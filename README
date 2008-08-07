@@ -1,0 +1,11 @@
+
+Padre
+
+Currently a simple editor for Perl written in Perl using WxWidgets
+
+
+installation:
+
+Alien::WxWidgets
+Wx
+Padre
