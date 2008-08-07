@@ -1,0 +1,13 @@
+Padre::Plugin::PAR
+
+A plugin for Padre to create PAR archives or 
+stand alone executable from within the editor.
+
+
+Installation should be done with the standard installation tools
+CPAN.pm or CPANPLUS
+
+Install Padre
+Install PAR::Packer
+Install Padre::Plugin::PAR
+
