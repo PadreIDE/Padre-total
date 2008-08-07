@@ -9,4 +9,4 @@ use warnings;
 use FindBin;
 $ENV{PADRE_DEV} = 1;
 $ENV{PADRE_HOME} = $FindBin::Bin;
-system "$^X -Ilib -Ipar/lib bin/padre @ARGV"; 
+system "$^X -Ilib -I../plugins/par/lib bin/padre @ARGV"; 
