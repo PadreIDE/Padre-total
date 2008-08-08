@@ -540,99 +540,11 @@ Send your wish list to Gabor Szabo <szabgab@gmail.com>
 
 =head2 Editor
 
-  Default file type for new unsaved buffers?
-
-  Menu options to create various specialized new files:
-     New .pl file
-     New .pm file
-     etc...
-     Should immediately call save_as and use the appropriate template.
-
-     It can actually behave differently:
-     There is only a single "New saved file" option that calls save_as and
-     then based on the extension we know which kind of file and which template
-     to use.
-
-     One might want to add several differen templates for .pm files so we might
-     need to ask which template to use, before creating the file.
-
-  Add unit tests that launch the GUI and generate events.
-
-  Run an application from within the editor:
-  Default: If the files is .pl save automatically and run it with
-     the current perl.
-  Any other file, don't run for now, just display a message.
-  When running a script disable the Run menu and show a stop menu point.
-    (try with a sleeping process)
-  Make sure both STDOUT and STDERR are displayed along with all of their newlines.
-  Allow for STDIN to be redirected to the external process.
-
-  Always save full path in opened-files history.
-  I think the relative pathes were saved when opening files on the
-  command line.
-
   Fix the remaining short-cut key that don't work on Windows (F3)
-
-  Run an application from within the editor:
-  Simple running works but there are several options here
-
-  - When developing a script we would like to
-    run the current file (the one we currently watch) with some predefined options
-    we should save these options before runs
-  - When developing a larger application with several modules and a script we
-    would like to run a predefined script with some predefind options
-  - Both of the above should be either directly or using a debugger
-  - STDERR and STDOUT should be captured - for simple command line script we might
-    want to have a full command line emulation?
-  - For now we can focus on GUI applications (e.g. written in Wx) where
-    the important part is the STDERR and the debugger.
-  - Run the unit tests assuming Makefile.PL or Build.PL
 
   Deal with "resource installation". That is probably talk to
   Module::Build, Debian and Fedora people to make it easy to install resource files
   such as xpm or po files. See File::ShareDir.
-
-  Project Management:
-  use PerlySense http://use.perl.org/comments.pl?sid=40446  ?
-
-  We need to assume that the current working directory of the editor can be anywhere.
-  For Perl project management we will assume a directory layout similar to what we have
-  in most CPAN distributions. That is
-
-  lib/    holding the modules
-  bin/    holding the executable scripts
-  t/      holding the test files
-
-  There should be a Makefile.PL or a Build.PL
-  Select a project is basically select a directory.
-  It will try to guess the prefered installation system Build.PL or Makefile.PL
-  Then one should have all the standard steps ready in the menu
-      Project Build.PL, Build, Build test, Build testcover, Build dist Build testdist
-
-  Create a new project will create the directory and the standard files
-  Select a project == select a directory assuming the files are already there
-    or
-  Select a project that was already selected once
-
-    Later we can integrate with various version control system so a new project might start by 
-    pointing to the repository (e.g. svn repo) and checking it out to some local place etc...
-
-  How to keep the path of projects on a stick?
-  Their path can be different in different machines.
-
-  When closing the application and there are still unsaved buffers provide better options:
-  Show the list of the unsaved buffers and the following buttons:
-    Close without saving
-    Cancel  (which will stop the closing)
-    Save  (save those that have filenames, provide save-as option to those that have no filenames)
-    Maybe provide a window with checkboxes for each unsaved buffer so the user can select which one
-    s/he wants to save and which one not.
-
-  Mark a section and comment out all of them at the same time - or remove the # from the beginning
-  of all the lines at once. This works with #, make this work with other comment characters for
-  other languages.
-
-  Keep the size of the output window,
 
 =head2 Podviewer
 
