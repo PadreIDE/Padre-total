@@ -1,3 +1,4 @@
+v0.04 2008.08.08
 
     add Devel::PerlySense as prereq
     stop checking for wx version for now
@@ -9,6 +10,8 @@
     * replace the search_term by search_terms in the config file
     allow remembering of search terms
     replace the text dialog by a full dialog box and a Wx::ComboBox
+    Setup http://padre.perlide.org/ using trac
+    Move the repository to http://svn.perlide.org/padre/
 
 v0.03_02 2008.08.03
     add experimental code for plugins

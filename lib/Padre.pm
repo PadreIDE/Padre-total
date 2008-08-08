@@ -2,7 +2,7 @@ package Padre;
 use strict;
 use warnings;
 
-our $VERSION = '0.03_02';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -532,11 +532,11 @@ sub get_widget {
 
 =head1 BUGS
 
-For now any bug report, please send directly to Gabor Szabo <szabgab@gmail.com>
+Please submit your bugs at L<http://padre.perlide.org/>
 
 =head1 TODO
 
-Send your wish list to Gabor Szabo <szabgab@gmail.com>
+L<http://padre.perlide.org/>
 
 =head2 Editor
 
@@ -615,7 +615,9 @@ Padre::Pod::* are there to index and show documentation written in pod.
 =head1 SUPPORT
 
 I hope the L<http://www.perlmonks.org/> will be ready to take
-upon themself supporting this application. 
+upon themself supporting this application.
+
+See also L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT
 

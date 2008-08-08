@@ -71,14 +71,14 @@ my $builder = $class->new(
         'Test::Exception'           => 0,
         'Test::NoWarnings'          => 0,
     },
-    #meta_merge => {
-    #    resources => {
-    #        homepage    => 'http://padre.perlide.org/',
-    #        bugtracker  => 'http://padre.perlide.org/',
-    #        Repository  => 'http://svn.perlide.org/padre',
+    meta_merge => {
+        resources => {
+            homepage    => 'http://padre.perlide.org/',
+            bugtracker  => 'http://padre.perlide.org/',
+            Repository  => 'http://svn.perlide.org/padre',
     #        MailingList => 'http://mail.perlide.org/listinfo/padre',
-    #    },
-    #},
+        },
+    },
 );
 
 #$builder->install_path->{share} = catdir($builder->install_path->{lib}, 'auto', 'share', 'dist', $builder->dist_name);
