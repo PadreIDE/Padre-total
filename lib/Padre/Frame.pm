@@ -713,6 +713,13 @@ sub on_find {
     my $choice = Wx::ComboBox->new( $dialog, -1, $selection, [-1, -1], [-1, -1], $config->{search_terms});
     $row1->Add( $choice, 1, wxALL, 3);
 
+    #my $verbatim = Wx::CheckBox->new( $dialog, -1, "Verbatim", [-1, -1], [-1, -1]);
+    #$row2->Add($verbatim);
+
+    #my $case_insensitive = Wx::CheckBox->new( $dialog, -1, "Case Insensitive", [-1, -1], [-1, -1]);
+    #$row2->Add($case_insensitive);
+
+
 #    $row2->Add($dir_selector, 1, wxALL, 3);
 
 #    my $path = Wx::StaticText->new( $dialog, -1, '');

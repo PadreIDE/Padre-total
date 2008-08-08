@@ -558,41 +558,6 @@ L<http://padre.perlide.org/>
   Indexing the words of all the pod files? (Search engine?)
   Indexing the function names only?
 
-=head1 Learning WxWidgets
-
-L<http://wxperl.sourceforge.net/tutorial/tutorial.html> of Mattia Barbon
-
-L<http://www.perl.com/pub/a/2001/09/12/wxtutorial1.html> by Jouke Visser
-
-Documentation of Wx::StyledTextCtrl is here:
-L<http://www.yellowbrain.com/stc/index.html>
-
-stock items in wx:
-
-L<http://docs.wxwidgets.org/2.8.6/wx_stockitems.html#stockitems>
-
-L<http://www.perlmonks.org/?node_id=122227> by boo_radley
-
-http://www.perlmonks.org/?node_id=112297 
-
-http://www.perlmonks.org/?node_id=152323
-
-http://www.perlmonks.org/?node_id=153366
-
-http://www.perlmonks.org/?node_id=184685
-
-http://www.perlmonks.org/?node_id=194611
-
-http://www.perlmonks.org/?node_id=199840
-
-http://www.perlmonks.org/?node_id=164341
-
-http://www.perlmonks.org/?node_id=287396
-
-http://www.perlmonks.org/?node_id=290475
-
-http://www.perlmonks.org/?node_id=219778
-
 =head2 Code layout:
 
 Padre is the main module that reads/writes the configuration files
