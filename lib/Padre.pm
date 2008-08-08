@@ -540,17 +540,6 @@ Send your wish list to Gabor Szabo <szabgab@gmail.com>
 
 =head2 Editor
 
-  Search window:
-  - case insensitive
-  - regex
-
-
-  In "open file" show filenames without extension as well.
-
-  Allow for changing font size.
-
-  Support the highlighting of more file types.
-
   Default file type for new unsaved buffers?
 
   Menu options to create various specialized new files:
@@ -583,12 +572,6 @@ Send your wish list to Gabor Szabo <szabgab@gmail.com>
   command line.
 
   Fix the remaining short-cut key that don't work on Windows (F3)
-
-  Tool for refactoring code: 
-  locate and replace all occurances of a method name within a project.
-
-  When opening a new file if there is an empty unsaved file then replace it.
-  Maybe this should only work on the first such buffer?
 
   Run an application from within the editor:
   Simple running works but there are several options here
@@ -637,22 +620,6 @@ Send your wish list to Gabor Szabo <szabgab@gmail.com>
   How to keep the path of projects on a stick?
   Their path can be different in different machines.
 
-  Debugger from within the editor
-
-  TAB jump N spaces, clever TAB (real tab in the beginning, spaces after???)
-
-  Add remote editing capability via ftp and ssh.
-
-  Define API to add more menu options and plugins
-
-  Plugin idea:
-  Based on file type (extension) have a pre-save hook that will include
-  a timestamp in the saved file. E.g. our $TIMESTAMP = DDDDDDDDDD;
-  where DDDDD is the result of time()
-  It could be also a DD.DD.DD number that is automatically increased on every save.
-  With both the main issue is that it is not working if someone 
-  uses a different editor.
-
   When closing the application and there are still unsaved buffers provide better options:
   Show the list of the unsaved buffers and the following buttons:
     Close without saving
@@ -666,7 +633,6 @@ Send your wish list to Gabor Szabo <szabgab@gmail.com>
   other languages.
 
   Keep the size of the output window,
-  Move between the editor and the output window with some hot-key
 
 =head2 Podviewer
 
