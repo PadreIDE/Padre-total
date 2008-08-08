@@ -487,6 +487,9 @@ sub on_open {
     my ($self) = @_;
 
     my $dialog = Wx::FileDialog->new( $self, "Open file", $default_dir, "", "*.*", wxFD_OPEN);
+    if ($^O !~ /win32/i) {
+       $dialog->SetWildcard("*");
+    }
     if ($dialog->ShowModal == wxID_CANCEL) {
         #print "Cancel\n";
         return;

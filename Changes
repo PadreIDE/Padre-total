@@ -1,5 +1,6 @@
 
     First stab at autocompletition using Ctrl-P
+    Allow opening files without extensions (on non-ms-windows systems)
 
 v0.04 2008.08.08
 

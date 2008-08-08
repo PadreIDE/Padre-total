@@ -56,6 +56,7 @@ Currently Ctrl-F5 does not save any file. (This will be added later.)
 You can edit the command line using the Run/Setup menu item.
 
  Ctr-B          matching brace
+ Ctr-P          Autocompletition
  Alt-N          Nth Pane
  Ctr-TAB        Next Pane
  Ctr-Shift-TAB  Previous Pane
