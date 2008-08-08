@@ -1,3 +1,6 @@
+
+    First stab at autocompletition using Ctrl-P
+
 v0.04 2008.08.08
 
     add Devel::PerlySense as prereq
