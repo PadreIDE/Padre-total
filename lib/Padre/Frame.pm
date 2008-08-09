@@ -244,6 +244,7 @@ sub _create_menu_bar {
     EVT_CLOSE( $self,              \&on_close_window);
 
     EVT_KEY_UP( $self, \&on_key );
+
     return;
 }
 
@@ -350,8 +351,104 @@ sub on_key {
         }
     }
 
+    return;
+}
+
+
+package Padre::Popup;
+use strict;
+use warnings;
+
+#use base 'Wx::ComboPopup';
+#use base 'Wx::PopupTransientWindow';
+#use base 'Wx::PopupWindow';
+use base qw(Wx::PlPopupTransientWindow);
+
+use Wx        qw(:everything);
+use Wx::Event qw(:everything);
+
+sub on_paint {
+    my( $self, $event ) = @_;
+#    my $dc = Wx::PaintDC->new( $self );
+#    $dc->SetBrush( Wx::Brush->new( Wx::Colour->new( 0, 192, 0 ), wxSOLID ) );
+#    $dc->SetPen( Wx::Pen->new( Wx::Colour->new( 0, 0, 0 ), 1, wxSOLID ) );
+#    $dc->DrawRectangle( 0, 0, $self->GetSize->x, $self->GetSize->y );
+
+    
+}
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new(@_);
+EVT_PAINT( $self, \&on_paint);
+
+print "xxx $self\n";
+#    my $panel =  Wx::Panel->new( $self, -1 );
+#print "panel $panel\n";
+    #$panel->SetBackgroundColour(Wx::wxWHITE);
+#    $self->SetBackgroundColour(Wx::wxWHITE);
+#print "aa\n";
+#    my $dialog = Wx::Dialog->new( $self, -1, "", [-1, -1], [550, 200]);
+#print "d $dialog\n";
+
+#    my $st = Wx::StaticText->new($panel, -1, 
+#           "abc adsda\n" .
+#           "Some more\n" .
+#           "and more\n"
+#           , [10, 10], [-1, -1]);
+#print "zz $st\n";
+#    my $sz = $st->GetBestSize();
+#    $self->SetSize( ($sz->GetWidth()+20, $sz->GetHeight()+20) );
+    #$self->SetSize( $panel->GetSize());
+
+    return $self;
+}
+
+sub ProcessLeftDown {
+    my ($self, $event) = @_;
+    print "Process Left $event\n";
+    #$event->Skip;
+    return 0;
+}
+
+sub OnDismiss {
+    my ($self, $event) = @_;
+    print "OnDismiss\n";
+    #$event->Skip;
+}
+
+package Padre::Frame;
+
+sub on_right_click {
+    my ($self, $event) = @_;
+    print "right\n";
+    my @options = qw(abc def);
+    my $HEIGHT = 30;
+    my $dialog = Wx::Dialog->new( $self, -1, "", [-1, -1], [100, 50 + $HEIGHT * $#options], wxBORDER_SIMPLE);
+    #$dialog->;
+    foreach my $i (0..@options-1) {
+        EVT_BUTTON( $dialog, Wx::Button->new( $dialog, -1, $options[$i], [10, 10+$HEIGHT*$i] ), sub {on_right(@_, $i)} );
+    }
+    my $ret = $dialog->Show;
+    print "ret\n";
+    #my $pop = Padre::Popup->new($self); #, wxSIMPLE_BORDER);
+    #$pop->Move($event->GetPosition());
+    #$pop->SetSize(300, 200);
+    #$pop->Popup;
+
+#Hide
+#Destroy
+
+    #my $choices = [ 'This', 'is one of my',  'really', 'wonderful', 'examples', ];
+    #my $combo = Wx::BitmapComboBox->new($self,-1,"This",[2,2],[10,10],$choices );
 
     return;
+}
+sub on_right {
+    my ($self, $event, $val) = @_;
+    print "$self $event $val\n";
+    #print ">", $event->GetClientObject, "<\n";
+    $self->Hide;
+    $self->Destroy;
 }
 
 sub on_exit {
@@ -438,6 +535,13 @@ sub setup_editor {
     my $id  = $nb->GetSelection;
     _set_filename($id, $file);
     #print "x" . $editor->AutoCompActive .  "x\n";
+
+    #$editor->UsePopUp(0);
+    #EVT_RIGHT_DOWN( $editor, \&on_right_click );
+
+    #EVT_RIGHT_UP( $self, \&on_right_click );
+    #EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
+    #EVT_MOTION( $editor, sub {print '.'});
 
     delete $self->{_in_setup_editor};
     $self->update_status;
