@@ -641,6 +641,16 @@ sub _get_filename {
     return $page->{$pack}{filename};
 }
 
+=head2 get_current_filename
+
+Returns the name filename of the current buffer.
+
+=cut
+sub get_current_filename {
+    my ($self) = @_;
+    my $id = $nb->GetSelection;
+    return $self->_get_filename($id);
+}
 
 sub on_save_as {
     my ($self) = @_;
