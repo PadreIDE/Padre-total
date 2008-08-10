@@ -39,17 +39,40 @@ our $VERSION = '0.01';
 
 # see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
 my %syntax_of = (
+    #  => wxSTC_LEX_ADA,
+    asm  => wxSTC_LEX_ASM,
+#    asp  => wxSTC_LEX_ASP, #in ifdef
+    bat  => wxSTC_LEX_BATCH,
+    cpp  => wxSTC_LEX_CPP,
     css  => wxSTC_LEX_CSS,
+    diff => wxSTC_LEX_DIFF,
+    # => wxSTC_LEX_EIFFEL,
+    # => wxSTC_LEX_EIFFELKW,
+    # => wxSTC_LEX_FORTH,
+    # => wxSTC_LEX_FORTRAN,
     html => wxSTC_LEX_HTML,
 #    js   => 
+    # => wxSTC_LEX_LATEX,
+    # => wxSTC_LEX_LISP,
+    lua => wxSTC_LEX_LUA,
+    # => wxSTC_LEX_MAKEFILE,
+    #   => wxSTC_LEX_MATLAB,
+    #   => wxSTC_LEX_PASCAL,
     pl   => wxSTC_LEX_PERL,
     pod  => wxSTC_LEX_PERL,
     pm   => wxSTC_LEX_PERL,
+#    php  => wxSTC_LEX_PHP, # in ifdef
+    #  => wxSTC_LEX_PHPSCRIPT,
+    py   => wxSTC_LEX_PYTHON,
+    rb   => wxSTC_LEX_RUBY,
     sql  => wxSTC_LEX_SQL,
+    tcl  => wxSTC_LEX_TCL,
     t    => wxSTC_LEX_PERL,
-    xml  => wxSTC_LEX_XML,
     yml  => wxSTC_LEX_YAML,
     yaml => wxSTC_LEX_YAML,
+    #  => wxSTC_LEX_VB,
+    #  => wxSTC_LEX_VBSCRIPT,
+    xml  => wxSTC_LEX_XML,
     _default_ => wxSTC_LEX_AUTOMATIC,
 );
 
@@ -57,7 +80,7 @@ my %syntax_of = (
 sub new {
     my ($class) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = $main::app->get_config;
     Wx::InitAllImageHandlers();
     my $self = $class->SUPER::new( undef, -1,
                                  'Padre ',
