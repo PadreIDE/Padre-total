@@ -57,7 +57,8 @@ my %syntax_of = (
 sub new {
     my ($class) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = $main::app->get_config;
+    Wx::InitAllImageHandlers();
     my $self = $class->SUPER::new( undef, -1,
                                  'Padre ',
                                   wxDefaultPosition,  
