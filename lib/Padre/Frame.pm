@@ -212,7 +212,7 @@ sub _create_menu_bar {
     EVT_MENU(  $self, $file->Append( wxID_CLOSE,  ''  ), \&on_close   );
     EVT_MENU(  $self, $file->Append( wxID_EXIT,   ''  ), \&on_exit    );
 
-#    EVT_MENU(  $self, $project->Append( -1, "&Create New"), \&on_create_project );
+    EVT_MENU(  $self, $project->Append( -1, "&New"), \&on_new_project );
     EVT_MENU(  $self, $project->Append( -1, "&Select"    ), \&on_select_project );
 #    EVT_MENU(  $self, $project->Append( -1, "&Test"      ), \&on_test_project );
 
@@ -1226,8 +1226,12 @@ sub on_redo { # Shift-Ctr-Z
 #    my ($self) = @_;
 #}
 
-sub on_create_project {
+sub on_new_project {
     my ($self) = @_;
+    # ask for project type, name and directory
+    # create directory call, Module::Starter
+    # set current project
+    # run
     Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
 }
 
