@@ -31,17 +31,15 @@ sub new {
                                  'Demo::App',
                                   wxDefaultPosition,  wxDefaultSize,
                                  );
-    my $main = Wx::SplitterWindow->new(
-                $self, -1, wxDefaultPosition, wxDefaultSize,
-                wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
 
-    my $button = Wx::Button->new( $main, -1, "What is the message?" );
-    #$main->SplitHorizontally( $nb, $output, $HEIGHT );
-    Wx::Event::EVT_BUTTON( $main, $button, sub {
+    my $button = Wx::Button->new( $self, -1, "What is this smell?" );
+    Wx::Event::EVT_BUTTON( $self, $button, sub {
          my ( $self, $event ) = @_;
-         print "printing messsage\n";
-         Wx::MessageBox( "This is the message", "Title", wxOK|wxCENTRE, $self );
+         print "printing to STDOUT\n";
+         print STDERR "printing to STDERR\n";
+         Wx::MessageBox( "This is the smell of an Onion", "Title", wxOK|wxCENTRE, $self );
     });
+    $self->SetSize($button->GetSizeWH);
 
     Wx::Event::EVT_CLOSE( $self,  sub {
          my ( $self, $event ) = @_;
