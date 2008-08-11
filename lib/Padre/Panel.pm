@@ -6,12 +6,8 @@ our $VERSION = '0.01';
 use Wx::STC;
 use base 'Wx::StyledTextCtrl';
 
-use Wx;
-use Wx qw(:stc :textctrl :font wxDefaultPosition wxDefaultSize :id
-          wxNO_FULL_REPAINT_ON_RESIZE wxLayout_LeftToRight);
-use Wx qw(wxDefaultPosition wxDefaultSize wxTheClipboard 
-          wxDEFAULT_FRAME_STYLE wxNO_FULL_REPAINT_ON_RESIZE wxCLIP_CHILDREN);
-use Wx::Event qw(EVT_TREE_SEL_CHANGED EVT_MENU EVT_CLOSE EVT_STC_CHANGE);
+use Wx qw(:everything);
+use Wx::Event qw(:everything);
 
 sub new {
     my( $class, $parent, $lexer ) = @_;
