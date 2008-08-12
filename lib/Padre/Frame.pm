@@ -289,7 +289,7 @@ sub on_key {
             my $id = $code - 49;
             $self->on_nth_pane($id);
         }
-    } elsif ($mod == 10) {            # Ctrl
+    } elsif ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             my $id = $code - 49;
             my $pageid = $nb->GetSelection();
@@ -307,16 +307,17 @@ sub on_key {
             my $line = $page->LineFromPosition($pos);
             my $first = $page->PositionFromLine($line);
             my $prefix = $page->GetTextRange($first, $pos); # line from beginning to current position
-            $prefix =~ s{^.*?(\w+)$}{$1};
+            $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
             print "prefix: '$prefix'\n";
             my $last = $page->GetLength();
             my $text = $page->GetTextRange(0, $last);
             my %seen;
-            my @words = grep { !$seen{$_}++ } sort ($text =~ m{\b($prefix\w*)\b}g);
+            my @words = grep { !$seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
             if (@words > 20) {
                @words = @words[0..19];
             }
-            $page->AutoCompShow(3, join " ", @words);
+            print Dumper \@words;
+            $page->AutoCompShow(length($prefix), join " ", @words);
             return;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
             my $id   = $nb->GetSelection;
