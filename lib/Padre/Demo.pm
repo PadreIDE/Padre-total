@@ -32,11 +32,13 @@ sub OnInit {
 package Padre::Demo::App::Frame;
 use strict;
 use warnings;
+
 use Wx qw(:everything);
 use Wx::Event qw(:everything);
 
 use base 'Wx::Frame';
 
+use File::Spec::Functions qw(catfile);
 
 sub prompt {
     my ($self, $text) = @_;
@@ -49,6 +51,23 @@ sub prompt {
     $dialog->Destroy;
     return $resp;
 }
+
+sub promp_input_file {
+    my ($self, $text) = @_;
+
+    my $dialog = Wx::FileDialog->new( $self, $text, '', "", "*.*", wxFD_OPEN);
+    if ($^O !~ /win32/i) {
+       $dialog->SetWildcard("*");
+    }
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+    my $filename = $dialog->GetFilename;
+    my $default_dir = $dialog->GetDirectory;
+
+    return catfile($default_dir, $filename);
+}
+
 
 sub new {
     my ($class) = @_;
