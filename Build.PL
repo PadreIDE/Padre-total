@@ -61,6 +61,7 @@ my $builder = $class->new(
         'File::ShareDir'          => '1.00',
         'File::Slurp'             => 0,
         'Pod::POM'                => 0,
+        'Pod::Simple'             => 0,
         'YAML'                    => 0,
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,
