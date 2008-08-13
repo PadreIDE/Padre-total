@@ -40,6 +40,8 @@ use base 'Wx::Frame';
 
 use File::Spec::Functions qw(catfile);
 
+my $output;
+
 sub prompt {
     my ($self, $text) = @_;
 
@@ -50,6 +52,12 @@ sub prompt {
     my $resp = $dialog->GetValue;
     $dialog->Destroy;
     return $resp;
+}
+
+sub print_out {
+    my ($self, $text) = @_;
+    $output->AddText($text);
+    return;
 }
 
 sub promp_input_file {
@@ -105,8 +113,9 @@ use Wx::STC;
 sub on_activate {
    my ($editor, $frame, $event) = @_;
 
+   $output = $editor;
    $frame->EVT_ACTIVATE(sub {}); 
-   return $main->($frame, $editor);
+   return $main->($frame);
 }
 
 1;
