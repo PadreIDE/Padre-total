@@ -301,23 +301,7 @@ sub on_key {
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB
             $self->on_next_pane;
         } elsif ($code == ord 'P') {              # Ctrl-P    Auto completition
-            my $id   = $nb->GetSelection;
-            my $page = $nb->GetPage($id);
-            my $pos  = $page->GetCurrentPos;
-            my $line = $page->LineFromPosition($pos);
-            my $first = $page->PositionFromLine($line);
-            my $prefix = $page->GetTextRange($first, $pos); # line from beginning to current position
-            $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-            print "prefix: '$prefix'\n";
-            my $last = $page->GetLength();
-            my $text = $page->GetTextRange(0, $last);
-            my %seen;
-            my @words = grep { !$seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
-            if (@words > 20) {
-               @words = @words[0..19];
-            }
-            print Dumper \@words;
-            $page->AutoCompShow(length($prefix), join " ", @words);
+            $self->on_autocompletition();
             return;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
             my $id   = $nb->GetSelection;
@@ -379,6 +363,27 @@ sub on_key {
     return;
 }
 
+sub on_autocompletition {
+   my ($self) = @_;
+   my $id   = $nb->GetSelection;
+   my $page = $nb->GetPage($id);
+   my $pos  = $page->GetCurrentPos;
+   my $line = $page->LineFromPosition($pos);
+   my $first = $page->PositionFromLine($line);
+   my $prefix = $page->GetTextRange($first, $pos); # line from beginning to current position
+   $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+   #print "prefix: '$prefix'\n";
+   my $last = $page->GetLength();
+   my $text = $page->GetTextRange(0, $last);
+   my %seen;
+   my @words = grep { !$seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
+   if (@words > 20) {
+      @words = @words[0..19];
+   }
+   #print Dumper \@words;
+   $page->AutoCompShow(length($prefix), join " ", @words);
+   return;
+}
 
 package Padre::Popup;
 use strict;
