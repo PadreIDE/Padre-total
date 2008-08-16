@@ -16,8 +16,9 @@ sub ACTION_code {
     $self->SUPER::ACTION_code(@_);
 
     use FindBin               ();
-    use File::Copy::Recursive qw(dircopy);
     use File::Spec::Functions qw(catfile catdir);
+    require File::Copy::Recursive;
+    import  File::Copy::Recursive qw(dircopy);
 
     my $dir =  catdir($FindBin::Bin, 'blib', 'lib', 'auto', 'share', 'dist', $self->dist_name);
     dircopy(catfile($FindBin::Bin, 'share'), $dir);
