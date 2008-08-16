@@ -14,6 +14,8 @@ use base 'Wx::Frame';
 use Padre::Pod::Viewer;
 
 my $search_term = '';
+my $choice;
+my $choices;
 
 sub new {
     my ($class) = @_;
@@ -45,10 +47,10 @@ sub _setup_podviewer {
 
     # TODO: remove magic values and just add the Choice box after the buttons
     # TODO: update list when a file is opened
-    my $choice = Wx::Choice->new( $panel, -1, [175, 5], [-1, 32], [$main::app->get_recent('pod')]); #, $frame->style );
-    EVT_CHOICE( $panel, $choice, sub {on_selection($self, $choice, @_)} );
+    $choice = Wx::Choice->new( $panel, -1, [175, 5], [-1, 32], [$main::app->get_recent('pod')]); #, $frame->style );
+    EVT_CHOICE( $panel, $choice, \&on_selection );
 
-    my $choices = $main::app->get_modules;
+    $choices = $main::app->get_modules;
     my @ch = @{$choices}[0..10];
     my $combobox = Wx::ComboBox->new($panel, -1, '', [375, 5], [-1, 32], []); #, $self->style);
     EVT_COMBOBOX(   $panel, $combobox, \&on_combobox);
@@ -68,6 +70,7 @@ sub _setup_podviewer {
 
     return;
 }
+
 
 sub on_combobox_text_changed {
     my ( $combobox, $self ) = @_;
@@ -91,10 +94,22 @@ sub on_combobox_text_changed {
     return;
 }
 
+sub on_combobox_text_enter {
+    my ($self, $event) = @_;
+#    print "enter $event\n";
+    on_selection($self, $event);
+}
+sub on_combobox {
+    my ($self, $event) = @_;
+#    print "combo $event\n";
+    on_selection($self, $event);
+}
+
 sub on_selection {
-    my ($self, $choice) = @_;
+    my ($self, $event) = @_;
 
     my $current = $choice->GetCurrentSelection;
+#print "$choice $current\n";
     my $module = $main::app->set_item('pod', $current);
     if ($module) {
         $self->{html}->display($module);
