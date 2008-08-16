@@ -58,6 +58,7 @@ my $builder = $class->new(
         #'Devel::PerlySense'       => 0, 
         'File::Copy::Recursive'   => 0,
         'File::HomeDir'           => 0,
+        'File::LocalizeNewlines'  => '1.10',
         'File::ShareDir'          => '1.00',
         'File::Slurp'             => 0,
         'Pod::POM'                => 0,
@@ -66,6 +67,7 @@ my $builder = $class->new(
         'YAML'                    => 0,
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,
+
 
     },
     build_requires        => {

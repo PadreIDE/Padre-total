@@ -32,6 +32,8 @@ use Carp            qw();
 use Data::Dumper    qw(Dumper);
 use List::Util      qw(max);
 use File::ShareDir  ();
+use File::LocalizeNewlines;
+
 my $default_dir = "";
 our $nb;
 my $cnt = 0;
@@ -119,7 +121,12 @@ sub _create_panel {
     my $config = $main::app->get_config;    
     $main_panel->SplitHorizontally( $nb, $output, $config->{main}{height} );
 
-    $self->CreateStatusBar;
+    my $sb = $self->CreateStatusBar;
+    #$self->SetStatusBarPane();
+    #my $sb = $self->GetStatusBar;
+    $sb->SetFieldsCount(3);
+    $sb->SetStatusWidths(-1, 50, 100);
+
     my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050);
     $tool_bar->AddTool(wxID_NEW, '', _bitmap('new'), 'New File');
     $tool_bar->AddTool(wxID_OPEN, '', _bitmap('open'), 'Open');
@@ -531,6 +538,16 @@ sub _lexer {
     return( (defined $syntax_of{$ext}) ? $syntax_of{$ext} : $syntax_of{_default_});
 }
 
+
+sub _get_local_filetype {
+    return $^O =~ /win32/i ? 'WIN' : 'UNIX';
+}
+sub _get_filetype {
+    my ($file) = @_;
+    my $nl = File::LocalizeNewlines->new;
+    return ( ($^O =~ /win32/i xor $nl->localized($file)) ? 'UNIX' : 'WIN' );
+}
+
 sub setup_editor {
     my ($self, $file) = @_;
 
@@ -540,6 +557,8 @@ sub setup_editor {
 
 
     my $editor = Padre::Panel->new($nb, _lexer($file));
+
+    my $file_type= _get_filetype($file);
 
     #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
     # it used to default to 0 on windows and still
@@ -565,7 +584,7 @@ sub setup_editor {
     my $pack = __PACKAGE__;
     #my $page = $nb->GetCurrentPage;
     my $id  = $nb->GetSelection;
-    _set_filename($id, $file);
+    _set_filename($id, $file, $file_type);
     #print "x" . $editor->AutoCompActive .  "x\n";
 
     #$editor->UsePopUp(0);
@@ -651,11 +670,12 @@ sub on_new {
 }
 
 sub _set_filename {
-    my ($id, $data) = @_;
+    my ($id, $data, $type) = @_;
 
     my $pack = __PACKAGE__;
     my $page = $nb->GetPage($id);
     $page->{$pack}{filename} = $data;
+    $page->{$pack}{type}     = $type;
 
     if ($data) {
        $page->SetLexer( _lexer($data) ); # set the syntax highlighting
@@ -670,7 +690,12 @@ sub _get_filename {
     my $pack = __PACKAGE__;
     my $page = $nb->GetPage($id);
 
-    return $page->{$pack}{filename};
+    
+    if (wantarray) {
+	return ($page->{$pack}{filename}, $page->{$pack}{type});
+    } else {
+	return $page->{$pack}{filename};
+    }
 }
 
 =head2 get_current_filename
@@ -704,11 +729,11 @@ sub on_save_as {
         if (-e $path) {
             my $res = Wx::MessageBox("File already exists. Overwrite it?", "Exist", wxYES_NO, $self);
             if ($res == wxYES) {
-                _set_filename($id, $path);
+                _set_filename($id, $path, _get_local_filetype());
                 last;
             }
         } else {
-            _set_filename($id, $path);
+            _set_filename($id, $path, _get_local_filetype());
             last;
         }
     }
@@ -747,7 +772,7 @@ sub _save_buffer {
 
     my $page = $nb->GetPage($id);
     my $content = $page->GetText;
-    my $filename = $self->_get_filename($id);
+    my ($filename, $file_type) = $self->_get_filename($id);
     eval {
         write_file($filename, $content);
     };
@@ -1405,12 +1430,14 @@ sub update_status {
 
     my $pageid = $nb->GetSelection();
     if (not defined $pageid) {
-        $self->SetStatusText("");
+        $self->SetStatusText("", $_) for (0..2);
         return;
     }
     my $page = $nb->GetPage($pageid);
     my $line = $page->GetCurrentLine;
-    my $filename = $self->_get_filename($pageid) || '';
+    my ($filename, $file_type) = $self->_get_filename($pageid);
+    $filename  ||= '';
+    $file_type ||= _get_local_filetype();
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
@@ -1424,7 +1451,10 @@ sub update_status {
     my $start = $page->PositionFromLine($line);
     my $char = $pos-$start;
 
-    $self->SetStatusText("$modified $filename L: " . ($line +1) . " Ch: $char");
+    $self->SetStatusText("$modified $filename", 0);
+    $self->SetStatusText($file_type, 1);
+
+    $self->SetStatusText("L: " . ($line +1) . " Ch: $char", 2);
 
     return;
 }
