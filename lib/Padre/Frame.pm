@@ -41,48 +41,48 @@ my $cnt = 0;
 our $VERSION = '0.01';
 
 # see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
+# N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
+#  wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
+# but not (yet) in 
+#  Wx-0.84/ext/stc/cpp/st_constants.cpp
+# so we have to hard-code their numeric value.
 my %syntax_of = (
-    #  => wxSTC_LEX_ADA,
-    asm  => wxSTC_LEX_ASM,
-#    asp  => wxSTC_LEX_ASP, #in ifdef
-    bat  => wxSTC_LEX_BATCH,
-    cpp  => wxSTC_LEX_CPP,
-    css  => wxSTC_LEX_CSS,
-    diff => wxSTC_LEX_DIFF,
-    # => wxSTC_LEX_EIFFEL,
-    # => wxSTC_LEX_EIFFELKW,
-    # => wxSTC_LEX_FORTH,
-    # => wxSTC_LEX_FORTRAN,
-    html => wxSTC_LEX_HTML,
-    
-    # N.B. wxSTC_LEX_ESCRIPT is defined in wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
-    # but is currently missing from Wx-0.84/ext/stc/cpp/st_constants.cpp
-    js   => 41, # wxSTC_LEX_ESCRIPT 
-    
-    # => wxSTC_LEX_LATEX,
-    # => wxSTC_LEX_LISP,
-    lua => wxSTC_LEX_LUA,
-    # => wxSTC_LEX_MAKEFILE,
-    #   => wxSTC_LEX_MATLAB,
-    #   => wxSTC_LEX_PASCAL,
-    pl   => wxSTC_LEX_PERL,
-    pod  => wxSTC_LEX_PERL,
-    pm   => wxSTC_LEX_PERL,
-#    php  => wxSTC_LEX_PHP, # in ifdef
-    #  => wxSTC_LEX_PHPSCRIPT,
-    py   => wxSTC_LEX_PYTHON,
-    rb   => wxSTC_LEX_RUBY,
-    sql  => wxSTC_LEX_SQL,
-    tcl  => wxSTC_LEX_TCL,
-    t    => wxSTC_LEX_PERL,
-    yml  => wxSTC_LEX_YAML,
-    yaml => wxSTC_LEX_YAML,
-    #  => wxSTC_LEX_VB,
-    #  => wxSTC_LEX_VBSCRIPT,
-    xml  => wxSTC_LEX_XML,
+    ada   => wxSTC_LEX_ADA,
+    asm   => wxSTC_LEX_ASM,
+    # asp => wxSTC_LEX_ASP, #in ifdef
+    bat   => wxSTC_LEX_BATCH,
+    cpp   => wxSTC_LEX_CPP,
+    css   => wxSTC_LEX_CSS,
+    diff  => wxSTC_LEX_DIFF,
+    #     => wxSTC_LEX_EIFFEL, # what is the default EIFFEL file extension?
+    #     => wxSTC_LEX_EIFFELKW,
+    '4th' => wxSTC_LEX_FORTH,
+    f     => wxSTC_LEX_FORTRAN,
+    html  => wxSTC_LEX_HTML,
+    js    => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
+    json  => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?)
+    latex => wxSTC_LEX_LATEX,
+    lsp   => wxSTC_LEX_LISP,
+    lua   => wxSTC_LEX_LUA,
+    mak   => wxSTC_LEX_MAKEFILE,
+    mat   => wxSTC_LEX_MATLAB,
+    pas   => wxSTC_LEX_PASCAL,
+    pl    => wxSTC_LEX_PERL,
+    pod   => wxSTC_LEX_PERL,
+    pm    => wxSTC_LEX_PERL,
+    php   => wxSTC_LEX_PHPSCRIPT,
+    py    => wxSTC_LEX_PYTHON,
+    rb    => wxSTC_LEX_RUBY,
+    sql   => wxSTC_LEX_SQL,
+    tcl   => wxSTC_LEX_TCL,
+    t     => wxSTC_LEX_PERL,
+    yml   => wxSTC_LEX_YAML,
+    yaml  => wxSTC_LEX_YAML,
+    vbs   => wxSTC_LEX_VBSCRIPT,
+    #     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
+    xml   => wxSTC_LEX_XML,
     _default_ => wxSTC_LEX_AUTOMATIC,
 );
-
 
 sub new {
     my ($class) = @_;
