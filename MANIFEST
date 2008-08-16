@@ -2,7 +2,6 @@ Build.PL
 Changes
 MANIFEST
 README
-Makefile.PL
 META.yml
 
 lib/Padre.pm
