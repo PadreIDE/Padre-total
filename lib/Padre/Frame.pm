@@ -54,7 +54,11 @@ my %syntax_of = (
     # => wxSTC_LEX_FORTH,
     # => wxSTC_LEX_FORTRAN,
     html => wxSTC_LEX_HTML,
-#    js   => 
+    
+    # N.B. wxSTC_LEX_ESCRIPT is defined in wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
+    # but is currently missing from Wx-0.84/ext/stc/cpp/st_constants.cpp
+    js   => 41, # wxSTC_LEX_ESCRIPT 
+    
     # => wxSTC_LEX_LATEX,
     # => wxSTC_LEX_LISP,
     lua => wxSTC_LEX_LUA,
