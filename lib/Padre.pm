@@ -89,6 +89,22 @@ You can edit the command line using the Run/Setup menu item.
 
  padre --index
 
+=head2 Rectangular Text Selection
+
+Simple text editors usually only allow you to select contiguous lines of text with your mouse. 
+Somtimes, however, it is handy to be able to select a rectangular area of text for more precise 
+cutting/copying/pasting or performing search/replace on. You can select a rectangular area in Padre
+by holding down Ctr-Alt whilst selecting text with your mouse. 
+
+For example, imagine you have the following nicely formatted hash assignment in a perl source file:
+
+ my %hash = (
+    key1 => 'value1',
+    key2 => 'value2',
+    key3 => 'value3',
+ );
+
+With a rectangular text selection you can select only the keys, only the values, etc.. 
 
 =head1 Command line options
 
