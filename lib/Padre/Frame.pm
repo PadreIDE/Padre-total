@@ -702,6 +702,23 @@ sub _get_filename {
     }
 }
 
+sub _set_page_text {
+    my ($self, $id, $text) = @_;
+
+    my $pack = __PACKAGE__;
+    my $page = $nb->GetPage($id);
+    return $page->SetText($text);
+}
+
+sub _get_page_text {
+    my ($self, $id) = @_;
+
+    my $pack = __PACKAGE__;
+    my $page = $nb->GetPage($id);
+    return $page->GetText;
+}
+
+
 =head2 get_current_filename
 
 Returns the name filename of the current buffer.
@@ -711,6 +728,18 @@ sub get_current_filename {
     my ($self) = @_;
     my $id = $nb->GetSelection;
     return $self->_get_filename($id);
+}
+
+sub set_page_text {
+    my ($self, $text) = @_;
+    my $id = $nb->GetSelection;
+    return $self->_set_page_text($id, $text);
+}
+
+sub get_page_text {
+    my ($self) = @_;
+    my $id = $nb->GetSelection;
+    return $self->_get_page_text($id);
 }
 
 sub on_save_as {
