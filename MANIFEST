@@ -8,6 +8,7 @@ lib/Padre.pm
 lib/Padre/App.pm
 lib/Padre/Frame.pm
 lib/Padre/Panel.pm
+lib/Padre/Demo.pm
 
 lib/Padre/Pod/Frame.pm
 lib/Padre/Pod/Indexer.pm
