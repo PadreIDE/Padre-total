@@ -1,4 +1,5 @@
 package Padre::Frame;
+
 use strict;
 use warnings;
 
@@ -1032,7 +1033,10 @@ sub on_run_this {
         Wx::MessageBox( "Currently we only support execution of .pl files", "Cannot run", wxOK|wxCENTRE, $self );
         return;
     }
-    $self->_run("$^X $filename");
+
+    # Run the program
+    my $perl = Padre->probe_perl->find_perl_interpreter;
+    $self->_run( qq["perl" "$filename"] );
 
     return;
 }
@@ -1051,7 +1055,8 @@ sub on_debug_this {
     _setup_debugger($host, $port);
 
     local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-    $self->_run("$^X -d $filename");
+    my $perl = Padre->probe_perl->find_perl_interpreter;
+    $self->_run(qq["$perl" -d "$filename"]);
 
     return;
 }

@@ -39,7 +39,7 @@ my $builder = $class->new(
 
     script_files          => [qw(bin/padre)],
     requires              => {
-        'perl'                    => '5.006',
+        'perl'                    => '5.008',
 
         'Carp'                    => 0,
         'Cwd'                     => 0,
@@ -48,7 +48,6 @@ my $builder = $class->new(
         'FindBin'                 => 0,
         'Getopt::Long'            => 0,
         'List::Util'              => 0,
-
         'IO::Socket'              => 0,
         'Term::ReadLine'          => 0,
 
@@ -62,6 +61,7 @@ my $builder = $class->new(
         'File::Slurp'             => 0,
         'Pod::POM'                => 0,
         'Pod::Simple'             => 0,
+	'Probe::Perl'             => '0.01',
         'YAML'                    => 0,
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,

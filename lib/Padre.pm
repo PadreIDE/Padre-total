@@ -1,4 +1,5 @@
 package Padre;
+
 use strict;
 use warnings;
 
@@ -125,8 +126,17 @@ use Carp                  qw();
 use YAML                  qw(LoadFile DumpFile);
 use Getopt::Long          qw(GetOptions);
 use Data::Dumper          qw(Dumper);
-
 use Padre::App;
+
+# Globally shared Perl detection object
+my $probe_perl = undef;
+sub probe_perl {
+	unless ( $probe_perl ) {
+		require Probe::Perl;
+		$probe_perl = Probe::Perl->new;
+	}
+	return $probe_perl;
+}
 
 use base 'Class::Accessor';
 

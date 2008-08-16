@@ -7,6 +7,8 @@ use warnings;
 # No need to distribute it
 
 use FindBin;
+use Probe::Perl;
 $ENV{PADRE_DEV} = 1;
 $ENV{PADRE_HOME} = $FindBin::Bin;
-system "$^X -Ilib -I../plugins/par/lib bin/padre @ARGV"; 
+my $perl = Probe::Perl->find_perl_interpreter;
+system qq["$perl" -Ilib -I../plugins/par/lib bin/padre @ARGV]; 
