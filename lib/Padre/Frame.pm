@@ -12,9 +12,6 @@ my $proc;
 my $help;
 my $right_sidebar;
 
-
-sub say { print @_, "\n" }
-
 my %marker;
 
 use Wx        qw(:everything);
