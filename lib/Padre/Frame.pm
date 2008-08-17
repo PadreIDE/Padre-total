@@ -131,11 +131,10 @@ sub _create_panel {
         -1, 
         wxDefaultPosition,
         wxDefaultSize,
-        [],
-        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
+        [], wxLB_SINGLE|wxLB_SORT,
     );
-
     EVT_LISTBOX($self, $right_sidebar, \&method_selected);
+    EVT_LISTBOX_DCLICK($self, $right_sidebar, \&method_selected_dclick);
 
     Padre->ide->{wx_notebook} = Wx::Notebook->new(
         $upper_panel,
@@ -175,6 +174,14 @@ sub _create_panel {
 }
 
 
+sub method_selected_dclick {
+    my ($self, $event) = @_;
+
+    $self->method_selected($event);
+    $self->get_current_editor->SetFocus;
+
+    return;
+}
 
 sub method_selected {
     my ($self, $event) = @_;
@@ -192,12 +199,18 @@ sub method_selected {
 }
 
 
-sub get_current_content {
+sub get_current_editor {
     my ($self) = @_;
 
     my $id   = Padre->ide->wx_notebook->GetSelection;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
-    return $page->GetText;
+    return Padre->ide->wx_notebook->GetPage($id);
+}
+
+sub get_current_content {
+    my ($self) = @_;
+
+    my $editor = $self->get_current_editor;
+    return $editor->GetText;
 }
 
 
@@ -1000,14 +1013,9 @@ sub on_find {
 sub update_methods {
     my ($self) = @_;
 
-
-    #print "Before" , $right_sidebar->GetCount, "\n";
     $right_sidebar->Delete(0) for 1..$right_sidebar->GetCount;
-    #print "After", $right_sidebar->GetCount, "\n";
-
     my $text = $self->get_current_content;
     my @methods = sort $text =~ m{sub\s+(\w+)}g;
-    #print Dumper \@methods;
     $right_sidebar->InsertItems(\@methods, 0);
 
     return;
