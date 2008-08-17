@@ -114,8 +114,18 @@ sub _create_panel {
                 wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
     $main::app->set_widget('main_panel', $main_panel);
 
+    my $upper_panel = Wx::SplitterWindow->new(
+                $main_panel, -1, wxDefaultPosition, wxDefaultSize,
+                wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
+    $main::app->set_widget('upper_panel', $upper_panel);
+
+    my $right_sidebar = Wx::TextCtrl->new( $upper_panel, -1, "", 
+        wxDefaultPosition, wxDefaultSize,
+        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE );
+
+
     $nb = Wx::Notebook->new
-      ( $main_panel, -1, wxDefaultPosition, wxDefaultSize,
+      ( $upper_panel, -1, wxDefaultPosition, wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
 
     $output = Wx::TextCtrl->new( $main_panel, -1, "", 
@@ -123,7 +133,8 @@ sub _create_panel {
         wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE );
 
     my $config = $main::app->get_config;    
-    $main_panel->SplitHorizontally( $nb, $output, $config->{main}{height} );
+    $main_panel->SplitHorizontally( $upper_panel, $output, $config->{main}{height} );
+    $upper_panel->SplitVertically( $nb, $right_sidebar, $config->{main}{width} -100 );
 
     my $sb = $self->CreateStatusBar;
     #$self->SetStatusBarPane();
@@ -554,6 +565,7 @@ sub _get_filetype {
 
 sub setup_editor {
     my ($self, $file) = @_;
+#Carp::cluck( $file);
     $self->{_in_setup_editor} = 1;
 
     # Flush old stuff
@@ -575,7 +587,12 @@ sub setup_editor {
     my $title   = " Unsaved Document $cnt";
     my $content = '';
     if ($file) {
-        $content = read_file($file);
+        $content = eval { read_file($file) };
+        if ($@) {
+            warn $@;
+            delete $self->{_in_setup_editor};
+            return;
+        }
         $title   = basename($file);
         # require Padre::Project;
 	# $self->{project} = Padre::Project->from_file($file);
