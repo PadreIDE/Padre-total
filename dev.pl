@@ -1,4 +1,6 @@
-#!/usr/bin/perl 
+#!/usr/bin/perl
+
+use 5.008;
 use strict;
 use warnings;
 
@@ -11,4 +13,4 @@ use Probe::Perl;
 $ENV{PADRE_DEV} = 1;
 $ENV{PADRE_HOME} = $FindBin::Bin;
 my $perl = Probe::Perl->find_perl_interpreter;
-system qq["$perl" -I$FindBin::Bin/lib -I$FindBin::Bin/../plugins/par/lib $FindBin::Bin/bin/padre @ARGV]; 
+system qq["$perl" -I$FindBin::Bin/lib -I$FindBin::Bin/../plugins/par/lib $FindBin::Bin/script/padre @ARGV]; 
