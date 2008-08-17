@@ -203,7 +203,7 @@ sub new {
         'config.db',
     );
 
-    $self->_load_config;
+    $self->load_config;
     $self->_process_command_line;
     $self->_locate_plugins;
 
@@ -330,7 +330,7 @@ sub config_dbh {
     return $dbh;
 }
 
-sub _load_config {
+sub load_config {
     my $self = shift;
 
     # Load the YAML configuration file
@@ -474,21 +474,18 @@ sub get_modules {
 sub save_config {
     my ($self) = @_;
 
+    # Save the database configuration information
     my $dbh = $self->config_dbh;
     $dbh->do("DELETE FROM history");
-
     my $sth = $dbh->prepare("INSERT INTO history (type, name) VALUES (?, ?)");
-
     foreach my $type (@history) {
         foreach my $name ($self->get_recent($type)) {
             $sth->execute($type, $name);
         }
     }
 
-    YAML::Tiny::DumpFile(
-        $self->config_yaml,
-        $self->get_config,
-    );
+    # Save the YAML configuration file
+    $self->get_config->write( $self->config_yaml );
 
     return;
 }
