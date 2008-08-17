@@ -7,6 +7,7 @@
     Replace YAML with YAML::Tiny (ADAMK)
     Moved bin/padre to script/padre (ADAMK)
     Moving all globals into a unified object tree (ADAMK)
+    Created standalone Padre::Config (ADAMK)
 
 v0.04 2008.08.08
 

@@ -4,17 +4,21 @@ MANIFEST
 README
 
 lib/Padre.pm
+lib/Padre/Config.pm
+lib/Padre/Project.pm
 lib/Padre/Wx/App.pm
 lib/Padre/Frame.pm
-lib/Padre/Panel.pm
+lib/Padre/Wx/Text.pm
+
 lib/Padre/Demo.pm
-lib/Padre/Project.pm
+lib/Padre/Demo/App.pm
+lib/Padre/Demo/Frame.pm
 
 lib/Padre/Pod/Frame.pm
 lib/Padre/Pod/Indexer.pm
 lib/Padre/Pod/Viewer.pm
 
-bin/padre
+script/padre
 
 t/01-load.t
 t/02-wx.t

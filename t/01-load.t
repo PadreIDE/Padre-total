@@ -26,7 +26,6 @@ SCOPE: {
 }
 
 SCOPE: {
-    $app->load_config;
     my $config = $app->get_config;
     is_deeply $config, {
             DISPLAY_MIN_LIMIT => 2,

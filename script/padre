@@ -7,5 +7,4 @@ $| = 1;
 
 use Padre;
 my $app = Padre->new;
-$app->load_config;
 $app->run;

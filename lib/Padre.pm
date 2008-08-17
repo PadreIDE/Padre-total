@@ -143,6 +143,7 @@ use YAML::Tiny    ();
 use DBI           ();
 
 # Preload just what is needed to get something on screen
+use Padre::Config   ();
 use Padre::Wx::App  ();
 use Padre::Frame    ();
 use Padre::Wx::Text ();
@@ -202,6 +203,7 @@ sub new {
         'config.db',
     );
 
+    $self->_load_config;
     $self->_process_command_line;
     $self->_locate_plugins;
 
@@ -328,11 +330,16 @@ sub config_dbh {
     return $dbh;
 }
 
-sub load_config {
-    my ($self) = @_;
+sub _load_config {
+    my $self = shift;
 
-    my $dbh = $self->config_dbh();
+    # Load the YAML configuration file
+    my $config = Padre::Config->read( $self->config_yaml )
+              || Padre::Config->new;
+    $self->set_config( $config );
 
+    # Load the database parts of the configuration
+    my $dbh = $self->config_dbh;
     my $sth = $dbh->prepare("SELECT name FROM history WHERE type = ? ORDER BY id");
 
     foreach my $type (@history) {
@@ -343,58 +350,6 @@ sub load_config {
         }
     }
 
-    my $yaml = $self->config_yaml;
-    if ( -e $yaml ) {
-        $self->set_config( YAML::Tiny::LoadFile($yaml) );
-    }
-    $self->set_defaults;
-
-    return;
-}
-
-sub set_defaults {
-    my ($self) = @_;
-
-    my $config = $self->get_config;
-
-    # number of moduls to display when searching for documentation
-    $config->{DISPLAY_MAX_LIMIT} ||= 200;
-    unless ( defined $config->{DISPLAY_MIN_LIMIT} ) {
-        $config->{DISPLAY_MIN_LIMIT} = 2;
-    }
-
-    # size of the main window
-    $config->{main}{height} ||= 600;
-    $config->{main}{width}  ||= 700;
-
-    # startup mode, if no files given on the command line this can be
-    #   new        - a new empty buffer
-    #   nothing    - nothing to open
-    #   last       - the files that were open last time    
-    $config->{startup} ||= 'new';
-
-    unless ( defined $config->{search_terms} ) {
-        $config->{search_terms} = [];
-    }
-    if ($config->{search_term}) {
-       $config->{search_terms} = [ delete $config->{search_term} ]
-    }
-
-    $config->{command_line}      ||= '';
-    # When running a script from the application some of the files might have not been saved yet.
-    # There are several option what to do before running the script
-    # none - don's save anything
-    # same - save the file in the current buffer
-    # all_files - all the files (but not buffers that have no filenames)
-    # all_buffers - all the buffers even if they don't have a name yet
-    $config->{save_on_run}       ||= 'same';
-
-    $config->{show_line_numbers} ||= 0;
-
-    $config->{projects}          ||= {};
-    $config->{current_project}   ||= '';
-
-    $self->set_config($config);
     return;
 }
 
@@ -412,8 +367,6 @@ sub add_to_recent {
     }
     return;
 }
-
-
 
 sub get_recent {
     my ($self, $type) = @_;
@@ -483,16 +436,14 @@ sub set_item {
 }
 
 sub remove_modules {
-    my ($self) = @_;
-    my $dbh = $self->config_dbh();
-    $dbh->do("DELETE FROM modules");
+    $_[0]->config_dbh->do("DELETE FROM modules");
     return;
 }
 
 sub add_modules {
     my ($self, @modules) = @_;
 
-    my $dbh = $self->config_dbh();
+    my $dbh = $self->config_dbh;
     $dbh->begin_work;
     my $sth = $dbh->prepare("INSERT INTO modules (name) VALUES (?)");
     foreach my $m (@modules) {
@@ -504,7 +455,7 @@ sub add_modules {
 
 sub get_modules {
     my ($self, $part) = @_;
-    my $dbh = $self->config_dbh();
+    my $dbh = $self->config_dbh;
     #$dbh->prepare("SELECT name FROM modules ORDER BY name");
     #$dbh->execute;
     my $sql = "SELECT name FROM modules";
@@ -523,7 +474,7 @@ sub get_modules {
 sub save_config {
     my ($self) = @_;
 
-    my $dbh = $self->config_dbh();
+    my $dbh = $self->config_dbh;
     $dbh->do("DELETE FROM history");
 
     my $sth = $dbh->prepare("INSERT INTO history (type, name) VALUES (?, ?)");
