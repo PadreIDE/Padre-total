@@ -7,6 +7,7 @@ lib/Padre.pm
 lib/Padre/Config.pm
 lib/Padre/Project.pm
 lib/Padre/Wx/App.pm
+lib/Padre/Wx/FindDialog.pm
 lib/Padre/Frame.pm
 lib/Padre/Wx/Text.pm
 
