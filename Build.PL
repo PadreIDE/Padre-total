@@ -38,7 +38,7 @@ my $builder = $class->new(
     create_readme         => 0,
     recursive_test_files  => 0,
 
-    script_files          => [qw(bin/padre)],
+    script_files          => [ 'script/padre' ],
     requires              => {
         'perl'                    => '5.008',
 
