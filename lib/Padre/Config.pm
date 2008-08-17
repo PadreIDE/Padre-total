@@ -58,7 +58,7 @@ sub read {
     }
 
     # Load the config
-    my $hash = YAML::Tiny::LoadFile(shift);
+    my $hash = YAML::Tiny::LoadFile($file);
     return unless ref($hash) eq 'HASH';
     return $class->new( %$hash );
 }
