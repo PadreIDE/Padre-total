@@ -1,12 +1,14 @@
 package Padre::Panel;
+
 use strict;
 use warnings;
 
 our $VERSION = '0.01';
+
 use Wx::STC;
 use base 'Wx::StyledTextCtrl';
 
-use Wx qw(:everything);
+use Wx        qw(:everything);
 use Wx::Event qw(:everything);
 
 sub new {
@@ -66,8 +68,9 @@ sub new {
 
     $self->SetLexer( $lexer );
 
-    $self->SetLayoutDirection( wxLayout_LeftToRight )
-      if $self->can( 'SetLayoutDirection' );
+    if ( $self->can('SetLayoutDirection') ) {
+        $self->SetLayoutDirection( wxLayout_LeftToRight );
+    }
 
     ##print $self->GetModEventMask() & wxSTC_MOD_INSERTTEXT;
     ##print "\n";
@@ -84,6 +87,4 @@ sub on_change {
     return;
 }
 
-
 1;
-

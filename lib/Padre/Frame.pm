@@ -554,15 +554,14 @@ sub _get_filetype {
 
 sub setup_editor {
     my ($self, $file) = @_;
-
     $self->{_in_setup_editor} = 1;
 
-    my $config = $main::app->get_config;
+    # Flush old stuff
+    delete $self->{project};
 
-
-    my $editor = Padre::Panel->new($nb, _lexer($file));
-
-    my $file_type= _get_filetype($file);
+    my $config    = $main::app->get_config;
+    my $editor    = Padre::Panel->new($nb, _lexer($file));
+    my $file_type = _get_filetype($file);
 
     #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
     # it used to default to 0 on windows and still
@@ -573,11 +572,13 @@ sub setup_editor {
 #    print Wx::wxSTC_EOL_LF, "\n";2
 
     $cnt++;
-    my $title = " Unsaved Document $cnt";
+    my $title   = " Unsaved Document $cnt";
     my $content = '';
     if ($file) {
         $content = read_file($file);
         $title   = basename($file);
+        # require Padre::Project;
+	# $self->{project} = Padre::Project->from_file($file);
         $editor->SetText( $content );
         $editor->EmptyUndoBuffer;
     }
@@ -641,7 +642,6 @@ sub _toggle_numbers {
     }
 }
 
-
 sub on_open {
     my ($self) = @_;
 
@@ -660,13 +660,13 @@ sub on_open {
     my $file = catfile($default_dir, $filename);
     $main::app->add_to_recent('files', $file);
 
-
     # if the current buffer is empty then fill that with the content of the current file
     # otherwise open a new buffer and open the file there
     $self->setup_editor($file);
 
     return;
 }
+
 sub on_new {
     my ($self) = @_;
     $self->setup_editor;
@@ -688,6 +688,7 @@ sub _set_filename {
 
     return;
 }
+
 sub _get_filename {
     my ($self, $id) = @_;
 
@@ -724,6 +725,7 @@ sub _get_page_text {
 Returns the name filename of the current buffer.
 
 =cut
+
 sub get_current_filename {
     my ($self) = @_;
     my $id = $nb->GetSelection;

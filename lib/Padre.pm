@@ -5,6 +5,8 @@ use warnings;
 
 our $VERSION = '0.04';
 
+=pod
+
 =head1 NAME
 
 Padre - Perl Application Development and Refactoring Environment
@@ -131,7 +133,6 @@ which is a list of lists:
 Padre will add a menu entry for every plugin under the B<Plugins>
 menu item. For each plugin menu item it will add all the Name_1,
 Name_2 subitems.
-
 
 =cut
 
@@ -270,16 +271,16 @@ sub _config_dir {
 sub config_dbh {
     my ($self) = @_;
 
-    my $dir = $self->_config_dir();
+    my $dir  = $self->_config_dir();
     my $path = catfile($dir, "config.db");
-    my $new = not -e $path;
-    my $dbh = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
+    my $new  = not -e $path;
+    my $dbh  = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
         RaiseError       => 1,
         PrintError       => 1,
         AutoCommit       => 1,
         FetchHashKeyName => 'NAME_lc',
     });
-    if ($new) {
+    if ( $new ) {
        $self->create_config($dbh);
     }
     return $dbh;
@@ -290,13 +291,12 @@ sub config_yaml {
     return catfile($self->_config_dir(), "config.yml");
 }
 
-
 sub load_config {
     my ($self) = @_;
 
     my $dbh = $self->config_dbh();
 
-    my $sth = $dbh->prepare("SELECT name FROM history WHERE type=? ORDER BY id");
+    my $sth = $dbh->prepare("SELECT name FROM history WHERE type = ? ORDER BY id");
 
     foreach my $type (@history) {
         $sth->execute($type);
