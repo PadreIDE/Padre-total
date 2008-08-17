@@ -10,6 +10,8 @@ my $run_menu;
 my $stop_menu;
 my $proc;
 my $help;
+my $right_sidebar;
+
 
 sub say { print @_, "\n" }
 
@@ -126,14 +128,16 @@ sub _create_panel {
     );
     Padre->ide->set_widget('upper_panel', $upper_panel);
 
-    my $right_sidebar = Wx::TextCtrl->new(
+    $right_sidebar = Wx::ListBox->new(
         $upper_panel,
-        -1,
-        "", 
+        -1, 
         wxDefaultPosition,
         wxDefaultSize,
+        [],
         wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
     );
+
+    EVT_LISTBOX($self, $right_sidebar, \&method_selected);
 
     Padre->ide->{wx_notebook} = Wx::Notebook->new(
         $upper_panel,
@@ -154,7 +158,7 @@ sub _create_panel {
 
     my $config = Padre->ide->get_config;    
     $main_panel->SplitHorizontally( $upper_panel, $output, $config->{main}{height} );
-    $upper_panel->SplitVertically( Padre->ide->wx_notebook, $right_sidebar, $config->{main}{width} - 100 );
+    $upper_panel->SplitVertically( Padre->ide->wx_notebook, $right_sidebar, $config->{main}{width} - 200 );
 
     my $sb = $self->CreateStatusBar;
     #$self->SetStatusBarPane();
@@ -171,6 +175,31 @@ sub _create_panel {
 
     return;
 }
+
+
+
+sub method_selected {
+    my ($self, $event) = @_;
+
+    my $sel = $right_sidebar->GetSelections;
+#    print "$methods[$sel]\n";
+#    print "CD", $right_sidebar->GetClientData($sel), "\n";
+    my $sub = $right_sidebar->GetString($sel);
+    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
+
+    return;
+}
+
+
+sub get_current_content {
+    my ($self) = @_;
+
+    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $page = Padre->ide->wx_notebook->GetPage($id);
+    return $page->GetText;
+}
+
+
 
 sub _bitmap {
     my $file = shift;
@@ -1016,11 +1045,29 @@ sub on_find {
     return;
 }
 
-sub _search {
+
+sub update_methods {
     my ($self) = @_;
 
+
+    #print "Before" , $right_sidebar->GetCount, "\n";
+    $right_sidebar->Delete(0) for 1..$right_sidebar->GetCount;
+    #print "After", $right_sidebar->GetCount, "\n";
+
+    my $text = $self->get_current_content;
+    my @methods = sort $text =~ m{sub\s+(\w+)}g;
+    #print Dumper \@methods;
+    $right_sidebar->InsertItems(\@methods, 0);
+
+    return;
+}
+
+
+sub _search {
+    my ($self, $search_term) = @_;
+
     my $config = Padre->ide->get_config;
-    my $search_term = $config->{search_terms}[0];
+    $search_term ||= $config->{search_terms}[0];
 
     my $id   = Padre->ide->wx_notebook->GetSelection;
     my $page = Padre->ide->wx_notebook->GetPage($id);
@@ -1529,7 +1576,11 @@ sub update_status {
 
 sub on_panel_changed {
     my ($self) = @_;
+
     $self->update_status;
+    $self->update_methods;
+
+    return;
 }
 
 sub get_nb {
