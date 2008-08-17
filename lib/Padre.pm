@@ -167,6 +167,9 @@ sub new {
 
     # Create the empty object
     my $self  = bless {
+        # Wx-related Attributes
+        wx_app      => undef,
+
         # Internal Attributes
         config_dir  => undef,
         config_yaml => undef,
@@ -175,9 +178,6 @@ sub new {
             files => [],
             pod   => [],
         },
- 
-        # Wx-related Attributes
-        app         => undef,
     }, $class;
 
     # Locate the configuration directory
@@ -222,10 +222,10 @@ sub config_db {
         : $SINGLETON->{config_db};
 }
 
-sub app {
+sub wx_app {
     return ref($_[0])
-        ? $_[0]->{app}
-        : $SINGLETON->{app};
+        ? $_[0]->{wx_app}
+        : $SINGLETON->{wx_app};
 }
 
 sub run {
@@ -299,9 +299,9 @@ END_USAGE
 
 sub run_editor {
     my $self = shift;
-    $self->{app} = Padre::Wx::App->new;
-    $self->{app}->MainLoop;
-    $self->{app} = undef;
+    $self->{wx_app} = Padre::Wx::App->new;
+    $self->{wx_app}->MainLoop;
+    $self->{wx_app} = undef;
     return;
 }
 

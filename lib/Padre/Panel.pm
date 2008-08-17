@@ -75,16 +75,7 @@ sub new {
     ##print $self->GetModEventMask() & wxSTC_MOD_INSERTTEXT;
     ##print "\n";
     #$self->SetModEventMask( wxSTC_MOD_INSERTTEXT  | wxSTC_PERFORMED_USER );
-    #EVT_STC_CHANGE($self, -1, \&on_change );
     return $self;
-}
-
-sub on_change {
-    #print "@_\n";
-    my $nb = $Padre::Frame::nb;
-    #print $nb->GetCurrentPage, "\n";
-    print $nb->GetSelection, "\n";
-    return;
 }
 
 1;
