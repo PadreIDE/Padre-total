@@ -1,6 +1,7 @@
+v0.05 2008.08.17
 
-    First stab at autocompletition using Ctrl-P
-    Allow opening files without extensions (on non-ms-windows systems)
+    First stab at autocompletition using Ctrl-P (SZABGAB)
+    Allow opening files without extensions (on non-ms-windows systems) (SZABGAB)
     Cleaning up to comply with perlcritic default settings (ADAMK)
     Adding basic "project" support (ADAMK)
     Adding Module::Inspector as prereq (ADAMK)
@@ -8,6 +9,10 @@
     Moved bin/padre to script/padre (ADAMK)
     Moving all globals into a unified object tree (ADAMK)
     Created standalone Padre::Config (ADAMK)
+    Show the filetpe in the status bar (SZABGAB)
+    remove Devel::PerlySense as prereq for now (SZABGAB)
+    List functions of the current file on the right panel (SZABGAB)
+    Syntax highlighting of more file types (PATSPAM)
 
 v0.04 2008.08.08
 

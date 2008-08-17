@@ -133,7 +133,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Carp          ();
 use File::Spec    ();
@@ -623,6 +623,10 @@ that's your problem.
 
 To Mattia Barbon for providing WxPerl.
 Part of the code was copied from his Wx::Demo application.
+
+To Adam Kennedy for lots of refactoring.
+
+To Patrick Donelan.
 
 To Herbert Breunung for leting me work on Kephra.
 
