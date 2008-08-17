@@ -17,9 +17,9 @@ $app->load_config;
 
 use Wx;
 
-my $wxapp = Padre::App->new();
+my $wxapp = Padre::Wx::App->new;
 
-my $frame = $Padre::App::frame;
+my $frame = $Padre::Wx::App::frame;
 my $timer = Wx::Timer->new( $frame );
 Wx::Event::EVT_TIMER( $frame, -1, sub {
                                       Wx::wxTheApp()->ExitMainLoop;

@@ -2,13 +2,13 @@ Build.PL
 Changes
 MANIFEST
 README
-META.yml
 
 lib/Padre.pm
-lib/Padre/App.pm
+lib/Padre/Wx/App.pm
 lib/Padre/Frame.pm
 lib/Padre/Panel.pm
 lib/Padre/Demo.pm
+lib/Padre/Project.pm
 
 lib/Padre/Pod/Frame.pm
 lib/Padre/Pod/Indexer.pm

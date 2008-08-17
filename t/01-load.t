@@ -9,13 +9,14 @@ plan tests => $tests + 1;
 
 use File::Temp    qw(tempdir);
 use Data::Dumper  qw(Dumper);
-
 use Padre;
+
+$ENV{PADRE_HOME} = tempdir( CLEANUP => 1 );
 my $app = Padre->new;
 
 diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
 
-{
+SCOPE: {
     isa_ok($app, 'Padre');
     ok ! $app->get_index, 'no index';
     my @files = $app->get_files;
@@ -24,11 +25,7 @@ diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
     BEGIN { $tests += 3; }
 }
 
-my $dir = tempdir( CLEANUP => 1 );
-#diag $dir;
-$ENV{PADRE_HOME} = $dir;
-
-{
+SCOPE: {
     $app->load_config;
     my $config = $app->get_config;
     is_deeply $config, {
@@ -50,7 +47,7 @@ $ENV{PADRE_HOME} = $dir;
     BEGIN { $tests += 1; }
 }
 
-{
+SCOPE: {
     throws_ok {$app->get_recent('xyz')} qr/Invalid type 'xyz'/, 'invalid get_recent';
     throws_ok {$app->get_recent()} qr/No type given/, 'invalid get_recent';
     throws_ok {$app->add_to_recent('xyz', 'Nothing')} qr/Invalid type 'xyz'/, 'invalid add_to_recent';
@@ -92,7 +89,7 @@ $ENV{PADRE_HOME} = $dir;
     BEGIN { $tests += 17; }
 }
 
-{
+SCOPE: {
     my @words = qw(One Two Three Four Five Six);
     foreach my $name (@words) {
         $app->add_to_recent('pod', $name);

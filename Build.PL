@@ -65,7 +65,7 @@ my $builder = $class->new(
         'Pod::POM'                => 0,
         'Pod::Simple'             => 0,
 	'Probe::Perl'             => '0.01',
-        'YAML'                    => 0,
+        'YAML::Tiny'              => '1.33',
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,
 

@@ -1,6 +1,10 @@
 
     First stab at autocompletition using Ctrl-P
     Allow opening files without extensions (on non-ms-windows systems)
+    Cleaning up to comply with perlcritic default settings (ADAMK)
+    Adding basic "project" support (ADAMK)
+    Adding Module::Inspector as prereq (ADAMK)
+    Replace YAML with YAML::Tiny (ADAMK)
 
 v0.04 2008.08.08
 

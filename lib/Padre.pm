@@ -135,14 +135,13 @@ use warnings;
 
 our $VERSION = '0.04';
 
-use File::Spec    ();
-use File::HomeDir ();
-use DBI           ();
-use Carp          ();
-use YAML::Tiny    ();
-use Getopt::Long  ();
-use Data::Dumper  qw(Dumper);
-use Padre::App;
+use Carp           ();
+use File::Spec     ();
+use File::HomeDir  ();
+use Getopt::Long   ();
+use YAML::Tiny     ();
+use DBI            ();
+use Padre::Wx::App ();
 
 # Globally shared Perl detection object
 my $probe_perl = undef;
@@ -161,18 +160,77 @@ __PACKAGE__->mk_accessors(qw(config index));
 
 my @history = qw(files pod);
 
+my $SINGLETON = undef;
 sub new {
-    my ($class) = @_;
-    my $self = bless {}, $class;
-    $self->{recent}{$_} = [] for @history;
+    return $SINGLETON if $SINGLETON;
+    my $class = shift;
+
+    # Create the empty object
+    my $self  = bless {
+        # Internal Attributes
+        config_dir  => undef,
+        config_yaml => undef,
+        config_db   => undef,
+        recent      => {
+            files => [],
+            pod   => [],
+        },
+ 
+        # Wx-related Attributes
+        app         => undef,
+    }, $class;
+
+    # Locate the configuration directory
+    $self->{config_dir} = File::Spec->catfile(
+        ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
+        '.padre'
+    );
+    unless ( -e $self->{config_dir} ) {
+        mkdir $self->{config_dir} or die "Cannot create config dir '$self->{config_dir}' $!";
+    }
+    $self->{config_yaml} = File::Spec->catfile(
+        $self->config_dir,
+        'config.yml',
+    );
+    $self->{config_db} = File::Spec->catfile(
+        $self->config_dir,
+        'config.db',
+    );
+
     $self->_process_command_line;
     $self->_locate_plugins;
+
+    $SINGLETON = $self;
     return $self;
+}
+
+sub config_dir {
+    return ref($_[0])
+        ? $_[0]->{config_dir}
+        : $SINGLETON->{config_dir};
+}
+
+sub config_yaml {
+    return ref($_[0])
+        ? $_[0]->{config_yaml}
+        : $SINGLETON->{config_yaml};
+}
+
+sub config_db {
+    return ref($_[0])
+        ? $_[0]->{config_db}
+        : $SINGLETON->{config_db};
+}
+
+sub app {
+    return ref($_[0])
+        ? $_[0]->{app}
+        : $SINGLETON->{app};
 }
 
 sub run {
     my ($self) = @_;
-    if ($self->get_index) {
+    if ( $self->get_index ) {
         $self->run_indexer;
     } else {
         $self->run_editor;
@@ -184,13 +242,11 @@ sub run_indexer {
     my ($self) = @_;
 
     require Padre::Pod::Indexer;
-    my $x = Padre::Pod::Indexer->new;
-    my @files = $x->list_all_files(@INC);
+    my $indexer = Padre::Pod::Indexer->new;
+    my @files   = $indexer->list_all_files(@INC);
 
-    $self->remove_modules();
+    $self->remove_modules;
     $self->add_modules(@files);
-
-    #require Pod::Index;
 
     return;
 }
@@ -242,30 +298,17 @@ END_USAGE
 }
 
 sub run_editor {
-    my ($self) = @_;
-
-    my $app = Padre::App->new();
-    $app->MainLoop;
-
+    my $self = shift;
+    $self->{app} = Padre::Wx::App->new;
+    $self->{app}->MainLoop;
+    $self->{app} = undef;
     return;
-}
-
-sub _config_dir {
-    my $dir = File::Spec->catfile(
-        ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
-        '.padre'
-    );
-    if ( not -e $dir ) {
-        mkdir $dir or die "Cannot create config dir '$dir' $!";
-    }
-    return $dir;
 }
 
 sub config_dbh {
     my ($self) = @_;
 
-    my $dir  = $self->_config_dir();
-    my $path = File::Spec->catfile($dir, "config.db");
+    my $path = $self->config_db;
     my $new  = not -e $path;
     my $dbh  = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
         RaiseError       => 1,
@@ -277,10 +320,6 @@ sub config_dbh {
        $self->create_config($dbh);
     }
     return $dbh;
-}
-
-sub config_yaml {
-    File::Spec->catfile( $_[0]->_config_dir, "config.yml" );
 }
 
 sub load_config {
@@ -299,8 +338,8 @@ sub load_config {
     }
 
     my $yaml = $self->config_yaml;
-    if (-e $yaml) {
-        $self->set_config(YAML::Tiny::LoadFile($yaml));
+    if ( -e $yaml ) {
+        $self->set_config( YAML::Tiny::LoadFile($yaml) );
     }
     $self->set_defaults;
 
@@ -593,7 +632,7 @@ List of functions
 
 The yml file contains individual configuration options
 
-Padre::App is the Wx::App subclass
+Padre::Wx::App is the Wx::App subclass
 
 Padre::Frame is the main frame, most of the code is currently there.
 
