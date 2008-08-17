@@ -135,13 +135,17 @@ use warnings;
 
 our $VERSION = '0.04';
 
-use Carp           ();
-use File::Spec     ();
-use File::HomeDir  ();
-use Getopt::Long   ();
-use YAML::Tiny     ();
-use DBI            ();
-use Padre::Wx::App ();
+use Carp          ();
+use File::Spec    ();
+use File::HomeDir ();
+use Getopt::Long  ();
+use YAML::Tiny    ();
+use DBI           ();
+
+# Preload just what is needed to get something on screen
+use Padre::Wx::App  ();
+use Padre::Frame    ();
+use Padre::Wx::Text ();
 
 # Globally shared Perl detection object
 my $probe_perl = undef;
@@ -591,6 +595,8 @@ sub get_widget {
     return $self->{widget}{$name};
 }
 
+1;
+
 =pod
 
 =head1 BUGS
@@ -636,7 +642,8 @@ Padre::Wx::App is the Wx::App subclass
 
 Padre::Frame is the main frame, most of the code is currently there.
 
-Padre::Panel holds an editor window instance (one for each buffer)
+Padre::Wx::Text holds an editor text control instance
+(one for each buffer/file)
 
 Padre::Pod::* are there to index and show documentation written in pod.
 
@@ -649,13 +656,12 @@ See also L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT
 
-(c) 2008 Gabor Szabo http://www.szabgab.com/
+Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
 
 =head1 LICENSE
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
-
 
 =head1 WARRANTY
 
@@ -673,6 +679,3 @@ To Herbert Breunung for leting me work on Kephra.
 To Octavian Rasnita for early testing and bug reports.
 
 =cut
-
-1;
-

@@ -21,8 +21,8 @@ use Wx::Perl::ProcessStream qw( :everything );
 
 use base 'Wx::Frame';
 
+use Padre::Wx::Text;
 use Padre::Pod::Frame;
-use Padre::Panel;
 
 use FindBin;
 use File::Spec::Functions qw(catfile catdir);
@@ -87,7 +87,7 @@ my %syntax_of = (
 sub new {
     my ($class) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     Wx::InitAllImageHandlers();
     my $self = $class->SUPER::new( undef, -1,
                                  'Padre ',
@@ -110,31 +110,52 @@ sub _create_panel {
     my ($self) = @_;
 
     my $main_panel = Wx::SplitterWindow->new(
-                $self, -1, wxDefaultPosition, wxDefaultSize,
-                wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
-    $main::app->set_widget('main_panel', $main_panel);
+        $self,
+        -1,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
+    );
+    Padre->ide->set_widget('main_panel', $main_panel);
 
     my $upper_panel = Wx::SplitterWindow->new(
-                $main_panel, -1, wxDefaultPosition, wxDefaultSize,
-                wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
-    $main::app->set_widget('upper_panel', $upper_panel);
+        $main_panel,
+        -1,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
+    );
+    Padre->ide->set_widget('upper_panel', $upper_panel);
 
-    my $right_sidebar = Wx::TextCtrl->new( $upper_panel, -1, "", 
-        wxDefaultPosition, wxDefaultSize,
-        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE );
+    my $right_sidebar = Wx::TextCtrl->new(
+        $upper_panel,
+        -1,
+        "", 
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
+    );
 
+    $nb = Wx::Notebook->new(
+        $upper_panel,
+        -1,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
+    );
 
-    $nb = Wx::Notebook->new
-      ( $upper_panel, -1, wxDefaultPosition, wxDefaultSize,
-        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN );
+    $output = Wx::TextCtrl->new(
+        $main_panel,
+        -1,
+        "", 
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
+    );
 
-    $output = Wx::TextCtrl->new( $main_panel, -1, "", 
-        wxDefaultPosition, wxDefaultSize,
-        wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE );
-
-    my $config = $main::app->get_config;    
+    my $config = Padre->ide->get_config;    
     $main_panel->SplitHorizontally( $upper_panel, $output, $config->{main}{height} );
-    $upper_panel->SplitVertically( $nb, $right_sidebar, $config->{main}{width} -100 );
+    $upper_panel->SplitVertically( $nb, $right_sidebar, $config->{main}{width} - 100 );
 
     my $sb = $self->CreateStatusBar;
     #$self->SetStatusBarPane();
@@ -143,9 +164,9 @@ sub _create_panel {
     $sb->SetStatusWidths(-1, 50, 100);
 
     my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050);
-    $tool_bar->AddTool(wxID_NEW, '', _bitmap('new'), 'New File');
-    $tool_bar->AddTool(wxID_OPEN, '', _bitmap('open'), 'Open');
-    $tool_bar->AddTool(wxID_SAVE, '', _bitmap('save'), 'Save');
+    $tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' );
+    $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     );
+    $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     );
 
     EVT_NOTEBOOK_PAGE_CHANGED($self, $nb, \&on_panel_changed);
 
@@ -164,12 +185,11 @@ sub _bitmap {
 sub _load_files {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
-
     # TODO make sure the full path to the file is saved and not
     # the relative path
-    my @files = $main::app->get_files;
-    if (@files) {
+    my $config = Padre->ide->get_config;
+    my @files  = Padre->ide->get_files;
+    if ( @files ) {
         foreach my $f (@files) {
             $self->setup_editor($f);
         }
@@ -193,17 +213,15 @@ sub _load_files {
 sub _create_menu_bar {
     my ($self) = @_;
 
-    my %plugins = %{ $main::app->{plugins} };
-
-    my $bar     = Wx::MenuBar->new;
-
-    my $file    = Wx::Menu->new;
-    my $project = Wx::Menu->new;
-    my $view    = Wx::Menu->new;
-    my $run     = Wx::Menu->new;
-    my $edit    = Wx::Menu->new;
+    my %plugins     = %{ Padre->ide->{plugins} };
+    my $bar         = Wx::MenuBar->new;
+    my $file        = Wx::Menu->new;
+    my $project     = Wx::Menu->new;
+    my $view        = Wx::Menu->new;
+    my $run         = Wx::Menu->new;
+    my $edit        = Wx::Menu->new;
     my $plugin_menu = Wx::Menu->new;
-    my $help    = Wx::Menu->new;
+    my $help        = Wx::Menu->new;
     $bar->Append( $file,    "&File" );
     $bar->Append( $project, "&Project" );
     $bar->Append( $edit,    "&Edit" );
@@ -216,12 +234,11 @@ sub _create_menu_bar {
 
     $self->SetMenuBar( $bar );
 
-    my $config = $main::app->get_config;
-
+    my $config = Padre->ide->get_config;
     EVT_MENU(  $self, $file->Append( wxID_NEW,    ''  ), \&on_new     );
     EVT_MENU(  $self, $file->Append( wxID_OPEN,   ''  ), \&on_open    );
     my $recent = Wx::Menu->new;
-    foreach my $f ($main::app->get_recent('files')) {
+    foreach my $f (Padre->ide->get_recent('files')) {
        EVT_MENU ($self, $recent->Append(-1, $f), sub { $_[0]->setup_editor($f) } );
     }
 
@@ -514,7 +531,7 @@ sub on_exit {
 sub on_close_window {
     my ( $self, $event ) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
 
     if ($event->CanVeto) {
         my @unsaved;
@@ -535,8 +552,8 @@ sub on_close_window {
     }
 
     ($config->{main}{width}, $config->{main}{height}) = $self->GetSizeWH;
-    #$main::app->set_config($config);
-    $main::app->save_config();
+    #Padre->ide->set_config($config);
+    Padre->ide->save_config();
 
     $help->Destroy if $help;
 
@@ -571,8 +588,8 @@ sub setup_editor {
     # Flush old stuff
     delete $self->{project};
 
-    my $config    = $main::app->get_config;
-    my $editor    = Padre::Panel->new($nb, _lexer($file));
+    my $config    = Padre->ide->get_config;
+    my $editor    = Padre::Wx::Text->new( $nb, _lexer($file) );
     my $file_type = _get_filetype($file);
 
     #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
@@ -624,7 +641,7 @@ sub setup_editor {
 sub on_toggle_line_numbers {
     my ($self, $event) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
 
     foreach my $id (0 .. $nb->GetPageCount -1) {
@@ -675,7 +692,7 @@ sub on_open {
     $default_dir = $dialog->GetDirectory;
 
     my $file = catfile($default_dir, $filename);
-    $main::app->add_to_recent('files', $file);
+    Padre->ide->add_to_recent('files', $file);
 
     # if the current buffer is empty then fill that with the content of the current file
     # otherwise open a new buffer and open the file there
@@ -828,7 +845,7 @@ sub _save_buffer {
     eval {
         write_file($filename, $content);
     };
-    $main::app->add_to_recent('files', $filename);
+    Padre->ide->add_to_recent('files', $filename);
     $nb->SetPageText($id, basename($filename));
     $page->SetSavePoint;
     $self->update_status;
@@ -865,7 +882,7 @@ sub _buffer_changed {
 sub on_setup {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
 
     my $dialog = Wx::Dialog->new( $self, -1, "Configuration", [-1, -1], [550, 200]);
 
@@ -892,7 +909,7 @@ sub on_setup {
     $config->{DISPLAY_MIN_LIMIT} = $min->GetValue;
 
     $config->{startup} =  $values[ $choice->GetSelection];
-    #$main::app->set_config($config);
+    #Padre->ide->set_config($config);
 
     return;
 }
@@ -934,7 +951,7 @@ sub on_goto {
 sub on_find {
     my ( $self ) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
 
     my $dialog = Wx::Dialog->new( $self, -1, "Search", [-1, -1], [-1, -1]);
 
@@ -1003,7 +1020,7 @@ sub on_find {
 sub _search {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     my $search_term = $config->{search_terms}[0];
 
     my $id   = $nb->GetSelection;
@@ -1028,7 +1045,7 @@ sub _search {
 sub on_find_again {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     my $search_term = $config->{search_terms}[0];
 
     if ($search_term) {
@@ -1056,7 +1073,7 @@ sub on_help {
 
     if (not $help) {
         $help = Padre::Pod::Frame->new;
-        my $module = $main::app->get_current('pod') || 'Padre';
+        my $module = Padre->ide->get_current('pod') || 'Padre';
         if ($module) {
             $help->{html}->display($module);
         }
@@ -1093,7 +1110,7 @@ sub _get_selection {
 sub on_run_this {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     if ($config->{save_on_run} eq 'same') {
         $self->on_save;
     } elsif ($config->{save_on_run} eq 'all_files') {
@@ -1168,8 +1185,8 @@ sub _run {
     $run_menu->Enable(0);
     $stop_menu->Enable(1);
 
-    my $config = $main::app->get_config;
-    $main::app->get_widget('main_panel')
+    my $config = Padre->ide->get_config;
+    Padre->ide->get_widget('main_panel')
         ->SetSashPosition($config->{main}{height} - 300);
     $output->Remove(0, $output->GetLastPosition);
 
@@ -1185,7 +1202,7 @@ sub _run {
 sub on_run {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     if (not $config->{command_line}) {
         $self->on_setup_run;
     }
@@ -1199,7 +1216,7 @@ sub on_run {
 sub on_setup_run {
     my ($self) = @_;
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
     my $dialog = Wx::TextEntryDialog->new( $self, "Command line", "Run setup", $config->{command_line} );
     if ($dialog->ShowModal == wxID_CANCEL) {
         return;
@@ -1217,8 +1234,8 @@ sub on_setup_run {
 sub on_toggle_show_output {
     my ($self, $event) = @_;
 
-    my $config = $main::app->get_config;
-    my $main_panel = $main::app->get_widget('main_panel');
+    my $config = Padre->ide->get_config;
+    my $main_panel = Padre->ide->get_widget('main_panel');
     if ($event->IsChecked) {
         $main_panel->SetSashPosition($config->{main}{height} -100);
     } else {
@@ -1333,7 +1350,7 @@ sub on_select_project {
     # there should also be way to remove a project or to move a project that would
     # probably move the whole directory structure.
 
-    my $config = $main::app->get_config;
+    my $config = Padre->ide->get_config;
 
     my $dialog = Wx::Dialog->new( $self, -1, "Select Project", [-1, -1], [-1, -1]);
 

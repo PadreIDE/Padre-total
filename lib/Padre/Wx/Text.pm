@@ -1,4 +1,4 @@
-package Padre::Panel;
+package Padre::Wx::Text;
 
 use strict;
 use warnings;
@@ -13,7 +13,9 @@ use Wx::Event qw(:everything);
 
 sub new {
     my( $class, $parent, $lexer ) = @_;
-    my $self = $class->SUPER::new( $parent, -1, [-1, -1], [750, 700]); # TODO get the numbers from the frame?
+
+    # TODO get the numbers from the frame?
+    my $self = $class->SUPER::new( $parent, -1, [ -1, -1 ], [ 750, 700 ] );
 
     my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
 
@@ -22,7 +24,7 @@ sub new {
     $self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
     $self->StyleClearAll();
 
-    $self->StyleSetForeground(0, Wx::Colour->new(0x00, 0x00, 0x7f));
+    $self->StyleSetForeground(0,  Wx::Colour->new(0x00, 0x00, 0x7f));
     $self->StyleSetForeground(1,  Wx::Colour->new(0xff, 0x00, 0x00));
 
     # 2 Comment line green
@@ -60,7 +62,7 @@ sub new {
     # 18 substitution regex light olive
     $self->StyleSetForeground(18, Wx::Colour->new(0x7f, 0x7f, 0x00));
 
-    #Set a style 12 bold
+    # Set a style 12 bold
     $self->StyleSetBold(12,  1);
 
     # Apply tag style for selected lexer (blue)
@@ -72,9 +74,6 @@ sub new {
         $self->SetLayoutDirection( wxLayout_LeftToRight );
     }
 
-    ##print $self->GetModEventMask() & wxSTC_MOD_INSERTTEXT;
-    ##print "\n";
-    #$self->SetModEventMask( wxSTC_MOD_INSERTTEXT  | wxSTC_PERFORMED_USER );
     return $self;
 }
 

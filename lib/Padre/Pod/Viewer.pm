@@ -83,7 +83,7 @@ sub OnLinkClicked {
     }
     my $path = $self->module_to_path($href);
     if ($path) {
-        $main::app->add_to_recent('pod', $href);
+        Padre->ide->add_to_recent('pod', $href);
         $self->display($href);
     } 
 
