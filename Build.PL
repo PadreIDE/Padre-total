@@ -12,14 +12,14 @@ my $builder = Module::Build->new(
     recursive_test_files  => 0,
 
     requires              => {
-        'perl'                    => '5.006',
+        'perl'                    => '5.008',
 
         'Carp'                    => 0,
         'Cwd'                     => 0,
         'Data::Dumper'            => 0,
 
         'PAR::Packer'             => 0,
-        'Padre'                   => 0.0302,
+        'Padre'                   => 0.05,
     },
     build_requires        => {
         'Test::More'                => '0.47',
