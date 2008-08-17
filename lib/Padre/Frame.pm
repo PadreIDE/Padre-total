@@ -35,7 +35,6 @@ use File::ShareDir  ();
 use File::LocalizeNewlines;
 
 my $default_dir = "";
-our $nb;
 my $cnt = 0;
 
 our $VERSION = '0.01';
@@ -136,7 +135,7 @@ sub _create_panel {
         wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
     );
 
-    $nb = Wx::Notebook->new(
+    Padre->ide->{wx_notebook} = Wx::Notebook->new(
         $upper_panel,
         -1,
         wxDefaultPosition,
@@ -155,7 +154,7 @@ sub _create_panel {
 
     my $config = Padre->ide->get_config;    
     $main_panel->SplitHorizontally( $upper_panel, $output, $config->{main}{height} );
-    $upper_panel->SplitVertically( $nb, $right_sidebar, $config->{main}{width} - 100 );
+    $upper_panel->SplitVertically( Padre->ide->wx_notebook, $right_sidebar, $config->{main}{width} - 100 );
 
     my $sb = $self->CreateStatusBar;
     #$self->SetStatusBarPane();
@@ -168,7 +167,7 @@ sub _create_panel {
     $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     );
     $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     );
 
-    EVT_NOTEBOOK_PAGE_CHANGED($self, $nb, \&on_panel_changed);
+    EVT_NOTEBOOK_PAGE_CHANGED($self, Padre->ide->wx_notebook, \&on_panel_changed);
 
     return;
 }
@@ -333,8 +332,8 @@ sub on_key {
     } elsif ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             my $id = $code - 49;
-            my $pageid = $nb->GetSelection();
-            my $page = $nb->GetPage($pageid);
+            my $pageid = Padre->ide->wx_notebook->GetSelection();
+            my $page = Padre->ide->wx_notebook->GetPage($pageid);
             my $line = $page->GetCurrentLine;
             $marker{$id} = $line;
 #print "set marker $id to line $line\n";
@@ -345,8 +344,8 @@ sub on_key {
             $self->on_autocompletition();
             return;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
-            my $id   = $nb->GetSelection;
-            my $page = $nb->GetPage($id);
+            my $id   = Padre->ide->wx_notebook->GetSelection;
+            my $page = Padre->ide->wx_notebook->GetPage($id);
             my $pos1  = $page->GetCurrentPos;
             my $pos2  = $page->BraceMatch($pos1);
             if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION
@@ -358,8 +357,8 @@ sub on_key {
             # we might want to check it at the previous position
             # TODO: or any nearby position.
         } elsif ($code == ord 'M') {              # Ctrl-M    comment out block of code
-            my $pageid = $nb->GetSelection();
-            my $page = $nb->GetPage($pageid);
+            my $pageid = Padre->ide->wx_notebook->GetSelection();
+            my $page = Padre->ide->wx_notebook->GetPage($pageid);
             my $start = $page->LineFromPosition($page->GetSelectionStart);
             my $end = $page->LineFromPosition($page->GetSelectionEnd);
             for my $line ($start .. $end) {
@@ -378,14 +377,14 @@ sub on_key {
             $self->on_redo;
         } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
             my $id = $code - 49;
-            my $pageid = $nb->GetSelection();
-            my $page = $nb->GetPage($pageid);
+            my $pageid = Padre->ide->wx_notebook->GetSelection();
+            my $page = Padre->ide->wx_notebook->GetPage($pageid);
             if (defined $marker{$id}) {
                 $page->GotoLine($marker{$id});
             }
         } elsif ($code == ord 'M') {             # Ctrl-Shift-M    uncomment block of code
-            my $pageid = $nb->GetSelection();
-            my $page = $nb->GetPage($pageid);
+            my $pageid = Padre->ide->wx_notebook->GetSelection();
+            my $page = Padre->ide->wx_notebook->GetPage($pageid);
             my $start = $page->LineFromPosition($page->GetSelectionStart);
             my $end = $page->LineFromPosition($page->GetSelectionEnd);
             for my $line ($start .. $end) {
@@ -406,8 +405,8 @@ sub on_key {
 
 sub on_autocompletition {
    my ($self) = @_;
-   my $id   = $nb->GetSelection;
-   my $page = $nb->GetPage($id);
+   my $id   = Padre->ide->wx_notebook->GetSelection;
+   my $page = Padre->ide->wx_notebook->GetPage($id);
    my $pos  = $page->GetCurrentPos;
    my $line = $page->LineFromPosition($pos);
    my $first = $page->PositionFromLine($line);
@@ -535,9 +534,9 @@ sub on_close_window {
 
     if ($event->CanVeto) {
         my @unsaved;
-        foreach my $id (0 .. $nb->GetPageCount -1) {
+        foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
             if (_buffer_changed($id)) {
-                push @unsaved, $nb->GetPageText($id);
+                push @unsaved, Padre->ide->wx_notebook->GetPageText($id);
             }
         }
         if (@unsaved) {
@@ -547,7 +546,7 @@ sub on_close_window {
             return;
         }
 
-        my @files = map { scalar $self->_get_filename($_) } (0 .. $nb->GetPageCount -1);
+        my @files = map { scalar $self->_get_filename($_) } (0 .. Padre->ide->wx_notebook->GetPageCount -1);
         $config->{main}{files} = \@files;
     }
 
@@ -589,7 +588,7 @@ sub setup_editor {
     delete $self->{project};
 
     my $config    = Padre->ide->get_config;
-    my $editor    = Padre::Wx::Text->new( $nb, _lexer($file) );
+    my $editor    = Padre::Wx::Text->new( Padre->ide->wx_notebook, _lexer($file) );
     my $file_type = _get_filetype($file);
 
     #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
@@ -618,11 +617,11 @@ sub setup_editor {
     }
     _toggle_numbers($editor, $config->{show_line_numbers});
 
-    $nb->AddPage($editor, $title, 1); # TODO add closing x
+    Padre->ide->wx_notebook->AddPage($editor, $title, 1); # TODO add closing x
     $editor->SetFocus;
     my $pack = __PACKAGE__;
-    #my $page = $nb->GetCurrentPage;
-    my $id  = $nb->GetSelection;
+    #my $page = Padre->ide->wx_notebook->GetCurrentPage;
+    my $id  = Padre->ide->wx_notebook->GetSelection;
     _set_filename($id, $file, $file_type);
     #print "x" . $editor->AutoCompActive .  "x\n";
 
@@ -644,9 +643,9 @@ sub on_toggle_line_numbers {
     my $config = Padre->ide->get_config;
     $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
 
-    foreach my $id (0 .. $nb->GetPageCount -1) {
-        my $editor = $nb->GetPage($id);
-        #my $editor = $nb->GetPage($id);
+    foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
+        my $editor = Padre->ide->wx_notebook->GetPage($id);
+        #my $editor = Padre->ide->wx_notebook->GetPage($id);
 
         #$editor->SetMarginLeft(200); # this is not the area of the number but on its right
         #$editor->SetMarginMask(0, wxSTC_STYLE_LINENUMBER);
@@ -711,7 +710,7 @@ sub _set_filename {
     my ($id, $data, $type) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     $page->{$pack}{filename} = $data;
     $page->{$pack}{type}     = $type;
 
@@ -727,7 +726,7 @@ sub _get_filename {
     my ($self, $id) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
 
     
     if (wantarray) {
@@ -741,7 +740,7 @@ sub _set_page_text {
     my ($self, $id, $text) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     return $page->SetText($text);
 }
 
@@ -749,7 +748,7 @@ sub _get_page_text {
     my ($self, $id) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     return $page->GetText;
 }
 
@@ -762,26 +761,26 @@ Returns the name filename of the current buffer.
 
 sub get_current_filename {
     my ($self) = @_;
-    my $id = $nb->GetSelection;
+    my $id = Padre->ide->wx_notebook->GetSelection;
     return $self->_get_filename($id);
 }
 
 sub set_page_text {
     my ($self, $text) = @_;
-    my $id = $nb->GetSelection;
+    my $id = Padre->ide->wx_notebook->GetSelection;
     return $self->_set_page_text($id, $text);
 }
 
 sub get_page_text {
     my ($self) = @_;
-    my $id = $nb->GetSelection;
+    my $id = Padre->ide->wx_notebook->GetSelection;
     return $self->_get_page_text($id);
 }
 
 sub on_save_as {
     my ($self) = @_;
 
-    my $id   = $nb->GetSelection;
+    my $id   = Padre->ide->wx_notebook->GetSelection;
     return if $id == -1;
 
     while (1) {
@@ -813,7 +812,7 @@ sub on_save_as {
 sub on_save {
     my ($self) = @_;
 
-    my $id   = $nb->GetSelection;
+    my $id   = Padre->ide->wx_notebook->GetSelection;
     return if $id == -1;
 
     return if not _buffer_changed($id) and $self->_get_filename($id);
@@ -828,7 +827,7 @@ sub on_save {
 
 sub on_save_all {
     my ($self) = @_;
-    foreach my $id (0 .. $nb->GetPageCount -1) {
+    foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
         if (_buffer_changed($id)) {
             $self->_save_buffer($id);
         }
@@ -839,14 +838,14 @@ sub on_save_all {
 sub _save_buffer {
     my ($self, $id) = @_;
 
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     my $content = $page->GetText;
     my ($filename, $file_type) = $self->_get_filename($id);
     eval {
         write_file($filename, $content);
     };
     Padre->ide->add_to_recent('files', $filename);
-    $nb->SetPageText($id, basename($filename));
+    Padre->ide->wx_notebook->SetPageText($id, basename($filename));
     $page->SetSavePoint;
     $self->update_status;
 
@@ -856,7 +855,7 @@ sub _save_buffer {
 sub on_close {
     my ($self) = @_;
     
-    my $id   = $nb->GetSelection;
+    my $id   = Padre->ide->wx_notebook->GetSelection;
     #print "Closing $id\n";
     if (_buffer_changed($id)) {
         my $ret = Wx::MessageBox( "Buffer changed. Do yo want to save it?", "Unsaved buffer", wxYES_NO|wxCANCEL|wxCENTRE, $self );
@@ -869,13 +868,13 @@ sub on_close {
             return;
         }
     }
-    $nb->DeletePage($id); 
+    Padre->ide->wx_notebook->DeletePage($id); 
     return;
 }
 sub _buffer_changed {
     my ($id) = @_;
 
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     return $page->GetModify;
 }
 
@@ -926,8 +925,8 @@ sub on_goto {
     return if not defined $line_number or $line_number !~ /^\d+$/;
     #what if it is bigger than buffer?
 
-    my $id   = $nb->GetSelection;
-    my $page = $nb->GetPage($id);
+    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $page = Padre->ide->wx_notebook->GetPage($id);
 
     $line_number--;
     $page->GotoLine($line_number);
@@ -1023,8 +1022,8 @@ sub _search {
     my $config = Padre->ide->get_config;
     my $search_term = $config->{search_terms}[0];
 
-    my $id   = $nb->GetSelection;
-    my $page = $nb->GetPage($id);
+    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     my $content = $page->GetText;
     my ($from, $to) = $page->GetSelection;
     my $last = $page->GetLength();
@@ -1101,9 +1100,9 @@ sub _get_selection {
     my ($self, $id) = @_;
 
     if (not defined $id) {
-        $id  = $nb->GetSelection;
+        $id  = Padre->ide->wx_notebook->GetSelection;
     }
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     return $page->GetSelectedText;
 }
 
@@ -1117,7 +1116,7 @@ sub on_run_this {
     } elsif ($config->{save_on_run} eq 'all_buffer') {
     }
 
-    my $id   = $nb->GetSelection;
+    my $id   = Padre->ide->wx_notebook->GetSelection;
     my $filename = $self->_get_filename($id);
     if (not $filename) {
         Wx::MessageBox( "No filename, cannot run", "Cannot run", wxOK|wxCENTRE, $self );
@@ -1139,7 +1138,7 @@ sub on_debug_this {
     my ($self) = @_;
     $self->on_save;
 
-    my $id   = $nb->GetSelection;
+    my $id   = Padre->ide->wx_notebook->GetSelection;
     my $filename = $self->_get_filename($id);
 
 
@@ -1304,8 +1303,8 @@ sub on_stop {
 sub on_undo { # Ctrl-Z
     my ($self) = @_;
 
-    my $id = $nb->GetSelection;
-    my $page = $nb->GetPage($id);
+    my $id = Padre->ide->wx_notebook->GetSelection;
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     if ($page->CanUndo) {
        $page->Undo;
     }
@@ -1316,8 +1315,8 @@ sub on_undo { # Ctrl-Z
 sub on_redo { # Shift-Ctr-Z
     my ($self) = @_;
 
-    my $id = $nb->GetSelection;
-    my $page = $nb->GetPage($id);
+    my $id = Padre->ide->wx_notebook->GetSelection;
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     if ($page->CanRedo) {
        $page->Redo;
     }
@@ -1456,9 +1455,9 @@ sub on_test_project {
 
 sub on_nth_pane {
     my ($self, $id) = @_;
-    my $page = $nb->GetPage($id);
+    my $page = Padre->ide->wx_notebook->GetPage($id);
     if ($page) {
-       $nb->ChangeSelection($id);
+       Padre->ide->wx_notebook->ChangeSelection($id);
        return 1;
     }
     return;
@@ -1466,10 +1465,10 @@ sub on_nth_pane {
 sub on_next_pane {
     my ($self) = @_;
 
-    my $count = $nb->GetPageCount;
+    my $count = Padre->ide->wx_notebook->GetPageCount;
     return if not $count;
 
-    my $id    = $nb->GetSelection;
+    my $id    = Padre->ide->wx_notebook->GetSelection;
     if ($id + 1 < $count) {
         $self->on_nth_pane($id + 1);
     } else {
@@ -1480,10 +1479,10 @@ sub on_next_pane {
 sub on_prev_pane {
     my ($self) = @_;
 
-    my $count = $nb->GetPageCount;
+    my $count = Padre->ide->wx_notebook->GetPageCount;
     return if not $count;
 
-    my $id    = $nb->GetSelection;
+    my $id    = Padre->ide->wx_notebook->GetSelection;
     if ($id) {
         $self->on_nth_pane($id - 1);
     } else {
@@ -1497,12 +1496,12 @@ sub update_status {
 
     return if $self->{_in_setup_editor};
 
-    my $pageid = $nb->GetSelection();
+    my $pageid = Padre->ide->wx_notebook->GetSelection();
     if (not defined $pageid) {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
-    my $page = $nb->GetPage($pageid);
+    my $page = Padre->ide->wx_notebook->GetPage($pageid);
     my $line = $page->GetCurrentLine;
     my ($filename, $file_type) = $self->_get_filename($pageid);
     $filename  ||= '';
@@ -1510,10 +1509,10 @@ sub update_status {
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
-        $nb->SetPageText($pageid, $modified . basename $filename);
+        Padre->ide->wx_notebook->SetPageText($pageid, $modified . basename $filename);
     } else {
-        my $text = substr($nb->GetPageText($pageid), 1);
-        $nb->SetPageText($pageid, $modified . $text);
+        my $text = substr(Padre->ide->wx_notebook->GetPageText($pageid), 1);
+        Padre->ide->wx_notebook->SetPageText($pageid, $modified . $text);
     }
     my $pos = $page->GetCurrentPos;
 
@@ -1535,7 +1534,7 @@ sub on_panel_changed {
 
 sub get_nb {
     my ($self) = @_;
-    return $nb;
+    return Padre->ide->wx_notebook;
 }
 
 1;

@@ -37,7 +37,7 @@ sub list_all_files {
             map { $_ =~ s{/}{::}g; $_  } ## no critic
             map { $_ =~ s{^/}{};   $_  } ## no critic
             map { substr($_, $len, -3) }
-            File::Find::Rule->name( '*.pm' )->file->in( $dir );
+            File::Find::Rule->name('*.pm')->file->in( $dir );
     }
     return @files;
 }

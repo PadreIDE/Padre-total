@@ -173,6 +173,7 @@ sub new {
     my $self  = bless {
         # Wx-related Attributes
         wx_app      => undef,
+        wx_notebook => undef,
 
         # Internal Attributes
         config_dir  => undef,
@@ -208,28 +209,29 @@ sub new {
     return $self;
 }
 
-sub config_dir {
-    return ref($_[0])
-        ? $_[0]->{config_dir}
-        : $SINGLETON->{config_dir};
-}
-
-sub config_yaml {
-    return ref($_[0])
-        ? $_[0]->{config_yaml}
-        : $SINGLETON->{config_yaml};
-}
-
-sub config_db {
-    return ref($_[0])
-        ? $_[0]->{config_db}
-        : $SINGLETON->{config_db};
+sub ide {
+    $SINGLETON or
+    $SINGLETON = Padre->new;
 }
 
 sub wx_app {
-    return ref($_[0])
-        ? $_[0]->{wx_app}
-        : $SINGLETON->{wx_app};
+    $_[0]->{wx_app};
+}
+
+sub wx_notebook {
+    $_[0]->{wx_notebook};
+}
+
+sub config_dir {
+    $_[0]->{config_dir};
+}
+
+sub config_yaml {
+    $_[0]->{config_yaml};
+}
+
+sub config_db {
+    $_[0]->{config_db};
 }
 
 sub run {
