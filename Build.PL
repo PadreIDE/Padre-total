@@ -34,7 +34,7 @@ my $builder = $class->new(
     module_name           => 'Padre',
     license               => 'perl',
     dist_author           => 'Gabor Szabo',
-    create_makefile_pl    => 'none',
+    create_makefile_pl    => 0,
     create_readme         => 0,
     recursive_test_files  => 0,
 

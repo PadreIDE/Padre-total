@@ -33,6 +33,11 @@ eg/sleep.pl
 eg/wx.pl
 eg/shell.pl
 
+eg/wx/01_simple_frame.pl
+eg/wx/02_label.pl
+eg/wx/03_button.pl
+eg/wx/04_button_with_event.pl
+
 
 share/docview/print.xpm
 share/docview/save.xpm
@@ -43,3 +48,4 @@ share/docview/new.xpm
 share/docview/copy.xpm
 share/docview/cut.xpm
 
+META.yml
