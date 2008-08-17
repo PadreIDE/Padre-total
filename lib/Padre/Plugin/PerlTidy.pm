@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Perl::Tidy;
 
-use Wx        qw(:everything);
+use Wx qw(:everything);
 use Wx::Event qw(:everything);
 
 our $VERSION = '0.01';
@@ -14,20 +14,17 @@ Padre::Plugin::PerlTidy - Format perl files using Perl::Tidy
 
 =head1 SYNOPIS
 
-This is an experimental version of the plugin using the experimental
-plugin interface of Padre 0.03_02 
+This is a simple plugin to run Perl::Tidy on your source code.
 
-After installation there should be a menu item Perl Tidy
+Currently there are no customisable options (since the Padre plugin system
+doesn't support that yet) - however Perl::Tidy will use your normal .perltidyrc 
+file if it exists (see Perl::Tidy documentation).
 
-Clicking on that menu item while a .pl or pm file is in view will reformat the file
-using PerlTidy
+You'll get interesting results if you run this plugin on non-perl files..
 
 =cut
 
-
-my @menu = (
-    ["Perl Tidy", \&on_run],
-);
+my @menu = ( [ "Perl Tidy", \&on_run ], );
 
 sub menu {
     my ($self) = @_;
@@ -35,18 +32,26 @@ sub menu {
 }
 
 sub on_run {
-    my ($self, $event) = @_;
-    
+    my ( $self, $event ) = @_;
+
     my $src = $self->get_page_text;
 
-    my $output;
     do {
+
+        # Undefine @ARGV so that Perl::Tidy doesn't try to use it
         local @ARGV;
-        perltidy( source => \$src, destination => \$output);
+
+        # Doooit
+        my $output;
+        eval { perltidy( source => \$src, destination => \$output ); };
+        if ($@) {
+            my $error_string = $@;
+            Wx::MessageBox( $error_string, "PerlTidy Error", wxOK | wxCENTRE, $self );
+        }
+        else {
+            $self->set_page_text($output);
+        }
     };
-    
-    $self->set_page_text($output);
-    
     return;
 }
 
