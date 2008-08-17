@@ -1,10 +1,5 @@
 package Padre;
 
-use strict;
-use warnings;
-
-our $VERSION = '0.04';
-
 =pod
 
 =head1 NAME
@@ -15,13 +10,11 @@ Padre - Perl Application Development and Refactoring Environment
 
 Padre is a text editor aimed to be an IDE for Perl.
 
-
 You should be able to just type in 
 
  padre
 
 and get the editor working.
-
 
 While I am using this editor myself there are still lots of
 missing features so I would consider this application to
@@ -136,13 +129,19 @@ Name_2 subitems.
 
 =cut
 
-use File::HomeDir         qw();
-use File::Spec::Functions qw(catfile catdir);
-use DBI                   qw();
-use Carp                  qw();
-use YAML                  qw(LoadFile DumpFile);
-use Getopt::Long          qw(GetOptions);
-use Data::Dumper          qw(Dumper);
+use 5.008;
+use strict;
+use warnings;
+
+our $VERSION = '0.04';
+
+use File::Spec    ();
+use File::HomeDir ();
+use DBI           ();
+use Carp          ();
+use YAML::Tiny    ();
+use Getopt::Long  ();
+use Data::Dumper  qw(Dumper);
 use Padre::App;
 
 # Globally shared Perl detection object
@@ -160,23 +159,19 @@ use base 'Class::Accessor';
 __PACKAGE__->follow_best_practice;
 __PACKAGE__->mk_accessors(qw(config index));
 
-
 my @history = qw(files pod);
 
 sub new {
     my ($class) = @_;
     my $self = bless {}, $class;
     $self->{recent}{$_} = [] for @history;
-
     $self->_process_command_line;
     $self->_locate_plugins;
-
     return $self;
 }
 
 sub run {
     my ($self) = @_;
-
     if ($self->get_index) {
         $self->run_indexer;
     } else {
@@ -204,7 +199,7 @@ sub _process_command_line {
     my ($self) = @_;
 
     my %opt;
-    GetOptions(\%opt, "index", "help") or usage();
+    Getopt::Long::GetOptions(\%opt, "index", "help") or usage();
     usage() if $opt{help};
 
     $self->set_files(@ARGV);
@@ -217,15 +212,14 @@ sub _locate_plugins {
     my ($self) = @_;
     my %plugins;
     foreach my $path (@INC) {
-        my $dir = catdir($path, 'Padre', 'Plugin');
+        my $dir = File::Spec->catdir($path, 'Padre', 'Plugin');
         opendir my $dh, $dir or next;
         while (my $file = readdir $dh) {
             if ($file =~ /^\w+\.pm$/) {
                 $file =~ s/\.pm$//;
                 $plugins{$file} = 0;
                 my $module = "Padre::Plugin::$file";
-                #print "loading $module\n";
-                eval "use $module";
+		eval "use $module"; ## no critic
                 if ($@) {
                     warn "ERROR while trying to load plugin '$file': $@";
                     next;
@@ -257,12 +251,11 @@ sub run_editor {
 }
 
 sub _config_dir {
-    my $dir = catfile(
-
-              ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
-
-              '.padre');
-    if (not -e $dir) {
+    my $dir = File::Spec->catfile(
+        ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
+        '.padre'
+    );
+    if ( not -e $dir ) {
         mkdir $dir or die "Cannot create config dir '$dir' $!";
     }
     return $dir;
@@ -272,7 +265,7 @@ sub config_dbh {
     my ($self) = @_;
 
     my $dir  = $self->_config_dir();
-    my $path = catfile($dir, "config.db");
+    my $path = File::Spec->catfile($dir, "config.db");
     my $new  = not -e $path;
     my $dbh  = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
         RaiseError       => 1,
@@ -287,8 +280,7 @@ sub config_dbh {
 }
 
 sub config_yaml {
-    my ($self) = @_;
-    return catfile($self->_config_dir(), "config.yml");
+    File::Spec->catfile( $_[0]->_config_dir, "config.yml" );
 }
 
 sub load_config {
@@ -308,7 +300,7 @@ sub load_config {
 
     my $yaml = $self->config_yaml;
     if (-e $yaml) {
-        $self->set_config(LoadFile($yaml));
+        $self->set_config(YAML::Tiny::LoadFile($yaml));
     }
     $self->set_defaults;
 
@@ -322,22 +314,25 @@ sub set_defaults {
 
     # number of moduls to display when searching for documentation
     $config->{DISPLAY_MAX_LIMIT} ||= 200;
-    $config->{DISPLAY_MIN_LIMIT}   = 2 if not defined $config->{DISPLAY_MIN_LIMIT};
+    unless ( defined $config->{DISPLAY_MIN_LIMIT} ) {
+        $config->{DISPLAY_MIN_LIMIT} = 2;
+    }
 
     # size of the main window
-    $config->{main}{height}      ||= 600;
-    $config->{main}{width}       ||= 700;
+    $config->{main}{height} ||= 600;
+    $config->{main}{width}  ||= 700;
 
     # startup mode, if no files given on the command line this can be
     #   new        - a new empty buffer
     #   nothing    - nothing to open
     #   last       - the files that were open last time    
-    $config->{startup}           ||= 'new';
+    $config->{startup} ||= 'new';
 
-    #$config->{search_term}         = '' if not defined $config->{search_term};
-    $config->{search_terms}       = [] if not defined $config->{search_terms};
+    unless ( defined $config->{search_terms} ) {
+        $config->{search_terms} = [];
+    }
     if ($config->{search_term}) {
-       $config->{search_terms} = [delete $config->{search_term}]
+       $config->{search_terms} = [ delete $config->{search_term} ]
     }
 
     $config->{command_line}      ||= '';
@@ -357,7 +352,6 @@ sub set_defaults {
     $self->set_config($config);
     return;
 }
-
 
 sub add_to_recent {
     my ($self, $type, $item) = @_;
@@ -495,8 +489,10 @@ sub save_config {
         }
     }
 
-    my $yaml = $self->config_yaml;
-    DumpFile($yaml, $self->get_config);
+    YAML::Tiny::DumpFile(
+        $self->config_yaml,
+        $self->get_config,
+    );
 
     return;
 }
@@ -556,6 +552,7 @@ sub get_widget {
     return $self->{widget}{$name};
 }
 
+=pod
 
 =head1 BUGS
 

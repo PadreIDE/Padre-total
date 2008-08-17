@@ -141,14 +141,14 @@ sub _create_panel {
     return;
 }
 
-sub _bitmap($) {
+sub _bitmap {
     my $file = shift;
-
-    my $dir = $ENV{PADRE_DEV} ? catdir($FindBin::Bin, '..', 'share') : File::ShareDir::dist_dir('Padre');
+    my $dir  = $ENV{PADRE_DEV}
+        ? catdir($FindBin::Bin, '..', 'share')
+        : File::ShareDir::dist_dir('Padre');
     my $path = catfile($dir , 'docview', "$file.xpm" );
     return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
 }
-
 
 sub _load_files {
     my ($self) = @_;

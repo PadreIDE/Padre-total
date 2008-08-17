@@ -1,4 +1,5 @@
 package Padre::App;
+
 use strict;
 use warnings;
 

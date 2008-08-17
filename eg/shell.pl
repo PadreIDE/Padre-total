@@ -1,7 +1,8 @@
-#!perl
+package main;
+
+use 5.008;
 use strict;
 use warnings;
-
 
 # use Demo::App;
 
@@ -10,6 +11,7 @@ $app->run;
 
 
 package Shell::App;
+
 use strict;
 use warnings;
 use base 'Wx::App';
@@ -52,6 +54,7 @@ sub args {
 }
 
 package Shell::App::Frame;
+
 use strict;
 use warnings;
 use Wx qw(:everything);
@@ -141,8 +144,7 @@ sub enter_2 {
     $self->{_app}{args} = $args;
 
     if ($self->{_app}{commands}{$cmd}) {
-        no strict;
-        my $output = $self->{_app}->$cmd;
+        my $output = $self->{_app}->$cmd();
         $out->AppendText($output);
     } else {
         $out->AppendText("No such command '$cmd'\n");
@@ -155,9 +157,9 @@ sub enter_2 {
 }
 
 package Demo::App;
+
 use strict;
 use warnings;
-
 use base 'Shell::App';
 
 sub setup {

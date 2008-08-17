@@ -1,4 +1,8 @@
-#!perl
+#!/usr/bin/perl
+
+package main;
+
+use 5.008;
 use strict;
 use warnings;
 
@@ -9,6 +13,7 @@ my $app = Demo::App->new;
 $app->MainLoop;
 
 package Demo::App;
+
 use strict;
 use warnings;
 use base 'Wx::App';

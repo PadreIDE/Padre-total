@@ -13,7 +13,7 @@ sub from_file {
 	# Check the file argument
 	my $focus_file = shift;
 	unless ( -f $focus_file ) {
-		return undef;
+		return;
 	}
 
 	# Search upwards from the file to find the project root
@@ -30,7 +30,7 @@ sub from_file {
 		} reverse ( 0 .. $#d );
 	unless ( defined $dirs ) {
 		# Carp::croak("Failed to find the portable.perl file");
-		return undef;
+		return;
 	}
 
 	# Hand off to the regular constructor

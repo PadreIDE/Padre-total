@@ -1,4 +1,5 @@
 package Padre::Pod::Indexer;
+
 use strict;
 use warnings;
 
@@ -13,6 +14,7 @@ use File::Find::Rule;
 #    3) index the pods - full text
 #    3) find all subroutiones and list them
 
+=pod
 
 =head1 SYNOPIS
 
@@ -22,30 +24,22 @@ use File::Find::Rule;
 =cut
 
 sub new {
-    my ($class) = @_;
-
-    my $self = bless {}, $class;
-
-    return $self;
+    bless {}, $_[0];
 }
 
 sub list_all_files {
     my ($self, @dirs) = @_;
 
     my @files;
-    foreach my $d (@dirs) {
-        my $l = length $d;
+    foreach my $dir (@dirs) {
+        my $len = length $dir;
         push @files, 
-                map {$_ =~ s{/}{::}g; $_}
-                map {$_ =~ s{^/}{}; $_}
-                map {substr($_, $l, -3)} File::Find::Rule->file()
-                        ->name( '*.pm' )
-                        ->in( $d );
+            map { $_ =~ s{/}{::}g; $_  } ## no critic
+            map { $_ =~ s{^/}{};   $_  } ## no critic
+            map { substr($_, $len, -3) }
+            File::Find::Rule->name( '*.pm' )->file->in( $dir );
     }
     return @files;
 }
 
-
 1;
-
-
