@@ -519,7 +519,7 @@ sub on_close_window {
             return;
         }
 
-        my @files = map { $self->_get_filename($_) } (0 .. $nb->GetPageCount -1);
+        my @files = map { scalar $self->_get_filename($_) } (0 .. $nb->GetPageCount -1);
         $config->{main}{files} = \@files;
     }
 
