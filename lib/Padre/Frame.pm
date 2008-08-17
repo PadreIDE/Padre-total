@@ -179,10 +179,13 @@ sub method_selected {
     my ($self, $event) = @_;
 
     my $sel = $right_sidebar->GetSelections;
+    return if not defind $sel;
 #    print "$methods[$sel]\n";
 #    print "CD", $right_sidebar->GetClientData($sel), "\n";
     my $sub = $right_sidebar->GetString($sel);
-    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
+    if ($sub) {
+        $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
+    }
 
     return;
 }
