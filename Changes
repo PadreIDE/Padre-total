@@ -5,6 +5,8 @@
     Adding basic "project" support (ADAMK)
     Adding Module::Inspector as prereq (ADAMK)
     Replace YAML with YAML::Tiny (ADAMK)
+    Moved bin/padre to script/padre (ADAMK)
+    Moving all globals into a unified object tree (ADAMK)
 
 v0.04 2008.08.08
 
