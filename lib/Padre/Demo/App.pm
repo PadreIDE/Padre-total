@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use base 'Wx::App';
 
+use Padre::Demo::Frame;
+
 our $frame;
 
 sub OnInit {

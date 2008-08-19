@@ -85,7 +85,8 @@ sub on_activate {
 
    $output = $editor;
    $frame->EVT_ACTIVATE(sub {});
-   return $main->($frame);
+   #$Padre::Demo::app->Yield;
+   return $Padre::Demo::main->($frame);
 }
 
 1;

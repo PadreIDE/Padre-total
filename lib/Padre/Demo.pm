@@ -5,8 +5,9 @@ use strict;
 use warnings;
 
 use base 'Exporter';
+use Padre::Demo::App;
 
-our @EXPORT = qw(prompt print_out promp_input_file);
+our @EXPORT = qw(prompt print_out promp_input_file close_app);
 
 sub prompt {
    my $frame = $Padre::Demo::App::frame;
@@ -23,14 +24,20 @@ sub promp_input_file {
    $frame->promp_input_file(@_);
 }
 
+sub close_app {
+   my $frame = $Padre::Demo::App::frame;
+   $frame->Close;
+}
+
 $| = 1;
 
-my $main;
+our $main;
+our $app;
 
 sub run {
    my ($class, $cb) = @_;
    $main = $cb;
-   my $app = Padre::Demo::App->new();
+   $app = Padre::Demo::App->new();
    
    $app->MainLoop;
 }
