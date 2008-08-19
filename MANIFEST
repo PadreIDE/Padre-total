@@ -48,4 +48,8 @@ share/docview/new.xpm
 share/docview/copy.xpm
 share/docview/cut.xpm
 
+share/templates/template.pl
+share/templates/template.pm
+share/templates/template.t
+
 META.yml
