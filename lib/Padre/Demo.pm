@@ -7,27 +7,120 @@ use warnings;
 use base 'Exporter';
 use Padre::Demo::App;
 
-our @EXPORT = qw(prompt print_out promp_input_file close_app);
+our @EXPORT = qw(prompt print_out promp_input_file close_app open_frame);
 
+use Wx                 qw(:everything);
+use Wx::STC            ();
+use Wx::Event          qw(:everything);
+
+=head1 NAME
+
+Padre::Demo - temporary name of a Zenity clone in wxPerl
+
+=head1 SYNOPIS
+
+ use Padre::Demo;
+
+ Padre::Demo->run(\&main);
+
+ sub main {
+    my $name = prompt("What is your name?\n");
+    print_out("How are you $name today?\n");
+
+    return;
+ }
+
+Command line:
+
+ Not yet available.
+
+=head1 General Options
+
+There are some common option for every dialog
+
+title
+
+window-icon  Not implemented
+
+width
+
+height
+
+=cut
+
+=head1 METHODS
+
+Dialogs
+
+=head2 prompt
+
+Display a text entry dialog
+
+=cut
 sub prompt {
-   my $frame = $Padre::Demo::App::frame;
-   $frame->prompt(@_);
+    my ($text) = @_;
+    my $frame = $Padre::Demo::App::frame;
+
+    my $dialog = Wx::TextEntryDialog->new( $frame, $text, "", '' );
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }   
+    my $resp = $dialog->GetValue;
+    $dialog->Destroy;
+    return $resp;
 }
 
+
+
+=head2 print_out
+
+=cut
 sub print_out {
    my $frame = $Padre::Demo::App::frame;
    $frame->print_out(@_);
 }
 
+=head2 promp_input_file
+
+=cut
 sub promp_input_file {
-   my $frame = $Padre::Demo::App::frame;
-   $frame->promp_input_file(@_);
+    my ($text) = @_;
+    my $frame = $Padre::Demo::App::frame;
+
+    my $dialog = Wx::FileDialog->new( $frame, $text, '', "", "*.*", wxFD_OPEN);
+    if ($^O !~ /win32/i) {
+       $dialog->SetWildcard("*");
+    }
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+    my $filename = $dialog->GetFilename;
+    my $default_dir = $dialog->GetDirectory;
+
+    return File::Spec->catfile($default_dir, $filename);
 }
 
+
+
+=head2 open_frame
+
+=cut
+sub open_frame {
+   
+}
+
+
+=head2 close_app
+
+=cut
 sub close_app {
    my $frame = $Padre::Demo::App::frame;
    $frame->Close;
 }
+
+
+
+
 
 sub get_frame {
    return $Padre::Demo::App::frame;
