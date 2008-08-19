@@ -16,18 +16,26 @@ You should be able to just type in
 
 and get the editor working.
 
-While I am using this editor myself there are still lots of
-missing features so I would consider this application to
-be in pre-alpha state.
+While I have been using this editor since version 0.01 myself there 
+are still lots of missing features.
 
-I do so mainly becasue everything is in a constant flux.
-Menus, shortcuts and the way they work will change from
-version to version.
+Not only it is missing several important feature, everything is in
+a constant flux. Menus, shortcuts and the way they work will change
+from version to version.
+
+Having said that you can already use it for serious editing and you
+can even get involved and add the missing features.
 
 You should also know that I am mostly working on Linux and I
 have been using vi for many years now. This means that I am 
 not that familiar with the expectations of people using 
 Windows.
+
+=head1 FEATURES
+
+Instead of duplicating all the text here, let me point you to the
+web site of Padre L<http://padre.perlide.org/> where we keep a list
+of existing and planned features.
 
 =head1 DESCRIPTION
 
