@@ -39,6 +39,7 @@ eg/wx/02_label.pl
 eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
+eg/wx_demo/01_prompt.pl
 
 share/docview/print.xpm
 share/docview/save.xpm

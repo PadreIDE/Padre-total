@@ -29,6 +29,10 @@ sub close_app {
    $frame->Close;
 }
 
+sub get_frame {
+   return $Padre::Demo::App::frame;
+}
+
 $| = 1;
 
 our $main;

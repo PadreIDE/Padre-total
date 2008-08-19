@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 
-#use Time::HiRes;
 use Test::More;
 my $tests;
 
@@ -11,16 +10,23 @@ plan tests => $tests;
 use Padre::Demo;
 
 Padre::Demo->run(\&test_app);
+ok(1, "test_app done");
+BEGIN { $tests += 1; }
+
+
+#Padre::Demo->run(\&test_prompt);
+#ok(1, "test_prompt done");
+
 
 sub test_app {
-#    sleep 1;
     close_app();
 }
 
-    #my $name = prompt("What is your name?");
-
-{
-    ok(1, "Dummy test");
-    BEGIN { $tests += 1; }
+sub test_prompt {
+    my $name = prompt("What is your name?");
+    sleep 2;
+    close_app();
 }
+
+
 
