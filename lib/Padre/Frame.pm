@@ -828,6 +828,7 @@ sub _save_buffer {
     Padre->ide->wx_notebook->SetPageText($id, basename($filename));
     $page->SetSavePoint;
     $self->update_status;
+    $self->update_methods;
 
     return; 
 }
