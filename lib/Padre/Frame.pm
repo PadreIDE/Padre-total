@@ -1054,6 +1054,7 @@ sub _get_selection {
     if (not defined $id) {
         $id  = Padre->ide->wx_notebook->GetSelection;
     }
+    return if $id == -1;
     my $page = Padre->ide->wx_notebook->GetPage($id);
     return $page->GetSelectedText;
 }

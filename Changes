@@ -2,6 +2,7 @@
     Temporarily remove the toolbar
     Some fixes for Padre::Demo
     update list of methods on save as well #54 (vincent)
+    Change the list of subs on the right hand side to be sorted
 
 v0.05 2008.08.17
 
