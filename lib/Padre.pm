@@ -40,57 +40,59 @@ of existing and planned features.
 =head1 DESCRIPTION
 
 The application maintains its configuration information in a 
-directory called .padre
+directory called F<.padre>.
 
 On Strawberry Perl you can associate .pl file extension with
-c:\strawberry\perl\bin\wxperl and then you can start double 
-clicking on the application. It should work.
+C:\strawberry\perl\bin\wxperl and then you can start double 
+clicking on the application. It should work...
 
- Run This (F5) - run the current buffer with the current perl
- this currently only works with files with .pl  extensions.
+  Run This (F5) - run the current buffer with the current perl
+  this currently only works with files with .pl  extensions.
+  
+  Run Any (Ctr-F5) - run any external application
+  First time it will prompt you to a command line that you have to
+  type in such as
+  
+  perl /full/path/to/my/script.pl
 
- Run Any (Ctr-F5) - run any external application
- First time it will prompt you to a command line that you have to type in such as
-
- perl /full/path/to/my/script.pl
-
-then it will execute this every time you press Ctrl-F5 or the menu option.
-Currently Ctrl-F5 does not save any file. (This will be added later.)
+...then it will execute this every time you press Ctrl-F5 or the menu
+option. Currently Ctrl-F5 does not save any file.
+(This will be added later.)
 
 You can edit the command line using the Run/Setup menu item.
 
- Ctr-B          matching brace
- Ctr-P          Autocompletition
- Alt-N          Nth Pane
- Ctr-TAB        Next Pane
- Ctr-Shift-TAB  Previous Pane
-
- Ctr-1 .. Ctrl-9 can set markers
- Ctr-Shift-1 .. Ctrl-Shift-9 jump to marker
-
- Ctr-M Ctr-Shift-M  comment/uncomment selected lines of code
-
- Ctr-H opens a help window where you can see the documentation of 
- any perl module. Just use open (in the help window) and type in the name
- of a module.
-
- Ctr-Shift-H Highlight the name of a module in the editor and then 
- press Ctr-Shift-H. IT will open the help window for the module 
- whose name was highlighted.
-
- In the help window you can also start typing the name of a module. When the
- list of the matching possible modules is small enough you'll be able
- to open the drop-down list and select the name.
- The "small enough" is controled by two configuration options in the 
- Edit/Setup menu:
-
- Max Number of modules
- Min Number of modules
-
- This feature only works after you have indexed all the modules 
- on your computer. Indexing is currently done by running the following command:
-
- padre --index
+  Ctr-B          matching brace
+  Ctr-P          Autocompletition
+  Alt-N          Nth Pane
+  Ctr-TAB        Next Pane
+  Ctr-Shift-TAB  Previous Pane
+  
+  Ctr-1 .. Ctrl-9 can set markers
+  Ctr-Shift-1 .. Ctrl-Shift-9 jump to marker
+  
+  Ctr-M Ctr-Shift-M  comment/uncomment selected lines of code
+  
+  Ctr-H opens a help window where you can see the documentation of 
+  any perl module. Just use open (in the help window) and type in the name
+  of a module.
+  
+  Ctr-Shift-H Highlight the name of a module in the editor and then 
+  press Ctr-Shift-H. IT will open the help window for the module 
+  whose name was highlighted.
+  
+  In the help window you can also start typing the name of a module. When the
+  list of the matching possible modules is small enough you'll be able
+  to open the drop-down list and select the name.
+  The "small enough" is controled by two configuration options in the 
+  Edit/Setup menu: 
+  
+  Max Number of modules
+  Min Number of modules
+  
+  This feature only works after you have indexed all the modules 
+  on your computer. Indexing is currently done by running the following command:
+  
+  padre --index
 
 =head2 Rectangular Text Selection
 
@@ -143,18 +145,28 @@ use warnings;
 
 our $VERSION = '0.05';
 
-use Carp          ();
-use File::Spec    ();
-use File::HomeDir ();
-use Getopt::Long  ();
-use YAML::Tiny    ();
-use DBI           ();
+use Carp           ();
+use File::Spec     ();
+use File::HomeDir  ();
+use Getopt::Long   ();
+use YAML::Tiny     ();
+use DBI            ();
 
-# Preload just what is needed to get something on screen
-use Padre::Config   ();
-use Padre::Wx::App  ();
-use Padre::Frame    ();
-use Padre::Wx::Text ();
+# Since everything is used OO-style,
+# autouse everything other than the bare essentials
+use Padre::Config         ();
+use Padre::Wx::App        ();
+use Padre::Wx::MainWindow ();
+
+use Class::Autouse qw{
+   Padre::Project
+   Padre::Pod::Frame
+   Padre::Pod::Indexer
+   Padre::Pod::Viewer
+   Padre::Wx::FindDialog
+   Padre::Wx::Popup
+   Padre::Wx::Text
+};
 
 # Globally shared Perl detection object
 my $probe_perl = undef;
@@ -225,7 +237,8 @@ sub ide {
 }
 
 sub wx_app {
-    $_[0]->{wx_app};
+    $_[0]->{wx_app} or
+    $_[0]->{wx_app} = Padre::Wx::App->new;
 }
 
 sub wx_notebook {
@@ -315,8 +328,7 @@ END_USAGE
 
 sub run_editor {
     my $self = shift;
-    $self->{wx_app} = Padre::Wx::App->new;
-    $self->{wx_app}->MainLoop;
+    $self->wx_app->MainLoop;
     $self->{wx_app} = undef;
     return;
 }
@@ -571,7 +583,7 @@ L<http://padre.perlide.org/>
 
   Deal with "resource installation". That is probably talk to
   Module::Build, Debian and Fedora people to make it easy to install resource files
-  such as xpm or po files. See File::ShareDir.
+  such as xpm or po files. See L<File::ShareDir>.
 
 =head2 Podviewer
 
@@ -598,7 +610,7 @@ The yml file contains individual configuration options
 
 Padre::Wx::App is the Wx::App subclass
 
-Padre::Frame is the main frame, most of the code is currently there.
+Padre::Wx::MainWindow is the main frame, most of the code is currently there.
 
 Padre::Wx::Text holds an editor text control instance
 (one for each buffer/file)
@@ -636,7 +648,7 @@ To Adam Kennedy for lots of refactoring.
 
 To Patrick Donelan.
 
-To Herbert Breunung for leting me work on Kephra.
+To Herbert Breunung for letting me work on Kephra.
 
 To Octavian Rasnita for early testing and bug reports.
 

@@ -1,35 +1,26 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
-
+use File::Temp qw(tempdir);
 use Test::More tests => 1;
+use Padre;
 
-
-use File::Temp    qw(tempdir);
-
-
+# Create a test home
 my $dir = tempdir( CLEANUP => 1 );
-#diag $dir;
 $ENV{PADRE_HOME} = $dir;
 
-use Padre;
-our $app = Padre->new;
-
-use Wx;
-
-my $wxapp = Padre::Wx::App->new;
-
-
-my $frame = $Padre::Wx::App::frame = $Padre::Wx::App::frame;
+my $ide   = Padre->new;
+my $frame = $ide->wx_app->main_window;
 my $timer = Wx::Timer->new( $frame );
-Wx::Event::EVT_TIMER( $frame, -1, sub {
-                                      Wx::wxTheApp()->ExitMainLoop;
-                                      $frame->Destroy;
-                                      #Wx::Event->new(&Wx::wxEVT_COMMAND_BUTTON_CLICKED, 
-             #Wx::KeyEvent->new(&Wx::wxEVT_CHAR);
-} );
+Wx::Event::EVT_TIMER(
+	$frame,
+	-1,
+	sub {
+        	$ide->wx_app->ExitMainLoop;
+		$ide->wx_app->main_window->Destroy;
+	}
+);
 $timer->Start( 500, 1 );
-
-$wxapp->MainLoop;
+$ide->wx_app->MainLoop;
 ok(1);
-
-

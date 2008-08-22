@@ -1,7 +1,16 @@
-package Padre::Frame;
+package Padre::Wx::MainWindow;
 
 use strict;
 use warnings;
+use FindBin;
+use Carp           ();
+use File::Spec     ();
+use File::Slurp    ();
+use File::Basename ();
+use Data::Dumper   ();
+use List::Util     ();
+use File::ShareDir ();
+use File::LocalizeNewlines;
 
 my $output;
 my $run_this_menu;
@@ -14,93 +23,91 @@ my $right_sidebar;
 
 my %marker;
 
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
-use Wx::Perl::ProcessStream qw( :everything );
+use Wx                      qw(:everything);
+use Wx::Event               qw(:everything);
+use Wx::Perl::ProcessStream qw(:everything);
 
 use base 'Wx::Frame';
 
 use Padre::Wx::Text;
-use Padre::Pod::Frame;
 use Padre::Wx::FindDialog;
-
-use FindBin;
-use File::Spec::Functions qw(catfile catdir);
-use File::Slurp     qw(read_file write_file);
-use File::Basename  qw(basename fileparse);
-use Carp            qw();
-use Data::Dumper    qw(Dumper);
-use List::Util      qw(max);
-use File::ShareDir  ();
-use File::LocalizeNewlines;
+use Padre::Pod::Frame;
 
 my $default_dir = "";
-my $cnt = 0;
+my $cnt         = 0;
 
-our $VERSION = '0.01';
+use vars qw{$VERSION %SYNTAX};
+BEGIN {
+	$VERSION = '0.05';
 
-# see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
-# N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
-#  wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
-# but not (yet) in 
-#  Wx-0.84/ext/stc/cpp/st_constants.cpp
-# so we have to hard-code their numeric value.
-my %syntax_of = (
-    ada   => wxSTC_LEX_ADA,
-    asm   => wxSTC_LEX_ASM,
-    # asp => wxSTC_LEX_ASP, #in ifdef
-    bat   => wxSTC_LEX_BATCH,
-    cpp   => wxSTC_LEX_CPP,
-    css   => wxSTC_LEX_CSS,
-    diff  => wxSTC_LEX_DIFF,
-    #     => wxSTC_LEX_EIFFEL, # what is the default EIFFEL file extension?
-    #     => wxSTC_LEX_EIFFELKW,
-    '4th' => wxSTC_LEX_FORTH,
-    f     => wxSTC_LEX_FORTRAN,
-    html  => wxSTC_LEX_HTML,
-    js    => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
-    json  => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?)
-    latex => wxSTC_LEX_LATEX,
-    lsp   => wxSTC_LEX_LISP,
-    lua   => wxSTC_LEX_LUA,
-    mak   => wxSTC_LEX_MAKEFILE,
-    mat   => wxSTC_LEX_MATLAB,
-    pas   => wxSTC_LEX_PASCAL,
-    pl    => wxSTC_LEX_PERL,
-    pod   => wxSTC_LEX_PERL,
-    pm    => wxSTC_LEX_PERL,
-    php   => wxSTC_LEX_PHPSCRIPT,
-    py    => wxSTC_LEX_PYTHON,
-    rb    => wxSTC_LEX_RUBY,
-    sql   => wxSTC_LEX_SQL,
-    tcl   => wxSTC_LEX_TCL,
-    t     => wxSTC_LEX_PERL,
-    yml   => wxSTC_LEX_YAML,
-    yaml  => wxSTC_LEX_YAML,
-    vbs   => wxSTC_LEX_VBSCRIPT,
-    #     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
-    xml   => wxSTC_LEX_XML,
-    _default_ => wxSTC_LEX_AUTOMATIC,
-);
+	# see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
+	# N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
+	#  wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
+	# but not (yet) in 
+	#  Wx-0.84/ext/stc/cpp/st_constants.cpp
+	# so we have to hard-code their numeric value.
+	%SYNTAX = (
+		ada   => wxSTC_LEX_ADA,
+		asm   => wxSTC_LEX_ASM,
+		# asp => wxSTC_LEX_ASP, #in ifdef
+		bat   => wxSTC_LEX_BATCH,
+		cpp   => wxSTC_LEX_CPP,
+		css   => wxSTC_LEX_CSS,
+		diff  => wxSTC_LEX_DIFF,
+		#     => wxSTC_LEX_EIFFEL, # what is the default EIFFEL file extension?
+		#     => wxSTC_LEX_EIFFELKW,
+		'4th' => wxSTC_LEX_FORTH,
+		f     => wxSTC_LEX_FORTRAN,
+		html  => wxSTC_LEX_HTML,
+		js    => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
+		json  => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?)
+		latex => wxSTC_LEX_LATEX,
+		lsp   => wxSTC_LEX_LISP,
+		lua   => wxSTC_LEX_LUA,
+		mak   => wxSTC_LEX_MAKEFILE,
+		mat   => wxSTC_LEX_MATLAB,
+		pas   => wxSTC_LEX_PASCAL,
+		pl    => wxSTC_LEX_PERL,
+		pod   => wxSTC_LEX_PERL,
+		pm    => wxSTC_LEX_PERL,
+		php   => wxSTC_LEX_PHPSCRIPT,
+		py    => wxSTC_LEX_PYTHON,
+		rb    => wxSTC_LEX_RUBY,
+		sql   => wxSTC_LEX_SQL,
+		tcl   => wxSTC_LEX_TCL,
+		t     => wxSTC_LEX_PERL,
+		yml   => wxSTC_LEX_YAML,
+		yaml  => wxSTC_LEX_YAML,
+		vbs   => wxSTC_LEX_VBSCRIPT,
+		#     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
+		xml   => wxSTC_LEX_XML,
+		_default_ => wxSTC_LEX_AUTOMATIC,
+	);
+}
 
 sub new {
     my ($class) = @_;
 
     my $config = Padre->ide->get_config;
     Wx::InitAllImageHandlers();
-    my $self = $class->SUPER::new( undef, -1,
-                                 'Padre ',
-                                  wxDefaultPosition,  
-                                 [$config->{main}{width}, $config->{main}{height}],
-                                  #wxDEFAULT_FRAME_STYLE|wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN 
-                                 );
+    my $self = $class->SUPER::new(
+        undef,
+        -1,
+        'Padre ',
+        wxDefaultPosition,  
+        [
+            $config->{main}{width},
+            $config->{main}{height},
+        ],
+        # wxDEFAULT_FRAME_STYLE|wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN 
+    );
     $self->_create_menu_bar;
     $self->_create_panel;
     $self->_load_files;
 
-    EVT_WXP_PROCESS_STREAM_STDOUT( $self, \&evt_process_stdout);
-    EVT_WXP_PROCESS_STREAM_STDERR( $self, \&evt_process_stderr);
-    EVT_WXP_PROCESS_STREAM_EXIT( $self,   \&evt_process_exit);
+    EVT_WXP_PROCESS_STREAM_STDOUT( $self, \&evt_process_stdout );
+    EVT_WXP_PROCESS_STREAM_STDERR( $self, \&evt_process_stderr );
+    EVT_WXP_PROCESS_STREAM_EXIT(   $self, \&evt_process_exit   );
 
     return $self;
 }
@@ -165,11 +172,6 @@ sub _create_panel {
     $sb->SetFieldsCount(3);
     $sb->SetStatusWidths(-1, 50, 100);
 
-    #my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050);
-    #$tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' );
-    #$tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     );
-    #$tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     );
-
     EVT_NOTEBOOK_PAGE_CHANGED($self, Padre->ide->wx_notebook, \&on_panel_changed);
 
     return;
@@ -187,37 +189,28 @@ sub method_selected_dclick {
 
 sub method_selected {
     my ($self, $event) = @_;
-
     my $sub = $event->GetItem->GetText;
     return if not defined $sub;
     $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
-
     return;
 }
 
 
 sub get_current_editor {
-    my ($self) = @_;
-
-    my $id   = Padre->ide->wx_notebook->GetSelection;
-    return Padre->ide->wx_notebook->GetPage($id);
+    my $nb = Padre->ide->wx_notebook;
+    return $nb->GetPage( $nb->GetSelection );
 }
 
 sub get_current_content {
-    my ($self) = @_;
-
-    my $editor = $self->get_current_editor;
-    return $editor->GetText;
+    $_[0]->get_current_editor->GetText;
 }
-
-
 
 sub _bitmap {
     my $file = shift;
     my $dir  = $ENV{PADRE_DEV}
-        ? catdir($FindBin::Bin, '..', 'share')
+        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
         : File::ShareDir::dist_dir('Padre');
-    my $path = catfile($dir , 'docview', "$file.xpm" );
+    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
     return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
 }
 
@@ -460,7 +453,7 @@ sub on_autocompletition {
    if (@words > 20) {
       @words = @words[0..19];
    }
-   #print Dumper \@words;
+   #print Data::Dumper::Dumper \@words;
    $page->AutoCompShow(length($prefix), join " ", @words);
    return;
 }
@@ -539,11 +532,11 @@ sub on_close_window {
 sub _lexer {
     my ($file) = @_;
 
-    return $syntax_of{_default_} if not $file;
+    return $SYNTAX{_default_} if not $file;
     (my $ext = $file) =~ s{.*\.}{};
     $ext = lc $ext;
-    return $syntax_of{_default_} if not $ext;
-    return( (defined $syntax_of{$ext}) ? $syntax_of{$ext} : $syntax_of{_default_});
+    return $SYNTAX{_default_} if not $ext;
+    return( (defined $SYNTAX{$ext}) ? $SYNTAX{$ext} : $SYNTAX{_default_});
 }
 
 
@@ -580,13 +573,13 @@ sub setup_editor {
     my $title   = " Unsaved Document $cnt";
     my $content = '';
     if ($file) {
-        $content = eval { read_file($file) };
+        $content = eval { File::Slurp::read_file($file) };
         if ($@) {
             warn $@;
             delete $self->{_in_setup_editor};
             return;
         }
-        $title   = basename($file);
+        $title   = File::Basename::basename($file);
         # require Padre::Project;
 	# $self->{project} = Padre::Project->from_file($file);
         $editor->SetText( $content );
@@ -642,7 +635,7 @@ sub _toggle_numbers {
     $editor->SetMarginWidth(1, 0);
     $editor->SetMarginWidth(2, 0);
     if ($on) {
-        my $n = 1 + max (2, length ($editor->GetLineCount * 2));
+        my $n = 1 + List::Util::max (2, length ($editor->GetLineCount * 2));
         my $width = $n * $editor->TextWidth(wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
         $editor->SetMarginWidth(0, $width);
         $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
@@ -667,7 +660,7 @@ sub on_open {
     #print "OK $filename\n";
     $default_dir = $dialog->GetDirectory;
 
-    my $file = catfile($default_dir, $filename);
+    my $file = File::Spec->catfile($default_dir, $filename);
     Padre->ide->add_to_recent('files', $file);
 
     # if the current buffer is empty then fill that with the content of the current file
@@ -770,7 +763,7 @@ sub on_save_as {
         #print "OK $filename\n";
         $default_dir = $dialog->GetDirectory;
 
-        my $path = catfile($default_dir, $filename);
+        my $path = File::Spec->catfile($default_dir, $filename);
         if (-e $path) {
             my $res = Wx::MessageBox("File already exists. Overwrite it?", "Exist", wxYES_NO, $self);
             if ($res == wxYES) {
@@ -819,10 +812,10 @@ sub _save_buffer {
     my $content = $page->GetText;
     my ($filename, $file_type) = $self->_get_filename($id);
     eval {
-        write_file($filename, $content);
+        File::Slurp::write_file($filename, $content);
     };
     Padre->ide->add_to_recent('files', $filename);
-    Padre->ide->wx_notebook->SetPageText($id, basename($filename));
+    Padre->ide->wx_notebook->SetPageText($id, File::Basename::basename($filename));
     $page->SetSavePoint;
     $self->update_status;
     $self->update_methods;
@@ -932,7 +925,7 @@ sub on_find {
     my $selection = $self->_get_selection();
     $selection = '' if not defined $selection;
 
-    my $search = Padre::Wx::FindDialog->new( $self, $config, {term => $selection});
+    my $search = Padre::Wx::FindDialog->new( $self, $config, {term => $selection} );
     return if not $search;
 
     unshift @{$config->{search_terms}}, $search->{term};
@@ -1462,7 +1455,7 @@ sub update_status {
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
-        Padre->ide->wx_notebook->SetPageText($pageid, $modified . basename $filename);
+        Padre->ide->wx_notebook->SetPageText($pageid, $modified . File::Basename::basename $filename);
     } else {
         my $text = substr(Padre->ide->wx_notebook->GetPageText($pageid), 1);
         Padre->ide->wx_notebook->SetPageText($pageid, $modified . $text);
@@ -1495,4 +1488,3 @@ sub get_nb {
 }
 
 1;
-
