@@ -9,7 +9,6 @@ use warnings;
 my $app = Demo::App->new;
 $app->run;
 
-
 package Shell::App;
 
 use strict;
