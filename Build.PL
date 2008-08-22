@@ -1,10 +1,6 @@
 use strict;
 use warnings;
-
-use Module::Build         ();
-
-
-#check_wx_version();
+use Module::Build ();
 
 my $class = Module::Build->subclass(
     class => 'Padre::Install',
@@ -53,9 +49,9 @@ my $builder = $class->new(
         'Term::ReadLine'          => 0,
 
         'Class::Accessor'         => 0,
+        'Class::Autouse'          => '1.26',
         'DBD::SQLite'             => 0,
         'DBI'                     => 0,
-        #'Devel::PerlySense'       => 0, 
         'File::Copy::Recursive'   => 0,
         'File::HomeDir'           => 0,
         'File::LocalizeNewlines'  => '1.10',
