@@ -9,10 +9,12 @@ use Padre::Demo;
 Padre::Demo->run(\&main);
 
 sub main {
-   open_frame();
+   #my $out = open_frame();
    my $name = prompt("What is your name?\n");
+   print "$name\n";
    print_out("How are you $name today?\n");
-
+   #sleep 2;
+   #close_app;
    return;
 }
 

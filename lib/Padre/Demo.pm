@@ -19,6 +19,8 @@ Padre::Demo - temporary name of a Zenity clone in wxPerl
 
 =head1 SYNOPIS
 
+As a module:
+
  use Padre::Demo;
 
  Padre::Demo->run(\&main);
@@ -30,7 +32,7 @@ Padre::Demo - temporary name of a Zenity clone in wxPerl
     return;
  }
 
-Command line:
+On the command line:
 
  Not yet available.
 
@@ -71,14 +73,19 @@ sub prompt {
 }
 
 
-
 =head2 print_out
 
 =cut
 sub print_out {
-   my $frame = $Padre::Demo::App::frame;
-   $frame->print_out(@_);
+    my ($text) = @_;
+    #my $frame = $Padre::Demo::App::frame;
+    my $output = $Padre::Demo::App::output;
+    $output->AddText($text);
+    #$Padre::Demo::app->Yield;
+    #print "x\n";
+    return;
 }
+
 
 =head2 promp_input_file
 
@@ -106,7 +113,11 @@ sub promp_input_file {
 
 =cut
 sub open_frame {
-   
+    my $frame = $Padre::Demo::App::frame;
+    my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
+    $output->SetMarginWidth(1, 0);
+    $frame->Show( 1 );
+    return $output;
 }
 
 

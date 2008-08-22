@@ -11,14 +11,6 @@ use Padre::Demo::App   ();
 use Padre::Demo::Frame ();
 use base 'Wx::Frame';
 
-my $output;
-
-sub print_out {
-    my ($self, $text) = @_;
-    $output->AddText($text);
-    return;
-}
-
 
 sub new {
     my ($class) = @_;
@@ -31,11 +23,8 @@ sub new {
         wxDefaultSize,
     );
 
-    $output = Wx::StyledTextCtrl->new($self, -1, [-1, -1], [750, 700]);
-    $output->SetMarginWidth(1, 0);
 
     EVT_ACTIVATE($self, \&on_activate);
-
     Wx::Event::EVT_CLOSE( $self,  sub {
          my ( $self, $event ) = @_;
          $event->Skip;
