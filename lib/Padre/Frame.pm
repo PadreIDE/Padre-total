@@ -126,15 +126,17 @@ sub _create_panel {
     );
     Padre->ide->set_widget('upper_panel', $upper_panel);
 
-    $right_sidebar = Wx::ListBox->new(
+    $right_sidebar = Wx::ListCtrl->new(
         $upper_panel,
         -1, 
         wxDefaultPosition,
         wxDefaultSize,
-        [], wxLB_SINGLE|wxLB_SORT,
+        wxLC_SINGLE_SEL|wxLC_NO_HEADER|wxLC_REPORT
     );
-    EVT_LISTBOX($self, $right_sidebar, \&method_selected);
-    EVT_LISTBOX_DCLICK($self, $right_sidebar, \&method_selected_dclick);
+    $right_sidebar->InsertColumn(0, 'Methods');
+    $right_sidebar->SetColumnWidth(0, wxLIST_AUTOSIZE);
+    EVT_LIST_ITEM_SELECTED( $self, $right_sidebar, \&method_selected );
+    EVT_LIST_ITEM_ACTIVATED( $self, $right_sidebar, \&method_selected_dclick);
 
     Padre->ide->{wx_notebook} = Wx::Notebook->new(
         $upper_panel,
@@ -186,14 +188,9 @@ sub method_selected_dclick {
 sub method_selected {
     my ($self, $event) = @_;
 
-    my $sel = $right_sidebar->GetSelections;
-    return if not defined $sel;
-#    print "$methods[$sel]\n";
-#    print "CD", $right_sidebar->GetClientData($sel), "\n";
-    my $sub = $right_sidebar->GetString($sel);
-    if ($sub) {
-        $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
-    }
+    my $sub = $event->GetItem->GetText;
+    return if not defined $sub;
+    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
 
     return;
 }
@@ -947,8 +944,19 @@ sub on_find {
     return;
 }
 
-
 sub update_methods {
+    my ($self) = @_;
+
+    my $text = $self->get_current_content;
+    my @methods = reverse sort $text =~ m{sub\s+(\w+)}g;
+    $right_sidebar->DeleteAllItems;
+    $right_sidebar->InsertStringItem(0, $_) for @methods;
+    $right_sidebar->SetColumnWidth(0, wxLIST_AUTOSIZE);
+
+    return;
+}
+
+sub xupdate_methods {
     my ($self) = @_;
 
     $right_sidebar->Delete(0) for 1..$right_sidebar->GetCount;
