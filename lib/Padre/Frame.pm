@@ -163,10 +163,10 @@ sub _create_panel {
     $sb->SetFieldsCount(3);
     $sb->SetStatusWidths(-1, 50, 100);
 
-    my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050);
-    $tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' );
-    $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     );
-    $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     );
+    #my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050);
+    #$tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' );
+    #$tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     );
+    #$tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     );
 
     EVT_NOTEBOOK_PAGE_CHANGED($self, Padre->ide->wx_notebook, \&on_panel_changed);
 
