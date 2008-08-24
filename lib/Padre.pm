@@ -378,7 +378,7 @@ sub add_to_recent {
     my @recent = $self->get_recent($type);
     if (not grep {$_ eq $item} @recent) {
         push @recent, $item;
-        @{ $self->{recent}{$type} } = @recent;
+        @{ $self->{recent}->{$type} } = @recent;
         $self->set_current_index($type, $#recent);
     }
     return;
@@ -390,7 +390,7 @@ sub get_recent {
     Carp::confess("No type given") if not $type;
     Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
 
-    return @{ $self->{recent}{$type} };
+    return @{ $self->{recent}->{$type} };
 }
 
 # gets a type, returns a name
@@ -402,7 +402,7 @@ sub get_current {
 
     my $index = $self->get_current_index($type);
     return if not defined $index or $index == -1;
-    return $self->{recent}{$type}[ $index ];
+    return $self->{recent}->{$type}->[ $index ];
 }
 
 # gets a type, returns and index
@@ -412,7 +412,7 @@ sub get_current_index {
     Carp::confess("No type given") if not $type;
     Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
 
-    return $self->{current}{$type};
+    return $self->{current}->{$type};
 }
 # gets a type and a name
 sub set_current {
@@ -421,9 +421,9 @@ sub set_current {
     Carp::confess("No type given") if not $type;
     Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
 
-    foreach my $i (0.. @{ $self->{recent}{$type} } -1) {
-        if ($self->{recent}{$type}[$i] eq $name) {
-            $self->{current}{$type} = $i;
+    foreach my $i (0.. @{ $self->{recent}->{$type} } -1) {
+        if ($self->{recent}->{$type}->[$i] eq $name) {
+            $self->{current}->{$type} = $i;
             last;
         }
     }
@@ -436,7 +436,7 @@ sub set_current_index {
 
     Carp::confess("No type given") if not $type;
     Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-    $self->{current}{$type} = $n;
+    $self->{current}->{$type} = $n;
     return; 
 }
 

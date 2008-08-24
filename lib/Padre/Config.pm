@@ -17,8 +17,8 @@ sub new {
     }
 
     # size of the main window
-    $self->{main}{height} ||= 600;
-    $self->{main}{width}  ||= 700;
+    $self->{main}->{height} ||= 600;
+    $self->{main}->{width}  ||= 700;
 
     # startup mode, if no files given on the command line this can be
     #   new        - a new empty buffer

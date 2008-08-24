@@ -92,8 +92,8 @@ sub new {
         'Padre ',
         wxDefaultPosition,  
         [
-            $config->{main}{width},
-            $config->{main}{height},
+            $config->{main}->{width},
+            $config->{main}->{height},
         ],
     );
 
@@ -169,12 +169,12 @@ sub new {
     $self->{main_panel}->SplitHorizontally(
         $self->{upper_panel},
         $self->{output},
-        $config->{main}{height},
+        $config->{main}->{height},
     );
     $self->{upper_panel}->SplitVertically(
         $self->{notebook},
         $self->{rightbar},
-        $config->{main}{width} - 200,
+        $config->{main}->{width} - 200,
     );
 
     # Create the status bar
@@ -363,8 +363,8 @@ sub _load_files {
     } elsif ($config->{startup} eq 'nothing') {
         # nothing
     } elsif ($config->{startup} eq 'last') {
-        if ($config->{main}{files} and ref $config->{main}{files} eq 'ARRAY') {
-            my @files = @{ $config->{main}{files} };
+        if ($config->{main}->{files} and ref $config->{main}->{files} eq 'ARRAY') {
+            my @files = @{ $config->{main}->{files} };
             foreach my $f (@files) {
                 $self->setup_editor($f);
             }
@@ -584,10 +584,10 @@ sub on_close_window {
         }
 
         my @files = map { scalar $self->_get_filename($_) } (0 .. $self->{notebook}->GetPageCount -1);
-        $config->{main}{files} = \@files;
+        $config->{main}->{files} = \@files;
     }
 
-    ($config->{main}{width}, $config->{main}{height}) = $self->GetSizeWH;
+    ($config->{main}->{width}, $config->{main}->{height}) = $self->GetSizeWH;
     #Padre->ide->set_config($config);
     Padre->ide->save_config();
 
@@ -748,8 +748,8 @@ sub _set_filename {
 
     my $pack = __PACKAGE__;
     my $page = $self->{notebook}->GetPage($id);
-    $page->{$pack}{filename} = $data;
-    $page->{$pack}{type}     = $type;
+    $page->{$pack}->{filename} = $data;
+    $page->{$pack}->{type}     = $type;
 
     if ($data) {
        $page->SetLexer( _lexer($data) ); # set the syntax highlighting
@@ -767,9 +767,9 @@ sub _get_filename {
 
     
     if (wantarray) {
-	return ($page->{$pack}{filename}, $page->{$pack}{type});
+	return ($page->{$pack}->{filename}, $page->{$pack}->{type});
     } else {
-	return $page->{$pack}{filename};
+	return $page->{$pack}->{filename};
     }
 }
 
@@ -1034,7 +1034,7 @@ sub _search {
     my ($self, $search_term) = @_;
 
     my $config = Padre->ide->get_config;
-    $search_term ||= $config->{search_terms}[0];
+    $search_term ||= $config->{search_terms}->[0];
 
     my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
@@ -1056,20 +1056,15 @@ sub _search {
 }
 
 sub on_find_again {
-    my ($self) = @_;
-
-    my $config = Padre->ide->get_config;
-    my $search_term = $config->{search_terms}[0];
-
-    if ($search_term) {
+    my $self = shift;
+    my $term = Padre->ide->get_config->{search_terms}->[0];
+    if ( $term ) {
         $self->_search;
     } else {
         $self->on_find;
     }
-
     return;
 }
-
 
 sub on_about {
     my ( $self ) = @_;
@@ -1200,7 +1195,7 @@ sub _run {
     $self->{menu}->{run_stop}->Enable(1);
 
     my $config = Padre->ide->get_config;
-    $self->{main_panel}->SetSashPosition($config->{main}{height} - 300);
+    $self->{main_panel}->SetSashPosition($config->{main}->{height} - 300);
     $self->{output}->Remove( 0, $self->{output}->GetLastPosition );
 
     $self->{proc} = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
@@ -1248,10 +1243,10 @@ sub on_toggle_show_output {
     my ($self, $event) = @_;
     my $config = Padre->ide->get_config;
     if ($event->IsChecked) {
-        $self->{main_panel}->SetSashPosition($config->{main}{height} -100);
+        $self->{main_panel}->SetSashPosition($config->{main}->{height} -100);
     } else {
         # TODO save the value and keep it for next use
-        $self->{main_panel}->SetSashPosition($config->{main}{height});
+        $self->{main_panel}->SetSashPosition($config->{main}->{height});
     }
 }
 
@@ -1412,10 +1407,10 @@ sub on_select_project {
         #msg
         return;
     }
-    if ($config->{projects}{$project}) {
+    if ($config->{projects}->{$project}) {
         #is changing allowed? how do we notice that it is not one of the already existing names?
     } else {
-       $config->{projects}{$project}{dir} = $dir;
+       $config->{projects}->{$project}->{dir} = $dir;
     }
 
     $config->{current_project} = $project;
