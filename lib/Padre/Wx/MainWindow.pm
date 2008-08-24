@@ -12,7 +12,6 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $run_this_menu;
 my $debug_this_menu;
 my $run_menu;
 my $stop_menu;
@@ -275,9 +274,10 @@ sub _create_menu_bar {
 
     # Creat the Run menu
     $menu->{run} = Wx::Menu->new;
+    $menu->{run_this} = $menu->{run}->Append( -1, "Run &This\tF5" );
     EVT_MENU(
         $self,
-        $menu->{run}->Append( -1, "Run &This\tF5" ),
+        $menu->{run_this},
         \&on_run_this,
     );
     EVT_MENU(
@@ -1200,7 +1200,7 @@ sub _setup_debugger {
 sub _run {
     my ($self, $cmd) = @_;
 
-    $run_this_menu->Enable(0);
+    $self->{menu}->{run_this}->Enable(0);
     $run_menu->Enable(0);
     $stop_menu->Enable(1);
 
@@ -1211,7 +1211,7 @@ sub _run {
 
     $proc = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
     if (not $proc) {
-       $run_this_menu->Enable(1);
+       $self->{menu}->{run_this}->Enable(1);
        $run_menu->Enable(1);
        $stop_menu->Enable(0);
     }
@@ -1297,7 +1297,7 @@ sub evt_process_exit {
     #my $exitcode = $process->GetExitCode;
     $process->Destroy;
 
-    $run_this_menu->Enable(1);
+    $self->{menu}->{run_this}->Enable(1);
     $run_menu->Enable(1);
     $stop_menu->Enable(0);
 
