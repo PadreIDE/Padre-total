@@ -108,9 +108,8 @@ sub new {
     );
 
     # Create the menu bar
-    $self->SetMenuBar(
-        $self->_create_menu_bar,
-    );
+    $self->{menu} = $self->_create_menu_bar;
+    $self->SetMenuBar( $self->{menu}->{wx} );
 
     # Create the layout boxes for the main window
     $self->{main_panel} = Wx::SplitterWindow->new(
@@ -205,91 +204,105 @@ sub new {
 
 sub _create_menu_bar {
     my $self   = shift;
-    my $config = Padre->ide->get_config;
+    my $ide    = Padre->ide;
+    my $config = $ide->get_config;
+
+    # Create the hash to store the menu items we need to remember
+    my $menu = {};
 
     # Create the File menu
-    my $file = Wx::Menu->new;
-    EVT_MENU( $self, $file->Append( wxID_NEW,    ''  ), \&on_new  );
-    EVT_MENU( $self, $file->Append( wxID_OPEN,   ''  ), \&on_open );
-    my $file_recent = Wx::Menu->new;
-    $file->Append( -1, "Recent Files", $file_recent );
-    foreach my $f ( Padre->ide->get_recent('files') ) {
+    $menu->{file} = Wx::Menu->new;
+    EVT_MENU( $self, $menu->{file}->Append( wxID_NEW,    ''  ), \&on_new  );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_OPEN,   ''  ), \&on_open );
+    $menu->{file_recent} = Wx::Menu->new;
+    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent} );
+    foreach my $f ( $ide->get_recent('files') ) {
        EVT_MENU(
            $self,
-           $file_recent->Append(-1, $f), 
+           $menu->{file_recent}->Append(-1, $f), 
            sub { $_[0]->setup_editor($f) },
        );
     }
-    EVT_MENU( $self, $file->Append( wxID_SAVE,   '' ), \&on_save     );
-    EVT_MENU( $self, $file->Append( wxID_SAVEAS, '' ), \&on_save_as  );
-    EVT_MENU( $self, $file->Append( -1, 'Save All'  ), \&on_save_all );
-    EVT_MENU( $self, $file->Append( wxID_CLOSE,  '' ), \&on_close    );
-    EVT_MENU( $self, $file->Append( wxID_EXIT,   '' ), \&on_exit     );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_SAVE,   '' ), \&on_save     );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_SAVEAS, '' ), \&on_save_as  );
+    EVT_MENU( $self, $menu->{file}->Append( -1, 'Save All'  ), \&on_save_all );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_CLOSE,  '' ), \&on_close    );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_EXIT,   '' ), \&on_exit     );
+
+
 
     # Create the Project menu
-    my $project = Wx::Menu->new;
-    EVT_MENU( $self, $project->Append( -1, "&New"), \&on_new_project );
-    EVT_MENU( $self, $project->Append( -1, "&Select"    ), \&on_select_project );
+    $menu->{project} = Wx::Menu->new;
+    EVT_MENU( $self, $menu->{project}->Append( -1, "&New"), \&on_new_project );
+    EVT_MENU( $self, $menu->{project}->Append( -1, "&Select"    ), \&on_select_project );
+
+
 
     # Create the Edit menu
-    my $edit = Wx::Menu->new;
-    EVT_MENU( $self, $edit->Append( wxID_UNDO, '' ),           \&on_undo             );
-    EVT_MENU( $self, $edit->Append( wxID_REDO, '' ),           \&on_redo             );
-    EVT_MENU( $self, $edit->Append( wxID_FIND, '' ),           \&on_find             );
-    EVT_MENU( $self, $edit->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
-    EVT_MENU( $self, $edit->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
-    EVT_MENU( $self, $edit->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
-    EVT_MENU( $self, $edit->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
-    EVT_MENU( $self, $edit->Append( -1, "&Setup" ),            \&on_setup            );
+    $menu->{edit} = Wx::Menu->new;
+    EVT_MENU( $self, $menu->{edit}->Append( wxID_UNDO, '' ),           \&on_undo             );
+    EVT_MENU( $self, $menu->{edit}->Append( wxID_REDO, '' ),           \&on_redo             );
+    EVT_MENU( $self, $menu->{edit}->Append( wxID_FIND, '' ),           \&on_find             );
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Setup" ),            \&on_setup            );
+
+
 
     # Create the View menu
-    my $view = Wx::Menu->new;
-    my $view_lines = $view->AppendCheckItem( -1, "Line numbers" );
+    $menu->{view}       = Wx::Menu->new;
+    $menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, "Line numbers" );
     EVT_MENU(
         $self,
-        $view_lines,
+        $menu->{view_lines},
         \&on_toggle_line_numbers,
     );
     EVT_MENU(
         $self,
-        $view->AppendCheckItem( -1, "Show Output" ),
+        $menu->{view}->AppendCheckItem( -1, "Show Output" ),
         \&on_toggle_show_output,
     );
     EVT_MENU(
         $self,
-        $view->AppendCheckItem( -1, "Hide StatusBar" ),
+        $menu->{view}->AppendCheckItem( -1, "Hide StatusBar" ),
         \&on_toggle_status_bar,
     );
-    $view_lines = $config->{show_line_numbers} ? 1 : 0;
+    $menu->{view_lines}->Check($config->{show_line_numbers} ? 1 : 0);
+
+
 
     # Creat the Run menu
-    my $run = Wx::Menu->new;
+    $menu->{run} = Wx::Menu->new;
     EVT_MENU(
         $self,
-        $run->Append( -1, "Run &This\tF5" ),
+        $menu->{run}->Append( -1, "Run &This\tF5" ),
         \&on_run_this,
     );
     EVT_MENU(
         $self,
-        $run->Append( -1, "Run Any\tCtrl-F5" ),
+        $menu->{run}->Append( -1, "Run Any\tCtrl-F5" ),
         \&on_run,
     );
-    my $run_stop = $run->Append( -1, "&Stop" );
+    $menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
     EVT_MENU(
         $self,
-        $run_stop,
+        $menu->{run_stop},
         \&on_stop,
     );
     EVT_MENU(
         $self,
-        $run->Append( -1, "&Setup" ),
+        $menu->{run}->Append( -1, "&Setup" ),
         \&on_setup_run,
     );
-    $run_stop->Enable(0);
+    $menu->{run_stop}->Enable(0);
+
+
 
     # Create the Plugins menu
-    my $plugin  = Wx::Menu->new;
-    my %plugins = %{ Padre->ide->{plugins} };
+    $menu->{plugin} = Wx::Menu->new;
+    my %plugins = %{ $ide->{plugins} };
     foreach my $name ( sort keys %plugins ) {
         next if not $plugins{$name};
         my $submenu = Wx::Menu->new;
@@ -298,49 +311,54 @@ sub _create_menu_bar {
         foreach my $m ( @menu ) {
            EVT_MENU( $self, $submenu->Append(-1, $m->[0]), $m->[1] );
         }
-        $plugin->Append( -1, $name, $submenu );
+        $menu->{plugin}->Append( -1, $name, $submenu );
     }
 
+
+
     # Create the help menu
-    my $help = Wx::Menu->new;
+    $menu->{help} = Wx::Menu->new;
     EVT_MENU(
         $self,
-        $help->Append( wxID_ABOUT,   '' ),
+        $menu->{help}->Append( wxID_ABOUT,   '' ),
         \&on_about,
     );
     EVT_MENU(
         $self,
-        $help->Append( wxID_HELP, '' ),
+        $menu->{help}->Append( wxID_HELP, '' ),
         \&on_help,
     );
     EVT_MENU(
         $self,
-        $help->Append( -1, 'Context-help  Ctrl-Shift-H' ),
+        $menu->{help}->Append( -1, 'Context-help  Ctrl-Shift-H' ),
         \&on_context_help,
     );
 
-    # Create and return the main menu bar
-    my $bar = Wx::MenuBar->new;
-    $bar->Append( $file,    "&File" );
-    $bar->Append( $project, "&Project" );
-    $bar->Append( $edit,    "&Edit" );
-    $bar->Append( $view,    "&View" );
-    $bar->Append( $run,     "&Run" );
-    if ( %plugins ) {
-        $bar->Append( $plugin, "Pl&ugins" );
-    }
-    $bar->Append( $help,    "&Help" );
 
-    return $bar;
+
+    # Create and return the main menu bar
+    $menu->{wx} = Wx::MenuBar->new;
+    $menu->{wx}->Append( $menu->{file},    "&File" );
+    $menu->{wx}->Append( $menu->{project}, "&Project" );
+    $menu->{wx}->Append( $menu->{edit},    "&Edit" );
+    $menu->{wx}->Append( $menu->{view},    "&View" );
+    $menu->{wx}->Append( $menu->{run},     "&Run" );
+    if ( %plugins ) {
+        $menu->{wx}->Append( $menu->{plugin}, "Pl&ugins" );
+    }
+    $menu->{wx}->Append( $menu->{help},    "&Help" );
+
+    return $menu;
 }
 
 sub _load_files {
-    my ($self) = @_;
+    my $self   =  shift;
+    my $ide    = Padre->ide;
+    my $config = $ide->get_config;
 
     # TODO make sure the full path to the file is saved and not
     # the relative path
-    my $config = Padre->ide->get_config;
-    my @files  = Padre->ide->get_files;
+    my @files  = $ide->get_files;
     if ( @files ) {
         foreach my $f (@files) {
             $self->setup_editor($f);
