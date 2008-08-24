@@ -24,43 +24,43 @@ sub new {
     $self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
     $self->StyleClearAll();
 
-    $self->StyleSetForeground(0,  Wx::Colour->new(0x00, 0x00, 0x7f));
-    $self->StyleSetForeground(1,  Wx::Colour->new(0xff, 0x00, 0x00));
+    $self->StyleSetForeground( wxSTC_PL_DEFAULT,      Wx::Colour->new(0x00, 0x00, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_ERROR,        Wx::Colour->new(0xff, 0x00, 0x00));
+    $self->StyleSetForeground( wxSTC_PL_COMMENTLINE,  Wx::Colour->new(0x00, 0x7f, 0x00)); # line green
+    $self->StyleSetForeground( wxSTC_PL_POD,          Wx::Colour->new(0x7f, 0x7f, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_NUMBER,       Wx::Colour->new(0x00, 0x7f, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_WORD,         Wx::Colour->new(0x00, 0x00, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_STRING,       Wx::Colour->new(0xff, 0x7f, 0x00)); # orange
+    $self->StyleSetForeground( wxSTC_PL_CHARACTER,    Wx::Colour->new(0x7f, 0x00, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_PUNCTUATION,  Wx::Colour->new(0x00, 0x00, 0x00));
+    $self->StyleSetForeground( wxSTC_PL_PREPROCESSOR, Wx::Colour->new(0x7f, 0x7f, 0x7f));
+    $self->StyleSetForeground( wxSTC_PL_OPERATOR,     Wx::Colour->new(0x00, 0x00, 0x7f)); # dark blue
+    $self->StyleSetForeground( wxSTC_PL_IDENTIFIER,   Wx::Colour->new(0x00, 0x00, 0xff)); # bright blue
+    $self->StyleSetForeground( wxSTC_PL_SCALAR,       Wx::Colour->new(0x7f, 0x00, 0x7f)); # purple
+    $self->StyleSetForeground( wxSTC_PL_ARRAY,        Wx::Colour->new(0x40, 0x80, 0xff)); # light blue
+    $self->StyleSetForeground( wxSTC_PL_HASH,         Wx::Colour->new(0x00, 0x80, 0xff));
+    # wxSTC_PL_SYMBOLTABLE (15)
+    # missing SCE_PL_VARIABLE_INDEXER (16)  
+    $self->StyleSetForeground( wxSTC_PL_REGEX,        Wx::Colour->new(0xff, 0x00, 0x7f)); # red
+    $self->StyleSetForeground( wxSTC_PL_REGSUBST,     Wx::Colour->new(0x7f, 0x7f, 0x00)); # light olive
+    # wxSTC_PL_LONGQUOTE (19)
+    # wxSTC_PL_BACKTICKS (20)
+    # wxSTC_PL_DATASECTION (21)
+    # wxSTC_PL_HERE_DELIM (22)
+    # wxSTC_PL_HERE_Q (23)
+    # wxSTC_PL_HERE_QQ (24)
+    # wxSTC_PL_HERE_QX (25)
+    # wxSTC_PL_STRING_Q (26)
+    # wxSTC_PL_STRING_QQ (27)
+    # wxSTC_PL_STRING_QX  (28)
+    # wxSTC_PL_STRING_QR  (29)
+    # wxSTC_PL_STRING_QW  (30)
 
-    # 2 Comment line green
-    $self->StyleSetForeground(2,  Wx::Colour->new(0x00, 0x7f, 0x00));
-    $self->StyleSetForeground(3,  Wx::Colour->new(0x7f, 0x7f, 0x7f));
-
-    # 4 numbers
-    $self->StyleSetForeground(4,  Wx::Colour->new(0x00, 0x7f, 0x7f));
-    $self->StyleSetForeground(5,  Wx::Colour->new(0x00, 0x00, 0x7f));
-
-    # 6 string orange
-    $self->StyleSetForeground(6,  Wx::Colour->new(0xff, 0x7f, 0x00));
-
-    $self->StyleSetForeground(7,  Wx::Colour->new(0x7f, 0x00, 0x7f));
-
-    $self->StyleSetForeground(8,  Wx::Colour->new(0x00, 0x00, 0x00));
-
-    $self->StyleSetForeground(9,  Wx::Colour->new(0x7f, 0x7f, 0x7f));
-
-    # 10 operators dark blue
-    $self->StyleSetForeground(10, Wx::Colour->new(0x00, 0x00, 0x7f));
-
-    # 11 identifiers bright blue
-    $self->StyleSetForeground(11, Wx::Colour->new(0x00, 0x00, 0xff));
-
-    # 12 scalars purple
-    $self->StyleSetForeground(12, Wx::Colour->new(0x7f, 0x00, 0x7f));
-
-    # 13 array light blue
-    $self->StyleSetForeground(13, Wx::Colour->new(0x40, 0x80, 0xff));
-
-    # 17 matching regex red
-    $self->StyleSetForeground(17, Wx::Colour->new(0xff, 0x00, 0x7f));
-
-    # 18 substitution regex light olive
-    $self->StyleSetForeground(18, Wx::Colour->new(0x7f, 0x7f, 0x00));
+    # missing:
+    #define SCE_PL_POD_VERB 31
+    #define SCE_PL_SUB_PROTOTYPE 40
+    #define SCE_PL_FORMAT_IDENT 41
+    #define SCE_PL_FORMAT 42
 
     # Set a style 12 bold
     $self->StyleSetBold(12,  1);
