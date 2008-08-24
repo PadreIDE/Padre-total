@@ -239,6 +239,7 @@ sub _create_menu_bar {
     EVT_MENU( $self, $edit->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
     EVT_MENU( $self, $edit->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
     EVT_MENU( $self, $edit->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
+    EVT_MENU( $self, $edit->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
     EVT_MENU( $self, $edit->Append( -1, "&Setup" ),            \&on_setup            );
 
     # Create the View menu
