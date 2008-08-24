@@ -26,6 +26,15 @@ SCOPE: {
 }
 
 SCOPE: {
+    my $same = Padre->new;
+    isa_ok($same, 'Padre');
+    is $same, $app, 'Same';
+
+    BEGIN { $tests += 2; }
+}
+
+
+SCOPE: {
     my $config = $app->get_config;
     is_deeply $config, {
             DISPLAY_MIN_LIMIT => 2,
