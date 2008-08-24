@@ -629,6 +629,7 @@ sub _mixed_newlines {
 # 0 if keep as they are
 # MAC|UNIX|WIN convert them to the appropriate type
 sub _auto_convert {
+    # TODO get from config
     return 0;
 }
 
@@ -1095,20 +1096,6 @@ sub update_methods {
 
     return;
 }
-
-sub xupdate_methods {
-    my ($self) = @_;
-
-    foreach ( 1 .. $self->{rightbar}->GetCount ) {
-        $self->{rightbar}->Delete(0);
-    }
-    my $text = $self->get_current_content;
-    my @methods = sort $text =~ m{sub\s+(\w+)}g;
-    $self->{rightbar}->InsertItems(\@methods, 0);
-
-    return;
-}
-
 
 sub _search {
     my ($self, $search_term) = @_;
