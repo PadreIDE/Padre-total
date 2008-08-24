@@ -40,6 +40,7 @@ SCOPE: {
             DISPLAY_MIN_LIMIT => 2,
             DISPLAY_MAX_LIMIT => 200,
             show_line_numbers => 0,
+            show_eol          => 0,
             search_terms      => [],
             command_line      => '',
             startup           => 'new',

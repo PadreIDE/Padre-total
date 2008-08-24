@@ -251,6 +251,12 @@ sub _create_menu_bar {
         $menu->{view_lines},
         \&on_toggle_line_numbers,
     );
+    $menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, "EOL" );
+    EVT_MENU(
+        $self,
+        $menu->{view_eol},
+        \&on_toggle_eol,
+    );
     EVT_MENU(
         $self,
         $menu->{view}->AppendCheckItem( -1, "Show Output" ),
@@ -262,6 +268,7 @@ sub _create_menu_bar {
         \&on_toggle_status_bar,
     );
     $menu->{view_lines}->Check($config->{show_line_numbers} ? 1 : 0);
+    $menu->{view_eol}->Check($config->{show_eol} ? 1 : 0);
 
 
 
@@ -630,6 +637,25 @@ sub _get_local_filetype {
            $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
 }
 
+# type can be WIN, MAC, UNIX
+# returns the converted text
+sub convert_to {
+    my ($type, $text) = @_;
+    my %map = (
+       WIN   => "\015\012",  # CRLF
+       MAC   => "\015",      # CR
+       UNIX  => "\012",      # LF
+    );
+
+    require Encode;
+    require Encode::Newlines;
+    import Encode::Newlines qw(decode);
+    local $Encode::Newlines::AllowMixed = 1;
+    decode( $map{$type} => $text );
+
+    return $text;
+}
+
 sub setup_editor {
     my ($self, $file) = @_;
 #Carp::cluck( $file);
@@ -690,6 +716,7 @@ sub setup_editor {
         $editor->EmptyUndoBuffer;
     }
     _toggle_numbers($editor, $config->{show_line_numbers});
+    _toggle_eol($editor, $config->{show_eol});
 
     $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
     $editor->SetFocus;
@@ -719,15 +746,25 @@ sub on_toggle_line_numbers {
 
     foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
         my $editor = $self->{notebook}->GetPage($id);
-        #my $editor = $self->{notebook}->GetPage($id);
-
-        #$editor->SetMarginLeft(200); # this is not the area of the number but on its right
-        #$editor->SetMarginMask(0, wxSTC_STYLE_LINENUMBER);
-        
         _toggle_numbers($editor, $config->{show_line_numbers})
     }
     return;
 }
+
+
+sub on_toggle_eol {
+    my ($self, $event) = @_;
+
+    my $config = Padre->ide->get_config;
+    $config->{show_eol} = $event->IsChecked ? 1 : 0;
+
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        my $editor = $self->{notebook}->GetPage($id);
+        _toggle_eol($editor, $config->{show_eol})
+    }
+    return;
+}
+
 
 # currently if there are 9 lines we set the margin to 1 width and then
 # if another line is added it is not seen well.
@@ -748,6 +785,12 @@ sub _toggle_numbers {
         $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
     }
 }
+sub _toggle_eol {
+    my ($editor, $on) = @_;
+    $editor->SetViewEOL($on);
+    return;
+}
+
 
 sub on_open {
     my ($self) = @_;

@@ -42,6 +42,7 @@ sub new {
     # all_buffers - all the buffers even if they don't have a name yet
     $self->{save_on_run}       ||= 'same';
     $self->{show_line_numbers} ||= 0;
+    $self->{show_eol}          ||= 0;
     $self->{projects}          ||= {};
     $self->{current_project}   ||= '';
 
