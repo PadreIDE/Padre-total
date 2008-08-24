@@ -12,7 +12,6 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $proc;
 my $help;
 
 my %marker;
@@ -1207,8 +1206,8 @@ sub _run {
         ->SetSashPosition($config->{main}{height} - 300);
     $self->{output}->Remove( 0, $self->{output}->GetLastPosition );
 
-    $proc = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
-    if (not $proc) {
+    $self->{proc} = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
+    if ( not $self->{proc} ) {
        $self->{menu}->{run_this}->Enable(1);
        $self->{menu}->{run_any}->Enable(1);
        $self->{menu}->{run_stop}->Enable(0);
@@ -1304,7 +1303,7 @@ sub evt_process_exit {
 
 sub on_stop {
     my ($self) = @_;
-    $proc->TerminateProcess;
+    $self->{proc}->TerminateProcess if $self->{proc};
     return;
 }
 
