@@ -1,8 +1,11 @@
     Add some "new file" templates
     Temporarily remove the toolbar
     Some fixes for Padre::Demo
-    update list of methods on save as well #54 (vincent)
+    Update list of methods on save as well #54 (vincent)
     Change the list of subs on the right hand side to be sorted
+    Set Alt-S to jump to the subs list
+    Deal with newlines in files
+    Lots of refactoring (ADAMK)
 
 v0.05 2008.08.17
 

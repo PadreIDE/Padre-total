@@ -25,6 +25,7 @@ script/padre
 
 t/01-load.t
 t/02-wx.t
+t/80-newline.t
 t/99-demo.t
 
 eg/hello_foo.pl
