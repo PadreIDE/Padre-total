@@ -10,7 +10,6 @@ use File::Basename ();
 use Data::Dumper   ();
 use List::Util     ();
 use File::ShareDir ();
-use File::LocalizeNewlines;
 use Wx                      qw(:everything);
 use Wx::Event               qw(:everything);
 use Wx::Perl::ProcessStream qw(:everything);
@@ -606,14 +605,29 @@ sub _lexer {
     return( (defined $SYNTAX{$ext}) ? $SYNTAX{$ext} : $SYNTAX{_default_});
 }
 
+# for files without a type
+sub _get_default_file_type {
+    # TODO: get it from config
+    return _get_local_filetype();
+}
+# Where to convert (UNIX, WIN, MAC)
+# or Ask (the user) or Keep (the garbage)
+# mixed files
+sub _mixed_newlines {
+    # TODO get from config
+    return _get_local_filetype();
+}
+
+# What to do with files that have consistent line endings:
+# 0 if keep as they are
+# MAC|UNIX|WIN convert them to the appropriate type
+sub _auto_convert {
+    return 0;
+}
 
 sub _get_local_filetype {
-    return $^O =~ /win32/i ? 'WIN' : 'UNIX';
-}
-sub _get_filetype {
-    my ($file) = @_;
-    my $nl = File::LocalizeNewlines->new;
-    return ( ($^O =~ /win32/i xor $nl->localized($file)) ? 'UNIX' : 'WIN' );
+    return $^O =~ /MSWin|cygwin|dos|os2/i ? 'WIN' : 
+           $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
 }
 
 sub setup_editor {
@@ -626,15 +640,13 @@ sub setup_editor {
 
     my $config    = Padre->ide->get_config;
     my $editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer($file) );
-    my $file_type = _get_filetype($file);
+    my $file_type = _get_default_file_type();
 
-    #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
-    # it used to default to 0 on windows and still
-    # it was adding extra characters
-    #print $editor->GetEOLMode, "\n"; #0
-#    print Wx::wxSTC_EOL_CR, "\n";1
-#    print Wx::wxSTC_EOL_CRLF, "\n"0;
-#    print Wx::wxSTC_EOL_LF, "\n";2
+    my %mode = (
+       'WIN'  => Wx::wxSTC_EOL_CRLF,
+       'MAC'  => Wx::wxSTC_EOL_CR,
+       'UNIX' => Wx::wxSTC_EOL_LF,
+    );
 
     $cnt++;
     my $title   = " Unsaved Document $cnt";
@@ -646,6 +658,31 @@ sub setup_editor {
             delete $self->{_in_setup_editor};
             return;
         }
+        my $current_type = Padre::get_newline_type($content);
+        if ($current_type eq 'None') {
+            # keep default
+        } elsif ($current_type eq 'Mixed') {
+            my $mixed = _mixed_newlines();
+            if ( $mixed eq 'Ask') {
+                warn "TODO ask the user what to do with $file";
+                # $file_type = ;
+            } elsif ( $mixed eq 'Keep' ) {
+                warn "TODO probably we should not allow keeping garbage ($file) \n";
+            } else {
+                warn "TODO converting $file";
+                $file_type = $mixed;
+            }
+        } else {
+            my $convert_to = _auto_convert();
+            if ($convert_to) {
+                warn "TODO call converting on $file";
+                $file_type = $convert_to;
+            } else {
+                $file_type = $current_type;
+            }
+        }
+        $editor->SetEOLMode( $mode{$file_type} );
+
         $title   = File::Basename::basename($file);
         # require Padre::Project;
 	# $self->{project} = Padre::Project->from_file($file);

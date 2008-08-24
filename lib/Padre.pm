@@ -567,8 +567,8 @@ sub get_newline_type {
     my $CRLF = "\015\012";
 
     return "None" if $text !~ /$LF/ and $text !~ /$CR/;
-    return "UNIX"    if $text !~ /$CR/;
-    return "MAC"     if $text !~ /$LF/;
+    return "UNIX" if $text !~ /$CR/;
+    return "MAC"  if $text !~ /$LF/;
 
     $text =~ s/$CRLF//g;
     return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
