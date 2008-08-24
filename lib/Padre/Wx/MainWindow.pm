@@ -12,14 +12,12 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $output;
 my $run_this_menu;
 my $debug_this_menu;
 my $run_menu;
 my $stop_menu;
 my $proc;
 my $help;
-my $right_sidebar;
 
 my %marker;
 
@@ -85,11 +83,19 @@ BEGIN {
 	);
 }
 
+
+
+
+
+#####################################################################
+# Constructor and Accessors
+
 sub new {
     my ($class) = @_;
-
-    my $config = Padre->ide->get_config;
+    my $config  = Padre->ide->get_config;
     Wx::InitAllImageHandlers();
+
+    # Create the main panel object
     my $self = $class->SUPER::new(
         undef,
         -1,
@@ -99,62 +105,67 @@ sub new {
             $config->{main}{width},
             $config->{main}{height},
         ],
-        # wxDEFAULT_FRAME_STYLE|wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN 
     );
-    $self->_create_menu_bar;
-    $self->_create_panel;
-    $self->_load_files;
 
-    EVT_WXP_PROCESS_STREAM_STDOUT( $self, \&evt_process_stdout );
-    EVT_WXP_PROCESS_STREAM_STDERR( $self, \&evt_process_stderr );
-    EVT_WXP_PROCESS_STREAM_EXIT(   $self, \&evt_process_exit   );
+    # Create the menu bar
+    $self->SetMenuBar(
+        $self->_create_menu_bar,
+    );
 
-    return $self;
-}
-
-sub _create_panel {
-    my ($self) = @_;
-
-    my $main_panel = Wx::SplitterWindow->new(
+    # Create the layout boxes for the main window
+    $self->{main_panel} = Wx::SplitterWindow->new(
         $self,
         -1,
         wxDefaultPosition,
         wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
     );
-    Padre->ide->set_widget('main_panel', $main_panel);
-
-    my $upper_panel = Wx::SplitterWindow->new(
-        $main_panel,
+    $self->{upper_panel} = Wx::SplitterWindow->new(
+        $self->{main_panel},
         -1,
         wxDefaultPosition,
         wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
     );
-    Padre->ide->set_widget('upper_panel', $upper_panel);
 
-    $right_sidebar = Wx::ListCtrl->new(
-        $upper_panel,
+    # Create the right-hand sidebar
+    $self->{rightbar} = Wx::ListCtrl->new(
+        $self->{upper_panel},
         -1, 
         wxDefaultPosition,
         wxDefaultSize,
         wxLC_SINGLE_SEL|wxLC_NO_HEADER|wxLC_REPORT
     );
-    $right_sidebar->InsertColumn(0, 'Methods');
-    $right_sidebar->SetColumnWidth(0, wxLIST_AUTOSIZE);
-    EVT_LIST_ITEM_SELECTED( $self, $right_sidebar, \&method_selected );
-    EVT_LIST_ITEM_ACTIVATED( $self, $right_sidebar, \&method_selected_dclick);
+    $self->{rightbar}->InsertColumn(0, 'Methods');
+    $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
+    EVT_LIST_ITEM_SELECTED(
+        $self,
+        $self->{rightbar},
+        \&method_selected,
+    );
+    EVT_LIST_ITEM_ACTIVATED(
+        $self,
+        $self->{rightbar},
+        \&method_selected_dclick,
+    );
 
-    Padre->ide->{wx_notebook} = Wx::Notebook->new(
-        $upper_panel,
+    # Create the main notebook for the documents
+    $self->{notebook} = Wx::Notebook->new(
+        $self->{upper_panel},
         -1,
         wxDefaultPosition,
         wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
     );
+    EVT_NOTEBOOK_PAGE_CHANGED(
+        $self,
+        $self->{notebook},
+        \&on_panel_changed,
+    );
 
-    $output = Wx::TextCtrl->new(
-        $main_panel,
+    # Create the bottom-of-screen output textarea
+    $self->{output} = Wx::TextCtrl->new(
+        $self->{main_panel},
         -1,
         "", 
         wxDefaultPosition,
@@ -162,56 +173,164 @@ sub _create_panel {
         wxTE_READONLY|wxTE_MULTILINE|wxNO_FULL_REPAINT_ON_RESIZE,
     );
 
-    my $config = Padre->ide->get_config;    
-    $main_panel->SplitHorizontally( $upper_panel, $output, $config->{main}{height} );
-    $upper_panel->SplitVertically( Padre->ide->wx_notebook, $right_sidebar, $config->{main}{width} - 200 );
+    # Add the bits to the layout
+    $self->{main_panel}->SplitHorizontally(
+        $self->{upper_panel},
+        $self->{output},
+        $config->{main}{height},
+    );
+    $self->{upper_panel}->SplitVertically(
+        $self->{notebook},
+        $self->{rightbar},
+        $config->{main}{width} - 200,
+    );
 
-    my $sb = $self->CreateStatusBar;
-    #$self->SetStatusBarPane();
-    #my $sb = $self->GetStatusBar;
-    $sb->SetFieldsCount(3);
-    $sb->SetStatusWidths(-1, 50, 100);
+    # Create the status bar
+    $self->{statusbar} = $self->CreateStatusBar;
+    $self->{statusbar}->SetFieldsCount(3);
+    $self->{statusbar}->SetStatusWidths(-1, 50, 100);
 
-    EVT_NOTEBOOK_PAGE_CHANGED($self, Padre->ide->wx_notebook, \&on_panel_changed);
+    # Attach main window events
+    EVT_CLOSE( $self, \&on_close_window);
+    EVT_KEY_UP( $self, \&on_key );
+    EVT_WXP_PROCESS_STREAM_STDOUT( $self, \&evt_process_stdout );
+    EVT_WXP_PROCESS_STREAM_STDERR( $self, \&evt_process_stderr );
+    EVT_WXP_PROCESS_STREAM_EXIT( $self, \&evt_process_exit );
 
-    return;
+    # Load any default files
+    $self->_load_files;
+
+    return $self;
 }
 
+sub _create_menu_bar {
+    my $self   = shift;
+    my $config = Padre->ide->get_config;
 
-sub method_selected_dclick {
-    my ($self, $event) = @_;
+    # Create the File menu
+    my $file = Wx::Menu->new;
+    EVT_MENU( $self, $file->Append( wxID_NEW,    ''  ), \&on_new  );
+    EVT_MENU( $self, $file->Append( wxID_OPEN,   ''  ), \&on_open );
+    my $file_recent = Wx::Menu->new;
+    $file->Append( -1, "Recent Files", $file_recent );
+    foreach my $f ( Padre->ide->get_recent('files') ) {
+       EVT_MENU(
+           $self,
+           $file_recent->Append(-1, $f), 
+           sub { $_[0]->setup_editor($f) },
+       );
+    }
+    EVT_MENU( $self, $file->Append( wxID_SAVE,   '' ), \&on_save     );
+    EVT_MENU( $self, $file->Append( wxID_SAVEAS, '' ), \&on_save_as  );
+    EVT_MENU( $self, $file->Append( -1, 'Save All'  ), \&on_save_all );
+    EVT_MENU( $self, $file->Append( wxID_CLOSE,  '' ), \&on_close    );
+    EVT_MENU( $self, $file->Append( wxID_EXIT,   '' ), \&on_exit     );
 
-    $self->method_selected($event);
-    $self->get_current_editor->SetFocus;
+    # Create the Project menu
+    my $project = Wx::Menu->new;
+    EVT_MENU( $self, $project->Append( -1, "&New"), \&on_new_project );
+    EVT_MENU( $self, $project->Append( -1, "&Select"    ), \&on_select_project );
 
-    return;
-}
+    # Create the Edit menu
+    my $edit = Wx::Menu->new;
+    EVT_MENU( $self, $edit->Append( wxID_UNDO, '' ),           \&on_undo             );
+    EVT_MENU( $self, $edit->Append( wxID_REDO, '' ),           \&on_redo             );
+    EVT_MENU( $self, $edit->Append( wxID_FIND, '' ),           \&on_find             );
+    EVT_MENU( $self, $edit->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
+    EVT_MENU( $self, $edit->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
+    EVT_MENU( $self, $edit->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
+    EVT_MENU( $self, $edit->Append( -1, "&Setup" ),            \&on_setup            );
 
-sub method_selected {
-    my ($self, $event) = @_;
-    my $sub = $event->GetItem->GetText;
-    return if not defined $sub;
-    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
-    return;
-}
+    # Create the View menu
+    my $view = Wx::Menu->new;
+    my $view_lines = $view->AppendCheckItem( -1, "Line numbers" );
+    EVT_MENU(
+        $self,
+        $view_lines,
+        \&on_toggle_line_numbers,
+    );
+    EVT_MENU(
+        $self,
+        $view->AppendCheckItem( -1, "Show Output" ),
+        \&on_toggle_show_output,
+    );
+    EVT_MENU(
+        $self,
+        $view->AppendCheckItem( -1, "Hide StatusBar" ),
+        \&on_toggle_status_bar,
+    );
+    $view_lines = $config->{show_line_numbers} ? 1 : 0;
 
+    # Creat the Run menu
+    my $run = Wx::Menu->new;
+    EVT_MENU(
+        $self,
+        $run->Append( -1, "Run &This\tF5" ),
+        \&on_run_this,
+    );
+    EVT_MENU(
+        $self,
+        $run->Append( -1, "Run Any\tCtrl-F5" ),
+        \&on_run,
+    );
+    my $run_stop = $run->Append( -1, "&Stop" );
+    EVT_MENU(
+        $self,
+        $run_stop,
+        \&on_stop,
+    );
+    EVT_MENU(
+        $self,
+        $run->Append( -1, "&Setup" ),
+        \&on_setup_run,
+    );
+    $run_stop->Enable(0);
 
-sub get_current_editor {
-    my $nb = Padre->ide->wx_notebook;
-    return $nb->GetPage( $nb->GetSelection );
-}
+    # Create the Plugins menu
+    my $plugin  = Wx::Menu->new;
+    my %plugins = %{ Padre->ide->{plugins} };
+    foreach my $name ( sort keys %plugins ) {
+        next if not $plugins{$name};
+        my $submenu = Wx::Menu->new;
+        my @menu    = eval { $plugins{$name}->menu };
+        warn "Error when calling menu for plugin '$name' $@" if $@;
+        foreach my $m ( @menu ) {
+           EVT_MENU( $self, $submenu->Append(-1, $m->[0]), $m->[1] );
+        }
+        $plugin->Append( -1, $name, $submenu );
+    }
 
-sub get_current_content {
-    $_[0]->get_current_editor->GetText;
-}
+    # Create the help menu
+    my $help = Wx::Menu->new;
+    EVT_MENU(
+        $self,
+        $help->Append( wxID_ABOUT,   '' ),
+        \&on_about,
+    );
+    EVT_MENU(
+        $self,
+        $help->Append( wxID_HELP, '' ),
+        \&on_help,
+    );
+    EVT_MENU(
+        $self,
+        $help->Append( -1, 'Context-help  Ctrl-Shift-H' ),
+        \&on_context_help,
+    );
 
-sub _bitmap {
-    my $file = shift;
-    my $dir  = $ENV{PADRE_DEV}
-        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
-        : File::ShareDir::dist_dir('Padre');
-    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
-    return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
+    # Create and return the main menu bar
+    my $bar = Wx::MenuBar->new;
+    $bar->Append( $file,    "&File" );
+    $bar->Append( $project, "&Project" );
+    $bar->Append( $edit,    "&Edit" );
+    $bar->Append( $view,    "&View" );
+    $bar->Append( $run,     "&Run" );
+    if ( %plugins ) {
+        $bar->Append( $plugin, "Pl&ugins" );
+    }
+    $bar->Append( $help,    "&Help" );
+
+    return $bar;
 }
 
 sub _load_files {
@@ -242,108 +361,44 @@ sub _load_files {
     return;
 }
 
-sub _create_menu_bar {
-    my ($self) = @_;
-
-    my %plugins     = %{ Padre->ide->{plugins} };
-    my $bar         = Wx::MenuBar->new;
-    my $file        = Wx::Menu->new;
-    my $project     = Wx::Menu->new;
-    my $view        = Wx::Menu->new;
-    my $run         = Wx::Menu->new;
-    my $edit        = Wx::Menu->new;
-    my $plugin_menu = Wx::Menu->new;
-    my $help        = Wx::Menu->new;
-    $bar->Append( $file,    "&File" );
-    $bar->Append( $project, "&Project" );
-    $bar->Append( $edit,    "&Edit" );
-    $bar->Append( $view,    "&View" );
-    $bar->Append( $run,     "&Run" );
-    if (%plugins) {
-        $bar->Append( $plugin_menu,     "Pl&ugins" );
-    }
-    $bar->Append( $help,    "&Help" );
-
-    $self->SetMenuBar( $bar );
-
-    my $config = Padre->ide->get_config;
-    EVT_MENU(  $self, $file->Append( wxID_NEW,    ''  ), \&on_new     );
-    EVT_MENU(  $self, $file->Append( wxID_OPEN,   ''  ), \&on_open    );
-    my $recent = Wx::Menu->new;
-    foreach my $f (Padre->ide->get_recent('files')) {
-       EVT_MENU ($self, $recent->Append(-1, $f), sub { $_[0]->setup_editor($f) } );
-    }
-
-    #$file->AppendSubMenu( $recent, "Recent Files" );
-    # to support older version of wxWidgets as well
-    $file->Append( -1, "Recent Files", $recent );
-
-    EVT_MENU(  $self, $file->Append( wxID_SAVE,   ''  ), \&on_save    );
-    EVT_MENU(  $self, $file->Append( wxID_SAVEAS, ''  ), \&on_save_as );
-    EVT_MENU(  $self, $file->Append( -1, 'Save All'  ), \&on_save_all );
-    EVT_MENU(  $self, $file->Append( wxID_CLOSE,  ''  ), \&on_close   );
-    EVT_MENU(  $self, $file->Append( wxID_EXIT,   ''  ), \&on_exit    );
-
-    EVT_MENU(  $self, $project->Append( -1, "&New"), \&on_new_project );
-    EVT_MENU(  $self, $project->Append( -1, "&Select"    ), \&on_select_project );
-#    EVT_MENU(  $self, $project->Append( -1, "&Test"      ), \&on_test_project );
-
-    EVT_MENU( $self, $edit->Append( wxID_UNDO,    ''       ), \&on_undo    );
-    EVT_MENU( $self, $edit->Append( wxID_REDO,    ''       ), \&on_redo    );
-#    EVT_MENU( $self, $edit->Append( wxID_COPY,    ''       ), \&on_copy    );
-#    EVT_MENU( $self, $edit->Append( wxID_PASTE,   ''       ), \&on_paste   );
-    EVT_MENU( $self, $edit->Append( wxID_FIND,    ''       ), \&on_find    );
-    EVT_MENU( $self, $edit->Append( -1,           "&Find Again\tF3"  ), \&on_find_again    );
-    EVT_MENU( $self, $edit->Append( -1,           "&Goto\tCtrl-G"     ), \&on_goto    );
-    EVT_MENU( $self, $edit->Append( -1,           "Subs\tAlt-S"     ),   sub { $right_sidebar->SetFocus()} );
-    EVT_MENU( $self, $edit->Append( -1,           "&AutoComp\tCtrl-P"     ), \&on_autocompletition);
-    EVT_MENU( $self, $edit->Append( -1,           "&Setup"      ), \&on_setup   );
-
-    my $chk = $view->AppendCheckItem( -1 , "Line numbers" );
-    if ($config->{show_line_numbers}) {
-       $chk->Check(1);
-    }
-    EVT_MENU( $self, $chk, \&on_toggle_line_numbers);
-    EVT_MENU( $self, $view->AppendCheckItem( -1 , "Show Output" ), \&on_toggle_show_output);
-    EVT_MENU( $self, $view->AppendCheckItem( -1 , "Hide StatusBar" ), \&on_toggle_status_bar);
-
-    ## Help
-    $run_this_menu  = $run->Append( -1 , "Run &This\tF5" );
-    #$debug_this_menu  = $run->Append( -1 , "Debug This\tF6" );
-    $run_menu  = $run->Append( -1 , "&Run Any\tCtrl-F5" );
-    $stop_menu = $run->Append( -1 , "&Stop" );
-    EVT_MENU( $self, $run_this_menu,  \&on_run_this);
-    #EVT_MENU( $self, $debug_this_menu,  \&on_debug_this);
-    EVT_MENU( $self, $run_menu,  \&on_run);
-    EVT_MENU( $self, $stop_menu,  \&on_stop);
-    $stop_menu->Enable(0);
-
-    EVT_MENU( $self, $run->Append( -1,           "&Setup"      ), \&on_setup_run   );
-
-    ## Plugins
-    foreach my $name (sort keys %plugins) {
-        next if not $plugins{$name};
-        my $submenu = Wx::Menu->new;
-        my @menu = eval {$plugins{$name}->menu;};
-        warn "Error when calling menu for plugin '$name' $@" if $@;
-        foreach my $m (@menu) {
-           EVT_MENU ($self, $submenu->Append(-1, $m->[0]), $m->[1] );
-        }
-        #$plugin_menu->AppendSubMenu( $submenu, $name );
-        $plugin_menu->Append(-1,$name, $submenu);
-    }
 
 
-    ## Help
-    EVT_MENU( $self, $help->Append( wxID_ABOUT,   '' ), \&on_about   );
-    EVT_MENU( $self, $help->Append( wxID_HELP,    '' ), \&on_help    );
-    EVT_MENU( $self, $help->Append( -1,    'Context-help  Ctrl-Shift-H' ), \&on_context_help    );
 
-    EVT_CLOSE( $self,              \&on_close_window);
 
-    EVT_KEY_UP( $self, \&on_key );
+#####################################################################
+# Event Handlers
 
+sub method_selected_dclick {
+    my ($self, $event) = @_;
+    $self->method_selected($event);
+    $self->get_current_editor->SetFocus;
     return;
+}
+
+sub method_selected {
+    my ($self, $event) = @_;
+    my $sub = $event->GetItem->GetText;
+    return if not defined $sub;
+    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
+    return;
+}
+
+sub get_current_editor {
+    my $nb = $_[0]->{notebook};
+    return $nb->GetPage( $nb->GetSelection );
+}
+
+sub get_current_content {
+    $_[0]->get_current_editor->GetText;
+}
+
+sub _bitmap {
+    my $file = shift;
+    my $dir  = $ENV{PADRE_DEV}
+        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
+        : File::ShareDir::dist_dir('Padre');
+    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
+    return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
 }
 
 sub on_key {
@@ -366,8 +421,8 @@ sub on_key {
     } elsif ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             my $id = $code - 49;
-            my $pageid = Padre->ide->wx_notebook->GetSelection();
-            my $page = Padre->ide->wx_notebook->GetPage($pageid);
+            my $pageid = $self->{notebook}->GetSelection();
+            my $page = $self->{notebook}->GetPage($pageid);
             my $line = $page->GetCurrentLine;
             $marker{$id} = $line;
 #print "set marker $id to line $line\n";
@@ -378,8 +433,8 @@ sub on_key {
             $self->on_autocompletition();
             return;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
-            my $id   = Padre->ide->wx_notebook->GetSelection;
-            my $page = Padre->ide->wx_notebook->GetPage($id);
+            my $id   = $self->{notebook}->GetSelection;
+            my $page = $self->{notebook}->GetPage($id);
             my $pos1  = $page->GetCurrentPos;
             my $pos2  = $page->BraceMatch($pos1);
             if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION
@@ -391,8 +446,8 @@ sub on_key {
             # we might want to check it at the previous position
             # TODO: or any nearby position.
         } elsif ($code == ord 'M') {              # Ctrl-M    comment out block of code
-            my $pageid = Padre->ide->wx_notebook->GetSelection();
-            my $page = Padre->ide->wx_notebook->GetPage($pageid);
+            my $pageid = $self->{notebook}->GetSelection();
+            my $page = $self->{notebook}->GetPage($pageid);
             my $start = $page->LineFromPosition($page->GetSelectionStart);
             my $end = $page->LineFromPosition($page->GetSelectionEnd);
             for my $line ($start .. $end) {
@@ -411,14 +466,14 @@ sub on_key {
             $self->on_redo;
         } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
             my $id = $code - 49;
-            my $pageid = Padre->ide->wx_notebook->GetSelection();
-            my $page = Padre->ide->wx_notebook->GetPage($pageid);
+            my $pageid = $self->{notebook}->GetSelection();
+            my $page = $self->{notebook}->GetPage($pageid);
             if (defined $marker{$id}) {
                 $page->GotoLine($marker{$id});
             }
         } elsif ($code == ord 'M') {             # Ctrl-Shift-M    uncomment block of code
-            my $pageid = Padre->ide->wx_notebook->GetSelection();
-            my $page = Padre->ide->wx_notebook->GetPage($pageid);
+            my $pageid = $self->{notebook}->GetSelection();
+            my $page = $self->{notebook}->GetPage($pageid);
             my $start = $page->LineFromPosition($page->GetSelectionStart);
             my $end = $page->LineFromPosition($page->GetSelectionEnd);
             for my $line ($start .. $end) {
@@ -438,23 +493,21 @@ sub on_key {
 }
 
 sub on_autocompletition {
-   my ($self) = @_;
-   my $id   = Padre->ide->wx_notebook->GetSelection;
-   my $page = Padre->ide->wx_notebook->GetPage($id);
-   my $pos  = $page->GetCurrentPos;
-   my $line = $page->LineFromPosition($pos);
-   my $first = $page->PositionFromLine($line);
+   my $self   = shift;
+   my $id     = $self->{notebook}->GetSelection;
+   my $page   = $self->{notebook}->GetPage($id);
+   my $pos    = $page->GetCurrentPos;
+   my $line   = $page->LineFromPosition($pos);
+   my $first  = $page->PositionFromLine($line);
    my $prefix = $page->GetTextRange($first, $pos); # line from beginning to current position
-   $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-   #print "prefix: '$prefix'\n";
-   my $last = $page->GetLength();
-   my $text = $page->GetTextRange(0, $last);
+      $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+   my $last   = $page->GetLength();
+   my $text   = $page->GetTextRange(0, $last);
    my %seen;
-   my @words = grep { !$seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
+   my @words = grep { ! $seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
    if (@words > 20) {
       @words = @words[0..19];
    }
-   #print Data::Dumper::Dumper \@words;
    $page->AutoCompShow(length($prefix), join " ", @words);
    return;
 }
@@ -497,7 +550,6 @@ sub on_exit {
     $self->Close
 }
 
-	
 sub on_close_window {
     my ( $self, $event ) = @_;
 
@@ -505,9 +557,9 @@ sub on_close_window {
 
     if ($event->CanVeto) {
         my @unsaved;
-        foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
-            if (_buffer_changed($id)) {
-                push @unsaved, Padre->ide->wx_notebook->GetPageText($id);
+        foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+            if ( $self->_buffer_changed($id) ) {
+                push @unsaved, $self->{notebook}->GetPageText($id);
             }
         }
         if (@unsaved) {
@@ -517,7 +569,7 @@ sub on_close_window {
             return;
         }
 
-        my @files = map { scalar $self->_get_filename($_) } (0 .. Padre->ide->wx_notebook->GetPageCount -1);
+        my @files = map { scalar $self->_get_filename($_) } (0 .. $self->{notebook}->GetPageCount -1);
         $config->{main}{files} = \@files;
     }
 
@@ -559,7 +611,7 @@ sub setup_editor {
     delete $self->{project};
 
     my $config    = Padre->ide->get_config;
-    my $editor    = Padre::Wx::Text->new( Padre->ide->wx_notebook, _lexer($file) );
+    my $editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer($file) );
     my $file_type = _get_filetype($file);
 
     #$editor->SetEOLMode( Wx::wxSTC_EOL_CRLF );
@@ -588,12 +640,12 @@ sub setup_editor {
     }
     _toggle_numbers($editor, $config->{show_line_numbers});
 
-    Padre->ide->wx_notebook->AddPage($editor, $title, 1); # TODO add closing x
+    $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
     $editor->SetFocus;
     my $pack = __PACKAGE__;
-    #my $page = Padre->ide->wx_notebook->GetCurrentPage;
-    my $id  = Padre->ide->wx_notebook->GetSelection;
-    _set_filename($id, $file, $file_type);
+    #my $page = $self->{notebook}->GetCurrentPage;
+    my $id  = $self->{notebook}->GetSelection;
+    $self->_set_filename($id, $file, $file_type);
     #print "x" . $editor->AutoCompActive .  "x\n";
 
     #$editor->UsePopUp(0);
@@ -614,9 +666,9 @@ sub on_toggle_line_numbers {
     my $config = Padre->ide->get_config;
     $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
 
-    foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
-        my $editor = Padre->ide->wx_notebook->GetPage($id);
-        #my $editor = Padre->ide->wx_notebook->GetPage($id);
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        my $editor = $self->{notebook}->GetPage($id);
+        #my $editor = $self->{notebook}->GetPage($id);
 
         #$editor->SetMarginLeft(200); # this is not the area of the number but on its right
         #$editor->SetMarginMask(0, wxSTC_STYLE_LINENUMBER);
@@ -678,10 +730,10 @@ sub on_new {
 }
 
 sub _set_filename {
-    my ($id, $data, $type) = @_;
+    my ($self, $id, $data, $type) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     $page->{$pack}{filename} = $data;
     $page->{$pack}{type}     = $type;
 
@@ -697,7 +749,7 @@ sub _get_filename {
     my ($self, $id) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
 
     
     if (wantarray) {
@@ -711,7 +763,7 @@ sub _set_page_text {
     my ($self, $id, $text) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     return $page->SetText($text);
 }
 
@@ -719,7 +771,7 @@ sub _get_page_text {
     my ($self, $id) = @_;
 
     my $pack = __PACKAGE__;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     return $page->GetText;
 }
 
@@ -732,26 +784,26 @@ Returns the name filename of the current buffer.
 
 sub get_current_filename {
     my ($self) = @_;
-    my $id = Padre->ide->wx_notebook->GetSelection;
+    my $id = $self->{notebook}->GetSelection;
     return $self->_get_filename($id);
 }
 
 sub set_page_text {
     my ($self, $text) = @_;
-    my $id = Padre->ide->wx_notebook->GetSelection;
+    my $id = $self->{notebook}->GetSelection;
     return $self->_set_page_text($id, $text);
 }
 
 sub get_page_text {
     my ($self) = @_;
-    my $id = Padre->ide->wx_notebook->GetSelection;
+    my $id = $self->{notebook}->GetSelection;
     return $self->_get_page_text($id);
 }
 
 sub on_save_as {
     my ($self) = @_;
 
-    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $id   = $self->{notebook}->GetSelection;
     return if $id == -1;
 
     while (1) {
@@ -768,11 +820,11 @@ sub on_save_as {
         if (-e $path) {
             my $res = Wx::MessageBox("File already exists. Overwrite it?", "Exist", wxYES_NO, $self);
             if ($res == wxYES) {
-                _set_filename($id, $path, _get_local_filetype());
+                $self->_set_filename($id, $path, _get_local_filetype());
                 last;
             }
         } else {
-            _set_filename($id, $path, _get_local_filetype());
+            $self->_set_filename($id, $path, _get_local_filetype());
             last;
         }
     }
@@ -782,12 +834,13 @@ sub on_save_as {
 
 sub on_save {
     my ($self) = @_;
-
-    my $id   = Padre->ide->wx_notebook->GetSelection;
-    return if $id == -1;
-
-    return if not _buffer_changed($id) and $self->_get_filename($id);
-
+    my $id = $self->{notebook}->GetSelection;
+    if ( $id == -1 ) {
+        return;
+    }
+    if ( not $self->_buffer_changed($id) and $self->_get_filename($id) ) {
+        return;
+    }
     if ($self->_get_filename($id)) {
         $self->_save_buffer($id);
     } else {
@@ -798,8 +851,8 @@ sub on_save {
 
 sub on_save_all {
     my ($self) = @_;
-    foreach my $id (0 .. Padre->ide->wx_notebook->GetPageCount -1) {
-        if (_buffer_changed($id)) {
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        if ( $self->_buffer_changed($id) ) {
             $self->_save_buffer($id);
         }
     }
@@ -809,14 +862,14 @@ sub on_save_all {
 sub _save_buffer {
     my ($self, $id) = @_;
 
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     my $content = $page->GetText;
     my ($filename, $file_type) = $self->_get_filename($id);
     eval {
         File::Slurp::write_file($filename, $content);
     };
     Padre->ide->add_to_recent('files', $filename);
-    Padre->ide->wx_notebook->SetPageText($id, File::Basename::basename($filename));
+    $self->{notebook}->SetPageText($id, File::Basename::basename($filename));
     $page->SetSavePoint;
     $self->update_status;
     $self->update_methods;
@@ -827,9 +880,9 @@ sub _save_buffer {
 sub on_close {
     my ($self) = @_;
     
-    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $id   = $self->{notebook}->GetSelection;
     #print "Closing $id\n";
-    if (_buffer_changed($id)) {
+    if ( $self->_buffer_changed($id) ) {
         my $ret = Wx::MessageBox( "Buffer changed. Do yo want to save it?", "Unsaved buffer", wxYES_NO|wxCANCEL|wxCENTRE, $self );
         if ($ret == wxYES) {
             $self->on_save();
@@ -840,19 +893,18 @@ sub on_close {
             return;
         }
     }
-    Padre->ide->wx_notebook->DeletePage($id); 
+    $self->{notebook}->DeletePage($id); 
     return;
 }
-sub _buffer_changed {
-    my ($id) = @_;
 
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+sub _buffer_changed {
+    my ($self, $id) = @_;
+    my $page = $self->{notebook}->GetPage($id);
     return $page->GetModify;
 }
 
 sub on_setup {
     my ($self) = @_;
-
     my $config = Padre->ide->get_config;
 
     my $dialog = Wx::Dialog->new( $self, -1, "Configuration", [-1, -1], [550, 200]);
@@ -897,8 +949,8 @@ sub on_goto {
     return if not defined $line_number or $line_number !~ /^\d+$/;
     #what if it is bigger than buffer?
 
-    my $id   = Padre->ide->wx_notebook->GetSelection;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $id   = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
 
     $line_number--;
     $page->GotoLine($line_number);
@@ -943,9 +995,9 @@ sub update_methods {
 
     my $text = $self->get_current_content;
     my @methods = reverse sort $text =~ m{sub\s+(\w+)}g;
-    $right_sidebar->DeleteAllItems;
-    $right_sidebar->InsertStringItem(0, $_) for @methods;
-    $right_sidebar->SetColumnWidth(0, wxLIST_AUTOSIZE);
+    $self->{rightbar}->DeleteAllItems;
+    $self->{rightbar}->InsertStringItem(0, $_) for @methods;
+    $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
 
     return;
 }
@@ -953,10 +1005,12 @@ sub update_methods {
 sub xupdate_methods {
     my ($self) = @_;
 
-    $right_sidebar->Delete(0) for 1..$right_sidebar->GetCount;
+    foreach ( 1 .. $self->{rightbar}->GetCount ) {
+        $self->{rightbar}->Delete(0);
+    }
     my $text = $self->get_current_content;
     my @methods = sort $text =~ m{sub\s+(\w+)}g;
-    $right_sidebar->InsertItems(\@methods, 0);
+    $self->{rightbar}->InsertItems(\@methods, 0);
 
     return;
 }
@@ -968,8 +1022,8 @@ sub _search {
     my $config = Padre->ide->get_config;
     $search_term ||= $config->{search_terms}[0];
 
-    my $id   = Padre->ide->wx_notebook->GetSelection;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $id   = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
     my $content = $page->GetText;
     my ($from, $to) = $page->GetSelection;
     my $last = $page->GetLength();
@@ -1046,10 +1100,10 @@ sub _get_selection {
     my ($self, $id) = @_;
 
     if (not defined $id) {
-        $id  = Padre->ide->wx_notebook->GetSelection;
+        $id  = $self->{notebook}->GetSelection;
     }
     return if $id == -1;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     return $page->GetSelectedText;
 }
 
@@ -1063,7 +1117,7 @@ sub on_run_this {
     } elsif ($config->{save_on_run} eq 'all_buffer') {
     }
 
-    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $id   = $self->{notebook}->GetSelection;
     my $filename = $self->_get_filename($id);
     if (not $filename) {
         Wx::MessageBox( "No filename, cannot run", "Cannot run", wxOK|wxCENTRE, $self );
@@ -1085,7 +1139,7 @@ sub on_debug_this {
     my ($self) = @_;
     $self->on_save;
 
-    my $id   = Padre->ide->wx_notebook->GetSelection;
+    my $id   = $self->{notebook}->GetSelection;
     my $filename = $self->_get_filename($id);
 
 
@@ -1134,7 +1188,7 @@ sub _run {
     my $config = Padre->ide->get_config;
     Padre->ide->get_widget('main_panel')
         ->SetSashPosition($config->{main}{height} - 300);
-    $output->Remove(0, $output->GetLastPosition);
+    $self->{output}->Remove( 0, $self->{output}->GetLastPosition );
 
     $proc = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
     if (not $proc) {
@@ -1179,14 +1233,12 @@ sub on_setup_run {
 
 sub on_toggle_show_output {
     my ($self, $event) = @_;
-
     my $config = Padre->ide->get_config;
-    my $main_panel = Padre->ide->get_widget('main_panel');
     if ($event->IsChecked) {
-        $main_panel->SetSashPosition($config->{main}{height} -100);
+        $self->{main_panel}->SetSashPosition($config->{main}{height} -100);
     } else {
         # TODO save the value and keep it for next use
-        $main_panel->SetSashPosition($config->{main}{height});
+        $self->{main_panel}->SetSashPosition($config->{main}{height});
     }
 }
 
@@ -1203,23 +1255,15 @@ sub on_toggle_status_bar {
 
 sub evt_process_stdout {
     my ($self, $event) = @_;
-
     $event->Skip(1);
-    my $process = $event->GetProcess;
-    my $line = $event->GetLine;
-    $output->AppendText($line . "\n");
-
+    $self->{output}->AppendText( $event->GetLine . "\n");
     return;
 }
 
 sub evt_process_stderr {
     my ($self, $event) = @_;
-
     $event->Skip(1);
-    my $process = $event->GetProcess;
-    my $line = $event->GetLine;
-    $output->AppendText($line . "\n");
-
+    $self->{output}->AppendText( $event->GetLine . "\n");
     return;
 }
 
@@ -1250,8 +1294,8 @@ sub on_stop {
 sub on_undo { # Ctrl-Z
     my ($self) = @_;
 
-    my $id = Padre->ide->wx_notebook->GetSelection;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $id = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
     if ($page->CanUndo) {
        $page->Undo;
     }
@@ -1262,8 +1306,8 @@ sub on_undo { # Ctrl-Z
 sub on_redo { # Shift-Ctr-Z
     my ($self) = @_;
 
-    my $id = Padre->ide->wx_notebook->GetSelection;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $id = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
     if ($page->CanRedo) {
        $page->Redo;
     }
@@ -1402,9 +1446,9 @@ sub on_test_project {
 
 sub on_nth_pane {
     my ($self, $id) = @_;
-    my $page = Padre->ide->wx_notebook->GetPage($id);
+    my $page = $self->{notebook}->GetPage($id);
     if ($page) {
-       Padre->ide->wx_notebook->ChangeSelection($id);
+       $self->{notebook}->ChangeSelection($id);
        return 1;
     }
     return;
@@ -1412,10 +1456,10 @@ sub on_nth_pane {
 sub on_next_pane {
     my ($self) = @_;
 
-    my $count = Padre->ide->wx_notebook->GetPageCount;
+    my $count = $self->{notebook}->GetPageCount;
     return if not $count;
 
-    my $id    = Padre->ide->wx_notebook->GetSelection;
+    my $id    = $self->{notebook}->GetSelection;
     if ($id + 1 < $count) {
         $self->on_nth_pane($id + 1);
     } else {
@@ -1426,10 +1470,10 @@ sub on_next_pane {
 sub on_prev_pane {
     my ($self) = @_;
 
-    my $count = Padre->ide->wx_notebook->GetPageCount;
+    my $count = $self->{notebook}->GetPageCount;
     return if not $count;
 
-    my $id    = Padre->ide->wx_notebook->GetSelection;
+    my $id    = $self->{notebook}->GetSelection;
     if ($id) {
         $self->on_nth_pane($id - 1);
     } else {
@@ -1443,12 +1487,12 @@ sub update_status {
 
     return if $self->{_in_setup_editor};
 
-    my $pageid = Padre->ide->wx_notebook->GetSelection();
+    my $pageid = $self->{notebook}->GetSelection();
     if (not defined $pageid) {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
-    my $page = Padre->ide->wx_notebook->GetPage($pageid);
+    my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
     my ($filename, $file_type) = $self->_get_filename($pageid);
     $filename  ||= '';
@@ -1456,10 +1500,10 @@ sub update_status {
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
-        Padre->ide->wx_notebook->SetPageText($pageid, $modified . File::Basename::basename $filename);
+        $self->{notebook}->SetPageText($pageid, $modified . File::Basename::basename $filename);
     } else {
-        my $text = substr(Padre->ide->wx_notebook->GetPageText($pageid), 1);
-        Padre->ide->wx_notebook->SetPageText($pageid, $modified . $text);
+        my $text = substr($self->{notebook}->GetPageText($pageid), 1);
+        $self->{notebook}->SetPageText($pageid, $modified . $text);
     }
     my $pos = $page->GetCurrentPos;
 
@@ -1481,11 +1525,6 @@ sub on_panel_changed {
     $self->update_methods;
 
     return;
-}
-
-sub get_nb {
-    my ($self) = @_;
-    return Padre->ide->wx_notebook;
 }
 
 1;

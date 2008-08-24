@@ -11,16 +11,16 @@ my $dir = tempdir( CLEANUP => 1 );
 $ENV{PADRE_HOME} = $dir;
 
 my $ide   = Padre->new;
-my $frame = $ide->wx_app->main_window;
+my $frame = $ide->wx->main_window;
 my $timer = Wx::Timer->new( $frame );
 Wx::Event::EVT_TIMER(
 	$frame,
 	-1,
 	sub {
-        	$ide->wx_app->ExitMainLoop;
-		$ide->wx_app->main_window->Destroy;
+        	$ide->wx->ExitMainLoop;
+		$ide->wx->main_window->Destroy;
 	}
 );
 $timer->Start( 500, 1 );
-$ide->wx_app->MainLoop;
+$ide->wx->MainLoop;
 ok(1);

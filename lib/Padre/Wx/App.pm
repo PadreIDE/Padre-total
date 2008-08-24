@@ -17,7 +17,7 @@ B<Padre::Wx::App> is a L<Wx::App> subclass that represents the Wx
 application as a whole, and acts as the root of the object tree for
 the GUI elements.
 
-From the main L<Padre> object, it can be accessed via the C<wx_app> method.
+From the main L<Padre> object, it can be accessed via the C<wx> method.
 
 =head1 METHODS
 

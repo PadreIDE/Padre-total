@@ -194,8 +194,7 @@ sub new {
     # Create the empty object
     my $self  = bless {
         # Wx-related Attributes
-        wx_app      => undef,
-        wx_notebook => undef,
+        wx      => undef,
 
         # Internal Attributes
         config_dir  => undef,
@@ -237,13 +236,9 @@ sub ide {
     $SINGLETON = Padre->new;
 }
 
-sub wx_app {
-    $_[0]->{wx_app} or
-    $_[0]->{wx_app} = Padre::Wx::App->new;
-}
-
-sub wx_notebook {
-    $_[0]->{wx_notebook};
+sub wx {
+    $_[0]->{wx} or
+    $_[0]->{wx} = Padre::Wx::App->new;
 }
 
 sub config_dir {
@@ -329,8 +324,8 @@ END_USAGE
 
 sub run_editor {
     my $self = shift;
-    $self->wx_app->MainLoop;
-    $self->{wx_app} = undef;
+    $self->wx->MainLoop;
+    $self->{wx} = undef;
     return;
 }
 
