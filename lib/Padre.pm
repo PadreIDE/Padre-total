@@ -551,17 +551,6 @@ sub get_files {
     return ($self->{_files} and ref ($self->{_files}) eq 'ARRAY' ? @{ $self->{_files} } : ());
 }
 
-sub set_widget {
-    my ($self, $name, $value) = @_;
-    $self->{widget}{$name} = $value;
-    return;
-}
-sub get_widget {
-    my ($self, $name) = @_;
-    return $self->{widget}{$name};
-}
-
-
 sub get_newline_type {
     my ($text) = @_;
 
