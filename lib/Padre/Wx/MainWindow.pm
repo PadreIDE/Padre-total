@@ -12,9 +12,7 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $debug_this_menu;
 my $run_menu;
-my $stop_menu;
 my $proc;
 my $help;
 
@@ -1202,7 +1200,7 @@ sub _run {
 
     $self->{menu}->{run_this}->Enable(0);
     $run_menu->Enable(0);
-    $stop_menu->Enable(1);
+    $self->{menu}->{run_stop}->Enable(1);
 
     my $config = Padre->ide->get_config;
     Padre->ide->get_widget('main_panel')
@@ -1213,7 +1211,7 @@ sub _run {
     if (not $proc) {
        $self->{menu}->{run_this}->Enable(1);
        $run_menu->Enable(1);
-       $stop_menu->Enable(0);
+       $self->{menu}->{run_stop}->Enable(0);
     }
     return;
 }
@@ -1299,7 +1297,7 @@ sub evt_process_exit {
 
     $self->{menu}->{run_this}->Enable(1);
     $run_menu->Enable(1);
-    $stop_menu->Enable(0);
+    $self->{menu}->{run_stop}->Enable(0);
 
     return;
 }
