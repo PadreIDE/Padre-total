@@ -12,8 +12,6 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $help;
-
 my %marker;
 
 use Wx                      qw(:everything);
@@ -593,7 +591,7 @@ sub on_close_window {
     #Padre->ide->set_config($config);
     Padre->ide->save_config();
 
-    $help->Destroy if $help;
+    $self->{help}->Destroy if $self->{help};
 
     $event->Skip;
 }
@@ -1086,15 +1084,15 @@ sub on_about {
 sub on_help {
     my ( $self ) = @_;
 
-    if (not $help) {
-        $help = Padre::Pod::Frame->new;
+    if ( not $self->{help} ) {
+        $self->{help} = Padre::Pod::Frame->new;
         my $module = Padre->ide->get_current('pod') || 'Padre';
         if ($module) {
-            $help->{html}->display($module);
+            $self->{help}->{html}->display($module);
         }
     }
-    $help->SetFocus;
-    $help->Show (1);
+    $self->{help}->SetFocus;
+    $self->{help}->Show (1);
 
     return;
 }
@@ -1106,7 +1104,7 @@ sub on_context_help {
     $self->on_help;
 
     if ($selection) {
-        $help->show($selection);
+        $self->{help}->show($selection);
     }
 
     return;
