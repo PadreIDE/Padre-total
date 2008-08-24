@@ -1200,8 +1200,7 @@ sub _run {
     $self->{menu}->{run_stop}->Enable(1);
 
     my $config = Padre->ide->get_config;
-    Padre->ide->get_widget('main_panel')
-        ->SetSashPosition($config->{main}{height} - 300);
+    $self->{main_panel}->SetSashPosition($config->{main}{height} - 300);
     $self->{output}->Remove( 0, $self->{output}->GetLastPosition );
 
     $self->{proc} = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
