@@ -551,6 +551,14 @@ sub get_files {
     return ($self->{_files} and ref ($self->{_files}) eq 'ARRAY' ? @{ $self->{_files} } : ());
 }
 
+=head2 get_newline_type
+
+Returns None if there was not CR or LF in the file.
+Returns UNIX, Mac or Windows if only the appropriate newlines were found.
+
+Returns Mixed if line endings are mixed.
+
+=cut
 sub get_newline_type {
     my ($text) = @_;
 
@@ -560,10 +568,10 @@ sub get_newline_type {
 
     return "None" if $text !~ /$LF/ and $text !~ /$CR/;
     return "UNIX"    if $text !~ /$CR/;
-    return "Mac"     if $text !~ /$LF/;
+    return "MAC"     if $text !~ /$LF/;
 
     $text =~ s/$CRLF//g;
-    return "Windows" if $text !~ /$LF/ and $text !~ /$CR/;
+    return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
 
     return "Mixed"
     # return "Unknown";
