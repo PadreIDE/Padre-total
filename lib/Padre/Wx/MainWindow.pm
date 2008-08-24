@@ -11,9 +11,6 @@ use Data::Dumper   ();
 use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
-
-my %marker;
-
 use Wx                      qw(:everything);
 use Wx::Event               qw(:everything);
 use Wx::Perl::ProcessStream qw(:everything);
@@ -99,6 +96,9 @@ sub new {
             $config->{main}{height},
         ],
     );
+
+    # Add some additional attribute slots
+    $self->{marker} = {};
 
     # Create the menu bar
     $self->{menu} = $self->_create_menu_bar;
@@ -438,7 +438,7 @@ sub on_key {
             my $pageid = $self->{notebook}->GetSelection();
             my $page = $self->{notebook}->GetPage($pageid);
             my $line = $page->GetCurrentLine;
-            $marker{$id} = $line;
+            $self->{marker}->{$id} = $line;
 #print "set marker $id to line $line\n";
             #$page->MarkerAdd($line, $id);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB
@@ -482,8 +482,8 @@ sub on_key {
             my $id = $code - 49;
             my $pageid = $self->{notebook}->GetSelection();
             my $page = $self->{notebook}->GetPage($pageid);
-            if (defined $marker{$id}) {
-                $page->GotoLine($marker{$id});
+            if (defined $self->{marker}->{$id}) {
+                $page->GotoLine($self->{marker}->{$id});
             }
         } elsif ($code == ord 'M') {             # Ctrl-Shift-M    uncomment block of code
             my $pageid = $self->{notebook}->GetSelection();
