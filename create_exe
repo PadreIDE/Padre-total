@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# temporary tool to create executable using PAR
+
+my @modules = qw(
+                libwx_gtk2_adv-2.8.so.0
+                libwx_gtk2_core-2.8.so.0
+                libwx_base-2.8.so.0
+                libwx_gtk2_stc-2.8.so.0
+                libwx_gtk2_html-2.8.so.0
+);
+
+my $c = '';
+$c .= "-l /home/gabor/perl5lib/lib/perl/5.8.8/Alien/wxWidgets/gtk_2_8_7/lib/$_ " for @modules;
+
+system "pp -o padre.exe -I lib  script/padre $c";
