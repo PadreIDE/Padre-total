@@ -638,25 +638,6 @@ sub _get_local_filetype {
            $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
 }
 
-# type can be WIN, MAC, UNIX
-# returns the converted text
-sub convert_to {
-    my ($type, $text) = @_;
-    my %map = (
-       WIN   => "\015\012",  # CRLF
-       MAC   => "\015",      # CR
-       UNIX  => "\012",      # LF
-    );
-
-    require Encode;
-    require Encode::Newlines;
-    import Encode::Newlines qw(decode);
-    local $Encode::Newlines::AllowMixed = 1;
-    decode( $map{$type} => $text );
-
-    return $text;
-}
-
 sub setup_editor {
     my ($self, $file) = @_;
 #Carp::cluck( $file);
@@ -679,6 +660,7 @@ sub setup_editor {
     my $title   = " Unsaved Document $cnt";
     my $content = '';
     if ($file) {
+        my $convert_to;
         $content = eval { File::Slurp::read_file($file) };
         if ($@) {
             warn $@;
@@ -692,17 +674,17 @@ sub setup_editor {
             my $mixed = _mixed_newlines();
             if ( $mixed eq 'Ask') {
                 warn "TODO ask the user what to do with $file";
-                # $file_type = ;
+                # $convert_to = $file_type = ;
             } elsif ( $mixed eq 'Keep' ) {
                 warn "TODO probably we should not allow keeping garbage ($file) \n";
             } else {
-                warn "TODO converting $file";
-                $file_type = $mixed;
+                #warn "TODO converting $file";
+                $convert_to = $file_type = $mixed;
             }
         } else {
-            my $convert_to = _auto_convert();
+            $convert_to = _auto_convert();
             if ($convert_to) {
-                warn "TODO call converting on $file";
+                #warn "TODO call converting on $file";
                 $file_type = $convert_to;
             } else {
                 $file_type = $current_type;
@@ -715,6 +697,10 @@ sub setup_editor {
 	# $self->{project} = Padre::Project->from_file($file);
         $editor->SetText( $content );
         $editor->EmptyUndoBuffer;
+        if ($convert_to) {
+           warn "Converting to $convert_to";
+           $editor->ConvertEOLs( $mode{$file_type} );
+        }
     }
     _toggle_numbers($editor, $config->{show_line_numbers});
     _toggle_eol($editor, $config->{show_eol});

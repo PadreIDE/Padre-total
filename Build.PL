@@ -52,7 +52,6 @@ my $builder = $class->new(
         'Class::Autouse'          => '1.26',
         'DBD::SQLite'             => 0,
         'DBI'                     => 0,
-        'Encode::Newlines'        => '0.04',
         'File::Copy::Recursive'   => 0,
         'File::HomeDir'           => 0,
 #        'File::LocalizeNewlines'  => '1.10',
