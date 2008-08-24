@@ -12,7 +12,6 @@ use List::Util     ();
 use File::ShareDir ();
 use File::LocalizeNewlines;
 
-my $run_menu;
 my $proc;
 my $help;
 
@@ -278,9 +277,10 @@ sub _create_menu_bar {
         $menu->{run_this},
         \&on_run_this,
     );
+    $menu->{run_any} = $menu->{run}->Append( -1, "Run Any\tCtrl-F5" );
     EVT_MENU(
         $self,
-        $menu->{run}->Append( -1, "Run Any\tCtrl-F5" ),
+        $menu->{run_any},
         \&on_run,
     );
     $menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
@@ -1199,7 +1199,7 @@ sub _run {
     my ($self, $cmd) = @_;
 
     $self->{menu}->{run_this}->Enable(0);
-    $run_menu->Enable(0);
+    $self->{menu}->{run_any}->Enable(0);
     $self->{menu}->{run_stop}->Enable(1);
 
     my $config = Padre->ide->get_config;
@@ -1210,7 +1210,7 @@ sub _run {
     $proc = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
     if (not $proc) {
        $self->{menu}->{run_this}->Enable(1);
-       $run_menu->Enable(1);
+       $self->{menu}->{run_any}->Enable(1);
        $self->{menu}->{run_stop}->Enable(0);
     }
     return;
@@ -1296,7 +1296,7 @@ sub evt_process_exit {
     $process->Destroy;
 
     $self->{menu}->{run_this}->Enable(1);
-    $run_menu->Enable(1);
+    $self->{menu}->{run_any}->Enable(1);
     $self->{menu}->{run_stop}->Enable(0);
 
     return;
