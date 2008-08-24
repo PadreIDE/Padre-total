@@ -66,7 +66,8 @@ You can edit the command line using the Run/Setup menu item.
   Alt-N          Nth Pane
   Ctr-TAB        Next Pane
   Ctr-Shift-TAB  Previous Pane
-  
+  Alt-S          Jump to list of subs window
+
   Ctr-1 .. Ctrl-9 can set markers
   Ctr-Shift-1 .. Ctrl-Shift-9 jump to marker
   
