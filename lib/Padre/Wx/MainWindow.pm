@@ -460,18 +460,7 @@ sub on_key {
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
             $self->on_next_pane;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
-            my $id   = $self->{notebook}->GetSelection;
-            my $page = $self->{notebook}->GetPage($id);
-            my $pos1  = $page->GetCurrentPos;
-            my $pos2  = $page->BraceMatch($pos1);
-            if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION
-                #print "$pos1 $pos2\n";
-                #$page->BraceHighlight($pos1, $pos2);
-                $page->SetCurrentPos($pos2);
-            }
-            # TODO: if not found matching brace,
-            # we might want to check it at the previous position
-            # TODO: or any nearby position.
+            $self->on_brace_matching($event);
         } elsif ($code == ord 'M') {              # Ctrl-M    comment out block of code
             $self->on_comment_out_block($event);
         }
@@ -509,6 +498,22 @@ sub on_key {
 
 
     return;
+}
+
+sub on_brace_matching {
+    my ($self, $event) = @_;
+    my $id   = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
+    my $pos1  = $page->GetCurrentPos;
+    my $pos2  = $page->BraceMatch($pos1);
+    if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION
+        #print "$pos1 $pos2\n";
+        #$page->BraceHighlight($pos1, $pos2);
+        $page->SetCurrentPos($pos2);
+    }
+    # TODO: if not found matching brace,
+    # we might want to check it at the previous position
+            # TODO: or any nearby position.
 }
 
 
