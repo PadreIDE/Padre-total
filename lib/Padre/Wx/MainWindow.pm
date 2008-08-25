@@ -473,16 +473,7 @@ sub on_key {
             # we might want to check it at the previous position
             # TODO: or any nearby position.
         } elsif ($code == ord 'M') {              # Ctrl-M    comment out block of code
-            my $pageid = $self->{notebook}->GetSelection();
-            my $page = $self->{notebook}->GetPage($pageid);
-            my $start = $page->LineFromPosition($page->GetSelectionStart);
-            my $end = $page->LineFromPosition($page->GetSelectionEnd);
-            for my $line ($start .. $end) {
-                # TODO: this should actually depend on language
-                # insert #
-                my $pos = $page->PositionFromLine($line);
-                $page->InsertText($pos, '#');
-            }
+            $self->on_comment_out_block($event);
         }
     } elsif ($mod == 6) {                         # Ctrl-Shift
         if ($code == ord 'H') {                   # Ctrl-Shift-H
@@ -518,6 +509,21 @@ sub on_key {
 
 
     return;
+}
+
+
+sub on_comment_out_block {
+    my ($self, $event) = @_;
+    my $pageid = $self->{notebook}->GetSelection();
+    my $page = $self->{notebook}->GetPage($pageid);
+    my $start = $page->LineFromPosition($page->GetSelectionStart);
+    my $end = $page->LineFromPosition($page->GetSelectionEnd);
+    for my $line ($start .. $end) {
+        # TODO: this should actually depend on language
+        # insert #
+        my $pos = $page->PositionFromLine($line);
+        $page->InsertText($pos, '#');
+    }
 }
 
 sub on_autocompletition {
