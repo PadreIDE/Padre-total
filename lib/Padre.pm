@@ -577,25 +577,6 @@ sub get_newline_type {
     # return "Unknown";
 }
 
-
-sub get_newline_type {
-    my ($text) = @_;
-
-    my $CR   = "\015";
-    my $LF   = "\012";
-    my $CRLF = "\015\012";
-
-    return "None" if $text !~ /$LF/ and $text !~ /$CR/;
-    return "UNIX"    if $text !~ /$CR/;
-    return "Mac"     if $text !~ /$LF/;
-
-    $text =~ s/$CRLF//g;
-    return "Windows" if $text !~ /$LF/ and $text !~ /$CR/;
-
-    return "Mixed"
-    # return "Unknown";
-}
-
 1;
 
 =pod

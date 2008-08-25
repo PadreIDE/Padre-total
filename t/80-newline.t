@@ -16,9 +16,9 @@ plan tests => $tests;
 
 {
     is(Padre::get_newline_type("...") => "None", "None");
-    is(Padre::get_newline_type(".$CR.$CR.") => "Mac", "Mac");
+    is(Padre::get_newline_type(".$CR.$CR.") => "MAC", "Mac");
     is(Padre::get_newline_type(".$LF.$LF.") => "UNIX", "Unix");
-    is(Padre::get_newline_type(".$CRLF.$CRLF.") => "Windows", "Windows");
+    is(Padre::get_newline_type(".$CRLF.$CRLF.") => "WIN", "Windows");
     BEGIN { $tests += 4; }
 }
 
