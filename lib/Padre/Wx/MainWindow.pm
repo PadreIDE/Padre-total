@@ -459,10 +459,6 @@ sub on_key {
             #$page->MarkerAdd($line, $id);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
             $self->on_next_pane;
-
-        } elsif ($code == ord 'P') {              # Ctrl-P    Auto completition
-            $self->on_autocompletition();
-            return;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
             my $id   = $self->{notebook}->GetSelection;
             my $page = $self->{notebook}->GetPage($id);
