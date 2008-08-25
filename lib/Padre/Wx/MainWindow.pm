@@ -477,23 +477,9 @@ sub on_key {
                 $page->GotoLine($self->{marker}->{$id});
             }
         } elsif ($code == ord 'M') {             # Ctrl-Shift-M    uncomment block of code
-            my $pageid = $self->{notebook}->GetSelection();
-            my $page = $self->{notebook}->GetPage($pageid);
-            my $start = $page->LineFromPosition($page->GetSelectionStart);
-            my $end = $page->LineFromPosition($page->GetSelectionEnd);
-            for my $line ($start .. $end) {
-                # TODO: this should actually depend on language
-                my $first = $page->PositionFromLine($line);
-                my $last = $first+1;
-                my $text = $page->GetTextRange($first, $last);
-                if ($text eq '#') {
-                    $page->SetSelection($first, $last);
-                    $page->ReplaceSelection('');
-                }
-            }
+            $self->on_uncomment_block($event);
         }
     }
-
 
     return;
 }
@@ -528,6 +514,25 @@ sub on_comment_out_block {
         $page->InsertText($pos, '#');
     }
 }
+
+sub on_uncomment_block {
+    my ($self, $event) = @_;
+    my $pageid = $self->{notebook}->GetSelection();
+    my $page = $self->{notebook}->GetPage($pageid);
+    my $start = $page->LineFromPosition($page->GetSelectionStart);
+    my $end = $page->LineFromPosition($page->GetSelectionEnd);
+    for my $line ($start .. $end) {
+        # TODO: this should actually depend on language
+        my $first = $page->PositionFromLine($line);
+        my $last = $first+1;
+        my $text = $page->GetTextRange($first, $last);
+        if ($text eq '#') {
+            $page->SetSelection($first, $last);
+            $page->ReplaceSelection('');
+        }
+    }
+}
+
 
 sub on_autocompletition {
    my $self   = shift;
