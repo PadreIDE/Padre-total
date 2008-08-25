@@ -242,8 +242,8 @@ sub _create_menu_bar {
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&on_comment_out_block       );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Setup" ),            \&on_setup            );
-
 
 
     # Create the View menu
@@ -461,8 +461,6 @@ sub on_key {
             $self->on_next_pane;
         } elsif ($code == ord 'B') {              # Ctrl-B    Brace matching?
             $self->on_brace_matching($event);
-        } elsif ($code == ord 'M') {              # Ctrl-M    comment out block of code
-            $self->on_comment_out_block($event);
         }
     } elsif ($mod == 6) {                         # Ctrl-Shift
         if ($code == ord 'H') {                   # Ctrl-Shift-H
