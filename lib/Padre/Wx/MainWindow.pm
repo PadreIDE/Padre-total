@@ -272,7 +272,13 @@ sub _create_menu_bar {
     );
     $menu->{view_lines}->Check($config->{show_line_numbers} ? 1 : 0);
     $menu->{view_eol}->Check($config->{show_eol} ? 1 : 0);
-
+    $menu->{view_files} = Wx::Menu->new;
+    $menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
+    EVT_MENU(
+        $self,
+        $menu->{view_files}->Append(-1, "Next File\tCtrl-TAB"),
+        \&on_next_pane,
+    );
 
 
     # Creat the Run menu
@@ -451,7 +457,7 @@ sub on_key {
             $self->{marker}->{$id} = $line;
 #print "set marker $id to line $line\n";
             #$page->MarkerAdd($line, $id);
-        } elsif ($code == WXK_TAB) {              # Ctrl-TAB
+        } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
             $self->on_next_pane;
 
         } elsif ($code == ord 'P') {              # Ctrl-P    Auto completition
