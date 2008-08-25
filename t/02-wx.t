@@ -12,6 +12,7 @@ $ENV{PADRE_HOME} = $dir;
 
 my $ide   = Padre->ide;
 my $frame = $ide->wx->main_window;
+
 my $timer = Wx::Timer->new( $frame );
 Wx::Event::EVT_TIMER(
 	$frame,

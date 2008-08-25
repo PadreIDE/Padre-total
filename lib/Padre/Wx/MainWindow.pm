@@ -17,6 +17,7 @@ use Wx::Perl::ProcessStream qw(:everything);
 use base 'Wx::Frame';
 
 use Padre::Wx::Text;
+
 use Padre::Wx::FindDialog;
 use Padre::Pod::Frame;
 
@@ -108,6 +109,7 @@ sub new {
         $self,
         -1,
         wxDefaultPosition,
+
         wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
     );
@@ -139,6 +141,7 @@ sub new {
         $self->{rightbar},
         \&method_selected_dclick,
     );
+
 
     # Create the main notebook for the documents
     $self->{notebook} = Wx::Notebook->new(
@@ -412,6 +415,7 @@ sub get_current_content {
     $_[0]->get_current_editor->GetText;
 }
 
+
 sub _bitmap {
     my $file = shift;
     my $dir  = $ENV{PADRE_DEV}
@@ -449,6 +453,7 @@ sub on_key {
             #$page->MarkerAdd($line, $id);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB
             $self->on_next_pane;
+
         } elsif ($code == ord 'P') {              # Ctrl-P    Auto completition
             $self->on_autocompletition();
             return;
@@ -509,6 +514,7 @@ sub on_key {
         }
     }
 
+
     return;
 }
 
@@ -531,6 +537,7 @@ sub on_autocompletition {
    $page->AutoCompShow(length($prefix), join " ", @words);
    return;
 }
+
 
 sub on_right_click {
     my ($self, $event) = @_;
@@ -659,6 +666,7 @@ sub setup_editor {
     $cnt++;
     my $title   = " Unsaved Document $cnt";
     my $content = '';
+
     if ($file) {
         my $convert_to;
         $content = eval { File::Slurp::read_file($file) };
@@ -691,6 +699,7 @@ sub setup_editor {
             }
         }
         $editor->SetEOLMode( $mode{$file_type} );
+
 
         $title   = File::Basename::basename($file);
         # require Padre::Project;
@@ -839,6 +848,7 @@ sub _get_filename {
 	return $page->{$pack}->{filename};
     }
 }
+
 
 sub _set_page_text {
     my ($self, $id, $text) = @_;
@@ -1072,13 +1082,16 @@ sub on_find {
 }
 
 sub update_methods {
+
     my ($self) = @_;
+
 
     my $text = $self->get_current_content;
     my @methods = reverse sort $text =~ m{sub\s+(\w+)}g;
     $self->{rightbar}->DeleteAllItems;
     $self->{rightbar}->InsertStringItem(0, $_) for @methods;
     $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
+
 
     return;
 }
@@ -1145,6 +1158,7 @@ sub on_help {
     return;
 }
 sub on_context_help {
+
     my ($self) = @_;
 
     my $selection = $self->_get_selection();
@@ -1549,12 +1563,14 @@ sub update_status {
     return if $self->{_in_setup_editor};
 
     my $pageid = $self->{notebook}->GetSelection();
+
     if (not defined $pageid) {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
     my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
+
     my ($filename, $file_type) = $self->_get_filename($pageid);
     $filename  ||= '';
     $file_type ||= _get_local_filetype();
@@ -1570,6 +1586,7 @@ sub update_status {
 
     my $start = $page->PositionFromLine($line);
     my $char = $pos-$start;
+
 
     $self->SetStatusText("$modified $filename", 0);
     $self->SetStatusText($file_type, 1);
@@ -1589,3 +1606,4 @@ sub on_panel_changed {
 }
 
 1;
+
