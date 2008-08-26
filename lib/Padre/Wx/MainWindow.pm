@@ -317,20 +317,16 @@ sub _create_menu_bar {
     );
     $menu->{run_stop}->Enable(0);
 
-
-
+    
     # Create the Plugins menu
     $menu->{plugin} = Wx::Menu->new;
     my %plugins = %{ $ide->{plugins} };
     foreach my $name ( sort keys %plugins ) {
         next if not $plugins{$name};
-        my $submenu = Wx::Menu->new;
         my @menu    = eval { $plugins{$name}->menu };
         warn "Error when calling menu for plugin '$name' $@" if $@;
-        foreach my $m ( @menu ) {
-           EVT_MENU( $self, $submenu->Append(-1, $m->[0]), $m->[1] );
-        }
-        $menu->{plugin}->Append( -1, $name, $submenu );
+        my $menu_items = $self->_add_plugin_menu_items(\@menu);
+        $menu->{plugin}->Append( -1, $name, $menu_items );
     }
 
 
@@ -369,6 +365,24 @@ sub _create_menu_bar {
 
     return $menu;
 }
+
+
+# Recursively add plugin menu items from nested array refs
+sub _add_plugin_menu_items {
+    my ($self, $menu_items) = @_;
+
+    my $menu = Wx::Menu->new;
+    foreach my $m ( @{$menu_items} ) {
+        if (ref $m->[1] eq 'ARRAY') {
+            my $submenu = $self->_add_plugin_menu_items($m->[1]);
+            $menu->Append(-1, $m->[0], $submenu);
+        } else {
+            EVT_MENU( $self, $menu->Append(-1, $m->[0]), $m->[1] );
+        }
+    }
+    return $menu;
+}
+
 
 sub _load_files {
     my $self   =  shift;
