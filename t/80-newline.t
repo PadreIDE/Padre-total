@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 use strict;
 use warnings;
 
@@ -9,6 +10,7 @@ my $CRLF = "\015\012";
 use Test::More;
 my $tests;
 
+use t::lib::Padre;
 use Padre;
 
 plan tests => $tests;

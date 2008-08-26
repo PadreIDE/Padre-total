@@ -4,11 +4,8 @@ use strict;
 use warnings;
 use File::Temp qw(tempdir);
 use Test::More tests => 1;
+use t::lib::Padre;
 use Padre;
-
-# Create a test home
-my $dir = tempdir( CLEANUP => 1 );
-$ENV{PADRE_HOME} = $dir;
 
 my $ide   = Padre->ide;
 my $frame = $ide->wx->main_window;

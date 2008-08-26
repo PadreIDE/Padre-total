@@ -212,21 +212,9 @@ sub new {
     }, $class;
 
     # Locate the configuration directory
-    $self->{config_dir} = File::Spec->catfile(
-        ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
-        '.padre'
-    );
-    unless ( -e $self->{config_dir} ) {
-        mkdir $self->{config_dir} or die "Cannot create config dir '$self->{config_dir}' $!";
-    }
-    $self->{config_yaml} = File::Spec->catfile(
-        $self->config_dir,
-        'config.yml',
-    );
-    $self->{config_db} = File::Spec->catfile(
-        $self->config_dir,
-        'config.db',
-    );
+    $self->{config_dir}  = Padre::Config->default_dir;
+    $self->{config_yaml} = Padre::Config->default_yaml;
+    $self->{config_db}   = Padre::Config->default_db;
 
     $self->load_config;
     $self->_process_command_line;

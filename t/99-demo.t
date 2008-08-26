@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 use strict;
 use warnings;
 
@@ -7,6 +8,7 @@ my $tests;
 
 plan tests => $tests;
 
+use t::lib::Padre;
 use Padre::Demo;
 
 Padre::Demo->run(\&test_app);
@@ -27,6 +29,3 @@ sub test_prompt {
     sleep 2;
     close_app();
 }
-
-
-

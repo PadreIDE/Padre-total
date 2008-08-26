@@ -9,11 +9,12 @@ use Test::NoWarnings;
 my $tests;
 plan tests => $tests + 1;
 
-use File::Temp    qw(tempdir);
-use Data::Dumper  qw(Dumper);
+use File::Temp   qw(tempdir);
+use Data::Dumper qw(Dumper);
+
+use t::lib::Padre;
 use Padre;
 
-$ENV{PADRE_HOME} = tempdir( CLEANUP => 1 );
 my $app = Padre->new;
 
 diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();

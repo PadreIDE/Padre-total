@@ -3,7 +3,52 @@ package Padre::Config;
 use 5.008;
 use strict;
 use warnings;
-use YAML::Tiny;
+use File::Spec    ();
+use File::HomeDir ();
+use YAML::Tiny    ();
+
+
+
+
+
+#####################################################################
+# Class-Level Functionality
+
+my $DEFAULT_DIR = File::Spec->catfile(
+    ($ENV{PADRE_HOME} ? $ENV{PADRE_HOME} : File::HomeDir->my_data),
+    '.padre'
+);
+
+sub default_dir {
+    my $dir = $DEFAULT_DIR;
+    unless ( -e $dir ) {
+        mkdir $dir or
+        die "Cannot create config dir '$dir' $!";
+    }
+
+    return $dir;
+}
+
+sub default_yaml {
+    File::Spec->catfile(
+        $_[0]->default_dir,
+        'config.yml',
+    );
+}
+
+sub default_db {
+   File::Spec->catfile(
+        $_[0]->default_dir,
+        'config.db',
+    );
+}
+
+
+
+
+
+#####################################################################
+# Constructor and Serialization
 
 sub new {
     my $class = shift;

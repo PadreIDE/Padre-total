@@ -78,6 +78,9 @@ my $builder = $class->new(
             Repository  => 'http://svn.perlide.org/padre',
     #        MailingList => 'http://mail.perlide.org/listinfo/padre',
         },
+        no_index => {
+            directory => [ qw{ t eg share } ],
+        },
     },
 );
 
