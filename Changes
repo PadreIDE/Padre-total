@@ -8,6 +8,8 @@
     Lots of refactoring (ADAMK)
     Remember that application was maximized (ADAMK)
     Better choice of default size (ADAMK)
+    Adding a separate compilation test script (ADAMK)
+    Adding a ORLite interface to the database Padre::DB (ADAMK)
 
 v0.05 2008.08.17
 

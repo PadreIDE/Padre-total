@@ -152,6 +152,7 @@ use File::HomeDir  ();
 use Getopt::Long   ();
 use YAML::Tiny     ();
 use DBI            ();
+use Class::Autouse ();
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
@@ -159,6 +160,10 @@ use Padre::Config         ();
 use Padre::Wx::App        ();
 use Padre::Wx::MainWindow ();
 
+# Nudges to make Class::Autouse behave
+BEGIN {
+	$Class::Autouse::LOADED{'Wx::Object'} = 1;
+}
 use Class::Autouse qw{
    Padre::Project
    Padre::Pod::Frame

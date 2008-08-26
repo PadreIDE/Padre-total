@@ -5,6 +5,7 @@ README
 
 lib/Padre.pm
 lib/Padre/Config.pm
+lib/Padre/DB.pm
 lib/Padre/Project.pm
 
 lib/Padre/Wx/App.pm
@@ -24,7 +25,8 @@ lib/Padre/Pod/Viewer.pm
 script/padre
 
 t/01-load.t
-t/02-wx.t
+t/02-new.t
+t/03-wx.t
 t/80-newline.t
 t/99-demo.t
 
