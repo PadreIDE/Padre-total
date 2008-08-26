@@ -95,7 +95,10 @@ sub new {
         undef,
         -1,
         'Padre ',
-        wxDefaultPosition,
+        [
+            $config->{main}->{left},
+            $config->{main}->{top},
+        ],
         [
             $config->{main}->{width},
             $config->{main}->{height},
@@ -251,30 +254,34 @@ sub _create_menu_bar {
 
     # Create the View menu
     $menu->{view}       = Wx::Menu->new;
-    $menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, "Line numbers" );
+    $menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, "Show Line numbers" );
+    $menu->{view_lines}->Check( $config->{show_line_numbers} ? 1 : 0 );
     EVT_MENU(
         $self,
         $menu->{view_lines},
         \&on_toggle_line_numbers,
     );
-    $menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, "EOL" );
+    $menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, "Show Newlines" );
+    $menu->{view_eol}->Check( $config->{show_eol} ? 1 : 0 );
     EVT_MENU(
         $self,
         $menu->{view_eol},
         \&on_toggle_eol,
     );
+    $menu->{view_output} = $menu->{view}->AppendCheckItem( -1, "Show Output" );
     EVT_MENU(
         $self,
-        $menu->{view}->AppendCheckItem( -1, "Show Output" ),
+        $menu->{view_output},
         \&on_toggle_show_output,
     );
+    $menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
+    $menu->{view_statusbar}->Check( $config->{show_statusbar} ? 1 : 0 );
     EVT_MENU(
         $self,
-        $menu->{view}->AppendCheckItem( -1, "Hide StatusBar" ),
+        $menu->{view_statusbar},
         \&on_toggle_status_bar,
     );
-    $menu->{view_lines}->Check($config->{show_line_numbers} ? 1 : 0);
-    $menu->{view_eol}->Check($config->{show_eol} ? 1 : 0);
+
     $menu->{view_files} = Wx::Menu->new;
     $menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
     EVT_MENU(
@@ -282,7 +289,6 @@ sub _create_menu_bar {
         $menu->{view_files}->Append(-1, "Next File\tCtrl-TAB"),
         \&on_next_pane,
     );
-
 
     # Creat the Run menu
     $menu->{run} = Wx::Menu->new;
@@ -626,8 +632,8 @@ sub on_close_window {
             $config->{main}->{height},
         ) = $self->GetSizeWH;
         (
-            $config->{main}->{top},
             $config->{main}->{left},
+            $config->{main}->{top},
         ) = $self->GetPositionXY;
     }
     Padre->ide->save_config;
@@ -766,13 +772,16 @@ sub setup_editor {
 sub on_toggle_line_numbers {
     my ($self, $event) = @_;
 
+    # Update the configuration
     my $config = Padre->ide->get_config;
     $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
 
-    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+    # Update the notebook pages
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
         my $editor = $self->{notebook}->GetPage($id);
-        _toggle_numbers($editor, $config->{show_line_numbers})
+        _toggle_numbers( $editor, $config->{show_line_numbers} );
     }
+
     return;
 }
 
@@ -1336,24 +1345,32 @@ sub on_setup_run {
 
 sub on_toggle_show_output {
     my ($self, $event) = @_;
+
+    # Update the output panel
     my $config = Padre->ide->get_config;
-    if ($event->IsChecked) {
-        $self->{main_panel}->SetSashPosition($config->{main}->{height} -100);
-    } else {
-        # TODO save the value and keep it for next use
-        $self->{main_panel}->SetSashPosition($config->{main}->{height});
-    }
+    $self->{main_panel}->SetSashPosition(
+        $config->{main}->{height} - ($event->IsChecked ? 100 : 0)
+    );
+
+    return;
 }
 
 sub on_toggle_status_bar {
     my ($self, $event) = @_;
 
+    # Update the configuration
+    my $config = Padre->ide->get_config;
+    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
+
+    # Update the status bar
     my $status_bar = $self->GetStatusBar;
-    if ($event->IsChecked) {
+    if ( $config->{show_status_bar} ) {
         $status_bar->Hide;
     } else {
         $status_bar->Show;
     }
+
+    return;
 }
 
 sub evt_process_stdout {
