@@ -50,8 +50,11 @@ SCOPE: {
             save_on_run       => 'same',
             current_project   => '',
             main              => {
-                width       => 700,
-                height      => 600,
+                top       => -1,
+                left      => -1,
+                width     => -1,
+                height    => -1,
+                maximized => 0,
             },
         }, 'defaults';
 
