@@ -2,6 +2,7 @@ Build.PL
 Changes
 MANIFEST
 README
+META.yml
 
 lib/Padre.pm
 lib/Padre/Config.pm
@@ -15,7 +16,6 @@ lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Text.pm
 
 lib/Padre/Demo.pm
-lib/Padre/Demo/App.pm
 lib/Padre/Demo/Frame.pm
 
 lib/Padre/Pod/Frame.pm
@@ -45,6 +45,7 @@ eg/wx/04_button_with_event.pl
 eg/wx_demo/wxer
 eg/wx_demo/01_prompt.pl
 eg/wx_demo/03_filename.pl
+eg/wx_demo/04_choice.pl
 
 share/docview/print.xpm
 share/docview/save.xpm
@@ -58,4 +59,3 @@ share/docview/cut.xpm
 share/templates/template.pl
 share/templates/template.pm
 share/templates/template.t
-META.yml

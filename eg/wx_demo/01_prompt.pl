@@ -7,7 +7,12 @@ use warnings;
 use lib 'lib';
 use Padre::Demo;
 
-my $name = prompt("What is your name?\n");
-#print "$name\n";
+
+my $empty = entry();
+display_text($empty);
+
+my $name = entry(title => "What is your name?");
 display_text("How are you $name today?\n");
 
+my $how = entry(title => $name, prompt => "How are you?");
+display_text("$name,  $how");

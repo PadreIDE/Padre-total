@@ -7,7 +7,6 @@ use File::Spec         ();
 use Wx                 qw(:everything);
 use Wx::STC            ();
 use Wx::Event          qw(:everything);
-use Padre::Demo::App   ();
 use Padre::Demo::Frame ();
 use base 'Wx::Frame';
 
@@ -18,7 +17,7 @@ sub new {
     my $self = $class->SUPER::new(
         undef,
         -1,
-        'Padre::Demo::App',
+        'Padre::Demo',
         wxDefaultPosition,
         wxDefaultSize,
     );

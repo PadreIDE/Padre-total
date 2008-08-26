@@ -7,6 +7,8 @@ use warnings;
 use lib 'lib';
 use Padre::Demo;
 
-my $filename = promp_input_file("Select source file");
+my $filename = file_selector();
 display_text("The file you selected is $filename\n");
 
+my $file = file_selector(title => "Select source file");
+display_text("The file you selected is $file\n");

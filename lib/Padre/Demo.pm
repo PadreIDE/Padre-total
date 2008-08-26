@@ -5,9 +5,14 @@ use strict;
 use warnings;
 
 use base 'Exporter';
-use Padre::Demo::App;
+use File::Spec;
 
-our @EXPORT = qw(prompt print_out promp_input_file close_app open_frame display_text);
+our @EXPORT = qw(
+                 entry
+                 file_selector
+                 choice
+
+                 print_out close_app open_frame display_text);
 
 use Wx                 qw(:everything);
 use Wx::STC            ();
@@ -23,18 +28,13 @@ As a module:
 
  use Padre::Demo;
 
- Padre::Demo->run(\&main);
+ my $name = prompt("What is your name?\n");
+ print_out("How are you $name today?\n");
 
- sub main {
-    my $name = prompt("What is your name?\n");
-    print_out("How are you $name today?\n");
 
-    return;
- }
+On the command line try
 
-On the command line:
-
- Not yet available.
+ wxer --help
 
 =head1 General Options
 
@@ -42,11 +42,11 @@ There are some common option for every dialog
 
 title
 
-window-icon  Not implemented
+window-icon  NA
 
-width
+width        NA
 
-height
+height       NA
 
 =cut
 
@@ -54,54 +54,40 @@ height
 
 Dialogs
 
-=head2 prompt
+=head2 entry
 
 Display a text entry dialog
 
 =cut
-sub prompt {
-    my ($text) = @_;
-    my $frame = $Padre::Demo::App::frame;
+sub entry {
+    my ( %args ) = @_;
 
-    my $dialog = Wx::TextEntryDialog->new( $frame, $text, "", '' );
+    %args = (
+              title   => '',
+              prompt  => '',
+              default => '',
+              %args);
+
+    my $dialog = Wx::TextEntryDialog->new( undef, $args{prompt}, $args{title}, $args{default} );
     if ($dialog->ShowModal == wxID_CANCEL) {
         return;
-    }   
+    }
     my $resp = $dialog->GetValue;
     $dialog->Destroy;
     return $resp;
 }
 
 
-=head2 print_out
+=head2 file_selector
 
 =cut
-sub print_out {
-    my ($output, $text) = @_;
-    #my $frame = $Padre::Demo::App::frame;
-    #my $output = $Padre::Demo::App::output;
-    $output->AddText($text);
-    #$Padre::Demo::app->Yield;
-    #print "x\n";
-    return;
-}
+sub file_selector {
+    my ( %args ) = @_;
+    %args = (
+                title => '',
+                %args);
 
-sub display_text {
-    my ($text) = @_;
-    my $title = '';
-    Wx::MessageBox( $text, $title, wxOK|wxCENTRE);
-
-}
-
-
-=head2 promp_input_file
-
-=cut
-sub promp_input_file {
-    my ($text) = @_;
-    my $frame = $Padre::Demo::App::frame;
-
-    my $dialog = Wx::FileDialog->new( $frame, $text, '', "", "*.*", wxFD_OPEN);
+    my $dialog = Wx::FileDialog->new( undef, $args{title}, '', "", "*.*", wxFD_OPEN);
     if ($^O !~ /win32/i) {
        $dialog->SetWildcard("*");
     }
@@ -114,6 +100,42 @@ sub promp_input_file {
     return File::Spec->catfile($default_dir, $filename);
 }
 
+sub choice {
+    my ( %args ) = @_;
+    %args = (
+                title   => '',
+                message => '',
+                choices => [],
+
+                %args);
+
+    my $dialog = Wx::MultiChoiceDialog->new( undef, $args{message}, $args{title}, $args{choices});
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+    return map {$args{choices}[$_]} $dialog->GetSelections;
+}
+
+
+
+=head2 print_out
+
+=cut
+sub print_out {
+    my ($output, $text) = @_;
+    $output->AddText($text);
+    #$Padre::Demo::app->Yield;
+    return;
+}
+
+sub display_text {
+    my ($text) = @_;
+    my $title = '';
+    Wx::MessageBox( $text, $title, wxOK|wxCENTRE);
+
+}
+
+
 
 
 =head2 open_frame
@@ -121,7 +143,6 @@ sub promp_input_file {
 =cut
 sub open_frame {
     my $frame = Padre::Demo::Frame->new;
-    #my $frame = $Padre::Demo::App::frame;
     my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
     $output->SetMarginWidth(1, 0);
     $frame->Show( 1 );
@@ -133,29 +154,13 @@ sub open_frame {
 
 =cut
 sub close_app {
-   my $frame = $Padre::Demo::App::frame;
-   $frame->Close;
+#   $frame->Close;
 }
 
-
-
-
-
-sub get_frame {
-   return $Padre::Demo::App::frame;
-}
 
 $| = 1;
 
 our $main;
 our $app;
-
-sub run {
-   my ($class, $cb) = @_;
-   $main = $cb;
-   $app = Padre::Demo::App->new();
-   
-   $app->MainLoop;
-}
 
 1;

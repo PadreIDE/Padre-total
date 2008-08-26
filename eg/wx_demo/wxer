@@ -4,12 +4,10 @@ use warnings;
 
 use Getopt::Long qw(GetOptions);
 
-use Padre::Demo;
+use Padre::Demo ();
 
 
-my %opt = (
-    title => '',
-);
+my %opt;
 
 GetOptions( \%opt,
    "entry",
@@ -29,9 +27,9 @@ if ($opt{help}) {
 usage() unless $opt{entry} xor $opt{'file-selection'};
 
 if ($opt{entry}) {
-    print Padre::Demo::prompt( $opt{title} );
+    print Padre::Demo::entry( $opt );
 } elsif ($opt{'file-selection'}) {
-    print promp_input_file( $opt{title} );
+    print Padre::Demo::file_selector( $opt );
 } else {
     usage();
 }

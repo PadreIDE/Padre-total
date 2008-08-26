@@ -1,6 +1,7 @@
     Add some "new file" templates
     Temporarily remove the toolbar
-    Some fixes for Padre::Demo
+    Change behavior of Padre::Demo, add wxer command line interface
+    Remove Demo::App
     Update list of methods on save as well #54 (vincent)
     Change the list of subs on the right hand side to be sorted
     Set Alt-S to jump to the subs list
