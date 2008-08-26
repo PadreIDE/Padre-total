@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Getopt::Long qw(GetOptions);
+
+use Padre::Demo;
+
+
+my %opt = (
+    title => '',
+);
+
+GetOptions( \%opt,
+   "entry",
+   "file-selection",
+
+   "title=s",
+
+   "help",
+) or usage();
+
+
+
+if ($opt{help}) {
+    usage();
+}
+
+usage() unless $opt{entry} xor $opt{'file-selection'};
+
+if ($opt{entry}) {
+    print Padre::Demo::prompt( $opt{title} );
+} elsif ($opt{'file-selection'}) {
+    print promp_input_file( $opt{title} );
+} else {
+    usage();
+}
+
+
+
+sub usage {
+    die <<"USAGE";
+Usage: $0
+           --entry
+           --file-selection
+
+
+           --title TITLE
+
+           --help    This help
+USAGE
+
+}

@@ -24,7 +24,7 @@ sub new {
     );
 
 
-    EVT_ACTIVATE($self, \&on_activate);
+#    EVT_ACTIVATE($self, \&on_activate);
     Wx::Event::EVT_CLOSE( $self,  sub {
          my ( $self, $event ) = @_;
          $event->Skip;

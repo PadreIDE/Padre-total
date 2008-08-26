@@ -7,7 +7,7 @@ use warnings;
 use base 'Exporter';
 use Padre::Demo::App;
 
-our @EXPORT = qw(prompt print_out promp_input_file close_app open_frame);
+our @EXPORT = qw(prompt print_out promp_input_file close_app open_frame display_text);
 
 use Wx                 qw(:everything);
 use Wx::STC            ();
@@ -77,13 +77,20 @@ sub prompt {
 
 =cut
 sub print_out {
-    my ($text) = @_;
+    my ($output, $text) = @_;
     #my $frame = $Padre::Demo::App::frame;
-    my $output = $Padre::Demo::App::output;
+    #my $output = $Padre::Demo::App::output;
     $output->AddText($text);
     #$Padre::Demo::app->Yield;
     #print "x\n";
     return;
+}
+
+sub display_text {
+    my ($text) = @_;
+    my $title = '';
+    Wx::MessageBox( $text, $title, wxOK|wxCENTRE);
+
 }
 
 
@@ -113,7 +120,8 @@ sub promp_input_file {
 
 =cut
 sub open_frame {
-    my $frame = $Padre::Demo::App::frame;
+    my $frame = Padre::Demo::Frame->new;
+    #my $frame = $Padre::Demo::App::frame;
     my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
     $output->SetMarginWidth(1, 0);
     $frame->Show( 1 );
