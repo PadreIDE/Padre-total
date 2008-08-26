@@ -58,14 +58,13 @@ my $builder = $class->new(
         'File::ShareDir'          => '1.00',
         'File::Slurp'             => 0,
 	'Module::Inspector'       => '0.04',
+        'ORLite'                  => '0.10',
         'Pod::POM'                => 0,
         'Pod::Simple'             => 0,
 	'Probe::Perl'             => '0.01',
         'YAML::Tiny'              => '1.32',
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,
-
-
     },
     build_requires        => {
         'Test::More'                => '0.47',
