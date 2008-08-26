@@ -6,6 +6,8 @@
     Set Alt-S to jump to the subs list
     Deal with newlines in files
     Lots of refactoring (ADAMK)
+    Remember that application was maximized (ADAMK)
+    Better choice of default size (ADAMK)
 
 v0.05 2008.08.17
 

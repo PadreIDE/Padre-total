@@ -17,7 +17,6 @@ use Wx::Perl::ProcessStream qw(:everything);
 use base 'Wx::Frame';
 
 use Padre::Wx::Text;
-
 use Padre::Wx::FindDialog;
 use Padre::Pod::Frame;
 
@@ -85,16 +84,23 @@ sub new {
     my $config  = Padre->ide->get_config;
     Wx::InitAllImageHandlers();
 
+    # Determine the initial frame style
+    my $wx_frame_style = wxDEFAULT_FRAME_STYLE;
+    if ( $config->{main}->{maximized} ) {
+        $wx_frame_style |= wxMAXIMIZE;
+    }
+
     # Create the main panel object
     my $self = $class->SUPER::new(
         undef,
         -1,
         'Padre ',
-        wxDefaultPosition,  
+        wxDefaultPosition,
         [
             $config->{main}->{width},
             $config->{main}->{height},
         ],
+        $wx_frame_style,
     );
 
     # Add some additional attribute slots
@@ -109,7 +115,6 @@ sub new {
         $self,
         -1,
         wxDefaultPosition,
-
         wxDefaultSize,
         wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
     );
@@ -141,7 +146,6 @@ sub new {
         $self->{rightbar},
         \&method_selected_dclick,
     );
-
 
     # Create the main notebook for the documents
     $self->{notebook} = Wx::Notebook->new(
@@ -201,14 +205,12 @@ sub _create_menu_bar {
     my $self   = shift;
     my $ide    = Padre->ide;
     my $config = $ide->get_config;
-
-    # Create the hash to store the menu items we need to remember
-    my $menu = {};
+    my $menu   = {};
 
     # Create the File menu
     $menu->{file} = Wx::Menu->new;
-    EVT_MENU( $self, $menu->{file}->Append( wxID_NEW,    ''  ), \&on_new  );
-    EVT_MENU( $self, $menu->{file}->Append( wxID_OPEN,   ''  ), \&on_open );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_NEW,  '' ), \&on_new  );
+    EVT_MENU( $self, $menu->{file}->Append( wxID_OPEN, '' ), \&on_open );
     $menu->{file_recent} = Wx::Menu->new;
     $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent} );
     foreach my $f ( $ide->get_recent('files') ) {
@@ -244,6 +246,7 @@ sub _create_menu_bar {
     EVT_MENU( $self, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&on_comment_out_block       );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Setup" ),            \&on_setup            );
+
 
 
     # Create the View menu
@@ -421,7 +424,6 @@ sub get_current_content {
     $_[0]->get_current_editor->GetText;
 }
 
-
 sub _bitmap {
     my $file = shift;
     my $dir  = $ENV{PADRE_DEV}
@@ -554,7 +556,6 @@ sub on_autocompletition {
    return;
 }
 
-
 sub on_right_click {
     my ($self, $event) = @_;
     print "right\n";
@@ -595,10 +596,10 @@ sub on_exit {
 
 sub on_close_window {
     my ( $self, $event ) = @_;
-
     my $config = Padre->ide->get_config;
 
-    if ($event->CanVeto) {
+    # Check that all files have been saved
+    if ( $event->CanVeto ) {
         my @unsaved;
         foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
             if ( $self->_buffer_changed($id) ) {
@@ -612,22 +613,35 @@ sub on_close_window {
             return;
         }
 
-        my @files = map { scalar $self->_get_filename($_) } (0 .. $self->{notebook}->GetPageCount -1);
+        my @files = map { scalar $self->_get_filename($_) } ( 0 .. $self->{notebook}->GetPageCount - 1 );
         $config->{main}->{files} = \@files;
     }
 
-    ($config->{main}->{width}, $config->{main}->{height}) = $self->GetSizeWH;
-    #Padre->ide->set_config($config);
-    Padre->ide->save_config();
+    # Discover and save the state we want to memorize
+    $config->{main}->{maximized} = $self->IsMaximized;
+    unless ( $self->IsMaximized ) {
+        # Don't save the position when maximized
+        (
+            $config->{main}->{width},
+            $config->{main}->{height},
+        ) = $self->GetSizeWH;
+        (
+            $config->{main}->{top},
+            $config->{main}->{left},
+        ) = $self->GetPositionXY;
+    }
+    Padre->ide->save_config;
 
-    $self->{help}->Destroy if $self->{help};
+    # Clean up secondary windows
+    if ( $self->{help} ) {
+        $self->{help}->Destroy;
+    }
 
     $event->Skip;
 }
 
 sub _lexer {
     my ($file) = @_;
-
     return $SYNTAX{_default_} if not $file;
     (my $ext = $file) =~ s{.*\.}{};
     $ext = lc $ext;
@@ -682,7 +696,6 @@ sub setup_editor {
     $cnt++;
     my $title   = " Unsaved Document $cnt";
     my $content = '';
-
     if ($file) {
         my $convert_to;
         $content = eval { File::Slurp::read_file($file) };
@@ -865,7 +878,6 @@ sub _get_filename {
     }
 }
 
-
 sub _set_page_text {
     my ($self, $id, $text) = @_;
 
@@ -986,14 +998,17 @@ sub _save_buffer {
 
 sub on_close {
     my ($self) = @_;
-    
-    my $id   = $self->{notebook}->GetSelection;
-    #print "Closing $id\n";
+    my $id     = $self->{notebook}->GetSelection;
     if ( $self->_buffer_changed($id) ) {
-        my $ret = Wx::MessageBox( "Buffer changed. Do yo want to save it?", "Unsaved buffer", wxYES_NO|wxCANCEL|wxCENTRE, $self );
-        if ($ret == wxYES) {
+        my $ret = Wx::MessageBox(
+            "Buffer changed. Do yo want to save it?",
+            "Unsaved buffer",
+            wxYES_NO|wxCANCEL|wxCENTRE,
+            $self,
+        );
+        if ( $ret == wxYES ) {
             $self->on_save();
-        } elsif ($ret == wxNO) {
+        } elsif ( $ret == wxNO ) {
             # just close it
         } else {
             # wxCANCEL, or when clicking on [x]
@@ -1098,9 +1113,7 @@ sub on_find {
 }
 
 sub update_methods {
-
     my ($self) = @_;
-
 
     my $text = $self->get_current_content;
     my @methods = reverse sort $text =~ m{sub\s+(\w+)}g;
@@ -1174,7 +1187,6 @@ sub on_help {
     return;
 }
 sub on_context_help {
-
     my ($self) = @_;
 
     my $selection = $self->_get_selection();
@@ -1579,14 +1591,12 @@ sub update_status {
     return if $self->{_in_setup_editor};
 
     my $pageid = $self->{notebook}->GetSelection();
-
     if (not defined $pageid) {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
     my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
-
     my ($filename, $file_type) = $self->_get_filename($pageid);
     $filename  ||= '';
     $file_type ||= _get_local_filetype();
@@ -1602,7 +1612,6 @@ sub update_status {
 
     my $start = $page->PositionFromLine($line);
     my $char = $pos-$start;
-
 
     $self->SetStatusText("$modified $filename", 0);
     $self->SetStatusText($file_type, 1);
@@ -1622,4 +1631,3 @@ sub on_panel_changed {
 }
 
 1;
-

@@ -20,6 +20,9 @@ sub new {
     $self->{main}->{height} ||= 600;
     $self->{main}->{width}  ||= 700;
 
+    # Is the window maximized
+    $self->{main}->{maximized} ||= 0;
+
     # startup mode, if no files given on the command line this can be
     #   new        - a new empty buffer
     #   nothing    - nothing to open
