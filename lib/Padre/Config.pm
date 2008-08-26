@@ -17,10 +17,10 @@ sub new {
     }
 
     # size of the main window
-    $self->{main}->{height} ||= Wx::wxDefaultSize->height;
-    $self->{main}->{width}  ||= Wx::wxDefaultWidth->width;
-    $self->{main}->{left}   ||= Wx::wxDefaultPosition->x;
-    $self->{main}->{top}    ||= Wx::wxDefaultPosition->y;
+    $self->{main}->{height} ||= Wx::wxDefaultSize()->height;
+    $self->{main}->{width}  ||= Wx::wxDefaultSize()->width;
+    $self->{main}->{left}   ||= Wx::wxDefaultPosition()->x;
+    $self->{main}->{top}    ||= Wx::wxDefaultPosition()->y;
 
     # Is the window maximized
     $self->{main}->{maximized} ||= 0;
