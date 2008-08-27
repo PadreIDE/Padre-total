@@ -348,7 +348,7 @@ sub _create_menu_bar {
     );
     EVT_MENU(
         $self,
-        $menu->{help}->Append( -1, 'Context-help  Ctrl-Shift-H' ),
+        $menu->{help}->Append( -1, "Context-help\tCtrl-Shift-H" ),
         \&on_context_help,
     );
 
@@ -486,9 +486,7 @@ sub on_key {
             $self->on_next_pane;
         }
     } elsif ($mod == 6) {                         # Ctrl-Shift
-        if ($code == ord 'H') {                   # Ctrl-Shift-H
-            $self->on_context_help;
-        } elsif ($code == WXK_TAB) {              # Ctrl-Shift-TAB
+        if ($code == WXK_TAB) {              # Ctrl-Shift-TAB
             $self->on_prev_pane;
         } elsif ($code == ord 'Z') {              # Ctrl-Shift-Z
             $self->on_redo;
