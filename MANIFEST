@@ -30,6 +30,9 @@ t/03-wx.t
 t/80-newline.t
 t/99-demo.t
 
+xt/99-critic.t
+xt/90-pod.t
+
 eg/hello_foo.pl
 eg/hello_world.pl
 eg/stderr.pl

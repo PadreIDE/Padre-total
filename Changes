@@ -11,6 +11,7 @@
     Better choice of default size (ADAMK)
     Adding a separate compilation test script (ADAMK)
     Adding a ORLite interface to the database Padre::DB (ADAMK)
+    Include authors tests for Perl critic and POD in xt/ directory
 
 v0.05 2008.08.17
 

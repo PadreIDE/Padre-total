@@ -1,4 +1,4 @@
-package Padre::Popup;
+package Padre::Wx::Popup;
 use strict;
 use warnings;
 
