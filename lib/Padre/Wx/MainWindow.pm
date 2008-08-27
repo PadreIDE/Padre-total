@@ -432,7 +432,7 @@ sub method_selected {
     my ($self, $event) = @_;
     my $sub = $event->GetItem->GetText;
     return if not defined $sub;
-    $self->_search("sub $sub"); # TODO actually search for sub\s+$sub
+    $self->_search(search_term => "sub $sub"); # TODO actually search for sub\s+$sub
     return;
 }
 
@@ -1127,11 +1127,18 @@ sub on_find {
     my $search = Padre::Wx::FindDialog->new( $self, $config, {term => $selection} );
     return if not $search;
 
-    unshift @{$config->{search_terms}}, $search->{term};
-    my %seen;
-    @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
+    if ($search->{term}) {
+        unshift @{$config->{search_terms}}, $search->{term};
+        my %seen;
+        @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
+    }
+    if ($search->{replace_term} ) {
+        unshift @{$config->{replace_terms}}, $search->{replace_term};
+        my %seen;
+        @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
+     }
 
-    $self->_search();
+    $self->_search(replace_term => $search->{replace_term});
 
     return;
 }
@@ -1150,10 +1157,11 @@ sub update_methods {
 }
 
 sub _search {
-    my ($self, $search_term) = @_;
+    my ($self, %args) = @_;
 
     my $config = Padre->ide->get_config;
-    $search_term ||= $config->{search_terms}->[0];
+    my $search_term = $args{search_term} ||= $config->{search_terms}->[0];
+    #$args{replace_term}
 
     my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
@@ -1165,7 +1173,12 @@ sub _search {
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange($from, $last);
 
+    if ($config->{case_insensitive}) {
+        $search_term = "(?i)$search_term";
+    }
+    #print $search_term, "\n";
     my $regex = qr/$search_term/;
+
     # @LAST_MATCH_START
     # @LAST_MATCH_END
     my $pos;

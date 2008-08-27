@@ -45,6 +45,7 @@ SCOPE: {
             show_line_numbers => 0,
             show_eol          => 0,
             search_terms      => [],
+            replace_terms     => [],
             command_line      => '',
             startup           => 'new',
             projects          => {},

@@ -76,12 +76,8 @@ sub new {
     #   last       - the files that were open last time    
     $self->{startup} ||= 'new';
 
-    unless ( defined $self->{search_terms} ) {
-        $self->{search_terms} = [];
-    }
-    if ($self->{search_term}) {
-       $self->{search_terms} = [ delete $self->{search_term} ]
-    }
+    $self->{search_terms}      ||= [];
+    $self->{replace_terms}     ||= [];
 
     $self->{command_line}      ||= '';
     # When running a script from the application some of the files might have not been saved yet.
