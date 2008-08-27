@@ -469,11 +469,7 @@ sub on_key {
         }
     } elsif ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
-            my $id = $code - 49;
-            my $pageid = $self->{notebook}->GetSelection();
-            my $page = $self->{notebook}->GetPage($pageid);
-            my $line = $page->GetCurrentLine;
-            $self->{marker}->{$id} = $line;
+            $self->on_set_mark($event, $code - 49);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
             $self->on_next_pane;
         }
@@ -481,16 +477,28 @@ sub on_key {
         if ($code == WXK_TAB) {              # Ctrl-Shift-TAB
             $self->on_prev_pane;
         } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
-            my $id = $code - 49;
-            my $pageid = $self->{notebook}->GetSelection();
-            my $page = $self->{notebook}->GetPage($pageid);
-            if (defined $self->{marker}->{$id}) {
-                $page->GotoLine($self->{marker}->{$id});
-            }
+            $self->on_jumpto_mark($event, $code - 49);
         }
     }
 
     return;
+}
+
+sub on_set_mark {
+    my ($self, $event, $id) = @_;
+    my $pageid = $self->{notebook}->GetSelection();
+    my $page = $self->{notebook}->GetPage($pageid);
+    my $line = $page->GetCurrentLine;
+    $self->{marker}->{$id} = $line;
+}
+
+sub on_jumpto_mark {
+    my ($self, $event, $id) = @_;
+    my $pageid = $self->{notebook}->GetSelection();
+    my $page = $self->{notebook}->GetPage($pageid);
+    if (defined $self->{marker}->{$id}) {
+        $page->GotoLine($self->{marker}->{$id});
+    }
 }
 
 sub on_brace_matching {
