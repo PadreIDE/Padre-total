@@ -462,11 +462,7 @@ sub on_key {
     my $mod  = $event->GetModifiers() || 0;
     my $code = $event->GetKeyCode;
     #print "$mod $code\n";
-    if (not $mod) {
-        if ($code == WXK_F7) {             # F7
-            print "experimental - sending s to debugger\n";
-        }
-    } elsif ($mod == 1) {                        # Alt
+    if ($mod == 1) {                        # Alt
         if (57 >= $code and $code >= 49) {       # Alt-1-9
             my $id = $code - 49;
             $self->on_nth_pane($id);
@@ -478,8 +474,6 @@ sub on_key {
             my $page = $self->{notebook}->GetPage($pageid);
             my $line = $page->GetCurrentLine;
             $self->{marker}->{$id} = $line;
-#print "set marker $id to line $line\n";
-            #$page->MarkerAdd($line, $id);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
             $self->on_next_pane;
         }
