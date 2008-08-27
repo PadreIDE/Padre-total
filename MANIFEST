@@ -29,6 +29,7 @@ t/02-new.t
 t/03-wx.t
 t/80-newline.t
 t/99-demo.t
+t/lib/Padre.pm
 
 xt/99-critic.t
 xt/90-pod.t
