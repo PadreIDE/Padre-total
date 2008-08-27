@@ -242,7 +242,7 @@ sub _create_menu_bar {
     # Create the Edit menu
     $menu->{edit} = Wx::Menu->new;
     EVT_MENU( $self, $menu->{edit}->Append( wxID_UNDO, '' ),           \&on_undo             );
-    EVT_MENU( $self, $menu->{edit}->Append( wxID_REDO, '' ),           \&on_redo             );
+    EVT_MENU( $self, $menu->{edit}->Append( wxID_REDO, "\tCtrl-Shift-Z" ),  \&on_redo             );
     EVT_MENU( $self, $menu->{edit}->Append( wxID_FIND, '' ),           \&on_find             );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
@@ -488,8 +488,6 @@ sub on_key {
     } elsif ($mod == 6) {                         # Ctrl-Shift
         if ($code == WXK_TAB) {              # Ctrl-Shift-TAB
             $self->on_prev_pane;
-        } elsif ($code == ord 'Z') {              # Ctrl-Shift-Z
-            $self->on_redo;
         } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
             my $id = $code - 49;
             my $pageid = $self->{notebook}->GetSelection();
