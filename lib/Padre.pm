@@ -578,31 +578,7 @@ sub get_newline_type {
 
 Please submit your bugs at L<http://padre.perlide.org/>
 
-=head1 TODO
-
-L<http://padre.perlide.org/>
-
-=head2 Editor
-
-  Fix the remaining short-cut key that don't work on Windows (F3)
-
-  Deal with "resource installation". That is probably talk to
-  Module::Build, Debian and Fedora people to make it easy to install resource files
-  such as xpm or po files. See L<File::ShareDir>.
-
-=head2 Podviewer
-
-  Enabled indexing from widthin application or run the indexer when installing
-  the application?
-
-  If a file exists but no pod in there, don't show just a white page.
-
-  When displaying pod allow for clicking on names of other modules to be displayed.
-
-  Indexing the words of all the pod files? (Search engine?)
-  Indexing the function names only?
-
-=head2 Code layout:
+=head1 Code layout
 
 Padre is the main module that reads/writes the configuration files
 There is an SQLite database and a yml file to keep various pices of information
