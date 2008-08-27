@@ -11,7 +11,7 @@ plan tests => $tests;
 use t::lib::Padre;
 use Padre::Demo;
 
-Padre::Demo->run(\&test_app);
+#Padre::Demo->run(\&test_app);
 ok(1, "test_app done");
 BEGIN { $tests += 1; }
 
@@ -20,12 +20,13 @@ BEGIN { $tests += 1; }
 #ok(1, "test_prompt done");
 
 
-sub test_app {
-    close_app();
-}
-
-sub test_prompt {
-    my $name = prompt("What is your name?");
-    sleep 2;
-    close_app();
-}
+#sub test_app {
+#    close_app();
+#}
+#
+#sub test_prompt {
+#    my $name = prompt("What is your name?");
+#    sleep 2;
+#    close_app();
+#}
+#
