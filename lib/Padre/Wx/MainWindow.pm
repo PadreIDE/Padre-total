@@ -202,6 +202,33 @@ sub new {
     return $self;
 }
 
+sub _add_alt_n_menu {
+    my ($self, $file, $n) = @_;
+    return if $n > 9;
+
+    $self->{menu}->{alt}->[$n] = $self->{menu}->{view}->Append(-1, "");
+    EVT_MENU( $self, $self->{menu}->{alt}->[$n], sub {$_[0]->on_nth_pane($n)} );
+    $self->_update_alt_n_menu($file, $n);
+
+    return;
+}
+
+sub _update_alt_n_menu {
+    my ($self, $file, $n) = @_;
+
+    my $v = $n +1;
+    $self->{menu}->{alt}->[$n]->SetText("$file\tAlt-$v");
+
+    return;
+}
+
+sub _remove_alt_n_menu {
+    my ($self) = @_;
+
+    $self->{menu}->{view}->Remove(pop @{ $self->{menu}->{alt} });
+
+    return;
+}
 
 sub _create_menu_bar {
     my $self   = shift;
@@ -284,12 +311,18 @@ sub _create_menu_bar {
         \&on_toggle_status_bar,
     );
 
-    $menu->{view_files} = Wx::Menu->new;
-    $menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
+    $menu->{view}->AppendSeparator;
+    #$menu->{view_files} = Wx::Menu->new;
+    #$menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
     EVT_MENU(
         $self,
-        $menu->{view_files}->Append(-1, "Next File\tCtrl-TAB"),
+        $menu->{view}->Append(-1, "Next File\tCtrl-TAB"),
         \&on_next_pane,
+    );
+    EVT_MENU(
+        $self,
+        $menu->{view}->Append(-1, "Prev File\tCtrl-Shift-TAB"),
+        \&on_prev_pane,
     );
 
     # Creat the Run menu
@@ -463,12 +496,7 @@ sub on_key {
     my $mod  = $event->GetModifiers() || 0;
     my $code = $event->GetKeyCode;
     #print "$mod $code\n";
-    if ($mod == 1) {                        # Alt
-        if (57 >= $code and $code >= 49) {       # Alt-1-9
-            my $id = $code - 49;
-            $self->on_nth_pane($id);
-        }
-    } elsif ($mod == 2) {            # Ctrl
+    if ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             $self->on_set_mark($event, $code - 49);
         } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
@@ -705,7 +733,7 @@ sub _get_local_filetype {
 
 sub setup_editor {
     my ($self, $file) = @_;
-#Carp::cluck( $file);
+
     $self->{_in_setup_editor} = 1;
 
     # Flush old stuff
@@ -757,7 +785,6 @@ sub setup_editor {
         }
         $editor->SetEOLMode( $mode{$file_type} );
 
-
         $title   = File::Basename::basename($file);
         # require Padre::Project;
 	# $self->{project} = Padre::Project->from_file($file);
@@ -776,6 +803,8 @@ sub setup_editor {
     my $pack = __PACKAGE__;
     #my $page = $self->{notebook}->GetCurrentPage;
     my $id  = $self->{notebook}->GetSelection;
+    $self->_add_alt_n_menu($file, $id);
+
     $self->_set_filename($id, $file, $file_type);
     #print "x" . $editor->AutoCompActive .  "x\n";
 
@@ -1032,8 +1061,8 @@ sub on_close {
     my $id     = $self->{notebook}->GetSelection;
     if ( $self->_buffer_changed($id) ) {
         my $ret = Wx::MessageBox(
-            "Buffer changed. Do yo want to save it?",
-            "Unsaved buffer",
+            "File changed. Do yo want to save it?",
+            "Unsaved file",
             wxYES_NO|wxCANCEL|wxCENTRE,
             $self,
         );
@@ -1047,6 +1076,12 @@ sub on_close {
         }
     }
     $self->{notebook}->DeletePage($id); 
+
+    $self->_remove_alt_n_menu();
+    foreach my $i (0..@{ $self->{menu}->{alt} } -1) {
+        $self->_update_alt_n_menu(scalar($self->_get_filename($i)), $i);
+    }
+
     return;
 }
 
@@ -1613,6 +1648,7 @@ sub on_test_project {
 
 sub on_nth_pane {
     my ($self, $id) = @_;
+
     my $page = $self->{notebook}->GetPage($id);
     if ($page) {
        $self->{notebook}->ChangeSelection($id);
