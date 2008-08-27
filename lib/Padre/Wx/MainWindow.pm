@@ -2,6 +2,7 @@ package Padre::Wx::MainWindow;
 
 use strict;
 use warnings;
+use English        qw(-no_match_vars);
 use FindBin;
 use Carp           ();
 use File::Spec     ();
@@ -1158,13 +1159,25 @@ sub _search {
     my $page = $self->{notebook}->GetPage($id);
     my $content = $page->GetText;
     my ($from, $to) = $page->GetSelection;
-    my $last = $page->GetLength();
-    my $str  = $page->GetTextRange(0, $last);
-    my $pos = index($str, $search_term, $from+1);
-    if (-1 == $pos) {
-        $pos = index($str, $search_term);
+    if ($from < $to) {
+        $from++;
     }
-    if (-1 == $pos) {
+    my $last = $page->GetLength();
+    my $str  = $page->GetTextRange($from, $last);
+
+    my $regex = qr/$search_term/;
+    # @LAST_MATCH_START
+    # @LAST_MATCH_END
+    my $pos;
+    if ($str =~ $regex) {
+        $pos = $LAST_MATCH_START[0] + $from;
+    } else {
+        my $str  = $page->GetTextRange(0, $last);
+        if ($str =~ $regex) {
+            $pos = $LAST_MATCH_START[0];
+        }
+    }
+    if (not defined $pos) {
         return; # not found
     }
 
