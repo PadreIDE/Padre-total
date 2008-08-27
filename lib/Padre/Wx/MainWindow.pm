@@ -202,6 +202,7 @@ sub new {
     return $self;
 }
 
+
 sub _create_menu_bar {
     my $self   = shift;
     my $ide    = Padre->ide;
@@ -520,24 +521,33 @@ sub on_brace_matching {
 
 sub on_comment_out_block {
     my ($self, $event) = @_;
+
     my $pageid = $self->{notebook}->GetSelection();
     my $page = $self->{notebook}->GetPage($pageid);
     my $start = $page->LineFromPosition($page->GetSelectionStart);
     my $end = $page->LineFromPosition($page->GetSelectionEnd);
+
+    $page->BeginUndoAction;
     for my $line ($start .. $end) {
         # TODO: this should actually depend on language
         # insert #
         my $pos = $page->PositionFromLine($line);
         $page->InsertText($pos, '#');
     }
+    $page->EndUndoAction;
+
+    return;
 }
 
 sub on_uncomment_block {
     my ($self, $event) = @_;
+
     my $pageid = $self->{notebook}->GetSelection();
     my $page = $self->{notebook}->GetPage($pageid);
     my $start = $page->LineFromPosition($page->GetSelectionStart);
     my $end = $page->LineFromPosition($page->GetSelectionEnd);
+
+    $page->BeginUndoAction;
     for my $line ($start .. $end) {
         # TODO: this should actually depend on language
         my $first = $page->PositionFromLine($line);
@@ -548,6 +558,9 @@ sub on_uncomment_block {
             $page->ReplaceSelection('');
         }
     }
+    $page->EndUndoAction;
+
+    return;
 }
 
 
