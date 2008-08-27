@@ -74,9 +74,6 @@ BEGIN {
 }
 
 
-
-
-
 #####################################################################
 # Constructor and Accessors
 
@@ -249,6 +246,7 @@ sub _create_menu_bar {
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&on_comment_out_block       );
+    EVT_MENU( $self, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&on_uncomment_block       );
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-B" ),   \&on_brace_matching       );
 
     EVT_MENU( $self, $menu->{edit}->Append( -1, "&Setup" ),            \&on_setup            );
@@ -495,8 +493,6 @@ sub on_key {
             if (defined $self->{marker}->{$id}) {
                 $page->GotoLine($self->{marker}->{$id});
             }
-        } elsif ($code == ord 'M') {             # Ctrl-Shift-M    uncomment block of code
-            $self->on_uncomment_block($event);
         }
     }
 
