@@ -7,12 +7,16 @@ use warnings;
 use base 'Exporter';
 use File::Spec;
 
+our $VERSION = '0.01';
+
+$| = 1;
+
 our @EXPORT = qw(
                  entry
                  file_selector
                  choice
-
-                 print_out close_app open_frame display_text);
+               );
+#                 print_out close_app open_frame display_text
 
 use Wx                 qw(:everything);
 use Wx::STC            ();
@@ -28,7 +32,7 @@ As a module:
 
  use Padre::Demo;
 
- my $name = prompt("What is your name?\n");
+ my $name = entry(title => "What is your name?");
  print_out("How are you $name today?\n");
 
 
@@ -100,6 +104,9 @@ sub file_selector {
     return File::Spec->catfile($default_dir, $filename);
 }
 
+=head2 choice
+
+=cut
 sub choice {
     my ( %args ) = @_;
     %args = (
@@ -118,17 +125,21 @@ sub choice {
 
 
 
-=head2 print_out
+#=head2 print_out
+#
+#=cut
+#sub print_out {
+#    my ($output, $text) = @_;
+#    $output->AddText($text);
+#    #$Padre::Demo::app->Yield;
+#    return;
+#}
+#
+
+=head2 message
 
 =cut
-sub print_out {
-    my ($output, $text) = @_;
-    $output->AddText($text);
-    #$Padre::Demo::app->Yield;
-    return;
-}
-
-sub display_text {
+sub message {
     my ($text) = @_;
     my $title = '';
     Wx::MessageBox( $text, $title, wxOK|wxCENTRE);
@@ -138,29 +149,57 @@ sub display_text {
 
 
 
-=head2 open_frame
+#=head2 open_frame
+#
+#=cut
+#sub open_frame {
+#    my $frame = Padre::Demo::Frame->new;
+#    my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
+#    $output->SetMarginWidth(1, 0);
+#    $frame->Show( 1 );
+#    return $output;
+#}
+#
+#
+#=head2 close_app
+#
+#=cut
+#sub close_app {
+##   $frame->Close;
+#}
+#
+
+
+#our $main;
+#our $app;
+
+=head1 SUPPORT
+
+See L<http://padre.perlide.org/>
+
+=head1 COPYRIGHT
+
+Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
+
+=head1 WARRANTY
+
+There is no warranty whatsoever.
+If you lose data or your hair because of this program,
+that's your problem.
+
+=head1 CREDITS and THANKS
+
+To Mattia Barbon for providing WxPerl.
+
+The idea was taken from the Zenity project.
 
 =cut
-sub open_frame {
-    my $frame = Padre::Demo::Frame->new;
-    my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
-    $output->SetMarginWidth(1, 0);
-    $frame->Show( 1 );
-    return $output;
-}
 
 
-=head2 close_app
-
-=cut
-sub close_app {
-#   $frame->Close;
-}
-
-
-$| = 1;
-
-our $main;
-our $app;
 
 1;
