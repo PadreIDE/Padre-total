@@ -3,7 +3,7 @@ package Padre::Wx::Text;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.06';
 
 use Wx::STC;
 use base 'Wx::StyledTextCtrl';

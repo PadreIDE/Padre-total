@@ -29,11 +29,7 @@ use Wx qw{:everything};
 use Padre::Wx::MainWindow;
 use base 'Wx::App';
 
-use vars qw{$VERSION};
-BEGIN {
-	$VERSION = '0.05';
-}
-
+our $VERSION = '0.06';
 
 
 

@@ -20,13 +20,13 @@ use Padre::Wx::Text;
 use Padre::Wx::FindDialog;
 use Padre::Pod::Frame;
 
+our $VERSION = '0.06';
+
 my $default_dir = "";
 my $cnt         = 0;
 
-use vars qw{$VERSION %SYNTAX};
+use vars qw{%SYNTAX};
 BEGIN {
-	$VERSION = '0.05';
-
 	# see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
 	# N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
 	#  wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 

@@ -10,6 +10,7 @@ use Wx::Event          qw(:everything);
 use Padre::Demo::Frame ();
 use base 'Wx::Frame';
 
+our $VERSION = '0.06';
 
 sub new {
     my ($class) = @_;

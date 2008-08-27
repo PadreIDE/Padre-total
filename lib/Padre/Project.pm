@@ -7,6 +7,8 @@ use warnings;
 use File::Spec ();
 use base 'Module::Inspector';
 
+our $VERSION = '0.06';
+
 sub from_file {
 	my $class = shift;
 
