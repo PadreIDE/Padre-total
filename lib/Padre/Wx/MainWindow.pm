@@ -1181,6 +1181,8 @@ sub on_find {
     my $search = Padre::Wx::FindDialog->new( $self, $config, {term => $selection} );
     return if not $search;
 
+    $config->{search}->{case_insensitive} = $search->{case_insensitive};
+
     if ($search->{term}) {
         unshift @{$config->{search_terms}}, $search->{term};
         my %seen;
@@ -1227,28 +1229,28 @@ sub _search {
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange($from, $last);
 
-    if ($config->{case_insensitive}) {
+    if ($config->{search}->{case_insensitive})  {
         $search_term = "(?i)$search_term";
     }
 #print $search_term, "\n";
     my $regex = qr/$search_term/m;
 
-    # @LAST_MATCH_START
-    # @LAST_MATCH_END
-    my $pos;
+    my ($start, $end);
     if ($str =~ $regex) {
-        $pos = $LAST_MATCH_START[0] + $from;
+        $start = $LAST_MATCH_START[0] + $from;
+        $end   = $LAST_MATCH_END[0] + $from;
     } else {
         my $str  = $page->GetTextRange(0, $last);
         if ($str =~ $regex) {
-            $pos = $LAST_MATCH_START[0];
+            $start = $LAST_MATCH_START[0];
+            $end   = $LAST_MATCH_END[0];
         }
     }
-    if (not defined $pos) {
+    if (not defined $start) {
         return; # not found
     }
 
-    $page->SetSelection($pos, $pos+length($search_term));
+    $page->SetSelection($start, $end);
 
     return;
 }

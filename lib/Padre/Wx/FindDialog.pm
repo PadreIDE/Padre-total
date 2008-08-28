@@ -12,6 +12,12 @@ our $VERSION = '0.06';
 sub new {
     my ( $class, $win, $config, $args) = @_;
 
+#you can "skip" slots by adding spacers
+#$self->{grid_sizer_1} = Wx::GridSizer->new(2, 3, 5, 5);
+#$self->{grid_sizer_1}->Add(20, 20, 1, wxEXPAND, 0);    
+#$self->{grid_sizer_1}->Add($self->{ButtonDir}, 0, 0, 0);
+#$self->{grid_sizer_1}->Add($self->{ButtonQuit}, 0, 0, 0);
+
     my %search;
     $search{term} = $args->{term} || '';
 
@@ -55,7 +61,11 @@ sub new {
     #$row2->Add($verbatim);
 
     my $case_insensitive = Wx::CheckBox->new( $dialog, -1, "Case &Insensitive", [-1, -1], [-1, -1]);
+    if ($config->{search}->{case_insensitive}) {
+        $case_insensitive->SetValue(1);
+    }
     $row3->Add($case_insensitive);
+    EVT_CHECKBOX( $dialog, $case_insensitive, sub { $find_choice->SetFocus; });
 
 #    $row2->Add($dir_selector, 1, wxALL, 3);
 
