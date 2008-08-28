@@ -499,11 +499,11 @@ sub on_key {
     if ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             $self->on_set_mark($event, $code - 49);
-        } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO why do we still need this?
+        } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
             $self->on_next_pane;
         }
     } elsif ($mod == 6) {                         # Ctrl-Shift
-        if ($code == WXK_TAB) {              # Ctrl-Shift-TAB
+        if ($code == WXK_TAB) {                   # Ctrl-Shift-TAB #TODO it is already in the menu
             $self->on_prev_pane;
         } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
             $self->on_jumpto_mark($event, $code - 49);
@@ -515,23 +515,30 @@ sub on_key {
 
 sub on_set_mark {
     my ($self, $event, $id) = @_;
+
     my $pageid = $self->{notebook}->GetSelection();
     my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
     $self->{marker}->{$id} = $line;
+
+    return;
 }
 
 sub on_jumpto_mark {
     my ($self, $event, $id) = @_;
+
     my $pageid = $self->{notebook}->GetSelection();
     my $page = $self->{notebook}->GetPage($pageid);
     if (defined $self->{marker}->{$id}) {
         $page->GotoLine($self->{marker}->{$id});
     }
+
+    return;
 }
 
 sub on_brace_matching {
     my ($self, $event) = @_;
+
     my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
     my $pos1  = $page->GetCurrentPos;
@@ -544,6 +551,8 @@ sub on_brace_matching {
     # TODO: if not found matching brace,
     # we might want to check it at the previous position
             # TODO: or any nearby position.
+
+    return;
 }
 
 
@@ -594,6 +603,7 @@ sub on_uncomment_block {
 
 sub on_autocompletition {
    my $self   = shift;
+
    my $id     = $self->{notebook}->GetSelection;
    my $page   = $self->{notebook}->GetPage($id);
    my $pos    = $page->GetCurrentPos;
@@ -609,6 +619,7 @@ sub on_autocompletition {
       @words = @words[0..19];
    }
    $page->AutoCompShow(length($prefix), join " ", @words);
+
    return;
 }
 
@@ -637,21 +648,28 @@ sub on_right_click {
 
     return;
 }
+
 sub on_right {
     my ($self, $event, $val) = @_;
 #print "$self $event $val\n";
 #print ">", $event->GetClientObject, "<\n";
     $self->Hide;
     $self->Destroy;
+
+    return;
 }
 
 sub on_exit {
     my ($self) = @_;
-    $self->Close
+
+    $self->Close;
+
+    return;
 }
 
 sub on_close_window {
     my ( $self, $event ) = @_;
+
     my $config = Padre->ide->get_config;
 
     # Check that all files have been saved
@@ -694,39 +712,50 @@ sub on_close_window {
     }
 
     $event->Skip;
+
+    return;
 }
 
 sub _lexer {
     my ($file) = @_;
+
     return $SYNTAX{_default_} if not $file;
     (my $ext = $file) =~ s{.*\.}{};
     $ext = lc $ext;
+
     return $SYNTAX{_default_} if not $ext;
     return( (defined $SYNTAX{$ext}) ? $SYNTAX{$ext} : $SYNTAX{_default_});
 }
 
 # for files without a type
 sub _get_default_file_type {
+    my ($self) = @_;
+
     # TODO: get it from config
-    return _get_local_filetype();
+    return $self->_get_local_filetype();
 }
 # Where to convert (UNIX, WIN, MAC)
 # or Ask (the user) or Keep (the garbage)
 # mixed files
 sub _mixed_newlines {
+    my ($self) = @_;
+
     # TODO get from config
-    return _get_local_filetype();
+    return $self->_get_local_filetype();
 }
 
 # What to do with files that have consistent line endings:
 # 0 if keep as they are
 # MAC|UNIX|WIN convert them to the appropriate type
 sub _auto_convert {
+    my ($self) = @_;
     # TODO get from config
     return 0;
 }
 
 sub _get_local_filetype {
+    my ($self) = @_;
+
     return $^O =~ /MSWin|cygwin|dos|os2/i ? 'WIN' : 
            $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
 }
@@ -741,7 +770,7 @@ sub setup_editor {
 
     my $config    = Padre->ide->get_config;
     my $editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer($file) );
-    my $file_type = _get_default_file_type();
+    my $file_type = $self->_get_default_file_type();
 
     my %mode = (
        'WIN'  => Wx::wxSTC_EOL_CRLF,
@@ -764,7 +793,7 @@ sub setup_editor {
         if ($current_type eq 'None') {
             # keep default
         } elsif ($current_type eq 'Mixed') {
-            my $mixed = _mixed_newlines();
+            my $mixed = $self->_mixed_newlines();
             if ( $mixed eq 'Ask') {
                 warn "TODO ask the user what to do with $file";
                 # $convert_to = $file_type = ;
@@ -775,7 +804,7 @@ sub setup_editor {
                 $convert_to = $file_type = $mixed;
             }
         } else {
-            $convert_to = _auto_convert();
+            $convert_to = $self->_auto_convert();
             if ($convert_to) {
                 #warn "TODO call converting on $file";
                 $file_type = $convert_to;
@@ -795,8 +824,8 @@ sub setup_editor {
            $editor->ConvertEOLs( $mode{$file_type} );
         }
     }
-    _toggle_numbers($editor, $config->{show_line_numbers});
-    _toggle_eol($editor, $config->{show_eol});
+    $self->_toggle_numbers($editor, $config->{show_line_numbers});
+    $self->_toggle_eol($editor, $config->{show_eol});
 
     $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
     $editor->SetFocus;
@@ -831,7 +860,7 @@ sub on_toggle_line_numbers {
     # Update the notebook pages
     foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
         my $editor = $self->{notebook}->GetPage($id);
-        _toggle_numbers( $editor, $config->{show_line_numbers} );
+        $self->_toggle_numbers( $editor, $config->{show_line_numbers} );
     }
 
     return;
@@ -846,7 +875,7 @@ sub on_toggle_eol {
 
     foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
         my $editor = $self->{notebook}->GetPage($id);
-        _toggle_eol($editor, $config->{show_eol})
+        $self->_toggle_eol($editor, $config->{show_eol})
     }
     return;
 }
@@ -857,7 +886,7 @@ sub on_toggle_eol {
 # actually I added some improvement allowing a 50% growth in the file
 # and requireing a min of 2 width
 sub _toggle_numbers {
-    my ($editor, $on) = @_;
+    my ($self, $editor, $on) = @_;
 
     $editor->SetMarginWidth(1, 0);
     $editor->SetMarginWidth(2, 0);
@@ -872,7 +901,7 @@ sub _toggle_numbers {
     }
 }
 sub _toggle_eol {
-    my ($editor, $on) = @_;
+    my ($self, $editor, $on) = @_;
     $editor->SetViewEOL($on);
     return;
 }
@@ -1001,11 +1030,11 @@ sub on_save_as {
         if (-e $path) {
             my $res = Wx::MessageBox("File already exists. Overwrite it?", "Exist", wxYES_NO, $self);
             if ($res == wxYES) {
-                $self->_set_filename($id, $path, _get_local_filetype());
+                $self->_set_filename($id, $path, $self->_get_local_filetype());
                 last;
             }
         } else {
-            $self->_set_filename($id, $path, _get_local_filetype());
+            $self->_set_filename($id, $path, $self->_get_local_filetype());
             last;
         }
     }
@@ -1714,7 +1743,7 @@ sub update_status {
     my $line = $page->GetCurrentLine;
     my ($filename, $file_type) = $self->_get_filename($pageid);
     $filename  ||= '';
-    $file_type ||= _get_local_filetype();
+    $file_type ||= $self->_get_local_filetype();
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
