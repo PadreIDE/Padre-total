@@ -495,7 +495,7 @@ sub on_key {
 
     my $mod  = $event->GetModifiers() || 0;
     my $code = $event->GetKeyCode;
-    #print "$mod $code\n";
+#print "$mod $code\n";
     if ($mod == 2) {            # Ctrl
         if (57 >= $code and $code >= 49) {       # Ctrl-1-9
             $self->on_set_mark($event, $code - 49);
@@ -614,7 +614,7 @@ sub on_autocompletition {
 
 sub on_right_click {
     my ($self, $event) = @_;
-    print "right\n";
+#print "right\n";
     my @options = qw(abc def);
     my $HEIGHT = 30;
     my $dialog = Wx::Dialog->new( $self, -1, "", [-1, -1], [100, 50 + $HEIGHT * $#options], wxBORDER_SIMPLE);
@@ -623,7 +623,7 @@ sub on_right_click {
         EVT_BUTTON( $dialog, Wx::Button->new( $dialog, -1, $options[$i], [10, 10+$HEIGHT*$i] ), sub {on_right(@_, $i)} );
     }
     my $ret = $dialog->Show;
-    print "ret\n";
+#print "ret\n";
     #my $pop = Padre::Wx::Popup->new($self); #, wxSIMPLE_BORDER);
     #$pop->Move($event->GetPosition());
     #$pop->SetSize(300, 200);
@@ -639,8 +639,8 @@ sub on_right_click {
 }
 sub on_right {
     my ($self, $event, $val) = @_;
-    print "$self $event $val\n";
-    #print ">", $event->GetClientObject, "<\n";
+#print "$self $event $val\n";
+#print ">", $event->GetClientObject, "<\n";
     $self->Hide;
     $self->Destroy;
 }
@@ -803,10 +803,11 @@ sub setup_editor {
     my $pack = __PACKAGE__;
     #my $page = $self->{notebook}->GetCurrentPage;
     my $id  = $self->{notebook}->GetSelection;
-    $self->_add_alt_n_menu($file, $id);
+    my $file_title = $file || $self->{notebook}->GetPageText($id);
+    $self->_add_alt_n_menu($file_title, $id);
 
     $self->_set_filename($id, $file, $file_type);
-    #print "x" . $editor->AutoCompActive .  "x\n";
+#print "x" . $editor->AutoCompActive .  "x\n";
 
     #$editor->UsePopUp(0);
     #EVT_RIGHT_DOWN( $editor, \&on_right_click );
@@ -885,11 +886,11 @@ sub on_open {
        $dialog->SetWildcard("*");
     }
     if ($dialog->ShowModal == wxID_CANCEL) {
-        #print "Cancel\n";
+#print "Cancel\n";
         return;
     }
     my $filename = $dialog->GetFilename;
-    #print "OK $filename\n";
+#print "OK $filename\n";
     $default_dir = $dialog->GetDirectory;
 
     my $file = File::Spec->catfile($default_dir, $filename);
@@ -930,6 +931,7 @@ sub _get_filename {
     my $pack = __PACKAGE__;
     my $page = $self->{notebook}->GetPage($id);
 
+print "filename: $id $page->{$pack}->{filename}, $page->{$pack}->{type}\n";
     
     if (wantarray) {
 	return ($page->{$pack}->{filename}, $page->{$pack}->{type});
@@ -988,11 +990,11 @@ sub on_save_as {
     while (1) {
         my $dialog = Wx::FileDialog->new( $self, "Save file as...", $default_dir, "", "*.*", wxFD_SAVE);
         if ($dialog->ShowModal == wxID_CANCEL) {
-            #print "Cancel\n";
+#print "Cancel\n";
             return;
         }
         my $filename = $dialog->GetFilename;
-        #print "OK $filename\n";
+#print "OK $filename\n";
         $default_dir = $dialog->GetDirectory;
 
         my $path = File::Spec->catfile($default_dir, $filename);
@@ -1079,7 +1081,8 @@ sub on_close {
 
     $self->_remove_alt_n_menu();
     foreach my $i (0..@{ $self->{menu}->{alt} } -1) {
-        $self->_update_alt_n_menu(scalar($self->_get_filename($i)), $i);
+        my $file = $self->_get_filename($i) || $self->{notebook}->GetPageText($i);
+        $self->_update_alt_n_menu($file, $i);
     }
 
     return;
@@ -1218,8 +1221,8 @@ sub _search {
     if ($config->{case_insensitive}) {
         $search_term = "(?i)$search_term";
     }
-    #print $search_term, "\n";
-    my $regex = qr/$search_term/;
+#print $search_term, "\n";
+    my $regex = qr/$search_term/m;
 
     # @LAST_MATCH_START
     # @LAST_MATCH_END
@@ -1629,13 +1632,13 @@ sub on_pick_project_dir {
 
     my $dialog = Wx::DirDialog->new( $self, "Select Project Directory", $default_dir);
     if ($dialog->ShowModal == wxID_CANCEL) {
-        #print "Cancel\n";
+#print "Cancel\n";
         return;
     }
     $default_dir = $dialog->GetPath;
 
     $path->SetLabel($default_dir);
-    #print "$default_dir\n";
+#print "$default_dir\n";
     return;
 }
 
@@ -1695,6 +1698,7 @@ sub update_status {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
+print "Pageid: $pageid\n";
     my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
     my ($filename, $file_type) = $self->_get_filename($pageid);
