@@ -371,9 +371,15 @@ sub add_to_recent {
     my @recent = $self->get_recent($type);
     if (not grep {$_ eq $item} @recent) {
         push @recent, $item;
+        my $MAX = 20;
+        if (@recent > $MAX) {
+            @recent = @recent[$#recent-$MAX..$#recent];
+        }
         @{ $self->{recent}->{$type} } = @recent;
         $self->set_current_index($type, $#recent);
     }
+    
+
     return;
 }
 
