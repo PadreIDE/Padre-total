@@ -15,8 +15,10 @@ our @EXPORT = qw(
                  entry
                  password
                  file_selector
+                 dir_selector
                  choice
                  message
+                 calendar
                );
 #                 print_out close_app open_frame display_text
 
@@ -35,7 +37,7 @@ As a module:
  use Padre::Demo;
 
  my $name = entry(title => "What is your name?");
- print_out("How are you $name today?\n");
+ message(text => "How are you $name today?\n");
 
 
 On the command line try
@@ -117,6 +119,27 @@ sub file_selector {
     return File::Spec->catfile($default_dir, $filename);
 }
 
+=head2 dir_selector
+
+=cut
+sub dir_selector {
+    my ( %args ) = @_;
+    %args = (
+                title => '',
+                path  => '',
+                %args);
+
+    my $dialog = Wx::DirDialog->new( undef, $args{title}, $args{path});
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+    my $dir = $dialog->GetPath;
+
+    return $dir;
+}
+
+
+
 =head2 choice
 
 =cut
@@ -155,15 +178,30 @@ sub choice {
 sub message {
     my ( %args ) = @_;
 
-    $args{text}  ||= '';
-    $args{title} ||= '';
+    %args = (
+                title   => '',
+                text    => '',
+
+                %args);
+
     Wx::MessageBox( $args{text}, $args{title}, wxOK|wxCENTRE);
 
     return;
 }
 
-
-
+#=head2 calendar
+#
+#=cut
+#sub calendar {
+#    my ( %args ) = @_;
+#
+#    require Wx::Calendar;
+#    my $cal = Wx::CalendarCtrl->new();
+#    $cal->Show;
+#
+#    return;
+#}
+#
 
 #=head2 open_frame
 #
