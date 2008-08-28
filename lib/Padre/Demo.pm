@@ -13,8 +13,10 @@ $| = 1;
 
 our @EXPORT = qw(
                  entry
+                 password
                  file_selector
                  choice
+                 message
                );
 #                 print_out close_app open_frame display_text
 
@@ -72,7 +74,8 @@ sub entry {
               default => '',
               %args);
 
-    my $dialog = Wx::TextEntryDialog->new( undef, $args{prompt}, $args{title}, $args{default} );
+    my $class = $args{password} ? 'Wx::PasswordEntryDialog' : 'Wx::TextEntryDialog';
+    my $dialog = $class->new( undef, $args{prompt}, $args{title}, $args{default} );
     if ($dialog->ShowModal == wxID_CANCEL) {
         return;
     }
@@ -81,6 +84,16 @@ sub entry {
     return $resp;
 }
 
+=head2 password
+
+=cut
+sub password {
+    my ( %args ) = @_;
+
+    $args{password} = 1;
+    
+    return entry( %args );
+}
 
 =head2 file_selector
 
@@ -140,10 +153,13 @@ sub choice {
 
 =cut
 sub message {
-    my ($text) = @_;
-    my $title = '';
-    Wx::MessageBox( $text, $title, wxOK|wxCENTRE);
+    my ( %args ) = @_;
 
+    $args{text}  ||= '';
+    $args{title} ||= '';
+    Wx::MessageBox( $args{text}, $args{title}, wxOK|wxCENTRE);
+
+    return;
 }
 
 

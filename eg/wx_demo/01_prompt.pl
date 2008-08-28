@@ -9,10 +9,10 @@ use Padre::Demo;
 
 
 my $empty = entry();
-display_text($empty);
+message(text => $empty);
 
 my $name = entry(title => "What is your name?");
-display_text("How are you $name today?\n");
+message(text => "How are you $name today?\n");
 
 my $how = entry(title => $name, prompt => "How are you?");
-display_text("$name,  $how");
+message(text => "$name,  $how");

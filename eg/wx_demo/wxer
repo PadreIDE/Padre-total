@@ -27,9 +27,9 @@ if ($opt{help}) {
 usage() unless $opt{entry} xor $opt{'file-selection'};
 
 if ($opt{entry}) {
-    print Padre::Demo::entry( $opt );
+    print Padre::Demo::entry( %opt );
 } elsif ($opt{'file-selection'}) {
-    print Padre::Demo::file_selector( $opt );
+    print Padre::Demo::file_selector( %opt );
 } else {
     usage();
 }

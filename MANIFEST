@@ -48,6 +48,7 @@ eg/wx/04_button_with_event.pl
 
 eg/wx_demo/wxer
 eg/wx_demo/01_prompt.pl
+eg/wx_demo/02_password.pl
 eg/wx_demo/03_filename.pl
 eg/wx_demo/04_choice.pl
 
