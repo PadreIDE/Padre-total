@@ -1,7 +1,10 @@
+v0.06 2008.08.28
+
     Add some "new file" templates
     Temporarily remove the toolbar
     Change behavior of Padre::Demo, add wxer command line interface
     Remove Demo::App
+    Padre::Demo add dir_selector() and password()
     Update list of methods on save as well #54 (vincent)
     Change the list of subs on the right hand side to be sorted
     Set Alt-S to jump to the subs list
@@ -13,7 +16,9 @@
     Adding a ORLite interface to the database Padre::DB (ADAMK)
     Include authors tests for Perl critic and POD in xt/ directory
     Make commenting out and uncommenting out atomic in the undo buffer
-    Replace string search by regex search
+    Replace string search by regex search, change the GUI
+    Add case insensitive search
+    Limit the max number of recent files to 20
 
 v0.05 2008.08.17
 
