@@ -931,7 +931,7 @@ sub _get_filename {
     my $pack = __PACKAGE__;
     my $page = $self->{notebook}->GetPage($id);
 
-print "filename: $id $page->{$pack}->{filename}, $page->{$pack}->{type}\n";
+#print "filename: $id $page->{$pack}->{filename}, $page->{$pack}->{type}\n";
     
     if (wantarray) {
 	return ($page->{$pack}->{filename}, $page->{$pack}->{type});
@@ -1060,6 +1060,10 @@ sub _save_buffer {
 
 sub on_close {
     my ($self) = @_;
+
+    local $self->{_in_delete_editor} = 1;
+#print "PageText: " . $self->{notebook}->GetPageText(0) . "\n";
+
     my $id     = $self->{notebook}->GetSelection;
     if ( $self->_buffer_changed($id) ) {
         my $ret = Wx::MessageBox(
@@ -1074,14 +1078,19 @@ sub on_close {
             # just close it
         } else {
             # wxCANCEL, or when clicking on [x]
+
             return;
         }
     }
     $self->{notebook}->DeletePage($id); 
+#print "PageText after delete: " . $self->{notebook}->GetPageText(0) . "\n";
 
     $self->_remove_alt_n_menu();
     foreach my $i (0..@{ $self->{menu}->{alt} } -1) {
-        my $file = $self->_get_filename($i) || $self->{notebook}->GetPageText($i);
+        my $file = $self->_get_filename($i);
+#print "file: $i $file\n";
+        $file ||= $self->{notebook}->GetPageText($i);
+#print "pagetext: $file\n";
         $self->_update_alt_n_menu($file, $i);
     }
 
@@ -1691,14 +1700,14 @@ sub on_prev_pane {
 sub update_status {
     my ($self) = @_;
 
-    return if $self->{_in_setup_editor};
+    return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
 
     my $pageid = $self->{notebook}->GetSelection();
     if (not defined $pageid) {
         $self->SetStatusText("", $_) for (0..2);
         return;
     }
-print "Pageid: $pageid\n";
+#print "Pageid: $pageid\n";
     my $page = $self->{notebook}->GetPage($pageid);
     my $line = $page->GetCurrentLine;
     my ($filename, $file_type) = $self->_get_filename($pageid);
@@ -1707,9 +1716,11 @@ print "Pageid: $pageid\n";
     my $modified = $page->GetModify ? '*' : ' ';
 
     if ($filename) {
+#print "set1 ($filename)\n";
         $self->{notebook}->SetPageText($pageid, $modified . File::Basename::basename $filename);
     } else {
         my $text = substr($self->{notebook}->GetPageText($pageid), 1);
+#print "set2 $text\n";
         $self->{notebook}->SetPageText($pageid, $modified . $text);
     }
     my $pos = $page->GetCurrentPos;
