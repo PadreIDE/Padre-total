@@ -51,6 +51,9 @@ SCOPE: {
             projects          => {},
             save_on_run       => 'same',
             current_project   => '',
+            editor            => {
+                    tab_size      => 8,
+            },
             main              => {
                 top       => -1,
                 left      => -1,

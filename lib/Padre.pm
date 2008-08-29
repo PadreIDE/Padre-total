@@ -169,7 +169,6 @@ use Class::Autouse qw{
    Padre::Pod::Frame
    Padre::Pod::Indexer
    Padre::Pod::Viewer
-   Padre::Wx::FindDialog
    Padre::Wx::Popup
    Padre::Wx::Text
 };

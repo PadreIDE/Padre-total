@@ -1139,6 +1139,11 @@ sub on_setup {
     require Padre::Wx::Preferences;
     Padre::Wx::Preferences->new( $self, $config );
 
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+        my $editor = $self->{notebook}->GetPage($id);
+        $editor->SetTabWidth( $config->{editor}->{tab_size} );
+    }
+
     return;
 }
 

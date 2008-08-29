@@ -92,6 +92,8 @@ sub new {
     $self->{projects}          ||= {};
     $self->{current_project}   ||= '';
 
+    $self->{editor}->{tab_size}    ||= 8;
+
     return $self;
 }
 
