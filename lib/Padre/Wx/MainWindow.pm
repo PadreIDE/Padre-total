@@ -108,7 +108,7 @@ sub new {
     $self->{marker} = {};
 
     # Create the menu bar
-    $self->{menu} = $self->_create_menu_bar;
+    $self->{menu} = Padre::Wx::Menu->new( $self );
     $self->SetMenuBar( $self->{menu}->{wx} );
 
     # Create the layout boxes for the main window
@@ -200,222 +200,6 @@ sub new {
     $self->_load_files;
 
     return $self;
-}
-
-sub _add_alt_n_menu {
-    my ($self, $file, $n) = @_;
-    return if $n > 9;
-
-    $self->{menu}->{alt}->[$n] = $self->{menu}->{view}->Append(-1, "");
-    EVT_MENU( $self, $self->{menu}->{alt}->[$n], sub {$_[0]->on_nth_pane($n)} );
-    $self->_update_alt_n_menu($file, $n);
-
-    return;
-}
-
-sub _update_alt_n_menu {
-    my ($self, $file, $n) = @_;
-
-    my $v = $n +1;
-    $self->{menu}->{alt}->[$n]->SetText("$file\tAlt-$v");
-
-    return;
-}
-
-sub _remove_alt_n_menu {
-    my ($self) = @_;
-
-    $self->{menu}->{view}->Remove(pop @{ $self->{menu}->{alt} });
-
-    return;
-}
-
-sub _create_menu_bar {
-    my $self   = shift;
-    my $ide    = Padre->ide;
-    my $config = $ide->get_config;
-    my $menu   = {};
-
-    # Create the File menu
-    $menu->{file} = Wx::Menu->new;
-    EVT_MENU( $self, $menu->{file}->Append( wxID_NEW,  '' ), \&on_new  );
-    EVT_MENU( $self, $menu->{file}->Append( wxID_OPEN, '' ), \&on_open );
-    $menu->{file_recent} = Wx::Menu->new;
-    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent} );
-    foreach my $f ( $ide->get_recent('files') ) {
-       EVT_MENU(
-           $self,
-           $menu->{file_recent}->Append(-1, $f), 
-           sub { $_[0]->setup_editor($f) },
-       );
-    }
-    EVT_MENU( $self, $menu->{file}->Append( wxID_SAVE,   '' ), \&on_save     );
-    EVT_MENU( $self, $menu->{file}->Append( wxID_SAVEAS, '' ), \&on_save_as  );
-    EVT_MENU( $self, $menu->{file}->Append( -1, 'Save All'  ), \&on_save_all );
-    EVT_MENU( $self, $menu->{file}->Append( wxID_CLOSE,  '' ), \&on_close    );
-    EVT_MENU( $self, $menu->{file}->Append( wxID_EXIT,   '' ), \&on_exit     );
-
-
-
-    # Create the Project menu
-    $menu->{project} = Wx::Menu->new;
-    EVT_MENU( $self, $menu->{project}->Append( -1, "&New"), \&on_new_project );
-    EVT_MENU( $self, $menu->{project}->Append( -1, "&Select"    ), \&on_select_project );
-
-
-
-    # Create the Edit menu
-    $menu->{edit} = Wx::Menu->new;
-    EVT_MENU( $self, $menu->{edit}->Append( wxID_UNDO, '' ),           \&on_undo             );
-    EVT_MENU( $self, $menu->{edit}->Append( wxID_REDO, "\tCtrl-Shift-Z" ),  \&on_redo             );
-    EVT_MENU( $self, $menu->{edit}->Append( wxID_FIND, '' ),           \&on_find             );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&on_find_again       );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&on_goto             );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&on_autocompletition );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&on_comment_out_block       );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&on_uncomment_block       );
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-B" ),   \&on_brace_matching       );
-
-    EVT_MENU( $self, $menu->{edit}->Append( -1, "&Setup" ),            \&on_setup            );
-
-
-
-    # Create the View menu
-    $menu->{view}       = Wx::Menu->new;
-    $menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, "Show Line numbers" );
-    $menu->{view_lines}->Check( $config->{show_line_numbers} ? 1 : 0 );
-    EVT_MENU(
-        $self,
-        $menu->{view_lines},
-        \&on_toggle_line_numbers,
-    );
-    $menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, "Show Newlines" );
-    $menu->{view_eol}->Check( $config->{show_eol} ? 1 : 0 );
-    EVT_MENU(
-        $self,
-        $menu->{view_eol},
-        \&on_toggle_eol,
-    );
-    $menu->{view_output} = $menu->{view}->AppendCheckItem( -1, "Show Output" );
-    EVT_MENU(
-        $self,
-        $menu->{view_output},
-        \&on_toggle_show_output,
-    );
-    $menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
-    $menu->{view_statusbar}->Check( $config->{show_statusbar} ? 1 : 0 );
-    EVT_MENU(
-        $self,
-        $menu->{view_statusbar},
-        \&on_toggle_status_bar,
-    );
-
-    $menu->{view}->AppendSeparator;
-    #$menu->{view_files} = Wx::Menu->new;
-    #$menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
-    EVT_MENU(
-        $self,
-        $menu->{view}->Append(-1, "Next File\tCtrl-TAB"),
-        \&on_next_pane,
-    );
-    EVT_MENU(
-        $self,
-        $menu->{view}->Append(-1, "Prev File\tCtrl-Shift-TAB"),
-        \&on_prev_pane,
-    );
-
-    # Creat the Run menu
-    $menu->{run} = Wx::Menu->new;
-    $menu->{run_this} = $menu->{run}->Append( -1, "Run &This\tF5" );
-    EVT_MENU(
-        $self,
-        $menu->{run_this},
-        \&on_run_this,
-    );
-    $menu->{run_any} = $menu->{run}->Append( -1, "Run Any\tCtrl-F5" );
-    EVT_MENU(
-        $self,
-        $menu->{run_any},
-        \&on_run,
-    );
-    $menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
-    EVT_MENU(
-        $self,
-        $menu->{run_stop},
-        \&on_stop,
-    );
-    EVT_MENU(
-        $self,
-        $menu->{run}->Append( -1, "&Setup" ),
-        \&on_setup_run,
-    );
-    $menu->{run_stop}->Enable(0);
-
-    
-    # Create the Plugins menu
-    $menu->{plugin} = Wx::Menu->new;
-    my %plugins = %{ $ide->{plugins} };
-    foreach my $name ( sort keys %plugins ) {
-        next if not $plugins{$name};
-        my @menu    = eval { $plugins{$name}->menu };
-        warn "Error when calling menu for plugin '$name' $@" if $@;
-        my $menu_items = $self->_add_plugin_menu_items(\@menu);
-        $menu->{plugin}->Append( -1, $name, $menu_items );
-    }
-
-
-
-    # Create the help menu
-    $menu->{help} = Wx::Menu->new;
-    EVT_MENU(
-        $self,
-        $menu->{help}->Append( wxID_ABOUT,   '' ),
-        \&on_about,
-    );
-    EVT_MENU(
-        $self,
-        $menu->{help}->Append( wxID_HELP, '' ),
-        \&on_help,
-    );
-    EVT_MENU(
-        $self,
-        $menu->{help}->Append( -1, "Context-help\tCtrl-Shift-H" ),
-        \&on_context_help,
-    );
-
-
-
-    # Create and return the main menu bar
-    $menu->{wx} = Wx::MenuBar->new;
-    $menu->{wx}->Append( $menu->{file},    "&File" );
-    $menu->{wx}->Append( $menu->{project}, "&Project" );
-    $menu->{wx}->Append( $menu->{edit},    "&Edit" );
-    $menu->{wx}->Append( $menu->{view},    "&View" );
-    $menu->{wx}->Append( $menu->{run},     "&Run" );
-    if ( %plugins ) {
-        $menu->{wx}->Append( $menu->{plugin}, "Pl&ugins" );
-    }
-    $menu->{wx}->Append( $menu->{help},    "&Help" );
-
-    return $menu;
-}
-
-
-# Recursively add plugin menu items from nested array refs
-sub _add_plugin_menu_items {
-    my ($self, $menu_items) = @_;
-
-    my $menu = Wx::Menu->new;
-    foreach my $m ( @{$menu_items} ) {
-        if (ref $m->[1] eq 'ARRAY') {
-            my $submenu = $self->_add_plugin_menu_items($m->[1]);
-            $menu->Append(-1, $m->[0], $submenu);
-        } else {
-            EVT_MENU( $self, $menu->Append(-1, $m->[0]), $m->[1] );
-        }
-    }
-    return $menu;
 }
 
 
@@ -833,7 +617,7 @@ sub setup_editor {
     #my $page = $self->{notebook}->GetCurrentPage;
     my $id  = $self->{notebook}->GetSelection;
     my $file_title = $file || $self->{notebook}->GetPageText($id);
-    $self->_add_alt_n_menu($file_title, $id);
+    $self->{menu}->add_alt_n_menu($file_title, $id);
 
     $self->_set_filename($id, $file, $file_type);
 #print "x" . $editor->AutoCompActive .  "x\n";
@@ -1114,13 +898,13 @@ sub on_close {
     $self->{notebook}->DeletePage($id); 
 #print "PageText after delete: " . $self->{notebook}->GetPageText(0) . "\n";
 
-    $self->_remove_alt_n_menu();
+    $self->{menu}->remove_alt_n_menu();
     foreach my $i (0..@{ $self->{menu}->{alt} } -1) {
         my $file = $self->_get_filename($i);
 #print "file: $i $file\n";
         $file ||= $self->{notebook}->GetPageText($i);
 #print "pagetext: $file\n";
-        $self->_update_alt_n_menu($file, $i);
+        $self->{menu}->update_alt_n_menu($file, $i);
     }
 
     return;
