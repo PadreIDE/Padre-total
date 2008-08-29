@@ -2,40 +2,7 @@ use strict;
 use warnings;
 use Module::Build ();
 
-my $class = Module::Build->subclass(
-    class => 'Padre::Install',
-    code  => <<'END_SUBCLASS' );
-
-sub ACTION_code {
-    my $self = shift;
-
-    $self->SUPER::ACTION_code(@_);
-
-    use FindBin               ();
-    use File::Spec::Functions qw(catfile catdir);
-    require File::Copy::Recursive;
-    import  File::Copy::Recursive qw(dircopy);
-
-    my $dir =  catdir($FindBin::Bin, 'blib', 'lib', 'auto', 'share', 'dist', $self->dist_name);
-    dircopy(catfile($FindBin::Bin, 'share'), $dir);
-    return;
-}
-
-
-END_SUBCLASS
-
-use File::Spec::Functions qw(catdir);
-
-my $builder = $class->new(
-    module_name           => 'Padre',
-    license               => 'perl',
-    dist_author           => 'Gabor Szabo',
-    create_makefile_pl    => 0,
-    create_readme         => 0,
-    recursive_test_files  => 0,
-
-    script_files          => [ 'script/padre' ],
-    requires              => {
+my %prereqs = (
         'perl'                    => '5.008',
 
         'Carp'                    => 0,
@@ -65,7 +32,94 @@ my $builder = $class->new(
         'YAML::Tiny'              => '1.32',
         'Wx'                      => 0,
         'Wx::Perl::ProcessStream' => 0,
-    },
+);
+
+
+
+my $class = Module::Build->subclass(
+    class => 'Padre::Install',
+    code  => <<'END_SUBCLASS' );
+
+sub ACTION_code {
+    my $self = shift;
+
+    $self->SUPER::ACTION_code(@_);
+
+    use FindBin               ();
+    use File::Spec::Functions qw(catfile catdir);
+    require File::Copy::Recursive;
+    import  File::Copy::Recursive qw(dircopy);
+
+    my $dir =  catdir($FindBin::Bin, 'blib', 'lib', 'auto', 'share', 'dist', $self->dist_name);
+    dircopy(catfile($FindBin::Bin, 'share'), $dir);
+    return;
+}
+
+sub ACTION_exe {
+    my $self = shift;
+
+    # temporary tool to create executable using PAR
+
+
+    my $libs    = libs();
+    my $modules = modules(); #(grep {$_ ne 'perl'} keys %{ $self->requires });
+    my $cmd     = "pp -o padre -I lib  script/padre $modules $libs";
+    print "$cmd\n";
+    system $cmd;
+
+    return;
+}
+
+sub libs {
+    my @libs = qw(
+                libwx_gtk2_adv-2.8.so.0
+                libwx_gtk2_core-2.8.so.0
+                libwx_base-2.8.so.0
+                libwx_base_net-2.8.so.0
+                libwx_gtk2_stc-2.8.so.0
+                libwx_gtk2_html-2.8.so.0
+    );
+    my $c = '';
+    $c .= "-l /home/gabor/perl5lib/lib/perl/5.8.8/Alien/wxWidgets/gtk_2_8_7/lib/$_ " for @libs;
+
+    return $c;
+}
+
+
+sub modules {
+    my @modules = @_;
+
+    open my $fh, '<', 'MANIFEST' or die $!;
+    while (my $line = <$fh>) {
+        chomp $line;
+        if ($line =~ m{^lib/}) {
+            $line = substr($line, 4, -3);
+            $line =~ s{/}{::}g;
+            push @modules, $line;
+        }
+    }
+    my $m = '';
+    $m .= "-M $_ " for @modules;
+
+    return $m;
+}
+
+
+END_SUBCLASS
+
+use File::Spec::Functions qw(catdir);
+
+
+my $builder = $class->new(
+    module_name           => 'Padre',
+    license               => 'perl',
+    dist_author           => 'Gabor Szabo',
+    create_makefile_pl    => 0,
+    create_readme         => 0,
+    recursive_test_files  => 0,
+
+    script_files          => [ 'script/padre' ],
+    requires              => \%prereqs,
     build_requires        => {
         'Test::More'                => '0.47',
         'Test::Exception'           => 0,
@@ -114,3 +168,5 @@ sub nono {
     print STDERR "$msg\n";
     exit 0;
 }
+
+
