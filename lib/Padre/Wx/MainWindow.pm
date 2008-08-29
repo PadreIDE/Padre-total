@@ -562,7 +562,7 @@ sub _get_local_filetype {
 sub setup_editor {
     my ($self, $file) = @_;
 
-    $self->{_in_setup_editor} = 1;
+    local $self->{_in_setup_editor} = 1;
 
     # Flush old stuff
     delete $self->{project};
@@ -585,7 +585,6 @@ sub setup_editor {
         $content = eval { File::Slurp::read_file($file) };
         if ($@) {
             warn $@;
-            delete $self->{_in_setup_editor};
             return;
         }
         my $current_type = Padre::get_newline_type($content);
@@ -645,7 +644,6 @@ sub setup_editor {
     #EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
     #EVT_MOTION( $editor, sub {print '.'});
 
-    delete $self->{_in_setup_editor};
     $self->update_status;
     return;
 }
