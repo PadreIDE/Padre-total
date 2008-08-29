@@ -625,6 +625,7 @@ sub setup_editor {
     }
     $self->_toggle_numbers($editor, $config->{show_line_numbers});
     $self->_toggle_eol($editor, $config->{show_eol});
+    $self->set_preferences($editor, $config);
 
     $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
     $editor->SetFocus;
@@ -873,21 +874,6 @@ sub _buffer_changed {
     my ($self, $id) = @_;
     my $page = $self->{notebook}->GetPage($id);
     return $page->GetModify;
-}
-
-sub on_setup {
-    my ($self) = @_;
-    my $config = Padre->ide->get_config;
-
-    require Padre::Wx::Preferences;
-    Padre::Wx::Preferences->new( $self, $config );
-
-    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
-        my $editor = $self->{notebook}->GetPage($id);
-        $editor->SetTabWidth( $config->{editor}->{tab_size} );
-    }
-
-    return;
 }
 
 sub on_goto {
@@ -1196,6 +1182,7 @@ sub on_nth_pane {
     }
     return;
 }
+
 sub on_next_pane {
     my ($self) = @_;
 
@@ -1274,7 +1261,30 @@ sub on_panel_changed {
 }
 
 
-###### toggle functions
+###### preferences and toggle functions
+
+sub on_setup {
+    my ($self) = @_;
+
+    my $config = Padre->ide->get_config;
+
+    require Padre::Wx::Preferences;
+    Padre::Wx::Preferences->new( $self, $config );
+
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+        my $editor = $self->{notebook}->GetPage($id);
+        $self->set_preferences($editor, $config);
+    }
+
+    return;
+}
+
+sub set_preferences {
+    my ($self, $editor, $config) = @_;
+    $editor->SetTabWidth( $config->{editor}->{tab_size} );
+
+    return;
+}
 
 sub on_toggle_line_numbers {
     my ($self, $event) = @_;
@@ -1306,6 +1316,52 @@ sub on_toggle_eol {
     return;
 }
 
+sub show_output {
+    my ($self) = @_;
+
+    if (not $self->{menu}->{view_output}->IsChecked) {
+        $self->{menu}->{view_output}->Check(1);
+        $self->_toggle_output(1);
+    }
+
+    return;
+}
+
+sub on_toggle_show_output {
+    my ($self, $event) = @_;
+
+    # Update the output panel
+    
+    $self->_toggle_output($event->IsChecked);
+
+    return;
+}
+
+sub _toggle_output {
+    my ($self, $on) = @_;
+    my $config = Padre->ide->get_config;
+    $self->{main_panel}->SetSashPosition(
+        $config->{main}->{height} - ($on ? 100 : 0)
+    );
+}
+
+sub on_toggle_status_bar {
+    my ($self, $event) = @_;
+
+    # Update the configuration
+    my $config = Padre->ide->get_config;
+    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
+
+    # Update the status bar
+    my $status_bar = $self->GetStatusBar;
+    if ( $config->{show_status_bar} ) {
+        $status_bar->Hide;
+    } else {
+        $status_bar->Show;
+    }
+
+    return;
+}
 
 # currently if there are 9 lines we set the margin to 1 width and then
 # if another line is added it is not seen well.
@@ -1330,36 +1386,6 @@ sub _toggle_numbers {
 sub _toggle_eol {
     my ($self, $editor, $on) = @_;
     $editor->SetViewEOL($on);
-    return;
-}
-
-sub on_toggle_show_output {
-    my ($self, $event) = @_;
-
-    # Update the output panel
-    my $config = Padre->ide->get_config;
-    $self->{main_panel}->SetSashPosition(
-        $config->{main}->{height} - ($event->IsChecked ? 100 : 0)
-    );
-
-    return;
-}
-
-sub on_toggle_status_bar {
-    my ($self, $event) = @_;
-
-    # Update the configuration
-    my $config = Padre->ide->get_config;
-    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
-
-    # Update the status bar
-    my $status_bar = $self->GetStatusBar;
-    if ( $config->{show_status_bar} ) {
-        $status_bar->Hide;
-    } else {
-        $status_bar->Show;
-    }
-
     return;
 }
 
