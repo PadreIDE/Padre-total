@@ -148,17 +148,17 @@ sub new {
     EVT_MENU(
         $win,
         $menu->{help}->Append( wxID_ABOUT,   '' ),
-        \&Padre::Wx::MainWindow::on_about,
+        \&Padre::Wx::Help::on_about,
     );
     EVT_MENU(
         $win,
         $menu->{help}->Append( wxID_HELP, '' ),
-        \&Padre::Wx::MainWindow::on_help,
+        \&Padre::Wx::Help::on_help,
     );
     EVT_MENU(
         $win,
         $menu->{help}->Append( -1, "Context-help\tCtrl-Shift-H" ),
-        \&Padre::Wx::MainWindow::on_context_help,
+        \&Padre::Wx::Help::on_context_help,
     );
 
 

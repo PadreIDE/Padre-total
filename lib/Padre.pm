@@ -172,6 +172,7 @@ use Class::Autouse qw{
    Padre::Wx::Popup
    Padre::Wx::Text
    Padre::Wx::Menu
+   Padre::Wx::Help
 };
 
 # Globally shared Perl detection object

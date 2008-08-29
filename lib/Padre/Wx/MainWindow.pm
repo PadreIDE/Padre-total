@@ -252,6 +252,23 @@ sub method_selected {
     return;
 }
 
+=head2 get_current_editor
+
+ my $editor = $self->get_current_editor;
+ my $text   = $editor->GetText;
+
+ ... do your stuff with the $text
+
+ $editor->SetText($text);
+
+You can also use the following two methods to make
+your editing a atomic in the Undo stack.
+
+ $editor->BeginUndoAction;
+ $editor->EndUndoAction;
+
+
+=cut
 sub get_current_editor {
     my $nb = $_[0]->{notebook};
     return $nb->GetPage( $nb->GetSelection );
@@ -632,62 +649,6 @@ sub setup_editor {
     return;
 }
 
-sub on_toggle_line_numbers {
-    my ($self, $event) = @_;
-
-    # Update the configuration
-    my $config = Padre->ide->get_config;
-    $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
-
-    # Update the notebook pages
-    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
-        my $editor = $self->{notebook}->GetPage($id);
-        $self->_toggle_numbers( $editor, $config->{show_line_numbers} );
-    }
-
-    return;
-}
-
-
-sub on_toggle_eol {
-    my ($self, $event) = @_;
-
-    my $config = Padre->ide->get_config;
-    $config->{show_eol} = $event->IsChecked ? 1 : 0;
-
-    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-        my $editor = $self->{notebook}->GetPage($id);
-        $self->_toggle_eol($editor, $config->{show_eol})
-    }
-    return;
-}
-
-
-# currently if there are 9 lines we set the margin to 1 width and then
-# if another line is added it is not seen well.
-# actually I added some improvement allowing a 50% growth in the file
-# and requireing a min of 2 width
-sub _toggle_numbers {
-    my ($self, $editor, $on) = @_;
-
-    $editor->SetMarginWidth(1, 0);
-    $editor->SetMarginWidth(2, 0);
-    if ($on) {
-        my $n = 1 + List::Util::max (2, length ($editor->GetLineCount * 2));
-        my $width = $n * $editor->TextWidth(wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
-        $editor->SetMarginWidth(0, $width);
-        $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-    } else {
-        $editor->SetMarginWidth(0, 0);
-        $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
-    }
-}
-sub _toggle_eol {
-    my ($self, $editor, $on) = @_;
-    $editor->SetViewEOL($on);
-    return;
-}
-
 
 sub on_open {
     my ($self) = @_;
@@ -1059,44 +1020,6 @@ sub on_find_again {
     return;
 }
 
-sub on_about {
-    my ( $self ) = @_;
-
-    Wx::MessageBox( 
-        "Perl Application Development and Refactoring Environment\n" .
-        "Padre $Padre::VERSION, (c) 2008 Gabor Szabo\n" .
-        "Using Wx v$Wx::VERSION, binding " . wxVERSION_STRING,
-        "About Padre", wxOK|wxCENTRE, $self );
-}
-
-sub on_help {
-    my ( $self ) = @_;
-
-    if ( not $self->{help} ) {
-        $self->{help} = Padre::Pod::Frame->new;
-        my $module = Padre->ide->get_current('pod') || 'Padre';
-        if ($module) {
-            $self->{help}->{html}->display($module);
-        }
-    }
-    $self->{help}->SetFocus;
-    $self->{help}->Show (1);
-
-    return;
-}
-sub on_context_help {
-    my ($self) = @_;
-
-    my $selection = $self->_get_selection();
-
-    $self->on_help;
-
-    if ($selection) {
-        $self->{help}->show($selection);
-    }
-
-    return;
-}
 
 sub _get_selection {
     my ($self, $id) = @_;
@@ -1109,42 +1032,6 @@ sub _get_selection {
     return $page->GetSelectedText;
 }
 
-sub on_toggle_show_output {
-    my ($self, $event) = @_;
-
-    # Update the output panel
-    my $config = Padre->ide->get_config;
-    $self->{main_panel}->SetSashPosition(
-        $config->{main}->{height} - ($event->IsChecked ? 100 : 0)
-    );
-
-    return;
-}
-
-sub on_toggle_status_bar {
-    my ($self, $event) = @_;
-
-    # Update the configuration
-    my $config = Padre->ide->get_config;
-    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
-
-    # Update the status bar
-    my $status_bar = $self->GetStatusBar;
-    if ( $config->{show_status_bar} ) {
-        $status_bar->Hide;
-    } else {
-        $status_bar->Show;
-    }
-
-    return;
-}
-
-
-sub on_stop {
-    my ($self) = @_;
-    $self->{proc}->TerminateProcess if $self->{proc};
-    return;
-}
 
 sub on_undo { # Ctrl-Z
     my ($self) = @_;
@@ -1385,5 +1272,97 @@ sub on_panel_changed {
 
     return;
 }
+
+
+###### toggle functions
+
+sub on_toggle_line_numbers {
+    my ($self, $event) = @_;
+
+    # Update the configuration
+    my $config = Padre->ide->get_config;
+    $config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
+
+    # Update the notebook pages
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+        my $editor = $self->{notebook}->GetPage($id);
+        $self->_toggle_numbers( $editor, $config->{show_line_numbers} );
+    }
+
+    return;
+}
+
+
+sub on_toggle_eol {
+    my ($self, $event) = @_;
+
+    my $config = Padre->ide->get_config;
+    $config->{show_eol} = $event->IsChecked ? 1 : 0;
+
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        my $editor = $self->{notebook}->GetPage($id);
+        $self->_toggle_eol($editor, $config->{show_eol})
+    }
+    return;
+}
+
+
+# currently if there are 9 lines we set the margin to 1 width and then
+# if another line is added it is not seen well.
+# actually I added some improvement allowing a 50% growth in the file
+# and requireing a min of 2 width
+sub _toggle_numbers {
+    my ($self, $editor, $on) = @_;
+
+    $editor->SetMarginWidth(1, 0);
+    $editor->SetMarginWidth(2, 0);
+    if ($on) {
+        my $n = 1 + List::Util::max (2, length ($editor->GetLineCount * 2));
+        my $width = $n * $editor->TextWidth(wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
+        $editor->SetMarginWidth(0, $width);
+        $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+    } else {
+        $editor->SetMarginWidth(0, 0);
+        $editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+    }
+}
+
+sub _toggle_eol {
+    my ($self, $editor, $on) = @_;
+    $editor->SetViewEOL($on);
+    return;
+}
+
+sub on_toggle_show_output {
+    my ($self, $event) = @_;
+
+    # Update the output panel
+    my $config = Padre->ide->get_config;
+    $self->{main_panel}->SetSashPosition(
+        $config->{main}->{height} - ($event->IsChecked ? 100 : 0)
+    );
+
+    return;
+}
+
+sub on_toggle_status_bar {
+    my ($self, $event) = @_;
+
+    # Update the configuration
+    my $config = Padre->ide->get_config;
+    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
+
+    # Update the status bar
+    my $status_bar = $self->GetStatusBar;
+    if ( $config->{show_status_bar} ) {
+        $status_bar->Hide;
+    } else {
+        $status_bar->Show;
+    }
+
+    return;
+}
+
+
 
 1;

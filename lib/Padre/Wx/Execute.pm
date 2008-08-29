@@ -177,5 +177,10 @@ sub evt_process_exit {
     return;
 }
 
+sub on_stop {
+    my ($self) = @_;
+    $self->{proc}->TerminateProcess if $self->{proc};
+    return;
+}
 
 1;
