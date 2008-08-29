@@ -1302,12 +1302,24 @@ sub on_toggle_line_numbers {
     return;
 }
 
+sub on_toggle_indentation_guide {
+    my ($self, $event) = @_;
+
+    my $config = Padre->ide->get_config;
+    $config->{editor}->{indentation_guide} = $self->{menu}->{view_indentation_guide}->IsChecked;
+
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        my $editor = $self->{notebook}->GetPage($id);
+        $editor->SetIndentationGuides( $config->{editor}->{indentation_guide} );
+    }
+    return;
+}
 
 sub on_toggle_eol {
     my ($self, $event) = @_;
 
     my $config = Padre->ide->get_config;
-    $config->{show_eol} = $event->IsChecked ? 1 : 0;
+    $config->{show_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
 
     foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
         my $editor = $self->{notebook}->GetPage($id);
@@ -1331,8 +1343,7 @@ sub on_toggle_show_output {
     my ($self, $event) = @_;
 
     # Update the output panel
-    
-    $self->_toggle_output($event->IsChecked);
+    $self->_toggle_output($self->{menu}->{view_output}->IsChecked);
 
     return;
 }
@@ -1341,7 +1352,7 @@ sub _toggle_output {
     my ($self, $on) = @_;
     my $config = Padre->ide->get_config;
     $self->{main_panel}->SetSashPosition(
-        $config->{main}->{height} - ($on ? 100 : 0)
+        $config->{main}->{height} - ($on ? 200 : 0)
     );
 }
 

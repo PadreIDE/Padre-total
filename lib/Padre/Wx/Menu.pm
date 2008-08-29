@@ -88,6 +88,13 @@ sub new {
         $menu->{view_statusbar},
         \&Padre::Wx::MainWindow::on_toggle_status_bar,
     );
+    $menu->{view_indentation_guide} = $menu->{view}->AppendCheckItem( -1, "Show Indentation Guide" );
+    $menu->{view_indentation_guide}->Check( $config->{editor}->{indentation_guide} ? 1 : 0 );
+    EVT_MENU(
+        $win,
+        $menu->{view_indentation_guide},
+        \&Padre::Wx::MainWindow::on_toggle_indentation_guide,
+    );
 
     $menu->{view}->AppendSeparator;
     #$menu->{view_files} = Wx::Menu->new;
