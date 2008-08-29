@@ -6,6 +6,7 @@ use warnings;
 use Wx                      qw(:everything);
 use Wx::Event               qw(:everything);
 
+our $VERSION = '0.01';
 
 sub new {
     my ($class, $win) = @_;
@@ -108,24 +109,24 @@ sub new {
     EVT_MENU(
         $win,
         $menu->{run_this},
-        \&Padre::Wx::MainWindow::on_run_this,
+        \&Padre::Wx::Execute::on_run_this,
     );
     $menu->{run_any} = $menu->{run}->Append( -1, "Run Any\tCtrl-F5" );
     EVT_MENU(
         $win,
         $menu->{run_any},
-        \&Padre::Wx::MainWindow::on_run,
+        \&Padre::Wx::Execute::on_run,
     );
     $menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
     EVT_MENU(
         $win,
         $menu->{run_stop},
-        \&Padre::Wx::MainWindow::on_stop,
+        \&Padre::Wx::Execute::on_stop,
     );
     EVT_MENU(
         $win,
         $menu->{run}->Append( -1, "&Setup" ),
-        \&Padre::Wx::MainWindow::on_setup_run,
+        \&Padre::Wx::Execute::on_setup_run,
     );
     $menu->{run_stop}->Enable(0);
 

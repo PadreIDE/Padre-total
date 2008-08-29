@@ -10,6 +10,7 @@ lib/Padre/DB.pm
 lib/Padre/Project.pm
 
 lib/Padre/Wx/App.pm
+lib/Padre/Wx/Execute.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm

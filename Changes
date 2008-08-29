@@ -1,6 +1,7 @@
     Allow the user to change the width ot TABs as they are displayed 
     Separate the code to show the preferences window to the Padre::Wx::Preferences module
     Separate code to Padre::Wx::Menu
+    Separate code to Padre::Wx::Execute
 
 v0.06 2008.08.28
 
