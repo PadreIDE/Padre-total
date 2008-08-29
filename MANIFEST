@@ -13,7 +13,7 @@ lib/Padre/Wx/App.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Popup.pm
-lib/Padre/Wx/Prefernces.pm
+lib/Padre/Wx/Preferences.pm
 lib/Padre/Wx/Text.pm
 
 lib/Padre/Demo.pm
