@@ -623,6 +623,8 @@ Part of the code was copied from his Wx::Demo application.
 
 To Adam Kennedy for lots of refactoring.
 
+To Steffen Müller for PAR plugins.
+
 To Patrick Donelan.
 
 To Herbert Breunung for letting me work on Kephra.
