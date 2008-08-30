@@ -1,7 +1,4 @@
 package Padre::PluginManager;
-
-# Miscellaneous plugin functionality for Padre
-
 use strict;
 use warnings;
 use File::Path ();
@@ -10,13 +7,38 @@ use Carp       qw(croak);
 
 our $VERSION = '0.06';
 
+=pod
+
+=head1 NAME
+
+Padre::PluginManager - Padre plugin manager
+
+=head1 DESCRIPTION
+
+The PluginManager class contains logic for locating and loading Padre
+plugins, as well as providing part of the interface to plugin writers.
+
+=head1 METHODS
+
+=cut
+
+=head2 new
+
+The constructor returns a new Padre::PluginManager object, but
+you should normally access it via the main Padre object:
+
+  my $manager = Padre->ide->plugin_manager;
+
+First argument should be a Padre object.
+
+=cut
 
 sub new {
     my $class = shift;
-    my $padre = shift || Padre->new();
+    my $padre = shift || Padre->ide;
 
     if (not $padre or not $padre->isa("Padre")) {
-      croak("Creation of a Padre::PluginManager without a Padre not possible");
+        croak("Creation of a Padre::PluginManager without a Padre not possible");
     }
 
     my $self  = bless {
@@ -33,11 +55,71 @@ sub new {
 #############
 # ACCESSORS
 #
+
+=head2 plugin_dir
+
+Returns the user plugin directory (below the Padre configuration directory).
+This directory was added to the C<@INC> module search path and may contain
+packaged plugins as PAR files.
+
+=cut
+
 sub plugin_dir { $_[0]->{plugin_dir} }
+
+=head2 plugins
+
+Returns a hash (reference) of plugin names associated with their
+implementing module names.
+
+This hash is only populated after C<load_plugins()> was called.
+
+=cut
 
 sub plugins { $_[0]->{plugins} }
 
+=head2 plugin_config
+
+Given a plugin name or namespace, returns a hash reference
+which corresponds to the configuration section in the Padre
+YAML configuration of that plugin. Any modifications of that
+hash reference will, on normal exit, be written to the
+configuration file.
+
+If the plugin name is omitted and this method is called from
+a plugin namespace, the plugin name is determine automatically.
+
+=cut
+
+sub plugin_config {
+    my $self = shift;
+    my $plugin = shift;
+
+    # infer the plugin name from caller
+    if (not defined $plugin) {
+        my ($package) = caller();
+        croak("Cannot infer the name of the plugin for which the configuration has been requested")
+          if $package !~ /^Padre::Plugin::/;
+        $plugin = $package;
+    }
+
+    $plugin =~ s/^Padre::Plugin:://;
+    my $padre_config = Padre->ide->get_config;
+    my $plugin_config = $padre_config->{plugins};
+    $plugin_config->{$plugin} ||= {};
+    return $plugin_config->{$plugin};
+}
+
 ##############
+
+=head2 load_plugins
+
+Scans for new plugins in the user plugin directory, in C<@INC>,
+and in C<.par> files in the user plugin directory.
+
+Loads any given module only once, i.e. does not refresh if the
+plugin has changed while Padre was running.
+
+=cut
 
 sub load_plugins {
     my ($self) = @_;
@@ -106,7 +188,7 @@ sub _setup_par {
 sub _load_plugin {
     my ($self, $file) = @_;
     my $plugins = $self->plugins;
-    $plugins->{$file} = 0;
+    delete $plugins->{$file};
     
     my $module = "Padre::Plugin::$file";
 
@@ -126,3 +208,25 @@ sub _load_plugin {
 
 
 1;
+
+__END__
+
+=pod
+
+=head1 SEE ALSO
+
+L<Padre>, L<Padre::Config>
+
+L<PAR> for more on the plugin system.
+
+=head1 COPYRIGHT
+
+Copyright 2008 Gabor Szabo.
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
+
+=cut
+
