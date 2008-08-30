@@ -165,6 +165,7 @@ BEGIN {
 	$Class::Autouse::LOADED{'Wx::Object'} = 1;
 }
 use Class::Autouse qw{
+   Padre::PluginManager
    Padre::Project
    Padre::Pod::Frame
    Padre::Pod::Indexer
@@ -210,6 +211,8 @@ sub new {
             files => [],
             pod   => [],
         },
+
+        plugin_manager => undef,
     }, $class;
 
     # Locate the configuration directory
@@ -218,8 +221,10 @@ sub new {
     $self->{config_db}   = Padre::Config->default_db;
 
     $self->load_config;
+
     $self->_process_command_line;
-    $self->_locate_plugins;
+
+    $self->{plugin_manager} = Padre::PluginManager->new($self),
 
     $SINGLETON = $self;
     return $self;
@@ -247,11 +252,19 @@ sub config_db {
     $_[0]->{config_db};
 }
 
+sub plugin_manager {
+    $_[0]->{plugin_manager};
+}
+
 sub run {
     my ($self) = @_;
     if ( $self->get_index ) {
         $self->run_indexer;
     } else {
+        # FIXME: This call should be delayed until after the
+        # window was opened but my Wx skills do not exist. --Steffen
+        # (RT #1)
+        $self->plugin_manager->load_plugins();
         $self->run_editor;
     }
     return;
@@ -282,32 +295,6 @@ sub _process_command_line {
 
     return;
 }
-
-sub _locate_plugins {
-    my ($self) = @_;
-    my %plugins;
-    foreach my $path (@INC) {
-        my $dir = File::Spec->catdir($path, 'Padre', 'Plugin');
-        opendir my $dh, $dir or next;
-        while (my $file = readdir $dh) {
-            if ($file =~ /^\w+\.pm$/) {
-                $file =~ s/\.pm$//;
-                $plugins{$file} = 0;
-                my $module = "Padre::Plugin::$file";
-		eval "use $module"; ## no critic
-                if ($@) {
-                    warn "ERROR while trying to load plugin '$file': $@";
-                    next;
-                }
-                
-                $plugins{$file} = $module;
-            }
-        }
-    }
-    $self->{plugins} = \%plugins;
-    return;
-}
-
 sub usage {
     die <<"END_USAGE";
 Usage: $0 [FILENAMEs]
