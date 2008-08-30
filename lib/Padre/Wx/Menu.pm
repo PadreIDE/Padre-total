@@ -144,7 +144,7 @@ sub new {
     
     # Create the Plugins menu
     $menu->{plugin} = Wx::Menu->new;
-    my %plugins = %{ $ide->{plugins} };
+    my %plugins = %{ $ide->plugin_manager->plugins };
     foreach my $name ( sort keys %plugins ) {
         next if not $plugins{$name};
         my @menu    = eval { $plugins{$name}->menu };
