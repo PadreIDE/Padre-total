@@ -67,6 +67,7 @@ Dialogs
 Display a text entry dialog
 
 =cut
+
 sub entry {
     my ( %args ) = @_;
 
@@ -89,6 +90,7 @@ sub entry {
 =head2 password
 
 =cut
+
 sub password {
     my ( %args ) = @_;
 
@@ -100,6 +102,7 @@ sub password {
 =head2 file_selector
 
 =cut
+
 sub file_selector {
     my ( %args ) = @_;
     %args = (
@@ -122,6 +125,7 @@ sub file_selector {
 =head2 dir_selector
 
 =cut
+
 sub dir_selector {
     my ( %args ) = @_;
     %args = (
@@ -143,6 +147,7 @@ sub dir_selector {
 =head2 choice
 
 =cut
+
 sub choice {
     my ( %args ) = @_;
     %args = (
@@ -164,6 +169,7 @@ sub choice {
 #=head2 print_out
 #
 #=cut
+
 #sub print_out {
 #    my ($output, $text) = @_;
 #    $output->AddText($text);
@@ -175,6 +181,7 @@ sub choice {
 =head2 message
 
 =cut
+
 sub message {
     my ( %args ) = @_;
 
@@ -192,6 +199,7 @@ sub message {
 #=head2 calendar
 #
 #=cut
+
 #sub calendar {
 #    my ( %args ) = @_;
 #
@@ -206,6 +214,7 @@ sub message {
 #=head2 open_frame
 #
 #=cut
+
 #sub open_frame {
 #    my $frame = Padre::Demo::Frame->new;
 #    my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
@@ -218,6 +227,7 @@ sub message {
 #=head2 close_app
 #
 #=cut
+
 #sub close_app {
 ##   $frame->Close;
 #}
