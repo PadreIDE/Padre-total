@@ -39,7 +39,7 @@ SCOPE: {
 
 SCOPE: {
     my $config = $app->get_config;
-    is_deeply $config, {
+    is_deeply {
             DISPLAY_MIN_LIMIT => 2,
             DISPLAY_MAX_LIMIT => 200,
             show_line_numbers => 0,
@@ -61,7 +61,8 @@ SCOPE: {
                 height    => -1,
                 maximized => 0,
             },
-        }, 'defaults';
+        }, $config,
+        'defaults';
 
     BEGIN { $tests += 1; }
 }
