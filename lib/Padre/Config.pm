@@ -111,6 +111,9 @@ sub new {
 
     $self->{editor}->{tab_size}    ||= 8;
 
+    # by default, we have an empty plugins configuration
+    $self->{plugins}           ||= {};
+
     return $self;
 }
 
