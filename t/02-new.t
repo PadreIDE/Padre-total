@@ -61,6 +61,7 @@ SCOPE: {
                 height    => -1,
                 maximized => 0,
             },
+            plugins => {},
         }, $config,
         'defaults';
 
