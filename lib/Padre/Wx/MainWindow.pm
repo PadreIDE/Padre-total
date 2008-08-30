@@ -1292,6 +1292,28 @@ sub on_panel_changed {
 
 ###### preferences and toggle functions
 
+sub on_zoom_in {
+    my ($self) = @_;
+    $self->zoom(+1);
+}
+sub on_zoom_out {
+    my ($self) = @_;
+    $self->zoom(-1);
+}
+sub zoom {
+    my ($self, $val) = @_;
+
+    my $editor  = $self->get_current_editor;
+    my $zoom = $editor->GetZoom;
+
+    $zoom += $val;
+
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+        $self->{notebook}->GetPage($id)->SetZoom($zoom);
+    }
+}
+
+
 sub on_setup {
     my ($self) = @_;
 

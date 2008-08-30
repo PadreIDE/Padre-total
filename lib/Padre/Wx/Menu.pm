@@ -96,6 +96,8 @@ sub new {
         $menu->{view_indentation_guide},
         \&Padre::Wx::MainWindow::on_toggle_indentation_guide,
     );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom in\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom out\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
 
     $menu->{view}->AppendSeparator;
     #$menu->{view_files} = Wx::Menu->new;
