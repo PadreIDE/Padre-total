@@ -563,19 +563,21 @@ sub _get_local_filetype {
 sub on_split_window {
     my ($self) = @_;
 
+    my $editor  = $self->get_current_editor;
+    my $id      = $self->{notebook}->GetSelection;
+    my $title   = $self->{notebook}->GetPageText($id);
+    my $file    = $self->get_current_filename;
+    my $pointer = $editor->GetDocPointer();
+    $editor->AddRefDocument($pointer);
+
+    my $new_editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer() );
+
+    #my $new_id = $self->setup_editor();
+    #my $new_editor = $self->{notebook}->GetPage( $new_id );
+    $new_editor->SetDocPointer($pointer);
+    $self->create_tab($new_editor, $file, " $title");
+
     return;
-
-    my $editor = $self->get_current_editor;
-    my $id     = $self->{notebook}->GetSelection;
-    my $title  = $self->{notebook}->GetPageText($id);
-    my $file   = $self->get_current_filename;
-    print $editor->GetDocPointer();
-
-#    $self->create_tab($editor, $file, $title);
-    my $new_id = $self->setup_editor();
-    my $new_editor = $self->{notebook}->GetPage( $new_id );
-    $new_editor->SetDocPointer($editor);
-
 }
 
 sub setup_editor {
@@ -1379,7 +1381,7 @@ sub _toggle_output {
     my ($self, $on) = @_;
     my $config = Padre->ide->get_config;
     $self->{main_panel}->SetSashPosition(
-        $config->{main}->{height} - ($on ? 200 : 0)
+        $config->{main}->{height} - ($on ? 300 : 0)
     );
 }
 
