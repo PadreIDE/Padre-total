@@ -295,6 +295,7 @@ sub _process_command_line {
 
     return;
 }
+
 sub usage {
     die <<"END_USAGE";
 Usage: $0 [FILENAMEs]
@@ -546,6 +547,7 @@ Returns UNIX, Mac or Windows if only the appropriate newlines were found.
 Returns Mixed if line endings are mixed.
 
 =cut
+
 sub get_newline_type {
     my ($text) = @_;
 
