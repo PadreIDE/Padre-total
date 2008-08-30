@@ -269,6 +269,7 @@ your editing a atomic in the Undo stack.
 
 
 =cut
+
 sub get_current_editor {
     my $nb = $_[0]->{notebook};
     return $nb->GetPage( $nb->GetSelection );
@@ -559,6 +560,24 @@ sub _get_local_filetype {
            $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
 }
 
+sub on_split_window {
+    my ($self) = @_;
+
+    return;
+
+    my $editor = $self->get_current_editor;
+    my $id     = $self->{notebook}->GetSelection;
+    my $title  = $self->{notebook}->GetPageText($id);
+    my $file   = $self->get_current_filename;
+    print $editor->GetDocPointer();
+
+#    $self->create_tab($editor, $file, $title);
+    my $new_id = $self->setup_editor();
+    my $new_editor = $self->{notebook}->GetPage( $new_id );
+    $new_editor->SetDocPointer($editor);
+
+}
+
 sub setup_editor {
     my ($self, $file) = @_;
 
@@ -626,16 +645,29 @@ sub setup_editor {
     $self->_toggle_eol($editor, $config->{show_eol});
     $self->set_preferences($editor, $config);
 
-    $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
-    $editor->SetFocus;
-    my $pack = __PACKAGE__;
-    #my $page = $self->{notebook}->GetCurrentPage;
-    my $id  = $self->{notebook}->GetSelection;
-    my $file_title = $file || $self->{notebook}->GetPageText($id);
-    $self->{menu}->add_alt_n_menu($file_title, $id);
+    my $id = $self->create_tab($editor, $file, $title);
 
     $self->_set_filename($id, $file, $file_type);
-#print "x" . $editor->AutoCompActive .  "x\n";
+
+    return $id;
+}
+
+
+sub create_tab {
+    my ($self, $editor, $file, $title) = @_;
+
+    $self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
+    $editor->SetFocus;
+
+    my $pack = __PACKAGE__;
+    my $id  = $self->{notebook}->GetSelection;
+    my $file_title = $file || $title;
+    $self->{menu}->add_alt_n_menu($file_title, $id);
+
+    $self->update_status;
+
+    return $id;
+}
 
     #$editor->UsePopUp(0);
     #EVT_RIGHT_DOWN( $editor, \&on_right_click );
@@ -644,9 +676,6 @@ sub setup_editor {
     #EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
     #EVT_MOTION( $editor, sub {print '.'});
 
-    $self->update_status;
-    return;
-}
 
 
 sub on_open {
