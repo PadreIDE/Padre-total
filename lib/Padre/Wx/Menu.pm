@@ -98,6 +98,7 @@ sub new {
     );
     EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom in\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
     EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom out\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom reset\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
 
     $menu->{view}->AppendSeparator;
     #$menu->{view_files} = Wx::Menu->new;

@@ -2,7 +2,7 @@
     Separate the code to show the preferences window to the Padre::Wx::Preferences module
     Separate code to Padre::Wx::Menu, Padre::Wx::Execute, Padre::Wx::Help
     Allow spliting windows to see two parts of the same document
-    Add Zoom-in/Zoom-out menu options to change the zoom on all documents
+    Add Zoom-in/Zoom-out/Zoom-reset menu options to change the zoom on all documents
 
 v0.06 2008.08.28
 

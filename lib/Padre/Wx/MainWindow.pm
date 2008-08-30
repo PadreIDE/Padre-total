@@ -1300,6 +1300,11 @@ sub on_zoom_out {
     my ($self) = @_;
     $self->zoom(-1);
 }
+sub on_zoom_reset {
+    my ($self) = @_;
+    my $editor  = $self->get_current_editor;
+    $self->zoom(-1 * $editor->GetZoom);
+}
 sub zoom {
     my ($self, $val) = @_;
 
