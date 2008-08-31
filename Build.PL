@@ -62,28 +62,54 @@ sub ACTION_exe {
     # temporary tool to create executable using PAR
 
 
-    my $libs    = libs();
-    my $modules = modules(); #(grep {$_ ne 'perl'} keys %{ $self->requires });
-    my $cmd     = "pp -o padre -I lib  script/padre $modules $libs";
-    print "$cmd\n";
-    system $cmd;
+    my @libs    = libs();
+    my @modules = modules(); #(grep {$_ ne 'perl'} keys %{ $self->requires });
+    my @cmd     = qw(pp -o padre -I lib  script/padre);
+    push @cmd, @modules, @libs;
+    print "@cmd\n";
+    system(@cmd);
 
     return;
 }
 
 sub libs {
-    my @libs = qw(
-                libwx_gtk2_adv-2.8.so.0
-                libwx_gtk2_core-2.8.so.0
-                libwx_base-2.8.so.0
-                libwx_base_net-2.8.so.0
-                libwx_gtk2_stc-2.8.so.0
-                libwx_gtk2_html-2.8.so.0
+    require Alien::wxWidgets;
+    Alien::wxWidgets->import(); # needed to make it work
+    require File::Find;
+    my @libs = Alien::wxWidgets->shared_libraries(
+      qw(stc xrc html adv core base) 
     );
-    my $c = '';
-    $c .= "-l /home/gabor/perl5lib/lib/perl/5.8.8/Alien/wxWidgets/gtk_2_8_7/lib/$_ " for @libs;
 
-    return $c;
+# formerly, we needed to put the libs verbatim:
+#    qw(
+#                libwx_gtk2_adv-2.8.so.0
+#                libwx_gtk2_core-2.8.so.0
+#                libwx_base-2.8.so.0
+#                libwx_base_net-2.8.so.0
+#                libwx_gtk2_stc-2.8.so.0
+#                libwx_gtk2_html-2.8.so.0
+#    );
+
+    my %libs = map {($_,0)} @libs;
+    my $prefix = Alien::wxWidgets->prefix;
+    
+    File::Find::find(
+      sub {
+          if (exists $libs{$_}) {
+            $libs{$_} = $File::Find::name;
+          }
+      },
+      $prefix
+    );
+
+    my @missing = grep {!$libs{$_}} keys %libs;
+    warn "Could not find shared library on disk for $_"
+      for @missing;
+
+    my @libs_args;
+    push @libs_args, "-l", $_ for values %libs;
+
+    return @libs_args;
 }
 
 
@@ -99,10 +125,10 @@ sub modules {
             push @modules, $line;
         }
     }
-    my $m = '';
-    $m .= "-M $_ " for @modules;
+    my @m_args;
+    push @m_args, "-M", $_ for @modules;
 
-    return $m;
+    return @m_args;
 }
 
 
