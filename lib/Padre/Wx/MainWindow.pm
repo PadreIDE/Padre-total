@@ -968,6 +968,45 @@ sub on_find {
     return;
 }
 
+my $DONE_EVENT : shared = Wx::NewEventType;
+sub on_ack {
+    my ($self) = @_;
+    @_ = (); # cargo cult Wx::Thread / Creating new threads
+
+# TODO kill the thread before closing the application
+
+    #require Padre::Wx::Ack;
+    #require App::Ack;
+    $self->show_output();
+
+    EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
+
+
+    my $worker = threads->create( \&_on_ack_thread );
+    #my $data = Padre::Wx::Ack->new;
+}
+sub ack_done {
+    my( $self, $event ) = @_;
+
+   my $data = $event->GetData;
+   print "Data: $data\n";
+   $self->{output}->AppendText("$data\n");
+
+   return;
+}
+
+sub _on_ack_thread {
+
+    my $frame = Padre->ide->wx->main_window;
+
+    for my $i (1..10) {
+       print "TH $i\n";
+       my $threvent = Wx::PlThreadEvent->new( -1, $DONE_EVENT, $i );
+       Wx::PostEvent( $frame, $threvent );
+       sleep 1;
+    }
+}
+
 sub update_methods {
     my ($self) = @_;
 

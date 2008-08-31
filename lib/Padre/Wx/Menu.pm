@@ -49,6 +49,7 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( wxID_REDO, "\tCtrl-Shift-Z" ),  \&Padre::Wx::MainWindow::on_redo             );
     EVT_MENU( $win, $menu->{edit}->Append( wxID_FIND, '' ),           \&Padre::Wx::MainWindow::on_find             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&Padre::Wx::MainWindow::on_find_again       );
+    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Ack" ),   \&Padre::Wx::MainWindow::on_ack       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&Padre::Wx::MainWindow::on_goto             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&Padre::Wx::MainWindow::on_autocompletition );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
