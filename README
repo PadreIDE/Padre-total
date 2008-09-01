@@ -1,5 +1,5 @@
 
-Padre
+Padre - Perl Application Development and Refactoring Environment
 
 Currently a simple editor for Perl written in Perl using WxWidgets
 
@@ -9,3 +9,8 @@ installation:
 Alien::WxWidgets
 Wx
 Padre
+
+For detailed installation look at 
+
+http://padre.perlide.org/wiki/Download
+

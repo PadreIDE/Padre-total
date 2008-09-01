@@ -164,7 +164,7 @@ my $builder = $class->new(
             homepage    => 'http://padre.perlide.org/',
             bugtracker  => 'http://padre.perlide.org/',
             Repository  => 'http://svn.perlide.org/padre',
-    #        MailingList => 'http://mail.perlide.org/listinfo/padre',
+            MailingList => 'http://mail.perlide.org/mailman/listinfo/padre-dev',
         },
         no_index => {
             directory => [ qw{ t eg share } ],
