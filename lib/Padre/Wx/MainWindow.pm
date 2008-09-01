@@ -208,6 +208,19 @@ sub new {
     # Load any default files
     $self->_load_files;
 
+    # we need an event immediately after the window opened
+    # (we had an issue that if the default of show_status_bar was false it did not show
+    # the status bar which is ok, but then when we selected the menu to show it, it showed
+    # at the top)
+    # TODO: there might be better ways to fix that issue...
+    my $timer = Wx::Timer->new( $self );
+    Wx::Event::EVT_TIMER(
+	    $self,
+	    -1,
+	    \&arrange_windows
+    );
+    $timer->Start( 500, 1 );
+
     return $self;
 }
 
@@ -675,6 +688,13 @@ sub setup_editor {
     return $id;
 }
 
+sub arrange_windows {
+    my ($self) = @_;
+    $self->on_toggle_status_bar;
+
+
+    #$self->
+}
 
 sub create_tab {
     my ($self, $editor, $file, $title) = @_;
@@ -1469,14 +1489,14 @@ sub on_toggle_status_bar {
 
     # Update the configuration
     my $config = Padre->ide->get_config;
-    $config->{show_status_bar} = $event->IsChecked ? 1 : 0;
+    $config->{show_status_bar} = $self->{menu}->{view_statusbar}->IsChecked;
 
     # Update the status bar
     my $status_bar = $self->GetStatusBar;
     if ( $config->{show_status_bar} ) {
-        $status_bar->Hide;
-    } else {
         $status_bar->Show;
+    } else {
+        $status_bar->Hide;
     }
 
     return;

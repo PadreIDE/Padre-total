@@ -84,7 +84,7 @@ sub new {
         \&Padre::Wx::MainWindow::on_toggle_show_output,
     );
     $menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
-    $menu->{view_statusbar}->Check( $config->{show_statusbar} ? 1 : 0 );
+    $menu->{view_statusbar}->Check( $config->{show_status_bar} ? 1 : 0 );
     EVT_MENU(
         $win,
         $menu->{view_statusbar},
