@@ -136,11 +136,11 @@ sub new {
     );
     $self->{rightbar}->InsertColumn(0, 'Methods');
     $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
-    EVT_LIST_ITEM_SELECTED(
-        $self,
-        $self->{rightbar},
-        \&method_selected,
-    );
+#    EVT_LIST_ITEM_SELECTED(
+#        $self,
+#        $self->{rightbar},
+#        \&method_selected,
+#    );
     EVT_LIST_ITEM_ACTIVATED(
         $self,
         $self->{rightbar},
