@@ -2,6 +2,12 @@ use strict;
 use warnings;
 use Module::Build ();
 
+use Config;
+if (not $Config{usethreads}) {
+    warn "Padre requires a perl built using threads\n";
+    exit 0;
+}
+
 my %prereqs = (
         'perl'                    => '5.008',
 
@@ -167,6 +173,7 @@ my $builder = $class->new(
 );
 
 #$builder->install_path->{share} = catdir($builder->install_path->{lib}, 'auto', 'share', 'dist', $builder->dist_name);
+$builder->config('usethreads');
 
 $builder->create_build_script();
 
