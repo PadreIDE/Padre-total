@@ -192,6 +192,17 @@ sub new {
     EVT_CLOSE( $self, \&on_close_window);
     EVT_KEY_UP( $self, \&on_key );
 
+    #EVT_LEFT_UP( $self, \&on_left_mouse_up );
+    #EVT_LEFT_DOWN( $self, \&on_left_mouse_down );
+    #EVT_MOTION( $self, sub {print "mot\n"; } );
+    #EVT_MOUSE_EVENTS( $self, sub {print "xxx\n"; });
+    #EVT_MIDDLE_DOWN( $self, sub {print "xxx\n"; } );
+    #EVT_RIGHT_DOWN( $editor, \&on_right_click );
+    #EVT_RIGHT_UP( $self, \&on_right_click );
+    #EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
+    #EVT_MOTION( $editor, sub {print '.'});
+    EVT_STC_UPDATEUI( $self, -1,  \&on_stc_update_ui );
+
     Padre::Wx::Execute->setup( $self );
 
     # Load any default files
@@ -286,6 +297,11 @@ sub _bitmap {
         : File::ShareDir::dist_dir('Padre');
     my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
     return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
+}
+
+sub on_stc_update_ui {
+    my ($self, $event) = @_;
+    $self->update_status;
 }
 
 sub on_key {
@@ -590,6 +606,9 @@ sub setup_editor {
 
     my $config    = Padre->ide->get_config;
     my $editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer($file) );
+    #$editor->SetMouseDownCaptures(0);
+    #$editor->UsePopUp(0);
+    
     my $file_type = $self->_get_default_file_type();
 
     my %mode = (
@@ -651,6 +670,8 @@ sub setup_editor {
 
     $self->_set_filename($id, $file, $file_type);
 
+    $self->{_in_setup_editor} = 0;
+    $self->update_status;
     return $id;
 }
 
@@ -670,14 +691,6 @@ sub create_tab {
 
     return $id;
 }
-
-    #$editor->UsePopUp(0);
-    #EVT_RIGHT_DOWN( $editor, \&on_right_click );
-
-    #EVT_RIGHT_UP( $self, \&on_right_click );
-    #EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
-    #EVT_MOTION( $editor, sub {print '.'});
-
 
 
 sub on_open {
