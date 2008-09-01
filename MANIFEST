@@ -19,9 +19,6 @@ lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Preferences.pm
 lib/Padre/Wx/Text.pm
 
-lib/Padre/Demo.pm
-lib/Padre/Demo/Frame.pm
-
 lib/Padre/Pod/Frame.pm
 lib/Padre/Pod/Indexer.pm
 lib/Padre/Pod/Viewer.pm
@@ -32,7 +29,6 @@ t/01-load.t
 t/02-new.t
 t/03-wx.t
 t/80-newline.t
-t/99-demo.t
 t/lib/Padre.pm
 
 xt/99-critic.t
@@ -49,13 +45,6 @@ eg/wx/01_simple_frame.pl
 eg/wx/02_label.pl
 eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
-
-eg/wx_demo/wxer
-eg/wx_demo/01_prompt.pl
-eg/wx_demo/02_password.pl
-eg/wx_demo/03_filename.pl
-eg/wx_demo/04_choice.pl
-eg/wx_demo/05_dir_selector.pl
 
 share/docview/print.xpm
 share/docview/save.xpm
