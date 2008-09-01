@@ -15,6 +15,7 @@ my %prereqs = (
         'IO::Socket'              => 0,
         'Term::ReadLine'          => 0,
 
+        'App::Ack'                => '1.86',
         'Class::Accessor'         => 0,
         'Class::Autouse'          => '1.26',
         'DBD::SQLite'             => 0,
