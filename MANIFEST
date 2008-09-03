@@ -2,7 +2,6 @@ Build.PL
 Changes
 MANIFEST
 README
-META.yml
 
 lib/Padre.pm
 lib/Padre/Config.pm
