@@ -25,11 +25,12 @@ From the main L<Padre> object, it can be accessed via the C<wx> method.
 
 use strict;
 use warnings;
-use Wx qw{:everything};
-use Padre::Wx::MainWindow;
-use base 'Wx::App';
+use Wx::App ();
+use Padre::Wx::MainWindow ();
 
 our $VERSION = '0.06';
+our @ISA     = 'Wx::App';
+
 
 
 
