@@ -4,7 +4,9 @@ package Padre::Project;
 
 use strict;
 use warnings;
-use File::Spec ();
+use File::Spec        ();
+use Module::Inspector ();
+
 use base 'Module::Inspector';
 
 our $VERSION = '0.06';
