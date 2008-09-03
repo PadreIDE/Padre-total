@@ -12,7 +12,7 @@ Padre is a text editor aimed to be an IDE for Perl.
 
 You should be able to just type in 
 
- padre
+  padre
 
 and get the editor working.
 
@@ -67,7 +67,7 @@ You can edit the command line using the Run/Setup menu item.
   Ctr-TAB        Next Pane
   Ctr-Shift-TAB  Previous Pane
   Alt-S          Jump to list of subs window
-
+  
   Ctr-1 .. Ctrl-9 can set markers
   Ctr-Shift-1 .. Ctrl-Shift-9 jump to marker
   
@@ -156,6 +156,7 @@ use Class::Autouse ();
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
+use Padre::Util           ();
 use Padre::Config         ();
 use Padre::Wx::App        ();
 use Padre::Wx::MainWindow ();
@@ -165,25 +166,22 @@ BEGIN {
 	$Class::Autouse::LOADED{'Wx::Object'} = 1;
 }
 use Class::Autouse qw{
-   Padre::PluginManager
-   Padre::Project
-   Padre::Pod::Frame
-   Padre::Pod::Indexer
-   Padre::Pod::Viewer
-   Padre::Wx::Popup
-   Padre::Wx::Text
-   Padre::Wx::Menu
-   Padre::Wx::Help
+    Padre::Document
+    Padre::Project
+    Padre::PluginManager
+    Padre::Pod::Frame
+    Padre::Pod::Indexer
+    Padre::Pod::Viewer
+    Padre::Wx::Popup
+    Padre::Wx::Text
+    Padre::Wx::Menu
+    Padre::Wx::Help
 };
 
 # Globally shared Perl detection object
-my $probe_perl = undef;
-sub probe_perl {
-	unless ( $probe_perl ) {
-		require Probe::Perl;
-		$probe_perl = Probe::Perl->new;
-	}
-	return $probe_perl;
+sub perl_interpreter {
+	require Probe::Perl;
+	return Probe::Perl->find_perl_interpreter;
 }
 
 use base 'Class::Accessor';
@@ -200,7 +198,7 @@ sub new {
 
     # Create the empty object
     my $self  = bless {
-        # Wx-related Attributes
+        # Wx Attributes
         wx      => undef,
 
         # Internal Attributes
@@ -212,7 +210,14 @@ sub new {
             pod   => [],
         },
 
+	# Plugin Attributes
         plugin_manager => undef,
+
+	# Second-Generation Object Model
+	# (Adam says ignore these for now, but don't comment out)
+	project  => {},
+	document => {},
+
     }, $class;
 
     # Locate the configuration directory
@@ -367,7 +372,6 @@ sub add_to_recent {
         @{ $self->{recent}->{$type} } = @recent;
         $self->set_current_index($type, $#recent);
     }
-    
 
     return;
 }
@@ -537,33 +541,6 @@ sub set_files {
 sub get_files {
     my ($self) = @_;
     return ($self->{_files} and ref ($self->{_files}) eq 'ARRAY' ? @{ $self->{_files} } : ());
-}
-
-=head2 get_newline_type
-
-Returns None if there was not CR or LF in the file.
-Returns UNIX, Mac or Windows if only the appropriate newlines were found.
-
-Returns Mixed if line endings are mixed.
-
-=cut
-
-sub get_newline_type {
-    my ($text) = @_;
-
-    my $CR   = "\015";
-    my $LF   = "\012";
-    my $CRLF = "\015\012";
-
-    return "None" if $text !~ /$LF/ and $text !~ /$CR/;
-    return "UNIX" if $text !~ /$CR/;
-    return "MAC"  if $text !~ /$LF/;
-
-    $text =~ s/$CRLF//g;
-    return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
-
-    return "Mixed"
-    # return "Unknown";
 }
 
 1;

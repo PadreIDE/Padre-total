@@ -8,33 +8,29 @@ my $LF   = "\012";
 my $CRLF = "\015\012";
 
 use Test::More;
-my $tests;
-
 use t::lib::Padre;
-use Padre;
+use Padre::Util 'newline_type';
 
+my $tests;
 plan tests => $tests;
 
-
-{
-    is(Padre::get_newline_type("...") => "None", "None");
-    is(Padre::get_newline_type(".$CR.$CR.") => "MAC", "Mac");
-    is(Padre::get_newline_type(".$LF.$LF.") => "UNIX", "Unix");
-    is(Padre::get_newline_type(".$CRLF.$CRLF.") => "WIN", "Windows");
+SCOPE: {
+    is(newline_type("...") => "None", "None");
+    is(newline_type(".$CR.$CR.") => "MAC", "Mac");
+    is(newline_type(".$LF.$LF.") => "UNIX", "Unix");
+    is(newline_type(".$CRLF.$CRLF.") => "WIN", "Windows");
     BEGIN { $tests += 4; }
 }
 
-{
-    is(Padre::get_newline_type(".$LF.$CR.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$CR.$LF.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$CRLF.$LF.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$LF.$CRLF.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$CR.$CRLF.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$CRLF.$CR.") => "Mixed", "Mixed");
-
-    is(Padre::get_newline_type(".$CR$LF$CR.") => "Mixed", "Mixed");
-    is(Padre::get_newline_type(".$CR$LF$LF.") => "Mixed", "Mixed");
-
+SCOPE: {
+    is(newline_type(".$LF.$CR.") => "Mixed", "Mixed");
+    is(newline_type(".$CR.$LF.") => "Mixed", "Mixed");
+    is(newline_type(".$CRLF.$LF.") => "Mixed", "Mixed");
+    is(newline_type(".$LF.$CRLF.") => "Mixed", "Mixed");
+    is(newline_type(".$CR.$CRLF.") => "Mixed", "Mixed");
+    is(newline_type(".$CRLF.$CR.") => "Mixed", "Mixed");
+    is(newline_type(".$CR$LF$CR.") => "Mixed", "Mixed");
+    is(newline_type(".$CR$LF$LF.") => "Mixed", "Mixed");
     BEGIN { $tests += 8; }
 }
 

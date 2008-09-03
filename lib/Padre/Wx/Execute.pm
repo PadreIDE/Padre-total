@@ -43,7 +43,7 @@ sub on_run_this {
     }
 
     # Run the program
-    my $perl = Padre->probe_perl->find_perl_interpreter;
+    my $perl = Padre->perl_interpreter;
     $self->_run( qq["perl" "$filename"] );
 
     return;
@@ -63,7 +63,7 @@ sub on_debug_this {
     _setup_debugger($host, $port);
 
     local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-    my $perl = Padre->probe_perl->find_perl_interpreter;
+    my $perl = Padre->perl_interpreter;
     $self->_run(qq["$perl" -d "$filename"]);
 
     return;

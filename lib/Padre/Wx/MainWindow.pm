@@ -11,14 +11,18 @@ use File::Basename ();
 use Data::Dumper   ();
 use List::Util     ();
 use File::ShareDir ();
-use Wx                      qw(:everything);
-use Wx::Event               qw(:everything);
+use Wx        qw(:everything);
+use Wx::Event qw(:everything);
 
-use base qw(Wx::Frame Padre::Wx::Execute);
+use base qw(
+	Wx::Frame
+	Padre::Wx::Execute
+);
 
+use Padre::Util ();
 use Padre::Wx::Text;
-use Padre::Wx::FindDialog;
-use Padre::Pod::Frame;
+# use Padre::Wx::FindDialog;
+# use Padre::Pod::Frame;
 
 our $VERSION = '0.06';
 
@@ -640,7 +644,7 @@ sub setup_editor {
             warn $@;
             return;
         }
-        my $current_type = Padre::get_newline_type($content);
+        my $current_type = Padre::Util::newline_type($content);
         if ($current_type eq 'None') {
             # keep default
         } elsif ($current_type eq 'Mixed') {
@@ -1173,7 +1177,7 @@ sub on_select_project {
 
     my $dialog = Wx::Dialog->new( $self, -1, "Select Project", [-1, -1], [-1, -1]);
 
-    my $box  = Wx::BoxSizer->new(  wxVERTICAL );
+    my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
     my $row1 = Wx::BoxSizer->new(  wxHORIZONTAL );
     my $row2 = Wx::BoxSizer->new(  wxHORIZONTAL );
     my $row3 = Wx::BoxSizer->new(  wxHORIZONTAL );
