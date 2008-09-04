@@ -4,6 +4,15 @@
     Allow spliting windows to see two parts of the same document
     Add Zoom-in/Zoom-out/Zoom-reset menu options to change the zoom on all documents
     Allow the use of PAR files as plugins (TSEE)
+    Stop jumping on selection movement in the list of methods frame.
+    Remove Padre::Demo and distribute it separately as Wx::Perl::Dialog. Make Padre depend on it.
+    Update the status when the mouse is moved 
+    Update status works on Windows now.
+    Require threaded perl as there is experimental code in Padre to use ack.
+    Depend on App::Ack.
+    Depend on PAR.
+    Clean up the par generation.
+    Lots of code cleanup.
 
 v0.06 2008.08.28
 
