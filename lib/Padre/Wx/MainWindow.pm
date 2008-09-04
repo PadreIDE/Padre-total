@@ -1008,12 +1008,18 @@ sub on_find {
 my $DONE_EVENT : shared = Wx::NewEventType;
 sub on_ack {
     my ($self) = @_;
-    @_ = (); # cargo cult Wx::Thread / Creating new threads
+    @_ = (); # cargo cult or bug? see Wx::Thread / Creating new threads
 
 # TODO kill the thread before closing the application
 
-    #require Padre::Wx::Ack;
-    #require App::Ack;
+    require Padre::Wx::Ack;
+    require App::Ack;
+    my $search = Padre::Wx::Ack->new;
+use Data::Dumper;
+print Dumper $search;
+
+    return;
+
     $self->show_output();
 
     EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
