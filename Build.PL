@@ -39,6 +39,7 @@ my %prereqs = (
         'Probe::Perl'             => '0.01',
         'YAML::Tiny'              => '1.32',
         'Wx'                      => 0,
+        'Wx::Perl::Dialog'        => 0,
         'Wx::Perl::ProcessStream' => 0,
 );
 
