@@ -5,6 +5,8 @@ use warnings;
 use Wx                      qw(:everything);
 use Wx::Event               qw(:everything);
 
+our $VERSION = '0.07';
+
 sub new {
     my ( $class, $win, $config ) = @_;
 	my $id     = -1;

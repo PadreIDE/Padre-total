@@ -20,8 +20,8 @@ sub xversion {
     return if $File::Find::name =~ /\.svn/;
     return if $_ !~ /\.pm/;
     my @data = read_file($_);
-    if (grep {$_ =~ /^our \$VERSION = '\d+\.\d\d';/ } @data ) {
-       my @new = map {$_ =~ s/^our \$VERSION = '\d+\.\d\d';/our \$VERSION = '$version';/; $_ } @data;
+    if (grep {$_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\d';/ } @data ) {
+       my @new = map {$_ =~ s/^(our \$VERSION\s*=\s*)'\d+\.\d\d';/$1'$version';/; $_ } @data;
        write_file($_, @new);
     } else {
        warn "No VERSION in $File::Find::name\n";

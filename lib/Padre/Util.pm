@@ -23,7 +23,7 @@ use strict;
 use warnings;
 use Exporter ();
 
-our $VERSION   = '0.06';
+our $VERSION   = '0.07';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = 'newline_type';
 

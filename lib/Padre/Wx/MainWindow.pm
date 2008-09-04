@@ -24,7 +24,7 @@ use Padre::Wx::Text;
 # use Padre::Wx::FindDialog;
 # use Padre::Pod::Frame;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 my $default_dir = "";
 my $cnt         = 0;

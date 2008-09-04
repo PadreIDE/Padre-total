@@ -2,7 +2,7 @@ package Padre::Wx::Preferences;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.07';
 
 use Wx        qw(:everything);
 use Wx::Event qw(:everything);

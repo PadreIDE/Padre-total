@@ -8,7 +8,7 @@ use File::Spec    ();
 use File::HomeDir ();
 use YAML::Tiny    ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 
