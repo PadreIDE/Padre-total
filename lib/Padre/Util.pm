@@ -17,7 +17,7 @@ but except for in the Padre core distribution you are discouraged in
 the strongest possible terms for relying on these functions, as they
 may be moved, removed or changed at any time without notice.
 
-=head1 FUNCTIONS
+=cut
 
 use strict;
 use warnings;
@@ -27,7 +27,7 @@ our $VERSION   = '0.06';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = 'newline_type';
 
-=pod
+=head1 FUNCTIONS
 
 =head2 newline_type
 
