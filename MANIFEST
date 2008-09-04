@@ -4,9 +4,14 @@ MANIFEST
 README
 
 lib/Padre.pm
+lib/Padre/Wx/Ack.pm
 lib/Padre/Config.pm
 lib/Padre/DB.pm
+lib/Padre/Document.pm
+lib/Padre/PluginManager.pm
 lib/Padre/Project.pm
+lib/Padre/Util.pm
+
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Execute.pm
