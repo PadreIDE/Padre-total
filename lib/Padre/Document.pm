@@ -15,12 +15,47 @@ our $VERSION = '0.07';
 
 
 #####################################################################
+# Class Methods
+
+sub notebook {
+	Padre->ide->wx->main_window->{notebook};
+}
+
+
+
+
+
+#####################################################################
 # Constructor and Accessors
 
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
+
+	# Check params
+	unless ( $self->page ) {
+		die "Missing or invalid page_id";
+	}
+
 	return $self;
+}
+
+sub filename {
+	$_[0]->{filename};
+}
+
+sub type {
+	$_[0]->{type};
+}
+
+sub page_id {
+	$_[0]->{page_id};
+}
+
+# Cache for speed reasons
+sub page {
+	$_[0]->{page} or
+	$_[0]->{page} = $_[0]->notebook->GetPage( $_[0]->page_id );
 }
 
 sub project_dir {
@@ -34,18 +69,33 @@ sub project_dir {
 
 
 #####################################################################
+# Content Manipulation
+
+sub get_text {
+	$_[0]->page->GetText;
+}
+
+sub set_text {
+	$_[0]->page->SetText($_[1]);
+}
+
+
+
+
+
+#####################################################################
 # System Interaction Methods
 
 sub find_project {
 	my $self = shift;
 
 	# Anonmous files don't have a project
-	unless ( defined $self->file ) {
+	unless ( defined $self->filename ) {
 		return;
 	}
 
 	# Search upwards from the file to find the project root
-	my ($v, $d, $f) = File::Spec->splitpath( $self->file );
+	my ($v, $d, $f) = File::Spec->splitpath( $self->filename );
 	my @d = File::Spec->splitdir($d);
 	pop @d if $d[-1] eq '';
 	my $dirs = List::Util::first {
