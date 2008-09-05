@@ -8,6 +8,13 @@ use Wx::Event qw(:everything);
 
 our $VERSION = '0.07';
 
+
+
+
+
+#####################################################################
+# Construction and Setup
+
 sub new {
     my ($class, $win) = @_;
 
@@ -240,10 +247,28 @@ sub remove_alt_n_menu {
 }
 
 sub win {
-    my ($self) = @_;
+	$_[0]->{win};
+}
 
-    return $self->{win};
+
+
+
+
+#####################################################################
+# Reflowing the Menu
+
+sub reflow {
+	my $self  = shift;
+	my $lexer = $self->win->get_current_editor->GetLexer;
+
+	# Enable or disable the run menu
+	if ( $lexer == wxSTC_LEX_PERL ) {
+		$self->{run}->Enable(1);
+	} else {
+		$self->{run}->Enable(0);
+	}
+
+	return 1;
 }
 
 1;
-
