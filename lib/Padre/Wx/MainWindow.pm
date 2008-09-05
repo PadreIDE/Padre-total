@@ -567,6 +567,7 @@ sub _get_default_file_type {
     # TODO: get it from config
     return $self->_get_local_filetype();
 }
+
 # Where to convert (UNIX, WIN, MAC)
 # or Ask (the user) or Keep (the garbage)
 # mixed files
