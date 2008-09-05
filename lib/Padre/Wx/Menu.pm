@@ -50,6 +50,8 @@ sub new {
 
 
 
+
+
     # Create the Edit menu
     $menu->{edit} = Wx::Menu->new;
     EVT_MENU( $win, $menu->{edit}->Append( wxID_UNDO, '' ),                \&Padre::Wx::MainWindow::on_undo             );
@@ -64,8 +66,10 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&Padre::Wx::MainWindow::on_uncomment_block       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-B" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Split window" ),   \&Padre::Wx::MainWindow::on_split_window     );
-
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
+
+
+
 
 
     # Create the View menu
@@ -122,6 +126,10 @@ sub new {
         \&Padre::Wx::MainWindow::on_prev_pane,
     );
 
+
+
+
+
     # Creat the Run menu
     $menu->{run} = Wx::Menu->new;
     $menu->{run_this} = $menu->{run}->Append( -1, "Run &This\tF5" );
@@ -162,6 +170,9 @@ sub new {
     }
 
 
+
+
+
     # Create the help menu
     $menu->{help} = Wx::Menu->new;
     EVT_MENU(
@@ -182,6 +193,23 @@ sub new {
 
 
 
+
+
+    # Create the Experimental menu
+    $menu->{experimental} = Wx::Menu->new;
+    EVT_MENU(
+        $win,
+        $menu->{experimental}->Append( -1, 'Reflow Menu' ),
+        sub {
+            $DB::single = 1;
+            $_[0]->{menu}->reflow;
+        },
+    );
+
+
+
+
+
     # Create and return the main menu bar
     $menu->{wx} = Wx::MenuBar->new;
     $menu->{wx}->Append( $menu->{file},    "&File" );
@@ -193,7 +221,10 @@ sub new {
         $menu->{wx}->Append( $menu->{plugin}, "Pl&ugins" );
     }
     $menu->{wx}->Append( $menu->{help},    "&Help" );
+    # $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
 
+    # Do an initial reflow
+    # $menu->reflow;
 
     return $menu;
 }
@@ -263,9 +294,9 @@ sub reflow {
 
 	# Enable or disable the run menu
 	if ( $lexer == wxSTC_LEX_PERL ) {
-		$self->{run}->Enable(1);
+		$self->{wx}->EnableTop( 4, 1 );
 	} else {
-		$self->{run}->Enable(0);
+		$self->{wx}->EnableTop( 4, 0 );
 	}
 
 	return 1;
