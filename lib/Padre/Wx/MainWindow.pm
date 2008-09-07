@@ -1084,6 +1084,9 @@ sub _search {
     if ($config->{search}->{case_insensitive})  {
         $search_term = "(?i)$search_term";
     }
+
+    $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
+
 #print $search_term, "\n";
     my $regex = qr/$search_term/m;
 
