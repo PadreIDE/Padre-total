@@ -1063,11 +1063,12 @@ sub _on_ack_thread {
     }
 }
 
+# sub update_methods
 sub update_methods {
     my ($self) = @_;
 
     my $text = $self->get_current_content;
-    my @methods = reverse sort $text =~ m{sub\s+(\w+)}g;
+    my @methods = reverse sort $text =~ m{^sub\s+(\w+)}gm;
     $self->{rightbar}->DeleteAllItems;
     $self->{rightbar}->InsertStringItem(0, $_) for @methods;
     $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
