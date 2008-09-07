@@ -172,11 +172,11 @@ use Class::Autouse qw{
     Padre::Pod::Frame
     Padre::Pod::Indexer
     Padre::Pod::Viewer
-    Padre::Ack
     Padre::Wx::Popup
     Padre::Wx::Text
     Padre::Wx::Menu
     Padre::Wx::Help
+    Padre::Wx::Ack
 };
 
 # Globally shared Perl detection object
