@@ -4,6 +4,7 @@ MANIFEST
 README
 
 lib/Padre.pm
+lib/Padre/Ack.pm
 lib/Padre/Wx/Ack.pm
 lib/Padre/Config.pm
 lib/Padre/DB.pm

@@ -25,7 +25,7 @@ sub new {
 	my $button_cancel = Wx::Button->new($dialog, wxID_CANCEL, '');
 	my $nothing_1     = Wx::StaticText->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, );
 	my $nothing_2     = Wx::StaticText->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, );
-	my $button_dir    = Wx::Button->new($dialog, -1, "Pick directory");
+	my $button_dir    = Wx::Button->new($dialog, -1, "Pick &directory");
 
     EVT_BUTTON( $dialog, $button_search, sub { $dialog->EndModal(wxID_FIND) } );
     EVT_BUTTON( $dialog, $button_dir,    sub { on_pick_dir($dir, @_) } );
@@ -54,15 +54,19 @@ sub new {
 	$sizer_1->Fit($dialog);
 	$dialog->Layout();
 
+    $term->SetFocus;
+    my $ret = $dialog->ShowModal;
 
-
-    #$self->Show(1);
-    if ($dialog->ShowModal == wxID_CANCEL) {
+    if ($ret == wxID_CANCEL) {
+         $dialog->Destroy;
         return;
     }
+    
     my %search;
     $search{term}  = $term->GetValue;
-
+    $search{dir}   = $dir->GetValue;
+    $dialog->Destroy;
+ 
 	return \%search;
 }
 
