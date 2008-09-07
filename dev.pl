@@ -23,7 +23,7 @@ if ( grep { $_ eq '-d' } @ARGV ) {
         push @cmd, '-d';
 }
 push @cmd, qq[$FindBin::Bin/script/padre], @ARGV;
-print join( ' ', @cmd ) . "\n";
+#print join( ' ', @cmd ) . "\n";
 system( @cmd );
 
 #my $cmd  = qq["$perl" -I$FindBin::Bin/lib -I$FindBin::Bin/../plugins/par/lib $FindBin::Bin/script/padre @ARGV];
