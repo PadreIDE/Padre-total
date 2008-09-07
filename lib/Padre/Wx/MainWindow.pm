@@ -937,6 +937,18 @@ sub on_close {
     return;
 }
 
+sub on_close_all {
+    my ($self, $event) = @_;
+
+    foreach my $id (reverse 0 .. $self->{notebook}->GetPageCount -1) {
+        if (not $self->_buffer_changed($id) ) {
+            $self->_save_buffer($id);
+        }
+        $self->{notebook}->DeletePage($id);
+    }
+    return;
+}
+
 sub _buffer_changed {
     my ($self, $id) = @_;
     my $page = $self->{notebook}->GetPage($id);

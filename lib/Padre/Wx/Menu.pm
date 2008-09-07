@@ -41,6 +41,7 @@ sub new {
     EVT_MENU( $win, $menu->{file}->Append( wxID_SAVEAS, '' ), \&Padre::Wx::MainWindow::on_save_as  );
     EVT_MENU( $win, $menu->{file}->Append( -1, 'Save All'  ), \&Padre::Wx::MainWindow::on_save_all );
     EVT_MENU( $win, $menu->{file}->Append( wxID_CLOSE,  '' ), \&Padre::Wx::MainWindow::on_close    );
+    EVT_MENU( $win, $menu->{file}->Append( -1, 'Close All' ), \&Padre::Wx::MainWindow::on_close_all );
     EVT_MENU( $win, $menu->{file}->Append( wxID_EXIT,   '' ), \&Padre::Wx::MainWindow::on_exit     );
 
     # Create the Project menu
