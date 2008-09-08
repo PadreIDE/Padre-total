@@ -1345,6 +1345,7 @@ sub on_nth_pane {
     my $page = $self->{notebook}->GetPage($id);
     if ($page) {
        $self->{notebook}->ChangeSelection($id);
+       $self->update_methods;
        return 1;
     }
     return;
