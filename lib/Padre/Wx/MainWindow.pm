@@ -1128,8 +1128,12 @@ sub _search {
 
     $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
 
-#print $search_term, "\n";
-    my $regex = qr/$search_term/m;
+    my $regex;
+    eval { $regex = qr/$search_term/m };
+    if ($@) {
+        Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $self);
+        return;
+    }
 
     my ($start, $end);
     if ($str =~ $regex) {
