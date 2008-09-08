@@ -240,6 +240,9 @@ sub _load_files {
     my @files  = $ide->get_files;
     if ( @files ) {
         foreach my $f (@files) {
+            if (not File::Spec->file_name_is_absolute($f)) {
+                $f = File::Spec->catfile(Cwd::cwd(), $f);
+            }
             $self->setup_editor($f);
         }
     } elsif ($config->{startup} eq 'new') {
@@ -767,7 +770,7 @@ sub on_open_selection {
     }
 
 	if (not $file) {
-        Wx::MessageBox("Could not fine file '$selection'", "Open Selection", wxOK, $self);
+        Wx::MessageBox("Could not find file '$selection'", "Open Selection", wxOK, $self);
         return;
     }
 
@@ -785,11 +788,9 @@ sub on_open {
        $dialog->SetWildcard("*");
     }
     if ($dialog->ShowModal == wxID_CANCEL) {
-#print "Cancel\n";
         return;
     }
     my $filename = $dialog->GetFilename;
-#print "OK $filename\n";
     $default_dir = $dialog->GetDirectory;
 
     my $file = File::Spec->catfile($default_dir, $filename);
