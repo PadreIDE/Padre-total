@@ -193,6 +193,11 @@ sub new {
     $self->{statusbar}->SetFieldsCount(3);
     $self->{statusbar}->SetStatusWidths(-1, 50, 100);
 
+    my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050); 
+    $tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' ); 
+    $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     ); 
+    $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     ); 
+
     # Attach main window events
     EVT_CLOSE( $self, \&on_close_window);
     EVT_KEY_UP( $self, \&on_key );
