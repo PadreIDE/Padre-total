@@ -223,6 +223,8 @@ sub new {
     EVT_STC_UPDATEUI( $self, -1,  \&on_stc_update_ui );
 
     Padre::Wx::Execute->setup( $self );
+    #$self->SetIcon( Wx::GetWxPerlIcon() );
+    $self->SetIcon( _icon('new') );
 
     # Load any default files
     $self->_load_files;
@@ -332,6 +334,14 @@ sub _bitmap {
         : File::ShareDir::dist_dir('Padre');
     my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
     return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
+}
+sub _icon {
+    my $file = shift;
+    my $dir  = $ENV{PADRE_DEV}
+        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
+        : File::ShareDir::dist_dir('Padre');
+    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
+    return Wx::Icon->new( $path, wxBITMAP_TYPE_XPM );
 }
 
 sub on_stc_update_ui {
