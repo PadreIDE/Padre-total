@@ -1135,7 +1135,9 @@ sub _search {
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange($from, $last);
 
-    if (not $config->{search}->{use_regex}) {
+    if ($config->{search}->{use_regex}) {
+        $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
+    } else {
         $search_term = quotemeta $search_term;
     }
 
@@ -1143,7 +1145,6 @@ sub _search {
         $search_term = "(?i)$search_term";
     }
 
-    $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
 
     my $regex;
     eval { $regex = qr/$search_term/m };
