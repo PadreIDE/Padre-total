@@ -749,6 +749,23 @@ sub on_open_selection {
             $file = $filename;
         }
     }
+    if (not $file) { # and we are in a Perl environment
+        $selection =~ s{::}{/}g;
+        $selection .= ".pm";
+        my $filename = File::Spec->catfile(Cwd::cwd(), $selection);
+        if (-e $filename) {
+            $file = $filename;
+        } else {
+            foreach my $path (@INC) {
+                 my $filename = File::Spec->catfile( $path, $selection );
+                 if (-e $filename) {
+                     $file = $filename;
+                     last;
+                 }
+            }
+        }
+    }
+
 	if (not $file) {
         Wx::MessageBox("Could not fine file '$selection'", "Open Selection", wxOK, $self);
         return;
