@@ -204,6 +204,8 @@ sub new {
     $tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' ); 
     $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     ); 
     $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     ); 
+    $tool_bar->AddSeparator;
+    $tool_bar->Realize;
 
     # Attach main window events
     EVT_CLOSE( $self, \&on_close_window);
