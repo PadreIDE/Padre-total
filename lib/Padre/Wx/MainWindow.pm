@@ -462,8 +462,15 @@ sub on_autocompletition {
       $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
    my $last   = $page->GetLength();
    my $text   = $page->GetTextRange(0, $last);
+
+   my $regex;
+   eval { $regex = qr{\b($prefix\w*(?:::\w+)*)\b} };
+   if ($@) {
+       Wx::MessageBox("Cannot build regex for '$prefix'", "Autocompletions error", wxOK, $self);
+       return;
+   }
    my %seen;
-   my @words = grep { ! $seen{$_}++ } sort ($text =~ m{\b($prefix\w*(?:::\w+)*)\b}g);
+   my @words = grep { ! $seen{$_}++ } sort ($text =~ /$regex/g);
    if (@words > 20) {
       @words = @words[0..19];
    }
