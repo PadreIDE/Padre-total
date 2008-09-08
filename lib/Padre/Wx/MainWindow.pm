@@ -1073,6 +1073,7 @@ sub on_find {
     return if not $search;
 
     $config->{search}->{case_insensitive} = $search->{case_insensitive};
+    $config->{search}->{use_regex}        = $search->{use_regex};
 
     if ($search->{term}) {
         unshift @{$config->{search_terms}}, $search->{term};
@@ -1121,6 +1122,10 @@ sub _search {
     }
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange($from, $last);
+
+    if (not $config->{search}->{use_regex}) {
+        $search_term = quotemeta $search_term;
+    }
 
     if ($config->{search}->{case_insensitive})  {
         $search_term = "(?i)$search_term";
