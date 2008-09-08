@@ -30,6 +30,13 @@ our $VERSION = '0.07';
 my $default_dir = "";
 my $cnt         = 0;
 
+
+my %mode = (
+    WIN  => Wx::wxSTC_EOL_CRLF,
+    MAC  => Wx::wxSTC_EOL_CR,
+    UNIX => Wx::wxSTC_EOL_LF,
+);
+
 use vars qw{%SYNTAX};
 BEGIN {
 	# see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
@@ -640,11 +647,6 @@ sub setup_editor {
     
     my $file_type = $self->_get_default_file_type();
 
-    my %mode = (
-       'WIN'  => Wx::wxSTC_EOL_CRLF,
-       'MAC'  => Wx::wxSTC_EOL_CR,
-       'UNIX' => Wx::wxSTC_EOL_LF,
-    );
 
     $cnt++;
     my $title   = " Unsaved Document $cnt";
@@ -1574,6 +1576,22 @@ sub _toggle_eol {
     return;
 }
 
+sub convert_to {
+    my ($self, $file_type) = @_;
 
+    my $editor = $self->get_current_editor;
+    #$editor->SetEOLMode( $mode{$file_type} );
+    $editor->ConvertEOLs( $mode{$file_type} );
+
+    my $id   = $self->{notebook}->GetSelection;
+    # TODO: include the changing of file type in the undo/redo actions
+    # or better yet somehow fetch it from the document when it is needed.
+    my ($filename, $type) = $self->_get_filename($id);
+    $self->_set_filename($id, $filename, $file_type);
+
+    $self->update_status;
+
+    return;
+}
 
 1;

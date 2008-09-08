@@ -70,6 +70,15 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Split window" ),   \&Padre::Wx::MainWindow::on_split_window     );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
 
+    $menu->{edit_convert} = Wx::Menu->new;
+    $menu->{edit}->Append( -1, "Convert File", $menu->{edit_convert} );
+    foreach my $os ( qw(UNIX MAC WIN) ) {
+       EVT_MENU(
+           $win,
+           $menu->{edit_convert}->Append(-1, "to $os"), 
+           sub { $_[0]->convert_to($os) },
+       );
+    }
 
 
 
