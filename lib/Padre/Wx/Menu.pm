@@ -46,9 +46,9 @@ sub new {
     EVT_MENU( $win, $menu->{file}->Append( wxID_EXIT,   '' ), \&Padre::Wx::MainWindow::on_exit     );
 
     # Create the Project menu
-    $menu->{project} = Wx::Menu->new;
-    EVT_MENU( $win, $menu->{project}->Append( -1, "&New"),        \&Padre::Wx::MainWindow::on_new_project );
-    EVT_MENU( $win, $menu->{project}->Append( -1, "&Select"    ), \&Padre::Wx::MainWindow::on_select_project );
+    #$menu->{project} = Wx::Menu->new;
+    #EVT_MENU( $win, $menu->{project}->Append( -1, "&New"),        \&Padre::Wx::MainWindow::on_new_project );
+    #EVT_MENU( $win, $menu->{project}->Append( -1, "&Select"    ), \&Padre::Wx::MainWindow::on_select_project );
 
 
 
