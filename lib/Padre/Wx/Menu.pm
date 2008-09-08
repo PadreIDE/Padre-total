@@ -28,6 +28,7 @@ sub new {
     $menu->{file} = Wx::Menu->new;
     EVT_MENU( $win, $menu->{file}->Append( wxID_NEW,  '' ), \&Padre::Wx::MainWindow::on_new  );
     EVT_MENU( $win, $menu->{file}->Append( wxID_OPEN, '' ), \&Padre::Wx::MainWindow::on_open );
+    EVT_MENU( $win, $menu->{file}->Append( -1, "Open Selection\tCtrl-Shift-O" ),  \&Padre::Wx::MainWindow::on_open_selection);
     $menu->{file_recent} = Wx::Menu->new;
     $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent} );
     foreach my $f ( $ide->get_recent('files') ) {

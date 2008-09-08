@@ -5,6 +5,7 @@ use warnings;
 use English        qw(-no_match_vars);
 use FindBin;
 use Carp           ();
+use Cwd            ();
 use File::Spec     ();
 use File::Slurp    ();
 use File::Basename ();
@@ -614,6 +615,8 @@ sub on_split_window {
     return;
 }
 
+# if the current buffer is empty then fill that with the content of the current file
+# otherwise open a new buffer and open the file there
 sub setup_editor {
     my ($self, $file) = @_;
 
@@ -717,6 +720,45 @@ sub create_tab {
     return $id;
 }
 
+# try to open in various ways
+#    as full path
+#    as path relative to cwd
+#    as path to relative to where the current file is
+# if we are in a perl file or perl environment also try if the thing might be a name
+#    of a module and try to open it locally or from @INC.
+sub on_open_selection {
+    my ($self, $event) = @_;
+    my $selection = $self->_get_selection();
+    if (not $selection) {
+        Wx::MessageBox("Need to have something selected", "Open Selection", wxOK, $self);
+        return;
+    }
+    my $file;
+    if (-e $selection) {
+        $file = $selection;
+        if (not File::Spec->file_name_is_absolute($file)) {
+            $file = File::Spec->catfile(Cwd::cwd(), $file);
+            # check if this is still a file?
+        }
+    } else {
+        my $filename
+            = File::Spec->catfile(
+                    File::Basename::dirname($self->get_current_filename),
+                    $selection);
+        if (-e $filename) {
+            $file = $filename;
+        }
+    }
+	if (not $file) {
+        Wx::MessageBox("Could not fine file '$selection'", "Open Selection", wxOK, $self);
+        return;
+    }
+
+    Padre->ide->add_to_recent('files', $file);
+    $self->setup_editor($file);
+
+    return;
+}
 
 sub on_open {
     my ($self) = @_;
@@ -736,8 +778,6 @@ sub on_open {
     my $file = File::Spec->catfile($default_dir, $filename);
     Padre->ide->add_to_recent('files', $file);
 
-    # if the current buffer is empty then fill that with the content of the current file
-    # otherwise open a new buffer and open the file there
     $self->setup_editor($file);
 
     return;

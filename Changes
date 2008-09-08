@@ -1,3 +1,10 @@
+    Add Ctrl-Shift-O to open a file based on the selection in the current window.
+    Enable ack integration even though it is not nice yet but it is working
+    Use real Wx:AboutDialogInfo for the about box.
+    Hide method names (in the method window) when they don't start on the first column.
+    Add menu option to close all buffers.
+    Escape $ signs by default so they will not interpolate during search 
+
 v0.07 2008.09.04
 
     Allow the user to change the width ot TABs as they are displayed 
