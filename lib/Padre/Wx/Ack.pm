@@ -6,6 +6,7 @@ use Wx                      qw(:everything);
 use Wx::Event               qw(:everything);
 use Padre::Wx::Ack;
 use App::Ack;
+use Data::Dumper            qw(Dumper);
 
 my $iter;
 my %opts;
@@ -22,10 +23,50 @@ our $VERSION = '0.07';
 }
 
 
+my $DONE_EVENT : shared = Wx::NewEventType;
+sub on_ack {
+    my ($self) = @_;
+    @_ = (); # cargo cult or bug? see Wx::Thread / Creating new threads
+
+    # TODO kill the thread before closing the application
+
+    my $search = dialog();
+print Dumper $search;
+
+    $search->{dir} ||= '.';
+    return if not $search->{term};
+
+    #my $config = get_config();
+    #%opts;# = %{ $config->{opts} };
+    #$opts{regex} = $regex;
+    $opts{regex} = $search->{term};
+    if (-f $search->{dir}) {
+        $opts{all} = 1;
+    }
+    #$opts{after_context}  = 0;
+    #$opts{before_context} = 0;
+print Dumper \%opts;
+    my $what = App::Ack::get_starting_points( [$search->{dir}], \%opts );
+    fill_type_wanted();
+#    $App::Ack::type_wanted{cc} = 1;
+#    $opts{show_filename} = 1;
+#    $opts{follow} = 0;
+    $iter = App::Ack::get_iterator( $what, \%opts );
+    App::Ack::filetype_setup();
 
 
-sub new {
-    my ( $class, $win, $config ) = @_;
+    $self->show_output();
+
+    EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
+
+    my $worker = threads->create( \&on_ack_thread );
+
+    return;
+}
+
+
+sub dialog {
+    my ( $win, $config ) = @_;
 	my $id     = -1;
 	my $title  = "Ack";
 	my $pos    = wxDefaultPosition;
@@ -101,49 +142,6 @@ sub on_pick_dir {
 
 
 
-
-my $DONE_EVENT : shared = Wx::NewEventType;
-sub on_ack {
-    my ($self) = @_;
-    @_ = (); # cargo cult or bug? see Wx::Thread / Creating new threads
-
-# TODO kill the thread before closing the application
-
-
-    my $search = Padre::Wx::Ack->new;
-use Data::Dumper;
-print Dumper $search;
-
-    $search->{dir} ||= '.';
-    return if not $search->{term};
-
-    #my $config = get_config();
-    #%opts;# = %{ $config->{opts} };
-    #$opts{regex} = $regex;
-    $opts{regex} = $search->{term};
-    if (-f $search->{dir}) {
-        $opts{all} = 1;
-    }
-    #$opts{after_context}  = 0;
-    #$opts{before_context} = 0;
-print Dumper \%opts;
-    my $what = App::Ack::get_starting_points( [$search->{dir}], \%opts );
-    fill_type_wanted();
-#    $App::Ack::type_wanted{cc} = 1;
-#    $opts{show_filename} = 1;
-#    $opts{follow} = 0;
-    $iter = App::Ack::get_iterator( $what, \%opts );
-    App::Ack::filetype_setup();
-
-
-    $self->show_output();
-
-    EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
-
-
-    my $worker = threads->create( \&on_ack_thread );
-    #my $data = Padre::Wx::Ack->new;
-}
 sub ack_done {
     my( $self, $event ) = @_;
 
@@ -155,15 +153,12 @@ sub ack_done {
 }
 
 sub on_ack_thread {
-
-    print "in thread\n";
     App::Ack::print_matches( $iter, \%opts );
-
 }
 
 sub print_results {
     my ($text) = @_;
-print $text;
+#print $text;
     #my $end = $result->get_end_iter;
     #$result->insert($end, $text);
 
