@@ -177,6 +177,7 @@ use Class::Autouse qw{
     Padre::Wx::Menu
     Padre::Wx::Help
     Padre::Wx::Ack
+    Padre::Wx::Bookmarks
 };
 
 # Globally shared Perl detection object

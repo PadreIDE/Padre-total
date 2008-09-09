@@ -97,6 +97,8 @@ sub new {
     $self->{replace_terms}     ||= [];
 
     $self->{command_line}      ||= '';
+    $self->{bookmarks}         ||= {};
+
     # When running a script from the application some of the files might have not been saved yet.
     # There are several option what to do before running the script
     # none - don's save anything

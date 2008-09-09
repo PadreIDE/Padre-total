@@ -119,9 +119,11 @@ sub new {
         $menu->{view_indentation_guide},
         \&Padre::Wx::MainWindow::on_toggle_indentation_guide,
     );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom in\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom out\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "&Zoom reset\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom in\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom out\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom reset\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),  \&Padre::Wx::Bookmarks::on_set_bookmark  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),  \&Padre::Wx::Bookmarks::on_goto_bookmark  );
 
     $menu->{view}->AppendSeparator;
     #$menu->{view_files} = Wx::Menu->new;
@@ -223,11 +225,12 @@ sub new {
 
     # Create and return the main menu bar
     $menu->{wx} = Wx::MenuBar->new;
-    $menu->{wx}->Append( $menu->{file},    "&File" );
-    $menu->{wx}->Append( $menu->{project}, "&Project" );
-    $menu->{wx}->Append( $menu->{edit},    "&Edit" );
-    $menu->{wx}->Append( $menu->{view},    "&View" );
-    $menu->{wx}->Append( $menu->{run},     "&Run" );
+    $menu->{wx}->Append( $menu->{file},     "&File" );
+    $menu->{wx}->Append( $menu->{project},  "&Project" );
+    $menu->{wx}->Append( $menu->{edit},     "&Edit" );
+    $menu->{wx}->Append( $menu->{view},     "&View" );
+    $menu->{wx}->Append( $menu->{run},      "&Run" );
+    $menu->{wx}->Append( $menu->{bookmark}, "&Bookmarks" );
     if ( %plugins ) {
         $menu->{wx}->Append( $menu->{plugin}, "Pl&ugins" );
     }

@@ -14,6 +14,7 @@ lib/Padre/Util.pm
 
 
 lib/Padre/Wx/App.pm
+lib/Padre/Wx/Bookmarks.pm
 lib/Padre/Wx/Execute.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/Help.pm

@@ -22,8 +22,6 @@ use base qw(
 
 use Padre::Util ();
 use Padre::Wx::Text;
-# use Padre::Wx::FindDialog;
-# use Padre::Pod::Frame;
 
 our $VERSION = '0.07';
 
@@ -349,6 +347,7 @@ sub on_stc_update_ui {
     $self->update_status;
 }
 
+
 sub on_key {
     my ($self, $event) = @_;
 
@@ -358,50 +357,24 @@ sub on_key {
     my $code = $event->GetKeyCode;
 #print "$mod $code\n";
     if ($mod == 2) {            # Ctrl
-        if (57 >= $code and $code >= 49) {       # Ctrl-1-9
-            $self->on_set_mark($event, $code - 49);
-        } elsif ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
+        if ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
             $self->on_next_pane;
         }
     } elsif ($mod == 6) {                         # Ctrl-Shift
         if ($code == WXK_TAB) {                   # Ctrl-Shift-TAB #TODO it is already in the menu
             $self->on_prev_pane;
-        } elsif (57 >= $code and $code >= 49) {   # Ctrl-Shift-1-9      go to marker $id\n";
-            $self->on_jumpto_mark($event, $code - 49);
         }
     }
 
     return;
 }
 
-sub on_set_mark {
-    my ($self, $event, $id) = @_;
-
-    my $pageid = $self->{notebook}->GetSelection();
-    my $page = $self->{notebook}->GetPage($pageid);
-    my $line = $page->GetCurrentLine;
-    $self->{marker}->{$id} = $line;
-
-    return;
-}
-
-sub on_jumpto_mark {
-    my ($self, $event, $id) = @_;
-
-    my $pageid = $self->{notebook}->GetSelection();
-    my $page = $self->{notebook}->GetPage($pageid);
-    if (defined $self->{marker}->{$id}) {
-        $page->GotoLine($self->{marker}->{$id});
-    }
-
-    return;
-}
 
 sub on_brace_matching {
     my ($self, $event) = @_;
 
-    my $id   = $self->{notebook}->GetSelection;
-    my $page = $self->{notebook}->GetPage($id);
+    my $id    = $self->{notebook}->GetSelection;
+    my $page  = $self->{notebook}->GetPage($id);
     my $pos1  = $page->GetCurrentPos;
     my $pos2  = $page->BraceMatch($pos1);
     if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION

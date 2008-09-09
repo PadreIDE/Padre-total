@@ -54,6 +54,7 @@ SCOPE: {
             editor            => {
                     tab_size      => 8,
             },
+            bookmarks     => {},
             main              => {
                 top       => -1,
                 left      => -1,
