@@ -27,7 +27,7 @@ use Padre::Wx::Text;
 
 our $VERSION = '0.07';
 
-my $default_dir = "";
+my $default_dir = Cwd::cwd();
 my $cnt         = 0;
 
 
@@ -636,6 +636,7 @@ sub on_split_window {
     my $id      = $self->{notebook}->GetSelection;
     my $title   = $self->{notebook}->GetPageText($id);
     my $file    = $self->get_current_filename;
+    return if not $file;
     my $pointer = $editor->GetDocPointer();
     $editor->AddRefDocument($pointer);
 
@@ -894,6 +895,7 @@ Returns the name filename of the current buffer.
 sub get_current_filename {
     my ($self) = @_;
     my $id = $self->{notebook}->GetSelection;
+    return if $id == -1;
     return $self->_get_filename($id);
 }
 
