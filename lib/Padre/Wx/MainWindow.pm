@@ -809,6 +809,10 @@ sub on_open_selection {
 sub on_open {
     my ($self) = @_;
 
+    my $current_filename = $self->get_current_filename;
+    if ($current_filename) {
+       $default_dir = File::Basename::dirname($current_filename);
+    }
     my $dialog = Wx::FileDialog->new( $self, "Open file", $default_dir, "", "*.*", wxFD_OPEN);
     if ($^O !~ /win32/i) {
        $dialog->SetWildcard("*");
@@ -911,6 +915,10 @@ sub on_save_as {
     my $id   = $self->{notebook}->GetSelection;
     return if $id == -1;
 
+    my $current_filename = $self->get_current_filename;
+    if ($current_filename) {
+       $default_dir = File::Basename::dirname($current_filename);
+    }
     while (1) {
         my $dialog = Wx::FileDialog->new( $self, "Save file as...", $default_dir, "", "*.*", wxFD_SAVE);
         if ($dialog->ShowModal == wxID_CANCEL) {
