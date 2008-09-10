@@ -66,7 +66,7 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&Padre::Wx::MainWindow::on_comment_out_block       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&Padre::Wx::MainWindow::on_uncomment_block       );
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-B" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
+    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-1" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Split window" ),   \&Padre::Wx::MainWindow::on_split_window     );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
 

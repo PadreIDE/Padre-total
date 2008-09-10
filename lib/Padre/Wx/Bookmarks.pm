@@ -116,7 +116,8 @@ sub on_set_bookmark {
     my $pageid = $self->{notebook}->GetSelection();
     my $editor = $self->{notebook}->GetPage($pageid);
     my $line   = $editor->GetCurrentLine;
-    my $file   = File::Basename::basename($self->get_current_filename || '');
+    my $path   = $self->get_current_filename;
+    my $file   = File::Basename::basename($path || '');
 
     my $data = dialog($self, "$file line $line");
     return if not $data;
@@ -130,7 +131,7 @@ sub on_set_bookmark {
     
     return if not $shortcut;
 
-    $data->{file}   = $file;
+    $data->{file}   = $path;
     $data->{line}   = $line;
     $data->{pageid} = $pageid;
     $config->{bookmarks}{$shortcut} = $data;
@@ -152,17 +153,24 @@ sub on_goto_bookmark {
     my $line = $bookmark->{line};
     my $pageid = $bookmark->{pageid};
 
+    if (not defined $pageid) {
+        # find if the given file is in memory
+        $pageid = $self->find_editor_of_file($file);
+    }
+    if (not defined $pageid) {
+        # load the file
+    }
+
+    # go to the relevant editor and row
     if (defined $pageid) {
        $self->on_nth_pane($pageid);
        my $page = $self->{notebook}->GetPage($pageid);
        $page->GotoLine($line);
-    } else {
-        # find if the give file is in memory, load it if not
-        # go to the relevant editor and relevant row.
     }
 
     return;
 }
+
 sub on_delete_bookmark {
     my ($self, $event) = @_;
 

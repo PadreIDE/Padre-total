@@ -1607,4 +1607,15 @@ sub convert_to {
     return;
 }
 
+sub find_editor_of_file {
+    my ($self, $file) = @_;
+
+    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+        my $filename = $self->_get_filename($id);
+        next if not $filename;
+        return $id if $filename eq $file;
+    }
+    return;
+}
+
 1;
