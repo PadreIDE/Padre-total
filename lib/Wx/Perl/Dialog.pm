@@ -17,6 +17,7 @@ our @EXPORT = qw(
                  file_selector
                  dir_selector
                  choice
+                 single_choice
                  message
                  calendar
                );
@@ -163,6 +164,23 @@ sub choice {
     }
     return map {$args{choices}[$_]} $dialog->GetSelections;
 }
+
+sub single_choice {
+    my ( %args ) = @_;
+    %args = (
+                title   => '',
+                message => '',
+                choices => [],
+
+                %args);
+
+    my $dialog = Wx::SingleChoiceDialog->new( undef, $args{message}, $args{title}, $args{choices});
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+    return $args{choices}[ $dialog->GetSelection ];
+}
+
 
 
 
