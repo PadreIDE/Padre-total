@@ -1640,7 +1640,15 @@ sub on_stc_change {
     }
 
     my %keywords = (
-       join => "EXPR, LIST",
+       chomp     => '(STRING)',
+       substr    => '(EXPR, OFFSET, LENGTH, REPLACEMENT)',
+       index     => '(STR, SUBSTR, INDEX)',
+       pop       => '(@ARRAY)',
+       psush     => '(@ARRAY, LIST)',
+       print     => '(LIST) or (FILEHANDLE LIST)',
+       join      => '(EXPR, LIST)',
+       split     => '(/PATTERN/,EXPR,LIMIT)',
+       wantarray => '()',
     );
 
     my $regex = join '|', sort {length $a <=> length $b} keys %keywords;
