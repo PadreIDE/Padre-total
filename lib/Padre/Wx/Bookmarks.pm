@@ -36,9 +36,6 @@ sub add_dialog {
     $entry->SetFocus;
     $rows[0]->Add( $entry );
 
-    my $height = 0;
-    my $width  = 25;
-
     my $ok = Wx::Button->new( $dialog, wxID_OK, '' );
     EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) } );
     $ok->SetDefault;
@@ -50,7 +47,7 @@ sub add_dialog {
     $rows[3]->Add( $ok );
     $rows[3]->Add( $cancel );
 
-    ($height, $width) = list_bookmarks($dialog, $height, $width, \@rows, $ok->GetSize);
+    my ($height, $width) = list_bookmarks($dialog, \@rows, $ok->GetSize);
 
     $dialog->SetSizer($box);
     my ($bw, $bh) = $ok->GetSizeWH;
@@ -77,10 +74,13 @@ sub add_dialog {
 }
 
 sub list_bookmarks {
-    my ($dialog, $height, $width, $rows, $button_size) = @_;
+    my ($dialog, $rows, $button_size) = @_;
 
     my $config = Padre->ide->get_config;
     my @shortcuts = sort keys %{ $config->{bookmarks} };
+    my $height = 0;
+    my $width  = 25;
+
     if (@shortcuts) {
         $height = @shortcuts * 27; # should be height of font
         $width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
