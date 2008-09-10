@@ -21,10 +21,6 @@ my $tb;
 sub add_dialog {
     my ($self, $file, $line) = @_;
 
-    my $config = Padre->ide->get_config;
-
-    my @shortcuts = sort keys %{ $config->{bookmarks} };
-
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
     my @rows;
     for my $i (0..3) {
@@ -40,19 +36,8 @@ sub add_dialog {
     $entry->SetFocus;
     $rows[0]->Add( $entry );
 
-    my $height = @shortcuts * 27; # should be height of font
-    my $width  = max( 25,   20 * max (1, map { length($_) } @shortcuts));
-
-    if (@shortcuts) {
-        $tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
-        foreach my $name ( @shortcuts ) {
-            my $count = $tb->GetPageCount;
-            my $page = Wx::Panel->new( $tb );
-            $tb->AddPage( $page, $name, 0, $count );
-        }
-        $rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
-        $rows[2]->Add( $tb );
-    }
+    my $height = 0;
+    my $width  = 25;
 
     my $ok = Wx::Button->new( $dialog, wxID_OK, '' );
     EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) } );
@@ -64,11 +49,8 @@ sub add_dialog {
 
     $rows[3]->Add( $ok );
     $rows[3]->Add( $cancel );
-    if (@shortcuts) {
-       my $delete  = Wx::Button->new( $dialog, wxID_DELETE, '', [-1, -1], $ok->GetSize);
-       EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
-       $rows[3]->Add( $delete );
-    }
+
+    ($height, $width) = list_bookmarks($dialog, $height, $width, \@rows, $ok->GetSize);
 
     $dialog->SetSizer($box);
     my ($bw, $bh) = $ok->GetSizeWH;
@@ -87,8 +69,6 @@ sub add_dialog {
     my $shortcut = $entry->GetValue;
     $shortcut =~ s/:/ /g; # YAML::Tiny limitation
 
-
-
     #$data{text}     = $text;
     $data{shortcut} = $shortcut;
     $dialog->Destroy;
@@ -96,7 +76,30 @@ sub add_dialog {
     return \%data;
 }
 
+sub list_bookmarks {
+    my ($dialog, $height, $width, $rows, $button_size) = @_;
 
+    my $config = Padre->ide->get_config;
+    my @shortcuts = sort keys %{ $config->{bookmarks} };
+    if (@shortcuts) {
+        $height = @shortcuts * 27; # should be height of font
+        $width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
+        $tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
+        foreach my $name ( @shortcuts ) {
+            my $count = $tb->GetPageCount;
+            my $page = Wx::Panel->new( $tb );
+            $tb->AddPage( $page, $name, 0, $count );
+        }
+        $rows->[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
+        $rows->[2]->Add( $tb );
+
+        my $delete  = Wx::Button->new( $dialog, wxID_DELETE, '', [-1, -1], $button_size );
+        EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
+        $rows->[3]->Add( $delete );
+    }
+
+   return ($height, $width);
+}
 
 sub on_set_bookmark {
     my ($self, $event) = @_;
@@ -127,12 +130,14 @@ sub on_set_bookmark {
 }
 
 sub on_goto_bookmark {
-    my ($self, $event, $id) = @_;
+    my ($self, $event) = @_;
 
     my $config = Padre->ide->get_config;
 
-    my $bookmark = $config->{bookmarks}{$id};
-    return if not $bookmark;
+#    show_dialog($self);
+
+    #my $bookmark = $config->{bookmarks}{$id};
+    #return if not $bookmark;
 
 #    my $pageid = $self->{notebook}->GetSelection();
 #    my $editor   = $self->{notebook}->GetPage($pageid);
