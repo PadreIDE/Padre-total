@@ -16,6 +16,8 @@ our $VERSION = '0.07';
 #    EVT_TEXT_ENTER($dialog, $choice,    sub { $dialog->EndModal(wxID_OK) });
 #    EVT_COMBOBOX($dialog, $choice, sub {print "c\n" });
 
+my $tb;
+
 sub add_dialog {
     my ($self, $file, $line) = @_;
 
@@ -39,10 +41,10 @@ sub add_dialog {
     $rows[0]->Add( $entry );
 
     my $height = @shortcuts * 27; # should be height of font
-    my $width  = max( 25,   20 * max (map { length($_) } @shortcuts));
+    my $width  = max( 25,   20 * max (1, map { length($_) } @shortcuts));
 
     if (@shortcuts) {
-        my $tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
+        $tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
         foreach my $name ( @shortcuts ) {
             my $count = $tb->GetPageCount;
             my $page = Wx::Panel->new( $tb );
@@ -64,7 +66,7 @@ sub add_dialog {
     $rows[3]->Add( $cancel );
     if (@shortcuts) {
        my $delete  = Wx::Button->new( $dialog, wxID_DELETE, '', [-1, -1], $ok->GetSize);
-       #EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(wxID_CANCEL) } );
+       EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
        $rows[3]->Add( $delete );
     }
 
@@ -85,7 +87,7 @@ sub add_dialog {
     my $shortcut = $entry->GetValue;
     $shortcut =~ s/:/ /g; # YAML::Tiny limitation
 
-    #my $shortcut = $shortcuts[ $tb->GetSelection ];
+
 
     #$data{text}     = $text;
     $data{shortcut} = $shortcut;
@@ -107,8 +109,8 @@ sub on_set_bookmark {
     my $data = add_dialog($self, $file, $line);
     return if not $data;
 
-    use Data::Dumper;
-    print Dumper $data;
+    #use Data::Dumper;
+    #print Dumper $data;
 
     my $config = Padre->ide->get_config;
     my $shortcut = delete $data->{shortcut};
@@ -136,6 +138,17 @@ sub on_goto_bookmark {
 #    my $editor   = $self->{notebook}->GetPage($pageid);
 #    $editor->GotoLine($self->{marker}->{$id});
 
+
+    return;
+}
+sub on_delete_bookmark {
+    my ($self, $event) = @_;
+
+    my $selection = $tb->GetSelection;
+    my $config = Padre->ide->get_config;
+    my @shortcuts = sort keys %{ $config->{bookmarks} };
+    delete $config->{bookmarks}{ $shortcuts[$selection] };
+    $tb->DeletePage($selection);
 
     return;
 }
