@@ -2,9 +2,10 @@ package Padre::Wx::Bookmarks;
 
 use strict;
 use warnings;
-use Wx         qw(:everything);
-use Wx::Event  qw(:everything);
-use List::Util qw(max);
+use Wx           qw(:everything);
+use Wx::Event    qw(:everything);
+use List::Util   qw(max);
+use Data::Dumper qw(Dumper);
 
 our $VERSION = '0.07';
 
@@ -18,8 +19,8 @@ our $VERSION = '0.07';
 
 my $tb;
 
-sub add_dialog {
-    my ($self, $file, $line) = @_;
+sub dialog {
+    my ($self, $text) = @_;
 
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
     my @rows;
@@ -28,13 +29,9 @@ sub add_dialog {
        $box->Add($rows[$i]);
     }
 
+    my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
+    my $dialog = Wx::Dialog->new( $self, -1, $title, [-1, -1], [-1, -1]);
 
-    my $dialog = Wx::Dialog->new( $self, -1, "Set Bookmark", [-1, -1], [-1, -1]);
-
-    my $text = "$file line: $line";
-    my $entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
-    $entry->SetFocus;
-    $rows[0]->Add( $entry );
 
     my $ok = Wx::Button->new( $dialog, wxID_OK, '' );
     EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) } );
@@ -47,7 +44,18 @@ sub add_dialog {
     $rows[3]->Add( $ok );
     $rows[3]->Add( $cancel );
 
+
     my ($height, $width) = list_bookmarks($dialog, \@rows, $ok->GetSize);
+
+    my $entry;
+    if ($text) {
+        $entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
+        $entry->SetFocus;
+        $rows[0]->Add( $entry );
+    } else {
+        $tb->SetFocus;
+    }
+
 
     $dialog->SetSizer($box);
     my ($bw, $bh) = $ok->GetSizeWH;
@@ -62,15 +70,16 @@ sub add_dialog {
        return;
     }
   
-    my %data;
-    my $shortcut = $entry->GetValue;
-    $shortcut =~ s/:/ /g; # YAML::Tiny limitation
-
-    #$data{text}     = $text;
-    $data{shortcut} = $shortcut;
-    $dialog->Destroy;
-
-    return \%data;
+    if ($text) {
+       my %data;
+       my $shortcut = $entry->GetValue;
+       $shortcut =~ s/:/ /g; # YAML::Tiny limitation
+       $data{shortcut} = $shortcut;
+       $dialog->Destroy;
+       return \%data;
+    } else {
+       return;
+    }
 }
 
 sub list_bookmarks {
@@ -109,10 +118,10 @@ sub on_set_bookmark {
     my $line   = $editor->GetCurrentLine;
     my $file   = File::Basename::basename($self->get_current_filename || '');
 
-    my $data = add_dialog($self, $file, $line);
+    my $data = dialog($self, "$file line $line");
     return if not $data;
 
-    #use Data::Dumper;
+
     #print Dumper $data;
 
     my $config = Padre->ide->get_config;
@@ -132,17 +141,25 @@ sub on_set_bookmark {
 sub on_goto_bookmark {
     my ($self, $event) = @_;
 
+    dialog($self);
+
     my $config = Padre->ide->get_config;
+    my $selection = $tb->GetSelection;
+    my @shortcuts = sort keys %{ $config->{bookmarks} };
+    my $bookmark = $config->{bookmarks}{ $shortcuts[$selection] };
 
-#    show_dialog($self);
+    my $file = $bookmark->{file};
+    my $line = $bookmark->{line};
+    my $pageid = $bookmark->{pageid};
 
-    #my $bookmark = $config->{bookmarks}{$id};
-    #return if not $bookmark;
-
-#    my $pageid = $self->{notebook}->GetSelection();
-#    my $editor   = $self->{notebook}->GetPage($pageid);
-#    $editor->GotoLine($self->{marker}->{$id});
-
+    if (defined $pageid) {
+       $self->on_nth_pane($pageid);
+       my $page = $self->{notebook}->GetPage($pageid);
+       $page->GotoLine($line);
+    } else {
+        # find if the give file is in memory, load it if not
+        # go to the relevant editor and relevant row.
+    }
 
     return;
 }
