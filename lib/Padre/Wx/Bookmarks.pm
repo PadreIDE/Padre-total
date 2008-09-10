@@ -9,14 +9,6 @@ use Data::Dumper qw(Dumper);
 
 our $VERSION = '0.07';
 
-    # by pressing a key show a window to bookmark this page
-    # let the user select a free letter, or override an already used letter
-    # open window with list of bookmarks
-    # allow easily set one of the bookmarks to the current location
-
-#    EVT_TEXT_ENTER($dialog, $choice,    sub { $dialog->EndModal(wxID_OK) });
-#    EVT_COMBOBOX($dialog, $choice, sub {print "c\n" });
-
 my $tb;
 
 sub dialog {
