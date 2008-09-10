@@ -159,6 +159,10 @@ sub on_goto_bookmark {
     }
     if (not defined $pageid) {
         # load the file
+        if (-e $file) {
+            $self->setup_editor($file);
+            $pageid = $self->find_editor_of_file($file);
+        }
     }
 
     # go to the relevant editor and row
