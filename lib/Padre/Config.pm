@@ -98,6 +98,9 @@ sub new {
 
     $self->{command_line}      ||= '';
     $self->{bookmarks}         ||= {};
+    #if (not $self->{bookmarks}) {
+    #   $self->{bookmarks}{$_} = undef for ('a'..'z');
+    #}
 
     # When running a script from the application some of the files might have not been saved yet.
     # There are several option what to do before running the script
@@ -136,8 +139,11 @@ sub read {
 
 sub write {
     my $self = shift;
+
     my %hash = %{ $self };
+    delete $self->{bookmarks}{$_}{pageid} for keys %{$self->{bookmarks}};
     YAML::Tiny::DumpFile( shift, \%hash );
+
     return 1;
 }
 

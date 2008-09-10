@@ -2,8 +2,9 @@ package Padre::Wx::Bookmarks;
 
 use strict;
 use warnings;
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
+use Wx         qw(:everything);
+use Wx::Event  qw(:everything);
+use List::Util qw(max);
 
 our $VERSION = '0.07';
 
@@ -12,55 +13,87 @@ our $VERSION = '0.07';
     # open window with list of bookmarks
     # allow easily set one of the bookmarks to the current location
 
+#    EVT_TEXT_ENTER($dialog, $choice,    sub { $dialog->EndModal(wxID_OK) });
+#    EVT_COMBOBOX($dialog, $choice, sub {print "c\n" });
+
 sub add_dialog {
     my ($self, $file, $line) = @_;
 
     my $config = Padre->ide->get_config;
 
-    my $dialog = Wx::Dialog->new( $self, -1, "Set Bookmark", [-1, -1], [-1, -1]);
+    my @shortcuts = sort keys %{ $config->{bookmarks} };
 
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
-    my $row1 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row2 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row3 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row4 = Wx::BoxSizer->new(  wxHORIZONTAL );
+    my @rows;
+    for my $i (0..3) {
+       $rows[$i] = Wx::BoxSizer->new(  wxHORIZONTAL );
+       $box->Add($rows[$i]);
+    }
 
-    $box->Add($row1);
-    $box->Add($row2);
-    $box->Add($row3);
-    $box->Add($row4);
 
-    $row1->Add( Wx::StaticText->new( $dialog, -1, 'Text:'), 1, wxALL, 3 );
-    $row1->Add( Wx::StaticText->new( $dialog, -1, "$file $line"), 1, wxALL, 3 );
+    my $dialog = Wx::Dialog->new( $self, -1, "Set Bookmark", [-1, -1], [-1, -1]);
 
-    my @shortcuts = keys %{ $config->{bookmarks} };
-    my $choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], \@shortcuts);
-    $row2->Add( $choice, 1, wxALL, 3);
+    my $text = "$file line: $line";
+    my $entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
+    $entry->SetFocus;
+    $rows[0]->Add( $entry );
 
-    my $ok = Wx::Button->new( $dialog, wxID_OK, '');
-    EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) });
-    $row3->Add($ok);
+    my $height = @shortcuts * 27; # should be height of font
+    my $width  = max( 25,   20 * max (map { length($_) } @shortcuts));
 
-    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',                 );
+    if (@shortcuts) {
+        my $tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
+        foreach my $name ( @shortcuts ) {
+            my $count = $tb->GetPageCount;
+            my $page = Wx::Panel->new( $tb );
+            $tb->AddPage( $page, $name, 0, $count );
+        }
+        $rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
+        $rows[2]->Add( $tb );
+    }
+
+    my $ok = Wx::Button->new( $dialog, wxID_OK, '' );
+    EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) } );
+    $ok->SetDefault;
+
+    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '', [-1, -1], $ok->GetSize);
     EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(wxID_CANCEL) } );
-    $row4->Add($cancel);
+
+
+    $rows[3]->Add( $ok );
+    $rows[3]->Add( $cancel );
+    if (@shortcuts) {
+       my $delete  = Wx::Button->new( $dialog, wxID_DELETE, '', [-1, -1], $ok->GetSize);
+       #EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(wxID_CANCEL) } );
+       $rows[3]->Add( $delete );
+    }
+
     $dialog->SetSizer($box);
-    $choice->SetFocus;
-    EVT_TEXT_ENTER($dialog, $choice,    sub { $dialog->EndModal(wxID_OK) });
+    my ($bw, $bh) = $ok->GetSizeWH;
+
+    my $dialog_width = max($width, 2* $bw, 300);
+    $dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
+
 
     my $ret = $dialog->ShowModal;
-
     if ( $ret eq wxID_CANCEL ) {
-        $dialog->Destroy;
-        return;
+       $dialog->Destroy;
+       return;
     }
+  
     my %data;
-    $data{shortcut} = $choice->GetValue;
+    my $shortcut = $entry->GetValue;
+    $shortcut =~ s/:/ /g; # YAML::Tiny limitation
 
+    #my $shortcut = $shortcuts[ $tb->GetSelection ];
+
+    #$data{text}     = $text;
+    $data{shortcut} = $shortcut;
     $dialog->Destroy;
 
     return \%data;
 }
+
 
 
 sub on_set_bookmark {
@@ -79,16 +112,13 @@ sub on_set_bookmark {
 
     my $config = Padre->ide->get_config;
     my $shortcut = delete $data->{shortcut};
-    if (not $shortcut) {
-       for my $ch ('a'..'z') {
-           if (not $config->{bookmarks}{$ch}) {
-               $shortcut = $ch;
-               last;
-           }
-       }
-    }
+    #my $text     = delete $data->{text};
+    
     return if not $shortcut;
 
+    $data->{file}   = $file;
+    $data->{line}   = $line;
+    $data->{pageid} = $pageid;
     $config->{bookmarks}{$shortcut} = $data;
 
     return;
