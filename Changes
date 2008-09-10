@@ -3,7 +3,15 @@
     Use real Wx:AboutDialogInfo for the about box.
     Hide method names (in the method window) when they don't start on the first column.
     Add menu option to close all buffers.
-    Escape $ signs by default so they will not interpolate during search 
+    Escape $ signs by default so they will not interpolate during search.
+    Open file now opens in the directory where the current file is.
+    Add Bookmarks
+    Add toolbar with several icons. Tested on Windows as well.
+    Add icon for the application.
+    Enable/disable regex in search.
+    Add menu option to convert line endings.
+    Replace relative path with full path on the command line.
+    Implement basic CallTips and add menu option to enable/disable them
 
 v0.07 2008.09.04
 
