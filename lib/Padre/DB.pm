@@ -6,6 +6,6 @@ use strict;
 use Padre;
 use ORLite Padre->ide->config_db;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 1;

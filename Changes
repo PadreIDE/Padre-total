@@ -1,3 +1,5 @@
+v0.08 2008.09.11
+
     Add Ctrl-Shift-O to open a file based on the selection in the current window.
     Enable ack integration even though it is not nice yet but it is working
     Use real Wx:AboutDialogInfo for the about box.

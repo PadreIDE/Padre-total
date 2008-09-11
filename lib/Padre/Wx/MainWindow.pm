@@ -23,7 +23,7 @@ use base qw(
 use Padre::Util ();
 use Padre::Wx::Text;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 my $default_dir = Cwd::cwd();
 my $cnt         = 0;

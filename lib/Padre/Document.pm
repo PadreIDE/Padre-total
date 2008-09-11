@@ -8,7 +8,7 @@ use warnings;
 use File::Spec ();
 use List::Util ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 
 
