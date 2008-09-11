@@ -1644,7 +1644,7 @@ sub on_stc_change {
        substr    => '(EXPR, OFFSET, LENGTH, REPLACEMENT)',
        index     => '(STR, SUBSTR, INDEX)',
        pop       => '(@ARRAY)',
-       psush     => '(@ARRAY, LIST)',
+       push      => '(@ARRAY, LIST)',
        print     => '(LIST) or (FILEHANDLE LIST)',
        join      => '(EXPR, LIST)',
        split     => '(/PATTERN/,EXPR,LIMIT)',
