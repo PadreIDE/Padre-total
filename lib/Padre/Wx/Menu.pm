@@ -58,8 +58,8 @@ sub new {
     $menu->{edit} = Wx::Menu->new;
     EVT_MENU( $win, $menu->{edit}->Append( wxID_UNDO, '' ),                \&Padre::Wx::MainWindow::on_undo             );
     EVT_MENU( $win, $menu->{edit}->Append( wxID_REDO, "\tCtrl-Shift-Z" ),  \&Padre::Wx::MainWindow::on_redo             );
-    EVT_MENU( $win, $menu->{edit}->Append( wxID_FIND, '' ),           \&Padre::Wx::MainWindow::on_find             );
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&Padre::Wx::MainWindow::on_find_again       );
+    EVT_MENU( $win, $menu->{edit}->Append( wxID_FIND, '' ),           \&Padre::Wx::FindDialog::on_find             );
+    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&Padre::Wx::FindDialog::on_find_again       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Ac&k" ),              \&Padre::Wx::Ack::on_ack  );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&Padre::Wx::MainWindow::on_goto             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&Padre::Wx::MainWindow::on_autocompletition );

@@ -138,6 +138,70 @@ Padre will add a menu entry for every plugin under the B<Plugins>
 menu item. For each plugin menu item it will add all the Name_1,
 Name_2 subitems.
 
+
+=head1 Search, Find and Replace
+
+(planning)
+
+
+=head2 Search
+
+Ctrl-F opens the search window, if something was selected then that is given as the search text.
+Otherwise the last search string should be displayed.
+
+Provide option to search backwards
+
+Limit action to current block, current subroutine, current
+file (should be the default) current project, current directory 
+with some file filters.
+
+When the user presses Find
+
+=over 4
+
+=item 1
+
+We find the first hit and the search window disappears. F3 jumps to next one.
+
+=item 2
+
+The first match is highlighted and focused but the window stays
+When the user clicks on the Find button again, we jump to the next hit
+In this case the user must be able to edit the document while the search window
+is on.
+
+=item 3
+
+All the matches are highlighted and we go to the first match, window disappears.
+F3 jumps to next one
+
+=item 4
+
+All the matches are highlighted and we go to the first one, window stays open
+user can edit text
+
+=back
+
+=head2 Find and Replace
+
+Find - find the next occurance
+
+Replace all - do just that
+
+Replace - if currently a match is selected then replace it find the next occurance and select it
+
+=head2 TODO describe what to do if we have to deal with files that are not in the editor
+
+if "Replace all" was pressed then do just that 
+   1) without opening editors for the files.
+   2) opening an editor for each file and keep it in unsaved state (sounds carzy having 1000 editors open...)
+if Search or Replace is clicked then we might show the next location in the lower pane. 
+If the user then presses Replace we open the file in an editor window and go on.
+If the user presses Search then we show the next occurance.
+Opened and edited files will be left in a not saved state.
+
+
+
 =cut
 
 use 5.008;
@@ -178,6 +242,7 @@ use Class::Autouse qw{
     Padre::Wx::Help
     Padre::Wx::Ack
     Padre::Wx::Bookmarks
+    Padre::Wx::FindDialog
 };
 
 # Globally shared Perl detection object

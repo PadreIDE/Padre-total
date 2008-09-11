@@ -4,12 +4,13 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
+use English        qw(-no_match_vars);
+use Wx             qw(:everything);
+use Wx::Event      qw(:everything);
 
 our $VERSION = '0.08';
 
-sub new {
+sub dialog {
     my ( $class, $win, $config, $args) = @_;
 
 #you can "skip" slots by adding spacers
@@ -116,6 +117,101 @@ sub new {
     return \%search;
 }
 
+sub on_find {
+    my ( $self ) = @_;
+
+    my $config = Padre->ide->get_config;
+    my $selection = $self->_get_selection();
+    $selection = '' if not defined $selection;
+
+    my $search = Padre::Wx::FindDialog->dialog( $self, $config, {term => $selection} );
+    return if not $search;
+
+    $config->{search}->{case_insensitive} = $search->{case_insensitive};
+    $config->{search}->{use_regex}        = $search->{use_regex};
+
+    if ($search->{term}) {
+        unshift @{$config->{search_terms}}, $search->{term};
+        my %seen;
+        @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
+    }
+    if ($search->{replace_term} ) {
+        unshift @{$config->{replace_terms}}, $search->{replace_term};
+        my %seen;
+        @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
+     }
+
+    _search($self, replace_term => $search->{replace_term});
+
+    return;
+}
+
+
+sub on_find_again {
+    my $self = shift;
+    my $term = Padre->ide->get_config->{search_terms}->[0];
+    if ( $term ) {
+        _search($self);
+    } else {
+        $self->on_find;
+    }
+    return;
+}
+
+sub _search {
+    my ($self, %args) = @_;
+
+    my $config = Padre->ide->get_config;
+    my $search_term = $args{search_term} ||= $config->{search_terms}->[0];
+    #$args{replace_term}
+
+    my $id   = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
+    my $content = $page->GetText;
+    my ($from, $to) = $page->GetSelection;
+    if ($from < $to) {
+        $from++;
+    }
+    my $last = $page->GetLength();
+    my $str  = $page->GetTextRange($from, $last);
+
+    if ($config->{search}->{use_regex}) {
+        $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
+    } else {
+        $search_term = quotemeta $search_term;
+    }
+
+    if ($config->{search}->{case_insensitive})  {
+        $search_term = "(?i)$search_term";
+    }
+
+
+    my $regex;
+    eval { $regex = qr/$search_term/m };
+    if ($@) {
+        Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $self);
+        return;
+    }
+
+    my ($start, $end);
+    if ($str =~ $regex) {
+        $start = $LAST_MATCH_START[0] + $from;
+        $end   = $LAST_MATCH_END[0] + $from;
+    } else {
+        my $str  = $page->GetTextRange(0, $last);
+        if ($str =~ $regex) {
+            $start = $LAST_MATCH_START[0];
+            $end   = $LAST_MATCH_END[0];
+        }
+    }
+    if (not defined $start) {
+        return; # not found
+    }
+
+    $page->SetSelection($start, $end);
+
+    return;
+}
 
 
 

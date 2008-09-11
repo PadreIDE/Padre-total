@@ -295,7 +295,7 @@ sub method_selected {
     my ($self, $event) = @_;
     my $sub = $event->GetItem->GetText;
     return if not defined $sub;
-    $self->_search(search_term => "sub $sub"); # TODO actually search for sub\s+$sub
+    Padre::Wx::FindDialog::_search($self, search_term => "sub $sub"); # TODO actually search for sub\s+$sub
     return;
 }
 
@@ -1057,36 +1057,6 @@ sub on_goto {
     return;
 }
 
-sub on_find {
-    my ( $self ) = @_;
-
-    my $config = Padre->ide->get_config;
-    my $selection = $self->_get_selection();
-    $selection = '' if not defined $selection;
-
-    require Padre::Wx::FindDialog;
-    my $search = Padre::Wx::FindDialog->new( $self, $config, {term => $selection} );
-    return if not $search;
-
-    $config->{search}->{case_insensitive} = $search->{case_insensitive};
-    $config->{search}->{use_regex}        = $search->{use_regex};
-
-    if ($search->{term}) {
-        unshift @{$config->{search_terms}}, $search->{term};
-        my %seen;
-        @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
-    }
-    if ($search->{replace_term} ) {
-        unshift @{$config->{replace_terms}}, $search->{replace_term};
-        my %seen;
-        @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
-     }
-
-    $self->_search(replace_term => $search->{replace_term});
-
-    return;
-}
-
 
 # sub update_methods
 sub update_methods {
@@ -1099,72 +1069,6 @@ sub update_methods {
     $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
 
 
-    return;
-}
-
-sub _search {
-    my ($self, %args) = @_;
-
-    my $config = Padre->ide->get_config;
-    my $search_term = $args{search_term} ||= $config->{search_terms}->[0];
-    #$args{replace_term}
-
-    my $id   = $self->{notebook}->GetSelection;
-    my $page = $self->{notebook}->GetPage($id);
-    my $content = $page->GetText;
-    my ($from, $to) = $page->GetSelection;
-    if ($from < $to) {
-        $from++;
-    }
-    my $last = $page->GetLength();
-    my $str  = $page->GetTextRange($from, $last);
-
-    if ($config->{search}->{use_regex}) {
-        $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
-    } else {
-        $search_term = quotemeta $search_term;
-    }
-
-    if ($config->{search}->{case_insensitive})  {
-        $search_term = "(?i)$search_term";
-    }
-
-
-    my $regex;
-    eval { $regex = qr/$search_term/m };
-    if ($@) {
-        Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $self);
-        return;
-    }
-
-    my ($start, $end);
-    if ($str =~ $regex) {
-        $start = $LAST_MATCH_START[0] + $from;
-        $end   = $LAST_MATCH_END[0] + $from;
-    } else {
-        my $str  = $page->GetTextRange(0, $last);
-        if ($str =~ $regex) {
-            $start = $LAST_MATCH_START[0];
-            $end   = $LAST_MATCH_END[0];
-        }
-    }
-    if (not defined $start) {
-        return; # not found
-    }
-
-    $page->SetSelection($start, $end);
-
-    return;
-}
-
-sub on_find_again {
-    my $self = shift;
-    my $term = Padre->ide->get_config->{search_terms}->[0];
-    if ( $term ) {
-        $self->_search;
-    } else {
-        $self->on_find;
-    }
     return;
 }
 
