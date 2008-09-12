@@ -1,0 +1,10 @@
+Build.PL
+Makefile.PL
+MANIFEST			This list of files
+Changes
+README
+
+lib/Padre/Debugger.pm
+
+t/01-add.t
+t/eg/01-add.pl

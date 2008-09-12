@@ -7,12 +7,13 @@ my $builder = Module::Build->new(
     module_name           => 'Padre::Debugger',
     license               => 'perl',
     dist_author           => 'Gabor Szabo',
-    create_makefile_pl    => 0,
+    create_makefile_pl    => 'traditional',
     create_readme         => 0,
     recursive_test_files  => 0,
 
     requires              => {
-        'perl'                    => '5.008',
+        #'perl'                    => '5.008',
+        'IO::Socket'               => '0',
     },
     build_requires        => {
         'Test::More'                => '0.47',
