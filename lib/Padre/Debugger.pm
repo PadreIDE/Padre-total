@@ -28,7 +28,7 @@ Padre::Debugger - client side code for perl debugger
 
   $out = $debugger->run;
 
-=DESCRIPTION
+=head1 DESCRIPTION
 
 It is currently in the Padre namespace but it does not have any Padre
 related code so at one point it will be renamed. For now I want it to
