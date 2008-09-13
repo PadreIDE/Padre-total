@@ -71,24 +71,56 @@ sub listen {
 
 }
 
-sub step_in   { $_[0]->_send('s') }
-sub run       { $_[0]->_send('r') }
-sub quit      { $_[0]->_send('q') }
-sub show_line { $_[0]->_send('.') }
+sub step_in   { $_[0]->send_get('s') }
+sub run       { $_[0]->send_get('r') }
+sub quit      { $_[0]->_send_get('q') }
+sub show_line { $_[0]->send_get('.') }
 
-sub get {
+sub get_value {
+    my ($self, $var) = @_;
+    die "no parameter given\n" if not defined $var;
+
+    if ($var =~ /^\$/) {
+        $self->_send("p $var");
+        my $buf = $self->_get;
+        if (wantarray) {
+            my $prompt = _prompt(\$buf);
+            return ($buf, $prompt);
+        } else {
+            return $buf
+        }
+    }
+    die "Unknown parameter '$var'\n";
+}
+
+sub _get {
     my ($self) = @_;
-    #my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
 
+    #my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
     my $buf = '';
     $self->{new_sock}->sysread($buf, 1024, length $buf) while $buf !~ /DB<\d+>/;
 
+    return $buf;
+}
+
+sub _prompt {
+    my ($buf) = @_;
+    my $prompt;
+    if ($$buf =~ s/\s*DB<(\d+)>\s*$//) {
+        $prompt = $1;
+    }
+    chomp($$buf);
+    return $prompt;
+}
+
+sub get {
+    my ($self) = @_;
+
+    my $buf = $self->_get;
+
     if (wantarray) {
-        my $prompt;
-        if ($buf =~ s/\s*DB<(\d+)>\s*$//) {
-            $prompt = $1;
-        }
-        chomp($buf);
+        my $prompt = _prompt(\$buf);
+
         my ($module, $file, $row, $content);
         # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
         if ($buf =~ /^([\w:]*)\(([^\)]*):(\d+)\):\t(.*)/) {
@@ -105,6 +137,11 @@ sub _send {
 
     #print "Sending '$input'\n";
     print { $self->{new_sock} } "$input\n";
+}
+
+sub send_get {
+    my ($self, $input) = @_;
+    $self->_send($input);
 
     return $self->get;
 }

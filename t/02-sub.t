@@ -8,7 +8,7 @@ my $pid = start_script('t/eg/02-sub.pl');
 require Test::More;
 import Test::More;
 
-plan(tests => 11);
+plan(tests => 13);
 
 my $debugger = start_debugger();
 
@@ -29,11 +29,11 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 1;', 1], 'line 6');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;', 1], 'line 6');
 }
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 2;', 1], 'line 7');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;', 1], 'line 7');
 }
 
 {
@@ -64,6 +64,15 @@ my $debugger = start_debugger();
 {
     my @out = $debugger->step_in;
     is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9');
+}
+
+{
+    my @out = $debugger->get_value('$q');
+    is_deeply(\@out, [242, 2], '$q is 11*22=242');
+}
+{
+    my @out = $debugger->get_value('$z');
+    is_deeply(\@out, ['', 3], '$z is empty');
 }
 
 {
