@@ -8,7 +8,7 @@ my $pid = start_script('t/eg/02-sub.pl');
 require Test::More;
 import Test::More;
 
-plan(tests => 6);
+plan(tests => 9);
 
 my $debugger = start_debugger();
 
@@ -45,11 +45,10 @@ my $debugger = start_debugger();
 }
 
 {
-    my $out = $debugger->step_in;
-    #diag($out);
-    $out =~ s/\n\s*DB<\d+>//;
-    $out =~ s/\s+$//;
-    chomp $out;
-    is($out, 'main::f(t/eg/02-sub.pl:13):' . "\t" . '   my ($q, $w) = @_;', 'line 13');
+    my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
+    is($module, 'main::f');
+    is($file, 't/eg/02-sub.pl');
+    is($row, 13);
+    is($content, '   my ($q, $w) = @_;', 'line 13');
 }
 

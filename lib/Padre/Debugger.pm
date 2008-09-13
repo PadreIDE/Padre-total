@@ -81,7 +81,21 @@ sub get {
     my $buf = '';
     $self->{new_sock}->sysread($buf, 1024, length $buf) while $buf !~ /DB<\d+>/;
 
-    return $buf;
+    if (wantarray) {
+        my $prompt;
+        if ($buf =~ s/\s*DB<(\d+)>$//) {
+            $prompt = $1;
+        }
+        chomp($buf);
+        my ($module, $file, $row, $content);
+        # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
+        if ($buf =~ /^([\w:]*)\(([^\)]*):(\d+)\):\t(.*)/) {
+            ($module, $file, $row, $content) = ($1, $2, $3, $4);
+        }
+        return ($module, $file, $row, $content, $prompt);
+    } else {
+        return $buf;
+    }
 }
 
 sub _send {
