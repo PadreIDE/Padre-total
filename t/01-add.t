@@ -49,20 +49,20 @@ $debugger->listen;
 
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:8\):	my \$x = 1;}, 'line 8');
+    like($out, qr{main::\(t/eg/01-add.pl:6\):	my \$x = 1;}, 'line 6');
 }
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:10\):	my \$y = 2;}, 'line 10');
+    like($out, qr{main::\(t/eg/01-add.pl:7\):	my \$y = 2;}, 'line 7');
     #diag($out);
 }
 
 {
-    my $out = $debugger->_send('.');
-    like($out, qr{main::\(t/eg/01-add.pl:10\):	my \$y = 2;}, 'line 10');
+    my $out = $debugger->show_line;
+    like($out, qr{main::\(t/eg/01-add.pl:7\):	my \$y = 2;}, 'line 7');
 }
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:12\):	my \$z = \$x \+ \$y;}, 'line 12');
+    like($out, qr{main::\(t/eg/01-add.pl:8\):	my \$z = \$x \+ \$y;}, 'line 8');
 }
 
