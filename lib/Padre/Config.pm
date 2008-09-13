@@ -115,7 +115,7 @@ sub new {
     $self->{current_project}   ||= '';
 
     $self->{editor}->{tab_size}    ||= 8;
-    $self->{editor}->{enable_calltip} = 1 if not exists $self->{editor}->{enable_calltip};
+    $self->{editor}->{show_calltips} = 1 if not exists $self->{editor}->{enable_calltip};
 
     # by default, we have an empty plugins configuration
     $self->{plugins}           ||= {};

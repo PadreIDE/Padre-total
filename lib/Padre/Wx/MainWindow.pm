@@ -83,6 +83,9 @@ BEGIN {
 }
 
 
+
+
+
 #####################################################################
 # Constructor and Accessors
 
@@ -101,7 +104,7 @@ sub new {
     my $self = $class->SUPER::new(
         undef,
         -1,
-        'Padre ',
+        "Padre $Padre::VERSION ",
         [
             $config->{main}->{left},
             $config->{main}->{top},
@@ -199,9 +202,10 @@ sub new {
     $self->{statusbar}->SetStatusWidths(-1, 50, 100);
 
     my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050); 
-    $tool_bar->AddTool( wxID_NEW,  '', _bitmap('new'),  'New File' ); 
-    $tool_bar->AddTool( wxID_OPEN, '', _bitmap('open'), 'Open'     ); 
-    $tool_bar->AddTool( wxID_SAVE, '', _bitmap('save'), 'Save'     ); 
+    $tool_bar->AddTool( wxID_NEW,   '', _bitmap('new'),   'New File'   ); 
+    $tool_bar->AddTool( wxID_OPEN,  '', _bitmap('open'),  'Open File'  ); 
+    $tool_bar->AddTool( wxID_SAVE,  '', _bitmap('save'),  'Save File'  );
+    # $tool_bar->AddTool( wxID_CLOSE, '', _bitmap('close'), 'Close File' );
     $tool_bar->AddSeparator;
     $tool_bar->Realize;
 
@@ -395,9 +399,9 @@ sub on_comment_out_block {
     my ($self, $event) = @_;
 
     my $pageid = $self->{notebook}->GetSelection();
-    my $page = $self->{notebook}->GetPage($pageid);
-    my $start = $page->LineFromPosition($page->GetSelectionStart);
-    my $end = $page->LineFromPosition($page->GetSelectionEnd);
+    my $page   = $self->{notebook}->GetPage($pageid);
+    my $start  = $page->LineFromPosition($page->GetSelectionStart);
+    my $end    = $page->LineFromPosition($page->GetSelectionEnd);
 
     $page->BeginUndoAction;
     for my $line ($start .. $end) {
@@ -415,9 +419,9 @@ sub on_uncomment_block {
     my ($self, $event) = @_;
 
     my $pageid = $self->{notebook}->GetSelection();
-    my $page = $self->{notebook}->GetPage($pageid);
-    my $start = $page->LineFromPosition($page->GetSelectionStart);
-    my $end = $page->LineFromPosition($page->GetSelectionEnd);
+    my $page   = $self->{notebook}->GetPage($pageid);
+    my $start  = $page->LineFromPosition($page->GetSelectionStart);
+    my $end    = $page->LineFromPosition($page->GetSelectionEnd);
 
     $page->BeginUndoAction;
     for my $line ($start .. $end) {
@@ -438,7 +442,6 @@ sub on_uncomment_block {
 
 sub on_autocompletition {
    my $self   = shift;
-
    my $id     = $self->{notebook}->GetSelection;
    my $page   = $self->{notebook}->GetPage($id);
    my $pos    = $page->GetCurrentPos;
@@ -502,10 +505,7 @@ sub on_right {
 }
 
 sub on_exit {
-    my ($self) = @_;
-
-    $self->Close;
-
+    $_[0]->Close;
     return;
 }
 
@@ -559,7 +559,8 @@ sub on_close_window {
 }
 
 sub _lexer {
-    my ($file) = @_;
+    my $self = shift;
+    my $file = shift;
 
     return $SYNTAX{_default_} if not $file;
     (my $ext = $file) =~ s{.*\.}{};
@@ -614,7 +615,10 @@ sub on_split_window {
     my $pointer = $editor->GetDocPointer();
     $editor->AddRefDocument($pointer);
 
-    my $new_editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer() );
+    my $new_editor = Padre::Wx::Text->new(
+        $self->{notebook},
+        $self->_lexer,
+    );
 
     #my $new_id = $self->setup_editor();
     #my $new_editor = $self->{notebook}->GetPage( $new_id );
@@ -634,8 +638,11 @@ sub setup_editor {
     # Flush old stuff
     delete $self->{project};
 
-    my $config    = Padre->ide->get_config;
-    my $editor    = Padre::Wx::Text->new( $self->{notebook}, _lexer($file) );
+    my $config = Padre->ide->get_config;
+    my $editor = Padre::Wx::Text->new(
+        $self->{notebook},
+        $self->_lexer($file),
+    );
     #$editor->SetMouseDownCaptures(0);
     #$editor->UsePopUp(0);
     
@@ -821,7 +828,7 @@ sub _set_filename {
     $page->{$pack}->{type}     = $type;
 
     if ($data) {
-       $page->SetLexer( _lexer($data) ); # set the syntax highlighting
+       $page->SetLexer( $self->_lexer($data) );
        $page->Colourise(0, $page->GetTextLength);
     }
 
@@ -1530,7 +1537,7 @@ sub on_stc_change {
 
     return if $self->{_in_setup_editor};
     my $config = Padre->ide->get_config;
-    return if not $config->{editor}->{enable_calltip};
+    return if not $config->{editor}->{show_calltips};
 
     my $editor = $self->get_current_editor;
 

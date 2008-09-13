@@ -67,7 +67,6 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&Padre::Wx::MainWindow::on_comment_out_block       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&Padre::Wx::MainWindow::on_uncomment_block       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-1" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Split window" ),   \&Padre::Wx::MainWindow::on_split_window     );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
 
     $menu->{edit_convert} = Wx::Menu->new;
@@ -119,32 +118,20 @@ sub new {
         $menu->{view_indentation_guide},
         \&Padre::Wx::MainWindow::on_toggle_indentation_guide,
     );
-    $menu->{view_enable_calltip} = $menu->{view}->AppendCheckItem( -1, "Enable Call Tip" );
-    $menu->{view_enable_calltip}->Check( $config->{editor}->{enable_calltip} ? 1 : 0 );
+    $menu->{view_show_calltips} = $menu->{view}->AppendCheckItem( -1, "Show Call Tips" );
+    $menu->{view_show_calltips}->Check( $config->{editor}->{show_calltips} ? 1 : 0 );
     EVT_MENU(
         $win,
-        $menu->{view_enable_calltip},
-        sub {$config->{editor}->{enable_calltip} = $menu->{view_enable_calltip}->IsChecked},
+        $menu->{view_show_calltips},
+        sub {$config->{editor}->{show_calltips} = $menu->{view_enable_calltip}->IsChecked},
     );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom in\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom out\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "Zoom reset\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
+    $menu->{view}->AppendSeparator;
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Increase Font Size\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Decrease Font Size\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
+    EVT_MENU( $win, $menu->{view}->Append( -1, "Reset Font Size\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
+    $menu->{view}->AppendSeparator;
     EVT_MENU( $win, $menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),  \&Padre::Wx::Bookmarks::on_set_bookmark  );
     EVT_MENU( $win, $menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),  \&Padre::Wx::Bookmarks::on_goto_bookmark  );
-
-    $menu->{view}->AppendSeparator;
-    #$menu->{view_files} = Wx::Menu->new;
-    #$menu->{view}->Append( -1, "Switch to...", $menu->{view_files} );
-    EVT_MENU(
-        $win,
-        $menu->{view}->Append(-1, "Next File\tCtrl-TAB"),
-        \&Padre::Wx::MainWindow::on_next_pane,
-    );
-    EVT_MENU(
-        $win,
-        $menu->{view}->Append(-1, "Prev File\tCtrl-Shift-TAB"),
-        \&Padre::Wx::MainWindow::on_prev_pane,
-    );
 
 
 
@@ -177,10 +164,14 @@ sub new {
     );
     $menu->{run_stop}->Enable(0);
 
+
+
     
-    # Create the Plugins menu
-    $menu->{plugin} = Wx::Menu->new;
+    # Create the Plugins menu if there are any plugins
     my %plugins = %{ $ide->plugin_manager->plugins };
+    if ( %plugins ) {
+        $menu->{plugin} = Wx::Menu->new;
+    }
     foreach my $name ( sort keys %plugins ) {
         next if not $plugins{$name};
         my @menu    = eval { $plugins{$name}->menu };
@@ -193,13 +184,32 @@ sub new {
 
 
 
-    # Create the help menu
-    $menu->{help} = Wx::Menu->new;
+    # Create the window menu
+    $menu->{window} = Wx::Menu->new;
     EVT_MENU(
         $win,
-        $menu->{help}->Append( wxID_ABOUT,   '' ),
-        \&Padre::Wx::Help::on_about,
+        $menu->{window}->Append( -1, "&Split window" ),
+        \&Padre::Wx::MainWindow::on_split_window,
     );
+    $menu->{window}->AppendSeparator;
+    EVT_MENU(
+        $win,
+        $menu->{window}->Append(-1, "Next File\tCtrl-TAB"),
+        \&Padre::Wx::MainWindow::on_next_pane,
+    );
+    EVT_MENU(
+        $win,
+        $menu->{window}->Append(-1, "Previous File\tCtrl-Shift-TAB"),
+        \&Padre::Wx::MainWindow::on_prev_pane,
+    );
+    $menu->{window}->AppendSeparator;
+
+
+
+
+
+    # Create the help menu
+    $menu->{help} = Wx::Menu->new;
     EVT_MENU(
         $win,
         $menu->{help}->Append( wxID_HELP, '' ),
@@ -209,6 +219,12 @@ sub new {
         $win,
         $menu->{help}->Append( -1, "Context-help\tCtrl-Shift-H" ),
         \&Padre::Wx::Help::on_context_help,
+    );
+    $menu->{help}->AppendSeparator;
+    EVT_MENU(
+        $win,
+        $menu->{help}->Append( wxID_ABOUT,   '' ),
+        \&Padre::Wx::Help::on_about,
     );
 
 
@@ -232,17 +248,16 @@ sub new {
 
     # Create and return the main menu bar
     $menu->{wx} = Wx::MenuBar->new;
-    $menu->{wx}->Append( $menu->{file},     "&File" );
-    $menu->{wx}->Append( $menu->{project},  "&Project" );
-    $menu->{wx}->Append( $menu->{edit},     "&Edit" );
-    $menu->{wx}->Append( $menu->{view},     "&View" );
-    $menu->{wx}->Append( $menu->{run},      "&Run" );
+    $menu->{wx}->Append( $menu->{file},     "&File"      );
+    $menu->{wx}->Append( $menu->{project},  "&Project"   );
+    $menu->{wx}->Append( $menu->{edit},     "&Edit"      );
+    $menu->{wx}->Append( $menu->{view},     "&View"      );
+    $menu->{wx}->Append( $menu->{run},      "&Run"       );
     $menu->{wx}->Append( $menu->{bookmark}, "&Bookmarks" );
-    if ( %plugins ) {
-        $menu->{wx}->Append( $menu->{plugin}, "Pl&ugins" );
-    }
-    $menu->{wx}->Append( $menu->{help},    "&Help" );
-    # $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
+    $menu->{wx}->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugin};
+    $menu->{wx}->Append( $menu->{window},   "&Window"    );
+    $menu->{wx}->Append( $menu->{help},     "&Help"      );
+    $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
 
     # Do an initial reflow
     # $menu->reflow;
@@ -254,7 +269,6 @@ sub new {
 # Recursively add plugin menu items from nested array refs
 sub add_plugin_menu_items {
     my ($self, $menu_items) = @_;
-
 
     my $menu = Wx::Menu->new;
     foreach my $m ( @{$menu_items} ) {
@@ -274,8 +288,8 @@ sub add_alt_n_menu {
     my ($self, $file, $n) = @_;
     return if $n > 9;
 
-    $self->{alt}->[$n] = $self->{view}->Append(-1, "");
-    EVT_MENU( $self->win, $self->{alt}->[$n], sub {$_[0]->on_nth_pane($n)} );
+    $self->{alt}->[$n] = $self->{window}->Append(-1, "");
+    EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
     $self->update_alt_n_menu($file, $n);
 
     return;
@@ -284,7 +298,7 @@ sub add_alt_n_menu {
 sub update_alt_n_menu {
     my ($self, $file, $n) = @_;
 
-    my $v = $n +1;
+    my $v = $n + 1;
     $self->{alt}->[$n]->SetText("$file\tAlt-$v");
 
     return;
@@ -293,7 +307,7 @@ sub update_alt_n_menu {
 sub remove_alt_n_menu {
     my ($self) = @_;
 
-    $self->{view}->Remove(pop @{ $self->{alt} });
+    $self->{window}->Remove(pop @{ $self->{alt} });
 
     return;
 }
@@ -313,12 +327,21 @@ sub reflow {
 	my $self  = shift;
 	my $lexer = $self->win->get_current_editor->GetLexer;
 
-	# Enable or disable the run menu
-	if ( $lexer == wxSTC_LEX_PERL ) {
-		$self->{wx}->EnableTop( 4, 1 );
-	} else {
-		$self->{wx}->EnableTop( 4, 0 );
-	}
+	# Create and return the main menu bar
+	my $wx   = Wx::MenuBar->new;
+	my $menu = $self->{menu};
+	$wx->Append( $menu->{file},     "&File"      );
+	$wx->Append( $menu->{project},  "&Project"   );
+	$wx->Append( $menu->{edit},     "&Edit"      );
+	$wx->Append( $menu->{view},     "&View"      );
+	$wx->Append( $menu->{run},      "&Run"       );
+	$wx->Append( $menu->{bookmark}, "&Bookmarks" );
+	$wx->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugins};
+	$wx->Append( $menu->{window},   "&Window"    );
+	$wx->Append( $menu->{help},     "&Help"      );
+	$wx->Append( $menu->{experimental}, "E&xperimental" );
+
+	
 
 	return 1;
 }
