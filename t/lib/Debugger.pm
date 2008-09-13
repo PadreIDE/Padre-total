@@ -30,6 +30,7 @@ sub start_script {
 sub start_debugger {
     require Padre::Debugger;
     my $debugger = Padre::Debugger->new(host => $host, port => $port);
+    $debugger->listen;
     return $debugger;
 }
 

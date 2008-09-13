@@ -13,7 +13,6 @@ plan(tests => 7);
 my $debugger = start_debugger();
 isa_ok($debugger, 'Padre::Debugger');
 
-$debugger->listen;
 
 {
     my $out = $debugger->get;
@@ -49,4 +48,3 @@ $debugger->listen;
     my $out = $debugger->step_in;
     like($out, qr{main::\(t/eg/01-add.pl:8\):\s*my \$z = \$x \+ \$y;}, 'line 8');
 }
-

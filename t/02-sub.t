@@ -12,8 +12,6 @@ plan(tests => 6);
 
 my $debugger = start_debugger();
 
-$debugger->listen;
-
 {
     my $out = $debugger->get;
  
