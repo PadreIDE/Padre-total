@@ -24,7 +24,7 @@ my $debugger = start_debugger();
 #   DB<1> 
 
     like($out, qr/Loading DB routines from perl5db.pl version/, 'loading line');
-    like($out, qr{main::\(t/eg/02-sub.pl:4\):\s*\$\| = 1;}, 'line 4'); # TODO why does
+    like($out, qr{main::\(t/eg/02-sub.pl:4\):\s*\$\| = 1;}, 'line 4');
 }
 
 {

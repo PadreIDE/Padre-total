@@ -10,8 +10,10 @@ t/01-add.t
 t/02-sub.t
 t/02-sub-step_over.t
 t/02-sub-step_out.t
+t/03-return.t
 
 t/lib/Debugger.pm
 
 t/eg/01-add.pl
 t/eg/02-sub.pl
+t/eg/03-return.pl
