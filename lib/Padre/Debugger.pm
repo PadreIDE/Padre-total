@@ -72,6 +72,7 @@ sub listen {
 }
 
 sub step_in   { $_[0]->send_get('s') }
+sub step_over { $_[0]->send_get('n') }
 sub run       { $_[0]->send_get('r') }
 sub quit      { $_[0]->_send_get('q') }
 sub show_line { $_[0]->send_get('.') }

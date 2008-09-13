@@ -11,4 +11,5 @@ t/eg/01-add.pl
 
 t/02-sub.t
 t/eg/02-sub.pl
+t/02-sub-step_over.t
 t/lib/Debugger.pm
