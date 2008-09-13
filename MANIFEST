@@ -8,3 +8,6 @@ lib/Padre/Debugger.pm
 
 t/01-add.t
 t/eg/01-add.pl
+
+t/02-sub.t
+t/eg/02-sub.pl
