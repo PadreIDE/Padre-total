@@ -1,5 +1,6 @@
 v0.03 2008.09.13
     Add debug output for tests to better understand test failures.
+    More tests
 
 v0.02 2008.09.13
     Replace step by step_in
