@@ -24,7 +24,7 @@ Padre::Debugger - client side code for perl debugger
  
   my $out = $debugger->get;
 
-  $out = $debugger->step;
+  $out = $debugger->step_in;
 
   $out = $debugger->run;
 
@@ -69,9 +69,10 @@ sub listen {
 
 }
 
-sub step  { $_[0]->_send("s") }
-sub run   { $_[0]->_send("r") }
-sub quit  { $_[0]->_send("q") }
+sub step_in   { $_[0]->_send('s') }
+sub run       { $_[0]->_send('r') }
+sub quit      { $_[0]->_send('q') }
+sub show_line { $_[0]->_send('.') }
 
 sub get {
     my ($self) = @_;

@@ -48,11 +48,11 @@ $debugger->listen;
 
 
 {
-    my $out = $debugger->step;
+    my $out = $debugger->step_in;
     like($out, qr{main::\(t/eg/01-add.pl:8\):	my \$x = 1;}, 'line 8');
 }
 {
-    my $out = $debugger->step;
+    my $out = $debugger->step_in;
     like($out, qr{main::\(t/eg/01-add.pl:10\):	my \$y = 2;}, 'line 10');
     #diag($out);
 }
@@ -62,7 +62,7 @@ $debugger->listen;
     like($out, qr{main::\(t/eg/01-add.pl:10\):	my \$y = 2;}, 'line 10');
 }
 {
-    my $out = $debugger->step;
+    my $out = $debugger->step_in;
     like($out, qr{main::\(t/eg/01-add.pl:12\):	my \$z = \$x \+ \$y;}, 'line 12');
 }
 
