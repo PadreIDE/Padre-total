@@ -48,12 +48,14 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', 1], 'line 14');
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', 1], 'line 14')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_out;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1, 242], 'line 9');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1, 242], 'line 9')
+        or diag($Padre::Debugger::response);
 }
 
 {

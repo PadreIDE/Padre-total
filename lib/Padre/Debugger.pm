@@ -4,6 +4,10 @@ use warnings;
 
 our $VERSION = '0.02';
 
+our $response;
+# keep last response here so test code
+# can display it for debugging purposes
+
 use IO::Socket;
 
 =head1 NAME
@@ -138,6 +142,7 @@ sub _get {
     my $buf = '';
     $self->{new_sock}->sysread($buf, 1024, length $buf) while $buf !~ /DB<\d+>/;
 
+    $response = $buf;
     return $buf;
 }
 

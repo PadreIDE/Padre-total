@@ -38,16 +38,19 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);', 1], 'line 8');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);', 1], 'line 8')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_over;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->get_value('$q');
-    is_deeply(\@out, [242, 2], '$q is 11*22=242');
+    is_deeply(\@out, [242, 2], '$q is 11*22=242')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->get_value('$z');

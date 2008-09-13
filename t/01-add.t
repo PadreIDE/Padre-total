@@ -32,18 +32,22 @@ isa_ok($debugger, 'Padre::Debugger');
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 6, 'my $x = 1;', 1], 'line 6');
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 6, 'my $x = 1;', 1], 'line 6')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7');
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->show_line;
-    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7');
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;', 1], 'line 8');
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;', 1], 'line 8')
+        or diag($Padre::Debugger::response);
 }

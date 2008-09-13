@@ -29,50 +29,60 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;', 1], 'line 6');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;', 1], 'line 6')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;', 1], 'line 7');
-}
-
-{
-    my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);', 1], 'line 8');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;', 1], 'line 7')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;', 1], 'line 13');
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);', 1], 'line 8')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', 1], 'line 14');
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;', 1], 'line 13')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;', 1], 'line 15');
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', 1], 'line 14')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 16, '   return $multi;', 1], 'line 16');
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;', 1], 'line 15')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->step_in;
-    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9');
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 16, '   return $multi;', 1], 'line 16')
+        or diag($Padre::Debugger::response);
+}
+
+{
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9')
+        or diag($Padre::Debugger::response);
 }
 
 {
     my @out = $debugger->get_value('$q');
-    is_deeply(\@out, [242, 2], '$q is 11*22=242');
+    is_deeply(\@out, [242, 2], '$q is 11*22=242')
+        or diag($Padre::Debugger::response);
 }
 {
     my @out = $debugger->get_value('$z');
-    is_deeply(\@out, ['', 3], '$z is empty');
+    is_deeply(\@out, ['', 3], '$z is empty')
+        or diag($Padre::Debugger::response);
 }
 
 {

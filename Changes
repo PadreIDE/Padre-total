@@ -1,3 +1,6 @@
+v0.03 2008.09.13
+    Add debug output for tests to better understand test failures.
+
 v0.02 2008.09.13
     Replace step by step_in
     Add methods step_out, step_over, get_value
