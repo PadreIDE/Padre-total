@@ -43,26 +43,26 @@ $debugger->listen;
 #   DB<1> 
 
     like($out, qr/Loading DB routines from perl5db.pl version/, 'loading line');
-    like($out, qr{main::\(t/eg/01-add.pl:4\): \$| = 1;}, 'line 4');
+    like($out, qr{main::\(t/eg/01-add.pl:4\):\s*\$\| = 1;}, 'line 4');
 }
 
 
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:6\):	my \$x = 1;}, 'line 6');
+    like($out, qr{main::\(t/eg/01-add.pl:6\):\s*my \$x = 1;}, 'line 6');
 }
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:7\):	my \$y = 2;}, 'line 7');
+    like($out, qr{main::\(t/eg/01-add.pl:7\):\s*my \$y = 2;}, 'line 7');
     #diag($out);
 }
 
 {
     my $out = $debugger->show_line;
-    like($out, qr{main::\(t/eg/01-add.pl:7\):	my \$y = 2;}, 'line 7');
+    like($out, qr{main::\(t/eg/01-add.pl:7\):\s*my \$y = 2;}, 'line 7');
 }
 {
     my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:8\):	my \$z = \$x \+ \$y;}, 'line 8');
+    like($out, qr{main::\(t/eg/01-add.pl:8\):\s*my \$z = \$x \+ \$y;}, 'line 8');
 }
 
