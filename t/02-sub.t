@@ -8,7 +8,7 @@ my $pid = start_script('t/eg/02-sub.pl');
 require Test::More;
 import Test::More;
 
-plan(tests => 6);
+plan(tests => 11);
 
 my $debugger = start_debugger();
 
@@ -42,8 +42,35 @@ my $debugger = start_debugger();
 }
 
 {
-    
     my @out = $debugger->step_in;
     is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;', 1], 'line 13');
 }
 
+{
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', 1], 'line 14');
+}
+
+{
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;', 1], 'line 15');
+}
+
+{
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 16, '   return $multi;', 1], 'line 16');
+}
+
+{
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 1], 'line 9');
+}
+
+{
+# Debugged program terminated.  Use q to quit or R to restart,
+#   use o inhibit_exit to avoid stopping after program termination,
+#   h q, h R or h o to get additional info.  
+#   DB<1> 
+    my $out = $debugger->step_in;
+    like($out, qr/Debugged program terminated/);
+}

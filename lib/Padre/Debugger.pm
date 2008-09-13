@@ -109,6 +109,9 @@ sub _send {
     return $self->get;
 }
 
+=head1 See Also
+
+L<GRID::Machine::remotedebugtut>
 
 =head1 COPYRIGHT
 
