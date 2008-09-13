@@ -53,7 +53,7 @@ sub new {
     $self->StyleSetForeground( wxSTC_PL_STRING_Q,     Wx::Colour->new(0x7f, 0x00, 0x7f));
     $self->StyleSetForeground( wxSTC_PL_STRING_QQ,    Wx::Colour->new(0xff, 0x7f, 0x00)); # orange
     # wxSTC_PL_STRING_QX  (28)
-    # wxSTC_PL_STRING_QR  (29)
+    $self->StyleSetForeground( wxSTC_PL_STRING_QR,    Wx::Colour->new(0xff, 0x00, 0x7f)); # red
     $self->StyleSetForeground( wxSTC_PL_STRING_QW,         Wx::Colour->new(0x7f, 0x00, 0x7f));
 
     # missing:
