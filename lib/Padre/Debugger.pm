@@ -2,7 +2,7 @@ package Padre::Debugger;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use IO::Socket;
 
@@ -18,7 +18,7 @@ Padre::Debugger - client side code for perl debugger
 
   # this is the point where the external script need to be launched
   # first setting 
-      # $ENV{PERLDB_OPTS} = "RemotePort=localhost:12345"
+      # $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
   # then running
       # perl -d script
  
@@ -28,9 +28,24 @@ Padre::Debugger - client side code for perl debugger
 
   $out = $debugger->step_over;
 
-  $out = $debugger->step_out;
 
   my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
+  my ($module, $file, $row, $content, $prompt, $return_value) = $debugger->step_out;
+  my ($value, $prompt) = $debugger->get_value('$x');
+
+Other planned methods:
+
+ $debugger->set_watch
+ $debugger->set_breakpoint
+ $debugger->remove_watch
+ $debugger->remove_breakpoint
+
+ $debugger->get_stack_trace
+ $debugger->run   (c in the debugger)
+
+ $debugger->execute_code
+
+ $debugger->watch_variable   (to make it easy to display values of variables)
 
 =head1 DESCRIPTION
 
