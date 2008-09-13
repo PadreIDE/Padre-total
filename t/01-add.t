@@ -1,35 +1,19 @@
 use strict;
 use warnings;
 
-my $host = 'localhost';
-my $port = 12345;
-#use IPC::Open3    qw(open3);
+use t::lib::Debugger;
 
-my $pid = fork();
-die if not defined $pid;
-
-if (not $pid) {
-   local $ENV{PERLDB_OPTS} = "RemotePort=localhost:12345";
-   unlink 'out', 'err';
-   sleep 1;
-   exec "$^X -d t/eg/01-add.pl > out 2> err";
-   exit 0;
-}
+my $pid = start_script('t/eg/01-add.pl');
 
 require Test::More;
 import Test::More;
 
 plan(tests => 7);
 
-require Padre::Debugger;
-my $debugger = Padre::Debugger->new(host => $host, port => $port);
+my $debugger = start_debugger();
 isa_ok($debugger, 'Padre::Debugger');
-#my ($in, $out, $err);
-#my $pid = open3($in, $out, $err, "$^X t/eg/01-add.pl -d");
 
 $debugger->listen;
-#diag("launched");
-#diag("---");
 
 {
     my $out = $debugger->get;

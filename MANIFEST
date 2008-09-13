@@ -11,3 +11,4 @@ t/eg/01-add.pl
 
 t/02-sub.t
 t/eg/02-sub.pl
+t/lib/Debugger.pm
