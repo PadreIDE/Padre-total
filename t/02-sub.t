@@ -8,7 +8,7 @@ my $pid = start_script('t/eg/02-sub.pl');
 require Test::More;
 import Test::More;
 
-plan(tests => 9);
+plan(tests => 6);
 
 my $debugger = start_debugger();
 
@@ -28,27 +28,22 @@ my $debugger = start_debugger();
 }
 
 {
-    my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/02-sub.pl:6\):\s*my \$x = 1;}, 'line 6');
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 1;', 1], 'line 6');
 }
 {
-    my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/02-sub.pl:7\):\s*my \$y = 2;}, 'line 7');
-    #diag($out);
-}
-
-{
-    my $out = $debugger->step_in;
-    #like($out, qr{main::\(t/eg/02-sub.pl:7\):\s*my \$y = 2;}, 'line 7');
-    like($out, qr{main::\(t/eg/02-sub.pl:8\):\s*my \$q = f\(\$x, \$y\);}, 'line 8');
-    #diag($out);
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 2;', 1], 'line 7');
 }
 
 {
-    my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
-    is($module, 'main::f');
-    is($file, 't/eg/02-sub.pl');
-    is($row, 13);
-    is($content, '   my ($q, $w) = @_;', 'line 13');
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);', 1], 'line 8');
+}
+
+{
+    
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;', 1], 'line 13');
 }
 

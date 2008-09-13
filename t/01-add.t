@@ -31,20 +31,19 @@ isa_ok($debugger, 'Padre::Debugger');
 
 
 {
-    my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:6\):\s*my \$x = 1;}, 'line 6');
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 6, 'my $x = 1;', 1], 'line 6');
 }
 {
-    my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:7\):\s*my \$y = 2;}, 'line 7');
-    #diag($out);
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7');
 }
 
 {
-    my $out = $debugger->show_line;
-    like($out, qr{main::\(t/eg/01-add.pl:7\):\s*my \$y = 2;}, 'line 7');
+    my @out = $debugger->show_line;
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 7, 'my $y = 2;', 1], 'line 7');
 }
 {
-    my $out = $debugger->step_in;
-    like($out, qr{main::\(t/eg/01-add.pl:8\):\s*my \$z = \$x \+ \$y;}, 'line 8');
+    my @out = $debugger->step_in;
+    is_deeply(\@out, ['main::', 't/eg/01-add.pl', 8, 'my $z = $x + $y;', 1], 'line 8');
 }

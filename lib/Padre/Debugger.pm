@@ -28,6 +28,8 @@ Padre::Debugger - client side code for perl debugger
 
   $out = $debugger->run;
 
+  my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
+
 =head1 DESCRIPTION
 
 It is currently in the Padre namespace but it does not have any Padre
@@ -83,7 +85,7 @@ sub get {
 
     if (wantarray) {
         my $prompt;
-        if ($buf =~ s/\s*DB<(\d+)>$//) {
+        if ($buf =~ s/\s*DB<(\d+)>\s*$//) {
             $prompt = $1;
         }
         chomp($buf);
