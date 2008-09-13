@@ -26,7 +26,9 @@ Padre::Debugger - client side code for perl debugger
 
   $out = $debugger->step_in;
 
-  $out = $debugger->run;
+  $out = $debugger->step_over;
+
+  $out = $debugger->step_out;
 
   my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
 
@@ -73,9 +75,29 @@ sub listen {
 
 sub step_in   { $_[0]->send_get('s') }
 sub step_over { $_[0]->send_get('n') }
-sub run       { $_[0]->send_get('r') }
 sub quit      { $_[0]->_send_get('q') }
 sub show_line { $_[0]->send_get('.') }
+
+
+sub step_out  { 
+    my ($self) = @_;
+    $self->_send('r');
+    my $buf = $self->_get;
+
+    # scalar context return from main::f: 242
+    # main::(t/eg/02-sub.pl:9):	my $z = $x + $y;
+    if (wantarray) {
+        my $prompt = _prompt(\$buf);
+        my @line = _process_line(\$buf);
+        my $ret;
+        if ($buf =~ /^scalar context return from (\S+): (.*)/s) {
+            $ret = $2;
+        }
+        return (@line, $prompt, $ret);
+    } else {
+        return $buf;
+    }
+}    
 
 sub get_value {
     my ($self, $var) = @_;
@@ -114,6 +136,22 @@ sub _prompt {
     return $prompt;
 }
 
+sub _process_line {
+    my ($buf) = @_;
+
+    my @parts = split /\n/, $$buf;
+    my $line = pop @parts;
+    $$buf = join "\n", @parts;
+
+    my ($module, $file, $row, $content);
+    # the last line before 
+    # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
+    if ($line =~ /^([\w:]*)\(([^\)]*):(\d+)\):\t(.*)/m) {
+        ($module, $file, $row, $content) = ($1, $2, $3, $4);
+    }
+    return ($module, $file, $row, $content);
+}
+
 sub get {
     my ($self) = @_;
 
@@ -121,12 +159,7 @@ sub get {
 
     if (wantarray) {
         my $prompt = _prompt(\$buf);
-
-        my ($module, $file, $row, $content);
-        # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
-        if ($buf =~ /^([\w:]*)\(([^\)]*):(\d+)\):\t(.*)/) {
-            ($module, $file, $row, $content) = ($1, $2, $3, $4);
-        }
+        my ($module, $file, $row, $content) = _process_line(\$buf);
         return ($module, $file, $row, $content, $prompt);
     } else {
         return $buf;
