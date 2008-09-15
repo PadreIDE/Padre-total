@@ -5,9 +5,12 @@ use warnings;
 
 $| = 1;
 
-use threads;
-use threads::shared;
 
-use Padre;
+exit 0 if fork();
+
+require threads;
+require threads::shared;
+
+require Padre;
 my $app = Padre->new;
 $app->run;
