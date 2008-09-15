@@ -123,7 +123,7 @@ sub new {
     EVT_MENU(
         $win,
         $menu->{view_show_calltips},
-        sub {$config->{editor}->{show_calltips} = $menu->{view_enable_calltip}->IsChecked},
+        sub {$config->{editor}->{show_calltips} = $menu->{view_show_calltips}->IsChecked},
     );
     $menu->{view}->AppendSeparator;
     EVT_MENU( $win, $menu->{view}->Append( -1, "Increase Font Size\tCtrl--" ),   \&Padre::Wx::MainWindow::on_zoom_in   );
