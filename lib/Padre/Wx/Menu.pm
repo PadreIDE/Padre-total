@@ -109,10 +109,15 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&Padre::Wx::MainWindow::on_goto             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&Padre::Wx::MainWindow::on_autocompletition );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Subs\tAlt-S"     ),   sub { $_[0]->{rightbar}->SetFocus()} ); 
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Comment out block\tCtrl-M" ),   \&Padre::Wx::MainWindow::on_comment_out_block       );
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&UnComment block\tCtrl-Shift-M" ),   \&Padre::Wx::MainWindow::on_uncomment_block       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-1" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
-    EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
+    $menu->{edit}->AppendSeparator;
+
+    # User Preferences
+    EVT_MENU(
+        $win,
+        $menu->{edit}->Append( -1, "&Preferences" ),
+        \&Padre::Wx::MainWindow::on_setup,
+    );
 
 
 
@@ -184,7 +189,7 @@ sub new {
 
 
 
-    # Create the Run menu
+    # Create the Perl menu
     $menu->{perl} = Wx::Menu->new;
     $menu->{perl_run_this} = $menu->{perl}->Append( -1, "Run &This\tF5" );
     EVT_MENU(
@@ -204,17 +209,30 @@ sub new {
         $menu->{perl_stop},
         \&Padre::Wx::Execute::on_stop,
     );
+    $menu->{perl_stop}->Enable(0);
     EVT_MENU(
         $win,
         $menu->{perl}->Append( -1, "&Setup" ),
         \&Padre::Wx::Execute::on_setup_run,
     );
-    $menu->{perl_stop}->Enable(0);
+    $menu->{perl}->AppendSeparator;
+
+    # Commenting
+    EVT_MENU(
+        $win,
+        $menu->{perl}->Append( -1, "&Comment Selected Lines\tCtrl-M" ),
+        \&Padre::Wx::MainWindow::on_comment_out_block,
+    );
+    EVT_MENU(
+        $win,
+        $menu->{perl}->Append( -1, "&Uncomment Selected Lines\tCtrl-Shift-M" ),
+        \&Padre::Wx::MainWindow::on_uncomment_block,
+    );
 
 
 
 
-    
+
     # Create the Plugins menu if there are any plugins
     my %plugins = %{ $ide->plugin_manager->plugins };
     if ( %plugins ) {
