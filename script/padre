@@ -5,8 +5,9 @@ use warnings;
 
 $| = 1;
 
-
-exit 0 if fork();
+unless ( $^O eq 'MSWin32' ) {
+	exit 0 if fork();
+}
 
 require threads;
 require threads::shared;
