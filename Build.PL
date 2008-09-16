@@ -12,7 +12,7 @@ my $builder = Module::Build->new(
     recursive_test_files  => 0,
 
     requires              => {
-        #'perl'                    => '5.008',
+        'perl'                    => '5.006',
         'IO::Socket'               => '0',
     },
     build_requires        => {

@@ -22,3 +22,4 @@ t/lib/Debugger.pm
 t/eg/01-add.pl
 t/eg/02-sub.pl
 t/eg/03-return.pl
+META.yml
