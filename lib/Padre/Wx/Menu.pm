@@ -28,24 +28,65 @@ sub new {
 
     # Create the File menu
     $menu->{file} = Wx::Menu->new;
+
+    # Opening and closing
     EVT_MENU( $win, $menu->{file}->Append( wxID_NEW,  '' ), \&Padre::Wx::MainWindow::on_new  );
     EVT_MENU( $win, $menu->{file}->Append( wxID_OPEN, '' ), \&Padre::Wx::MainWindow::on_open );
     EVT_MENU( $win, $menu->{file}->Append( -1, "Open Selection\tCtrl-Shift-O" ),  \&Padre::Wx::MainWindow::on_open_selection);
-    $menu->{file_recent} = Wx::Menu->new;
-    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent} );
+    EVT_MENU( $win, $menu->{file}->Append( wxID_CLOSE,  '' ), \&Padre::Wx::MainWindow::on_close     );
+    EVT_MENU( $win, $menu->{file}->Append( -1, 'Close All' ), \&Padre::Wx::MainWindow::on_close_all );
+    $menu->{file}->AppendSeparator;
+
+    # Saving
+    EVT_MENU( $win, $menu->{file}->Append( wxID_SAVE,   '' ), \&Padre::Wx::MainWindow::on_save      );
+    EVT_MENU( $win, $menu->{file}->Append( wxID_SAVEAS, '' ), \&Padre::Wx::MainWindow::on_save_as   );
+    EVT_MENU( $win, $menu->{file}->Append( -1, 'Save All'  ), \&Padre::Wx::MainWindow::on_save_all  );
+    $menu->{file}->AppendSeparator;
+
+    # Conversions and Transforms
+    $menu->{file_convert} = Wx::Menu->new;
+    $menu->{file}->Append( -1, "Convert EOL to...", $menu->{file_convert} );
+    EVT_MENU(
+        $win,
+        $menu->{file_convert}->Append(-1, "Windows"),
+        sub { $_[0]->convert_to("WIN") },
+    );
+    EVT_MENU(
+        $win,
+        $menu->{file_convert}->Append(-1, "Unix"),
+        sub { $_[0]->convert_to("UNIX") },
+    );
+    EVT_MENU(
+        $win,
+        $menu->{file_convert}->Append(-1, "Mac"),
+        sub { $_[0]->convert_to("MAC") },
+    );
+    $menu->{file}->AppendSeparator;
+
+    # Recent things
+    $menu->{file_recent_files} = Wx::Menu->new;
+    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent_files} );
     foreach my $f ( $ide->get_recent('files') ) {
+       next unless -f $f;
        EVT_MENU(
            $win,
-           $menu->{file_recent}->Append(-1, $f), 
+           $menu->{file_recent_files}->Append(-1, $f), 
            sub { $_[0]->setup_editor($f) },
        );
     }
-    EVT_MENU( $win, $menu->{file}->Append( wxID_SAVE,   '' ), \&Padre::Wx::MainWindow::on_save     );
-    EVT_MENU( $win, $menu->{file}->Append( wxID_SAVEAS, '' ), \&Padre::Wx::MainWindow::on_save_as  );
-    EVT_MENU( $win, $menu->{file}->Append( -1, 'Save All'  ), \&Padre::Wx::MainWindow::on_save_all );
-    EVT_MENU( $win, $menu->{file}->Append( wxID_CLOSE,  '' ), \&Padre::Wx::MainWindow::on_close    );
-    EVT_MENU( $win, $menu->{file}->Append( -1, 'Close All' ), \&Padre::Wx::MainWindow::on_close_all );
-    EVT_MENU( $win, $menu->{file}->Append( wxID_EXIT,   '' ), \&Padre::Wx::MainWindow::on_exit     );
+    if ( Padre->ide->get_config->{experimental} ) {
+        $menu->{file_recent_projects} = Wx::Menu->new;
+        $menu->{file}->Append( -1, "Recent Projects", $menu->{file_recent_projects} );
+        # $menu->{file_recent_projects}->Enable(0);
+    }
+    $menu->{file}->AppendSeparator;
+
+    # Exiting
+    EVT_MENU( $win, $menu->{file}->Append( wxID_EXIT,   '' ), \&Padre::Wx::MainWindow::on_exit      );
+
+
+
+
 
     # Create the Project menu
     #$menu->{project} = Wx::Menu->new;
@@ -58,8 +99,10 @@ sub new {
 
     # Create the Edit menu
     $menu->{edit} = Wx::Menu->new;
-    EVT_MENU( $win, $menu->{edit}->Append( wxID_UNDO, '' ),                \&Padre::Wx::MainWindow::on_undo             ); # Ctrl-Z
-    EVT_MENU( $win, $menu->{edit}->Append( wxID_REDO, '' ),  \&Padre::Wx::MainWindow::on_redo             ); # Ctrl-Y
+    EVT_MENU( $win, $menu->{edit}->Append( wxID_UNDO, '' ),  \&Padre::Wx::MainWindow::on_undo ); # Ctrl-Z
+    EVT_MENU( $win, $menu->{edit}->Append( wxID_REDO, '' ),  \&Padre::Wx::MainWindow::on_redo ); # Ctrl-Y
+    $menu->{edit}->AppendSeparator;
+
     EVT_MENU( $win, $menu->{edit}->Append( wxID_FIND, '' ),           \&Padre::Wx::FindDialog::on_find             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&Padre::Wx::FindDialog::on_find_again       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Ac&k" ),              \&Padre::Wx::Ack::on_ack  );
@@ -71,15 +114,6 @@ sub new {
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Brace matching\tCtrl-1" ),   \&Padre::Wx::MainWindow::on_brace_matching       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Setup" ),            \&Padre::Wx::MainWindow::on_setup            );
 
-    $menu->{edit_convert} = Wx::Menu->new;
-    $menu->{edit}->Append( -1, "Convert File", $menu->{edit_convert} );
-    foreach my $os ( qw(UNIX MAC WIN) ) {
-       EVT_MENU(
-           $win,
-           $menu->{edit_convert}->Append(-1, "to $os"), 
-           sub { $_[0]->convert_to($os) },
-       );
-    }
 
 
 
@@ -150,32 +184,33 @@ sub new {
 
 
 
-    # Creat the Run menu
-    $menu->{run} = Wx::Menu->new;
-    $menu->{run_this} = $menu->{run}->Append( -1, "Run &This\tF5" );
+    # Create the Run menu
+    $menu->{perl} = Wx::Menu->new;
+    $menu->{perl_run_this} = $menu->{perl}->Append( -1, "Run &This\tF5" );
     EVT_MENU(
         $win,
-        $menu->{run_this},
+        $menu->{perl_run_this},
         \&Padre::Wx::Execute::on_run_this,
     );
-    $menu->{run_any} = $menu->{run}->Append( -1, "Run Any\tCtrl-F5" );
+    $menu->{perl_run_any} = $menu->{perl}->Append( -1, "Run Any\tCtrl-F5" );
     EVT_MENU(
         $win,
-        $menu->{run_any},
+        $menu->{perl_run_any},
         \&Padre::Wx::Execute::on_run,
     );
-    $menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
+    $menu->{perl_stop} = $menu->{perl}->Append( -1, "&Stop" );
     EVT_MENU(
         $win,
-        $menu->{run_stop},
+        $menu->{perl_stop},
         \&Padre::Wx::Execute::on_stop,
     );
     EVT_MENU(
         $win,
-        $menu->{run}->Append( -1, "&Setup" ),
+        $menu->{perl}->Append( -1, "&Setup" ),
         \&Padre::Wx::Execute::on_setup_run,
     );
-    $menu->{run_stop}->Enable(0);
+    $menu->{perl_stop}->Enable(0);
+
 
 
 
@@ -268,7 +303,7 @@ sub new {
     $menu->{wx}->Append( $menu->{project},  "&Project"   );
     $menu->{wx}->Append( $menu->{edit},     "&Edit"      );
     $menu->{wx}->Append( $menu->{view},     "&View"      );
-    $menu->{wx}->Append( $menu->{run},      "&Run"       );
+    $menu->{wx}->Append( $menu->{perl},     "Perl"       );
     $menu->{wx}->Append( $menu->{bookmark}, "&Bookmarks" );
     $menu->{wx}->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugin};
     $menu->{wx}->Append( $menu->{window},   "&Window"    );
@@ -352,7 +387,7 @@ sub reflow {
 	$self->{wx}->Append( $self->{edit},     "&Edit"      );
 	$self->{wx}->Append( $self->{view},     "&View"      );
         if ( _INSTANCE($document, 'Padre::Document::Perl') ) {
-		$self->{wx}->Append( $self->{run}, "&Run" );
+		$self->{wx}->Append( $self->{perl}, "&Run" );
 	}
 	$self->{wx}->Append( $self->{bookmark}, "&Bookmarks" );
 	if ( $self->{plugins} ) {
