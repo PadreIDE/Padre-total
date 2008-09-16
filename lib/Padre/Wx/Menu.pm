@@ -273,7 +273,9 @@ sub new {
     $menu->{wx}->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugin};
     $menu->{wx}->Append( $menu->{window},   "&Window"    );
     $menu->{wx}->Append( $menu->{help},     "&Help"      );
-    $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
+    if ( Padre->get_config->{experimental} ) {
+        $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
+    }
 
     # Do an initial reflow
     # $menu->reflow;

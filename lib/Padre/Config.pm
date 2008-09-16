@@ -120,6 +120,9 @@ sub new {
     # by default, we have an empty plugins configuration
     $self->{plugins}           ||= {};
 
+    # By default, don't enable experimental features
+    $self->{experimental} ||= 0;
+
     return $self;
 }
 

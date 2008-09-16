@@ -231,6 +231,7 @@ BEGIN {
 }
 use Class::Autouse qw{
     Padre::Document
+    Padre::Document::Perl
     Padre::Project
     Padre::PluginManager
     Padre::Pod::Frame
@@ -266,7 +267,7 @@ sub new {
     # Create the empty object
     my $self  = bless {
         # Wx Attributes
-        wx      => undef,
+        wx          => undef,
 
         # Internal Attributes
         config_dir  => undef,
@@ -328,6 +329,11 @@ sub plugin_manager {
     $_[0]->{plugin_manager};
 }
 
+sub db {
+    require Padre::DB;
+    return 'Padre::DB';
+}
+
 sub run {
     my ($self) = @_;
     if ( $self->get_index ) {
@@ -368,14 +374,6 @@ sub _process_command_line {
     return;
 }
 
-sub usage {
-    die <<"END_USAGE";
-Usage: $0 [FILENAMEs]
-           --index to index the modules found on this computer
-           --help this help
-END_USAGE
-}
-
 sub run_editor {
     my $self = shift;
     $self->wx->MainLoop;
@@ -384,8 +382,7 @@ sub run_editor {
 }
 
 sub config_dbh {
-    my ($self) = @_;
-
+    my $self = shift;
     my $path = $self->config_db;
     my $new  = not -e $path;
     my $dbh  = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
@@ -393,9 +390,9 @@ sub config_dbh {
         PrintError       => 1,
         AutoCommit       => 1,
         FetchHashKeyName => 'NAME_lc',
-    });
+    } );
     if ( $new ) {
-       $self->create_config($dbh);
+        $self->create_config($dbh);
     }
     return $dbh;
 }
@@ -424,10 +421,12 @@ sub load_config {
 }
 
 sub add_to_recent {
-    my ($self, $type, $item) = @_;
-
-    Carp::confess("No type given") if not $type;
-    Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
+    my $self = shift;
+    my $type = shift or Carp::confess("No type given");
+    my $item = shift;
+    unless ( grep { $_ eq $type } @history ) {
+    	Carp::confess("Invalid type '$type'");
+    }
 
     my @recent = $self->get_recent($type);
     if (not grep {$_ eq $item} @recent) {
@@ -473,6 +472,7 @@ sub get_current_index {
 
     return $self->{current}->{$type};
 }
+
 # gets a type and a name
 sub set_current {
     my ($self, $type, $name) = @_;
@@ -570,7 +570,7 @@ sub create_config {
     $dbh->do("CREATE TABLE modules (id INTEGER PRIMARY KEY, name VARCHAR(100))");
     $dbh->do("CREATE TABLE history (id INTEGER PRIMARY KEY, type VARCHAR(100), name VARCHAR(100))");
     return;
-} 
+}
 
 # returns the name of the next module
 sub next_module {
@@ -602,13 +602,19 @@ sub prev_module {
 sub set_files {
     my ($self, @files) = @_;
     @{ $self->{_files} } = @files;
-
     return;
 }
+
 sub get_files {
     my ($self) = @_;
     return ($self->{_files} and ref ($self->{_files}) eq 'ARRAY' ? @{ $self->{_files} } : ());
 }
+
+sub usage { die <<"END_USAGE" }
+Usage: $0 [FILENAMEs]
+           --index to index the modules found on this computer
+           --help this help
+END_USAGE
 
 1;
 
