@@ -60,7 +60,7 @@ sub on_debug_this {
     my $host = 'localhost';
     my $port = 12345;
 
-    _setup_debugger($host, $port);
+    $self->_setup_debugger($host, $port);
 
     local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
     my $perl = Padre->perl_interpreter;
@@ -71,7 +71,7 @@ sub on_debug_this {
 
 # based on remoteport from "Pro Perl Debugging by Richard Foley and Andy Lester"
 sub _setup_debugger {
-    my ($host, $port) = @_;
+    my ($self, $host, $port) = @_;
 
 #use IO::Socket;
 #use Term::ReadLine;
