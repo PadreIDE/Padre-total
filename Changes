@@ -1,3 +1,9 @@
+v0.04
+    Add more methods
+    Add more tests
+    Rename to Debug::Client
+    Remove the global $response variable and let users fetch the buffer using $dbg->buffer
+
 v0.03 2008.09.13
     Add debug output for tests to better understand test failures.
     More tests

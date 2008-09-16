@@ -4,10 +4,6 @@ use warnings;
 
 our $VERSION = '0.03';
 
-our $response;
-# keep last response here so test code
-# can display it for debugging purposes
-
 use IO::Socket;
 
 =head1 NAME
@@ -45,7 +41,6 @@ Debug::Client - client side code for perl debugger
 
   $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
 
-  $debugger->buffer;  # return the content of the buffer since the last command
 
 Other planned methods:
 
@@ -57,7 +52,6 @@ Other planned methods:
   $debugger->remove_breakpoint
 
   $debugger->get_stack_trace
-
 
   $debugger->watch_variable   (to make it easy to display values of variables)
 
@@ -98,8 +92,17 @@ sub listen {
 
 }
 
+=head2 buffer
+
+return the content of the buffer since the last command
+
+  $debugger->buffer;
+
+=cut
+
 sub buffer {
-    return $response;
+    my ($self) = @_;
+    return $self->{buffer};
 }
 
 sub step_in   { $_[0]->send_get('s') }
@@ -219,7 +222,7 @@ sub _get {
     my $buf = '';
     $self->{new_sock}->sysread($buf, 1024, length $buf) while $buf !~ /DB<\d+>/;
 
-    $response = $buf;
+    $self->{buffer} = $buf;
     return $buf;
 }
 
