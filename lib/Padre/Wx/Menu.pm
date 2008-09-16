@@ -361,7 +361,7 @@ sub reflow {
 	$self->{wx}->Append( $self->{window},   "&Window"    );
 	$self->{wx}->Append( $self->{help},     "&Help"      );
         if ( Padre->ide->get_config->{experimental} ) {
-            $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
+            $self->{wx}->Append( $self->{experimental}, "E&xperimental" );
         }
 
 	return 1;
