@@ -304,7 +304,7 @@ sub new {
         $menu->{experimental}->Append( -1, 'Reflow Menu' ),
         sub {
             $DB::single = 1;
-            my $document = Padre::Document->current;
+            my $document = Padre::Document->from_selection;
             $_[0]->{menu}->reflow( $document );
             $_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
             return;

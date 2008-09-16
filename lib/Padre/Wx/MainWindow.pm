@@ -12,6 +12,7 @@ use File::Basename ();
 use Data::Dumper   ();
 use List::Util     ();
 use File::ShareDir ();
+use Params::Util   ();
 use Wx        qw(:everything);
 use Wx::Event qw(:everything);
 
@@ -493,27 +494,32 @@ sub on_exit {
 }
 
 sub on_close_window {
-    my ( $self, $event ) = @_;
-
+    my $self   = shift;
+    my $event  = shift;
     my $config = Padre->ide->get_config;
 
     # Check that all files have been saved
     if ( $event->CanVeto ) {
-        my @unsaved;
-        foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-            if ( $self->_buffer_changed($id) ) {
-                push @unsaved, $self->{notebook}->GetPageText($id);
+        if ( $config->{startup} eq 'same' ) {
+            # Save the files, but don't close
+            my $saved = $self->on_save_all;
+            unless ( $saved ) {
+                 # They cancelled at some point
+                $event->Veto;
+                return;
+            }
+        } else {
+            my $closed = $self->on_close_all;
+            unless ( $closed ) {
+                # They cancelled at some point
+                $event->Veto;
+                return;
             }
         }
-        if (@unsaved) {
-            Wx::MessageBox( "The following buffers are still not saved:\n" . join("\n", @unsaved), 
-                            "Unsaved", wxOK|wxCENTRE, $self );
-            $event->Veto;
-            return;
-        }
-
-        my @files = map { scalar $self->_get_filename($_) } ( 0 .. $self->{notebook}->GetPageCount - 1 );
-        $config->{main}->{files} = \@files;
+        $config->{main}->{files} = [
+            map { scalar $self->_get_filename($_) }
+            ( 0 .. $self->{notebook}->GetPageCount - 1 )
+        ];
     }
 
     # Discover and save the state we want to memorize
@@ -875,67 +881,83 @@ sub get_page_text {
     return $self->_get_page_text($id);
 }
 
+# Returns true if saved.
+# Returns false if cancelled.
 sub on_save_as {
-    my ($self) = @_;
-
-    my $id   = $self->{notebook}->GetSelection;
-    return if $id == -1;
-
-    my $current_filename = $self->get_current_filename;
-    if ($current_filename) {
-       $default_dir = File::Basename::dirname($current_filename);
+    my $self    = shift;
+    my $doc     = _DOCUMENT(@_) or return;
+    my $current = $doc->filename;
+    if ( defined $current ) {
+        $default_dir = File::Basename::dirname($current);
     }
     while (1) {
-        my $dialog = Wx::FileDialog->new( $self, "Save file as...", $default_dir, "", "*.*", wxFD_SAVE);
-        if ($dialog->ShowModal == wxID_CANCEL) {
-#print "Cancel\n";
-            return;
+        my $dialog = Wx::FileDialog->new(
+            $self,
+            "Save file as...",
+            $default_dir,
+            "",
+            "*.*",
+            wxFD_SAVE,
+        );
+        if ( $dialog->ShowModal == wxID_CANCEL ) {
+            return 0;
         }
         my $filename = $dialog->GetFilename;
-#print "OK $filename\n";
         $default_dir = $dialog->GetDirectory;
-
         my $path = File::Spec->catfile($default_dir, $filename);
-        if (-e $path) {
-            my $res = Wx::MessageBox("File already exists. Overwrite it?", "Exist", wxYES_NO, $self);
-            if ($res == wxYES) {
-                $self->_set_filename($id, $path, $self->_get_local_filetype());
+        if ( -e $path ) {
+            my $res = Wx::MessageBox(
+                "File already exists. Overwrite it?",
+                "Exist",
+                wxYES_NO,
+                $self,
+            );
+            if ( $res == wxYES ) {
+                $doc->_set_filename($path);
+                $self->_set_filename(
+                    $doc->page_id,
+                    $path,
+                    $self->_get_local_filetype,
+                );
                 last;
             }
         } else {
-            $self->_set_filename($id, $path, $self->_get_local_filetype());
+            $doc->_set_filename($path);
+            $self->_set_filename(
+                $doc->page_id,
+                $path,
+                $self->_get_local_filetype,
+            );
             last;
         }
     }
-    $self->_save_buffer($id);
-    return;
+    $self->_save_buffer($doc->page_id);
+    return 1;
 }
 
 sub on_save {
-    my ($self) = @_;
-    my $id = $self->{notebook}->GetSelection;
-    if ( $id == -1 ) {
-        return;
+    my $self = shift;
+    my $doc  = _DOCUMENT(@_) or return;
+
+    if ( $doc->is_new ) {
+        return $self->on_save_as($doc);
     }
-    if ( not $self->_buffer_changed($id) and $self->_get_filename($id) ) {
-        return;
+    if ( $doc->is_modified ) {
+        $self->_save_buffer($doc->page_id);
     }
-    if ($self->_get_filename($id)) {
-        $self->_save_buffer($id);
-    } else {
-        $self->on_save_as();
-    }
+
     return;
 }
 
+# Returns true if all saved.
+# Returns false if cancelled.
 sub on_save_all {
-    my ($self) = @_;
-    foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-        if ( $self->_buffer_changed($id) ) {
-            $self->_save_buffer($id);
-        }
+    my $self = shift;
+    foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+	my $doc = Padre::Document->from_page_id($id);
+        $self->on_save( $doc ) or return 0;
     }
-    return;
+    return 1;
 }
 
 sub _save_buffer {
@@ -956,55 +978,51 @@ sub _save_buffer {
     return; 
 }
 
+# Returns true if closed.
+# Returns false on cancel.
 sub on_close {
-    my ($self) = @_;
-
+    $DB::single = 1;
+    my $self = shift;
+    my $doc  = _DOCUMENT(@_);
     local $self->{_in_delete_editor} = 1;
-#print "PageText: " . $self->{notebook}->GetPageText(0) . "\n";
 
-    my $id     = $self->{notebook}->GetSelection;
-    if ( $self->_buffer_changed($id) ) {
+    if ( $doc->is_modified ) {
         my $ret = Wx::MessageBox(
-            "File changed. Do yo want to save it?",
-            "Unsaved file",
+            "File changed. Do you want to save it?",
+            scalar($self->_get_filename($doc->page_id)) || "Unsaved File",
             wxYES_NO|wxCANCEL|wxCENTRE,
             $self,
         );
         if ( $ret == wxYES ) {
-            $self->on_save();
+            $self->on_save( $doc );
         } elsif ( $ret == wxNO ) {
             # just close it
         } else {
             # wxCANCEL, or when clicking on [x]
-
-            return;
+            return 0;
         }
     }
-    $self->{notebook}->DeletePage($id); 
-#print "PageText after delete: " . $self->{notebook}->GetPageText(0) . "\n";
+    $self->{notebook}->DeletePage($doc->page_id);
 
-    $self->{menu}->remove_alt_n_menu();
-    foreach my $i (0..@{ $self->{menu}->{alt} } -1) {
-        my $file = $self->_get_filename($i);
-#print "file: $i $file\n";
-        $file ||= $self->{notebook}->GetPageText($i);
-#print "pagetext: $file\n";
+    # Update the alt-n menus
+    $self->{menu}->remove_alt_n_menu;
+    foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
+        my $file = $self->_get_filename($i)
+        	|| $self->{notebook}->GetPageText($i);
         $self->{menu}->update_alt_n_menu($file, $i);
     }
 
-    return;
+    return 1;
 }
 
+# Returns true if all closed.
+# Returns false if cancelled.
 sub on_close_all {
-    my ($self, $event) = @_;
-
-    foreach my $id (reverse 0 .. $self->{notebook}->GetPageCount -1) {
-        if (not $self->_buffer_changed($id) ) {
-            $self->_save_buffer($id);
-        }
-        $self->{notebook}->DeletePage($id);
+    my $self = shift;
+    foreach my $id ( reverse 0 .. $self->{notebook}->GetPageCount - 1 ) {
+        $self->on_close( $id ) or return 0;
     }
-    return;
+    return 1;
 }
 
 sub _buffer_changed {
@@ -1560,6 +1578,27 @@ sub on_stc_change {
     }
 
     return;
+}
+
+
+
+
+
+#####################################################################
+# Convenience Functions
+
+sub _DOCUMENT {
+	if ( Params::Util::_INSTANCE($_[0], 'Wx::CommandEvent') ) {
+		shift;
+	}
+	unless ( @_ ) {
+		return Padre::Document->from_selection;
+	}
+	if ( Params::Util::_INSTANCE($_[0], 'Padre::Document') ) {
+		return $_[0];
+	} else {
+		return Padre::Document->from_page_id($_[0]);
+	}
 }
 
 1;

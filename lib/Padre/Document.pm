@@ -3,6 +3,7 @@ package Padre::Document;
 # Provides a logical document abstraction, allowing Padre
 # to associate several Wx elements with the one document.
 
+use 5.008;
 use strict;
 use warnings;
 use Wx qw{
@@ -78,10 +79,20 @@ our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
 ### DODGY HACK
 # This is a temporary method that can generate an "anonymous"
 # document for whatever is in the current buffer. The document
-# 
-sub current {
+# is not saved or cached anywhere.
+# This method may be changed to work properly later, but for now
+# feel free to use it wherever needed.
+sub from_selection {
+	$_[0]->from_page_id( $_[0]->notebook->GetSelection );
+}
+
+sub from_page_id {
 	my $class    = shift;
-	my $page_id  = $class->notebook->GetSelection;
+	my $page_id  = shift;
+        if ( $page_id == -1 ) {
+		# No page selected
+		return;
+        }
 	my $page     = $class->notebook->GetPage( $page_id );
 	my $filename = $page->{'Padre::Wx::MainWindow'}->{filename};
 	my $document = $class->new(
@@ -137,9 +148,9 @@ sub new {
 			}
 		}
 
-		# Fall back to plain text
-		unless ( $self->mimetype ) {
-			$self->{mimetype} = 'text/plain';
+		# Fall back to a null value
+		unless ( defined $self->mimetype ) {
+			$self->{mimetype} = '';
 		}
 	}
 
@@ -162,28 +173,20 @@ sub filename {
 	$_[0]->{filename};
 }
 
+# Temporary hack
+sub _set_filename {
+	$_[0]->{filename} = $_[1];
+}
+
 sub mimetype {
 	$_[0]->{mimetype};
 }
 
 sub lexer {
 	my $self = shift;
-
-	# Use the mimetype first
-	if ( $self->mimetype ) {
-		return $MIME_LEXER{$self->mimetype}
-			|| $DEFAULT_LEXER;
-	}
-
-	# Otherwise guess
-	my $text = $self->get_text;
-	if ( $text =~ /\A\#\!/m ) {
-		if ( $text =~ /\A[^\n]\bperl\b/m ) {
-			return MIME_LEXER{'text/perl'};
-		}
-	}
-
-	return $DEFAULT_LEXER;
+	return $DEFAULT_LEXER unless $self->mimetype;
+	return $DEFAULT_LEXER unless $MIME_LEXER{$self->mimetype};
+	return $MIME_LEXER{$self->mimetype};
 }
 
 sub page_id {
@@ -196,11 +199,18 @@ sub page {
 	$_[0]->{page} = $_[0]->notebook->GetPage( $_[0]->page_id );
 }
 
-sub project_dir {
-	my $self = shift;
-	$self->{project_dir} or
-	$self->{project_dir} = $self->find_project;
+sub is_new {
+	return !! ( defined $_[0]->page_id and not defined $_[0]->filename );
 }
+
+sub is_modified {
+	return !! ( $_[0]->page->GetModify );
+}
+
+sub is_saved {
+	return !! ( defined $_[0]->filename and not $_[0]->is_modified );
+}
+
 
 
 
@@ -222,7 +232,13 @@ sub set_text {
 
 
 #####################################################################
-# System Interaction Methods
+# Project Methods
+
+sub project_dir {
+	my $self = shift;
+	$self->{project_dir} or
+	$self->{project_dir} = $self->find_project;
+}
 
 sub find_project {
 	my $self = shift;
