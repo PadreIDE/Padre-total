@@ -1,10 +1,12 @@
 package Padre::Wx::Menu;
 
+use 5.008;
 use strict;
 use warnings;
-
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
+use Padre::Util  ();
+use Params::Util qw{_INSTANCE};
+use Wx           qw(:everything);
+use Wx::Event    qw(:everything);
 
 our $VERSION = '0.08';
 
@@ -104,13 +106,16 @@ sub new {
         $menu->{view_output},
         \&Padre::Wx::MainWindow::on_toggle_show_output,
     );
-    $menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
-    $menu->{view_statusbar}->Check( $config->{show_status_bar} ? 1 : 0 );
-    EVT_MENU(
-        $win,
-        $menu->{view_statusbar},
-        \&Padre::Wx::MainWindow::on_toggle_status_bar,
-    );
+    unless ( Padre::Util::WIN32 ) {
+        # On Windows disabling the status bar is broken, so don't allow it
+        $menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
+        $menu->{view_statusbar}->Check( $config->{show_status_bar} ? 1 : 0 );
+        EVT_MENU(
+            $win,
+            $menu->{view_statusbar},
+            \&Padre::Wx::MainWindow::on_toggle_status_bar,
+        );
+    }
     $menu->{view_indentation_guide} = $menu->{view}->AppendCheckItem( -1, "Show Indentation Guide" );
     $menu->{view_indentation_guide}->Check( $config->{editor}->{indentation_guide} ? 1 : 0 );
     EVT_MENU(
@@ -130,8 +135,16 @@ sub new {
     EVT_MENU( $win, $menu->{view}->Append( -1, "Decrease Font Size\tCtrl-+" ),  \&Padre::Wx::MainWindow::on_zoom_out  );
     EVT_MENU( $win, $menu->{view}->Append( -1, "Reset Font Size\tCtrl-/" ),  \&Padre::Wx::MainWindow::on_zoom_reset  );
     $menu->{view}->AppendSeparator;
-    EVT_MENU( $win, $menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),  \&Padre::Wx::Bookmarks::on_set_bookmark  );
-    EVT_MENU( $win, $menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),  \&Padre::Wx::Bookmarks::on_goto_bookmark  );
+    EVT_MENU(
+        $win,
+        $menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
+        \&Padre::Wx::Bookmarks::on_set_bookmark,
+    );
+    EVT_MENU(
+        $win,
+        $menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
+        \&Padre::Wx::Bookmarks::on_goto_bookmark,
+    );
 
 
 
@@ -217,7 +230,7 @@ sub new {
     );
     EVT_MENU(
         $win,
-        $menu->{help}->Append( -1, "Context-help\tCtrl-Shift-H" ),
+        $menu->{help}->Append( -1, "Context Help\tCtrl-Shift-H" ),
         \&Padre::Wx::Help::on_context_help,
     );
     $menu->{help}->AppendSeparator;
@@ -238,7 +251,10 @@ sub new {
         $menu->{experimental}->Append( -1, 'Reflow Menu' ),
         sub {
             $DB::single = 1;
-            $_[0]->{menu}->reflow;
+            my $document = Padre::Document->current;
+            $_[0]->{menu}->reflow( $document );
+            $_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
+            return;
         },
     );
 
@@ -324,25 +340,26 @@ sub win {
 # Reflowing the Menu
 
 sub reflow {
-	my $self  = shift;
-	my $lexer = $self->win->get_current_editor->GetLexer;
+	my $self     = shift;
+	my $document = _INSTANCE(shift, 'Padre::Document');
 
-	# Create and return the main menu bar
-	my $wx   = Wx::MenuBar->new;
-	my $menu = $self->{menu};
-	$wx->Append( $menu->{file},     "&File"      );
-	$wx->Append( $menu->{project},  "&Project"   );
-	$wx->Append( $menu->{edit},     "&Edit"      );
-	$wx->Append( $menu->{view},     "&View"      );
-	$wx->Append( $menu->{run},      "&Run"       );
-	$wx->Append( $menu->{bookmark}, "&Bookmarks" );
-	$wx->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugins};
-	$wx->Append( $menu->{window},   "&Window"    );
-	$wx->Append( $menu->{help},     "&Help"      );
-	$wx->Append( $menu->{experimental}, "E&xperimental" );
-
+	# Create the new menu bar
+	$self->{wx} = Wx::MenuBar->new;
+	$self->{wx}->Append( $self->{file},     "&File"      );
+	$self->{wx}->Append( $self->{project},  "&Project"   );
+	$self->{wx}->Append( $self->{edit},     "&Edit"      );
+	$self->{wx}->Append( $self->{view},     "&View"      );
+        if ( _INSTANCE($document, 'Padre::Document::Perl') ) {
+		$self->{wx}->Append( $self->{run}, "&Run" );
+	}
+	$self->{wx}->Append( $self->{bookmark}, "&Bookmarks" );
+	if ( $self->{plugins} ) {
+		$self->{wx}->Append( $self->{plugin}, "Pl&ugins" );
+	}
+	$self->{wx}->Append( $self->{window},   "&Window"    );
+	$self->{wx}->Append( $self->{help},     "&Help"      );
+	$self->{wx}->Append( $self->{experimental}, "E&xperimental" );
 	
-
 	return 1;
 }
 

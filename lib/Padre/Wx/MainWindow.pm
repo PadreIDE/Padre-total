@@ -15,13 +15,14 @@ use File::ShareDir ();
 use Wx        qw(:everything);
 use Wx::Event qw(:everything);
 
-use base qw(
+use base qw{
 	Wx::Frame
 	Padre::Wx::Execute
-);
+};
 
-use Padre::Util ();
-use Padre::Wx::Text;
+use Padre::Util     ();
+use Padre::Wx       ();
+use Padre::Wx::Text ();
 
 our $VERSION = '0.08';
 
@@ -202,10 +203,10 @@ sub new {
     $self->{statusbar}->SetStatusWidths(-1, 50, 100);
 
     my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050); 
-    $tool_bar->AddTool( wxID_NEW,   '', _bitmap('new'),   'New File'   ); 
-    $tool_bar->AddTool( wxID_OPEN,  '', _bitmap('open'),  'Open File'  ); 
-    $tool_bar->AddTool( wxID_SAVE,  '', _bitmap('save'),  'Save File'  );
-    # $tool_bar->AddTool( wxID_CLOSE, '', _bitmap('close'), 'Close File' );
+    $tool_bar->AddTool( wxID_NEW,  '', Padre::Wx::bitmap('new'),  'New File'  ); 
+    $tool_bar->AddTool( wxID_OPEN, '', Padre::Wx::bitmap('open'), 'Open File' ); 
+    $tool_bar->AddTool( wxID_SAVE, '', Padre::Wx::bitmap('save'), 'Save File' );
+    # $tool_bar->AddTool( wxID_CLOSE, '', Padre::Wx::bitmap('close'), 'Close File' );
     $tool_bar->AddSeparator;
     $tool_bar->Realize;
 
@@ -227,7 +228,7 @@ sub new {
 
     Padre::Wx::Execute->setup( $self );
     #$self->SetIcon( Wx::GetWxPerlIcon() );
-    $self->SetIcon( _icon('new') );
+    $self->SetIcon( Padre::Wx::icon('new') );
 
     # Load any default files
     $self->_load_files;
@@ -330,28 +331,10 @@ sub get_current_content {
     $_[0]->get_current_editor->GetText;
 }
 
-sub _bitmap {
-    my $file = shift;
-    my $dir  = $ENV{PADRE_DEV}
-        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
-        : File::ShareDir::dist_dir('Padre');
-    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
-    return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
-}
-sub _icon {
-    my $file = shift;
-    my $dir  = $ENV{PADRE_DEV}
-        ? File::Spec->catdir($FindBin::Bin, '..', 'share')
-        : File::ShareDir::dist_dir('Padre');
-    my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
-    return Wx::Icon->new( $path, wxBITMAP_TYPE_XPM );
-}
-
 sub on_stc_update_ui {
     my ($self, $event) = @_;
     $self->update_status;
 }
-
 
 sub on_key {
     my ($self, $event) = @_;
@@ -1459,6 +1442,10 @@ sub _toggle_output {
 
 sub on_toggle_status_bar {
     my ($self, $event) = @_;
+    if ( Padre::Util::WIN32 ) {
+        # Status bar always shown on Windows
+        return;
+    }
 
     # Update the configuration
     my $config = Padre->ide->get_config;

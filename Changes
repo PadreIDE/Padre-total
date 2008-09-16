@@ -3,6 +3,12 @@ v0.09
     Move various relevant menu items into a "Window" menu (ADAMK)
     Rename "Enable CallTip" to "Show Call Tips" for consistency (ADAMK)
     Adding more menu seperators to improve the visual look (ADAMK)
+    Always show status bar on Win32, as removing it breaks (ADAMK)
+    Added experimental Padre::Document::Perl (ADAMK)
+    Added experimental PPI intergration (ADAMK)
+    Experimental menu reflow closer to being usable (ADAMK)
+    Split out Wx-related utility functions into Padre::Wx (ADAMK)
+    Adding common platform-detection logic to Padre::Util (ADAMK(
 
 v0.08 2008.09.11
 

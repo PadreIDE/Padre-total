@@ -79,10 +79,10 @@ sub new {
     }
 
     # size of the main window
-    $self->{main}->{height} ||= Wx::wxDefaultSize()->height;
-    $self->{main}->{width}  ||= Wx::wxDefaultSize()->width;
-    $self->{main}->{left}   ||= Wx::wxDefaultPosition()->x;
-    $self->{main}->{top}    ||= Wx::wxDefaultPosition()->y;
+    $self->{main}->{height}    ||= Wx::wxDefaultSize()->height;
+    $self->{main}->{width}     ||= Wx::wxDefaultSize()->width;
+    $self->{main}->{left}      ||= Wx::wxDefaultPosition()->x;
+    $self->{main}->{top}       ||= Wx::wxDefaultPosition()->y;
 
     # Is the window maximized
     $self->{main}->{maximized} ||= 0;
@@ -91,11 +91,10 @@ sub new {
     #   new        - a new empty buffer
     #   nothing    - nothing to open
     #   last       - the files that were open last time    
-    $self->{startup} ||= 'new';
+    $self->{startup}           ||= 'new';
 
     $self->{search_terms}      ||= [];
     $self->{replace_terms}     ||= [];
-
     $self->{command_line}      ||= '';
     $self->{bookmarks}         ||= {};
     #if (not $self->{bookmarks}) {
@@ -108,14 +107,15 @@ sub new {
     # same - save the file in the current buffer
     # all_files - all the files (but not buffers that have no filenames)
     # all_buffers - all the buffers even if they don't have a name yet
-    $self->{save_on_run}       ||= 'same';
-    $self->{show_line_numbers} ||= 0;
-    $self->{show_eol}          ||= 0;
-    $self->{projects}          ||= {};
-    $self->{current_project}   ||= '';
-
-    $self->{editor}->{tab_size}    ||= 8;
-    $self->{editor}->{show_calltips} = 1 if not exists $self->{editor}->{enable_calltip};
+    $self->{save_on_run}        ||= 'same';
+    $self->{show_line_numbers}  ||= 0;
+    $self->{show_eol}           ||= 0;
+    $self->{projects}           ||= {};
+    $self->{current_project}    ||= '';
+    $self->{editor}->{tab_size} ||= 8;
+    unless ( exists $self->{editor}->{show_calltips} ) {
+        $self->{editor}->{show_calltips} = 1;
+    }
 
     # by default, we have an empty plugins configuration
     $self->{plugins}           ||= {};

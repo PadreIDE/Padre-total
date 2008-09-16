@@ -65,11 +65,32 @@ our %EXT_MIME = (
 	plx => 'text/perl',
 );
 
+our %MIME_CLASS = (
+	'text/perl' => 'Padre::Document::Perl',
+);
+
 our %MIME_LEXER = (
 	'text/perl' => wxSTC_LEX_PERL,
 );
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
+
+### DODGY HACK
+# This is a temporary method that can generate an "anonymous"
+# document for whatever is in the current buffer. The document
+# 
+sub current {
+	my $class    = shift;
+	my $page_id  = $class->notebook->GetSelection;
+	my $page     = $class->notebook->GetPage( $page_id );
+	my $filename = $page->{'Padre::Wx::MainWindow'}->{filename};
+	my $document = $class->new(
+		page_id  => $page_id,
+		page     => $page,
+		filename => $filename,
+	);
+	return $document;
+}
 
 
 
@@ -101,17 +122,36 @@ sub new {
 		# Try derive the mime type from the name
 		if ( $self->filename and $self->filename =~ /\.([^.]+)$/ ) {
 			my $ext = lc $1;
-			return $EXT_MIME{$ext} if $EXT_MIME{$ext};
+			$self->{mimetype} = $EXT_MIME{$ext} if $EXT_MIME{$ext};
 		}
 
-		# Fall back on deriving the type from the content
-		# Hardcode this for now for the special cases we care about.
-		my $text = $self->get_text;
-		if ( $text =~ /\A\#\!/m ) {
-			# Found a hash bang line
-			if ( $text =~ /\A[^\n]\bperl\b/m ) {
-				return 'text/perl';
+		unless ( $self->mimetype ) {
+			# Fall back on deriving the type from the content
+			# Hardcode this for now for the special cases we care about.
+			my $text = $self->get_text;
+			if ( $text =~ /\A\#\!/m ) {
+				# Found a hash bang line
+				if ( $text =~ /\A[^\n]\bperl\b/m ) {
+					$self->{mimetype} = 'text/perl';
+				}
 			}
+		}
+
+		# Fall back to plain text
+		unless ( $self->mimetype ) {
+			$self->{mimetype} = 'text/plain';
+		}
+	}
+
+	# If we blessed as the base class, and the mime type has a
+	# specific subclass, rebless it.
+	# This isn't exactly the most elegant way to do this, but will
+	# do for a first implementation.
+	if ( $class eq __PACKAGE__ ) {
+		my $subclass = $MIME_CLASS{$self->mimetype};
+		if ( $subclass ) {
+			Class::Autouse->autouse($subclass);
+			bless $self, $subclass;
 		}
 	}
 
