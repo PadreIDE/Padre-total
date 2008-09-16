@@ -360,8 +360,10 @@ sub reflow {
 	}
 	$self->{wx}->Append( $self->{window},   "&Window"    );
 	$self->{wx}->Append( $self->{help},     "&Help"      );
-	$self->{wx}->Append( $self->{experimental}, "E&xperimental" );
-	
+        if ( Padre->ide->get_config->{experimental} ) {
+            $menu->{wx}->Append( $menu->{experimental}, "E&xperimental" );
+        }
+
 	return 1;
 }
 
