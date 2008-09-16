@@ -40,6 +40,7 @@ SCOPE: {
 SCOPE: {
     my $config = $app->get_config;
     is_deeply {
+            experimental      => 0,
             DISPLAY_MIN_LIMIT => 2,
             DISPLAY_MAX_LIMIT => 200,
             show_line_numbers => 0,
