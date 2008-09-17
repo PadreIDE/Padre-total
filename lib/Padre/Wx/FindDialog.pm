@@ -63,7 +63,10 @@ sub dialog {
 
     my %cbs = (
        case_insensitive => {
-          title => "Case &Insensitive",
+           title => "Case &Insensitive",
+       },
+       use_regex        => {
+           title => "Use &Regex",
        },
     );
     
@@ -76,14 +79,6 @@ sub dialog {
         EVT_CHECKBOX( $dialog, $cb, sub { $find_choice->SetFocus; });
         $cbs{$field}{cb} = $cb;
     }
-
-    my $use_regex = Wx::CheckBox->new( $dialog, -1, "Use &Regex", [-1, -1], [-1, -1]);
-    if ($config->{search}->{use_regex}) {
-        $use_regex->SetValue(1);
-    }
-    $row3->Add($use_regex);
-    EVT_CHECKBOX( $dialog, $use_regex, sub { $find_choice->SetFocus; });
-
 
 #    $row2->Add($dir_selector, 1, wxALL, 3);
 
@@ -117,7 +112,6 @@ sub dialog {
     }
 
     $search{term}             = $find_choice->GetValue;
-    $search{use_regex}        = $use_regex->GetValue;
     $dialog->Destroy;
 
     return if not defined $search{term} or $search{term} eq '';
