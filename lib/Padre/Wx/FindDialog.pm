@@ -19,6 +19,9 @@ my %cbs = (
     use_regex        => {
         title => "Use &Regex",
     },
+    backwords        => {
+        title => "Search &Backwords",
+    },
     close_on_hit     => {
         title => "Close Window on &hit",
     },
@@ -180,23 +183,12 @@ sub on_find_again {
     return;
 }
 
-sub _search {
-    my ($self, %args) = @_;
+sub _get_regex {
+    my ($self, $args) = @_;
 
     my $config = Padre->ide->get_config;
-    my $search_term = $args{search_term} ||= $config->{search_terms}->[0];
-    #$args{replace_term}
 
-    my $id   = $self->{notebook}->GetSelection;
-    my $page = $self->{notebook}->GetPage($id);
-    my $content = $page->GetText;
-    my ($from, $to) = $page->GetSelection;
-    if ($from < $to) {
-        $from++;
-    }
-    my $last = $page->GetLength();
-    my $str  = $page->GetTextRange($from, $last);
-
+    my $search_term = $args->{search_term} ||= $config->{search_terms}->[0];
     if ($config->{search}->{use_regex}) {
         $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
     } else {
@@ -214,7 +206,28 @@ sub _search {
         Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $self);
         return;
     }
+    return $regex;
+}
 
+sub _search {
+    my ($self, %args) = @_;
+
+    my $regex = _get_regex($self, \%args);
+    return if not defined $regex;
+
+    #$args{replace_term}
+
+    my $id   = $self->{notebook}->GetSelection;
+    my $page = $self->{notebook}->GetPage($id);
+    my $content = $page->GetText;
+    my ($from, $to) = $page->GetSelection;
+    if ($from < $to) {
+        $from++;
+    }
+    my $last = $page->GetLength();
+    my $str  = $page->GetTextRange($from, $last);
+
+ 
     my ($start, $end);
     if ($str =~ $regex) {
         $start = $LAST_MATCH_START[0] + $from;
