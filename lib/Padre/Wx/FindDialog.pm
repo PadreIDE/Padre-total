@@ -10,6 +10,33 @@ use Wx::Event      qw(:everything);
 
 our $VERSION = '0.09';
 
+my $main;
+my $find_choice;
+my %cbs = (
+    case_insensitive => {
+        title => "Case &Insensitive",
+    },
+    use_regex        => {
+        title => "Use &Regex",
+    },
+    close_on_hit     => {
+        title => "Close Window on hit",
+    },
+);
+
+
+sub on_find {
+    my ( $self ) = @_;
+    $main = $self;
+
+    my $config = Padre->ide->get_config;
+    my $selection = $self->_get_selection();
+    $selection = '' if not defined $selection;
+
+    Padre::Wx::FindDialog->dialog( $self, $config, {term => $selection} );
+}
+
+
 sub dialog {
     my ( $class, $win, $config, $args) = @_;
 
@@ -37,18 +64,19 @@ sub dialog {
 
 
     my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',                 );
+    $find->SetDefault;
     #my $replace = Wx::Button->new( $dialog, -1,          'Find and Replace', );
     my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',                 );
 
-    EVT_BUTTON( $dialog, $find,    sub { $dialog->EndModal(wxID_FIND)     } );
-    #EVT_BUTTON( $dialog, $replace, sub { $dialog->EndModal('replace')     } );
-    EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(wxID_CANCEL) } );
+    EVT_BUTTON( $dialog, $find,    \&find_clicked   );
+    #EVT_BUTTON( $dialog, $replace, \&replace_clicked );
+    EVT_BUTTON( $dialog, $cancel,  \&cancel_clicked );
 
     my @WIDTH  = (100);
     my @HEIGHT = (200);
 
     $row1->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
-    my $find_choice = Wx::ComboBox->new( $dialog, -1, $search{term}, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
+    $find_choice = Wx::ComboBox->new( $dialog, -1, $search{term}, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
     $row1->Add( $find_choice, 1, wxALL, 3 );
     $row1->Add( $find,        1, wxALL, 3 );
 
@@ -61,14 +89,6 @@ sub dialog {
     #my $verbatim = Wx::CheckBox->new( $dialog, -1, "Verbatim", [-1, -1], [-1, -1]);
     #$row2->Add($verbatim);
 
-    my %cbs = (
-       case_insensitive => {
-           title => "Case &Insensitive",
-       },
-       use_regex        => {
-           title => "Use &Regex",
-       },
-    );
     
     foreach my $field (keys %cbs) {
         my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
@@ -86,7 +106,7 @@ sub dialog {
 #    $row3->Add( $path, 1, wxALL, 3 );
 #    EVT_BUTTON( $dialog, $dir_selector, sub {on_pick_project_dir($path, @_) } );
     #wxTE_PROCESS_ENTER
-    EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
+    #EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
     #EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
 
     $row4->Add($cancel);
@@ -96,21 +116,31 @@ sub dialog {
 
 
     $find_choice->SetFocus;
-    my $ret = $dialog->ShowModal;
+    $dialog->Show(1);
 
-    if ( $ret eq wxID_CANCEL ) {
-        return;
-    } elsif ( $ret eq wxID_FIND ) {
-    } elsif ( $ret eq 'replace' ) {
-        #$search{replace_term}     = $replace_choice->GetValue;
-    } else {
-        # what the hell?
-    }
+    return;
+}
 
+sub cancel_clicked {
+    my ($self, $event) = @_;
+
+    $self->Destroy;
+
+    return;
+}
+
+#    } elsif ( $ret eq 'replace' ) {
+#        #$search{replace_term}     = $replace_choice->GetValue;
+
+sub find_clicked {
+    my ($dialog, $event) = @_;
+
+    my $config = Padre->ide->get_config;
     foreach my $field (keys %cbs) {
-       $search{$field} = $cbs{$field}{cb}->GetValue;
+       $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
     }
 
+    my %search;
     $search{term}             = $find_choice->GetValue;
     $dialog->Destroy;
 
@@ -120,34 +150,18 @@ sub dialog {
     #my %seen;
     #@{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
 
-    return \%search;
-}
-
-sub on_find {
-    my ( $self ) = @_;
-
-    my $config = Padre->ide->get_config;
-    my $selection = $self->_get_selection();
-    $selection = '' if not defined $selection;
-
-    my $search = Padre::Wx::FindDialog->dialog( $self, $config, {term => $selection} );
-    return if not $search;
-
-    $config->{search}->{case_insensitive} = $search->{case_insensitive};
-    $config->{search}->{use_regex}        = $search->{use_regex};
-
-    if ($search->{term}) {
-        unshift @{$config->{search_terms}}, $search->{term};
+    if ($search{term}) {
+        unshift @{$config->{search_terms}}, $search{term};
         my %seen;
         @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
     }
-    if ($search->{replace_term} ) {
-        unshift @{$config->{replace_terms}}, $search->{replace_term};
+    if ($search{replace_term} ) {
+        unshift @{$config->{replace_terms}}, $search{replace_term};
         my %seen;
         @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
      }
 
-    _search($self, replace_term => $search->{replace_term});
+    _search($main, replace_term => $search{replace_term});
 
     return;
 }
