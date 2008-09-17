@@ -2,6 +2,7 @@ Build.PL
 Changes
 MANIFEST
 README
+inc/Padre/Install.pm
 
 lib/Padre.pm
 lib/Padre/Wx/Ack.pm
