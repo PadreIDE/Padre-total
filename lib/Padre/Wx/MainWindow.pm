@@ -975,6 +975,10 @@ sub _save_buffer {
     eval {
         File::Slurp::write_file($filename, $content);
     };
+    if ($@) {
+        Wx::MessageBox("Could not save: $!", "Error", wxOK, $self);
+        return;
+    }
     Padre->ide->add_to_recent('files', $filename);
     $self->{notebook}->SetPageText($id, File::Basename::basename($filename));
     $page->SetSavePoint;
