@@ -1,4 +1,4 @@
-v0.09
+v0.09 2008.08.17
 
     Move various relevant menu items into a "Window" menu (ADAMK)
     Rename "Enable CallTip" to "Show Call Tips" for consistency (ADAMK)
@@ -11,6 +11,9 @@ v0.09
     Adding common platform-detection logic to Padre::Util (ADAMK(
     If we start with a new file and then open another one,
     implicitly close the unused new file (ADAMK)
+    Some dialog cleanups.
+    Make sure we can build stand alon executable for Linux.
+    Remove Ctrl-Shift-Z from redo as Ctrl-Y already works.
 
 v0.08 2008.09.11
 

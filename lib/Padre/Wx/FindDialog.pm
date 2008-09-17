@@ -8,7 +8,7 @@ use English        qw(-no_match_vars);
 use Wx             qw(:everything);
 use Wx::Event      qw(:everything);
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub dialog {
     my ( $class, $win, $config, $args) = @_;

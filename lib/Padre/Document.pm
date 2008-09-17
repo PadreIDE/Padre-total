@@ -13,7 +13,7 @@ use Wx qw{
 use File::Spec ();
 use List::Util ();
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 # see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
 # N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 

@@ -25,7 +25,7 @@ use Padre::Util     ();
 use Padre::Wx       ();
 use Padre::Wx::Text ();
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 my $default_dir = Cwd::cwd();
 my $cnt         = 0;
