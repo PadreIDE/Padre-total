@@ -31,7 +31,7 @@ sub on_ack {
     # TODO kill the thread before closing the application
 
     my $search = dialog();
-print Dumper $search;
+#print Dumper $search;
 
     $search->{dir} ||= '.';
     return if not $search->{term};
@@ -45,7 +45,7 @@ print Dumper $search;
     }
     #$opts{after_context}  = 0;
     #$opts{before_context} = 0;
-print Dumper \%opts;
+#print Dumper \%opts;
     my $what = App::Ack::get_starting_points( [$search->{dir}], \%opts );
     fill_type_wanted();
 #    $App::Ack::type_wanted{cc} = 1;

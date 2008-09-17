@@ -32,10 +32,10 @@ sub new {
     my $choice = Wx::Choice->new( $dialog, -1, [300, $y], [-1, -1], \@values);
 
     $y += $HEIGHT;
-    EVT_BUTTON( $dialog, Wx::Button->new( $dialog, wxID_OK,     '', [10, $y] ),
-                sub { $dialog->EndModal(wxID_OK) } );
-    EVT_BUTTON( $dialog, Wx::Button->new( $dialog, wxID_CANCEL, '', [120, $y] ),
-                sub { $dialog->EndModal(wxID_CANCEL) } );
+    my $ok     = Wx::Button->new( $dialog, wxID_OK,     '', [10,  $y] );
+    my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '', [120, $y], $ok->GetSize );
+    EVT_BUTTON( $dialog, $ok,     sub { $dialog->EndModal(wxID_OK) } );
+    EVT_BUTTON( $dialog, $cancel, sub { $dialog->EndModal(wxID_CANCEL) } );
 
     if ($dialog->ShowModal == wxID_CANCEL) {
         return;
