@@ -61,12 +61,21 @@ sub dialog {
     #my $verbatim = Wx::CheckBox->new( $dialog, -1, "Verbatim", [-1, -1], [-1, -1]);
     #$row2->Add($verbatim);
 
-    my $case_insensitive = Wx::CheckBox->new( $dialog, -1, "Case &Insensitive", [-1, -1], [-1, -1]);
-    if ($config->{search}->{case_insensitive}) {
-        $case_insensitive->SetValue(1);
+    my %cbs = (
+       case_insensitive => {
+          title => "Case &Insensitive",
+       },
+    );
+    
+    foreach my $field (keys %cbs) {
+        my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
+        if ($config->{search}->{$field}) {
+            $cb->SetValue(1);
+        }
+        $row3->Add($cb);
+        EVT_CHECKBOX( $dialog, $cb, sub { $find_choice->SetFocus; });
+        $cbs{$field}{cb} = $cb;
     }
-    $row3->Add($case_insensitive);
-    EVT_CHECKBOX( $dialog, $case_insensitive, sub { $find_choice->SetFocus; });
 
     my $use_regex = Wx::CheckBox->new( $dialog, -1, "Use &Regex", [-1, -1], [-1, -1]);
     if ($config->{search}->{use_regex}) {
@@ -103,8 +112,11 @@ sub dialog {
         # what the hell?
     }
 
+    foreach my $field (keys %cbs) {
+       $search{$field} = $cbs{$field}{cb}->GetValue;
+    }
+
     $search{term}             = $find_choice->GetValue;
-    $search{case_insensitive} = $case_insensitive->GetValue;
     $search{use_regex}        = $use_regex->GetValue;
     $dialog->Destroy;
 
