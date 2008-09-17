@@ -1,7 +1,8 @@
 
-Padre::Debugger - client for the standard perl debugger 
+Debug::Client - client for the standard perl debugger 
 
 Installation:
+
 perl Makefile.PL
 make
 make test
@@ -17,7 +18,8 @@ perl Build.PL
 
 
 
-For detailes look at
+Debug::Client was spun off from Padre.
+For details look at
 
-http://padre.perlide.org/
+http://padre.perlide.org/wiki/Projects
 

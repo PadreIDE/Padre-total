@@ -16,10 +16,12 @@ t/04-run_to_sub.t
 t/04-run.t
 t/05-execute.t
 t/06-breakpoint.t
+t/07-quit.t
+t/08-recursive.t
 
 t/lib/Debugger.pm
 
 t/eg/01-add.pl
 t/eg/02-sub.pl
 t/eg/03-return.pl
-META.yml
+t/eg/04-fib.pl

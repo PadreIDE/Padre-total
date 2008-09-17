@@ -41,6 +41,7 @@ Debug::Client - client side code for perl debugger
 
   $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
 
+  $debugger->get_stack_trace
 
 Other planned methods:
 
@@ -51,7 +52,6 @@ Other planned methods:
   $debugger->remove_watch
   $debugger->remove_breakpoint
 
-  $debugger->get_stack_trace
 
   $debugger->watch_variable   (to make it easy to display values of variables)
 
@@ -107,8 +107,23 @@ sub buffer {
 
 sub step_in   { $_[0]->send_get('s') }
 sub step_over { $_[0]->send_get('n') }
-sub quit      { $_[0]->send_get('q') }
+sub quit      { $_[0]->_send('q')    }
 sub show_line { $_[0]->send_get('.') }
+
+sub get_stack_trace {
+    my ($self) = @_;
+    $self->_send('T');
+    my $buf = $self->_get;
+
+    if (wantarray) {
+        my $prompt = _prompt(\$buf);
+        return($buf, $prompt);
+    } else {
+        return $buf;
+    }
+}
+
+
 
 sub run       { 
     my ($self, $param) = @_;
