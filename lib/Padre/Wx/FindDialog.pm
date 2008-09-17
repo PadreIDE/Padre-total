@@ -19,8 +19,8 @@ my %cbs = (
     use_regex        => {
         title => "Use &Regex",
     },
-    backwords        => {
-        title => "Search &Backwords",
+    backwards        => {
+        title => "Search &Backwards",
     },
     close_on_hit     => {
         title => "Close Window on &hit",
@@ -42,12 +42,6 @@ sub on_find {
 
 sub dialog {
     my ( $class, $win, $config, $args) = @_;
-
-#you can "skip" slots by adding spacers
-#$self->{grid_sizer_1} = Wx::GridSizer->new(2, 3, 5, 5);
-#$self->{grid_sizer_1}->Add(20, 20, 1, wxEXPAND, 0);    
-#$self->{grid_sizer_1}->Add($self->{ButtonDir}, 0, 0, 0);
-#$self->{grid_sizer_1}->Add($self->{ButtonQuit}, 0, 0, 0);
 
     my %search;
     $search{term} = $args->{term} || '';
@@ -93,7 +87,7 @@ sub dialog {
     #$row2->Add($verbatim);
 
     
-    foreach my $field (keys %cbs) {
+    foreach my $field (sort keys %cbs) {
         my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
         if ($config->{search}->{$field}) {
             $cb->SetValue(1);
@@ -111,7 +105,7 @@ sub dialog {
     #wxTE_PROCESS_ENTER
     #EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
     #EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
-
+    $row4->Add(300, 20, 1, wxEXPAND, 0);
     $row4->Add($cancel);
 
     $dialog->SetSizer($box);
@@ -216,38 +210,21 @@ sub _search {
     return if not defined $regex;
 
     #$args{replace_term}
+    my $config = Padre->ide->get_config;
 
     my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
-    my $content = $page->GetText;
     my ($from, $to) = $page->GetSelection;
-    if ($from < $to) {
-        $from++;
-    }
     my $last = $page->GetLength();
-    my $str  = $page->GetTextRange($from, $last);
+    my $str  = $page->GetTextRange(0, $last);
 
- 
-    my ($start, $end);
-    if ($str =~ $regex) {
-        $start = $LAST_MATCH_START[0] + $from;
-        $end   = $LAST_MATCH_END[0] + $from;
-    } else {
-        my $str  = $page->GetTextRange(0, $last);
-        if ($str =~ $regex) {
-            $start = $LAST_MATCH_START[0];
-            $end   = $LAST_MATCH_END[0];
-        }
-    }
-    if (not defined $start) {
-        return; # not found
-    }
+    my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $config->{search}->{backwards});
+    return if not defined $start;
+    #print "$from - $to;  $start - $end\n";
 
-    $page->SetSelection($start, $end);
+    $page->SetSelection( $start, $end );
 
     return;
 }
-
-
 
 1;
