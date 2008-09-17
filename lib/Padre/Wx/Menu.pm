@@ -188,9 +188,39 @@ sub new {
 
 
 
-
     # Create the Perl menu
     $menu->{perl} = Wx::Menu->new;
+
+    # Perl-Specific Searches
+    $menu->{perl_find_unmatched} = $menu->{perl}->Append( -1, "Find Unmatched Brace" );
+    EVT_MENU(
+        $win,
+        $menu->{perl_find_unmatched},
+        sub {
+            my $doc = Padre::Document->from_selection;
+            unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
+                return;
+            }
+            Class::Autouse->load('Padre::PPI');
+            my $ppi   = $doc->ppi_get or return;
+            my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
+            if ( $where ) {
+                @$where = sort {
+                    Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
+                    or
+                    $a->location->[0] <=> $b->location->[0]
+                    or
+                    $a->location->[1] <=> $b->location->[1]
+                } @$where;
+                $doc->ppi_select( $where->[0] );
+            } else {
+                Wx::MessageBox( "All braces appear to be matched", "Check Complete", wxOK, $win );
+            }
+        },
+    );
+    $menu->{perl}->AppendSeparator;
+
+    # Script Execution
     $menu->{perl_run_this} = $menu->{perl}->Append( -1, "Run &This\tF5" );
     EVT_MENU(
         $win,
@@ -303,7 +333,6 @@ sub new {
         $win,
         $menu->{experimental}->Append( -1, 'Reflow Menu' ),
         sub {
-            $DB::single = 1;
             my $document = Padre::Document->from_selection;
             $_[0]->{menu}->reflow( $document );
             $_[0]->SetMenuBar( $_[0]->{menu}->{wx} );

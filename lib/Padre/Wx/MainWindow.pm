@@ -1,5 +1,6 @@
 package Padre::Wx::MainWindow;
 
+use 5.008;
 use strict;
 use warnings;
 use English        qw(-no_match_vars);
@@ -243,7 +244,7 @@ sub new {
     Wx::Event::EVT_TIMER(
 	    $self,
 	    -1,
-	    \&arrange_windows
+            sub { $_[0]->on_toggle_status_bar },
     );
     $timer->Start( 500, 1 );
 
@@ -344,7 +345,6 @@ sub on_key {
 
     my $mod  = $event->GetModifiers() || 0;
     my $code = $event->GetKeyCode;
-#print "$mod $code\n";
     if ($mod == 2) {            # Ctrl
         if ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
             $self->on_next_pane;
@@ -696,14 +696,6 @@ sub setup_editor {
     return $id;
 }
 
-sub arrange_windows {
-    my ($self) = @_;
-    $self->on_toggle_status_bar;
-
-
-    #$self->
-}
-
 sub create_tab {
     my ($self, $editor, $file, $title) = @_;
 
@@ -778,17 +770,23 @@ sub on_open_selection {
 }
 
 sub on_open {
-    my ($self) = @_;
-
+    my $self = shift;
     my $current_filename = $self->get_current_filename;
     if ($current_filename) {
        $default_dir = File::Basename::dirname($current_filename);
     }
-    my $dialog = Wx::FileDialog->new( $self, "Open file", $default_dir, "", "*.*", wxFD_OPEN);
-    if ($^O !~ /win32/i) {
+    my $dialog = Wx::FileDialog->new(
+        $self,
+        "Open file",
+        $default_dir,
+        "",
+        "*.*",
+        wxFD_OPEN,
+    );
+    unless ( Padre::Util::WIN32 ) {
        $dialog->SetWildcard("*");
     }
-    if ($dialog->ShowModal == wxID_CANCEL) {
+    if ( $dialog->ShowModal == wxID_CANCEL ) {
         return;
     }
     my $filename = $dialog->GetFilename;
@@ -796,6 +794,14 @@ sub on_open {
 
     my $file = File::Spec->catfile($default_dir, $filename);
     Padre->ide->add_to_recent('files', $file);
+
+    # If and only if there is only one current file,
+    # and it is unused, close it.
+    if ( $self->{notebook}->GetPageCount == 1 ) {
+        if ( Padre::Document->from_selection->is_unused ) {
+            $self->on_close;
+        }
+    }
 
     $self->setup_editor($file);
 
@@ -981,12 +987,11 @@ sub _save_buffer {
 # Returns true if closed.
 # Returns false on cancel.
 sub on_close {
-    $DB::single = 1;
     my $self = shift;
     my $doc  = _DOCUMENT(@_);
     local $self->{_in_delete_editor} = 1;
 
-    if ( $doc->is_modified ) {
+    if ( $doc->is_modified and not $doc->is_unused ) {
         my $ret = Wx::MessageBox(
             "File changed. Do you want to save it?",
             scalar($self->_get_filename($doc->page_id)) || "Unsaved File",
@@ -1065,26 +1070,20 @@ sub on_goto {
     return;
 }
 
-
 # sub update_methods
 sub update_methods {
-    my ($self) = @_;
-
-    my $text = $self->get_current_content;
+    my $self    = shift;
+    my $text    = $self->get_current_content;
     my @methods = reverse sort $text =~ m{^sub\s+(\w+)}gm;
     $self->{rightbar}->DeleteAllItems;
     $self->{rightbar}->InsertStringItem(0, $_) for @methods;
     $self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
-
-
     return;
 }
 
-
 sub _get_selection {
     my ($self, $id) = @_;
-
-    if (not defined $id) {
+    if ( not defined $id ) {
         $id  = $self->{notebook}->GetSelection;
     }
     return if $id == -1;
@@ -1092,28 +1091,23 @@ sub _get_selection {
     return $page->GetSelectedText;
 }
 
-
 sub on_undo { # Ctrl-Z
-    my ($self) = @_;
-
-    my $id = $self->{notebook}->GetSelection;
+    my $self = shift;
+    my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
-    if ($page->CanUndo) {
+    if ( $page->CanUndo ) {
        $page->Undo;
     }
-
     return;
 }
 
 sub on_redo { # Shift-Ctr-Z
-    my ($self) = @_;
-
-    my $id = $self->{notebook}->GetSelection;
+    my $self = shift;
+    my $id   = $self->{notebook}->GetSelection;
     my $page = $self->{notebook}->GetPage($id);
-    if ($page->CanRedo) {
+    if ( $page->CanRedo ) {
        $page->Redo;
     }
-
     return;
 }
 

@@ -19,7 +19,8 @@ our @ISA     = 'Padre::Document';
 
 sub ppi_get {
 	my $self = shift;
-	my $text = $self->get_text;
+	my $text = $self->text_get;
+	require PPI::Document;
 	PPI::Document->new( \$text );
 }
 
@@ -31,7 +32,19 @@ sub ppi_set {
 	}
 
 	# Serialize and overwrite the current text
-	$self->set_text( $document->serialize );
+	$self->text_set( $document->serialize );
+}
+
+sub ppi_find {
+	my $self     = shift;
+	my $document = $self->ppi_get;
+	return $document->find( @_ );
+}
+
+sub ppi_find_first {
+	my $self     = shift;
+	my $document = $self->ppi_get;
+	return $document->find_first( @_ );
 }
 
 sub ppi_transform {
@@ -49,6 +62,18 @@ sub ppi_transform {
 	$self->ppi_set($document);
 
 	return 1;
+}
+
+sub ppi_select {
+	my $self     = shift;
+	my $location = shift;
+	if ( _INSTANCE($location, 'PPI::Element') ) {
+		$location = $location->location;
+	}
+	my $page     = $self->page or return;
+	my $line     = $page->PositionFromLine( $location->[0] - 1 );
+	my $start    = $line + $location->[1] - 1;
+	$page->SetSelection( $start, $start + 1 );
 }
 
 1;

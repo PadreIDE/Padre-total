@@ -139,7 +139,7 @@ sub new {
 		unless ( $self->mimetype ) {
 			# Fall back on deriving the type from the content
 			# Hardcode this for now for the special cases we care about.
-			my $text = $self->get_text;
+			my $text = $self->text_get;
 			if ( $text =~ /\A\#\!/m ) {
 				# Found a hash bang line
 				if ( $text =~ /\A[^\n]\bperl\b/m ) {
@@ -207,6 +207,15 @@ sub is_modified {
 	return !! ( $_[0]->page->GetModify );
 }
 
+# A new document that isn't worth saving
+sub is_unused {
+	my $self = shift;
+	return '' unless $self->is_new;
+	return 1  unless $self->is_modified;
+	return 1  if     $self->text_get eq '';
+	return '';
+}
+
 sub is_saved {
 	return !! ( defined $_[0]->filename and not $_[0]->is_modified );
 }
@@ -219,12 +228,17 @@ sub is_saved {
 #####################################################################
 # Content Manipulation
 
-sub get_text {
+sub text_get {
 	$_[0]->page->GetText;
 }
 
-sub set_text {
+sub text_set {
 	$_[0]->page->SetText($_[1]);
+}
+
+sub text_like {
+	my $self = shift;
+	return !! ( $self->text_get =~ /$_[0]/m );
 }
 
 

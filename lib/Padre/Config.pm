@@ -92,7 +92,6 @@ sub new {
     #   nothing    - nothing to open
     #   last       - the files that were open last time    
     $self->{startup}           ||= 'new';
-
     $self->{search_terms}      ||= [];
     $self->{replace_terms}     ||= [];
     $self->{command_line}      ||= '';
