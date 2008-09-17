@@ -498,6 +498,11 @@ sub on_close_window {
     my $event  = shift;
     my $config = Padre->ide->get_config;
 
+    $config->{main}->{files} = [
+        map { scalar $self->_get_filename($_) }
+        ( 0 .. $self->{notebook}->GetPageCount - 1 )
+    ];
+
     # Check that all files have been saved
     if ( $event->CanVeto ) {
         if ( $config->{startup} eq 'same' ) {
@@ -516,10 +521,6 @@ sub on_close_window {
                 return;
             }
         }
-        $config->{main}->{files} = [
-            map { scalar $self->_get_filename($_) }
-            ( 0 .. $self->{notebook}->GetPageCount - 1 )
-        ];
     }
 
     # Discover and save the state we want to memorize
