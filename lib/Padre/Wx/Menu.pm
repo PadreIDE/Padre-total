@@ -105,6 +105,7 @@ sub new {
 
     EVT_MENU( $win, $menu->{edit}->Append( wxID_FIND, '' ),           \&Padre::Wx::FindDialog::on_find             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Find Again\tF3" ),   \&Padre::Wx::FindDialog::on_find_again       );
+    EVT_MENU( $win, $menu->{edit}->Append( -1, "Reverse Find Again\tShift-F3" ),   \&Padre::Wx::FindDialog::on_find_again_reverse       );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "Ac&k" ),              \&Padre::Wx::Ack::on_ack  );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),     \&Padre::Wx::MainWindow::on_goto             );
     EVT_MENU( $win, $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ), \&Padre::Wx::MainWindow::on_autocompletition );

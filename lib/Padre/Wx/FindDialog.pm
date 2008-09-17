@@ -176,6 +176,16 @@ sub on_find_again {
     }
     return;
 }
+sub on_find_again_reverse {
+    my $self = shift;
+    my $term = Padre->ide->get_config->{search_terms}->[0];
+    if ( $term ) {
+        _search($self, rev => 1);
+    } else {
+        $self->on_find;
+    }
+    return;
+}
 
 sub _get_regex {
     my ($self, $args) = @_;
@@ -218,7 +228,12 @@ sub _search {
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange(0, $last);
 
-    my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $config->{search}->{backwards});
+    my $backwards = $config->{search}->{backwards};
+    if ($args{rev}) {
+
+       $backwards = not $backwards;
+    }
+    my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backwards);
     return if not defined $start;
     #print "$from - $to;  $start - $end\n";
 
