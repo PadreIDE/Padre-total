@@ -28,7 +28,7 @@ use Exporter ();
 
 our $VERSION   = '0.09';
 our @ISA       = 'Exporter';
-our @EXPORT_OK = 'newline_type';
+our @EXPORT_OK = qw(newline_type get_matches);
 
 # Padre targets three major platforms.
 # 1. Native Win32
@@ -70,6 +70,41 @@ sub newline_type {
     return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
 
     return "Mixed"
+}
+
+sub get_matches {
+    my ($text, $regex, $from, $to, $backward, $global) = @_;
+    die "missing parameters" if @_ < 4;
+
+    my @matches;
+    my ($start, $end);
+
+    while ($text =~ /$regex/g) {
+        my $e = pos($text);
+        my $s = $e - length($&);
+        push @matches, [$s, $e];
+        if ($backward) {
+           if (not defined $start and $e < $end) {
+               ($start, $end) = ($s, $e);
+           }
+        } else {
+           if (not defined $start and $from < $s) {
+               ($start, $end) = ($s, $e);
+           }
+        }
+    }
+
+	if ($backward) {
+	   if (not defined $start and @matches) {
+		   ($start, $end) = @{$matches[-1]};
+	   }
+	} else {
+	   if (not defined $start and @matches) {
+		   ($start, $end) = @{$matches[0]};
+	   }
+	}
+
+    return ($start, $end, @matches);
 }
 
 1;
