@@ -25,8 +25,16 @@ sub ACTION_exe {
 
     my @libs    = libs();
     my @modules = modules();
-    my @cmd     = qw(pp -o padre -I lib  script/padre);
+    my $exe     = $^O =~ /win32/i ? 'padre.exe' : 'padre';
+    if (-e $exe) {
+        unlink $exe or die "Cannot remove '$exe' $!";
+    }
+    my @cmd     = ('pp', '-o', $exe, qw(-I lib  script/padre));
     push @cmd, @modules, @libs;
+    if ($^O =~ /win32/i) {
+        push @cmd, '-M', 'File::HomeDir::Windows';
+        push @cmd, '-M', 'Tie::Hash::NamedCapture';
+    }
     print "@cmd\n";
     system(@cmd);
 
