@@ -20,7 +20,7 @@ my %cbs = (
         title => "Use &Regex",
     },
     close_on_hit     => {
-        title => "Close Window on hit",
+        title => "Close Window on &hit",
     },
 );
 
@@ -142,7 +142,9 @@ sub find_clicked {
 
     my %search;
     $search{term}             = $find_choice->GetValue;
-    $dialog->Destroy;
+    if ($config->{search}->{close_on_hit}) {
+        $dialog->Destroy;
+    }
 
     return if not defined $search{term} or $search{term} eq '';
 
