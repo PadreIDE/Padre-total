@@ -92,6 +92,7 @@ sub dialog {
 	#$dialog->SetTitle("frame_1");
 	$term->SetSelection(-1);
 	$dir->SetSelection(-1);
+    $button_search->SetDefault;
 
     # layout
 	my $sizer_1 = Wx::BoxSizer->new(wxVERTICAL);
