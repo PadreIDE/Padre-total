@@ -11,7 +11,10 @@ lib/Padre/Document.pm
 lib/Padre/PluginManager.pm
 lib/Padre/Project.pm
 lib/Padre/Util.pm
+lib/Padre/PPI.pm
+lib/Padre/Wx.pm
 
+lib/Padre/Document/Perl.pm
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm
