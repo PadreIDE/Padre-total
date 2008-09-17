@@ -12,7 +12,6 @@ use File::Slurp    ();
 use File::Basename ();
 use Data::Dumper   ();
 use List::Util     ();
-use File::ShareDir ();
 use Params::Util   ();
 use Wx        qw(:everything);
 use Wx::Event qw(:everything);

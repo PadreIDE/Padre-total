@@ -30,6 +30,7 @@ my %prereqs = (
         'File::HomeDir'           => 0,
 #        'File::LocalizeNewlines'  => '1.10',
         'File::ShareDir'          => '1.00',
+        'File::ShareDir::PAR'     => 0,
         'File::Slurp'             => 0,
         'Module::Inspector'       => '0.04',
         'ORLite'                  => '0.10',
