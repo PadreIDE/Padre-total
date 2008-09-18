@@ -74,7 +74,7 @@ sub newline_type {
 }
 
 sub get_matches {
-    my ($text, $regex, $from, $to, $backward, $global) = @_;
+    my ($text, $regex, $from, $to, $backward) = @_;
     die "missing parameters" if @_ < 4;
 
     my @matches;

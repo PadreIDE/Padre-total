@@ -13,15 +13,19 @@ our $VERSION = '0.09';
 my %cbs = (
     case_insensitive => {
         title => "Case &Insensitive",
+        row   => 2,
     },
     use_regex        => {
         title => "Use &Regex",
+        row   => 3,
     },
     backwards        => {
         title => "Search &Backwards",
+        row   => 4,
     },
     close_on_hit     => {
         title => "Close Window on &hit",
+        row   => 6,
     },
 );
 
@@ -46,13 +50,14 @@ sub dialog {
 
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
     my @rows;
-    push @rows, Wx::BoxSizer->new(  wxHORIZONTAL ) for 0..3;
-    $box->Add($rows[$_]) for 0..3;
+    foreach my $i ( 0..7 ) {
+        push @rows, Wx::BoxSizer->new(  wxHORIZONTAL );
+        $box->Add($rows[$i]);
+    }
 
-
-    my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',        );
-    my $replace = Wx::Button->new( $dialog, -1,          'Replace', );
-    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',        );
+    my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',        [-1, -1], [-1, -1]);
+    my $replace = Wx::Button->new( $dialog, -1,          'Replace', [-1, -1], [-1, -1]);
+    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',        [-1, -1], [-1, -1]);
     $find->SetDefault;
 
     EVT_BUTTON( $dialog, $find,    \&find_clicked    );
@@ -77,7 +82,7 @@ sub dialog {
         if ($config->{search}->{$field}) {
             $cb->SetValue(1);
         }
-        $rows[2]->Add($cb);
+        $rows[ $cbs{$field}{row} ]->Add($cb);
         EVT_CHECKBOX( $dialog, $cb, sub { $find_choice->SetFocus; });
         $cbs{$field}{cb} = $cb;
     }
@@ -90,8 +95,8 @@ sub dialog {
     #wxTE_PROCESS_ENTER
     #EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
     #EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
-    $rows[3]->Add(300, 20, 1, wxEXPAND, 0);
-    $rows[3]->Add($cancel);
+    $rows[7]->Add(300, 20, 1, wxEXPAND, 0);
+    $rows[7]->Add($cancel);
 
     $dialog->SetSizer($box);
 
@@ -114,15 +119,47 @@ sub cancel_clicked {
 
 sub replace_clicked {
     my ($dialog, $event) = @_;
-    # get current selection
-    # get current search condition and check if they match
-    # if they do, replace
-    # run a search_again on the whole text
 
+    _get_data_from( $dialog ) or return;
+    my $regex = _get_regex();
+    return if not defined $regex;
+
+    my $config = Padre->ide->get_config;
+
+    # get current search condition and check if they match
+    my $main_window = Padre->ide->wx->main_window;
+    my $str = $main_window->_get_selection();
+    my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
+
+    # if they do, replace it
+    if (defined $start and $start == 0 and $end == length($str)) {
+        my $id   = $main_window->{notebook}->GetSelection;
+        my $page = $main_window->{notebook}->GetPage($id);
+        #my ($from, $to) = $page->GetSelection;
+    
+        my $replace_term = $config->{replace_terms}->[0];
+        $page->ReplaceSelection($replace_term);
+    }
+
+    # if search window is still open, run a search_again on the whole text
+    if (not $config->{search}->{close_on_hit}) {
+        _search();
+    }
+
+    return;
 }
 
 sub find_clicked {
     my ($dialog, $event) = @_;
+
+    _get_data_from( $dialog ) or return;
+    _search();
+
+    return;
+}
+
+sub _get_data_from {
+    my ( $dialog ) = @_;
 
     my $config = Padre->ide->get_config;
     foreach my $field (keys %cbs) {
@@ -146,13 +183,9 @@ sub find_clicked {
         unshift @{$config->{replace_terms}}, $replace_term;
         my %seen;
         @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
-     }
-
-    _search( );
-
-    return;
+    }
+    return 1;
 }
-
 
 sub on_find_again {
     my $main_window = shift;
@@ -179,11 +212,10 @@ sub on_find_again_reverse {
 }
 
 sub _get_regex {
-    my ( $args ) = @_;
 
     my $config = Padre->ide->get_config;
 
-    my $search_term = $args->{search_term} ||= $config->{search_terms}->[0];
+    my $search_term = $config->{search_terms}->[0];
     if ($config->{search}->{use_regex}) {
         $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
     } else {
@@ -206,13 +238,11 @@ sub _get_regex {
 }
 
 sub _search {
-    my (%args) = @_;
+    my ( %args ) = @_;
     my $main_window = Padre->ide->wx->main_window;
 
-    my $regex = _get_regex(\%args);
+    my $regex = _get_regex();
     return if not defined $regex;
-
-    my $config = Padre->ide->get_config;
 
     my $id   = $main_window->{notebook}->GetSelection;
     my $page = $main_window->{notebook}->GetPage($id);
@@ -220,14 +250,13 @@ sub _search {
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange(0, $last);
 
+    my $config    = Padre->ide->get_config;
     my $backwards = $config->{search}->{backwards};
     if ($args{rev}) {
-
        $backwards = not $backwards;
     }
     my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backwards);
     return if not defined $start;
-    #print "$from - $to;  $start - $end\n";
 
     $page->SetSelection( $start, $end );
 
