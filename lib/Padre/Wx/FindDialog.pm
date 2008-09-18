@@ -13,19 +13,19 @@ our $VERSION = '0.09';
 my %cbs = (
     case_insensitive => {
         title => "Case &Insensitive",
-        row   => 2,
+        row   => 4,
     },
     use_regex        => {
         title => "Use &Regex",
-        row   => 3,
+        row   => 5,
     },
     backwards        => {
         title => "Search &Backwards",
-        row   => 4,
+        row   => 6,
     },
     close_on_hit     => {
         title => "Close Window on &hit",
-        row   => 6,
+        row   => 7,
     },
 );
 
@@ -46,23 +46,25 @@ sub dialog {
 
     my $search_term = $args->{term} || '';
 
-    my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 200]);
+    my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 300]);
 
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
     my @rows;
-    foreach my $i ( 0..7 ) {
+    foreach my $i ( 0..8 ) {
         push @rows, Wx::BoxSizer->new(  wxHORIZONTAL );
         $box->Add($rows[$i]);
     }
 
-    my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',        [-1, -1], [-1, -1]);
-    my $replace = Wx::Button->new( $dialog, -1,          'Replace', [-1, -1], [-1, -1]);
-    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',        [-1, -1], [-1, -1]);
+    my $find        = Wx::Button->new( $dialog, wxID_FIND,   '',            );
+    my $replace     = Wx::Button->new( $dialog, -1,          'Replace',     );
+    my $replace_all = Wx::Button->new( $dialog, -1,          'Replace All', );
+    my $cancel      = Wx::Button->new( $dialog, wxID_CANCEL, '',            );
     $find->SetDefault;
 
-    EVT_BUTTON( $dialog, $find,    \&find_clicked    );
-    EVT_BUTTON( $dialog, $replace, \&replace_clicked );
-    EVT_BUTTON( $dialog, $cancel,  \&cancel_clicked  );
+    EVT_BUTTON( $dialog, $find,        \&find_clicked        );
+    EVT_BUTTON( $dialog, $replace,     \&replace_clicked     );
+    EVT_BUTTON( $dialog, $replace_all, \&replace_all_clicked );
+    EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
 
     my @WIDTH  = (100);
     my @HEIGHT = (200);
@@ -76,6 +78,9 @@ sub dialog {
     my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
     $rows[1]->Add( $replace_choice, 1, wxALL, 3 );
     $rows[1]->Add( $replace,        1, wxALL, 3 );
+
+    $rows[2]->Add(300, 20, 1, wxEXPAND, 0);
+    $rows[2]->Add( $replace_all );
 
     foreach my $field (sort keys %cbs) {
         my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
@@ -95,8 +100,8 @@ sub dialog {
     #wxTE_PROCESS_ENTER
     #EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
     #EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
-    $rows[7]->Add(300, 20, 1, wxEXPAND, 0);
-    $rows[7]->Add($cancel);
+    $rows[8]->Add(300, 20, 1, wxEXPAND, 0);
+    $rows[8]->Add($cancel);
 
     $dialog->SetSizer($box);
 
@@ -113,6 +118,35 @@ sub cancel_clicked {
     my ($dialog, $event) = @_;
 
     $dialog->Destroy;
+
+    return;
+}
+
+sub replace_all_clicked {
+    my ($dialog, $event) = @_;
+
+    _get_data_from( $dialog ) or return;
+    my $regex = _get_regex();
+    return if not defined $regex;
+
+    my $config = Padre->ide->get_config;
+    my $main_window = Padre->ide->wx->main_window;
+
+    my $id   = $main_window->{notebook}->GetSelection;
+    my $page = $main_window->{notebook}->GetPage($id);
+    my $last = $page->GetLength();
+    my $str  = $page->GetTextRange(0, $last);
+
+    my $replace_term = $config->{replace_terms}->[0];
+
+    my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
+    $page->BeginUndoAction;
+    foreach my $m (reverse @matches) {
+        $page->SetTargetStart($m->[0]);
+        $page->SetTargetEnd($m->[1]);
+        $page->ReplaceTarget($replace_term);
+    }
+    $page->EndUndoAction;
 
     return;
 }
