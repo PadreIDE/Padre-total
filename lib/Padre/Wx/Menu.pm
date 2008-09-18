@@ -340,6 +340,20 @@ sub new {
             return;
         },
     );
+    EVT_MENU(
+        $win,
+        $menu->{experimental}->Append( -1, 'Run in &Padre' ),
+        sub {
+            my $self = shift;
+            my $code = $self->get_current_content;
+            eval $code;
+            if ($@) {
+                Wx::MessageBox("Error: $@", "Self error", wxOK, $self);
+                return;
+            }
+            return;
+        },
+    );
 
 
 
