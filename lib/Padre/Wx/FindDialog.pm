@@ -49,15 +49,9 @@ sub dialog {
     my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 200]);
 
     my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
-    my $row1 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row2 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row3 = Wx::BoxSizer->new(  wxHORIZONTAL );
-    my $row4 = Wx::BoxSizer->new(  wxHORIZONTAL );
-
-    $box->Add($row1);
-    $box->Add($row2);
-    $box->Add($row3);
-    $box->Add($row4);
+    my @rows;
+    push @rows, Wx::BoxSizer->new(  wxHORIZONTAL ) for 0..3;
+    $box->Add($rows[$_]) for 0..3;
 
 
     my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',                 );
@@ -72,19 +66,19 @@ sub dialog {
     my @WIDTH  = (100);
     my @HEIGHT = (200);
 
-    $row1->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
+    $rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
     $find_choice = Wx::ComboBox->new( $dialog, -1, $search{term}, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
-    $row1->Add( $find_choice, 1, wxALL, 3 );
-    $row1->Add( $find,        1, wxALL, 3 );
+    $rows[0]->Add( $find_choice, 1, wxALL, 3 );
+    $rows[0]->Add( $find,        1, wxALL, 3 );
 
-    #$row2->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
+    #$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
     #my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
-    #$row2->Add( $replace_choice, 1, wxALL, 3 );
-    #$row2->Add( $replace,        1, wxALL, 3 );
+    #$rows[1]->Add( $replace_choice, 1, wxALL, 3 );
+    #$rows[1]->Add( $replace,        1, wxALL, 3 );
 
 
     #my $verbatim = Wx::CheckBox->new( $dialog, -1, "Verbatim", [-1, -1], [-1, -1]);
-    #$row2->Add($verbatim);
+    #$rows[1]->Add($verbatim);
 
     
     foreach my $field (sort keys %cbs) {
@@ -92,21 +86,21 @@ sub dialog {
         if ($config->{search}->{$field}) {
             $cb->SetValue(1);
         }
-        $row3->Add($cb);
+        $rows[2]->Add($cb);
         EVT_CHECKBOX( $dialog, $cb, sub { $find_choice->SetFocus; });
         $cbs{$field}{cb} = $cb;
     }
 
-#    $row2->Add($dir_selector, 1, wxALL, 3);
+#    $rows[1]->Add($dir_selector, 1, wxALL, 3);
 
 #    my $path = Wx::StaticText->new( $dialog, -1, '');
-#    $row3->Add( $path, 1, wxALL, 3 );
+#    $rows[2]->Add( $path, 1, wxALL, 3 );
 #    EVT_BUTTON( $dialog, $dir_selector, sub {on_pick_project_dir($path, @_) } );
     #wxTE_PROCESS_ENTER
     #EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
     #EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
-    $row4->Add(300, 20, 1, wxEXPAND, 0);
-    $row4->Add($cancel);
+    $rows[3]->Add(300, 20, 1, wxEXPAND, 0);
+    $rows[3]->Add($cancel);
 
     $dialog->SetSizer($box);
     #$box->SetSizeHints( $self );
