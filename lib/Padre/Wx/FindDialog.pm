@@ -10,9 +10,6 @@ use Wx::Event      qw(:everything);
 
 our $VERSION = '0.09';
 
-my $find_choice;
-my $replace_choice;
-
 my %cbs = (
     case_insensitive => {
         title => "Case &Insensitive",
@@ -30,13 +27,13 @@ my %cbs = (
 
 
 sub on_find {
-    my ( $self ) = @_;
+    my ( $main_window ) = @_;
 
     my $config = Padre->ide->get_config;
-    my $selection = $self->_get_selection();
+    my $selection = $main_window->_get_selection();
     $selection = '' if not defined $selection;
 
-    Padre::Wx::FindDialog->dialog( $self, $config, {term => $selection} );
+    Padre::Wx::FindDialog->dialog( $main_window, $config, {term => $selection} );
 }
 
 
@@ -66,12 +63,12 @@ sub dialog {
     my @HEIGHT = (200);
 
     $rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
-    $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
+    my $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
     $rows[0]->Add( $find_choice, 1, wxALL, 3 );
     $rows[0]->Add( $find,        1, wxALL, 3 );
 
     $rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
-    $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
+    my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
     $rows[1]->Add( $replace_choice, 1, wxALL, 3 );
     $rows[1]->Add( $replace,        1, wxALL, 3 );
 
@@ -101,13 +98,16 @@ sub dialog {
     $find_choice->SetFocus;
     $dialog->Show(1);
 
+    $dialog->{_find_choice_}    = $find_choice;
+    $dialog->{_replace_choice_} = $replace_choice;
+
     return;
 }
 
 sub cancel_clicked {
-    my ($self, $event) = @_;
+    my ($dialog, $event) = @_;
 
-    $self->Destroy;
+    $dialog->Destroy;
 
     return;
 }
@@ -129,8 +129,8 @@ sub find_clicked {
        $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
     }
 
-    my $search_term      = $find_choice->GetValue;
-    my $replace_term     = $replace_choice->GetValue;
+    my $search_term      = $dialog->{_find_choice_}->GetValue;
+    my $replace_term     = $dialog->{_replace_choice_}->GetValue;
 
     if ($config->{search}->{close_on_hit}) {
         $dialog->Destroy;
@@ -155,28 +155,31 @@ sub find_clicked {
 
 
 sub on_find_again {
-    my $self = shift;
+    my $main_window = shift;
+
     my $term = Padre->ide->get_config->{search_terms}->[0];
     if ( $term ) {
         _search();
     } else {
-        $self->on_find;
+        on_find( $main_window );
     }
     return;
 }
+
 sub on_find_again_reverse {
-    my $self	 = shift;
+    my $main_window = shift;
+
     my $term = Padre->ide->get_config->{search_terms}->[0];
     if ( $term ) {
         _search(rev => 1);
     } else {
-        $self->on_find;
+        on_find( $main_window );
     }
     return;
 }
 
 sub _get_regex {
-    my ($self, $args) = @_;
+    my ( $args ) = @_;
 
     my $config = Padre->ide->get_config;
 
@@ -195,7 +198,8 @@ sub _get_regex {
     my $regex;
     eval { $regex = qr/$search_term/m };
     if ($@) {
-        Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $self);
+        my $main_window = Padre->ide->wx->main_window;
+        Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $main_window);
         return;
     }
     return $regex;
@@ -203,15 +207,15 @@ sub _get_regex {
 
 sub _search {
     my (%args) = @_;
-    my $self= Padre->ide->wx->main_window;
+    my $main_window = Padre->ide->wx->main_window;
 
-    my $regex = _get_regex($self, \%args);
+    my $regex = _get_regex(\%args);
     return if not defined $regex;
 
     my $config = Padre->ide->get_config;
 
-    my $id   = $self->{notebook}->GetSelection;
-    my $page = $self->{notebook}->GetPage($id);
+    my $id   = $main_window->{notebook}->GetSelection;
+    my $page = $main_window->{notebook}->GetPage($id);
     my ($from, $to) = $page->GetSelection;
     my $last = $page->GetLength();
     my $str  = $page->GetTextRange(0, $last);
