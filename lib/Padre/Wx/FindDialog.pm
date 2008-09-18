@@ -10,8 +10,9 @@ use Wx::Event      qw(:everything);
 
 our $VERSION = '0.09';
 
-my $main;
 my $find_choice;
+my $replace_choice;
+
 my %cbs = (
     case_insensitive => {
         title => "Case &Insensitive",
@@ -30,7 +31,6 @@ my %cbs = (
 
 sub on_find {
     my ( $self ) = @_;
-    $main = $self;
 
     my $config = Padre->ide->get_config;
     my $selection = $self->_get_selection();
@@ -43,8 +43,7 @@ sub on_find {
 sub dialog {
     my ( $class, $win, $config, $args) = @_;
 
-    my %search;
-    $search{term} = $args->{term} || '';
+    my $search_term = $args->{term} || '';
 
     my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 200]);
 
@@ -54,33 +53,28 @@ sub dialog {
     $box->Add($rows[$_]) for 0..3;
 
 
-    my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',                 );
+    my $find    = Wx::Button->new( $dialog, wxID_FIND,   '',        );
+    my $replace = Wx::Button->new( $dialog, -1,          'Replace', );
+    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',        );
     $find->SetDefault;
-    #my $replace = Wx::Button->new( $dialog, -1,          'Find and Replace', );
-    my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '',                 );
 
-    EVT_BUTTON( $dialog, $find,    \&find_clicked   );
-    #EVT_BUTTON( $dialog, $replace, \&replace_clicked );
-    EVT_BUTTON( $dialog, $cancel,  \&cancel_clicked );
+    EVT_BUTTON( $dialog, $find,    \&find_clicked    );
+    EVT_BUTTON( $dialog, $replace, \&replace_clicked );
+    EVT_BUTTON( $dialog, $cancel,  \&cancel_clicked  );
 
     my @WIDTH  = (100);
     my @HEIGHT = (200);
 
     $rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
-    $find_choice = Wx::ComboBox->new( $dialog, -1, $search{term}, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
+    $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
     $rows[0]->Add( $find_choice, 1, wxALL, 3 );
     $rows[0]->Add( $find,        1, wxALL, 3 );
 
-    #$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
-    #my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
-    #$rows[1]->Add( $replace_choice, 1, wxALL, 3 );
-    #$rows[1]->Add( $replace,        1, wxALL, 3 );
+    $rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
+    $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
+    $rows[1]->Add( $replace_choice, 1, wxALL, 3 );
+    $rows[1]->Add( $replace,        1, wxALL, 3 );
 
-
-    #my $verbatim = Wx::CheckBox->new( $dialog, -1, "Verbatim", [-1, -1], [-1, -1]);
-    #$rows[1]->Add($verbatim);
-
-    
     foreach my $field (sort keys %cbs) {
         my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
         if ($config->{search}->{$field}) {
@@ -103,8 +97,6 @@ sub dialog {
     $rows[3]->Add($cancel);
 
     $dialog->SetSizer($box);
-    #$box->SetSizeHints( $self );
-
 
     $find_choice->SetFocus;
     $dialog->Show(1);
@@ -120,8 +112,14 @@ sub cancel_clicked {
     return;
 }
 
-#    } elsif ( $ret eq 'replace' ) {
-#        #$search{replace_term}     = $replace_choice->GetValue;
+sub replace_clicked {
+    my ($dialog, $event) = @_;
+    # get current selection
+    # get current search condition and check if they match
+    # if they do, replace
+    # run a search_again on the whole text
+
+}
 
 sub find_clicked {
     my ($dialog, $event) = @_;
@@ -131,30 +129,26 @@ sub find_clicked {
        $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
     }
 
-    my %search;
-    $search{term}             = $find_choice->GetValue;
+    my $search_term      = $find_choice->GetValue;
+    my $replace_term     = $replace_choice->GetValue;
+
     if ($config->{search}->{close_on_hit}) {
         $dialog->Destroy;
     }
+    return if not defined $search_term or $search_term eq '';
 
-    return if not defined $search{term} or $search{term} eq '';
-
-    #unshift @{$config->{search_terms}}, $search_term;
-    #my %seen;
-    #@{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
-
-    if ($search{term}) {
-        unshift @{$config->{search_terms}}, $search{term};
+    if ( $search_term ) {
+        unshift @{$config->{search_terms}}, $search_term;
         my %seen;
         @{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
     }
-    if ($search{replace_term} ) {
-        unshift @{$config->{replace_terms}}, $search{replace_term};
+    if ( $replace_term ) {
+        unshift @{$config->{replace_terms}}, $replace_term;
         my %seen;
         @{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
      }
 
-    _search($main, replace_term => $search{replace_term});
+    _search( );
 
     return;
 }
@@ -164,17 +158,17 @@ sub on_find_again {
     my $self = shift;
     my $term = Padre->ide->get_config->{search_terms}->[0];
     if ( $term ) {
-        _search($self);
+        _search();
     } else {
         $self->on_find;
     }
     return;
 }
 sub on_find_again_reverse {
-    my $self = shift;
+    my $self	 = shift;
     my $term = Padre->ide->get_config->{search_terms}->[0];
     if ( $term ) {
-        _search($self, rev => 1);
+        _search(rev => 1);
     } else {
         $self->on_find;
     }
@@ -208,12 +202,12 @@ sub _get_regex {
 }
 
 sub _search {
-    my ($self, %args) = @_;
+    my (%args) = @_;
+    my $self= Padre->ide->wx->main_window;
 
     my $regex = _get_regex($self, \%args);
     return if not defined $regex;
 
-    #$args{replace_term}
     my $config = Padre->ide->get_config;
 
     my $id   = $self->{notebook}->GetSelection;
