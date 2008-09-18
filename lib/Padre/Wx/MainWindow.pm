@@ -5,8 +5,8 @@ use strict;
 use warnings;
 use English        qw(-no_match_vars);
 use FindBin;
-use Carp           ();
 use Cwd            ();
+use Carp           ();
 use File::Spec     ();
 use File::Slurp    ();
 use File::Basename ();
@@ -21,9 +21,10 @@ use base qw{
 	Padre::Wx::Execute
 };
 
-use Padre::Util     ();
-use Padre::Wx       ();
-use Padre::Wx::Text ();
+use Padre::Util        ();
+use Padre::Wx          ();
+use Padre::Wx::Text    ();
+use Padre::Wx::ToolBar ();
 
 our $VERSION = '0.09';
 
@@ -125,6 +126,10 @@ sub new {
     $self->{menu} = Padre::Wx::Menu->new( $self );
     $self->SetMenuBar( $self->{menu}->{wx} );
 
+    # Create the tool bar
+    $self->SetToolBar( Padre::Wx::ToolBar->new($self) );
+    $self->GetToolBar->Realize;
+
     # Create the layout boxes for the main window
     $self->{main_panel} = Wx::SplitterWindow->new(
         $self,
@@ -202,14 +207,6 @@ sub new {
     $self->{statusbar} = $self->CreateStatusBar;
     $self->{statusbar}->SetFieldsCount(3);
     $self->{statusbar}->SetStatusWidths(-1, 50, 100);
-
-    my $tool_bar = $self->CreateToolBar( wxTB_HORIZONTAL | wxNO_BORDER | wxTB_FLAT | wxTB_DOCKABLE, 5050); 
-    $tool_bar->AddTool( wxID_NEW,  '', Padre::Wx::bitmap('new'),  'New File'  ); 
-    $tool_bar->AddTool( wxID_OPEN, '', Padre::Wx::bitmap('open'), 'Open File' ); 
-    $tool_bar->AddTool( wxID_SAVE, '', Padre::Wx::bitmap('save'), 'Save File' );
-    # $tool_bar->AddTool( wxID_CLOSE, '', Padre::Wx::bitmap('close'), 'Close File' );
-    $tool_bar->AddSeparator;
-    $tool_bar->Realize;
 
     # Attach main window events
     EVT_CLOSE( $self, \&on_close_window);
@@ -991,6 +988,10 @@ sub _save_buffer {
 # Returns true if closed.
 # Returns false on cancel.
 sub on_close {
+	shift->close(@_);
+}
+
+sub close {
     my $self = shift;
     my $doc  = _DOCUMENT(@_);
     local $self->{_in_delete_editor} = 1;
@@ -1029,7 +1030,7 @@ sub on_close {
 sub on_close_all {
     my $self = shift;
     foreach my $id ( reverse 0 .. $self->{notebook}->GetPageCount - 1 ) {
-        $self->on_close( $id ) or return 0;
+        $self->close( $id ) or return 0;
     }
     return 1;
 }

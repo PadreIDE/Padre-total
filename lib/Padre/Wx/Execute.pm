@@ -95,8 +95,8 @@ sub _setup_debugger {
 sub _run {
     my ($self, $cmd) = @_;
 
-    $self->{menu}->{perl_run_this}->Enable(0);
-    $self->{menu}->{perl_run_any}->Enable(0);
+    $self->{menu}->{perl_run_script}->Enable(0);
+    $self->{menu}->{perl_run_command}->Enable(0);
     $self->{menu}->{perl_stop}->Enable(1);
 
     my $config = Padre->ide->get_config;
@@ -106,8 +106,8 @@ sub _run {
 
     $self->{proc} = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
     if ( not $self->{proc} ) {
-       $self->{menu}->{perl_run_this}->Enable(1);
-       $self->{menu}->{perl_run_any}->Enable(1);
+       $self->{menu}->{perl_run_script}->Enable(1);
+       $self->{menu}->{perl_run_command}->Enable(1);
        $self->{menu}->{perl_stop}->Enable(0);
     }
     return;
@@ -171,8 +171,8 @@ sub evt_process_exit {
     #my $exitcode = $process->GetExitCode;
     $process->Destroy;
 
-    $self->{menu}->{perl_run_this}->Enable(1);
-    $self->{menu}->{perl_run_any}->Enable(1);
+    $self->{menu}->{perl_run_script}->Enable(1);
+    $self->{menu}->{perl_run_command}->Enable(1);
     $self->{menu}->{perl_stop}->Enable(0);
 
     return;
