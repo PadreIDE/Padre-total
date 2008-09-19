@@ -172,6 +172,14 @@ sub new {
 	return $self;
 }
 
+sub set_newline_type {
+	$_[0]->{newline_type} = $_[1];
+}
+
+sub get_newline_type {
+	$_[0]->{newline_type};
+}
+
 sub filename {
 	$_[0]->{filename};
 }

@@ -495,7 +495,7 @@ sub on_close_window {
 	my $config = Padre->ide->get_config;
 
 	$config->{main}->{files} = [
-		map { scalar $self->_get_filename($_) }
+		map { $self->_get_filename($_) }
 		( 0 .. $self->{notebook}->GetPageCount - 1 )
 	];
 
@@ -649,13 +649,13 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-	$self->_set_filename($id, $file, $newline_type);
-	my $doc = Padre::Document->new(
+	$self->_set_filename($id, $file);
+    $editor->{Padre} = Padre::Document->new(
 		page_id  => $id,
 		page     => $editor,
 		filename => $file,
 	);
-    $editor->{Padre} = $doc;
+    $editor->{Padre}->set_newline_type($newline_type);
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
@@ -826,12 +826,11 @@ sub on_new {
 }
 
 sub _set_filename {
-	my ($self, $id, $data, $type) = @_;
+	my ($self, $id, $data) = @_;
 
 	my $pack = __PACKAGE__;
 	my $page = $self->{notebook}->GetPage($id);
 	$page->{$pack}->{filename} = $data;
-	$page->{$pack}->{type}     = $type;
 
 	if ($data) {
 	   $page->SetLexer( $self->_lexer($data) );
@@ -846,14 +845,8 @@ sub _get_filename {
 
 	my $pack = __PACKAGE__;
 	my $page = $self->{notebook}->GetPage($id);
-
-#print "filename: $id $page->{$pack}->{filename}, $page->{$pack}->{type}\n";
 	
-	if (wantarray) {
-	return ($page->{$pack}->{filename}, $page->{$pack}->{type});
-	} else {
 	return $page->{$pack}->{filename};
-	}
 }
 
 sub _set_page_text {
@@ -934,18 +927,18 @@ sub on_save_as {
 		        $self->_set_filename(
 		            $doc->page_id,
 		            $path,
-		            $self->_get_local_newline_type,
 		        );
+				$doc->set_newline_type($self->_get_local_newline_type);
 		        last;
 		    }
 		} else {
-		    $doc->_set_filename($path);
-		    $self->_set_filename(
-		        $doc->page_id,
-		        $path,
-		        $self->_get_local_newline_type,
-		    );
-		    last;
+			$doc->_set_filename($path);
+			$doc->set_newline_type($self->_get_local_newline_type);
+			$self->_set_filename(
+				$doc->page_id,
+				$path,
+			);
+			last;
 		}
 	}
 	$self->_save_buffer($doc->page_id);
@@ -980,9 +973,12 @@ sub on_save_all {
 sub _save_buffer {
 	my ($self, $id) = @_;
 
-	my $page = $self->{notebook}->GetPage($id);
-	my $content = $page->GetText;
-	my ($filename, $newline_type) = $self->_get_filename($id);
+	my $page     = $self->{notebook}->GetPage($id);
+	my $content  = $page->GetText;
+	my $filename = $self->_get_filename($id);
+    my $doc      = _DOCUMENT($id);
+    my $newline_type = $doc->get_newline_type;
+
 	eval {
 		File::Slurp::write_file($filename, $content);
 	};
@@ -1013,7 +1009,7 @@ sub close {
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
 		    "File changed. Do you want to save it?",
-		    scalar($self->_get_filename($doc->page_id)) || "Unsaved File",
+		    $self->_get_filename($doc->page_id) || "Unsaved File",
 		    wxYES_NO|wxCANCEL|wxCENTRE,
 		    $self,
 		);
@@ -1311,12 +1307,12 @@ sub update_status {
 		return;
 	}
 #print "Pageid: $pageid\n";
-	my $page = $self->{notebook}->GetPage($pageid);
-	my $line = $page->GetCurrentLine;
-	my ($filename, $newline_type) = $self->_get_filename($pageid);
-	$filename  ||= '';
-	$newline_type ||= $self->_get_local_newline_type();
-	my $modified = $page->GetModify ? '*' : ' ';
+    #my $doc          = _DOCUMENT($pageid);
+	my $page         = $self->{notebook}->GetPage($pageid);
+	my $line         = $page->GetCurrentLine;
+	my $filename     = $self->_get_filename($pageid) || '';
+    #my $newline_type = $doc->get_newline_type || $self->_get_local_newline_type();
+	my $modified     = $page->GetModify ? '*' : ' ';
 
 	if ($filename) {
 #print "set1 ($filename)\n";
@@ -1332,7 +1328,7 @@ sub update_status {
 	my $char = $pos-$start;
 
 	$self->SetStatusText("$modified $filename", 0);
-	$self->SetStatusText($newline_type, 1);
+	#$self->SetStatusText($newline_type, 1);
 
 	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 2);
 
@@ -1530,8 +1526,10 @@ sub convert_to {
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
-	my ($filename, $type) = $self->_get_filename($id);
-	$self->_set_filename($id, $filename, $newline_type);
+	my $filename = $self->_get_filename($id);
+	$self->_set_filename($id, $filename);
+	#my $doc     = _DOCUMENT($id) or return;
+    #$doc->set_newline_type($newline_type);
 
 	$self->update_status;
 
