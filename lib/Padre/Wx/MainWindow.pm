@@ -252,13 +252,12 @@ sub _load_files {
 	my $self   =  shift;
 	my $ide    = Padre->ide;
 	my $config = $ide->get_config;
-print "x\n";
+
 	# TODO make sure the full path to the file is saved and not
 	# the relative path
 	my @files  = $ide->get_files;
 	if ( @files ) {
 		foreach my $f (@files) {
-print "F $f\n";
 		    if (not File::Spec->file_name_is_absolute($f)) {
 		        $f = File::Spec->catfile(Cwd::cwd(), $f);
 		    }
@@ -956,7 +955,7 @@ sub _save_buffer {
 		return;
 	}
 	Padre->ide->add_to_recent('files', $filename);
-	$self->{notebook}->SetPageText($id, File::Basename::basename($filename));
+	#$self->{notebook}->SetPageText($id, File::Basename::basename($filename));
 	$page->SetSavePoint;
 	$self->update_status;
 	$self->update_methods;
@@ -1277,12 +1276,12 @@ sub update_status {
 		return;
 	}
 #print "Pageid: $pageid\n";
-    #my $doc          = _DOCUMENT($pageid);
 	my $page         = $self->{notebook}->GetPage($pageid);
+    #my $doc          = _DOCUMENT($pageid);
+	my $doc          = $page->{Padre};
 	my $line         = $page->GetCurrentLine;
-    my $filename = '';
-	#my $filename     = $doc->filename || '';
-    #my $newline_type = $doc->get_newline_type || $self->_get_local_newline_type();
+	my $filename     = $doc->filename || '';
+    my $newline_type = $doc->get_newline_type || $self->_get_local_newline_type();
 	my $modified     = $page->GetModify ? '*' : ' ';
 
 	if ($filename) {
@@ -1299,7 +1298,7 @@ sub update_status {
 	my $char = $pos-$start;
 
 	$self->SetStatusText("$modified $filename", 0);
-	#$self->SetStatusText($newline_type, 1);
+	$self->SetStatusText($newline_type, 1);
 
 	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 2);
 
@@ -1497,10 +1496,8 @@ sub convert_to {
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
-	#my $doc     = _DOCUMENT($id) or return;
-	#my $filename = $doc->filename;
-    #$doc->set_newline_type($newline_type);
-	#$doc->_set_filename($filename);
+	my $doc     = _DOCUMENT($id) or return;
+    $doc->set_newline_type($newline_type);
 
 	$self->update_status;
 
