@@ -652,7 +652,6 @@ sub setup_editor {
 	my $id = $self->create_tab($editor, $file, $title);
 
     $editor->{Padre} = Padre::Document->new(
-		page_id  => $id,
 		page     => $editor,
 		filename => $file,
 	);
@@ -871,7 +870,9 @@ sub get_page_text {
 # Returns false if cancelled.
 sub on_save_as {
 	my $self    = shift;
-	my $doc     = _DOCUMENT(@_) or return;
+
+	my $page_id = $self->{notebook}->GetSelection;
+	my $doc     = _DOCUMENT($page_id) or return;
 	my $current = $doc->filename;
 	if ( defined $current ) {
 		$default_dir = File::Basename::dirname($current);
@@ -909,19 +910,21 @@ sub on_save_as {
 			last;
 		}
 	}
-	$self->_save_buffer($doc->page_id);
+	$self->_save_buffer($page_id);
 	return 1;
 }
 
 sub on_save {
 	my $self = shift;
-	my $doc  = _DOCUMENT(@_) or return;
+
+	my $page_id = $self->{notebook}->GetSelection;
+	my $doc  = _DOCUMENT($page_id) or return;
 
 	if ( $doc->is_new ) {
 		return $self->on_save_as($doc);
 	}
 	if ( $doc->is_modified ) {
-		$self->_save_buffer($doc->page_id);
+		$self->_save_buffer($page_id);
 	}
 
 	return;
@@ -971,7 +974,9 @@ sub on_close {
 
 sub close {
 	my $self = shift;
-	my $doc  = _DOCUMENT(@_);
+
+	my $page_id = $self->{notebook}->GetSelection;
+	my $doc     = _DOCUMENT($page_id);
 	local $self->{_in_delete_editor} = 1;
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
@@ -990,7 +995,7 @@ sub close {
 		    return 0;
 		}
 	}
-	$self->{notebook}->DeletePage($doc->page_id);
+	$self->{notebook}->DeletePage($page_id);
 
 	# Update the alt-n menus
 	$self->{menu}->remove_alt_n_menu;

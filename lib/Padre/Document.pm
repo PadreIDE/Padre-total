@@ -95,15 +95,7 @@ sub from_page_id {
 	}
 	my $page     = $class->notebook->GetPage( $page_id );
 
-	return $page->{Padre} if $page->{Padre};
-
-	my $filename = $page->{'Padre::Wx::MainWindow'}->{filename};
-	my $document = $class->new(
-		page_id  => $page_id,
-		page     => $page,
-		filename => $filename,
-	);
-	return $document;
+	return $page->{Padre};
 }
 
 
@@ -130,7 +122,7 @@ sub new {
 
 	# Check and derive params
 	unless ( $self->page ) {
-		die "Missing or invalid page_id";
+		die "Missing or invalid page";
 	}
 	unless ( $self->mimetype ) {
 		# Try derive the mime type from the name
@@ -204,18 +196,13 @@ sub lexer {
 	return $MIME_LEXER{$self->mimetype};
 }
 
-sub page_id {
-	$_[0]->{page_id};
-}
-
 # Cache for speed reasons
 sub page {
-	$_[0]->{page} or
-	$_[0]->{page} = $_[0]->notebook->GetPage( $_[0]->page_id );
+	$_[0]->{page};
 }
 
 sub is_new {
-	return !! ( defined $_[0]->page_id and not defined $_[0]->filename );
+	return !! ( not defined $_[0]->filename );
 }
 
 sub is_modified {
