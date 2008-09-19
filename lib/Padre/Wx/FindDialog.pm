@@ -37,6 +37,9 @@ sub on_find {
 	my $selection = $main_window->_get_selection();
 	$selection = '' if not defined $selection;
 
+    # TODO: if selection is more than one lines then consider it as the limit
+    # of the search and replace and not as the string to be used
+
 	Padre::Wx::FindDialog->dialog( $main_window, $config, {term => $selection} );
 }
 
