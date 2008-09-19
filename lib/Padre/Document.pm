@@ -287,4 +287,7 @@ sub find_project {
 	return File::Spec->catpath( $v, $dirs );
 }
 
+# abstract method, each subclass should implement it
+sub keywords { return {} }
+
 1;

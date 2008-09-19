@@ -76,4 +76,19 @@ sub ppi_select {
 	$page->SetSelection( $start, $start + 1 );
 }
 
+sub keywords {
+	my $keywords = {
+	   chomp     => '(STRING)',
+	   substr    => '(EXPR, OFFSET, LENGTH, REPLACEMENT)',
+	   index     => '(STR, SUBSTR, INDEX)',
+	   pop       => '(@ARRAY)',
+	   push      => '(@ARRAY, LIST)',
+	   print     => '(LIST) or (FILEHANDLE LIST)',
+	   join      => '(EXPR, LIST)',
+	   split     => '(/PATTERN/,EXPR,LIMIT)',
+	   wantarray => '()',
+	};
+	return $keywords;
+}
+
 1;

@@ -1535,23 +1535,14 @@ sub on_stc_change {
 		$editor->CallTipCancel;
 	}
 
-	my %keywords = (
-	   chomp     => '(STRING)',
-	   substr    => '(EXPR, OFFSET, LENGTH, REPLACEMENT)',
-	   index     => '(STR, SUBSTR, INDEX)',
-	   pop       => '(@ARRAY)',
-	   push      => '(@ARRAY, LIST)',
-	   print     => '(LIST) or (FILEHANDLE LIST)',
-	   join      => '(EXPR, LIST)',
-	   split     => '(/PATTERN/,EXPR,LIMIT)',
-	   wantarray => '()',
-	);
+    my $doc = _DOCUMENT();
+    my $keywords = $doc->keywords;
 
-	my $regex = join '|', sort {length $a <=> length $b} keys %keywords;
+	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
 
 	my $tip;
 	if ( $prefix =~ /($regex)[ (]?$/ ) {
-		$tip = $keywords{$1};
+		$tip = $keywords->{$1};
 	}
 	if ($tip) {
 		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
