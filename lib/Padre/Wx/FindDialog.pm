@@ -1,4 +1,6 @@
 package Padre::Wx::FindDialog;
+
+use 5.008;
 use strict;
 use warnings;
 
