@@ -16,7 +16,7 @@ my %cbs = (
 		row   => 4,
 	},
 	use_regex        => {
-		title => "Use &Regex",
+		title => "&Use Regex",
 		row   => 5,
 	},
 	backwards        => {
@@ -59,8 +59,8 @@ sub dialog {
 	}
 
 	my $find        = Wx::Button->new( $dialog, wxID_FIND,   '',            );
-	my $replace     = Wx::Button->new( $dialog, -1,          'Replace',     );
-	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace All', );
+	my $replace     = Wx::Button->new( $dialog, -1,          '&Replace',     );
+	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
 	my $cancel      = Wx::Button->new( $dialog, wxID_CANCEL, '',            );
 	$find->SetDefault;
 
