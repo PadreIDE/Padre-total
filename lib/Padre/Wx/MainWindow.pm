@@ -625,8 +625,6 @@ sub setup_editor {
 
 	my $config = Padre->ide->get_config;
 	my $editor = Padre::Wx::Text->new( $self->{notebook} );
-	$editor->SetLexer( $self->_lexer($file) );
-	$editor->padre_setup();
 
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
@@ -653,6 +651,8 @@ sub setup_editor {
 		filename     => $file,
         newline_type => $newline_type,
 	);
+	$editor->SetLexer( $editor->{Padre}->lexer );
+	$editor->padre_setup( $editor->{Padre}->mimetype );
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;

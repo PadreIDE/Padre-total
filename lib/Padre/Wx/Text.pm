@@ -20,7 +20,17 @@ sub new {
 	return $self;
 }
 
+# most of this should be read from some external files
+# but for now we set this if statement
 sub padre_setup {
+	my ($self, $mimetype) = @_;
+    if ($mimetype eq 'text/perl') {
+        $self->padre_setup_perl;
+    }
+    return;
+}
+
+sub padre_setup_perl {
 	my ($self) = @_;
 
 	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
