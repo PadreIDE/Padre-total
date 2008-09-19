@@ -15,7 +15,13 @@ use Wx::Event qw(:everything);
 sub new {
 	my( $class, $parent ) = @_;
 
-	my $self = $class->SUPER::new( $parent, -1, );
+	my $self = $class->SUPER::new( $parent );
+
+	return $self;
+}
+
+sub padre_setup {
+	my ($self) = @_;
 
 	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
 

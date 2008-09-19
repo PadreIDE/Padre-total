@@ -603,10 +603,7 @@ sub on_split_window {
 	my $pointer = $editor->GetDocPointer();
 	$editor->AddRefDocument($pointer);
 
-	my $new_editor = Padre::Wx::Text->new(
-		$self->{notebook},
-		$self->_lexer,
-	);
+	my $new_editor = Padre::Wx::Text->new( $self->{notebook} );
 
 	#my $new_id = $self->setup_editor();
 	#my $new_editor = $self->{notebook}->GetPage( $new_id );
@@ -627,10 +624,9 @@ sub setup_editor {
 	delete $self->{project};
 
 	my $config = Padre->ide->get_config;
-	my $editor = Padre::Wx::Text->new(
-		$self->{notebook},
-	);
+	my $editor = Padre::Wx::Text->new( $self->{notebook} );
 	$editor->SetLexer( $self->_lexer($file) );
+	$editor->padre_setup();
 
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
