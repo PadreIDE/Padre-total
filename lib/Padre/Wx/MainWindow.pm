@@ -1552,7 +1552,16 @@ sub on_stc_change {
 }
 
 
-
+sub run_in_padre {
+	my $self = shift;
+	my $code = $self->get_current_content;
+	eval $code;
+	if ($@) {
+		Wx::MessageBox("Error: $@", "Self error", wxOK, $self);
+		return;
+	}
+	return;
+}
 
 
 #####################################################################
