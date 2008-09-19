@@ -258,9 +258,8 @@ sub _get_regex {
     }
 
     if ($config->{search}->{case_insensitive})  {
-        $search_term = "(?i)$search_term";
+        $search_term =~ s/^(\^?)/$1(?i)/;
     }
-
 
     my $regex;
     eval { $regex = qr/$search_term/m };
