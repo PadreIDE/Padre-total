@@ -14,8 +14,7 @@ use Wx::Event qw(:everything);
 sub new {
 	my( $class, $parent, $lexer ) = @_;
 
-	# TODO get the numbers from the frame?
-	my $self = $class->SUPER::new( $parent, -1, [ -1, -1 ], [ 750, 700 ] );
+	my $self = $class->SUPER::new( $parent, -1, );
 
 	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
 
