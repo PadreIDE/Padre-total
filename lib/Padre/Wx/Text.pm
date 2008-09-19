@@ -13,7 +13,7 @@ use Wx        qw(:everything);
 use Wx::Event qw(:everything);
 
 sub new {
-	my( $class, $parent, $lexer ) = @_;
+	my( $class, $parent ) = @_;
 
 	my $self = $class->SUPER::new( $parent, -1, );
 
@@ -67,8 +67,6 @@ sub new {
 
 	# Apply tag style for selected lexer (blue)
 	$self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
-
-	$self->SetLexer( $lexer );
 
 	if ( $self->can('SetLayoutDirection') ) {
 		$self->SetLayoutDirection( wxLayout_LeftToRight );

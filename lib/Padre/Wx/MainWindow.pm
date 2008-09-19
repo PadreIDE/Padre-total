@@ -629,8 +629,9 @@ sub setup_editor {
 	my $config = Padre->ide->get_config;
 	my $editor = Padre::Wx::Text->new(
 		$self->{notebook},
-		$self->_lexer($file),
 	);
+	$editor->SetLexer( $self->_lexer($file) );
+
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
 	
@@ -828,7 +829,6 @@ sub on_new {
 sub _set_page_text {
 	my ($self, $id, $text) = @_;
 
-	my $pack = __PACKAGE__;
 	my $page = $self->{notebook}->GetPage($id);
 	return $page->SetText($text);
 }
@@ -836,7 +836,6 @@ sub _set_page_text {
 sub _get_page_text {
 	my ($self, $id) = @_;
 
-	my $pack = __PACKAGE__;
 	my $page = $self->{notebook}->GetPage($id);
 	return $page->GetText;
 }
