@@ -32,7 +32,8 @@ sub on_run_this {
 	}
 
 	my $id   = $self->{notebook}->GetSelection;
-	my $filename = $self->_get_filename($id);
+	my $doc  = Padre::MainWindow::_DOCUMENT($id);
+	my $filename = $doc->filename;
 	if (not $filename) {
 		Wx::MessageBox( "No filename, cannot run", "Cannot run", wxOK|wxCENTRE, $self );
 		return;
@@ -53,9 +54,9 @@ sub on_debug_this {
 	my ($self) = @_;
 	$self->on_save;
 
-	my $id   = $self->{notebook}->GetSelection;
-	my $filename = $self->_get_filename($id);
-
+	my $id       = $self->{notebook}->GetSelection;
+	my $doc      = Padre::MainWindow::_DOCUMENT($id);
+	my $filename = $doc->filename;
 
 	my $host = 'localhost';
 	my $port = 12345;

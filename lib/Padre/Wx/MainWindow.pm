@@ -252,12 +252,13 @@ sub _load_files {
 	my $self   =  shift;
 	my $ide    = Padre->ide;
 	my $config = $ide->get_config;
-
+print "x\n";
 	# TODO make sure the full path to the file is saved and not
 	# the relative path
 	my @files  = $ide->get_files;
 	if ( @files ) {
 		foreach my $f (@files) {
+print "F $f\n";
 		    if (not File::Spec->file_name_is_absolute($f)) {
 		        $f = File::Spec->catfile(Cwd::cwd(), $f);
 		    }
@@ -494,10 +495,12 @@ sub on_close_window {
 	my $event  = shift;
 	my $config = Padre->ide->get_config;
 
-	$config->{main}->{files} = [
-		map { $self->_get_filename($_) }
-		( 0 .. $self->{notebook}->GetPageCount - 1 )
-	];
+	my @files;
+	foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
+		my $doc = _DOCUMENT($id);
+		push @files, $doc->filename;
+	}
+	$config->{main}->{files} = \@files;
 
 	# Check that all files have been saved
 	if ( $event->CanVeto ) {
@@ -649,7 +652,6 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-	$self->_set_filename($id, $file);
     $editor->{Padre} = Padre::Document->new(
 		page_id  => $id,
 		page     => $editor,
@@ -825,30 +827,6 @@ sub on_new {
 	return;
 }
 
-sub _set_filename {
-	my ($self, $id, $data) = @_;
-
-	my $pack = __PACKAGE__;
-	my $page = $self->{notebook}->GetPage($id);
-	$page->{$pack}->{filename} = $data;
-
-	if ($data) {
-	   $page->SetLexer( $self->_lexer($data) );
-	   $page->Colourise(0, $page->GetTextLength);
-	}
-
-	return;
-}
-
-sub _get_filename {
-	my ($self, $id) = @_;
-
-	my $pack = __PACKAGE__;
-	my $page = $self->{notebook}->GetPage($id);
-	
-	return $page->{$pack}->{filename};
-}
-
 sub _set_page_text {
 	my ($self, $id, $text) = @_;
 
@@ -874,9 +852,8 @@ Returns the name filename of the current buffer.
 
 sub get_current_filename {
 	my ($self) = @_;
-	my $id = $self->{notebook}->GetSelection;
-	return if $id == -1;
-	return $self->_get_filename($id);
+    my $doc = _DOCUMENT();
+	return $doc->filename;
 }
 
 sub set_page_text {
@@ -924,20 +901,12 @@ sub on_save_as {
 		    );
 		    if ( $res == wxYES ) {
 		        $doc->_set_filename($path);
-		        $self->_set_filename(
-		            $doc->page_id,
-		            $path,
-		        );
 				$doc->set_newline_type($self->_get_local_newline_type);
 		        last;
 		    }
 		} else {
 			$doc->_set_filename($path);
 			$doc->set_newline_type($self->_get_local_newline_type);
-			$self->_set_filename(
-				$doc->page_id,
-				$path,
-			);
 			last;
 		}
 	}
@@ -973,10 +942,10 @@ sub on_save_all {
 sub _save_buffer {
 	my ($self, $id) = @_;
 
-	my $page     = $self->{notebook}->GetPage($id);
-	my $content  = $page->GetText;
-	my $filename = $self->_get_filename($id);
-    my $doc      = _DOCUMENT($id);
+	my $page         = $self->{notebook}->GetPage($id);
+	my $content      = $page->GetText;
+    my $doc          = _DOCUMENT($id);
+	my $filename     = $doc->filename;
     my $newline_type = $doc->get_newline_type;
 
 	eval {
@@ -1009,7 +978,7 @@ sub close {
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
 		    "File changed. Do you want to save it?",
-		    $self->_get_filename($doc->page_id) || "Unsaved File",
+		    $doc->filename || "Unsaved File",
 		    wxYES_NO|wxCANCEL|wxCENTRE,
 		    $self,
 		);
@@ -1027,7 +996,8 @@ sub close {
 	# Update the alt-n menus
 	$self->{menu}->remove_alt_n_menu;
 	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
-		my $file = $self->_get_filename($i)
+		my $doc = _DOCUMENT($i);
+		my $file = $doc->filename
 			|| $self->{notebook}->GetPageText($i);
 		$self->{menu}->update_alt_n_menu($file, $i);
 	}
@@ -1310,7 +1280,8 @@ sub update_status {
     #my $doc          = _DOCUMENT($pageid);
 	my $page         = $self->{notebook}->GetPage($pageid);
 	my $line         = $page->GetCurrentLine;
-	my $filename     = $self->_get_filename($pageid) || '';
+    my $filename = '';
+	#my $filename     = $doc->filename || '';
     #my $newline_type = $doc->get_newline_type || $self->_get_local_newline_type();
 	my $modified     = $page->GetModify ? '*' : ' ';
 
@@ -1526,10 +1497,10 @@ sub convert_to {
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
-	my $filename = $self->_get_filename($id);
-	$self->_set_filename($id, $filename);
 	#my $doc     = _DOCUMENT($id) or return;
+	#my $filename = $doc->filename;
     #$doc->set_newline_type($newline_type);
+	#$doc->_set_filename($filename);
 
 	$self->update_status;
 
@@ -1540,7 +1511,8 @@ sub find_editor_of_file {
 	my ($self, $file) = @_;
 
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-		my $filename = $self->_get_filename($id);
+        my $doc = _DOCUMENT($id);
+		my $filename = $doc->filename;
 		next if not $filename;
 		return $id if $filename eq $file;
 	}

@@ -188,6 +188,10 @@ sub filename {
 sub _set_filename {
 	$_[0]->{filename} = $_[1];
 }
+#	if ($data) {
+#	   $page->SetLexer( $self->_lexer($data) );
+#	   $page->Colourise(0, $page->GetTextLength);
+#	}
 
 sub mimetype {
 	$_[0]->{mimetype};
