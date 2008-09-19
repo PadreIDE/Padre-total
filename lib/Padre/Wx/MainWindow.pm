@@ -632,54 +632,17 @@ sub setup_editor {
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
 	
-	my $newline_type = $self->_get_default_newline_type();
+	my ($newline_type, $title);
 
-
-	$cnt++;
-	my $title   = " Unsaved Document $cnt";
-	my $content = '';
 	if ($file) {
-		my $convert_to;
-		$content = eval { File::Slurp::read_file($file) };
-		if ($@) {
-		    warn $@;
-		    return;
-		}
-		my $current_type = Padre::Util::newline_type($content);
-		if ($current_type eq 'None') {
-		    # keep default
-		} elsif ($current_type eq 'Mixed') {
-		    my $mixed = $self->_mixed_newlines();
-		    if ( $mixed eq 'Ask') {
-		        warn "TODO ask the user what to do with $file";
-		        # $convert_to = $newline_type = ;
-		    } elsif ( $mixed eq 'Keep' ) {
-		        warn "TODO probably we should not allow keeping garbage ($file) \n";
-		    } else {
-		        #warn "TODO converting $file";
-		        $convert_to = $newline_type = $mixed;
-		    }
-		} else {
-		    $convert_to = $self->_auto_convert();
-		    if ($convert_to) {
-		        #warn "TODO call converting on $file";
-		        $newline_type = $convert_to;
-		    } else {
-		        $newline_type = $current_type;
-		    }
-		}
-		$editor->SetEOLMode( $mode{$newline_type} );
+        $newline_type = $self->load_file($file, $editor);
+        $title        = File::Basename::basename($file);
+	} else {
+		$cnt++;
+        $newline_type = $self->_get_default_newline_type();
+		$title        = " Unsaved Document $cnt";
+    }
 
-		$title   = File::Basename::basename($file);
-		# require Padre::Project;
-	# $self->{project} = Padre::Project->from_file($file);
-		$editor->SetText( $content );
-		$editor->EmptyUndoBuffer;
-		if ($convert_to) {
-		   warn "Converting to $convert_to";
-		   $editor->ConvertEOLs( $mode{$newline_type} );
-		}
-	}
 	$self->_toggle_numbers($editor, $config->{show_line_numbers});
 	$self->_toggle_eol($editor, $config->{show_eol});
 	$self->set_preferences($editor, $config);
@@ -693,6 +656,52 @@ sub setup_editor {
 	return $id;
 }
 
+sub load_file {
+	my ($self, $file, $editor) = @_;
+
+	my $newline_type = $self->_get_default_newline_type();
+	my $convert_to;
+	my $content = eval { File::Slurp::read_file($file) };
+	if ($@) {
+		warn $@;
+		return;
+	}
+	my $current_type = Padre::Util::newline_type($content);
+	if ($current_type eq 'None') {
+		# keep default
+	} elsif ($current_type eq 'Mixed') {
+		my $mixed = $self->_mixed_newlines();
+		if ( $mixed eq 'Ask') {
+			warn "TODO ask the user what to do with $file";
+			# $convert_to = $newline_type = ;
+		} elsif ( $mixed eq 'Keep' ) {
+			warn "TODO probably we should not allow keeping garbage ($file) \n";
+		} else {
+			#warn "TODO converting $file";
+			$convert_to = $newline_type = $mixed;
+		}
+	} else {
+		$convert_to = $self->_auto_convert();
+		if ($convert_to) {
+			#warn "TODO call converting on $file";
+			$newline_type = $convert_to;
+		} else {
+			$newline_type = $current_type;
+		}
+	}
+	$editor->SetEOLMode( $mode{$newline_type} );
+
+	# require Padre::Project;
+# $self->{project} = Padre::Project->from_file($file);
+	$editor->SetText( $content );
+	$editor->EmptyUndoBuffer;
+	if ($convert_to) {
+		warn "Converting to $convert_to";
+		$editor->ConvertEOLs( $mode{$newline_type} );
+	}
+
+	return ($newline_type);
+}
 sub create_tab {
 	my ($self, $editor, $file, $title) = @_;
 
