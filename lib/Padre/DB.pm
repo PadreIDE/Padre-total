@@ -4,7 +4,10 @@ package Padre::DB;
 
 use strict;
 use Padre;
-use ORLite Padre->ide->config_db;
+use ORLite 0.13 {
+	file   => Padre->ide->config_db,
+	tables => 0,
+};
 
 our $VERSION = '0.09';
 
