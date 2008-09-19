@@ -421,6 +421,11 @@ sub update_alt_n_menu {
 	my ($self, $file, $n) = @_;
 
 	my $v = $n + 1;
+# TODO: fix the occassional crash here:
+if (not defined $self->{alt}->[$n]) {
+    warn $n;
+    return;
+}
 	$self->{alt}->[$n]->SetText("$file\tAlt-$v");
 
 	return;
