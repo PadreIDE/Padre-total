@@ -652,10 +652,10 @@ sub setup_editor {
 	my $id = $self->create_tab($editor, $file, $title);
 
     $editor->{Padre} = Padre::Document->new(
-		page     => $editor,
-		filename => $file,
+		editor       => $editor,
+		filename     => $file,
+        newline_type => $newline_type,
 	);
-    $editor->{Padre}->set_newline_type($newline_type);
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;

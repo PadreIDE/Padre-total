@@ -121,8 +121,8 @@ sub new {
 	my $self  = bless { @_ }, $class;
 
 	# Check and derive params
-	unless ( $self->page ) {
-		die "Missing or invalid page";
+	unless ( $self->editor ) {
+		die "Missing or invalid editor";
 	}
 	unless ( $self->mimetype ) {
 		# Try derive the mime type from the name
@@ -181,8 +181,8 @@ sub _set_filename {
 	$_[0]->{filename} = $_[1];
 }
 #	if ($data) {
-#	   $page->SetLexer( $self->_lexer($data) );
-#	   $page->Colourise(0, $page->GetTextLength);
+#	   $editor->SetLexer( $self->_lexer($data) );
+#	   $editor->Colourise(0, $editor->GetTextLength);
 #	}
 
 sub mimetype {
@@ -197,8 +197,8 @@ sub lexer {
 }
 
 # Cache for speed reasons
-sub page {
-	$_[0]->{page};
+sub editor {
+	$_[0]->{editor};
 }
 
 sub is_new {
@@ -206,7 +206,7 @@ sub is_new {
 }
 
 sub is_modified {
-	return !! ( $_[0]->page->GetModify );
+	return !! ( $_[0]->editor->GetModify );
 }
 
 # A new document that isn't worth saving
@@ -231,11 +231,11 @@ sub is_saved {
 # Content Manipulation
 
 sub text_get {
-	$_[0]->page->GetText;
+	$_[0]->editor->GetText;
 }
 
 sub text_set {
-	$_[0]->page->SetText($_[1]);
+	$_[0]->editor->SetText($_[1]);
 }
 
 sub text_like {
