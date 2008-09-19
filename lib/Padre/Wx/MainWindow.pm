@@ -662,20 +662,6 @@ sub on_new {
 	return;
 }
 
-sub _set_page_text {
-	my ($self, $id, $text) = @_;
-
-	my $page = $self->{notebook}->GetPage($id);
-	return $page->SetText($text);
-}
-
-sub _get_page_text {
-	my ($self, $id) = @_;
-
-	my $page = $self->{notebook}->GetPage($id);
-	return $page->GetText;
-}
-
 
 =head2 get_current_filename
 
@@ -692,13 +678,15 @@ sub get_current_filename {
 sub set_page_text {
 	my ($self, $text) = @_;
 	my $id = $self->{notebook}->GetSelection;
-	return $self->_set_page_text($id, $text);
+	my $page = $self->{notebook}->GetPage($id);
+	return $page->SetText($text);
 }
 
 sub get_page_text {
 	my ($self) = @_;
 	my $id = $self->{notebook}->GetSelection;
-	return $self->_get_page_text($id);
+	my $page = $self->{notebook}->GetPage($id);
+	return $page->GetText;
 }
 
 # Returns true if saved.
