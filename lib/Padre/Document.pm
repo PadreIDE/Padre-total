@@ -168,6 +168,7 @@ sub new {
 			bless $self, $subclass;
 		}
 	}
+	$self->setup;
 
 	return $self;
 }

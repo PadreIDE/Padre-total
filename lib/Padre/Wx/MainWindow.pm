@@ -590,7 +590,6 @@ sub setup_editor {
 		editor       => $editor,
 		filename     => $file,
 	);
-	$editor->{Padre}->setup;
 
     my $title = $editor->{Padre}->get_title;
 
