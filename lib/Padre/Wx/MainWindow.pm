@@ -29,14 +29,8 @@ use Padre::Wx::ToolBar ();
 our $VERSION = '0.09';
 
 my $default_dir = Cwd::cwd();
-my $cnt         = 0;
 
 
-my %mode = (
-	WIN  => Wx::wxSTC_EOL_CRLF,
-	MAC  => Wx::wxSTC_EOL_CR,
-	UNIX => Wx::wxSTC_EOL_LF,
-);
 
 use vars qw{%SYNTAX};
 BEGIN {
@@ -325,10 +319,6 @@ sub get_current_editor {
 	return $nb->GetPage( $nb->GetSelection );
 }
 
-sub get_current_content {
-	$_[0]->get_current_editor->GetText;
-}
-
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
 	$self->update_status;
@@ -558,39 +548,6 @@ sub _lexer {
 	return( (defined $SYNTAX{$ext}) ? $SYNTAX{$ext} : $SYNTAX{_default_});
 }
 
-# for ts without a newline type
-sub _get_default_newline_type {
-	my ($self) = @_;
-
-	# TODO: get it from config
-	return $self->_get_local_newline_type();
-}
-
-# Where to convert (UNIX, WIN, MAC)
-# or Ask (the user) or Keep (the garbage)
-# mixed files
-sub _mixed_newlines {
-	my ($self) = @_;
-
-	# TODO get from config
-	return $self->_get_local_newline_type();
-}
-
-# What to do with files that have consistent line endings:
-# 0 if keep as they are
-# MAC|UNIX|WIN convert them to the appropriate type
-sub _auto_convert {
-	my ($self) = @_;
-	# TODO get from config
-	return 0;
-}
-
-sub _get_local_newline_type {
-	my ($self) = @_;
-
-	return $^O =~ /MSWin|cygwin|dos|os2/i ? 'WIN' : 
-		   $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
-}
 
 sub on_split_window {
 	my ($self) = @_;
@@ -629,16 +586,13 @@ sub setup_editor {
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
 	
-	my ($newline_type, $title);
+    $editor->{Padre} = Padre::Document->new(
+		editor       => $editor,
+		filename     => $file,
+	);
+	$editor->{Padre}->setup;
 
-	if ($file) {
-        $newline_type = $self->load_file($file, $editor);
-        $title        = File::Basename::basename($file);
-	} else {
-		$cnt++;
-        $newline_type = $self->_get_default_newline_type();
-		$title        = " Unsaved Document $cnt";
-    }
+    my $title = $editor->{Padre}->get_title;
 
 	$self->_toggle_numbers($editor, $config->{show_line_numbers});
 	$self->_toggle_eol($editor, $config->{show_eol});
@@ -646,11 +600,7 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-    $editor->{Padre} = Padre::Document->new(
-		editor       => $editor,
-		filename     => $file,
-        newline_type => $newline_type,
-	);
+
 	$editor->SetLexer( $editor->{Padre}->lexer );
 	$editor->padre_setup( $editor->{Padre}->mimetype );
 
@@ -659,52 +609,7 @@ sub setup_editor {
 	return $id;
 }
 
-sub load_file {
-	my ($self, $file, $editor) = @_;
 
-	my $newline_type = $self->_get_default_newline_type();
-	my $convert_to;
-	my $content = eval { File::Slurp::read_file($file) };
-	if ($@) {
-		warn $@;
-		return;
-	}
-	my $current_type = Padre::Util::newline_type($content);
-	if ($current_type eq 'None') {
-		# keep default
-	} elsif ($current_type eq 'Mixed') {
-		my $mixed = $self->_mixed_newlines();
-		if ( $mixed eq 'Ask') {
-			warn "TODO ask the user what to do with $file";
-			# $convert_to = $newline_type = ;
-		} elsif ( $mixed eq 'Keep' ) {
-			warn "TODO probably we should not allow keeping garbage ($file) \n";
-		} else {
-			#warn "TODO converting $file";
-			$convert_to = $newline_type = $mixed;
-		}
-	} else {
-		$convert_to = $self->_auto_convert();
-		if ($convert_to) {
-			#warn "TODO call converting on $file";
-			$newline_type = $convert_to;
-		} else {
-			$newline_type = $current_type;
-		}
-	}
-	$editor->SetEOLMode( $mode{$newline_type} );
-
-	# require Padre::Project;
-# $self->{project} = Padre::Project->from_file($file);
-	$editor->SetText( $content );
-	$editor->EmptyUndoBuffer;
-	if ($convert_to) {
-		warn "Converting to $convert_to";
-		$editor->ConvertEOLs( $mode{$newline_type} );
-	}
-
-	return ($newline_type);
-}
 sub create_tab {
 	my ($self, $editor, $file, $title) = @_;
 
@@ -896,12 +801,12 @@ sub on_save_as {
 		    );
 		    if ( $res == wxYES ) {
 		        $doc->_set_filename($path);
-				$doc->set_newline_type($self->_get_local_newline_type);
+				$doc->set_newline_type($doc->_get_local_newline_type);
 		        last;
 		    }
 		} else {
 			$doc->_set_filename($path);
-			$doc->set_newline_type($self->_get_local_newline_type);
+			$doc->set_newline_type($doc->_get_local_newline_type);
 			last;
 		}
 	}
@@ -1057,8 +962,12 @@ sub on_goto {
 # sub update_methods
 sub update_methods {
 	my $self    = shift;
-	my $text    = $self->get_current_content;
-	my @methods = reverse sort $text =~ m{^sub\s+(\w+)}gm;
+
+	return if $self->{_in_setup_editor};
+
+	my $doc     = _DOCUMENT();
+    
+	my @methods = $doc->get_functions;
 	$self->{rightbar}->DeleteAllItems;
 	$self->{rightbar}->InsertStringItem(0, $_) for @methods;
 	$self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
@@ -1281,7 +1190,7 @@ sub update_status {
 	my $doc          = $page->{Padre};
 	my $line         = $page->GetCurrentLine;
 	my $filename     = $doc->filename || '';
-    my $newline_type = $doc->get_newline_type || $self->_get_local_newline_type();
+    my $newline_type = $doc->get_newline_type || $doc->_get_local_newline_type();
 	my $modified     = $page->GetModify ? '*' : ' ';
 
 	if ($filename) {
@@ -1491,7 +1400,7 @@ sub convert_to {
 
 	my $editor = $self->get_current_editor;
 	#$editor->SetEOLMode( $mode{$newline_type} );
-	$editor->ConvertEOLs( $mode{$newline_type} );
+	$editor->ConvertEOLs( $Padre::Document::mode{$newline_type} );
 
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions

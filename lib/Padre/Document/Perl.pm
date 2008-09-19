@@ -91,4 +91,11 @@ sub keywords {
 	return $keywords;
 }
 
+sub get_functions {
+	my $self = shift;
+
+	my $text = $self->text_get;
+    return reverse sort $text =~ m{^sub\s+(\w+)}gm;
+}
+
 1;

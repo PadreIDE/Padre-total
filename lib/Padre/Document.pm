@@ -12,8 +12,16 @@ use Wx qw{
 };
 use File::Spec ();
 use List::Util ();
+use Carp       ();
 
 our $VERSION = '0.09';
+
+my $cnt         = 0;
+our %mode = (
+	WIN  => Wx::wxSTC_EOL_CRLF,
+	MAC  => Wx::wxSTC_EOL_CR,
+	UNIX => Wx::wxSTC_EOL_LF,
+);
 
 # see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
 # N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
@@ -164,6 +172,105 @@ sub new {
 	return $self;
 }
 
+sub setup {
+	my $self = shift;
+
+	if ($self->{filename}) {
+        $self->{newline_type} = $self->load_file($self->{filename}, $self->editor);
+	} else {
+		$cnt++;
+        $self->{newline_type} = $self->_get_default_newline_type();
+    }
+}
+
+sub get_title {
+	my $self = shift;
+	if ($self->{filename}) {
+        return File::Basename::basename( $self->{filename} );
+	} else {
+		return " Unsaved Document $cnt";
+	}
+}
+
+# for ts without a newline type
+sub _get_default_newline_type {
+	my ($self) = @_;
+
+	# TODO: get it from config
+	return $self->_get_local_newline_type();
+}
+
+# Where to convert (UNIX, WIN, MAC)
+# or Ask (the user) or Keep (the garbage)
+# mixed files
+sub _mixed_newlines {
+	my ($self) = @_;
+
+	# TODO get from config
+	return $self->_get_local_newline_type();
+}
+
+# What to do with files that have consistent line endings:
+# 0 if keep as they are
+# MAC|UNIX|WIN convert them to the appropriate type
+sub _auto_convert {
+	my ($self) = @_;
+	# TODO get from config
+	return 0;
+}
+
+sub _get_local_newline_type {
+	my ($self) = @_;
+
+	return $^O =~ /MSWin|cygwin|dos|os2/i ? 'WIN' : 
+		   $^O =~ /MacOS/                 ? 'MAC' : 'UNIX';
+}
+
+sub load_file {
+	my ($self, $file, $editor) = @_;
+
+	my $newline_type = $self->_get_default_newline_type;
+	my $convert_to;
+	my $content = eval { File::Slurp::read_file($file) };
+	if ($@) {
+		warn $@;
+		return;
+	}
+	my $current_type = Padre::Util::newline_type($content);
+	if ($current_type eq 'None') {
+		# keep default
+	} elsif ($current_type eq 'Mixed') {
+		my $mixed = $self->_mixed_newlines();
+		if ( $mixed eq 'Ask') {
+			warn "TODO ask the user what to do with $file";
+			# $convert_to = $newline_type = ;
+		} elsif ( $mixed eq 'Keep' ) {
+			warn "TODO probably we should not allow keeping garbage ($file) \n";
+		} else {
+			#warn "TODO converting $file";
+			$convert_to = $newline_type = $mixed;
+		}
+	} else {
+		$convert_to = $self->_auto_convert();
+		if ($convert_to) {
+			#warn "TODO call converting on $file";
+			$newline_type = $convert_to;
+		} else {
+			$newline_type = $current_type;
+		}
+	}
+	$editor->SetEOLMode( $mode{$newline_type} );
+
+	$editor->SetText( $content );
+	$editor->EmptyUndoBuffer;
+	if ($convert_to) {
+		warn "Converting to $convert_to";
+		$editor->ConvertEOLs( $mode{$newline_type} );
+	}
+
+	return ($newline_type);
+}
+
 sub set_newline_type {
 	$_[0]->{newline_type} = $_[1];
 }
@@ -288,6 +395,7 @@ sub find_project {
 }
 
 # abstract method, each subclass should implement it
-sub keywords { return {} }
+sub keywords      { return {} }
+sub get_functions { return () };
 
 1;
