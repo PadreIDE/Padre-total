@@ -556,12 +556,12 @@ sub _lexer {
 	return( (defined $SYNTAX{$ext}) ? $SYNTAX{$ext} : $SYNTAX{_default_});
 }
 
-# for files without a type
-sub _get_default_file_type {
+# for ts without a newline type
+sub _get_default_newline_type {
 	my ($self) = @_;
 
 	# TODO: get it from config
-	return $self->_get_local_filetype();
+	return $self->_get_local_newline_type();
 }
 
 # Where to convert (UNIX, WIN, MAC)
@@ -571,7 +571,7 @@ sub _mixed_newlines {
 	my ($self) = @_;
 
 	# TODO get from config
-	return $self->_get_local_filetype();
+	return $self->_get_local_newline_type();
 }
 
 # What to do with files that have consistent line endings:
@@ -583,7 +583,7 @@ sub _auto_convert {
 	return 0;
 }
 
-sub _get_local_filetype {
+sub _get_local_newline_type {
 	my ($self) = @_;
 
 	return $^O =~ /MSWin|cygwin|dos|os2/i ? 'WIN' : 
@@ -632,7 +632,7 @@ sub setup_editor {
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);
 	
-	my $file_type = $self->_get_default_file_type();
+	my $newline_type = $self->_get_default_newline_type();
 
 
 	$cnt++;
@@ -652,23 +652,23 @@ sub setup_editor {
 		    my $mixed = $self->_mixed_newlines();
 		    if ( $mixed eq 'Ask') {
 		        warn "TODO ask the user what to do with $file";
-		        # $convert_to = $file_type = ;
+		        # $convert_to = $newline_type = ;
 		    } elsif ( $mixed eq 'Keep' ) {
 		        warn "TODO probably we should not allow keeping garbage ($file) \n";
 		    } else {
 		        #warn "TODO converting $file";
-		        $convert_to = $file_type = $mixed;
+		        $convert_to = $newline_type = $mixed;
 		    }
 		} else {
 		    $convert_to = $self->_auto_convert();
 		    if ($convert_to) {
 		        #warn "TODO call converting on $file";
-		        $file_type = $convert_to;
+		        $newline_type = $convert_to;
 		    } else {
-		        $file_type = $current_type;
+		        $newline_type = $current_type;
 		    }
 		}
-		$editor->SetEOLMode( $mode{$file_type} );
+		$editor->SetEOLMode( $mode{$newline_type} );
 
 		$title   = File::Basename::basename($file);
 		# require Padre::Project;
@@ -677,7 +677,7 @@ sub setup_editor {
 		$editor->EmptyUndoBuffer;
 		if ($convert_to) {
 		   warn "Converting to $convert_to";
-		   $editor->ConvertEOLs( $mode{$file_type} );
+		   $editor->ConvertEOLs( $mode{$newline_type} );
 		}
 	}
 	$self->_toggle_numbers($editor, $config->{show_line_numbers});
@@ -686,7 +686,7 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-	$self->_set_filename($id, $file, $file_type);
+	$self->_set_filename($id, $file, $newline_type);
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
@@ -699,7 +699,6 @@ sub create_tab {
 	$self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
 	$editor->SetFocus;
 
-	my $pack = __PACKAGE__;
 	my $id  = $self->{notebook}->GetSelection;
 	my $file_title = $file || $title;
 	$self->{menu}->add_alt_n_menu($file_title, $id);
@@ -920,7 +919,7 @@ sub on_save_as {
 		        $self->_set_filename(
 		            $doc->page_id,
 		            $path,
-		            $self->_get_local_filetype,
+		            $self->_get_local_newline_type,
 		        );
 		        last;
 		    }
@@ -929,7 +928,7 @@ sub on_save_as {
 		    $self->_set_filename(
 		        $doc->page_id,
 		        $path,
-		        $self->_get_local_filetype,
+		        $self->_get_local_newline_type,
 		    );
 		    last;
 		}
@@ -968,7 +967,7 @@ sub _save_buffer {
 
 	my $page = $self->{notebook}->GetPage($id);
 	my $content = $page->GetText;
-	my ($filename, $file_type) = $self->_get_filename($id);
+	my ($filename, $newline_type) = $self->_get_filename($id);
 	eval {
 		File::Slurp::write_file($filename, $content);
 	};
@@ -1299,9 +1298,9 @@ sub update_status {
 #print "Pageid: $pageid\n";
 	my $page = $self->{notebook}->GetPage($pageid);
 	my $line = $page->GetCurrentLine;
-	my ($filename, $file_type) = $self->_get_filename($pageid);
+	my ($filename, $newline_type) = $self->_get_filename($pageid);
 	$filename  ||= '';
-	$file_type ||= $self->_get_local_filetype();
+	$newline_type ||= $self->_get_local_newline_type();
 	my $modified = $page->GetModify ? '*' : ' ';
 
 	if ($filename) {
@@ -1318,7 +1317,7 @@ sub update_status {
 	my $char = $pos-$start;
 
 	$self->SetStatusText("$modified $filename", 0);
-	$self->SetStatusText($file_type, 1);
+	$self->SetStatusText($newline_type, 1);
 
 	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 2);
 
@@ -1507,17 +1506,17 @@ sub _toggle_eol {
 }
 
 sub convert_to {
-	my ($self, $file_type) = @_;
+	my ($self, $newline_type) = @_;
 
 	my $editor = $self->get_current_editor;
-	#$editor->SetEOLMode( $mode{$file_type} );
-	$editor->ConvertEOLs( $mode{$file_type} );
+	#$editor->SetEOLMode( $mode{$newline_type} );
+	$editor->ConvertEOLs( $mode{$newline_type} );
 
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
 	my ($filename, $type) = $self->_get_filename($id);
-	$self->_set_filename($id, $filename, $file_type);
+	$self->_set_filename($id, $filename, $newline_type);
 
 	$self->update_status;
 
