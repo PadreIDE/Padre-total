@@ -298,7 +298,7 @@ sub method_selected {
     my ($self, $event) = @_;
     my $sub = $event->GetItem->GetText;
     return if not defined $sub;
-    Padre::Wx::FindDialog::_search($self, search_term => "sub $sub"); # TODO actually search for sub\s+$sub
+    Padre::Wx::FindDialog::_search(search_term => "sub $sub"); # TODO actually search for sub\s+$sub
     return;
 }
 

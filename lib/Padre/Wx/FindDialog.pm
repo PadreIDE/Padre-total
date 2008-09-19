@@ -246,10 +246,11 @@ sub on_find_again_reverse {
 }
 
 sub _get_regex {
+    my %args = @_;
 
     my $config = Padre->ide->get_config;
 
-    my $search_term = $config->{search_terms}->[0];
+    my $search_term = $args{search_term} || $config->{search_terms}->[0];
     if ($config->{search}->{use_regex}) {
         $search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
     } else {
@@ -275,7 +276,7 @@ sub _search {
     my ( %args ) = @_;
     my $main_window = Padre->ide->wx->main_window;
 
-    my $regex = _get_regex();
+    my $regex = _get_regex(%args);
     return if not defined $regex;
 
     my $id   = $main_window->{notebook}->GetSelection;
