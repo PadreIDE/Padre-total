@@ -94,6 +94,9 @@ sub from_page_id {
 		return;
 	}
 	my $page     = $class->notebook->GetPage( $page_id );
+
+	return $page->{Padre} if $page->{Padre};
+
 	my $filename = $page->{'Padre::Wx::MainWindow'}->{filename};
 	my $document = $class->new(
 		page_id  => $page_id,

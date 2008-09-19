@@ -650,6 +650,12 @@ sub setup_editor {
 	my $id = $self->create_tab($editor, $file, $title);
 
 	$self->_set_filename($id, $file, $newline_type);
+	my $doc = Padre::Document->new(
+		page_id  => $id,
+		page     => $editor,
+		filename => $file,
+	);
+    $editor->{Padre} = $doc;
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
