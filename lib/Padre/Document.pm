@@ -89,10 +89,10 @@ sub from_selection {
 sub from_page_id {
 	my $class    = shift;
 	my $page_id  = shift;
-        if ( $page_id == -1 ) {
+	if ( $page_id == -1 ) {
 		# No page selected
 		return;
-        }
+	}
 	my $page     = $class->notebook->GetPage( $page_id );
 	my $filename = $page->{'Padre::Wx::MainWindow'}->{filename};
 	my $document = $class->new(
