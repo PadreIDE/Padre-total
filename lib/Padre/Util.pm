@@ -57,51 +57,51 @@ Returns Mixed if line endings are mixed.
 =cut
 
 sub newline_type {
-    my $text = shift;
+	my $text = shift;
 
-    my $CR   = "\015";
-    my $LF   = "\012";
-    my $CRLF = "\015\012";
+	my $CR   = "\015";
+	my $LF   = "\012";
+	my $CRLF = "\015\012";
 
-    return "None" if $text !~ /$LF/ and $text !~ /$CR/;
-    return "UNIX" if $text !~ /$CR/;
-    return "MAC"  if $text !~ /$LF/;
+	return "None" if $text !~ /$LF/ and $text !~ /$CR/;
+	return "UNIX" if $text !~ /$CR/;
+	return "MAC"  if $text !~ /$LF/;
 
-    $text =~ s/$CRLF//g;
-    return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
+	$text =~ s/$CRLF//g;
+	return "WIN" if $text !~ /$LF/ and $text !~ /$CR/;
 
-    return "Mixed"
+	return "Mixed"
 }
 
 sub get_matches {
-    my ($text, $regex, $from, $to, $backward) = @_;
-    die "missing parameters" if @_ < 4;
+	my ($text, $regex, $from, $to, $backward) = @_;
+	die "missing parameters" if @_ < 4;
 
-    my @matches;
+	my @matches;
 
-    while ($text =~ /$regex/g) {
-        my $e = pos($text);
-        my $s = $e - length($&);
-        push @matches, [$s, $e];
-    }
+	while ($text =~ /$regex/g) {
+		my $e = pos($text);
+		my $s = $e - length($&);
+		push @matches, [$s, $e];
+	}
 
-    my $pair;
+	my $pair;
 	if ($backward) {
-        $pair = first {$to > $_->[1]} reverse @matches;
-        if (not $pair and @matches) {
-            $pair = $matches[-1];
-        }
-    } else {
-        $pair = first {$from < $_->[0]}         @matches;
-        if (not $pair and @matches) {
-            $pair = $matches[0];
-        }
-    }
+		$pair = first {$to > $_->[1]} reverse @matches;
+		if (not $pair and @matches) {
+			$pair = $matches[-1];
+		}
+	} else {
+		$pair = first {$from < $_->[0]}         @matches;
+		if (not $pair and @matches) {
+		    $pair = $matches[0];
+		}
+	}
 
-    my ($start, $end);
-    ($start, $end) = @$pair if $pair;
+	my ($start, $end);
+	($start, $end) = @$pair if $pair;
 
-    return ($start, $end, @matches);
+	return ($start, $end, @matches);
 }
 
 1;

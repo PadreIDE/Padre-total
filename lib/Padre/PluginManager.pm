@@ -34,22 +34,22 @@ First argument should be a Padre object.
 =cut
 
 sub new {
-    my $class = shift;
-    my $padre = shift || Padre->ide;
+	my $class = shift;
+	my $padre = shift || Padre->ide;
 
-    if (not $padre or not $padre->isa("Padre")) {
-        croak("Creation of a Padre::PluginManager without a Padre not possible");
-    }
+	if (not $padre or not $padre->isa("Padre")) {
+		croak("Creation of a Padre::PluginManager without a Padre not possible");
+	}
 
-    my $self  = bless {
-      plugins => {},
-      plugin_dir => Padre::Config->default_plugin_dir,
-      
-      par_loaded => 0,
-      @_
-    }, $class;
+	my $self  = bless {
+		plugins => {},
+		plugin_dir => Padre::Config->default_plugin_dir,
+	  
+		par_loaded => 0,
+		@_
+	}, $class;
 
-    return $self;
+	return $self;
 }
 
 #############
@@ -91,22 +91,22 @@ a plugin namespace, the plugin name is determine automatically.
 =cut
 
 sub plugin_config {
-    my $self = shift;
-    my $plugin = shift;
+	my $self = shift;
+	my $plugin = shift;
 
-    # infer the plugin name from caller
-    if (not defined $plugin) {
-        my ($package) = caller();
-        croak("Cannot infer the name of the plugin for which the configuration has been requested")
-          if $package !~ /^Padre::Plugin::/;
-        $plugin = $package;
-    }
+	# infer the plugin name from caller
+	if (not defined $plugin) {
+		my ($package) = caller();
+		croak("Cannot infer the name of the plugin for which the configuration has been requested")
+			if $package !~ /^Padre::Plugin::/;
+		$plugin = $package;
+	}
 
-    $plugin =~ s/^Padre::Plugin:://;
-    my $padre_config = Padre->ide->get_config;
-    my $plugin_config = $padre_config->{plugins};
-    $plugin_config->{$plugin} ||= {};
-    return $plugin_config->{$plugin};
+	$plugin =~ s/^Padre::Plugin:://;
+	my $padre_config = Padre->ide->get_config;
+	my $plugin_config = $padre_config->{plugins};
+	$plugin_config->{$plugin} ||= {};
+	return $plugin_config->{$plugin};
 }
 
 ##############
@@ -122,88 +122,88 @@ plugin has changed while Padre was running.
 =cut
 
 sub load_plugins {
-    my ($self) = @_;
-    $self->_load_plugins_from_inc();
-    $self->_load_plugins_from_par();
-    return;
+	my ($self) = @_;
+	$self->_load_plugins_from_inc();
+	$self->_load_plugins_from_par();
+	return;
 }
 
 sub _load_plugins_from_inc {
-    my ($self) = @_;
+	my ($self) = @_;
 
-    # Try the plugin directory first:
-    my $plugin_dir = $self->plugin_dir;
-    unshift @INC, $plugin_dir unless grep {$_ eq $plugin_dir} @INC;
+	# Try the plugin directory first:
+	my $plugin_dir = $self->plugin_dir;
+	unshift @INC, $plugin_dir unless grep {$_ eq $plugin_dir} @INC;
 
-    foreach my $path (@INC) {
-        my $dir = File::Spec->catdir($path, 'Padre', 'Plugin');
-        opendir my $dh, $dir or next;
-        while (my $file = readdir $dh) {
-            if ($file =~ /^\w+\.pm$/) {
-                $file =~ s/\.pm$//;
-                $self->_load_plugin($file);
-            }
-        }
-    }
+	foreach my $path (@INC) {
+		my $dir = File::Spec->catdir($path, 'Padre', 'Plugin');
+		opendir my $dh, $dir or next;
+		while (my $file = readdir $dh) {
+			if ($file =~ /^\w+\.pm$/) {
+				$file =~ s/\.pm$//;
+				$self->_load_plugin($file);
+			}
+		}
+	}
 
-    return;
+	return;
 }
 
 sub _load_plugins_from_par {
-    my ($self) = @_;
-    $self->_setup_par();
+	my ($self) = @_;
+	$self->_setup_par();
 
-    my $plugin_dir = $self->plugin_dir();
-    opendir my $dh, $plugin_dir or return;
-    while (my $file = readdir $dh) {
-        if ($file =~ /^\w+\.par$/i) {
-            my $parfile = File::Spec->catfile($plugin_dir, $file);
-            $file =~ s/\.par$//i;
-            PAR->import($parfile);
-            $self->_load_plugin($file);
-        }
-    }
-    closedir($dh);
-    return;
+	my $plugin_dir = $self->plugin_dir();
+	opendir my $dh, $plugin_dir or return;
+	while (my $file = readdir $dh) {
+		if ($file =~ /^\w+\.par$/i) {
+			my $parfile = File::Spec->catfile($plugin_dir, $file);
+			$file =~ s/\.par$//i;
+			PAR->import($parfile);
+			$self->_load_plugin($file);
+		}
+	}
+	closedir($dh);
+	return;
 }
 
 sub _setup_par {
-    my ($self) = @_;
+	my ($self) = @_;
 
-    return if $self->{par_loaded};
+	return if $self->{par_loaded};
 
-    require PAR;
-    # setup the PAR environment:
-    my $plugin_dir = $self->plugin_dir;
-    my $cache_dir = File::Spec->catdir($plugin_dir, 'cache');
-    $ENV{PAR_GLOBAL_TEMP} = $cache_dir;
-    File::Path::mkpath($cache_dir) if not -e $cache_dir;
-    $ENV{PAR_TEMP} = $cache_dir;
+	require PAR;
+	# setup the PAR environment:
+	my $plugin_dir = $self->plugin_dir;
+	my $cache_dir = File::Spec->catdir($plugin_dir, 'cache');
+	$ENV{PAR_GLOBAL_TEMP} = $cache_dir;
+	File::Path::mkpath($cache_dir) if not -e $cache_dir;
+	$ENV{PAR_TEMP} = $cache_dir;
 
-    $self->{par_loaded} = 1;
-    return();
+	$self->{par_loaded} = 1;
+	return();
 }
 
 # given a file name (Foo.pm), load the corresponding module
 sub _load_plugin {
-    my ($self, $file) = @_;
-    my $plugins = $self->plugins;
-    delete $plugins->{$file};
-    
-    my $module = "Padre::Plugin::$file";
+	my ($self, $file) = @_;
+	my $plugins = $self->plugins;
+	delete $plugins->{$file};
+	
+	my $module = "Padre::Plugin::$file";
 
-    # skip if that plugin was already loaded
-    my $inc_file = $module.".pm";
-    $inc_file =~ s/::/\//g;
-    return if exists $INC{$inc_file};
+	# skip if that plugin was already loaded
+	my $inc_file = $module.".pm";
+	$inc_file =~ s/::/\//g;
+	return if exists $INC{$inc_file};
 
-    eval "use $module"; ## no critic
-    if ($@) {
-        warn "ERROR while trying to load plugin '$file': $@";
-        return();
-    }
-    $plugins->{$file} = $module;
-    return 1;
+	eval "use $module"; ## no critic
+	if ($@) {
+		warn "ERROR while trying to load plugin '$file': $@";
+		return();
+	}
+	$plugins->{$file} = $module;
+	return 1;
 }
 
 
