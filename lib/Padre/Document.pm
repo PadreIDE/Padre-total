@@ -7,9 +7,29 @@ use 5.008;
 use strict;
 use warnings;
 use Wx qw{
+	wxSTC_LEX_ADA
+	wxSTC_LEX_ASM
+	wxSTC_LEX_BATCH
+	wxSTC_LEX_CPP
+	wxSTC_LEX_CSS
+	wxSTC_LEX_DIFF
+	wxSTC_LEX_HTML
 	wxSTC_LEX_PERL
 	wxSTC_LEX_YAML
 	wxSTC_LEX_AUTOMATIC
+	wxSTC_LEX_XML
+	wxSTC_LEX_LATEX
+	wxSTC_LEX_LISP
+	wxSTC_LEX_LUA
+	wxSTC_LEX_MAKEFILE
+	wxSTC_LEX_MATLAB
+	wxSTC_LEX_PASCAL
+	wxSTC_LEX_PHPSCRIPT
+	wxSTC_LEX_PYTHON
+	wxSTC_LEX_RUBY
+	wxSTC_LEX_SQL
+	wxSTC_LEX_TCL
+	wxSTC_LEX_VBSCRIPT
 };
 use File::Spec ();
 use List::Util ();
@@ -30,45 +50,46 @@ our %mode = (
 # but not (yet) in 
 #  Wx-0.84/ext/stc/cpp/st_constants.cpp
 # so we have to hard-code their numeric value.
-#our %SYNTAX = (
-#	ada   => wxSTC_LEX_ADA,
-#	asm   => wxSTC_LEX_ASM,
+
 	# asp => wxSTC_LEX_ASP, #in ifdef
-#	bat   => wxSTC_LEX_BATCH,
-#	cpp   => wxSTC_LEX_CPP,
-#	css   => wxSTC_LEX_CSS,
-#	diff  => wxSTC_LEX_DIFF,
 	#     => wxSTC_LEX_EIFFEL, # what is the default EIFFEL file extension?
 	#     => wxSTC_LEX_EIFFELKW,
 #	'4th' => wxSTC_LEX_FORTH,
 #	f     => wxSTC_LEX_FORTRAN,
-#	html  => wxSTC_LEX_HTML,
-#	js    => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
-#	json  => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?)
-#	latex => wxSTC_LEX_LATEX,
-#	lsp   => wxSTC_LEX_LISP,
-#	lua   => wxSTC_LEX_LUA,
-#	mak   => wxSTC_LEX_MAKEFILE,
-#	mat   => wxSTC_LEX_MATLAB,
-#	pas   => wxSTC_LEX_PASCAL,
-#	php   => wxSTC_LEX_PHPSCRIPT,
-#	py    => wxSTC_LEX_PYTHON,
-#	rb    => wxSTC_LEX_RUBY,
-#	sql   => wxSTC_LEX_SQL,
-#	tcl   => wxSTC_LEX_TCL,
-
-#	vbs   => wxSTC_LEX_VBSCRIPT,
 	#     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
-#	xml   => wxSTC_LEX_XML,
-#	_default_ => wxSTC_LEX_AUTOMATIC,
-#);
 
+# totally made-up MIME-types. 
+# Someone should go over and see if there are official mime-type definitions
+# for the languages
 our %EXT_MIME = (
-	pm    => 'text/perl',
-	t     => 'text/perl',
+	ada   => 'text/ada',
+	asm   => 'text/asm',
+	bat   => 'text/bat',
+	cpp   => 'text/cpp',
+	css   => 'text/css',
+	diff  => 'text/diff',
+	html  => 'text/html',
+	js    => 'text/ecmascript',
+	json  => 'text/ecmascript',
+	latex => 'text/latex',
+	lsp   => 'text/lisp',
+	lua   => 'text/lua',
+	mak   => 'text/make',
+	mat   => 'text/matlab',
+	pas   => 'text/pascal',
+	php   => 'text/php',
+	py    => 'text/python',
+	rb    => 'text/ruby',
+	sql   => 'text/sql',
+	tcl   => 'text/tcl',
+	vbs   => 'text/vbscript',
+	patch => 'text/diff',
 	pl    => 'text/perl',
 	plx   => 'text/perl',
+	pm    => 'text/perl',
 	pod   => 'text/perl',
+	t     => 'text/perl',
+	xml   => 'text/xml',
 	yml   => 'text/yaml',
 	yaml  => 'text/yaml',
 );
@@ -78,8 +99,29 @@ our %MIME_CLASS = (
 );
 
 our %MIME_LEXER = (
-	'text/perl' => wxSTC_LEX_PERL,
-	'text/yaml' => wxSTC_LEX_YAML,
+	'text/ada'        => wxSTC_LEX_ADA,
+	'text/asm'        => wxSTC_LEX_ASM,
+	'text/bat'        => wxSTC_LEX_BATCH,
+	'text/cpp'        => wxSTC_LEX_CPP,
+	'text/css'        => wxSTC_LEX_CSS,
+	'text/diff'       => wxSTC_LEX_DIFF,
+	'text/html'       => wxSTC_LEX_HTML,
+    'text/ecmascript' => 41, # wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
+	'text/latex'      => wxSTC_LEX_LATEX,
+	'text/lisp'       => wxSTC_LEX_LISP,
+	'text/lua'        => wxSTC_LEX_LUA,
+	'text/make'       => wxSTC_LEX_MAKEFILE,
+	'text/matlab'     => wxSTC_LEX_MATLAB,
+	'text/pascal'     => wxSTC_LEX_PASCAL,
+	'text/perl'       => wxSTC_LEX_PERL,
+	'text/python'     => wxSTC_LEX_PYTHON,
+    'text/php'        => wxSTC_LEX_PHPSCRIPT,
+	'text/ruby'       => wxSTC_LEX_RUBY,
+	'text/sql'        => wxSTC_LEX_SQL,
+	'text/tcl'        => wxSTC_LEX_TCL,
+    'text/vbscript'   => wxSTC_LEX_VBSCRIPT,
+	'text/xml'        => wxSTC_LEX_XML,
+	'text/yaml'       => wxSTC_LEX_YAML,
 );
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
