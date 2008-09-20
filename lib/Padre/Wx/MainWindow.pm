@@ -13,8 +13,8 @@ use File::Basename ();
 use Data::Dumper   ();
 use List::Util     ();
 use Params::Util   ();
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
+use Wx             qw(:everything);
+use Wx::Event      qw(:everything);
 
 use base qw{
 	Wx::Frame
@@ -282,11 +282,11 @@ sub on_key {
 	my $code = $event->GetKeyCode;
 	if ($mod == 2) {            # Ctrl
 		if ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
-		    $self->on_next_pane;
+			$self->on_next_pane;
 		}
 	} elsif ($mod == 6) {                         # Ctrl-Shift
 		if ($code == WXK_TAB) {                   # Ctrl-Shift-TAB #TODO it is already in the menu
-		    $self->on_prev_pane;
+			$self->on_prev_pane;
 		}
 	}
 
@@ -308,7 +308,7 @@ sub on_brace_matching {
 	}
 	# TODO: if not found matching brace,
 	# we might want to check it at the previous position
-		    # TODO: or any nearby position.
+	# TODO: or any nearby position.
 
 	return;
 }
@@ -346,11 +346,11 @@ sub on_uncomment_block {
 	for my $line ($start .. $end) {
 		# TODO: this should actually depend on language
 		my $first = $page->PositionFromLine($line);
-		my $last = $first+1;
-		my $text = $page->GetTextRange($first, $last);
+		my $last  = $first+1;
+		my $text  = $page->GetTextRange($first, $last);
 		if ($text eq '#') {
-		    $page->SetSelection($first, $last);
-		    $page->ReplaceSelection('');
+			$page->SetSelection($first, $last);
+			$page->ReplaceSelection('');
 		}
 	}
 	$page->EndUndoAction;
@@ -360,31 +360,19 @@ sub on_uncomment_block {
 
 
 sub on_autocompletition {
-   my $self   = shift;
-   my $id     = $self->{notebook}->GetSelection;
-   my $page   = $self->{notebook}->GetPage($id);
-   my $pos    = $page->GetCurrentPos;
-   my $line   = $page->LineFromPosition($pos);
-   my $first  = $page->PositionFromLine($line);
-   my $prefix = $page->GetTextRange($first, $pos); # line from beginning to current position
-	  $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-   my $last   = $page->GetLength();
-   my $text   = $page->GetTextRange(0, $last);
+	my $self   = shift;
 
-   my $regex;
-   eval { $regex = qr{\b($prefix\w*(?:::\w+)*)\b} };
-   if ($@) {
-	   Wx::MessageBox("Cannot build regex for '$prefix'", "Autocompletions error", wxOK, $self);
-	   return;
-   }
-   my %seen;
-   my @words = grep { ! $seen{$_}++ } sort ($text =~ /$regex/g);
-   if (@words > 20) {
-	  @words = @words[0..19];
-   }
-   $page->AutoCompShow(length($prefix), join " ", @words);
+	my $doc    = _DOCUMENT();
+    my ($length, @words)  = $doc->autocomplete;
+    if ($length =~ /\D/) {
+		Wx::MessageBox($length, "Autocompletions error", wxOK);
+	}
 
-   return;
+	if (@words) {
+		$doc->editor->AutoCompShow($length, join " ", @words);
+	}
+
+	return;
 }
 
 sub on_right_click {
@@ -443,20 +431,20 @@ sub on_close_window {
 	# Check that all files have been saved
 	if ( $event->CanVeto ) {
 		if ( $config->{startup} eq 'same' ) {
-		    # Save the files, but don't close
-		    my $saved = $self->on_save_all;
-		    unless ( $saved ) {
-		         # They cancelled at some point
-		        $event->Veto;
-		        return;
-		    }
+			# Save the files, but don't close
+			my $saved = $self->on_save_all;
+			unless ( $saved ) {
+				# They cancelled at some point
+				$event->Veto;
+				return;
+			}
 		} else {
-		    my $closed = $self->on_close_all;
-		    unless ( $closed ) {
-		        # They cancelled at some point
-		        $event->Veto;
-		        return;
-		    }
+			my $closed = $self->on_close_all;
+			unless ( $closed ) {
+				# They cancelled at some point
+				$event->Veto;
+				return;
+			}
 		}
 	}
 
@@ -465,12 +453,12 @@ sub on_close_window {
 	unless ( $self->IsMaximized ) {
 		# Don't save the position when maximized
 		(
-		    $config->{main}->{width},
-		    $config->{main}->{height},
+			$config->{main}->{width},
+			$config->{main}->{height},
 		) = $self->GetSizeWH;
 		(
-		    $config->{main}->{left},
-		    $config->{main}->{top},
+			$config->{main}->{left},
+			$config->{main}->{top},
 		) = $self->GetPositionXY;
 	}
 	Padre->ide->save_config;
@@ -577,16 +565,16 @@ sub on_open_selection {
 	if (-e $selection) {
 		$file = $selection;
 		if (not File::Spec->file_name_is_absolute($file)) {
-		    $file = File::Spec->catfile(Cwd::cwd(), $file);
-		    # check if this is still a file?
+			$file = File::Spec->catfile(Cwd::cwd(), $file);
+			# check if this is still a file?
 		}
 	} else {
 		my $filename
-		    = File::Spec->catfile(
-		            File::Basename::dirname($self->get_current_filename),
-		            $selection);
+			= File::Spec->catfile(
+					File::Basename::dirname($self->get_current_filename),
+					$selection);
 		if (-e $filename) {
-		    $file = $filename;
+			$file = $filename;
 		}
 	}
 	if (not $file) { # and we are in a Perl environment
@@ -594,15 +582,15 @@ sub on_open_selection {
 		$selection .= ".pm";
 		my $filename = File::Spec->catfile(Cwd::cwd(), $selection);
 		if (-e $filename) {
-		    $file = $filename;
+			$file = $filename;
 		} else {
-		    foreach my $path (@INC) {
-		         my $filename = File::Spec->catfile( $path, $selection );
-		         if (-e $filename) {
-		             $file = $filename;
-		             last;
-		         }
-		    }
+			foreach my $path (@INC) {
+				my $filename = File::Spec->catfile( $path, $selection );
+				if (-e $filename) {
+					$file = $filename;
+					last;
+				}
+			}
 		}
 	}
 
@@ -621,7 +609,7 @@ sub on_open {
 	my $self = shift;
 	my $current_filename = $self->get_current_filename;
 	if ($current_filename) {
-	   $default_dir = File::Basename::dirname($current_filename);
+		$default_dir = File::Basename::dirname($current_filename);
 	}
 	my $dialog = Wx::FileDialog->new(
 		$self,
@@ -632,7 +620,7 @@ sub on_open {
 		wxFD_OPEN,
 	);
 	unless ( Padre::Util::WIN32 ) {
-	   $dialog->SetWildcard("*");
+		$dialog->SetWildcard("*");
 	}
 	if ( $dialog->ShowModal == wxID_CANCEL ) {
 		return;
@@ -647,7 +635,7 @@ sub on_open {
 	# and it is unused, close it.
 	if ( $self->{notebook}->GetPageCount == 1 ) {
 		if ( Padre::Document->from_selection->is_unused ) {
-		    $self->on_close;
+			$self->on_close;
 		}
 	}
 
@@ -702,31 +690,31 @@ sub on_save_as {
 	}
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
-		    $self,
-		    "Save file as...",
-		    $default_dir,
-		    "",
-		    "*.*",
-		    wxFD_SAVE,
+			$self,
+			"Save file as...",
+			$default_dir,
+			"",
+			"*.*",
+			wxFD_SAVE,
 		);
 		if ( $dialog->ShowModal == wxID_CANCEL ) {
-		    return 0;
+			return 0;
 		}
 		my $filename = $dialog->GetFilename;
 		$default_dir = $dialog->GetDirectory;
 		my $path = File::Spec->catfile($default_dir, $filename);
 		if ( -e $path ) {
-		    my $res = Wx::MessageBox(
-		        "File already exists. Overwrite it?",
-		        "Exist",
-		        wxYES_NO,
-		        $self,
-		    );
-		    if ( $res == wxYES ) {
-		        $doc->_set_filename($path);
+			my $res = Wx::MessageBox(
+				"File already exists. Overwrite it?",
+				"Exist",
+				wxYES_NO,
+				$self,
+			);
+			if ( $res == wxYES ) {
+				$doc->_set_filename($path);
 				$doc->set_newline_type($doc->_get_local_newline_type);
-		        last;
-		    }
+				last;
+			}
 		} else {
 			$doc->_set_filename($path);
 			$doc->set_newline_type($doc->_get_local_newline_type);
@@ -741,7 +729,7 @@ sub on_save {
 	my $self = shift;
 
 	my $page_id = $self->{notebook}->GetSelection;
-	my $doc  = _DOCUMENT($page_id) or return;
+	my $doc     = _DOCUMENT($page_id) or return;
 
 	if ( $doc->is_new ) {
 		return $self->on_save_as($doc);
@@ -804,18 +792,18 @@ sub close {
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
-		    "File changed. Do you want to save it?",
-		    $doc->filename || "Unsaved File",
-		    wxYES_NO|wxCANCEL|wxCENTRE,
-		    $self,
+			"File changed. Do you want to save it?",
+			$doc->filename || "Unsaved File",
+			wxYES_NO|wxCANCEL|wxCENTRE,
+			$self,
 		);
 		if ( $ret == wxYES ) {
-		    $self->on_save( $doc );
+			$self->on_save( $doc );
 		} elsif ( $ret == wxNO ) {
-		    # just close it
+			# just close it
 		} else {
-		    # wxCANCEL, or when clicking on [x]
-		    return 0;
+			# wxCANCEL, or when clicking on [x]
+			return 0;
 		}
 	}
 	$self->{notebook}->DeletePage($page_id);
@@ -894,36 +882,43 @@ sub update_methods {
 	$self->{rightbar}->DeleteAllItems;
 	$self->{rightbar}->InsertStringItem(0, $_) for @methods;
 	$self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
+
 	return;
 }
 
 sub _get_selection {
 	my ($self, $id) = @_;
+
 	if ( not defined $id ) {
 		$id  = $self->{notebook}->GetSelection;
 	}
 	return if $id == -1;
 	my $page = $self->{notebook}->GetPage($id);
+
 	return $page->GetSelectedText;
 }
 
 sub on_undo { # Ctrl-Z
 	my $self = shift;
+
 	my $id   = $self->{notebook}->GetSelection;
 	my $page = $self->{notebook}->GetPage($id);
 	if ( $page->CanUndo ) {
-	   $page->Undo;
+		$page->Undo;
 	}
+
 	return;
 }
 
 sub on_redo { # Shift-Ctr-Z
 	my $self = shift;
+
 	my $id   = $self->{notebook}->GetSelection;
 	my $page = $self->{notebook}->GetPage($id);
 	if ( $page->CanRedo ) {
-	   $page->Redo;
+		$page->Redo;
 	}
+
 	return;
 }
 
@@ -936,15 +931,19 @@ sub on_redo { # Shift-Ctr-Z
 
 sub on_new_project {
 	my ($self) = @_;
+
 	# ask for project type, name and directory
 	# create directory call, Module::Starter
 	# set current project
 	# run
 	Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
+
+	return;
 }
 
 sub on_select_project {
 	my ($self) = @_;
+
 	#Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
 	#return;
 	# popup a window with a list of projects previously selected,
@@ -1065,6 +1064,7 @@ sub on_nth_pane {
 	   $self->update_methods;
 	   return 1;
 	}
+
 	return;
 }
 
@@ -1165,8 +1165,8 @@ sub on_zoom_reset {
 sub zoom {
 	my ($self, $val) = @_;
 
-	my $editor  = $self->get_current_editor;
-	my $zoom = $editor->GetZoom;
+	my $editor = $self->get_current_editor;
+	my $zoom   = $editor->GetZoom;
 
 	$zoom += $val;
 
@@ -1194,6 +1194,7 @@ sub on_setup {
 
 sub set_preferences {
 	my ($self, $editor, $config) = @_;
+
 	$editor->SetTabWidth( $config->{editor}->{tab_size} );
 
 	return;
@@ -1310,11 +1311,15 @@ sub _toggle_numbers {
 		$editor->SetMarginWidth(0, 0);
 		$editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
 	}
+
+	return;
 }
 
 sub _toggle_eol {
 	my ($self, $editor, $on) = @_;
+
 	$editor->SetViewEOL($on);
+
 	return;
 }
 
@@ -1394,6 +1399,7 @@ sub run_in_padre {
 		Wx::MessageBox("Error: $@", "Self error", wxOK, $self);
 		return;
 	}
+
 	return;
 }
 

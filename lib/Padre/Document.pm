@@ -399,4 +399,34 @@ sub find_project {
 sub keywords      { return {} }
 sub get_functions { return () };
 
+# should return ($length, @words)
+# where $length is the length of the prefix to be replaced by one of the words
+# or
+# return ($error_message)
+# in case of some error
+sub autocomplete {
+	my $self   = shift;
+
+	my $editor = $self->editor;
+	my $pos    = $editor->GetCurrentPos;
+	my $line   = $editor->LineFromPosition($pos);
+	my $first  = $editor->PositionFromLine($line);
+	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
+	   $prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+	my $last   = $editor->GetLength();
+	my $text   = $editor->GetTextRange(0, $last);
+
+	my $regex;
+	eval { $regex = qr{\b($prefix\w*(?:::\w+)*)\b} };
+	if ($@) {
+		return ("Cannot build regex for '$prefix'");
+	}
+	my %seen;
+	my @words = grep { ! $seen{$_}++ } sort ($text =~ /$regex/g);
+	if (@words > 20) {
+		@words = @words[0..19];
+	}
+
+	return (length($prefix), @words);
+}
 1;
