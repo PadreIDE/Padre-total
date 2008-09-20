@@ -523,7 +523,6 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-
 	$editor->SetLexer( $editor->{Padre}->lexer );
 	$editor->padre_setup( $editor->{Padre}->mimetype );
 

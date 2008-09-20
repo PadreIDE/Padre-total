@@ -8,6 +8,7 @@ use strict;
 use warnings;
 use Wx qw{
 	wxSTC_LEX_PERL
+	wxSTC_LEX_YAML
 	wxSTC_LEX_AUTOMATIC
 };
 use File::Spec ();
@@ -29,7 +30,7 @@ our %mode = (
 # but not (yet) in 
 #  Wx-0.84/ext/stc/cpp/st_constants.cpp
 # so we have to hard-code their numeric value.
-our %SYNTAX = (
+#our %SYNTAX = (
 #	ada   => wxSTC_LEX_ADA,
 #	asm   => wxSTC_LEX_ASM,
 	# asp => wxSTC_LEX_ASP, #in ifdef
@@ -50,28 +51,26 @@ our %SYNTAX = (
 #	mak   => wxSTC_LEX_MAKEFILE,
 #	mat   => wxSTC_LEX_MATLAB,
 #	pas   => wxSTC_LEX_PASCAL,
-#	pl    => wxSTC_LEX_PERL,
-#	pod   => wxSTC_LEX_PERL,
-#	pm    => wxSTC_LEX_PERL,
 #	php   => wxSTC_LEX_PHPSCRIPT,
 #	py    => wxSTC_LEX_PYTHON,
 #	rb    => wxSTC_LEX_RUBY,
 #	sql   => wxSTC_LEX_SQL,
 #	tcl   => wxSTC_LEX_TCL,
-#	t     => wxSTC_LEX_PERL,
-#	yml   => wxSTC_LEX_YAML,
-#	yaml  => wxSTC_LEX_YAML,
+
 #	vbs   => wxSTC_LEX_VBSCRIPT,
 	#     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
 #	xml   => wxSTC_LEX_XML,
 #	_default_ => wxSTC_LEX_AUTOMATIC,
-);
+#);
 
 our %EXT_MIME = (
-	pm  => 'text/perl',
-	t   => 'text/perl',
-	pl  => 'text/perl',
-	plx => 'text/perl',
+	pm    => 'text/perl',
+	t     => 'text/perl',
+	pl    => 'text/perl',
+	plx   => 'text/perl',
+	pod   => 'text/perl',
+	yml   => 'text/yaml',
+	yaml  => 'text/yaml',
 );
 
 our %MIME_CLASS = (
@@ -80,6 +79,7 @@ our %MIME_CLASS = (
 
 our %MIME_LEXER = (
 	'text/perl' => wxSTC_LEX_PERL,
+	'text/yaml' => wxSTC_LEX_YAML,
 );
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;

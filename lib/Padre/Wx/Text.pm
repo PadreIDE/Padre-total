@@ -21,24 +21,46 @@ sub new {
 }
 
 # most of this should be read from some external files
-# but for now we set this if statement
+# but for now we use this if statement
 sub padre_setup {
 	my ($self, $mimetype) = @_;
+
     if ($mimetype eq 'text/perl') {
         $self->padre_setup_perl;
-    }
+    } elsif ($mimetype) {
+		# setup some default colouring
+		# for the time being it is the same as for Perl
+        $self->padre_setup_perl;
+	} else {
+		# if mimetype is not known, then no colouring for now
+		# but mimimal conifuration should apply here too
+        $self->padre_setup_plain;
+	}
+
     return;
 }
 
-sub padre_setup_perl {
-	my ($self) = @_;
+sub padre_setup_plain {
+	my $self = shift;
 
 	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
 
 	$self->SetFont( $font );
 
 	$self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
+
 	$self->StyleClearAll();
+
+	$self->StyleSetForeground( 0,      Wx::Colour->new(0x00, 0x00, 0x7f));
+
+	return;
+}
+
+sub padre_setup_perl {
+	my ($self) = @_;
+
+	$self->padre_setup_plain;
+
 
 	$self->StyleSetForeground( wxSTC_PL_DEFAULT,      Wx::Colour->new(0x00, 0x00, 0x7f));
 	$self->StyleSetForeground( wxSTC_PL_ERROR,        Wx::Colour->new(0xff, 0x00, 0x00));
@@ -88,7 +110,7 @@ sub padre_setup_perl {
 		$self->SetLayoutDirection( wxLayout_LeftToRight );
 	}
 
-	return $self;
+	return;
 }
 
 1;
