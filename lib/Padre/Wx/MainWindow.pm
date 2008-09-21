@@ -156,8 +156,8 @@ sub new {
 
 	# Create the status bar
 	$self->{statusbar} = $self->CreateStatusBar;
-	$self->{statusbar}->SetFieldsCount(3);
-	$self->{statusbar}->SetStatusWidths(-1, 50, 100);
+	$self->{statusbar}->SetFieldsCount(4);
+	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 
     # Special Key Handling
     EVT_KEY_UP( $self, sub {
@@ -1051,10 +1051,10 @@ sub update_status {
 	my $start = $page->PositionFromLine($line);
 	my $char = $pos-$start;
 
-	$self->SetStatusText("$modified $filename", 0);
-	$self->SetStatusText($newline_type, 1);
-
-	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 2);
+	$self->SetStatusText("$modified $filename",             0);
+	$self->SetStatusText($doc->mimetype,                    1);
+	$self->SetStatusText($newline_type,                     2);
+	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 3);
 
 	return;
 }
