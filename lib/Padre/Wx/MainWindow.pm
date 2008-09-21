@@ -177,9 +177,9 @@ sub new {
 
     # Deal with someone closing the window
     EVT_CLOSE( $self, \&on_close_window);
-	EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui   );
-	EVT_STC_CHANGE(      $self, -1, \&on_stc_change      );
-	EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
+	EVT_STC_UPDATEUI(    $self, -1, \&Padre::Wx::Editor::on_stc_update_ui    );
+	EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
+	EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
 
 	Padre::Wx::Execute->setup( $self );
 	#$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -267,20 +267,6 @@ sub get_current_editor {
 	return $nb->GetPage( $nb->GetSelection );
 }
 
-sub on_stc_update_ui {
-	my ($self, $event) = @_;
-	$self->update_status;
-}
-
-sub on_stc_style_needed {
-	my ( $self, $event ) = @_;
-
-	my $doc = _DOCUMENT() or return;
-	if ($doc->can('colourise')) {
-		$doc->colourise;
-	}
-
-}
 
 sub on_brace_matching {
 	my ($self, $event) = @_;
@@ -1279,39 +1265,6 @@ sub find_editor_of_file {
 }
 
 
-sub on_stc_change {
-	my ($self, $event) = @_;
-
-	return if $self->{_in_setup_editor};
-	my $config = Padre->ide->get_config;
-	return if not $config->{editor}->{show_calltips};
-
-	my $editor = $self->get_current_editor;
-
-	my $pos    = $editor->GetCurrentPos;
-	my $line   = $editor->LineFromPosition($pos);
-	my $first  = $editor->PositionFromLine($line);
-	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
-	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-	if ($editor->CallTipActive) {
-		$editor->CallTipCancel;
-	}
-
-    my $doc = _DOCUMENT() or return;
-    my $keywords = $doc->keywords;
-
-	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
-
-	my $tip;
-	if ( $prefix =~ /($regex)[ (]?$/ ) {
-		$tip = $keywords->{$1};
-	}
-	if ($tip) {
-		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
-	}
-
-	return;
-}
 
 
 sub run_in_padre {

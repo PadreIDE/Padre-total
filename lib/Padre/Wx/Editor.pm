@@ -113,4 +113,54 @@ sub padre_setup_perl {
 	return;
 }
 
+
+sub on_stc_update_ui {
+	my ($self, $event) = @_;
+	$self->update_status;
+}
+
+sub on_stc_style_needed {
+	my ( $self, $event ) = @_;
+
+	my $doc = Padre::Wx::MainWindow::_DOCUMENT() or return;
+	if ($doc->can('colourise')) {
+		$doc->colourise;
+	}
+
+}
+
+sub on_stc_change {
+	my ($self, $event) = @_;
+
+	return if $self->{_in_setup_editor};
+	my $config = Padre->ide->get_config;
+	return if not $config->{editor}->{show_calltips};
+
+	my $editor = $self->get_current_editor;
+
+	my $pos    = $editor->GetCurrentPos;
+	my $line   = $editor->LineFromPosition($pos);
+	my $first  = $editor->PositionFromLine($line);
+	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
+	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+	if ($editor->CallTipActive) {
+		$editor->CallTipCancel;
+	}
+
+    my $doc = Padre::Wx::MainWindow::_DOCUMENT() or return;
+    my $keywords = $doc->keywords;
+
+	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
+
+	my $tip;
+	if ( $prefix =~ /($regex)[ (]?$/ ) {
+		$tip = $keywords->{$1};
+	}
+	if ($tip) {
+		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
+	}
+
+	return;
+}
+
 1;
