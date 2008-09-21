@@ -29,7 +29,7 @@ lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Preferences.pm
-lib/Padre/Wx/Text.pm
+lib/Padre/Wx/Editor.pm
 lib/Padre/Wx/ToolBar.pm
 
 lib/Padre/Pod/Frame.pm

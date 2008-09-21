@@ -238,7 +238,7 @@ use Class::Autouse qw{
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
 	Padre::Wx::Popup
-	Padre::Wx::Text
+	Padre::Wx::Editor
 	Padre::Wx::Menu
 	Padre::Wx::Help
 	Padre::Wx::Ack
@@ -639,7 +639,7 @@ Padre::Wx::App is the Wx::App subclass
 
 Padre::Wx::MainWindow is the main frame, most of the code is currently there.
 
-Padre::Wx::Text holds an editor text control instance
+Padre::Wx::Editor holds an editor text control instance
 (one for each buffer/file)
 
 Padre::Pod::* are there to index and show documentation written in pod.

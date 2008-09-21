@@ -23,7 +23,7 @@ use base qw{
 
 use Padre::Util        ();
 use Padre::Wx          ();
-use Padre::Wx::Text    ();
+use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
 
 our $VERSION = '0.09';
@@ -472,7 +472,7 @@ sub on_split_window {
 	my $pointer = $editor->GetDocPointer();
 	$editor->AddRefDocument($pointer);
 
-	my $new_editor = Padre::Wx::Text->new( $self->{notebook} );
+	my $new_editor = Padre::Wx::Editor->new( $self->{notebook} );
 
 	#my $new_id = $self->setup_editor();
 	#my $new_editor = $self->{notebook}->GetPage( $new_id );
@@ -493,7 +493,7 @@ sub setup_editor {
 	delete $self->{project};
 
 	my $config = Padre->ide->get_config;
-	my $editor = Padre::Wx::Text->new( $self->{notebook} );
+	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 
 	#$editor->SetMouseDownCaptures(0);
 	#$editor->UsePopUp(0);

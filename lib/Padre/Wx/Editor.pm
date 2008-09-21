@@ -1,4 +1,4 @@
-package Padre::Wx::Text;
+package Padre::Wx::Editor;
 
 use 5.008;
 use strict;
