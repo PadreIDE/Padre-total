@@ -195,7 +195,7 @@ sub new {
 		die "Missing or invalid editor";
 	}
 	unless ( $self->mimetype ) {
-		$self->{mimetype} = $self->guess_mimetype;
+		$self->set_mimetype( $self->guess_mimetype );
 	}
 
 	# If we blessed as the base class, and the mime type has a
@@ -359,6 +359,9 @@ sub _set_filename {
 
 sub mimetype {
 	$_[0]->{mimetype};
+}
+sub set_mimetype {
+	$_[0]->{mimetype} = $_[1];
 }
 
 sub lexer {

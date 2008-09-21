@@ -684,8 +684,12 @@ sub on_save_as {
 	}
 	$self->_save_buffer($page_id);
 
-	# change mime-type
-	# change lexer and colouring
+	$doc->set_mimetype( $doc->guess_mimetype );
+	$doc->editor->padre_setup;
+
+	$self->update_status;
+	$self->update_methods;
+
 	return 1;
 }
 
