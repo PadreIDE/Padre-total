@@ -2,8 +2,12 @@
     Allow keeping the search window open (or close it and use F3)
 	Shif-F3 to jump backwards
     Add Search and Replace and global search and replace
+    Setup mapping of file extensions to mime-types and to color coding
     Clean up the MainWindow module, move code to Document and Document::Perl
     Implement an experimental Pasm, Pir and Perl 6 highlighting
+    Allow experimental code to allow the user to execute code within Padre
+    Report if file could not be saved and keep it in unsaved state (bug #74)
+    Separate the Padre::Install module from Build.PL
 
 v0.09 2008.08.17
 
