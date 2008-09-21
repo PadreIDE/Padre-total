@@ -195,32 +195,7 @@ sub new {
 		die "Missing or invalid editor";
 	}
 	unless ( $self->mimetype ) {
-		# default mime-type of new files, should be configurable in the GUI
-		if (not $self->filename) {
-			$self->{mimetype} = 'text/perl';
-		}
-		# Try derive the mime type from the name
-		if ( $self->filename and $self->filename =~ /\.([^.]+)$/ ) {
-			my $ext = lc $1;
-			$self->{mimetype} = $EXT_MIME{$ext} if $EXT_MIME{$ext};
-		}
-
-		unless ( $self->mimetype ) {
-			# Fall back on deriving the type from the content
-			# Hardcode this for now for the special cases we care about.
-			my $text = $self->text_get;
-			if ( $text =~ /\A\#\!/m ) {
-				# Found a hash bang line
-				if ( $text =~ /\A[^\n]\bperl\b/m ) {
-					$self->{mimetype} = 'text/perl';
-				}
-			}
-		}
-
-		# Fall back to a null value
-		unless ( defined $self->mimetype ) {
-			$self->{mimetype} = '';
-		}
+		$self->{mimetype} = $self->guess_mimetype;
 	}
 
 	# If we blessed as the base class, and the mime type has a
@@ -237,6 +212,33 @@ sub new {
 	$self->setup;
 
 	return $self;
+}
+
+sub guess_mimetype {
+	my $self = shift;
+
+	# default mime-type of new files, should be configurable in the GUI
+	if (not $self->filename) {
+		return 'text/perl';
+	}
+	# Try derive the mime type from the name
+	if ( $self->filename and $self->filename =~ /\.([^.]+)$/ ) {
+		my $ext = lc $1;
+		return $EXT_MIME{$ext} if $EXT_MIME{$ext};
+	}
+
+	# Fall back on deriving the type from the content
+	# Hardcode this for now for the special cases we care about.
+	my $text = $self->text_get;
+	if ( $text =~ /\A\#\!/m ) {
+		# Found a hash bang line
+		if ( $text =~ /\A[^\n]\bperl\b/m ) {
+			return 'text/perl';
+		}
+	}
+
+	# Fall back to a null value
+	return '';
 }
 
 sub setup {
