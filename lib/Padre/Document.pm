@@ -96,6 +96,7 @@ our %EXT_MIME = (
 	yaml  => 'text/yaml',
 
 	pasm  => 'text/pasm',
+	pir   => 'text/pir',
 	p6    => 'text/perl6',
 );
 
@@ -103,6 +104,7 @@ our %MIME_CLASS = (
 	'text/perl'  => 'Padre::Document::Perl',
 	'text/perl6' => 'Padre::Document::Perl6',
 	'text/pasm'  => 'Padre::Document::Pasm',
+	'text/pir'   => 'Padre::Document::Pir',
 );
 
 our %MIME_LEXER = (
@@ -130,6 +132,7 @@ our %MIME_LEXER = (
 	'text/xml'        => wxSTC_LEX_XML,
 	'text/yaml'       => wxSTC_LEX_YAML,
 
+	'text/pir'        => wxSTC_LEX_CONTAINER,
 	'text/pasm'       => wxSTC_LEX_CONTAINER,
 	'text/perl6'      => wxSTC_LEX_CONTAINER,
 );

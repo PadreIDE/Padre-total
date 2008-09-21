@@ -1,4 +1,4 @@
-package Padre::Document::Pasm;
+package Padre::Document::Pir;
 
 use 5.008;
 use strict;
@@ -11,7 +11,7 @@ our $VERSION = '0.09';
 our @ISA     = 'Padre::Document';
 
 
-# Naive way to parse and colourise pasm files
+# Naive way to parse and colourise pir files
 sub colourise {
 	my ($self, $first) = @_;
 
@@ -25,13 +25,14 @@ sub colourise {
 #		}
 #	}
 
-	my ($KEYWORD, $REGISTER, $LABEL, $STRING, $COMMENT) = (1 .. 5);
+	my ($KEYWORD, $REGISTER, $LABEL, $DIRECTIVES, $STRING, $COMMENT) = (1 .. 6);
 	my %regex_of = (
-		$KEYWORD  => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
-		$REGISTER => qr/\$?[ISPN]\d+/,
-		$LABEL    => qr/^\s*\w*:/m,
-		$STRING   => qr/(['"]).*\1/,
-		$COMMENT  => qr/#.*/,
+		$KEYWORD    => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
+		$REGISTER   => qr/I0|N\d+/,
+		$LABEL      => qr/^\w*:/m,
+		$STRING     => qr/(['"]).*\1/,
+		$COMMENT    => qr/#.*/,
+		$DIRECTIVES => qr/^\./m,
 	);
 	foreach my $color (keys %regex_of) {
 		while ($text =~ /$regex_of{$color}/g) {

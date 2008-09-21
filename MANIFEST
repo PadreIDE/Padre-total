@@ -18,6 +18,7 @@ lib/Padre/Wx.pm
 lib/Padre/Document/Pasm.pm
 lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
+lib/Padre/Document/Pir.pm
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm

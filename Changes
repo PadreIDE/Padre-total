@@ -3,7 +3,7 @@
 	Shif-F3 to jump backwards
     Add Search and Replace and global search and replace
     Clean up the MainWindow module, move code to Document and Document::Perl
-    Implement an experimental Pasm and Perl 6 highlighting and calltip
+    Implement an experimental Pasm, Pir and Perl 6 highlighting
 
 v0.09 2008.08.17
 
