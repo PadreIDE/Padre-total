@@ -123,7 +123,7 @@ sub new {
     EVT_MENU( $win, # Ctrl-Z
         $menu->{edit}->Append( wxID_UNDO, '' ),
         sub {
-            my $page = Padre::Document->from_selection->page;
+            my $page = Padre::Document->from_selection->editor;
             if ( $page->CanUndo ) {
                $page->Undo;
             }
@@ -133,7 +133,7 @@ sub new {
     EVT_MENU( $win, # Ctrl-Y
         $menu->{edit}->Append( wxID_REDO, '' ),
         sub {
-            my $page = Padre::Document->from_selection->page;
+            my $page = Padre::Document->from_selection->editor;
             if ( $page->CanRedo ) {
                $page->Redo;
             }
