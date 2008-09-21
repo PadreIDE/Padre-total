@@ -195,6 +195,10 @@ sub new {
 		die "Missing or invalid editor";
 	}
 	unless ( $self->mimetype ) {
+		# default mime-type of new files, should be configurable in the GUI
+		if (not $self->filename) {
+			$self->{mimetype} = 'text/perl';
+		}
 		# Try derive the mime type from the name
 		if ( $self->filename and $self->filename =~ /\.([^.]+)$/ ) {
 			my $ext = lc $1;
