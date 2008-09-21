@@ -3,14 +3,14 @@ package Padre::Wx::MainWindow;
 use 5.008;
 use strict;
 use warnings;
-use English        qw(-no_match_vars);
-use FindBin;
 use Cwd            ();
 use Carp           ();
+use Data::Dumper   ();
+use English        qw(-no_match_vars);
 use File::Spec     ();
 use File::Slurp    ();
 use File::Basename ();
-use Data::Dumper   ();
+use FindBin;
 use List::Util     ();
 use Params::Util   ();
 use Wx             qw(:everything);
@@ -164,8 +164,9 @@ sub new {
 	#EVT_RIGHT_UP( $self, \&on_right_click );
 	#EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
 	#EVT_MOTION( $editor, sub {print '.'});
-	EVT_STC_UPDATEUI( $self, -1,  \&on_stc_update_ui );
-	EVT_STC_CHANGE( $self, -1, \&on_stc_change );
+	EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui   );
+	EVT_STC_CHANGE(      $self, -1, \&on_stc_change      );
+	EVT_STC_STYLENEEDED( $self, -1, \&on_stc_syle_needed );
 
 	Padre::Wx::Execute->setup( $self );
 	#$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -293,6 +294,12 @@ sub on_key {
 	return;
 }
 
+sub on_stc_syle_needed {
+	my ($self, $event) = @_;
+	my $doc = _DOCUMENT() or return;
+
+	
+}
 
 sub on_brace_matching {
 	my ($self, $event) = @_;
@@ -362,7 +369,7 @@ sub on_uncomment_block {
 sub on_autocompletition {
 	my $self   = shift;
 
-	my $doc    = _DOCUMENT();
+	my $doc    = _DOCUMENT() or return;
     my ($length, @words)  = $doc->autocomplete;
     if ($length =~ /\D/) {
 		Wx::MessageBox($length, "Autocompletions error", wxOK);
@@ -423,7 +430,7 @@ sub on_close_window {
 
 	my @files;
 	foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
-		my $doc = _DOCUMENT($id);
+		my $doc = _DOCUMENT($id) or next;
 		push @files, $doc->filename;
 	}
 	$config->{main}->{files} = \@files;
@@ -525,6 +532,11 @@ sub setup_editor {
 
 	$editor->SetLexer( $editor->{Padre}->lexer );
 	$editor->padre_setup( $editor->{Padre}->mimetype );
+#	if ($editor->{Padre}->can('get_keywords')) {
+#		my $keywords = $editor->{Padre}->get_keywords;
+#		print "1\n";
+#		$editor->SetKeyWords(0, $keywords);
+#	}
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
@@ -658,7 +670,7 @@ Returns the name filename of the current buffer.
 
 sub get_current_filename {
 	my ($self) = @_;
-    my $doc = _DOCUMENT();
+    my $doc = _DOCUMENT() or return;
 	return $doc->filename;
 }
 
@@ -756,7 +768,7 @@ sub _save_buffer {
 
 	my $page         = $self->{notebook}->GetPage($id);
 	my $content      = $page->GetText;
-    my $doc          = _DOCUMENT($id);
+    my $doc          = _DOCUMENT($id) or return;
 	my $filename     = $doc->filename;
     my $newline_type = $doc->get_newline_type;
 
@@ -786,7 +798,7 @@ sub close {
 	my $self = shift;
 
 	my $page_id = $self->{notebook}->GetSelection;
-	my $doc     = _DOCUMENT($page_id);
+	my $doc     = _DOCUMENT($page_id) or return;
 	local $self->{_in_delete_editor} = 1;
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
@@ -810,7 +822,7 @@ sub close {
 	# Update the alt-n menus
 	$self->{menu}->remove_alt_n_menu;
 	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
-		my $doc = _DOCUMENT($i);
+		my $doc = _DOCUMENT($i) or return;
 		my $file = $doc->filename
 			|| $self->{notebook}->GetPageText($i);
 		$self->{menu}->update_alt_n_menu($file, $i);
@@ -875,8 +887,8 @@ sub update_methods {
 
 	return if $self->{_in_setup_editor};
 
-	my $doc     = _DOCUMENT();
-    
+	my $doc     = _DOCUMENT() or return;
+
 	my @methods = $doc->get_functions;
 	$self->{rightbar}->DeleteAllItems;
 	$self->{rightbar}->InsertStringItem(0, $_) for @methods;
@@ -1108,7 +1120,6 @@ sub update_status {
 	}
 #print "Pageid: $pageid\n";
 	my $page         = $self->{notebook}->GetPage($pageid);
-    #my $doc          = _DOCUMENT($pageid);
 	my $doc          = $page->{Padre};
 	my $line         = $page->GetCurrentLine;
 	my $filename     = $doc->filename || '';
@@ -1344,7 +1355,7 @@ sub find_editor_of_file {
 	my ($self, $file) = @_;
 
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-        my $doc = _DOCUMENT($id);
+        my $doc = _DOCUMENT($id) or return;
 		my $filename = $doc->filename;
 		next if not $filename;
 		return $id if $filename eq $file;
@@ -1371,7 +1382,7 @@ sub on_stc_change {
 		$editor->CallTipCancel;
 	}
 
-    my $doc = _DOCUMENT();
+    my $doc = _DOCUMENT() or return;
     my $keywords = $doc->keywords;
 
 	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
@@ -1391,7 +1402,7 @@ sub on_stc_change {
 sub run_in_padre {
 	my $self = shift;
 
-	my $doc  = _DOCUMENT();
+	my $doc  = _DOCUMENT() or return;
 	my $code = $doc->text_get;
 	eval $code;
 	if ($@) {
