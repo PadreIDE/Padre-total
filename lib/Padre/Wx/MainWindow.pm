@@ -516,6 +516,7 @@ sub setup_editor {
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
+	$self->update_methods($editor->{Padre});
 	return $id;
 }
 
@@ -853,11 +854,12 @@ sub on_goto {
 
 # sub update_methods
 sub update_methods {
-	my $self    = shift;
+	my ($self, $doc) = @_;
 
 	return if $self->{_in_setup_editor};
 
-	my $doc     = _DOCUMENT() or return;
+	$doc  ||= _DOCUMENT();
+	return if not $doc;
 
 	my @methods = $doc->get_functions;
 	$self->{rightbar}->DeleteAllItems;
