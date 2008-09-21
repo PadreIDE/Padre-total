@@ -108,7 +108,7 @@ sub new {
             return if not defined $sub;
             # TODO actually search for sub\s+$sub
             require Padre::Wx::FindDialog;
-            Padre::Wx::FindDialog::_search($self, search_term => "sub $sub");
+            Padre::Wx::FindDialog::_search(search_term => "sub $sub");
             $self->get_current_editor->SetFocus;
             return;
         }
