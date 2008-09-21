@@ -652,12 +652,6 @@ sub set_page_text {
 	return $page->SetText($text);
 }
 
-sub get_page_text {
-	my ($self) = @_;
-	my $id = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-	return $page->GetText;
-}
 
 # Returns true if saved.
 # Returns false if cancelled.
