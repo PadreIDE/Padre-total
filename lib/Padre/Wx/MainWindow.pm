@@ -497,8 +497,7 @@ sub setup_editor {
 
 	my $id = $self->create_tab($editor, $file, $title);
 
-	$editor->SetLexer( $editor->{Padre}->lexer );
-	$editor->padre_setup( $editor->{Padre}->mimetype );
+	$editor->padre_setup;
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;
@@ -684,6 +683,9 @@ sub on_save_as {
 		}
 	}
 	$self->_save_buffer($page_id);
+
+	# change mime-type
+	# change lexer and colouring
 	return 1;
 }
 

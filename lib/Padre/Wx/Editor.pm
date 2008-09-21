@@ -23,8 +23,12 @@ sub new {
 # most of this should be read from some external files
 # but for now we use this if statement
 sub padre_setup {
-	my ($self, $mimetype) = @_;
+	my ($self) = @_;
 
+	$self->SetLexer( $self->{Padre}->lexer );
+#	 $self->Colourise(0, $self->GetTextLength);
+
+	my $mimetype = $self->{Padre}->mimetype;
     if ($mimetype eq 'text/perl') {
         $self->padre_setup_perl;
     } elsif ($mimetype) {

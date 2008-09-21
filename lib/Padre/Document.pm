@@ -356,10 +356,6 @@ sub filename {
 sub _set_filename {
 	$_[0]->{filename} = $_[1];
 }
-#	if ($data) {
-#	   $editor->SetLexer( $self->_lexer($data) );
-#	   $editor->Colourise(0, $editor->GetTextLength);
-#	}
 
 sub mimetype {
 	$_[0]->{mimetype};
