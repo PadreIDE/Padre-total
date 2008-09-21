@@ -32,7 +32,7 @@ sub new {
 	return $self;
 }
 
-sub reflow {
+sub refresh {
 	my $self    = shift;
 	my $doc     = shift;
 	my $enabled = !! ( $doc and ( $doc->is_new or $doc->is_modified ) );

@@ -99,30 +99,38 @@ sub new {
 	);
 	$self->{rightbar}->InsertColumn(0, 'Methods');
 	$self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
-#    EVT_LIST_ITEM_SELECTED(
-#        $self,
-#        $self->{rightbar},
-#        \&method_selected,
-#    );
-	EVT_LIST_ITEM_ACTIVATED(
-		$self,
-		$self->{rightbar},
-		\&method_selected_dclick,
-	);
+    EVT_LIST_ITEM_ACTIVATED(
+        $self,
+        $self->{rightbar},
+        sub {
+            my ($self, $event) = @_;
+            my $sub = $event->GetItem->GetText;
+            return if not defined $sub;
+            # TODO actually search for sub\s+$sub
+            require Padre::Wx::FindDialog;
+            Padre::Wx::FindDialog::_search($self, search_term => "sub $sub");
+            $self->get_current_editor->SetFocus;
+            return;
+        }
+    );
 
-	# Create the main notebook for the documents
-	$self->{notebook} = Wx::Notebook->new(
-		$self->{upper_panel},
-		-1,
-		wxDefaultPosition,
-		wxDefaultSize,
-		wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
-	);
-	EVT_NOTEBOOK_PAGE_CHANGED(
-		$self,
-		$self->{notebook},
-		\&on_panel_changed,
-	);
+    # Create the main notebook for the documents
+    $self->{notebook} = Wx::Notebook->new(
+        $self->{upper_panel},
+        -1,
+        wxDefaultPosition,
+        wxDefaultSize,
+        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
+    );
+    EVT_NOTEBOOK_PAGE_CHANGED(
+        $self,
+        $self->{notebook},
+        sub {
+            $_[0]->update_status;
+            $_[0]->update_methods;
+            return;
+        },
+    );
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Wx::TextCtrl->new(
@@ -151,19 +159,24 @@ sub new {
 	$self->{statusbar}->SetFieldsCount(3);
 	$self->{statusbar}->SetStatusWidths(-1, 50, 100);
 
-	# Attach main window events
-	EVT_CLOSE( $self, \&on_close_window);
-	EVT_KEY_UP( $self, \&on_key );
+    # Special Key Handling
+    EVT_KEY_UP( $self, sub {
+        my ($self, $event) = @_;
+        $self->update_status;
+        my $mod  = $event->GetModifiers || 0;
+        my $code = $event->GetKeyCode;
+        if ( $mod == 2 ) { # Ctrl
+            # Ctrl-TAB  #TODO it is already in the menu
+            $self->on_next_pane if $code == WXK_TAB;
+        } elsif ( $mod == 6 ) { # Ctrl-Shift
+            # Ctrl-Shift-TAB #TODO it is already in the menu
+            $self->on_prev_pane if $code == WXK_TAB;
+        }
+        return;
+    } );
 
-	#EVT_LEFT_UP( $self, \&on_left_mouse_up );
-	#EVT_LEFT_DOWN( $self, \&on_left_mouse_down );
-	#EVT_MOTION( $self, sub {print "mot\n"; } );
-	#EVT_MOUSE_EVENTS( $self, sub {print "xxx\n"; });
-	#EVT_MIDDLE_DOWN( $self, sub {print "xxx\n"; } );
-	#EVT_RIGHT_DOWN( $editor, \&on_right_click );
-	#EVT_RIGHT_UP( $self, \&on_right_click );
-	#EVT_STC_DWELLSTART( $editor, -1, sub {print 1});
-	#EVT_MOTION( $editor, sub {print '.'});
+    # Deal with someone closing the window
+    EVT_CLOSE( $self, \&on_close_window);
 	EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui   );
 	EVT_STC_CHANGE(      $self, -1, \&on_stc_change      );
 	EVT_STC_STYLENEEDED( $self, -1, \&on_stc_syle_needed );
@@ -231,21 +244,6 @@ sub _load_files {
 #####################################################################
 # Event Handlers
 
-sub method_selected_dclick {
-	my ($self, $event) = @_;
-	$self->method_selected($event);
-	$self->get_current_editor->SetFocus;
-	return;
-}
-
-sub method_selected {
-	my ($self, $event) = @_;
-	my $sub = $event->GetItem->GetText;
-	return if not defined $sub;
-	Padre::Wx::FindDialog::_search(search_term => "sub $sub"); # TODO actually search for sub\s+$sub
-	return;
-}
-
 =head2 get_current_editor
 
  my $editor = $self->get_current_editor;
@@ -272,33 +270,6 @@ sub get_current_editor {
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
 	$self->update_status;
-}
-
-sub on_key {
-	my ($self, $event) = @_;
-
-	$self->update_status;
-
-	my $mod  = $event->GetModifiers() || 0;
-	my $code = $event->GetKeyCode;
-	if ($mod == 2) {            # Ctrl
-		if ($code == WXK_TAB) {              # Ctrl-TAB  #TODO it is already in the menu
-			$self->on_next_pane;
-		}
-	} elsif ($mod == 6) {                         # Ctrl-Shift
-		if ($code == WXK_TAB) {                   # Ctrl-Shift-TAB #TODO it is already in the menu
-			$self->on_prev_pane;
-		}
-	}
-
-	return;
-}
-
-sub on_stc_syle_needed {
-	my ($self, $event) = @_;
-	my $doc = _DOCUMENT() or return;
-
-	
 }
 
 sub on_brace_matching {
@@ -655,12 +626,6 @@ sub on_open {
 	return;
 }
 
-sub on_new {
-	my ($self) = @_;
-	$self->setup_editor;
-	return;
-}
-
 
 =head2 get_current_filename
 
@@ -909,37 +874,6 @@ sub _get_selection {
 	return $page->GetSelectedText;
 }
 
-sub on_undo { # Ctrl-Z
-	my $self = shift;
-
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-	if ( $page->CanUndo ) {
-		$page->Undo;
-	}
-
-	return;
-}
-
-sub on_redo { # Shift-Ctr-Z
-	my $self = shift;
-
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-	if ( $page->CanRedo ) {
-		$page->Redo;
-	}
-
-	return;
-}
-
-#sub on_copy {
-#    my ($self) = @_;
-#}
-#sub on_paste {
-#    my ($self) = @_;
-#}
-
 sub on_new_project {
 	my ($self) = @_;
 
@@ -1118,7 +1052,6 @@ sub update_status {
 		$self->SetStatusText("", $_) for (0..2);
 		return;
 	}
-#print "Pageid: $pageid\n";
 	my $page         = $self->{notebook}->GetPage($pageid);
 	my $doc          = $page->{Padre};
 	my $line         = $page->GetCurrentLine;
@@ -1127,11 +1060,9 @@ sub update_status {
 	my $modified     = $page->GetModify ? '*' : ' ';
 
 	if ($filename) {
-#print "set1 ($filename)\n";
 		$self->{notebook}->SetPageText($pageid, $modified . File::Basename::basename $filename);
 	} else {
 		my $text = substr($self->{notebook}->GetPageText($pageid), 1);
-#print "set2 $text\n";
 		$self->{notebook}->SetPageText($pageid, $modified . $text);
 	}
 	my $pos = $page->GetCurrentPos;
@@ -1146,16 +1077,6 @@ sub update_status {
 
 	return;
 }
-
-sub on_panel_changed {
-	my ($self) = @_;
-
-	$self->update_status;
-	$self->update_methods;
-
-	return;
-}
-
 
 ###### preferences and toggle functions
 
@@ -1186,7 +1107,7 @@ sub zoom {
 }
 
 
-sub on_setup {
+sub on_preferences {
 	my ($self) = @_;
 
 	my $config = Padre->ide->get_config;
@@ -1353,7 +1274,6 @@ sub convert_to {
 
 sub find_editor_of_file {
 	my ($self, $file) = @_;
-
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
         my $doc = _DOCUMENT($id) or return;
 		my $filename = $doc->filename;

@@ -228,7 +228,7 @@ sub _get_data_from {
 	return 1;
 }
 
-sub on_find_again {
+sub on_find_next {
 	my $main_window = shift;
 
 	my $term = Padre->ide->get_config->{search_terms}->[0];
@@ -240,7 +240,7 @@ sub on_find_again {
 	return;
 }
 
-sub on_find_again_reverse {
+sub on_find_previous {
 	my $main_window = shift;
 
 	my $term = Padre->ide->get_config->{search_terms}->[0];

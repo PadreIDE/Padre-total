@@ -6,7 +6,7 @@ v0.09 2008.08.17
     Always show status bar on Win32, as removing it breaks (ADAMK)
     Added experimental Padre::Document::Perl (ADAMK)
     Added experimental PPI intergration (ADAMK)
-    Experimental menu reflow closer to being usable (ADAMK)
+    Experimental menu refresh closer to being usable (ADAMK)
     Split out Wx-related utility functions into Padre::Wx (ADAMK)
     Adding common platform-detection logic to Padre::Util (ADAMK(
     If we start with a new file and then open another one,
