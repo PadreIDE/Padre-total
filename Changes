@@ -1,3 +1,10 @@
+    Improve the search tool (include backward search)
+    Allow keeping the search window open (or close it and use F3)
+	Shif-F3 to jump backwards
+    Add Search and Replace and global search and replace
+    Clean up the MainWindow module, move code to Document and Document::Perl
+    Implement an experimental Pasm and Perl 6 highlighting and calltip
+
 v0.09 2008.08.17
 
     Move various relevant menu items into a "Window" menu (ADAMK)

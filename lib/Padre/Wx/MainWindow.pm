@@ -179,7 +179,7 @@ sub new {
     EVT_CLOSE( $self, \&on_close_window);
 	EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui   );
 	EVT_STC_CHANGE(      $self, -1, \&on_stc_change      );
-	EVT_STC_STYLENEEDED( $self, -1, \&on_stc_syle_needed );
+	EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
 
 	Padre::Wx::Execute->setup( $self );
 	#$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -270,6 +270,16 @@ sub get_current_editor {
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
 	$self->update_status;
+}
+
+sub on_stc_style_needed {
+	my ( $self, $event ) = @_;
+
+	my $doc = _DOCUMENT() or return;
+	if ($doc->can('colourise')) {
+		$doc->colourise;
+	}
+
 }
 
 sub on_brace_matching {
@@ -503,11 +513,6 @@ sub setup_editor {
 
 	$editor->SetLexer( $editor->{Padre}->lexer );
 	$editor->padre_setup( $editor->{Padre}->mimetype );
-#	if ($editor->{Padre}->can('get_keywords')) {
-#		my $keywords = $editor->{Padre}->get_keywords;
-#		print "1\n";
-#		$editor->SetKeyWords(0, $keywords);
-#	}
 
 	$self->{_in_setup_editor} = 0;
 	$self->update_status;

@@ -14,22 +14,24 @@ use Wx qw{
 	wxSTC_LEX_CSS
 	wxSTC_LEX_DIFF
 	wxSTC_LEX_HTML
-	wxSTC_LEX_PERL
-	wxSTC_LEX_YAML
-	wxSTC_LEX_AUTOMATIC
-	wxSTC_LEX_XML
 	wxSTC_LEX_LATEX
 	wxSTC_LEX_LISP
 	wxSTC_LEX_LUA
 	wxSTC_LEX_MAKEFILE
 	wxSTC_LEX_MATLAB
 	wxSTC_LEX_PASCAL
+	wxSTC_LEX_PERL
 	wxSTC_LEX_PHPSCRIPT
 	wxSTC_LEX_PYTHON
 	wxSTC_LEX_RUBY
 	wxSTC_LEX_SQL
 	wxSTC_LEX_TCL
 	wxSTC_LEX_VBSCRIPT
+	wxSTC_LEX_YAML
+	wxSTC_LEX_XML
+
+	wxSTC_LEX_AUTOMATIC
+	wxSTC_LEX_CONTAINER
 };
 use File::Spec ();
 use List::Util ();
@@ -92,10 +94,15 @@ our %EXT_MIME = (
 	xml   => 'text/xml',
 	yml   => 'text/yaml',
 	yaml  => 'text/yaml',
+
+	pasm  => 'text/pasm',
+	p6    => 'text/perl6',
 );
 
 our %MIME_CLASS = (
-	'text/perl' => 'Padre::Document::Perl',
+	'text/perl'  => 'Padre::Document::Perl',
+	'text/perl6' => 'Padre::Document::Perl6',
+	'text/pasm'  => 'Padre::Document::Pasm',
 );
 
 our %MIME_LEXER = (
@@ -122,6 +129,9 @@ our %MIME_LEXER = (
     'text/vbscript'   => wxSTC_LEX_VBSCRIPT,
 	'text/xml'        => wxSTC_LEX_XML,
 	'text/yaml'       => wxSTC_LEX_YAML,
+
+	'text/pasm'       => wxSTC_LEX_CONTAINER,
+	'text/perl6'      => wxSTC_LEX_CONTAINER,
 );
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
@@ -139,10 +149,17 @@ sub from_selection {
 sub from_page_id {
 	my $class    = shift;
 	my $page_id  = shift;
+
+	# TODO maybe report some error?
+	return if not defined $page_id or $page_id =~ /\D/;
+
 	if ( $page_id == -1 ) {
 		# No page selected
 		return;
 	}
+
+	return if $page_id >= $class->notebook->GetPageCount;
+
 	my $page     = $class->notebook->GetPage( $page_id );
 
 	return $page->{Padre};
@@ -342,7 +359,7 @@ sub mimetype {
 sub lexer {
 	my $self = shift;
 	return $DEFAULT_LEXER unless $self->mimetype;
-	return $DEFAULT_LEXER unless $MIME_LEXER{$self->mimetype};
+	return $DEFAULT_LEXER unless defined $MIME_LEXER{$self->mimetype};
 	return $MIME_LEXER{$self->mimetype};
 }
 
