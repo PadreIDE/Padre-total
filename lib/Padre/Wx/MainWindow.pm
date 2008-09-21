@@ -812,12 +812,6 @@ sub on_close_all {
 	return 1;
 }
 
-sub _buffer_changed {
-	my ($self, $id) = @_;
-	my $page = $self->{notebook}->GetPage($id);
-	return $page->GetModify;
-}
-
 sub on_goto {
 	my ($self) = @_;
 
