@@ -7,7 +7,7 @@ use Params::Util qw{ _INSTANCE };
 use Wx           ();
 use Padre::Wx    ();
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 our @ISA     = 'Wx::ToolBar';
 
 sub new {

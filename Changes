@@ -1,3 +1,5 @@
+v0.10 2008.09.22
+
     Improve the search tool (include backward search)
     Allow keeping the search window open (or close it and use F3)
 	Shif-F3 to jump backwards
@@ -8,8 +10,10 @@
     Allow experimental code to allow the user to execute code within Padre
     Report if file could not be saved and keep it in unsaved state (bug #74)
     Separate the Padre::Install module from Build.PL
+    Set default mime-type of new files to be perl
+    Change mime-type when saving file to the appropriate new mime-type
 
-v0.09 2008.08.17
+v0.09 2008.09.17
 
     Move various relevant menu items into a "Window" menu (ADAMK)
     Rename "Enable CallTip" to "Show Call Tips" for consistency (ADAMK)

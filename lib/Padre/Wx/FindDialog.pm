@@ -10,7 +10,7 @@ use English        qw(-no_match_vars);
 use Wx             qw(:everything);
 use Wx::Event      qw(:everything);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 my %cbs = (
 	case_insensitive => {

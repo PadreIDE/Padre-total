@@ -37,7 +37,7 @@ use File::Spec ();
 use List::Util ();
 use Carp       ();
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 my $cnt         = 0;
 our %mode = (

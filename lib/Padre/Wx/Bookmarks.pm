@@ -7,7 +7,7 @@ use Wx::Event    qw(:everything);
 use List::Util   qw(max);
 use Data::Dumper qw(Dumper);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 my $tb;
 

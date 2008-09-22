@@ -8,7 +8,7 @@ use Params::Util qw{_INSTANCE};
 use Wx           qw(:everything);
 use Wx::Event    qw(:everything);
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 
 

@@ -9,6 +9,6 @@ use ORLite 0.13 {
 	tables => 0,
 };
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 1;
