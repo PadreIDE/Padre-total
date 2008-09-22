@@ -6,7 +6,6 @@ use warnings;
 use Cwd            ();
 use Carp           ();
 use Data::Dumper   ();
-use English        qw(-no_match_vars);
 use File::Spec     ();
 use File::Slurp    ();
 use File::Basename ();

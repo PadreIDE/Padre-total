@@ -6,7 +6,6 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use English        qw(-no_match_vars);
 use Wx             qw(:everything);
 use Wx::Event      qw(:everything);
 
