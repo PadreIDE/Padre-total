@@ -18,6 +18,7 @@ our @EXPORT = qw(
 				dir_selector
 				dir_picker
 				file_picker
+				date_picker
 				choice
 				single_choice
 				message
@@ -26,6 +27,7 @@ our @EXPORT = qw(
 #                 print_out close_app open_frame display_text
 
 use Wx                 qw(:everything);
+#qw(wxID_CANCEL wxID_OK wxOK wxFD_OPEN :sizer :datepicker);
 use Wx::STC            ();
 use Wx::Event          qw(:everything);
 
@@ -145,32 +147,56 @@ sub dir_selector {
     return $dir;
 }
 
+sub date_picker {
+
+	require Wx::DateTime;
+    require Wx::Calendar;
+	my $date = Wx::DateTime->newFromDMY( 8, 0, 1979, 1, 1, 1, 1 );
+	my $calendar = Wx::DatePickerCtrl->new( undef, -1, $date );
+
+	return dialog(
+				sub { Wx::DatePickerCtrl->new( $_[0], -1 ) },
+				sub { $_[0]; },
+				sub { $_[0]->GetValue->Format; },
+				{
+					title => 'Select date',
+				},
+	);
+}
 
 sub file_picker {
+
 	require Cwd;
-	return dialog('Wx::FilePickerCtrl', 
-	              sub {$_[0]->SetPath(Cwd::cwd()) }, # setup
-	              sub {$_[0]->GetPath; },            # get data
-	              title => 'Select file',
+	return dialog(
+				sub { Wx::FilePickerCtrl->new( $_[0] ) }, 
+				sub { $_[0]->SetPath(Cwd::cwd()) }, # setup
+				sub { $_[0]->GetPath; },            # get data
+				{
+					title => 'Select file',
+				},
 	);
 }
 
 sub dir_picker {
 	require Cwd;
-	return dialog('Wx::DirPickerCtrl', 
-	              sub {$_[0]->SetPath(Cwd::cwd()) }, # setup
-	              sub {$_[0]->GetPath; },            # get data
-	              title => 'Select directory',
+	return dialog(
+				sub { Wx::DirPickerCtrl->new( $_[0] ) },
+				sub { $_[0]->SetPath(Cwd::cwd()) }, # setup
+				sub { $_[0]->GetPath; },            # get data
+				{
+					title => 'Select directory',
+				},
 	);
 }
 
 sub dialog {
-	my ($control, $setup, $getdata, %args) = @_;
+	my ($control, $setup, $getdata, $args) = @_;
 
-	$args{title} ||= '';
+	$args          ||= {};
+	$args->{title} ||= '';
 
-	my $dialog = Wx::Dialog->new( undef, -1, $args{title} );
-	my $ctrl   = $control->new( $dialog, -1, "", $args{title} );
+	my $dialog = Wx::Dialog->new( undef, -1, $args->{title} );
+	my $ctrl   = $control->($dialog);
 	my $ok     = Wx::Button->new( $dialog, wxID_OK, '');
 	my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '', [-1, -1], $ok->GetSize);
 
@@ -281,7 +307,6 @@ sub message {
 #sub calendar {
 #    my ( %args ) = @_;
 #
-#    require Wx::Calendar;
 #    my $cal = Wx::CalendarCtrl->new();
 #    $cal->Show;
 #
