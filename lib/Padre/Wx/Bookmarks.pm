@@ -77,7 +77,7 @@ sub dialog {
 sub list_bookmarks {
 	my ($dialog, $rows, $button_size) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 	my $height = 0;
 	my $width  = 25;
@@ -117,7 +117,7 @@ sub on_set_bookmark {
 
 	#print Dumper $data;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $shortcut = delete $data->{shortcut};
 	#my $text     = delete $data->{text};
 	
@@ -136,7 +136,7 @@ sub on_goto_bookmark {
 
 	dialog($self);
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $selection = $tb->GetSelection;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 	my $bookmark = $config->{bookmarks}{ $shortcuts[$selection] };
@@ -171,7 +171,7 @@ sub on_delete_bookmark {
 	my ($self, $event) = @_;
 
 	my $selection = $tb->GetSelection;
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 	delete $config->{bookmarks}{ $shortcuts[$selection] };
 	$tb->DeletePage($selection);

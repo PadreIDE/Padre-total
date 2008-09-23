@@ -200,16 +200,11 @@ If the user then presses Replace we open the file in an editor window and go on.
 If the user presses Search then we show the next occurance.
 Opened and edited files will be left in a not saved state.
 
-
-
 =cut
 
 use 5.008;
 use strict;
 use warnings;
-
-our $VERSION = '0.10';
-
 use Carp           ();
 use File::Spec     ();
 use File::HomeDir  ();
@@ -217,6 +212,8 @@ use Getopt::Long   ();
 use YAML::Tiny     ();
 use DBI            ();
 use Class::Autouse ();
+
+our $VERSION = '0.10';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
@@ -230,6 +227,7 @@ BEGIN {
 	$Class::Autouse::LOADED{'Wx::Object'} = 1;
 }
 use Class::Autouse qw{
+	Padre::DB
 	Padre::Document
 	Padre::Document::Perl
 	Padre::Project
@@ -252,11 +250,6 @@ sub perl_interpreter {
 	return Probe::Perl->find_perl_interpreter;
 }
 
-use base 'Class::Accessor';
-
-__PACKAGE__->follow_best_practice;
-__PACKAGE__->mk_accessors(qw(config index));
-
 my @history = qw(files pod);
 
 my $SINGLETON = undef;
@@ -265,41 +258,35 @@ sub new {
 	my $class = shift;
 
 	# Create the empty object
-	my $self  = bless {
+	my $self = $SINGLETON = bless {
 		# Wx Attributes
 		wx          => undef,
 
 		# Internal Attributes
 		config_dir  => undef,
 		config_yaml => undef,
-		config_db   => undef,
-		recent      => {
-			files => [],
-			pod   => [],
-		},
 
-	# Plugin Attributes
+		# Plugin Attributes
 		plugin_manager => undef,
 
-	# Second-Generation Object Model
-	# (Adam says ignore these for now, but don't comment out)
-	project  => {},
-	document => {},
+		# Second-Generation Object Model
+		# (Adam says ignore these for now, but don't comment out)
+		project  => {},
+		document => {},
 
 	}, $class;
 
-	# Locate the configuration directory
+	# Locate the configuration
 	$self->{config_dir}  = Padre::Config->default_dir;
 	$self->{config_yaml} = Padre::Config->default_yaml;
-	$self->{config_db}   = Padre::Config->default_db;
+	$self->{config}      = Padre::Config->read( $self->config_yaml );
+	$self->{config}    ||= Padre::Config->new;
 
-	$self->load_config;
+	$self->{plugin_manager} = Padre::PluginManager->new($self);
 
-	$self->_process_command_line;
+	# Load the database
+	Class::Autouse->load('Padre::DB');
 
-	$self->{plugin_manager} = Padre::PluginManager->new($self),
-
-	$SINGLETON = $self;
 	return $self;
 }
 
@@ -309,8 +296,13 @@ sub ide {
 }
 
 sub wx {
-	$_[0]->{wx} or
-	$_[0]->{wx} = Padre::Wx::App->new;
+	my $self = shift;
+	$self->{wx} or
+	$self->{wx} = Padre::Wx::App->new(@_);
+}
+
+sub config {
+	$_[0]->{config};
 }
 
 sub config_dir {
@@ -321,296 +313,86 @@ sub config_yaml {
 	$_[0]->{config_yaml};
 }
 
-sub config_db {
-	$_[0]->{config_db};
-}
-
 sub plugin_manager {
 	$_[0]->{plugin_manager};
 }
 
-sub db {
-	require Padre::DB;
-	return 'Padre::DB';
-}
-
 sub run {
-	my ($self) = @_;
-	if ( $self->get_index ) {
-		$self->run_indexer;
-	} else {
-		# FIXME: This call should be delayed until after the
-		# window was opened but my Wx skills do not exist. --Steffen
-		# (RT #1)
-		$self->plugin_manager->load_plugins();
-		$self->run_editor;
-	}
-	return;
-}
-
-sub run_indexer {
-	my ($self) = @_;
-
-	require Padre::Pod::Indexer;
-	my $indexer = Padre::Pod::Indexer->new;
-	my @files   = $indexer->list_all_files(@INC);
-
-	$self->remove_modules;
-	$self->add_modules(@files);
-
-	return;
-}
-
-sub _process_command_line {
-	my ($self) = @_;
+	my $self = shift;
 
 	my %opt;
 	Getopt::Long::GetOptions(\%opt, "index", "help") or usage();
 	usage() if $opt{help};
 
-	$self->set_files(@ARGV);
-	$self->set_index($opt{index});
+	# Launch the indexer if requested
+	return $self->run_indexer if $opt{index};
+
+	# FIXME: This call should be delayed until after the
+	# window was opened but my Wx skills do not exist. --Steffen
+	# (RT #1)
+	$self->plugin_manager->load_plugins;
+	return $self->run_editor( @ARGV );
+}
+
+sub run_indexer {
+	my ($self) = @_;
+
+	# Run the indexer
+	require Padre::Pod::Indexer;
+	my $indexer = Padre::Pod::Indexer->new;
+	my @files   = $indexer->list_all_files(@INC);
+
+	# Save to the database
+	Padre::DB->begin;
+	Padre::DB->remove_modules;
+	Padre::DB->add_modules(@files);
+	Padre::DB->commit;
 
 	return;
 }
 
 sub run_editor {
 	my $self = shift;
-	$self->wx->MainLoop;
+	$self->wx(@_)->MainLoop;
 	$self->{wx} = undef;
 	return;
 }
 
-sub config_dbh {
-	my $self = shift;
-	my $path = $self->config_db;
-	my $new  = not -e $path;
-	my $dbh  = DBI->connect("dbi:SQLite:dbname=$path", "", "", {
-		RaiseError       => 1,
-		PrintError       => 1,
-		AutoCommit       => 1,
-		FetchHashKeyName => 'NAME_lc',
-	} );
-	if ( $new ) {
-		$self->create_config($dbh);
-	}
-	return $dbh;
-}
-
-sub load_config {
-	my $self = shift;
-
-	# Load the YAML configuration file
-	my $config = Padre::Config->read( $self->config_yaml )
-		      || Padre::Config->new;
-	$self->set_config( $config );
-
-	# Load the database parts of the configuration
-	my $dbh = $self->config_dbh;
-	my $sth = $dbh->prepare("SELECT name FROM history WHERE type = ? ORDER BY id");
-
-	foreach my $type (@history) {
-		$sth->execute($type);
-		#$Padre::Pod::Viewer::current = 0;
-		while (my ($name) = $sth->fetchrow_array) {
-			$self->add_to_recent($type, $name); 
-		}
-	}
-
-	return;
-}
-
-sub add_to_recent {
-	my $self = shift;
-	my $type = shift or Carp::confess("No type given");
-	my $item = shift;
-	unless ( grep { $_ eq $type } @history ) {
-		Carp::confess("Invalid type '$type'");
-	}
-
-	my @recent = $self->get_recent($type);
-	if (not grep {$_ eq $item} @recent) {
-		push @recent, $item;
-		my $MAX = 20;
-		if (@recent > $MAX) {
-			@recent = @recent[$#recent-$MAX..$#recent];
-		}
-		@{ $self->{recent}->{$type} } = @recent;
-		$self->set_current_index($type, $#recent);
-	}
-
-	return;
-}
-
-sub get_recent {
-	my ($self, $type) = @_;
-
-	Carp::confess("No type given") if not $type;
-	Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-
-	return @{ $self->{recent}->{$type} };
-}
-
-# gets a type, returns a name
-sub get_current {
-	my ($self, $type) = @_;
-
-	Carp::confess("No type given") if not $type;
-	Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-
-	my $index = $self->get_current_index($type);
-	return if not defined $index or $index == -1;
-	return $self->{recent}->{$type}->[ $index ];
-}
-
-# gets a type, returns and index
-sub get_current_index {
-	my ($self, $type) = @_;
-
-	Carp::confess("No type given") if not $type;
-	Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-
-	return $self->{current}->{$type};
-}
-
-# gets a type and a name
-sub set_current {
-	my ($self, $type, $name) = @_;
-
-	Carp::confess("No type given") if not $type;
-	Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-
-	foreach my $i (0.. @{ $self->{recent}->{$type} } -1) {
-		if ($self->{recent}->{$type}->[$i] eq $name) {
-			$self->{current}->{$type} = $i;
-			last;
-		}
-	}
-	return;
-}
-
-# gets a type and a number
-sub set_current_index {
-	my ($self, $type, $n) = @_;
-
-	Carp::confess("No type given") if not $type;
-	Carp::confess("Invalid type '$type'") if not grep {$_ eq $type} @history;
-	$self->{current}->{$type} = $n;
-	return; 
-}
-
-
-sub set_item {
-	my ($self, $type, $number) = @_;
-
-	my @recent = $self->get_recent($type);
-	my $item = $recent[$number];
-	$self->set_current_index('pod', $number);
-
-	return $item;
-}
-
-sub remove_modules {
-	$_[0]->config_dbh->do("DELETE FROM modules");
-	return;
-}
-
-sub add_modules {
-	my ($self, @modules) = @_;
-
-	my $dbh = $self->config_dbh;
-	$dbh->begin_work;
-	my $sth = $dbh->prepare("INSERT INTO modules (name) VALUES (?)");
-	foreach my $m (@modules) {
-		$sth->execute($m);
-	}
-	$dbh->commit;
-	return;
-}
-
-sub get_modules {
-	my ($self, $part) = @_;
-	my $dbh = $self->config_dbh;
-	#$dbh->prepare("SELECT name FROM modules ORDER BY name");
-	#$dbh->execute;
-	my $sql = "SELECT name FROM modules";
-	my @bind_values;
-	if ($part) {
-		$sql .= " WHERE name LIKE ?";
-		push @bind_values, '%' . $part .  '%';
-	}
-	$sql .= " ORDER BY name";
-	#print "$sql\n";
-	my $names = $dbh->selectcol_arrayref($sql, {}, @bind_values);
-
-	return $names;
-}
-
+# Save the YAML configuration file
 sub save_config {
-	my ($self) = @_;
-
-	# Save the database configuration information
-	my $dbh = $self->config_dbh;
-	$dbh->do("DELETE FROM history");
-	my $sth = $dbh->prepare("INSERT INTO history (type, name) VALUES (?, ?)");
-	foreach my $type (@history) {
-		foreach my $name ($self->get_recent($type)) {
-			$sth->execute($type, $name);
-		}
-	}
-
-	# Save the YAML configuration file
-	$self->get_config->write( $self->config_yaml );
-
-	return;
-}
-
-sub create_config {
-	my ($self, $dbh) = @_;
-	$dbh->do("CREATE TABLE modules (id INTEGER PRIMARY KEY, name VARCHAR(100))");
-	$dbh->do("CREATE TABLE history (id INTEGER PRIMARY KEY, type VARCHAR(100), name VARCHAR(100))");
-	return;
+	$_[0]->config->write( $_[0]->config_yaml );
 }
 
 # returns the name of the next module
 sub next_module {
 	my ($self) = @_;
 
-	my $current = $self->get_current_index('pod');
-	return if not defined $current;
+	# Temporarily breaking the next and back buttons
+	# my $current = $self->get_current_index('pod');
+	# return if not defined $current;
+	#
+	# my @current = Padre::DB->get_recent_pod;
+	# return if $current == $#current;
+	# $self->set_current_index('pod', $current + 1);
 
-	my @current = $self->get_recent('pod');
-	return if $current == $#current;
-	$self->set_current_index('pod', $current + 1);
-
-	return $self->get_current('pod');
+	return Padre::DB->get_current_pod;
 }
 
 # returns the name of the previous module
 sub prev_module {
 	my ($self) = @_;
 
-	my $current = $self->get_current_index('pod');
-	return if not defined $current;
+	# Temporarily breaking the next and back buttons
+	# my $current = $self->get_current_index('pod');
+	# return if not defined $current;
+	#
+	# return if not $current;
+	# $self->set_current_index('pod', $current - 1);
 
-	return if not $current;
-	$self->set_current_index('pod', $current - 1);
-
-	return $self->get_current('pod');
+	return Padre::DB->get_current_pod;
 }
 
-sub set_files {
-	my ($self, @files) = @_;
-	@{ $self->{_files} } = @files;
-	return;
-}
-
-sub get_files {
-	my ($self) = @_;
-	return ($self->{_files} and ref ($self->{_files}) eq 'ARRAY' ? @{ $self->{_files} } : ());
-}
-
-sub usage { die <<"END_USAGE" }
+sub usage { print <<"END_USAGE"; exit(1) }
 Usage: $0 [FILENAMEs]
            --index to index the modules found on this computer
            --help this help

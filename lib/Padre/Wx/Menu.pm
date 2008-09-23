@@ -21,7 +21,7 @@ sub new {
     my $class        = shift;
     my $win          = shift;
     my $ide          = Padre->ide;
-    my $config       = $ide->get_config;
+    my $config       = $ide->config;
     my $experimental = $config->{experimental};
 
     # Create the menu object
@@ -90,12 +90,12 @@ sub new {
 	$menu->{file}->AppendSeparator;
 
     # Recent things
-    $menu->{file_recent_files} = Wx::Menu->new;
-    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recent_files} );
-    foreach my $f ( $ide->get_recent('files') ) {
+    $menu->{file_recentfiles} = Wx::Menu->new;
+    $menu->{file}->Append( -1, "Recent Files", $menu->{file_recentfiles} );
+    foreach my $f ( Padre::DB->get_recent_files ) {
        next unless -f $f;
        EVT_MENU( $win,
-           $menu->{file_recent_files}->Append(-1, $f), 
+           $menu->{file_recentfiles}->Append(-1, $f), 
            sub { $_[0]->setup_editor($f) },
        );
     }
@@ -395,7 +395,7 @@ sub new {
             $menu->{experimental}->Append( -1, 'Run in &Padre' ),
             sub {
                 my $self = shift;
-                my $code = $self->get_current_content;
+                my $code = Padre::Document->from_selection->text_get;
                 eval $code;
                 if ($@) {
                     Wx::MessageBox("Error: $@", "Self error", wxOK, $self);
@@ -516,7 +516,7 @@ sub refresh {
 	}
 	$self->{wx}->Append( $self->{window},   "&Window"    );
 	$self->{wx}->Append( $self->{help},     "&Help"      );
-    if ( Padre->ide->get_config->{experimental} ) {
+    if ( Padre->ide->config->{experimental} ) {
         $self->{wx}->Append( $self->{experimental}, "E&xperimental" );
     }
 

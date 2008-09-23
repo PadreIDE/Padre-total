@@ -1,3 +1,18 @@
+Changes for Padre. All changes by Gabor unless noted.
+
+v0.11
+
+    Updated ORLite dependency to 0.14 for create => 1 support (ADAMK)
+    Rewrote Padre::DB to auto-configure directly from Padre::Config (ADAMK)
+    All Padre.pm DBI code converted to Padre::DB calls (ADAMK)
+    Removed minor use of Class::Accessor to reduce memory overhead,
+        namespace pollution and dependency count (ADAMK)
+    Removed some superfluous code from the Pir/Pasm/Perl6 documents (ADAMK)
+    Cleaned up (and shrunk the code for) the bootstrap sequence (ADAMK)
+    Moved the "recent files" internal state into the database (ADAMK)
+    Removed index pointers unrelated to the IDE from Padre.pm (ADAMK)
+    Transaction-wrap exiting to make it much much faster (ADAMK)
+
 v0.10 2008.09.22
 
     Improve the search tool (include backward search)

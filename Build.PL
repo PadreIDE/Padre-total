@@ -24,7 +24,6 @@ my %prereqs = (
         'Term::ReadLine'          => 0,
 
         'App::Ack'                => '1.86',
-        'Class::Accessor'         => 0,
         'Class::Autouse'          => '1.26',
         'DBD::SQLite'             => 0,
         'DBI'                     => 0,
@@ -34,7 +33,7 @@ my %prereqs = (
         'File::ShareDir'          => '1.00',
         'File::Slurp'             => 0,
         'Module::Inspector'       => '0.04',
-        'ORLite'                  => '0.13',
+        'ORLite'                  => '0.14',
         'PAR'                     => '0.970',
         'Pod::POM'                => 0,
         'Pod::Simple'             => 0,

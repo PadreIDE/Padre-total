@@ -34,7 +34,7 @@ my %cbs = (
 sub on_find {
 	my ( $main_window ) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $selection = $main_window->_get_selection();
 	$selection = '' if not defined $selection;
 
@@ -133,7 +133,7 @@ sub replace_all_clicked {
 	my $regex = _get_regex();
 	return if not defined $regex;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $main_window = Padre->ide->wx->main_window;
 
 	my $id   = $main_window->{notebook}->GetSelection;
@@ -163,7 +163,7 @@ sub replace_clicked {
 	my $regex = _get_regex();
 	return if not defined $regex;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	# get current search condition and check if they match
 	my $main_window = Padre->ide->wx->main_window;
@@ -201,7 +201,7 @@ sub find_clicked {
 sub _get_data_from {
 	my ( $dialog ) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	foreach my $field (keys %cbs) {
 	   $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
 	}
@@ -230,7 +230,7 @@ sub _get_data_from {
 sub on_find_next {
 	my $main_window = shift;
 
-	my $term = Padre->ide->get_config->{search_terms}->[0];
+	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search();
 	} else {
@@ -242,7 +242,7 @@ sub on_find_next {
 sub on_find_previous {
 	my $main_window = shift;
 
-	my $term = Padre->ide->get_config->{search_terms}->[0];
+	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search(rev => 1);
 	} else {
@@ -254,7 +254,7 @@ sub on_find_previous {
 sub _get_regex {
 	my %args = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	my $search_term = $args{search_term} || $config->{search_terms}->[0];
 	if ($config->{search}->{use_regex}) {
@@ -290,7 +290,7 @@ sub _search {
 	my $last = $page->GetLength();
 	my $str  = $page->GetTextRange(0, $last);
 
-	my $config    = Padre->ide->get_config;
+	my $config    = Padre->ide->config;
 	my $backwards = $config->{search}->{backwards};
 	if ($args{rev}) {
 	   $backwards = not $backwards;

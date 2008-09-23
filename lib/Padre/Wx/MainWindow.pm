@@ -35,8 +35,9 @@ my $default_dir = Cwd::cwd();
 # Constructor and Accessors
 
 sub new {
-	my ($class) = @_;
-	my $config  = Padre->ide->get_config;
+	my $class  = shift;
+	my @files  = @_;
+	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
 
 	# Determine the initial frame style
@@ -98,38 +99,38 @@ sub new {
 	);
 	$self->{rightbar}->InsertColumn(0, 'Methods');
 	$self->{rightbar}->SetColumnWidth(0, wxLIST_AUTOSIZE);
-    EVT_LIST_ITEM_ACTIVATED(
-        $self,
-        $self->{rightbar},
-        sub {
-            my ($self, $event) = @_;
-            my $sub = $event->GetItem->GetText;
-            return if not defined $sub;
-            # TODO actually search for sub\s+$sub
-            require Padre::Wx::FindDialog;
-            Padre::Wx::FindDialog::_search(search_term => "sub $sub");
-            $self->get_current_editor->SetFocus;
-            return;
-        }
-    );
+	EVT_LIST_ITEM_ACTIVATED(
+		$self,
+		$self->{rightbar},
+		sub {
+			my ($self, $event) = @_;
+			my $sub = $event->GetItem->GetText;
+			return if not defined $sub;
+			# TODO actually search for sub\s+$sub
+			require Padre::Wx::FindDialog;
+			Padre::Wx::FindDialog::_search(search_term => "sub $sub");
+			$self->get_current_editor->SetFocus;
+			return;
+		}
+	);
 
-    # Create the main notebook for the documents
-    $self->{notebook} = Wx::Notebook->new(
-        $self->{upper_panel},
-        -1,
-        wxDefaultPosition,
-        wxDefaultSize,
-        wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
-    );
-    EVT_NOTEBOOK_PAGE_CHANGED(
-        $self,
-        $self->{notebook},
-        sub {
-            $_[0]->update_status;
-            $_[0]->update_methods;
-            return;
-        },
-    );
+	# Create the main notebook for the documents
+	$self->{notebook} = Wx::Notebook->new(
+		$self->{upper_panel},
+		-1,
+		wxDefaultPosition,
+		wxDefaultSize,
+		wxNO_FULL_REPAINT_ON_RESIZE|wxCLIP_CHILDREN,
+	);
+	EVT_NOTEBOOK_PAGE_CHANGED(
+		$self,
+		$self->{notebook},
+		sub {
+			$_[0]->update_status;
+			$_[0]->update_methods;
+			return;
+		},
+	);
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Wx::TextCtrl->new(
@@ -158,24 +159,24 @@ sub new {
 	$self->{statusbar}->SetFieldsCount(4);
 	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 
-    # Special Key Handling
-    EVT_KEY_UP( $self, sub {
-        my ($self, $event) = @_;
-        $self->update_status;
-        my $mod  = $event->GetModifiers || 0;
-        my $code = $event->GetKeyCode;
-        if ( $mod == 2 ) { # Ctrl
-            # Ctrl-TAB  #TODO it is already in the menu
-            $self->on_next_pane if $code == WXK_TAB;
-        } elsif ( $mod == 6 ) { # Ctrl-Shift
-            # Ctrl-Shift-TAB #TODO it is already in the menu
-            $self->on_prev_pane if $code == WXK_TAB;
-        }
-        return;
-    } );
+	# Special Key Handling
+	EVT_KEY_UP( $self, sub {
+		my ($self, $event) = @_;
+		$self->update_status;
+		my $mod  = $event->GetModifiers || 0;
+		my $code = $event->GetKeyCode;
+		if ( $mod == 2 ) { # Ctrl
+			# Ctrl-TAB  #TODO it is already in the menu
+			$self->on_next_pane if $code == WXK_TAB;
+		} elsif ( $mod == 6 ) { # Ctrl-Shift
+			# Ctrl-Shift-TAB #TODO it is already in the menu
+			$self->on_prev_pane if $code == WXK_TAB;
+		}
+		return;
+	} );
 
-    # Deal with someone closing the window
-    EVT_CLOSE( $self, \&on_close_window);
+	# Deal with someone closing the window
+	EVT_CLOSE( $self, \&on_close_window);
 	EVT_STC_UPDATEUI(    $self, -1, \&Padre::Wx::Editor::on_stc_update_ui    );
 	EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
 	EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
@@ -185,7 +186,29 @@ sub new {
 	$self->SetIcon( Padre::Wx::icon('new') );
 
 	# Load any default files
-	$self->_load_files;
+	# TODO make sure the full path to the file is saved and not
+	# the relative path
+	if ( @files ) {
+		foreach my $f ( @files ) {
+		    if ( not File::Spec->file_name_is_absolute($f) ) {
+		        $f = File::Spec->catfile(Cwd::cwd(), $f);
+		    }
+		    $self->setup_editor($f);
+		}
+	} elsif ( $config->{startup} eq 'new' ) {
+		$self->setup_editor;
+	} elsif ( $config->{startup} eq 'nothing' ) {
+		# nothing
+	} elsif ( $config->{startup} eq 'last' ) {
+		if ( $config->{main}->{files} and ref $config->{main}->{files} eq 'ARRAY' ) {
+		    @files = @{ $config->{main}->{files} };
+		    foreach my $f (@files) {
+		        $self->setup_editor($f);
+		    }
+		}
+	} else {
+		# should never happen
+	}
 
 	# we need an event immediately after the window opened
 	# (we had an issue that if the default of show_status_bar was false it did not show
@@ -201,39 +224,6 @@ sub new {
 	$timer->Start( 500, 1 );
 
 	return $self;
-}
-
-
-sub _load_files {
-	my $self   =  shift;
-	my $ide    = Padre->ide;
-	my $config = $ide->get_config;
-
-	# TODO make sure the full path to the file is saved and not
-	# the relative path
-	my @files  = $ide->get_files;
-	if ( @files ) {
-		foreach my $f (@files) {
-		    if (not File::Spec->file_name_is_absolute($f)) {
-		        $f = File::Spec->catfile(Cwd::cwd(), $f);
-		    }
-		    $self->setup_editor($f);
-		}
-	} elsif ($config->{startup} eq 'new') {
-		$self->setup_editor;
-	} elsif ($config->{startup} eq 'nothing') {
-		# nothing
-	} elsif ($config->{startup} eq 'last') {
-		if ($config->{main}->{files} and ref $config->{main}->{files} eq 'ARRAY') {
-		    my @files = @{ $config->{main}->{files} };
-		    foreach my $f (@files) {
-		        $self->setup_editor($f);
-		    }
-		}
-	} else {
-		# should never happen
-	}
-	return;
 }
 
 
@@ -392,7 +382,7 @@ sub on_exit {
 sub on_close_window {
 	my $self   = shift;
 	my $event  = shift;
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	my @files;
 	foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
@@ -477,7 +467,7 @@ sub setup_editor {
 	# Flush old stuff
 	delete $self->{project};
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 
 	#$editor->SetMouseDownCaptures(0);
@@ -571,7 +561,7 @@ sub on_open_selection {
 		return;
 	}
 
-	Padre->ide->add_to_recent('files', $file);
+	Padre::DB->add_recent_files($file);
 	$self->setup_editor($file);
 
 	return;
@@ -601,7 +591,7 @@ sub on_open {
 	$default_dir = $dialog->GetDirectory;
 
 	my $file = File::Spec->catfile($default_dir, $filename);
-	Padre->ide->add_to_recent('files', $file);
+	Padre::DB->add_recent_files($file);
 
 	# If and only if there is only one current file,
 	# and it is unused, close it.
@@ -735,7 +725,7 @@ sub _save_buffer {
 		Wx::MessageBox("Could not save: $!", "Error", wxOK, $self);
 		return;
 	}
-	Padre->ide->add_to_recent('files', $filename);
+	Padre::DB->add_recent_files($filename);
 	#$self->{notebook}->SetPageText($id, File::Basename::basename($filename));
 	$page->SetSavePoint;
 	$self->update_status;
@@ -882,7 +872,7 @@ sub on_select_project {
 	# there should also be way to remove a project or to move a project that would
 	# probably move the whole directory structure.
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	my $dialog = Wx::Dialog->new( $self, -1, "Select Project", [-1, -1], [-1, -1]);
 
@@ -1096,7 +1086,7 @@ sub zoom {
 sub on_preferences {
 	my ($self) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	require Padre::Wx::Preferences;
 	Padre::Wx::Preferences->new( $self, $config );
@@ -1121,7 +1111,7 @@ sub on_toggle_line_numbers {
 	my ($self, $event) = @_;
 
 	# Update the configuration
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	$config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
 
 	# Update the notebook pages
@@ -1136,7 +1126,7 @@ sub on_toggle_line_numbers {
 sub on_toggle_indentation_guide {
 	my ($self, $event) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	$config->{editor}->{indentation_guide} = $self->{menu}->{view_indentation_guide}->IsChecked;
 
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
@@ -1149,7 +1139,7 @@ sub on_toggle_indentation_guide {
 sub on_toggle_eol {
 	my ($self, $event) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	$config->{show_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
 
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
@@ -1181,7 +1171,7 @@ sub on_toggle_show_output {
 
 sub _toggle_output {
 	my ($self, $on) = @_;
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	$self->{main_panel}->SetSashPosition(
 		$config->{main}->{height} - ($on ? 300 : 0)
 	);
@@ -1195,7 +1185,7 @@ sub on_toggle_status_bar {
 	}
 
 	# Update the configuration
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	$config->{show_status_bar} = $self->{menu}->{view_statusbar}->IsChecked;
 
 	# Update the status bar

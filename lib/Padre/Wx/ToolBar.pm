@@ -3,7 +3,6 @@ package Padre::Wx::ToolBar;
 use 5.008;
 use strict;
 use warnings;
-use Params::Util qw{ _INSTANCE };
 use Wx           ();
 use Padre::Wx    ();
 

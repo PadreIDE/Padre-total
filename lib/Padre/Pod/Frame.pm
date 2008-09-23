@@ -47,10 +47,18 @@ sub _setup_podviewer {
 
     # TODO: remove magic values and just add the Choice box after the buttons
     # TODO: update list when a file is opened
-    $choice = Wx::Choice->new( $panel, -1, [175, 5], [-1, 32], [Padre->ide->get_recent('pod')]); #, $frame->style );
+    $choice = Wx::Choice->new(
+        $panel,
+        -1,
+        [ 175, 5 ],
+        [ -1, 32 ],
+        [
+            Padre::DB->get_recent_pod
+        ]
+    );
     EVT_CHOICE( $panel, $choice, \&on_selection );
 
-    $choices = Padre->ide->get_modules;
+    $choices = Padre::DB->find_modules;
     my @ch = @{$choices}[0..10];
     my $combobox = Wx::ComboBox->new($panel, -1, '', [375, 5], [-1, 32], []); #, $self->style);
     EVT_COMBOBOX(   $panel, $combobox, \&on_combobox);
@@ -74,47 +82,37 @@ sub _setup_podviewer {
 
 sub on_combobox_text_changed {
     my ( $combobox, $self ) = @_;
-    #print Dumper \@_;
-
-    my $text = $combobox->GetValue();
-    #print "$text\n";
-    my $choices = Padre->ide->get_modules($text);
-    my $DISPLAY_MAX_LIMIT = Padre->ide->get_config->{DISPLAY_MAX_LIMIT};
-    my $DISPLAY_MIN_LIMIT = Padre->ide->get_config->{DISPLAY_MIN_LIMIT};
-    #print $combobox->GetLastPosition, "\n"; # length of current selection?
-    if ($DISPLAY_MIN_LIMIT < @$choices and @$choices < $DISPLAY_MAX_LIMIT) {
-        #print join "\n", @$choises, "\n";
-        $combobox->Clear();
+    my $text              = $combobox->GetValue;
+    my $choices           = Padre::DB->find_modules($text);
+    my $DISPLAY_MAX_LIMIT = Padre->ide->config->{DISPLAY_MAX_LIMIT};
+    my $DISPLAY_MIN_LIMIT = Padre->ide->config->{DISPLAY_MIN_LIMIT};
+    if ( $DISPLAY_MIN_LIMIT < @$choices and @$choices < $DISPLAY_MAX_LIMIT ) {
+        $combobox->Clear;
         foreach my $name (@$choices) {
             $combobox->Append($name);
         }
     } elsif ($DISPLAY_MAX_LIMIT < @$choices) {
-        $combobox->Clear();
+        $combobox->Clear;
     }
     return;
 }
 
 sub on_combobox_text_enter {
     my ($self, $event) = @_;
-#    print "enter $event\n";
     on_selection($self, $event);
 }
 sub on_combobox {
     my ($self, $event) = @_;
-#    print "combo $event\n";
     on_selection($self, $event);
 }
 
 sub on_selection {
     my ($self, $event) = @_;
-
     my $current = $choice->GetCurrentSelection;
-#print "$choice $current\n";
-    my $module = Padre->ide->set_item('pod', $current);
-    if ($module) {
+    my $module  = (Padre::DB->get_recent_pod)[$current];
+    if ( $module ) {
         $self->{html}->display($module);
     } # TODO: else error message?
-
     return;
 }
 
@@ -177,7 +175,7 @@ sub on_open {
         return;
     }
 
-    Padre->ide->add_to_recent('pod', $module);
+    Padre::DB->add_recent_pod( $module);
     $self->{html}->display($module);
 
     return;
@@ -191,7 +189,7 @@ sub show {
     }
     # for now assume it is a module
     # later look it up in the indexed list of perl/module functions
-    Padre->ide->add_to_recent('pod', $text);
+    Padre::DB->add_recent_pod( $text);
     $self->{html}->display($text);
 
     return;
@@ -200,19 +198,17 @@ sub show {
 
 sub on_forward {
     my ( $self ) = @_;
-
-    my $module = Padre->ide->next_module();
-    if ($module) {
+    my $module = Padre->ide->next_module;
+    if ( $module ) {
         $self->{html}->display($module);
     }
     return;
 }
-    
+
 sub on_back {
     my ( $self ) = @_;
-
-    my $module = Padre->ide->prev_module();
-    if ($module) {
+    my $module = Padre->ide->prev_module;
+    if ( $module ) {
         $self->{html}->display($module);
     }
     return;

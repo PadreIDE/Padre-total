@@ -31,26 +31,16 @@ sub on_ack {
 	# TODO kill the thread before closing the application
 
 	my $search = dialog();
-#print Dumper $search;
 
 	$search->{dir} ||= '.';
 	return if not $search->{term};
 
-	#my $config = get_config();
-	#%opts;# = %{ $config->{opts} };
-	#$opts{regex} = $regex;
 	$opts{regex} = $search->{term};
 	if (-f $search->{dir}) {
 		$opts{all} = 1;
 	}
-	#$opts{after_context}  = 0;
-	#$opts{before_context} = 0;
-#print Dumper \%opts;
 	my $what = App::Ack::get_starting_points( [$search->{dir}], \%opts );
 	fill_type_wanted();
-#    $App::Ack::type_wanted{cc} = 1;
-#    $opts{show_filename} = 1;
-#    $opts{follow} = 0;
 	$iter = App::Ack::get_iterator( $what, \%opts );
 	App::Ack::filetype_setup();
 

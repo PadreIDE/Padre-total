@@ -103,7 +103,7 @@ sub plugin_config {
 	}
 
 	$plugin =~ s/^Padre::Plugin:://;
-	my $padre_config = Padre->ide->get_config;
+	my $padre_config = Padre->ide->config;
 	my $plugin_config = $padre_config->{plugins};
 	$plugin_config->{$plugin} ||= {};
 	return $plugin_config->{$plugin};

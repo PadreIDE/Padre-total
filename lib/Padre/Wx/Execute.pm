@@ -24,7 +24,7 @@ sub setup {
 sub on_run_this {
 	my ($self) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	if ($config->{save_on_run} eq 'same') {
 		$self->on_save;
 	} elsif ($config->{save_on_run} eq 'all_files') {
@@ -100,7 +100,7 @@ sub _run {
 	$self->{menu}->{perl_run_command}->Enable(0);
 	$self->{menu}->{perl_stop}->Enable(1);
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 
 	$self->show_output();
 	$self->{output}->Remove( 0, $self->{output}->GetLastPosition );
@@ -117,7 +117,7 @@ sub _run {
 sub on_run {
 	my ($self) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	if (not $config->{command_line}) {
 		$self->on_setup_run;
 	}
@@ -131,7 +131,7 @@ sub on_run {
 sub on_setup_run {
 	my ($self) = @_;
 
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	my $dialog = Wx::TextEntryDialog->new( $self, "Command line", "Run setup", $config->{command_line} );
 	if ($dialog->ShowModal == wxID_CANCEL) {
 		return;

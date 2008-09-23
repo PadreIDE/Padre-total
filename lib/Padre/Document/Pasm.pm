@@ -3,13 +3,10 @@ package Padre::Document::Pasm;
 use 5.008;
 use strict;
 use warnings;
-use Carp            ();
-use Params::Util    '_INSTANCE';
 use Padre::Document ();
 
 our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
-
 
 # Naive way to parse and colourise pasm files
 sub colourise {
@@ -19,11 +16,6 @@ sub colourise {
 
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
-#	my @lines = split /\n/, $text;
-#	foreach my $line (@lines) {
-#		if ($line =~ //) {
-#		}
-#	}
 
 	my ($KEYWORD, $REGISTER, $LABEL, $STRING, $COMMENT) = (1 .. 5);
 	my %regex_of = (
@@ -48,14 +40,13 @@ sub remove_color {
 	my ($self) = @_;
 
 	my $editor = $self->editor;
-	# TODO this is strange, do we reall need to do it with all?
-	for my $i (1..5) {
+	# TODO this is strange, do we really need to do it with all?
+	for my $i ( 1 .. 5 ) {
 		$editor->StartStyling(0, $i);
 		$editor->SetStyling($editor->GetLength, 0);
 	}
 
 	return;
 }
-
 
 1;

@@ -137,7 +137,7 @@ sub on_stc_change {
 	my ($self, $event) = @_;
 
 	return if $self->{_in_setup_editor};
-	my $config = Padre->ide->get_config;
+	my $config = Padre->ide->config;
 	return if not $config->{editor}->{show_calltips};
 
 	my $editor = $self->get_current_editor;
