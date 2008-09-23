@@ -22,3 +22,4 @@ eg/05_dir_selector.pl
 eg/06_single_choice.pl
 eg/07_single_choice.pl
 eg/08_dir_picker.pl
+eg/09_file_picker.pl

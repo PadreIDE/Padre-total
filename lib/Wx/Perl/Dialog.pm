@@ -17,6 +17,7 @@ our @EXPORT = qw(
 				file_selector
 				dir_selector
 				dir_picker
+				file_picker
 				choice
 				single_choice
 				message
@@ -144,9 +145,32 @@ sub dir_selector {
     return $dir;
 }
 
+
+sub file_picker {
+	require Cwd;
+	return dialog('Wx::FilePickerCtrl', 
+	              sub {$_[0]->SetPath(Cwd::cwd()) }, # setup
+	              sub {$_[0]->GetPath; },            # get data
+	              title => 'Select file',
+	);
+}
+
 sub dir_picker {
-	my $dialog = Wx::Dialog->new(undef);
-	my $dp = Wx::DirPickerCtrl->new( $dialog, -1, "", "Choose a directory");
+	require Cwd;
+	return dialog('Wx::DirPickerCtrl', 
+	              sub {$_[0]->SetPath(Cwd::cwd()) }, # setup
+	              sub {$_[0]->GetPath; },            # get data
+	              title => 'Select directory',
+	);
+}
+
+sub dialog {
+	my ($control, $setup, $getdata, %args) = @_;
+
+	$args{title} ||= '';
+
+	my $dialog = Wx::Dialog->new( undef, -1, $args{title} );
+	my $ctrl   = $control->new( $dialog, -1, "", $args{title} );
 	my $ok     = Wx::Button->new( $dialog, wxID_OK, '');
 	my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '', [-1, -1], $ok->GetSize);
 
@@ -155,7 +179,7 @@ sub dir_picker {
     my $buttons  = Wx::BoxSizer->new(  wxHORIZONTAL );
 	$box->Add($top);
 	$box->Add($buttons);
-	$top->Add($dp);
+	$top->Add($ctrl);
 	$buttons->Add($ok);
 	$buttons->Add($cancel);
 	$ok->SetDefault;
@@ -163,19 +187,21 @@ sub dir_picker {
 
 
 	my ($bw, $bh) = $ok->GetSizeWH;
-	my ($w, $h)   = $dp->GetSizeWH;
+	my ($w, $h)   = $ctrl->GetSizeWH;
 	$dialog->SetSize($bw*2, $h+$bh+20);
 
-	require Cwd;
-	$dp->SetPath(Cwd::cwd());
+	$setup->($ctrl);
+
+
     if ($dialog->ShowModal == wxID_CANCEL) {
         return;
     }
+	
+	my $data = $getdata->($ctrl);
 
-    my $dir = $dp->GetPath;
 	$dialog->Destroy;
 
-    return $dir;
+    return $data;
 }
 
 
