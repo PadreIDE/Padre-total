@@ -8,6 +8,7 @@ use lib 'lib';
 use Wx::Perl::Dialog;
 
 my $empty = colour_picker() || '';
-print "$empty\n";
-message(text => $empty);
+my $str = sprintf("%x%x%x",  @$empty);
+print "$str\n";
+message(text => $str);
 

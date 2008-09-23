@@ -170,7 +170,7 @@ sub colour_picker {
 	return dialog(
 				sub { Wx::ColourPickerCtrl->new( $_[0], -1 ) },
 				sub { $_[0]; },
-				sub { my $c = $_[0]->GetColour; return sprintf("%x%x%x", $c->Red, $c->Green, $c->Blue) },
+				sub { my $c = $_[0]->GetColour; return [$c->Red, $c->Green, $c->Blue] },
 				{
 					title => 'Select colour',
 				},
