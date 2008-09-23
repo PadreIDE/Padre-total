@@ -24,3 +24,4 @@ eg/07_single_choice.pl
 eg/08_dir_picker.pl
 eg/09_file_picker.pl
 eg/10_date_picker.pl
+eg/11_colour_picker.pl

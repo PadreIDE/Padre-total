@@ -19,6 +19,7 @@ our @EXPORT = qw(
 				dir_picker
 				file_picker
 				date_picker
+				colour_picker
 				choice
 				single_choice
 				message
@@ -160,6 +161,18 @@ sub date_picker {
 				sub { $_[0]->GetValue->Format; },
 				{
 					title => 'Select date',
+				},
+	);
+}
+
+sub colour_picker {
+
+	return dialog(
+				sub { Wx::ColourPickerCtrl->new( $_[0], -1 ) },
+				sub { $_[0]; },
+				sub { my $c = $_[0]->GetColour; return sprintf("%x%x%x", $c->Red, $c->Green, $c->Blue) },
+				{
+					title => 'Select colour',
 				},
 	);
 }
