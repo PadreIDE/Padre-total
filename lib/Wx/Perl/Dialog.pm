@@ -12,15 +12,16 @@ our $VERSION = '0.01';
 $| = 1;
 
 our @EXPORT = qw(
-                 entry
-                 password
-                 file_selector
-                 dir_selector
-                 choice
-                 single_choice
-                 message
-                 calendar
-               );
+				entry
+				password
+				file_selector
+				dir_selector
+				dir_picker
+				choice
+				single_choice
+				message
+				calendar
+			);
 #                 print_out close_app open_frame display_text
 
 use Wx                 qw(:everything);
@@ -143,6 +144,39 @@ sub dir_selector {
     return $dir;
 }
 
+sub dir_picker {
+	my $dialog = Wx::Dialog->new(undef);
+	my $dp = Wx::DirPickerCtrl->new( $dialog, -1, "", "Choose a directory");
+	my $ok     = Wx::Button->new( $dialog, wxID_OK, '');
+	my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '', [-1, -1], $ok->GetSize);
+
+	my $box      = Wx::BoxSizer->new(  wxVERTICAL   );
+	my $top      = Wx::BoxSizer->new(  wxHORIZONTAL );
+    my $buttons  = Wx::BoxSizer->new(  wxHORIZONTAL );
+	$box->Add($top);
+	$box->Add($buttons);
+	$top->Add($dp);
+	$buttons->Add($ok);
+	$buttons->Add($cancel);
+	$ok->SetDefault;
+	$dialog->SetSizer($box);
+
+
+	my ($bw, $bh) = $ok->GetSizeWH;
+	my ($w, $h)   = $dp->GetSizeWH;
+	$dialog->SetSize($bw*2, $h+$bh+20);
+
+	require Cwd;
+	$dp->SetPath(Cwd::cwd());
+    if ($dialog->ShowModal == wxID_CANCEL) {
+        return;
+    }
+
+    my $dir = $dp->GetPath;
+	$dialog->Destroy;
+
+    return $dir;
+}
 
 
 =head2 choice

@@ -6,6 +6,7 @@ META.yml
 
 lib/Wx/Perl/Dialog.pm
 lib/Wx/Perl/Dialog/Frame.pm
+lib/Wx/Perl/Dialog/SingleChoice.pm
 
 t/01-load.t
 
@@ -19,4 +20,5 @@ eg/03_filename.pl
 eg/04_choice.pl
 eg/05_dir_selector.pl
 eg/06_single_choice.pl
-
+eg/07_single_choice.pl
+eg/08_dir_picker.pl
