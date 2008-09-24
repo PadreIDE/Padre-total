@@ -25,6 +25,7 @@ lib/Padre/Wx/Bookmarks.pm
 lib/Padre/Wx/Editor.pm
 lib/Padre/Wx/Execute.pm
 lib/Padre/Wx/FindDialog.pm
+lib/Padre/Wx/GoToLine.pm
 lib/Padre/Wx/Help.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm

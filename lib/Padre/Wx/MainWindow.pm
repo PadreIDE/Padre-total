@@ -751,39 +751,6 @@ sub on_close_all {
 	return 1;
 }
 
-sub on_goto {
-	my ($self) = @_;
-
-	my $dialog = Wx::TextEntryDialog->new( $self, "Line number:", "", '' );
-	if ($dialog->ShowModal == wxID_CANCEL) {
-		return;
-	}   
-	my $line_number = $dialog->GetValue;
-	$dialog->Destroy;
-	return if not defined $line_number or $line_number !~ /^\d+$/;
-	#what if it is bigger than buffer?
-
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-
-	$line_number--;
-	$page->GotoLine($line_number);
-
-# highlight a line
-#    $page->SetSelection($page->PositionFromLine($line_number), $page->GetLineEndPosition($line_number));
-
-	#$page->SetMarginMask(0, wxSTC_STYLE_LINENUMBER);
-	#$page->SetMarginType(0, wxSTC_STYLE_LINENUMBER);
-
-# put circle next to row
-#    $page->SetMarginWidth(1, 16);
-#    my $fg = Wx::Colour->new( 0xff, 0xff, 0xff );
-#    my $bg = Wx::Colour->new( 0x00, 0x00, 0x00 );
-#    $page->MarkerDefine(0, wxSTC_MARK_CIRCLE, $fg, $bg);
-#    $page->MarkerAdd($line_number, 0);
-#
-	return;
-}
 
 # sub update_methods
 sub update_methods {

@@ -161,7 +161,7 @@ sub new {
     );
     EVT_MENU( $win,
         $menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),
-        \&Padre::Wx::MainWindow::on_goto,
+        \&Padre::Wx::GoToLine::on_goto,
     );
     EVT_MENU( $win,
         $menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ),
