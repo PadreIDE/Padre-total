@@ -4,8 +4,8 @@ use warnings;
 
 our $VERSION = '0.10';
 
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
+use Wx        qw(wxID_OK wxID_CANCEL wxDEFAULT_FRAME_STYLE);
+use Wx::Event qw(EVT_BUTTON);
 
 sub new {
     my ( $class, $win, $config ) = @_;
