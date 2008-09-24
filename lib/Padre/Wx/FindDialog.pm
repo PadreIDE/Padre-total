@@ -6,8 +6,9 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx             qw(:everything);
-use Wx::Event      qw(:everything);
+use Wx             qw(wxOK wxID_CANCEL wxID_FIND wxALL wxEXPAND 
+                   wxVERTICAL wxHORIZONTAL wxDefaultPosition wxDefaultSize);
+use Wx::Event      qw(EVT_BUTTON EVT_CHECKBOX);
 
 our $VERSION = '0.10';
 
@@ -52,10 +53,10 @@ sub dialog {
 
 	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 300]);
 
-	my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
+	my $box  = Wx::BoxSizer->new( wxVERTICAL );
 	my @rows;
 	foreach my $i ( 0..8 ) {
-		push @rows, Wx::BoxSizer->new(  wxHORIZONTAL );
+		push @rows, Wx::BoxSizer->new( wxHORIZONTAL );
 		$box->Add($rows[$i]);
 	}
 
