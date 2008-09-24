@@ -2,8 +2,8 @@ package Padre::Wx::Bookmarks;
 
 use strict;
 use warnings;
-use Wx           qw(:everything);
-use Wx::Event    qw(:everything);
+use Wx           qw(wxID_OK wxID_CANCEL wxID_DELETE wxVERTICAL wxHORIZONTAL);
+use Wx::Event    qw(EVT_BUTTON);
 use List::Util   qw(max);
 use Data::Dumper qw(Dumper);
 
@@ -14,10 +14,10 @@ my $tb;
 sub dialog {
 	my ($self, $text) = @_;
 
-	my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
+	my $box  = Wx::BoxSizer->new( wxVERTICAL );
 	my @rows;
 	for my $i (0..3) {
-		$rows[$i] = Wx::BoxSizer->new(  wxHORIZONTAL );
+		$rows[$i] = Wx::BoxSizer->new( wxHORIZONTAL );
 		$box->Add($rows[$i]);
 	}
 
