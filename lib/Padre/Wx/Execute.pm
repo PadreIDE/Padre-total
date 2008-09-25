@@ -25,10 +25,10 @@ sub on_run_this {
 	my ($self) = @_;
 
 	my $config = Padre->ide->config;
-	if ($config->{save_on_run} eq 'same') {
+	if ($config->{run_save} eq 'same') {
 		$self->on_save;
-	} elsif ($config->{save_on_run} eq 'all_files') {
-	} elsif ($config->{save_on_run} eq 'all_buffer') {
+	} elsif ($config->{run_save} eq 'all_files') {
+	} elsif ($config->{run_save} eq 'all_buffer') {
 	}
 
 	my $id   = $self->{notebook}->GetSelection;
@@ -116,36 +116,33 @@ sub _run {
 
 sub on_run {
 	my ($self) = @_;
-
 	my $config = Padre->ide->config;
-	if (not $config->{command_line}) {
+	unless ( $config->{host}->{run_command} ) {
 		$self->on_setup_run;
 	}
-	return if not $config->{command_line};
-	$self->_run($config->{command_line});
-
+	unless ( $config->{host}->{run_command} ) {
+		return;
+	}
+	$self->_run($config->{host}->{run_command});
 	return;
 }
-
 
 sub on_setup_run {
 	my ($self) = @_;
-
 	my $config = Padre->ide->config;
-	my $dialog = Wx::TextEntryDialog->new( $self, "Command line", "Run setup", $config->{command_line} );
-	if ($dialog->ShowModal == wxID_CANCEL) {
+	my $dialog = Wx::TextEntryDialog->new(
+		$self,
+		"Command line",
+		"Run setup",
+		$config->{host}->{run_command},
+	);
+	if ( $dialog->ShowModal == wxID_CANCEL ) {
 		return;
 	}
-#    my @values = ($config->{startup}, grep {$_ ne $config->{startup}} qw(new nothing last));
-
-#    my $choice = Wx::Choice->new( $dialog, -1, [300, 70], [-1, -1], \@values);
-
-	$config->{command_line} = $dialog->GetValue;
+	$config->{host}->{run_command} = $dialog->GetValue;
 	$dialog->Destroy;
-
 	return;
 }
-
 
 sub evt_process_stdout {
 	my ($self, $event) = @_;

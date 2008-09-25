@@ -42,7 +42,7 @@ sub new {
 
 	# Determine the initial frame style
 	my $wx_frame_style = wxDEFAULT_FRAME_STYLE;
-	if ( $config->{main}->{maximized} ) {
+	if ( $config->{host}->{main_maximized} ) {
 		$wx_frame_style |= wxMAXIMIZE;
 	}
 
@@ -52,12 +52,12 @@ sub new {
 		-1,
 		"Padre $Padre::VERSION ",
 		[
-		    $config->{main}->{left},
-		    $config->{main}->{top},
+		    $config->{host}->{main_left},
+		    $config->{host}->{main_top},
 		],
 		[
-		    $config->{main}->{width},
-		    $config->{main}->{height},
+		    $config->{host}->{main_width},
+		    $config->{host}->{main_height},
 		],
 		$wx_frame_style,
 	);
@@ -146,12 +146,12 @@ sub new {
 	$self->{main_panel}->SplitHorizontally(
 		$self->{upper_panel},
 		$self->{output},
-		$config->{main}->{height},
+		$config->{host}->{main_height},
 	);
 	$self->{upper_panel}->SplitVertically(
 		$self->{notebook},
 		$self->{rightbar},
-		$config->{main}->{width} - 200,
+		$config->{host}->{main_width} - 200,
 	);
 
 	# Create the status bar
@@ -195,15 +195,14 @@ sub new {
 		    }
 		    $self->setup_editor($f);
 		}
-	} elsif ( $config->{startup} eq 'new' ) {
+	} elsif ( $config->{main_startup} eq 'new' ) {
 		$self->setup_editor;
-	} elsif ( $config->{startup} eq 'nothing' ) {
+	} elsif ( $config->{main_startup} eq 'nothing' ) {
 		# nothing
-	} elsif ( $config->{startup} eq 'last' ) {
-		if ( $config->{main}->{files} and ref $config->{main}->{files} eq 'ARRAY' ) {
-		    @files = @{ $config->{main}->{files} };
-		    foreach my $f (@files) {
-		        $self->setup_editor($f);
+	} elsif ( $config->{main_startup} eq 'last' ) {
+		if ( $config->{host}->{main_files} ) {
+		    foreach my $file ( @{$config->{host}->{main_files}} ) {
+		        $self->setup_editor($file);
 		    }
 		}
 	} else {
@@ -211,7 +210,7 @@ sub new {
 	}
 
 	# we need an event immediately after the window opened
-	# (we had an issue that if the default of show_status_bar was false it did not show
+	# (we had an issue that if the default of main_statusbar was false it did not show
 	# the status bar which is ok, but then when we selected the menu to show it, it showed
 	# at the top)
 	# TODO: there might be better ways to fix that issue...
@@ -353,11 +352,11 @@ sub on_close_window {
 		my $doc = _DOCUMENT($id) or next;
 		push @files, $doc->filename;
 	}
-	$config->{main}->{files} = \@files;
+	$config->{host}->{main_files} = \@files;
 
 	# Check that all files have been saved
 	if ( $event->CanVeto ) {
-		if ( $config->{startup} eq 'same' ) {
+		if ( $config->{main_startup} eq 'same' ) {
 			# Save the files, but don't close
 			my $saved = $self->on_save_all;
 			unless ( $saved ) {
@@ -376,16 +375,16 @@ sub on_close_window {
 	}
 
 	# Discover and save the state we want to memorize
-	$config->{main}->{maximized} = $self->IsMaximized;
+	$config->{host}->{main_maximized} = $self->IsMaximized ? 1 : 0;
 	unless ( $self->IsMaximized ) {
 		# Don't save the position when maximized
 		(
-			$config->{main}->{width},
-			$config->{main}->{height},
+			$config->{host}->{main_width},
+			$config->{host}->{main_height},
 		) = $self->GetSizeWH;
 		(
-			$config->{main}->{left},
-			$config->{main}->{top},
+			$config->{host}->{main_left},
+			$config->{host}->{main_top},
 		) = $self->GetPositionXY;
 	}
 	Padre->ide->save_config;
@@ -444,8 +443,8 @@ sub setup_editor {
 
     my $title = $editor->{Padre}->get_title;
 
-	$self->_toggle_numbers($editor, $config->{show_line_numbers});
-	$self->_toggle_eol($editor, $config->{show_eol});
+	$self->_toggle_numbers($editor, $config->{editor_linenumbers});
+	$self->_toggle_eol($editor, $config->{editor_eol});
 	$self->set_preferences($editor, $config);
 
 	my $id = $self->create_tab($editor, $file, $title);
@@ -907,9 +906,7 @@ sub on_preferences {
 
 sub set_preferences {
 	my ($self, $editor, $config) = @_;
-
-	$editor->SetTabWidth( $config->{editor}->{tab_size} );
-
+	$editor->SetTabWidth( $config->{editor_tabwidth} );
 	return;
 }
 
@@ -918,12 +915,12 @@ sub on_toggle_line_numbers {
 
 	# Update the configuration
 	my $config = Padre->ide->config;
-	$config->{show_line_numbers} = $event->IsChecked ? 1 : 0;
+	$config->{editor_linenumbers} = $event->IsChecked ? 1 : 0;
 
 	# Update the notebook pages
 	foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
 		my $editor = $self->{notebook}->GetPage($id);
-		$self->_toggle_numbers( $editor, $config->{show_line_numbers} );
+		$self->_toggle_numbers( $editor, $config->{editor_linenumbers} );
 	}
 
 	return;
@@ -931,13 +928,11 @@ sub on_toggle_line_numbers {
 
 sub on_toggle_indentation_guide {
 	my ($self, $event) = @_;
-
 	my $config = Padre->ide->config;
-	$config->{editor}->{indentation_guide} = $self->{menu}->{view_indentation_guide}->IsChecked;
-
-	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+	$config->{editor_indentationguides} = $self->{menu}->{view_indentation_guide}->IsChecked ? 1 : 0;
+	foreach my $id ( 0 .. $self->{notebook}->GetPageCount - 1 ) {
 		my $editor = $self->{notebook}->GetPage($id);
-		$editor->SetIndentationGuides( $config->{editor}->{indentation_guide} );
+		$editor->SetIndentationGuides( $config->{editor_indentationguides} );
 	}
 	return;
 }
@@ -946,11 +941,11 @@ sub on_toggle_eol {
 	my ($self, $event) = @_;
 
 	my $config = Padre->ide->config;
-	$config->{show_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
+	$config->{editor_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
 
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
 		my $editor = $self->{notebook}->GetPage($id);
-		$self->_toggle_eol($editor, $config->{show_eol})
+		$self->_toggle_eol($editor, $config->{editor_eol})
 	}
 	return;
 }
@@ -979,7 +974,7 @@ sub _toggle_output {
 	my ($self, $on) = @_;
 	my $config = Padre->ide->config;
 	$self->{main_panel}->SetSashPosition(
-		$config->{main}->{height} - ($on ? 300 : 0)
+		$config->{host}->{main_height} - ($on ? 300 : 0)
 	);
 }
 
@@ -992,11 +987,11 @@ sub on_toggle_status_bar {
 
 	# Update the configuration
 	my $config = Padre->ide->config;
-	$config->{show_status_bar} = $self->{menu}->{view_statusbar}->IsChecked;
+	$config->{main_statusbar} = $self->{menu}->{view_statusbar}->IsChecked ? 1 : 0;
 
 	# Update the status bar
 	my $status_bar = $self->GetStatusBar;
-	if ( $config->{show_status_bar} ) {
+	if ( $config->{main_statusbar} ) {
 		$status_bar->Show;
 	} else {
 		$status_bar->Hide;

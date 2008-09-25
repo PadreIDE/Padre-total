@@ -84,14 +84,14 @@ sub on_combobox_text_changed {
     my ( $combobox, $self ) = @_;
     my $text              = $combobox->GetValue;
     my $choices           = Padre::DB->find_modules($text);
-    my $DISPLAY_MAX_LIMIT = Padre->ide->config->{DISPLAY_MAX_LIMIT};
-    my $DISPLAY_MIN_LIMIT = Padre->ide->config->{DISPLAY_MIN_LIMIT};
-    if ( $DISPLAY_MIN_LIMIT < @$choices and @$choices < $DISPLAY_MAX_LIMIT ) {
+    my $pod_maxlist = Padre->ide->config->{pod_maxlist};
+    my $pod_minlist = Padre->ide->config->{pod_minlist};
+    if ( $pod_minlist < @$choices and @$choices < $pod_maxlist ) {
         $combobox->Clear;
         foreach my $name (@$choices) {
             $combobox->Append($name);
         }
-    } elsif ($DISPLAY_MAX_LIMIT < @$choices) {
+    } elsif ($pod_maxlist < @$choices) {
         $combobox->Clear;
     }
     return;

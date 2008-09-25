@@ -221,7 +221,7 @@ sub new {
     $menu->{view_show_calltips} = $menu->{view}->AppendCheckItem( -1, "Show Call Tips" );
     EVT_MENU( $win,
         $menu->{view_show_calltips},
-        sub { $config->{editor}->{show_calltips} = $menu->{view_show_calltips}->IsChecked },
+        sub { $config->{editor_calltips} = $menu->{view_show_calltips}->IsChecked },
     );
     $menu->{view}->AppendSeparator;
     EVT_MENU( $win,
@@ -426,13 +426,13 @@ sub new {
     }
 
     # Setup menu state from configuration
-    $menu->{view_lines}->Check( $config->{show_line_numbers} ? 1 : 0 );
-    $menu->{view_eol}->Check( $config->{show_eol} ? 1 : 0 );
+    $menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
+    $menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
     unless ( Padre::Util::WIN32 ) {
-        $menu->{view_statusbar}->Check( $config->{show_status_bar} ? 1 : 0 );
+        $menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
     }
-    $menu->{view_indentation_guide}->Check( $config->{editor}->{indentation_guide} ? 1 : 0 );
-    $menu->{view_show_calltips}->Check( $config->{editor}->{show_calltips} ? 1 : 0 );
+    $menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
+    $menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
 
 	return $menu;
 }

@@ -4,7 +4,7 @@ package Padre::DB;
 
 use strict;
 use Padre::Config ();
-use ORLite 0.14 {
+use ORLite 0.15 {
 	file   => Padre::Config->default_db,
 	create => 1,
 	tables => 0,
@@ -13,8 +13,8 @@ use ORLite 0.14 {
 our $VERSION = '0.10';
 
 # At load time, autocrate if needed
-unless ( Padre::DB->pragma('user_version') ) {
-	Padre::DB->create;
+unless ( Padre::DB->pragma('user_version') == 2 ) {
+	Padre::DB->setup;
 }
 
 
@@ -25,29 +25,69 @@ unless ( Padre::DB->pragma('user_version') ) {
 #####################################################################
 # General Methods
 
-sub create {
+sub table_exists {
+	$_[0]->selectrow_array(
+		"select count(*) from sqlite_master where type = 'table' and name = ?",
+		{}, $_[1],
+	);
+}
+
+sub setup {
 	my $class = shift;
 
+	# Create the host settings table
+	$class->do(<<'END_SQL') unless $class->table_exists('hostconf');
+CREATE TABLE hostconf (
+	name VARCHAR(255) PRIMARY KEY,
+	value VARCHAR(255)
+)
+END_SQL
+
 	# Create the modules table
-	$class->do(<<'END_SQL');
+	$class->do(<<'END_SQL') unless $class->table_exists('modules');
 CREATE TABLE modules (
 	id INTEGER PRIMARY KEY,
-	name VARCHAR(100)
+	name VARCHAR(255)
 )
 END_SQL
 
 	# Create the history table
-	$class->do(<<'END_SQL');
+	$class->do(<<'END_SQL') unless $class->table_exists('history');
 CREATE TABLE history (
 	id INTEGER PRIMARY KEY,
-	type VARCHAR(100),
-	name VARCHAR(100)
+	type VARCHAR(255),
+	name VARCHAR(255)
 )
 END_SQL
 
-	# Set the schema version
 	$class->pragma('user_version', 1);
+}
 
+
+
+
+
+#####################################################################
+# Host Preference Methods
+
+sub hostconf_read {
+	my $class = shift;
+	my $rows  = $class->selectall_arrayref('select name, value from hostconf');
+	return { map { @$_ } @$rows };
+}
+
+sub hostconf_write {
+	my $class = shift;
+	my $hash  = shift;
+	$class->begin;
+	$class->do('delete from hostconf');
+	foreach my $key ( sort keys %$hash ) {
+		$class->do(
+			'insert into hostconf ( name, value ) values ( ?, ? )',
+			{}, $key => $hash->{$key},
+		);
+	}
+	$class->commit;
 	return 1;
 }
 

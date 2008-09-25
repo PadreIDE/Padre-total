@@ -29,16 +29,16 @@ SCOPE: {
     my $config = $app->config;
     is_deeply {
             experimental      => 0,
-            DISPLAY_MIN_LIMIT => 2,
-            DISPLAY_MAX_LIMIT => 200,
-            show_line_numbers => 0,
-            show_eol          => 0,
+            pod_minlist => 2,
+            pod_maxlist => 200,
+            editor_linenumbers => 0,
+            editor_eol          => 0,
             search_terms      => [],
             replace_terms     => [],
             command_line      => '',
             startup           => 'new',
             projects          => {},
-            save_on_run       => 'same',
+            run_save       => 'same',
             current_project   => '',
             editor            => {
                     tab_size      => 8,

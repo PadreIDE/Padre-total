@@ -219,6 +219,7 @@ our $VERSION = '0.10';
 # autouse everything other than the bare essentials
 use Padre::Util           ();
 use Padre::Config         ();
+use Padre::DB             ();
 use Padre::Wx::App        ();
 use Padre::Wx::MainWindow ();
 
@@ -280,8 +281,8 @@ sub new {
 	# Locate the configuration
 	$self->{config_dir}  = Padre::Config->default_dir;
 	$self->{config_yaml} = Padre::Config->default_yaml;
-	$self->{config}      = Padre::Config->read( $self->config_yaml );
-	$self->{config}    ||= Padre::Config->new;
+	$self->{config}      = Padre::Config->read(   $self->config_yaml );
+	$self->{config}    ||= Padre::Config->create( $self->config_yaml );
 
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
 
