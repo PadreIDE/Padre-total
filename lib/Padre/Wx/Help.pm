@@ -45,12 +45,12 @@ sub on_help {
 sub on_context_help {
     my ($self) = @_;
 
-    my $selection = $self->_get_selection();
+    my $selection = $self->selected_text;
 
     on_help($self);
 
-    if ($selection) {
-        $self->{help}->show($selection);
+    if ( $selection ) {
+        $self->{help}->show( $selection );
     }
 
     return;

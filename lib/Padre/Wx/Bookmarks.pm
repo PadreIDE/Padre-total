@@ -108,7 +108,7 @@ sub on_set_bookmark {
 	my $pageid = $self->{notebook}->GetSelection();
 	my $editor = $self->{notebook}->GetPage($pageid);
 	my $line   = $editor->GetCurrentLine;
-	my $path   = $self->get_current_filename;
+	my $path   = $self->selected_filename;
 	my $file   = File::Basename::basename($path || '');
 
 	my $data = dialog($self, "$file line $line");

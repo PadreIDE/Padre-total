@@ -23,10 +23,10 @@ sub new {
 sub padre_setup {
 	my ($self) = @_;
 
-	$self->SetLexer( $self->{Padre}->lexer );
+	$self->SetLexer( $self->{Document}->lexer );
 #	 $self->Colourise(0, $self->GetTextLength);
 
-	my $mimetype = $self->{Padre}->mimetype;
+	my $mimetype = $self->{Document}->mimetype;
     if ($mimetype eq 'text/perl') {
         $self->padre_setup_perl;
     } elsif ($mimetype) {
@@ -127,7 +127,7 @@ sub padre_setup_perl {
 
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
-	$self->update_status;
+	$self->refresh_status;
 }
 
 sub on_stc_style_needed {
@@ -147,7 +147,7 @@ sub on_stc_change {
 	my $config = Padre->ide->config;
 	return if not $config->{editor_calltips};
 
-	my $editor = $self->get_current_editor;
+	my $editor = $self->selected_editor;
 
 	my $pos    = $editor->GetCurrentPos;
 	my $line   = $editor->LineFromPosition($pos);

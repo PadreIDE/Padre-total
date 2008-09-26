@@ -6,9 +6,8 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx             qw(wxOK wxID_CANCEL wxID_FIND wxALL wxEXPAND 
-                   wxVERTICAL wxHORIZONTAL wxDefaultPosition wxDefaultSize);
-use Wx::Event      qw(EVT_BUTTON EVT_CHECKBOX);
+use Wx        ();
+use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
 
 our $VERSION = '0.10';
 
@@ -31,20 +30,17 @@ my %cbs = (
 	},
 );
 
-
 sub on_find {
-	my ( $main_window ) = @_;
-
+	my $main   = shift;
 	my $config = Padre->ide->config;
-	my $selection = $main_window->_get_selection();
-	$selection = '' if not defined $selection;
+	my $text   = $main->selected_text;
+	$text = '' if not defined $text;
 
-    # TODO: if selection is more than one lines then consider it as the limit
-    # of the search and replace and not as the string to be used
+	# TODO: if selection is more than one lines then consider it as the limit
+	# of the search and replace and not as the string to be used
 
-	Padre::Wx::FindDialog->dialog( $main_window, $config, {term => $selection} );
+	Padre::Wx::FindDialog->dialog( $main, $config, { term => $text } );
 }
-
 
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
@@ -53,17 +49,17 @@ sub dialog {
 
 	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 300]);
 
-	my $box  = Wx::BoxSizer->new( wxVERTICAL );
+	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	my @rows;
 	foreach my $i ( 0..8 ) {
-		push @rows, Wx::BoxSizer->new( wxHORIZONTAL );
+		push @rows, Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 		$box->Add($rows[$i]);
 	}
 
-	my $find        = Wx::Button->new( $dialog, wxID_FIND,   '',            );
+	my $find        = Wx::Button->new( $dialog, Wx::wxID_FIND,   '',            );
 	my $replace     = Wx::Button->new( $dialog, -1,          '&Replace',     );
 	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
-	my $cancel      = Wx::Button->new( $dialog, wxID_CANCEL, '',            );
+	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
 	$find->SetDefault;
 
 	EVT_BUTTON( $dialog, $find,        \&find_clicked        );
@@ -74,17 +70,17 @@ sub dialog {
 	my @WIDTH  = (100);
 	my @HEIGHT = (200);
 
-	$rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         wxDefaultPosition, [$WIDTH[0], -1] ) );
-	my $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, wxDefaultPosition, wxDefaultSize, $config->{search_terms});
-	$rows[0]->Add( $find_choice, 1, wxALL, 3 );
-	$rows[0]->Add( $find,        1, wxALL, 3 );
+	$rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
+	my $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, Wx::wxDefaultPosition, Wx::wxDefaultSize, $config->{search_terms});
+	$rows[0]->Add( $find_choice, 1, Wx::wxALL, 3 );
+	$rows[0]->Add( $find,        1, Wx::wxALL, 3 );
 
-	$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', wxDefaultPosition, [$WIDTH[0], -1]) );
+	$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', Wx::wxDefaultPosition, [$WIDTH[0], -1]) );
 	my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
-	$rows[1]->Add( $replace_choice, 1, wxALL, 3 );
-	$rows[1]->Add( $replace,        1, wxALL, 3 );
+	$rows[1]->Add( $replace_choice, 1, Wx::wxALL, 3 );
+	$rows[1]->Add( $replace,        1, Wx::wxALL, 3 );
 
-	$rows[2]->Add(300, 20, 1, wxEXPAND, 0);
+	$rows[2]->Add(300, 20, 1, Wx::wxEXPAND, 0);
 	$rows[2]->Add( $replace_all );
 
 	foreach my $field (sort keys %cbs) {
@@ -97,15 +93,15 @@ sub dialog {
 		$cbs{$field}{cb} = $cb;
 	}
 
-#    $rows[1]->Add($dir_selector, 1, wxALL, 3);
+#    $rows[1]->Add($dir_selector, 1, Wx::wxALL, 3);
 
 #    my $path = Wx::StaticText->new( $dialog, -1, '');
-#    $rows[2]->Add( $path, 1, wxALL, 3 );
+#    $rows[2]->Add( $path, 1, Wx::wxALL, 3 );
 #    EVT_BUTTON( $dialog, $dir_selector, sub {on_pick_project_dir($path, @_) } );
 	#wxTE_PROCESS_ENTER
-	#EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(wxID_FIND)    });
+	#EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(Wx::wxID_FIND)    });
 	#EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
-	$rows[8]->Add(300, 20, 1, wxEXPAND, 0);
+	$rows[8]->Add(300, 20, 1, Wx::wxEXPAND, 0);
 	$rows[8]->Add($cancel);
 
 	$dialog->SetSizer($box);
@@ -168,7 +164,7 @@ sub replace_clicked {
 
 	# get current search condition and check if they match
 	my $main_window = Padre->ide->wx->main_window;
-	my $str = $main_window->_get_selection();
+	my $str         = $main_window->selected_text;
 	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
 
 	# if they do, replace it
@@ -272,7 +268,7 @@ sub _get_regex {
 	eval { $regex = qr/$search_term/m };
 	if ($@) {
 		my $main_window = Padre->ide->wx->main_window;
-		Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", wxOK, $main_window);
+		Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", Wx::wxOK, $main_window);
 		return;
 	}
 	return $regex;

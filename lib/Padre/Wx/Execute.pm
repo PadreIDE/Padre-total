@@ -1,4 +1,5 @@
 package Padre::Wx::Execute;
+
 use strict;
 use warnings;
 
@@ -102,7 +103,7 @@ sub _run {
 
 	my $config = Padre->ide->config;
 
-	$self->show_output();
+	$self->show_output(1);
 	$self->{output}->Remove( 0, $self->{output}->GetLastPosition );
 
 	$self->{proc} = Wx::Perl::ProcessStream->OpenProcess($cmd, 'MyName1', $self);
