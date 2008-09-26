@@ -1,8 +1,10 @@
+v0.02 2008.09.23
 
 	Add several new dialogs
 		Directory, File, Date and Colour pickers
 		Single Choice
 
 v0.01 2008.09.01
+
 	First version as Wx::Perl::Dialog
 	Moved from Padre::Demo  after v0.06

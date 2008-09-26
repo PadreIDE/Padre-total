@@ -7,7 +7,7 @@ use warnings;
 use base 'Exporter';
 use File::Spec;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 $| = 1;
 
@@ -148,6 +148,10 @@ sub dir_selector {
     return $dir;
 }
 
+=head2 date_picker
+
+=cut
+
 sub date_picker {
 
 	require Wx::DateTime;
@@ -165,6 +169,10 @@ sub date_picker {
 	);
 }
 
+=head2 colour_picker
+
+=cut
+
 sub colour_picker {
 
 	return dialog(
@@ -176,6 +184,10 @@ sub colour_picker {
 				},
 	);
 }
+
+=head2 file_picker
+
+=cut
 
 sub file_picker {
 
@@ -190,6 +202,10 @@ sub file_picker {
 	);
 }
 
+=head2 dir_picker
+
+=cut
+
 sub dir_picker {
 	require Cwd;
 	return dialog(
@@ -201,6 +217,22 @@ sub dir_picker {
 				},
 	);
 }
+
+=head2 dialog
+
+Generic dialog, with two buttons and a place for some control.
+It needs 4 parameters: 3 subroutines and a hash-ref
+
+ dialog(
+   sub { create_and_return_the_control },
+   sub { setup_data_in_the control },
+   sub { fetch_and_return_data_from_the_control },
+   {
+      title => "",
+      other arguments,
+   }
+
+=cut
 
 sub dialog {
 	my ($control, $setup, $getdata, $args) = @_;
