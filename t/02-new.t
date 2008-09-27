@@ -58,7 +58,7 @@ SCOPE: {
 }
 
 SCOPE: {
-    my $current = Padre::DB->get_current_pod;
+    my $current = Padre::DB->get_last_pod;
     ok !defined $current, 'current pod not defined';
 
     my @pods = Padre::DB->get_recent_pod;
@@ -70,13 +70,13 @@ SCOPE: {
     ok( ! Padre::DB->add_recent_pod('Test'), 'add_recent_pod' );
     @pods = Padre::DB->get_recent_pod;
     is_deeply \@pods, ['Test'], 'pods';
-    is( Padre::DB->get_current_pod, 'Test', 'current is Test' );
+    is( Padre::DB->get_last_pod, 'Test', 'current is Test' );
 
     ok( ! Padre::DB->add_recent_pod('Test::More'), 'add_recent_pod' );
     @pods = Padre::DB->get_recent_pod;
     is_deeply \@pods, ['Test', 'Test::More'], 'pods';
-    is( Padre::DB->get_current_pod, 'Test::More', 'current is Test::More' );
-    is( Padre::DB->get_current_pod, 'Test', 'current is Test' );
+    is( Padre::DB->get_last_pod, 'Test::More', 'current is Test::More' );
+    is( Padre::DB->get_last_pod, 'Test', 'current is Test' );
 
 # TODO next, previous,
 # TODO limit number of items and see what happens
@@ -91,10 +91,10 @@ SCOPE: {
     }
     my @pods = Padre::DB->get_recent_pod;
     is_deeply \@pods, ['Test', 'Test::More', @words], 'pods';
-    is( Padre::DB->get_current_pod, 'Six', 'current is Six' );
+    is( Padre::DB->get_last_pod, 'Six', 'current is Six' );
 
     is( $app->prev_module, 'Five', 'prev Five' );
     is( $app->prev_module, 'Four', 'prev Four' );
-    is( Padre::DB->get_current_pod, 'Four', 'current is Four' );
+    is( Padre::DB->get_last_pod, 'Four', 'current is Four' );
     is( $app->next_module, 'Five', 'next Five' );
 }

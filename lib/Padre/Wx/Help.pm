@@ -31,7 +31,7 @@ sub on_help {
 
     if ( not $self->{help} ) {
         $self->{help} = Padre::Pod::Frame->new;
-        my $module = Padre::DB->get_current_pod || 'Padre';
+        my $module = Padre::DB->get_last_pod || 'Padre';
         if ( $module ) {
             $self->{help}->{html}->display($module);
         }

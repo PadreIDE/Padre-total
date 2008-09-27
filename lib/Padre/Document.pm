@@ -6,7 +6,10 @@ package Padre::Document;
 use 5.008;
 use strict;
 use warnings;
-use Wx qw{
+use File::Spec ();
+use List::Util ();
+use Carp       ();
+use Wx         qw{
 	wxSTC_LEX_ADA
 	wxSTC_LEX_ASM
 	wxSTC_LEX_BATCH
@@ -29,13 +32,9 @@ use Wx qw{
 	wxSTC_LEX_VBSCRIPT
 	wxSTC_LEX_YAML
 	wxSTC_LEX_XML
-
 	wxSTC_LEX_AUTOMATIC
 	wxSTC_LEX_CONTAINER
 };
-use File::Spec ();
-use List::Util ();
-use Carp       ();
 
 our $VERSION = '0.10';
 

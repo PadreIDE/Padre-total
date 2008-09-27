@@ -15,10 +15,7 @@ use Params::Util   ();
 use Wx             qw(:everything);
 use Wx::Event      qw(:everything);
 
-use base qw{
-	Wx::Frame
-	Padre::Wx::Execute
-};
+use base qw{Wx::Frame};
 
 use Padre::Util        ();
 use Padre::Wx          ();
@@ -181,9 +178,9 @@ sub new {
 	EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
 	EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
 
-	Padre::Wx::Execute->setup( $self );
-	#$self->SetIcon( Wx::GetWxPerlIcon() );
-	$self->SetIcon( Padre::Wx::icon('new') );
+	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
+	$self->SetIcon( Wx::GetWxPerlIcon() );
+	# $self->SetIcon( Padre::Wx::icon('new') );
 
 	# Load any default files
 	# TODO make sure the full path to the file is saved and not
@@ -386,6 +383,159 @@ sub pageids {
 sub pages {
 	my $notebook = $_[0]->{notebook};
 	return map { $notebook->GetPage($_) } $_[0]->pageids;
+}
+
+
+
+
+
+#####################################################################
+# Process Execution
+
+sub run_command {
+	my $self   = shift;
+	my $cmd    = shift;
+	my $config = Padre->ide->config;
+
+	# Temporarily hard-wire this to the Perl menu
+	$self->{menu}->{perl_run_script}->Enable(0);
+	$self->{menu}->{perl_run_command}->Enable(0);
+	$self->{menu}->{perl_stop}->Enable(1);
+
+	# Prepare the output window for the output
+	$self->show_output(1);
+	$self->{output}->Remove( 0, $self->{output}->GetLastPosition );
+
+	# If this is the first time a command has been run,
+	# set up the ProcessStream bindings.
+	unless ( $Wx::Perl::ProcessStream::VERSION ) {
+		require Wx::Perl::ProcessStream;
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
+			$self,
+			sub {
+				$_[1]->Skip(1);
+				$_[1]->GetProcess->Destroy;
+
+				# Temporarily hard-wired to the Perl menu
+				$self->{menu}->{perl_run_script}->Enable(1);
+				$self->{menu}->{perl_run_command}->Enable(1);
+				$self->{menu}->{perl_stop}->Enable(0);
+			},
+		);
+	}
+
+	# Start the command
+	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, 'MyName1', $self );
+	unless ( $self->{command} ) {
+		# Failed to start the command. Clean up.
+		$self->{menu}->{perl_run_script}->Enable(1);
+		$self->{menu}->{perl_run_command}->Enable(1);
+		$self->{menu}->{perl_stop}->Enable(0);
+	}
+
+	return;
+}
+
+# This should really be somewhere else, but can stay here for now
+sub run_perl {
+	my $self     = shift;
+	my $document = _DOCUMENT(shift);
+	unless ( $document->isa('Perl::Document::Perl') ) {
+		return $self->error("Not a Perl document");
+	}
+
+	# Check the file name
+	my $filename = $document->filename;
+	unless ( $filename =~ /\.pl$/i ) {
+		return $self->error("Only .pl files can be executed");
+	}
+
+	# Apply the user's save-on-run policy
+	# TODO: Make this code suck less
+	my $config = Padre->ide->config;
+	if ( $config->{run_save} eq 'same' ) {
+		$self->on_save;
+	} elsif ( $config->{run_save} eq 'all_files' ) {
+		$self->on_save_all;
+	} elsif ( $config->{run_save} eq 'all_buffer' ) {
+		$self->on_save_all;
+	}
+
+	# Run with the same Perl that launched Padre
+	my $perl = Padre->perl_interpreter;
+	$self->run_command( qq{"$perl" "$filename"} );
+}
+
+sub debug_perl {
+	my $self     = shift;
+	my $document = _DOCUMENT(shift);
+	unless ( $document->isa('Perl::Document::Perl') ) {
+		return $self->error("Not a Perl document");
+	}
+
+	# Check the file name
+	my $filename = $document->filename;
+	unless ( $filename =~ /\.pl$/i ) {
+		return $self->error("Only .pl files can be executed");
+	}
+
+	# Apply the user's save-on-run policy
+	# TODO: Make this code suck less
+	my $config = Padre->ide->config;
+	if ( $config->{run_save} eq 'same' ) {
+		$self->on_save;
+	} elsif ( $config->{run_save} eq 'all_files' ) {
+		$self->on_save_all;
+	} elsif ( $config->{run_save} eq 'all_buffer' ) {
+		$self->on_save_all;
+	}
+
+	# Set up the debugger
+	my $host = 'localhost';
+	my $port = 12345;
+	# $self->_setup_debugger($host, $port);
+	local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
+
+	# Run with the same Perl that launched Padre
+	my $perl = Padre->perl_interpreter;
+	$self->run_command(qq["$perl" -d "$filename"]);
+	
+}
+
+
+
+
+
+#####################################################################
+# User Interaction
+
+sub message {
+	my $self    = shift;
+	my $message = shift;
+	my $title   = shift || 'Message';
+	Wx::MessageBox( $message, $title, Wx::wxOK | Wx::wxCENTRE, $self );
+	return;
+}
+
+sub error {
+	my $self = shift;
+	$self->message( shift, 'Error' );
 }
 
 
@@ -911,7 +1061,7 @@ sub on_preferences {
 	my $config = Padre->ide->config;
 
 	require Padre::Wx::Preferences;
-	Padre::Wx::Preferences->new( $self, $config );
+	Padre::Wx::Preferences->run( $self, $config );
 
 	foreach my $page ( $self->pages ) {
 		$self->set_preferences($page, $config);

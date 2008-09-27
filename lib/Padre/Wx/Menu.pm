@@ -235,16 +235,19 @@ sub new {
 		$menu->{view}->Append( -1, "Reset Font Size\tCtrl-/" ),
 		sub { $_[0]->zoom( -1 * $_[0]->selected_editor->GetZoom ) },
 	);
-	$menu->{view}->AppendSeparator;
 
-	EVT_MENU( $win,
-		$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
-		\&Padre::Wx::Bookmarks::on_set_bookmark,
-	);
-	EVT_MENU( $win,
-		$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
-		\&Padre::Wx::Bookmarks::on_goto_bookmark,
-	);
+	if ( $experimental ) {
+		$menu->{view}->AppendSeparator;
+		EVT_MENU( $win,
+			$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
+			sub { Padre::Wx::Bookmarks::on_set_bookmark($_[0]) },
+		);
+		EVT_MENU( $win,
+			$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
+			sub { Padre::Wx::Bookmarks::on_goto_bookmark($_[0]) },
+		);
+	}
+
 
 
 
@@ -284,24 +287,45 @@ sub new {
 	$menu->{perl_run_script} = $menu->{perl}->Append( -1, "Run Script\tF5" );
 	EVT_MENU( $win,
 		$menu->{perl_run_script},
-		\&Padre::Wx::Execute::on_run_this,
+		sub { $_[0]->run_perl },
 	);
 	$menu->{perl_run_command} = $menu->{perl}->Append( -1, "Run Command\tCtrl-F5" );
 	EVT_MENU( $win,
 		$menu->{perl_run_command},
-		\&Padre::Wx::Execute::on_run,
+		sub {
+			$DB::single = 1;
+			my $main_window = shift;
+			require Padre::Wx::Dialog::LastText;
+			my $dialog = Padre::Wx::Dialog::LastText->new(
+				$main_window,
+				"Command line",
+				"Run setup",
+				"run_command",
+			);
+			if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+				return;
+			}
+			my $command = $dialog->GetValue;
+			$dialog->Destroy;
+			unless ( defined $command and $command ne '' ) {
+				return;
+			}
+			$main_window->run_command( $command );
+			return;
+		}
 	);
 	$menu->{perl_stop} = $menu->{perl}->Append( -1, "&Stop" );
 	EVT_MENU( $win,
 		$menu->{perl_stop},
-		\&Padre::Wx::Execute::on_stop,
+		sub {
+			if ( $_[0]->{command} ) {
+				$_[0]->{command}->TerminateProcess;
+			}
+			delete $_[0]->{command};
+			return;
+		},
 	);
 	$menu->{perl_stop}->Enable(0);
-	EVT_MENU( $win,
-		$menu->{perl}->Append( -1, "&Setup" ),
-		\&Padre::Wx::Execute::on_setup_run,
-	);
-	$menu->{perl}->AppendSeparator;
 
 	# Commenting
 	EVT_MENU( $win,
@@ -336,11 +360,13 @@ sub new {
 
 	# Create the window menu
 	$menu->{window} = Wx::Menu->new;
-	EVT_MENU( $win,
-		$menu->{window}->Append( -1, "&Split window" ),
-		\&Padre::Wx::MainWindow::on_split_window,
-	);
-	$menu->{window}->AppendSeparator;
+	if ( $experimental ) {
+		EVT_MENU( $win,
+			$menu->{window}->Append( -1, "&Split window" ),
+			\&Padre::Wx::MainWindow::on_split_window,
+		);
+		$menu->{window}->AppendSeparator;
+	}
 	EVT_MENU( $win,
 		$menu->{window}->Append(-1, "Next File\tCtrl-TAB"),
 		\&Padre::Wx::MainWindow::on_next_pane,
@@ -375,37 +401,37 @@ sub new {
 
 
 
-    # Create the Experimental menu
-    # All the crap that doesn't work, have a home,
-    # or should never be seen be real users goes here.
-    if ( $experimental ) {
-        $menu->{experimental} = Wx::Menu->new;
-        EVT_MENU( $win,
-            $menu->{experimental}->Append( -1, 'Reflow Menu/Toolbar' ),
-            sub {
-                $DB::single = 1;
-                my $document = Padre::Document->from_selection;
-                $_[0]->{menu}->refresh( $document );
-                $_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
-                $_[0]->GetToolBar->refresh( $document );
-                return;
-            },
-        );
-        EVT_MENU(
-            $win,
-            $menu->{experimental}->Append( -1, 'Run in &Padre' ),
-            sub {
-                my $self = shift;
-                my $code = Padre::Document->from_selection->text_get;
-                eval $code;
-                if ($@) {
-                    Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);
-                    return;
-                }
-                return;
-            },
-        );
-    }
+	# Create the Experimental menu
+	# All the crap that doesn't work, have a home,
+	# or should never be seen be real users goes here.
+	if ( $experimental ) {
+		$menu->{experimental} = Wx::Menu->new;
+		EVT_MENU( $win,
+			$menu->{experimental}->Append( -1, 'Reflow Menu/Toolbar' ),
+			sub {
+				$DB::single = 1;
+				my $document = Padre::Document->from_selection;
+				$_[0]->{menu}->refresh( $document );
+				$_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
+				$_[0]->GetToolBar->refresh( $document );
+				return;
+			},
+		);
+		EVT_MENU(
+			$win,
+			$menu->{experimental}->Append( -1, 'Run in &Padre' ),
+			sub {
+				my $self = shift;
+				my $code = Padre::Document->from_selection->text_get;
+				eval $code;
+				if ($@) {
+					Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);
+					return;
+				}
+				return;
+			},
+		);
+	}
 
 	# Create and return the main menu bar
 	$menu->{wx} = Wx::MenuBar->new;
@@ -464,13 +490,14 @@ sub add_alt_n_menu {
 
 sub update_alt_n_menu {
 	my ($self, $file, $n) = @_;
-
 	my $v = $n + 1;
-# TODO: fix the occassional crash here:
-if (not defined $self->{alt}->[$n]) {
-    warn $n;
-    return;
-}
+
+	# TODO: fix the occassional crash here:
+	if (not defined $self->{alt}->[$n]) {
+		warn $n;
+		return;
+	}
+
 	$self->{alt}->[$n]->SetText("$file\tAlt-$v");
 
 	return;

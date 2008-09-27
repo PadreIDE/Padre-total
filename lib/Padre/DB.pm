@@ -3,6 +3,7 @@ package Padre::DB;
 # Provide an ORLite-based API for the Padre database
 
 use strict;
+use Params::Util  ();
 use Padre::Config ();
 use ORLite 0.15 {
 	file   => Padre::Config->default_db,
@@ -131,51 +132,60 @@ sub find_modules {
 
 
 #####################################################################
-# Recent Files
+# History
 
-sub add_recent_files {
+sub add_history {
 	my $class = shift;
-	my $file  = shift;
+	my $type  = shift;
+	my $value = shift;
 	$class->do(
-		"INSERT INTO history ( type, name ) VALUES ( 'files', ? )",
-		{}, $file,
+		"insert into history ( type, name ) values ( ?, ? )",
+		{}, $type, $value,
 	);
 	return;
+}
+
+sub get_history {
+	my $class = shift;
+	my $type  = shift;
+	die "CODE INCOMPLETE";
+}
+
+sub get_recent {
+	my $class  = shift;
+	my $type   = shift;
+	my $limit  = Params::Util::_POSINT(shift) || 10;
+	my $recent = $class->selectcol_arrayref(
+		"select distinct name from history where type = ? order by id desc limit $limit",
+		{}, $type,
+	) or die "Failed to find revent files";
+	return wantarray ? @$recent : $recent;
+}
+
+sub get_last {
+	my $class  = shift;
+	my @recent = $class->get_recent(shift, 1);
+	return $recent[0];
+}
+
+sub add_recent_files {
+	$_[0]->add_history('files', $_[1]);
 }
 
 sub get_recent_files {
-	my $files = shift->selectcol_arrayref(
-		"SELECT DISTINCT name FROM history where type = 'file' ORDER BY id",
-	) or die "Failed to find revent files";
-	return @$files;
+	$_[0]->get_recent('files');
 }
 
-
-
-
-
-#####################################################################
-# Recent POD Methods
-
 sub add_recent_pod {
-	my $class = shift;
-	my $file  = shift;
-	$class->do(
-		"INSERT INTO history ( type, name ) VALUES ( 'pod', ? )",
-		{}, $file,
-	);
-	return;
+	$_[0]->add_history('pod', $_[1]);
 }
 
 sub get_recent_pod {
-	my $pod = shift->selectcol_arrayref(
-		"SELECT DISTINCT name FROM history where type = 'pod' ORDER BY id",
-	) or die "Failed to find revent pod";
-	return @$pod;
+	$_[0]->get_recent('pod');
 }
 
-sub get_current_pod {
-	return ($_[0]->get_recent_pod)[-1];
+sub get_last_pod {
+	$_[0]->get_last('pod');
 }
 
 1;

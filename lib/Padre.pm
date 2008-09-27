@@ -377,7 +377,7 @@ sub next_module {
 	# return if $current == $#current;
 	# $self->set_current_index('pod', $current + 1);
 
-	return Padre::DB->get_current_pod;
+	return Padre::DB->get_last_pod;
 }
 
 # returns the name of the previous module
@@ -391,7 +391,7 @@ sub prev_module {
 	# return if not $current;
 	# $self->set_current_index('pod', $current - 1);
 
-	return Padre::DB->get_current_pod;
+	return Padre::DB->get_last_pod;
 }
 
 sub usage { print <<"END_USAGE"; exit(1) }
