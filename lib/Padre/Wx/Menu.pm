@@ -295,8 +295,8 @@ sub new {
 		sub {
 			$DB::single = 1;
 			my $main_window = shift;
-			require Padre::Wx::Dialog::LastText;
-			my $dialog = Padre::Wx::Dialog::LastText->new(
+			require Padre::Wx::History::TextDialog;
+			my $dialog = Padre::Wx::History::TextDialog->new(
 				$main_window,
 				"Command line",
 				"Run setup",

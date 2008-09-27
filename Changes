@@ -14,7 +14,7 @@ v0.11
     Transaction-wrap exiting to make it much much faster (ADAMK)
     Adding shortcut methods for popup messages/errors (ADAMK)
     Optimised away the non-Wx non-class Padre::Wx::Execute (ADAMK)
-    Created Padre::Wx::Dialog::LastText so we can have a dialog
+    Created Padre::Wx::History::TextDialog so we can have a dialog
         box that defaults to whatever the last answer was. (ADAMK)
 
 v0.10 2008.09.22

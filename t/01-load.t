@@ -18,6 +18,6 @@ use_ok( 'Padre::Config'                 );
 use_ok( 'Padre::DB'                     );
 use_ok( 'Padre::Project'                );
 use_ok( 'Padre::Wx'                     );
-use_ok( 'Padre::Wx::Dialog::LastText' );
+use_ok( 'Padre::Wx::History::TextDialog' );
 use_ok( 'Padre'                         );
 use_ok( 'Padre::Pod::Viewer'            );

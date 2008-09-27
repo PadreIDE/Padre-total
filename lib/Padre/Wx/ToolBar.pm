@@ -25,7 +25,7 @@ sub new {
 	$self->AddTool( Wx::wxID_NEW,  '', Padre::Wx::bitmap('new'),  'New File'  ); 
 	$self->AddTool( Wx::wxID_OPEN, '', Padre::Wx::bitmap('open'), 'Open File' ); 
 	$self->AddTool( Wx::wxID_SAVE, '', Padre::Wx::bitmap('save'), 'Save File' );
-	# $self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::bitmap('close'), 'Close File' );
+	$self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::bitmap('close'), 'Close File' );
 	$self->AddSeparator;
 
 	return $self;

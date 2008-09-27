@@ -1,4 +1,4 @@
-package Padre::Wx::Dialog::LastText;
+package Padre::Wx::History::TextDialog;
 
 use 5.008;
 use strict;
