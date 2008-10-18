@@ -14,7 +14,7 @@ my %prereqs = (
         'perl'                    => '5.008',
 
         'Carp'                    => 0,
-	'Class::Abstract'         => '1.05',
+	'Class::Adapter'          => '1.05',
         'Cwd'                     => 0,
         'Data::Dumper'            => 0,
         'File::Spec::Functions'   => 0,
