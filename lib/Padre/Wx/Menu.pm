@@ -382,19 +382,28 @@ sub new {
 
 
 	# Create the help menu
-	$menu->{help} = Wx::Menu->new;
+	require Padre::Wx::Menu::Help;
+	$menu->{help} = Padre::Wx::Menu::Help->new;
 	EVT_MENU( $win,
 		$menu->{help}->Append( Wx::wxID_HELP, '' ),
-		\&Padre::Wx::Help::on_help,
+		sub { $menu->{help}->help($win) },
 	);
 	EVT_MENU( $win,
 		$menu->{help}->Append( -1, "Context Help\tCtrl-Shift-H" ),
-		\&Padre::Wx::Help::on_context_help,
+		sub {
+			my $main      = shift;
+			my $selection = $main->selected_text;
+			$menu->{help}->help($main);
+			if ( $selection ) {
+				$main->{help}->show( $selection );
+			}
+			return;
+		},
 	);
 	$menu->{help}->AppendSeparator;
 	EVT_MENU( $win,
-		$menu->{help}->Append( Wx::wxID_ABOUT,   '' ),
-		\&Padre::Wx::Help::on_about,
+		$menu->{help}->Append( Wx::wxID_ABOUT, '' ),
+		sub { $menu->{help}->about },
 	);
 
 

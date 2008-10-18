@@ -9,7 +9,7 @@ use warnings;
 use File::Spec ();
 use List::Util ();
 use Carp       ();
-use Wx         qw{
+use Wx qw{
 	wxSTC_LEX_ADA
 	wxSTC_LEX_ASM
 	wxSTC_LEX_BATCH

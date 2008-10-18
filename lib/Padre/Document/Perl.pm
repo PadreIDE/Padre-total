@@ -70,10 +70,10 @@ sub ppi_select {
 	if ( _INSTANCE($location, 'PPI::Element') ) {
 		$location = $location->location;
 	}
-	my $page     = $self->page or return;
-	my $line     = $page->PositionFromLine( $location->[0] - 1 );
+	my $editor   = $self->editor or return;
+	my $line     = $editor->PositionFromLine( $location->[0] - 1 );
 	my $start    = $line + $location->[1] - 1;
-	$page->SetSelection( $start, $start + 1 );
+	$editor->SetSelection( $start, $start + 1 );
 }
 
 my $keywords = {
