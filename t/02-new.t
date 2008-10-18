@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 21;
+use Test::More tests => 5; # + 16;
 use Test::Exception;
 use Test::NoWarnings;
 
@@ -62,6 +62,8 @@ SCOPE: {
 	},
 	'defaults';
 }
+
+__END__
 
 SCOPE: {
 	my $current = Padre::DB->get_last_pod;
