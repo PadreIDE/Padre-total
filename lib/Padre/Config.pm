@@ -108,7 +108,7 @@ sub new {
 
 	# Look and feel preferences
 	$self->{main_statusbar}           ||= 1;
-	$self->{editor_tabwidth}          ||= 8;
+	$self->{editor_tabwidth}          ||= 4;
 	$self->{editor_linenumbers}       ||= 0;
 	$self->{editor_eol}               ||= 0;
 	$self->{editor_indentationguides} ||= 0;
