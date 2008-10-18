@@ -536,6 +536,7 @@ sub refresh {
 	my $document = _INSTANCE(shift, 'Padre::Document');
 
 	# Create the new menu bar
+return;
 	$self->{wx} = Wx::MenuBar->new;
 	$self->{wx}->Append( $self->{file},     "&File"      );
 	$self->{wx}->Append( $self->{project},  "&Project"   );
