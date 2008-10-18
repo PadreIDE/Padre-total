@@ -23,16 +23,20 @@ lib/Padre/Document/Pir.pm
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm
 lib/Padre/Wx/Editor.pm
-lib/Padre/Wx/Execute.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/GoToLine.pm
-lib/Padre/Wx/Help.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Preferences.pm
+lib/Padre/Wx/Project.pm
 lib/Padre/Wx/RightClick.pm
 lib/Padre/Wx/ToolBar.pm
+
+lib/Padre/Wx/History/ComboBox.pm
+lib/Padre/Wx/History/TextDialog.pm
+
+lib/Padre/Wx/Menu/Help.pm
 
 lib/Padre/Pod/Frame.pm
 lib/Padre/Pod/Indexer.pm
@@ -75,3 +79,5 @@ share/templates/template.pl
 share/templates/template.pm
 share/templates/template.t
 META.yml
+
+
