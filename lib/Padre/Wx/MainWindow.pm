@@ -101,16 +101,7 @@ sub new {
 	EVT_LIST_ITEM_ACTIVATED(
 		$self,
 		$self->{rightbar},
-		sub {
-			my ($self, $event) = @_;
-			my $sub = $event->GetItem->GetText;
-			return if not defined $sub;
-			# TODO actually search for sub\s+$sub
-			require Padre::Wx::FindDialog;
-			Padre::Wx::FindDialog::_search( search_term => "sub $sub" );
-			$self->selected_editor->SetFocus;
-			return;
-		}
+		\&on_function_selected,
 	);
 
 	# Create the main notebook for the documents
@@ -1209,7 +1200,17 @@ sub run_in_padre {
 	return;
 }
 
+sub on_function_selected {
+	my ($self, $event) = @_;
+	my $sub = $event->GetItem->GetText;
+	return if not defined $sub;
 
+	require Padre::Wx::FindDialog;
+	my $doc = _DOCUMENT();
+	Padre::Wx::FindDialog::_search( search_term => $doc->get_function_regex($sub) );
+	$self->selected_editor->SetFocus;
+	return;
+}
 
 
 #####################################################################

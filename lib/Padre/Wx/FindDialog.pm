@@ -254,6 +254,8 @@ sub _get_regex {
 	my $config = Padre->ide->config;
 
 	my $search_term = $args{search_term} || $config->{search_terms}->[0];
+	return $search_term if defined $search_term and 'Regexp' eq ref $search_term;
+
 	if ($config->{search}->{use_regex}) {
 		$search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
 	} else {

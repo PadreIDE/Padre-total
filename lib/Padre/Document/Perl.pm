@@ -98,4 +98,9 @@ sub get_functions {
 	return reverse sort $text =~ m{^sub\s+(\w+)}gm;
 }
 
+sub get_function_regex {
+	my ( $self, $sub ) = @_;
+	return qr{sub\s+$sub\b};
+}
+
 1;
