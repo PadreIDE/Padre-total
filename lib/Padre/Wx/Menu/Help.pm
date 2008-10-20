@@ -6,9 +6,11 @@ use warnings;
 use Wx ();
 
 our $VERSION = '0.10';
-our @ISA     = 'Wx::Menu';
+#our @ISA     = 'Wx::Menu';
+sub new { return bless {}, shift };
 
 sub help {
+	my $self = shift;
 	my $main = shift;
 	unless ( $main->{help} ) {
 		$main->{help} = Padre::Pod::Frame->new;
@@ -24,6 +26,8 @@ sub help {
 }
 
 sub about {
+	my $self = shift;
+
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre");
 	$about->SetDescription(

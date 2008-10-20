@@ -380,17 +380,19 @@ sub new {
 
 	# Create the help menu
 	require Padre::Wx::Menu::Help;
-	$menu->{help} = Padre::Wx::Menu::Help->new;
+	$menu->{help} = Wx::Menu->new;
+	my $help = Padre::Wx::Menu::Help->new;
+
 	EVT_MENU( $win,
 		$menu->{help}->Append( Wx::wxID_HELP, '' ),
-		sub { $menu->{help}->help($win) },
+		sub { $help->help($win) },
 	);
 	EVT_MENU( $win,
 		$menu->{help}->Append( -1, "Context Help\tCtrl-Shift-H" ),
 		sub {
 			my $main      = shift;
 			my $selection = $main->selected_text;
-			$menu->{help}->help($main);
+			$help->help($main);
 			if ( $selection ) {
 				$main->{help}->show( $selection );
 			}
