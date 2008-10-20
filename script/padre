@@ -5,7 +5,7 @@ use warnings;
 
 $| = 1;
 
-unless ( $^O eq 'MSWin32' ) {
+unless ( $^O eq 'MSWin32' or $ENV{PADRE_DEV} ) {
 	exit 0 if fork();
 }
 
