@@ -236,18 +236,15 @@ sub new {
 		sub { $_[0]->zoom( -1 * $_[0]->selected_editor->GetZoom ) },
 	);
 
-	if ( $experimental ) {
-		$menu->{view}->AppendSeparator;
-		EVT_MENU( $win,
-			$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
-			sub { Padre::Wx::Bookmarks::on_set_bookmark($_[0]) },
-		);
-		EVT_MENU( $win,
-			$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
-			sub { Padre::Wx::Bookmarks::on_goto_bookmark($_[0]) },
-		);
-	}
-
+	$menu->{view}->AppendSeparator;
+	EVT_MENU( $win,
+		$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
+		sub { Padre::Wx::Bookmarks::on_set_bookmark($_[0]) },
+	);
+	EVT_MENU( $win,
+		$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
+		sub { Padre::Wx::Bookmarks::on_goto_bookmark($_[0]) },
+	);
 
 
 
