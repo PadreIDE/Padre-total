@@ -1,10 +1,76 @@
 ---
-chomp: (STRING)
-index: '(STR, SUBSTR, INDEX)'
-join: '(EXPR, LIST)'
-pop: (@ARRAY)
-print: (LIST) or (FILEHANDLE LIST)
-push: '(@ARRAY, LIST)'
-split: '(/PATTERN/,EXPR,LIMIT)'
-substr: '(EXPR, OFFSET, LENGTH, REPLACEMENT)'
-wantarray: ()
+abs:
+ cmd: (NUMBER)
+ exp: The absolute value of NUMBER.
+accept:
+ cmd: (NEWSOCKET, GENERICSOCKET)
+ exp: Accept an incoming socket.
+alarm:
+ cmd: (NUMBER)
+ exp: Asks the operating system to send an alarm sign after NUMBER seconds.
+atan2:
+ cmd: (Y, X)
+ exp: Returns the arctangent of Y/X in the range -PI to PI.
+bind:
+ cmd: (SOCKET, NAME)
+ exp: Binds a network address to a socket.
+binmode:
+ cmd: (FILEHANDLE)  or  (FILEHANDLE, LAYER)
+ exp: Arranges for FILEHANDLE to be read or written in "binary" format.
+bless:
+ cmd: (REFERENCE, CLASSNAME)
+ exp: Connects a REFERENCE (usually of a hash) to a CLASS to arrange for OOP dispatching.
+caller:
+ cmd: (NUMBER)
+ exp: Returns information regarding the caller of the current function NUMBER frames earlier in the call stack.
+chdir:
+ cmd: (PATH)
+ exp: Change the current working directory to PATH.
+chmod:
+ cmd: (LIST)
+ exp:  Changes the permissions of a LIST of files.
+chomp:
+ cmd: (STRING)   or (ARRAY)
+ exp: Remove the newline from the end of the STRING or from the end of every string in the ARRAY.
+chomp:
+ cmd: (STRING)
+ exp: Remove last character from STRING. (Usually better to use chomp than chop.)
+chown:
+ cmd: (LIST)
+ exp: Changes the owner (and group) of a LIST of files.
+chr:
+ cmd: (NUMBER)
+ exp: Returns the character represented by that NUMBER in the character set.
+chroot:
+ cmd: (FILENAME)
+ exp: (Superuser only.)
+close:
+ cmd: (FILEHANDLE)
+ exp: Flushes all the data and closes a FILEHANDLE opened by open().
+closedir:
+ cmd: (DIRECTORY_HANDLE)
+ exp: Close a DIRECTORY_HANDLE opened by opendir().
+index:
+ cmd: '(STR, SUBSTR, INDEX)'
+ exp: Return the offset of the next occurance of SUBSTR in STR starting from INDEX.
+join:
+ cmd: '(STRING, LIST)'
+ exp: Join the elements of LIST using the STRING as connector between every two element.
+pop:
+ cmd: (@ARRAY)
+ exp: Return the last element of the array.
+print:
+ cmd: (LIST) or (FILEHANDLE LIST)
+ exp: Print to the screen or to the file that was open()-ed for writing.
+push:
+ cmd: '(@ARRAY, VALUE)  or (@ARRAY, LIST)'
+ exp: Add one or more elements to the end of the array.
+split:
+ cmd: '(/PATTERN/, STRING , LIMIT)    or   (/PATTERN/, STRING , LIMIT)'
+ exp: Split up the STRING at every match of the PATTERN.
+substr:
+ cmd: '(STRING, OFFSET, LENGTH)'
+ exp: Return LENGTH number of character of the STRING starting from OFFSET character.
+wantarray:
+ cmd: () no parameters
+ exp: Returns true if the current call of the function expects more than one results.

@@ -165,7 +165,8 @@ sub on_stc_change {
 
 	my $tip;
 	if ( $prefix =~ /($regex)[ (]?$/ ) {
-		$tip = $keywords->{$1};
+		my $z = $keywords->{$1};
+		$tip = "$z->{cmd}\n$z->{exp}";
 	}
 	if ($tip) {
 		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
