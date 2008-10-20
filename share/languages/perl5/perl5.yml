@@ -1,0 +1,10 @@
+---
+chomp: (STRING)
+index: '(STR, SUBSTR, INDEX)'
+join: '(EXPR, LIST)'
+pop: (@ARRAY)
+print: (LIST) or (FILEHANDLE LIST)
+push: '(@ARRAY, LIST)'
+split: '(/PATTERN/,EXPR,LIMIT)'
+substr: '(EXPR, OFFSET, LENGTH, REPLACEMENT)'
+wantarray: ()

@@ -6,6 +6,7 @@ use warnings;
 use Carp            ();
 use Params::Util    '_INSTANCE';
 use Padre::Document ();
+use YAML::Tiny      ();
 
 our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
@@ -76,19 +77,14 @@ sub ppi_select {
 	$editor->SetSelection( $start, $start + 1 );
 }
 
-my $keywords = {
-	chomp     => '(STRING)',
-	substr    => '(EXPR, OFFSET, LENGTH, REPLACEMENT)',
-	index     => '(STR, SUBSTR, INDEX)',
-	pop       => '(@ARRAY)',
-	push      => '(@ARRAY, LIST)',
-	print     => '(LIST) or (FILEHANDLE LIST)',
-	join      => '(EXPR, LIST)',
-	split     => '(/PATTERN/,EXPR,LIMIT)',
-	wantarray => '()',
-};
+my $keywords;
 
 sub keywords {
+	if (not $keywords) {
+		my $dir  = Padre::Wx::_dir();
+		my $path = File::Spec->catfile($dir , 'languages', 'perl5', "perl5.yml");
+		$keywords = YAML::Tiny::LoadFile($path);
+	}
 	return $keywords;
 }
 
