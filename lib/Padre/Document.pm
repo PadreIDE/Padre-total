@@ -233,9 +233,9 @@ sub guess_mimetype {
 	# Fall back on deriving the type from the content
 	# Hardcode this for now for the special cases we care about.
 	my $text = $self->text_get;
-	if ( $text =~ /\A\#\!/m ) {
+	if ( $text =~ /\A#!/m ) {
 		# Found a hash bang line
-		if ( $text =~ /\A\#\![^\n]*\bperl\b/m ) {
+		if ( $text =~ /\A#![^\n]*\bperl\b/m ) {
 			return 'text/perl';
 		}
 	}
