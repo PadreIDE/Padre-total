@@ -255,8 +255,12 @@ sub perl_interpreter {
 my @history = qw(files pod);
 
 my $SINGLETON = undef;
+sub inst {
+	Carp::croak("Padre->new has not been called yet") if not $SINGLETON;
+	return $SINGLETON;
+}
 sub new {
-	return $SINGLETON if $SINGLETON;
+	Carp::croak("Padre->new already called. Use Padre->inst") if $SINGLETON;
 	my $class = shift;
 
 	# Create the empty object
@@ -300,7 +304,7 @@ sub ide {
 sub wx {
 	my $self = shift;
 	$self->{wx} or
-	$self->{wx} = Padre::Wx::App->new(@_);
+	$self->{wx} = Padre::Wx::App->new;
 }
 
 sub config {
@@ -333,7 +337,9 @@ sub run {
 	# window was opened but my Wx skills do not exist. --Steffen
 	# (RT #1)
 	$self->plugin_manager->load_plugins;
-	return $self->run_editor( @ARGV );
+	$self->{ARGV} = \@ARGV;
+
+	return $self->run_editor;
 }
 
 sub run_indexer {
@@ -355,7 +361,8 @@ sub run_indexer {
 
 sub run_editor {
 	my $self = shift;
-	$self->wx(@_)->MainLoop;
+
+	$self->wx->MainLoop;
 	$self->{wx} = undef;
 	return;
 }

@@ -35,7 +35,8 @@ my $default_dir = Cwd::cwd();
 
 sub new {
 	my $class  = shift;
-	my @files  = @_;
+	my $files  = Padre->inst->{ARGV};
+
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
 
@@ -176,8 +177,8 @@ sub new {
 	# Load any default files
 	# TODO make sure the full path to the file is saved and not
 	# the relative path
-	if ( @files ) {
-		foreach my $f ( @files ) {
+	if ( @$files ) {
+		foreach my $f ( @$files ) {
 		    if ( not File::Spec->file_name_is_absolute($f) ) {
 		        $f = File::Spec->catfile(Cwd::cwd(), $f);
 		    }
