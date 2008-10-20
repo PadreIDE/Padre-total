@@ -194,6 +194,9 @@ sub new {
 	unless ( $self->editor ) {
 		die "Missing or invalid editor";
 	}
+
+	$self->setup;
+
 	unless ( $self->mimetype ) {
 		$self->set_mimetype( $self->guess_mimetype );
 	}
@@ -209,7 +212,6 @@ sub new {
 			bless $self, $subclass;
 		}
 	}
-	$self->setup;
 
 	return $self;
 }
@@ -221,6 +223,7 @@ sub guess_mimetype {
 	if (not $self->filename) {
 		return 'text/perl';
 	}
+
 	# Try derive the mime type from the name
 	if ( $self->filename and $self->filename =~ /\.([^.]+)$/ ) {
 		my $ext = lc $1;
@@ -232,7 +235,7 @@ sub guess_mimetype {
 	my $text = $self->text_get;
 	if ( $text =~ /\A\#\!/m ) {
 		# Found a hash bang line
-		if ( $text =~ /\A[^\n]\bperl\b/m ) {
+		if ( $text =~ /\A\#\![^\n]*\bperl\b/m ) {
 			return 'text/perl';
 		}
 	}
