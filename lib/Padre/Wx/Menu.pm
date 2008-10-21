@@ -105,6 +105,14 @@ sub new {
 	}
 	$menu->{file}->AppendSeparator;
 
+	# Module::Start
+	EVT_MENU( $win,
+		$menu->{file}->Append( -1, 'Start Module' ),
+		\&Padre::Wx::ModuleStartDialog::on_start,
+	);
+
+	$menu->{file}->AppendSeparator;
+
 	# Exiting
 	EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_EXIT, '' ),

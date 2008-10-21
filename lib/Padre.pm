@@ -244,6 +244,7 @@ use Class::Autouse qw{
 	Padre::Wx::Bookmarks
 	Padre::Wx::FindDialog
 	Padre::Wx::GoToLine
+	Padre::Wx::ModuleStartDialog
 };
 
 # Globally shared Perl detection object

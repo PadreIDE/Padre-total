@@ -39,7 +39,7 @@ sub on_find {
 	# TODO: if selection is more than one lines then consider it as the limit
 	# of the search and replace and not as the string to be used
 
-	Padre::Wx::FindDialog->dialog( $main, $config, { term => $text } );
+	__PACKAGE__->dialog( $main, $config, { term => $text } );
 }
 
 sub dialog {

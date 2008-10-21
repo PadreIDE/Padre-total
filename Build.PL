@@ -34,6 +34,7 @@ my %prereqs = (
 	'File::ShareDir'          => '1.00',
 	'File::Slurp'             => 0,
 	'Module::Inspector'       => '0.04',
+	'Module::Starter'         => 0,
 	'ORLite'                  => '0.15',
 	'PAR'                     => '0.970',
 	'Pod::POM'                => 0,
