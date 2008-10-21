@@ -166,6 +166,7 @@ sub on_stc_change {
 	my $tip;
 	if ( $prefix =~ /($regex)[ (]?$/ ) {
 		my $z = $keywords->{$1};
+		return if not $z or not ref($z) or ref($z) ne 'HASH';
 		$tip = "$z->{cmd}\n$z->{exp}";
 	}
 	if ($tip) {
