@@ -3,7 +3,7 @@ package Padre::Wx::ToolBar;
 use 5.008;
 use strict;
 use warnings;
-use Wx           ();
+use Wx           qw( wxNO_BORDER wxTB_HORIZONTAL wxTB_FLAT wxTB_DOCKABLE wxID_NEW wxID_OPEN wxID_SAVE);
 use Padre::Wx    ();
 
 our $VERSION = '0.10';

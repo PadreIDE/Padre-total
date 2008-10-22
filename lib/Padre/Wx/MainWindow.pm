@@ -12,8 +12,14 @@ use File::Slurp    ();
 use File::Basename ();
 use List::Util     ();
 use Params::Util   ();
-use Wx             qw(:everything);
-use Wx::Event      qw(:everything);
+use Wx             qw(
+                   WXK_TAB wxDEFAULT_FRAME_STYLE wxMAXIMIZE wxNO_FULL_REPAINT_ON_RESIZE wxCLIP_CHILDREN 
+                   wxLC_SINGLE_SEL wxLC_NO_HEADER wxLC_REPORT wxLIST_AUTOSIZE wxTE_READONLY wxTE_MULTILINE 
+                   wxOK wxCENTRE wxFD_OPEN wxID_CANCEL wxFD_SAVE wxYES_NO wxYES wxCANCEL wxNO
+                   wxSTC_STYLE_LINENUMBER wxSTC_MARGIN_NUMBER);
+use Wx::Event      qw(
+                   EVT_LIST_ITEM_ACTIVATED EVT_NOTEBOOK_PAGE_CHANGED EVT_KEY_UP EVT_CLOSE
+                   EVT_STC_UPDATEUI EVT_STC_CHANGE EVT_STC_STYLENEEDED);
 
 use base qw{Wx::Frame};
 
