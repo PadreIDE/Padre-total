@@ -222,7 +222,7 @@ sub new {
 # Window Methods
 
 sub window_width {
-	($_[0]->GetSizeWH)[1];
+	($_[0]->GetSizeWH)[0];
 }
 
 sub window_height {
