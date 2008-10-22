@@ -21,6 +21,9 @@ sub on_start {
 	__PACKAGE__->dialog( $main, $config, { } );
 }
 
+	my @WIDTH  = (100, 200);
+	my @HEIGHT = (200);
+
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
@@ -42,16 +45,17 @@ sub dialog {
 	EVT_BUTTON( $dialog, $ok,          \&ok_clicked          );
 	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
 
-	my @WIDTH  = (100);
-	my @HEIGHT = (200);
-
-	$rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Module Name:', Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
-    my $module_name = Wx::TextCtrl->new( $dialog, -1 , '', [-1, -1], [200, -1]);
-	$rows[0]->Add( $module_name, 1, Wx::wxALL, 3 );
-
-	$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Author:', Wx::wxDefaultPosition, [$WIDTH[0], -1]) );
-    my $author_name = Wx::TextCtrl->new( $dialog, -1 , '', [-1, -1], [200, -1]);
-	$rows[1]->Add( $author_name, 1, Wx::wxALL, 3 );
+	my @layout = (
+		[
+			[ 'Wx::StaticText', undef,           'Module Name:'],
+			[ 'Wx::TextCtrl',   '_module_name_', ''],
+		],
+		[
+			[ 'Wx::StaticText', undef,           'Author:'],
+			[ 'Wx::TextCtrl',   '_author_name_', ''],
+		],
+	);
+	build_layout($dialog, \@layout, \@rows);
 
 	$rows[2]->Add( Wx::StaticText->new( $dialog, -1, 'Email:', Wx::wxDefaultPosition, [$WIDTH[0], -1]) );
     my $email = Wx::TextCtrl->new( $dialog, -1 , '', [-1, -1], [200, -1]);
@@ -62,12 +66,15 @@ sub dialog {
 	my $builder_choice = Wx::ComboBox->new( $dialog, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize, \@builders);
 	$rows[3]->Add( $builder_choice, 1, Wx::wxALL, 3 );
 
-	my @licenses = qw(perl retricted);
+	# list taken from http://search.cpan.org/dist/Module-Build/lib/Module/Build/API.pod
+	# even though it should be in http://module-build.sourceforge.net/META-spec.html
+	# and we should fetch it from Module::Start or maybe Software::License
+	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
 	$rows[4]->Add( Wx::StaticText->new( $dialog, -1, 'License:',         Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
 	my $license_choice = Wx::ComboBox->new( $dialog, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize, \@licenses);
 	$rows[4]->Add( $license_choice, 1, Wx::wxALL, 3 );
 
-	$rows[5]->Add( Wx::StaticText->new( $dialog, -1, 'Directory:',         Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
+	$rows[5]->Add( Wx::StaticText->new( $dialog, -1, 'Parent Directory:',  Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
 	my $directory = Wx::DirPickerCtrl->new( $dialog, -1);
 	$rows[5]->Add( $directory, 1, Wx::wxALL, 3 );
 
@@ -77,7 +84,7 @@ sub dialog {
 		    $cb->SetValue(1);
 		}
 		$rows[ $cbs{$field}{row} ]->Add($cb);
-		EVT_CHECKBOX( $dialog, $cb, sub { $module_name->SetFocus; });
+		#EVT_CHECKBOX( $dialog, $cb, sub { $module_name->SetFocus; });
 		$cbs{$field}{cb} = $cb;
 	}
 
@@ -87,14 +94,29 @@ sub dialog {
 
 	$dialog->SetSizer($box);
 
-	$module_name->SetFocus;
+	#$module_name->SetFocus;
 	$dialog->Show(1);
 
-	$dialog->{_module_name_} = $module_name;
-	$dialog->{_author_name_} = $author_name;
+	#$dialog->{_module_name_} = $module_name;
+	#$dialog->{_author_name_} = $author_name;
 	$dialog->{_email_} = $email;
 
 	return;
+}
+
+sub build_layout {
+	my ($dialog, $layout, $rows) = @_;
+
+	foreach my $i (0..@$layout-1) {
+		foreach my $j (0..@{$layout->[$i]}-1) {
+			my ($class, $name, $arg) = @{ $layout->[$i][$j] };
+			my $thing = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$WIDTH[$j], -1] );
+			$rows->[$i]->Add($thing);
+			if ($name) {
+				$dialog->{$name} = $thing;
+			}
+		}
+	}
 }
 
 sub cancel_clicked {
@@ -163,21 +185,11 @@ sub replace_clicked {
 	return;
 }
 
-sub find_clicked {
-	my ($dialog, $event) = @_;
-
-	_get_data_from( $dialog ) or return;
-
-	return;
-}
 
 sub _get_data_from {
 	my ( $dialog ) = @_;
 
 	my $config = Padre->ide->config;
-	foreach my $field (keys %cbs) {
-	   $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
-	}
 
 	my $search_term      = $dialog->{_find_choice_}->GetValue;
 	my $replace_term     = $dialog->{_replace_choice_}->GetValue;
