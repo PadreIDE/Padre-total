@@ -24,8 +24,6 @@ sub on_start {
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
-	my $search_term = '';
-
 	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [500, 300]);
 
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
@@ -35,18 +33,12 @@ sub dialog {
 		$box->Add($rows[$i]);
 	}
 
-	my $ok          = Wx::Button->new( $dialog, Wx::wxID_OK,   '', );
-	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', );
-	$ok->SetDefault;
-
-	EVT_BUTTON( $dialog, $ok,          \&ok_clicked          );
-	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
-
 	my @builders = ('Module::Build', 'ExtUtils::MakeMaker', 'Module::Install');
-	# list taken from http://search.cpan.org/dist/Module-Build/lib/Module/Build/API.pod
+	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
+	# licenses list taken from 
+	# http://search.cpan.org/dist/Module-Build/lib/Module/Build/API.pod
 	# even though it should be in http://module-build.sourceforge.net/META-spec.html
 	# and we should fetch it from Module::Start or maybe Software::License
-	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
 
 	my @layout = (
 		[
@@ -73,6 +65,10 @@ sub dialog {
 			[ 'Wx::StaticText', undef,              'Parent Directory:'],
 			[ 'Wx::DirPickerCtrl',   '_directory_', ''],
 		],
+		[
+			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK],
+			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL],
+		]
 	);
 	my @width  = (100, 200);
 	build_layout($dialog, \@layout, \@rows, \@width);
@@ -87,9 +83,10 @@ sub dialog {
 		$cbs{$field}{cb} = $cb;
 	}
 
-	#$rows[8]->Add(300, 20, 1, Wx::wxEXPAND, 0);
-	$rows[8]->Add( $ok,);
-	$rows[8]->Add($cancel);
+	$dialog->{_ok_}->SetDefault;
+
+	EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked       );
+	EVT_BUTTON( $dialog, $dialog->{_cancel_},   \&cancel_clicked  );
 
 	$dialog->SetSizer($box);
 
@@ -104,6 +101,10 @@ sub build_layout {
 
 	foreach my $i (0..@$layout-1) {
 		foreach my $j (0..@{$layout->[$i]}-1) {
+			if (not @{ $layout->[$i][$j] } ) {
+				$rows->[$i]->Add($width->[$j], 0, 0, Wx::wxEXPAND, 0);
+				next;
+			}
 			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
 
 			my $widget;
@@ -114,6 +115,7 @@ sub build_layout {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 			}
 			$rows->[$i]->Add($widget);
+
 			if ($name) {
 				$dialog->{$name} = $widget;
 			}

@@ -58,34 +58,31 @@ sub dialog {
 
 	my @width  = (100, 200);
 
-#	my $find        = Wx::Button->new( $dialog, Wx::wxID_FIND,   '',            );
-	my $replace     = Wx::Button->new( $dialog, -1,          '&Replace',     );
-	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
-	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
-
-	EVT_BUTTON( $dialog, $replace,     \&replace_clicked     );
-	EVT_BUTTON( $dialog, $replace_all, \&replace_all_clicked );
-	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
-
-	my @WIDTH  = (100);
 	my @layout = (
 		[
 			[ 'Wx::StaticText', undef,              'Find:'],
 			[ 'Wx::ComboBox',   '_find_choice_',    $search_term, $config->{search_terms}],
-			[ 'Wx::Button',     '_find_',           Wx::wxID_FIND],
+			[ 'Wx::Button',     '_find_',           Wx::wxID_FIND ],
 		],
+		[
+			[ 'Wx::StaticText', undef,              'Replace With:'],
+			[ 'Wx::ComboBox',   '_find_choice_',    '', $config->{replace_terms}],
+			[ 'Wx::Button',     '_replace_',        '&Replace'],
+		],
+		[
+			[],
+			[],
+			[ 'Wx::Button',     '_replace_all_',    'Replace &All'],
+		]
 	);
 	Padre::Wx::ModuleStartDialog::build_layout($dialog, \@layout, \@rows, \@width);
-	$dialog->{_find_}->SetDefault;
-	EVT_BUTTON( $dialog, $dialog->{_find_}, \&find_clicked);
 
-	$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', Wx::wxDefaultPosition, [$WIDTH[0], -1]) );
-	my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
-	$rows[1]->Add( $replace_choice, 1, Wx::wxALL, 3 );
-	$rows[1]->Add( $replace,        1, Wx::wxALL, 3 );
+#	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
+	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
 
-	$rows[2]->Add(300, 20, 1, Wx::wxEXPAND, 0);
-	$rows[2]->Add( $replace_all );
+	#$rows[2]->Add(100, 0, 0, Wx::wxEXPAND, 0);
+	#$rows[2]->Add(200, 0, 0, Wx::wxEXPAND, 0);
+	#$rows[2]->Add( $replace_all );
 
 	foreach my $field (sort keys %cbs) {
 		my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
@@ -97,14 +94,12 @@ sub dialog {
 		$cbs{$field}{cb} = $cb;
 	}
 
-#    $rows[1]->Add($dir_selector, 1, Wx::wxALL, 3);
+	$dialog->{_find_}->SetDefault;
+	EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
+	EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
+	EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
+	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
 
-#    my $path = Wx::StaticText->new( $dialog, -1, '');
-#    $rows[2]->Add( $path, 1, Wx::wxALL, 3 );
-#    EVT_BUTTON( $dialog, $dir_selector, sub {on_pick_project_dir($path, @_) } );
-	#wxTE_PROCESS_ENTER
-	#EVT_TEXT_ENTER($dialog, $find_choice,    sub { $dialog->EndModal(Wx::wxID_FIND)    });
-	#EVT_TEXT_ENTER($dialog, $replace_choice, sub { $dialog->EndModal('replace') });
 	$rows[8]->Add(300, 20, 1, Wx::wxEXPAND, 0);
 	$rows[8]->Add($cancel);
 
@@ -112,8 +107,6 @@ sub dialog {
 
 	$dialog->{_find_choice_}->SetFocus;
 	$dialog->Show(1);
-
-	$dialog->{_replace_choice_} = $replace_choice;
 
 	return;
 }
