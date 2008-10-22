@@ -36,7 +36,7 @@ sub dialog {
 	}
 
 	my $ok          = Wx::Button->new( $dialog, Wx::wxID_OK,   '', );
-	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
+	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', );
 	$ok->SetDefault;
 
 	EVT_BUTTON( $dialog, $ok,          \&ok_clicked          );
@@ -105,13 +105,22 @@ sub build_layout {
 	foreach my $i (0..@$layout-1) {
 		foreach my $j (0..@{$layout->[$i]}-1) {
 			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
-			my $thing = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
-			$rows->[$i]->Add($thing);
+
+			my $widget;
+			if ($class eq 'Wx::Button') {
+				my ($first, $second) = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
+				$widget = $class->new( $dialog, $first, $second);
+			} else {
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+			}
+			$rows->[$i]->Add($widget);
 			if ($name) {
-				$dialog->{$name} = $thing;
+				$dialog->{$name} = $widget;
 			}
 		}
 	}
+
+	return;
 }
 
 sub cancel_clicked {

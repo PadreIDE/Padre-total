@@ -56,24 +56,28 @@ sub dialog {
 		$box->Add($rows[$i]);
 	}
 
-	my $find        = Wx::Button->new( $dialog, Wx::wxID_FIND,   '',            );
+	my @width  = (100, 200);
+
+#	my $find        = Wx::Button->new( $dialog, Wx::wxID_FIND,   '',            );
 	my $replace     = Wx::Button->new( $dialog, -1,          '&Replace',     );
 	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
 	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
-	$find->SetDefault;
 
-	EVT_BUTTON( $dialog, $find,        \&find_clicked        );
 	EVT_BUTTON( $dialog, $replace,     \&replace_clicked     );
 	EVT_BUTTON( $dialog, $replace_all, \&replace_all_clicked );
 	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
 
 	my @WIDTH  = (100);
-	my @HEIGHT = (200);
-
-	$rows[0]->Add( Wx::StaticText->new( $dialog, -1, 'Find:',         Wx::wxDefaultPosition, [$WIDTH[0], -1] ) );
-	my $find_choice = Wx::ComboBox->new( $dialog, -1, $search_term, Wx::wxDefaultPosition, Wx::wxDefaultSize, $config->{search_terms});
-	$rows[0]->Add( $find_choice, 1, Wx::wxALL, 3 );
-	$rows[0]->Add( $find,        1, Wx::wxALL, 3 );
+	my @layout = (
+		[
+			[ 'Wx::StaticText', undef,              'Find:'],
+			[ 'Wx::ComboBox',   '_find_choice_',    $search_term, $config->{search_terms}],
+			[ 'Wx::Button',     '_find_',           Wx::wxID_FIND],
+		],
+	);
+	Padre::Wx::ModuleStartDialog::build_layout($dialog, \@layout, \@rows, \@width);
+	$dialog->{_find_}->SetDefault;
+	EVT_BUTTON( $dialog, $dialog->{_find_}, \&find_clicked);
 
 	$rows[1]->Add( Wx::StaticText->new( $dialog, -1, 'Replace With:', Wx::wxDefaultPosition, [$WIDTH[0], -1]) );
 	my $replace_choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], $config->{replace_terms});
@@ -89,7 +93,7 @@ sub dialog {
 		    $cb->SetValue(1);
 		}
 		$rows[ $cbs{$field}{row} ]->Add($cb);
-		EVT_CHECKBOX( $dialog, $cb, sub { $find_choice->SetFocus; });
+		EVT_CHECKBOX( $dialog, $cb, sub { $_[0]->{_find_choice_}->SetFocus; });
 		$cbs{$field}{cb} = $cb;
 	}
 
@@ -106,10 +110,9 @@ sub dialog {
 
 	$dialog->SetSizer($box);
 
-	$find_choice->SetFocus;
+	$dialog->{_find_choice_}->SetFocus;
 	$dialog->Show(1);
 
-	$dialog->{_find_choice_}    = $find_choice;
 	$dialog->{_replace_choice_} = $replace_choice;
 
 	return;
