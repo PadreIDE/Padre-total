@@ -1,10 +1,10 @@
 package Padre::Plugin::PerlTidy;
+
 use strict;
 use warnings;
-use Perl::Tidy;
 
-use Wx qw(:everything);
-use Wx::Event qw(:everything);
+use Perl::Tidy ();
+use Wx qw(wxOK wxCENTRE);
 
 our $VERSION = '0.01';
 
@@ -20,14 +20,12 @@ Currently there are no customisable options (since the Padre plugin system
 doesn't support that yet) - however Perl::Tidy will use your normal .perltidyrc 
 file if it exists (see Perl::Tidy documentation).
 
-You'll get interesting results if you run this plugin on non-perl files..
-
 =cut
 
-my @menu = ( [ "Perl Tidy", \&on_run ], );
+my @menu = ( [ "Tidy the active document", \&on_run ], );
 
 sub menu {
-    my ($self) = @_;
+    my ( $self ) = @_;
     return @menu;
 }
 
@@ -36,45 +34,53 @@ sub on_run {
 
     my $doc = $self->selected_document;
 
-    if( !$doc->isa( 'Padre::Document::Perl' ) ) {
-        return Wx::MessageBox( 'Document is not a Perl document', "Error", wxOK | wxCENTRE, $self );
+    if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
+        return Wx::MessageBox( 'Document is not a Perl document',
+            "Error", wxOK | wxCENTRE, $self );
     }
 
     my $src = $self->selected_document->text_get;
 
-    do {
+    my ( $output, $stderr );
 
-        # Undefine @ARGV so that Perl::Tidy doesn't try to use it
-        local @ARGV;
-
-        # Doooit
-        my $output;
-        eval { perltidy( source => \$src, destination => \$output ); };
-        if ($@) {
-            my $error_string = $@;
-            Wx::MessageBox( $error_string, "PerlTidy Error", wxOK | wxCENTRE, $self );
-        }
-        else {
-            $doc->text_set($output);
-        }
+    # TODO: why doesn't stderr get captured properly?
+    eval {
+        Perl::Tidy::perltidy(
+            argv        => \'-se',
+            source      => \$src,
+            destination => \$output,
+            stderr      => \$stderr,
+        );
     };
+
+    if ( $@ ) {
+        my $error_string = $@;
+        Wx::MessageBox(
+            $error_string,
+            "PerlTidy Error",
+            wxOK | wxCENTRE, $self
+        );
+    }
+    else {
+        $self->{ output }->AppendText( "$stderr\n" ) if defined $stderr;
+        $doc->text_set( $output );
+    }
+
     return;
 }
 
-=head1 COPYRIGHT
+=head1 AUTHOR
 
-(c) 2008 Patrick Donelan http://www.patspam.com
+Patrick Donelan
 
-=head1 LICENSE
+Brian Cassidy E<lt>bricas@cpan.orgE<gt>
 
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 WARRANTY
+Copyright 2008 by Patrick Donelan http://www.patspam.com
 
-There is no warranty whatsoever.
-If you lose data or your hair because of this program,
-that's your problem.
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
 
 =cut
 

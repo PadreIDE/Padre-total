@@ -15,6 +15,6 @@ diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
 {
     my @menu = Padre::Plugin::PerlTidy->menu;
     is @menu, 1, 'one menu item';
-    is $menu[0][0], 'Perl Tidy', 'menu item';
+    is $menu[0][0], 'Tidy the active document', 'menu item';
     BEGIN { $tests += 2; }
 }
