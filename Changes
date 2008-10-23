@@ -1,5 +1,9 @@
 Changes for Padre. All changes by Gabor unless noted.
 
+v0.XX XXXX
+
+    fix warning when closing Padre with no files open
+
 v0.12 2008.10.23
 
     stupid bugs left in 0.11 reported by Brian Cassidy

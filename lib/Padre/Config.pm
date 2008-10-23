@@ -195,7 +195,7 @@ sub write {
 	}
 
 	# Serialize some values
-	$copy->{host}->{main_files} = join( "\n", @{$copy->{host}->{main_files}} );
+	$copy->{host}->{main_files} = join( "\n", grep { defined } @{$copy->{host}->{main_files}} );
 
 	# Save the host configuration
 	Padre::DB->hostconf_write( delete $copy->{host} );
