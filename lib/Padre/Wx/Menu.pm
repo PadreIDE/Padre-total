@@ -96,7 +96,14 @@ sub new {
 		next unless -f $f;
 		EVT_MENU( $win,
 			$menu->{file_recentfiles}->Append(-1, $f), 
-			sub { $_[0]->setup_editor($f) },
+            sub { 
+                if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
+                    if ( Padre::Document->from_selection->is_unused ) {
+                        $_[0]->on_close;
+                    }
+                }
+                $_[0]->setup_editor($f)
+            },
 		);
 	}
 	if ( $experimental ) {

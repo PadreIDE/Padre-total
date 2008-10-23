@@ -3,6 +3,8 @@ Changes for Padre. All changes by Gabor unless noted.
 v0.XX XXXX
 
     fix warning when closing Padre with no files open
+    close lone unused document when opening a recent file (now works the same
+        as file->open)
 
 v0.12 2008.10.23
 
