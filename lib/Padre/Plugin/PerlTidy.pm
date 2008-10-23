@@ -22,15 +22,19 @@ file if it exists (see Perl::Tidy documentation).
 
 =cut
 
-my @menu = ( [ "Tidy the active document", \&on_run ], );
+my @menu = (
+    [ 'Tidy the active document', \&tidy_document ],
+    [ 'Tidy the selected text',   \&tidy_selection ]
+);
 
 sub menu {
-    my ( $self ) = @_;
     return @menu;
 }
 
-sub on_run {
-    my ( $self, $event ) = @_;
+sub _tidy {
+    my ( $self, $src ) = @_;
+
+    return unless defined $src;
 
     my $doc = $self->selected_document;
 
@@ -38,8 +42,6 @@ sub on_run {
         return Wx::MessageBox( 'Document is not a Perl document',
             "Error", wxOK | wxCENTRE, $self );
     }
-
-    my $src = $self->selected_document->text_get;
 
     my ( $output, $stderr );
 
@@ -60,13 +62,38 @@ sub on_run {
             "PerlTidy Error",
             wxOK | wxCENTRE, $self
         );
-    }
-    else {
-        $self->{ output }->AppendText( "$stderr\n" ) if defined $stderr;
-        $doc->text_set( $output );
+        return;
     }
 
-    return;
+    $self->{ output }->AppendText( "$stderr\n" ) if defined $stderr;
+    return $output;
+}
+
+sub tidy_selection {
+    my ( $self, $event ) = @_;
+    my $src = $self->selected_text;
+
+    my $newtext = _tidy( $self, $src );
+
+    return unless defined $newtext && length $newtext;
+
+    $newtext =~ s{\n$}{};
+
+    my $editor = $self->selected_editor;
+    $editor->ReplaceSelection( $newtext );
+}
+
+sub tidy_document {
+    my ( $self, $event ) = @_;
+
+    my $doc = $self->selected_document;
+    my $src = $doc->text_get;
+
+    my $newtext = _tidy( $self, $src );
+
+    return unless defined $newtext && length $newtext;
+
+    $doc->text_set( $newtext );
 }
 
 =head1 AUTHOR
