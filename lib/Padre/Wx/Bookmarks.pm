@@ -7,7 +7,7 @@ use Wx::Event    qw(EVT_BUTTON);
 use List::Util   qw(max);
 use Data::Dumper qw(Dumper);
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 my $tb;
 

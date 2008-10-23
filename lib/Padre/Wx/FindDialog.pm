@@ -9,7 +9,7 @@ use warnings;
 use Wx        ();
 use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub on_find {
 	my $main   = shift;

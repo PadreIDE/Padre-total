@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Wx ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 #our @ISA     = 'Wx::Menu';
 sub new { return bless {}, shift };
 

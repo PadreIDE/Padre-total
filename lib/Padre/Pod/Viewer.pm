@@ -2,7 +2,7 @@ package Padre::Pod::Viewer;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Wx qw(wxOK wxCENTRE wxVERSION_STRING);
 use Wx::Html;

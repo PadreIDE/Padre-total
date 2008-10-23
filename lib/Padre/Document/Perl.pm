@@ -8,7 +8,7 @@ use Params::Util    '_INSTANCE';
 use Padre::Document ();
 use YAML::Tiny      ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our @ISA     = 'Padre::Document';
 
 

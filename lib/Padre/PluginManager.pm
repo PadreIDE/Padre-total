@@ -5,7 +5,7 @@ use File::Path ();
 use File::Spec ();
 use Carp       qw(croak);
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 =pod
 

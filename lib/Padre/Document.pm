@@ -40,7 +40,7 @@ use Wx qw{
 	wxSTC_EOL_LF
 };
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 my $cnt   = 0;
 

@@ -8,7 +8,7 @@ use warnings;
 
 #use Wx             qw(wxID_CANCEL);
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 
 sub on_new_project {

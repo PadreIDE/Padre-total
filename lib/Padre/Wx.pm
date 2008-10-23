@@ -11,7 +11,7 @@ use Wx qw{
 	wxBITMAP_TYPE_XPM
 };
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub _dir {
 	return $ENV{PADRE_DEV}      ?  File::Spec->catdir($FindBin::Bin, '..', 'share')
