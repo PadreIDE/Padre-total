@@ -239,7 +239,7 @@ use Class::Autouse qw{
 	Padre::Wx::Popup
 	Padre::Wx::Editor
 	Padre::Wx::Menu
-	Padre::Wx::Help
+	Padre::Wx::Menu::Help
 	Padre::Wx::Ack
 	Padre::Wx::Bookmarks
 	Padre::Wx::FindDialog

@@ -1,5 +1,8 @@
 Changes for Padre. All changes by Gabor unless noted.
 
+v0.12
+    stupid bugs left in 0.11 reported by Brian Cassidy
+
 v0.11 2008.10.23
 
     Updated ORLite dependency to 0.14 for create => 1 support (ADAMK)

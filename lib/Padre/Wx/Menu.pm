@@ -387,7 +387,6 @@ sub new {
 
 
 	# Create the help menu
-	require Padre::Wx::Menu::Help;
 	$menu->{help} = Wx::Menu->new;
 	my $help = Padre::Wx::Menu::Help->new;
 
@@ -410,7 +409,7 @@ sub new {
 	$menu->{help}->AppendSeparator;
 	EVT_MENU( $win,
 		$menu->{help}->Append( Wx::wxID_ABOUT, '' ),
-		sub { $menu->{help}->about },
+		sub { $help->about },
 	);
 
 
