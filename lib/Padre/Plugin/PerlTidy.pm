@@ -35,6 +35,11 @@ sub on_run {
     my ( $self, $event ) = @_;
 
     my $doc = $self->selected_document;
+
+    if( !$doc->isa( 'Padre::Document::Perl' ) ) {
+        return Wx::MessageBox( 'Document is not a Perl document', "Error", wxOK | wxCENTRE, $self );
+    }
+
     my $src = $self->selected_document->text_get;
 
     do {
