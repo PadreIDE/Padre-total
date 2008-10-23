@@ -26,14 +26,9 @@ sub dialog {
 	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [500, 300]);
 
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	my @rows;
-	foreach my $i ( 0..8 ) {
-		push @rows, Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-		$box->Add($rows[$i]);
-	}
 
 	my $layout = get_layout();
-	build_layout($dialog, $layout, \@rows, [100, 200]);
+	build_layout($dialog, $layout, $box, [100, 200]);
 
 	$dialog->{_ok_}->SetDefault;
 
@@ -91,12 +86,15 @@ sub get_layout {
 
 
 sub build_layout {
-	my ($dialog, $layout, $rows, $width) = @_;
+	my ($dialog, $layout, $box, $width) = @_;
+
 
 	foreach my $i (0..@$layout-1) {
+		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+		$box->Add($row);
 		foreach my $j (0..@{$layout->[$i]}-1) {
 			if (not @{ $layout->[$i][$j] } ) {  # [] means Expand
-				$rows->[$i]->Add($width->[$j], 0, 0, Wx::wxEXPAND, 0);
+				$row->Add($width->[$j], 0, 0, Wx::wxEXPAND, 0);
 				next;
 			}
 			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
@@ -121,7 +119,7 @@ sub build_layout {
 				$widget->SetValue(shift @params);
 			}
 
-			$rows->[$i]->Add($widget);
+			$row->Add($widget);
 
 			if ($name) {
 				$dialog->{$name} = $widget;

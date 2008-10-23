@@ -33,14 +33,9 @@ sub dialog {
 	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 300]);
 
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	my @rows;
-	foreach my $i ( 0..8 ) {
-		push @rows, Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-		$box->Add($rows[$i]);
-	}
 
 	my $layout = get_layout($search_term, $config);
-	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, \@rows, [150, 200]);
+	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, $box, [150, 200]);
 
 	foreach my $cb (@cbs) {
 		EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
