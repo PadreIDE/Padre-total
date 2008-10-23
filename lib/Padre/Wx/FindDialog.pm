@@ -179,9 +179,8 @@ sub _get_data_from {
 
 	my $config = Padre->ide->config;
 	foreach my $field (@cbs) {
-	   $config->{search}->{$field} = $dialog->{$field}->GetValue;
+	   $config->{search}->{$field} = $data->{$field};
 	}
-
 	my $search_term      = $data->{_find_choice_};
 	my $replace_term     = $data->{_replace_choice_};
 

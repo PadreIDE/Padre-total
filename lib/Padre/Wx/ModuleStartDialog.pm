@@ -6,10 +6,10 @@ use warnings;
 
 # Module::Start widget of Padre
 
-use Wx        ();
-use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
+use Wx           qw(wxOK);
+use Wx::Event    qw( EVT_BUTTON EVT_CHECKBOX );
 use Data::Dumper qw(Dumper);
-use Cwd       ();
+use Cwd          ();
 
 our $VERSION = '0.10';
 
@@ -25,7 +25,7 @@ sub dialog {
 
 	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [300, 220]);
 
-	my $layout = get_layout();
+	my $layout = get_layout($config);
 	build_layout($dialog, $layout, [100, 200]);
 
 	$dialog->{_ok_}->SetDefault;
@@ -39,6 +39,7 @@ sub dialog {
 }
 
 sub get_layout {
+	my ($config) = @_;
 
 	my @builders = ('Module::Build', 'ExtUtils::MakeMaker', 'Module::Install');
 	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
@@ -54,11 +55,11 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Author:'],
-			[ 'Wx::TextCtrl',   '_author_name_',    ''],
+			[ 'Wx::TextCtrl',   '_author_name_',    '', ($config->{module_start}{author_name} || '') ],
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Email:'],
-			[ 'Wx::TextCtrl',   '_email_',          ''],
+			[ 'Wx::TextCtrl',   '_email_',          '', ($config->{module_start}{email} || '') ],
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Builder:'],
@@ -103,17 +104,22 @@ sub build_layout {
 			} elsif ($class eq 'Wx::DirPickerCtrl') {
 				my $title = shift(@params) || '';
 				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+				# it seems we cannot set the default directory and 
+				# we still have to set this directory in order to get anything back in
+				# GetPath
+				$widget->SetPath(Cwd::cwd());
+			} elsif ($class eq 'Wx::TextCtrl') {
+				my $default = shift @params;
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+				if (defined $default) {
+					$widget->SetValue($default);
+				}
+			} elsif ($class eq 'Wx::CheckBox') {
+				my $default = shift @params;
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+				$widget->SetValue($default);
 			} else {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
-			}
-
-			# it seems we cannot set the default directory and 
-			# we still have to set this directory in order to get anything back in
-			# GetPath
-			if ($class eq 'Wx::DirPickerCtrl') {
-				$widget->SetPath(Cwd::cwd());
-			} elsif ($class eq 'Wx::CheckBox') {
-				$widget->SetValue(shift @params);
 			}
 
 			$row->Add($widget);
@@ -142,10 +148,36 @@ sub ok_clicked {
 
 	my $data = get_data_from( $dialog, get_layout() );
 	$dialog->Destroy;
-
-	#my $config = Padre->ide->config;
-	#my $main_window = Padre->ide->wx->main_window;
 	print Dumper $data;
+
+	my $config = Padre->ide->config;
+	$config->{module_start}{author_name} = $data->{_author_name_};
+	$config->{module_start}{email}       = $data->{_email_};
+
+	my $main_window = Padre->ide->wx->main_window;
+
+	# TODO improve input validation !
+	my @fields = qw(_module_name_ _author_name_ _email_ _builder_choice_ _license_choice_);
+	foreach my $f (@fields) {
+		if (not $data->{$f}) {
+			Wx::MessageBox("Field $f was missing. Module not created.", "missing field", Wx::wxOK, $main_window);
+			return;
+		}
+	}
+
+	my $pwd = Cwd::cwd();
+	chdir $data->{_directory_};
+	require Module::Starter::App;
+	@ARGV = ('--module',   $data->{_module_name_},
+	         '--author',   $data->{_author_name_},
+	         '--email',    $data->{_email_},
+	         '--builder',  $data->{_builder_choice_},
+	         '--license',  $data->{_license_choice_},
+	        );
+	Module::Starter::App->run;
+	@ARGV = ();
+	chdir $pwd;
+	Wx::MessageBox("$data->{_module_name_} apperantly created.", "Done", Wx::wxOK, $main_window);
 
 	return;
 }
