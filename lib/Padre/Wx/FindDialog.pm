@@ -30,24 +30,19 @@ sub dialog {
 
 	my $search_term = $args->{term} || '';
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [500, 300]);
-
-	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [440, 220]);
 
 	my $layout = get_layout($search_term, $config);
-	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, $box, [150, 200]);
+	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, [150, 200]);
 
 	foreach my $cb (@cbs) {
 		EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
 	}
-
 	$dialog->{_find_}->SetDefault;
 	EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
 	EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
 	EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
 	EVT_BUTTON( $dialog, $dialog->{_cancel_},      \&cancel_clicked      );
-
-	$dialog->SetSizer($box);
 
 	$dialog->{_find_choice_}->SetFocus;
 	$dialog->Show(1);

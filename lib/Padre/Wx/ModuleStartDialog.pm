@@ -23,19 +23,15 @@ sub on_start {
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [500, 300]);
-
-	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [300, 220]);
 
 	my $layout = get_layout();
-	build_layout($dialog, $layout, $box, [100, 200]);
+	build_layout($dialog, $layout, [100, 200]);
 
 	$dialog->{_ok_}->SetDefault;
-
 	EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
 	EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
 
-	$dialog->SetSizer($box);
 	$dialog->{_module_name_}->SetFocus;
 	$dialog->Show(1);
 
@@ -86,8 +82,9 @@ sub get_layout {
 
 
 sub build_layout {
-	my ($dialog, $layout, $box, $width) = @_;
+	my ($dialog, $layout, $width) = @_;
 
+	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 
 	foreach my $i (0..@$layout-1) {
 		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
@@ -126,6 +123,8 @@ sub build_layout {
 			}
 		}
 	}
+
+	$dialog->SetSizer($box);
 
 	return;
 }
