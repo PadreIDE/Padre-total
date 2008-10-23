@@ -477,6 +477,9 @@ sub run_perl {
 
 	# Run with the same Perl that launched Padre
 	my $perl = Padre->perl_interpreter;
+
+	my $dir = File::Basename::dirname($filename);
+	chdir $dir;
 	$self->run_command( qq{"$perl" "$filename"} );
 }
 
