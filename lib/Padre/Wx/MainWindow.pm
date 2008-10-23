@@ -453,8 +453,8 @@ sub run_command {
 # This should really be somewhere else, but can stay here for now
 sub run_perl {
 	my $self     = shift;
-	my $document = _DOCUMENT(shift);
-	unless ( $document->isa('Perl::Document::Perl') ) {
+	my $document = $self->selected_document;
+	unless ( $document->isa('Padre::Document::Perl') ) {
 		return $self->error("Not a Perl document");
 	}
 
