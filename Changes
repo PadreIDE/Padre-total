@@ -1,6 +1,6 @@
 Changes for Padre. All changes by Gabor unless noted.
 
-v0.11
+v0.11 2008.10.23
 
     Updated ORLite dependency to 0.14 for create => 1 support (ADAMK)
     Rewrote Padre::DB to auto-configure directly from Padre::Config (ADAMK)
@@ -16,6 +16,14 @@ v0.11
     Optimised away the non-Wx non-class Padre::Wx::Execute (ADAMK)
     Created Padre::Wx::History::TextDialog so we can have a dialog
         box that defaults to whatever the last answer was. (ADAMK)
+    Some clean up in the FindDialog window with abstraction.
+    Add support to Module::Starter and make it to be a prereq.
+    Add all the perl functions to the Calltip keyword list and move
+        it to a yaml file.
+    Fix several bugs that were probably introduced after 0.10.
+    Turn the color definition of the syntax highlighting into a hash
+        for easier maintenance.
+    Lots of code refactoring.
 
 v0.10 2008.09.22
 
