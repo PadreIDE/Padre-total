@@ -11,25 +11,6 @@ use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
 
 our $VERSION = '0.10';
 
-my %cbs = (
-	case_insensitive => {
-		title => "Case &Insensitive",
-		row   => 4,
-	},
-	use_regex        => {
-		title => "&Use Regex",
-		row   => 5,
-	},
-	backwards        => {
-		title => "Search &Backwards",
-		row   => 6,
-	},
-	close_on_hit     => {
-		title => "Close Window on &hit",
-		row   => 7,
-	},
-);
-
 sub on_find {
 	my $main   = shift;
 	my $config = Padre->ide->config;
@@ -41,6 +22,8 @@ sub on_find {
 
 	__PACKAGE__->dialog( $main, $config, { term => $text } );
 }
+
+my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
@@ -56,7 +39,29 @@ sub dialog {
 		$box->Add($rows[$i]);
 	}
 
-	my @width  = (100, 200);
+	my $layout = get_layout($search_term, $config);
+	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, \@rows, [150, 200]);
+
+	foreach my $cb (@cbs) {
+		EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
+	}
+
+	$dialog->{_find_}->SetDefault;
+	EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
+	EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
+	EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
+	EVT_BUTTON( $dialog, $dialog->{_cancel_},      \&cancel_clicked      );
+
+	$dialog->SetSizer($box);
+
+	$dialog->{_find_choice_}->SetFocus;
+	$dialog->Show(1);
+
+	return;
+}
+
+sub get_layout {
+	my ($search_term, $config) = @_;
 
 	my @layout = (
 		[
@@ -66,49 +71,33 @@ sub dialog {
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Replace With:'],
-			[ 'Wx::ComboBox',   '_find_choice_',    '', $config->{replace_terms}],
+			[ 'Wx::ComboBox',   '_replace_choice_',    '', $config->{replace_terms}],
 			[ 'Wx::Button',     '_replace_',        '&Replace'],
 		],
 		[
 			[],
 			[],
 			[ 'Wx::Button',     '_replace_all_',    'Replace &All'],
-		]
+		],
+		[
+			['Wx::CheckBox',    'case_insensitive', 'Case &Insensitive',    ($config->{search}->{case_insensitive} ? 1 : 0) ],
+		],
+		[
+			['Wx::CheckBox',    'use_regex',        '&Use Regex',           ($config->{search}->{use_regex} ? 1 : 0) ],
+		],
+		[
+			['Wx::CheckBox',    'backwards',        'Search &Backwards',    ($config->{search}->{backwards} ? 1 : 0) ],
+		],
+		[
+			['Wx::CheckBox',    'close_on_hit',     'Close Window on &hit', ($config->{search}->{close_on_hit} ? 1 : 0) ],
+		],
+		[
+			[],
+			[],
+			[ 'Wx::Button',     '_cancel_',    Wx::wxID_CANCEL],
+		],
 	);
-	Padre::Wx::ModuleStartDialog::build_layout($dialog, \@layout, \@rows, \@width);
-
-#	my $replace_all = Wx::Button->new( $dialog, -1,          'Replace &All', );
-	my $cancel      = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '',            );
-
-	#$rows[2]->Add(100, 0, 0, Wx::wxEXPAND, 0);
-	#$rows[2]->Add(200, 0, 0, Wx::wxEXPAND, 0);
-	#$rows[2]->Add( $replace_all );
-
-	foreach my $field (sort keys %cbs) {
-		my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
-		if ($config->{search}->{$field}) {
-		    $cb->SetValue(1);
-		}
-		$rows[ $cbs{$field}{row} ]->Add($cb);
-		EVT_CHECKBOX( $dialog, $cb, sub { $_[0]->{_find_choice_}->SetFocus; });
-		$cbs{$field}{cb} = $cb;
-	}
-
-	$dialog->{_find_}->SetDefault;
-	EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
-	EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
-	EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
-	EVT_BUTTON( $dialog, $cancel,      \&cancel_clicked      );
-
-	$rows[8]->Add(300, 20, 1, Wx::wxEXPAND, 0);
-	$rows[8]->Add($cancel);
-
-	$dialog->SetSizer($box);
-
-	$dialog->{_find_choice_}->SetFocus;
-	$dialog->Show(1);
-
-	return;
+	return \@layout;
 }
 
 sub cancel_clicked {
@@ -194,13 +183,17 @@ sub find_clicked {
 sub _get_data_from {
 	my ( $dialog ) = @_;
 
+	my $data = Padre::Wx::ModuleStartDialog::get_data_from($dialog, get_layout());
+
+	#print Data::Dumper::Dumper $data;
+
 	my $config = Padre->ide->config;
-	foreach my $field (keys %cbs) {
-	   $config->{search}->{$field} = $cbs{$field}{cb}->GetValue;
+	foreach my $field (@cbs) {
+	   $config->{search}->{$field} = $dialog->{$field}->GetValue;
 	}
 
-	my $search_term      = $dialog->{_find_choice_}->GetValue;
-	my $replace_term     = $dialog->{_replace_choice_}->GetValue;
+	my $search_term      = $data->{_find_choice_};
+	my $replace_term     = $data->{_replace_choice_};
 
 	if ($config->{search}->{close_on_hit}) {
 		$dialog->Destroy;

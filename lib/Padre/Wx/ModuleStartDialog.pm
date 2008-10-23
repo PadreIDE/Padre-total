@@ -8,11 +8,10 @@ use warnings;
 
 use Wx        ();
 use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
+use Data::Dumper qw(Dumper);
+use Cwd       ();
 
 our $VERSION = '0.10';
-
-my %cbs = (
-);
 
 sub on_start {
 	my $main   = shift;
@@ -32,6 +31,23 @@ sub dialog {
 		push @rows, Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 		$box->Add($rows[$i]);
 	}
+
+	my $layout = get_layout();
+	build_layout($dialog, $layout, \@rows, [100, 200]);
+
+	$dialog->{_ok_}->SetDefault;
+
+	EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
+	EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
+
+	$dialog->SetSizer($box);
+	$dialog->{_module_name_}->SetFocus;
+	$dialog->Show(1);
+
+	return;
+}
+
+sub get_layout {
 
 	my @builders = ('Module::Build', 'ExtUtils::MakeMaker', 'Module::Install');
 	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
@@ -62,46 +78,24 @@ sub dialog {
 			[ 'Wx::ComboBox',   '_license_choice_', '',       \@licenses],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Parent Directory:'],
-			[ 'Wx::DirPickerCtrl',   '_directory_', ''],
+			[ 'Wx::StaticText',      undef,         'Parent Directory:'],
+			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL],
 		]
 	);
-	my @width  = (100, 200);
-	build_layout($dialog, \@layout, \@rows, \@width);
-
-	foreach my $field (sort keys %cbs) {
-		my $cb = Wx::CheckBox->new( $dialog, -1, $cbs{$field}{title}, [-1, -1], [-1, -1]);
-		if ($config->{search}->{$field}) {
-		    $cb->SetValue(1);
-		}
-		$rows[ $cbs{$field}{row} ]->Add($cb);
-		#EVT_CHECKBOX( $dialog, $cb, sub { $module_name->SetFocus; });
-		$cbs{$field}{cb} = $cb;
-	}
-
-	$dialog->{_ok_}->SetDefault;
-
-	EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked       );
-	EVT_BUTTON( $dialog, $dialog->{_cancel_},   \&cancel_clicked  );
-
-	$dialog->SetSizer($box);
-
-	$dialog->{_module_name_}->SetFocus;
-	$dialog->Show(1);
-
-	return;
+	return \@layout;
 }
+
 
 sub build_layout {
 	my ($dialog, $layout, $rows, $width) = @_;
 
 	foreach my $i (0..@$layout-1) {
 		foreach my $j (0..@{$layout->[$i]}-1) {
-			if (not @{ $layout->[$i][$j] } ) {
+			if (not @{ $layout->[$i][$j] } ) {  # [] means Expand
 				$rows->[$i]->Add($width->[$j], 0, 0, Wx::wxEXPAND, 0);
 				next;
 			}
@@ -111,9 +105,22 @@ sub build_layout {
 			if ($class eq 'Wx::Button') {
 				my ($first, $second) = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
 				$widget = $class->new( $dialog, $first, $second);
+			} elsif ($class eq 'Wx::DirPickerCtrl') {
+				my $title = shift(@params) || '';
+				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 			} else {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 			}
+
+			# it seems we cannot set the default directory and 
+			# we still have to set this directory in order to get anything back in
+			# GetPath
+			if ($class eq 'Wx::DirPickerCtrl') {
+				$widget->SetPath(Cwd::cwd());
+			} elsif ($class eq 'Wx::CheckBox') {
+				$widget->SetValue(shift @params);
+			}
+
 			$rows->[$i]->Add($widget);
 
 			if ($name) {
@@ -133,89 +140,40 @@ sub cancel_clicked {
 	return;
 }
 
-sub replace_all_clicked {
+sub ok_clicked {
 	my ($dialog, $event) = @_;
 
-	_get_data_from( $dialog ) or return;
-	my $regex = '';
-	return if not defined $regex;
+	my $data = get_data_from( $dialog, get_layout() );
+	$dialog->Destroy;
 
-	my $config = Padre->ide->config;
-	my $main_window = Padre->ide->wx->main_window;
-
-	my $id   = $main_window->{notebook}->GetSelection;
-	my $page = $main_window->{notebook}->GetPage($id);
-	my $last = $page->GetLength();
-	my $str  = $page->GetTextRange(0, $last);
-
-	my $replace_term = $config->{replace_terms}->[0];
-	$replace_term =~ s/\\t/\t/g;
-
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
-	$page->BeginUndoAction;
-	foreach my $m (reverse @matches) {
-		$page->SetTargetStart($m->[0]);
-		$page->SetTargetEnd($m->[1]);
-		$page->ReplaceTarget($replace_term);
-	}
-	$page->EndUndoAction;
+	#my $config = Padre->ide->config;
+	#my $main_window = Padre->ide->wx->main_window;
+	print Dumper $data;
 
 	return;
 }
 
-sub replace_clicked {
-	my ($dialog, $event) = @_;
+sub get_data_from {
+	my ( $dialog, $layout ) = @_;
 
-	_get_data_from( $dialog ) or return;
-	my $regex = '';
-	return if not defined $regex;
+	my %data;
+	foreach my $i (0..@$layout-1) {
+		foreach my $j (0..@{$layout->[$i]}-1) {
+			next if not @{ $layout->[$i][$j] }; # [] means Expand
+			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
+			if ($name) {
+				next if $class eq 'Wx::Button';
 
-	my $config = Padre->ide->config;
-
-	# get current search condition and check if they match
-	my $main_window = Padre->ide->wx->main_window;
-	my $str         = $main_window->selected_text;
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
-
-	# if they do, replace it
-	if (defined $start and $start == 0 and $end == length($str)) {
-		my $id   = $main_window->{notebook}->GetSelection;
-		my $page = $main_window->{notebook}->GetPage($id);
-		#my ($from, $to) = $page->GetSelection;
-	
-		my $replace_term = $config->{replace_terms}->[0];
-		$replace_term =~ s/\\t/\t/g;
-		$page->ReplaceSelection($replace_term);
+				if ($class eq 'Wx::DirPickerCtrl') {
+					$data{$name} = $dialog->{$name}->GetPath;
+				} else {
+					$data{$name} = $dialog->{$name}->GetValue;
+				}
+			}
+		}
 	}
 
-	return;
-}
-
-
-sub _get_data_from {
-	my ( $dialog ) = @_;
-
-	my $config = Padre->ide->config;
-
-	my $search_term      = $dialog->{_find_choice_}->GetValue;
-	my $replace_term     = $dialog->{_replace_choice_}->GetValue;
-
-	if ($config->{search}->{close_on_hit}) {
-		$dialog->Destroy;
-	}
-	return if not defined $search_term or $search_term eq '';
-
-	if ( $search_term ) {
-		unshift @{$config->{search_terms}}, $search_term;
-		my %seen;
-		@{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
-	}
-	if ( $replace_term ) {
-		unshift @{$config->{replace_terms}}, $replace_term;
-		my %seen;
-		@{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
-	}
-	return 1;
+	return \%data;
 }
 
 
