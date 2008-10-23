@@ -34,7 +34,8 @@ sub menu {
 sub on_run {
     my ( $self, $event ) = @_;
 
-    my $src = $self->get_page_text;
+    my $doc = $self->selected_document;
+    my $src = $self->selected_document->text_get;
 
     do {
 
@@ -49,7 +50,7 @@ sub on_run {
             Wx::MessageBox( $error_string, "PerlTidy Error", wxOK | wxCENTRE, $self );
         }
         else {
-            $self->set_page_text($output);
+            $doc->text_set($output);
         }
     };
     return;
