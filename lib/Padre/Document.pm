@@ -34,6 +34,10 @@ use Wx qw{
 	wxSTC_LEX_XML
 	wxSTC_LEX_AUTOMATIC
 	wxSTC_LEX_CONTAINER
+
+	wxSTC_EOL_CRLF
+	wxSTC_EOL_CR
+	wxSTC_EOL_LF
 };
 
 our $VERSION = '0.10';

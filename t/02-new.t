@@ -19,7 +19,7 @@ isa_ok($app, 'Padre');
 diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
 
 SCOPE: {
-	my $same = Padre->new;
+	my $same = Padre->inst;
 	isa_ok($same, 'Padre');
 	is $same, $app, 'Same';
 }

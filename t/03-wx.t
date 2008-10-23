@@ -15,7 +15,7 @@ Wx::Event::EVT_TIMER(
 	$frame,
 	-1,
 	sub {
-        	$ide->wx->ExitMainLoop;
+		$ide->wx->ExitMainLoop;
 		$ide->wx->main_window->Destroy;
 	}
 );
