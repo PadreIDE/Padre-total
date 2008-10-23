@@ -8,7 +8,7 @@ use warnings;
 
 use Wx             qw(wxID_CANCEL);
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 
 sub on_goto {

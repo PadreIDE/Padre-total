@@ -11,7 +11,7 @@ use Data::Dumper            qw(Dumper);
 my $iter;
 my %opts;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 {
 	no warnings 'redefine';

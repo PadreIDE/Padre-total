@@ -7,7 +7,7 @@ use Carp            ();
 use Params::Util    '_INSTANCE';
 use Padre::Document ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @ISA     = 'Padre::Document';
 
 

@@ -11,7 +11,7 @@ use Wx::Event    qw( EVT_BUTTON EVT_CHECKBOX );
 use Data::Dumper qw(Dumper);
 use Cwd          ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 sub on_start {
 	my $main   = shift;

@@ -6,7 +6,7 @@ use warnings;
 use Wx           qw( wxNO_BORDER wxTB_HORIZONTAL wxTB_FLAT wxTB_DOCKABLE wxID_NEW wxID_OPEN wxID_SAVE);
 use Padre::Wx    ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @ISA     = 'Wx::ToolBar';
 
 sub new {

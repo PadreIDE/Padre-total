@@ -28,7 +28,7 @@ use Padre::Wx          ();
 use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 my $default_dir = Cwd::cwd();
 

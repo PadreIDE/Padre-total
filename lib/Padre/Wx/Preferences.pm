@@ -6,7 +6,7 @@ use warnings;
 use Wx        qw(wxID_OK wxID_CANCEL wxDEFAULT_FRAME_STYLE);
 use Wx::Event qw(EVT_BUTTON);
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 sub run {
 	my ( $class, $win, $config ) = @_;
