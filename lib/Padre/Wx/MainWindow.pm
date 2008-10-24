@@ -252,7 +252,8 @@ sub window_top {
 
 sub refresh_all {
 	my $self = shift;
-	my $doc  = _DOCUMENT(shift);
+	return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
+	my $doc  = $self->selected_document;
 	$self->refresh_menu($doc);
 	$self->refresh_toolbar($doc);
 	$self->refresh_status($doc);
@@ -309,7 +310,7 @@ sub refresh_methods {
 
 	return if $self->{_in_setup_editor};
 
-	$doc ||= _DOCUMENT();
+	$doc ||= $self->selected_document;
 	return if not $doc;
 
 	my @methods = $doc->get_functions;
@@ -363,7 +364,8 @@ Returns the name filename of the current buffer.
 =cut
 
 sub selected_filename {
-	my $doc = _DOCUMENT() or return;
+	my $self = shift;
+	my $doc = $self->selected_document or return;
 	return $doc->filename;
 }
 
@@ -485,7 +487,7 @@ sub run_perl {
 
 sub debug_perl {
 	my $self     = shift;
-	my $document = _DOCUMENT(shift);
+	my $document = $self->selected_document;
 	unless ( $document->isa('Perl::Document::Perl') ) {
 		return $self->error("Not a Perl document");
 	}
@@ -613,7 +615,7 @@ sub on_uncomment_block {
 
 sub on_autocompletition {
 	my $self   = shift;
-	my $doc    = _DOCUMENT() or return;
+	my $doc    = $self->selected_document or return;
 	my ( $length, @words ) = $doc->autocomplete;
 	if ( $length =~ /\D/ ) {
 		Wx::MessageBox($length, "Autocompletions error", wxOK);
@@ -852,8 +854,7 @@ sub on_open {
 # Returns false if cancelled.
 sub on_save_as {
 	my $self    = shift;
-	my $pageid = $self->{notebook}->GetSelection;
-	my $doc     = _DOCUMENT($pageid) or return;
+	my $doc     = $self->selected_document or return;
 	my $current = $doc->filename;
 	if ( defined $current ) {
 		$default_dir = File::Basename::dirname($current);
@@ -891,6 +892,7 @@ sub on_save_as {
 			last;
 		}
 	}
+	my $pageid = $self->{notebook}->GetSelection;
 	$self->_save_buffer($pageid);
 
 	$doc->set_mimetype( $doc->guess_mimetype );
@@ -905,13 +907,13 @@ sub on_save_as {
 sub on_save {
 	my $self = shift;
 
-	my $pageid = $self->{notebook}->GetSelection;
-	my $doc     = _DOCUMENT($pageid) or return;
+	my $doc    = $self->selected_document or return;
 
 	if ( $doc->is_new ) {
 		return $self->on_save_as($doc);
 	}
 	if ( $doc->is_modified ) {
+		my $pageid = $self->{notebook}->GetSelection;
 		$self->_save_buffer($pageid);
 	}
 
@@ -963,8 +965,7 @@ sub on_close {
 sub close {
 	my $self = shift;
 
-	my $pageid = $self->{notebook}->GetSelection;
-	my $doc     = _DOCUMENT($pageid) or return;
+	my $doc     = $self->selected_document or return;
 	local $self->{_in_delete_editor} = 1;
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
@@ -983,6 +984,7 @@ sub close {
 			return 0;
 		}
 	}
+	my $pageid = $self->{notebook}->GetSelection;
 	$self->{notebook}->DeletePage($pageid);
 
 	# Update the alt-n menus
@@ -1061,7 +1063,6 @@ sub on_preferences {
 	my $self   = shift;
 	my $config = Padre->ide->config;
 
-	require Padre::Wx::Preferences;
 	Padre::Wx::Preferences->run( $self, $config );
 
 	foreach my $page ( $self->pages ) {
@@ -1179,7 +1180,7 @@ sub convert_to {
 	my $id   = $self->{notebook}->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
-	my $doc     = _DOCUMENT($id) or return;
+	my $doc     = $self->selected_document or return;
 	$doc->set_newline_type($newline_type);
 
 	$self->refresh_status;
@@ -1200,7 +1201,7 @@ sub find_editor_of_file {
 
 sub run_in_padre {
 	my $self = shift;
-	my $doc  = _DOCUMENT() or return;
+	my $doc  = $self->selected_document or return;
 	my $code = $doc->text_get;
 	eval $code;
 	if ( $@ ) {
@@ -1215,29 +1216,15 @@ sub on_function_selected {
 	my $sub = $event->GetItem->GetText;
 	return if not defined $sub;
 
-	require Padre::Wx::FindDialog;
-	my $doc = _DOCUMENT();
+	my $doc = $self->selected_document;
 	Padre::Wx::FindDialog::_search( search_term => $doc->get_function_regex($sub) );
 	$self->selected_editor->SetFocus;
 	return;
 }
 
-
-#####################################################################
-# Convenience Functions
-
 sub _DOCUMENT {
-	if ( Params::Util::_INSTANCE($_[0], 'Wx::CommandEvent') ) {
-		shift;
-	}
-	unless ( @_ ) {
-		return Padre::Document->from_selection;
-	}
-	if ( Params::Util::_INSTANCE($_[0], 'Padre::Document') ) {
-		return $_[0];
-	} else {
-		return Padre::Document->from_pageid($_[0]);
-	}
+	return (defined $_[0]) ? Padre::Document->from_pageid($_[0]) : Padre::Document->from_selection;
 }
+
 
 1;
