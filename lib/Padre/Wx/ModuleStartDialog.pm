@@ -6,7 +6,7 @@ use warnings;
 
 # Module::Start widget of Padre
 
-use Wx           qw(wxOK);
+use Wx           qw(wxOK wxID_OK wxVERTICAL wxHORIZONTAL wxEXPAND);
 use Wx::Event    qw( EVT_BUTTON EVT_CHECKBOX );
 use Data::Dumper qw(Dumper);
 use Cwd          ();
