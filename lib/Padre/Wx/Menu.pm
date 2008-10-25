@@ -217,7 +217,11 @@ sub new {
 	$menu->{view_output} = $menu->{view}->AppendCheckItem( -1, "Show Output" );
 	EVT_MENU( $win,
 		$menu->{view_output},
-		sub { $_[0]->show_output($_[0]->{menu}->{view_output}->IsChecked) },
+		sub {
+			$_[0]->show_output(
+				$_[0]->{menu}->{view_output}->IsChecked
+			),
+		},
 	);
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
