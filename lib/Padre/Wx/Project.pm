@@ -4,9 +4,11 @@ use 5.008;
 use strict;
 use warnings;
 
+my $default_dir;
+
 # Project related widgets of Padre
 
-#use Wx             qw(wxID_CANCEL);
+use Wx             qw(wxOK wxID_OK wxID_CANCEL wxVERTICAL wxHORIZONTAL wxALL);
 
 our $VERSION = '0.12';
 
