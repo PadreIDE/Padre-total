@@ -6,7 +6,7 @@ use warnings;
 
 # Module::Start widget of Padre
 
-use Wx           qw(wxOK wxID_OK wxVERTICAL wxHORIZONTAL wxEXPAND);
+use Wx           qw( wxOK wxID_OK wxID_CANCEL wxVERTICAL wxHORIZONTAL wxEXPAND );
 use Wx::Event    qw( EVT_BUTTON EVT_CHECKBOX );
 use Data::Dumper qw(Dumper);
 use Cwd          ();
@@ -16,7 +16,6 @@ our $VERSION = '0.12';
 sub on_start {
 	my $main   = shift;
 	my $config = Padre->ide->config;
-
 	__PACKAGE__->dialog( $main, $config, { } );
 }
 
@@ -74,8 +73,8 @@ sub get_layout {
 			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
 		],
 		[
-			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK],
-			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL],
+			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
+			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
 		]
 	);
 	return \@layout;
