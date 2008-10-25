@@ -5,10 +5,10 @@ use warnings;
 #use base 'Wx::ComboPopup';
 #use base 'Wx::PopupTransientWindow';
 #use base 'Wx::PopupWindow';
-use base qw(Wx::PlPopupTransientWindow);
-
 use Wx        qw(:everything);
 use Wx::Event qw(:everything);
+use base qw(Wx::PlPopupTransientWindow);
+
 
 our $VERSION = '0.12';
 

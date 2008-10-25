@@ -39,6 +39,7 @@ use Wx qw{
 	wxSTC_EOL_CR
 	wxSTC_EOL_LF
 };
+use Wx::STC;
 
 use Padre::Util;
 

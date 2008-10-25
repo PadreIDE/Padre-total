@@ -5,7 +5,8 @@ use strict;
 use warnings;
 use Padre::Util  ();
 use Params::Util qw{_INSTANCE};
-use Wx           qw( wxID_NEW wxID_CLOSE wxID_SAVEAS wxID_EXIT wxID_UNDO wxID_REDO wxID_FIND wxID_HELP wxID_ABOUT );
+use Wx           qw( wxID_NEW wxID_CLOSE wxID_SAVEAS wxID_EXIT wxID_UNDO wxID_REDO 
+                     wxID_FIND wxID_HELP wxID_ABOUT wxOK wxID_CANCEL wxID_OPEN wxID_SAVE);
 use Wx::Event    qw(EVT_MENU);
 
 our $VERSION = '0.12';
