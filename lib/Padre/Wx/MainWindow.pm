@@ -56,10 +56,18 @@ sub new {
 	}
 
 	# Create the main panel object
+	my $title = "Padre $Padre::VERSION ";
+	if ( $0 =~ /padre$/ ) {
+		my $dir = $0;
+		$dir =~ s/padre$//;
+		if ( -d "$dir.svn" ) {
+			$title .= '(running from SVN checkout)';
+		}
+	}
 	my $self = $class->SUPER::new(
 		undef,
 		-1,
-		"Padre $Padre::VERSION ",
+		$title,
 		[
 		    $config->{host}->{main_left},
 		    $config->{host}->{main_top},
