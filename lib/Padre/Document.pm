@@ -295,7 +295,7 @@ sub load_file {
 
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
-	my $content = eval { File::Slurp::read_file($file) };
+	my $content = eval { File::Slurp::read_file($file, binmode => ':raw') };
 	if ($@) {
 		warn $@;
 		return;

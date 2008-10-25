@@ -941,7 +941,7 @@ sub _save_buffer {
     my $newline_type = $doc->get_newline_type;
 
 	eval {
-		File::Slurp::write_file($filename, $content);
+		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
 	};
 	if ($@) {
 		Wx::MessageBox("Could not save: $!", "Error", wxOK, $self);
