@@ -80,10 +80,10 @@ sub ppi_select {
 my $keywords;
 
 sub keywords {
-	if (not $keywords) {
-		my $dir  = Padre::Wx::_dir();
-		my $path = File::Spec->catfile($dir , 'languages', 'perl5', "perl5.yml");
-		$keywords = YAML::Tiny::LoadFile($path);
+	unless ( defined $keywords ) {
+		$keywords = YAML::Tiny::LoadFile(
+			Padre::Wx::sharefile( 'languages', 'perl5', 'perl5.yml' )
+		);
 	}
 	return $keywords;
 }

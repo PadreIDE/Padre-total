@@ -5,33 +5,57 @@ package Padre::Wx;
 use 5.008;
 use strict;
 use warnings;
-use File::Spec;
-use File::ShareDir;
-use Wx qw{
-	wxBITMAP_TYPE_XPM
-};
+use FindBin;
+use File::Spec     ();
+use File::ShareDir ();
+
+# Load every exportable constant into here, so that they come into
+# existance in the Wx:: package, allowing everywhere else in the code to
+# use them without braces.
+use Wx ':everything';
 
 our $VERSION = '0.12';
 
-sub _dir {
-	return $ENV{PADRE_DEV}      ?  File::Spec->catdir($FindBin::Bin, '..', 'share')
-		 : $ENV{PADRE_PAR_PATH} ?  File::Spec->catdir($ENV{PADRE_PAR_PATH}, 'inc', 'share')
-		 :                         File::ShareDir::dist_dir('Padre')
-		 ;
+
+
+
+
+#####################################################################
+# Shared Resources
+
+sub share () {
+	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
+	return File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' )      if $ENV{PADRE_PAR_PATH};
+	return File::ShareDir::dist_dir('Padre');
 }
 
+sub sharedir {
+	File::Spec->catdir( share, @_ );
+}
+
+sub sharefile {
+	File::Spec->catfile( share, @_ );
+}
+
+
+
+
+
+#####################################################################
+# Load Shared Resources
+
 sub bitmap {
-	my $file = shift;
-	my $dir  = _dir();
-	my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
-	return Wx::Bitmap->new( $path, wxBITMAP_TYPE_XPM );
+	Wx::Bitmap->new(
+		sharefile( 'docview', "$_[0].xpm" ),
+		Wx::wxBITMAP_TYPE_XPM,
+	);
 }
 
 sub icon {
-	my $file = shift;
-	my $dir  = _dir();
-	my $path = File::Spec->catfile($dir , 'docview', "$file.xpm");
-	return Wx::Icon->new( $path, wxBITMAP_TYPE_XPM );
+	Wx::Icon->new(
+		sharefile( 'docview', "$_[0].xpm" ),
+		Wx::wxBITMAP_TYPE_XPM,
+	);
 }
 
 1;
