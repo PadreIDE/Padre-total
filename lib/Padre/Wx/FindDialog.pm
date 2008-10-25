@@ -6,7 +6,7 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx        ();
+use Wx        qw( wxOK wxID_FIND wxID_CANCEL );
 use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
 
 our $VERSION = '0.12';

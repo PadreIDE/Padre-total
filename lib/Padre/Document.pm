@@ -40,14 +40,16 @@ use Wx qw{
 	wxSTC_EOL_LF
 };
 
+use Padre::Util;
+
 our $VERSION = '0.12';
 
 my $cnt   = 0;
 
 our %mode = (
-	WIN  => Wx::wxSTC_EOL_CRLF,
-	MAC  => Wx::wxSTC_EOL_CR,
-	UNIX => Wx::wxSTC_EOL_LF,
+	WIN  => wxSTC_EOL_CRLF,
+	MAC  => wxSTC_EOL_CR,
+	UNIX => wxSTC_EOL_LF,
 );
 
 # see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension

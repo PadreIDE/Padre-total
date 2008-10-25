@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use Wx ();
 
+use Padre::Util;
+
 our $VERSION = '0.12';
 #our @ISA     = 'Wx::Menu';
 sub new { return bless {}, shift };
