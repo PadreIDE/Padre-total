@@ -79,7 +79,12 @@ sub new {
 	$self->SetToolBar( Padre::Wx::ToolBar->new($self) );
 	$self->GetToolBar->Realize;
 
-	# Create the layout boxes for the main window
+	# Create the status bar
+	$self->{statusbar} = $self->CreateStatusBar;
+	$self->{statusbar}->SetFieldsCount(4);
+	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+
+	# Create the splitters but do not populate them yet
 	$self->{main_panel} = Wx::SplitterWindow->new(
 		$self,
 		-1,
@@ -87,6 +92,7 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
 	);
+	$self->{main_panel}->SetSashGravity(1);
 	$self->{upper_panel} = Wx::SplitterWindow->new(
 		$self->{main_panel},
 		-1,
@@ -94,6 +100,7 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
 	);
+	$self->{upper_panel}->SetSashGravity(1);
 
 	# Create the right-hand sidebar
 	$self->{rightbar} = Wx::ListCtrl->new(
@@ -135,22 +142,15 @@ sub new {
 		Wx::wxTE_READONLY | Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE,
 	);
 
-	# Add the bits to the layout
-	$self->{main_panel}->SplitHorizontally(
+	# Populate the layout
+	$self->{main_panel}->Initialize(
 		$self->{upper_panel},
-		$self->{output},
-		$self->window_height,
 	);
 	$self->{upper_panel}->SplitVertically(
 		$self->{notebook},
 		$self->{rightbar},
-		$self->window_width - 200,
+		-150,
 	);
-
-	# Create the status bar
-	$self->{statusbar} = $self->CreateStatusBar;
-	$self->{statusbar}->SetFieldsCount(4);
-	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 
 	# Special Key Handling
 	EVT_KEY_UP( $self, sub {
@@ -1115,13 +1115,20 @@ sub on_toggle_eol {
 
 sub show_output {
 	my $self = shift;
-	my $on   = shift;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
 	unless ( $on == $self->{menu}->{view_output}->IsChecked ) {
 		$self->{menu}->{view_output}->Check($on);
 	}
-	$self->{main_panel}->SetSashPosition(
-		$self->window_height - ($on ? 300 : 0)
-	);
+	if ( $on and not $self->{main_panel}->IsSplit ) {
+		$self->{main_panel}->SplitHorizontally(
+			$self->{upper_panel},
+			$self->{output},
+			-100,
+		);
+	}
+	if ( $self->{main_panel}->IsSplit and not $on ) {
+		$self->{main_panel}->Unsplit;
+	}
 	return;
 }
 
@@ -1225,6 +1232,5 @@ sub on_function_selected {
 sub _DOCUMENT {
 	return (defined $_[0]) ? Padre::Document->from_pageid($_[0]) : Padre::Document->from_selection;
 }
-
 
 1;
