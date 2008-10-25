@@ -11,6 +11,7 @@ v0.XX XXXX
     General refactoring pass over Padre::Wx (ADAMK)
     Padre::Wx forces all the Wx::wxCONSTANT values to be populated,
     so that we don't need all the use Wx qw{ wxCONSTANT } imports (ADAMK)
+    Make it clear in the main window title if running from SVN checkout (ADAMK)
 
 v0.12 2008.10.23
 
