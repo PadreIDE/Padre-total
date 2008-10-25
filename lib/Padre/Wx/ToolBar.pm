@@ -34,7 +34,8 @@ sub new {
 sub refresh {
 	my $self    = shift;
 	my $doc     = shift;
-	my $enabled = !! ( $doc and ( $doc->is_new or $doc->is_modified ) );
+
+	my $enabled = !! ( $doc and $doc->is_modified );
 	$self->EnableTool( Wx::wxID_SAVE, $enabled );
 	return 1;
 }

@@ -213,7 +213,7 @@ sub new {
 	Wx::Event::EVT_TIMER(
 		$self,
 		-1,
-		sub { $_[0]->on_toggle_status_bar },
+		sub { $_[0]->on_toggle_status_bar; $_[0]->refresh_all; },
 	);
 	$timer->Start( 500, 1 );
 
@@ -255,8 +255,8 @@ sub refresh_all {
 	return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
 	my $doc  = $self->selected_document;
 	$self->refresh_menu($doc);
-	$self->refresh_toolbar($doc);
-	$self->refresh_status($doc);
+	$self->refresh_toolbar;
+	$self->refresh_status;
 	$self->refresh_methods($doc);
 	return;
 }
@@ -266,7 +266,8 @@ sub refresh_menu {
 }
 
 sub refresh_toolbar {
-	shift->GetToolBar->refresh(@_);
+	my $self = shift;
+	$self->GetToolBar->refresh($self->selected_document);
 }
 
 sub refresh_status {
