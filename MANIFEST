@@ -45,6 +45,7 @@ lib/Padre/Pod/Viewer.pm
 
 script/padre
 
+t/00-compile.t
 t/01-load.t
 t/02-new.t
 t/03-wx.t

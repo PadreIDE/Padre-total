@@ -60,6 +60,7 @@ my $builder = Padre::Install->new(
 	script_files          => [ 'script/padre' ],
 	requires              => \%prereqs,
 	build_requires        => {
+		'Test::Compile'             => '0.08',
 		'Test::More'                => '0.47',
 		'Test::Exception'           => 0,
 		'Test::NoWarnings'          => 0,
