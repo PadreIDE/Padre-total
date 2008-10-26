@@ -744,8 +744,10 @@ sub setup_editor {
 
 	my $title = $editor->{Document}->get_title;
 
-	$editor->show_line_numbers($config->{editor_linenumbers});
-	$editor->SetViewEOL($config->{editor_eol});
+	$editor->show_line_numbers(    $config->{editor_linenumbers}       );
+	$editor->SetIndentationGuides( $config->{editor_indentationguides} );
+	$editor->SetViewEOL(           $config->{editor_eol}               );
+
 	$self->set_preferences($editor, $config);
 
 	my $id = $self->create_tab($editor, $file, $title);
@@ -1098,8 +1100,8 @@ sub on_toggle_line_numbers {
 	my $config = Padre->ide->config;
 	$config->{editor_linenumbers} = $event->IsChecked ? 1 : 0;
 
-	foreach my $page ( $self->pages ) {
-		$page->show_line_numbers( $config->{editor_linenumbers} );
+	foreach my $editor ( $self->pages ) {
+		$editor->show_line_numbers( $config->{editor_linenumbers} );
 	}
 
 	return;
@@ -1111,8 +1113,8 @@ sub on_toggle_indentation_guide {
 	my $config = Padre->ide->config;
 	$config->{editor_indentationguides} = $self->{menu}->{view_indentation_guide}->IsChecked ? 1 : 0;
 
-	foreach my $page ( $self->pages ) {
-		$page->SetIndentationGuides( $config->{editor_indentationguides} );
+	foreach my $editor ( $self->pages ) {
+		$editor->SetIndentationGuides( $config->{editor_indentationguides} );
 	}
 
 	return;
@@ -1124,8 +1126,8 @@ sub on_toggle_eol {
 	my $config = Padre->ide->config;
 	$config->{editor_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
 
-	foreach my $page ( $self->pages ) {
-		$page->SetViewEOL( $config->{editor_eol} );
+	foreach my $editor ( $self->pages ) {
+		$editor->SetViewEOL( $config->{editor_eol} );
 	}
 
 	return;
