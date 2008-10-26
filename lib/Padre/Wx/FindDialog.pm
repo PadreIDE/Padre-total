@@ -7,6 +7,7 @@ use warnings;
 # Find and Replace widget of Padre
 
 use Padre::Wx;
+use Padre::Wx::Dialog;
 
 our $VERSION = '0.12';
 
@@ -32,7 +33,7 @@ sub dialog {
 	my $dialog = Wx::Dialog->new( $win, -1, "Search", [-1, -1], [440, 220]);
 
 	my $layout = get_layout($search_term, $config);
-	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, [150, 200]);
+	Padre::Wx::Dialog::build_layout($dialog, $layout, [150, 200]);
 
 	foreach my $cb (@cbs) {
 		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
@@ -172,7 +173,7 @@ sub find_clicked {
 sub _get_data_from {
 	my ( $dialog ) = @_;
 
-	my $data = Padre::Wx::ModuleStartDialog::get_data_from($dialog, get_layout());
+	my $data = Padre::Wx::Dialog::get_data_from($dialog, get_layout());
 
 	#print Data::Dumper::Dumper $data;
 

@@ -23,6 +23,7 @@ lib/Padre/Document/Pir.pm
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm
+lib/Padre/Wx/Dialog.pm
 lib/Padre/Wx/Editor.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/GoToLine.pm
