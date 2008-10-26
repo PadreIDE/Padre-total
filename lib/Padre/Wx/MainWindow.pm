@@ -744,7 +744,7 @@ sub setup_editor {
 
 	my $title = $editor->{Document}->get_title;
 
-	$editor->_toggle_numbers($config->{editor_linenumbers});
+	$editor->show_line_numbers($config->{editor_linenumbers});
 	$editor->SetViewEOL($config->{editor_eol});
 	$self->set_preferences($editor, $config);
 
@@ -1099,7 +1099,7 @@ sub on_toggle_line_numbers {
 	$config->{editor_linenumbers} = $event->IsChecked ? 1 : 0;
 
 	foreach my $page ( $self->pages ) {
-		$page->_toggle_numbers( $config->{editor_linenumbers} );
+		$page->show_line_numbers( $config->{editor_linenumbers} );
 	}
 
 	return;
