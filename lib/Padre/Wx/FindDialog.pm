@@ -6,8 +6,7 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx        qw( wxOK wxID_FIND wxID_CANCEL );
-use Wx::Event qw{ EVT_BUTTON EVT_CHECKBOX };
+use Padre::Wx;
 
 our $VERSION = '0.12';
 
@@ -36,13 +35,13 @@ sub dialog {
 	Padre::Wx::ModuleStartDialog::build_layout($dialog, $layout, [150, 200]);
 
 	foreach my $cb (@cbs) {
-		EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
+		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
 	}
 	$dialog->{_find_}->SetDefault;
-	EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
-	EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
-	EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
-	EVT_BUTTON( $dialog, $dialog->{_cancel_},      \&cancel_clicked      );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_},      \&cancel_clicked      );
 
 	$dialog->{_find_choice_}->SetFocus;
 	$dialog->Show(1);

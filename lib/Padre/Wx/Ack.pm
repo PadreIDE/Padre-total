@@ -2,11 +2,11 @@ package Padre::Wx::Ack;
 
 use strict;
 use warnings;
-use Wx                      qw(:everything);
-use Wx::Event               qw(:everything);
-use Padre::Wx::Ack;
-use App::Ack;
 use Data::Dumper            qw(Dumper);
+
+use App::Ack;
+
+use Padre::Wx;
 
 my $iter;
 my %opts;
@@ -46,7 +46,7 @@ sub on_ack {
 
 	$self->show_output(1);
 
-	EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
+	Wx::Event::EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
 
 	my $worker = threads->create( \&on_ack_thread );
 
@@ -58,25 +58,25 @@ sub dialog {
 	my ( $win, $config ) = @_;
 	my $id     = -1;
 	my $title  = "Ack";
-	my $pos    = wxDefaultPosition;
-	my $size   = wxDefaultSize;
+	my $pos    = Wx::wxDefaultPosition;
+	my $size   = Wx::wxDefaultSize;
 	my $name   = "";
-	my $style = wxDEFAULT_FRAME_STYLE;
+	my $style = Wx::wxDEFAULT_FRAME_STYLE;
 
 	my $dialog        = Wx::Dialog->new( $win, $id, $title, $pos, $size, $style, $name );
-	my $label_1       = Wx::StaticText->new($dialog, -1, "Term: ", wxDefaultPosition, wxDefaultSize, );
-	my $term          = Wx::ComboBox->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	my $button_search = Wx::Button->new($dialog, wxID_FIND, '');
-	my $label_2       = Wx::StaticText->new($dialog, -1, "Dir: ", wxDefaultPosition, wxDefaultSize, );
-	my $dir           = Wx::ComboBox->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	my $button_cancel = Wx::Button->new($dialog, wxID_CANCEL, '');
-	my $nothing_1     = Wx::StaticText->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, );
-	my $nothing_2     = Wx::StaticText->new($dialog, -1, "", wxDefaultPosition, wxDefaultSize, );
+	my $label_1       = Wx::StaticText->new($dialog, -1, "Term: ", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
+	my $term          = Wx::ComboBox->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, [], Wx::wxCB_DROPDOWN);
+	my $button_search = Wx::Button->new($dialog, Wx::wxID_FIND, '');
+	my $label_2       = Wx::StaticText->new($dialog, -1, "Dir: ", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
+	my $dir           = Wx::ComboBox->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, [], Wx::wxCB_DROPDOWN);
+	my $button_cancel = Wx::Button->new($dialog, Wx::wxID_CANCEL, '');
+	my $nothing_1     = Wx::StaticText->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
+	my $nothing_2     = Wx::StaticText->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
 	my $button_dir    = Wx::Button->new($dialog, -1, "Pick &directory");
 
-	EVT_BUTTON( $dialog, $button_search, sub { $dialog->EndModal(wxID_FIND) } );
-	EVT_BUTTON( $dialog, $button_dir,    sub { on_pick_dir($dir, @_) } );
-	EVT_BUTTON( $dialog, $button_cancel, sub { $dialog->EndModal(wxID_CANCEL) } );
+	Wx::Event::EVT_BUTTON( $dialog, $button_search, sub { $dialog->EndModal(Wx::wxID_FIND) } );
+	Wx::Event::EVT_BUTTON( $dialog, $button_dir,    sub { on_pick_dir($dir, @_) } );
+	Wx::Event::EVT_BUTTON( $dialog, $button_cancel, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
 	#$dialog->SetTitle("frame_1");
 	$term->SetSelection(-1);
@@ -84,7 +84,7 @@ sub dialog {
 	$button_search->SetDefault;
 
 	# layout
-	my $sizer_1 = Wx::BoxSizer->new(wxVERTICAL);
+	my $sizer_1 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $grid_sizer_1 = Wx::GridSizer->new(4, 3, 0, 0);
 	$grid_sizer_1->Add($label_1, 0, 0, 0);
 	$grid_sizer_1->Add($term, 0, 0, 0);
@@ -96,7 +96,7 @@ sub dialog {
 	$grid_sizer_1->Add($nothing_2, 0, 0, 0);
 	$grid_sizer_1->Add($button_cancel, 0, 0, 0);
 
-	$sizer_1->Add($grid_sizer_1, 1, wxEXPAND, 0);
+	$sizer_1->Add($grid_sizer_1, 1, Wx::wxEXPAND, 0);
 
 	$dialog->SetSizer($sizer_1);
 	$sizer_1->Fit($dialog);
@@ -105,7 +105,7 @@ sub dialog {
 	$term->SetFocus;
 	my $ret = $dialog->ShowModal;
 
-	if ($ret == wxID_CANCEL) {
+	if ($ret == Wx::wxID_CANCEL) {
 		 $dialog->Destroy;
 		return;
 	}
@@ -122,7 +122,7 @@ sub on_pick_dir {
 	my ($dir, $self, $event) = @_;
 
 	my $dir_dialog = Wx::DirDialog->new( $self, "Select directory", '');
-	if ($dir_dialog->ShowModal == wxID_CANCEL) {
+	if ($dir_dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}
 	$dir->SetValue($dir_dialog->GetPath);

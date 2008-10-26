@@ -9,7 +9,8 @@ our $VERSION = '0.12';
 use Wx::STC;
 use base 'Wx::StyledTextCtrl';
 
-use Wx   qw( wxTELETYPE wxNORMAL wxSTC_STYLE_DEFAULT wxSTC_H_TAG wxLayout_LeftToRight );
+use Padre::Wx;
+
 sub new {
 	my( $class, $parent ) = @_;
 
@@ -45,11 +46,11 @@ sub padre_setup {
 sub padre_setup_plain {
 	my $self = shift;
 
-	my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
+	my $font = Wx::Font->new( 10, Wx::wxTELETYPE, Wx::wxNORMAL, Wx::wxNORMAL );
 
 	$self->SetFont( $font );
 
-	$self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
+	$self->StyleSetFont( Wx::wxSTC_STYLE_DEFAULT, $font );
 
 	$self->StyleClearAll();
 
@@ -104,21 +105,21 @@ sub padre_setup_perl {
 		#define SCE_PL_FORMAT_IDENT 41
 		#define SCE_PL_FORMAT 42
 	);
-	Wx->import(keys %colors);
 
 	foreach my $k (keys %colors) {
 		my @c = map {hex($_)} $colors{$k} =~ /(..)(..)(..)/;
-		$self->StyleSetForeground( $k->(), Wx::Colour->new(@c));
+		my $f = 'Wx::' . $k;
+		$self->StyleSetForeground( $f->(), Wx::Colour->new(@c));
 	}
 
 	# Set a style 12 bold
 	$self->StyleSetBold(12,  1);
 
 	# Apply tag style for selected lexer (blue)
-	$self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
+	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
 
 	if ( $self->can('SetLayoutDirection') ) {
-		$self->SetLayoutDirection( wxLayout_LeftToRight );
+		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
 	}
 
 	return;

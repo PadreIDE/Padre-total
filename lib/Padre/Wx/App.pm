@@ -25,6 +25,7 @@ From the main L<Padre> object, it can be accessed via the C<wx> method.
 
 use strict;
 use warnings;
+
 use Wx::App ();
 use Padre::Wx::MainWindow ();
 

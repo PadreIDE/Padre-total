@@ -2,10 +2,11 @@ package Padre::Wx::Bookmarks;
 
 use strict;
 use warnings;
-use Wx           qw(wxID_OK wxID_CANCEL wxID_DELETE wxVERTICAL wxHORIZONTAL);
-use Wx::Event    qw(EVT_BUTTON);
+
 use List::Util   qw(max);
 use Data::Dumper qw(Dumper);
+
+use Padre::Wx;
 
 our $VERSION = '0.12';
 
@@ -14,10 +15,10 @@ my $tb;
 sub dialog {
 	my ($self, $text) = @_;
 
-	my $box  = Wx::BoxSizer->new( wxVERTICAL );
+	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	my @rows;
 	for my $i (0..3) {
-		$rows[$i] = Wx::BoxSizer->new( wxHORIZONTAL );
+		$rows[$i] = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 		$box->Add($rows[$i]);
 	}
 
@@ -25,12 +26,12 @@ sub dialog {
 	my $dialog = Wx::Dialog->new( $self, -1, $title, [-1, -1], [-1, -1]);
 
 
-	my $ok = Wx::Button->new( $dialog, wxID_OK, '' );
-	EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(wxID_OK) } );
+	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
+	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
 	$ok->SetDefault;
 
-	my $cancel  = Wx::Button->new( $dialog, wxID_CANCEL, '', [-1, -1], $ok->GetSize);
-	EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(wxID_CANCEL) } );
+	my $cancel  = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', [-1, -1], $ok->GetSize);
+	Wx::Event::EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
 
 	$rows[3]->Add( $ok );
@@ -57,7 +58,7 @@ sub dialog {
 
 
 	my $ret = $dialog->ShowModal;
-	if ( $ret eq wxID_CANCEL ) {
+	if ( $ret eq Wx::wxID_CANCEL ) {
 		$dialog->Destroy;
 		return;
 	}
@@ -94,8 +95,8 @@ sub list_bookmarks {
 		$rows->[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
 		$rows->[2]->Add( $tb );
 
-		my $delete  = Wx::Button->new( $dialog, wxID_DELETE, '', [-1, -1], $button_size );
-		EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
+		my $delete  = Wx::Button->new( $dialog, Wx::wxID_DELETE, '', [-1, -1], $button_size );
+		Wx::Event::EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
 		$rows->[3]->Add( $delete );
 	}
 
