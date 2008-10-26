@@ -24,11 +24,6 @@ sub new {
 		Wx::wxTE_READONLY | Wx::wxTE_MULTILINE | Wx::wxTE_DONTWRAP | Wx::wxNO_FULL_REPAINT_ON_RESIZE,
 	);
 
-	# By definition the output window is not shown by default.
-	# Therefore, we should Freeze the widget to stop it attempt to render anything,
-	# which has been a cause of weird visual artifacts in the past.
-	$self->Freeze;
-
 	# Do custom startup stuff here
 
 	return $self;

@@ -480,6 +480,8 @@ sub new {
 	unless ( Padre::Util::WIN32 ) {
 		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}
+	$menu->{view_output}->Check( $config->{main_output} ? 1 : 0 );
+
 	$menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
 	$menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
 

@@ -43,6 +43,7 @@ SCOPE: {
 		replace_terms      => [],
 		main_startup       => 'new',
 		main_statusbar     => 1,
+		main_output        => 0,
 		projects           => {},
 		run_save           => 'same',
 		current_project    => '',
