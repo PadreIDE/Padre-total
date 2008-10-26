@@ -926,7 +926,7 @@ sub on_save {
 	my $doc    = $self->selected_document or return;
 
 	if ( $doc->is_new ) {
-		return $self->on_save_as($doc);
+		return $self->on_save_as;
 	}
 	if ( $doc->is_modified ) {
 		my $pageid = $self->{notebook}->GetSelection;
