@@ -22,10 +22,10 @@ sub on_start {
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [300, 220]);
+	my $dialog = Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [310, 210]);
 
 	my $layout = get_layout($config);
-	Padre::Wx::Dialog::build_layout($dialog, $layout, [100, 200]);
+	Padre::Wx::Dialog::build_layout($dialog, $layout, [100, 200], [5, 5]);
 
 	$dialog->{_ok_}->SetDefault;
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
@@ -125,7 +125,7 @@ sub ok_clicked {
 	Module::Starter::App->run;
 	@ARGV = ();
 	chdir $pwd;
-	Wx::MessageBox("$data->{_module_name_} apperantly created.", "Done", Wx::wxOK, $main_window);
+	Wx::MessageBox("$data->{_module_name_} apparantly created.", "Done", Wx::wxOK, $main_window);
 
 	return;
 }

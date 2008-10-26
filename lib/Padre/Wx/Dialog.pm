@@ -18,16 +18,21 @@ Padre::Wx::Dialog
 
 =head2 build_layout
 
- build_layout($dialog, $layout, $width);
+ build_layout($dialog, $layout, $width, $top_left_offset);
 
 =cut
 sub build_layout {
-	my ($dialog, $layout, $width) = @_;
+	my ($dialog, $layout, $width, $top_left_offset) = @_;
+	$top_left_offset = [0, 0] if not ref($top_left_offset);
 
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	# Add Y-offset
+	$box->Add(0, $top_left_offset->[1], 0) if $top_left_offset->[1];
 
 	foreach my $i (0..@$layout-1) {
 		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+		# Add X-offset
+		$row->Add($top_left_offset->[0], 0, 0) if $top_left_offset->[0];
 		$box->Add($row);
 		foreach my $j (0..@{$layout->[$i]}-1) {
 			if (not @{ $layout->[$i][$j] } ) {  # [] means Expand
