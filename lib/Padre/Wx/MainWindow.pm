@@ -1095,11 +1095,9 @@ sub set_preferences {
 sub on_toggle_line_numbers {
 	my ($self, $event) = @_;
 
-	# Update the configuration
 	my $config = Padre->ide->config;
 	$config->{editor_linenumbers} = $event->IsChecked ? 1 : 0;
 
-	# Update the notebook pages
 	foreach my $page ( $self->pages ) {
 		$self->_toggle_numbers( $page, $config->{editor_linenumbers} );
 	}
@@ -1109,21 +1107,27 @@ sub on_toggle_line_numbers {
 
 sub on_toggle_indentation_guide {
 	my $self   = shift;
+
 	my $config = Padre->ide->config;
 	$config->{editor_indentationguides} = $self->{menu}->{view_indentation_guide}->IsChecked ? 1 : 0;
+
 	foreach my $page ( $self->pages ) {
 		$page->SetIndentationGuides( $config->{editor_indentationguides} );
 	}
+
 	return;
 }
 
 sub on_toggle_eol {
 	my $self   = shift;
+
 	my $config = Padre->ide->config;
 	$config->{editor_eol} = $self->{menu}->{view_eol}->IsChecked ? 1 : 0;
+
 	foreach my $page ( $self->pages ) {
 		$page->SetViewEOL( $config->{editor_eol} );
 	}
+
 	return;
 }
 
