@@ -77,7 +77,7 @@ sub get_layout {
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
-		]
+		],
 	);
 	return \@layout;
 }
