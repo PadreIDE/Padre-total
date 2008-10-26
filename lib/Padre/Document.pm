@@ -6,9 +6,10 @@ package Padre::Document;
 use 5.008;
 use strict;
 use warnings;
-use File::Spec ();
-use List::Util ();
-use Carp       ();
+use File::Spec  ();
+use File::Slurp ();
+use List::Util  ();
+use Carp        ();
 use Wx qw{
 	wxSTC_LEX_ADA
 	wxSTC_LEX_ASM
