@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use Padre::Wx;
 
@@ -25,6 +25,8 @@ sub build_layout {
 	my ($dialog, $layout, $width, $top_left_offset) = @_;
 	$top_left_offset = [0, 0] if not ref($top_left_offset);
 
+	# TODO make sure width has enough elements to the widest row
+	# or maybe we should also check that all the rows has the same number of elements
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	# Add Y-offset
 	$box->Add(0, $top_left_offset->[1], 0) if $top_left_offset->[1];
@@ -62,8 +64,15 @@ sub build_layout {
 				my $default = shift @params;
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 				$widget->SetValue($default);
-			} else {
+			} elsif ($class eq 'Wx::StaticText') {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+			} elsif ($class eq 'Wx::ComboBox') {
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+			} elsif ($class eq 'Wx::Choice') {
+				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1], $arg, @params );
+			} else {
+				warn "Unsupported widget $class\n";
+				return;
 			}
 
 			$row->Add($widget);
@@ -92,6 +101,8 @@ sub get_data_from {
 
 				if ($class eq 'Wx::DirPickerCtrl') {
 					$data{$name} = $dialog->{$name}->GetPath;
+				} elsif ($class eq 'Wx::Choice') {
+					$data{$name} = $dialog->{$name}->GetSelection;
 				} else {
 					$data{$name} = $dialog->{$name}->GetValue;
 				}

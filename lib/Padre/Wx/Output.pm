@@ -12,6 +12,8 @@ use Padre::Wx ();
 
 use base 'Wx::TextCtrl';
 
+our $VERSION = '0.13';
+
 sub new {
 	my $class  = shift;
 	my $parent = shift;

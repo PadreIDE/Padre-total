@@ -44,7 +44,7 @@ use Wx::STC;
 
 use Padre::Util;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 my $cnt   = 0;
 
@@ -290,7 +290,7 @@ sub load_file {
 	$editor->SetText( $content );
 	$editor->EmptyUndoBuffer;
 	if ($convert_to) {
-		warn "Converting to $convert_to";
+		warn "Converting $file to $convert_to";
 		$editor->ConvertEOLs( $mode{$newline_type} );
 	}
 

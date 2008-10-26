@@ -10,7 +10,7 @@ my $default_dir;
 
 use Padre::Wx  ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 
 sub on_new_project {

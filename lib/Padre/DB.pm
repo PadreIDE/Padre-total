@@ -11,7 +11,7 @@ use ORLite 0.15 {
 	tables => 0,
 };
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 # At load time, autocrate if needed
 unless ( Padre::DB->pragma('user_version') == 2 ) {

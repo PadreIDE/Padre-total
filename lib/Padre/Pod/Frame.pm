@@ -2,7 +2,7 @@ package Padre::Pod::Frame;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use Data::Dumper qw(Dumper);
 

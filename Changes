@@ -1,10 +1,10 @@
 Changes for Padre. All changes by Gabor unless noted.
 
-v0.XX XXXX
+v0.13 2008.10.26
 
-    fix warning when closing Padre with no files open
+    fix warning when closing Padre with no files open (BRICAS)
     close lone unused document when opening a recent file (now works the same
-        as file->open)
+        as file->open) (BRICAS)
     SplitWindow widgets are now used properly (ADAMK)
     Show Output nows correctly hides away the output window when non-visible (ADAMK)
     Refactored out output window to Padre::Wx::Output (ADAMK)
@@ -13,6 +13,16 @@ v0.XX XXXX
     so that we don't need all the use Wx qw{ wxCONSTANT } imports (ADAMK)
     Make it clear in the main window title if running from SVN checkout (ADAMK)
     Add Padre::PluginBuilder for Padre plugins with extra build targets (SMUELLER)
+    Create dialog abstraction in Padre::Wx::Dialog.
+    Lots of refreshing related fixes.
+    Create Padre::Documents to return the current or any other document object.
+    Stop importing Wx directly in the Padre::Wx:: modules.
+    Compile all modules if Test::Compile is available during tests.
+    Save button on toolbar is working now when the current document needs saving.
+    Use binmode :raw in order to help Windows when opening and writing files
+        fixing the bug that we used to change the newline types whem editing on Windows.
+    Run Script did not work bug fixed #76
+    chdir to directory to be executed with Run Script #69
 
 v0.12 2008.10.23
 
