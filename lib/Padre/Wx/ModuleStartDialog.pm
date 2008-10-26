@@ -31,6 +31,8 @@ sub dialog {
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
 
+        $dialog->{_license_choice_}->SetValue('perl');
+
 	$dialog->{_module_name_}->SetFocus;
 	$dialog->Show(1);
 
