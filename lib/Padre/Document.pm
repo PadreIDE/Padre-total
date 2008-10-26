@@ -290,7 +290,7 @@ sub load_file {
 	$editor->SetText( $content );
 	$editor->EmptyUndoBuffer;
 	if ($convert_to) {
-		warn "Converting to $convert_to";
+		warn "Converting $file to $convert_to";
 		$editor->ConvertEOLs( $mode{$newline_type} );
 	}
 
