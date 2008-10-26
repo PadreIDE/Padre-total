@@ -643,8 +643,9 @@ sub on_close_window {
 
 	# Save the list of open files
 	$config->{host}->{main_files} = [
-		map { $_->filename }
-		grep { $_ } map { _DOCUMENT($_) }
+		map  { $_->filename }
+		grep { $_ } 
+		map  { Padre::Documents->by_id($_) }
 		$self->pageids
 	];
 
@@ -946,7 +947,7 @@ sub _save_buffer {
 
 	my $page         = $self->{notebook}->GetPage($id);
 	my $content      = $page->GetText;
-    my $doc          = _DOCUMENT($id) or return;
+    my $doc          = Padre::Documents->by_id($id) or return;
 	my $filename     = $doc->filename;
     my $newline_type = $doc->get_newline_type;
 
@@ -1000,7 +1001,7 @@ sub close {
 	# Update the alt-n menus
 	$self->{menu}->remove_alt_n_menu;
 	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
-		my $doc = _DOCUMENT($i) or return;
+		my $doc = Padre::Documents->by_id($i) or return;
 		my $file = $doc->filename
 			|| $self->{notebook}->GetPageText($i);
 		$self->{menu}->update_alt_n_menu($file, $i);
@@ -1212,7 +1213,7 @@ sub convert_to {
 sub find_editor_of_file {
 	my ($self, $file) = @_;
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-        my $doc = _DOCUMENT($id) or return;
+        my $doc = Padre::Documents->by_id($id) or return;
 		my $filename = $doc->filename;
 		next if not $filename;
 		return $id if $filename eq $file;
@@ -1241,10 +1242,6 @@ sub on_function_selected {
 	Padre::Wx::FindDialog::_search( search_term => $doc->get_function_regex($sub) );
 	$self->selected_editor->SetFocus;
 	return;
-}
-
-sub _DOCUMENT {
-	return (defined $_[0]) ? Padre::Documents->by_id($_[0]) : Padre::Documents->current;
 }
 
 1;

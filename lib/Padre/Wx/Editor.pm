@@ -4,6 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
+use Padre::Documents ();
 use Wx::STC;
 use Padre::Wx;
 
@@ -134,7 +135,7 @@ sub on_stc_update_ui {
 sub on_stc_style_needed {
 	my ( $self, $event ) = @_;
 
-	my $doc = Padre::Wx::MainWindow::_DOCUMENT() or return;
+	my $doc = Padre::Documents->current or return;
 	if ($doc->can('colourise')) {
 		$doc->colourise;
 	}
@@ -159,7 +160,7 @@ sub on_stc_change {
 		$editor->CallTipCancel;
 	}
 
-    my $doc = Padre::Wx::MainWindow::_DOCUMENT() or return;
+    my $doc = Padre::Documents->current or return;
     my $keywords = $doc->keywords;
 
 	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
