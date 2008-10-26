@@ -42,7 +42,7 @@ sub dialog {
 sub get_layout {
 	my ($config) = @_;
 
-	my @builders = ('Module::Build', 'ExtUtils::MakeMaker', 'Module::Install');
+	my @builders = ('Module::Build', 'ExtUtils::MakeMaker'); #, 'Module::Install');
 	my @licenses = qw(apache artistic artistic_2 bsd gpl lgpl mit mozilla open_source perl restrictive unrestricted);
 	# licenses list taken from 
 	# http://search.cpan.org/dist/Module-Build/lib/Module/Build/API.pod
