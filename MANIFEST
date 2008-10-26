@@ -9,6 +9,7 @@ lib/Padre/Wx/Ack.pm
 lib/Padre/Config.pm
 lib/Padre/DB.pm
 lib/Padre/Document.pm
+lib/Padre/Documents.pm
 lib/Padre/PluginManager.pm
 lib/Padre/Project.pm
 lib/Padre/Util.pm

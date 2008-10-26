@@ -5,8 +5,9 @@ use strict;
 use warnings;
 use Params::Util qw{_INSTANCE};
 
-use Padre::Wx    ();
-use Padre::Util  ();
+use Padre::Wx        ();
+use Padre::Util      ();
+use Padre::Documents ();
 
 our $VERSION = '0.12';
 
@@ -98,7 +99,7 @@ sub new {
 			$menu->{file_recentfiles}->Append(-1, $f), 
             sub { 
                 if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
-                    if ( Padre::Document->from_selection->is_unused ) {
+                    if ( Padre::Documents->from_selection->is_unused ) {
                         $_[0]->on_close;
                     }
                 }
@@ -137,7 +138,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Z
 		$menu->{edit}->Append( Wx::wxID_UNDO, '' ),
 		sub {
-			my $page = Padre::Document->from_selection->editor;
+			my $page = Padre::Documents->from_selection->editor;
 			if ( $page->CanUndo ) {
 				$page->Undo;
 			}
@@ -147,7 +148,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Y
 		$menu->{edit}->Append( Wx::wxID_REDO, '' ),
 		sub {
-			my $page = Padre::Document->from_selection->editor;
+			my $page = Padre::Documents->from_selection->editor;
 			if ( $page->CanRedo ) {
 				$page->Redo;
 			}
@@ -276,7 +277,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_find_unmatched},
 		sub {
-			my $doc = Padre::Document->from_selection;
+			my $doc = Padre::Documents->from_selection;
 			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
 				return;
 			}
@@ -436,7 +437,7 @@ sub new {
 			$menu->{experimental}->Append( -1, 'Reflow Menu/Toolbar' ),
 			sub {
 				$DB::single = 1;
-				my $document = Padre::Document->from_selection;
+				my $document = Padre::Documents->from_selection;
 				$_[0]->{menu}->refresh( $document );
 				$_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
 				$_[0]->GetToolBar->refresh( $document );
@@ -448,7 +449,7 @@ sub new {
 			$menu->{experimental}->Append( -1, 'Run in &Padre' ),
 			sub {
 				my $self = shift;
-				my $code = Padre::Document->from_selection->text_get;
+				my $code = Padre::Documents->from_selection->text_get;
 				eval $code;
 				if ($@) {
 					Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);

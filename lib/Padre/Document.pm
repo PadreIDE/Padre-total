@@ -146,48 +146,6 @@ our %MIME_LEXER = (
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
 
-### DODGY HACK
-# This is a temporary method that can generate an "anonymous"
-# document for whatever is in the current buffer. The document
-# is not saved or cached anywhere.
-# This method may be changed to work properly later, but for now
-# feel free to use it wherever needed.
-sub from_selection {
-	$_[0]->from_pageid( $_[0]->notebook->GetSelection );
-}
-
-sub from_pageid {
-	my $class   = shift;
-	my $pageid  = shift;
-
-	# TODO maybe report some error?
-	return if not defined $pageid or $pageid =~ /\D/;
-
-	if ( $pageid == -1 ) {
-		# No page selected
-		return;
-	}
-
-	return if $pageid >= $class->notebook->GetPageCount;
-
-	my $page = $class->notebook->GetPage( $pageid );
-
-	return $page->{Document};
-}
-
-
-
-
-
-#####################################################################
-# Class Methods
-
-sub notebook {
-	Padre->ide->wx->main_window->{notebook};
-}
-
-
-
 
 
 #####################################################################

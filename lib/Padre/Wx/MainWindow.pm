@@ -18,6 +18,7 @@ use Padre::Wx          ();
 use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
 use Padre::Wx::Output  ();
+use Padre::Documents   ();
 
 use base qw{Wx::Frame};
 
@@ -340,7 +341,7 @@ sub refresh_methods {
 # Introspection
 
 sub selected_document {
-	Padre::Document->from_selection;
+	Padre::Documents->from_selection;
 }
 
 =head2 selected_editor
@@ -849,7 +850,7 @@ sub on_open {
 	# If and only if there is only one current file,
 	# and it is unused, close it.
 	if ( $self->{notebook}->GetPageCount == 1 ) {
-		if ( Padre::Document->from_selection->is_unused ) {
+		if ( Padre::Documents->from_selection->is_unused ) {
 			$self->on_close;
 		}
 	}
@@ -934,7 +935,7 @@ sub on_save {
 sub on_save_all {
 	my $self = shift;
 	foreach my $id ( $self->pageids ) {
-		my $doc = Padre::Document->from_pageid($id);
+		my $doc = Padre::Documents->from_pageid($id);
 		$self->on_save( $doc ) or return 0;
 	}
 	return 1;
@@ -1243,7 +1244,7 @@ sub on_function_selected {
 }
 
 sub _DOCUMENT {
-	return (defined $_[0]) ? Padre::Document->from_pageid($_[0]) : Padre::Document->from_selection;
+	return (defined $_[0]) ? Padre::Documents->from_pageid($_[0]) : Padre::Documents->from_selection;
 }
 
 1;
