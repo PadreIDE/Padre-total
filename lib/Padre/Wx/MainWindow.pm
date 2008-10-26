@@ -1135,9 +1135,9 @@ sub on_toggle_eol {
 
 sub show_output {
 	my $self = shift;
+	my $on   = shift;
 
-	my $on   = @_ ? $_[0] ? 1 : 0 : $self->{menu}->{view_output}->IsChecked;
-	return if Padre::Util::WIN32 and not $on;
+#	return if Padre::Util::WIN32 and not $on;
 
 	my $config = Padre->ide->config;
 	$config->{main_output} = $on;
