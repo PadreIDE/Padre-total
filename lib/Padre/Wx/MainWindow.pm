@@ -746,7 +746,7 @@ sub setup_editor {
 	$editor->SetIndentationGuides( $config->{editor_indentationguides} );
 	$editor->SetViewEOL(           $config->{editor_eol}               );
 
-	$self->set_preferences($editor, $config);
+	$editor->set_preferences;
 
 	my $id = $self->create_tab($editor, $file, $title);
 
@@ -1079,18 +1079,13 @@ sub on_preferences {
 
 	Padre::Wx::Preferences->run( $self, $config );
 
-	foreach my $page ( $self->pages ) {
-		$self->set_preferences($page, $config);
+	foreach my $editor ( $self->pages ) {
+		$editor->set_preferences;
 	}
 
 	return;
 }
 
-sub set_preferences {
-	my ($self, $editor, $config) = @_;
-	$editor->SetTabWidth( $config->{editor_tabwidth} );
-	return;
-}
 
 sub on_toggle_line_numbers {
 	my ($self, $event) = @_;

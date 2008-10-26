@@ -200,5 +200,14 @@ sub show_line_numbers {
 	return;
 }
 
+sub set_preferences {
+	my ($self) = @_;
+	my $config = Padre->ide->config;
+
+	$self->SetTabWidth( $config->{editor_tabwidth} );
+
+	return;
+}
+
 
 1;
