@@ -262,7 +262,7 @@ sub window_top {
 
 sub refresh_all {
 	my $self = shift;
-	return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
+	return if $self->{_in_setup_editor};
 	my $doc  = $self->selected_document;
 	$self->refresh_menu($doc);
 	$self->refresh_toolbar;
@@ -283,7 +283,7 @@ sub refresh_toolbar {
 sub refresh_status {
 	my ($self) = @_;
 
-	return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
+	return if $self->{_in_setup_editor};
 
 	my $pageid = $self->{notebook}->GetSelection();
 	if (not defined $pageid or $pageid == -1) {
@@ -976,7 +976,8 @@ sub close {
 	my $self = shift;
 
 	my $doc     = $self->selected_document or return;
-	local $self->{_in_delete_editor} = 1;
+	local $self->{_in_setup_editor} = 1;
+	
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
