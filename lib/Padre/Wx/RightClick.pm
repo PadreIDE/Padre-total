@@ -6,8 +6,7 @@ use warnings;
 
 # Find and Replace widget of Padre
 
-use Wx             qw(:everything);
-use Wx::Event      qw(:everything);
+use Padre::Wx  ();
 
 our $VERSION = '0.12';
 
@@ -16,14 +15,14 @@ sub on_right_click {
 #print "right\n";
 	my @options = qw(abc def);
 	my $HEIGHT = 30;
-	my $dialog = Wx::Dialog->new( $self, -1, "", [-1, -1], [100, 50 + $HEIGHT * $#options], wxBORDER_SIMPLE);
+	my $dialog = Wx::Dialog->new( $self, -1, "", [-1, -1], [100, 50 + $HEIGHT * $#options], Wx::wxBORDER_SIMPLE);
 	#$dialog->;
 	foreach my $i (0..@options-1) {
-		EVT_BUTTON( $dialog, Wx::Button->new( $dialog, -1, $options[$i], [10, 10+$HEIGHT*$i] ), sub {on_right(@_, $i)} );
+		Wx::Event::EVT_BUTTON( $dialog, Wx::Button->new( $dialog, -1, $options[$i], [10, 10+$HEIGHT*$i] ), sub {on_right(@_, $i)} );
 	}
 	my $ret = $dialog->Show;
 #print "ret\n";
-	#my $pop = Padre::Wx::Popup->new($self); #, wxSIMPLE_BORDER);
+	#my $pop = Padre::Wx::Popup->new($self); #, Wx::wxSIMPLE_BORDER);
 	#$pop->Move($event->GetPosition());
 	#$pop->SetSize(300, 200);
 	#$pop->Popup;

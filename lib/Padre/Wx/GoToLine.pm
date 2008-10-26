@@ -6,7 +6,7 @@ use warnings;
 
 # GoTo Line widget of Padre
 
-use Wx             qw(wxID_CANCEL);
+use Padre::Wx  ();
 
 our $VERSION = '0.12';
 
@@ -15,7 +15,7 @@ sub on_goto {
 	my ($self) = @_;
 
 	my $dialog = Wx::TextEntryDialog->new( $self, "Line number:", "", '' );
-	if ($dialog->ShowModal == wxID_CANCEL) {
+	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}   
 	my $line_number = $dialog->GetValue;

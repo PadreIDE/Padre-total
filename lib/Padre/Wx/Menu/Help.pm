@@ -3,8 +3,8 @@ package Padre::Wx::Menu::Help;
 use 5.008;
 use strict;
 use warnings;
-use Wx ();
 
+use Padre::Wx ();
 use Padre::Util;
 
 our $VERSION = '0.12';

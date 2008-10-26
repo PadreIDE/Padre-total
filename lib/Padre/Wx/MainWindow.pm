@@ -12,24 +12,14 @@ use File::Slurp    ();
 use File::Basename ();
 use List::Util     ();
 use Params::Util   ();
-use Wx             qw(
-                   WXK_TAB wxDEFAULT_FRAME_STYLE wxMAXIMIZE wxNO_FULL_REPAINT_ON_RESIZE wxCLIP_CHILDREN 
-                   wxLC_SINGLE_SEL wxLC_NO_HEADER wxLC_REPORT wxLIST_AUTOSIZE wxTE_READONLY wxTE_MULTILINE 
-                   wxOK wxCENTRE wxFD_OPEN wxID_CANCEL wxFD_SAVE wxYES_NO wxYES wxCANCEL wxNO
-                   wxSTC_STYLE_LINENUMBER wxSTC_MARGIN_NUMBER
-                   );
-use Wx::Event      qw(
-                   EVT_LIST_ITEM_ACTIVATED EVT_NOTEBOOK_PAGE_CHANGED EVT_KEY_UP EVT_CLOSE
-                   EVT_STC_UPDATEUI EVT_STC_CHANGE EVT_STC_STYLENEEDED
-                   );
-
-use base qw{Wx::Frame};
 
 use Padre::Util        ();
 use Padre::Wx          ();
 use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
 use Padre::Wx::Output  ();
+
+use base qw{Wx::Frame};
 
 our $VERSION = '0.12';
 
@@ -123,7 +113,7 @@ sub new {
 	);
 	$self->{rightbar}->InsertColumn(0, 'Methods');
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
-	EVT_LIST_ITEM_ACTIVATED(
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
 		$self->{rightbar},
 		\&on_function_selected,
@@ -137,7 +127,7 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
 	);
-	EVT_NOTEBOOK_PAGE_CHANGED(
+	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{notebook},
 		sub { $_[0]->refresh_all },
@@ -159,7 +149,7 @@ sub new {
 	);
 
 	# Special Key Handling
-	EVT_KEY_UP( $self, sub {
+	Wx::Event::EVT_KEY_UP( $self, sub {
 		my ($self, $event) = @_;
 		$self->refresh_status;
 		$self->refresh_toolbar;
@@ -167,20 +157,20 @@ sub new {
 		my $code = $event->GetKeyCode;
 		if ( $mod == 2 ) { # Ctrl
 			# Ctrl-TAB  #TODO it is already in the menu
-			$self->on_next_pane if $code == WXK_TAB;
+			$self->on_next_pane if $code == Wx::WXK_TAB;
 		} elsif ( $mod == 6 ) { # Ctrl-Shift
 			# Ctrl-Shift-TAB #TODO it is already in the menu
-			$self->on_prev_pane if $code == WXK_TAB;
+			$self->on_prev_pane if $code == Wx::WXK_TAB;
 		}
 		return;
 	} );
 
 	# Deal with someone closing the window
-	EVT_CLOSE( $self, \&on_close_window);
+	Wx::Event::EVT_CLOSE( $self, \&on_close_window);
 
-	EVT_STC_UPDATEUI(    $self, -1, \&Padre::Wx::Editor::on_stc_update_ui    );
-	EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
-	EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
+	Wx::Event::EVT_STC_UPDATEUI(    $self, -1, \&Padre::Wx::Editor::on_stc_update_ui    );
+	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
+	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -563,7 +553,7 @@ sub on_brace_matching {
 	my $page  = $self->{notebook}->GetPage($id);
 	my $pos1  = $page->GetCurrentPos;
 	my $pos2  = $page->BraceMatch($pos1);
-	if ($pos2 != -1 ) {   #wxSTC_INVALID_POSITION
+	if ($pos2 != -1 ) {   #Wx::wxSTC_INVALID_POSITION
 		#print "$pos1 $pos2\n";
 		#$page->BraceHighlight($pos1, $pos2);
 		$page->SetCurrentPos($pos2);
@@ -625,7 +615,7 @@ sub on_autocompletition {
 	my $doc    = $self->selected_document or return;
 	my ( $length, @words ) = $doc->autocomplete;
 	if ( $length =~ /\D/ ) {
-		Wx::MessageBox($length, "Autocompletions error", wxOK);
+		Wx::MessageBox($length, "Autocompletions error", Wx::wxOK);
 	}
 	if ( @words ) {
 		$doc->editor->AutoCompShow($length, join " ", @words);
@@ -771,7 +761,7 @@ sub on_open_selection {
 	my ($self, $event) = @_;
 	my $selection = $self->selected_text();
 	if (not $selection) {
-		Wx::MessageBox("Need to have something selected", "Open Selection", wxOK, $self);
+		Wx::MessageBox("Need to have something selected", "Open Selection", Wx::wxOK, $self);
 		return;
 	}
 	my $file;
@@ -808,7 +798,7 @@ sub on_open_selection {
 	}
 
 	if (not $file) {
-		Wx::MessageBox("Could not find file '$selection'", "Open Selection", wxOK, $self);
+		Wx::MessageBox("Could not find file '$selection'", "Open Selection", Wx::wxOK, $self);
 		return;
 	}
 
@@ -830,12 +820,12 @@ sub on_open {
 		$default_dir,
 		"",
 		"*.*",
-		wxFD_OPEN,
+		Wx::wxFD_OPEN,
 	);
 	unless ( Padre::Util::WIN32 ) {
 		$dialog->SetWildcard("*");
 	}
-	if ( $dialog->ShowModal == wxID_CANCEL ) {
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 		return;
 	}
 	my $filename = $dialog->GetFilename;
@@ -873,9 +863,9 @@ sub on_save_as {
 			$default_dir,
 			"",
 			"*.*",
-			wxFD_SAVE,
+			Wx::wxFD_SAVE,
 		);
-		if ( $dialog->ShowModal == wxID_CANCEL ) {
+		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 			return 0;
 		}
 		my $filename = $dialog->GetFilename;
@@ -885,10 +875,10 @@ sub on_save_as {
 			my $res = Wx::MessageBox(
 				"File already exists. Overwrite it?",
 				"Exist",
-				wxYES_NO,
+				Wx::wxYES_NO,
 				$self,
 			);
-			if ( $res == wxYES ) {
+			if ( $res == Wx::wxYES ) {
 				$doc->_set_filename($path);
 				$doc->set_newline_type(Padre::Util::NEWLINE);
 				last;
@@ -951,7 +941,7 @@ sub _save_buffer {
 		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
 	};
 	if ($@) {
-		Wx::MessageBox("Could not save: $!", "Error", wxOK, $self);
+		Wx::MessageBox("Could not save: $!", "Error", Wx::wxOK, $self);
 		return;
 	}
 	Padre::DB->add_recent_files($filename);
@@ -979,15 +969,15 @@ sub close {
 		my $ret = Wx::MessageBox(
 			"File changed. Do you want to save it?",
 			$doc->filename || "Unsaved File",
-			wxYES_NO|wxCANCEL|wxCENTRE,
+			Wx::wxYES_NO|Wx::wxCANCEL|Wx::wxCENTRE,
 			$self,
 		);
-		if ( $ret == wxYES ) {
+		if ( $ret == Wx::wxYES ) {
 			$self->on_save( $doc );
-		} elsif ( $ret == wxNO ) {
+		} elsif ( $ret == Wx::wxNO ) {
 			# just close it
 		} else {
-			# wxCANCEL, or when clicking on [x]
+			# Wx::wxCANCEL, or when clicking on [x]
 			return 0;
 		}
 	}
@@ -1175,12 +1165,12 @@ sub _toggle_numbers {
 	$editor->SetMarginWidth(2, 0);
 	if ($on) {
 		my $n = 1 + List::Util::max (2, length ($editor->GetLineCount * 2));
-		my $width = $n * $editor->TextWidth(wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
+		my $width = $n * $editor->TextWidth(Wx::wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
 		$editor->SetMarginWidth(0, $width);
-		$editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+		$editor->SetMarginType(0, Wx::wxSTC_MARGIN_NUMBER);
 	} else {
 		$editor->SetMarginWidth(0, 0);
-		$editor->SetMarginType(0, wxSTC_MARGIN_NUMBER);
+		$editor->SetMarginType(0, Wx::wxSTC_MARGIN_NUMBER);
 	}
 
 	return;
@@ -1221,7 +1211,7 @@ sub run_in_padre {
 	my $code = $doc->text_get;
 	eval $code;
 	if ( $@ ) {
-		Wx::MessageBox("Error: $@", "Self error", wxOK, $self);
+		Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);
 		return;
 	}
 	return;

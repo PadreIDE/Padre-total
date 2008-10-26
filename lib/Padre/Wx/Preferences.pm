@@ -3,15 +3,15 @@ package Padre::Wx::Preferences;
 use 5.008;
 use strict;
 use warnings;
-use Wx        qw(wxID_OK wxID_CANCEL wxDEFAULT_FRAME_STYLE);
-use Wx::Event qw(EVT_BUTTON);
+
+use Padre::Wx  ();
 
 our $VERSION = '0.12';
 
 sub run {
 	my ( $class, $win, $config ) = @_;
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [550, 200], wxDEFAULT_FRAME_STYLE);
+	my $dialog = Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [550, 200], Wx::wxDEFAULT_FRAME_STYLE);
 
 	my $y = 10;
 	my $HEIGHT = 30;
@@ -43,12 +43,12 @@ sub run {
 	my $choice = Wx::Choice->new( $dialog, -1, [300, $y], [-1, -1], \@values );
 
 	$y += $HEIGHT;
-	my $ok     = Wx::Button->new( $dialog, wxID_OK,     '', [10,  $y] );
-	my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '', [120, $y], $ok->GetSize );
-	EVT_BUTTON( $dialog, $ok,     sub { $dialog->EndModal(wxID_OK) } );
-	EVT_BUTTON( $dialog, $cancel, sub { $dialog->EndModal(wxID_CANCEL) } );
+	my $ok     = Wx::Button->new( $dialog, Wx::wxID_OK,     '', [10,  $y] );
+	my $cancel = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', [120, $y], $ok->GetSize );
+	Wx::Event::EVT_BUTTON( $dialog, $ok,     sub { $dialog->EndModal(Wx::wxID_OK) } );
+	Wx::Event::EVT_BUTTON( $dialog, $cancel, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 	$ok->SetDefault;
-	if ($dialog->ShowModal == wxID_CANCEL) {
+	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}
 	$config->{pod_maxlist}     = $max->GetValue;

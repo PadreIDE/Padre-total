@@ -3,13 +3,12 @@ package Padre::Wx::ModuleStartDialog;
 use 5.008;
 use strict;
 use warnings;
+use Data::Dumper qw(Dumper);
+use Cwd          ();
 
 # Module::Start widget of Padre
 
-use Wx           qw( wxOK wxID_OK wxID_CANCEL wxVERTICAL wxHORIZONTAL wxEXPAND );
-use Wx::Event    qw( EVT_BUTTON EVT_CHECKBOX );
-use Data::Dumper qw(Dumper);
-use Cwd          ();
+use Padre::Wx  ();
 
 our $VERSION = '0.12';
 
@@ -28,8 +27,8 @@ sub dialog {
 	build_layout($dialog, $layout, [100, 200]);
 
 	$dialog->{_ok_}->SetDefault;
-	EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
-	EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
 
 	$dialog->{_module_name_}->SetFocus;
 	$dialog->Show(1);

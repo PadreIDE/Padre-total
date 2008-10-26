@@ -8,7 +8,7 @@ my $default_dir;
 
 # Project related widgets of Padre
 
-use Wx             qw(wxOK wxID_OK wxID_CANCEL wxVERTICAL wxHORIZONTAL wxALL);
+use Padre::Wx  ();
 
 our $VERSION = '0.12';
 
@@ -20,7 +20,7 @@ sub on_new_project {
 	# create directory call, Module::Starter
 	# set current project
 	# run
-	Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
+	Wx::MessageBox("Not implemented yet", "Not Yes", Wx::wxOK, $self);
 
 	return;
 }
@@ -28,7 +28,7 @@ sub on_new_project {
 sub on_select_project {
 	my ($self) = @_;
 
-	#Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
+	#Wx::MessageBox("Not implemented yet", "Not Yes", Wx::wxOK, $self);
 	#return;
 	# popup a window with a list of projects previously selected,
 	# and a button to browse for project directory
@@ -39,28 +39,28 @@ sub on_select_project {
 
 	my $dialog = Wx::Dialog->new( $self, -1, "Select Project", [-1, -1], [-1, -1]);
 
-	my $box  = Wx::BoxSizer->new(  wxVERTICAL   );
-	my $row1 = Wx::BoxSizer->new(  wxHORIZONTAL );
-	my $row2 = Wx::BoxSizer->new(  wxHORIZONTAL );
-	my $row3 = Wx::BoxSizer->new(  wxHORIZONTAL );
-	my $row4 = Wx::BoxSizer->new(  wxHORIZONTAL );
+	my $box  = Wx::BoxSizer->new(  Wx::wxVERTICAL   );
+	my $row1 = Wx::BoxSizer->new(  Wx::wxHORIZONTAL );
+	my $row2 = Wx::BoxSizer->new(  Wx::wxHORIZONTAL );
+	my $row3 = Wx::BoxSizer->new(  Wx::wxHORIZONTAL );
+	my $row4 = Wx::BoxSizer->new(  Wx::wxHORIZONTAL );
 
 	$box->Add($row1);
 	$box->Add($row2);
 	$box->Add($row3);
 	$box->Add($row4);
 
-	$row1->Add( Wx::StaticText->new( $dialog, -1, 'Select Project Name or type in new one'), 1, wxALL, 3 );
+	$row1->Add( Wx::StaticText->new( $dialog, -1, 'Select Project Name or type in new one'), 1, Wx::wxALL, 3 );
 
 	my @projects = keys %{ $config->{projects} };
 	my $choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], \@projects);
-	$row2->Add( $choice, 1, wxALL, 3);
+	$row2->Add( $choice, 1, Wx::wxALL, 3);
 
 	my $dir_selector = Wx::Button->new( $dialog, -1, 'Select Directory');
-	$row2->Add($dir_selector, 1, wxALL, 3);
+	$row2->Add($dir_selector, 1, Wx::wxALL, 3);
 
 	my $path = Wx::StaticText->new( $dialog, -1, '');
-	$row3->Add( $path, 1, wxALL, 3 );
+	$row3->Add( $path, 1, Wx::wxALL, 3 );
 
 	EVT_BUTTON( $dialog, $dir_selector, sub {on_pick_project_dir($path, @_) } );
 
@@ -71,17 +71,17 @@ sub on_select_project {
 	# parameters. Some of these should be saved in the central config file, some might need to
 	# be local in the development directory and checked in to version control.
 
-	my $ok     = Wx::Button->new( $dialog, wxID_OK,     '');
-	my $cancel = Wx::Button->new( $dialog, wxID_CANCEL, '');
-	EVT_BUTTON( $dialog, $ok,     sub { $dialog->EndModal(wxID_OK)     } );
-	EVT_BUTTON( $dialog, $cancel, sub { $dialog->EndModal(wxID_CANCEL) } );
-	$row4->Add($cancel, 1, wxALL, 3);
-	$row4->Add($ok,     1, wxALL, 3);
+	my $ok     = Wx::Button->new( $dialog, Wx::wxID_OK,     '');
+	my $cancel = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '');
+	EVT_BUTTON( $dialog, $ok,     sub { $dialog->EndModal(Wx::wxID_OK)     } );
+	EVT_BUTTON( $dialog, $cancel, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
+	$row4->Add($cancel, 1, Wx::wxALL, 3);
+	$row4->Add($ok,     1, Wx::wxALL, 3);
 
 	$dialog->SetSizer($box);
 	#$box->SetSizeHints( $self );
 
-	if ($dialog->ShowModal == wxID_CANCEL) {
+	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}
 	my $project = $choice->GetValue;
@@ -108,7 +108,7 @@ sub on_select_project {
 #sub get_project_name {
 #    my ($choice, $self, $event) = @_;
 #    my $dialog = Wx::TextEntryDialog->new( $self, "Project Name", "", '' );
-#    if ($dialog->ShowModal == wxID_CANCEL) {
+#    if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 #        return;
 #    }   
 #    my $name = $dialog->GetValue;
@@ -121,7 +121,7 @@ sub on_pick_project_dir {
 	my ($path, $self, $event) = @_;
 
 	my $dialog = Wx::DirDialog->new( $self, "Select Project Directory", $default_dir);
-	if ($dialog->ShowModal == wxID_CANCEL) {
+	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 #print "Cancel\n";
 		return;
 	}
@@ -136,7 +136,7 @@ sub on_pick_project_dir {
 
 sub on_test_project {
 	my ($self) = @_;
-	Wx::MessageBox("Not implemented yet", "Not Yes", wxOK, $self);
+	Wx::MessageBox("Not implemented yet", "Not Yes", Wx::wxOK, $self);
 }
 
 1;

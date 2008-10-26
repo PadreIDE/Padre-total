@@ -3,11 +3,10 @@ package Padre::Wx::Menu;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Util  ();
 use Params::Util qw{_INSTANCE};
-use Wx           qw( wxID_NEW wxID_CLOSE wxID_SAVEAS wxID_EXIT wxID_UNDO wxID_REDO 
-                     wxID_FIND wxID_HELP wxID_ABOUT wxOK wxID_CANCEL wxID_OPEN wxID_SAVE);
-use Wx::Event    qw(EVT_MENU);
+
+use Padre::Wx    ();
+use Padre::Util  ();
 
 our $VERSION = '0.12';
 
@@ -33,41 +32,41 @@ sub new {
 	$menu->{file} = Wx::Menu->new;
 
 	# Opening and closing files
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_NEW, '' ),
 		sub {
 			$_[0]->setup_editor;
 			return;
 		},
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_OPEN, '' ),
 		sub { $_[0]->on_open },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, "Open Selection\tCtrl-Shift-O" ),
 		sub { $_[0]->on_open_selection },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_CLOSE,  '' ),
 		sub { $_[0]->close },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, 'Close All' ),
 		sub { $_[0]->on_close_all },
 	);
 	$menu->{file}->AppendSeparator;
 
 	# Saving
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_SAVE, '' ),
 		sub { $_[0]->on_save },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_SAVEAS, '' ),
 		sub { $_[0]->on_save_as },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, 'Save All' ),
 		sub { $_[0]->on_save_all },
 	);
@@ -76,15 +75,15 @@ sub new {
 	# Conversions and Transforms
 	$menu->{file_convert} = Wx::Menu->new;
 	$menu->{file}->Append( -1, "Convert...", $menu->{file_convert} );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file_convert}->Append(-1, "EOL to Windows"),
 		sub { $_[0]->convert_to("WIN") },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file_convert}->Append(-1, "EOL to Unix"),
 		sub { $_[0]->convert_to("UNIX") },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file_convert}->Append(-1, "EOL to Mac"),
 		sub { $_[0]->convert_to("MAC") },
 	);
@@ -95,7 +94,7 @@ sub new {
 	$menu->{file}->Append( -1, "Recent Files", $menu->{file_recentfiles} );
 	foreach my $f ( Padre::DB->get_recent_files ) {
 		next unless -f $f;
-		EVT_MENU( $win,
+		Wx::Event::EVT_MENU( $win,
 			$menu->{file_recentfiles}->Append(-1, $f), 
             sub { 
                 if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
@@ -114,7 +113,7 @@ sub new {
 	$menu->{file}->AppendSeparator;
 
 	# Module::Start
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, 'Start Module' ),
 		\&Padre::Wx::ModuleStartDialog::on_start,
 	);
@@ -122,7 +121,7 @@ sub new {
 	$menu->{file}->AppendSeparator;
 
 	# Exiting
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_EXIT, '' ),
 		sub { $_[0]->Close },
 	);
@@ -135,7 +134,7 @@ sub new {
 	$menu->{edit} = Wx::Menu->new;
 
 	# Undo/Redo
-	EVT_MENU( $win, # Ctrl-Z
+	Wx::Event::EVT_MENU( $win, # Ctrl-Z
 		$menu->{edit}->Append( Wx::wxID_UNDO, '' ),
 		sub {
 			my $page = Padre::Document->from_selection->editor;
@@ -145,7 +144,7 @@ sub new {
 			return;
 		},
 	);
-	EVT_MENU( $win, # Ctrl-Y
+	Wx::Event::EVT_MENU( $win, # Ctrl-Y
 		$menu->{edit}->Append( Wx::wxID_REDO, '' ),
 		sub {
 			my $page = Padre::Document->from_selection->editor;
@@ -158,42 +157,42 @@ sub new {
 	$menu->{edit}->AppendSeparator;
 
 	# Random shit that doesn't fit anywhere better yet
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( Wx::wxID_FIND, '' ),
 		\&Padre::Wx::FindDialog::on_find,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Find Next\tF3" ),
 		\&Padre::Wx::FindDialog::on_find_next,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "Find Previous\tShift-F3" ),
 		\&Padre::Wx::FindDialog::on_find_previous,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "Ac&k" ),
 		\&Padre::Wx::Ack::on_ack,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),
 		\&Padre::Wx::GoToLine::on_goto,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ),
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "Subs\tAlt-S" ),
 		sub { $_[0]->{rightbar}->SetFocus },
 	); 
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Brace matching\tCtrl-1" ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
 	$menu->{edit}->AppendSeparator;
 
 	# User Preferences
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Preferences" ),
 		\&Padre::Wx::MainWindow::on_preferences,
 	);
@@ -205,17 +204,17 @@ sub new {
 	# Create the View menu
 	$menu->{view}       = Wx::Menu->new;
 	$menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, "Show Line numbers" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view_lines},
 		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
 	);
 	$menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, "Show Newlines" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
 		\&Padre::Wx::MainWindow::on_toggle_eol,
 	);
 	$menu->{view_output} = $menu->{view}->AppendCheckItem( -1, "Show Output" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view_output},
 		sub {
 			$_[0]->show_output(
@@ -226,42 +225,42 @@ sub new {
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
 		$menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, "Show StatusBar" );
-		EVT_MENU( $win,
+		Wx::Event::EVT_MENU( $win,
 			$menu->{view_statusbar},
 			\&Padre::Wx::MainWindow::on_toggle_status_bar,
 		);
 	}
 	$menu->{view_indentation_guide} = $menu->{view}->AppendCheckItem( -1, "Show Indentation Guide" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view_indentation_guide},
 		\&Padre::Wx::MainWindow::on_toggle_indentation_guide,
 	);
 	$menu->{view_show_calltips} = $menu->{view}->AppendCheckItem( -1, "Show Call Tips" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view_show_calltips},
 		sub { $config->{editor_calltips} = $menu->{view_show_calltips}->IsChecked },
 	);
 	$menu->{view}->AppendSeparator;
 
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Increase Font Size\tCtrl--" ),
 		sub { $_[0]->zoom(+1) },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Decrease Font Size\tCtrl-+" ),
 		sub { $_[0]->zoom(-1) },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Reset Font Size\tCtrl-/" ),
 		sub { $_[0]->zoom( -1 * $_[0]->selected_editor->GetZoom ) },
 	);
 
 	$menu->{view}->AppendSeparator;
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
 		sub { Padre::Wx::Bookmarks::on_set_bookmark($_[0]) },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
 		sub { Padre::Wx::Bookmarks::on_goto_bookmark($_[0]) },
 	);
@@ -274,7 +273,7 @@ sub new {
 
 	# Perl-Specific Searches
 	$menu->{perl_find_unmatched} = $menu->{perl}->Append( -1, "Find Unmatched Brace" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_find_unmatched},
 		sub {
 			my $doc = Padre::Document->from_selection;
@@ -302,12 +301,12 @@ sub new {
 
 	# Script Execution
 	$menu->{perl_run_script} = $menu->{perl}->Append( -1, "Run Script\tF5" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_run_script},
 		sub { $_[0]->run_perl },
 	);
 	$menu->{perl_run_command} = $menu->{perl}->Append( -1, "Run Command\tCtrl-F5" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_run_command},
 		sub {
 			$DB::single = 1;
@@ -332,7 +331,7 @@ sub new {
 		}
 	);
 	$menu->{perl_stop} = $menu->{perl}->Append( -1, "&Stop" );
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_stop},
 		sub {
 			if ( $_[0]->{command} ) {
@@ -345,11 +344,11 @@ sub new {
 	$menu->{perl_stop}->Enable(0);
 
 	# Commenting
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl}->Append( -1, "&Comment Selected Lines\tCtrl-M" ),
 		\&Padre::Wx::MainWindow::on_comment_out_block,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{perl}->Append( -1, "&Uncomment Selected Lines\tCtrl-Shift-M" ),
 		\&Padre::Wx::MainWindow::on_uncomment_block,
 	);
@@ -378,17 +377,17 @@ sub new {
 	# Create the window menu
 	$menu->{window} = Wx::Menu->new;
 	if ( $experimental ) {
-		EVT_MENU( $win,
+		Wx::Event::EVT_MENU( $win,
 			$menu->{window}->Append( -1, "&Split window" ),
 			\&Padre::Wx::MainWindow::on_split_window,
 		);
 		$menu->{window}->AppendSeparator;
 	}
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{window}->Append(-1, "Next File\tCtrl-TAB"),
 		\&Padre::Wx::MainWindow::on_next_pane,
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{window}->Append(-1, "Previous File\tCtrl-Shift-TAB"),
 		\&Padre::Wx::MainWindow::on_prev_pane,
 	);
@@ -402,11 +401,11 @@ sub new {
 	$menu->{help} = Wx::Menu->new;
 	my $help = Padre::Wx::Menu::Help->new;
 
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{help}->Append( Wx::wxID_HELP, '' ),
 		sub { $help->help($win) },
 	);
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{help}->Append( -1, "Context Help\tCtrl-Shift-H" ),
 		sub {
 			my $main      = shift;
@@ -419,7 +418,7 @@ sub new {
 		},
 	);
 	$menu->{help}->AppendSeparator;
-	EVT_MENU( $win,
+	Wx::Event::EVT_MENU( $win,
 		$menu->{help}->Append( Wx::wxID_ABOUT, '' ),
 		sub { $help->about },
 	);
@@ -433,7 +432,7 @@ sub new {
 	# or should never be seen be real users goes here.
 	if ( $experimental ) {
 		$menu->{experimental} = Wx::Menu->new;
-		EVT_MENU( $win,
+		Wx::Event::EVT_MENU( $win,
 			$menu->{experimental}->Append( -1, 'Reflow Menu/Toolbar' ),
 			sub {
 				$DB::single = 1;
@@ -444,7 +443,7 @@ sub new {
 				return;
 			},
 		);
-		EVT_MENU(
+		Wx::Event::EVT_MENU(
 			$win,
 			$menu->{experimental}->Append( -1, 'Run in &Padre' ),
 			sub {
@@ -497,7 +496,7 @@ sub add_plugin_menu_items {
 			my $submenu = $self->add_plugin_menu_items($m->[1]);
 			$menu->Append(-1, $m->[0], $submenu);
 		} else {
-			EVT_MENU( $self->win, $menu->Append(-1, $m->[0]), $m->[1] );
+			Wx::Event::EVT_MENU( $self->win, $menu->Append(-1, $m->[0]), $m->[1] );
 		}
 	}
 
@@ -509,7 +508,7 @@ sub add_alt_n_menu {
 	return if $n > 9;
 
 	$self->{alt}->[$n] = $self->{window}->Append(-1, "");
-	EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
+	Wx::Event::EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
 	$self->update_alt_n_menu($file, $n);
 
 	return;

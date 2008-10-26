@@ -7,6 +7,7 @@ package Padre::Wx::Output;
 use 5.008;
 use strict;
 use warnings;
+
 use Padre::Wx ();
 
 use base 'Wx::TextCtrl';

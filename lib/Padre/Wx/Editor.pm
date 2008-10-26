@@ -4,12 +4,12 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.12';
-
 use Wx::STC;
+use Padre::Wx;
+
 use base 'Wx::StyledTextCtrl';
 
-use Padre::Wx;
+our $VERSION = '0.12';
 
 sub new {
 	my( $class, $parent ) = @_;
