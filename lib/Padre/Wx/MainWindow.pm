@@ -266,10 +266,10 @@ sub refresh_all {
 	return if $self->no_refresh;
 
 	my $doc  = $self->selected_document;
-	$self->refresh_menu($doc);
+	$self->refresh_menu;
 	$self->refresh_toolbar;
 	$self->refresh_status;
-	$self->refresh_methods($doc);
+	$self->refresh_methods;
 	return;
 }
 
@@ -277,7 +277,7 @@ sub refresh_menu {
 	my $self = shift;
 	return if $self->no_refresh;
 
-	$self->{menu}->refresh(@_);	
+	$self->{menu}->refresh;	
 }
 
 sub refresh_toolbar {
@@ -323,10 +323,10 @@ sub refresh_status {
 }
 
 sub refresh_methods {
-	my ($self, $doc) = @_;
+	my ($self) = @_;
 	return if $self->no_refresh;
 
-	$doc ||= $self->selected_document;
+	my $doc = $self->selected_document;
 	return if not $doc;
 
 	my @methods = $doc->get_functions;

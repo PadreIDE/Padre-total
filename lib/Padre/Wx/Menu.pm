@@ -553,7 +553,7 @@ sub win {
 
 sub refresh {
 	my $self     = shift;
-	my $document = _INSTANCE(shift, 'Padre::Document');
+	my $document = Padre::Documents->current;
 
 	# Create the new menu bar
 return;
