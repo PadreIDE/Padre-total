@@ -4,13 +4,23 @@ use 5.008;
 use strict;
 use warnings;
 
-### Only Class methods
+=head1 NAME
 
-sub from_selection {
-	$_[0]->from_pageid( $_[0]->_notebook->GetSelection );
+Padre::Documents
+
+=head1 SYNOPSIS
+
+Currently there are only class methods in this class.
+
+=head1 METHODS
+
+=cut
+
+sub current {
+	$_[0]->by_id( $_[0]->_notebook->GetSelection );
 }
 
-sub from_pageid {
+sub by_id {
 	my $class   = shift;
 	my $pageid  = shift;
 

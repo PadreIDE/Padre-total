@@ -99,7 +99,7 @@ sub new {
 			$menu->{file_recentfiles}->Append(-1, $f), 
             sub { 
                 if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
-                    if ( Padre::Documents->from_selection->is_unused ) {
+                    if ( Padre::Documents->current->is_unused ) {
                         $_[0]->on_close;
                     }
                 }
@@ -138,7 +138,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Z
 		$menu->{edit}->Append( Wx::wxID_UNDO, '' ),
 		sub {
-			my $page = Padre::Documents->from_selection->editor;
+			my $page = Padre::Documents->current->editor;
 			if ( $page->CanUndo ) {
 				$page->Undo;
 			}
@@ -148,7 +148,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Y
 		$menu->{edit}->Append( Wx::wxID_REDO, '' ),
 		sub {
-			my $page = Padre::Documents->from_selection->editor;
+			my $page = Padre::Documents->current->editor;
 			if ( $page->CanRedo ) {
 				$page->Redo;
 			}
@@ -277,7 +277,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_find_unmatched},
 		sub {
-			my $doc = Padre::Documents->from_selection;
+			my $doc = Padre::Documents->current;
 			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
 				return;
 			}
@@ -437,7 +437,7 @@ sub new {
 			$menu->{experimental}->Append( -1, 'Reflow Menu/Toolbar' ),
 			sub {
 				$DB::single = 1;
-				my $document = Padre::Documents->from_selection;
+				my $document = Padre::Documents->current;
 				$_[0]->{menu}->refresh( $document );
 				$_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
 				$_[0]->GetToolBar->refresh( $document );
@@ -449,7 +449,7 @@ sub new {
 			$menu->{experimental}->Append( -1, 'Run in &Padre' ),
 			sub {
 				my $self = shift;
-				my $code = Padre::Documents->from_selection->text_get;
+				my $code = Padre::Documents->current->text_get;
 				eval $code;
 				if ($@) {
 					Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);

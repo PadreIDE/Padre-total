@@ -341,7 +341,7 @@ sub refresh_methods {
 # Introspection
 
 sub selected_document {
-	Padre::Documents->from_selection;
+	Padre::Documents->current;
 }
 
 =head2 selected_editor
@@ -850,7 +850,7 @@ sub on_open {
 	# If and only if there is only one current file,
 	# and it is unused, close it.
 	if ( $self->{notebook}->GetPageCount == 1 ) {
-		if ( Padre::Documents->from_selection->is_unused ) {
+		if ( Padre::Documents->current->is_unused ) {
 			$self->on_close;
 		}
 	}
@@ -935,7 +935,7 @@ sub on_save {
 sub on_save_all {
 	my $self = shift;
 	foreach my $id ( $self->pageids ) {
-		my $doc = Padre::Documents->from_pageid($id);
+		my $doc = Padre::Documents->by_id($id);
 		$self->on_save( $doc ) or return 0;
 	}
 	return 1;
@@ -1244,7 +1244,7 @@ sub on_function_selected {
 }
 
 sub _DOCUMENT {
-	return (defined $_[0]) ? Padre::Documents->from_pageid($_[0]) : Padre::Documents->from_selection;
+	return (defined $_[0]) ? Padre::Documents->by_id($_[0]) : Padre::Documents->current;
 }
 
 1;
