@@ -10,11 +10,11 @@ use File::Spec     ();
 use File::ShareDir ();
 
 # Load every exportable constant into here, so that they come into
-# existance in the Wx:: package, allowing everywhere else in the code to
+# existance in the Wx:: packages, allowing everywhere else in the code to
 # use them without braces.
-use Wx ':everything';
-# the same with events in the Wx::Event:: package
+use Wx        ':everything';
 use Wx::Event ':everything';
+
 our $VERSION = '0.13';
 
 
