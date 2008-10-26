@@ -96,6 +96,15 @@ sub tidy_document {
     $doc->text_set( $newtext );
 }
 
+=head1 INSTALLATION
+
+You can install this module like any other Perl module and it will
+become available in your Padre editor. However, you can also
+choose to install it into your user's Padre configuration directory only.
+The necessary steps are outlined in the C<README> file in this distribution.
+
+Essentially, you do C<perl Build.PL> and C<./Build installplugin>.
+
 =head1 AUTHOR
 
 Patrick Donelan
