@@ -296,6 +296,21 @@ sub load_file {
 	return ($newline_type);
 }
 
+sub save_file {
+	my ($self) = @_;
+	my $content      = $self->text_get;
+	my $filename     = $self->filename;
+    #my $newline_type = $self->get_newline_type;
+
+	eval {
+		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
+	};
+	if ($@) {
+		return "Could not save: $!";
+	}
+	return;
+}
+
 sub set_newline_type {
 	$_[0]->{newline_type} = $_[1];
 }

@@ -8,7 +8,6 @@ use Cwd            ();
 use Carp           ();
 use Data::Dumper   ();
 use File::Spec     ();
-use File::Slurp    ();
 use File::Basename ();
 use List::Util     ();
 use Params::Util   ();
@@ -951,20 +950,15 @@ sub _save_buffer {
 	my ($self, $id) = @_;
 
 	my $page         = $self->{notebook}->GetPage($id);
-	my $content      = $page->GetText;
     my $doc          = Padre::Documents->by_id($id) or return;
-	my $filename     = $doc->filename;
-    my $newline_type = $doc->get_newline_type;
 
-	eval {
-		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
-	};
-	if ($@) {
-		Wx::MessageBox("Could not save: $!", "Error", Wx::wxOK, $self);
+	my $error = $doc->save_file;
+	if ($error) {
+		Wx::MessageBox($error, "Error", Wx::wxOK, $self);
 		return;
 	}
-	Padre::DB->add_recent_files($filename);
-	#$self->{notebook}->SetPageText($id, File::Basename::basename($filename));
+
+	Padre::DB->add_recent_files($doc->filename);
 	$page->SetSavePoint;
 	$self->refresh_status;
 	$self->refresh_methods;
