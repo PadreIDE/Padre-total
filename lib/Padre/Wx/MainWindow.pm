@@ -262,9 +262,9 @@ sub no_refresh {
 }
 
 sub refresh_all {
-	my $self = shift;
-
+	my ($self) = @_;
 	return if $self->no_refresh;
+
 	my $doc  = $self->selected_document;
 	$self->refresh_menu($doc);
 	$self->refresh_toolbar;
@@ -274,18 +274,23 @@ sub refresh_all {
 }
 
 sub refresh_menu {
-	shift->{menu}->refresh(@_);	
+	my $self = shift;
+	return if $self->no_refresh;
+
+	$self->{menu}->refresh(@_);	
 }
 
 sub refresh_toolbar {
 	my $self = shift;
+	return if $self->no_refresh;
+
 	$self->GetToolBar->refresh($self->selected_document);
 }
 
 sub refresh_status {
 	my ($self) = @_;
-
 	return if $self->no_refresh;
+
 	my $pageid = $self->{notebook}->GetSelection();
 	if (not defined $pageid or $pageid == -1) {
 		$self->SetStatusText("", $_) for (0..2);
@@ -319,7 +324,6 @@ sub refresh_status {
 
 sub refresh_methods {
 	my ($self, $doc) = @_;
-
 	return if $self->no_refresh;
 
 	$doc ||= $self->selected_document;
