@@ -254,15 +254,17 @@ sub window_top {
 }
 
 
-
-
-
 #####################################################################
 # Refresh Methods
 
+sub no_refresh {
+	$_[0]->{_no_refresh};
+}
+
 sub refresh_all {
 	my $self = shift;
-	return if $self->{_in_setup_editor};
+
+	return if $self->no_refresh;
 	my $doc  = $self->selected_document;
 	$self->refresh_menu($doc);
 	$self->refresh_toolbar;
@@ -283,8 +285,7 @@ sub refresh_toolbar {
 sub refresh_status {
 	my ($self) = @_;
 
-	return if $self->{_in_setup_editor};
-
+	return if $self->no_refresh;
 	my $pageid = $self->{notebook}->GetSelection();
 	if (not defined $pageid or $pageid == -1) {
 		$self->SetStatusText("", $_) for (0..2);
@@ -319,7 +320,7 @@ sub refresh_status {
 sub refresh_methods {
 	my ($self, $doc) = @_;
 
-	return if $self->{_in_setup_editor};
+	return if $self->no_refresh;
 
 	$doc ||= $self->selected_document;
 	return if not $doc;
@@ -724,7 +725,7 @@ sub on_split_window {
 sub setup_editor {
 	my ($self, $file) = @_;
 
-	local $self->{_in_setup_editor} = 1;
+	local $self->{_no_refresh} = 1;
 
 	# Flush old stuff
 	delete $self->{project};
@@ -747,7 +748,7 @@ sub setup_editor {
 
 	$editor->padre_setup;
 
-	$self->{_in_setup_editor} = 0;
+	$self->{_no_refresh} = 0;
 	$self->refresh_status;
 	$self->refresh_methods( $editor->{Document} );
 
@@ -976,7 +977,7 @@ sub close {
 	my $self = shift;
 
 	my $doc     = $self->selected_document or return;
-	local $self->{_in_setup_editor} = 1;
+	local $self->{_no_refresh} = 1;
 	
 
 	if ( $doc->is_modified and not $doc->is_unused ) {

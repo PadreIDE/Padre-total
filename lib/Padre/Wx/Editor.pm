@@ -145,7 +145,7 @@ sub on_stc_style_needed {
 sub on_stc_change {
 	my ($self, $event) = @_;
 
-	return if $self->{_in_setup_editor};
+	return if $self->no_refresh;
 	my $config = Padre->ide->config;
 	return if not $config->{editor_calltips};
 
