@@ -1017,9 +1017,11 @@ sub close {
 # Returns false if cancelled.
 sub on_close_all {
 	my $self = shift;
+	$self->Freeze;
 	foreach my $id ( reverse $self->pageids ) {
 		$self->close( $id ) or return 0;
 	}
+	$self->Thaw;
 	return 1;
 }
 
@@ -1128,10 +1130,7 @@ sub on_toggle_eol {
 
 sub show_output {
 	my $self = shift;
-	my $on   = shift;
-
-	my $config = Padre->ide->config;
-	$config->{main_output} = $on;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
 	unless ( $on == $self->{menu}->{view_output}->IsChecked ) {
 		$self->{menu}->{view_output}->Check($on);
 	}
@@ -1147,6 +1146,7 @@ sub show_output {
 		$self->{main_panel}->Unsplit;
 		$self->{output}->Hide;
 	}
+	Padre->ide->config->{main_output} = $on;
 	return;
 }
 
@@ -1171,7 +1171,6 @@ sub on_toggle_status_bar {
 
 	return;
 }
-
 
 sub convert_to {
 	my ($self, $newline_type) = @_;
