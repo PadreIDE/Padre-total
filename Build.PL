@@ -19,7 +19,7 @@ my $builder = Module::Build->new(
         'Data::Dumper'            => 0,
 
         'PAR::Packer'             => 0,
-        'Padre'                   => 0.05,
+        'Padre'                   => 0.12,
     },
     build_requires        => {
         'Test::More'                => '0.47',
