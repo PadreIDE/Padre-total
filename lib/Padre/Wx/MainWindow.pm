@@ -296,12 +296,12 @@ sub refresh_status {
 		$self->SetStatusText("", $_) for (0..2);
 		return;
 	}
-	my $page         = $self->{notebook}->GetPage($pageid);
-	my $doc          = $page->{Document} or return;
-	my $line         = $page->GetCurrentLine;
+	my $editor       = $self->{notebook}->GetPage($pageid);
+	my $doc          = Padre::Documents->current or return;
+	my $line         = $editor->GetCurrentLine;
 	my $filename     = $doc->filename || '';
 	my $newline_type = $doc->get_newline_type || Padre::Util::NEWLINE;
-	my $modified     = $page->GetModify ? '*' : ' ';
+	my $modified     = $editor->GetModify ? '*' : ' ';
 
 	if ($filename) {
 		$self->{notebook}->SetPageText($pageid, $modified . File::Basename::basename $filename);
@@ -309,10 +309,10 @@ sub refresh_status {
 		my $text = substr($self->{notebook}->GetPageText($pageid), 1);
 		$self->{notebook}->SetPageText($pageid, $modified . $text);
 	}
-	my $pos = $page->GetCurrentPos;
 
-	my $start = $page->PositionFromLine($line);
-	my $char = $pos-$start;
+	my $pos   = $editor->GetCurrentPos;
+	my $start = $editor->PositionFromLine($line);
+	my $char  = $pos-$start;
 
 	$self->SetStatusText("$modified $filename",             0);
 	$self->SetStatusText($doc->mimetype,                    1);
