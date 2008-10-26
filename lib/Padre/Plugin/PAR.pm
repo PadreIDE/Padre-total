@@ -6,7 +6,7 @@ use Wx         qw(:everything);
 use Wx::Event  qw(:everything);
 use File::Temp ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
@@ -15,7 +15,7 @@ Padre::Plugin::PAR - PAR generation from Padre
 =head1 SYNOPIS
 
 This is an experimental version of the plugin using the experimental
-plugin interface of Padre 0.06
+plugin interface of Padre 0.12_01
 
 After installation there should be a menu item Padre - PAR - Stand Alone
 
@@ -35,31 +35,33 @@ sub menu {
 }
 
 sub on_stand_alone {
-    my ($mw, $event) = @_;
+    my ($self, $event) = @_;
 
     #print "Stand alone called\n";
     # get name of the current file, if it is a pl file create the corresponding .exe
 
-    my $filename = $mw->get_current_filename;
+    my $doc = $self->selected_document;
+
+    my $filename = $doc->filename;
     my $tmpfh;
     my $cleanup = sub { unlink $filename if $tmpfh };
     local $SIG{INT} = $cleanup;
     local $SIG{QUIT} = $cleanup;
 
     if (not $filename) {
-        ($filename, $tmpfh) = _to_temp_file($mw);
+        ($filename, $tmpfh) = _to_temp_file($doc);
     }
 
     if ($filename !~ /\.pl$/i) {
-        Wx::MessageBox( "Currently we only support exe generation from .pl files", "Cannot create", wxOK|wxCENTRE, $mw );
+        Wx::MessageBox( "Currently we only support exe generation from .pl files", "Cannot create", wxOK|wxCENTRE, $self );
         return;
     }
     (my $out = $filename) =~ s/pl$/exe/i;
     my $ret = system("pp", $filename, "-o", $out);
     if ($ret) {
-       Wx::MessageBox( "Error generating '$out': $!", "Failed", wxOK|wxCENTRE, $mw );
+       Wx::MessageBox( "Error generating '$out': $!", "Failed", wxOK|wxCENTRE, $self );
     } else {
-       Wx::MessageBox( "$out generated", "Done", wxOK|wxCENTRE, $mw );
+       Wx::MessageBox( "$out generated", "Done", wxOK|wxCENTRE, $self );
     }
 
     if ($tmpfh) {
@@ -70,12 +72,10 @@ sub on_stand_alone {
 }
 
 sub _to_temp_file {
-    my $mw = shift;
+    my $doc = shift;
 
-    my $id   = $mw->{notebook}->GetSelection;
-    my $page = $mw->{notebook}->GetPage($id);
-    my $code = $page->GetTextRange(0, $page->GetLength());
- 
+    my $text = $doc->text_get();
+
     my ($fh, $tempfile) = File::Temp::tempfile(
       "padre_standalone_XXXXXX",
       UNLINK => 1,
@@ -83,8 +83,7 @@ sub _to_temp_file {
       SUFFIX => '.pl',
     );
     local $| = 1;
-    warn $code;
-    print $fh $code;
+    print $fh $text;
     return($tempfile, $fh);
 }
 
