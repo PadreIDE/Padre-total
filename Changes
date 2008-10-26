@@ -1,12 +1,13 @@
-v0.03 2008.10.26
+0.03 2008-10-26
 
-Follow the API changes of Padre 0.12_01
+  - Follow the API changes of Padre 0.12_01
+  - Add the "plugin" and "installplugin" ./Build targets.
 
-v0.02 2008.08.17
+0.02 2008-08-17
 
-Follow the API changes of Padre 0.05
+  - Follow the API changes of Padre 0.05
 
-v0.01 2008.08.03
+0.01  2008-08-03
 
-Initial, experimental version released.
+  - Initial, experimental version released.
 

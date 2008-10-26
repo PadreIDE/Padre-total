@@ -15,12 +15,15 @@ Padre::Plugin::PAR - PAR generation from Padre
 =head1 SYNOPIS
 
 This is an experimental version of the plugin using the experimental
-plugin interface of Padre 0.12_01
+plugin interface of Padre 0.12_01.
 
-After installation there should be a menu item Padre - PAR - Stand Alone
+After installation there should be a menu item I<Padre - PAR - Stand Alone>
 
 Clicking on that menu item while a .pl file is in view will generate a stand alone
 executable with .exe extension next to the .pl file.
+
+If you are currently editing an unsaved buffer, it will be saved to a temporary
+file for you.
 
 =cut
 
@@ -87,6 +90,18 @@ sub _to_temp_file {
     return($tempfile, $fh);
 }
 
+1;
+
+__END__
+
+=head1 INSTALLATION
+
+You can install this module like any other Perl module and it will
+become available in your Padre editor. However, you can also
+choose to install it into your user's Padre configuration directory only.
+The necessary steps are outlined in the C<README> file in this distribution.
+Essentially, you do C<perl Build.PL> and C<./Build installplugin>.
+
 =head1 COPYRIGHT
 
 (c) 2008 Gabor Szabo http://www.szabgab.com/
@@ -103,5 +118,3 @@ If you lose data or your hair because of this program,
 that's your problem.
 
 =cut
-
-1;
