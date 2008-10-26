@@ -8,7 +8,7 @@ use warnings;
 
 use Padre::Wx  ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 sub on_right_click {
 	my ($self, $event) = @_;

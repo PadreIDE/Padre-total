@@ -4,6 +4,8 @@ use 5.008;
 use strict;
 use warnings;
 
+our $VERSION = '0.13';
+
 =head1 NAME
 
 Padre::Documents

@@ -11,7 +11,7 @@ use Cwd          ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 sub on_start {
 	my $main   = shift;

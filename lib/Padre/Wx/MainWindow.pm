@@ -21,7 +21,7 @@ use Padre::Documents   ();
 
 use base qw{Wx::Frame};
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 my $default_dir = Cwd::cwd();
 

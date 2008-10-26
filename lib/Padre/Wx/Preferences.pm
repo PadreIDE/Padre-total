@@ -7,7 +7,7 @@ use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 sub get_layout {
 	my ($config, $values) = @_;

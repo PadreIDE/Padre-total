@@ -1,6 +1,6 @@
 Changes for Padre. All changes by Gabor unless noted.
 
-v0.XX XXXX
+v0.13 2008.10.26
 
     fix warning when closing Padre with no files open (BRICAS)
     close lone unused document when opening a recent file (now works the same

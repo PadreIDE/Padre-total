@@ -11,7 +11,7 @@ use Padre::Wx;
 my $iter;
 my %opts;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 {
 	no warnings 'redefine';
