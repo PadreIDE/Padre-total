@@ -557,7 +557,7 @@ sub refresh {
 	my $document = Padre::Documents->current;
 
 	# Create the new menu bar
-return;
+	# return;
 	$self->{wx} = Wx::MenuBar->new;
 	$self->{wx}->Append( $self->{file},     "&File"      );
 	$self->{wx}->Append( $self->{project},  "&Project"   );
@@ -567,14 +567,13 @@ return;
 		$self->{wx}->Append( $self->{perl}, "Perl" );
 	}
 	$self->{wx}->Append( $self->{bookmark}, "&Bookmarks" );
-	if ( $self->{plugins} ) {
-		$self->{wx}->Append( $self->{plugin}, "Pl&ugins" );
-	}
+	$self->{wx}->Append( $self->{plugin},   "Pl&ugins"   ) if $self->{plugin};
 	$self->{wx}->Append( $self->{window},   "&Window"    );
 	$self->{wx}->Append( $self->{help},     "&Help"      );
 	if ( Padre->ide->config->{experimental} ) {
 		$self->{wx}->Append( $self->{experimental}, "E&xperimental" );
 	}
+	$self->win->SetMenuBar( $self->{wx} );
 
 	return 1;
 }
