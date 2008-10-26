@@ -178,4 +178,27 @@ sub on_stc_change {
 	return;
 }
 
+# currently if there are 9 lines we set the margin to 1 width and then
+# if another line is added it is not seen well.
+# actually I added some improvement allowing a 50% growth in the file
+# and requireing a min of 2 width
+sub _toggle_numbers {
+	my ($editor, $on) = @_;
+
+	$editor->SetMarginWidth(1, 0);
+	$editor->SetMarginWidth(2, 0);
+	if ($on) {
+		my $n = 1 + List::Util::max (2, length ($editor->GetLineCount * 2));
+		my $width = $n * $editor->TextWidth(Wx::wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
+		$editor->SetMarginWidth(0, $width);
+		$editor->SetMarginType(0, Wx::wxSTC_MARGIN_NUMBER);
+	} else {
+		$editor->SetMarginWidth(0, 0);
+		$editor->SetMarginType(0, Wx::wxSTC_MARGIN_NUMBER);
+	}
+
+	return;
+}
+
+
 1;
