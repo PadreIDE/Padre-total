@@ -325,11 +325,12 @@ sub refresh_methods {
 	my ($self) = @_;
 	return if $self->no_refresh;
 
+	$self->{rightbar}->DeleteAllItems;
+
 	my $doc = $self->selected_document;
 	return if not $doc;
 
 	my @methods = $doc->get_functions;
-	$self->{rightbar}->DeleteAllItems;
 	foreach my $method ( @methods ) {
 		$self->{rightbar}->InsertStringItem(0, $method);
 	}
