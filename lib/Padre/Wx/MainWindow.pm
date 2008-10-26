@@ -261,6 +261,7 @@ sub no_refresh {
 
 sub refresh_all {
 	my ($self) = @_;
+
 	return if $self->no_refresh;
 
 	my $doc  = $self->selected_document;
@@ -291,7 +292,7 @@ sub refresh_status {
 
 	my $pageid = $self->{notebook}->GetSelection();
 	if (not defined $pageid or $pageid == -1) {
-		$self->SetStatusText("", $_) for (0..2);
+		$self->SetStatusText("", $_) for (0..3);
 		return;
 	}
 	my $editor       = $self->{notebook}->GetPage($pageid);
@@ -972,7 +973,9 @@ sub _save_buffer {
 # Returns true if closed.
 # Returns false on cancel.
 sub on_close {
-	shift->close(@_);
+	my $self = shift;
+	$self->close(@_);
+	$self->refresh_all;
 }
 
 sub close {
@@ -1022,6 +1025,7 @@ sub on_close_all {
 		$self->close( $id ) or return 0;
 	}
 	$self->Thaw;
+	$self->refresh_all;
 	return 1;
 }
 

@@ -50,7 +50,7 @@ sub new {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_CLOSE,  '' ),
-		sub { $_[0]->close },
+		sub { $_[0]->on_close },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, 'Close All' ),
