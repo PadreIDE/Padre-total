@@ -23,7 +23,6 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxTE_READONLY | Wx::wxTE_MULTILINE | Wx::wxTE_DONTWRAP | Wx::wxNO_FULL_REPAINT_ON_RESIZE,
 	);
-	$self->Freeze;
 
 	# Do custom startup stuff here
 

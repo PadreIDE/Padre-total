@@ -214,14 +214,12 @@ sub new {
 			$_[0]->refresh_all;
 
 			my $output = $_[0]->{menu}->{view_output}->IsChecked;
-			# Firs we show the output window and then hide it if necessary
+			# First we show the output window and then hide it if necessary
 			# in order to avoide some weird visual artifacts (empty square at
 			# top left part of the whole application)
 			# TODO maybe some users want to make sure the output window is always
 			# off at startup.
-			unless ( Padre::Util::WIN32 ) {
-				$_[0]->show_output(1);
-			}
+			$_[0]->show_output(1);
 			$_[0]->show_output($output) if not $output;
 			},
 	);
@@ -1137,8 +1135,6 @@ sub show_output {
 	my $self = shift;
 	my $on   = shift;
 
-#	return if Padre::Util::WIN32 and not $on;
-
 	my $config = Padre->ide->config;
 	$config->{main_output} = $on;
 	unless ( $on == $self->{menu}->{view_output}->IsChecked ) {
@@ -1150,11 +1146,11 @@ sub show_output {
 			$self->{output},
 			-100,
 		);
-		$self->{output}->Thaw;
+		$self->{output}->Show;
 	}
 	if ( $self->{main_panel}->IsSplit and not $on ) {
 		$self->{main_panel}->Unsplit;
-		$self->Freeze;
+		$self->{output}->Hide;
 	}
 	return;
 }
