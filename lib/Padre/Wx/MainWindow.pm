@@ -287,7 +287,7 @@ sub refresh_status {
 	return if $self->{_in_setup_editor} or $self->{_in_delete_editor};
 
 	my $pageid = $self->{notebook}->GetSelection();
-	if (not defined $pageid) {
+	if (not defined $pageid or $pageid == -1) {
 		$self->SetStatusText("", $_) for (0..2);
 		return;
 	}
@@ -467,7 +467,9 @@ sub run_command {
 # This should really be somewhere else, but can stay here for now
 sub run_perl {
 	my $self     = shift;
-	my $document = $self->selected_document;
+	my $document = Padre::Documents->current;
+
+	return $self->error("No open document") if not $document;
 	unless ( $document->isa('Padre::Document::Perl') ) {
 		return $self->error("Not a Perl document");
 	}
@@ -490,6 +492,7 @@ sub run_perl {
 	}
 
 	# Run with the same Perl that launched Padre
+	# TODO: get preferred Perl from configuration
 	my $perl = Padre->perl_interpreter;
 
 	my $dir = File::Basename::dirname($filename);

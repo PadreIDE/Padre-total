@@ -523,7 +523,7 @@ sub update_alt_n_menu {
 
 	# TODO: fix the occassional crash here:
 	if (not defined $self->{alt}->[$n]) {
-		warn $n;
+		warn "alt-n $n problem ?";
 		return;
 	}
 
