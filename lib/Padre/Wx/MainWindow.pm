@@ -752,10 +752,6 @@ sub setup_editor {
 
 	$editor->padre_setup;
 
-	$self->{_no_refresh} = 0;
-	$self->refresh_status;
-	$self->refresh_methods( $editor->{Document} );
-
 	return $id;
 }
 
@@ -827,6 +823,7 @@ sub on_open_selection {
 
 	Padre::DB->add_recent_files($file);
 	$self->setup_editor($file);
+	$self->refresh_all;
 
 	return;
 }
@@ -866,6 +863,7 @@ sub on_open {
 	}
 
 	$self->setup_editor($file);
+	$self->refresh_all;
 
 	return;
 }
