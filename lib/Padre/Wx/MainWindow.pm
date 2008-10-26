@@ -220,7 +220,9 @@ sub new {
 			# top left part of the whole application)
 			# TODO maybe some users want to make sure the output window is always
 			# off at startup.
-			$_[0]->show_output(1);
+			unless ( Padre::Util::WIN32 ) {
+				$_[0]->show_output(1);
+			}
 			$_[0]->show_output($output) if not $output;
 			},
 	);
@@ -1126,7 +1128,10 @@ sub on_toggle_eol {
 
 sub show_output {
 	my $self = shift;
+
 	my $on   = @_ ? $_[0] ? 1 : 0 : $self->{menu}->{view_output}->IsChecked;
+	return if Padre::Util::WIN32 and not $on;
+
 	my $config = Padre->ide->config;
 	$config->{main_output} = $on;
 	unless ( $on == $self->{menu}->{view_output}->IsChecked ) {
