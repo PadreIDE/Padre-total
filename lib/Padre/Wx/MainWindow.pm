@@ -756,9 +756,6 @@ sub setup_editor {
 
 	local $self->{_no_refresh} = 1;
 
-	# Flush old stuff
-	delete $self->{project};
-
 	my $config = Padre->ide->config;
 	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 	
