@@ -205,6 +205,7 @@ sub set_preferences {
 	my $config = Padre->ide->config;
 
 	$self->SetTabWidth( $config->{editor_tabwidth} );
+	$self->SetUseTabs(  $config->{editor_use_tabs} );
 
 	return;
 }

@@ -109,6 +109,7 @@ sub new {
 	# Look and feel preferences
 	$self->{main_statusbar}           ||= 1;
 	$self->{main_output}              ||= 0;
+	$self->{editor_use_tabs}          ||= 1;
 	$self->{editor_tabwidth}          ||= 4;
 	$self->{editor_linenumbers}       ||= 0;
 	$self->{editor_eol}               ||= 0;

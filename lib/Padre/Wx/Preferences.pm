@@ -14,6 +14,10 @@ sub get_layout {
 
 	return [
 		[
+			[],
+			['Wx::CheckBox',    'editor_use_tabs', 'Use Tabs',    ($config->{editor_use_tabs} ? 1 : 0) ],
+		],
+		[
 			[ 'Wx::StaticText', undef,              'TAB display size (in spaces)'],
 			[ 'Wx::TextCtrl',   'editor_tabwidth',	$config->{editor_tabwidth}],
 		],
@@ -44,7 +48,7 @@ sub run {
 		grep { $_ ne $config->{main_startup} } qw( new nothing last )
 	);
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [550, 200], Wx::wxDEFAULT_FRAME_STYLE);
+	my $dialog = Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [450, 170], Wx::wxDEFAULT_FRAME_STYLE);
 
 	my $layout = get_layout($config, \@values);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [250, 200]);
@@ -59,9 +63,9 @@ sub run {
 
 	my $data = Padre::Wx::Dialog::get_data_from( $dialog, get_layout() );
 
-	$config->{pod_maxlist}     = $data->{pod_maxlist};
-	$config->{pod_minlist}     = $data->{pod_minlist};
-	$config->{editor_tabwidth} = $data->{editor_tabwidth};
+	foreach my $f (qw(editor_use_tabs pod_maxlist pod_minlist editor_tabwidth)) {
+		$config->{$f} = $data->{$f};
+	}
 	$config->{main_startup}    = $values[ $data->{choice} ];
 
 	return;
