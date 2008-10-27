@@ -179,6 +179,7 @@ sub show_line_numbers {
 
 sub set_preferences {
 	my ($self) = @_;
+
 	my $config = Padre->ide->config;
 
 	$self->show_line_numbers(    $config->{editor_linenumbers}       );

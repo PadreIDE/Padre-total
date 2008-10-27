@@ -735,8 +735,6 @@ sub on_split_window {
 	$new_editor->{Document} = $editor->{Document};
 	$new_editor->padre_setup;
 
-	#my $new_id = $self->setup_editor();
-	#my $new_editor = $self->{notebook}->GetPage( $new_id );
 	$new_editor->SetDocPointer($pointer);
 	$self->create_tab($new_editor, $file, " $title");
 
