@@ -4,6 +4,7 @@ Changes for Padre.
     Make the add/remove Perl menu work without warnings. (ADAMK + SZABGAB)
     Make brace matching (Ctrl-1) jump to the matching brace. (SZABGAB)
 	Allow preference to use tabs (or spaces) when pressing TAB. (SZABGAB)
+	Add automatic brace highlighting during. (SZABGAB)
 
 v0.13 2008.10.26
 

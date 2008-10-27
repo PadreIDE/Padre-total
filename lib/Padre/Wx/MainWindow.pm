@@ -1253,7 +1253,7 @@ sub on_stc_update_ui {
 	
 	# check for brace, on current position, higlight the matching brace
 	my $editor = $self->selected_editor;
-	$editor->check_for_brace;
+	$editor->highlight_braces;
 
 	$self->refresh_status;
 

@@ -127,35 +127,50 @@ sub padre_setup_perl {
 }
 
 
-sub check_for_brace {
+sub highlight_braces {
 	my ($self) = @_;
+#print ".";
+
+    $self->StartStyling(0, Wx::wxSTC_INDICS_MASK);
+    $self->SetStyling($self->GetLength(), 0);
 
 	my $pos1  = $self->GetCurrentPos;
-	#print "$pos1\n";
-	return;
-	my $pos2  = $self->BraceMatch($pos1);
-	if ($pos2 == -1 ) {   #Wx::wxSTC_INVALID_POSITION
+	my $chr = chr($self->GetCharAt($pos1));
+#print $chr, "\n";
+
+	my @braces = ( '{', '}', '(', ')', '[', ']');
+	if (not grep {$chr eq $_} @braces) {
 		if ($pos1 > 0) {
 			$pos1--;
-			$pos2 = $self->BraceMatch($pos1);
+			$chr = chr($self->GetCharAt($pos1));
+			return unless grep {$chr eq $_} @braces;
 		}
 	}
+	
+	my $pos2  = $self->BraceMatch($pos1);
+	return if abs($pos1-$pos2) < 2;
 
-	if ($pos2 != -1 ) {   #Wx::wxSTC_INVALID_POSITION
-		#print "$pos1 $pos2\n";
-		#$page->BraceHighlight($pos1, $pos2);
-		#$page->SetCurrentPos($pos2);
-		$self->GotoPos($pos2);
-		#$page->MoveCaretInsideView;
-	}
-}
-sub highlight_brace {
-	my ($self) = @_;
+#
+#print chr($self->GetCharAt($pos2)), "\n";
+	return if $pos2 == -1;   #Wx::wxSTC_INVALID_POSITION  #????
+
+	
+	#print "$pos1, $pos2\n";
+
+#	$self->IndicatorSetStyle(6, 35);
+#	$self->IndicatorSetForeground(6, Wx::Colour->new(0x00, 0xFF, 0x00));
+	#$self->StyleSetBackground(35, Wx::Colour->new(0x00, 0xFF, 0x00));
+	#$self->StyleSetForeground(35, Wx::Colour->new(0x00, 0xFF, 0xFF));
+	#$self->StartStyling($pos1, 35);
+	#$self->SetStyling(1, 35);
+	#$self->BraceHighlight($pos1, $pos2);
 
 	$self->IndicatorSetStyle(1, 6);
 	$self->IndicatorSetForeground(1, Wx::Colour->new(0x00, 0xFF, 0x00));
-	#$self->StartStyling($m->[0],         Wx::wxSTC_INDIC1_MASK);
-	#$self->SetStyling(  $m->[1]-$m->[0], Wx::wxSTC_INDIC1_MASK);
+	$self->StartStyling($pos1,  Wx::wxSTC_INDIC1_MASK);
+	$self->SetStyling(  1,      Wx::wxSTC_INDIC1_MASK);
+	$self->StartStyling($pos2,  Wx::wxSTC_INDIC1_MASK);
+	$self->SetStyling(  1,      Wx::wxSTC_INDIC1_MASK);
 	return;
 }
 
