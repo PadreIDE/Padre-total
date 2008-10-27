@@ -732,6 +732,8 @@ sub on_split_window {
 	$editor->AddRefDocument($pointer);
 
 	my $new_editor = Padre::Wx::Editor->new( $self->{notebook} );
+	$new_editor->{Document} = $editor->{Document};
+	$new_editor->padre_setup;
 
 	#my $new_id = $self->setup_editor();
 	#my $new_editor = $self->{notebook}->GetPage( $new_id );
