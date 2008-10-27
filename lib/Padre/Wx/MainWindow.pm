@@ -217,17 +217,20 @@ sub new {
 }
 
 sub post_init { 
-	$_[0]->on_toggle_status_bar; 
-	$_[0]->refresh_all;
+	my ($self) = @_;
+	$self->on_toggle_status_bar;
+	$self->refresh_all;
 
-	my $output = $_[0]->{menu}->{view_output}->IsChecked;
+	my $output = $self->{menu}->{view_output}->IsChecked;
 	# First we show the output window and then hide it if necessary
 	# in order to avoide some weird visual artifacts (empty square at
 	# top left part of the whole application)
 	# TODO maybe some users want to make sure the output window is always
 	# off at startup.
-	$_[0]->show_output(1);
-	$_[0]->show_output($output) if not $output;
+	$self->show_output(1);
+	$self->show_output($output) if not $output;
+
+	return;
 }
 
 
