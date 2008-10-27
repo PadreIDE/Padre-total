@@ -119,6 +119,8 @@ sub padre_setup_perl {
 	# Apply tag style for selected lexer (blue)
 	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
 
+	$self->StyleSetBackground(34, Wx::Colour->new(0x00, 0xFF, 0x00)); # brace highlight
+
 	if ( $self->can('SetLayoutDirection') ) {
 		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
 	}
@@ -126,17 +128,12 @@ sub padre_setup_perl {
 	return;
 }
 
-
 sub highlight_braces {
 	my ($self) = @_;
-#print ".";
 
-    $self->StartStyling(0, Wx::wxSTC_INDICS_MASK);
-    $self->SetStyling($self->GetLength(), 0);
-
+	$self->BraceHighlight(-1, -1); # Wx::wxSTC_INVALID_POSITION
 	my $pos1  = $self->GetCurrentPos;
 	my $chr = chr($self->GetCharAt($pos1));
-#print $chr, "\n";
 
 	my @braces = ( '{', '}', '(', ')', '[', ']');
 	if (not grep {$chr eq $_} @braces) {
@@ -150,27 +147,10 @@ sub highlight_braces {
 	my $pos2  = $self->BraceMatch($pos1);
 	return if abs($pos1-$pos2) < 2;
 
-#
-#print chr($self->GetCharAt($pos2)), "\n";
 	return if $pos2 == -1;   #Wx::wxSTC_INVALID_POSITION  #????
-
 	
-	#print "$pos1, $pos2\n";
+	$self->BraceHighlight($pos1, $pos2);
 
-#	$self->IndicatorSetStyle(6, 35);
-#	$self->IndicatorSetForeground(6, Wx::Colour->new(0x00, 0xFF, 0x00));
-	#$self->StyleSetBackground(35, Wx::Colour->new(0x00, 0xFF, 0x00));
-	#$self->StyleSetForeground(35, Wx::Colour->new(0x00, 0xFF, 0xFF));
-	#$self->StartStyling($pos1, 35);
-	#$self->SetStyling(1, 35);
-	#$self->BraceHighlight($pos1, $pos2);
-
-	$self->IndicatorSetStyle(1, 6);
-	$self->IndicatorSetForeground(1, Wx::Colour->new(0x00, 0xFF, 0x00));
-	$self->StartStyling($pos1,  Wx::wxSTC_INDIC1_MASK);
-	$self->SetStyling(  1,      Wx::wxSTC_INDIC1_MASK);
-	$self->StartStyling($pos2,  Wx::wxSTC_INDIC1_MASK);
-	$self->SetStyling(  1,      Wx::wxSTC_INDIC1_MASK);
 	return;
 }
 
