@@ -211,7 +211,7 @@ sub new {
 		-1,
 		\&post_init,
 	);
-	$timer->Start( 500, 1 );
+	$timer->Start( 1, 1 );
 
 	return $self;
 }
