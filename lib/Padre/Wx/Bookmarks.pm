@@ -8,7 +8,7 @@ use Data::Dumper qw(Dumper);
 
 use Padre::Wx;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 my $tb;
 

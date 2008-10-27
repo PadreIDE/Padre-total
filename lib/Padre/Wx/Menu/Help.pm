@@ -7,7 +7,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Util;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 #our @ISA     = 'Wx::Menu';
 sub new { return bless {}, shift };
 

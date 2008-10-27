@@ -1,5 +1,7 @@
 Changes for Padre.
 
+v0.14 2008.10.27
+
     Skip the Test::Compile test if the module is not installed. (SZABGAB)
     Make the add/remove Perl menu work without warnings. (ADAMK + SZABGAB)
     Make brace matching (Ctrl-1) jump to the matching brace. (SZABGAB)

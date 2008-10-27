@@ -10,7 +10,7 @@ use Padre::Wx;
 
 use base 'Wx::StyledTextCtrl';
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 sub new {
 	my( $class, $parent ) = @_;

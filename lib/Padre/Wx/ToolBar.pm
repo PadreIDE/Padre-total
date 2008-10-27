@@ -6,7 +6,7 @@ use warnings;
 
 use Padre::Wx    ();
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 our @ISA     = 'Wx::ToolBar';
 
 sub new {

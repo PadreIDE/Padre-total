@@ -9,7 +9,7 @@ use Padre::Wx        ();
 use Padre::Util      ();
 use Padre::Documents ();
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 
 
