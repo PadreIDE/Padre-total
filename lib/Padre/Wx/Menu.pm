@@ -467,7 +467,7 @@ sub new {
 	$menu->{wx}->Append( $menu->{project},  "&Project"   );
 	$menu->{wx}->Append( $menu->{edit},     "&Edit"      );
 	$menu->{wx}->Append( $menu->{view},     "&View"      );
-	$menu->{wx}->Append( $menu->{perl},     "Perl"       );
+	#$menu->{wx}->Append( $menu->{perl},     "Perl"       );
 	$menu->{wx}->Append( $menu->{bookmark}, "&Bookmarks" );
 	$menu->{wx}->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugin};
 	$menu->{wx}->Append( $menu->{window},   "&Window"    );
@@ -556,9 +556,9 @@ sub refresh {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
-	if ( _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenu(3)->GetTitle ne 'Perl') {
+	if ( _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) ne 'Perl') {
 		$self->{wx}->Insert( 3, $self->{perl}, "Perl" );
-	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenu(3)->GetTitle eq 'Perl') {
+	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq 'Perl') {
 		$self->{wx}->Remove( 3 );
 	}
 
