@@ -575,6 +575,13 @@ sub on_brace_matching {
 	my $page  = $self->{notebook}->GetPage($id);
 	my $pos1  = $page->GetCurrentPos;
 	my $pos2  = $page->BraceMatch($pos1);
+	if ($pos2 == -1 ) {   #Wx::wxSTC_INVALID_POSITION
+		if ($pos1 > 0) {
+			$pos1--;
+			$pos2 = $page->BraceMatch($pos1);
+		}
+	}
+
 	if ($pos2 != -1 ) {   #Wx::wxSTC_INVALID_POSITION
 		#print "$pos1 $pos2\n";
 		#$page->BraceHighlight($pos1, $pos2);
@@ -582,8 +589,6 @@ sub on_brace_matching {
 		$page->GotoPos($pos2);
 		#$page->MoveCaretInsideView;
 	}
-	# TODO: if not found matching brace,
-	# we might want to check it at the previous position
 	# TODO: or any nearby position.
 
 	return;
