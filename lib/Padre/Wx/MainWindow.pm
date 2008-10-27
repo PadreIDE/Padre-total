@@ -168,9 +168,9 @@ sub new {
 	# Deal with someone closing the window
 	Wx::Event::EVT_CLOSE( $self, \&on_close_window);
 
-	Wx::Event::EVT_STC_UPDATEUI(    $self, -1, \&Padre::Wx::Editor::on_stc_update_ui    );
-	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&Padre::Wx::Editor::on_stc_change       );
-	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&Padre::Wx::Editor::on_stc_style_needed );
+	Wx::Event::EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui    );
+	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&on_stc_change       );
+	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -1231,6 +1231,68 @@ sub on_function_selected {
 	my $doc = $self->selected_document;
 	Padre::Wx::FindDialog::_search( search_term => $doc->get_function_regex($sub) );
 	$self->selected_editor->SetFocus;
+	return;
+}
+
+
+## STC related functions
+
+sub on_stc_style_needed {
+	my ( $self, $event ) = @_;
+
+	my $doc = Padre::Documents->current or return;
+	if ($doc->can('colourise')) {
+		$doc->colourise;
+	}
+
+}
+
+
+sub on_stc_update_ui {
+	my ($self, $event) = @_;
+	
+	# check for brace, on current position, higlight the matching brace
+	my $editor = $self->selected_editor;
+	$editor->check_for_brace;
+
+	$self->refresh_status;
+
+	return;
+}
+
+sub on_stc_change {
+	my ($self, $event) = @_;
+
+	return if $self->no_refresh;
+	my $config = Padre->ide->config;
+	return if not $config->{editor_calltips};
+
+	my $editor = $self->selected_editor;
+
+	my $pos    = $editor->GetCurrentPos;
+	my $line   = $editor->LineFromPosition($pos);
+	my $first  = $editor->PositionFromLine($line);
+	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
+	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+	if ($editor->CallTipActive) {
+		$editor->CallTipCancel;
+	}
+
+    my $doc = Padre::Documents->current or return;
+    my $keywords = $doc->keywords;
+
+	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
+
+	my $tip;
+	if ( $prefix =~ /($regex)[ (]?$/ ) {
+		my $z = $keywords->{$1};
+		return if not $z or not ref($z) or ref($z) ne 'HASH';
+		$tip = "$z->{cmd}\n$z->{exp}";
+	}
+	if ($tip) {
+		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
+	}
+
 	return;
 }
 

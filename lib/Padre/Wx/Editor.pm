@@ -127,56 +127,38 @@ sub padre_setup_perl {
 }
 
 
-sub on_stc_update_ui {
-	my ($self, $event) = @_;
-	$self->refresh_status;
+sub check_for_brace {
+	my ($self) = @_;
+
+	my $pos1  = $self->GetCurrentPos;
+	#print "$pos1\n";
+	return;
+	my $pos2  = $self->BraceMatch($pos1);
+	if ($pos2 == -1 ) {   #Wx::wxSTC_INVALID_POSITION
+		if ($pos1 > 0) {
+			$pos1--;
+			$pos2 = $self->BraceMatch($pos1);
+		}
+	}
+
+	if ($pos2 != -1 ) {   #Wx::wxSTC_INVALID_POSITION
+		#print "$pos1 $pos2\n";
+		#$page->BraceHighlight($pos1, $pos2);
+		#$page->SetCurrentPos($pos2);
+		$self->GotoPos($pos2);
+		#$page->MoveCaretInsideView;
+	}
 }
+sub highlight_brace {
+	my ($self) = @_;
 
-sub on_stc_style_needed {
-	my ( $self, $event ) = @_;
-
-	my $doc = Padre::Documents->current or return;
-	if ($doc->can('colourise')) {
-		$doc->colourise;
-	}
-
-}
-
-sub on_stc_change {
-	my ($self, $event) = @_;
-
-	return if $self->no_refresh;
-	my $config = Padre->ide->config;
-	return if not $config->{editor_calltips};
-
-	my $editor = $self->selected_editor;
-
-	my $pos    = $editor->GetCurrentPos;
-	my $line   = $editor->LineFromPosition($pos);
-	my $first  = $editor->PositionFromLine($line);
-	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
-	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-	if ($editor->CallTipActive) {
-		$editor->CallTipCancel;
-	}
-
-    my $doc = Padre::Documents->current or return;
-    my $keywords = $doc->keywords;
-
-	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
-
-	my $tip;
-	if ( $prefix =~ /($regex)[ (]?$/ ) {
-		my $z = $keywords->{$1};
-		return if not $z or not ref($z) or ref($z) ne 'HASH';
-		$tip = "$z->{cmd}\n$z->{exp}";
-	}
-	if ($tip) {
-		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
-	}
-
+	$self->IndicatorSetStyle(1, 6);
+	$self->IndicatorSetForeground(1, Wx::Colour->new(0x00, 0xFF, 0x00));
+	#$self->StartStyling($m->[0],         Wx::wxSTC_INDIC1_MASK);
+	#$self->SetStyling(  $m->[1]-$m->[0], Wx::wxSTC_INDIC1_MASK);
 	return;
 }
+
 
 # currently if there are 9 lines we set the margin to 1 width and then
 # if another line is added it is not seen well.
