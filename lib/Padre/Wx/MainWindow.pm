@@ -34,7 +34,6 @@ my $default_dir = Cwd::cwd();
 
 sub new {
 	my $class  = shift;
-	my $files  = Padre->inst->{ARGV};
 
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
@@ -176,9 +175,34 @@ sub new {
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	# $self->SetIcon( Padre::Wx::icon('new') );
 
+	$self->load_files;
+
+	# we need an event immediately after the window opened
+	# (we had an issue that if the default of main_statusbar was false it did not show
+	# the status bar which is ok, but then when we selected the menu to show it, it showed
+	# at the top)
+	# TODO: there might be better ways to fix that issue...
+	my $timer = Wx::Timer->new( $self );
+	Wx::Event::EVT_TIMER(
+		$self,
+		-1,
+		\&post_init,
+	);
+	$timer->Start( 1, 1 );
+
+	return $self;
+}
+
+sub load_files {
+	my ($self) = @_;
 	# Load any default files
 	# TODO make sure the full path to the file is saved and not
 	# the relative path
+
+	my $config = Padre->ide->config;
+
+
+	my $files  = Padre->inst->{ARGV};
 	if ( $files and ref($files) eq 'ARRAY' and @$files ) {
 		foreach my $f ( @$files ) {
 		    if ( not File::Spec->file_name_is_absolute($f) ) {
@@ -199,21 +223,7 @@ sub new {
 	} else {
 		# should never happen
 	}
-
-	# we need an event immediately after the window opened
-	# (we had an issue that if the default of main_statusbar was false it did not show
-	# the status bar which is ok, but then when we selected the menu to show it, it showed
-	# at the top)
-	# TODO: there might be better ways to fix that issue...
-	my $timer = Wx::Timer->new( $self );
-	Wx::Event::EVT_TIMER(
-		$self,
-		-1,
-		\&post_init,
-	);
-	$timer->Start( 1, 1 );
-
-	return $self;
+	return;
 }
 
 sub post_init { 
