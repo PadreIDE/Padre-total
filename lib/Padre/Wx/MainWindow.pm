@@ -767,7 +767,7 @@ sub create_tab {
 	my $file_title = $file || $title;
 	$self->{menu}->add_alt_n_menu($file_title, $id);
 
-	$self->refresh_status;
+	$self->refresh_all;
 
 	return $id;
 }
@@ -918,8 +918,7 @@ sub on_save_as {
 	$doc->set_mimetype( $doc->guess_mimetype );
 	$doc->editor->padre_setup;
 
-	$self->refresh_status;
-	$self->refresh_methods;
+	$self->refresh_all;
 
 	return 1;
 }
@@ -965,8 +964,7 @@ sub _save_buffer {
 
 	Padre::DB->add_recent_files($doc->filename);
 	$page->SetSavePoint;
-	$self->refresh_status;
-	$self->refresh_methods;
+	$self->refresh_all;
 
 	return; 
 }
