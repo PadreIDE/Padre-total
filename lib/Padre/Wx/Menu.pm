@@ -556,6 +556,14 @@ sub refresh {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
+	if ( _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenu(3)->GetTitle ne 'Perl') {
+		$self->{wx}->Insert( 3, $self->{perl}, "Perl" );
+	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenu(3)->GetTitle eq 'Perl') {
+		$self->{wx}->Remove( 3 );
+	}
+
+	return 1;
+
 	# Create the new menu bar
 	$self->{wx} = Wx::MenuBar->new;
 	$self->{wx}->Append( $self->{file},     "&File"      );
