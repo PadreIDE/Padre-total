@@ -1196,6 +1196,7 @@ sub convert_to {
 	$doc->set_newline_type($newline_type);
 
 	$self->refresh_status;
+	$self->refresh_toolbar;
 
 	return;
 }
@@ -1256,6 +1257,7 @@ sub on_stc_update_ui {
 	$editor->highlight_braces;
 
 	$self->refresh_status;
+	$self->refresh_toolbar;
 
 	return;
 }
