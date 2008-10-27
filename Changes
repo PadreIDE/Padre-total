@@ -1,5 +1,7 @@
 Changes for Padre.
 
+    Don't let opening file that is already open. (SZABGAB)
+
 v0.14 2008.10.27
 
     Skip the Test::Compile test if the module is not installed. (SZABGAB)
