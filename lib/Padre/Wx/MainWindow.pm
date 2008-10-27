@@ -766,10 +766,6 @@ sub setup_editor {
 
 	my $title = $editor->{Document}->get_title;
 
-	$editor->show_line_numbers(    $config->{editor_linenumbers}       );
-	$editor->SetIndentationGuides( $config->{editor_indentationguides} );
-	$editor->SetViewEOL(           $config->{editor_eol}               );
-
 	$editor->set_preferences;
 
 	my $id = $self->create_tab($editor, $file, $title);

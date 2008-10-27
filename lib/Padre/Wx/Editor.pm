@@ -181,6 +181,10 @@ sub set_preferences {
 	my ($self) = @_;
 	my $config = Padre->ide->config;
 
+	$self->show_line_numbers(    $config->{editor_linenumbers}       );
+	$self->SetIndentationGuides( $config->{editor_indentationguides} );
+	$self->SetViewEOL(           $config->{editor_eol}               );
+
 	$self->SetTabWidth( $config->{editor_tabwidth} );
 	$self->SetUseTabs(  $config->{editor_use_tabs} );
 
