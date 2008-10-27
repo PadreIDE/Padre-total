@@ -38,6 +38,7 @@ SCOPE: {
 		editor_tabwidth    => 4,
 		editor_indentationguides => 0,
 		editor_calltips    => 1,
+		editor_use_tabs    => 1,
 
 		search_terms       => [],
 		replace_terms      => [],
