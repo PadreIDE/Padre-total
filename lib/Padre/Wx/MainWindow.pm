@@ -578,7 +578,9 @@ sub on_brace_matching {
 	if ($pos2 != -1 ) {   #Wx::wxSTC_INVALID_POSITION
 		#print "$pos1 $pos2\n";
 		#$page->BraceHighlight($pos1, $pos2);
-		$page->SetCurrentPos($pos2);
+		#$page->SetCurrentPos($pos2);
+		$page->GotoPos($pos2);
+		#$page->MoveCaretInsideView;
 	}
 	# TODO: if not found matching brace,
 	# we might want to check it at the previous position
