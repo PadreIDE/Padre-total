@@ -34,7 +34,9 @@ sub ACTION_exe {
     if ($^O =~ /win32/i) {
         push @cmd, '-M', 'File::HomeDir::Windows';
         push @cmd, '-M', 'Tie::Hash::NamedCapture';
-    }
+    } else {
+        push @cmd, '-M', 'File::HomeDir::Unix';
+	}
     print "@cmd\n";
     system(@cmd);
 
