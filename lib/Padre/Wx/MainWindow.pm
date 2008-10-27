@@ -175,8 +175,6 @@ sub new {
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	# $self->SetIcon( Padre::Wx::icon('new') );
 
-	$self->load_files;
-
 	# we need an event immediately after the window opened
 	# (we had an issue that if the default of main_statusbar was false it did not show
 	# the status bar which is ok, but then when we selected the menu to show it, it showed
@@ -193,15 +191,11 @@ sub new {
 	return $self;
 }
 
+# Load any default files
 sub load_files {
 	my ($self) = @_;
-	# Load any default files
-	# TODO make sure the full path to the file is saved and not
-	# the relative path
 
 	my $config = Padre->ide->config;
-
-
 	my $files  = Padre->inst->{ARGV};
 	if ( $files and ref($files) eq 'ARRAY' and @$files ) {
 		foreach my $f ( @$files ) {
@@ -228,6 +222,9 @@ sub load_files {
 
 sub post_init { 
 	my ($self) = @_;
+
+	$self->load_files;
+
 	$self->on_toggle_status_bar;
 	$self->refresh_all;
 
@@ -748,6 +745,14 @@ sub on_split_window {
 # current file otherwise open a new buffer and open the file there.
 sub setup_editor {
 	my ($self, $file) = @_;
+
+	if ($file) {
+		my $id = $self->find_editor_of_file($file);
+		if (defined $id) {
+			Wx::MessageBox("The file '$file' is already open in tab $id", "Open error", Wx::wxOK, $self);
+			return;
+		}
+	}
 
 	local $self->{_no_refresh} = 1;
 
