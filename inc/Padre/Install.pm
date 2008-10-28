@@ -21,7 +21,7 @@ sub ACTION_exe {
     my $self = shift;
 
     # temporary tool to create executable using PAR
-	eval "use Module::ScanDeps 0.87; 1;" or die $@;
+    eval "use Module::ScanDeps 0.88; 1;" or die $@;
 
 
     my @libs    = libs();
@@ -30,18 +30,42 @@ sub ACTION_exe {
     if (-e $exe) {
         unlink $exe or die "Cannot remove '$exe' $!";
     }
-    my @cmd     = ('pp', '-o', $exe, qw(-I lib  script/padre));
+    my @cmd     = ('pp', '-o', $exe, qw(-I lib script/padre));
     push @cmd, @modules, @libs;
     if ($^O =~ /win32/i) {
-        push @cmd, '-M', 'File::HomeDir::Windows';
         push @cmd, '-M', 'Tie::Hash::NamedCapture';
-    } else {
-        push @cmd, '-M', 'File::HomeDir::Unix';
-	}
+    }
+
+    # gather the "share" files
+    my @add_files = share();
+    require File::Temp;
+    my ($tfh, $tempfilename) = File::Temp::tempfile(
+      "additional_files_XXXXXX",
+      TMPDIR => 1,
+      UNLINK => 1,
+    );
+    print $tfh join("\n", @add_files), "\n";
+    close $tfh;
+    push @cmd, '-A', $tempfilename;
+    
     print "@cmd\n";
     system(@cmd);
 
     return;
+}
+
+sub share {
+    require File::Find;
+    my @files;
+    File::Find::find(
+      {
+        preprocess => sub { grep { !/^\.svn/i } @_ },
+        wanted => sub { push @files, $_ if -f $_ },
+        no_chdir => 1,
+      },
+      'share'
+    );
+    return @files;
 }
 
 sub libs {
