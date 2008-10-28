@@ -36,36 +36,10 @@ sub ACTION_exe {
         push @cmd, '-M', 'Tie::Hash::NamedCapture';
     }
 
-    # gather the "share" files
-    my @add_files = share();
-    require File::Temp;
-    my ($tfh, $tempfilename) = File::Temp::tempfile(
-      "additional_files_XXXXXX",
-      TMPDIR => 1,
-      UNLINK => 1,
-    );
-    print $tfh join("\n", @add_files), "\n";
-    close $tfh;
-    push @cmd, '-A', $tempfilename;
-    
     print "@cmd\n";
     system(@cmd);
 
     return;
-}
-
-sub share {
-    require File::Find;
-    my @files;
-    File::Find::find(
-      {
-        preprocess => sub { grep { !/^\.svn/i } @_ },
-        wanted => sub { push @files, $_ if -f $_ },
-        no_chdir => 1,
-      },
-      'share'
-    );
-    return @files;
 }
 
 sub libs {
