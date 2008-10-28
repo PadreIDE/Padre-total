@@ -21,6 +21,7 @@ sub ACTION_exe {
     my $self = shift;
 
     # temporary tool to create executable using PAR
+	eval "use Module::ScanDeps 0.87; 1;" or die $@;
 
 
     my @libs    = libs();
