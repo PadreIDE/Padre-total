@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use FindBin;
 use File::Spec     ();
-use File::ShareDir ();
+use File::ShareDir::PAR ();
 
 # Load every exportable constant into here, so that they come into
 # existance in the Wx:: packages, allowing everywhere else in the code to
@@ -27,7 +27,7 @@ our $VERSION = '0.14';
 sub share () {
 	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
 	return File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' )      if $ENV{PADRE_PAR_PATH};
-	return File::ShareDir::dist_dir('Padre');
+	return File::ShareDir::PAR::dist_dir('Padre');
 }
 
 sub sharedir {
