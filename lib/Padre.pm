@@ -251,7 +251,10 @@ use Class::Autouse qw{
 # Globally shared Perl detection object
 sub perl_interpreter {
 	require Probe::Perl;
-	return Probe::Perl->find_perl_interpreter;
+	my $perl = Probe::Perl->find_perl_interpreter;
+	return $perl if $perl;
+	require File::Which;
+	return scalar File::Which::which('perl');
 }
 
 my @history = qw(files pod);
