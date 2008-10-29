@@ -982,6 +982,16 @@ sub _save_buffer {
 	my $page         = $self->{notebook}->GetPage($id);
     my $doc          = Padre::Documents->by_id($id) or return;
 
+	if ($doc->has_changed_on_disk) {
+		my $ret = Wx::MessageBox(
+			"File changed on disk since last saved. Do you want to overwrite it?",
+			$doc->filename || "File not in sync",
+			Wx::wxYES_NO|Wx::wxCENTRE,
+			$self,
+		);
+		return if $ret != Wx::wxYES;
+	}
+	
 	my $error = $doc->save_file;
 	if ($error) {
 		Wx::MessageBox($error, "Error", Wx::wxOK, $self);
