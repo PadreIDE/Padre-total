@@ -85,6 +85,8 @@ share/templates/template.pl
 share/templates/template.pm
 share/templates/template.t
 
+share/styles/default.yml
+
 share/languages/perl5/perl5.yml
 
 META.yml

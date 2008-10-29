@@ -4,6 +4,8 @@ use 5.008;
 use strict;
 use warnings;
 
+use YAML::Tiny      ();
+
 use Padre::Documents ();
 use Wx::STC;
 use Padre::Wx;
@@ -12,64 +14,26 @@ use base 'Wx::StyledTextCtrl';
 
 our $VERSION = '0.14';
 
+my $data;
+
 sub new {
 	my( $class, $parent ) = @_;
 
 	my $self = $class->SUPER::new( $parent );
+	$data = data();
 
 	return $self;
 }
 
-	my $data = {
-		plain => {
-			foregrounds => {
-				0 => '00007f',
-			},
-		},
-		perl => {
-			colors => {
-		wxSTC_PL_DEFAULT       => '00007f',
-		wxSTC_PL_ERROR         => 'ff0000',
-		wxSTC_PL_COMMENTLINE   => '007f00',
-		wxSTC_PL_POD           => '7f7f7f',
-		wxSTC_PL_NUMBER        => '007f7f',
-		wxSTC_PL_WORD          => '00007f',
-		wxSTC_PL_STRING        => 'ff7f00',
-		wxSTC_PL_CHARACTER     => '7f007f',
-		wxSTC_PL_PUNCTUATION   => '000000',
-		wxSTC_PL_PREPROCESSOR  => '7f7f7f',
-		wxSTC_PL_OPERATOR      => '00007f',
-		wxSTC_PL_IDENTIFIER    => '0000ff',
-		wxSTC_PL_SCALAR        => '7f007f',
-		wxSTC_PL_ARRAY         => '4080ff',
-		wxSTC_PL_HASH          => '0080ff',
-		wxSTC_PL_SYMBOLTABLE   => '00ff00',
-		# missing SCE_PL_VARIABLE_INDEXER (16)  
-		wxSTC_PL_REGEX         => 'ff007f',
-		wxSTC_PL_REGSUBST      => '7f7f00',
-		wxSTC_PL_LONGQUOTE     => 'ff7f00',
-		wxSTC_PL_BACKTICKS     => 'ffaa00',
-		wxSTC_PL_DATASECTION   => 'ff7f00',
-		wxSTC_PL_HERE_DELIM    => 'ff7f00',
-		wxSTC_PL_HERE_Q        => '7f007f',
-		wxSTC_PL_HERE_QQ       => 'ff7f00',
-		wxSTC_PL_HERE_QX       => 'ffaa00',
-		wxSTC_PL_STRING_Q      => '7f007f',
-		wxSTC_PL_STRING_QQ     => 'ff7f00',
-		wxSTC_PL_STRING_QX     => 'ffaa00',
-		wxSTC_PL_STRING_QR     => 'ff007f',
-		wxSTC_PL_STRING_QW     => '7f007f',
-
-		# missing:
-		#define SCE_PL_POD_VERB 31
-		#define SCE_PL_SUB_PROTOTYPE 40
-		#define SCE_PL_FORMAT_IDENT 41
-		#define SCE_PL_FORMAT 42
-		},
-		brace_highlight => '00FF00',
-		},
-	};
-
+sub data {
+	unless ( defined $data ) {
+		$data = YAML::Tiny::LoadFile(
+			Padre::Wx::sharefile( 'styles', 'default.yml' )
+		);
+		print Data::Dumper::Dumper $data;
+	}
+	return $data;
+}
 
 
 # most of this should be read from some external files

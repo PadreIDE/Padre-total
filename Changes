@@ -11,6 +11,7 @@ Changes for Padre.
     Set focus on windows. (SZABGAB)
     Before saving, check if file has changed on disk. (SZABGAB)
     New menu option: "Reload file". (SZABGAB)
+    Move style definition to external yaml file. (SZABGAB)
 
 v0.14 2008.10.27
 
