@@ -114,6 +114,7 @@ sub padre_setup_perl {
 		#define SCE_PL_FORMAT_IDENT 41
 		#define SCE_PL_FORMAT 42
 		},
+		brace_highlight => '00FF00',
 		},
 	};
 
@@ -128,7 +129,7 @@ sub padre_setup_perl {
 	# Apply tag style for selected lexer (blue)
 	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
 
-	$self->StyleSetBackground(34, _colour('00FF00')); # brace highlight
+	$self->StyleSetBackground(34, _colour($data->{perl}{brace_highlight}));
 
 	if ( $self->can('SetLayoutDirection') ) {
 		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
