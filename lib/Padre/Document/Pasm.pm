@@ -4,6 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Document ();
+use Padre::Util     (); # Px::
 
 our $VERSION = '0.14';
 our @ISA     = 'Padre::Document';
@@ -17,21 +18,22 @@ sub colourise {
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
 
-	my ($KEYWORD, $REGISTER, $LABEL, $STRING, $COMMENT) = (1 .. 5);
 	my %regex_of = (
-		$KEYWORD  => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
-		$REGISTER => qr/\$?[ISPN]\d+/,
-		$LABEL    => qr/^\s*\w*:/m,
-		$STRING   => qr/(['"]).*\1/,
-		$COMMENT  => qr/#.*/,
+		PASM_KEYWORD  => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
+		PASM_REGISTER => qr/\$?[ISPN]\d+/,
+		PASM_LABEL    => qr/^\s*\w*:/m,
+		PASM_STRING   => qr/(['"]).*\1/,
+		PASM_COMMENT  => qr/#.*/,
 	);
 	foreach my $color (keys %regex_of) {
 		while ($text =~ /$regex_of{$color}/g) {
 			my $end    = pos($text);
 			my $length = length($&);
 			my $start  = $end - $length;
-			$editor->StartStyling($start, $color);
-			$editor->SetStyling($length, $color);
+			no strict "refs";
+			my $str = 'Px::' . $color;
+			$editor->StartStyling($start, $str->());
+			$editor->SetStyling($length,  $str->());
 		}
 	}
 }

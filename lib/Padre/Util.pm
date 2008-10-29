@@ -105,6 +105,16 @@ sub get_matches {
 	return ($start, $end, @matches);
 }
 
+package Px;
+
+use constant {
+	PASM_KEYWORD  => 1,
+	PASM_REGISTER => 2,
+	PASM_LABEL    => 3,
+	PASM_STRING   => 4,
+	PASM_COMMENT  => 5,
+};
+
 1;
 
 =head1 SUPPORT
