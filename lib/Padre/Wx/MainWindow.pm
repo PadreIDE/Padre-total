@@ -1037,6 +1037,11 @@ sub close {
 # Returns false if cancelled.
 sub on_close_all {
 	my $self = shift;
+	return $self->_close_all;
+}
+
+sub _close_all {
+	my $self = shift;
 	$self->Freeze;
 	foreach my $id ( reverse $self->pageids ) {
 		$self->close( $id ) or return 0;
