@@ -426,6 +426,29 @@ sub pages {
 #####################################################################
 # Process Execution
 
+# probably need to be combined with run_command
+sub on_run_command {
+	$DB::single = 1;
+	my $main_window = shift;
+	require Padre::Wx::History::TextDialog;
+	my $dialog = Padre::Wx::History::TextDialog->new(
+		$main_window,
+		"Command line",
+		"Run setup",
+		"run_command",
+	);
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		return;
+	}
+	my $command = $dialog->GetValue;
+	$dialog->Destroy;
+	unless ( defined $command and $command ne '' ) {
+		return;
+	}
+	$main_window->run_command( $command );
+	return;
+}
+
 sub run_command {
 	my $self   = shift;
 	my $cmd    = shift;

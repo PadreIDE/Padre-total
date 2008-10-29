@@ -318,27 +318,7 @@ sub new {
 	$menu->{perl_run_command} = $menu->{perl}->Append( -1, "Run Command\tCtrl-F5" );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{perl_run_command},
-		sub {
-			$DB::single = 1;
-			my $main_window = shift;
-			require Padre::Wx::History::TextDialog;
-			my $dialog = Padre::Wx::History::TextDialog->new(
-				$main_window,
-				"Command line",
-				"Run setup",
-				"run_command",
-			);
-			if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-				return;
-			}
-			my $command = $dialog->GetValue;
-			$dialog->Destroy;
-			unless ( defined $command and $command ne '' ) {
-				return;
-			}
-			$main_window->run_command( $command );
-			return;
-		}
+		sub { $_[0]->on_run_command },
 	);
 	$menu->{perl_stop} = $menu->{perl}->Append( -1, "&Stop" );
 	Wx::Event::EVT_MENU( $win,
