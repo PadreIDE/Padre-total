@@ -28,6 +28,9 @@ sub padre_setup {
 	$self->SetLexer( $self->{Document}->lexer );
 #	 $self->Colourise(0, $self->GetTextLength);
 
+	$self->SetCodePage(65001); # which is supposed to be wxSTC_CP_UTF8
+	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
+
 	my $mimetype = $self->{Document}->mimetype;
     if ($mimetype eq 'text/perl') {
         $self->padre_setup_perl;
