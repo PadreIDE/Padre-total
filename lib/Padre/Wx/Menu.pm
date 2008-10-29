@@ -201,6 +201,18 @@ sub new {
 	);
 	$menu->{edit}->AppendSeparator;
 
+	# Commenting
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, "&Comment Selected Lines\tCtrl-M" ),
+		\&Padre::Wx::MainWindow::on_comment_out_block,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, "&Uncomment Selected Lines\tCtrl-Shift-M" ),
+		\&Padre::Wx::MainWindow::on_uncomment_block,
+	);
+	$menu->{edit}->AppendSeparator;
+
+
 	# User Preferences
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Preferences" ),
@@ -332,17 +344,6 @@ sub new {
 		},
 	);
 	$menu->{perl_stop}->Enable(0);
-
-	# Commenting
-	Wx::Event::EVT_MENU( $win,
-		$menu->{perl}->Append( -1, "&Comment Selected Lines\tCtrl-M" ),
-		\&Padre::Wx::MainWindow::on_comment_out_block,
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{perl}->Append( -1, "&Uncomment Selected Lines\tCtrl-Shift-M" ),
-		\&Padre::Wx::MainWindow::on_uncomment_block,
-	);
-
 
 
 
