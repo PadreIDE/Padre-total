@@ -80,6 +80,16 @@ sub padre_setup_plain {
 	foreach my $k (keys %{ $data->{plain}{forgrounds} }) {
 		$self->StyleSetForeground( $k, _colour( $data->{plain}{foregrounds}{$k} ) );
 	}
+	
+	#$self->StyleSetBold(12,  1);
+
+	# Apply tag style for selected lexer (blue)
+	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
+
+	if ( $self->can('SetLayoutDirection') ) {
+		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
+	}
+
 	return;
 }
 
@@ -94,17 +104,7 @@ sub padre_setup_perl {
 		$self->StyleSetForeground( $f->(), _colour($data->{perl}{colors}{$k}) );
 	}
 
-	# Set a style 12 bold
-	$self->StyleSetBold(12,  1);
-
-	# Apply tag style for selected lexer (blue)
-	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
-
 	$self->StyleSetBackground(34, _colour($data->{perl}{brace_highlight}));
-
-	if ( $self->can('SetLayoutDirection') ) {
-		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
-	}
 
 	return;
 }
