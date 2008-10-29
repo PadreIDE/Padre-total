@@ -161,6 +161,7 @@ sub new {
 			# Ctrl-Shift-TAB #TODO it is already in the menu
 			$self->on_prev_pane if $code == Wx::WXK_TAB;
 		}
+		$event->Skip();
 		return;
 	} );
 
