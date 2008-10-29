@@ -62,7 +62,7 @@ sub padre_setup_plain {
 
 	$self->StyleClearAll();
 
-	$self->StyleSetForeground( 0,      Wx::Colour->new(0x00, 0x00, 0x7f));
+	$self->StyleSetForeground( 0, _colour('00007f') );
 
 	return;
 }
