@@ -30,7 +30,6 @@ sub data {
 		$data = YAML::Tiny::LoadFile(
 			Padre::Wx::sharefile( 'styles', 'default.yml' )
 		);
-		print Data::Dumper::Dumper $data;
 	}
 	return $data;
 }
