@@ -118,9 +118,8 @@ sub padre_setup_perl {
 	};
 
 	foreach my $k ( keys %{ $data->{perl}{colors} }) {
-		my @c = map {hex($_)} $data->{perl}{colors}{$k} =~ /(..)(..)(..)/;
 		my $f = 'Wx::' . $k;
-		$self->StyleSetForeground( $f->(), Wx::Colour->new(@c));
+		$self->StyleSetForeground( $f->(), _colour($data->{perl}{colors}{$k}) );
 	}
 
 	# Set a style 12 bold
@@ -136,6 +135,12 @@ sub padre_setup_perl {
 	}
 
 	return;
+}
+
+sub _colour {
+	my $rgb = shift;
+	my @c = map {hex($_)} $rgb =~ /(..)(..)(..)/;
+	return Wx::Colour->new(@c)
 }
 
 sub highlight_braces {
