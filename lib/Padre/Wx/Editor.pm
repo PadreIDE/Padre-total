@@ -52,11 +52,11 @@ sub padre_setup {
 
 	my $mimetype = $self->{Document}->mimetype;
     if ($mimetype eq 'text/perl') {
-        $self->padre_setup_perl;
+        $self->padre_setup_style('perl');
     } elsif ($mimetype) {
 		# setup some default colouring
 		# for the time being it is the same as for Perl
-        $self->padre_setup_perl;
+        $self->padre_setup_style('perl');
 	} else {
 		# if mimetype is not known, then no colouring for now
 		# but mimimal conifuration should apply here too
@@ -93,18 +93,18 @@ sub padre_setup_plain {
 	return;
 }
 
-sub padre_setup_perl {
-	my ($self) = @_;
+sub padre_setup_style {
+	my ($self, $name) = @_;
 
 	$self->padre_setup_plain;
 
 	no strict "refs";
-	foreach my $k ( keys %{ $data->{perl}{colors} }) {
+	foreach my $k ( keys %{ $data->{$name}{colors} }) {
 		my $f = 'Wx::' . $k;
-		$self->StyleSetForeground( $f->(), _colour($data->{perl}{colors}{$k}) );
+		$self->StyleSetForeground( $f->(), _colour($data->{$name}{colors}{$k}) );
 	}
 
-	$self->StyleSetBackground(34, _colour($data->{perl}{brace_highlight}));
+	$self->StyleSetBackground(34, _colour($data->{$name}{brace_highlight}));
 
 	return;
 }
