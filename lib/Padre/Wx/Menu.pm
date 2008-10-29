@@ -319,22 +319,25 @@ sub new {
 			}
 		},
 	);
-	$menu->{perl}->AppendSeparator;
+
+
+	# Create the Run menu
+	$menu->{run} = Wx::Menu->new;
 
 	# Script Execution
-	$menu->{perl_run_script} = $menu->{perl}->Append( -1, "Run Script\tF5" );
+	$menu->{run_run_script} = $menu->{run}->Append( -1, "Run Script\tF5" );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{perl_run_script},
+		$menu->{run_run_script},
 		sub { $_[0]->run_perl },
 	);
-	$menu->{perl_run_command} = $menu->{perl}->Append( -1, "Run Command\tCtrl-F5" );
+	$menu->{run_run_command} = $menu->{run}->Append( -1, "Run Command\tCtrl-F5" );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{perl_run_command},
+		$menu->{run_run_command},
 		sub { $_[0]->on_run_command },
 	);
-	$menu->{perl_stop} = $menu->{perl}->Append( -1, "&Stop" );
+	$menu->{run_stop} = $menu->{run}->Append( -1, "&Stop" );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{perl_stop},
+		$menu->{run_stop},
 		sub {
 			if ( $_[0]->{command} ) {
 				$_[0]->{command}->TerminateProcess;
@@ -343,7 +346,7 @@ sub new {
 			return;
 		},
 	);
-	$menu->{perl_stop}->Enable(0);
+	$menu->{run_stop}->Enable(0);
 
 
 
@@ -457,6 +460,7 @@ sub new {
 	$menu->{wx}->Append( $menu->{edit},     "&Edit"      );
 	$menu->{wx}->Append( $menu->{view},     "&View"      );
 	#$menu->{wx}->Append( $menu->{perl},     "Perl"       );
+	$menu->{wx}->Append( $menu->{run},      "Run"        );
 	$menu->{wx}->Append( $menu->{bookmark}, "&Bookmarks" );
 	$menu->{wx}->Append( $menu->{plugin},   "Pl&ugins"   ) if $menu->{plugin};
 	$menu->{wx}->Append( $menu->{window},   "&Window"    );
