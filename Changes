@@ -1,6 +1,11 @@
 Changes for Padre.
 
     Don't let opening file that is already open. (SZABGAB)
+    Start UTF-8 support. (SZABGAB)
+	Switch to File::ShareDir::PAR (SMUELLER)
+	Start using File::Which to locate the perl interpreter
+       (if padre is running from a par archive). (SZABGAB)
+    Fix the Split Window menu option to really work. (SZABGAB)
 
 v0.14 2008.10.27
 
