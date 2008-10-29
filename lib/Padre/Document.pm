@@ -374,7 +374,7 @@ sub has_changed_on_disk {
 
 sub time_on_file {
 	return if not defined $_[0]->filename;
-	return (stat($_[0]->filename))[8];
+	return (stat($_[0]->filename))[9];
 }
 
 sub last_sync {
