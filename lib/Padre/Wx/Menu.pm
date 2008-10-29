@@ -60,6 +60,10 @@ sub new {
 		$menu->{file}->Append( -1, 'Close All but Current Document' ),
 		sub { $_[0]->on_close_all_but_current },
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{file}->Append( -1, 'Reload file' ),
+		sub { $_[0]->on_reload_file },
+	);
 	$menu->{file}->AppendSeparator;
 
 	# Saving

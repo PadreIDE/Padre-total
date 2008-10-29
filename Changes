@@ -10,6 +10,7 @@ Changes for Padre.
     Add autoindentation. (SZABGAB)
     Set focus on windows. (SZABGAB)
     Before saving, check if file has changed on disk. (SZABGAB)
+    New menu option: "Reload file". (SZABGAB)
 
 v0.14 2008.10.27
 

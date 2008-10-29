@@ -394,7 +394,13 @@ sub is_saved {
 	return !! ( defined $_[0]->filename and not $_[0]->is_modified );
 }
 
+sub reload {
+	my ($self) = @_;
 
+	my $filename = $self->filename or return;
+	$self->load_file($filename, $self->editor);
+	return 1;
+}
 
 
 

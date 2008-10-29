@@ -896,6 +896,15 @@ sub on_open {
 	return;
 }
 
+sub on_reload_file {
+	my ($self) = @_;
+
+	my $doc     = $self->selected_document or return;
+	$doc->reload;
+	
+	return;
+}
+
 # Returns true if saved.
 # Returns false if cancelled.
 sub on_save_as {
