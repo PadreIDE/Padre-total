@@ -171,6 +171,7 @@ sub new {
 	Wx::Event::EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui    );
 	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&on_stc_change       );
 	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
+	Wx::Event::EVT_STC_CHARADDED(   $self, -1, \&on_stc_char_added   );
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -1294,6 +1295,18 @@ sub on_stc_change {
 
 	return if $self->no_refresh;
 
+	return;
+}
+
+# http://www.yellowbrain.com/stc/events.html#EVT_STC_CHARADDED
+# TODO: maybe we need to check this more carefully.
+sub on_stc_char_added {
+	my ($self, $event) = @_;
+
+	if ($event->GetKey == 10) { # ENTER
+		my $editor = $self->selected_editor;
+		$editor->autoindent;
+	}
 	return;
 }
 

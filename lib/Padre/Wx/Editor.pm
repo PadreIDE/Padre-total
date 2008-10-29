@@ -232,4 +232,27 @@ sub show_calltip {
 	return;
 }
 
+# 1) get the white spaces of the previous line and add them here as well
+# TODO: 2) after a brace indent one level more than previous line
+sub autoindent {
+	my ($self) = @_;
+
+	my $pos       = $self->GetCurrentPos;
+	my $prev_line = $self->LineFromPosition($pos) -1;
+	return if $prev_line < 0;
+
+	my $start     = $self->PositionFromLine($prev_line);
+	my $end       = $self->GetLineEndPosition($prev_line);
+	#my $length    = $self->LineLength($prev_line);
+	my $content   = $self->GetTextRange($start, $end);
+	#print "'$content'\n";
+	if ($content =~ /^(\s+)/) {
+		my $indent = $1;
+		$self->InsertText($pos, $indent);
+		$self->GotoPos($pos + length($indent));
+	}
+
+	return;
+}
+
 1;
