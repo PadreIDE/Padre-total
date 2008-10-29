@@ -128,7 +128,7 @@ sub padre_setup_perl {
 	# Apply tag style for selected lexer (blue)
 	$self->StyleSetSpec( Wx::wxSTC_H_TAG, "fore:#0000ff" );
 
-	$self->StyleSetBackground(34, Wx::Colour->new(0x00, 0xFF, 0x00)); # brace highlight
+	$self->StyleSetBackground(34, _colour('00FF00')); # brace highlight
 
 	if ( $self->can('SetLayoutDirection') ) {
 		$self->SetLayoutDirection( Wx::wxLayout_LeftToRight );
