@@ -53,6 +53,8 @@ sub padre_setup {
 	my $mimetype = $self->{Document}->mimetype;
     if ($mimetype eq 'text/perl') {
         $self->padre_setup_style('perl');
+    } elsif ($mimetype eq 'text/pasm') {
+        $self->padre_setup_style('pasm');
     } elsif ($mimetype) {
 		# setup some default colouring
 		# for the time being it is the same as for Perl
@@ -101,6 +103,16 @@ sub padre_setup_style {
 	no strict "refs";
 	foreach my $k ( keys %{ $data->{$name}{colors} }) {
 		my $f = 'Wx::' . $k;
+		my $v = eval {$f->()};
+		if ($@) {
+			$f = 'Px::' . $k;
+			$v = eval {$f->()};
+			if ($@) {
+				warn "invalid key '$k'\n";
+				next;
+			}
+		}
+
 		$self->StyleSetForeground( $f->(), _colour($data->{$name}{colors}{$k}) );
 	}
 
