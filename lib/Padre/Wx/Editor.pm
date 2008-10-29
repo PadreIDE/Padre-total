@@ -21,6 +21,11 @@ sub new {
 }
 
 	my $data = {
+		plain => {
+			foregrounds => {
+				0 => '00007f',
+			},
+		},
 		perl => {
 			colors => {
 		wxSTC_PL_DEFAULT       => '00007f',
@@ -109,8 +114,9 @@ sub padre_setup_plain {
 
 	$self->StyleClearAll();
 
-	$self->StyleSetForeground( 0, _colour('00007f') );
-
+	foreach my $k (keys %{ $data->{plain}{forgrounds} }) {
+		$self->StyleSetForeground( $k, _colour( $data->{plain}{foregrounds}{$k} ) );
+	}
 	return;
 }
 
