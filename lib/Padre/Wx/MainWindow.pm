@@ -1291,34 +1291,9 @@ sub on_stc_change {
 	my ($self, $event) = @_;
 
 	return if $self->no_refresh;
-	my $config = Padre->ide->config;
-	return if not $config->{editor_calltips};
 
 	my $editor = $self->selected_editor;
-
-	my $pos    = $editor->GetCurrentPos;
-	my $line   = $editor->LineFromPosition($pos);
-	my $first  = $editor->PositionFromLine($line);
-	my $prefix = $editor->GetTextRange($first, $pos); # line from beginning to current position
-	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
-	if ($editor->CallTipActive) {
-		$editor->CallTipCancel;
-	}
-
-    my $doc = Padre::Documents->current or return;
-    my $keywords = $doc->keywords;
-
-	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
-
-	my $tip;
-	if ( $prefix =~ /($regex)[ (]?$/ ) {
-		my $z = $keywords->{$1};
-		return if not $z or not ref($z) or ref($z) ne 'HASH';
-		$tip = "$z->{cmd}\n$z->{exp}";
-	}
-	if ($tip) {
-		$editor->CallTipShow($editor->CallTipPosAtStart() + 1, $tip);
-	}
+	$editor->show_calltip;
 
 	return;
 }

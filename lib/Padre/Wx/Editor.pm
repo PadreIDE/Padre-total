@@ -195,5 +195,37 @@ sub set_preferences {
 	return;
 }
 
+sub show_calltip {
+	my ($self) = @_;
+
+	my $config = Padre->ide->config;
+	return if not $config->{editor_calltips};
+
+
+	my $pos    = $self->GetCurrentPos;
+	my $line   = $self->LineFromPosition($pos);
+	my $first  = $self->PositionFromLine($line);
+	my $prefix = $self->GetTextRange($first, $pos); # line from beginning to current position
+	   #$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
+	if ($self->CallTipActive) {
+		$self->CallTipCancel;
+	}
+
+    my $doc = Padre::Documents->current or return;
+    my $keywords = $doc->keywords;
+
+	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
+
+	my $tip;
+	if ( $prefix =~ /($regex)[ (]?$/ ) {
+		my $z = $keywords->{$1};
+		return if not $z or not ref($z) or ref($z) ne 'HASH';
+		$tip = "$z->{cmd}\n$z->{exp}";
+	}
+	if ($tip) {
+		$self->CallTipShow($self->CallTipPosAtStart() + 1, $tip);
+	}
+	return;
+}
 
 1;
