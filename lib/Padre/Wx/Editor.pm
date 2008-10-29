@@ -28,6 +28,10 @@ sub padre_setup {
 	$self->SetLexer( $self->{Document}->lexer );
 #	 $self->Colourise(0, $self->GetTextLength);
 
+	# the next line will change the ESC key to cut the current selection
+	# See: http://www.yellowbrain.com/stc/keymap.html
+	#$self->CmdKeyAssign(Wx::wxSTC_KEY_ESCAPE, 0, Wx::wxSTC_CMD_CUT);
+
 	$self->SetCodePage(65001); # which is supposed to be wxSTC_CP_UTF8
 	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
 
