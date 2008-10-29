@@ -4,8 +4,10 @@ use strict;
 BEGIN {
 	$|  = 1;
 	$^W = 1;
+	$DB::single = 1;
 }
 
+use Test::NeedsDisplay;
 use Test::More tests => 10;
 
 use Class::Autouse ':devel';

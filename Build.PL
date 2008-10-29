@@ -66,6 +66,7 @@ my $builder = Padre::Install->new(
 		'Test::More'                => '0.47',
 		'Test::Exception'           => 0,
 		'Test::NoWarnings'          => 0,
+		'Test::NeedsDisplay'        => '1.05',
 	},
 	meta_merge => {
 		resources => {

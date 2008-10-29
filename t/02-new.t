@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Test::NeedsDisplay;
 use Test::More tests => 5; # + 16;
 use Test::Exception;
 use Test::NoWarnings;

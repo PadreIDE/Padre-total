@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use Test::NeedsDisplay;
 
 use Test::More;
 plan skip_all => 'Needs Test::Compile 0.08' if not eval "use Test::Compile 0.08; 1";

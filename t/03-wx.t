@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Test::NeedsDisplay;
 use File::Temp qw(tempdir);
 use Test::More tests => 1;
 use t::lib::Padre;

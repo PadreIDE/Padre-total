@@ -2,6 +2,7 @@
 
 use strict;
 use warnings;
+use Test::NeedsDisplay;
 
 my $CR   = "\015";
 my $LF   = "\012";

@@ -2,8 +2,7 @@
 
 use strict;
 use warnings;
-
-
+use Test::NeedsDisplay;
 use Test::More;
 use t::lib::Padre;
 use Padre::Util 'get_matches';
