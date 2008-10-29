@@ -281,6 +281,12 @@ sub refresh_all {
 	$self->refresh_toolbar;
 	$self->refresh_status;
 	$self->refresh_methods;
+	
+	my $id = $self->{notebook}->GetSelection();
+	if (defined $id and $id >= 0) {
+		$self->{notebook}->GetPage($id)->SetFocus;
+	}
+
 	return;
 }
 
