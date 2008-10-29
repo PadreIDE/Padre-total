@@ -991,14 +991,17 @@ sub _save_buffer {
 # Returns false on cancel.
 sub on_close {
 	my $self = shift;
-	$self->close(@_);
+	$self->close;
 	$self->refresh_all;
 }
 
 sub close {
-	my $self = shift;
+	my ($self, $id) = @_;
 
-	my $doc     = $self->selected_document or return;
+	$id = defined $id ? $id : $self->{notebook}->GetSelection;
+
+	my $doc = Padre::Documents->by_id($id) or return;
+
 	local $self->{_no_refresh} = 1;
 	
 
@@ -1018,8 +1021,7 @@ sub close {
 			return 0;
 		}
 	}
-	my $pageid = $self->{notebook}->GetSelection;
-	$self->{notebook}->DeletePage($pageid);
+	$self->{notebook}->DeletePage($id);
 
 	# Update the alt-n menus
 	$self->{menu}->remove_alt_n_menu;
