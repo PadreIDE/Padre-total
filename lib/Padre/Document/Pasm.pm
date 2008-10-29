@@ -15,11 +15,17 @@ sub colourise {
 
 	$self->remove_color;
 
-	my $editor = $self->editor;
-	my $text   = $self->text_get;
+	my $editor   = $self->editor;
+	my $text     = $self->text_get;
+	my @keywords = qw(substr save print branch new set end 
+	                 sub abs gt lt eq shift get_params if 
+	                 getstdin getstdout readline bsr inc 
+	                 push dec mul pop ret sweepoff trace 
+	                 restore ge le);
+	my $keywords = join '|', sort {length $b <=> length $a} @keywords;
 
 	my %regex_of = (
-		PASM_KEYWORD  => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
+		PASM_KEYWORD  => qr/$keywords/,
 		PASM_REGISTER => qr/\$?[ISPN]\d+/,
 		PASM_LABEL    => qr/^\s*\w*:/m,
 		PASM_STRING   => qr/(['"]).*\1/,
