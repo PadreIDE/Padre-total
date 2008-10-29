@@ -73,7 +73,9 @@ sub padre_setup_perl {
 	$self->padre_setup_plain;
 
 	no strict "refs";
-	my %colors = (
+	my $data = {
+		perl => {
+			colors => {
 		wxSTC_PL_DEFAULT       => '00007f',
 		wxSTC_PL_ERROR         => 'ff0000',
 		wxSTC_PL_COMMENTLINE   => '007f00',
@@ -111,10 +113,12 @@ sub padre_setup_perl {
 		#define SCE_PL_SUB_PROTOTYPE 40
 		#define SCE_PL_FORMAT_IDENT 41
 		#define SCE_PL_FORMAT 42
-	);
+		},
+		},
+	};
 
-	foreach my $k (keys %colors) {
-		my @c = map {hex($_)} $colors{$k} =~ /(..)(..)(..)/;
+	foreach my $k ( keys %{ $data->{perl}{colors} }) {
+		my @c = map {hex($_)} $data->{perl}{colors}{$k} =~ /(..)(..)(..)/;
 		my $f = 'Wx::' . $k;
 		$self->StyleSetForeground( $f->(), Wx::Colour->new(@c));
 	}
