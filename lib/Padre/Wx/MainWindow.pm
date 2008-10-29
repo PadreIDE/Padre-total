@@ -1042,10 +1042,17 @@ sub on_close_all {
 	return $self->_close_all;
 }
 
-sub _close_all {
+sub on_close_all_but_current {
 	my $self = shift;
+	return $self->_close_all( $self->{notebook}->GetSelection );
+}
+
+sub _close_all {
+	my ($self, $skip) = @_;
+
 	$self->Freeze;
 	foreach my $id ( reverse $self->pageids ) {
+		next if defined $skip and $skip == $id;
 		$self->close( $id ) or return 0;
 	}
 	$self->Thaw;

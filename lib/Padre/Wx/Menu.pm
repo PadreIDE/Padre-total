@@ -56,6 +56,10 @@ sub new {
 		$menu->{file}->Append( -1, 'Close All' ),
 		sub { $_[0]->on_close_all },
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{file}->Append( -1, 'Close All but Current Document' ),
+		sub { $_[0]->on_close_all_but_current },
+	);
 	$menu->{file}->AppendSeparator;
 
 	# Saving

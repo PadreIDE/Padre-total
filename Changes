@@ -6,6 +6,7 @@ Changes for Padre.
 	Start using File::Which to locate the perl interpreter
        (if padre is running from a par archive). (SZABGAB)
     Fix the Split Window menu option to really work. (SZABGAB)
+    Adding "Close All but Current Document" menu option. (SZABGAB)
 
 v0.14 2008.10.27
 
