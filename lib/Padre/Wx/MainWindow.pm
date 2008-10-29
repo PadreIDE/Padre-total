@@ -1280,6 +1280,7 @@ sub on_stc_update_ui {
 	# check for brace, on current position, higlight the matching brace
 	my $editor = $self->selected_editor;
 	$editor->highlight_braces;
+	$editor->show_calltip;
 
 	$self->refresh_status;
 	$self->refresh_toolbar;
@@ -1291,9 +1292,6 @@ sub on_stc_change {
 	my ($self, $event) = @_;
 
 	return if $self->no_refresh;
-
-	my $editor = $self->selected_editor;
-	$editor->show_calltip;
 
 	return;
 }
