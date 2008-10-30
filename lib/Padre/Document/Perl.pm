@@ -99,4 +99,24 @@ sub get_function_regex {
 	return qr{sub\s+$sub\b};
 }
 
+
+sub get_command {
+	my $self     = shift;
+
+	# Check the file name
+	my $filename = $self->filename;
+	unless ( $filename =~ /\.pl$/i ) {
+		die "Only .pl files can be executed\n";
+	}
+
+	# Run with the same Perl that launched Padre
+	# TODO: get preferred Perl from configuration
+	my $perl = Padre->perl_interpreter;
+
+	my $dir = File::Basename::dirname($filename);
+	chdir $dir;
+	return qq{"$perl" "$filename"};
+}
+
+
 1;

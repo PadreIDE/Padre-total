@@ -509,25 +509,6 @@ sub run_command {
 	return;
 }
 
-# these should be renamed...
-sub run_pasm {
-	my $self     = shift;
-	my $document = Padre::Documents->current;
-
-	if (not $ENV{PARROT_PATH}) {
-		return $self->error("PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.");
-	}
-	my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
-	if (not -x $parrot) {
-		return $self->error("$parrot is not an executable.");
-	}
-	my $filename = $document->filename;
-
-	$self->run_command( qq{"$parrot" "$filename"} );
-
-	return;
-}
-
 # This should really be somewhere else, but can stay here for now
 sub run_script {
 	my $self     = shift;
@@ -546,33 +527,20 @@ sub run_script {
 		$self->on_save_all;
 	}
 	
-	if ( $document->isa('Padre::Document::Pasm') ) {
-		return $self->run_pasm;
+	if ( not $document->can('get_command') ) {
+		return $self->error("No execution mode was defined for this document");
 	}
-
-	if ( $document->isa('Padre::Document::Perl') ) {
-		return $self->run_perl;
+	
+	my $cmd = eval { $document->get_command };
+	if ($@) {
+		chomp $@;
+		$self->error($@);
+		return;
 	}
-	return $self->error("No execution mode was defined for this document");
-}
-
-sub run_perl {
-	my $self     = shift;
-	my $document = Padre::Documents->current;
-
-	# Check the file name
-	my $filename = $document->filename;
-	unless ( $filename =~ /\.pl$/i ) {
-		return $self->error("Only .pl files can be executed");
+	if ($cmd) {
+		$self->run_command( $cmd );
 	}
-
-	# Run with the same Perl that launched Padre
-	# TODO: get preferred Perl from configuration
-	my $perl = Padre->perl_interpreter;
-
-	my $dir = File::Basename::dirname($filename);
-	chdir $dir;
-	$self->run_command( qq{"$perl" "$filename"} );
+	return;
 }
 
 sub debug_perl {

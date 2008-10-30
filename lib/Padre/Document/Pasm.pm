@@ -154,4 +154,22 @@ sub remove_color {
 	return;
 }
 
+sub get_command {
+	my $self     = shift;
+	
+	my $filename = $self->filename;
+
+	if (not $ENV{PARROT_PATH}) {
+		die "PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.\n";
+	}
+	my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
+	if (not -x $parrot) {
+		die "$parrot is not an executable.\n";
+	}
+
+	return qq{"$parrot" "$filename"};
+
+}
+
+
 1;
