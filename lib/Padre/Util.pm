@@ -113,6 +113,7 @@ use constant {
 	PASM_LABEL    => 3,
 	PASM_STRING   => 4,
 	PASM_COMMENT  => 5,
+	PASM_POD      => 6,
 };
 
 1;

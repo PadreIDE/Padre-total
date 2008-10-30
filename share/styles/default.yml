@@ -49,3 +49,4 @@ pasm:
   PASM_LABEL:       aa007f
   PASM_STRING:      00aa7f
   PASM_COMMENT:     0000aa
+  PASM_POD:         0000ff
