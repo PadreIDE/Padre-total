@@ -328,7 +328,7 @@ sub new {
 	$menu->{run_run_script} = $menu->{run}->Append( -1, "Run Script\tF5" );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{run_run_script},
-		sub { $_[0]->run_perl },
+		sub { $_[0]->run_script },
 	);
 	$menu->{run_run_command} = $menu->{run}->Append( -1, "Run Command\tCtrl-F5" );
 	Wx::Event::EVT_MENU( $win,

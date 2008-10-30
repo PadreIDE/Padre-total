@@ -529,7 +529,7 @@ sub run_pasm {
 }
 
 # This should really be somewhere else, but can stay here for now
-sub run_perl {
+sub run_script {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
