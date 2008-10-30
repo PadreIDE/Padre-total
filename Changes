@@ -12,6 +12,10 @@ Changes for Padre.
     Before saving, check if file has changed on disk. (SZABGAB)
     New menu option: "Reload file". (SZABGAB)
     Move style definition to external yaml file. (SZABGAB)
+    Separate highlighting definition for PASM files. (SZABGAB)
+    Reorganize Menus (make the Perl menu really only perl specific). (SZABGAB)
+    Allow the execution of PASM files using parrot if PARROT_PATH
+        is defined. (SZABGAB)
 
 v0.14 2008.10.27
 

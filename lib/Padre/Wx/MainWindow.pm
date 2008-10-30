@@ -509,12 +509,35 @@ sub run_command {
 	return;
 }
 
+# these should be renamed...
+sub run_pasm {
+	my $self     = shift;
+	my $document = Padre::Documents->current;
+
+	if (not $ENV{PARROT_PATH}) {
+		return $self->error("PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.");
+	}
+	my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
+	if (not -x $parrot) {
+		return $self->error("$parrot is not an executable.");
+	}
+	my $filename = $document->filename;
+
+	$self->run_command( qq{"$parrot" "$filename"} );
+
+	return;
+}
+
 # This should really be somewhere else, but can stay here for now
 sub run_perl {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
 	return $self->error("No open document") if not $document;
+	if ( $document->isa('Padre::Document::Pasm') ) {
+		return $self->run_pasm;
+	}
+
 	unless ( $document->isa('Padre::Document::Perl') ) {
 		return $self->error("Not a Perl document");
 	}
