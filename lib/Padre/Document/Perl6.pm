@@ -47,4 +47,27 @@ sub remove_color {
 	return;
 }
 
+
+sub get_command {
+	my $self     = shift;
+	
+	my $filename = $self->filename;
+
+	if (not $ENV{PARROT_PATH}) {
+		die "PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.\n";
+	}
+	my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
+	if (not -x $parrot) {
+		die "$parrot is not an executable.\n";
+	}
+	my $rakudo = File::Spec->catfile($ENV{PARROT_PATH}, 'languages', 'perl6', 'perl6.pbc');
+	if (not -e $rakudo) {
+		die "Cannot find Rakudo ($rakudo)\n";
+	}
+
+	return qq{"$parrot" "$rakudo" "$filename"};
+
+}
+
+
 1;
