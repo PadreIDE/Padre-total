@@ -17,6 +17,7 @@ my @cmd  = (
         qq[$perl],
         qq[-I$FindBin::Bin/lib],
         qq[-I$FindBin::Bin/../plugins/par/lib],
+        qq[-I$FindBin::Bin/../plugins/perltidy/lib],
 );
 if ( grep { $_ eq '-d' } @ARGV ) {
         @ARGV = grep { $_ ne '-d' } @ARGV;
