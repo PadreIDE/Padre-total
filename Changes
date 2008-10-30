@@ -16,7 +16,8 @@ Changes for Padre.
     Reorganize Menus (make the Perl menu really only perl specific). (SZABGAB)
     Allow the execution of PASM files using parrot if PARROT_PATH
         is defined. (SZABGAB)
-    Load Embed::Parrot if it is available. (SZABGAB)
+    Load Parrot::Embed if it is available. (SZABGAB)
+    Add Padre::Plugin::Parrot to show how to use pir for plugin writing. (SZABGAB)
 
 v0.14 2008.10.27
 

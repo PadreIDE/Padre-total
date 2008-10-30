@@ -27,12 +27,12 @@ sub colourise {
 
 	my ($KEYWORD, $REGISTER, $LABEL, $DIRECTIVES, $STRING, $COMMENT) = (1 .. 6);
 	my %regex_of = (
-		$KEYWORD    => qr/print|branch|new|set|end|sub|abs|gt|lt|eq/,
+		$KEYWORD    => qr/\b(print|branch|new|set|end|sub|abs|gt|lt|eq)\b/,
 		$REGISTER   => qr/I0|N\d+/,
 		$LABEL      => qr/^\w*:/m,
 		$STRING     => qr/(['"]).*\1/,
 		$COMMENT    => qr/#.*/,
-		$DIRECTIVES => qr/^\./m,
+		$DIRECTIVES => qr/\.\w+/m,
 	);
 	foreach my $color (keys %regex_of) {
 		while ($text =~ /$regex_of{$color}/g) {

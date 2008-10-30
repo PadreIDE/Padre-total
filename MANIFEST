@@ -22,6 +22,8 @@ lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
 lib/Padre/Document/Pir.pm
 
+lib/Padre/Plugin/Parrot.pm
+
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm
 lib/Padre/Wx/Dialog.pm
