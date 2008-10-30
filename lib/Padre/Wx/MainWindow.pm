@@ -534,19 +534,6 @@ sub run_script {
 	my $document = Padre::Documents->current;
 
 	return $self->error("No open document") if not $document;
-	if ( $document->isa('Padre::Document::Pasm') ) {
-		return $self->run_pasm;
-	}
-
-	unless ( $document->isa('Padre::Document::Perl') ) {
-		return $self->error("Not a Perl document");
-	}
-
-	# Check the file name
-	my $filename = $document->filename;
-	unless ( $filename =~ /\.pl$/i ) {
-		return $self->error("Only .pl files can be executed");
-	}
 
 	# Apply the user's save-on-run policy
 	# TODO: Make this code suck less
@@ -557,6 +544,26 @@ sub run_script {
 		$self->on_save_all;
 	} elsif ( $config->{run_save} eq 'all_buffer' ) {
 		$self->on_save_all;
+	}
+	
+	if ( $document->isa('Padre::Document::Pasm') ) {
+		return $self->run_pasm;
+	}
+
+	if ( $document->isa('Padre::Document::Perl') ) {
+		return $self->run_perl;
+	}
+	return $self->error("No execution mode was defined for this document");
+}
+
+sub run_perl {
+	my $self     = shift;
+	my $document = Padre::Documents->current;
+
+	# Check the file name
+	my $filename = $document->filename;
+	unless ( $filename =~ /\.pl$/i ) {
+		return $self->error("Only .pl files can be executed");
 	}
 
 	# Run with the same Perl that launched Padre
