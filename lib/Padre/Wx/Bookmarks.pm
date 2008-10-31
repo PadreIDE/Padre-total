@@ -11,7 +11,7 @@ use Padre::Wx;
 our $VERSION = '0.14';
 
 sub dialog {
-	my ($self, $text) = @_;
+	my ($class, $main, $text) = @_;
 
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	my @rows;
@@ -21,7 +21,7 @@ sub dialog {
 	}
 
 	my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
-	my $dialog = Wx::Dialog->new( $self, -1, $title, [-1, -1], [-1, -1]);
+	my $dialog = Wx::Dialog->new( $main, -1, $title, [-1, -1], [-1, -1]);
 
 	if ($text) {
 		$dialog->{_widgets_}{entry}  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
@@ -77,40 +77,44 @@ sub dialog {
 		my $page = Wx::Panel->new( $dialog->{_widgets_}{tb} );
 		$dialog->{_widgets_}{tb}->AddPage( $page, $name, 0, $count );
 	}
+	
+	return $dialog;
+}
 
-
+sub show_modal {
+	my ($dialog) = @_;
 	my $ret = $dialog->ShowModal;
 	if ( $ret eq Wx::wxID_CANCEL ) {
 		$dialog->Destroy;
 		return;
-	}
-
-	if ($text) {
-	   my %data;
-	   my $shortcut = $dialog->{_widgets_}{entry}->GetValue;
-	   $shortcut =~ s/:/ /g; # YAML::Tiny limitation
-	   $data{shortcut} = $shortcut;
-	   $dialog->Destroy;
-	   return ($dialog, \%data);
 	} else {
-	   return 1;
+		return 1;
 	}
 }
 
-sub on_set_bookmark {
-	my ($self, $event) = @_;
+sub _get_data {
+	my ($dialog) = @_;
 
-	my $pageid = $self->{notebook}->GetSelection();
-	my $editor = $self->{notebook}->GetPage($pageid);
+   my %data;
+   my $shortcut = $dialog->{_widgets_}{entry}->GetValue;
+   $shortcut =~ s/:/ /g; # YAML::Tiny limitation
+   $data{shortcut} = $shortcut;
+   $dialog->Destroy;
+   return ($dialog, \%data);
+}
+
+sub set_bookmark {
+	my ($class, $main) = @_;
+
+	my $pageid = $main->{notebook}->GetSelection();
+	my $editor = $main->{notebook}->GetPage($pageid);
 	my $line   = $editor->GetCurrentLine;
-	my $path   = $self->selected_filename;
+	my $path   = $main->selected_filename;
 	my $file   = File::Basename::basename($path || '');
 
-	my $data = dialog($self, "$file line $line");
-	return if not $data;
-
-
-	#print Dumper $data;
+	my $dialog = $class->dialog($main, "$file line $line");
+	return if not show_modal($dialog);
+	my $data   = _get_data($dialog);
 
 	my $config = Padre->ide->config;
 	my $shortcut = delete $data->{shortcut};
@@ -126,12 +130,11 @@ sub on_set_bookmark {
 	return;
 }
 
-sub on_goto_bookmark {
-	my ($self, $event) = @_;
+sub goto_bookmark {
+	my ($class, $main) = @_;
 
-	my ($dialog, $data) = dialog($self);
-	return if not $data;
-print "$dialog\n";
+	my $dialog = $class->dialog($main);
+	return if show_modal($dialog);
 	my $config = Padre->ide->config;
 	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
@@ -143,20 +146,20 @@ print "$dialog\n";
 
 	if (not defined $pageid) {
 		# find if the given file is in memory
-		$pageid = $self->find_editor_of_file($file);
+		$pageid = $main->find_editor_of_file($file);
 	}
 	if (not defined $pageid) {
 		# load the file
 		if (-e $file) {
-		    $self->setup_editor($file);
-		    $pageid = $self->find_editor_of_file($file);
+		    $main->setup_editor($file);
+		    $pageid = $main->find_editor_of_file($file);
 		}
 	}
 
 	# go to the relevant editor and row
 	if (defined $pageid) {
-	   $self->on_nth_pane($pageid);
-	   my $page = $self->{notebook}->GetPage($pageid);
+	   $main->on_nth_pane($pageid);
+	   my $page = $main->{notebook}->GetPage($pageid);
 	   $page->GotoLine($line);
 	}
 
@@ -164,9 +167,8 @@ print "$dialog\n";
 }
 
 sub on_delete_bookmark {
-	my ($self, $event) = @_;
+	my ($dialog, $event) = @_;
 
-	my $dialog = $self;
 	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };

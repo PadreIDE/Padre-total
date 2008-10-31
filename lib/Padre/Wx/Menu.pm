@@ -280,13 +280,12 @@ sub new {
 	$menu->{view}->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Set Bookmark\tCtrl-B" ),
-		sub { Padre::Wx::Bookmarks::on_set_bookmark($_[0]) },
+		sub { Padre::Wx::Bookmarks->set_bookmark($_[0]) },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, "Goto Bookmark\tCtrl-Shift-B" ),
-		sub { Padre::Wx::Bookmarks::on_goto_bookmark($_[0]) },
+		sub { Padre::Wx::Bookmarks->goto_bookmark($_[0]) },
 	);
-
 
 
 
