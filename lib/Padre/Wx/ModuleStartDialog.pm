@@ -22,7 +22,9 @@ sub on_start {
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
-	my $dialog = Padre::Wx::Dialog->new( $win, -1, "Module Start", [-1, -1], [310, 210]);
+	my $dialog = Padre::Wx::Dialog->new(
+		std => [$win, -1, "Module Start", [-1, -1], [310, 210]],
+	);
 
 	my $layout = get_layout($config);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [100, 200], [5, 5]);

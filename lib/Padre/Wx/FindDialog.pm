@@ -30,7 +30,9 @@ sub dialog {
 
 	my $search_term = $args->{term} || '';
 
-	my $dialog = Padre::Wx::Dialog->new( $win, -1, "Search", [-1, -1], [440, 220]);
+	my $dialog = Padre::Wx::Dialog->new(
+		std => [$win, -1, "Search", [-1, -1], [440, 220]],
+	);
 
 	my $layout = get_layout($search_term, $config);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [150, 200]);

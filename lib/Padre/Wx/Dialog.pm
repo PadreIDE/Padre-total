@@ -23,9 +23,9 @@ Padre::Wx::Dialog
 =cut
 
 sub new {
-	my ($class, @args) = @_;
-	
-	my $self = $class->SUPER::new(@args);
+	my ($class, %args) = @_;
+
+	my $self = $class->SUPER::new(@{ $args{std} });
 
 	return $self;
 }
