@@ -50,4 +50,28 @@ sub clear {
 	return 1;
 }
 
+sub style_good {
+	my $self = shift;
+	$self->SetBackgroundColour('#CCFFCC');
+	return 1;
+}
+
+sub style_bad {
+	my $self = shift;
+	$self->SetBackgroundColour('#FFCCCC');
+	return 1;
+}
+
+sub style_neutral {
+	my $self = shift;
+	$self->SetBackgroundColour('#FFFFFF');
+	return 1;
+}
+
+sub style_busy {
+	my $self = shift;
+	$self->SetBackgroundColour('#CCCCCC');
+	return 1;
+}
+
 1;
