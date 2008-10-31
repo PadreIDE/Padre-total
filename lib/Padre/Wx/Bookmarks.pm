@@ -62,7 +62,7 @@ sub dialog {
 		$dialog->Destroy;
 		return;
 	}
-  
+
 	if ($text) {
 	   my %data;
 	   my $shortcut = $entry->GetValue;
@@ -71,7 +71,7 @@ sub dialog {
 	   $dialog->Destroy;
 	   return \%data;
 	} else {
-	   return;
+	   return 1;
 	}
 }
 
@@ -135,7 +135,8 @@ sub on_set_bookmark {
 sub on_goto_bookmark {
 	my ($self, $event) = @_;
 
-	dialog($self);
+	my $data = dialog($self);
+	return if not $data;
 
 	my $config = Padre->ide->config;
 	my $selection = $tb->GetSelection;
