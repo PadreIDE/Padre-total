@@ -281,7 +281,7 @@ use Class::Autouse qw{
 	Padre::Wx::FindDialog
 	Padre::Wx::GoToLine
 	Padre::Wx::Dialog::ModuleStart
-	Padre::Wx::Preferences
+	Padre::Wx::Dialog::Preferences
 };
 
 # Globally shared Perl detection object

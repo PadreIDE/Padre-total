@@ -1,4 +1,4 @@
-package Padre::Wx::Preferences;
+package Padre::Wx::Dialog::Preferences;
 
 use 5.008;
 use strict;

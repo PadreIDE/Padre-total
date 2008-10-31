@@ -1160,7 +1160,7 @@ sub on_preferences {
 	my $self   = shift;
 	my $config = Padre->ide->config;
 
-	Padre::Wx::Preferences->run( $self, $config );
+	Padre::Wx::Dialog::Preferences->run( $self, $config );
 
 	foreach my $editor ( $self->pages ) {
 		$editor->set_preferences;
