@@ -80,7 +80,7 @@ sub dialog {
 	);
 
 	foreach my $cb (@cbs) {
-		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
+		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_widgets_}{_find_choice_}->SetFocus; });
 	}
 	$dialog->{_widgets_}{_find_}->SetDefault;
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_find_},        \&find_clicked);
