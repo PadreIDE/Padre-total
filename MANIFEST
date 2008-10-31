@@ -27,12 +27,12 @@ lib/Padre/Plugin/Parrot.pm
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Bookmarks.pm
 lib/Padre/Wx/Dialog.pm
+lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Editor.pm
 lib/Padre/Wx/FindDialog.pm
 lib/Padre/Wx/GoToLine.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
-lib/Padre/Wx/ModuleStartDialog.pm
 lib/Padre/Wx/Output.pm
 lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Preferences.pm

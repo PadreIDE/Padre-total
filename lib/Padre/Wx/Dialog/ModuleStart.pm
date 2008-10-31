@@ -1,4 +1,4 @@
-package Padre::Wx::ModuleStartDialog;
+package Padre::Wx::Dialog::ModuleStart;
 
 use 5.008;
 use strict;
@@ -99,7 +99,7 @@ sub ok_clicked {
 
 	my $data = $dialog->get_data;
 	$dialog->Destroy;
-	print Dumper $data;
+	#print Dumper $data;
 
 	my $config = Padre->ide->config;
 	$config->{module_start}{author_name} = $data->{_author_name_};

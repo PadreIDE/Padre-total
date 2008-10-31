@@ -125,7 +125,7 @@ sub new {
 	# Module::Start
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( -1, 'Start Module' ),
-		\&Padre::Wx::ModuleStartDialog::on_start,
+		\&Padre::Wx::Dialog::ModuleStart::on_start,
 	);
 
 	$menu->{file}->AppendSeparator;
