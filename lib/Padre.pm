@@ -278,8 +278,8 @@ use Class::Autouse qw{
 	Padre::Wx::Menu::Help
 	Padre::Wx::Ack
 	Padre::Wx::Bookmarks
-	Padre::Wx::FindDialog
 	Padre::Wx::GoToLine
+	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
 	Padre::Wx::Dialog::Preferences
 };

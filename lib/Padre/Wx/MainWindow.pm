@@ -1301,7 +1301,7 @@ sub on_function_selected {
 	return if not defined $sub;
 
 	my $doc = $self->selected_document;
-	Padre::Wx::FindDialog::_search( search_term => $doc->get_function_regex($sub) );
+	Padre::Wx::Dialog::Find::_search( search_term => $doc->get_function_regex($sub) );
 	$self->selected_editor->SetFocus;
 	return;
 }
