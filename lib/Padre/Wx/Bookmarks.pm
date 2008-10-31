@@ -25,6 +25,13 @@ sub dialog {
 	my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
 	my $dialog = Wx::Dialog->new( $self, -1, $title, [-1, -1], [-1, -1]);
 
+	my $entry;
+	if ($text) {
+		$entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
+		$rows[0]->Add( $entry );
+	}
+
+	my ($height, $width, $shortcuts) = list_bookmarks($dialog, \@rows);
 
 	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
 	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
@@ -34,20 +41,12 @@ sub dialog {
 	Wx::Event::EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
 
+	my $delete  = Wx::Button->new( $dialog, Wx::wxID_DELETE, '', [-1, -1], , $ok->GetSize );
+	Wx::Event::EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
+
 	$rows[3]->Add( $ok );
 	$rows[3]->Add( $cancel );
-
-
-	my ($height, $width) = list_bookmarks($dialog, \@rows, $ok->GetSize);
-
-	my $entry;
-	if ($text) {
-		$entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
-		$entry->SetFocus;
-		$rows[0]->Add( $entry );
-	} else {
-		$tb->SetFocus;
-	}
+	$rows[3]->Add( $delete );
 
 
 	$dialog->SetSizer($box);
@@ -56,6 +55,11 @@ sub dialog {
 	my $dialog_width = max($width, 2* $bw, 300);
 	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
 
+	if ($text) {
+		$entry->SetFocus;
+	} else {
+		$tb->SetFocus;
+	}
 
 	my $ret = $dialog->ShowModal;
 	if ( $ret eq Wx::wxID_CANCEL ) {
@@ -76,7 +80,7 @@ sub dialog {
 }
 
 sub list_bookmarks {
-	my ($dialog, $rows, $button_size) = @_;
+	my ($dialog, $rows) = @_;
 
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
@@ -94,13 +98,9 @@ sub list_bookmarks {
 		}
 		$rows->[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
 		$rows->[2]->Add( $tb );
-
-		my $delete  = Wx::Button->new( $dialog, Wx::wxID_DELETE, '', [-1, -1], $button_size );
-		Wx::Event::EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
-		$rows->[3]->Add( $delete );
 	}
 
-   return ($height, $width);
+   return ($height, $width, scalar @shortcuts);
 }
 
 sub on_set_bookmark {
