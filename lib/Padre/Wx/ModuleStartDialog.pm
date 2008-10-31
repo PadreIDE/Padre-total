@@ -97,7 +97,7 @@ sub cancel_clicked {
 sub ok_clicked {
 	my ($dialog, $event) = @_;
 
-	my $data = Padre::Wx::Dialog::get_data_from( $dialog, get_layout() );
+	my $data = $dialog->get_data;
 	$dialog->Destroy;
 	print Dumper $data;
 

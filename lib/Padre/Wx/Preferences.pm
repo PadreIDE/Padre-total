@@ -64,7 +64,7 @@ sub run {
 		return;
 	}
 
-	my $data = Padre::Wx::Dialog::get_data_from( $dialog, get_layout() );
+	my $data = $dialog->get_data;
 
 	foreach my $f (qw(editor_use_tabs pod_maxlist pod_minlist editor_tabwidth)) {
 		$config->{$f} = $data->{$f};

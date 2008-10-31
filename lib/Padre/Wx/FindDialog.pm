@@ -175,7 +175,7 @@ sub find_clicked {
 sub _get_data_from {
 	my ( $dialog ) = @_;
 
-	my $data = Padre::Wx::Dialog::get_data_from($dialog, get_layout());
+	my $data = $dialog->get_data;
 
 	#print Data::Dumper::Dumper $data;
 

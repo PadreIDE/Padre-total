@@ -28,6 +28,7 @@ sub new {
 	my $self = $class->SUPER::new(@{ $args{std} });
 	$args{top_left} ||= [0, 0];
 	$self->build_layout($args{layout}, $args{width}, $args{top_left});
+	$self->{_layout_} = $args{layout};
 
 	return $self;
 }
@@ -105,9 +106,10 @@ sub build_layout {
 	return;
 }
 
-sub get_data_from {
-	my ( $dialog, $layout ) = @_;
+sub get_data {
+	my ( $dialog ) = @_;
 
+	my $layout = $dialog->{_layout_};
 	my %data;
 	foreach my $i (0..@$layout-1) {
 		foreach my $j (0..@{$layout->[$i]}-1) {
