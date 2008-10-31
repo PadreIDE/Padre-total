@@ -31,7 +31,17 @@ sub dialog {
 		$rows[0]->Add( $entry );
 	}
 
-	my ($height, $width, $shortcuts) = list_bookmarks($dialog, \@rows);
+	my ($height, $width, $shortcuts) = list_bookmarks();
+
+	$tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
+	$rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
+	$rows[2]->Add( $tb );
+	foreach my $name ( @$shortcuts ) {
+		my $count = $tb->GetPageCount;
+		my $page = Wx::Panel->new( $tb );
+		$tb->AddPage( $page, $name, 0, $count );
+	}
+
 
 	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
 	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
@@ -46,8 +56,9 @@ sub dialog {
 
 	$rows[3]->Add( $ok );
 	$rows[3]->Add( $cancel );
-	$rows[3]->Add( $delete );
-
+	if (@$shortcuts) {
+		$rows[3]->Add( $delete );
+	}
 
 	$dialog->SetSizer($box);
 	my ($bw, $bh) = $ok->GetSizeWH;
@@ -80,7 +91,6 @@ sub dialog {
 }
 
 sub list_bookmarks {
-	my ($dialog, $rows) = @_;
 
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
@@ -90,17 +100,9 @@ sub list_bookmarks {
 	if (@shortcuts) {
 		$height = @shortcuts * 27; # should be height of font
 		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
-		$tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
-		foreach my $name ( @shortcuts ) {
-		    my $count = $tb->GetPageCount;
-		    my $page = Wx::Panel->new( $tb );
-		    $tb->AddPage( $page, $name, 0, $count );
-		}
-		$rows->[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
-		$rows->[2]->Add( $tb );
 	}
 
-   return ($height, $width, scalar @shortcuts);
+   return ($height, $width, \@shortcuts);
 }
 
 sub on_set_bookmark {
