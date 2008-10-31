@@ -48,7 +48,7 @@ sub run {
 		grep { $_ ne $config->{main_startup} } qw( new nothing last )
 	);
 
-	my $dialog = Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [450, 170], Wx::wxDEFAULT_FRAME_STYLE);
+	my $dialog = Padre::Wx::Dialog->new( $win, -1, "Preferences", [-1, -1], [450, 170], Wx::wxDEFAULT_FRAME_STYLE);
 
 	my $layout = get_layout($config, \@values);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [250, 200]);

@@ -8,6 +8,8 @@ our $VERSION = '0.14';
 
 use Padre::Wx;
 
+use base 'Wx::Dialog';
+
 =head1 NAME
 
 Padre::Wx::Dialog
