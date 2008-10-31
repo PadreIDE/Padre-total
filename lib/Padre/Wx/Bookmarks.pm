@@ -10,8 +10,6 @@ use Padre::Wx;
 
 our $VERSION = '0.14';
 
-my $tb;
-
 sub dialog {
 	my ($self, $text) = @_;
 
@@ -25,10 +23,9 @@ sub dialog {
 	my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
 	my $dialog = Wx::Dialog->new( $self, -1, $title, [-1, -1], [-1, -1]);
 
-	my $entry;
 	if ($text) {
-		$entry  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
-		$rows[0]->Add( $entry );
+		$dialog->{_widgets_}{entry}  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
+		$rows[0]->Add( $dialog->{_widgets_}{entry} );
 	}
 
 
@@ -41,9 +38,9 @@ sub dialog {
 		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
 	}
 
-	$tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
+	$dialog->{_widgets_}{tb} = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
 	$rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
-	$rows[2]->Add( $tb );
+	$rows[2]->Add( $dialog->{_widgets_}{tb} );
 
 	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
 	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
@@ -69,16 +66,16 @@ sub dialog {
 	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
 
 	if ($text) {
-		$entry->SetFocus;
+		$dialog->{_widgets_}{entry}->SetFocus;
 	} else {
-		$tb->SetFocus;
+		$dialog->{_widgets_}{tb}->SetFocus;
 	}
 
 
 	foreach my $name ( @shortcuts ) {
-		my $count = $tb->GetPageCount;
-		my $page = Wx::Panel->new( $tb );
-		$tb->AddPage( $page, $name, 0, $count );
+		my $count = $dialog->{_widgets_}{tb}->GetPageCount;
+		my $page = Wx::Panel->new( $dialog->{_widgets_}{tb} );
+		$dialog->{_widgets_}{tb}->AddPage( $page, $name, 0, $count );
 	}
 
 
@@ -90,11 +87,11 @@ sub dialog {
 
 	if ($text) {
 	   my %data;
-	   my $shortcut = $entry->GetValue;
+	   my $shortcut = $dialog->{_widgets_}{entry}->GetValue;
 	   $shortcut =~ s/:/ /g; # YAML::Tiny limitation
 	   $data{shortcut} = $shortcut;
 	   $dialog->Destroy;
-	   return \%data;
+	   return ($dialog, \%data);
 	} else {
 	   return 1;
 	}
@@ -132,11 +129,11 @@ sub on_set_bookmark {
 sub on_goto_bookmark {
 	my ($self, $event) = @_;
 
-	my $data = dialog($self);
+	my ($dialog, $data) = dialog($self);
 	return if not $data;
-
+print "$dialog\n";
 	my $config = Padre->ide->config;
-	my $selection = $tb->GetSelection;
+	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 	my $bookmark = $config->{bookmarks}{ $shortcuts[$selection] };
 
@@ -169,11 +166,12 @@ sub on_goto_bookmark {
 sub on_delete_bookmark {
 	my ($self, $event) = @_;
 
-	my $selection = $tb->GetSelection;
+	my $dialog = $self;
+	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 	delete $config->{bookmarks}{ $shortcuts[$selection] };
-	$tb->DeletePage($selection);
+	$dialog->{_widgets_}{tb}->DeletePage($selection);
 
 	return;
 }
