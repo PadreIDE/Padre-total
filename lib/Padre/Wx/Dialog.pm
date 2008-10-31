@@ -78,7 +78,7 @@ sub build_layout {
 			$row->Add($widget);
 
 			if ($name) {
-				$dialog->{$name} = $widget;
+				$dialog->{_widgets_}{$name} = $widget;
 			}
 		}
 	}
@@ -100,11 +100,11 @@ sub get_data_from {
 				next if $class eq 'Wx::Button';
 
 				if ($class eq 'Wx::DirPickerCtrl') {
-					$data{$name} = $dialog->{$name}->GetPath;
+					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
 				} elsif ($class eq 'Wx::Choice') {
-					$data{$name} = $dialog->{$name}->GetSelection;
+					$data{$name} = $dialog->{_widgets_}{$name}->GetSelection;
 				} else {
-					$data{$name} = $dialog->{$name}->GetValue;
+					$data{$name} = $dialog->{_widgets_}{$name}->GetValue;
 				}
 			}
 		}

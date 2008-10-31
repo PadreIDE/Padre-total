@@ -36,15 +36,15 @@ sub dialog {
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [150, 200]);
 
 	foreach my $cb (@cbs) {
-		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
+		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
 	}
-	$dialog->{_find_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_find_},        \&find_clicked);
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_replace_},     \&replace_clicked     );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_replace_all_}, \&replace_all_clicked );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_},      \&cancel_clicked      );
+	$dialog->{_widgets_}{_find_}->SetDefault;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_find_},        \&find_clicked);
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_},     \&replace_clicked     );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_all_}, \&replace_all_clicked );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},      \&cancel_clicked      );
 
-	$dialog->{_find_choice_}->SetFocus;
+	$dialog->{_widgets_}{_find_choice_}->SetFocus;
 	$dialog->Show(1);
 
 	return;

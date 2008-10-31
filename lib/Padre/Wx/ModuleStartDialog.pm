@@ -27,13 +27,13 @@ sub dialog {
 	my $layout = get_layout($config);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [100, 200], [5, 5]);
 
-	$dialog->{_ok_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_ok_},      \&ok_clicked      );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_},  \&cancel_clicked  );
+	$dialog->{_widgets_}{_ok_}->SetDefault;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
 
-        $dialog->{_license_choice_}->SetValue('perl');
+        $dialog->{_widgets_}{_license_choice_}->SetValue('perl');
 
-	$dialog->{_module_name_}->SetFocus;
+	$dialog->{_widgets_}{_module_name_}->SetFocus;
 	$dialog->Show(1);
 
 	return;

@@ -52,11 +52,11 @@ sub run {
 
 	my $layout = get_layout($config, \@values);
 	Padre::Wx::Dialog::build_layout($dialog, $layout, [250, 200]);
-	$dialog->{editor_tabwidth}->SetFocus;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_ok_},     sub { $dialog->EndModal(Wx::wxID_OK) } );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_cancel_}, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
+	$dialog->{_widgets_}{editor_tabwidth}->SetFocus;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},     sub { $dialog->EndModal(Wx::wxID_OK) } );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
-	$dialog->{_ok_}->SetDefault;
+	$dialog->{_widgets_}{_ok_}->SetDefault;
 	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}
