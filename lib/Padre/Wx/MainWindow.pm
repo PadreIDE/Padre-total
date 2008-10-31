@@ -776,7 +776,7 @@ sub setup_editor {
 	if ($file) {
 		my $id = $self->find_editor_of_file($file);
 		if (defined $id) {
-			Wx::MessageBox("The file '$file' is already open in tab $id", "Open error", Wx::wxOK, $self);
+			$self->on_nth_pane($id);
 			return;
 		}
 	}
