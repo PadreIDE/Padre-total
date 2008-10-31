@@ -44,12 +44,6 @@ sub dialog {
 	$tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
 	$rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
 	$rows[2]->Add( $tb );
-	foreach my $name ( @shortcuts ) {
-		my $count = $tb->GetPageCount;
-		my $page = Wx::Panel->new( $tb );
-		$tb->AddPage( $page, $name, 0, $count );
-	}
-
 
 	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
 	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
@@ -79,6 +73,14 @@ sub dialog {
 	} else {
 		$tb->SetFocus;
 	}
+
+
+	foreach my $name ( @shortcuts ) {
+		my $count = $tb->GetPageCount;
+		my $page = Wx::Panel->new( $tb );
+		$tb->AddPage( $page, $name, 0, $count );
+	}
+
 
 	my $ret = $dialog->ShowModal;
 	if ( $ret eq Wx::wxID_CANCEL ) {
