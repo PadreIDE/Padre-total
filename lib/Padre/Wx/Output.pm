@@ -7,8 +7,8 @@ package Padre::Wx::Output;
 use 5.008;
 use strict;
 use warnings;
-
-use Padre::Wx ();
+use Params::Util ();
+use Padre::Wx    ();
 
 use base 'Wx::TextCtrl';
 
@@ -27,8 +27,27 @@ sub new {
 	);
 
 	# Do custom startup stuff here
+	$self->clear;
+	$self->AppendText('No output');
 
 	return $self;
+}
+
+# A convenience not provided by the original version
+sub SetBackgroundColour {
+	my $self = shift;
+	my $arg  = shift;
+	if ( defined Params::Util::_STRING($arg) ) {
+		$arg = Wx::Colour->new($arg);
+	}
+	return $self->SUPER::SetBackgroundColour($arg);
+}
+
+sub clear {
+	my $self = shift;
+	$self->SetBackgroundColour('#FFFFFF');
+	$self->Remove( 0, $self->GetLastPosition );
+	return 1;
 }
 
 1;
