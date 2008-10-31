@@ -11,46 +11,7 @@ use Padre::Wx::Dialog;
 
 our $VERSION = '0.14';
 
-sub on_find {
-	my $main   = shift;
-	my $config = Padre->ide->config;
-	my $text   = $main->selected_text;
-	$text = '' if not defined $text;
-
-	# TODO: if selection is more than one lines then consider it as the limit
-	# of the search and replace and not as the string to be used
-
-	__PACKAGE__->dialog( $main, $config, { term => $text } );
-}
-
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
-
-sub dialog {
-	my ( $class, $win, $config, $args) = @_;
-
-	my $search_term = $args->{term} || '';
-
-	my $layout = get_layout($search_term, $config);
-	my $dialog = Padre::Wx::Dialog->new(
-		std    => [$win, -1, "Search", [-1, -1], [440, 220]],
-		layout => $layout,
-		width  => [150, 200],
-	);
-
-	foreach my $cb (@cbs) {
-		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
-	}
-	$dialog->{_widgets_}{_find_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_find_},        \&find_clicked);
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_},     \&replace_clicked     );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_all_}, \&replace_all_clicked );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},      \&cancel_clicked      );
-
-	$dialog->{_widgets_}{_find_choice_}->SetFocus;
-	$dialog->Show(1);
-
-	return;
-}
 
 sub get_layout {
 	my ($search_term, $config) = @_;
@@ -91,6 +52,48 @@ sub get_layout {
 	);
 	return \@layout;
 }
+
+
+sub on_find {
+	my $main   = shift;
+	my $config = Padre->ide->config;
+	my $text   = $main->selected_text;
+	$text = '' if not defined $text;
+
+	# TODO: if selection is more than one lines then consider it as the limit
+	# of the search and replace and not as the string to be used
+
+	__PACKAGE__->dialog( $main, $config, { term => $text } );
+}
+
+
+sub dialog {
+	my ( $class, $win, $config, $args) = @_;
+
+	my $search_term = $args->{term} || '';
+
+	my $layout = get_layout($search_term, $config);
+	my $dialog = Padre::Wx::Dialog->new(
+		std    => [$win, -1, "Search", [-1, -1], [440, 220]],
+		layout => $layout,
+		width  => [150, 200],
+	);
+
+	foreach my $cb (@cbs) {
+		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
+	}
+	$dialog->{_widgets_}{_find_}->SetDefault;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_find_},        \&find_clicked);
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_},     \&replace_clicked     );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_all_}, \&replace_all_clicked );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},      \&cancel_clicked      );
+
+	$dialog->{_widgets_}{_find_choice_}->SetFocus;
+	$dialog->Show(1);
+
+	return;
+}
+
 
 sub cancel_clicked {
 	my ($dialog, $event) = @_;

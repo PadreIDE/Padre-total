@@ -13,35 +13,6 @@ use Padre::Wx::Dialog ();
 
 our $VERSION = '0.14';
 
-sub on_start {
-	my $main   = shift;
-	my $config = Padre->ide->config;
-	__PACKAGE__->dialog( $main, $config, { } );
-}
-
-sub dialog {
-	my ( $class, $win, $config, $args) = @_;
-
-	my $layout = get_layout($config);
-	my $dialog = Padre::Wx::Dialog->new(
-		std      => [$win, -1, "Module Start", [-1, -1], [310, 220]],
-		layout   => $layout,
-		width    => [100, 200],
-		top_left => [5, 5],
-	);
-
-	$dialog->{_widgets_}{_ok_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
-
-        $dialog->{_widgets_}{_license_choice_}->SetValue('perl');
-
-	$dialog->{_widgets_}{_module_name_}->SetFocus;
-	$dialog->Show(1);
-
-	return;
-}
-
 sub get_layout {
 	my ($config) = @_;
 
@@ -83,6 +54,37 @@ sub get_layout {
 		],
 	);
 	return \@layout;
+}
+
+
+
+sub on_start {
+	my $main   = shift;
+	my $config = Padre->ide->config;
+	__PACKAGE__->dialog( $main, $config, { } );
+}
+
+sub dialog {
+	my ( $class, $win, $config, $args) = @_;
+
+	my $layout = get_layout($config);
+	my $dialog = Padre::Wx::Dialog->new(
+		std      => [$win, -1, "Module Start", [-1, -1], [310, 220]],
+		layout   => $layout,
+		width    => [100, 200],
+		top_left => [5, 5],
+	);
+
+	$dialog->{_widgets_}{_ok_}->SetDefault;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
+
+	$dialog->{_widgets_}{_license_choice_}->SetValue('perl');
+
+	$dialog->{_widgets_}{_module_name_}->SetFocus;
+	$dialog->Show(1);
+
+	return;
 }
 
 
