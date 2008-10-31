@@ -31,12 +31,20 @@ sub dialog {
 		$rows[0]->Add( $entry );
 	}
 
-	my ($height, $width, $shortcuts) = list_bookmarks();
+
+	my $config = Padre->ide->config;
+	my @shortcuts = sort keys %{ $config->{bookmarks} };
+	my $height = 0;
+	my $width  = 25;
+	if (@shortcuts) {
+		$height = @shortcuts * 27; # should be height of font
+		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
+	}
 
 	$tb = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
 	$rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
 	$rows[2]->Add( $tb );
-	foreach my $name ( @$shortcuts ) {
+	foreach my $name ( @shortcuts ) {
 		my $count = $tb->GetPageCount;
 		my $page = Wx::Panel->new( $tb );
 		$tb->AddPage( $page, $name, 0, $count );
@@ -56,7 +64,7 @@ sub dialog {
 
 	$rows[3]->Add( $ok );
 	$rows[3]->Add( $cancel );
-	if (@$shortcuts) {
+	if (@shortcuts) {
 		$rows[3]->Add( $delete );
 	}
 
@@ -88,21 +96,6 @@ sub dialog {
 	} else {
 	   return 1;
 	}
-}
-
-sub list_bookmarks {
-
-	my $config = Padre->ide->config;
-	my @shortcuts = sort keys %{ $config->{bookmarks} };
-	my $height = 0;
-	my $width  = 25;
-
-	if (@shortcuts) {
-		$height = @shortcuts * 27; # should be height of font
-		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
-	}
-
-   return ($height, $width, \@shortcuts);
 }
 
 sub on_set_bookmark {
