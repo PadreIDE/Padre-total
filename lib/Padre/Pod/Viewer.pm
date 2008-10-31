@@ -17,6 +17,11 @@ use Config;
 
 our @pages;
 
+=head1 NAME
+
+Padre::Pod::Viewer - class for viewing pod
+
+=head1 METHODS
 
 =head2 module_to_path
 
