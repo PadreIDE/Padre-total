@@ -72,7 +72,7 @@ sub build_layout {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1], $arg, @params );
 			} else {
 				warn "Unsupported widget $class\n";
-				return;
+				next;
 			}
 
 			$row->Add($widget);
