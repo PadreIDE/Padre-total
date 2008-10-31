@@ -18,11 +18,24 @@ Padre::Wx::Dialog
 
 =cut
 
+=head2 new
+
+=cut
+
+sub new {
+	my ($class, @args) = @_;
+	
+	my $self = $class->SUPER::new(@args);
+
+	return $self;
+}
+
 =head2 build_layout
 
  build_layout($dialog, $layout, $width, $top_left_offset);
 
 =cut
+
 sub build_layout {
 	my ($dialog, $layout, $width, $top_left_offset) = @_;
 	$top_left_offset = [0, 0] if not ref($top_left_offset);
