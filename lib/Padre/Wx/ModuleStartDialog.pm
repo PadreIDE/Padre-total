@@ -22,12 +22,13 @@ sub on_start {
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
-	my $dialog = Padre::Wx::Dialog->new(
-		std => [$win, -1, "Module Start", [-1, -1], [310, 210]],
-	);
-
 	my $layout = get_layout($config);
-	Padre::Wx::Dialog::build_layout($dialog, $layout, [100, 200], [5, 5]);
+	my $dialog = Padre::Wx::Dialog->new(
+		std      => [$win, -1, "Module Start", [-1, -1], [310, 220]],
+		layout   => $layout,
+		width    => [100, 200],
+		top_left => [5, 5],
+	);
 
 	$dialog->{_widgets_}{_ok_}->SetDefault;
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );

@@ -26,6 +26,8 @@ sub new {
 	my ($class, %args) = @_;
 
 	my $self = $class->SUPER::new(@{ $args{std} });
+	$args{top_left} ||= [0, 0];
+	$self->build_layout($args{layout}, $args{width}, $args{top_left});
 
 	return $self;
 }

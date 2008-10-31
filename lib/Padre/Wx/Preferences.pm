@@ -48,12 +48,13 @@ sub run {
 		grep { $_ ne $config->{main_startup} } qw( new nothing last )
 	);
 
+	my $layout = get_layout($config, \@values);
 	my $dialog = Padre::Wx::Dialog->new(
-		std => [$win, -1, "Preferences", [-1, -1], [450, 170], Wx::wxDEFAULT_FRAME_STYLE]
+		std    => [$win, -1, "Preferences", [-1, -1], [450, 170], Wx::wxDEFAULT_FRAME_STYLE],
+		layout => $layout,
+		width  => [250, 200],
 	);
 
-	my $layout = get_layout($config, \@values);
-	Padre::Wx::Dialog::build_layout($dialog, $layout, [250, 200]);
 	$dialog->{_widgets_}{editor_tabwidth}->SetFocus;
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},     sub { $dialog->EndModal(Wx::wxID_OK) } );
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );

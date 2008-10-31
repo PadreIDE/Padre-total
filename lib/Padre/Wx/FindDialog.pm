@@ -30,12 +30,12 @@ sub dialog {
 
 	my $search_term = $args->{term} || '';
 
-	my $dialog = Padre::Wx::Dialog->new(
-		std => [$win, -1, "Search", [-1, -1], [440, 220]],
-	);
-
 	my $layout = get_layout($search_term, $config);
-	Padre::Wx::Dialog::build_layout($dialog, $layout, [150, 200]);
+	my $dialog = Padre::Wx::Dialog->new(
+		std    => [$win, -1, "Search", [-1, -1], [440, 220]],
+		layout => $layout,
+		width  => [150, 200],
+	);
 
 	foreach my $cb (@cbs) {
 		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_find_choice_}->SetFocus; });
