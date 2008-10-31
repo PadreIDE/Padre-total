@@ -4,14 +4,13 @@ use 5.008;
 use strict;
 use warnings;
 use FindBin;
-use Cwd            ();
-use Carp           ();
-use Data::Dumper   ();
-use File::Spec     ();
-use File::Basename ();
-use List::Util     ();
-use Params::Util   ();
-
+use Cwd                ();
+use Carp               ();
+use Data::Dumper       ();
+use File::Spec         ();
+use File::Basename     ();
+use List::Util         ();
+use Params::Util       ();
 use Padre::Util        ();
 use Padre::Wx          ();
 use Padre::Wx::Editor  ();
@@ -428,7 +427,6 @@ sub pages {
 
 # probably need to be combined with run_command
 sub on_run_command {
-	$DB::single = 1;
 	my $main_window = shift;
 	require Padre::Wx::History::TextDialog;
 	my $dialog = Padre::Wx::History::TextDialog->new(
@@ -454,7 +452,7 @@ sub run_command {
 	my $cmd    = shift;
 	my $config = Padre->ide->config;
 
-	# Temporarily hard-wire this to the Perl menu
+	# Temporarily hard-wire this to the appropriate menu
 	$self->{menu}->{run_run_script}->Enable(0);
 	$self->{menu}->{run_run_command}->Enable(0);
 	$self->{menu}->{run_stop}->Enable(1);
