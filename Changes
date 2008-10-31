@@ -19,6 +19,7 @@ Changes for Padre.
     Load Parrot::Embed if it is available. (SZABGAB)
     Add Padre::Plugin::Parrot to show how to use pir for plugin writing. (SZABGAB)
     Allow execution of Perl 6 code using Rakudo. (SZABGAB)
+    Add copyright/license to all the .pm files as per Debian request. (SZABGAB)
 
 v0.14 2008.10.27
 
