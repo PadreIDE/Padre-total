@@ -71,6 +71,10 @@ Supported widgets and their parameters:
 
  3. default value, if any
 
+=item Wx::Treebook
+
+ 3. array ref for list of values
+
 
 =back
 
@@ -103,7 +107,7 @@ sub build_layout {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1] );
 			} elsif ($class eq 'Wx::Button') {
 				my $s = Wx::Button::GetDefaultSize;
-				print $s->GetWidth, " ", $s->GetHeight, "\n";
+				#print $s->GetWidth, " ", $s->GetHeight, "\n";
 				my @args = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
 				$widget = $class->new( $dialog, @args );
 			} elsif ($class eq 'Wx::DirPickerCtrl') {
@@ -125,6 +129,11 @@ sub build_layout {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1], $arg, @params );
 			} elsif ($class eq 'Wx::Treebook') {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1] );
+				foreach my $name ( @$arg ) {
+					my $count = $widget->GetPageCount;
+					my $page  = Wx::Panel->new( $widget );
+					$widget->AddPage( $page, $name, 0, $count );
+				}
 			} else {
 				warn "Unsupported widget $class\n";
 				next;

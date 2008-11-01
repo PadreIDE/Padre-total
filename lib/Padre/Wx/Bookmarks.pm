@@ -23,14 +23,14 @@ sub get_layout {
 			['Wx::StaticText', undef, "Existing bookmarks:"],
 		],
 		[
-			['Wx::Treebook',   'tb', ],
+			['Wx::Treebook',   'tb', $shortcuts],
 		],
 		[
 			['Wx::Button',     'ok',     Wx::wxID_OK],
 			['Wx::Button',     'cancel', Wx::wxID_CANCEL],
 		];
 
-	if ($shortcuts) {
+	if (@$shortcuts) {
 		push @{ $layout[-1] }, 
 			['Wx::Button',     'delete', Wx::wxID_DELETE];
 	}
@@ -45,7 +45,7 @@ sub dialog {
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 
-	my $layout = get_layout($text, (@shortcuts ? 1 : 0));
+	my $layout = get_layout($text, \@shortcuts);
 	my $dialog = Padre::Wx::Dialog->new(
 		std      => [$main, -1, $title, [-1, -1], [360, 220]],
 		layout   => $layout,
@@ -61,17 +61,17 @@ sub dialog {
 		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
 	}
 
-#	my $cancel  = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', [-1, -1], );
-#	print $dialog->{_widgets_}{ok}->GetSize, "\n";
-	
+#	foreach my $b (qw(ok cancel delete)) {
+#		print "$b ", join (':', $dialog->{_widgets_}{ok}->GetSizeWH), "\n";
+#	}
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{ok},      sub { $dialog->EndModal(Wx::wxID_OK) } );
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{cancel},  sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 	$dialog->{_widgets_}{ok}->SetDefault;
 
+	if ($dialog->{_widgets_}{delete}) {
+		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},  \&on_delete_bookmark );
+	}
 
-	#Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},  \&on_delete_bookmark );
-
-#	$dialog->SetSizer($box);
 #	my ($bw, $bh) = $ok->GetSizeWH;
 #
 #	my $dialog_width = max($width, 2* $bw, 300);
@@ -83,13 +83,6 @@ sub dialog {
 		$dialog->{_widgets_}{tb}->SetFocus;
 	}
 
-
-	foreach my $name ( @shortcuts ) {
-		my $count = $dialog->{_widgets_}{tb}->GetPageCount;
-		my $page  = Wx::Panel->new( $dialog->{_widgets_}{tb} );
-		$dialog->{_widgets_}{tb}->AddPage( $page, $name, 0, $count );
-	}
-	
 	return $dialog;
 }
 
