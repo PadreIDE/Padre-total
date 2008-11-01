@@ -51,6 +51,12 @@ sub bitmap {
 		Wx::wxBITMAP_TYPE_XPM,
 	);
 }
+sub image {
+	Wx::Bitmap->new(
+		sharefile( $_[0] ),
+		Wx::wxBITMAP_TYPE_PNG,
+	);
+}
 
 sub icon {
 	Wx::Icon->new(

@@ -93,5 +93,7 @@ share/styles/default.yml
 
 share/languages/perl5/perl5.yml
 
+share/tango/16x16/actions/bookmark-new.png
+
 META.yml
 

@@ -27,6 +27,9 @@ sub new {
 	$self->AddTool( Wx::wxID_SAVE, '', Padre::Wx::bitmap('save'), 'Save File' );
 	# $self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::bitmap('close'), 'Close File' );
 	$self->AddSeparator;
+	# TODO, how can we make sure these numbers are unique?
+	$self->AddTool( 1000, '', Padre::Wx::image('tango/16x16/actions/bookmark-new.png'), 'Bookmark' );
+	Wx::Event::EVT_TOOL($parent, 1000, sub {print "book\n";} );
 
 	return $self;
 }
