@@ -7,30 +7,53 @@ use List::Util   qw(max);
 use Data::Dumper qw(Dumper);
 
 use Padre::Wx;
+use Padre::Wx::Dialog;
 
 our $VERSION = '0.14';
+
+sub get_layout {
+	my ($text, $shortcuts) = @_;
+	
+	my @layout;
+	if ($text) {
+		push @layout, [['Wx::TextCtrl', 'entry', $text]];
+	}
+	push @layout,
+		[
+			['Wx::StaticText', undef, "Existing bookmarks:"],
+		],
+		[
+			['Wx::Treebook',   'tb', ],
+		],
+		[
+			['Wx::Button',     'ok',     Wx::wxID_OK],
+			['Wx::Button',     'cancel', Wx::wxID_CANCEL],
+		];
+
+	if ($shortcuts) {
+		push @{ $layout[-1] }, 
+			['Wx::Button',     'delete', Wx::wxID_DELETE];
+	}
+	return \@layout;
+}
+
 
 sub dialog {
 	my ($class, $main, $text) = @_;
 
-	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	my @rows;
-	for my $i (0..3) {
-		$rows[$i] = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-		$box->Add($rows[$i]);
-	}
-
 	my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
-	my $dialog = Wx::Dialog->new( $main, -1, $title, [-1, -1], [-1, -1]);
-
-	if ($text) {
-		$dialog->{_widgets_}{entry}  = Wx::TextCtrl->new( $dialog, -1, $text, [-1, -1] , [10 * length $text, -1]);
-		$rows[0]->Add( $dialog->{_widgets_}{entry} );
-	}
-
-
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
+
+	my $layout = get_layout($text, (@shortcuts ? 1 : 0));
+	my $dialog = Padre::Wx::Dialog->new(
+		std      => [$main, -1, $title, [-1, -1], [360, 220]],
+		layout   => $layout,
+		width    => [300, 50],
+		top_left => [5, 5],
+	);
+	$dialog->{_widgets_}{entry}->SetSize(10 * length $text, -1);
+
 	my $height = 0;
 	my $width  = 25;
 	if (@shortcuts) {
@@ -38,33 +61,22 @@ sub dialog {
 		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
 	}
 
-	$dialog->{_widgets_}{tb} = Wx::Treebook->new( $dialog, -1, [-1, -1], [$width, $height] );
-	$rows[1]->Add( Wx::StaticText->new($dialog, -1, "Existing bookmarks:"));
-	$rows[2]->Add( $dialog->{_widgets_}{tb} );
-
-	my $ok = Wx::Button->new( $dialog, Wx::wxID_OK, '' );
-	Wx::Event::EVT_BUTTON( $dialog, $ok, sub { $dialog->EndModal(Wx::wxID_OK) } );
-	$ok->SetDefault;
-
-	my $cancel  = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', [-1, -1], $ok->GetSize);
-	Wx::Event::EVT_BUTTON( $dialog, $cancel,  sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
+#	my $cancel  = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', [-1, -1], );
+#	print $dialog->{_widgets_}{ok}->GetSize, "\n";
+	
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{ok},      sub { $dialog->EndModal(Wx::wxID_OK) } );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{cancel},  sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
+	$dialog->{_widgets_}{ok}->SetDefault;
 
 
-	my $delete  = Wx::Button->new( $dialog, Wx::wxID_DELETE, '', [-1, -1], , $ok->GetSize );
-	Wx::Event::EVT_BUTTON( $dialog, $delete,  \&on_delete_bookmark );
+	#Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},  \&on_delete_bookmark );
 
-	$rows[3]->Add( $ok );
-	$rows[3]->Add( $cancel );
-	if (@shortcuts) {
-		$rows[3]->Add( $delete );
-	}
-
-	$dialog->SetSizer($box);
-	my ($bw, $bh) = $ok->GetSizeWH;
-
-	my $dialog_width = max($width, 2* $bw, 300);
-	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
-
+#	$dialog->SetSizer($box);
+#	my ($bw, $bh) = $ok->GetSizeWH;
+#
+#	my $dialog_width = max($width, 2* $bw, 300);
+#	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
+#
 	if ($text) {
 		$dialog->{_widgets_}{entry}->SetFocus;
 	} else {

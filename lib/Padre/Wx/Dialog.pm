@@ -36,6 +36,43 @@ sub new {
 =head2 build_layout
 
  build_layout($dialog, $layout, $width, $top_left_offset);
+ 
+The layout is reference to a two dimensional array.
+Every element (an array) represents one line in the dialog.
+
+Every element in the internal array is an array that describes a widget.
+
+The first value in each widget description is the type of the widget.
+
+The second value is an identifyer (or undef if we don't need any access to the widget).
+
+The widget will be accessible form the dialog object using $dialog->{_widgets}{identifyer}
+
+The rest of the values in the array depend on the widget.
+
+Supported widgets and their parameters:
+
+=over 4
+
+=item Wx::StaticText
+
+ 3.: "the text",
+
+=item Wx::Button
+
+ 3.: button type (stock item such as Wx::wxID_OK or string "&do this")
+ 
+=item Wx::DirPickerCtrl
+
+ 3. default directory (must be '')  ???
+ 4. title to show on the directory browser 
+
+=item Wx::TextCtrl
+
+ 3. default value, if any
+
+
+=back
 
 =cut
 
@@ -62,32 +99,32 @@ sub build_layout {
 			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
 
 			my $widget;
-			if ($class eq 'Wx::Button') {
-				my ($first, $second) = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
-				$widget = $class->new( $dialog, $first, $second);
+			if ($class eq 'Wx::StaticText') {
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1] );
+			} elsif ($class eq 'Wx::Button') {
+				my $s = Wx::Button::GetDefaultSize;
+				print $s->GetWidth, " ", $s->GetHeight, "\n";
+				my @args = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
+				$widget = $class->new( $dialog, @args );
 			} elsif ($class eq 'Wx::DirPickerCtrl') {
 				my $title = shift(@params) || '';
-				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
+				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, [$width->[$j], -1] );
 				# it seems we cannot set the default directory and 
 				# we still have to set this directory in order to get anything back in
 				# GetPath
 				$widget->SetPath(Cwd::cwd());
 			} elsif ($class eq 'Wx::TextCtrl') {
-				my $default = shift @params;
-				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
-				if (defined $default) {
-					$widget->SetValue($default);
-				}
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1]);
 			} elsif ($class eq 'Wx::CheckBox') {
 				my $default = shift @params;
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 				$widget->SetValue($default);
-			} elsif ($class eq 'Wx::StaticText') {
-				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 			} elsif ($class eq 'Wx::ComboBox') {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, [$width->[$j], -1], @params );
 			} elsif ($class eq 'Wx::Choice') {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1], $arg, @params );
+			} elsif ($class eq 'Wx::Treebook') {
+				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1] );
 			} else {
 				warn "Unsupported widget $class\n";
 				next;

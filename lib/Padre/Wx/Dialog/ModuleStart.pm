@@ -30,11 +30,11 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Author:'],
-			[ 'Wx::TextCtrl',   '_author_name_',    '', ($config->{module_start}{author_name} || '') ],
+			[ 'Wx::TextCtrl',   '_author_name_',    ($config->{module_start}{author_name} || '') ],
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Email:'],
-			[ 'Wx::TextCtrl',   '_email_',          '', ($config->{module_start}{email} || '') ],
+			[ 'Wx::TextCtrl',   '_email_',          ($config->{module_start}{email} || '') ],
 		],
 		[
 			[ 'Wx::StaticText', undef,              'Builder:'],
