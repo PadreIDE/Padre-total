@@ -369,6 +369,7 @@ sub is_modified {
 sub has_changed_on_disk {
 	my ($self) = @_;
 	return 0 if not defined $self->filename;
+	return 0 if not defined $self->last_sync;
 	return $self->last_sync < $self->time_on_file ? 1 : 0;
 }
 
