@@ -27,7 +27,7 @@ sub new {
 
 	my $self = $class->SUPER::new(@{ $args{std} });
 	$args{top_left} ||= [0, 0];
-	$self->build_layout($args{layout}, $args{width}, $args{top_left});
+	$self->build_layout($args{layout}, $args{width}, $args{top_left}, $args{element_spacing});
 	$self->{_layout_} = $args{layout};
 
 	return $self;
@@ -81,8 +81,9 @@ Supported widgets and their parameters:
 =cut
 
 sub build_layout {
-	my ($dialog, $layout, $width, $top_left_offset) = @_;
+	my ($dialog, $layout, $width, $top_left_offset, $element_spacing) = @_;
 	$top_left_offset = [0, 0] if not ref($top_left_offset);
+	$element_spacing = [0, 0] if not ref($element_spacing);
 
 	# TODO make sure width has enough elements to the widest row
 	# or maybe we should also check that all the rows has the same number of elements
@@ -94,12 +95,14 @@ sub build_layout {
 		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 		# Add X-offset
 		$row->Add($top_left_offset->[0], 0, 0) if $top_left_offset->[0];
+	        $box->Add(0, $element_spacing->[1], 0) if $element_spacing->[1];
 		$box->Add($row);
 		foreach my $j (0..@{$layout->[$i]}-1) {
 			if (not @{ $layout->[$i][$j] } ) {  # [] means Expand
 				$row->Add($width->[$j], 0, 0, Wx::wxEXPAND, 0);
 				next;
 			}
+		        $row->Add($element_spacing->[0], 0, 0) if $element_spacing->[0];
 			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
 
 			my $widget;
