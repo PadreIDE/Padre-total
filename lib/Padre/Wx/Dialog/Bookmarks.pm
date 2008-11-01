@@ -1,4 +1,4 @@
-package Padre::Wx::Bookmarks;
+package Padre::Wx::Dialog::Bookmarks;
 
 use strict;
 use warnings;
