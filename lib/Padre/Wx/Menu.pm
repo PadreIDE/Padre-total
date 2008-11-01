@@ -32,7 +32,7 @@ sub new {
 	# Create the File menu
 	$menu->{file} = Wx::Menu->new;
 
-	# Opening and closing files
+	# Creating new things
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_NEW, '' ),
 		sub {
@@ -40,6 +40,14 @@ sub new {
 			return;
 		},
 	);
+	$menu->{file_new} = Wx::Menu->new;
+	$menu->{file}->Append( -1, "New...", $menu->{file_new} );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{file_new}->Append( -1, 'Perl Distribution (Module::Starter)' ),
+		\&Padre::Wx::Dialog::ModuleStart::on_start,
+	);
+
+	# Opening and closing files
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file}->Append( Wx::wxID_OPEN, '' ),
 		sub { $_[0]->on_open },
@@ -120,14 +128,6 @@ sub new {
 		$menu->{file_recent_projects} = Wx::Menu->new;
 		$menu->{file}->Append( -1, "Recent Projects", $menu->{file_recent_projects} );
 	}
-	$menu->{file}->AppendSeparator;
-
-	# Module::Start
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, 'Start Module' ),
-		\&Padre::Wx::Dialog::ModuleStart::on_start,
-	);
-
 	$menu->{file}->AppendSeparator;
 
 	# Exiting
