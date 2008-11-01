@@ -128,7 +128,8 @@ sub build_layout {
 			} elsif ($class eq 'Wx::Choice') {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1], $arg, @params );
 			} elsif ($class eq 'Wx::Treebook') {
-				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], -1] );
+				my $height = @$arg * 27; # should be height of font
+				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$width->[$j], $height] );
 				foreach my $name ( @$arg ) {
 					my $count = $widget->GetPageCount;
 					my $page  = Wx::Panel->new( $widget );

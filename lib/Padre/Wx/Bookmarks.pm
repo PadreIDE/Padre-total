@@ -52,13 +52,8 @@ sub dialog {
 		width    => [300, 50],
 		top_left => [5, 5],
 	);
-	$dialog->{_widgets_}{entry}->SetSize(10 * length $text, -1);
-
-	my $height = 0;
-	my $width  = 25;
-	if (@shortcuts) {
-		$height = @shortcuts * 27; # should be height of font
-		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
+	if ($dialog->{_widgets_}{entry}) {
+		$dialog->{_widgets_}{entry}->SetSize(10 * length $text, -1);
 	}
 
 #	foreach my $b (qw(ok cancel delete)) {
@@ -73,6 +68,13 @@ sub dialog {
 	}
 
 #	my ($bw, $bh) = $ok->GetSizeWH;
+
+#	my $height = 0;
+#	my $width  = 25;
+#	if (@shortcuts) {
+#		$height = @shortcuts * 27; # should be height of font
+#		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
+#	}
 #
 #	my $dialog_width = max($width, 2* $bw, 300);
 #	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
