@@ -412,6 +412,12 @@ sub run_indexer {
 sub run_editor {
 	my $self = shift;
 
+	# Move our current dir to the user's documents directory by default
+	my $documents = File::HomeDir->my_documents;
+	if ( defined $documents ) {
+		chdir $documents;
+	}
+
 	$self->wx->MainLoop;
 	$self->{wx} = undef;
 	return;
