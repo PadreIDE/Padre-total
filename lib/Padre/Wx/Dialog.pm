@@ -35,7 +35,7 @@ sub new {
 
 =head2 build_layout
 
- build_layout($dialog, $layout, $width, $top_left_offset);
+ build_layout($dialog, $layout, $width, $top_left_offset, $element_spacing);
  
 The layout is reference to a two dimensional array.
 Every element (an array) represents one line in the dialog.
