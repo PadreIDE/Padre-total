@@ -76,15 +76,6 @@ eg/wx/02_label.pl
 eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
-share/docview/print.xpm
-share/docview/save.xpm
-share/docview/open.xpm
-share/docview/preview.xpm
-share/docview/help.xpm
-share/docview/new.xpm
-share/docview/copy.xpm
-share/docview/cut.xpm
-
 share/templates/template.pl
 share/templates/template.pm
 share/templates/template.t
@@ -94,6 +85,11 @@ share/styles/default.yml
 share/languages/perl5/perl5.yml
 
 share/tango/16x16/actions/bookmark-new.png
+share/tango/16x16/actions/document-open.png
+share/tango/16x16/actions/document-new.png
+share/tango/16x16/actions/document-save.png
+share/tango/16x16/emblems/emblem-unreadable.png
+
 
 META.yml
 

@@ -51,9 +51,9 @@ sub bitmap {
 		Wx::wxBITMAP_TYPE_XPM,
 	);
 }
-sub image {
+sub tango {
 	Wx::Bitmap->new(
-		sharefile( $_[0] ),
+		sharefile( 'tango', '16x16', $_[0] ),
 		Wx::wxBITMAP_TYPE_PNG,
 	);
 }
