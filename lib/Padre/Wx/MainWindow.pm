@@ -1176,6 +1176,8 @@ sub on_diff {
 	use Text::Diff ();
 	my $current = $doc->text_get;
 	my $file    = $doc->filename;
+	return $self->error("Cannot diff if file was never saved") if not $file;
+	
 	my $diff = Text::Diff::diff($file, \$current);
 	
 	if (not $diff) {
