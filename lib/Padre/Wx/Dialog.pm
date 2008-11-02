@@ -134,7 +134,8 @@ sub build_layout {
 				my $s = Wx::Button::GetDefaultSize;
 				#print $s->GetWidth, " ", $s->GetHeight, "\n";
 				my @args = $arg =~ /[a-zA-Z]/ ? (-1, $arg) : ($arg, '');
-				$widget = $class->new( $dialog, @args );
+				my $size = Wx::Button::GetDefaultSize();
+				$widget = $class->new( $dialog, @args, Wx::wxDefaultPosition, $size );
 			} elsif ($class eq 'Wx::DirPickerCtrl') {
 				my $title = shift(@params) || '';
 				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, $width );
