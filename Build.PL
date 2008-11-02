@@ -45,7 +45,7 @@ my %prereqs = (
 	'PPI'                     => '1.203',
 	'Text::Diff'              => '0.35',
 	'YAML::Tiny'              => '1.32',
-	'Wx'                      => 0,
+	'Wx'                      => '0.86',
 	'Wx::Perl::Dialog'        => 0,
 	'Wx::Perl::ProcessStream' => 0,
 );
