@@ -41,6 +41,8 @@ sub refresh {
 
 	my $enabled = !! ( $doc and $doc->is_modified );
 	$self->EnableTool( Wx::wxID_SAVE, $enabled );
+	
+	$self->EnableTool( Wx::wxID_CLOSE,  (defined Padre::Documents->current ? 1 :0));
 	return 1;
 }
 
