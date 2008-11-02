@@ -213,6 +213,12 @@ sub new {
 	$menu->{edit}->AppendSeparator;
 
 
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, "Diff" ),
+		\&Padre::Wx::MainWindow::on_diff,
+	);
+	$menu->{edit}->AppendSeparator;
+
 	# User Preferences
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Preferences" ),

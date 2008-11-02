@@ -1168,6 +1168,26 @@ sub on_prev_pane {
 	return;
 }
 
+sub on_diff {
+	my ( $self ) = @_;
+	my $doc = Padre::Documents->current;
+	return if not $doc;
+	
+	use Text::Diff ();
+	my $current = $doc->text_get;
+	my $file    = $doc->filename;
+	my $diff = Text::Diff::diff($file, \$current);
+	
+	if (not $diff) {
+		$diff = "There are no differences\n";
+	}
+	$self->show_output;
+	$self->{output}->clear;
+	$self->{output}->AppendText($diff);
+	return;
+}
+
+
 ###### preferences and toggle functions
 
 sub zoom {
