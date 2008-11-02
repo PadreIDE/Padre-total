@@ -604,7 +604,6 @@ sub error {
 #####################################################################
 # Event Handlers
 
-
 sub on_brace_matching {
 	my ($self, $event) = @_;
 
@@ -686,6 +685,27 @@ sub on_autocompletition {
 	if ( @words ) {
 		$doc->editor->AutoCompShow($length, join " ", @words);
 	}
+	return;
+}
+
+sub on_goto {
+	my $self = shift;
+
+	my $dialog = Wx::TextEntryDialog->new( $self, "Line number:", "", '' );
+	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
+		return;
+	}   
+	my $line_number = $dialog->GetValue;
+	$dialog->Destroy;
+	return if not defined $line_number or $line_number !~ /^\d+$/;
+	#what if it is bigger than buffer?
+
+	my $id   = $self->{notebook}->GetSelection;
+	my $page = $self->{notebook}->GetPage($id);
+
+	$line_number--;
+	$page->GotoLine($line_number);
+
 	return;
 }
 

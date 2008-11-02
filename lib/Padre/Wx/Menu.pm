@@ -185,7 +185,7 @@ sub new {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&Goto\tCtrl-G" ),
-		\&Padre::Wx::GoToLine::on_goto,
+		\&Padre::Wx::MainWindow::on_goto,
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, "&AutoComp\tCtrl-P" ),
