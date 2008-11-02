@@ -1045,7 +1045,9 @@ sub close {
 	my ($self, $id) = @_;
 
 	$id = defined $id ? $id : $self->{notebook}->GetSelection;
-
+	
+	return if $id == -1;
+	
 	my $doc = Padre::Documents->by_id($id) or return;
 
 	local $self->{_no_refresh} = 1;
