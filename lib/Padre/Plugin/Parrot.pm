@@ -8,7 +8,7 @@ use Padre::Wx ();
 
 =head1 NAME
 
-Padre::Plugin::PIR
+Padre::Plugin::Parrot
 
 =cut
 
