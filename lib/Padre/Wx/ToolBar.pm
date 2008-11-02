@@ -23,7 +23,7 @@ sub new {
 	);
 
 	# Automatically populate
-	$self->AddTool( Wx::wxID_NEW,   '', Padre::Wx::tango(catfile('actions', 'document-new.png')),  'New File'  ); 
+	$self->AddTool( 1000,   '', Padre::Wx::tango(catfile('actions', 'document-new.png')),  'New File'  ); 
 	$self->AddTool( Wx::wxID_OPEN,  '', Padre::Wx::tango(catfile('actions', 'document-open.png')), 'Open File' ); 
 	$self->AddTool( Wx::wxID_SAVE,  '', Padre::Wx::tango(catfile('actions', 'document-save.png')), 'Save File' );
 	$self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::tango(catfile('emblems', 'emblem-unreadable.png')) , 'Close File' );
@@ -32,6 +32,8 @@ sub new {
 	#$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
 	#Wx::Event::EVT_TOOL($parent, 1000, sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) } );
 
+	Wx::Event::EVT_TOOL($parent, 1000, sub { $_[0]->setup_editor; return; } );
+		
 	return $self;
 }
 
