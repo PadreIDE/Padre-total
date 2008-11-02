@@ -74,7 +74,6 @@ sub dialog {
 		layout          => $layout,
 		width           => [100, 200],
 		top_left        => [9, 5],
-		element_spacing => [0, 5],
 	);
 
 	$dialog->{_widgets_}{_ok_}->SetDefault;

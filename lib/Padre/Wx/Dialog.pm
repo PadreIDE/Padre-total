@@ -33,6 +33,7 @@ sub new {
 		pos      => [-1, -1],
 		size     => [-1, -1],
 		top_left => [0, 0],
+		element_spacing => [0, 5],
 	);
 	%args = (%default, %args);
 
