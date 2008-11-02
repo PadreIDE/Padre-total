@@ -277,7 +277,6 @@ use Class::Autouse qw{
 	Padre::Wx::Menu
 	Padre::Wx::Menu::Help
 	Padre::Wx::Ack
-	Padre::Wx::GoToLine
 	Padre::Wx::Dialog::Bookmarks
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
