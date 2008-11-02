@@ -33,13 +33,16 @@ sub new {
 		pos             => [-1, -1],
 		size            => [-1, -1],
 		
-		top_left        => [0, 0],
+		top             => 5,
+		left            => 5,
+		bottom          => 5,
+		right           => 5,
 		element_spacing => [0, 5],
 	);
 	%args = (%default, %args);
 
 	my $self = $class->SUPER::new( @args{qw(parent id title pos size style)});
-	$self->build_layout( map {$_ => $args{$_} } qw(layout width top_left element_spacing) );
+	$self->build_layout( map {$_ => $args{$_} } qw(layout width top left bottom right element_spacing) );
 	$self->{_layout_} = $args{layout};
 
 	return $self;
@@ -50,7 +53,8 @@ sub new {
  $dialog->build_layout(
 	layout          => $layout,
 	width           => $width,
-	top_left        => $top_left, 
+	top             => $top
+	left            => $left, 
 	element_spacing => $element_spacing,
 	);
  
@@ -104,14 +108,15 @@ sub build_layout {
 	# or maybe we should also check that all the rows has the same number of elements
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	# Add Y-offset
-	$box->Add(0, $args{top_left}[1], 0) if $args{top_left}[1];
+	$box->Add(0, $args{top}, 0) if $args{top};
 
 	foreach my $i (0..@{$args{layout}}-1) {
 		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-		# Add X-offset
-		$row->Add($args{top_left}[0], 0, 0) if $args{top_left}[0];
-		$box->Add(0, $args{element_spacing}[1], 0) if $args{element_spacing}[1];
+		$box->Add(0, $args{element_spacing}[1], 0) if $args{element_spacing}[1] and $i;
 		$box->Add($row);
+
+		# Add X-offset
+		$row->Add($args{left}, 0, 0) if $args{left};
 		foreach my $j (0..@{$args{layout}[$i]}-1) {
 			my $width = [$args{width}[$j], -1];
 
@@ -119,7 +124,7 @@ sub build_layout {
 				$row->Add($args{width}[$j], 0, 0, Wx::wxEXPAND, 0);
 				next;
 			}
-		        $row->Add($args{element_spacing}[0], 0, 0) if $args{element_spacing}[0];
+			$row->Add($args{element_spacing}[0], 0, 0) if $args{element_spacing}[0] and $j;
 			my ($class, $name, $arg, @params) = @{ $args{layout}[$i][$j] };
 
 			my $widget;
@@ -166,7 +171,9 @@ sub build_layout {
 				$dialog->{_widgets_}{$name} = $widget;
 			}
 		}
+		$row->Add(0, $args{right}, 0) if $args{right};
 	}
+	$box->Add(0, $args{bottom}, 0) if $args{bottom};
 
 	$dialog->SetSizerAndFit($box);
 

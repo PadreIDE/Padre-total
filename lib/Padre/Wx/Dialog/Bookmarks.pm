@@ -51,7 +51,6 @@ sub dialog {
 		title    => $title,
 		layout   => $layout,
 		width    => [300, 50],
-		top_left => [5, 5],
 	);
 	if ($dialog->{_widgets_}{entry}) {
 		$dialog->{_widgets_}{entry}->SetSize(10 * length $text, -1);
