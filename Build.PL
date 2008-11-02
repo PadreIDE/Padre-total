@@ -43,6 +43,7 @@ my %prereqs = (
 	'Pod::Simple'             => 0,
 	'Probe::Perl'             => '0.01',
 	'PPI'                     => '1.203',
+	'Text::Diff'              => '0.35',
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => 0,
 	'Wx::Perl::Dialog'        => 0,
