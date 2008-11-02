@@ -74,7 +74,9 @@ sub dialog {
 
 	my $layout = get_layout($search_term, $config);
 	my $dialog = Padre::Wx::Dialog->new(
-		std    => [$win, -1, "Search", [-1, -1], [440, 220]],
+		parent => $win,
+		title  => "Search",
+		size   => [440, 220],
 		layout => $layout,
 		width  => [150, 200],
 	);

@@ -69,7 +69,9 @@ sub dialog {
 
 	my $layout = get_layout($config);
 	my $dialog = Padre::Wx::Dialog->new(
-		std             => [$win, -1, "Module Start", [-1, -1], [323, 240]],
+		parent          => $win,
+		title           => "Module Start",
+		size            => [323, 240],
 		layout          => $layout,
 		width           => [100, 200],
 		top_left        => [9, 5],

@@ -47,7 +47,9 @@ sub dialog {
 
 	my $layout = get_layout($text, \@shortcuts);
 	my $dialog = Padre::Wx::Dialog->new(
-		std      => [$main, -1, $title, [-1, -1], [360, 220]],
+		parent   => $main,
+		title    => $title,
+		size     => [360, 220],
 		layout   => $layout,
 		width    => [300, 50],
 		top_left => [5, 5],
