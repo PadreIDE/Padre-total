@@ -29,8 +29,8 @@ sub new {
 	$self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::tango(catfile('emblems', 'emblem-unreadable.png')) , 'Close File' );
 	$self->AddSeparator;
 	# TODO, how can we make sure these numbers are unique?
-	$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
-	Wx::Event::EVT_TOOL($parent, 1000, sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) } );
+	#$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
+	#Wx::Event::EVT_TOOL($parent, 1000, sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) } );
 
 	return $self;
 }
