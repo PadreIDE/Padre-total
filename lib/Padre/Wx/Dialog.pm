@@ -25,7 +25,9 @@ Padre::Wx::Dialog
 sub new {
 	my ($class, %args) = @_;
 
-	my $self = $class->SUPER::new(@{ $args{std} });
+	$args{style} = Wx::wxDEFAULT_FRAME_STYLE if not defined $args{style};
+
+	my $self = $class->SUPER::new(@{ $args{std} }, $args{style});
 	$args{top_left} ||= [0, 0];
 	$self->build_layout($args{layout}, $args{width}, $args{top_left}, $args{element_spacing});
 	$self->{_layout_} = $args{layout};
