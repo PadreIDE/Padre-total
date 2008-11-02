@@ -26,17 +26,17 @@ sub new {
 	my ($class, %args) = @_;
 
 	my %default = (
-		parent => undef,
-		id     => -1,
-		style  => Wx::wxDEFAULT_FRAME_STYLE,
-		title  => '',
-		pos    => [-1, -1],
-		size   => [-1, -1],
+		parent   => undef,
+		id       => -1,
+		style    => Wx::wxDEFAULT_FRAME_STYLE,
+		title    => '',
+		pos      => [-1, -1],
+		size     => [-1, -1],
+		top_left => [0, 0],
 	);
 	%args = (%default, %args);
 
 	my $self = $class->SUPER::new( @args{qw(parent id title pos size style)});
-	$args{top_left} ||= [0, 0];
 	$self->build_layout($args{layout}, $args{width}, $args{top_left}, $args{element_spacing});
 	$self->{_layout_} = $args{layout};
 
