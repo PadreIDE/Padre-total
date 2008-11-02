@@ -67,18 +67,6 @@ sub dialog {
 		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},  \&on_delete_bookmark );
 	}
 
-#	my ($bw, $bh) = $ok->GetSizeWH;
-
-#	my $height = 0;
-#	my $width  = 25;
-#	if (@shortcuts) {
-#		$height = @shortcuts * 27; # should be height of font
-#		$width  = max( $width,   20 * max (1, map { length($_) } @shortcuts));
-#	}
-#
-#	my $dialog_width = max($width, 2* $bw, 300);
-#	$dialog->SetSize(-1, -1, $dialog_width, 25 + 40 + $height + $bh); # height of text, entry box
-#
 	if ($text) {
 		$dialog->{_widgets_}{entry}->SetFocus;
 	} else {
