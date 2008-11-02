@@ -15,7 +15,7 @@ use File::ShareDir::PAR ();
 use Wx        ':everything';
 use Wx::Event ':everything';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 
 

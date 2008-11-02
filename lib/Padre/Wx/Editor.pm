@@ -12,7 +12,7 @@ use Padre::Wx;
 
 use base 'Wx::StyledTextCtrl';
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 my $data;
 
