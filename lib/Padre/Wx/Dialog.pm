@@ -105,7 +105,7 @@ sub build_layout {
 		my $row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 		# Add X-offset
 		$row->Add($top_left_offset->[0], 0, 0) if $top_left_offset->[0];
-	        $box->Add(0, $element_spacing->[1], 0) if $element_spacing->[1];
+		$box->Add(0, $element_spacing->[1], 0) if $element_spacing->[1];
 		$box->Add($row);
 		foreach my $j (0..@{$layout->[$i]}-1) {
 			if (not @{ $layout->[$i][$j] } ) {  # [] means Expand
