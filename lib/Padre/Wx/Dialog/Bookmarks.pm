@@ -144,7 +144,7 @@ sub goto_bookmark {
 	my ($class, $main) = @_;
 
 	my $dialog    = $class->dialog($main);
-	return if show_modal($dialog);
+	return if not show_modal($dialog);
 	
 	my $config    = Padre->ide->config;
 	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
