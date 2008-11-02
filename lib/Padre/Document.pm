@@ -17,6 +17,12 @@ use Wx qw{
 	wxSTC_LEX_CPP
 	wxSTC_LEX_CSS
 	wxSTC_LEX_DIFF
+	wxSTC_LEX_EIFFEL
+	wxSTC_LEX_EIFFELKW
+	wxSTC_LEX_ERRORLIST
+	wxSTC_LEX_ESCRIPT
+	wxSTC_LEX_FORTRAN
+	wxSTC_LEX_FORTH
 	wxSTC_LEX_HTML
 	wxSTC_LEX_LATEX
 	wxSTC_LEX_LISP
@@ -33,6 +39,7 @@ use Wx qw{
 	wxSTC_LEX_VBSCRIPT
 	wxSTC_LEX_YAML
 	wxSTC_LEX_XML
+
 	wxSTC_LEX_AUTOMATIC
 	wxSTC_LEX_CONTAINER
 
@@ -54,17 +61,15 @@ our %mode = (
 	UNIX => wxSTC_EOL_LF,
 );
 
-# see Wx-0.84/ext/stc/cpp/st_constants.cpp for extension
-# N.B. Some constants (wxSTC_LEX_ESCRIPT for example) are defined in 
-#  wxWidgets-2.8.7/contrib/include/wx/stc/stc.h 
+# see Wx-0.86/ext/stc/cpp/st_constants.cpp for extension
+# There might be some constants are defined in 
+#  wxWidgets-2.8.8/contrib/include/wx/stc/stc.h 
 # but not (yet) in 
-#  Wx-0.84/ext/stc/cpp/st_constants.cpp
+#  Wx-0.86/ext/stc/cpp/st_constants.cpp
 # so we have to hard-code their numeric value.
 
 	# asp => wxSTC_LEX_ASP, #in ifdef
-	#     => wxSTC_LEX_EIFFEL, # what is the default EIFFEL file extension?
-	#     => wxSTC_LEX_EIFFELKW,
-#	'4th' => wxSTC_LEX_FORTH,
+#	,
 #	f     => wxSTC_LEX_FORTRAN,
 	#     => wxSTC_LEX_VB, # What's the difference between VB and VBSCRIPT?
 
@@ -78,6 +83,8 @@ our %EXT_MIME = (
 	cpp   => 'text/cpp',
 	css   => 'text/css',
 	diff  => 'text/diff',
+	e     => 'text/eiffel',
+	f     => 'text/fortran',
 	html  => 'text/html',
 	js    => 'text/ecmascript',
 	json  => 'text/ecmascript',
@@ -102,6 +109,7 @@ our %EXT_MIME = (
 	xml   => 'text/xml',
 	yml   => 'text/yaml',
 	yaml  => 'text/yaml',
+	'4th' => 'text/forth',
 
 	pasm  => 'text/pasm',
 	pir   => 'text/pir',
@@ -122,9 +130,11 @@ our %MIME_LEXER = (
 	'text/cpp'        => wxSTC_LEX_CPP,
 	'text/css'        => wxSTC_LEX_CSS,
 	'text/diff'       => wxSTC_LEX_DIFF,
+	'text/eiffel'     => wxSTC_LEX_EIFFEL,
+	'text/forth'      => wxSTC_LEX_FORTH,
+	'text/fortran'    => wxSTC_LEX_FORTRAN,
 	'text/html'       => wxSTC_LEX_HTML,
-	# wxSTC_LEX_ESCRIPT (presumably "ESCRIPT" refers to ECMA-script?) 
-	'text/ecmascript' => 41,
+	'text/ecmascript' => wxSTC_LEX_ESCRIPT,
 	'text/latex'      => wxSTC_LEX_LATEX,
 	'text/lisp'       => wxSTC_LEX_LISP,
 	'text/lua'        => wxSTC_LEX_LUA,
