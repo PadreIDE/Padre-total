@@ -35,7 +35,7 @@ sub new {
 		
 		top             => 5,
 		left            => 5,
-		bottom          => 5,
+		bottom          => 20,
 		right           => 5,
 		element_spacing => [0, 5],
 	);
