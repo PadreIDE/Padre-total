@@ -107,7 +107,8 @@ sub build_layout {
 	# TODO make sure width has enough elements to the widest row
 	# or maybe we should also check that all the rows has the same number of elements
 	my $box  = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	# Add Y-offset
+	
+	# Add top margin
 	$box->Add(0, $args{top}, 0) if $args{top};
 
 	foreach my $i (0..@{$args{layout}}-1) {
@@ -115,8 +116,9 @@ sub build_layout {
 		$box->Add(0, $args{element_spacing}[1], 0) if $args{element_spacing}[1] and $i;
 		$box->Add($row);
 
-		# Add X-offset
+		# Add left margin
 		$row->Add($args{left}, 0, 0) if $args{left};
+		
 		foreach my $j (0..@{$args{layout}[$i]}-1) {
 			my $width = [$args{width}[$j], -1];
 
@@ -172,9 +174,9 @@ sub build_layout {
 				$dialog->{_widgets_}{$name} = $widget;
 			}
 		}
-		$row->Add(0, $args{right}, 0) if $args{right};
+		$row->Add($args{right}, 0, 0, Wx::wxEXPAND, 0) if $args{right}; # margin
 	}
-	$box->Add(0, $args{bottom}, 0) if $args{bottom};
+	$box->Add(0, $args{bottom}, 0) if $args{bottom}; # margin
 
 	$dialog->SetSizerAndFit($box);
 
