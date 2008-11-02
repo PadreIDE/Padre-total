@@ -145,6 +145,10 @@ sub build_layout {
 				# we still have to set this directory in order to get anything back in
 				# GetPath
 				$widget->SetPath(Cwd::cwd());
+			} elsif ($class eq 'Wx::FilePickerCtrl') {
+				my $title = shift(@params) || '';
+				$widget = $class->new( $dialog, -1, $arg, $title, Wx::wxDefaultPosition, $width );
+				$widget->SetPath(Cwd::cwd());
 			} elsif ($class eq 'Wx::TextCtrl') {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, $width );
 			} elsif ($class eq 'Wx::CheckBox') {
@@ -196,6 +200,8 @@ sub get_data {
 				next if $class eq 'Wx::Button';
 
 				if ($class eq 'Wx::DirPickerCtrl') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
+				} elsif ($class eq 'Wx::FilePickerCtrl') {
 					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
 				} elsif ($class eq 'Wx::Choice') {
 					$data{$name} = $dialog->{_widgets_}{$name}->GetSelection;
