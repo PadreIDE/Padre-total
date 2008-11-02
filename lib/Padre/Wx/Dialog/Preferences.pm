@@ -52,7 +52,6 @@ sub run {
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
 		title  => "Preferences",
-		size   => [450, 170],
 		layout => $layout,
 		width  => [250, 200],
 	);

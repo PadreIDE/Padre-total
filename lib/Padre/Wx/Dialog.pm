@@ -161,7 +161,7 @@ sub build_layout {
 		}
 	}
 
-	$dialog->SetSizer($box);
+	$dialog->SetSizerAndFit($box);
 
 	return;
 }

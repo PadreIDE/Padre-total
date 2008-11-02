@@ -49,7 +49,6 @@ sub dialog {
 	my $dialog = Padre::Wx::Dialog->new(
 		parent   => $main,
 		title    => $title,
-		size     => [360, 220],
 		layout   => $layout,
 		width    => [300, 50],
 		top_left => [5, 5],
