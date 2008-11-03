@@ -188,19 +188,15 @@ sub _setup_par {
 sub _load_plugin {
 	my ($self, $file) = @_;
 	my $plugins = $self->plugins;
-#	delete $plugins->{$file};
-	
-	my $module = "Padre::Plugin::$file";
 
 	# skip if that plugin was already loaded
-	my $inc_file = $module.".pm";
-	$inc_file =~ s/::/\//g;
-	return if exists $INC{$inc_file};
+	return if exists $plugins->{$file};
 
+	my $module = "Padre::Plugin::$file";
 	eval "use $module"; ## no critic
 	if ($@) {
 		warn "ERROR while trying to load plugin '$file': $@";
-		return();
+		return;
 	}
 	$plugins->{$file} = $module;
 	return 1;
