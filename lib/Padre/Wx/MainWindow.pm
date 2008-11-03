@@ -98,6 +98,8 @@ sub new {
 		Wx::AuiPaneInfo->new->Name( "notebook" )
 			->CenterPane->Resizable->PaneBorder
 			->Dockable->Floatable->PinButton->CaptionVisible->Movable
+			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
+			->FloatingPosition(100, 100)
 			->Caption( "Files" )->Position( 1 )
 		);
 	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
