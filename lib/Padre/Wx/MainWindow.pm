@@ -200,9 +200,6 @@ sub load_files {
 	my $files  = Padre->inst->{ARGV};
 	if ( $files and ref($files) eq 'ARRAY' and @$files ) {
 		foreach my $f ( @$files ) {
-		    if ( not File::Spec->file_name_is_absolute($f) ) {
-		        $f = File::Spec->catfile(Padre->ide->{original_dir}, $f);
-		    }
 		    $self->setup_editor($f);
 		}
 	} elsif ( $config->{main_startup} eq 'new' ) {

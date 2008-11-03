@@ -387,7 +387,8 @@ sub run {
 	# window was opened but my Wx skills do not exist. --Steffen
 	# (RT #1)
 	$self->plugin_manager->load_plugins;
-	$self->{ARGV} = \@ARGV;
+	
+	$self->{ARGV} = [ map {File::Spec->rel2abs( $_ )} @ARGV ];
 
 	return $self->run_editor;
 }
