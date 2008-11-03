@@ -145,7 +145,7 @@ sub new {
 			->Dockable->Floatable->PinButton->CaptionVisible->Movable
 			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
 			->FloatingPosition(100, 100)
-			->Caption( "Output" )->Position( 2 )
+			->Caption( "Output" )->Position( 2 )->Bottom
 		);
 
 	# Special Key Handling
