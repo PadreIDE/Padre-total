@@ -14,6 +14,7 @@ use File::ShareDir::PAR ();
 # use them without braces.
 use Wx        ':everything';
 use Wx::Event ':everything';
+use Wx::AUI   ();
 
 our $VERSION = '0.15';
 
