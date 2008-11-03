@@ -102,12 +102,24 @@ sub new {
 			->FloatingPosition(100, 100)->FloatingSize(500, 300)
 			->Caption( "Files" )->Position( 1 )
 		);
-	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
+
+
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{notebook},
 		sub { $_[0]->refresh_all },
 	);
-
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
+		$self,
+		$self->{notebook},
+		\&on_close,
+	);
+#	Wx::Event::EVT_DESTROY(
+#		$self,
+#		$self->{notebook},
+#		sub {print "destroy @_\n"; },
+#	);
+#
 
 	# Create the right-hand sidebar
 	$self->{rightbar} = Wx::ListCtrl->new(
@@ -901,7 +913,8 @@ sub on_open_selection {
 }
 
 sub on_open {
-	my $self = shift;
+	my ($self, $event) = @_;
+
 	my $current_filename = $self->selected_filename;
 	if ($current_filename) {
 		$default_dir = File::Basename::dirname($current_filename);
@@ -930,7 +943,7 @@ sub on_open {
 	# and it is unused, close it.
 	if ( $self->{notebook}->GetPageCount == 1 ) {
 		if ( Padre::Documents->current->is_unused ) {
-			$self->on_close;
+			$self->on_close($self);
 		}
 	}
 
@@ -1061,7 +1074,15 @@ sub _save_buffer {
 # Returns true if closed.
 # Returns false on cancel.
 sub on_close {
-	my $self = shift;
+	my ($self, $event) = @_;
+
+	# When we get an Wx::AuiNotebookEvent from it will try to close
+	# the notebook no matter what. For the other events we have to
+	# close the tab manually which we do in the close() function
+	# Hence here we don't allow the automatic closing of the window. 
+	if ($event and $event->isa('Wx::AuiNotebookEvent')) {
+		$event->Veto;
+	}
 	$self->close;
 	$self->refresh_all;
 }

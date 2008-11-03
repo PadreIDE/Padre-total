@@ -32,6 +32,7 @@ sub new {
 	#$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
 	#Wx::Event::EVT_TOOL($parent, 1000, sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) } );
 
+	Wx::Event::EVT_TOOL($parent, Wx::wxID_CLOSE, \&Padre::Wx::MainWindow::on_close );
 	Wx::Event::EVT_TOOL($parent, 1000, sub { $_[0]->setup_editor; return; } );
 		
 	return $self;
