@@ -272,8 +272,6 @@ sub load_file {
 		warn $@;
 		return;
 	}
-	
-	utf8::decode($content);
 	$self->{_timestamp} = $self->time_on_file;
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
@@ -316,9 +314,6 @@ sub save_file {
 	my $filename     = $self->filename;
     #my $newline_type = $self->get_newline_type;
 
-	if ( $content && utf8::is_utf8($content) ){
-		utf8::encode( $content );
-	}
 	eval {
 		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
 	};
