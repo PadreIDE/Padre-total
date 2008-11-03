@@ -87,12 +87,12 @@ sub new {
 	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 
 	# Create the main notebook for the documents
-	$self->{notebook} = Wx::Notebook->new(
+	$self->{notebook} = Wx::AuiNotebook->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
+		Wx::wxAUI_NB_DEFAULT_STYLE | Wx::wxAUI_NB_WINDOWLIST_BUTTON,
 	);
 	$self->manager->AddPane($self->{notebook}, 
 		Wx::AuiPaneInfo->new->Name( "notebook" )
