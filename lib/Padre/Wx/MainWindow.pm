@@ -67,6 +67,9 @@ sub new {
 		$wx_frame_style,
 	);
 
+	$self->{manager} = Wx::AuiManager->new;
+	$self->manager->SetManagedWindow( $self );
+
 	# Add some additional attribute slots
 	$self->{marker} = {};
 
@@ -83,32 +86,39 @@ sub new {
 	$self->{statusbar}->SetFieldsCount(4);
 	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 
-	# Create the splitters but do not populate them yet
-	$self->{main_panel} = Wx::SplitterWindow->new(
+	# Create the main notebook for the documents
+	$self->{notebook} = Wx::Notebook->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
 	);
-	$self->{main_panel}->SetSashGravity(1);
-	$self->{upper_panel} = Wx::SplitterWindow->new(
-		$self->{main_panel},
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
+	$self->manager->AddPane($self->{notebook}, 
+		Wx::AuiPaneInfo->new->Name( "notebook" )->CenterPane->Position( 1 )
+			->Resizable->PaneBorder->Dockable->Movable );
+	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
+		$self,
+		$self->{notebook},
+		sub { $_[0]->refresh_all },
 	);
-	$self->{upper_panel}->SetSashGravity(1);
+
 
 	# Create the right-hand sidebar
 	$self->{rightbar} = Wx::ListCtrl->new(
-		$self->{upper_panel},
+		$self,
 		-1, 
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
 	);
+	$self->manager->AddPane($self->{rightbar}, 
+		Wx::AuiPaneInfo->new->Name( "rightbar" )->CenterPane->Right()->Resizable->PaneBorder
+			->RightDockable->Dockable->Floatable->PinButton->Caption( "Subs" )->CaptionVisible
+			->Movable->Position( 3 )
+			 );
+        
+
 	$self->{rightbar}->InsertColumn(0, 'Methods');
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
@@ -117,34 +127,16 @@ sub new {
 		\&on_function_selected,
 	);
 
-	# Create the main notebook for the documents
-	$self->{notebook} = Wx::Notebook->new(
-		$self->{upper_panel},
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
-	);
-	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
-		$self,
-		$self->{notebook},
-		sub { $_[0]->refresh_all },
-	);
-
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
-		$self->{main_panel},
+		$self,
 	);
-
-	# Populate the layout
-	$self->{main_panel}->Initialize(
-		$self->{upper_panel},
-	);
-	$self->{upper_panel}->SplitVertically(
-		$self->{notebook},
-		$self->{rightbar},
-		-150,
-	);
+	$self->manager->AddPane($self->{output}, 
+		Wx::AuiPaneInfo->new->Name( "output" )->CenterPane->Position( 2 )
+			->Caption( "Output" )->CaptionVisible
+			->Resizable->PaneBorder->MinimizeButton->PinButton->PaneBorder->Dockable
+			->Gripper->Movable->MaximizeButton
+			->Floatable->FloatingPosition(100, 100) );
 
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
@@ -163,6 +155,7 @@ sub new {
 		$event->Skip();
 		return;
 	} );
+	$self->manager->Update;
 
 	# Deal with someone closing the window
 	Wx::Event::EVT_CLOSE( $self, \&on_close_window);
@@ -190,6 +183,11 @@ sub new {
 	$timer->Start( 1, 1 );
 
 	return $self;
+}
+
+sub manager {
+	my ($self) = @_;
+	return $self->{manager};
 }
 
 # Load any default files
@@ -1256,19 +1254,13 @@ sub show_output {
 	unless ( $on == $self->{menu}->{view_output}->IsChecked ) {
 		$self->{menu}->{view_output}->Check($on);
 	}
-	if ( $on and not $self->{main_panel}->IsSplit ) {
-		$self->{main_panel}->SplitHorizontally(
-			$self->{upper_panel},
-			$self->{output},
-			-100,
-		);
+	if ( $on ) {
 		$self->{output}->Show;
-	}
-	if ( $self->{main_panel}->IsSplit and not $on ) {
-		$self->{main_panel}->Unsplit;
+	} else {
 		$self->{output}->Hide;
 	}
 	Padre->ide->config->{main_output} = $on;
+
 	return;
 }
 
