@@ -188,7 +188,7 @@ sub _setup_par {
 sub _load_plugin {
 	my ($self, $file) = @_;
 	my $plugins = $self->plugins;
-	delete $plugins->{$file};
+#	delete $plugins->{$file};
 	
 	my $module = "Padre::Plugin::$file";
 
