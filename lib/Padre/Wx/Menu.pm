@@ -271,11 +271,11 @@ sub new {
 	$menu->{view}->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view}->Append( -1, "Increase Font Size\tCtrl--" ),
+		$menu->{view}->Append( -1, "Increase Font Size\tCtrl-+" ),
 		sub { $_[0]->zoom(+1) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view}->Append( -1, "Decrease Font Size\tCtrl-+" ),
+		$menu->{view}->Append( -1, "Decrease Font Size\tCtrl--" ),
 		sub { $_[0]->zoom(-1) },
 	);
 	Wx::Event::EVT_MENU( $win,
