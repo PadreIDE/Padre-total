@@ -201,7 +201,7 @@ sub load_files {
 	if ( $files and ref($files) eq 'ARRAY' and @$files ) {
 		foreach my $f ( @$files ) {
 		    if ( not File::Spec->file_name_is_absolute($f) ) {
-		        $f = File::Spec->catfile(Cwd::cwd(), $f);
+		        $f = File::Spec->catfile(Padre->ide->{original_dir}, $f);
 		    }
 		    $self->setup_editor($f);
 		}

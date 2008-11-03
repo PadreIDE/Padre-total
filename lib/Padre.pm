@@ -242,6 +242,7 @@ use 5.008;
 use strict;
 use warnings;
 use Carp           ();
+use Cwd            ();
 use File::Spec     ();
 use File::HomeDir  ();
 use Getopt::Long   ();
@@ -411,6 +412,7 @@ sub run_indexer {
 sub run_editor {
 	my $self = shift;
 
+	$self->{original_dir} = Cwd::cwd();
 	# Move our current dir to the user's documents directory by default
 	my $documents = File::HomeDir->my_documents;
 	if ( defined $documents ) {
