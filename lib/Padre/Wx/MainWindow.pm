@@ -95,8 +95,11 @@ sub new {
 		Wx::wxNO_FULL_REPAINT_ON_RESIZE | Wx::wxCLIP_CHILDREN,
 	);
 	$self->manager->AddPane($self->{notebook}, 
-		Wx::AuiPaneInfo->new->Name( "notebook" )->CenterPane->Position( 1 )
-			->Resizable->PaneBorder->Dockable->Movable );
+		Wx::AuiPaneInfo->new->Name( "notebook" )
+			->CenterPane->Resizable->PaneBorder
+			->Dockable->Movable
+			->Position( 1 )
+		);
 	Wx::Event::EVT_NOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{notebook},
@@ -113,10 +116,11 @@ sub new {
 		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
 	);
 	$self->manager->AddPane($self->{rightbar}, 
-		Wx::AuiPaneInfo->new->Name( "rightbar" )->CenterPane->Right()->Resizable->PaneBorder
-			->RightDockable->Dockable->Floatable->PinButton->Caption( "Subs" )->CaptionVisible
-			->Movable->Position( 3 )
-			 );
+		Wx::AuiPaneInfo->new->Name( "rightbar" )
+			->CenterPane->Resizable->PaneBorder
+			->Dockable->Floatable->PinButton->CaptionVisible->Movable
+			->Caption( "Subs" )->Position( 3 )->Right->RightDockable
+		 );
         
 
 	$self->{rightbar}->InsertColumn(0, 'Methods');
