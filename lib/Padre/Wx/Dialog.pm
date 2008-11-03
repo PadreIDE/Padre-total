@@ -159,6 +159,7 @@ sub build_layout {
 				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, $width, @params );
 			} elsif ($class eq 'Wx::Choice') {
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, $width, $arg, @params );
+				$widget->SetSelection(0);
 			} elsif ($class eq 'Wx::Treebook') {
 				my $height = @$arg * 27; # should be height of font
 				$widget = $class->new( $dialog, -1, Wx::wxDefaultPosition, [$args{width}[$j], $height] );
