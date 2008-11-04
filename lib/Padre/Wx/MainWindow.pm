@@ -70,7 +70,7 @@ sub new {
 	);
 
 	# config param has to be ID, not name (e.g.: 87 for 'de'); TODO change this 
-	$self->refresh_locale( $config->{'host'}->{'locale'} );
+	$self->refresh_locale( $config->{host}->{locale} );
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->manager->SetManagedWindow( $self );
