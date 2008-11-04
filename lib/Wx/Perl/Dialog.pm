@@ -53,7 +53,7 @@ The first value in each widget description is the type of the widget.
 
 The second value is an identifyer (or undef if we don't need any access to the widget).
 
-The widget will be accessible form the dialog object using $dialog->{_widgets}{identifyer}
+The widget will be accessible form the dialog object using $dialog->{_widgets_}{identifyer}
 
 The rest of the values in the array depend on the widget.
 
@@ -112,27 +112,81 @@ sub new {
 	%args = (%default, %args);
 
 	my $self = $class->SUPER::new( @args{qw(parent id title pos size style)});
-	$self->build_layout( map {$_ => $args{$_} } qw(layout width top left bottom right element_spacing) );
+	$self->_build_layout( map {$_ => $args{$_} } qw(layout width top left bottom right element_spacing) );
 	$self->{_layout_} = $args{layout};
 
 	return $self;
 }
 
-=head2 build_layout
+=head2 get_data
 
-Internal function
+ my $data = $dialog->get_data;
+ 
+Returns a hash with the keys being the names you gave for each widgets
+and the value being the value of that widget in the dialog.
 
- $dialog->build_layout(
-	layout          => $layout,
-	width           => $width,
-	top             => $top
-	left            => $left, 
-	element_spacing => $element_spacing,
-	);
+=cut 
+ 
+sub get_data {
+	my ( $dialog ) = @_;
 
+	my $layout = $dialog->{_layout_};
+	my %data;
+	foreach my $i (0..@$layout-1) {
+		foreach my $j (0..@{$layout->[$i]}-1) {
+			next if not @{ $layout->[$i][$j] }; # [] means Expand
+			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
+			if ($name) {
+				next if $class eq 'Wx::Button';
+
+				if ($class eq 'Wx::DirPickerCtrl') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
+				} elsif ($class eq 'Wx::FilePickerCtrl') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
+				} elsif ($class eq 'Wx::Choice') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetSelection;
+				} else {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetValue;
+				}
+			}
+		}
+	}
+
+	return \%data;
+}
+
+=head2 show_modal
+
+Helper function that will probably change soon...
+
+ return if not $dialog->show_modal;
+ 
 =cut
 
-sub build_layout {
+sub show_modal {
+	my ( $dialog ) = @_;
+
+	my $ret = $dialog->ShowModal;
+	if ( $ret eq Wx::wxID_CANCEL ) {
+		$dialog->Destroy;
+		return;
+	} else {
+		return $ret;
+	}
+}
+
+
+# Internal function
+#
+# $dialog->_build_layout(
+#	layout          => $layout,
+#	width           => $width,
+#	top             => $top
+#	left            => $left, 
+#	element_spacing => $element_spacing,
+#	);
+#
+sub _build_layout {
 	my ($dialog, %args) = @_;
 
 	# TODO make sure width has enough elements to the widest row
@@ -219,49 +273,19 @@ sub build_layout {
 	return;
 }
 
-sub get_data {
-	my ( $dialog ) = @_;
+=head1 BUGS
 
-	my $layout = $dialog->{_layout_};
-	my %data;
-	foreach my $i (0..@$layout-1) {
-		foreach my $j (0..@{$layout->[$i]}-1) {
-			next if not @{ $layout->[$i][$j] }; # [] means Expand
-			my ($class, $name, $arg, @params) = @{ $layout->[$i][$j] };
-			if ($name) {
-				next if $class eq 'Wx::Button';
+Please submit bugs you find on L<http://padre.perlide.org/>
 
-				if ($class eq 'Wx::DirPickerCtrl') {
-					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
-				} elsif ($class eq 'Wx::FilePickerCtrl') {
-					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
-				} elsif ($class eq 'Wx::Choice') {
-					$data{$name} = $dialog->{_widgets_}{$name}->GetSelection;
-				} else {
-					$data{$name} = $dialog->{_widgets_}{$name}->GetValue;
-				}
-			}
-		}
-	}
+=head1 COPYRIGHT
 
-	return \%data;
-}
+Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
 
-sub show_modal {
-	my ( $dialog ) = @_;
+=head1 LICENSE
 
-	my $ret = $dialog->ShowModal;
-	if ( $ret eq Wx::wxID_CANCEL ) {
-		$dialog->Destroy;
-		return;
-	} else {
-		return $ret;
-	}
-}
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
+
+=cut
 
 1;
-
-# Copyright 2008 Gabor Szabo.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
