@@ -61,12 +61,17 @@ sub get_layout {
 
 sub start {
 	my ($class, $main) = @_;
-	my $config = Padre->ide->config;
-	$class->dialog( $main, $config, { } );
+	
+	my $dialog = $class->dialog( $main );
+	$dialog->Show(1);
+
+	return;
 }
 
 sub dialog {
-	my ( $class, $win, $config, $args) = @_;
+	my ( $class, $win ) = @_;
+
+	my $config = Padre->ide->config;
 
 	my $layout = get_layout($config);
 	my $dialog = Padre::Wx::Dialog->new(
@@ -83,9 +88,8 @@ sub dialog {
 	$dialog->{_widgets_}{_license_choice_}->SetValue(gettext('perl'));
 
 	$dialog->{_widgets_}{_module_name_}->SetFocus;
-	$dialog->Show(1);
 
-	return;
+	return $dialog;
 }
 
 
