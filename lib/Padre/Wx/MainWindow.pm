@@ -537,7 +537,7 @@ sub run_command {
 	}
 
 	# Start the command
-	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, gettext('MyName1'), $self );
+	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, 'MyName1', $self );
 	unless ( $self->{command} ) {
 		# Failed to start the command. Clean up.
 		$self->{menu}->{run_run_script}->Enable(1);

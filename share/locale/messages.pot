@@ -142,10 +142,6 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Bookmarks.pm:20
-msgid "entry"
-msgstr ""
-
 #: lib/Padre/Wx/Dialog/Bookmarks.pm:24
 msgid "Existing bookmarks:"
 msgstr ""
@@ -481,10 +477,6 @@ msgstr ""
 
 #: lib/Padre/Wx/MainWindow.pm:464
 msgid "Run setup"
-msgstr ""
-
-#: lib/Padre/Wx/MainWindow.pm:528
-msgid "MyName1"
 msgstr ""
 
 #: lib/Padre/Wx/MainWindow.pm:544

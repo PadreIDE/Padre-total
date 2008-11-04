@@ -17,7 +17,7 @@ sub get_layout {
 	
 	my @layout;
 	if ($text) {
-		push @layout, [['Wx::TextCtrl', gettext('entry'), $text]];
+		push @layout, [['Wx::TextCtrl', 'entry', $text]];
 	}
 	push @layout,
 		[

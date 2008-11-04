@@ -142,10 +142,6 @@ msgstr "Offene Dateien:"
 msgid "Preferences"
 msgstr "Voreinstellungen"
 
-#: lib/Padre/Wx/Dialog/Bookmarks.pm:20
-msgid "entry"
-msgstr "Eintrag"
-
 #: lib/Padre/Wx/Dialog/Bookmarks.pm:24
 msgid "Existing bookmarks:"
 msgstr "Vorhandene Lesezeichen:"
@@ -481,10 +477,6 @@ msgstr "Kommandozeile"
 #: lib/Padre/Wx/MainWindow.pm:464
 msgid "Run setup"
 msgstr "Ausführungs-Konfigurationen"
-
-#: lib/Padre/Wx/MainWindow.pm:528
-msgid "MyName1"
-msgstr "MeinName1"
 
 #: lib/Padre/Wx/MainWindow.pm:544
 msgid "No open document"
