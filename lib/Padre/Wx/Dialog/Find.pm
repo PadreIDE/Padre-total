@@ -102,7 +102,7 @@ sub find_next {
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
-		_search();
+		$class->search();
 	} else {
 		$class->find( $main );
 	}
@@ -114,7 +114,7 @@ sub find_previous {
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
-		_search(rev => 1);
+		$class->search(rev => 1);
 	} else {
 		$class->find( $main );
 	}
@@ -187,7 +187,7 @@ sub replace_clicked {
 
 	# if search window is still open, run a search_again on the whole text
 	if (not $config->{search}->{close_on_hit}) {
-		_search();
+		__PACKAGE__->search();
 	}
 
 	return;
@@ -197,7 +197,7 @@ sub find_clicked {
 	my ($dialog, $event) = @_;
 
 	_get_data_from( $dialog ) or return;
-	_search();
+	__PACKAGE__->search();
 
 	return;
 }
@@ -262,8 +262,9 @@ sub _get_regex {
 	return $regex;
 }
 
-sub _search {
-	my ( %args ) = @_;
+sub search {
+	my ( $class, %args ) = @_;
+
 	my $main_window = Padre->ide->wx->main_window;
 
 	my $regex = _get_regex(%args);
