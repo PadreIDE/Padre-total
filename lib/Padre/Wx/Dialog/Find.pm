@@ -54,20 +54,6 @@ sub get_layout {
 	return \@layout;
 }
 
-
-sub find {
-	my ($class, $main) = @_;
-	my $config = Padre->ide->config;
-	my $text   = $main->selected_text;
-	$text = '' if not defined $text;
-
-	# TODO: if selection is more than one lines then consider it as the limit
-	# of the search and replace and not as the string to be used
-
-	$class->dialog( $main, $config, { term => $text } );
-}
-
-
 sub dialog {
 	my ( $class, $win, $config, $args) = @_;
 
@@ -95,6 +81,44 @@ sub dialog {
 
 	return;
 }
+
+sub find {
+	my ($class, $main) = @_;
+
+	my $config = Padre->ide->config;
+	my $text   = $main->selected_text;
+	$text = '' if not defined $text;
+
+	# TODO: if selection is more than one lines then consider it as the limit
+	# of the search and replace and not as the string to be used
+
+	$class->dialog( $main, $config, { term => $text } );
+}
+
+sub find_next {
+	my ($class, $main_window) = @_;
+
+	my $term = Padre->ide->config->{search_terms}->[0];
+	if ( $term ) {
+		_search();
+	} else {
+		$class->find( $main_window );
+	}
+	return;
+}
+
+sub find_previous {
+	my ($class, $main_window) = @_;
+
+	my $term = Padre->ide->config->{search_terms}->[0];
+	if ( $term ) {
+		_search(rev => 1);
+	} else {
+		$class->find( $main_window );
+	}
+	return;
+}
+
 
 
 sub cancel_clicked {
@@ -207,30 +231,6 @@ sub _get_data_from {
 		@{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
 	}
 	return 1;
-}
-
-sub find_next {
-	my ($class, $main_window) = @_;
-
-	my $term = Padre->ide->config->{search_terms}->[0];
-	if ( $term ) {
-		_search();
-	} else {
-		$class->find( $main_window );
-	}
-	return;
-}
-
-sub find_previous {
-	my ($class, $main_window) = @_;
-
-	my $term = Padre->ide->config->{search_terms}->[0];
-	if ( $term ) {
-		_search(rev => 1);
-	} else {
-		$class->find( $main_window );
-	}
-	return;
 }
 
 sub _get_regex {
