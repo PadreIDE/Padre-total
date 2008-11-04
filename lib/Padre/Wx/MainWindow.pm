@@ -814,8 +814,9 @@ sub on_split_window {
 	my $new_editor = Padre::Wx::Editor->new( $self->{notebook} );
 	$new_editor->{Document} = $editor->{Document};
 	$new_editor->padre_setup;
-
 	$new_editor->SetDocPointer($pointer);
+	$new_editor->set_preferences;
+	
 	$self->create_tab($new_editor, $file, " $title");
 
 	return;
