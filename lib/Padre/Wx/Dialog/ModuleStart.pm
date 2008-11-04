@@ -60,9 +60,9 @@ sub get_layout {
 
 
 sub on_start {
-	my $main   = shift;
+	my ($class, $main) = @_;
 	my $config = Padre->ide->config;
-	__PACKAGE__->dialog( $main, $config, { } );
+	$class->dialog( $main, $config, { } );
 }
 
 sub dialog {
