@@ -14,50 +14,36 @@ use base 'Wx::Dialog';
 
 Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
 
-=head1 METHODS
+=head1 SYNOPSIS
 
-=cut
+	my $layout = [
+		[
+			[ 'Wx::StaticText', undef,         'Some text entry'],
+			[ 'Wx::TextCtrl',   'name_of',     'Default value'  ],
+		],
+		[
+			[ 'Wx::Button',     'ok',           Wx::wxID_OK     ],
+			[ 'Wx::Button',     'cancel',       Wx::wxID_CANCEL ],
+		],
+    ];
 
-=head2 new
-
-=cut
-
-sub new {
-	my ($class, %args) = @_;
-
-	my %default = (
-		parent          => undef,
-		id              => -1,
-		style           => Wx::wxDEFAULT_FRAME_STYLE,
-		title           => '',
-		pos             => [-1, -1],
-		size            => [-1, -1],
-		
-		top             => 5,
-		left            => 5,
-		bottom          => 20,
-		right           => 5,
-		element_spacing => [0, 5],
+ 	my $dialog = Wx::Perl::Dialog->new(
+		parent => $win,
+		title  => 'Widgetry dialog',
+		layout => $layout,
+		width  => [150, 200],
 	);
-	%args = (%default, %args);
 
-	my $self = $class->SUPER::new( @args{qw(parent id title pos size style)});
-	$self->build_layout( map {$_ => $args{$_} } qw(layout width top left bottom right element_spacing) );
-	$self->{_layout_} = $args{layout};
+   	return if not $dialog->show_modal;
 
-	return $self;
-}
 
-=head2 build_layout
+Where $win is the Wx::Frame of your application.
 
- $dialog->build_layout(
-	layout          => $layout,
-	width           => $width,
-	top             => $top
-	left            => $left, 
-	element_spacing => $element_spacing,
-	);
- 
+
+=head1 DESCRIPTION
+
+=head2 Layout
+
 The layout is reference to a two dimensional array.
 Every element (an array) represents one line in the dialog.
 
@@ -96,8 +82,53 @@ Supported widgets and their parameters:
 
  3. array ref for list of values
 
-
 =back
+
+=head1 METHODS
+
+=cut
+
+=head2 new
+
+=cut
+
+sub new {
+	my ($class, %args) = @_;
+
+	my %default = (
+		parent          => undef,
+		id              => -1,
+		style           => Wx::wxDEFAULT_FRAME_STYLE,
+		title           => '',
+		pos             => [-1, -1],
+		size            => [-1, -1],
+		
+		top             => 5,
+		left            => 5,
+		bottom          => 20,
+		right           => 5,
+		element_spacing => [0, 5],
+	);
+	%args = (%default, %args);
+
+	my $self = $class->SUPER::new( @args{qw(parent id title pos size style)});
+	$self->build_layout( map {$_ => $args{$_} } qw(layout width top left bottom right element_spacing) );
+	$self->{_layout_} = $args{layout};
+
+	return $self;
+}
+
+=head2 build_layout
+
+Internal function
+
+ $dialog->build_layout(
+	layout          => $layout,
+	width           => $width,
+	top             => $top
+	left            => $left, 
+	element_spacing => $element_spacing,
+	);
 
 =cut
 
