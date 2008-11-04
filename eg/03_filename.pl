@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use lib 'lib';
-use Wx::Perl::Dialog;
+use Wx::Perl::Dialog::Simple;
 
 my $filename = file_selector();
 message(text => "The file you selected is $filename\n");

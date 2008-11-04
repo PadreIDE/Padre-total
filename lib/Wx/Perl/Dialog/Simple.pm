@@ -1,4 +1,4 @@
-package Wx::Perl::Dialog;
+package Wx::Perl::Dialog::Simple;
 
 use 5.008;
 use strict;
@@ -34,13 +34,13 @@ use Wx::Event          qw(:everything);
 
 =head1 NAME
 
-Wx::Perl::Dialog - a set of simple dialogs (a partial Zenity clone in wxPerl)
+Wx::Perl::Dialog::Simple - a set of simple dialogs (a partial Zenity clone in wxPerl)
 
 =head1 SYNOPIS
 
 As a module:
 
- use Wx::Perl::Dialog;
+ use Wx::Perl::Dialog::Simple;
 
  my $name = entry(title => "What is your name?");
  message(text => "How are you $name today?\n");
@@ -322,7 +322,7 @@ sub single_choice {
 #sub print_out {
 #    my ($output, $text) = @_;
 #    $output->AddText($text);
-#    #$Wx::Perl::Dialog::app->Yield;
+#    #$Wx::Perl::Dialog::Simple::app->Yield;
 #    return;
 #}
 #

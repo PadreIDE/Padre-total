@@ -4,7 +4,7 @@ use warnings;
 
 use Getopt::Long qw(GetOptions);
 
-use Wx::Perl::Dialog ();
+use Wx::Perl::Dialog::Simple ();
 
 
 my %opt;
@@ -27,9 +27,9 @@ if ($opt{help}) {
 usage() unless $opt{entry} xor $opt{'file-selection'};
 
 if ($opt{entry}) {
-    print Wx::Perl::Dialog::entry( %opt );
+    print Wx::Perl::Dialog::Simple::entry( %opt );
 } elsif ($opt{'file-selection'}) {
-    print Wx::Perl::Dialog::file_selector( %opt );
+    print Wx::Perl::Dialog::Simple::file_selector( %opt );
 } else {
     usage();
 }

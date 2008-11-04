@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use lib 'lib';
-use Wx::Perl::Dialog;
+use Wx::Perl::Dialog::Simple;
 
 my $empty = file_picker() || '';
 print "$empty\n";
