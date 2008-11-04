@@ -2,6 +2,11 @@ Changes for Padre.
 
     Fix New on the Toolbar (SZABGAB)
     Add Diff menu item to show changes in file. (SZABGAB)
+    Change windowing system to AUI solving several requests: (SZABGAB)
+       Split view
+       Tab reordering
+       Tab close button
+    Localization and German translation. (Heiko Jansen)
 
 0.15 2008.11.02
 
