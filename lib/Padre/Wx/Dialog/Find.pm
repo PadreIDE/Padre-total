@@ -55,8 +55,9 @@ sub get_layout {
 }
 
 sub dialog {
-	my ( $class, $win, $config, $args) = @_;
+	my ( $class, $win, $args) = @_;
 
+	my $config = Padre->ide->config;
 	my $search_term = $args->{term} || '';
 
 	my $layout = get_layout($search_term, $config);
@@ -77,48 +78,48 @@ sub dialog {
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},      \&cancel_clicked      );
 
 	$dialog->{_widgets_}{_find_choice_}->SetFocus;
-	$dialog->Show(1);
 
-	return;
+	return $dialog;
 }
 
 sub find {
 	my ($class, $main) = @_;
 
-	my $config = Padre->ide->config;
 	my $text   = $main->selected_text;
 	$text = '' if not defined $text;
 
 	# TODO: if selection is more than one lines then consider it as the limit
 	# of the search and replace and not as the string to be used
 
-	$class->dialog( $main, $config, { term => $text } );
+	my $dialog = $class->dialog( $main, { term => $text } );
+	$dialog->Show(1);
+
+	return;
 }
 
 sub find_next {
-	my ($class, $main_window) = @_;
+	my ($class, $main) = @_;
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search();
 	} else {
-		$class->find( $main_window );
+		$class->find( $main );
 	}
 	return;
 }
 
 sub find_previous {
-	my ($class, $main_window) = @_;
+	my ($class, $main) = @_;
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search(rev => 1);
 	} else {
-		$class->find( $main_window );
+		$class->find( $main );
 	}
 	return;
 }
-
 
 
 sub cancel_clicked {
@@ -136,7 +137,7 @@ sub replace_all_clicked {
 	my $regex = _get_regex();
 	return if not defined $regex;
 
-	my $config = Padre->ide->config;
+	my $config      = Padre->ide->config;
 	my $main_window = Padre->ide->wx->main_window;
 
 	my $id   = $main_window->{notebook}->GetSelection;
