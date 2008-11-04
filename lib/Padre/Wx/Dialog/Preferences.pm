@@ -6,6 +6,7 @@ use warnings;
 
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Wx::Locale        qw(:default);
 
 our $VERSION = '0.15';
 
@@ -15,22 +16,22 @@ sub get_layout {
 	return [
 		[
 			[],
-			['Wx::CheckBox',    'editor_use_tabs', 'Use Tabs',    ($config->{editor_use_tabs} ? 1 : 0) ],
+			['Wx::CheckBox',    'editor_use_tabs', gettext('Use Tabs'),    ($config->{editor_use_tabs} ? 1 : 0) ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'TAB display size (in spaces)'],
+			[ 'Wx::StaticText', undef,              gettext('TAB display size (in spaces)')],
 			[ 'Wx::TextCtrl',   'editor_tabwidth',	$config->{editor_tabwidth}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Max number of modules'],
+			[ 'Wx::StaticText', undef,              gettext('Max number of modules')],
 			[ 'Wx::TextCtrl',   'pod_maxlist',		$config->{pod_maxlist}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Min number of modules'],
+			[ 'Wx::StaticText', undef,              gettext('Min number of modules')],
 			[ 'Wx::TextCtrl',   'pod_minlist', 	     $config->{pod_minlist}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Open files:'],
+			[ 'Wx::StaticText', undef,              gettext('Open files:')],
 			[ 'Wx::Choice',     'choice',    $values],
 		],
 		[
@@ -51,7 +52,7 @@ sub run {
 	my $layout = get_layout($config, \@values);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
-		title  => "Preferences",
+		title  => gettext("Preferences"),
 		layout => $layout,
 		width  => [250, 200],
 	);

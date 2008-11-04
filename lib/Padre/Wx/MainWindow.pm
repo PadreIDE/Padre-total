@@ -18,6 +18,8 @@ use Padre::Wx::ToolBar ();
 use Padre::Wx::Output  ();
 use Padre::Documents   ();
 
+use Wx::Locale         qw(:default);
+
 use base qw{Wx::Frame};
 
 our $VERSION = '0.15';
@@ -49,7 +51,7 @@ sub new {
 		my $dir = $0;
 		$dir =~ s/padre$//;
 		if ( -d "$dir.svn" ) {
-			$title .= '(running from SVN checkout)';
+			$title .= gettext('(running from SVN checkout)');
 		}
 	}
 	my $self = $class->SUPER::new(
@@ -66,6 +68,9 @@ sub new {
 		],
 		$wx_frame_style,
 	);
+
+	# config param has to be ID, not name (e.g.: 87 for 'de'); TODO change this 
+	$self->refresh_locale( $config->{'host'}->{'locale'} );
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->manager->SetManagedWindow( $self );
@@ -100,7 +105,7 @@ sub new {
 			->Dockable->Floatable->PinButton->CaptionVisible->Movable
 			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
 			->FloatingPosition(100, 100)->FloatingSize(500, 300)
-			->Caption( "Files" )->Position( 1 )
+			->Caption( gettext("Files") )->Position( 1 )
 		);
 
 
@@ -135,11 +140,11 @@ sub new {
 			->Dockable->Floatable->PinButton->CaptionVisible->Movable
 			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
 			->FloatingPosition(100, 100)->FloatingSize(100, 400)
-			->Caption( "Subs" )->Position( 3 )->Right
+			->Caption( gettext("Subs") )->Position( 3 )->Right
 		 );
         
 
-	$self->{rightbar}->InsertColumn(0, 'Methods');
+	$self->{rightbar}->InsertColumn(0, gettext('Methods'));
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
@@ -157,7 +162,7 @@ sub new {
 			->Dockable->Floatable->PinButton->CaptionVisible->Movable
 			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
 			->FloatingPosition(100, 100)
-			->Caption( "Output" )->Position( 2 )->Bottom
+			->Caption( gettext("Output") )->Position( 2 )->Bottom
 		);
 
 	# Special Key Handling
@@ -293,6 +298,7 @@ sub refresh_all {
 	return if $self->no_refresh;
 
 	my $doc  = $self->selected_document;
+	$self->refresh_locale;
 	$self->refresh_menu;
 	$self->refresh_toolbar;
 	$self->refresh_status;
@@ -304,6 +310,24 @@ sub refresh_all {
 	}
 
 	return;
+}
+
+sub refresh_locale {
+    my $self = shift;
+    my $lang = shift || Wx::Locale::GetSystemLanguage;
+
+    $self->{'locale'} = undef;
+
+    $self->{'locale'} = Wx::Locale->new($lang);
+    $self->{'locale'}->AddCatalogLookupPathPrefix( Padre::Wx::sharedir('locale') );
+    my $langname = $self->{'locale'}->GetCanonicalName();
+
+    my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
+    my $filename = Padre::Wx::sharefile( 'locale', $shortname ) . '.mo';
+
+    $self->{'locale'}->AddCatalog($shortname) if -f $filename;
+
+    return;
 }
 
 sub refresh_menu {
@@ -448,8 +472,8 @@ sub on_run_command {
 	require Padre::Wx::History::TextDialog;
 	my $dialog = Padre::Wx::History::TextDialog->new(
 		$main_window,
-		"Command line",
-		"Run setup",
+		gettext("Command line"),
+		gettext("Run setup"),
 		"run_command",
 	);
 	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
@@ -513,7 +537,7 @@ sub run_command {
 	}
 
 	# Start the command
-	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, 'MyName1', $self );
+	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, gettext('MyName1'), $self );
 	unless ( $self->{command} ) {
 		# Failed to start the command. Clean up.
 		$self->{menu}->{run_run_script}->Enable(1);
@@ -529,7 +553,7 @@ sub run_script {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
-	return $self->error("No open document") if not $document;
+	return $self->error(gettext("No open document")) if not $document;
 
 	# Apply the user's save-on-run policy
 	# TODO: Make this code suck less
@@ -543,7 +567,7 @@ sub run_script {
 	}
 	
 	if ( not $document->can('get_command') ) {
-		return $self->error("No execution mode was defined for this document");
+		return $self->error(gettext("No execution mode was defined for this document"));
 	}
 	
 	my $cmd = eval { $document->get_command };
@@ -562,13 +586,13 @@ sub debug_perl {
 	my $self     = shift;
 	my $document = $self->selected_document;
 	unless ( $document->isa('Perl::Document::Perl') ) {
-		return $self->error("Not a Perl document");
+		return $self->error(gettext("Not a Perl document"));
 	}
 
 	# Check the file name
 	my $filename = $document->filename;
 	unless ( $filename =~ /\.pl$/i ) {
-		return $self->error("Only .pl files can be executed");
+		return $self->error(gettext("Only .pl files can be executed"));
 	}
 
 	# Apply the user's save-on-run policy
@@ -604,14 +628,14 @@ sub debug_perl {
 sub message {
 	my $self    = shift;
 	my $message = shift;
-	my $title   = shift || 'Message';
+	my $title   = shift || gettext('Message');
 	Wx::MessageBox( $message, $title, Wx::wxOK | Wx::wxCENTRE, $self );
 	return;
 }
 
 sub error {
 	my $self = shift;
-	$self->message( shift, 'Error' );
+	$self->message( shift, gettext('Error') );
 }
 
 
@@ -697,7 +721,7 @@ sub on_autocompletition {
 	my $doc    = $self->selected_document or return;
 	my ( $length, @words ) = $doc->autocomplete;
 	if ( $length =~ /\D/ ) {
-		Wx::MessageBox($length, "Autocompletions error", Wx::wxOK);
+		Wx::MessageBox($length, gettext("Autocompletions error"), Wx::wxOK);
 	}
 	if ( @words ) {
 		$doc->editor->AutoCompShow($length, join " ", @words);
@@ -708,7 +732,7 @@ sub on_autocompletition {
 sub on_goto {
 	my $self = shift;
 
-	my $dialog = Wx::TextEntryDialog->new( $self, "Line number:", "", '' );
+	my $dialog = Wx::TextEntryDialog->new( $self, gettext("Line number:"), "", '' );
 	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}   
@@ -864,7 +888,7 @@ sub on_open_selection {
 	my ($self, $event) = @_;
 	my $selection = $self->selected_text();
 	if (not $selection) {
-		Wx::MessageBox("Need to have something selected", "Open Selection", Wx::wxOK, $self);
+		Wx::MessageBox(gettext("Need to have something selected"), gettext("Open Selection"), Wx::wxOK, $self);
 		return;
 	}
 	my $file;
@@ -901,7 +925,7 @@ sub on_open_selection {
 	}
 
 	if (not $file) {
-		Wx::MessageBox("Could not find file '$selection'", "Open Selection", Wx::wxOK, $self);
+		Wx::MessageBox(gettext("Could not find file '%s'", $selection), gettext("Open Selection"), Wx::wxOK, $self);
 		return;
 	}
 
@@ -921,7 +945,7 @@ sub on_open {
 	}
 	my $dialog = Wx::FileDialog->new(
 		$self,
-		"Open file",
+		gettext("Open file"),
 		$default_dir,
 		"",
 		"*.*",
@@ -974,7 +998,7 @@ sub on_save_as {
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
 			$self,
-			"Save file as...",
+			gettext("Save file as..."),
 			$default_dir,
 			"",
 			"*.*",
@@ -988,8 +1012,8 @@ sub on_save_as {
 		my $path = File::Spec->catfile($default_dir, $filename);
 		if ( -e $path ) {
 			my $res = Wx::MessageBox(
-				"File already exists. Overwrite it?",
-				"Exist",
+				gettext("File already exists. Overwrite it?"),
+				gettext("Exist"),
 				Wx::wxYES_NO,
 				$self,
 			);
@@ -1050,8 +1074,8 @@ sub _save_buffer {
 
 	if ($doc->has_changed_on_disk) {
 		my $ret = Wx::MessageBox(
-			"File changed on disk since last saved. Do you want to overwrite it?",
-			$doc->filename || "File not in sync",
+			gettext("File changed on disk since last saved. Do you want to overwrite it?"),
+			$doc->filename || gettext("File not in sync"),
 			Wx::wxYES_NO|Wx::wxCENTRE,
 			$self,
 		);
@@ -1060,7 +1084,7 @@ sub _save_buffer {
 	
 	my $error = $doc->save_file;
 	if ($error) {
-		Wx::MessageBox($error, "Error", Wx::wxOK, $self);
+		Wx::MessageBox($error, gettext("Error"), Wx::wxOK, $self);
 		return;
 	}
 
@@ -1101,8 +1125,8 @@ sub close {
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
-			"File changed. Do you want to save it?",
-			$doc->filename || "Unsaved File",
+			gettext("File changed. Do you want to save it?"),
+			$doc->filename || gettext("Unsaved File"),
 			Wx::wxYES_NO|Wx::wxCANCEL|Wx::wxCENTRE,
 			$self,
 		);
@@ -1202,12 +1226,12 @@ sub on_diff {
 	use Text::Diff ();
 	my $current = $doc->text_get;
 	my $file    = $doc->filename;
-	return $self->error("Cannot diff if file was never saved") if not $file;
+	return $self->error(gettext("Cannot diff if file was never saved")) if not $file;
 	
 	my $diff = Text::Diff::diff($file, \$current);
 	
 	if (not $diff) {
-		$diff = "There are no differences\n";
+		$diff = gettext("There are no differences\n");
 	}
 	$self->show_output;
 	$self->{output}->clear;
@@ -1353,7 +1377,7 @@ sub run_in_padre {
 	my $code = $doc->text_get;
 	eval $code;
 	if ( $@ ) {
-		Wx::MessageBox("Error: $@", "Self error", Wx::wxOK, $self);
+		Wx::MessageBox(gettext("Error: %s", $@), gettext("Self error"), Wx::wxOK, $self);
 		return;
 	}
 	return;

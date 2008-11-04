@@ -8,6 +8,7 @@ use Data::Dumper qw(Dumper);
 
 use Padre::Wx;
 use Padre::Wx::Dialog;
+use Wx::Locale qw(:default);
 
 our $VERSION = '0.15';
 
@@ -16,11 +17,11 @@ sub get_layout {
 	
 	my @layout;
 	if ($text) {
-		push @layout, [['Wx::TextCtrl', 'entry', $text]];
+		push @layout, [['Wx::TextCtrl', gettext('entry'), $text]];
 	}
 	push @layout,
 		[
-			['Wx::StaticText', undef, "Existing bookmarks:"],
+			['Wx::StaticText', undef, gettext("Existing bookmarks:")],
 		],
 		[
 			['Wx::Treebook',   'tb', $shortcuts],
@@ -41,7 +42,7 @@ sub get_layout {
 sub dialog {
 	my ($class, $main, $text) = @_;
 
-	my $title = $text ? "Set Bookmark" : "GoTo Bookmark";
+	my $title = $text ? gettext("Set Bookmark") : gettext("GoTo Bookmark");
 	my $config = Padre->ide->config;
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 
@@ -107,7 +108,7 @@ sub set_bookmark {
 	my $path     = $main->selected_filename;
 	my $file     = File::Basename::basename($path || '');
 
-	my $dialog   = $class->dialog($main, "$file line $line");
+	my $dialog   = $class->dialog($main, gettext("%s line %s", $file, $line));
 	return if not show_modal($dialog);
 	
 	my $data     = _get_data($dialog);

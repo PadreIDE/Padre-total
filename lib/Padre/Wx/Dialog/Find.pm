@@ -8,6 +8,7 @@ use warnings;
 
 use Padre::Wx;
 use Padre::Wx::Dialog;
+use Wx::Locale qw(:default);
 
 our $VERSION = '0.15';
 
@@ -18,31 +19,31 @@ sub get_layout {
 
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              'Find:'],
+			[ 'Wx::StaticText', undef,              gettext('Find:')],
 			[ 'Wx::ComboBox',   '_find_choice_',    $search_term, $config->{search_terms}],
 			[ 'Wx::Button',     '_find_',           Wx::wxID_FIND ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Replace With:'],
+			[ 'Wx::StaticText', undef,              gettext('Replace With:')],
 			[ 'Wx::ComboBox',   '_replace_choice_',    '', $config->{replace_terms}],
 			[ 'Wx::Button',     '_replace_',        '&Replace'],
 		],
 		[
 			[],
 			[],
-			[ 'Wx::Button',     '_replace_all_',    'Replace &All'],
+			[ 'Wx::Button',     '_replace_all_',    gettext('Replace &All')],
 		],
 		[
-			['Wx::CheckBox',    'case_insensitive', 'Case &Insensitive',    ($config->{search}->{case_insensitive} ? 1 : 0) ],
+			['Wx::CheckBox',    'case_insensitive', gettext('Case &Insensitive'),    ($config->{search}->{case_insensitive} ? 1 : 0) ],
 		],
 		[
-			['Wx::CheckBox',    'use_regex',        '&Use Regex',           ($config->{search}->{use_regex} ? 1 : 0) ],
+			['Wx::CheckBox',    'use_regex',        gettext('&Use Regex'),           ($config->{search}->{use_regex} ? 1 : 0) ],
 		],
 		[
-			['Wx::CheckBox',    'backwards',        'Search &Backwards',    ($config->{search}->{backwards} ? 1 : 0) ],
+			['Wx::CheckBox',    'backwards',        gettext('Search &Backwards'),    ($config->{search}->{backwards} ? 1 : 0) ],
 		],
 		[
-			['Wx::CheckBox',    'close_on_hit',     'Close Window on &hit', ($config->{search}->{close_on_hit} ? 1 : 0) ],
+			['Wx::CheckBox',    'close_on_hit',     gettext('Close Window on &hit'), ($config->{search}->{close_on_hit} ? 1 : 0) ],
 		],
 		[
 			[],
@@ -75,7 +76,7 @@ sub dialog {
 	my $layout = get_layout($search_term, $config);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
-		title  => "Search",
+		title  => gettext("Search"),
 		layout => $layout,
 		width  => [150, 200],
 	);
@@ -254,7 +255,7 @@ sub _get_regex {
 	eval { $regex = qr/$search_term/m };
 	if ($@) {
 		my $main_window = Padre->ide->wx->main_window;
-		Wx::MessageBox("Cannot build regex for '$search_term'", "Search error", Wx::wxOK, $main_window);
+		Wx::MessageBox(gettext("Cannot build regex for '%s'", $search_term), gettext("Search error"), Wx::wxOK, $main_window);
 		return;
 	}
 	return $regex;

@@ -75,6 +75,9 @@ eg/wx/02_label.pl
 eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
+share/locale/de.po
+share/locale/de.mo
+
 share/templates/template.pl
 share/templates/template.pm
 share/templates/template.t

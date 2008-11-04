@@ -10,6 +10,7 @@ use Cwd          ();
 
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Wx::Locale        qw(:default);
 
 our $VERSION = '0.15';
 
@@ -25,28 +26,28 @@ sub get_layout {
 
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              'Module Name:'],
+			[ 'Wx::StaticText', undef,              gettext('Module Name:')],
 			[ 'Wx::TextCtrl',   '_module_name_',    ''],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Author:'],
+			[ 'Wx::StaticText', undef,              gettext('Author:')],
 			[ 'Wx::TextCtrl',   '_author_name_',    ($config->{module_start}{author_name} || '') ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Email:'],
+			[ 'Wx::StaticText', undef,              gettext('Email:')],
 			[ 'Wx::TextCtrl',   '_email_',          ($config->{module_start}{email} || '') ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Builder:'],
+			[ 'Wx::StaticText', undef,              gettext('Builder:')],
 			[ 'Wx::ComboBox',   '_builder_choice_', '',       \@builders],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'License:'],
+			[ 'Wx::StaticText', undef,              gettext('License:')],
 			[ 'Wx::ComboBox',   '_license_choice_', '',       \@licenses],
 		],
 		[
-			[ 'Wx::StaticText',      undef,         'Parent Directory:'],
-			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
+			[ 'Wx::StaticText',      undef,         gettext('Parent Directory:')],
+			[ 'Wx::DirPickerCtrl',   '_directory_', '',   gettext('Pick parent directory')],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -70,7 +71,7 @@ sub dialog {
 	my $layout = get_layout($config);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent          => $win,
-		title           => "Module Start",
+		title           => gettext("Module Start"),
 		layout          => $layout,
 		width           => [100, 200],
 	);
@@ -79,7 +80,7 @@ sub dialog {
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
 
-	$dialog->{_widgets_}{_license_choice_}->SetValue('perl');
+	$dialog->{_widgets_}{_license_choice_}->SetValue(gettext('perl'));
 
 	$dialog->{_widgets_}{_module_name_}->SetFocus;
 	$dialog->Show(1);
@@ -113,7 +114,7 @@ sub ok_clicked {
 	my @fields = qw(_module_name_ _author_name_ _email_ _builder_choice_ _license_choice_);
 	foreach my $f (@fields) {
 		if (not $data->{$f}) {
-			Wx::MessageBox("Field $f was missing. Module not created.", "missing field", Wx::wxOK, $main_window);
+			Wx::MessageBox(gettext("Field %s was missing. Module not created.", $f), gettext("missing field"), Wx::wxOK, $main_window);
 			return;
 		}
 	}
@@ -130,7 +131,7 @@ sub ok_clicked {
 	Module::Starter::App->run;
 	@ARGV = ();
 	chdir $pwd;
-	Wx::MessageBox("$data->{_module_name_} apparantly created.", "Done", Wx::wxOK, $main_window);
+	Wx::MessageBox(gettext("%s apparantly created.", $data->{_module_name_}), gettext("Done"), Wx::wxOK, $main_window);
 
 	return;
 }

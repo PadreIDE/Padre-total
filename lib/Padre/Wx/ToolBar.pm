@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Padre::Wx    ();
+use Wx::Locale   qw(:default);
 use File::Spec::Functions qw(catfile);
 
 our $VERSION = '0.15';
@@ -23,10 +24,10 @@ sub new {
 	);
 
 	# Automatically populate
-	$self->AddTool( 1000,   '', Padre::Wx::tango(catfile('actions', 'document-new.png')),  'New File'  ); 
-	$self->AddTool( Wx::wxID_OPEN,  '', Padre::Wx::tango(catfile('actions', 'document-open.png')), 'Open File' ); 
-	$self->AddTool( Wx::wxID_SAVE,  '', Padre::Wx::tango(catfile('actions', 'document-save.png')), 'Save File' );
-	$self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::tango(catfile('emblems', 'emblem-unreadable.png')) , 'Close File' );
+	$self->AddTool( 1000,   '', Padre::Wx::tango(catfile('actions', 'document-new.png')),  gettext('New File')  ); 
+	$self->AddTool( Wx::wxID_OPEN,  '', Padre::Wx::tango(catfile('actions', 'document-open.png')), gettext('Open File') ); 
+	$self->AddTool( Wx::wxID_SAVE,  '', Padre::Wx::tango(catfile('actions', 'document-save.png')), gettext('Save File') );
+	$self->AddTool( Wx::wxID_CLOSE, '', Padre::Wx::tango(catfile('emblems', 'emblem-unreadable.png')), gettext('Close File') );
 	$self->AddSeparator;
 	# TODO, how can we make sure these numbers are unique?
 	#$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
