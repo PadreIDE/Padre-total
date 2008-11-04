@@ -6,7 +6,7 @@ use warnings;
 
 our $VERSION = '0.15';
 
-use Padre::Wx;
+use Wx ':everything';
 
 use base 'Wx::Dialog';
 
