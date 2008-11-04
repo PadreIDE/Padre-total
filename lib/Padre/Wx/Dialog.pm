@@ -216,6 +216,18 @@ sub get_data {
 	return \%data;
 }
 
+sub show_modal {
+	my ( $dialog ) = @_;
+
+	my $ret = $dialog->ShowModal;
+	if ( $ret eq Wx::wxID_CANCEL ) {
+		$dialog->Destroy;
+		return;
+	} else {
+		return $ret;
+	}
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

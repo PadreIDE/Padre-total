@@ -77,17 +77,6 @@ sub dialog {
 	return $dialog;
 }
 
-sub show_modal {
-	my ($dialog) = @_;
-	my $ret = $dialog->ShowModal;
-	if ( $ret eq Wx::wxID_CANCEL ) {
-		$dialog->Destroy;
-		return;
-	} else {
-		return 1;
-	}
-}
-
 sub _get_data {
 	my ($dialog) = @_;
 
@@ -109,7 +98,7 @@ sub set_bookmark {
 	my $file     = File::Basename::basename($path || '');
 
 	my $dialog   = $class->dialog($main, sprintf(gettext("%s line %s"), $file, $line));
-	return if not show_modal($dialog);
+	return if not $dialog->show_modal;
 	
 	my $data     = _get_data($dialog);
 
@@ -131,7 +120,7 @@ sub goto_bookmark {
 	my ($class, $main) = @_;
 
 	my $dialog    = $class->dialog($main);
-	return if not show_modal($dialog);
+	return if not $dialog->show_modal;
 	
 	my $config    = Padre->ide->config;
 	my $selection = $dialog->{_widgets_}{tb}->GetSelection;
