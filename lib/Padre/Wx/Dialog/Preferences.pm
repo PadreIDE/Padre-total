@@ -75,9 +75,7 @@ sub run {
 	);
 
 	my $dialog = $class->dialog( $win, \@main_startup );
-	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
-		return;
-	}
+	return if not $dialog->show_modal;
 
 	my $data = $dialog->get_data;
 
