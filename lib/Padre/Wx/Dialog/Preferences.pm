@@ -42,7 +42,9 @@ sub get_layout {
 }
 
 sub run {
-	my ( $class, $win, $config ) = @_;
+	my ( $class, $win ) = @_;
+
+	my $config = Padre->ide->config;
 
 	my @main_startup = (
 		$config->{main_startup},

@@ -1245,9 +1245,8 @@ sub zoom {
 
 sub on_preferences {
 	my $self   = shift;
-	my $config = Padre->ide->config;
 
-	Padre::Wx::Dialog::Preferences->run( $self, $config );
+	Padre::Wx::Dialog::Preferences->run( $self );
 
 	foreach my $editor ( $self->pages ) {
 		$editor->set_preferences;
