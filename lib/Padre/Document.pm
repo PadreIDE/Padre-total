@@ -176,6 +176,13 @@ sub new {
 	unless ( $self->mimetype ) {
 		$self->set_mimetype( $self->guess_mimetype );
 	}
+	$self->rebless($class);
+
+	return $self;
+}
+
+sub rebless {
+	my ($self, $class) = @_;
 
 	# If we blessed as the base class, and the mime type has a
 	# specific subclass, rebless it.
@@ -188,8 +195,8 @@ sub new {
 			bless $self, $subclass;
 		}
 	}
-
-	return $self;
+	
+	return;
 }
 
 sub guess_mimetype {
