@@ -11,7 +11,7 @@ use Wx::Locale        qw(:default);
 our $VERSION = '0.15';
 
 sub get_layout {
-	my ($config, $values) = @_;
+	my ($config, $main_startup) = @_;
 
 	return [
 		[
@@ -32,7 +32,7 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Open files:')],
-			[ 'Wx::Choice',     'choice',    $values],
+			[ 'Wx::Choice',     'main_startup',    $main_startup],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -44,12 +44,12 @@ sub get_layout {
 sub run {
 	my ( $class, $win, $config ) = @_;
 
-	my @values = (
+	my @main_startup = (
 		$config->{main_startup},
 		grep { $_ ne $config->{main_startup} } qw( new nothing last )
 	);
 
-	my $layout = get_layout($config, \@values);
+	my $layout = get_layout($config, \@main_startup);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
 		title  => gettext("Preferences"),
@@ -71,7 +71,7 @@ sub run {
 	foreach my $f (qw(editor_use_tabs pod_maxlist pod_minlist editor_tabwidth)) {
 		$config->{$f} = $data->{$f};
 	}
-	$config->{main_startup}    = $values[ $data->{choice} ];
+	$config->{main_startup}    = $main_startup[ $data->{choice} ];
 
 	return;
 }
