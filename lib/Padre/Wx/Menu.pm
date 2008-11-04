@@ -170,15 +170,15 @@ sub new {
 	# Random shit that doesn't fit anywhere better yet
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( Wx::wxID_FIND, '' ),
-		\&Padre::Wx::Dialog::Find::on_find,
+		sub { Padre::Wx::Dialog::Find->find(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("&Find Next\tF3") ),
-		\&Padre::Wx::Dialog::Find::on_find_next,
+		sub { Padre::Wx::Dialog::Find->find_next(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Find Previous\tShift-F3") ),
-		\&Padre::Wx::Dialog::Find::on_find_previous,
+		sub { Padre::Wx::Dialog::Find->find_previous(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Ac&k") ),

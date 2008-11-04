@@ -55,8 +55,8 @@ sub get_layout {
 }
 
 
-sub on_find {
-	my $main   = shift;
+sub find {
+	my ($class, $main) = @_;
 	my $config = Padre->ide->config;
 	my $text   = $main->selected_text;
 	$text = '' if not defined $text;
@@ -64,7 +64,7 @@ sub on_find {
 	# TODO: if selection is more than one lines then consider it as the limit
 	# of the search and replace and not as the string to be used
 
-	__PACKAGE__->dialog( $main, $config, { term => $text } );
+	$class->dialog( $main, $config, { term => $text } );
 }
 
 
@@ -209,26 +209,26 @@ sub _get_data_from {
 	return 1;
 }
 
-sub on_find_next {
-	my $main_window = shift;
+sub find_next {
+	my ($class, $main_window) = @_;
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search();
 	} else {
-		on_find( $main_window );
+		$class->find( $main_window );
 	}
 	return;
 }
 
-sub on_find_previous {
-	my $main_window = shift;
+sub find_previous {
+	my ($class, $main_window) = @_;
 
 	my $term = Padre->ide->config->{search_terms}->[0];
 	if ( $term ) {
 		_search(rev => 1);
 	} else {
-		on_find( $main_window );
+		$class->find( $main_window );
 	}
 	return;
 }
