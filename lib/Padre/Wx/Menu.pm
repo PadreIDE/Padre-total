@@ -551,6 +551,26 @@ sub win {
 #####################################################################
 # Reflowing the Menu
 
+# Temporarily hard-wire this to the appropriate menu
+# should be integrated in the refresh sub
+sub disable_run {
+	my $self = shift;
+	
+	$self->{run_run_script}->Enable(0);
+	$self->{run_run_command}->Enable(0);
+	$self->{run_stop}->Enable(1);
+	return;
+}
+
+sub enable_run {
+	my $self = shift;
+
+	$self->{run_run_script}->Enable(1);
+	$self->{run_run_command}->Enable(1);
+	$self->{run_stop}->Enable(0);
+	return;
+}
+
 sub refresh {
 	my $self     = shift;
 	my $document = Padre::Documents->current;

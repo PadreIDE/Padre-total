@@ -493,10 +493,7 @@ sub run_command {
 	my $cmd    = shift;
 	my $config = Padre->ide->config;
 
-	# Temporarily hard-wire this to the appropriate menu
-	$self->{menu}->{run_run_script}->Enable(0);
-	$self->{menu}->{run_run_command}->Enable(0);
-	$self->{menu}->{run_stop}->Enable(1);
+	$self->{menu}->disable_run;
 
 	# Prepare the output window for the output
 	$self->show_output(1);
@@ -528,10 +525,7 @@ sub run_command {
 				$_[1]->Skip(1);
 				$_[1]->GetProcess->Destroy;
 
-				# Temporarily hard-wired to the Perl menu
-				$self->{menu}->{run_run_script}->Enable(1);
-				$self->{menu}->{run_run_command}->Enable(1);
-				$self->{menu}->{run_stop}->Enable(0);
+				$self->{menu}->enable_run;
 			},
 		);
 	}
@@ -540,9 +534,7 @@ sub run_command {
 	$self->{command} = Wx::Perl::ProcessStream->OpenProcess( $cmd, 'MyName1', $self );
 	unless ( $self->{command} ) {
 		# Failed to start the command. Clean up.
-		$self->{menu}->{run_run_script}->Enable(1);
-		$self->{menu}->{run_run_command}->Enable(1);
-		$self->{menu}->{run_stop}->Enable(0);
+		$self->{menu}->enable_run;
 	}
 
 	return;
