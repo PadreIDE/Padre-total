@@ -41,17 +41,11 @@ sub get_layout {
 	];
 }
 
-sub run {
-	my ( $class, $win ) = @_;
+sub dialog {
+	my ($class, $win, $main_startup) = @_;
 
 	my $config = Padre->ide->config;
-
-	my @main_startup = (
-		$config->{main_startup},
-		grep { $_ ne $config->{main_startup} } qw( new nothing last )
-	);
-
-	my $layout = get_layout($config, \@main_startup);
+	my $layout = get_layout($config, $main_startup);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
 		title  => gettext("Preferences"),
@@ -64,6 +58,23 @@ sub run {
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
 	$dialog->{_widgets_}{_ok_}->SetDefault;
+	
+	return $dialog;
+}
+
+
+
+sub run {
+	my ( $class, $win ) = @_;
+
+	my $config = Padre->ide->config;
+
+	my @main_startup = (
+		$config->{main_startup},
+		grep { $_ ne $config->{main_startup} } qw( new nothing last )
+	);
+
+	my $dialog = $class->dialog( $win, \@main_startup );
 	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}
