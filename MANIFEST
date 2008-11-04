@@ -5,6 +5,7 @@ README
 META.yml
 
 lib/Wx/Perl/Dialog.pm
+lib/Wx/Perl/Dialog/Simple.pm
 lib/Wx/Perl/Dialog/Frame.pm
 lib/Wx/Perl/Dialog/SingleChoice.pm
 

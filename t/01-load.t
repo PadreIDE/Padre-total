@@ -8,6 +8,7 @@ my $tests;
 
 plan tests => $tests;
 
+use Wx::Perl::Dialog;
 use Wx::Perl::Dialog::Simple;
 
 ok(1, "test_app done");
