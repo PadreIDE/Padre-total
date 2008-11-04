@@ -108,7 +108,7 @@ sub set_bookmark {
 	my $path     = $main->selected_filename;
 	my $file     = File::Basename::basename($path || '');
 
-	my $dialog   = $class->dialog($main, gettext("%s line %s", $file, $line));
+	my $dialog   = $class->dialog($main, sprintf(gettext("%s line %s"), $file, $line));
 	return if not show_modal($dialog);
 	
 	my $data     = _get_data($dialog);
