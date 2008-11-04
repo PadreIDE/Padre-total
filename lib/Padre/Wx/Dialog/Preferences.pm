@@ -71,7 +71,7 @@ sub run {
 	foreach my $f (qw(editor_use_tabs pod_maxlist pod_minlist editor_tabwidth)) {
 		$config->{$f} = $data->{$f};
 	}
-	$config->{main_startup}    = $main_startup[ $data->{choice} ];
+	$config->{main_startup}    = $main_startup[ $data->{main_startup} ];
 
 	return;
 }
