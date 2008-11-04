@@ -530,7 +530,7 @@ To Adam Kennedy for lots of refactoring.
 
 To Steffen Muller for PAR plugins.
 
-To Patrick Donelan, Fayland Lam, Brian Cassidy
+To Patrick Donelan, Fayland Lam, Brian Cassidy, Heiko Jansen
 
 To Herbert Breunung for letting me work on Kephra.
 

@@ -1159,7 +1159,7 @@ sub on_nth_pane {
 	my ($self, $id) = @_;
 	my $page = $self->{notebook}->GetPage($id);
 	if ($page) {
-	   $self->{notebook}->ChangeSelection($id);
+	   $self->{notebook}->SetSelection($id);
 	   $self->refresh_status;
 	   return 1;
 	}
