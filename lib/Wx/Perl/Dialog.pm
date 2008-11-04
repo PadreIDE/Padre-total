@@ -1,10 +1,10 @@
-package Padre::Wx::Dialog;
+package Wx::Perl::Dialog;
 
 use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.15';
+our $VERSION = '0.02';
 
 use Wx ':everything';
 
@@ -12,7 +12,7 @@ use base 'Wx::Dialog';
 
 =head1 NAME
 
-Padre::Wx::Dialog
+Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
 
 =head1 METHODS
 
