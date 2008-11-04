@@ -59,7 +59,7 @@ sub get_layout {
 
 
 
-sub on_start {
+sub start {
 	my ($class, $main) = @_;
 	my $config = Padre->ide->config;
 	$class->dialog( $main, $config, { } );

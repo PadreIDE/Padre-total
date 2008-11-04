@@ -45,7 +45,7 @@ sub new {
 	$menu->{file}->Append( -1, gettext("New..."), $menu->{file_new} );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{file_new}->Append( -1, gettext('Perl Distribution (Module::Starter)') ),
-		sub { Padre::Wx::Dialog::ModuleStart->on_start(@_) },
+		sub { Padre::Wx::Dialog::ModuleStart->start(@_) },
 	);
 
 	# Opening and closing files
