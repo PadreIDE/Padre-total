@@ -101,10 +101,10 @@ sub new {
 	);
 	$self->manager->AddPane($self->{notebook}, 
 		Wx::AuiPaneInfo->new->Name( "notebook" )
-			->CenterPane->Resizable->PaneBorder
-			->Dockable->Floatable->PinButton->CaptionVisible->Movable
-			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-			->FloatingPosition(100, 100)->FloatingSize(500, 300)
+			->CenterPane->Resizable->PaneBorder->Dockable
+#			->Floatable->PinButton->CaptionVisible->Movable
+#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
+#			->FloatingPosition(100, 100)->FloatingSize(500, 300)
 			->Caption( gettext("Files") )->Position( 1 )
 		);
 
@@ -136,10 +136,10 @@ sub new {
 	);
 	$self->manager->AddPane($self->{rightbar}, 
 		Wx::AuiPaneInfo->new->Name( "rightbar" )
-			->CenterPane->Resizable->PaneBorder
-			->Dockable->Floatable->PinButton->CaptionVisible->Movable
-			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-			->FloatingPosition(100, 100)->FloatingSize(100, 400)
+			->CenterPane->Resizable->PaneBorder->Dockable
+#			->Floatable->PinButton->CaptionVisible->Movable
+#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
+#			->FloatingPosition(100, 100)->FloatingSize(100, 400)
 			->Caption( gettext("Subs") )->Position( 3 )->Right
 		 );
         
@@ -158,10 +158,10 @@ sub new {
 	);
 	$self->manager->AddPane($self->{output}, 
 		Wx::AuiPaneInfo->new->Name( "output" )
-			->CenterPane->Resizable->PaneBorder
-			->Dockable->Floatable->PinButton->CaptionVisible->Movable
-			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-			->FloatingPosition(100, 100)
+			->CenterPane->Resizable->PaneBorder->Dockable
+#			->Floatable->PinButton->CaptionVisible->Movable
+#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
+#			->FloatingPosition(100, 100)
 			->Caption( gettext("Output") )->Position( 2 )->Bottom
 		);
 
