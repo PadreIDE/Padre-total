@@ -387,12 +387,11 @@ sub has_changed_on_disk {
 	my ($self) = @_;
 	return 0 if not defined $self->filename;
 	return 0 if not defined $self->last_sync;
-	return 0 if not defined $self->time_on_file; # for new file
 	return $self->last_sync < $self->time_on_file ? 1 : 0;
 }
 
 sub time_on_file {
-	return if not defined $_[0]->filename;
+	return 0 if not defined $_[0]->filename;
 	return (stat($_[0]->filename))[9];
 }
 
