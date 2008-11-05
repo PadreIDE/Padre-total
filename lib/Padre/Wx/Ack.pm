@@ -46,6 +46,7 @@ sub on_ack {
 	App::Ack::filetype_setup();
 
 	$self->show_output(1);
+	$self->{output}->clear;
 
 	Wx::Event::EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
 
