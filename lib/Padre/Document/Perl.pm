@@ -7,6 +7,7 @@ use Carp            ();
 use Params::Util    '_INSTANCE';
 use Padre::Document ();
 use YAML::Tiny      ();
+use PPI;
 
 our $VERSION = '0.15';
 our @ISA     = 'Padre::Document';
@@ -121,6 +122,74 @@ sub get_command {
 sub colourise {
 	my ($self, $first) = @_;
 	
+	$self->remove_color;
+
+	my $editor = $self->editor;
+	my $text   = $self->text_get;
+	
+	my $doc = PPI::Document->new( \$text );
+    my @tokens = @{ $doc->find('PPI::Token') };
+
+	# color 1 is for keywords
+	my $keywords = $self->keywords;
+    my %colors = (
+		'PPI::Token::HereDoc'   => 4,
+		'PPI::Token::Data'      => 4,
+		'PPI::Token::Operator'  => 6,
+		'PPI::Token::Comment'   => 2, # it's good, it's green
+		'PPI::Token::Pod'       => 2,
+		'PPI::Token::End'       => 2,
+		'PPI::Token::Word'      => 0, # stay the black
+		'PPI::Token::Quote'     => 9,
+		'PPI::Token::QuoteLike' => 7,
+		'PPI::Token::Regexp'    => 8,
+		'PPI::Token::Symbol'    => 0, # stay the black
+		'PPI::Token::Prototype' => 0, # stay the black
+    );
+
+    my $pos = 0;
+    foreach my $flag ( 0 .. $#tokens ) {
+		my $token = $tokens[$flag];
+
+		my $content; # original content
+		if ( $token->isa('PPI::Token::HereDoc') ) {
+			# XXX? hi, it's a bit breaking, but I don't know how to fix
+			my @next_tokens;
+			my $old_flag = $flag;
+			while ( $old_flag++ ) {
+				push @next_tokens, $tokens[$old_flag];
+				last if ( $tokens[$old_flag]->content eq ';' );
+			}
+			$content = $token->content .
+            join('', map { $_->content } @next_tokens ) . "\n" .
+            join('', $token->heredoc) .
+            $token->terminator;
+		} else {
+			$content = $token->content;
+		}
+
+		my $len = length($content);
+		$pos += $len;
+		
+		my $color = 0;
+		foreach my $token_isa ( keys %colors ) {
+			# keywords has color 1
+			if ( $token->isa('PPI::Token::Word') and grep { $token->content eq $_ } keys %$keywords ) {
+				$color = 1;
+				last;
+			}
+		
+			if ( $token->isa( $token_isa ) ) {
+				$color = $colors{ $token_isa };
+				last;
+			}
+		}
+		next unless ( $color );
+		
+		my $start  = $pos - $len;
+		$editor->StartStyling($start, $color);
+		$editor->SetStyling($len, $color);
+    }
 }
 
 
