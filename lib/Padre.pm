@@ -307,19 +307,19 @@ sub new {
 	# Create the empty object
 	my $self = $SINGLETON = bless {
 		# Wx Attributes
-		wx          => undef,
+		wx             => undef,
 
 		# Internal Attributes
-		config_dir  => undef,
-		config_yaml => undef,
+		config_dir     => undef,
+		config_yaml    => undef,
 
 		# Plugin Attributes
 		plugin_manager => undef,
 
 		# Second-Generation Object Model
 		# (Adam says ignore these for now, but don't comment out)
-		project  => {},
-		document => {},
+		project        => {},
+		document       => {},
 
 	}, $class;
 
@@ -330,7 +330,7 @@ sub new {
 	$self->{config}    ||= Padre::Config->create( $self->config_yaml );
 
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
-	
+
 	eval {
 		require Parrot::Embed;
 		$self->{parrot} = Parrot::Interpreter->new;
@@ -376,12 +376,27 @@ sub plugin_manager {
 sub run {
 	my $self = shift;
 
-	my %opt;
-	Getopt::Long::GetOptions(\%opt, "index", "help") or usage();
-	usage() if $opt{help};
+	# Handle architectural command line options
+	foreach my $M ( grep { /^-M/ } @ARGV ) {
+		my $module = substr($M, 2);
+		eval "use $module";
+		die $@ if $@;
+	}
+	@ARGV = grep { ! /^-M/ } @ARGV;
+
+	# Handle regular command line options
+	my $USAGE = '';
+	my $INDEX = '';
+	my $rv    = Getopt::Long::GetOptions(
+		help  => \$USAGE,
+		index => \$INDEX,
+	);
+	if ( $USAGE or ! $rv ) {
+		usage();
+	}
 
 	# Launch the indexer if requested
-	return $self->run_indexer if $opt{index};
+	return $self->run_indexer if $INDEX;
 
 	# FIXME: This call should be delayed until after the
 	# window was opened but my Wx skills do not exist. --Steffen
