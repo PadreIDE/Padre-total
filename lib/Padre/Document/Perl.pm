@@ -154,6 +154,7 @@ sub colourise {
 		'PPI::Token::Comment'       => 2, # it's good, it's green
 		'PPI::Token::Pod'           => 2,
 		'PPI::Token::End'           => 2,
+		'PPI::Token::Label'         => 0,
 		'PPI::Token::Word'          => 0, # stay the black
 		'PPI::Token::Quote'            => 9,
 		'PPI::Token::Quote::Single'    => 9,
@@ -166,6 +167,7 @@ sub colourise {
 		'PPI::Token::Regexp::Match'         => 3,
 		'PPI::Token::Regexp::Substitute'    => 5,
 		'PPI::Token::Regexp::Transliterate' => 5,
+		'PPI::Token::Separator'             => 0,
 		'PPI::Token::Symbol'                => 0,
 		'PPI::Token::Prototype' => 0,
 		'PPI::Token::ArrayIndex' => 0,
