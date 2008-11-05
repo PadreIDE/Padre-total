@@ -1397,6 +1397,15 @@ sub on_stc_style_needed {
 
 	my $doc = Padre::Documents->current or return;
 	if ($doc->can('colourise')) {
+
+		# workaround something that seems like a Scintilla bug
+		# when the cursor is close to the end of the document
+		# and there is code at the end of the document (and not comment)
+		# the STC_STYLE_NEEDED event is being constantly called
+		my $text = $doc->text_get;
+		return if defined $doc->{_text} and $doc->{_text} eq $text;
+		$doc->{_text} = $text;
+
 		$doc->colourise;
 	}
 
