@@ -133,47 +133,43 @@ sub colourise {
 		Wx::LogMessage( 'Original text: %s', $text );
 		return;
 	}
-    #my @tokens = @{ $ppi_doc->find('PPI::Token') };
 
-	# color 1 is for keywords
-	my $keywords = $self->keywords;
     my %colors = (
-		keyword   => 4,
-		structure => 6,
-		core      => 2,
-		pragma    => 3,
-		'PPI::Token::Whitespace' => 0,
-		'PPI::Token::Structure'  => 0,
+		keyword         => 4, # dark green
+		structure       => 6,
+		core            => 1, # red
+		pragma          => 7, # purple
+		'Whitespace'    => 0,
+		'Structure'     => 0,
 
-		'PPI::Token::Number'        => 0,
-		'PPI::Token::Number::Float' => 0,
+		'Number'        => 1,
+		'Float'         => 1,
 		
-		'PPI::Token::HereDoc'       => 4,
-		'PPI::Token::Data'          => 4,
-		'PPI::Token::Operator'      => 6,
-		'PPI::Token::Comment'       => 2, # it's good, it's green
-		'PPI::Token::Pod'           => 2,
-		'PPI::Token::End'           => 2,
-		'PPI::Token::Label'         => 0,
-		'PPI::Token::Word'          => 0, # stay the black
-		'PPI::Token::Quote'            => 9,
-		'PPI::Token::Quote::Single'    => 9,
-		'PPI::Token::Quote::Double'      => 9,
-		'PPI::Token::Quote::Interpolate'    => 9,
-		'PPI::Token::QuoteLike' => 7,
-		'PPI::Token::QuoteLike::Regexp'   => 7,
-		'PPI::Token::QuoteLike::Words' => 7,
-		'PPI::Token::QuoteLike::Readline' => 7,
-		'PPI::Token::Regexp::Match'         => 3,
-		'PPI::Token::Regexp::Substitute'    => 5,
-		'PPI::Token::Regexp::Transliterate' => 5,
-		'PPI::Token::Separator'             => 0,
-		'PPI::Token::Symbol'                => 0,
-		'PPI::Token::Prototype' => 0,
-		'PPI::Token::ArrayIndex' => 0,
-		'PPI::Token::Cast' => 0,
-		'PPI::Token::Magic' => 0,
-		'PPI::Token::Magic' => 0,
+		'HereDoc'       => 4,
+		'Data'          => 4,
+		'Operator'      => 6,
+		'Comment'       => 2, # it's good, it's green
+		'Pod'           => 2,
+		'End'           => 2,
+		'Label'         => 0,
+		'Word'          => 0, # stay the black
+		'Quote'         => 9,
+		'Single'        => 9,
+		'Double'        => 9,
+		'Interpolate'   => 9,
+		'QuoteLike'     => 7,
+		'Regexp'        => 7,
+		'Words'         => 7,
+		'Readline'      => 7,
+		'Match'         => 3,
+		'Substitute'    => 5,
+		'Transliterate' => 5,
+		'Separator'     => 0,
+		'Symbol'        => 0,
+		'Prototype'     => 0,
+		'ArrayIndex'    => 0,
+		'Cast'          => 0,
+		'Magic'         => 0,
     );
 
 	my @tokens = $ppi_doc->tokens;
@@ -213,15 +209,15 @@ sub _css_class {
 		# There are some words we can be very confident are
 		# being used as keywords
 		unless ( $Token->snext_sibling and $Token->snext_sibling->content eq '=>' ) {
-			if ( $Token->content eq 'sub' ) {
+			if ( $Token->content =~ /^(?:sub|return)$/ ) {
 				return 'keyword';
-			} elsif ( $Token->content eq 'return' ) {
-				return 'keyword';
-			} elsif ( $Token->content eq 'undef' ) {
+			} elsif ( $Token->content =~ /^(?:undef|shift|defined|bless)$/ ) {
 				return 'core';
-			} elsif ( $Token->content eq 'shift' ) {
-				return 'core';
-			} elsif ( $Token->content eq 'defined' ) {
+			}
+		}
+		
+		if ( $Token->previous_sibling and $Token->previous_sibling->content eq '->' ) {
+			if ( $Token->content =~ /^(?:new)$/ ) {
 				return 'core';
 			}
 		}
@@ -251,8 +247,7 @@ sub _css_class {
 	}
 
 	# Normal colouring
-	return $Token->class;
-	my $css = lc ref $Token;
+	my $css = ref $Token;
 	$css =~ s/^.+:://;
 	$css;
 }
