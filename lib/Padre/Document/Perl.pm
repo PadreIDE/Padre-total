@@ -129,7 +129,8 @@ sub colourise {
 	
 	my $doc = PPI::Document->new( \$text );
 	if (not defined $doc) {
-		print $text;
+		Wx::LogMessage( 'PPI::Document Error %s', PPI::Document->errstr );
+		Wx::LogMessage( 'Original text: %s', $text );
 		return;
 	}
     my @tokens = @{ $doc->find('PPI::Token') };

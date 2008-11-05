@@ -38,7 +38,10 @@ sub new {
 
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
-
+	
+	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
+	#Wx::LogMessage( 'Start');
+	
 	# Determine the initial frame style
 	my $wx_frame_style = Wx::wxDEFAULT_FRAME_STYLE;
 	if ( $config->{host}->{main_maximized} ) {
