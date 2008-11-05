@@ -198,6 +198,10 @@ sub write {
 
 	# Serialize some values
 	$copy->{host}->{main_files} = join( "\n", grep { defined } @{$copy->{host}->{main_files}} );
+	
+	# Limit the search_terms/replace_terms
+	@{$copy->{search_terms}}  = splice(@{$copy->{search_terms}},  0, 30);
+	@{$copy->{replace_terms}} = splice(@{$copy->{replace_terms}}, 0, 30);
 
 	# Save the host configuration
 	Padre::DB->hostconf_write( delete $copy->{host} );
