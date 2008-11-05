@@ -525,6 +525,19 @@ sub autocomplete {
 	return (length($prefix), @words);
 }
 
+sub remove_color {
+	my ($self) = @_;
+
+	my $editor = $self->editor;
+	# TODO this is strange, do we reall need to do it with all?
+	for my $i (1..5) {
+		$editor->StartStyling(0, $i);
+		$editor->SetStyling($editor->GetLength, 0);
+	}
+
+	return;
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.
