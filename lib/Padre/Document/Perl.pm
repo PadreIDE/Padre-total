@@ -118,6 +118,11 @@ sub get_command {
 	return qq{"$perl" "$filename"};
 }
 
+sub colourise {
+	my ($self, $first) = @_;
+	
+}
+
 
 1;
 

@@ -165,6 +165,10 @@ our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
+	
+	if (Padre->ide->config->{ppi_highlight}) {
+		$MIME_LEXER{'text/perl'} = wxSTC_LEX_CONTAINER;
+	}
 
 	# Check and derive params
 	unless ( $self->editor ) {
