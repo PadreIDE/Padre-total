@@ -128,6 +128,10 @@ sub colourise {
 	my $text   = $self->text_get;
 	
 	my $doc = PPI::Document->new( \$text );
+	if (not defined $doc) {
+		print $text;
+		return;
+	}
     my @tokens = @{ $doc->find('PPI::Token') };
 
 	# color 1 is for keywords
