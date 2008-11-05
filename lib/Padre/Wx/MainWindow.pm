@@ -921,7 +921,7 @@ sub on_open_selection {
 	}
 
 	if (not $file) {
-		Wx::MessageBox(gettext("Could not find file '%s'", $selection), gettext("Open Selection"), Wx::wxOK, $self);
+		Wx::MessageBox(sprintf(gettext("Could not find file '%s'"), $selection), gettext("Open Selection"), Wx::wxOK, $self);
 		return;
 	}
 
@@ -1372,7 +1372,7 @@ sub run_in_padre {
 	my $code = $doc->text_get;
 	eval $code;
 	if ( $@ ) {
-		Wx::MessageBox(gettext("Error: %s", $@), gettext("Self error"), Wx::wxOK, $self);
+		Wx::MessageBox(sprintf(gettext("Error: %s"), $@), gettext("Self error"), Wx::wxOK, $self);
 		return;
 	}
 	return;

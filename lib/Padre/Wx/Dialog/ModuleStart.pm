@@ -118,7 +118,7 @@ sub ok_clicked {
 	my @fields = qw(_module_name_ _author_name_ _email_ _builder_choice_ _license_choice_);
 	foreach my $f (@fields) {
 		if (not $data->{$f}) {
-			Wx::MessageBox(gettext("Field %s was missing. Module not created.", $f), gettext("missing field"), Wx::wxOK, $main_window);
+			Wx::MessageBox(sprintf(gettext("Field %s was missing. Module not created."), $f), gettext("missing field"), Wx::wxOK, $main_window);
 			return;
 		}
 	}
@@ -135,7 +135,7 @@ sub ok_clicked {
 	Module::Starter::App->run;
 	@ARGV = ();
 	chdir $pwd;
-	Wx::MessageBox(gettext("%s apparantly created.", $data->{_module_name_}), gettext("Done"), Wx::wxOK, $main_window);
+	Wx::MessageBox(sprintf(gettext("%s apparantly created."), $data->{_module_name_}), gettext("Done"), Wx::wxOK, $main_window);
 
 	return;
 }

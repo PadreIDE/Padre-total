@@ -256,7 +256,7 @@ sub _get_regex {
 	eval { $regex = qr/$search_term/m };
 	if ($@) {
 		my $main_window = Padre->ide->wx->main_window;
-		Wx::MessageBox(gettext("Cannot build regex for '%s'", $search_term), gettext("Search error"), Wx::wxOK, $main_window);
+		Wx::MessageBox(sprintf(gettext("Cannot build regex for '%s'"), $search_term), gettext("Search error"), Wx::wxOK, $main_window);
 		return;
 	}
 	return $regex;
