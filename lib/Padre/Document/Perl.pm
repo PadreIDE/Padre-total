@@ -142,7 +142,9 @@ sub colourise {
 		'PPI::Token::Word'      => 0, # stay the black
 		'PPI::Token::Quote'     => 9,
 		'PPI::Token::QuoteLike' => 7,
-		'PPI::Token::Regexp'    => 8,
+		'PPI::Token::Regexp::Match'         => 3,
+		'PPI::Token::Regexp::Substitute'    => 5,
+		'PPI::Token::Regexp::Transliterate' => 5,
 		'PPI::Token::Symbol'    => 0, # stay the black
 		'PPI::Token::Prototype' => 0, # stay the black
     );
