@@ -15,6 +15,7 @@ use base 'Wx::StyledTextCtrl';
 our $VERSION = '0.15';
 
 my $data;
+my $width;
 
 sub new {
 	my( $class, $parent ) = @_;
@@ -163,9 +164,13 @@ sub show_line_numbers {
 
 	$self->SetMarginWidth(1, 0);
 	$self->SetMarginWidth(2, 0);
+
+	# premature optimization, caching the with that was on the 3rd place at load time
+	# as timed my Deve::NYTProf
+	$width ||= $self->TextWidth(Wx::wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
 	if ($on) {
 		my $n = 1 + List::Util::max (2, length ($self->GetLineCount * 2));
-		my $width = $n * $self->TextWidth(Wx::wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
+		my $width = $n * $width;
 		$self->SetMarginWidth(0, $width);
 		$self->SetMarginType(0, Wx::wxSTC_MARGIN_NUMBER);
 	} else {
