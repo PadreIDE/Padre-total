@@ -263,6 +263,7 @@ sub post_init {
 	$self->show_output(1);
 	$self->show_output($output) if not $output;
 
+#$self->Close;
 	return;
 }
 

@@ -137,27 +137,41 @@ sub colourise {
 
 	# color 1 is for keywords
 	my $keywords = $self->keywords;
-	my %c = (
+    my %colors = (
 		keyword   => 4,
 		structure => 6,
 		core      => 2,
 		pragma    => 3,
-	);
-    my %colors = (
-		'PPI::Token::HereDoc'   => 4,
-		'PPI::Token::Data'      => 4,
-		'PPI::Token::Operator'  => 6,
-		'PPI::Token::Comment'   => 2, # it's good, it's green
-		'PPI::Token::Pod'       => 2,
-		'PPI::Token::End'       => 2,
-		'PPI::Token::Word'      => 0, # stay the black
-		'PPI::Token::Quote'     => 9,
+		'PPI::Token::Whitespace' => 0,
+		'PPI::Token::Structure'  => 0,
+
+		'PPI::Token::Number'        => 0,
+		'PPI::Token::Number::Float' => 0,
+		
+		'PPI::Token::HereDoc'       => 4,
+		'PPI::Token::Data'          => 4,
+		'PPI::Token::Operator'      => 6,
+		'PPI::Token::Comment'       => 2, # it's good, it's green
+		'PPI::Token::Pod'           => 2,
+		'PPI::Token::End'           => 2,
+		'PPI::Token::Word'          => 0, # stay the black
+		'PPI::Token::Quote'            => 9,
+		'PPI::Token::Quote::Single'    => 9,
+		'PPI::Token::Quote::Double'      => 9,
+		'PPI::Token::Quote::Interpolate'    => 9,
 		'PPI::Token::QuoteLike' => 7,
+		'PPI::Token::QuoteLike::Regexp'   => 7,
+		'PPI::Token::QuoteLike::Words' => 7,
+		'PPI::Token::QuoteLike::Readline' => 7,
 		'PPI::Token::Regexp::Match'         => 3,
 		'PPI::Token::Regexp::Substitute'    => 5,
 		'PPI::Token::Regexp::Transliterate' => 5,
-		'PPI::Token::Symbol'    => 0, # stay the black
-		'PPI::Token::Prototype' => 0, # stay the black
+		'PPI::Token::Symbol'                => 0,
+		'PPI::Token::Prototype' => 0,
+		'PPI::Token::ArrayIndex' => 0,
+		'PPI::Token::Cast' => 0,
+		'PPI::Token::Magic' => 0,
+		'PPI::Token::Magic' => 0,
     );
 
 	my @tokens = $ppi_doc->tokens;
@@ -175,9 +189,12 @@ sub colourise {
 #			print "$row, $rowchar, ", $t->length, "  ", $t->class, "  ", $css, "  ", $t->content, "\n";
 #		}
 #		last if $row > 10;
-		#my $color = $colors{ $t->class };
-		my $color = $c{$css};
-		next if not defined $color;
+		my $color = $colors{$css};
+		if (not defined $color) {
+			Wx::LogMessage("Missing definition fir '$css'\n");
+			next;
+		}
+		next if not $color;
 
 		my $start  = $editor->PositionFromLine($row-1) + $rowchar-1;
 		my $len = $t->length;
@@ -185,54 +202,6 @@ sub colourise {
 		$editor->StartStyling($start, $color);
 		$editor->SetStyling($len, $color);
 	}
-
-=pod
-
-    my $pos = 0;
-    foreach my $flag ( 0 .. $#tokens ) {
-		my $token = $tokens[$flag];
-
-		my $content; # original content
-		if ( $token->isa('PPI::Token::HereDoc') ) {
-			# XXX? hi, it's a bit breaking, but I don't know how to fix
-			my @next_tokens;
-			my $old_flag = $flag;
-			while ( $old_flag++ ) {
-				push @next_tokens, $tokens[$old_flag];
-				last if ( $tokens[$old_flag]->content eq ';' );
-			}
-			$content = $token->content .
-            join('', map { $_->content } @next_tokens ) . "\n" .
-            join('', $token->heredoc) .
-            $token->terminator;
-		} else {
-			$content = $token->content;
-		}
-
-		my $len = length($content);
-		$pos += $len;
-		
-		my $color = 0;
-		foreach my $token_isa ( keys %colors ) {
-			# keywords has color 1
-			if ( $token->isa('PPI::Token::Word') and grep { $token->content eq $_ } keys %$keywords ) {
-				$color = 1;
-				last;
-			}
-		
-			if ( $token->isa( $token_isa ) ) {
-				$color = $colors{ $token_isa };
-				last;
-			}
-		}
-		next unless ( $color );
-		
-		my $start  = $pos - $len;
-		$editor->StartStyling($start, $color);
-		$editor->SetStyling($len, $color);
-    }
-=cut
-
 }
 
 
@@ -280,6 +249,7 @@ sub _css_class {
 	}
 
 	# Normal colouring
+	return $Token->class;
 	my $css = lc ref $Token;
 	$css =~ s/^.+:://;
 	$css;
