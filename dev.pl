@@ -23,6 +23,10 @@ if ( grep { $_ eq '-d' } @ARGV ) {
         @ARGV = grep { $_ ne '-d' } @ARGV;
         push @cmd, '-d';
 }
+if ( grep { $_ eq '-p' } @ARGV ) {
+        @ARGV = grep { $_ ne '-p' } @ARGV;
+        push @cmd, '-d:NYTProf';
+}
 push @cmd, qq[$FindBin::Bin/script/padre], @ARGV;
 #print join( ' ', @cmd ) . "\n";
 system( @cmd );
