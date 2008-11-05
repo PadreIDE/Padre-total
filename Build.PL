@@ -17,7 +17,7 @@ my $builder = Padre::PluginBuilder->new(
     requires => {
         'perl'       => '5.008',
         'Perl::Tidy' => 0,
-        'Padre'      => '0.12',
+        'Padre'      => '0.15',
     },
     build_requires => { 'Test::More' => '0.47', },
 );

@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Perl::Tidy ();
-use Wx qw(wxOK wxCENTRE);
+use Padre::Wx ();
 
 our $VERSION = '0.01';
 
@@ -40,7 +40,7 @@ sub _tidy {
 
     if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
         return Wx::MessageBox( 'Document is not a Perl document',
-            "Error", wxOK | wxCENTRE, $self );
+            "Error", Wx::wxOK | Wx::wxCENTRE, $self );
     }
 
     my ( $output, $stderr );
@@ -60,7 +60,7 @@ sub _tidy {
         Wx::MessageBox(
             $error_string,
             "PerlTidy Error",
-            wxOK | wxCENTRE, $self
+            Wx::wxOK | Wx::wxCENTRE, $self
         );
         return;
     }
@@ -100,10 +100,25 @@ sub tidy_document {
 
 You can install this module like any other Perl module and it will
 become available in your Padre editor. However, you can also
-choose to install it into your user's Padre configuration directory only.
-The necessary steps are outlined in the C<README> file in this distribution.
+choose to install it into your user's Padre configuration directory only:
 
-Essentially, you do C<perl Build.PL> and C<./Build installplugin>.
+=over 4
+
+=item * Install the prerequisite modules.
+
+=item * perl Build.PL
+
+=item * ./Build
+
+=item * ./Build installplugin
+
+=back
+
+This will install the plugin as PerlTidy.par into your user's ~/.padre/plugins
+directory.
+
+Similarly, "./Build plugin" will just create the PerlTidy.par which you can
+then copy manually.
 
 =head1 AUTHOR
 
