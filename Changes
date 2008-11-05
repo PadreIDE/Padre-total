@@ -1,4 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.02  XXX
+    - Use Padre::PluginBuilder to allow the user to install the plugin
+      to their local dir (Steffen Mueller)
+
 0.01  Thu Oct 23 2008
     - original version
