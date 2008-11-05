@@ -482,8 +482,6 @@ END_USAGE
 
 1;
 
-=pod
-
 =head1 BUGS
 
 Please submit your bugs at L<http://padre.perlide.org/>

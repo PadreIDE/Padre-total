@@ -46,7 +46,7 @@ my %prereqs = (
 	'Text::Diff'              => '0.35',
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => '0.86',
-	'Wx::Perl::Dialog'        => 0,
+	'Wx::Perl::Dialog'        => '0.02',
 	'Wx::Perl::ProcessStream' => 0,
 );
 
