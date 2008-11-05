@@ -167,7 +167,7 @@ sub new {
 	my $self  = bless { @_ }, $class;
 	
 	if (Padre->ide->config->{ppi_highlight}) {
-		$MIME_LEXER{'text/perl'} = wxSTC_LEX_CONTAINER;
+		$MIME_LEXER{'application/x-perl'} = wxSTC_LEX_CONTAINER;
 	}
 
 	# Check and derive params
