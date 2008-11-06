@@ -26,7 +26,7 @@ sub get_layout {
 		[
 			[ 'Wx::StaticText', undef,              gettext('Replace With:')],
 			[ 'Wx::ComboBox',   '_replace_choice_',    '', $config->{replace_terms}],
-			[ 'Wx::Button',     '_replace_',        '&Replace'],
+			[ 'Wx::Button',     '_replace_',        gettext('&Replace')],
 		],
 		[
 			[],
