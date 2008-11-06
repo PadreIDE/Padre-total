@@ -146,7 +146,32 @@ For example, imagine you have the following nicely formatted hash assignment in 
 	key3 => 'value3',
  );
 
-With a rectangular text selection you can select only the keys, only the values, etc.. 
+With a rectangular text selection you can select only the keys, only the values, etc..
+
+=head1 Syntax highlighting
+
+Padre is using L<Wx> (aka wxPerl), wxWidgtes for GUI and Scintilla for the editor.
+Scintiall provides very good syntax highlighting for many languages but Padre is still
+bound by the version of Scintilla included.
+
+The share/styles/default.yml file is the mapping between the Scintialla defined
+constants for various syntactical elements of each language and the RGB values
+of the color to be used to highlight them.
+
+We plan to allow the user to switch between styles.
+
+=head2 Adding new syntax highlighting
+
+Need to define constanst in L<Padre::Util> to be in the Px:: namespace.
+
+Need to add the color mapping to share/styles/default.yml
+
+Need to implement the C<Padre::Document::Language> class.
+
+Need to define the mime-type mapping in L<Padre::Document>
+
+For examples see L<Padre::Document::Pasm>, L<Padre::Document::Pir>,
+L<Padre::Document::Perl>.
 
 =head1 Command line options
 
