@@ -208,7 +208,7 @@ sub guess_mimetype {
 
 	# default mime-type of new files, should be configurable in the GUI
 	if (not $self->filename) {
-		return 'text/perl';
+		return 'application/x-perl';
 	}
 
 	# Try derive the mime type from the name
@@ -223,7 +223,7 @@ sub guess_mimetype {
 	if ( $text =~ /\A#!/m ) {
 		# Found a hash bang line
 		if ( $text =~ /\A#![^\n]*\bperl\b/m ) {
-			return 'text/perl';
+			return 'application/x-perl';
 		}
 	}
 

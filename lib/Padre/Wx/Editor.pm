@@ -58,7 +58,7 @@ sub padre_setup {
 	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
 
 	my $mimetype = $self->{Document}->mimetype;
-    if ($mimetype eq 'text/perl') {
+    if ($mimetype eq 'application/x-perl') {
         $self->padre_setup_style('perl');
     } elsif ($mimetype eq 'text/pasm') {
         $self->padre_setup_style('pasm');
