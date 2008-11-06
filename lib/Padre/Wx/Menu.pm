@@ -455,6 +455,12 @@ sub new {
 				return;
 			},
 		);
+		$menu->{experimental_ppi_highlight} = $menu->{experimental}->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
+		Wx::Event::EVT_MENU( $win,
+			$menu->{experimental_ppi_highlight},
+			\&Padre::Wx::MainWindow::on_ppi_highlight,
+		);
+	
 	}
 
 	# Create and return the main menu bar
@@ -476,6 +482,7 @@ sub new {
 	# Setup menu state from configuration
 	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
 	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
+	$menu->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
 	unless ( Padre::Util::WIN32 ) {
 		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}

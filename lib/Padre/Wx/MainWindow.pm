@@ -1329,6 +1329,16 @@ sub show_output {
 	return;
 }
 
+sub on_ppi_highlight {
+	my ($self, $event) = @_;
+
+	my $config = Padre->ide->config;
+	$config->{ppi_highlight} = $event->IsChecked ? 1 : 0;
+	
+	return;
+}
+
+
 sub on_toggle_status_bar {
 	my ($self, $event) = @_;
 	if ( Padre::Util::WIN32 ) {
