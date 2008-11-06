@@ -8,7 +8,8 @@ Changes for Padre.
        Tab close button
     Localization and German translation. (Heiko Jansen)
     Move the content of Padre::Wx::Dialog to Wx::Perl::Dialog 0.02 (SZABGAB)
-    Chnage back the new-file hot-key to be Ctr-N again. (SZABGAB)
+    Chanage back the new-file hot-key to be Ctr-N again. (SZABGAB)
+    Add experimental PPI based Perl5 syntax highlighting (FAYLAND, SZABGAB)
 
 0.15 2008.11.02
 
