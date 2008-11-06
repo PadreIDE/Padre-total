@@ -106,7 +106,7 @@ sub get_command {
 
 	# Check the file name
 	my $filename = $self->filename;
-	unless ( $filename =~ /\.pl$/i ) {
+	unless ( $filename and $filename =~ /\.pl$/i ) {
 		die "Only .pl files can be executed\n";
 	}
 
