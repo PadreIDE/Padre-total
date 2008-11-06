@@ -35,7 +35,7 @@ sub new {
 
 	# Creating new things
 	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext("New Tab\tCtrl-T") ),
+		$menu->{file}->Append( Wx::wxID_NEW, '' ),
 		sub {
 			$_[0]->setup_editor;
 			return;
