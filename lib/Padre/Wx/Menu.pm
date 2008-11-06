@@ -144,9 +144,9 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Z
 		$menu->{edit}->Append( Wx::wxID_UNDO, '' ),
 		sub {
-			my $page = Padre::Documents->current->editor;
-			if ( $page->CanUndo ) {
-				$page->Undo;
+			my $editor = Padre::Documents->current->editor;
+			if ( $editor->CanUndo ) {
+				$editor->Undo;
 			}
 			return;
 		},
