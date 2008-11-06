@@ -18,6 +18,8 @@ my @cmd  = (
         qq[-I$FindBin::Bin/lib],
         qq[-I$FindBin::Bin/../plugins/par/lib],
         qq[-I$FindBin::Bin/../plugins/perltidy/lib],
+
+        qq[-I$FindBin::Bin/../projects/Wx-Perl-Dialog/lib],
 );
 if ( grep { $_ eq '-d' } @ARGV ) {
         @ARGV = grep { $_ ne '-d' } @ARGV;
