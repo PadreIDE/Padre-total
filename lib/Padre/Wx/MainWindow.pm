@@ -236,16 +236,16 @@ sub load_files {
 		# nothing
 	} elsif ( $config->{main_startup} eq 'last' ) {
 		if ( $config->{host}->{main_files} ) {
-			my @main_files     = @{$config->{host}->{main_files}};
+			my @main_files	 = @{$config->{host}->{main_files}};
 			my @main_files_pos = @{$config->{host}->{main_files_pos}};
-		    foreach my $i ( 0 ..$#main_files ) {
+			foreach my $i ( 0 ..$#main_files ) {
 				my $file = $main_files[$i];
-		        my $id   = $self->setup_editor($file);
-		        if ( $main_files_pos[$i] ) {
-		            my $doc  = Padre::Documents->by_id($id);
-		            $doc->editor->GotoPos( $main_files_pos[$i] );
-		        }
-		    }
+				my $id   = $self->setup_editor($file);
+				if ( $main_files_pos[$i] ) {
+					my $doc  = Padre::Documents->by_id($id);
+					$doc->editor->GotoPos( $main_files_pos[$i] );
+				}
+			}
 		}
 	} else {
 		# should never happen
