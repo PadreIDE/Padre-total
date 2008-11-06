@@ -79,8 +79,11 @@ sub run {
 
 	my $data = $dialog->get_data;
 
-	foreach my $f (qw(editor_use_tabs pod_maxlist pod_minlist editor_tabwidth)) {
+	foreach my $f (qw(pod_maxlist pod_minlist editor_tabwidth)) {
 		$config->{$f} = $data->{$f};
+	}
+	foreach my $f (qw(editor_use_tabs)) {
+		$config->{$f} = $data->{$f} ? 1 :0;
 	}
 	$config->{main_startup}    = $main_startup[ $data->{main_startup} ];
 

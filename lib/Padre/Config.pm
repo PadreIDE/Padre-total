@@ -106,20 +106,21 @@ sub new {
 	# startup mode, if no files given on the command line this can be
 	#   new        - a new empty buffer
 	#   nothing    - nothing to open
-	#   last       - the files that were open last time    
-	$self->{main_startup}  ||= 'new';
-
-	# Look and feel preferences
-	$self->{main_statusbar}           ||= 1;
-	$self->{main_output}              ||= 0;
-	$self->{editor_use_tabs}          ||= 1;
-	$self->{editor_tabwidth}          ||= 4;
-	$self->{editor_linenumbers}       ||= 0;
-	$self->{editor_eol}               ||= 0;
-	$self->{editor_indentationguides} ||= 0;
-	unless ( defined $self->{editor_calltips} ) {
-		$self->{editor_calltips} = 1;
-	}
+	#   last       - the files that were open last time
+	my %defaults = (
+		main_startup              => 'new',
+	
+		# Look and feel preferences
+		main_statusbar            => 1,
+		main_output               => 0,
+		editor_use_tabs           => 1,
+		editor_tabwidth           => 4,
+		editor_linenumbers        => 0,
+		editor_eol                => 0,
+		editor_indentationguides  => 0,
+		editor_calltips           => 1,
+	);
+	%$self = (%defaults, %$self);
 
 	# When running a script from the application some of the files might have not been saved yet.
 	# There are several option what to do before running the script
