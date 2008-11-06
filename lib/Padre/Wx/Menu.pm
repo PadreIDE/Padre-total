@@ -376,13 +376,11 @@ sub new {
 
 	# Create the window menu
 	$menu->{window} = Wx::Menu->new;
-	if ( $experimental ) {
-		Wx::Event::EVT_MENU( $win,
-			$menu->{window}->Append( -1, gettext("&Split window") ),
-			\&Padre::Wx::MainWindow::on_split_window,
-		);
-		$menu->{window}->AppendSeparator;
-	}
+	Wx::Event::EVT_MENU( $win,
+		$menu->{window}->Append( -1, gettext("&Split window") ),
+		\&Padre::Wx::MainWindow::on_split_window,
+	);
+	$menu->{window}->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu->{window}->Append(-1, gettext("Next File\tCtrl-TAB")),
 		\&Padre::Wx::MainWindow::on_next_pane,
