@@ -25,6 +25,7 @@ sub new {
 	my $self = $class->SUPER::new( $parent );
 #	$self->UsePopUp(0);
 	$data = data();
+#	$self->SetMouseDwellTime(1000); # off: Wx::SC_TIME_FOREVER
 
 	Wx::Event::EVT_RIGHT_DOWN( $self, \&on_right_down );
 	Wx::Event::EVT_LEFT_UP(  $self, \&on_left_up );

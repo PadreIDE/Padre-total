@@ -194,6 +194,7 @@ sub new {
 	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&on_stc_change       );
 	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
 	Wx::Event::EVT_STC_CHARADDED(   $self, -1, \&on_stc_char_added   );
+	Wx::Event::EVT_STC_DWELLSTART(  $self, -1, \&on_stc_dwell_start  );
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
@@ -1474,6 +1475,19 @@ sub on_stc_char_added {
 		my $editor = $self->selected_editor;
 		$editor->autoindent;
 	}
+	return;
+}
+
+sub on_stc_dwell_start {
+	my ($self, $event) = @_;
+
+	print Data::Dumper::Dumper $event;
+	my $editor = $self->selected_editor;
+	print "dwell: ", $event->GetPosition, "\n";
+	#$editor->show_tooltip;
+	#print Wx::GetMousePosition, "\n";
+	#print Wx::GetMousePositionXY, "\n";
+
 	return;
 }
 
