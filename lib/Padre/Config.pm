@@ -86,6 +86,9 @@ sub new {
 	unless ( _ARRAY($self->{host}->{main_files}) ) {
 		$self->{host}->{main_files} = [];
 	}
+	unless ( _ARRAY($self->{host}->{main_files_pos}) ) {
+		$self->{host}->{main_files_pos} = [];
+	}
 	$self->{host}->{main_files} = [
 		grep { -f $_ and -r _ }
 		@{ $self->{host}->{main_files} }
@@ -179,6 +182,11 @@ sub read {
 			 split /\n/, $host->{main_files}
 		];
 	}
+	if ( defined _STRING($host->{main_files_pos}) ) {
+		$host->{main_files_pos} = [
+			 split /\n/, $host->{main_files_pos}
+		];
+	}
 
 	# Merge and create the configuration
 	return $class->new( %$hash, host => $host );
@@ -198,6 +206,7 @@ sub write {
 
 	# Serialize some values
 	$copy->{host}->{main_files} = join( "\n", grep { defined } @{$copy->{host}->{main_files}} );
+	$copy->{host}->{main_files_pos} = join( "\n", grep { defined } @{$copy->{host}->{main_files_pos}} );
 	
 	# Limit the search_terms/replace_terms
 	@{$copy->{search_terms}}  = splice(@{$copy->{search_terms}},  0, 30);

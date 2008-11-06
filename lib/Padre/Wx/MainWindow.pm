@@ -236,8 +236,15 @@ sub load_files {
 		# nothing
 	} elsif ( $config->{main_startup} eq 'last' ) {
 		if ( $config->{host}->{main_files} ) {
-		    foreach my $file ( @{$config->{host}->{main_files}} ) {
-		        $self->setup_editor($file);
+			my @main_files     = @{$config->{host}->{main_files}};
+			my @main_files_pos = @{$config->{host}->{main_files_pos}};
+		    foreach my $i ( 0 ..$#main_files ) {
+				my $file = $main_files[$i];
+		        my $id   = $self->setup_editor($file);
+		        if ( $main_files_pos[$i] ) {
+		            my $doc  = Padre::Documents->by_id($id);
+		            $doc->editor->GotoPos( $main_files_pos[$i] );
+		        }
 		    }
 		}
 	} else {
@@ -754,6 +761,13 @@ sub on_close_window {
 	# Save the list of open files
 	$config->{host}->{main_files} = [
 		map  { $_->filename }
+		grep { $_ } 
+		map  { Padre::Documents->by_id($_) }
+		$self->pageids
+	];
+    # Save all Pos for open files
+	$config->{host}->{main_files_pos} = [
+        map  { $_->editor->GetCurrentPos }
 		grep { $_ } 
 		map  { Padre::Documents->by_id($_) }
 		$self->pageids
