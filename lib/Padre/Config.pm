@@ -97,17 +97,16 @@ sub new {
 	# When they want to run an arbitrary command
 	$self->{host}->{run_command}    ||= '';
 
-	# Number of modules to display when searching for documentation
-	$self->{pod_maxlist} ||= 200;
-	unless ( defined $self->{pod_minlist} ) {
-		$self->{pod_minlist} = 2;
-	}
-
-	# startup mode, if no files given on the command line this can be
-	#   new        - a new empty buffer
-	#   nothing    - nothing to open
-	#   last       - the files that were open last time
 	my %defaults = (
+
+		# Number of modules to display when searching for documentation
+		pod_maxlist               => 200,
+		pod_minlist               => 2,
+
+		# startup mode, if no files given on the command line this can be
+		#   new        - a new empty buffer
+		#   nothing    - nothing to open
+		#   last       - the files that were open last time
 		main_startup              => 'new',
 	
 		# Look and feel preferences
@@ -119,31 +118,32 @@ sub new {
 		editor_eol                => 0,
 		editor_indentationguides  => 0,
 		editor_calltips           => 1,
+
+		# When running a script from the application some of the files might have not been saved yet.
+		# There are several option what to do before running the script
+		# none - don's save anything
+		# same - save the file in the current buffer
+		# all_files - all the files (but not buffers that have no filenames)
+		# all_buffers - all the buffers even if they don't have a name yet
+		run_save                  => 'same',
+
+		# Search and replace recent values
+		search_terms              => [],
+		replace_terms             => [],
+
+		# Various things that should probably be in the database
+		bookmarks                 => {},
+		projects                  => {},
+		current_project           => '',
+
+		# By default we have an empty plugins configuration
+		plugins                   => {},
+
+		# By default, don't enable experimental features
+		experimental              => 0,
+
 	);
 	%$self = (%defaults, %$self);
-
-	# When running a script from the application some of the files might have not been saved yet.
-	# There are several option what to do before running the script
-	# none - don's save anything
-	# same - save the file in the current buffer
-	# all_files - all the files (but not buffers that have no filenames)
-	# all_buffers - all the buffers even if they don't have a name yet
-	$self->{run_save}        ||= 'same';
-
-	# Search and replace recent values
-	$self->{search_terms}  ||= [];
-	$self->{replace_terms} ||= [];
-
-	# Various things that should probably be in the database
-	$self->{bookmarks}       ||= {};
-	$self->{projects}        ||= {};
-	$self->{current_project} ||= '';
-
-	# By default we have an empty plugins configuration
-	$self->{plugins}      ||= {};
-
-	# By default, don't enable experimental features
-	$self->{experimental} ||= 0;
 
 	return $self;
 }
