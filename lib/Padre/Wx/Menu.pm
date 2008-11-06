@@ -125,10 +125,6 @@ sub new {
             },
 		);
 	}
-	if ( $experimental ) {
-		$menu->{file_recent_projects} = Wx::Menu->new;
-		$menu->{file}->Append( -1, gettext("Recent Projects"), $menu->{file_recent_projects} );
-	}
 	$menu->{file}->AppendSeparator;
 
 	# Exiting
@@ -441,6 +437,10 @@ sub new {
 				return;
 			},
 		);
+		
+		$menu->{experimental_recent_projects} = Wx::Menu->new;
+		$menu->{experimental}->Append( -1, gettext("Recent Projects"), $menu->{file_recent_projects} );
+		
 		Wx::Event::EVT_MENU(
 			$win,
 			$menu->{experimental}->Append( -1, gettext('Run in &Padre') ),
