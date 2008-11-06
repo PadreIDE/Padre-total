@@ -154,9 +154,9 @@ sub new {
 	Wx::Event::EVT_MENU( $win, # Ctrl-Y
 		$menu->{edit}->Append( Wx::wxID_REDO, '' ),
 		sub {
-			my $page = Padre::Documents->current->editor;
-			if ( $page->CanRedo ) {
-				$page->Redo;
+			my $editor = Padre::Documents->current->editor;
+			if ( $editor->CanRedo ) {
+				$editor->Redo;
 			}
 			return;
 		},
