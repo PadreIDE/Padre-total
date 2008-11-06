@@ -156,7 +156,7 @@ With a rectangular text selection you can select only the keys, only the values,
 
 =head1 Plugins
 
-There is a highly experimental but quit simple plugin system.
+There is a highly experimental but quite simple plugin system.
 
 A plugin is a module in the Padre::Plugin::* namespace.
 
