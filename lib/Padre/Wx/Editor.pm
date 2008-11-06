@@ -27,8 +27,7 @@ sub new {
 	$data = data();
 
 	Wx::Event::EVT_RIGHT_DOWN( $self, \&on_right_down );
-	#Wx::Event::EVT_RIGHT_UP(   $self, \&on_right_up   );
-
+	Wx::Event::EVT_LEFT_UP(  $self, \&on_left_up );
 	return $self;
 }
 
@@ -265,6 +264,12 @@ sub on_right_down {
 	
 # Popup Was: Undo, Redo | Cut, Copy, Paste, Delete | Select All
 
+	my $pos       = $self->GetCurrentPos;
+	#my $line      = $self->LineFromPosition($pos);
+	#print "right down: $pos\n"; # this is the position of the cursor and not that of the mouse!
+	#my $p = $event->GetLogicalPosition;
+	#print "x: ", $p->x, "\n";
+	
 	my $menu = Wx::Menu->new;
 	my $undo = $menu->Append( Wx::wxID_UNDO, '' );
 	if (not $self->CanUndo) {
@@ -305,6 +310,19 @@ sub on_right_down {
 	);
 
 	$self->PopupMenu( $menu, $event->GetX, $event->GetY);
+}
+
+sub on_left_up {
+	my ($self, $event) = @_;
+
+	my $pos       = $self->GetCurrentPos;
+	#my $line      = $self->LineFromPosition($pos);
+	#print "$pos\n"; # this is the position of the cursor and not that of the mouse!
+
+	#print "left $pos\n";
+
+	$event->Skip();
+	return;
 }
 
 1;
