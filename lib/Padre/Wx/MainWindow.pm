@@ -240,11 +240,15 @@ sub load_files {
 			my @main_files_pos = @{$config->{host}->{main_files_pos}};
 			foreach my $i ( 0 ..$#main_files ) {
 				my $file = $main_files[$i];
-				my $id   = $self->setup_editor($file);
-				if ( $main_files_pos[$i] ) {
-					my $doc  = Padre::Documents->by_id($id);
-					$doc->editor->GotoPos( $main_files_pos[$i] );
-				}
+		        my $id   = $self->setup_editor($file);
+		        if ( $id and $main_files_pos[$i] ) {
+		            my $doc  = Padre::Documents->by_id($id);
+		            $doc->editor->GotoPos( $main_files_pos[$i] );
+		        }
+		    }
+		    if ( $config->{host}->{main_file} ) {
+				my $id = $self->find_editor_of_file( $config->{host}->{main_file} );
+				$self->on_nth_pane($id) if (defined $id);
 			}
 		}
 	} else {
@@ -765,13 +769,15 @@ sub on_close_window {
 		map  { Padre::Documents->by_id($_) }
 		$self->pageids
 	];
-    # Save all Pos for open files
+	# Save all Pos for open files
 	$config->{host}->{main_files_pos} = [
         map  { $_->editor->GetCurrentPos }
 		grep { $_ } 
 		map  { Padre::Documents->by_id($_) }
 		$self->pageids
 	];
+	# Save selected tab
+	$config->{host}->{main_file} = $self->selected_filename;
 
 	# Check that all files have been saved
 	if ( $event->CanVeto ) {
