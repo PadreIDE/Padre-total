@@ -9,6 +9,8 @@ use YAML::Tiny      ();
 use Padre::Documents ();
 use Wx::STC;
 use Padre::Wx;
+use Wx::Locale       qw(:default);
+
 
 use base 'Wx::StyledTextCtrl';
 
@@ -21,7 +23,11 @@ sub new {
 	my( $class, $parent ) = @_;
 
 	my $self = $class->SUPER::new( $parent );
+#	$self->UsePopUp(0);
 	$data = data();
+
+	Wx::Event::EVT_RIGHT_DOWN( $self, \&on_right_down );
+	#Wx::Event::EVT_RIGHT_UP(   $self, \&on_right_up   );
 
 	return $self;
 }
@@ -250,6 +256,55 @@ sub autoindent {
 	}
 
 	return;
+}
+
+sub on_right_down {
+	my ($self, $event) = @_;
+	
+	my $win = Padre->ide->wx->main_window;
+	
+# Popup Was: Undo, Redo | Cut, Copy, Paste, Delete | Select All
+
+	my $menu = Wx::Menu->new;
+	my $undo = $menu->Append( Wx::wxID_UNDO, '' );
+	if (not $self->CanUndo) {
+		$undo->Enable(0);
+	}
+	my $z = Wx::Event::EVT_MENU( $win, # Ctrl-Z
+		$undo,
+		sub {
+			my $editor = Padre::Documents->current->editor;
+			if ( $editor->CanUndo ) {
+				$editor->Undo;
+			}
+			return;
+		},
+	);
+	my $redo = $menu->Append( Wx::wxID_REDO, '' );
+	if ( not $self->CanRedo ) {
+		$redo->Enable(0);
+	}
+	
+	Wx::Event::EVT_MENU( $win, # Ctrl-Y
+		$redo,
+		sub {
+			my $editor = Padre::Documents->current->editor;
+			if ( $editor->CanRedo ) {
+				$editor->Redo;
+			}
+			return;
+		},
+	);
+	$menu->AppendSeparator;
+	
+	
+#	$menu->Append( Wx::wxID_NEW, '' );
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("&Split window") ),
+		\&Padre::Wx::MainWindow::on_split_window,
+	);
+
+	$self->PopupMenu( $menu, $event->GetX, $event->GetY);
 }
 
 1;
