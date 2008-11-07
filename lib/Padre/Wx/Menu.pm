@@ -360,11 +360,15 @@ sub new {
 	}
 	foreach my $name ( sort keys %plugins ) {
 		next if not $plugins{$name};
-		my @menu    = eval { $plugins{$name}->menu };
+		my @menu       = eval { $plugins{$name}->menu };
 		warn "Error when calling menu for plugin '$name' $@" if $@;
 		my $menu_items = $menu->add_plugin_menu_items(\@menu);
-		$name =~ s/::/ /;
-		$menu->{plugin}->Append( -1, $name, $menu_items );
+		my $menu_name  = eval { $plugins{$name}->menu_name };
+		if (not $menu_name) {
+			$menu_name = $name;
+			$menu_name =~ s/::/ /;
+		}
+		$menu->{plugin}->Append( -1, $menu_name, $menu_items );
 	}
 
 
