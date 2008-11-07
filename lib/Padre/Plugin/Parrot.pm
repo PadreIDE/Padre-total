@@ -69,6 +69,9 @@ END_PIR
 	return;
 }
 
+sub menu_name {
+	return "Parrot Experiments";
+}
 
 1;
 
