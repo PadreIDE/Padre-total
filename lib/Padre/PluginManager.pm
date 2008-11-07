@@ -140,11 +140,10 @@ sub _load_plugins_from_inc {
 	my @dirs = grep {-d $_} map {File::Spec->catdir($_, 'Padre', 'Plugin')} @INC;
 	
 	my @files = File::Find::Rule->file()->name('*.pm')->in( @dirs );
-	my $pdr = File::Spec->catdir('Padre', 'Plugin');
 	foreach my $file (@files) {
 		# full path filenames
 		$file =~ s/\.pm$//;
-		$file =~ s{^.*$pdr\W*}{};
+		$file =~ s{^.*Padre[/\\]Plugin\W*}{};
 		$file =~ s{[/\\]}{::}g;
 		$self->_load_plugin($file); # Foo::Bar names
 	}
