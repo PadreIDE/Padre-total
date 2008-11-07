@@ -1,4 +1,4 @@
-ppackage Padre;
+package Padre;
 
 =pod
 
@@ -274,6 +274,8 @@ which is a list of lists:
 Padre will add a menu entry for every plugin under the B<Plugins>
 menu item. For each plugin menu item it will add all the Name_1,
 Name_2 subitems.
+
+See also L<Padre::PluginManager> and L<Padre::PluginBuilder> 
 
 
 =head1 Search, Find and Replace
