@@ -59,6 +59,7 @@ SCOPE: {
 			main_height    => -1,
 			run_command    => '',
 			main_files     => [],
+			main_files_pos => [],
 		},
 
 		plugins => {},
