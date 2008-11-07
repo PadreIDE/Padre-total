@@ -1,4 +1,4 @@
-package Padre;
+ppackage Padre;
 
 =pod
 
@@ -178,6 +178,82 @@ L<Padre::Document::Perl>.
  --index   will go over the @INC and list all the available modules in the database
  
  a list of filenames can be given to be opened
+ 
+=head1 Preferences
+
+There are several types of preferences we can think of.
+There are the current view orinted preferences such as B<Show newlines>
+or B<Show Line numbers> and there are the project and file 
+oriented preferences such as the use of TAB or whitespace
+for indentation.
+
+We would like to achive that the 
+
+Currently some of the preferences are accesible via the 
+B<Edit/Preferences> menu options, others via the B<View> 
+menu option.
+
+We have to make sure that when changing the preferences via
+the GUI it change for the correct things.
+
+e.g. When changing the B<Use TABs> preference it currently 
+applyes to all the files open currently or in the future.
+It should probably apply to the current file and/or the 
+current project. Such options - when changing them - might even
+be applied "retroactively". That is when I change the TAB/space
+mode of a file or a project it should ask if I want to reflow the
+file with the new method of indentation?
+
+On the other hand the "TAB display size" is purely a local, edior
+oriented preference. It should probably apply to all files currently
+open.
+
+=head2 Editor or view oriented preferences
+
+=over 4
+
+=item Size and location of windows
+
+=item Show/Hide various windows, Status bar, Toolbar
+
+=item Files recently opened
+
+=item Files that were open last time, cursor location
+
+=item Show newlines
+
+=item Show Line numbers
+
+=item Show indentation guide
+
+=item Show Call Tips
+
+=item TAB display size
+
+=item Allow experimental features
+
+=item Open file policy
+
+What files to open when launchin Padre? 
+nothing, new, those that were open last time?
+
+=item Max/Min number of modules to display in podviewer
+
+=item Autoindentation on/off?
+
+=item Autosave on/off?
+
+=back
+
+=head2 File and Project oriented preferences
+
+=over 4
+
+=item Indentation should be by TABs or spaces
+
+=item In case of using spaces for indentation, the width  of every indentation level
+
+=back
 
 =head1 Plugins
 
@@ -203,7 +279,6 @@ Name_2 subitems.
 =head1 Search, Find and Replace
 
 (planning)
-
 
 =head2 Search
 
