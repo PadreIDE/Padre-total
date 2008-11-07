@@ -363,6 +363,7 @@ sub new {
 		my @menu    = eval { $plugins{$name}->menu };
 		warn "Error when calling menu for plugin '$name' $@" if $@;
 		my $menu_items = $menu->add_plugin_menu_items(\@menu);
+		$name =~ s/::/ /;
 		$menu->{plugin}->Append( -1, $name, $menu_items );
 	}
 
