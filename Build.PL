@@ -31,6 +31,7 @@ my %prereqs = (
 	'DBD::SQLite'             => 0,
 	'DBI'                     => 0,
 	'File::Copy::Recursive'   => 0,
+	'File::Find::Rule'        => 0,
 	'File::HomeDir'           => 0,
 #	'File::LocalizeNewlines'  => '1.10',
 	'File::ShareDir'          => '1.00',

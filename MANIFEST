@@ -22,6 +22,7 @@ lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
 lib/Padre/Document/Pir.pm
 
+lib/Padre/Plugin/Development/Tools.pm
 lib/Padre/Plugin/Parrot.pm
 
 lib/Padre/Wx/App.pm
@@ -58,6 +59,8 @@ t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
 t/lib/Padre.pm
+t/lib/Padre/Plugin/TestPlugin.pm
+t/lib/Padre/Plugin/Test/Plugin.pm
 
 xt/99-critic.t
 xt/90-pod.t
@@ -94,4 +97,5 @@ share/tango/16x16/emblems/emblem-unreadable.png
 
 
 META.yml
+
 
