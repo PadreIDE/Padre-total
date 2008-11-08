@@ -111,8 +111,23 @@ sub on_selection {
     my $current = $choice->GetCurrentSelection;
     my $module  = (Padre::DB->get_recent_pod)[$current];
     if ( $module ) {
-        $self->{html}->display($module);
-    } # TODO: else error message?
+        # apparently there are cases where self isn't the window but a
+        # subordinate panel
+        # I still don't really understand who calls what so lets play save...
+        if ( defined $self->{html} ) {
+            $self->{html}->display($module);
+        }
+        else {
+            my $win = $self;
+            while ( $win = $win->GetParent ) {
+                if ( defined $win->{html} ) {
+                    $win->{html}->display($module);
+                    last;
+                }
+            }
+            # TODO error message?
+        }
+    } # TODO else error message?
     return;
 }
 
