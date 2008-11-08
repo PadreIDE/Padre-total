@@ -1491,6 +1491,49 @@ sub on_stc_dwell_start {
 	return;
 }
 
+sub on_doc_stats {
+	my ($self, $event) = @_;
+
+    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly );
+
+	my $code;
+    my $src = $self->selected_text;
+    my $doc = $self->selected_document;
+    if ( $src ) {
+        $code = $src;
+		
+		my $code2 = $code; # it's ugly, need improvement
+		$code2 =~ s/\r\n/\n/g;
+		$lines = 1; # by default
+		$lines++ while ( $code2 =~ /[\r\n]/g );
+		$chars_with_space = length($code);
+    } else {
+        $code = $doc->text_get;
+        
+        # I trust editor more
+        my $editor = $doc->editor;
+        $lines = $editor->GetLineCount();
+        $chars_with_space = $editor->GetTextLength();
+        $is_readonly = $editor->GetReadOnly();
+    }
+    
+	$words++ while ( $code =~ /\b\w+\b/g );
+	$chars_without_space++ while ( $code =~ /\S/g );
+
+	my $message = <<MESSAGE;
+Words: $words
+Lines: $lines
+Chars without spaces: $chars_without_space
+Chars with spaces: $chars_with_space
+MESSAGE
+
+	if ($is_readonly) {
+		$message .= "File is read-only.\n";
+	}
+	
+	$self->message( $message, 'Stats' );
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

@@ -126,6 +126,13 @@ sub new {
 		);
 	}
 	$menu->{file}->AppendSeparator;
+	
+	# Word Stats
+	Wx::Event::EVT_MENU( $win,
+		$menu->{file}->Append( -1, gettext('Doc Stats') ),
+		sub { $_[0]->on_doc_stats },
+	);
+	$menu->{file}->AppendSeparator;
 
 	# Exiting
 	Wx::Event::EVT_MENU( $win,
