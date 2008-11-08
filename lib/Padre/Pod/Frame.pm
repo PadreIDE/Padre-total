@@ -45,17 +45,9 @@ sub _setup_podviewer {
     $but_s->Add( $back );
     $but_s->Add( $forward );
 
-    # TODO: remove magic values and just add the Choice box after the buttons
     # TODO: update list when a file is opened
-    $choice = Wx::Choice->new(
-        $panel,
-        -1,
-        [ 175, 5 ],
-        [ -1, 32 ],
-        [
-            Padre::DB->get_recent_pod
-        ]
-    );
+    $choice = Wx::Choice->new( $panel, wxID_ANY, [ 0, 0 ], Wx::wxDefaultSize, scalar(Padre::DB->get_recent_pod), [ Padre::DB->get_recent_pod ] );
+    $but_s->Add($choice);
     EVT_CHOICE( $panel, $choice, \&on_selection );
 
     $choices = Padre::DB->find_modules;
