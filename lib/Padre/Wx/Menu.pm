@@ -254,12 +254,6 @@ sub new {
 	);
 	$menu->{edit}->AppendSeparator;
 
-	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Diff") ),
-		\&Padre::Wx::MainWindow::on_diff,
-	);
-	$menu->{edit}->AppendSeparator;
-
 	# Diff
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Diff") ),
