@@ -44,7 +44,8 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('License:')],
-			[ 'Wx::ComboBox',   '_license_choice_', '',       \@licenses],
+			[ 'Wx::ComboBox',   '_license_choice_',
+				($config->{module_start}{license_choice} || ''), \@licenses],
 		],
 		[
 			[ 'Wx::StaticText',      undef,         gettext('Parent Directory:')],
@@ -86,8 +87,6 @@ sub dialog {
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
 
-	$dialog->{_widgets_}{_license_choice_}->SetValue(gettext('perl'));
-
 	$dialog->{_widgets_}{_module_name_}->SetFocus;
 
 	return $dialog;
@@ -113,6 +112,7 @@ sub ok_clicked {
 	$config->{module_start}{author_name} = $data->{_author_name_};
 	$config->{module_start}{email}       = $data->{_email_};
 	$config->{module_start}{builder_choice} = $data->{_builder_choice_};
+	$config->{module_start}{license_choice} = $data->{_license_choice_};
 
 	my $main_window = Padre->ide->wx->main_window;
 
