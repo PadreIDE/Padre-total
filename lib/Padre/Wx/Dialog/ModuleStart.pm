@@ -39,7 +39,8 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Builder:')],
-			[ 'Wx::ComboBox',   '_builder_choice_', '',       \@builders],
+			[ 'Wx::ComboBox',   '_builder_choice_',
+				($config->{module_start}{builder_choice} || ''), \@builders],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('License:')],
@@ -111,6 +112,7 @@ sub ok_clicked {
 	my $config = Padre->ide->config;
 	$config->{module_start}{author_name} = $data->{_author_name_};
 	$config->{module_start}{email}       = $data->{_email_};
+	$config->{module_start}{builder_choice} = $data->{_builder_choice_};
 
 	my $main_window = Padre->ide->wx->main_window;
 
