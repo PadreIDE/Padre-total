@@ -93,6 +93,12 @@ share/languages/perl5/perl5.yml
 share/tango/16x16/actions/document-open.png
 share/tango/16x16/actions/document-new.png
 share/tango/16x16/actions/document-save.png
+share/tango/16x16/actions/edit-copy.png
+share/tango/16x16/actions/edit-cut.png
+share/tango/16x16/actions/edit-paste.png
+share/tango/16x16/actions/edit-redo.png
+share/tango/16x16/actions/edit-select-all.png
+share/tango/16x16/actions/edit-undo.png
 share/tango/16x16/emblems/emblem-unreadable.png
 
 
