@@ -219,11 +219,11 @@ sub new {
 	# Tab And Space
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Tab to Space") ),
-		sub { $_[0]->on_tab_and_space("Tab_to_Space") },
+		sub { $_[0]->on_tab_and_space('Tab_to_Space') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Space to Tab") ),
-		sub { $_[0]->on_tab_and_space("Space_to_Tab") },
+		sub { $_[0]->on_tab_and_space('Space_to_Tab') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Delete Ending Space") ),
@@ -235,6 +235,32 @@ sub new {
 	);
 	$menu->{edit}->AppendSeparator;
 
+	# Upper and Lower Case
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Upper All") ),
+		sub { $_[0]->on_upper_and_lower('Upper_All') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Lower All") ),
+		sub { $_[0]->on_upper_and_lower('Lower_All') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Upper First") ),
+		sub { $_[0]->on_upper_and_lower('Upper_First') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Lower First") ),
+		sub { $_[0]->on_upper_and_lower('Lower_First') },
+	);
+	$menu->{edit}->AppendSeparator;
+
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Diff") ),
+		\&Padre::Wx::MainWindow::on_diff,
+	);
+	$menu->{edit}->AppendSeparator;
+
+	# Diff
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Diff") ),
 		\&Padre::Wx::MainWindow::on_diff,

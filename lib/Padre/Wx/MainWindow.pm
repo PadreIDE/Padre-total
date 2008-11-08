@@ -1640,6 +1640,39 @@ sub on_delete_leading_space {
     $editor->ReplaceSelection( $code );
 }
 
+sub on_upper_and_lower {
+	my ($self, $type) = @_;
+	
+	my $code;
+    my $src = $self->selected_text;
+    my $doc = $self->selected_document;
+    if ( $src ) {
+        $code = $src;
+    } else {
+        $code = $doc->text_get;
+    }
+    
+    return unless ( defined $code and length($code) );
+    
+    if ( $type eq 'Upper_All' ) {
+		$code = uc($code);
+	} elsif ( $type eq 'Lower_All' ) {
+		$code = lc($code);
+	} elsif ( $type eq 'Upper_First' ) {
+		$code =~ s/\b(\S+)\b/ucfirst($1)/ge;
+	} elsif ( $type eq 'Lower_First' ) {
+		$code =~ s/\b(\S+)\b/lcfirst($1)/ge;
+	}
+    
+    if ( $src ) {
+		my $editor = $self->selected_editor;
+	    $editor->ReplaceSelection( $code );
+	} else {
+		$doc->text_set( $code );
+	}
+
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.
