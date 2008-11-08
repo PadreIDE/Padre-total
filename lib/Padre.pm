@@ -243,6 +243,30 @@ nothing, new, those that were open last time?
 
 =item Autosave on/off?
 
+=item Autobackup (Planned)
+
+When Padre opens a file it automatically creates a copy of the original
+in ~/.padre/backup/PATH  where PATH is the same PATH as the full PATH of
+the file. On Windows the initial drive letter is converted to another 
+subdirectory so c:\dir\file.txt  will be saved as
+~/padre/backup/dir/file.txt
+
+When a new file is created no need for autobackup.
+
+When a remote file is opened the backup will probably go to
+~/padre/backup_remote/
+
+Configurable options: on/off
+
+=item Autosave files (Planned)
+
+Every N seconds all the files changed since the last autosave are 
+saved to a temporary place maybe ~/.padre/save.
+
+When the user closes the file, the autosaved file is removed.
+
+Configurable options: on/off, frequency in seconds
+
 =back
 
 =head2 File and Project oriented preferences
