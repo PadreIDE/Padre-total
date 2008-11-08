@@ -170,8 +170,7 @@ sub on_open {
 
     my $path = $self->{html}->module_to_path($module);
     if (not $path) {
-        # TODO put exclamation mark on the window!
-        Wx::MessageBox( "Could not find module $module", "Invalid module name", wxOK|wxCENTRE, $self );
+        Wx::MessageBox( "Could not find module $module", "Invalid module name", wxOK|wxCENTRE|wxICON_EXCLAMATION, $self );
         return;
     }
 
