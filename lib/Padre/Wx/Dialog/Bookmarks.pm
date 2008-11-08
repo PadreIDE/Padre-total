@@ -34,6 +34,8 @@ sub get_layout {
 	if (@$shortcuts) {
 		push @{ $layout[-1] }, 
 			['Wx::Button',     'delete', Wx::wxID_DELETE];
+		push @{ $layout[-1] }, 
+			['Wx::Button',     'delete_all', 'Delete &All'];
 	}
 	return \@layout;
 }
@@ -65,7 +67,8 @@ sub dialog {
 	$dialog->{_widgets_}{ok}->SetDefault;
 
 	if ($dialog->{_widgets_}{delete}) {
-		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},  \&on_delete_bookmark );
+		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete},     \&on_delete_bookmark );
+		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{delete_all}, \&on_delete_all_bookmark );
 	}
 
 	if ($text) {
@@ -162,6 +165,17 @@ sub on_delete_bookmark {
 	
 	delete $config->{bookmarks}{ $shortcuts[$selection] };
 	$dialog->{_widgets_}{tb}->DeletePage($selection);
+
+	return;
+}
+
+sub on_delete_all_bookmark {
+	my ($dialog, $event) = @_;
+
+	my $config    = Padre->ide->config;
+	$config->{bookmarks} = {}; # clear
+	
+	$dialog->{_widgets_}{tb}->DeleteAllPages();
 
 	return;
 }
