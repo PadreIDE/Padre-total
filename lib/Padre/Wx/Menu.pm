@@ -216,6 +216,24 @@ sub new {
 	);
 	$menu->{edit}->AppendSeparator;
 
+	# Tab And Space
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Tab to Space") ),
+		sub { $_[0]->on_tab_and_space("Tab_to_Space") },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Space to Tab") ),
+		sub { $_[0]->on_tab_and_space("Space_to_Tab") },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Delete Ending Space") ),
+		sub { $_[0]->on_delete_ending_space() },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Delete Leading Space") ),
+		sub { $_[0]->on_delete_leading_space() },
+	);
+	$menu->{edit}->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Diff") ),

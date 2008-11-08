@@ -1534,6 +1534,112 @@ MESSAGE
 	$self->message( $message, 'Stats' );
 }
 
+sub on_tab_and_space {
+	my ( $self, $type ) = @_;
+
+	my ( $title, $conte );
+    if ( $type eq 'Space_to_Tab' ) {
+        $title = 'Space to Tab';
+    } else {
+        $title = 'Tab to Space';
+    }
+    
+    require Padre::Wx::History::TextDialog;
+    my $dialog = Padre::Wx::History::TextDialog->new(
+        $self, 'How many spaces for each tab:', $title, $type,
+    );
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $space_num = $dialog->GetValue;
+    $dialog->Destroy;
+    unless ( defined $space_num and $space_num =~ /^\d+$/ ) {
+        return;
+    }
+    
+    my $code;
+    my $src = $self->selected_text;
+    my $doc = $self->selected_document;
+    if ( $src ) {
+        $code = $src;
+    } else {
+        $code = $doc->text_get;
+    }
+    
+    return unless ( defined $doc and length($doc) );
+    
+    my $to_space = ' ' x $space_num;
+    if ( $type eq 'Space_to_Tab' ) {
+        $code =~ s/$to_space/\t/isg;
+    } else {
+        $code =~ s/\t/$to_space/isg;
+    }
+    
+    if ( $src ) {
+        my $editor = $self->selected_editor;
+        $editor->ReplaceSelection( $code );
+    } else {
+        $doc->text_set( $code );
+    }
+}
+
+sub on_delete_ending_space {
+	my ( $self ) = @_;
+	
+	my $code;
+    my $src = $self->selected_text;
+    my $doc = $self->selected_document;
+    if ( $src ) {
+        $code = $src;
+    } else {
+        $code = $doc->text_get;
+    }
+    
+    # remove ending space
+    $code =~ s/([^\n\S]+)$//mg;
+    
+    if ( $src ) {
+        my $editor = $self->selected_editor;
+        $editor->ReplaceSelection( $code );
+    } else {
+        $doc->text_set( $code );
+    }
+}
+
+sub on_delete_leading_space {
+	my ( $self ) = @_;
+	
+	my $src = $self->selected_text;
+    unless ( $src ) {
+        $self->message('No selection');
+    }
+    
+    require Padre::Wx::History::TextDialog;
+    my $dialog = Padre::Wx::History::TextDialog->new(
+        $self, 'How many leading spaces to delete(1 tab == 4 spaces):',
+        'Delete Leading Space', 'fay_delete_leading_space',
+    );
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $space_num = $dialog->GetValue;
+    $dialog->Destroy;
+    unless ( defined $space_num and $space_num =~ /^\d+$/ ) {
+        return;
+    }
+
+    my $code = $src;
+    my $spaces = ' ' x $space_num;
+    my $tab_num = int($space_num/4);
+    my $space_num_left = $space_num - 4 * $tab_num;
+    my $tabs   = "\t" x $tab_num;
+    $tabs .= '' x $space_num_left if ( $space_num_left );
+    $code =~ s/^($spaces|$tabs)//mg;
+    
+    my $editor = $self->selected_editor;
+    $editor->ReplaceSelection( $code );
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.
