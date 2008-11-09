@@ -6,7 +6,7 @@ Changes for Padre.
        Split view
        Tab reordering
        Tab close button
-    Localization and German translation. (Heiko Jansen)
+    Localization and German translation. (HJANSEN)
     Move the content of Padre::Wx::Dialog to Wx::Perl::Dialog 0.02 (SZABGAB)
     Chanage back the new-file hot-key to be Ctr-N again. (SZABGAB)
     Add experimental PPI based Perl5 syntax highlighting (FAYLAND, SZABGAB)
@@ -16,6 +16,7 @@ Changes for Padre.
     New icons on the toolbar adding undo/redo/cut/cop/paste/select all. (HJANSEN)
     Also put cut/copy/paste/select all in the edit menu and in the right click menu. (HJANSEN)
     Move Parrot plugin to separate distribution. (SZABGAB)
+    Enable swictching between German and English. (SZABGAB)
 
 0.15 2008.11.02
 

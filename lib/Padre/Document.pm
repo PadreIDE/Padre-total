@@ -355,7 +355,7 @@ sub save_file {
 		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
 	};
 	if ($@) {
-		return "Could not save: $!";
+		return "Could not save: $@";
 	}
 	$self->{_timestamp} = $self->time_on_file;
 

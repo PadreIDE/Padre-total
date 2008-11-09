@@ -356,7 +356,30 @@ sub new {
 		sub { Padre::Wx::Dialog::Bookmarks->goto_bookmark($_[0]) },
 	);
 
-
+	$menu->{view}->AppendSeparator;
+	$menu->{view_language} = Wx::Menu->new;
+	$menu->{view}->Append( -1, gettext("Language"), $menu->{view_language} );
+	
+	# TODO horrible, fix this
+	if ($config->{host}->{locale} eq 'en') {
+		Wx::Event::EVT_MENU( $win,
+			$menu->{view_language}->AppendRadioItem( -1, gettext("English") ),
+			sub { $_[0]->change_locale('en') },
+		);
+		Wx::Event::EVT_MENU( $win,
+			$menu->{view_language}->AppendRadioItem( -1, gettext("German") ),
+			sub { $_[0]->change_locale('de') },
+		);
+	} else {
+		Wx::Event::EVT_MENU( $win,
+			$menu->{view_language}->AppendRadioItem( -1, gettext("German") ),
+			sub { $_[0]->change_locale('de') },
+		);
+		Wx::Event::EVT_MENU( $win,
+			$menu->{view_language}->AppendRadioItem( -1, gettext("English") ),
+			sub { $_[0]->change_locale('en') },
+		);
+	}
 
 	# Create the Perl menu
 	$menu->{perl} = Wx::Menu->new;

@@ -40,6 +40,8 @@ sub new {
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
 	
+	$config->{host}->{locale} || Wx::Locale::GetSystemLanguage;	
+
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
 	
@@ -73,8 +75,7 @@ sub new {
 		$wx_frame_style,
 	);
 
-	# config param has to be ID, not name (e.g.: 87 for 'de'); TODO change this 
-	$self->refresh_locale( $config->{host}->{locale} );
+	$self->set_locale( $config->{host}->{locale} );
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->manager->SetManagedWindow( $self );
@@ -315,7 +316,6 @@ sub refresh_all {
 	return if $self->no_refresh;
 
 	my $doc  = $self->selected_document;
-	$self->refresh_locale;
 	$self->refresh_menu;
 	$self->refresh_toolbar;
 	$self->refresh_status;
@@ -329,20 +329,33 @@ sub refresh_all {
 	return;
 }
 
-sub refresh_locale {
+    
+sub change_locale {
+	my ($self, $shortname) = @_;
+	my $config = Padre->ide->config;
+	$config->{host}->{locale} = $shortname;
+	$self->message( 'Currently you have to restart Padre for the language change to take effect' );
+	return;
+}
+
+sub set_locale {
     my $self = shift;
-    my $lang = shift || Wx::Locale::GetSystemLanguage;
+    my $shortname = shift;
 
-    $self->{'locale'} = undef;
+	my %map = (
+		en => 58,
+		de => 87,
+	);
+	my $lang = $map{$shortname};
 
-    $self->{'locale'} = Wx::Locale->new($lang);
-    $self->{'locale'}->AddCatalogLookupPathPrefix( Padre::Wx::sharedir('locale') );
-    my $langname = $self->{'locale'}->GetCanonicalName();
+    $self->{locale} = Wx::Locale->new($lang);
+    $self->{locale}->AddCatalogLookupPathPrefix( Padre::Wx::sharedir('locale') );
+    my $langname = $self->{locale}->GetCanonicalName();
 
-    my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
+    #my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
     my $filename = Padre::Wx::sharefile( 'locale', $shortname ) . '.mo';
 
-    $self->{'locale'}->AddCatalog($shortname) if -f $filename;
+    $self->{locale}->AddCatalog($shortname) if -f $filename;
 
     return;
 }
