@@ -28,6 +28,11 @@ our $VERSION = '0.15';
 my $default_dir = Cwd::cwd();
 
 
+my %shortname_of = (
+	58 => 'en',
+	87 => 'de',
+);
+my %number_of = reverse %shortname_of;
 
 
 
@@ -40,7 +45,8 @@ sub new {
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
 	
-	$config->{host}->{locale} || Wx::Locale::GetSystemLanguage;	
+	$config->{host}->{locale} ||= 
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || $shortname_of{ 'en' };
 
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
@@ -75,7 +81,7 @@ sub new {
 		$wx_frame_style,
 	);
 
-	$self->set_locale( $config->{host}->{locale} );
+	$self->set_locale( );
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->manager->SetManagedWindow( $self );
@@ -340,14 +346,10 @@ sub change_locale {
 
 sub set_locale {
     my $self = shift;
-    my $shortname = shift;
 
-	my %map = (
-		en => 58,
-		de => 87,
-	);
-	my $lang = $map{$shortname};
-
+	my $config = Padre->ide->config;
+	my $shortname = $config->{host}->{locale};
+	my $lang = $number_of{ $shortname };
     $self->{locale} = Wx::Locale->new($lang);
     $self->{locale}->AddCatalogLookupPathPrefix( Padre::Wx::sharedir('locale') );
     my $langname = $self->{locale}->GetCanonicalName();
