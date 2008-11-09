@@ -48,6 +48,7 @@ sub about {
 	$about->AddDeveloper("Adam Kennedy");
 	$about->AddDeveloper("Steffen Mueller");
 	$about->AddDeveloper("Fayland Lam");
+	$about->AddDeveloper("Heiko Jansen");
 	Wx::AboutBox( $about );
 	return;
 }
