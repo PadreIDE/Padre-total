@@ -4,9 +4,8 @@ use 5.008;
 use strict;
 use warnings;
 
-use Wx qw(:dnd wxTheClipboard);
-use Wx::DND;
 use Padre::Wx ();
+use Padre::Wx::Editor ();
 use Wx::Locale qw(:default);
 use File::Spec::Functions qw(catfile);
 
@@ -50,91 +49,10 @@ sub new {
 	$self->AddTool( Wx::wxID_CUT,   '', Padre::Wx::tango( catfile( 'actions', 'edit-cut.png' ) ),   gettext('Cut') );
 	$self->AddTool( Wx::wxID_PASTE, '', Padre::Wx::tango( catfile( 'actions', 'edit-paste.png' ) ), gettext('Paste') );
 
-	Wx::Event::EVT_TOOL(
-		$parent,
-		Wx::wxID_SELECTALL,
-		sub {
-			my $win = shift;
-			my $evt = shift;
-
-			my $id = $win->{notebook}->GetSelection;
-			return if $id == -1;
-			$win->{notebook}->GetPage($id)->SelectAll;
-			return;
-		}
-	);
-
-	Wx::Event::EVT_TOOL(
-		$parent,
-		Wx::wxID_COPY,
-		sub {
-			my $win = shift;
-			my $evt = shift;
-
-			my $id = $win->{notebook}->GetSelection;
-			return if $id == -1;
-			wxTheClipboard->Open;
-
-			my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-			if ( defined($txt) ) {
-				wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
-			}
-
-			wxTheClipboard->Close;
-			return;
-		},
-	);
-	Wx::Event::EVT_TOOL(
-		$parent,
-		Wx::wxID_CUT,
-		sub {
-			my $win = shift;
-			my $evt = shift;
-
-			my $id = $win->{notebook}->GetSelection;
-			return if $id == -1;
-			wxTheClipboard->Open;
-
-			my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-			if ( defined($txt) ) {
-				wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
-				$win->{notebook}->GetPage($id)->ReplaceSelection('');
-			}
-
-			wxTheClipboard->Close;
-			return;
-		},
-	);
-	Wx::Event::EVT_TOOL(
-		$parent,
-		Wx::wxID_PASTE,
-		sub {
-			my $win = shift;
-			my $evt = shift;
-			my $id  = $win->{notebook}->GetSelection;
-			return if $id == -1;
-			wxTheClipboard->Open;
-			my $text   = '';
-			my $length = 0;
-			if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
-				my $data = Wx::TextDataObject->new;
-				my $ok   = wxTheClipboard->GetData($data);
-				if ($ok) {
-					$text   = $data->GetText;
-					$length = $data->GetTextLength;
-				}
-				else {
-					$text   = '';
-                    $length = 1;
-				}
-			}
-			my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
-			$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
-			$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
-			wxTheClipboard->Close;
-			return;
-		},
-	);
+	Wx::Event::EVT_TOOL( $parent, Wx::wxID_SELECTALL, sub { \&Padre::Wx::Editor::text_select_all(@_) } );
+	Wx::Event::EVT_TOOL( $parent, Wx::wxID_COPY, sub { \&Padre::Wx::Editor::text_copy_to_clipboard(@_) } );
+	Wx::Event::EVT_TOOL( $parent, Wx::wxID_CUT, sub { \&Padre::Wx::Editor::text_cut_to_clipboard(@_) } );
+	Wx::Event::EVT_TOOL( $parent, Wx::wxID_PASTE, sub { \&Padre::Wx::Editor::text_paste_from_clipboard(@_) } );
 
 	return $self;
 } ## end sub new

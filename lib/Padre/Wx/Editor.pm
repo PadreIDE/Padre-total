@@ -7,6 +7,8 @@ use warnings;
 use YAML::Tiny      ();
 
 use Padre::Documents ();
+use Wx               qw(:dnd wxTheClipboard);
+use Wx::DND;
 use Wx::STC;
 use Padre::Wx;
 use Wx::Locale       qw(:default);
@@ -302,8 +304,63 @@ sub on_right_down {
 		},
 	);
 	$menu->AppendSeparator;
+
+	my $selection_exists = 0;
+	my $id = $win->{notebook}->GetSelection;
+	if ( $id != -1 ) {
+		my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
+		if ( defined($txt) && length($txt) > 0 ) {
+			$selection_exists = 1;
+		}
+	}
+
+	my $sel_all = $menu->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") );
+	if ( not $win->{notebook}->GetPage($id)->GetTextLength > 0 ) {
+		$sel_all->Enable(0);
+	}
+	Wx::Event::EVT_MENU( $win, # Ctrl-A
+		$sel_all,
+		sub { \&text_select_all(@_) },
+	);
+	$menu->AppendSeparator;
 	
-	
+	my $copy = $menu->Append( Wx::wxID_COPY, '' );
+	if ( not $selection_exists ) {
+		$copy->Enable(0);
+	}
+	Wx::Event::EVT_MENU( $win, # Ctrl-C
+		$copy,
+		sub { \&text_copy_to_clipboard(@_) },
+	);
+
+	my $cut = $menu->Append( Wx::wxID_CUT, '' );
+	if ( not $selection_exists ) {
+		$cut->Enable(0);
+	}
+	Wx::Event::EVT_MENU( $win, # Ctrl-X
+		$cut,
+		sub { \&text_cut_to_clipboard(@_) },
+	);
+
+	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
+	wxTheClipboard->Open;
+	if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
+		my $data = Wx::TextDataObject->new;
+		my $ok   = wxTheClipboard->GetData($data);
+		if ( $ok && $data->GetTextLength > 0 && $win->{notebook}->GetPage($id)->CanPaste ) {
+			Wx::Event::EVT_MENU( $win, # Ctrl-V
+				$paste,
+				sub { \&text_paste_from_clipboard(@_) },
+			);
+		}
+		else {
+			$paste->Enable(0);
+		}
+	}
+	wxTheClipboard->Close;
+
+	$menu->AppendSeparator;
+
 #	$menu->Append( Wx::wxID_NEW, '' );
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("&Split window") ),
@@ -323,6 +380,77 @@ sub on_left_up {
 	#print "left $pos\n";
 
 	$event->Skip();
+	return;
+}
+
+sub text_select_all {
+	my ( $win, $event ) = @_;
+
+	my $id = $win->{notebook}->GetSelection;
+	return if $id == -1;
+	$win->{notebook}->GetPage($id)->SelectAll;
+	return;
+}
+
+sub text_copy_to_clipboard {
+	my ( $win, $event ) = @_;
+
+	my $id = $win->{notebook}->GetSelection;
+	return if $id == -1;
+	wxTheClipboard->Open;
+
+	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
+	if ( defined($txt) ) {
+		wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
+	}
+
+	wxTheClipboard->Close;
+	return;
+}
+
+sub text_cut_to_clipboard {
+	my ( $win, $event ) = @_;
+
+	my $id = $win->{notebook}->GetSelection;
+	return if $id == -1;
+	wxTheClipboard->Open;
+
+	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
+	if ( defined($txt) ) {
+		wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
+		$win->{notebook}->GetPage($id)->ReplaceSelection('');
+	}
+
+	wxTheClipboard->Close;
+	return;
+}
+
+sub text_paste_from_clipboard {
+    my ( $win, $event ) = @_;
+
+	my $id  = $win->{notebook}->GetSelection;
+	return if $id == -1;
+
+	wxTheClipboard->Open;
+	my $text   = '';
+	my $length = 0;
+	if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
+		my $data = Wx::TextDataObject->new;
+		my $ok   = wxTheClipboard->GetData($data);
+		if ($ok) {
+			$text   = $data->GetText;
+			$length = $data->GetTextLength;
+		}
+		else {
+			$text   = '';
+			$length = 1;
+		}
+	}
+	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
+	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
+	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
+
+	wxTheClipboard->Close;
 	return;
 }
 

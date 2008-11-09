@@ -170,6 +170,24 @@ sub new {
 	);
 	$menu->{edit}->AppendSeparator;
 
+    Wx::Event::EVT_MENU( $win,
+        $menu->{edit}->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") ),
+        sub { \&Padre::Wx::Editor::text_select_all(@_) },
+    );
+    Wx::Event::EVT_MENU( $win,
+        $menu->{edit}->Append( Wx::wxID_COPY, '' ),
+        sub { \&Padre::Wx::Editor::text_copy_to_clipboard(@_) },
+    );
+    Wx::Event::EVT_MENU( $win,
+        $menu->{edit}->Append( Wx::wxID_CUT, '' ),
+        sub { \&Padre::Wx::Editor::text_cut_to_clipboard(@_) },
+    );
+    Wx::Event::EVT_MENU( $win,
+        $menu->{edit}->Append( Wx::wxID_PASTE, '' ),
+        sub { \&Padre::Wx::Editor::text_paste_from_clipboard(@_) },
+    );
+    $menu->{edit}->AppendSeparator;
+
 	# Random shit that doesn't fit anywhere better yet
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( Wx::wxID_FIND, '' ),
