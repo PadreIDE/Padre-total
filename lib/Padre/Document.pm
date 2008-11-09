@@ -166,10 +166,6 @@ sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
 	
-	if (Padre->ide->config->{ppi_highlight}) {
-		$MIME_LEXER{'application/x-perl'} = wxSTC_LEX_CONTAINER;
-	}
-
 	# Check and derive params
 	unless ( $self->editor ) {
 		die "Missing or invalid editor";

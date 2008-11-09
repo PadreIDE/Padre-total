@@ -514,6 +514,9 @@ sub new {
 			\&Padre::Wx::MainWindow::on_ppi_highlight,
 		);
 		$menu->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
+		$Padre::Document::MIME_LEXER{'application/x-perl'} = 
+			$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
+
 	}
 
 	# Create and return the main menu bar

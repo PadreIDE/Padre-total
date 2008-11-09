@@ -16,6 +16,7 @@ use Padre::Wx          ();
 use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
 use Padre::Wx::Output  ();
+use Padre::Document    ();
 use Padre::Documents   ();
 
 use Wx::Locale         qw(:default);
@@ -1342,7 +1343,20 @@ sub on_ppi_highlight {
 
 	my $config = Padre->ide->config;
 	$config->{ppi_highlight} = $event->IsChecked ? 1 : 0;
-	
+	$Padre::Document::MIME_LEXER{'application/x-perl'} = 
+		$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
+		
+	foreach my $editor ( $self->pages ) {
+		#my $editor = $self->selected_editor;
+		next if not $editor->{Document}->isa('Padre::Document::Perl');
+		if ($config->{ppi_highlight}) {
+			$editor->{Document}->colourise;
+		} else {
+			$editor->{Document}->remove_color;
+			$editor->Colourise(0, $editor->GetLength);
+		}
+	}
+
 	return;
 }
 
