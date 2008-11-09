@@ -301,6 +301,29 @@ Name_2 subitems.
 
 See also L<Padre::PluginManager> and L<Padre::PluginBuilder> 
 
+=head1 Editing tools
+
+=head2 Case Changes
+
+Change the case of the selected text or if there 
+is no selection all the text in the current file.
+
+Change all characters to upper or lower case
+
+Change the first character ot every word to upper/lower
+case leaving the rest as they were.
+
+=head2 Tab and space conversion
+
+Tab to Space and Space to Tab conversions ask the number of spaces
+each tab should substitute. It currently works everywhere.
+We probably should add a mode to operate only at the beginning of 
+the lines or better yet only at the indentation levels.
+
+Delete All Ending space does just what it sais.
+
+Delete Leading Space will ask How many leading spaces and act accordingly.
+
 
 =head1 Search, Find and Replace
 
