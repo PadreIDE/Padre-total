@@ -1,7 +1,23 @@
 package Padre::Document;
 
-# Provides a logical document abstraction, allowing Padre
-# to associate several Wx elements with the one document.
+=head1 NAME
+
+Padre::Document - document abstraction layer
+
+=head1 DESCRIPTION
+
+This is an internal module of L<Padre> that provides a 
+logical document abstraction, allowing Padre to associate 
+several Wx elements with the one document.
+
+The objective would be to allow the use of this module without
+loading Wx.
+
+Currently there are still interdependencies that need to be cleaned.
+
+=head1 METHODS
+
+=cut
 
 use 5.008;
 use strict;
@@ -162,6 +178,21 @@ our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
 
 #####################################################################
 # Constructor and Accessors
+
+=head2 new
+
+ my $doc = Padre::Document->new(
+		editor   => $editor,
+		filename => $file,
+ );
+ 
+$editor is required and is a Padre::Wx::Editor object
+
+$file is optional and if given it will be loaded in the document
+
+mime-type is defined by the guess_mimetype function
+
+=cut
 
 sub new {
 	my $class = shift;
