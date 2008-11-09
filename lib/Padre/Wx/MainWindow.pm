@@ -1537,12 +1537,7 @@ MESSAGE
 sub on_tab_and_space {
 	my ( $self, $type ) = @_;
 
-	my ( $title, $conte );
-    if ( $type eq 'Space_to_Tab' ) {
-        $title = 'Space to Tab';
-    } else {
-        $title = 'Tab to Space';
-    }
+	my $title = $type eq 'Space_to_Tab' ? 'Space to Tab' : 'Tab to Space';
     
     require Padre::Wx::History::TextDialog;
     my $dialog = Padre::Wx::History::TextDialog->new(
