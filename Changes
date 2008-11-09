@@ -11,6 +11,9 @@ Changes for Padre.
     Chanage back the new-file hot-key to be Ctr-N again. (SZABGAB)
     Add experimental PPI based Perl5 syntax highlighting (FAYLAND, SZABGAB)
     Save cursor position between runs of Padre. (FAYLAND)
+    Tab/space conversion menu items. (FAYLAND)
+    Upper/Lower case comversion menu items. (FAYLAND)
+    New icons on the toolbar adding undo/redo/cut/cop/paste/select all. (HJANSEN)
 
 0.15 2008.11.02
 
