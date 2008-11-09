@@ -9,6 +9,7 @@ use warnings;
 use File::Spec  ();
 use File::Slurp ();
 use List::Util  ();
+use Class::Autouse ();
 use Carp        ();
 use Wx qw{
 	wxSTC_LEX_ADA

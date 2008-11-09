@@ -54,6 +54,7 @@ t/00-compile.t
 t/01-load.t
 t/02-new.t
 t/03-wx.t
+t/70-document.t
 t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
