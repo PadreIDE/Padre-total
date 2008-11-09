@@ -16,7 +16,11 @@ sub SetText {
 sub EmptyUndoBuffer {
 }
 
-#sub ConvertEOLs {
-#}
+sub ConvertEOLs {
+}
+
+sub  GetText {
+}
+
 
 1;
