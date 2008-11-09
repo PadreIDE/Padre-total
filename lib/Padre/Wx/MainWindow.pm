@@ -1499,6 +1499,11 @@ sub on_doc_stats {
 	my $code;
     my $src = $self->selected_text;
     my $doc = $self->selected_document;
+   	if (not $doc) {
+		$self->message( 'No file is open', 'Stats' );
+		return;
+	}
+
     if ( $src ) {
         $code = $src;
 		
@@ -1519,7 +1524,7 @@ sub on_doc_stats {
     
 	$words++ while ( $code =~ /\b\w+\b/g );
 	$chars_without_space++ while ( $code =~ /\S/g );
-
+	
 	my $message = <<MESSAGE;
 Words: $words
 Lines: $lines
@@ -1527,11 +1532,18 @@ Chars without spaces: $chars_without_space
 Chars with spaces: $chars_with_space
 MESSAGE
 
+	if (defined $doc->filename) {
+		$message .= sprintf("Filename: '%s'\n", $doc->filename);
+	} else {
+		$message .= "No filename\n";
+	}
+
 	if ($is_readonly) {
 		$message .= "File is read-only.\n";
 	}
 	
 	$self->message( $message, 'Stats' );
+	return;
 }
 
 sub on_tab_and_space {

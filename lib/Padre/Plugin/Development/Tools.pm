@@ -22,7 +22,6 @@ Padre::Plugin::Development::Tools - tools used by the Padre developers
 # reload plugins.
 my @menu = (
 	['About',          sub {about(@_)}          ],
-	['Doc stats',      sub {doc_stats(@_)}      ],
 	['Show %INC',      sub {show_inc(@_)}       ],
 	['Reload plugins', sub {reload_plugins(@_)} ],
 );
@@ -50,29 +49,6 @@ sub show_inc {
 
 	Wx::MessageBox( Data::Dumper::Dumper(\%INC), '%INC', Wx::wxOK|Wx::wxCENTRE, $main );
 	
-}
-
-sub doc_stats {
-	my ($main) = @_;
-	
-	my $doc = Padre::Documents->current;
-	
-	if (not $doc) {
-		Wx::MessageBox( "No file is open", "Stats", Wx::wxOK|Wx::wxCENTRE, $main );
-	}
-	my $text = $doc->text_get;
-	my $str = sprintf("Number of characters in the current file: %s\n", length($text));
-	my $spaces = () = $text =~ /( )/g;
-	$str .= sprintf("Number of spaces: %s\n", $spaces);
-	
-	if (defined $doc->filename) {
-		$str .= sprintf("Filename: '%s'\n", $doc->filename);
-	} else {
-		$str .= "No filename\n";
-	}
-
-	Wx::MessageBox( $str, "Stats", Wx::wxOK|Wx::wxCENTRE, $main );
-	return;
 }
 
 sub reload_plugins {
