@@ -1051,6 +1051,7 @@ sub on_save_as {
 
 	$doc->set_mimetype( $doc->guess_mimetype );
 	$doc->editor->padre_setup;
+	$doc->rebless;
 
 	$self->refresh_all;
 

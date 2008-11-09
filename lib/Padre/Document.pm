@@ -180,24 +180,22 @@ sub new {
 	unless ( $self->mimetype ) {
 		$self->set_mimetype( $self->guess_mimetype );
 	}
-	$self->rebless($class);
+	$self->rebless;
 
 	return $self;
 }
 
 sub rebless {
-	my ($self, $class) = @_;
+	my ($self) = @_;
 
-	# If we blessed as the base class, and the mime type has a
-	# specific subclass, rebless it.
+	# Rebless as either to a subclass if there is a mime-type or
+	# to the the base class, 
 	# This isn't exactly the most elegant way to do this, but will
 	# do for a first implementation.
-	if ( $class eq __PACKAGE__ ) {
-		my $subclass = $MIME_CLASS{$self->mimetype};
-		if ( $subclass ) {
-			Class::Autouse->autouse($subclass);
-			bless $self, $subclass;
-		}
+	my $subclass = $MIME_CLASS{$self->mimetype} || __PACKAGE__;
+	if ( $subclass ) {
+		Class::Autouse->autouse($subclass);
+		bless $self, $subclass;
 	}
 	
 	return;
