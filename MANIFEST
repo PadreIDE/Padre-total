@@ -61,6 +61,7 @@ t/82-plugin-manager.t
 t/lib/Padre.pm
 t/lib/Padre/Plugin/TestPlugin.pm
 t/lib/Padre/Plugin/Test/Plugin.pm
+t/lib/Padre/Editor.pm
 
 xt/99-critic.t
 xt/90-pod.t
