@@ -298,6 +298,11 @@ sub new {
 		$menu->{view_lines},
 		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
 	);
+	$menu->{view_folding} = $menu->{view}->AppendCheckItem( -1, gettext("Show code folding") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_folding},
+		\&Padre::Wx::MainWindow::on_toggle_code_folding,
+	);
 	$menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
@@ -577,6 +582,7 @@ sub new {
 
 	# Setup menu state from configuration
 	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
+	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
 	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
 	unless ( Padre::Util::WIN32 ) {
 		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );

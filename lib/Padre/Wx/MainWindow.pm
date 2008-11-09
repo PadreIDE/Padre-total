@@ -1311,6 +1311,19 @@ sub on_toggle_line_numbers {
 	return;
 }
 
+sub on_toggle_code_folding {
+	my ($self, $event) = @_;
+
+	my $config = Padre->ide->config;
+	$config->{editor_codefolding} = $event->IsChecked ? 1 : 0;
+
+	foreach my $editor ( $self->pages ) {
+		$editor->show_folding( $config->{editor_codefolding} );
+	}
+
+	return;
+}
+
 sub on_toggle_indentation_guide {
 	my $self   = shift;
 

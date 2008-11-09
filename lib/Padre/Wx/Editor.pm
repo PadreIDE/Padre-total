@@ -171,7 +171,7 @@ sub show_line_numbers {
 	my ($self, $on) = @_;
 
 	$self->SetMarginWidth(1, 0);
-	$self->SetMarginWidth(2, 0);
+	#$self->SetMarginWidth(2, 0);
 
 	# premature optimization, caching the with that was on the 3rd place at load time
 	# as timed my Deve::NYTProf
@@ -189,12 +189,73 @@ sub show_line_numbers {
 	return;
 }
 
+# Just a placeholder
+sub show_symbols {
+    my ( $self, $on ) = @_;
+
+	$self->SetMarginWidth(1, 0);
+
+	# $self->SetMarginWidth(1, 16);   #margin 1 for symbols, 16 px wide
+	# $self->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL);
+
+	return;
+}
+
+sub show_folding {
+	my ( $self, $on ) = @_;
+
+	if ( $on ) {
+		# Setup a margin to hold fold markers
+		$self->SetMarginType(2, Wx::wxSTC_MARGIN_SYMBOL); # margin number 2 for symbols
+		$self->SetMarginMask(2, Wx::wxSTC_MASK_FOLDERS);  # set up mask for folding symbols
+		$self->SetMarginSensitive(2, 1);                  # this one needs to be mouse-aware
+		$self->SetMarginWidth(2, 16);                     # set margin 2 16 px wide
+
+		# define folding markers
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEREND,     Wx::wxSTC_MARK_BOXPLUSCONNECTED,  Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPENMID, Wx::wxSTC_MARK_BOXMINUSCONNECTED, Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERMIDTAIL, Wx::wxSTC_MARK_TCORNER,  Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERTAIL,    Wx::wxSTC_MARK_LCORNER,  Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDERSUB,     Wx::wxSTC_MARK_VLINE,    Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDER,        Wx::wxSTC_MARK_BOXPLUS,  Wx::Colour->new("white"), Wx::Colour->new("black"));
+		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPEN,    Wx::wxSTC_MARK_BOXMINUS, Wx::Colour->new("white"), Wx::Colour->new("black"));
+
+		# activate 
+		$self->SetProperty('fold' => 1);
+
+		Wx::Event::EVT_STC_MARGINCLICK(
+		    $self,
+    		Wx::wxID_ANY,
+    		sub {
+        		my ( $editor, $event ) = @_;
+        		if ( $event->GetMargin() == 2 ) {
+            		my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
+            		my $level_clicked = $editor->GetFoldLevel($line_clicked);
+                    # TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
+            		#if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
+                		$editor->ToggleFold($line_clicked);
+            		#}
+        		}
+    		}
+		);
+	}
+	else {
+		$self->SetMarginSensitive(2, 0);
+        $self->SetMarginWidth(2, 0);
+		# deactivate
+        $self->SetProperty('fold' => 1);
+	}
+
+	return;
+}
+
 sub set_preferences {
 	my ($self) = @_;
 
 	my $config = Padre->ide->config;
 
 	$self->show_line_numbers(    $config->{editor_linenumbers}       );
+	$self->show_folding(         $config->{editor_codefolding}       );
 	$self->SetIndentationGuides( $config->{editor_indentationguides} );
 	$self->SetViewEOL(           $config->{editor_eol}               );
 
