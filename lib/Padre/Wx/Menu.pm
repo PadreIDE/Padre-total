@@ -235,23 +235,24 @@ sub new {
 		$menu->{edit_tab}->Append( -1, gettext("Delete Leading Space") ),
 		sub { $_[0]->on_delete_leading_space() },
 	);
-	$menu->{edit}->AppendSeparator;
 
 	# Upper and Lower Case
+	$menu->{edit_case} = Wx::Menu->new;
+	$menu->{edit}->Append( -1, gettext("Upper/Lower Case"), $menu->{edit_case} );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Upper All") ),
+		$menu->{edit_case}->Append( -1, gettext("Upper All") ),
 		sub { $_[0]->on_upper_and_lower('Upper_All') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Lower All") ),
+		$menu->{edit_case}->Append( -1, gettext("Lower All") ),
 		sub { $_[0]->on_upper_and_lower('Lower_All') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Upper First") ),
+		$menu->{edit_case}->Append( -1, gettext("Upper First") ),
 		sub { $_[0]->on_upper_and_lower('Upper_First') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Lower First") ),
+		$menu->{edit_case}->Append( -1, gettext("Lower First") ),
 		sub { $_[0]->on_upper_and_lower('Lower_First') },
 	);
 	$menu->{edit}->AppendSeparator;
