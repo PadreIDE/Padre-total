@@ -24,6 +24,7 @@ my @menu = (
 	['About',          sub {about(@_)}          ],
 	['Show %INC',      sub {show_inc(@_)}       ],
 	['Reload plugins', sub {reload_plugins(@_)} ],
+	['Info',           sub {info(@_)} ],
 );
 sub menu {
     my ($self) = @_;
@@ -41,6 +42,21 @@ sub about {
 	);
 	#$about->SetVersion($Padre::VERSION);
 	Wx::AboutBox( $about );
+	return;
+}
+
+sub info {
+	my ($main) = @_;
+	my $doc = Padre::Documents->current;
+	if (not $doc) {
+		$main->message( 'No file is open', 'Info' );
+
+		return;
+	}
+	my $msg = '';
+	$msg   .= "Doc: $doc\n";
+	$main->message( $msg, 'Info' );
+
 	return;
 }
 
