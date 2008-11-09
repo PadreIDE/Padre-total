@@ -8,7 +8,20 @@ use Padre::Wx ();
 
 =head1 NAME
 
-Padre::Plugin::Parrot
+Padre::Plugin::Parrot - Experimental Padre plugin that runs on Parrot
+
+=head1 SYNOPSIS
+
+After installation when you run Padre there should be a menu option Plugins/Parrot.
+
+=head1 COPYRIGHT
+
+Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
 
 =cut
 
