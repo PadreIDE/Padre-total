@@ -188,7 +188,6 @@ sub new {
     );
     $menu->{edit}->AppendSeparator;
 
-	# Random shit that doesn't fit anywhere better yet
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( Wx::wxID_FIND, '' ),
 		sub { Padre::Wx::Dialog::Find->find(@_) },
