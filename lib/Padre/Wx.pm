@@ -16,7 +16,7 @@ use Wx        ':everything';
 use Wx::Event ':everything';
 use Wx::AUI   ();
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 
 

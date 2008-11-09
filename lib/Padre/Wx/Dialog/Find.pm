@@ -10,7 +10,7 @@ use Padre::Wx;
 use Padre::Wx::Dialog;
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 

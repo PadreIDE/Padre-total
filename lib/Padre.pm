@@ -399,7 +399,7 @@ use YAML::Tiny     ();
 use DBI            ();
 use Class::Autouse ();
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials

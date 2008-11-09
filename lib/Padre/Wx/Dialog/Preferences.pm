@@ -8,7 +8,7 @@ use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 sub get_layout {
 	my ($config, $main_startup) = @_;

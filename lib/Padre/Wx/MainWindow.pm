@@ -23,7 +23,7 @@ use Wx::Locale         qw(:default);
 
 use base qw{Wx::Frame};
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 my $default_dir = Cwd::cwd();
 

@@ -16,7 +16,7 @@ use Wx::Locale       qw(:default);
 
 use base 'Wx::StyledTextCtrl';
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 my $data;
 my $width;

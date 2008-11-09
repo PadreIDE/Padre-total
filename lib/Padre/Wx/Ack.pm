@@ -12,7 +12,7 @@ use Wx::Locale qw(:default);
 my $iter;
 my %opts;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 {
 	no warnings 'redefine';

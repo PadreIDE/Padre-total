@@ -7,7 +7,7 @@ use File::Path   ();
 use File::Spec   ();
 use File::Find::Rule;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 =pod
 

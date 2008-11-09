@@ -1,5 +1,7 @@
 Changes for Padre.
 
+0.16 2008.11.09
+
     Fix New on the Toolbar (SZABGAB)
     Add Diff menu item to show changes in file. (SZABGAB)
     Change windowing system to AUI solving several requests: (SZABGAB)

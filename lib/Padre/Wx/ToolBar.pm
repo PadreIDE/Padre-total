@@ -9,7 +9,7 @@ use Padre::Wx::Editor ();
 use Wx::Locale qw(:default);
 use File::Spec::Functions qw(catfile);
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 our @ISA     = 'Wx::ToolBar';
 
 sub new {

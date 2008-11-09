@@ -9,7 +9,7 @@ use Padre::Document ();
 use YAML::Tiny      ();
 use PPI;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 our @ISA     = 'Padre::Document';
 
 
