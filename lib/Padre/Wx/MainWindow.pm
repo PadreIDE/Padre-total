@@ -1607,6 +1607,7 @@ sub on_delete_leading_space {
 	my $src = $self->selected_text;
     unless ( $src ) {
         $self->message('No selection');
+        return;
     }
     
     require Padre::Wx::History::TextDialog;
