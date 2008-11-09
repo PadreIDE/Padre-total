@@ -1548,6 +1548,12 @@ MESSAGE
 
 sub on_tab_and_space {
 	my ( $self, $type ) = @_;
+	
+	my $doc = $self->selected_document;
+	if (not $doc) {
+		$self->message( 'No file is open' );
+		return;
+	}
 
 	my $title = $type eq 'Space_to_Tab' ? 'Space to Tab' : 'Tab to Space';
 	
@@ -1564,10 +1570,9 @@ sub on_tab_and_space {
 	}
 	
 	my $src = $self->selected_text;
-	my $doc = $self->selected_document;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
-	return unless ( defined $doc and length($doc) );
+	return unless ( defined $code and length($code) );
 	
 	my $to_space = ' ' x $space_num;
 	if ( $type eq 'Space_to_Tab' ) {
@@ -1587,8 +1592,13 @@ sub on_tab_and_space {
 sub on_delete_ending_space {
 	my ( $self ) = @_;
 	
-	my $src = $self->selected_text;
 	my $doc = $self->selected_document;
+	if (not $doc) {
+		$self->message( 'No file is open' );
+		return;
+	}
+	
+	my $src = $self->selected_text;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	# remove ending space
@@ -1639,8 +1649,12 @@ sub on_delete_leading_space {
 sub on_upper_and_lower {
 	my ($self, $type) = @_;
 	
-	my $src  = $self->selected_text;
 	my $doc  = $self->selected_document;
+	if (not $doc) {
+		$self->message( 'No file is open' );
+		return;
+	}
+	my $src  = $self->selected_text;
 	my $code = ( $src ) ? $src : $doc->text_get;
 
 	return unless ( defined $code and length($code) );
