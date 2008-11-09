@@ -7,7 +7,7 @@ use FindBin      qw($Bin);
 use File::Spec   ();
 use Data::Dumper qw(Dumper);
 
-use Test::More tests => 17;
+use Test::More tests => 15;
 
 use t::lib::Padre;
 use Padre;
@@ -25,12 +25,11 @@ ok ! defined($plugin_m1->load_plugins()), 'load_plugins always returns undef';
 
 
 # check if we have the plugins that come with Padre
-is (keys %{$plugin_m1->plugins}, 2);
-is $plugin_m1->plugins->{Parrot}, 'Padre::Plugin::Parrot';
+is (keys %{$plugin_m1->plugins}, 1);
 is $plugin_m1->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
 
 # try load again
-my $st = $plugin_m1->_load_plugin('Parrot');
+my $st = $plugin_m1->_load_plugin('Development::Tools');
 is $st, undef;
 
 ## Test Part Two With custom plugins
@@ -41,10 +40,9 @@ is $plugin_m2->plugin_dir, $custom_dir;
 is keys %{$plugin_m2->plugins}, 0;
 
 $plugin_m2->_load_plugins_from_inc();
-is(keys %{$plugin_m2->plugins}, 4, 'correct number of test plugins')
+is(keys %{$plugin_m2->plugins}, 3, 'correct number of test plugins')
 	or diag(Dumper(\$plugin_m2->plugins));
 
-is $plugin_m2->plugins->{Parrot},                'Padre::Plugin::Parrot';
 is $plugin_m2->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
 is $plugin_m2->plugins->{TestPlugin},            'Padre::Plugin::TestPlugin';
 is $plugin_m2->plugins->{'Test::Plugin'},        'Padre::Plugin::Test::Plugin';
