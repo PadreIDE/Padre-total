@@ -431,6 +431,7 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
 	Padre::Wx::Dialog::Preferences
+	Padre::Wx::History::TextDialog
 };
 
 # Globally shared Perl detection object

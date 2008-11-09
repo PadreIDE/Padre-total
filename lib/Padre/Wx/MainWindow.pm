@@ -485,7 +485,7 @@ sub pages {
 # probably need to be combined with run_command
 sub on_run_command {
 	my $main_window = shift;
-	require Padre::Wx::History::TextDialog;
+
 	my $dialog = Padre::Wx::History::TextDialog->new(
 		$main_window,
 		gettext("Command line"),
@@ -1539,7 +1539,6 @@ sub on_tab_and_space {
 
 	my $title = $type eq 'Space_to_Tab' ? 'Space to Tab' : 'Tab to Space';
 	
-	require Padre::Wx::History::TextDialog;
 	my $dialog = Padre::Wx::History::TextDialog->new(
 		$self, 'How many spaces for each tab:', $title, $type,
 	);
@@ -1610,7 +1609,6 @@ sub on_delete_leading_space {
 		return;
 	}
 	
-	require Padre::Wx::History::TextDialog;
 	my $dialog = Padre::Wx::History::TextDialog->new(
 		$self, 'How many leading spaces to delete(1 tab == 4 spaces):',
 		'Delete Leading Space', 'fay_delete_leading_space',
