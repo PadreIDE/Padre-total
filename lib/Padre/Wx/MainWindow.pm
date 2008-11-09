@@ -1563,14 +1563,9 @@ sub on_tab_and_space {
 		return;
 	}
 	
-	my $code;
 	my $src = $self->selected_text;
 	my $doc = $self->selected_document;
-	if ( $src ) {
-		$code = $src;
-	} else {
-		$code = $doc->text_get;
-	}
+	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $doc and length($doc) );
 	
@@ -1592,14 +1587,9 @@ sub on_tab_and_space {
 sub on_delete_ending_space {
 	my ( $self ) = @_;
 	
-	my $code;
 	my $src = $self->selected_text;
 	my $doc = $self->selected_document;
-	if ( $src ) {
-		$code = $src;
-	} else {
-		$code = $doc->text_get;
-	}
+	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	# remove ending space
 	$code =~ s/([^\n\S]+)$//mg;
@@ -1649,15 +1639,10 @@ sub on_delete_leading_space {
 sub on_upper_and_lower {
 	my ($self, $type) = @_;
 	
-	my $code;
-	my $src = $self->selected_text;
-	my $doc = $self->selected_document;
-	if ( $src ) {
-		$code = $src;
-	} else {
-		$code = $doc->text_get;
-	}
-	
+	my $src  = $self->selected_text;
+	my $doc  = $self->selected_document;
+	my $code = ( $src ) ? $src : $doc->text_get;
+
 	return unless ( defined $code and length($code) );
 	
 	if ( $type eq 'Upper_All' ) {
