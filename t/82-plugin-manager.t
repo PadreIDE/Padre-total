@@ -25,7 +25,7 @@ ok ! defined($plugin_m1->load_plugins()), 'load_plugins always returns undef';
 
 
 # check if we have the plugins that come with Padre
-is (keys %{$plugin_m1->plugins}, 1);
+cmp_ok (keys %{$plugin_m1->plugins}, '>=', 1);
 is $plugin_m1->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
 
 # try load again
@@ -40,7 +40,8 @@ is $plugin_m2->plugin_dir, $custom_dir;
 is keys %{$plugin_m2->plugins}, 0;
 
 $plugin_m2->_load_plugins_from_inc();
-is(keys %{$plugin_m2->plugins}, 3, 'correct number of test plugins')
+# cannot compare with the exact numbers as there might be plugins already installed
+cmp_ok (keys %{$plugin_m2->plugins}, '>=', 3, 'at least 3 plugins')
 	or diag(Dumper(\$plugin_m2->plugins));
 
 is $plugin_m2->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
