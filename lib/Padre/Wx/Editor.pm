@@ -303,6 +303,9 @@ sub show_calltip {
 sub autoindent {
 	my ($self) = @_;
 
+	my $config = Padre->ide->config;
+	return if not $config->{editor_autoindent} or $config->{editor_autoindent} eq 'no';
+	
 	my $pos       = $self->GetCurrentPos;
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
@@ -312,12 +315,18 @@ sub autoindent {
 	#my $length    = $self->LineLength($prev_line);
 	my $content   = $self->GetTextRange($start, $end);
 	#print "'$content'\n";
+	my $indent = '';
 	if ($content =~ /^(\s+)/) {
-		my $indent = $1;
+		$indent = $1;
+	}
+	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
+		$indent .= "\t";
+	}
+	if ($indent ne '') {
 		$self->InsertText($pos, $indent);
 		$self->GotoPos($pos + length($indent));
 	}
-
+	
 	return;
 }
 

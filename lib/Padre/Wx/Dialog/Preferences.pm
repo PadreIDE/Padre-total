@@ -93,7 +93,9 @@ sub run {
 	foreach my $f (qw(editor_use_tabs)) {
 		$config->{$f} = $data->{$f} ? 1 :0;
 	}
-	$config->{main_startup}    = $main_startup[ $data->{main_startup} ];
+
+	$config->{main_startup}        = $main_startup[ $data->{main_startup} ];
+	$config->{editor_autoindent}   = $editor_autoindent[ $data->{editor_autoindent} ];
 
 	return;
 }
