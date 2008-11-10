@@ -102,7 +102,7 @@ sub new {
 		sub { $_[0]->convert_to("UNIX") },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{file_convert}->Append(-1, gettext("EOL to Mac")),
+		$menu->{file_convert}->Append(-1, gettext("EOL to Mac Classic")),
 		sub { $_[0]->convert_to("MAC") },
 	);
 	$menu->{file}->AppendSeparator;
