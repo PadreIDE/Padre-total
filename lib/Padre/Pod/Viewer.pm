@@ -32,6 +32,7 @@ If no file found, returns undef.
 
 
 =cut
+
 sub module_to_path {
     my ($self, $module) = @_;
 
