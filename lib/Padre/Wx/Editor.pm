@@ -507,8 +507,8 @@ sub text_paste_from_clipboard {
 			$length = 1;
 		}
 	}
-	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
 	$win->{notebook}->GetPage($id)->ReplaceSelection('');
+	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
 	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
 	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
 
