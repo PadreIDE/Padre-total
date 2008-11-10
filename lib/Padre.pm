@@ -363,6 +363,19 @@ On the other hand the "TAB display size" is purely a local, edior
 oriented preference. It should probably apply to all files currently
 open.
 
+There are other aspects of preferences as well that might not exactly 
+overlap with the above set:
+
+The developer might work on the same project on different machines.
+In such case some of the personal preferences should apply only 
+only on one computer while others apply in both places.
+
+In particular if Padre is installed in a Portable Perl it might 
+run on machines with different parameters. Screen size and resolution
+might be different along other parameters. We would like to make sure
+the relevant preferences are separated from those that are constant
+even when moving betwen computers.
+
 =head2 Editor or view oriented preferences
 
 =over 4
