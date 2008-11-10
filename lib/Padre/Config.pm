@@ -119,6 +119,7 @@ sub new {
 		editor_eol                => 0,
 		editor_indentationguides  => 0,
 		editor_calltips           => 1,
+		editor_autoindent         => 'deep',
 
 		# When running a script from the application some of the files might have not been saved yet.
 		# There are several option what to do before running the script

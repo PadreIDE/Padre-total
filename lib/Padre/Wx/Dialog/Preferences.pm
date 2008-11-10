@@ -11,7 +11,7 @@ use Wx::Locale        qw(:default);
 our $VERSION = '0.16';
 
 sub get_layout {
-	my ($config, $main_startup) = @_;
+	my ($config, $main_startup, $editor_autoindent) = @_;
 
 	return [
 		[
@@ -35,6 +35,10 @@ sub get_layout {
 			[ 'Wx::Choice',     'main_startup',    $main_startup],
 		],
 		[
+			[ 'Wx::StaticText', undef,              gettext('Autoindent:')],
+			[ 'Wx::Choice',     'editor_autoindent',    $editor_autoindent],
+		],
+		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
 		],
@@ -42,10 +46,10 @@ sub get_layout {
 }
 
 sub dialog {
-	my ($class, $win, $main_startup) = @_;
+	my ($class, $win, $main_startup, $editor_autoindent) = @_;
 
 	my $config = Padre->ide->config;
-	my $layout = get_layout($config, $main_startup);
+	my $layout = get_layout($config, $main_startup, $editor_autoindent);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
 		title  => gettext("Preferences"),
@@ -73,8 +77,12 @@ sub run {
 		$config->{main_startup},
 		grep { $_ ne $config->{main_startup} } qw( new nothing last )
 	);
+	my @editor_autoindent = (
+		$config->{editor_autoindent},
+		grep { $_ ne $config->{editor_autoindent} } qw( no same_level deep )
+	);
 
-	my $dialog = $class->dialog( $win, \@main_startup );
+	my $dialog = $class->dialog( $win, \@main_startup, \@editor_autoindent );
 	return if not $dialog->show_modal;
 
 	my $data = $dialog->get_data;

@@ -40,6 +40,7 @@ SCOPE: {
 		editor_indentationguides => 0,
 		editor_calltips    => 1,
 		editor_use_tabs    => 1,
+		editor_autoindent  => 'deep',
 
 		search_terms       => [],
 		replace_terms      => [],
