@@ -407,11 +407,32 @@ nothing, new, those that were open last time?
 
 =item Max/Min number of modules to display in podviewer
 
-=item Autoindentation on/off?
+=item Autoindentation off/same level/deeper
+
+There are at least two levels of autoindentation:
+
+1) when ENTER is pressed indent to exactly the same level as the previous line
+
+2) if there is an opening brace { on the previous line, indent one level more
+
 
 =item Autosave on/off?
 
-=item Autobackup (Planned)
+=back
+
+=head2 File and Project oriented preferences
+
+=over 4
+
+=item Indentation should be by TABs or spaces
+
+=item In case of using spaces for indentation, the width  of every indentation level
+
+=back
+
+=head1 Other features
+
+=head2 Autobackup (Planned)
 
 When Padre opens a file it automatically creates a copy of the original
 in ~/.padre/backup/PATH  where PATH is the same PATH as the full PATH of
@@ -426,7 +447,7 @@ When a remote file is opened the backup will probably go to
 
 Configurable options: on/off
 
-=item Autosave files (Planned)
+=head2 Autosave files (Planned)
 
 Every N seconds all the files changed since the last autosave are 
 saved to a temporary place maybe ~/.padre/save.
@@ -435,17 +456,6 @@ When the user closes the file, the autosaved file is removed.
 
 Configurable options: on/off, frequency in seconds
 
-=back
-
-=head2 File and Project oriented preferences
-
-=over 4
-
-=item Indentation should be by TABs or spaces
-
-=item In case of using spaces for indentation, the width  of every indentation level
-
-=back
 
 =head1 SQLite
 
