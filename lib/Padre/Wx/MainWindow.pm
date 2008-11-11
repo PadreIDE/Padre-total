@@ -154,7 +154,7 @@ sub new {
 	$self->manager->AddPane($self->{rightbar}, 
 		Wx::AuiPaneInfo->new->Name( "rightbar" )
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)
+			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
 			->Caption( gettext("Subs") )->Position( 3 )->Right
 		 );
@@ -175,10 +175,15 @@ sub new {
 	$self->manager->AddPane($self->{output}, 
 		Wx::AuiPaneInfo->new->Name( "output" )
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)
+			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
 			->Caption( gettext("Output") )->Position( 2 )->Bottom
 		);
+
+	# on close pane
+	Wx::Event::EVT_AUI_PANE_CLOSE(
+        $self, \&on_pane_close
+    } );
 
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
@@ -1567,6 +1572,11 @@ sub on_stc_dwell_start {
 	#print Wx::GetMousePositionXY, "\n";
 
 	return;
+}
+
+sub on_pane_close {
+    my ( $self, $event ) = @_;
+    my $pane = $event->GetPane();
 }
 
 sub on_doc_stats {
