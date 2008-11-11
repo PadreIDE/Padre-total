@@ -1578,17 +1578,12 @@ sub on_close_pane {
     my ( $self, $event ) = @_;
     my $pane = $event->GetPane();
 
-#    now: $VAR1 = \bless( do{\(my $o = 57629952)}, 'Wx::AuiPaneInfo' );
-#    output:$VAR1 = \bless( do{\(my $o = 57629952)}, 'Wx::AuiPaneInfo' );
-#    rightbar:$VAR1 = \bless( do{\(my $o = 57620328)}, 'Wx::AuiPaneInfo' );
-
-    # YYY? eq is not working, refaddr is not working.
-    # what can we get from $pane?
-    if ( $pane eq $self->manager->GetPane('output') ) {
-        warn 1 . "\n";
+    # it's ugly, but it works
+    if ( Data::Dumper::Dumper(\$pane) eq 
+         Data::Dumper::Dumper(\$self->manager->GetPane('output')) ) {
     	$self->{menu}->{view_output}->Check(0);
-    } elsif ( $pane eq $self->manager->GetPane('rightbar')) {
-        warn 2 . "\n";
+    } elsif ( Data::Dumper::Dumper(\$pane) eq
+              Data::Dumper::Dumper(\$self->manager->GetPane('rightbar')) ) {
 		$self->{menu}->{view_functions}->Check(0);
     }
 }
