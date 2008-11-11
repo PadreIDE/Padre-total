@@ -1357,9 +1357,13 @@ sub show_output {
 		$self->{menu}->{view_output}->Check($on);
 	}
 	if ( $on ) {
-		$self->{output}->Show;
+		my $pane = $self->manager->GetPane('output');
+		$self->manager->RestorePane( $pane );
+		$self->manager->Update();
 	} else {
-		$self->{output}->Hide;
+		my $pane = $self->manager->GetPane('output');
+		$self->manager->ClosePane( $pane );
+		$self->manager->Update();
 	}
 	Padre->ide->config->{main_output} = $on;
 
