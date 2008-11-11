@@ -183,7 +183,7 @@ sub new {
 	# on close pane
 	Wx::Event::EVT_AUI_PANE_CLOSE(
         $self, \&on_pane_close
-    } );
+    );
 
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
