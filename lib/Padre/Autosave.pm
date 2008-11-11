@@ -12,7 +12,7 @@ Padre::Autosave - autosave and recovery mechanism for Padre
 =head1 SYNOPSIS
 
  my $autosave = Padre:Autosave->new(db => 'path/to/database');
- $autosave->save($path, $timestamp, $type, $data) = @_;
+ $autosave->save_file($path, $type, $data, $timestamp) = @_;
 
 
 =head1 DESCRIPTION
@@ -98,7 +98,7 @@ sub new {
 
 	Carp::croak("No filename is given") if not $self->{dbfile};
 
-	require ORLite; import ORLite { file => $self->{dbfile}, create => 1 };
+	require ORLite; import ORLite { file => $self->{dbfile}, create => 1, table => 0 };
 	$self->setup;
 
 	return $self;
@@ -125,5 +125,28 @@ CREATE TABLE autosave (
 END_SQL
 
 }
+
+sub types { return qw(initial autosave usersave external); }
+
+sub list_files {
+	my ($self) = @_;
+
+	my $rows  = $self->selectall_arrayref('SELECT DISTINCT path FROM autosave');
+	return map { @$_ } @$rows ;
+}
+
+sub save_file {
+	my ($self, $path, $type, $content, $timestamp) = @_;
+
+	Carp::croak("Missing type") if not defined $type;
+	Carp::croak("Invalid type '$type'") if not grep {$type eq $_} $self->types;
+	$timestamp ||= time;
+	$self->do(
+			'INSERT INTO autosave ( path, timestamp, type, content ) values ( ?, ?, ?, ?)',
+			{}, $path, $timestamp, $type, $content,	);
+
+	return;
+}
+
 
 1;
