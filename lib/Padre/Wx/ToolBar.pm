@@ -21,7 +21,7 @@ sub new {
 	# Automatically populate
 	$self->AddTool(
 		Wx::wxID_NEW, '',
-		Padre::Wx::tango( catfile( 'actions', 'document-new.png' ) ),
+		Padre::Wx::tango( 'actions', 'document-new.png' ),
 		gettext('New File'),
 	);
 	Wx::Event::EVT_TOOL(
@@ -31,17 +31,17 @@ sub new {
 	);
 	$self->AddTool(
 		Wx::wxID_OPEN, '',
-		Padre::Wx::tango( catfile( 'actions', 'document-open.png' ) ),
+		Padre::Wx::tango( 'actions', 'document-open.png' ),
 		gettext('Open File'),
 	);
 	$self->AddTool(
 		Wx::wxID_SAVE, '',
-		Padre::Wx::tango( catfile( 'actions', 'document-save.png' ) ),
+		Padre::Wx::tango( 'actions', 'document-save.png' ),
 		gettext('Save File'),
 	);
 	$self->AddTool(
 		Wx::wxID_CLOSE, '',
-		Padre::Wx::tango( catfile( 'emblems', 'emblem-unreadable.png' ) ),
+		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),
 		gettext('Close File'),
 	);
 	Wx::Event::EVT_TOOL(
@@ -62,12 +62,12 @@ sub new {
 	# Undo/Redo Support
 	$self->AddTool(
 		Wx::wxID_UNDO, '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-undo.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-undo.png' ),
 		gettext('Undo'),
 	);
 	$self->AddTool(
 		Wx::wxID_REDO, '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-redo.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-redo.png' ),
 		gettext('Redo'),
 	);
 	$self->AddSeparator;
@@ -79,7 +79,7 @@ sub new {
 	# Cut/Copy/Paste
 	$self->AddTool(
 		Wx::wxID_CUT, '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-cut.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-cut.png' ),
 		gettext('Cut'),
 	);
 	Wx::Event::EVT_TOOL(
@@ -89,7 +89,7 @@ sub new {
 	);
 	$self->AddTool(
 		Wx::wxID_COPY,  '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-copy.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-copy.png' ),
 		gettext('Copy'),
 	);
 	Wx::Event::EVT_TOOL(
@@ -99,7 +99,7 @@ sub new {
 	);
 	$self->AddTool(
 		Wx::wxID_PASTE, '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-paste.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-paste.png' ),
 		gettext('Paste'),
 	);
 	Wx::Event::EVT_TOOL(
@@ -109,7 +109,7 @@ sub new {
 	);
 	$self->AddTool(
 		Wx::wxID_SELECTALL, '',
-		Padre::Wx::tango( catfile( 'actions', 'edit-select-all.png' ) ),
+		Padre::Wx::tango( 'actions', 'edit-select-all.png' ),
 		gettext('Select all'),
 	);
 	Wx::Event::EVT_TOOL(
