@@ -182,7 +182,7 @@ sub new {
 
 	# on close pane
 	Wx::Event::EVT_AUI_PANE_CLOSE(
-        $self, \&on_pane_close
+        $self, \&on_close_pane
     );
 
 	# Special Key Handling
@@ -1574,9 +1574,23 @@ sub on_stc_dwell_start {
 	return;
 }
 
-sub on_pane_close {
+sub on_close_pane {
     my ( $self, $event ) = @_;
     my $pane = $event->GetPane();
+
+#    now: $VAR1 = \bless( do{\(my $o = 57629952)}, 'Wx::AuiPaneInfo' );
+#    output:$VAR1 = \bless( do{\(my $o = 57629952)}, 'Wx::AuiPaneInfo' );
+#    rightbar:$VAR1 = \bless( do{\(my $o = 57620328)}, 'Wx::AuiPaneInfo' );
+
+    # YYY? eq is not working, refaddr is not working.
+    # what can we get from $pane?
+    if ( $pane eq $self->manager->GetPane('output') ) {
+        warn 1 . "\n";
+    	$self->{menu}->{view_output}->Check(0);
+    } elsif ( $pane eq $self->manager->GetPane('rightbar')) {
+        warn 2 . "\n";
+		$self->{menu}->{view_functions}->Check(0);
+    }
 }
 
 sub on_doc_stats {
