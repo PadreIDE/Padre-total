@@ -6,6 +6,7 @@ inc/Padre/Install.pm
 
 lib/Padre.pm
 lib/Padre/Wx/Ack.pm
+lib/Padre/Autosave.pm
 lib/Padre/Config.pm
 lib/Padre/DB.pm
 lib/Padre/Document.pm
@@ -58,6 +59,7 @@ t/70-document.t
 t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
+t/83-autosave.t
 t/lib/Padre.pm
 t/lib/Padre/Plugin/TestPlugin.pm
 t/lib/Padre/Plugin/Test/Plugin.pm

@@ -23,6 +23,9 @@ Not only it is missing several important feature, everything is in
 a constant flux. Menus, shortcuts and the way they work will change
 from version to version.
 
+Configuration options are also changing which means if you configure it in
+one version you might need to configure it again.
+
 Having said that you can already use it for serious editing and you
 can even get involved and add the missing features.
 
@@ -36,8 +39,8 @@ Windows.
 After installing Padre you can start it by typing B<padre> on the command line.
 On Windows that would be Start/Run padre.bat
 
-By default Padre starts with an editor containing a simple Perl script
-and instructions.
+(TODO) By default Padre starts with an editor containing a simple Perl script
+and instructions. 
 
 You can edit the file and save it using File/Save (Ctrl-S ).
 
@@ -407,7 +410,9 @@ nothing, new, those that were open last time?
 
 =item Max/Min number of modules to display in podviewer
 
-=item Autoindentation off/same level/deeper
+=item Autoindentation 
+
+Possible values: no/same level/deep
 
 There are at least two levels of autoindentation:
 
@@ -433,6 +438,8 @@ There are at least two levels of autoindentation:
 =head1 Other features
 
 =head2 Autobackup (Planned)
+
+See L<Padre::Autosave>
 
 When Padre opens a file it automatically creates a copy of the original
 in ~/.padre/backup/PATH  where PATH is the same PATH as the full PATH of
