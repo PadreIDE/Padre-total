@@ -235,21 +235,21 @@ sub new {
 
 	# Tab And Space
 	$menu->{edit_tab} = Wx::Menu->new;
-	$menu->{edit}->Append( -1, gettext("Tab and Space"), $menu->{edit_tab} );
+	$menu->{edit}->Append( -1, gettext("Tabs and Spaces"), $menu->{edit_tab} );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit_tab}->Append( -1, gettext("Tab to Space...") ),
+		$menu->{edit_tab}->Append( -1, gettext("Tabs to Spaces...") ),
 		sub { $_[0]->on_tab_and_space('Tab_to_Space') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit_tab}->Append( -1, gettext("Space to Tab...") ),
+		$menu->{edit_tab}->Append( -1, gettext("Spaces to Tabs...") ),
 		sub { $_[0]->on_tab_and_space('Space_to_Tab') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit_tab}->Append( -1, gettext("Delete All Ending Space") ),
+		$menu->{edit_tab}->Append( -1, gettext("Delete Trailing Spaces") ),
 		sub { $_[0]->on_delete_ending_space() },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit_tab}->Append( -1, gettext("Delete Leading Space...") ),
+		$menu->{edit_tab}->Append( -1, gettext("Delete Leading Spaces") ),
 		sub { $_[0]->on_delete_leading_space() },
 	);
 
