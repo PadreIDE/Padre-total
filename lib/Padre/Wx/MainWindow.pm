@@ -1370,6 +1370,25 @@ sub show_output {
 	return;
 }
 
+sub show_functions {
+	my $self = shift;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	unless ( $on == $self->{menu}->{view_functions}->IsChecked ) {
+		$self->{menu}->{view_functions}->Check($on);
+	}
+	if ( $on ) {
+		my $pane = $self->manager->GetPane('rightbar');
+		$self->manager->RestorePane( $pane );
+		$self->manager->Update();
+	} else {
+		my $pane = $self->manager->GetPane('rightbar');
+		$self->manager->ClosePane( $pane );
+		$self->manager->Update();
+	}
+
+	return;
+}
+
 sub on_ppi_highlight {
 	my ($self, $event) = @_;
 
