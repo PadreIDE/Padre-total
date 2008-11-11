@@ -16,8 +16,6 @@ my $perl = Probe::Perl->find_perl_interpreter;
 my @cmd  = (
         qq[$perl],
         qq[-I$FindBin::Bin/lib],
-        qq[-I$FindBin::Bin/../plugins/par/lib],
-        qq[-I$FindBin::Bin/../plugins/perltidy/lib],
 
         qq[-I$FindBin::Bin/../projects/Wx-Perl-Dialog/lib],
 );
