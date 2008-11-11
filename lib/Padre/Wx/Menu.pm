@@ -292,22 +292,9 @@ sub new {
 
 
 	# Create the View menu
-	$menu->{view}       = Wx::Menu->new;
-	$menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, gettext("Show Line numbers") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{view_lines},
-		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
-	);
-	$menu->{view_folding} = $menu->{view}->AppendCheckItem( -1, gettext("Show code folding") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{view_folding},
-		\&Padre::Wx::MainWindow::on_toggle_code_folding,
-	);
-	$menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, gettext("Show Newlines") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{view_eol},
-		\&Padre::Wx::MainWindow::on_toggle_eol,
-	);
+	$menu->{view} = Wx::Menu->new;
+
+	# GUI Elements
 	$menu->{view_output} = $menu->{view}->AppendCheckItem( -1, gettext("Show Output") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_output},
@@ -317,6 +304,18 @@ sub new {
 			),
 		},
 	);
+	if ( $experimental ) {
+		# Not implemented yet in MainWindow
+		$menu->{view_functions} = $menu->{view}->AppendCheckItem( -1, gettext("Show Functions") );
+		Wx::Event::EVT_MENU( $win,
+			$menu->{view_functions},
+			sub {
+				$_[0]->show_functions(
+					$_[0]->{menu}->{view_functions}->IsChecked
+				),
+			},
+		);
+	}
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
 		$menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, gettext("Show StatusBar") );
@@ -325,6 +324,24 @@ sub new {
 			\&Padre::Wx::MainWindow::on_toggle_status_bar,
 		);
 	}
+	$menu->{view}->AppendSeparator;
+
+	# Editor look and feel
+	$menu->{view_lines} = $menu->{view}->AppendCheckItem( -1, gettext("Show Line numbers") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_lines},
+		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
+	);
+	$menu->{view_folding} = $menu->{view}->AppendCheckItem( -1, gettext("Show Code Folding") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_folding},
+		\&Padre::Wx::MainWindow::on_toggle_code_folding,
+	);
+	$menu->{view_eol} = $menu->{view}->AppendCheckItem( -1, gettext("Show Newlines") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_eol},
+		\&Padre::Wx::MainWindow::on_toggle_eol,
+	);
 	$menu->{view_indentation_guide} = $menu->{view}->AppendCheckItem( -1, gettext("Show Indentation Guide") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_indentation_guide},
