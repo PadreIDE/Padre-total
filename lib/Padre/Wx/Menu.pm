@@ -304,18 +304,15 @@ sub new {
 			),
 		},
 	);
-	if ( $experimental ) {
-		# Not implemented yet in MainWindow
-		$menu->{view_functions} = $menu->{view}->AppendCheckItem( -1, gettext("Show Functions") );
-		Wx::Event::EVT_MENU( $win,
-			$menu->{view_functions},
-			sub {
-				$_[0]->show_functions(
-					$_[0]->{menu}->{view_functions}->IsChecked
-				),
-			},
-		);
-	}
+	$menu->{view_functions} = $menu->{view}->AppendCheckItem( -1, gettext("Show Functions") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_functions},
+		sub {
+			$_[0]->show_functions(
+				$_[0]->{menu}->{view_functions}->IsChecked
+			),
+		},
+	);
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
 		$menu->{view_statusbar} = $menu->{view}->AppendCheckItem( -1, gettext("Show StatusBar") );
@@ -605,9 +602,7 @@ sub new {
 		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}
 	$menu->{view_output}->Check( $config->{main_output} ? 1 : 0 );
-	if ( $experimental ) {
-		$menu->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
-	}
+	$menu->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
 
 	$menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
 	$menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );

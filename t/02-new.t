@@ -47,6 +47,7 @@ SCOPE: {
 		main_startup       => 'new',
 		main_statusbar     => 1,
 		main_output        => 0,
+		main_rightbar      => 1,
 		projects           => {},
 		run_save           => 'same',
 		current_project    => '',

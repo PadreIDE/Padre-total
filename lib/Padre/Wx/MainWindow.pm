@@ -198,7 +198,7 @@ sub new {
 	unless ( $self->{menu}->{view_output}->IsChecked ) {
 		$self->manager->GetPane('output')->Hide();
 	}
-	if ( $config->{experimental} and not $self->{menu}->{view_functions}->IsChecked ) {
+	unless ( $self->{menu}->{view_functions}->IsChecked ) {
 		$self->manager->GetPane('rightbar')->Hide();
 	}
 	
@@ -423,8 +423,7 @@ sub refresh_status {
 sub refresh_methods {
 	my ($self) = @_;
 	return if $self->no_refresh;
-    return if ( Padre->ide->config->{experimental} and
-        not $self->{menu}->{view_functions}->IsChecked );
+    return unless ( $self->{menu}->{view_functions}->IsChecked );
 
 	$self->{rightbar}->DeleteAllItems;
 
