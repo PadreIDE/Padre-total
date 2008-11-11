@@ -84,60 +84,14 @@ sub go {
 	);
 	$dialog->{_widgets_}{entry}->SetFocus;
 	$dialog->{_widgets_}{ok}->SetDefault;
-	my @commands = qw(e w);
-	my @current_options;
-	Wx::Event::EVT_CHAR( $dialog->{_widgets_}{entry}, sub {
-		my ($text_ctrl, $event) = @_;
-		my $mod  = $event->GetModifiers || 0;
-		my $code = $event->GetKeyCode;
-		if ($code != Wx::WXK_TAB) {
-			$tab_started = undef;
-			$event->Skip(1);
-			return;
-		}
-
-		my $txt = $text_ctrl->GetValue;
-		$txt = '' if not defined $txt; # just in case...
-		if (not defined $tab_started) {
-			$tab_started = $txt;
-			
-			# setup the loop
-			if ($tab_started eq '') {
-				@current_options = @commands;
-			} elsif ($tab_started =~ /^e\s+(.*)$/) {
-				my $prefix = $1;
-				my $cwd = Cwd::cwd();
-				#msg($cwd);
-				if ($prefix) {
-					$cwd = File::Spec->catfile($cwd, $prefix);
-				}
-				if (opendir my $dh, $cwd) {
-					@current_options = map {-d $_ ? "$_/" : $_} grep {$_ ne '.' and $_ ne '..'} readdir $dh;
-					#@current_options = readdir $dh;
-				}
-				#msg (join ':', @current_options);
-			} else {
-				@current_options = ();
-			}
-		}
-		return if not @current_options; # somehow alert the user?
-		my $option = shift @current_options;
-		push @current_options, $option;
-
-		$text_ctrl->SetValue($tab_started . $option);
-		$text_ctrl->SetInsertionPointEnd;
-
-		$event->Skip(0);
-		return;
-		} );
-
+	Wx::Event::EVT_CHAR( $dialog->{_widgets_}{entry}, \&on_key_pressed );
 
 	if ($dialog->show_modal) {
 		my $cmd = $dialog->{_widgets_}{entry}->GetValue;
 		if ($cmd =~ /^e\s+(.*)/ and defined $1) {
 			my $file = $1;
 			# try to open file
- 			$main->setup_editor($file);
+			$main->setup_editor($file);
 			$main->refresh_all;
 		} elsif ($cmd eq 'w') {
 			# save file
@@ -146,6 +100,54 @@ sub go {
 	}
 	$dialog->Destroy;
 	
+	return;
+}
+
+my @commands = qw(e w);
+my @current_options;
+
+sub on_key_pressed {
+	my ($text_ctrl, $event) = @_;
+	my $mod  = $event->GetModifiers || 0;
+	my $code = $event->GetKeyCode;
+	if ($code != Wx::WXK_TAB) {
+		$tab_started = undef;
+		$event->Skip(1);
+		return;
+	}
+
+	my $txt = $text_ctrl->GetValue;
+	$txt = '' if not defined $txt; # just in case...
+	if (not defined $tab_started) {
+		$tab_started = $txt;
+		
+		# setup the loop
+		if ($tab_started eq '') {
+			@current_options = @commands;
+		} elsif ($tab_started =~ /^e\s+(.*)$/) {
+			my $prefix = $1;
+			my $cwd = Cwd::cwd();
+			#msg($cwd);
+			if ($prefix) {
+				$cwd = File::Spec->catfile($cwd, $prefix);
+			}
+			if (opendir my $dh, $cwd) {
+				@current_options = map {-d $_ ? "$_/" : $_} grep {$_ ne '.' and $_ ne '..'} readdir $dh;
+				#@current_options = readdir $dh;
+			}
+			#msg (join ':', @current_options);
+		} else {
+			@current_options = ();
+		}
+	}
+	return if not @current_options; # somehow alert the user?
+	my $option = shift @current_options;
+	push @current_options, $option;
+
+	$text_ctrl->SetValue($tab_started . $option);
+	$text_ctrl->SetInsertionPointEnd;
+
+	$event->Skip(0);
 	return;
 }
 
