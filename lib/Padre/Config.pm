@@ -113,6 +113,7 @@ sub new {
 		# Look and feel preferences
 		main_statusbar            => 1,
 		main_output               => 0,
+		main_rightbar             => 1,
 		editor_use_tabs           => 1,
 		editor_tabwidth           => 4,
 		editor_linenumbers        => 0,

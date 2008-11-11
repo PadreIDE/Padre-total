@@ -193,6 +193,15 @@ sub new {
 		$event->Skip();
 		return;
 	} );
+	
+	# remember the last time we show them or not
+	unless ( $self->{menu}->{view_output}->IsChecked ) {
+		$self->manager->GetPane('output')->Hide();
+	}
+	if ( $config->{experimental} and not $self->{menu}->{view_functions}->IsChecked ) {
+		$self->manager->GetPane('rightbar')->Hide();
+	}
+	
 	$self->manager->Update;
 
 	# Deal with someone closing the window
@@ -414,6 +423,8 @@ sub refresh_status {
 sub refresh_methods {
 	my ($self) = @_;
 	return if $self->no_refresh;
+    return if ( Padre->ide->config->{experimental} and
+        not $self->{menu}->{view_functions}->IsChecked );
 
 	$self->{rightbar}->DeleteAllItems;
 
@@ -1357,13 +1368,11 @@ sub show_output {
 		$self->{menu}->{view_output}->Check($on);
 	}
 	if ( $on ) {
-		my $pane = $self->manager->GetPane('output');
-		$self->manager->RestorePane( $pane );
-		$self->manager->Update();
+		$self->manager->GetPane('output')->Show();
+		$self->manager->Update;
 	} else {
-		my $pane = $self->manager->GetPane('output');
-		$self->manager->ClosePane( $pane );
-		$self->manager->Update();
+		$self->manager->GetPane('output')->Hide();
+		$self->manager->Update;
 	}
 	Padre->ide->config->{main_output} = $on;
 
@@ -1377,14 +1386,14 @@ sub show_functions {
 		$self->{menu}->{view_functions}->Check($on);
 	}
 	if ( $on ) {
-		my $pane = $self->manager->GetPane('rightbar');
-		$self->manager->RestorePane( $pane );
-		$self->manager->Update();
+	    $self->refresh_methods();
+		$self->manager->GetPane('rightbar')->Show();
+		$self->manager->Update;
 	} else {
-		my $pane = $self->manager->GetPane('rightbar');
-		$self->manager->ClosePane( $pane );
-		$self->manager->Update();
+		$self->manager->GetPane('rightbar')->Hide();
+		$self->manager->Update;
 	}
+	Padre->ide->config->{main_rightbar} = $on;
 
 	return;
 }
