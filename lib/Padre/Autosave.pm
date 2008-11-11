@@ -5,7 +5,6 @@ use warnings;
 
 our $VERSION = '0.01';
 
-
 =head1 NAME
 
 Padre::Autosave - autosave and recovery mechanism for Padre
@@ -93,5 +92,38 @@ sub save_data {
 
 =cut
 
+sub new {
+	my ($class, %args) = @_;
+	my $self = bless \%args, $class;
+
+	Carp::croak("No filename is given") if not $self->{dbfile};
+
+	require ORLite; import ORLite { file => $self->{dbfile}, create => 1 };
+	$self->setup;
+
+	return $self;
+}
+
+sub table_exists {
+	$_[0]->selectrow_array(
+		"select count(*) from sqlite_master where type = 'table' and name = ?",
+		{}, $_[1],
+	);
+}
+
+sub setup {
+	my $class = shift;
+
+	# Create the autosave table
+	$class->do(<<'END_SQL') unless $class->table_exists('autosave');
+CREATE TABLE autosave (
+	path        VARCHAR(1024) PRIMARY KEY,
+	timestamp   VARCHAR(255),
+	type        VARCHAR(255),
+	content     BLOB
+)
+END_SQL
+
+}
 
 1;
