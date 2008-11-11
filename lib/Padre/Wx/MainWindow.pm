@@ -84,7 +84,13 @@ sub new {
 	$self->set_locale( );
 
 	$self->{manager} = Wx::AuiManager->new;
-	$self->manager->SetManagedWindow( $self );
+	$self->{manager}->SetManagedWindow( $self );
+
+	# do NOT use hints other than Rectangle or the app will crash on Linux/GTK
+	my $flags = $self->{manager}->GetFlags;
+	$flags &= ~Wx::wxAUI_MGR_TRANSPARENT_HINT;
+	$flags &= ~Wx::wxAUI_MGR_VENETIAN_BLINDS_HINT;
+	$self->{manager}->SetFlags( $flags ^ Wx::wxAUI_MGR_RECTANGLE_HINT );
 
 	# Add some additional attribute slots
 	$self->{marker} = {};
@@ -147,10 +153,9 @@ sub new {
 	);
 	$self->manager->AddPane($self->{rightbar}, 
 		Wx::AuiPaneInfo->new->Name( "rightbar" )
-			->CenterPane->Resizable->PaneBorder->Dockable
-#			->Floatable->PinButton->CaptionVisible->Movable
-#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-#			->FloatingPosition(100, 100)->FloatingSize(100, 400)
+			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
+			->CaptionVisible(1)->CloseButton(1)
+			->MaximizeButton(1)->Floatable(1)->Dockable(1)
 			->Caption( gettext("Subs") )->Position( 3 )->Right
 		 );
         
@@ -169,10 +174,9 @@ sub new {
 	);
 	$self->manager->AddPane($self->{output}, 
 		Wx::AuiPaneInfo->new->Name( "output" )
-			->CenterPane->Resizable->PaneBorder->Dockable
-#			->Floatable->PinButton->CaptionVisible->Movable
-#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-#			->FloatingPosition(100, 100)
+			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
+			->CaptionVisible(1)->CloseButton(1)
+			->MaximizeButton(1)->Floatable(1)->Dockable(1)
 			->Caption( gettext("Output") )->Position( 2 )->Bottom
 		);
 
