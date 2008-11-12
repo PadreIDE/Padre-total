@@ -97,7 +97,7 @@ sub get_functions {
 
 sub get_function_regex {
 	my ( $self, $sub ) = @_;
-	return qr{sub\s+$sub\b};
+	return qr{(^|\n)sub\s+$sub\b};
 }
 
 
