@@ -351,19 +351,16 @@ sub new {
 	);
 	$menu->{view}->AppendSeparator;
 	
-	# it's not finished, so mark it as experimental now
-	if ( $experimental ) {
-		$menu->{view_wrap_lines} = $menu->{view}->AppendCheckItem( -1, gettext("Wrap Lines") );
-		Wx::Event::EVT_MENU( $win,
-			$menu->{view_wrap_lines},
-			sub {
-				$_[0]->on_wrap_lines(
-					$_[0]->{menu}->{view_wrap_lines}->IsChecked
-				),
-			},
-		);
-		$menu->{view}->AppendSeparator;
-	}
+	$menu->{view_wrap_lines} = $menu->{view}->AppendCheckItem( -1, gettext("Wrap Lines") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_wrap_lines},
+		sub {
+			$_[0]->on_wrap_lines(
+				$_[0]->{menu}->{view_wrap_lines}->IsChecked
+			),
+		},
+	);
+	$menu->{view}->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view}->Append( -1, gettext("Increase Font Size\tCtrl-+") ),
