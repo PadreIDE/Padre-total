@@ -472,24 +472,8 @@ sub new {
 
 
 	# Create the Plugins menu if there are any plugins
-	my %plugins = %{ $ide->plugin_manager->plugins };
-	if ( %plugins ) {
-		$menu->{plugin} = Wx::Menu->new;
-	}
-	foreach my $name ( sort keys %plugins ) {
-		next if not $plugins{$name};
-		my @menu       = eval { $plugins{$name}->menu };
-		warn "Error when calling menu for plugin '$name' $@" if $@;
-		my $menu_items = $menu->add_plugin_menu_items(\@menu);
-		my $menu_name  = eval { $plugins{$name}->menu_name };
-		if (not $menu_name) {
-			$menu_name = $name;
-			$menu_name =~ s/::/ /;
-		}
-		$menu->{plugin}->Append( -1, $menu_name, $menu_items );
-	}
-
-
+	my $plugin_menu = $menu->get_plugin_menu();
+	$menu->{plugin} = $plugin_menu if $plugin_menu;
 
 
 
@@ -745,6 +729,32 @@ sub refresh {
 	$self->win->SetMenuBar( $self->{wx} );
 
 	return 1;
+}
+
+sub get_plugin_menu {
+	my ( $self ) = @_;
+	
+	my $plugin_menu = Wx::Menu->new;
+	my %plugins = %{ Padre->ide->plugin_manager->plugins };
+	return unless ( scalar keys %plugins );
+
+	foreach my $name ( sort keys %plugins ) {
+		next if not $plugins{$name};
+		my @menu       = eval { $plugins{$name}->menu };
+		if ( $@ ) {
+			warn "Error when calling menu for plugin '$name' $@";
+			next;
+		}
+		my $menu_items = $self->add_plugin_menu_items(\@menu);
+		my $menu_name  = eval { $plugins{$name}->menu_name };
+		if (not $menu_name) {
+			$menu_name = $name;
+			$menu_name =~ s/::/ /;
+		}
+		$plugin_menu->Append( -1, $menu_name, $menu_items );
+	}
+	
+	return $plugin_menu;
 }
 
 1;

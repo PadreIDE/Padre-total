@@ -25,6 +25,7 @@ my %prereqs = (
 	'List::Util'              => 0,
 	'IO::Socket'              => 0,
 	'Term::ReadLine'          => 0,
+	'Module::Refresh'		  => 0,
 
 	'App::Ack'                => '1.86',
 	'Class::Autouse'          => '1.26',
