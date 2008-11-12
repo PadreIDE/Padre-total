@@ -6,11 +6,12 @@ use strict;
 use Cwd              ();
 use Wx::Perl::Dialog ();
 use Padre::Wx        ();
-
+use File::Spec       ();
+use File::Basename   ();
 
 =head1 NAME
 
-Padre::Plugin::CommandLine - vi in Padre ?
+Padre::Plugin::CommandLine - vi and emacs in Padre ?
 
 =head1 VERSION
 
@@ -23,8 +24,9 @@ our $VERSION = '0.01';
 =head1 SYNOPSIS
 
 Install L<Padre>, install this plug-in. It should automatically 
-a menu option Plugins/CommandLine/Show 
-with Alt-` (backtick) as a hot-key. (It will later change or be configurable.
+add a menu option B<Plugins/CommandLine/Show Prompt>
+with Alt-` (Alt-backtick) as a hot-key. 
+(It will later change or be configurable.)
 
 =head1 DESCRIPTION
 
@@ -41,21 +43,21 @@ Currently available commands are based on the vi command mode.
 
 =item e path/to/file
 
-open a file for editing
+open a file for editing supports TAB completion
 
 =item w
 
 write a file
 
-=back
+It does NOT support save-as or providing filename.
 
-=head1 FUNCTIONS
+=back
 
 =cut
 
 my @menu = (
     ["About",        \&about],
-    ["Go\tAlt-`",     \&go],
+    ["Show Prompt\tAlt-`",     \&show_prompt],
 );
 
 sub menu {
@@ -74,7 +76,8 @@ my @layout =  (
 
 
 my $tab_started;
-sub go {
+my $last_tab;
+sub show_prompt {
 	my $main   = Padre->ide->wx->main_window;
 	my $dialog = Padre::Wx::Dialog->new(
 		parent   => $main,
@@ -119,8 +122,9 @@ sub on_key_pressed {
 	my $txt = $text_ctrl->GetValue;
 	$txt = '' if not defined $txt; # just in case...
 	if (not defined $tab_started) {
+		$last_tab    = '';
 		$tab_started = $txt;
-		
+
 		# setup the loop
 		if ($tab_started eq '') {
 			@current_options = @commands;
@@ -128,7 +132,11 @@ sub on_key_pressed {
 			my $prefix = $1;
 			my $path = Cwd::cwd();
 			if ($prefix) {
-				$path = File::Spec->catfile($path, $prefix);
+				if (File::Spec->file_name_is_absolute( $prefix ) ) {
+					$path = $prefix;
+				} else {
+					$path = File::Spec->catfile($path, $prefix);
+				}
 			}
 			$prefix = '';
 			my $dir = $path;
@@ -148,20 +156,34 @@ sub on_key_pressed {
 				$prefix  = File::Basename::basename($path);
 			}
 			if (opendir my $dh, $dir) {
-				@current_options = map {-d "$prefix$_" ? "$_/" : $_} 
+				@current_options = sort
+							map {-d "$prefix$_" ? "$_/" : $_} 
 							map  { $_ =~ s/^$prefix//; $_ }
 							grep { $_ =~ /^$prefix/ }
 							grep {$_ ne '.' and $_ ne '..'} readdir $dh;
-				#@current_options = readdir $dh;
 			}
-			#msg (join ':', @current_options);
 		} else {
 			@current_options = ();
 		}
 	}
 	return if not @current_options; # somehow alert the user?
-	my $option = shift @current_options;
-	push @current_options, $option;
+	
+	my $option;
+	if ( $mod & 4 ) { # Shift
+		if ($last_tab eq 'for') {
+			unshift @current_options, pop @current_options
+		}
+		$option = pop @current_options;
+		unshift @current_options, $option;
+		$last_tab = 'back';
+	} else {
+		if ($last_tab eq 'back') {
+			push @current_options, shift @current_options;
+		}
+		$option = shift @current_options;
+		push @current_options, $option;
+		$last_tab = 'for';
+	}
 
 	$text_ctrl->SetValue($tab_started . $option);
 	$text_ctrl->SetInsertionPointEnd;
@@ -202,7 +224,9 @@ You can find documentation for this module with the perldoc command.
     perldoc Padre::Plugin::CommandLine
 
 
-You can also look for information at:
+You can also look for information at: 
+
+L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT & LICENSE
 
