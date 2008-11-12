@@ -79,7 +79,25 @@ sub show_inc {
 sub reload_plugins {
     my ( $self ) = @_;
 
-    _reload_x_plugins( $self );
+    my $refresher = new Module::Refresh;
+
+    my %plugins = %{ Padre->ide->plugin_manager->plugins };
+    foreach my $name ( sort keys %plugins ) {
+    	# no warnings; # DO not reload itself
+        next if ( $name eq 'Development::Tools' );
+
+        # reload the module
+        my $file_in_INC = "Padre/Plugin/${name}.pm";
+        $file_in_INC =~ s/\:\:/\//;
+        $refresher->refresh_module($file_in_INC);
+    }
+    
+    # re-create menu,
+    my $plugin_menu = $self->{menu}->get_plugin_menu();
+    my $plugin_menu_place = $self->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
+    $self->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
+    
+    $self->{menu}->refresh;
     
     Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $self );
 }
@@ -96,12 +114,7 @@ sub test_a_plugin {
         $default_dir = File::Basename::dirname($last_filename);
     }
     my $dialog = Wx::FileDialog->new(
-        $self,
-        'Open file',
-        $default_dir,
-        "",
-        "*.*",
-        Wx::wxFD_OPEN,
+        $self, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
     );
     unless ( Padre::Util::WIN32 ) {
         $dialog->SetWildcard("*");
@@ -128,33 +141,7 @@ sub test_a_plugin {
     return $self->error( $@ ) if ( $@ );
     
     # reload all means rebuild the 'Plugins' menu
-    _reload_x_plugins( $self, 'all' );
-    
-    Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $self );
-}
-
-sub _reload_x_plugins {
-    my ( $self ) = @_;
-    
-    my $refresher = new Module::Refresh;
-
-    my %plugins = %{ Padre->ide->plugin_manager->plugins };
-    foreach my $name ( sort keys %plugins ) {
-        if ( $name eq 'Development::Tools' ) {
-			next; # no warnings; # DO not reload itself
-        }
-        # reload the module
-        my $file_in_INC = "Padre/Plugin/${name}.pm";
-        $file_in_INC =~ s/\:\:/\//;
-        $refresher->refresh_module($file_in_INC);
-    }
-    
-    # re-create menu, # coped from Padre::Wx::Menu
-    my $plugin_menu = $self->{menu}->get_plugin_menu();
-    my $plugin_menu_place = $self->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
-    $self->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
-    
-    $self->{menu}->refresh;
+    reload_plugins( $self );
 }
 
 1;
