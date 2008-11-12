@@ -571,6 +571,17 @@ sub new {
 		$Padre::Document::MIME_LEXER{'application/x-perl'} = 
 			$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
 
+		# Quick Find: Press F3 to start search with selected text
+		$menu->{experimental_quick_find} = $menu->{experimental}->AppendCheckItem( -1, gettext("Quick Find") );
+		Wx::Event::EVT_MENU( $win,
+			$menu->{experimental_quick_find},
+			sub {
+				$_[0]->on_quick_find(
+					$_[0]->{menu}->{experimental_quick_find}->IsChecked
+				),
+			},
+		);
+		$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
 	}
 
 	# Create and return the main menu bar

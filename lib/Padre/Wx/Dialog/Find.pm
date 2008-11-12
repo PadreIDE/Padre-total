@@ -99,8 +99,20 @@ sub find {
 
 sub find_next {
 	my ($class, $main) = @_;
+	
+	my $config = Padre->ide->config;
+	# for Quick Find
+	if ( $config->{experimental} ) {
+		# check if is checked
+		if ( $main->{menu}->{experimental_quick_find}->IsChecked ) {
+			my $text = $main->selected_text;
+			if ( $text ) {
+				unshift @{$config->{search_terms}}, $text;
+			}
+		}
+	}
 
-	my $term = Padre->ide->config->{search_terms}->[0];
+	my $term = $config->{search_terms}->[0];
 	if ( $term ) {
 		$class->search();
 	} else {

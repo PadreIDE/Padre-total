@@ -1681,6 +1681,17 @@ sub on_close_pane {
     }
 }
 
+sub on_quick_find {
+	my $self = shift;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	unless ( $on == $self->{menu}->{experimental_quick_find}->IsChecked ) {
+		$self->{menu}->{experimental_quick_find}->Check($on);
+	}
+	Padre->ide->config->{is_quick_find} = $on;
+
+	return;
+}
+
 sub on_doc_stats {
 	my ($self, $event) = @_;
 
