@@ -250,15 +250,27 @@ sub on_timer {
 	my $id = $win->{notebook}->GetSelection;
 	if ( defined $id ) {
 		my $page = $win->{notebook}->GetPage($id);
+
+		unless (   defined( $page->{Document} )
+				&& $page->{Document}->isa('Padre::Document::Perl')
+		) {
+			return;
+		}
+
 		if ($page) {
 			my $text = $page->GetText;
+
 			return unless $text;
-            if ( defined $page->{old_text} and $page->{old_text} eq $text ) {
-                return;
-            }
-            else {
-                $page->{old_text} = $text;
-            }
+
+			if (   defined( $page->{old_text} )
+				&& $page->{old_text} eq $text
+			) {
+				return;
+			}
+			else {
+				$page->{old_text} = $text;
+			}
+
 			my $report = '';
 			{
 				use File::Temp;
@@ -267,6 +279,7 @@ sub on_timer {
 				print $fh $text;
 				$report = `$^X -c $fname 2>&1`;
 			}
+
 			my @msgs = split(/\n/, $report);
 			my @fmt  = ();
 			foreach my $msg ( @msgs ) {
@@ -277,6 +290,7 @@ sub on_timer {
 					$fmt[-1]->{msg} .= "\n$msg";
 				}
 			}
+
 			#use Data::Dumper;
 			#print Dumper([@fmt]);
 			if ( scalar(@fmt) > 0 ) {
@@ -288,6 +302,7 @@ sub on_timer {
 				$page->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
 				$page->MarkerDefine(1,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"), Wx::Colour->new("red"));
 				$page->MarkerDefine(2,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("yellow"), Wx::Colour->new("yellow"));
+
 				foreach my $hint (@fmt) {
 					if ( index( $hint->{msg}, 'error' ) > 0 ) { 
 						$page->MarkerAdd( $hint->{line}, 1);
