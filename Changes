@@ -1,7 +1,7 @@
 Changes for Padre.
 
-	Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
-	Show/Hide Output or Functions (FAYLAND)
+    Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
+    Show/Hide Output or Functions (FAYLAND)
     Fix the failing plugin manager test. (SZABGAB)
     Add configuration option to the autoindentation (no, same_level, deep). (SZABGAB)
     Temporarily stop using File::ShareDir::PAR. (SZABGAB)
