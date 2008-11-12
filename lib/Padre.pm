@@ -420,6 +420,17 @@ so that in every block the "correct" indentation guide is highlighted.
 
 =item Allow experimental features
 
+In order to allow the experimental features one needs to manually turn on the
+experimental flag to 1 in config.yml. As Padre keeps overwriting this file you'll 
+have to make this change with another editor and while Padre is B<not> open.
+
+The config.yml file is in ~/.padre/ on Linux/Unix and in general in
+your home directory on Windows. In any case the B<Help/About> box will show
+you the path of the .padrfe directory of Padre.
+
+Once you set the experimental flag when you start Padre you will see a new
+menu on the right side of the menu bar called B<Experimental>.
+
 =item Open file policy
 
 What files to open when launchin Padre? 
