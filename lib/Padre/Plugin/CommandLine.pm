@@ -126,13 +126,32 @@ sub on_key_pressed {
 			@current_options = @commands;
 		} elsif ($tab_started =~ /^e\s+(.*)$/) {
 			my $prefix = $1;
-			my $cwd = Cwd::cwd();
-			#msg($cwd);
+			my $path = Cwd::cwd();
 			if ($prefix) {
-				$cwd = File::Spec->catfile($cwd, $prefix);
+				$path = File::Spec->catfile($path, $prefix);
 			}
-			if (opendir my $dh, $cwd) {
-				@current_options = map {-d $_ ? "$_/" : $_} grep {$_ ne '.' and $_ ne '..'} readdir $dh;
+			$prefix = '';
+			my $dir = $path;
+			if (-e $path) {
+				if (-f $path) {
+					return;
+				} elsif (-d $path) {
+					$dir = $path;
+					$prefix = '';
+					# go ahead, opening the directory
+				} else {
+					# what shall we do here?
+					return;
+				}
+			} else { # partial file or directory name
+				$dir     = File::Basename::dirname($path);
+				$prefix  = File::Basename::basename($path);
+			}
+			if (opendir my $dh, $dir) {
+				@current_options = map {-d "$prefix$_" ? "$_/" : $_} 
+							map  { $_ =~ s/^$prefix//; $_ }
+							grep { $_ =~ /^$prefix/ }
+							grep {$_ ne '.' and $_ ne '..'} readdir $dh;
 				#@current_options = readdir $dh;
 			}
 			#msg (join ':', @current_options);
