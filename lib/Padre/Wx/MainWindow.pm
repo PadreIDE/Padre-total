@@ -242,6 +242,71 @@ sub new {
 	return $self;
 }
 
+sub on_timer {
+	#use Data::Dumper;
+	#warn Dumper([@_]);
+	my ( $win, $event ) = @_;
+
+	my $id = $win->{notebook}->GetSelection;
+	if ( defined $id ) {
+		my $page = $win->{notebook}->GetPage($id);
+		if ($page) {
+			my $text = $page->GetText;
+			return unless $text;
+            if ( $page->{old_text} eq $text ) {
+                return;
+            }
+            else {
+                $page->{old_text} = $text;
+            }
+			my $report = '';
+			{
+				use File::Temp;
+				my $fh = File::Temp->new();
+				my $fname = $fh->filename;
+				print $fh $text;
+				$report = `$^X -c $fname 2>&1`;
+			}
+			my @msgs = split(/\n/, $report);
+			my @fmt  = ();
+			foreach my $msg ( @msgs ) {
+				if ( $msg =~ s/ at .+?line (\d+)//o ) {
+					push @fmt, { line => $1 - 1, msg => $msg };
+				}
+				elsif ( $msg =~ /\A\s+/o ) {
+					$fmt[-1]->{msg} .= "\n$msg";
+				}
+			}
+			#use Data::Dumper;
+			#print Dumper([@fmt]);
+			if ( scalar(@fmt) > 0 ) {
+				$page->MarkerDeleteAll(1);
+				$page->MarkerDeleteAll(2);
+				# Setup a margin to hold fold markers
+				$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 2 for symbols
+				$page->SetMarginSensitive(2, 1);                  # this one needs to be mouse-aware
+				$page->SetMarginWidth(2, 16);                     # set margin 2 16 px wide
+				$page->MarkerDefine(1,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"), Wx::Colour->new("red"));
+				$page->MarkerDefine(2,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("yellow"), Wx::Colour->new("yellow"));
+				foreach my $hint (@fmt) {
+					if ( index( $hint->{msg}, 'error' ) > 0 ) { 
+						$page->MarkerAdd( $hint->{line}, 1);
+					}
+					else {
+						$page->MarkerAdd( $hint->{line}, 2);
+					}
+				}
+			}
+			else {
+				$page->MarkerDeleteAll(1);
+				$page->MarkerDeleteAll(2);
+			}
+		}
+	}
+
+	return;
+}
+
 sub manager {
 	my ($self) = @_;
 	return $self->{manager};
@@ -302,6 +367,14 @@ sub post_init {
 	$self->show_output($output) if not $output;
 
 #$self->Close;
+
+	# Turn on syntax checker timer; VERY experimental
+	if ( Padre->ide->config->{experimental} ) {
+		$self->{synCheckTimer} = Wx::Timer->new($self);
+		Wx::Event::EVT_TIMER( $self, Wx::wxID_ANY, \&on_timer );
+		$self->{synCheckTimer}->Start(1000);
+	}
+
 	return;
 }
 

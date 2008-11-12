@@ -175,7 +175,7 @@ sub highlight_braces {
 sub show_line_numbers {
 	my ($self, $on) = @_;
 
-	$self->SetMarginWidth(1, 0);
+	#$self->SetMarginWidth(1, 0);
 	#$self->SetMarginWidth(2, 0);
 
 	# premature optimization, caching the with that was on the 3rd place at load time
