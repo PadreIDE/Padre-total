@@ -5,6 +5,7 @@ Changes for Padre.
     Fix the failing plugin manager test. (SZABGAB)
     Add configuration option to the autoindentation (no, same_level, deep). (SZABGAB)
     Temporarily stop using File::ShareDir::PAR. (SZABGAB)
+    Allow opening multiple files at once (JQUELIN)
 
 0.16 2008.11.09
 

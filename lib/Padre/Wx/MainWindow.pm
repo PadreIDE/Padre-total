@@ -1093,7 +1093,7 @@ sub on_open {
 		$default_dir,
 		"",
 		"*.*",
-		Wx::wxFD_OPEN,
+		Wx::wxFD_MULTIPLE,
 	);
 	unless ( Padre::Util::WIN32 ) {
 		$dialog->SetWildcard("*");
@@ -1101,11 +1101,8 @@ sub on_open {
 	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 		return;
 	}
-	my $filename = $dialog->GetFilename;
+	my @filenames = $dialog->GetFilenames;
 	$default_dir = $dialog->GetDirectory;
-
-	my $file = File::Spec->catfile($default_dir, $filename);
-	Padre::DB->add_recent_files($file);
 
 	# If and only if there is only one current file,
 	# and it is unused, close it.
@@ -1115,7 +1112,12 @@ sub on_open {
 		}
 	}
 
-	$self->setup_editor($file);
+	foreach my $filename ( @filenames ) {
+		my $file = File::Spec->catfile($default_dir, $filename);
+		Padre::DB->add_recent_files($file);
+
+		$self->setup_editor($file);
+	}
 	$self->refresh_all;
 
 	return;
