@@ -253,7 +253,7 @@ sub on_timer {
 		if ($page) {
 			my $text = $page->GetText;
 			return unless $text;
-            if ( $page->{old_text} eq $text ) {
+            if ( defined $page->{old_text} and $page->{old_text} eq $text ) {
                 return;
             }
             else {
