@@ -1369,6 +1369,23 @@ sub on_toggle_eol {
 	return;
 }
 
+sub on_wrap_lines {
+	my $self = shift;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	unless ( $on == $self->{menu}->{view_wrap_lines}->IsChecked ) {
+		$self->{menu}->{view_wrap_lines}->Check($on);
+	}
+	
+	my $doc = $self->selected_document;
+	return unless $doc;
+	
+	if ( $on ) {
+		$doc->editor->SetWrapMode( Wx::wxSTC_WRAP_WORD );
+	} else {
+		$doc->editor->SetWrapMode( Wx::wxSTC_WRAP_NONE );
+	}
+}
+
 sub show_output {
 	my $self = shift;
 	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
