@@ -351,12 +351,12 @@ sub new {
 	);
 	$menu->{view}->AppendSeparator;
 	
-	$menu->{view_wrap_lines} = $menu->{view}->AppendCheckItem( -1, gettext("Wrap Lines") );
+	$menu->{view_word_wrap} = $menu->{view}->AppendCheckItem( -1, gettext("Word-Wrap") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_wrap_lines},
+		$menu->{view_word_wrap},
 		sub {
-			$_[0]->on_wrap_lines(
-				$_[0]->{menu}->{view_wrap_lines}->IsChecked
+			$_[0]->on_word_wrap(
+				$_[0]->{menu}->{view_word_wrap}->IsChecked
 			),
 		},
 	);
@@ -716,11 +716,11 @@ sub refresh {
 	if ( $document ) {
 		# check "wrap lines"
 		my $mode = $document->editor->GetWrapMode;
-		my $is_vwl_checked = $self->{view_wrap_lines}->IsChecked;
+		my $is_vwl_checked = $self->{view_word_wrap}->IsChecked;
 		if ( $mode eq Wx::wxSTC_WRAP_WORD and not $is_vwl_checked ) {
-			$self->{view_wrap_lines}->Check(1);
+			$self->{view_word_wrap}->Check(1);
 		} elsif ( $mode eq Wx::wxSTC_WRAP_NONE and $is_vwl_checked ) {
-			$self->{view_wrap_lines}->Check(0);
+			$self->{view_word_wrap}->Check(0);
 		}
 	}
 

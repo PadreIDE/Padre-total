@@ -1369,11 +1369,11 @@ sub on_toggle_eol {
 	return;
 }
 
-sub on_wrap_lines {
+sub on_word_wrap {
 	my $self = shift;
 	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
-	unless ( $on == $self->{menu}->{view_wrap_lines}->IsChecked ) {
-		$self->{menu}->{view_wrap_lines}->Check($on);
+	unless ( $on == $self->{menu}->{view_word_wrap}->IsChecked ) {
+		$self->{menu}->{view_word_wrap}->Check($on);
 	}
 	
 	my $doc = $self->selected_document;
