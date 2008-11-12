@@ -397,6 +397,23 @@ even when moving betwen computers.
 
 =item Show indentation guide
 
+B<View/Show Indentation Guide>
+
+When set, Padre will display a thin vertical line at every indentation
+level on every row with are indented more than one level.
+
+=item Highlight indentation guide (TODO)
+
+This should be a separate option available only
+if the C<Show indentation guide> and brace matching is on.
+
+If SetHighlightGuide is set to 8 then when the user reaches one
+side of a pair of praces the indentation guide - if there is one
+on column 8 - will be highlighted. (in green).
+
+As I understand Padre should constantly adjust the SetHighlightGuide
+so that in every block the "correct" indentation guide is highlighted.
+
 =item Show Call Tips
 
 =item TAB display size
@@ -419,6 +436,13 @@ There are at least two levels of autoindentation:
 1) when ENTER is pressed indent to exactly the same level as the previous line
 
 2) if there is an opening brace { on the previous line, indent one level more
+
+=item Brace matching
+
+When the cursor reaches an opening or closing brace { }, square bracket [ ]
+or parentheses ( ), Padre automatically highlight the pair of the braces.
+
+TODO make this optional, let the user set the color
 
 
 =item Autosave on/off?
