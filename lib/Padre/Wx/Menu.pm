@@ -715,6 +715,15 @@ sub refresh {
 	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq 'Perl') {
 		$self->{wx}->Remove( 3 );
 	}
+	
+	# check "wrap lines"
+	my $mode = $document->editor->GetWrapMode;
+	my $is_vwl_checked = $self->{view_wrap_lines}->IsChecked;
+	if ( $mode eq Wx::wxSTC_WRAP_WORD and not $is_vwl_checked ) {
+		$self->{view_wrap_lines}->Check(1);
+	} elsif ( $mode eq Wx::wxSTC_WRAP_NONE and $is_vwl_checked ) {
+		$self->{view_wrap_lines}->Check(0);
+	}
 
 	return 1;
 
