@@ -1,0 +1,26 @@
+Hacking
+
+
+This file should inculde some information that is only relevant to 
+those who want to develop Padre. We assume that they will all work in
+a workspace checked out from the SVN repository.
+
+Some extra files we have in the SVN repository that don't get distributed:
+
+dev.pl      is just a wrapper script to launch script/padre the main executable of 
+            setting some environment variables.
+
+release.pl  is a script used only before releasing Padre to check and set version numbers
+            it will have to be improved to create a real release script maybe based on
+            Dist::Zilla
+
+
+Translation file
+
+Currently we are using gettext so we have a po file for each additional
+language (currently only German) in the share/locale/ directory.
+
+Before release we have to generate an mo file by typing
+
+  msgfmt -o share/locale/de.mo share/locale/de.po
+
