@@ -24,6 +24,7 @@ use Module::Refresh;
 my @menu = (
 	['Reload All Plugins', \&reload_plugins     ],
     ['Test A Plugin From Local Dir', \&test_a_plugin],
+    ['Insert From File...', \&insert_from_file  ],
 	['Show %INC',      sub {show_inc(@_)}       ],
 	['Info',           sub {info(@_)}           ],
 	['About',          sub {about(@_)}          ],
@@ -100,7 +101,7 @@ sub test_a_plugin {
     
     my $manager = Padre->ide->plugin_manager;
     my $plugin_config = $manager->plugin_config('Development::Tools');
-    my $last_filename = $plugin_config->{last_filename};
+    my $last_filename = $plugin_config->{last_test_plugin_file};
     $last_filename  ||= $self->selected_filename;
     my $default_dir;
     if ($last_filename) {
@@ -121,7 +122,7 @@ sub test_a_plugin {
     my $file = File::Spec->catfile($default_dir, $filename);
     
     # save into plugin for next time
-    $plugin_config->{last_filename} = $file;
+    $plugin_config->{last_test_plugin_file} = $file;
     
     $filename    =~ s/\.pm$//; # remove last .pm
     $filename    =~ s/[\\\/]/\:\:/;
@@ -135,6 +136,46 @@ sub test_a_plugin {
     
     # reload all means rebuild the 'Plugins' menu
     reload_plugins( $self );
+}
+
+sub insert_from_file {
+	my ( $win ) = @_;
+	
+	my $id  = $win->{notebook}->GetSelection;
+	return if $id == -1;
+	
+	# popup the window
+	my $last_filename = $win->selected_filename;
+    my $default_dir;
+    if ($last_filename) {
+        $default_dir = File::Basename::dirname($last_filename);
+    }
+    my $dialog = Wx::FileDialog->new(
+        $win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+    );
+    unless ( Padre::Util::WIN32 ) {
+        $dialog->SetWildcard("*");
+    }
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $filename = $dialog->GetFilename;
+    $default_dir = $dialog->GetDirectory;
+    
+    my $file = File::Spec->catfile($default_dir, $filename);
+    
+    open( my $fh, '<', $file );
+    local $/;
+    my $text = <$fh>;
+    close($fh);
+    my $data = Wx::TextDataObject->new;
+    $data->SetText($text);
+    my $length = $data->GetTextLength;
+	
+	$win->{notebook}->GetPage($id)->ReplaceSelection('');
+	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
+	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
+	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
 }
 
 1;
