@@ -39,6 +39,11 @@ sub get_layout {
 			[ 'Wx::Choice',     'editor_autoindent',    $editor_autoindent],
 		],
 		[
+			[ 'Wx::StaticText', undef,              gettext('Default word wrap on for each file')],
+			['Wx::CheckBox',    'editor_use_wordwrap', '',
+				($config->{editor_use_wordwrap} ? 1 : 0) ],
+		],
+		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
 		],
@@ -90,7 +95,7 @@ sub run {
 	foreach my $f (qw(pod_maxlist pod_minlist editor_tabwidth)) {
 		$config->{$f} = $data->{$f};
 	}
-	foreach my $f (qw(editor_use_tabs)) {
+	foreach my $f (qw(editor_use_tabs editor_use_wordwrap)) {
 		$config->{$f} = $data->{$f} ? 1 :0;
 	}
 

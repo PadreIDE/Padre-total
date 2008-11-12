@@ -31,6 +31,11 @@ sub new {
 
 	Wx::Event::EVT_RIGHT_DOWN( $self, \&on_right_down );
 	Wx::Event::EVT_LEFT_UP(  $self, \&on_left_up );
+	
+	if ( Padre->ide->config->{editor_use_wordwrap} ) {
+		$self->SetWrapMode( Wx::wxSTC_WRAP_WORD );
+	}
+	
 	return $self;
 }
 
