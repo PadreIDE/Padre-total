@@ -2,7 +2,6 @@ package Padre::Plugin::Development::Tools;
 use strict;
 use warnings;
 
-
 our $VERSION = '0.16';
 
 use Padre::Wx ();
@@ -16,12 +15,6 @@ use File::Spec     ();
 use Data::Dumper   ();
 use Padre::Util ();
 use Module::Refresh;
-
-=head1 NAME
-
-Padre::Plugin::Development::Tools - tools used by the Padre developers
-
-=cut
 
 # TODO fix this
 # we need to create anonymous subs in order to makes
@@ -145,3 +138,37 @@ sub test_a_plugin {
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Padre::Plugin::Development::Tools - tools used by the Padre developers
+
+=head1 DESCRIPTION
+
+=head2 Reload All Plugins
+
+Clicking this instead of restarting the padre when plugin code is changed.
+
+=head2 Test A Plugin From Local Dir
+
+Test a plugin without install it.
+
+=head2 Show %INC
+
+Dumper %INC
+
+=head2 Info
+
+=head2 About
+
+=head1 AUTHOR
+
+Gabor Szabo
+
+Fayland Lam  C<< <fayland at gmail.com> >>
+
+=head1 LICENSE
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
