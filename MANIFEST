@@ -83,7 +83,6 @@ eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
 share/locale/de.po
-share/locale/de.mo
 
 share/templates/template.pl
 share/templates/template.pm
@@ -103,8 +102,4 @@ share/tango/16x16/actions/edit-redo.png
 share/tango/16x16/actions/edit-select-all.png
 share/tango/16x16/actions/edit-undo.png
 share/tango/16x16/emblems/emblem-unreadable.png
-
-
-META.yml
-
 
