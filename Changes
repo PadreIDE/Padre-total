@@ -6,6 +6,7 @@ Changes for Padre.
     Add configuration option to the autoindentation (no, same_level, deep). (SZABGAB)
     Temporarily stop using File::ShareDir::PAR. (SZABGAB)
     Allow opening multiple files at once (JQUELIN)
+    Add Padre::Plugin::MY and set it to be a prefered plugin. (SZABGAB)
 
 0.16 2008.11.09
 

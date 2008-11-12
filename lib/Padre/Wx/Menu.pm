@@ -749,7 +749,9 @@ sub get_plugin_menu {
 	my %plugins = %{ Padre->ide->plugin_manager->plugins };
 	return unless ( scalar keys %plugins );
 
-	foreach my $name ( sort keys %plugins ) {
+	my @plugins = grep { $_ ne 'MY' } sort keys %plugins;
+
+	foreach my $name ( 'MY', @plugins ) {
 		next if not $plugins{$name};
 		my @menu       = eval { $plugins{$name}->menu };
 		if ( $@ ) {
@@ -763,6 +765,9 @@ sub get_plugin_menu {
 			$menu_name =~ s/::/ /;
 		}
 		$plugin_menu->Append( -1, $menu_name, $menu_items );
+		if ($name eq 'MY') {
+			$plugin_menu->AppendSeparator;
+		}
 	}
 	
 	return $plugin_menu;
