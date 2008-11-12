@@ -5,7 +5,11 @@ This file should inculde some information that is only relevant to
 those who want to develop Padre. We assume that they will all work in
 a workspace checked out from the SVN repository.
 
+Extra files
+------------
+
 Some extra files we have in the SVN repository that don't get distributed:
+
 
 dev.pl      is just a wrapper script to launch script/padre the main executable of 
             setting some environment variables.
@@ -15,7 +19,8 @@ release.pl  is a script used only before releasing Padre to check and set versio
             Dist::Zilla
 
 
-Translation file
+Translation files
+-----------------
 
 Currently we are using gettext so we have a po file for each additional
 language (currently only German) in the share/locale/ directory.
@@ -23,4 +28,27 @@ language (currently only German) in the share/locale/ directory.
 Before release we have to generate an mo file by typing
 
   msgfmt -o share/locale/de.mo share/locale/de.po
+
+
+
+Version control
+----------------
+You probably already know that we use Subversion and it is located
+at http://svn.perlide.org/
+
+Bug tracking and Feature requests
+----------------------------------
+We are using Trac for this. The main web site of Padre is actually its
+trac http://padre.perlide.org/
+
+
+Patching
+--------
+Check out the trunk, http://svn.perlide.org/padre/trunk/
+and use svn diff to create your patch while your current
+working directory is  the trunk directory.
+
+Please send patches either to the padre-dev mailing list or
+add them to trac.
+
 
