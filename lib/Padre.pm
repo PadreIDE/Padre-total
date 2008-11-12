@@ -607,6 +607,60 @@ If the user then presses Replace we open the file in an editor window and go on.
 If the user presses Search then we show the next occurance.
 Opened and edited files will be left in a not saved state.
 
+
+=head1 Code layout
+
+Padre.pm is the main module.
+
+L<Padre::Config> reads/writes the configuration files.
+
+There is an SQLite database and a yml file to keep various pices of information
+The SQLite database holds the list of modules available on the system.
+It will also contain indexing of the documentation
+Looking at the C<X<>> entries of modules
+List of functions
+
+The yml file contains individual configuration options
+
+L<Padre::Document> is an abstraction class to deal with a single document.
+
+L<Padre::Documents> aggregated the list of all currently open documents.
+
+L<Padre::DB> is the database abstraction for SQLite.
+
+L<Padre::PluginManager> locates and loads the plugins.
+
+L<Padre::PluginBuilder> 
+
+L<Padre::PPI>
+
+=head2 Wx GUI
+
+The Padre::WX::* namespace is supposed to deal with all the 
+wx related code. Outside of that the code is not supposed to
+know about wx, but currently it still does. 
+
+L<Padre::Wx::Dialog> is the parent class of all the major dialogs
+that are all implemented in modules in the C<Padre::Wx::Dialog::*>
+namespace.
+
+L<Padre::Wx::App> is the L<Wx::App> subclass
+
+L<Padre::Wx::MainWindow> is the main frame, most of the code is currently there.
+
+L<Padre::Wx::Editor> holds an editor text control instance (one for each buffer/file).
+
+L<Padre::Wx::Menu> handles everythin the menu should know and do.
+
+L<Padre::Wx::ToolBar> handles everythin the toolbar should know and do.
+
+L<Padre::Wx::Output> - the output window.
+
+=head2 POD viewer
+
+Padre::Pod::* are there to index and show documentation written in pod.
+TODO: One day we might be able to factor it out into a separate pod-viewer class.
+
 =cut
 
 use 5.008;
@@ -857,60 +911,6 @@ END_USAGE
 =head1 BUGS
 
 Please submit your bugs at L<http://padre.perlide.org/>
-
-=head1 Code layout
-
-Padre.pm is the main module.
-
-L<Padre::Config> reads/writes the configuration files.
-
-There is an SQLite database and a yml file to keep various pices of information
-The SQLite database holds the list of modules available on the system.
-It will also contain indexing of the documentation
-Looking at the C<X<>> entries of modules
-List of functions
-
-The yml file contains individual configuration options
-
-L<Padre::Document> is an abstraction class to deal with a single document.
-
-L<Padre::Documents> aggregated the list of all currently open documents.
-
-L<Padre::DB> is the database abstraction for SQLite.
-
-L<Padre::PluginManager> locates and loads the plugins.
-
-L<Padre::PluginBuilder> 
-
-L<Padre::PPI>
-
-=head2 Wx GUI
-
-The Padre::WX::* namespace is supposed to deal with all the 
-wx related code. Outside of that the code is not supposed to
-know about wx, but currently it still does. 
-
-L<Padre::Wx::Dialog> is the parent class of all the major dialogs
-that are all implemented in modules in the C<Padre::Wx::Dialog::*>
-namespace.
-
-L<Padre::Wx::App> is the L<Wx::App> subclass
-
-L<Padre::Wx::MainWindow> is the main frame, most of the code is currently there.
-
-L<Padre::Wx::Editor> holds an editor text control instance (one for each buffer/file).
-
-L<Padre::Wx::Menu> handles everythin the menu should know and do.
-
-L<Padre::Wx::ToolBar> handles everythin the toolbar should know and do.
-
-L<Padre::Wx::Output> - the output window.
-
-=head2 POD viewer
-
-Padre::Pod::* are there to index and show documentation written in pod.
-TODO: One day we might be able to factor it out into a separate pod-viewer class.
-
 
 =head1 SUPPORT
 
