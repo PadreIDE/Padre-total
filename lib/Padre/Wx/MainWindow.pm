@@ -283,9 +283,9 @@ sub on_timer {
 				$page->MarkerDeleteAll(1);
 				$page->MarkerDeleteAll(2);
 				# Setup a margin to hold fold markers
-				$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 2 for symbols
-				$page->SetMarginSensitive(2, 1);                  # this one needs to be mouse-aware
-				$page->SetMarginWidth(2, 16);                     # set margin 2 16 px wide
+				$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
+				$page->SetMarginSensitive(1, 1);                  # this one needs to be mouse-aware
+				$page->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
 				$page->MarkerDefine(1,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"), Wx::Colour->new("red"));
 				$page->MarkerDefine(2,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("yellow"), Wx::Colour->new("yellow"));
 				foreach my $hint (@fmt) {
@@ -295,6 +295,9 @@ sub on_timer {
 					else {
 						$page->MarkerAdd( $hint->{line}, 2);
 					}
+					# TODO also send this info to a pane where the user can read all the messages at once
+					#      click on a message in the pane should bring the appropriate line into view
+					#      in the editor
 				}
 			}
 			else {
