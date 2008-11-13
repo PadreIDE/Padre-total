@@ -628,6 +628,14 @@ sub new {
 				return;
 			},
 		);
+		$menu->{experimental_ppi_syntax_check} = $menu->{experimental}->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax checking") );
+		Wx::Event::EVT_MENU( $win,
+			$menu->{experimental_ppi_syntax_check},
+			sub {Padre->ide->config->{ppi_syntax_check}
+				= $_[0]->{menu}->{experimental_ppi_syntax_check}->IsChecked ? 1 : 0; },
+		);
+		$menu->{experimental_ppi_syntax_check}->Check( $config->{ppi_syntax_check} ? 1 : 0 );
+		
 		$menu->{experimental_ppi_highlight} = $menu->{experimental}->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
 		Wx::Event::EVT_MENU( $win,
 			$menu->{experimental_ppi_highlight},

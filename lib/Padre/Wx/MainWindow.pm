@@ -249,6 +249,8 @@ sub on_timer {
 	#warn Dumper([@_]);
 	my ( $win, $event ) = @_;
 
+	return if not Padre->ide->config->{ppi_syntax_check};
+
 	my $id = $win->{notebook}->GetSelection;
 	if ( defined $id ) {
 		my $page = $win->{notebook}->GetPage($id);
