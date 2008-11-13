@@ -536,6 +536,12 @@ sub new {
 			$_[0]->{output}->SetFocus;
 		},
 	); 
+	Wx::Event::EVT_MENU( $win,
+		$menu->{window}->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
+		sub {
+			$_[0]->selected_editor->SetFocus;
+		},
+	); 
 	$menu->{window}->AppendSeparator;
 
 
