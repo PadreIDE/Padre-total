@@ -23,6 +23,10 @@ my $builder = Module::Build->new(
     license             => 'perl',
     dist_author         => 'Gabor Szabo <szabgab@gmail.com>',
     dist_version_from   => 'lib/Padre/Plugin/Parrot.pm',
+    requires => {
+		'Padre' => '0.16',
+		'Wx::Perl::Dialog',
+		# Parrot::Embed
     build_requires => {
         'Test::More' => 0,
     },
