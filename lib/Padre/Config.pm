@@ -6,6 +6,7 @@ use warnings;
 use Storable      ();
 use File::Path    ();
 use File::Spec    ();
+use File::Copy    ();
 use File::HomeDir ();
 use Params::Util  qw{ _STRING _ARRAY };
 use YAML::Tiny    ();
@@ -59,6 +60,19 @@ sub default_plugin_dir {
 	unless ( -e $plugins_full_path) {
 		File::Path::mkpath($plugins_full_path) or
 		die "Cannot create plugins dir '$plugins_full_path' $!";
+	}
+
+	# copy the MY Plugin
+	my $file = File::Spec->catfile( $plugins_full_path, 'MY.pm' );
+	if (not -e $file) {
+		my $src = File::Spec->catfile( File::Basename::dirname($INC{'Padre/Config.pm'}), 'Plugin', 'MY.pm' );
+		if (not $src) {
+			die "Could not find the original MY plugin";
+		}
+		if (not File::Copy::copy($src, $file) ) {
+			return die "Could not copy the MY plugin ($src) to : $!";
+		}
+		chmod 0644, $file;
 	}
 
 	return $pluginsdir;
