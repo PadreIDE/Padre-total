@@ -282,6 +282,10 @@ sub new {
 		$menu->{edit}->Append( -1, gettext("Diff") ),
 		\&Padre::Wx::MainWindow::on_diff,
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("Insert From File...") ),
+		\&Padre::Wx::MainWindow::on_insert_from_file,
+	);
 	$menu->{edit}->AppendSeparator;
 
 	# User Preferences
