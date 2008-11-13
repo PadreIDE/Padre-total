@@ -633,7 +633,7 @@ sub new {
 	$menu->{wx}->Append( $menu->{edit},     gettext("&Edit")      );
 	$menu->{wx}->Append( $menu->{view},     gettext("&View")      );
 	#$menu->{wx}->Append( $menu->{perl},     gettext("Perl")       );
-	$menu->{wx}->Append( $menu->{run},      gettext("Run")        );
+	$menu->{wx}->Append( $menu->{run},      gettext("&Run")        );
 	$menu->{wx}->Append( $menu->{bookmark}, gettext("&Bookmarks") );
 	$menu->{wx}->Append( $menu->{plugin},   gettext("Pl&ugins")   ) if $menu->{plugin};
 	$menu->{wx}->Append( $menu->{tools},    gettext("&Tools")    );
@@ -745,9 +745,9 @@ sub refresh {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
-	if ( _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) ne 'Perl') {
-		$self->{wx}->Insert( 3, $self->{perl}, "Perl" );
-	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq 'Perl') {
+	if ( _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) ne '&Perl') {
+		$self->{wx}->Insert( 3, $self->{perl}, '&Perl' );
+	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq '&Perl') {
 		$self->{wx}->Remove( 3 );
 	}
 	
