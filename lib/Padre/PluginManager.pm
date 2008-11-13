@@ -220,7 +220,12 @@ sub reload_plugins {
         $file_in_INC =~ s/\:\:/\//;
         $refresher->refresh_module($file_in_INC);
     }
-    
+    reload_menu($win);
+}
+
+sub reload_menu {
+    my ( $win ) = @_;
+
     # re-create menu,
     my $plugin_menu = $win->{menu}->get_plugin_menu();
     my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
