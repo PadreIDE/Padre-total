@@ -1390,7 +1390,7 @@ sub on_diff {
 #
 # on_join_lines()
 #
-# join current line with next one (à-la vi with Ctrl+J)
+# join current line with next one (a-la vi with Ctrl+J)
 #
 sub on_join_lines {
 	my ($self, $event) = @_;
