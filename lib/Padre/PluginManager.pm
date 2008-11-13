@@ -220,6 +220,14 @@ sub reload_plugins {
     reload_menu($win);
 }
 
+sub reload_plugin {
+	my ( $win, $name ) = @_;
+	my $refresher = Module::Refresh->new;
+	reload_module( $refresher, $name );
+	reload_menu($win);
+	return;
+}
+
 sub reload_module {
     my ( $refresher, $name ) = @_;
 	my $file_in_INC = "Padre/Plugin/${name}.pm";

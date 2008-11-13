@@ -503,6 +503,10 @@ sub new {
 		\&Padre::PluginManager::reload_plugins,
 	);
 	Wx::Event::EVT_MENU( $win,
+		$menu->{tools}->Append( -1, gettext("Reload MY Plugin") ),
+		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
+	);
+	Wx::Event::EVT_MENU( $win,
 		$menu->{tools}->Append( -1, gettext("Test A Plugin From Local Dir") ),
 		\&Padre::PluginManager::test_a_plugin,
 	);
