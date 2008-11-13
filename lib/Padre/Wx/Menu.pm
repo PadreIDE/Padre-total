@@ -695,7 +695,7 @@ sub add_alt_n_menu {
 	#return if $n > 9;
 
 	$self->{alt}->[$n] = $self->{window}->Append(-1, "");
-	#Wx::Event::EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
+	Wx::Event::EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
 	$self->update_alt_n_menu($file, $n);
 
 	return;
