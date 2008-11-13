@@ -27,6 +27,17 @@ my $DONE_EVENT : shared = Wx::NewEventType;
 
 sub on_ack {
 	my ($self) = @_;
+
+	# check minimum App::Ack version
+	my $minver = 1.86;
+	if ( $App::Ack::VERSION < $minver ) {
+		$self->error(
+			"App::Ack $minver required for this function " .
+			"(you have $App::Ack::VERSION installed)."
+		);
+		return;
+	}
+	
 	@_ = (); # cargo cult or bug? see Wx::Thread / Creating new threads
 
 	# TODO kill the thread before closing the application
