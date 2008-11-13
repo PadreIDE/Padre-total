@@ -124,9 +124,9 @@ sub test_a_plugin {
     # save into plugin for next time
     $plugin_config->{last_test_plugin_file} = $file;
     
+    ( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
     $filename    =~ s/\.pm$//; # remove last .pm
     $filename    =~ s/[\\\/]/\:\:/;
-    $default_dir =~ s/Padre[\\\/]Plugin([\\\/]|$)//;
     
     unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
     my $plugins = Padre->ide->plugin_manager->plugins;
