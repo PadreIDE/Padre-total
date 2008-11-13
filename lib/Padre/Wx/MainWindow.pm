@@ -152,6 +152,7 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
 	);
+	Wx::Event::EVT_KILL_FOCUS($self->{rightbar}, \&on_rightbar_left );
 	$self->manager->AddPane($self->{rightbar}, 
 		Wx::AuiPaneInfo->new->Name( "rightbar" )
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
@@ -1991,6 +1992,18 @@ sub on_upper_and_lower {
 		$doc->text_set( $code );
 	}
 
+}
+
+# TODO next function
+# should be in a class representing the rightbar
+sub on_rightbar_left {
+	my ($self, $event) = @_;
+	my $main  = Padre->ide->wx->main_window;
+	if ($main->{rightbar_was_closed}) {
+		$main->show_functions(0);
+		$main->{rightbar_was_closed} = 0;
+	}
+	return;
 }
 
 1;

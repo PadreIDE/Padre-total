@@ -542,6 +542,7 @@ sub new {
 	Wx::Event::EVT_MENU( $win,
 		$menu->{window}->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
 		sub {
+			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
 			$_[0]->show_functions(1); 
 			$_[0]->{rightbar}->SetFocus;
 		},
