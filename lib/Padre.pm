@@ -532,6 +532,10 @@ Padre will add a menu entry for every plugin under the B<Plugins>
 menu item. For each plugin menu item it will add all the Name_1,
 Name_2 subitems.
 
+If the B<menu_name> method is provided its return value will be the displayed
+entry in the Plugins/ menu. If this method is omitted the name of the plugin
+without the Padre::Plugin part will be used.
+
 See also L<Padre::PluginManager> and L<Padre::PluginBuilder> 
 
 =head1 Editing tools
