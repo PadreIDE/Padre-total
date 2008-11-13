@@ -213,7 +213,7 @@ sub new {
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Subs\tAlt-S") ),
+		$menu->{edit}->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
 		sub {
 			$_[0]->show_functions(1); 
 			$_[0]->{rightbar}->SetFocus;
