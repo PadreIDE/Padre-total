@@ -494,6 +494,14 @@ sub new {
 			$self->refresh_all;
 		},
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{tools}->Append( -1, gettext("Reload All Plugins") ),
+		\&Padre::PluginManager::reload_plugins,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{tools}->Append( -1, gettext("Test A Plugin From Local Dir") ),
+		\&Padre::PluginManager::test_a_plugin,
+	);
 
 	# Create the window menu
 	$menu->{window} = Wx::Menu->new;

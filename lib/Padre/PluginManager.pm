@@ -6,6 +6,9 @@ use Carp         qw(croak);
 use File::Path   ();
 use File::Spec   ();
 use File::Find::Rule;
+use Module::Refresh;
+
+use Wx::Locale qw(:default);
 
 our $VERSION = '0.16';
 
@@ -205,6 +208,69 @@ sub _load_plugin {
 	return 1;
 }
 
+sub reload_plugins {
+    my ( $win ) = @_;
+
+    my $refresher = new Module::Refresh;
+
+    my %plugins = %{ Padre->ide->plugin_manager->plugins };
+    foreach my $name ( sort keys %plugins ) {
+        # reload the module
+        my $file_in_INC = "Padre/Plugin/${name}.pm";
+        $file_in_INC =~ s/\:\:/\//;
+        $refresher->refresh_module($file_in_INC);
+    }
+    
+    # re-create menu,
+    my $plugin_menu = $win->{menu}->get_plugin_menu();
+    my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
+    $win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
+    
+    $win->{menu}->refresh;
+    
+    Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
+}
+
+sub test_a_plugin {
+    my ( $win ) = @_;
+
+    my $plugin_config = Padre->ide->plugin_manager->plugin_config('Development::Tools');
+    my $last_filename = $plugin_config->{last_test_plugin_file};
+    $last_filename  ||= $win->selected_filename;
+    my $default_dir;
+    if ($last_filename) {
+        $default_dir = File::Basename::dirname($last_filename);
+    }
+    my $dialog = Wx::FileDialog->new(
+        $win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+    );
+    unless ( Padre::Util::WIN32 ) {
+        $dialog->SetWildcard("*");
+    }
+    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+        return;
+    }
+    my $filename = $dialog->GetFilename;
+    $default_dir = $dialog->GetDirectory;
+    
+    my $file = File::Spec->catfile($default_dir, $filename);
+    
+    # save into plugin for next time
+    $plugin_config->{last_test_plugin_file} = $file;
+    
+    ( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
+    $filename    =~ s/\.pm$//; # remove last .pm
+    $filename    =~ s/[\\\/]/\:\:/;
+    
+    unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
+    my $plugins = Padre->ide->plugin_manager->plugins;
+    $plugins->{$filename} = "Padre::Plugin::$filename";
+    eval { require $file; 1 }; # load for Module::Refresh
+    return $win->error( $@ ) if ( $@ );
+    
+    # reload all means rebuild the 'Plugins' menu
+    reload_plugins( $win );
+}
 
 1;
 
