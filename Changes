@@ -9,6 +9,7 @@ Changes for Padre.
     Add Padre::Plugin::MY and set it to be a prefered plugin. (SZABGAB)
     Join lines with Ctrl+J (JQUELIN)
     Full screen view (JQUELIN)
+    Hide/show white spaces and tabs (JQUELIN)
 
 0.16 2008.11.09
 

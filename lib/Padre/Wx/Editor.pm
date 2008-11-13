@@ -263,6 +263,7 @@ sub set_preferences {
 	$self->show_folding(         $config->{editor_codefolding}       );
 	$self->SetIndentationGuides( $config->{editor_indentationguides} );
 	$self->SetViewEOL(           $config->{editor_eol}               );
+	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
 
 	$self->SetTabWidth( $config->{editor_tabwidth} );
 	$self->SetUseTabs(  $config->{editor_use_tabs} );

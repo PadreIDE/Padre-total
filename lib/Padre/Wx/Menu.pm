@@ -343,6 +343,12 @@ sub new {
 		$menu->{view_eol},
 		\&Padre::Wx::MainWindow::on_toggle_eol,
 	);
+	$menu->{view_whitespaces} = $menu->{view}->AppendCheckItem( -1, gettext("Show Whitespaces") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_whitespaces},
+		\&Padre::Wx::MainWindow::on_toggle_whitespaces,
+	);
+
 	$menu->{view_indentation_guide} = $menu->{view}->AppendCheckItem( -1, gettext("Show Indentation Guide") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_indentation_guide},
@@ -649,6 +655,7 @@ sub new {
 	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
 	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
 	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
+	$menu->{view_whitespaces}->Check( $config->{editor_whitespaces} ? 1 : 0 );
 	unless ( Padre::Util::WIN32 ) {
 		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}

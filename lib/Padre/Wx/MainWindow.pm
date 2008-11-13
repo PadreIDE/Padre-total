@@ -1496,6 +1496,27 @@ sub on_toggle_eol {
 	return;
 }
 
+#
+# on_toggle_whitespaces()
+#
+# show/hide spaces and tabs (with dots and arrows respectively).
+#
+sub on_toggle_whitespaces {
+	my ($self) = @_;
+	
+	# check whether we need to show / hide spaces & tabs.
+	my $config = Padre->ide->config;
+	$config->{editor_whitespaces} = $self->{menu}->{view_whitespaces}->IsChecked
+		? Wx::wxSTC_WS_VISIBLEALWAYS
+		: Wx::wxSTC_WS_INVISIBLE;
+	
+	# update all open views with the new config.
+	foreach my $editor ( $self->pages ) {
+		$editor->SetViewWhiteSpace( $config->{editor_whitespaces} );
+	}
+}
+
+
 sub on_word_wrap {
 	my $self = shift;
 	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
