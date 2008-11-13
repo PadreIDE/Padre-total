@@ -414,6 +414,13 @@ sub new {
 		);
 	}
 
+	$menu->{view}->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view}->Append( -1, gettext("&Full screen\tF11") ),
+		\&Padre::Wx::MainWindow::on_full_screen,
+	);
+
+
 	# Create the Perl menu
 	$menu->{perl} = Wx::Menu->new;
 

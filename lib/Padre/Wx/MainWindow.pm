@@ -1388,6 +1388,16 @@ sub on_diff {
 }
 
 #
+# on_full_screen()
+#
+# toggle full screen status.
+#
+sub on_full_screen {
+	my ($self, $event) = @_;
+	$self->ShowFullScreen( ! $self->IsFullScreen );
+}
+
+#
 # on_join_lines()
 #
 # join current line with next one (a-la vi with Ctrl+J)
