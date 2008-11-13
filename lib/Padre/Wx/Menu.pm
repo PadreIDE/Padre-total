@@ -632,6 +632,29 @@ sub new {
 		$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
 	}
 
+	$menu->create_main_menu_bar;
+
+	# Setup menu state from configuration
+	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
+	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
+	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
+	unless ( Padre::Util::WIN32 ) {
+		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
+	}
+	$menu->{view_output}->Check( $config->{main_output} ? 1 : 0 );
+	$menu->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
+
+	$menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
+	$menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
+
+	return $menu;
+}
+
+sub create_main_menu_bar {
+	my ( $menu ) = @_;
+
+	my $experimental = Padre->ide->config->{experimental};
+
 	# Create and return the main menu bar
 	$menu->{wx} = Wx::MenuBar->new;
 	$menu->{wx}->Append( $menu->{file},     gettext("&File")      );
@@ -648,21 +671,6 @@ sub new {
 	if ( $experimental ) {
 		$menu->{wx}->Append( $menu->{experimental}, gettext("E&xperimental") );
 	}
-
-	# Setup menu state from configuration
-	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
-	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
-	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
-	unless ( Padre::Util::WIN32 ) {
-		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
-	}
-	$menu->{view_output}->Check( $config->{main_output} ? 1 : 0 );
-	$menu->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
-
-	$menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
-	$menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
-
-	return $menu;
 }
 
 # Recursively add plugin menu items from nested array refs
