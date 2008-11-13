@@ -287,7 +287,7 @@ sub on_timer {
 					push @fmt, { line => $1 - 1, msg => $msg };
 				}
 				elsif ( $msg =~ /\A\s+/o ) {
-					$fmt[-1]->{msg} .= "\n$msg";
+					$fmt[-1]->{msg} .= "\n$msg" if (scalar @fmt);
 				}
 			}
 
