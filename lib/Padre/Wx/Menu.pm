@@ -769,26 +769,6 @@ sub refresh {
 	}
 
 	return 1;
-
-	# Create the new menu bar
-	$self->{wx} = Wx::MenuBar->new;
-	$self->{wx}->Append( $self->{file},     gettext("&File")      );
-	$self->{wx}->Append( $self->{project},  gettext("&Project")   );
-	$self->{wx}->Append( $self->{edit},     gettext("&Edit")      );
-	$self->{wx}->Append( $self->{view},     gettext("&View")      );
-	if ( _INSTANCE($document, 'Padre::Document::Perl') ) {
-		$self->{wx}->Append( $self->{perl}, gettext("Perl") );
-	}
-	$self->{wx}->Append( $self->{bookmark}, gettext("&Bookmarks") );
-	$self->{wx}->Append( $self->{plugin},   gettext("Pl&ugins")   ) if $self->{plugin};
-	$self->{wx}->Append( $self->{window},   gettext("&Window")    );
-	$self->{wx}->Append( $self->{help},     gettext("&Help")      );
-	if ( Padre->ide->config->{experimental} ) {
-		$self->{wx}->Append( $self->{experimental}, gettext("E&xperimental") );
-	}
-	$self->win->SetMenuBar( $self->{wx} );
-
-	return 1;
 }
 
 sub get_plugin_menu {
