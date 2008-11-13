@@ -692,10 +692,10 @@ sub add_plugin_menu_items {
 
 sub add_alt_n_menu {
 	my ($self, $file, $n) = @_;
-	return if $n > 9;
+	#return if $n > 9;
 
 	$self->{alt}->[$n] = $self->{window}->Append(-1, "");
-	Wx::Event::EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
+	#Wx::Event::EVT_MENU( $self->win, $self->{alt}->[$n], sub { $_[0]->on_nth_pane($n) } );
 	$self->update_alt_n_menu($file, $n);
 
 	return;
@@ -711,7 +711,8 @@ sub update_alt_n_menu {
 		return;
 	}
 
-	$self->{alt}->[$n]->SetText("$file\tAlt-$v");
+	#$self->{alt}->[$n]->SetText("$file\tAlt-$v");
+	$self->{alt}->[$n]->SetText($file);
 
 	return;
 }
