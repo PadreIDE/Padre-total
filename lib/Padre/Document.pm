@@ -138,6 +138,7 @@ our %MIME_CLASS = (
 	'application/x-perl6' => 'Padre::Document::Perl6',
 	'text/pasm'  => 'Padre::Document::Pasm',
 	'text/pir'   => 'Padre::Document::Pir',
+	'text/ecmascript' => 'Padre::Document::JavaScript',
 );
 
 our %MIME_LEXER = (
