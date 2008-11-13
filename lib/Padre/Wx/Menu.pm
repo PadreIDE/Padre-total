@@ -216,6 +216,10 @@ sub new {
 		$menu->{edit}->Append( -1, gettext("&Brace matching\tCtrl-1") ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("&Join lines\tCtrl-J") ),
+		\&Padre::Wx::MainWindow::on_join_lines,
+	);
 	$menu->{edit}->AppendSeparator;
 
 	# Commenting

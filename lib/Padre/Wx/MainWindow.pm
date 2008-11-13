@@ -1387,6 +1387,29 @@ sub on_diff {
 	return;
 }
 
+#
+# on_join_lines()
+#
+# join current line with next one (à-la vi with Ctrl+J)
+#
+sub on_join_lines {
+	my ($self, $event) = @_;
+
+	my $notebook = $self->{notebook};
+	my $id   = $notebook->GetSelection;
+	my $page = $notebook->GetPage($id);
+	
+	# find positions
+	my $pos1 = $page->GetCurrentPos;
+	my $line = $page->LineFromPosition($pos1);
+	my $pos2 = $page->PositionFromLine($line+1);
+
+	# mark target & join lines
+	$page->SetTargetStart($pos1);
+	$page->SetTargetEnd($pos2);
+	$page->LinesJoin;
+}
+
 
 ###### preferences and toggle functions
 
