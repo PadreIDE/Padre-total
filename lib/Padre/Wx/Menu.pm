@@ -479,6 +479,21 @@ sub new {
 	$menu->{plugin} = $plugin_menu if $plugin_menu;
 
 
+	# Create the tools menu
+	$menu->{tools} = Wx::Menu->new;
+	Wx::Event::EVT_MENU( $win,
+		$menu->{tools}->Append( -1, gettext("Edit MY Plugin") ),
+		sub  {
+			my $self = shift;
+			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'MY.pm' );
+			if (not -e $file) {
+				return $self->error(gettext("Could not find the MY plugin"));
+			}
+			
+			$self->setup_editor($file);
+			$self->refresh_all;
+		},
+	);
 
 	# Create the window menu
 	$menu->{window} = Wx::Menu->new;
@@ -597,6 +612,7 @@ sub new {
 	$menu->{wx}->Append( $menu->{run},      gettext("Run")        );
 	$menu->{wx}->Append( $menu->{bookmark}, gettext("&Bookmarks") );
 	$menu->{wx}->Append( $menu->{plugin},   gettext("Pl&ugins")   ) if $menu->{plugin};
+	$menu->{wx}->Append( $menu->{tools},    gettext("&Tools")    );
 	$menu->{wx}->Append( $menu->{window},   gettext("&Window")    );
 	$menu->{wx}->Append( $menu->{help},     gettext("&Help")      );
 	if ( $experimental ) {
