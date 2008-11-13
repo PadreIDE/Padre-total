@@ -215,13 +215,19 @@ sub reload_plugins {
 
     my %plugins = %{ Padre->ide->plugin_manager->plugins };
     foreach my $name ( sort keys %plugins ) {
-        # reload the module
-        my $file_in_INC = "Padre/Plugin/${name}.pm";
-        $file_in_INC =~ s/\:\:/\//;
-        $refresher->refresh_module($file_in_INC);
+		reload_module( $refresher, $name );
     }
     reload_menu($win);
 }
+
+sub reload_module {
+    my ( $refresher, $name ) = @_;
+	my $file_in_INC = "Padre/Plugin/${name}.pm";
+	$file_in_INC =~ s/\:\:/\//;
+	$refresher->refresh_module($file_in_INC);
+	return;
+}
+
 
 sub reload_menu {
     my ( $win ) = @_;
