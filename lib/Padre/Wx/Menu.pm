@@ -214,7 +214,10 @@ sub new {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("Subs\tAlt-S") ),
-		sub { $_[0]->{rightbar}->SetFocus },
+		sub {
+			$_[0]->show_functions(1); 
+			$_[0]->{rightbar}->SetFocus;
+		},
 	); 
 	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("&Brace matching\tCtrl-1") ),
