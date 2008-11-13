@@ -220,6 +220,13 @@ sub new {
 		},
 	); 
 	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("GoTo Output Window\tAlt-O") ),
+		sub {
+			$_[0]->show_output(1);
+			$_[0]->{output}->SetFocus;
+		},
+	); 
+	Wx::Event::EVT_MENU( $win,
 		$menu->{edit}->Append( -1, gettext("&Brace matching\tCtrl-1") ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
