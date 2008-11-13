@@ -8,6 +8,8 @@ use File::Spec   ();
 use File::Find::Rule;
 use Module::Refresh;
 
+use Padre::Wx    ();
+use Padre::Util  ();
 use Wx::Locale qw(:default);
 
 our $VERSION = '0.16';
