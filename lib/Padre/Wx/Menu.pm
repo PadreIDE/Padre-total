@@ -30,115 +30,7 @@ sub new {
 	my $menu     = bless {}, $class;
 	$menu->{win} = $win;
 
-	# Create the File menu
-	$menu->{file} = Wx::Menu->new;
-
-	# Creating new things
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_NEW, '' ),
-		sub {
-			$_[0]->setup_editor;
-			return;
-		},
-	);
-	$menu->{file_new} = Wx::Menu->new;
-	$menu->{file}->Append( -1, gettext("New..."), $menu->{file_new} );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file_new}->Append( -1, gettext('Perl Distribution (Module::Starter)') ),
-		sub { Padre::Wx::Dialog::ModuleStart->start(@_) },
-	);
-
-	# Opening and closing files
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_OPEN, '' ),
-		sub { $_[0]->on_open },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext("Open Selection\tCtrl-Shift-O") ),
-		sub { $_[0]->on_open_selection },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_CLOSE,  '' ),
-		sub { $_[0]->on_close },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext('Close All') ),
-		sub { $_[0]->on_close_all },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext('Close All but Current Document') ),
-		sub { $_[0]->on_close_all_but_current },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext('Reload file') ),
-		sub { $_[0]->on_reload_file },
-	);
-	$menu->{file}->AppendSeparator;
-
-	# Saving
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_SAVE, '' ),
-		sub { $_[0]->on_save },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_SAVEAS, '' ),
-		sub { $_[0]->on_save_as },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext('Save All') ),
-		sub { $_[0]->on_save_all },
-	);
-	$menu->{file}->AppendSeparator;
-
-	# Conversions and Transforms
-	$menu->{file_convert} = Wx::Menu->new;
-	$menu->{file}->Append( -1, gettext("Convert..."), $menu->{file_convert} );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file_convert}->Append(-1, gettext("EOL to Windows")),
-		sub { $_[0]->convert_to("WIN") },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file_convert}->Append(-1, gettext("EOL to Unix")),
-		sub { $_[0]->convert_to("UNIX") },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file_convert}->Append(-1, gettext("EOL to Mac Classic")),
-		sub { $_[0]->convert_to("MAC") },
-	);
-	$menu->{file}->AppendSeparator;
-
-	# Recent things
-	$menu->{file_recentfiles} = Wx::Menu->new;
-	$menu->{file}->Append( -1, gettext("Recent Files"), $menu->{file_recentfiles} );
-	foreach my $f ( Padre::DB->get_recent_files ) {
-		next unless -f $f;
-		Wx::Event::EVT_MENU( $win,
-			$menu->{file_recentfiles}->Append(-1, $f), 
-            sub { 
-                if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
-                    if ( Padre::Documents->current->is_unused ) {
-                        $_[0]->on_close;
-                    }
-                }
-                $_[0]->setup_editor($f);
-				$_[0]->refresh_all;
-            },
-		);
-	}
-	$menu->{file}->AppendSeparator;
-	
-	# Word Stats
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( -1, gettext('Doc Stats') ),
-		sub { $_[0]->on_doc_stats },
-	);
-	$menu->{file}->AppendSeparator;
-
-	# Exiting
-	Wx::Event::EVT_MENU( $win,
-		$menu->{file}->Append( Wx::wxID_EXIT, '' ),
-		sub { $_[0]->Close },
-	);
+	$menu->{file} = $menu->menu_file( $win );
 
 
 
@@ -805,6 +697,122 @@ sub refresh {
 	}
 
 	return 1;
+}
+
+sub menu_file {
+	my ( $self, $win ) = @_;
+	
+	# Create the File menu
+	my $menu = Wx::Menu->new;
+
+	# Creating new things
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_NEW, '' ),
+		sub {
+			$_[0]->setup_editor;
+			return;
+		},
+	);
+	my $menu_file_new = Wx::Menu->new;
+	$menu->Append( -1, gettext("New..."), $menu_file_new );
+	Wx::Event::EVT_MENU( $win,
+		$menu_file_new->Append( -1, gettext('Perl Distribution (Module::Starter)') ),
+		sub { Padre::Wx::Dialog::ModuleStart->start(@_) },
+	);
+
+	# Opening and closing files
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_OPEN, '' ),
+		sub { $_[0]->on_open },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Open Selection\tCtrl-Shift-O") ),
+		sub { $_[0]->on_open_selection },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_CLOSE,  '' ),
+		sub { $_[0]->on_close },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Close All') ),
+		sub { $_[0]->on_close_all },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Close All but Current Document') ),
+		sub { $_[0]->on_close_all_but_current },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Reload file') ),
+		sub { $_[0]->on_reload_file },
+	);
+	$menu->AppendSeparator;
+
+	# Saving
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_SAVE, '' ),
+		sub { $_[0]->on_save },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_SAVEAS, '' ),
+		sub { $_[0]->on_save_as },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Save All') ),
+		sub { $_[0]->on_save_all },
+	);
+	$menu->AppendSeparator;
+
+	# Conversions and Transforms
+	my $menu_file_convert = Wx::Menu->new;
+	$menu->Append( -1, gettext("Convert..."), $menu_file_convert );
+	Wx::Event::EVT_MENU( $win,
+		$menu_file_convert->Append(-1, gettext("EOL to Windows")),
+		sub { $_[0]->convert_to("WIN") },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu_file_convert->Append(-1, gettext("EOL to Unix")),
+		sub { $_[0]->convert_to("UNIX") },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu_file_convert->Append(-1, gettext("EOL to Mac Classic")),
+		sub { $_[0]->convert_to("MAC") },
+	);
+	$menu->AppendSeparator;
+
+	# Recent things
+	my $menu_file_recentfiles = Wx::Menu->new;
+	$menu->Append( -1, gettext("Recent Files"), $menu_file_recentfiles );
+	foreach my $f ( Padre::DB->get_recent_files ) {
+		next unless -f $f;
+		Wx::Event::EVT_MENU( $win,
+			$menu_file_recentfiles->Append(-1, $f), 
+            sub { 
+                if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
+                    if ( Padre::Documents->current->is_unused ) {
+                        $_[0]->on_close;
+                    }
+                }
+                $_[0]->setup_editor($f);
+				$_[0]->refresh_all;
+            },
+		);
+	}
+	$menu->AppendSeparator;
+	
+	# Word Stats
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Doc Stats') ),
+		sub { $_[0]->on_doc_stats },
+	);
+	$menu->AppendSeparator;
+
+	# Exiting
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_EXIT, '' ),
+		sub { $_[0]->Close },
+	);
+	
+	return $menu;
 }
 
 sub get_plugin_menu {
