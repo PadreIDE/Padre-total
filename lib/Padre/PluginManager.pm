@@ -260,8 +260,8 @@ sub reload_menu {
 sub test_a_plugin {
     my ( $win ) = @_;
 
-    my $plugin_config = Padre->ide->plugin_manager->plugin_config('Development::Tools');
-    my $last_filename = $plugin_config->{last_test_plugin_file};
+    my $config = Padre->ide->config;
+    my $last_filename = $config->{last_test_plugin_file};
     $last_filename  ||= $win->selected_filename;
     my $default_dir;
     if ($last_filename) {
@@ -282,7 +282,7 @@ sub test_a_plugin {
     my $file = File::Spec->catfile($default_dir, $filename);
     
     # save into plugin for next time
-    $plugin_config->{last_test_plugin_file} = $file;
+    $config->{last_test_plugin_file} = $file;
     
     ( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
     $filename    =~ s/\.pm$//; # remove last .pm
