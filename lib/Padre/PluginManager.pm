@@ -6,7 +6,6 @@ use Carp         qw(croak);
 use File::Path   ();
 use File::Spec   ();
 use File::Find::Rule;
-use Module::Refresh;
 
 use Padre::Wx    ();
 use Padre::Util  ();
@@ -216,7 +215,8 @@ sub _load_plugin {
 sub reload_plugins {
     my ( $win ) = @_;
 
-    my $refresher = new Module::Refresh;
+	require Module::Refresh;
+    my $refresher = Module::Refresh->new;
 
     my %plugins = %{ Padre->ide->plugin_manager->plugins };
     foreach my $name ( sort keys %plugins ) {
@@ -227,6 +227,8 @@ sub reload_plugins {
 
 sub reload_plugin {
 	my ( $win, $name ) = @_;
+	
+	require Module::Refresh;
 	my $refresher = Module::Refresh->new;
 	reload_module( $refresher, $name );
 	reload_menu($win);
