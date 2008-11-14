@@ -703,7 +703,7 @@ sub menu_plugin {
 	my $menu = Wx::Menu->new;
 
 	# Add the Plugin Tools menu
-	my $tools = $self->menu_tools( $win );
+	my $tools = $self->menu_plugin_tools( $win );
 	$menu->Append( -1, 'Plugin Tools', $tools );
 	$menu->AppendSeparator;
 
@@ -731,7 +731,7 @@ sub menu_plugin {
 	return $menu;
 }
 
-sub menu_tools {
+sub menu_plugin_tools {
 	my ( $self, $win ) = @_;
 	
 	# Create the tools menu
