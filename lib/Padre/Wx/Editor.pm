@@ -468,6 +468,50 @@ sub text_select_all {
 	return;
 }
 
+sub text_selection_mark_start {
+	my ($win) = @_;
+
+	# find positions
+	my $notebook = $win->{notebook};
+	my $id   = $notebook->GetSelection;
+	my $page = $notebook->GetPage($id);
+	$page->{selection_mark_start} = $page->GetCurrentPos;
+	
+	# change selection if start and end are defined
+	$page->SetSelection(
+		$page->{selection_mark_start},
+		$page->{selection_mark_end}
+	) if defined $page->{selection_mark_end};
+}
+
+sub text_selection_mark_end {
+	my ($win) = @_;
+
+	# find positions
+	my $notebook = $win->{notebook};
+	my $id   = $notebook->GetSelection;
+	my $page = $notebook->GetPage($id);
+	$page->{selection_mark_end} = $page->GetCurrentPos;
+	
+	# change selection if start and end are defined
+	$page->SetSelection(
+		$page->{selection_mark_start},
+		$page->{selection_mark_end}
+	) if defined $page->{selection_mark_start};
+}
+
+sub text_selection_clear_marks {
+	my ($win) = @_;
+
+	# find positions
+	my $notebook = $win->{notebook};
+	my $id   = $notebook->GetSelection;
+	my $page = $notebook->GetPage($id);
+
+	undef $page->{selection_mark_start};
+	undef $page->{selection_mark_end};
+}
+
 sub text_copy_to_clipboard {
 	my ( $win, $event ) = @_;
 

@@ -359,10 +359,28 @@ sub menu_edit {
 	);
 	$menu->AppendSeparator;
 
-    Wx::Event::EVT_MENU( $win,
-        $menu->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") ),
-        sub { \&Padre::Wx::Editor::text_select_all(@_) },
-    );
+	my $menu_edit_select = Wx::Menu->new;
+	$menu->Append( -1, gettext("Select"), $menu_edit_select );
+	Wx::Event::EVT_MENU( $win,
+		$menu_edit_select->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") ),
+		sub { \&Padre::Wx::Editor::text_select_all(@_) },
+	);
+	$menu_edit_select->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$menu_edit_select->Append( -1, gettext("Mark selection start\tCtrl-[") ),
+		\&Padre::Wx::Editor::text_selection_mark_start,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu_edit_select->Append( -1, gettext("Mark selection end\tCtrl-]") ),
+		\&Padre::Wx::Editor::text_selection_mark_end,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu_edit_select->Append( -1, gettext("Clear selection marks") ),
+		\&Padre::Wx::Editor::text_selection_clear_marks,
+	);
+
+
+    
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_COPY, '' ),
         sub { \&Padre::Wx::Editor::text_copy_to_clipboard(@_) },
