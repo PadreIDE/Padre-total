@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use Data::Dumper            qw(Dumper);
 
-use App::Ack;
-
 use Padre::Wx;
 use Wx::Locale qw(:default);
 
@@ -13,29 +11,47 @@ my $iter;
 my %opts;
 
 our $VERSION = '0.16';
+my $DONE_EVENT : shared = Wx::NewEventType;
 
-{
-	no warnings 'redefine';
-	sub App::Ack::print_first_filename { print_results("$_[0]\n"); }
-	sub App::Ack::print_separator      { print_results("--\n"); }
-	sub App::Ack::print                { print_results($_[0]); }
-	sub App::Ack::print_filename       { print_results("$_[0]$_[1]"); }
-	sub App::Ack::print_line_no        { print_results("$_[0]$_[1]"); }
+my $ack_loaded = 0;
+sub load_ack {
+	print "ack\n";
+	my $minver = 1.86;
+	my $error  = "App::Ack $minver required for this feature";
+
+	# try to load app::ack - we don't require $minver in the eval to
+	# provide a meaningful error message if needed.
+	eval "use App::Ack";
+	return "$error (module not installed)" if $@;
+	return "$error (you have $App::Ack::VERSION installed)"
+		if $App::Ack::VERSION < $minver;
+
+	# redefine some app::ack subs to display results in padre's output
+	# note - we're eval-ing this, otherwise it would get interpreted
+	# before loading app::ack, leading to redefine warnings.
+	eval q{
+		no warnings 'redefine';
+		sub App::Ack::print_first_filename { print_results("$_[0]\n"); }
+		sub App::Ack::print_separator      { print_results("--\n"); }
+		sub App::Ack::print                { print_results($_[0]); }
+		sub App::Ack::print_filename       { print_results("$_[0]$_[1]"); }
+		sub App::Ack::print_line_no        { print_results("$_[0]$_[1]"); }
+	}
 }
 
-my $DONE_EVENT : shared = Wx::NewEventType;
 
 sub on_ack {
 	my ($self) = @_;
 
-	# check minimum App::Ack version
-	my $minver = 1.86;
-	if ( $App::Ack::VERSION < $minver ) {
-		$self->error(
-			"App::Ack $minver required for this function " .
-			"(you have $App::Ack::VERSION installed)."
-		);
-		return;
+	# delay App::Ack loading till first use, to reduce memory
+	# usage and init time.
+	if ( ! $ack_loaded ) {
+		my $error = load_ack();
+		if ( $error ) {
+			$self->error($error);
+			return;
+		}
+		$ack_loaded = 1;
 	}
 	
 	@_ = (); # cargo cult or bug? see Wx::Thread / Creating new threads
