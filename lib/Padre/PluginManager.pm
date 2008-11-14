@@ -195,19 +195,19 @@ sub _setup_par {
 # given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
 # load the corresponding module
 sub _load_plugin {
-	my ($self, $file) = @_;
+	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
 
 	# skip if that plugin was already loaded
-	return if exists $plugins->{$file};
+	return if exists $plugins->{$plugin_name};
 
-	my $module = "Padre::Plugin::$file";
+	my $module = "Padre::Plugin::$plugin_name";
 	eval "use $module"; ## no critic
 	if ($@) {
-		warn "ERROR while trying to load plugin '$file': $@";
+		warn "ERROR while trying to load plugin '$plugin_name': $@";
 		return;
 	}
-	$plugins->{$file} = $module;
+	$plugins->{$plugin_name} = $module;
 	return 1;
 }
 
