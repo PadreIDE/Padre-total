@@ -1,4 +1,4 @@
-package Padre::Plugin::Development::Tools;
+package Padre::Plugin::Devel;
 
 use strict;
 use warnings;
@@ -38,7 +38,7 @@ sub about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Padre::Plugin::Development::Tools");
+	$about->SetName("Padre::Plugin::Devel");
 	$about->SetDescription(
 		"A set of unrelated tools used by the Padre developers\n" .
 		"Some of these might end up in core Padre or in oter plugins"
