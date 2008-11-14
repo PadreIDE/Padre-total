@@ -1084,6 +1084,16 @@ sub on_open_selection {
 	return;
 }
 
+sub on_open_all_recent_files {
+	my ( $self ) = @_;
+	
+	my $files = Padre::DB->get_recent_files();
+	foreach my $file ( @$files ) {
+		$self->setup_editor($file);
+	}
+	$self->refresh_all;
+}
+
 sub on_open {
 	my ($self, $event) = @_;
 

@@ -284,6 +284,11 @@ sub menu_file {
 	# Recent things
 	my $menu_file_recentfiles = Wx::Menu->new;
 	$menu->Append( -1, gettext("Recent Files"), $menu_file_recentfiles );
+	Wx::Event::EVT_MENU( $win,
+		$menu_file_recentfiles->Append(-1, gettext("Open All Recent Files")),
+		sub { $_[0]->on_open_all_recent_files },
+	);
+	$menu_file_recentfiles->AppendSeparator;
 	foreach my $f ( Padre::DB->get_recent_files ) {
 		next unless -f $f;
 		Wx::Event::EVT_MENU( $win,
