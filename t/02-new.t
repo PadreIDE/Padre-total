@@ -41,6 +41,7 @@ SCOPE: {
 		editor_calltips    => 1,
 		editor_use_tabs    => 1,
 		editor_autoindent  => 'deep',
+		editor_whitespaces => 0,
 
 		search_terms       => [],
 		replace_terms      => [],
@@ -72,44 +73,3 @@ SCOPE: {
 
 __END__
 
-SCOPE: {
-	my $current = Padre::DB->get_last_pod;
-	ok !defined $current, 'current pod not defined';
-
-	my @pods = Padre::DB->get_recent_pod;
-	is_deeply \@pods, [], 'no pods yet'
-		or diag Dumper \@pods;
-	my @files = Padre::DB->get_recent_files;
-	is_deeply \@files, [], 'no files yet';
-
-	ok( ! Padre::DB->add_recent_pod('Test'), 'add_recent_pod' );
-	@pods = Padre::DB->get_recent_pod;
-	is_deeply \@pods, ['Test'], 'pods';
-	is( Padre::DB->get_last_pod, 'Test', 'current is Test' );
-
-	ok( ! Padre::DB->add_recent_pod('Test::More'), 'add_recent_pod' );
-	@pods = Padre::DB->get_recent_pod;
-	is_deeply \@pods, ['Test', 'Test::More'], 'pods';
-	is( Padre::DB->get_last_pod, 'Test::More', 'current is Test::More' );
-	is( Padre::DB->get_last_pod, 'Test', 'current is Test' );
-
-# TODO next, previous,
-# TODO limit number of items and see what happens
-# TODO whne setting an element that was already in the list as recent
-# it should become the last one!
-}
-
-SCOPE: {
-	my @words = qw(One Two Three Four Five Six);
-	foreach my $name (@words) {
-		Padre::DB->add_recent_pod($name);
-	}
-	my @pods = Padre::DB->get_recent_pod;
-	is_deeply \@pods, ['Test', 'Test::More', @words], 'pods';
-	is( Padre::DB->get_last_pod, 'Six', 'current is Six' );
-
-	is( $app->prev_module, 'Five', 'prev Five' );
-	is( $app->prev_module, 'Four', 'prev Four' );
-	is( Padre::DB->get_last_pod, 'Four', 'current is Four' );
-	is( $app->next_module, 'Five', 'next Five' );
-}
