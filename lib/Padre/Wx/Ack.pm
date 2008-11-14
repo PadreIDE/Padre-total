@@ -14,7 +14,6 @@ my $DONE_EVENT : shared = Wx::NewEventType;
 
 my $ack_loaded = 0;
 sub load_ack {
-	print "ack\n";
 	my $minver = 1.86;
 	my $error  = "App::Ack $minver required for this feature";
 
@@ -26,16 +25,16 @@ sub load_ack {
 		if $App::Ack::VERSION < $minver;
 
 	# redefine some app::ack subs to display results in padre's output
-	# note - we're eval-ing this, otherwise it would get interpreted
-	# before loading app::ack, leading to redefine warnings.
-	eval q{
+	{
 		no warnings 'redefine';
-		sub App::Ack::print_first_filename { print_results("$_[0]\n"); }
-		sub App::Ack::print_separator      { print_results("--\n"); }
-		sub App::Ack::print                { print_results($_[0]); }
-		sub App::Ack::print_filename       { print_results("$_[0]$_[1]"); }
-		sub App::Ack::print_line_no        { print_results("$_[0]$_[1]"); }
+		*{App::Ack::print_first_filename} = sub { print_results("$_[0]\n"); };
+		*{App::Ack::print_separator}      = sub { print_results("--\n"); };
+		*{App::Ack::print}                = sub { print_results($_[0]); };
+		*{App::Ack::print_filename}       = sub { print_results("$_[0]$_[1]"); };
+		*{App::Ack::print_line_no}        = sub { print_results("$_[0]$_[1]"); };
 	}
+	
+	return;
 }
 
 
