@@ -1,5 +1,6 @@
 Changes for Padre.
 
+    Code folding (HJANSEN)
     Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
     Show/Hide Output or Functions (FAYLAND)
     Fix the failing plugin manager test. (SZABGAB)
