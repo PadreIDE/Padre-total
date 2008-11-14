@@ -18,12 +18,13 @@ lib/Padre/Util.pm
 lib/Padre/PPI.pm
 lib/Padre/Wx.pm
 
+lib/Padre/Document/JavaScript.pm
 lib/Padre/Document/Pasm.pm
 lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
 lib/Padre/Document/Pir.pm
 
-lib/Padre/Plugin/Development/Tools.pm
+lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/MY.pm
 
 lib/Padre/Wx/App.pm
@@ -56,6 +57,7 @@ t/00-compile.t
 t/01-load.t
 t/02-new.t
 t/03-wx.t
+t/60-db.t
 t/70-document.t
 t/80-newline.t
 t/81-search.t
