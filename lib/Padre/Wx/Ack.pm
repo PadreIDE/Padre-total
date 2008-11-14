@@ -2,7 +2,6 @@ package Padre::Wx::Ack;
 
 use strict;
 use warnings;
-use Data::Dumper            qw(Dumper);
 
 use Padre::Wx;
 use Wx::Locale qw(:default);
