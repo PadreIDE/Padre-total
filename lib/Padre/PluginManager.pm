@@ -163,10 +163,11 @@ sub _load_plugins_from_par {
 	my $plugin_dir = $self->plugin_dir();
 	opendir my $dh, $plugin_dir or return;
 	while (my $file = readdir $dh) {
-		if ($file =~ /^\w+\.par$/i) {
+		if ($file =~ /^[\w-]+\.par$/i) {
 			my $parfile = File::Spec->catfile($plugin_dir, $file);
-			$file =~ s/\.par$//i;
 			PAR->import($parfile);
+			$file =~ s/\.par$//i;
+                        $file =~ s/-/::/g;
 			$self->_load_plugin($file);
 		}
 	}
