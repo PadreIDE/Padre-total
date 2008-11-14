@@ -1,4 +1,5 @@
 package Padre::Plugin::Development::Tools;
+
 use strict;
 use warnings;
 
@@ -6,14 +7,16 @@ our $VERSION = '0.16';
 
 use Padre::Wx ();
 
-use Wx ':everything';
-use Wx::Menu ();
+use Wx         ':everything';
+use Wx::Menu   ();
 use Wx::Locale qw(:default);
 
 use File::Basename ();
 use File::Spec     ();
 use Data::Dumper   ();
-use Padre::Util ();
+use Padre::Util    ();
+
+sub menu_name { 'Development Tools' }
 
 # TODO fix this
 # we need to create anonymous subs in order to makes
@@ -25,6 +28,7 @@ my @menu = (
 	['Info',           sub {info(@_)}           ],
 	['About',          sub {about(@_)}          ],
 );
+
 sub menu {
     my ($self) = @_;
 	return @menu;
@@ -67,6 +71,7 @@ sub show_inc {
 }
 
 1;
+
 __END__
 
 =head1 NAME
