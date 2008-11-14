@@ -282,17 +282,27 @@ sub menu_file {
 	$menu->AppendSeparator;
 
 	# Recent things
-	my $menu_file_recentfiles = Wx::Menu->new;
-	$menu->Append( -1, gettext("Recent Files"), $menu_file_recentfiles );
+	$self->{file_recentfiles} = Wx::Menu->new;
+	$menu->Append( -1, gettext("Recent Files"), $self->{file_recentfiles} );
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_recentfiles->Append(-1, gettext("Open All Recent Files")),
+		$self->{file_recentfiles}->Append(-1, gettext("Open All Recent Files")),
 		sub { $_[0]->on_open_all_recent_files },
 	);
-	$menu_file_recentfiles->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$self->{file_recentfiles}->Append(-1, gettext("Clean Recent Files List")),
+		sub {
+			Padre::DB->delete_recent( 'files' );
+			# replace the whole File menu
+			my $menu = $_[0]->{menu}->menu_file($_[0]);
+			my $menu_place = $_[0]->{menu}->{wx}->FindMenu( gettext("&File") );
+			$_[0]->{menu}->{wx}->Replace( $menu_place, $menu, gettext("&File") );
+		},
+	);
+	$self->{file_recentfiles}->AppendSeparator;
 	foreach my $f ( Padre::DB->get_recent_files ) {
 		next unless -f $f;
 		Wx::Event::EVT_MENU( $win,
-			$menu_file_recentfiles->Append(-1, $f), 
+			$self->{file_recentfiles}->Append(-1, $f), 
             sub { 
                 if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
                     if ( Padre::Documents->current->is_unused ) {

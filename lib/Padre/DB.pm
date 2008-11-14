@@ -162,6 +162,17 @@ sub get_recent {
 	return wantarray ? @$recent : $recent;
 }
 
+sub delete_recent {
+	my ( $class, $type ) = @_;
+	
+	$class->do(
+		"DELETE FROM history WHERE type = ?",
+		{}, $type
+	);
+	
+	return 1;
+}
+
 sub get_last {
 	my $class  = shift;
 	my @recent = $class->get_recent(shift, 1);
