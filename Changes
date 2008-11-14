@@ -38,8 +38,8 @@ Changes for Padre.
 
     Don't let opening file that is already open. (SZABGAB)
     Start UTF-8 support. (SZABGAB)
-	Switch to File::ShareDir::PAR (SMUELLER)
-	Start using File::Which to locate the perl interpreter
+    Switch to File::ShareDir::PAR (SMUELLER)
+    Start using File::Which to locate the perl interpreter
        (if padre is running from a par archive). (SZABGAB)
     Fix the Split Window menu option to really work. (SZABGAB)
     Adding "Close All but Current Document" menu option. (SZABGAB)
@@ -65,8 +65,8 @@ v0.14 2008.10.27
     Skip the Test::Compile test if the module is not installed. (SZABGAB)
     Make the add/remove Perl menu work without warnings. (ADAMK + SZABGAB)
     Make brace matching (Ctrl-1) jump to the matching brace. (SZABGAB)
-	Allow preference to use tabs (or spaces) when pressing TAB. (SZABGAB)
-	Add automatic brace highlighting during. (SZABGAB)
+    Allow preference to use tabs (or spaces) when pressing TAB. (SZABGAB)
+    Add automatic brace highlighting during. (SZABGAB)
 
 v0.13 2008.10.26
 
@@ -127,7 +127,7 @@ v0.10 2008.09.22
 
     Improve the search tool (include backward search).
     Allow keeping the search window open (or close it and use F3).
-	Shift-F3 to jump backwards.
+    Shift-F3 to jump backwards.
     Add Search and Replace and global search and replace.
     Setup mapping of file extensions to mime-types and to color coding.
     Clean up the MainWindow module, move code to Document and Document::Perl.
