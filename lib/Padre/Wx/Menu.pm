@@ -39,8 +39,6 @@ sub new {
 	# Create the Plugins menu if there are any plugins
 	my $menu_plugin = $menu->menu_plugin( $win );
 	$menu->{plugin} = $menu_plugin if $menu_plugin;
-
-	$menu->{tools}  = $menu->menu_tools( $win );
 	$menu->{window} = $menu->menu_window( $win );
 	$menu->{help}   = $menu->menu_help( $win );
 
@@ -695,33 +693,42 @@ sub menu_run {
 
 sub menu_plugin {
 	my ( $self, $win ) = @_;
-	
-	my $plugin_menu = Wx::Menu->new;
-	my %plugins = %{ Padre->ide->plugin_manager->plugins };
-	return unless ( scalar keys %plugins );
 
-	my @plugins = grep { $_ ne 'MY' } sort keys %plugins;
+	# Get the list of plugins
+	my %plugins = %{ Padre->ide->plugin_manager->plugins };
+	my @plugins = grep { $_ ne 'MY' } sort keys %plugins or return;
+	return unless @plugins;
+
+	# Create the plugin menu
+	my $menu = Wx::Menu->new;
+
+	# Add the Plugin Tools menu
+	my $tools = $self->menu_tools( $win );
+	$menu->Append( -1, 'Plugin Tools', $tools );
+	$menu->AppendSeparator;
 
 	foreach my $name ( 'MY', @plugins ) {
 		next if not $plugins{$name};
-		my @menu       = eval { $plugins{$name}->menu };
+		my @menu = eval { $plugins{$name}->menu };
 		if ( $@ ) {
 			warn "Error when calling menu for plugin '$name' $@";
 			next;
 		}
-		my $menu_items = $self->add_plugin_menu_items(\@menu);
-		my $menu_name  = eval { $plugins{$name}->menu_name };
-		if (not $menu_name) {
-			$menu_name = $name;
-			$menu_name =~ s/::/ /;
+		my $items = $self->add_plugin_menu_items(\@menu);
+		my $label = '';
+		if ( $plugins{$name} and $plugins{$name}->can('menu_name') ) {
+			$label = $plugins{$name}->menu_name;
+		} else {
+			$label = $name;
+			$label =~ s/::/ /;
 		}
-		$plugin_menu->Append( -1, $menu_name, $menu_items );
-		if ($name eq 'MY') {
-			$plugin_menu->AppendSeparator;
+		$menu->Append( -1, $label, $items );
+		if ( $name eq 'MY' ) {
+			$menu->AppendSeparator;
 		}
 	}
 	
-	return $plugin_menu;
+	return $menu;
 }
 
 sub menu_tools {
@@ -730,12 +737,12 @@ sub menu_tools {
 	# Create the tools menu
 	my $menu = Wx::Menu->new;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Edit MY Plugin") ),
+		$menu->Append( -1, gettext("Edit My Plugin") ),
 		sub  {
 			my $self = shift;
 			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'MY.pm' );
 			if (not -e $file) {
-				return $self->error(gettext("Could not find the MY plugin"));
+				return $self->error(gettext("Could not find the Padre::Plugin::MY plugin"));
 			}
 			
 			$self->setup_editor($file);
@@ -743,12 +750,14 @@ sub menu_tools {
 		},
 	);
 	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Reload My Plugin") ),
+		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
+	);
+	$menu->AppendSeparator;
+
+	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reload All Plugins") ),
 		\&Padre::PluginManager::reload_plugins,
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Reload MY Plugin") ),
-		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Test A Plugin From Local Dir") ),

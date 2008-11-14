@@ -126,7 +126,6 @@ sub new {
 			->Caption( gettext("Files") )->Position( 1 )
 		);
 
-
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{notebook},
