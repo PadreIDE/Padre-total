@@ -33,74 +33,12 @@ sub new {
 	$menu->{file} = $menu->menu_file( $win );
 	$menu->{edit} = $menu->menu_edit( $win );
 	$menu->{view} = $menu->menu_view( $win );
-
-	
-
-
-	# Create the Perl menu
-	$menu->{perl} = Wx::Menu->new;
-
-	# Perl-Specific Searches
-	$menu->{perl_find_unmatched} = $menu->{perl}->Append( -1, gettext("Find Unmatched Brace") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{perl_find_unmatched},
-		sub {
-			my $doc = Padre::Documents->current;
-			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
-				return;
-			}
-			Class::Autouse->load('Padre::PPI');
-			my $ppi   = $doc->ppi_get or return;
-			my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
-			if ( $where ) {
-				@$where = sort {
-					Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
-					or
-					$a->location->[0] <=> $b->location->[0]
-					or
-					$a->location->[1] <=> $b->location->[1]
-				} @$where;
-				$doc->ppi_select( $where->[0] );
-			} else {
-				Wx::MessageBox( gettext("All braces appear to be matched"), gettext("Check Complete"), Wx::wxOK, $win );
-			}
-		},
-	);
-
-
-	# Create the Run menu
-	$menu->{run} = Wx::Menu->new;
-
-	# Script Execution
-	$menu->{run_run_script} = $menu->{run}->Append( -1, gettext("Run Script\tF5") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{run_run_script},
-		sub { $_[0]->run_script },
-	);
-	$menu->{run_run_command} = $menu->{run}->Append( -1, gettext("Run Command\tCtrl-F5") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{run_run_command},
-		sub { $_[0]->on_run_command },
-	);
-	$menu->{run_stop} = $menu->{run}->Append( -1, gettext("&Stop") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{run_stop},
-		sub {
-			if ( $_[0]->{command} ) {
-				$_[0]->{command}->TerminateProcess;
-			}
-			delete $_[0]->{command};
-			return;
-		},
-	);
-	$menu->{run_stop}->Enable(0);
-
-
-
+	$menu->{perl} = $menu->menu_perl( $win );
+	$menu->{run}  = $menu->menu_run(  $win );
 
 	# Create the Plugins menu if there are any plugins
-	my $plugin_menu = $menu->get_plugin_menu();
-	$menu->{plugin} = $plugin_menu if $plugin_menu;
+	my $menu_plugin = $menu->menu_plugin( $win );
+	$menu->{plugin} = $menu_plugin if $menu_plugin;
 
 
 	# Create the tools menu
@@ -825,8 +763,77 @@ sub menu_view {
 	return $menu_view;
 }
 
-sub get_plugin_menu {
-	my ( $self ) = @_;
+sub menu_perl {
+	my ( $self, $win ) = @_;
+	
+	# Create the Perl menu
+	my $menu = Wx::Menu->new;
+
+	# Perl-Specific Searches
+	my $menu_perl_find_unmatched = $menu->Append( -1, gettext("Find Unmatched Brace") );
+	Wx::Event::EVT_MENU( $win,
+		$menu_perl_find_unmatched,
+		sub {
+			my $doc = Padre::Documents->current;
+			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
+				return;
+			}
+			Class::Autouse->load('Padre::PPI');
+			my $ppi   = $doc->ppi_get or return;
+			my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
+			if ( $where ) {
+				@$where = sort {
+					Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
+					or
+					$a->location->[0] <=> $b->location->[0]
+					or
+					$a->location->[1] <=> $b->location->[1]
+				} @$where;
+				$doc->ppi_select( $where->[0] );
+			} else {
+				Wx::MessageBox( gettext("All braces appear to be matched"), gettext("Check Complete"), Wx::wxOK, $win );
+			}
+		},
+	);
+	
+	return $menu;
+}
+
+sub menu_run {
+	my ( $menu, $win ) = @_;
+	
+	# Create the Run menu
+	my $menu_run = Wx::Menu->new;
+
+	# Script Execution
+	$menu->{run_run_script} = $menu_run->Append( -1, gettext("Run Script\tF5") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{run_run_script},
+		sub { $_[0]->run_script },
+	);
+	$menu->{run_run_command} = $menu_run->Append( -1, gettext("Run Command\tCtrl-F5") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{run_run_command},
+		sub { $_[0]->on_run_command },
+	);
+	$menu->{run_stop} = $menu_run->Append( -1, gettext("&Stop") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{run_stop},
+		sub {
+			if ( $_[0]->{command} ) {
+				$_[0]->{command}->TerminateProcess;
+			}
+			delete $_[0]->{command};
+			return;
+		},
+	);
+	$menu->{run_stop}->Enable(0);
+	
+	return $menu_run;
+}
+
+sub menu_plugin {
+	my ( $self, $win ) = @_;
 	
 	my $plugin_menu = Wx::Menu->new;
 	my %plugins = %{ Padre->ide->plugin_manager->plugins };

@@ -243,7 +243,7 @@ sub reload_menu {
     my ( $win ) = @_;
 
     # re-create menu,
-    my $plugin_menu = $win->{menu}->get_plugin_menu();
+    my $plugin_menu = $win->{menu}->menu_plugin( $win );
     my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
     $win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
     
