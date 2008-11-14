@@ -144,7 +144,7 @@ sub _load_plugins_from_inc {
 	
 	my @dirs = grep {-d $_} map {File::Spec->catdir($_, 'Padre', 'Plugin')} @INC;
 	
-	my @files = File::Find::Rule->file()->name('*.pm')->in( @dirs );
+	my @files = File::Find::Rule->file()->name('*.pm')->maxdepth(1)->in( @dirs );
 	foreach my $file (@files) {
 		# full path filenames
 		$file =~ s/\.pm$//;
