@@ -40,170 +40,16 @@ sub new {
 	my $menu_plugin = $menu->menu_plugin( $win );
 	$menu->{plugin} = $menu_plugin if $menu_plugin;
 
-
-	# Create the tools menu
-	$menu->{tools} = Wx::Menu->new;
-	Wx::Event::EVT_MENU( $win,
-		$menu->{tools}->Append( -1, gettext("Edit MY Plugin") ),
-		sub  {
-			my $self = shift;
-			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'MY.pm' );
-			if (not -e $file) {
-				return $self->error(gettext("Could not find the MY plugin"));
-			}
-			
-			$self->setup_editor($file);
-			$self->refresh_all;
-		},
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{tools}->Append( -1, gettext("Reload All Plugins") ),
-		\&Padre::PluginManager::reload_plugins,
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{tools}->Append( -1, gettext("Reload MY Plugin") ),
-		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{tools}->Append( -1, gettext("Test A Plugin From Local Dir") ),
-		\&Padre::PluginManager::test_a_plugin,
-	);
-
-	# Create the window menu
-	$menu->{window} = Wx::Menu->new;
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append( -1, gettext("&Split window") ),
-		\&Padre::Wx::MainWindow::on_split_window,
-	);
-	$menu->{window}->AppendSeparator;
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append(-1, gettext("Next File\tCtrl-TAB")),
-		\&Padre::Wx::MainWindow::on_next_pane,
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append(-1, gettext("Previous File\tCtrl-Shift-TAB")),
-		\&Padre::Wx::MainWindow::on_prev_pane,
-	);
-	$menu->{window}->AppendSeparator;
-
-
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
-		sub {
-			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
-			$_[0]->show_functions(1); 
-			$_[0]->{rightbar}->SetFocus;
-		},
-	); 
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append( -1, gettext("GoTo Output Window\tAlt-O") ),
-		sub {
-			$_[0]->show_output(1);
-			$_[0]->{output}->SetFocus;
-		},
-	); 
-	Wx::Event::EVT_MENU( $win,
-		$menu->{window}->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
-		sub {
-			$_[0]->selected_editor->SetFocus;
-		},
-	); 
-	$menu->{window}->AppendSeparator;
-
-
-
-	# Create the help menu
-	$menu->{help} = Wx::Menu->new;
-	my $help = Padre::Wx::Menu::Help->new;
-
-	Wx::Event::EVT_MENU( $win,
-		$menu->{help}->Append( Wx::wxID_HELP, '' ),
-		sub { $help->help($win) },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->{help}->Append( -1, gettext("Context Help\tCtrl-Shift-H") ),
-		sub {
-			my $main      = shift;
-			my $selection = $main->selected_text;
-			$help->help($main);
-			if ( $selection ) {
-				$main->{help}->show( $selection );
-			}
-			return;
-		},
-	);
-	$menu->{help}->AppendSeparator;
-	Wx::Event::EVT_MENU( $win,
-		$menu->{help}->Append( Wx::wxID_ABOUT, '' ),
-		sub { $help->about },
-	);
-
-
-
+	$menu->{tools}  = $menu->menu_tools( $win );
+	$menu->{window} = $menu->menu_window( $win );
+	$menu->{help}   = $menu->menu_help( $win );
 
 
 	# Create the Experimental menu
 	# All the crap that doesn't work, have a home,
 	# or should never be seen be real users goes here.
 	if ( $experimental ) {
-		$menu->{experimental} = Wx::Menu->new;
-		Wx::Event::EVT_MENU( $win,
-			$menu->{experimental}->Append( -1, gettext('Reflow Menu/Toolbar') ),
-			sub {
-				$DB::single = 1;
-				my $document = Padre::Documents->current;
-				$_[0]->{menu}->refresh( $document );
-				$_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
-				$_[0]->GetToolBar->refresh( $document );
-				return;
-			},
-		);
-		
-		$menu->{experimental_recent_projects} = Wx::Menu->new;
-		$menu->{experimental}->Append( -1, gettext("Recent Projects"), $menu->{file_recent_projects} );
-		
-		Wx::Event::EVT_MENU(
-			$win,
-			$menu->{experimental}->Append( -1, gettext('Run in &Padre') ),
-			sub {
-				my $self = shift;
-				my $code = Padre::Documents->current->text_get;
-				eval $code;
-				if ($@) {
-					Wx::MessageBox(gettext("Error: ") . "$@", gettext("Self error"), Wx::wxOK, $self);
-					return;
-				}
-				return;
-			},
-		);
-		$menu->{experimental_ppi_syntax_check} = $menu->{experimental}->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax checking") );
-		Wx::Event::EVT_MENU( $win,
-			$menu->{experimental_ppi_syntax_check},
-			sub {Padre->ide->config->{ppi_syntax_check}
-				= $_[0]->{menu}->{experimental_ppi_syntax_check}->IsChecked ? 1 : 0; },
-		);
-		$menu->{experimental_ppi_syntax_check}->Check( $config->{ppi_syntax_check} ? 1 : 0 );
-		
-		$menu->{experimental_ppi_highlight} = $menu->{experimental}->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
-		Wx::Event::EVT_MENU( $win,
-			$menu->{experimental_ppi_highlight},
-			\&Padre::Wx::MainWindow::on_ppi_highlight,
-		);
-		$menu->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
-		$Padre::Document::MIME_LEXER{'application/x-perl'} = 
-			$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
-
-		# Quick Find: Press F3 to start search with selected text
-		$menu->{experimental_quick_find} = $menu->{experimental}->AppendCheckItem( -1, gettext("Quick Find") );
-		Wx::Event::EVT_MENU( $win,
-			$menu->{experimental_quick_find},
-			sub {
-				$_[0]->on_quick_find(
-					$_[0]->{menu}->{experimental_quick_find}->IsChecked
-				),
-			},
-		);
-		$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
+		$menu->{experimental} = $menu->menu_experimental( $win );
 	}
 
 	$menu->create_main_menu_bar;
@@ -861,6 +707,186 @@ sub menu_plugin {
 	}
 	
 	return $plugin_menu;
+}
+
+sub menu_tools {
+	my ( $self, $win ) = @_;
+	
+	# Create the tools menu
+	my $menu = Wx::Menu->new;
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Edit MY Plugin") ),
+		sub  {
+			my $self = shift;
+			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'MY.pm' );
+			if (not -e $file) {
+				return $self->error(gettext("Could not find the MY plugin"));
+			}
+			
+			$self->setup_editor($file);
+			$self->refresh_all;
+		},
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Reload All Plugins") ),
+		\&Padre::PluginManager::reload_plugins,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Reload MY Plugin") ),
+		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Test A Plugin From Local Dir") ),
+		\&Padre::PluginManager::test_a_plugin,
+	);
+	
+	return $menu;
+}
+
+sub menu_window {
+	my ( $self, $win ) = @_;
+	
+	# Create the window menu
+	my $menu = Wx::Menu->new;
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("&Split window") ),
+		\&Padre::Wx::MainWindow::on_split_window,
+	);
+	$menu->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append(-1, gettext("Next File\tCtrl-TAB")),
+		\&Padre::Wx::MainWindow::on_next_pane,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append(-1, gettext("Previous File\tCtrl-Shift-TAB")),
+		\&Padre::Wx::MainWindow::on_prev_pane,
+	);
+	$menu->AppendSeparator;
+
+
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
+		sub {
+			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
+			$_[0]->show_functions(1); 
+			$_[0]->{rightbar}->SetFocus;
+		},
+	); 
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("GoTo Output Window\tAlt-O") ),
+		sub {
+			$_[0]->show_output(1);
+			$_[0]->{output}->SetFocus;
+		},
+	); 
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
+		sub {
+			$_[0]->selected_editor->SetFocus;
+		},
+	); 
+	$menu->AppendSeparator;
+	
+	return $menu;
+}
+
+sub menu_help {
+	my ( $self, $win ) = @_;
+	
+	# Create the help menu
+	my $menu = Wx::Menu->new;
+	my $help = Padre::Wx::Menu::Help->new;
+
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_HELP, '' ),
+		sub { $help->help($win) },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Context Help\tCtrl-Shift-H") ),
+		sub {
+			my $main      = shift;
+			my $selection = $main->selected_text;
+			$help->help($main);
+			if ( $selection ) {
+				$main->{help}->show( $selection );
+			}
+			return;
+		},
+	);
+	$menu->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( Wx::wxID_ABOUT, '' ),
+		sub { $help->about },
+	);
+	
+	return $menu;
+}
+
+sub menu_experimental {
+	my ( $menu, $win ) = @_;
+	
+	my $config = Padre->ide->config;
+	
+	my $menu_exp = Wx::Menu->new;
+	Wx::Event::EVT_MENU( $win,
+		$menu_exp->Append( -1, gettext('Reflow Menu/Toolbar') ),
+		sub {
+			$DB::single = 1;
+			my $document = Padre::Documents->current;
+			$_[0]->{menu}->refresh( $document );
+			$_[0]->SetMenuBar( $_[0]->{menu}->{wx} );
+			$_[0]->GetToolBar->refresh( $document );
+			return;
+		},
+	);
+	
+	$menu->{experimental_recent_projects} = Wx::Menu->new;
+	$menu_exp->Append( -1, gettext("Recent Projects"), $menu->{file_recent_projects} );
+	
+	Wx::Event::EVT_MENU(
+		$win,
+		$menu_exp->Append( -1, gettext('Run in &Padre') ),
+		sub {
+			my $self = shift;
+			my $code = Padre::Documents->current->text_get;
+			eval $code;
+			if ($@) {
+				Wx::MessageBox(gettext("Error: ") . "$@", gettext("Self error"), Wx::wxOK, $self);
+				return;
+			}
+			return;
+		},
+	);
+	$menu->{experimental_ppi_syntax_check} = $menu_exp->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax checking") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{experimental_ppi_syntax_check},
+		sub {Padre->ide->config->{ppi_syntax_check}
+			= $_[0]->{menu}->{experimental_ppi_syntax_check}->IsChecked ? 1 : 0; },
+	);
+	$menu->{experimental_ppi_syntax_check}->Check( $config->{ppi_syntax_check} ? 1 : 0 );
+	
+	$menu->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{experimental_ppi_highlight},
+		\&Padre::Wx::MainWindow::on_ppi_highlight,
+	);
+	$menu->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
+	$Padre::Document::MIME_LEXER{'application/x-perl'} = 
+		$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
+
+	# Quick Find: Press F3 to start search with selected text
+	$menu->{experimental_quick_find} = $menu_exp->AppendCheckItem( -1, gettext("Quick Find") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{experimental_quick_find},
+		sub {
+			$_[0]->on_quick_find(
+				$_[0]->{menu}->{experimental_quick_find}->IsChecked
+			),
+		},
+	);
+	$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
+	
+	return $menu_exp;
 }
 
 1;
