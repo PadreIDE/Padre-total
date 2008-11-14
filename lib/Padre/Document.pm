@@ -423,6 +423,7 @@ sub has_changed_on_disk {
 
 sub time_on_file {
 	return 0 if not defined $_[0]->filename;
+	return 0 if not -e $_[0]->filename;
 	return (stat($_[0]->filename))[9];
 }
 
