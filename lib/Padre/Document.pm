@@ -23,9 +23,6 @@ use 5.008;
 use strict;
 use warnings;
 use File::Spec  ();
-use File::Slurp ();
-use List::Util  ();
-use Class::Autouse ();
 use Carp        ();
 use Wx qw{
 	wxSTC_LEX_ADA
@@ -223,6 +220,7 @@ sub rebless {
 	# do for a first implementation.
 	my $subclass = $MIME_CLASS{$self->mimetype} || __PACKAGE__;
 	if ( $subclass ) {
+                require Class::Autouse;
 		Class::Autouse->autouse($subclass);
 		bless $self, $subclass;
 	}
@@ -303,6 +301,7 @@ sub _auto_convert {
 sub load_file {
 	my ($self, $file, $editor) = @_;
 
+	require File::Slurp;
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
 	my $content = eval { File::Slurp::read_file($file, binmode => ':raw') };
@@ -351,7 +350,8 @@ sub save_file {
 	my $content      = $self->text_get;
 	my $filename     = $self->filename;
     #my $newline_type = $self->get_newline_type;
-
+        
+	require File::Slurp;
 	eval {
 		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
 	};
@@ -496,6 +496,7 @@ sub find_project {
 	my ($v, $d, $f) = File::Spec->splitpath( $self->filename );
 	my @d = File::Spec->splitdir($d);
 	pop @d if $d[-1] eq '';
+	require List::Util;
 	my $dirs = List::Util::first {
 		-f File::Spec->catpath( $v, $_, 'Makefile.PL' )
 		or
