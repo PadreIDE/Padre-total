@@ -41,7 +41,7 @@ sub about {
 	);
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(
-		Padre::Plugin::MY->menu_name;
+		Padre::Plugin::MY->menu_name
 	);
 	$about->SetDescription( <<"END_MESSAGE" );
 The philosophy behind Padre is that every Perl programmer
