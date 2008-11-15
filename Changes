@@ -1,5 +1,6 @@
 Changes for Padre.
 
+    Optional highlighting of current line (via background color) (HJANSEN)
     Code folding (HJANSEN)
     Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
     Show/Hide Output or Functions (FAYLAND)
