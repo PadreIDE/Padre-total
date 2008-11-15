@@ -1529,6 +1529,19 @@ sub on_toggle_code_folding {
 	return;
 }
 
+sub on_toggle_current_line_background {
+	my ($self, $event) = @_;
+
+	my $config = Padre->ide->config;
+	$config->{editor_currentlinebackground} = $event->IsChecked ? 1 : 0;
+
+	foreach my $editor ( $self->pages ) {
+		$editor->show_currentlinebackground( $config->{editor_currentlinebackground} ? 1 : 0 );
+	}
+
+	return;
+}
+
 sub on_toggle_synchk {
 	my ($self, $event) = @_;
 

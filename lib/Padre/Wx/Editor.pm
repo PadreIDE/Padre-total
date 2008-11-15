@@ -271,9 +271,19 @@ sub set_preferences {
 	$self->SetIndentationGuides( $config->{editor_indentationguides} );
 	$self->SetViewEOL(           $config->{editor_eol}               );
 	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
+	$self->show_currentlinebackground( $config->{editor_currentlinebackground} );
 
 	$self->SetTabWidth( $config->{editor_tabwidth} );
 	$self->SetUseTabs(  $config->{editor_use_tabs} );
+
+	return;
+}
+
+sub show_currentlinebackground {
+	my ($self, $on) = (@_);
+
+	$self->SetCaretLineBackground( Wx::Colour->new(238, 238, 238, 255) );
+	$self->SetCaretLineVisible( ( defined($on) && $on ) ? 1 : 0 );
 
 	return;
 }

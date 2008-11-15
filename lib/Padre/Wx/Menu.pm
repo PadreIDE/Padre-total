@@ -55,6 +55,7 @@ sub new {
 	# Setup menu state from configuration
 	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
 	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
+	$menu->{view_currentlinebackground}->Check( $config->{editor_currentlinebackground} ? 1 : 0 );
 	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
 	$menu->{view_whitespaces}->Check( $config->{editor_whitespaces} ? 1 : 0 );
 	unless ( Padre::Util::WIN32 ) {
@@ -548,6 +549,11 @@ sub menu_view {
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_folding},
 		\&Padre::Wx::MainWindow::on_toggle_code_folding,
+	);
+	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, gettext("Highlight Current Line") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_currentlinebackground},
+		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
 	);
 	$menu->{view_syntaxcheck} = $menu_view->AppendCheckItem( -1, gettext("Show Syntax Check") );
 	Wx::Event::EVT_MENU( $win,
