@@ -59,6 +59,7 @@ t/02-new.t
 t/03-wx.t
 t/60-db.t
 t/70-document.t
+t/71-perl.t
 t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
@@ -67,6 +68,8 @@ t/lib/Padre.pm
 t/lib/Padre/Plugin/TestPlugin.pm
 t/lib/Padre/Plugin/Test/Plugin.pm
 t/lib/Padre/Editor.pm
+
+t/files/missing_brace_1.pl
 
 xt/99-critic.t
 xt/90-pod.t

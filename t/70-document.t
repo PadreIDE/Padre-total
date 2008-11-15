@@ -43,8 +43,9 @@ my $doc_3 = Padre::Document->new(
 	);
 SCOPE: {
 	isa_ok($doc_3, 'Padre::Document');
+	isa_ok($doc_3, 'Padre::Document::Perl');
 	is($doc_3->filename, $file_3, 'filename');
-    BEGIN { $tests += 2; }
+    BEGIN { $tests += 3; }
 }
 
 
