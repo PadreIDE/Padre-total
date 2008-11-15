@@ -452,6 +452,10 @@ sub reload {
 	return 1;
 }
 
+sub can_check_syntax {
+	return 0;
+}
+
 
 
 

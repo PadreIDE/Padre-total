@@ -23,6 +23,17 @@ our $VERSION = '0.16';
 
 
 #####################################################################
+# Defines for sidebar marker; others may be needed for breakpoint
+# icons etc.
+
+sub MarkError { 1 }
+sub MarkWarn  { 2 }
+
+
+
+
+
+#####################################################################
 # Shared Resources
 
 sub share () {

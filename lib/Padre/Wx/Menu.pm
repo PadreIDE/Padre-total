@@ -549,6 +549,11 @@ sub menu_view {
 		$menu->{view_folding},
 		\&Padre::Wx::MainWindow::on_toggle_code_folding,
 	);
+	$menu->{view_syntaxcheck} = $menu_view->AppendCheckItem( -1, gettext("Show Syntax Check") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_syntaxcheck},
+		\&Padre::Wx::MainWindow::on_toggle_synchk,
+	);
 	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
@@ -820,7 +825,18 @@ sub menu_window {
 			$_[0]->show_output(1);
 			$_[0]->{output}->SetFocus;
 		},
-	); 
+	);
+	$self->{window_goto_synchk} = $menu->Append( -1, gettext("GoTo Syntax Check Window\tAlt-C") );
+	Wx::Event::EVT_MENU( $win,
+		$self->{window_goto_synchk},
+		sub {
+			$_[0]->show_syntaxbar(1);
+			$_[0]->{syntaxbar}->SetFocus;
+		},
+	);
+	unless ( $_[0]->{view_syntaxcheck}->IsChecked ) {
+		$self->{window_goto_synchk}->Enable(0);
+	}
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
 		sub {

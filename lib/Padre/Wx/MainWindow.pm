@@ -169,6 +169,8 @@ sub new {
 		\&on_function_selected,
 	);
 
+	$self->create_syntaxbar;
+
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
 		$self,
@@ -243,88 +245,37 @@ sub new {
 	return $self;
 }
 
-sub on_timer {
-	#use Data::Dumper;
-	#warn Dumper([@_]);
-	my ( $win, $event ) = @_;
+sub create_syntaxbar {
+	my $self = shift;
 
-	return if not Padre->ide->config->{ppi_syntax_check};
-
-	my $id = $win->{notebook}->GetSelection;
-	if ( defined $id ) {
-		my $page = $win->{notebook}->GetPage($id);
-
-		unless (   defined( $page->{Document} )
-				&& $page->{Document}->isa('Padre::Document::Perl')
-		) {
-			return;
-		}
-
-		if ($page) {
-			my $text = $page->GetText;
-
-			return unless $text;
-
-			if (   defined( $page->{old_text} )
-				&& $page->{old_text} eq $text
-			) {
-				return;
-			}
-			else {
-				$page->{old_text} = $text;
-			}
-
-			my $report = '';
-			{
-				use File::Temp;
-				my $fh = File::Temp->new();
-				my $fname = $fh->filename;
-				print $fh $text;
-				$report = `$^X -c $fname 2>&1`;
-			}
-
-			my @msgs = split(/\n/, $report);
-			my @fmt  = ();
-			foreach my $msg ( @msgs ) {
-				if ( $msg =~ s/ at .+?line (\d+)//o ) {
-					push @fmt, { line => $1 - 1, msg => $msg };
-				}
-				elsif ( $msg =~ /\A\s+/o ) {
-					$fmt[-1]->{msg} .= "\n$msg" if (scalar @fmt);
-				}
-			}
-
-			#use Data::Dumper;
-			#print Dumper([@fmt]);
-			if ( scalar(@fmt) > 0 ) {
-				$page->MarkerDeleteAll(1);
-				$page->MarkerDeleteAll(2);
-				# Setup a margin to hold fold markers
-				$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
-				$page->SetMarginSensitive(1, 1);                  # this one needs to be mouse-aware
-				$page->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
-				$page->MarkerDefine(1,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"), Wx::Colour->new("red"));
-				$page->MarkerDefine(2,    Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("yellow"), Wx::Colour->new("yellow"));
-
-				foreach my $hint (@fmt) {
-					if ( index( $hint->{msg}, 'error' ) > 0 ) { 
-						$page->MarkerAdd( $hint->{line}, 1);
-					}
-					else {
-						$page->MarkerAdd( $hint->{line}, 2);
-					}
-					# TODO also send this info to a pane where the user can read all the messages at once
-					#      click on a message in the pane should bring the appropriate line into view
-					#      in the editor
-				}
-			}
-			else {
-				$page->MarkerDeleteAll(1);
-				$page->MarkerDeleteAll(2);
-			}
-		}
+	$self->{syntaxbar} = Wx::ListView->new(
+		$self,
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
+	);
+	$self->{syntaxbar}->InsertColumn( 0, gettext('Line') );
+	$self->{syntaxbar}->InsertColumn( 1, gettext('Type') );
+	$self->{syntaxbar}->InsertColumn( 2, gettext('Description') );
+	$self->manager->AddPane($self->{syntaxbar},
+		Wx::AuiPaneInfo->new->Name( "syntaxbar" )
+			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
+			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
+			->MaximizeButton(1)->Floatable(1)->Dockable(1)
+			->Caption( gettext("Syntax") )->Position( 3 )->Bottom
+	);
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
+		$self,
+		$self->{syntaxbar},
+		\&on_synchkmsg_selected,
+	);
+	if ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+		$self->manager->GetPane('syntaxbar')->Show();
 	}
-
+	else {
+		$self->manager->GetPane('syntaxbar')->Hide();
+	}
 	return;
 }
 
@@ -389,11 +340,107 @@ sub post_init {
 
 #$self->Close;
 
-	# Turn on syntax checker timer; VERY experimental
-	if ( Padre->ide->config->{experimental} ) {
-		$self->{synCheckTimer} = Wx::Timer->new($self);
-		Wx::Event::EVT_TIMER( $self, Wx::wxID_ANY, \&on_timer );
-		$self->{synCheckTimer}->Start(1000);
+	if ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+		$self->enable_syntax_checker(1);
+	}
+
+	return;
+}
+
+sub enable_syntax_checker {
+	my $self = shift;
+	my $on   = shift;
+
+	if ($on) {
+		if (   defined( $self->{synCheckTimer} )
+			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
+		) {
+			$self->{synCheckTimer}->Start(-1);
+			$self->on_synchk_timer( undef, 1 );
+		}
+		else {
+			$self->{synCheckTimer} = Wx::Timer->new($self);
+			Wx::Event::EVT_TIMER( $self, -1, \&on_synchk_timer );
+			$self->{synCheckTimer}->Start(1000);
+		}
+        $self->show_syntaxbar(1);
+	}
+	else {
+		if (   defined($self->{synCheckTimer})
+			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
+		) {
+			$self->{synCheckTimer}->Stop;
+        }
+		my $id   = $self->{notebook}->GetSelection;
+		my $page = $self->{notebook}->GetPage($id);
+		$page->MarkerDeleteAll(Padre::Wx::MarkError);
+		$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+		$self->{syntaxbar}->DeleteAllItems;
+		$self->show_syntaxbar(0);
+	}
+
+	return;
+}
+
+sub on_synchk_timer {
+	my ( $win, $event, $force ) = @_;
+
+	my $id = $win->{notebook}->GetSelection;
+	if ( defined $id ) {
+		my $page = $win->{notebook}->GetPage($id);
+
+		unless (   defined( $page->{Document} )
+				&& $page->{Document}->can_check_syntax
+		) {
+            if ( ref $page ) {
+				$page->MarkerDeleteAll(Padre::Wx::MarkError);
+				$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+			}
+			$win->{syntaxbar}->DeleteAllItems;
+			return;
+		}
+
+		my $messages = $page->{Document}->check_syntax($force);
+		return unless defined $messages;
+
+		if ( scalar(@{$messages}) > 0 ) {
+			$page->MarkerDeleteAll(Padre::Wx::MarkError);
+			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+
+			# Setup a margin to hold fold markers
+			$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
+			$page->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
+			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"),    Wx::Colour->new("red"));
+			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("orange"), Wx::Colour->new("orange"));
+
+			my $i = 0;
+			$win->{syntaxbar}->DeleteAllItems;
+			my $last_hint = '';
+			foreach my $hint ( sort { $a->{line} <=> $b->{line} } @{$messages} ) {
+				if ( $hint->{severity} eq 'W' ) {
+					$page->MarkerAdd( $hint->{line} - 1, 2);
+				}
+				else {
+					$page->MarkerAdd( $hint->{line} - 1, 1);
+				}
+				my $idx = $win->{syntaxbar}->InsertStringItem( $i++, $hint->{line} );
+				$win->{syntaxbar}->SetItem( $idx, 1, $hint->{severity} );
+				$win->{syntaxbar}->SetItem( $idx, 2, $hint->{msg} );
+
+				$last_hint = $hint;
+			}
+			my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
+			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, gettext("Type") x 2 );
+			my $width2 = $win->{syntaxbar}->GetSize->GetWidth - $width0 - $width1 - $win->{syntaxbar}->GetCharWidth * 2;
+			$win->{syntaxbar}->SetColumnWidth( 0, $width0 );
+			$win->{syntaxbar}->SetColumnWidth( 1, $width1 );
+			$win->{syntaxbar}->SetColumnWidth( 2, $width2 );
+		}
+		else {
+			$page->MarkerDeleteAll(Padre::Wx::MarkError);
+			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+			$win->{syntaxbar}->DeleteAllItems;
+		}
 	}
 
 	return;
@@ -1482,6 +1529,19 @@ sub on_toggle_code_folding {
 	return;
 }
 
+sub on_toggle_synchk {
+	my ($self, $event) = @_;
+
+	my $config = Padre->ide->config;
+	$config->{editor_syntaxcheck} = $event->IsChecked ? 1 : 0;
+
+	$self->enable_syntax_checker( $config->{editor_syntaxcheck} );
+
+    $self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} );
+
+	return;
+}
+
 sub on_toggle_indentation_guide {
 	my $self   = shift;
 
@@ -1580,6 +1640,25 @@ sub show_functions {
 	}
 	Padre->ide->config->{main_rightbar} = $on;
 
+	return;
+}
+
+sub show_syntaxbar {
+	my $self = shift;
+	my $on   = scalar(@_) ? $_[0] ? 1 : 0 : 1;
+	unless ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+		$self->manager->GetPane('syntaxbar')->Hide();
+		$self->manager->Update;
+		return;
+	}
+	if ( $on ) {
+		$self->manager->GetPane('syntaxbar')->Show();
+		$self->manager->Update;
+	}
+	else {
+		$self->manager->GetPane('syntaxbar')->Hide();
+		$self->manager->Update;
+	}
 	return;
 }
 
@@ -1722,6 +1801,26 @@ sub on_function_selected {
 	$self->selected_editor->SetFocus;
 	return;
 }
+
+sub on_synchkmsg_selected {
+	my ($self, $event) = @_;
+
+	my $id   = $self->{notebook}->GetSelection;
+	my $page = $self->{notebook}->GetPage($id);
+
+	my $line_number = $event->GetItem->GetText;
+	return if  not defined($line_number)
+			or $line_number !~ /^\d+$/o
+			or $page->GetLineCount < $line_number;
+
+	$line_number--;
+	$page->EnsureVisible($line_number);
+	$page->GotoPos( $page->GetLineIndentPosition($line_number) );
+	$page->SetFocus;
+
+	return;
+}
+
 
 
 ## STC related functions
