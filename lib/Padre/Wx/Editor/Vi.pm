@@ -63,11 +63,7 @@ $subs{PLAIN} = {
 		my $self = shift;
 		$self->PageDown;
 	},
-	Wx::WXK_HOME => sub {
-		my $self = shift;
-		$self->{vi_mode_end_pressed} = 0;
-		$self->Home;
-	},
+	Wx::WXK_HOME => \&goto_beginning_of_line,
 	Wx::WXK_END => \&goto_end_of_line,
 	
 
@@ -156,6 +152,7 @@ $subs{SHIFT} = {
 		Padre::Wx::Editor::text_paste_from_clipboard();
 	},
 	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
+	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
 
 sub vi_mode_line_down {
@@ -274,6 +271,12 @@ sub goto_end_of_line {
 	my $line = $self->LineFromPosition($pos);
 	my $end  = $self->GetLineEndPosition($line);
 	$self->GotoPos($end);
+}
+
+sub goto_beginning_of_line {
+	my $self = shift;
+	$self->{vi_mode_end_pressed} = 0;
+	$self->Home;
 }
 
 1;
