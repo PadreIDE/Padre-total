@@ -30,10 +30,12 @@ lib/Padre/Plugin/MY.pm
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Dialog.pm
 lib/Padre/Wx/Dialog/Bookmarks.pm
+lib/Padre/Wx/Dialog/CommandLine.pm
 lib/Padre/Wx/Dialog/Find.pm
 lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Dialog/Preferences.pm
 lib/Padre/Wx/Editor.pm
+lib/Padre/Wx/Editor/Vi.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Output.pm

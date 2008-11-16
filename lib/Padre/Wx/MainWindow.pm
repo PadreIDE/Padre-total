@@ -1930,6 +1930,25 @@ sub on_quick_find {
 	return;
 }
 
+sub on_set_vi_mode {
+	my $self = shift;
+	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	unless ( $on == $self->{menu}->{experimental_vi_mode}->IsChecked ) {
+		$self->{menu}->{experimental_vi_mode}->Check($on);
+	}
+	Padre->ide->config->{vi_mode} = $on;
+
+	if ($on) {
+		require Padre::Wx::Editor::Vi;
+		require Padre::Wx::Dialog::CommandLine;
+		foreach my $editor ( $self->pages ) {
+			$editor->setup_vi_mode;
+		}
+	}
+
+	return;
+}
+
 sub on_doc_stats {
 	my ($self, $event) = @_;
 

@@ -31,6 +31,7 @@ SCOPE: {
 	is_deeply  $config,
 		{
 		experimental       => 0,
+		vi_mode            => 0,
 		pod_minlist        => 2,
 		pod_maxlist        => 200,
 

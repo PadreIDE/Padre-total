@@ -949,6 +949,18 @@ sub menu_experimental {
 		},
 	);
 	$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
+
+
+	$menu->{experimental_vi_mode} = $menu_exp->AppendCheckItem( -1, gettext("vi mode") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{experimental_vi_mode},
+		sub {
+			$_[0]->on_set_vi_mode(
+				$_[0]->{menu}->{experimental_vi_mode}->IsChecked
+			),
+		},
+	);
+	$menu->{experimental_vi_mode}->Check( $config->{vi_mode} ? 1 : 0 );
 	
 	return $menu_exp;
 }
