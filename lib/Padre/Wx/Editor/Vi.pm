@@ -103,7 +103,7 @@ $subs{PLAIN} = {
 	},
 	
 	### editing from navigation mode
-	ord('D') => sub { # delete
+	ord('X') => sub { # delete
 		my $self = shift;
 		my $pos  = $self->GetCurrentPos;
 		$self->SetTargetStart($pos);
