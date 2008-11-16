@@ -113,7 +113,9 @@ $subs{PLAIN} = {
 			$self->GotoPos($start);
 			$self->SetTargetStart($start);
 			$self->SetTargetEnd($end);
-			$self->ReplaceTarget('');
+			$self->SetSelection($start, $end);
+
+			Padre::Wx::Editor::text_cut_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
 		} else {
