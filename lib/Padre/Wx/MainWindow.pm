@@ -1464,7 +1464,7 @@ sub on_full_screen {
 # join current line with next one (a-la vi with Ctrl+J)
 #
 sub on_join_lines {
-	my ($self, $event) = @_;
+	my ($self) = @_;
 
 	my $notebook = $self->{notebook};
 	my $id   = $notebook->GetSelection;

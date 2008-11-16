@@ -149,6 +149,10 @@ $subs{SHIFT} = {
 		$self->GotoPos($start);
 		# change cursor
 	},
+	ord('J') => sub {
+		my $main   = Padre->ide->wx->main_window;
+		$main->on_join_lines;
+	},
 };
 
 sub vi_mode_line_down {
