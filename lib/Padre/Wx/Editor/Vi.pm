@@ -135,6 +135,9 @@ $subs{PLAIN} = {
 	ord('U') => sub { # undo
 		$_[0]->Undo;
 	},
+	ord('P') => sub { #paste
+		Padre::Wx::Editor::text_paste_from_clipboard();
+	},
 };
 
 $subs{SHIFT} = {
@@ -152,6 +155,12 @@ $subs{SHIFT} = {
 	ord('J') => sub {
 		my $main   = Padre->ide->wx->main_window;
 		$main->on_join_lines;
+	},
+	ord('P') => sub { #paste above
+		my $self = shift;
+		my $pos = $self->GetCurrentPos;
+		$self->GotoPos($pos-1);
+		Padre::Wx::Editor::text_paste_from_clipboard();
 	},
 };
 
