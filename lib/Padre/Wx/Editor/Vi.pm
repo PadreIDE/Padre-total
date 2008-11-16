@@ -214,6 +214,7 @@ sub vi_mode {
 
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
+		$self->{vi_buffer}      = '';
 		$event->Skip(0);
 		return;
 	}
