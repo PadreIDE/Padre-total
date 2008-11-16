@@ -102,6 +102,24 @@ $subs{PLAIN} = {
 		# change cursor
 	},
 	
+	ord('D') => sub {
+		my $self = shift;
+		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
+			my $count = $1 || 1;
+			my $line = $self->GetCurrentLine;
+			my $start = $self->PositionFromLine( $line );
+			my $end   = $self->PositionFromLine( $line + $count );
+			#my $end   = $self->GetLineEndPosition($line+$count-1);
+			$self->GotoPos($start);
+			$self->SetTargetStart($start);
+			$self->SetTargetEnd($end);
+			$self->ReplaceTarget('');
+			# got to first char, remove $count rows
+			$self->{vi_buffer} = '';
+		} else {
+			$self->{vi_buffer} .= 'd';
+		}
+	},
 	### editing from navigation mode
 	ord('X') => sub { # delete
 		my $self = shift;
