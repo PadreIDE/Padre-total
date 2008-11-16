@@ -549,7 +549,7 @@ sub text_copy_to_clipboard {
 }
 
 sub text_cut_to_clipboard {
-	my ( $win, $event ) = @_;
+	my $win = Padre->ide->wx->main_window;
 
 	my $id = $win->{notebook}->GetSelection;
 	return if $id == -1;
