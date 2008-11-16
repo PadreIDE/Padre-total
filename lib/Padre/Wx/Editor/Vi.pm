@@ -68,14 +68,7 @@ $subs{PLAIN} = {
 		$self->{vi_mode_end_pressed} = 0;
 		$self->Home;
 	},
-	Wx::WXK_END => sub {
-		my $self = shift;
-		$self->{vi_mode_end_pressed} = 1;
-		my $pos  = $self->GetCurrentPos;
-		my $line = $self->LineFromPosition($pos);
-		my $end  = $self->GetLineEndPosition($line);
-		$self->GotoPos($end);
-	},
+	Wx::WXK_END => \&goto_end_of_line,
 	
 
 	### swictch to insert mode
@@ -162,6 +155,7 @@ $subs{SHIFT} = {
 		$self->GotoPos($pos-1);
 		Padre::Wx::Editor::text_paste_from_clipboard();
 	},
+	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
 };
 
 sub vi_mode_line_down {
@@ -260,7 +254,7 @@ sub vi_mode {
 			$sub->($self);
 		}
 		return;
-	}
+	} 
 
 	if (ord('0') <= $code and $code <= ord('9')) {
 		$self->{vi_buffer} .= chr($code);
@@ -271,6 +265,15 @@ sub vi_mode {
 	printf("k '%s' '%s', '%s'\n", $mod, $code, 
 		(0 < $code and $code < 128 ? chr($code) : ''));
 	return;
+}
+
+sub goto_end_of_line {
+	my $self = shift;
+	$self->{vi_mode_end_pressed} = 1;
+	my $pos  = $self->GetCurrentPos;
+	my $line = $self->LineFromPosition($pos);
+	my $end  = $self->GetLineEndPosition($line);
+	$self->GotoPos($end);
 }
 
 1;
