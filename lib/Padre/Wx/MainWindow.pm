@@ -19,6 +19,8 @@ use Padre::Wx::ToolBar ();
 use Padre::Wx::Output  ();
 use Padre::Document    ();
 use Padre::Documents   ();
+use Padre::Wx::DNDFilesDropTarget ();
+
 
 use Wx::Locale         qw(:default);
 
@@ -81,6 +83,7 @@ sub new {
 		],
 		$wx_frame_style,
 	);
+	$self->SetDropTarget(Padre::Wx::DNDFilesDropTarget->new($self));
 
 	$self->set_locale( );
 

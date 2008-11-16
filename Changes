@@ -14,6 +14,7 @@ Changes for Padre.
     Hide/show white spaces and tabs (JQUELIN)
     Check minimum App::Ack version (JQUELIN)
     Selection markers to ease selection (JQUELIN)
+    Drag-n-drop files from Filer Explorer (CORION)
 
 0.16 2008.11.09
 
