@@ -452,10 +452,58 @@ sub reload {
 	return 1;
 }
 
+=head2 can_check_syntax
+
+Returns a B<true> value if the class provides a method C<check_syntax>
+for retrieving information on syntax errors and warnings in the 
+current document.
+
+The method in this base class returns B<false>.
+
+=cut
+
 sub can_check_syntax {
 	return 0;
 }
 
+=head2 check_syntax ( [ FORCE ] )
+
+NOT IMPLEMENTED IN THIS BASE CLASS
+
+An implementation in a derived class needs to return an arrayref of
+syntax problems.
+Each entry in the array has to be an anonymous hash with the 
+following keys:
+
+=over 4
+
+=item * line
+
+The line where the problem resides
+
+=item * msg
+
+A short description of the problem
+
+=item * severity
+
+A flag indicating the problem class: Either 'B<W>' (warning) or 'B<E>' (error)
+
+=item * desc
+
+A longer description with more information on the error (currently 
+not used but intended to be)
+
+=back
+
+Returns an empty arrayref if no problems can be found.
+
+Returns B<undef> if nothing has changed since the last invocation.
+
+Must return the problem list even if nothing has changed when a 
+param is present which evaluates to B<true>.
+
+=cut
 
 
 
