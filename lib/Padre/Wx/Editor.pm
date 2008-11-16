@@ -446,7 +446,7 @@ sub on_right_down {
 		if ( $ok && $data->GetTextLength > 0 && $win->{notebook}->GetPage($id)->CanPaste ) {
 			Wx::Event::EVT_MENU( $win, # Ctrl-V
 				$paste,
-				sub { \&text_paste_from_clipboard(@_) },
+				sub { text_paste_from_clipboard() },
 			);
 		}
 		else {
@@ -566,7 +566,7 @@ sub text_cut_to_clipboard {
 }
 
 sub text_paste_from_clipboard {
-    my ( $win, $event ) = @_;
+	my $win = Padre->ide->wx->main_window;
 
 	my $id  = $win->{notebook}->GetSelection;
 	return if $id == -1;

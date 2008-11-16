@@ -105,7 +105,7 @@ sub new {
 	Wx::Event::EVT_TOOL(
 		$parent,
 		Wx::wxID_PASTE,
-		sub { \&Padre::Wx::Editor::text_paste_from_clipboard(@_) },
+		sub { Padre::Wx::Editor::text_paste_from_clipboard() },
 	);
 	$self->AddTool(
 		Wx::wxID_SELECTALL, '',

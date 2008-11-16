@@ -392,7 +392,7 @@ sub menu_edit {
     );
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_PASTE, '' ),
-        sub { \&Padre::Wx::Editor::text_paste_from_clipboard(@_) },
+        sub { Padre::Wx::Editor::text_paste_from_clipboard() },
     );
     $menu->AppendSeparator;
 
