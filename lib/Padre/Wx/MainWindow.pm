@@ -392,7 +392,7 @@ sub on_synchk_timer {
 		unless (   defined( $page->{Document} )
 				&& $page->{Document}->can_check_syntax
 		) {
-            if ( ref $page ) {
+            if ( ref $page eq 'Padre::Wx::Editor' ) {
 				$page->MarkerDeleteAll(Padre::Wx::MarkError);
 				$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 			}
@@ -429,10 +429,12 @@ sub on_synchk_timer {
 
 				$last_hint = $hint;
 			}
+
+			my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, gettext("Line") . ' ' );
 			my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
 			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, gettext("Type") x 2 );
 			my $width2 = $win->{syntaxbar}->GetSize->GetWidth - $width0 - $width1 - $win->{syntaxbar}->GetCharWidth * 2;
-			$win->{syntaxbar}->SetColumnWidth( 0, $width0 );
+			$win->{syntaxbar}->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
 			$win->{syntaxbar}->SetColumnWidth( 1, $width1 );
 			$win->{syntaxbar}->SetColumnWidth( 2, $width2 );
 		}

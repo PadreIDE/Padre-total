@@ -288,15 +288,26 @@ sub check_syntax {
 		$report = substr( $report, 0, $i );
 	}
 
-	$report =~ s/\n\n/\n/go;
-	$report =~ s/\n\s/\x1F /go;
-	my @msgs = split(/\n/, $report);
+	my $nlchar = "\n";
+	if ( $self->get_newline_type eq 'WIN' ) {
+		$nlchar = "\r\n";
+	}
+	elsif ( $self->get_newline_type eq 'MAC' ) {
+        $nlchar = "\r";
+    }
+
+	return [] if $report =~ /\A[^\n]+syntax OK$nlchar\z/o;
+
+	$report =~ s/$nlchar$nlchar/$nlchar/go;
+	$report =~ s/$nlchar\s/\x1F /go;
+	my @msgs = split(/$nlchar/, $report);
 
 	my $issues = [];
 	my @diag = ();
 	foreach my $msg ( @msgs ) {
 		if (   index( $msg, 'has too many errors' )    > 0
 			or index( $msg, 'had compilation errors' ) > 0
+			or index( $msg, 'syntax OK' ) > 0
 		) {
 			last;
 		}
@@ -329,7 +340,7 @@ sub check_syntax {
 			$cur->{msg} .= "\n" . $tmp;
 		}
 
-		$cur->{msg} =~ s/\x1F/\n/go;
+		$cur->{msg} =~ s/\x1F/$nlchar/go;
 
 		if ( defined $cur->{diag} ) {
 			$cur->{desc} = $diag[ $cur->{diag} ];
