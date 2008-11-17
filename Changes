@@ -1,5 +1,7 @@
 Changes for Padre.
 
+0.17 2008.11.17
+
     Optional highlighting of current line (via background color) (HJANSEN)
     Code folding (#61) (HJANSEN)
     Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
@@ -20,7 +22,7 @@ Changes for Padre.
     Add the beginning of second generation plugin support. (ADAMK)
     Limit the plugin names to one deep only. Second level
         namespaces are saved for the implementation details. (SZABGAB)
-    Experimental PPI base syntax checking. (HJANSEN)
+    Experimental perl -c based syntax checking. (HJANSEN)
     Clean recent files list (#126). (FAYLAND)
     Open all recent files (#125). (FAYLAND)
     Alt-1, Alt-2, etc removed. (#122) (SZABGAB)
