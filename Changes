@@ -1,20 +1,33 @@
 Changes for Padre.
 
     Optional highlighting of current line (via background color) (HJANSEN)
-    Code folding (HJANSEN)
+    Code folding (#61) (HJANSEN)
     Word Wrap and "Default word wrap on for each file" in Preferences (FAYLAND)
     Show/Hide Output or Functions (FAYLAND)
     Fix the failing plugin manager test. (SZABGAB)
     Add configuration option to the autoindentation (no, same_level, deep). (SZABGAB)
-    Temporarily stop using File::ShareDir::PAR. (SZABGAB)
-    Allow opening multiple files at once (JQUELIN)
+    Switch to File::ShareDir::PAR 0.03. (SZABGAB)
+    Allow opening multiple files at once (#43) (JQUELIN)
     Add Padre::Plugin::MY and set it to be a prefered plugin. (SZABGAB)
-    Join lines with Ctrl+J (JQUELIN)
-    Full screen view (JQUELIN)
-    Hide/show white spaces and tabs (JQUELIN)
-    Check minimum App::Ack version (JQUELIN)
-    Selection markers to ease selection (JQUELIN)
+    Join lines with Ctrl+J (#128) (JQUELIN)
+    Full screen view (#131) (JQUELIN)
+    Hide/show white spaces and tabs (#132) (JQUELIN)
+    Check minimum App::Ack version (#104). (JQUELIN)
+    Selection markers to ease selection (#133) (JQUELIN)
     Drag-n-drop files from Filer Explorer (CORION)
+    Add experimantal and basic vi mode. (SZABGAB)
+    Fix Shift-TAB (#141) (SZABGAB)
+    Add the beginning of second generation plugin support. (ADAMK)
+    Limit the plugin names to one deep only. Second level
+        namespaces are saved for the implementation details. (SZABGAB)
+    Experimental PPI base syntax checking. (HJANSEN)
+    Clean recent files list (#126). (FAYLAND)
+    Open all recent files (#125). (FAYLAND)
+    Alt-1, Alt-2, etc removed. (#122) (SZABGAB)
+    Initial Javascript support. (FAYLAND)
+    Enable/Disable the subs window via View menu (#100). 
+    Move between the editor, the output window 
+      and the subs window with some hot-key (#14) (SZABGAB)
 
 0.16 2008.11.09
 
