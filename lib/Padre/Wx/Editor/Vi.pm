@@ -4,6 +4,8 @@ use warnings;
 
 use Padre::Wx::Editor;
 
+our $VERSION = '0.16';
+
 
 package Padre::Wx::Editor;
 use strict;
