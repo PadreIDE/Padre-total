@@ -879,16 +879,12 @@ sub on_comment_out_block {
 
 	my $pageid = $self->{notebook}->GetSelection();
 	my $page   = $self->{notebook}->GetPage($pageid);
-	my $start  = $page->LineFromPosition($page->GetSelectionStart);
+	my $begin  = $page->LineFromPosition($page->GetSelectionStart);
 	my $end    = $page->LineFromPosition($page->GetSelectionEnd);
+	my $doc    = $self->selected_document;
 
 	$page->BeginUndoAction;
-	for my $line ($start .. $end) {
-		# TODO: this should actually depend on language
-		# insert #
-		my $pos = $page->PositionFromLine($line);
-		$page->InsertText($pos, '#');
-	}
+	$doc->comment_lines($begin, $end);
 	$page->EndUndoAction;
 
 	return;
@@ -899,20 +895,12 @@ sub on_uncomment_block {
 
 	my $pageid = $self->{notebook}->GetSelection();
 	my $page   = $self->{notebook}->GetPage($pageid);
-	my $start  = $page->LineFromPosition($page->GetSelectionStart);
+	my $begin  = $page->LineFromPosition($page->GetSelectionStart);
 	my $end    = $page->LineFromPosition($page->GetSelectionEnd);
+	my $doc    = $self->selected_document;
 
 	$page->BeginUndoAction;
-	for my $line ($start .. $end) {
-		# TODO: this should actually depend on language
-		my $first = $page->PositionFromLine($line);
-		my $last  = $first+1;
-		my $text  = $page->GetTextRange($first, $last);
-		if ($text eq '#') {
-			$page->SetSelection($first, $last);
-			$page->ReplaceSelection('');
-		}
-	}
+	$doc->uncomment_lines($begin, $end);
 	$page->EndUndoAction;
 
 	return;
