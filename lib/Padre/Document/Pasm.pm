@@ -157,6 +157,41 @@ sub get_command {
 
 }
 
+#
+# $doc->comment_lines($begin, $end);
+#
+# comment out lines $begin..$end
+#
+sub comment_lines {
+	my ($self, $begin, $end) = @_;
+
+	my $editor = $self->editor;
+	for my $line ($begin .. $end) {
+		# insert #
+		my $pos = $editor->PositionFromLine($line);
+		$editor->InsertText($pos, '#');
+	}
+}
+
+#
+# $doc->uncomment_lines($begin, $end);
+#
+# uncomment lines $begin..$end
+#
+sub uncomment_lines {
+	my ($self, $begin, $end) = @_;
+
+	my $editor = $self->editor;
+	for my $line ($begin .. $end) {
+		my $first = $editor->PositionFromLine($line);
+		my $last  = $first+1;
+		my $text  = $editor->GetTextRange($first, $last);
+		if ($text eq '#') {
+			$editor->SetSelection($first, $last);
+			$editor->ReplaceSelection('');
+		}
+	}
+}
 
 1;
 
