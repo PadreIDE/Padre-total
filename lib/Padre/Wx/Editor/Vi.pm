@@ -94,16 +94,7 @@ $subs{PLAIN} = {
 	ord('D') => sub {
 		my $self = shift;
 		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
-			my $count = $1 || 1;
-			my $line = $self->GetCurrentLine;
-			my $start = $self->PositionFromLine( $line );
-			my $end   = $self->PositionFromLine( $line + $count );
-			#my $end   = $self->GetLineEndPosition($line+$count-1);
-			$self->GotoPos($start);
-			$self->SetTargetStart($start);
-			$self->SetTargetEnd($end);
-			$self->SetSelection($start, $end);
-
+			$self->vi_mode_select($1 || 1);
 			Padre::Wx::Editor::text_cut_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
@@ -111,6 +102,19 @@ $subs{PLAIN} = {
 			$self->{vi_buffer} .= 'd';
 		}
 	},
+	
+	ord('Y') => sub {
+		my $self = shift;
+		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
+			$self->vi_mode_select($1 || 1);
+			Padre::Wx::Editor::text_copy_to_clipboard();
+			# got to first char, remove $count rows
+			$self->{vi_buffer} = '';
+		} else {
+			$self->{vi_buffer} .= 'y';
+		}
+	},
+
 	### editing from navigation mode
 	ord('X') => sub { # delete
 		my $self = shift;
@@ -277,6 +281,18 @@ sub goto_beginning_of_line {
 	my $self = shift;
 	$self->{vi_mode_end_pressed} = 0;
 	$self->Home;
+}
+
+sub vi_mode_select {
+	my ($self, $count) = @_;
+	my $line = $self->GetCurrentLine;
+	my $start = $self->PositionFromLine( $line );
+	my $end   = $self->PositionFromLine( $line + $count );
+	#my $end   = $self->GetLineEndPosition($line+$count-1);
+	$self->GotoPos($start);
+	$self->SetTargetStart($start);
+	$self->SetTargetEnd($end);
+	$self->SetSelection($start, $end);
 }
 
 1;

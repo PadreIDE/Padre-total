@@ -384,7 +384,7 @@ sub menu_edit {
     
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_COPY, '' ),
-        sub { \&Padre::Wx::Editor::text_copy_to_clipboard(@_) },
+        sub { Padre::Wx::Editor::text_copy_to_clipboard() },
     );
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_CUT, '' ),
