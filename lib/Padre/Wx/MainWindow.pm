@@ -172,7 +172,9 @@ sub new {
 		\&on_function_selected,
 	);
 
-	$self->create_syntaxbar;
+	if (Padre->ide->config->{experimental}) {
+		$self->create_syntaxbar;
+	}
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -276,7 +278,7 @@ sub create_syntaxbar {
 		$self->{syntaxbar},
 		\&on_synchkmsg_selected,
 	);
-	if ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Show();
 	}
 	else {
@@ -346,8 +348,10 @@ sub post_init {
 
 #$self->Close;
 
-	if ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+	if (Padre->ide->config->{experimental}) {
+	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
 		$self->enable_syntax_checker(1);
+	}
 	}
 
 	return;
@@ -1558,7 +1562,7 @@ sub on_toggle_synchk {
 
 	$self->enable_syntax_checker( $config->{editor_syntaxcheck} );
 
-    $self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} );
+    #$self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} );
 
 	return;
 }
@@ -1667,7 +1671,7 @@ sub show_functions {
 sub show_syntaxbar {
 	my $self = shift;
 	my $on   = scalar(@_) ? $_[0] ? 1 : 0 : 1;
-	unless ( $self->{menu}->{view_syntaxcheck}->IsChecked ) {
+	unless ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Hide();
 		$self->manager->Update;
 		return;

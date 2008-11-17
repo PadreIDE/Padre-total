@@ -555,11 +555,6 @@ sub menu_view {
 		$menu->{view_currentlinebackground},
 		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
 	);
-	$menu->{view_syntaxcheck} = $menu_view->AppendCheckItem( -1, gettext("Show Syntax Check") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{view_syntaxcheck},
-		\&Padre::Wx::MainWindow::on_toggle_synchk,
-	);
 	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
@@ -832,17 +827,17 @@ sub menu_window {
 			$_[0]->{output}->SetFocus;
 		},
 	);
-	$self->{window_goto_synchk} = $menu->Append( -1, gettext("GoTo Syntax Check Window\tAlt-C") );
-	Wx::Event::EVT_MENU( $win,
-		$self->{window_goto_synchk},
-		sub {
-			$_[0]->show_syntaxbar(1);
-			$_[0]->{syntaxbar}->SetFocus;
-		},
-	);
-	unless ( $_[0]->{view_syntaxcheck}->IsChecked ) {
-		$self->{window_goto_synchk}->Enable(0);
-	}
+#	$self->{window_goto_synchk} = $menu->Append( -1, gettext("GoTo Syntax Check Window\tAlt-C") );
+#	Wx::Event::EVT_MENU( $win,
+#		$self->{window_goto_synchk},
+#		sub {
+#			$_[0]->show_syntaxbar(1);
+#			$_[0]->{syntaxbar}->SetFocus;
+#		},
+#	);
+#	unless ( $_[0]->{experimental_syntaxcheck}->IsChecked ) {
+#		$self->{window_goto_synchk}->Enable(0);
+#	}
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
 		sub {
@@ -921,13 +916,12 @@ sub menu_experimental {
 			return;
 		},
 	);
-	$menu->{experimental_ppi_syntax_check} = $menu_exp->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax checking") );
+	$menu->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, gettext("Show Syntax Check") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{experimental_ppi_syntax_check},
-		sub {Padre->ide->config->{ppi_syntax_check}
-			= $_[0]->{menu}->{experimental_ppi_syntax_check}->IsChecked ? 1 : 0; },
+		$menu->{experimental_syntaxcheck},
+		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
-	$menu->{experimental_ppi_syntax_check}->Check( $config->{ppi_syntax_check} ? 1 : 0 );
+
 	
 	$menu->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
 	Wx::Event::EVT_MENU( $win,
