@@ -57,7 +57,7 @@ sub new {
 }
 
 # Default plugins menu label
-sub plugins_menu_label {
+sub manu_plugins_label {
 	my $self  = shift;
 	my $label = Scalar::Util::blessed($self);
 	$label =~ s/^Padre::Plugin:://;
@@ -65,20 +65,20 @@ sub plugins_menu_label {
 }
 
 # Default plugins menu data
-sub plugins_menu_data {
+sub menu_plugins_data {
 	# Plugins returning no data will not
 	# be visible in the plugin menu.
 	return ();
 }
 
 # Generates plugin menu
-sub plugins_menu {
+sub menu_plugins {
 	my $self   = shift;
 	my $parent = shift;
 	
 }
 
-sub plugins_menu_items {
+sub _menu_plugins_items {
 	my $self  = shift;
 	my $items = shift;
 	my ($self, $items) = @_;
