@@ -2175,11 +2175,7 @@ sub on_rightbar_left {
 sub on_timer_check_overwrite {
 	my ($self) = @_;
 
-	my $notebook = $self->{notebook};
-	my $id   = $notebook->GetSelection;
-	my $page = $notebook->GetPage($id);
-	my $doc  = Padre::Documents->by_id($id) or return;
-
+	my $doc = $self->selected_document;
 	return unless $doc->has_changed_on_disk;
 
 	my $ret = Wx::MessageBox(
