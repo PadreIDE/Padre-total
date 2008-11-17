@@ -1,5 +1,7 @@
 Changes for Padre.
 
+    Recognize when file is changed on disk (#55) (JQUELIN)
+
 0.17 2008.11.17
 
     Optional highlighting of current line (via background color) (HJANSEN)

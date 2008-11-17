@@ -30,6 +30,7 @@ our $VERSION = '0.16';
 
 my $default_dir = Cwd::cwd();
 
+use constant SECONDS => 1000;
 
 my %shortname_of = (
 	58 => 'en',
@@ -353,6 +354,11 @@ sub post_init {
 		$self->enable_syntax_checker(1);
 	}
 	}
+
+	# 
+	my $timer = Wx::Timer->new( $self );
+	Wx::Event::EVT_TIMER($self, -1,	\&on_timer_check_overwrite);
+	$timer->Start(5 * SECONDS, 0);
 
 	return;
 }
@@ -1300,7 +1306,7 @@ sub _save_buffer {
 		);
 		return if $ret != Wx::wxYES;
 	}
-	
+
 	my $error = $doc->save_file;
 	if ($error) {
 		Wx::MessageBox($error, gettext("Error"), Wx::wxOK, $self);
@@ -1311,7 +1317,7 @@ sub _save_buffer {
 	$page->SetSavePoint;
 	$self->refresh_all;
 
-	return; 
+	return;
 }
 
 # Returns true if closed.
@@ -2158,6 +2164,36 @@ sub on_rightbar_left {
 		$main->{rightbar_was_closed} = 0;
 	}
 	return;
+}
+
+#
+# on_timer_check_overwrite()
+#
+# called every 5 seconds to check if file has been overwritten outside of
+# padre.
+#
+sub on_timer_check_overwrite {
+	my ($self) = @_;
+
+	my $notebook = $self->{notebook};
+	my $id   = $notebook->GetSelection;
+	my $page = $notebook->GetPage($id);
+	my $doc  = Padre::Documents->by_id($id) or return;
+
+	return unless $doc->has_changed_on_disk;
+
+	my $ret = Wx::MessageBox(
+		gettext("File changed on disk since last saved. Do you want to reload it?"),
+		$doc->filename || gettext("File not in sync"),
+		Wx::wxYES_NO|Wx::wxCENTRE,
+		$self,
+	);
+
+	if ( $ret == Wx::wxYES ) {
+		$doc->reload;
+	} else {
+		$doc->{_timestamp} = $doc->time_on_file;
+	}
 }
 
 1;
