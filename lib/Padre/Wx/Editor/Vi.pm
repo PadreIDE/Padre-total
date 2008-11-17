@@ -231,13 +231,16 @@ sub vi_mode {
 #	}
 #
 	$event->Skip(0);
+
+	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
-	if ($code == ord(';') and $mod & 4) { # shift-; also know as :
+	if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
 		Padre::Wx::Dialog::CommandLine->show_prompt();
 		return;
 	}
 
-	my $modifier = $mod & 4 ? 'SHIFT' : 'PLAIN';
+	my $modifier = ($mod == Wx::wxMOD_SHIFT() ? 'SHIFT' : 'PLAIN');
 
 	if (my $thing = $subs{$modifier}{$code}) {
 		my $sub;
@@ -266,7 +269,7 @@ sub vi_mode {
 	
 	# left here to easily find extra keys we still need to implement:
 	printf("k '%s' '%s', '%s'\n", $mod, $code, 
-		(0 < $code and $code < 128 ? chr($code) : ''));
+		(30 < $code and $code < 128 ? chr($code) : ''));
 	return;
 }
 
