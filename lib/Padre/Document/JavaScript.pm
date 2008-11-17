@@ -35,6 +35,42 @@ sub get_function_regex {
 	return qr{(^|\n)function\s+$sub\b};
 }
 
+#
+# $doc->comment_lines($begin, $end);
+#
+# comment out lines $begin..$end
+#
+sub comment_lines {
+	my ($self, $begin, $end) = @_;
+
+	my $editor = $self->editor;
+	for my $line ($begin .. $end) {
+		# insert //
+		my $pos = $editor->PositionFromLine($line);
+		$editor->InsertText($pos, '//');
+	}
+}
+
+#
+# $doc->uncomment_lines($begin, $end);
+#
+# uncomment lines $begin..$end
+#
+sub uncomment_lines {
+	my ($self, $begin, $end) = @_;
+
+	my $editor = $self->editor;
+	for my $line ($begin .. $end) {
+		my $first = $editor->PositionFromLine($line);
+		my $last  = $first+2;
+		my $text  = $editor->GetTextRange($first, $last);
+		if ($text eq '//') {
+			$editor->SetSelection($first, $last);
+			$editor->ReplaceSelection('');
+		}
+	}
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo and Fayland Lam
