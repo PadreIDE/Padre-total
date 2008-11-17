@@ -198,10 +198,13 @@ sub new {
 		$self->refresh_toolbar;
 		my $mod  = $event->GetModifiers || 0;
 		my $code = $event->GetKeyCode;
-		if ( $mod & 2 ) { # Ctrl
+		
+		# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+		$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
+		if ( $mod == Wx::wxMOD_CMD ) { # Ctrl
 			# Ctrl-TAB  #TODO it is already in the menu
 			$self->on_next_pane if $code == Wx::WXK_TAB;
-		} elsif ( $mod & 2+4) { # Ctrl-Shift
+		} elsif ( $mod == Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT()) { # Ctrl-Shift
 			# Ctrl-Shift-TAB #TODO it is already in the menu
 			$self->on_prev_pane if $code == Wx::WXK_TAB;
 		}
