@@ -56,6 +56,12 @@ sub new {
 	return $self;
 }
 
+# By default we use no interfaces.
+# This is of course a lie, but makes it easier in the short term
+sub padre_interfaces {
+	return ();
+}
+
 # Default plugins menu label
 sub manu_plugins_label {
 	my $self  = shift;
