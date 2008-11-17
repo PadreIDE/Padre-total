@@ -205,18 +205,15 @@ sub menu_plugins {
 sub _menu_plugins_simple {
 	my $self  = shift;
 	my $items = shift;
-	my ($self, $items) = @_;
-
-	my $menu = Wx::Menu->new;
-	foreach my $item ( @items ) {
-		if (ref $m->[1] eq 'ARRAY') {
-			my $submenu = $self->_menu_plugins_submenu($m->[1]);
-			$menu->Append(-1, $m->[0], $submenu);
+	my $menu  = Wx::Menu->new;
+	foreach my $item ( @$items ) {
+		if (ref $item->[1] eq 'ARRAY') {
+			my $submenu = $self->_menu_plugins_submenu($item->[1]);
+			$menu->Append(-1, $item->[0], $submenu);
 		} else {
-			Wx::Event::EVT_MENU( $self->win, $menu->Append(-1, $m->[0]), $m->[1] );
+			Wx::Event::EVT_MENU( $self->win, $menu->Append( -1, $item->[0]), $item->[1] );
 		}
 	}
-
 	return $menu;
 }
 
