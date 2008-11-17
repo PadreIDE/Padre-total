@@ -52,7 +52,6 @@ our $VERSION = '0.16';
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
-
 	return $self;
 }
 
@@ -62,8 +61,17 @@ sub padre_interfaces {
 	return ();
 }
 
+# Runs when the plugin is started
+sub plugin_start {
+	return 1;
+}
+
+sub plugin_stop {
+	return 1;
+}
+
 # Default plugins menu label
-sub manu_plugins_label {
+sub menu_plugins_label {
 	my $self  = shift;
 	my $label = Scalar::Util::blessed($self);
 	$label =~ s/^Padre::Plugin:://;
