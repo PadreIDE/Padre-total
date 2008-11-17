@@ -121,6 +121,10 @@ sub on_key_pressed {
 	my ($text_ctrl, $event) = @_;
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
+
+	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
+	
 	if ($code != Wx::WXK_TAB) {
 		$tab_started = undef;
 		$event->Skip(1);
@@ -177,7 +181,7 @@ sub on_key_pressed {
 	return if not @current_options; # somehow alert the user?
 	
 	my $option;
-	if ( $mod & 4 ) { # Shift
+	if ( $mod == Wx::wxMOD_SHIFT() ) {
 		if ($last_tab eq 'for') {
 			unshift @current_options, pop @current_options
 		}
