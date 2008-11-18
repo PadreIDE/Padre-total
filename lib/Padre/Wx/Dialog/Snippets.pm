@@ -22,7 +22,7 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Snippet:')],
-			[ 'Wx::Choice',   '_replace_choice_',    [4,5,6]],
+			[ 'Wx::Choice',   '_find_snippet_',     [4,5,6]],
 		],
 		[
 			[],
@@ -60,10 +60,7 @@ sub dialog {
 sub snippets {
 	my ($class, $main) = @_;
 
-	my $text   = $main->selected_text;
-	$text = '' if not defined $text;
-
-	my $dialog = $class->dialog( $main, { term => $text } );
+	my $dialog = $class->dialog( $main, { } );
 	$dialog->Show(1);
 
 	return;
@@ -96,9 +93,10 @@ sub cancel_clicked {
 sub _get_data_from {
 	my ( $dialog ) = @_;
 print ref $dialog;
-#	my $data = $dialog->get_data;
-
-#	print Data::Dumper::Dumper $data;
+print "BEFORE\n";
+	my $data; eval {$data = $dialog->get_data;};
+print "AFTER $@\n";
+	print Data::Dumper::Dumper $data;
 
 	my $config = Padre->ide->config;
 #	foreach my $field (qw//) {

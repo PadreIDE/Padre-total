@@ -421,11 +421,11 @@ sub menu_edit {
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("Snippets\tAlt-S") ),
-		sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
+        $menu->Append( -1, gettext("Snippets\tAlt-S") ),
+        sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
 	); 
 	Wx::Event::EVT_MENU( $win,
-		$menu->{edit}->Append( -1, gettext("&Brace matching\tCtrl-1") ),
+		$menu->Append( -1, gettext("&Brace matching\tCtrl-1") ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
 	Wx::Event::EVT_MENU( $win,
