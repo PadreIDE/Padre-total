@@ -10,7 +10,7 @@ use Padre::Wx;
 use Padre::Wx::Dialog;
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 sub get_layout {
     my ($config) = @_;
@@ -63,7 +63,7 @@ sub _get_catno {
 
     my $data     = $dialog->get_data;
     my $catno    = $data->{_find_cat_};
-    return defined $catno ? @{ Padre::DB->find_snipclasses }[$catno-1] : '';
+    return $catno ? @{ Padre::DB->find_snipclasses }[$catno-1] : '';
 }
 
 sub find_category {
