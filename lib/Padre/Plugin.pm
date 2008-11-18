@@ -78,7 +78,7 @@ pairs, as shown in the example.
 The padre_interfaces method will be called on the class, not on the plugin
 object. By default, this method returns nothing.
 
-In furture, plugins that do NOT supply compatibility information may be
+In future, plugins that do NOT supply compatibility information may be
 disabled unless the user has specifically allowed experimental plugins.
 
 =cut
@@ -150,7 +150,10 @@ should unload them as well, and delete the code if at all possible, as
 the plugin may be in the process of upgrading and will want those classes
 freed up for use by the new version.
 
-The Padre Plugin Manager will unload the Padre::Plugin::Foo module itself.
+TODO: This should be using Class::Unload. Expecting plugin authors to
+do manual unloading (INC clearing and all the involved trouble) is
+not good. Besides: If a class you loaded uses a third class, should you unload
+that, too?
 
 Returns true on success, or false if the unloading process failed.
 
