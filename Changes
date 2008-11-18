@@ -16,6 +16,7 @@ Changes for Padre.
     Hide the margin of the syntax checker when it is not in use. (SZABGAB)
     Save-as updates the window menu (#145) (JQUELIN)
     Drag and drop file(s) open them (#42) (SZABGAB,JQUELIN)
+    padre --index no longer crashes (#79) (JQUELIN)
 
 0.17 2008.11.17
 

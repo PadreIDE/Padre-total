@@ -886,7 +886,7 @@ sub run_indexer {
 
 	# Save to the database
 	Padre::DB->begin;
-	Padre::DB->remove_modules;
+	Padre::DB->delete_modules;
 	Padre::DB->add_modules(@files);
 	Padre::DB->commit;
 
