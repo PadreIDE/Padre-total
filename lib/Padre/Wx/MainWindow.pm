@@ -1126,6 +1126,13 @@ sub setup_editor {
 
 	$editor->set_preferences;
 
+	if ( $config->{editor_syntaxcheck} ) {
+		if ( $editor->GetMarginWidth(1) == 0 ) {
+			$editor->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
+			$editor->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
+		}
+	}
+
 	my $id = $self->create_tab($editor, $file, $title);
 
 	$editor->padre_setup;
