@@ -6,6 +6,7 @@ my %subs;
 
 use List::Util   ();
 use Padre::Wx    ();
+use Padre::Plugin::Vi::CommandLine;
 
 sub new {
 	my ($class, $editor) = @_;
@@ -172,7 +173,7 @@ sub key_down {
 	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
 	if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
-		Padre::Wx::Dialog::CommandLine->show_prompt();
+		Padre::Plugin::Vi::CommandLine->show_prompt();
 		return 0;
 	}
 

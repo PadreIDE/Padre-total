@@ -28,11 +28,11 @@ lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/MY.pm
 lib/Padre/Plugin/Vi.pm
 lib/Padre/Plugin/Vi/Editor.pm
+lib/Padre/Plugin/Vi/CommandLine.pm
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Dialog.pm
 lib/Padre/Wx/Dialog/Bookmarks.pm
-lib/Padre/Wx/Dialog/CommandLine.pm
 lib/Padre/Wx/Dialog/Find.pm
 lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Dialog/Preferences.pm

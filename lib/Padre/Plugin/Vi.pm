@@ -22,7 +22,7 @@ sub plugin_start {
 	my ($self) = @_;
 
 	require Padre::Plugin::Vi::Editor;
-	require Padre::Wx::Dialog::CommandLine;
+	require Padre::Plugin::Vi::CommandLine;
 	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
 		$self->editor_start($editor);
 	}
@@ -35,7 +35,7 @@ sub plugin_stop {
 		$self->editor_stop($editor);
 	}
 	delete $INC{"Padre/Plugin/Vi/Editor.pm"};
-	delete $INC{"Padre/Wx/dialog/CommandLine.pm"};
+	delete $INC{"Padre/Plugin/Vi/CommandLine.pm"};
 	return;
 }
 

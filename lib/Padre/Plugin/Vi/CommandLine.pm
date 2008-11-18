@@ -1,4 +1,4 @@
-package Padre::Wx::Dialog::CommandLine;
+package Padre::Plugin::Vi::CommandLine;
 
 use warnings;
 use strict;
@@ -11,7 +11,7 @@ use File::Basename   ();
 
 =head1 NAME
 
-Padre::Wx::Dialog::CommandLine - vi and emacs in Padre ?
+Padre::Plugin::Vi::CommandLine - vi plugin in Padre ?
 
 =head1 VERSION
 
@@ -23,10 +23,7 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Install L<Padre>, install this plug-in. It should automatically 
-add a menu option B<Plugins/CommandLine/Show Prompt>
-with Alt-` (Alt-backtick) as a hot-key. 
-(It will later change or be configurable.)
+Install L<Padre>, install this plug-in. 
 
 =head1 DESCRIPTION
 
