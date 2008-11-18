@@ -79,7 +79,7 @@ sub find_class {
     my $field = $dialog->{_widgets_}{_find_snippet_};
     $field->Clear;
     $field->AppendItems($snippets);
-    $field->SetFocus;
+    $field->SetSelection(0);
 
 	return;
 }
