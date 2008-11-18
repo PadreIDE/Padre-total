@@ -62,29 +62,25 @@ CREATE TABLE history (
 END_SQL
 
 	# Create the snippets table
-	 unless ($class->table_exists('snippets')) {
+    unless ($class->table_exists('snippets')) {
         $class->do(<<'END_SQL');
 CREATE TABLE snippets (
 	id INTEGER PRIMARY KEY,
-	class VARCHAR(255),
+	category VARCHAR(255),
 	name VARCHAR(255), 
 	snippet TEXT
 );
 END_SQL
-        $class->do(<<'END_SQL');
-INSERT INTO snippets (class,name,snippet) VALUES ('Statements','foreach','foreach my $ (  ) {
-}
-');
-END_SQL
-        $class->do(<<'END_SQL');
-INSERT INTO snippets (class,name,snippet) VALUES ('Statements','if','if (  ) {
-}
-');
-END_SQL
-        $class->do(<<'END_SQL');
-INSERT INTO snippets (class,name,snippet) VALUES ('Regex','grouping','()');
-END_SQL
+        my @prepsnips = (
+            ['Statements','foreach',"foreach my \$ (  ) {\n}\n"],
+            ['Statements','if',"if (  ) {\n}\n"],
+            ['Regex','grouping','()'],
+        );
+        my $sth = $class->prepare('INSERT INTO snippets (category,name,snippet) VALUES (?, ?, ?)');
+        $sth->execute($_->[0], $_->[1], $_->[2]) for @prepsnips;
     }
+
+    #
 	$class->pragma('user_version', 1);
 }
 
@@ -231,11 +227,11 @@ sub get_last_pod {
 # Snippets
 
 sub add_snippet {
-	my ($class, $type, $name, $value) = @_;
+	my ($class, $category, $name, $value) = @_;
 
 	$class->do(
-		"INSERT INTO snippet ( class, name, value ) VALUES ( ?, ?, ? )",
-		{}, $type, $name, $value,
+		"INSERT INTO snippet ( category, name, value ) VALUES ( ?, ?, ? )",
+		{}, $category, $name, $value,
 	);
 	return;
 }
@@ -243,13 +239,13 @@ sub add_snippet {
 sub find_snipclasses {
 	my ($class, $part) = @_;
 
-	my $sql   = "SELECT distinct class FROM snippets";
+	my $sql   = "SELECT distinct category FROM snippets";
 	my @bind_values;
 	if ( $part ) {
-		$sql .= " WHERE class LIKE ?";
+		$sql .= " WHERE category LIKE ?";
 		push @bind_values, '%' . $part .  '%';
 	}
-	$sql .= " ORDER BY class";
+	$sql .= " ORDER BY category";
 	return $class->selectcol_arrayref($sql, {}, @bind_values);
 }
 
@@ -259,7 +255,7 @@ sub find_snipnames {
 	my $sql   = "SELECT name FROM snippets";
 	my @bind_values;
 	if ( $part ) {
-		$sql .= " WHERE class LIKE ?";
+		$sql .= " WHERE category LIKE ?";
 		push @bind_values, '%' . $part .  '%';
 	}
 	$sql .= " ORDER BY name";
@@ -272,7 +268,7 @@ sub find_snippets {
 	my $sql   = "SELECT snippet FROM snippets";
 	my @bind_values;
 	if ( $part ) {
-		$sql .= " WHERE class LIKE ?";
+		$sql .= " WHERE category LIKE ?";
 		push @bind_values, '%' . $part .  '%';
 	}
 	$sql .= " ORDER BY name";
