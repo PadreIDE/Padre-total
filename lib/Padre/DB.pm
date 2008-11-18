@@ -81,6 +81,9 @@ INSERT INTO snippets (class,name,snippet) VALUES ('Statements','if','if (  ) {
 }
 ');
 END_SQL
+        $class->do(<<'END_SQL');
+INSERT INTO snippets (class,name,snippet) VALUES ('Regex','grouping','()');
+END_SQL
     }
 	$class->pragma('user_version', 1);
 }
@@ -235,6 +238,19 @@ sub add_snippet {
 		{}, $type, $name, $value,
 	);
 	return;
+}
+
+sub find_snipclasses {
+	my ($class, $part) = @_;
+
+	my $sql   = "SELECT distinct class FROM snippets";
+	my @bind_values;
+	if ( $part ) {
+		$sql .= " WHERE class LIKE ?";
+		push @bind_values, '%' . $part .  '%';
+	}
+	$sql .= " ORDER BY class";
+	return $class->selectcol_arrayref($sql, {}, @bind_values);
 }
 
 sub find_snipnames {

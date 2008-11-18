@@ -12,19 +12,16 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.16';
 
-sub get_snipnames {
-    my $choices = Padre::DB->find_snipnames;
-    return $choices;
-}
-
 sub get_layout {
 	my ($search_term, $config) = @_;
 
-    my $snippets = get_snipnames;
+    my $classes = Padre::DB->find_snipclasses;
+    my $snippets = Padre::DB->find_snipnames;
+
 	my @layout = (
 		[
 			[ 'Wx::StaticText', undef,              gettext('Class:')],
-			[ 'Wx::Choice',     '_find_class_',    [1,2,3]],
+			[ 'Wx::Choice',     '_find_class_',    $classes],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Snippet:')],
@@ -75,7 +72,14 @@ sub snippets {
 sub find_class {
 	my ($dialog, $event) = @_;
 
-	_get_data_from( $dialog ) or return;
+	my $data    = _get_data_from( $dialog ) or return;
+    my $classno = $data->{_find_class_};
+    my $class = @{ Padre::DB->find_snipclasses }[$classno];
+    my $snippets = Padre::DB->find_snipnames($class);
+    my $field = $dialog->{_widgets_}{_find_snippet_};
+    $field->Clear;
+    $field->AppendItems($snippets);
+    $field->SetFocus;
 
 	return;
 }
