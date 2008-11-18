@@ -503,6 +503,7 @@ sub refresh_all {
 	$self->refresh_toolbar;
 	$self->refresh_status;
 	$self->refresh_methods;
+	$self->refresh_syntaxcheck;
 	
 	my $id = $self->{notebook}->GetSelection();
 	if (defined $id and $id >= 0) {
@@ -512,7 +513,6 @@ sub refresh_all {
 	return;
 }
 
-    
 sub change_locale {
 	my ($self, $shortname) = @_;
 	my $config = Padre->ide->config;
@@ -537,6 +537,17 @@ sub set_locale {
     $self->{locale}->AddCatalog($shortname) if -f $filename;
 
     return;
+}
+
+sub refresh_syntaxcheck {
+	my $self = shift;
+	return if $self->no_refresh;
+	return if not Padre->ide->config->{experimental};
+	return if not $self->{menu}->{experimental_syntaxcheck}->IsChecked;
+
+	$self->on_synchk_timer(undef, 1);
+
+	return;
 }
 
 sub refresh_menu {
