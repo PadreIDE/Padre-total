@@ -528,6 +528,14 @@ sub refresh_all {
 		$self->{notebook}->GetPage($id)->SetFocus;
 	}
 
+	# force update of list of opened files in window menu
+	# TODO: shouldn't this be in Padre::Wx::Menu::refresh()?
+	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
+		my $doc = Padre::Documents->by_id($i) or return;
+		my $file = $doc->filename || $self->{notebook}->GetPageText($i);
+		$self->{menu}->update_alt_n_menu($file, $i);
+	}
+
 	return;
 }
 
@@ -1394,6 +1402,8 @@ sub close {
 	$self->{notebook}->DeletePage($id);
 
 	# Update the alt-n menus
+	# TODO: shouldn't this be in Padre::Wx::Menu::refresh()?
+	# TODO: why don't we call $self->refresh_all()?
 	$self->{menu}->remove_alt_n_menu;
 	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
 		my $doc = Padre::Documents->by_id($i) or return;
