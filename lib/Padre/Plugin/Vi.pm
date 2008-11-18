@@ -12,6 +12,56 @@ our $VERSION = '0.17';
 
 Padre::Plugin::Vi - vi keyboard for Padre
 
+=head1 DESCRIPTION
+
+Once installed and enabled the user is in full vi-emulation mode,
+which was partially implemented.
+
+The 3 basic modes of vi are in development:
+
+When you turn on vi-mode, or load Padre with vi-mode already enabled
+you reach the normal navigation mode of vi.
+
+
+
+In general the following are implemented:
+
+=over
+
+=item *
+
+in naviation mode catch 'a' and move to insert mode
+
+=item *
+
+in insert mode catch ESC and move to navigation mode
+
+=item *
+
+in navigation mode catch 'd' character and delete the current charcter
+
+=item *
+
+in navigation mode catch '3d' and delete 3 characters
+
+=item *
+
+in navigation mode catch ':' and open the command line
+
+=item *
+
+menu option to swicth back and force vi-mode
+
+=back
+
+We don't plan to impelement many of the configuration options of vi. 
+Even parts that are going to be implemented will not use the same method
+of configuration.
+
+That said, we are planning to add looking for vi configuration options in
+the source file so the editor can set its own configuration based on the
+vi configuration options.
+
 =cut
 
 sub padre_interfaces {
