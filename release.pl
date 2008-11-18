@@ -35,7 +35,7 @@ if (open my $fh, '>>', 'MANIFEST') {
 }
 
 #print "Setting VERSION $version\n";
-find(\&set_version, 'lib');
+find(\&check_version, 'lib');
 die if $error;
 
 _system("$^X Build.PL");
@@ -49,13 +49,16 @@ if ($tag) {
 chdir "/home/gabor/tmp";
 
 
-sub set_version {
+sub check_version {
     return if $File::Find::name =~ /\.svn/;
     return if $_ !~ /\.pm/;
     my @data = read_file($_);
-    if (grep {$_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\d';/ } @data ) {
-       my @new = map {$_ =~ s/^(our \$VERSION\s*=\s*)'\d+\.\d\d';/$1'$version';/; $_ } @data;
-       write_file($_, @new);
+    if (my ($line) = grep {$_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\d';/ } @data ) {
+		if ($line !~ /^(our \$VERSION\s*=\s*)'$version';/ ) {
+			chomp $line;
+			warn "Invalid VERSION in $File::Find::name  ($line)\n";
+			$error++;
+		}
     } else {
        warn "No VERSION in $File::Find::name\n";
        $error++;
