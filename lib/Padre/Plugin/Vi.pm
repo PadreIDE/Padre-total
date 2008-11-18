@@ -18,17 +18,17 @@ sub padre_interfaces {
 	'Padre::Plugin' => 0.17,
 }
 
-sub plugin_start {
+sub plugin_enable {
 	my ($self) = @_;
 
 	require Padre::Plugin::Vi::Editor;
 	require Padre::Plugin::Vi::CommandLine;
 	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
-		$self->editor_start($editor);
+		$self->editor_enable($editor);
 	}
 }
 
-sub plugin_stop {
+sub plugin_disable {
 	my ($self) = @_;
 
 	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
@@ -39,7 +39,7 @@ sub plugin_stop {
 	return;
 }
 
-sub editor_start {
+sub editor_enable {
 	my ($self, $editor, $doc) = @_;
 	
 	$self->{editor}{refaddr $editor} = Padre::Plugin::Vi::Editor->new($editor);

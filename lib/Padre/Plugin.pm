@@ -108,9 +108,9 @@ sub new {
 
 =pod
 
-=head2 plugin_start
+=head2 plugin_enable
 
-The C<plugin_start> object method will be called (at an arbitrary time of Padre's
+The C<plugin_enable> object method will be called (at an arbitrary time of Padre's
 choosing) to allow the plugin object to initialise and start up the Plugin.
 
 This may involve loading any config files, hooking into existing documents or
@@ -128,15 +128,15 @@ The default implementation does nothing, and returns true.
 
 =cut
 
-sub plugin_start {
+sub plugin_enable {
 	return 1;
 }
 
 =pod
 
-=head2 plugin_stop
+=head2 plugin_disable
 
-The C<plugin_stop> method is called by Padre for various reasons to request
+The C<plugin_disable> method is called by Padre for various reasons to request
 the plugin do whatever tasks are necesary to shut itself down. This also
 provides an opportunity to save configuration information, save caches to
 disk, and so on.
@@ -156,7 +156,7 @@ Returns true on success, or false if the unloading process failed.
 
 =cut
 
-sub plugin_stop {
+sub plugin_disable {
 	return 1;
 }
 
@@ -228,7 +228,7 @@ sub _menu_plugins_simple {
 
 =head2 editor_setup
 
-  sub editor_start {
+  sub editor_enable {
       my $self     = shift;
       my $editor   = shift;
       my $document = shift;
@@ -242,7 +242,7 @@ The C<editor_setup> method is called by Padre to provide the plugin with
 an opportunity to alter the setup of the editor as it is being loaded.
 
 This method is only triggered when new editor windows are opened. Hooking
-into any existing open documents must be done within the C<plugin_start>
+into any existing open documents must be done within the C<plugin_enable>
 method.
 
 The method is passed two parameters, the fully set up editor object, and
@@ -254,7 +254,7 @@ deep integration with the editor widget.
 
 =cut
 
-sub editor_start {
+sub editor_enable {
 	return 1;
 }
 

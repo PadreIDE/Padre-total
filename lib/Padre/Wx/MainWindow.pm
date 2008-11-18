@@ -1037,7 +1037,7 @@ sub on_split_window {
 
 	# TODO the plugin manager should call this method for every enabled plugin
 	if ( Padre->ide->config->{vi_mode} ) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_start( $new_editor, $new_editor->{Document} );
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_enable( $new_editor, $new_editor->{Document} );
 	}
 	
 	$self->create_tab($new_editor, $file, " $title");
@@ -1070,7 +1070,7 @@ sub setup_editor {
 	
 	# TODO the plugin manager should call this method for every enabled plugin
 	if ( Padre->ide->config->{vi_mode} ) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_start( $editor, $editor->{Document} );
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_enable( $editor, $editor->{Document} );
 	}
 
 	my $title = $editor->{Document}->get_title;
@@ -1958,7 +1958,7 @@ sub on_quick_find {
 }
 
 # TODO this code will be eliminated and the Plugin Manager itself
-# will call plugin_start when the user enables a plugin
+# will call plugin_enable when the user enables a plugin
 # or after a plugin which is enabled gets loaded (or reloaded).
 sub on_set_vi_mode {
 	my $self = shift;
@@ -1969,9 +1969,9 @@ sub on_set_vi_mode {
 	Padre->ide->config->{vi_mode} = $on;
 
 	if ($on) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_start;
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_enable;
 	} else {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_stop;
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_disable;
 	}
 
 	return;
