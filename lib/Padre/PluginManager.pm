@@ -211,6 +211,9 @@ sub _load_plugin {
 	$plugins->{$plugin_name} = $module;
 	if ($plugin_name eq 'Vi') {
 		$self->{_objects_}{$plugin_name} = $module->new;
+		if ( Padre->ide->config->{vi_mode} ) {
+			$self->{_objects_}{$plugin_name}->plugin_enable;
+		}
 	}
 	
 	return 1;
