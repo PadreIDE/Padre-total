@@ -26,6 +26,8 @@ lib/Padre/Document/Pir.pm
 
 lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/MY.pm
+lib/Padre/Plugin/Vi.pm
+lib/Padre/Plugin/Vi/Editor.pm
 
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Dialog.pm
@@ -36,7 +38,6 @@ lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Dialog/Preferences.pm
 lib/Padre/Wx/DNDFilesDropTarget.pm
 lib/Padre/Wx/Editor.pm
-lib/Padre/Wx/Editor/Vi.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Output.pm

@@ -35,10 +35,7 @@ sub new {
 	if ( Padre->ide->config->{editor_use_wordwrap} ) {
 		$self->SetWrapMode( Wx::wxSTC_WRAP_WORD );
 	}
-	if ( Padre->ide->config->{vi_mode} ) {
-		$self->setup_vi_mode;
-	}
-
+	
 	return $self;
 }
 

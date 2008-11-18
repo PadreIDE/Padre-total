@@ -1023,6 +1023,11 @@ sub on_split_window {
 	$new_editor->padre_setup;
 	$new_editor->SetDocPointer($pointer);
 	$new_editor->set_preferences;
+
+	# TODO the plugin manager should call this method for every enabled plugin
+	if ( Padre->ide->config->{vi_mode} ) {
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_start( $new_editor, $new_editor->{Document} );
+	}
 	
 	$self->create_tab($new_editor, $file, " $title");
 
@@ -1051,6 +1056,11 @@ sub setup_editor {
 		editor   => $editor,
 		filename => $file,
 	);
+	
+	# TODO the plugin manager should call this method for every enabled plugin
+	if ( Padre->ide->config->{vi_mode} ) {
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_start( $editor, $editor->{Document} );
+	}
 
 	my $title = $editor->{Document}->get_title;
 
@@ -1936,6 +1946,9 @@ sub on_quick_find {
 	return;
 }
 
+# TODO this code will be eliminated and the Plugin Manager itself
+# will call plugin_start when the user enables a plugin
+# or after a plugin which is enabled gets loaded (or reloaded).
 sub on_set_vi_mode {
 	my $self = shift;
 	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
@@ -1945,11 +1958,9 @@ sub on_set_vi_mode {
 	Padre->ide->config->{vi_mode} = $on;
 
 	if ($on) {
-		require Padre::Wx::Editor::Vi;
-		require Padre::Wx::Dialog::CommandLine;
-		foreach my $editor ( $self->pages ) {
-			$editor->setup_vi_mode;
-		}
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_start;
+	} else {
+		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_stop;
 	}
 
 	return;

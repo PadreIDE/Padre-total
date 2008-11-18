@@ -168,7 +168,7 @@ sub _load_plugins_from_par {
 			my $parfile = File::Spec->catfile($plugin_dir, $file);
 			PAR->import($parfile);
 			$file =~ s/\.par$//i;
-                        $file =~ s/-/::/g;
+			$file =~ s/-/::/g;
 			$self->_load_plugin($file);
 		}
 	}
@@ -209,6 +209,10 @@ sub _load_plugin {
 		return;
 	}
 	$plugins->{$plugin_name} = $module;
+	if ($plugin_name eq 'Vi') {
+		$self->{_objects_}{$plugin_name} = $module->new;
+	}
+	
 	return 1;
 }
 

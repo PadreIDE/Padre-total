@@ -1,54 +1,38 @@
-package Padre::Wx::Editor::Vi;
+package Padre::Plugin::Vi::Editor;
 use strict;
 use warnings;
-
-use Padre::Wx::Editor;
-
-our $VERSION = '0.16';
-
-
-package Padre::Wx::Editor;
-use strict;
-use warnings;
-
-use List::Util ();
-
-sub setup_vi_mode {
-	my ($self) = @_;
-
-	$self->{vi_insert_mode} = 0;
-	$self->{vi_buffer}      = '';
-	Wx::Event::EVT_KEY_DOWN( $self, sub {
-		my ($self, $event) = @_;
-
-		if (not Padre->ide->config->{vi_mode}) {
-			$event->Skip(1);
-			return;
-		}
-		$self->vi_mode($event);
-		return;
-	});
-
-	return;
-}
-
-# TODO can we somehow remove the event handler when not needed?
-# sub remove_vi_mode {
 
 my %subs;
 
+use List::Util   ();
+use Padre::Wx    ();
+
+sub new {
+	my ($class, $editor) = @_;
+	my $self = bless {}, $class;
+	
+	$self->{vi_insert_mode} = 0;
+	$self->{vi_buffer}      = '';
+	$self->{editor}         = $editor;
+
+	return $self;
+}
+
+sub editor { return $_[0]->{editor} }
+
+
 $subs{PLAIN} = {
 	ord('L')      => sub {
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_mode_end_pressed} = 0;
-		$self->CharRight;
+		$editor->CharRight;
 	},
 	Wx::WXK_RIGHT => ord('L'),
 	
 	ord('H')      => sub {
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_mode_end_pressed} = 0;
-		$self->CharLeft;
+		$editor->CharLeft;
 	},
 	Wx::WXK_LEFT  => ord('H'),
 	
@@ -58,12 +42,12 @@ $subs{PLAIN} = {
 	Wx::WXK_DOWN => ord('J'),
 	
 	Wx::WXK_PAGEUP => sub {
-		my $self = shift;
-		$self->PageUp;
+		my ($self, $editor) = @_;
+		$editor->PageUp;
 	},
 	Wx::WXK_PAGEDOWN => sub {
-		my $self = shift;
-		$self->PageDown;
+		my ($self, $editor) = @_;
+		$editor->PageDown;
 	},
 	Wx::WXK_HOME => \&goto_beginning_of_line,
 	Wx::WXK_END => \&goto_end_of_line,
@@ -71,32 +55,32 @@ $subs{PLAIN} = {
 
 	### swictch to insert mode
 	ord('A')   => sub {  # append
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_insert_mode} = 1;
 		# change cursor
 	},
 	ord('I') => sub { # insert
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_insert_mode} = 1;
-		my $pos  = $self->GetCurrentPos;
-		$self->GotoPos($pos-1);
+		my $pos  = $editor->GetCurrentPos;
+		$editor->GotoPos($pos-1);
 		# change cursor
 	},
 	ord('O') => sub { # open below
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_insert_mode} = 1;
-		my $line = $self->GetCurrentLine;
-		my $end = $self->GetLineEndPosition($line);
+		my $line = $editor->GetCurrentLine;
+		my $end  = $editor->GetLineEndPosition($line);
 		# go to end of line, insert newline
-		$self->GotoPos($end);
-		$self->NewLine;
+		$editor->GotoPos($end);
+		$editor->NewLine;
 		# change cursor
 	},
 	
 	ord('D') => sub {
-		my $self = shift;
+		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
-			$self->vi_mode_select($1 || 1);
+			$self->vi_mode_select($editor, $1 || 1);
 			Padre::Wx::Editor::text_cut_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
@@ -106,9 +90,9 @@ $subs{PLAIN} = {
 	},
 	
 	ord('Y') => sub {
-		my $self = shift;
+		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
-			$self->vi_mode_select($1 || 1);
+			$self->vi_mode_select($editor, $1 || 1);
 			Padre::Wx::Editor::text_copy_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
@@ -119,16 +103,16 @@ $subs{PLAIN} = {
 
 	### editing from navigation mode
 	ord('X') => sub { # delete
-		my $self = shift;
-		my $pos  = $self->GetCurrentPos;
-		$self->SetTargetStart($pos);
+		my ($self, $editor) = @_;
+		my $pos  = $editor->GetCurrentPos;
+		$editor->SetTargetStart($pos);
 		my $count = $self->{vi_buffer} || 1;
-		$self->SetTargetEnd($pos + $count);
+		$editor->SetTargetEnd($pos + $count);
 		$self->{vi_buffer} = '';
-		$self->ReplaceTarget('');
+		$editor->ReplaceTarget('');
 	},
 	ord('U') => sub { # undo
-		$_[0]->Undo;
+		$_[1]->Undo;
 	},
 	ord('P') => sub { #paste
 		Padre::Wx::Editor::text_paste_from_clipboard();
@@ -137,14 +121,14 @@ $subs{PLAIN} = {
 
 $subs{SHIFT} = {
 	ord('O') => sub { # open above
-		my $self = shift;
+		my ($self, $editor) = @_;
 		$self->{vi_insert_mode} = 1;
-		my $line = $self->GetCurrentLine;
-		my $start = $self->PositionFromLine($line);
+		my $line = $editor->GetCurrentLine;
+		my $start = $editor->PositionFromLine($line);
 		# go to beginning of line, insert newline, go to previous line
-		$self->GotoPos($start);
-		$self->NewLine;
-		$self->GotoPos($start);
+		$editor->GotoPos($start);
+		$editor->NewLine;
+		$editor->GotoPos($start);
 		# change cursor
 	},
 	ord('J') => sub {
@@ -152,73 +136,27 @@ $subs{SHIFT} = {
 		$main->on_join_lines;
 	},
 	ord('P') => sub { #paste above
-		my $self = shift;
-		my $pos = $self->GetCurrentPos;
-		$self->GotoPos($pos-1);
+		my ($self, $editor) = @_;
+		my $pos = $editor->GetCurrentPos;
+		$editor->GotoPos($pos-1);
 		Padre::Wx::Editor::text_paste_from_clipboard();
 	},
 	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
 	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
 
-sub vi_mode_line_down {
-	my $self = shift;
-	#$self->LineDown; # is this broken?
-	my $pos  = $self->GetCurrentPos;
-	my $line = $self->LineFromPosition($pos);
-	my $last_line = $self->LineFromPosition(length $self->GetText);
-	if ($line < $last_line) {
-		vi_mode_line_up_down($self, $pos, $line, +1);
-	}
-	return;
-}
-
-sub vi_mode_line_up {
-	my $self = shift;
-	#$self->LineUp; # is this broken?
-	my $pos  = $self->GetCurrentPos;
-	my $line = $self->LineFromPosition($pos);
-	if ($line > 1) {
-		vi_mode_line_up_down($self, $pos, $line, -1);
-	}
-	return;
-}
-
-sub vi_mode_line_up_down {
-	my ($self, $pos, $line, $dir) = @_;
-		
-	my $to;
-	my $end      = $self->GetLineEndPosition($line);
-	my $prev_end = $self->GetLineEndPosition($line + $dir);
-	if ($self->{vi_mode_end_pressed}) {
-		$to = $prev_end;
-	} else {
-		my $prev_start = $self->PositionFromLine($line + $dir);
-		my $col  = $self->GetColumn($pos);
-		$to = $prev_start + $col;
-		$to = List::Util::min($to, $prev_end);
-	}
-	$self->GotoPos($to);
-	return;
-}
-
-
-sub vi_mode {
-	my ($self, $event) = @_;
-
-	my $mod  = $event->GetModifiers || 0;
-	my $code = $event->GetKeyCode;
+# returning the value that will be given to $event->Skip()
+sub key_down {
+	my ($self, $mod, $code) = @_;
 
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
 		$self->{vi_buffer}      = '';
-		$event->Skip(0);
-		return;
+		return 0;
 	}
 
 	if ($self->{vi_insert_mode}) {
-		$event->Skip(1);
-		return;
+		return 1;
 	}
 
 # list of keys we don't want to implement but pass back to the STC to handle
@@ -226,18 +164,16 @@ sub vi_mode {
 #		(Wx::WXK_PAGEDOWN, Wx::WXK_HOME);
 #	
 #	if ($skip{$code}) {
-#		$event->Skip(1);
-#		return;
+#		return 1;
 #	}
 #
-	$event->Skip(0);
 
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
 	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
 	if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
 		Padre::Wx::Dialog::CommandLine->show_prompt();
-		return;
+		return 0;
 	}
 
 	my $modifier = ($mod == Wx::wxMOD_SHIFT() ? 'SHIFT' : 'PLAIN');
@@ -257,47 +193,96 @@ sub vi_mode {
 		}
 		
 		if ($sub) {
-			$sub->($self);
+			$sub->($self, $self->editor);
 		}
-		return;
+		return 0 ;
 	} 
 
 	if (ord('0') <= $code and $code <= ord('9')) {
 		$self->{vi_buffer} .= chr($code);
-		return;
+		return 0;
 	}
 	
 	# left here to easily find extra keys we still need to implement:
 	printf("k '%s' '%s', '%s'\n", $mod, $code, 
 		(30 < $code and $code < 128 ? chr($code) : ''));
+	return 0;
+}
+
+
+sub vi_mode_line_down {
+	my ($self, $editor) = @_;
+	#$editor->LineDown; # is this broken?
+	my $pos  = $editor->GetCurrentPos;
+	my $line = $editor->LineFromPosition($pos);
+	my $last_line = $editor->LineFromPosition(length $editor->GetText);
+	if ($line < $last_line) {
+		vi_mode_line_up_down($self, $editor, $pos, $line, +1);
+	}
 	return;
 }
 
+sub vi_mode_line_up {
+	my ($self, $editor) = @_;
+	#$editor->LineUp; # is this broken?
+	my $pos  = $editor->GetCurrentPos;
+	my $line = $editor->LineFromPosition($pos);
+	if ($line > 1) {
+		vi_mode_line_up_down($self, $editor, $pos, $line, -1);
+	}
+	return;
+}
+
+sub vi_mode_line_up_down {
+	my ($self, $editor, $pos, $line, $dir) = @_;
+		
+	my $to;
+	my $end      = $editor->GetLineEndPosition($line);
+	my $prev_end = $editor->GetLineEndPosition($line + $dir);
+	if ($self->{vi_mode_end_pressed}) {
+		$to = $prev_end;
+	} else {
+		my $prev_start = $editor->PositionFromLine($line + $dir);
+		my $col  = $editor->GetColumn($pos);
+		$to = $prev_start + $col;
+		$to = List::Util::min($to, $prev_end);
+	}
+	$editor->GotoPos($to);
+	return;
+}
+
+
+
 sub goto_end_of_line {
-	my $self = shift;
+	my ($self, $editor) = @_;
 	$self->{vi_mode_end_pressed} = 1;
-	my $pos  = $self->GetCurrentPos;
-	my $line = $self->LineFromPosition($pos);
-	my $end  = $self->GetLineEndPosition($line);
-	$self->GotoPos($end);
+	my $pos  = $editor->GetCurrentPos;
+	my $line = $editor->LineFromPosition($pos);
+	my $end  = $editor->GetLineEndPosition($line);
+	$editor->GotoPos($end);
 }
 
 sub goto_beginning_of_line {
-	my $self = shift;
+	my ($self, $editor) = @_;
 	$self->{vi_mode_end_pressed} = 0;
-	$self->Home;
+	$editor->Home;
 }
 
 sub vi_mode_select {
-	my ($self, $count) = @_;
-	my $line = $self->GetCurrentLine;
-	my $start = $self->PositionFromLine( $line );
-	my $end   = $self->PositionFromLine( $line + $count );
-	#my $end   = $self->GetLineEndPosition($line+$count-1);
-	$self->GotoPos($start);
-	$self->SetTargetStart($start);
-	$self->SetTargetEnd($end);
-	$self->SetSelection($start, $end);
+	my ($self, $editor, $count) = @_;
+	my $line  = $editor->GetCurrentLine;
+	my $start = $editor->PositionFromLine( $line );
+	my $end   = $editor->PositionFromLine( $line + $count );
+	#my $end   = $editor->GetLineEndPosition($line+$count-1);
+	$editor->GotoPos($start);
+	$editor->SetTargetStart($start);
+	$editor->SetTargetEnd($end);
+	$editor->SetSelection($start, $end);
 }
 
 1;
+
+# Copyright 2008 Gabor Szabo.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
