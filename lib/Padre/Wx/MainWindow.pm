@@ -11,6 +11,7 @@ use File::Spec         ();
 use File::Basename     ();
 use File::Slurp        ();
 use List::Util         ();
+use Scalar::Util       qw(refaddr);
 use Params::Util       ();
 use Padre::Util        ();
 use Padre::Wx          ();
@@ -55,6 +56,7 @@ sub new {
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
 	
+
 	# Determine the initial frame style
 	my $wx_frame_style = Wx::wxDEFAULT_FRAME_STYLE;
 	if ( $config->{host}->{main_maximized} ) {
@@ -100,6 +102,8 @@ sub new {
 	# Add some additional attribute slots
 	$self->{marker} = {};
 
+	$self->{page_history} = [];
+
 	# Create the menu bar
 	$self->{menu} = Padre::Wx::Menu->new( $self );
 	$self->SetMenuBar( $self->{menu}->{wx} );
@@ -133,7 +137,14 @@ sub new {
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{notebook},
-		sub { $_[0]->refresh_all },
+		sub {
+			my $editor = $_[0]->selected_editor;
+			if ($editor) {
+				@{ $_[0]->{page_history} } = grep {refaddr $_ ne refaddr $editor} @{ $_[0]->{page_history} };
+				push @{ $_[0]->{page_history} }, $editor;
+			}
+			$_[0]->refresh_all;
+			},
 	);
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
 		$self,
@@ -2209,6 +2220,21 @@ sub on_timer_check_overwrite {
 	}
 }
 
+sub on_last_visited_pane {
+	my ($self, $event) = @_;
+
+	if (@{ $self->{page_history} } >= 2) {
+		@{ $self->{page_history} }[-1, -2] = @{ $_[0]->{page_history} }[-2, -1];
+		foreach my $i ($self->pageids) {
+			my $editor = $_[0]->{notebook}->GetPage($i);
+			if (refaddr $editor eq refaddr $_[0]->{page_history}[-1]) {
+				$self->{notebook}->SetSelection($i);
+				last;
+			}
+		}
+		$self->refresh_status;
+	}
+}
 1;
 
 # Copyright 2008 Gabor Szabo.
