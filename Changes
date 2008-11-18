@@ -2,13 +2,13 @@ Changes for Padre.
 
     Added a few more directories to the no_index list in Build.PL (ADAMK)
     Implement a reusable Padre::Pod2HTML class so that Padre can develop
-    a specific look and feel for all HTML generated from Pod. (ADAMK)
+        a specific look and feel for all HTML generated from Pod. (ADAMK)
     Aggresively bump the Pod::Simple dependency so that the generated
-    HTML contains support for all the latest developments. (ADAMK)
+        HTML contains support for all the latest developments. (ADAMK)
     Add explicit dependency on HTML::Entities because Pod::Simple
-    has now made the dependency optional. (ADAMK)
+        has now made the dependency optional. (ADAMK)
     Aggressivly bump the HTML::Parser dependency so that we have
-    better support for our Unicode-needing users (ADAMK)
+        better support for our Unicode-needing users (ADAMK)
     Recognize when file is changed on disk (#55) (JQUELIN)
     Un/Comment now filetype-dependant (#26) (JQUELIN)
     Moving the vi keybinding code to a Plugin (SZABGAB)
