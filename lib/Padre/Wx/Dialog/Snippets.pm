@@ -61,9 +61,9 @@ sub snippets {
 sub _get_catno {
     my ( $dialog ) = @_;
 
-    my $data     = $dialog->get_data or return;
-    my $catno    = $data->{_find_cat_} - 1;
-    return @{ Padre::DB->find_snipclasses }[$catno];
+    my $data     = $dialog->get_data;
+    my $catno    = $data->{_find_cat_};
+    return defined $catno ? @{ Padre::DB->find_snipclasses }[$catno-1] : '';
 }
 
 sub find_category {
@@ -93,7 +93,6 @@ sub get_snippet {
     my $cat = _get_catno($dialog);
     my $snipno = $data->{_find_snippet_};
     my $text   = get_snippet_text( $cat, $snipno );
-
     my $win = Padre->ide->wx->main_window;
     my $id  = $win->{notebook}->GetSelection;
     $win->{notebook}->GetPage($id)->ReplaceSelection('');
