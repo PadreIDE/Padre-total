@@ -2193,7 +2193,7 @@ sub on_timer_check_overwrite {
 	my ($self) = @_;
 
 	my $doc = $self->selected_document;
-	return unless $doc->has_changed_on_disk;
+	return unless $doc && $doc->has_changed_on_disk;
 
 	my $ret = Wx::MessageBox(
 		gettext("File changed on disk since last saved. Do you want to reload it?"),
