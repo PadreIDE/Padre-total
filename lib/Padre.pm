@@ -536,7 +536,34 @@ If the B<menu_name> method is provided its return value will be the displayed
 entry in the Plugins/ menu. If this method is omitted the name of the plugin
 without the Padre::Plugin part will be used.
 
-See also L<Padre::PluginManager> and L<Padre::PluginBuilder> 
+See also L<Padre::PluginManager> and L<Padre::PluginBuilder>
+
+=head2 Plugin Management TODO
+
+When Padre is launched it looks for plugins in @INC and ...
+It checks against its configuration file and loads the plugins that are
+enabled in the configuration file.
+
+If it encounters plugins that were not in the configuration file yet, that is
+newly installed plugins it will automatically show the Plugin 
+management window listing the newly installed plugins to let the user decide if
+he wants to enable or disable them and if he wants to configure them.
+
+While Padre is running there is a menu option to show the Plugin configuration
+window that shows the list of all the plugins.
+
+TODO: What to do if a newer version of the same plugin was installed?
+
+TODO: What to do if a module was removed ? Shall we keep its data in 
+the configuration file or remove it?
+
+The configuration file has a plugins hash. The keys are the names of the plugins
+(sans the Padre::Plugin:: part)
+
+TODO Padre should offer an easy but simple way for plugin authors 
+to declare configuration variables and automaticly generate both configuration
+file and configuration dialog. Padre should also allow for full customization
+of both for those more advanced in wx foo.
 
 =head1 Editing tools
 
