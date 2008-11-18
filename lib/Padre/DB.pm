@@ -61,6 +61,27 @@ CREATE TABLE history (
 )
 END_SQL
 
+	# Create the snippets table
+	 unless ($class->table_exists('snippets')) {
+        $class->do(<<'END_SQL');
+CREATE TABLE snippets (
+	id INTEGER PRIMARY KEY,
+	class VARCHAR(255),
+	name VARCHAR(255), 
+	snippet TEXT
+);
+END_SQL
+        $class->do(<<'END_SQL');
+INSERT INTO snippets (class,name,snippet) VALUES ('Statements','foreach','foreach my $ (  ) {
+}
+');
+END_SQL
+        $class->do(<<'END_SQL');
+INSERT INTO snippets (class,name,snippet) VALUES ('Statements','if','if (  ) {
+}
+');
+END_SQL
+    }
 	$class->pragma('user_version', 1);
 }
 
@@ -197,6 +218,49 @@ sub get_recent_pod {
 
 sub get_last_pod {
 	$_[0]->get_last('pod');
+}
+
+
+
+
+
+#####################################################################
+# Snippets
+
+sub add_snippet {
+	my ($class, $type, $name, $value) = @_;
+
+	$class->do(
+		"INSERT INTO snippet ( class, name, value ) VALUES ( ?, ?, ? )",
+		{}, $type, $name, $value,
+	);
+	return;
+}
+
+sub find_snipnames {
+	my ($class, $part) = @_;
+
+	my $sql   = "SELECT name FROM snippets";
+	my @bind_values;
+	if ( $part ) {
+		$sql .= " WHERE class LIKE ?";
+		push @bind_values, '%' . $part .  '%';
+	}
+	$sql .= " ORDER BY name";
+	return $class->selectcol_arrayref($sql, {}, @bind_values);
+}
+
+sub find_snippets {
+	my ($class, $part) = @_;
+
+	my $sql   = "SELECT snippet FROM snippets";
+	my @bind_values;
+	if ( $part ) {
+		$sql .= " WHERE class LIKE ?";
+		push @bind_values, '%' . $part .  '%';
+	}
+	$sql .= " ORDER BY name";
+	return $class->selectcol_arrayref($sql, {}, @bind_values);
 }
 
 1;

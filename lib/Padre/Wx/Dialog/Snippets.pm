@@ -12,9 +12,15 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.16';
 
+sub get_snipnames {
+    my $choices = Padre::DB->find_snipnames;
+    return $choices;
+}
+
 sub get_layout {
 	my ($search_term, $config) = @_;
 
+    my $snippets = get_snipnames;
 	my @layout = (
 		[
 			[ 'Wx::StaticText', undef,              gettext('Class:')],
@@ -22,7 +28,7 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Snippet:')],
-			[ 'Wx::Choice',   '_find_snippet_',     [4,5,6]],
+			[ 'Wx::Choice',   '_find_snippet_',     $snippets],
 		],
 		[
 			[],
@@ -74,12 +80,26 @@ sub find_class {
 	return;
 }
 
+sub get_snippet_text {
+	my ($snipno) = @_;
+
+    my $choices = Padre::DB->find_snippets;
+    return $choices->[$snipno];
+}
+
 sub get_snippet {
 	my ($dialog, $event) = @_;
 
-	_get_data_from( $dialog ) or return;
+	my $data   = _get_data_from( $dialog ) or return;
+    my $snipno = $data->{_find_snippet_};
+    my $text   = get_snippet_text($snipno);
 
-	return;
+	my $win = Padre->ide->wx->main_window;
+    my $id  = $win->{notebook}->GetSelection;
+    $win->{notebook}->GetPage($id)->ReplaceSelection('');
+    my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
+    $win->{notebook}->GetPage($id)->InsertText( $pos, $text );
+#    $win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );	return;
 }
 
 sub cancel_clicked {
@@ -92,17 +112,12 @@ sub cancel_clicked {
 
 sub _get_data_from {
 	my ( $dialog ) = @_;
-print ref $dialog;
-print "BEFORE\n";
-	my $data; eval {$data = $dialog->get_data;};
-print "AFTER $@\n";
-	print Data::Dumper::Dumper $data;
 
-	my $config = Padre->ide->config;
-#	foreach my $field (qw//) {
-#	   $config->{search}->{$field} = $data->{$field};
-#	}
-	return 1;
+    my $data = $dialog->get_data;
+
+    #print Data::Dumper::Dumper $data;
+
+	return $data;
 }
 
 1;
