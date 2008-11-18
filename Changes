@@ -12,6 +12,8 @@ Changes for Padre.
     Recognize when file is changed on disk (#55) (JQUELIN)
     Un/Comment now filetype-dependant (#26) (JQUELIN)
     Moving the vi keybinding code to a Plugin (SZABGAB)
+    Jump to the last open window using menu or Ctrl-6 (#137) (SZABGAB)
+    Hide the margin of the synaxt checker when it is not in use. (SZABGAB)
 
 0.17 2008.11.17
 
