@@ -737,15 +737,18 @@ sub menu_plugin {
 
 	foreach my $name ( 'MY', @plugins ) {
 		next if not $plugins{$name};
-		my @menu = eval { $plugins{$name}->menu };
+		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
+		next if not $plugins{$name}{status} or $plugins{$name}{status} ne 'loaded';
+		# TODO add new Padre::Plugin menu creation system
+		my @menu = eval { $plugins{$name}{module}->menu };
 		if ( $@ ) {
 			warn "Error when calling menu for plugin '$name' $@";
 			next;
 		}
 		my $items = $self->add_plugin_menu_items(\@menu);
 		my $label = '';
-		if ( $plugins{$name} and $plugins{$name}->can('menu_name') ) {
-			$label = $plugins{$name}->menu_name;
+		if ( $plugins{$name} and $plugins{$name}{module}->can('menu_name') ) {
+			$label = $plugins{$name}{module}->menu_name;
 		} else {
 			$label = $name;
 			$label =~ s/::/ /;
@@ -783,6 +786,10 @@ sub menu_plugin_tools {
 	);
 	$menu->AppendSeparator;
 
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Open Plugin Manager") ),
+		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
+	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reload All Plugins") ),
 		\&Padre::PluginManager::reload_plugins,

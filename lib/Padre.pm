@@ -540,14 +540,22 @@ See also L<Padre::PluginManager> and L<Padre::PluginBuilder>
 
 =head2 Plugin Management TODO
 
-When Padre is launched it looks for plugins in @INC and ...
+When Padre is launched it looks for plugins in @INC and in its private
+directories. It finds a list of plugins.
 It checks against its configuration file and loads the plugins that are
 enabled in the configuration file.
 
 If it encounters plugins that were not in the configuration file yet, that is
-newly installed plugins it will automatically show the Plugin 
-management window listing the newly installed plugins to let the user decide if
+newly installed plugins it will automatically show the Plugin management window 
+listing the newly installed plugins to let the user decide if
 he wants to enable or disable them and if he wants to configure them.
+
+(Think about a multy user system where a sysadmin might install plugins 
+but the individual user might want to decide which one to enable and which one
+not).
+
+If the user enables a plugin it gets loaded in memory and its enable method is 
+called.
 
 While Padre is running there is a menu option to show the Plugin configuration
 window that shows the list of all the plugins.
@@ -748,6 +756,7 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Bookmarks
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
+	Padre::Wx::Dialog::PluginManager
 	Padre::Wx::Dialog::Preferences
 	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog

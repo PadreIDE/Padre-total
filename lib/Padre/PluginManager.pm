@@ -203,12 +203,28 @@ sub _load_plugin {
 	return if exists $plugins->{$plugin_name};
 
 	my $module = "Padre::Plugin::$plugin_name";
+	my $config = Padre->ide->config;
+
+	$plugins->{$plugin_name}{module} = $module;
+
+	if ( not $config->{plugins}{$plugin_name} ) {
+		$config->{plugins}{$plugin_name}{enabled} = 0;
+		$plugins->{$plugin_name}{status} = 'new';
+		return;
+	}
+	
+	if (not $config->{plugins}{$plugin_name}{enabled} ) {
+		$plugins->{$plugin_name}{status} = 'disabled';
+		return;
+	}
+	
 	eval "use $module"; ## no critic
 	if ($@) {
 		warn "ERROR while trying to load plugin '$plugin_name': $@";
+		$plugins->{$plugin_name}{status} = 'failed';
 		return;
 	}
-	$plugins->{$plugin_name} = $module;
+	$plugins->{$plugin_name}{status} = 'loaded';
 	if ($plugin_name eq 'Vi') {
 		$self->{_objects_}{$plugin_name} = $module->new;
 		if ( Padre->ide->config->{vi_mode} ) {

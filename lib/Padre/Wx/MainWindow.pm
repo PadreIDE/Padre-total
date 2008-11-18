@@ -366,6 +366,27 @@ sub post_init {
 	}
 	}
 
+	my $plugins = Padre->ide->{plugin_manager}{plugins};
+
+	my $new_plugins  = '';
+	foreach my $plugin_name (sort keys %$plugins ) {
+		if ($plugins->{$plugin_name}{status} eq 'new') {
+			$new_plugins .= "$plugin_name\n";
+		}
+	}
+	if ($new_plugins) {
+		my $msg = <<"END_MSG";
+We found several new plugins.
+In order to configure and enable them go to
+Plugins/Plugin Tools/Open Plugin Manager
+
+List of new plugins:
+
+$new_plugins
+END_MSG
+
+		$self->message($msg, 'New plugins detected');
+	}
 	# 
 	my $timer = Wx::Timer->new( $self );
 	Wx::Event::EVT_TIMER($self, -1,	\&on_timer_check_overwrite);
