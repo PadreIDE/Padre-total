@@ -15,6 +15,7 @@ Changes for Padre.
     Jump to the last open window using menu or Ctrl-6 (#137) (SZABGAB)
     Hide the margin of the syntax checker when it is not in use. (SZABGAB)
     Save-as updates the window menu (#145) (JQUELIN)
+    Drag and drop file(s) open them (#42) (SZABGAB,JQUELIN)
 
 0.17 2008.11.17
 

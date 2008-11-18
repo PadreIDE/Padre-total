@@ -39,7 +39,7 @@ sub new {
 	if ( Padre->ide->config->{editor_use_wordwrap} ) {
 		$self->SetWrapMode( Wx::wxSTC_WRAP_WORD );
 	}
-	
+	$self->SetDropTarget(Padre::Wx::DNDFilesDropTarget->new(Padre->ide->wx->main_window));	
 	return $self;
 }
 
