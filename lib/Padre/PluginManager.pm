@@ -11,7 +11,7 @@ use Padre::Wx    ();
 use Padre::Util  ();
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 =pod
 

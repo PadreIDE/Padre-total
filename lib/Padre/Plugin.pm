@@ -42,7 +42,7 @@ use warnings;
 use Scalar::Util ();
 use Padre::Wx    ();
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 
 

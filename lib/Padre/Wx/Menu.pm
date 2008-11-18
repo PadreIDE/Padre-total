@@ -10,7 +10,7 @@ use Padre::Util      ();
 use Padre::Documents ();
 use Wx::Locale       qw(:default);
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 
 

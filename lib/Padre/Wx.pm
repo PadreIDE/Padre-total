@@ -17,7 +17,7 @@ use Wx::Event  ':everything';
 use Wx::AUI    ();
 use Wx::Locale ':default';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 
 

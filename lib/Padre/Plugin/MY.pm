@@ -3,7 +3,7 @@ package Padre::Plugin::MY;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.17';
 
 sub menu_name { 'My Plugin' }
 

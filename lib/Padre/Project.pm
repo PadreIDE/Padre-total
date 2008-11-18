@@ -9,7 +9,7 @@ use Module::Inspector ();
 
 use base 'Module::Inspector';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 sub from_file {
 	my $class = shift;

@@ -11,7 +11,7 @@ my $default_dir;
 use Padre::Wx  ();
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 
 sub on_new_project {

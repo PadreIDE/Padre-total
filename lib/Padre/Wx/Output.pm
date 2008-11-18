@@ -13,7 +13,7 @@ use Wx::Locale   qw(:default);
 
 use base 'Wx::TextCtrl';
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 sub new {
 	my $class  = shift;

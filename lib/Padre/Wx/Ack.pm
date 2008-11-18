@@ -9,7 +9,7 @@ use Wx::Locale qw(:default);
 my $iter;
 my %opts;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 my $DONE_EVENT : shared = Wx::NewEventType;
 
 my $ack_loaded = 0;

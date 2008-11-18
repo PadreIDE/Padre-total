@@ -65,7 +65,7 @@ use Wx::STC;
 
 use Padre::Util;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 my $cnt   = 0;
 
