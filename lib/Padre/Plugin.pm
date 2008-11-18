@@ -226,7 +226,7 @@ sub _menu_plugins_simple {
 
 =pod
 
-=head2 editor_setup
+=head2 editor_enable
 
   sub editor_enable {
       my $self     = shift;
@@ -238,7 +238,7 @@ sub _menu_plugins_simple {
       return 1;
   }
 
-The C<editor_setup> method is called by Padre to provide the plugin with
+The C<editor_enable> method is called by Padre to provide the plugin with
 an opportunity to alter the setup of the editor as it is being loaded.
 
 This method is only triggered when new editor windows are opened. Hooking
@@ -249,12 +249,45 @@ The method is passed two parameters, the fully set up editor object, and
 the L<Padre::Document> being opened.
 
 At the present time, this method has been provided primarily for the use
-of the to-be-created Padre::Plugin::Vi plugin and other plugins that need
+of the L<Padre::Plugin::Vi> plugin and other plugins that need
 deep integration with the editor widget.
 
 =cut
 
 sub editor_enable {
+	return 1;
+}
+
+=pod
+
+=head2 editor_disable
+
+  sub editor_disable {
+      my $self     = shift;
+      my $editor   = shift;
+      my $document = shift;
+  
+      # Undo your changes to the editor here...
+  
+  return 1;
+
+The C<editor_disable> method is the twin of the previous C<editor_enable>
+method. It is called as the file in the editor is being closed, AFTER the
+used has confirmed the file is to be closed.
+
+It provides the plugin with an opportunity to clean up, remove any gui
+customisations, and complete any other shutdown/close processes.
+
+The method is passed two parameters, the fully set up editor object, and
+the L<Padre::Document> being closed.
+
+At the present time, this method has been provided primarily for the use
+of the L<Padre::Plugin::Vi> plugin and other plugins that need 
+deep integration with the editor widget.
+
+=cut
+
+sub editor_disable {
 	return 1;
 }
 
