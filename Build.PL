@@ -22,11 +22,12 @@ my %prereqs = (
 	'File::Basename'          => 0,
 	'FindBin'                 => 0,
 	'Getopt::Long'            => 0,
+	'HTML::Parser'            => '3.58',
+	'HTML::Entities'          => '3.57',
 	'List::Util'              => 0,
 	'IO::Socket'              => 0,
 	'Term::ReadLine'          => 0,
-	'Module::Refresh'		  => 0,
-
+	'Module::Refresh'         => 0,
 	'App::Ack'                => '1.86',
 	'Class::Autouse'          => '1.26',
 	'DBD::SQLite'             => 0,
@@ -44,7 +45,7 @@ my %prereqs = (
 	'ORLite'                  => '0.15',
 	'PAR'                     => '0.970',
 	'Pod::POM'                => 0,
-	'Pod::Simple'             => 0,
+	'Pod::Simple'             => '3.07',
 	'Probe::Perl'             => '0.01',
 	'PPI'                     => '1.203',
 	'Text::Diff'              => '0.35',
@@ -81,7 +82,7 @@ my $builder = Padre::Install->new(
 			MailingList => 'http://mail.perlide.org/mailman/listinfo/padre-dev',
 		},
 		no_index => {
-			directory => [ qw{ t eg share } ],
+			directory => [ qw{ t xt eg share inc} ],
 		},
 	},
 );
