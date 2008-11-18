@@ -421,8 +421,10 @@ sub enable_syntax_checker {
         }
 		my $id   = $self->{notebook}->GetSelection;
 		my $page = $self->{notebook}->GetPage($id);
-		$page->MarkerDeleteAll(Padre::Wx::MarkError);
-		$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+		if ( defined($page) ) {
+			$page->MarkerDeleteAll(Padre::Wx::MarkError);
+			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+		}
 		$self->{syntaxbar}->DeleteAllItems;
 		$self->show_syntaxbar(0);
 	}
