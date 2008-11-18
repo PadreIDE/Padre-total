@@ -72,9 +72,11 @@ CREATE TABLE snippets (
 );
 END_SQL
         my @prepsnips = (
-            ['Statements','foreach',"foreach my \$ (  ) {\n}\n"],
-            ['Statements','if',"if (  ) {\n}\n"],
+            ['File test', 'exists', '-e'],
+            ['Pod', 'pod/cut', "=pod\n\n\n\n=cut\n"],
             ['Regex','grouping','()'],
+            ['Statement','foreach',"foreach my \$ (  ) {\n}\n"],
+            ['Statement','if',"if (  ) {\n}\n"],
         );
         my $sth = $class->prepare('INSERT INTO snippets (category,name,snippet) VALUES (?, ?, ?)');
         $sth->execute($_->[0], $_->[1], $_->[2]) for @prepsnips;
