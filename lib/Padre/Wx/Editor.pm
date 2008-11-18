@@ -29,6 +29,10 @@ sub new {
 	$data = data();
 #	$self->SetMouseDwellTime(1000); # off: Wx::SC_TIME_FOREVER
 
+	$self->SetMarginWidth(0, 0);
+	$self->SetMarginWidth(1, 0);
+	$self->SetMarginWidth(2, 0);
+
 	Wx::Event::EVT_RIGHT_DOWN( $self, \&on_right_down );
 	Wx::Event::EVT_LEFT_UP(  $self, \&on_left_up );
 	
@@ -175,9 +179,6 @@ sub highlight_braces {
 sub show_line_numbers {
 	my ($self, $on) = @_;
 
-	#$self->SetMarginWidth(1, 0);
-	#$self->SetMarginWidth(2, 0);
-
 	# premature optimization, caching the with that was on the 3rd place at load time
 	# as timed my Deve::NYTProf
 	$width ||= $self->TextWidth(Wx::wxSTC_STYLE_LINENUMBER, "9"); # width of a single character
@@ -198,7 +199,7 @@ sub show_line_numbers {
 sub show_symbols {
     my ( $self, $on ) = @_;
 
-	$self->SetMarginWidth(1, 0);
+#	$self->SetMarginWidth(1, 0);
 
 	# $self->SetMarginWidth(1, 16);   #margin 1 for symbols, 16 px wide
 	# $self->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL);

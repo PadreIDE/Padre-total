@@ -395,6 +395,16 @@ sub enable_syntax_checker {
 		$self->show_syntaxbar(0);
 	}
 
+	# Setup a margin to hold fold markers
+	foreach my $editor ($self->pages) {
+		if ($on) {
+			$editor->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
+			$editor->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
+		} else {
+			$editor->SetMarginWidth(1, 0);
+		}
+	}
+
 	return;
 }
 
@@ -423,9 +433,6 @@ sub on_synchk_timer {
 			$page->MarkerDeleteAll(Padre::Wx::MarkError);
 			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 
-			# Setup a margin to hold fold markers
-			$page->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
-			$page->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
 			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"),    Wx::Colour->new("red"));
 			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("orange"), Wx::Colour->new("orange"));
 
