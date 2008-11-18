@@ -749,6 +749,7 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
 	Padre::Wx::Dialog::Preferences
+	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog
 };
 

@@ -421,7 +421,11 @@ sub menu_edit {
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Brace matching\tCtrl-1") ),
+		$menu->{edit}->Append( -1, gettext("Snippets\tAlt-S") ),
+		sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
+	); 
+	Wx::Event::EVT_MENU( $win,
+		$menu->{edit}->Append( -1, gettext("&Brace matching\tCtrl-1") ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
 	Wx::Event::EVT_MENU( $win,
@@ -816,14 +820,6 @@ sub menu_window {
 	$menu->AppendSeparator;
 
 
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
-		sub {
-			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
-			$_[0]->show_functions(1); 
-			$_[0]->{rightbar}->SetFocus;
-		},
-	); 
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("GoTo Output Window\tAlt-O") ),
 		sub {
