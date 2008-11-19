@@ -783,6 +783,20 @@ sub menu_plugin_tools {
 		$menu->Append( -1, gettext("Reload My Plugin") ),
 		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
 	);
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext("Reset My Plugin") ),
+		sub  {
+			my $ret = Wx::MessageBox(
+				gettext("Reset My Plugin"), gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
+			);
+			if ( $ret == Wx::wxOK) {
+				my $target = File::Spec->catfile(
+					Padre->ide->plugin_manager->plugin_dir, 'Padre', 'Plugin', 'MY.pm'
+				);
+				Padre::Config->copy_original_MY_plugin($target);
+			}
+		},
+	);
 	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
