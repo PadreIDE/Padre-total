@@ -646,7 +646,7 @@ sub menu_view {
 		$menu_view->Append( -1, gettext("&Full screen\tF11") ),
 		\&Padre::Wx::MainWindow::on_full_screen,
 	);
-	
+
 	return $menu_view;
 }
 
