@@ -73,9 +73,9 @@ sub plugin_enable {
 
 	require Padre::Plugin::Vi::Editor;
 	require Padre::Plugin::Vi::CommandLine;
-	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
-		$self->editor_enable($editor);
-	}
+	#foreach my $editor ( Padre->ide->wx->main_window->pages ) {
+	#	$self->editor_enable($editor);
+	#}
 }
 
 sub plugin_disable {

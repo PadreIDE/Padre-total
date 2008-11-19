@@ -217,19 +217,22 @@ sub _load_plugin {
 		$plugins->{$plugin_name}{status} = 'disabled';
 		return;
 	}
-	
+	#print "use $module\n";	
 	eval "use $module"; ## no critic
 	if ($@) {
 		warn "ERROR while trying to load plugin '$plugin_name': $@";
 		$plugins->{$plugin_name}{status} = 'failed';
 		return;
 	}
+
 	$plugins->{$plugin_name}{status} = 'loaded';
 	if ($plugin_name eq 'Vi') {
 		$self->{_objects_}{$plugin_name} = $module->new;
-		if ( Padre->ide->config->{vi_mode} ) {
-			$self->{_objects_}{$plugin_name}->plugin_enable;
-		}
+		$self->{_objects_}{$plugin_name}->plugin_enable;
+# this now causes trouble
+#		foreach my $editor ( Padre->ide->wx->main_window->pages ) {
+#			$self->{_objects_}{$plugin_name}->editor_enable( $editor, $editor->{Document} );
+#		}
 	}
 	
 	return 1;

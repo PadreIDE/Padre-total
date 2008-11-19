@@ -159,15 +159,9 @@ sub new {
 
 		# By default, don't enable experimental features
 		experimental              => 0,
-		vi_mode                   => 0,
-
 	);
 	%$self = (%defaults, %$self);
 
-	if ($self->{vi_mode}) {
-		require Padre::Wx::Editor::Vi;
-		require Padre::Wx::Dialog::CommandLine;
-	}
 	return $self;
 }
 

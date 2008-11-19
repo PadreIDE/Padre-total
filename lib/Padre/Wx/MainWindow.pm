@@ -1085,8 +1085,8 @@ sub on_split_window {
 	$new_editor->set_preferences;
 
 	# TODO the plugin manager should call this method for every enabled plugin
-	if ( Padre->ide->config->{vi_mode} ) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_enable( $new_editor, $new_editor->{Document} );
+	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
+		Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $new_editor, $new_editor->{Document} );
 	}
 	
 	$self->create_tab($new_editor, $file, " $title");
@@ -1118,8 +1118,8 @@ sub setup_editor {
 	);
 	
 	# TODO the plugin manager should call this method for every enabled plugin
-	if ( Padre->ide->config->{vi_mode} ) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->editor_enable( $editor, $editor->{Document} );
+	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
+		Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $editor, $editor->{Document} );
 	}
 
 	my $title = $editor->{Document}->get_title;
@@ -2011,26 +2011,6 @@ sub on_quick_find {
 		$self->{menu}->{experimental_quick_find}->Check($on);
 	}
 	Padre->ide->config->{is_quick_find} = $on;
-
-	return;
-}
-
-# TODO this code will be eliminated and the Plugin Manager itself
-# will call plugin_enable when the user enables a plugin
-# or after a plugin which is enabled gets loaded (or reloaded).
-sub on_set_vi_mode {
-	my $self = shift;
-	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
-	unless ( $on == $self->{menu}->{experimental_vi_mode}->IsChecked ) {
-		$self->{menu}->{experimental_vi_mode}->Check($on);
-	}
-	Padre->ide->config->{vi_mode} = $on;
-
-	if ($on) {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_enable;
-	} else {
-		Padre->ide->{plugin_manager}->{_objects_}->{Vi}->plugin_disable;
-	}
 
 	return;
 }
