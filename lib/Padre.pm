@@ -263,30 +263,30 @@ Configure PARROT_PATH to point to the root of parrot
 
 Configure LD_LIBRARY_PATH
 
- export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
+  export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
  
 Build Parrot
 
- cd $PARROT_PATH
- svn up
- make realclean
- perl Configure.pl
- make
- make test
+  cd $PARROT_PATH
+  svn up
+  make realclean
+  perl Configure.pl
+  make
+  make test
 
 Build Parrot::Embed
 
- cd ext/Parrot-Embed/
- ./Build realclean
- perl Build.PL
- ./Build
- ./Build test
+  cd ext/Parrot-Embed/
+  ./Build realclean
+  perl Build.PL
+  ./Build
+  ./Build test
 
 Now if you run Padre it will come with an embedded Parrot interpreter.
 
 You can get the interpreter by calling 
 
- Padre->ide->parrot
+  Padre->ide->parrot
 
 
 =head2 Rectangular Text Selection
@@ -298,10 +298,10 @@ by holding down Ctr-Alt whilst selecting text with your mouse.
 
 For example, imagine you have the following nicely formatted hash assignment in a perl source file:
 
- my %hash = (
-	key1 => 'value1',
-	key2 => 'value2',
-	key3 => 'value3',
+  my %hash = (
+      key1 => 'value1',
+      key2 => 'value2',
+      key3 => 'value3',
  );
 
 With a rectangular text selection you can select only the keys, only the values, etc..
@@ -333,9 +333,9 @@ L<Padre::Document::Perl>.
 
 =head1 Command line options
 
- --index   will go over the @INC and list all the available modules in the database
+  --index   will go over the @INC and list all the available modules in the database
  
- a list of filenames can be given to be opened
+  a list of filenames can be given to be opened
  
 =head1 Preferences
 
@@ -455,7 +455,6 @@ or parentheses ( ), Padre automatically highlight the pair of the braces.
 
 TODO make this optional, let the user set the color
 
-
 =item Autosave on/off?
 
 =back
@@ -498,7 +497,6 @@ When the user closes the file, the autosaved file is removed.
 
 Configurable options: on/off, frequency in seconds
 
-
 =head1 SQLite
 
 Padre is using an SQLite database (~/.padre/config.db) for two 
@@ -520,42 +518,10 @@ A plugin is a module in the Padre::Plugin::* namespace.
 
 At startup time Padre looks for all such modules in @INC 
 and loads them.
-Every plugin must have a C<menu> method that returns its menu items
-which is a list of lists:
-
- ( 
-   [ Name_1, \&callback_1 ],
-   [ Name_2, \&callback_2 ],
- )
-
-Padre will add a menu entry for every plugin under the B<Plugins>
-menu item. For each plugin menu item it will add all the Name_1,
-Name_2 subitems.
-
-If the B<menu_name> method is provided its return value will be the displayed
-entry in the Plugins/ menu. If this method is omitted the name of the plugin
-without the Padre::Plugin part will be used.
+Every plugin must be a subclass of L<Padre::Plugin> and follow the rules
+defined in the L<Padre::Plugin> API documentation.
 
 See also L<Padre::PluginManager> and L<Padre::PluginBuilder>
-
-=head2 Plugin Management TODO
-
-When Padre is launched it looks for plugins in @INC and in its private
-directories. It finds a list of plugins.
-It checks against its configuration file and loads the plugins that are
-enabled in the configuration file.
-
-If it encounters plugins that were not in the configuration file yet, that is
-newly installed plugins it will automatically show the Plugin management window 
-listing the newly installed plugins to let the user decide if
-he wants to enable or disable them and if he wants to configure them.
-
-(Think about a multy user system where a sysadmin might install plugins 
-but the individual user might want to decide which one to enable and which one
-not).
-
-If the user enables a plugin it gets loaded in memory and its enable method is 
-called.
 
 While Padre is running there is a menu option to show the Plugin configuration
 window that shows the list of all the plugins.
