@@ -5,6 +5,7 @@ use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
+use Data::Dumper qw(Dumper);
 
 our $VERSION = '0.17';
 
@@ -17,8 +18,7 @@ sub get_layout {
 		push @layout,
 			[
 				['Wx::StaticText', undef, $module],
-				['Wx::Button',    "able_$module", 
-					($plugins->{$module}{enabled} ? gettext('Disable') : gettext('Enable')) ],
+				['Wx::Button',    "able_$module", 'na'					 ],
 				['Wx::Button',    "pref_$module", gettext('Preferences') ],
 			];
 	}
@@ -47,11 +47,10 @@ sub dialog {
 		width    => [300, 100, 100],
 	);
 	foreach my $module (@plugins) {
-		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{"pref_$module"}, sub { _pref(@_, $module)} );
-		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{"able_$module"}, sub { _able(@_, $module)} );
-		if (not $config->{plugins}{$module}{enabled}) {
-			$dialog->{_widgets_}{"pref_$module"}->Disable;
-		}
+		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{"pref_$module"}, sub { _pref($_[0], $module)} );
+		Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{"able_$module"}, sub { _able($_[0], $module)} );
+		$dialog->{_widgets_}{"pref_$module"}->Disable;
+		_set_labels($dialog, $module, $config->{plugins}{$module}{enabled});
 	}
 
 	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{ok},      sub { $dialog->EndModal(Wx::wxID_OK) } );
@@ -63,30 +62,49 @@ sub dialog {
 }
 
 sub _pref {
-	my ($self, $event, $module) = @_;
-	#$self->{_widgets_}{"pref_$module"}
+	my ($self, $module) = @_;
+
+	my $obj = Padre->ide->plugin_manager->{_objects_}{$module};
+	if ($obj and $obj->can('preferences_dialog')) {
+		$obj->preferences_dialog;
+	}
 	
 	#print "$self\n";
+	return;
 }
 
 sub _able {
-	my ($self, $event, $module) = @_;
+	my ($self, $module) = @_;
 	
 	my $config = Padre->ide->config;
+	
 	if ($config->{plugins}{$module}{enabled}) {
-		# disable plugin
+		# TODO actually disable plugin
 		$config->{plugins}{$module}{enabled} = 0;
-		$self->{_widgets_}{"able_$module"}->SetLabel(gettext('Enable'));
-		$self->{_widgets_}{"pref_$module"}->Disable;
 	} else {
-		# enable plugin
+		# TODO actually enable plugin
+		#Padre::PluginManager::reload_plugin( Padre->ide->wx->main_window, $module );
 		$config->{plugins}{$module}{enabled} = 1;
-		$self->{_widgets_}{"able_$module"}->SetLabel(gettext('Disable'));
-		$self->{_widgets_}{"pref_$module"}->Enable;
 	}
+	_set_labels($self, $module, $config->{plugins}{$module}{enabled});
 	#print "$self\n";
+	return;
 }
 
+sub _set_labels {
+	my ($dialog, $module, $enabled) = @_;
+
+	if ($enabled) {
+		$dialog->{_widgets_}{"able_$module"}->SetLabel(gettext('Disable'));
+		my $obj = Padre->ide->plugin_manager->{_objects_}{$module};
+		if ($obj and $obj->can('preferences_dialog')) {
+			$dialog->{_widgets_}{"pref_$module"}->Enable;
+		}
+	} else {
+		$dialog->{_widgets_}{"able_$module"}->SetLabel(gettext('Enable'));
+		$dialog->{_widgets_}{"pref_$module"}->Disable;
+	}
+}
 
 sub show {
 	my ($class, $main) = @_;
