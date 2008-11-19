@@ -49,7 +49,7 @@ cmp_ok (keys %{$plugin_m2->plugins}, '>=', 3, 'at least 3 plugins')
 
 #is $plugin_m2->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
 ok !exists $plugin_m2->plugins->{'Development::Tools'},  'no second level plugin';
-is $plugin_m2->plugins->{TestPlugin},            'Padre::Plugin::TestPlugin';
+is $plugin_m2->plugins->{TestPlugin}{module},     'Padre::Plugin::TestPlugin';
 #is $plugin_m2->plugins->{'Test::Plugin'},        'Padre::Plugin::Test::Plugin';
 ok ! defined $plugin_m2->plugins->{'Test::Plugin'},        'no second level plugin';
 
