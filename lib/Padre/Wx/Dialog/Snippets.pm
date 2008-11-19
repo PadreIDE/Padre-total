@@ -22,7 +22,7 @@ sub get_layout {
     my @layout = (
         [ [ 'Wx::StaticText', undef, gettext('Class:') ],   [ 'Wx::Choice', '_find_cat_',     $cats ], ],
         [ [ 'Wx::StaticText', undef, gettext('Snippet:') ], [ 'Wx::Choice', '_find_snippet_', $snippets ], ],
-        [ [], [ 'Wx::Button', '_insert_', gettext('Insert') ], [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
+        [ [], [ 'Wx::Button', '_insert_', gettext('&Insert') ], [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
     );
     return \@layout;
 }
@@ -45,6 +45,7 @@ sub dialog {
     Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, \&cancel_clicked );
 
     $dialog->{_widgets_}{_find_cat_}->SetFocus;
+    $dialog->{_widgets_}{_insert_}->SetDefault;
 
     return $dialog;
 }
