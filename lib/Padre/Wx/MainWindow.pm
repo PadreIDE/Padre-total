@@ -553,11 +553,13 @@ sub refresh_all {
 
 	# force update of list of opened files in window menu
 	# TODO: shouldn't this be in Padre::Wx::Menu::refresh()?
-	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
-		my $doc = Padre::Documents->by_id($i) or return;
-		my $file = $doc->filename || $self->{notebook}->GetPageText($i);
-		$self->{menu}->update_alt_n_menu($file, $i);
-	}
+    if ( defined $self->{menu}->{alt} ) {
+	    foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
+		    my $doc = Padre::Documents->by_id($i) or return;
+		    my $file = $doc->filename || $self->{notebook}->GetPageText($i);
+    		$self->{menu}->update_alt_n_menu($file, $i);
+	    }
+    }
 
 	return;
 }
