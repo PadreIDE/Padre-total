@@ -837,6 +837,15 @@ sub menu_window {
  		$menu->Append(-1, gettext("Last Visited File\tCtrl-6")),
  		\&Padre::Wx::MainWindow::on_last_visited_pane,
 	);
+ 	Wx::Event::EVT_MENU( $win,
+ 		$menu->Append(-1, gettext("Right Click\tCtrl-/")),
+ 		sub {
+			my $editor = $_[0]->selected_editor;
+			if ($editor) {
+				$editor->on_right_down($_[1]);
+			}
+		},
+	);
 	$menu->AppendSeparator;
 
 

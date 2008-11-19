@@ -460,8 +460,11 @@ sub on_right_down {
 		$menu->Append( -1, gettext("&Split window") ),
 		\&Padre::Wx::MainWindow::on_split_window,
 	);
-
-	$self->PopupMenu( $menu, $event->GetX, $event->GetY);
+	if ($event->isa('Wx::MouseEvent')) {
+		$self->PopupMenu( $menu, $event->GetX, $event->GetY);
+	} else { #Wx::CommandEvent
+		$self->PopupMenu( $menu, 50, 50); # TODO better location
+	}
 }
 
 sub on_left_up {
