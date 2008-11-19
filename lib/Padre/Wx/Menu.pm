@@ -38,7 +38,7 @@ sub new {
 
 	# Create the Plugins menu if there are any plugins
 	my $menu_plugin = $menu->menu_plugin( $win );
-	$menu->{plugin} = $menu_plugin if $menu_plugin;
+	$menu->{plugin} = $menu_plugin;
 	$menu->{window} = $menu->menu_window( $win );
 	$menu->{help}   = $menu->menu_help( $win );
 
@@ -725,7 +725,6 @@ sub menu_plugin {
 	# Get the list of plugins
 	my %plugins = %{ Padre->ide->plugin_manager->plugins };
 	my @plugins = grep { $_ ne 'MY' } sort keys %plugins or return;
-	return unless @plugins;
 
 	# Create the plugin menu
 	my $menu = Wx::Menu->new;
