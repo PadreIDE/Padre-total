@@ -34,11 +34,12 @@ BEGIN {
 sub load_file {
 	my $self = shift;
 	my $file = shift;
+	my $pod;
 	SCOPE: {
 		local */;
 		local *FILE;
 		open( FILE, '<', $file ) or die "Failed to open file";
-		my $pod = <FILE>;
+		$pod = <FILE>;
 		close( FILE )            or die "Failed to close file";
 	}
 	return $self->load_pod( $pod );
