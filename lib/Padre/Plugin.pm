@@ -6,7 +6,7 @@ package Padre::Plugin;
 
 Padre::Plugin - Padre Plugin API 
 
-=head SYNOPSIS
+=head1 SYNOPSIS
 
   package Padre::Plugin::Foo;
   
