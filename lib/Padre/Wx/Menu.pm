@@ -554,11 +554,6 @@ sub menu_view {
 		$menu->{view_folding},
 		\&Padre::Wx::MainWindow::on_toggle_code_folding,
 	);
-	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, gettext("Highlight Current Line") );
-	Wx::Event::EVT_MENU( $win,
-		$menu->{view_currentlinebackground},
-		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
-	);
 	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
@@ -590,6 +585,11 @@ sub menu_view {
 				$_[0]->{menu}->{view_word_wrap}->IsChecked
 			),
 		},
+	);
+	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, gettext("Highlight Current Line") );
+	Wx::Event::EVT_MENU( $win,
+		$menu->{view_currentlinebackground},
+		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
 	);
 	$menu_view->AppendSeparator;
 
