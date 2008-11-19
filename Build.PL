@@ -30,6 +30,7 @@ my %prereqs = (
 	'Module::Refresh'         => 0,
 	'App::Ack'                => '1.86',
 	'Class::Autouse'          => '1.26',
+	'Class::Unload'           => 0,
 	'DBD::SQLite'             => 0,
 	'DBI'                     => 0,
 	'File::Copy::Recursive'   => 0,

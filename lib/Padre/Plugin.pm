@@ -46,8 +46,6 @@ our $VERSION = '0.17';
 
 
 
-
-
 ######################################################################
 # Default Constructor
 
@@ -145,15 +143,20 @@ Most often, this will be when Padre itself is shutting down. Other uses may
 be when the user wishes to disable the plugin, when the plugin is being
 reloaded, or if the plugin is about to be upgraded.
 
-If you have any classes other than the standard Padre::Plugin::Foo, you
-should unload them as well, and delete the code if at all possible, as
-the plugin may be in the process of upgrading and will want those classes
-freed up for use by the new version.
+If you have any private classes other than the standard Padre::Plugin::Foo, you
+should unload them as well as the plugin may be in the process of upgrading
+and will want those classes freed up for use by the new version.
 
-TODO: This should be using Class::Unload. Expecting plugin authors to
-do manual unloading (INC clearing and all the involved trouble) is
-not good. Besides: If a class you loaded uses a third class, should you unload
-that, too?
+The recommended way of unloading your extra classes is using
+L<Class::Unload>. Suppose you have C<My::Extra::Class> and want to unload it,
+simply do this in C<plugin_disable>:
+
+  require Class::Unload;
+  Class::Unload->unload( "My::Extra::Class" );
+
+Class::Unload takes care of all the tedious bits for you. Note that you
+shouldn't unload any extra, external CPAN dependencies at this point
+since they might be required by other plugins.
 
 Returns true on success, or false if the unloading process failed.
 
