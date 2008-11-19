@@ -1,4 +1,4 @@
-package Padre::Plugin::MY;
+package Padre::Plugin::My;
 
 use strict;
 use warnings;
@@ -37,11 +37,11 @@ sub about {
 
 	my $path = File::Spec->catfile(
 		Padre->ide->config_dir,
-		qw{ plugins Padre Plugin MY.pm }
+		qw{ plugins Padre Plugin My.pm }
 	);
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(
-		Padre::Plugin::MY->menu_name
+		Padre::Plugin::My->menu_name
 	);
 	$about->SetDescription( <<"END_MESSAGE" );
 The philosophy behind Padre is that every Perl programmer

@@ -724,7 +724,7 @@ sub menu_plugin {
 
 	# Get the list of plugins
 	my %plugins = %{ Padre->ide->plugin_manager->plugins };
-	my @plugins = grep { $_ ne 'MY' } sort keys %plugins or return;
+	my @plugins = grep { $_ ne 'My' } sort keys %plugins or return;
 
 	# Create the plugin menu
 	my $menu = Wx::Menu->new;
@@ -734,7 +734,7 @@ sub menu_plugin {
 	$menu->Append( -1, 'Plugin Tools', $tools );
 	$menu->AppendSeparator;
 
-	foreach my $name ( 'MY', @plugins ) {
+	foreach my $name ( 'My', @plugins ) {
 		next if not $plugins{$name};
 		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
 		next if not $plugins{$name}{status} or $plugins{$name}{status} ne 'loaded';
@@ -753,7 +753,7 @@ sub menu_plugin {
 			$label =~ s/::/ /;
 		}
 		$menu->Append( -1, $label, $items );
-		if ( $name eq 'MY' ) {
+		if ( $name eq 'My' ) {
 			$menu->AppendSeparator;
 		}
 	}
@@ -770,9 +770,9 @@ sub menu_plugin_tools {
 		$menu->Append( -1, gettext("Edit My Plugin") ),
 		sub  {
 			my $self = shift;
-			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'MY.pm' );
+			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'My.pm' );
 			if (not -e $file) {
-				return $self->error(gettext("Could not find the Padre::Plugin::MY plugin"));
+				return $self->error(gettext("Could not find the Padre::Plugin::My plugin"));
 			}
 			
 			$self->setup_editor($file);
@@ -781,7 +781,7 @@ sub menu_plugin_tools {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reload My Plugin") ),
-		sub { Padre::PluginManager::reload_plugin( $_[0], 'MY') },
+		sub { Padre::PluginManager::reload_plugin( $_[0], 'My') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reset My Plugin") ),
@@ -791,9 +791,9 @@ sub menu_plugin_tools {
 			);
 			if ( $ret == Wx::wxOK) {
 				my $target = File::Spec->catfile(
-					Padre->ide->plugin_manager->plugin_dir, 'Padre', 'Plugin', 'MY.pm'
+					Padre->ide->plugin_manager->plugin_dir, 'Padre', 'Plugin', 'My.pm'
 				);
-				Padre::Config->copy_original_MY_plugin($target);
+				Padre::Config->copy_original_My_plugin($target);
 			}
 		},
 	);

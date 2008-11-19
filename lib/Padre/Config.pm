@@ -62,24 +62,24 @@ sub default_plugin_dir {
 		die "Cannot create plugins dir '$plugins_full_path' $!";
 	}
 
-	# copy the MY Plugin if necessary
-	my $file = File::Spec->catfile( $plugins_full_path, 'MY.pm' );
+	# copy the My Plugin if necessary
+	my $file = File::Spec->catfile( $plugins_full_path, 'My.pm' );
 	if (not -e $file) {
-		Padre::Config->copy_original_MY_plugin( $file );
+		Padre::Config->copy_original_My_plugin( $file );
 	}
 	return $pluginsdir;
 }
 
 
-sub copy_original_MY_plugin {
+sub copy_original_My_plugin {
 	my $class = shift;
 	my $target = shift;
-	my $src = File::Spec->catfile( File::Basename::dirname($INC{'Padre/Config.pm'}), 'Plugin', 'MY.pm' );
+	my $src = File::Spec->catfile( File::Basename::dirname($INC{'Padre/Config.pm'}), 'Plugin', 'My.pm' );
 	if (not $src) {
-		die "Could not find the original MY plugin";
+		die "Could not find the original My plugin";
 	}
 	if (not File::Copy::copy($src, $target) ) {
-		return die "Could not copy the MY plugin ($src) to $target: $!";
+		return die "Could not copy the My plugin ($src) to $target: $!";
 	}
 	chmod 0644, $target;
 

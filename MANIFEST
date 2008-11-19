@@ -26,7 +26,7 @@ lib/Padre/Document/Perl6.pm
 lib/Padre/Document/Pir.pm
 
 lib/Padre/Plugin/Devel.pm
-lib/Padre/Plugin/MY.pm
+lib/Padre/Plugin/My.pm
 lib/Padre/Plugin/Vi.pm
 lib/Padre/Plugin/Vi/Editor.pm
 lib/Padre/Plugin/Vi/CommandLine.pm
