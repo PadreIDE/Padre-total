@@ -107,9 +107,10 @@ sub _create_panel {
 	# manage the pane in aui
 	$main->manager->AddPane($panel,
 		Wx::AuiPaneInfo->new->Name( 'find' )
-		->Bottom
+        ->Bottom
 		->CaptionVisible(0)
-		->Resizable(0)
+        ->Layer(1)
+        ->Fixed
         ->Show(0)
 	);
 }

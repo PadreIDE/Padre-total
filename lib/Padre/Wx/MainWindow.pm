@@ -172,7 +172,7 @@ sub new {
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Subs") )->Position( 3 )->Right
+			->Caption( gettext("Subs") )->Position( 3 )->Right->Layer(3)
 		 );
         
 
@@ -197,7 +197,7 @@ sub new {
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Output") )->Position( 2 )->Bottom
+			->Caption( gettext("Output") )->Position(2)->Bottom->Layer(4)
 		);
 
 	# on close pane
@@ -283,7 +283,7 @@ sub create_syntaxbar {
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Syntax") )->Position( 3 )->Bottom
+			->Caption( gettext("Syntax") )->Position(3)->Bottom->Layer(2)
 	);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
