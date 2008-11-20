@@ -35,6 +35,16 @@ sub MarkWarn  { 2 }
 
 
 #####################################################################
+# Defines for object IDs
+
+sub id_SYNCHK_TIMER  { 65001 }
+sub id_FILECHK_TIMER { 65002 }
+
+
+
+
+
+#####################################################################
 # Shared Resources
 
 sub share () {

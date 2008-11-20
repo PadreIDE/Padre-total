@@ -388,8 +388,8 @@ END_MSG
 		$self->message($msg, 'New plugins detected');
 	}
 	# 
-	my $timer = Wx::Timer->new( $self );
-	Wx::Event::EVT_TIMER($self, -1, \&on_timer_check_overwrite);
+	my $timer = Wx::Timer->new( $self, Padre::Wx::id_FILECHK_TIMER );
+	Wx::Event::EVT_TIMER($self, Padre::Wx::id_FILECHK_TIMER, \&on_timer_check_overwrite);
 	$timer->Start(5 * SECONDS, 0);
 
 	return;
@@ -417,8 +417,8 @@ sub enable_syntax_checker {
 			$self->on_synchk_timer( undef, 1 );
 		}
 		else {
-			$self->{synCheckTimer} = Wx::Timer->new($self);
-			Wx::Event::EVT_TIMER( $self, -1, \&on_synchk_timer );
+			$self->{synCheckTimer} = Wx::Timer->new($self, Padre::Wx::id_SYNCHK_TIMER);
+			Wx::Event::EVT_TIMER( $self, Padre::Wx::id_SYNCHK_TIMER, \&on_synchk_timer );
 			Wx::Event::EVT_IDLE( $self, \&_idle_timer );
 		}
 		$self->show_syntaxbar(1);
