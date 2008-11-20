@@ -5,40 +5,27 @@ use warnings;
 
 our $VERSION = '0.17';
 
-sub menu_name { 'My Plugin' }
-
-sub menu {
-	return ( 
-		['About' => \&about],
-
-		# To get another menu item comment out the following line
-		# and implement appropriate function		
-		# ['Do Something Quick'  => \&do_something_quick],
-		
-		# To have deeper levels in the menu comment out the following
-		# 4 lines and implement the appropriate function
-		#     [ 'Deep' => [
-		#         [ 'Do something substantial' => \&do_something_substantial ],
-		#     ],
+sub menu_plugins_simple {
+	my $self = shift;
+	return 'My Plugin' => [
+		'About' => sub { $self->about },
+		# 'Another Menu Entry' => sub { $self->about },
+		# 'A Sub-Menu...' => [
+		#     'Sub-Menu Entry' => sub { $self->about },
 		# ],
-	);
+	];
 }
 
-#sub do_something_quick {
-#	my ($main) = @_;
-#}
-#
-#sub do_something_substantial {
-#	my ($main) = @_;
-#}
-
 sub about {
-	my ($main) = @_;
+	my $self = shift;
 
+	# Locate this plugin
 	my $path = File::Spec->catfile(
 		Padre->ide->config_dir,
 		qw{ plugins Padre Plugin My.pm }
 	);
+
+	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(
 		Padre::Plugin::My->menu_name
@@ -54,7 +41,9 @@ $path
 Open it with with Padre and you'll see an explanation on how to add items.
 END_MESSAGE
 
+	# Show the About dialog
 	Wx::AboutBox( $about );
+
 	return;
 }
 
