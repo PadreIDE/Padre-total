@@ -44,10 +44,11 @@ sub search {
 sub _find {
 	my $main  = Padre->ide->wx->main_window;
 
-	my $page = Padre::Documents->current->editor;
-	my $last = $page->GetLength();
-	my $str  = $page->GetTextRange(0, $last);
-	my $regex = quotemeta $wx{entry}->GetValue;
+	my $page  = Padre::Documents->current->editor;
+	my $last  = $page->GetLength();
+	my $text  = $page->GetTextRange(0, $last);
+	my $what  = quotemeta $wx{entry}->GetValue;
+	my $regex = $wx{case}->GetValue ? qr/$what/ : qr/$what/i;
 	my ($from, $to) = $restart
 		? (0, $last)
 		: $page->GetSelection;
@@ -55,7 +56,7 @@ sub _find {
 
 	# search and highlight
 	my ($start, $end, @matches) =
-		Padre::Util::get_matches($str, $regex, $from, $to, $backward);
+		Padre::Util::get_matches($text, $regex, $from, $to, $backward);
 	if ( defined $start ) {
 		$page->SetSelection($start, $end);
 		$wx{entry}->SetBackgroundColour(Wx::wxWHITE);
@@ -95,8 +96,12 @@ sub _create_panel {
 	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed  );
 	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
+	# case sensitivity
+	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case sensitive'));
+	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
+	
 	# place all controls
-	foreach my $w ( qw{ close label entry } ) {
+	foreach my $w ( qw{ close label entry case } ) {
 		$hbox->Add(10,0);
 		$hbox->Add($wx{$w});
 	}
@@ -149,13 +154,26 @@ sub _show_panel {
 	$wx{entry}->SetFocus;
 }
 
+
 # -- Event handlers
+
+#
+# _on_case_checked()
+#
+# called when the "case sensitive" checkbox has changed value. in that case,
+# we'll restart searching from the start of the document.
+#
+sub _on_case_checked {
+	$restart = 1;
+	_find();
+}
+
 
 #
 # _on_entry_changed()
 #
 # called when the entry content has changed (keyboard or other mean). in that
-# case, we're start searching from the start of the document.
+# case, we'll start searching from the start of the document.
 #
 sub _on_entry_changed {
 	$restart = 1;
