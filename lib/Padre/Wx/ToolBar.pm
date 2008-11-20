@@ -105,7 +105,10 @@ sub new {
 	Wx::Event::EVT_TOOL(
 		$parent,
 		Wx::wxID_PASTE,
-		sub { Padre::Wx::Editor::text_paste_from_clipboard() },
+        sub { 
+			my $editor = Padre->ide->wx->main_window->selected_editor or return;
+			$editor->text_paste_from_clipboard();
+		},
 	);
 	$self->AddTool(
 		Wx::wxID_SELECTALL, '',

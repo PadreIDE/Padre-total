@@ -444,7 +444,7 @@ sub on_right_down {
 		if ( $ok && $data->GetTextLength > 0 && $win->{notebook}->GetPage($id)->CanPaste ) {
 			Wx::Event::EVT_MENU( $win, # Ctrl-V
 				$paste,
-				sub { text_paste_from_clipboard() },
+				sub { $_[0]->text_paste_from_clipboard() },
 			);
 		}
 		else {
@@ -591,37 +591,32 @@ sub text_cut_to_clipboard {
 sub get_text_from_clipboard {
 	wxTheClipboard->Open;
 	my $text   = '';
-	my $length = 0;
 	if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
 		my $data = Wx::TextDataObject->new;
 		my $ok   = wxTheClipboard->GetData($data);
 		if ($ok) {
 			$text   = $data->GetText;
 		}
-		else {
-			$text   = '';
-		}
-		wxTheClipboard->Close;
 	}
+	wxTheClipboard->Close;
 	return $text;
 }
 
 sub text_paste_from_clipboard {
+	my ($self) = @_;
+
 	my $text = get_text_from_clipboard();
-	paste_text($text);
+	$self->paste_text($text);
 	return;
 }
 
 sub paste_text {
-	my ($text) = @_;
+	my ($self, $text) = @_;
 
-	my $editor = Padre->ide->wx->main_window->selected_editor;;
-	return if not $editor;
-
-	$editor->ReplaceSelection('');
-	my $pos = $editor->GetCurrentPos;
-	$editor->InsertText( $pos, $text );
-	$editor->GotoPos( $pos + length($text) );
+	$self->ReplaceSelection('');
+	my $pos = $self->GetCurrentPos;
+	$self->InsertText( $pos, $text );
+	$self->GotoPos( $pos + length($text) );
 
 	return;
 }
