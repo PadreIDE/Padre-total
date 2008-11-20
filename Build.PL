@@ -50,6 +50,7 @@ my %prereqs = (
 	'Probe::Perl'             => '0.01',
 	'PPI'                     => '1.203',
 	'Text::Diff'              => '0.35',
+	'Text::FindIndent'        => '0.01',
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => '0.86',
 	'Wx::Perl::Dialog'        => '0.02',
