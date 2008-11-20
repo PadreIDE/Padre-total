@@ -437,21 +437,16 @@ sub on_right_down {
 	);
 
 	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
-	wxTheClipboard->Open;
-	if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
-		my $data = Wx::TextDataObject->new;
-		my $ok   = wxTheClipboard->GetData($data);
-		if ( $ok && $data->GetTextLength > 0 && $win->{notebook}->GetPage($id)->CanPaste ) {
-			Wx::Event::EVT_MENU( $win, # Ctrl-V
-				$paste,
-				sub { Padre->ide->wx->main_window->selected_editor->Paste },
-			);
-		}
-		else {
-			$paste->Enable(0);
-		}
+ 	my $text  = get_text_from_clipboard();
+
+	if ( length($text) && $win->{notebook}->GetPage($id)->CanPaste ) {
+		Wx::Event::EVT_MENU( $win, # Ctrl-V
+			$paste,
+			sub { Padre->ide->wx->main_window->selected_editor->Paste },
+		);
+	} else {
+		$paste->Enable(0);
 	}
-	wxTheClipboard->Close;
 
 	$menu->AppendSeparator;
 
