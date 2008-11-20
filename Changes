@@ -17,6 +17,7 @@ Changes for Padre.
     Save-as updates the window menu (#145) (JQUELIN)
     Drag and drop file(s) open them (#42) (SZABGAB,JQUELIN)
     padre --index no longer crashes (#79) (JQUELIN)
+    Incremental, non-intrusive search a-la Firefox (#60) (JQUELIN)
 
 0.17 2008.11.17
 
