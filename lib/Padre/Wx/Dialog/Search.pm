@@ -120,7 +120,6 @@ sub _create_panel {
 
 	# case sensitivity
 	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case insensitive'));
-	$wx{case}->SetValue( $config->{search}->{case_insensitive} );
 	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
 
 	# regex search
@@ -177,6 +176,11 @@ sub _show_panel {
 	$pane->Show;
 	$auimngr->Update;
 
+	# update checkboxes with config values
+	# since they might have been updated by find dialog
+	$wx{case}->SetValue( $config->{search}->{case_insensitive} );
+	$wx{regex}->SetValue( $config->{search}->{use_regex} );
+
 	# direct input to search
 	$wx{entry}->SetFocus;
 }
@@ -187,8 +191,8 @@ sub _show_panel {
 #
 # _on_case_checked()
 #
-# called when the "case sensitive" checkbox has changed value. in that case,
-# we'll restart searching from the start of the document.
+# called when the "case insensitive" checkbox has changed value. in that
+# case, we'll restart searching from the start of the document.
 #
 sub _on_case_checked {
 	$config->{search}->{case_insensitive} = $wx{case}->GetValue;
@@ -239,6 +243,7 @@ sub _on_key_pressed {
 # we'll restart searching from the start of the document.
 #
 sub _on_regex_checked {
+	$config->{search}->{use_regex} = $wx{regex}->GetValue;
 	$restart = 1;
 	_find();
 }
