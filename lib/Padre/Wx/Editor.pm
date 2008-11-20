@@ -608,12 +608,18 @@ sub get_text_from_clipboard {
 }
 
 sub text_paste_from_clipboard {
+	my ($text, $length) = get_text_from_clipboard();
+	paste_text($text, $length);
+	return;
+}
+
+sub paste_text {
+	my ($text, $length) = @_;
+
 	my $win = Padre->ide->wx->main_window;
 
 	my $id  = $win->{notebook}->GetSelection;
 	return if $id == -1;
-
-	my ($text, $length) = get_text_from_clipboard();
 
 	$win->{notebook}->GetPage($id)->ReplaceSelection('');
 	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
