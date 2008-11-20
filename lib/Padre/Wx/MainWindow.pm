@@ -389,9 +389,19 @@ END_MSG
 	}
 	# 
 	my $timer = Wx::Timer->new( $self );
-	Wx::Event::EVT_TIMER($self, -1,	\&on_timer_check_overwrite);
+	Wx::Event::EVT_TIMER($self, -1, \&on_timer_check_overwrite);
 	$timer->Start(5 * SECONDS, 0);
 
+	return;
+}
+
+sub _idle_timer {
+	my ( $self, $event ) = @_;
+
+	$self->{synCheckTimer}->Stop if $self->{synCheckTimer}->IsRunning;
+	$self->{synCheckTimer}->Start(500, 1);
+
+	$event->Skip(0);
 	return;
 }
 
@@ -403,22 +413,23 @@ sub enable_syntax_checker {
 		if (   defined( $self->{synCheckTimer} )
 			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
 		) {
-			$self->{synCheckTimer}->Start(-1);
+			Wx::Event::EVT_IDLE( $self, \&_idle_timer );
 			$self->on_synchk_timer( undef, 1 );
 		}
 		else {
 			$self->{synCheckTimer} = Wx::Timer->new($self);
 			Wx::Event::EVT_TIMER( $self, -1, \&on_synchk_timer );
-			$self->{synCheckTimer}->Start(1000);
+			Wx::Event::EVT_IDLE( $self, \&_idle_timer );
 		}
-        $self->show_syntaxbar(1);
+		$self->show_syntaxbar(1);
 	}
 	else {
 		if (   defined($self->{synCheckTimer})
 			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
 		) {
 			$self->{synCheckTimer}->Stop;
-        }
+			Wx::Event::EVT_IDLE( $self, sub { return } );
+		}
 		my $id   = $self->{notebook}->GetSelection;
 		my $page = $self->{notebook}->GetPage($id);
 		if ( defined($page) ) {
@@ -452,7 +463,7 @@ sub on_synchk_timer {
 		unless (   defined( $page->{Document} )
 				&& $page->{Document}->can_check_syntax
 		) {
-            if ( ref $page eq 'Padre::Wx::Editor' ) {
+			if ( ref $page eq 'Padre::Wx::Editor' ) {
 				$page->MarkerDeleteAll(Padre::Wx::MarkError);
 				$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 			}
@@ -467,8 +478,10 @@ sub on_synchk_timer {
 			$page->MarkerDeleteAll(Padre::Wx::MarkError);
 			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 
-			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("red"),    Wx::Colour->new("red"));
-			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, Wx::Colour->new("orange"), Wx::Colour->new("orange"));
+			my $red = Wx::Colour->new("red");
+			my $orange = Wx::Colour->new("orange");
+			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, $red, $red);
+			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, $orange, $orange);
 
 			my $i = 0;
 			$win->{syntaxbar}->DeleteAllItems;
@@ -500,6 +513,10 @@ sub on_synchk_timer {
 			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 			$win->{syntaxbar}->DeleteAllItems;
 		}
+	}
+
+	if ( defined($event) ) {
+		$event->Skip(0);
 	}
 
 	return;
