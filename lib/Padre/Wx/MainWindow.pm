@@ -485,18 +485,26 @@ sub on_synchk_timer {
 
 			my $i = 0;
 			$win->{syntaxbar}->DeleteAllItems;
+			delete $page->{synchk_calltips};
 			my $last_hint = '';
 			foreach my $hint ( sort { $a->{line} <=> $b->{line} } @{$messages} ) {
+				my $l = $hint->{line} - 1;
 				if ( $hint->{severity} eq 'W' ) {
-					$page->MarkerAdd( $hint->{line} - 1, 2);
+					$page->MarkerAdd( $l, 2);
 				}
 				else {
-					$page->MarkerAdd( $hint->{line} - 1, 1);
+					$page->MarkerAdd( $l, 1);
 				}
-				my $idx = $win->{syntaxbar}->InsertStringItem( $i++, $hint->{line} );
+				my $idx = $win->{syntaxbar}->InsertStringItem( $i++, $l + 1 );
 				$win->{syntaxbar}->SetItem( $idx, 1, $hint->{severity} );
 				$win->{syntaxbar}->SetItem( $idx, 2, $hint->{msg} );
 
+				if ( exists $page->{synchk_calltips}->{$l} ) {
+					$page->{synchk_calltips}->{$l} .= "\n--\n" . $hint->{msg};
+				}
+				else {
+					$page->{synchk_calltips}->{$l} = $hint->{msg};
+				}
 				$last_hint = $hint;
 			}
 
@@ -1155,6 +1163,8 @@ sub setup_editor {
 	my $id = $self->create_tab($editor, $file, $title);
 
 	$editor->padre_setup;
+
+	Wx::Event::EVT_MOTION( $editor, \&Padre::Wx::Editor::on_mouse_motion );
 
 	return $id;
 }
@@ -1964,7 +1974,7 @@ sub on_stc_style_needed {
 
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
-	
+    
 	# check for brace, on current position, higlight the matching brace
 	my $editor = $self->selected_editor;
 	$editor->highlight_braces;

@@ -480,6 +480,28 @@ sub on_left_up {
 	return;
 }
 
+sub on_mouse_motion {
+	my ( $self, $event ) = @_;
+
+	return unless Padre->ide->config->{editor_syntaxcheck};
+
+	my $mousePos = $event->GetPosition;
+	my $line = $self->LineFromPosition( $self->PositionFromPoint($mousePos) );
+	my $firstPointInLine = $self->PointFromPosition( $self->PositionFromLine($line) );
+
+	if (   $mousePos->x < ( $firstPointInLine->x - 18 )
+		&& $mousePos->x > ( $firstPointInLine->x - 36 )
+	) {
+		$self->CallTipCancel, return unless $self->MarkerGet($line);
+		$self->CallTipShow( $self->PositionFromLine($line), $self->{synchk_calltips}->{$line} );
+	}
+	else {
+		$self->CallTipCancel;
+	}
+
+	return;
+}
+
 sub text_select_all {
 	my ( $win, $event ) = @_;
 
