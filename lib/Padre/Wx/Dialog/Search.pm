@@ -12,8 +12,9 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
 
-my $backward;   # whether to search up or down
-my %wx;         # all the wx widgets
+my $backward = 0;   # whether to search up or down
+my $restart  = 1;   # whether to search from start
+my %wx;             # all the wx widgets
 
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
@@ -217,10 +218,13 @@ sub _find {
 	my $main  = Padre->ide->wx->main_window;
 
     my $page = Padre::Documents->current->editor;
-	my ($from, $to) = $page->GetSelection;
 	my $last = $page->GetLength();
 	my $str  = $page->GetTextRange(0, $last);
     my $regex = quotemeta $wx{entry}->GetValue;
+	my ($from, $to) = $restart
+        ? (0, $last)
+        : $page->GetSelection;
+    $restart = 0;
 	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backward);
 
 	return if not defined $start;
@@ -255,7 +259,8 @@ sub _create_panel {
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
 	$wx{entry}  = Wx::TextCtrl->new($panel, -1, '');
 	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
-    Wx::Event::EVT_CHAR($wx{entry}, \&_on_key_pressed);
+    Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed);
+    Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
     # place all controls
     foreach my $w ( qw{ close label entry } ) {
@@ -311,6 +316,12 @@ sub _show_panel {
 }
 
 # -- Event handlers
+
+sub _on_entry_changed {
+    $restart = 1;
+    _find();
+}
+
 
 sub _on_key_pressed {
     my ($entry, $event) = @_;
