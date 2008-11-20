@@ -4,10 +4,9 @@ use 5.008;
 use strict;
 use warnings;
 
-# Find widget of Padre
+# Incremental search for padre
 
 use Padre::Wx;
-use Padre::Wx::Dialog;
 use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
@@ -15,8 +14,6 @@ our $VERSION = '0.17';
 my $backward = 0;   # whether to search up or down
 my $restart  = 1;   # whether to search from start
 my %wx;             # all the wx widgets
-
-my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
 
 #
@@ -39,178 +36,8 @@ sub search {
     } else {
         _show_panel();
     }
-
-    return;
-
-    my $class;
-	my $config = Padre->ide->config;
-	# for Quick Find
-	if ( $config->{experimental} ) {
-		# check if is checked
-		if ( $main->{menu}->{experimental_quick_find}->IsChecked ) {
-			my $text = $main->selected_text;
-			if ( $text ) {
-				unshift @{$config->{search_terms}}, $text;
-			}
-		}
-	}
-
-	my $term = $config->{search_terms}->[0];
-	if ( $term ) {
-		$class->search();
-	} else {
-		$class->find( $main );
-	}
-	return;
 }
 
-sub find_previous {
-	my ($class, $main) = @_;
-
-	my $term = Padre->ide->config->{search_terms}->[0];
-	if ( $term ) {
-		$class->search(rev => 1);
-	} else {
-		$class->find( $main );
-	}
-	return;
-}
-
-
-sub cancel_clicked {
-	my ($dialog, $event) = @_;
-
-	$dialog->Destroy;
-
-	return;
-}
-
-sub replace_all_clicked {
-	my ($dialog, $event) = @_;
-
-	_get_data_from( $dialog ) or return;
-	my $regex = _get_regex();
-	return if not defined $regex;
-
-	my $config      = Padre->ide->config;
-	my $main_window = Padre->ide->wx->main_window;
-
-	my $id   = $main_window->{notebook}->GetSelection;
-	my $page = $main_window->{notebook}->GetPage($id);
-	my $last = $page->GetLength();
-	my $str  = $page->GetTextRange(0, $last);
-
-	my $replace_term = $config->{replace_terms}->[0];
-	$replace_term =~ s/\\t/\t/g;
-
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
-	$page->BeginUndoAction;
-	foreach my $m (reverse @matches) {
-		$page->SetTargetStart($m->[0]);
-		$page->SetTargetEnd($m->[1]);
-		$page->ReplaceTarget($replace_term);
-	}
-	$page->EndUndoAction;
-
-	return;
-}
-
-sub replace_clicked {
-	my ($dialog, $event) = @_;
-
-	_get_data_from( $dialog ) or return;
-	my $regex = _get_regex();
-	return if not defined $regex;
-
-	my $config = Padre->ide->config;
-
-	# get current search condition and check if they match
-	my $main_window = Padre->ide->wx->main_window;
-	my $str         = $main_window->selected_text;
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, 0, 0);
-
-	# if they do, replace it
-	if (defined $start and $start == 0 and $end == length($str)) {
-		my $id   = $main_window->{notebook}->GetSelection;
-		my $page = $main_window->{notebook}->GetPage($id);
-		#my ($from, $to) = $page->GetSelection;
-	
-		my $replace_term = $config->{replace_terms}->[0];
-		$replace_term =~ s/\\t/\t/g;
-		$page->ReplaceSelection($replace_term);
-	}
-
-	# if search window is still open, run a search_again on the whole text
-	if (not $config->{search}->{close_on_hit}) {
-		__PACKAGE__->search();
-	}
-
-	return;
-}
-
-sub find_clicked {
-	my ($dialog, $event) = @_;
-
-	_get_data_from( $dialog ) or return;
-	__PACKAGE__->search();
-
-	return;
-}
-
-sub _get_regex {
-	my %args = @_;
-
-	my $config = Padre->ide->config;
-
-	my $search_term = $args{search_term} || $config->{search_terms}->[0];
-	return $search_term if defined $search_term and 'Regexp' eq ref $search_term;
-
-	if ($config->{search}->{use_regex}) {
-		$search_term =~ s/\$/\\\$/; # escape $ signs by default so they won't interpolate
-	} else {
-		$search_term = quotemeta $search_term;
-	}
-
-	if ($config->{search}->{case_insensitive})  {
-		$search_term =~ s/^(\^?)/$1(?i)/;
-	}
-
-	my $regex;
-	eval { $regex = qr/$search_term/m };
-	if ($@) {
-		my $main_window = Padre->ide->wx->main_window;
-		Wx::MessageBox(sprintf(gettext("Cannot build regex for '%s'"), $search_term), gettext("Search error"), Wx::wxOK, $main_window);
-		return;
-	}
-	return $regex;
-}
-
-sub __old_search {
-	my ( $class, %args ) = @_;
-
-	my $main_window = Padre->ide->wx->main_window;
-
-	my $regex = _get_regex(%args);
-	return if not defined $regex;
-
-	my $id   = $main_window->{notebook}->GetSelection;
-	my $page = $main_window->{notebook}->GetPage($id);
-	my ($from, $to) = $page->GetSelection;
-	my $last = $page->GetLength();
-	my $str  = $page->GetTextRange(0, $last);
-
-	my $config    = Padre->ide->config;
-	my $backwards = $config->{search}->{backwards};
-	if ($args{rev}) {
-	   $backwards = not $backwards;
-	}
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backwards);
-	return if not defined $start;
-
-	$page->SetSelection( $start, $end );
-
-	return;
-}
 
 # -- Private subs
 
@@ -306,7 +133,7 @@ sub _hide_panel {
 #
 # _show_panel();
 #
-# force visibility of find panel. create panel if needed.
+# force visibility of find panel.
 #
 sub _show_panel {
 	my $main = Padre->ide->wx->main_window;
@@ -323,12 +150,24 @@ sub _show_panel {
 
 # -- Event handlers
 
+#
+# _on_entry_changed()
+#
+# called when the entry content has changed (keyboard or other mean). in that
+# case, we're start searching from the start of the document.
+#
 sub _on_entry_changed {
     $restart = 1;
     _find();
 }
 
 
+#
+# _on_key_pressed()
+#
+# called when a key is pressed in the entry. used to trap escape so we abort
+# search, otherwise dispatch event up-stack.
+#
 sub _on_key_pressed {
     my ($entry, $event) = @_;
     my $mod  = $event->GetModifiers || 0;
