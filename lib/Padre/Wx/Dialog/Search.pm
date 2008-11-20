@@ -360,7 +360,7 @@ sub _create_panel {
     Wx::Event::EVT_CHAR($wx{entry}, sub { _on_key_pressed(@_, $main) } );
 
     # place all controls
-    foreach my $w ( qw{ close label term } ) {
+    foreach my $w ( qw{ close label entry } ) {
         $hbox->Add(10,0);
 	    $hbox->Add($wx{$w});
     }
