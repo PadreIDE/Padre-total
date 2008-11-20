@@ -316,10 +316,12 @@ sub test_a_plugin {
     
     unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
     my $plugins = Padre->ide->plugin_manager->plugins;
-    $plugins->{$filename} = "Padre::Plugin::$filename";
-    eval { require $file; 1 }; # load for Module::Refresh
-    return $win->error( $@ ) if ( $@ );
-    
+
+    # load plugin
+    delete $plugins->{$filename};
+    $config->{plugins}{$filename}{enabled} = 1;
+    _load_plugin( Padre->ide->plugin_manager, $filename );
+
     # reload all means rebuild the 'Plugins' menu
     reload_plugins( $win );
 }
