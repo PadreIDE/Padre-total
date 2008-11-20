@@ -42,7 +42,7 @@ On Windows that would be Start/Run padre.bat
 (TODO) By default Padre starts with an editor containing a simple Perl script
 and instructions. 
 
-You can edit the file and save it using File/Save (Ctrl-S ).
+You can edit the file and save it using File/Save (Ctrl-S).
 
 You can run the script by pressing Run/Run Script (F5)
 
@@ -479,7 +479,7 @@ When Padre opens a file it automatically creates a copy of the original
 in ~/.padre/backup/PATH  where PATH is the same PATH as the full PATH of
 the file. On Windows the initial drive letter is converted to another 
 subdirectory so c:\dir\file.txt  will be saved as
-~/padre/backup/dir/file.txt
+~/padre/backup/c/dir/file.txt
 
 When a new file is created no need for autobackup.
 
