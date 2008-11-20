@@ -17,35 +17,6 @@ my %wx;
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
 
-sub dialog {
-	my ( $class, $win, $args) = @_;
-
-	my $config = Padre->ide->config;
-	my $search_term = $args->{entry} || '';
-
-	my $layout = get_layout($search_term, $config);
-	my $dialog = Padre::Wx::Dialog->new(
-		parent => $win,
-		title  => gettext("Search"),
-		layout => $layout,
-		width  => [150, 200],
-	);
-
-	foreach my $cb (@cbs) {
-		Wx::Event::EVT_CHECKBOX( $dialog, $dialog->{_widgets_}{$cb}, sub { $_[0]->{_widgets_}{_find_choice_}->SetFocus; });
-	}
-	$dialog->{_widgets_}{_find_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_find_},        \&find_clicked);
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_},     \&replace_clicked     );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_replace_all_}, \&replace_all_clicked );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},      \&cancel_clicked      );
-
-	$dialog->{_widgets_}{_find_choice_}->SetFocus;
-
-	return $dialog;
-}
-
-
 #
 # find_next();
 #
@@ -179,38 +150,6 @@ sub find_clicked {
 	__PACKAGE__->search();
 
 	return;
-}
-
-sub _get_data_from {
-	my ( $dialog ) = @_;
-
-	my $data = $dialog->get_data;
-
-	#print Data::Dumper::Dumper $data;
-
-	my $config = Padre->ide->config;
-	foreach my $field (@cbs) {
-	   $config->{search}->{$field} = $data->{$field};
-	}
-	my $search_term      = $data->{_find_choice_};
-	my $replace_term     = $data->{_replace_choice_};
-
-	if ($config->{search}->{close_on_hit}) {
-		$dialog->Destroy;
-	}
-	return if not defined $search_term or $search_term eq '';
-
-	if ( $search_term ) {
-		unshift @{$config->{search_terms}}, $search_term;
-		my %seen;
-		@{$config->{search_terms}} = grep {!$seen{$_}++} @{$config->{search_terms}};
-	}
-	if ( $replace_term ) {
-		unshift @{$config->{replace_terms}}, $replace_term;
-		my %seen;
-		@{$config->{replace_terms}} = grep {!$seen{$_}++} @{$config->{replace_terms}};
-	}
-	return 1;
 }
 
 sub _get_regex {
