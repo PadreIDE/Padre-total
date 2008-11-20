@@ -86,7 +86,7 @@ sub dialog {
 
 
 #
-# Padre::Wx::Find::find($main)
+# Padre::Wx::Dialog::Search::find($main)
 #
 # create (if needed) and toggle visibility of quick find bar.
 # if some text is selected, use it to initialize the search.
@@ -344,18 +344,22 @@ sub _create_panel {
 	my $panel = Wx::Panel->new($main, -1);
 	my $hbox  = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$panel->SetSizerAndFit($hbox);
-
 	$wx{panel} = $panel;
 
+    # close button
     $wx{close} = Wx::BitmapButton->new(
         $panel, -1,
         Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' )
     );
     Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
+
+    # search area
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
 	$wx{term}  = Wx::TextCtrl->new($panel, -1, '');
 	$wx{term}->SetMinSize( Wx::Size->new(25*$wx{term}->GetCharWidth, -1) );
+    Wx::Event::EVT_CHAR($wx{term}, sub { _on_key_pressed(@_, $main) } );
 
+    # place all controls
     foreach my $w ( qw{ close label term } ) {
         $hbox->Add(10,0);
 	    $hbox->Add($wx{$w});
@@ -408,6 +412,24 @@ sub _show_panel {
 
     # direct input to search
     $wx{term}->SetFocus;
+}
+
+# -- Event handlers
+
+sub _on_key_pressed {
+    my ($entry, $event, $main) = @_;
+    my $mod  = $event->GetModifiers || 0;
+    my $code = $event->GetKeyCode;
+
+    # remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+    $mod = $mod & (Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT);
+
+    if ( $code == Wx::WXK_ESCAPE ) {
+        _hide_panel($main);
+        return;
+    }
+
+    $event->Skip(1);
 }
 
 1;
