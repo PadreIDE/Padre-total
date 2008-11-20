@@ -43,12 +43,33 @@ sub search {
 
 sub _find {
 	my $main  = Padre->ide->wx->main_window;
-
 	my $page  = Padre::Documents->current->editor;
 	my $last  = $page->GetLength();
 	my $text  = $page->GetTextRange(0, $last);
-	my $what  = quotemeta $wx{entry}->GetValue;
-	my $regex = $wx{case}->GetValue ? qr/$what/ : qr/$what/i;
+
+	# build regex depending on what we search for
+	my $what;
+	if ( $wx{regex}->GetValue ) {
+		# regex search, let's validate regex
+		$what = $wx{entry}->GetValue;
+		eval { qr/$what/ };
+		if ( $@ ) {
+			# regex is invalid
+			$wx{entry}->SetBackgroundColour(Wx::wxRED);
+			return;
+			
+		} else {
+			# regex is valid
+			$wx{entry}->SetBackgroundColour(Wx::wxWHITE);
+		}
+		
+	} else {
+		# plain text search
+		$what = quotemeta $wx{entry}->GetValue;
+	}
+
+	my $regex = $wx{case}->GetValue ? qr/$what/ : qr/$what/im;
+
 	my ($from, $to) = $restart
 		? (0, $last)
 		: $page->GetSelection;
@@ -99,9 +120,13 @@ sub _create_panel {
 	# case sensitivity
 	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case sensitive'));
 	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
+
+	# regex search
+	$wx{regex} = Wx::CheckBox->new($panel, -1, gettext('Use regex'));
+	Wx::Event::EVT_CHECKBOX($main, $wx{regex}, \&_on_regex_checked);
 	
 	# place all controls
-	foreach my $w ( qw{ close label entry case } ) {
+	foreach my $w ( qw{ close label entry case regex } ) {
 		$hbox->Add(10,0);
 		$hbox->Add($wx{$w});
 	}
@@ -202,6 +227,19 @@ sub _on_key_pressed {
 
 	$event->Skip(1);
 }
+
+
+#
+# _on_regex_checked()
+#
+# called when the "use regex" checkbox has changed value. in that case,
+# we'll restart searching from the start of the document.
+#
+sub _on_regex_checked {
+	$restart = 1;
+	_find();
+}
+
 
 1;
 
