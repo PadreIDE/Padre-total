@@ -54,6 +54,10 @@ menu option to swicth back and force vi-mode
 
 =back
 
+Othere keys that are supported 
+p paste below
+P paste above
+
 We don't plan to impelement many of the configuration options of vi. 
 Even parts that are going to be implemented will not use the same method
 of configuration.
@@ -61,6 +65,40 @@ of configuration.
 That said, we are planning to add looking for vi configuration options in
 the source file so the editor can set its own configuration based on the
 vi configuration options.
+
+=head1 TODO
+
+vi mode
+
+- change the cursor for navigation mode and back to insert mode
+
+- integrate command line pop-up
+  move it to the bottom of the window
+  make it come up faster (show/hide instead of create/destroy?)
+  (maybe actually we should have it integrated it into the main GUI
+  and add it as another window under or above the output window?)
+
+fix i, 
+:q to exit
+yy - should not mark the text that is yanked or should remove the selection
+v to start marking section
+/ and search connect it to the new (and yet experimental search)
+
+:d$
+:dw
+
+
+if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
+    $buffer =~ /^(\d*)(d[dw])$/ or
+	$buffer =~ /^(\d*)(y[yw])$/) {
+	process($1, $2);
+}
+
+:ZZ
+:q!
+:e!
+:ls and :b2 to switch buffer
+
 
 =cut
 
