@@ -346,14 +346,20 @@ sub _create_panel {
 	$panel->SetSizerAndFit($hbox);
 
 	$wx{panel} = $panel;
+
+    $wx{close} = Wx::BitmapButton->new(
+        $panel, -1,
+        Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' )
+    );
+    Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
 	$wx{term}  = Wx::TextCtrl->new($panel, -1, '');
 	$wx{term}->SetMinSize( Wx::Size->new(25*$wx{term}->GetCharWidth, -1) );
 
-	$hbox->Add(10,0);
-	$hbox->Add($wx{label});
-	$hbox->Add(10,0);
-	$hbox->Add($wx{term});
+    foreach my $w ( qw{ close label term } ) {
+        $hbox->Add(10,0);
+	    $hbox->Add($wx{$w});
+    }
 
 	# make sure the panel is high enough
 	$panel->Fit;
@@ -365,6 +371,21 @@ sub _create_panel {
 		->CaptionVisible(0)
 		->Resizable(0)
 	);
+}
+
+
+#
+# _hide_panel($main);
+#
+# remove find panel.
+#
+sub _hide_panel {
+    my ($main) = @_;
+
+	my $auimngr = $main->manager;
+	my $pane    = $auimngr->GetPane('find');
+	$pane->Hide;
+	$auimngr->Update;
 }
 
 
