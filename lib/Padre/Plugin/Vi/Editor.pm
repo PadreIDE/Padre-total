@@ -148,6 +148,14 @@ $subs{SHIFT} = {
 	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
 
+$subs{COMMAND} = {
+	ord('N') => sub { # autocompletion
+	    print "Ctrl-N $_[0]\n";
+		my $main   = Padre->ide->wx->main_window;
+		$main->on_autocompletition;
+	},
+};
+
 # returning the value that will be given to $event->Skip()
 sub key_down {
 	my ($self, $mod, $code) = @_;
@@ -179,7 +187,10 @@ sub key_down {
 		return 0;
 	}
 
-	my $modifier = ($mod == Wx::wxMOD_SHIFT() ? 'SHIFT' : 'PLAIN');
+
+	my $modifier = (  $mod == Wx::wxMOD_SHIFT() ? 'SHIFT' 
+	               :  $mod == Wx::wxMOD_CMD()   ? 'COMMAND'
+	               :                              'PLAIN');
 
 	if (my $thing = $subs{$modifier}{$code}) {
 		my $sub;
