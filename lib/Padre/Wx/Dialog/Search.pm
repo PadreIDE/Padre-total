@@ -125,9 +125,23 @@ sub _create_panel {
 	# regex search
 	$wx{regex} = Wx::CheckBox->new($panel, -1, gettext('Use regex'));
 	Wx::Event::EVT_CHECKBOX($main, $wx{regex}, \&_on_regex_checked);
+
+	# previous button
+	$wx{previous} = Wx::BitmapButton->new(
+		$panel, -1,
+		Padre::Wx::tango( 'actions', 'go-previous.png' )
+	);
+	Wx::Event::EVT_BUTTON($main, $wx{previous}, sub { search('previous') } );
 	
+	# previous button
+	$wx{next} = Wx::BitmapButton->new(
+		$panel, -1,
+		Padre::Wx::tango( 'actions', 'go-next.png' )
+	);
+	Wx::Event::EVT_BUTTON($main, $wx{next}, sub { search('next') } );
+
 	# place all controls
-	foreach my $w ( qw{ close label entry case regex } ) {
+	foreach my $w ( qw{ close label entry previous next case regex } ) {
 		$hbox->Add(10,0);
 		$hbox->Add($wx{$w});
 	}
