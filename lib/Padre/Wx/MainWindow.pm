@@ -247,7 +247,7 @@ sub new {
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
-	# $self->SetIcon( Padre::Wx::icon('new') );
+	# $self->SetIcon( Padre::Wx::tango('new') );
 
 	# we need an event immediately after the window opened
 	# (we had an issue that if the default of main_statusbar was false it did not show
