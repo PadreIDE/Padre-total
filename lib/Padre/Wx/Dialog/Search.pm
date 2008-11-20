@@ -12,7 +12,8 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
 
-my %wx;
+my $backward;   # whether to search up or down
+my %wx;         # all the wx widgets
 
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
@@ -24,6 +25,7 @@ my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 #
 sub search {
 	my ($dir) = @_;
+    $backward = $dir eq 'previous';
 	
 	# create panel if needed
 	_create_panel() unless defined $wx{panel};
@@ -32,9 +34,7 @@ sub search {
 	my $auimngr = $main->manager;
 	my $pane    = $auimngr->GetPane('find');
     if ( $pane->IsShown ) {
-        $dir eq 'next'
-            ? _find_next()
-            : _find_previous();
+        _find();
     } else {
         _show_panel();
     }
@@ -213,7 +213,7 @@ sub __old_search {
 
 # -- Private subs
 
-sub _find_next {
+sub _find {
 	my $main  = Padre->ide->wx->main_window;
 
     my $page = Padre::Documents->current->editor;
@@ -221,13 +221,10 @@ sub _find_next {
 	my $last = $page->GetLength();
 	my $str  = $page->GetTextRange(0, $last);
     my $regex = quotemeta $wx{entry}->GetValue;
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, 0);
+	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backward);
 
 	return if not defined $start;
 	$page->SetSelection( $start, $end );
-}
-
-sub _find_previous {
 }
 
 
