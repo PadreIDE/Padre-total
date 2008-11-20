@@ -101,11 +101,13 @@ sub show_prompt {
 	if ($cmd =~ /^e\s+(.*)/ and defined $1) {
 		my $file = $1;
 		# try to open file
-		$main->setup_editor($file);
+		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_dir}, $file));
 		$main->refresh_all;
 	} elsif ($cmd eq 'w') {
 		# save file
 		$main->on_save;
+	} elsif ($cmd =~ /^\d+$/) {
+		Padre->ide->wx->main_window->selected_editor->GotoLine($cmd-1);
 	}
 	
 	return;
