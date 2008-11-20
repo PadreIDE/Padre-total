@@ -118,7 +118,14 @@ $subs{PLAIN} = {
 		$_[1]->Undo;
 	},
 	ord('P') => sub { #paste
-		Padre::Wx::Editor::text_paste_from_clipboard();
+		my ($self, $editor) = @_;
+		my $text = Padre::Wx::Editor::get_text_from_clipboard();
+		if ($text =~ /\n/) {
+			my $line  = $editor->GetCurrentLine;
+			my $start = $editor->PositionFromLine($line+1);
+			$editor->GotoPos($start);
+		}
+		$editor->Paste;
 	},
 };
 
@@ -140,9 +147,16 @@ $subs{SHIFT} = {
 	},
 	ord('P') => sub { #paste above
 		my ($self, $editor) = @_;
-		my $pos = $editor->GetCurrentPos;
-		$editor->GotoPos($pos-1);
-		Padre::Wx::Editor::text_paste_from_clipboard();
+		my $text = Padre::Wx::Editor::get_text_from_clipboard();
+		if ($text =~ /\n/) {
+			my $line  = $editor->GetCurrentLine;
+			my $start = $editor->PositionFromLine($line);
+			$editor->GotoPos($start);
+		} else {
+			my $pos = $editor->GetCurrentPos;
+			$editor->GotoPos($pos-1);
+		}
+		$editor->Paste;
 	},
 	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
 	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
@@ -150,7 +164,7 @@ $subs{SHIFT} = {
 
 $subs{COMMAND} = {
 	ord('N') => sub { # autocompletion
-	    print "Ctrl-N $_[0]\n";
+		print "Ctrl-N $_[0]\n";
 		my $main   = Padre->ide->wx->main_window;
 		$main->on_autocompletition;
 	},
