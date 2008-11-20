@@ -597,36 +597,32 @@ sub get_text_from_clipboard {
 		my $ok   = wxTheClipboard->GetData($data);
 		if ($ok) {
 			$text   = $data->GetText;
-			$length = $data->GetTextLength;
 		}
 		else {
 			$text   = '';
-			$length = 1;
 		}
+		wxTheClipboard->Close;
 	}
-	return ($text, $length);
+	return $text;
 }
 
 sub text_paste_from_clipboard {
-	my ($text, $length) = get_text_from_clipboard();
-	paste_text($text, $length);
+	my $text = get_text_from_clipboard();
+	paste_text($text);
 	return;
 }
 
 sub paste_text {
-	my ($text, $length) = @_;
+	my ($text) = @_;
 
-	my $win = Padre->ide->wx->main_window;
+	my $editor = Padre->ide->wx->main_window->selected_editor;;
+	return if not $editor;
 
-	my $id  = $win->{notebook}->GetSelection;
-	return if $id == -1;
+	$editor->ReplaceSelection('');
+	my $pos = $editor->GetCurrentPos;
+	$editor->InsertText( $pos, $text );
+	$editor->GotoPos( $pos + length($text) );
 
-	$win->{notebook}->GetPage($id)->ReplaceSelection('');
-	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
-	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
-	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
-
-	wxTheClipboard->Close;
 	return;
 }
 
