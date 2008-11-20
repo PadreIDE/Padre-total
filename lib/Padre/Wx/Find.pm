@@ -363,6 +363,7 @@ sub _create_panel {
 		Wx::AuiPaneInfo->new->Name( 'find' )
 		->Bottom
 		->CaptionVisible(0)
+		->Resizable(0)
 	);
 }
 
