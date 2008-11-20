@@ -68,24 +68,10 @@ sub sharefile {
 #####################################################################
 # Load Shared Resources
 
-sub bitmap {
-	Wx::Bitmap->new(
-		sharefile( 'docview', "$_[0].xpm" ),
-		Wx::wxBITMAP_TYPE_XPM,
-	);
-}
-
 sub tango {
 	Wx::Bitmap->new(
 		sharefile( 'tango', '16x16', @_ ),
 		Wx::wxBITMAP_TYPE_PNG,
-	);
-}
-
-sub icon {
-	Wx::Icon->new(
-		sharefile( 'docview', "$_[0].xpm" ),
-		Wx::wxBITMAP_TYPE_XPM,
 	);
 }
 
