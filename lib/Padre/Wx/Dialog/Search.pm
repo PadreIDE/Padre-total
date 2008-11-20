@@ -1,4 +1,4 @@
-package Padre::Wx::Find;
+package Padre::Wx::Dialog::Search;
 
 use 5.008;
 use strict;

@@ -38,9 +38,9 @@ lib/Padre/Wx/Dialog/Find.pm
 lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Dialog/PluginManager.pm
 lib/Padre/Wx/Dialog/Preferences.pm
+lib/Padre/Wx/Dialog/Search.pm
 lib/Padre/Wx/DNDFilesDropTarget.pm
 lib/Padre/Wx/Editor.pm
-lib/Padre/Wx/Find.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Output.pm

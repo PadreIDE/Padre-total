@@ -984,11 +984,11 @@ sub menu_experimental {
     # Incremental find (#60)
 	Wx::Event::EVT_MENU( $win,
 		$menu_exp->Append( -1, gettext("&Find Next\tF4") ),
-		\&Padre::Wx::Find::find_next,
+		\&Padre::Wx::Dialog::Search::find_next,
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu_exp->Append( -1, gettext("&Find Previous\tShift-F4") ),
-		\&Padre::Wx::Find::find_previous,
+		\&Padre::Wx::Dialog::Search::find_previous,
 	);
 
 	return $menu_exp;
