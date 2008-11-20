@@ -18,19 +18,23 @@ my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
 
 #
-# search();
+# search($direction);
 #
+# initiate/continue searching in $direction.
 #
 sub search {
-	my $main = Padre->ide->wx->main_window;
+	my ($dir) = @_;
 	
 	# create panel if needed
 	_create_panel() unless defined $wx{panel};
 
+    my $main    = Padre->ide->wx->main_window;
 	my $auimngr = $main->manager;
 	my $pane    = $auimngr->GetPane('find');
     if ( $pane->IsShown ) {
-        # find_next
+        $dir eq 'next'
+            ? _find_next()
+            : _find_previous();
     } else {
         _show_panel();
     }
@@ -208,6 +212,26 @@ sub __old_search {
 }
 
 # -- Private subs
+
+sub _find_next {
+	my $main  = Padre->ide->wx->main_window;
+
+    my $page = Padre::Documents->current->editor;
+	my ($from, $to) = $page->GetSelection;
+	my $last = $page->GetLength();
+	my $str  = $page->GetTextRange(0, $last);
+    my $regex = quotemeta $wx{entry}->GetValue;
+	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, 0);
+
+	return if not defined $start;
+	$page->SetSelection( $start, $end );
+}
+
+sub _find_previous {
+}
+
+
+# -- GUI related subs
 
 #
 # _create_panel();
