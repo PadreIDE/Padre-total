@@ -394,7 +394,7 @@ sub menu_edit {
         $menu->Append( Wx::wxID_PASTE, '' ),
         sub { 
 			my $editor = Padre->ide->wx->main_window->selected_editor or return;
-			$editor->text_paste_from_clipboard();
+			$editor->Paste;
 		},
     );
     $menu->AppendSeparator;

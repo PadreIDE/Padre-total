@@ -444,7 +444,7 @@ sub on_right_down {
 		if ( $ok && $data->GetTextLength > 0 && $win->{notebook}->GetPage($id)->CanPaste ) {
 			Wx::Event::EVT_MENU( $win, # Ctrl-V
 				$paste,
-				sub { $_[0]->text_paste_from_clipboard() },
+				sub { Padre->ide->wx->main_window->selected_editor->Paste },
 			);
 		}
 		else {
@@ -600,25 +600,6 @@ sub get_text_from_clipboard {
 	}
 	wxTheClipboard->Close;
 	return $text;
-}
-
-sub text_paste_from_clipboard {
-	my ($self) = @_;
-
-	my $text = get_text_from_clipboard();
-	$self->paste_text($text);
-	return;
-}
-
-sub paste_text {
-	my ($self, $text) = @_;
-
-	$self->ReplaceSelection('');
-	my $pos = $self->GetCurrentPos;
-	$self->InsertText( $pos, $text );
-	$self->GotoPos( $pos + length($text) );
-
-	return;
 }
 
 1;
