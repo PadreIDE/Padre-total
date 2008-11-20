@@ -16,45 +16,6 @@ my %wx;
 
 my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
-sub get_layout {
-	my ($search_term, $config) = @_;
-
-	my @layout = (
-		[
-			[ 'Wx::StaticText', undef,              gettext('Find:')],
-			[ 'Wx::ComboBox',   '_find_choice_',    $search_term, $config->{search_terms}],
-			[ 'Wx::Button',     '_find_',           Wx::wxID_FIND ],
-		],
-		[
-			[ 'Wx::StaticText', undef,              gettext('Replace With:')],
-			[ 'Wx::ComboBox',   '_replace_choice_',    '', $config->{replace_terms}],
-			[ 'Wx::Button',     '_replace_',        gettext('&Replace')],
-		],
-		[
-			[],
-			[],
-			[ 'Wx::Button',     '_replace_all_',    gettext('Replace &All')],
-		],
-		[
-			['Wx::CheckBox',    'case_insensitive', gettext('Case &Insensitive'),    ($config->{search}->{case_insensitive} ? 1 : 0) ],
-		],
-		[
-			['Wx::CheckBox',    'use_regex',        gettext('&Use Regex'),           ($config->{search}->{use_regex} ? 1 : 0) ],
-		],
-		[
-			['Wx::CheckBox',    'backwards',        gettext('Search &Backwards'),    ($config->{search}->{backwards} ? 1 : 0) ],
-		],
-		[
-			['Wx::CheckBox',    'close_on_hit',     gettext('Close Window on &hit'), ($config->{search}->{close_on_hit} ? 1 : 0) ],
-		],
-		[
-			[],
-			[],
-			[ 'Wx::Button',     '_cancel_',    Wx::wxID_CANCEL],
-		],
-	);
-	return \@layout;
-}
 
 sub dialog {
 	my ( $class, $win, $args) = @_;
@@ -86,45 +47,13 @@ sub dialog {
 
 
 #
-# Padre::Wx::Dialog::Search::find($main)
-#
-# create (if needed) and toggle visibility of quick find bar.
-# if some text is selected, use it to initialize the search.
-#
-sub find {
-	my ($class, $main) = @_;
-
-	# create panel if needed
-	$class->_create_panel($main) unless defined $wx{panel};
-
-	# hide/show panel
-	my $auimngr = $main->manager;
-	my $pane    = $auimngr->GetPane('find');
-	if ( $pane->IsShown ) {
-		$pane->Hide;
-		$auimngr->Update;
-		return;
-	}
-	$pane->Show;
-
-	# update search term
-	my $text = $main->selected_text || '';
-	$wx{entry}->SetValue($text);
-
-	#
-	$auimngr->Update;
-	return;
-}
-
-
-#
-# find_next($main);
+# find_next();
 #
 #
 sub find_next {
-	my ($main) = @_;
+	my $main = Padre->ide->wx->main_window;
 	
-    _show_panel($main);
+    _show_panel();
 
     return;
 
@@ -333,12 +262,12 @@ sub search {
 # -- Private subs
 
 #
-# _create_panel($main);
+# _create_panel();
 #
 # create find panel in aui manager.
 #
 sub _create_panel {
-	my ($main) = @_;
+	my $main = Padre->ide->wx->main_window;
 
 	# the panel and the boxsizer to place controls
 	my $panel = Wx::Panel->new($main, -1);
@@ -357,7 +286,7 @@ sub _create_panel {
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
 	$wx{entry}  = Wx::TextCtrl->new($panel, -1, '');
 	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
-    Wx::Event::EVT_CHAR($wx{entry}, sub { _on_key_pressed(@_, $main) } );
+    Wx::Event::EVT_CHAR($wx{entry}, \&_on_key_pressed);
 
     # place all controls
     foreach my $w ( qw{ close label entry } ) {
@@ -379,12 +308,12 @@ sub _create_panel {
 
 
 #
-# _hide_panel($main);
+# _hide_panel();
 #
 # remove find panel.
 #
 sub _hide_panel {
-    my ($main) = @_;
+	my $main = Padre->ide->wx->main_window;
 
 	my $auimngr = $main->manager;
 	my $pane    = $auimngr->GetPane('find');
@@ -394,15 +323,15 @@ sub _hide_panel {
 
 
 #
-# _show_panel($main);
+# _show_panel();
 #
 # force visibility of find panel. create panel if needed.
 #
 sub _show_panel {
-    my ($main) = @_;
+	my $main = Padre->ide->wx->main_window;
 
 	# create panel if needed
-	_create_panel($main) unless defined $wx{panel};
+	_create_panel() unless defined $wx{panel};
 
 	# show panel
 	my $auimngr = $main->manager;
@@ -417,7 +346,7 @@ sub _show_panel {
 # -- Event handlers
 
 sub _on_key_pressed {
-    my ($entry, $event, $main) = @_;
+    my ($entry, $event) = @_;
     my $mod  = $event->GetModifiers || 0;
     my $code = $event->GetKeyCode;
 
@@ -425,7 +354,7 @@ sub _on_key_pressed {
     $mod = $mod & (Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT);
 
     if ( $code == Wx::WXK_ESCAPE ) {
-        _hide_panel($main);
+        _hide_panel();
         return;
     }
 
