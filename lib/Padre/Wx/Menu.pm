@@ -369,11 +369,17 @@ sub menu_edit {
 	$menu_edit_select->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu_edit_select->Append( -1, gettext("Mark selection start\tCtrl-[") ),
-		\&Padre::Wx::Editor::text_selection_mark_start,
+		sub {
+			my $editor = Padre->ide->wx->main_window->selected_editor or return;
+			$editor->text_selection_mark_start;
+		},
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu_edit_select->Append( -1, gettext("Mark selection end\tCtrl-]") ),
-		\&Padre::Wx::Editor::text_selection_mark_end,
+		sub {
+			my $editor = Padre->ide->wx->main_window->selected_editor or return;
+			$editor->text_selection_mark_end;
+		},
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu_edit_select->Append( -1, gettext("Clear selection marks") ),

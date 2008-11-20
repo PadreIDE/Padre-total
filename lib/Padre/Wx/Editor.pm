@@ -507,35 +507,28 @@ sub text_select_all {
 }
 
 sub text_selection_mark_start {
-	my ($win) = @_;
+	my ($self) = @_;
 
 	# find positions
-	my $notebook = $win->{notebook};
-	my $id   = $notebook->GetSelection;
-	my $page = $notebook->GetPage($id);
-	$page->{selection_mark_start} = $page->GetCurrentPos;
+	$self->{selection_mark_start} = $self->GetCurrentPos;
 	
 	# change selection if start and end are defined
-	$page->SetSelection(
-		$page->{selection_mark_start},
-		$page->{selection_mark_end}
-	) if defined $page->{selection_mark_end};
+	$self->SetSelection(
+		$self->{selection_mark_start},
+		$self->{selection_mark_end}
+	) if defined $self->{selection_mark_end};
 }
 
 sub text_selection_mark_end {
-	my ($win) = @_;
+	my ($self) = @_;
 
-	# find positions
-	my $notebook = $win->{notebook};
-	my $id   = $notebook->GetSelection;
-	my $page = $notebook->GetPage($id);
-	$page->{selection_mark_end} = $page->GetCurrentPos;
+	$self->{selection_mark_end} = $self->GetCurrentPos;
 	
 	# change selection if start and end are defined
-	$page->SetSelection(
-		$page->{selection_mark_start},
-		$page->{selection_mark_end}
-	) if defined $page->{selection_mark_start};
+	$self->SetSelection(
+		$self->{selection_mark_start},
+		$self->{selection_mark_end}
+	) if defined $self->{selection_mark_start};
 }
 
 sub text_selection_clear_marks {
