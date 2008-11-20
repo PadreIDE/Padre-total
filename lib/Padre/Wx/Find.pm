@@ -330,6 +330,8 @@ sub search {
 	return;
 }
 
+# -- Private subs
+
 #
 # _create_panel($main);
 #
@@ -381,6 +383,9 @@ sub _show_panel {
 	my $pane    = $auimngr->GetPane('find');
 	$pane->Show;
 	$auimngr->Update;
+
+    # direct input to search
+    $wx{term}->SetFocus;
 }
 
 1;
