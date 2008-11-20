@@ -225,10 +225,16 @@ sub _find {
         ? (0, $last)
         : $page->GetSelection;
     $restart = 0;
-	my ($start, $end, @matches) = Padre::Util::get_matches($str, $regex, $from, $to, $backward);
 
-	return if not defined $start;
-	$page->SetSelection( $start, $end );
+    # search and highlight
+	my ($start, $end, @matches) =
+        Padre::Util::get_matches($str, $regex, $from, $to, $backward);
+    if ( defined $start ) {
+	    $page->SetSelection($start, $end);
+        $wx{entry}->SetBackgroundColour(Wx::wxWHITE);
+    } else {
+        $wx{entry}->SetBackgroundColour(Wx::wxRED);
+    }
 }
 
 
