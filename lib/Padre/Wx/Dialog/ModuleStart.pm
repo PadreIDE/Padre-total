@@ -11,6 +11,7 @@ use Cwd          ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
+use File::Spec		  ();
 
 our $VERSION = '0.17';
 
@@ -137,7 +138,25 @@ sub ok_clicked {
 	Module::Starter::App->run;
 	@ARGV = ();
 	chdir $pwd;
-	Wx::MessageBox(sprintf(gettext("%s apparantly created."), $data->{_module_name_}), gettext("Done"), Wx::wxOK, $main_window);
+
+	my $ret = Wx::MessageBox(
+		sprintf(gettext("%s apparantly created. Do you want to open it now?"), $data->{_module_name_}),
+		gettext("Done"),
+		Wx::wxYES_NO|Wx::wxCENTRE,
+		$main_window,
+	);
+	if ( $ret == Wx::wxYES ) {
+		my $module_name = $data->{_module_name_};
+		($module_name)  = split(',', $module_name); # for Foo::Bar,Foo::Bat
+		# prepare Foo-Bar/lib/Foo/Bar.pm
+		my @parts = split('::', $module_name);
+		my $dir_name = join('-', @parts);
+		$parts[-1] .= '.pm';
+		my $file = File::Spec->catfile( $data->{_directory_}, $dir_name, 'lib', @parts);
+		Padre::DB->add_recent_files($file);
+		$main_window->setup_editor($file);
+		$main_window->refresh_all;
+	}
 
 	return;
 }
