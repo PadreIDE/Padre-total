@@ -13,7 +13,7 @@ our $VERSION = '0.17';
 
 my $backward = 0;   # whether to search up or down
 my $restart  = 1;   # whether to search from start
-my %wx;             # all the wx widgets
+my %wx;	            # all the wx widgets
 
 
 #
@@ -23,19 +23,19 @@ my %wx;             # all the wx widgets
 #
 sub search {
 	my ($dir) = @_;
-    $backward = $dir eq 'previous';
+	$backward = $dir eq 'previous';
 	
 	# create panel if needed
 	_create_panel() unless defined $wx{panel};
 
-    my $main    = Padre->ide->wx->main_window;
+	my $main    = Padre->ide->wx->main_window;
 	my $auimngr = $main->manager;
 	my $pane    = $auimngr->GetPane('find');
-    if ( $pane->IsShown ) {
-        _find();
-    } else {
-        _show_panel();
-    }
+	if ( $pane->IsShown ) {
+		_find();
+	} else {
+		_show_panel();
+	}
 }
 
 
@@ -44,24 +44,24 @@ sub search {
 sub _find {
 	my $main  = Padre->ide->wx->main_window;
 
-    my $page = Padre::Documents->current->editor;
+	my $page = Padre::Documents->current->editor;
 	my $last = $page->GetLength();
 	my $str  = $page->GetTextRange(0, $last);
-    my $regex = quotemeta $wx{entry}->GetValue;
+	my $regex = quotemeta $wx{entry}->GetValue;
 	my ($from, $to) = $restart
-        ? (0, $last)
-        : $page->GetSelection;
-    $restart = 0;
+		? (0, $last)
+		: $page->GetSelection;
+	$restart = 0;
 
-    # search and highlight
+	# search and highlight
 	my ($start, $end, @matches) =
-        Padre::Util::get_matches($str, $regex, $from, $to, $backward);
-    if ( defined $start ) {
-	    $page->SetSelection($start, $end);
-        $wx{entry}->SetBackgroundColour(Wx::wxWHITE);
-    } else {
-        $wx{entry}->SetBackgroundColour(Wx::wxRED);
-    }
+		Padre::Util::get_matches($str, $regex, $from, $to, $backward);
+	if ( defined $start ) {
+		$page->SetSelection($start, $end);
+		$wx{entry}->SetBackgroundColour(Wx::wxWHITE);
+	} else {
+		$wx{entry}->SetBackgroundColour(Wx::wxRED);
+	}
 }
 
 
@@ -81,25 +81,25 @@ sub _create_panel {
 	$panel->SetSizerAndFit($hbox);
 	$wx{panel} = $panel;
 
-    # close button
-    $wx{close} = Wx::BitmapButton->new(
-        $panel, -1,
-        Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' )
-    );
-    Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
+	# close button
+	$wx{close} = Wx::BitmapButton->new(
+		$panel, -1,
+		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' )
+	);
+	Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
 
-    # search area
+	# search area
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
 	$wx{entry}  = Wx::TextCtrl->new($panel, -1, '');
 	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
-    Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed);
-    Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
+	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed);
+	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
-    # place all controls
-    foreach my $w ( qw{ close label entry } ) {
-        $hbox->Add(10,0);
-	    $hbox->Add($wx{$w});
-    }
+	# place all controls
+	foreach my $w ( qw{ close label entry } ) {
+		$hbox->Add(10,0);
+		$hbox->Add($wx{$w});
+	}
 
 	# make sure the panel is high enough
 	$panel->Fit;
@@ -107,11 +107,11 @@ sub _create_panel {
 	# manage the pane in aui
 	$main->manager->AddPane($panel,
 		Wx::AuiPaneInfo->new->Name( 'find' )
-        ->Bottom
+		->Bottom
 		->CaptionVisible(0)
-        ->Layer(1)
-        ->Fixed
-        ->Show(0)
+		->Layer(1)
+		->Fixed
+		->Show(0)
 	);
 }
 
@@ -145,8 +145,8 @@ sub _show_panel {
 	$pane->Show;
 	$auimngr->Update;
 
-    # direct input to search
-    $wx{entry}->SetFocus;
+	# direct input to search
+	$wx{entry}->SetFocus;
 }
 
 # -- Event handlers
@@ -158,8 +158,8 @@ sub _show_panel {
 # case, we're start searching from the start of the document.
 #
 sub _on_entry_changed {
-    $restart = 1;
-    _find();
+	$restart = 1;
+	_find();
 }
 
 
@@ -170,19 +170,19 @@ sub _on_entry_changed {
 # search, otherwise dispatch event up-stack.
 #
 sub _on_key_pressed {
-    my ($entry, $event) = @_;
-    my $mod  = $event->GetModifiers || 0;
-    my $code = $event->GetKeyCode;
+	my ($entry, $event) = @_;
+	my $mod  = $event->GetModifiers || 0;
+	my $code = $event->GetKeyCode;
 
-    # remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-    $mod = $mod & (Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT);
+	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+	$mod = $mod & (Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT);
 
-    if ( $code == Wx::WXK_ESCAPE ) {
-        _hide_panel();
-        return;
-    }
+	if ( $code == Wx::WXK_ESCAPE ) {
+		_hide_panel();
+		return;
+	}
 
-    $event->Skip(1);
+	$event->Skip(1);
 }
 
 1;
