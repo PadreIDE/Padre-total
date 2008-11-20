@@ -18,10 +18,10 @@ my @cbs = qw(case_insensitive use_regex backwards close_on_hit);
 
 
 #
-# find_next();
+# search();
 #
 #
-sub find_next {
+sub search {
 	my $main = Padre->ide->wx->main_window;
 	
 	# create panel if needed
@@ -180,7 +180,7 @@ sub _get_regex {
 	return $regex;
 }
 
-sub search {
+sub __old_search {
 	my ( $class, %args ) = @_;
 
 	my $main_window = Padre->ide->wx->main_window;
