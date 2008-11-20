@@ -139,7 +139,7 @@ sub on_key_pressed {
 			@current_options = @commands;
 		} elsif ($tab_started =~ /^e\s+(.*)$/) {
 			my $prefix = $1;
-			my $path = Cwd::cwd();
+			my $path = Padre->ide->{original_dir};
 			if ($prefix) {
 				if (File::Spec->file_name_is_absolute( $prefix ) ) {
 					$path = $prefix;
