@@ -60,7 +60,7 @@ sub dialog {
 	my ( $class, $win, $args) = @_;
 
 	my $config = Padre->ide->config;
-	my $search_term = $args->{term} || '';
+	my $search_term = $args->{entry} || '';
 
 	my $layout = get_layout($search_term, $config);
 	my $dialog = Padre::Wx::Dialog->new(
@@ -109,7 +109,7 @@ sub find {
 
 	# update search term
 	my $text = $main->selected_text || '';
-	$wx{term}->SetValue($text);
+	$wx{entry}->SetValue($text);
 
 	#
 	$auimngr->Update;
@@ -355,9 +355,9 @@ sub _create_panel {
 
     # search area
 	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
-	$wx{term}  = Wx::TextCtrl->new($panel, -1, '');
-	$wx{term}->SetMinSize( Wx::Size->new(25*$wx{term}->GetCharWidth, -1) );
-    Wx::Event::EVT_CHAR($wx{term}, sub { _on_key_pressed(@_, $main) } );
+	$wx{entry}  = Wx::TextCtrl->new($panel, -1, '');
+	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
+    Wx::Event::EVT_CHAR($wx{entry}, sub { _on_key_pressed(@_, $main) } );
 
     # place all controls
     foreach my $w ( qw{ close label term } ) {
@@ -411,7 +411,7 @@ sub _show_panel {
 	$auimngr->Update;
 
     # direct input to search
-    $wx{term}->SetFocus;
+    $wx{entry}->SetFocus;
 }
 
 # -- Event handlers
