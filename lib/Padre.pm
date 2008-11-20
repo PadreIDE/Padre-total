@@ -720,6 +720,7 @@ use Class::Autouse qw{
 	Padre::Wx::Menu::Help
 	Padre::Wx::Ack
 	Padre::Wx::Dialog::Bookmarks
+	Padre::Wx::Find
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
 	Padre::Wx::Dialog::PluginManager

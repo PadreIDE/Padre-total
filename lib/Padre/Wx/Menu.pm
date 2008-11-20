@@ -981,6 +981,16 @@ sub menu_experimental {
 	);
 	$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
 
+    # Incremental find (#60)
+	Wx::Event::EVT_MENU( $win,
+		$menu_exp->Append( -1, gettext("&Find Next\tF4") ),
+		\&Padre::Wx::Find::find_next,
+	);
+	Wx::Event::EVT_MENU( $win,
+		$menu_exp->Append( -1, gettext("&Find Previous\tShift-F4") ),
+		\&Padre::Wx::Find::find_previous,
+	);
+
 	return $menu_exp;
 }
 
