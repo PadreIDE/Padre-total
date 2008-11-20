@@ -53,7 +53,16 @@ sub dialog {
 sub find_next {
 	my $main = Padre->ide->wx->main_window;
 	
-    _show_panel();
+	# create panel if needed
+	_create_panel() unless defined $wx{panel};
+
+	my $auimngr = $main->manager;
+	my $pane    = $auimngr->GetPane('find');
+    if ( $pane->IsShown ) {
+        # find_next
+    } else {
+        _show_panel();
+    }
 
     return;
 
@@ -303,6 +312,7 @@ sub _create_panel {
 		->Bottom
 		->CaptionVisible(0)
 		->Resizable(0)
+        ->Show(0)
 	);
 }
 
@@ -329,9 +339,6 @@ sub _hide_panel {
 #
 sub _show_panel {
 	my $main = Padre->ide->wx->main_window;
-
-	# create panel if needed
-	_create_panel() unless defined $wx{panel};
 
 	# show panel
 	my $auimngr = $main->manager;
