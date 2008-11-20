@@ -16,6 +16,7 @@ sub new {
 	
 	$self->{vi_insert_mode} = 0;
 	$self->{vi_buffer}      = '';
+	$self->{visual_mode}    = 0;
 	$self->{editor}         = $editor;
 
 	return $self;
@@ -23,19 +24,28 @@ sub new {
 
 sub editor { return $_[0]->{editor} }
 
-
 $subs{PLAIN} = {
+
+	# movements
 	ord('L')      => sub {
 		my ($self, $editor) = @_;
 		$self->{vi_mode_end_pressed} = 0;
-		$editor->CharRight;
+		if ($self->{visual_mode}) {
+			$editor->CharRightExtend();
+		} else {
+			$editor->CharRight;
+		}
 	},
 	Wx::WXK_RIGHT => ord('L'),
 	
 	ord('H')      => sub {
 		my ($self, $editor) = @_;
 		$self->{vi_mode_end_pressed} = 0;
-		$editor->CharLeft;
+		if ($self->{visual_mode}) {
+			$editor->CharLeftExtend;
+		} else {
+			$editor->CharLeft;
+		}
 	},
 	Wx::WXK_LEFT  => ord('H'),
 	
@@ -46,16 +56,31 @@ $subs{PLAIN} = {
 	
 	Wx::WXK_PAGEUP => sub {
 		my ($self, $editor) = @_;
-		$editor->PageUp;
+		if ($self->{visual_mode}) {
+			$editor->PageUpExtend;
+		} else {
+			$editor->PageUp;
+		}
 	},
 	Wx::WXK_PAGEDOWN => sub {
 		my ($self, $editor) = @_;
-		$editor->PageDown;
+		if ($self->{visual_mode}) {
+			$editor->PageDownExtend;
+		} else {
+			$editor->PageDown;
+		}
 	},
 	Wx::WXK_HOME => \&goto_beginning_of_line,
 	Wx::WXK_END => \&goto_end_of_line,
-	
 
+
+	# selection
+	ord('V')     => sub {
+		my ($self, $editor) = @_;
+		my $main   = Padre->ide->wx->main_window;
+		$editor->text_selection_mark_start($main);
+		$self->{visual_mode} = 1;
+	},
 	### swictch to insert mode
 	ord('A')   => sub {  # append
 		my ($self, $editor) = @_;
@@ -177,6 +202,7 @@ sub key_down {
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
 		$self->{vi_buffer}      = '';
+		$self->{visual_mode}    = 0;
 		return 0;
 	}
 
@@ -240,6 +266,10 @@ sub key_down {
 
 sub vi_mode_line_down {
 	my ($self, $editor) = @_;
+	if ($self->{visual_mode}) {
+		$editor->LineDownExtend;
+		return;
+	}
 	#$editor->LineDown; # is this broken?
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
@@ -252,6 +282,11 @@ sub vi_mode_line_down {
 
 sub vi_mode_line_up {
 	my ($self, $editor) = @_;
+
+	if ($self->{visual_mode}) {
+		$editor->LineUpExtend;
+		return;
+	}
 	#$editor->LineUp; # is this broken?
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
@@ -276,6 +311,7 @@ sub vi_mode_line_up_down {
 		$to = List::Util::min($to, $prev_end);
 	}
 	$editor->GotoPos($to);
+	#$self->visual($editor);
 	return;
 }
 
@@ -284,16 +320,21 @@ sub vi_mode_line_up_down {
 sub goto_end_of_line {
 	my ($self, $editor) = @_;
 	$self->{vi_mode_end_pressed} = 1;
-	my $pos  = $editor->GetCurrentPos;
-	my $line = $editor->LineFromPosition($pos);
-	my $end  = $editor->GetLineEndPosition($line);
-	$editor->GotoPos($end);
+	if ($self->{visual_mode}) {
+		$editor->LineEndExtend();
+	} else {
+		$editor->LineEnd();
+	}
 }
 
 sub goto_beginning_of_line {
 	my ($self, $editor) = @_;
 	$self->{vi_mode_end_pressed} = 0;
-	$editor->Home;
+	if ($self->{visual_mode}) {
+		$editor->HomeExtend;
+	} else {
+		$editor->Home;
+	}
 }
 
 sub vi_mode_select {
