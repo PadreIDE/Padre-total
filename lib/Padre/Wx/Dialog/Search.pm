@@ -11,6 +11,7 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
 
+my $config = Padre->ide->config;
 my $backward = 0;   # whether to search up or down
 my $restart  = 1;   # whether to search from start
 my %wx;	            # all the wx widgets
@@ -68,7 +69,7 @@ sub _find {
 		$what = quotemeta $wx{entry}->GetValue;
 	}
 
-	my $regex = $wx{case}->GetValue ? qr/$what/ : qr/$what/im;
+	my $regex = $wx{case}->GetValue ? qr/$what/im : qr/$what/m;
 
 	my ($from, $to) = $restart
 		? (0, $last)
@@ -118,7 +119,8 @@ sub _create_panel {
 	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
 	# case sensitivity
-	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case sensitive'));
+	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case insensitive'));
+	$wx{case}->SetValue( $config->{search}->{case_insensitive} );
 	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
 
 	# regex search
@@ -189,6 +191,7 @@ sub _show_panel {
 # we'll restart searching from the start of the document.
 #
 sub _on_case_checked {
+	$config->{search}->{case_insensitive} = $wx{case}->GetValue;
 	$restart = 1;
 	_find();
 }
