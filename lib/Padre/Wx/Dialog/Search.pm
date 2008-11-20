@@ -89,10 +89,10 @@ sub _create_panel {
 	Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
 
 	# search area
-	$wx{label} = Wx::StaticText->new($panel, -1, 'Find:');
-	$wx{entry}  = Wx::TextCtrl->new($panel, -1, '');
+	$wx{label} = Wx::StaticText->new($panel, -1, gettext('Find:'));
+	$wx{entry} = Wx::TextCtrl->new($panel, -1, '');
 	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
-	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed);
+	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed  );
 	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
 	# place all controls
