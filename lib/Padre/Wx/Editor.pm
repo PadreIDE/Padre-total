@@ -588,12 +588,7 @@ sub text_cut_to_clipboard {
 	return;
 }
 
-sub text_paste_from_clipboard {
-	my $win = Padre->ide->wx->main_window;
-
-	my $id  = $win->{notebook}->GetSelection;
-	return if $id == -1;
-
+sub get_text_from_clipboard {
 	wxTheClipboard->Open;
 	my $text   = '';
 	my $length = 0;
@@ -609,6 +604,17 @@ sub text_paste_from_clipboard {
 			$length = 1;
 		}
 	}
+	return ($text, $length);
+}
+
+sub text_paste_from_clipboard {
+	my $win = Padre->ide->wx->main_window;
+
+	my $id  = $win->{notebook}->GetSelection;
+	return if $id == -1;
+
+	my ($text, $length) = get_text_from_clipboard();
+
 	$win->{notebook}->GetPage($id)->ReplaceSelection('');
 	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
 	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
