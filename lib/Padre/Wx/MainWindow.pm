@@ -2244,7 +2244,9 @@ sub on_timer_check_overwrite {
 
 	my $doc = $self->selected_document;
 	return unless $doc && $doc->has_changed_on_disk;
+	return if ( $doc->{_already_popup_file_changed} );
 
+	$doc->{_already_popup_file_changed} = 1;
 	my $ret = Wx::MessageBox(
 		gettext("File changed on disk since last saved. Do you want to reload it?"),
 		$doc->filename || gettext("File not in sync"),
@@ -2257,6 +2259,7 @@ sub on_timer_check_overwrite {
 	} else {
 		$doc->{_timestamp} = $doc->time_on_file;
 	}
+	$doc->{_already_popup_file_changed} = 0;
 }
 
 sub on_last_visited_pane {
