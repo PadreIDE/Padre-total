@@ -1,5 +1,6 @@
 package Padre::Plugin::My;
 
+use 5.008;
 use strict;
 use warnings;
 
