@@ -146,7 +146,7 @@ sub _create_panel {
 	# place all controls
 	foreach my $w ( qw{ close label entry previous next case regex } ) {
 		$hbox->Add(10,0);
-		$hbox->Add($wx{$w});
+		$hbox->Add($wx{$w}, 0, Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_LEFT, 0);
 	}
 
 	# make sure the panel is high enough
