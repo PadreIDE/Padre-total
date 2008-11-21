@@ -1146,7 +1146,13 @@ sub setup_editor {
 	
 	# TODO the plugin manager should call this method for every enabled plugin
 	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
-		Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $editor, $editor->{Document} );
+		eval {
+			Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $editor, $editor->{Document} );
+		};
+		if ($@) {
+			warn $@;
+			# TODO: report the plugin error!
+		}
 	}
 
 	my $title = $editor->{Document}->get_title;
