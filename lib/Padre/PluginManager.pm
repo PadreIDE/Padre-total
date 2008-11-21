@@ -131,7 +131,18 @@ sub load_plugins {
 	my ($self) = @_;
 	$self->_load_plugins_from_inc();
 	$self->_load_plugins_from_par();
+	if (my @failed = $self->failed) {
+		Padre->ide->wx->main_window->error("Failed to load the following plugin(s):\n" . join "\n", @failed);
+		return;
+    }
+
 	return;
+}
+
+sub failed {
+	my ($self) = @_;
+	my $plugins = $self->plugins;
+	return grep { $plugins->{$_}{status} eq 'failed' } keys %$plugins;
 }
 
 sub _load_plugins_from_inc {
@@ -225,14 +236,22 @@ sub _load_plugin {
 		return;
 	}
 
-	$plugins->{$plugin_name}{status} = 'loaded';
-	if ($plugin_name eq 'Vi') {
+	eval {
 		$self->{_objects_}{$plugin_name} = $module->new;
 		$self->{_objects_}{$plugin_name}->plugin_enable;
 # this now causes trouble
 #		foreach my $editor ( Padre->ide->wx->main_window->pages ) {
 #			$self->{_objects_}{$plugin_name}->editor_enable( $editor, $editor->{Document} );
 #		}
+	};
+	if ($@) {
+		# TODO report error in a nicer way
+		warn "ERROR $@";
+		$plugins->{$plugin_name}{status} = 'failed';
+		# automatically disable the plugin
+		$config->{plugins}{$plugin_name}{enabled} = 0;
+	} else {
+		$plugins->{$plugin_name}{status} = 'loaded';
 	}
 	
 	return 1;
@@ -321,6 +340,10 @@ sub test_a_plugin {
     delete $plugins->{$filename};
     $config->{plugins}{$filename}{enabled} = 1;
     _load_plugin( Padre->ide->plugin_manager, $filename );
+    if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
+		Padre->ide->wx->main_window->error("Faild to load the plugin '$filename'");
+		return;
+    }
 
     # reload all means rebuild the 'Plugins' menu
     reload_plugins( $win );
