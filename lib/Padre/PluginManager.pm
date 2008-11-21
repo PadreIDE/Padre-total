@@ -160,6 +160,12 @@ sub _load_plugins_from_inc {
 		$file =~ s/\.pm$//;
 		$file =~ s{^.*Padre[/\\]Plugin\W*}{};
 		$file =~ s{[/\\]}{::}g;
+
+		# TODO maybe we should report to the user the fact
+		# that we changed the name of the MY plugin and she should
+		# rename the original one and remove the MY.pm from his installation
+		next if $file eq 'MY';
+
 		$self->_load_plugin($file); # Foo::Bar names
 	}
 
