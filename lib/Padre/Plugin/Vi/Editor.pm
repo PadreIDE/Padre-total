@@ -29,7 +29,7 @@ $subs{PLAIN} = {
 	# movements
 	ord('L')      => sub {
 		my ($self, $editor) = @_;
-		$self->{vi_mode_end_pressed} = 0;
+		$self->{end_pressed} = 0;
 		if ($self->{visual_mode}) {
 			$editor->CharRightExtend();
 		} else {
@@ -40,7 +40,7 @@ $subs{PLAIN} = {
 	
 	ord('H')      => sub {
 		my ($self, $editor) = @_;
-		$self->{vi_mode_end_pressed} = 0;
+		$self->{end_pressed} = 0;
 		if ($self->{visual_mode}) {
 			$editor->CharLeftExtend;
 		} else {
@@ -49,9 +49,9 @@ $subs{PLAIN} = {
 	},
 	Wx::WXK_LEFT  => ord('H'),
 	
-	ord('K')     => \&vi_mode_line_up,
+	ord('K')     => \&line_up,
 	Wx::WXK_UP   => ord('K'),
-	ord('J')     => \&vi_mode_line_down,
+	ord('J')     => \&line_down,
 	Wx::WXK_DOWN => ord('J'),
 	
 	Wx::WXK_PAGEUP => sub {
@@ -108,7 +108,7 @@ $subs{PLAIN} = {
 	ord('D') => sub {
 		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
-			$self->vi_mode_select($editor, $1 || 1);
+			$self->select_text($editor, $1 || 1);
 			Padre::Wx::Editor::text_cut_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
@@ -120,7 +120,7 @@ $subs{PLAIN} = {
 	ord('Y') => sub {
 		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
-			$self->vi_mode_select($editor, $1 || 1);
+			$self->select_text($editor, $1 || 1);
 			Padre::Wx::Editor::text_copy_to_clipboard();
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
@@ -264,7 +264,7 @@ sub key_down {
 }
 
 
-sub vi_mode_line_down {
+sub line_down {
 	my ($self, $editor) = @_;
 	if ($self->{visual_mode}) {
 		$editor->LineDownExtend;
@@ -275,12 +275,12 @@ sub vi_mode_line_down {
 	my $line = $editor->LineFromPosition($pos);
 	my $last_line = $editor->LineFromPosition(length $editor->GetText);
 	if ($line < $last_line) {
-		vi_mode_line_up_down($self, $editor, $pos, $line, +1);
+		line_up_down($self, $editor, $pos, $line, +1);
 	}
 	return;
 }
 
-sub vi_mode_line_up {
+sub line_up {
 	my ($self, $editor) = @_;
 
 	if ($self->{visual_mode}) {
@@ -291,18 +291,18 @@ sub vi_mode_line_up {
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
 	if ($line > 1) {
-		vi_mode_line_up_down($self, $editor, $pos, $line, -1);
+		line_up_down($self, $editor, $pos, $line, -1);
 	}
 	return;
 }
 
-sub vi_mode_line_up_down {
+sub line_up_down {
 	my ($self, $editor, $pos, $line, $dir) = @_;
 		
 	my $to;
 	my $end      = $editor->GetLineEndPosition($line);
 	my $prev_end = $editor->GetLineEndPosition($line + $dir);
-	if ($self->{vi_mode_end_pressed}) {
+	if ($self->{end_pressed}) {
 		$to = $prev_end;
 	} else {
 		my $prev_start = $editor->PositionFromLine($line + $dir);
@@ -319,7 +319,7 @@ sub vi_mode_line_up_down {
 
 sub goto_end_of_line {
 	my ($self, $editor) = @_;
-	$self->{vi_mode_end_pressed} = 1;
+	$self->{end_pressed} = 1;
 	if ($self->{visual_mode}) {
 		$editor->LineEndExtend();
 	} else {
@@ -329,7 +329,7 @@ sub goto_end_of_line {
 
 sub goto_beginning_of_line {
 	my ($self, $editor) = @_;
-	$self->{vi_mode_end_pressed} = 0;
+	$self->{end_pressed} = 0;
 	if ($self->{visual_mode}) {
 		$editor->HomeExtend;
 	} else {
@@ -337,7 +337,7 @@ sub goto_beginning_of_line {
 	}
 }
 
-sub vi_mode_select {
+sub select_text {
 	my ($self, $editor, $count) = @_;
 	my $line  = $editor->GetCurrentLine;
 	my $start = $editor->PositionFromLine( $line );
