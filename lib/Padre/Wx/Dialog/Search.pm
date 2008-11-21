@@ -107,7 +107,8 @@ sub _create_panel {
 	# close button
 	$wx{close} = Wx::BitmapButton->new(
 		$panel, -1,
-		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' )
+		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),
+		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
 	);
 	Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
 
@@ -129,14 +130,16 @@ sub _create_panel {
 	# previous button
 	$wx{previous} = Wx::BitmapButton->new(
 		$panel, -1,
-		Padre::Wx::tango( 'actions', 'go-previous.png' )
+		Padre::Wx::tango( 'actions', 'go-previous.png' ),
+		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
 	);
 	Wx::Event::EVT_BUTTON($main, $wx{previous}, sub { search('previous') } );
 	
 	# previous button
 	$wx{next} = Wx::BitmapButton->new(
 		$panel, -1,
-		Padre::Wx::tango( 'actions', 'go-next.png' )
+		Padre::Wx::tango( 'actions', 'go-next.png' ),
+		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
 	);
 	Wx::Event::EVT_BUTTON($main, $wx{next}, sub { search('next') } );
 
