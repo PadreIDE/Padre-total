@@ -6,6 +6,16 @@ use warnings;
 
 our $VERSION = '0.17';
 
+use base 'Padre::Plugin';
+
+sub new {
+	my ($class) = @_;
+
+	my $self = bless {}, $class;
+
+	return $self;
+}
+
 sub menu_plugins_simple {
 	my $self = shift;
 	return 'My Plugin' => [
