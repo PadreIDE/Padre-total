@@ -119,14 +119,6 @@ sub _create_panel {
 	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed  );
 	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
 
-	# case sensitivity
-	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case insensitive'));
-	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
-
-	# regex search
-	$wx{regex} = Wx::CheckBox->new($panel, -1, gettext('Use regex'));
-	Wx::Event::EVT_CHECKBOX($main, $wx{regex}, \&_on_regex_checked);
-
 	# previous button
 	$wx{previous} = Wx::BitmapButton->new(
 		$panel, -1,
@@ -142,6 +134,14 @@ sub _create_panel {
 		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
 	);
 	Wx::Event::EVT_BUTTON($main, $wx{next}, sub { search('next') } );
+
+	# case sensitivity
+	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case insensitive'));
+	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
+
+	# regex search
+	$wx{regex} = Wx::CheckBox->new($panel, -1, gettext('Use regex'));
+	Wx::Event::EVT_CHECKBOX($main, $wx{regex}, \&_on_regex_checked);
 
 	# place all controls
 	foreach my $w ( qw{ close label entry previous next case regex } ) {
