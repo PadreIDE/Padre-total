@@ -891,35 +891,6 @@ sub save_config {
 	$_[0]->config->write( $_[0]->config_yaml );
 }
 
-# returns the name of the next module
-sub next_module {
-	my ($self) = @_;
-
-	# Temporarily breaking the next and back buttons
-	# my $current = $self->get_current_index('pod');
-	# return if not defined $current;
-	#
-	# my @current = Padre::DB->get_recent_pod;
-	# return if $current == $#current;
-	# $self->set_current_index('pod', $current + 1);
-
-	return Padre::DB->get_last_pod;
-}
-
-# returns the name of the previous module
-sub prev_module {
-	my ($self) = @_;
-
-	# Temporarily breaking the next and back buttons
-	# my $current = $self->get_current_index('pod');
-	# return if not defined $current;
-	#
-	# return if not $current;
-	# $self->set_current_index('pod', $current - 1);
-
-	return Padre::DB->get_last_pod;
-}
-
 sub usage { print <<"END_USAGE"; exit(1) }
 Usage: $0 [FILENAMEs]
            --index to index the modules found on this computer
@@ -927,6 +898,8 @@ Usage: $0 [FILENAMEs]
 END_USAGE
 
 1;
+
+=pod
 
 =head1 BUGS
 
