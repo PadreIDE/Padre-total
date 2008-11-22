@@ -37,25 +37,6 @@ sub get_function_regex {
 
 sub comment_lines_str { return '//' }
 
-#
-# $doc->uncomment_lines($begin, $end);
-#
-# uncomment lines $begin..$end
-#
-sub uncomment_lines {
-	my ($self, $begin, $end) = @_;
-
-	my $editor = $self->editor;
-	for my $line ($begin .. $end) {
-		my $first = $editor->PositionFromLine($line);
-		my $last  = $first+2;
-		my $text  = $editor->GetTextRange($first, $last);
-		if ($text eq '//') {
-			$editor->SetSelection($first, $last);
-			$editor->ReplaceSelection('');
-		}
-	}
-}
 
 1;
 

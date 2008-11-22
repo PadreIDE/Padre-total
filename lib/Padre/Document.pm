@@ -620,9 +620,7 @@ sub remove_color {
 }
 
 #
-# $doc->uncomment_lines($begin, $end);
-#
-# un/comment out lines $begin..$end
+# $doc->comment_lines_str;
 #
 # this is of course dependant on the language, and thus it's actually
 # done in the subclasses. however, we provide base empty methods in
@@ -630,7 +628,6 @@ sub remove_color {
 # a document type that did not define those methods.
 #
 sub comment_lines_str {}
-sub uncomment_lines {}
 
 
 1;

@@ -605,6 +605,32 @@ sub comment_lines {
 	return;
 }
 
+#
+# $editor->uncomment_lines($begin, $end, $str);
+#
+# uncomment lines $begin..$end
+#
+sub uncomment_lines {
+	my ($self, $begin, $end, $str) = @_;
+
+	my $length = length $str;
+	$self->BeginUndoAction;
+	for my $line ($begin .. $end) {
+		my $first = $self->PositionFromLine($line);
+		my $last  = $first + $length;
+		my $text  = $self->GetTextRange($first, $last);
+		if ($text eq $str) {
+			$self->SetSelection($first, $last);
+			$self->ReplaceSelection('');
+		}
+	}
+	$self->EndUndoAction;
+
+	return;
+}
+
+
+
 1;
 
 # Copyright 2008 Gabor Szabo.
