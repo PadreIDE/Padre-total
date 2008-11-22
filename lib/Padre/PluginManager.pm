@@ -1,15 +1,13 @@
 package Padre::PluginManager;
+
 use strict;
 use warnings;
-
-use Carp         qw(croak);
-use File::Path   ();
-use File::Spec   ();
-use File::Find::Rule;
-
-use Padre::Wx    ();
-use Padre::Util  ();
-use Wx::Locale qw(:default);
+use Carp        qw(croak);
+use File::Path  ();
+use File::Spec  ();
+use Padre::Wx   ();
+use Padre::Util ();
+use Wx::Locale  qw(:default);
 
 our $VERSION = '0.17';
 
@@ -153,7 +151,8 @@ sub _load_plugins_from_inc {
 	unshift @INC, $plugin_dir unless grep {$_ eq $plugin_dir} @INC;
 	
 	my @dirs = grep {-d $_} map {File::Spec->catdir($_, 'Padre', 'Plugin')} @INC;
-	
+
+	require File::Find::Rule;
 	my @files = File::Find::Rule->file()->name('*.pm')->maxdepth(1)->in( @dirs );
 	foreach my $file (@files) {
 		# full path filenames
