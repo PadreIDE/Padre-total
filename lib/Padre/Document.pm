@@ -232,7 +232,7 @@ sub get_title {
 	if ( $self->{filename} ) {
 		return File::Basename::basename( $self->{filename} );
 	} else {
-		return "Unsaved $unsaved_number";
+		return " Unsaved $unsaved_number";
 	}
 }
 
