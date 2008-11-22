@@ -1,17 +1,15 @@
 package Padre::Pod::Frame;
+
+use 5.008;
 use strict;
 use warnings;
-
-our $VERSION = '0.17';
-
-use Data::Dumper qw(Dumper);
-
-use Wx        qw(:everything);
-use Wx::Event qw(:everything);
-
+use Data::Dumper qw{Dumper};
+use Padre::DB    ();
+use Padre::Wx    ();
+use Padre::Pod::Viewer ();
 use base 'Wx::Frame';
 
-use Padre::Pod::Viewer;
+our $VERSION = '0.17';
 
 my $search_term = '';
 my $choice;
@@ -226,13 +224,34 @@ sub on_close {
     #$event->Skip;
 }
 
+# returns the name of the previous module
+sub prev_module {
+	my ($self) = @_;
 
-#sub OnClick {
-#    my( $self, $event ) = @_;
-#
-#    $self->SetTitle( 'Clicked' );
-#}
+	# Temporarily breaking the next and back buttons
+	# my $current = $self->get_current_index('pod');
+	# return if not defined $current;
+	#
+	# return if not $current;
+	# $self->set_current_index('pod', $current - 1);
 
+	return Padre::DB->get_last_pod;
+}
+
+# returns the name of the next module
+sub next_module {
+	my ($self) = @_;
+
+	# Temporarily breaking the next and back buttons
+	# my $current = $self->get_current_index('pod');
+	# return if not defined $current;
+	#
+	# my @current = Padre::DB->get_recent_pod;
+	# return if $current == $#current;
+	# $self->set_current_index('pod', $current + 1);
+
+	return Padre::DB->get_last_pod;
+}
 
 1;
 
