@@ -22,8 +22,10 @@ Currently there are still interdependencies that need to be cleaned.
 use 5.008;
 use strict;
 use warnings;
-use File::Spec  ();
-use Carp        ();
+use Carp       ();
+use File::Spec ();
+use Padre::Wx  ();
+
 use Wx qw{
 	wxSTC_LEX_ADA
 	wxSTC_LEX_ASM
@@ -61,6 +63,7 @@ use Wx qw{
 	wxSTC_EOL_CR
 	wxSTC_EOL_LF
 };
+
 use Wx::STC;
 
 use Padre::Util;
@@ -124,18 +127,17 @@ our %EXT_MIME = (
 	yml   => 'text/yaml',
 	yaml  => 'text/yaml',
 	'4th' => 'text/forth',
-
-	pasm  => 'text/pasm',
-	pir   => 'text/pir',
+	pasm  => 'application/x-pasm',
+	pir   => 'application/x-pir',
 	p6    => 'application/x-perl6',
 );
 
 our %MIME_CLASS = (
 	'application/x-perl'  => 'Padre::Document::Perl',
 	'application/x-perl6' => 'Padre::Document::Perl6',
-	'text/pasm'  => 'Padre::Document::Pasm',
-	'text/pir'   => 'Padre::Document::Pir',
-	'text/ecmascript' => 'Padre::Document::JavaScript',
+	'application/x-pasm'  => 'Padre::Document::Pasm',
+	'application/x-pir'   => 'Padre::Document::Pir',
+	'text/ecmascript'     => 'Padre::Document::JavaScript',
 );
 
 our %MIME_LEXER = (
@@ -165,8 +167,8 @@ our %MIME_LEXER = (
 	'text/vbscript'       => wxSTC_LEX_VBSCRIPT,
 	'text/xml'            => wxSTC_LEX_XML,
 	'text/yaml'           => wxSTC_LEX_YAML,
-	'text/pir'            => wxSTC_LEX_CONTAINER,
-	'text/pasm'           => wxSTC_LEX_CONTAINER,
+	'application/x-pir'   => wxSTC_LEX_CONTAINER,
+	'application/x-pasm'  => wxSTC_LEX_CONTAINER,
 	'application/x-perl6' => wxSTC_LEX_CONTAINER,
 );
 
@@ -610,8 +612,8 @@ sub remove_color {
 	my ($self) = @_;
 
 	my $editor = $self->editor;
-	# TODO this is strange, do we reall need to do it with all?
-	for my $i (0..31) {
+	# TODO this is strange, do we really need to do it with all?
+	for my $i ( 0..31 ) {
 		$editor->StartStyling(0, $i);
 		$editor->SetStyling($editor->GetLength, 0);
 	}
@@ -628,7 +630,6 @@ sub remove_color {
 # a document type that did not define those methods.
 #
 sub comment_lines_str {}
-
 
 1;
 
