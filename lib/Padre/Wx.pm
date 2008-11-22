@@ -17,6 +17,8 @@ use Wx::STC    ();
 use Wx::AUI    ();
 use Wx::Locale ':default';
 
+use Padre::Util ();
+
 our $VERSION = '0.17';
 
 
@@ -44,26 +46,6 @@ sub id_FILECHK_TIMER { 30002 }
 
 
 
-#####################################################################
-# Shared Resources
-
-sub share () {
-	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
-	return File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' )      if $ENV{PADRE_PAR_PATH};
-	require File::ShareDir::PAR;
-	return File::ShareDir::PAR::dist_dir('Padre');
-}
-
-sub sharedir {
-	File::Spec->catdir( share(), @_ );
-}
-
-sub sharefile {
-	File::Spec->catfile( share(), @_ );
-}
-
-
-
 
 
 #####################################################################
@@ -71,7 +53,7 @@ sub sharefile {
 
 sub tango {
 	Wx::Bitmap->new(
-		sharefile( 'tango', '16x16', @_ ),
+		Padre::Util::sharefile( 'tango', '16x16', @_ ),
 		Wx::wxBITMAP_TYPE_PNG,
 	);
 }

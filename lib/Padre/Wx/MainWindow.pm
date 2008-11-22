@@ -606,11 +606,11 @@ sub set_locale {
 	my $shortname = $config->{host}->{locale};
 	my $lang = $number_of{ $shortname };
     $self->{locale} = Wx::Locale->new($lang);
-    $self->{locale}->AddCatalogLookupPathPrefix( Padre::Wx::sharedir('locale') );
+    $self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
     my $langname = $self->{locale}->GetCanonicalName();
 
     #my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
-    my $filename = Padre::Wx::sharefile( 'locale', $shortname ) . '.mo';
+    my $filename = Padre::Util::sharefile( 'locale', $shortname ) . '.mo';
 
     $self->{locale}->AddCatalog($shortname) if -f $filename;
 

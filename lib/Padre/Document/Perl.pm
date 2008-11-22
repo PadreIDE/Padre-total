@@ -3,11 +3,14 @@ package Padre::Document::Perl;
 use 5.008;
 use strict;
 use warnings;
+
 use Carp            ();
 use Params::Util    '_INSTANCE';
-use Padre::Document ();
 use YAML::Tiny      ();
 use PPI;
+
+use Padre::Document ();
+use Padre::Util     ();
 
 our $VERSION = '0.17';
 our @ISA     = 'Padre::Document';
@@ -83,7 +86,7 @@ my $keywords;
 sub keywords {
 	unless ( defined $keywords ) {
 		$keywords = YAML::Tiny::LoadFile(
-			Padre::Wx::sharefile( 'languages', 'perl5', 'perl5.yml' )
+			Padre::Util::sharefile( 'languages', 'perl5', 'perl5.yml' )
 		);
 	}
 	return $keywords;

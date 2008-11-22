@@ -18,7 +18,7 @@ our @ISA     = 'Padre::Document';
 #sub keywords {
 #	unless ( defined $keywords ) {
 #		$keywords = YAML::Tiny::LoadFile(
-#			Padre::Wx::sharefile( 'languages', 'perl5', 'javascript.yml' )
+#			Padre::Util::sharefile( 'languages', 'perl5', 'javascript.yml' )
 #		);
 #	}
 #	return $keywords;

@@ -4,15 +4,16 @@ use 5.008;
 use strict;
 use warnings;
 
-use YAML::Tiny      ();
+use YAML::Tiny       ();
 
-use Padre::Documents ();
 use Wx               qw(:dnd wxTheClipboard);
 use Wx::DND;
 use Wx::STC;
-use Padre::Wx;
 use Wx::Locale       qw(:default);
 
+use Padre::Documents ();
+use Padre::Util      ();
+use Padre::Wx;
 
 use base 'Wx::StyledTextCtrl';
 
@@ -46,7 +47,7 @@ sub new {
 sub data {
 	unless ( defined $data ) {
 		$data = YAML::Tiny::LoadFile(
-			Padre::Wx::sharefile( 'styles', 'default.yml' )
+			Padre::Util::sharefile( 'styles', 'default.yml' )
 		);
 	}
 	return $data;
