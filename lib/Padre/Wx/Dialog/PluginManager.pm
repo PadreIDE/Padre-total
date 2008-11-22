@@ -64,7 +64,7 @@ sub dialog {
 sub _pref {
 	my ($self, $module) = @_;
 
-	my $obj = Padre->ide->plugin_manager->{_objects_}{$module};
+	my $obj = Padre->ide->plugin_manager->plugins->{$module}{object};
 	if ($obj and $obj->can('preferences_dialog')) {
 		$obj->preferences_dialog;
 	}
@@ -77,14 +77,15 @@ sub _able {
 	my ($self, $module) = @_;
 	
 	my $config = Padre->ide->config;
+	my $manager = Padre->ide->plugin_manager;
 	
 	if ($config->{plugins}{$module}{enabled}) {
-		# TODO actually disable plugin
 		$config->{plugins}{$module}{enabled} = 0;
+		$manager->unload_plugin($module);
+
 	} else {
-		# TODO actually enable plugin
-		#Padre::PluginManager::reload_plugin( Padre->ide->wx->main_window, $module );
 		$config->{plugins}{$module}{enabled} = 1;
+		$manager->reload_plugin($module);
 	}
 	_set_labels($self, $module, $config->{plugins}{$module}{enabled});
 	#print "$self\n";
@@ -96,7 +97,7 @@ sub _set_labels {
 
 	if ($enabled) {
 		$dialog->{_widgets_}{"able_$module"}->SetLabel(gettext('Disable'));
-		my $obj = Padre->ide->plugin_manager->{_objects_}{$module};
+		my $obj = Padre->ide->plugin_manager->plugins->{$module}{object};
 		if ($obj and $obj->can('preferences_dialog')) {
 			$dialog->{_widgets_}{"pref_$module"}->Enable;
 		}
