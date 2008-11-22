@@ -525,10 +525,8 @@ sub get_menu {
 	# TODO add new Padre::Plugin menu creation system
 	# in 0.19 remove support for old menu
 	my ($label, $items, $menu, @data);
-	use Data::Dumper;
 	if ($plugins->{$name}{module}->can('menu_plugins_simple') ) {
 		($label, $items) = eval { $plugins->{$name}{module}->menu_plugins_simple };
-		print Dumper $items;
 		if ( $@ ) {
 			warn "Error when calling menu for plugin '$name' $@";
 			return ();
