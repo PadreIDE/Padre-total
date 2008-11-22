@@ -10,12 +10,9 @@ use Padre::Wx;
 use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
-
-my $config = Padre->ide->config;
 my $backward = 0;   # whether to search up or down
 my $restart  = 1;   # whether to search from start
 my %wx;	            # all the wx widgets
-
 
 #
 # search($direction);
@@ -195,6 +192,7 @@ sub _show_panel {
 
 	# update checkboxes with config values
 	# since they might have been updated by find dialog
+	my $config = Padre->ide->config;
 	$wx{case}->SetValue( $config->{search}->{case_insensitive} );
 	$wx{regex}->SetValue( $config->{search}->{use_regex} );
 
@@ -212,7 +210,7 @@ sub _show_panel {
 # case, we'll restart searching from the start of the document.
 #
 sub _on_case_checked {
-	$config->{search}->{case_insensitive} = $wx{case}->GetValue;
+	Padre->ide->config->{search}->{case_insensitive} = $wx{case}->GetValue;
 	$restart = 1;
 	_find();
 }
@@ -260,7 +258,7 @@ sub _on_key_pressed {
 # we'll restart searching from the start of the document.
 #
 sub _on_regex_checked {
-	$config->{search}->{use_regex} = $wx{regex}->GetValue;
+	Padre->ide->config->{search}->{use_regex} = $wx{regex}->GetValue;
 	$restart = 1;
 	_find();
 }
