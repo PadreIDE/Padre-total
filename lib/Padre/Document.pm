@@ -22,60 +22,19 @@ Currently there are still interdependencies that need to be cleaned.
 use 5.008;
 use strict;
 use warnings;
-use Carp       ();
-use File::Spec ();
-use Padre::Wx  ();
-
-use Wx qw{
-	wxSTC_LEX_ADA
-	wxSTC_LEX_ASM
-	wxSTC_LEX_BATCH
-	wxSTC_LEX_CPP
-	wxSTC_LEX_CSS
-	wxSTC_LEX_DIFF
-	wxSTC_LEX_EIFFEL
-	wxSTC_LEX_EIFFELKW
-	wxSTC_LEX_ERRORLIST
-	wxSTC_LEX_ESCRIPT
-	wxSTC_LEX_FORTRAN
-	wxSTC_LEX_FORTH
-	wxSTC_LEX_HTML
-	wxSTC_LEX_LATEX
-	wxSTC_LEX_LISP
-	wxSTC_LEX_LUA
-	wxSTC_LEX_MAKEFILE
-	wxSTC_LEX_MATLAB
-	wxSTC_LEX_PASCAL
-	wxSTC_LEX_PERL
-	wxSTC_LEX_PHPSCRIPT
-	wxSTC_LEX_PYTHON
-	wxSTC_LEX_RUBY
-	wxSTC_LEX_SQL
-	wxSTC_LEX_TCL
-	wxSTC_LEX_VBSCRIPT
-	wxSTC_LEX_YAML
-	wxSTC_LEX_XML
-
-	wxSTC_LEX_AUTOMATIC
-	wxSTC_LEX_CONTAINER
-
-	wxSTC_EOL_CRLF
-	wxSTC_EOL_CR
-	wxSTC_EOL_LF
-};
-
-use Wx::STC;
-
-use Padre::Util;
+use Carp        ();
+use File::Spec  ();
+use Padre::Util ();
+use Padre::Wx   ();
 
 our $VERSION = '0.17';
 
 my $cnt   = 0;
 
 our %mode = (
-	WIN  => wxSTC_EOL_CRLF,
-	MAC  => wxSTC_EOL_CR,
-	UNIX => wxSTC_EOL_LF,
+	WIN  => Wx::wxSTC_EOL_CRLF,
+	MAC  => Wx::wxSTC_EOL_CR,
+	UNIX => Wx::wxSTC_EOL_LF,
 );
 
 # see Wx-0.86/ext/stc/cpp/st_constants.cpp for extension
@@ -141,35 +100,35 @@ our %MIME_CLASS = (
 );
 
 our %MIME_LEXER = (
-	'text/x-adasrc'       => wxSTC_LEX_ADA,
-	'text/asm'            => wxSTC_LEX_ASM,
-	'text/bat'            => wxSTC_LEX_BATCH,
-	'text/x-c++src'       => wxSTC_LEX_CPP,
-	'text/css'            => wxSTC_LEX_CSS,
-	'text/x-patch'        => wxSTC_LEX_DIFF,
-	'text/eiffel'         => wxSTC_LEX_EIFFEL,
-	'text/forth'          => wxSTC_LEX_FORTH,
-	'text/x-fortran'      => wxSTC_LEX_FORTRAN,
-	'text/html'           => wxSTC_LEX_HTML,
-	'text/ecmascript'     => wxSTC_LEX_ESCRIPT,
-	'text/latex'          => wxSTC_LEX_LATEX,
-	'text/lisp'           => wxSTC_LEX_LISP,
-	'text/lua'            => wxSTC_LEX_LUA,
-	'text/x-makefile'     => wxSTC_LEX_MAKEFILE,
-	'text/matlab'         => wxSTC_LEX_MATLAB,
-	'text/x-pascal'       => wxSTC_LEX_PASCAL,
-	'application/x-perl'  => wxSTC_LEX_PERL,
-	'text/x-python'       => wxSTC_LEX_PYTHON,
-	'application/x-php'   => wxSTC_LEX_PHPSCRIPT,
-	'application/x-ruby'  => wxSTC_LEX_RUBY,
-	'text/x-sql'          => wxSTC_LEX_SQL,
-	'text/x-tcl'          => wxSTC_LEX_TCL,
-	'text/vbscript'       => wxSTC_LEX_VBSCRIPT,
-	'text/xml'            => wxSTC_LEX_XML,
-	'text/yaml'           => wxSTC_LEX_YAML,
-	'application/x-pir'   => wxSTC_LEX_CONTAINER,
-	'application/x-pasm'  => wxSTC_LEX_CONTAINER,
-	'application/x-perl6' => wxSTC_LEX_CONTAINER,
+	'text/x-adasrc'       => Wx::wxSTC_LEX_ADA,
+	'text/asm'            => Wx::wxSTC_LEX_ASM,
+	'text/bat'            => Wx::wxSTC_LEX_BATCH,
+	'text/x-c++src'       => Wx::wxSTC_LEX_CPP,
+	'text/css'            => Wx::wxSTC_LEX_CSS,
+	'text/x-patch'        => Wx::wxSTC_LEX_DIFF,
+	'text/eiffel'         => Wx::wxSTC_LEX_EIFFEL,
+	'text/forth'          => Wx::wxSTC_LEX_FORTH,
+	'text/x-fortran'      => Wx::wxSTC_LEX_FORTRAN,
+	'text/html'           => Wx::wxSTC_LEX_HTML,
+	'text/ecmascript'     => Wx::wxSTC_LEX_ESCRIPT,
+	'text/latex'          => Wx::wxSTC_LEX_LATEX,
+	'text/lisp'           => Wx::wxSTC_LEX_LISP,
+	'text/lua'            => Wx::wxSTC_LEX_LUA,
+	'text/x-makefile'     => Wx::wxSTC_LEX_MAKEFILE,
+	'text/matlab'         => Wx::wxSTC_LEX_MATLAB,
+	'text/x-pascal'       => Wx::wxSTC_LEX_PASCAL,
+	'application/x-perl'  => Wx::wxSTC_LEX_PERL,
+	'text/x-python'       => Wx::wxSTC_LEX_PYTHON,
+	'application/x-php'   => Wx::wxSTC_LEX_PHPSCRIPT,
+	'application/x-ruby'  => Wx::wxSTC_LEX_RUBY,
+	'text/x-sql'          => Wx::wxSTC_LEX_SQL,
+	'text/x-tcl'          => Wx::wxSTC_LEX_TCL,
+	'text/vbscript'       => Wx::wxSTC_LEX_VBSCRIPT,
+	'text/xml'            => Wx::wxSTC_LEX_XML,
+	'text/yaml'           => Wx::wxSTC_LEX_YAML,
+	'application/x-pir'   => Wx::wxSTC_LEX_CONTAINER,
+	'application/x-pasm'  => Wx::wxSTC_LEX_CONTAINER,
+	'application/x-perl6' => Wx::wxSTC_LEX_CONTAINER,
 );
 
 our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
