@@ -1,18 +1,36 @@
 package Padre::Wx::Dialog::Search;
 
+# Incremental search
+
 use 5.008;
 use strict;
 use warnings;
-
-# Incremental search for padre
-
 use Padre::Wx;
-use Wx::Locale qw(:default);
 
 our $VERSION = '0.17';
-my $backward = 0;   # whether to search up or down
-my $restart  = 1;   # whether to search from start
-my %wx;	            # all the wx widgets
+
+
+
+
+
+######################################################################
+# Constructor
+
+sub new {
+	my $class = shift;
+	my $self  = bless {
+		restart  => 1,
+		backward => 0,
+	}, $class;
+	return $self;
+}
+
+
+
+
+
+######################################################################
+# Main Methods
 
 #
 # search($direction);
@@ -20,70 +38,67 @@ my %wx;	            # all the wx widgets
 # initiate/continue searching in $direction.
 #
 sub search {
-	my ($dir) = @_;
-	$backward = $dir eq 'previous';
-	
-	# create panel if needed
-	_create_panel() unless defined $wx{panel};
-
-	my $main    = Padre->ide->wx->main_window;
-	my $auimngr = $main->manager;
-	my $pane    = $auimngr->GetPane('find');
-	if ( $pane->IsShown ) {
-		_find();
+	my $self      = shift;
+	my $direction = shift;
+	$self->{backward} = $direction eq 'previous';
+	unless ( $self->{panel} ) {
+		$self->{panel} = $self->_create_panel;
+	}
+	if ( $self->{panel}->IsShown ) {
+		$self->_find;
 	} else {
-		_show_panel();
+		$self->_show_panel;
 	}
 }
 
-
-# -- Private subs
+# -- Private methods
 
 sub _find {
+	my $self  = shift;
 	my $main  = Padre->ide->wx->main_window;
 	my $page  = Padre::Documents->current->editor;
-	my $last  = $page->GetLength();
+	my $last  = $page->GetLength;
 	my $text  = $page->GetTextRange(0, $last);
 
 	# build regex depending on what we search for
 	my $what;
-	if ( $wx{regex}->GetValue ) {
+	if ( $self->{regex}->GetValue ) {
 		# regex search, let's validate regex
-		$what = $wx{entry}->GetValue;
+		$what = $self->{entry}->GetValue;
 		eval { qr/$what/ };
 		if ( $@ ) {
 			# regex is invalid
-			$wx{entry}->SetBackgroundColour(Wx::wxRED);
+			$self->{entry}->SetBackgroundColour(Wx::wxRED);
 			return;
 			
 		} else {
 			# regex is valid
-			$wx{entry}->SetBackgroundColour(Wx::wxWHITE);
+			$self->{entry}->SetBackgroundColour(Wx::wxWHITE);
 		}
 		
 	} else {
 		# plain text search
-		$what = quotemeta $wx{entry}->GetValue;
+		$what = quotemeta $self->{entry}->GetValue;
 	}
 
-	my $regex = $wx{case}->GetValue ? qr/$what/im : qr/$what/m;
+	my $regex = $self->{case}->GetValue ? qr/$what/im : qr/$what/m;
 
-	my ($from, $to) = $restart
+	my ($from, $to) = $self->{restart}
 		? (0, $last)
 		: $page->GetSelection;
-	$restart = 0;
+	$self->{restart} = 0;
 
 	# search and highlight
 	my ($start, $end, @matches) =
-		Padre::Util::get_matches($text, $regex, $from, $to, $backward);
+		Padre::Util::get_matches($text, $regex, $from, $to, $self->{backward});
 	if ( defined $start ) {
 		$page->SetSelection($start, $end);
-		$wx{entry}->SetBackgroundColour(Wx::wxWHITE);
+		$self->{entry}->SetBackgroundColour(Wx::wxWHITE);
 	} else {
-		$wx{entry}->SetBackgroundColour(Wx::wxRED);
+		$self->{entry}->SetBackgroundColour(Wx::wxRED);
 	}
+	return;
 }
-
 
 # -- GUI related subs
 
@@ -93,64 +108,72 @@ sub _find {
 # create find panel in aui manager.
 #
 sub _create_panel {
+	my $self = shift;
 	my $main = Padre->ide->wx->main_window;
 
-	# the panel and the boxsizer to place controls
-	my $panel = Wx::Panel->new($main, -1);
-	my $hbox  = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$panel->SetSizerAndFit($hbox);
-	$wx{panel} = $panel;
+	# The panel and the boxsizer to place controls
+	$self->{panel} = Wx::Panel->new($main, -1);
+	$self->{hbox}  = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$self->{panel}->SetSizerAndFit($self->{hbox});
 
-	# close button
-	$wx{close} = Wx::BitmapButton->new(
-		$panel, -1,
+	# Close button
+	$self->{close} = Wx::BitmapButton->new(
+		$self->{panel}, -1,
 		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),
-		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
+		Wx::Point->new(-1,-1),
+		Wx::Size->new(-1,-1),
+		Wx::wxNO_BORDER,
 	);
-	Wx::Event::EVT_BUTTON($main, $wx{close}, \&_hide_panel);
+	Wx::Event::EVT_BUTTON($main, $self->{close}, sub { $self->_hide_panel } );
 
-	# search area
-	$wx{label} = Wx::StaticText->new($panel, -1, gettext('Find:'));
-	$wx{entry} = Wx::TextCtrl->new($panel, -1, '');
-	$wx{entry}->SetMinSize( Wx::Size->new(25*$wx{entry}->GetCharWidth, -1) );
-	Wx::Event::EVT_CHAR(       $wx{entry}, \&_on_key_pressed  );
-	Wx::Event::EVT_TEXT($main, $wx{entry}, \&_on_entry_changed);
+	# Search area
+	$self->{label} = Wx::StaticText->new($self->{panel}, -1, Wx::Locale::gettext('Find:'));
+	$self->{entry} = Wx::TextCtrl->new($self->{panel}, -1, '');
+	$self->{entry}->SetMinSize(
+		Wx::Size->new( 25 * $self->{entry}->GetCharWidth, -1 )
+	);
+	Wx::Event::EVT_CHAR(       $self->{entry}, sub { $self->_on_key_pressed($_[1])   } );
+	Wx::Event::EVT_TEXT($main, $self->{entry}, sub { $self->_on_entry_changed($_[1]) } );
 
-	# previous button
-	$wx{previous} = Wx::BitmapButton->new(
-		$panel, -1,
+	# Previous button
+	$self->{previous} = Wx::BitmapButton->new(
+		$self->{panel}, -1,
 		Padre::Wx::tango( 'actions', 'go-previous.png' ),
-		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
+		Wx::Point->new(-1,-1),
+		Wx::Size->new(-1,-1),
+		Wx::wxNO_BORDER
 	);
-	Wx::Event::EVT_BUTTON($main, $wx{previous}, sub { search('previous') } );
-	
-	# previous button
-	$wx{next} = Wx::BitmapButton->new(
-		$panel, -1,
+	Wx::Event::EVT_BUTTON($main, $self->{previous}, sub { $self->search('previous') } );
+
+	# Previous button
+	$self->{next} = Wx::BitmapButton->new(
+		$self->{panel}, -1,
 		Padre::Wx::tango( 'actions', 'go-next.png' ),
-		Wx::Point->new(-1,-1), Wx::Size->new(-1,-1), Wx::wxNO_BORDER
+		Wx::Point->new(-1,-1),
+		Wx::Size->new(-1,-1),
+		Wx::wxNO_BORDER,
 	);
-	Wx::Event::EVT_BUTTON($main, $wx{next}, sub { search('next') } );
+	Wx::Event::EVT_BUTTON($main, $self->{next}, sub { $self->search('next') } );
 
-	# case sensitivity
-	$wx{case} = Wx::CheckBox->new($panel, -1, gettext('Case insensitive'));
-	Wx::Event::EVT_CHECKBOX($main, $wx{case}, \&_on_case_checked);
+	# Case sensitivity
+	$self->{case} = Wx::CheckBox->new($self->{panel}, -1, Wx::Locale::gettext('Case insensitive'));
+	Wx::Event::EVT_CHECKBOX($main, $self->{case}, sub { $self->_on_case_checked } );
 
-	# regex search
-	$wx{regex} = Wx::CheckBox->new($panel, -1, gettext('Use regex'));
-	Wx::Event::EVT_CHECKBOX($main, $wx{regex}, \&_on_regex_checked);
+	# Regex search
+	$self->{regex} = Wx::CheckBox->new($self->{panel}, -1, Wx::Locale::gettext('Use regex'));
+	Wx::Event::EVT_CHECKBOX($main, $self->{regex}, sub { $self->_on_regex_checked } );
 
-	# place all controls
-	foreach my $w ( qw{ close label entry previous next case regex } ) {
-		$hbox->Add(10,0);
-		$hbox->Add($wx{$w}, 0, Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_LEFT, 0);
+	# Place all controls
+	foreach my $element ( qw{ close label entry previous next case regex } ) {
+		$self->{hbox}->Add(10,0);
+		$self->{hbox}->Add($self->{$element}, 0, Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_LEFT, 0);
 	}
 
-	# make sure the panel is high enough
-	$panel->Fit;
+	# Make sure the panel is high enough
+	$self->{panel}->Fit;
 
 	# manage the pane in aui
-	$main->manager->AddPane($panel,
+	$main->manager->AddPane( $self->{panel},
 		Wx::AuiPaneInfo->new->Name( 'find' )
 		->Bottom
 		->CaptionVisible(0)
@@ -158,48 +181,34 @@ sub _create_panel {
 		->Fixed
 		->Show(0)
 	);
+
+	return 1;
 }
 
-
-#
-# _hide_panel();
-#
-# remove find panel.
-#
-sub _hide_panel {
-	my $main = Padre->ide->wx->main_window;
-
-	my $auimngr = $main->manager;
-	my $pane    = $auimngr->GetPane('find');
-	$pane->Hide;
-	$auimngr->Update;
+sub hide {
+	$_[0]->{panel}->Hide;
+	Padre->ide->wx->main_window->manager->Update;
+	return 1;
 }
 
+sub show {
+	my $self = shift;
 
-#
-# _show_panel();
-#
-# force visibility of find panel.
-#
-sub _show_panel {
-	my $main = Padre->ide->wx->main_window;
+	# Show the panel
+	$self->{panel}->Show;
+	Padre->ide->wx->main_window->manager->Update;
 
-	# show panel
-	my $auimngr = $main->manager;
-	my $pane    = $auimngr->GetPane('find');
-	$pane->Show;
-	$auimngr->Update;
-
-	# update checkboxes with config values
+	# Update checkboxes with config values
 	# since they might have been updated by find dialog
 	my $config = Padre->ide->config;
-	$wx{case}->SetValue( $config->{search}->{case_insensitive} );
-	$wx{regex}->SetValue( $config->{search}->{use_regex} );
+	$self->{case}->SetValue( $config->{search}->{case_insensitive} );
+	$self->{regex}->SetValue( $config->{search}->{use_regex} );
 
-	# direct input to search
-	$wx{entry}->SetFocus;
+	# You probably want to use the Find
+	$self->{entry}->SetFocus;
+
+	return 1;
 }
-
 
 # -- Event handlers
 
@@ -210,11 +219,12 @@ sub _show_panel {
 # case, we'll restart searching from the start of the document.
 #
 sub _on_case_checked {
-	Padre->ide->config->{search}->{case_insensitive} = $wx{case}->GetValue;
-	$restart = 1;
-	_find();
+	my $self = shift;
+	Padre->ide->config->{search}->{case_insensitive} = $self->{case}->GetValue;
+	$self->{restart} = 1;
+	$self->_find;
+	return;
 }
-
 
 #
 # _on_entry_changed()
@@ -223,8 +233,9 @@ sub _on_case_checked {
 # case, we'll start searching from the start of the document.
 #
 sub _on_entry_changed {
-	$restart = 1;
-	_find();
+	$_[0]->{restart} = 1;
+	$_[0]->_find;
+	return;
 }
 
 
@@ -235,21 +246,21 @@ sub _on_entry_changed {
 # search, otherwise dispatch event up-stack.
 #
 sub _on_key_pressed {
-	my ($entry, $event) = @_;
+	my $self  = shift;
+	my $event = shift;
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-	$mod = $mod & (Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT);
+	$mod = $mod & ( Wx::wxMOD_ALT + Wx::wxMOD_CMD + Wx::wxMOD_SHIFT );
 
 	if ( $code == Wx::WXK_ESCAPE ) {
-		_hide_panel();
+		$self->_hide_panel;
 		return;
 	}
 
 	$event->Skip(1);
 }
-
 
 #
 # _on_regex_checked()
@@ -258,11 +269,12 @@ sub _on_key_pressed {
 # we'll restart searching from the start of the document.
 #
 sub _on_regex_checked {
-	Padre->ide->config->{search}->{use_regex} = $wx{regex}->GetValue;
-	$restart = 1;
-	_find();
+	my $self = shift;
+	Padre->ide->config->{search}->{use_regex} = $self->{regex}->GetValue;
+	$self->{restart} = 1;
+	$self->_find;
+	return;
 }
-
 
 1;
 
