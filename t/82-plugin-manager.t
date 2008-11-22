@@ -31,7 +31,7 @@ ok ! $plugin_m1->plugins->{'Development::Tools'},  'no second level plugin';
 
 # try load again
 #{
-#my $st = $plugin_m1->_load_plugin('Development::Tools');
+#my $st = $plugin_m1->load_plugin('Development::Tools');
 #is $st, undef;
 #}
 
@@ -55,7 +55,7 @@ ok ! defined $plugin_m2->plugins->{'Test::Plugin'},        'no second level plug
 
 # try load again
 {
-	my $st = $plugin_m2->_load_plugin('TestPlugin');
+	my $st = $plugin_m2->load_plugin('TestPlugin');
 	is $st, undef;
 }
 
