@@ -119,9 +119,25 @@ sub new {
 sub refresh {
 	my $self    = shift;
 	my $doc     = shift;
-	my $enabled = !!( $doc and $doc->is_modified );
-	$self->EnableTool( Wx::wxID_SAVE, $enabled );
-	$self->EnableTool( Wx::wxID_CLOSE, ( defined Padre::Documents->current ? 1 : 0 ) );
+
+	my $editor  = $doc ? $doc->editor : undef;
+
+	my $selection_exists = 0;
+	if ($editor) {
+		my $txt = $editor->GetSelectedText;
+		if ( defined($txt) && length($txt) > 0 ) {
+			$selection_exists = 1;
+		}
+	}
+
+	$self->EnableTool( Wx::wxID_SAVE,      ( $doc and $doc->is_modified ? 1 : 0 ));
+	$self->EnableTool( Wx::wxID_CLOSE,     ( $editor ? 1 : 0 ));
+	$self->EnableTool( Wx::wxID_UNDO,      ( $editor and $editor->CanUndo  ));
+	$self->EnableTool( Wx::wxID_REDO,      ( $editor and $editor->CanRedo  ));
+	$self->EnableTool( Wx::wxID_CUT,       ( $selection_exists ));
+	$self->EnableTool( Wx::wxID_COPY,      ( $selection_exists ));
+	$self->EnableTool( Wx::wxID_PASTE,     ( $editor and $editor->CanPaste ));
+	$self->EnableTool( Wx::wxID_SELECTALL, ( $editor ? 1 : 0 ));
 	return 1;
 }
 
