@@ -709,6 +709,7 @@ use Class::Autouse qw{
 	Padre::DB
 	Padre::Document
 	Padre::Document::Perl
+	Padre::PPI
 	Padre::Project
 	Padre::PluginManager
 	Padre::Pod::Frame

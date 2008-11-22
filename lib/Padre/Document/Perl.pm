@@ -400,7 +400,7 @@ sub uncomment_lines {
 
 sub find_unmatched_brace {
 	my ($self) = @_;
-	Class::Autouse->load('Padre::PPI');
+
 	my $ppi   = $self->ppi_get or return;
 	my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
 	if ( $where ) {
