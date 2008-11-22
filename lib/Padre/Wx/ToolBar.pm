@@ -77,7 +77,7 @@ sub new {
 	Wx::Event::EVT_TOOL(
 		$parent,
 		Wx::wxID_CUT,
-		sub { \&Padre::Wx::Editor::text_cut_to_clipboard(@_) },
+		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
 	);
 	$self->AddTool(
 		Wx::wxID_COPY,  '',

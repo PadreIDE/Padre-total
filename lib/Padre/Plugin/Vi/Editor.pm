@@ -109,7 +109,7 @@ $subs{PLAIN} = {
 		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
 			$self->select_text($editor, $1 || 1);
-			Padre::Wx::Editor::text_cut_to_clipboard();
+			$editor->Cut;
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
 		} else {

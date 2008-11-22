@@ -428,7 +428,7 @@ sub on_right_down {
 	}
 	Wx::Event::EVT_MENU( $win, # Ctrl-X
 		$cut,
-		sub { \&text_cut_to_clipboard(@_) },
+		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
 	);
 
 	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
@@ -552,18 +552,6 @@ sub text_copy_to_clipboard {
 	return;
 }
 
-sub text_cut_to_clipboard {
-	my $win = Padre->ide->wx->main_window;
-
-	my $id = $win->{notebook}->GetSelection;
-	return if $id == -1;
-	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-	if (length $txt) {
-		put_text_to_clipboard($txt);
-	}
-	$win->{notebook}->GetPage($id)->ReplaceSelection('');
-}
-	
 sub put_text_to_clipboard {
 	my ($txt) = @_;
 

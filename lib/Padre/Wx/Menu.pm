@@ -392,7 +392,7 @@ sub menu_edit {
     );
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_CUT, '' ),
-        sub { Padre::Wx::Editor::text_cut_to_clipboard() },
+		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
     );
     Wx::Event::EVT_MENU( $win,
         $menu->Append( Wx::wxID_PASTE, '' ),
