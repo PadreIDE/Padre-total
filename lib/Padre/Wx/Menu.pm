@@ -203,8 +203,15 @@ sub refresh {
 		}
 		$self->{$_}->Enable(1) for @has_document;
 		
+		my $selection_exists = 0;
+		my $txt = $editor->GetSelectedText;
+		if ( defined($txt) && length($txt) > 0 ) {
+			$selection_exists = 1;
+		}
+		
 		$self->{edit_undo}->Enable($editor->CanUndo);
 		$self->{edit_redo}->Enable($editor->CanRedo);
+		$self->{edit_copy}->Enable($selection_exists);
 	} else {
 		$self->{$_}->Enable(0) for @has_document;
 		$self->{$_}->Enable(0) for qw(edit_undo edit_redo);
@@ -405,9 +412,9 @@ sub menu_edit {
 	);
 
 
-    
+	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, '' );
     Wx::Event::EVT_MENU( $win,
-        $menu->Append( Wx::wxID_COPY, '' ),
+        $self->{edit_copy},
 		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
     );
     Wx::Event::EVT_MENU( $win,
