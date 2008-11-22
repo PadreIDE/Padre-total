@@ -1,16 +1,5 @@
 package Padre::PluginManager;
 
-use strict;
-use warnings;
-use Carp        qw(croak);
-use File::Path  ();
-use File::Spec  ();
-use Padre::Wx   ();
-use Padre::Util ();
-use Wx::Locale  qw(:default);
-
-our $VERSION = '0.17';
-
 =pod
 
 =head1 NAME
@@ -25,6 +14,18 @@ plugins, as well as providing part of the interface to plugin writers.
 =head1 METHODS
 
 =cut
+
+use strict;
+use warnings;
+use Carp        qw(croak);
+use File::Path  ();
+use File::Spec  ();
+use Padre::Util ();
+use Padre::Wx   ();
+
+our $VERSION = '0.17';
+
+=pod
 
 =head2 new
 
@@ -41,16 +42,15 @@ sub new {
 	my $class = shift;
 	my $padre = shift || Padre->ide;
 
-	if (not $padre or not $padre->isa("Padre")) {
+	if ( not $padre or not $padre->isa("Padre") ) {
 		croak("Creation of a Padre::PluginManager without a Padre not possible");
 	}
 
 	my $self  = bless {
-		plugins => {},
+		plugins    => {},
 		plugin_dir => Padre::Config->default_plugin_dir,
- 
 		par_loaded => 0,
-		@_
+		@_,
 	}, $class;
 
 	return $self;
@@ -99,7 +99,7 @@ sub plugin_config {
 	my $plugin = shift;
 
 	# infer the plugin name from caller
-	if (not defined $plugin) {
+	if ( not defined $plugin ) {
 		my ($package) = caller();
 		croak("Cannot infer the name of the plugin for which the configuration has been requested")
 			if $package !~ /^Padre::Plugin::/;
@@ -107,7 +107,7 @@ sub plugin_config {
 	}
 
 	$plugin =~ s/^Padre::Plugin:://;
-	my $padre_config = Padre->ide->config;
+	my $padre_config  = Padre->ide->config;
 	my $plugin_config = $padre_config->{plugins};
 	$plugin_config->{$plugin} ||= {};
 	return $plugin_config->{$plugin};
@@ -127,9 +127,9 @@ plugin has changed while Padre was running.
 
 sub load_plugins {
 	my ($self) = @_;
-	$self->_load_plugins_from_inc();
-	$self->_load_plugins_from_par();
-	if (my @failed = $self->failed) {
+	$self->_load_plugins_from_inc;
+	$self->_load_plugins_from_par;
+	if ( my @failed = $self->failed ) {
 		Padre->ide->wx->main_window->error("Failed to load the following plugin(s):\n" . join "\n", @failed);
 		return;
 	}
@@ -153,7 +153,7 @@ sub _load_plugins_from_inc {
 	my @dirs = grep {-d $_} map {File::Spec->catdir($_, 'Padre', 'Plugin')} @INC;
 
 	require File::Find::Rule;
-	my @files = File::Find::Rule->file()->name('*.pm')->maxdepth(1)->in( @dirs );
+	my @files = File::Find::Rule->file->name('*.pm')->maxdepth(1)->in( @dirs );
 	foreach my $file (@files) {
 		# full path filenames
 		$file =~ s/\.pm$//;
@@ -351,8 +351,8 @@ sub _refresh_plugin_menu {
 	# re-create menu,
 	my $win = Padre->ide->wx->main_window;
 	my $plugin_menu = $win->{menu}->menu_plugin( $win );
-	my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
-	$win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
+	my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( Wx::gettext("Pl&ugins") );
+	$win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, Wx::gettext("Pl&ugins") );
 
 	$win->{menu}->refresh;
 
@@ -371,7 +371,7 @@ sub test_a_plugin {
 		$default_dir = File::Basename::dirname($last_filename);
 	}
 	my $dialog = Wx::FileDialog->new(
-		$win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+		$win, Wx::gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
 	);
 	unless ( Padre::Util::WIN32 ) {
 		$dialog->SetWildcard("*");
