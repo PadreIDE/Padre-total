@@ -189,6 +189,7 @@ sub refresh {
 				file_save file_save_as file_save_all
 				file_convert_nl_windows file_convert_nl_unix file_convert_nl_mac
 				file_docstat
+				edit_goto edit_autocomp edit_brace_match edit_join_lines edit_snippets
 	);
 
 	if ( $document ) {
@@ -209,9 +210,11 @@ sub refresh {
 			$selection_exists = 1;
 		}
 		
-		$self->{edit_undo}->Enable($editor->CanUndo);
-		$self->{edit_redo}->Enable($editor->CanRedo);
-		$self->{edit_copy}->Enable($selection_exists);
+		$self->{edit_undo}->Enable(  $editor->CanUndo  );
+		$self->{edit_redo}->Enable(  $editor->CanRedo  );
+		$self->{edit_copy}->Enable(  $selection_exists );
+		$self->{edit_cut}->Enable(   $selection_exists );
+		$self->{edit_paste}->Enable( $editor->CanPaste );
 	} else {
 		$self->{$_}->Enable(0) for @has_document;
 		$self->{$_}->Enable(0) for qw(edit_undo edit_redo);
@@ -417,12 +420,14 @@ sub menu_edit {
         $self->{edit_copy},
 		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
     );
+    $self->{edit_cut} = $menu->Append( Wx::wxID_CUT, '' );
     Wx::Event::EVT_MENU( $win,
-        $menu->Append( Wx::wxID_CUT, '' ),
+        $self->{edit_cut},
 		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
     );
+    $self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, '' );
     Wx::Event::EVT_MENU( $win,
-        $menu->Append( Wx::wxID_PASTE, '' ),
+        $self->{edit_paste},
         sub { 
 			my $editor = Padre->ide->wx->main_window->selected_editor or return;
 			$editor->Paste;
@@ -446,24 +451,29 @@ sub menu_edit {
 		$menu->Append( -1, Wx::gettext("Ac&k") ),
 		\&Padre::Wx::Ack::on_ack,
 	);
+	$self->{edit_goto} = $menu->Append( -1, Wx::gettext("&Goto\tCtrl-G") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Goto\tCtrl-G") ),
+		$self->{edit_goto},
 		\&Padre::Wx::MainWindow::on_goto,
 	);
+	$self->{edit_autocomp} = $menu->Append( -1, Wx::gettext("&AutoComp\tCtrl-P") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&AutoComp\tCtrl-P") ),
+		$self->{edit_autocomp},
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
+	$self->{edit_brace_match} = $menu->Append( -1, Wx::gettext("&Brace matching\tCtrl-1") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Brace matching\tCtrl-1") ),
+		$self->{edit_brace_match},
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
+	$self->{edit_join_lines} = $menu->Append( -1, Wx::gettext("&Join lines\tCtrl-J") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Join lines\tCtrl-J") ),
+		$self->{edit_join_lines},
 		\&Padre::Wx::MainWindow::on_join_lines,
 	);
+	$self->{edit_snippets} = $menu->Append( -1, Wx::gettext("Snippets\tCtrl-Shift-A") );
 	Wx::Event::EVT_MENU( $win,
-        $menu->Append( -1, Wx::gettext("Snippets\tCtrl-Shift-A") ),
+        $self->{edit_snippets},
         sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
 	); 
 	$menu->AppendSeparator;
@@ -525,7 +535,7 @@ sub menu_edit {
 
 	# User Preferences
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Preferences") ),
+		$menu->Append( -1, Wx::gettext("Preferences") ),
 		\&Padre::Wx::MainWindow::on_preferences,
 	);
 	
