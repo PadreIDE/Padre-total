@@ -478,12 +478,12 @@ sub menu_edit {
 	my $menu_edit_case = Wx::Menu->new;
 	$menu->Append( -1, gettext("Upper/Lower Case"), $menu_edit_case );
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Upper All") ),
-		sub { $_[0]->on_upper_and_lower('Upper_All') },
+		$menu_edit_case->Append( -1, gettext("Upper All\tCtrl-Shift-U") ),
+		sub { Padre::Documents->current->editor->UpperCase; },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Lower All") ),
-		sub { $_[0]->on_upper_and_lower('Lower_All') },
+		$menu_edit_case->Append( -1, gettext("Lower All\tCtrl-U") ),
+		sub { Padre::Documents->current->editor->LowerCase; },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu_edit_case->Append( -1, gettext("Upper First") ),
