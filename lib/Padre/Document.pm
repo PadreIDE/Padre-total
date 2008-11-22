@@ -589,6 +589,40 @@ sub remove_color {
 #
 sub comment_lines_str {}
 
+sub stats {
+	my ($self) = @_;
+	
+	my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly )
+		= (0) x 5;
+
+	my $editor = $self->editor;
+	my $src = $editor->GetSelectedText;
+	my $code;
+	if ( $src ) {
+		$code = $src;
+
+		my $code2 = $code; # it's ugly, need improvement
+		$code2 =~ s/\r\n/\n/g;
+		$lines = 1; # by default
+		$lines++ while ( $code2 =~ /[\r\n]/g );
+		$chars_with_space = length($code);
+    } else {
+		$code = $self->text_get;
+
+		# I trust editor more
+		$lines = $editor->GetLineCount();
+		$chars_with_space = $editor->GetTextLength();
+		$is_readonly = $editor->GetReadOnly();
+	}
+    
+	$words++ while ( $code =~ /\b\w+\b/g );
+	$chars_without_space++ while ( $code =~ /\S/g );
+
+	my $filename = $self->filename;
+	
+	return ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename);
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

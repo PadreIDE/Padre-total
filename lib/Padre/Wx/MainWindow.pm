@@ -2059,38 +2059,15 @@ sub on_quick_find {
 sub on_doc_stats {
 	my ($self, $event) = @_;
 
-    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly )
-		= (0) x 5;
-
-	my $code;
-    my $src = $self->selected_text;
     my $doc = $self->selected_document;
    	if (not $doc) {
 		$self->message( 'No file is open', 'Stats' );
 		return;
 	}
 
-    if ( $src ) {
-        $code = $src;
-		
-		my $code2 = $code; # it's ugly, need improvement
-		$code2 =~ s/\r\n/\n/g;
-		$lines = 1; # by default
-		$lines++ while ( $code2 =~ /[\r\n]/g );
-		$chars_with_space = length($code);
-    } else {
-        $code = $doc->text_get;
-        
-        # I trust editor more
-        my $editor = $doc->editor;
-        $lines = $editor->GetLineCount();
-        $chars_with_space = $editor->GetTextLength();
-        $is_readonly = $editor->GetReadOnly();
-    }
-    
-	$words++ while ( $code =~ /\b\w+\b/g );
-	$chars_without_space++ while ( $code =~ /\S/g );
-	
+    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename)
+		= $doc->stats;
+
 	my $message = <<MESSAGE;
 Words: $words
 Lines: $lines
@@ -2098,11 +2075,9 @@ Chars without spaces: $chars_without_space
 Chars with spaces: $chars_with_space
 MESSAGE
 
-	if (defined $doc->filename) {
-		$message .= sprintf("Filename: '%s'\n", $doc->filename);
-	} else {
-		$message .= "No filename\n";
-	}
+	$message .= defined $filename ?
+				sprintf("Filename: '%s'\n", $filename) :
+				"No filename\n";
 
 	if ($is_readonly) {
 		$message .= "File is read-only.\n";
