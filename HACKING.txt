@@ -20,7 +20,7 @@ release.pl  Used to release  Padre.
 Translation files
 -----------------
 
-Currently we are using gettext so we have a po file for each additional
+Currently we are using Wx::gettext so we have a po file for each additional
 language (currently only German) in the share/locale/ directory.
 
 Before release the release.pl script generates an mo file using

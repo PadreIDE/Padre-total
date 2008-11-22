@@ -1,14 +1,7 @@
 #!/usr/bin/perl
+
+use 5.006;
 use strict;
 use warnings;
 
-=head1 NAME
-
-One line name
-
-=head1 DESCRIPTION
-
-Detailed description of the script
-
-=cut
-
+print "Hello World!\n";

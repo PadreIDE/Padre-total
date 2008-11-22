@@ -22,9 +22,6 @@ use Padre::Document    ();
 use Padre::Documents   ();
 use Padre::Wx::DNDFilesDropTarget ();
 
-
-use Wx::Locale         qw(:default);
-
 use base qw{Wx::Frame};
 
 our $VERSION = '0.17';
@@ -69,7 +66,7 @@ sub new {
 		my $dir = $0;
 		$dir =~ s/padre$//;
 		if ( -d "$dir.svn" ) {
-			$title .= gettext('(running from SVN checkout)');
+			$title .= Wx::gettext('(running from SVN checkout)');
 		}
 	}
 	my $self = $class->SUPER::new(
@@ -129,7 +126,7 @@ sub new {
 		$self->{notebook}, 
 		Wx::AuiPaneInfo->new->Name( "notebook" )
 			->CenterPane->Resizable->PaneBorder->Dockable
-			->Caption( gettext("Files") )->Position( 1 )
+			->Caption( Wx::gettext("Files") )->Position( 1 )
 	);
 
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
@@ -173,9 +170,9 @@ sub new {
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Subs") )->Position( 3 )->Right->Layer(3)
+			->Caption( Wx::gettext("Subs") )->Position( 3 )->Right->Layer(3)
 	);
-	$self->{rightbar}->InsertColumn(0, gettext('Methods'));
+	$self->{rightbar}->InsertColumn(0, Wx::gettext('Methods'));
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
@@ -197,7 +194,7 @@ sub new {
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Output") )->Position(2)->Bottom->Layer(4)
+			->Caption( Wx::gettext("Output") )->Position(2)->Bottom->Layer(4)
 		);
 
 	# on close pane
@@ -273,15 +270,15 @@ sub create_syntaxbar {
 		Wx::wxDefaultSize,
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
-	$self->{syntaxbar}->InsertColumn( 0, gettext('Line') );
-	$self->{syntaxbar}->InsertColumn( 1, gettext('Type') );
-	$self->{syntaxbar}->InsertColumn( 2, gettext('Description') );
+	$self->{syntaxbar}->InsertColumn( 0, Wx::gettext('Line') );
+	$self->{syntaxbar}->InsertColumn( 1, Wx::gettext('Type') );
+	$self->{syntaxbar}->InsertColumn( 2, Wx::gettext('Description') );
 	$self->manager->AddPane($self->{syntaxbar},
 		Wx::AuiPaneInfo->new->Name( "syntaxbar" )
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( gettext("Syntax") )->Position(3)->Bottom->Layer(2)
+			->Caption( Wx::gettext("Syntax") )->Position(3)->Bottom->Layer(2)
 	);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
@@ -510,9 +507,9 @@ sub on_synchk_timer {
 				$last_hint = $hint;
 			}
 
-			my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, gettext("Line") . ' ' );
+			my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Line") . ' ' );
 			my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
-			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, gettext("Type") x 2 );
+			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Type") x 2 );
 			my $width2 = $win->{syntaxbar}->GetSize->GetWidth - $width0 - $width1 - $win->{syntaxbar}->GetCharWidth * 2;
 			$win->{syntaxbar}->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
 			$win->{syntaxbar}->SetColumnWidth( 1, $width1 );
@@ -771,8 +768,8 @@ sub on_run_command {
 
 	my $dialog = Padre::Wx::History::TextDialog->new(
 		$main_window,
-		gettext("Command line"),
-		gettext("Run setup"),
+		Wx::gettext("Command line"),
+		Wx::gettext("Run setup"),
 		"run_command",
 	);
 	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
@@ -844,7 +841,7 @@ sub run_script {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
 
-	return $self->error(gettext("No open document")) if not $document;
+	return $self->error(Wx::gettext("No open document")) if not $document;
 
 	# Apply the user's save-on-run policy
 	# TODO: Make this code suck less
@@ -858,7 +855,7 @@ sub run_script {
 	}
 	
 	if ( not $document->can('get_command') ) {
-		return $self->error(gettext("No execution mode was defined for this document"));
+		return $self->error(Wx::gettext("No execution mode was defined for this document"));
 	}
 	
 	my $cmd = eval { $document->get_command };
@@ -877,13 +874,13 @@ sub debug_perl {
 	my $self     = shift;
 	my $document = $self->selected_document;
 	unless ( $document->isa('Perl::Document::Perl') ) {
-		return $self->error(gettext("Not a Perl document"));
+		return $self->error(Wx::gettext("Not a Perl document"));
 	}
 
 	# Check the file name
 	my $filename = $document->filename;
 	unless ( $filename =~ /\.pl$/i ) {
-		return $self->error(gettext("Only .pl files can be executed"));
+		return $self->error(Wx::gettext("Only .pl files can be executed"));
 	}
 
 	# Apply the user's save-on-run policy
@@ -919,14 +916,14 @@ sub debug_perl {
 sub message {
 	my $self    = shift;
 	my $message = shift;
-	my $title   = shift || gettext('Message');
+	my $title   = shift || Wx::gettext('Message');
 	Wx::MessageBox( $message, $title, Wx::wxOK | Wx::wxCENTRE, $self );
 	return;
 }
 
 sub error {
 	my $self = shift;
-	$self->message( shift, gettext('Error') );
+	$self->message( shift, Wx::gettext('Error') );
 }
 
 
@@ -1000,7 +997,7 @@ sub on_autocompletition {
 	my $doc    = $self->selected_document or return;
 	my ( $length, @words ) = $doc->autocomplete;
 	if ( $length =~ /\D/ ) {
-		Wx::MessageBox($length, gettext("Autocompletions error"), Wx::wxOK);
+		Wx::MessageBox($length, Wx::gettext("Autocompletions error"), Wx::wxOK);
 	}
 	if ( @words ) {
 		$doc->editor->AutoCompShow($length, join " ", @words);
@@ -1011,7 +1008,7 @@ sub on_autocompletition {
 sub on_goto {
 	my $self = shift;
 
-	my $dialog = Wx::TextEntryDialog->new( $self, gettext("Line number:"), "", '' );
+	my $dialog = Wx::TextEntryDialog->new( $self, Wx::gettext("Line number:"), "", '' );
 	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}   
@@ -1202,7 +1199,12 @@ sub on_open_selection {
 	my ($self, $event) = @_;
 	my $selection = $self->selected_text();
 	if (not $selection) {
-		Wx::MessageBox(gettext("Need to have something selected"), gettext("Open Selection"), Wx::wxOK, $self);
+		Wx::MessageBox(
+			Wx::gettext("Need to have something selected"),
+			Wx::gettext("Open Selection"),
+			Wx::wxOK,
+			$self,
+		);
 		return;
 	}
 	my $file;
@@ -1239,7 +1241,7 @@ sub on_open_selection {
 	}
 
 	if (not $file) {
-		Wx::MessageBox(sprintf(gettext("Could not find file '%s'"), $selection), gettext("Open Selection"), Wx::wxOK, $self);
+		Wx::MessageBox(sprintf(Wx::gettext("Could not find file '%s'"), $selection), Wx::gettext("Open Selection"), Wx::wxOK, $self);
 		return;
 	}
 
@@ -1269,7 +1271,7 @@ sub on_open {
 	}
 	my $dialog = Wx::FileDialog->new(
 		$self,
-		gettext("Open file"),
+		Wx::gettext("Open file"),
 		$default_dir,
 		"",
 		"*.*",
@@ -1325,7 +1327,7 @@ sub on_save_as {
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
 			$self,
-			gettext("Save file as..."),
+			Wx::gettext("Save file as..."),
 			$default_dir,
 			"",
 			"*.*",
@@ -1339,8 +1341,8 @@ sub on_save_as {
 		my $path = File::Spec->catfile($default_dir, $filename);
 		if ( -e $path ) {
 			my $res = Wx::MessageBox(
-				gettext("File already exists. Overwrite it?"),
-				gettext("Exist"),
+				Wx::gettext("File already exists. Overwrite it?"),
+				Wx::gettext("Exist"),
 				Wx::wxYES_NO,
 				$self,
 			);
@@ -1402,8 +1404,8 @@ sub _save_buffer {
 
 	if ($doc->has_changed_on_disk) {
 		my $ret = Wx::MessageBox(
-			gettext("File changed on disk since last saved. Do you want to overwrite it?"),
-			$doc->filename || gettext("File not in sync"),
+			Wx::gettext("File changed on disk since last saved. Do you want to overwrite it?"),
+			$doc->filename || Wx::gettext("File not in sync"),
 			Wx::wxYES_NO|Wx::wxCENTRE,
 			$self,
 		);
@@ -1412,7 +1414,7 @@ sub _save_buffer {
 
 	my $error = $doc->save_file;
 	if ($error) {
-		Wx::MessageBox($error, gettext("Error"), Wx::wxOK, $self);
+		Wx::MessageBox($error, Wx::gettext("Error"), Wx::wxOK, $self);
 		return;
 	}
 
@@ -1453,8 +1455,8 @@ sub close {
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
-			gettext("File changed. Do you want to save it?"),
-			$doc->filename || gettext("Unsaved File"),
+			Wx::gettext("File changed. Do you want to save it?"),
+			$doc->filename || Wx::gettext("Unsaved File"),
 			Wx::wxYES_NO|Wx::wxCANCEL|Wx::wxCENTRE,
 			$self,
 		);
@@ -1556,13 +1558,13 @@ sub on_diff {
 
 	my $current = $doc->text_get;
 	my $file    = $doc->filename;
-	return $self->error(gettext("Cannot diff if file was never saved")) if not $file;
+	return $self->error(Wx::gettext("Cannot diff if file was never saved")) if not $file;
 
 	require Text::Diff;
 	my $diff = Text::Diff::diff($file, \$current);
 	
 	if ( not $diff ) {
-		$diff = gettext("There are no differences\n");
+		$diff = Wx::gettext("There are no differences\n");
 	}
 	$self->show_output;
 	$self->{output}->clear;
@@ -1857,7 +1859,7 @@ sub on_insert_from_file {
         $default_dir = File::Basename::dirname($last_filename);
     }
     my $dialog = Wx::FileDialog->new(
-        $win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+        $win, Wx::gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
     );
     unless ( Padre::Util::WIN32 ) {
         $dialog->SetWildcard("*");
@@ -1922,7 +1924,7 @@ sub run_in_padre {
 	my $code = $doc->text_get;
 	eval $code;
 	if ( $@ ) {
-		Wx::MessageBox(sprintf(gettext("Error: %s"), $@), gettext("Self error"), Wx::wxOK, $self);
+		Wx::MessageBox(sprintf(Wx::gettext("Error: %s"), $@), Wx::gettext("Self error"), Wx::wxOK, $self);
 		return;
 	}
 	return;
@@ -2236,8 +2238,8 @@ sub on_timer_check_overwrite {
 
 	$doc->{_already_popup_file_changed} = 1;
 	my $ret = Wx::MessageBox(
-		gettext("File changed on disk since last saved. Do you want to reload it?"),
-		$doc->filename || gettext("File not in sync"),
+		Wx::gettext("File changed on disk since last saved. Do you want to reload it?"),
+		$doc->filename || Wx::gettext("File not in sync"),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$self,
 	);

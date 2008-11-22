@@ -1,10 +1,9 @@
 package Padre::Wx::Ack;
 
+use 5.008;
 use strict;
 use warnings;
-
-use Padre::Wx;
-use Wx::Locale qw(:default);
+use Padre::Wx ();
 
 my $iter;
 my %opts;
@@ -91,15 +90,15 @@ sub dialog {
 	my $style = Wx::wxDEFAULT_FRAME_STYLE;
 
 	my $dialog        = Wx::Dialog->new( $win, $id, $title, $pos, $size, $style, $name );
-	my $label_1       = Wx::StaticText->new($dialog, -1, gettext("Term: "), Wx::wxDefaultPosition, Wx::wxDefaultSize, );
+	my $label_1       = Wx::StaticText->new($dialog, -1, Wx::gettext("Term: "), Wx::wxDefaultPosition, Wx::wxDefaultSize, );
 	my $term          = Wx::ComboBox->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, [], Wx::wxCB_DROPDOWN);
 	my $button_search = Wx::Button->new($dialog, Wx::wxID_FIND, '');
-	my $label_2       = Wx::StaticText->new($dialog, -1, gettext("Dir: "), Wx::wxDefaultPosition, Wx::wxDefaultSize, );
+	my $label_2       = Wx::StaticText->new($dialog, -1, Wx::gettext("Dir: "), Wx::wxDefaultPosition, Wx::wxDefaultSize, );
 	my $dir           = Wx::ComboBox->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, [], Wx::wxCB_DROPDOWN);
 	my $button_cancel = Wx::Button->new($dialog, Wx::wxID_CANCEL, '');
 	my $nothing_1     = Wx::StaticText->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
 	my $nothing_2     = Wx::StaticText->new($dialog, -1, "", Wx::wxDefaultPosition, Wx::wxDefaultSize, );
-	my $button_dir    = Wx::Button->new($dialog, -1, gettext("Pick &directory"));
+	my $button_dir    = Wx::Button->new($dialog, -1, Wx::gettext("Pick &directory"));
 
 	Wx::Event::EVT_BUTTON( $dialog, $button_search, sub { $dialog->EndModal(Wx::wxID_FIND) } );
 	Wx::Event::EVT_BUTTON( $dialog, $button_dir,    sub { on_pick_dir($dir, @_) } );
@@ -148,7 +147,7 @@ sub dialog {
 sub on_pick_dir {
 	my ($dir, $self, $event) = @_;
 
-	my $dir_dialog = Wx::DirDialog->new( $self, gettext("Select directory"), '');
+	my $dir_dialog = Wx::DirDialog->new( $self, Wx::gettext("Select directory"), '');
 	if ($dir_dialog->ShowModal == Wx::wxID_CANCEL) {
 		return;
 	}

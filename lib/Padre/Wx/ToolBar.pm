@@ -3,11 +3,8 @@ package Padre::Wx::ToolBar;
 use 5.008;
 use strict;
 use warnings;
-
-use Padre::Wx ();
+use Padre::Wx         ();
 use Padre::Wx::Editor ();
-use Wx::Locale qw(:default);
-use File::Spec::Functions qw(catfile);
 
 our $VERSION = '0.17';
 our @ISA     = 'Wx::ToolBar';
@@ -22,7 +19,7 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_NEW, '',
 		Padre::Wx::tango( 'actions', 'document-new.png' ),
-		gettext('New File'),
+		Wx::gettext('New File'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,
@@ -32,17 +29,17 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_OPEN, '',
 		Padre::Wx::tango( 'actions', 'document-open.png' ),
-		gettext('Open File'),
+		Wx::gettext('Open File'),
 	);
 	$self->AddTool(
 		Wx::wxID_SAVE, '',
 		Padre::Wx::tango( 'actions', 'document-save.png' ),
-		gettext('Save File'),
+		Wx::gettext('Save File'),
 	);
 	$self->AddTool(
 		Wx::wxID_CLOSE, '',
 		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),
-		gettext('Close File'),
+		Wx::gettext('Close File'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,
@@ -51,11 +48,6 @@ sub new {
 	);
 	$self->AddSeparator;
 
-	# TODO, how can we make sure these numbers are unique?
-	#$self->AddTool( 1000, '', Padre::Wx::tango(catfile('actions', 'bookmark-new.png')), 'Bookmark' );
-	#Wx::Event::EVT_TOOL($parent, 1000, sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) } );
-
-
 
 
 
@@ -63,12 +55,12 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_UNDO, '',
 		Padre::Wx::tango( 'actions', 'edit-undo.png' ),
-		gettext('Undo'),
+		Wx::gettext('Undo'),
 	);
 	$self->AddTool(
 		Wx::wxID_REDO, '',
 		Padre::Wx::tango( 'actions', 'edit-redo.png' ),
-		gettext('Redo'),
+		Wx::gettext('Redo'),
 	);
 	$self->AddSeparator;
 
@@ -80,7 +72,7 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_CUT, '',
 		Padre::Wx::tango( 'actions', 'edit-cut.png' ),
-		gettext('Cut'),
+		Wx::gettext('Cut'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,
@@ -90,7 +82,7 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_COPY,  '',
 		Padre::Wx::tango( 'actions', 'edit-copy.png' ),
-		gettext('Copy'),
+		Wx::gettext('Copy'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,
@@ -100,7 +92,7 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_PASTE, '',
 		Padre::Wx::tango( 'actions', 'edit-paste.png' ),
-		gettext('Paste'),
+		Wx::gettext('Paste'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,
@@ -113,7 +105,7 @@ sub new {
 	$self->AddTool(
 		Wx::wxID_SELECTALL, '',
 		Padre::Wx::tango( 'actions', 'edit-select-all.png' ),
-		gettext('Select all'),
+		Wx::gettext('Select all'),
 	);
 	Wx::Event::EVT_TOOL(
 		$parent,

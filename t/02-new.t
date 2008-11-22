@@ -56,10 +56,10 @@ SCOPE: {
 
 		host               => {
 			main_maximized => 0,
-			main_top       => -1,
-			main_left      => -1,
-			main_width     => -1,
-			main_height    => -1,
+			main_top       => 20,
+			main_left      => 40,
+			main_width     => 600,
+			main_height    => 400,
 			run_command    => '',
 			main_files     => [],
 			main_files_pos => [],

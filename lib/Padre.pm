@@ -697,9 +697,6 @@ our $VERSION = '0.17';
 # autouse everything other than the bare essentials
 use Padre::Util           ();
 use Padre::Config         ();
-use Padre::DB             ();
-use Padre::Wx::App        ();
-use Padre::Wx::MainWindow ();
 
 # Nudges to make Class::Autouse behave
 BEGIN {
@@ -720,6 +717,7 @@ use Class::Autouse qw{
 	Padre::Wx::Menu
 	Padre::Wx::Menu::Help
 	Padre::Wx::Ack
+	Padre::Wx::App
 	Padre::Wx::Dialog::Bookmarks
 	Padre::Wx::Dialog::Find
 	Padre::Wx::Dialog::ModuleStart
@@ -728,6 +726,7 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Search
 	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog
+	Padre::Wx::MainWindow
 };
 
 # Globally shared Perl detection object
@@ -746,6 +745,7 @@ sub inst {
 	Carp::croak("Padre->new has not been called yet") if not $SINGLETON;
 	return $SINGLETON;
 }
+
 sub new {
 	Carp::croak("Padre->new already called. Use Padre->inst") if $SINGLETON;
 	my $class = shift;
@@ -883,6 +883,7 @@ sub run_editor {
 
 	$self->wx->MainLoop;
 	$self->{wx} = undef;
+
 	return;
 }
 

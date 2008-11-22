@@ -3,17 +3,11 @@ package Padre::Wx::Editor;
 use 5.008;
 use strict;
 use warnings;
-
 use YAML::Tiny       ();
-
-use Wx               qw(:dnd wxTheClipboard);
-use Wx::DND;
-use Wx::STC;
-use Wx::Locale       qw(:default);
-
-use Padre::Documents ();
 use Padre::Util      ();
-use Padre::Wx;
+use Padre::Wx        ();
+use Padre::Documents ();
+use Wx::DND;
 
 use base 'Wx::StyledTextCtrl';
 
@@ -66,13 +60,13 @@ sub padre_setup {
 	# See: http://www.yellowbrain.com/stc/keymap.html
 	#$self->CmdKeyAssign(Wx::wxSTC_KEY_ESCAPE, 0, Wx::wxSTC_CMD_CUT);
 
-	$self->SetCodePage(65001); # which is supposed to be wxSTC_CP_UTF8
+	$self->SetCodePage(65001); # which is supposed to be Wx::wxSTC_CP_UTF8
 	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
 
 	my $mimetype = $self->{Document}->mimetype;
     if ($mimetype eq 'application/x-perl') {
         $self->padre_setup_style('perl');
-    } elsif ($mimetype eq 'text/pasm') {
+    } elsif ( $mimetype eq 'application/x-pasm' ) {
         $self->padre_setup_style('pasm');
     } elsif ($mimetype) {
 		# setup some default colouring
@@ -409,7 +403,7 @@ sub on_right_down {
 		}
 	}
 
-	my $sel_all = $menu->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") );
+	my $sel_all = $menu->Append( Wx::wxID_SELECTALL, Wx::gettext("Select all\tCtrl-A") );
 	if ( not $win->{notebook}->GetPage($id)->GetTextLength > 0 ) {
 		$sel_all->Enable(0);
 	}
@@ -453,7 +447,7 @@ sub on_right_down {
 
 #	$menu->Append( Wx::wxID_NEW, '' );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Split window") ),
+		$menu->Append( -1, Wx::gettext("&Split window") ),
 		\&Padre::Wx::MainWindow::on_split_window,
 	);
 	if ($event->isa('Wx::MouseEvent')) {
@@ -580,14 +574,14 @@ sub text_cut_to_clipboard {
 sub get_text_from_clipboard {
 	wxTheClipboard->Open;
 	my $text   = '';
-	if ( wxTheClipboard->IsSupported(wxDF_TEXT) ) {
+	if ( wxTheClipboard->IsSupported(Wx::wxDF_TEXT) ) {
 		my $data = Wx::TextDataObject->new;
-		my $ok   = wxTheClipboard->GetData($data);
+		my $ok   = Wx::wxTheClipboard->GetData($data);
 		if ($ok) {
 			$text   = $data->GetText;
 		}
 	}
-	wxTheClipboard->Close;
+	Wx::wxTheClipboard->Close;
 	return $text;
 }
 

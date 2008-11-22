@@ -78,12 +78,12 @@ sub dialog {
 }
 
 sub guess_indentation_settings {
-	my $class = shift;
+	my $class  = shift;
 	my $dialog = shift;
-	require Text::FindIndent;
+	my $doc    = Padre::Documents->current;
 
-	my $doc = Padre::Documents->current();
-	my $indentation = Text::FindIndent->parse($doc->text_get());
+	require Text::FindIndent;
+	my $indentation = Text::FindIndent->parse($doc->text_get);
 
 	# TODO: Padre can't do mixed tab/space indentation (i.e. tab-compressed indentation) yet
 

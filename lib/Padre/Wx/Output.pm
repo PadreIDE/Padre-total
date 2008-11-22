@@ -9,7 +9,6 @@ use strict;
 use warnings;
 use Params::Util ();
 use Padre::Wx    ();
-use Wx::Locale   qw(:default);
 
 use base 'Wx::TextCtrl';
 
@@ -29,7 +28,7 @@ sub new {
 
 	# Do custom startup stuff here
 	$self->clear;
-	$self->AppendText(gettext('No output'));
+	$self->AppendText(Wx::gettext('No output'));
 
 	return $self;
 }

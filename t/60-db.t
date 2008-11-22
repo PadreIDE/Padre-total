@@ -62,11 +62,6 @@ SCOPE: {
 	my @pods = Padre::DB->get_recent_pod;
 	is_deeply \@pods, [reverse @words], 'pods';
 	is( Padre::DB->get_last_pod, 'Six', 'current is Six' );
-
-#	is( $app->prev_module, 'Five', 'prev Five' );
-#	is( $app->prev_module, 'Four', 'prev Four' );
-#	is( Padre::DB->get_last_pod, 'Four', 'current is Four' );
-#	is( $app->next_module, 'Five', 'next Five' );
 }
 
 1;

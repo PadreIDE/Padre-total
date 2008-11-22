@@ -3,12 +3,10 @@ package Padre::Wx::Menu;
 use 5.008;
 use strict;
 use warnings;
-use Params::Util qw{_INSTANCE};
-
-use Padre::Wx        ();
+use Params::Util     qw{_INSTANCE};
 use Padre::Util      ();
+use Padre::Wx        ();
 use Padre::Documents ();
-use Wx::Locale       qw(:default);
 
 our $VERSION = '0.17';
 
@@ -77,19 +75,19 @@ sub create_main_menu_bar {
 
 	# Create and return the main menu bar
 	$menu->{wx} = Wx::MenuBar->new;
-	$menu->{wx}->Append( $menu->{file},     gettext("&File")      );
-	$menu->{wx}->Append( $menu->{project},  gettext("&Project")   );
-	$menu->{wx}->Append( $menu->{edit},     gettext("&Edit")      );
-	$menu->{wx}->Append( $menu->{view},     gettext("&View")      );
-	#$menu->{wx}->Append( $menu->{perl},     gettext("Perl")       );
-	$menu->{wx}->Append( $menu->{run},      gettext("&Run")        );
-	$menu->{wx}->Append( $menu->{bookmark}, gettext("&Bookmarks") );
-	$menu->{wx}->Append( $menu->{plugin},   gettext("Pl&ugins")   ) if $menu->{plugin};
-	$menu->{wx}->Append( $menu->{tools},    gettext("&Tools")    );
-	$menu->{wx}->Append( $menu->{window},   gettext("&Window")    );
-	$menu->{wx}->Append( $menu->{help},     gettext("&Help")      );
+	$menu->{wx}->Append( $menu->{file},     Wx::gettext("&File")      );
+	$menu->{wx}->Append( $menu->{project},  Wx::gettext("&Project")   );
+	$menu->{wx}->Append( $menu->{edit},     Wx::gettext("&Edit")      );
+	$menu->{wx}->Append( $menu->{view},     Wx::gettext("&View")      );
+	#$menu->{wx}->Append( $menu->{perl},     Wx::gettext("Perl")       );
+	$menu->{wx}->Append( $menu->{run},      Wx::gettext("&Run")        );
+	$menu->{wx}->Append( $menu->{bookmark}, Wx::gettext("&Bookmarks") );
+	$menu->{wx}->Append( $menu->{plugin},   Wx::gettext("Pl&ugins")   ) if $menu->{plugin};
+	$menu->{wx}->Append( $menu->{tools},    Wx::gettext("&Tools")    );
+	$menu->{wx}->Append( $menu->{window},   Wx::gettext("&Window")    );
+	$menu->{wx}->Append( $menu->{help},     Wx::gettext("&Help")      );
 	if ( $experimental ) {
-		$menu->{wx}->Append( $menu->{experimental}, gettext("E&xperimental") );
+		$menu->{wx}->Append( $menu->{experimental}, Wx::gettext("E&xperimental") );
 	}
 }
 
@@ -215,9 +213,9 @@ sub menu_file {
 		},
 	);
 	my $menu_file_new = Wx::Menu->new;
-	$menu->Append( -1, gettext("New..."), $menu_file_new );
+	$menu->Append( -1, Wx::gettext("New..."), $menu_file_new );
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_new->Append( -1, gettext('Perl Distribution (Module::Starter)') ),
+		$menu_file_new->Append( -1, Wx::gettext('Perl Distribution (Module::Starter)') ),
 		sub { Padre::Wx::Dialog::ModuleStart->start(@_) },
 	);
 
@@ -227,7 +225,7 @@ sub menu_file {
 		sub { $_[0]->on_open },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Open Selection\tCtrl-Shift-O") ),
+		$menu->Append( -1, Wx::gettext("Open Selection\tCtrl-Shift-O") ),
 		sub { $_[0]->on_open_selection },
 	);
 	Wx::Event::EVT_MENU( $win,
@@ -235,15 +233,15 @@ sub menu_file {
 		sub { $_[0]->on_close },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Close All') ),
+		$menu->Append( -1, Wx::gettext('Close All') ),
 		sub { $_[0]->on_close_all },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Close All but Current Document') ),
+		$menu->Append( -1, Wx::gettext('Close All but Current Document') ),
 		sub { $_[0]->on_close_all_but_current },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Reload file') ),
+		$menu->Append( -1, Wx::gettext('Reload file') ),
 		sub { $_[0]->on_reload_file },
 	);
 	$menu->AppendSeparator;
@@ -258,43 +256,43 @@ sub menu_file {
 		sub { $_[0]->on_save_as },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Save All') ),
+		$menu->Append( -1, Wx::gettext('Save All') ),
 		sub { $_[0]->on_save_all },
 	);
 	$menu->AppendSeparator;
 
 	# Conversions and Transforms
 	my $menu_file_convert = Wx::Menu->new;
-	$menu->Append( -1, gettext("Convert..."), $menu_file_convert );
+	$menu->Append( -1, Wx::gettext("Convert..."), $menu_file_convert );
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, gettext("EOL to Windows")),
+		$menu_file_convert->Append(-1, Wx::gettext("EOL to Windows")),
 		sub { $_[0]->convert_to("WIN") },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, gettext("EOL to Unix")),
+		$menu_file_convert->Append(-1, Wx::gettext("EOL to Unix")),
 		sub { $_[0]->convert_to("UNIX") },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, gettext("EOL to Mac Classic")),
+		$menu_file_convert->Append(-1, Wx::gettext("EOL to Mac Classic")),
 		sub { $_[0]->convert_to("MAC") },
 	);
 	$menu->AppendSeparator;
 
 	# Recent things
 	$self->{file_recentfiles} = Wx::Menu->new;
-	$menu->Append( -1, gettext("Recent Files"), $self->{file_recentfiles} );
+	$menu->Append( -1, Wx::gettext("Recent Files"), $self->{file_recentfiles} );
 	Wx::Event::EVT_MENU( $win,
-		$self->{file_recentfiles}->Append(-1, gettext("Open All Recent Files")),
+		$self->{file_recentfiles}->Append(-1, Wx::gettext("Open All Recent Files")),
 		sub { $_[0]->on_open_all_recent_files },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$self->{file_recentfiles}->Append(-1, gettext("Clean Recent Files List")),
+		$self->{file_recentfiles}->Append(-1, Wx::gettext("Clean Recent Files List")),
 		sub {
 			Padre::DB->delete_recent( 'files' );
 			# replace the whole File menu
 			my $menu = $_[0]->{menu}->menu_file($_[0]);
-			my $menu_place = $_[0]->{menu}->{wx}->FindMenu( gettext("&File") );
-			$_[0]->{menu}->{wx}->Replace( $menu_place, $menu, gettext("&File") );
+			my $menu_place = $_[0]->{menu}->{wx}->FindMenu( Wx::gettext("&File") );
+			$_[0]->{menu}->{wx}->Replace( $menu_place, $menu, Wx::gettext("&File") );
 		},
 	);
 	$self->{file_recentfiles}->AppendSeparator;
@@ -317,7 +315,7 @@ sub menu_file {
 	
 	# Word Stats
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Doc Stats') ),
+		$menu->Append( -1, Wx::gettext('Doc Stats') ),
 		sub { $_[0]->on_doc_stats },
 	);
 	$menu->AppendSeparator;
@@ -361,28 +359,28 @@ sub menu_edit {
 	$menu->AppendSeparator;
 
 	my $menu_edit_select = Wx::Menu->new;
-	$menu->Append( -1, gettext("Select"), $menu_edit_select );
+	$menu->Append( -1, Wx::gettext("Select"), $menu_edit_select );
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_select->Append( Wx::wxID_SELECTALL, gettext("Select all\tCtrl-A") ),
+		$menu_edit_select->Append( Wx::wxID_SELECTALL, Wx::gettext("Select all\tCtrl-A") ),
 		sub { \&Padre::Wx::Editor::text_select_all(@_) },
 	);
 	$menu_edit_select->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_select->Append( -1, gettext("Mark selection start\tCtrl-[") ),
+		$menu_edit_select->Append( -1, Wx::gettext("Mark selection start\tCtrl-[") ),
 		sub {
 			my $editor = Padre->ide->wx->main_window->selected_editor or return;
 			$editor->text_selection_mark_start;
 		},
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_select->Append( -1, gettext("Mark selection end\tCtrl-]") ),
+		$menu_edit_select->Append( -1, Wx::gettext("Mark selection end\tCtrl-]") ),
 		sub {
 			my $editor = Padre->ide->wx->main_window->selected_editor or return;
 			$editor->text_selection_mark_end;
 		},
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_select->Append( -1, gettext("Clear selection marks") ),
+		$menu_edit_select->Append( -1, Wx::gettext("Clear selection marks") ),
 		\&Padre::Wx::Editor::text_selection_clear_marks,
 	);
 
@@ -410,97 +408,97 @@ sub menu_edit {
 		sub { Padre::Wx::Dialog::Find->find(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Find Next\tF3") ),
+		$menu->Append( -1, Wx::gettext("Find Next\tF3") ),
 		sub { Padre::Wx::Dialog::Find->find_next(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Find Previous\tShift-F3") ),
+		$menu->Append( -1, Wx::gettext("Find Previous\tShift-F3") ),
 		sub { Padre::Wx::Dialog::Find->find_previous(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Ac&k") ),
+		$menu->Append( -1, Wx::gettext("Ac&k") ),
 		\&Padre::Wx::Ack::on_ack,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Goto\tCtrl-G") ),
+		$menu->Append( -1, Wx::gettext("&Goto\tCtrl-G") ),
 		\&Padre::Wx::MainWindow::on_goto,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&AutoComp\tCtrl-P") ),
+		$menu->Append( -1, Wx::gettext("&AutoComp\tCtrl-P") ),
 		\&Padre::Wx::MainWindow::on_autocompletition,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Brace matching\tCtrl-1") ),
+		$menu->Append( -1, Wx::gettext("&Brace matching\tCtrl-1") ),
 		\&Padre::Wx::MainWindow::on_brace_matching,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Join lines\tCtrl-J") ),
+		$menu->Append( -1, Wx::gettext("&Join lines\tCtrl-J") ),
 		\&Padre::Wx::MainWindow::on_join_lines,
 	);
 	Wx::Event::EVT_MENU( $win,
-        $menu->Append( -1, gettext("Snippets\tCtrl-Shift-A") ),
+        $menu->Append( -1, Wx::gettext("Snippets\tCtrl-Shift-A") ),
         sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
 	); 
 	$menu->AppendSeparator;
 
 	# Commenting
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Comment Selected Lines\tCtrl-M") ),
+		$menu->Append( -1, Wx::gettext("&Comment Selected Lines\tCtrl-M") ),
 		\&Padre::Wx::MainWindow::on_comment_out_block,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Uncomment Selected Lines\tCtrl-Shift-M") ),
+		$menu->Append( -1, Wx::gettext("&Uncomment Selected Lines\tCtrl-Shift-M") ),
 		\&Padre::Wx::MainWindow::on_uncomment_block,
 	);
 	$menu->AppendSeparator;
 
 	# Tab And Space
 	my $menu_edit_tab = Wx::Menu->new;
-	$menu->Append( -1, gettext("Tabs and Spaces"), $menu_edit_tab );
+	$menu->Append( -1, Wx::gettext("Tabs and Spaces"), $menu_edit_tab );
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_tab->Append( -1, gettext("Tabs to Spaces...") ),
+		$menu_edit_tab->Append( -1, Wx::gettext("Tabs to Spaces...") ),
 		sub { $_[0]->on_tab_and_space('Tab_to_Space') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_tab->Append( -1, gettext("Spaces to Tabs...") ),
+		$menu_edit_tab->Append( -1, Wx::gettext("Spaces to Tabs...") ),
 		sub { $_[0]->on_tab_and_space('Space_to_Tab') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_tab->Append( -1, gettext("Delete Trailing Spaces") ),
+		$menu_edit_tab->Append( -1, Wx::gettext("Delete Trailing Spaces") ),
 		sub { $_[0]->on_delete_ending_space() },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_tab->Append( -1, gettext("Delete Leading Spaces") ),
+		$menu_edit_tab->Append( -1, Wx::gettext("Delete Leading Spaces") ),
 		sub { $_[0]->on_delete_leading_space() },
 	);
 
 	# Upper and Lower Case
 	my $menu_edit_case = Wx::Menu->new;
-	$menu->Append( -1, gettext("Upper/Lower Case"), $menu_edit_case );
+	$menu->Append( -1, Wx::gettext("Upper/Lower Case"), $menu_edit_case );
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Upper All\tCtrl-Shift-U") ),
+		$menu_edit_case->Append( -1, Wx::gettext("Upper All\tCtrl-Shift-U") ),
 		sub { Padre::Documents->current->editor->UpperCase; },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Lower All\tCtrl-U") ),
+		$menu_edit_case->Append( -1, Wx::gettext("Lower All\tCtrl-U") ),
 		sub { Padre::Documents->current->editor->LowerCase; },
 	);
 	$menu->AppendSeparator;
 
 	# Diff
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Diff") ),
+		$menu->Append( -1, Wx::gettext("Diff") ),
 		\&Padre::Wx::MainWindow::on_diff,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Insert From File...") ),
+		$menu->Append( -1, Wx::gettext("Insert From File...") ),
 		\&Padre::Wx::MainWindow::on_insert_from_file,
 	);
 	$menu->AppendSeparator;
 
 	# User Preferences
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Preferences") ),
+		$menu->Append( -1, Wx::gettext("&Preferences") ),
 		\&Padre::Wx::MainWindow::on_preferences,
 	);
 	
@@ -516,7 +514,7 @@ sub menu_view {
 	my $menu_view = Wx::Menu->new;
 
 	# GUI Elements
-	$menu->{view_output} = $menu_view->AppendCheckItem( -1, gettext("Show Output") );
+	$menu->{view_output} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Output") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_output},
 		sub {
@@ -525,7 +523,7 @@ sub menu_view {
 			),
 		},
 	);
-	$menu->{view_functions} = $menu_view->AppendCheckItem( -1, gettext("Show Functions") );
+	$menu->{view_functions} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Functions") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_functions},
 		sub {
@@ -536,7 +534,7 @@ sub menu_view {
 	);
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
-		$menu->{view_statusbar} = $menu_view->AppendCheckItem( -1, gettext("Show StatusBar") );
+		$menu->{view_statusbar} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show StatusBar") );
 		Wx::Event::EVT_MENU( $win,
 			$menu->{view_statusbar},
 			\&Padre::Wx::MainWindow::on_toggle_status_bar,
@@ -545,40 +543,40 @@ sub menu_view {
 	$menu_view->AppendSeparator;
 
 	# Editor look and feel
-	$menu->{view_lines} = $menu_view->AppendCheckItem( -1, gettext("Show Line numbers") );
+	$menu->{view_lines} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Line numbers") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_lines},
 		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
 	);
-	$menu->{view_folding} = $menu_view->AppendCheckItem( -1, gettext("Show Code Folding") );
+	$menu->{view_folding} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Code Folding") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_folding},
 		\&Padre::Wx::MainWindow::on_toggle_code_folding,
 	);
-	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, gettext("Show Newlines") );
+	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_eol},
 		\&Padre::Wx::MainWindow::on_toggle_eol,
 	);
-	$menu->{view_whitespaces} = $menu_view->AppendCheckItem( -1, gettext("Show Whitespaces") );
+	$menu->{view_whitespaces} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Whitespaces") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_whitespaces},
 		\&Padre::Wx::MainWindow::on_toggle_whitespaces,
 	);
 
-	$menu->{view_indentation_guide} = $menu_view->AppendCheckItem( -1, gettext("Show Indentation Guide") );
+	$menu->{view_indentation_guide} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Indentation Guide") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_indentation_guide},
 		\&Padre::Wx::MainWindow::on_toggle_indentation_guide,
 	);
-	$menu->{view_show_calltips} = $menu_view->AppendCheckItem( -1, gettext("Show Call Tips") );
+	$menu->{view_show_calltips} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Call Tips") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_show_calltips},
 		sub { $config->{editor_calltips} = $menu->{view_show_calltips}->IsChecked },
 	);
 	$menu_view->AppendSeparator;
 	
-	$menu->{view_word_wrap} = $menu_view->AppendCheckItem( -1, gettext("Word-Wrap") );
+	$menu->{view_word_wrap} = $menu_view->AppendCheckItem( -1, Wx::gettext("Word-Wrap") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_word_wrap},
 		sub {
@@ -587,7 +585,7 @@ sub menu_view {
 			),
 		},
 	);
-	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, gettext("Highlight Current Line") );
+	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, Wx::gettext("Highlight Current Line") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{view_currentlinebackground},
 		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
@@ -595,56 +593,56 @@ sub menu_view {
 	$menu_view->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("Increase Font Size\tCtrl-+") ),
+		$menu_view->Append( -1, Wx::gettext("Increase Font Size\tCtrl-+") ),
 		sub { $_[0]->zoom(+1) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("Decrease Font Size\tCtrl--") ),
+		$menu_view->Append( -1, Wx::gettext("Decrease Font Size\tCtrl--") ),
 		sub { $_[0]->zoom(-1) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("Reset Font Size\tCtrl-/") ),
+		$menu_view->Append( -1, Wx::gettext("Reset Font Size\tCtrl-/") ),
 		sub { $_[0]->zoom( -1 * $_[0]->selected_editor->GetZoom ) },
 	);
 
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("Set Bookmark\tCtrl-B") ),
+		$menu_view->Append( -1, Wx::gettext("Set Bookmark\tCtrl-B") ),
 		sub { Padre::Wx::Dialog::Bookmarks->set_bookmark($_[0]) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("Goto Bookmark\tCtrl-Shift-B") ),
+		$menu_view->Append( -1, Wx::gettext("Goto Bookmark\tCtrl-Shift-B") ),
 		sub { Padre::Wx::Dialog::Bookmarks->goto_bookmark($_[0]) },
 	);
 
 	$menu_view->AppendSeparator;
 	$menu->{view_language} = Wx::Menu->new;
-	$menu_view->Append( -1, gettext("Language"), $menu->{view_language} );
+	$menu_view->Append( -1, Wx::gettext("Language"), $menu->{view_language} );
 	
 	# TODO horrible, fix this
 	if ($config->{host}->{locale} eq 'en') {
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, gettext("English") ),
+			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
 			sub { $_[0]->change_locale('en') },
 		);
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, gettext("German") ),
+			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
 		);
 	} else {
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, gettext("German") ),
+			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
 		);
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, gettext("English") ),
+			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
 			sub { $_[0]->change_locale('en') },
 		);
 	}
 
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu_view->Append( -1, gettext("&Full screen\tF11") ),
+		$menu_view->Append( -1, Wx::gettext("&Full screen\tF11") ),
 		\&Padre::Wx::MainWindow::on_full_screen,
 	);
 
@@ -658,7 +656,7 @@ sub menu_perl {
 	my $menu = Wx::Menu->new;
 
 	# Perl-Specific Searches
-	my $menu_perl_find_unmatched = $menu->Append( -1, gettext("Find Unmatched Brace") );
+	my $menu_perl_find_unmatched = $menu->Append( -1, Wx::gettext("Find Unmatched Brace") );
 	Wx::Event::EVT_MENU( $win,
 		$menu_perl_find_unmatched,
 		sub {
@@ -667,7 +665,7 @@ sub menu_perl {
 				return;
 			}
 			unless ($doc->find_unmatched_brace) {
-				Wx::MessageBox( gettext("All braces appear to be matched"), gettext("Check Complete"), Wx::wxOK, $win );
+				Wx::MessageBox( Wx::gettext("All braces appear to be matched"), Wx::gettext("Check Complete"), Wx::wxOK, $win );
 			}
 		},
 	);
@@ -682,17 +680,17 @@ sub menu_run {
 	my $menu_run = Wx::Menu->new;
 
 	# Script Execution
-	$menu->{run_run_script} = $menu_run->Append( -1, gettext("Run Script\tF5") );
+	$menu->{run_run_script} = $menu_run->Append( -1, Wx::gettext("Run Script\tF5") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{run_run_script},
 		sub { $_[0]->run_script },
 	);
-	$menu->{run_run_command} = $menu_run->Append( -1, gettext("Run Command\tCtrl-F5") );
+	$menu->{run_run_command} = $menu_run->Append( -1, Wx::gettext("Run Command\tCtrl-F5") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{run_run_command},
 		sub { $_[0]->on_run_command },
 	);
-	$menu->{run_stop} = $menu_run->Append( -1, gettext("&Stop") );
+	$menu->{run_stop} = $menu_run->Append( -1, Wx::gettext("&Stop") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{run_stop},
 		sub {
@@ -749,12 +747,12 @@ sub menu_plugin_tools {
 	# Create the tools menu
 	my $menu = Wx::Menu->new;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Edit My Plugin") ),
+		$menu->Append( -1, Wx::gettext("Edit My Plugin") ),
 		sub  {
 			my $self = shift;
 			my $file = File::Spec->catfile( Padre->ide->config_dir, 'plugins', 'Padre', 'Plugin', 'My.pm' );
 			if (not -e $file) {
-				return $self->error(gettext("Could not find the Padre::Plugin::My plugin"));
+				return $self->error(Wx::gettext("Could not find the Padre::Plugin::My plugin"));
 			}
 			
 			$self->setup_editor($file);
@@ -762,14 +760,14 @@ sub menu_plugin_tools {
 		},
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Reload My Plugin") ),
+		$menu->Append( -1, Wx::gettext("Reload My Plugin") ),
 		sub { Padre->ide->plugin_manager->reload_plugin('My') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Reset My Plugin") ),
+		$menu->Append( -1, Wx::gettext("Reset My Plugin") ),
 		sub  {
 			my $ret = Wx::MessageBox(
-				gettext("Reset My Plugin"), gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
+				Wx::gettext("Reset My Plugin"), Wx::gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
 			);
 			if ( $ret == Wx::wxOK) {
 				my $manager = Padre->ide->plugin_manager;
@@ -785,15 +783,15 @@ sub menu_plugin_tools {
 	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Open Plugin Manager") ),
+		$menu->Append( -1, Wx::gettext("Open Plugin Manager") ),
 		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Reload All Plugins") ),
+		$menu->Append( -1, Wx::gettext("Reload All Plugins") ),
 		sub { Padre->ide->plugin_manager->reload_plugins; },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Test A Plugin From Local Dir") ),
+		$menu->Append( -1, Wx::gettext("Test A Plugin From Local Dir") ),
 		sub { Padre->ide->plugin_manager->test_a_plugin; },
 	);
 	
@@ -806,24 +804,24 @@ sub menu_window {
 	# Create the window menu
 	my $menu = Wx::Menu->new;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("&Split window") ),
+		$menu->Append( -1, Wx::gettext("&Split window") ),
 		\&Padre::Wx::MainWindow::on_split_window,
 	);
 	$menu->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append(-1, gettext("Next File\tCtrl-TAB")),
+		$menu->Append(-1, Wx::gettext("Next File\tCtrl-TAB")),
 		\&Padre::Wx::MainWindow::on_next_pane,
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append(-1, gettext("Previous File\tCtrl-Shift-TAB")),
+		$menu->Append(-1, Wx::gettext("Previous File\tCtrl-Shift-TAB")),
 		\&Padre::Wx::MainWindow::on_prev_pane,
 	);
  	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, gettext("Last Visited File\tCtrl-6")),
+ 		$menu->Append(-1, Wx::gettext("Last Visited File\tCtrl-6")),
  		\&Padre::Wx::MainWindow::on_last_visited_pane,
 	);
  	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, gettext("Right Click\tCtrl-/")),
+ 		$menu->Append(-1, Wx::gettext("Right Click\tCtrl-/")),
  		sub {
 			my $editor = $_[0]->selected_editor;
 			if ($editor) {
@@ -835,7 +833,7 @@ sub menu_window {
 
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("GoTo Subs Window\tAlt-S") ),
+		$menu->Append( -1, Wx::gettext("GoTo Subs Window\tAlt-S") ),
 		sub {
 			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
 			$_[0]->show_functions(1); 
@@ -843,13 +841,13 @@ sub menu_window {
 		},
 	); 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("GoTo Output Window\tAlt-O") ),
+		$menu->Append( -1, Wx::gettext("GoTo Output Window\tAlt-O") ),
 		sub {
 			$_[0]->show_output(1);
 			$_[0]->{output}->SetFocus;
 		},
 	);
-#	$self->{window_goto_synchk} = $menu->Append( -1, gettext("GoTo Syntax Check Window\tAlt-C") );
+#	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
 #	Wx::Event::EVT_MENU( $win,
 #		$self->{window_goto_synchk},
 #		sub {
@@ -861,7 +859,7 @@ sub menu_window {
 #		$self->{window_goto_synchk}->Enable(0);
 #	}
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("GoTo Main Window\tAlt-M") ),
+		$menu->Append( -1, Wx::gettext("GoTo Main Window\tAlt-M") ),
 		sub {
 			$_[0]->selected_editor->SetFocus;
 		},
@@ -883,7 +881,7 @@ sub menu_help {
 		sub { $help->help($win) },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext("Context Help\tCtrl-Shift-H") ),
+		$menu->Append( -1, Wx::gettext("Context Help\tCtrl-Shift-H") ),
 		sub {
 			my $main      = shift;
 			my $selection = $main->selected_text;
@@ -897,7 +895,7 @@ sub menu_help {
 
 	$menu->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, gettext('Visit the PerlMonks') ),
+		$menu->Append( -1, Wx::gettext('Visit the PerlMonks') ),
 		sub { Wx::LaunchDefaultBrowser('http://perlmonks.org/') },
 	);
 	
@@ -917,7 +915,7 @@ sub menu_experimental {
 	
 	my $menu_exp = Wx::Menu->new;
 	Wx::Event::EVT_MENU( $win,
-		$menu_exp->Append( -1, gettext('Reflow Menu/Toolbar') ),
+		$menu_exp->Append( -1, Wx::gettext('Reflow Menu/Toolbar') ),
 		sub {
 			$DB::single = 1;
 			my $document = Padre::Documents->current;
@@ -929,30 +927,30 @@ sub menu_experimental {
 	);
 	
 	$menu->{experimental_recent_projects} = Wx::Menu->new;
-	$menu_exp->Append( -1, gettext("Recent Projects"), $menu->{file_recent_projects} );
+	$menu_exp->Append( -1, Wx::gettext("Recent Projects"), $menu->{file_recent_projects} );
 	
 	Wx::Event::EVT_MENU(
 		$win,
-		$menu_exp->Append( -1, gettext('Run in &Padre') ),
+		$menu_exp->Append( -1, Wx::gettext('Run in &Padre') ),
 		sub {
 			my $self = shift;
 			my $code = Padre::Documents->current->text_get;
 			eval $code;
 			if ($@) {
-				Wx::MessageBox(gettext("Error: ") . "$@", gettext("Self error"), Wx::wxOK, $self);
+				Wx::MessageBox(Wx::gettext("Error: ") . "$@", Wx::gettext("Self error"), Wx::wxOK, $self);
 				return;
 			}
 			return;
 		},
 	);
-	$menu->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, gettext("Show Syntax Check") );
+	$menu->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{experimental_syntaxcheck},
 		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 
 	
-	$menu->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, gettext("Use PPI for Perl5 syntax highlighting") );
+	$menu->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Use PPI for Perl5 syntax highlighting") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{experimental_ppi_highlight},
 		\&Padre::Wx::MainWindow::on_ppi_highlight,
@@ -962,7 +960,7 @@ sub menu_experimental {
 		$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
 
 	# Quick Find: Press F3 to start search with selected text
-	$menu->{experimental_quick_find} = $menu_exp->AppendCheckItem( -1, gettext("Quick Find") );
+	$menu->{experimental_quick_find} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Quick Find") );
 	Wx::Event::EVT_MENU( $win,
 		$menu->{experimental_quick_find},
 		sub {
@@ -975,11 +973,11 @@ sub menu_experimental {
 
 	# Incremental find (#60)
 	Wx::Event::EVT_MENU( $win,
-		$menu_exp->Append( -1, gettext("Find Next\tF4") ),
+		$menu_exp->Append( -1, Wx::gettext("Find Next\tF4") ),
         	sub { $_[0]->find->search('next') },
 	);
 	Wx::Event::EVT_MENU( $win,
-		$menu_exp->Append( -1, gettext("Find Previous\tShift-F4") ),
+		$menu_exp->Append( -1, Wx::gettext("Find Previous\tShift-F4") ),
 		sub { $_[0]->find->search('previous') }
 	);
 

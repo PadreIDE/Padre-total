@@ -127,7 +127,7 @@ sub _create_panel {
 	Wx::Event::EVT_BUTTON($main, $self->{close}, sub { $self->_hide_panel } );
 
 	# Search area
-	$self->{label} = Wx::StaticText->new($self->{panel}, -1, Wx::Locale::gettext('Find:'));
+	$self->{label} = Wx::StaticText->new($self->{panel}, -1, Wx::gettext('Find:'));
 	$self->{entry} = Wx::TextCtrl->new($self->{panel}, -1, '');
 	$self->{entry}->SetMinSize(
 		Wx::Size->new( 25 * $self->{entry}->GetCharWidth, -1 )
@@ -156,11 +156,11 @@ sub _create_panel {
 	Wx::Event::EVT_BUTTON($main, $self->{next}, sub { $self->search('next') } );
 
 	# Case sensitivity
-	$self->{case} = Wx::CheckBox->new($self->{panel}, -1, Wx::Locale::gettext('Case insensitive'));
+	$self->{case} = Wx::CheckBox->new($self->{panel}, -1, Wx::gettext('Case insensitive'));
 	Wx::Event::EVT_CHECKBOX($main, $self->{case}, sub { $self->_on_case_checked } );
 
 	# Regex search
-	$self->{regex} = Wx::CheckBox->new($self->{panel}, -1, Wx::Locale::gettext('Use regex'));
+	$self->{regex} = Wx::CheckBox->new($self->{panel}, -1, Wx::gettext('Use regex'));
 	Wx::Event::EVT_CHECKBOX($main, $self->{regex}, sub { $self->_on_regex_checked } );
 
 	# Place all controls

@@ -21,7 +21,12 @@ sub on_new_project {
 	# create directory call, Module::Starter
 	# set current project
 	# run
-	Wx::MessageBox(gettext("Not implemented yet"), gettext("Not Yes"), Wx::wxOK, $self);
+	Wx::MessageBox(
+		Wx::gettext("Not implemented yet"),
+		Wx::gettext("Not Yes"),
+		Wx::wxOK,
+		$self,
+	);
 
 	return;
 }
@@ -38,7 +43,7 @@ sub on_select_project {
 
 	my $config = Padre->ide->config;
 
-	my $dialog = Wx::Dialog->new( $self, -1, gettext("Select Project"), [-1, -1], [-1, -1]);
+	my $dialog = Wx::Dialog->new( $self, -1, Wx::gettext("Select Project"), [-1, -1], [-1, -1]);
 
 	my $box  = Wx::BoxSizer->new(  Wx::wxVERTICAL   );
 	my $row1 = Wx::BoxSizer->new(  Wx::wxHORIZONTAL );
@@ -51,13 +56,13 @@ sub on_select_project {
 	$box->Add($row3);
 	$box->Add($row4);
 
-	$row1->Add( Wx::StaticText->new( $dialog, -1, gettext('Select Project Name or type in new one')), 1, Wx::wxALL, 3 );
+	$row1->Add( Wx::StaticText->new( $dialog, -1, Wx::gettext('Select Project Name or type in new one')), 1, Wx::wxALL, 3 );
 
 	my @projects = keys %{ $config->{projects} };
 	my $choice = Wx::ComboBox->new( $dialog, -1, '', [-1, -1], [-1, -1], \@projects);
 	$row2->Add( $choice, 1, Wx::wxALL, 3);
 
-	my $dir_selector = Wx::Button->new( $dialog, -1, gettext('Select Directory'));
+	my $dir_selector = Wx::Button->new( $dialog, -1, Wx::gettext('Select Directory'));
 	$row2->Add($dir_selector, 1, Wx::wxALL, 3);
 
 	my $path = Wx::StaticText->new( $dialog, -1, '');
@@ -121,7 +126,7 @@ sub on_select_project {
 sub on_pick_project_dir {
 	my ($path, $self, $event) = @_;
 
-	my $dialog = Wx::DirDialog->new( $self, gettext("Select Project Directory"), $default_dir);
+	my $dialog = Wx::DirDialog->new( $self, Wx::gettext("Select Project Directory"), $default_dir);
 	if ($dialog->ShowModal == Wx::wxID_CANCEL) {
 #print "Cancel\n";
 		return;
@@ -137,7 +142,7 @@ sub on_pick_project_dir {
 
 sub on_test_project {
 	my ($self) = @_;
-	Wx::MessageBox(gettext("Not implemented yet"), gettext("Not Yes"), Wx::wxOK, $self);
+	Wx::MessageBox(Wx::gettext("Not implemented yet"), Wx::gettext("Not Yes"), Wx::wxOK, $self);
 }
 
 1;
