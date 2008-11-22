@@ -212,7 +212,7 @@ sub _setup_par {
 
 # given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
 # load the corresponding module
-sub _load_plugin {
+sub load_plugin {
 	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
 
@@ -281,7 +281,7 @@ sub reload_plugin {
 	
 	require Module::Refresh;
 	my $refresher = Module::Refresh->new;
-	$refresher->reload_module( $name );
+	reload_module( $refresher, $name );
 	reload_menu($win);
 	return;
 }

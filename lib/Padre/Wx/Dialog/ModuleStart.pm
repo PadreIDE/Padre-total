@@ -82,6 +82,7 @@ sub dialog {
 		title           => gettext("Module Start"),
 		layout          => $layout,
 		width           => [100, 200],
+                bottom => 20,
 	);
 
 	$dialog->{_widgets_}{_ok_}->SetDefault;

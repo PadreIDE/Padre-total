@@ -795,6 +795,8 @@ sub menu_plugin_tools {
 				my $target = File::Spec->catfile(
 					Padre->ide->plugin_manager->plugin_dir, 'Padre', 'Plugin', 'My.pm'
 				);
+                                require Class::Unload;
+                                Class::Unload->unload("Padre::Plugin::My");
 				Padre::Config->copy_original_My_plugin($target);
 			}
 		},
