@@ -121,7 +121,8 @@ $subs{PLAIN} = {
 		my ($self, $editor) = @_;
 		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
 			$self->select_text($editor, $1 || 1);
-			Padre::Wx::Editor::text_copy_to_clipboard();
+			$editor->Copy;
+
 			# got to first char, remove $count rows
 			$self->{vi_buffer} = '';
 		} else {

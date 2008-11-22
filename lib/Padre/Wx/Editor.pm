@@ -419,7 +419,7 @@ sub on_right_down {
 	}
 	Wx::Event::EVT_MENU( $win, # Ctrl-C
 		$copy,
-		sub { text_copy_to_clipboard() },
+		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
 	);
 
 	my $cut = $menu->Append( Wx::wxID_CUT, '' );
@@ -536,20 +536,6 @@ sub text_selection_clear_marks {
 
 	undef $page->{selection_mark_start};
 	undef $page->{selection_mark_end};
-}
-
-sub text_copy_to_clipboard {
-	my $win = Padre->ide->wx->main_window;
-
-	my $id = $win->{notebook}->GetSelection;
-	return if $id == -1;
-
-	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-	if (length $txt) {
-		put_text_to_clipboard($txt);
-	}
-
-	return;
 }
 
 sub put_text_to_clipboard {
