@@ -543,14 +543,12 @@ sub text_copy_to_clipboard {
 
 	my $id = $win->{notebook}->GetSelection;
 	return if $id == -1;
-	Wx::wxTheClipboard->Open;
 
 	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-	if ( defined($txt) ) {
-		Wx::wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
+	if (length $txt) {
+		put_text_to_clipboard($txt);
 	}
 
-	Wx::wxTheClipboard->Close;
 	return;
 }
 
@@ -559,15 +557,20 @@ sub text_cut_to_clipboard {
 
 	my $id = $win->{notebook}->GetSelection;
 	return if $id == -1;
-	Wx::wxTheClipboard->Open;
-
 	my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
-	if ( defined($txt) ) {
-		Wx::wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
-		$win->{notebook}->GetPage($id)->ReplaceSelection('');
+	if (length $txt) {
+		put_text_to_clipboard($txt);
 	}
+	$win->{notebook}->GetPage($id)->ReplaceSelection('');
+}
+	
+sub put_text_to_clipboard {
+	my ($txt) = @_;
 
+	Wx::wxTheClipboard->Open;
+	Wx::wxTheClipboard->SetData( Wx::TextDataObject->new($txt) );
 	Wx::wxTheClipboard->Close;
+
 	return;
 }
 
