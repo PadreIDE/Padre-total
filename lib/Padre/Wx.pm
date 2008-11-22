@@ -12,6 +12,7 @@ use File::Spec ();
 # existance in the Wx:: packages, allowing everywhere else in the code to
 # use them without braces.
 use Wx         ':everything';
+use Wx         'wxTheClipboard';
 use Wx::Event  ':everything';
 use Wx::STC    ();
 use Wx::AUI    ();
