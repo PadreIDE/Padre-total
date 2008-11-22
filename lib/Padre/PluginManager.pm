@@ -355,6 +355,67 @@ sub test_a_plugin {
     reload_plugins( $win );
 }
 
+# fetch main menu label for specific plugin
+#sub get_label {
+#	my ($self, $name) = @_;
+#	
+#	my $plugins = $self->plugins;
+#
+#	my $label = '';
+#	if ($plugins->{$name}{module}->can('plugins_menu_label')) {
+#		$label = eval { $plugins->{$name}{module}->can('plugins_menu_label') };
+#		# TODO error handling
+#	} else {
+#		# TODO report lack of plugins_menu_label
+#		# TODO remove support for menu_name in 0.19
+#		if ( $plugins->{$name} and $plugins->{$name}{module}->can('menu_name') ) {
+#			$label = $plugins->{$name}{module}->menu_name;
+#		} else {
+#			$label = $name;
+#			$label =~ s/::/ /;
+#		}
+#	}
+#	return $label;
+#}
+#
+#sub get_menu {
+#	my ($self, $name) = @_;
+#
+#	my $plugins = $self->plugins;
+#	my $menu;
+#	if ( $plugins->{$name}{module}->can('menu_plugins') ) {
+#		$menu = eval { $plugins->{$name}{module}->menu_plugins; };
+#		# TODO error handling ?
+#		# TODO combaility with pre 0.18 plugins?
+#	}
+#	return $menu;
+#}
+#
+
+sub get_menu {
+	my ($self, $win, $name) = @_;
+
+	my $plugins = $self->plugins;
+
+	# TODO add new Padre::Plugin menu creation system
+	# in 0.19 remove support for old menu
+	my ($label, $items, $menu, @data);
+	use Data::Dumper;
+	if ($plugins->{$name}{module}->can('menu_plugins_simple') ) {
+		($label, $items) = eval { $plugins->{$name}{module}->menu_plugins_simple };
+		print Dumper $items;
+		if ( $@ ) {
+			warn "Error when calling menu for plugin '$name' $@";
+			return ();
+		}
+		# TODO better error handling
+		$menu = eval { $plugins->{$name}{module}->menu_plugins($label, $win, [$items]) };
+	} else {
+		warn "plugins_menu_data is not implemented in plugin '$name'\n";
+	} 
+	return ($label, $menu);
+}
+
 1;
 
 __END__

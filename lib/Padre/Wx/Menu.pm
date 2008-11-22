@@ -732,7 +732,8 @@ sub menu_plugin {
 	my ( $self, $win ) = @_;
 
 	# Get the list of plugins
-	my %plugins = %{ Padre->ide->plugin_manager->plugins };
+	my $manager = Padre->ide->plugin_manager;
+	my %plugins = %{ $manager->plugins };
 	my @plugins = grep { $_ ne 'My' } sort keys %plugins or return;
 
 	# Create the plugin menu
@@ -747,20 +748,12 @@ sub menu_plugin {
 		next if not $plugins{$name};
 		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
 		next if not $plugins{$name}{status} or $plugins{$name}{status} ne 'loaded';
-		# TODO add new Padre::Plugin menu creation system
-		my @menu = eval { $plugins{$name}{module}->menu };
-		if ( $@ ) {
-			warn "Error when calling menu for plugin '$name' $@";
-			next;
-		}
-		my $items = $self->add_plugin_menu_items(\@menu);
-		my $label = '';
-		if ( $plugins{$name} and $plugins{$name}{module}->can('menu_name') ) {
-			$label = $plugins{$name}{module}->menu_name;
-		} else {
-			$label = $name;
-			$label =~ s/::/ /;
-		}
+
+		#my $label = $manager->get_label($name);
+		#my @menu  = $manager->get_menu($name);
+		my ($label, $items) = $manager->get_menu($self->win, $name);
+		
+		#my $items = $self->add_plugin_menu_items(\@menu);
 		$menu->Append( -1, $label, $items );
 		if ( $name eq 'My' ) {
 			$menu->AppendSeparator;
