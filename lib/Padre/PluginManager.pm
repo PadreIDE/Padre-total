@@ -216,6 +216,7 @@ sub load_plugin {
 	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
 
+	# normalize to plugin name only
 	$plugin_name =~ s/^Padre::Plugin:://;
 
 	# skip if that plugin was already loaded
@@ -347,7 +348,7 @@ sub test_a_plugin {
 	# load plugin
 	delete $plugins->{$filename};
 	$config->{plugins}{$filename}{enabled} = 1;
-	load_plugin( Padre->ide->plugin_manager, $filename );
+	Padre->ide->plugin_manager->load_plugin( $filename );
 	if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
 		Padre->ide->wx->main_window->error("Faild to load the plugin '$filename'");
 		return;
