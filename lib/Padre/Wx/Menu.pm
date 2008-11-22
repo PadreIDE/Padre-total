@@ -485,14 +485,6 @@ sub menu_edit {
 		$menu_edit_case->Append( -1, gettext("Lower All\tCtrl-U") ),
 		sub { Padre::Documents->current->editor->LowerCase; },
 	);
-	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Upper First") ),
-		sub { $_[0]->on_upper_and_lower('Upper_First') },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu_edit_case->Append( -1, gettext("Lower First") ),
-		sub { $_[0]->on_upper_and_lower('Lower_First') },
-	);
 	$menu->AppendSeparator;
 
 	# Diff

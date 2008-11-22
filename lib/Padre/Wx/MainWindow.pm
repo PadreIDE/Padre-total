@@ -2205,38 +2205,6 @@ sub on_delete_leading_space {
 	$editor->ReplaceSelection( $code );
 }
 
-sub on_upper_and_lower {
-	my ($self, $type) = @_;
-	
-	my $doc  = $self->selected_document;
-	if (not $doc) {
-		$self->message( 'No file is open' );
-		return;
-	}
-	my $src  = $self->selected_text;
-	my $code = ( $src ) ? $src : $doc->text_get;
-
-	return unless ( defined $code and length($code) );
-	
-	if ( $type eq 'Upper_All' ) {
-		$code = uc($code);
-	} elsif ( $type eq 'Lower_All' ) {
-		$code = lc($code);
-	} elsif ( $type eq 'Upper_First' ) {
-		$code =~ s/\b(\S+)\b/ucfirst($1)/ge;
-	} elsif ( $type eq 'Lower_First' ) {
-		$code =~ s/\b(\S+)\b/lcfirst($1)/ge;
-	}
-	
-	if ( $src ) {
-		my $editor = $self->selected_editor;
-		$editor->ReplaceSelection( $code );
-	} else {
-		$doc->text_set( $code );
-	}
-
-}
-
 # TODO next function
 # should be in a class representing the rightbar
 sub on_rightbar_left {
