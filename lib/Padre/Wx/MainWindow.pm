@@ -205,8 +205,7 @@ sub new {
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
 		my ($self, $event) = @_;
-		$self->refresh_status;
-		$self->refresh_toolbar;
+		$self->refresh_all;
 		my $mod  = $event->GetModifiers || 0;
 		my $code = $event->GetKeyCode;
 		
@@ -1901,8 +1900,7 @@ sub convert_to {
 	my $doc     = $self->selected_document or return;
 	$doc->set_newline_type($newline_type);
 
-	$self->refresh_status;
-	$self->refresh_toolbar;
+	$self->refresh_all;
 
 	return;
 }
@@ -1992,8 +1990,7 @@ sub on_stc_update_ui {
 	$editor->highlight_braces;
 	$editor->show_calltip;
 
-	$self->refresh_status;
-	$self->refresh_toolbar;
+	$self->refresh_all;
 
 	return;
 }
@@ -2240,7 +2237,7 @@ sub on_last_visited_pane {
 				last;
 			}
 		}
-		$self->refresh_status;
+		$self->refresh_all;
 	}
 }
 1;

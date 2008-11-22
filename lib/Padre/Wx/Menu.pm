@@ -192,8 +192,9 @@ sub refresh {
 	);
 
 	if ( $document ) {
+		my $editor = $document->editor;
 		# check "wrap lines"
-		my $mode = $document->editor->GetWrapMode;
+		my $mode = $editor->GetWrapMode;
 		my $is_vwl_checked = $self->{view_word_wrap}->IsChecked;
 		if ( $mode eq Wx::wxSTC_WRAP_WORD and not $is_vwl_checked ) {
 			$self->{view_word_wrap}->Check(1);
@@ -201,8 +202,12 @@ sub refresh {
 			$self->{view_word_wrap}->Check(0);
 		}
 		$self->{$_}->Enable(1) for @has_document;
+		
+		$self->{edit_undo}->Enable($editor->CanUndo);
+		$self->{edit_redo}->Enable($editor->CanRedo);
 	} else {
 		$self->{$_}->Enable(0) for @has_document;
+		$self->{$_}->Enable(0) for qw(edit_undo edit_redo);
 	}
 
 	return 1;
@@ -361,25 +366,15 @@ sub menu_edit {
 	my $menu = Wx::Menu->new;
 
 	# Undo/Redo
+	$self->{edit_undo} = $menu->Append( Wx::wxID_UNDO, '' );
 	Wx::Event::EVT_MENU( $win, # Ctrl-Z
-		$menu->Append( Wx::wxID_UNDO, '' ),
-		sub {
-			my $editor = Padre::Documents->current->editor;
-			if ( $editor->CanUndo ) {
-				$editor->Undo;
-			}
-			return;
-		},
+		$self->{edit_undo},
+		sub { Padre::Documents->current->editor->Undo; },
 	);
+	$self->{edit_redo} = $menu->Append( Wx::wxID_REDO, '' );
 	Wx::Event::EVT_MENU( $win, # Ctrl-Y
-		$menu->Append( Wx::wxID_REDO, '' ),
-		sub {
-			my $editor = Padre::Documents->current->editor;
-			if ( $editor->CanRedo ) {
-				$editor->Redo;
-			}
-			return;
-		},
+		$self->{edit_redo},
+		sub { Padre::Documents->current->editor->Redo; },
 	);
 	$menu->AppendSeparator;
 
