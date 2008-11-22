@@ -174,6 +174,16 @@ sub enable_run {
 	return;
 }
 
+my @has_document = qw(
+			file_close file_close_all file_close_all_but_current file_reload_file
+			file_save file_save_as file_save_all
+			file_convert_nl_windows file_convert_nl_unix file_convert_nl_mac
+			file_docstat
+			edit_goto edit_autocomp edit_brace_match edit_join_lines edit_snippets
+			edit_comment_out edit_uncomment
+			edit_diff edit_insert_from_file
+);
+
 sub refresh {
 	my $self     = shift;
 	my $document = Padre::Documents->current;
@@ -183,14 +193,6 @@ sub refresh {
 	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq '&Perl') {
 		$self->{wx}->Remove( 3 );
 	}
-
-	my @has_document = qw(
-				file_close file_close_all file_close_all_but_current file_reload_file
-				file_save file_save_as file_save_all
-				file_convert_nl_windows file_convert_nl_unix file_convert_nl_mac
-				file_docstat
-				edit_goto edit_autocomp edit_brace_match edit_join_lines edit_snippets
-	);
 
 	if ( $document ) {
 		my $editor = $document->editor;
@@ -202,14 +204,14 @@ sub refresh {
 		} elsif ( $mode eq Wx::wxSTC_WRAP_NONE and $is_vwl_checked ) {
 			$self->{view_word_wrap}->Check(0);
 		}
-		$self->{$_}->Enable(1) for @has_document;
 		
 		my $selection_exists = 0;
 		my $txt = $editor->GetSelectedText;
 		if ( defined($txt) && length($txt) > 0 ) {
 			$selection_exists = 1;
 		}
-		
+
+		$self->{$_}->Enable(1) for @has_document;
 		$self->{edit_undo}->Enable(  $editor->CanUndo  );
 		$self->{edit_redo}->Enable(  $editor->CanRedo  );
 		$self->{edit_copy}->Enable(  $selection_exists );
@@ -217,7 +219,7 @@ sub refresh {
 		$self->{edit_paste}->Enable( $editor->CanPaste );
 	} else {
 		$self->{$_}->Enable(0) for @has_document;
-		$self->{$_}->Enable(0) for qw(edit_undo edit_redo);
+		$self->{$_}->Enable(0) for qw(edit_undo edit_redo edit_copy edit_cut edit_paste);
 	}
 
 	return 1;
@@ -479,12 +481,14 @@ sub menu_edit {
 	$menu->AppendSeparator;
 
 	# Commenting
+	$self->{edit_comment_out} = $menu->Append( -1, Wx::gettext("&Comment Selected Lines\tCtrl-M") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Comment Selected Lines\tCtrl-M") ),
+		$self->{edit_comment_out},
 		\&Padre::Wx::MainWindow::on_comment_out_block,
 	);
+	$self->{edit_uncomment} = $menu->Append( -1, Wx::gettext("&Uncomment Selected Lines\tCtrl-Shift-M") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("&Uncomment Selected Lines\tCtrl-Shift-M") ),
+		$self->{edit_uncomment},
 		\&Padre::Wx::MainWindow::on_uncomment_block,
 	);
 	$menu->AppendSeparator;
@@ -523,12 +527,14 @@ sub menu_edit {
 	$menu->AppendSeparator;
 
 	# Diff
+	$self->{edit_diff} = $menu->Append( -1, Wx::gettext("Diff") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Diff") ),
+		$self->{edit_diff},
 		\&Padre::Wx::MainWindow::on_diff,
 	);
+	$self->{edit_insert_from_file} = $menu->Append( -1, Wx::gettext("Insert From File...") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Insert From File...") ),
+		$self->{edit_insert_from_file},
 		\&Padre::Wx::MainWindow::on_insert_from_file,
 	);
 	$menu->AppendSeparator;
