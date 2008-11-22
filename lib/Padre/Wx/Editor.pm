@@ -590,6 +590,21 @@ sub get_text_from_clipboard {
 	return $text;
 }
 
+# $editor->comment_lines($begin, $end, $str);
+# $str is either # for perl or // for Javascript, etc.
+sub comment_lines {
+	my ($self, $begin, $end, $str) = @_;
+
+	$self->BeginUndoAction;
+	for my $line ($begin .. $end) {
+		# insert $str (# or //)
+		my $pos = $self->PositionFromLine($line);
+		$self->InsertText($pos, $str);
+	}
+	$self->EndUndoAction;
+	return;
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

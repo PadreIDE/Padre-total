@@ -620,7 +620,6 @@ sub remove_color {
 }
 
 #
-# $doc->comment_lines($begin, $end);
 # $doc->uncomment_lines($begin, $end);
 #
 # un/comment out lines $begin..$end
@@ -630,7 +629,7 @@ sub remove_color {
 # order for padre not to crash if user wants to un/comment lines with
 # a document type that did not define those methods.
 #
-sub comment_lines {}
+sub comment_lines_str {}
 sub uncomment_lines {}
 
 

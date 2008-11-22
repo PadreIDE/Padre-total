@@ -45,21 +45,7 @@ sub colourise {
 	}
 }
 
-#
-# $doc->comment_lines($begin, $end);
-#
-# comment out lines $begin..$end
-#
-sub comment_lines {
-	my ($self, $begin, $end) = @_;
-
-	my $editor = $self->editor;
-	for my $line ($begin .. $end) {
-		# insert #
-		my $pos = $editor->PositionFromLine($line);
-		$editor->InsertText($pos, '#');
-	}
-}
+sub comment_lines_str { return '#' }
 
 #
 # $doc->uncomment_lines($begin, $end);

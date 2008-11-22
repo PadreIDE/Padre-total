@@ -970,9 +970,9 @@ sub on_comment_out_block {
 	my $end    = $page->LineFromPosition($page->GetSelectionEnd);
 	my $doc    = $self->selected_document;
 
-	$page->BeginUndoAction;
-	$doc->comment_lines($begin, $end);
-	$page->EndUndoAction;
+	my $str = $doc->comment_lines_str;
+	return if not defined $str;
+	$page->comment_lines($begin, $end, $str);
 
 	return;
 }
