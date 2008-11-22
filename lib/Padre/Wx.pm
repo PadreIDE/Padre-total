@@ -6,14 +6,14 @@ use 5.008;
 use strict;
 use warnings;
 use FindBin;
-use File::Spec          ();
-use File::ShareDir::PAR ();
+use File::Spec ();
 
 # Load every exportable constant into here, so that they come into
 # existance in the Wx:: packages, allowing everywhere else in the code to
 # use them without braces.
 use Wx         ':everything';
 use Wx::Event  ':everything';
+use Wx::STC    ();
 use Wx::AUI    ();
 use Wx::Locale ':default';
 
@@ -50,15 +50,16 @@ sub id_FILECHK_TIMER { 30002 }
 sub share () {
 	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
 	return File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' )      if $ENV{PADRE_PAR_PATH};
+	require File::ShareDir::PAR;
 	return File::ShareDir::PAR::dist_dir('Padre');
 }
 
 sub sharedir {
-	File::Spec->catdir( share, @_ );
+	File::Spec->catdir( share(), @_ );
 }
 
 sub sharefile {
-	File::Spec->catfile( share, @_ );
+	File::Spec->catfile( share(), @_ );
 }
 
 
