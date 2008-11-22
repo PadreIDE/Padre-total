@@ -184,6 +184,11 @@ sub refresh {
 		$self->{wx}->Remove( 3 );
 	}
 
+	my @has_document = qw(
+				file_close file_close_all file_close_all_but_current file_reload_file
+				file_save file_save_as file_save_all
+	);
+
 	if ( $document ) {
 		# check "wrap lines"
 		my $mode = $document->editor->GetWrapMode;
@@ -193,9 +198,9 @@ sub refresh {
 		} elsif ( $mode eq Wx::wxSTC_WRAP_NONE and $is_vwl_checked ) {
 			$self->{view_word_wrap}->Check(0);
 		}
-		$self->{file_close}->Enable(1);
+		$self->{$_}->Enable(1) for @has_document;
 	} else {
-		$self->{file_close}->Enable(0);
+		$self->{$_}->Enable(0) for @has_document;
 	}
 
 	return 1;
@@ -239,31 +244,38 @@ sub menu_file {
 		sub { $_[0]->on_close },
 	);
 	
+	$self->{file_close_all} = $menu->Append( -1, Wx::gettext('Close All') );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Close All') ),
+		$self->{file_close_all},
 		sub { $_[0]->on_close_all },
 	);
+	$self->{file_close_all_but_current}
+		= $menu->Append( -1, Wx::gettext('Close All but Current Document') );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Close All but Current Document') ),
+		$self->{file_close_all_but_current},
 		sub { $_[0]->on_close_all_but_current },
 	);
+	$self->{file_reload_file} = $menu->Append( -1, Wx::gettext('Reload file') );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Reload file') ),
+		$self->{file_reload_file},
 		sub { $_[0]->on_reload_file },
 	);
 	$menu->AppendSeparator;
 
 	# Saving
+	$self->{file_save} = $menu->Append( Wx::wxID_SAVE, '' );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_SAVE, '' ),
+		$self->{file_save},
 		sub { $_[0]->on_save },
 	);
+	$self->{file_save_as} = $menu->Append( Wx::wxID_SAVEAS, '' );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_SAVEAS, '' ),
+		$self->{file_save_as},
 		sub { $_[0]->on_save_as },
 	);
+	$self->{file_save_all} = $menu->Append( -1, Wx::gettext('Save All') );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Save All') ),
+		$self->{file_save_all},
 		sub { $_[0]->on_save_all },
 	);
 	$menu->AppendSeparator;
