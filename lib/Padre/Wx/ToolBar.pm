@@ -24,7 +24,7 @@ sub new {
 	Wx::Event::EVT_TOOL(
 		$parent,
 		Wx::wxID_NEW,
-		sub { $_[0]->setup_editor; return; },
+		sub { $_[0]->setup_editor; $_[0]->refresh_all; return; },
 	);
 	$self->AddTool(
 		Wx::wxID_OPEN, '',

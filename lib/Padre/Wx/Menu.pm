@@ -183,7 +183,7 @@ sub refresh {
 	} elsif ( not _INSTANCE($document, 'Padre::Document::Perl') and $self->{wx}->GetMenuLabel(3) eq '&Perl') {
 		$self->{wx}->Remove( 3 );
 	}
-	
+
 	if ( $document ) {
 		# check "wrap lines"
 		my $mode = $document->editor->GetWrapMode;
@@ -193,6 +193,9 @@ sub refresh {
 		} elsif ( $mode eq Wx::wxSTC_WRAP_NONE and $is_vwl_checked ) {
 			$self->{view_word_wrap}->Check(0);
 		}
+		$self->{file_close}->Enable(1);
+	} else {
+		$self->{file_close}->Enable(0);
 	}
 
 	return 1;
@@ -209,6 +212,7 @@ sub menu_file {
 		$menu->Append( Wx::wxID_NEW, '' ),
 		sub {
 			$_[0]->setup_editor;
+			$_[0]->refresh_all;
 			return;
 		},
 	);
@@ -228,10 +232,13 @@ sub menu_file {
 		$menu->Append( -1, Wx::gettext("Open Selection\tCtrl-Shift-O") ),
 		sub { $_[0]->on_open_selection },
 	);
+	
+	$self->{file_close} = $menu->Append( Wx::wxID_CLOSE,  '' );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_CLOSE,  '' ),
+		$self->{file_close},
 		sub { $_[0]->on_close },
 	);
+	
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext('Close All') ),
 		sub { $_[0]->on_close_all },
