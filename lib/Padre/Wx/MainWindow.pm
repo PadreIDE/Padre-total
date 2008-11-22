@@ -11,7 +11,7 @@ use File::Spec         ();
 use File::Basename     ();
 use File::Slurp        ();
 use List::Util         ();
-use Scalar::Util       qw(refaddr);
+use Scalar::Util       ();
 use Params::Util       ();
 use Padre::Util        ();
 use Padre::Wx          ();
@@ -140,7 +140,9 @@ sub new {
 		sub {
 			my $editor = $_[0]->selected_editor;
 			if ($editor) {
-				@{ $_[0]->{page_history} } = grep {refaddr $_ ne refaddr $editor} @{ $_[0]->{page_history} };
+				@{ $_[0]->{page_history} } = grep {
+					Scalar::Util::refaddr($_) ne Scalar::Util::refaddr($editor)
+				} @{ $_[0]->{page_history} };
 				push @{ $_[0]->{page_history} }, $editor;
 			}
 			$_[0]->refresh_all;
@@ -1251,7 +1253,7 @@ sub on_open_selection {
 sub on_open_all_recent_files {
 	my ( $self ) = @_;
 	
-	my $files = Padre::DB->get_recent_files();
+	my $files = Padre::DB->get_recent_files;
 	foreach my $file ( @$files ) {
 		$self->setup_editor($file);
 	}
@@ -1290,13 +1292,14 @@ sub on_open {
 		}
 	}
 
+	$self->Freeze;
 	foreach my $filename ( @filenames ) {
 		my $file = File::Spec->catfile($default_dir, $filename);
 		Padre::DB->add_recent_files($file);
-
 		$self->setup_editor($file);
 	}
 	$self->refresh_all;
+	$self->Thaw;
 
 	return;
 }
@@ -1500,8 +1503,9 @@ sub _close_all {
 		next if defined $skip and $skip == $id;
 		$self->close( $id ) or return 0;
 	}
-	$self->Thaw;
 	$self->refresh_all;
+	$self->Thaw;
+
 	return 1;
 }
 
@@ -2253,7 +2257,7 @@ sub on_last_visited_pane {
 		@{ $self->{page_history} }[-1, -2] = @{ $_[0]->{page_history} }[-2, -1];
 		foreach my $i ($self->pageids) {
 			my $editor = $_[0]->{notebook}->GetPage($i);
-			if (refaddr $editor eq refaddr $_[0]->{page_history}[-1]) {
+			if ( Scalar::Util::refaddr($editor) eq Scalar::Util::refaddr($_[0]->{page_history}[-1]) ) {
 				$self->{notebook}->SetSelection($i);
 				last;
 			}
