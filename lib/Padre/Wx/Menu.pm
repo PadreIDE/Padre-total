@@ -25,69 +25,69 @@ sub new {
 	my $experimental = $config->{experimental};
 
 	# Create the menu object
-	my $menu     = bless {}, $class;
-	$menu->{win} = $win;
+	my $self     = bless {}, $class;
+	$self->{win} = $win;
 
-	$menu->{file} = $menu->menu_file( $win );
-	$menu->{edit} = $menu->menu_edit( $win );
-	$menu->{view} = $menu->menu_view( $win );
-	$menu->{perl} = $menu->menu_perl( $win );
-	$menu->{run}  = $menu->menu_run(  $win );
+	$self->{file} = $self->menu_file( $win );
+	$self->{edit} = $self->menu_edit( $win );
+	$self->{view} = $self->menu_view( $win );
+	$self->{perl} = $self->menu_perl( $win );
+	$self->{run}  = $self->menu_run(  $win );
 
 	# Create the Plugins menu if there are any plugins
-	my $menu_plugin = $menu->menu_plugin( $win );
-	$menu->{plugin} = $menu_plugin;
-	$menu->{window} = $menu->menu_window( $win );
-	$menu->{help}   = $menu->menu_help( $win );
+	my $menu_plugin = $self->menu_plugin( $win );
+	$self->{plugin} = $menu_plugin;
+	$self->{window} = $self->menu_window( $win );
+	$self->{help}   = $self->menu_help( $win );
 
 
 	# Create the Experimental menu
 	# All the crap that doesn't work, have a home,
 	# or should never be seen be real users goes here.
 	if ( $experimental ) {
-		$menu->{experimental} = $menu->menu_experimental( $win );
+		$self->{experimental} = $self->menu_experimental( $win );
 	}
 
-	$menu->create_main_menu_bar;
+	$self->create_main_menu_bar;
 
 	# Setup menu state from configuration
-	$menu->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
-	$menu->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
-	$menu->{view_currentlinebackground}->Check( $config->{editor_currentlinebackground} ? 1 : 0 );
-	$menu->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
-	$menu->{view_whitespaces}->Check( $config->{editor_whitespaces} ? 1 : 0 );
+	$self->{view_lines}->Check( $config->{editor_linenumbers} ? 1 : 0 );
+	$self->{view_folding}->Check( $config->{editor_codefolding} ? 1 : 0 );
+	$self->{view_currentlinebackground}->Check( $config->{editor_currentlinebackground} ? 1 : 0 );
+	$self->{view_eol}->Check( $config->{editor_eol} ? 1 : 0 );
+	$self->{view_whitespaces}->Check( $config->{editor_whitespaces} ? 1 : 0 );
 	unless ( Padre::Util::WIN32 ) {
-		$menu->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
+		$self->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}
-	$menu->{view_output}->Check( $config->{main_output} ? 1 : 0 );
-	$menu->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
+	$self->{view_output}->Check( $config->{main_output} ? 1 : 0 );
+	$self->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
 
-	$menu->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
-	$menu->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
+	$self->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
+	$self->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
 
-	return $menu;
+	return $self;
 }
 
 sub create_main_menu_bar {
-	my ( $menu ) = @_;
+	my ( $self ) = @_;
 
 	my $experimental = Padre->ide->config->{experimental};
 
 	# Create and return the main menu bar
-	$menu->{wx} = Wx::MenuBar->new;
-	$menu->{wx}->Append( $menu->{file},     Wx::gettext("&File")      );
-	$menu->{wx}->Append( $menu->{project},  Wx::gettext("&Project")   );
-	$menu->{wx}->Append( $menu->{edit},     Wx::gettext("&Edit")      );
-	$menu->{wx}->Append( $menu->{view},     Wx::gettext("&View")      );
-	#$menu->{wx}->Append( $menu->{perl},     Wx::gettext("Perl")       );
-	$menu->{wx}->Append( $menu->{run},      Wx::gettext("&Run")        );
-	$menu->{wx}->Append( $menu->{bookmark}, Wx::gettext("&Bookmarks") );
-	$menu->{wx}->Append( $menu->{plugin},   Wx::gettext("Pl&ugins")   ) if $menu->{plugin};
-	$menu->{wx}->Append( $menu->{tools},    Wx::gettext("&Tools")    );
-	$menu->{wx}->Append( $menu->{window},   Wx::gettext("&Window")    );
-	$menu->{wx}->Append( $menu->{help},     Wx::gettext("&Help")      );
+	$self->{wx} = Wx::MenuBar->new;
+	$self->{wx}->Append( $self->{file},     Wx::gettext("&File")      );
+	$self->{wx}->Append( $self->{project},  Wx::gettext("&Project")   );
+	$self->{wx}->Append( $self->{edit},     Wx::gettext("&Edit")      );
+	$self->{wx}->Append( $self->{view},     Wx::gettext("&View")      );
+	#$self->{wx}->Append( $self->{perl},     Wx::gettext("Perl")       );
+	$self->{wx}->Append( $self->{run},      Wx::gettext("&Run")        );
+	$self->{wx}->Append( $self->{bookmark}, Wx::gettext("&Bookmarks") );
+	$self->{wx}->Append( $self->{plugin},   Wx::gettext("Pl&ugins")   ) if $self->{plugin};
+	$self->{wx}->Append( $self->{tools},    Wx::gettext("&Tools")    );
+	$self->{wx}->Append( $self->{window},   Wx::gettext("&Window")    );
+	$self->{wx}->Append( $self->{help},     Wx::gettext("&Help")      );
 	if ( $experimental ) {
-		$menu->{wx}->Append( $menu->{experimental}, Wx::gettext("E&xperimental") );
+		$self->{wx}->Append( $self->{experimental}, Wx::gettext("E&xperimental") );
 	}
 }
 
@@ -513,7 +513,7 @@ sub menu_edit {
 }
 
 sub menu_view {
-	my ( $menu, $win ) = @_;
+	my ( $self, $win ) = @_;
 	
 	my $config = Padre->ide->config;
 	
@@ -521,18 +521,18 @@ sub menu_view {
 	my $menu_view = Wx::Menu->new;
 
 	# GUI Elements
-	$menu->{view_output} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Output") );
+	$self->{view_output} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Output") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_output},
+		$self->{view_output},
 		sub {
 			$_[0]->show_output(
 				$_[0]->{menu}->{view_output}->IsChecked
 			),
 		},
 	);
-	$menu->{view_functions} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Functions") );
+	$self->{view_functions} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Functions") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_functions},
+		$self->{view_functions},
 		sub {
 			$_[0]->show_functions(
 				$_[0]->{menu}->{view_functions}->IsChecked
@@ -541,60 +541,60 @@ sub menu_view {
 	);
 	unless ( Padre::Util::WIN32 ) {
 		# On Windows disabling the status bar is broken, so don't allow it
-		$menu->{view_statusbar} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show StatusBar") );
+		$self->{view_statusbar} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show StatusBar") );
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_statusbar},
+			$self->{view_statusbar},
 			\&Padre::Wx::MainWindow::on_toggle_status_bar,
 		);
 	}
 	$menu_view->AppendSeparator;
 
 	# Editor look and feel
-	$menu->{view_lines} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Line numbers") );
+	$self->{view_lines} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Line numbers") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_lines},
+		$self->{view_lines},
 		\&Padre::Wx::MainWindow::on_toggle_line_numbers,
 	);
-	$menu->{view_folding} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Code Folding") );
+	$self->{view_folding} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Code Folding") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_folding},
+		$self->{view_folding},
 		\&Padre::Wx::MainWindow::on_toggle_code_folding,
 	);
-	$menu->{view_eol} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Newlines") );
+	$self->{view_eol} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Newlines") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_eol},
+		$self->{view_eol},
 		\&Padre::Wx::MainWindow::on_toggle_eol,
 	);
-	$menu->{view_whitespaces} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Whitespaces") );
+	$self->{view_whitespaces} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Whitespaces") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_whitespaces},
+		$self->{view_whitespaces},
 		\&Padre::Wx::MainWindow::on_toggle_whitespaces,
 	);
 
-	$menu->{view_indentation_guide} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Indentation Guide") );
+	$self->{view_indentation_guide} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Indentation Guide") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_indentation_guide},
+		$self->{view_indentation_guide},
 		\&Padre::Wx::MainWindow::on_toggle_indentation_guide,
 	);
-	$menu->{view_show_calltips} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Call Tips") );
+	$self->{view_show_calltips} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Call Tips") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_show_calltips},
-		sub { $config->{editor_calltips} = $menu->{view_show_calltips}->IsChecked },
+		$self->{view_show_calltips},
+		sub { $config->{editor_calltips} = $self->{view_show_calltips}->IsChecked },
 	);
 	$menu_view->AppendSeparator;
 	
-	$menu->{view_word_wrap} = $menu_view->AppendCheckItem( -1, Wx::gettext("Word-Wrap") );
+	$self->{view_word_wrap} = $menu_view->AppendCheckItem( -1, Wx::gettext("Word-Wrap") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_word_wrap},
+		$self->{view_word_wrap},
 		sub {
 			$_[0]->on_word_wrap(
 				$_[0]->{menu}->{view_word_wrap}->IsChecked
 			),
 		},
 	);
-	$menu->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, Wx::gettext("Highlight Current Line") );
+	$self->{view_currentlinebackground} = $menu_view->AppendCheckItem( -1, Wx::gettext("Highlight Current Line") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{view_currentlinebackground},
+		$self->{view_currentlinebackground},
 		\&Padre::Wx::MainWindow::on_toggle_current_line_background,
 	);
 	$menu_view->AppendSeparator;
@@ -623,26 +623,26 @@ sub menu_view {
 	);
 
 	$menu_view->AppendSeparator;
-	$menu->{view_language} = Wx::Menu->new;
-	$menu_view->Append( -1, Wx::gettext("Language"), $menu->{view_language} );
+	$self->{view_language} = Wx::Menu->new;
+	$menu_view->Append( -1, Wx::gettext("Language"), $self->{view_language} );
 	
 	# TODO horrible, fix this
 	if ($config->{host}->{locale} eq 'en') {
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
 			sub { $_[0]->change_locale('en') },
 		);
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
 		);
 	} else {
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
 		);
 		Wx::Event::EVT_MENU( $win,
-			$menu->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
 			sub { $_[0]->change_locale('en') },
 		);
 	}
@@ -681,25 +681,25 @@ sub menu_perl {
 }
 
 sub menu_run {
-	my ( $menu, $win ) = @_;
+	my ( $self, $win ) = @_;
 	
 	# Create the Run menu
 	my $menu_run = Wx::Menu->new;
 
 	# Script Execution
-	$menu->{run_run_script} = $menu_run->Append( -1, Wx::gettext("Run Script\tF5") );
+	$self->{run_run_script} = $menu_run->Append( -1, Wx::gettext("Run Script\tF5") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{run_run_script},
+		$self->{run_run_script},
 		sub { $_[0]->run_script },
 	);
-	$menu->{run_run_command} = $menu_run->Append( -1, Wx::gettext("Run Command\tCtrl-F5") );
+	$self->{run_run_command} = $menu_run->Append( -1, Wx::gettext("Run Command\tCtrl-F5") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{run_run_command},
+		$self->{run_run_command},
 		sub { $_[0]->on_run_command },
 	);
-	$menu->{run_stop} = $menu_run->Append( -1, Wx::gettext("&Stop") );
+	$self->{run_stop} = $menu_run->Append( -1, Wx::gettext("&Stop") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{run_stop},
+		$self->{run_stop},
 		sub {
 			if ( $_[0]->{command} ) {
 				$_[0]->{command}->TerminateProcess;
@@ -708,7 +708,7 @@ sub menu_run {
 			return;
 		},
 	);
-	$menu->{run_stop}->Enable(0);
+	$self->{run_stop}->Enable(0);
 	
 	return $menu_run;
 }
@@ -916,7 +916,7 @@ sub menu_help {
 }
 
 sub menu_experimental {
-	my ( $menu, $win ) = @_;
+	my ( $self, $win ) = @_;
 	
 	my $config = Padre->ide->config;
 	
@@ -933,8 +933,8 @@ sub menu_experimental {
 		},
 	);
 	
-	$menu->{experimental_recent_projects} = Wx::Menu->new;
-	$menu_exp->Append( -1, Wx::gettext("Recent Projects"), $menu->{file_recent_projects} );
+	$self->{experimental_recent_projects} = Wx::Menu->new;
+	$menu_exp->Append( -1, Wx::gettext("Recent Projects"), $self->{file_recent_projects} );
 	
 	Wx::Event::EVT_MENU(
 		$win,
@@ -950,33 +950,33 @@ sub menu_experimental {
 			return;
 		},
 	);
-	$menu->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
+	$self->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{experimental_syntaxcheck},
+		$self->{experimental_syntaxcheck},
 		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 
 	
-	$menu->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Use PPI for Perl5 syntax highlighting") );
+	$self->{experimental_ppi_highlight} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Use PPI for Perl5 syntax highlighting") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{experimental_ppi_highlight},
+		$self->{experimental_ppi_highlight},
 		\&Padre::Wx::MainWindow::on_ppi_highlight,
 	);
-	$menu->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
+	$self->{experimental_ppi_highlight}->Check( $config->{ppi_highlight} ? 1 : 0 );
 	$Padre::Document::MIME_LEXER{'application/x-perl'} = 
 		$config->{ppi_highlight} ? Wx::wxSTC_LEX_CONTAINER : Wx::wxSTC_LEX_PERL;
 
 	# Quick Find: Press F3 to start search with selected text
-	$menu->{experimental_quick_find} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Quick Find") );
+	$self->{experimental_quick_find} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Quick Find") );
 	Wx::Event::EVT_MENU( $win,
-		$menu->{experimental_quick_find},
+		$self->{experimental_quick_find},
 		sub {
 			$_[0]->on_quick_find(
 				$_[0]->{menu}->{experimental_quick_find}->IsChecked
 			),
 		},
 	);
-	$menu->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
+	$self->{experimental_quick_find}->Check( $config->{is_quick_find} ? 1 : 0 );
 
 	# Incremental find (#60)
 	Wx::Event::EVT_MENU( $win,
