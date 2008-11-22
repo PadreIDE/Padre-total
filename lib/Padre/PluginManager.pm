@@ -212,6 +212,14 @@ sub _setup_par {
 # given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
 # load the corresponding module
 sub load_plugin {
+	my $self = shift;
+	my $ret = $self->_load_plugin_no_refresh(@_);
+	$self->_refresh_plugin_menu();
+	return $ret;
+}
+
+# the guts of load_plugin which don't refresh the menu
+sub _load_plugin_no_refresh {
 	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
 
@@ -274,6 +282,14 @@ sub load_plugin {
 # UNload the corresponding module
 sub unload_plugin {
 	my $self = shift;
+	my $ret = $self->_unload_plugin_no_refresh(@_);
+	$self->_refresh_plugin_menu();
+	return $ret;
+}
+
+# the guts of unload_plugin which don't refresh the menu
+sub _unload_plugin_no_refresh {
+	my $self = shift;
 	my $plugin_name = shift;
 
 	# normalize to plugin name only
@@ -313,10 +329,10 @@ sub reload_plugins {
 	foreach my $plugin_name (sort keys %$plugins) {
 		# do not use the reload_plugin method since that
 		# refreshes the menu every time
-		$self->unload_plugin($plugin_name);
-		$self->load_plugin($plugin_name);
+		$self->_unload_plugin_no_refresh($plugin_name);
+		$self->_load_plugin_no_refresh($plugin_name);
 	}
-	$self->_reload_plugin_menu();
+	$self->_refresh_plugin_menu();
 	return 1;
 }
 
@@ -324,13 +340,12 @@ sub reload_plugin {
 	my $self = shift;
 	my $plugin_name = shift;
 
-	$self->unload_plugin( $plugin_name );
+	$self->_unload_plugin_no_refresh( $plugin_name );
 	$self->load_plugin( $plugin_name );
-	$self->_reload_plugin_menu();
 	return 1;
 }
 
-sub _reload_plugin_menu {
+sub _refresh_plugin_menu {
 	my $self = shift;
 
 	# re-create menu,
@@ -341,7 +356,7 @@ sub _reload_plugin_menu {
 
 	$win->{menu}->refresh;
 
-	Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
+	#Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
 }
 
 sub test_a_plugin {
