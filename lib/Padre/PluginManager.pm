@@ -227,7 +227,7 @@ sub _load_plugin_no_refresh {
 	$plugin_name =~ s/^Padre::Plugin:://;
 
 	# skip if that plugin was already loaded
-	return if exists $plugins->{$plugin_name};
+	return if exists $plugins->{$plugin_name} and $plugins->{$plugin_name}{status} eq 'loaded';
 
 	my $module = "Padre::Plugin::$plugin_name";
 	my $config = Padre->ide->config;
