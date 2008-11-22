@@ -763,7 +763,7 @@ sub menu_plugin_tools {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reload My Plugin") ),
-		sub { Padre::PluginManager::reload_plugin( $_[0], 'My') },
+		sub { Padre->ide->plugin_manager->reload_plugin('My') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reset My Plugin") ),
@@ -772,12 +772,13 @@ sub menu_plugin_tools {
 				gettext("Reset My Plugin"), gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
 			);
 			if ( $ret == Wx::wxOK) {
+				my $manager = Padre->ide->plugin_manager;
 				my $target = File::Spec->catfile(
-					Padre->ide->plugin_manager->plugin_dir, 'Padre', 'Plugin', 'My.pm'
+					$manager->plugin_dir, 'Padre', 'Plugin', 'My.pm'
 				);
-                                require Class::Unload;
-                                Class::Unload->unload("Padre::Plugin::My");
+				$manager->unload_plugin("My");
 				Padre::Config->copy_original_My_plugin($target);
+				$manager->load_plugin("My");
 			}
 		},
 	);
@@ -789,11 +790,11 @@ sub menu_plugin_tools {
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Reload All Plugins") ),
-		\&Padre::PluginManager::reload_plugins,
+		sub { Padre->ide->plugin_manager->reload_plugins; },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, gettext("Test A Plugin From Local Dir") ),
-		\&Padre::PluginManager::test_a_plugin,
+		sub { Padre->ide->plugin_manager->test_a_plugin; },
 	);
 	
 	return $menu;
