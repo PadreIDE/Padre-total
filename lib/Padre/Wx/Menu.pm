@@ -714,7 +714,7 @@ sub menu_plugin {
 	# Get the list of plugins
 	my $manager = Padre->ide->plugin_manager;
 	my %plugins = %{ $manager->plugins };
-	my @plugins = grep { $_ ne 'My' } sort keys %plugins or return;
+	my @plugins = grep { $_ ne 'My' } sort keys %plugins;
 
 	# Create the plugin menu
 	my $menu = Wx::Menu->new;
