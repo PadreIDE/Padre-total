@@ -29,7 +29,7 @@ use Padre::Wx   ();
 
 our $VERSION = '0.17';
 
-my $cnt   = 0;
+my $unsaved_number = 0;
 
 our %mode = (
 	WIN  => Wx::wxSTC_EOL_CRLF,
@@ -131,7 +131,7 @@ our %MIME_LEXER = (
 	'application/x-perl6' => Wx::wxSTC_LEX_CONTAINER,
 );
 
-our $DEFAULT_LEXER = wxSTC_LEX_AUTOMATIC;
+our $DEFAULT_LEXER = Wx::wxSTC_LEX_AUTOMATIC;
 
 
 
@@ -222,7 +222,7 @@ sub setup {
 	if ( $self->{filename} ) {
 		$self->{newline_type} = $self->load_file($self->{filename}, $self->editor);
 	} else {
-		$cnt++;
+		$unsaved_number++;
 		$self->{newline_type} = $self->_get_default_newline_type;
 	}
 }
@@ -232,7 +232,7 @@ sub get_title {
 	if ( $self->{filename} ) {
 		return File::Basename::basename( $self->{filename} );
 	} else {
-		return " Unsaved Document $cnt";
+		return "Unsaved $unsaved_number";
 	}
 }
 
@@ -286,7 +286,7 @@ sub load_file {
 			$convert_to = $newline_type = $mixed;
 		}
 	} else {
-		$convert_to = $self->_auto_convert();
+		$convert_to = $self->_auto_convert;
 		if ($convert_to) {
 			#warn "TODO call converting on $file";
 			$newline_type = $convert_to;
@@ -308,9 +308,8 @@ sub load_file {
 
 sub save_file {
 	my ($self) = @_;
-	my $content      = $self->text_get;
-	my $filename     = $self->filename;
-    #my $newline_type = $self->get_newline_type;
+	my $content  = $self->text_get;
+	my $filename = $self->filename;
         
 	require File::Slurp;
 	eval {
