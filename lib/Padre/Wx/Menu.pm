@@ -713,8 +713,8 @@ sub menu_plugin {
 
 	# Get the list of plugins
 	my $manager = Padre->ide->plugin_manager;
-	my %plugins = %{ $manager->plugins };
-	my @plugins = grep { $_ ne 'My' } sort keys %plugins;
+	my $plugins = $manager->plugins;
+	my @plugins = grep { $_ ne 'My' } sort keys %$plugins;
 
 	# Create the plugin menu
 	my $menu = Wx::Menu->new;
@@ -725,9 +725,9 @@ sub menu_plugin {
 	$menu->AppendSeparator;
 
 	foreach my $name ( 'My', @plugins ) {
-		next if not $plugins{$name};
+		next if not $plugins->{$name};
 		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
-		next if not $plugins{$name}{status} or $plugins{$name}{status} ne 'loaded';
+		next if not $plugins->{$name}{status} or $plugins->{$name}{status} ne 'loaded';
 
 		#my $label = $manager->get_label($name);
 		#my @menu  = $manager->get_menu($name);
