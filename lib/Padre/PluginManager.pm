@@ -166,7 +166,7 @@ sub _load_plugins_from_inc {
 		# rename the original one and remove the MY.pm from his installation
 		next if $file eq 'MY';
 
-		$self->_load_plugin($file); # Foo::Bar names
+		$self->load_plugin($file); # Foo::Bar names
 	}
 
 	return;
@@ -186,7 +186,7 @@ sub _load_plugins_from_par {
 			PAR->import($parfile);
 			$file =~ s/\.par$//i;
 			$file =~ s/-/::/g;
-			$self->_load_plugin($file);
+			$self->load_plugin($file);
 		}
 	}
 	closedir($dh);
@@ -212,9 +212,11 @@ sub _setup_par {
 
 # given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
 # load the corresponding module
-sub _load_plugin {
+sub load_plugin {
 	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
+
+	$plugin_name =~ s/^Padre::Plugin:://;
 
 	# skip if that plugin was already loaded
 	return if exists $plugins->{$plugin_name};
@@ -234,7 +236,7 @@ sub _load_plugin {
 		$plugins->{$plugin_name}{status} = 'disabled';
 		return;
 	}
-	#print "use $module\n";	
+	#print "use $module\n";
 	eval "use $module"; ## no critic
 	if ($@) {
 		warn "ERROR while trying to load plugin '$plugin_name': $@";
@@ -345,7 +347,7 @@ sub test_a_plugin {
 	# load plugin
 	delete $plugins->{$filename};
 	$config->{plugins}{$filename}{enabled} = 1;
-	_load_plugin( Padre->ide->plugin_manager, $filename );
+	load_plugin( Padre->ide->plugin_manager, $filename );
 	if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
 		Padre->ide->wx->main_window->error("Faild to load the plugin '$filename'");
 		return;
