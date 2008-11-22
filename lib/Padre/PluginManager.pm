@@ -266,6 +266,24 @@ sub load_plugin {
 	return 1;
 }
 
+# given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
+# UNload the corresponding module
+sub unload_plugin {
+	my $self = shift;
+	my $plugin_name = shift;
+
+	# normalize to plugin name only
+	$plugin_name =~ s/^Padre::Plugin:://;
+        
+	delete $self->plugins->{$plugin_name};
+
+	require Class::Unload;
+	Class::Unload->unload("Padre::Plugin::$plugin_name");
+
+	return 1;
+}
+
+
 sub reload_plugins {
 	my ( $win ) = @_;
 
