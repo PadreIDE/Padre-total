@@ -281,7 +281,7 @@ sub reload_plugin {
 	
 	require Module::Refresh;
 	my $refresher = Module::Refresh->new;
-	reload_module( $refresher, $name );
+	$refresher->reload_module( $name );
 	reload_menu($win);
 	return;
 }
