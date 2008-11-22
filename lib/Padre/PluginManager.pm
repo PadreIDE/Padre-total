@@ -72,8 +72,39 @@ sub plugin_dir { $_[0]->{plugin_dir} }
 
 =head2 plugins
 
-Returns a hash (reference) of plugin names associated with their
-implementing module names.
+Returns a hash (reference) of plugin names associated with a plugin manager
+internal structure describing the state of the plugin in the current
+editor. The contents are somewhat in flux and considered mostly B<PRIVATE>,
+but the following will likely stay:
+
+=over 2
+
+=item module
+
+Full name of the module that implements the plugin, i.e. C<Padre::Plugin::Foo>.
+
+=item status
+
+The status of the plugin. C<failed> indicates failure while trying to load
+the module. C<new> indicates it was detected as a new plugin.
+C<loaded> indicates that the module has been successfully loaded, and
+C<disabled> indicates that it isn't being used as it's been disabled
+in the configuration.
+
+Note that this concerns the status of the module in memory. Whether or
+not to load the plugin is kept in the B<configuration> instead to make
+it persistent. To check whether a given plugin is enabled, do this:
+
+  if (Padre->config->{plugins}{$plugin_name}{enabled}) {...}
+
+=item object
+
+The actual C<Padre::Plugin::Foo> object. Availability depends on the C<status>,
+of course. The other keys are kept separate since the plugin object is the
+sole domain of the plugin writer. We don't want them to wreak havoc on
+our meta data, now do we?
+
+=back
 
 This hash is only populated after C<load_plugins()> was called.
 
@@ -113,7 +144,6 @@ sub plugin_config {
 	return $plugin_config->{$plugin};
 }
 
-##############
 
 =head2 load_plugins
 
@@ -137,12 +167,8 @@ sub load_plugins {
 	return;
 }
 
-sub failed {
-	my ($self) = @_;
-	my $plugins = $self->plugins;
-	return grep { $plugins->{$_}{status} eq 'failed' } keys %$plugins;
-}
-
+# attempt to load all plugins that sit as .pm files in the
+# .padre/plugins/Padre/Plugin/ folder
 sub _load_plugins_from_inc {
 	my ($self) = @_;
 
@@ -171,6 +197,8 @@ sub _load_plugins_from_inc {
 	return;
 }
 
+# attempt to load all plugins that sit as .par files in the
+# .padre/plugins/ folder
 sub _load_plugins_from_par {
 	my ($self) = @_;
 	$self->_setup_par();
@@ -192,6 +220,7 @@ sub _load_plugins_from_par {
 	return;
 }
 
+# load the PAR module and setup the cache directory.
 sub _setup_par {
 	my ($self) = @_;
 
@@ -209,8 +238,14 @@ sub _setup_par {
 	return();
 }
 
-# given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
-# load the corresponding module
+=head2 load_plugin
+
+Given a plugin name such as C<Foo> (the part after Padre::Plugin),
+load the corresponding module, enable the plugin and update the Plugins
+menu, etc.
+
+=cut
+
 sub load_plugin {
 	my $self = shift;
 	my $ret = $self->_load_plugin_no_refresh(@_);
@@ -278,8 +313,14 @@ sub _load_plugin_no_refresh {
 	return 1;
 }
 
-# given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
-# UNload the corresponding module
+=head2 unload_plugin
+
+Given a plugin name such as C<Foo> (the part after Padre::Plugin),
+DISable the plugin, UNload the corresponding module, and update the Plugins
+menu, etc.
+
+=cut
+
 sub unload_plugin {
 	my $self = shift;
 	my $ret = $self->_unload_plugin_no_refresh(@_);
@@ -321,6 +362,12 @@ sub _unload_plugin_no_refresh {
 	return 1;
 }
 
+=head2 reload_plugins
+
+For all registered plugins, unload them if they were loaded
+and then reload them.
+
+=cut
 
 sub reload_plugins {
 	my $self = shift;
@@ -336,6 +383,13 @@ sub reload_plugins {
 	return 1;
 }
 
+=head2 reload_plugin
+
+Reload a single plugin whose name (without C<Padre::Plugin::)
+is passed in as first argument.
+
+=cut
+
 sub reload_plugin {
 	my $self = shift;
 	my $plugin_name = shift;
@@ -345,6 +399,8 @@ sub reload_plugin {
 	return 1;
 }
 
+
+# recreate the Plugins menu
 sub _refresh_plugin_menu {
 	my $self = shift;
 
@@ -359,6 +415,23 @@ sub _refresh_plugin_menu {
 	#Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
 }
 
+=head2 failed
+
+Returns the plugin names (without C<Padre::Plugin::> prefixed) of all plugins
+that the editor attempted to load but failed. Note that after a failed
+attempt, the plugin is usually disabled in the configuration and not loaded
+again when the editor is restarted.
+
+=cut
+
+sub failed {
+	my ($self) = @_;
+	my $plugins = $self->plugins;
+	return grep { $plugins->{$_}{status} eq 'failed' } keys %$plugins;
+}
+
+
+# TODO: document this.
 sub test_a_plugin {
 	my ( $self ) = @_;
         my $win = Padre->ide->wx->main_window;
