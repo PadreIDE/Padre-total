@@ -1546,18 +1546,18 @@ sub on_prev_pane {
 }
 
 sub on_diff {
-	my ( $self ) = @_;
-	my $doc = Padre::Documents->current;
+	my $self = shift;
+	my $doc  = Padre::Documents->current;
 	return if not $doc;
-	
-	use Text::Diff ();
+
 	my $current = $doc->text_get;
 	my $file    = $doc->filename;
 	return $self->error(gettext("Cannot diff if file was never saved")) if not $file;
-	
+
+	require Text::Diff;
 	my $diff = Text::Diff::diff($file, \$current);
 	
-	if (not $diff) {
+	if ( not $diff ) {
 		$diff = gettext("There are no differences\n");
 	}
 	$self->show_output;
