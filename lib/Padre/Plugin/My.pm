@@ -8,14 +8,6 @@ our $VERSION = '0.17';
 
 use base 'Padre::Plugin';
 
-sub new {
-	my ($class) = @_;
-
-	my $self = bless {}, $class;
-
-	return $self;
-}
-
 sub menu_plugins_simple {
 	my $self = shift;
 	return 'My Plugin' => [
@@ -38,9 +30,7 @@ sub about {
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName(
-		Padre::Plugin::My->menu_name
-	);
+	$about->SetName("My Plugin");
 	$about->SetDescription( <<"END_MESSAGE" );
 The philosophy behind Padre is that every Perl programmer
 should be able to easily modify and improve their own editor.
