@@ -187,6 +187,8 @@ sub refresh {
 	my @has_document = qw(
 				file_close file_close_all file_close_all_but_current file_reload_file
 				file_save file_save_as file_save_all
+				file_convert_nl_windows file_convert_nl_unix file_convert_nl_mac
+				file_docstat
 	);
 
 	if ( $document ) {
@@ -281,18 +283,21 @@ sub menu_file {
 	$menu->AppendSeparator;
 
 	# Conversions and Transforms
-	my $menu_file_convert = Wx::Menu->new;
-	$menu->Append( -1, Wx::gettext("Convert..."), $menu_file_convert );
+	$self->{file_convert_nl} = Wx::Menu->new;
+	$menu->Append( -1, Wx::gettext("Convert..."), $self->{file_convert_nl} );
+	$self->{file_convert_nl_windows} = $self->{file_convert_nl}->Append(-1, Wx::gettext("EOL to Windows"));
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, Wx::gettext("EOL to Windows")),
+		$self->{file_convert_nl_windows},
 		sub { $_[0]->convert_to("WIN") },
 	);
+	$self->{file_convert_nl_unix} = $self->{file_convert_nl}->Append(-1, Wx::gettext("EOL to Unix"));
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, Wx::gettext("EOL to Unix")),
+		$self->{file_convert_nl_unix},
 		sub { $_[0]->convert_to("UNIX") },
 	);
+	$self->{file_convert_nl_mac} = $self->{file_convert_nl}->Append(-1, Wx::gettext("EOL to Mac Classic"));
 	Wx::Event::EVT_MENU( $win,
-		$menu_file_convert->Append(-1, Wx::gettext("EOL to Mac Classic")),
+		$self->{file_convert_nl_mac},
 		sub { $_[0]->convert_to("MAC") },
 	);
 	$menu->AppendSeparator;
@@ -333,8 +338,9 @@ sub menu_file {
 	$menu->AppendSeparator;
 	
 	# Word Stats
+	$self->{file_docstat} = $menu->Append( -1, Wx::gettext('Doc Stats') );
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Doc Stats') ),
+		$self->{file_docstat},
 		sub { $_[0]->on_doc_stats },
 	);
 	$menu->AppendSeparator;
