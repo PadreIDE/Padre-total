@@ -49,7 +49,7 @@ sub new {
 
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
-	
+
 	$config->{host}->{locale} ||= 
 		$shortname_of{ Wx::Locale::GetSystemLanguage } || $shortname_of{ 'en' };
 
@@ -125,14 +125,12 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxAUI_NB_DEFAULT_STYLE | Wx::wxAUI_NB_WINDOWLIST_BUTTON,
 	);
-	$self->manager->AddPane($self->{notebook}, 
+	$self->manager->AddPane(
+		$self->{notebook}, 
 		Wx::AuiPaneInfo->new->Name( "notebook" )
 			->CenterPane->Resizable->PaneBorder->Dockable
-#			->Floatable->PinButton->CaptionVisible->Movable
-#			->MinimizeButton->PaneBorder->Gripper->MaximizeButton
-#			->FloatingPosition(100, 100)->FloatingSize(500, 300)
 			->Caption( gettext("Files") )->Position( 1 )
-		);
+	);
 
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self,
@@ -169,15 +167,14 @@ sub new {
 		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
 	);
 	Wx::Event::EVT_KILL_FOCUS($self->{rightbar}, \&on_rightbar_left );
-	$self->manager->AddPane($self->{rightbar}, 
+	$self->manager->AddPane(
+		$self->{rightbar}, 
 		Wx::AuiPaneInfo->new->Name( "rightbar" )
 			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
 			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
 			->MaximizeButton(1)->Floatable(1)->Dockable(1)
 			->Caption( gettext("Subs") )->Position( 3 )->Right->Layer(3)
-		 );
-        
-
+	);
 	$self->{rightbar}->InsertColumn(0, gettext('Methods'));
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
@@ -186,7 +183,8 @@ sub new {
 		\&on_function_selected,
 	);
 
-	if (Padre->ide->config->{experimental}) {
+	# Create the (experiemental) syntaxbar
+	if ( Padre->ide->config->{experimental} ) {
 		$self->create_syntaxbar;
 	}
 
@@ -204,8 +202,8 @@ sub new {
 
 	# on close pane
 	Wx::Event::EVT_AUI_PANE_CLOSE(
-        $self, \&on_close_pane
-    );
+		$self, \&on_close_pane
+	);
 
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
@@ -230,17 +228,16 @@ sub new {
 	
 	# remember the last time we show them or not
 	unless ( $self->{menu}->{view_output}->IsChecked ) {
-		$self->manager->GetPane('output')->Hide();
+		$self->manager->GetPane('output')->Hide;
 	}
 	unless ( $self->{menu}->{view_functions}->IsChecked ) {
-		$self->manager->GetPane('rightbar')->Hide();
+		$self->manager->GetPane('rightbar')->Hide;
 	}
-	
+
 	$self->manager->Update;
 
 	# Deal with someone closing the window
-	Wx::Event::EVT_CLOSE( $self, \&on_close_window);
-
+	Wx::Event::EVT_CLOSE(           $self,     \&on_close_window     );
 	Wx::Event::EVT_STC_UPDATEUI(    $self, -1, \&on_stc_update_ui    );
 	Wx::Event::EVT_STC_CHANGE(      $self, -1, \&on_stc_change       );
 	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
@@ -249,7 +246,6 @@ sub new {
 
 	# As ugly as the WxPerl icon is, the new file toolbar image is uglier
 	$self->SetIcon( Wx::GetWxPerlIcon() );
-	# $self->SetIcon( Padre::Wx::tango('new') );
 
 	# we need an event immediately after the window opened
 	# (we had an issue that if the default of main_statusbar was false it did not show
@@ -302,40 +298,44 @@ sub create_syntaxbar {
 }
 
 sub manager {
-	my ($self) = @_;
-	return $self->{manager};
+	$_[0]->{manager};
 }
 
 # Load any default files
 sub load_files {
-	my ($self) = @_;
-
+	my $self   = shift;
 	my $config = Padre->ide->config;
 	my $files  = Padre->inst->{ARGV};
-	if ( $files and ref($files) eq 'ARRAY' and @$files ) {
+	if ( Params::Util::_ARRAY($files) ) {
+		$self->Freeze;
 		foreach my $f ( @$files ) {
 		    $self->setup_editor($f);
 		}
+		$self->Thaw;
 	} elsif ( $config->{main_startup} eq 'new' ) {
+		$self->Freeze;
 		$self->setup_editor;
+		$self->Thaw;
 	} elsif ( $config->{main_startup} eq 'nothing' ) {
 		# nothing
 	} elsif ( $config->{main_startup} eq 'last' ) {
 		if ( $config->{host}->{main_files} ) {
-			my @main_files	 = @{$config->{host}->{main_files}};
+			$self->Freeze;
+			my @main_files	   = @{$config->{host}->{main_files}};
 			my @main_files_pos = @{$config->{host}->{main_files_pos}};
-			foreach my $i ( 0 ..$#main_files ) {
+			foreach my $i ( 0 .. $#main_files ) {
 				my $file = $main_files[$i];
-		        my $id   = $self->setup_editor($file);
-		        if ( $id and $main_files_pos[$i] ) {
-		            my $doc  = Padre::Documents->by_id($id);
-		            $doc->editor->GotoPos( $main_files_pos[$i] );
-		        }
-		    }
-		    if ( $config->{host}->{main_file} ) {
+				my $id   = $self->setup_editor($file);
+				if ( $id and $main_files_pos[$i] ) {
+					my $doc  = Padre::Documents->by_id($id);
+					$doc->editor->GotoPos( $main_files_pos[$i] );
+				}
+			}
+			if ( $config->{host}->{main_file} ) {
 				my $id = $self->find_editor_of_file( $config->{host}->{main_file} );
 				$self->on_nth_pane($id) if (defined $id);
 			}
+			$self->Thaw;
 		}
 	} else {
 		# should never happen
