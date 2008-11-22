@@ -918,6 +918,13 @@ sub menu_help {
 			return;
 		},
 	);
+
+	$menu->AppendSeparator;
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, gettext('Visit the PerlMonks') ),
+		sub { Wx::LaunchDefaultBrowser('http://perlmonks.org/') },
+	);
+	
 	$menu->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( Wx::wxID_ABOUT, '' ),
