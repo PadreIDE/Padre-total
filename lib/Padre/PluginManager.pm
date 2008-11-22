@@ -50,7 +50,7 @@ sub new {
 	my $self  = bless {
 		plugins => {},
 		plugin_dir => Padre::Config->default_plugin_dir,
-	  
+ 
 		par_loaded => 0,
 		@_
 	}, $class;
@@ -134,7 +134,7 @@ sub load_plugins {
 	if (my @failed = $self->failed) {
 		Padre->ide->wx->main_window->error("Failed to load the following plugin(s):\n" . join "\n", @failed);
 		return;
-    }
+	}
 
 	return;
 }
@@ -180,7 +180,7 @@ sub _load_plugins_from_par {
 	opendir my $dh, $plugin_dir or return;
 	while (my $file = readdir $dh) {
 		if ($file =~ /^\w+\.par$/i) {
-                # only single-level plugins for now.
+		# only single-level plugins for now.
 		#if ($file =~ /^[\w-]+\.par$/i) {
 			my $parfile = File::Spec->catfile($plugin_dir, $file);
 			PAR->import($parfile);
@@ -212,7 +212,7 @@ sub _setup_par {
 
 # given a plugin name such as Foo or Foo::Bar (the part after Padre::Plugin),
 # load the corresponding module
-sub load_plugin {
+sub _load_plugin {
 	my ($self, $plugin_name) = @_;
 	my $plugins = $self->plugins;
 
@@ -264,16 +264,16 @@ sub load_plugin {
 }
 
 sub reload_plugins {
-    my ( $win ) = @_;
+	my ( $win ) = @_;
 
 	require Module::Refresh;
-    my $refresher = Module::Refresh->new;
+	my $refresher = Module::Refresh->new;
 
-    my %plugins = %{ Padre->ide->plugin_manager->plugins };
-    foreach my $name ( sort keys %plugins ) {
+	my %plugins = %{ Padre->ide->plugin_manager->plugins };
+	foreach my $name ( sort keys %plugins ) {
 		reload_module( $refresher, $name );
-    }
-    reload_menu($win);
+	}
+	reload_menu($win);
 }
 
 sub reload_plugin {
@@ -287,7 +287,7 @@ sub reload_plugin {
 }
 
 sub reload_module {
-    my ( $refresher, $name ) = @_;
+	my ( $refresher, $name ) = @_;
 	my $file_in_INC = "Padre/Plugin/${name}.pm";
 	$file_in_INC =~ s/\:\:/\//;
 	$refresher->refresh_module($file_in_INC);
@@ -296,63 +296,63 @@ sub reload_module {
 
 
 sub reload_menu {
-    my ( $win ) = @_;
+	my ( $win ) = @_;
 
-    # re-create menu,
-    my $plugin_menu = $win->{menu}->menu_plugin( $win );
-    my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
-    $win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
-    
-    $win->{menu}->refresh;
-    
-    Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
+	# re-create menu,
+	my $plugin_menu = $win->{menu}->menu_plugin( $win );
+	my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
+	$win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
+
+	$win->{menu}->refresh;
+
+	Wx::MessageBox( 'done', 'done', Wx::wxOK|Wx::wxCENTRE, $win );
 }
 
 sub test_a_plugin {
-    my ( $win ) = @_;
+	my ( $win ) = @_;
 
-    my $config = Padre->ide->config;
-    my $last_filename = $config->{last_test_plugin_file};
-    $last_filename  ||= $win->selected_filename;
-    my $default_dir;
-    if ($last_filename) {
-        $default_dir = File::Basename::dirname($last_filename);
-    }
-    my $dialog = Wx::FileDialog->new(
-        $win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
-    );
-    unless ( Padre::Util::WIN32 ) {
-        $dialog->SetWildcard("*");
-    }
-    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-        return;
-    }
-    my $filename = $dialog->GetFilename;
-    $default_dir = $dialog->GetDirectory;
-    
-    my $file = File::Spec->catfile($default_dir, $filename);
-    
-    # save into plugin for next time
-    $config->{last_test_plugin_file} = $file;
-    
-    ( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
-    $filename    =~ s/\.pm$//; # remove last .pm
-    $filename    =~ s/[\\\/]/\:\:/;
-    
-    unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
-    my $plugins = Padre->ide->plugin_manager->plugins;
+	my $config = Padre->ide->config;
+	my $last_filename = $config->{last_test_plugin_file};
+	$last_filename  ||= $win->selected_filename;
+	my $default_dir;
+	if ($last_filename) {
+		$default_dir = File::Basename::dirname($last_filename);
+	}
+	my $dialog = Wx::FileDialog->new(
+		$win, gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+	);
+	unless ( Padre::Util::WIN32 ) {
+		$dialog->SetWildcard("*");
+	}
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		return;
+	}
+	my $filename = $dialog->GetFilename;
+	$default_dir = $dialog->GetDirectory;
+	
+	my $file = File::Spec->catfile($default_dir, $filename);
+	
+	# save into plugin for next time
+	$config->{last_test_plugin_file} = $file;
+	
+	( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
+	$filename =~ s/\.pm$//; # remove last .pm
+	$filename =~ s/[\\\/]/\:\:/;
+	
+	unshift @INC, $default_dir unless ($INC[0] eq $default_dir);
+	my $plugins = Padre->ide->plugin_manager->plugins;
 
-    # load plugin
-    delete $plugins->{$filename};
-    $config->{plugins}{$filename}{enabled} = 1;
-    _load_plugin( Padre->ide->plugin_manager, $filename );
-    if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
+	# load plugin
+	delete $plugins->{$filename};
+	$config->{plugins}{$filename}{enabled} = 1;
+	_load_plugin( Padre->ide->plugin_manager, $filename );
+	if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
 		Padre->ide->wx->main_window->error("Faild to load the plugin '$filename'");
 		return;
-    }
+	}
 
-    # reload all means rebuild the 'Plugins' menu
-    reload_plugins( $win );
+	# reload all means rebuild the 'Plugins' menu
+	reload_plugins( $win );
 }
 
 # fetch main menu label for specific plugin
