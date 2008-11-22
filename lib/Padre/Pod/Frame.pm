@@ -21,7 +21,7 @@ sub new {
     my $self = $class->SUPER::new( undef,
                                  -1,
                                  'PodViewer ',
-                                 wxDefaultPosition,
+                                 Wx::wxDefaultPosition,
                                  [750, 700],
                                  );
     $self->_setup_podviewer();
@@ -36,15 +36,15 @@ sub _setup_podviewer {
     my $panel = Wx::Panel->new( $self, -1,);
 
     my $html    = Padre::Pod::Viewer->new( $panel, -1 );
-    my $top_s   = Wx::BoxSizer->new( wxVERTICAL );
-    my $but_s   = Wx::BoxSizer->new( wxHORIZONTAL );
+    my $top_s   = Wx::BoxSizer->new( Wx::wxVERTICAL );
+    my $but_s   = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
     my $forward = Wx::Button->new( $panel, -1, "Forward" );
     my $back    = Wx::Button->new( $panel, -1, "Back" );
     $but_s->Add( $back );
     $but_s->Add( $forward );
 
     # TODO: update list when a file is opened
-    $choice = Wx::Choice->new( $panel, wxID_ANY, [ 0, 0 ], Wx::wxDefaultSize, scalar(Padre::DB->get_recent_pod), [ Padre::DB->get_recent_pod ] );
+    $choice = Wx::Choice->new( $panel, Wx::wxID_ANY, [ 0, 0 ], Wx::wxDefaultSize, scalar(Padre::DB->get_recent_pod), [ Padre::DB->get_recent_pod ] );
     $but_s->Add($choice);
     EVT_CHOICE( $panel, $choice, \&on_selection );
 
@@ -55,8 +55,8 @@ sub _setup_podviewer {
     EVT_TEXT(       $panel, $combobox, sub { on_combobox_text_changed($combobox, @_) } );
     EVT_TEXT_ENTER( $panel, $combobox, \&on_combobox_text_enter);
 
-    $top_s->Add( $but_s, 0, wxALL, 5 );
-    $top_s->Add( $html,  1, wxGROW|wxALL, 5 );
+    $top_s->Add( $but_s, 0, Wx::wxALL, 5 );
+    $top_s->Add( $html,  1, Wx::wxGROW|Wx::wxALL, 5 );
 
     $panel->SetSizer( $top_s );
     $panel->SetAutoLayout( 1 );
@@ -131,9 +131,9 @@ sub _create_menu_bar {
     $bar->Append( $edit, "&Edit" );
     $self->SetMenuBar( $bar );
 
-    EVT_MENU(  $self, $file->Append( wxID_OPEN, ''),  \&on_open);
-    EVT_MENU(  $self, $file->Append( wxID_EXIT, ''),  sub { $self->Close } );
-    EVT_MENU(  $self, $edit->Append( wxID_FIND, ''),  \&on_find);
+    EVT_MENU(  $self, $file->Append( Wx::wxID_OPEN, ''),  \&on_open);
+    EVT_MENU(  $self, $file->Append( Wx::wxID_EXIT, ''),  sub { $self->Close } );
+    EVT_MENU(  $self, $edit->Append( Wx::wxID_FIND, ''),  \&on_find);
    
     EVT_CLOSE( $self,             \&on_close);
 
@@ -145,7 +145,7 @@ sub on_find {
     my ( $self ) = @_;
 
     my $dialog = Wx::TextEntryDialog->new( $self, "", "Type in search term", $search_term );
-    if ($dialog->ShowModal == wxID_CANCEL) {
+    if ($dialog->ShowModal == Wx::wxID_CANCEL) {
         return;
     }   
     $search_term = $dialog->GetValue;
@@ -166,7 +166,7 @@ sub on_open {
     my( $self ) = @_;
 
     my $dialog = Wx::TextEntryDialog->new( $self, "", "Type in module name", '' );
-    if ($dialog->ShowModal == wxID_CANCEL) {
+    if ($dialog->ShowModal == Wx::wxID_CANCEL) {
         return;
     }   
     my $module = $dialog->GetValue;
@@ -175,7 +175,7 @@ sub on_open {
 
     my $path = $self->{html}->module_to_path($module);
     if (not $path) {
-        Wx::MessageBox( "Could not find module $module", "Invalid module name", wxOK|wxCENTRE|wxICON_EXCLAMATION, $self );
+        Wx::MessageBox( "Could not find module $module", "Invalid module name", Wx::wxOK|Wx::wxCENTRE|Wx::wxICON_EXCLAMATION, $self );
         return;
     }
 
