@@ -4,7 +4,7 @@ package Padre::Util;
 
 =head1 NAME
 
-Padre::Util - Padre Utility Functions
+Padre::Util - Padre Non-Wx Utility Functions
 
 =head1 DESCRIPTION
 
