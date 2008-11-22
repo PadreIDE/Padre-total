@@ -2059,7 +2059,8 @@ sub on_quick_find {
 sub on_doc_stats {
 	my ($self, $event) = @_;
 
-    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly );
+    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly )
+		= (0) x 5;
 
 	my $code;
     my $src = $self->selected_text;
