@@ -7,7 +7,7 @@ use FindBin      qw($Bin);
 use File::Spec   ();
 use Data::Dumper qw(Dumper);
 
-use Test::More tests => 14;
+use Test::More tests => 22;
 
 use t::lib::Padre;
 use Padre;
@@ -21,13 +21,13 @@ isa_ok $plugin_m1, 'Padre::PluginManager';
 is $plugin_m1->plugin_dir, Padre::Config->default_plugin_dir;
 is keys %{$plugin_m1->plugins}, 0;
 
-ok ! defined($plugin_m1->load_plugins()), 'load_plugins always returns undef';
+ok !defined($plugin_m1->load_plugins()), 'load_plugins always returns undef';
 
 
 # check if we have the plugins that come with Padre
 cmp_ok (keys %{$plugin_m1->plugins}, '>=', 1);
 #is $plugin_m1->plugins->{'Development::Tools'},  'Padre::Plugin::Development::Tools';
-ok ! $plugin_m1->plugins->{'Development::Tools'},  'no second level plugin';
+ok !$plugin_m1->plugins->{'Development::Tools'},  'no second level plugin';
 
 # try load again
 #{
@@ -35,7 +35,20 @@ ok ! $plugin_m1->plugins->{'Development::Tools'},  'no second level plugin';
 #is $st, undef;
 #}
 
-## Test Part Two With custom plugins
+## Test loading single plugins
+$plugin_m1 = Padre::PluginManager->new($padre);
+is keys %{$plugin_m1->plugins}, 0;
+ok(!$plugin_m1->load_plugin('My'));
+is keys %{$plugin_m1->plugins}, 1;
+is( $plugin_m1->plugins->{My}{status}, 'disabled' );
+$padre->config->{plugins}{My}{enabled} = 1;
+ok($plugin_m1->load_plugin('My'));
+is( $plugin_m1->plugins->{My}{status}, 'loaded' );
+ok($plugin_m1->unload_plugin('My'));
+ok( !defined($plugin_m1->plugins->{My}) );
+
+
+## Test With custom plugins
 my $custom_dir = File::Spec->catfile( $Bin, 'lib' );
 my $plugin_m2  = Padre::PluginManager->new($padre, plugin_dir => $custom_dir);
 
@@ -51,7 +64,7 @@ cmp_ok (keys %{$plugin_m2->plugins}, '>=', 3, 'at least 3 plugins')
 ok !exists $plugin_m2->plugins->{'Development::Tools'},  'no second level plugin';
 is $plugin_m2->plugins->{TestPlugin}{module},     'Padre::Plugin::TestPlugin';
 #is $plugin_m2->plugins->{'Test::Plugin'},        'Padre::Plugin::Test::Plugin';
-ok ! defined $plugin_m2->plugins->{'Test::Plugin'},        'no second level plugin';
+ok !defined $plugin_m2->plugins->{'Test::Plugin'},        'no second level plugin';
 
 # try load again
 {
