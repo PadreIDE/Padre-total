@@ -398,6 +398,25 @@ sub uncomment_lines {
 }
 
 
+sub find_unmatched_brace {
+	my ($self) = @_;
+	Class::Autouse->load('Padre::PPI');
+	my $ppi   = $self->ppi_get or return;
+	my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
+	if ( $where ) {
+		@$where = sort {
+			Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
+			or
+			$a->location->[0] <=> $b->location->[0]
+			or
+			$a->location->[1] <=> $b->location->[1]
+		} @$where;
+		$self->ppi_select( $where->[0] );
+		return 1;
+	}
+	return 0;
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

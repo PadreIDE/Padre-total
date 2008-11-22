@@ -666,19 +666,7 @@ sub menu_perl {
 			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
 				return;
 			}
-			Class::Autouse->load('Padre::PPI');
-			my $ppi   = $doc->ppi_get or return;
-			my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
-			if ( $where ) {
-				@$where = sort {
-					Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
-					or
-					$a->location->[0] <=> $b->location->[0]
-					or
-					$a->location->[1] <=> $b->location->[1]
-				} @$where;
-				$doc->ppi_select( $where->[0] );
-			} else {
+			unless ($doc->find_unmatched_brace) {
 				Wx::MessageBox( gettext("All braces appear to be matched"), gettext("Check Complete"), Wx::wxOK, $win );
 			}
 		},
