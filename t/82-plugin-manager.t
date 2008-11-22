@@ -7,7 +7,7 @@ use FindBin      qw($Bin);
 use File::Spec   ();
 use Data::Dumper qw(Dumper);
 
-use Test::More tests => 22;
+use Test::More tests => 24;
 
 use t::lib::Padre;
 use Padre;
@@ -43,6 +43,8 @@ is keys %{$plugin_m1->plugins}, 1;
 is( $plugin_m1->plugins->{My}{status}, 'disabled' );
 $padre->config->{plugins}{My}{enabled} = 1;
 ok($plugin_m1->load_plugin('My'));
+is( $plugin_m1->plugins->{My}{status}, 'loaded' );
+ok($plugin_m1->reload_plugin('My'));
 is( $plugin_m1->plugins->{My}{status}, 'loaded' );
 ok($plugin_m1->unload_plugin('My'));
 ok( !defined($plugin_m1->plugins->{My}) );
