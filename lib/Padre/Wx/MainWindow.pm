@@ -89,6 +89,7 @@ sub new {
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->{manager}->SetManagedWindow( $self );
+	$self->{_methods_} = {};
 
 	# do NOT use hints other than Rectangle or the app will crash on Linux/GTK
 	my $flags = $self->{manager}->GetFlags;
@@ -673,21 +674,32 @@ sub refresh_status {
 	return;
 }
 
+# TODO now on every ui chnage (move of the mouse)
+# we refresh this even though that should not be
+# necessary 
+# can that be eliminated ?
 sub refresh_methods {
 	my ($self) = @_;
 	return if $self->no_refresh;
     return unless ( $self->{menu}->{view_functions}->IsChecked );
 
-	$self->{rightbar}->DeleteAllItems;
-
 	my $doc = $self->selected_document;
-	return if not $doc;
+	if (not $doc) {
+		$self->{rightbar}->DeleteAllItems;
+		return;
+	}
 
-	my @methods = $doc->get_functions;
-	foreach my $method ( @methods ) {
+	my %methods = map {$_ => 1} $doc->get_functions;
+	my $new = join ';', sort keys %methods;
+	my $old = join ';', sort keys %{ $self->{_methods_} };
+	return if $old eq $new;
+	
+	$self->{rightbar}->DeleteAllItems;
+	foreach my $method ( sort keys %methods ) {
 		$self->{rightbar}->InsertStringItem(0, $method);
 	}
 	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
+	$self->{_methods_} = \%methods;
 
 	return;
 }
