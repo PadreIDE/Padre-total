@@ -225,7 +225,7 @@ sub load_plugin {
 	my $module = "Padre::Plugin::$plugin_name";
 	my $config = Padre->ide->config;
 
-	$plugins->{$plugin_name}{module} = $module;
+	$plugins->{$plugin_name}{module} = $module; # TODO: Is caching this really worth the memory?
 
 	if ( not $config->{plugins}{$plugin_name} ) {
 		$config->{plugins}{$plugin_name}{enabled} = 0;
@@ -246,8 +246,8 @@ sub load_plugin {
 	}
 
 	eval {
-		$self->{_objects_}{$plugin_name} = $module->new;
-		$self->{_objects_}{$plugin_name}->plugin_enable;
+		$plugins->{$plugin_name}{object} = $module->new;
+		$plugins->{$plugin_name}{object}->plugin_enable;
 # this now causes trouble
 #		foreach my $editor ( Padre->ide->wx->main_window->pages ) {
 #			$self->{_objects_}{$plugin_name}->editor_enable( $editor, $editor->{Document} );
@@ -258,7 +258,7 @@ sub load_plugin {
 		warn "ERROR $@";
 		$plugins->{$plugin_name}{status} = 'failed';
 		# automatically disable the plugin
-		$config->{plugins}{$plugin_name}{enabled} = 0;
+		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
 	} else {
 		$plugins->{$plugin_name}{status} = 'loaded';
 	}
@@ -274,8 +274,24 @@ sub unload_plugin {
 
 	# normalize to plugin name only
 	$plugin_name =~ s/^Padre::Plugin:://;
-        
-	delete $self->plugins->{$plugin_name};
+	my $config = Padre->ide->config;
+	my $plugins = $self->plugins;
+
+	eval {
+		$plugins->{$plugin_name}{object}->plugin_disable;
+	};
+	if ($@) {
+		# TODO report error in a nicer way
+		warn "ERROR $@";
+		$plugins->{$plugin_name}{status} = 'failed';
+                # automatically disable the plugin
+	        $config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
+	} else {
+		$plugins->{$plugin_name}{status} = 'disabled';
+	}
+	
+
+	delete $plugins->{$plugin_name};
 
 	require Class::Unload;
 	Class::Unload->unload("Padre::Plugin::$plugin_name");
@@ -285,41 +301,34 @@ sub unload_plugin {
 
 
 sub reload_plugins {
-	my ( $win ) = @_;
+	my $self = shift;
+	my $plugins = $self->plugins;
 
-	require Module::Refresh;
-	my $refresher = Module::Refresh->new;
-
-	my %plugins = %{ Padre->ide->plugin_manager->plugins };
-	foreach my $name ( sort keys %plugins ) {
-		reload_module( $refresher, $name );
+	foreach my $plugin_name (sort keys %$plugins) {
+		# do not use the reload_plugin method since that
+		# refreshes the menu every time
+		$self->unload_plugin($plugin_name);
+		$self->load_plugin($plugin_name);
 	}
-	reload_menu($win);
+	$self->_reload_plugin_menu();
+	return 1;
 }
 
 sub reload_plugin {
-	my ( $win, $name ) = @_;
-	
-	require Module::Refresh;
-	my $refresher = Module::Refresh->new;
-	reload_module( $refresher, $name );
-	reload_menu($win);
-	return;
+	my $self = shift;
+	my $plugin_name = shift;
+
+	$self->unload_plugin( $plugin_name );
+	$self->load_plugin( $plugin_name );
+	$self->_reload_plugin_menu();
+	return 1;
 }
 
-sub reload_module {
-	my ( $refresher, $name ) = @_;
-	my $file_in_INC = "Padre/Plugin/${name}.pm";
-	$file_in_INC =~ s/\:\:/\//;
-	$refresher->refresh_module($file_in_INC);
-	return;
-}
-
-
-sub reload_menu {
-	my ( $win ) = @_;
+sub _reload_plugin_menu {
+	my $self = shift;
 
 	# re-create menu,
+	my $win = Padre->ide->wx->main_window;
 	my $plugin_menu = $win->{menu}->menu_plugin( $win );
 	my $plugin_menu_place = $win->{menu}->{wx}->FindMenu( gettext("Pl&ugins") );
 	$win->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, gettext("Pl&ugins") );
