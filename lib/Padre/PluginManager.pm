@@ -224,29 +224,34 @@ sub load_plugin {
 	my $module = "Padre::Plugin::$plugin_name";
 	my $config = Padre->ide->config;
 
-	$plugins->{$plugin_name}{module} = $module; # TODO: Is caching this really worth the memory?
+	$plugins->{$plugin_name} ||= {};
+	my $plugin_state = $plugins->{$plugin_name};
+
+	$plugin_state->{module} = $module; # TODO: Is caching this really worth the memory?
 
 	if ( not $config->{plugins}{$plugin_name} ) {
 		$config->{plugins}{$plugin_name}{enabled} = 0;
-		$plugins->{$plugin_name}{status} = 'new';
+		$plugin_state->{status} = 'new';
 		return;
 	}
 	
 	if (not $config->{plugins}{$plugin_name}{enabled} ) {
-		$plugins->{$plugin_name}{status} = 'disabled';
+		$plugin_state->{status} = 'disabled';
 		return;
 	}
 	#print "use $module\n";
 	eval "use $module"; ## no critic
 	if ($@) {
 		warn "ERROR while trying to load plugin '$plugin_name': $@";
-		$plugins->{$plugin_name}{status} = 'failed';
+		$plugin_state->{status} = 'failed';
 		return;
 	}
 
 	eval {
-		$plugins->{$plugin_name}{object} = $module->new;
-		$plugins->{$plugin_name}{object}->plugin_enable;
+		$plugin_state->{object} = $module->new;
+		die "Could not create plugin object for $module"
+		  if not ref($plugin_state->{object});
+		$plugin_state->{object}->plugin_enable;
 # this now causes trouble
 #		foreach my $editor ( Padre->ide->wx->main_window->pages ) {
 #			$self->{_objects_}{$plugin_name}->editor_enable( $editor, $editor->{Document} );
@@ -255,11 +260,11 @@ sub load_plugin {
 	if ($@) {
 		# TODO report error in a nicer way
 		warn "ERROR $@";
-		$plugins->{$plugin_name}{status} = 'failed';
+		$plugin_state->{status} = 'failed';
 		# automatically disable the plugin
 		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
 	} else {
-		$plugins->{$plugin_name}{status} = 'loaded';
+		$plugin_state->{status} = 'loaded';
 	}
 	
 	return 1;
@@ -276,6 +281,8 @@ sub unload_plugin {
 	my $config = Padre->ide->config;
 	my $plugins = $self->plugins;
 
+	return if not defined $plugins->{$plugin_name}{object};
+
 	eval {
 		$plugins->{$plugin_name}{object}->plugin_disable;
 	};
@@ -283,8 +290,8 @@ sub unload_plugin {
 		# TODO report error in a nicer way
 		warn "ERROR $@";
 		$plugins->{$plugin_name}{status} = 'failed';
-                # automatically disable the plugin
-	        $config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
+		# automatically disable the plugin
+		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
 	} else {
 		$plugins->{$plugin_name}{status} = 'disabled';
 	}
@@ -338,7 +345,8 @@ sub _reload_plugin_menu {
 }
 
 sub test_a_plugin {
-	my ( $win ) = @_;
+	my ( $self ) = @_;
+        my $win = Padre->ide->wx->main_window;
 
 	my $config = Padre->ide->config;
 	my $last_filename = $config->{last_test_plugin_file};
@@ -374,14 +382,14 @@ sub test_a_plugin {
 	# load plugin
 	delete $plugins->{$filename};
 	$config->{plugins}{$filename}{enabled} = 1;
-	Padre->ide->plugin_manager->load_plugin( $filename );
-	if (Padre->ide->plugin_manager->plugins->{$filename}->{status} eq 'failed') {
+	my $manager = Padre->ide->plugin_manager;
+	$manager->load_plugin( $filename );
+	if ($manager->plugins->{$filename}->{status} eq 'failed') {
 		Padre->ide->wx->main_window->error("Faild to load the plugin '$filename'");
 		return;
 	}
 
-	# reload all means rebuild the 'Plugins' menu
-	reload_plugins( $win );
+	$manager->reload_plugins();
 }
 
 # fetch main menu label for specific plugin
