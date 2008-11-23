@@ -826,7 +826,7 @@ sub menu_plugin_tools {
 	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Open Plugin Manager") ),
+		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
 		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
