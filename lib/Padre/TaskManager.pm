@@ -13,24 +13,40 @@ use Padre::Wx;
 use Wx::Event qw(EVT_COMMAND EVT_CLOSE);
 
 our $TASK_DONE_EVENT : shared = Wx::NewEventType;
+our $REAP_TIMER;
+our $SINGLETON;
 
 sub new {
 	my $class = shift;
+        
+	return $SINGLETON if defined $SINGLETON;
 
-	my $self = bless {
-		no_workers => 3,
+	my $self = $SINGLETON = bless {
+		min_no_workers => 1,
+		max_no_workers => 3,
 		@_,
 		workers => [],
 		task_queue => undef,
 	} => $class;
 
-	my $mw = Padre->ide->wx->main_window; # TODO/FIXME global --yuck
+	my $mw = Padre->ide->wx->main_window;
 
 	EVT_COMMAND($mw, -1, $TASK_DONE_EVENT, \&on_task_done_event);
 	EVT_CLOSE($mw, \&on_close);
  
 	$self->{task_queue} = Thread::Queue->new();
 
+	# Set up a regular action for reaping dead workers
+	# and setting up new workers
+	if (not defined $REAP_TIMER) {
+		# explicit id necessary to distinguish from startup-timer of the main window
+		my $timerid = Wx::NewId();
+		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
+		Wx::Event::EVT_TIMER(
+			$mw, $timerid, sub { $SINGLETON->reap(); },
+		);
+		$REAP_TIMER->Start( 2000, Wx::wxTIMER_CONTINUOUS  ); # in ms
+	}
 	#$self->setup_workers();
 
 	return $self;
@@ -38,23 +54,62 @@ sub new {
 
 sub setup_workers {
 	my $self = shift;
-	my $mw = Padre->ide->wx->main_window; # TODO/FIXME global --yuck
+	my $mw = Padre->ide->wx->main_window;
 
 	my $workers = $self->{workers};
-	while (@$workers < $self->{no_workers}) {
+	while (@$workers < $self->{min_no_workers}) {
 		my $worker = threads->create(\&worker_loop, $mw, $self);
 		push @{$workers}, $worker;
+	}
+
+	my $jobs_pending = $self->task_queue->pending();
+	if (@$workers < $self->{max_no_workers} and $jobs_pending > 2*@$workers) {
+		my $target = int($jobs_pending/2);
+		$target = $self->{max_no_workers} if $target > $self->{max_no_workers};
+		foreach (1..($target-@$workers)) {
+			my $worker = threads->create(\&worker_loop, $mw, $self);
+			push @{$workers}, $worker;
+		}
 	}
 
 	return 1;
 }
 
+# join all dead threads and remove them from the list of threads in 
+# the list of workers
 sub reap {
 	my $self = shift;
 	my $workers = $self->{workers};
 
-	$_->join for threads->list(threads::joinable);
+	my @active_or_waiting;
+
+	foreach my $thread (@$workers) {
+		if ($thread->joinable()) {
+			$thread->join();
+		} else {
+			push @active_or_waiting, $thread;
+		}
+	}
 	
+	$self->{workers} = \@active_or_waiting;
+
+
+	# kill the no. of workers that exceed the maximum
+	# (however this may happen)
+	# TODO: We should slowly reduce the no. threads to minimum
+	# of not busy. But how can we check for idling threads?
+	# => check the no. queued jobs.
+	if (@active_or_waiting > $self->{max_no_workers}) {
+		my $no_to_kill = scalar(@active_or_waiting) - $self->{max_no_workers};
+		$self->task_queue->insert( 0, ("STOP") x $no_to_kill );
+
+		# We don't actually need to wait for the soon-to-be-joinable threads
+		# since reap should be called regularly.
+		#while (threads->list(threads::running) >= $self->{max_no_workers}) {
+		#  $_->join for threads->list(threads::joinable);
+		#}
+	}
+
 	$self->setup_workers();
 
 	return 1;
