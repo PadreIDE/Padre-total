@@ -291,7 +291,7 @@ sub line_up {
 	#$editor->LineUp; # is this broken?
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
-	if ($line > 1) {
+	if ($line > 0) {
 		line_up_down($self, $editor, $pos, $line, -1);
 	}
 	return;
