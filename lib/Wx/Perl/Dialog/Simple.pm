@@ -7,7 +7,7 @@ use warnings;
 use base 'Exporter';
 use File::Spec;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 $| = 1;
 

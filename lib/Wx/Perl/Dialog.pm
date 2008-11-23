@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Wx ':everything';
 
@@ -39,6 +39,11 @@ Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
     my $data = $dialog->get_data; 
 
 Where $win is the Wx::Frame of your application.
+
+=head1 B<WARNING>
+
+This is still an alpha version of the code. It is used mainly by L<Padre> and its
+plugins. The API can change without any warning.
 
 
 =head1 DESCRIPTION
