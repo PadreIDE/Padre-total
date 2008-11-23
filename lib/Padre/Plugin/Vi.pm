@@ -146,15 +146,29 @@ sub editor_stop {
 	return 1;
 }
 
-# old way
-sub menu {
-	return ( 
-		['About' => \&about ],
-	);
-}
 # new way
 sub menu_plugins_simple {
 	return ("Vi mode", ['About' => \&about ]);
+}
+
+sub about {
+	my ($main) = @_;
+
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName("Padre::Plugin::Vi");
+	$about->SetDescription(
+		"Try to emulate the vi modes of operation\n"
+	);
+	$about->SetVersion($Padre::Plugin::Vi::VERSION);
+	$about->SetCopyright(gettext("Copyright 2008 Gabor Szabo"));
+	# Only Unix/GTK native about box supports websites
+	if ( Padre::Util::UNIX ) {
+		$about->SetWebSite("http://padre.perlide.org/");
+	}
+	$about->AddDeveloper("Gabor Szabo");
+
+	Wx::AboutBox( $about );
+	return;
 }
 
 
