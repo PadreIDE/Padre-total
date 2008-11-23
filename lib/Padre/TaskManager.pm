@@ -16,6 +16,53 @@ our $TASK_DONE_EVENT : shared = Wx::NewEventType;
 our $REAP_TIMER;
 our $SINGLETON;
 
+#
+# This IRC log is the only documentation for the time being. With a big TODO! FIXME!
+#
+#<tsee> - There's a pool of N worker threads which can either be started at launch time or when the first background task is scheduled. (This will need some more thought)
+#<tsee> - Now, in order to create background tasks, you set up a "Padre::Task" subclass.
+#<tsee> - It needs to implement at least the run() method which will be run in a worker thread.
+#<tsee> - It can additionally implement prepare() and finish() which will be run in the main thread before and after delegation to the worker.
+#<tsee> - Then, to actually use that, I added a simple hook to the My.pm plugin. (Plugins->My Plugin->test). There, I create new objects of the Padre::Task subclass "Padre::Plugin::My::Task".
+#<tsee> - Set some data for sending to the worker thread with the object and call $taskobject->schedule().
+#<tsee> - It will be sent to the Padre::TaskManager which will add it to a queue of jobs to be run.
+#<tsee> (In fact, it also sets up the worker threads only on demand right now. Depending on the number of those, this can be a bit of a delay. Remember this is testing code)
+#<tsee> The queue can only deal with simple data, so the task is serialized before being queued.
+#<tsee> And deserialized in the worker.
+#<tsee> - When a worker thread is idle, it checks the queue to see whether there is any work to do. Since for good measure, I submitted fifty jobs in the test, there'll be plenty.
+#<tsee> - the worker runs $taskobj->run().
+#<tsee> - When that's done, it serializes the object and creates a Wx event handler.
+#<tsee> - In the Wx event handler in the main thread, the object it reconstructed once again and $taskobj->finish() is called.
+#<tsee> - This hook can be used to actually implement any changes to the GUI.
+#<tsee> - In this example case, we just grab the current document and add some text to the end.
+#<tsee> - Which is just the time between scheduling of the job (which, by the way, sleeps for a second) and the time finish() is actually executed.
+#<tsee> - Since there's a couple of worker threads churning away at the same time, this should happen in bunches.
+#<tsee> - The editor stays responsive all the time.
+#<tsee> *at all times
+#
+#<tsee> Threads make me weep.
+#<tsee> There's tons of stuff left to do.
+#<tsee> The least of which is the total lack of docs.
+#<tsee> When a task kills a thread, it's respawned the next time any jobs a scheduled, for example.
+#<tsee> When's the right time to start workers? Certainly the first idea is to do this only when jobs are submitted, BUT: How many do you spawn at a time? AND: If you spawn them late, they'll need more memory!
+#<tsee> Using events, IIRC it's possible for worker threads to interact with the GUI in the main thread. How? And how safe is this?
+#<tsee> Essentially, I'm doing that for the finish call.
+#<tsee> I *think*.
+#<tsee> What's the performance?
+#<tsee> What happens if you pass a lot of data around -- will the serialization kill us?
+#<tsee> etc.
+#<tsee> Oh, and a biggie: What happens if the CPU can't run stuff fast enough so jobs queue up a lot?
+#<tsee> I guess the queue should simply block the main thread at some point.
+#<tsee> But then, tasks can't be finish()ed either.
+#<tsee> Okay, I'll stop for now. This is enough to keep you poor man busy reading for a while.
+#<tsee> Oh, and the cleanup routine needs work.
+#<tsee> Timings: On my single-CPU four-year-old Athlon, a single (simple) background job has a total overhead of ~0.015s
+#<tsee> With three worker threads, submitting three such jobs at once results in a total delay of ~0.019s for each job.
+#<tsee> Remember this is a single-core machine.-
+#<tsee> When submitting FIFTY at the same time, running time is between 0.064s and 0.078s.
+#<tsee> The timing is only slightly worse with only one worker thread (0.068-0.084s), but that's not surprising since those jobs now don't block on anything and it's simply the the overhead of passing things around and doing so one job after another.
+#<tsee> The timings improve similarly little when 20 worker threads are used, but memory overhead is ridicilous.
+
 sub new {
 	my $class = shift;
         
