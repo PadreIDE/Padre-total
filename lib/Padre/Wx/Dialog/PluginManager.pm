@@ -85,7 +85,9 @@ sub _able {
 
 	} else {
 		$config->{plugins}{$module}{enabled} = 1;
-		$manager->reload_plugin($module);
+		if (not $manager->reload_plugin($module)) {
+			Padre->ide->wx->main_window->error($manager->{errstr});
+		}
 	}
 	_set_labels($self, $module, $config->{plugins}{$module}{enabled});
 	#print "$self\n";

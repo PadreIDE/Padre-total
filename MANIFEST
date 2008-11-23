@@ -31,6 +31,10 @@ lib/Padre/Plugin/Vi.pm
 lib/Padre/Plugin/Vi/Editor.pm
 lib/Padre/Plugin/Vi/CommandLine.pm
 
+lib/Padre/Pod2HTML.pm
+
+lib/Padre/Project/Perl.pm
+
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Dialog.pm
 lib/Padre/Wx/Dialog/Bookmarks.pm
@@ -39,11 +43,13 @@ lib/Padre/Wx/Dialog/ModuleStart.pm
 lib/Padre/Wx/Dialog/PluginManager.pm
 lib/Padre/Wx/Dialog/Preferences.pm
 lib/Padre/Wx/Dialog/Search.pm
+lib/Padre/Wx/Dialog/Snippets.pm
 lib/Padre/Wx/DNDFilesDropTarget.pm
 lib/Padre/Wx/Editor.pm
 lib/Padre/Wx/MainWindow.pm
 lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Output.pm
+lib/Padre/Wx/Pod2HTML.pm
 lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Project.pm
 lib/Padre/Wx/RightClick.pm
@@ -117,4 +123,5 @@ share/tango/16x16/actions/edit-undo.png
 share/tango/16x16/actions/go-next.png
 share/tango/16x16/actions/go-previous.png
 share/tango/16x16/emblems/emblem-unreadable.png
+
 

@@ -189,7 +189,10 @@ sub _load_plugins_from_inc {
 		# TODO maybe we should report to the user the fact
 		# that we changed the name of the MY plugin and she should
 		# rename the original one and remove the MY.pm from his installation
-		next if $file eq 'MY';
+		if ($file eq 'MY') {
+			warn "Deprecated Padre::Plugin::MY found. Please remove the upper case MY.pm";
+			return;
+		}
 
 		$self->load_plugin($file); # Foo::Bar names
 	}
@@ -287,7 +290,7 @@ sub _load_plugin_no_refresh {
 	#print "use $module\n";
 	eval "use $module"; ## no critic
 	if ($@) {
-		warn "ERROR while trying to load plugin '$plugin_name': $@";
+		warn $self->{errstr} = "ERROR while trying to load plugin '$plugin_name': $@";
 		$plugin_state->{status} = 'failed';
 		return;
 	}
@@ -295,12 +298,12 @@ sub _load_plugin_no_refresh {
 	eval {
 		$plugin_state->{object} = $module->new;
 		die "Could not create plugin object for $module"
-		  if not ref($plugin_state->{object});
+			if not ref($plugin_state->{object});
 		$plugin_state->{object}->plugin_enable;
 	};
 	if ($@) {
 		# TODO report error in a nicer way
-		warn "ERROR $@";
+		warn $self->{errstr} = $@;
 		$plugin_state->{status} = 'failed';
 		# automatically disable the plugin
 		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
@@ -342,8 +345,7 @@ sub _unload_plugin_no_refresh {
 		$plugins->{$plugin_name}{object}->plugin_disable;
 	};
 	if ($@) {
-		# TODO report error in a nicer way
-		warn "ERROR $@";
+		warn $self->{errstr} = $@;
 		$plugins->{$plugin_name}{status} = 'failed';
 		# automatically disable the plugin
 		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
@@ -388,6 +390,7 @@ sub enable_editors_for_all {
 	foreach my $plugin_name (keys %$plugins) {
 		$self->enable_editors($plugin_name);
 	}
+	return 1;
 }
 
 sub enable_editors {
@@ -401,6 +404,7 @@ sub enable_editors {
 			$plugins->{$plugin_name}{object}->editor_enable( $editor, $editor->{Document} );
 		}
 	}
+	return 1;
 }
 
 =head2 reload_plugin
@@ -415,8 +419,8 @@ sub reload_plugin {
 	my $plugin_name = shift;
 
 	$self->_unload_plugin_no_refresh( $plugin_name );
-	$self->load_plugin( $plugin_name );
-	$self->enable_editors( $plugin_name );
+	$self->load_plugin( $plugin_name ) or return;
+	$self->enable_editors( $plugin_name ) or return;
 	return 1;
 }
 
@@ -501,61 +505,21 @@ sub test_a_plugin {
 	$manager->reload_plugins();
 }
 
-# fetch main menu label for specific plugin
-#sub get_label {
-#	my ($self, $name) = @_;
-#	
-#	my $plugins = $self->plugins;
-#
-#	my $label = '';
-#	if ($plugins->{$name}{module}->can('plugins_menu_label')) {
-#		$label = eval { $plugins->{$name}{module}->can('plugins_menu_label') };
-#		# TODO error handling
-#	} else {
-#		# TODO report lack of plugins_menu_label
-#		# TODO remove support for menu_name in 0.19
-#		if ( $plugins->{$name} and $plugins->{$name}{module}->can('menu_name') ) {
-#			$label = $plugins->{$name}{module}->menu_name;
-#		} else {
-#			$label = $name;
-#			$label =~ s/::/ /;
-#		}
-#	}
-#	return $label;
-#}
-#
-#sub get_menu {
-#	my ($self, $name) = @_;
-#
-#	my $plugins = $self->plugins;
-#	my $menu;
-#	if ( $plugins->{$name}{module}->can('menu_plugins') ) {
-#		$menu = eval { $plugins->{$name}{module}->menu_plugins; };
-#		# TODO error handling ?
-#		# TODO combaility with pre 0.18 plugins?
-#	}
-#	return $menu;
-#}
-#
-
 sub get_menu {
 	my ($self, $win, $name) = @_;
 
 	my $plugins = $self->plugins;
 
-	# TODO add new Padre::Plugin menu creation system
-	# in 0.19 remove support for old menu
 	my ($label, $items, $menu, @data);
 	if ($plugins->{$name}{module}->can('menu_plugins_simple') ) {
 		($label, $items) = eval { $plugins->{$name}{module}->menu_plugins_simple };
 		if ( $@ ) {
-			warn "Error when calling menu for plugin '$name' $@";
+			warn $self->{errstr} = "Error when calling menu for plugin '$name' $@";
 			return ();
 		}
-		# TODO better error handling
 		$menu = eval { $plugins->{$name}{module}->menu_plugins($label, $win, [$items]) };
 	} else {
-		warn "plugins_menu_data is not implemented in plugin '$name'\n";
+		warn $self->{errstr} = "menu_plugins_simple is not implemented in plugin '$name'\n";
 	} 
 	return ($label, $menu);
 }
