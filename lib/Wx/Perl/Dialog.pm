@@ -36,6 +36,7 @@ Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
 
    	return if not $dialog->show_modal;
 
+    my $data = $dialog->get_data; 
 
 Where $win is the Wx::Frame of your application.
 
