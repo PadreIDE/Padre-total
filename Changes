@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-CommandLine
 
+0.02    2008.12.23
+        Add prereq Wx::Perl::Dialog
+
+
 0.01    2008.11.12
         First version, released on an unsuspecting world.
 
