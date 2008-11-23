@@ -278,26 +278,33 @@ sub get_last_pod {
 # Snippets
 
 sub add_snippet {
-	my ($class, $category, $name, $value) = @_;
+	my ($class, $category, $name, $snippet) = @_;
 
 	$class->do(
-		"INSERT INTO snippet ( category, name, value ) VALUES ( ?, ?, ? )",
-		{}, $category, $name, $value,
+		"INSERT INTO snippets ( category, name, snippet ) VALUES ( ?, ?, ? )",
+		{}, $category, $name, $snippet,
 	);
+
+	return;
+}
+
+sub edit_snippet {
+	my ($class, $id, $category, $name, $snippet) = @_;
+
+	$class->do(
+		"UPDATE snippets SET category=?, name=?, snippet=? WHERE id=?",
+		{}, $category, $name, $snippet, $id,
+	);
+
 	return;
 }
 
 sub find_snipclasses {
-	my ($class, $part) = @_;
+	my ($class) = @_;
 
-	my $sql   = "SELECT distinct category FROM snippets";
-	my @bind_values;
-	if ( $part ) {
-		$sql .= " WHERE category LIKE ?";
-		push @bind_values, '%' . $part .  '%';
-	}
-	$sql .= " ORDER BY category";
-	return $class->selectcol_arrayref($sql, {}, @bind_values);
+	my $sql   = "SELECT distinct category FROM snippets ORDER BY category";
+
+	return $class->selectcol_arrayref($sql, {});
 }
 
 sub find_snipnames {
@@ -306,24 +313,26 @@ sub find_snipnames {
 	my $sql   = "SELECT name FROM snippets";
 	my @bind_values;
 	if ( $part ) {
-		$sql .= " WHERE category LIKE ?";
-		push @bind_values, '%' . $part .  '%';
+		$sql .= " WHERE category = ?";
+		push @bind_values, $part;
 	}
 	$sql .= " ORDER BY name";
+
 	return $class->selectcol_arrayref($sql, {}, @bind_values);
 }
 
 sub find_snippets {
 	my ($class, $part) = @_;
 
-	my $sql   = "SELECT snippet FROM snippets";
+	my $sql   = "SELECT * FROM snippets";
 	my @bind_values;
 	if ( $part ) {
-		$sql .= " WHERE category LIKE ?";
-		push @bind_values, '%' . $part .  '%';
+		$sql .= " WHERE category = ?";
+		push @bind_values, $part;
 	}
 	$sql .= " ORDER BY name";
-	return $class->selectcol_arrayref($sql, {}, @bind_values);
+
+	return $class->selectall_arrayref($sql, {}, @bind_values);
 }
 
 1;
