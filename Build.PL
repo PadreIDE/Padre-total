@@ -67,7 +67,7 @@ my %prereqs = (
 	'Text::FindIndent'        => '0.03',
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => '0.86',
-	'Wx::Perl::Dialog'        => '0.02',
+	'Wx::Perl::Dialog'        => '0.03',
 	'Wx::Perl::ProcessStream' => 0,
 );
 
