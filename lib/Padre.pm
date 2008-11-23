@@ -514,10 +514,12 @@ modules/functions/etc.
 
 There is a highly experimental but quite simple plugin system.
 
-A plugin is a module in the Padre::Plugin::* namespace.
+A plugin is a module in the Padre::Plugin::* namespace optionally
+packaged as a L<PAR> archive.
 
-At startup time Padre looks for all such modules in @INC 
-and loads them.
+At startup time Padre looks for all such modules in @INC and
+in its own private directory and loads them.
+
 Every plugin must be a subclass of L<Padre::Plugin> and follow the rules
 defined in the L<Padre::Plugin> API documentation.
 

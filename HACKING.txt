@@ -14,8 +14,8 @@ Some extra files we have in the SVN repository that don't get distributed:
 dev.pl      is just a wrapper script to launch script/padre the main executable of 
             setting some environment variables.
 
-release.pl  Used to release  Padre.
-
+../tools/release.pl                       Used to release  Padre.
+../tools/update_version_number.pl
 
 Translation files
 -----------------
@@ -23,7 +23,7 @@ Translation files
 Currently we are using Wx::gettext so we have a po file for each additional
 language (currently only German) in the share/locale/ directory.
 
-Before release the release.pl script generates an mo file using
+Before release the /tools/release.pl script generates an mo file using
 
   msgfmt -o share/locale/de.mo share/locale/de.po
 
