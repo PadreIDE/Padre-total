@@ -684,6 +684,9 @@ TODO: One day we might be able to factor it out into a separate pod-viewer class
 use 5.008;
 use strict;
 use warnings;
+use threads;
+use threads::shared;
+
 use Carp           ();
 use Cwd            ();
 use File::Spec     ();
