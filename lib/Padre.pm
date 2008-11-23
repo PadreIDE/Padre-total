@@ -729,6 +729,9 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog
 	Padre::Wx::MainWindow
+
+        Padre::Task
+        Padre::TaskManager
 };
 
 # Globally shared Perl detection object
@@ -779,6 +782,8 @@ sub new {
 
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
 
+        $self->{task_manager} = Padre::TaskManager->new();
+
 	eval {
 		require Parrot::Embed;
 		$self->{parrot} = Parrot::Interpreter->new;
@@ -819,6 +824,10 @@ sub config_yaml {
 
 sub plugin_manager {
 	$_[0]->{plugin_manager};
+}
+
+sub task_manager {
+	$_[0]->{task_manager};
 }
 
 sub run {
