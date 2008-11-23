@@ -346,6 +346,7 @@ sub post_init {
 	$self->load_files;
 
 	$self->on_toggle_status_bar;
+	Padre->ide->{plugin_manager}->enable_editors_for_all;
 	$self->refresh_all;
 
 	my $output = $self->{menu}->{view_output}->IsChecked;

@@ -262,7 +262,9 @@ sub _load_plugin_no_refresh {
 	$plugin_name =~ s/^Padre::Plugin:://;
 
 	# skip if that plugin was already loaded
-	return if exists $plugins->{$plugin_name} and $plugins->{$plugin_name}{status} eq 'loaded';
+	return if exists $plugins->{$plugin_name} 
+			  and defined $plugins->{$plugin_name}{status}
+			  and $plugins->{$plugin_name}{status} eq 'loaded';
 
 	my $module = "Padre::Plugin::$plugin_name";
 	my $config = Padre->ide->config;
@@ -295,10 +297,6 @@ sub _load_plugin_no_refresh {
 		die "Could not create plugin object for $module"
 		  if not ref($plugin_state->{object});
 		$plugin_state->{object}->plugin_enable;
-# this now causes trouble
-#		foreach my $editor ( Padre->ide->wx->main_window->pages ) {
-#			$self->{_objects_}{$plugin_name}->editor_enable( $editor, $editor->{Document} );
-#		}
 	};
 	if ($@) {
 		# TODO report error in a nicer way
@@ -378,9 +376,31 @@ sub reload_plugins {
 		# refreshes the menu every time
 		$self->_unload_plugin_no_refresh($plugin_name);
 		$self->_load_plugin_no_refresh($plugin_name);
+		$self->enable_editors($plugin_name);
 	}
 	$self->_refresh_plugin_menu();
 	return 1;
+}
+
+sub enable_editors_for_all {
+	my $self = shift;
+	my $plugins = $self->plugins;
+	foreach my $plugin_name (keys %$plugins) {
+		$self->enable_editors($plugin_name);
+	}
+}
+
+sub enable_editors {
+	my $self        = shift;
+	my $plugin_name = shift;
+	
+	my $plugins = $self->plugins;
+	return if not $plugins->{$plugin_name} or not $plugins->{$plugin_name}{object};
+	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
+		if ($plugins->{$plugin_name}{object}->can('editor_enable')) {
+			$plugins->{$plugin_name}{object}->editor_enable( $editor, $editor->{Document} );
+		}
+	}
 }
 
 =head2 reload_plugin
@@ -396,6 +416,7 @@ sub reload_plugin {
 
 	$self->_unload_plugin_no_refresh( $plugin_name );
 	$self->load_plugin( $plugin_name );
+	$self->enable_editors( $plugin_name );
 	return 1;
 }
 
