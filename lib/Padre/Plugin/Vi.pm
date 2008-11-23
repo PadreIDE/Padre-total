@@ -103,7 +103,7 @@ if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.17,
+	'Padre::Plugin' => 0.18,
 }
 
 sub plugin_enable {
@@ -146,7 +146,6 @@ sub editor_stop {
 	return 1;
 }
 
-# new way
 sub menu_plugins_simple {
 	return ("Vi mode" => ['About' => \&about ]);
 }
