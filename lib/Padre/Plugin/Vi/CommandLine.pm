@@ -68,7 +68,7 @@ sub dialog {
 	
 	my $main   = Padre->ide->wx->main_window;
 	if (not $dialog) {
-		$dialog = Padre::Wx::Dialog->new(
+		$dialog = Wx::Perl::Dialog->new(
 			parent   => $main->{notebook},
 			title    => "Command Line",
 			layout   => \@layout,
