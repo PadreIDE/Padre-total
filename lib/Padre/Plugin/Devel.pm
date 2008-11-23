@@ -3,6 +3,8 @@ package Padre::Plugin::Devel;
 use strict;
 use warnings;
 
+use base 'Padre::Plugin';
+
 our $VERSION = '0.17';
 
 use Padre::Wx ();
@@ -16,22 +18,22 @@ use File::Spec     ();
 use Data::Dumper   ();
 use Padre::Util    ();
 
-sub menu_name { 'Development Tools' }
+sub padre_interfaces {
+	'Padre::Plugin' => 0.17,
+}
+
 
 # TODO fix this
 # we need to create anonymous subs in order to makes
 # sure reloading the module changes the call as well
 # A better to replace the whole Plugins/ menu when we
 # reload plugins.
-my @menu = (
-	['Show %INC',      sub {show_inc(@_)}       ],
-	['Info',           sub {info(@_)}           ],
-	['About',          sub {about(@_)}          ],
-);
-
-sub menu {
-    my ($self) = @_;
-	return @menu;
+sub menu_plugins_simple {
+	return ('Development Tools' => [
+		'Show %INC' =>      sub {show_inc(@_)},
+		'Info'      =>      sub {info(@_)},
+		'About'     =>      sub {about(@_)},
+	]);
 }
 
 sub about {
@@ -57,7 +59,7 @@ sub info {
 		return;
 	}
 	my $msg = '';
-	$msg   .= "Doc: $doc\n";
+	$msg   .= "Doc object: $doc\n";
 	$main->message( $msg, 'Info' );
 
 	return;

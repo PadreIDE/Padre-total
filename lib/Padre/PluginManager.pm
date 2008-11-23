@@ -517,7 +517,7 @@ sub get_menu {
 			warn $self->{errstr} = "Error when calling menu for plugin '$name' $@";
 			return ();
 		}
-		$menu = eval { $plugins->{$name}{module}->menu_plugins($label, $win, [$items]) };
+		$menu = eval { $plugins->{$name}{module}->menu_plugins($label, $win, $items) };
 	} else {
 		warn $self->{errstr} = "menu_plugins_simple is not implemented in plugin '$name'\n";
 	} 

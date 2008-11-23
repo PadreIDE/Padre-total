@@ -19,16 +19,18 @@ Padre::Plugin - Padre Plugin API
       'Padre::Wx::MainWindow' => 0.16,
       'Padre::DB'             => 0.16,
   }
-  
+
   # The plugin name to show in the Plugins menu
-  sub plugins_menu_label {
-  	  'Sample Plugin'
-  }
-  
   # The command structure to show in the Plugins menu
-  sub plugins_menu_data {
-  	  ...
+  sub menu_plugins_simple {
+  	  'My Plugin' => [
+          About => sub { $self->show_about },
+          Deep  => [
+              'Do Something' => sub { $self->do_something },
+          ],
+      ];
   }
+
   
   1;
 
@@ -215,12 +217,15 @@ sub _menu_plugins_submenu {
 	my $items = shift;
 
 	my $menu  = Wx::Menu->new;
-	foreach my $item ( @$items ) {
-		if (ref $item->[1] eq 'ARRAY') {
-			my $submenu = $self->_menu_plugins_submenu($win, $item->[1]);
-			$menu->Append(-1, $item->[0], $submenu);
+	return if not $items or not ref $items or not 'ARRAY' eq ref $items;
+	return if @$items % 2;
+
+	for my $i (0 .. (@$items-2) / 2) {
+		if (ref $items->[$i*2+1] eq 'ARRAY') {
+			my $submenu = $self->_menu_plugins_submenu($win, $items->[$i*2 + 1]);
+			$menu->Append(-1, $items->[$i*2], $submenu);
 		} else {
-			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $item->[0]), $item->[1] );
+			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $items->[$i*2]), $items->[$i*2+1] );
 		}
 	}
 	return $menu;

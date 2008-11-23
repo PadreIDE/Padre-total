@@ -148,7 +148,7 @@ sub editor_stop {
 
 # new way
 sub menu_plugins_simple {
-	return ("Vi mode", ['About' => \&about ]);
+	return ("Vi mode" => ['About' => \&about ]);
 }
 
 sub about {
