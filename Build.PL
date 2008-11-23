@@ -10,6 +10,20 @@ if (not $Config{usethreads}) {
 	exit 0;
 }
 
+print <<"END_WARN";
+**********************************************************
+WARNING
+
+We have renamed the MY plugin to be called Padre::Plugin::My 
+If you have Padre::Plugin::MY (in capital letters) installed
+on your system (it came with 0.17 of Padre) Please remove
+it manually before launching Padre.
+
+It can be both in the standard \@INC and in ~/.padre/plugins/
+
+**********************************************************
+END_WARN
+
 my %prereqs = (
 	'perl'                    => '5.008',
 
@@ -50,7 +64,7 @@ my %prereqs = (
 	'Probe::Perl'             => '0.01',
 	'PPI'                     => '1.203',
 	'Text::Diff'              => '0.35',
-	'Text::FindIndent'        => '0.01',
+	'Text::FindIndent'        => '0.03',
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => '0.86',
 	'Wx::Perl::Dialog'        => '0.02',
