@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use threads;
-use threads::shared;
+use threads::shared; # TODO: according to Wx docs, this MUST be loaded before Wx. But we don't do this yet!
 use Thread::Queue;
 
 require Padre;
@@ -70,7 +70,7 @@ sub new {
 
 	my $self = $SINGLETON = bless {
 		min_no_workers => 1,
-		max_no_workers => 3,
+		max_no_workers => 10,
 		@_,
 		workers => [],
 		task_queue => undef,
@@ -91,68 +91,90 @@ sub new {
 		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
 		Wx::Event::EVT_TIMER(
 			$mw, $timerid, sub { $SINGLETON->reap(); },
+			#$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
 		);
 		$REAP_TIMER->Start( 2000, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
 	#$self->setup_workers();
-
 	return $self;
 }
 
 sub setup_workers {
 	my $self = shift;
+        @_=(); # avoid "Scalars leaked"
 	my $mw = Padre->ide->wx->main_window;
 
+        # ensure minimum no. workers
 	my $workers = $self->{workers};
 	while (@$workers < $self->{min_no_workers}) {
-		my $worker = threads->create(\&worker_loop, $mw, $self);
-		push @{$workers}, $worker;
+		#my $worker = threads->create(\&worker_loop, $mw, $self);
+		#push @{$workers}, $worker;
+			make_thread($self, $mw);
 	}
 
+        # add workers to satisfy demand
 	my $jobs_pending = $self->task_queue->pending();
 	if (@$workers < $self->{max_no_workers} and $jobs_pending > 2*@$workers) {
 		my $target = int($jobs_pending/2);
 		$target = $self->{max_no_workers} if $target > $self->{max_no_workers};
 		foreach (1..($target-@$workers)) {
-			my $worker = threads->create(\&worker_loop, $mw, $self);
-			push @{$workers}, $worker;
+#			my $worker = threads->create(\&worker_loop, $mw, $self);
+#			push @{$workers}, $worker;
+			make_thread($self, $mw);
 		}
 	}
 
 	return 1;
+}
+sub make_thread {
+  my $self = shift;
+  my $mw = shift;
+  @_=();
+  push @{$self->{workers}}, threads->create({'exit' => 'thread_only'}, \&worker_loop, $mw, $self);
 }
 
 # join all dead threads and remove them from the list of threads in 
 # the list of workers
 sub reap {
 	my $self = shift;
+        @_=(); # avoid "Scalars leaked"
 	my $workers = $self->{workers};
 
 	my @active_or_waiting;
+        #warn "--".scalar (@$workers);
 
 	foreach my $thread (@$workers) {
-		if ($thread->joinable()) {
-			$thread->join();
-		} else {
+		if ($thread->is_joinable()) {
+                  #warn "Joining thread " . $thread->tid();
+			my $tmp = $thread->join();
+                  #warn "joined";
+                }
+                else {
 			push @active_or_waiting, $thread;
 		}
 	}
-	
 	$self->{workers} = \@active_or_waiting;
+        #warn "--".scalar (@active_or_waiting);
 
+	# kill the no. of workers that aren't needed
+	my $n_threads_to_kill =  @active_or_waiting - $self->{max_no_workers};
+        $n_threads_to_kill = 0 if $n_threads_to_kill < 0;
+	my $jobs_pending = $self->task_queue->pending();
 
-	# kill the no. of workers that exceed the maximum
-	# (however this may happen)
-	# TODO: We should slowly reduce the no. threads to minimum
-	# of not busy. But how can we check for idling threads?
-	# => check the no. queued jobs.
-	if (@active_or_waiting > $self->{max_no_workers}) {
-		my $no_to_kill = scalar(@active_or_waiting) - $self->{max_no_workers};
-		$self->task_queue->insert( 0, ("STOP") x $no_to_kill );
+        # slowly reduce the no. workers to the minimum
+	$n_threads_to_kill++
+          if @active_or_waiting-$n_threads_to_kill > $self->{min_no_workers}
+          and $jobs_pending == 0;
+	
+	if ($n_threads_to_kill) {
+                # my $target_n_threads = @active_or_waiting - $n_threads_to_kill;
+                my $queue = $self->task_queue;
+		$queue->insert( 0, ("STOP") x $n_threads_to_kill )
+                  unless $queue->pending() and not ref($queue->peek(0));
 
 		# We don't actually need to wait for the soon-to-be-joinable threads
 		# since reap should be called regularly.
-		#while (threads->list(threads::running) >= $self->{max_no_workers}) {
+		#while (threads->list(threads::running) >= $target_n_threads) {
 		#  $_->join for threads->list(threads::joinable);
 		#}
 	}
@@ -237,7 +259,7 @@ sub on_task_done_event {
 # Worker thread main loop
 
 sub worker_loop {
-	my ($mw, $taskmanager) = @_;
+	my ($mw, $taskmanager) = @_;  @_ = (); # hack to avoid "Scalars leaked"
 	my $queue = $taskmanager->task_queue;
 	require Storable;
 
@@ -247,6 +269,7 @@ sub worker_loop {
 
 		#warn threads->tid() . " -- got task.";
 
+		#warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
 		return 1 if not ref($task) eq 'ARRAY';
 
 		my $class = $task->[0];
