@@ -23,6 +23,7 @@ sub get_layout {
         [ [ 'Wx::StaticText', undef, gettext('Class:') ],   [ 'Wx::Choice', '_find_cat_',     $cats ], ],
         [ [ 'Wx::StaticText', undef, gettext('Snippet:') ], [ 'Wx::Choice', '_find_snippet_', $snippets ], ],
         [ [], [ 'Wx::Button', '_insert_', gettext('&Insert') ], [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
+        [ [ 'Wx::StaticLine' ],[ 'Wx::StaticLine' ], ],
         [ [], [ 'Wx::Button', '_edit_',   gettext('&Edit') ],   [ 'Wx::Button', '_add_',    gettext('&Add') ], ],
     );
     return \@layout;
@@ -32,7 +33,6 @@ sub dialog {
     my ( $class, $win, $args ) = @_;
 
     my $config = Padre->ide->config;
-    $main_window = $win;
     my $layout = get_layout($config);
     my $dialog = Padre::Wx::Dialog->new(
         parent => $win,
