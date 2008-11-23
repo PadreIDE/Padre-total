@@ -13,7 +13,7 @@ use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
 use File::Spec		  ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 sub get_layout {
 	my ($config) = @_;

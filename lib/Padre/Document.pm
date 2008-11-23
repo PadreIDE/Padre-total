@@ -27,7 +27,7 @@ use File::Spec  ();
 use Padre::Util ();
 use Padre::Wx   ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 my $unsaved_number = 0;
 

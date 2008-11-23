@@ -11,7 +11,7 @@ use File::HomeDir ();
 use Params::Util  qw{ _STRING _ARRAY };
 use YAML::Tiny    ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 
 

@@ -9,7 +9,7 @@ use Padre::Wx    ();
 use Padre::Pod::Viewer ();
 use base 'Wx::Frame';
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 my $search_term = '';
 my $choice;

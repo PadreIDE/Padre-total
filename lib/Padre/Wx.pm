@@ -20,7 +20,7 @@ use Wx::Locale ':default';
 
 use Padre::Util ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 
 

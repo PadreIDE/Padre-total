@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use Padre::Wx;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 
 

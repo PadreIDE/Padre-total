@@ -7,7 +7,7 @@ use Carp            ();
 use Padre::Document ();
 use YAML::Tiny      ();
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 our @ISA     = 'Padre::Document';
 
 #####################################################################

@@ -6,7 +6,7 @@ use base 'Padre::Plugin';
 
 use Scalar::Util qw(refaddr);
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 =head1 NAME
 

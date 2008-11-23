@@ -1,5 +1,7 @@
 Changes for Padre.
 
+0.18 2008.11.23
+
     Added a few more directories to the no_index list in Build.PL (ADAMK)
     Implement a reusable Padre::Pod2HTML class so that Padre can develop
         a specific look and feel for all HTML generated from Pod. (ADAMK)
@@ -18,6 +20,9 @@ Changes for Padre.
     Drag and drop file(s) open them (#42) (SZABGAB,JQUELIN)
     padre --index no longer crashes (#79) (JQUELIN)
     Incremental, non-intrusive search a-la Firefox (#60) (JQUELIN)
+    New Plug-in system, incompatible with the previous one.
+    Plug-in manager dialog.
+    Rename Padre::Plugin::MY to Padre::Plugin::My.
 
 0.17 2008.11.17
 
