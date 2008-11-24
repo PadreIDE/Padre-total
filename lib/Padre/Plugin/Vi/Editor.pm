@@ -211,7 +211,7 @@ $subs{COMMAND} = {
 
 # returning the value that will be given to $event->Skip()
 sub key_down {
-	my ($self, $mod, $code) = @_;
+	my ($self, $mod, $code, $chr) = @_;
 
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
@@ -236,7 +236,8 @@ sub key_down {
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
 	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
-	if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
+	#if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
+	if ($chr and $chr eq ':') {
 		Padre::Plugin::Vi::CommandLine->show_prompt();
 		return 0;
 	}

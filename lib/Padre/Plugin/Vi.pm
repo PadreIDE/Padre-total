@@ -249,7 +249,8 @@ sub editor_enable {
 	
 	$self->{editor}{refaddr $editor} = Padre::Plugin::Vi::Editor->new($editor);
 
-	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->key_down(@_) } );
+	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->evt_key_down(@_) } );
+	Wx::Event::EVT_CHAR(     $editor, sub { $self->evt_char(@_) } );
 
 	return 1;
 }
@@ -259,6 +260,7 @@ sub editor_stop {
 	
 	delete $self->{editor}{refaddr $editor};
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
+	Wx::Event::EVT_CHAR(     $editor, undef );
 
 	return 1;
 }
@@ -288,17 +290,36 @@ sub about {
 }
 
 
-sub key_down {
+sub evt_key_down {
 	my ($self, $editor, $event) = @_;
 
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
+
+	printf("key: '$mod', '$code' '%s'\n", chr($code));
+	if (32 <= $code and $code <= 127) {
+		$event->Skip;
+		return;
+	}
 
 	my $skip = $self->{editor}{refaddr $editor}->key_down($mod, $code);
 	$event->Skip($skip);
 	return;
 }
 
+sub evt_char {
+	my ($self, $editor, $event) = @_;
+
+	my $mod  = $event->GetModifiers || 0;
+	my $code = $event->GetKeyCode;
+
+	printf("char: '$mod', '$code' '%s'\n", chr($code));
+	if (32 <= $code and $code <= 127) {
+		my $skip = $self->{editor}{refaddr $editor}->key_down($mod, $code, chr($code));
+		$event->Skip($skip);
+	}
+	return;
+}
 
 1;
 
