@@ -22,42 +22,6 @@ The 3 basic modes of vi are in development:
 When you turn on vi-mode, or load Padre with vi-mode already enabled
 you reach the normal navigation mode of vi.
 
-
-
-In general the following are implemented:
-
-=over
-
-=item *
-
-in naviation mode catch 'a' and move to insert mode
-
-=item *
-
-in insert mode catch ESC and move to navigation mode
-
-=item *
-
-in navigation mode catch 'd' character and delete the current charcter
-
-=item *
-
-in navigation mode catch '3d' and delete 3 characters
-
-=item *
-
-in navigation mode catch ':' and open the command line
-
-=item *
-
-menu option to swicth back and force vi-mode
-
-=back
-
-Othere keys that are supported 
-p paste below
-P paste above
-
 We don't plan to impelement many of the configuration options of vi. 
 Even parts that are going to be implemented will not use the same method
 of configuration.
@@ -66,26 +30,176 @@ That said, we are planning to add looking for vi configuration options in
 the source file so the editor can set its own configuration based on the
 vi configuration options.
 
+
+The following are implemented:
+
+=head2 Navigation mode
+
+=over
+
+=item *
+
+in navigation mode catch ':' and open the command line
+
+=ietm *
+
+l,h,k,j  - (right, left, up, down) navigation 
+
+4 arrows also work
+
+Number prefix are alloed in both the 4 letter and the 4 arrows
+
+=item *
+
+PageUp, PageDown
+
+=item *
+
+Home - goto first character on line
+
+=item *
+
+End - goto last character on line
+
+=item *
+
+v - visual mode, to start marking section
+
+TODO - ENTER should yank the data, other operation that should work on the selection?
+
+=item *
+
+p - paste below
+
+P - paste above
+
+=item *
+
+Ctrl-6 - jump to last window edited. (This is inherited from Padre)
+
+=item *
+
+a - switch to insert mode after the current character
+
+=item *
+
+i - switch to insert mode before the current character
+
+TODO this is currently step one character back as the caret is not
+ON a caracter but between two.
+
+=item *
+
+o - add an empty line below current line and switch to insert mode
+
+O - add an empty line above current line and switch to insert mode
+
+=item *
+
+x - delete current character
+
+Nx - delete N characters
+
+=item *
+
+dd - delete current line
+
+Ndd - (N any number) delete N lines
+
+=item *
+
+yy - yank (copy) current line to buffer
+
+Nyy - yank (copy) N lines to buffer
+
+TODO yy - should not mark the text that is yanked or should remove the selection
+
+=item *
+
+u - undu last editing
+
+=item *
+
+J - (shift-j) join lines, join the next line after the current one
+
+=item *
+
+^ - (shift-6) jump to beginning of line
+
+=item *
+
+$ - (shift-4) jump to end of line
+
+=back
+
+=head2 Insert mode
+
+=over 4
+
+=item *
+
+ESC moves to navigation mode
+
+=item *
+
+Ctrl-p - autocompletion (inherited from Padre)
+
+=back
+
+=head2 Command mode
+
+=over 4
+
+=item *
+
+w - write current buffer
+
+=item *
+
+e filename - open file for editing
+
+TAB completition of directory and filenames
+
+TODO: it seems the auto completition does not always (or not at all?)
+put the trailing / on directory names
+
+=item *
+
+:42 - goto line 42 
+
+(we have it in generalized form, you can type any number there :)
+
+=item *
+
+42G - jump to line 42
+
+G - jump to last line
+
+=back
+
 =head1 TODO
 
-vi mode
+Better indication that Padre is  in vi-mode.
 
-- change the cursor for navigation mode and back to insert mode
+Change the cursor for navigation mode and back to insert mode.
+(fix i)
 
-- integrate command line pop-up
-  move it to the bottom of the window
-  make it come up faster (show/hide instead of create/destroy?)
-  (maybe actually we should have it integrated it into the main GUI
-  and add it as another window under or above the output window?)
+Integrate command line pop-up
+move it to the bottom of the window
+make it come up faster (show/hide instead of create/destroy?)
+(maybe actually we should have it integrated it into the main GUI
+and add it as another window under or above the output window?)
+Most importantly, make it faster to come up
 
-fix i, 
-:q to exit
-yy - should not mark the text that is yanked or should remove the selection
-v to start marking section
+
+:q - exit
+
+:wq - write and exit
+
 / and search connect it to the new (and yet experimental search)
 
-:d$
-:dw
+:d$ - delete till end of line
+:dw - delete word
 
 
 if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
@@ -103,7 +217,7 @@ if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.17,
+	'Padre::Plugin' => 0.18,
 }
 
 sub plugin_enable {
@@ -146,7 +260,6 @@ sub editor_stop {
 	return 1;
 }
 
-# new way
 sub menu_plugins_simple {
 	return ("Vi mode" => ['About' => \&about ]);
 }

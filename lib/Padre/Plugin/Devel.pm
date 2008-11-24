@@ -19,7 +19,7 @@ use Data::Dumper   ();
 use Padre::Util    ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.17,
+	'Padre::Plugin' => 0.18,
 }
 
 
