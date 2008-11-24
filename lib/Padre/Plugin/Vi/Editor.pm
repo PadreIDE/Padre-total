@@ -147,29 +147,16 @@ $subs{CHAR} = {
 
 
 
-	dd => sub {
+	dd => sub { # delete current line
 		my ($self, $count) = @_;
-		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
-			$self->select_text($1 || 1);
-			$self->{editor}->Cut;
-			# got to first char, remove $count rows
-			$self->{vi_buffer} = '';
-		} else {
-			$self->{vi_buffer} .= 'd';
-		}
+		$self->select_rows($count);
+		$self->{editor}->Cut;
 	},
 	
-	yy => sub {
+	yy => sub { # yank current line
 		my ($self, $count) = @_;
-		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
-			$self->select_text($1 || 1);
-			$self->{editor}->Copy;
-
-			# got to first char, remove $count rows
-			$self->{vi_buffer} = '';
-		} else {
-			$self->{vi_buffer} .= 'y';
-		}
+		$self->select_rows($count);
+		$self->{editor}->Copy;
 	},
 
 	'$' => \&goto_end_of_line, # Shift-4 is $   End
@@ -304,8 +291,8 @@ sub key_down {
 
 
 sub line_down {
-	my ($self) = @_;
-	if ($self->{visual_mode}) {
+	my ($self, $count) = @_;
+	if ($self->{visual_mode}) { # TODO moer than one lines
 		$self->{editor}->LineDownExtend;
 		return;
 	}
@@ -313,14 +300,13 @@ sub line_down {
 	my $pos  = $self->{editor}->GetCurrentPos;
 	my $line = $self->{editor}->LineFromPosition($pos);
 	my $last_line = $self->{editor}->LineFromPosition(length $self->{editor}->GetText);
-	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
 	my $toline = List::Util::min($line+$count, $last_line);
 	$self->line_up_down($pos, $line, $toline);
 	return;
 }
 
 sub line_up {
-	my ($self) = @_;
+	my ($self, $count) = @_;
 
 	if ($self->{visual_mode}) {
 		$self->{editor}->LineUpExtend;
@@ -329,7 +315,6 @@ sub line_up {
 	#$self->{editor}->LineUp; # is this broken?
 	my $pos  = $self->{editor}->GetCurrentPos;
 	my $line = $self->{editor}->LineFromPosition($pos);
-	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
 	my $toline = List::Util::max($line-$count, 0);
 	$self->line_up_down($pos, $line, $toline);
 	return;
@@ -375,7 +360,7 @@ sub goto_beginning_of_line {
 	}
 }
 
-sub select_text {
+sub select_rows {
 	my ($self, $count) = @_;
 	my $line  = $self->{editor}->GetCurrentLine;
 	my $start = $self->{editor}->PositionFromLine( $line );
