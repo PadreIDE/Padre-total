@@ -33,8 +33,11 @@ $subs{PLAIN} = {
 		if ($self->{visual_mode}) {
 			$editor->CharRightExtend();
 		} else {
-			$editor->CharRight;
+			my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
+			my $pos  = $editor->GetCurrentPos;
+			$editor->GotoPos($pos + $count); 
 		}
+		$self->{vi_buffer} = '';
 	},
 	Wx::WXK_RIGHT => ord('L'),
 	
@@ -44,8 +47,11 @@ $subs{PLAIN} = {
 		if ($self->{visual_mode}) {
 			$editor->CharLeftExtend;
 		} else {
-			$editor->CharLeft;
+			my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
+			my $pos  = $editor->GetCurrentPos;
+			$editor->GotoPos($pos - $count); 
 		}
+		$self->{vi_buffer} = '';
 	},
 	Wx::WXK_LEFT  => ord('H'),
 	
@@ -283,9 +289,10 @@ sub line_down {
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
 	my $last_line = $editor->LineFromPosition(length $editor->GetText);
-	if ($line < $last_line) {
-		line_up_down($self, $editor, $pos, $line, +1);
-	}
+	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
+	my $toline = List::Util::min($line+$count, $last_line);
+	line_up_down($self, $editor, $pos, $line, $toline);
+	$self->{vi_buffer} = '';
 	return;
 }
 
@@ -299,22 +306,23 @@ sub line_up {
 	#$editor->LineUp; # is this broken?
 	my $pos  = $editor->GetCurrentPos;
 	my $line = $editor->LineFromPosition($pos);
-	if ($line > 0) {
-		line_up_down($self, $editor, $pos, $line, -1);
-	}
+	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
+	my $toline = List::Util::max($line-$count, 0);
+	line_up_down($self, $editor, $pos, $line, $toline);
+	$self->{vi_buffer} = '';
 	return;
 }
 
 sub line_up_down {
-	my ($self, $editor, $pos, $line, $dir) = @_;
+	my ($self, $editor, $pos, $line, $toline) = @_;
 		
 	my $to;
 	my $end      = $editor->GetLineEndPosition($line);
-	my $prev_end = $editor->GetLineEndPosition($line + $dir);
+	my $prev_end = $editor->GetLineEndPosition($toline);
 	if ($self->{end_pressed}) {
 		$to = $prev_end;
 	} else {
-		my $prev_start = $editor->PositionFromLine($line + $dir);
+		my $prev_start = $editor->PositionFromLine($toline);
 		my $col  = $editor->GetColumn($pos);
 		$to = $prev_start + $col;
 		$to = List::Util::min($to, $prev_end);

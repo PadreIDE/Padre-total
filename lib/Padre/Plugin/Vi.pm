@@ -47,7 +47,7 @@ l,h,k,j  - (right, left, up, down) navigation
 
 4 arrows also work
 
-TODO: allow the number prefix
+Number prefix are alloed in both the 4 letter and the 4 arrows
 
 =item *
 
