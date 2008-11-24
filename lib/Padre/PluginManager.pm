@@ -190,7 +190,7 @@ sub _load_plugins_from_inc {
 		# that we changed the name of the MY plugin and she should
 		# rename the original one and remove the MY.pm from his installation
 		if ($file eq 'MY') {
-			warn "Deprecated Padre::Plugin::MY found. Please remove the upper case MY.pm";
+			warn "Deprecated Padre::Plugin::MY found. Please remove the upper case MY.pm\n";
 			return;
 		}
 
