@@ -184,10 +184,18 @@ $subs{SHIFT} = {
 		}
 		$editor->Paste;
 	},
+	ord('G') => sub { # goto line
+		my ($self, $editor) = @_;
+		my $count = $self->{vi_buffer} || $editor->GetLineCount;
+		$editor->GotoLine($count-1);
+		$self->{vi_buffer} = '';
+	},
 	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
 	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
 
+# the following does not yet work as we need to neuralize the Ctrl-N of Padre
+# before we can see this command
 $subs{COMMAND} = {
 	ord('N') => sub { # autocompletion
 		print "Ctrl-N $_[0]\n";
