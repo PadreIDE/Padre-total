@@ -77,6 +77,7 @@ t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
 t/83-autosave.t
+t/91-vi.t
 t/lib/Padre.pm
 t/lib/Padre/Plugin/TestPlugin.pm
 t/lib/Padre/Plugin/Test/Plugin.pm

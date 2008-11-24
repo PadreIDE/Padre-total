@@ -3,24 +3,34 @@ use strict;
 use warnings;
 
 sub new {
-	return bless {}, shift;
+	my $self = bless {}, shift;
+	return $self;
 }
 
 sub SetEOLMode {
 }
-
-sub SetText {
-	$_[0]->{text} = $_[1];
+sub ConvertEOLs {
 }
+
 
 sub EmptyUndoBuffer {
 }
 
-sub ConvertEOLs {
+sub SetText {
+	$_[0]->{text} = $_[1];
+	$_[0]->{pos}  = 0;
 }
 
-sub  GetText {
+sub GetText {
+	return $_[0]->{text}
 }
 
+sub GetCurrentPos {
+	return $_[0]->{pos};
+}
+
+sub GotoPos {
+	$_[0]->{pos} = $_[1];
+}
 
 1;

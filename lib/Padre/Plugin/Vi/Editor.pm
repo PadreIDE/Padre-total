@@ -49,7 +49,7 @@ $subs{PLAIN} = {
 		} else {
 			my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
 			my $pos  = $editor->GetCurrentPos;
-			$editor->GotoPos($pos - $count); 
+			$editor->GotoPos(List::Util::max($pos - $count, 0)); 
 		}
 		$self->{vi_buffer} = '';
 	},
