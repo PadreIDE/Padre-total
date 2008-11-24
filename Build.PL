@@ -10,6 +10,8 @@ if (not $Config{usethreads}) {
 	exit 0;
 }
 
+check_wx_version();
+
 print <<"END_WARN";
 **********************************************************
 WARNING
@@ -124,8 +126,8 @@ sub check_wx_version {
 	nono("Sorry we don't known this wxWidgets version format: '$version'")
 		if $version !~ /^\d+\.\d+(\.\d+)?$/;
 	my ($major, $minor, $way_too_minor) = split /\./, $version;
-	nono("Padre needs at least version 2.7.x of wxWidgets. this is version $version")
-		if $major < 2 or $minor < 7;
+	nono("Padre needs at least version 2.8.8 of wxWidgets. this is version $version")
+		if $major < 2 or $minor < 8;
 
 	return;
 }
