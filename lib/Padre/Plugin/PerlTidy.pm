@@ -3,7 +3,8 @@ package Padre::Plugin::PerlTidy;
 use strict;
 use warnings;
 
-use Perl::Tidy ();
+use base 'Padre::Plugin';
+
 use Padre::Wx ();
 
 our $VERSION = '0.02';
@@ -22,17 +23,21 @@ file if it exists (see Perl::Tidy documentation).
 
 =cut
 
-my @menu = (
-    [ 'Tidy the active document', \&tidy_document ],
-    [ 'Tidy the selected text',   \&tidy_selection ]
-);
+sub padre_interfaces {
+	'Padre::Plugin' => '0.18',
+}
 
-sub menu {
-    return @menu;
+sub menu_plugins_simple {
+    Perl => [
+        'Tidy the active document' => \&tidy_document,
+        'Tidy the selected text'   => \&tidy_selection,
+    ];
 }
 
 sub _tidy {
     my ( $self, $src ) = @_;
+
+    require Perl::Tidy;
 
     return unless defined $src;
 
@@ -106,29 +111,29 @@ choose to install it into your user's Padre configuration directory only:
 
 =item * Install the prerequisite modules.
 
-=item * perl Build.PL
+=item * perl Makefile.PL
 
-=item * ./Build
+=item * make
 
-=item * ./Build installplugin
+=item * make installplugin
 
 =back
 
 This will install the plugin as PerlTidy.par into your user's ~/.padre/plugins
 directory.
 
-Similarly, "./Build plugin" will just create the PerlTidy.par which you can
+Similarly, "make plugin" will just create the PerlTidy.par which you can
 then copy manually.
 
 =head1 AUTHOR
 
-Patrick Donelan
-
 Brian Cassidy E<lt>bricas@cpan.orgE<gt>
+
+Patrick Donelan
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 by Patrick Donelan http://www.patspam.com
+Copyright 2008 by Patrick Donelan, Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
