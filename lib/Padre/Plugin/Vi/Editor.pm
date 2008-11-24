@@ -24,11 +24,11 @@ sub new {
 
 sub editor { return $_[0]->{editor} }
 
-$subs{PLAIN} = {
-
+$subs{CHAR} = {
 	# movements
-	ord('L')      => sub {
+	l => sub {
 		my ($self, $count) = @_;
+		#print "COUNT $count\n";
 		$self->{end_pressed} = 0;
 		if ($self->{visual_mode}) {
 			$self->{editor}->CharRightExtend(); # TODO use $count
@@ -36,11 +36,9 @@ $subs{PLAIN} = {
 			my $pos  = $self->{editor}->GetCurrentPos;
 			$self->{editor}->GotoPos($pos + $count); 
 		}
-		$self->{vi_buffer} = '';
 	},
-	Wx::WXK_RIGHT => ord('L'),
-	
-	ord('H')      => sub {
+
+	h => sub {
 		my ($self, $count) = @_;
 		$self->{end_pressed} = 0;
 		if ($self->{visual_mode}) {
@@ -49,15 +47,142 @@ $subs{PLAIN} = {
 			my $pos  = $self->{editor}->GetCurrentPos;
 			$self->{editor}->GotoPos(List::Util::max($pos - $count, 0)); 
 		}
+	},
+
+	k => \&line_up,
+	j => \&line_down,
+
+	# selection
+	v => sub {
+		my ($self, $count) = @_;
+		my $main   = Padre->ide->wx->main_window;
+		$self->{editor}->text_selection_mark_start($main);
+		$self->{visual_mode} = 1;
+	},
+	### swictch to insert mode
+	a => sub {  # append
+		my ($self, $count) = @_; # TODO use $count ??
+		$self->{vi_insert_mode} = 1;
+		# change cursor
+	},
+	i => sub { # insert
+		my ($self, $count) = @_; # use $count ?
+		$self->{vi_insert_mode} = 1;
+		my $pos  = $self->{editor}->GetCurrentPos;
+		$self->{editor}->GotoPos($pos-1);
+		# change cursor
+	},
+	o => sub { # open below
+		my ($self, $count) = @_; # TODO use $count ??
+		$self->{vi_insert_mode} = 1;
+		my $line = $self->{editor}->GetCurrentLine;
+		my $end  = $self->{editor}->GetLineEndPosition($line);
+		# go to end of line, insert newline
+		$self->{editor}->GotoPos($end);
+		$self->{editor}->NewLine;
+		# change cursor
+	},
+
+	### editing from navigation mode
+	x => sub { # delete
+		my ($self, $count) = @_;
+		my $pos  = $self->{editor}->GetCurrentPos;
+		$self->{editor}->SetTargetStart($pos);
+		$self->{editor}->SetTargetEnd($pos + $count);
+		$self->{vi_buffer} = '';
+		$self->{editor}->ReplaceTarget('');
+	},
+	u => sub { # undo
+		my ($self, $count) = @_;
+		$self->{editor}->Undo;
+	},
+	p => sub { #paste
+		my ($self, $count) = @_;
+		my $text = Padre::Wx::Editor::get_text_from_clipboard();
+		if ($text =~ /\n/) {
+			my $line  = $self->{editor}->GetCurrentLine;
+			my $start = $self->{editor}->PositionFromLine($line+1);
+			$self->{editor}->GotoPos($start);
+		}
+		$self->{editor}->Paste;
+	},
+
+
+	O => sub { # open above
+		my ($self, $count) = @_;
+		$self->{vi_insert_mode} = 1;
+		my $line  = $self->{editor}->GetCurrentLine;
+		my $start = $self->{editor}->PositionFromLine($line);
+		# go to beginning of line, insert newline, go to previous line
+		$self->{editor}->GotoPos($start);
+		$self->{editor}->NewLine;
+		$self->{editor}->GotoPos($start);
+		# change cursor
+	},
+	J => sub {
+		my ($self, $count) = @_;
+		my $main   = Padre->ide->wx->main_window;
+		$main->on_join_lines;
+	},
+	P => sub { #paste above
+		my ($self, $count) = @_;
+		my $text = Padre::Wx::Editor::get_text_from_clipboard();
+		if ($text =~ /\n/) {
+			my $line  = $self->{editor}->GetCurrentLine;
+			my $start = $self->{editor}->PositionFromLine($line);
+			$self->{editor}->GotoPos($start);
+		} else {
+			my $pos = $self->{editor}->GetCurrentPos;
+			$self->{editor}->GotoPos($pos-1);
+		}
+		$self->{editor}->Paste;
+	},
+
+	G => sub { # goto line
+		my ($self, $count) = @_; # TODO: special case for count !!
+		$count = $self->{vi_buffer} || $self->{editor}->GetLineCount;
+		$self->{editor}->GotoLine($count-1);
 		$self->{vi_buffer} = '';
 	},
-	Wx::WXK_LEFT  => ord('H'),
+
+
+
+	dd => sub {
+		my ($self, $count) = @_;
+		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
+			$self->select_text($1 || 1);
+			$self->{editor}->Cut;
+			# got to first char, remove $count rows
+			$self->{vi_buffer} = '';
+		} else {
+			$self->{vi_buffer} .= 'd';
+		}
+	},
 	
-	ord('K')     => \&line_up,
-	Wx::WXK_UP   => ord('K'),
-	ord('J')     => \&line_down,
-	Wx::WXK_DOWN => ord('J'),
-	
+	yy => sub {
+		my ($self, $count) = @_;
+		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
+			$self->select_text($1 || 1);
+			$self->{editor}->Copy;
+
+			# got to first char, remove $count rows
+			$self->{vi_buffer} = '';
+		} else {
+			$self->{vi_buffer} .= 'y';
+		}
+	},
+
+	'$' => \&goto_end_of_line, # Shift-4 is $   End
+	'^' => \&goto_beginning_of_line, # Shift-6 is ^   Home
+};
+
+$subs{PLAIN} = {
+	# movements
+	Wx::WXK_RIGHT => $subs{CHAR}{l},
+	Wx::WXK_LEFT  => $subs{CHAR}{h},
+	Wx::WXK_UP    => $subs{CHAR}{k},
+	Wx::WXK_DOWN  => $subs{CHAR}{j},
+
 	Wx::WXK_PAGEUP => sub {
 		my ($self, $count) = @_; # TODO use $count ??
 		if ($self->{visual_mode}) {
@@ -76,127 +201,9 @@ $subs{PLAIN} = {
 	},
 	Wx::WXK_HOME => \&goto_beginning_of_line,
 	Wx::WXK_END => \&goto_end_of_line,
-
-
-	# selection
-	ord('V')     => sub {
-		my ($self, $count) = @_;
-		my $main   = Padre->ide->wx->main_window;
-		$self->{editor}->text_selection_mark_start($main);
-		$self->{visual_mode} = 1;
-	},
-	### swictch to insert mode
-	ord('A')   => sub {  # append
-		my ($self, $count) = @_; # TODO use $count ??
-		$self->{vi_insert_mode} = 1;
-		# change cursor
-	},
-	ord('I') => sub { # insert
-		my ($self, $count) = @_; # use $count ?
-		$self->{vi_insert_mode} = 1;
-		my $pos  = $self->{editor}->GetCurrentPos;
-		$self->{editor}->GotoPos($pos-1);
-		# change cursor
-	},
-	ord('O') => sub { # open below
-		my ($self, $count) = @_; # TODO use $count ??
-		$self->{vi_insert_mode} = 1;
-		my $line = $self->{editor}->GetCurrentLine;
-		my $end  = $self->{editor}->GetLineEndPosition($line);
-		# go to end of line, insert newline
-		$self->{editor}->GotoPos($end);
-		$self->{editor}->NewLine;
-		# change cursor
-	},
-	
-	ord('D') => sub {
-		my ($self, $count) = @_;
-		if ($self->{vi_buffer} =~ /^(\d*)d$/) { # delete current line
-			$self->select_text($1 || 1);
-			$self->{editor}->Cut;
-			# got to first char, remove $count rows
-			$self->{vi_buffer} = '';
-		} else {
-			$self->{vi_buffer} .= 'd';
-		}
-	},
-	
-	ord('Y') => sub {
-		my ($self, $count) = @_;
-		if ($self->{vi_buffer} =~ /^(\d*)y$/) { # yank current line
-			$self->select_text($1 || 1);
-			$self->{editor}->Copy;
-
-			# got to first char, remove $count rows
-			$self->{vi_buffer} = '';
-		} else {
-			$self->{vi_buffer} .= 'y';
-		}
-	},
-
-	### editing from navigation mode
-	ord('X') => sub { # delete
-		my ($self, $count) = @_;
-		my $pos  = $self->{editor}->GetCurrentPos;
-		$self->{editor}->SetTargetStart($pos);
-		$self->{editor}->SetTargetEnd($pos + $count);
-		$self->{vi_buffer} = '';
-		$self->{editor}->ReplaceTarget('');
-	},
-	ord('U') => sub { # undo
-		my ($self, $count) = @_;
-		$self->{editor}->Undo;
-	},
-	ord('P') => sub { #paste
-		my ($self, $count) = @_;
-		my $text = Padre::Wx::Editor::get_text_from_clipboard();
-		if ($text =~ /\n/) {
-			my $line  = $self->{editor}->GetCurrentLine;
-			my $start = $self->{editor}->PositionFromLine($line+1);
-			$self->{editor}->GotoPos($start);
-		}
-		$self->{editor}->Paste;
-	},
 };
 
 $subs{SHIFT} = {
-	ord('O') => sub { # open above
-		my ($self, $count) = @_;
-		$self->{vi_insert_mode} = 1;
-		my $line  = $self->{editor}->GetCurrentLine;
-		my $start = $self->{editor}->PositionFromLine($line);
-		# go to beginning of line, insert newline, go to previous line
-		$self->{editor}->GotoPos($start);
-		$self->{editor}->NewLine;
-		$self->{editor}->GotoPos($start);
-		# change cursor
-	},
-	ord('J') => sub {
-		my ($self, $count) = @_;
-		my $main   = Padre->ide->wx->main_window;
-		$main->on_join_lines;
-	},
-	ord('P') => sub { #paste above
-		my ($self, $count) = @_;
-		my $text = Padre::Wx::Editor::get_text_from_clipboard();
-		if ($text =~ /\n/) {
-			my $line  = $self->{editor}->GetCurrentLine;
-			my $start = $self->{editor}->PositionFromLine($line);
-			$self->{editor}->GotoPos($start);
-		} else {
-			my $pos = $self->{editor}->GetCurrentPos;
-			$self->{editor}->GotoPos($pos-1);
-		}
-		$self->{editor}->Paste;
-	},
-	ord('G') => sub { # goto line
-		my ($self, $count) = @_; # TODO: special case for count !!
-		$count = $self->{vi_buffer} || $self->{editor}->GetLineCount;
-		$self->{editor}->GotoLine($count-1);
-		$self->{vi_buffer} = '';
-	},
-	ord('4') => \&goto_end_of_line, # Shift-4 is $   End
-	ord('6') => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
 
 # the following does not yet work as we need to neuralize the Ctrl-N of Padre
@@ -213,6 +220,7 @@ $subs{COMMAND} = {
 sub key_down {
 	my ($self, $mod, $code, $chr) = @_;
 
+#print "CHR $chr\n" if $chr;
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
 		$self->{vi_buffer}      = '';
@@ -237,9 +245,23 @@ sub key_down {
 	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
 	#if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
-	if ($chr and $chr eq ':') {
-		Padre::Plugin::Vi::CommandLine->show_prompt();
-		return 0;
+	if ($chr) {
+		if ($chr eq ':') {
+			Padre::Plugin::Vi::CommandLine->show_prompt();
+			return 0;
+		}
+		$self->{vi_buffer} .= $chr;
+		print "B: '$self->{vi_buffer}'\n";
+		if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG])$/ or 
+		    $self->{vi_buffer} =~ /^(\d*)(dd|yy)$/) {
+			my $count   = $1 || 1;
+			my $command = $2;
+			if ($subs{CHAR}{$command}) {
+				$subs{CHAR}{$command}->($self, $count);
+				$self->{vi_buffer} = '';
+			}
+			return 0 ;
+		}
 	}
 
 
@@ -269,10 +291,10 @@ sub key_down {
 		return 0 ;
 	}
 
-	if (ord('0') <= $code and $code <= ord('9')) {
-		$self->{vi_buffer} .= chr($code);
-		return 0;
-	}
+	#if (ord('0') <= $code and $code <= ord('9')) {
+	#	$self->{vi_buffer} .= chr($code);
+	#	return 0;
+	#}
 	
 	# left here to easily find extra keys we still need to implement:
 	printf("k '%s' '%s', '%s'\n", $mod, $code, 
@@ -293,8 +315,7 @@ sub line_down {
 	my $last_line = $self->{editor}->LineFromPosition(length $self->{editor}->GetText);
 	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
 	my $toline = List::Util::min($line+$count, $last_line);
-	line_up_down($self, $pos, $line, $toline);
-	$self->{vi_buffer} = '';
+	$self->line_up_down($pos, $line, $toline);
 	return;
 }
 
@@ -310,8 +331,7 @@ sub line_up {
 	my $line = $self->{editor}->LineFromPosition($pos);
 	my $count = $self->{vi_buffer} =~ /^\d+$/ ? $self->{vi_buffer} : 1; 
 	my $toline = List::Util::max($line-$count, 0);
-	line_up_down($self, $pos, $line, $toline);
-	$self->{vi_buffer} = '';
+	$self->line_up_down($pos, $line, $toline);
 	return;
 }
 
