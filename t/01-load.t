@@ -10,11 +10,14 @@ BEGIN {
 }
 
 use Test::NeedsDisplay;
-use Test::More tests => 11;
+use Test::More tests => 12;
 
 use Class::Autouse ':devel';
 
 ok( $] >= 5.008, 'Perl version is new enough' );
+
+use_ok( 'Wx'                             );
+diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
 
 use_ok( 't::lib::Padre'                  );
 use_ok( 'Padre::Util'                    );
