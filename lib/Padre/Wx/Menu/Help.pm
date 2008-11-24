@@ -50,7 +50,7 @@ sub about {
 	$about->AddDeveloper("Gabor Szabo");
 	$about->AddDeveloper("Heiko Jansen");
 	$about->AddDeveloper("Jerome Quelin");
-	$about->AddDeveloper("Kaare Rasmussen")
+	$about->AddDeveloper("Kaare Rasmussen");
 	$about->AddDeveloper("Max Maischein");
 	$about->AddDeveloper("Patrick Donelan");
 	$about->AddDeveloper("Steffen Mueller");
