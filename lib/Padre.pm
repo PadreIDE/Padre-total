@@ -941,11 +941,18 @@ that's your problem.
 To Mattia Barbon for providing WxPerl.
 Part of the code was copied from his Wx::Demo application.
 
-To Adam Kennedy for lots of refactoring.
+The developers of Padre:
 
-To Steffen Muller for PAR plugins.
+Adam Kennedy (ADAMK),
+Brian Cassidy (BRICAS),
+Fayland Lam (FAYLAND),
+Heiko Jansen (HJANSEN),
+Jerome Quelin (JQUELIN),
+Kaare Rasmussen (KAARE),
+Max Maischein (CORION)
+Patrick Donelan (PATSPAM),
+Steffen Mueller (TSEE), 
 
-To Patrick Donelan, Fayland Lam, Brian Cassidy, Heiko Jansen
 
 To Herbert Breunung for letting me work on Kephra.
 
