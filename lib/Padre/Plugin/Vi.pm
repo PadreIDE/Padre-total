@@ -65,7 +65,10 @@ End - goto last character on line
 
 v - visual mode, to start marking section
 
-TODO - ENTER should yank the data, other operation that should work on the selection?
+TODO - y should yank the data, other operation that should work on the selection?
+d - delete selection
+x - delete selection
+v - stop the visual mode, remove selection
 
 =item *
 
