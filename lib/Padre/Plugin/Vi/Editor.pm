@@ -140,7 +140,6 @@ $subs{CHAR} = {
 
 	G => sub { # goto line
 		my ($self, $count) = @_; # TODO: special case for count !!
-		$count = $self->{vi_buffer} || $self->{editor}->GetLineCount;
 		$self->{editor}->GotoLine($count-1);
 		$self->{vi_buffer} = '';
 	},
@@ -239,10 +238,18 @@ sub key_down {
 		}
 		$self->{vi_buffer} .= $chr;
 		print "B: '$self->{vi_buffer}'\n";
-		if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG])$/ or 
+		if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
 		    $self->{vi_buffer} =~ /^(\d*)(dd|yy)$/) {
-			my $count   = $1 || 1;
+			my $count   = $1;
 			my $command = $2;
+			
+			# special case default value
+			if ($command eq 'G') {
+				$count ||= $self->{editor}->GetLineCount;
+			} else {
+				$count ||= 1;
+			}
+
 			if ($subs{CHAR}{$command}) {
 				$subs{CHAR}{$command}->($self, $count);
 				$self->{vi_buffer} = '';
@@ -274,15 +281,10 @@ sub key_down {
 		if ($sub) {
 			$sub->($self, $count);
 		}
-		#$self->{vi_buffer} = '';
+		$self->{vi_buffer} = '';
 		return 0 ;
 	}
 
-	#if (ord('0') <= $code and $code <= ord('9')) {
-	#	$self->{vi_buffer} .= chr($code);
-	#	return 0;
-	#}
-	
 	# left here to easily find extra keys we still need to implement:
 	printf("k '%s' '%s', '%s'\n", $mod, $code, 
 		(30 < $code and $code < 128 ? chr($code) : ''));
