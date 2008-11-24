@@ -14,8 +14,8 @@ sub new {
 	my ($class, $editor) = @_;
 	my $self = bless {}, $class;
 	
-	$self->{vi_insert_mode} = 0;
-	$self->{vi_buffer}      = '';
+	$self->{insert_mode} = 0;
+	$self->{buffer}      = '';
 	$self->{visual_mode}    = 0;
 	$self->{editor}         = $editor;
 
@@ -62,19 +62,19 @@ $subs{CHAR} = {
 	### swictch to insert mode
 	a => sub {  # append
 		my ($self, $count) = @_; # TODO use $count ??
-		$self->{vi_insert_mode} = 1;
+		$self->{insert_mode} = 1;
 		# change cursor
 	},
 	i => sub { # insert
 		my ($self, $count) = @_; # use $count ?
-		$self->{vi_insert_mode} = 1;
+		$self->{insert_mode} = 1;
 		my $pos  = $self->{editor}->GetCurrentPos;
 		$self->{editor}->GotoPos($pos-1);
 		# change cursor
 	},
 	o => sub { # open below
 		my ($self, $count) = @_; # TODO use $count ??
-		$self->{vi_insert_mode} = 1;
+		$self->{insert_mode} = 1;
 		my $line = $self->{editor}->GetCurrentLine;
 		my $end  = $self->{editor}->GetLineEndPosition($line);
 		# go to end of line, insert newline
@@ -89,7 +89,7 @@ $subs{CHAR} = {
 		my $pos  = $self->{editor}->GetCurrentPos;
 		$self->{editor}->SetTargetStart($pos);
 		$self->{editor}->SetTargetEnd($pos + $count);
-		$self->{vi_buffer} = '';
+		$self->{buffer} = '';
 		$self->{editor}->ReplaceTarget('');
 	},
 	u => sub { # undo
@@ -110,7 +110,7 @@ $subs{CHAR} = {
 
 	O => sub { # open above
 		my ($self, $count) = @_;
-		$self->{vi_insert_mode} = 1;
+		$self->{insert_mode} = 1;
 		my $line  = $self->{editor}->GetCurrentLine;
 		my $start = $self->{editor}->PositionFromLine($line);
 		# go to beginning of line, insert newline, go to previous line
@@ -141,7 +141,7 @@ $subs{CHAR} = {
 	G => sub { # goto line
 		my ($self, $count) = @_; # TODO: special case for count !!
 		$self->{editor}->GotoLine($count-1);
-		$self->{vi_buffer} = '';
+		$self->{buffer} = '';
 	},
 
 
@@ -207,14 +207,14 @@ sub key_down {
 	my ($self, $mod, $code) = @_;
 
 	if ($code == Wx::WXK_ESCAPE) {
-		$self->{vi_insert_mode} = 0;
-		$self->{vi_buffer}      = '';
+		$self->{insert_mode} = 0;
+		$self->{buffer}      = '';
 		$self->{visual_mode}    = 0;
 		$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
 		return 0;
 	}
 
-	if ($self->{vi_insert_mode}) {
+	if ($self->{insert_mode}) {
 		return 1;
 	}
 
@@ -249,11 +249,11 @@ sub key_down {
 			warn "Invalid entry in 'subs' hash for code '$code'";
 		}
 		
-		my $count = $self->{vi_buffer} =~ /^(\d+)/ ? $1 : 1; 
+		my $count = $self->{buffer} =~ /^(\d+)/ ? $1 : 1; 
 		if ($sub) {
 			$sub->($self, $count);
 		}
-		$self->{vi_buffer} = '';
+		$self->{buffer} = '';
 		return 0 ;
 	}
 
@@ -266,7 +266,7 @@ sub get_char {
 	my ($self, $mod, $code, $chr) = @_;
 
 #print "CHR $chr\n" if $chr;
-	if ($self->{vi_insert_mode}) {
+	if ($self->{insert_mode}) {
 		return 1;
 	}
 
@@ -274,10 +274,10 @@ sub get_char {
 		Padre::Plugin::Vi::CommandLine->show_prompt();
 		return 0;
 	}
-	$self->{vi_buffer} .= $chr;
-	print "Buffer: '$self->{vi_buffer}'\n";
-	if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		$self->{vi_buffer} =~ /^(\d*)(dd|yy)$/) {
+	$self->{buffer} .= $chr;
+	print "Buffer: '$self->{buffer}'\n";
+	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
+		$self->{buffer} =~ /^(\d*)(dd|yy)$/) {
 		my $count   = $1;
 		my $command = $2;
 		
@@ -290,7 +290,7 @@ sub get_char {
 
 		if ($subs{CHAR}{$command}) {
 			$subs{CHAR}{$command}->($self, $count);
-			$self->{vi_buffer} = '';
+			$self->{buffer} = '';
 		}
 		return 0 ;
 	}
