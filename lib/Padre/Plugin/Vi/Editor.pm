@@ -85,6 +85,10 @@ $subs{PLAIN} = {
 	Wx::WXK_END => \&goto_end_of_line,
 };
 
+$subs{VISUAL} = {
+	d => \&delete_selection,
+};
+
 $subs{SHIFT} = {
 };
 
@@ -165,13 +169,25 @@ sub get_char {
 	if ($self->{insert_mode}) {
 		return 1;
 	}
+	
+	$self->{buffer} .= $chr;
+	print "Buffer: '$self->{buffer}'\n";
+	if ($self->{visual_mode}) {
+		if ($self->{buffer} =~ /^d$/) {
+			my $command = $self->{buffer};
+			if ($subs{VISUAL}{$command}) {
+				$subs{VISUAL}{$command}->($self);
+				$self->{buffer}      = '';
+				$self->{visual_mode} = 0;
+			}
+			return 0 ;
+		}
+	}
 
 	if ($chr eq ':') {
 		Padre::Plugin::Vi::CommandLine->show_prompt();
 		return 0;
 	}
-	$self->{buffer} .= $chr;
-	print "Buffer: '$self->{buffer}'\n";
 	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
 		$self->{buffer} =~ /^(\d*)(d[d\$]|y[y\$])$/) {
 		my $count   = $1;
@@ -435,6 +451,11 @@ sub yank_lines {
 	my ($self, $count) = @_;
 	$self->select_rows($count);
 	$self->{editor}->Copy;
+}
+
+sub delete_selection {
+	my ($self) = @_;
+	$self->{editor}->Cut;
 }
 
 
