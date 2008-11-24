@@ -227,10 +227,6 @@ sub key_down {
 #	}
 #
 
-	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-	
-	#if ($code == ord(';') and $mod == Wx::wxMOD_SHIFT) { # shift-; also know as :
 	if ($chr) {
 		if ($chr eq ':') {
 			Padre::Plugin::Vi::CommandLine->show_prompt();
@@ -259,6 +255,9 @@ sub key_down {
 	}
 
 
+	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
+	
 	my $modifier = (  $mod == Wx::wxMOD_SHIFT() ? 'SHIFT' 
 	               :  $mod == Wx::wxMOD_CMD()   ? 'COMMAND'
 	               :                              'PLAIN');
