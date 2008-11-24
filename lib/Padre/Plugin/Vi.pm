@@ -109,6 +109,8 @@ dd - delete current line
 
 Ndd - (N any number) delete N lines
 
+d$ - delete till end of line
+
 =item *
 
 yy - yank (copy) current line to buffer

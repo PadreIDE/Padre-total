@@ -50,6 +50,7 @@ $subs{CHAR} = {
 	J => \&join_lines,
 
 	dd => \&delete_lines,
+	'd$' => \&delete_till_end_of_line,
 	yy => \&yank_lines,
 
 	'$' => \&goto_end_of_line, # Shift-4 is $   End
@@ -171,7 +172,7 @@ sub get_char {
 	$self->{buffer} .= $chr;
 	print "Buffer: '$self->{buffer}'\n";
 	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		$self->{buffer} =~ /^(\d*)(dd|yy)$/) {
+		$self->{buffer} =~ /^(\d*)(d[d\$]|yy)$/) {
 		my $count   = $1;
 		my $command = $2;
 		
@@ -402,7 +403,27 @@ sub delete_lines {
 	$self->select_rows($count);
 	$self->{editor}->Cut;
 }
-	
+sub delete_till_end_of_line {
+	my ($self, $count) = @_;
+
+	$self->select_till_end_of_line;
+
+	$self->{editor}->Cut;
+}
+
+sub select_till_end_of_line {
+	my ($self) = @_;
+	my $line  = $self->{editor}->GetCurrentLine;
+	my $start = $self->{editor}->GetCurrentPos;
+	my $end   = $self->{editor}->GetLineEndPosition($line);
+
+	$self->{editor}->SetTargetStart($start);
+	$self->{editor}->SetTargetEnd($end);
+	$self->{editor}->SetSelection($start, $end);
+
+	return;
+}
+
 sub yank_lines {
 	my ($self, $count) = @_;
 	$self->select_rows($count);
