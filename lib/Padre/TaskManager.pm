@@ -90,8 +90,8 @@ sub new {
 		my $timerid = Wx::NewId();
 		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
 		Wx::Event::EVT_TIMER(
-			$mw, $timerid, sub { $SINGLETON->reap(); },
-			#$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
+			#$mw, $timerid, sub { $SINGLETON->reap(); },
+			$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
 		);
 		$REAP_TIMER->Start( 2000, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
@@ -141,20 +141,20 @@ sub reap {
 	my $workers = $self->{workers};
 
 	my @active_or_waiting;
-        #warn "--".scalar (@$workers);
+        warn "--".scalar (@$workers);
 
 	foreach my $thread (@$workers) {
 		if ($thread->is_joinable()) {
-                  #warn "Joining thread " . $thread->tid();
+                  warn "Joining thread " . $thread->tid();
 			my $tmp = $thread->join();
-                  #warn "joined";
+                  warn "joined";
                 }
                 else {
 			push @active_or_waiting, $thread;
 		}
 	}
 	$self->{workers} = \@active_or_waiting;
-        #warn "--".scalar (@active_or_waiting);
+        warn "--".scalar (@active_or_waiting);
 
 	# kill the no. of workers that aren't needed
 	my $n_threads_to_kill =  @active_or_waiting - $self->{max_no_workers};
@@ -269,7 +269,7 @@ sub worker_loop {
 
 		#warn threads->tid() . " -- got task.";
 
-		#warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
+		warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
 		return 1 if not ref($task) eq 'ARRAY';
 
 		my $class = $task->[0];
