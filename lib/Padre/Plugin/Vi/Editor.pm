@@ -52,6 +52,7 @@ $subs{CHAR} = {
 	dd => \&delete_lines,
 	'd$' => \&delete_till_end_of_line,
 	yy => \&yank_lines,
+	'y$' => \&yank_till_end_of_line,
 
 	'$' => \&goto_end_of_line, # Shift-4 is $   End
 	'^' => \&goto_beginning_of_line, # Shift-6 is ^   Home
@@ -172,7 +173,7 @@ sub get_char {
 	$self->{buffer} .= $chr;
 	print "Buffer: '$self->{buffer}'\n";
 	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		$self->{buffer} =~ /^(\d*)(d[d\$]|yy)$/) {
+		$self->{buffer} =~ /^(\d*)(d[d\$]|y[y\$])$/) {
 		my $count   = $1;
 		my $command = $2;
 		
@@ -407,8 +408,14 @@ sub delete_till_end_of_line {
 	my ($self, $count) = @_;
 
 	$self->select_till_end_of_line;
-
 	$self->{editor}->Cut;
+}
+
+sub yank_till_end_of_line {
+	my ($self, $count) = @_;
+
+	$self->select_till_end_of_line;
+	$self->{editor}->Copy;
 }
 
 sub select_till_end_of_line {

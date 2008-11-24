@@ -47,7 +47,7 @@ l,h,k,j  - (right, left, up, down) navigation
 
 4 arrows also work
 
-Number prefix are alloed in both the 4 letter and the 4 arrows
+Number prefix are allowed in both the 4 letter and the 4 arrows
 
 =item *
 
@@ -60,6 +60,14 @@ Home - goto first character on line
 =item *
 
 End - goto last character on line
+
+=item *
+
+^ - (shift-6) jump to beginning of line
+
+=item *
+
+$ - (shift-4) jump to end of line
 
 =item *
 
@@ -117,6 +125,8 @@ yy - yank (copy) current line to buffer
 
 Nyy - yank (copy) N lines to buffer
 
+y$ - yank till end of line
+
 TODO yy - should not mark the text that is yanked or should remove the selection
 
 =item *
@@ -127,13 +137,6 @@ u - undu last editing
 
 J - (shift-j) join lines, join the next line after the current one
 
-=item *
-
-^ - (shift-6) jump to beginning of line
-
-=item *
-
-$ - (shift-4) jump to end of line
 
 =back
 
@@ -203,15 +206,9 @@ Most importantly, make it faster to come up
 
 / and search connect it to the new (and yet experimental search)
 
-:d$ - delete till end of line
 :dw - delete word
 
 
-if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
-    $buffer =~ /^(\d*)(d[dw])$/ or
-	$buffer =~ /^(\d*)(y[yw])$/) {
-	process($1, $2);
-}
 
 :ZZ
 :q!
