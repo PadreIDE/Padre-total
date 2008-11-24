@@ -204,9 +204,8 @@ $subs{COMMAND} = {
 
 # returning the value that will be given to $event->Skip()
 sub key_down {
-	my ($self, $mod, $code, $chr) = @_;
+	my ($self, $mod, $code) = @_;
 
-#print "CHR $chr\n" if $chr;
 	if ($code == Wx::WXK_ESCAPE) {
 		$self->{vi_insert_mode} = 0;
 		$self->{vi_buffer}      = '';
@@ -227,33 +226,6 @@ sub key_down {
 #		return 1;
 #	}
 #
-
-	if ($chr) {
-		if ($chr eq ':') {
-			Padre::Plugin::Vi::CommandLine->show_prompt();
-			return 0;
-		}
-		$self->{vi_buffer} .= $chr;
-		print "B: '$self->{vi_buffer}'\n";
-		if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		    $self->{vi_buffer} =~ /^(\d*)(dd|yy)$/) {
-			my $count   = $1;
-			my $command = $2;
-			
-			# special case default value
-			if ($command eq 'G') {
-				$count ||= $self->{editor}->GetLineCount;
-			} else {
-				$count ||= 1;
-			}
-
-			if ($subs{CHAR}{$command}) {
-				$subs{CHAR}{$command}->($self, $count);
-				$self->{vi_buffer} = '';
-			}
-			return 0 ;
-		}
-	}
 
 
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
@@ -286,8 +258,45 @@ sub key_down {
 	}
 
 	# left here to easily find extra keys we still need to implement:
-	printf("k '%s' '%s', '%s'\n", $mod, $code, 
-		(30 < $code and $code < 128 ? chr($code) : ''));
+	printf("key '%s' '%s'\n", $mod, $code); 
+	return 0;
+}
+
+sub get_char {
+	my ($self, $mod, $code, $chr) = @_;
+
+#print "CHR $chr\n" if $chr;
+	if ($self->{vi_insert_mode}) {
+		return 1;
+	}
+
+	if ($chr eq ':') {
+		Padre::Plugin::Vi::CommandLine->show_prompt();
+		return 0;
+	}
+	$self->{vi_buffer} .= $chr;
+	print "Buffer: '$self->{vi_buffer}'\n";
+	if ($self->{vi_buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
+		$self->{vi_buffer} =~ /^(\d*)(dd|yy)$/) {
+		my $count   = $1;
+		my $command = $2;
+		
+		# special case default value
+		if ($command eq 'G') {
+			$count ||= $self->{editor}->GetLineCount;
+		} else {
+			$count ||= 1;
+		}
+
+		if ($subs{CHAR}{$command}) {
+			$subs{CHAR}{$command}->($self, $count);
+			$self->{vi_buffer} = '';
+		}
+		return 0 ;
+	}
+
+	# left here to easily find extra keys we still need to implement:
+	printf("chr '%s' '%s'\n", $mod, $chr);
 	return 0;
 }
 

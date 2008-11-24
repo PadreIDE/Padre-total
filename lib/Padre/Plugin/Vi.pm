@@ -315,7 +315,7 @@ sub evt_char {
 
 	printf("char: '$mod', '$code' '%s'\n", chr($code));
 	if (32 <= $code and $code <= 127) {
-		my $skip = $self->{editor}{refaddr $editor}->key_down($mod, $code, chr($code));
+		my $skip = $self->{editor}{refaddr $editor}->get_char($mod, $code, chr($code));
 		$event->Skip($skip);
 	}
 	return;
