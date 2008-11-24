@@ -422,7 +422,9 @@ sub delete_lines {
 }
 sub delete_till_end_of_line {
 	my ($self, $count) = @_;
-
+	
+	#$self->{editor}->DelLineRight; # would be nice, but it does not put the strin in the clipboard
+	
 	$self->select_till_end_of_line;
 	$self->{editor}->Cut;
 }
