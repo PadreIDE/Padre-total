@@ -17,8 +17,12 @@ sub EmptyUndoBuffer {
 }
 
 sub SetText {
-	$_[0]->{text} = $_[1];
-	$_[0]->{pos}  = 0;
+	my ($self, $text) = @_;
+	$self->{text} = $text;
+	$self->{pos}  = 0;
+	$self->{selection_start} = 0;
+	$self->{selection_start} = 0;
+	return;
 }
 
 sub LineFromPosition {
@@ -59,6 +63,13 @@ sub GetText {
 
 sub GetCurrentPos {
 	return $_[0]->{pos};
+}
+
+sub GetSelectionEnd {
+	return $_->{selection_end};
+}
+sub SetSelectionStart {
+	$_[0]->{selection_start} = $_[1]
 }
 
 sub GotoPos {
