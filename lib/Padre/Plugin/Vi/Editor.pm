@@ -211,6 +211,7 @@ sub key_down {
 		$self->{vi_insert_mode} = 0;
 		$self->{vi_buffer}      = '';
 		$self->{visual_mode}    = 0;
+		$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
 		return 0;
 	}
 
