@@ -253,42 +253,6 @@ bookmarks.
   
   padre --index
   
-=head2 Parrot integration
-
-This is an experimentatl feature.
-
-Download Parrot (or check it out from its version control)
-
-Configure PARROT_PATH to point to the root of parrot
-
-Configure LD_LIBRARY_PATH
-
-  export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
- 
-Build Parrot
-
-  cd $PARROT_PATH
-  svn up
-  make realclean
-  perl Configure.pl
-  make
-  make test
-
-Build Parrot::Embed
-
-  cd ext/Parrot-Embed/
-  ./Build realclean
-  perl Build.PL
-  ./Build
-  ./Build test
-
-Now if you run Padre it will come with an embedded Parrot interpreter.
-
-You can get the interpreter by calling 
-
-  Padre->ide->parrot
-
-
 =head2 Rectangular Text Selection
 
 Simple text editors usually only allow you to select contiguous lines of text with your mouse. 
@@ -778,11 +742,6 @@ sub new {
 	$self->{config}    ||= Padre::Config->create( $self->config_yaml );
 
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
-
-	eval {
-		require Parrot::Embed;
-		$self->{parrot} = Parrot::Interpreter->new;
-	};
 
 	# Load the database
 	Class::Autouse->load('Padre::DB');
