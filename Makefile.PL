@@ -4,7 +4,7 @@ if ( -e 'MANIFEST.SKIP' ) {
     system( 'pod2text lib/Padre/Plugin/PerlTidy.pm > README' );
 }
 
-perl_version '5.008';
+perl_version '5.008001';
 
 name 'Padre-Plugin-PerlTidy';
 all_from 'lib/Padre/Plugin/PerlTidy.pm';

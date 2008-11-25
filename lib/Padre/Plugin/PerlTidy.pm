@@ -28,7 +28,7 @@ sub padre_interfaces {
 }
 
 sub menu_plugins_simple {
-    Perl => [
+    PerlTidy => [
         'Tidy the active document' => \&tidy_document,
         'Tidy the selected text'   => \&tidy_selection,
     ];
