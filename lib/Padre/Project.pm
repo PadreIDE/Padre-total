@@ -5,8 +5,28 @@ package Padre::Project;
 use strict;
 use warnings;
 use File::Spec ();
+use YAML::Tiny ();
 
 our $VERSION = '0.18';
+
+
+
+
+
+######################################################################
+# Constructor and Accessors
+
+sub new {
+
+}
+
+sub root {
+	$_[0]->{root}
+}
+
+sub padre_yml {
+	$_[0]->{padre_yml}
+}
 
 1;
 
