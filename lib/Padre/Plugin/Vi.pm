@@ -192,9 +192,6 @@ For now at least, everything else should work as in standard Padre.
 
 TAB completition of directory and filenames
 
-TODO: it seems the auto completition does not always (or not at all?)
-put the trailing / on directory names
-
 =item *
 
 :42 - goto line 42 

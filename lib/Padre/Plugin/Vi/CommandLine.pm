@@ -184,7 +184,7 @@ sub on_key_pressed {
 			}
 			if (opendir my $dh, $dir) {
 				@current_options = sort
-							map {-d "$prefix$_" ? "$_/" : $_} 
+							map {-d File::Spec->catfile($dir, "$prefix$_") ? "$_/" : $_} 
 							map  { $_ =~ s/^$prefix//; $_ }
 							grep { $_ =~ /^$prefix/ }
 							grep {$_ ne '.' and $_ ne '..'} readdir $dh;
