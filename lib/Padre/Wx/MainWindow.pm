@@ -55,7 +55,7 @@ sub new {
 	Wx::InitAllImageHandlers();
 
 	$config->{host}->{locale} ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || $shortname_of{ 'en' };
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || 'en' ;
 
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
