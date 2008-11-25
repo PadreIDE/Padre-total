@@ -255,17 +255,12 @@ sub line_up {
 
 sub line_up_down {
 	my ($self, $pos, $line, $toline) = @_;
-		
+	
 	my $to;
-	my $end      = $self->{editor}->GetLineEndPosition($line);
-	my $prev_end = $self->{editor}->GetLineEndPosition($toline);
 	if ($self->{end_pressed}) {
-		$to = $prev_end;
+		$to = $self->{editor}->GetLineEndPosition($toline);
 	} else {
-		my $prev_start = $self->{editor}->PositionFromLine($toline);
-		my $col  = $self->{editor}->GetColumn($pos);
-		$to = $prev_start + $col;
-		$to = List::Util::min($to, $prev_end);
+		$to = $self->{editor}->FindColumn($toline, $self->{editor}->GetColumn($pos));
 	}
 	$self->{editor}->GotoPos($to);
 	return;
