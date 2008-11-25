@@ -1,6 +1,8 @@
 package Padre;
 
-use 5.008;
+# See POD at end for documentation
+
+use 5.008001;
 use strict;
 use warnings;
 use Carp           ();
