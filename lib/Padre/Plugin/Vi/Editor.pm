@@ -89,6 +89,7 @@ $subs{PLAIN} = {
 
 $subs{VISUAL} = {
 	d => \&delete_selection,
+	y => \&yank_selection,
 };
 
 $subs{SHIFT} = {
@@ -175,12 +176,13 @@ sub get_char {
 	$self->{buffer} .= $chr;
 	print "Buffer: '$self->{buffer}'\n";
 	if ($self->{visual_mode}) {
-		if ($self->{buffer} =~ /^d$/) {
+		if ($self->{buffer} =~ /^[dy]$/) {
 			my $command = $self->{buffer};
 			if ($subs{VISUAL}{$command}) {
 				$subs{VISUAL}{$command}->($self);
 				$self->{buffer}      = '';
 				$self->{visual_mode} = 0;
+				$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
 			}
 			return 0 ;
 		}
@@ -473,6 +475,10 @@ sub yank_lines {
 sub delete_selection {
 	my ($self) = @_;
 	$self->{editor}->Cut;
+}
+sub yank_selection {
+	my ($self) = @_;
+	$self->{editor}->Copy;
 }
 
 

@@ -73,8 +73,10 @@ $ - (shift-4) jump to end of line
 
 v - visual mode, to start marking section
 
-TODO - y should yank the data, other operation that should work on the selection?
-d - delete selection
+ d - delete the selection
+ y - yank the selection
+
+TODO - 
 x - delete selection
 v - stop the visual mode, remove selection
 
