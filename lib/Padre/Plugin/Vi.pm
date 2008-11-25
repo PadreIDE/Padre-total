@@ -150,6 +150,14 @@ ZZ - save file and close editor
 
 G - jump to last line
 
+=item *
+
+w, Nw - next word, forwad N words
+
+=item *
+
+b, Nb - back one word, back N words
+
 =back
 
 =head2 Insert mode

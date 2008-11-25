@@ -30,6 +30,8 @@ $subs{CHAR} = {
 	h => \&move_left,
 	k => \&line_up,
 	j => \&line_down,
+	w => \&word_right,
+	b => \&word_left,
 
 	G => \&goto_line,
 
@@ -193,9 +195,10 @@ sub get_char {
 
 	if ($chr eq ':') {
 		Padre::Plugin::Vi::CommandLine->show_prompt();
+		$self->{buffer} = '';
 		return 0;
 	}
-	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
+	if ($self->{buffer} =~ /^(\d*)([wblhjkvaioxupOJPG\$^])$/ or 
 		$self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/) {
 		my $count   = $1;
 		my $command = $2;
@@ -498,6 +501,16 @@ sub save_and_quit {
 	$main->Close;
 	return;
 }
+
+sub word_right {
+	my ($self, $count) = @_;
+	$self->{editor}->WordRight for 1..$count;
+}
+sub word_left {
+	my ($self, $count) = @_;
+	$self->{editor}->WordLeft for 1..$count;
+}
+	
 
 1;
 
