@@ -2009,7 +2009,14 @@ sub on_stc_update_ui {
 	$editor->highlight_braces;
 	$editor->show_calltip;
 
-	$self->refresh_all;
+	$self->refresh_menu;
+	$self->refresh_toolbar;
+	$self->refresh_status;
+	#$self->refresh_methods;
+	#$self->refresh_syntaxcheck;
+	# avoid refreshing the subs as that takes a lot of time
+	# TODO maybe we should refresh it on every 20s hit or so
+#	$self->refresh_all;
 
 	return;
 }
