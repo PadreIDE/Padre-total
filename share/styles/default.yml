@@ -9,7 +9,7 @@ plain:
 perl:
  brace_highlight: 00FF00
  colors:
-  wxSTC_PL_DEFAULT:        00007f
+  wxSTC_PL_DEFAULT:        000000
   wxSTC_PL_ERROR:          ff0000
   wxSTC_PL_COMMENTLINE:    007f00
   wxSTC_PL_POD:            7f7f7f

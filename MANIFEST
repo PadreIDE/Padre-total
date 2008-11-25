@@ -23,7 +23,7 @@ lib/Padre/Document/JavaScript.pm
 lib/Padre/Document/Pasm.pm
 lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
-lib/Padre/Document/Pir.pm
+lib/Padre/Document/PIR.pm
 
 lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/My.pm
