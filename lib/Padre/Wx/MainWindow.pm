@@ -39,7 +39,7 @@ my %languages = (
 my %shortname_of = (
 	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
 	Wx::wxLANGUAGE_GERMAN() => 'de', 
-	Wx::wxLANGUAGE_KOREAN() => 'kr',
+	Wx::wxLANGUAGE_KOREAN() => 'ko',
 );
 my %number_of = reverse %shortname_of;
 
