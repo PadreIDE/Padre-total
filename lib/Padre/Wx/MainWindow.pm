@@ -1123,8 +1123,14 @@ sub on_split_window {
 	$new_editor->set_preferences;
 
 	# TODO the plugin manager should call this method for every enabled plugin
-	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
-		Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $new_editor, $new_editor->{Document} );
+	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{plugins}} ) {
+		eval {
+			Padre->ide->{plugin_manager}->{plugins}->{$plugin}->{object}->editor_enable( $new_editor, $new_editor->{Document} );
+		};
+		if ($@) {
+			warn $@;
+			# TODO: report the plugin error!
+		}
 	}
 	
 	$self->create_tab($new_editor, $file, " $title");
@@ -1156,9 +1162,9 @@ sub setup_editor {
 	);
 	
 	# TODO the plugin manager should call this method for every enabled plugin
-	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
+	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{plugins} }) {
 		eval {
-			Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $editor, $editor->{Document} );
+			Padre->ide->{plugin_manager}->{plugins}->{$plugin}->{object}->editor_enable( $editor, $editor->{Document} );
 		};
 		if ($@) {
 			warn $@;
