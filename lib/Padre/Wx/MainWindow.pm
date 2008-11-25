@@ -30,9 +30,16 @@ my $default_dir = Cwd::cwd();
 
 use constant SECONDS => 1000;
 
+my %languages = (
+	de => Wx::gettext('German'),
+	en => Wx::gettext('English'),
+	ko => Wx::gettext('Korean'),
+);
+
 my %shortname_of = (
-	58 => 'en',
-	87 => 'de',
+	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
+	Wx::wxLANGUAGE_GERMAN() => 'de', 
+	Wx::wxLANGUAGE_KOREAN() => 'kr',
 );
 my %number_of = reverse %shortname_of;
 
