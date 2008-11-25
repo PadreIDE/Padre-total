@@ -766,16 +766,14 @@ sub menu_plugin {
 	$menu->AppendSeparator;
 
 	foreach my $name ( 'My', @plugins ) {
-		next if not $plugins->{$name};
-		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
-		next if not $plugins->{$name}{status} or $plugins->{$name}{status} ne 'loaded';
+		next unless $plugins->{$name};
+		next unless $plugins->{$name}->{status};
+		next unless $plugins->{$name}->{status} eq 'loaded';
 
-		#my $label = $manager->get_label($name);
-		#my @menu  = $manager->get_menu($name);
-		my ($label, $items) = $manager->get_menu($self->win, $name);
-		
-		#my $items = $self->add_plugin_menu_items(\@menu);
-		$menu->Append( -1, $label, $items );
+		my @plugin = $manager->get_menu($self->win, $name);
+		next unless @plugin;
+
+		$menu->Append( -1, @plugin );
 		if ( $name eq 'My' ) {
 			$menu->AppendSeparator;
 		}
@@ -810,7 +808,10 @@ sub menu_plugin_tools {
 		$menu->Append( -1, Wx::gettext("Reset My Plugin") ),
 		sub  {
 			my $ret = Wx::MessageBox(
-				Wx::gettext("Reset My Plugin"), Wx::gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
+				Wx::gettext("Reset My Plugin"),
+				Wx::gettext("Reset My Plugin"),
+				Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE,
+				$win
 			);
 			if ( $ret == Wx::wxOK) {
 				my $manager = Padre->ide->plugin_manager;
