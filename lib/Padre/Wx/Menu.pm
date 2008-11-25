@@ -762,6 +762,10 @@ sub menu_plugin {
 
 	# Add the Plugin Tools menu
 	my $tools = $self->menu_plugin_tools( $win );
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
+		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
+	);
 	$menu->Append( -1, 'Plugin Tools', $tools );
 	$menu->AppendSeparator;
 
@@ -826,10 +830,6 @@ sub menu_plugin_tools {
 	);
 	$menu->AppendSeparator;
 
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
-		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
-	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("Reload All Plugins") ),
 		sub { Padre->ide->plugin_manager->reload_plugins; },
