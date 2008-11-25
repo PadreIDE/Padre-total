@@ -865,7 +865,7 @@ sub menu_window {
  		\&Padre::Wx::MainWindow::on_last_visited_pane,
 	);
  	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, Wx::gettext("Right Click\tCtrl-/")),
+ 		$menu->Append(-1, Wx::gettext("Right Click\tAlt-/")),
  		sub {
 			my $editor = $_[0]->selected_editor;
 			if ($editor) {
