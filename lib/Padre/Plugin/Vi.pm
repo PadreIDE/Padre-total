@@ -140,6 +140,9 @@ u - undu last editing
 
 J - (shift-j) join lines, join the next line after the current one
 
+=item *
+
+ZZ - save file and close editor
 
 =back
 
@@ -216,7 +219,6 @@ Most importantly, make it faster to come up
 
 
 r for replacing current character
-:ZZ
 :q!
 :e!
 :ls and :b2 to switch buffer

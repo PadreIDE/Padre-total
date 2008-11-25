@@ -56,6 +56,7 @@ $subs{CHAR} = {
 	yw => \&yank_words,
 	'y$' => \&yank_till_end_of_line,
 
+	ZZ => \&save_and_quit,
 	'$' => \&goto_end_of_line, # Shift-4 is $   End
 	'^' => \&goto_beginning_of_line, # Shift-6 is ^   Home
 };
@@ -170,7 +171,7 @@ sub key_down {
 sub get_char {
 	my ($self, $mod, $code, $chr) = @_;
 
-#print "CHR $chr\n" if $chr;
+# print "CHR $chr\n" if $chr;
 	if ($self->{insert_mode}) {
 		return 1;
 	}
@@ -195,7 +196,7 @@ sub get_char {
 		return 0;
 	}
 	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		$self->{buffer} =~ /^(\d*)(d[dw\$]|y[yw\$])$/) {
+		$self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/) {
 		my $count   = $1;
 		my $command = $2;
 		
@@ -490,6 +491,13 @@ sub yank_selection {
 	$self->{editor}->Copy;
 }
 
+sub save_and_quit {
+	my ($self) = @_;
+	my $main   = Padre->ide->wx->main_window;
+	$main->on_save;
+	$main->Close;
+	return;
+}
 
 1;
 
