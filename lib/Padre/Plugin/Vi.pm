@@ -119,6 +119,8 @@ Ndd - (N any number) delete N lines
 
 d$ - delete till end of line
 
+Ndw - delete N word
+
 =item *
 
 yy - yank (copy) current line to buffer
@@ -126,6 +128,8 @@ yy - yank (copy) current line to buffer
 Nyy - yank (copy) N lines to buffer
 
 y$ - yank till end of line
+
+Nyw - yank N words
 
 TODO yy - should not mark the text that is yanked or should remove the selection
 
@@ -206,7 +210,6 @@ Most importantly, make it faster to come up
 
 / and search connect it to the new (and yet experimental search)
 
-:dw - delete word
 
 
 

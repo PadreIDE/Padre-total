@@ -50,8 +50,10 @@ $subs{CHAR} = {
 	J => \&join_lines,
 
 	dd => \&delete_lines,
+	dw => \&delete_words,
 	'd$' => \&delete_till_end_of_line,
 	yy => \&yank_lines,
+	yw => \&yank_words,
 	'y$' => \&yank_till_end_of_line,
 
 	'$' => \&goto_end_of_line, # Shift-4 is $   End
@@ -189,7 +191,7 @@ sub get_char {
 		return 0;
 	}
 	if ($self->{buffer} =~ /^(\d*)([lhjkvaioxupOJPG\$^])$/ or 
-		$self->{buffer} =~ /^(\d*)(d[d\$]|y[y\$])$/) {
+		$self->{buffer} =~ /^(\d*)(d[dw\$]|y[yw\$])$/) {
 		my $count   = $1;
 		my $command = $2;
 		
@@ -448,6 +450,19 @@ sub select_till_end_of_line {
 
 	return;
 }
+sub delete_words {
+	my ($self, $count) = @_;
+	$self->{editor}->WordRightEndExtend for 1..$count;
+	$self->{editor}->Cut;
+	return;
+}
+sub yank_words {
+	my ($self, $count) = @_;
+	$self->{editor}->WordRightEndExtend for 1..$count;
+	$self->{editor}->Copy;
+	return;
+}
+
 
 sub yank_lines {
 	my ($self, $count) = @_;
