@@ -44,7 +44,10 @@ use warnings;
 use Scalar::Util ();
 use Padre::Wx    ();
 
-our $VERSION = '0.18';
+our $VERSION    = '0.18';
+our $COMPATIBLE = '0.18';
+
+
 
 
 
@@ -188,11 +191,6 @@ It returns two values, the label for the menu entry to be used in the top level
 Plugins menu, and a reference to an ARRAY containing an ordered set of key/value
 pairs that will be turned into menus.
 
-More complex plugins that need full control over the menu will be addressed
-in the next release.
-
-If the method return a null list, no menu entry will be created for the plugin.
-
 =cut
 
 sub menu_plugins_simple {
@@ -201,31 +199,66 @@ sub menu_plugins_simple {
 	return ();
 }
 
-# Generates plugin menu
+=pod
+
+=head2 menu_plugins
+
+  sub menu_plugins {
+      my $self        = shift;
+      my $main_window = shift;
+  
+      # Create a simple menu with a single About entry
+      my $menu = Wx::Menu->new;
+      Wx::Event::EVT_MENU(
+          $main_window,
+          $menu->Append( -1, 'About', ),
+          sub { $self->show_about },
+      );
+  
+      # Return it and the label for our plugin
+      return ( 'My Plugin' => $menu );
+
+The C<menu_plugins> method defines a fully-featured mechanism for building
+your plugin menu.
+
+It returns two values, the label for the menu entry to be used in the top level
+Plugins menu, and a L<Wx::Menu> object containing the custom-built menu structure.
+
+A default implementation of this method is provided which will call
+C<menu_plugins_simple> and implements the expansion of the simple data into a full
+menu structure.
+
+If the method return a null list, no menu entry will be created for the plugin.
+
+=cut
+
 sub menu_plugins {
-	my $self  = shift;
-	my $name  = shift;
-	my $win   = shift;
-	my $items = shift;
-	my $menu  = $self->_menu_plugins_submenu($win, $items);
-	
+	my $self   = shift;
+	my $win    = shift;
+	my @simple = $self->menu_plugins_simple or return ();
+	my $label  = $simple[0];
+	my $menu   = $self->_menu_plugins_submenu( $win, $simple[1] ) or return ();
+	return ($label, $menu);
 }
 
 sub _menu_plugins_submenu {
 	my $self  = shift;
 	my $win   = shift;
 	my $items = shift;
+	unless ( $items and ref $items and ref $items eq 'ARRAY' and not @$items % 2 ) {
+		return;
+	}
 
+	# Fill the menu
 	my $menu  = Wx::Menu->new;
-	return if not $items or not ref $items or not 'ARRAY' eq ref $items;
-	return if @$items % 2;
-
-	for my $i (0 .. (@$items-2) / 2) {
-		if (ref $items->[$i*2+1] eq 'ARRAY') {
-			my $submenu = $self->_menu_plugins_submenu($win, $items->[$i*2 + 1]);
-			$menu->Append(-1, $items->[$i*2], $submenu);
+	while ( @$items ) {
+		my $label = shift @$items;
+		my $value = shift @$items;
+		if ( ref $value eq 'ARRAY' ) {
+			my $submenu = $self->_menu_plugins_submenu( $win, $value );
+			$menu->Append( -1, $label, $submenu );
 		} else {
-			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $items->[$i*2]), $items->[$i*2+1] );
+			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $label), $value );
 		}
 	}
 	return $menu;
