@@ -95,7 +95,7 @@ Note that this concerns the status of the module in memory. Whether or
 not to load the plugin is kept in the B<configuration> instead to make
 it persistent. To check whether a given plugin is enabled, do this:
 
-  if (Padre->config->{plugins}{$plugin_name}{enabled}) {...}
+  if ( Padre->ide->config->{plugins}->{$name}->{enabled} ) {...}
 
 =item object
 
@@ -126,7 +126,7 @@ a plugin namespace, the plugin name is determine automatically.
 =cut
 
 sub plugin_config {
-	my $self = shift;
+	my $self   = shift;
 	my $plugin = shift;
 
 	# infer the plugin name from caller
@@ -138,10 +138,10 @@ sub plugin_config {
 	}
 
 	$plugin =~ s/^Padre::Plugin:://;
-	my $padre_config  = Padre->ide->config;
-	my $plugin_config = $padre_config->{plugins};
-	$plugin_config->{$plugin} ||= {};
-	return $plugin_config->{$plugin};
+	my $config  = Padre->ide->config;
+	my $plugins = $config->{plugins};
+	$plugins->{$plugin} ||= {};
+	return $plugins->{$plugin};
 }
 
 
@@ -174,44 +174,44 @@ sub _load_plugins_from_inc {
 
 	# Try the plugin directory first:
 	my $plugin_dir = $self->plugin_dir;
-	unshift @INC, $plugin_dir unless grep {$_ eq $plugin_dir} @INC;
+	unshift @INC, $plugin_dir unless grep { $_ eq $plugin_dir } @INC;
 	
 	my @dirs = grep {-d $_} map {File::Spec->catdir($_, 'Padre', 'Plugin')} @INC;
 
 	require File::Find::Rule;
 	my @files = File::Find::Rule->file->name('*.pm')->maxdepth(1)->in( @dirs );
 	foreach my $file (@files) {
-		# full path filenames
-		$file =~ s/\.pm$//;
-		$file =~ s{^.*Padre[/\\]Plugin\W*}{};
-		$file =~ s{[/\\]}{::}g;
+		# Full path filenames
+		my $module = $file;
+		$module =~ s/\.pm$//;
+		$module =~ s{^.*Padre[/\\]Plugin\W*}{};
+		$module =~ s{[/\\]}{::}g;
 
 		# TODO maybe we should report to the user the fact
 		# that we changed the name of the MY plugin and she should
 		# rename the original one and remove the MY.pm from his installation
-		if ($file eq 'MY') {
-			warn "Deprecated Padre::Plugin::MY found. Please remove the upper case MY.pm\n";
+		if ( $module eq 'MY') {
+			warn "Deprecated Padre::Plugin::MY found at $file. Please remove it\n";
 			return;
 		}
 
-		$self->load_plugin($file); # Foo::Bar names
+		$self->load_plugin($module);
 	}
 
 	return;
 }
 
-# attempt to load all plugins that sit as .par files in the
+# Attempt to load all plugins that sit as .par files in the
 # .padre/plugins/ folder
 sub _load_plugins_from_par {
 	my ($self) = @_;
-	$self->_setup_par();
+	$self->_setup_par;
 
-	my $plugin_dir = $self->plugin_dir();
+	my $plugin_dir = $self->plugin_dir;
 	opendir my $dh, $plugin_dir or return;
-	while (my $file = readdir $dh) {
-		if ($file =~ /^\w+\.par$/i) {
-		# only single-level plugins for now.
-		#if ($file =~ /^[\w-]+\.par$/i) {
+	while ( my $file = readdir $dh ) {
+		if ( $file =~ /^\w+\.par$/i ) {
+			# Only single-level plugins for now.
 			my $parfile = File::Spec->catfile($plugin_dir, $file);
 			PAR->import($parfile);
 			$file =~ s/\.par$//i;
@@ -223,7 +223,7 @@ sub _load_plugins_from_par {
 	return;
 }
 
-# load the PAR module and setup the cache directory.
+# Load the PAR module and setup the cache directory.
 sub _setup_par {
 	my ($self) = @_;
 
@@ -252,45 +252,45 @@ menu, etc.
 sub load_plugin {
 	my $self = shift;
 	my $ret = $self->_load_plugin_no_refresh(@_);
-	$self->_refresh_plugin_menu();
+	$self->_refresh_plugin_menu;
 	return $ret;
 }
 
-# the guts of load_plugin which don't refresh the menu
+# The guts of load_plugin which don't refresh the menu
 sub _load_plugin_no_refresh {
-	my ($self, $plugin_name) = @_;
+	my $self = shift;
+
+	# Normalize classes to plugin name only
+	my $name = shift;
+	$name =~ s/^Padre::Plugin:://;
+
+	# Skip if that plugin was already loaded
 	my $plugins = $self->plugins;
+	if ( $plugins->{$name} and $plugins->{$name}->{status} eq 'loaded' ) {
+		return;
+	}
 
-	# normalize to plugin name only
-	$plugin_name =~ s/^Padre::Plugin:://;
+	my $module = "Padre::Plugin::$name";
 
-	# skip if that plugin was already loaded
-	return if exists $plugins->{$plugin_name} 
-			  and defined $plugins->{$plugin_name}{status}
-			  and $plugins->{$plugin_name}{status} eq 'loaded';
+	$plugins->{$name} ||= {};
+	my $plugin_state = $plugins->{$name};
 
-	my $module = "Padre::Plugin::$plugin_name";
+	$plugin_state->{module} = $module;
+
 	my $config = Padre->ide->config;
-
-	$plugins->{$plugin_name} ||= {};
-	my $plugin_state = $plugins->{$plugin_name};
-
-	$plugin_state->{module} = $module; # TODO: Is caching this really worth the memory?
-
-	if ( not $config->{plugins}{$plugin_name} ) {
-		$config->{plugins}{$plugin_name}{enabled} = 0;
+	unless ( $config->{plugins}->{$name} ) {
+		$config->{plugins}->{$name}->{enabled} = 0;
 		$plugin_state->{status} = 'new';
 		return;
 	}
-	
-	if (not $config->{plugins}{$plugin_name}{enabled} ) {
+	unless ( $config->{plugins}->{$name}->{enabled} ) {
 		$plugin_state->{status} = 'disabled';
 		return;
 	}
-	#print "use $module\n";
+
 	eval "use $module"; ## no critic
 	if ($@) {
-		warn $self->{errstr} = "ERROR while trying to load plugin '$plugin_name': $@";
+		warn $self->{errstr} = "ERROR while trying to load plugin '$name': $@";
 		$plugin_state->{status} = 'failed';
 		return;
 	}
@@ -306,7 +306,7 @@ sub _load_plugin_no_refresh {
 		warn $self->{errstr} = $@;
 		$plugin_state->{status} = 'failed';
 		# automatically disable the plugin
-		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
+		$config->{plugins}->{$name}->{enabled} = 0; # persistent!
 	} else {
 		$plugin_state->{status} = 'loaded';
 	}
@@ -332,32 +332,32 @@ sub unload_plugin {
 # the guts of unload_plugin which don't refresh the menu
 sub _unload_plugin_no_refresh {
 	my $self = shift;
-	my $plugin_name = shift;
+	my $name = shift;
 
 	# normalize to plugin name only
-	$plugin_name =~ s/^Padre::Plugin:://;
+	$name =~ s/^Padre::Plugin:://;
 	my $config = Padre->ide->config;
 	my $plugins = $self->plugins;
 
-	return if not defined $plugins->{$plugin_name}{object};
+	return if not defined $plugins->{$name}->{object};
 
 	eval {
-		$plugins->{$plugin_name}{object}->plugin_disable;
+		$plugins->{$name}->{object}->plugin_disable;
 	};
 	if ($@) {
 		warn $self->{errstr} = $@;
-		$plugins->{$plugin_name}{status} = 'failed';
+		$plugins->{$name}->{status} = 'failed';
 		# automatically disable the plugin
-		$config->{plugins}{$plugin_name}{enabled} = 0; # persistent!
+		$config->{plugins}->{$name}->{enabled} = 0; # persistent!
 	} else {
-		$plugins->{$plugin_name}{status} = 'disabled';
+		$plugins->{$name}->{status} = 'disabled';
 	}
 	
 
-	delete $plugins->{$plugin_name};
+	delete $plugins->{$name};
 
 	require Class::Unload;
-	Class::Unload->unload("Padre::Plugin::$plugin_name");
+	Class::Unload->unload("Padre::Plugin::$name");
 
 	return 1;
 }
@@ -373,12 +373,12 @@ sub reload_plugins {
 	my $self = shift;
 	my $plugins = $self->plugins;
 
-	foreach my $plugin_name (sort keys %$plugins) {
+	foreach my $name (sort keys %$plugins) {
 		# do not use the reload_plugin method since that
 		# refreshes the menu every time
-		$self->_unload_plugin_no_refresh($plugin_name);
-		$self->_load_plugin_no_refresh($plugin_name);
-		$self->enable_editors($plugin_name);
+		$self->_unload_plugin_no_refresh($name);
+		$self->_load_plugin_no_refresh($name);
+		$self->enable_editors($name);
 	}
 	$self->_refresh_plugin_menu();
 	return 1;
@@ -387,21 +387,21 @@ sub reload_plugins {
 sub enable_editors_for_all {
 	my $self = shift;
 	my $plugins = $self->plugins;
-	foreach my $plugin_name (keys %$plugins) {
-		$self->enable_editors($plugin_name);
+	foreach my $name (keys %$plugins) {
+		$self->enable_editors($name);
 	}
 	return 1;
 }
 
 sub enable_editors {
 	my $self        = shift;
-	my $plugin_name = shift;
+	my $name = shift;
 	
 	my $plugins = $self->plugins;
-	return if not $plugins->{$plugin_name} or not $plugins->{$plugin_name}{object};
+	return if not $plugins->{$name} or not $plugins->{$name}->{object};
 	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
-		if ($plugins->{$plugin_name}{object}->can('editor_enable')) {
-			$plugins->{$plugin_name}{object}->editor_enable( $editor, $editor->{Document} );
+		if ($plugins->{$name}->{object}->can('editor_enable')) {
+			$plugins->{$name}->{object}->editor_enable( $editor, $editor->{Document} );
 		}
 	}
 	return 1;
@@ -416,11 +416,11 @@ is passed in as first argument.
 
 sub reload_plugin {
 	my $self = shift;
-	my $plugin_name = shift;
+	my $name = shift;
 
-	$self->_unload_plugin_no_refresh( $plugin_name );
-	$self->load_plugin( $plugin_name ) or return;
-	$self->enable_editors( $plugin_name ) or return;
+	$self->_unload_plugin_no_refresh( $name );
+	$self->load_plugin( $name ) or return;
+	$self->enable_editors( $name ) or return;
 	return 1;
 }
 
@@ -452,9 +452,8 @@ again when the editor is restarted.
 sub failed {
 	my ($self) = @_;
 	my $plugins = $self->plugins;
-	return grep { $plugins->{$_}{status} eq 'failed' } keys %$plugins;
+	return grep { $plugins->{$_}->{status} eq 'failed' } keys %$plugins;
 }
-
 
 # TODO: document this.
 sub test_a_plugin {
@@ -494,7 +493,7 @@ sub test_a_plugin {
 
 	# load plugin
 	delete $plugins->{$filename};
-	$config->{plugins}{$filename}{enabled} = 1;
+	$config->{plugins}->{$filename}->{enabled} = 1;
 	my $manager = Padre->ide->plugin_manager;
 	$manager->load_plugin( $filename );
 	if ($manager->plugins->{$filename}->{status} eq 'failed') {
@@ -502,25 +501,25 @@ sub test_a_plugin {
 		return;
 	}
 
-	$manager->reload_plugins();
+	$manager->reload_plugins;
 }
 
 sub get_menu {
-	my ($self, $win, $name) = @_;
-
-	my $plugins = $self->plugins;
-
-	my ($label, $items, $menu, @data);
-	if ($plugins->{$name}{module}->can('menu_plugins_simple') ) {
-		($label, $items) = eval { $plugins->{$name}{module}->menu_plugins_simple };
-		if ( $@ ) {
-			warn $self->{errstr} = "Error when calling menu for plugin '$name' $@";
-			return ();
-		}
-		$menu = eval { $plugins->{$name}{module}->menu_plugins($label, $win, $items) };
-	} else {
-		warn $self->{errstr} = "menu_plugins_simple is not implemented in plugin '$name'\n";
-	} 
+	my $self    = shift;
+	my $win     = shift;
+	my $name    = shift;
+	my $plugin  = $self->plugins->{$name};
+	unless ( $plugin and $plugin->{status} eq 'loaded' ) {
+		return ();
+	}
+	unless ( $plugin->{object}->can('menu_plugins') ) {
+		return ();
+	}
+	my ($label, $menu) = eval { $plugin->{object}->menu_plugins($win) };
+	if ( $@ ) {
+		$self->{errstr} = "Error when calling menu for plugin '$name' $@";
+		return ();
+	}
 	return ($label, $menu);
 }
 
