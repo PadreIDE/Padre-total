@@ -115,7 +115,7 @@ sub key_down {
 		$self->{insert_mode} = 0;
 		$self->{buffer}      = '';
 		$self->{visual_mode}    = 0;
-		$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
+		$self->remove_selection;
 		return 0;
 	}
 
@@ -184,7 +184,7 @@ sub get_char {
 				$subs{VISUAL}{$command}->($self);
 				$self->{buffer}      = '';
 				$self->{visual_mode} = 0;
-				$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
+				$self->remove_selection;
 			}
 			return 0 ;
 		}
@@ -472,6 +472,13 @@ sub yank_lines {
 	my ($self, $count) = @_;
 	$self->select_rows($count);
 	$self->{editor}->Copy;
+	$self->remove_selection;
+}
+
+sub remove_selection {
+	my ($self) = @_;
+	$self->{editor}->SetSelectionStart($self->{editor}->GetSelectionEnd);
+	return;
 }
 
 sub delete_selection {

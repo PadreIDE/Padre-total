@@ -132,8 +132,6 @@ y$ - yank till end of line
 
 Nyw - yank N words
 
-TODO yy - should not mark the text that is yanked or should remove the selection
-
 =item *
 
 u - undu last editing
