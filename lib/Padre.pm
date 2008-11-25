@@ -18,8 +18,8 @@ our $VERSION = '0.18';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
-use Padre::Util           ();
-use Padre::Config         ();
+use Padre::Util    ();
+use Padre::Config  ();
 
 # Nudges to make Class::Autouse behave
 BEGIN {
