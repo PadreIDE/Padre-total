@@ -103,6 +103,8 @@ sub show_prompt {
 		# try to open file
 		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_dir}, $file));
 		$main->refresh_all;
+	} elsif ($cmd =~ /^b(\d+)$/) {
+		$main->on_nth_pane($1);
 	} elsif ($cmd eq 'w') {
 		$main->on_save;
 	} elsif ($cmd eq 'q') {

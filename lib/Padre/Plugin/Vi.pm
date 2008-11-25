@@ -144,6 +144,12 @@ J - (shift-j) join lines, join the next line after the current one
 
 ZZ - save file and close editor
 
+=item *
+
+42G - jump to line 42
+
+G - jump to last line
+
 =back
 
 =head2 Insert mode
@@ -157,6 +163,10 @@ ESC moves to navigation mode
 =item *
 
 Ctrl-p - autocompletion (inherited from Padre)
+
+=item *
+
+For now at least, everything else should work as in standard Padre.
 
 =back
 
@@ -191,11 +201,13 @@ put the trailing / on directory names
 
 :wq - write and exit
 
-=item *
+:bN to switch buffer N
 
-42G - jump to line 42
-
-G - jump to last line
+TODO: it is not working the same way as in vi, 
+first of all numbers are from and if a file is closed
+the buffers are renumbered. If we really want to
+support this option we might need to have our own
+separate mapping of numbers to buffers and files.
 
 =back
 
@@ -219,9 +231,10 @@ Most importantly, make it faster to come up
 
 
 r for replacing current character
-:q!
+:q! - discard changes and exit
+
 :e!
-:ls and :b2 to switch buffer
+:ls and
 
 
 =cut
