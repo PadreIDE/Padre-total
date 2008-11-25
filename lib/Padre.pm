@@ -115,10 +115,6 @@ sub wx {
 	$self->{wx} = Padre::Wx::App->new;
 }
 
-sub parrot {
-	$_[0]->{parrot};
-}
-
 sub config {
 	$_[0]->{config};
 }
