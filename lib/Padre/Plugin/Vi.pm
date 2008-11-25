@@ -75,10 +75,10 @@ v - visual mode, to start marking section
 
  d - delete the selection
  y - yank the selection
+ v - stop the visual mode, remove selection
 
 TODO - 
 x - delete selection
-v - stop the visual mode, remove selection
 
 =item *
 
