@@ -16,7 +16,7 @@ use Wx         'wxTheClipboard';
 use Wx::Event  ':everything';
 use Wx::STC    ();
 use Wx::AUI    ();
-use Wx::Locale ':default';
+use Wx::Locale ();
 
 use Padre::Util ();
 
