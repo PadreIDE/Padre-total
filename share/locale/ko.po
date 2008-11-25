@@ -1,0 +1,588 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2008 THE Padre'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Padre package.
+# Keedi Kim <keedi@perl.kr>, 2008.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.15\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-11-26 01:33+0900\n"
+"POT-Revision-Date: 2008-11-26 01:33+0900\n"
+"Last-Translator: Keedi Kim <keedi@perl.kr>\n"
+"Language-Team: Korean\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Wx/Ack.pm:68
+msgid "Term: "
+msgstr "단어:"
+
+#: lib/Padre/Wx/Ack.pm:71
+msgid "Dir: "
+msgstr "디렉터리:"
+
+#: lib/Padre/Wx/Ack.pm:76
+msgid "Pick &directory"
+msgstr "디렉터리 고르기(&d)"
+
+#: lib/Padre/Wx/Ack.pm:125
+msgid "Select directory"
+msgstr "디렉터리를 고르세요"
+
+#: lib/Padre/Wx/Dialog/Find.pm:22
+msgid "Find:"
+msgstr "찾을 문자열:"
+
+#: lib/Padre/Wx/Dialog/Find.pm:27
+msgid "Replace With:"
+msgstr "바꿀 문자열:"
+
+#: lib/Padre/Wx/Dialog/Find.pm:34
+msgid "Replace &All"
+msgstr "모두 바꾸기(&A)"
+
+#: lib/Padre/Wx/Dialog/Find.pm:37
+msgid "Case &Insensitive"
+msgstr "대소문자 구분하지않음(&I)"
+
+#: lib/Padre/Wx/Dialog/Find.pm:40
+msgid "&Use Regex"
+msgstr "정규표현식 사용(&U)"
+
+#: lib/Padre/Wx/Dialog/Find.pm:43
+msgid "Search &Backwards"
+msgstr "이전 찾기"
+
+#: lib/Padre/Wx/Dialog/Find.pm:46
+msgid "Close Window on &hit"
+msgstr "Close Window on &hit"
+
+#: lib/Padre/Wx/Dialog/Find.pm:79
+msgid "Search"
+msgstr "찾기"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:29
+msgid "Module Name:"
+msgstr "모듈 이름:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:33
+msgid "Author:"
+msgstr "저자:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:37
+msgid "Email:"
+msgstr "전자우편:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:41
+msgid "Builder:"
+msgstr "빌더:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:45
+msgid "License:"
+msgstr "라이센스:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:49
+msgid "Parent Directory:"
+msgstr "상위 디렉터리:"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:50
+msgid "Pick parent directory"
+msgstr "상위 디렉터리 고르기"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:74
+msgid "Module Start"
+msgstr "모듈 만들기"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:83
+msgid "perl"
+msgstr "perl"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:117
+#, perl-format
+msgid "Field %s was missing. Module not created."
+msgstr "%s 항목을 빠뜨렸습니다. 모듈을 만들지 않을 것입니다."
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:117
+msgid "missing field"
+msgstr "빠뜨린 항목"
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:134
+#, perl-format
+msgid "%s apparantly created."
+msgstr "%s apparantly created."
+
+#: lib/Padre/Wx/Dialog/ModuleStart.pm:134
+msgid "Done"
+msgstr "완료"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:19
+msgid "Use Tabs"
+msgstr "탭 사용"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:22
+msgid "TAB display size (in spaces)"
+msgstr "빈 칸으로 표시할 탭의 크기"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:26
+msgid "Max number of modules"
+msgstr "모듈의 최대 개수"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:30
+msgid "Min number of modules"
+msgstr "모듈의 최소 개수"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:34
+msgid "Open files:"
+msgstr "파일 열기:"
+
+#: lib/Padre/Wx/Dialog/Preferences.pm:55
+msgid "Preferences"
+msgstr "기본 설정"
+
+#: lib/Padre/Wx/Dialog/Bookmarks.pm:24
+msgid "Existing bookmarks:"
+msgstr "책갈피 목록:"
+
+#: lib/Padre/Wx/Dialog/Bookmarks.pm:45
+msgid "Set Bookmark"
+msgstr "책갈피 꽂기"
+
+#: lib/Padre/Wx/Dialog/Bookmarks.pm:45
+msgid "GoTo Bookmark"
+msgstr "책갈피로 이동"
+
+#: lib/Padre/Wx/Dialog/Bookmarks.pm:111
+#, perl-format
+msgid "%s line %s"
+msgstr "%s line %s"
+
+#: lib/Padre/Wx/Menu.pm:38
+msgid "New Tab\tCtrl-T"
+msgstr "새로운 탭\tCtrl-T"
+
+#: lib/Padre/Wx/Menu.pm:45
+msgid "New..."
+msgstr "새로 만들기..."
+
+#: lib/Padre/Wx/Menu.pm:47
+msgid "Perl Distribution (Module::Starter)"
+msgstr "펄 배포 (Module::Starter)"
+
+#: lib/Padre/Wx/Menu.pm:57
+msgid "Open Selection\tCtrl-Shift-O"
+msgstr "Open Selection\tCtrl-Shift-O"
+
+#: lib/Padre/Wx/Menu.pm:65
+msgid "Close All"
+msgstr "모두 닫기"
+
+#: lib/Padre/Wx/Menu.pm:69
+msgid "Close All but Current Document"
+msgstr "현재 문서를 제외하고 모두 닫기"
+
+#: lib/Padre/Wx/Menu.pm:73
+msgid "Reload file"
+msgstr "파일을 다시 불러오기"
+
+#: lib/Padre/Wx/Menu.pm:88
+msgid "Save All"
+msgstr "모두 저장"
+
+#: lib/Padre/Wx/Menu.pm:95
+msgid "Convert..."
+msgstr "변환..."
+
+#: lib/Padre/Wx/Menu.pm:97
+msgid "EOL to Windows"
+msgstr "윈도우즈용 줄바꿈"
+
+#: lib/Padre/Wx/Menu.pm:101
+msgid "EOL to Unix"
+msgstr "유닉스용 줄바꿈"
+
+#: lib/Padre/Wx/Menu.pm:105
+msgid "EOL to Mac"
+msgstr "맥용 줄바꿈"
+
+#: lib/Padre/Wx/Menu.pm:112
+msgid "Recent Files"
+msgstr "최근 파일"
+
+#: lib/Padre/Wx/Menu.pm:130
+msgid "Recent Projects"
+msgstr "최근 프로젝트"
+
+#: lib/Padre/Wx/Menu.pm:176
+msgid "&Find Next\tF3"
+msgstr "다음 찾기(&F)\tF3"
+
+#: lib/Padre/Wx/Menu.pm:180
+msgid "Find Previous\tShift-F3"
+msgstr "이전 찾기\tShift-F3"
+
+#: lib/Padre/Wx/Menu.pm:184
+msgid "Ac&k"
+msgstr "Ac&k"
+
+#: lib/Padre/Wx/Menu.pm:188
+msgid "&Goto\tCtrl-G"
+msgstr "특정 줄로 이동(&G)\tCtrl-G"
+
+#: lib/Padre/Wx/Menu.pm:192
+msgid "&AutoComp\tCtrl-P"
+msgstr "&AutoComp\tCtrl-P"
+
+#: lib/Padre/Wx/Menu.pm:196
+msgid "Subs\tAlt-S"
+msgstr "Subs\tAlt-S"
+
+#: lib/Padre/Wx/Menu.pm:200
+msgid "&Brace matching\tCtrl-1"
+msgstr "괄호 짝 맞추기(&B)\tCtrl-1"
+
+#: lib/Padre/Wx/Menu.pm:207
+msgid "&Comment Selected Lines\tCtrl-M"
+msgstr "선택한 줄을 주석으로 변경(&C)\tCtrl-M"
+
+#: lib/Padre/Wx/Menu.pm:211
+msgid "&Uncomment Selected Lines\tCtrl-Shift-M"
+msgstr "선택한 줄의 주석 제거(&U)\tCtrl-Shift-M"
+
+#: lib/Padre/Wx/Menu.pm:218
+msgid "Diff"
+msgstr "diff로 차이점 비교하기"
+
+#: lib/Padre/Wx/Menu.pm:225
+msgid "&Preferences"
+msgstr "기본 설정(&P)"
+
+#: lib/Padre/Wx/Menu.pm:235
+msgid "Show Line numbers"
+msgstr "줄 번호 보기"
+
+#: lib/Padre/Wx/Menu.pm:240
+msgid "Show Newlines"
+msgstr "줄바꿈 보기"
+
+#: lib/Padre/Wx/Menu.pm:245
+msgid "Show Output"
+msgstr "출력 보기"
+
+#: lib/Padre/Wx/Menu.pm:256
+msgid "Show StatusBar"
+msgstr "상태표시줄 보기"
+
+#: lib/Padre/Wx/Menu.pm:262
+msgid "Show Indentation Guide"
+msgstr "들여쓰기 안내선 보기"
+
+#: lib/Padre/Wx/Menu.pm:267
+msgid "Show Call Tips"
+msgstr "호출 팁 보기"
+
+#: lib/Padre/Wx/Menu.pm:275
+msgid "Increase Font Size\tCtrl-+"
+msgstr "글꼴 크기 늘리기\tCtrl-+"
+
+#: lib/Padre/Wx/Menu.pm:279
+msgid "Decrease Font Size\tCtrl--"
+msgstr "글꼴 크기 줄이기\tCtrl--"
+
+#: lib/Padre/Wx/Menu.pm:283
+msgid "Reset Font Size\tCtrl-/"
+msgstr "원래 글꼴 크기\tCtrl-/"
+
+#: lib/Padre/Wx/Menu.pm:289
+msgid "Set Bookmark\tCtrl-B"
+msgstr "책갈피 꽂기\tCtrl-B"
+
+#: lib/Padre/Wx/Menu.pm:293
+msgid "Goto Bookmark\tCtrl-Shift-B"
+msgstr "책갈피로 이동\tCtrl-Shift-B"
+
+#: lib/Padre/Wx/Menu.pm:303
+msgid "Find Unmatched Brace"
+msgstr "짝이 맞지않는 괄호 찾기"
+
+#: lib/Padre/Wx/Menu.pm:324
+msgid "All braces appear to be matched"
+msgstr "All braces appear to be matched"
+
+#: lib/Padre/Wx/Menu.pm:324
+msgid "Check Complete"
+msgstr "Check Complete"
+
+#: lib/Padre/Wx/Menu.pm:334
+msgid "Run Script\tF5"
+msgstr "스크립트 실행\tF5"
+
+#: lib/Padre/Wx/Menu.pm:339
+msgid "Run Command\tCtrl-F5"
+msgstr "명령 실행\tCtrl-F5"
+
+#: lib/Padre/Wx/Menu.pm:344
+msgid "&Stop"
+msgstr "정지(&S)"
+
+#: lib/Padre/Wx/Menu.pm:381
+msgid "&Split window"
+msgstr "창 나누기(&S)"
+
+#: lib/Padre/Wx/Menu.pm:387
+msgid "Next File\tCtrl-TAB"
+msgstr "다음 파일\tCtrl-TAB"
+
+#: lib/Padre/Wx/Menu.pm:391
+msgid "Previous File\tCtrl-Shift-TAB"
+msgstr "이전 파일\tCtrl-Shift-TAB"
+
+#: lib/Padre/Wx/Menu.pm:409
+msgid "Context Help\tCtrl-Shift-H"
+msgstr "문맥 도움말\tCtrl-Shift-H"
+
+#: lib/Padre/Wx/Menu.pm:436
+msgid "Reflow Menu/Toolbar"
+msgstr "Reflow Menu/Toolbar"
+
+#: lib/Padre/Wx/Menu.pm:448
+msgid "Run in &Padre"
+msgstr "Padre 로 실행(&P)"
+
+#: lib/Padre/Wx/Menu.pm:454
+msgid "Error: "
+msgstr "오류: "
+
+#: lib/Padre/Wx/Menu.pm:454 lib/Padre/Wx/MainWindow.pm:1359
+msgid "Self error"
+msgstr "Self error"
+
+#: lib/Padre/Wx/Menu.pm:464 lib/Padre/Wx/Menu.pm:568
+msgid "&File"
+msgstr "파일(&F)"
+
+#: lib/Padre/Wx/Menu.pm:465 lib/Padre/Wx/Menu.pm:569
+msgid "&Project"
+msgstr "프로젝트(&P)"
+
+#: lib/Padre/Wx/Menu.pm:466 lib/Padre/Wx/Menu.pm:570
+msgid "&Edit"
+msgstr "편집(&E)"
+
+#: lib/Padre/Wx/Menu.pm:467 lib/Padre/Wx/Menu.pm:571
+msgid "&View"
+msgstr "보기(&V)"
+
+#: lib/Padre/Wx/Menu.pm:469
+msgid "Run"
+msgstr "실행"
+
+#: lib/Padre/Wx/Menu.pm:470 lib/Padre/Wx/Menu.pm:575
+msgid "&Bookmarks"
+msgstr "책갈피(&B)"
+
+#: lib/Padre/Wx/Menu.pm:471 lib/Padre/Wx/Menu.pm:576
+msgid "Pl&ugins"
+msgstr "플러그인(&u)"
+
+#: lib/Padre/Wx/Menu.pm:472 lib/Padre/Wx/Menu.pm:577
+msgid "&Window"
+msgstr "창(&W)"
+
+#: lib/Padre/Wx/Menu.pm:473 lib/Padre/Wx/Menu.pm:578
+msgid "&Help"
+msgstr "도움말(&H)"
+
+#: lib/Padre/Wx/Menu.pm:475 lib/Padre/Wx/Menu.pm:580
+msgid "E&xperimental"
+msgstr "실험적인 기능(&x)"
+
+#: lib/Padre/Wx/Menu.pm:573
+msgid "Perl"
+msgstr "펄"
+
+#: lib/Padre/Wx/Project.pm:24 lib/Padre/Wx/Project.pm:140
+msgid "Not implemented yet"
+msgstr "아직 구현하지 않았습니다"
+
+#: lib/Padre/Wx/Project.pm:24 lib/Padre/Wx/Project.pm:140
+msgid "Not Yes"
+msgstr "Not Yes"
+
+#: lib/Padre/Wx/Project.pm:41
+msgid "Select Project"
+msgstr "프로젝트를 고르세요"
+
+#: lib/Padre/Wx/Project.pm:54
+msgid "Select Project Name or type in new one"
+msgstr "프로젝트 이름을 고르거나 새로운 이름을 입력하세요"
+
+#: lib/Padre/Wx/Project.pm:60
+msgid "Select Directory"
+msgstr "디렉터리를 고르세요"
+
+#: lib/Padre/Wx/Project.pm:124
+msgid "Select Project Directory"
+msgstr "프로젝트 디렉터리를 고르세요"
+
+#: lib/Padre/Wx/Output.pm:32
+msgid "No output"
+msgstr "출력이 없습니다"
+
+#: lib/Padre/Wx/Menu/Help.pm:37
+msgid ""
+"Perl Application Development and Refactoring Environment\n"
+"\n"
+msgstr ""
+"펄 응용 개발 및 리팩토링 환경\n"
+"\n"
+
+#: lib/Padre/Wx/Menu/Help.pm:38
+#, perl-format
+msgid "Based on Wx.pm %s and %s\n"
+msgstr "Based on Wx.pm %s and %s\n"
+
+#: lib/Padre/Wx/Menu/Help.pm:39
+#, perl-format
+msgid "Config at %s\n"
+msgstr "Config at %s\n"
+
+#: lib/Padre/Wx/Menu/Help.pm:42
+msgid "Copyright 2008 Gabor Szabo"
+msgstr "Copyright 2008 Gabor Szabo"
+
+#: lib/Padre/Wx/MainWindow.pm:54
+msgid "(running from SVN checkout)"
+msgstr "(서브버전 체크아웃 버전으로 실행)"
+
+#: lib/Padre/Wx/MainWindow.pm:108
+msgid "Files"
+msgstr "파일"
+
+#: lib/Padre/Wx/MainWindow.pm:131
+msgid "Subs"
+msgstr "함수"
+
+#: lib/Padre/Wx/MainWindow.pm:135
+msgid "Methods"
+msgstr "메소드"
+
+#: lib/Padre/Wx/MainWindow.pm:153
+msgid "Output"
+msgstr "출력"
+
+#: lib/Padre/Wx/MainWindow.pm:463
+msgid "Command line"
+msgstr "명령줄"
+
+#: lib/Padre/Wx/MainWindow.pm:464
+msgid "Run setup"
+msgstr "Run setup"
+
+#: lib/Padre/Wx/MainWindow.pm:544
+msgid "No open document"
+msgstr "열려있는 문서가 없습니다"
+
+#: lib/Padre/Wx/MainWindow.pm:558
+msgid "No execution mode was defined for this document"
+msgstr "No execution mode was defined for this document"
+
+#: lib/Padre/Wx/MainWindow.pm:577
+msgid "Not a Perl document"
+msgstr "펄 문서가 아닙니다"
+
+#: lib/Padre/Wx/MainWindow.pm:583
+msgid "Only .pl files can be executed"
+msgstr ".pl 파일만 실행할 수 있습니다"
+
+#: lib/Padre/Wx/MainWindow.pm:619
+msgid "Message"
+msgstr "메시지"
+
+#: lib/Padre/Wx/MainWindow.pm:626 lib/Padre/Wx/MainWindow.pm:1074
+msgid "Error"
+msgstr "오류"
+
+#: lib/Padre/Wx/MainWindow.pm:712
+msgid "Autocompletions error"
+msgstr "자동완성 오류"
+
+#: lib/Padre/Wx/MainWindow.pm:723
+msgid "Line number:"
+msgstr "줄 번호:"
+
+#: lib/Padre/Wx/MainWindow.pm:879
+msgid "Need to have something selected"
+msgstr "Need to have something selected"
+
+#: lib/Padre/Wx/MainWindow.pm:879 lib/Padre/Wx/MainWindow.pm:916
+msgid "Open Selection"
+msgstr "Open Selection"
+
+#: lib/Padre/Wx/MainWindow.pm:916
+#, perl-format
+msgid "Could not find file '%s'"
+msgstr "'%s' 파일을 찾을 수 없습니다"
+
+#: lib/Padre/Wx/MainWindow.pm:935
+msgid "Open file"
+msgstr "열기"
+
+#: lib/Padre/Wx/MainWindow.pm:988
+msgid "Save file as..."
+msgstr "다른 이름으로 저장..."
+
+#: lib/Padre/Wx/MainWindow.pm:1002
+msgid "File already exists. Overwrite it?"
+msgstr "같은 이름의 파일이 이미 있습니다. 덮어쓰시겠습니까?"
+
+#: lib/Padre/Wx/MainWindow.pm:1003
+msgid "Exist"
+msgstr "Exist"
+
+#: lib/Padre/Wx/MainWindow.pm:1064
+msgid "File changed on disk since last saved. Do you want to overwrite it?"
+msgstr "마지막 저장 이후에 디스크의 파일 내용이 바뀌었습니다. 덮어쓰시겠습니까?"
+
+#: lib/Padre/Wx/MainWindow.pm:1065
+msgid "File not in sync"
+msgstr "File not in sync"
+
+#: lib/Padre/Wx/MainWindow.pm:1107
+msgid "File changed. Do you want to save it?"
+msgstr "파일의 내용이 바뀌었습니다. 저장하시겠습니까?"
+
+#: lib/Padre/Wx/MainWindow.pm:1108
+msgid "Unsaved File"
+msgstr "저장하지 않은 파일"
+
+#: lib/Padre/Wx/MainWindow.pm:1208
+msgid "Cannot diff if file was never saved"
+msgstr "파일을 저장하지 않으면 diff로 비교할 수 없습니다"
+
+#: lib/Padre/Wx/MainWindow.pm:1213
+msgid "There are no differences\n"
+msgstr "다른 점이 없습니다\n"
+
+#: lib/Padre/Wx/MainWindow.pm:1359
+#, perl-format
+msgid "Error: %s"
+msgstr "오류: %s"
+
+#: lib/Padre/Wx/ToolBar.pm:27
+msgid "New File"
+msgstr "새로 만들기"
+
+#: lib/Padre/Wx/ToolBar.pm:28
+msgid "Open File"
+msgstr "열기"
+
+#: lib/Padre/Wx/ToolBar.pm:29
+msgid "Save File"
+msgstr "저장"
+
+#: lib/Padre/Wx/ToolBar.pm:30
+msgid "Close File"
+msgstr "닫기"
