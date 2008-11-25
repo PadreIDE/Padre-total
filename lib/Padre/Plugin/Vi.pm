@@ -74,11 +74,10 @@ $ - (shift-4) jump to end of line
 v - visual mode, to start marking section
 
  d - delete the selection
+ x - delete the selection
  y - yank the selection
  v - stop the visual mode, remove selection
 
-TODO - 
-x - delete selection
 
 =item *
 

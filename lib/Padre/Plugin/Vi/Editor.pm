@@ -89,6 +89,7 @@ $subs{PLAIN} = {
 
 $subs{VISUAL} = {
 	d => \&delete_selection,
+	x => \&delete_selection,
 	y => \&yank_selection,
 	v => sub {}, # just end visual mode
 };
@@ -177,7 +178,7 @@ sub get_char {
 	$self->{buffer} .= $chr;
 	print "Buffer: '$self->{buffer}'\n";
 	if ($self->{visual_mode}) {
-		if ($self->{buffer} =~ /^[dvy]$/) {
+		if ($self->{buffer} =~ /^[dvxy]$/) {
 			my $command = $self->{buffer};
 			if ($subs{VISUAL}{$command}) {
 				$subs{VISUAL}{$command}->($self);
