@@ -384,6 +384,25 @@ sub reload_plugins {
 	return 1;
 }
 
+# enable all the plugins for a single editor
+sub editor_enable {
+	my ($self, $editor) = @_;
+	foreach my $plugin (keys %{ $self->{plugins} }) {
+		eval {
+			if (my $object = $self->{plugins}->{$plugin}->{object}) {
+				return if not $object->can('editor_enable');
+				$object->editor_enable( $editor, $editor->{Document} );
+			}
+		};
+		if ($@) {
+			warn $@;
+			# TODO: report the plugin error!
+		}
+	}
+	return;
+}
+
+
 sub enable_editors_for_all {
 	my $self = shift;
 	my $plugins = $self->plugins;
@@ -394,7 +413,7 @@ sub enable_editors_for_all {
 }
 
 sub enable_editors {
-	my $self        = shift;
+	my $self = shift;
 	my $name = shift;
 	
 	my $plugins = $self->plugins;
