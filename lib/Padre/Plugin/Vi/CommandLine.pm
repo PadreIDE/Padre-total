@@ -106,6 +106,8 @@ sub show_prompt {
 	} elsif ($cmd eq 'w') {
 		# save file
 		$main->on_save;
+	} elsif ($cmd eq 'q') {
+		$main->Close;
 	} elsif ($cmd =~ /^\d+$/) {
 		Padre->ide->wx->main_window->selected_editor->GotoLine($cmd-1);
 	} elsif ($cmd =~ m{%s/}) {

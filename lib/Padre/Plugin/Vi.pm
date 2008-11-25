@@ -164,11 +164,11 @@ Ctrl-p - autocompletion (inherited from Padre)
 
 =item *
 
-w - write current buffer
+:w - write current buffer
 
 =item *
 
-e filename - open file for editing
+:e filename - open file for editing
 
 TAB completition of directory and filenames
 
@@ -180,6 +180,10 @@ put the trailing / on directory names
 :42 - goto line 42 
 
 (we have it in generalized form, you can type any number there :)
+
+=item *
+
+:q - exit
 
 =item *
 
@@ -204,15 +208,13 @@ and add it as another window under or above the output window?)
 Most importantly, make it faster to come up
 
 
-:q - exit
-
 :wq - write and exit
 
 / and search connect it to the new (and yet experimental search)
 
 
 
-
+r for replacing current character
 :ZZ
 :q!
 :e!
