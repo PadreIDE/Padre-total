@@ -704,8 +704,6 @@ sub perl_interpreter {
 	return scalar File::Which::which('perl');
 }
 
-my @history = qw(files pod);
-
 my $SINGLETON = undef;
 sub inst {
 	Carp::croak("Padre->new has not been called yet") if not $SINGLETON;
