@@ -187,6 +187,10 @@ put the trailing / on directory names
 
 =item *
 
+:wq - write and exit
+
+=item *
+
 42G - jump to line 42
 
 G - jump to last line
@@ -207,8 +211,6 @@ make it come up faster (show/hide instead of create/destroy?)
 and add it as another window under or above the output window?)
 Most importantly, make it faster to come up
 
-
-:wq - write and exit
 
 / and search connect it to the new (and yet experimental search)
 

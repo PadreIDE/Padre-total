@@ -104,9 +104,11 @@ sub show_prompt {
 		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_dir}, $file));
 		$main->refresh_all;
 	} elsif ($cmd eq 'w') {
-		# save file
 		$main->on_save;
 	} elsif ($cmd eq 'q') {
+		$main->Close;
+	} elsif ($cmd eq 'wq') { #TODO shall this be save_all ?
+		$main->on_save;
 		$main->Close;
 	} elsif ($cmd =~ /^\d+$/) {
 		Padre->ide->wx->main_window->selected_editor->GotoLine($cmd-1);
