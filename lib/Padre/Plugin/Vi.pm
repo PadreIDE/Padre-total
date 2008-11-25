@@ -321,7 +321,7 @@ sub evt_key_down {
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
-	printf("key: '$mod', '$code' '%s'\n", chr($code));
+	print("key: '$mod', '$code'\n");
 	if (32 <= $code and $code <= 127) {
 		$event->Skip;
 		return;
