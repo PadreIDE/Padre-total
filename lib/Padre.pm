@@ -328,7 +328,7 @@ Need to implement the C<Padre::Document::Language> class.
 
 Need to define the mime-type mapping in L<Padre::Document>
 
-For examples see L<Padre::Document::Pasm>, L<Padre::Document::PIR>,
+For examples see L<Padre::Document::PASM>, L<Padre::Document::PIR>,
 L<Padre::Document::Perl>.
 
 =head1 Command line options

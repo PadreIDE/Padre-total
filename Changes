@@ -146,7 +146,7 @@ v0.11 2008.10.23
     All Padre.pm DBI code converted to Padre::DB calls (ADAMK)
     Removed minor use of Class::Accessor to reduce memory overhead,
         namespace pollution and dependency count (ADAMK)
-    Removed some superfluous code from the Pir/Pasm/Perl6 documents (ADAMK)
+    Removed some superfluous code from the PIR/PASM/Perl6 documents (ADAMK)
     Cleaned up (and shrunk the code for) the bootstrap sequence (ADAMK)
     Moved the "recent files" internal state into the database (ADAMK)
     Removed index pointers unrelated to the IDE from Padre.pm (ADAMK)
@@ -172,7 +172,7 @@ v0.10 2008.09.22
     Add Search and Replace and global search and replace.
     Setup mapping of file extensions to mime-types and to color coding.
     Clean up the MainWindow module, move code to Document and Document::Perl.
-    Implement an experimental Pasm, Pir and Perl 6 highlighting.
+    Implement an experimental PASM, PIR and Perl 6 highlighting.
     Allow experimental code to allow the user to execute code within Padre.
     Report if file could not be saved and keep it in unsaved state (bug #74).
     Separate the Padre::Install module from Build.PL.

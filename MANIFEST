@@ -20,7 +20,7 @@ lib/Padre/PPI.pm
 lib/Padre/Wx.pm
 
 lib/Padre/Document/JavaScript.pm
-lib/Padre/Document/Pasm.pm
+lib/Padre/Document/PASM.pm
 lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
 lib/Padre/Document/PIR.pm
