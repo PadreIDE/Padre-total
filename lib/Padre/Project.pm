@@ -34,7 +34,7 @@ sub new {
 		'padre.yml',
 	);
 	if ( -f $padre_yml ) {
-		$self->{padre_yml} = $padre_yml;
+		$self->{padre_yml} = YAML::Tiny->read( $padre_yml );
 	}
 
 	return $self;
