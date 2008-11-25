@@ -154,7 +154,11 @@ sub run {
 	}
 
 	# Launch the indexer if requested
-	return $self->run_indexer if $INDEX;
+	if ( $INDEX ) {
+		require Padre::Pod::Indexer;
+		Padre::Pod::Indexer->run;
+		return;
+	}
 
 	# FIXME: This call should be delayed until after the
 	# window was opened but my Wx skills do not exist. --Steffen
@@ -173,23 +177,6 @@ sub run {
 
 	$self->wx->MainLoop;
 	$self->{wx} = undef;
-
-	return;
-}
-
-sub run_indexer {
-	my ($self) = @_;
-
-	# Run the indexer
-	require Padre::Pod::Indexer;
-	my $indexer = Padre::Pod::Indexer->new;
-	my @files   = $indexer->list_all_files(@INC);
-
-	# Save to the database
-	Padre::DB->begin;
-	Padre::DB->delete_modules;
-	Padre::DB->add_modules(@files);
-	Padre::DB->commit;
 
 	return;
 }
