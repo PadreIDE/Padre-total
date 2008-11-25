@@ -213,7 +213,10 @@ sub new {
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
 		my ($self, $event) = @_;
-		$self->refresh_all;
+		# TODO see what else can be refreshed without too much penalty
+		#$self->refresh_all;
+		$self->refresh_status;
+		$self->refresh_toolbar;
 		my $mod  = $event->GetModifiers || 0;
 		my $code = $event->GetKeyCode;
 		
@@ -2253,7 +2256,9 @@ sub on_last_visited_pane {
 				last;
 			}
 		}
-		$self->refresh_all;
+		#$self->refresh_all;
+		$self->refresh_status;
+		$self->refresh_toolbar;
 	}
 }
 1;
