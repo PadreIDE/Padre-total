@@ -27,7 +27,7 @@ It can be both in the standard \@INC and in ~/.padre/plugins/
 END_WARN
 
 my %prereqs = (
-	'perl'                    => '5.008',
+	'perl'                    => '5.008001',
 	'Carp'                    => 0,
 	'Class::Adapter'          => '1.05',
 	'Cwd'                     => '3.2701',
