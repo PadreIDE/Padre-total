@@ -163,7 +163,18 @@ sub run {
 	
 	$self->{ARGV} = [ map {File::Spec->rel2abs( $_ )} @ARGV ];
 
-	return $self->run_editor;
+	$self->{original_dir} = Cwd::cwd();
+
+	# Move our current dir to the user's documents directory by default
+	my $documents = File::HomeDir->my_documents;
+	if ( defined $documents ) {
+		chdir $documents;
+	}
+
+	$self->wx->MainLoop;
+	$self->{wx} = undef;
+
+	return;
 }
 
 sub run_indexer {
@@ -179,22 +190,6 @@ sub run_indexer {
 	Padre::DB->delete_modules;
 	Padre::DB->add_modules(@files);
 	Padre::DB->commit;
-
-	return;
-}
-
-sub run_editor {
-	my $self = shift;
-
-	$self->{original_dir} = Cwd::cwd();
-	# Move our current dir to the user's documents directory by default
-	my $documents = File::HomeDir->my_documents;
-	if ( defined $documents ) {
-		chdir $documents;
-	}
-
-	$self->wx->MainLoop;
-	$self->{wx} = undef;
 
 	return;
 }
