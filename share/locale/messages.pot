@@ -33,31 +33,30 @@ msgid "Select directory"
 msgstr ""
 
 #: lib/Padre/Wx/Dialog/Find.pm:22 lib/Padre/Wx/Dialog/Search.pm:130
-#: lib/Padre/Wx/Dialog/Find.pm:22
 msgid "Find:"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:27 lib/Padre/Wx/Dialog/Find.pm:27
+#: lib/Padre/Wx/Dialog/Find.pm:27
 msgid "Replace With:"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:34 lib/Padre/Wx/Dialog/Find.pm:34
+#: lib/Padre/Wx/Dialog/Find.pm:34
 msgid "Replace &All"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:37 lib/Padre/Wx/Dialog/Find.pm:37
+#: lib/Padre/Wx/Dialog/Find.pm:37
 msgid "Case &Insensitive"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:40 lib/Padre/Wx/Dialog/Find.pm:40
+#: lib/Padre/Wx/Dialog/Find.pm:40
 msgid "&Use Regex"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:43 lib/Padre/Wx/Dialog/Find.pm:43
+#: lib/Padre/Wx/Dialog/Find.pm:43
 msgid "Search &Backwards"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Find.pm:46 lib/Padre/Wx/Dialog/Find.pm:46
+#: lib/Padre/Wx/Dialog/Find.pm:46
 msgid "Close Window on &hit"
 msgstr ""
 
@@ -122,11 +121,11 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Preferences.pm:19 lib/Padre/Wx/Dialog/Preferences.pm:19
+#: lib/Padre/Wx/Dialog/Preferences.pm:19
 msgid "Use Tabs"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Preferences.pm:22 lib/Padre/Wx/Dialog/Preferences.pm:22
+#: lib/Padre/Wx/Dialog/Preferences.pm:22
 msgid "TAB display size (in spaces)"
 msgstr ""
 
@@ -148,7 +147,7 @@ msgstr ""
 msgid "Preferences"
 msgstr ""
 
-#: lib/Padre/Wx/Dialog/Bookmarks.pm:24 lib/Padre/Wx/Dialog/Bookmarks.pm:24
+#: lib/Padre/Wx/Dialog/Bookmarks.pm:24
 msgid "Existing bookmarks:"
 msgstr ""
 
@@ -461,7 +460,6 @@ msgid "Config at %s\n"
 msgstr ""
 
 #: lib/Padre/Wx/Menu/Help.pm:42 lib/Padre/Plugin/Vi.pm:306
-#: lib/Padre/Wx/Menu/Help.pm:42
 msgid "Copyright 2008 Gabor Szabo"
 msgstr ""
 
