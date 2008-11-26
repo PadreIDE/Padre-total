@@ -17,6 +17,6 @@ diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
     is @menu, 2, 'one menu item';
     is $menu[0], 'PerlTidy', 'plugin name';
     is $menu[1][0], 'Tidy the active document', 'menu item 1';
-    is $menu[1][1], 'Tidy the selected text', 'menu item 2';
+    is $menu[1][2], 'Tidy the selected text', 'menu item 2';
     BEGIN { $tests += 4; }
 }
