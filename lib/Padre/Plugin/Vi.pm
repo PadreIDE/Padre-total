@@ -41,7 +41,7 @@ The following are implemented:
 
 in navigation mode catch ':' and open the command line
 
-=ietm *
+=item *
 
 l,h,k,j  - (right, left, up, down) navigation 
 

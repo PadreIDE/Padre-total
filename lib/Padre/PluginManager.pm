@@ -428,7 +428,7 @@ sub enable_editors {
 
 =head2 reload_plugin
 
-Reload a single plugin whose name (without C<Padre::Plugin::)
+Reload a single plugin whose name (without C<Padre::Plugin::>)
 is passed in as first argument.
 
 =cut
