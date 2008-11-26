@@ -672,10 +672,18 @@ sub menu_view {
 			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
 		);
+		Wx::Event::EVT_MENU( $win,
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
+			sub { $_[0]->change_locale('ko') },
+		);
 	} else {
 		Wx::Event::EVT_MENU( $win,
 			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
 			sub { $_[0]->change_locale('de') },
+		);
+		Wx::Event::EVT_MENU( $win,
+			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
+			sub { $_[0]->change_locale('ko') },
 		);
 		Wx::Event::EVT_MENU( $win,
 			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
