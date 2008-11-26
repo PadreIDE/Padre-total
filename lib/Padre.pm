@@ -893,4 +893,13 @@ To Herbert Breunung for letting me work on Kephra.
 
 To Octavian Rasnita for early testing and bug reports.
 
+=head2 Translations
+
+English - everyone on the team
+
+German - Heiko Jansen (HJANSEN)
+
+Korean - Keedi Kim (KEEDI)
+
+
 =cut
