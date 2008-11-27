@@ -3,10 +3,9 @@
 # This file is distributed under the same license as the Padre package.
 # Keedi Kim <keedi@perl.kr>, 2008.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.15\n"
+"Project-Id-Version: 0.18\n"
 "Report-Msgid-Bugs-To: padre-dev@perlide.org\n"
 "POT-Creation-Date: 2008-11-27 04:05+0900\n"
 "Last-Translator: Keedi Kim <keedi@perl.kr>\n"
@@ -14,7 +13,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Revision-Date: 2008-11-26 01:33+0900\n"
+"POT-Revision-Date: 2008-11-27 20:53+0900\n"
 
 #: lib/Padre/Wx/Ack.pm:68 lib/Padre/Wx/Ack.pm:93
 msgid "Term: "
@@ -114,7 +113,7 @@ msgstr "빠뜨린 항목"
 #: lib/Padre/Wx/Dialog/ModuleStart.pm:134
 #, perl-format
 msgid "%s apparantly created."
-msgstr "%s apparantly created."
+msgstr ""
 
 #: lib/Padre/Wx/Dialog/ModuleStart.pm:134
 #: lib/Padre/Wx/Dialog/ModuleStart.pm:145
@@ -162,7 +161,7 @@ msgstr "책갈피로 이동"
 #: lib/Padre/Wx/Dialog/Bookmarks.pm:111 lib/Padre/Wx/Dialog/Bookmarks.pm:103
 #, perl-format
 msgid "%s line %s"
-msgstr "%s line %s"
+msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:38
 msgid "New Tab\tCtrl-T"
@@ -178,7 +177,7 @@ msgstr "펄 배포 (Module::Starter)"
 
 #: lib/Padre/Wx/Menu.pm:57 lib/Padre/Wx/Menu.pm:256
 msgid "Open Selection\tCtrl-Shift-O"
-msgstr "Open Selection\tCtrl-Shift-O"
+msgstr "선택한 이름의 파일 열기\tCtrl-Shift-O"
 
 #: lib/Padre/Wx/Menu.pm:65 lib/Padre/Wx/Menu.pm:266
 msgid "Close All"
@@ -230,7 +229,7 @@ msgstr "이전 찾기\tShift-F3"
 
 #: lib/Padre/Wx/Menu.pm:184 lib/Padre/Wx/Menu.pm:453
 msgid "Ac&k"
-msgstr "Ac&k"
+msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:188 lib/Padre/Wx/Menu.pm:456
 msgid "&Goto\tCtrl-G"
@@ -238,11 +237,11 @@ msgstr "특정 줄로 이동(&G)\tCtrl-G"
 
 #: lib/Padre/Wx/Menu.pm:192 lib/Padre/Wx/Menu.pm:461
 msgid "&AutoComp\tCtrl-P"
-msgstr "&AutoComp\tCtrl-P"
+msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:196
 msgid "Subs\tAlt-S"
-msgstr "Subs\tAlt-S"
+msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:200 lib/Padre/Wx/Menu.pm:466
 msgid "&Brace matching\tCtrl-1"
@@ -274,11 +273,11 @@ msgstr "줄바꿈 보기"
 
 #: lib/Padre/Wx/Menu.pm:245 lib/Padre/Wx/Menu.pm:560
 msgid "Show Output"
-msgstr "출력 보기"
+msgstr "출력 창 보기"
 
 #: lib/Padre/Wx/Menu.pm:256 lib/Padre/Wx/Menu.pm:580
 msgid "Show StatusBar"
-msgstr "상태표시줄 보기"
+msgstr "상태 표시줄 보기"
 
 #: lib/Padre/Wx/Menu.pm:262 lib/Padre/Wx/Menu.pm:610
 msgid "Show Indentation Guide"
@@ -318,7 +317,7 @@ msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:324 lib/Padre/Wx/Menu.pm:719
 msgid "Check Complete"
-msgstr ""
+msgstr "검사 완료"
 
 #: lib/Padre/Wx/Menu.pm:334 lib/Padre/Wx/Menu.pm:734
 msgid "Run Script\tF5"
@@ -364,7 +363,7 @@ msgstr "오류: "
 #: lib/Padre/Wx/Menu.pm:454 lib/Padre/Wx/MainWindow.pm:1359
 #: lib/Padre/Wx/Menu.pm:992 lib/Padre/Wx/MainWindow.pm:1933
 msgid "Self error"
-msgstr "Self error"
+msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:464 lib/Padre/Wx/Menu.pm:568 lib/Padre/Wx/Menu.pm:78
 #: lib/Padre/Wx/Menu.pm:335 lib/Padre/Wx/Menu.pm:336
@@ -555,7 +554,7 @@ msgstr "같은 이름의 파일이 이미 있습니다. 덮어쓰시겠습니까
 
 #: lib/Padre/Wx/MainWindow.pm:1003 lib/Padre/Wx/MainWindow.pm:1352
 msgid "Exist"
-msgstr "Exist"
+msgstr ""
 
 #: lib/Padre/Wx/MainWindow.pm:1064 lib/Padre/Wx/MainWindow.pm:1414
 msgid "File changed on disk since last saved. Do you want to overwrite it?"
@@ -686,51 +685,51 @@ msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:498
 msgid "Tabs and Spaces"
-msgstr ""
+msgstr "탭과 빈 칸"
 
 #: lib/Padre/Wx/Menu.pm:500
 msgid "Tabs to Spaces..."
-msgstr ""
+msgstr "탭을 빈 칸으로..."
 
 #: lib/Padre/Wx/Menu.pm:504
 msgid "Spaces to Tabs..."
-msgstr ""
+msgstr "빈 칸을 탭으로..."
 
 #: lib/Padre/Wx/Menu.pm:508
 msgid "Delete Trailing Spaces"
-msgstr ""
+msgstr "줄 끝의 빈 칸 지우기"
 
 #: lib/Padre/Wx/Menu.pm:512
 msgid "Delete Leading Spaces"
-msgstr ""
+msgstr "줄 앞의 빈 칸 지우기"
 
 #: lib/Padre/Wx/Menu.pm:518
 msgid "Upper/Lower Case"
-msgstr ""
+msgstr "대소문자"
 
 #: lib/Padre/Wx/Menu.pm:520
 msgid "Upper All\tCtrl-Shift-U"
-msgstr ""
+msgstr "모두 대문자로\tCtrl-Shift-U"
 
 #: lib/Padre/Wx/Menu.pm:524
 msgid "Lower All\tCtrl-U"
-msgstr ""
+msgstr "모두 소문자로\tCtrl-U"
 
 #: lib/Padre/Wx/Menu.pm:535
 msgid "Insert From File..."
-msgstr ""
+msgstr "파일을 통째로 집어넣기..."
 
 #: lib/Padre/Wx/Menu.pm:569
 msgid "Show Functions"
-msgstr ""
+msgstr "함수 창 보기"
 
 #: lib/Padre/Wx/Menu.pm:594
 msgid "Show Code Folding"
-msgstr ""
+msgstr "코드 접기 보기"
 
 #: lib/Padre/Wx/Menu.pm:604
 msgid "Show Whitespaces"
-msgstr ""
+msgstr "공백문자 보기"
 
 #: lib/Padre/Wx/Menu.pm:622
 msgid "Word-Wrap"
@@ -738,11 +737,11 @@ msgstr ""
 
 #: lib/Padre/Wx/Menu.pm:631
 msgid "Highlight Current Line"
-msgstr ""
+msgstr "현재 줄 강조하기"
 
 #: lib/Padre/Wx/Menu.pm:663
 msgid "Language"
-msgstr ""
+msgstr "언어"
 
 #: lib/Padre/Wx/Menu.pm:668 lib/Padre/Wx/Menu.pm:689
 #: lib/Padre/Wx/MainWindow.pm:35
@@ -769,31 +768,31 @@ msgstr "플러그인 관리자"
 
 #: lib/Padre/Wx/Menu.pm:803
 msgid "Edit My Plugin"
-msgstr ""
+msgstr "My 플러그인 편집"
 
 #: lib/Padre/Wx/Menu.pm:808
 msgid "Could not find the Padre::Plugin::My plugin"
-msgstr ""
+msgstr "Padre::Plugin::My 플러그인을 찾을 수 없습니다"
 
 #: lib/Padre/Wx/Menu.pm:816
 msgid "Reload My Plugin"
-msgstr ""
+msgstr "My 플러그인을 다시 불러오기"
 
 #: lib/Padre/Wx/Menu.pm:820 lib/Padre/Wx/Menu.pm:823 lib/Padre/Wx/Menu.pm:824
 msgid "Reset My Plugin"
-msgstr ""
+msgstr "My 플러그인 초기화"
 
 #: lib/Padre/Wx/Menu.pm:842
 msgid "Reload All Plugins"
-msgstr ""
+msgstr "모든 플러그인을 다시 불러오기"
 
 #: lib/Padre/Wx/Menu.pm:846
 msgid "Test A Plugin From Local Dir"
-msgstr ""
+msgstr "로컬 디렉터리에서 플러그인 테스트"
 
 #: lib/Padre/Wx/Menu.pm:872
 msgid "Last Visited File\tCtrl-6"
-msgstr ""
+msgstr "마지막에 열었던 파일\tCtrl-6"
 
 #: lib/Padre/Wx/Menu.pm:876
 msgid "Right Click\tAlt-/"
@@ -801,31 +800,31 @@ msgstr "오른쪽 클릭\tAlt-/"
 
 #: lib/Padre/Wx/Menu.pm:888
 msgid "GoTo Subs Window\tAlt-S"
-msgstr ""
+msgstr "함수 창으로 이동\tAlt-S"
 
 #: lib/Padre/Wx/Menu.pm:896
 msgid "GoTo Output Window\tAlt-O"
-msgstr ""
+msgstr "출력 창으로 이동\tAlt-O"
 
 #: lib/Padre/Wx/Menu.pm:914
 msgid "GoTo Main Window\tAlt-M"
-msgstr ""
+msgstr "메인 창으로 이동\tAlt-M"
 
 #: lib/Padre/Wx/Menu.pm:950
 msgid "Visit the PerlMonks"
-msgstr ""
+msgstr "펄몽크스(PerlMonks) 방문하기"
 
 #: lib/Padre/Wx/Menu.pm:998
 msgid "Show Syntax Check"
-msgstr ""
+msgstr "문법 검사 보기"
 
 #: lib/Padre/Wx/Menu.pm:1005
 msgid "Use PPI for Perl5 syntax highlighting"
-msgstr ""
+msgstr "PPI를 사용한 펄5 문법 강조"
 
 #: lib/Padre/Wx/Menu.pm:1015
 msgid "Quick Find"
-msgstr ""
+msgstr "빠른 찾기"
 
 #: lib/Padre/Wx/Menu.pm:1028
 msgid "Find Next\tF4"
@@ -918,15 +917,15 @@ msgstr "바꾸기(&R)"
 
 #: lib/Padre/Wx/Dialog/Preferences.pm:26
 msgid "Guess from current document"
-msgstr ""
+msgstr "현재 문서로 추측하기"
 
 #: lib/Padre/Wx/Dialog/Preferences.pm:27
 msgid "Guess"
-msgstr ""
+msgstr "추측하기"
 
 #: lib/Padre/Wx/Dialog/Preferences.pm:42
 msgid "Autoindent:"
-msgstr ""
+msgstr "자동 들여쓰기:"
 
 #: lib/Padre/Wx/Dialog/Preferences.pm:46
 msgid "Default word wrap on for each file"
