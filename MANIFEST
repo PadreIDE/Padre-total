@@ -20,10 +20,10 @@ lib/Padre/PPI.pm
 lib/Padre/Wx.pm
 
 lib/Padre/Document/JavaScript.pm
-lib/Padre/Document/Pasm.pm
+lib/Padre/Document/PASM.pm
 lib/Padre/Document/Perl.pm
 lib/Padre/Document/Perl6.pm
-lib/Padre/Document/Pir.pm
+lib/Padre/Document/PIR.pm
 
 lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/My.pm
@@ -77,6 +77,7 @@ t/80-newline.t
 t/81-search.t
 t/82-plugin-manager.t
 t/83-autosave.t
+t/91-vi.t
 t/lib/Padre.pm
 t/lib/Padre/Plugin/TestPlugin.pm
 t/lib/Padre/Plugin/Test/Plugin.pm
@@ -123,5 +124,4 @@ share/tango/16x16/actions/edit-undo.png
 share/tango/16x16/actions/go-next.png
 share/tango/16x16/actions/go-previous.png
 share/tango/16x16/emblems/emblem-unreadable.png
-
 

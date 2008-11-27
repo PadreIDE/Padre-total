@@ -11,9 +11,10 @@ use ORLite 0.15 {
 	tables => 0,
 };
 
-our $VERSION = '0.18';
+our $VERSION    = '0.18';
+our $COMPATIBLE = '0.17';
 
-# At load time, autocrate if needed
+# At load time, autocreate if needed
 unless ( Padre::DB->pragma('user_version') == 2 ) {
 	Padre::DB->setup;
 }

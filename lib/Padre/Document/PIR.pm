@@ -1,4 +1,4 @@
-package Padre::Document::Pir;
+package Padre::Document::PIR;
 
 use 5.008;
 use strict;
@@ -9,7 +9,6 @@ use Padre::Document ();
 
 our $VERSION = '0.18';
 our @ISA     = 'Padre::Document';
-
 
 # Naive way to parse and colourise pir files
 sub colourise {

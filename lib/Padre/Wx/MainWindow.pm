@@ -30,9 +30,22 @@ my $default_dir = Cwd::cwd();
 
 use constant SECONDS => 1000;
 
+# TODO move it to some better place,
+# used in Menu.pm
+our %languages = (
+	de => Wx::gettext('German'),
+	en => Wx::gettext('English'),
+	ko => Wx::gettext('Korean'),
+	hu => Wx::gettext('Hungarian'),
+	he => Wx::gettext('Hebrew'),
+);
+
 my %shortname_of = (
-	58 => 'en',
-	87 => 'de',
+	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
+	Wx::wxLANGUAGE_GERMAN() => 'de', 
+	Wx::wxLANGUAGE_KOREAN() => 'ko',
+	Wx::wxLANGUAGE_HUNGARIAN() => 'hu',
+	Wx::wxLANGUAGE_HEBREW() => 'he',
 );
 my %number_of = reverse %shortname_of;
 
@@ -48,7 +61,7 @@ sub new {
 	Wx::InitAllImageHandlers();
 
 	$config->{host}->{locale} ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || $shortname_of{ 'en' };
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || 'en' ;
 
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
@@ -206,7 +219,6 @@ sub new {
 	# Special Key Handling
 	Wx::Event::EVT_KEY_UP( $self, sub {
 		my ($self, $event) = @_;
-		$self->refresh_all;
 		my $mod  = $event->GetModifiers || 0;
 		my $code = $event->GetKeyCode;
 		
@@ -1122,11 +1134,9 @@ sub on_split_window {
 	$new_editor->SetDocPointer($pointer);
 	$new_editor->set_preferences;
 
-	# TODO the plugin manager should call this method for every enabled plugin
-	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
-		Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $new_editor, $new_editor->{Document} );
-	}
-	
+
+	Padre->ide->{plugin_manager}->editor_enable($new_editor);
+
 	$self->create_tab($new_editor, $file, " $title");
 
 	return;
@@ -1155,16 +1165,7 @@ sub setup_editor {
 		filename => $file,
 	);
 	
-	# TODO the plugin manager should call this method for every enabled plugin
-	foreach my $plugin (keys %{ Padre->ide->{plugin_manager}->{_objects_} }) {
-		eval {
-			Padre->ide->{plugin_manager}->{_objects_}->{$plugin}->editor_enable( $editor, $editor->{Document} );
-		};
-		if ($@) {
-			warn $@;
-			# TODO: report the plugin error!
-		}
-	}
+	Padre->ide->{plugin_manager}->editor_enable($editor);
 
 	my $title = $editor->{Document}->get_title;
 
@@ -2003,7 +2004,14 @@ sub on_stc_update_ui {
 	$editor->highlight_braces;
 	$editor->show_calltip;
 
-	$self->refresh_all;
+	$self->refresh_menu;
+	$self->refresh_toolbar;
+	$self->refresh_status;
+	#$self->refresh_methods;
+	#$self->refresh_syntaxcheck;
+	# avoid refreshing the subs as that takes a lot of time
+	# TODO maybe we should refresh it on every 20s hit or so
+#	$self->refresh_all;
 
 	return;
 }
@@ -2250,7 +2258,9 @@ sub on_last_visited_pane {
 				last;
 			}
 		}
-		$self->refresh_all;
+		#$self->refresh_all;
+		$self->refresh_status;
+		$self->refresh_toolbar;
 	}
 }
 1;

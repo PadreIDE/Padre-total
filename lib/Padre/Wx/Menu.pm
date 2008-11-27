@@ -663,23 +663,16 @@ sub menu_view {
 	$menu_view->Append( -1, Wx::gettext("Language"), $self->{view_language} );
 	
 	# TODO horrible, fix this
-	if ($config->{host}->{locale} eq 'en') {
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("System Default") ),
+		sub { $_[0]->change_locale() },
+	);
+	$self->{view_language}->AppendSeparator;
+	my %languages = %Padre::Wx::MainWindow::languages;
+	foreach my $name (sort { $languages{$a} cmp $languages{$b} }  keys %languages) {
 		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
-			sub { $_[0]->change_locale('en') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
-			sub { $_[0]->change_locale('de') },
-		);
-	} else {
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
-			sub { $_[0]->change_locale('de') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
-			sub { $_[0]->change_locale('en') },
+			$self->{view_language}->AppendRadioItem( -1, $languages{$name} ),
+			sub { $_[0]->change_locale($name) },
 		);
 	}
 
@@ -762,20 +755,22 @@ sub menu_plugin {
 
 	# Add the Plugin Tools menu
 	my $tools = $self->menu_plugin_tools( $win );
-	$menu->Append( -1, 'Plugin Tools', $tools );
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
+		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
+	);
+	$menu->Append( -1, Wx::gettext('Plugin Tools'), $tools );
 	$menu->AppendSeparator;
 
 	foreach my $name ( 'My', @plugins ) {
-		next if not $plugins->{$name};
-		#print "$name - $plugins{$name}{module} - $plugins{$name}{status}\n";
-		next if not $plugins->{$name}{status} or $plugins->{$name}{status} ne 'loaded';
+		next unless $plugins->{$name};
+		next unless $plugins->{$name}->{status};
+		next unless $plugins->{$name}->{status} eq 'loaded';
 
-		#my $label = $manager->get_label($name);
-		#my @menu  = $manager->get_menu($name);
-		my ($label, $items) = $manager->get_menu($self->win, $name);
-		
-		#my $items = $self->add_plugin_menu_items(\@menu);
-		$menu->Append( -1, $label, $items );
+		my @plugin = $manager->get_menu($self->win, $name);
+		next unless @plugin;
+
+		$menu->Append( -1, @plugin );
 		if ( $name eq 'My' ) {
 			$menu->AppendSeparator;
 		}
@@ -810,7 +805,10 @@ sub menu_plugin_tools {
 		$menu->Append( -1, Wx::gettext("Reset My Plugin") ),
 		sub  {
 			my $ret = Wx::MessageBox(
-				Wx::gettext("Reset My Plugin"), Wx::gettext("Reset My Plugin"), Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE, $win
+				Wx::gettext("Reset My Plugin"),
+				Wx::gettext("Reset My Plugin"),
+				Wx::wxOK | Wx::wxCANCEL | Wx::wxCENTRE,
+				$win
 			);
 			if ( $ret == Wx::wxOK) {
 				my $manager = Padre->ide->plugin_manager;
@@ -825,10 +823,6 @@ sub menu_plugin_tools {
 	);
 	$menu->AppendSeparator;
 
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
-		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
-	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("Reload All Plugins") ),
 		sub { Padre->ide->plugin_manager->reload_plugins; },
@@ -864,7 +858,7 @@ sub menu_window {
  		\&Padre::Wx::MainWindow::on_last_visited_pane,
 	);
  	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, Wx::gettext("Right Click\tCtrl-/")),
+ 		$menu->Append(-1, Wx::gettext("Right Click\tAlt-/")),
  		sub {
 			my $editor = $_[0]->selected_editor;
 			if ($editor) {

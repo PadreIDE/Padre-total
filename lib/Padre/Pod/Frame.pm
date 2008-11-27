@@ -46,14 +46,14 @@ sub _setup_podviewer {
     # TODO: update list when a file is opened
     $choice = Wx::Choice->new( $panel, Wx::wxID_ANY, [ 0, 0 ], Wx::wxDefaultSize, scalar(Padre::DB->get_recent_pod), [ Padre::DB->get_recent_pod ] );
     $but_s->Add($choice);
-    EVT_CHOICE( $panel, $choice, \&on_selection );
+    Wx::Event::EVT_CHOICE( $panel, $choice, \&on_selection );
 
     $choices = Padre::DB->find_modules;
     my @ch = @{$choices}[0..10];
     my $combobox = Wx::ComboBox->new($panel, -1, '', [375, 5], [-1, 32], []); #, $self->style);
-    EVT_COMBOBOX(   $panel, $combobox, \&on_combobox);
-    EVT_TEXT(       $panel, $combobox, sub { on_combobox_text_changed($combobox, @_) } );
-    EVT_TEXT_ENTER( $panel, $combobox, \&on_combobox_text_enter);
+    Wx::Event::EVT_COMBOBOX(   $panel, $combobox, \&on_combobox);
+    Wx::Event::EVT_TEXT(       $panel, $combobox, sub { on_combobox_text_changed($combobox, @_) } );
+    Wx::Event::EVT_TEXT_ENTER( $panel, $combobox, \&on_combobox_text_enter);
 
     $top_s->Add( $but_s, 0, Wx::wxALL, 5 );
     $top_s->Add( $html,  1, Wx::wxGROW|Wx::wxALL, 5 );
@@ -61,8 +61,8 @@ sub _setup_podviewer {
     $panel->SetSizer( $top_s );
     $panel->SetAutoLayout( 1 );
 
-    EVT_BUTTON( $panel, $back,    sub { on_back($self, @_)    } );
-    EVT_BUTTON( $panel, $forward, sub { on_forward($self, @_) } );
+    Wx::Event::EVT_BUTTON( $panel, $back,    sub { on_back($self, @_)    } );
+    Wx::Event::EVT_BUTTON( $panel, $forward, sub { on_forward($self, @_) } );
 
     $self->{html} = $html;
 
@@ -131,11 +131,11 @@ sub _create_menu_bar {
     $bar->Append( $edit, "&Edit" );
     $self->SetMenuBar( $bar );
 
-    EVT_MENU(  $self, $file->Append( Wx::wxID_OPEN, ''),  \&on_open);
-    EVT_MENU(  $self, $file->Append( Wx::wxID_EXIT, ''),  sub { $self->Close } );
-    EVT_MENU(  $self, $edit->Append( Wx::wxID_FIND, ''),  \&on_find);
+    Wx::Event::EVT_MENU(  $self, $file->Append( Wx::wxID_OPEN, ''),  \&on_open);
+    Wx::Event::EVT_MENU(  $self, $file->Append( Wx::wxID_EXIT, ''),  sub { $self->Close } );
+    Wx::Event::EVT_MENU(  $self, $edit->Append( Wx::wxID_FIND, ''),  \&on_find);
    
-    EVT_CLOSE( $self,             \&on_close);
+    Wx::Event::EVT_CLOSE( $self,             \&on_close);
 
     return;
 }

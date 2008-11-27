@@ -41,13 +41,13 @@ The following are implemented:
 
 in navigation mode catch ':' and open the command line
 
-=ietm *
+=item *
 
 l,h,k,j  - (right, left, up, down) navigation 
 
 4 arrows also work
 
-Number prefix are alloed in both the 4 letter and the 4 arrows
+Number prefix are allowed in both the 4 letter and the 4 arrows
 
 =item *
 
@@ -63,12 +63,21 @@ End - goto last character on line
 
 =item *
 
+^ - (shift-6) jump to beginning of line
+
+=item *
+
+$ - (shift-4) jump to end of line
+
+=item *
+
 v - visual mode, to start marking section
 
-TODO - y should yank the data, other operation that should work on the selection?
-d - delete selection
-x - delete selection
-v - stop the visual mode, remove selection
+ d - delete the selection
+ x - delete the selection
+ y - yank the selection
+ v - stop the visual mode, remove selection
+
 
 =item *
 
@@ -109,13 +118,19 @@ dd - delete current line
 
 Ndd - (N any number) delete N lines
 
+d$ - delete till end of line
+
+Ndw - delete N word
+
 =item *
 
 yy - yank (copy) current line to buffer
 
 Nyy - yank (copy) N lines to buffer
 
-TODO yy - should not mark the text that is yanked or should remove the selection
+y$ - yank till end of line
+
+Nyw - yank N words
 
 =item *
 
@@ -127,11 +142,21 @@ J - (shift-j) join lines, join the next line after the current one
 
 =item *
 
-^ - (shift-6) jump to beginning of line
+ZZ - save file and close editor
 
 =item *
 
-$ - (shift-4) jump to end of line
+42G - jump to line 42
+
+G - jump to last line
+
+=item *
+
+w, Nw - next word, forwad N words
+
+=item *
+
+b, Nb - back one word, back N words
 
 =back
 
@@ -147,6 +172,10 @@ ESC moves to navigation mode
 
 Ctrl-p - autocompletion (inherited from Padre)
 
+=item *
+
+For now at least, everything else should work as in standard Padre.
+
 =back
 
 =head2 Command mode
@@ -155,16 +184,13 @@ Ctrl-p - autocompletion (inherited from Padre)
 
 =item *
 
-w - write current buffer
+:w - write current buffer
 
 =item *
 
-e filename - open file for editing
+:e filename - open file for editing
 
 TAB completition of directory and filenames
-
-TODO: it seems the auto completition does not always (or not at all?)
-put the trailing / on directory names
 
 =item *
 
@@ -174,9 +200,19 @@ put the trailing / on directory names
 
 =item *
 
-42G - jump to line 42
+:q - exit
 
-G - jump to last line
+=item *
+
+:wq - write and exit
+
+:bN to switch buffer N
+
+TODO: it is not working the same way as in vi, 
+first of all numbers are from and if a file is closed
+the buffers are renumbered. If we really want to
+support this option we might need to have our own
+separate mapping of numbers to buffers and files.
 
 =back
 
@@ -195,26 +231,15 @@ and add it as another window under or above the output window?)
 Most importantly, make it faster to come up
 
 
-:q - exit
-
-:wq - write and exit
-
 / and search connect it to the new (and yet experimental search)
 
-:d$ - delete till end of line
-:dw - delete word
 
 
-if ($buffer =~ /^(\d*)([lkjhxaiup])$/ or
-    $buffer =~ /^(\d*)(d[dw])$/ or
-	$buffer =~ /^(\d*)(y[yw])$/) {
-	process($1, $2);
-}
+r for replacing current character
+:q! - discard changes and exit
 
-:ZZ
-:q!
 :e!
-:ls and :b2 to switch buffer
+:ls and
 
 
 =cut
@@ -249,7 +274,8 @@ sub editor_enable {
 	
 	$self->{editor}{refaddr $editor} = Padre::Plugin::Vi::Editor->new($editor);
 
-	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->key_down(@_) } );
+	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->evt_key_down(@_) } );
+	Wx::Event::EVT_CHAR(     $editor, sub { $self->evt_char(@_) } );
 
 	return 1;
 }
@@ -259,6 +285,7 @@ sub editor_stop {
 	
 	delete $self->{editor}{refaddr $editor};
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
+	Wx::Event::EVT_CHAR(     $editor, undef );
 
 	return 1;
 }
@@ -288,17 +315,36 @@ sub about {
 }
 
 
-sub key_down {
+sub evt_key_down {
 	my ($self, $editor, $event) = @_;
 
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
+
+	print("key: '$mod', '$code'\n");
+	if (32 <= $code and $code <= 127) {
+		$event->Skip;
+		return;
+	}
 
 	my $skip = $self->{editor}{refaddr $editor}->key_down($mod, $code);
 	$event->Skip($skip);
 	return;
 }
 
+sub evt_char {
+	my ($self, $editor, $event) = @_;
+
+	my $mod  = $event->GetModifiers || 0;
+	my $code = $event->GetKeyCode;
+
+	printf("char: '$mod', '$code' '%s'\n", chr($code));
+	if (32 <= $code and $code <= 127) {
+		my $skip = $self->{editor}{refaddr $editor}->get_char($mod, $code, chr($code));
+		$event->Skip($skip);
+	}
+	return;
+}
 
 1;
 

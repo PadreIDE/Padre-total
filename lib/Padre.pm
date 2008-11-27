@@ -1,5 +1,210 @@
 package Padre;
 
+# See POD at end for documentation
+
+use 5.008001;
+use strict;
+use warnings;
+use Carp           ();
+use Cwd            ();
+use File::Spec     ();
+use File::HomeDir  ();
+use Getopt::Long   ();
+use YAML::Tiny     ();
+use DBI            ();
+use Class::Autouse ();
+
+our $VERSION = '0.18';
+
+# Since everything is used OO-style,
+# autouse everything other than the bare essentials
+use Padre::Util    ();
+use Padre::Config  ();
+
+# Nudges to make Class::Autouse behave
+BEGIN {
+	$Class::Autouse::LOADED{'Wx::Object'} = 1;
+}
+use Class::Autouse qw{
+	Padre::DB
+	Padre::Document
+	Padre::Document::Perl
+	Padre::PPI
+	Padre::Project
+	Padre::PluginManager
+	Padre::Pod::Frame
+	Padre::Pod::Indexer
+	Padre::Pod::Viewer
+	Padre::Wx::Popup
+	Padre::Wx::Editor
+	Padre::Wx::Menu
+	Padre::Wx::Menu::Help
+	Padre::Wx::Ack
+	Padre::Wx::App
+	Padre::Wx::Dialog::Bookmarks
+	Padre::Wx::Dialog::Find
+	Padre::Wx::Dialog::ModuleStart
+	Padre::Wx::Dialog::PluginManager
+	Padre::Wx::Dialog::Preferences
+	Padre::Wx::Dialog::Search
+	Padre::Wx::Dialog::Snippets
+	Padre::Wx::History::TextDialog
+	Padre::Wx::MainWindow
+
+        Padre::Task
+        Padre::TaskManager
+};
+
+# Globally shared Perl detection object
+sub perl_interpreter {
+	require Probe::Perl;
+	my $perl = Probe::Perl->find_perl_interpreter;
+	return $perl if $perl;
+	require File::Which;
+	return scalar File::Which::which('perl');
+}
+
+my $SINGLETON = undef;
+sub inst {
+	Carp::croak("Padre->new has not been called yet") if not $SINGLETON;
+	return $SINGLETON;
+}
+
+sub new {
+	Carp::croak("Padre->new already called. Use Padre->inst") if $SINGLETON;
+	my $class = shift;
+
+	# Create the empty object
+	my $self = $SINGLETON = bless {
+		# Wx Attributes
+		wx             => undef,
+
+		# Internal Attributes
+		config_dir     => undef,
+		config_yaml    => undef,
+
+		# Plugin Attributes
+		plugin_manager => undef,
+
+		# Second-Generation Object Model
+		# (Adam says ignore these for now, but don't comment out)
+		project        => {},
+		document       => {},
+
+	}, $class;
+
+	# Locate the configuration
+	$self->{config_dir}  = Padre::Config->default_dir;
+	$self->{config_yaml} = Padre::Config->default_yaml;
+	$self->{config}      = Padre::Config->read(   $self->config_yaml );
+	$self->{config}    ||= Padre::Config->create( $self->config_yaml );
+
+	$self->{plugin_manager} = Padre::PluginManager->new($self);
+
+        $self->{task_manager} = Padre::TaskManager->new();
+
+	# Load the database
+	Class::Autouse->load('Padre::DB');
+
+	return $self;
+}
+
+sub ide {
+	$SINGLETON or
+	$SINGLETON = Padre->new;
+}
+
+sub wx {
+	my $self = shift;
+	$self->{wx} or
+	$self->{wx} = Padre::Wx::App->new;
+}
+
+sub config {
+	$_[0]->{config};
+}
+
+sub config_dir {
+	$_[0]->{config_dir};
+}
+
+sub config_yaml {
+	$_[0]->{config_yaml};
+}
+
+sub plugin_manager {
+	$_[0]->{plugin_manager};
+}
+
+sub task_manager {
+	$_[0]->{task_manager};
+}
+
+sub run {
+	my $self = shift;
+
+	# Handle architectural command line options
+	foreach my $M ( grep { /^-M/ } @ARGV ) {
+		my $module = substr($M, 2);
+		eval "use $module";
+		die $@ if $@;
+	}
+	@ARGV = grep { ! /^-M/ } @ARGV;
+
+	# Handle regular command line options
+	my $USAGE = '';
+	my $INDEX = '';
+	my $rv    = Getopt::Long::GetOptions(
+		help  => \$USAGE,
+		index => \$INDEX,
+	);
+	if ( $USAGE or ! $rv ) {
+		usage();
+	}
+
+	# Launch the indexer if requested
+	if ( $INDEX ) {
+		require Padre::Pod::Indexer;
+		Padre::Pod::Indexer->run;
+		return;
+	}
+
+	# FIXME: This call should be delayed until after the
+	# window was opened but my Wx skills do not exist. --Steffen
+	# (RT #1)
+	$self->plugin_manager->load_plugins;
+	
+	$self->{ARGV} = [ map {File::Spec->rel2abs( $_ )} @ARGV ];
+
+	$self->{original_dir} = Cwd::cwd();
+
+	# Move our current dir to the user's documents directory by default
+	my $documents = File::HomeDir->my_documents;
+	if ( defined $documents ) {
+		chdir $documents;
+	}
+
+	$self->wx->MainLoop;
+	$self->{wx} = undef;
+
+	return;
+}
+
+# Save the YAML configuration file
+sub save_config {
+	$_[0]->config->write( $_[0]->config_yaml );
+}
+
+sub usage { print <<"END_USAGE"; exit(1) }
+Usage: $0 [FILENAMEs]
+           --index to index the modules found on this computer
+           --help this help
+END_USAGE
+
+1;
+
+__END__
+
 =pod
 
 =head1 NAME
@@ -253,42 +458,6 @@ bookmarks.
   
   padre --index
   
-=head2 Parrot integration
-
-This is an experimentatl feature.
-
-Download Parrot (or check it out from its version control)
-
-Configure PARROT_PATH to point to the root of parrot
-
-Configure LD_LIBRARY_PATH
-
-  export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
- 
-Build Parrot
-
-  cd $PARROT_PATH
-  svn up
-  make realclean
-  perl Configure.pl
-  make
-  make test
-
-Build Parrot::Embed
-
-  cd ext/Parrot-Embed/
-  ./Build realclean
-  perl Build.PL
-  ./Build
-  ./Build test
-
-Now if you run Padre it will come with an embedded Parrot interpreter.
-
-You can get the interpreter by calling 
-
-  Padre->ide->parrot
-
-
 =head2 Rectangular Text Selection
 
 Simple text editors usually only allow you to select contiguous lines of text with your mouse. 
@@ -328,7 +497,7 @@ Need to implement the C<Padre::Document::Language> class.
 
 Need to define the mime-type mapping in L<Padre::Document>
 
-For examples see L<Padre::Document::Pasm>, L<Padre::Document::Pir>,
+For examples see L<Padre::Document::PASM>, L<Padre::Document::PIR>,
 L<Padre::Document::Perl>.
 
 =head1 Command line options
@@ -679,243 +848,6 @@ L<Padre::Wx::Output> - the output window.
 Padre::Pod::* are there to index and show documentation written in pod.
 TODO: One day we might be able to factor it out into a separate pod-viewer class.
 
-=cut
-
-use 5.008;
-use strict;
-use warnings;
-use threads;
-use threads::shared;
-
-use Carp           ();
-use Cwd            ();
-use File::Spec     ();
-use File::HomeDir  ();
-use Getopt::Long   ();
-use YAML::Tiny     ();
-use DBI            ();
-use Class::Autouse ();
-
-our $VERSION = '0.18';
-
-# Since everything is used OO-style,
-# autouse everything other than the bare essentials
-use Padre::Util           ();
-use Padre::Config         ();
-
-# Nudges to make Class::Autouse behave
-BEGIN {
-	$Class::Autouse::LOADED{'Wx::Object'} = 1;
-}
-use Class::Autouse qw{
-	Padre::DB
-	Padre::Document
-	Padre::Document::Perl
-	Padre::PPI
-	Padre::Project
-	Padre::PluginManager
-	Padre::Pod::Frame
-	Padre::Pod::Indexer
-	Padre::Pod::Viewer
-	Padre::Wx::Popup
-	Padre::Wx::Editor
-	Padre::Wx::Menu
-	Padre::Wx::Menu::Help
-	Padre::Wx::Ack
-	Padre::Wx::App
-	Padre::Wx::Dialog::Bookmarks
-	Padre::Wx::Dialog::Find
-	Padre::Wx::Dialog::ModuleStart
-	Padre::Wx::Dialog::PluginManager
-	Padre::Wx::Dialog::Preferences
-	Padre::Wx::Dialog::Search
-	Padre::Wx::Dialog::Snippets
-	Padre::Wx::History::TextDialog
-	Padre::Wx::MainWindow
-
-        Padre::Task
-        Padre::TaskManager
-};
-
-# Globally shared Perl detection object
-sub perl_interpreter {
-	require Probe::Perl;
-	my $perl = Probe::Perl->find_perl_interpreter;
-	return $perl if $perl;
-	require File::Which;
-	return scalar File::Which::which('perl');
-}
-
-my @history = qw(files pod);
-
-my $SINGLETON = undef;
-sub inst {
-	Carp::croak("Padre->new has not been called yet") if not $SINGLETON;
-	return $SINGLETON;
-}
-
-sub new {
-	Carp::croak("Padre->new already called. Use Padre->inst") if $SINGLETON;
-	my $class = shift;
-
-	# Create the empty object
-	my $self = $SINGLETON = bless {
-		# Wx Attributes
-		wx             => undef,
-
-		# Internal Attributes
-		config_dir     => undef,
-		config_yaml    => undef,
-
-		# Plugin Attributes
-		plugin_manager => undef,
-
-		# Second-Generation Object Model
-		# (Adam says ignore these for now, but don't comment out)
-		project        => {},
-		document       => {},
-
-	}, $class;
-
-	# Locate the configuration
-	$self->{config_dir}  = Padre::Config->default_dir;
-	$self->{config_yaml} = Padre::Config->default_yaml;
-	$self->{config}      = Padre::Config->read(   $self->config_yaml );
-	$self->{config}    ||= Padre::Config->create( $self->config_yaml );
-
-	$self->{plugin_manager} = Padre::PluginManager->new($self);
-
-        $self->{task_manager} = Padre::TaskManager->new();
-
-	eval {
-		require Parrot::Embed;
-		$self->{parrot} = Parrot::Interpreter->new;
-	};
-
-	# Load the database
-	Class::Autouse->load('Padre::DB');
-
-	return $self;
-}
-
-sub ide {
-	$SINGLETON or
-	$SINGLETON = Padre->new;
-}
-
-sub wx {
-	my $self = shift;
-	$self->{wx} or
-	$self->{wx} = Padre::Wx::App->new;
-}
-
-sub parrot {
-	$_[0]->{parrot};
-}
-
-sub config {
-	$_[0]->{config};
-}
-
-sub config_dir {
-	$_[0]->{config_dir};
-}
-
-sub config_yaml {
-	$_[0]->{config_yaml};
-}
-
-sub plugin_manager {
-	$_[0]->{plugin_manager};
-}
-
-sub task_manager {
-	$_[0]->{task_manager};
-}
-
-sub run {
-	my $self = shift;
-
-	# Handle architectural command line options
-	foreach my $M ( grep { /^-M/ } @ARGV ) {
-		my $module = substr($M, 2);
-		eval "use $module";
-		die $@ if $@;
-	}
-	@ARGV = grep { ! /^-M/ } @ARGV;
-
-	# Handle regular command line options
-	my $USAGE = '';
-	my $INDEX = '';
-	my $rv    = Getopt::Long::GetOptions(
-		help  => \$USAGE,
-		index => \$INDEX,
-	);
-	if ( $USAGE or ! $rv ) {
-		usage();
-	}
-
-	# Launch the indexer if requested
-	return $self->run_indexer if $INDEX;
-
-	# FIXME: This call should be delayed until after the
-	# window was opened but my Wx skills do not exist. --Steffen
-	# (RT #1)
-	$self->plugin_manager->load_plugins;
-	
-	$self->{ARGV} = [ map {File::Spec->rel2abs( $_ )} @ARGV ];
-
-	return $self->run_editor;
-}
-
-sub run_indexer {
-	my ($self) = @_;
-
-	# Run the indexer
-	require Padre::Pod::Indexer;
-	my $indexer = Padre::Pod::Indexer->new;
-	my @files   = $indexer->list_all_files(@INC);
-
-	# Save to the database
-	Padre::DB->begin;
-	Padre::DB->delete_modules;
-	Padre::DB->add_modules(@files);
-	Padre::DB->commit;
-
-	return;
-}
-
-sub run_editor {
-	my $self = shift;
-
-	$self->{original_dir} = Cwd::cwd();
-	# Move our current dir to the user's documents directory by default
-	my $documents = File::HomeDir->my_documents;
-	if ( defined $documents ) {
-		chdir $documents;
-	}
-
-	$self->wx->MainLoop;
-	$self->{wx} = undef;
-
-	return;
-}
-
-# Save the YAML configuration file
-sub save_config {
-	$_[0]->config->write( $_[0]->config_yaml );
-}
-
-sub usage { print <<"END_USAGE"; exit(1) }
-Usage: $0 [FILENAMEs]
-           --index to index the modules found on this computer
-           --help this help
-END_USAGE
-
-1;
-
-=pod
-
 =head1 BUGS
 
 Please submit your bugs at L<http://padre.perlide.org/>
@@ -953,14 +885,30 @@ that's your problem.
 To Mattia Barbon for providing WxPerl.
 Part of the code was copied from his Wx::Demo application.
 
-To Adam Kennedy for lots of refactoring.
+The developers of Padre:
 
-To Steffen Muller for PAR plugins.
+Adam Kennedy (ADAMK),
+Brian Cassidy (BRICAS),
+Fayland Lam (FAYLAND),
+Heiko Jansen (HJANSEN),
+Jerome Quelin (JQUELIN),
+Kaare Rasmussen (KAARE),
+Max Maischein (CORION)
+Patrick Donelan (PATSPAM),
+Steffen Mueller (TSEE), 
 
-To Patrick Donelan, Fayland Lam, Brian Cassidy, Heiko Jansen
 
 To Herbert Breunung for letting me work on Kephra.
 
 To Octavian Rasnita for early testing and bug reports.
+
+=head2 Translations
+
+English - everyone on the team
+
+German - Heiko Jansen (HJANSEN)
+
+Korean - Keedi Kim (KEEDI)
+
 
 =cut

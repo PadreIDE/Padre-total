@@ -5,10 +5,12 @@ use lib 'inc';
 use Padre::Install;
 use Config;
 
-if (not $Config{usethreads}) {
+if ( not $Config{usethreads} ) {
 	warn "Padre requires a perl built using threads\n";
 	exit 0;
 }
+
+check_wx_version();
 
 print <<"END_WARN";
 **********************************************************
@@ -25,41 +27,40 @@ It can be both in the standard \@INC and in ~/.padre/plugins/
 END_WARN
 
 my %prereqs = (
-	'perl'                    => '5.008',
-
+	'perl'                    => '5.008001',
 	'Carp'                    => 0,
 	'Class::Adapter'          => '1.05',
-	'Cwd'                     => 0,
+	'Cwd'                     => '3.2701',
 	'Data::Dumper'            => 0,
-	'File::Spec'              => 0,
-	'File::Spec::Functions'   => 0,
+	'File::Spec'              => '3.2701',
+	'File::Spec::Functions'   => '3.2701',
 	'File::Basename'          => 0,
 	'FindBin'                 => 0,
 	'Getopt::Long'            => 0,
 	'HTML::Parser'            => '3.58',
 	'HTML::Entities'          => '3.57',
-	'List::Util'              => 0,
-	'IO::Socket'              => 0,
+	'List::Util'              => '1.18',
+	'IO::Socket'              => '1.30',
 	'Term::ReadLine'          => 0,
-	'Module::Refresh'         => 0,
+	'Module::Refresh'         => '0.13',
 	'App::Ack'                => '1.86',
 	'Class::Autouse'          => '1.26',
-	'Class::Unload'           => 0,
-	'DBD::SQLite'             => 0,
-	'DBI'                     => 0,
-	'File::Copy::Recursive'   => 0,
-	'File::Find::Rule'        => 0,
-	'File::HomeDir'           => 0,
+	'Class::Unload'           => '0.03',
+	'DBD::SQLite'             => '1.10',
+	'DBI'                     => '1.607',
+	'File::Copy::Recursive'   => '0.37',
+	'File::Find::Rule'        => '0.30',
+	'File::HomeDir'           => '0.82',
 #	'File::LocalizeNewlines'  => '1.10',
 	'File::ShareDir'          => '1.00',
 	'File::ShareDir::PAR'     => '0.03',
-	'File::Slurp'             => 0,
+	'File::Slurp'             => '9999.13',
 	'File::Which'             => '0.05',
 	'Module::Inspector'       => '0.04',
 	'Module::Starter'         => '1.50',
 	'ORLite'                  => '0.15',
 	'PAR'                     => '0.970',
-	'Pod::POM'                => 0,
+	'Pod::POM'                => '0.17',
 	'Pod::Simple'             => '3.07',
 	'Probe::Perl'             => '0.01',
         'Process'                 => '0.22',
@@ -73,7 +74,7 @@ my %prereqs = (
 	'YAML::Tiny'              => '1.32',
 	'Wx'                      => '0.86',
 	'Wx::Perl::Dialog'        => '0.03',
-	'Wx::Perl::ProcessStream' => 0,
+	'Wx::Perl::ProcessStream' => '0.11',
 );
 
 
@@ -91,8 +92,8 @@ my $builder = Padre::Install->new(
 	build_requires        => {
 #		'Test::Compile'             => '0.08', # does not work on Windows
 		'Test::More'                => '0.47',
-		'Test::Exception'           => 0,
-		'Test::NoWarnings'          => 0,
+		'Test::Exception'           => '0.27',
+		'Test::NoWarnings'          => '0.084',
 		'Test::NeedsDisplay'        => '1.05',
 	},
 	meta_merge => {
@@ -129,8 +130,8 @@ sub check_wx_version {
 	nono("Sorry we don't known this wxWidgets version format: '$version'")
 		if $version !~ /^\d+\.\d+(\.\d+)?$/;
 	my ($major, $minor, $way_too_minor) = split /\./, $version;
-	nono("Padre needs at least version 2.7.x of wxWidgets. this is version $version")
-		if $major < 2 or $minor < 7;
+	nono("Padre needs at least version 2.8.8 of wxWidgets. this is version $version")
+		if $major < 2 or $minor < 8;
 
 	return;
 }

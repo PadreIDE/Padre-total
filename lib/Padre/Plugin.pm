@@ -34,8 +34,6 @@ Padre::Plugin - Padre Plugin API
   
   1;
 
-=head2 METHODS
-
 =cut
 
 use 5.008;
@@ -44,12 +42,38 @@ use warnings;
 use Scalar::Util ();
 use Padre::Wx    ();
 
-our $VERSION = '0.18';
+our $VERSION    = '0.18';
+our $COMPATIBLE = '0.18';
+
+
 
 
 
 ######################################################################
-# Default Constructor
+# Static Methods
+
+=pod
+
+=head2 STATIC/CLASS METHODS
+
+=head2 plugin_name
+
+The C<plugin_name> method will be called by Padre when it needs a name
+to display in the user inferface.
+
+The default implementation will generate a name based on the class name
+of the plugin.
+
+=cut
+
+sub plugin_name {
+	my $class = ref($_[0]) || $_[0];
+	my @words = $class =~ /(\w+)/gi;
+	my $name  = pop @words;
+	$name =~ s/([a-z])([A-Z])/$1 $2/g;
+	$name =~ s/([A-Z]+)([A-Z])/$1 $2/g;
+	return $name;
+}
 
 =pod
 
@@ -87,7 +111,16 @@ sub padre_interfaces {
 	return ();
 }
 
+
+
+
+
+######################################################################
+# Default Constructor
+
 =pod
+
+=head1 CONSTRUCTORS
 
 =head2 new
 
@@ -104,6 +137,46 @@ sub new {
 	my $class = shift;
 	my $self  = bless {}, $class;
 	return $self;
+}
+
+
+
+
+
+#####################################################################
+# Instance Methods
+
+=pod
+
+=head1 INSTANCE METHODS
+
+=head2 registered_documents
+
+  sub registered_documents {
+      'application/javascript' => 'Padre::Plugin::JavaScript::Document',
+      'application/json'       => 'Padre::Plugin::JavaScript::Document',
+  }
+
+The C<registered_documents> methods can be used by a plugin to define
+document types for which the plugin provides a document class
+(which is used by Padre to enable functionality beyond the level of
+a plain text file with simple Scintilla highlighting).
+
+This method will be called by the Plugin Manager and used to populate
+various internal data and do various other tasks at a time of its choosing.
+
+This (theoretically at this point) allows Padre to keep a document open
+while a plugin is being enabled or disabled, upgrading or downgrading the
+document in the process.
+
+The method call is made on the Plugin object, and returns a list of
+MIME-type to class pairs. By default the method returns a null list, 
+which indicates that the plugin does not provide any document types.
+
+=cut
+
+sub registered_documents {
+	return ();
 }
 
 =pod
@@ -188,11 +261,6 @@ It returns two values, the label for the menu entry to be used in the top level
 Plugins menu, and a reference to an ARRAY containing an ordered set of key/value
 pairs that will be turned into menus.
 
-More complex plugins that need full control over the menu will be addressed
-in the next release.
-
-If the method return a null list, no menu entry will be created for the plugin.
-
 =cut
 
 sub menu_plugins_simple {
@@ -201,31 +269,66 @@ sub menu_plugins_simple {
 	return ();
 }
 
-# Generates plugin menu
+=pod
+
+=head2 menu_plugins
+
+  sub menu_plugins {
+      my $self        = shift;
+      my $main_window = shift;
+  
+      # Create a simple menu with a single About entry
+      my $menu = Wx::Menu->new;
+      Wx::Event::EVT_MENU(
+          $main_window,
+          $menu->Append( -1, 'About', ),
+          sub { $self->show_about },
+      );
+  
+      # Return it and the label for our plugin
+      return ( 'My Plugin' => $menu );
+
+The C<menu_plugins> method defines a fully-featured mechanism for building
+your plugin menu.
+
+It returns two values, the label for the menu entry to be used in the top level
+Plugins menu, and a L<Wx::Menu> object containing the custom-built menu structure.
+
+A default implementation of this method is provided which will call
+C<menu_plugins_simple> and implements the expansion of the simple data into a full
+menu structure.
+
+If the method return a null list, no menu entry will be created for the plugin.
+
+=cut
+
 sub menu_plugins {
-	my $self  = shift;
-	my $name  = shift;
-	my $win   = shift;
-	my $items = shift;
-	my $menu  = $self->_menu_plugins_submenu($win, $items);
-	
+	my $self   = shift;
+	my $win    = shift;
+	my @simple = $self->menu_plugins_simple or return ();
+	my $label  = $simple[0];
+	my $menu   = $self->_menu_plugins_submenu( $win, $simple[1] ) or return ();
+	return ($label, $menu);
 }
 
 sub _menu_plugins_submenu {
 	my $self  = shift;
 	my $win   = shift;
 	my $items = shift;
+	unless ( $items and ref $items and ref $items eq 'ARRAY' and not @$items % 2 ) {
+		return;
+	}
 
+	# Fill the menu
 	my $menu  = Wx::Menu->new;
-	return if not $items or not ref $items or not 'ARRAY' eq ref $items;
-	return if @$items % 2;
-
-	for my $i (0 .. (@$items-2) / 2) {
-		if (ref $items->[$i*2+1] eq 'ARRAY') {
-			my $submenu = $self->_menu_plugins_submenu($win, $items->[$i*2 + 1]);
-			$menu->Append(-1, $items->[$i*2], $submenu);
+	while ( @$items ) {
+		my $label = shift @$items;
+		my $value = shift @$items;
+		if ( ref $value eq 'ARRAY' ) {
+			my $submenu = $self->_menu_plugins_submenu( $win, $value );
+			$menu->Append( -1, $label, $submenu );
 		} else {
-			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $items->[$i*2]), $items->[$i*2+1] );
+			Wx::Event::EVT_MENU( $win, $menu->Append( -1, $label), $value );
 		}
 	}
 	return $menu;

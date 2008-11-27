@@ -103,11 +103,27 @@ sub show_prompt {
 		# try to open file
 		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_dir}, $file));
 		$main->refresh_all;
+	} elsif ($cmd =~ /^b(\d+)$/) {
+		$main->on_nth_pane($1);
 	} elsif ($cmd eq 'w') {
-		# save file
 		$main->on_save;
+	} elsif ($cmd eq 'q') {
+		$main->Close;
+	} elsif ($cmd eq 'wq') { #TODO shall this be save_all ?
+		$main->on_save;
+		$main->Close;
 	} elsif ($cmd =~ /^\d+$/) {
 		Padre->ide->wx->main_window->selected_editor->GotoLine($cmd-1);
+	} elsif ($cmd =~ m{%s/}) {
+		my $editor = Padre->ide->wx->main_window->selected_editor;
+		my $text = $editor->GetText;
+		$cmd = substr($cmd, 1);
+		eval "\$text =~ $cmd";
+		if ($@) {
+			Padre->ide->wx->main_window->error($@);
+		} else {
+			$editor->SetText($text);
+		}
 	}
 	
 	return;
@@ -168,7 +184,7 @@ sub on_key_pressed {
 			}
 			if (opendir my $dh, $dir) {
 				@current_options = sort
-							map {-d "$prefix$_" ? "$_/" : $_} 
+							map {-d File::Spec->catfile($dir, "$prefix$_") ? "$_/" : $_} 
 							map  { $_ =~ s/^$prefix//; $_ }
 							grep { $_ =~ /^$prefix/ }
 							grep {$_ ne '.' and $_ ne '..'} readdir $dh;

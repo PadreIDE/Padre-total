@@ -1,8 +1,10 @@
 package Padre::Document;
 
+=pod
+
 =head1 NAME
 
-Padre::Document - document abstraction layer
+Padre::Document - Padre Document Abstraction Layer
 
 =head1 DESCRIPTION
 
@@ -54,27 +56,27 @@ our %mode = (
 # missing from the languages list
 our %EXT_MIME = (
 	ada   => 'text/x-adasrc',
-	asm   => 'text/asm',
-	bat   => 'text/bat',
+	asm   => 'text/x-asm',
+	bat   => 'text/x-bat',
 	cpp   => 'text/x-c++src',
 	css   => 'text/css',
 	diff  => 'text/x-patch',
-	e     => 'text/eiffel',
+	e     => 'text/x-eiffel',
 	f     => 'text/x-fortran',
 	html  => 'text/html',
-	js    => 'text/ecmascript',
-	json  => 'text/ecmascript',
-	latex => 'text/latex',
-	lsp   => 'text/lisp',
-	lua   => 'text/lua',
+	js    => 'application/javascript',
+	json  => 'application/json',
+	latex => 'application/x-latex',
+	lsp   => 'application/x-lisp',
+	lua   => 'text/x-lua',
 	mak   => 'text/x-makefile',
-	mat   => 'text/matlab',
+	mat   => 'text/x-matlab',
 	pas   => 'text/x-pascal',
 	php   => 'application/x-php',
 	py    => 'text/x-python',
 	rb    => 'application/x-ruby',
 	sql   => 'text/x-sql',
-	tcl   => 'text/x-tcl',
+	tcl   => 'application/x-tcl',
 	vbs   => 'text/vbscript',
 	patch => 'text/x-patch',
 	pl    => 'application/x-perl',
@@ -83,67 +85,76 @@ our %EXT_MIME = (
 	pod   => 'application/x-perl',
 	t     => 'application/x-perl',
 	xml   => 'text/xml',
-	yml   => 'text/yaml',
-	yaml  => 'text/yaml',
-	'4th' => 'text/forth',
+	yml   => 'text/x-yaml',
+	yaml  => 'text/x-yaml',
+	'4th' => 'text/x-forth',
 	pasm  => 'application/x-pasm',
 	pir   => 'application/x-pir',
 	p6    => 'application/x-perl6',
 );
 
 our %MIME_CLASS = (
-	'application/x-perl'  => 'Padre::Document::Perl',
-	'application/x-perl6' => 'Padre::Document::Perl6',
-	'application/x-pasm'  => 'Padre::Document::Pasm',
-	'application/x-pir'   => 'Padre::Document::Pir',
-	'text/ecmascript'     => 'Padre::Document::JavaScript',
+	'application/x-perl'     => 'Padre::Document::Perl',
+	'application/x-perl6'    => 'Padre::Document::Perl6',
+	'application/x-pasm'     => 'Padre::Document::PASM',
+	'application/x-pir'      => 'Padre::Document::PIR',
+	'application/javascript' => 'Padre::Document::JavaScript',
+	'application/json'       => 'Padre::Document::JavaScript',
 );
 
+# Document types marked here with CONFIRMED have be checked to confirm that
+# the MIME type is either the official type, or the primary one in use by
+# the relevant language communities.
 our %MIME_LEXER = (
-	'text/x-adasrc'       => Wx::wxSTC_LEX_ADA,
-	'text/asm'            => Wx::wxSTC_LEX_ASM,
-	'text/bat'            => Wx::wxSTC_LEX_BATCH,
-	'text/x-c++src'       => Wx::wxSTC_LEX_CPP,
-	'text/css'            => Wx::wxSTC_LEX_CSS,
-	'text/x-patch'        => Wx::wxSTC_LEX_DIFF,
-	'text/eiffel'         => Wx::wxSTC_LEX_EIFFEL,
-	'text/forth'          => Wx::wxSTC_LEX_FORTH,
-	'text/x-fortran'      => Wx::wxSTC_LEX_FORTRAN,
-	'text/html'           => Wx::wxSTC_LEX_HTML,
-	'text/ecmascript'     => Wx::wxSTC_LEX_ESCRIPT,
-	'text/latex'          => Wx::wxSTC_LEX_LATEX,
-	'text/lisp'           => Wx::wxSTC_LEX_LISP,
-	'text/lua'            => Wx::wxSTC_LEX_LUA,
-	'text/x-makefile'     => Wx::wxSTC_LEX_MAKEFILE,
-	'text/matlab'         => Wx::wxSTC_LEX_MATLAB,
-	'text/x-pascal'       => Wx::wxSTC_LEX_PASCAL,
-	'application/x-perl'  => Wx::wxSTC_LEX_PERL,
-	'text/x-python'       => Wx::wxSTC_LEX_PYTHON,
-	'application/x-php'   => Wx::wxSTC_LEX_PHPSCRIPT,
-	'application/x-ruby'  => Wx::wxSTC_LEX_RUBY,
-	'text/x-sql'          => Wx::wxSTC_LEX_SQL,
-	'text/x-tcl'          => Wx::wxSTC_LEX_TCL,
-	'text/vbscript'       => Wx::wxSTC_LEX_VBSCRIPT,
-	'text/xml'            => Wx::wxSTC_LEX_XML,
-	'text/yaml'           => Wx::wxSTC_LEX_YAML,
-	'application/x-pir'   => Wx::wxSTC_LEX_CONTAINER,
-	'application/x-pasm'  => Wx::wxSTC_LEX_CONTAINER,
-	'application/x-perl6' => Wx::wxSTC_LEX_CONTAINER,
+	'text/x-adasrc'          => Wx::wxSTC_LEX_ADA,       # CONFIRMED
+	'text/x-asm'             => Wx::wxSTC_LEX_ASM,       # CONFIRMED
+	'application/x-bat'      => Wx::wxSTC_LEX_BATCH,     # CONFIRMED (application/x-msdos-program includes .exe and .com)
+	'text/x-c++src'          => Wx::wxSTC_LEX_CPP,       # CONFIRMED
+	'text/css'               => Wx::wxSTC_LEX_CSS,       # CONFIRMED
+	'text/x-patch'           => Wx::wxSTC_LEX_DIFF,      # CONFIRMED
+	'text/x-eiffel'          => Wx::wxSTC_LEX_EIFFEL,    # CONFIRMED
+	'text/x-forth'           => Wx::wxSTC_LEX_FORTH,     # CONFIRMED
+	'text/x-fortran'         => Wx::wxSTC_LEX_FORTRAN,   # CONFIRMED
+	'text/html'              => Wx::wxSTC_LEX_HTML,      # CONFIRMED
+	'application/javascript' => Wx::wxSTC_LEX_ESCRIPT,   # CONFIRMED
+	'application/json'       => Wx::wxSTC_LEX_ESCRIPT,   # CONFIRMED
+	'application/x-latex'    => Wx::wxSTC_LEX_LATEX,     # CONFIRMED
+	'application/x-lisp'     => Wx::wxSTC_LEX_LISP,      # CONFIRMED
+	'text/x-lua'             => Wx::wxSTC_LEX_LUA,       # CONFIRMED
+	'text/x-makefile'        => Wx::wxSTC_LEX_MAKEFILE,  # CONFIRMED
+	'text/x-matlab'          => Wx::wxSTC_LEX_MATLAB,    # CONFIRMED
+	'text/x-pascal'          => Wx::wxSTC_LEX_PASCAL,    # CONFIRMED
+	'application/x-perl'     => Wx::wxSTC_LEX_PERL,      # CONFIRMED
+	'text/x-python'          => Wx::wxSTC_LEX_PYTHON,    # CONFIRMED
+	'application/x-php'      => Wx::wxSTC_LEX_PHPSCRIPT, # CONFIRMED
+	'application/x-ruby'     => Wx::wxSTC_LEX_RUBY,      # CONFIRMED
+	'text/x-sql'             => Wx::wxSTC_LEX_SQL,       # CONFIRMED
+	'application/x-tcl'      => Wx::wxSTC_LEX_TCL,       # CONFIRMED
+	'text/vbscript'          => Wx::wxSTC_LEX_VBSCRIPT,  # CONFIRMED
+	'text/xml'               => Wx::wxSTC_LEX_XML,       # CONFIRMED (text/xml specifically means "human-readable XML")
+	'text/x-yaml'            => Wx::wxSTC_LEX_YAML,      # CONFIRMED
+	'application/x-pir'      => Wx::wxSTC_LEX_CONTAINER, # CONFIRMED
+	'application/x-pasm'     => Wx::wxSTC_LEX_CONTAINER, # CONFIRMED
+	'application/x-perl6'    => Wx::wxSTC_LEX_CONTAINER, # CONFIRMED
 );
 
 our $DEFAULT_LEXER = Wx::wxSTC_LEX_AUTOMATIC;
 
 
 
+
+
 #####################################################################
 # Constructor and Accessors
 
+=pod
+
 =head2 new
 
- my $doc = Padre::Document->new(
-		editor   => $editor,
-		filename => $file,
- );
+  my $doc = Padre::Document->new(
+      editor   => $editor,
+      filename => $file,
+  );
  
 $editor is required and is a Padre::Wx::Editor object
 
@@ -412,6 +423,8 @@ sub reload {
 	return 1;
 }
 
+=pod
+
 =head2 can_check_syntax
 
 Returns a B<true> value if the class provides a method C<check_syntax>
@@ -425,6 +438,8 @@ The method in this base class returns B<false>.
 sub can_check_syntax {
 	return 0;
 }
+
+=pod
 
 =head2 check_syntax ( [ FORCE ] )
 
@@ -464,6 +479,8 @@ Must return the problem list even if nothing has changed when a
 param is present which evaluates to B<true>.
 
 =cut
+
+
 
 
 

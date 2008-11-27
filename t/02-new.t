@@ -63,7 +63,6 @@ SCOPE: {
 			run_command    => '',
 			main_files     => [],
 			main_files_pos => [],
-			locale         => 'en',
 		},
 
 		plugins => {},

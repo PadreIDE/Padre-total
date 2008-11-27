@@ -4,12 +4,17 @@ package Padre::Project;
 
 use strict;
 use warnings;
-use File::Spec        ();
-use Module::Inspector ();
-
-use base 'Module::Inspector';
+use base 'Padre::Project';
 
 our $VERSION = '0.18';
+
+sub inspector {
+	unless ( $_[0]->{inspector} ) {
+		require Module::Inspector;
+		$_[0]->{inspector} = Module::Inspector->new( dist_dir => $self->root );
+	}
+	return $_[0]->{inspector};
+}
 
 sub from_file {
 	my $class = shift;
@@ -39,7 +44,7 @@ sub from_file {
 
 	# Hand off to the regular constructor
 	return $class->new(
-		dist_dir => File::Spec->catpath( $v, $dirs ),
+		root => File::Spec->catpath( $v, $dirs ),
 	);
 }
 
