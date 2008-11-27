@@ -34,6 +34,7 @@ my %languages = (
 	de => Wx::gettext('German'),
 	en => Wx::gettext('English'),
 	ko => Wx::gettext('Korean'),
+	hu => Wx::gettext('Hungarian'),
 );
 
 my %shortname_of = (
