@@ -664,25 +664,17 @@ sub menu_view {
 	
 	# TODO horrible, fix this
 	Wx::Event::EVT_MENU( $win,
-		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
-		sub { $_[0]->change_locale('en') },
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("System Default") ),
+		sub { $_[0]->change_locale() },
 	);
-	Wx::Event::EVT_MENU( $win,
-		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
-		sub { $_[0]->change_locale('de') },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Hungarian") ),
-		sub { $_[0]->change_locale('hu') },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Hebrew") ),
-		sub { $_[0]->change_locale('he') },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
-		sub { $_[0]->change_locale('ko') },
-	);
+	$self->{view_language}->AppendSeparator;
+	my %languages = %Padre::Wx::MainWindow::languages;
+	foreach my $name (sort { $languages{$a} cmp $languages{$b} }  keys %languages) {
+		Wx::Event::EVT_MENU( $win,
+			$self->{view_language}->AppendRadioItem( -1, $languages{$name} ),
+			sub { $_[0]->change_locale($name) },
+		);
+	}
 
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,

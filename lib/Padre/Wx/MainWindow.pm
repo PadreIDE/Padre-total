@@ -30,7 +30,9 @@ my $default_dir = Cwd::cwd();
 
 use constant SECONDS => 1000;
 
-my %languages = (
+# TODO move it to some better place,
+# used in Menu.pm
+our %languages = (
 	de => Wx::gettext('German'),
 	en => Wx::gettext('English'),
 	ko => Wx::gettext('Korean'),
