@@ -1,6 +1,6 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
-0.02  XXX
+0.02  Thu Nov 27 2008
     - Use Module::Install::PadrePlugin to allow the user to install the plugin
       to their local dir
     - instead of use() Perl::Tidy, require() when needed
