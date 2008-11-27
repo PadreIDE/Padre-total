@@ -30,6 +30,8 @@ my $default_dir = Cwd::cwd();
 
 use constant SECONDS => 1000;
 
+use constant DEFAULT_LOCALE => 'en';
+
 # TODO move it to some better place,
 # used in Menu.pm
 our %languages = (
@@ -64,7 +66,7 @@ sub new {
 	Wx::InitAllImageHandlers();
 
 	$config->{host}->{locale} ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || 'en' ;
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
 
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
