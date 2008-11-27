@@ -289,13 +289,13 @@ menu, etc.
 
 sub load_plugin {
 	my $self = shift;
-	my $ret = $self->_load_plugin_no_refresh(@_);
+	my $ret = $self->_load_plugin(@_);
 	$self->_refresh_plugin_menu;
 	return $ret;
 }
 
 # The guts of load_plugin which don't refresh the menu
-sub _load_plugin_no_refresh {
+sub _load_plugin {
 	my $self = shift;
 
 	# Normalize classes to plugin name only
@@ -335,8 +335,9 @@ sub _load_plugin_no_refresh {
 
 	eval {
 		$plugin_state->{object} = $module->new;
-		die "Could not create plugin object for $module"
-			if not ref($plugin_state->{object});
+		unless ( ref($plugin_state->{object}) ) {
+			die "Could not create plugin object for $module";
+		}
 		$plugin_state->{object}->plugin_enable;
 	};
 	if ($@) {
@@ -364,13 +365,13 @@ menu, etc.
 
 sub unload_plugin {
 	my $self = shift;
-	my $ret  = $self->_unload_plugin_no_refresh(@_);
+	my $ret  = $self->_unload_plugin(@_);
 	$self->_refresh_plugin_menu;
 	return $ret;
 }
 
 # the guts of unload_plugin which don't refresh the menu
-sub _unload_plugin_no_refresh {
+sub _unload_plugin {
 	my $self = shift;
 	my $name = shift;
 
@@ -418,8 +419,8 @@ sub reload_plugins {
 	foreach my $name (sort keys %$plugins) {
 		# do not use the reload_plugin method since that
 		# refreshes the menu every time
-		$self->_unload_plugin_no_refresh($name);
-		$self->_load_plugin_no_refresh($name);
+		$self->_unload_plugin($name);
+		$self->_load_plugin($name);
 		$self->enable_editors($name);
 	}
 	$self->_refresh_plugin_menu();
@@ -523,10 +524,9 @@ is passed in as first argument.
 sub reload_plugin {
 	my $self = shift;
 	my $name = shift;
-
-	$self->_unload_plugin_no_refresh( $name );
-	$self->load_plugin( $name ) or return;
-	$self->enable_editors( $name ) or return;
+	$self->_unload_plugin($name);
+	$self->load_plugin($name)    or return;
+	$self->enable_editors($name) or return;
 	return 1;
 }
 
@@ -534,14 +534,16 @@ sub reload_plugin {
 # recreate the Plugins menu
 sub _refresh_plugin_menu {
 	my $self = shift;
-
-	# re-create menu,
 	my $main = $self->parent->wx->main_window;
-	my $plugin_menu = $main->{menu}->menu_plugin( $main );
-	my $plugin_menu_place = $main->{menu}->{wx}->FindMenu( Wx::gettext("Pl&ugins") );
-	$main->{menu}->{wx}->Replace( $plugin_menu_place, $plugin_menu, Wx::gettext("Pl&ugins") );
 
-	$main->{menu}->refresh;
+	# Regenerate the menu
+	my $menu    = $main->{menu};
+	my $submenu = $menu->menu_plugin($main);
+	my $place   = $menu->{wx}->FindMenu( Wx::gettext("Pl&ugins") );
+
+	# Update the menu
+	$menu->{wx}->Replace( $place, $submenu, Wx::gettext("Pl&ugins") );
+	$menu->refresh;
 }
 
 =pod
@@ -556,9 +558,11 @@ again when the editor is restarted.
 =cut
 
 sub failed {
-	my ($self) = @_;
+	my $self    = shift;
 	my $plugins = $self->plugins;
-	return grep { $plugins->{$_}->{status} eq 'failed' } keys %$plugins;
+	return grep {
+		$plugins->{$_}->{status} eq 'failed'
+	} keys %$plugins;
 }
 
 # TODO: document this.
