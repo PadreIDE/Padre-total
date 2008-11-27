@@ -42,12 +42,15 @@ our %languages = (
 
 my %shortname_of = (
 	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
-	Wx::wxLANGUAGE_GERMAN() => 'de', 
-	Wx::wxLANGUAGE_KOREAN() => 'ko',
-	Wx::wxLANGUAGE_HUNGARIAN() => 'hu',
-	Wx::wxLANGUAGE_HEBREW() => 'he',
+	Wx::wxLANGUAGE_GERMAN()     => 'de', 
+	Wx::wxLANGUAGE_KOREAN()     => 'ko',
+	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_HEBREW()     => 'he',
 );
+
 my %number_of = reverse %shortname_of;
+
+
 
 
 
@@ -358,7 +361,7 @@ sub post_init {
 	$self->load_files;
 
 	$self->on_toggle_status_bar;
-	Padre->ide->{plugin_manager}->enable_editors_for_all;
+	Padre->ide->plugin_manager->enable_editors_for_all;
 	$self->refresh_all;
 
 	my $output = $self->{menu}->{view_output}->IsChecked;
@@ -370,36 +373,16 @@ sub post_init {
 	$self->show_output(1);
 	$self->show_output($output) if not $output;
 
-#$self->Close;
-
-	if (Padre->ide->config->{experimental}) {
-	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
-		$self->enable_syntax_checker(1);
-	}
-	}
-
-	my $plugins = Padre->ide->{plugin_manager}{plugins};
-
-	my $new_plugins  = '';
-	foreach my $plugin_name (sort keys %$plugins ) {
-		if ($plugins->{$plugin_name}{status} eq 'new') {
-			$new_plugins .= "$plugin_name\n";
+	if ( Padre->ide->config->{experimental} ) {
+		if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+			$self->enable_syntax_checker(1);
 		}
 	}
-	if ($new_plugins) {
-		my $msg = <<"END_MSG";
-We found several new plugins.
-In order to configure and enable them go to
-Plugins/Plugin Tools/Open Plugin Manager
 
-List of new plugins:
+	# Check for new plugins and alert if so
+	my $plugins = Padre->ide->plugin_manager->alert_new;
 
-$new_plugins
-END_MSG
-
-		$self->message($msg, 'New plugins detected');
-	}
-	# 
+	# Start the change detection timer
 	my $timer = Wx::Timer->new( $self, Padre::Wx::id_FILECHK_TIMER );
 	Wx::Event::EVT_TIMER($self, Padre::Wx::id_FILECHK_TIMER, \&on_timer_check_overwrite);
 	$timer->Start(5 * SECONDS, 0);
@@ -1134,8 +1117,7 @@ sub on_split_window {
 	$new_editor->SetDocPointer($pointer);
 	$new_editor->set_preferences;
 
-
-	Padre->ide->{plugin_manager}->editor_enable($new_editor);
+	Padre->ide->plugin_manager->editor_enable($new_editor);
 
 	$self->create_tab($new_editor, $file, " $title");
 
@@ -1165,7 +1147,7 @@ sub setup_editor {
 		filename => $file,
 	);
 	
-	Padre->ide->{plugin_manager}->editor_enable($editor);
+	Padre->ide->plugin_manager->editor_enable($editor);
 
 	my $title = $editor->{Document}->get_title;
 
