@@ -4,6 +4,8 @@ Changes for Padre.
    Hungarian translation added
    Hebrew translation added
    Improvement in vi PLugin
+   Locale switching no longer needs a restart (HJANSEN)
+   Moved syntax checking out from experimental state (HJANSEN)
 
 0.18 2008.11.23
 
