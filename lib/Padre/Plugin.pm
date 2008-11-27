@@ -34,8 +34,6 @@ Padre::Plugin - Padre Plugin API
   
   1;
 
-=head2 METHODS
-
 =cut
 
 use 5.008;
@@ -52,9 +50,11 @@ our $COMPATIBLE = '0.18';
 
 
 ######################################################################
-# Default Constructor
+# Static Methods
 
 =pod
+
+=head2 STATIC/CLASS METHODS
 
 =head2 padre_interfaces
 
@@ -90,7 +90,16 @@ sub padre_interfaces {
 	return ();
 }
 
+
+
+
+
+######################################################################
+# Default Constructor
+
 =pod
+
+=head1 CONSTRUCTORS
 
 =head2 new
 
@@ -107,6 +116,46 @@ sub new {
 	my $class = shift;
 	my $self  = bless {}, $class;
 	return $self;
+}
+
+
+
+
+
+#####################################################################
+# Instance Methods
+
+=pod
+
+=head1 INSTANCE METHODS
+
+=head2 registered_documents
+
+  sub registered_documents {
+      'application/javascript' => 'Padre::Plugin::JavaScript::Document',
+      'application/json'       => 'Padre::Plugin::JavaScript::Document',
+  }
+
+The C<registered_documents> methods can be used by a plugin to define
+document types for which the plugin provides a document class
+(which is used by Padre to enable functionality beyond the level of
+a plain text file with simple Scintilla highlighting).
+
+This method will be called by the Plugin Manager and used to populate
+various internal data and do various other tasks at a time of its choosing.
+
+This (theoretically at this point) allows Padre to keep a document open
+while a plugin is being enabled or disabled, upgrading or downgrading the
+document in the process.
+
+The method call is made on the Plugin object, and returns a list of
+MIME-type to class pairs. By default the method returns a null list, 
+which indicates that the plugin does not provide any document types.
+
+=cut
+
+sub registered_documents {
+	return ();
 }
 
 =pod
