@@ -7,11 +7,22 @@ use warnings;
 # This script is only used to run the application from
 # its development location
 # No need to distribute it
-
 use FindBin;
+use File::Basename ();
 use Probe::Perl;
 $ENV{PADRE_DEV}  = 1;
 $ENV{PADRE_HOME} = $FindBin::Bin;
+
+if ($^O eq 'linux') {
+	if( my $msgfmt = `which msgfmt`) {
+		chomp $msgfmt;
+		foreach my $locale (map { substr(File::Basename::basename($_), 0, -3) } glob "share/locale/*.po") {
+			print "$locale\n";
+			system("$msgfmt -o share/locale/$locale.mo share/locale/$locale.po");	
+		}
+	}
+}
+
 my $perl = Probe::Perl->find_perl_interpreter;
 my @cmd  = (
         qq[$perl],
