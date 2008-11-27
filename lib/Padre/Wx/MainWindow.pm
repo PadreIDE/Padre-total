@@ -65,9 +65,6 @@ sub new {
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
 
-	$config->{host}->{locale} ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
-
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
 	
@@ -597,8 +594,12 @@ sub change_locale {
 sub set_locale {
     my $self = shift;
 
-	my $config = Padre->ide->config;
+	my $config    = Padre->ide->config;
 	my $shortname = $config->{host}->{locale};
+
+	$shortname ||= 
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
+
 	my $lang = $number_of{ $shortname };
     $self->{locale} = Wx::Locale->new($lang);
     $self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
