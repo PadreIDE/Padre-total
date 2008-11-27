@@ -36,6 +36,11 @@ sub new {
 		Padre::Wx::tango( 'actions', 'document-save.png' ),
 		Wx::gettext('Save File'),
 	);
+#	$self->AddTool(
+#		Wx::wxID_PRINT, '',
+#		Padre::Wx::tango( 'actions', 'document-print.png' ),
+#		Wx::gettext('Print File'),
+#	);
 	$self->AddTool(
 		Wx::wxID_CLOSE, '',
 		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),

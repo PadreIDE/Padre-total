@@ -299,6 +299,14 @@ sub menu_file {
 	);
 	$menu->AppendSeparator;
 
+#	# Printing
+#	$self->{file_print} = $menu->Append( Wx::wxID_PRINT, Wx::gettext('Print File') );
+#	Wx::Event::EVT_MENU( $win,
+#		$self->{file_print},
+#		sub { require Padre::Wx::Print; Padre::Wx::Print::OnPrint(@_) }     
+#	);                                                                            
+#	$menu->AppendSeparator;
+
 	# Conversions and Transforms
 	$self->{file_convert_nl} = Wx::Menu->new;
 	$menu->Append( -1, Wx::gettext("Convert..."), $self->{file_convert_nl} );
