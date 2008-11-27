@@ -296,60 +296,81 @@ sub load_plugin {
 
 # The guts of load_plugin which don't refresh the menu
 sub _load_plugin {
-	my $self = shift;
-
-	# Normalize classes to plugin name only
-	my $name = shift;
-	$name =~ s/^Padre::Plugin:://;
+	my $self    = shift;
+	my $name    = shift;
+	my $config  = $self->parent->config;
+	my $plugins = $self->plugins;
 
 	# Skip if that plugin was already loaded
-	my $plugins = $self->plugins;
+	$name =~ s/^Padre::Plugin:://;
 	if ( $plugins->{$name} and $plugins->{$name}->{status} eq 'loaded' ) {
 		return;
 	}
 
-	my $module = "Padre::Plugin::$name";
-
 	$plugins->{$name} ||= {};
-	my $plugin_state = $plugins->{$name};
+	my $state = $plugins->{$name};
 
-	$plugin_state->{module} = $module;
+	my $module = "Padre::Plugin::$name";
+	$state->{module} = $module;
 
-	my $config = $self->parent->config;
 	unless ( $config->{plugins}->{$name} ) {
 		$config->{plugins}->{$name}->{enabled} = 0;
-		$plugin_state->{status} = 'new';
+		$state->{status} = 'new';
 		return;
 	}
 	unless ( $config->{plugins}->{$name}->{enabled} ) {
-		$plugin_state->{status} = 'disabled';
+		$state->{status} = 'disabled';
 		return;
 	}
 
 	eval "use $module"; ## no critic
-	if ($@) {
+	if ( $@ ) {
 		warn $self->{errstr} = "ERROR while trying to load plugin '$name': $@";
-		$plugin_state->{status} = 'failed';
+		$state->{status} = 'failed';
 		return;
 	}
 
 	eval {
-		$plugin_state->{object} = $module->new;
-		unless ( ref($plugin_state->{object}) ) {
+		$state->{object} = $module->new;
+		unless ( ref($state->{object}) ) {
 			die "Could not create plugin object for $module";
 		}
-		$plugin_state->{object}->plugin_enable;
+		$self->_plugin_enable($name);
 	};
-	if ($@) {
+	if ( $@ ) {
 		# TODO report error in a nicer way
 		warn $self->{errstr} = $@;
-		$plugin_state->{status} = 'failed';
-		# automatically disable the plugin
+		$state->{status} = 'failed';
+
+		# Automatically disable the plugin
 		$config->{plugins}->{$name}->{enabled} = 0; # persistent!
 	} else {
-		$plugin_state->{status} = 'loaded';
+		$state->{status} = 'loaded';
 	}
 	
+	return 1;
+}
+
+# Assume the named plugin exists, load it
+sub _plugin_enable {
+	my $self   = shift;
+	my $name   = shift;
+	my $plugin = $self->plugins->{$name}->{object};
+
+	# Call the plugin's own enable method
+	$plugin->plugin_enable;
+
+	# If the plugin defines document types, enable them
+	my @documents = $plugin->registered_documents;
+	if ( @documents ) {
+		Class::Autouse->load('Padre::Document');
+	}
+	while ( @documents ) {
+		my $type  = shift @documents;
+		my $class = shift @documents;
+		$Padre::Document::MIME_CLASS{$type} = $class;
+	}
+
 	return 1;
 }
 
@@ -590,9 +611,8 @@ sub test_a_plugin {
 	my $filename = $dialog->GetFilename;
 	$default_dir = $dialog->GetDirectory;
 	
+	# Save into plugin for next time
 	my $file = File::Spec->catfile($default_dir, $filename);
-	
-	# save into plugin for next time
 	$config->{last_test_plugin_file} = $file;
 	
 	( $default_dir, $filename ) = split(/Padre[\\\/]Plugin[\\\/]/, $file, 2);
@@ -602,7 +622,7 @@ sub test_a_plugin {
 		unshift @INC, $default_dir;
 	}
 
-	# load plugin
+	# Load plugin
 	delete $plugins->{$filename};
 	$config->{plugins}->{$filename}->{enabled} = 1;
 	$self->load_plugin($filename);
