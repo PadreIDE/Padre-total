@@ -52,6 +52,7 @@ lib/Padre/Wx/Output.pm
 lib/Padre/Wx/Pod2HTML.pm
 lib/Padre/Wx/Popup.pm
 lib/Padre/Wx/Print.pm
+lib/Padre/Wx/Print/Printout.pm
 lib/Padre/Wx/Project.pm
 lib/Padre/Wx/RightClick.pm
 lib/Padre/Wx/ToolBar.pm
