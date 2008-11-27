@@ -35,12 +35,15 @@ my %languages = (
 	en => Wx::gettext('English'),
 	ko => Wx::gettext('Korean'),
 	hu => Wx::gettext('Hungarian'),
+	he => Wx::gettext('Hebrew'),
 );
 
 my %shortname_of = (
 	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
 	Wx::wxLANGUAGE_GERMAN() => 'de', 
 	Wx::wxLANGUAGE_KOREAN() => 'ko',
+	Wx::wxLANGUAGE_HUNGARIAN() => 'hu',
+	Wx::wxLANGUAGE_HEBREW() => 'he',
 );
 my %number_of = reverse %shortname_of;
 

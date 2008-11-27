@@ -663,33 +663,26 @@ sub menu_view {
 	$menu_view->Append( -1, Wx::gettext("Language"), $self->{view_language} );
 	
 	# TODO horrible, fix this
-	if ($config->{host}->{locale} eq 'en') {
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
-			sub { $_[0]->change_locale('en') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
-			sub { $_[0]->change_locale('de') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
-			sub { $_[0]->change_locale('ko') },
-		);
-	} else {
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
-			sub { $_[0]->change_locale('de') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
-			sub { $_[0]->change_locale('ko') },
-		);
-		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
-			sub { $_[0]->change_locale('en') },
-		);
-	}
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("English") ),
+		sub { $_[0]->change_locale('en') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("German") ),
+		sub { $_[0]->change_locale('de') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Hungarian") ),
+		sub { $_[0]->change_locale('hu') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Hebrew") ),
+		sub { $_[0]->change_locale('he') },
+	);
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("Korean") ),
+		sub { $_[0]->change_locale('ko') },
+	);
 
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
