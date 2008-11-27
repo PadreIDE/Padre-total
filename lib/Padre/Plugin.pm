@@ -56,6 +56,27 @@ our $COMPATIBLE = '0.18';
 
 =head2 STATIC/CLASS METHODS
 
+=head2 plugin_name
+
+The C<plugin_name> method will be called by Padre when it needs a name
+to display in the user inferface.
+
+The default implementation will generate a name based on the class name
+of the plugin.
+
+=cut
+
+sub plugin_name {
+	my $class = ref($_[0]) || $_[0];
+	my @words = $class =~ /(\w+)/gi;
+	my $name  = pop @words;
+	$name =~ s/([a-z])([A-Z])/$1 $2/g;
+	$name =~ s/([A-Z]+)([A-Z])/$1 $2/g;
+	return $name;
+}
+
+=pod
+
 =head2 padre_interfaces
 
   sub padre_interfaces {
