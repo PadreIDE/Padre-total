@@ -670,7 +670,6 @@ sub menu_view {
 	$self->{view_language} = Wx::Menu->new;
 	$menu_view->Append( -1, Wx::gettext("Language"), $self->{view_language} );
 	
-	# TODO horrible, fix this
 	Wx::Event::EVT_MENU( $win,
 		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("System Default") ),
 		sub { $_[0]->change_locale() },
