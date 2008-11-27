@@ -1,5 +1,10 @@
 Changes for Padre.
 
+   Korean translation added
+   Hungarian translation added
+   Hebrew translation added
+   Improvement in vi PLugin
+
 0.18 2008.11.23
 
     Added a few more directories to the no_index list in Build.PL (ADAMK)
