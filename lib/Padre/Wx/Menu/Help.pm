@@ -58,6 +58,8 @@ sub about {
 
 	$about->AddTranslator("German - Heiko Jansen");
 	$about->AddTranslator("Korean - Keedi Kim");
+	$about->AddTranslator("Hungarian = Gyorgy Pasztor");
+	$about->AddTranslator("Hebrew - Omer Zak");
 
 
 	Wx::AboutBox( $about );

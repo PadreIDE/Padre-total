@@ -901,5 +901,10 @@ German - Heiko Jansen (HJANSEN)
 
 Korean - Keedi Kim (KEEDI)
 
+Hungarian = Gyorgy Pasztor (GYU)
+
+Hebrew - Omer Zak
+
+
 
 =cut
