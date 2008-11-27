@@ -1,8 +1,10 @@
 package Padre::Document;
 
+=pod
+
 =head1 NAME
 
-Padre::Document - document abstraction layer
+Padre::Document - Padre Document Abstraction Layer
 
 =head1 DESCRIPTION
 
@@ -100,10 +102,13 @@ our %MIME_CLASS = (
 	'application/json'       => 'Padre::Document::JavaScript',
 );
 
+# Document types marked here with CONFIRMED have be checked to confirm that
+# the MIME type is either the official type, or the primary one in use by
+# the relevant language communities.
 our %MIME_LEXER = (
 	'text/x-adasrc'          => Wx::wxSTC_LEX_ADA,       # CONFIRMED
 	'text/x-asm'             => Wx::wxSTC_LEX_ASM,       # CONFIRMED
-	'application/x-bat'      => Wx::wxSTC_LEX_BATCH,     # CONFIRMED (appication/x-msdos-program includes .exe and .com)
+	'application/x-bat'      => Wx::wxSTC_LEX_BATCH,     # CONFIRMED (application/x-msdos-program includes .exe and .com)
 	'text/x-c++src'          => Wx::wxSTC_LEX_CPP,       # CONFIRMED
 	'text/css'               => Wx::wxSTC_LEX_CSS,       # CONFIRMED
 	'text/x-patch'           => Wx::wxSTC_LEX_DIFF,      # CONFIRMED
@@ -137,15 +142,19 @@ our $DEFAULT_LEXER = Wx::wxSTC_LEX_AUTOMATIC;
 
 
 
+
+
 #####################################################################
 # Constructor and Accessors
 
+=pod
+
 =head2 new
 
- my $doc = Padre::Document->new(
-		editor   => $editor,
-		filename => $file,
- );
+  my $doc = Padre::Document->new(
+      editor   => $editor,
+      filename => $file,
+  );
  
 $editor is required and is a Padre::Wx::Editor object
 
@@ -414,6 +423,8 @@ sub reload {
 	return 1;
 }
 
+=pod
+
 =head2 can_check_syntax
 
 Returns a B<true> value if the class provides a method C<check_syntax>
@@ -427,6 +438,8 @@ The method in this base class returns B<false>.
 sub can_check_syntax {
 	return 0;
 }
+
+=pod
 
 =head2 check_syntax ( [ FORCE ] )
 
@@ -466,6 +479,8 @@ Must return the problem list even if nothing has changed when a
 param is present which evaluates to B<true>.
 
 =cut
+
+
 
 
 
