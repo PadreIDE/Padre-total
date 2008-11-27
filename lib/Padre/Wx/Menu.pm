@@ -64,6 +64,7 @@ sub new {
 
 	$self->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
 	$self->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
+	$self->{view_show_syntaxcheck}->Check( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return $self;
 }
@@ -620,10 +621,17 @@ sub menu_view {
 		$self->{view_indentation_guide},
 		\&Padre::Wx::MainWindow::on_toggle_indentation_guide,
 	);
+	$menu_view->AppendSeparator;	
+
 	$self->{view_show_calltips} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Call Tips") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{view_show_calltips},
 		sub { $config->{editor_calltips} = $self->{view_show_calltips}->IsChecked },
+	);
+	$self->{view_show_syntaxcheck} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_show_syntaxcheck},
+		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 	$menu_view->AppendSeparator;
 	
@@ -895,17 +903,14 @@ sub menu_window {
 			$_[0]->{output}->SetFocus;
 		},
 	);
-#	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
-#	Wx::Event::EVT_MENU( $win,
-#		$self->{window_goto_synchk},
-#		sub {
-#			$_[0]->show_syntaxbar(1);
-#			$_[0]->{syntaxbar}->SetFocus;
-#		},
-#	);
-#	unless ( $_[0]->{experimental_syntaxcheck}->IsChecked ) {
-#		$self->{window_goto_synchk}->Enable(0);
-#	}
+	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
+	Wx::Event::EVT_MENU( $win,
+		$self->{window_goto_synchk},
+		sub {
+			$_[0]->show_syntaxbar(1);
+			$_[0]->{syntaxbar}->SetFocus;
+		},
+	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("GoTo Main Window\tAlt-M") ),
 		sub {
@@ -990,11 +995,6 @@ sub menu_experimental {
 			}
 			return;
 		},
-	);
-	$self->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
-	Wx::Event::EVT_MENU( $win,
-		$self->{experimental_syntaxcheck},
-		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 
 	

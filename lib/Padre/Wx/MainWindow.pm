@@ -186,10 +186,8 @@ sub new {
 		\&on_function_selected,
 	);
 
-	# Create the (experiemental) syntaxbar
-	if ( Padre->ide->config->{experimental} ) {
-		$self->create_syntaxbar;
-	}
+	# Create the sidebar for syntax check messages
+	$self->create_syntaxbar;
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -313,7 +311,7 @@ sub create_syntaxbar {
 		$self->{syntaxbar},
 		\&on_synchkmsg_selected,
 	);
-	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Show();
 	}
 	else {
@@ -386,10 +384,8 @@ sub post_init {
 	$self->show_output(1);
 	$self->show_output($output) if not $output;
 
-	if ( Padre->ide->config->{experimental} ) {
-		if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
-			$self->enable_syntax_checker(1);
-		}
+	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
+		$self->enable_syntax_checker(1);
 	}
 
 	# Check for new plugins and alert if so
@@ -644,7 +640,7 @@ sub refresh_syntaxcheck {
 	my $self = shift;
 	return if $self->no_refresh;
 	return if not Padre->ide->config->{experimental};
-	return if not $self->{menu}->{experimental_syntaxcheck}->IsChecked;
+	return if not $self->{menu}->{view_show_syntaxcheck}->IsChecked;
 
 	$self->on_synchk_timer(undef, 1);
 
@@ -1699,9 +1695,9 @@ sub on_toggle_synchk {
 	my $config = Padre->ide->config;
 	$config->{editor_syntaxcheck} = $event->IsChecked ? 1 : 0;
 
-	$self->enable_syntax_checker( $config->{editor_syntaxcheck} );
+	$self->enable_syntax_checker( $config->{editor_syntaxcheck} ? 1 : 0 );
 
-    #$self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} );
+    $self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return;
 }
@@ -1810,7 +1806,7 @@ sub show_functions {
 sub show_syntaxbar {
 	my $self = shift;
 	my $on   = scalar(@_) ? $_[0] ? 1 : 0 : 1;
-	unless ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+	unless ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Hide();
 		$self->manager->Update;
 		return;
