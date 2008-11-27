@@ -767,7 +767,7 @@ sub menu_plugin {
 		$menu->Append( -1, Wx::gettext("Plugin Manager") ),
 		sub { Padre::Wx::Dialog::PluginManager->show(@_) },
 	);
-	$menu->Append( -1, 'Plugin Tools', $tools );
+	$menu->Append( -1, Wx::gettext('Plugin Tools'), $tools );
 	$menu->AppendSeparator;
 
 	foreach my $name ( 'My', @plugins ) {
