@@ -15,6 +15,7 @@ Padre::Plugin - Padre Plugin API
   
   # Declare the Padre classes we use and Padre version the code was written to
   sub padre_interfaces {
+      'Padre::Plugin'         => 0.19,
       'Padre::Document::Perl' => 0.16,
       'Padre::Wx::MainWindow' => 0.16,
       'Padre::DB'             => 0.16,
@@ -80,8 +81,9 @@ sub plugin_name {
 =head2 padre_interfaces
 
   sub padre_interfaces {
+      'Padre::Plugin'         => 0.19,
       'Padre::Document::Perl' => 0.16,
-      'Padre::Wx::MainWindow' => 0.16,
+      'Padre::Wx::MainWindow' => 0.18,
       'Padre::DB'             => 0.16,
   }
 
@@ -246,7 +248,7 @@ sub plugin_disable {
 =head2 menu_plugins_simple
 
   sub menu_plugins_simple {
-  	  'My Plugin' => [
+      'My Plugin' => [
           About => sub { $self->show_about },
           Deep  => [
               'Do Something' => sub { $self->do_something },
