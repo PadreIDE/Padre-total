@@ -117,18 +117,8 @@ sub new {
 
 	$self->{page_history} = [];
 
-	# Create the menu bar
-	$self->{menu} = Padre::Wx::Menu->new( $self );
-	$self->SetMenuBar( $self->{menu}->{wx} );
-
-	# Create the tool bar
-	$self->SetToolBar( Padre::Wx::ToolBar->new($self) );
-	$self->GetToolBar->Realize;
-
-	# Create the status bar
-	$self->{statusbar} = $self->CreateStatusBar;
-	$self->{statusbar}->SetFieldsCount(4);
-	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+	# create basic window components
+	$self->create_main_components;
 
 	# Create the main notebook for the documents
 	$self->{notebook} = Wx::AuiNotebook->new(
@@ -272,6 +262,30 @@ sub new {
 	$timer->Start( 1, 1 );
 
 	return $self;
+}
+
+sub create_main_components {
+	my $self = shift;
+
+	# Create the menu bar
+	if ( defined $self->{menu} ) {
+		delete $self->{menu};
+	}
+	$self->{menu} = Padre::Wx::Menu->new( $self );
+	$self->SetMenuBar( $self->{menu}->{wx} );
+
+	# Create the tool bar
+	$self->SetToolBar( Padre::Wx::ToolBar->new($self) );
+	$self->GetToolBar->Realize;
+
+	# Create the status bar
+	if ( ! defined $self->{statusbar} ) {
+		$self->{statusbar} = $self->CreateStatusBar;
+		$self->{statusbar}->SetFieldsCount(4);
+		$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+	}
+
+	return;
 }
 
 sub create_syntaxbar {
@@ -585,14 +599,25 @@ sub refresh_all {
 
 sub change_locale {
 	my ($self, $shortname) = @_;
+
 	my $config = Padre->ide->config;
 	$config->{host}->{locale} = $shortname;
-	$self->message( 'Currently you have to restart Padre for the language change to take effect' );
+
+	delete $self->{locale};
+	$self->set_locale;
+
+	$self->create_main_components;
+
+	$self->refresh_all;
+
+	$self->manager->GetPane('output')->Caption( Wx::gettext("Output") );
+	$self->manager->GetPane('syntaxbar')->Caption( Wx::gettext("Syntax") );
+	$self->manager->GetPane('rightbar')->Caption( Wx::gettext("Subs") );
 	return;
 }
 
 sub set_locale {
-    my $self = shift;
+	my $self = shift;
 
 	my $config    = Padre->ide->config;
 	my $shortname = $config->{host}->{locale};
@@ -601,16 +626,18 @@ sub set_locale {
 		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
 
 	my $lang = $number_of{ $shortname };
-    $self->{locale} = Wx::Locale->new($lang);
-    $self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
-    my $langname = $self->{locale}->GetCanonicalName();
+	$self->{locale} = Wx::Locale->new($lang);
+	$self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
+	my $langname = $self->{locale}->GetCanonicalName();
 
-    #my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
-    my $filename = Padre::Util::sharefile( 'locale', $shortname ) . '.mo';
+	#my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
+	my $filename = Padre::Util::sharefile( 'locale', $shortname ) . '.mo';
 
-    $self->{locale}->AddCatalog($shortname) if -f $filename;
+	unless ( $self->{locale}->IsLoaded($shortname) ) {
+		$self->{locale}->AddCatalog($shortname) if -f $filename;
+	}
 
-    return;
+	return;
 }
 
 sub refresh_syntaxcheck {
