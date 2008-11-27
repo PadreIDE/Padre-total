@@ -1,4 +1,4 @@
-package Padre::Project;
+package Padre::Project::Perl;
 
 # This is not usable yet
 
@@ -9,11 +9,13 @@ use base 'Padre::Project';
 our $VERSION = '0.18';
 
 sub inspector {
-	unless ( $_[0]->{inspector} ) {
+	my $self = shift;
+
+	unless ( $self->{inspector} ) {
 		require Module::Inspector;
-		$_[0]->{inspector} = Module::Inspector->new( dist_dir => $self->root );
+		$self->{inspector} = Module::Inspector->new( dist_dir => $self->root );
 	}
-	return $_[0]->{inspector};
+	return $self->{inspector};
 }
 
 sub from_file {
