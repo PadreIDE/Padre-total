@@ -50,6 +50,7 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog
 	Padre::Wx::MainWindow
+	Padre::Wx::Print
 };
 
 # Globally shared Perl detection object

@@ -2,7 +2,9 @@ package Padre::Wx::Print;
 
 use strict;
 use warnings;
+
 use Wx::Print;
+use Padre::Wx::Print::Printout;
 
 our $VERSION = '0.18';
 
