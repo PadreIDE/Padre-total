@@ -29,6 +29,7 @@ use File::Spec  ();
 use Encode::Guess ();
 use Padre::Util ();
 use Padre::Wx   ();
+use Padre;
 
 our $VERSION = '0.18';
 
