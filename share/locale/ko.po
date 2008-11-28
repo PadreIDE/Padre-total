@@ -213,7 +213,7 @@ msgstr "문서에 넣기(&I)"
 
 #: ../../lib/Padre/Wx/Dialog/Snippets.pm:27 ../../lib/Padre/Wx/Menu.pm:81
 msgid "&Edit"
-msgstr "고치기(&E)"
+msgstr "편집(&E)"
 
 #: ../../lib/Padre/Wx/Dialog/Snippets.pm:27
 msgid "&Add"
@@ -237,7 +237,7 @@ msgstr "저장(&S)"
 
 #: ../../lib/Padre/Wx/Dialog/Snippets.pm:135
 msgid "Edit/Add Snippets"
-msgstr "코드 조각을 고치거나 더하기"
+msgstr "코드 조각 편집하거나 추가하기"
 
 #: ../../lib/Padre/Wx/Dialog/Bookmarks.pm:24
 msgid "Existing bookmarks:"
