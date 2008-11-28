@@ -36,7 +36,7 @@ use constant DEFAULT_LOCALE => 'en';
 # used in Menu.pm
 our %languages = (
 	de => Wx::gettext('German'),
-	en => Wx::gettext('English'),
+	en => Wx::gettext('English (London.pm)'),
 	ko => Wx::gettext('Korean'),
 	hu => Wx::gettext('Hungarian'),
 	he => Wx::gettext('Hebrew'),

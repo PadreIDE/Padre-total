@@ -318,7 +318,7 @@ sub load_file {
 		$self->{encoding} = 'utf-8';
 	}
 	$content = Encode::decode($self->{encoding}, $content);
-	print "DEBUG: $lang_shortname:$self->{encoding}   $file\n";
+	#print "DEBUG: $lang_shortname:$self->{encoding}   $file\n";
 
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
