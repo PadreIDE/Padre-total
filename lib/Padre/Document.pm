@@ -31,7 +31,7 @@ use Padre::Util ();
 use Padre::Wx   ();
 use Padre;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 my $unsaved_number = 0;
 

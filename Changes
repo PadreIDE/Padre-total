@@ -1,5 +1,7 @@
 Changes for Padre.
 
+0.19 2008.11.28
+
     Korean translation added (KEEDI)
     Hungarian translation added (GYU)
     Hebrew translation added (Omer Zak)
@@ -10,6 +12,7 @@ Changes for Padre.
     Adding support for document type registration (ADAMK)
     Adding plugin_name to the Padre::Plugin API (ADAMK)
     Advancing the version numbers of some prereqs (ADAMK)
+    Save files in the same encoding as they were read.
 
 0.18 2008.11.23
 

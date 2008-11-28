@@ -11,7 +11,7 @@ use Wx::DND;
 
 use base 'Wx::StyledTextCtrl';
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 my $data;
 my $width;

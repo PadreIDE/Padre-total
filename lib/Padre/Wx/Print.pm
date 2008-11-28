@@ -6,7 +6,7 @@ use warnings;
 use Wx::Print;
 use Padre::Wx::Print::Printout;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 sub OnPrint {
 	my ( $win, $event ) = @_;

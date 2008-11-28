@@ -24,7 +24,7 @@ use Padre::Wx::DNDFilesDropTarget ();
 
 use base qw{Wx::Frame};
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 my $default_dir = Cwd::cwd();
 
