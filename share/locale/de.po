@@ -439,7 +439,6 @@ msgid "Upper/Lower Case"
 msgstr "Groß-/Kleinschreibung"
 
 #: ../../lib/Padre/Wx/Menu.pm:529
-#, fuzzy
 msgid "Upper All\tCtrl-Shift-U"
 msgstr "Alles in Großbuchstaben\tStrg-Umschalt-U"
 
@@ -602,14 +601,13 @@ msgstr "Vorherige Datei\tStrg-Umschalt-TAB"
 
 #: ../../lib/Padre/Wx/Menu.pm:876
 msgid "Last Visited File\tCtrl-6"
-msgstr "Zuletzt aufgerufene Dateie\tStrg-6"
+msgstr "Zuletzt aufgerufene Datei\tStrg-6"
 
 #: ../../lib/Padre/Wx/Menu.pm:880
 msgid "Right Click\tAlt-/"
 msgstr "Rechts-Klick\tAlt-/"
 
 #: ../../lib/Padre/Wx/Menu.pm:892
-#, fuzzy
 msgid "GoTo Subs Window\tAlt-S"
 msgstr "Subroutinen\tAlt-S"
 
@@ -662,12 +660,10 @@ msgid "Quick Find"
 msgstr "Schnell finden"
 
 #: ../../lib/Padre/Wx/Menu.pm:1024
-#, fuzzy
 msgid "Find Next\tF4"
 msgstr "&Finde nächste\tF4"
 
 #: ../../lib/Padre/Wx/Menu.pm:1028
-#, fuzzy
 msgid "Find Previous\tShift-F4"
 msgstr "Finde vorhergehende\tUmschalt-F4"
 
@@ -850,9 +846,8 @@ msgid "Error: %s"
 msgstr "Fehler: %s"
 
 #: ../../lib/Padre/Wx/MainWindow.pm:2243
-#, fuzzy
 msgid "File changed on disk since last saved. Do you want to reload it?"
-msgstr "Datei wurde verändert seit dem letzten Speichern. Änderungen überschreiben?"
+msgstr "Datei im Dateisystem seit letztem Speichern verändert. Erneut laden?"
 
 #: ../../lib/Padre/Wx/ToolBar.pm:22
 msgid "New File"
