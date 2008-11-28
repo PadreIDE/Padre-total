@@ -201,15 +201,15 @@ msgstr "변환..."
 
 #: lib/Padre/Wx/Menu.pm:97 lib/Padre/Wx/Menu.pm:305
 msgid "EOL to Windows"
-msgstr "윈도우즈용 줄바꿈"
+msgstr "윈도우즈용 줄 바꿈"
 
 #: lib/Padre/Wx/Menu.pm:101 lib/Padre/Wx/Menu.pm:310
 msgid "EOL to Unix"
-msgstr "유닉스용 줄바꿈"
+msgstr "유닉스용 줄 바꿈"
 
 #: lib/Padre/Wx/Menu.pm:105
 msgid "EOL to Mac"
-msgstr "맥용 줄바꿈"
+msgstr "맥용 줄 바꿈"
 
 #: lib/Padre/Wx/Menu.pm:112 lib/Padre/Wx/Menu.pm:324
 msgid "Recent Files"
@@ -269,7 +269,7 @@ msgstr "줄 번호 보기"
 
 #: lib/Padre/Wx/Menu.pm:240 lib/Padre/Wx/Menu.pm:599
 msgid "Show Newlines"
-msgstr "줄바꿈 보기"
+msgstr "줄 바꿈 보기"
 
 #: lib/Padre/Wx/Menu.pm:245 lib/Padre/Wx/Menu.pm:560
 msgid "Show Output"
@@ -637,7 +637,7 @@ msgstr "도구(&T)"
 
 #: lib/Padre/Wx/Menu.pm:315
 msgid "EOL to Mac Classic"
-msgstr "맥 클래식 용 줄바꿈"
+msgstr "맥 클래식 용 줄 바꿈"
 
 #: lib/Padre/Wx/Menu.pm:326
 msgid "Open All Recent Files"
@@ -729,11 +729,11 @@ msgstr "코드 접기 보기"
 
 #: lib/Padre/Wx/Menu.pm:604
 msgid "Show Whitespaces"
-msgstr "공백문자 보기"
+msgstr "공백 문자 보기"
 
 #: lib/Padre/Wx/Menu.pm:622
 msgid "Word-Wrap"
-msgstr ""
+msgstr "줄 바꿔서 단어 넘기기"
 
 #: lib/Padre/Wx/Menu.pm:631
 msgid "Highlight Current Line"
@@ -812,7 +812,7 @@ msgstr "메인 창으로 이동\tAlt-M"
 
 #: lib/Padre/Wx/Menu.pm:950
 msgid "Visit the PerlMonks"
-msgstr "펄몽크스(PerlMonks) 방문하기"
+msgstr "펄몽크스 방문하기"
 
 #: lib/Padre/Wx/Menu.pm:998
 msgid "Show Syntax Check"
