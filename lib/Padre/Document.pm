@@ -26,6 +26,7 @@ use strict;
 use warnings;
 use Carp        ();
 use File::Spec  ();
+use Encode::Guess ();
 use Padre::Util ();
 use Padre::Wx   ();
 
@@ -271,15 +272,22 @@ sub _auto_convert {
 sub load_file {
 	my ($self, $file, $editor) = @_;
 
-	require File::Slurp;
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
-	my $content = eval { File::Slurp::read_file($file, binmode => ':raw') };
-	if ($@) {
-		warn $@;
+	my $content;
+	if (open my $fh, '<', $file) {
+		binmode($fh);
+		local $/ = undef;
+		$content = <$fh>;
+	} else {
+		warn $!;
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
+	my $encoding = Encode::Guess::guess_encoding($content);
+	$self->{encoding} = $encoding->name;
+	$content = $encoding->decode($content);
+
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
 		# keep default
@@ -320,12 +328,11 @@ sub save_file {
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
         
-	require File::Slurp;
-	eval {
-		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
-	};
-	if ($@) {
-		return "Could not save: $@";
+	if (open my $fh, '>:raw:utf8', $filename) {
+		#binmode($fh);
+		print {$fh} $content;
+	} else {
+		return "Could not save: $!";
 	}
 	$self->{_timestamp} = $self->time_on_file;
 

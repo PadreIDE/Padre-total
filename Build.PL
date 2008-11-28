@@ -32,6 +32,7 @@ my %prereqs = (
 	'Class::Adapter'          => '1.05',
 	'Cwd'                     => '3.2701',
 	'Data::Dumper'            => 0,
+	'Encode'                  => '2.26',
 	'File::Spec'              => '3.2701',
 	'File::Spec::Functions'   => '3.2701',
 	'File::Basename'          => 0,
