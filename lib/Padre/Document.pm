@@ -98,8 +98,6 @@ our %MIME_CLASS = (
 	'application/x-perl6'    => 'Padre::Document::Perl6',
 	'application/x-pasm'     => 'Padre::Document::PASM',
 	'application/x-pir'      => 'Padre::Document::PIR',
-	'application/javascript' => 'Padre::Document::JavaScript',
-	'application/json'       => 'Padre::Document::JavaScript',
 );
 
 # Document types marked here with CONFIRMED have be checked to confirm that
