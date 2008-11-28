@@ -8,9 +8,13 @@ our $VERSION = '0.18';
 
 use base 'Padre::Plugin';
 
+sub plugin_name {
+	return 'My Plugin';
+}
+
 sub menu_plugins_simple {
 	my $self = shift;
-	return 'My Plugin' => [
+	return $self->plugin_name => [
 		'About' => sub { $self->about },
 		# 'Another Menu Entry' => sub { $self->about },
 		# 'A Sub-Menu...' => [
