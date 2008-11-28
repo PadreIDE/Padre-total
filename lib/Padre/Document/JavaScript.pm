@@ -10,6 +10,10 @@ use YAML::Tiny      ();
 our $VERSION = '0.18';
 our @ISA     = 'Padre::Document';
 
+
+
+
+
 #####################################################################
 # Padre::Document::JavaScript Methods
 
@@ -36,7 +40,6 @@ sub get_function_regex {
 }
 
 sub comment_lines_str { return '//' }
-
 
 1;
 
