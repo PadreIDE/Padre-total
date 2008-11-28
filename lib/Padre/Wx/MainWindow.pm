@@ -612,15 +612,17 @@ sub change_locale {
 	return;
 }
 
+sub shortname {
+	my $config    = Padre->ide->config;
+	my $shortname = $config->{host}->{locale};
+	$shortname ||= 
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
+	return $shortname;
+}
 sub set_locale {
 	my $self = shift;
 
-	my $config    = Padre->ide->config;
-	my $shortname = $config->{host}->{locale};
-
-	$shortname ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
-
+	my $shortname = shortname();
 	my $lang = $number_of{ $shortname };
 	$self->{locale} = Wx::Locale->new($lang);
 	$self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
