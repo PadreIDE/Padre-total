@@ -287,39 +287,52 @@ sub load_file {
 	$self->{_timestamp} = $self->time_on_file;
 
 	#
-	# Maybe we can support specific CJK character-set at least
-	# Japanese and Chinese have to be tested.
-	# Only Korean is tested
+	# FIXME
+	# This is a just heuristic approach. Maybe there is a better way. :)
+	# Japanese and Chinese have to be tested. Only Korean is tested.
 	#
-	# Refer to language setting from config,
-	# since Encode::Guess is not always correct, it's juest guess
+	# If locale of config is one of CJK, then we could guess more correctly.
+	# Any type of locale which is supported by Encode::Guesss could be added.
+	# Or, we'll use system default encode setting
+	# If we cannot get system default, then forced it to set 'utf-8'
 	#
-	my $config = Padre->ide->config;
+	my $system_default = Wx::Locale::GetSystemEncodingName();
 	my $lang_shortname = Padre::Wx::MainWindow::shortname(); # TODO clean this up
-	my @guess_encoding = ();
-	if ($lang_shortname eq 'ko') {
-		@guess_encoding = qw/euc-kr/;
-	} elsif ($lang_shortname eq 'ja') {
-		@guess_encoding = qw/euc-jp shiftjis 7bit-jis/;
-	} elsif ($lang_shortname eq 'cn') {
-		@guess_encoding = qw/euc-cn/;
-	} # another language and @guess_encoding list is needed
+	if ($system_default) {
+		# In windows system Wx::locale::GetSystemEncodingName() returns
+		# like ``windows-1257'' and it matches as ``cp1257''
+		# refer to src/common/intl.cpp
+		$system_default =~ s/^windows-/cp/;
 
-	my $encoding = Encode::Guess::guess_encoding($content, @guess_encoding);
-	if (ref($encoding) =~ m/^Encode::/) {		# Wow, nice!
-		$self->{encoding} = $encoding->name;
-	} elsif ($encoding =~ m/utf8/) {
-		$self->{encoding} = 'utf-8';
-	} elsif ($encoding =~ m/or/) {				# choose between suggestion
-		my @suggest_encodings = split /\sor\s/, "$encoding";
-		$self->{encoding} = $suggest_encodings[0];
-	} else {									# use utf-8 as default
-		warn "Could not find encoding of file '$file'. Defaulting to utf-8"
+		my @guess_encoding = ();
+		if ($lang_shortname eq 'ko') {      # Korean
+			@guess_encoding = qw/utf-8 euc-kr/;
+		} elsif ($lang_shortname eq 'ja') { # Japan (not yet tested)
+			@guess_encoding = qw/utf-8 iso8859-1 euc-jp shiftjis 7bit-jis/;
+		} elsif ($lang_shortname eq 'cn') { # Chinese (not yet tested)
+			@guess_encoding = qw/utf-8 iso8859-1 euc-cn/;
+		} else {
+			@guess_encoding = ($system_default);
+		}
+
+		my $encoding = Encode::Guess::guess_encoding($content, @guess_encoding);
+		if (ref($encoding) =~ m/^Encode::/) {       # Wow, nice!
+			$self->{encoding} = $encoding->name;
+		} elsif ($encoding =~ m/utf8/) {            # utf-8 is in suggestion
+			$self->{encoding} = 'utf-8';
+		} elsif ($encoding =~ m/or/) {              # choose from suggestion
+			my @suggest_encodings = split /\sor\s/, "$encoding";
+			$self->{encoding} = $suggest_encodings[0];
+		} else {                                    # use system default
+			$self->{encoding} = $system_default;
+		}
+	} else { # fail to get system default encoding
+		warn "Could not find encoding of file '$file'. Defaulting to 'utf-8'. "
 			. "Please check it manually and report to the Padre development team.";
 		$self->{encoding} = 'utf-8';
 	}
 	$content = Encode::decode($self->{encoding}, $content);
-	#print "DEBUG: $lang_shortname:$self->{encoding}   $file\n";
+	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
