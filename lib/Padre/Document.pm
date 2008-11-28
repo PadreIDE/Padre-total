@@ -285,9 +285,11 @@ sub load_file {
 	}
 	$self->{_timestamp} = $self->time_on_file;
 	my $encoding = Encode::Guess::guess_encoding($content);
-	$self->{encoding} = $encoding->name;
-	#print "$self->{encoding}   $file\n";
-	$content = $encoding->decode($content);
+	if ( ref($encoding) ) {
+	    $self->{encoding} = $encoding->name;
+	    #print "$self->{encoding}   $file\n";
+	    $content = $encoding->decode($content);
+	}
 
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
