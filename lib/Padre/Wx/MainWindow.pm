@@ -1903,10 +1903,11 @@ sub on_insert_from_file {
     $data->SetText($text);
     my $length = $data->GetTextLength;
 	
-	$win->{notebook}->GetPage($id)->ReplaceSelection('');
-	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
-	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
-	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
+	my $editor = $win->{notebook}->GetPage($id);
+	$editor->ReplaceSelection('');
+	my $pos = $editor->GetCurrentPos;
+	$editor->InsertText( $pos, $text );
+	$editor->GotoPos( $pos + $length - 1 );
 }
 
 sub convert_to {
