@@ -294,7 +294,7 @@ sub load_file {
 	# since Encode::Guess is not always correct, it's juest guess
 	#
 	my $config = Padre->ide->config;
-	my $lang_shortname = $config->{host}->{locale};
+	my $lang_shortname = Padre::Wx::MainWindow::shortname(); # TODO clean this up
 	my @guess_encoding = ();
 	if ($lang_shortname eq 'ko') {
 		@guess_encoding = qw/euc-kr/;
@@ -313,10 +313,12 @@ sub load_file {
 		my @suggest_encodings = split /\sor\s/, "$encoding";
 		$self->{encoding} = $suggest_encodings[0];
 	} else {									# use utf-8 as default
+		warn "Could not find encoding of file '$file'. Defaulting to utf-8"
+			. "Please check it manually and report to the Padre development team.";
 		$self->{encoding} = 'utf-8';
 	}
 	$content = Encode::decode($self->{encoding}, $content);
-	print "DEBUG: $config->{host}->{locale}:$self->{encoding}   $file\n";
+	print "DEBUG: $lang_shortname:$self->{encoding}   $file\n";
 
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
@@ -357,9 +359,8 @@ sub save_file {
 	my ($self) = @_;
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
-        
+
 	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
-		#binmode($fh);
 		print {$fh} $content;
 	} else {
 		return "Could not save: $!";
