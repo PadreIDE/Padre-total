@@ -284,12 +284,39 @@ sub load_file {
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
-	my $encoding = Encode::Guess::guess_encoding($content);
-	if ( ref($encoding) ) {
-	    $self->{encoding} = $encoding->name;
-	    #print "$self->{encoding}   $file\n";
-	    $content = $encoding->decode($content);
+
+	#
+	# Maybe we can support specific CJK character-set at least
+	# Japanese and Chinese have to be tested.
+	# Only Korean is tested
+	#
+	# Refer to language setting from config,
+	# since Encode::Guess is not always correct, it's juest guess
+	#
+	my $config = Padre->ide->config;
+	my $lang_shortname = $config->{host}->{locale};
+	my @guess_encoding = ();
+	if ($lang_shortname eq 'ko') {
+		@guess_encoding = qw/euc-kr/;
+	} elsif ($lang_shortname eq 'ja') {
+		@guess_encoding = qw/euc-jp shiftjis 7bit-jis/;
+	} elsif ($lang_shortname eq 'cn') {
+		@guess_encoding = qw/euc-cn/;
+	} # another language and @guess_encoding list is needed
+
+	my $encoding = Encode::Guess::guess_encoding($content, @guess_encoding);
+	if (ref($encoding) =~ m/^Encode::/) {		# Wow, nice!
+		$self->{encoding} = $encoding->name;
+	} elsif ($encoding =~ m/utf8/) {
+		$self->{encoding} = 'utf-8';
+	} elsif ($encoding =~ m/or/) {				# choose between suggestion
+		my @suggest_encodings = split /\sor\s/, "$encoding";
+		$self->{encoding} = $suggest_encodings[0];
+	} else {									# use utf-8 as default
+		$self->{encoding} = 'utf-8';
 	}
+	$content = Encode::decode($self->{encoding}, $content);
+	print "DEBUG: $config->{host}->{locale}:$self->{encoding}   $file\n";
 
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
@@ -331,7 +358,7 @@ sub save_file {
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
         
-	if (open my $fh, '>:raw:utf8', $filename) {
+	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
 		#binmode($fh);
 		print {$fh} $content;
 	} else {
