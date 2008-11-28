@@ -2091,7 +2091,8 @@ sub on_doc_stats {
 		return;
 	}
 
-    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename)
+    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly,
+		$filename, $newline_type)
 		= $doc->stats;
 
 	my $message = <<MESSAGE;
@@ -2099,6 +2100,7 @@ Words: $words
 Lines: $lines
 Chars without spaces: $chars_without_space
 Chars with spaces: $chars_with_space
+Newline type: $newline_type
 MESSAGE
 
 	$message .= defined $filename ?

@@ -642,7 +642,8 @@ sub stats {
 
 	my $filename = $self->filename;
 	
-	return ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename);
+	return ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, 
+			$filename, $self->{newline_type});
 }
 
 1;
