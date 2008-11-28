@@ -423,17 +423,16 @@ msgid "Tabs to Spaces..."
 msgstr "In Leerzeichen wandeln..."
 
 #: ../../lib/Padre/Wx/Menu.pm:513
-#, fuzzy
 msgid "Spaces to Tabs..."
 msgstr "In Tabulatoren wandeln..."
 
 #: ../../lib/Padre/Wx/Menu.pm:517
 msgid "Delete Trailing Spaces"
-msgstr "Entferne Leerzichen am Ende"
+msgstr "Entferne Leerzeichen am Ende"
 
 #: ../../lib/Padre/Wx/Menu.pm:521
 msgid "Delete Leading Spaces"
-msgstr "Entferne Leerzichen am Anfang"
+msgstr "Entferne Leerzeichen am Anfang"
 
 #: ../../lib/Padre/Wx/Menu.pm:527
 msgid "Upper/Lower Case"
