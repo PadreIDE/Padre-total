@@ -685,7 +685,11 @@ sub menu_view {
 	$self->{view_language}->AppendSeparator;
 	my %languages = %Padre::Wx::MainWindow::languages;
 	foreach my $name (sort { $languages{$a} cmp $languages{$b} }  keys %languages) {
-		my $item = $self->{view_language}->AppendRadioItem( -1, $languages{$name} );
+		my $label = $languages{$name};
+		if ( $label eq 'English' ) {
+			$label = 'English (London.pm)';
+		}
+		my $item = $self->{view_language}->AppendRadioItem( -1, $label );
 		Wx::Event::EVT_MENU( $win,
 			$item,
 			sub { $_[0]->change_locale($name) },
