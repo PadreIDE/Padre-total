@@ -115,7 +115,7 @@ $builder->create_build_script();
 
 sub check_wx_version {
 
-	require Wx;
+	eval {require Wx};
 	return if $@;  # missing Wx should be dealt by the standard prereq system
 
 	my $version = Wx::wxVERSION_STRING();
