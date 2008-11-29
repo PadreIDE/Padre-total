@@ -301,7 +301,7 @@ sub menu_file {
 	$menu->AppendSeparator;
 
 #	# Printing
-	$self->{file_print} = $menu->Append( Wx::wxID_PRINT, Wx::gettext('Print File') );
+	$self->{file_print} = $menu->Append( Wx::wxID_PRINT, Wx::gettext('Print File...') );
 	Wx::Event::EVT_MENU( $win,
 		$self->{file_print},
 		sub { Padre::Wx::Print::OnPrint(@_) }     

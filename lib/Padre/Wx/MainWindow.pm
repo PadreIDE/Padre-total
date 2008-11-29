@@ -1836,7 +1836,7 @@ sub on_ppi_highlight {
 		#my $editor = $self->selected_editor;
 		next if not $editor->{Document}->isa('Padre::Document::Perl');
 		if ($config->{ppi_highlight}) {
-			$editor->{Document}->colourise;
+			$editor->{Document}->colorize;
 		} else {
 			$editor->{Document}->remove_color;
 			$editor->Colourise(0, $editor->GetLength);
@@ -1991,7 +1991,7 @@ sub on_stc_style_needed {
 	my ( $self, $event ) = @_;
 
 	my $doc = Padre::Documents->current or return;
-	if ($doc->can('colourise')) {
+	if ($doc->can('colorize')) {
 
 		# workaround something that seems like a Scintilla bug
 		# when the cursor is close to the end of the document
@@ -2001,7 +2001,7 @@ sub on_stc_style_needed {
 		return if defined $doc->{_text} and $doc->{_text} eq $text;
 		$doc->{_text} = $text;
 
-		$doc->colourise;
+		$doc->colorize;
 	}
 
 }
@@ -2009,7 +2009,11 @@ sub on_stc_style_needed {
 
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
-    
+
+	# avoid recursion
+	return if $self->{_in_stc_update_ui};
+	local $self->{_in_stc_update_ui} = 1;
+
 	# check for brace, on current position, higlight the matching brace
 	my $editor = $self->selected_editor;
 	$editor->highlight_braces;
@@ -2040,9 +2044,14 @@ sub on_stc_change {
 sub on_stc_char_added {
 	my ($self, $event) = @_;
 
-	if ($event->GetKey == 10) { # ENTER
+        my $key = $event->GetKey;
+	if ($key == 10) { # ENTER
 		my $editor = $self->selected_editor;
-		$editor->autoindent;
+		$editor->autoindent("indent");
+	}
+	elsif ($key == 125) { # Closing brace }
+		my $editor = $self->selected_editor;
+		$editor->autoindent("deindent");
 	}
 	return;
 }

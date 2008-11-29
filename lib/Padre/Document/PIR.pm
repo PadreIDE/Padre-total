@@ -10,8 +10,8 @@ use Padre::Document ();
 our $VERSION = '0.19';
 our @ISA     = 'Padre::Document';
 
-# Naive way to parse and colourise pir files
-sub colourise {
+# Naive way to parse and colorize pir files
+sub colorize {
 	my ($self, $first) = @_;
 
 	$self->remove_color;

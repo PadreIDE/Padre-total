@@ -9,7 +9,7 @@ use Padre::Util     ();
 our $VERSION = '0.19';
 our @ISA     = 'Padre::Document';
 
-# Slightly less naive way to parse and colourise pasm files
+# Slightly less naive way to parse and colorize pasm files
 
 # still not working:
 #  eq	I1,31,done
@@ -17,7 +17,7 @@ our @ISA     = 'Padre::Document';
 #	mul	P0,P0,I2
 
 
-sub colourise {
+sub colorize {
 	my ($self, $first) = @_;
 
 	$self->remove_color;

@@ -55,7 +55,6 @@ sub info {
 	my $doc = Padre::Documents->current;
 	if (not $doc) {
 		$main->message( 'No file is open', 'Info' );
-
 		return;
 	}
 	my $msg = '';
@@ -76,9 +75,11 @@ sub show_inc {
 
 __END__
 
+=pod
+
 =head1 NAME
 
-Padre::Plugin::Development::Tools - tools used by the Padre developers
+Padre::Plugin::Devel - tools used by the Padre developers
 
 =head1 DESCRIPTION
 
@@ -98,3 +99,5 @@ Gabor Szabo
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=cut

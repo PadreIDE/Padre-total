@@ -69,11 +69,11 @@ sub padre_setup {
     } elsif ( $mimetype eq 'application/x-pasm' ) {
         $self->padre_setup_style('pasm');
     } elsif ($mimetype) {
-		# setup some default colouring
+		# setup some default coloring
 		# for the time being it is the same as for Perl
         $self->padre_setup_style('perl');
 	} else {
-		# if mimetype is not known, then no colouring for now
+		# if mimetype is not known, then no coloring for now
 		# but mimimal conifuration should apply here too
         $self->padre_setup_plain;
 	}
@@ -93,7 +93,7 @@ sub padre_setup_plain {
 	$self->StyleClearAll();
 
 	foreach my $k (keys %{ $data->{plain}{forgrounds} }) {
-		$self->StyleSetForeground( $k, _colour( $data->{plain}{foregrounds}{$k} ) );
+		$self->StyleSetForeground( $k, _color( $data->{plain}{foregrounds}{$k} ) );
 	}
 	
 	#$self->StyleSetBold(12,  1);
@@ -126,15 +126,15 @@ sub padre_setup_style {
 			}
 		}
 
-		$self->StyleSetForeground( $f->(), _colour($data->{$name}{colors}{$k}) );
+		$self->StyleSetForeground( $f->(), _color($data->{$name}{colors}{$k}) );
 	}
 
-	$self->StyleSetBackground(34, _colour($data->{$name}{brace_highlight}));
+	$self->StyleSetBackground(34, _color($data->{$name}{brace_highlight}));
 
 	return;
 }
 
-sub _colour {
+sub _color {
 	my $rgb = shift;
 	my @c = map {hex($_)} $rgb =~ /(..)(..)(..)/;
 	return Wx::Colour->new(@c)
@@ -223,7 +223,7 @@ sub show_folding {
 		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDER,        Wx::wxSTC_MARK_BOXPLUS,  $w, $b);
 		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPEN,    Wx::wxSTC_MARK_BOXMINUS, $w, $b);
 
-		# This would be nice but the colour used for drawing the lines is 
+		# This would be nice but the color used for drawing the lines is 
 		# Wx::wxSTC_STYLE_DEFAULT, i.e. usually black and therefore quite
 		# obtrusive...
 		# $self->SetFoldFlags( Wx::wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | Wx::wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );
@@ -232,26 +232,26 @@ sub show_folding {
 		$self->SetProperty('fold' => 1);
 
 		Wx::Event::EVT_STC_MARGINCLICK(
-		    $self,
-    		Wx::wxID_ANY,
-    		sub {
-        		my ( $editor, $event ) = @_;
-        		if ( $event->GetMargin() == 2 ) {
-            		my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
-            		my $level_clicked = $editor->GetFoldLevel($line_clicked);
-                    # TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
-            		#if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
-                		$editor->ToggleFold($line_clicked);
-            		#}
-        		}
-    		}
+			$self,
+			Wx::wxID_ANY,
+			sub {
+				my ( $editor, $event ) = @_;
+				if ( $event->GetMargin() == 2 ) {
+					my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
+					my $level_clicked = $editor->GetFoldLevel($line_clicked);
+					# TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
+					#if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
+					$editor->ToggleFold($line_clicked);
+					#}
+				}
+			}
 		);
 	}
 	else {
 		$self->SetMarginSensitive(2, 0);
-        $self->SetMarginWidth(2, 0);
+	$self->SetMarginWidth(2, 0);
 		# deactivate
-        $self->SetProperty('fold' => 1);
+	$self->SetProperty('fold' => 1);
 	}
 
 	return;
@@ -269,7 +269,11 @@ sub set_preferences {
 	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
 	$self->show_currentlinebackground( $config->{editor_currentlinebackground} );
 
+	# The display width of literal tab characters (ne "indentation width"!)
 	$self->SetTabWidth( $config->{editor_tabwidth} );
+	# The actual indentation width in COLUMNS!
+	$self->SetIndent( $config->{editor_indentwidth} );
+	# Use tabs for indentation where possible?
 	$self->SetUseTabs(  $config->{editor_use_tabs} );
 
 	return;
@@ -300,8 +304,8 @@ sub show_calltip {
 		$self->CallTipCancel;
 	}
 
-    my $doc = Padre::Documents->current or return;
-    my $keywords = $doc->keywords;
+	my $doc = Padre::Documents->current or return;
+	my $keywords = $doc->keywords;
 
 	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
 
@@ -317,14 +321,33 @@ sub show_calltip {
 	return;
 }
 
+# For auto-indentation (i.e. one more level), we do the following:
 # 1) get the white spaces of the previous line and add them here as well
-# TODO: 2) after a brace indent one level more than previous line
+# 2) after a brace indent one level more than previous line
+# 3) while doing all this, respect the current (sadly global) indentation settings
+# For auto-de-indentation (i.e. closing brace), we remove one level of indentation
+# instead.
+# FIXME/TODO: needs some refactoring
 sub autoindent {
-	my ($self) = @_;
+	my ($self, $mode) = @_;
 
 	my $config = Padre->ide->config;
 	return if not $config->{editor_autoindent} or $config->{editor_autoindent} eq 'no';
 	
+	if ($mode eq 'deindent') {
+		$self->_auto_deindent($config);
+	}
+	else {
+		# default to "indent"
+		$self->_auto_indent($config);
+	}
+
+	return;
+}
+
+sub _auto_indent {
+	my ($self, $config) = @_;
+
 	my $pos       = $self->GetCurrentPos;
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
@@ -338,14 +361,85 @@ sub autoindent {
 	if ($content =~ /^(\s+)/) {
 		$indent = $1;
 	}
+
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
-		$indent .= "\t";
+		my $indent_width = $config->{editor_indentwidth};
+		my $tab_width    = $config->{editor_tabwidth};
+		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+			# do tab compression if necessary
+			# - First, convert all to spaces (aka columns)
+			# - Then, add an indentation level
+			# - Then, convert to tabs as necessary
+			my $tab_equivalent = " " x $tab_width;
+			$indent =~ s/\t/$tab_equivalent/g;
+			$indent .= $tab_equivalent;
+			$indent =~ s/$tab_equivalent/\t/g;
+		}
+		elsif ($config->{editor_use_tabs}) {
+			# use tabs only
+			$indent .= "\t";
+		}
+		else {
+			$indent .= " " x $indent_width;
+		}
 	}
 	if ($indent ne '') {
 		$self->InsertText($pos, $indent);
 		$self->GotoPos($pos + length($indent));
 	}
-	
+
+	return;
+}
+
+sub _auto_deindent {
+        my ($self, $config) = @_;
+
+	my $pos       = $self->GetCurrentPos;
+	my $line      = $self->LineFromPosition($pos);
+
+	my $start     = $self->PositionFromLine($line);
+	my $end       = $self->GetLineEndPosition($line);
+	my $content   = $self->GetTextRange($start, $end);
+	my $indent = '';
+	if ($content =~ /^(\s+)/) {
+		$indent = $1;
+	}
+
+	# This is for } on a new line:
+	if ($config->{editor_autoindent} eq 'deep' and $content =~ /^\s*\}\s*$/) {
+		my $indent_width = $config->{editor_indentwidth};
+		my $tab_width    = $config->{editor_tabwidth};
+		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+			# do tab compression if necessary
+			# - First, convert all to spaces (aka columns)
+			# - Then, add an indentation level
+			# - Then, convert to tabs as necessary
+			my $tab_equivalent = " " x $tab_width;
+			$indent =~ s/\t/$tab_equivalent/g;
+			$indent =~ s/$tab_equivalent$//;
+			$indent =~ s/$tab_equivalent/\t/g;
+		}
+		elsif ($config->{editor_use_tabs}) {
+			# use tabs only
+			$indent =~ s/\t$//;
+		}
+		else {
+			my $indentation_level=  " " x $indent_width;
+			$indent =~ s/$indentation_level$//;
+		}
+
+		# replace indentation of the current line
+		$self->GotoPos($pos-1);
+		$self->DelLineLeft();
+		$pos = $self->GetCurrentPos();
+		$self->InsertText($pos, $indent);
+		$self->GotoPos( $self->GetLineEndPosition($line) );
+	}
+	# this is if the line matches "blahblahSomeText}".
+	elsif ($config->{editor_autoindent} eq 'deep' and $content =~ /\}\s*$/) {
+		# TODO: What should happen in this case?
+	}
+
 	return;
 }
 
@@ -412,7 +506,7 @@ sub on_right_down {
 		sub { \&text_select_all(@_) },
 	);
 	$menu->AppendSeparator;
-	
+
 	my $copy = $menu->Append( Wx::wxID_COPY, '' );
 	if ( not $selection_exists ) {
 		$copy->Enable(0);
@@ -432,7 +526,7 @@ sub on_right_down {
 	);
 
 	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
- 	my $text  = get_text_from_clipboard();
+	my $text  = get_text_from_clipboard();
 
 	if ( length($text) && $win->{notebook}->GetPage($id)->CanPaste ) {
 		Wx::Event::EVT_MENU( $win, # Ctrl-V
@@ -442,6 +536,17 @@ sub on_right_down {
 	} else {
 		$paste->Enable(0);
 	}
+
+	$menu->AppendSeparator;
+
+	my $comment = $menu->Append( -1, Wx::gettext("&Comment Selected Lines\tCtrl-M") );
+	Wx::Event::EVT_MENU( $win, $comment,
+		\&Padre::Wx::MainWindow::on_comment_out_block,
+	);
+	my $uncomment = $menu->Append( -1, Wx::gettext("&Uncomment Selected Lines\tCtrl-Shift-M") );
+	Wx::Event::EVT_MENU( $win, $uncomment,
+		\&Padre::Wx::MainWindow::on_uncomment_block,
+	);
 
 	$menu->AppendSeparator;
 
@@ -473,6 +578,7 @@ sub on_left_up {
 sub on_mouse_motion {
 	my ( $self, $event ) = @_;
 
+	$event->Skip;
 	return unless Padre->ide->config->{editor_syntaxcheck};
 
 	my $mousePos = $event->GetPosition;
