@@ -20,7 +20,11 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('TAB display size (in spaces)')],
-			[ 'Wx::TextCtrl',   'editor_tabwidth',	$config->{editor_tabwidth}],
+			[ 'Wx::TextCtrl',   'editor_tabwidth',  $config->{editor_tabwidth}],
+		],
+		[
+			[ 'Wx::StaticText', undef,              gettext('Indentation width (in columns)')],
+			[ 'Wx::TextCtrl',   'editor_indentwidth', $config->{editor_indentwidth}],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Guess from current document')],
@@ -28,19 +32,19 @@ sub get_layout {
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Max number of modules')],
-			[ 'Wx::TextCtrl',   'pod_maxlist',		$config->{pod_maxlist}],
+			[ 'Wx::TextCtrl',   'pod_maxlist',      $config->{pod_maxlist}],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Min number of modules')],
-			[ 'Wx::TextCtrl',   'pod_minlist', 	     $config->{pod_minlist}],
+			[ 'Wx::TextCtrl',   'pod_minlist',      $config->{pod_minlist}],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Open files:')],
-			[ 'Wx::Choice',     'main_startup',    $main_startup],
+			[ 'Wx::Choice',     'main_startup',     $main_startup],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Autoindent:')],
-			[ 'Wx::Choice',     'editor_autoindent',    $editor_autoindent],
+			[ 'Wx::Choice',     'editor_autoindent', $editor_autoindent],
 		],
 		[
 			[ 'Wx::StaticText', undef,              gettext('Default word wrap on for each file')],
@@ -63,7 +67,7 @@ sub dialog {
 		parent => $win,
 		title  => gettext("Preferences"),
 		layout => $layout,
-		width  => [250, 200],
+		width  => [280, 200],
 	);
 
 	$dialog->{_widgets_}{editor_tabwidth}->SetFocus;
@@ -90,16 +94,23 @@ sub guess_indentation_settings {
 	if ($indentation =~ /^t\d+/) { # we only do ONE tab
 		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
 		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
+		$dialog->{_widgets_}{editor_indentwidth}->SetValue(8);
 	}
-	elsif ($indentation =~ /^[sm](\d+)/) {
-		# TODO: as mentioned above, the "m"/mixed case needs to eventually be separate
+	elsif ($indentation =~ /^s(\d+)/) {
 		$dialog->{_widgets_}{editor_use_tabs}->SetValue(0);
-		$dialog->{_widgets_}{editor_tabwidth}->SetValue($1);
+		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
+		$dialog->{_widgets_}{editor_indentwidth}->SetValue($1);
+	}
+	elsif ($indentation =~ /^m(\d+)/) {
+		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
+		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
+		$dialog->{_widgets_}{editor_indentwidth}->SetValue($1);
 	}
 	else {
 		# fallback
-		$dialog->{_widgets_}{editor_use_tabs}->SetValue(0);
+		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
 		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
+		$dialog->{_widgets_}{editor_indentwidth}->SetValue(4);
 	}
 
 }
@@ -124,7 +135,7 @@ sub run {
 
 	my $data = $dialog->get_data;
 
-	foreach my $f (qw(pod_maxlist pod_minlist editor_tabwidth)) {
+	foreach my $f (qw(pod_maxlist pod_minlist editor_tabwidth editor_indentwidth)) {
 		$config->{$f} = $data->{$f};
 	}
 	foreach my $f (qw(editor_use_tabs editor_use_wordwrap)) {

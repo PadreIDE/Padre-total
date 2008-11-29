@@ -269,7 +269,11 @@ sub set_preferences {
 	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
 	$self->show_currentlinebackground( $config->{editor_currentlinebackground} );
 
+	# The display width of literal tab characters (ne "indentation width"!)
 	$self->SetTabWidth( $config->{editor_tabwidth} );
+	# The actual indentation width in COLUMNS!
+	$self->SetIndent( $config->{editor_indentwidth} );
+	# Use tabs for indentation where possible?
 	$self->SetUseTabs(  $config->{editor_use_tabs} );
 
 	return;
@@ -318,7 +322,8 @@ sub show_calltip {
 }
 
 # 1) get the white spaces of the previous line and add them here as well
-# TODO: 2) after a brace indent one level more than previous line
+# 2) after a brace indent one level more than previous line
+# 3) while doing all this, respect the current (sadly global) indentation settings
 sub autoindent {
 	my ($self) = @_;
 
@@ -339,7 +344,25 @@ sub autoindent {
 		$indent = $1;
 	}
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
-		$indent .= "\t";
+		my $indent_width = $config->{editor_indentwidth};
+		my $tab_width    = $config->{editor_tabwidth};
+		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+			# do tab compression if necessary
+			# - First, convert all to spaces (aka columns)
+			# - Then, add an indentation level
+			# - Then, convert to tabs as necessary
+			my $tab_equivalent = " " x $tab_width;
+			$indent =~ s/\t/$tab_equivalent/g;
+			$indent .= " " x $indent_width;
+			$indent =~ s/$tab_equivalent/\t/g;
+		}
+		elsif ($config->{editor_use_tabs}) {
+			# use tabs only
+			$indent .= "\t";
+		}
+		else {
+			$indent .= " " x $config->{editor_indentwidth};
+		}
 	}
 	if ($indent ne '') {
 		$self->InsertText($pos, $indent);
@@ -432,7 +455,7 @@ sub on_right_down {
 	);
 
 	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
- 	my $text  = get_text_from_clipboard();
+	my $text  = get_text_from_clipboard();
 
 	if ( length($text) && $win->{notebook}->GetPage($id)->CanPaste ) {
 		Wx::Event::EVT_MENU( $win, # Ctrl-V
