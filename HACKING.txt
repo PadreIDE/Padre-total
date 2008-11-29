@@ -93,3 +93,19 @@ We don't have formal code-review but in response to the commit messages
 we sometimes reply with comments to the padre-dev mailing list.
 You are also encourgaed to do so!
 
+
+Code style
+------------
+
+We're not overly strict about it, but please don't feel offended if
+somebody corrects your coding style. There's just a bunch of moderately
+simple rules that are more or less enforced:
+
+- Use one tab character for indentation.
+- Accessors should be named "get_foo" and "set_foo". Do not use
+  mutators. Exception to this rule are attributes which get
+  initialized by the constructor once and then just return the value
+  (i.e. no setter is available). Example: Padre->plugin_manager
+- TODO: This list.
+
+
