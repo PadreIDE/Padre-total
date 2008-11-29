@@ -69,11 +69,13 @@ CREATE TABLE history (
 )
 END_SQL
 
-    # Drop table if not recent
-    $class->do('DROP TABLE snippets') if $class->table_exists('snippets') and !$class->column_exists('snippets', 'mimetype');
+	# Drop old version of the table
+	if ( $class->table_exists('snippits') and not $class->column_exists('snippits', 'mimetype') ) {
+		$class->do('DROP TABLE snippets');
+	}
+
 	# Create the snippets table
-    unless ($class->table_exists('snippets')) {
-        $class->do(<<'END_SQL');
+	$class->do(<<'END_SQL') unless $class->table_exists('snippets');
 CREATE TABLE snippets (
 	id INTEGER PRIMARY KEY,
 	mimetype VARCHAR(255),
@@ -82,67 +84,66 @@ CREATE TABLE snippets (
 	snippet TEXT
 );
 END_SQL
-        my @prepsnips = (
-            ['application/x-perl','Char class', '[:alnum:]','[:alnum:]'],
-            ['application/x-perl','Char class', '[:alpha:]','[:alpha:]'],
-            ['application/x-perl','Char class', '[:ascii:]','[:ascii:]'],
-            ['application/x-perl','Char class', '[:blank:]','[:blank:]'],
-            ['application/x-perl','Char class', '[:cntrl:]','[:cntrl:]'],
-            ['application/x-perl','Char class', '[:digit:]','[:digit:]'],
-            ['application/x-perl','Char class', '[:graph:]','[:graph:]'],
-            ['application/x-perl','Char class', '[:lower:]','[:lower:]'],
-            ['application/x-perl','Char class', '[:print:]','[:print:]'],
-            ['application/x-perl','Char class', '[:punct:]','[:punct:]'],
-            ['application/x-perl','Char class', '[:space:]','[:space:]'],
-            ['application/x-perl','Char class', '[:upper:]','[:upper:]'],
-            ['application/x-perl','Char class', '[:word:]','[:word:]'],
-            ['application/x-perl','Char class', '[:xdigit:]','[:xdigit:]'],
-            ['application/x-perl','File test', 'age since inode change', '-C'],
-            ['application/x-perl','File test', 'age since last access', '-A'],
-            ['application/x-perl','File test', 'age since modification', '-M'],
-            ['application/x-perl','File test', 'binary file', '-B'],
-            ['application/x-perl','File test', 'block special file', '-b'],
-            ['application/x-perl','File test', 'character special file', '-c'],
-            ['application/x-perl','File test', 'directory', '-d'],
-            ['application/x-perl','File test', 'executable by eff. UID/GID', '-x'],
-            ['application/x-perl','File test', 'executable by real UID/GID', '-X'],
-            ['application/x-perl','File test', 'exists', '-e'],
-            ['application/x-perl','File test', 'handle opened to a tty', '-t'],
-            ['application/x-perl','File test', 'named pipe', '-p'],
-            ['application/x-perl','File test', 'nonzero size', '-s'],
-            ['application/x-perl','File test', 'owned by eff. UID', '-o'],
-            ['application/x-perl','File test', 'owned by real UID', '-O'],
-            ['application/x-perl','File test', 'plain file', '-f'],
-            ['application/x-perl','File test', 'readable by eff. UID/GID', '-r'],
-            ['application/x-perl','File test', 'readable by real UID/GID', '-R'],
-            ['application/x-perl','File test', 'setgid bit set', '-g'],
-            ['application/x-perl','File test', 'setuid bit set', '-u'],
-            ['application/x-perl','File test', 'socket', '-S'],
-            ['application/x-perl','File test', 'sticky bit set', '-k'],
-            ['application/x-perl','File test', 'symbolic link', '-l'],
-            ['application/x-perl','File test', 'text file', '-T'],
-            ['application/x-perl','File test', 'writable by eff. UID/GID', '-w'],
-            ['application/x-perl','File test', 'writable by real UID/GID', '-W'],
-            ['application/x-perl','File test', 'zero size', '-z'],
-            ['application/x-perl','Pod', 'pod/cut', "=pod\n\n\n\n=cut\n"],
-            ['application/x-perl','Regex','grouping','()'],
-            ['application/x-perl','Statement','foreach',"foreach my \$ (  ) {\n}\n"],
-            ['application/x-perl','Statement','if',"if (  ) {\n}\n"],
-            ['application/x-perl','Statement','do while',"do {\n\n	    }\n	    while (  );\n"],
-            ['application/x-perl','Statement','for',"for ( ; ; ) {\n}\n"],
-            ['application/x-perl','Statement','foreach',"foreach my $ (  ) {\n}\n"],
-            ['application/x-perl','Statement','if',"if (  ) {\n}\n"],
-            ['application/x-perl','Statement','if else { }',"if (  ) {\n} else {\n}\n"],
-            ['application/x-perl','Statement','unless ',"unless (  ) {\n}\n"],
-            ['application/x-perl','Statement','unless else',"unless (  ) {\n} else {\n}\n"],
-            ['application/x-perl','Statement','until',"until (  ) {\n}\n"],
-            ['application/x-perl','Statement','while',"while (  ) {\n}\n"],
-        );
-        my $sth = $class->prepare('INSERT INTO snippets (mimetype,category,name,snippet) VALUES (?, ?, ?, ?)');
-        $sth->execute($_->[0], $_->[1], $_->[2], $_->[3]) for @prepsnips;
-    }
 
-    #
+	my @prepsnips = (
+		['application/x-perl','Char class', '[:alnum:]','[:alnum:]'],
+		['application/x-perl','Char class', '[:alpha:]','[:alpha:]'],
+		['application/x-perl','Char class', '[:ascii:]','[:ascii:]'],
+		['application/x-perl','Char class', '[:blank:]','[:blank:]'],
+		['application/x-perl','Char class', '[:cntrl:]','[:cntrl:]'],
+		['application/x-perl','Char class', '[:digit:]','[:digit:]'],
+		['application/x-perl','Char class', '[:graph:]','[:graph:]'],
+		['application/x-perl','Char class', '[:lower:]','[:lower:]'],
+		['application/x-perl','Char class', '[:print:]','[:print:]'],
+		['application/x-perl','Char class', '[:punct:]','[:punct:]'],
+		['application/x-perl','Char class', '[:space:]','[:space:]'],
+		['application/x-perl','Char class', '[:upper:]','[:upper:]'],
+		['application/x-perl','Char class', '[:word:]','[:word:]'],
+		['application/x-perl','Char class', '[:xdigit:]','[:xdigit:]'],
+		['application/x-perl','File test', 'age since inode change', '-C'],
+		['application/x-perl','File test', 'age since last access', '-A'],
+		['application/x-perl','File test', 'age since modification', '-M'],
+		['application/x-perl','File test', 'binary file', '-B'],
+		['application/x-perl','File test', 'block special file', '-b'],
+		['application/x-perl','File test', 'character special file', '-c'],
+		['application/x-perl','File test', 'directory', '-d'],
+		['application/x-perl','File test', 'executable by eff. UID/GID', '-x'],
+		['application/x-perl','File test', 'executable by real UID/GID', '-X'],
+		['application/x-perl','File test', 'exists', '-e'],
+		['application/x-perl','File test', 'handle opened to a tty', '-t'],
+		['application/x-perl','File test', 'named pipe', '-p'],
+		['application/x-perl','File test', 'nonzero size', '-s'],
+		['application/x-perl','File test', 'owned by eff. UID', '-o'],
+		['application/x-perl','File test', 'owned by real UID', '-O'],
+		['application/x-perl','File test', 'plain file', '-f'],
+		['application/x-perl','File test', 'readable by eff. UID/GID', '-r'],
+		['application/x-perl','File test', 'readable by real UID/GID', '-R'],
+		['application/x-perl','File test', 'setgid bit set', '-g'],
+		['application/x-perl','File test', 'setuid bit set', '-u'],
+		['application/x-perl','File test', 'socket', '-S'],
+		['application/x-perl','File test', 'sticky bit set', '-k'],
+		['application/x-perl','File test', 'symbolic link', '-l'],
+		['application/x-perl','File test', 'text file', '-T'],
+		['application/x-perl','File test', 'writable by eff. UID/GID', '-w'],
+		['application/x-perl','File test', 'writable by real UID/GID', '-W'],
+		['application/x-perl','File test', 'zero size', '-z'],
+		['application/x-perl','Pod', 'pod/cut', "=pod\n\n\n\n=cut\n"],
+		['application/x-perl','Regex','grouping','()'],
+		['application/x-perl','Statement','foreach',"foreach my \$ (  ) {\n}\n"],
+		['application/x-perl','Statement','if',"if (  ) {\n}\n"],
+		['application/x-perl','Statement','do while',"do {\n\n	    }\n	    while (  );\n"],
+		['application/x-perl','Statement','for',"for ( ; ; ) {\n}\n"],
+		['application/x-perl','Statement','foreach',"foreach my $ (  ) {\n}\n"],
+		['application/x-perl','Statement','if',"if (  ) {\n}\n"],
+		['application/x-perl','Statement','if else { }',"if (  ) {\n} else {\n}\n"],
+		['application/x-perl','Statement','unless ',"unless (  ) {\n}\n"],
+		['application/x-perl','Statement','unless else',"unless (  ) {\n} else {\n}\n"],
+		['application/x-perl','Statement','until',"until (  ) {\n}\n"],
+		['application/x-perl','Statement','while',"while (  ) {\n}\n"],
+	);
+	my $sth = $class->prepare('INSERT INTO snippets (mimetype,category,name,snippet) VALUES (?, ?, ?, ?)');
+	$sth->execute($_->[0], $_->[1], $_->[2], $_->[3]) for @prepsnips;
+
 	$class->pragma('user_version', 1);
 }
 
