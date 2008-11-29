@@ -64,21 +64,21 @@ sub padre_setup {
 	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
 
 	my $mimetype = $self->{Document}->mimetype;
-    if ($mimetype eq 'application/x-perl') {
-        $self->padre_setup_style('perl');
-    } elsif ( $mimetype eq 'application/x-pasm' ) {
-        $self->padre_setup_style('pasm');
-    } elsif ($mimetype) {
+	if ($mimetype eq 'application/x-perl') {
+		$self->padre_setup_style('perl');
+	} elsif ( $mimetype eq 'application/x-pasm' ) {
+		$self->padre_setup_style('pasm');
+	} elsif ($mimetype) {
 		# setup some default coloring
 		# for the time being it is the same as for Perl
-        $self->padre_setup_style('perl');
+		$self->padre_setup_style('perl');
 	} else {
 		# if mimetype is not known, then no coloring for now
 		# but mimimal conifuration should apply here too
-        $self->padre_setup_plain;
+		$self->padre_setup_plain;
 	}
 
-    return;
+	return;
 }
 
 sub padre_setup_plain {
@@ -192,7 +192,7 @@ sub show_line_numbers {
 
 # Just a placeholder
 sub show_symbols {
-    my ( $self, $on ) = @_;
+	my ( $self, $on ) = @_;
 
 #	$self->SetMarginWidth(1, 0);
 
@@ -249,9 +249,9 @@ sub show_folding {
 	}
 	else {
 		$self->SetMarginSensitive(2, 0);
-	$self->SetMarginWidth(2, 0);
+		$self->SetMarginWidth(2, 0);
 		# deactivate
-	$self->SetProperty('fold' => 1);
+		$self->SetProperty('fold' => 1);
 	}
 
 	return;
@@ -392,7 +392,7 @@ sub _auto_indent {
 }
 
 sub _auto_deindent {
-        my ($self, $config) = @_;
+	my ($self, $config) = @_;
 
 	my $pos       = $self->GetCurrentPos;
 	my $line      = $self->LineFromPosition($pos);

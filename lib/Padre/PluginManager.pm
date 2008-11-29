@@ -193,7 +193,7 @@ sub load_plugins {
 	my $self = shift;
 	$self->_load_plugins_from_inc;
 	$self->_load_plugins_from_par;
-        $self->_refresh_plugin_menu;
+	$self->_refresh_plugin_menu;
 	if ( my @failed = $self->failed ) {
 		$self->parent->wx->main_window->error(
 			"Failed to load the following plugin(s):\n"

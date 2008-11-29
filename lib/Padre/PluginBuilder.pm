@@ -33,23 +33,23 @@ configuration directory (which defaults to C<~/.padre> on Unixy systems).
 =cut
 
 sub ACTION_plugin {
-  my ($self) = @_;
+	my ($self) = @_;
 
-  # Need PAR::Dist
-  if ( not eval { require PAR::Dist; PAR::Dist->VERSION(0.17) } ) {
-    $self->log_warn( "In order to create .par files, you need to install PAR::Dist first." );
-    return();
-  }
-  $self->depends_on( 'build' );
-  my $module = $self->module_name();
-  $module =~ s/^Padre::Plugin:://;
-  $module =~ s/::/-/g;
+	# Need PAR::Dist
+	if ( not eval { require PAR::Dist; PAR::Dist->VERSION(0.17) } ) {
+		$self->log_warn( "In order to create .par files, you need to install PAR::Dist first." );
+		return();
+	}
+	$self->depends_on( 'build' );
+	my $module = $self->module_name();
+	$module =~ s/^Padre::Plugin:://;
+	$module =~ s/::/-/g;
 
-  return PAR::Dist::blib_to_par(
-    name => $self->dist_name,
-    version => $self->dist_version,
-    dist => "$module.par",
-  );
+	return PAR::Dist::blib_to_par(
+		name => $self->dist_name,
+		version => $self->dist_version,
+		dist => "$module.par",
+	);
 }
 
 
@@ -61,19 +61,19 @@ into the user's Padre plugins directory.
 =cut
 
 sub ACTION_installplugin {
-  my ($self) = @_;
+	my ($self) = @_;
 
-  $self->depends_on( 'plugin' );
+	$self->depends_on( 'plugin' );
 
-  my $module = $self->module_name();
-  $module =~ s/^Padre::Plugin:://;
-  $module =~ s/::/-/g;
-  my $plugin = "$module.par";
+	my $module = $self->module_name();
+	$module =~ s/^Padre::Plugin:://;
+	$module =~ s/::/-/g;
+	my $plugin = "$module.par";
 
-  require Padre;
-  my $plugin_dir = Padre::Config->default_plugin_dir;
+	require Padre;
+	my $plugin_dir = Padre::Config->default_plugin_dir;
 
-  return $self->copy_if_modified(from => $plugin, to_dir => $plugin_dir);
+	return $self->copy_if_modified(from => $plugin, to_dir => $plugin_dir);
 }
 
 

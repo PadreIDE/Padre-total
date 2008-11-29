@@ -13,20 +13,18 @@ use base qw(Wx::PlPopupTransientWindow);
 our $VERSION = '0.19';
 
 sub on_paint {
-    my( $self, $event ) = @_;
-#    my $dc = Wx::PaintDC->new( $self );
-#    $dc->SetBrush( Wx::Brush->new( Wx::Colour->new( 0, 192, 0 ), Wx::wxSOLID ) );
-#    $dc->SetPen( Wx::Pen->new( Wx::Colour->new( 0, 0, 0 ), 1, Wx::wxSOLID ) );
-#    $dc->DrawRectangle( 0, 0, $self->GetSize->x, $self->GetSize->y );
-
-    
+	my( $self, $event ) = @_;
+#	my $dc = Wx::PaintDC->new( $self );
+#	$dc->SetBrush( Wx::Brush->new( Wx::Colour->new( 0, 192, 0 ), Wx::wxSOLID ) );
+#	$dc->SetPen( Wx::Pen->new( Wx::Colour->new( 0, 0, 0 ), 1, Wx::wxSOLID ) );
+#	$dc->DrawRectangle( 0, 0, $self->GetSize->x, $self->GetSize->y );
 }
 sub new {
-    my $class = shift;
-    my $self = $class->SUPER::new(@_);
-Wx::Event::EVT_PAINT( $self, \&on_paint);
+	my $class = shift;
+	my $self = $class->SUPER::new(@_);
+	Wx::Event::EVT_PAINT( $self, \&on_paint);
 
-print "xxx $self\n";
+	print "xxx $self\n";
 #    my $panel =  Wx::Panel->new( $self, -1 );
 #print "panel $panel\n";
     #$panel->SetBackgroundColour(Wx::wxWHITE);
@@ -45,20 +43,20 @@ print "xxx $self\n";
 #    $self->SetSize( ($sz->GetWidth()+20, $sz->GetHeight()+20) );
     #$self->SetSize( $panel->GetSize());
 
-    return $self;
+	return $self;
 }
 
 sub ProcessLeftDown {
-    my ($self, $event) = @_;
-    print "Process Left $event\n";
-    #$event->Skip;
-    return 0;
+	my ($self, $event) = @_;
+	print "Process Left $event\n";
+	#$event->Skip;
+	return 0;
 }
 
 sub OnDismiss {
-    my ($self, $event) = @_;
-    print "OnDismiss\n";
-    #$event->Skip;
+	my ($self, $event) = @_;
+	print "OnDismiss\n";
+	#$event->Skip;
 }
 
 1;

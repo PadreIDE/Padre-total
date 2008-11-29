@@ -350,15 +350,15 @@ sub menu_file {
 		next unless -f $f;
 		Wx::Event::EVT_MENU( $win,
 			$self->{file_recentfiles}->Append(-1, $f), 
-            sub { 
-                if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
-                    if ( Padre::Documents->current->is_unused ) {
-                        $_[0]->on_close;
-                    }
-                }
-                $_[0]->setup_editor($f);
+			sub { 
+				if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
+					if ( Padre::Documents->current->is_unused ) {
+						$_[0]->on_close;
+					}
+				}
+				$_[0]->setup_editor($f);
 				$_[0]->refresh_all;
-            },
+			},
 		);
 	}
 	$menu->AppendSeparator;
@@ -427,24 +427,24 @@ sub menu_edit {
 
 
 	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, '' );
-    Wx::Event::EVT_MENU( $win,
-        $self->{edit_copy},
+	Wx::Event::EVT_MENU( $win,
+		$self->{edit_copy},
 		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
-    );
-    $self->{edit_cut} = $menu->Append( Wx::wxID_CUT, '' );
-    Wx::Event::EVT_MENU( $win,
-        $self->{edit_cut},
+	);
+	$self->{edit_cut} = $menu->Append( Wx::wxID_CUT, '' );
+	Wx::Event::EVT_MENU( $win,
+		$self->{edit_cut},
 		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
-    );
-    $self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, '' );
-    Wx::Event::EVT_MENU( $win,
-        $self->{edit_paste},
-        sub { 
+	);
+	$self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, '' );
+	Wx::Event::EVT_MENU( $win,
+		$self->{edit_paste},
+		sub { 
 			my $editor = Padre->ide->wx->main_window->selected_editor or return;
 			$editor->Paste;
 		},
-    );
-    $menu->AppendSeparator;
+	);
+	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( Wx::wxID_FIND, '' ),
@@ -484,8 +484,8 @@ sub menu_edit {
 	);
 	$self->{edit_snippets} = $menu->Append( -1, Wx::gettext("Snippets\tCtrl-Shift-A") );
 	Wx::Event::EVT_MENU( $win,
-        $self->{edit_snippets},
-        sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
+		$self->{edit_snippets},
+		sub { Padre::Wx::Dialog::Snippets->snippets(@_) },
 	); 
 	$menu->AppendSeparator;
 
@@ -876,13 +876,13 @@ sub menu_window {
 		$menu->Append(-1, Wx::gettext("Previous File\tCtrl-Shift-TAB")),
 		\&Padre::Wx::MainWindow::on_prev_pane,
 	);
- 	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, Wx::gettext("Last Visited File\tCtrl-6")),
- 		\&Padre::Wx::MainWindow::on_last_visited_pane,
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append(-1, Wx::gettext("Last Visited File\tCtrl-6")),
+		\&Padre::Wx::MainWindow::on_last_visited_pane,
 	);
- 	Wx::Event::EVT_MENU( $win,
- 		$menu->Append(-1, Wx::gettext("Right Click\tAlt-/")),
- 		sub {
+	Wx::Event::EVT_MENU( $win,
+		$menu->Append(-1, Wx::gettext("Right Click\tAlt-/")),
+		sub {
 			my $editor = $_[0]->selected_editor;
 			if ($editor) {
 				$editor->on_right_down($_[1]);
@@ -1026,7 +1026,7 @@ sub menu_experimental {
 	# Incremental find (#60)
 	Wx::Event::EVT_MENU( $win,
 		$menu_exp->Append( -1, Wx::gettext("Find Next\tF4") ),
-        	sub { $_[0]->find->search('next') },
+		sub { $_[0]->find->search('next') },
 	);
 	Wx::Event::EVT_MENU( $win,
 		$menu_exp->Append( -1, Wx::gettext("Find Previous\tShift-F4") ),

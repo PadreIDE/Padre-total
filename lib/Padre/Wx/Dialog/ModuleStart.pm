@@ -11,7 +11,7 @@ use Cwd          ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
-use File::Spec		  ();
+use File::Spec        ();
 
 our $VERSION = '0.19';
 

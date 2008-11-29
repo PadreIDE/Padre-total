@@ -17,8 +17,8 @@ sub get_layout {
 	foreach my $module (sort keys %$plugins) {
 		push @layout,
 			[
-				['Wx::StaticText', undef, $module],
-				['Wx::Button',    "able_$module", 'na'					 ],
+				['Wx::StaticText', undef, $module ],
+				['Wx::Button',    "able_$module", 'na' ],
 				['Wx::Button',    "pref_$module", gettext('Preferences') ],
 			];
 	}
