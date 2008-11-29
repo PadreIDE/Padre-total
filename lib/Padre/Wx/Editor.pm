@@ -321,15 +321,33 @@ sub show_calltip {
 	return;
 }
 
+# For auto-indentation (i.e. one more level), we do the following:
 # 1) get the white spaces of the previous line and add them here as well
 # 2) after a brace indent one level more than previous line
 # 3) while doing all this, respect the current (sadly global) indentation settings
+# For auto-de-indentation (i.e. closing brace), we remove one level of indentation
+# instead.
+# FIXME/TODO: needs some refactoring
 sub autoindent {
-	my ($self) = @_;
+	my ($self, $mode) = @_;
 
 	my $config = Padre->ide->config;
 	return if not $config->{editor_autoindent} or $config->{editor_autoindent} eq 'no';
 	
+	if ($mode eq 'deindent') {
+		$self->_auto_deindent($config);
+	}
+	else {
+		# default to "indent"
+		$self->_auto_indent($config);
+	}
+
+	return;
+}
+
+sub _auto_indent {
+	my ($self, $config) = @_;
+
 	my $pos       = $self->GetCurrentPos;
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
@@ -343,6 +361,7 @@ sub autoindent {
 	if ($content =~ /^(\s+)/) {
 		$indent = $1;
 	}
+
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
 		my $indent_width = $config->{editor_indentwidth};
 		my $tab_width    = $config->{editor_tabwidth};
@@ -353,7 +372,7 @@ sub autoindent {
 			# - Then, convert to tabs as necessary
 			my $tab_equivalent = " " x $tab_width;
 			$indent =~ s/\t/$tab_equivalent/g;
-			$indent .= " " x $indent_width;
+			$indent .= $tab_equivalent;
 			$indent =~ s/$tab_equivalent/\t/g;
 		}
 		elsif ($config->{editor_use_tabs}) {
@@ -361,14 +380,66 @@ sub autoindent {
 			$indent .= "\t";
 		}
 		else {
-			$indent .= " " x $config->{editor_indentwidth};
+			$indent .= " " x $indent_width;
 		}
 	}
 	if ($indent ne '') {
 		$self->InsertText($pos, $indent);
 		$self->GotoPos($pos + length($indent));
 	}
-	
+
+	return;
+}
+
+sub _auto_deindent {
+        my ($self, $config) = @_;
+
+	my $pos       = $self->GetCurrentPos;
+	my $line      = $self->LineFromPosition($pos);
+
+	my $start     = $self->PositionFromLine($line);
+	my $end       = $self->GetLineEndPosition($line);
+	my $content   = $self->GetTextRange($start, $end);
+	my $indent = '';
+	if ($content =~ /^(\s+)/) {
+		$indent = $1;
+	}
+
+	# This is for } on a new line:
+	if ($config->{editor_autoindent} eq 'deep' and $content =~ /^\s*\}\s*$/) {
+		my $indent_width = $config->{editor_indentwidth};
+		my $tab_width    = $config->{editor_tabwidth};
+		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+			# do tab compression if necessary
+			# - First, convert all to spaces (aka columns)
+			# - Then, add an indentation level
+			# - Then, convert to tabs as necessary
+			my $tab_equivalent = " " x $tab_width;
+			$indent =~ s/\t/$tab_equivalent/g;
+			$indent =~ s/$tab_equivalent$//;
+			$indent =~ s/$tab_equivalent/\t/g;
+		}
+		elsif ($config->{editor_use_tabs}) {
+			# use tabs only
+			$indent =~ s/\t$//;
+		}
+		else {
+			my $indentation_level=  " " x $indent_width;
+			$indent =~ s/$indentation_level$//;
+		}
+
+		# replace indentation of the current line
+		$self->GotoPos($pos-1);
+		$self->DelLineLeft();
+		$pos = $self->GetCurrentPos();
+		$self->InsertText($pos, $indent);
+		$self->GotoPos( $self->GetLineEndPosition($line) );
+	}
+	# this is if the line matches "blahblahSomeText}".
+	elsif ($config->{editor_autoindent} eq 'deep' and $content =~ /\}\s*$/) {
+		# TODO: What should happen in this case?
+	}
+
 	return;
 }
 

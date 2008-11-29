@@ -2040,9 +2040,14 @@ sub on_stc_change {
 sub on_stc_char_added {
 	my ($self, $event) = @_;
 
-	if ($event->GetKey == 10) { # ENTER
+        my $key = $event->GetKey;
+	if ($key == 10) { # ENTER
 		my $editor = $self->selected_editor;
-		$editor->autoindent;
+		$editor->autoindent("indent");
+	}
+	elsif ($key == 125) { # Closing brace }
+		my $editor = $self->selected_editor;
+		$editor->autoindent("deindent");
 	}
 	return;
 }
