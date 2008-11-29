@@ -70,7 +70,7 @@ CREATE TABLE history (
 END_SQL
 
 	# Drop old version of the table
-	if ( $class->table_exists('snippits') and not $class->column_exists('snippits', 'mimetype') ) {
+	if ( $class->table_exists('snippets') and not $class->column_exists('snippets', 'mimetype') ) {
 		$class->do('DROP TABLE snippets');
 	}
 
