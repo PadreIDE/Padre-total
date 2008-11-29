@@ -232,26 +232,26 @@ sub show_folding {
 		$self->SetProperty('fold' => 1);
 
 		Wx::Event::EVT_STC_MARGINCLICK(
-		    $self,
-    		Wx::wxID_ANY,
-    		sub {
-        		my ( $editor, $event ) = @_;
-        		if ( $event->GetMargin() == 2 ) {
-            		my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
-            		my $level_clicked = $editor->GetFoldLevel($line_clicked);
-                    # TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
-            		#if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
-                		$editor->ToggleFold($line_clicked);
-            		#}
-        		}
-    		}
+			$self,
+			Wx::wxID_ANY,
+			sub {
+				my ( $editor, $event ) = @_;
+				if ( $event->GetMargin() == 2 ) {
+					my $line_clicked = $editor->LineFromPosition( $event->GetPosition() );
+					my $level_clicked = $editor->GetFoldLevel($line_clicked);
+					# TODO check this (cf. ~/contrib/samples/stc/edit.cpp from wxWidgets)
+					#if ( $level_clicked && wxSTC_FOLDLEVELHEADERFLAG) > 0) {
+					$editor->ToggleFold($line_clicked);
+					#}
+				}
+			}
 		);
 	}
 	else {
 		$self->SetMarginSensitive(2, 0);
-        $self->SetMarginWidth(2, 0);
+	$self->SetMarginWidth(2, 0);
 		# deactivate
-        $self->SetProperty('fold' => 1);
+	$self->SetProperty('fold' => 1);
 	}
 
 	return;
@@ -300,8 +300,8 @@ sub show_calltip {
 		$self->CallTipCancel;
 	}
 
-    my $doc = Padre::Documents->current or return;
-    my $keywords = $doc->keywords;
+	my $doc = Padre::Documents->current or return;
+	my $keywords = $doc->keywords;
 
 	my $regex = join '|', sort {length $a <=> length $b} keys %$keywords;
 
