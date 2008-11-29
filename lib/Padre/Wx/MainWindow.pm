@@ -961,7 +961,16 @@ sub error {
 	$self->message( shift, Wx::gettext('Error') );
 }
 
+sub find {
+	my $self = shift;
 
+	if ( not defined $self->{fast_find_panel} ) {
+		require Padre::Wx::Dialog::Search;
+		$self->{fast_find_panel} = Padre::Wx::Dialog::Search->new;
+	}
+
+	return $self->{fast_find_panel};
+}
 
 
 
