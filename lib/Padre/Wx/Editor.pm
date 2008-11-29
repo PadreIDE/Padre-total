@@ -506,7 +506,7 @@ sub on_right_down {
 		sub { \&text_select_all(@_) },
 	);
 	$menu->AppendSeparator;
-	
+
 	my $copy = $menu->Append( Wx::wxID_COPY, '' );
 	if ( not $selection_exists ) {
 		$copy->Enable(0);
@@ -536,6 +536,17 @@ sub on_right_down {
 	} else {
 		$paste->Enable(0);
 	}
+
+	$menu->AppendSeparator;
+
+	my $comment = $menu->Append( -1, Wx::gettext("&Comment Selected Lines\tCtrl-M") );
+	Wx::Event::EVT_MENU( $win, $comment,
+		\&Padre::Wx::MainWindow::on_comment_out_block,
+	);
+	my $uncomment = $menu->Append( -1, Wx::gettext("&Uncomment Selected Lines\tCtrl-Shift-M") );
+	Wx::Event::EVT_MENU( $win, $uncomment,
+		\&Padre::Wx::MainWindow::on_uncomment_block,
+	);
 
 	$menu->AppendSeparator;
 
