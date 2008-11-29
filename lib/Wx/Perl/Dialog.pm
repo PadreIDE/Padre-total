@@ -88,6 +88,14 @@ Supported widgets and their parameters:
 
  3. array ref for list of values
 
+=item Wx::FontPickerCtrl
+
+ 3. A string describing the font
+
+=item Wx::ColourPickerControl
+
+ 3. A HTML-compatible colour description string: '#' plus 6 hex digits; i.e. #FF0000
+
 =back
 
 =head1 METHODS
@@ -151,6 +159,10 @@ sub get_data {
 					$data{$name} = $dialog->{_widgets_}{$name}->GetPath;
 				} elsif ($class eq 'Wx::Choice') {
 					$data{$name} = $dialog->{_widgets_}{$name}->GetSelection;
+				} elsif ($class eq 'Wx::FontPickerCtrl') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetSelectedFont->GetNativeFontInfoUserDesc;
+				} elsif ($class eq 'Wx::ColourPickerCtrl') {
+					$data{$name} = $dialog->{_widgets_}{$name}->GetColour->GetAsString(Wx::wxC2S_HTML_SYNTAX);
 				} else {
 					$data{$name} = $dialog->{_widgets_}{$name}->GetValue;
 				}
@@ -266,6 +278,22 @@ sub _build_layout {
 					my $page  = Wx::Panel->new( $widget );
 					$widget->AddPage( $page, $name, 0, $count );
 				}
+			} elsif ($class eq 'Wx::FontPickerCtrl') {
+				my $default_val = ( defined $arg ? $arg : '' );
+				my $default = Wx::Font->new(Wx::wxNullFont);
+				eval {
+					$default->SetNativeFontInfoUserDesc($default_val);
+				};
+				$default = Wx::wxNullFont if $@;
+				$widget = $class->new( $dialog, -1, $default, Wx::wxDefaultPosition, $width, Wx::wxFNTP_DEFAULT_STYLE );
+			} elsif ($class eq 'Wx::ColourPickerCtrl') {
+				my $default_val = ( defined $arg ? $arg : '#000000' );
+				my $default;
+				eval {
+					$default = Wx::Colour->new($default_val);
+				};
+				$default = Wx::Colour->new('#000000') if $@;
+				$widget = $class->new( $dialog, -1, $default, Wx::wxDefaultPosition, $width, Wx::wxCLRP_DEFAULT_STYLE );
 			} else {
 				warn "Unsupported widget $class\n";
 				next;
