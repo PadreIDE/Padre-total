@@ -2009,7 +2009,11 @@ sub on_stc_style_needed {
 
 sub on_stc_update_ui {
 	my ($self, $event) = @_;
-    
+
+	# avoid recursion
+	return if $self->{_in_stc_update_ui};
+	local $self->{_in_stc_update_ui} = 1;
+
 	# check for brace, on current position, higlight the matching brace
 	my $editor = $self->selected_editor;
 	$editor->highlight_braces;
