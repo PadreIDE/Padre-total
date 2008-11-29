@@ -6,7 +6,6 @@ use warnings;
 
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
-use Wx::Locale        qw(:default);
 
 our $VERSION = '0.19';
 
@@ -16,38 +15,38 @@ sub get_layout {
 	return [
 		[
 			[],
-			['Wx::CheckBox',    'editor_use_tabs', gettext('Use Tabs'),    ($config->{editor_use_tabs} ? 1 : 0) ],
+			['Wx::CheckBox',    'editor_use_tabs', Wx::gettext('Use Tabs'),    ($config->{editor_use_tabs} ? 1 : 0) ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('TAB display size (in spaces)')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('TAB display size (in spaces)')],
 			[ 'Wx::TextCtrl',   'editor_tabwidth',  $config->{editor_tabwidth}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Indentation width (in columns)')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Indentation width (in columns)')],
 			[ 'Wx::TextCtrl',   'editor_indentwidth', $config->{editor_indentwidth}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Guess from current document')],
-			[ 'Wx::Button',     '_guess_',          gettext('Guess')     ],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Guess from current document')],
+			[ 'Wx::Button',     '_guess_',          Wx::gettext('Guess')     ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Max number of modules')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Max number of modules')],
 			[ 'Wx::TextCtrl',   'pod_maxlist',      $config->{pod_maxlist}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Min number of modules')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Min number of modules')],
 			[ 'Wx::TextCtrl',   'pod_minlist',      $config->{pod_minlist}],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Open files:')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Open files:')],
 			[ 'Wx::Choice',     'main_startup',     $main_startup],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Autoindent:')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Autoindent:')],
 			[ 'Wx::Choice',     'editor_autoindent', $editor_autoindent],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Default word wrap on for each file')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Default word wrap on for each file')],
 			['Wx::CheckBox',    'editor_use_wordwrap', '',
 				($config->{editor_use_wordwrap} ? 1 : 0) ],
 		],
@@ -65,7 +64,7 @@ sub dialog {
 	my $layout = get_layout($config, $main_startup, $editor_autoindent);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
-		title  => gettext("Preferences"),
+		title  => Wx::gettext("Preferences"),
 		layout => $layout,
 		width  => [280, 200],
 	);
