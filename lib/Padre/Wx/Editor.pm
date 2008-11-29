@@ -567,6 +567,7 @@ sub on_left_up {
 sub on_mouse_motion {
 	my ( $self, $event ) = @_;
 
+	$event->Skip;
 	return unless Padre->ide->config->{editor_syntaxcheck};
 
 	my $mousePos = $event->GetPosition;
