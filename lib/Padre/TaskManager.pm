@@ -280,7 +280,8 @@ sub worker_loop {
 			warn "Could not load class $class for running background task, skipping. This is a severe error.";
 			next;
 		}
-		my $process = $class->deserialize( \$task->[1] );
+                my $string = $task->[1];
+		my $process = $class->deserialize( \$string );
 		
 		# RUN
 		$process->run();
