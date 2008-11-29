@@ -1836,7 +1836,7 @@ sub on_ppi_highlight {
 		#my $editor = $self->selected_editor;
 		next if not $editor->{Document}->isa('Padre::Document::Perl');
 		if ($config->{ppi_highlight}) {
-			$editor->{Document}->colourise;
+			$editor->{Document}->colorize;
 		} else {
 			$editor->{Document}->remove_color;
 			$editor->Colourise(0, $editor->GetLength);
@@ -1991,7 +1991,7 @@ sub on_stc_style_needed {
 	my ( $self, $event ) = @_;
 
 	my $doc = Padre::Documents->current or return;
-	if ($doc->can('colourise')) {
+	if ($doc->can('colorize')) {
 
 		# workaround something that seems like a Scintilla bug
 		# when the cursor is close to the end of the document
@@ -2001,7 +2001,7 @@ sub on_stc_style_needed {
 		return if defined $doc->{_text} and $doc->{_text} eq $text;
 		$doc->{_text} = $text;
 
-		$doc->colourise;
+		$doc->colorize;
 	}
 
 }

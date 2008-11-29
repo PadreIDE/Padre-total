@@ -69,11 +69,11 @@ sub padre_setup {
     } elsif ( $mimetype eq 'application/x-pasm' ) {
         $self->padre_setup_style('pasm');
     } elsif ($mimetype) {
-		# setup some default colouring
+		# setup some default coloring
 		# for the time being it is the same as for Perl
         $self->padre_setup_style('perl');
 	} else {
-		# if mimetype is not known, then no colouring for now
+		# if mimetype is not known, then no coloring for now
 		# but mimimal conifuration should apply here too
         $self->padre_setup_plain;
 	}
@@ -93,7 +93,7 @@ sub padre_setup_plain {
 	$self->StyleClearAll();
 
 	foreach my $k (keys %{ $data->{plain}{forgrounds} }) {
-		$self->StyleSetForeground( $k, _colour( $data->{plain}{foregrounds}{$k} ) );
+		$self->StyleSetForeground( $k, _color( $data->{plain}{foregrounds}{$k} ) );
 	}
 	
 	#$self->StyleSetBold(12,  1);
@@ -126,15 +126,15 @@ sub padre_setup_style {
 			}
 		}
 
-		$self->StyleSetForeground( $f->(), _colour($data->{$name}{colors}{$k}) );
+		$self->StyleSetForeground( $f->(), _color($data->{$name}{colors}{$k}) );
 	}
 
-	$self->StyleSetBackground(34, _colour($data->{$name}{brace_highlight}));
+	$self->StyleSetBackground(34, _color($data->{$name}{brace_highlight}));
 
 	return;
 }
 
-sub _colour {
+sub _color {
 	my $rgb = shift;
 	my @c = map {hex($_)} $rgb =~ /(..)(..)(..)/;
 	return Wx::Colour->new(@c)
@@ -223,7 +223,7 @@ sub show_folding {
 		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDER,        Wx::wxSTC_MARK_BOXPLUS,  $w, $b);
 		$self->MarkerDefine(Wx::wxSTC_MARKNUM_FOLDEROPEN,    Wx::wxSTC_MARK_BOXMINUS, $w, $b);
 
-		# This would be nice but the colour used for drawing the lines is 
+		# This would be nice but the color used for drawing the lines is 
 		# Wx::wxSTC_STYLE_DEFAULT, i.e. usually black and therefore quite
 		# obtrusive...
 		# $self->SetFoldFlags( Wx::wxSTC_FOLDFLAG_LINEBEFORE_CONTRACTED | Wx::wxSTC_FOLDFLAG_LINEAFTER_CONTRACTED );

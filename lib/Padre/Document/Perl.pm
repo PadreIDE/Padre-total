@@ -122,7 +122,7 @@ sub get_command {
 	return qq{"$perl" "$filename"};
 }
 
-sub colourise {
+sub colorize {
 	my ($self) = @_;
 	
 	$self->remove_color;
@@ -249,7 +249,7 @@ sub _css_class {
 		}
 	}
 
-	# Normal colouring
+	# Normal coloring
 	my $css = ref $Token;
 	$css =~ s/^.+:://;
 	$css;
