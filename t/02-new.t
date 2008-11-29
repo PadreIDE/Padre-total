@@ -36,8 +36,9 @@ SCOPE: {
 
 		editor_linenumbers => 0,
 		editor_eol         => 0,
-		editor_tabwidth    => 4,
+		editor_tabwidth    => 8,
 		editor_indentationguides => 0,
+		editor_indentwidth => 4,
 		editor_calltips    => 1,
 		editor_use_tabs    => 1,
 		editor_autoindent  => 'deep',

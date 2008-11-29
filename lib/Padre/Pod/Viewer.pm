@@ -42,10 +42,11 @@ sub module_to_path {
 	my $module = shift;
 
 	my $root = $module;
+	my $file = $module;
 	$file =~ s{::}{/}g;
 	my $path;
 
-	my $poddir = File::Spec->catdir($Config{privlib}, 'pod')
+	my $poddir = File::Spec->catdir($Config{privlib}, 'pod');
 	foreach my $dir ( $poddir, @INC) {
 		my $fpath = File::Spec->catfile($dir, $file);
 		if ( -e "$fpath.pm" ) {
