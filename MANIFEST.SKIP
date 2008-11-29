@@ -36,4 +36,8 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bWx-Tutorial-[\d\.\_]+
+\bPadre-[\d\.\_]+
+
+\.mo
+\B\.padre
+

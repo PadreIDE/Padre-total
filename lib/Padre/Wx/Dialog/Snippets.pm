@@ -10,7 +10,7 @@ use Padre::Wx;
 use Padre::Wx::Dialog;
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 sub get_layout {
     my ($config) = @_;
@@ -20,10 +20,10 @@ sub get_layout {
     my $snippets = Padre::DB->find_snipnames;
 
     my @layout = (
-        [ [ 'Wx::StaticText', undef, gettext('Class:') ],   [ 'Wx::Choice', '_find_cat_',     $cats ], ],
-        [ [ 'Wx::StaticText', undef, gettext('Snippet:') ], [ 'Wx::Choice', '_find_snippet_', $snippets ], ],
+        [ [ 'Wx::StaticText', undef, gettext('Class:') ],       [ 'Wx::Choice', '_find_cat_',     $cats ], ],
+        [ [ 'Wx::StaticText', undef, gettext('Snippet:') ],     [ 'Wx::Choice', '_find_snippet_', $snippets ], ],
         [ [], [ 'Wx::Button', '_insert_', gettext('&Insert') ], [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
-        [ [ 'Wx::StaticLine' ],[ 'Wx::StaticLine' ], ],
+        [ [ 'Wx::StaticLine' ],                                 [ 'Wx::StaticLine' ], ],
         [ [], [ 'Wx::Button', '_edit_',   gettext('&Edit') ],   [ 'Wx::Button', '_add_',    gettext('&Add') ], ],
     );
     return \@layout;
@@ -49,6 +49,9 @@ sub dialog {
 
     $dialog->{_widgets_}{_find_cat_}->SetFocus;
     $dialog->{_widgets_}{_insert_}->SetDefault;
+
+
+    my $doc = Padre::Documents->current or return;
 
     return $dialog;
 }
@@ -102,7 +105,6 @@ sub get_snippet {
     $win->{notebook}->GetPage($id)->ReplaceSelection('');
     my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
     $win->{notebook}->GetPage($id)->InsertText( $pos, $text );
-
     return;
 }
 
@@ -121,7 +123,7 @@ sub snippet_layout {
         [ [ 'Wx::StaticText', undef, gettext('Category:') ], [ 'Wx::TextCtrl', 'category', $snippet->[1] ], ],
         [ [ 'Wx::StaticText', undef, gettext('Name:') ],     [ 'Wx::TextCtrl', 'name',     $snippet->[2] ], ],
         [ [ 'Wx::StaticText', undef, gettext('Snippet:') ],  [ 'Wx::TextCtrl', 'snippet',  $snippet->[3], 400 ], ],
-        [ [], [ 'Wx::Button', '_save_', gettext('&Save') ], [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
+        [ [], [ 'Wx::Button', '_save_', gettext('&Save') ],  [ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ], ],
     );
     return \@layout;
 }

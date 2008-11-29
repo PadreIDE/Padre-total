@@ -26,10 +26,12 @@ use strict;
 use warnings;
 use Carp        ();
 use File::Spec  ();
+use Encode::Guess ();
 use Padre::Util ();
 use Padre::Wx   ();
+use Padre;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 my $unsaved_number = 0;
 
@@ -98,8 +100,6 @@ our %MIME_CLASS = (
 	'application/x-perl6'    => 'Padre::Document::Perl6',
 	'application/x-pasm'     => 'Padre::Document::PASM',
 	'application/x-pir'      => 'Padre::Document::PIR',
-	'application/javascript' => 'Padre::Document::JavaScript',
-	'application/json'       => 'Padre::Document::JavaScript',
 );
 
 # Document types marked here with CONFIRMED have be checked to confirm that
@@ -273,15 +273,67 @@ sub _auto_convert {
 sub load_file {
 	my ($self, $file, $editor) = @_;
 
-	require File::Slurp;
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
-	my $content = eval { File::Slurp::read_file($file, binmode => ':raw') };
-	if ($@) {
-		warn $@;
+	my $content;
+	if (open my $fh, '<', $file) {
+		binmode($fh);
+		local $/ = undef;
+		$content = <$fh>;
+	} else {
+		warn $!;
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
+
+	#
+	# FIXME
+	# This is a just heuristic approach. Maybe there is a better way. :)
+	# Japanese and Chinese have to be tested. Only Korean is tested.
+	#
+	# If locale of config is one of CJK, then we could guess more correctly.
+	# Any type of locale which is supported by Encode::Guesss could be added.
+	# Or, we'll use system default encode setting
+	# If we cannot get system default, then forced it to set 'utf-8'
+	#
+	my $system_default = Wx::Locale::GetSystemEncodingName();
+	my $lang_shortname = Padre::Wx::MainWindow::shortname(); # TODO clean this up
+	if ($system_default) {
+		# In windows system Wx::locale::GetSystemEncodingName() returns
+		# like ``windows-1257'' and it matches as ``cp1257''
+		# refer to src/common/intl.cpp
+		$system_default =~ s/^windows-/cp/;
+
+		my @guess_encoding = ();
+		if ($lang_shortname eq 'ko') {      # Korean
+			@guess_encoding = qw/utf-8 euc-kr/;
+		} elsif ($lang_shortname eq 'ja') { # Japan (not yet tested)
+			@guess_encoding = qw/utf-8 iso8859-1 euc-jp shiftjis 7bit-jis/;
+		} elsif ($lang_shortname eq 'cn') { # Chinese (not yet tested)
+			@guess_encoding = qw/utf-8 iso8859-1 euc-cn/;
+		} else {
+			@guess_encoding = ($system_default);
+		}
+
+		my $encoding = Encode::Guess::guess_encoding($content, @guess_encoding);
+		if (ref($encoding) =~ m/^Encode::/) {       # Wow, nice!
+			$self->{encoding} = $encoding->name;
+		} elsif ($encoding =~ m/utf8/) {            # utf-8 is in suggestion
+			$self->{encoding} = 'utf-8';
+		} elsif ($encoding =~ m/or/) {              # choose from suggestion
+			my @suggest_encodings = split /\sor\s/, "$encoding";
+			$self->{encoding} = $suggest_encodings[0];
+		} else {                                    # use system default
+			$self->{encoding} = $system_default;
+		}
+	} else { # fail to get system default encoding
+		warn "Could not find encoding of file '$file'. Defaulting to 'utf-8'. "
+			. "Please check it manually and report to the Padre development team.";
+		$self->{encoding} = 'utf-8';
+	}
+	$content = Encode::decode($self->{encoding}, $content);
+	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
+
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
 		# keep default
@@ -321,13 +373,11 @@ sub save_file {
 	my ($self) = @_;
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
-        
-	require File::Slurp;
-	eval {
-		File::Slurp::write_file($filename, {binmode => ':raw'}, $content);
-	};
-	if ($@) {
-		return "Could not save: $@";
+
+	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
+		print {$fh} $content;
+	} else {
+		return "Could not save: $!";
 	}
 	$self->{_timestamp} = $self->time_on_file;
 
@@ -637,7 +687,8 @@ sub stats {
 
 	my $filename = $self->filename;
 	
-	return ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename);
+	return ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, 
+			$filename, $self->{newline_type}, $self->{encoding} );
 }
 
 1;

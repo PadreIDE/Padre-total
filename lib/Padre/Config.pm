@@ -11,7 +11,7 @@ use File::HomeDir ();
 use Params::Util  qw{ _STRING _ARRAY };
 use YAML::Tiny    ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 
 
@@ -104,7 +104,6 @@ sub new {
 #	$self->{host}->{main_left}      ||= Wx::wxDefaultPosition()->x;
 #	$self->{host}->{main_top}       ||= Wx::wxDefaultPosition()->y;
 	$self->{host}->{main_maximized} ||= 0;
-#	$self->{host}->{locale}         ||= 'en';
 
 	# Files that were previously open (and can be still)
 	unless ( _ARRAY($self->{host}->{main_files}) ) {

@@ -8,7 +8,7 @@ use Padre::Util      ();
 use Padre::Wx        ();
 use Padre::Documents ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 
 
@@ -64,6 +64,7 @@ sub new {
 
 	$self->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
 	$self->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
+	$self->{view_show_syntaxcheck}->Check( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return $self;
 }
@@ -297,6 +298,14 @@ sub menu_file {
 		$self->{file_save_all},
 		sub { $_[0]->on_save_all },
 	);
+	$menu->AppendSeparator;
+
+#	# Printing
+	$self->{file_print} = $menu->Append( Wx::wxID_PRINT, Wx::gettext('Print File') );
+	Wx::Event::EVT_MENU( $win,
+		$self->{file_print},
+		sub { Padre::Wx::Print::OnPrint(@_) }     
+	);                                                                            
 	$menu->AppendSeparator;
 
 	# Conversions and Transforms
@@ -612,10 +621,17 @@ sub menu_view {
 		$self->{view_indentation_guide},
 		\&Padre::Wx::MainWindow::on_toggle_indentation_guide,
 	);
+	$menu_view->AppendSeparator;	
+
 	$self->{view_show_calltips} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Call Tips") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{view_show_calltips},
 		sub { $config->{editor_calltips} = $self->{view_show_calltips}->IsChecked },
+	);
+	$self->{view_show_syntaxcheck} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
+	Wx::Event::EVT_MENU( $win,
+		$self->{view_show_syntaxcheck},
+		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 	$menu_view->AppendSeparator;
 	
@@ -662,7 +678,6 @@ sub menu_view {
 	$self->{view_language} = Wx::Menu->new;
 	$menu_view->Append( -1, Wx::gettext("Language"), $self->{view_language} );
 	
-	# TODO horrible, fix this
 	Wx::Event::EVT_MENU( $win,
 		$self->{view_language}->AppendRadioItem( -1, Wx::gettext("System Default") ),
 		sub { $_[0]->change_locale() },
@@ -670,10 +685,18 @@ sub menu_view {
 	$self->{view_language}->AppendSeparator;
 	my %languages = %Padre::Wx::MainWindow::languages;
 	foreach my $name (sort { $languages{$a} cmp $languages{$b} }  keys %languages) {
+		my $label = $languages{$name};
+		if ( $label eq 'English' ) {
+			$label = q{English (Queen's)};
+		}
+		my $item = $self->{view_language}->AppendRadioItem( -1, $label );
 		Wx::Event::EVT_MENU( $win,
-			$self->{view_language}->AppendRadioItem( -1, $languages{$name} ),
+			$item,
 			sub { $_[0]->change_locale($name) },
 		);
+		if ($config->{host}->{locale} and $config->{host}->{locale} eq $name) {
+			$item->Check(1);
+		}
 	}
 
 	$menu_view->AppendSeparator;
@@ -884,17 +907,14 @@ sub menu_window {
 			$_[0]->{output}->SetFocus;
 		},
 	);
-#	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
-#	Wx::Event::EVT_MENU( $win,
-#		$self->{window_goto_synchk},
-#		sub {
-#			$_[0]->show_syntaxbar(1);
-#			$_[0]->{syntaxbar}->SetFocus;
-#		},
-#	);
-#	unless ( $_[0]->{experimental_syntaxcheck}->IsChecked ) {
-#		$self->{window_goto_synchk}->Enable(0);
-#	}
+	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
+	Wx::Event::EVT_MENU( $win,
+		$self->{window_goto_synchk},
+		sub {
+			$_[0]->show_syntaxbar(1);
+			$_[0]->{syntaxbar}->SetFocus;
+		},
+	);
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("GoTo Main Window\tAlt-M") ),
 		sub {
@@ -979,11 +999,6 @@ sub menu_experimental {
 			}
 			return;
 		},
-	);
-	$self->{experimental_syntaxcheck} = $menu_exp->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
-	Wx::Event::EVT_MENU( $win,
-		$self->{experimental_syntaxcheck},
-		\&Padre::Wx::MainWindow::on_toggle_synchk,
 	);
 
 	

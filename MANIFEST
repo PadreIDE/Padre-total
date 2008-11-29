@@ -5,7 +5,6 @@ README
 inc/Padre/Install.pm
 
 lib/Padre.pm
-lib/Padre/Wx/Ack.pm
 lib/Padre/Autosave.pm
 lib/Padre/Config.pm
 lib/Padre/DB.pm
@@ -17,7 +16,6 @@ lib/Padre/PluginManager.pm
 lib/Padre/Project.pm
 lib/Padre/Util.pm
 lib/Padre/PPI.pm
-lib/Padre/Wx.pm
 
 lib/Padre/Document/JavaScript.pm
 lib/Padre/Document/PASM.pm
@@ -26,6 +24,7 @@ lib/Padre/Document/Perl6.pm
 lib/Padre/Document/PIR.pm
 
 lib/Padre/Plugin/Devel.pm
+lib/Padre/Plugin/JavaScript.pm
 lib/Padre/Plugin/My.pm
 lib/Padre/Plugin/Vi.pm
 lib/Padre/Plugin/Vi/Editor.pm
@@ -35,6 +34,8 @@ lib/Padre/Pod2HTML.pm
 
 lib/Padre/Project/Perl.pm
 
+lib/Padre/Wx.pm
+lib/Padre/Wx/Ack.pm
 lib/Padre/Wx/App.pm
 lib/Padre/Wx/Dialog.pm
 lib/Padre/Wx/Dialog/Bookmarks.pm
@@ -51,6 +52,8 @@ lib/Padre/Wx/Menu.pm
 lib/Padre/Wx/Output.pm
 lib/Padre/Wx/Pod2HTML.pm
 lib/Padre/Wx/Popup.pm
+lib/Padre/Wx/Print.pm
+lib/Padre/Wx/Print/Printout.pm
 lib/Padre/Wx/Project.pm
 lib/Padre/Wx/RightClick.pm
 lib/Padre/Wx/ToolBar.pm
@@ -103,6 +106,9 @@ eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
 share/locale/de.po
+share/locale/he.po
+share/locale/hu.po
+share/locale/ko.po
 
 share/templates/template.pl
 share/templates/template.pm
@@ -114,6 +120,7 @@ share/languages/perl5/perl5.yml
 
 share/tango/16x16/actions/document-open.png
 share/tango/16x16/actions/document-new.png
+share/tango/16x16/actions/document-print.png
 share/tango/16x16/actions/document-save.png
 share/tango/16x16/actions/edit-copy.png
 share/tango/16x16/actions/edit-cut.png

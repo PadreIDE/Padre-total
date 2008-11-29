@@ -8,7 +8,7 @@ use List::Util   ();
 use Padre::Wx    ();
 use Padre::Plugin::Vi::CommandLine;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 sub new {
 	my ($class, $editor) = @_;
@@ -166,7 +166,7 @@ sub key_down {
 	}
 
 	# left here to easily find extra keys we still need to implement:
-	printf("key '%s' '%s'\n", $mod, $code); 
+	#printf("key '%s' '%s'\n", $mod, $code); 
 	return 0;
 }
 
@@ -179,7 +179,7 @@ sub get_char {
 	}
 	
 	$self->{buffer} .= $chr;
-	print "Buffer: '$self->{buffer}'\n";
+	#print "Buffer: '$self->{buffer}'\n";
 	if ($self->{visual_mode}) {
 		if ($self->{buffer} =~ /^[dvxy]$/) {
 			my $command = $self->{buffer};
@@ -218,7 +218,7 @@ sub get_char {
 	}
 
 	# left here to easily find extra keys we still need to implement:
-	printf("chr '%s' '%s'\n", $mod, $chr);
+	#printf("chr '%s' '%s'\n", $mod, $chr);
 	return 0;
 }
 

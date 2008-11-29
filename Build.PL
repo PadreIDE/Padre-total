@@ -32,6 +32,7 @@ my %prereqs = (
 	'Class::Adapter'          => '1.05',
 	'Cwd'                     => '3.2701',
 	'Data::Dumper'            => 0,
+	'Encode'                  => '2.12',
 	'File::Spec'              => '3.2701',
 	'File::Spec::Functions'   => '3.2701',
 	'File::Basename'          => 0,
@@ -47,7 +48,7 @@ my %prereqs = (
 	'Class::Autouse'          => '1.26',
 	'Class::Unload'           => '0.03',
 	'DBD::SQLite'             => '1.10',
-	'DBI'                     => '1.607',
+	'DBI'                     => '1.58',
 	'File::Copy::Recursive'   => '0.37',
 	'File::Find::Rule'        => '0.30',
 	'File::HomeDir'           => '0.82',
@@ -119,7 +120,7 @@ $builder->create_build_script();
 
 sub check_wx_version {
 
-	require Wx;
+	eval {require Wx};
 	return if $@;  # missing Wx should be dealt by the standard prereq system
 
 	my $version = Wx::wxVERSION_STRING();

@@ -14,7 +14,7 @@ use YAML::Tiny     ();
 use DBI            ();
 use Class::Autouse ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
@@ -50,9 +50,10 @@ use Class::Autouse qw{
 	Padre::Wx::Dialog::Snippets
 	Padre::Wx::History::TextDialog
 	Padre::Wx::MainWindow
+	Padre::Wx::Print
 
-        Padre::Task
-        Padre::TaskManager
+	Padre::Task
+	Padre::TaskManager
 };
 
 # Globally shared Perl detection object
@@ -173,7 +174,7 @@ sub run {
 	# window was opened but my Wx skills do not exist. --Steffen
 	# (RT #1)
 	$self->plugin_manager->load_plugins;
-	
+
 	$self->{ARGV} = [ map {File::Spec->rel2abs( $_ )} @ARGV ];
 
 	$self->{original_dir} = Cwd::cwd();
@@ -909,6 +910,11 @@ English - everyone on the team
 German - Heiko Jansen (HJANSEN)
 
 Korean - Keedi Kim (KEEDI)
+
+Hungarian = Gyorgy Pasztor (GYU)
+
+Hebrew - Omer Zak
+
 
 
 =cut

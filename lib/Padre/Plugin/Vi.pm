@@ -6,7 +6,7 @@ use base 'Padre::Plugin';
 
 use Scalar::Util qw(refaddr);
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
@@ -321,7 +321,7 @@ sub evt_key_down {
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
-	print("key: '$mod', '$code'\n");
+	#print("key: '$mod', '$code'\n");
 	if (32 <= $code and $code <= 127) {
 		$event->Skip;
 		return;
@@ -338,7 +338,7 @@ sub evt_char {
 	my $mod  = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
-	printf("char: '$mod', '$code' '%s'\n", chr($code));
+	#printf("char: '$mod', '$code' '%s'\n", chr($code));
 	if (32 <= $code and $code <= 127) {
 		my $skip = $self->{editor}{refaddr $editor}->get_char($mod, $code, chr($code));
 		$event->Skip($skip);

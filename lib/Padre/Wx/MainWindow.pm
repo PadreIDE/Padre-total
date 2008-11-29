@@ -24,17 +24,19 @@ use Padre::Wx::DNDFilesDropTarget ();
 
 use base qw{Wx::Frame};
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 my $default_dir = Cwd::cwd();
 
 use constant SECONDS => 1000;
 
+use constant DEFAULT_LOCALE => 'en';
+
 # TODO move it to some better place,
 # used in Menu.pm
 our %languages = (
 	de => Wx::gettext('German'),
-	en => Wx::gettext('English'),
+	en => Wx::gettext('English (London.pm)'),
 	ko => Wx::gettext('Korean'),
 	hu => Wx::gettext('Hungarian'),
 	he => Wx::gettext('Hebrew'),
@@ -42,12 +44,15 @@ our %languages = (
 
 my %shortname_of = (
 	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
-	Wx::wxLANGUAGE_GERMAN() => 'de', 
-	Wx::wxLANGUAGE_KOREAN() => 'ko',
-	Wx::wxLANGUAGE_HUNGARIAN() => 'hu',
-	Wx::wxLANGUAGE_HEBREW() => 'he',
+	Wx::wxLANGUAGE_GERMAN()     => 'de', 
+	Wx::wxLANGUAGE_KOREAN()     => 'ko',
+	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_HEBREW()     => 'he',
 );
+
 my %number_of = reverse %shortname_of;
+
+
 
 
 
@@ -59,9 +64,6 @@ sub new {
 
 	my $config = Padre->ide->config;
 	Wx::InitAllImageHandlers();
-
-	$config->{host}->{locale} ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || 'en' ;
 
 	Wx::Log::SetActiveTarget( Wx::LogStderr->new );
 	#Wx::LogMessage( 'Start');
@@ -115,18 +117,8 @@ sub new {
 
 	$self->{page_history} = [];
 
-	# Create the menu bar
-	$self->{menu} = Padre::Wx::Menu->new( $self );
-	$self->SetMenuBar( $self->{menu}->{wx} );
-
-	# Create the tool bar
-	$self->SetToolBar( Padre::Wx::ToolBar->new($self) );
-	$self->GetToolBar->Realize;
-
-	# Create the status bar
-	$self->{statusbar} = $self->CreateStatusBar;
-	$self->{statusbar}->SetFieldsCount(4);
-	$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+	# create basic window components
+	$self->create_main_components;
 
 	# Create the main notebook for the documents
 	$self->{notebook} = Wx::AuiNotebook->new(
@@ -194,10 +186,8 @@ sub new {
 		\&on_function_selected,
 	);
 
-	# Create the (experiemental) syntaxbar
-	if ( Padre->ide->config->{experimental} ) {
-		$self->create_syntaxbar;
-	}
+	# Create the sidebar for syntax check messages
+	$self->create_syntaxbar;
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -272,6 +262,30 @@ sub new {
 	return $self;
 }
 
+sub create_main_components {
+	my $self = shift;
+
+	# Create the menu bar
+	if ( defined $self->{menu} ) {
+		delete $self->{menu};
+	}
+	$self->{menu} = Padre::Wx::Menu->new( $self );
+	$self->SetMenuBar( $self->{menu}->{wx} );
+
+	# Create the tool bar
+	$self->SetToolBar( Padre::Wx::ToolBar->new($self) );
+	$self->GetToolBar->Realize;
+
+	# Create the status bar
+	if ( ! defined $self->{statusbar} ) {
+		$self->{statusbar} = $self->CreateStatusBar;
+		$self->{statusbar}->SetFieldsCount(4);
+		$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+	}
+
+	return;
+}
+
 sub create_syntaxbar {
 	my $self = shift;
 
@@ -297,7 +311,7 @@ sub create_syntaxbar {
 		$self->{syntaxbar},
 		\&on_synchkmsg_selected,
 	);
-	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Show();
 	}
 	else {
@@ -358,7 +372,7 @@ sub post_init {
 	$self->load_files;
 
 	$self->on_toggle_status_bar;
-	Padre->ide->{plugin_manager}->enable_editors_for_all;
+	Padre->ide->plugin_manager->enable_editors_for_all;
 	$self->refresh_all;
 
 	my $output = $self->{menu}->{view_output}->IsChecked;
@@ -370,36 +384,14 @@ sub post_init {
 	$self->show_output(1);
 	$self->show_output($output) if not $output;
 
-#$self->Close;
-
-	if (Padre->ide->config->{experimental}) {
-	if ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$self->enable_syntax_checker(1);
 	}
-	}
 
-	my $plugins = Padre->ide->{plugin_manager}{plugins};
+	# Check for new plugins and alert if so
+	my $plugins = Padre->ide->plugin_manager->alert_new;
 
-	my $new_plugins  = '';
-	foreach my $plugin_name (sort keys %$plugins ) {
-		if ($plugins->{$plugin_name}{status} eq 'new') {
-			$new_plugins .= "$plugin_name\n";
-		}
-	}
-	if ($new_plugins) {
-		my $msg = <<"END_MSG";
-We found several new plugins.
-In order to configure and enable them go to
-Plugins/Plugin Tools/Open Plugin Manager
-
-List of new plugins:
-
-$new_plugins
-END_MSG
-
-		$self->message($msg, 'New plugins detected');
-	}
-	# 
+	# Start the change detection timer
 	my $timer = Wx::Timer->new( $self, Padre::Wx::id_FILECHK_TIMER );
 	Wx::Event::EVT_TIMER($self, Padre::Wx::id_FILECHK_TIMER, \&on_timer_check_overwrite);
 	$timer->Start(5 * SECONDS, 0);
@@ -603,35 +595,54 @@ sub refresh_all {
 
 sub change_locale {
 	my ($self, $shortname) = @_;
+
 	my $config = Padre->ide->config;
 	$config->{host}->{locale} = $shortname;
-	$self->message( 'Currently you have to restart Padre for the language change to take effect' );
+
+	delete $self->{locale};
+	$self->set_locale;
+
+	$self->create_main_components;
+
+	$self->refresh_all;
+
+	$self->manager->GetPane('output')->Caption( Wx::gettext("Output") );
+	$self->manager->GetPane('syntaxbar')->Caption( Wx::gettext("Syntax") );
+	$self->manager->GetPane('rightbar')->Caption( Wx::gettext("Subs") );
 	return;
 }
 
-sub set_locale {
-    my $self = shift;
-
-	my $config = Padre->ide->config;
+sub shortname {
+	my $config    = Padre->ide->config;
 	my $shortname = $config->{host}->{locale};
+	$shortname ||= 
+		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
+	return $shortname;
+}
+sub set_locale {
+	my $self = shift;
+
+	my $shortname = shortname();
 	my $lang = $number_of{ $shortname };
-    $self->{locale} = Wx::Locale->new($lang);
-    $self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
-    my $langname = $self->{locale}->GetCanonicalName();
+	$self->{locale} = Wx::Locale->new($lang);
+	$self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
+	my $langname = $self->{locale}->GetCanonicalName();
 
-    #my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
-    my $filename = Padre::Util::sharefile( 'locale', $shortname ) . '.mo';
+	#my $shortname = $langname ? substr( $langname, 0, 2 ) : 'en'; # only providing default sublangs
+	my $filename = Padre::Util::sharefile( 'locale', $shortname ) . '.mo';
 
-    $self->{locale}->AddCatalog($shortname) if -f $filename;
+	unless ( $self->{locale}->IsLoaded($shortname) ) {
+		$self->{locale}->AddCatalog($shortname) if -f $filename;
+	}
 
-    return;
+	return;
 }
 
 sub refresh_syntaxcheck {
 	my $self = shift;
 	return if $self->no_refresh;
 	return if not Padre->ide->config->{experimental};
-	return if not $self->{menu}->{experimental_syntaxcheck}->IsChecked;
+	return if not $self->{menu}->{view_show_syntaxcheck}->IsChecked;
 
 	$self->on_synchk_timer(undef, 1);
 
@@ -1134,8 +1145,7 @@ sub on_split_window {
 	$new_editor->SetDocPointer($pointer);
 	$new_editor->set_preferences;
 
-
-	Padre->ide->{plugin_manager}->editor_enable($new_editor);
+	Padre->ide->plugin_manager->editor_enable($new_editor);
 
 	$self->create_tab($new_editor, $file, " $title");
 
@@ -1165,7 +1175,7 @@ sub setup_editor {
 		filename => $file,
 	);
 	
-	Padre->ide->{plugin_manager}->editor_enable($editor);
+	Padre->ide->plugin_manager->editor_enable($editor);
 
 	my $title = $editor->{Document}->get_title;
 
@@ -1687,9 +1697,9 @@ sub on_toggle_synchk {
 	my $config = Padre->ide->config;
 	$config->{editor_syntaxcheck} = $event->IsChecked ? 1 : 0;
 
-	$self->enable_syntax_checker( $config->{editor_syntaxcheck} );
+	$self->enable_syntax_checker( $config->{editor_syntaxcheck} ? 1 : 0 );
 
-    #$self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} );
+    $self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return;
 }
@@ -1798,7 +1808,7 @@ sub show_functions {
 sub show_syntaxbar {
 	my $self = shift;
 	my $on   = scalar(@_) ? $_[0] ? 1 : 0 : 1;
-	unless ( $self->{menu}->{experimental_syntaxcheck}->IsChecked ) {
+	unless ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$self->manager->GetPane('syntaxbar')->Hide();
 		$self->manager->Update;
 		return;
@@ -1895,10 +1905,11 @@ sub on_insert_from_file {
     $data->SetText($text);
     my $length = $data->GetTextLength;
 	
-	$win->{notebook}->GetPage($id)->ReplaceSelection('');
-	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
-	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
-	$win->{notebook}->GetPage($id)->GotoPos( $pos + $length - 1 );
+	my $editor = $win->{notebook}->GetPage($id);
+	$editor->ReplaceSelection('');
+	my $pos = $editor->GetCurrentPos;
+	$editor->InsertText( $pos, $text );
+	$editor->GotoPos( $pos + $length - 1 );
 }
 
 sub convert_to {
@@ -2083,7 +2094,8 @@ sub on_doc_stats {
 		return;
 	}
 
-    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly, $filename)
+    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly,
+		$filename, $newline_type, $encoding)
 		= $doc->stats;
 
 	my $message = <<MESSAGE;
@@ -2091,6 +2103,8 @@ Words: $words
 Lines: $lines
 Chars without spaces: $chars_without_space
 Chars with spaces: $chars_with_space
+Newline type: $newline_type
+Encoding: $encoding
 MESSAGE
 
 	$message .= defined $filename ?

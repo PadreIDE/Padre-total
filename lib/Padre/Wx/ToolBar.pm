@@ -6,7 +6,7 @@ use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Editor ();
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 our @ISA     = 'Wx::ToolBar';
 
 sub new {
@@ -36,6 +36,11 @@ sub new {
 		Padre::Wx::tango( 'actions', 'document-save.png' ),
 		Wx::gettext('Save File'),
 	);
+#	$self->AddTool(
+#		Wx::wxID_PRINT, '',
+#		Padre::Wx::tango( 'actions', 'document-print.png' ),
+#		Wx::gettext('Print File'),
+#	);
 	$self->AddTool(
 		Wx::wxID_CLOSE, '',
 		Padre::Wx::tango( 'emblems', 'emblem-unreadable.png' ),
