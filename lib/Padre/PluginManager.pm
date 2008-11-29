@@ -193,6 +193,7 @@ sub load_plugins {
 	my $self = shift;
 	$self->_load_plugins_from_inc;
 	$self->_load_plugins_from_par;
+        $self->_refresh_plugin_menu;
 	if ( my @failed = $self->failed ) {
 		$self->parent->wx->main_window->error(
 			"Failed to load the following plugin(s):\n"
@@ -231,7 +232,8 @@ sub _load_plugins_from_inc {
 			return;
 		}
 
-		$self->load_plugin($module);
+		# caller must refresh plugin menu
+		$self->_load_plugin_norefresh_menu($module);
 	}
 
 	return;
@@ -252,7 +254,9 @@ sub _load_plugins_from_par {
 			PAR->import($parfile);
 			$file =~ s/\.par$//i;
 			$file =~ s/-/::/g;
-			$self->load_plugin($file);
+
+			# caller must refresh plugin menu
+			$self->_load_plugin_norefresh_menu($file);
 		}
 	}
 	closedir($dh);
@@ -289,13 +293,13 @@ menu, etc.
 
 sub load_plugin {
 	my $self = shift;
-	my $ret = $self->_load_plugin(@_);
+	my $ret = $self->_load_plugin_norefresh_menu(@_);
 	$self->_refresh_plugin_menu;
 	return $ret;
 }
 
 # The guts of load_plugin which don't refresh the menu
-sub _load_plugin {
+sub _load_plugin_norefresh_menu {
 	my $self    = shift;
 	my $name    = shift;
 	my $config  = $self->parent->config;
@@ -441,7 +445,7 @@ sub reload_plugins {
 		# do not use the reload_plugin method since that
 		# refreshes the menu every time
 		$self->_unload_plugin($name);
-		$self->_load_plugin($name);
+		$self->_load_plugin_norefresh_menu($name);
 		$self->enable_editors($name);
 	}
 	$self->_refresh_plugin_menu();
