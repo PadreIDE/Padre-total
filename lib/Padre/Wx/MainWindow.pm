@@ -344,7 +344,7 @@ sub load_files {
 	} elsif ( $config->{main_startup} eq 'last' ) {
 		if ( $config->{host}->{main_files} ) {
 			$self->Freeze;
-			my @main_files	   = @{$config->{host}->{main_files}};
+			my @main_files     = @{$config->{host}->{main_files}};
 			my @main_files_pos = @{$config->{host}->{main_files_pos}};
 			foreach my $i ( 0 .. $#main_files ) {
 				my $file = $main_files[$i];
@@ -582,13 +582,13 @@ sub refresh_all {
 
 	# force update of list of opened files in window menu
 	# TODO: shouldn't this be in Padre::Wx::Menu::refresh()?
-    if ( defined $self->{menu}->{alt} ) {
-	    foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
-		    my $doc = Padre::Documents->by_id($i) or return;
-		    my $file = $doc->filename || $self->{notebook}->GetPageText($i);
-    		$self->{menu}->update_alt_n_menu($file, $i);
-	    }
-    }
+	if ( defined $self->{menu}->{alt} ) {
+		foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
+			my $doc = Padre::Documents->by_id($i) or return;
+			my $file = $doc->filename || $self->{notebook}->GetPageText($i);
+			$self->{menu}->update_alt_n_menu($file, $i);
+		}
+	}
 
 	return;
 }
@@ -653,7 +653,7 @@ sub refresh_menu {
 	my $self = shift;
 	return if $self->no_refresh;
 
-	$self->{menu}->refresh;	
+	$self->{menu}->refresh;
 }
 
 sub refresh_toolbar {
@@ -705,7 +705,7 @@ sub refresh_status {
 sub refresh_methods {
 	my ($self) = @_;
 	return if $self->no_refresh;
-    return unless ( $self->{menu}->{view_functions}->IsChecked );
+	return unless ( $self->{menu}->{view_functions}->IsChecked );
 
 	my $doc = $self->selected_document;
 	if (not $doc) {
@@ -1075,7 +1075,7 @@ sub on_close_window {
 	];
 	# Save all Pos for open files
 	$config->{host}->{main_files_pos} = [
-        map  { $_->editor->GetCurrentPos }
+		map  { $_->editor->GetCurrentPos }
 		grep { $_ } 
 		map  { Padre::Documents->by_id($_) }
 		$self->pageids
@@ -1423,7 +1423,7 @@ sub _save_buffer {
 	my ($self, $id) = @_;
 
 	my $page         = $self->{notebook}->GetPage($id);
-    my $doc          = Padre::Documents->by_id($id) or return;
+	my $doc          = Padre::Documents->by_id($id) or return;
 
 	if ($doc->has_changed_on_disk) {
 		my $ret = Wx::MessageBox(
@@ -1699,7 +1699,7 @@ sub on_toggle_synchk {
 
 	$self->enable_syntax_checker( $config->{editor_syntaxcheck} ? 1 : 0 );
 
-    $self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
+	$self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return;
 }
@@ -1877,33 +1877,33 @@ sub on_insert_from_file {
 	
 	# popup the window
 	my $last_filename = $win->selected_filename;
-    my $default_dir;
-    if ($last_filename) {
-        $default_dir = File::Basename::dirname($last_filename);
-    }
-    my $dialog = Wx::FileDialog->new(
-        $win, Wx::gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
-    );
-    unless ( Padre::Util::WIN32 ) {
-        $dialog->SetWildcard("*");
-    }
-    if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-        return;
-    }
-    my $filename = $dialog->GetFilename;
-    $default_dir = $dialog->GetDirectory;
+	my $default_dir;
+	if ($last_filename) {
+		$default_dir = File::Basename::dirname($last_filename);
+	}
+	my $dialog = Wx::FileDialog->new(
+		$win, Wx::gettext('Open file'), $default_dir, '', '*.*', Wx::wxFD_OPEN,
+	);
+	unless ( Padre::Util::WIN32 ) {
+		$dialog->SetWildcard("*");
+	}
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		return;
+	}
+	my $filename = $dialog->GetFilename;
+	$default_dir = $dialog->GetDirectory;
     
-    my $file = File::Spec->catfile($default_dir, $filename);
+	my $file = File::Spec->catfile($default_dir, $filename);
     
-    my $text = eval { File::Slurp::read_file($file, binmode => ':raw') };
+	my $text = eval { File::Slurp::read_file($file, binmode => ':raw') };
 	if ($@) {
 		$win->error($@);
 		return;
 	}
 	
-    my $data = Wx::TextDataObject->new;
-    $data->SetText($text);
-    my $length = $data->GetTextLength;
+	my $data = Wx::TextDataObject->new;
+	$data->SetText($text);
+	my $length = $data->GetTextLength;
 	
 	my $editor = $win->{notebook}->GetPage($id);
 	$editor->ReplaceSelection('');
@@ -1933,7 +1933,7 @@ sub convert_to {
 sub find_editor_of_file {
 	my ($self, $file) = @_;
 	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
-        my $doc = Padre::Documents->by_id($id) or return;
+	my $doc = Padre::Documents->by_id($id) or return;
 		my $filename = $doc->filename;
 		next if not $filename;
 		return $id if $filename eq $file;
@@ -2044,7 +2044,7 @@ sub on_stc_change {
 sub on_stc_char_added {
 	my ($self, $event) = @_;
 
-        my $key = $event->GetKey;
+	my $key = $event->GetKey;
 	if ($key == 10) { # ENTER
 		my $editor = $self->selected_editor;
 		$editor->autoindent("indent");
@@ -2070,17 +2070,20 @@ sub on_stc_dwell_start {
 }
 
 sub on_close_pane {
-    my ( $self, $event ) = @_;
-    my $pane = $event->GetPane();
+	my ( $self, $event ) = @_;
+	my $pane = $event->GetPane();
 
-    # it's ugly, but it works
-    if ( Data::Dumper::Dumper(\$pane) eq 
-         Data::Dumper::Dumper(\$self->manager->GetPane('output')) ) {
-    	$self->{menu}->{view_output}->Check(0);
-    } elsif ( Data::Dumper::Dumper(\$pane) eq
-              Data::Dumper::Dumper(\$self->manager->GetPane('rightbar')) ) {
+	# it's ugly, but it works
+	if ( Data::Dumper::Dumper(\$pane) eq 
+	     Data::Dumper::Dumper(\$self->manager->GetPane('output')) )
+	{
+		$self->{menu}->{view_output}->Check(0);
+	}
+	elsif ( Data::Dumper::Dumper(\$pane) eq
+	        Data::Dumper::Dumper(\$self->manager->GetPane('rightbar')) )
+	{
 		$self->{menu}->{view_functions}->Check(0);
-    }
+	}
 }
 
 sub on_quick_find {
@@ -2097,13 +2100,13 @@ sub on_quick_find {
 sub on_doc_stats {
 	my ($self, $event) = @_;
 
-    my $doc = $self->selected_document;
-   	if (not $doc) {
+	my $doc = $self->selected_document;
+	if (not $doc) {
 		$self->message( 'No file is open', 'Stats' );
 		return;
 	}
 
-    my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly,
+	my ( $lines, $chars_with_space, $chars_without_space, $words, $is_readonly,
 		$filename, $newline_type, $encoding)
 		= $doc->stats;
 

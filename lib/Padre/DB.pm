@@ -38,7 +38,7 @@ sub column_exists {
 	my ($class, $table, $column) = @_;
 
 	return unless $class->table_exists($table);
-    return $class->selectrow_array("select count($column) from $table", {});
+	return $class->selectrow_array("select count($column) from $table", {});
 }
 
 sub setup {
@@ -70,7 +70,7 @@ CREATE TABLE history (
 END_SQL
 
 	# Drop old version of the table
-	if ( $class->table_exists('snippits') and not $class->column_exists('snippits', 'mimetype') ) {
+	if ( $class->table_exists('snippets') and not $class->column_exists('snippets', 'mimetype') ) {
 		$class->do('DROP TABLE snippets');
 	}
 
@@ -292,7 +292,7 @@ sub get_last_pod {
 sub add_snippet {
 	my ($class, $category, $name, $snippet) = @_;
 
-    my $mimetype = Padre::Documents->current->guess_mimetype;
+	my $mimetype = Padre::Documents->current->guess_mimetype;
 	$class->do(
 		"INSERT INTO snippets ( mimetype, category, name, snippet ) VALUES ( ?, ?, ?, ? )",
 		{}, $mimetype, $category, $name, $snippet,
@@ -315,7 +315,7 @@ sub edit_snippet {
 sub find_snipclasses {
 	my ($class) = @_;
 
-    my $mimetype = Padre::Documents->current->guess_mimetype;
+	my $mimetype = Padre::Documents->current->guess_mimetype;
 	my $sql   = "SELECT distinct category FROM snippets WHERE mimetype=? ORDER BY category";
 
 	return $class->selectcol_arrayref($sql, {}, $mimetype);
@@ -325,7 +325,7 @@ sub find_snipnames {
 	my ($class, $part) = @_;
 
 	my $sql   = "SELECT name FROM snippets WHERE mimetype=?";
-    my $mimetype = Padre::Documents->current->guess_mimetype;
+	my $mimetype = Padre::Documents->current->guess_mimetype;
 	my @bind_values = ($mimetype);
 	if ( $part ) {
 		$sql .= " AND category = ?";
@@ -340,7 +340,7 @@ sub find_snippets {
 	my ($class, $part) = @_;
 
 	my $sql   = "SELECT id,category,name,snippet FROM snippets WHERE mimetype=? ";
-    my $mimetype = Padre::Documents->current->guess_mimetype;
+	my $mimetype = Padre::Documents->current->guess_mimetype;
 	my @bind_values = ($mimetype);
 	if ( $part ) {
 		$sql .= " AND category = ?";

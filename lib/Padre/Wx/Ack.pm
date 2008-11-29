@@ -161,11 +161,11 @@ sub on_pick_dir {
 sub ack_done {
 	my( $self, $event ) = @_;
 
-   my $data = $event->GetData;
-   #print "Data: $data\n";
-   $self->{output}->AppendText("$data\n");
+	my $data = $event->GetData;
+	#print "Data: $data\n";
+	$self->{output}->AppendText("$data\n");
 
-   return;
+	return;
 }
 
 sub on_ack_thread {

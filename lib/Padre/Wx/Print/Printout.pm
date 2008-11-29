@@ -80,16 +80,16 @@ sub GetPageInfo {
 
 	while ( $self->HasPage($maxPage) ) {
 		$self->{PRINTED} = $self->{EDITOR}->FormatRange(
-	        0,
-	        $self->{PRINTED},
-	        $self->{EDITOR}->GetLength(),
-	        $dc,
-	        $dc,
-	        $self->{printRect},
-	        $self->{pageRect}
-	    );
+			0,
+			$self->{PRINTED},
+			$self->{EDITOR}->GetLength(),
+			$dc,
+			$dc,
+			$self->{printRect},
+			$self->{pageRect}
+		);
 
-	    $maxPage += 1;
+		$maxPage += 1;
 	}
 	$self->{PRINTED} = 0;
 

@@ -192,7 +192,7 @@ sub rebless {
 	# do for a first implementation.
 	my $subclass = $MIME_CLASS{$self->mimetype} || __PACKAGE__;
 	if ( $subclass ) {
-                require Class::Autouse;
+		require Class::Autouse;
 		Class::Autouse->autouse($subclass);
 		bless $self, $subclass;
 	}
@@ -673,7 +673,7 @@ sub stats {
 		$lines = 1; # by default
 		$lines++ while ( $code2 =~ /[\r\n]/g );
 		$chars_with_space = length($code);
-    } else {
+	} else {
 		$code = $self->text_get;
 
 		# I trust editor more

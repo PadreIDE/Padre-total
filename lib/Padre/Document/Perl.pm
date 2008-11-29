@@ -296,8 +296,8 @@ sub check_syntax {
 		$nlchar = "\r\n";
 	}
 	elsif ( $self->get_newline_type eq 'MAC' ) {
-        $nlchar = "\r";
-    }
+		$nlchar = "\r";
+	}
 
 	return [] if $report =~ /\A[^\n]+syntax OK$nlchar\z/o;
 

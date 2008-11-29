@@ -505,7 +505,7 @@ sub word_left {
 	my ($self, $count) = @_;
 	$self->{editor}->WordLeft for 1..$count;
 }
-	
+
 
 1;
 
