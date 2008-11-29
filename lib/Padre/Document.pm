@@ -175,7 +175,7 @@ sub new {
 
 	$self->setup;
 
-	unless ( $self->mimetype ) {
+	unless ( $self->get_mimetype ) {
 		$self->set_mimetype( $self->guess_mimetype );
 	}
 	$self->rebless;
@@ -190,7 +190,7 @@ sub rebless {
 	# to the the base class, 
 	# This isn't exactly the most elegant way to do this, but will
 	# do for a first implementation.
-	my $subclass = $MIME_CLASS{$self->mimetype} || __PACKAGE__;
+	my $subclass = $MIME_CLASS{$self->get_mimetype} || __PACKAGE__;
 	if ( $subclass ) {
 		require Class::Autouse;
 		Class::Autouse->autouse($subclass);
@@ -401,7 +401,7 @@ sub _set_filename {
 	$_[0]->{filename} = $_[1];
 }
 
-sub mimetype {
+sub get_mimetype {
 	$_[0]->{mimetype};
 }
 sub set_mimetype {
@@ -410,9 +410,9 @@ sub set_mimetype {
 
 sub lexer {
 	my $self = shift;
-	return $DEFAULT_LEXER unless $self->mimetype;
-	return $DEFAULT_LEXER unless defined $MIME_LEXER{$self->mimetype};
-	return $MIME_LEXER{$self->mimetype};
+	return $DEFAULT_LEXER unless $self->get_mimetype;
+	return $DEFAULT_LEXER unless defined $MIME_LEXER{$self->get_mimetype};
+	return $MIME_LEXER{$self->get_mimetype};
 }
 
 # Cache for speed reasons
