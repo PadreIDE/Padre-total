@@ -53,6 +53,16 @@ use Class::Autouse qw{
 	Padre::Wx::Print
 };
 
+# generate fast accessors
+use Class::XSAccessor
+	getters => {
+		config         => 'config',
+		config_dir     => 'config_dir',
+		config_yaml    => 'config_yaml',
+		plugin_manager => 'plugin_manager',
+	};
+
+
 # Globally shared Perl detection object
 sub perl_interpreter {
 	require Probe::Perl;
@@ -114,22 +124,6 @@ sub wx {
 	my $self = shift;
 	$self->{wx} or
 	$self->{wx} = Padre::Wx::App->new;
-}
-
-sub config {
-	$_[0]->{config};
-}
-
-sub config_dir {
-	$_[0]->{config_dir};
-}
-
-sub config_yaml {
-	$_[0]->{config_yaml};
-}
-
-sub plugin_manager {
-	$_[0]->{plugin_manager};
 }
 
 sub run {
