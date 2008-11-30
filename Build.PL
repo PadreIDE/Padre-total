@@ -74,7 +74,7 @@ my %prereqs = (
         'threads::shared'         => '1.26',
         'Thread::Queue'           => '2.11',
 	'YAML::Tiny'              => '1.32',
-	'Wx'                      => '0.86',
+	'Wx'                      => '0.89',
 	'Wx::Perl::Dialog'        => '0.03',
 	'Wx::Perl::ProcessStream' => '0.11',
 );
