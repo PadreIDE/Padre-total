@@ -43,7 +43,7 @@ sub default_yaml {
 }
 
 sub default_db {
-   File::Spec->catfile(
+	File::Spec->catfile(
 		$_[0]->default_dir,
 		'config.db',
 	);
