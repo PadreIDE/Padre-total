@@ -266,6 +266,10 @@ sub new {
 	);
 	$timer->Start( 1, 1 );
 
+	if ( defined $config->{host}->{aui_manager_layout} ) {
+		$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
+	}
+
 	return $self;
 }
 
@@ -1124,6 +1128,9 @@ sub on_close_window {
 			$config->{host}->{main_top},
 		) = $self->GetPositionXY;
 	}
+
+	$config->{host}->{aui_manager_layout} = $self->manager->SavePerspective;
+
 	Padre->ide->save_config;
 
 	# Clean up secondary windows
