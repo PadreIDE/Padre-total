@@ -876,10 +876,12 @@ The developers of Padre:
 
 Adam Kennedy (ADAMK),
 Brian Cassidy (BRICAS),
+Chris Dolan (CHRISDOLAN),
 Fayland Lam (FAYLAND),
 Heiko Jansen (HJANSEN),
 Jerome Quelin (JQUELIN),
 Kaare Rasmussen (KAARE),
+Keedi Kim (KEEDI),
 Max Maischein (CORION)
 Patrick Donelan (PATSPAM),
 Steffen Mueller (TSEE), 

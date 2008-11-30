@@ -46,6 +46,7 @@ sub about {
 	}
 	$about->AddDeveloper("Adam Kennedy");
 	$about->AddDeveloper("Brian Cassidy");
+	$about->AddDeveloper("Chris Dolan");
 	$about->AddDeveloper("Fayland Lam");
 	$about->AddDeveloper("Gabor Szabo");
 	$about->AddDeveloper("Heiko Jansen");
@@ -58,7 +59,7 @@ sub about {
 
 	$about->AddTranslator("German - Heiko Jansen");
 	$about->AddTranslator("Korean - Keedi Kim");
-	$about->AddTranslator("Hungarian = Gyorgy Pasztor");
+	$about->AddTranslator("Hungarian - Gyorgy Pasztor");
 	$about->AddTranslator("Hebrew - Omer Zak");
 
 
