@@ -63,6 +63,12 @@ our $SINGLETON;
 #<tsee> The timing is only slightly worse with only one worker thread (0.068-0.084s), but that's not surprising since those jobs now don't block on anything and it's simply the the overhead of passing things around and doing so one job after another.
 #<tsee> The timings improve similarly little when 20 worker threads are used, but memory overhead is ridicilous.
 
+use Class::XSAccessor
+	getters => {
+		task_queue => 'task_queue',
+	};
+
+
 sub new {
 	my $class = shift;
         
@@ -70,7 +76,7 @@ sub new {
 
 	my $self = $SINGLETON = bless {
 		min_no_workers => 1,
-		max_no_workers => 10,
+		max_no_workers => 3,
 		@_,
 		workers => [],
 		task_queue => undef,
@@ -93,7 +99,7 @@ sub new {
 			#$mw, $timerid, sub { $SINGLETON->reap(); },
 			$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
 		);
-		$REAP_TIMER->Start( 2000, Wx::wxTIMER_CONTINUOUS  ); # in ms
+		$REAP_TIMER->Start( 5000, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
 	#$self->setup_workers();
 	return $self;
@@ -101,15 +107,13 @@ sub new {
 
 sub setup_workers {
 	my $self = shift;
-        @_=(); # avoid "Scalars leaked"
+	@_=(); # avoid "Scalars leaked"
 	my $mw = Padre->ide->wx->main_window;
 
-        # ensure minimum no. workers
+	# ensure minimum no. workers
 	my $workers = $self->{workers};
 	while (@$workers < $self->{min_no_workers}) {
-		#my $worker = threads->create(\&worker_loop, $mw, $self);
-		#push @{$workers}, $worker;
-			make_thread($self, $mw);
+		$self->_make_worker_thread($mw);
 	}
 
         # add workers to satisfy demand
@@ -117,60 +121,55 @@ sub setup_workers {
 	if (@$workers < $self->{max_no_workers} and $jobs_pending > 2*@$workers) {
 		my $target = int($jobs_pending/2);
 		$target = $self->{max_no_workers} if $target > $self->{max_no_workers};
-		foreach (1..($target-@$workers)) {
-#			my $worker = threads->create(\&worker_loop, $mw, $self);
-#			push @{$workers}, $worker;
-			make_thread($self, $mw);
-		}
+		$self->_make_worker_thread($mw) for 1..($target-@$workers);
 	}
 
 	return 1;
 }
-sub make_thread {
-  my $self = shift;
-  my $mw = shift;
-  @_=();
-  push @{$self->{workers}}, threads->create({'exit' => 'thread_only'}, \&worker_loop, $mw, $self);
+
+sub _make_worker_thread {
+	my $self = shift;
+	my $mw = shift;
+	@_=();
+	push @{$self->{workers}}, threads->create({'exit' => 'thread_only'}, \&worker_loop, $mw, $self);
 }
 
 # join all dead threads and remove them from the list of threads in 
 # the list of workers
 sub reap {
 	my $self = shift;
-        @_=(); # avoid "Scalars leaked"
+	@_=(); # avoid "Scalars leaked"
 	my $workers = $self->{workers};
 
 	my @active_or_waiting;
-        warn "--".scalar (@$workers);
+	warn "--".scalar (@$workers);
 
 	foreach my $thread (@$workers) {
 		if ($thread->is_joinable()) {
-                  warn "Joining thread " . $thread->tid();
 			my $tmp = $thread->join();
-                  warn "joined";
-                }
-                else {
+		}
+		else {
 			push @active_or_waiting, $thread;
 		}
 	}
 	$self->{workers} = \@active_or_waiting;
-        warn "--".scalar (@active_or_waiting);
+	warn "--".scalar (@active_or_waiting);
 
 	# kill the no. of workers that aren't needed
 	my $n_threads_to_kill =  @active_or_waiting - $self->{max_no_workers};
-        $n_threads_to_kill = 0 if $n_threads_to_kill < 0;
+	$n_threads_to_kill = 0 if $n_threads_to_kill < 0;
 	my $jobs_pending = $self->task_queue->pending();
 
-        # slowly reduce the no. workers to the minimum
+	# slowly reduce the no. workers to the minimum
 	$n_threads_to_kill++
-          if @active_or_waiting-$n_threads_to_kill > $self->{min_no_workers}
-          and $jobs_pending == 0;
+	  if @active_or_waiting-$n_threads_to_kill > $self->{min_no_workers}
+	  and $jobs_pending == 0;
 	
 	if ($n_threads_to_kill) {
-                # my $target_n_threads = @active_or_waiting - $n_threads_to_kill;
-                my $queue = $self->task_queue;
+		# my $target_n_threads = @active_or_waiting - $n_threads_to_kill;
+		my $queue = $self->task_queue;
 		$queue->insert( 0, ("STOP") x $n_threads_to_kill )
-                  unless $queue->pending() and not ref($queue->peek(0));
+		  unless $queue->pending() and not ref($queue->peek(0));
 
 		# We don't actually need to wait for the soon-to-be-joinable threads
 		# since reap should be called regularly.
@@ -224,8 +223,6 @@ sub cleanup {
 ###################
 # Accessors
 
-sub task_queue { $_[0]->{task_queue} }
-
 sub workers {
 	my $self = shift;
 	return @{$self->{workers}};
@@ -269,7 +266,7 @@ sub worker_loop {
 
 		#warn threads->tid() . " -- got task.";
 
-		warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
+		#warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
 		return 1 if not ref($task) eq 'ARRAY';
 
 		my $class = $task->[0];
