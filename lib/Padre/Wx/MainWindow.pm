@@ -526,9 +526,22 @@ sub refresh_status {
 	my $char  = $pos-$start;
 
 	$self->SetStatusText("$modified $filename",             0);
-	$self->SetStatusText($doc->get_mimetype,                1);
-	$self->SetStatusText($newline_type,                     2);
-	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 3);
+
+	my $charWidth = $self->{statusbar}->GetCharWidth;
+	my $mt = $doc->get_mimetype;
+	my $curPos = Wx::gettext('L:') . ($line + 1) . ' ' . Wx::gettext('Ch:') . $char;
+
+	$self->SetStatusText($mt,           1);
+	$self->SetStatusText($newline_type, 2);
+	$self->SetStatusText($curPos,       3);
+
+    # since charWidth is an average we adjust the values a little
+	$self->{statusbar}->SetStatusWidths(
+		-1,
+		(length($mt)           - 1) * $charWidth,
+		(length($newline_type) + 2) * $charWidth,
+		(length($curPos)       + 1) * $charWidth
+	); 
 
 	return;
 }
