@@ -99,7 +99,7 @@ sub new {
 			#$mw, $timerid, sub { $SINGLETON->reap(); },
 			$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
 		);
-		$REAP_TIMER->Start( 5000, Wx::wxTIMER_CONTINUOUS  ); # in ms
+		$REAP_TIMER->Start( 15000, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
 	#$self->setup_workers();
 	return $self;
@@ -212,10 +212,10 @@ sub cleanup {
 		$_->join for threads->list(threads::joinable);
 	}
 
-	# TODO:
-	# the hard way goes along the lines of
-	# - detach
-	# - then kill
+	# didn't work the nice way?
+	while (threads->list(threads::running) >= 1) {
+		$_->detach(), $_->kill() for threads->list(threads::running);
+	}
 
 	return 1;
 }
