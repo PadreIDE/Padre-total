@@ -116,7 +116,7 @@ sub setup_workers {
 		$self->_make_worker_thread($mw);
 	}
 
-        # add workers to satisfy demand
+	# add workers to satisfy demand
 	my $jobs_pending = $self->task_queue->pending();
 	if (@$workers < $self->{max_no_workers} and $jobs_pending > 2*@$workers) {
 		my $target = int($jobs_pending/2);
@@ -211,6 +211,7 @@ sub cleanup {
 	while (threads->list(threads::running) >= 1) {
 		$_->join for threads->list(threads::joinable);
 	}
+	$_->join for threads->list(threads::joinable);
 
 	# didn't work the nice way?
 	while (threads->list(threads::running) >= 1) {
