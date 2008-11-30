@@ -59,6 +59,13 @@ my %number_of = reverse %shortname_of;
 #####################################################################
 # Constructor and Accessors
 
+use Class::XSAccessor
+	getters => {
+		manager    => 'manager',
+		no_refresh => '_no_refresh',
+	};
+
+
 sub new {
 	my $class  = shift;
 
@@ -320,10 +327,6 @@ sub create_syntaxbar {
 	return;
 }
 
-sub manager {
-	$_[0]->{manager};
-}
-
 # Load any default files
 sub load_files {
 	my $self   = shift;
@@ -558,10 +561,6 @@ sub window_top {
 
 #####################################################################
 # Refresh Methods
-
-sub no_refresh {
-	$_[0]->{_no_refresh};
-}
 
 sub refresh_all {
 	my ($self) = @_;
