@@ -1,4 +1,4 @@
-package Padre::SyntaxChecker;
+package Padre::Wx::SyntaxChecker;
 use strict;
 use warnings;
 

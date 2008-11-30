@@ -195,7 +195,7 @@ sub new {
 	);
 
 	# Create the syntax checker and sidebar for syntax check messages
-	$self->{syntax_checker} = Padre::SyntaxChecker->new($self);
+	$self->{syntax_checker} = Padre::Wx::SyntaxChecker->new($self);
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -479,7 +479,7 @@ sub refresh_syntaxcheck {
 	return if not Padre->ide->config->{experimental};
 	return if not $self->{menu}->{view_show_syntaxcheck}->IsChecked;
 
-	Padre::SyntaxChecker::on_syntax_check_timer( $self, undef, 1 );
+	Padre::Wx::SyntaxChecker::on_syntax_check_timer( $self, undef, 1 );
 
 	return;
 }

@@ -35,7 +35,6 @@ use Class::Autouse qw{
 	Padre::Pod::Frame
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
-	Padre::SyntaxChecker
 	Padre::Wx::Popup
 	Padre::Wx::Editor
 	Padre::Wx::Menu
@@ -52,6 +51,7 @@ use Class::Autouse qw{
 	Padre::Wx::History::TextDialog
 	Padre::Wx::MainWindow
 	Padre::Wx::Print
+	Padre::Wx::SyntaxChecker
 };
 
 # generate fast accessors
