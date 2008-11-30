@@ -39,9 +39,10 @@ BEGIN {
 	@ISA     = 'Pod::Simple::XHTML';
 }
 
-
-
-
+use Class::XSAccessor
+	getters => {
+		html => 'scratch', # Method to fetch out the scratch
+	};
 
 #####################################################################
 # One-Shot Method
@@ -77,12 +78,6 @@ sub new {
 sub emit {
 	return;
 }
-
-# Method to fetch out the scratch
-sub html {
-	return $_[0]->{scratch};
-}
-
 
 
 
