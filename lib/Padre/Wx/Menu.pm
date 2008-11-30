@@ -15,7 +15,12 @@ our $VERSION = '0.19';
 
 
 #####################################################################
-# Construction and Setup
+# Construction, Setup, and Accessors
+
+use Class::XSAccessor
+	getters => {
+		win => 'win',
+	};
 
 sub new {
 	my $class        = shift;
@@ -143,11 +148,6 @@ sub remove_alt_n_menu {
 
 	return;
 }
-
-sub win {
-	$_[0]->{win};
-}
-
 
 
 

@@ -137,7 +137,7 @@ sub colorize {
 		return;
 	}
 
-    my %colors = (
+	my %colors = (
 		keyword         => 4, # dark green
 		structure       => 6,
 		core            => 1, # red

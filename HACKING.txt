@@ -101,7 +101,20 @@ We're not overly strict about it, but please don't feel offended if
 somebody corrects your coding style. There's just a bunch of moderately
 simple rules that are more or less enforced:
 
-- Use one tab character for indentation.
+- Use one tab character for each indentation level.
+- After the initial indentation, do not use tabs for indentation
+  any more. Instead, use the appropriate amount of spaces to make
+  things line up. Example: (Where you put the opening brace isn't
+  important for this example!)
+
+sub baz {
+	if (foo()
+	    and bar())
+	{
+		# ...
+	}
+}
+
 - Accessors should be named "get_foo" and "set_foo". Do not use
   mutators. Exception to this rule are attributes which get
   initialized by the constructor once and then just return the value

@@ -70,27 +70,11 @@ sub new {
 
 Stores a reference back to the parent IDE object.
 
-=cut
-
-sub parent {
-	$_[0]->{parent}
-}
-
-=pod
-
 =head2 plugin_dir
 
 Returns the user plugin directory (below the Padre configuration directory).
 This directory was added to the C<@INC> module search path and may contain
 packaged plugins as PAR files.
-
-=cut
-
-sub plugin_dir {
-	$_[0]->{plugin_dir}
-}
-
-=pod
 
 =head2 plugins
 
@@ -132,12 +116,12 @@ This hash is only populated after C<load_plugins()> was called.
 
 =cut
 
-sub plugins {
-	$_[0]->{plugins}
-}
-
-
-
+use Class::XSAccessor
+	getters => {
+		parent     => 'parent',
+		plugin_dir => 'plugin_dir',
+                plugins    => 'plugins',
+	};
 
 
 #####################################################################

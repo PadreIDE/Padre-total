@@ -63,7 +63,7 @@ sub padre_setup {
 	$self->SetCodePage(65001); # which is supposed to be Wx::wxSTC_CP_UTF8
 	# and Wx::wxUNICODE() or wxUSE_UNICODE should be on
 
-	my $mimetype = $self->{Document}->mimetype;
+	my $mimetype = $self->{Document}->get_mimetype;
 	if ($mimetype eq 'application/x-perl') {
 		$self->padre_setup_style('perl');
 	} elsif ( $mimetype eq 'application/x-pasm' ) {

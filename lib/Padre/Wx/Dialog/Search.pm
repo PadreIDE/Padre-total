@@ -10,9 +10,6 @@ use Padre::Wx;
 our $VERSION = '0.19';
 
 
-
-
-
 ######################################################################
 # Constructor
 
@@ -21,12 +18,11 @@ sub new {
 	my $self  = bless {
 		restart  => 1,
 		backward => 0,
+		default_bgcolour => Wx::Colour->new('#ffffff'),
+		error_bgcolour   => Wx::Colour->new('#ffaaaa'),
 	}, $class;
 	return $self;
 }
-
-
-
 
 
 ######################################################################
@@ -42,9 +38,11 @@ sub search {
 	my $direction = shift;
 	$self->{backward} = $direction eq 'previous';
 	unless ( $self->{panel} ) {
-		$self->{panel} = $self->_create_panel;
+		$self->_create_panel;
 	}
-	if ( $self->{panel}->IsShown ) {
+	# pane != panel
+	my $pane = Padre->ide->wx->main_window->manager->GetPane('find');
+	if ( $pane->IsShown ) {
 		$self->_find;
 	} else {
 		$self->_show_panel;
@@ -68,12 +66,12 @@ sub _find {
 		eval { qr/$what/ };
 		if ( $@ ) {
 			# regex is invalid
-			$self->{entry}->SetBackgroundColour(Wx::wxRED);
+			$self->{entry}->SetBackgroundColour( $self->{error_bgcolour} );
 			return;
 			
 		} else {
 			# regex is valid
-			$self->{entry}->SetBackgroundColour(Wx::wxWHITE);
+			$self->{entry}->SetBackgroundColour( $self->{default_bgcolour} );
 		}
 		
 	} else {
@@ -93,9 +91,9 @@ sub _find {
 		Padre::Util::get_matches($text, $regex, $from, $to, $self->{backward});
 	if ( defined $start ) {
 		$page->SetSelection($start, $end);
-		$self->{entry}->SetBackgroundColour(Wx::wxWHITE);
+		$self->{entry}->SetBackgroundColour( $self->{default_bgcolour} );
 	} else {
-		$self->{entry}->SetBackgroundColour(Wx::wxRED);
+		$self->{entry}->SetBackgroundColour( $self->{error_bgcolour} );
 	}
 	return;
 }
@@ -112,9 +110,9 @@ sub _create_panel {
 	my $main = Padre->ide->wx->main_window;
 
 	# The panel and the boxsizer to place controls
-	$self->{panel} = Wx::Panel->new($main, -1);
+	$self->{outer} = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$self->{panel} = Wx::Panel->new($main, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize);
 	$self->{hbox}  = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$self->{panel}->SetSizerAndFit($self->{hbox});
 
 	# Close button
 	$self->{close} = Wx::BitmapButton->new(
@@ -168,9 +166,18 @@ sub _create_panel {
 		$self->{hbox}->Add(10,0);
 		$self->{hbox}->Add($self->{$element}, 0, Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_LEFT, 0);
 	}
+	$self->{hbox}->Add( 0, 1, Wx::wxEXPAND, 5 );
 
-	# Make sure the panel is high enough
-	$self->{panel}->Fit;
+	$self->{panel}->SetSizer( $self->{hbox} );
+	$self->{panel}->Layout;
+	$self->{hbox}->Fit($self->{panel});
+
+	$self->{outer}->Add( $self->{panel}, 1, Wx::wxALIGN_LEFT|Wx::wxALL|Wx::wxEXPAND, 5 );
+
+	my $width  = $main->selected_editor->GetSize->GetWidth;
+	my $height = $self->{panel}->GetSize->GetHeight;
+	my $size = Wx::Size->new( $width, $height );
+	$self->{panel}->SetSize( $size );
 
 	# manage the pane in aui
 	$main->manager->AddPane( $self->{panel},
@@ -179,24 +186,30 @@ sub _create_panel {
 		->CaptionVisible(0)
 		->Layer(1)
 		->Fixed
-		->Show(0)
+		->Hide
 	);
 
 	return 1;
 }
 
-sub hide {
-	$_[0]->{panel}->Hide;
-	Padre->ide->wx->main_window->manager->Update;
+sub _hide_panel {
+	my $self = shift;
+
+	# pane != panel
+	my $auimngr = Padre->ide->wx->main_window->manager;
+	$auimngr->GetPane('find')->Hide;
+	$auimngr->Update;
+
 	return 1;
 }
 
-sub show {
+sub _show_panel {
 	my $self = shift;
 
-	# Show the panel
-	$self->{panel}->Show;
-	Padre->ide->wx->main_window->manager->Update;
+	# Show the panel; pane != panel
+	my $auimngr = Padre->ide->wx->main_window->manager;
+	$auimngr->GetPane('find')->Show(1);
+	$auimngr->Update;
 
 	# Update checkboxes with config values
 	# since they might have been updated by find dialog

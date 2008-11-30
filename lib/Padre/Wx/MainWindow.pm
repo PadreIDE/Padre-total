@@ -59,6 +59,13 @@ my %number_of = reverse %shortname_of;
 #####################################################################
 # Constructor and Accessors
 
+use Class::XSAccessor
+	getters => {
+		manager    => 'manager',
+		no_refresh => '_no_refresh',
+	};
+
+
 sub new {
 	my $class  = shift;
 
@@ -259,6 +266,10 @@ sub new {
 	);
 	$timer->Start( 1, 1 );
 
+	if ( defined $config->{host}->{aui_manager_layout} ) {
+		$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
+	}
+
 	return $self;
 }
 
@@ -318,10 +329,6 @@ sub create_syntaxbar {
 		$self->manager->GetPane('syntaxbar')->Hide();
 	}
 	return;
-}
-
-sub manager {
-	$_[0]->{manager};
 }
 
 # Load any default files
@@ -559,10 +566,6 @@ sub window_top {
 #####################################################################
 # Refresh Methods
 
-sub no_refresh {
-	$_[0]->{_no_refresh};
-}
-
 sub refresh_all {
 	my ($self) = @_;
 
@@ -691,7 +694,7 @@ sub refresh_status {
 	my $char  = $pos-$start;
 
 	$self->SetStatusText("$modified $filename",             0);
-	$self->SetStatusText($doc->mimetype,                    1);
+	$self->SetStatusText($doc->get_mimetype,                1);
 	$self->SetStatusText($newline_type,                     2);
 	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 3);
 
@@ -961,7 +964,16 @@ sub error {
 	$self->message( shift, Wx::gettext('Error') );
 }
 
+sub find {
+	my $self = shift;
 
+	if ( not defined $self->{fast_find_panel} ) {
+		require Padre::Wx::Dialog::Search;
+		$self->{fast_find_panel} = Padre::Wx::Dialog::Search->new;
+	}
+
+	return $self->{fast_find_panel};
+}
 
 
 
@@ -1116,6 +1128,9 @@ sub on_close_window {
 			$config->{host}->{main_top},
 		) = $self->GetPositionXY;
 	}
+
+	$config->{host}->{aui_manager_layout} = $self->manager->SavePerspective;
+
 	Padre->ide->save_config;
 
 	# Clean up secondary windows

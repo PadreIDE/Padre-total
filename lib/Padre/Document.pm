@@ -147,6 +147,19 @@ our $DEFAULT_LEXER = Wx::wxSTC_LEX_AUTOMATIC;
 #####################################################################
 # Constructor and Accessors
 
+use Class::XSAccessor
+	getters => {
+		editor           => 'editor',
+		filename         => 'filename', # TODO is this read_only or what?
+		get_mimetype     => 'mimetype',
+		get_newline_type => 'newline_type',
+	},
+	setters => {
+		_set_filename    => 'filename', # TODO temporary hack
+		set_newline_type => 'newline_type',
+		set_mimetype     => 'mimetype',
+	};
+
 =pod
 
 =head2 new
@@ -175,7 +188,7 @@ sub new {
 
 	$self->setup;
 
-	unless ( $self->mimetype ) {
+	unless ( $self->get_mimetype ) {
 		$self->set_mimetype( $self->guess_mimetype );
 	}
 	$self->rebless;
@@ -190,7 +203,7 @@ sub rebless {
 	# to the the base class, 
 	# This isn't exactly the most elegant way to do this, but will
 	# do for a first implementation.
-	my $subclass = $MIME_CLASS{$self->mimetype} || __PACKAGE__;
+	my $subclass = $MIME_CLASS{$self->get_mimetype} || __PACKAGE__;
 	if ( $subclass ) {
 		require Class::Autouse;
 		Class::Autouse->autouse($subclass);
@@ -384,40 +397,13 @@ sub save_file {
 	return;
 }
 
-sub set_newline_type {
-	$_[0]->{newline_type} = $_[1];
-}
 
-sub get_newline_type {
-	$_[0]->{newline_type};
-}
-
-sub filename {
-	$_[0]->{filename};
-}
-
-# Temporary hack
-sub _set_filename {
-	$_[0]->{filename} = $_[1];
-}
-
-sub mimetype {
-	$_[0]->{mimetype};
-}
-sub set_mimetype {
-	$_[0]->{mimetype} = $_[1];
-}
 
 sub lexer {
 	my $self = shift;
-	return $DEFAULT_LEXER unless $self->mimetype;
-	return $DEFAULT_LEXER unless defined $MIME_LEXER{$self->mimetype};
-	return $MIME_LEXER{$self->mimetype};
-}
-
-# Cache for speed reasons
-sub editor {
-	$_[0]->{editor};
+	return $DEFAULT_LEXER unless $self->get_mimetype;
+	return $DEFAULT_LEXER unless defined $MIME_LEXER{$self->get_mimetype};
+	return $MIME_LEXER{$self->get_mimetype};
 }
 
 sub is_new {
