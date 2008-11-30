@@ -341,7 +341,8 @@ sub load_file {
 		}
 	} else { # fail to get system default encoding
 		warn "Could not find encoding of file '$file'. Defaulting to 'utf-8'. "
-			. "Please check it manually and report to the Padre development team.";
+			. "Please check it manually and report to the Padre development team."
+			if ! defined $system_default;
 		$self->{encoding} = 'utf-8';
 	}
 	$content = Encode::decode($self->{encoding}, $content);
@@ -387,7 +388,8 @@ sub save_file {
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
 
-	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
+        my $encoding = $self->{encoding} || 'utf-8';
+	if (open my $fh, ">:raw:encoding($encoding)", $filename) {
 		print {$fh} $content;
 	} else {
 		return "Could not save: $!";
