@@ -35,6 +35,7 @@ use Class::Autouse qw{
 	Padre::Pod::Frame
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
+	Padre::SyntaxChecker
 	Padre::Wx::Popup
 	Padre::Wx::Editor
 	Padre::Wx::Menu

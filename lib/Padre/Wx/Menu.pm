@@ -631,7 +631,7 @@ sub menu_view {
 	$self->{view_show_syntaxcheck} = $menu_view->AppendCheckItem( -1, Wx::gettext("Show Syntax Check") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{view_show_syntaxcheck},
-		\&Padre::Wx::MainWindow::on_toggle_synchk,
+		\&Padre::Wx::MainWindow::on_toggle_syntax_check,
 	);
 	$menu_view->AppendSeparator;
 	
@@ -907,9 +907,9 @@ sub menu_window {
 			$_[0]->{output}->SetFocus;
 		},
 	);
-	$self->{window_goto_synchk} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
+	$self->{window_goto_syntax_check} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
 	Wx::Event::EVT_MENU( $win,
-		$self->{window_goto_synchk},
+		$self->{window_goto_syntax_check},
 		sub {
 			$_[0]->show_syntaxbar(1);
 			$_[0]->{syntaxbar}->SetFocus;

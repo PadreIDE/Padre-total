@@ -61,8 +61,9 @@ my %number_of = reverse %shortname_of;
 
 use Class::XSAccessor
 	getters => {
-		manager    => 'manager',
-		no_refresh => '_no_refresh',
+		manager        => 'manager',
+		no_refresh     => '_no_refresh',
+                syntax_checker => 'syntax_checker',
 	};
 
 
@@ -193,8 +194,8 @@ sub new {
 		\&on_function_selected,
 	);
 
-	# Create the sidebar for syntax check messages
-	$self->create_syntaxbar;
+	# Create the syntax checker and sidebar for syntax check messages
+        $self->{syntax_checker} = Padre::SyntaxChecker->new($self);
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -297,39 +298,6 @@ sub create_main_components {
 	return;
 }
 
-sub create_syntaxbar {
-	my $self = shift;
-
-	$self->{syntaxbar} = Wx::ListView->new(
-		$self,
-		Wx::wxID_ANY,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
-	);
-	$self->{syntaxbar}->InsertColumn( 0, Wx::gettext('Line') );
-	$self->{syntaxbar}->InsertColumn( 1, Wx::gettext('Type') );
-	$self->{syntaxbar}->InsertColumn( 2, Wx::gettext('Description') );
-	$self->manager->AddPane($self->{syntaxbar},
-		Wx::AuiPaneInfo->new->Name( "syntaxbar" )
-			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
-			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( Wx::gettext("Syntax") )->Position(3)->Bottom->Layer(2)
-	);
-	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
-		$self,
-		$self->{syntaxbar},
-		\&on_synchkmsg_selected,
-	);
-	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
-		$self->manager->GetPane('syntaxbar')->Show();
-	}
-	else {
-		$self->manager->GetPane('syntaxbar')->Hide();
-	}
-	return;
-}
 
 # Load any default files
 sub load_files {
@@ -392,7 +360,7 @@ sub post_init {
 	$self->show_output($output) if not $output;
 
 	if ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
-		$self->enable_syntax_checker(1);
+		$self->syntax_checker->enable(1);
 	}
 
 	# Check for new plugins and alert if so
@@ -405,142 +373,6 @@ sub post_init {
 
 	return;
 }
-
-sub _idle_timer {
-	my ( $self, $event ) = @_;
-
-	$self->{synCheckTimer}->Stop if $self->{synCheckTimer}->IsRunning;
-	$self->{synCheckTimer}->Start(500, 1);
-
-	$event->Skip(0);
-	return;
-}
-
-sub enable_syntax_checker {
-	my $self = shift;
-	my $on   = shift;
-
-	if ($on) {
-		if (   defined( $self->{synCheckTimer} )
-			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
-		) {
-			Wx::Event::EVT_IDLE( $self, \&_idle_timer );
-			$self->on_synchk_timer( undef, 1 );
-		}
-		else {
-			$self->{synCheckTimer} = Wx::Timer->new($self, Padre::Wx::id_SYNCHK_TIMER);
-			Wx::Event::EVT_TIMER( $self, Padre::Wx::id_SYNCHK_TIMER, \&on_synchk_timer );
-			Wx::Event::EVT_IDLE( $self, \&_idle_timer );
-		}
-		$self->show_syntaxbar(1);
-	}
-	else {
-		if (   defined($self->{synCheckTimer})
-			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
-		) {
-			$self->{synCheckTimer}->Stop;
-			Wx::Event::EVT_IDLE( $self, sub { return } );
-		}
-		my $id   = $self->{notebook}->GetSelection;
-		my $page = $self->{notebook}->GetPage($id);
-		if ( defined($page) ) {
-			$page->MarkerDeleteAll(Padre::Wx::MarkError);
-			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-		}
-		$self->{syntaxbar}->DeleteAllItems;
-		$self->show_syntaxbar(0);
-	}
-
-	# Setup a margin to hold fold markers
-	foreach my $editor ($self->pages) {
-		if ($on) {
-			$editor->SetMarginType(1, Wx::wxSTC_MARGIN_SYMBOL); # margin number 1 for symbols
-			$editor->SetMarginWidth(1, 16);                     # set margin 1 16 px wide
-		} else {
-			$editor->SetMarginWidth(1, 0);
-		}
-	}
-
-	return;
-}
-
-sub on_synchk_timer {
-	my ( $win, $event, $force ) = @_;
-
-	my $id = $win->{notebook}->GetSelection;
-	if ( defined $id ) {
-		my $page = $win->{notebook}->GetPage($id);
-
-		unless (   defined( $page->{Document} )
-				&& $page->{Document}->can_check_syntax
-		) {
-			if ( ref $page eq 'Padre::Wx::Editor' ) {
-				$page->MarkerDeleteAll(Padre::Wx::MarkError);
-				$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-			}
-			$win->{syntaxbar}->DeleteAllItems;
-			return;
-		}
-
-		my $messages = $page->{Document}->check_syntax($force);
-		return unless defined $messages;
-
-		if ( scalar(@{$messages}) > 0 ) {
-			$page->MarkerDeleteAll(Padre::Wx::MarkError);
-			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-
-			my $red = Wx::Colour->new("red");
-			my $orange = Wx::Colour->new("orange");
-			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, $red, $red);
-			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, $orange, $orange);
-
-			my $i = 0;
-			$win->{syntaxbar}->DeleteAllItems;
-			delete $page->{synchk_calltips};
-			my $last_hint = '';
-			foreach my $hint ( sort { $a->{line} <=> $b->{line} } @{$messages} ) {
-				my $l = $hint->{line} - 1;
-				if ( $hint->{severity} eq 'W' ) {
-					$page->MarkerAdd( $l, 2);
-				}
-				else {
-					$page->MarkerAdd( $l, 1);
-				}
-				my $idx = $win->{syntaxbar}->InsertStringItem( $i++, $l + 1 );
-				$win->{syntaxbar}->SetItem( $idx, 1, $hint->{severity} );
-				$win->{syntaxbar}->SetItem( $idx, 2, $hint->{msg} );
-
-				if ( exists $page->{synchk_calltips}->{$l} ) {
-					$page->{synchk_calltips}->{$l} .= "\n--\n" . $hint->{msg};
-				}
-				else {
-					$page->{synchk_calltips}->{$l} = $hint->{msg};
-				}
-				$last_hint = $hint;
-			}
-
-			my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Line") . ' ' );
-			my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
-			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Type") x 2 );
-			my $width2 = $win->{syntaxbar}->GetSize->GetWidth - $width0 - $width1 - $win->{syntaxbar}->GetCharWidth * 2;
-			$win->{syntaxbar}->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
-			$win->{syntaxbar}->SetColumnWidth( 1, $width1 );
-			$win->{syntaxbar}->SetColumnWidth( 2, $width2 );
-		}
-		else {
-			$page->MarkerDeleteAll(Padre::Wx::MarkError);
-			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-			$win->{syntaxbar}->DeleteAllItems;
-		}
-	}
-
-	if ( defined($event) ) {
-		$event->Skip(0);
-	}
-
-	return;
-}
-
 
 
 #####################################################################
@@ -1706,15 +1538,15 @@ sub on_toggle_current_line_background {
 	return;
 }
 
-sub on_toggle_synchk {
+sub on_toggle_syntax_check {
 	my ($self, $event) = @_;
 
 	my $config = Padre->ide->config;
 	$config->{editor_syntaxcheck} = $event->IsChecked ? 1 : 0;
 
-	$self->enable_syntax_checker( $config->{editor_syntaxcheck} ? 1 : 0 );
+	$self->syntax_checker->enable( $config->{editor_syntaxcheck} ? 1 : 0 );
 
-	$self->{menu}->{window_goto_synchk}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
+	$self->{menu}->{window_goto_syntax_check}->Enable( $config->{editor_syntaxcheck} ? 1 : 0 );
 
 	return;
 }
