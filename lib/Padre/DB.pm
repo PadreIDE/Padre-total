@@ -142,8 +142,15 @@ END_SQL
 			['application/x-perl','Statement','until',"until (  ) {\n}\n"],
 			['application/x-perl','Statement','while',"while (  ) {\n}\n"],
 		);
-		my $sth = $class->prepare('INSERT INTO snippets (mimetype,category,name,snippet) VALUES (?, ?, ?, ?)');
-		$sth->execute($_->[0], $_->[1], $_->[2], $_->[3]) for @prepsnips;
+		Padre::DB->begin;
+		SCOPE: {
+			my $sth = $class->prepare(
+				'INSERT INTO snippets ( mimetype, category, name, snippet ) VALUES (?, ?, ?, ?)'
+			);
+			$sth->execute($_->[0], $_->[1], $_->[2], $_->[3]) for @prepsnips;
+			$sth->finish;
+		}
+		Padre::DB->commit;
 	}
 
 	$class->pragma('user_version', 1);
