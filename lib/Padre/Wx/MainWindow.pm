@@ -63,7 +63,7 @@ use Class::XSAccessor
 	getters => {
 		manager        => 'manager',
 		no_refresh     => '_no_refresh',
-                syntax_checker => 'syntax_checker',
+		syntax_checker => 'syntax_checker',
 	};
 
 
@@ -195,7 +195,7 @@ sub new {
 	);
 
 	# Create the syntax checker and sidebar for syntax check messages
-        $self->{syntax_checker} = Padre::SyntaxChecker->new($self);
+	$self->{syntax_checker} = Padre::SyntaxChecker->new($self);
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
