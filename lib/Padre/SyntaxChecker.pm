@@ -55,7 +55,7 @@ sub create_syntaxbar {
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$mw,
 		$self->{syntaxbar},
-		\&on_synchkmsg_selected,
+		\&on_syntax_check_msg_selected,
 	);
 	if ( $mw->{menu}->{view_show_syntaxcheck}->IsChecked ) {
 		$mw->manager->GetPane('syntaxbar')->Show();
@@ -79,7 +79,7 @@ sub enable {
 			&& ref $self->{synCheckTimer} eq 'Wx::Timer'
 		) {
 			Wx::Event::EVT_IDLE( $mw, \&syntax_check_idle_timer );
-			$self->on_syntax_check_timer( undef, 1 );
+			on_syntax_check_timer( $mw, undef, 1 );
 		}
 		else {
 			$self->{synCheckTimer} = Wx::Timer->new($mw, Padre::Wx::id_SYNCHK_TIMER);
@@ -131,6 +131,26 @@ sub syntax_check_idle_timer {
 	return;
 }
 
+
+
+sub on_syntax_check_msg_selected {
+	my ($mw, $event) = @_;
+
+	my $id   = $mw->{notebook}->GetSelection;
+	my $page = $mw->{notebook}->GetPage($id);
+
+	my $line_number = $event->GetItem->GetText;
+	return if  not defined($line_number)
+			or $line_number !~ /^\d+$/o
+			or $page->GetLineCount < $line_number;
+
+	$line_number--;
+	$page->EnsureVisible($line_number);
+	$page->GotoPos( $page->GetLineIndentPosition($line_number) );
+	$page->SetFocus;
+
+	return;
+}
 
 
 sub on_syntax_check_timer {

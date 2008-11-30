@@ -479,7 +479,7 @@ sub refresh_syntaxcheck {
 	return if not Padre->ide->config->{experimental};
 	return if not $self->{menu}->{view_show_syntaxcheck}->IsChecked;
 
-	$self->on_synchk_timer(undef, 1);
+	Padre::SyntaxChecker::on_syntax_check_timer( $self, undef, 1 );
 
 	return;
 }
@@ -1810,26 +1810,6 @@ sub on_function_selected {
 	$self->selected_editor->SetFocus;
 	return;
 }
-
-sub on_synchkmsg_selected {
-	my ($self, $event) = @_;
-
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-
-	my $line_number = $event->GetItem->GetText;
-	return if  not defined($line_number)
-			or $line_number !~ /^\d+$/o
-			or $page->GetLineCount < $line_number;
-
-	$line_number--;
-	$page->EnsureVisible($line_number);
-	$page->GotoPos( $page->GetLineIndentPosition($line_number) );
-	$page->SetFocus;
-
-	return;
-}
-
 
 
 ## STC related functions
