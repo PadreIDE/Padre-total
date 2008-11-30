@@ -45,6 +45,7 @@ task:
   # You don't have to implement this if you don't need it.
   sub finish {
           my $self = shift;
+          my $mainwindow = shift;
           # cleanup!
           return 1;
   }
@@ -80,7 +81,7 @@ thread for your task, the following steps happen:
 and hands it back to the main thread.
 
 =item In the main thread, the scheduler calls C<finish> on your
-object for cleanup.
+object with the Padre main window object as argument for cleanup.
 
 =back
 
@@ -156,6 +157,9 @@ background task somehow. Since you cannot directly
 communicate with the Wx GUI from the worker thread,
 this method is called from the main thread after the
 task object has been transferred back to the main thread.
+
+The first and only argument to C<finish> is the Padre
+main window object.
 
 You do not have to implement this method in the subclass.
 

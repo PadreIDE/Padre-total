@@ -249,7 +249,7 @@ sub on_task_done_event {
 	my $frozen = $event->GetData;
 	my $process = Padre::TaskManager->thaw_process($frozen);
 
-	$process->finish();
+	$process->finish($mw);
 	return();
 }
 
