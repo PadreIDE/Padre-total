@@ -1,6 +1,18 @@
 package Padre::Wx::MainWindow;
 
 use 5.008;
+
+# This is somewhat disturbing but necessary to prevent
+# Test::Compile from breaking. The compile tests run
+# perl -v lib/Padre/Wx/MainWindow.pm which first compiles
+# the module as a script (i.e. no %INC entry created)
+# and then again when Padre::Wx::MainWindow is required
+# from another module down the dependency chain.
+# This used to break with subroutine redefinitions.
+# So to prevent this, we force the creating of the correct
+# %INC entry when the file is first compiled. -- Steffen
+BEGIN {$INC{"Padre/Wx/MainWindow.pm"} ||= __FILE__}
+
 use strict;
 use warnings;
 use FindBin;
