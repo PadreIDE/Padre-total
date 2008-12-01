@@ -221,6 +221,56 @@ sub _package_exists {
 }
 
 
+sub serialize {
+	my $self = shift;
+
+	# The idea is to store the actual class of the object
+	# in the object itself for serialization. It's not as bad as
+	# it sounds. It just requires two things from the subclasses:
+	# - The subclasses cannot override "deserialize" and thus
+	#   probably not "serialize" either. But that shouldn't be
+	#   a huge deal as there are the "prepare" and "finish" hooks
+	#   for the user.
+	# - The subclasses must not use the "_process_class" slot
+	#   of the object. (Ohh...)
+ 
+	# save the real object class for deserialization 
+	my $class = ref($self);
+	if (exists $self->{_process_class}) {
+		require Carp;
+		Carp::croak("The '_process_class' slot in a Padre::Task"
+		            . " object is reserved for usage by Padre::Task");
+	}
+
+	$self->{_process_class} = $class;
+
+	# remove pesky dependency by explicitly
+	# blessing into Padre::Task
+	bless $self => 'Padre::Task';
+
+	return $self->SUPER::serialize(@_);
+}
+
+sub deserialize {
+	my $class = shift;
+
+	my $padretask = Padre::Task->SUPER::deserialize(@_);
+	my $userclass = $padretask->{_process_class};
+	delete $padretask->{_process_class};
+
+	if (!eval "require $userclass;") {
+		require Carp;
+		if ($@) {
+			Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
+		} else {
+			Carp::croak("Failed to load Padre::Task subclass '$userclass': It did not return a true value.");
+		}
+	}
+
+	my $obj = bless $padretask => $userclass;
+	return $obj;
+}
+
 1;
 
 __END__

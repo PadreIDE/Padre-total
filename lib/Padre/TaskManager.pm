@@ -197,7 +197,7 @@ sub schedule {
 
 	my $string;
 	$process->serialize(\$string);
-	$self->task_queue->enqueue( [ref($process), $string] );
+	$self->task_queue->enqueue( $string );
 
 	return 1;
 }
@@ -247,7 +247,7 @@ sub on_close {
 sub on_task_done_event {
 	my ($mw, $event) = @_; @_ = (); # hack to avoid "Scalars leaked"
 	my $frozen = $event->GetData;
-	my $process = Padre::TaskManager->thaw_process($frozen);
+	my $process = Padre::Task->deserialize( \$frozen );
 
 	$process->finish($mw);
 	return();
@@ -267,25 +267,18 @@ sub worker_loop {
 
 		#warn threads->tid() . " -- got task.";
 
-		#warn("THREAD TERMINATING"), return 1 if not ref($task) eq 'ARRAY';
-		return 1 if not ref($task) eq 'ARRAY';
+		#warn("THREAD TERMINATING"), return 1 if not ref($task) and $task eq 'STOP';
+		return 1 if not ref($task) and $task eq 'STOP';
 
-		my $class = $task->[0];
-
-		# GET THE PROCESS
-		my $okay = eval "require $class";
-		if (!$okay or $@) {
-			warn "Could not load class $class for running background task, skipping. This is a severe error.";
-			next;
-		}
-                my $string = $task->[1];
-		my $process = $class->deserialize( \$string );
+		my $process = Padre::Task->deserialize( \$task);
 		
 		# RUN
 		$process->run();
 
 		# FREEZE THE PROCESS AND PASS IT BACK
-		my $thread_event = Wx::PlThreadEvent->new(-1, $TASK_DONE_EVENT, Padre::TaskManager->freeze_process($process) );
+                undef $task;
+                $process->serialize( \$task );
+		my $thread_event = Wx::PlThreadEvent->new( -1, $TASK_DONE_EVENT, $task );
 		Wx::PostEvent($mw, $thread_event);
 
 		#warn threads->tid() . " -- done with task.";
@@ -293,31 +286,6 @@ sub worker_loop {
 }
 
 
-################################################################
-# Utility functions for serializing processes with their classes
-
-sub freeze_process {
-	my $selfclass = shift;
-	my $obj = shift;
-	my $string;
-	$obj->serialize(\$string);
-	my $stuff = [ref($obj), $string];
-	return Storable::freeze($stuff);
-}
-
-sub thaw_process {
-	my $selfclass = shift;
-	my $string = shift;
-	my $stuff = Storable::thaw($string);
-	my $class = $stuff->[0];
-
-	my $okay = eval "require $class";
-	if (!$okay or $@) {
-		warn "Could not load Padre::Task subclass $class. This is a severe error.";
-		return();
-	}
-	return $class->deserialize( \$stuff->[1] );
-}
 
 1;
 
