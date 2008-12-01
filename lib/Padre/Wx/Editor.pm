@@ -352,15 +352,8 @@ sub _auto_indent {
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
 
-	my $start     = $self->PositionFromLine($prev_line);
-	my $end       = $self->GetLineEndPosition($prev_line);
-	#my $length    = $self->LineLength($prev_line);
-	my $content   = $self->GetTextRange($start, $end);
-	#print "'$content'\n";
-	my $indent = '';
-	if ($content =~ /^(\s+)/) {
-		$indent = $1;
-	}
+	my $content = $self->_get_line_by_number($prev_line);
+	my $indent  = ($content =~ /^(\s+)/ ? $1 : '');
 
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
 		my $indent_width = $config->{editor_indentwidth};
@@ -397,13 +390,8 @@ sub _auto_deindent {
 	my $pos       = $self->GetCurrentPos;
 	my $line      = $self->LineFromPosition($pos);
 
-	my $start     = $self->PositionFromLine($line);
-	my $end       = $self->GetLineEndPosition($line);
-	my $content   = $self->GetTextRange($start, $end);
-	my $indent = '';
-	if ($content =~ /^(\s+)/) {
-		$indent = $1;
-	}
+	my $content   = $self->_get_line_by_number($line);
+	my $indent  = ($content =~ /^(\s+)/ ? $1 : '');
 
 	# This is for } on a new line:
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /^\s*\}\s*$/) {
@@ -441,6 +429,16 @@ sub _auto_deindent {
 	}
 
 	return;
+}
+
+# given a line number, returns the contents
+sub _get_line_by_number {
+	my $self = shift;
+	my $line_no = shift;
+
+	my $start     = $self->PositionFromLine($line_no);
+	my $end       = $self->GetLineEndPosition($line_no);
+	return $self->GetTextRange($start, $end);
 }
 
 sub on_right_down {
