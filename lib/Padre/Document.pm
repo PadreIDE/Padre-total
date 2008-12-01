@@ -257,7 +257,8 @@ sub get_title {
 	if ( $self->{filename} ) {
 		return File::Basename::basename( $self->{filename} );
 	} else {
-		return " Unsaved $unsaved_number";
+		my $str = sprintf(Wx::gettext(" Unsaved %d"), $unsaved_number);
+		return $str;
 	}
 }
 
