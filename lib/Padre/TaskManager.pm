@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use threads;
-use threads::shared; # TODO: according to Wx docs, this MUST be loaded before Wx. But we don't do this yet!
+use threads::shared; # according to Wx docs, this MUST be loaded before Wx, so this also happens in the script
 use Thread::Queue;
 
 require Padre;
