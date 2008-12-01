@@ -125,7 +125,7 @@ sub syntax_check_idle_timer {
 	my $self = $mw->syntax_checker;
 
 	$self->{synCheckTimer}->Stop if $self->{synCheckTimer}->IsRunning;
-	$self->{synCheckTimer}->Start(500, 1);
+	$self->{synCheckTimer}->Start(50, 1);
 
 	$event->Skip(0);
 	return;
@@ -173,57 +173,12 @@ sub on_syntax_check_timer {
 			return;
 		}
 
-		my $messages = $page->{Document}->check_syntax($force);
-		return unless defined $messages;
+		my $messages = $page->{Document}->check_syntax( $force, $id );
+		return unless defined $messages; # no immediate results
+		$self->update_gui_with_syntax_check_results( $messages, $id );
 
-		if ( scalar(@{$messages}) > 0 ) {
-			$page->MarkerDeleteAll(Padre::Wx::MarkError);
-			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-
-			my $red = Wx::Colour->new("red");
-			my $orange = Wx::Colour->new("orange");
-			$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, $red, $red);
-			$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, $orange, $orange);
-
-			my $i = 0;
-			$syntaxbar->DeleteAllItems;
-			delete $page->{synchk_calltips};
-			my $last_hint = '';
-			foreach my $hint ( sort { $a->{line} <=> $b->{line} } @{$messages} ) {
-				my $l = $hint->{line} - 1;
-				if ( $hint->{severity} eq 'W' ) {
-					$page->MarkerAdd( $l, 2);
-				}
-				else {
-					$page->MarkerAdd( $l, 1);
-				}
-				my $idx = $syntaxbar->InsertStringItem( $i++, $l + 1 );
-				$syntaxbar->SetItem( $idx, 1, $hint->{severity} );
-				$syntaxbar->SetItem( $idx, 2, $hint->{msg} );
-
-				if ( exists $page->{synchk_calltips}->{$l} ) {
-					$page->{synchk_calltips}->{$l} .= "\n--\n" . $hint->{msg};
-				}
-				else {
-					$page->{synchk_calltips}->{$l} = $hint->{msg};
-				}
-				$last_hint = $hint;
-			}
-
-			my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Line") . ' ' );
-			my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
-			my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Type") x 2 );
-			my $width2 = $syntaxbar->GetSize->GetWidth - $width0 - $width1 - $syntaxbar->GetCharWidth * 2;
-			$syntaxbar->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
-			$syntaxbar->SetColumnWidth( 1, $width1 );
-			$syntaxbar->SetColumnWidth( 2, $width2 );
-		}
-		else {
-			$page->MarkerDeleteAll(Padre::Wx::MarkError);
-			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
-			$syntaxbar->DeleteAllItems;
-		}
 	}
+
 
 	if ( defined($event) ) {
 		$event->Skip(0);
@@ -232,7 +187,64 @@ sub on_syntax_check_timer {
 	return;
 }
 
+# separated because it may be called from an
+# event handler of an asynchroneous syntax checker task
+sub update_gui_with_syntax_check_results {
+	my $self = shift;
+	my $messages = shift;
+	my $id = shift; # the notebook page id
+	my $win = $self->mw;
+	my $syntaxbar = $self->syntaxbar;
+	my $page = $win->{notebook}->GetPage($id);
 
+	if ( scalar(@{$messages}) > 0 ) {
+		$page->MarkerDeleteAll(Padre::Wx::MarkError);
+		$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+
+		my $red = Wx::Colour->new("red");
+		my $orange = Wx::Colour->new("orange");
+		$page->MarkerDefine(Padre::Wx::MarkError, Wx::wxSTC_MARK_SMALLRECT, $red, $red);
+		$page->MarkerDefine(Padre::Wx::MarkWarn,  Wx::wxSTC_MARK_SMALLRECT, $orange, $orange);
+
+		my $i = 0;
+		$syntaxbar->DeleteAllItems;
+		delete $page->{synchk_calltips};
+		my $last_hint = '';
+		foreach my $hint ( sort { $a->{line} <=> $b->{line} } @{$messages} ) {
+			my $l = $hint->{line} - 1;
+			if ( $hint->{severity} eq 'W' ) {
+				$page->MarkerAdd( $l, 2);
+			}
+			else {
+				$page->MarkerAdd( $l, 1);
+			}
+			my $idx = $syntaxbar->InsertStringItem( $i++, $l + 1 );
+			$syntaxbar->SetItem( $idx, 1, $hint->{severity} );
+			$syntaxbar->SetItem( $idx, 2, $hint->{msg} );
+
+			if ( exists $page->{synchk_calltips}->{$l} ) {
+				$page->{synchk_calltips}->{$l} .= "\n--\n" . $hint->{msg};
+			}
+			else {
+				$page->{synchk_calltips}->{$l} = $hint->{msg};
+			}
+			$last_hint = $hint;
+		}
+
+		my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Line") . ' ' );
+		my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
+		my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Type") x 2 );
+		my $width2 = $syntaxbar->GetSize->GetWidth - $width0 - $width1 - $syntaxbar->GetCharWidth * 2;
+		$syntaxbar->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
+		$syntaxbar->SetColumnWidth( 1, $width1 );
+		$syntaxbar->SetColumnWidth( 2, $width2 );
+	}
+	else {
+		$page->MarkerDeleteAll(Padre::Wx::MarkError);
+		$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
+		$syntaxbar->DeleteAllItems;
+	}
+}
 
 
 1;
