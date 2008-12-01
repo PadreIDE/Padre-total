@@ -330,7 +330,7 @@ sub menu_file {
 
 	# Recent things
 	$self->{file_recentfiles} = Wx::Menu->new;
-	$menu->Append( -1, Wx::gettext("Recent Files"), $self->{file_recentfiles} );
+	$menu->Append( -1, Wx::gettext("&Recent Files"), $self->{file_recentfiles} );
 	Wx::Event::EVT_MENU( $win,
 		$self->{file_recentfiles}->Append(-1, Wx::gettext("Open All Recent Files")),
 		sub { $_[0]->on_open_all_recent_files },
@@ -346,10 +346,12 @@ sub menu_file {
 		},
 	);
 	$self->{file_recentfiles}->AppendSeparator;
+	my $idx;
 	foreach my $f ( Padre::DB->get_recent_files ) {
 		next unless -f $f;
+		++$idx;
 		Wx::Event::EVT_MENU( $win,
-			$self->{file_recentfiles}->Append(-1, $f), 
+			$self->{file_recentfiles}->Append(-1, $idx < 10 ? "&$idx. $f" : "$idx. $f"), 
 			sub { 
 				if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
 					if ( Padre::Documents->current->is_unused ) {

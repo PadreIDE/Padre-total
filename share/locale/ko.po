@@ -109,7 +109,7 @@ msgstr "책갈피(&B)"
 #: ../../lib/Padre/Wx/Menu.pm:91 ../../lib/Padre/PluginManager.pm:551
 #: ../../lib/Padre/PluginManager.pm:554
 msgid "Pl&ugins"
-msgstr "플러그인(&u)"
+msgstr "플러그인(&U)"
 
 #: ../../lib/Padre/Wx/Menu.pm:92
 msgid "&Tools"
@@ -125,7 +125,7 @@ msgstr "도움말(&H)"
 
 #: ../../lib/Padre/Wx/Menu.pm:96
 msgid "E&xperimental"
-msgstr "실험적인 기능(&x)"
+msgstr "실험적인 기능(&X)"
 
 #: ../../lib/Padre/Wx/Menu.pm:237
 msgid "&New\tCtrl-N"
@@ -196,8 +196,8 @@ msgid "EOL to Mac Classic"
 msgstr "맥 클래식 용 줄 바꿈"
 
 #: ../../lib/Padre/Wx/Menu.pm:333
-msgid "Recent Files"
-msgstr "최근 파일"
+msgid "&Recent Files"
+msgstr "최근 파일(&R)"
 
 #: ../../lib/Padre/Wx/Menu.pm:335
 msgid "Open All Recent Files"
@@ -245,7 +245,7 @@ msgstr "이전 찾기\tShift-F3"
 
 #: ../../lib/Padre/Wx/Menu.pm:462
 msgid "Ac&k"
-msgstr "ack를 이용한 본문 검색"
+msgstr "ack를 이용한 본문 검색(&K)"
 
 #: ../../lib/Padre/Wx/Menu.pm:465
 msgid "&Goto\tCtrl-G"
@@ -736,7 +736,7 @@ msgstr "디렉터리: "
 
 #: ../../lib/Padre/Wx/Ack.pm:101
 msgid "Pick &directory"
-msgstr "디렉터리 고르기(&d)"
+msgstr "디렉터리 고르기(&D)"
 
 #: ../../lib/Padre/Wx/Ack.pm:150
 msgid "Select directory"
