@@ -170,6 +170,57 @@ sub finish {
 	return 1;
 }
 
+
+sub subclass {
+	my $proto = shift;
+	my $class = ref($proto)||$proto;
+	
+	my %opts = @_;
+	my $methods = $opts{methods} || {};
+	my $targetclass = $opts{class};
+	if (not defined $targetclass or $targetclass !~ /^[\w:]+$/) {
+		croak("You must specify a valid class name!");
+	}
+	my $code = $opts{code} || '';
+
+	return $targetclass if $class->_package_exists($targetclass);
+
+	my $fullcode = <<HERE;
+package $targetclass;
+our \@ISA = qw($class);
+$code
+HERE
+	eval $fullcode;
+	if ($@) {
+		croak("Could not generate subclass '$targetclass' of '$class' using"
+		      . " the following code:\n---\n$fullcode\n---\nReason: $@"
+		);
+	}
+	
+	foreach my $method (keys %$methods) {
+		my $sub = $methods->{$method};
+		no strict 'refs';
+		if (not defined *{"${targetclass}::$method"}{CODE}) {
+			*{"${targetclass}::$method"} = $sub;
+		}
+	}
+
+	return $targetclass;
+}
+
+sub _package_exists {
+	my $self = shift;
+	my $test_pkg = shift;
+	my $pkg = \%::;
+	while ( $test_pkg =~ /(.*?)::(.*)/m and exists $pkg->{$1."::"} ) {
+		$pkg = *{$pkg->{$1."::"}}{HASH};
+		$test_pkg = $2;
+	}
+
+	return exists $pkg->{$test_pkg."::"};
+}
+
+
 1;
 
 __END__
