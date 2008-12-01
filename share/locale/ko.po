@@ -351,7 +351,7 @@ msgstr "최근 파일 목록 지우기"
 
 #: ../../lib/Padre/Wx/Menu.pm:367
 msgid "Doc Stats"
-msgstr ""
+msgstr "문서 정보"
 
 #: ../../lib/Padre/Wx/Menu.pm:403
 msgid "Select"
@@ -383,7 +383,7 @@ msgstr "이전 찾기\tShift-F3"
 
 #: ../../lib/Padre/Wx/Menu.pm:462
 msgid "Ac&k"
-msgstr ""
+msgstr "ack를 이용한 본문 검색"
 
 #: ../../lib/Padre/Wx/Menu.pm:465
 msgid "&Goto\tCtrl-G"

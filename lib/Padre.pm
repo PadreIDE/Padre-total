@@ -35,7 +35,6 @@ use Class::Autouse qw{
 	Padre::Pod::Frame
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
-	Padre::SyntaxChecker
 	Padre::Wx::Popup
 	Padre::Wx::Editor
 	Padre::Wx::Menu
@@ -52,6 +51,7 @@ use Class::Autouse qw{
 	Padre::Wx::History::TextDialog
 	Padre::Wx::MainWindow
 	Padre::Wx::Print
+	Padre::Wx::SyntaxChecker
 
 	Padre::Task
 	Padre::TaskManager
@@ -885,10 +885,12 @@ The developers of Padre:
 
 Adam Kennedy (ADAMK),
 Brian Cassidy (BRICAS),
+Chris Dolan (CHRISDOLAN),
 Fayland Lam (FAYLAND),
 Heiko Jansen (HJANSEN),
 Jerome Quelin (JQUELIN),
 Kaare Rasmussen (KAARE),
+Keedi Kim (KEEDI),
 Max Maischein (CORION)
 Patrick Donelan (PATSPAM),
 Steffen Mueller (TSEE), 

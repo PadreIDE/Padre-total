@@ -195,7 +195,7 @@ sub new {
 	);
 
 	# Create the syntax checker and sidebar for syntax check messages
-	$self->{syntax_checker} = Padre::SyntaxChecker->new($self);
+	$self->{syntax_checker} = Padre::Wx::SyntaxChecker->new($self);
 
 	# Create the bottom-of-screen output textarea
 	$self->{output} = Padre::Wx::Output->new(
@@ -479,7 +479,7 @@ sub refresh_syntaxcheck {
 	return if not Padre->ide->config->{experimental};
 	return if not $self->{menu}->{view_show_syntaxcheck}->IsChecked;
 
-	$self->on_synchk_timer(undef, 1);
+	Padre::Wx::SyntaxChecker::on_syntax_check_timer( $self, undef, 1 );
 
 	return;
 }
@@ -526,9 +526,22 @@ sub refresh_status {
 	my $char  = $pos-$start;
 
 	$self->SetStatusText("$modified $filename",             0);
-	$self->SetStatusText($doc->get_mimetype,                1);
-	$self->SetStatusText($newline_type,                     2);
-	$self->SetStatusText("L: " . ($line +1) . " Ch: $char", 3);
+
+	my $charWidth = $self->{statusbar}->GetCharWidth;
+	my $mt = $doc->get_mimetype;
+	my $curPos = Wx::gettext('L:') . ($line + 1) . ' ' . Wx::gettext('Ch:') . $char;
+
+	$self->SetStatusText($mt,           1);
+	$self->SetStatusText($newline_type, 2);
+	$self->SetStatusText($curPos,       3);
+
+    # since charWidth is an average we adjust the values a little
+	$self->{statusbar}->SetStatusWidths(
+		-1,
+		(length($mt)           - 1) * $charWidth,
+		(length($newline_type) + 2) * $charWidth,
+		(length($curPos)       + 1) * $charWidth
+	); 
 
 	return;
 }
@@ -1810,26 +1823,6 @@ sub on_function_selected {
 	$self->selected_editor->SetFocus;
 	return;
 }
-
-sub on_synchkmsg_selected {
-	my ($self, $event) = @_;
-
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
-
-	my $line_number = $event->GetItem->GetText;
-	return if  not defined($line_number)
-			or $line_number !~ /^\d+$/o
-			or $page->GetLineCount < $line_number;
-
-	$line_number--;
-	$page->EnsureVisible($line_number);
-	$page->GotoPos( $page->GetLineIndentPosition($line_number) );
-	$page->SetFocus;
-
-	return;
-}
-
 
 
 ## STC related functions
