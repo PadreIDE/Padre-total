@@ -49,17 +49,19 @@ use constant DEFAULT_LOCALE => 'en';
 our %languages = (
 	de => Wx::gettext('German'),
 	en => Wx::gettext('English (London.pm)'),
-	ko => Wx::gettext('Korean'),
-	hu => Wx::gettext('Hungarian'),
+	en => Wx::gettext('French'),
 	he => Wx::gettext('Hebrew'),
+	hu => Wx::gettext('Hungarian'),
+	ko => Wx::gettext('Korean'),
 );
 
 my %shortname_of = (
-	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
-	Wx::wxLANGUAGE_GERMAN()     => 'de', 
-	Wx::wxLANGUAGE_KOREAN()     => 'ko',
-	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_GERMAN()     => 'de',
+	Wx::wxLANGUAGE_ENGLISH_US() => 'en',
+	Wx::wxLANGUAGE_FRENCH()     => 'fr',
 	Wx::wxLANGUAGE_HEBREW()     => 'he',
+	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_KOREAN()     => 'ko',
 );
 
 my %number_of = reverse %shortname_of;
