@@ -7,6 +7,11 @@ Changes for Padre.
         an indentation-width != tab-width (SMUELLER)
     Reworked the autoindentation: Now with auto-de-indentation on
         closing brace (SMUELLER)
+    Now using Class::XSAccessor for generating accessors (SMUELLER)
+    Moved the syntax checker from MainWindow.pm into
+        Padre::Wx::SyntaxChecker (SMUELLER)
+    Small improvement to startup time by not refreshing the plugin
+        menu after loading each plugin (SMUELLER)
 
 0.19 2008.11.28
 
