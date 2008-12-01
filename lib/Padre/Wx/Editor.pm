@@ -391,29 +391,40 @@ sub _auto_deindent {
 	my $line      = $self->LineFromPosition($pos);
 
 	my $content   = $self->_get_line_by_number($line);
-	my $indent  = ($content =~ /^(\s+)/ ? $1 : '');
+	my $indent    = ($content =~ /^(\s+)/ ? $1 : '');
 
 	# This is for } on a new line:
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /^\s*\}\s*$/) {
-		my $indent_width = $config->{editor_indentwidth};
-		my $tab_width    = $config->{editor_tabwidth};
-		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
-			# do tab compression if necessary
-			# - First, convert all to spaces (aka columns)
-			# - Then, add an indentation level
-			# - Then, convert to tabs as necessary
-			my $tab_equivalent = " " x $tab_width;
-			$indent =~ s/\t/$tab_equivalent/g;
-			$indent =~ s/$tab_equivalent$//;
-			$indent =~ s/$tab_equivalent/\t/g;
-		}
-		elsif ($config->{editor_use_tabs}) {
-			# use tabs only
-			$indent =~ s/\t$//;
-		}
-		else {
-			my $indentation_level=  " " x $indent_width;
-			$indent =~ s/$indentation_level$//;
+		my $prev_line    = $line-1;
+		my $prev_content = ( $prev_line < 0 ? '' : $self->_get_line_by_number($prev_line) );
+		my $prev_indent  = ($prev_content =~ /^(\s+)/ ? $1 : '');
+
+		# de-indent only in these cases:
+		# - same indentation level as prev. line and not a brace on prev line
+		# - higher indentation than pr. l. and a brace on pr. line
+		if ($prev_indent eq $indent && $prev_content !~ /^\s*{/
+		    or length($prev_indent) < length($indent) && $prev_content =~ /^\s*{/
+		   ) {
+			my $indent_width = $config->{editor_indentwidth};
+			my $tab_width    = $config->{editor_tabwidth};
+			if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+				# do tab compression if necessary
+				# - First, convert all to spaces (aka columns)
+				# - Then, add an indentation level
+				# - Then, convert to tabs as necessary
+				my $tab_equivalent = " " x $tab_width;
+				$indent =~ s/\t/$tab_equivalent/g;
+				$indent =~ s/$tab_equivalent$//;
+				$indent =~ s/$tab_equivalent/\t/g;
+			}
+			elsif ($config->{editor_use_tabs}) {
+				# use tabs only
+				$indent =~ s/\t$//;
+			}
+			else {
+				my $indentation_level=  " " x $indent_width;
+				$indent =~ s/$indentation_level$//;
+			}
 		}
 
 		# replace indentation of the current line
