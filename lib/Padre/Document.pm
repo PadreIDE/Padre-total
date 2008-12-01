@@ -26,6 +26,7 @@ use strict;
 use warnings;
 use Carp        ();
 use File::Spec  ();
+use POSIX       qw(LC_CTYPE);
 use Encode::Guess ();
 use Padre::Util ();
 use Padre::Wx   ();
@@ -283,6 +284,110 @@ sub _auto_convert {
 	return 0;
 }
 
+sub _get_system_default_encoding {
+	my $encoding;
+
+	if ($^O =~ m/^MacOS/i) {
+		# In mac system Wx::locale::GetSystemEncodingName() couldn't
+		# return the name of encoding directly.
+		# Use LC_CTYPE to guess system default encoding.
+		my $loc = POSIX::setlocale(LC_CTYPE);
+		if ($loc =~ m/^(C|POSIX)/i) {
+			$encoding = 'ascii';
+		}
+		elsif ($loc =~ /\./) {
+			my ($language, $codeset) = split /\./, $loc;
+			$encoding = $codeset;
+		}
+	}
+	elsif ($^O =~ m/^MSWin32/i) {
+		# In windows system Wx::locale::GetSystemEncodingName() returns
+		# like ``windows-1257'' and it matches as ``cp1257''
+		# refer to src/common/intl.cpp
+		$encoding = Wx::Locale::GetSystemEncodingName();
+		$encoding =~ s/^windows-/cp/i;
+	}
+	elsif ($^O =~ m/^linux/i) {
+		$encoding = Wx::Locale::GetSystemEncodingName();
+		if (!$encoding) {
+			# this is not a usual case, but...
+			my $loc = POSIX::setlocale(LC_CTYPE);
+			if ($loc =~ m/^(C|POSIX)/i) {
+				$encoding = 'ascii';
+			}
+			elsif ($loc =~ /\./) {
+				my ($language, $codeset) = split /\./, $loc;
+				$encoding = $codeset;
+			}
+		}
+	}
+	else {
+		$encoding = Wx::Locale::GetSystemEncodingName();
+	}
+
+	if (!$encoding) {
+		# fail to get system default encoding
+		warn "Could not find system($^O) default encoding. "
+			. "Please check it manually and report your environment to the Padre development team.";
+		return;
+	}
+
+	return $encoding;
+}
+
+sub _get_encoding_from_contents {
+	my ($content) = @_;
+
+	#
+	# FIXME
+	# This is a just heuristic approach. Maybe there is a better way. :)
+	# Japanese and Chinese have to be tested. Only Korean is tested.
+	#
+	# If locale of config is one of CJK, then we could guess more correctly.
+	# Any type of locale which is supported by Encode::Guesss could be added.
+	# Or, we'll use system default encode setting
+	# If we cannot get system default, then forced it to set 'utf-8'
+	#
+
+	my $encoding;
+	my $lang_shortname = Padre::Wx::MainWindow::shortname(); # TODO clean this up
+
+	my $system_default = _get_system_default_encoding();
+
+	my @guess_list = ();
+	if ($lang_shortname eq 'ko') {      # Korean
+		@guess_list = qw/utf-8 euc-kr/;
+	} elsif ($lang_shortname eq 'ja') { # Japan (not yet tested)
+		@guess_list = qw/utf-8 iso8859-1 euc-jp shiftjis 7bit-jis/;
+	} elsif ($lang_shortname eq 'cn') { # Chinese (not yet tested)
+		@guess_list = qw/utf-8 iso8859-1 euc-cn/;
+	} else {
+		@guess_list = ($system_default) if $system_default;
+	}
+
+	my $guess = Encode::Guess::guess_encoding($content, @guess_list);
+	if (ref($guess) =~ m/^Encode::/) {       # Wow, nice!
+		$encoding = $guess->name;
+	} elsif ($guess =~ m/utf8/) {            # utf-8 is in suggestion
+		$encoding = 'utf-8';
+	} elsif ($guess =~ m/or/) {              # choose from suggestion
+		my @suggest_encodings = split /\sor\s/, "$guess";
+		$encoding = $suggest_encodings[0];
+	}
+	else {                                 # use system default
+		$encoding = $system_default;
+	}
+
+	if (!$encoding) {
+		# fail to guess encoding from contents
+		warn "Could not find encoding. Defaulting to 'utf-8'. "
+			. "Please check it manually and report to the Padre development team.";
+		$encoding = 'utf-8';
+	}
+
+	return $encoding;
+}
+
 sub load_file {
 	my ($self, $file, $editor) = @_;
 
@@ -299,52 +404,8 @@ sub load_file {
 	}
 	$self->{_timestamp} = $self->time_on_file;
 
-	#
-	# FIXME
-	# This is a just heuristic approach. Maybe there is a better way. :)
-	# Japanese and Chinese have to be tested. Only Korean is tested.
-	#
-	# If locale of config is one of CJK, then we could guess more correctly.
-	# Any type of locale which is supported by Encode::Guesss could be added.
-	# Or, we'll use system default encode setting
-	# If we cannot get system default, then forced it to set 'utf-8'
-	#
-	my $system_default = Wx::Locale::GetSystemEncodingName();
-	my $lang_shortname = Padre::Wx::MainWindow::shortname(); # TODO clean this up
-	if ($system_default) {
-		# In windows system Wx::locale::GetSystemEncodingName() returns
-		# like ``windows-1257'' and it matches as ``cp1257''
-		# refer to src/common/intl.cpp
-		$system_default =~ s/^windows-/cp/;
-
-		my @guess_encoding = ();
-		if ($lang_shortname eq 'ko') {      # Korean
-			@guess_encoding = qw/utf-8 euc-kr/;
-		} elsif ($lang_shortname eq 'ja') { # Japan (not yet tested)
-			@guess_encoding = qw/utf-8 iso8859-1 euc-jp shiftjis 7bit-jis/;
-		} elsif ($lang_shortname eq 'cn') { # Chinese (not yet tested)
-			@guess_encoding = qw/utf-8 iso8859-1 euc-cn/;
-		} else {
-			@guess_encoding = ($system_default);
-		}
-
-		my $encoding = Encode::Guess::guess_encoding($content, @guess_encoding);
-		if (ref($encoding) =~ m/^Encode::/) {       # Wow, nice!
-			$self->{encoding} = $encoding->name;
-		} elsif ($encoding =~ m/utf8/) {            # utf-8 is in suggestion
-			$self->{encoding} = 'utf-8';
-		} elsif ($encoding =~ m/or/) {              # choose from suggestion
-			my @suggest_encodings = split /\sor\s/, "$encoding";
-			$self->{encoding} = $suggest_encodings[0];
-		} else {                                    # use system default
-			$self->{encoding} = $system_default;
-		}
-	} else { # fail to get system default encoding
-		warn "Could not find encoding of file '$file'. Defaulting to 'utf-8'. "
-			. "Please check it manually and report to the Padre development team."
-			if ! defined $system_default;
-		$self->{encoding} = 'utf-8';
-	}
+	# if guess encoding fails then use 'utf-8'
+	$self->{encoding} = _get_encoding_from_contents($content);
 	$content = Encode::decode($self->{encoding}, $content);
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
@@ -388,8 +449,10 @@ sub save_file {
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
 
-        my $encoding = $self->{encoding} || 'utf-8';
-	if (open my $fh, ">:raw:encoding($encoding)", $filename) {
+	if (!$self->{encoding}) { # when first time to save
+		$self->{encoding} = _get_encoding_from_contents($content);
+	}
+	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
 		print {$fh} $content;
 	} else {
 		return "Could not save: $!";
