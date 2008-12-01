@@ -11,10 +11,9 @@ sub run {
 	my $self = shift;
 	my $filename = $self->{filename};
 	my @inc = map { " -I" . $_ } @INC; # TODO hack! Replace with project support
-	require Time::HiRes;
-	warn Time::HiRes::time() . " - Starting check." ;
+	warn "Starting check." ;
 	$self->{result} = `$^X -I. -Ilib@inc -Mdiagnostics -c $filename 2>&1 1>/dev/null`;
-	warn Time::HiRes::time() . " - Finished check." ;
+	warn "Finished check." ;
 	return 1;
 }
 
