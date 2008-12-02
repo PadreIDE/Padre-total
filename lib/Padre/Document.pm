@@ -369,7 +369,10 @@ sub _get_encoding_from_contents {
 	}
 
 	my $guess = Encode::Guess::guess_encoding($content, @guess_list);
-	if (ref($guess) =~ m/^Encode::/) {       # Wow, nice!
+	if (not defined $guess) {
+		$guess = ''; # to avoid warnings
+	}	
+	if (ref($guess) and ref($guess) =~ m/^Encode::/) {       # Wow, nice!
 		$encoding = $guess->name;
 	} elsif ($guess =~ m/utf8/) {            # utf-8 is in suggestion
 		$encoding = 'utf-8';
