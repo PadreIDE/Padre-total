@@ -247,7 +247,7 @@ sub guess_mimetype {
 sub setup {
 	my $self = shift;
 	if ( $self->{filename} ) {
-		$self->load_file($self->{filename}, $self->editor);
+		$self->load_file;
 	} else {
 		$unsaved_number++;
 		$self->{newline_type} = $self->_get_default_newline_type;
@@ -410,8 +410,9 @@ Returns true on success false on failure. Sets $doc->errstr;
 =cut
 
 sub load_file {
-	my ($self, $file, $editor) = @_;
-	
+	my ($self) = @_;
+
+	my $file = $self->{filename};
 	$self->set_errstr('');
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
@@ -454,14 +455,15 @@ sub load_file {
 			$newline_type = $current_type;
 		}
 	}
-	$self->configure_editor($editor, $content, $newline_type, $convert_to, $file);
+	$self->configure_editor($content, $newline_type, $convert_to, $file);
 
 	return 1;
 }
 
 sub configure_editor {
-	my ($self, $editor, $content, $newline_type, $convert_to, $file) = @_;
+	my ($self, $content, $newline_type, $convert_to, $file) = @_;
 	
+	my $editor = $self->editor;
 	$editor->SetEOLMode( $mode{$newline_type} );
 
 	$editor->SetText( $content );
@@ -568,7 +570,7 @@ sub reload {
 	my ($self) = @_;
 
 	my $filename = $self->filename or return;
-	return $self->load_file($filename, $self->editor);
+	return $self->load_file;
 }
 
 =pod
