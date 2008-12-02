@@ -417,8 +417,6 @@ sub load_file {
 
 	my $file = $self->{filename};
 	$self->set_errstr('');
-	my $newline_type = $self->_get_default_newline_type;
-	my $convert_to;
 	my $content;
 	if (open my $fh, '<', $file) {
 		binmode($fh);
@@ -435,6 +433,18 @@ sub load_file {
 	$content = Encode::decode($self->{encoding}, $content);
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
+	my ($newline_type, $convert_to) = $self->newline_type($content);
+	$self->configure_editor($content, $newline_type, $convert_to);
+
+	return 1;
+}
+
+sub newline_type {
+	my ($self, $content) = @_;
+
+	my $file = $self->{filename};
+	my $newline_type = $self->_get_default_newline_type;
+	my $convert_to;
 	my $current_type = Padre::Util::newline_type($content);
 	if ($current_type eq 'None') {
 		# keep default
@@ -458,9 +468,7 @@ sub load_file {
 			$newline_type = $current_type;
 		}
 	}
-	$self->configure_editor($content, $newline_type, $convert_to);
-
-	return 1;
+	return ($newline_type, $convert_to);
 }
 
 sub configure_editor {
