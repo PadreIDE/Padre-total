@@ -245,7 +245,7 @@ sub guess_mimetype {
 sub setup {
 	my $self = shift;
 	if ( $self->{filename} ) {
-		$self->{newline_type} = $self->load_file($self->{filename}, $self->editor);
+		$self->load_file($self->{filename}, $self->editor);
 	} else {
 		$unsaved_number++;
 		$self->{newline_type} = $self->_get_default_newline_type;
@@ -441,8 +441,10 @@ sub load_file {
 		warn "Converting $file to $convert_to";
 		$editor->ConvertEOLs( $mode{$newline_type} );
 	}
+	
+	$self->{newline_type} = $newline_type;
 
-	return ($newline_type);
+	return 1;
 }
 
 sub save_file {
