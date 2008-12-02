@@ -1207,8 +1207,10 @@ sub on_reload_file {
 	my ($self) = @_;
 
 	my $doc     = $self->selected_document or return;
-	$doc->reload;
-	
+	if (not $doc->reload) {
+		$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+	}
+
 	return;
 }
 
@@ -2119,7 +2121,9 @@ sub on_timer_check_overwrite {
 	);
 
 	if ( $ret == Wx::wxYES ) {
-		$doc->reload;
+		if (not $doc->reload) {
+			$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+		}
 	} else {
 		$doc->{_timestamp} = $doc->time_on_file;
 	}
