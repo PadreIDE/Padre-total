@@ -1042,13 +1042,15 @@ sub setup_editor {
 	local $self->{_no_refresh} = 1;
 
 	my $config = Padre->ide->config;
-	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 	
-	$editor->{Document} = Padre::Document->new(
+	my $doc = Padre::Document->new(
 		filename => $file,
 	);
-	$editor->{Document}->set_editor( $editor );
-	$editor->configure_editor($editor->{Document});
+
+	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
+	$editor->{Document} = $doc;
+	$doc->set_editor( $editor );
+	$editor->configure_editor($doc);
 	
 	Padre->ide->plugin_manager->editor_enable($editor);
 
