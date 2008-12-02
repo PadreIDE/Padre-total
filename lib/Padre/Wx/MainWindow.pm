@@ -53,6 +53,7 @@ our %languages = (
 	he => Wx::gettext('Hebrew'),
 	hu => Wx::gettext('Hungarian'),
 	ko => Wx::gettext('Korean'),
+	it => Wx::gettext('Italian')
 );
 
 my %shortname_of = (
@@ -61,6 +62,7 @@ my %shortname_of = (
 	Wx::wxLANGUAGE_FRENCH()     => 'fr',
 	Wx::wxLANGUAGE_HEBREW()     => 'he',
 	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_ITALIAN()  	=> 'it',	
 	Wx::wxLANGUAGE_KOREAN()     => 'ko',
 );
 
