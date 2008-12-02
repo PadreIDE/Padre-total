@@ -23,7 +23,7 @@ sub on_new_project {
 	# run
 	Wx::MessageBox(
 		Wx::gettext("Not implemented yet"),
-		Wx::gettext("Not Yes"),
+		Wx::gettext("Not Yet"),
 		Wx::wxOK,
 		$self,
 	);

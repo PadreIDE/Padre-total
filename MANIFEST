@@ -106,6 +106,7 @@ eg/wx/03_button.pl
 eg/wx/04_button_with_event.pl
 
 share/locale/de.po
+share/locale/fr.po
 share/locale/he.po
 share/locale/hu.po
 share/locale/ko.po

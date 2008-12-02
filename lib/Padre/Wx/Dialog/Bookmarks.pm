@@ -35,7 +35,7 @@ sub get_layout {
 		push @{ $layout[-1] }, 
 			['Wx::Button',     'delete', Wx::wxID_DELETE];
 		push @{ $layout[-1] }, 
-			['Wx::Button',     'delete_all', 'Delete &All'];
+			['Wx::Button',     'delete_all', gettext('Delete &All')];
 	}
 	return \@layout;
 }

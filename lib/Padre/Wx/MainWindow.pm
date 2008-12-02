@@ -1,6 +1,18 @@
 package Padre::Wx::MainWindow;
 
 use 5.008;
+
+# This is somewhat disturbing but necessary to prevent
+# Test::Compile from breaking. The compile tests run
+# perl -v lib/Padre/Wx/MainWindow.pm which first compiles
+# the module as a script (i.e. no %INC entry created)
+# and then again when Padre::Wx::MainWindow is required
+# from another module down the dependency chain.
+# This used to break with subroutine redefinitions.
+# So to prevent this, we force the creating of the correct
+# %INC entry when the file is first compiled. -- Steffen
+BEGIN {$INC{"Padre/Wx/MainWindow.pm"} ||= __FILE__}
+
 use strict;
 use warnings;
 use FindBin;
@@ -37,17 +49,19 @@ use constant DEFAULT_LOCALE => 'en';
 our %languages = (
 	de => Wx::gettext('German'),
 	en => Wx::gettext('English (London.pm)'),
-	ko => Wx::gettext('Korean'),
-	hu => Wx::gettext('Hungarian'),
+	en => Wx::gettext('French'),
 	he => Wx::gettext('Hebrew'),
+	hu => Wx::gettext('Hungarian'),
+	ko => Wx::gettext('Korean'),
 );
 
 my %shortname_of = (
-	Wx::wxLANGUAGE_ENGLISH_US() => 'en',  
-	Wx::wxLANGUAGE_GERMAN()     => 'de', 
-	Wx::wxLANGUAGE_KOREAN()     => 'ko',
-	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_GERMAN()     => 'de',
+	Wx::wxLANGUAGE_ENGLISH_US() => 'en',
+	Wx::wxLANGUAGE_FRENCH()     => 'fr',
 	Wx::wxLANGUAGE_HEBREW()     => 'he',
+	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_KOREAN()     => 'ko',
 );
 
 my %number_of = reverse %shortname_of;

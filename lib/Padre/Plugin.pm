@@ -24,6 +24,7 @@ Padre::Plugin - Padre Plugin API
   # The plugin name to show in the Plugins menu
   # The command structure to show in the Plugins menu
   sub menu_plugins_simple {
+      my $self = shift;
       'My Plugin' => [
           About => sub { $self->show_about },
           Deep  => [

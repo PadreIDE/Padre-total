@@ -257,7 +257,8 @@ sub get_title {
 	if ( $self->{filename} ) {
 		return File::Basename::basename( $self->{filename} );
 	} else {
-		return " Unsaved $unsaved_number";
+		my $str = sprintf(Wx::gettext(" Unsaved %d"), $unsaved_number);
+		return $str;
 	}
 }
 
@@ -449,11 +450,15 @@ sub save_file {
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
 
-	if (!$self->{encoding}) { # when first time to save
-		$self->{encoding} = _get_encoding_from_contents($content);
-	}
-	if (open my $fh, ">:raw:encoding($self->{encoding})", $filename) {
-		print {$fh} $content;
+	# not set when first time to save
+	$self->{encoding} ||= _get_encoding_from_contents($content);
+
+	my $fh;
+	if ($self->{encoding} && open $fh,  ">:raw:encoding($self->{encoding})", $filename ) {
+	  print {$fh} $content;
+	} elsif (open $fh, ">$filename" ) {
+	  warn "encoding is not set, (couldn't get from contents) when saving file $filename\n";
+	  print {$fh} $content;
 	} else {
 		return "Could not save: $!";
 	}
