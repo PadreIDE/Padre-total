@@ -128,7 +128,7 @@ sub new {
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->{manager}->SetManagedWindow( $self );
-	$self->{_methods_} = {};
+	$self->{_methods_} = [];
 
 	# do NOT use hints other than Rectangle or the app will crash on Linux/GTK
 	my $flags = $self->{manager}->GetFlags;
@@ -630,17 +630,17 @@ sub refresh_methods {
 		return;
 	}
 
-	my %methods = map {$_ => 1} $doc->get_functions;
-	my $new = join ';', sort keys %methods;
-	my $old = join ';', sort keys %{ $self->{_methods_} };
+	my @methods = $doc->get_functions;
+	my $new = join ';', @methods;
+	my $old = join ';', @{ $self->{_methods_} };
 	return if $old eq $new;
-	
+
 	$self->{gui}->{subs_panel}->DeleteAllItems;
-	foreach my $method ( reverse sort keys %methods ) {
+	foreach my $method ( reverse sort @methods ) {
 		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
 	}
 	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
-	$self->{_methods_} = \%methods;
+	$self->{_methods_} = \@methods;
 
 	return;
 }
