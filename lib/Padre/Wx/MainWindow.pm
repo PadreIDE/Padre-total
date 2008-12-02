@@ -142,90 +142,20 @@ sub new {
 	# create basic window components
 	$self->create_main_components;
 
-	# Create the main notebook for the documents
-	$self->{notebook} = Wx::AuiNotebook->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxAUI_NB_DEFAULT_STYLE | Wx::wxAUI_NB_WINDOWLIST_BUTTON,
-	);
-	$self->manager->AddPane(
-		$self->{notebook}, 
-		Wx::AuiPaneInfo->new->Name( "notebook" )
-			->CenterPane->Resizable->PaneBorder->Dockable
-			->Caption( Wx::gettext("Files") )->Position( 1 )
-	);
+	$self->create_editor_pane;
 
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
-		$self,
-		$self->{notebook},
-		sub {
-			my $editor = $_[0]->selected_editor;
-			if ($editor) {
-				@{ $_[0]->{page_history} } = grep {
-					Scalar::Util::refaddr($_) ne Scalar::Util::refaddr($editor)
-				} @{ $_[0]->{page_history} };
-				push @{ $_[0]->{page_history} }, $editor;
-			}
-			$_[0]->refresh_all;
-			},
-	);
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
-		$self,
-		$self->{notebook},
-		\&on_close,
-	);
-#	Wx::Event::EVT_DESTROY(
-#		$self,
-#		$self->{notebook},
-#		sub {print "destroy @_\n"; },
-#	);
-#
+	$self->create_side_pane;
 
-	# Create the right-hand sidebar
-	$self->{rightbar} = Wx::ListCtrl->new(
-		$self,
-		-1, 
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
-	);
-	Wx::Event::EVT_KILL_FOCUS($self->{rightbar}, \&on_rightbar_left );
-	$self->manager->AddPane(
-		$self->{rightbar}, 
-		Wx::AuiPaneInfo->new->Name( "rightbar" )
-			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
-			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( Wx::gettext("Subs") )->Position( 3 )->Right->Layer(3)
-	);
-	$self->{rightbar}->InsertColumn(0, Wx::gettext('Methods'));
-	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
-	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
-		$self,
-		$self->{rightbar},
-		\&on_function_selected,
-	);
+	$self->create_bottom_pane;
 
 	# Create the syntax checker and sidebar for syntax check messages
+	# create it AFTER the bottom pane!
 	$self->{syntax_checker} = Padre::Wx::SyntaxChecker->new($self);
-
-	# Create the bottom-of-screen output textarea
-	$self->{output} = Padre::Wx::Output->new(
-		$self,
-	);
-	$self->manager->AddPane($self->{output}, 
-		Wx::AuiPaneInfo->new->Name( "output" )
-			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
-			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( Wx::gettext("Output") )->Position(2)->Bottom->Layer(4)
-		);
 
 	# on close pane
 	Wx::Event::EVT_AUI_PANE_CLOSE(
-		$self, \&on_close_pane
+		$self,
+		\&on_close_pane
 	);
 
 	# Special Key Handling
@@ -248,11 +178,12 @@ sub new {
 	} );
 	
 	# remember the last time we show them or not
+	# TODO do we need this, given that we have self->manager->LoadPerspective below?
 	unless ( $self->{menu}->{view_output}->IsChecked ) {
-		$self->manager->GetPane('output')->Hide;
+		$self->{gui}->{output_panel}->Hide;
 	}
 	unless ( $self->{menu}->{view_functions}->IsChecked ) {
-		$self->manager->GetPane('rightbar')->Hide;
+		$self->{gui}->{subs_panel}->Hide;
 	}
 
 	$self->manager->Update;
@@ -303,11 +234,138 @@ sub create_main_components {
 	$self->GetToolBar->Realize;
 
 	# Create the status bar
-	if ( ! defined $self->{statusbar} ) {
-		$self->{statusbar} = $self->CreateStatusBar;
-		$self->{statusbar}->SetFieldsCount(4);
-		$self->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
+	if ( ! defined $self->{gui}->{statusbar} ) {
+		$self->{gui}->{statusbar} = $self->CreateStatusBar( 1, Wx::wxST_SIZEGRIP|Wx::wxFULL_REPAINT_ON_RESIZE );
+		$self->{gui}->{statusbar}->SetFieldsCount(4);
+		$self->{gui}->{statusbar}->SetStatusWidths(-1, 100, 50, 100);
 	}
+
+	return;
+}
+
+
+sub create_editor_pane {
+	my $self = shift;
+
+	# Create the main notebook for the documents
+	$self->{gui}->{notebook} = Wx::AuiNotebook->new(
+		$self,
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxAUI_NB_DEFAULT_STYLE | Wx::wxAUI_NB_WINDOWLIST_BUTTON,
+	);
+
+	$self->manager->AddPane(
+		$self->nb,
+		Wx::AuiPaneInfo->new->Name('editorpane')
+			->CenterPane->Resizable->PaneBorder->Dockable
+			->Caption( Wx::gettext('Files') )->Position(1)
+	);
+
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
+		$self,
+		$self->{gui}->{notebook},
+		sub {
+			my $editor = $_[0]->selected_editor;
+			if ($editor) {
+				@{ $_[0]->{page_history} } = grep {
+					Scalar::Util::refaddr($_) ne Scalar::Util::refaddr($editor)
+				} @{ $_[0]->{page_history} };
+				push @{ $_[0]->{page_history} }, $editor;
+			}
+			$_[0]->refresh_all;
+		},
+	);
+
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
+		$self,
+		$self->nb,
+		\&on_close,
+	);
+
+#	Wx::Event::EVT_DESTROY(
+#	   $self,
+#	   $self->nb,
+#	   sub {print "destroy @_\n"; },
+#	);
+
+	return;
+}
+
+
+sub create_side_pane {
+	my $self = shift;
+
+	$self->{gui}->{sidepane} = Wx::Notebook->new(
+		$self,
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::Size->new(300, 350), # used when pane is floated
+		Wx::wxNB_TOP
+	);
+
+	# Create the right-hand sidebar
+	$self->{gui}->{subs_panel} = Wx::ListCtrl->new(
+		$self->{gui}->{sidepane},
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT
+	);
+
+	Wx::Event::EVT_KILL_FOCUS( $self->{gui}->{subs_panel}, \&on_subs_panel_left );
+
+	$self->{gui}->{sidepane}->AddPage( $self->{gui}->{subs_panel}, Wx::gettext("Subs"), 1 );
+
+	$self->manager->AddPane(
+		$self->{gui}->{sidepane},
+		Wx::AuiPaneInfo->new->Name('sidepane')
+			->CenterPane->Resizable(1)->PaneBorder(0)->Movable(1)
+			->CaptionVisible(1)->CloseButton(0)->DestroyOnClose(0)
+			->MaximizeButton(1)->Floatable(1)->Dockable(1)
+			->Caption( Wx::gettext("Workspace View") )->Position(3)->Right->Layer(3)
+	);
+
+	$self->{gui}->{subs_panel}->InsertColumn(0, Wx::gettext('Methods'));
+	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
+
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
+		$self,
+		$self->{gui}->{subs_panel},
+		\&on_function_selected,
+	);
+
+	return;
+}
+
+
+sub create_bottom_pane {
+	my $self = shift;
+
+	$self->{gui}->{bottompane} = Wx::Notebook->new(
+		$self,
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::Size->new(350, 300), # used when pane is floated
+		Wx::wxNB_TOP
+	);
+
+	# Create the bottom-of-screen output textarea
+	$self->{gui}->{output_panel} = Padre::Wx::Output->new(
+		$self->{gui}->{bottompane}
+	);
+
+	$self->{gui}->{bottompane}->InsertPage( 0, $self->{gui}->{output_panel}, Wx::gettext("Output"), 1 );
+
+	$self->manager->AddPane(
+		$self->{gui}->{bottompane},
+		Wx::AuiPaneInfo->new->Name('bottompane')
+			->CenterPane->Resizable(1)->PaneBorder(0)->Movable(1)
+			->CaptionVisible(1)->CloseButton(0)->DestroyOnClose(0)
+			->MaximizeButton(1)->Floatable(1)->Dockable(1)
+			->Caption( Wx::gettext("Output View") )->Position(2)->Bottom->Layer(4)
+	);
 
 	return;
 }
@@ -418,9 +476,9 @@ sub refresh_all {
 	$self->refresh_methods;
 	$self->refresh_syntaxcheck;
 	
-	my $id = $self->{notebook}->GetSelection();
+	my $id = $self->nb->GetSelection();
 	if (defined $id and $id >= 0) {
-		$self->{notebook}->GetPage($id)->SetFocus;
+		$self->nb->GetPage($id)->SetFocus;
 	}
 
 	# force update of list of opened files in window menu
@@ -428,7 +486,7 @@ sub refresh_all {
 	if ( defined $self->{menu}->{alt} ) {
 		foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
 			my $doc = Padre::Documents->by_id($i) or return;
-			my $file = $doc->filename || $self->{notebook}->GetPageText($i);
+			my $file = $doc->filename || $self->nb->GetPageText($i);
 			$self->{menu}->update_alt_n_menu($file, $i);
 		}
 	}
@@ -449,9 +507,9 @@ sub change_locale {
 
 	$self->refresh_all;
 
-	$self->manager->GetPane('output')->Caption( Wx::gettext("Output") );
-	$self->manager->GetPane('syntaxbar')->Caption( Wx::gettext("Syntax") );
-	$self->manager->GetPane('rightbar')->Caption( Wx::gettext("Subs") );
+	$self->{gui}->{output_panel}->Caption( Wx::gettext("Output") );
+	$self->{gui}->{syntaxcheck_panel}->Caption( Wx::gettext("Syntax") );
+	$self->{gui}->{subs_panel}->Caption( Wx::gettext("Subs") );
 	return;
 }
 
@@ -462,6 +520,7 @@ sub shortname {
 		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
 	return $shortname;
 }
+
 sub set_locale {
 	my $self = shift;
 
@@ -510,12 +569,12 @@ sub refresh_status {
 	my ($self) = @_;
 	return if $self->no_refresh;
 
-	my $pageid = $self->{notebook}->GetSelection();
+	my $pageid = $self->nb->GetSelection();
 	if (not defined $pageid or $pageid == -1) {
 		$self->SetStatusText("", $_) for (0..3);
 		return;
 	}
-	my $editor       = $self->{notebook}->GetPage($pageid);
+	my $editor       = $self->nb->GetPage($pageid);
 	my $doc          = Padre::Documents->current or return;
 	my $line         = $editor->GetCurrentLine;
 	my $filename     = $doc->filename || '';
@@ -523,10 +582,10 @@ sub refresh_status {
 	my $modified     = $editor->GetModify ? '*' : ' ';
 
 	if ($filename) {
-		$self->{notebook}->SetPageText($pageid, $modified . File::Basename::basename $filename);
+		$self->nb->SetPageText($pageid, $modified . File::Basename::basename $filename);
 	} else {
-		my $text = substr($self->{notebook}->GetPageText($pageid), 1);
-		$self->{notebook}->SetPageText($pageid, $modified . $text);
+		my $text = substr($self->nb->GetPageText($pageid), 1);
+		$self->nb->SetPageText($pageid, $modified . $text);
 	}
 
 	my $pos   = $editor->GetCurrentPos;
@@ -535,7 +594,7 @@ sub refresh_status {
 
 	$self->SetStatusText("$modified $filename",             0);
 
-	my $charWidth = $self->{statusbar}->GetCharWidth;
+	my $charWidth = $self->{gui}->{statusbar}->GetCharWidth;
 	my $mt = $doc->get_mimetype;
 	my $curPos = Wx::gettext('L:') . ($line + 1) . ' ' . Wx::gettext('Ch:') . $char;
 
@@ -543,8 +602,8 @@ sub refresh_status {
 	$self->SetStatusText($newline_type, 2);
 	$self->SetStatusText($curPos,       3);
 
-    # since charWidth is an average we adjust the values a little
-	$self->{statusbar}->SetStatusWidths(
+	# since charWidth is an average we adjust the values a little
+	$self->{gui}->{statusbar}->SetStatusWidths(
 		-1,
 		(length($mt)           - 1) * $charWidth,
 		(length($newline_type) + 2) * $charWidth,
@@ -565,7 +624,7 @@ sub refresh_methods {
 
 	my $doc = $self->selected_document;
 	if (not $doc) {
-		$self->{rightbar}->DeleteAllItems;
+		$self->{gui}->{subs_panel}->DeleteAllItems;
 		return;
 	}
 
@@ -574,11 +633,11 @@ sub refresh_methods {
 	my $old = join ';', sort keys %{ $self->{_methods_} };
 	return if $old eq $new;
 	
-	$self->{rightbar}->DeleteAllItems;
+	$self->{gui}->{subs_panel}->DeleteAllItems;
 	foreach my $method ( sort keys %methods ) {
-		$self->{rightbar}->InsertStringItem(0, $method);
+		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
 	}
-	$self->{rightbar}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
+	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	$self->{_methods_} = \%methods;
 
 	return;
@@ -593,6 +652,10 @@ sub refresh_methods {
 
 sub selected_document {
 	Padre::Documents->current;
+}
+
+sub nb {
+	return $_[0]->{gui}->{notebook};
 }
 
 =head2 selected_editor
@@ -614,7 +677,7 @@ your editing a atomic in the Undo stack.
 =cut
 
 sub selected_editor {
-	my $nb = $_[0]->{notebook};
+	my $nb = $_[0]->nb;
 	return $nb->GetPage( $nb->GetSelection );
 }
 
@@ -632,17 +695,17 @@ sub selected_filename {
 
 sub selected_text {
 	my $self = shift;
-	my $id   = $self->{notebook}->GetSelection;
+	my $id   = $self->nb->GetSelection;
 	return if $id == -1;
-	$self->{notebook}->GetPage($id)->GetSelectedText;
+	return $self->selected_editor->GetSelectedText;
 }
 
 sub pageids {
-	return ( 0 .. $_[0]->{notebook}->GetPageCount - 1 );
+	return ( 0 .. $_[0]->nb->GetPageCount - 1 );
 }
 
 sub pages {
-	my $notebook = $_[0]->{notebook};
+	my $notebook = $_[0]->nb;
 	return map { $notebook->GetPage($_) } $_[0]->pageids;
 }
 
@@ -836,8 +899,7 @@ sub find {
 sub on_brace_matching {
 	my ($self, $event) = @_;
 
-	my $id    = $self->{notebook}->GetSelection;
-	my $page  = $self->{notebook}->GetPage($id);
+	my $page  = $self->selected_editor;
 	my $pos1  = $page->GetCurrentPos;
 	my $pos2  = $page->BraceMatch($pos1);
 	if ($pos2 == -1 ) {   #Wx::wxSTC_INVALID_POSITION
@@ -863,8 +925,7 @@ sub on_brace_matching {
 sub on_comment_out_block {
 	my ($self, $event) = @_;
 
-	my $pageid = $self->{notebook}->GetSelection();
-	my $page   = $self->{notebook}->GetPage($pageid);
+	my $page   = $self->selected_editor;
 	my $begin  = $page->LineFromPosition($page->GetSelectionStart);
 	my $end    = $page->LineFromPosition($page->GetSelectionEnd);
 	my $doc    = $self->selected_document;
@@ -879,8 +940,7 @@ sub on_comment_out_block {
 sub on_uncomment_block {
 	my ($self, $event) = @_;
 
-	my $pageid = $self->{notebook}->GetSelection();
-	my $page   = $self->{notebook}->GetPage($pageid);
+	my $page   = $self->selected_editor;
 	my $begin  = $page->LineFromPosition($page->GetSelectionStart);
 	my $end    = $page->LineFromPosition($page->GetSelectionEnd);
 	my $doc    = $self->selected_document;
@@ -917,8 +977,7 @@ sub on_goto {
 	return if not defined $line_number or $line_number !~ /^\d+$/;
 	#what if it is bigger than buffer?
 
-	my $id   = $self->{notebook}->GetSelection;
-	my $page = $self->{notebook}->GetPage($id);
+	my $page = $self->selected_editor;
 
 	$line_number--;
 	$page->GotoLine($line_number);
@@ -1000,14 +1059,14 @@ sub on_split_window {
 	my ($self) = @_;
 
 	my $editor  = $self->selected_editor;
-	my $id      = $self->{notebook}->GetSelection;
-	my $title   = $self->{notebook}->GetPageText($id);
+	my $id      = $self->nb->GetSelection;
+	my $title   = $self->nb->GetPageText($id);
 	my $file    = $self->selected_filename;
 	return if not $file;
 	my $pointer = $editor->GetDocPointer();
 	$editor->AddRefDocument($pointer);
 
-	my $new_editor = Padre::Wx::Editor->new( $self->{notebook} );
+	my $new_editor = Padre::Wx::Editor->new( $self->nb );
 	$new_editor->{Document} = $editor->{Document};
 	$new_editor->padre_setup;
 	$new_editor->SetDocPointer($pointer);
@@ -1060,7 +1119,7 @@ sub setup_editor {
 		return;
 	}
 
-	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
+	my $editor = Padre::Wx::Editor->new( $self->nb );
 	$editor->{Document} = $doc;
 	$doc->set_editor( $editor );
 	$editor->configure_editor($doc);
@@ -1090,10 +1149,10 @@ sub setup_editor {
 sub create_tab {
 	my ($self, $editor, $file, $title) = @_;
 
-	$self->{notebook}->AddPage($editor, $title, 1); # TODO add closing x
+	$self->nb->AddPage($editor, $title, 1);
 	$editor->SetFocus;
 
-	my $id  = $self->{notebook}->GetSelection;
+	my $id  = $self->nb->GetSelection;
 	my $file_title = $file || $title;
 	$self->{menu}->add_alt_n_menu($file_title, $id);
 
@@ -1199,7 +1258,7 @@ sub on_open {
 
 	# If and only if there is only one current file,
 	# and it is unused, close it.
-	if ( $self->{notebook}->GetPageCount == 1 ) {
+	if ( $self->nb->GetPageCount == 1 ) {
 		if ( Padre::Documents->current->is_unused ) {
 			$self->on_close($self);
 		}
@@ -1268,7 +1327,7 @@ sub on_save_as {
 			last;
 		}
 	}
-	my $pageid = $self->{notebook}->GetSelection;
+	my $pageid = $self->nb->GetSelection;
 	$self->_save_buffer($pageid);
 
 	$doc->set_mimetype( $doc->guess_mimetype );
@@ -1289,7 +1348,7 @@ sub on_save {
 		return $self->on_save_as;
 	}
 	if ( $doc->is_modified ) {
-		my $pageid = $self->{notebook}->GetSelection;
+		my $pageid = $self->nb->GetSelection;
 		$self->_save_buffer($pageid);
 	}
 
@@ -1310,7 +1369,7 @@ sub on_save_all {
 sub _save_buffer {
 	my ($self, $id) = @_;
 
-	my $page         = $self->{notebook}->GetPage($id);
+	my $page         = $self->nb->GetPage($id);
 	my $doc          = Padre::Documents->by_id($id) or return;
 
 	if ($doc->has_changed_on_disk) {
@@ -1355,7 +1414,7 @@ sub on_close {
 sub close {
 	my ($self, $id) = @_;
 
-	$id = defined $id ? $id : $self->{notebook}->GetSelection;
+	$id = defined $id ? $id : $self->nb->GetSelection;
 	
 	return if $id == -1;
 	
@@ -1380,7 +1439,7 @@ sub close {
 			return 0;
 		}
 	}
-	$self->{notebook}->DeletePage($id);
+	$self->nb->DeletePage($id);
 
 	# Update the alt-n menus
 	# TODO: shouldn't this be in Padre::Wx::Menu::refresh()?
@@ -1389,7 +1448,7 @@ sub close {
 	foreach my $i ( 0 .. @{ $self->{menu}->{alt} } - 1 ) {
 		my $doc = Padre::Documents->by_id($i) or return;
 		my $file = $doc->filename
-			|| $self->{notebook}->GetPageText($i);
+			|| $self->nb->GetPageText($i);
 		$self->{menu}->update_alt_n_menu($file, $i);
 	}
 
@@ -1405,7 +1464,7 @@ sub on_close_all {
 
 sub on_close_all_but_current {
 	my $self = shift;
-	return $self->_close_all( $self->{notebook}->GetSelection );
+	return $self->_close_all( $self->nb->GetSelection );
 }
 
 sub _close_all {
@@ -1425,9 +1484,9 @@ sub _close_all {
 
 sub on_nth_pane {
 	my ($self, $id) = @_;
-	my $page = $self->{notebook}->GetPage($id);
+	my $page = $self->nb->GetPage($id);
 	if ($page) {
-	   $self->{notebook}->SetSelection($id);
+	   $self->nb->SetSelection($id);
 	   $self->refresh_status;
 	   return 1;
 	}
@@ -1438,10 +1497,10 @@ sub on_nth_pane {
 sub on_next_pane {
 	my ($self) = @_;
 
-	my $count = $self->{notebook}->GetPageCount;
+	my $count = $self->nb->GetPageCount;
 	return if not $count;
 
-	my $id    = $self->{notebook}->GetSelection;
+	my $id    = $self->nb->GetSelection;
 	if ($id + 1 < $count) {
 		$self->on_nth_pane($id + 1);
 	} else {
@@ -1451,9 +1510,9 @@ sub on_next_pane {
 }
 sub on_prev_pane {
 	my ($self) = @_;
-	my $count = $self->{notebook}->GetPageCount;
+	my $count = $self->nb->GetPageCount;
 	return if not $count;
-	my $id    = $self->{notebook}->GetSelection;
+	my $id    = $self->nb->GetSelection;
 	if ($id) {
 		$self->on_nth_pane($id - 1);
 	} else {
@@ -1501,9 +1560,7 @@ sub on_full_screen {
 sub on_join_lines {
 	my ($self) = @_;
 
-	my $notebook = $self->{notebook};
-	my $id   = $notebook->GetSelection;
-	my $page = $notebook->GetPage($id);
+	my $page = $self->selected_editor;
 	
 	# find positions
 	my $pos1 = $page->GetCurrentPos;
@@ -1663,32 +1720,39 @@ sub show_output {
 		$self->{menu}->{view_output}->Check($on);
 	}
 	if ( $on ) {
-		$self->manager->GetPane('output')->Show();
+		$self->{gui}->{output_panel}->Show;
+		$self->{gui}->{bottompane}->SetSelection(0);
+		$self->check_pane_needed('bottompane');
 		$self->manager->Update;
 	} else {
-		$self->manager->GetPane('output')->Hide();
+		$self->{gui}->{output_panel}->Hide;
+		$self->check_pane_needed('bottompane');
 		$self->manager->Update;
 	}
-	Padre->ide->config->{main_output} = $on;
+	Padre->ide->config->{main_output_panel} = $on;
 
 	return;
 }
 
 sub show_functions {
 	my $self = shift;
+
 	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
 	unless ( $on == $self->{menu}->{view_functions}->IsChecked ) {
 		$self->{menu}->{view_functions}->Check($on);
 	}
 	if ( $on ) {
-	    $self->refresh_methods();
-		$self->manager->GetPane('rightbar')->Show();
+		$self->refresh_methods();
+		$self->{gui}->{subs_panel}->Show;
+		$self->{gui}->{sidepane}->SetSelection(0);
+		$self->check_pane_needed('sidepane');
 		$self->manager->Update;
 	} else {
-		$self->manager->GetPane('rightbar')->Hide();
+		$self->{gui}->{subs_panel}->Hide;
+		$self->check_pane_needed('sidepane');
 		$self->manager->Update;
 	}
-	Padre->ide->config->{main_rightbar} = $on;
+	Padre->ide->config->{main_subs_panel} = $on;
 
 	return;
 }
@@ -1697,18 +1761,47 @@ sub show_syntaxbar {
 	my $self = shift;
 	my $on   = scalar(@_) ? $_[0] ? 1 : 0 : 1;
 	unless ( $self->{menu}->{view_show_syntaxcheck}->IsChecked ) {
-		$self->manager->GetPane('syntaxbar')->Hide();
+		$self->{gui}->{syntaxcheck_panel}->Hide;
+		$self->check_pane_needed('bottompane');
 		$self->manager->Update;
 		return;
 	}
 	if ( $on ) {
-		$self->manager->GetPane('syntaxbar')->Show();
+		$self->{gui}->{syntaxcheck_panel}->Show;
+		$self->{gui}->{bottompane}->SetSelection(1);
+		$self->check_pane_needed('bottompane');
 		$self->manager->Update;
 	}
 	else {
-		$self->manager->GetPane('syntaxbar')->Hide();
+		$self->{gui}->{syntaxcheck_panel}->Hide;
+		$self->check_pane_needed('bottompane');
 		$self->manager->Update;
 	}
+	return;
+}
+
+sub check_pane_needed {
+	my ( $self, $pane ) = @_;
+
+	my $visible = 0;
+	my $cnt = $self->{gui}->{$pane}->GetPageCount - 1;
+
+	foreach my $num ( 0 .. $cnt ) {
+		my $p = undef;
+		eval {
+			$p = $self->{gui}->{$pane}->GetPage($num)
+		};
+		if ( defined($p) && $p->IsShown ) {
+			$visible++;
+		}
+	}
+	if ($visible) {
+		$self->manager->GetPane($pane)->Show;
+	}
+	else {
+		$self->manager->GetPane($pane)->Hide;
+	}
+
 	return;
 }
 
@@ -1760,7 +1853,7 @@ sub on_toggle_status_bar {
 sub on_insert_from_file {
 	my ( $win ) = @_;
 	
-	my $id  = $win->{notebook}->GetSelection;
+	my $id  = $win->nb->GetSelection;
 	return if $id == -1;
 	
 	# popup the window
@@ -1780,9 +1873,9 @@ sub on_insert_from_file {
 	}
 	my $filename = $dialog->GetFilename;
 	$default_dir = $dialog->GetDirectory;
-    
+	
 	my $file = File::Spec->catfile($default_dir, $filename);
-    
+	
 	my $text = eval { File::Slurp::read_file($file, binmode => ':raw') };
 	if ($@) {
 		$win->error($@);
@@ -1793,7 +1886,7 @@ sub on_insert_from_file {
 	$data->SetText($text);
 	my $length = $data->GetTextLength;
 	
-	my $editor = $win->{notebook}->GetPage($id);
+	my $editor = $win->nb->GetPage($id);
 	$editor->ReplaceSelection('');
 	my $pos = $editor->GetCurrentPos;
 	$editor->InsertText( $pos, $text );
@@ -1807,7 +1900,7 @@ sub convert_to {
 	#$editor->SetEOLMode( $mode{$newline_type} );
 	$editor->ConvertEOLs( $Padre::Document::mode{$newline_type} );
 
-	my $id   = $self->{notebook}->GetSelection;
+	my $id   = $self->nb->GetSelection;
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.
 	my $doc     = $self->selected_document or return;
@@ -1820,7 +1913,7 @@ sub convert_to {
 
 sub find_editor_of_file {
 	my ($self, $file) = @_;
-	foreach my $id (0 .. $self->{notebook}->GetPageCount -1) {
+	foreach my $id (0 .. $self->nb->GetPageCount -1) {
 	my $doc = Padre::Documents->by_id($id) or return;
 		my $filename = $doc->filename;
 		next if not $filename;
@@ -1943,12 +2036,12 @@ sub on_close_pane {
 
 	# it's ugly, but it works
 	if ( Data::Dumper::Dumper(\$pane) eq 
-	     Data::Dumper::Dumper(\$self->manager->GetPane('output')) )
+	     Data::Dumper::Dumper(\$self->{gui}->{output_panel}) )
 	{
 		$self->{menu}->{view_output}->Check(0);
 	}
 	elsif ( Data::Dumper::Dumper(\$pane) eq
-	        Data::Dumper::Dumper(\$self->manager->GetPane('rightbar')) )
+	        Data::Dumper::Dumper(\$self->{gui}->{subs_panel}) )
 	{
 		$self->{menu}->{view_functions}->Check(0);
 	}
@@ -2100,13 +2193,13 @@ sub on_delete_leading_space {
 }
 
 # TODO next function
-# should be in a class representing the rightbar
-sub on_rightbar_left {
+# should be in a class representing the subs panel
+sub on_subs_panel_left {
 	my ($self, $event) = @_;
 	my $main  = Padre->ide->wx->main_window;
-	if ($main->{rightbar_was_closed}) {
+	if ($main->{subs_panel_was_closed}) {
 		$main->show_functions(0);
-		$main->{rightbar_was_closed} = 0;
+		$main->{subs_panel_was_closed} = 0;
 	}
 	return;
 }
@@ -2150,9 +2243,9 @@ sub on_last_visited_pane {
 	if (@{ $self->{page_history} } >= 2) {
 		@{ $self->{page_history} }[-1, -2] = @{ $_[0]->{page_history} }[-2, -1];
 		foreach my $i ($self->pageids) {
-			my $editor = $_[0]->{notebook}->GetPage($i);
+			my $editor = $_[0]->nb->GetPage($i);
 			if ( Scalar::Util::refaddr($editor) eq Scalar::Util::refaddr($_[0]->{page_history}[-1]) ) {
-				$self->{notebook}->SetSelection($i);
+				$self->nb->SetSelection($i);
 				last;
 			}
 		}
