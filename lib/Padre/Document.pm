@@ -434,7 +434,6 @@ sub load_file {
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
 	$self->{original_content} = $content;
-	$self->configure_editor;
 
 	return 1;
 }

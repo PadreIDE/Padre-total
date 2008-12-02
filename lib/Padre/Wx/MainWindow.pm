@@ -1048,6 +1048,7 @@ sub setup_editor {
 		editor   => $editor,
 		filename => $file,
 	);
+	$editor->{Document}->configure_editor;
 	
 	Padre->ide->plugin_manager->editor_enable($editor);
 
@@ -1209,6 +1210,8 @@ sub on_reload_file {
 	my $doc     = $self->selected_document or return;
 	if (not $doc->reload) {
 		$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+	} else {
+		$doc->configure_editor;
 	}
 
 	return;
@@ -2123,6 +2126,8 @@ sub on_timer_check_overwrite {
 	if ( $ret == Wx::wxYES ) {
 		if (not $doc->reload) {
 			$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+		} else {
+			$doc->configure_editor;
 		}
 	} else {
 		$doc->{_timestamp} = $doc->time_on_file;
