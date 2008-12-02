@@ -127,7 +127,7 @@ sub syntax_check_idle_timer {
 	my $self = $mw->syntax_checker;
 
 	$self->{synCheckTimer}->Stop if $self->{synCheckTimer}->IsRunning;
-	$self->{synCheckTimer}->Start(50, 1);
+	$self->{synCheckTimer}->Start(500, 1);
 
 	$event->Skip(0);
 	return;
