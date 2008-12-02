@@ -1159,7 +1159,7 @@ sub on_open_selection {
 	}
 
 	Padre::DB->add_recent_files($file);
-	$self->setup_editor($file);
+	$self->setup_editors($file);
 	$self->refresh_all;
 
 	return;
@@ -1169,9 +1169,7 @@ sub on_open_all_recent_files {
 	my ( $self ) = @_;
 	
 	my $files = Padre::DB->get_recent_files;
-	foreach my $file ( @$files ) {
-		$self->setup_editor($file);
-	}
+	$self->setup_editors( @$files );
 	$self->refresh_all;
 }
 
@@ -1207,14 +1205,10 @@ sub on_open {
 		}
 	}
 
-	$self->Freeze;
-	foreach my $filename ( @filenames ) {
-		my $file = File::Spec->catfile($default_dir, $filename);
-		Padre::DB->add_recent_files($file);
-		$self->setup_editor($file);
-	}
+	my @files = map { File::Spec->catfile($default_dir, $_) } @filenames;
+	Padre::DB->add_recent_files($_) for @files;
+	$self->setup_editors(@files);
 	$self->refresh_all;
-	$self->Thaw;
 
 	return;
 }
