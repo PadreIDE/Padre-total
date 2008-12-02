@@ -17,9 +17,9 @@ use Padre::PPI;
 my $editor_1 = t::lib::Padre::Editor->new;
 my $file_1   = File::Spec->catfile('t', 'files', 'missing_brace_1.pl');
 my $doc_1    = Padre::Document->new(
-	editor    => $editor_1, 
 	filename  => $file_1,
 );
+	#editor    => $editor_1, 
 
 SCOPE: {
 	isa_ok($doc_1, 'Padre::Document');

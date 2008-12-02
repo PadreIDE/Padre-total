@@ -29,7 +29,7 @@ use Exporter     ();
 use File::Spec   ();
 use List::Util   qw(first);
 
-our $VERSION   = '0.19';
+our $VERSION   = '0.20';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = qw(newline_type get_matches);
 
@@ -66,6 +66,7 @@ sub newline_type {
 	my $LF   = "\012";
 	my $CRLF = "\015\012";
 
+	return "None" if not defined $text;
 	return "None" if $text !~ /$LF/ and $text !~ /$CR/;
 	return "UNIX" if $text !~ /$CR/;
 	return "MAC"  if $text !~ /$LF/;

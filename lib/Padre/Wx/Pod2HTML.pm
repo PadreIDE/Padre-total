@@ -19,7 +19,7 @@ use warnings;
 use Padre::Wx ();
 
 use vars qw{@ISA};
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 BEGIN {
 	@ISA     = 'Wx::HtmlWindow';
 }

@@ -10,7 +10,7 @@ use Padre::Wx;
 use Padre::Wx::Dialog;
 use Wx::Locale qw(:default);
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 sub get_layout {
 	my ($text, $shortcuts) = @_;

@@ -7,7 +7,7 @@ use Padre::Wx::Dialog ();
 use Wx::Locale        qw(:default);
 use Data::Dumper qw(Dumper);
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 sub get_layout {
 	my ($plugins) = @_;

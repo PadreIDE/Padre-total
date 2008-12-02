@@ -14,7 +14,7 @@ use YAML::Tiny     ();
 use DBI            ();
 use Class::Autouse ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
@@ -904,13 +904,15 @@ To Octavian Rasnita for early testing and bug reports.
 
 English - everyone on the team
 
+French - Jerome Quelin (JQUELIN)
+
 German - Heiko Jansen (HJANSEN)
 
-Korean - Keedi Kim (KEEDI)
+Hebrew - Omer Zak
 
 Hungarian = Gyorgy Pasztor (GYU)
 
-Hebrew - Omer Zak
+Korean - Keedi Kim (KEEDI)
 
 
 

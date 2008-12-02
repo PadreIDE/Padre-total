@@ -56,6 +56,7 @@ lib/Padre/Wx/Print.pm
 lib/Padre/Wx/Print/Printout.pm
 lib/Padre/Wx/Project.pm
 lib/Padre/Wx/RightClick.pm
+lib/Padre/Wx/SyntaxChecker.pm
 lib/Padre/Wx/ToolBar.pm
 
 lib/Padre/Wx/History/ComboBox.pm

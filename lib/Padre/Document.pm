@@ -32,15 +32,9 @@ use Padre::Util ();
 use Padre::Wx   ();
 use Padre;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 my $unsaved_number = 0;
-
-our %mode = (
-	WIN  => Wx::wxSTC_EOL_CRLF,
-	MAC  => Wx::wxSTC_EOL_CR,
-	UNIX => Wx::wxSTC_EOL_LF,
-);
 
 # see Wx-0.86/ext/stc/cpp/st_constants.cpp for extension
 # There might be some constants are defined in 
@@ -154,11 +148,14 @@ use Class::XSAccessor
 		filename         => 'filename', # TODO is this read_only or what?
 		get_mimetype     => 'mimetype',
 		get_newline_type => 'newline_type',
+		errstr           => 'errstr',
 	},
 	setters => {
 		_set_filename    => 'filename', # TODO temporary hack
 		set_newline_type => 'newline_type',
 		set_mimetype     => 'mimetype',
+		set_errstr       => 'errstr',
+		set_editor       => 'editor',
 	};
 
 =pod
@@ -166,26 +163,23 @@ use Class::XSAccessor
 =head2 new
 
   my $doc = Padre::Document->new(
-      editor   => $editor,
       filename => $file,
   );
  
-$editor is required and is a Padre::Wx::Editor object
 
 $file is optional and if given it will be loaded in the document
 
 mime-type is defined by the guess_mimetype function
+
+TODO describe
+
+ $editor is required and is a Padre::Wx::Editor object
 
 =cut
 
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
-	
-	# Check and derive params
-	unless ( $self->editor ) {
-		die "Missing or invalid editor";
-	}
 
 	$self->setup;
 
@@ -230,7 +224,7 @@ sub guess_mimetype {
 
 	# Fall back on deriving the type from the content
 	# Hardcode this for now for the special cases we care about.
-	my $text = $self->text_get;
+	my $text = $self->{original_content};
 	if ( $text =~ /\A#!/m ) {
 		# Found a hash bang line
 		if ( $text =~ /\A#![^\n]*\bperl\b/m ) {
@@ -245,7 +239,7 @@ sub guess_mimetype {
 sub setup {
 	my $self = shift;
 	if ( $self->{filename} ) {
-		$self->load_file($self->{filename}, $self->editor);
+		$self->load_file;
 	} else {
 		$unsaved_number++;
 		$self->{newline_type} = $self->_get_default_newline_type;
@@ -367,7 +361,10 @@ sub _get_encoding_from_contents {
 	}
 
 	my $guess = Encode::Guess::guess_encoding($content, @guess_list);
-	if (ref($guess) =~ m/^Encode::/) {       # Wow, nice!
+	if (not defined $guess) {
+		$guess = ''; # to avoid warnings
+	}	
+	if (ref($guess) and ref($guess) =~ m/^Encode::/) {       # Wow, nice!
 		$encoding = $guess->name;
 	} elsif ($guess =~ m/utf8/) {            # utf-8 is in suggestion
 		$encoding = 'utf-8';
@@ -389,18 +386,36 @@ sub _get_encoding_from_contents {
 	return $encoding;
 }
 
-sub load_file {
-	my ($self, $file, $editor) = @_;
+=pod
 
-	my $newline_type = $self->_get_default_newline_type;
-	my $convert_to;
+=head2 load_file
+
+ $doc->load_file;
+ 
+Loads the current file.
+
+Sets the B<Encoding> bit using L<Encode::Guess> and tries to figure
+out what kind of newlines are in the file. Defaults to utf-8 if
+could not figure out the encoding.
+
+Currently it autoconverts files with mixed newlines. TODO we should stop autoconverting.
+
+Returns true on success false on failure. Sets $doc->errstr;
+
+=cut
+
+sub load_file {
+	my ($self) = @_;
+
+	my $file = $self->{filename};
+	$self->set_errstr('');
 	my $content;
 	if (open my $fh, '<', $file) {
 		binmode($fh);
 		local $/ = undef;
 		$content = <$fh>;
 	} else {
-		warn $!;
+		$self->set_errstr($!);
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
@@ -410,7 +425,18 @@ sub load_file {
 	$content = Encode::decode($self->{encoding}, $content);
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
-	my $current_type = Padre::Util::newline_type($content);
+	$self->{original_content} = $content;
+
+	return 1;
+}
+
+sub newline_type {
+	my ($self) = @_;
+
+	my $file = $self->{filename};
+	my $newline_type = $self->_get_default_newline_type;
+	my $convert_to;
+	my $current_type = Padre::Util::newline_type( $self->{original_content} );
 	if ($current_type eq 'None') {
 		# keep default
 	} elsif ($current_type eq 'Mixed') {
@@ -433,18 +459,7 @@ sub load_file {
 			$newline_type = $current_type;
 		}
 	}
-	$editor->SetEOLMode( $mode{$newline_type} );
-
-	$editor->SetText( $content );
-	$editor->EmptyUndoBuffer;
-	if ($convert_to) {
-		warn "Converting $file to $convert_to";
-		$editor->ConvertEOLs( $mode{$newline_type} );
-	}
-	
-	$self->{newline_type} = $newline_type;
-
-	return 1;
+	return ($newline_type, $convert_to);
 }
 
 sub save_file {
@@ -523,12 +538,23 @@ sub is_saved {
 	return !! ( defined $_[0]->filename and not $_[0]->is_modified );
 }
 
+=pod
+
+=head2 reload
+
+Reload the current file discarding changes in the editor.
+
+Returns true on success false on failure. Error message will be in $doc->errstr;
+
+TODO: In the future it should backup the changes in case the user regrets the action.
+
+=cut
+
 sub reload {
 	my ($self) = @_;
 
 	my $filename = $self->filename or return;
-	$self->load_file($filename, $self->editor);
-	return 1;
+	return $self->load_file;
 }
 
 =pod

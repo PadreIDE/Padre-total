@@ -7,7 +7,7 @@ use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 sub get_layout {
 	my ($config, $main_startup, $editor_autoindent) = @_;

@@ -36,7 +36,7 @@ use Padre::Wx::DNDFilesDropTarget ();
 
 use base qw{Wx::Frame};
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 my $default_dir = Cwd::cwd();
 
@@ -319,15 +319,9 @@ sub load_files {
 	my $config = Padre->ide->config;
 	my $files  = Padre->inst->{ARGV};
 	if ( Params::Util::_ARRAY($files) ) {
-		$self->Freeze;
-		foreach my $f ( @$files ) {
-		    $self->setup_editor($f);
-		}
-		$self->Thaw;
+		$self->setup_editors( @$files );
 	} elsif ( $config->{main_startup} eq 'new' ) {
-		$self->Freeze;
-		$self->setup_editor;
-		$self->Thaw;
+		$self->setup_editors();
 	} elsif ( $config->{main_startup} eq 'nothing' ) {
 		# nothing
 	} elsif ( $config->{main_startup} eq 'last' ) {
@@ -1026,6 +1020,21 @@ sub on_split_window {
 	return;
 }
 
+sub setup_editors {
+	my ($self, @files) = @_;
+	$self->Freeze;
+	if (@files) {
+		foreach my $f ( @files ) {
+			$self->setup_editor($f);
+		}
+	} else {
+		$self->setup_editor;
+	}
+	$self->Thaw;
+	return;
+}
+
+
 # if the current buffer is empty then fill that with the content of the
 # current file otherwise open a new buffer and open the file there.
 sub setup_editor {
@@ -1042,12 +1051,19 @@ sub setup_editor {
 	local $self->{_no_refresh} = 1;
 
 	my $config = Padre->ide->config;
-	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 	
-	$editor->{Document} = Padre::Document->new(
-		editor   => $editor,
+	my $doc = Padre::Document->new(
 		filename => $file,
 	);
+	if ($doc->errstr) {
+		warn $doc->errstr;
+		return;
+	}
+
+	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
+	$editor->{Document} = $doc;
+	$doc->set_editor( $editor );
+	$editor->configure_editor($doc);
 	
 	Padre->ide->plugin_manager->editor_enable($editor);
 
@@ -1143,7 +1159,7 @@ sub on_open_selection {
 	}
 
 	Padre::DB->add_recent_files($file);
-	$self->setup_editor($file);
+	$self->setup_editors($file);
 	$self->refresh_all;
 
 	return;
@@ -1153,9 +1169,7 @@ sub on_open_all_recent_files {
 	my ( $self ) = @_;
 	
 	my $files = Padre::DB->get_recent_files;
-	foreach my $file ( @$files ) {
-		$self->setup_editor($file);
-	}
+	$self->setup_editors( @$files );
 	$self->refresh_all;
 }
 
@@ -1191,14 +1205,10 @@ sub on_open {
 		}
 	}
 
-	$self->Freeze;
-	foreach my $filename ( @filenames ) {
-		my $file = File::Spec->catfile($default_dir, $filename);
-		Padre::DB->add_recent_files($file);
-		$self->setup_editor($file);
-	}
+	my @files = map { File::Spec->catfile($default_dir, $_) } @filenames;
+	Padre::DB->add_recent_files($_) for @files;
+	$self->setup_editors(@files);
 	$self->refresh_all;
-	$self->Thaw;
 
 	return;
 }
@@ -1207,8 +1217,12 @@ sub on_reload_file {
 	my ($self) = @_;
 
 	my $doc     = $self->selected_document or return;
-	$doc->reload;
-	
+	if (not $doc->reload) {
+		$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+	} else {
+		$doc->editor->configure_editor($doc);
+	}
+
 	return;
 }
 
@@ -2119,7 +2133,11 @@ sub on_timer_check_overwrite {
 	);
 
 	if ( $ret == Wx::wxYES ) {
-		$doc->reload;
+		if (not $doc->reload) {
+			$self->error(sprintf(Wx::gettext("Could not reload file: %s"), $doc->errstr));
+		} else {
+			$doc->editor->configure_editor($doc);
+		}
 	} else {
 		$doc->{_timestamp} = $doc->time_on_file;
 	}

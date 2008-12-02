@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Class::Autouse 'Padre::Document::JavaScript';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 use base 'Padre::Plugin';
 

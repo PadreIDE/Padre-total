@@ -8,7 +8,7 @@ use Padre::Wx ();
 my $iter;
 my %opts;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 my $DONE_EVENT : shared = Wx::NewEventType;
 
 my $ack_loaded = 0;
