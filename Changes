@@ -2,7 +2,7 @@ Changes for Padre.
 
    Italian translation (SBLANDIN)
 
-0.20 2008.12.02
+v0.20 2008.12.02
 
     Separate tab-width from indentation-level preference (SMUELLER)
     Expend auto-detection of indentation style to include the
@@ -25,7 +25,7 @@ Changes for Padre.
     Save files under Mac. #160 (ChrisDolan)
     Restor inner window layout through restart. (HJANSEN)
 
-0.19 2008.11.28
+v0.19 2008.11.28
 
     Korean translation added (KEEDI)
     Hungarian translation added (GYU)
@@ -39,7 +39,7 @@ Changes for Padre.
     Advancing the version numbers of some prereqs (ADAMK)
     Save files in the same encoding as they were read.
 
-0.18 2008.11.23
+v0.18 2008.11.23
 
     Added a few more directories to the no_index list in Build.PL (ADAMK)
     Implement a reusable Padre::Pod2HTML class so that Padre can develop
@@ -63,7 +63,7 @@ Changes for Padre.
     Plug-in manager dialog.
     Rename Padre::Plugin::MY to Padre::Plugin::My.
 
-0.17 2008.11.17
+v0.17 2008.11.17
 
     Optional highlighting of current line (via background color) (HJANSEN)
     Code folding (#61) (HJANSEN)
@@ -94,7 +94,7 @@ Changes for Padre.
     Move between the editor, the output window 
       and the subs window with some hot-key (#14) (SZABGAB)
 
-0.16 2008.11.09
+v0.16 2008.11.09
 
     Fix New on the Toolbar (SZABGAB)
     Add Diff menu item to show changes in file. (SZABGAB)
@@ -114,7 +114,7 @@ Changes for Padre.
     Move Parrot plugin to separate distribution. (SZABGAB)
     Enable switching between German and English. (SZABGAB)
 
-0.15 2008.11.02
+v0.15 2008.11.02
 
     Don't let opening file that is already open. (SZABGAB)
     Start UTF-8 support. (SZABGAB)
