@@ -434,8 +434,7 @@ sub load_file {
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
 	$self->{original_content} = $content;
-	my ($newline_type, $convert_to) = $self->newline_type;
-	$self->configure_editor($newline_type, $convert_to);
+	$self->configure_editor;
 
 	return 1;
 }
@@ -473,8 +472,9 @@ sub newline_type {
 }
 
 sub configure_editor {
-	my ($self, $newline_type, $convert_to) = @_;
+	my ($self) = @_;
 	
+	my ($newline_type, $convert_to) = $self->newline_type;
 	my $editor = $self->editor;
 	$editor->SetEOLMode( $mode{$newline_type} );
 
