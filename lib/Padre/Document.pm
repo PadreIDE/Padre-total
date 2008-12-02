@@ -454,6 +454,14 @@ sub load_file {
 			$newline_type = $current_type;
 		}
 	}
+	$self->configure_editor($editor, $content, $newline_type, $convert_to, $file);
+
+	return 1;
+}
+
+sub configure_editor {
+	my ($self, $editor, $content, $newline_type, $convert_to, $file) = @_;
+	
 	$editor->SetEOLMode( $mode{$newline_type} );
 
 	$editor->SetText( $content );
