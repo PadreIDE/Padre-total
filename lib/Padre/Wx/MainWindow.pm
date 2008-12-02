@@ -749,7 +749,7 @@ sub run_command {
 
 	# Prepare the output window for the output
 	$self->show_output(1);
-	$self->{output}->Remove( 0, $self->{output}->GetLastPosition );
+	$self->{gui}->{output_panel}->Remove( 0, $self->{gui}->{output_panel}->GetLastPosition );
 
 	# If this is the first time a command has been run,
 	# set up the ProcessStream bindings.
@@ -759,7 +759,7 @@ sub run_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
@@ -767,7 +767,7 @@ sub run_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
