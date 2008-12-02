@@ -389,12 +389,12 @@ sub menu_edit {
 	my $menu = Wx::Menu->new;
 
 	# Undo/Redo
-	$self->{edit_undo} = $menu->Append( Wx::wxID_UNDO, '' );
+	$self->{edit_undo} = $menu->Append( Wx::wxID_UNDO, Wx::gettext("&Undo") );
 	Wx::Event::EVT_MENU( $win, # Ctrl-Z
 		$self->{edit_undo},
 		sub { Padre::Documents->current->editor->Undo; },
 	);
-	$self->{edit_redo} = $menu->Append( Wx::wxID_REDO, '' );
+	$self->{edit_redo} = $menu->Append( Wx::wxID_REDO, Wx::gettext("&Redo") );
 	Wx::Event::EVT_MENU( $win, # Ctrl-Y
 		$self->{edit_redo},
 		sub { Padre::Documents->current->editor->Redo; },
@@ -428,17 +428,17 @@ sub menu_edit {
 	);
 
 
-	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, '' );
+	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, Wx::gettext("&Copy") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_copy},
 		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
 	);
-	$self->{edit_cut} = $menu->Append( Wx::wxID_CUT, '' );
+	$self->{edit_cut} = $menu->Append( Wx::wxID_CUT, Wx::gettext("Cu&t") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_cut},
 		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
 	);
-	$self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, '' );
+	$self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, Wx::gettext("&Paste") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_paste},
 		sub { 
@@ -449,7 +449,7 @@ sub menu_edit {
 	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_FIND, '' ),
+		$menu->Append( Wx::wxID_FIND, Wx::gettext("&Find") ),
 		sub { Padre::Wx::Dialog::Find->find(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
