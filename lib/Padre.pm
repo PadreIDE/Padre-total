@@ -35,6 +35,8 @@ use Class::Autouse qw{
 	Padre::Pod::Frame
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
+	Padre::Task
+	Padre::TaskManager
 	Padre::Wx::Popup
 	Padre::Wx::Editor
 	Padre::Wx::Menu
@@ -52,6 +54,7 @@ use Class::Autouse qw{
 	Padre::Wx::MainWindow
 	Padre::Wx::Print
 	Padre::Wx::SyntaxChecker
+
 };
 
 # generate fast accessors
@@ -110,6 +113,11 @@ sub new {
 
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
 
+	$self->{task_manager} = Padre::TaskManager->new(
+		# TODO: off by default for now, should be on in production later
+		use_threads => $self->config->{use_worker_threads},
+	);
+
 	# Load the database
 	Class::Autouse->load('Padre::DB');
 
@@ -125,6 +133,10 @@ sub wx {
 	my $self = shift;
 	$self->{wx} or
 	$self->{wx} = Padre::Wx::App->new;
+}
+
+sub task_manager {
+	$_[0]->{task_manager};
 }
 
 sub run {
