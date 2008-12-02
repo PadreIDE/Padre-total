@@ -42,6 +42,7 @@ SCOPE: {
 		editor_calltips    => 1,
 		editor_use_tabs    => 1,
 		editor_autoindent  => 'deep',
+		editor_methods     => 'abc',
 		editor_whitespaces => 0,
 
 		search_terms       => [],

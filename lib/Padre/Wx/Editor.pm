@@ -504,16 +504,16 @@ sub on_right_down {
 	$menu->AppendSeparator;
 
 	my $selection_exists = 0;
-	my $id = $win->{notebook}->GetSelection;
+	my $id = $win->nb->GetSelection;
 	if ( $id != -1 ) {
-		my $txt = $win->{notebook}->GetPage($id)->GetSelectedText;
+		my $txt = $win->nb->GetPage($id)->GetSelectedText;
 		if ( defined($txt) && length($txt) > 0 ) {
 			$selection_exists = 1;
 		}
 	}
 
 	my $sel_all = $menu->Append( Wx::wxID_SELECTALL, Wx::gettext("Select all\tCtrl-A") );
-	if ( not $win->{notebook}->GetPage($id)->GetTextLength > 0 ) {
+	if ( not $win->nb->GetPage($id)->GetTextLength > 0 ) {
 		$sel_all->Enable(0);
 	}
 	Wx::Event::EVT_MENU( $win, # Ctrl-A
@@ -543,7 +543,7 @@ sub on_right_down {
 	my $paste = $menu->Append( Wx::wxID_PASTE, '' );
 	my $text  = get_text_from_clipboard();
 
-	if ( length($text) && $win->{notebook}->GetPage($id)->CanPaste ) {
+	if ( length($text) && $win->nb->GetPage($id)->CanPaste ) {
 		Wx::Event::EVT_MENU( $win, # Ctrl-V
 			$paste,
 			sub { Padre->ide->wx->main_window->selected_editor->Paste },
@@ -616,9 +616,9 @@ sub on_mouse_motion {
 sub text_select_all {
 	my ( $win, $event ) = @_;
 
-	my $id = $win->{notebook}->GetSelection;
+	my $id = $win->nb->GetSelection;
 	return if $id == -1;
-	$win->{notebook}->GetPage($id)->SelectAll;
+	$win->nb->GetPage($id)->SelectAll;
 	return;
 }
 
@@ -650,10 +650,7 @@ sub text_selection_mark_end {
 sub text_selection_clear_marks {
 	my ($win) = @_;
 
-	# find positions
-	my $notebook = $win->{notebook};
-	my $id   = $notebook->GetSelection;
-	my $page = $notebook->GetPage($id);
+	my $page = $win->selected_editor;
 
 	undef $page->{selection_mark_start};
 	undef $page->{selection_mark_end};

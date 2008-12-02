@@ -23,7 +23,7 @@ sub on_new_project {
 	# run
 	Wx::MessageBox(
 		Wx::gettext("Not implemented yet"),
-		Wx::gettext("Not Yet"),
+		Wx::gettext("Not yet available"),
 		Wx::wxOK,
 		$self,
 	);
@@ -34,7 +34,7 @@ sub on_new_project {
 sub on_select_project {
 	my ($self) = @_;
 
-	#Wx::MessageBox("Not implemented yet", "Not Yes", Wx::wxOK, $self);
+	#Wx::MessageBox("Not implemented yet", "Not yet available", Wx::wxOK, $self);
 	#return;
 	# popup a window with a list of projects previously selected,
 	# and a button to browse for project directory
@@ -142,7 +142,7 @@ sub on_pick_project_dir {
 
 sub on_test_project {
 	my ($self) = @_;
-	Wx::MessageBox(Wx::gettext("Not implemented yet"), Wx::gettext("Not Yes"), Wx::wxOK, $self);
+	Wx::MessageBox(Wx::gettext("Not implemented yet"), Wx::gettext("Not yet available"), Wx::wxOK, $self);
 }
 
 1;

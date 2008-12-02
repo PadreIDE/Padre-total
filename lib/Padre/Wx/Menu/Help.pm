@@ -61,6 +61,7 @@ sub about {
 	$about->AddTranslator("French - Jerome Quelin");
 	$about->AddTranslator("Hebrew - Omer Zak");
 	$about->AddTranslator("Hungarian - Gyorgy Pasztor");
+	$about->AddTranslator("Italian - Simone Blandino");
 	$about->AddTranslator("Korean - Keedi Kim");
 
 

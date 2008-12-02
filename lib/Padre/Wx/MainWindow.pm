@@ -53,6 +53,7 @@ our %languages = (
 	he => Wx::gettext('Hebrew'),
 	hu => Wx::gettext('Hungarian'),
 	ko => Wx::gettext('Korean'),
+	it => Wx::gettext('Italian')
 );
 
 my %shortname_of = (
@@ -61,6 +62,7 @@ my %shortname_of = (
 	Wx::wxLANGUAGE_FRENCH()     => 'fr',
 	Wx::wxLANGUAGE_HEBREW()     => 'he',
 	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
+	Wx::wxLANGUAGE_ITALIAN()  	=> 'it',	
 	Wx::wxLANGUAGE_KOREAN()     => 'ko',
 );
 
@@ -126,7 +128,7 @@ sub new {
 
 	$self->{manager} = Wx::AuiManager->new;
 	$self->{manager}->SetManagedWindow( $self );
-	$self->{_methods_} = {};
+	$self->{_methods_} = [];
 
 	# do NOT use hints other than Rectangle or the app will crash on Linux/GTK
 	my $flags = $self->{manager}->GetFlags;
@@ -212,9 +214,9 @@ sub new {
 	);
 	$timer->Start( 1, 1 );
 
-	if ( defined $config->{host}->{aui_manager_layout} ) {
-		$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
-	}
+	#if ( defined $config->{host}->{aui_manager_layout} ) {
+	#	$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
+	#}
 
 	return $self;
 }
@@ -628,17 +630,25 @@ sub refresh_methods {
 		return;
 	}
 
-	my %methods = map {$_ => 1} $doc->get_functions;
-	my $new = join ';', sort keys %methods;
-	my $old = join ';', sort keys %{ $self->{_methods_} };
-	return if $old eq $new;
+	my @methods = $doc->get_functions;
 	
+	my $config = Padre->ide->config;
+	if ($config->{editor_methods} eq 'abc') {
+		@methods = sort @methods;
+	} elsif ($config->{editor_methods} eq 'original') {
+		# that should be the one we got from get_functions
+	}
+
+	my $new = join ';', @methods;
+	my $old = join ';', @{ $self->{_methods_} };
+	return if $old eq $new;
+
 	$self->{gui}->{subs_panel}->DeleteAllItems;
-	foreach my $method ( sort keys %methods ) {
+	foreach my $method ( reverse @methods ) {
 		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
 	}
 	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
-	$self->{_methods_} = \%methods;
+	$self->{_methods_} = \@methods;
 
 	return;
 }
@@ -747,7 +757,7 @@ sub run_command {
 
 	# Prepare the output window for the output
 	$self->show_output(1);
-	$self->{output}->Remove( 0, $self->{output}->GetLastPosition );
+	$self->{gui}->{output_panel}->Remove( 0, $self->{gui}->{output_panel}->GetLastPosition );
 
 	# If this is the first time a command has been run,
 	# set up the ProcessStream bindings.
@@ -757,7 +767,7 @@ sub run_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
@@ -765,7 +775,7 @@ sub run_command {
 			$self,
 			sub {
 				$_[1]->Skip(1);
-				$_[0]->{output}->AppendText( $_[1]->GetLine . "\n" );
+				$_[0]->{gui}->{output_panel}->AppendText( $_[1]->GetLine . "\n" );
 				return;
 			},
 		);
@@ -1592,6 +1602,7 @@ sub on_preferences {
 	foreach my $editor ( $self->pages ) {
 		$editor->set_preferences;
 	}
+	$self->refresh_methods;
 
 	return;
 }
