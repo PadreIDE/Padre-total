@@ -1046,6 +1046,10 @@ sub setup_editor {
 	my $doc = Padre::Document->new(
 		filename => $file,
 	);
+	if ($doc->errstr) {
+		warn $doc->errstr;
+		return;
+	}
 
 	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 	$editor->{Document} = $doc;
