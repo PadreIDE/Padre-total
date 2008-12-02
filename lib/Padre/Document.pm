@@ -458,13 +458,13 @@ sub load_file {
 			$newline_type = $current_type;
 		}
 	}
-	$self->configure_editor($content, $newline_type, $convert_to, $file);
+	$self->configure_editor($content, $newline_type, $convert_to);
 
 	return 1;
 }
 
 sub configure_editor {
-	my ($self, $content, $newline_type, $convert_to, $file) = @_;
+	my ($self, $content, $newline_type, $convert_to) = @_;
 	
 	my $editor = $self->editor;
 	$editor->SetEOLMode( $mode{$newline_type} );
@@ -472,6 +472,7 @@ sub configure_editor {
 	$editor->SetText( $content );
 	$editor->EmptyUndoBuffer;
 	if ($convert_to) {
+		my $file = $self->filename;
 		warn "Converting $file to $convert_to";
 		$editor->ConvertEOLs( $mode{$newline_type} );
 	}
