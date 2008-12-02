@@ -85,7 +85,7 @@ object with the Padre main window object as argument for cleanup.
 
 =back
 
-=head1 METHODS
+=head1 INSTANCE METHODS
 
 =cut
 
@@ -171,6 +171,126 @@ sub finish {
 }
 
 
+# this will serialize the object and do some magic as it happens
+# This is an INTERNAL method and subject to change
+sub serialize {
+	my $self = shift;
+
+	# The idea is to store the actual class of the object
+	# in the object itself for serialization. It's not as bad as
+	# it sounds. It just requires two things from the subclasses:
+	# - The subclasses cannot override "deserialize" and thus
+	#   probably not "serialize" either. But that shouldn't be
+	#   a huge deal as there are the "prepare" and "finish" hooks
+	#   for the user.
+	# - The subclasses must not use the "_process_class" slot
+	#   of the object. (Ohh...)
+ 
+	# save the real object class for deserialization 
+	my $class = ref($self);
+	if (exists $self->{_process_class}) {
+		require Carp;
+		Carp::croak("The '_process_class' slot in a Padre::Task"
+		            . " object is reserved for usage by Padre::Task");
+	}
+
+	$self->{_process_class} = $class;
+
+	# remove pesky dependency by explicitly
+	# blessing into Padre::Task
+	bless $self => 'Padre::Task';
+
+	return $self->SUPER::serialize(@_);
+}
+
+# this will deserialize the object and do some magic as it happens
+# This is an INTERNAL method and subject to change
+sub deserialize {
+	my $class = shift;
+
+	my $padretask = Padre::Task->SUPER::deserialize(@_);
+	my $userclass = $padretask->{_process_class};
+	delete $padretask->{_process_class};
+
+	if (!eval "require $userclass;") {
+		require Carp;
+		if ($@) {
+			Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
+		} else {
+			Carp::croak("Failed to load Padre::Task subclass '$userclass': It did not return a true value.");
+		}
+	}
+
+	my $obj = bless $padretask => $userclass;
+	return $obj;
+}
+
+
+=head1 CLASS METHODS
+
+=head2 subclass
+
+As a convenience for the authors of C<Padre::Task> subclasses, the
+C<subclass> method will create a subclass on the fly. For anything
+slightly more complicated, you should probably prefer ordinary
+subclassing. This works remotely similar to the subclass method of
+Module::Build. It generates the subclass from the specified parameters
+and returns the class name for convenience. Here is an example:
+
+  my $subclass = Padre::Task->subclass(
+      class => 'Padre::Task::Foo',
+      methods => {
+          run => sub {
+              my $self = shift;
+              print "Running in a worker thread.\n";
+              print "Main thread says: '$self->{msg}'\n";
+              $self->{answer} = 'Blah!';
+          },
+          finish => sub {
+              my $self = shift;
+              print "Running in the main thread.\n";
+              print "Worker thread says: '$self->{answer}'\n";
+          },
+      },
+  );
+  
+  my $obj = $subclass->new( msg => 'Hey there!' );
+  $obj->schedule();
+
+When this is run, it'll print (after being scheduled for
+execution):
+
+  Running in a worker thread.
+  Main thread says: Hey there!
+  Running in the main thread.
+  Worker thread says: Blah!
+
+C<subclass> takes the following parameters:
+
+=over 2
+
+=item class
+
+The name of the class to create. Typically something like
+C<Padre::Task::Yourname>. This is a required parameter.
+
+=item code
+
+An arbitrary piece of code (as a string) that will
+be executed in the new package after loading strictures
+and warnings and setting up the inheritance from
+C<Padre::Task>. Use this to load additional modules.
+
+=item methods
+
+A reference to a hash containing method names as keys and
+code references as values. The code references will be
+installed as the methods in the new class.
+
+=back
+
+=cut
+
 sub subclass {
 	my $proto = shift;
 	my $class = ref($proto)||$proto;
@@ -187,6 +307,7 @@ sub subclass {
 
 	my $fullcode = <<HERE;
 package $targetclass;
+use strict; use warnings;
 our \@ISA = qw($class);
 $code
 HERE
@@ -220,56 +341,6 @@ sub _package_exists {
 	return exists $pkg->{$test_pkg."::"};
 }
 
-
-sub serialize {
-	my $self = shift;
-
-	# The idea is to store the actual class of the object
-	# in the object itself for serialization. It's not as bad as
-	# it sounds. It just requires two things from the subclasses:
-	# - The subclasses cannot override "deserialize" and thus
-	#   probably not "serialize" either. But that shouldn't be
-	#   a huge deal as there are the "prepare" and "finish" hooks
-	#   for the user.
-	# - The subclasses must not use the "_process_class" slot
-	#   of the object. (Ohh...)
- 
-	# save the real object class for deserialization 
-	my $class = ref($self);
-	if (exists $self->{_process_class}) {
-		require Carp;
-		Carp::croak("The '_process_class' slot in a Padre::Task"
-		            . " object is reserved for usage by Padre::Task");
-	}
-
-	$self->{_process_class} = $class;
-
-	# remove pesky dependency by explicitly
-	# blessing into Padre::Task
-	bless $self => 'Padre::Task';
-
-	return $self->SUPER::serialize(@_);
-}
-
-sub deserialize {
-	my $class = shift;
-
-	my $padretask = Padre::Task->SUPER::deserialize(@_);
-	my $userclass = $padretask->{_process_class};
-	delete $padretask->{_process_class};
-
-	if (!eval "require $userclass;") {
-		require Carp;
-		if ($@) {
-			Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
-		} else {
-			Carp::croak("Failed to load Padre::Task subclass '$userclass': It did not return a true value.");
-		}
-	}
-
-	my $obj = bless $padretask => $userclass;
-	return $obj;
-}
 
 1;
 
