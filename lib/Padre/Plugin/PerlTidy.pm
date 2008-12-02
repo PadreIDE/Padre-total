@@ -7,7 +7,7 @@ use base 'Padre::Plugin';
 
 use Padre::Wx ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 NAME
 
@@ -70,7 +70,7 @@ sub _tidy {
         return;
     }
 
-    $self->{ output }->AppendText( "$stderr\n" ) if defined $stderr;
+    $self->{ gui }->{ output_panel }->AppendText( "$stderr\n" ) if defined $stderr;
     return $output;
 }
 
