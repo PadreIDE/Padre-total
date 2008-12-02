@@ -89,10 +89,14 @@ sub new {
 	my $self = $SINGLETON = bless {
 		min_no_workers => 1,
 		max_no_workers => 3,
+		use_threads    => 1, # can be explicitly disabled
 		@_,
 		workers => [],
 		task_queue => undef,
 	} => $class;
+
+	$self->{use_threads} = 0
+	  if Wx->VERSION < 0.89;
 
 	my $mw = Padre->ide->wx->main_window;
 
@@ -103,7 +107,7 @@ sub new {
 
 	# Set up a regular action for reaping dead workers
 	# and setting up new workers
-	if (not defined $REAP_TIMER) {
+	if (not defined $REAP_TIMER and $self->{use_threads}) {
 		# explicit id necessary to distinguish from startup-timer of the main window
 		my $timerid = Wx::NewId();
 		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
@@ -113,14 +117,17 @@ sub new {
 		);
 		$REAP_TIMER->Start( 15000, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
-	#$self->setup_workers();
+
 	return $self;
 }
 
 sub setup_workers {
 	my $self = shift;
+	return if not $self->{use_threads};
+
 	@_=(); # avoid "Scalars leaked"
 	my $mw = Padre->ide->wx->main_window;
+
 
 	# ensure minimum no. workers
 	my $workers = $self->{workers};
@@ -142,7 +149,9 @@ sub setup_workers {
 sub _make_worker_thread {
 	my $self = shift;
 	my $mw = shift;
-	@_=();
+	return if not $self->{use_threads};
+
+	@_=(); # avoid "Scalars leaked"
 	push @{$self->{workers}}, threads->create({'exit' => 'thread_only'}, \&worker_loop, $mw, $self);
 }
 
@@ -150,11 +159,13 @@ sub _make_worker_thread {
 # the list of workers
 sub reap {
 	my $self = shift;
+	return if not $self->{use_threads};
+
 	@_=(); # avoid "Scalars leaked"
 	my $workers = $self->{workers};
 
 	my @active_or_waiting;
-	warn "--".scalar (@$workers);
+	warn "No. worker threads before reaping: ".scalar (@$workers);
 
 	foreach my $thread (@$workers) {
 		if ($thread->is_joinable()) {
@@ -165,7 +176,7 @@ sub reap {
 		}
 	}
 	$self->{workers} = \@active_or_waiting;
-	warn "--".scalar (@active_or_waiting);
+	warn "No. worker threads after reaping:  ".scalar (@$workers);
 
 	# kill the no. of workers that aren't needed
 	my $n_threads_to_kill =  @active_or_waiting - $self->{max_no_workers};
@@ -209,13 +220,24 @@ sub schedule {
 
 	my $string;
 	$process->serialize(\$string);
-	$self->task_queue->enqueue( $string );
+	if ($self->{use_threads}) {
+		$self->task_queue->enqueue( $string );
+	}
+	else {
+		# TODO: Instead of this hack, consider
+		# "reimplementing" the worker loop 
+		# as a non-threading, non-queued, fake worker loop
+		$self->task_queue->enqueue( $string );
+		$self->task_queue->enqueue( "STOP" );
+		worker_loop( Padre->ide->wx->main_window, $self );
+	}
 
 	return 1;
 }
 
 sub cleanup {
 	my $self = shift;
+	return if not $self->{use_threads};
 
 	# the nice way:
 	my @workers = $self->workers;
