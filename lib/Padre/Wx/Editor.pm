@@ -11,7 +11,7 @@ use Wx::DND;
 
 use base 'Wx::StyledTextCtrl';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 our %mode = (
 	WIN  => Wx::wxSTC_EOL_CRLF,

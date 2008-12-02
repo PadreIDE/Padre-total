@@ -3,7 +3,7 @@ package Padre::Wx::DNDFilesDropTarget;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 use Wx::DND;
 use base qw(Wx::FileDropTarget);

@@ -1,5 +1,7 @@
 Changes for Padre.
 
+0.20 2008.12.02
+
     Separate tab-width from indentation-level preference (SMUELLER)
     Expend auto-detection of indentation style to include the
         indentation level (SMUELLER)
@@ -13,6 +15,13 @@ Changes for Padre.
     Small improvement to startup time by not refreshing the plugin
         menu after loading each plugin (SMUELLER)
     French translation added (JQUELIN)
+    Some refactoring, (SZABGAB)
+    Display error when reload file failed. (SZABGAB)
+    Korean updates. (KEEDI)
+    Hungarian updates. (GYU)
+    Fix the "cannot save new file bug". (TEEJAY)
+    Save files under Mac. #160 (ChrisDolan)
+    Restor inner window layout through restart. (HJANSEN)
 
 0.19 2008.11.28
 

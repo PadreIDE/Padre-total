@@ -23,7 +23,7 @@ use File::Spec  ();
 use Padre::Util ();
 use Padre::Wx   ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 
 

@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use base 'Padre::Project';
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 sub inspector {
 	my $self = shift;

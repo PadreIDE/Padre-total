@@ -12,7 +12,7 @@ use PPI;
 use Padre::Document ();
 use Padre::Util     ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 our @ISA     = 'Padre::Document';
 
 

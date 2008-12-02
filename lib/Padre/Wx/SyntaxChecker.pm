@@ -2,7 +2,7 @@ package Padre::Wx::SyntaxChecker;
 use strict;
 use warnings;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 require Padre;
 use Padre::Wx;

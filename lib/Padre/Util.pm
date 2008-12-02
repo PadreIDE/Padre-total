@@ -29,7 +29,7 @@ use Exporter     ();
 use File::Spec   ();
 use List::Util   qw(first);
 
-our $VERSION   = '0.19';
+our $VERSION   = '0.20';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = qw(newline_type get_matches);
 

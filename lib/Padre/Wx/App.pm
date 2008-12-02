@@ -28,7 +28,7 @@ use warnings;
 
 use Wx::App ();
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 our @ISA     = 'Wx::App';
 
 
