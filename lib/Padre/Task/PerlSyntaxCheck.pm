@@ -30,7 +30,7 @@ sub _process_syntax_check_results {
 	my $self = shift;
 	my $result = $self->{result};
 	my $page_id = $self->{notebook_page_id};
-	my $document = Padre->ide->wx->main_window->{notebook}->GetPage($page_id)->{Document};
+	my $document = Padre->ide->wx->main_window->nb->GetPage($page_id)->{Document};
 
 	# Don't really know where that comes from...
 	my $i = index( $result, 'Uncaught exception from user code' );

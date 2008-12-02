@@ -10,7 +10,6 @@ use Padre::Wx;
 use Class::XSAccessor
 	getters => {
 		mw => 'mw',
-		syntaxbar => 'syntaxbar',
 	};
 
 sub new {
@@ -35,36 +34,40 @@ sub create_syntaxbar {
 	my $self = shift;
 	my $mw = $self->mw;
 
-	$self->{syntaxbar} = Wx::ListView->new(
-		$mw,
+	$mw->{gui}->{syntaxcheck_panel} = Wx::ListView->new(
+		$mw->{gui}->{bottompane},
 		Wx::wxID_ANY,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
-	$self->{syntaxbar}->InsertColumn( 0, Wx::gettext('Line') );
-	$self->{syntaxbar}->InsertColumn( 1, Wx::gettext('Type') );
-	$self->{syntaxbar}->InsertColumn( 2, Wx::gettext('Description') );
-	$mw->manager->AddPane($self->{syntaxbar},
-		Wx::AuiPaneInfo->new->Name( "syntaxbar" )
-			->CenterPane->Resizable(1)->PaneBorder(1)->Movable(1)
-			->CaptionVisible(1)->CloseButton(1)->DestroyOnClose(0)
-			->MaximizeButton(1)->Floatable(1)->Dockable(1)
-			->Caption( Wx::gettext("Syntax") )->Position(3)->Bottom->Layer(2)
-	);
+	my $syntaxbar = $mw->{gui}->{syntaxcheck_panel};
+
+	$syntaxbar->InsertColumn( 0, Wx::gettext('Line') );
+	$syntaxbar->InsertColumn( 1, Wx::gettext('Type') );
+	$syntaxbar->InsertColumn( 2, Wx::gettext('Description') );
+
+	$mw->{gui}->{bottompane}->InsertPage( 1, $syntaxbar, Wx::gettext("Syntax Check"), 0 );
+
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$mw,
-		$self->{syntaxbar},
+		$syntaxbar,
 		\&on_syntax_check_msg_selected,
 	);
+
 	if ( $mw->{menu}->{view_show_syntaxcheck}->IsChecked ) {
-		$mw->manager->GetPane('syntaxbar')->Show();
+		$syntaxbar->Show();
 	}
 	else {
-		$mw->manager->GetPane('syntaxbar')->Hide();
+		$syntaxbar->Hide();
 	}
 
 	return;
+}
+
+
+sub syntaxbar {
+	return $_[0]->mw->{gui}->{syntaxcheck_panel};
 }
 
 
@@ -95,13 +98,12 @@ sub enable {
 			$self->{synCheckTimer}->Stop;
 			Wx::Event::EVT_IDLE( $mw, sub { return } );
 		}
-		my $id   = $mw->{notebook}->GetSelection;
-		my $page = $mw->{notebook}->GetPage($id);
+		my $page = $mw->selected_editor;
 		if ( defined($page) ) {
 			$page->MarkerDeleteAll(Padre::Wx::MarkError);
 			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
 		}
-		$self->{syntaxbar}->DeleteAllItems;
+		$self->syntaxbar->DeleteAllItems;
 		$mw->show_syntaxbar(0);
 	}
 
@@ -136,8 +138,7 @@ sub syntax_check_idle_timer {
 sub on_syntax_check_msg_selected {
 	my ($mw, $event) = @_;
 
-	my $id   = $mw->{notebook}->GetSelection;
-	my $page = $mw->{notebook}->GetPage($id);
+	my $page = $mw->selected_editor;
 
 	my $line_number = $event->GetItem->GetText;
 	return if  not defined($line_number)
@@ -158,10 +159,13 @@ sub on_syntax_check_timer {
 	my $self = $win->syntax_checker;
 	my $syntaxbar = $self->syntaxbar;
 
-	my $id = $win->{notebook}->GetSelection;
-	if ( defined $id ) {
-		my $page = $win->{notebook}->GetPage($id);
+	my $page = $win->selected_editor;
+	if ( ! defined $page ) {
+		return;
+	}
 
+	my $id = $win->nb->GetSelection;
+	if ( defined $id ) {
 		unless (   defined( $page->{Document} )
 				&& $page->{Document}->can_check_syntax
 		) {
@@ -176,9 +180,7 @@ sub on_syntax_check_timer {
 		my $messages = $page->{Document}->check_syntax( $force, $id );
 		return unless defined $messages; # no immediate results
 		$self->update_gui_with_syntax_check_results( $messages, $id );
-
 	}
-
 
 	if ( defined($event) ) {
 		$event->Skip(0);
@@ -195,7 +197,7 @@ sub update_gui_with_syntax_check_results {
 	my $id = shift; # the notebook page id
 	my $win = $self->mw;
 	my $syntaxbar = $self->syntaxbar;
-	my $page = $win->{notebook}->GetPage($id);
+	my $page = $win->nb->GetPage($id);
 
 	if ( scalar(@{$messages}) > 0 ) {
 		$page->MarkerDeleteAll(Padre::Wx::MarkError);

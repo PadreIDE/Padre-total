@@ -94,8 +94,7 @@ sub _get_data {
 sub set_bookmark {
 	my ($class, $main) = @_;
 
-	my $pageid   = $main->{notebook}->GetSelection();
-	my $editor   = $main->{notebook}->GetPage($pageid);
+	my $editor   = $main->selected_editor;
 	my $line     = $editor->GetCurrentLine;
 	my $path     = $main->selected_filename;
 	my $file     = File::Basename::basename($path || '');

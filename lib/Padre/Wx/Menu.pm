@@ -64,8 +64,8 @@ sub new {
 	unless ( Padre::Util::WIN32 ) {
 		$self->{view_statusbar}->Check( $config->{main_statusbar} ? 1 : 0 );
 	}
-	$self->{view_output}->Check( $config->{main_output} ? 1 : 0 );
-	$self->{view_functions}->Check( $config->{main_rightbar} ? 1 : 0 );
+	$self->{view_output}->Check( $config->{main_output_panel} ? 1 : 0 );
+	$self->{view_functions}->Check( $config->{main_subs_panel} ? 1 : 0 );
 
 	$self->{view_indentation_guide}->Check( $config->{editor_indentationguides} ? 1 : 0 );
 	$self->{view_show_calltips}->Check( $config->{editor_calltips} ? 1 : 0 );
@@ -353,7 +353,7 @@ sub menu_file {
 		Wx::Event::EVT_MENU( $win,
 			$self->{file_recentfiles}->Append(-1, $idx < 10 ? "&$idx. $f" : "$idx. $f"), 
 			sub { 
-				if ( $_[ 0 ]->{notebook}->GetPageCount == 1 ) {
+				if ( $_[ 0 ]->nb->GetPageCount == 1 ) {
 					if ( Padre::Documents->current->is_unused ) {
 						$_[0]->on_close;
 					}
@@ -897,16 +897,16 @@ sub menu_window {
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("GoTo Subs Window\tAlt-S") ),
 		sub {
-			$_[0]->{rightbar_was_closed} = ! Padre->ide->config->{main_rightbar};
+			$_[0]->{subs_panel_was_closed} = ! Padre->ide->config->{main_subs_panel};
 			$_[0]->show_functions(1); 
-			$_[0]->{rightbar}->SetFocus;
+			$_[0]->{gui}->{subs_panel}->SetFocus;
 		},
 	); 
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( -1, Wx::gettext("GoTo Output Window\tAlt-O") ),
 		sub {
 			$_[0]->show_output(1);
-			$_[0]->{output}->SetFocus;
+			$_[0]->{gui}->{output_panel}->SetFocus;
 		},
 	);
 	$self->{window_goto_syntax_check} = $menu->Append( -1, Wx::gettext("GoTo Syntax Check Window\tAlt-C") );
@@ -914,7 +914,7 @@ sub menu_window {
 		$self->{window_goto_syntax_check},
 		sub {
 			$_[0]->show_syntaxbar(1);
-			$_[0]->{syntaxbar}->SetFocus;
+			$_[0]->{gui}->{syntaxcheck_panel}->SetFocus;
 		},
 	);
 	Wx::Event::EVT_MENU( $win,

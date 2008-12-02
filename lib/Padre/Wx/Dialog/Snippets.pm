@@ -101,10 +101,10 @@ sub get_snippet {
 	my $snipno = $data->{_find_snippet_};
 	my $text   = get_snippet_text( $cat, $snipno );
 	my $win	= Padre->ide->wx->main_window;
-	my $id	 = $win->{notebook}->GetSelection;
-	$win->{notebook}->GetPage($id)->ReplaceSelection('');
-	my $pos = $win->{notebook}->GetPage($id)->GetCurrentPos;
-	$win->{notebook}->GetPage($id)->InsertText( $pos, $text );
+	my $editor = $win->selected_editor;
+	$editor->ReplaceSelection('');
+	my $pos = $editor->GetCurrentPos;
+	$editor->InsertText( $pos, $text );
 	return;
 }
 

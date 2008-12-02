@@ -43,7 +43,7 @@ sub by_id {
 
 
 sub _notebook {
-	Padre->ide->wx->main_window->{notebook};
+	Padre->ide->wx->main_window->nb;
 }
 
 1;
