@@ -636,7 +636,7 @@ sub refresh_methods {
 	return if $old eq $new;
 	
 	$self->{gui}->{subs_panel}->DeleteAllItems;
-	foreach my $method ( sort keys %methods ) {
+	foreach my $method ( reverse sort keys %methods ) {
 		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
 	}
 	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
