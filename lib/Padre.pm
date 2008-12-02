@@ -895,13 +895,15 @@ To Octavian Rasnita for early testing and bug reports.
 
 English - everyone on the team
 
+French - Jerome Quelin (JQUELIN)
+
 German - Heiko Jansen (HJANSEN)
 
-Korean - Keedi Kim (KEEDI)
+Hebrew - Omer Zak
 
 Hungarian = Gyorgy Pasztor (GYU)
 
-Hebrew - Omer Zak
+Korean - Keedi Kim (KEEDI)
 
 
 
