@@ -1,4 +1,4 @@
-package Padre::Wx::MainWindow;
+lpackage Padre::Wx::MainWindow;
 
 use 5.008;
 
@@ -48,8 +48,8 @@ use constant DEFAULT_LOCALE => 'en';
 # used in Menu.pm
 our %languages = (
 	de => Wx::gettext('German'),
-	en => Wx::gettext('English (London.pm)'),
-	en => Wx::gettext('French'),
+	en => Wx::gettext('English'),
+	fr => Wx::gettext('French'),
 	he => Wx::gettext('Hebrew'),
 	hu => Wx::gettext('Hungarian'),
 	ko => Wx::gettext('Korean'),
