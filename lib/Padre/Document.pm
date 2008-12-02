@@ -433,19 +433,20 @@ sub load_file {
 	$content = Encode::decode($self->{encoding}, $content);
 	#print "DEBUG: SystemDefault($system_default), $lang_shortname:$self->{encoding}, $file\n";
 
-	my ($newline_type, $convert_to) = $self->newline_type($content);
-	$self->configure_editor($content, $newline_type, $convert_to);
+	$self->{original_content} = $content;
+	my ($newline_type, $convert_to) = $self->newline_type;
+	$self->configure_editor($newline_type, $convert_to);
 
 	return 1;
 }
 
 sub newline_type {
-	my ($self, $content) = @_;
+	my ($self) = @_;
 
 	my $file = $self->{filename};
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
-	my $current_type = Padre::Util::newline_type($content);
+	my $current_type = Padre::Util::newline_type( $self->{original_content} );
 	if ($current_type eq 'None') {
 		# keep default
 	} elsif ($current_type eq 'Mixed') {
@@ -472,12 +473,12 @@ sub newline_type {
 }
 
 sub configure_editor {
-	my ($self, $content, $newline_type, $convert_to) = @_;
+	my ($self, $newline_type, $convert_to) = @_;
 	
 	my $editor = $self->editor;
 	$editor->SetEOLMode( $mode{$newline_type} );
 
-	$editor->SetText( $content );
+	$editor->SetText( $self->{original_content} );
 	$editor->EmptyUndoBuffer;
 	if ($convert_to) {
 		my $file = $self->filename;
