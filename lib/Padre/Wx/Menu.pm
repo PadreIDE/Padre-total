@@ -234,7 +234,7 @@ sub menu_file {
 
 	# Creating new things
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_NEW, Wx::gettext("&New\tCtrl-N") ),
+		$menu->Append( Wx::wxID_NEW, Wx::gettext("&New") ),
 		sub {
 			$_[0]->setup_editor;
 			$_[0]->refresh_all;
@@ -250,7 +250,7 @@ sub menu_file {
 
 	# Opening and closing files
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_OPEN, Wx::gettext("&Open...\tCtrl-O") ),
+		$menu->Append( Wx::wxID_OPEN, Wx::gettext("&Open...") ),
 		sub { $_[0]->on_open },
 	);
 	Wx::Event::EVT_MENU( $win,
@@ -258,7 +258,7 @@ sub menu_file {
 		sub { $_[0]->on_open_selection },
 	);
 	
-	$self->{file_close} = $menu->Append( Wx::wxID_CLOSE, Wx::gettext("&Close\tCtrl-W") );
+	$self->{file_close} = $menu->Append( Wx::wxID_CLOSE, Wx::gettext("&Close") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{file_close},
 		sub { $_[0]->on_close },
@@ -283,7 +283,7 @@ sub menu_file {
 	$menu->AppendSeparator;
 
 	# Saving
-	$self->{file_save} = $menu->Append( Wx::wxID_SAVE, Wx::gettext("&Save\tCtrl-S") );
+	$self->{file_save} = $menu->Append( Wx::wxID_SAVE, Wx::gettext("&Save") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{file_save},
 		sub { $_[0]->on_save },
@@ -375,7 +375,7 @@ sub menu_file {
 
 	# Exiting
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_EXIT, Wx::gettext("&Quit\tCtrl-Q") ),
+		$menu->Append( Wx::wxID_EXIT, Wx::gettext("&Quit") ),
 		sub { $_[0]->Close },
 	);
 	
@@ -960,7 +960,7 @@ sub menu_help {
 	
 	$menu->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_ABOUT, '' ),
+		$menu->Append( Wx::wxID_ABOUT, Wx::gettext("&About") ),
 		sub { $help->about },
 	);
 	
