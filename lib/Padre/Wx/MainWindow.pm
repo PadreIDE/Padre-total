@@ -1,4 +1,4 @@
-lpackage Padre::Wx::MainWindow;
+package Padre::Wx::MainWindow;
 
 use 5.008;
 
