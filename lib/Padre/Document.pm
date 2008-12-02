@@ -36,12 +36,6 @@ our $VERSION = '0.19';
 
 my $unsaved_number = 0;
 
-our %mode = (
-	WIN  => Wx::wxSTC_EOL_CRLF,
-	MAC  => Wx::wxSTC_EOL_CR,
-	UNIX => Wx::wxSTC_EOL_LF,
-);
-
 # see Wx-0.86/ext/stc/cpp/st_constants.cpp for extension
 # There might be some constants are defined in 
 #  wxWidgets-2.8.8/contrib/include/wx/stc/stc.h 
@@ -466,29 +460,6 @@ sub newline_type {
 		}
 	}
 	return ($newline_type, $convert_to);
-}
-
-sub configure_editor {
-	my ($self) = @_;
-	
-	my ($newline_type, $convert_to) = $self->newline_type;
-	my $editor = $self->editor;
-
-	$editor->SetEOLMode( $mode{$newline_type} );
-
-	if (defined $self->{original_content}) {
-		$editor->SetText( $self->{original_content} );
-	}
-	$editor->EmptyUndoBuffer;
-	if ($convert_to) {
-		my $file = $self->filename;
-		warn "Converting $file to $convert_to";
-		$editor->ConvertEOLs( $mode{$newline_type} );
-	}
-	
-	$self->{newline_type} = $newline_type;
-
-	return 1;
 }
 
 sub save_file {

@@ -13,6 +13,12 @@ use base 'Wx::StyledTextCtrl';
 
 our $VERSION = '0.19';
 
+our %mode = (
+	WIN  => Wx::wxSTC_EOL_CRLF,
+	MAC  => Wx::wxSTC_EOL_CR,
+	UNIX => Wx::wxSTC_EOL_LF,
+);
+
 my $data;
 my $width;
 
@@ -712,6 +718,28 @@ sub uncomment_lines {
 		}
 	}
 	$self->EndUndoAction;
+
+	return;
+}
+
+sub configure_editor {
+	my ($self, $doc) = @_;
+	
+	my ($newline_type, $convert_to) = $doc->newline_type;
+
+	$self->SetEOLMode( $mode{$newline_type} );
+
+	if (defined $doc->{original_content}) {
+		$self->SetText( $doc->{original_content} );
+	}
+	$self->EmptyUndoBuffer;
+	if ($convert_to) {
+		my $file = $doc->filename;
+		warn "Converting $file to $convert_to";
+		$self->ConvertEOLs( $mode{$newline_type} );
+	}
+	
+	$doc->{newline_type} = $newline_type;
 
 	return;
 }
