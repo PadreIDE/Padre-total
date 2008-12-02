@@ -154,11 +154,13 @@ use Class::XSAccessor
 		filename         => 'filename', # TODO is this read_only or what?
 		get_mimetype     => 'mimetype',
 		get_newline_type => 'newline_type',
+		errstr           => 'errstr',
 	},
 	setters => {
 		_set_filename    => 'filename', # TODO temporary hack
 		set_newline_type => 'newline_type',
 		set_mimetype     => 'mimetype',
+		set_errstr       => 'errstr',
 	};
 
 =pod
@@ -389,9 +391,28 @@ sub _get_encoding_from_contents {
 	return $encoding;
 }
 
+=pod
+
+=head2 load_file
+
+ $doc->load_file( $filename, $editor_object );
+ 
+Loads the given file to the editor object.
+
+Sets the B<Encoding> bit using L<Encode::Guess> and tries to figure
+out what kind of newlines are in the file. Defaults to utf-8 if
+could not figure out the encoding.
+
+Currently it autoconverts files with mixed newlines. TODO we should stop autoconverting.
+
+Returns true on success false on failure. Sets $doc->errstr;
+
+=cut
+
 sub load_file {
 	my ($self, $file, $editor) = @_;
-
+	
+	$self->set_errstr('');
 	my $newline_type = $self->_get_default_newline_type;
 	my $convert_to;
 	my $content;
@@ -400,7 +421,7 @@ sub load_file {
 		local $/ = undef;
 		$content = <$fh>;
 	} else {
-		warn $!;
+		$self->set_errstr($!);
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
@@ -523,12 +544,23 @@ sub is_saved {
 	return !! ( defined $_[0]->filename and not $_[0]->is_modified );
 }
 
+=pod
+
+=head2 reload
+
+Reload the current file discarding changes in the editor.
+
+Returns true on success false on failure. Error message will be in $doc->errstr;
+
+TODO: In the future it should backup the changes in case the user regrets the action.
+
+=cut
+
 sub reload {
 	my ($self) = @_;
 
 	my $filename = $self->filename or return;
-	$self->load_file($filename, $self->editor);
-	return 1;
+	return $self->load_file($filename, $self->editor);
 }
 
 =pod
