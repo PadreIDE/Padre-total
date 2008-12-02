@@ -1,6 +1,8 @@
 Changes for Padre.
 
-   Italian translation (SBLANDIN)
+    Italian translation (SBLANDIN)
+    Show methods in abc order. Allow user to set preference to 'abc' or 'original'
+       ordering of methods. (#163) (SZABGAB)
 
 v0.20 2008.12.02
 

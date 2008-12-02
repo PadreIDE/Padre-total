@@ -631,12 +631,20 @@ sub refresh_methods {
 	}
 
 	my @methods = $doc->get_functions;
+	
+	my $config = Padre->ide->config;
+	if ($config->{editor_methods} eq 'abc') {
+		@methods = sort @methods;
+	} elsif ($config->{editor_methods} eq 'original') {
+		# that should be the one we got from get_functions
+	}
+
 	my $new = join ';', @methods;
 	my $old = join ';', @{ $self->{_methods_} };
 	return if $old eq $new;
 
 	$self->{gui}->{subs_panel}->DeleteAllItems;
-	foreach my $method ( reverse sort @methods ) {
+	foreach my $method ( reverse @methods ) {
 		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
 	}
 	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
@@ -1594,6 +1602,7 @@ sub on_preferences {
 	foreach my $editor ( $self->pages ) {
 		$editor->set_preferences;
 	}
+	$self->refresh_methods;
 
 	return;
 }

@@ -10,7 +10,7 @@ use Padre::Wx::Dialog ();
 our $VERSION = '0.20';
 
 sub get_layout {
-	my ($config, $main_startup, $editor_autoindent) = @_;
+	my ($config, $main_startup, $editor_autoindent, $editor_methods) = @_;
 
 	return [
 		[
@@ -46,6 +46,10 @@ sub get_layout {
 			[ 'Wx::Choice',     'editor_autoindent', $editor_autoindent],
 		],
 		[
+			[ 'Wx::StaticText', undef,              Wx::gettext('Methods order:')],
+			[ 'Wx::Choice',     'editor_methods', $editor_methods],
+		],
+		[
 			[ 'Wx::StaticText', undef,              Wx::gettext('Default word wrap on for each file')],
 			['Wx::CheckBox',    'editor_use_wordwrap', '',
 				($config->{editor_use_wordwrap} ? 1 : 0) ],
@@ -58,10 +62,10 @@ sub get_layout {
 }
 
 sub dialog {
-	my ($class, $win, $main_startup, $editor_autoindent) = @_;
+	my ($class, $win, $main_startup, $editor_autoindent, $editor_methods) = @_;
 
 	my $config = Padre->ide->config;
-	my $layout = get_layout($config, $main_startup, $editor_autoindent);
+	my $layout = get_layout($config, $main_startup, $editor_autoindent, $editor_methods);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $win,
 		title  => Wx::gettext("Preferences"),
@@ -128,8 +132,12 @@ sub run {
 		$config->{editor_autoindent},
 		grep { $_ ne $config->{editor_autoindent} } qw( no same_level deep )
 	);
+	my @editor_methods = (
+		$config->{editor_methods},
+		grep { $_ ne $config->{editor_methods} } qw( abc original )
+	);
 
-	my $dialog = $class->dialog( $win, \@main_startup, \@editor_autoindent );
+	my $dialog = $class->dialog( $win, \@main_startup, \@editor_autoindent, \@editor_methods );
 	return if not $dialog->show_modal;
 
 	my $data = $dialog->get_data;
@@ -143,6 +151,7 @@ sub run {
 
 	$config->{main_startup}        = $main_startup[ $data->{main_startup} ];
 	$config->{editor_autoindent}   = $editor_autoindent[ $data->{editor_autoindent} ];
+	$config->{editor_methods}      = $editor_methods[ $data->{editor_methods} ];
 
 	return;
 }
