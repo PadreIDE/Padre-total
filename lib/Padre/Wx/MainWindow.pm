@@ -212,9 +212,9 @@ sub new {
 	);
 	$timer->Start( 1, 1 );
 
-	if ( defined $config->{host}->{aui_manager_layout} ) {
-		$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
-	}
+	#if ( defined $config->{host}->{aui_manager_layout} ) {
+	#	$self->manager->LoadPerspective( $config->{host}->{aui_manager_layout} );
+	#}
 
 	return $self;
 }
