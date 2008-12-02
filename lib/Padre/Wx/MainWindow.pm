@@ -319,11 +319,7 @@ sub load_files {
 	my $config = Padre->ide->config;
 	my $files  = Padre->inst->{ARGV};
 	if ( Params::Util::_ARRAY($files) ) {
-		$self->Freeze;
-		foreach my $f ( @$files ) {
-		    $self->setup_editor($f);
-		}
-		$self->Thaw;
+		$self->setup_editors( @$files );
 	} elsif ( $config->{main_startup} eq 'new' ) {
 		$self->Freeze;
 		$self->setup_editor;
@@ -1025,6 +1021,17 @@ sub on_split_window {
 
 	return;
 }
+
+sub setup_editors {
+	my ($self, @files) = @_;
+	$self->Freeze;
+	foreach my $f ( @files ) {
+	    $self->setup_editor($f);
+	}
+	$self->Thaw;
+	return;
+}
+
 
 # if the current buffer is empty then fill that with the content of the
 # current file otherwise open a new buffer and open the file there.
