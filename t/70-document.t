@@ -14,7 +14,8 @@ plan tests => $tests;
 use Padre::Document;
 
 my $editor_1 = t::lib::Padre::Editor->new;
-my $doc_1 = Padre::Document->new(editor => $editor_1);
+my $doc_1 = Padre::Document->new;
+#(editor => $editor_1);
 
 SCOPE: {
 	isa_ok($doc_1, 'Padre::Document');
@@ -38,9 +39,10 @@ SCOPE: {
 my $editor_3 = t::lib::Padre::Editor->new;
 my $file_3   = File::Spec->catfile('eg', 'hello_world.pl');
 my $doc_3 = Padre::Document->new(
-		editor   => $editor_3,
 		filename => $file_3,
 	);
+#editor   => $editor_3,
+
 SCOPE: {
 	isa_ok($doc_3, 'Padre::Document');
 	isa_ok($doc_3, 'Padre::Document::Perl');

@@ -161,6 +161,7 @@ use Class::XSAccessor
 		set_newline_type => 'newline_type',
 		set_mimetype     => 'mimetype',
 		set_errstr       => 'errstr',
+		set_editor       => 'editor',
 	};
 
 =pod
@@ -168,26 +169,23 @@ use Class::XSAccessor
 =head2 new
 
   my $doc = Padre::Document->new(
-      editor   => $editor,
       filename => $file,
   );
  
-$editor is required and is a Padre::Wx::Editor object
 
 $file is optional and if given it will be loaded in the document
 
 mime-type is defined by the guess_mimetype function
+
+TODO describe
+
+ $editor is required and is a Padre::Wx::Editor object
 
 =cut
 
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
-	
-	# Check and derive params
-	unless ( $self->editor ) {
-		die "Missing or invalid editor";
-	}
 
 	$self->setup;
 
@@ -398,9 +396,9 @@ sub _get_encoding_from_contents {
 
 =head2 load_file
 
- $doc->load_file( $filename, $editor_object );
+ $doc->load_file;
  
-Loads the given file to the editor object.
+Loads the current file.
 
 Sets the B<Encoding> bit using L<Encode::Guess> and tries to figure
 out what kind of newlines are in the file. Defaults to utf-8 if
@@ -475,9 +473,12 @@ sub configure_editor {
 	
 	my ($newline_type, $convert_to) = $self->newline_type;
 	my $editor = $self->editor;
+
 	$editor->SetEOLMode( $mode{$newline_type} );
 
-	$editor->SetText( $self->{original_content} );
+	if (defined $self->{original_content}) {
+		$editor->SetText( $self->{original_content} );
+	}
 	$editor->EmptyUndoBuffer;
 	if ($convert_to) {
 		my $file = $self->filename;

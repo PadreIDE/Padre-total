@@ -66,6 +66,7 @@ sub newline_type {
 	my $LF   = "\012";
 	my $CRLF = "\015\012";
 
+	return "None" if not defined $text;
 	return "None" if $text !~ /$LF/ and $text !~ /$CR/;
 	return "UNIX" if $text !~ /$CR/;
 	return "MAC"  if $text !~ /$LF/;

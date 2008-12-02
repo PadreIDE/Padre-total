@@ -1045,9 +1045,9 @@ sub setup_editor {
 	my $editor = Padre::Wx::Editor->new( $self->{notebook} );
 	
 	$editor->{Document} = Padre::Document->new(
-		editor   => $editor,
 		filename => $file,
 	);
+	$editor->{Document}->set_editor( $editor );
 	$editor->{Document}->configure_editor;
 	
 	Padre->ide->plugin_manager->editor_enable($editor);
