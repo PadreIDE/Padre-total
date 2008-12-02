@@ -69,3 +69,18 @@ SCOPE: {
     is_deeply(\@matches, [ 5, 6, [1,3], [3,5], [5,6] ], 'three matches bw, wrap');
     BEGIN { $tests += 1; }
 }
+
+
+SCOPE: {
+	my $str = qq( perl ("שלום"); perl );
+	#use Encode::Guess;
+	#my $guess = Encode::Guess::guess_encoding($str);
+	#diag $guess;
+	diag "Length " . length $str;
+    my (@matches) = get_matches($str, qr/perl/, 0, 0);
+	# TODO are these really correct numbers?
+    is_deeply(\@matches, [ 1, 5, [1, 5], [28, 32] ], '2 matches with unicode');
+    is(substr($str, 1, 4), 'perl');
+    BEGIN { $tests += 2; }
+}
+

@@ -77,9 +77,32 @@ sub newline_type {
 	return "Mixed"
 }
 
+=pod
+
+=head2 get_matches
+
+Paramters:
+
+* The text in which we need to search
+
+* The regular expression
+
+* The offset within the text where we the last match started
+  so the next forward match must start after this.
+
+* The offset within the text where we the last match ended
+  so the next backward match must end before this.
+
+* backward bit (1 = search backward, 0 = search forward)
+
+=cut
+
 sub get_matches {
 	my ($text, $regex, $from, $to, $backward) = @_;
 	die "missing parameters" if @_ < 4;
+
+	use Encode;
+	$text = Encode::encode('utf-8', $text);
 
 	my @matches;
 
