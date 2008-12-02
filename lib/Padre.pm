@@ -901,7 +901,9 @@ German - Heiko Jansen (HJANSEN)
 
 Hebrew - Omer Zak
 
-Hungarian = Gyorgy Pasztor (GYU)
+Hungarian - Gyorgy Pasztor (GYU)
+
+Italian - Simone Blandino (SBLANDIN)
 
 Korean - Keedi Kim (KEEDI)
 
