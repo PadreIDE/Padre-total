@@ -321,9 +321,7 @@ sub load_files {
 	if ( Params::Util::_ARRAY($files) ) {
 		$self->setup_editors( @$files );
 	} elsif ( $config->{main_startup} eq 'new' ) {
-		$self->Freeze;
-		$self->setup_editor;
-		$self->Thaw;
+		$self->setup_editors();
 	} elsif ( $config->{main_startup} eq 'nothing' ) {
 		# nothing
 	} elsif ( $config->{main_startup} eq 'last' ) {
@@ -1025,8 +1023,12 @@ sub on_split_window {
 sub setup_editors {
 	my ($self, @files) = @_;
 	$self->Freeze;
-	foreach my $f ( @files ) {
-	    $self->setup_editor($f);
+	if (@files) {
+		foreach my $f ( @files ) {
+			$self->setup_editor($f);
+		}
+	} else {
+		$self->setup_editor;
 	}
 	$self->Thaw;
 	return;
