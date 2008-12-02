@@ -112,7 +112,7 @@ sub set_bookmark {
 
 	$data->{file}   = $path;
 	$data->{line}   = $line;
-	$data->{pageid} = $pageid;
+	#$data->{pageid} = $pageid;
 	$config->{bookmarks}{$shortcut} = $data;
 
 	return;
