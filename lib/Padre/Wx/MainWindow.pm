@@ -1092,6 +1092,15 @@ sub on_split_window {
 sub setup_editors {
 	my ($self, @files) = @_;
 	$self->Freeze;
+
+	# If and only if there is only one current file,
+	# and it is unused, close it.
+	if ( $self->nb->GetPageCount == 1 ) {
+		if ( Padre::Documents->current->is_unused ) {
+			$self->on_close($self);
+		}
+	}
+
 	if (@files) {
 		foreach my $f ( @files ) {
 			Padre::DB->add_recent_files($f);
@@ -1270,14 +1279,6 @@ sub on_open {
 	}
 	my @filenames = $dialog->GetFilenames;
 	$default_dir = $dialog->GetDirectory;
-
-	# If and only if there is only one current file,
-	# and it is unused, close it.
-	if ( $self->nb->GetPageCount == 1 ) {
-		if ( Padre::Documents->current->is_unused ) {
-			$self->on_close($self);
-		}
-	}
 
 	my @files = map { File::Spec->catfile($default_dir, $_) } @filenames;
 	$self->setup_editors(@files);

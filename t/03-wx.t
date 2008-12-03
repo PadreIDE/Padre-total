@@ -27,7 +27,18 @@ my @events = (
 		delay => 100,
 		code  => sub {
 			my $main = $ide->wx->main_window;
+			my $T = Test::Builder->new;
+			{
+				my @editors = $main->pages;
+				$T->is_num(scalar(@editors), 1, '1 editor');
+			}
 			$main->setup_editors( catfile($home, 'hello_world.pl') );
+			{
+				my @editors = $main->pages;
+				#$T->todo_skip('close the empty buffer');
+				$T->is_num(scalar(@editors), 1, '1 editor');
+			}
+			BEGIN { $main::tests += 2; }
 		},
 	},
 	{
@@ -72,6 +83,11 @@ my @events = (
 			my $editor = $doc->editor;
 
 			{
+				my @editors = $main->pages;
+				$T->is_num(scalar(@editors), 2, '2 editors');
+			}
+
+			{
 				Padre::Wx::Dialog::Find->search( search_term => qr/test/ );
 				$T->is_eq($main->selected_text,    'test', 'selected_text');
 				my ($start, $end) = $editor->GetSelection;
@@ -86,7 +102,7 @@ my @events = (
 				$T->is_num($end,   215, 'end is 215');
 			}
 
-			BEGIN { $main::tests += 6; }
+			BEGIN { $main::tests += 7; }
 		},
 	},
 	{
