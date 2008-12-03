@@ -206,10 +206,10 @@ sub new {
 	# the status bar which is ok, but then when we selected the menu to show it, it showed
 	# at the top)
 	# TODO: there might be better ways to fix that issue...
-	my $timer = Wx::Timer->new( $self );
+	my $timer = Wx::Timer->new( $self, Padre::Wx::id_POST_INIT_TIMER );
 	Wx::Event::EVT_TIMER(
 		$self,
-		-1,
+		Padre::Wx::id_POST_INIT_TIMER,
 		\&post_init,
 	);
 	$timer->Start( 1, 1 );

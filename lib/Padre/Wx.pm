@@ -42,6 +42,7 @@ sub MarkWarn  { 2 }
 
 sub id_SYNCHK_TIMER  { 30001 }
 sub id_FILECHK_TIMER { 30002 }
+sub id_POST_INIT_TIMER { 30003 }
 
 
 
