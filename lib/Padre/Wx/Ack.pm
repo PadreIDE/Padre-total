@@ -38,14 +38,14 @@ sub load_ack {
 
 
 sub on_ack {
-	my ($self) = @_;
+	my ($mainwindow) = @_;
 
 	# delay App::Ack loading till first use, to reduce memory
 	# usage and init time.
 	if ( ! $ack_loaded ) {
 		my $error = load_ack();
 		if ( $error ) {
-			$self->error($error);
+			$mainwindow->error($error);
 			return;
 		}
 		$ack_loaded = 1;
@@ -69,10 +69,10 @@ sub on_ack {
 	$iter = App::Ack::get_iterator( $what, \%opts );
 	App::Ack::filetype_setup();
 
-	$self->show_output(1);
-	$self->{output}->clear;
+	$mainwindow->show_output(1);
+	$mainwindow->{gui}->{output_panel}->clear;
 
-	Wx::Event::EVT_COMMAND( $self, -1, $DONE_EVENT, \&ack_done );
+	Wx::Event::EVT_COMMAND( $mainwindow, -1, $DONE_EVENT, \&ack_done );
 
 	my $worker = threads->create( \&on_ack_thread );
 
@@ -159,11 +159,11 @@ sub on_pick_dir {
 
 
 sub ack_done {
-	my( $self, $event ) = @_;
+	my( $mainwindow, $event ) = @_;
 
 	my $data = $event->GetData;
 	#print "Data: $data\n";
-	$self->{output}->AppendText("$data\n");
+	$mainwindow->{gui}->{output_panel}->AppendText("$data\n");
 
 	return;
 }
