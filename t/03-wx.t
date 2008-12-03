@@ -2,21 +2,45 @@
 
 use strict;
 use warnings;
+
+use File::Copy            qw(copy);
+use File::Spec::Functions qw(catfile);
 use Test::NeedsDisplay;
-use File::Temp qw(tempdir);
-use Test::More tests => 1;
+our $tests;
+use Test::More;
+use Test::Builder;
 use t::lib::Padre;
 use Padre;
+
+plan tests => $tests;
+diag "PADRE_HOME: $ENV{PADRE_HOME}";
+my $home = $ENV{PADRE_HOME};
+copy catfile('eg', 'hello_world.pl'), catfile($home, 'hello_world.pl');
 
 my $ide   = Padre->ide;
 my $frame = $ide->wx->main_window;
 
 my @events = (
 	{
-		delay => 500,
+		delay => 100,
 		code  => sub {
 			my $main = $ide->wx->main_window;
-			$main->setup_editor('t/03-wx.t');
+			$main->setup_editors( catfile($home, 'hello_world.pl') );
+		},
+	},
+	{
+		delay => 200,
+		code  => sub {
+			my $main = $ide->wx->main_window;
+			my $doc  = $main->selected_document;
+			my $editor = $doc->editor;
+			$editor->SetSelection(10, 15);
+			my $T = Test::Builder->new;
+			$T->is_eq($editor->GetSelectedText, '/perl', 'selection');
+			$T->is_eq($main->selected_text,     '/perl', 'selected_text');
+			BEGIN { $main::tests += 2; }
+			#$editor->GetText
+			#$main->on_save;
 		},
 	},
 	{
@@ -40,4 +64,9 @@ foreach my $event (@events) {
 }
 
 $ide->wx->MainLoop;
-ok(1);
+
+ok(1, 'finished');
+BEGIN { $tests += 1; }
+
+
+
