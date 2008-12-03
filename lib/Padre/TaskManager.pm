@@ -24,13 +24,43 @@ use Padre::Task;
 use Padre::Wx;
 use Wx::Event qw(EVT_COMMAND EVT_CLOSE);
 
+# This event is triggered by the worker thread main loop after
+# finishing a task.
 our $TASK_DONE_EVENT : shared = Wx::NewEventType;
+# Timer to reap dead workers every N milliseconds
 our $REAP_TIMER;
+# You can instantiate this class only once.
 our $SINGLETON;
 
-#
-# This IRC log is the only documentation for the time being. With a big TODO! FIXME!
-#
+=pod
+
+=head1 NAME
+
+Padre::TaskManager - Padre Background Task Scheduler
+
+=head1 SYNOPSIS
+
+  require Padre::Task::Foo;
+  my $task = Padre::Task::Foo->new(some => 'data');
+  $task->schedule(); # handed off to the task manager
+
+=head1 DESCRIPTION
+
+Padre uses threads for asynchroneous background operations
+which may take so long that they would make the GUI unresponsive
+if run in the main (GUI) thread.
+
+This class implements a pool of a configurable number of
+re-usable worker threads. Re-using threads is necessary as
+the overhead of spawning threads is high. Additional threads
+are spawned if many background tasks are scheduled for execution.
+When the load goes down, the number of extra threads is (slowly!)
+reduced down to the default.
+
+=cut
+
+
+
 #<tsee> - There's a pool of N worker threads which can either be started at launch time or when the first background task is scheduled. (This will need some more thought)
 #<tsee> - Now, in order to create background tasks, you set up a "Padre::Task" subclass.
 #<tsee> - It needs to implement at least the run() method which will be run in a worker thread.
@@ -320,9 +350,26 @@ sub worker_loop {
 }
 
 
-
 1;
 
+__END__
+
+=head1 SEE ALSO
+
+The base class of all "work units" is L<Padre::Task>.
+
+=head1 AUTHOR
+
+Steffen Mueller C<smueller@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2008 Gabor Szabo.
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
+
+=cut
 
 # Copyright 2008 Gabor Szabo.
 # LICENSE
