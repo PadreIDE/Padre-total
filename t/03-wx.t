@@ -38,9 +38,19 @@ my @events = (
 			my $T = Test::Builder->new;
 			$T->is_eq($editor->GetSelectedText, '/perl', 'selection');
 			$T->is_eq($main->selected_text,     '/perl', 'selected_text');
-			BEGIN { $main::tests += 2; }
-			#$editor->GetText
-			#$main->on_save;
+
+			$editor->ReplaceSelection('/java');
+			$editor->SetSelection(0, 0);
+			# TODO: search
+			$T->is_eq($main->selected_text,     '', 'selected_text');
+
+			$main->on_save;
+			if ( open my $fh, '<', catfile($home, 'hello_world.pl') ) {
+				my $line = <$fh>;
+				$T->is_eq($line, "#!/usr/bin/java\n", 'file really changed');
+			}
+			
+			BEGIN { $main::tests += 4; }
 		},
 	},
 	{
