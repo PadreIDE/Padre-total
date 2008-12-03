@@ -297,6 +297,13 @@ installed as the methods in the new class.
 
 =back
 
+I<Note:> If the package you're trying to instantiate via
+C<subclass> already exists, C<subclass> simply returns
+the subclass name as if the subclass was freshly created.
+This is on purpose so you can safely call C<subclass>
+repeatedly without having to worry about the subclassing
+really being a compile-time action.
+
 =cut
 
 sub subclass {
