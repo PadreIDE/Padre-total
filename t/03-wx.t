@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use File::Basename        qw(basename);
 use File::Copy            qw(copy);
 use File::Spec::Functions qw(catfile);
 use Test::NeedsDisplay;
@@ -102,7 +103,15 @@ my @events = (
 				$T->is_num($end,   215, 'end is 215');
 			}
 
-			BEGIN { $main::tests += 7; }
+			$main->on_close_all_but_current;
+			{
+				my @editors = $main->pages;
+				$T->is_num(scalar(@editors), 1, '1 editor');
+				my $doc = $main->selected_document;
+				$T->is_eq(basename($doc->filename), 'cyrillic_test.pl', 'filename');
+			}
+
+			BEGIN { $main::tests += 9; }
 		},
 	},
 	{
