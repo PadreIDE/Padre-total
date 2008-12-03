@@ -484,7 +484,7 @@ msgstr "&Lancer"
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:90
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:90
 msgid "&Bookmarks"
-msgstr "&Marque-pages"
+msgstr "&Signets"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:92
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:92
@@ -837,12 +837,12 @@ msgstr "Réinitialiser la taille de la fonte\tCtrl-/"
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:659
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:671
 msgid "Set Bookmark\tCtrl-B"
-msgstr "Placer un marque-page\tCtrl-B"
+msgstr "Placer un signet\tCtrl-B"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:663
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:675
 msgid "Goto Bookmark\tCtrl-Shift-B"
-msgstr "Aller au marque-page\tCtrl-Shift-B"
+msgstr "Aller au signet\tCtrl-Shift-B"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:669
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:681
@@ -1223,7 +1223,7 @@ msgstr "Retour à la ligne automatique pour chaque fichier"
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Dialog/Bookmarks.pm:24
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Bookmarks.pm:24
 msgid "Existing bookmarks:"
-msgstr "Marque-pages existants :"
+msgstr "Signets existants :"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Dialog/Bookmarks.pm:38
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Bookmarks.pm:38
@@ -1233,12 +1233,12 @@ msgstr "&Tout supprimer"
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Dialog/Bookmarks.pm:47
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Bookmarks.pm:47
 msgid "Set Bookmark"
-msgstr "Placer un marque-page"
+msgstr "Placer un signet"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Dialog/Bookmarks.pm:47
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Bookmarks.pm:47
 msgid "GoTo Bookmark"
-msgstr "Aller au marque-page"
+msgstr "Aller au signet"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Dialog/Bookmarks.pm:102
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Bookmarks.pm:102
