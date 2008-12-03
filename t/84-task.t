@@ -81,8 +81,8 @@ my $subclass = Padre::Task->subclass(
 	},
 );
 
-$TestClass = "Padre::Task::OnTheFlyTest";
-fake_execute_task($TestClass);
+$TestClass = $subclass;
+fake_execute_task($subclass);
 
 
 
