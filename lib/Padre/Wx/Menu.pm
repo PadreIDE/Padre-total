@@ -283,7 +283,7 @@ sub menu_file {
 	$menu->AppendSeparator;
 
 	# Saving
-	$self->{file_save} = $menu->Append( Wx::wxID_SAVE, Wx::gettext("&Save\tCtrl-S") );
+	$self->{file_save} = $menu->Append( Wx::wxID_SAVE, Wx::gettext('&Save') );
 	Wx::Event::EVT_MENU( $win,
 		$self->{file_save},
 		sub { $_[0]->on_save },
