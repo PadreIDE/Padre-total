@@ -100,6 +100,7 @@ eg/wx.pl
 eg/shell.pl
 eg/hello.pasm
 eg/hello.p6
+eg/cyrillic_test.pl
 
 eg/wx/01_simple_frame.pl
 eg/wx/02_label.pl
