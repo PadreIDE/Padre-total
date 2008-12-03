@@ -1104,6 +1104,12 @@ sub setup_editors {
 	return;
 }
 
+sub on_new {
+	$_[0]->setup_editor;
+	$_[0]->refresh_all;
+	return;
+}
+
 
 # if the current buffer is empty then fill that with the content of the
 # current file otherwise open a new buffer and open the file there.

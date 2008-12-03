@@ -235,11 +235,7 @@ sub menu_file {
 	# Creating new things
 	Wx::Event::EVT_MENU( $win,
 		$menu->Append( Wx::wxID_NEW, Wx::gettext("&New") ),
-		sub {
-			$_[0]->setup_editor;
-			$_[0]->refresh_all;
-			return;
-		},
+		\&Padre::Wx::MainWindow::on_new,
 	);
 	my $menu_file_new = Wx::Menu->new;
 	$menu->Append( -1, Wx::gettext("New..."), $menu_file_new );
