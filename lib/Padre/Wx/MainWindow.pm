@@ -1545,8 +1545,8 @@ sub on_diff {
 		$diff = Wx::gettext("There are no differences\n");
 	}
 	$self->show_output;
-	$self->{output}->clear;
-	$self->{output}->AppendText($diff);
+	$self->{gui}->{output_panel}->clear;
+	$self->{gui}->{output_panel}->AppendText($diff);
 	return;
 }
 
