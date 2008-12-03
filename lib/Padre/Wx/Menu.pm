@@ -348,14 +348,7 @@ sub menu_file {
 		++$idx;
 		Wx::Event::EVT_MENU( $win,
 			$self->{file_recentfiles}->Append(-1, $idx < 10 ? "&$idx. $f" : "$idx. $f"), 
-			sub { 
-				if ( $_[ 0 ]->nb->GetPageCount == 1 ) {
-					if ( Padre::Documents->current->is_unused ) {
-						$_[0]->on_close;
-					}
-				}
-				$_[0]->setup_editors($f);
-			},
+			sub { $_[0]->setup_editors($f); },
 		);
 	}
 	$menu->AppendSeparator;
