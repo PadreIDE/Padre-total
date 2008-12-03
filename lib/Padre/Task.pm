@@ -85,6 +85,11 @@ object with the Padre main window object as argument for cleanup.
 
 =back
 
+During all this time, the state of your task object is retained!
+So anything you store in the task object while in the worker thread
+is still there when C<finish> runs in the main thread. (Confer the
+CAVEATS section below!)
+
 =head1 INSTANCE METHODS
 
 =cut
