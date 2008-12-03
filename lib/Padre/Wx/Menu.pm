@@ -416,17 +416,17 @@ sub menu_edit {
 	);
 
 
-	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, Wx::gettext("&Copy") );
+	$self->{edit_copy} = $menu->Append( Wx::wxID_COPY, Wx::gettext("&Copy\tCtrl-C") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_copy},
 		sub { Padre->ide->wx->main_window->selected_editor->Copy; }
 	);
-	$self->{edit_cut} = $menu->Append( Wx::wxID_CUT, Wx::gettext("Cu&t") );
+	$self->{edit_cut} = $menu->Append( Wx::wxID_CUT, Wx::gettext("Cu&t\tCtrl-X") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_cut},
 		sub { Padre->ide->wx->main_window->selected_editor->Cut; }
 	);
-	$self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, Wx::gettext("&Paste") );
+	$self->{edit_paste} = $menu->Append( Wx::wxID_PASTE, Wx::gettext("&Paste\tCtrl-V") );
 	Wx::Event::EVT_MENU( $win,
 		$self->{edit_paste},
 		sub { 
@@ -437,7 +437,7 @@ sub menu_edit {
 	$menu->AppendSeparator;
 
 	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_FIND, Wx::gettext("&Find") ),
+		$menu->Append( Wx::wxID_FIND, Wx::gettext("&Find\tCtrl-F") ),
 		sub { Padre::Wx::Dialog::Find->find(@_) },
 	);
 	Wx::Event::EVT_MENU( $win,
