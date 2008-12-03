@@ -45,30 +45,19 @@ my @events = (
 			# TODO: search
 			$T->is_eq($main->selected_text,     '', 'selected_text');
 
-			#my $event = Wx::CommandEvent->new( $main->{menu}->{file_save}, -1 );
-			#my $event = Wx::CommandEvent->new( Wx::wxID_SAVE, -1 );
-			my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED, -1 );
-
-			#$main->{menu}->{file_save}->ProcessEvent($event);
-			$main->{menu}{wx}->AddPendingEvent($event);
-			#$main->ProcessEvent($event);
-    		#Wx::WakeUpIdle();
 			BEGIN { $main::tests += 3; }
 		}
 	},
 	{
 		delay => 1500,
 		code  => sub {
-    		Wx::WakeUpIdle();
-#			$main->on_save;
 			my $T = Test::Builder->new;
+			my $main = $ide->wx->main_window;
+			$main->on_save;
 			if ( open my $fh, '<', catfile($home, 'hello_world.pl') ) {
 				my $line = <$fh>;
 				$T->is_eq($line, "#!/usr/bin/java\n", 'file really changed');
 			}
-#			my $event = Wx::CommandEvent->new( &Wx::wxEVT_COMMAND_BUTTON_CLICKED,
-#                                         $button->GetId() );
-
 
 			BEGIN { $main::tests += 1; }
 		},
