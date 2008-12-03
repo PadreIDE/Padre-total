@@ -2093,18 +2093,18 @@ sub on_doc_stats {
 		$filename, $newline_type, $encoding)
 		= $doc->stats;
 
-	my $message = <<MESSAGE;
-Words: $words
-Lines: $lines
-Chars without spaces: $chars_without_space
-Chars with spaces: $chars_with_space
-Newline type: $newline_type
-Encoding: $encoding
-MESSAGE
-
-	$message .= defined $filename ?
-				sprintf("Filename: '%s'\n", $filename) :
-				"No filename\n";
+	my @messages = (
+		sprintf(Wx::gettext("Words: %d"),                $words              ),
+		sprintf(Wx::gettext("Lines: %d"),                $lines              ),
+		sprintf(Wx::gettext("Chars without spaces: %d"), $chars_without_space),
+		sprintf(Wx::gettext("Chars with spaces: %d"),    $chars_with_space   ),
+		sprintf(Wx::gettext("Newline type: %s"),         $newline_type       ),
+		sprintf(Wx::gettext("Encoding: %s"),             $encoding           ),
+		defined $filename
+			? sprintf(Wx::gettext("Filename: %s"),       $filename)
+			: Wx::gettext("No filename"),
+	);
+	my $message = join $/, @messages;
 
 	if ($is_readonly) {
 		$message .= "File is read-only.\n";
