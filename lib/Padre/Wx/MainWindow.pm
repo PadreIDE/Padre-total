@@ -1094,6 +1094,7 @@ sub setup_editors {
 	$self->Freeze;
 	if (@files) {
 		foreach my $f ( @files ) {
+			Padre::DB->add_recent_files($f);
 			$self->setup_editor($f);
 		}
 	} else {
@@ -1234,7 +1235,6 @@ sub on_open_selection {
 		return;
 	}
 
-	Padre::DB->add_recent_files($file);
 	$self->setup_editors($file);
 
 	return;
@@ -1280,7 +1280,6 @@ sub on_open {
 	}
 
 	my @files = map { File::Spec->catfile($default_dir, $_) } @filenames;
-	Padre::DB->add_recent_files($_) for @files;
 	$self->setup_editors(@files);
 
 	return;
