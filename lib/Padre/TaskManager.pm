@@ -57,59 +57,44 @@ are spawned if many background tasks are scheduled for execution.
 When the load goes down, the number of extra threads is (slowly!)
 reduced down to the default.
 
+=head1 CLASS METHODS
+
 =cut
 
+=head2 new
 
+The constructor returns a C<Padre::TaskManager> object.
+At the moment, C<Padre::TaskManager> is a singleton.
+An object is instantiated when the editor object is created.
 
-#<tsee> - There's a pool of N worker threads which can either be started at launch time or when the first background task is scheduled. (This will need some more thought)
-#<tsee> - Now, in order to create background tasks, you set up a "Padre::Task" subclass.
-#<tsee> - It needs to implement at least the run() method which will be run in a worker thread.
-#<tsee> - It can additionally implement prepare() and finish() which will be run in the main thread before and after delegation to the worker.
-#<tsee> - Then, to actually use that, I added a simple hook to the My.pm plugin. (Plugins->My Plugin->test). There, I create new objects of the Padre::Task subclass "Padre::Plugin::My::Task".
-#<tsee> - Set some data for sending to the worker thread with the object and call $taskobject->schedule().
-#<tsee> - It will be sent to the Padre::TaskManager which will add it to a queue of jobs to be run.
-#<tsee> (In fact, it also sets up the worker threads only on demand right now. Depending on the number of those, this can be a bit of a delay. Remember this is testing code)
-#<tsee> The queue can only deal with simple data, so the task is serialized before being queued.
-#<tsee> And deserialized in the worker.
-#<tsee> - When a worker thread is idle, it checks the queue to see whether there is any work to do. Since for good measure, I submitted fifty jobs in the test, there'll be plenty.
-#<tsee> - the worker runs $taskobj->run().
-#<tsee> - When that's done, it serializes the object and creates a Wx event handler.
-#<tsee> - In the Wx event handler in the main thread, the object it reconstructed once again and $taskobj->finish() is called.
-#<tsee> - This hook can be used to actually implement any changes to the GUI.
-#<tsee> - In this example case, we just grab the current document and add some text to the end.
-#<tsee> - Which is just the time between scheduling of the job (which, by the way, sleeps for a second) and the time finish() is actually executed.
-#<tsee> - Since there's a couple of worker threads churning away at the same time, this should happen in bunches.
-#<tsee> - The editor stays responsive all the time.
-#<tsee> *at all times
-#
-#<tsee> Threads make me weep.
-#<tsee> There's tons of stuff left to do.
-#<tsee> The least of which is the total lack of docs.
-#<tsee> When a task kills a thread, it's respawned the next time any jobs a scheduled, for example.
-#<tsee> When's the right time to start workers? Certainly the first idea is to do this only when jobs are submitted, BUT: How many do you spawn at a time? AND: If you spawn them late, they'll need more memory!
-#<tsee> Using events, IIRC it's possible for worker threads to interact with the GUI in the main thread. How? And how safe is this?
-#<tsee> Essentially, I'm doing that for the finish call.
-#<tsee> I *think*.
-#<tsee> What's the performance?
-#<tsee> What happens if you pass a lot of data around -- will the serialization kill us?
-#<tsee> etc.
-#<tsee> Oh, and a biggie: What happens if the CPU can't run stuff fast enough so jobs queue up a lot?
-#<tsee> I guess the queue should simply block the main thread at some point.
-#<tsee> But then, tasks can't be finish()ed either.
-#<tsee> Okay, I'll stop for now. This is enough to keep you poor man busy reading for a while.
-#<tsee> Oh, and the cleanup routine needs work.
-#<tsee> Timings: On my single-CPU four-year-old Athlon, a single (simple) background job has a total overhead of ~0.015s
-#<tsee> With three worker threads, submitting three such jobs at once results in a total delay of ~0.019s for each job.
-#<tsee> Remember this is a single-core machine.-
-#<tsee> When submitting FIFTY at the same time, running time is between 0.064s and 0.078s.
-#<tsee> The timing is only slightly worse with only one worker thread (0.068-0.084s), but that's not surprising since those jobs now don't block on anything and it's simply the the overhead of passing things around and doing so one job after another.
-#<tsee> The timings improve similarly little when 20 worker threads are used, but memory overhead is ridicilous.
+Optional parameters:
 
-use Class::XSAccessor
-	getters => {
-		task_queue => 'task_queue',
-	};
+=over 2
 
+=item min_no_workers / max_no_workers
+
+Set the minimum and maximum number of worker threads
+to spawn. Default: 1 to 3
+
+The first workers are spawned lazily: I.e. only when
+the first task is being scheduled.
+
+=item use_threads
+
+TODO: This is disabled for now since we need Wx 0.89
+for stable threading.
+
+Disable for profiling runs. In the degraded, threadless mode,
+all tasks are run in the main thread. Default: 1 (use threads)
+
+=item reap_interval
+
+The number of milliseconds to wait before checking for dead
+worker threads. Default: 15000ms
+
+=back
+
+=cut
 
 sub new {
 	my $class = shift;
@@ -120,6 +105,7 @@ sub new {
 		min_no_workers => 1,
 		max_no_workers => 3,
 		use_threads    => 1, # can be explicitly disabled
+		reap_interval  => 15000,
 		@_,
 		workers => [],
 		task_queue => undef,
@@ -137,7 +123,7 @@ sub new {
 
 	# Set up a regular action for reaping dead workers
 	# and setting up new workers
-	if (not defined $REAP_TIMER and $self->{use_threads}) {
+	if (not defined $REAP_TIMER and $self->use_threads) {
 		# explicit id necessary to distinguish from startup-timer of the main window
 		my $timerid = Wx::NewId();
 		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
@@ -145,15 +131,65 @@ sub new {
 			#$mw, $timerid, sub { $SINGLETON->reap(); },
 			$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
 		);
-		$REAP_TIMER->Start( 15000, Wx::wxTIMER_CONTINUOUS  ); # in ms
+		$REAP_TIMER->Start( $self->reap_interval, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
 
 	return $self;
 }
 
+=head1 INSTANCE METHODS
+
+=cut
+
+=head2 schedule
+
+Given a C<Padre::Task> instance (or rather an instance of a subclass),
+schedule that task for execution in a worker thread.
+If you call the C<schedule> method of the task object, it will
+proxy to this method for convenience.
+
+=cut
+
+sub schedule {
+	my $self = shift;
+	my $process = shift;
+	if (not ref($process) or not $process->isa("Padre::Task")) {
+		die "Invalid task scheduled!"; # TODO: grace
+	}
+
+	# cleanup old threads and refill the pool
+	$self->reap();
+
+	$process->prepare();
+
+	my $string;
+	$process->serialize(\$string);
+	if ($self->use_threads) {
+		$self->task_queue->enqueue( $string );
+	}
+	else {
+		# TODO: Instead of this hack, consider
+		# "reimplementing" the worker loop 
+		# as a non-threading, non-queued, fake worker loop
+		$self->task_queue->enqueue( $string );
+		$self->task_queue->enqueue( "STOP" );
+		worker_loop( Padre->ide->wx->main_window, $self );
+	}
+
+	return 1;
+}
+
+=head2 setup_workers
+
+Create more workers if necessary. Called by C<reap> which
+is called regularly by the reap timer, so users don't
+typically need to call this.
+
+=cut
+
 sub setup_workers {
 	my $self = shift;
-	return if not $self->{use_threads};
+	return if not $self->use_threads;
 
 	@_=(); # avoid "Scalars leaked"
 	my $mw = Padre->ide->wx->main_window;
@@ -176,20 +212,35 @@ sub setup_workers {
 	return 1;
 }
 
+# short method to create a new thread
 sub _make_worker_thread {
 	my $self = shift;
 	my $mw = shift;
-	return if not $self->{use_threads};
+	return if not $self->use_threads;
 
 	@_=(); # avoid "Scalars leaked"
-	push @{$self->{workers}}, threads->create({'exit' => 'thread_only'}, \&worker_loop, $mw, $self);
+	my $worker = threads->create(
+	  {'exit' => 'thread_only'}, \&worker_loop, $mw, $self
+	);
+	push @{$self->{workers}}, $worker;
 }
 
-# join all dead threads and remove them from the list of threads in 
-# the list of workers
+=head2 reap
+
+Check for worker threads that have exited and can be joined.
+If there are more worker threads than the normal number and
+they are idle, one worker thread (per C<reap> call) is
+stopped.
+
+This method is called regularly by the reap timer (see
+the C<reap_interval> option to the constructor) and it's not
+typically called by users.
+
+=cut
+
 sub reap {
 	my $self = shift;
-	return if not $self->{use_threads};
+	return if not $self->use_threads;
 
 	@_=(); # avoid "Scalars leaked"
 	my $workers = $self->{workers};
@@ -236,38 +287,15 @@ sub reap {
 	return 1;
 }
 
-sub schedule {
-	my $self = shift;
-	my $process = shift;
-	if (not ref($process) or not $process->isa("Padre::Task")) {
-		die "Invalid task scheduled!"; # TODO: grace
-	}
+=head2 cleanup
 
-	# cleanup old threads and refill the pool
-	$self->reap();
+Stops all worker threads. Called on editor shutdown.
 
-	$process->prepare();
-
-	my $string;
-	$process->serialize(\$string);
-	if ($self->{use_threads}) {
-		$self->task_queue->enqueue( $string );
-	}
-	else {
-		# TODO: Instead of this hack, consider
-		# "reimplementing" the worker loop 
-		# as a non-threading, non-queued, fake worker loop
-		$self->task_queue->enqueue( $string );
-		$self->task_queue->enqueue( "STOP" );
-		worker_loop( Padre->ide->wx->main_window, $self );
-	}
-
-	return 1;
-}
+=cut
 
 sub cleanup {
 	my $self = shift;
-	return if not $self->{use_threads};
+	return if not $self->use_threads;
 
 	# the nice way:
 	my @workers = $self->workers;
@@ -285,16 +313,56 @@ sub cleanup {
 	return 1;
 }
 
-###################
-# Accessors
+=head1 ACCESSORS
+
+=head2 task_queue
+
+Returns the queue of tasks to be processed as a
+L<Thread::Queue> object. The tasks in the
+queue have been serialized for passing between threads,
+so this is mostly useful internally or
+for checking the number of outstanding jobs.
+
+=head2 reap_interval
+
+Returns the number of milliseconds between the
+regulary cleanup runs.
+
+=head2 use_threads
+
+Returns whether running in degraded mode (no threads, false)
+or normal operation (threads, true).
+
+=cut
+
+use Class::XSAccessor
+	getters => {
+		task_queue    => 'task_queue',
+		reap_interval => 'reap_interval',
+		use_threads   => 'use_threads',
+	};
+
+=head2 workers
+
+Returns B<a list> of the worker threads.
+
+=cut
 
 sub workers {
 	my $self = shift;
 	return @{$self->{workers}};
 }
 
-###################
-# Event Handlers
+=head1 EVENT HANDLERS
+
+=cut
+
+=head2 on_close
+
+Registered to be executed on editor shutdown.
+Executes the cleanup method.
+
+=cut
 
 sub on_close {
 	my ($mw, $event) = @_; @_ = (); # hack to avoid "Scalars leaked"
@@ -308,6 +376,16 @@ sub on_close {
 	$event->Skip(1);
 }
 
+=head2 on_task_done_event
+
+This event handler is called when a background task has
+finished execution. It deserializes the background task
+object and calls its C<finish> method with the
+Padre main window object as first argument. (This is done
+because C<finish> most likely updates the GUI.)
+
+=cut
+
 sub on_task_done_event {
 	my ($mw, $event) = @_; @_ = (); # hack to avoid "Scalars leaked"
 	my $frozen = $event->GetData;
@@ -319,7 +397,6 @@ sub on_task_done_event {
 
 ##########################
 # Worker thread main loop
-
 sub worker_loop {
 	my ($mw, $taskmanager) = @_;  @_ = (); # hack to avoid "Scalars leaked"
 	my $queue = $taskmanager->task_queue;
@@ -353,6 +430,16 @@ sub worker_loop {
 1;
 
 __END__
+
+=head1 TODO
+
+What if the computer can't keep up with the queued jobs? This needs
+some consideration and probably, the schedule() call needs to block once
+the queue is "full". However, it's not clear how this can work if the
+Wx MainLoop isn't reached for processing finish events.
+
+There needs to be a way to flag data in the task that doesn't have to be
+passed to the worker but is necessary in the finish routine.
 
 =head1 SEE ALSO
 
