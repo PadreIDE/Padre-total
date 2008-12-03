@@ -116,7 +116,7 @@ my @events = (
 		},
 	},
 	{
-		delay => 2000,
+		delay => 1000,
 		code  => sub {
 			my $main = $ide->wx->main_window;
 			my $T = Test::Builder->new;
@@ -127,6 +127,23 @@ my @events = (
 			#$T->diag($event);
 			#$main->ProcessEvent($event);
 			$dialog->EndModal(Wx::wxID_CANCEL);
+			BEGIN { $main::tests += 0; }
+		},
+	},
+	{
+		delay => 1100,
+		code  => sub {
+			my $main = $ide->wx->main_window;
+			my $T = Test::Builder->new;
+			$main->on_close_all;
+			{
+				my @editors = $main->pages;
+				$T->is_num(scalar(@editors), 0, '0 editor');
+				my $doc = $main->selected_document;
+				$T->ok(not(defined $doc), 'no document');
+			}
+			Padre::Wx::Dialog::Bookmarks->set_bookmark($main);
+			BEGIN { $main::tests += 2; }
 		},
 	},
 	{
