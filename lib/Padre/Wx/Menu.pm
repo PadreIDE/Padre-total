@@ -354,8 +354,7 @@ sub menu_file {
 						$_[0]->on_close;
 					}
 				}
-				$_[0]->setup_editor($f);
-				$_[0]->refresh_all;
+				$_[0]->setup_editors($f);
 			},
 		);
 	}
