@@ -200,7 +200,11 @@ sub serialize {
 	# blessing into Padre::Task
 	bless $self => 'Padre::Task';
 
-	return $self->SUPER::serialize(@_);
+	my $ret = $self->SUPER::serialize(@_);
+	delete $self->{_process_class};
+	bless $self => $class;
+
+	return $ret;
 }
 
 # this will deserialize the object and do some magic as it happens
@@ -212,7 +216,11 @@ sub deserialize {
 	my $userclass = $padretask->{_process_class};
 	delete $padretask->{_process_class};
 
-	if (!eval "require $userclass;") {
+	no strict 'refs';
+	my $ref = \%{"${userclass}::"};
+	use strict 'refs';
+	my $loaded = exists $ref->{"ISA"};
+	if (!$loaded and !eval "require $userclass;") {
 		require Carp;
 		if ($@) {
 			Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
