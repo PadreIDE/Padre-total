@@ -469,7 +469,7 @@ msgstr "&Projet"
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:86
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Dialog/Snippets.pm:27
 msgid "&Edit"
-msgstr "&Edition"
+msgstr "Editio&n"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:87
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:87
@@ -494,17 +494,17 @@ msgstr "&Outils"
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:93
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:93
 msgid "&Window"
-msgstr "&Fenêtre"
+msgstr "Fenê&tre"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:94
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:94
 msgid "&Help"
-msgstr "&Aide"
+msgstr "Aid&e"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:96
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:96
 msgid "E&xperimental"
-msgstr "&Experimental"
+msgstr "E&xpérimental"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/Menu.pm:237
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/Menu.pm:237
