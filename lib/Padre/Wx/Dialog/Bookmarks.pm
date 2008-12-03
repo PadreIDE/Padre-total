@@ -12,6 +12,10 @@ use Wx::Locale qw(:default);
 
 our $VERSION = '0.20';
 
+# workaround: need to be accessible from outside in oder to write unit test ( t/03-wx.t )
+my $dialog;
+sub get_dialog { return $dialog };
+
 sub get_layout {
 	my ($text, $shortcuts) = @_;
 	
@@ -49,7 +53,7 @@ sub dialog {
 	my @shortcuts = sort keys %{ $config->{bookmarks} };
 
 	my $layout = get_layout($text, \@shortcuts);
-	my $dialog = Padre::Wx::Dialog->new(
+	$dialog = Padre::Wx::Dialog->new(
 		parent   => $main,
 		title    => $title,
 		layout   => $layout,
@@ -88,6 +92,7 @@ sub _get_data {
 	$shortcut =~ s/:/ /g; # YAML::Tiny limitation
 	$data{shortcut} = $shortcut;
 	$dialog->Destroy;
+	$dialog = undef;
 	return ($dialog, \%data);
 }
 

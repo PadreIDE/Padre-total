@@ -110,13 +110,30 @@ my @events = (
 				my $doc = $main->selected_document;
 				$T->is_eq(basename($doc->filename), 'cyrillic_test.pl', 'filename');
 			}
+			Padre::Wx::Dialog::Bookmarks->set_bookmark($main);
 
 			BEGIN { $main::tests += 9; }
 		},
 	},
 	{
+		delay => 2000,
+		code  => sub {
+			my $main = $ide->wx->main_window;
+			my $T = Test::Builder->new;
+			my $dialog = Padre::Wx::Dialog::Bookmarks::get_dialog();
+			#$T->diag($dialog);
+			# TODO: we should create an event and send it, instead of calling EndModal
+			#my $event = Wx::CommandEvent->new( $dialog->{_widgets_}{cancel}, -1 );
+			#$T->diag($event);
+			#$main->ProcessEvent($event);
+			$dialog->EndModal(Wx::wxID_CANCEL);
+		},
+	},
+	{
 		delay => 4000,
 		code  => sub {
+			my $T = Test::Builder->new;
+			$T->diag("exiting");
 			$ide->wx->ExitMainLoop;
 			$ide->wx->main_window->Destroy;
 		},
