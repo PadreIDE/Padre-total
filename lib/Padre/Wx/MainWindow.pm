@@ -1196,16 +1196,23 @@ sub create_tab {
 #    of a module and try to open it locally or from @INC.
 sub on_open_selection {
 	my ($self, $event) = @_;
+	
+	# get selection, ask for it if needed
 	my $selection = $self->selected_text();
 	if (not $selection) {
-		Wx::MessageBox(
-			Wx::gettext("Need to have something selected"),
-			Wx::gettext("Open Selection"),
-			Wx::wxOK,
+		my $dialog = Wx::TextEntryDialog->new(
 			$self,
+			Wx::gettext("Nothing selected. Enter what should be opened:"),
+			Wx::gettext("Open selection"),
+			''
 		);
-		return;
+		return if $dialog->ShowModal == Wx::wxID_CANCEL;
+
+		$selection = $dialog->GetValue;
+		$dialog->Destroy;
+		return if not defined $selection;
 	}
+	
 	my $file;
 	if (-e $selection) {
 		$file = $selection;

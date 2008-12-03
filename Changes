@@ -3,6 +3,7 @@ Changes for Padre.
     Italian translation (SBLANDIN)
     Show methods in abc order. Allow user to set preference to 'abc' or 'original'
        ordering of methods. (#163) (SZABGAB)
+    Open selection prompts user if nothing selected. (#143) (JQUELIN)
 
 v0.20 2008.12.02
 
