@@ -62,16 +62,8 @@ my @events = (
 	},
 );
 
-foreach my $event (@events) {
-	my $id    = Wx::NewId();
-	my $timer = Wx::Timer->new( $frame, $id );
-	Wx::Event::EVT_TIMER(
-		$frame,
-		$id,
-		$event->{code}
-	);
-	$timer->Start( $event->{delay}, 1 );
-}
+t::lib::Padre::setup_events($frame, \@events);
+
 
 $ide->wx->MainLoop;
 
