@@ -252,7 +252,10 @@ sub get_title {
 		return File::Basename::basename( $self->{filename} );
 	} else {
 		my $str = sprintf(Wx::gettext("Unsaved %d"), $unsaved_number);
-		return $str;
+
+		# A bug in Wx requires a space at the front of the title
+		# (For reasons I don't understand yet)
+		return ' ' . $str;
 	}
 }
 
@@ -484,8 +487,6 @@ sub save_file {
 	return;
 }
 
-
-
 sub lexer {
 	my $self = shift;
 	return $DEFAULT_LEXER unless $self->get_mimetype;
@@ -666,7 +667,7 @@ sub find_project {
 		-f File::Spec->catpath( $v, $_, 'Build.PL' )
 		or
 		# Some notional Padre project file
-		-f File::Spec->catpath( $v, $_, 'padre.proj' )
+		-f File::Spec->catpath( $v, $_, 'padre.yml' )
 	} map {
 		File::Spec->catdir(@d[0 .. $_])
 	} reverse ( 0 .. $#d );
