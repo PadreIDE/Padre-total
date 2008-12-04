@@ -55,7 +55,7 @@ our %languages = (
 	he => Wx::gettext('Hebrew'),
 	hu => Wx::gettext('Hungarian'),
 	ko => Wx::gettext('Korean'),
-	it => Wx::gettext('Italian')
+	it => Wx::gettext('Italian'),
 	ru => Wx::gettext('Russian')
 );
 
