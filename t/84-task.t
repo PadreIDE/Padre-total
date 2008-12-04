@@ -14,7 +14,7 @@ use vars '$TestClass'; # secret class name
 # TODO: test with real threads
 
 sub fake_run_task {
-  my $string = shift;
+	my $string = shift;
 	my $recovered = Padre::Task->deserialize( \$string );
 	ok(defined $recovered, "recovered form defined");
 	isa_ok($recovered, 'Padre::Task');
@@ -25,12 +25,12 @@ sub fake_run_task {
 	$string = undef;
 	$recovered->serialize(\$string);
 	ok(defined $string);
-  return $string;
+	return $string;
 }
 
 sub fake_execute_task {
 	my $class = shift;
-        my $use_threads = shift;
+	my $use_threads = shift;
 
 	ok($class->can('new'), "task can be constructed");
 	my $task = $class->new( main_thread_only => "not in sub thread" );
@@ -43,22 +43,22 @@ sub fake_execute_task {
 	$task->serialize(\$string);
 	ok(defined $string, "serialized form defined");
 
-        if ($use_threads) {
-          my $thread = threads->create(
-            \&fake_run_task, $string
-          );
-          $string = $thread->join();
-          isa_ok($thread, 'threads');
-        }
-        else {
-          $string = fake_run_task($string);
-          ok(1);
-        }
+	if ($use_threads) {
+		my $thread = threads->create(
+			\&fake_run_task, $string
+		);
+		$string = $thread->join();
+		isa_ok($thread, 'threads');
+	}
+	else {
+		$string = fake_run_task($string);
+		ok(1);
+	}
 
 	my $final = Padre::Task->deserialize( \$string );
 	ok(defined $final);
-        ok(not exists $task->{answer});
-        $task->{answer} = 'succeed';
+	ok(not exists $task->{answer});
+	$task->{answer} = 'succeed';
 	is_deeply($final, $task);
 	$final->finish();
 }
