@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 80;
+use Test::More tests => 82;
 use threads;
 use threads::shared;
 use Padre::Task;
@@ -11,8 +11,6 @@ use t::lib::Padre::Task::Test;
 
 use vars '$TestClass'; # secret class name
 
-# TODO: test with real threads
-
 sub fake_run_task {
 	my $string = shift;
 	my $recovered = Padre::Task->deserialize( \$string );
@@ -20,6 +18,18 @@ sub fake_run_task {
 	isa_ok($recovered, 'Padre::Task');
 	isa_ok($recovered, $TestClass);
 	#is_deeply($recovered, $task);
+	
+	if (threads->tid() == 0) { # main thread
+		ok( exists($recovered->{main_thread_only})
+		    && not exists($recovered->{_main_thread_data_id}),
+		    && $recovered->{main_thread_only} eq 'not in sub thread',
+		    "main-thread data stays available in main thread" );
+	}
+	else {
+		ok( not exists($recovered->{main_thread_only}),
+		    && exists($recovered->{_main_thread_data_id}),
+		    "main-thread data not available in worker thread" );
+	}
 	
 	$recovered->run();
 	$string = undef;
