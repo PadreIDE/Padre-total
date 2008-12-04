@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Cwd ();
+use FindBin qw/$RealBin/;
 use vars qw/@windows/;
 
 BEGIN {
@@ -27,8 +27,9 @@ Win32::GuiTest::SendKeys("If you're reading this inside Padre, ");
 Win32::GuiTest::SendKeys("we might consider this test succesful. ");
 Win32::GuiTest::SendKeys("Please wait.......");
 
-# XXX? It's broken!
-my $dir = Cwd::cwd();
+my $dir = $RealBin;
+# Stupid Save box don't accpect '/' in the input
+$dir =~ s/\//\\/g;
 
 MenuSelect("&File|&Save");
 sleep 1;
@@ -36,7 +37,8 @@ sleep 1;
 my $save_to = "$$.txt";
 unlink("$dir/$save_to");
 
-SendKeys($save_to);
+# Stupid Save box don't accpect '/' in the input
+SendKeys("$dir\\$save_to");
 SendKeys("%{S}");
 sleep 1;
 
