@@ -3,7 +3,7 @@ use warnings;
 use Test::NeedsDisplay;
 
 use Test::More;
-plan skip_all => 'Needs Test::Compile 0.08 but that does not work on Windows' if $^O =~ /win/i;
+plan skip_all => 'Needs Test::Compile 0.08 but that does not work on Windows' if $^O eq 'MSWin32'; # the same as File::Spec uses
 plan skip_all => 'Needs Test::Compile 0.08' if not eval "use Test::Compile 0.08; 1";
 diag "Test::Compile $Test::Compile::VERSION";
 
