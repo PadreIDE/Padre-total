@@ -14,7 +14,7 @@ BEGIN {
     scalar @windows or plan skip_all => 'You need open Padre then start this test';
 };
 
-plan tests => 3;
+plan tests => 5;
 
 my $padre = $windows[0];
 
@@ -24,6 +24,11 @@ my $menu = GetMenu($padre);
 my $submenu = GetSubMenu($menu, 0);
 my %h = GetMenuItemInfo($menu, 0);
 is $h{text}, '&File';
+%h = GetMenuItemInfo($submenu, 0);   # New in the File menu
+is $h{text}, "&New\tCtrl-N";
+my $subsubmenu = GetSubMenu($submenu, 1);
+%h = GetMenuItemInfo($subsubmenu, 0);
+is $h{text}, "Perl Distribution (Module::Starter)";
 
 # test Edit
 $submenu = GetSubMenu($menu, 1);
