@@ -38,6 +38,7 @@ unlink("$RealBin/$save_to");
 
 SendKeys($save_to);
 SendKeys("%{S}");
+sleep 1;
 
 # check the file
 ok(-e "$RealBin/$save_to", 'file saved');
