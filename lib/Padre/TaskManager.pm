@@ -15,6 +15,8 @@ BEGIN {$INC{"Padre/TaskManager.pm"} ||= __FILE__}
 use strict;
 use warnings;
 
+our $VERSION = '0.20';
+
 use threads;
 use threads::shared; # according to Wx docs, this MUST be loaded before Wx, so this also happens in the script
 use Thread::Queue;

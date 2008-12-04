@@ -3,6 +3,8 @@ package Padre::Task;
 use strict;
 use warnings;
 
+our $VERSION = '0.20';
+
 require Padre;
 
 use base qw{Process::Storable Process};
