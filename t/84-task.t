@@ -6,6 +6,9 @@ use Test::More tests => 25+25;
 use threads;
 use threads::shared;
 use Padre::Task;
+use lib '.';
+use t::lib::Padre::Task::Test;
+
 use vars '$TestClass'; # secret class name
 
 # TODO: test with real threads
@@ -40,34 +43,6 @@ sub fake_execute_task {
 	isa_ok($recovered, $class);
 	is_deeply($final, $recovered);
 	$final->finish();
-}
-
-package Padre::Task::Test;
-use base 'Padre::Task';
-
-sub prepare {
-	my $self = shift;
-	Test::More::isa_ok( $self, "Padre::Task" );
-	Test::More::isa_ok( $self, $main::TestClass );
-	$self->{msg} = "query";
-}
-
-sub run {
-	my $self = shift;
-	Test::More::isa_ok( $self, "Padre::Task" );
-	Test::More::isa_ok( $self, $main::TestClass );
-	Test::More::is( $self->{msg}, "query", "message received in worker" );
-	Test::More::ok( !exists $self->{_process_class}, "_process_class was cleaned" );
-	$self->{answer} = 'succeed';
-}
-
-sub finish {
-	my $self = shift;
-	Test::More::isa_ok( $self, "Padre::Task" );
-	Test::More::isa_ok( $self, $main::TestClass );
-	Test::More::is( $self->{msg}, "query", "message survived worker" );
-	Test::More::is( $self->{answer}, "succeed", "message from worker" );
-	Test::More::ok( !exists $self->{_process_class}, "_process_class was cleaned" );
 }
 
 package main;
