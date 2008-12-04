@@ -7,4 +7,4 @@ lib/Padre/Plugin/Vi.pm
 lib/Padre/Plugin/Vi/CommandLine.pm
 lib/Padre/Plugin/Vi/Editor.pm
 
-t/91-vi.t
+t/00-load.t
