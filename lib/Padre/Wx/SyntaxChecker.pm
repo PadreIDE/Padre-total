@@ -47,13 +47,7 @@ sub create_syntaxbar {
 	$syntaxbar->InsertColumn( 1, Wx::gettext('Type') );
 	$syntaxbar->InsertColumn( 2, Wx::gettext('Description') );
 
-	$mw->{gui}->{bottompane}->InsertPage(
-		1,
-		$syntaxbar,
-		Wx::gettext("Syntax Check"),
-		0,
-		Padre::Wx::tango( 'status', 'dialog-warning.png' )
-	);
+	$mw->{gui}->{bottompane}->InsertPage( 1, $syntaxbar, Wx::gettext("Syntax Check"), 0 );
 
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$mw,

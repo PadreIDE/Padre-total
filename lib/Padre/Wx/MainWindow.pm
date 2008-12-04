@@ -303,12 +303,12 @@ sub create_editor_pane {
 sub create_side_pane {
 	my $self = shift;
 
-	$self->{gui}->{sidepane} = Wx::AuiNotebook->new(
+	$self->{gui}->{sidepane} = Wx::Notebook->new(
 		$self,
 		Wx::wxID_ANY,
 		Wx::wxDefaultPosition,
 		Wx::Size->new(300, 350), # used when pane is floated
-		Wx::wxAUI_NB_SCROLL_BUTTONS|Wx::wxAUI_NB_WINDOWLIST_BUTTON|Wx::wxAUI_NB_TOP
+		Wx::wxNB_TOP
 	);
 
 	# Create the right-hand sidebar
@@ -349,12 +349,12 @@ sub create_side_pane {
 sub create_bottom_pane {
 	my $self = shift;
 
-	$self->{gui}->{bottompane} = Wx::AuiNotebook->new(
+	$self->{gui}->{bottompane} = Wx::Notebook->new(
 		$self,
 		Wx::wxID_ANY,
 		Wx::wxDefaultPosition,
 		Wx::Size->new(350, 300), # used when pane is floated
-		Wx::wxAUI_NB_SCROLL_BUTTONS|Wx::wxAUI_NB_WINDOWLIST_BUTTON|Wx::wxAUI_NB_TOP
+		Wx::wxNB_TOP
 	);
 
 	# Create the bottom-of-screen output textarea
@@ -362,13 +362,7 @@ sub create_bottom_pane {
 		$self->{gui}->{bottompane}
 	);
 
-	$self->{gui}->{bottompane}->InsertPage(
-		0,
-		$self->{gui}->{output_panel},
-		Wx::gettext("Output"),
-		1,
-		Padre::Wx::tango( 'mimetypes', 'text-x-generic.png' )
-	);
+	$self->{gui}->{bottompane}->InsertPage( 0, $self->{gui}->{output_panel}, Wx::gettext("Output"), 1 );
 
 	$self->manager->AddPane(
 		$self->{gui}->{bottompane},
