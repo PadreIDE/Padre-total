@@ -1,5 +1,8 @@
 Changes for Padre.
 
+    Experimental implementation of the Padre::TaskManager thread pool
+       and Padre::Task background-task-interface for running blocking
+       tasks in additional threads. (SMUELLER)
     Italian translation (SBLANDIN)
     Show methods in abc order. Allow user to set preference to 'abc' or 'original'
        ordering of methods. (#163) (SZABGAB)
