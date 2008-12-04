@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 25+25;
+use Test::More tests => 80;
 use threads;
 use threads::shared;
 use Padre::Task;
@@ -13,8 +13,25 @@ use vars '$TestClass'; # secret class name
 
 # TODO: test with real threads
 
+sub fake_run_task {
+  my $string = shift;
+	my $recovered = Padre::Task->deserialize( \$string );
+	ok(defined $recovered, "recovered form defined");
+	isa_ok($recovered, 'Padre::Task');
+	isa_ok($recovered, $TestClass);
+	#is_deeply($recovered, $task);
+	
+	$recovered->run();
+	$string = undef;
+	$recovered->serialize(\$string);
+	ok(defined $string);
+  return $string;
+}
+
 sub fake_execute_task {
 	my $class = shift;
+        my $use_threads = shift;
+
 	ok($class->can('new'), "task can be constructed");
 	my $task = $class->new( main_thread_only => "not in sub thread" );
 	isa_ok($task, 'Padre::Task');
@@ -26,28 +43,30 @@ sub fake_execute_task {
 	$task->serialize(\$string);
 	ok(defined $string, "serialized form defined");
 
-	my $recovered = Padre::Task->deserialize( \$string );
-	ok(defined $recovered, "recovered form defined");
-	isa_ok($recovered, 'Padre::Task');
-	isa_ok($recovered, $class);
-	is_deeply($recovered, $task);
-	
-	$recovered->run();
-	$string = undef;
-	$recovered->serialize(\$string);
-	ok(defined $string);
+        if ($use_threads) {
+          my $thread = threads->create(
+            \&fake_run_task, $string
+          );
+          $string = $thread->join();
+          isa_ok($thread, 'threads');
+        }
+        else {
+          $string = fake_run_task($string);
+          ok(1);
+        }
 
 	my $final = Padre::Task->deserialize( \$string );
 	ok(defined $final);
-	isa_ok($recovered, 'Padre::Task');
-	isa_ok($recovered, $class);
-	is_deeply($final, $recovered);
+        ok(not exists $task->{answer});
+        $task->{answer} = 'succeed';
+	is_deeply($final, $task);
 	$final->finish();
 }
 
 package main;
 $TestClass = "Padre::Task::Test";
-fake_execute_task($TestClass);
+fake_execute_task($TestClass, 0);
+fake_execute_task($TestClass, 1);
 
 my $subclass = Padre::Task->subclass(
 	class => 'Padre::Task::OnTheFlyTest',
@@ -59,7 +78,8 @@ my $subclass = Padre::Task->subclass(
 );
 
 $TestClass = $subclass;
-fake_execute_task($subclass);
+fake_execute_task($subclass, 0);
+fake_execute_task($subclass, 1);
 
 
 
