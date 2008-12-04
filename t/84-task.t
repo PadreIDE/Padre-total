@@ -8,21 +8,23 @@ use threads::shared;
 use Padre::Task;
 use vars '$TestClass'; # secret class name
 
+# TODO: test with real threads
+
 sub fake_execute_task {
 	my $class = shift;
 	ok($class->can('new'), "task can be constructed");
-	my $task = $class->new();
+	my $task = $class->new( main_thread_only => "not in sub thread" );
 	isa_ok($task, 'Padre::Task');
 	isa_ok($task, $class);
-	ok($task->can('prepare'));
+	ok($task->can('prepare'), "can prepare");
 	
 	$task->prepare();
 	my $string;
 	$task->serialize(\$string);
-	ok(defined $string);
+	ok(defined $string, "serialized form defined");
 
 	my $recovered = Padre::Task->deserialize( \$string );
-	ok(defined $recovered);
+	ok(defined $recovered, "recovered form defined");
 	isa_ok($recovered, 'Padre::Task');
 	isa_ok($recovered, $class);
 	is_deeply($recovered, $task);
