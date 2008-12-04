@@ -919,6 +919,8 @@ Italian - Simone Blandino (SBLANDIN)
 
 Korean - Keedi Kim (KEEDI)
 
+Russian - Andrew Shitov
+
 
 
 =cut

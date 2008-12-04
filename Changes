@@ -8,6 +8,10 @@ Changes for Padre.
        ordering of methods. (#163) (SZABGAB)
     Open selection prompts user if nothing selected. (#143) (JQUELIN)
 
+v0.21 2008.12.04
+
+    Russian translation added (Andrew Shitov)
+
 v0.20 2008.12.02
 
     Separate tab-width from indentation-level preference (SMUELLER)

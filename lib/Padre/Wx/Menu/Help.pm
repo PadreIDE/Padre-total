@@ -63,6 +63,7 @@ sub about {
 	$about->AddTranslator("Hungarian - Gyorgy Pasztor");
 	$about->AddTranslator("Italian - Simone Blandino");
 	$about->AddTranslator("Korean - Keedi Kim");
+	$about->AddTranslator("Russian - Andrew Shitov");
 
 
 	Wx::AboutBox( $about );
