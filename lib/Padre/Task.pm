@@ -61,6 +61,14 @@ follows. (C<new> and C<schedule> are inherited.)
   my $task = Padre::Task::Foo->new(some => 'data');
   $task->schedule(); # hand off to the task manager
 
+As a special case, any (arbitrarily nested and complex) data
+structure you put into your object under
+the magic C<main_thread_only> hash slot will not be passed
+to the worker thread but become available again when C<finish>
+is called in the main thread. You can use this to pass references
+to GUI objects and similar things to the finish event handler
+since these must not be accessed from worker threads.
+
 =head1 DESCRIPTION
 
 This is the base class of all background operations in Padre. The SYNOPSIS
