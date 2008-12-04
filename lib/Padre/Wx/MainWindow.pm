@@ -1117,11 +1117,12 @@ sub setup_editors {
 }
 
 sub on_new {
+	$_[0]->Freeze;
 	$_[0]->setup_editor;
 	$_[0]->refresh_all;
+	$_[0]->Thaw;
 	return;
 }
-
 
 # if the current buffer is empty then fill that with the content of the
 # current file otherwise open a new buffer and open the file there.
@@ -1584,7 +1585,7 @@ sub on_join_lines {
 	my ($self) = @_;
 
 	my $page = $self->selected_editor;
-	
+
 	# find positions
 	my $pos1 = $page->GetCurrentPos;
 	my $line = $page->LineFromPosition($pos1);
@@ -1608,7 +1609,7 @@ sub zoom {
 }
 
 sub on_preferences {
-	my $self   = shift;
+	my $self = shift;
 
 	if (Padre::Wx::Dialog::Preferences->run( $self )) {
 		foreach my $editor ( $self->pages ) {
