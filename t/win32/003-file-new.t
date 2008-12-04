@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use FindBin qw/$RealBin/;
+use Cwd ();
 use vars qw/@windows/;
 
 BEGIN {
@@ -28,30 +28,32 @@ Win32::GuiTest::SendKeys("we might consider this test succesful. ");
 Win32::GuiTest::SendKeys("Please wait.......");
 
 # get old $default_dir
-my $old_default_dir = $Padre::Wx::MainWindow::default_dir;
-$Padre::Wx::MainWindow::default_dir = $RealBin;
+my $dir = Cwd::cwd();
 
 MenuSelect("&File|&Save");
+sleep 1;
 
 my $save_to = "$$.txt";
-unlink("$RealBin/$save_to");
+unlink("$dir/$save_to");
 
 SendKeys($save_to);
 SendKeys("%{S}");
 sleep 1;
 
-# check the file
-ok(-e "$RealBin/$save_to", 'file saved');
+diag "saved to $dir/$save_to\n";
 
-open(my $fh, '<', "$RealBin/$save_to");
+# check the file
+ok(-e "$dir/$save_to", 'file saved');
+
+open(my $fh, '<', "$dir/$save_to");
 local $/;
 my $text = <$fh>;
 close($fh);
 like($text, qr/inside Padre/);
 
 # restore
+sleep 1;
 MenuSelect("&File|&Close");
-unlink("$RealBin/$save_to");
-$Padre::Wx::MainWindow::default_dir = $old_default_dir;
+unlink("$dir/$save_to");
 
 1;
