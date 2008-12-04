@@ -74,10 +74,19 @@ sub dialog {
 	);
 
 	$dialog->{_widgets_}{editor_tabwidth}->SetFocus;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},     sub { $dialog->EndModal(Wx::wxID_OK) } );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, sub { $dialog->EndModal(Wx::wxID_CANCEL) } );
 
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_guess_},  sub { $class->guess_indentation_settings($dialog) } );
+	Wx::Event::EVT_BUTTON( $dialog,
+		$dialog->{_widgets_}{_ok_},
+		sub { $dialog->EndModal(Wx::wxID_OK) },
+	);
+	Wx::Event::EVT_BUTTON( $dialog,
+		$dialog->{_widgets_}{_cancel_},
+		sub { $dialog->EndModal(Wx::wxID_CANCEL) },
+	);
+	Wx::Event::EVT_BUTTON( $dialog,
+		$dialog->{_widgets_}{_guess_},
+		sub { $class->guess_indentation_settings($dialog) },
+	);
 
 	$dialog->{_widgets_}{_ok_}->SetDefault;
 	
