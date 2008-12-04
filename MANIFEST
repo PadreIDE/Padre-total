@@ -26,10 +26,6 @@ lib/Padre/Document/PIR.pm
 lib/Padre/Plugin/Devel.pm
 lib/Padre/Plugin/JavaScript.pm
 lib/Padre/Plugin/My.pm
-lib/Padre/Plugin/Vi.pm
-lib/Padre/Plugin/Vi/Editor.pm
-lib/Padre/Plugin/Vi/CommandLine.pm
-
 lib/Padre/Pod2HTML.pm
 
 lib/Padre/Project/Perl.pm
