@@ -7,7 +7,18 @@ our $VERSION = '0.20';
 
 require Padre;
 
-use base qw{Process::Storable Process};
+use Storable     ();
+use IO::Handle   ();
+use IO::String   ();
+use Scalar::Util ();
+use Params::Util '_INSTANCE';
+
+BEGIN {
+	# Hack IO::String to be a real IO::Handle
+	unless ( IO::String->isa('IO::Handle') ) {
+		@IO::String::ISA = qw{IO::Handle IO::Seekable};
+	}
+}
 
 =pod
 
@@ -227,7 +238,7 @@ sub finish {
 		# blessing into Padre::Task
 		bless $self => 'Padre::Task';
 
-		my $ret = $self->SUPER::serialize(@_);
+		my $ret = $self->_serialize(@_);
 
 		# cleanup
 		delete $self->{_process_class};
@@ -245,7 +256,7 @@ sub finish {
 	sub deserialize {
 		my $class = shift;
 
-		my $padretask = Padre::Task->SUPER::deserialize(@_);
+		my $padretask = Padre::Task->_deserialize(@_);
 		my $userclass = $padretask->{_process_class};
 		delete $padretask->{_process_class};
 
@@ -275,6 +286,86 @@ sub finish {
 	}
 
 } # end scope of main thread data storage
+
+
+# old Process::Storable internals
+sub _serialize {
+	my $self = shift;
+
+	# Serialize to a named file (locking it)
+	if ( defined $_[0] and ! ref $_[0] and length $_[0] ) {
+		return Storable::lock_nstore($self, shift);
+	}
+
+	# Serialize to a string (via a handle)
+	if ( Params::Util::_SCALAR0($_[0]) ) {
+		my $string = shift;
+		$$string   = 'pst0' . Storable::nfreeze($self);
+		return 1;
+	}
+
+	# Serialize to a generic handle
+	if ( defined fileno($_[0]) ) {
+		local $/ = undef;
+		return Storable::nstore_fd($self, shift);
+	}
+
+	# Serialize to an IO::Handle object
+	if ( Params::Util::_INSTANCE($_[0], 'IO::Handle') ) {
+		my $string   = Storable::nfreeze($self);
+		my $iohandle = shift;
+		$iohandle->print( 'pst0' )  or return undef;
+		$iohandle->print( $string ) or return undef;
+		return 1;
+	}
+
+	# We don't support anything else
+	undef;
+}
+
+# old Process::Storable internals
+sub _deserialize {
+	my $class = shift;
+
+	# Serialize from a named file (locking it)
+	if ( defined $_[0] and ! ref $_[0] and length $_[0] ) {
+		return Storable::lock_retrieve(shift);
+	}
+
+	# Serialize from a string (via a handle)
+	if ( Params::Util::_SCALAR0($_[0]) ) {
+		my $string = shift;
+
+		# Remove the magic header if it exists
+		if ( substr($$string, 0, 4) eq 'pst0' ) {
+			substr($$string, 0, 4, '');
+		}
+
+		return Storable::thaw($$string);
+	}
+
+	# Serialize from a generic handle
+	if ( defined fileno($_[0]) ) {
+		return Storable::retrieve_fd(shift);
+	}
+
+	# Serialize from an IO::Handle object
+	if ( Params::Util::_INSTANCE($_[0], 'IO::Handle') ) {
+		local $/   = undef;
+		my $string = $_[0]->getline;
+
+		# Remove the magic header if it exists
+		if ( substr($string, 0, 4) eq 'pst0' ) {
+			substr($string, 0, 4, '');
+		}
+
+		return Storable::thaw($string);
+	}
+
+	# We don't support anything else
+	undef;
+}
+
 
 
 =head1 CLASS METHODS
