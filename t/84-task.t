@@ -2,7 +2,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 82;
+BEGIN {
+	$| = 1; # flush for the threads
+}
+
+use Test::More tests => 100;
 use threads;
 use threads::shared;
 use Padre::Task;
@@ -58,6 +62,10 @@ sub fake_execute_task {
 			\&fake_run_task, $string
 		);
 		$string = $thread->join();
+		# modify main thread copy of test counter since
+		# it was copied for the worker thread.
+		my $tb = Test::Builder->new();
+		$tb->current_test( $tb->current_test() + 9 ); # XXX - watch out! Magic number of tests in thread
 		isa_ok($thread, 'threads');
 	}
 	else {
