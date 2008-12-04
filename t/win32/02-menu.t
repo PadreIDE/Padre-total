@@ -14,7 +14,7 @@ BEGIN {
     scalar @windows or plan skip_all => 'You need open Padre then start this test';
 };
 
-plan tests => 1;
+plan tests => 3;
 
 my $padre = $windows[0];
 
@@ -26,8 +26,13 @@ my %h = GetMenuItemInfo($menu, 0);
 is $h{text}, '&File';
 
 # test Edit
-my $submenu = GetSubMenu($menu, 1);
-my %h = GetMenuItemInfo($menu, 1);
+$submenu = GetSubMenu($menu, 1);
+%h = GetMenuItemInfo($menu, 1);
 is $h{text}, '&Edit';
+
+# test View
+$submenu = GetSubMenu($menu, 2);
+%h = GetMenuItemInfo($menu, 2);
+is $h{text}, '&View';
 
 1;
