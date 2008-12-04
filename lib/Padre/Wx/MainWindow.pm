@@ -1610,12 +1610,12 @@ sub zoom {
 sub on_preferences {
 	my $self   = shift;
 
-	Padre::Wx::Dialog::Preferences->run( $self );
-
-	foreach my $editor ( $self->pages ) {
-		$editor->set_preferences;
+	if (Padre::Wx::Dialog::Preferences->run( $self )) {
+		foreach my $editor ( $self->pages ) {
+			$editor->set_preferences;
+		}
+		$self->refresh_methods;
 	}
-	$self->refresh_methods;
 
 	return;
 }

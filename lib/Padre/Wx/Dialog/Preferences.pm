@@ -153,7 +153,7 @@ sub run {
 	$config->{editor_autoindent}   = $editor_autoindent[ $data->{editor_autoindent} ];
 	$config->{editor_methods}      = $editor_methods[ $data->{editor_methods} ];
 
-	return;
+	return 1;
 }
 
 1;
