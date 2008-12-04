@@ -64,6 +64,7 @@ my %prereqs = (
 	'PAR'                     => '0.970',
 	'Pod::POM'                => '0.17',
 	'Pod::Simple'             => '3.07',
+	'Pod::Simple::XHTML'      => '3.04',
 	'Probe::Perl'             => '0.01',
         'Process'                 => '0.22',
 	'PPI'                     => '1.203',
