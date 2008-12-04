@@ -178,67 +178,95 @@ sub finish {
 }
 
 
-# this will serialize the object and do some magic as it happens
-# This is an INTERNAL method and subject to change
-sub serialize {
-	my $self = shift;
+{ # scope for main thread data storage
+	my %MainThreadData;
 
-	# The idea is to store the actual class of the object
-	# in the object itself for serialization. It's not as bad as
-	# it sounds. It just requires two things from the subclasses:
-	# - The subclasses cannot override "deserialize" and thus
-	#   probably not "serialize" either. But that shouldn't be
-	#   a huge deal as there are the "prepare" and "finish" hooks
-	#   for the user.
-	# - The subclasses must not use the "_process_class" slot
-	#   of the object. (Ohh...)
+	# this will serialize the object and do some magic as it happens
+	# This is an INTERNAL method and subject to change
+	sub serialize {
+		my $self = shift;
+
+		# The idea is to store the actual class of the object
+		# in the object itself for serialization. It's not as bad as
+		# it sounds. It just requires two things from the subclasses:
+		# - The subclasses cannot override "deserialize" and thus
+		#   probably not "serialize" either. But that shouldn't be
+		#   a huge deal as there are the "prepare" and "finish" hooks
+		#   for the user.
+		# - The subclasses must not use the "_process_class" slot
+		#   of the object. (Ohh...)
  
-	# save the real object class for deserialization 
-	my $class = ref($self);
-	if (exists $self->{_process_class}) {
-		require Carp;
-		Carp::croak("The '_process_class' slot in a Padre::Task"
-		            . " object is reserved for usage by Padre::Task");
-	}
-
-	$self->{_process_class} = $class;
-
-	# remove pesky dependency by explicitly
-	# blessing into Padre::Task
-	bless $self => 'Padre::Task';
-
-	my $ret = $self->SUPER::serialize(@_);
-	delete $self->{_process_class};
-	bless $self => $class;
-
-	return $ret;
-}
-
-# this will deserialize the object and do some magic as it happens
-# This is an INTERNAL method and subject to change
-sub deserialize {
-	my $class = shift;
-
-	my $padretask = Padre::Task->SUPER::deserialize(@_);
-	my $userclass = $padretask->{_process_class};
-	delete $padretask->{_process_class};
-
-	no strict 'refs';
-	my $ref = \%{"${userclass}::"};
-	use strict 'refs';
-	my $loaded = exists $ref->{"ISA"};
-	if (!$loaded and !eval "require $userclass;") {
-		require Carp;
-		if ($@) {
-			Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
-		} else {
-			Carp::croak("Failed to load Padre::Task subclass '$userclass': It did not return a true value.");
+		# save the real object class for deserialization 
+		my $class = ref($self);
+		if (exists $self->{_process_class}) {
+			require Carp;
+			Carp::croak("The '_process_class' slot in a Padre::Task"
+			            . " object is reserved for usage by Padre::Task");
 		}
+
+		$self->{_process_class} = $class;
+
+		my $save_main_thread_data = (threads->tid() == 0 and exists $self->{main_thread_only});
+		if ($save_main_thread_data) {
+			my $id = "$self";
+			$id .= '_' while exists $MainThreadData{$id};
+			$MainThreadData{$id} = $self->{main_thread_only};
+			$self->{_main_thread_data_id} = $id;
+			delete $self->{main_thread_only};
+		}
+
+		# remove pesky dependency by explicitly
+		# blessing into Padre::Task
+		bless $self => 'Padre::Task';
+
+		my $ret = $self->SUPER::serialize(@_);
+
+		# cleanup
+		delete $self->{_process_class};
+		if ($save_main_thread_data) {
+			$self->{main_thread_only} = $MainThreadData{$self->{_main_thread_data_id}};
+			delete $self->{_main_thread_data_id};
+		}
+		bless $self => $class;
+
+		return $ret;
 	}
 
-	my $obj = bless $padretask => $userclass;
-	return $obj;
-}
+	# this will deserialize the object and do some magic as it happens
+	# This is an INTERNAL method and subject to change
+	sub deserialize {
+		my $class = shift;
+
+		my $padretask = Padre::Task->SUPER::deserialize(@_);
+		my $userclass = $padretask->{_process_class};
+		delete $padretask->{_process_class};
+
+		no strict 'refs';
+		my $ref = \%{"${userclass}::"};
+		use strict 'refs';
+		my $loaded = exists $ref->{"ISA"};
+		if (!$loaded and !eval "require $userclass;") {
+			require Carp;
+			if ($@) {
+				Carp::croak("Failed to load Padre::Task subclass '$userclass': $@");
+			} else {
+				Carp::croak("Failed to load Padre::Task subclass '$userclass': It did not return a true value.");
+			}
+		}
+
+		# restore the main-thread-only data in the task
+		if (threads->tid() == 0 and exists $padretask->{_main_thread_data_id}) {
+			my $id = $padretask->{_main_thread_data_id};
+			$padretask->{main_thread_only} = $MainThreadData{$id};
+			delete $padretask->{_main_thread_data_id};
+			delete $MainThreadData{$id};
+		}
+
+		my $obj = bless $padretask => $userclass;
+		return $obj;
+	}
+
+} # end scope of main thread data storage
 
 
 =head1 CLASS METHODS
