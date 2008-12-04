@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     requires => {
 		'Padre' => '0.20',
 		'Wx::Perl::Dialog',
+	},
     build_requires => {
         'Test::More' => 0,
     },
