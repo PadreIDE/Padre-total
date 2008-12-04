@@ -12,8 +12,12 @@ our @ISA     = 'Wx::ToolBar';
 sub new {
 	my $class  = shift;
 	my $parent = shift;
-	my $self   = $class->SUPER::new( $parent, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize,
-								   Wx::wxNO_BORDER | Wx::wxTB_HORIZONTAL | Wx::wxTB_FLAT | Wx::wxTB_DOCKABLE, 5050, );
+	my $self   = $class->SUPER::new( $parent, -1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxNO_BORDER | Wx::wxTB_HORIZONTAL | Wx::wxTB_FLAT | Wx::wxTB_DOCKABLE,
+		5050,
+	);
 
 	# Automatically populate
 	$self->AddTool(

@@ -11,7 +11,9 @@ use 5.008;
 # This used to break with subroutine redefinitions.
 # So to prevent this, we force the creating of the correct
 # %INC entry when the file is first compiled. -- Steffen
-BEGIN {$INC{"Padre/Wx/MainWindow.pm"} ||= __FILE__}
+BEGIN {
+	$INC{"Padre/Wx/MainWindow.pm"} ||= __FILE__;
+}
 
 use strict;
 use warnings;
