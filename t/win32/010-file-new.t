@@ -27,7 +27,7 @@ Win32::GuiTest::SendKeys("If you're reading this inside Padre, ");
 Win32::GuiTest::SendKeys("we might consider this test succesful. ");
 Win32::GuiTest::SendKeys("Please wait.......");
 
-# get old $default_dir
+# XXX? It's broken!
 my $dir = Cwd::cwd();
 
 MenuSelect("&File|&Save");
