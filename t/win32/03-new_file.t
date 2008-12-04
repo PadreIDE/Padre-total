@@ -18,6 +18,7 @@ plan tests => 2;
 
 my $padre = $windows[0];
 SetForegroundWindow($padre);
+sleep 1;
 
 MenuSelect("&File|&New");
 sleep 1;
