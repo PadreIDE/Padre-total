@@ -25,7 +25,7 @@ MenuSelect("&File|Open Selection");
 sleep 1;
 
 SendKeys("Wx::Perl::Dialog");
-PushButton("OK");
+SendKeys("~"); # press Enter
 sleep 1;
 
 # check if the Padre.pm is open.
