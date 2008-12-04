@@ -42,8 +42,6 @@ SendKeys("$dir\\$save_to");
 SendKeys("%{S}");
 sleep 1;
 
-diag "saved to $dir/$save_to\n";
-
 # check the file
 ok(-e "$dir/$save_to", 'file saved');
 
@@ -54,7 +52,6 @@ close($fh);
 like($text, qr/inside Padre/);
 
 # restore
-sleep 1;
 MenuSelect("&File|&Close");
 unlink("$dir/$save_to");
 
