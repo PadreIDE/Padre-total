@@ -17,12 +17,10 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Wx ();
+use Wx::HTML  ();
 
-use vars qw{@ISA};
 our $VERSION = '0.20';
-BEGIN {
-	@ISA     = 'Wx::HtmlWindow';
-}
+our @ISA     = 'Wx::HtmlWindow';
 
 
 
