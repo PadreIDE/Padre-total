@@ -37,6 +37,36 @@ sub element_depth {
 	return $depth;
 }
 
+# This does not guarantee a match: the location of
+# a token is only the first character
+# TODO: PPIx::IndexOffsets or something similar might help.
+# TODO: See the 71... tests. If we don#t flush locations there, this breaks.
+sub find_token_at_location {
+	my $document = shift;
+	my $location = shift;
+	
+	if (not defined $document
+	    or not $document->isa('PPI::Document')
+	    or not defined $location
+	    or not ref($location) eq 'ARRAY') {
+		require Carp;
+		Carp::croak("find_token_at_location() requires a PPI::Document and a PPI-style location is arguments");
+	}
+
+	$document->index_locations();
+
+	my $variable_token = $document->find_first(
+		sub {
+			my $elem = $_[1];
+			my $loc = $elem->location;
+			return 0 if $loc->[0] != $location->[0] or $loc->[1] != $location->[1];
+			return 1;
+		},
+	);
+
+	return $variable_token;
+}
+
 # given either a PPI::Token::Symbol (i.e. a variable)
 # or a PPI::Token which contains something that looks like
 # a variable (quoted vars, interpolated vars in regexes...)
