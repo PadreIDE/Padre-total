@@ -21,6 +21,7 @@ my $padre = $windows[0];
 SetForegroundWindow($padre);
 sleep 1;
 
+SendKeys("{LEFT}"); # no selection
 MenuSelect("&File|Open Selection");
 sleep 1;
 
