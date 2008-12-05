@@ -131,7 +131,7 @@ sub new {
 		$REAP_TIMER = Wx::Timer->new( $mw, $timerid );
 		Wx::Event::EVT_TIMER(
 			#$mw, $timerid, sub { $SINGLETON->reap(); },
-			$mw, $timerid, sub { warn scalar($SINGLETON->workers); $SINGLETON->reap(); },
+			$mw, $timerid, sub { $SINGLETON->reap(); },
 		);
 		$REAP_TIMER->Start( $self->reap_interval, Wx::wxTIMER_CONTINUOUS  ); # in ms
 	}
