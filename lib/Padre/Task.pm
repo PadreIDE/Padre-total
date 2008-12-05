@@ -507,8 +507,6 @@ of my knowledge>, that includes filehandles and code references.
 The management of worker threads is implemented in the L<Padre::TaskManager>
 class.
 
-C<Padre::Task> inherits from L<Process> and L<Process::Storable>.
-
 The transfer of the objects to and from the worker threads is implemented
 with L<Storable>.
 
