@@ -106,7 +106,7 @@ The rest of the values in the array depend on the widget.
 
  3. A string describing the font
 
-=item Wx::ColourPickerControl
+=item Wx::ColourPickerCtrl
 
  3. A HTML-compatible colour description string: '#' plus 6 hex digits; i.e. #FF0000
 
