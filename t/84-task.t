@@ -6,7 +6,7 @@ BEGIN {
 	$| = 1; # flush for the threads
 }
 
-use Test::More tests => 100;
+use Test::More tests => 50;
 use threads;
 use threads::shared;
 use Padre::Task;
@@ -83,21 +83,8 @@ sub fake_execute_task {
 
 package main;
 $TestClass = "Padre::Task::Test";
-fake_execute_task($TestClass, 0);
-fake_execute_task($TestClass, 1);
-
-my $subclass = Padre::Task->subclass(
-	class => 'Padre::Task::OnTheFlyTest',
-	methods => {
-		run     => \&Padre::Task::Test::run,
-		prepare => \&Padre::Task::Test::prepare,
-		finish  => \&Padre::Task::Test::finish,
-	},
-);
-
-$TestClass = $subclass;
-fake_execute_task($subclass, 0);
-fake_execute_task($subclass, 1);
+fake_execute_task($TestClass, 0); # no threading
+fake_execute_task($TestClass, 1); # threading
 
 
 
