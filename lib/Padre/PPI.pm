@@ -37,6 +37,51 @@ sub element_depth {
 	return $depth;
 }
 
+# given either a PPI::Token::Symbol (i.e. a variable)
+# or a PPI::Token which contains something that looks like
+# a variable (quoted vars, interpolated vars in regexes...)
+# find where that variable has been declared lexically.
+# Doesn't find stuff like "use vars...".
+sub find_variable_declaration {
+	my $cursor   = shift;
+	return()
+	  if not $cursor->isa("PPI::Token");
+	my ($varname, $token_str);
+	if ($cursor->isa("PPI::Token::Symbol")) {
+		$varname = $cursor->canonical;
+		$token_str = $cursor->content;
+	}
+	else {
+		my $content = $cursor->content;
+		if ($content =~ /([\$@%*][\w:']+)/) {
+			$varname = $1;
+			$token_str = $1;
+		}
+	}
+	return()
+	  if not defined $varname;
+
+	my $document = $cursor->top();
+	my $declaration;
+	while ( $cursor = $cursor->parent ) {
+		last if $cursor == $document;
+		if ($cursor->isa("PPI::Structure::Block")) {
+			my @elems = $cursor->elements;
+			foreach my $elem (@elems) {
+				if ($elem->isa("PPI::Statement::Variable")
+				    and grep {$_ eq $varname} $elem->variables) {
+					$declaration = $elem;
+					last;
+				}
+			}
+			last if $declaration;
+		}
+	} # end while not top level
+
+	return $declaration;
+}
+
+
 1;
 
 # Copyright 2008 Gabor Szabo.
