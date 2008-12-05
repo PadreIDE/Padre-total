@@ -37,6 +37,7 @@ use Class::Autouse qw{
 	Padre::Pod::Viewer
 	Padre::Task
 	Padre::Task::PPI
+	Padre::Task::PPI::FindUnmatchedBrace
 	Padre::TaskManager
 	Padre::Wx::Popup
 	Padre::Wx::Editor
