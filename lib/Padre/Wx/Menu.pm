@@ -713,9 +713,7 @@ sub menu_perl {
 			unless ( $doc and $doc->isa('Padre::Document::Perl') ) {
 				return;
 			}
-			unless ($doc->find_unmatched_brace) {
-				Wx::MessageBox( Wx::gettext("All braces appear to be matched"), Wx::gettext("Check Complete"), Wx::wxOK, $win );
-			}
+			$doc->find_unmatched_brace;
 		},
 	);
 	
