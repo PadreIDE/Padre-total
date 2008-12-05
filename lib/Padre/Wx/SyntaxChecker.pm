@@ -200,7 +200,7 @@ sub on_syntax_check_timer {
 				$page->MarkerAdd( $l, 1);
 			}
 			my $idx = $syntaxbar->InsertStringItem( $i++, $l + 1 );
-			$syntaxbar->SetItem( $idx, 1, $hint->{severity} );
+			$syntaxbar->SetItem( $idx, 1, ( $hint->{severity} eq 'W' ? Wx::gettext('Warning') : Wx::gettext('Error') ) );
 			$syntaxbar->SetItem( $idx, 2, $hint->{msg} );
 
 			if ( exists $page->{synchk_calltips}->{$l} ) {
@@ -214,7 +214,14 @@ sub on_syntax_check_timer {
 
 		my $width0_default = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Line") . ' ' );
 		my $width0 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $last_hint->{line} x 2 );
-		my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, Wx::gettext("Type") x 2 );
+		my $refStr = '';
+		if ( length( Wx::gettext('Warning') ) > length( Wx::gettext('Error') ) ) {
+			$refStr = Wx::gettext('Warning');
+		}
+		else {
+			$refStr = Wx::gettext('Error');
+		}
+		my $width1 = $page->TextWidth( Wx::wxSTC_STYLE_DEFAULT, $refStr . ' ' );
 		my $width2 = $syntaxbar->GetSize->GetWidth - $width0 - $width1 - $syntaxbar->GetCharWidth * 2;
 		$syntaxbar->SetColumnWidth( 0, ( $width0_default > $width0 ? $width0_default : $width0 ) );
 		$syntaxbar->SetColumnWidth( 1, $width1 );
