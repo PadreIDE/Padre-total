@@ -279,7 +279,7 @@ msgstr "Невозможно найти различия в несохранен
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/MainWindow.pm:1558
 #: /home/jquelin/prog/padre/trunk/blib/lib/Padre/Wx/MainWindow.pm:1547
-msgid "There are no differences\n"
+msgid "There are no differences"
 msgstr "Различий нет"
 
 #: /home/jquelin/prog/padre/trunk/lib/Padre/Wx/MainWindow.pm:1953
