@@ -370,20 +370,56 @@ sub comment_lines_str { return '#' }
 sub find_unmatched_brace {
 	my ($self) = @_;
 
-	my $ppi   = $self->ppi_get or return;
-	my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
-	if ( $where ) {
-		@$where = sort {
-			Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
-			or
-			$a->location->[0] <=> $b->location->[0]
-			or
-			$a->location->[1] <=> $b->location->[1]
-		} @$where;
-		$self->ppi_select( $where->[0] );
-		return 1;
-	}
-	return 0;
+	# create a specialized ppi-task subclass
+	my $subclass = Padre::Task::PPI->subclass(
+		class => 'Padre::Task::PPI::FindUnmatchedBrace',
+		methods => {
+			# will be called after ppi-parsing:
+			process_ppi => sub {
+				# find bad braces
+				my $self = shift;
+				my $ppi = shift or return;
+				require Padre::PPI;
+				my $where = $ppi->find( \&Padre::PPI::find_unmatched_brace );
+				if ( $where ) {
+					@$where = sort {
+						Padre::PPI::element_depth($b) <=> Padre::PPI::element_depth($a)
+						or
+						$a->location->[0] <=> $b->location->[0]
+						or
+						$a->location->[1] <=> $b->location->[1]
+					} @$where;
+					$self->{bad_element} = $where->[0]; # remember for gui update
+				}
+				return();
+			},
+			finish => sub {
+				my $self = shift;
+				if (defined $self->{bad_element}) {
+					# GUI update
+					$self->{main_thread_only}{document}->ppi_select( $self->{bad_element} );
+				}
+				else {
+					Wx::MessageBox(
+						Wx::gettext("All braces appear to be matched"),
+						Wx::gettext("Check Complete"),
+						Wx::wxOK,
+						Padre->ide->wx->main_window
+					);
+				}
+			},
+		},
+	);
+
+	# create a new object of the task class and schedule it
+	$subclass->new(
+		# for parsing
+		text => $self->text_get,
+		# will be available in "finish" but not in "run"/"process_ppi"
+		main_thread_only => { document => $self },
+	)->schedule;
+
+	return();
 }
 
 1;
