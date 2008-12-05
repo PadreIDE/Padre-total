@@ -36,6 +36,7 @@ use Class::Autouse qw{
 	Padre::Pod::Indexer
 	Padre::Pod::Viewer
 	Padre::Task
+	Padre::Task::PPI
 	Padre::TaskManager
 	Padre::Wx::Popup
 	Padre::Wx::Editor
