@@ -1,11 +1,18 @@
 Changes for Padre.
 
+    AUI updates to the syntax-checker/output-window GUI elements (HJANSEN)
+    Add new Perl-specific feature: "Jump to variable declaration"
+        and the experimental "replace lexical variable". (SMUELLER)
+    The Perl-specific "find unmatched brace" feature now processes
+        the document in the background. (SMUELLER)
+    Generic Padre::Task::PPI class with tools for PPI-related
+        background tasks. (SMUELLER)
     Experimental implementation of the Padre::TaskManager thread pool
-       and Padre::Task background-task-interface for running blocking
-       tasks in additional threads. (SMUELLER)
+        and Padre::Task background-task-interface for running blocking
+        tasks in additional threads. (SMUELLER)
     Italian translation (SBLANDIN)
     Show methods in abc order. Allow user to set preference to 'abc' or 'original'
-       ordering of methods. (#163) (SZABGAB)
+        ordering of methods. (#163) (SZABGAB)
     Open selection prompts user if nothing selected. (#143) (JQUELIN)
     Russian translation added (Andrew Shitov)
 
