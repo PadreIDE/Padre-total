@@ -58,6 +58,7 @@ sub find_token_at_location {
 	my $variable_token = $document->find_first(
 		sub {
 			my $elem = $_[1];
+			return 0 if not $elem->isa('PPI::Token');
 			my $loc = $elem->location;
 			return 0 if $loc->[0] != $location->[0] or $loc->[1] != $location->[1];
 			return 1;
@@ -75,7 +76,7 @@ sub find_token_at_location {
 sub find_variable_declaration {
 	my $cursor   = shift;
 	return()
-	  if not $cursor->isa("PPI::Token");
+	  if not $cursor or not $cursor->isa("PPI::Token");
 	my ($varname, $token_str);
 	if ($cursor->isa("PPI::Token::Symbol")) {
 		$varname = $cursor->canonical;
