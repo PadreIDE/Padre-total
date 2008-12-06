@@ -57,7 +57,6 @@ SCOPE: {
 	#my $doc2 = PPI::Document->new( \$text );
 	my $cmp_elem = Padre::PPI::find_token_at_location($doc, [138, 33, 33]);
 	ok( $elem == $cmp_elem, 'find_token_at_location returns the same token as a manual search' );
-
 	my $declaration;
 	$doc->find_first(
 		sub {
@@ -71,7 +70,8 @@ SCOPE: {
   
 	$doc->flush_locations(); # TODO: This shouldn't have to be here. But remove it and things break -- Adam?
 	my $cmp_declaration = Padre::PPI::find_token_at_location($doc, [126, 2, 9]);
-	ok( $declaration == $cmp_declaration, 'find_token_at_location returns the same token as a manual search' );
+	# They're not really the same. The manual search finds the entire Statement node. Hence the first_element.
+	ok( $declaration->first_element() == $cmp_declaration, 'find_token_at_location returns the same token as a manual search' );
 
 	my $result_declaration = Padre::PPI::find_variable_declaration($elem);
 
