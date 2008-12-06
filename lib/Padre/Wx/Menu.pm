@@ -727,6 +727,30 @@ sub menu_perl {
 		},
 	);
 
+	my $experimental = Padre->ide->config->{experimental};
+
+	if ($experimental) {
+		my $menu_perl_lexical_replace_var = $menu->Append( -1, Wx::gettext("Lexically replace variable") );
+		Wx::Event::EVT_MENU( $win,
+			$menu_perl_lexical_replace_var,
+			sub {
+				my $doc = Padre::Documents->current;
+				return unless $doc and $doc->isa('Padre::Document::Perl');
+				my $dialog = Padre::Wx::History::TextDialog->new(
+					$win,
+					Wx::gettext("Replacement"),
+					Wx::gettext("Replacement"),
+					'$foo',
+				);
+				return if $dialog->ShowModal == Wx::wxID_CANCEL;
+				my $replacement = $dialog->GetValue;
+				$dialog->Destroy;
+				return unless defined $replacement;
+
+				$doc->lexical_variable_replacement($replacement);
+			},
+		);
+	}
 	return $menu;
 }
 
