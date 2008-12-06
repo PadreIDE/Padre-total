@@ -77,6 +77,10 @@ sub process_ppi {
 		$self->{error} = "no declaration";
 		return;
 	}
+	my $scope = $declaration->parent;
+	while ( not $scope->isa('Padre::Document') and not $scope->isa('PPI::Structure::Block') ) {
+		$scope = $scope->parent;
+	}
         
 	my $token_str = $token->content;
 	my $varname = $token->canonical;
@@ -91,7 +95,7 @@ sub process_ppi {
 
 	my $replacement = $self->{replacement};
 
-	$ppi->find(
+	$scope->find(
 		sub {
 			my $node = $_[1];
 			if ($node->isa("PPI::Token::Symbol")) {
@@ -111,7 +115,7 @@ sub process_ppi {
 		},
 	);
 
-        $self->{token_location} = $token->location; # for moving the cursor after updating the text
+	$self->{token_location} = $token->location; # for moving the cursor after updating the text
 	# TODO: passing this back and forth is probably hyper-inefficient, but such is life.
 	$self->{updated_document_string} = $ppi->serialize;
 
