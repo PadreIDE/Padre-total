@@ -383,6 +383,10 @@ sub find_unmatched_brace {
 }
 
 
+# finds the start of the current symbol.
+# current symbol means in the context something remotely similar
+# to what PPI considers a PPI::Token::Symbol, but since we're doing
+# it the manual, stupid way, this may also work within quotelikes and regexes.
 sub _get_current_symbol {
 	my $editor = shift;
 	my $pos          = $editor->GetCurrentPos;
@@ -429,6 +433,7 @@ sub find_variable_declaration {
 
 	return();
 }
+
 
 
 1;
