@@ -22,6 +22,7 @@ our @ISA     = 'Padre::Document';
 #####################################################################
 # Padre::Document::Perl Methods
 
+# TODO watch out! These PPI methods may be VERY expensive!
 sub ppi_get {
 	my $self = shift;
 	my $text = $self->text_get;
@@ -380,6 +381,55 @@ sub find_unmatched_brace {
 
 	return();
 }
+
+
+sub _get_current_symbol {
+	my $editor = shift;
+	my $pos          = $editor->GetCurrentPos;
+	my $line         = $editor->LineFromPosition($pos);
+	my $line_start   = $editor->PositionFromLine($line);
+	my $cursor_col   = $pos-$line_start; # TODO: let's hope this is the physical column
+	my $line_end     = $editor->GetLineEndPosition($line);
+	my $line_content = $editor->GetTextRange($line_start, $line_end);
+
+	my $col = $cursor_col;
+        
+	# find start of symbol TODO: This could be more robust, no?
+	while (1) {
+		if ($col == 0 or substr($line_content, $col, 1) =~ /^[^\w:']$/) {
+			last;
+		}
+		$col--;
+	}
+
+	return() if $col == 0
+	         or substr($line_content, $col+1, 1) !~ /^[\w:']$/;
+	return [$line+1, $col+1];
+}
+
+
+sub find_variable_declaration {
+	my ($self) = @_;
+
+	my $location = _get_current_symbol($self->editor);
+	if (not defined $location) {
+		Wx::MessageBox(
+			Wx::gettext("Current cursor does not seem to point at a variable"),
+			Wx::gettext("Check cancelled"),
+			Wx::wxOK,
+			Padre->ide->wx->main_window
+		);
+		return();
+	}
+	# create a new object of the task class and schedule it
+	Padre::Task::PPI::FindVariableDeclaration->new(
+		document => $self,
+		location => $location,
+	)->schedule;
+
+	return();
+}
+
 
 1;
 
