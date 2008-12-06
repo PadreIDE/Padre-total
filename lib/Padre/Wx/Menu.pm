@@ -717,6 +717,16 @@ sub menu_perl {
 		},
 	);
 	
+	my $menu_perl_find_declaration = $menu->Append( -1, Wx::gettext("Find variable declaration") );
+	Wx::Event::EVT_MENU( $win,
+		$menu_perl_find_declaration,
+		sub {
+			my $doc = Padre::Documents->current;
+			return unless $doc and $doc->isa('Padre::Document::Perl');
+			$doc->find_variable_declaration;
+		},
+	);
+
 	return $menu;
 }
 
