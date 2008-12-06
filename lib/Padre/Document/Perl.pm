@@ -435,6 +435,31 @@ sub find_variable_declaration {
 }
 
 
+sub lexical_variable_replacement {
+	my ($self, $replacement) = @_;
+
+	my $location = _get_current_symbol($self->editor);
+	if (not defined $location) {
+		Wx::MessageBox(
+			Wx::gettext("Current cursor does not seem to point at a variable"),
+			Wx::gettext("Check cancelled"),
+			Wx::wxOK,
+			Padre->ide->wx->main_window
+		);
+		return();
+	}
+	# create a new object of the task class and schedule it
+	Padre::Task::PPI::LexicalReplaceVariable->new(
+		document => $self,
+		location => $location,
+                replacement => $replacement,
+	)->schedule;
+
+	return();
+}
+
+
+
 
 1;
 
