@@ -18,6 +18,7 @@ Padre::Task::PPI::FindVariableDeclaration - Finds where a variable was declared 
   # finds declaration of varibable at cursor
   my $declfinder = Padre::Task::PPI::FindVariableDeclaration->new(
           document => $document_obj,
+          location => [$line, $column], # ppi-style location is okay, too
   );
   
   $declfinder->schedule();
