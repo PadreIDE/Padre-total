@@ -38,6 +38,7 @@ use Class::Autouse qw{
 	Padre::Task
 	Padre::Task::PPI
 	Padre::Task::PPI::FindUnmatchedBrace
+	Padre::Task::PPI::FindVariableDeclaration
 	Padre::TaskManager
 	Padre::Wx::Popup
 	Padre::Wx::Editor
