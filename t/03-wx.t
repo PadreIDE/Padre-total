@@ -151,9 +151,24 @@ my @events = (
 		delay => 200,
 		code  => sub {
 			my $T = Test::Builder->new;
-			$T->diag("exiting");
+			$T->diag("changing locale");
 			my $main = $ide->wx->main_window;
 			$main->change_locale('en');
+			BEGIN { $main::tests += 0; }
+		},
+	},
+	{
+		delay => 100,
+		code  => sub {
+			my $T = Test::Builder->new;
+			$T->diag("setting syntax check");
+			my $main = $ide->wx->main_window;
+			$T->diag($main->{gui}->{syntaxcheck_panel});
+			#$T->ok(not (defined $main->{gui}->{syntaxcheck_panel}), 'syntaxcheck_panel is not yet defined');
+			$main->{menu}->{view_show_syntaxcheck}->Check(1);
+			$main->on_toggle_syntax_check(event(checked => 1));
+			$T->ok($main->{gui}->{syntaxcheck_panel}->isa('Wx::ListView'), 'is a Wx::ListView');
+			BEGIN { $main::tests += 1; }
 		},
 	},
 	{
@@ -176,4 +191,10 @@ ok(1, 'finished');
 BEGIN { $tests += 1; }
 
 
+sub event {
+	my (%args) = @_;
+	return bless \%args, 'Wx::Event';
+}
 
+package Wx::Event;
+sub IsChecked { return $_[0]->{checked}; }
