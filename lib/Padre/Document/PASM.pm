@@ -129,12 +129,12 @@ sub gg {
 sub _color {
 	my ($editor, $color, $line, $offset, $length) = @_;
 	#print "C: $color\n";
-	no strict "refs";
 	my $start  = $editor->PositionFromLine($line) + $offset;
 	if (not defined $length) {
 		$length = $editor->GetLineEndPosition($line) - $start;
 	}
 
+	no strict "refs"; ## no critic
 	$editor->StartStyling($start,  $color->());
 	$editor->SetStyling(  $length, $color->());
 	return;

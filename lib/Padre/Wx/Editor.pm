@@ -119,9 +119,9 @@ sub padre_setup_style {
 
 	$self->padre_setup_plain;
 
-	no strict "refs";
 	foreach my $k ( keys %{ $data->{$name}{colors} }) {
 		my $f = 'Wx::' . $k;
+		no strict "refs"; ## no critic
 		my $v = eval {$f->()};
 		if ($@) {
 			$f = 'Px::' . $k;
