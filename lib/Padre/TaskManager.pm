@@ -247,7 +247,7 @@ sub reap {
 	my $workers = $self->{workers};
 
 	my @active_or_waiting;
-	warn "No. worker threads before reaping: ".scalar (@$workers);
+	#warn "No. worker threads before reaping: ".scalar (@$workers);
 
 	foreach my $thread (@$workers) {
 		if ($thread->is_joinable()) {
@@ -258,7 +258,7 @@ sub reap {
 		}
 	}
 	$self->{workers} = \@active_or_waiting;
-	warn "No. worker threads after reaping:  ".scalar (@$workers);
+	#warn "No. worker threads after reaping:  ".scalar (@$workers);
 
 	# kill the no. of workers that aren't needed
 	my $n_threads_to_kill =  @active_or_waiting - $self->{max_no_workers};
