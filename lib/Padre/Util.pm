@@ -26,6 +26,7 @@ use strict;
 use warnings;
 
 use Exporter     ();
+use FindBin      ();
 use File::Spec   ();
 use List::Util   qw(first);
 
@@ -134,7 +135,7 @@ sub get_matches {
 #####################################################################
 # Shared Resources
 
-sub share () {
+sub share {
 	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
 	return File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' )      if $ENV{PADRE_PAR_PATH};
 	require File::ShareDir::PAR;

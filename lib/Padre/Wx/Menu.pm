@@ -688,7 +688,7 @@ sub menu_view {
 			$item->Check(1);
 		}
 	}
-
+ee
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu_view->Append( -1, Wx::gettext("&Full screen\tF11") ),
@@ -1014,7 +1014,7 @@ sub menu_experimental {
 		sub {
 			my $self = shift;
 			my $code = Padre::Documents->current->text_get;
-			eval $code;
+			eval $code; ## no critic
 			if ($@) {
 				Wx::MessageBox(Wx::gettext("Error: ") . "$@", Wx::gettext("Self error"), Wx::wxOK, $self);
 				return;

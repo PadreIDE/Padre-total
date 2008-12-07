@@ -18,7 +18,7 @@ sub load_ack {
 
 	# try to load app::ack - we don't require $minver in the eval to
 	# provide a meaningful error message if needed.
-	eval "use App::Ack";
+	eval "use App::Ack"; ## no critic
 	return "$error (module not installed)" if $@;
 	return "$error (you have $App::Ack::VERSION installed)"
 		if $App::Ack::VERSION < $minver;

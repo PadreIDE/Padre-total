@@ -1,4 +1,3 @@
-
 package Padre::TaskManager;
 
 # This is somewhat disturbing but necessary to prevent

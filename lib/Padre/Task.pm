@@ -1,4 +1,3 @@
-
 package Padre::Task;
 use strict;
 use warnings;
