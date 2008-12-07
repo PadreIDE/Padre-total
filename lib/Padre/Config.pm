@@ -136,9 +136,6 @@ sub new {
 		main_statusbar            => 1,
 		main_output               => 0,
 		main_rightbar             => 1,
-		editor_use_tabs           => 1,
-		editor_tabwidth           => 8,
-		editor_indentwidth        => 4,
 		editor_linenumbers        => 0,
 		editor_eol                => 0,
 		editor_indentationguides  => 0,
@@ -146,6 +143,12 @@ sub new {
 		editor_autoindent         => 'deep',
 		editor_whitespaces        => 0,
 		editor_methods            => 'alphabetical',
+		
+		# Indentation settings
+		editor_auto_indentation_style => 0,
+		editor_use_tabs               => 1,
+		editor_tabwidth               => 8,
+		editor_indentwidth            => 4,
 
 		# When running a script from the application some of the files might have not been saved yet.
 		# There are several option what to do before running the script
