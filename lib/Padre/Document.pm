@@ -788,41 +788,19 @@ sub get_indentation_style {
 	my $config = Padre->ide->config;
 
 	# TODO: (document >) project > config
-	# We're falling through to Config for now, but
-	# later, this will be overridable. Do not forget to
-	# support "auto-auto-indentation", too
-	my $style = {
-		use_tabs    => $config->{editor_use_tabs},
-		tabwidth    => $config->{editor_tabwidth},
-		indentwidth => $config->{editor_indentwidth},
-	};
-	
-	# TODO: This should be cached and happen if a global option is set
-	# TODO: this works, but it's commented out until I can implement the global switch and caching
-#	require Text::FindIndent;
-#	my $indentation = Text::FindIndent->parse($self->text_get);
-#
-#	if ($indentation =~ /^t\d+/) { # we only do ONE tab
-#		$style->{use_tabs} = 1;
-#		$style->{tabwidth} = 8;
-#		$style->{indentwidth} = 8;
-#	}
-#	elsif ($indentation =~ /^s(\d+)/) {
-#		$style->{use_tabs} = 0;
-#		$style->{tabwidth} = 8;
-#		$style->{indentwidth} = $1;
-#	}
-#	elsif ($indentation =~ /^m(\d+)/) {
-#		$style->{use_tabs} = 1;
-#		$style->{tabwidth} = 8;
-#		$style->{indentwidth} = $1;
-#	}
-#	else {
-#		# fallback
-#		$style->{use_tabs} = 1;
-#		$style->{tabwidth} = 8;
-#		$style->{indentwidth} = 4;
-#	}
+
+	my $style;
+	if ($config->{editor_auto_indentation_style}) {
+		# TODO: This should be cached? What's with newish documents then?
+		$style = $self->guess_indentation_style;
+	}
+	else {
+		$style = {
+			use_tabs    => $config->{editor_use_tabs},
+			tabwidth    => $config->{editor_tabwidth},
+			indentwidth => $config->{editor_indentwidth},
+		};
+	}
 	
 	return $style;
 }
