@@ -275,21 +275,9 @@ sub set_preferences {
 	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
 	$self->show_currentlinebackground( $config->{editor_currentlinebackground} );
 
-	$self->set_indentation_style;
+	$self->{Document}->set_indentation_style;
 
 	return;
-}
-
-sub set_indentation_style {
-	my $self = shift;
-	my $style = shift || $self->{Document}->indentation_style;
-	# The display width of literal tab characters (ne "indentation width"!)
-	$self->SetTabWidth( $style->{tabwidth} );
-	# The actual indentation width in COLUMNS!
-	$self->SetIndent( $style->{indentwidth} );
-	# Use tabs for indentation where possible?
-	$self->SetUseTabs(  $style->{use_tabs} );
-	return();
 }
 
 
@@ -366,7 +354,7 @@ sub _auto_indent {
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
 
-	my $indent_style = $self->{Document}->indentation_style;
+	my $indent_style = $self->{Document}->get_indentation_style;
 
 	my $content = $self->_get_line_by_number($prev_line);
 	my $indent  = ($content =~ /^(\s+)/ ? $1 : '');
@@ -406,7 +394,7 @@ sub _auto_deindent {
 	my $pos       = $self->GetCurrentPos;
 	my $line      = $self->LineFromPosition($pos);
 
-	my $indent_style = $self->{Document}->indentation_style;
+	my $indent_style = $self->{Document}->get_indentation_style;
 
 	my $content   = $self->_get_line_by_number($line);
 	my $indent    = ($content =~ /^(\s+)/ ? $1 : '');

@@ -98,31 +98,11 @@ sub guess_indentation_settings {
 	my $dialog = shift;
 	my $doc    = Padre::Documents->current;
 
-	require Text::FindIndent;
-	my $indentation = Text::FindIndent->parse($doc->text_get);
-
-	if ($indentation =~ /^t\d+/) { # we only do ONE tab
-		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
-		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
-		$dialog->{_widgets_}{editor_indentwidth}->SetValue(8);
-	}
-	elsif ($indentation =~ /^s(\d+)/) {
-		$dialog->{_widgets_}{editor_use_tabs}->SetValue(0);
-		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
-		$dialog->{_widgets_}{editor_indentwidth}->SetValue($1);
-	}
-	elsif ($indentation =~ /^m(\d+)/) {
-		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
-		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
-		$dialog->{_widgets_}{editor_indentwidth}->SetValue($1);
-	}
-	else {
-		# fallback
-		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
-		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
-		$dialog->{_widgets_}{editor_indentwidth}->SetValue(4);
-	}
-
+	my $indent_style = $doc->guess_indentation_style();
+	
+	$dialog->{_widgets_}{editor_use_tabs}->SetValue( $indent_style->{use_tabs} );
+	$dialog->{_widgets_}{editor_tabwidth}->SetValue( $indent_style->{tabwidth} );
+	$dialog->{_widgets_}{editor_indentwidth}->SetValue( $indent_style->{indentwidth} );
 }
 
 

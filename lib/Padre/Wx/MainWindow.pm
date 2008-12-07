@@ -272,16 +272,7 @@ sub create_editor_pane {
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self,
 		$self->{gui}->{notebook},
-		sub {
-			my $editor = $_[0]->selected_editor;
-			if ($editor) {
-				@{ $_[0]->{page_history} } = grep {
-					Scalar::Util::refaddr($_) ne Scalar::Util::refaddr($editor)
-				} @{ $_[0]->{page_history} };
-				push @{ $_[0]->{page_history} }, $editor;
-			}
-			$_[0]->refresh_all;
-		},
+		\&on_notebook_page_changed,
 	);
 
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
@@ -1522,9 +1513,10 @@ sub on_nth_pane {
 	my ($self, $id) = @_;
 	my $page = $self->nb->GetPage($id);
 	if ($page) {
-	   $self->nb->SetSelection($id);
-	   $self->refresh_status;
-	   return 1;
+		$self->nb->SetSelection($id);
+		$self->refresh_status;
+		$page->{Document}->set_indentation_style(); # TODO: encapsulation?
+		return 1;
 	}
 
 	return;
@@ -2291,6 +2283,19 @@ sub on_last_visited_pane {
 		$self->refresh_toolbar;
 	}
 }
+
+sub on_notebook_page_changed {
+	my $editor = $_[0]->selected_editor;
+	if ($editor) {
+		@{ $_[0]->{page_history} } = grep {
+			Scalar::Util::refaddr($_) ne Scalar::Util::refaddr($editor)
+		} @{ $_[0]->{page_history} };
+		push @{ $_[0]->{page_history} }, $editor;
+		$editor->{Document}->set_indentation_style(); #  update indentation in case auto-update is on; TODO: encasulation?
+	}
+	$_[0]->refresh_all;
+}
+
 1;
 
 # Copyright 2008 Gabor Szabo.

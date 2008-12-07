@@ -783,23 +783,127 @@ sub stats {
 
 
 # TODO: experimental
-sub indentation_style {
+sub get_indentation_style {
 	my $self = shift;
 	my $config = Padre->ide->config;
 
 	# TODO: (document >) project > config
 	# We're falling through to Config for now, but
 	# later, this will be overridable. Do not forget to
-	# support "auto-auto-indentation", too!
+	# support "auto-auto-indentation", too
 	my $style = {
 		use_tabs    => $config->{editor_use_tabs},
 		tabwidth    => $config->{editor_tabwidth},
 		indentwidth => $config->{editor_indentwidth},
 	};
 	
+	# TODO: This should be cached and happen if a global option is set
+	# TODO: this works, but it's commented out until I can implement the global switch and caching
+#	require Text::FindIndent;
+#	my $indentation = Text::FindIndent->parse($self->text_get);
+#
+#	if ($indentation =~ /^t\d+/) { # we only do ONE tab
+#		$style->{use_tabs} = 1;
+#		$style->{tabwidth} = 8;
+#		$style->{indentwidth} = 8;
+#	}
+#	elsif ($indentation =~ /^s(\d+)/) {
+#		$style->{use_tabs} = 0;
+#		$style->{tabwidth} = 8;
+#		$style->{indentwidth} = $1;
+#	}
+#	elsif ($indentation =~ /^m(\d+)/) {
+#		$style->{use_tabs} = 1;
+#		$style->{tabwidth} = 8;
+#		$style->{indentwidth} = $1;
+#	}
+#	else {
+#		# fallback
+#		$style->{use_tabs} = 1;
+#		$style->{tabwidth} = 8;
+#		$style->{indentwidth} = 4;
+#	}
+	
 	return $style;
 }
 
+
+=head2 set_indentation_style
+
+Given a hash reference with the keys C<use_tabs>,
+C<tabwidth>, and C<indentwidth>, set the document's editor's
+indentation style.
+
+Without an argument, falls back to what C<get_indentation_style>
+returns.
+
+=cut
+
+sub set_indentation_style {
+	my $self = shift;
+
+	my $style  = shift || $self->get_indentation_style;
+	my $editor = $self->editor;
+	# The display width of literal tab characters (ne "indentation width"!)
+	$editor->SetTabWidth( $style->{tabwidth} );
+	# The actual indentation width in COLUMNS!
+	$editor->SetIndent( $style->{indentwidth} );
+	# Use tabs for indentation where possible?
+	$editor->SetUseTabs(  $style->{use_tabs} );
+	return();
+}
+
+
+=head2 guess_indentation_style
+
+Automatically infer the indentation style of the document using
+L<Text::FindIndent>.
+
+Returns a hash reference containing the keys C<use_tabs>,
+C<tabwidth>, and C<indentwidth>. It is suitable for passing
+to C<set_indendentation_style>.
+
+=cut
+
+sub guess_indentation_style {
+	my $self  = shift;
+
+	require Text::FindIndent;
+	my $indentation = Text::FindIndent->parse($self->text_get);
+
+	my $style;
+	if ($indentation =~ /^t\d+/) { # we only do ONE tab
+		$style = {
+			use_tabs    => 1,
+			tabwidth    => 8,
+			indentwidth => 8,
+		};
+	}
+	elsif ($indentation =~ /^s(\d+)/) {
+		$style = {
+			use_tabs    => 0,
+			tabwidth    => 8,
+			indentwidth => $1,
+		};
+	}
+	elsif ($indentation =~ /^m(\d+)/) {
+		$style = {
+			use_tabs    => 1,
+			tabwidth    => 8,
+			indentwidth => $1,
+		};
+	}
+	else {
+		# fallback
+		$style = {
+			use_tabs    => 1,
+			tabwidth    => 8,
+			indentwidth => 4,
+		};
+	}
+	
+	return $style;
+}
 
 1;
 
