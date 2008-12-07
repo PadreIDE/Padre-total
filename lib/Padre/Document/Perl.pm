@@ -271,7 +271,7 @@ sub check_syntax {
 		if (   defined( $self->{last_checked_txt} )
 			&& $self->{last_checked_txt} eq $txt
 		) {
-			return undef;
+			return;
 		}
 	}
 	$self->{last_checked_txt} = $txt;

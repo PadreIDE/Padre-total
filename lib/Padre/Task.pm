@@ -314,8 +314,8 @@ sub _serialize {
 	if ( Params::Util::_INSTANCE($_[0], 'IO::Handle') ) {
 		my $string   = Storable::nfreeze($self);
 		my $iohandle = shift;
-		$iohandle->print( 'pst0' )  or return undef;
-		$iohandle->print( $string ) or return undef;
+		$iohandle->print( 'pst0' )  or return;
+		$iohandle->print( $string ) or return;
 		return 1;
 	}
 
