@@ -1,5 +1,7 @@
 Changes for Padre.
 
+    Option to always auto-detect indentation style and adapt for each
+        open document. (SMUELLER)
     Default to showing functions in alphabetical order. (SMUELLER)
     Option to show functions in alphabetical order, except private methods
         go last. (SMUELLER)
