@@ -275,15 +275,23 @@ sub set_preferences {
 	$self->SetViewWhiteSpace(    $config->{editor_whitespaces}       );
 	$self->show_currentlinebackground( $config->{editor_currentlinebackground} );
 
-	# The display width of literal tab characters (ne "indentation width"!)
-	$self->SetTabWidth( $config->{editor_tabwidth} );
-	# The actual indentation width in COLUMNS!
-	$self->SetIndent( $config->{editor_indentwidth} );
-	# Use tabs for indentation where possible?
-	$self->SetUseTabs(  $config->{editor_use_tabs} );
+	$self->set_indentation_style;
 
 	return;
 }
+
+sub set_indentation_style {
+	my $self = shift;
+	my $style = shift || $self->{Document}->indentation_style;
+	# The display width of literal tab characters (ne "indentation width"!)
+	$self->SetTabWidth( $style->{tabwidth} );
+	# The actual indentation width in COLUMNS!
+	$self->SetIndent( $style->{indentwidth} );
+	# Use tabs for indentation where possible?
+	$self->SetUseTabs(  $style->{use_tabs} );
+	return();
+}
+
 
 sub show_currentlinebackground {
 	my ($self, $on) = (@_);
@@ -358,13 +366,15 @@ sub _auto_indent {
 	my $prev_line = $self->LineFromPosition($pos) -1;
 	return if $prev_line < 0;
 
+	my $indent_style = $self->{Document}->indentation_style;
+
 	my $content = $self->_get_line_by_number($prev_line);
 	my $indent  = ($content =~ /^(\s+)/ ? $1 : '');
 
 	if ($config->{editor_autoindent} eq 'deep' and $content =~ /\{\s*$/) {
-		my $indent_width = $config->{editor_indentwidth};
-		my $tab_width    = $config->{editor_tabwidth};
-		if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+		my $indent_width = $indent_style->{indentwidth};
+		my $tab_width    = $indent_style->{tabwidth};
+		if ($indent_style->{use_tabs} and $indent_width != $tab_width) {
 			# do tab compression if necessary
 			# - First, convert all to spaces (aka columns)
 			# - Then, add an indentation level
@@ -374,7 +384,7 @@ sub _auto_indent {
 			$indent .= $tab_equivalent;
 			$indent =~ s/$tab_equivalent/\t/g;
 		}
-		elsif ($config->{editor_use_tabs}) {
+		elsif ($indent_style->{use_tabs}) {
 			# use tabs only
 			$indent .= "\t";
 		}
@@ -396,6 +406,8 @@ sub _auto_deindent {
 	my $pos       = $self->GetCurrentPos;
 	my $line      = $self->LineFromPosition($pos);
 
+	my $indent_style = $self->{Document}->indentation_style;
+
 	my $content   = $self->_get_line_by_number($line);
 	my $indent    = ($content =~ /^(\s+)/ ? $1 : '');
 
@@ -411,9 +423,9 @@ sub _auto_deindent {
 		if ($prev_indent eq $indent && $prev_content !~ /^\s*{/
 		    or length($prev_indent) < length($indent) && $prev_content =~ /{\s*$/
 		   ) {
-			my $indent_width = $config->{editor_indentwidth};
-			my $tab_width    = $config->{editor_tabwidth};
-			if ($config->{editor_use_tabs} and $indent_width != $tab_width) {
+			my $indent_width = $indent_style->{indentwidth};
+			my $tab_width    = $indent_style->{tabwidth};
+			if ($indent_style->{use_tabs} and $indent_width != $tab_width) {
 				# do tab compression if necessary
 				# - First, convert all to spaces (aka columns)
 				# - Then, add an indentation level
@@ -423,7 +435,7 @@ sub _auto_deindent {
 				$indent =~ s/$tab_equivalent$//;
 				$indent =~ s/$tab_equivalent/\t/g;
 			}
-			elsif ($config->{editor_use_tabs}) {
+			elsif ($indent_style->{use_tabs}) {
 				# use tabs only
 				$indent =~ s/\t$//;
 			}

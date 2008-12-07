@@ -781,6 +781,26 @@ sub stats {
 			$filename, $self->{newline_type}, $self->{encoding} );
 }
 
+
+# TODO: experimental
+sub indentation_style {
+	my $self = shift;
+	my $config = Padre->ide->config;
+
+	# TODO: (document >) project > config
+	# We're falling through to Config for now, but
+	# later, this will be overridable. Do not forget to
+	# support "auto-auto-indentation", too!
+	my $style = {
+		use_tabs    => $config->{editor_use_tabs},
+		tabwidth    => $config->{editor_tabwidth},
+		indentwidth => $config->{editor_indentwidth},
+	};
+	
+	return $style;
+}
+
+
 1;
 
 # Copyright 2008 Gabor Szabo.
