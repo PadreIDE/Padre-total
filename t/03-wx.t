@@ -122,12 +122,11 @@ my @events = (
 			my $main = $ide->wx->main_window;
 			my $T = Test::Builder->new;
 			my $dialog = Padre::Wx::Dialog::Bookmarks::get_dialog();
-			#$T->diag($dialog);
-			# TODO: we should create an event and send it, instead of calling EndModal
-			#my $event = Wx::CommandEvent->new( $dialog->{_widgets_}{cancel}, -1 );
-			#$T->diag($event);
-			#$main->ProcessEvent($event);
-			$dialog->EndModal(Wx::wxID_CANCEL);
+			my $event = Wx::CommandEvent->new( &Wx::wxEVT_COMMAND_BUTTON_CLICKED, $dialog->{_widgets_}{cancel}->GetId );
+			#$dialog->{_widgets_}{cancel}->GetEventHandler->ProcessEvent( $event );
+			#$dialog->GetEventHandler->ProcessEvent( $event );
+			$dialog->GetEventHandler->AddPendingEvent( $event );
+			#$dialog->EndModal(Wx::wxID_CANCEL);
 			BEGIN { $main::tests += 0; }
 		},
 	},
