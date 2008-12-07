@@ -14,7 +14,7 @@ sub get_layout {
 
 	return [
 		[
-			[],
+			['Wx::CheckBox',    'editor_automatic_indentation_style', Wx::gettext('Automatic indentation style'),    ($config->{editor_automatic_indentation_style} ? 1 : 0) ],
 			['Wx::CheckBox',    'editor_use_tabs', Wx::gettext('Use Tabs'),    ($config->{editor_use_tabs} ? 1 : 0) ],
 		],
 		[
@@ -132,7 +132,7 @@ sub run {
 	foreach my $f (qw(pod_maxlist pod_minlist editor_tabwidth editor_indentwidth)) {
 		$config->{$f} = $data->{$f};
 	}
-	foreach my $f (qw(editor_use_tabs editor_use_wordwrap)) {
+	foreach my $f (qw(editor_use_tabs editor_use_wordwrap editor_automatic_indentation_style)) {
 		$config->{$f} = $data->{$f} ? 1 :0;
 	}
 
