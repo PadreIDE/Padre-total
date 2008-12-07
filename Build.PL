@@ -12,20 +12,6 @@ if ( not $Config{usethreads} ) {
 
 check_wx_version();
 
-print <<"END_WARN";
-**********************************************************
-WARNING
-
-We have renamed the MY plugin to be called Padre::Plugin::My 
-If you have Padre::Plugin::MY (in capital letters) installed
-on your system (it came with 0.17 of Padre) Please remove
-it manually before launching Padre.
-
-It can be both in the standard \@INC and in ~/.padre/plugins/
-
-**********************************************************
-END_WARN
-
 my %prereqs = (
 	'perl'                    => '5.008001',
 	'Carp'                    => 0,
