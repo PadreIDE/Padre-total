@@ -478,7 +478,7 @@ For example, imagine you have the following nicely formatted hash assignment in 
 
 With a rectangular text selection you can select only the keys, only the values, etc..
 
-=head1 Syntax highlighting
+=head2 Syntax highlighting
 
 Padre is using L<Wx> (aka wxPerl), wxWidgtes for GUI and Scintilla for the editor.
 Scintiall provides very good syntax highlighting for many languages but Padre is still
@@ -490,7 +490,7 @@ of the color to be used to highlight them.
 
 We plan to allow the user to switch between styles.
 
-=head2 Adding new syntax highlighting
+=head3 Adding new syntax highlighting
 
 Need to define constanst in L<Padre::Util> to be in the Px:: namespace.
 
@@ -797,32 +797,96 @@ If the user then presses Replace we open the file in an editor window and go on.
 If the user presses Search then we show the next occurance.
 Opened and edited files will be left in a not saved state.
 
-
 =head1 Code layout
 
-Padre.pm is the main module.
+=over 4
 
-L<Padre::Config> reads/writes the configuration files.
+=item Padre.pm
 
-There is an SQLite database and a yml file to keep various pices of information
+is the main module.
+
+=item L<Padre::Autosave>
+
+describes some of our plans for an autosave mechanism. 
+It is not implemented yet. (There is also some description elsewhere in this
+document).
+
+=item L<Padre::Config>
+
+reads/writes the configuration files.
+
+There is an SQLite database and a yml file to keep various pices of information.
+The database holds host related configuration values while the yaml file holds
+personal configuration options.
+
 The SQLite database holds the list of modules available on the system.
 It will also contain indexing of the documentation
 Looking at the C<X<>> entries of modules
 List of functions
 
-The yml file contains individual configuration options
+=item L<Padre::DB>
 
-L<Padre::Document> is an abstraction class to deal with a single document.
+is the database abstraction for SQLite.
 
-L<Padre::Documents> aggregated the list of all currently open documents.
+=item L<Padre::Document>
 
-L<Padre::DB> is the database abstraction for SQLite.
+is an abstraction class to deal with a single document.
 
-L<Padre::PluginManager> locates and loads the plugins.
+=over 4
 
-L<Padre::PluginBuilder> 
+=item L<Padre::Document::PASM>
 
-L<Padre::PPI>
+=item L<Padre::Document::PIR>
+
+=item L<Padre::Document::Perl>
+
+=back
+
+=item L<Padre::Documents>
+
+aggregated the list of all currently open documents.
+
+=item L<Padre::PluginBuilder> 
+
+=item L<Padre::PluginManager>
+
+locates and loads the plugins.
+
+=item L<Plugin>
+
+Should be the base class of all plugins.
+
+=item L<Padre::Pod2HTML>
+
+=item L<Padre::PPI>
+
+=item L<Padre::Project>
+
+Abstract class understanding what a project is.
+
+=item L<Padre::Project::Perl>
+
+Is a Perl specific project. These are work in process.
+Not yet used.
+
+=item L<Padre::TaskManager>
+
+Managing background tasks.
+
+=item L<Padre::Task>
+
+Background tasks.
+
+=item L<Padre::Util>
+
+Various utility functions.
+
+=back 
+
+=head2 POD viewer
+
+Padre::Pod::* are there to index and show documentation written in pod.
+TODO: One day we might be able to factor it out into a separate pod-viewer class.
 
 =head2 Wx GUI
 
@@ -830,26 +894,105 @@ The Padre::WX::* namespace is supposed to deal with all the
 wx related code. Outside of that the code is not supposed to
 know about wx, but currently it still does. 
 
-L<Padre::Wx::Dialog> is the parent class of all the major dialogs
+=over 4
+
+=item L<Padre::Wx>
+
+=item L<Padre::Wx::Ack>
+
+Implementation of the L<ack> integration in Edit/Ack menu item.
+It probably should be either under Dialog or moved out to be a 
+plug-in.
+
+=item L<Padre::Wx::App>
+
+is the L<Wx::App> subclass. Does not really do much.
+
+=item L<Padre::Wx::Dialog>
+
+is the parent class of all the major dialogs
 that are all implemented in modules in the C<Padre::Wx::Dialog::*>
-namespace.
+namespace. It is actually a plain subclass of L<Wx::Perl::Dialog>.
 
-L<Padre::Wx::App> is the L<Wx::App> subclass
+=over 4
 
-L<Padre::Wx::MainWindow> is the main frame, most of the code is currently there.
+=item L<Padre::Wx::Dialog::Bookmarks>
 
-L<Padre::Wx::Editor> holds an editor text control instance (one for each buffer/file).
+=item L<Padre::Wx::Dialog::Find>
 
-L<Padre::Wx::Menu> handles everythin the menu should know and do.
+=item L<Padre::Wx::Dialog::ModuleStart>
 
-L<Padre::Wx::ToolBar> handles everythin the toolbar should know and do.
+L<Module::Start> integration. Maybe it should be moved to be a plug-in.
 
-L<Padre::Wx::Output> - the output window.
+=item L<Padre::Wx::Dialog::PluginManager>
 
-=head2 POD viewer
+=item L<Padre::Wx::Dialog::Preferences>
 
-Padre::Pod::* are there to index and show documentation written in pod.
-TODO: One day we might be able to factor it out into a separate pod-viewer class.
+=item L<Padre::Wx::Dialog::Search>
+
+This is the newer Firefox like search box. Not yet integrated.
+
+=item L<Padre::Wx::Dialog::Snippets>
+
+=back
+
+=item L<Padre::Wx::DNDFilesDropTarget>
+
+The code for drag and drop
+
+=item L<Padre::Wx::Editor>
+
+holds an editor text control instance (one for each buffer/file).
+This is a subclass of L<Wx::StyledTextCtrl> also known as STC or
+Scintilla.
+
+=item L<Padre::Wx::History::ComboBox>
+
+=item L<Padre::Wx::History::TextDialog>
+
+=item L<Padre::Wx::MainWindow>
+
+is the main frame, most of the code is currently there.
+
+=item L<Padre::Wx::Menu>
+
+handles everythin the menu should know and do.
+
+=item L<Padre::Wx::Output>
+
+the output window at the bottom of the editor displaying the output
+of running code using F5.
+
+=item L<Padre::Wx::Pod2HTML>
+
+=item L<Padre::Wx::PodFrame>
+
+=item L<Padre::Wx::Popup>
+
+not in use.
+
+=item L<Padre::Wx::Print>
+
+Implementing the printing capability of Padre.
+
+=item L<Padre::Wx::Project>
+
+not in use.
+
+=item L<Padre::Wx::RightClick>
+
+not in use.
+
+=item L<Padre::Wx::SyntaxCheck>
+
+Implementing the continous syntax check of perl code.
+
+=item L<Padre::Wx::ToolBar>
+
+handles everything the toolbar should know and do.
+
+=back
+
 
 =head1 BUGS
 
