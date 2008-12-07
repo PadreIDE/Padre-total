@@ -118,7 +118,6 @@ sub new {
 	$self->{plugin_manager} = Padre::PluginManager->new($self);
 
 	$self->{task_manager} = Padre::TaskManager->new(
-		# TODO: off by default for now, should be on in production later
 		use_threads => $self->config->{use_worker_threads},
 	);
 
