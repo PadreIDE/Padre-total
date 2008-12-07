@@ -639,10 +639,19 @@ sub refresh_methods {
 	my @methods = $doc->get_functions;
 	
 	my $config = Padre->ide->config;
-	if ($config->{editor_methods} eq 'abc') {
-		@methods = sort @methods;
-	} elsif ($config->{editor_methods} eq 'original') {
+	if ($config->{editor_methods} eq 'original') {
 		# that should be the one we got from get_functions
+	}
+	elsif ($config->{editor_methods} eq 'alphabetical_private_last') {
+		# ~ comes after \w
+		@methods =
+			map {tr/~/_/; $_}
+			sort
+			map {tr/_/~/; $_}
+			@methods;
+	}
+	else {
+		@methods = sort @methods; # alphabetical (aka 'abc')
 	}
 
 	my $new = join ';', @methods;

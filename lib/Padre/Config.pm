@@ -145,7 +145,7 @@ sub new {
 		editor_calltips           => 1,
 		editor_autoindent         => 'deep',
 		editor_whitespaces        => 0,
-		editor_methods            => 'abc',
+		editor_methods            => 'alphabetical',
 
 		# When running a script from the application some of the files might have not been saved yet.
 		# There are several option what to do before running the script

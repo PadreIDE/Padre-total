@@ -141,7 +141,7 @@ sub run {
 	);
 	my @editor_methods = (
 		$config->{editor_methods},
-		grep { $_ ne $config->{editor_methods} } qw( abc original )
+		grep { $_ ne $config->{editor_methods} } qw( alphabetical original alphabetical_private_last )
 	);
 
 	my $dialog = $class->dialog( $win, \@main_startup, \@editor_autoindent, \@editor_methods );
