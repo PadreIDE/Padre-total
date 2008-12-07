@@ -101,8 +101,6 @@ sub guess_indentation_settings {
 	require Text::FindIndent;
 	my $indentation = Text::FindIndent->parse($doc->text_get);
 
-	# TODO: Padre can't do mixed tab/space indentation (i.e. tab-compressed indentation) yet
-
 	if ($indentation =~ /^t\d+/) { # we only do ONE tab
 		$dialog->{_widgets_}{editor_use_tabs}->SetValue(1);
 		$dialog->{_widgets_}{editor_tabwidth}->SetValue(8);
