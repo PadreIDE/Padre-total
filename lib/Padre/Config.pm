@@ -170,6 +170,9 @@ sub new {
 		# By default we have an empty plugins configuration
 		plugins                   => {},
 
+		# By default, use background threads unless profiling
+		use_worker_threads        => 1,
+
 		# By default, don't enable experimental features
 		experimental              => 0,
 	);

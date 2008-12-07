@@ -70,6 +70,7 @@ SCOPE: {
 		},
 
 		plugins => {},
+		use_worker_threads        => 1,
 	},
 	'defaults';
 }
