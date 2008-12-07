@@ -873,10 +873,11 @@ sub guess_indentation_style {
 	}
 	else {
 		# fallback
+		my $config = Padre->ide->config;
 		$style = {
-			use_tabs    => 1,
-			tabwidth    => 8,
-			indentwidth => 4,
+			use_tabs    => $config->{editor_use_tabs},
+			tabwidth    => $config->{editor_tabwidth},
+			indentwidth => $config->{editor_indentwidth},
 		};
 	}
 	
