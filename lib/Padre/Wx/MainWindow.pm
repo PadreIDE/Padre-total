@@ -513,9 +513,11 @@ sub change_locale {
 
 	$self->refresh_all;
 
-	$self->{gui}->{output_panel}->Caption( Wx::gettext("Output") );
-	$self->{gui}->{syntaxcheck_panel}->Caption( Wx::gettext("Syntax") );
-	$self->{gui}->{subs_panel}->Caption( Wx::gettext("Subs") );
+	$self->manager->GetPane('bottompane')->Caption( Wx::gettext("Output") );
+	$self->manager->GetPane('sidepane')->Caption( Wx::gettext("Subs") );
+	#$self->{gui}->{output_panel}->Caption( Wx::gettext("Output") );
+	#$self->{gui}->{syntaxcheck_panel}->Caption( Wx::gettext("Syntax") );
+	#$self->{gui}->{subs_panel}->Caption( Wx::gettext("Subs") );
 	return;
 }
 

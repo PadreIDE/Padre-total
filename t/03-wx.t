@@ -147,6 +147,15 @@ my @events = (
 		},
 	},
 	{
+		delay => 200,
+		code  => sub {
+			my $T = Test::Builder->new;
+			$T->diag("exiting");
+			my $main = $ide->wx->main_window;
+			$main->change_locale('en');
+		},
+	},
+	{
 		delay => 2000,
 		code  => sub {
 			my $T = Test::Builder->new;
