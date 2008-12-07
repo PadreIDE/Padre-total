@@ -688,7 +688,7 @@ sub menu_view {
 			$item->Check(1);
 		}
 	}
-ee
+
 	$menu_view->AppendSeparator;
 	Wx::Event::EVT_MENU( $win,
 		$menu_view->Append( -1, Wx::gettext("&Full screen\tF11") ),
