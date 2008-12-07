@@ -14,6 +14,7 @@ use t::lib::Padre;
 use Padre;
 use Padre::Wx;
 
+plan skip_all => 'For some reason does not work on Windows' if $^O eq 'MSWin32'; # the same as File::Spec uses
 plan tests => $tests;
 diag "PADRE_HOME: $ENV{PADRE_HOME}";
 my $home = $ENV{PADRE_HOME};
