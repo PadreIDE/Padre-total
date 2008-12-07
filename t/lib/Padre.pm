@@ -11,9 +11,10 @@ BEGIN {
     $ENV{PADRE_HOME} = File::Temp::tempdir( CLEANUP => 1 );
 }
 
-
+# delay is counted from the previous event
 sub setup_events {
 	my ($frame, $events) = @_;
+	my $delay = 0;
 	foreach my $event (@$events) {
 		my $id    = Wx::NewId();
 		my $timer = Wx::Timer->new( $frame, $id );
@@ -22,7 +23,8 @@ sub setup_events {
 			$id,
 			$event->{code}
 		);
-		$timer->Start( $event->{delay}, 1 );
+		$delay += $event->{delay};
+		$timer->Start( $delay, 1 );
 	}
 }
 

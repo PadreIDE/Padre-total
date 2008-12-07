@@ -43,7 +43,7 @@ my @events = (
 		},
 	},
 	{
-		delay => 200,
+		delay => 100,
 		code  => sub {
 			my $main = $ide->wx->main_window;
 			my $doc  = $main->selected_document;
@@ -74,7 +74,7 @@ my @events = (
 		}
 	},
 	{
-		delay => 300,
+		delay => 100,
 		code  => sub {
 			my $main = $ide->wx->main_window;
 			$main->setup_editors( catfile($home, 'cyrillic_test.pl') );
@@ -116,7 +116,7 @@ my @events = (
 		},
 	},
 	{
-		delay => 1000,
+		delay => 700,
 		code  => sub {
 			my $main = $ide->wx->main_window;
 			my $T = Test::Builder->new;
@@ -131,7 +131,7 @@ my @events = (
 		},
 	},
 	{
-		delay => 1100,
+		delay => 100,
 		code  => sub {
 			my $main = $ide->wx->main_window;
 			my $T = Test::Builder->new;
@@ -147,7 +147,7 @@ my @events = (
 		},
 	},
 	{
-		delay => 4000,
+		delay => 2000,
 		code  => sub {
 			my $T = Test::Builder->new;
 			$T->diag("exiting");
