@@ -1410,9 +1410,8 @@ sub _save_buffer {
 		return if $ret != Wx::wxYES;
 	}
 
-	my $error = $doc->save_file;
-	if ($error) {
-		Wx::MessageBox($error, Wx::gettext("Error"), Wx::wxOK, $self);
+	if (not $doc->save_file) {
+		Wx::MessageBox(Wx::gettext("Could not save file: ") . $doc->errstr, Wx::gettext("Error"), Wx::wxOK, $self);
 		return;
 	}
 

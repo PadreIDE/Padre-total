@@ -467,24 +467,29 @@ sub newline_type {
 
 sub save_file {
 	my ($self) = @_;
+	$self->set_errstr('');
+
 	my $content  = $self->text_get;
 	my $filename = $self->filename;
 
 	# not set when first time to save
 	$self->{encoding} ||= _get_encoding_from_contents($content);
 
-	my $fh;
-	if ($self->{encoding} && open $fh,  ">:raw:encoding($self->{encoding})", $filename ) {
-	  print {$fh} $content;
-	} elsif (open $fh, ">$filename" ) {
-	  warn "encoding is not set, (couldn't get from contents) when saving file $filename\n";
-	  print {$fh} $content;
+	my $encode = '';
+	if (defined $self->{encoding}) {
+		$encode = ":raw:encoding($self->{encoding})";
 	} else {
-		return "Could not save: $!";
+		warn "encoding is not set, (couldn't get from contents) when saving file $filename\n";
+	}
+	
+	if (open my $fh,  ">$encode", $filename ) {
+		print {$fh} $content;
+	} else {
+		$self->set_errstr($!);
+		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
-
-	return;
+	return 1;
 }
 
 sub lexer {
