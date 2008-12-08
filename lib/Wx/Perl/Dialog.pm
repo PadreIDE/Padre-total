@@ -417,7 +417,7 @@ sub _build_layout {
 				$default = Wx::wxNullFont if $@;
 				$widget = $class->new( $dialog, -1, $default, Wx::wxDefaultPosition, $width, Wx::wxFNTP_DEFAULT_STYLE );
 			} elsif ($class eq 'Wx::ColourPickerCtrl') {
-				my $default_val = ( defined $arg ? $arg : '#000000' );
+				my $default_val = ( defined($arg) && $arg ? $arg : '#000000' );
 				my $default;
 				eval {
 					$default = Wx::Colour->new($default_val);
