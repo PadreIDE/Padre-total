@@ -1758,7 +1758,10 @@ sub show_output {
 sub show_functions {
 	my $self = shift;
 
-	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	my $on   = ( @_
+	             ? ($_[0] ? 1 : 0)
+	             : 1 );
+	
 	unless ( $on == $self->{menu}->{view_functions}->IsChecked ) {
 		$self->{menu}->{view_functions}->Check($on);
 	}
