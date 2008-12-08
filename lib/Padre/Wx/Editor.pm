@@ -284,7 +284,7 @@ sub set_preferences {
 sub show_currentlinebackground {
 	my ($self, $on) = (@_);
 
-	$self->SetCaretLineBackground( Wx::Colour->new(238, 238, 238, 255) );
+	$self->SetCaretLineBackground( Wx::Colour->new(255, 255, 64, 255) );
 	$self->SetCaretLineVisible( ( defined($on) && $on ) ? 1 : 0 );
 
 	return;
