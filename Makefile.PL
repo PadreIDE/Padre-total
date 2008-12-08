@@ -67,7 +67,7 @@ requires       'threads'                 => '1.71';
 requires       'threads::shared'         => '1.26';
 requires       'Thread::Queue'           => '2.11';
 requires       'YAML::Tiny'              => '1.32';
-requires       'Wx'                      => '0.88';
+requires       'Wx'                      => '0.89';
 requires       'Wx::Perl::Dialog'        => '0.03';
 requires       'Wx::Perl::ProcessStream' => '0.11';
 
