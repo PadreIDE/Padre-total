@@ -326,7 +326,6 @@ sub create_side_pane {
 		$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT()); # TODO: This is cargo-cult
 
 		if (!$mod) {
-			warn $code;
 			if ($code <= 255 and $code > 0 and chr($code) =~ /^[\w_:-]$/) { # TODO is there a better way? use ==?
 				$code = 95 if $code == 45; # transform - => _ for convenience
 				$self->{function_find_string} .= chr($code);
