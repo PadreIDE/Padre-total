@@ -164,9 +164,7 @@ sub on_syntax_check_timer {
         return;
     }
 
-	unless (   defined( $page->{Document} )
-			&& $page->{Document}->can_check_syntax
-	) {
+	unless ( defined( $page->{Document} ) and $page->{Document}->can('check_syntax') ) {
 		if ( ref $page eq 'Padre::Wx::Editor' ) {
 			$page->MarkerDeleteAll(Padre::Wx::MarkError);
 			$page->MarkerDeleteAll(Padre::Wx::MarkWarn);
