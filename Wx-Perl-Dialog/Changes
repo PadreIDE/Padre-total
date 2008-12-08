@@ -1,0 +1,16 @@
+v0.03 2008.11.23
+    Add support to wxTextCtrl, add wxStaticLine (KAARE)
+
+v0.02 2008.11.04
+
+	Add several new dialogs
+		Directory, File, Date and Colour pickers
+		Single Choice
+	Rename the class that provides the simple dialogs to
+		Wx::Perl::Dialog::Simple
+	The new Wx::Perl::Dialog was extracted from Padre after 0.15 was release.
+
+v0.01 2008.09.01
+
+	First version as Wx::Perl::Dialog
+	Moved from Padre::Demo  after v0.06

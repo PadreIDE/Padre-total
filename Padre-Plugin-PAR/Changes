@@ -1,0 +1,23 @@
+0.05 2008-11-22
+
+  - Follow the API changes of Padre 0.17, be a Padre::Plugin!
+
+0.04 2008-11-12
+
+  - Follow the API changes of Padre 0.16
+  - Use Padre::Wx instead of Wx.
+  - Use Padre::PluginBuilder instead of Module::Build.
+
+0.03 2008-10-26
+
+  - Follow the API changes of Padre 0.12_01
+  - Add the "plugin" and "installplugin" ./Build targets.
+
+0.02 2008-08-17
+
+  - Follow the API changes of Padre 0.05
+
+0.01  2008-08-03
+
+  - Initial, experimental version released.
+

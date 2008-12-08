@@ -1,0 +1,9 @@
+Revision history for Padre-Plugin-Parrot
+
+0.16    2008.11.09
+        Moved to its own distribution
+        Checking if Parrot::Embed is available
+
+0.15
+        First version, released on an unsuspecting world as part of Padre.
+

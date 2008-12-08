@@ -1,0 +1,10 @@
+Build.PL
+Changes
+MANIFEST
+README
+
+lib/Padre/Plugin/Vi.pm
+lib/Padre/Plugin/Vi/CommandLine.pm
+lib/Padre/Plugin/Vi/Editor.pm
+
+t/00-load.t

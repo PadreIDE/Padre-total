@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use Getopt::Long qw(GetOptions);
+
+use Wx::Perl::Dialog::Simple ();
+
+
+my %opt;
+
+GetOptions( \%opt,
+   "entry",
+   "file-selection",
+
+   "title=s",
+
+   "help",
+) or usage();
+
+
+
+if ($opt{help}) {
+    usage();
+}
+
+usage() unless $opt{entry} xor $opt{'file-selection'};
+
+if ($opt{entry}) {
+    print Wx::Perl::Dialog::Simple::entry( %opt );
+} elsif ($opt{'file-selection'}) {
+    print Wx::Perl::Dialog::Simple::file_selector( %opt );
+} else {
+    usage();
+}
+
+
+
+sub usage {
+    die <<"USAGE";
+Usage: $0
+           --entry
+           --file-selection
+
+
+           --title TITLE
+
+           --help    This help
+USAGE
+
+}

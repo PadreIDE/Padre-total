@@ -1,0 +1,13 @@
+
+Wx::Perl::Dialog - a set of simple stand alone dialogs
+
+
+installation:
+
+Alien::WxWidgets
+Wx
+Wx::Perl::Dialog
+
+For more detailed instructions visit
+http://padre.perlide.org/
+

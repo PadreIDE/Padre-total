@@ -1,0 +1,8 @@
+Build.PL
+Changes
+MANIFEST
+README
+lib/Padre/Plugin/Parrot.pm
+t/00-load.t
+Makefile.PL
+META.yml

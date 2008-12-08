@@ -1,0 +1,16 @@
+Revision history for Task-Padre-Plugins
+
+0.04
+		add Padre::Plugin::Tidy
+		add Padre::Plugin::HTMLExport
+		add Padre::Plugin::Alarm
+
+0.03    2008.11.12
+
+0.02	2008.11.08
+		add Padre::Plugin::Encrypt
+		remove Padre::Plugin::WordStats/TabAndSpace since it's in core
+
+0.01    2008.11.07
+        First version, released on an unsuspecting world.
+

@@ -1,0 +1,6 @@
+Build.PL
+Changes
+MANIFEST
+README
+lib/Task/Padre/Plugin/Deps.pm
+t/00-load.t
