@@ -14,6 +14,23 @@ our $VERSION = '0.20';
 
 
 ######################################################################
+# Class Methods
+
+sub project_class {
+	my $class = shift;
+	my $dir   = shift;
+	unless ( -d $dir ) {
+		die("Directory '$dir' does not exist");
+	}
+
+	
+}
+
+
+
+
+
+######################################################################
 # Constructor and Accessors
 
 sub new {
