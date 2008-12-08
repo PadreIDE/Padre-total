@@ -8,6 +8,6 @@ use Class::Adapter::Builder
 
 our $VERSION = '0.20';
 
-sub VERSION { $VERSION }
+sub wx { $_[0]->{OBJECT} }
 
 1;

@@ -3,10 +3,11 @@ package Padre::Wx::Menu;
 use 5.008;
 use strict;
 use warnings;
-use Params::Util     qw{_INSTANCE};
-use Padre::Util      ();
-use Padre::Wx        ();
-use Padre::Documents ();
+use Params::Util           qw{_INSTANCE};
+use Padre::Util            ();
+use Padre::Wx              ();
+use Padre::Wx::Menu::Help  ();
+use Padre::Documents       ();
 
 our $VERSION = '0.20';
 
@@ -43,8 +44,7 @@ sub new {
 	my $menu_plugin = $self->menu_plugin( $win );
 	$self->{plugin} = $menu_plugin;
 	$self->{window} = $self->menu_window( $win );
-	$self->{help}   = $self->menu_help( $win );
-
+	$self->{help}   = Padre::Wx::Menu::Help->new($win);
 
 	# Create the Experimental menu
 	# All the crap that doesn't work, have a home,
@@ -91,7 +91,7 @@ sub create_main_menu_bar {
 	$self->{wx}->Append( $self->{plugin},   Wx::gettext("Pl&ugins")   ) if $self->{plugin};
 	$self->{wx}->Append( $self->{tools},    Wx::gettext("&Tools")    );
 	$self->{wx}->Append( $self->{window},   Wx::gettext("&Window")    );
-	$self->{wx}->Append( $self->{help},     Wx::gettext("&Help")      );
+	$self->{wx}->Append( $self->{help}->wx, Wx::gettext("&Help")      );
 	if ( $experimental ) {
 		$self->{wx}->Append( $self->{experimental}, Wx::gettext("E&xperimental") );
 	}
@@ -944,45 +944,6 @@ sub menu_window {
 		},
 	); 
 	$menu->AppendSeparator;
-	
-	return $menu;
-}
-
-sub menu_help {
-	my ( $self, $win ) = @_;
-	
-	# Create the help menu
-	my $menu = Wx::Menu->new;
-	my $help = Padre::Wx::Menu::Help->new;
-
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_HELP, '' ),
-		sub { $help->help($win) },
-	);
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext("Context Help\tCtrl-Shift-H") ),
-		sub {
-			my $main      = shift;
-			my $selection = $main->selected_text;
-			$help->help($main);
-			if ( $selection ) {
-				$main->{help}->show( $selection );
-			}
-			return;
-		},
-	);
-
-	$menu->AppendSeparator;
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( -1, Wx::gettext('Visit the PerlMonks') ),
-		sub { Wx::LaunchDefaultBrowser('http://perlmonks.org/') },
-	);
-	
-	$menu->AppendSeparator;
-	Wx::Event::EVT_MENU( $win,
-		$menu->Append( Wx::wxID_ABOUT, Wx::gettext("&About") ),
-		sub { $help->about },
-	);
 	
 	return $menu;
 }
