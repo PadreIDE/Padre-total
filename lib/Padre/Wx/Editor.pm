@@ -98,7 +98,7 @@ sub padre_setup_plain {
 
 	$self->StyleClearAll();
 
-	foreach my $k (keys %{ $data->{plain}{forgrounds} }) {
+	foreach my $k (keys %{ $data->{plain}{foregrounds} }) {
 		$self->StyleSetForeground( $k, _color( $data->{plain}{foregrounds}{$k} ) );
 	}
 	
