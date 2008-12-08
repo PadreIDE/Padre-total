@@ -1,4 +1,4 @@
-package Padre::Wx::Menu::Help2;
+package Padre::Wx::Menu::Help;
 
 # Second attempt to build an fully encapsulated help menu.
 # (As a test bed for doing it for the bigger ones)
