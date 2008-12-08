@@ -1,5 +1,7 @@
 package Padre::Wx::Submenu;
 
+# Implements additional functionality to support richer submenus
+
 use strict;
 use Class::Adapter::Builder
 	ISA      => 'Wx::Menu',
@@ -8,6 +10,10 @@ use Class::Adapter::Builder
 
 our $VERSION = '0.20';
 
+# Convenience shortcut
 sub wx { $_[0]->{OBJECT} }
+
+# Default implementation of refresh
+sub refresh { 1 }
 
 1;
