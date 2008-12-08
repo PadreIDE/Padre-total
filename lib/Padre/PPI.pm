@@ -22,6 +22,63 @@ sub find_unmatched_brace {
 }
 
 
+# scans a document for variable declarations and
+# sorts them into three categories:
+# lexical (my)
+# our (our, doh)
+# dynamic (local)
+# TODO: add "use vars..." as "package" scope
+# Returns a hash reference containing the three category names
+# each pointing at a hash which contains '$variablename' => locations.
+# locations is an array reference containing one or more PPI-style
+# locations. Example:
+# {
+#   lexical => {
+#     '$foo' => [ [ 2, 3, 3], [ 6, 7, 7 ] ],
+#   },
+#   ...
+# }
+# Thus, there are two places where a "my $foo" was declared. On line 2 col 3
+# and line 6 col 7.
+sub get_all_variable_declarations {
+	my $document = shift;
+	my %vars;
+	
+	my $declarations = $document->find(
+		sub {
+			return 0 unless $_[1]->isa('PPI::Statement::Variable');
+			return 1;
+		},
+	);
+	
+	my %our;
+	my %lexical;
+	my %dynamic;
+	foreach my $decl (@$declarations) {
+		my $type = $decl->type();
+		my @vars = $decl->variables;
+		my $location = $decl->location;
+
+		my $target_type;
+
+		if ($type eq 'my') {
+			$target_type = \%lexical;
+		}
+		elsif ($type eq 'our') {
+			$target_type = \%our;
+		}
+		elsif ($type eq 'local') {
+			$target_type = \%dynamic;
+		}
+
+		foreach my $var (@vars) {
+			$target_type->{$var} ||= [];
+			push @{$target_type->{$var}}, $location;
+		}
+	}
+	
+	return({ our => \%our, lexical => \%lexical, dynamic => \%dynamic });
+}
 
 
 
