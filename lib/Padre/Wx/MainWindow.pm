@@ -293,7 +293,6 @@ sub create_editor_pane {
 	return;
 }
 
-
 sub create_side_pane {
 	my $self = shift;
 
@@ -315,6 +314,37 @@ sub create_side_pane {
 	);
 
 	Wx::Event::EVT_KILL_FOCUS( $self->{gui}->{subs_panel}, \&on_subs_panel_left );
+
+	# find-as-you-type in functions tab
+	# TODO: should the whole subs_panel stuff be in its own class?
+	Wx::Event::EVT_CHAR( $self->{gui}->{subs_panel}, sub {
+		my ($self, $event) = @_;
+		my $mod  = $event->GetModifiers || 0;
+		my $code = $event->GetKeyCode;
+		
+		# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+		$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT()); # TODO: This is cargo-cult
+
+		if (!$mod) {
+			warn $code;
+			if ($code <= 255 and $code > 0 and chr($code) =~ /^[\w_:-]$/) { # TODO is there a better way? use ==?
+				$code = 95 if $code == 45; # transform - => _ for convenience
+				$self->{function_find_string} .= chr($code);
+				# this does a partial match starting at the beginning of the function name
+				my $pos = $self->FindItem(0, $self->{function_find_string}, 1);
+				if (defined $pos) {
+					$self->SetItemState($pos, Wx::wxLIST_STATE_SELECTED, Wx::wxLIST_STATE_SELECTED);
+				}
+			}
+			else {
+				# reset the find string
+				$self->{function_find_string} = undef;
+			}
+		}
+
+		$event->Skip(1);
+		return;
+	} );
 
 	$self->{gui}->{sidepane}->AddPage( $self->{gui}->{subs_panel}, Wx::gettext("Subs"), 1 );
 
@@ -613,9 +643,11 @@ sub refresh_methods {
 	return if $self->no_refresh;
 	return unless ( $self->{menu}->{view_functions}->IsChecked );
 
+	my $subs_panel = $self->{gui}->{subs_panel};
+
 	my $doc = $self->selected_document;
 	if (not $doc) {
-		$self->{gui}->{subs_panel}->DeleteAllItems;
+		$subs_panel->DeleteAllItems;
 		return;
 	}
 
@@ -641,11 +673,11 @@ sub refresh_methods {
 	my $old = join ';', @{ $self->{_methods_} };
 	return if $old eq $new;
 
-	$self->{gui}->{subs_panel}->DeleteAllItems;
+	$subs_panel->DeleteAllItems;
 	foreach my $method ( reverse @methods ) {
-		$self->{gui}->{subs_panel}->InsertStringItem(0, $method);
+		$subs_panel->InsertStringItem(0, $method);
 	}
-	$self->{gui}->{subs_panel}->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
+	$subs_panel->SetColumnWidth(0, Wx::wxLIST_AUTOSIZE);
 	$self->{_methods_} = \@methods;
 
 	return;
@@ -2059,6 +2091,7 @@ sub on_close_pane {
 	my $pane = $event->GetPane();
 
 	# it's ugly, but it works
+	# TODO: This needs to be fixed. Data::Dumper is damn slow and this is just... wrong.
 	if ( Data::Dumper::Dumper(\$pane) eq 
 	     Data::Dumper::Dumper(\$self->{gui}->{output_panel}) )
 	{
