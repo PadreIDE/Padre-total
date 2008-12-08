@@ -43,7 +43,7 @@ sub find_unmatched_brace {
 sub get_all_variable_declarations {
 	my $document = shift;
 	my %vars;
-	
+
 	my $declarations = $document->find(
 		sub {
 			return 0 unless $_[1]->isa('PPI::Statement::Variable');
