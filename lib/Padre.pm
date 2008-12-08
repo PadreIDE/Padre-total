@@ -58,7 +58,6 @@ use Class::Autouse qw{
 	Padre::Wx::MainWindow
 	Padre::Wx::Print
 	Padre::Wx::SyntaxChecker
-
 };
 
 # generate fast accessors
