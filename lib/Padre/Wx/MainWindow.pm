@@ -11,6 +11,8 @@ use 5.008;
 # This used to break with subroutine redefinitions.
 # So to prevent this, we force the creating of the correct
 # %INC entry when the file is first compiled. -- Steffen
+# TODO - Test::Compile is clearly a piece of shit, someone
+#        write a better and properly-crossplatform one. -- Adam K
 BEGIN {
 	$INC{"Padre/Wx/MainWindow.pm"} ||= __FILE__;
 }
@@ -28,6 +30,7 @@ use List::Util         ();
 use Scalar::Util       ();
 use Params::Util       ();
 use Padre::Util        ();
+use Padre::Locale      ();
 use Padre::Wx          ();
 use Padre::Wx::Editor  ();
 use Padre::Wx::ToolBar ();
@@ -65,7 +68,7 @@ my %shortname_of = (
 	Wx::wxLANGUAGE_FRENCH()     => 'fr',
 	Wx::wxLANGUAGE_HEBREW()     => 'he',
 	Wx::wxLANGUAGE_HUNGARIAN()  => 'hu',
-	Wx::wxLANGUAGE_ITALIAN()    => 'it',	
+	Wx::wxLANGUAGE_ITALIAN()    => 'it',
 	Wx::wxLANGUAGE_KOREAN()     => 'ko',
 	Wx::wxLANGUAGE_RUSSIAN()    => 'ru',
 );
@@ -506,25 +509,14 @@ sub change_locale {
 
 	$self->manager->GetPane('bottompane')->Caption( Wx::gettext("Output") );
 	$self->manager->GetPane('sidepane')->Caption( Wx::gettext("Subs") );
-	#$self->{gui}->{output_panel}->Caption( Wx::gettext("Output") );
-	#$self->{gui}->{syntaxcheck_panel}->Caption( Wx::gettext("Syntax") );
-	#$self->{gui}->{subs_panel}->Caption( Wx::gettext("Subs") );
 	return;
-}
-
-sub shortname {
-	my $config    = Padre->ide->config;
-	my $shortname = $config->{host}->{locale};
-	$shortname ||= 
-		$shortname_of{ Wx::Locale::GetSystemLanguage } || DEFAULT_LOCALE ;
-	return $shortname;
 }
 
 sub set_locale {
 	my $self = shift;
 
-	my $shortname = shortname();
-	my $lang = $number_of{ $shortname };
+	my $shortname = Padre::Locale::shortname();
+	my $lang      = $number_of{ $shortname };
 	$self->{locale} = Wx::Locale->new($lang);
 	$self->{locale}->AddCatalogLookupPathPrefix( Padre::Util::sharedir('locale') );
 	my $langname = $self->{locale}->GetCanonicalName();
