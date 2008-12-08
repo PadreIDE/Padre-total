@@ -11,7 +11,10 @@ use Class::Adapter::Builder
 our $VERSION = '0.20';
 
 # Convenience shortcut
-sub wx { $_[0]->{OBJECT} }
+use Class::XSAccessor
+	getters => {
+		wx => 'OBJECT',
+	};
 
 # Default implementation of refresh
 sub refresh { 1 }
