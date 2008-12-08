@@ -166,6 +166,15 @@ sub schedule {
 	my $string;
 	$process->serialize(\$string);
 	if ($self->use_threads) {
+		require Time::HiRes;
+		# This is to make sure we don't indefinitely fill the
+		# queue if the CPU can't keep up. If it REALLY can't
+		# keep up, we *want* to block eventually.
+		# For now, the limit has been set to 5*NWORKERTHREADS
+		# which should be a lot.
+		while ($self->task_queue->pending > 5*$self->{max_no_workers}) {
+			Time::HiRes::usleep(10000); # sleep 10msec
+		}
 		$self->task_queue->enqueue( $string );
 	}
 	else {
