@@ -41,10 +41,11 @@ our @EXPORT_OK = qw(newline_type get_matches);
 # The following defined reusable constants for these platforms,
 # suitable for use in platform-specific adaptation code.
 
-use constant WIN32   => !! ( $^O eq 'MSWin32' );
-use constant MAC     => !! ( $^O eq 'darwin'  );
+use constant WIN32   => !! ( $^O eq 'MSWin32'  );
+use constant MAC     => !! ( $^O eq 'darwin'   );
+use constant LINUX   => !! ( $^O =~ m/^linux/i ); # TODO Is an insensitive regex really needed?
 use constant UNIX    => !  ( WIN32 or MAC );
-use constant NEWLINE => WIN32 ? 'WIN' : MAC ? 'MAX' : 'UNIX';
+use constant NEWLINE => WIN32 ? 'WIN' : MAC ? 'MAC' : 'UNIX';
 
 =pod
 
