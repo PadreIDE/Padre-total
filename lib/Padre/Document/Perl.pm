@@ -7,8 +7,6 @@ use warnings;
 use Carp            ();
 use Params::Util    '_INSTANCE';
 use YAML::Tiny      ();
-use PPI;
-
 use Padre::Document ();
 use Padre::Util     ();
 
@@ -130,7 +128,8 @@ sub colorize {
 
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
-	
+
+	require PPI::Document;
 	my $ppi_doc = PPI::Document->new( \$text );
 	if (not defined $ppi_doc) {
 		Wx::LogMessage( 'PPI::Document Error %s', PPI::Document->errstr );
@@ -148,7 +147,7 @@ sub colorize {
 
 		'Number'        => 1,
 		'Float'         => 1,
-		
+
 		'HereDoc'       => 4,
 		'Data'          => 4,
 		'Operator'      => 6,
@@ -254,10 +253,6 @@ sub _css_class {
 	my $css = ref $Token;
 	$css =~ s/^.+:://;
 	$css;
-}
-
-sub can_check_syntax {
-	return 1;
 }
 
 sub check_syntax {
@@ -367,7 +362,6 @@ sub check_syntax {
 
 sub comment_lines_str { return '#' }
 
-
 sub find_unmatched_brace {
 	my ($self) = @_;
 
@@ -381,7 +375,6 @@ sub find_unmatched_brace {
 
 	return();
 }
-
 
 # finds the start of the current symbol.
 # current symbol means in the context something remotely similar
