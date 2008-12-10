@@ -14,7 +14,8 @@ my $pot_file  = catfile( $localedir, 'messages.pot' );
 my $pmfiles   = catfile( $cwd, 'files.txt' );
 
 # build list of perl modules from where to extract strings
-my @pmfiles = File::Find::Rule->file()->name("*.pm")->in("$cwd/lib");
+my @pmfiles = grep {/^lib/}
+	File::Find::Rule->file()->name("*.pm")->relative->in($cwd);
 open my $fh, '>', $pmfiles or die "cannot open '$pmfiles': $!\n";
 print $fh map { "$_$/" } @pmfiles;
 close $fh;
