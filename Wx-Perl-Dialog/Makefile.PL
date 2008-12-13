@@ -23,12 +23,11 @@ test_requires  'Test::NeedsDisplay'      => '1.05';
 no_index       'directory' => [ qw{ t xt eg share inc privinc} ];
 install_share  'eg';
 
-#    meta_merge => {
-#        resources => {
-#            homepage    => 'http://padre.perlide.org/',
-#            bugtracker  => 'http://padre.perlide.org/',
-#            Repository  => 'http://svn.perlide.org/padre',
-#            MailingList => 'http://mail.perlide.org/mailman/listinfo/padre-dev',
-#        },
+resources => 
+            homepage    => 'http://padre.perlide.org/',
+            bugtracker  => 'http://padre.perlide.org/',
+            Repository  => 'http://svn.perlide.org/padre',
+            MailingList => 'http://mail.perlide.org/mailman/listinfo/padre-dev',
+			;
  
 WriteAll;
