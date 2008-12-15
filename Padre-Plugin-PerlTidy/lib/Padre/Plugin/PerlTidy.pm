@@ -24,7 +24,7 @@ file if it exists (see Perl::Tidy documentation).
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.21',
 }
 
 sub menu_plugins_simple {
