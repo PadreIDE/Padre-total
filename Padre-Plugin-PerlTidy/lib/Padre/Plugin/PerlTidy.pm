@@ -48,15 +48,15 @@ sub _tidy {
             "Error", Wx::wxOK | Wx::wxCENTRE, $self );
     }
 
-    my ( $output, $stderr );
+    my ( $output, $error );
 
-    # TODO: why doesn't stderr get captured properly?
+    # TODO: suppress the senseless warning from PerlTidy
     eval {
         Perl::Tidy::perltidy(
-            argv        => \'-se',
+            argv        => \'',
             source      => \$src,
             destination => \$output,
-            stderr      => \$stderr,
+            errorfile   => \$error,
         );
     };
 
@@ -70,7 +70,13 @@ sub _tidy {
         return;
     }
 
-    $self->{ gui }->{ output_panel }->AppendText( "$stderr\n" ) if defined $stderr;
+    if ( defined $error ) {
+        my $width = length( $doc->filename ) + 2;
+        $self->{ gui }->{ output_panel }->AppendText(
+            "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
+        $self->{ gui }->{ output_panel }->AppendText( "$error\n" );
+        $self->{ gui }->{ output_panel }->select;
+    }
     return $output;
 }
 
