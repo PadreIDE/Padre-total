@@ -21,7 +21,7 @@ print $fh map { "$_$/" } @pmfiles;
 close $fh;
 
 unlink $pot_file;
-system("xgettext -o $pot_file -f $pmfiles") == 0
+system("xgettext --from-code=utf-8 -o $pot_file -f $pmfiles") == 0
 	or die "xgettext exited with return code " . $? >> 8;
 
 # cleanup
