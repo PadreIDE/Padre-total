@@ -38,6 +38,10 @@ sub menu_plugins_simple {
 	];
 }
 
+sub registered_documents {
+	'application/x-perl6'    => 'Padre::Document::Perl6',
+}
+
 
 sub show_about {
 	my ($main) = @_;
