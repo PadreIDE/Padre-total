@@ -36,6 +36,11 @@ sub menu {
     return @menu;
 }
 
+sub registered_documents {
+	'application/x-pasm'  => 'Padre::Document::PASM',
+	'application/x-pir'       => 'Padre::Document::PIR',
+}
+
 sub on_try_perl5 {
 	my ($main) = @_;
 	
@@ -85,6 +90,17 @@ END_PIR
 sub menu_name {
 	return "Parrot Experiments";
 }
+
+package Px;
+
+use constant {
+	PASM_KEYWORD  => 1,
+	PASM_REGISTER => 2,
+	PASM_LABEL    => 3,
+	PASM_STRING   => 4,
+	PASM_COMMENT  => 5,
+	PASM_POD      => 6,
+};
 
 1;
 
