@@ -21,9 +21,6 @@ sub colorize {
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
   
-  print $text;
-  print "\n\n";
-
   my $p = new Syntax::Highlight::Perl6(
     text => $text,
   );
@@ -31,42 +28,37 @@ sub colorize {
   my @parse_recs = @{ $p->parse_trees };
   
   my %colors = (
-  'comp_unit'  => 0, # color: Blue; 
-  'scope_declarator' => 1, # color: DarkRed
-  'routine_declarator' => 1, # color: DarkRed;
-  'regex_declarator' => 1, #color: DarkRed;
-  'package_declarator' => 1, #color DarkRed;
-  'statement_control' => 1, #color: DarkRed;
-  'block' => 0, # color: Black;
-  'regex_block' => 0, #color: Black;
-  'noun' => 0, #color: Black;
-  'sigil' => 4, #color: DarkGreen;
-  'variable' => 4, #color: DarkGreen; 
-  'assertion' => 4, #color: Darkgreen;
-  'quote' => => 7, #color: DarkMagenta;
-  'number' => 7, #color: DarkOrange;
-  'infix' => 3, #color: DimGray;
-  'methodop' => 0, #color: black; font-weight: bold;
-  'pod_comment' => 4, #color: DarkGreen; font-weight: bold;
-  'param_var' => 7, #color: Crimson;
-
-  '_routine' => 1, #color: DarkRed; font-weight: bold;
-  '_type' => 1, #color: DarkBlue; font-weight: bold;
-  '_scalar' => 1, #color: DarkBlue; font-weight: bold;
-  '_array' => 1, #color: Brown; font-weight: bold;
-  '_hash' => 1, #color: DarkOrange; font-weight: bold;
-  '_comment' => 4, #color: DarkGreen; font-weight: bold;
+		'comp_unit'  => 0, # color: Blue; 
+		'scope_declarator' => 1, # color: DarkRed
+		'routine_declarator' => 1, # color: DarkRed;
+		'regex_declarator' => 1, #color: DarkRed;
+		'package_declarator' => 1, #color DarkRed;
+		'statement_control' => 1, #color: DarkRed;
+		'block' => 0, # color: Black;
+		'regex_block' => 0, #color: Black;
+		'noun' => 0, #color: Black;
+		'sigil' => 4, #color: DarkGreen;
+		'variable' => 4, #color: DarkGreen; 
+		'assertion' => 4, #color: Darkgreen;
+		'quote' => => 7, #color: DarkMagenta;
+		'number' => 7, #color: DarkOrange;
+		'infix' => 3, #color: DimGray;
+		'methodop' => 0, #color: black; font-weight: bold;
+		'pod_comment' => 4, #color: DarkGreen; font-weight: bold;
+		'param_var' => 7, #color: Crimson;
+		'_routine' => 1, #color: DarkRed; font-weight: bold;
+		'_type' => 1, #color: DarkBlue; font-weight: bold;
+		'_scalar' => 1, #color: DarkBlue; font-weight: bold;
+		'_array' => 1, #color: Brown; font-weight: bold;
+		'_hash' => 1, #color: DarkOrange; font-weight: bold;
+		'_comment' => 4, #color: DarkGreen; font-weight: bold;
   );
-  my $rec;
-  for $rec (@parse_recs) {
+  for my $rec (@parse_recs) {
     my $pos = @{$rec}[0];
     my $buffer = @{$rec}[1];
     my $rule = @{$rec}[2];
-    
     my $color = $colors{$rule};
     if($color) {
-      #say qq{Found '$rule' at position '$pos' => '$buffer'};
-      #say qq{matched color is $color};
       my $len = length $buffer;
       my $start = $pos - $len;
       $editor->StartStyling($start, $color);
