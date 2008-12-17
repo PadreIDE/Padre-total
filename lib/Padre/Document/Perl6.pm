@@ -5,6 +5,7 @@ package Padre::Document::Perl6;
 use 5.010;
 use strict;
 use warnings;
+use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 
 use Syntax::Highlight::Perl6;
@@ -16,8 +17,6 @@ our @ISA     = 'Padre::Document';
 sub colorize {
 	my ($self, $first) = @_;
 
-	$self->remove_color;
-
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
   
@@ -25,8 +24,21 @@ sub colorize {
     text => $text,
   );
   
-  my @parse_recs = @{ $p->parse_trees };
-  
+  my @parse_recs;
+
+	print "STD parse begin...\n";
+	eval {
+	@parse_recs = @{ $p->parse_trees };
+  1;
+	};
+	
+	if($EVAL_ERROR) {
+		print "STD Parse error... Aborting highlighting...\n";
+		return;
+	}
+	
+	$self->remove_color;
+	
   my %colors = (
 		'comp_unit'  => 0, # color: Blue; 
 		'scope_declarator' => 1, # color: DarkRed
