@@ -26,7 +26,7 @@ modify it under the same terms as Perl 5 itself.
 
 =cut
 
-sub padre_interfacesx {
+sub padre_interfaces {
 	'Padre::Plugin'         => 0.20,
 }
 
