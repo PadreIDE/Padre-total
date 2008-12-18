@@ -5,6 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::CSS',
           'VERSION_FROM' => 'lib/Padre/Plugin/CSS.pm',
           'PREREQ_PM' => {
+                           'CSS::Minifier::XS' => '0',
                            'Padre' => '0.21',
                            'Test::More' => '0',
                            'WebService::Validator::CSS::W3C' => '0'
