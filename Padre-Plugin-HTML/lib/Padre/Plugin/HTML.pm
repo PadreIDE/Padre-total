@@ -16,6 +16,7 @@ sub menu_plugins_simple {
 	'HTML' => [
 		'Validate HTML',  \&validate_html,
 		'Tidy HTML', \&tidy_html,
+		'HTML Lint', \&html_lint,
 	];
 }
 
@@ -81,9 +82,32 @@ sub tidy_html {
     }
     
     $text = 'OK' unless ( length($text) );
-	$self->show_output;
-	$self->{gui}->{output_panel}->clear;
-	$self->{gui}->{output_panel}->AppendText($text);
+	_output($self, $text);
+}
+
+sub html_lint {
+	my ( $self ) = @_;
+	
+	my $src = $self->selected_text;
+	my $doc = $self->selected_document;
+	my $code = ( $src ) ? $src : $doc->text_get;
+	
+	return unless ( defined $code and length($code) );
+	
+	require HTML::Lint;
+	my $lint = HTML::Lint->new;
+
+	$lint->parse( $code );
+
+	my $text;
+	my $error_count = $lint->errors;
+
+    foreach my $error ( $lint->errors ) {
+        $text .= $error->as_string, "\n";
+    }
+    
+    $text = 'OK' unless ( length($text) );
+	_output($self, $text);
 }
 
 1;

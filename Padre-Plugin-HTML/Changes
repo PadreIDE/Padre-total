@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-HTML
 
+0.02    2008.12.18
+        add HTML::Lint
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 

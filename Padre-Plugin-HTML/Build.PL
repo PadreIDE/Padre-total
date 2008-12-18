@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'XML::XPath' => 0,
         'WebService::Validator::HTML::W3C' => 0,
         'HTML::Tidy' => 0,
+        'HTML::Lint' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-HTML-*' ],
     create_makefile_pl => 'traditional',
