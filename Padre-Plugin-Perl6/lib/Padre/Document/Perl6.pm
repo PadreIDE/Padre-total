@@ -56,7 +56,7 @@ sub colorize {
 		'sigil' => 4, #color: DarkGreen;
 		'variable' => 4, #color: DarkGreen; 
 		'assertion' => 4, #color: Darkgreen;
-		'quote' => => 7, #color: DarkMagenta;
+		'quote' => 7, #color: DarkMagenta;
 		'number' => 7, #color: DarkOrange;
 		'infix' => 3, #color: DimGray;
 		'methodop' => 0, #color: black; font-weight: bold;
