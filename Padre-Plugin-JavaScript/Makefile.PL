@@ -10,6 +10,8 @@ requires       'perl'                    => '5.008001';
 requires       'Exporter'                => 0;
 requires       'Padre'                   => '0.21';
 requires       'Class::Autouse'          => '1.26';
+requires       'JavaScript::Beautifier'  => '0.03';
+requires       'JavaScript::JSLint'      => 0;
 
 test_requires  'Test::More'              => '0.47';
 test_requires  'Test::NeedsDisplay'      => '1.05';
