@@ -5,9 +5,11 @@ package Padre::Document::Perl6;
 use 5.010;
 use strict;
 use warnings;
+use feature qw(say);
 use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 
+use Benchmark;
 use Syntax::Highlight::Perl6;
 
 our $VERSION = '0.21';
@@ -20,20 +22,20 @@ sub colorize {
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
   
+  my $t0 = new Benchmark;
   my $p = new Syntax::Highlight::Perl6(
     text => $text,
   );
   
   my @parse_recs;
 
-	print "STD parse begin...\n";
 	eval {
 	@parse_recs = @{ $p->parse_trees };
   1;
 	};
 	
 	if($EVAL_ERROR) {
-		print "STD Parse error... Aborting highlighting...\n";
+		say "Parsing error, bye bye ->colorize";
 		return;
 	}
 	
@@ -77,6 +79,9 @@ sub colorize {
       $editor->SetStyling($len, $color);
     }
   }
+  
+  my $td = timediff(new Benchmark, $t0);
+  say "->colorize took:" . timestr($td) ;  
 }
 
 sub get_command {
