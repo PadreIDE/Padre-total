@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Padre' => '0.21',
         'WebService::Validator::CSS::W3C' => 0,
+        'CSS::Minifier::XS' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-CSS-*' ],
     create_makefile_pl => 'traditional',

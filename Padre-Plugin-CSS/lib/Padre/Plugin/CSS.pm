@@ -14,7 +14,8 @@ sub padre_interfaces {
 
 sub menu_plugins_simple {
 	'CSS' => [
-		'Validate CSS',  \&validate_css,
+	    'CSS Minifier',   \&css_minifier,
+		'Validate CSS',   \&validate_css,
 	];
 }
 
@@ -60,12 +61,37 @@ sub _output {
 	$self->{gui}->{output_panel}->AppendText($text);
 }
 
+sub css_minifier {
+	my ( $win) = @_;
+
+	my $src = $win->selected_text;
+	my $doc = $win->selected_document;
+	my $code = $src ? $src : $doc->text_get;
+	return unless ( defined $code and length($code) );
+
+	require CSS::Minifier::XS;
+	CSS::Minifier::XS->import('minify');
+		
+	my $css = minify( $code );
+    
+    if ( $src ) {
+		my $editor = $win->selected_editor;
+	    $editor->ReplaceSelection( $css );
+	} else {
+		$doc->text_set( $css );
+	}
+}
+
 1;
 __END__
 
 =head1 NAME
 
 Padre::Plugin::CSS - L<Padre> and CSS
+
+=head1 CSS Minifier
+
+use L<CSS::Minifier::XS> to minify css
 
 =head1 Validate CSS
 
