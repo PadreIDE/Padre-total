@@ -12,7 +12,7 @@ use Padre::Document ();
 use Benchmark;
 use Syntax::Highlight::Perl6;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
 
 # Naive way to parse and colorize perl6 files
