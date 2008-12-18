@@ -15,6 +15,8 @@ use Syntax::Highlight::Perl6;
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
 
+my $keywords;
+
 # Naive way to parse and colorize perl6 files
 sub colorize {
 	my ($self, $first) = @_;
@@ -103,6 +105,15 @@ sub get_command {
 
 	return qq{"$parrot" "$rakudo" "$filename"};
 
+}
+
+sub keywords {
+	if (! defined $keywords) {
+		$keywords = YAML::Tiny::LoadFile(
+			Padre::Util::sharefile( 'languages', 'perl6', 'perl6.yml' )
+		);
+	}
+	return $keywords;
 }
 
 sub comment_lines_str { return '#' }
