@@ -44,7 +44,7 @@ sub colorize {
 	$self->remove_color;
 	
   my %colors = (
-		'comp_unit'  => 0, # color: Blue; 
+		'comp_unit'  => Px::PADRE_BLUE, # color: Blue; 
 		'scope_declarator' => 1, # color: DarkRed
 		'routine_declarator' => 1, # color: DarkRed;
 		'regex_declarator' => 1, #color: DarkRed;
@@ -64,7 +64,7 @@ sub colorize {
 		'param_var' => 7, #color: Crimson;
 		'_routine' => 1, #color: DarkRed; font-weight: bold;
 		'_type' => 1, #color: DarkBlue; font-weight: bold;
-		'_scalar' => 1, #color: DarkBlue; font-weight: bold;
+		'_scalar' => Px::PADRE_RED, #color: DarkBlue; font-weight: bold;
 		'_array' => 1, #color: Brown; font-weight: bold;
 		'_hash' => 1, #color: DarkOrange; font-weight: bold;
 		'_comment' => 4, #color: DarkGreen; font-weight: bold;
