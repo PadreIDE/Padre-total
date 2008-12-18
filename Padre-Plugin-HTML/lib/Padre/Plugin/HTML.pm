@@ -3,96 +3,107 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-=head1 NAME
-
-Padre::Plugin::HTML - The great new Padre::Plugin::HTML!
-
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
 our $VERSION = '0.01';
 
+use base 'Padre::Plugin';
+use Wx ':everything';
 
-=head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
-    use Padre::Plugin::HTML;
-
-    my $foo = Padre::Plugin::HTML->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
+sub padre_interfaces {
+	'Padre::Plugin' => '0.21',
 }
 
-=head2 function2
-
-=cut
-
-sub function2 {
+sub menu_plugins_simple {
+	'HTML' => [
+		'Validate HTML',  \&validate_html,
+		'Tidy HTML', \&tidy_html,
+	];
 }
+
+sub validate_html {
+	my ( $self ) = @_;
+	
+	my $doc  = $self->selected_document;
+	my $code = $doc->text_get;
+	
+	unless ( $code and length($code) ) {
+		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+	}
+	
+	require WebService::Validator::HTML::W3C;
+	my $v = WebService::Validator::HTML::W3C->new(
+		detailed => 1
+	);
+
+	if ( $v->validate_markup($code) ) {
+        if ( $v->is_valid ) {
+			_output( $self, "HTML is valid\n" );
+        } else {
+			my $error_text = "HTML is not valid\n";
+            foreach my $error ( @{$v->errors} ) {
+                $error_text .= sprintf("%s at line %d\n", $error->msg, $error->line);
+            }
+            _output( $self, $error_text );
+        }
+    } else {
+        my $error_text = sprintf("Failed to validate the code: %s\n", $v->validator_error);
+        _output( $self, $error_text );
+    }
+}
+
+sub _output {
+	my ( $self, $text ) = @_;
+	
+	$self->show_output;
+	$self->{gui}->{output_panel}->clear;
+	$self->{gui}->{output_panel}->AppendText($text);
+}
+
+sub tidy_html {
+	my ( $self ) = @_;
+	
+	my $src = $self->selected_text;
+	my $doc = $self->selected_document;
+	my $code = ( $src ) ? $src : $doc->text_get;
+	
+	return unless ( defined $code and length($code) );
+	
+	require HTML::Tidy;
+	my $tidy = HTML::Tidy->new;
+
+	{
+		no warnings;
+		$tidy->parse( $0, $code );
+	}
+
+	my $text;
+    for my $message ( $tidy->messages ) {
+        $text .= $message->as_string . "\n";
+    }
+    
+    $text = 'OK' unless ( length($text) );
+	$self->show_output;
+	$self->{gui}->{output_panel}->clear;
+	$self->{gui}->{output_panel}->AppendText($text);
+}
+
+1;
+__END__
+
+=head1 NAME
+
+Padre::Plugin::HTML - L<Padre> and HTML
+
+=head1 Validate HTML
+
+use L<WebService::Validator::HTML::W3C> to validate the HTML
+
+=head1 Tidy HTML
+
+use L<HTML::Tidy> to tidy HTML
 
 =head1 AUTHOR
 
 Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-padre-plugin-html at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-HTML>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Padre::Plugin::HTML
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-HTML>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Padre-Plugin-HTML>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Padre-Plugin-HTML>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Padre-Plugin-HTML/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 COPYRIGHT & LICENSE
 
@@ -101,7 +112,4 @@ Copyright 2008 Fayland Lam, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of Padre::Plugin::HTML
