@@ -32,7 +32,6 @@ sub registered_documents {
 sub menu_plugins_simple {
 	'JavaScript' => [
 		'JavaScript Beautifier', \&js_eautifier,
-		'JavaScript JSLint',     \&js_lint,
 	];
 }
 
@@ -60,34 +59,6 @@ sub js_eautifier {
 	}
 }
 
-sub js_lint {
-	my ( $win ) = @_;
-	
-	my $src = $win->selected_text;
-	my $doc = $win->selected_document;
-	my $code = $src ? $src : $doc->text_get;
-	return unless ( defined $code and length($code) );
-	
-	require JavaScript::JSLint;
-	JavaScript::JSLint->import('jslint');
-	
-	my @errors = jslint( $code );
-	my $text;
-	foreach my $err (@errors) {
-        $text .= "$err->{reason} at line $err->{line}\n";
-    }
-    $text = 'OK' unless ( length($text) );
-    _output($win, $text);
-}
-
-sub _output {
-	my ( $self, $text ) = @_;
-	
-	$self->show_output;
-	$self->{gui}->{output_panel}->clear;
-	$self->{gui}->{output_panel}->AppendText($text);
-}
-
 1;
 __END__
 
@@ -98,10 +69,6 @@ Padre::Plugin::JavaScript - L<Padre> and JavaScript
 =head1 JavaScript Beautifier
 
 use L<JavaScript::Beautifier> to beautify js
-
-=head1 JavaScript JSLint
-
-use L<JavaScript::JSLint> to find js errors.
 
 =head1 AUTHOR
 
