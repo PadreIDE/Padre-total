@@ -8,7 +8,7 @@ all_from       'lib/Padre/Plugin/Perl6.pm';
 
 requires       'perl'                    => '5.008001';
 
-requires       'Padre'                    => 0;
+requires       'Padre'                    => '0.22';
 requires       'Syntax::Highlight::Perl6' => '0.0292';
 
 test_requires  'Test::More'              => '0.47';
