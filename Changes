@@ -1,2 +1,4 @@
 
-   Moving out from the Padre source code
+  Support keyword scintilla auto completion
+  Supports Perl6 highlighting via Syntax::Highlight::Perl6
+  Moving out from the Padre source code
