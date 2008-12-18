@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/CSS.pm',
     build_requires => {
         'Test::More' => 0,
+        'Padre' => '0.21',
+        'WebService::Validator::CSS::W3C' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-CSS-*' ],
     create_makefile_pl => 'traditional',
