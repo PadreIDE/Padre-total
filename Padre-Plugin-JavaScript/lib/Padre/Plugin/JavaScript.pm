@@ -32,6 +32,7 @@ sub registered_documents {
 sub menu_plugins_simple {
 	'JavaScript' => [
 		'JavaScript Beautifier', \&js_eautifier,
+		'JavaScript Minifier',   \&js_minifier,
 	];
 }
 
@@ -56,6 +57,27 @@ sub js_eautifier {
 	    $editor->ReplaceSelection( $pretty_js );
 	} else {
 		$doc->text_set( $pretty_js );
+	}
+}
+
+sub js_minifier {
+	my ( $win) = @_;
+
+	my $src = $win->selected_text;
+	my $doc = $win->selected_document;
+	my $code = $src ? $src : $doc->text_get;
+	return unless ( defined $code and length($code) );
+
+	require JavaScript::Minifier::XS;
+	JavaScript::Minifier::XS->import('minify');
+		
+	my $mjs = minify( $code );
+    
+    if ( $src ) {
+		my $editor = $win->selected_editor;
+	    $editor->ReplaceSelection( $mjs );
+	} else {
+		$doc->text_set( $mjs );
 	}
 }
 
