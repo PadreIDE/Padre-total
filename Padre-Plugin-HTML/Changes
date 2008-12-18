@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-HTML
 
+0.03    2008.12.18
+        small bug fix
+
 0.02    2008.12.18
         add HTML::Lint
 

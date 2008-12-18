@@ -3,7 +3,7 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
@@ -103,7 +103,7 @@ sub html_lint {
 	my $error_count = $lint->errors;
 
     foreach my $error ( $lint->errors ) {
-        $text .= $error->as_string, "\n";
+        $text .= $error->as_string . "\n";
     }
     
     $text = 'OK' unless ( length($text) );
