@@ -92,6 +92,10 @@ Padre::Plugin::JavaScript - L<Padre> and JavaScript
 
 use L<JavaScript::Beautifier> to beautify js
 
+=head1 JavaScript Minifier
+
+use L<JavaScript::Minifier::XS> to minify js
+
 =head1 AUTHOR
 
 Adam Kennedy C<< <adamk@cpan.org> >>
