@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/XML.pm',
     build_requires => {
         'Test::More' => 0,
+        'Padre' => '0.21',
+        'XML::Tidy' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-XML-*' ],
     create_makefile_pl => 'traditional',
