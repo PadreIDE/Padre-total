@@ -3,13 +3,18 @@ package Padre::Plugin::XML;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.21',
+	'Padre::Plugin'   => 0.21,
+	'Padre::Document' => 0.21,
+}
+
+sub registered_documents {
+	'text/xml' => 'Padre::Document::XML',
 }
 
 sub menu_plugins_simple {

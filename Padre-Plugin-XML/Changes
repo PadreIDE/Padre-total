@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-XML
 
+0.02
+        add a new Padre::Document::XML
+
 0.01    Date/time
         First version, released on an unsuspecting world.
 
