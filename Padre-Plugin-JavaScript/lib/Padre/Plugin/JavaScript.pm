@@ -8,13 +8,9 @@ use strict;
 use warnings;
 use Class::Autouse 'Padre::Document::JavaScript';
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 use base 'Padre::Plugin';
-
-
-
-
 
 ######################################################################
 # Padre::Plugin API Methods

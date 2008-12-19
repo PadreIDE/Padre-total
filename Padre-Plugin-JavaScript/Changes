@@ -1,4 +1,8 @@
-v0.22 2008.12.18
-    First release separately from Padre
-    add JavaScrip::Beautifier
-    add JavaScript::Minifier::XS
+
+0.23    
+        fix Padre::Document::JavaScript get_functions/get_function_regex for Mac
+
+0.22    2008.12.18
+        First release separately from Padre
+        add JavaScrip::Beautifier
+        add JavaScript::Minifier::XS

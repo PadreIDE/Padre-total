@@ -5,9 +5,8 @@ use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
-use YAML::Tiny      ();
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 our @ISA     = 'Padre::Document';
 
 
@@ -17,26 +16,23 @@ our @ISA     = 'Padre::Document';
 #####################################################################
 # Padre::Document::JavaScript Methods
 
-#my $keywords;
-#
-#sub keywords {
-#	unless ( defined $keywords ) {
-#		$keywords = YAML::Tiny::LoadFile(
-#			Padre::Util::sharefile( 'languages', 'perl5', 'javascript.yml' )
-#		);
-#	}
-#	return $keywords;
-#}
-
 sub get_functions {
 	my $self = shift;
 	my $text = $self->text_get;
-	return reverse sort $text =~ m{^function\s+(\w+(?:::\w+)*)}gm;
+	
+	my %nlCharTable = ( UNIX => "\n", WIN => "\r\n", MAC => "\r" );
+	my $nlchar = $nlCharTable{ $self->get_newline_type };
+	
+	return $text =~ m/${nlchar}function\s+(\w+(?:::\w+)*)/g;
 }
 
 sub get_function_regex {
 	my ( $self, $sub ) = @_;
-	return qr{(^|\n)function\s+$sub\b};
+	
+	my %nlCharTable = ( UNIX => "\n", WIN => "\r\n", MAC => "\r" );
+	my $nlchar = $nlCharTable{ $self->get_newline_type };
+	
+	return qr!(?:^|${nlchar})function\s+$sub\b!;
 }
 
 sub comment_lines_str { return '//' }
