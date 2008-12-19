@@ -29,10 +29,10 @@ sub colorize {
     text => $text,
   );
   
-  my @parse_recs;
+  my @tokens;
 
 	eval {
-	@parse_recs = @{ $p->parse_trees };
+	@tokens = $p->tokens;
   1;
 	};
 	
@@ -69,14 +69,12 @@ sub colorize {
 		'_hash' => 1, #color: DarkOrange; font-weight: bold;
 		'_comment' => 4, #color: DarkGreen; font-weight: bold;
   );
-  for my $rec (@parse_recs) {
-    my $pos = @{$rec}[0];
-    my $buffer = @{$rec}[1];
-    my $rule = @{$rec}[2];
-    my $color = $colors{$rule};
+  for my $htoken (@tokens) {
+    my %token = %{$htoken};
+    my $color = $colors{ $token{rule} };
     if($color) {
-      my $len = length $buffer;
-      my $start = $pos - $len;
+      my $len = length $token{buffer};
+      my $start = $token{last_pos} - $len;
       $editor->StartStyling($start, $color);
       $editor->SetStyling($len, $color);
     }
