@@ -1,8 +1,18 @@
 package Padre::Plugin::Perl6;
+
+use 5.010;
 use strict;
 use warnings;
+use English;
+use Carp;
+use feature qw(say);
+use IO::File;
+use File::Temp;
 
 our $VERSION = '0.22';
+
+use URI::file;
+use Syntax::Highlight::Perl6;
 
 use Padre::Wx ();
 use base 'Padre::Plugin';
@@ -34,7 +44,8 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	my $self = shift;
 	'Perl 6' => [
-		About => sub { $self->show_about },
+		'About' => sub { $self->show_about },
+		'Export HTML' => sub { $self->export_html },
 	];
 }
 
@@ -49,11 +60,44 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		"Experimental Perl6 syntax highlighting\n"
+		"Perl6 syntax highlighting that is based on Syntax::Highlight::Perl6\n"
 	);
 	#$about->SetVersion($Padre::VERSION);
 	Wx::AboutBox( $about );
 	return;
+}
+
+
+sub export_html {
+	my ($main) = @_;
+	
+	my $text = Padre::Documents->current->text_get() // '';
+	
+  my $p = Syntax::Highlight::Perl6->new(
+    text => $text,
+  );
+  
+  my $snippet_html;
+	eval {
+		$snippet_html = $p->snippet_html;
+		1;
+	};
+	
+	if($EVAL_ERROR) {
+		say 'Parsing error, bye bye ->export_html';
+		return;
+	}
+
+	my $tmp = File::Temp->new(SUFFIX => '.html');
+	$tmp->unlink_on_destroy(0);
+	my $filename = $tmp->filename;
+	
+	print $tmp $snippet_html;
+	close $tmp
+		or croak "Could not close $filename";
+
+	my $uri = URI::file->new($filename);
+	Wx::LaunchDefaultBrowser($uri);	
 }
 
 
