@@ -34,10 +34,10 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	my $self = shift;
 	'Perl 6' => [
-		'About' => sub { $self->show_about },
 		'Export Full HTML' => sub { $self->export_html($FULL_HTML); },
 		'Export Simple HTML' => sub { $self->export_html($SIMPLE_HTML); },
 		'Export Snippet HTML' => sub { $self->export_html($SNIPPET_HTML); },
+		'About' => sub { $self->show_about },
 	];
 }
 
@@ -60,14 +60,18 @@ sub show_about {
 
 sub export_html {
 	my ($self, $type) = @ARG;
-	
+
+	if(!defined Padre::Documents->current) {
+		return;
+	}
+
 	my $text = Padre::Documents->current->text_get() // '';
-	
+
   my $p = Syntax::Highlight::Perl6->new(
     text => $text,
 		inline_resources => 1, 
   );
-  
+
   my $html;
 	eval {
 		given($type) {
@@ -80,12 +84,13 @@ sub export_html {
 		}
 		1;
 	};
-	
+
 	if($EVAL_ERROR) {
 		say 'Parsing error, bye bye ->export_html';
 		return;
 	}
 
+	# create a temporary HTML file
 	my $tmp = File::Temp->new(SUFFIX => '.html');
 	$tmp->unlink_on_destroy(0);
 	my $filename = $tmp->filename;
@@ -93,6 +98,12 @@ sub export_html {
 	close $tmp
 		or croak "Could not close $filename";
 
+	# try to open the HTML file
+	my $main   = Padre->ide->wx->main_window;
+	$main->setup_editor($filename);
+	#$main->refresh_all;
+
+	# launch the HTML file in your default browser
 	my $file_url = URI::file->new($filename);
 	Wx::LaunchDefaultBrowser($file_url);	
 }
