@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-HTML
-version: 0.01
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: L<Padre> and HTML
@@ -8,6 +8,7 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  HTML::Lint: 0
   HTML::Tidy: 0
   Padre: 0.21
   Test::More: 0
@@ -16,7 +17,7 @@ build_requires:
 provides:
   Padre::Plugin::HTML:
     file: lib/Padre/Plugin/HTML.pm
-    version: 0.01
+    version: 0.04
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

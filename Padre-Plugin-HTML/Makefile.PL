@@ -5,6 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::HTML',
           'VERSION_FROM' => 'lib/Padre/Plugin/HTML.pm',
           'PREREQ_PM' => {
+                           'HTML::Lint' => '0',
                            'HTML::Tidy' => '0',
                            'Padre' => '0.21',
                            'Test::More' => '0',
