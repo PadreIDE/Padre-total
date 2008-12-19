@@ -10,7 +10,8 @@ requires       'perl'                    => '5.008001';
 
 requires       'Padre'                    => '0.22';
 requires       'Syntax::Highlight::Perl6' => '0.0294';
-requires       'URI' 											=> '1.37';
+requires       'URI'                      => '1.37';
+requires       'Readonly'                 => '1.03';
 
 test_requires  'Test::More'              => '0.47';
 test_requires  'Test::Exception'         => '0.27';
