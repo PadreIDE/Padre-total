@@ -1,8 +1,9 @@
 Revision history for Task-Padre-Plugin-Deps
 
 0.02
-		add Padre::Plugin::HTML::Export and Tidy
+		add Padre::Plugin::HTML::Export
 		add Padre::Plugin::Alarm
+		etc.
 
 0.01    2008.11.12
         First version, released on an unsuspecting world.

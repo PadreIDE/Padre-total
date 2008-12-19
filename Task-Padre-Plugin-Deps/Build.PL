@@ -19,12 +19,17 @@ my $builder = Module::Build->new(
         'Test::More'              => 0,
         'Test::NeedsDisplay'      => '1.05',
         'Module::Build'           => 0,
+        'Module::Install'         => 0,
 
 		# Padre::Plugin::AcmePlayCode   0.02,
 		'Acme::PlayCode' => 0,
 		
 		# Padre::Plugin::Alarm
 		'Audio::Beep'    => 0,
+		
+		# Padre::Plugin::CSS 0.02
+		'WebService::Validator::CSS::W3C' => 0,
+		'CSS::Minifier::XS' => 0,
 
 		# Padre::Plugin::CPAN 0.03
 		'CPAN'           => 0,
@@ -32,6 +37,12 @@ my $builder = Module::Build->new(
 		# Padre::Plugin::Encrypt  0.01
 		'Crypt::CBC' => 0,
         'Crypt::Blowfish' => 0,
+        
+        # Padre::Plugin::HTML 0.03
+        'XML::XPath' => 0,
+        'WebService::Validator::HTML::W3C' => 0,
+        'HTML::Tidy' => 0,
+        'HTML::Lint' => 0,
 
 		# Padre::Plugin::HTMLExport
 		'Syntax::Highlight::Engine::Kate' => 0,
@@ -40,6 +51,10 @@ my $builder = Module::Build->new(
         'ExtUtils::InferConfig'   => '0.02',
         'ExtUtils::InstallPAR'    => '0.01',
         'LWP::Simple'             => '0',
+        
+        # Padre::Plugin::JavaScript 0.22
+        'JavaScript::Beautifie'   => '0.03',
+        'JavaScript::Minifier::XS' => 0,
 
         # Padre::Plugin::PAR',
         'PAR::Packer'             => 0,
@@ -52,18 +67,10 @@ my $builder = Module::Build->new(
 
 		# Padre::Plugin::Pip 0.13
         'pip'                     => '0.13',
+        
+        # Padre::Plugin::XML
+        'XML::Tidy' => 0,
 
-		# Padre::Plugin::Tidy
-		'XML::Tidy'  => 0,
-        'HTML::Tidy' => 0,
-
-		# Padre::Plugin::Validator 0.02
-		'XML::XPath'                       => 0,
-        'WebService::Validator::HTML::W3C' => 0,
-        'WebService::Validator::CSS::W3C'  => 0,
-
-		# Padre::Plugin::ViewInBrowser  0.01
-	    'Path::Class::File' => 0,
     },
     build_requires => {
         'Test::More' => 0,
