@@ -3,20 +3,25 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.21',
+	'Padre::Plugin'   => 0.21,
+	'Padre::Document' => 0.21,
+}
+
+sub registered_documents {
+	'text/html' => 'Padre::Document::HTML',
 }
 
 sub menu_plugins_simple {
 	'HTML' => [
-		'Validate HTML',  \&validate_html,
 		'Tidy HTML', \&tidy_html,
 		'HTML Lint', \&html_lint,
+		'Validate HTML',  \&validate_html,
 	];
 }
 
