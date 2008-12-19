@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugin-Deps
 
+0.03    2008.12.19
+        fix wrong uploaded version
+
 0.02    2008.12.19
 		add Padre::Plugin::HTML::Export
 		add Padre::Plugin::Alarm

@@ -7,7 +7,7 @@ my $builder = Module::Build->new(
     license             => 'perl',
     dist_author         => 'Gabor Szabo <szabgab@gmail.com>',
     #dist_version_from   => 'lib/Task/Padre/Plugin/Deps.pm',
-    dist_version        => '0.01',
+    dist_version        => '0.03',
     requires => {
         'perl'                    => '5.008',
 
