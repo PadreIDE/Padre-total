@@ -1,8 +1,8 @@
 Build.PL
 Changes
-MANIFEST
-README
 lib/Task/Padre/Plugins.pm
+MANIFEST			This list of files
+README
 t/00-load.t
 Makefile.PL
 META.yml

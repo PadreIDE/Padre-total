@@ -1,6 +1,6 @@
 Revision history for Task-Padre-Plugins
 
-0.04
+0.04    2008.12.19
 		add Padre::Plugin::HTMLExport
 		add Padre::Plugin::Alarm
 		etc.
