@@ -1,0 +1,14 @@
+Revision history for Padre-Plugin-ViewInBrowser
+
+0.04	2008.11.24
+		for 'Padre::Plugin' => '0.18'
+
+0.03	2008.11.22
+		Wx::LaunchDefaultBrowser
+
+0.02	2008.11.20
+		from use to require
+
+0.01    Date/time
+        First version, released on an unsuspecting world.
+

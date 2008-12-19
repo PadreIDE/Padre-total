@@ -1,0 +1,14 @@
+Revision history for Padre-Plugin-AcmePlayCode
+
+0.05	2008.11.24
+		for 'Padre::Plugin' => '0.18'
+
+0.04	2008.11.20
+		from use Acme::PlayCode to require
+
+0.02	2008.11.3
+		requires 'Padre' => '0.15'
+
+0.01    Date/time
+        First version, released on an unsuspecting world.
+
