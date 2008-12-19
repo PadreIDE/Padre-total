@@ -24,8 +24,8 @@ sub colorize {
 	my $editor = $self->editor;
 	my $text   = $self->text_get;
   
-  my $t0 = new Benchmark;
-  my $p = new Syntax::Highlight::Perl6(
+  my $t0 = Benchmark->new;
+  my $p = Syntax::Highlight::Perl6->new(
     text => $text,
   );
   
