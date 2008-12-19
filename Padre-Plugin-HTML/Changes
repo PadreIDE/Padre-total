@@ -1,7 +1,7 @@
 Revision history for Padre-Plugin-HTML
 
-0.05
-        add Padre::Document::HTML
+0.05    2008.12.19
+        add Padre::Document::HTML with get_command
 
 0.04    2008.12.19
         fix htmltidy

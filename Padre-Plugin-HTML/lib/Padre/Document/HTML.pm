@@ -5,9 +5,16 @@ use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
-use YAML::Tiny      ();
+use Wx ':everything';
 
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
+
+sub get_command {
+	my $self     = shift;
+
+	my $filename = $self->filename;	
+	Wx::LaunchDefaultBrowser($filename);
+}
 
 1;
