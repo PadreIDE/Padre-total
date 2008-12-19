@@ -3,7 +3,7 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
@@ -71,10 +71,7 @@ sub tidy_html {
 	require HTML::Tidy;
 	my $tidy = HTML::Tidy->new;
 
-	{
-		no warnings;
-		$tidy->parse( $0, $code );
-	}
+	my $cleaned_code = $tidy->clean( $code );
 
 	my $text;
     for my $message ( $tidy->messages ) {
@@ -83,6 +80,13 @@ sub tidy_html {
     
     $text = 'OK' unless ( length($text) );
 	_output($self, $text);
+	
+	if ( $src ) {
+		my $editor = $self->selected_editor;
+	    $editor->ReplaceSelection( $cleaned_code );
+	} else {
+		$doc->text_set( $cleaned_code );
+	}
 }
 
 sub html_lint {
