@@ -110,6 +110,13 @@ The rest of the values in the array depend on the widget.
 
  3. A HTML-compatible colour description string: '#' plus 6 hex digits; i.e. #FF0000
 
+=item Wx::SpinCtrl
+
+ 3. Current value (as text value in wxWidgets; an Integer)
+ 4. Minimum value allowed (Integer)
+ 5. Maximum value allowed (Integer)
+ 6. Current value (Integer)
+
 =back
 
 =head2 Multipage Layout (with a Wx::Notebook)
@@ -141,6 +148,8 @@ The value of the 'multipage' param should be a hash containing extra options.
 =item pagenames
 
  An arrayref of strings which represent the tab titles. 
+
+=back
 
 =head1 METHODS
 
@@ -424,6 +433,8 @@ sub _build_layout {
 				};
 				$default = Wx::Colour->new('#000000') if $@;
 				$widget = $class->new( $dialog, -1, $default, Wx::wxDefaultPosition, $width, Wx::wxCLRP_DEFAULT_STYLE );
+			} elsif ($class eq 'Wx::SpinCtrl') {
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, $width, Wx::wxSP_ARROW_KEYS, $params[0], $params[1], $params[2] );
 			} else {
 				warn "Unsupported widget $class\n";
 				next;
