@@ -13,7 +13,7 @@ use feature qw(say switch);
 use IO::File;
 use File::Temp;
 
-our $VERSION = '0.22';
+our $VERSION = '0.01';
 
 use URI::file;
 use Syntax::Highlight::Perl6;
@@ -115,11 +115,16 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Perl6 - Experimental Padre plugin for Perl6
+Padre::Plugin::Perl6 - Padre plugin for Perl6
 
 =head1 SYNOPSIS
 
 After installation when you run Padre there should be a menu option Plugins/Perl6.
+
+=head1 AUTHOR
+
+Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
+Gabor Szabo
 
 =head1 COPYRIGHT
 
