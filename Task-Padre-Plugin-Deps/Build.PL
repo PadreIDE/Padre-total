@@ -6,8 +6,8 @@ my $builder = Module::Build->new(
     module_name         => 'Task::Padre::Plugin::Deps',
     license             => 'perl',
     dist_author         => 'Gabor Szabo <szabgab@gmail.com>',
-    #dist_version_from   => 'lib/Task/Padre/Plugin/Deps.pm',
-    dist_version        => '0.03',
+    dist_version_from   => 'lib/Task/Padre/Plugin/Deps.pm',
+#dist_version        => '0.03',
     requires => {
         'perl'                    => '5.008',
 
@@ -58,6 +58,11 @@ my $builder = Module::Build->new(
 
         # Padre::Plugin::PAR',
         'PAR::Packer'             => 0,
+
+        # Padre::Plugin::Perl6
+        'Syntax::Highlight::Perl6' => '0.0295',
+        'URI'                      => '1.37',
+        'Readonly'                 => '1.03',
 
 		# Padre::Plugin::PerlCritic 0.03
 		'Perl::Critic' => 0,

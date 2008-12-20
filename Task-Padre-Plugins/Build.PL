@@ -19,6 +19,7 @@ my $builder = Module::Build->new(
 		'Padre::Plugin::PAR'           => '0.03',
 #		'Padre::Plugin::Parrot'       # only for people with Parrot on their computer
 #		'Padre::Plugin::PIR'          # this was only a typo
+        'Padre::Plugin::Perl6'         => 0,
 		'Padre::Plugin::PerlCritic'    => 0,
 		'Padre::Plugin::PerlTidy'      => 0,
 #		'Padre::Plugin::PluginHelper'  => '0.06',  # integrated in Padre
