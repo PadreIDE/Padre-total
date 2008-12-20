@@ -44,30 +44,28 @@ sub colorize {
 	$self->remove_color;
 	
   my %colors = (
-		'comp_unit'  => Px::PADRE_BLUE, # color: Blue; 
-		'scope_declarator' => 1, # color: DarkRed
-		'routine_declarator' => 1, # color: DarkRed;
-		'regex_declarator' => 1, #color: DarkRed;
-		'package_declarator' => 1, #color DarkRed;
-		'statement_control' => 1, #color: DarkRed;
-		'block' => 0, # color: Black;
-		'regex_block' => 0, #color: Black;
-		'noun' => 0, #color: Black;
-		'sigil' => 4, #color: DarkGreen;
-		'variable' => 4, #color: DarkGreen; 
-		'assertion' => 4, #color: Darkgreen;
-		'quote' => 7, #color: DarkMagenta;
-		'number' => 7, #color: DarkOrange;
-		'infix' => 3, #color: DimGray;
-		'methodop' => 0, #color: black; font-weight: bold;
-		'pod_comment' => 4, #color: DarkGreen; font-weight: bold;
-		'param_var' => 7, #color: Crimson;
-		'_routine' => 1, #color: DarkRed; font-weight: bold;
-		'_type' => 1, #color: DarkBlue; font-weight: bold;
-		'_scalar' => Px::PADRE_RED, #color: DarkBlue; font-weight: bold;
-		'_array' => 1, #color: Brown; font-weight: bold;
-		'_hash' => 1, #color: DarkOrange; font-weight: bold;
-		'_comment' => 4, #color: DarkGreen; font-weight: bold;
+		'comp_unit'  => Px::PADRE_BLUE, 
+		'scope_declarator' => Px::PADRE_DARK_RED,
+		'routine_declarator' => Px::PADRE_DARK_RED,
+		'regex_declarator' => Px::PADRE_DARK_RED,
+		'package_declarator' => Px::PADRE_DARK_RED,
+		'statement_control' => Px::PADRE_DARK_RED,
+		'block' => Px::PADRE_BLACK,
+		'regex_block' => Px::PADRE_BLACK,
+		'noun' => Px::PADRE_BLACK,
+		'sigil' => Px::PADRE_DARK_GREEN,
+		'variable' => Px::PADRE_DARK_GREEN, 
+		'assertion' => Px::PADRE_DARK_GREEN,
+		'quote' => Px::PADRE_DARK_MAGENTA,
+		'number' => Px::PADRE_DARK_ORANGE,
+		'infix' => Px::PADRE_DIM_GRAY,
+		'methodop' => Px::PADRE_BLACK,
+		'pod_comment' => Px::PADRE_DARK_GREEN,
+		'param_var' => Px::PADRE_CRIMSON,
+		'_scalar' => Px::PADRE_DARK_RED,
+		'_array' => Px::PADRE_BROWN,
+		'_hash' => Px::PADRE_DARK_ORANGE,
+		'_comment' => Px::PADRE_DARK_GREEN,
   );
   for my $htoken (@tokens) {
     my %token = %{$htoken};
