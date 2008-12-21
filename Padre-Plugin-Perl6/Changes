@@ -1,7 +1,10 @@
 Changes
 
+0.011 Dec 21 2008
+    - Source cleanup and POD fixes.
+    
 0.01 Dec 20 2008
-_ Initial release to CPAN
-- Support keyword scintilla auto completion
-- Supports Perl6 highlighting via Syntax::Highlight::Perl6
-- Moving out from the Padre source code
+    - Initial release to CPAN
+    - Support keyword scintilla auto completion
+    - Supports Perl6 highlighting via Syntax::Highlight::Perl6
+    - Moving out from the Padre source code
