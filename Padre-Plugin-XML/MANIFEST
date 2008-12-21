@@ -1,6 +1,8 @@
 Build.PL
 Changes
+lib/Padre/Document/XML.pm
 lib/Padre/Plugin/XML.pm
+lib/Padre/Task/SyntaxChecker/XML.pm
 MANIFEST			This list of files
 README
 t/00-load.t

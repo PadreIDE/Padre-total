@@ -3,7 +3,7 @@ package Padre::Plugin::XML;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
@@ -39,7 +39,7 @@ sub tidy_xml {
 	my $string = $tidy_obj->toString();
 	if ( $src ) {
 		my $editor = $self->selected_editor;
-	    $editor->ReplaceSelection( $string );
+		$editor->ReplaceSelection( $string );
 	} else {
 		$doc->text_set( $string );
 	}

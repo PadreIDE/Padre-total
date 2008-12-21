@@ -5,9 +5,10 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::XML',
           'VERSION_FROM' => 'lib/Padre/Plugin/XML.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0.21',
-                           'Test::More' => '0',
-                           'XML::Tidy' => '0'
+                           'Padre'       => '0.21',
+                           'Test::More'  => '0',
+                           'XML::Tidy'   => '0',
+                           'XML::LibXML' => '1.025'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
