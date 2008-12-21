@@ -1,5 +1,3 @@
-use STD;
-
 package Padre::Document::Perl6;
 
 use 5.010;
