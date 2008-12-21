@@ -6,7 +6,7 @@ license        'perl';
 author         'Gabor Szabo';
 all_from       'lib/Padre/Plugin/Perl6.pm';
 
-requires       'perl'                    => '5.008001';
+requires       'perl'                    => '5.010';
 
 requires       'Padre'                    => '0.22';
 requires       'Syntax::Highlight::Perl6' => '0.0295';
@@ -22,6 +22,6 @@ no_index       'directory' => [ qw{ t xt eg share inc privinc} ];
 homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6';
-#mailinglist    'http://mail.perlide.org/mailman/listinfo/padre-dev';
+mailinglist    'http://mail.perlide.org/mailman/listinfo/padre-dev';
  
 WriteAll;

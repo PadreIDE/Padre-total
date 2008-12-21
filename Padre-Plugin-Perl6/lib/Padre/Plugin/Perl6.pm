@@ -13,7 +13,7 @@ use feature qw(say switch);
 use IO::File;
 use File::Temp;
 
-our $VERSION = '0.01';
+our $VERSION = '0.011';
 
 use URI::file;
 use Syntax::Highlight::Perl6;
@@ -52,7 +52,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		"Perl6 syntax highlighting that is based on Syntax::Highlight::Perl6\n"
+		"Perl6 syntax highlighting\nthat is based on Syntax::Highlight::Perl6\n"
 	);
 	Wx::AboutBox( $about );
 	return;
@@ -67,14 +67,14 @@ sub export_html {
 
 	my $text = Padre::Documents->current->text_get() // '';
 
-  my $p = Syntax::Highlight::Perl6->new(
-    text => $text,
-		inline_resources => 1, 
-  );
+    my $p = Syntax::Highlight::Perl6->new(
+        text => $text,
+        inline_resources => 1, 
+    );
 
-  my $html;
-	eval {
-		given($type) {
+    my $html;
+    eval {
+	    given($type) {
 			when ($FULL_HTML) { $html = $p->full_html; }
 			when ($SIMPLE_HTML) { $html = $p->simple_html; }
 			when ($SNIPPET_HTML) { $html = $p->snippet_html; }
@@ -101,7 +101,6 @@ sub export_html {
 	# try to open the HTML file
 	my $main   = Padre->ide->wx->main_window;
 	$main->setup_editor($filename);
-	#$main->refresh_all;
 
 	# launch the HTML file in your default browser
 	my $file_url = URI::file->new($filename);
@@ -124,7 +123,8 @@ After installation when you run Padre there should be a menu option Plugins/Perl
 =head1 AUTHOR
 
 Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
-Gabor Szabo
+
+Gabor Szabo L<http://www.szabgab.com/>
 
 =head1 COPYRIGHT
 
