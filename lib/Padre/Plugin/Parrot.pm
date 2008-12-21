@@ -16,12 +16,18 @@ Padre::Plugin::Parrot - Experimental Padre plugin that runs on Parrot
 
 =head1 SYNOPSIS
 
-After installation when you run Padre there should be a menu option Plugins/Parrot.
+After installation when you run Padre there should be a menu option Plugins/Parrot
+with several submenues.
 
+About is just some short explanation
 
-=head2 Parrot integration
+The other menu options will count the number of characters in the current document
+using the current Perl 5 interpreter or PASM running on top of Parrot.
+Later we add other implementations running on top of Parrot.
 
-This is an experimentatl feature.
+=head1 Parrot integration
+
+This is an experimental feature.
 
 Download Parrot (or check it out from its version control)
 
@@ -31,7 +37,7 @@ Configure LD_LIBRARY_PATH
 
   export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
  
-Build Parrot
+=head2 Build Parrot
 
   cd $PARROT_PATH
   svn up
@@ -40,7 +46,47 @@ Build Parrot
   make
   make test
 
-Build Parrot::Embed
+=head2 Build languages
+
+After building Parrot you can run
+
+ make languages
+
+to build all the languages or cd to the directory of
+the individual languages and type C<make>.
+
+=over 4
+
+=item Perl 6 (Rakudo)
+
+In order to be able to run code written in Perl 6,
+after building Parrot do the following:
+
+ cd languages/perl6
+ make
+
+=item Lua
+
+ cd languages/lua
+ make 
+ 
+Currently Lua cannot be embedded. See L<https://trac.parrot.org/parrot/ticket/74>
+
+
+=item PHP (Pipp)
+
+ cd languages/pipp
+ make
+ 
+See L<https://trac.parrot.org/parrot/ticket/76>
+
+=item Pynie
+
+=item Cardinal
+
+=back
+
+=head2 Build Parrot::Embed
 
   cd ext/Parrot-Embed/
   ./Build realclean
@@ -55,7 +101,8 @@ The test will give a warning like this, but will pass:
 	in file 'EVAL_2' line 1
 
 Now if you run Padre and enable Padre::Plugin::Parrot 
-it will have an embedded Parrot interpreter.
+it will have an embedded Parrot interpreter that can run
+code written in PASM.
 
 
 =head1 COPYRIGHT
@@ -101,6 +148,10 @@ sub plugin_enable {
 		"$ENV{PARROT_PATH}/ext/Parrot-Embed/_build/lib",
 		@INC);
 
+	# for now we keep the parrot interpreter in a script-global
+	# in $main as if we try to reload the Plugin the embedded parrot will
+	# blow up. TODO: we should be able to shut down the Parrot interpreter
+	# when the plugin is disabled.
 	eval {
 		require Parrot::Embed;
 		$main::parrot = Parrot::Interpreter->new;
