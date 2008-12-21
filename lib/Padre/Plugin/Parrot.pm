@@ -65,6 +65,8 @@ after building Parrot do the following:
  cd languages/perl6
  make
 
+See L<https://trac.parrot.org/parrot/ticket/77>
+
 =item Lua
 
  cd languages/lua
@@ -80,9 +82,13 @@ Currently Lua cannot be embedded. See L<https://trac.parrot.org/parrot/ticket/74
  
 See L<https://trac.parrot.org/parrot/ticket/76>
 
-=item Pynie
+=item Pynie (Python)
 
-=item Cardinal
+See L<https://trac.parrot.org/parrot/ticket/79>
+
+=item Cardinal (Ruby)
+
+See L<https://trac.parrot.org/parrot/ticket/77>
 
 =back
 
