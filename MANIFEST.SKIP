@@ -12,6 +12,7 @@
 \bpm_to_blib$
 \bblibdirs$
 ^MANIFEST\.SKIP$
+\.tar.gz$
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
@@ -36,4 +37,4 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bPadre-Plugin-PerlTidy-[\d\.\_]+
+\bPadre-Plugin-Perl6-[\d\.\_]+
