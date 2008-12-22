@@ -58,15 +58,34 @@ sub show_about {
     return;
 }
 
+sub text_with_one_nl {
+    my $self = shift;
+    my $doc = shift;
+    my $text = $doc->text_get // '';
+    
+    my $nlchar = "\n";
+    if ( $doc->get_newline_type eq 'WIN' ) {
+        $nlchar = "\r\n";
+    }
+    elsif ( $doc->get_newline_type eq 'MAC' ) {
+        $nlchar = "\r";
+    }
+    $text =~ s/$nlchar/\n/g;
+    return $text;
+}
+
 sub export_html {
     my ($self, $type) = @ARG;
 
-    if(!defined Padre::Documents->current) {
+    my $doc = Padre::Documents->current;
+    if(!defined $doc) {
         return;
     }
-
-    my $text = Padre::Documents->current->text_get() // '';
-
+    if($doc->get_mimetype ne q{application/x-perl6}) {
+        return;
+    }
+    
+    my $text = $self->text_with_one_nl($doc);
     my $p = Syntax::Highlight::Perl6->new(
         text => $text,
         inline_resources => 1,
