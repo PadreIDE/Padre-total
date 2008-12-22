@@ -52,7 +52,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		"Perl6 syntax highlighting\nthat is based on Syntax::Highlight::Perl6\n"
+		"Perl6 syntax highlighting that is based on\nSyntax::Highlight::Perl6\n"
 	);
 	Wx::AboutBox( $about );
 	return;
