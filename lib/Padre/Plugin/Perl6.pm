@@ -27,13 +27,13 @@ Readonly my $SIMPLE_HTML  => 'simple_html';
 Readonly my $SNIPPET_HTML => 'snippet_html';
 
 sub padre_interfaces {
-	'Padre::Plugin'         => 0.20,
+	return 'Padre::Plugin'         => 0.20,
 }
 
 
 sub menu_plugins_simple {
 	my $self = shift;
-	'Perl 6' => [
+	return 'Perl 6' => [
 		'Export Full HTML' => sub { $self->export_html($FULL_HTML); },
 		'Export Simple HTML' => sub { $self->export_html($SIMPLE_HTML); },
 		'Export Snippet HTML' => sub { $self->export_html($SNIPPET_HTML); },
@@ -42,7 +42,7 @@ sub menu_plugins_simple {
 }
 
 sub registered_documents {
-	'application/x-perl6'    => 'Padre::Document::Perl6',
+	return 'application/x-perl6'    => 'Padre::Document::Perl6',
 }
 
 
@@ -104,7 +104,9 @@ sub export_html {
 
 	# launch the HTML file in your default browser
 	my $file_url = URI::file->new($filename);
-	Wx::LaunchDefaultBrowser($file_url);	
+	Wx::LaunchDefaultBrowser($file_url);
+    
+    return;
 }
 
 
