@@ -13,15 +13,26 @@ use Syntax::Highlight::Perl6;
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
 
-my $keywords;
-my $issues = [];
+sub text_with_one_nl {
+    my $self = shift;
+    my $text = $self->text_get;
+    my $nlchar = "\n";
+    if ( $self->get_newline_type eq 'WIN' ) {
+        $nlchar = "\r\n";
+    }
+    elsif ( $self->get_newline_type eq 'MAC' ) {
+        $nlchar = "\r";
+    }
+    $text =~ s/$nlchar/\n/g;
+    return $text;
+}
 
 # Naive way to parse and colorize perl6 files
 sub colorize {
     my ($self, $first) = @_;
 
     my $editor = $self->editor;
-    my $text   = $self->text_get;
+    my $text   = $self->text_with_one_nl;
 
     my $t0 = Benchmark->new;
     my $p = Syntax::Highlight::Perl6->new(
@@ -30,24 +41,21 @@ sub colorize {
 
     my @tokens;
     eval { @tokens = $p->tokens;   1; };
+    $self->{issues} = [];
     if($EVAL_ERROR) {
         say "Parsing error, bye bye ->colorize " . $EVAL_ERROR;
         my @errors = split /\n/, $EVAL_ERROR;
-        my $lineno = -1;
-        my $error_msg = "";
+        my $lineno = undef;
         for my $error (@errors) {
-            if($error =~ /error.+line (\d+)/) {
+            if($error =~ /line (\d+):$/) {
                 $lineno = $1;
-                $error_msg = $error;
+            }
+            if($lineno) {
+                push @{$self->{issues}}, { line => $lineno, msg => $error, severity => 'E', };
             }
         }
-        # update errors
-        $issues = [ { line => $lineno, msg => $error_msg, severity => 'E', desc => $EVAL_ERROR, } ];
         return;
-    } else {
-        # no errors...
-        $issues = [];
-    }
+    } 
 
     $self->remove_color;
 
@@ -112,28 +120,74 @@ sub get_command {
 
 }
 
+# Checks the syntax of a Perl document.
+# Documented in Padre::Document!
+# Implemented as a task. See Padre::Task::SyntaxChecker::Perl6
 sub check_syntax {
-    my $self = shift;
-    return $self->_check_syntax_internal;
+    my $self  = shift;
+    my %args  = @ARG;
+    $args{background} = 0;
+    return $self->_check_syntax_internals(\%args);
 }
 
 sub check_syntax_in_background {
-    my $self = shift;
-    return $self->_check_syntax_internal;
+    my $self  = shift;
+    my %args  = @ARG;
+    $args{background} = 1;
+    return $self->_check_syntax_internals(\%args);
 }
 
-sub _check_syntax_internal {
+sub _check_syntax_internals {
     my $self = shift;
-    return $issues;
+    my $args  = shift;
+
+    my $text = $self->text_with_one_nl;
+    unless ( defined $text and $text ne '' ) {
+        return [];
+    }
+
+    # Do we really need an update?
+    require Digest::MD5;
+    use Encode qw(encode_utf8);
+    my $md5 = Digest::MD5::md5(encode_utf8($text));
+    unless ( $args->{force} ) {
+        if ( defined( $self->{last_checked_md5} )
+             && $self->{last_checked_md5} eq $md5
+        ) {
+            return;
+        }
+    }
+    $self->{last_checked_md5} = $md5;
+
+    require Padre::Task::SyntaxChecker::Perl6;
+    my $task = Padre::Task::SyntaxChecker::Perl6->new(
+        notebook_page => $self->editor,
+        text => $text,
+        issues => $self->{issues},
+        ( exists $args->{on_finish} ? (on_finish => $args->{on_finish}) : () ),
+    );
+    if ($args->{background}) {
+        # asynchroneous execution (see on_finish hook)
+        $task->schedule();
+        return();
+    }
+    else {
+        # serial execution, returning the result
+        return() if $task->prepare() =~ /^break$/;
+        $task->run();
+        return $task->{syntax_check};
+    }
+    return;
 }
 
 sub keywords {
-    if (! defined $keywords) {
-        $keywords = YAML::Tiny::LoadFile(
+    my $self = shift;
+    if (! defined $self->{keywords}) {
+        $self->{keywords} = YAML::Tiny::LoadFile(
             Padre::Util::sharefile( 'languages', 'perl6', 'perl6.yml' )
         );
     }
-    return $keywords;
+    return $self->{keywords};
 }
 
 sub comment_lines_str { return '#' }
