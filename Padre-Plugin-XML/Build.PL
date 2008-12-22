@@ -11,7 +11,7 @@ my $builder = Module::Build->new(
         'Test::More'  => 0,
         'Padre'       => '0.21',
         'XML::Tidy'   => 0,
-        'XML::LibXML' => '1.025',
+        'XML::LibXML' => '1.67',
     },
     add_to_cleanup      => [ 'Padre-Plugin-XML-*' ],
     create_makefile_pl  => 'traditional',

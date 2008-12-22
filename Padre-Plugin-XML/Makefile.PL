@@ -8,7 +8,7 @@ WriteMakefile
                            'Padre'       => '0.21',
                            'Test::More'  => '0',
                            'XML::Tidy'   => '0',
-                           'XML::LibXML' => '1.025'
+                           'XML::LibXML' => '1.67'
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
