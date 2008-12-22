@@ -22,11 +22,11 @@ requires 'Padre::Plugin::XML'          => '0.01';
 
 feature 'Install experimental Padre plugin that runs on Parrot?',
     -default                => 0,
-    'Padre::Plugin::Parrot' => 1;
+    'Padre::Plugin::Parrot' => '0.22';
 
 feature 'Install Padre plugin for Perl6?',
     -default                => 0,
-    'Padre::Plugin::Parrot' => 1;
+    'Padre::Plugin::Parrot' => '0.011';
 
 build_requires 'Test::More';
 
