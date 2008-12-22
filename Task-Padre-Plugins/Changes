@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugins
 
+0.06    2008.12.22
+        from Module::Build to Module::Install
+
 0.05    2008.12.20
         add Perl6 Plugin
 
