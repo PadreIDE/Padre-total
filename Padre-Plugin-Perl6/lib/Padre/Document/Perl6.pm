@@ -14,6 +14,7 @@ our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
 
 my $keywords;
+my $issues = [];
 
 # Naive way to parse and colorize perl6 files
 sub colorize {
@@ -30,8 +31,22 @@ sub colorize {
     my @tokens;
     eval { @tokens = $p->tokens;   1; };
     if($EVAL_ERROR) {
-        say "Parsing error, bye bye ->colorize";
+        say "Parsing error, bye bye ->colorize " . $EVAL_ERROR;
+        my @errors = split /\n/, $EVAL_ERROR;
+        my $lineno = -1;
+        my $error_msg = "";
+        for my $error (@errors) {
+            if($error =~ /error.+line (\d+)/) {
+                $lineno = $1;
+                $error_msg = $error;
+            }
+        }
+        # update errors
+        $issues = [ { line => $lineno, msg => $error_msg, severity => 'E', desc => $EVAL_ERROR, } ];
         return;
+    } else {
+        # no errors...
+        $issues = [];
     }
 
     $self->remove_color;
@@ -95,6 +110,21 @@ sub get_command {
 
     return qq{"$parrot" "$rakudo" "$filename"};
 
+}
+
+sub check_syntax {
+    my $self = shift;
+    return $self->_check_syntax_internal;
+}
+
+sub check_syntax_in_background {
+    my $self = shift;
+    return $self->_check_syntax_internal;
+}
+
+sub _check_syntax_internal {
+    my $self = shift;
+    return $issues;
 }
 
 sub keywords {
