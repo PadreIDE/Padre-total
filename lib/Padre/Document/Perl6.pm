@@ -22,18 +22,13 @@ sub colorize {
     my $editor = $self->editor;
     my $text   = $self->text_get;
 
-  my $t0 = Benchmark->new;
-  my $p = Syntax::Highlight::Perl6->new(
-    text => $text,
-  );
+    my $t0 = Benchmark->new;
+    my $p = Syntax::Highlight::Perl6->new(
+        text => $text,
+    );
 
-  my @tokens;
-
-    eval {
-    @tokens = $p->tokens;
-  1;
-    };
-
+    my @tokens;
+    eval { @tokens = $p->tokens;   1; };
     if($EVAL_ERROR) {
         say "Parsing error, bye bye ->colorize";
         return;
@@ -41,7 +36,7 @@ sub colorize {
 
     $self->remove_color;
 
-  my %colors = (
+    my %colors = (
         'comp_unit'  => Px::PADRE_BLUE,
         'scope_declarator' => Px::PADRE_RED,
         'routine_declarator' => Px::PADRE_RED,
@@ -64,20 +59,21 @@ sub colorize {
         '_array' => Px::PADRE_BROWN,
         '_hash' => Px::PADRE_ORANGE,
         '_comment' => Px::PADRE_GREEN,
-  );
-  for my $htoken (@tokens) {
-    my %token = %{$htoken};
-    my $color = $colors{ $token{rule} };
-    if($color) {
-      my $len = length $token{buffer};
-      my $start = $token{last_pos} - $len;
-      $editor->StartStyling($start, $color);
-      $editor->SetStyling($len, $color);
-    }
-  }
+    );
 
-  my $td = timediff(new Benchmark, $t0);
-  say "->colorize took:" . timestr($td) ;
+    for my $htoken (@tokens) {
+        my %token = %{$htoken};
+        my $color = $colors{ $token{rule} };
+        if($color) {
+              my $len = length $token{buffer};
+              my $start = $token{last_pos} - $len;
+              $editor->StartStyling($start, $color);
+              $editor->SetStyling($len, $color);
+        }
+    }
+
+      my $td = timediff(new Benchmark, $t0);
+      say "->colorize took:" . timestr($td) ;
 }
 
 sub get_command {
