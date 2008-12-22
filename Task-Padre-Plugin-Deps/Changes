@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugin-Deps
 
+0.05    2008.12.22
+        from Module::Build to Module::Install
+
 0.04    2008.12.20
         add Plugin Perl6 Deps
 
