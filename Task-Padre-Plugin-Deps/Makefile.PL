@@ -39,7 +39,7 @@ requires 'ExtUtils::InstallPAR'    => '0.01';
 requires 'LWP::Simple';
         
 # Padre::Plugin::JavaScript 0.22
-requires 'JavaScript::Beautifie'   => '0.03';
+requires 'JavaScript::Beautifier'   => '0.03';
 requires 'JavaScript::Minifier::XS';
 
 # Padre::Plugin::PAR',
@@ -68,7 +68,7 @@ feature 'Install Padre plugin for Perl6?',
     'Readonly'                 => '1.03';
 
 build_requires 'Test::More';
-build_requires 'Test::NeedsDisplay' => '1.05',
+build_requires 'Test::NeedsDisplay' => '1.05';
 
 auto_install;
 
