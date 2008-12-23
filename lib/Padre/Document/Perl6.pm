@@ -43,7 +43,7 @@ sub colorize {
     eval { @tokens = $p->tokens;   1; };
     $self->{issues} = [];
     if($EVAL_ERROR) {
-        say "Parsing error, bye bye ->colorize " . $EVAL_ERROR;
+        say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
         my @errors = split /\n/, $EVAL_ERROR;
         my $lineno = undef;
         for my $error (@errors) {
