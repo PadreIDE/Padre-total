@@ -1,5 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.04
+    - Add HTML export feature (HJANSEN)
+
 0.03  Mon Dec 15 2008
     - Update for latest API
 
