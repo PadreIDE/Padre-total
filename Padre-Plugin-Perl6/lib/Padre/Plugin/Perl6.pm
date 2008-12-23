@@ -37,6 +37,7 @@ sub menu_plugins_simple {
         'Export Full HTML' => sub { $self->export_html($FULL_HTML); },
         'Export Simple HTML' => sub { $self->export_html($SIMPLE_HTML); },
         'Export Snippet HTML' => sub { $self->export_html($SNIPPET_HTML); },
+        '---' => undef,
         'About' => sub { $self->show_about },
     ];
 }
