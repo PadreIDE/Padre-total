@@ -83,6 +83,12 @@ sub export_html {
         return;
     }
     if($doc->get_mimetype ne q{application/x-perl6}) {
+		Wx::MessageBox(
+			'Not a Perl 6 file',
+			'Export cancelled',
+			Wx::wxOK,
+			Padre->ide->wx->main_window
+		);
         return;
     }
     
@@ -106,7 +112,13 @@ sub export_html {
     };
 
     if($EVAL_ERROR) {
-        say 'Parsing error, bye bye ->export_html';
+		Wx::MessageBox(
+			qq{STD.pm Parsing Error:\n$EVAL_ERROR},
+			'Export cancelled',
+			Wx::wxOK,
+			Padre->ide->wx->main_window
+		);
+        say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
         return;
     }
 
