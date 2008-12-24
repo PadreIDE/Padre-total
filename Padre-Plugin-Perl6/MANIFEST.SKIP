@@ -13,6 +13,7 @@
 \bblibdirs$
 ^MANIFEST\.SKIP$
 \.tar.gz$
+\.log$
 
 # Avoid Module::Build generated and utility files.
 \bBuild$
