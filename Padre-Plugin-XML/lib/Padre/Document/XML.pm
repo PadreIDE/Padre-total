@@ -65,4 +65,6 @@ sub _check_syntax_internals {
 	}
 }
 
+sub comment_lines_str { return [ '<!--', '-->' ] }
+
 1;

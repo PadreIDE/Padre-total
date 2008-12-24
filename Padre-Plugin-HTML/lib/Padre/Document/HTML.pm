@@ -7,7 +7,7 @@ use Carp            ();
 use Padre::Document ();
 use Wx ':everything';
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 our @ISA     = 'Padre::Document';
 
 sub get_command {
@@ -16,5 +16,7 @@ sub get_command {
 	my $filename = $self->filename;	
 	Wx::LaunchDefaultBrowser($filename);
 }
+
+sub comment_lines_str { return [ '<!--', '-->' ] }
 
 1;

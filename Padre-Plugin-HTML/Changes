@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-HTML
 
+0.06    2008.12.24
+        comment_lines_str
+
 0.05    2008.12.19
         add Padre::Document::HTML with get_command
 
