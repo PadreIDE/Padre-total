@@ -13,7 +13,7 @@ use feature qw(say switch);
 use IO::File;
 use File::Temp;
 
-our $VERSION = '0.012';
+our $VERSION = '0.013';
 
 use URI::file;
 use Syntax::Highlight::Perl6;
@@ -83,12 +83,12 @@ sub export_html {
         return;
     }
     if($doc->get_mimetype ne q{application/x-perl6}) {
-		Wx::MessageBox(
-			'Not a Perl 6 file',
-			'Export cancelled',
-			Wx::wxOK,
-			Padre->ide->wx->main_window
-		);
+        Wx::MessageBox(
+            'Not a Perl 6 file',
+            'Export cancelled',
+            Wx::wxOK,
+            Padre->ide->wx->main_window
+        );
         return;
     }
     
@@ -112,12 +112,12 @@ sub export_html {
     };
 
     if($EVAL_ERROR) {
-		Wx::MessageBox(
-			qq{STD.pm Parsing Error:\n$EVAL_ERROR},
-			'Export cancelled',
-			Wx::wxOK,
-			Padre->ide->wx->main_window
-		);
+        Wx::MessageBox(
+            qq{STD.pm Parsing Error:\n$EVAL_ERROR},
+            'Export cancelled',
+            Wx::wxOK,
+            Padre->ide->wx->main_window
+        );
         say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
         return;
     }

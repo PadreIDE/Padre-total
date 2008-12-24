@@ -1,5 +1,12 @@
 Changes
 
+0.013 Dec 24 2008
+    - Added a menu separator before About menu item in Padre::Plugin::Perl6
+    - Another message typo fix in Padre::Document::Perl6
+    - Show an error message box in the following situations: 
+        - exporting a non-Perl6 file 
+        - STD.pm parsing error occurs
+
 0.012 Dec 22 2008
     - Added Perl6 Syntax checking.
     - Handled newlines for Mac/Unix and Win platforms in export feature.
