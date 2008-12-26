@@ -33,23 +33,16 @@ sub edit_config {
 	require CPAN;
 	my $default_dir = $INC{'CPAN.pm'};
 	$default_dir =~ s/\.pm$//is; # remove .pm
-	my $filename = 'Config.pm';
-	
-	# copy from MainWindow.pm sub on_open
-	
-	my $file = File::Spec->catfile($default_dir, $filename);
-	Padre::DB->add_recent_files($file);
 
-	# If and only if there is only one current file,
-	# and it is unused, close it.
-	if ( $self->{notebook}->GetPageCount == 1 ) {
-		if ( Padre::Documents->current->is_unused ) {
-			$self->on_close($self);
+	foreach my $file (
+			File::Spec->catfile($default_dir, 'Config.pm'),
+			File::Spec->catfile(File::HomeDir->my_home, '.cpan', 'CPAN', 'MyConfig.pm')
+			) {
+		if (-e $file) {
+			$self->setup_editors($file);
+			last;
 		}
 	}
-
-	$self->setup_editor($file);
-	$self->refresh_all;
 }
 
 sub install_module {
