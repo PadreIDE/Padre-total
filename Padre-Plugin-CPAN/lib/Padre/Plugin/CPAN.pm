@@ -13,11 +13,16 @@ sub padre_interfaces {
 	'Padre::Plugin' => '0.21',
 }
 
+sub plugin_name {
+	'CPAN';
+}
+
 sub menu_plugins_simple {
 	'CPAN' => [
-		'Edit Config',    \&edit_config,
-		'Install Module', \&install_module,
+		'Edit Config',               \&edit_config,
+		'Install Module',            \&install_module,
 		'Upgrade All Padre Plugins', \&upgrade_all_plugins,
+		'About',                     \&about,
 	];
 }
 
@@ -136,6 +141,21 @@ sub _run_cpan_command {
 	# restore
 	$ENV{AUTOMATED_TESTING} = $org_AUTOMATED_TESTING;
 }
+
+
+sub about {
+	my ($main) = @_;
+
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName("Padre::Plugin::CPAN");
+	$about->SetDescription(
+		"Interface to install modules from CPAN\n"
+	);
+	$about->SetVersion($VERSION);
+	Wx::AboutBox( $about );
+	return;
+}
+
 
 1;
 __END__
