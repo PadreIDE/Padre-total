@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 1;
 __END__
@@ -14,11 +14,101 @@ Task::Padre::Plugins - Get many Plugins of Padre at once
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =head1 SYNOPSIS
 
-Nothing here.
+Most plugins will just run with the text you selected if there is any selection.
+
+If not, they run with the whole text from selected document.
+
+=head1 MODULES
+
+=head2 Padre::Plugin::AcmePlayCode
+
+This is a simple plugin to run Acme::PlayCode on your source code.
+
+=head2 Padre::Plugin::Alarm
+
+Alarm Clock (Audio::Beep)
+
+=head2 Padre::Plugin::CPAN
+
+CPAN in Padre
+
+=head3 Edit Config
+
+Edit CPAN/Config.pm
+
+=head3 Install Module
+
+Run cpan $mod inside Padre. behaves like:
+
+ perl −MCPAN −e "install $mod"
+
+=head3 Upgrade All Padre Plugins
+
+Upgrade all plugin in one hit
+
+=head2 Padre::Plugin::CSS
+
+=head3 CSS Minifier
+
+use CSS::Minifier::XS to minify css
+
+=head3 Validate CSS
+
+use WebService::Validator::CSS::W3C to validate the CSS
+
+=head2 Padre::Plugin::Encrypt
+
+Encrypt/Decrypt by Crypt::CBC
+
+=head2 Padre::Plugin::HTML
+
+=head3 Validate HTML
+
+use WebService::Validator::HTML::W3C to validate the HTML
+
+=head3 Tidy HTML
+
+use HTML::Tidy to tidy HTML
+
+=head2 Padre::Plugin::HTMLExport
+
+Export a HTML page by using Syntax::Highlight::Engine::Kate
+
+=head2 Padre::Plugin::JavaScript
+
+=head3 JavaScript Beautifier
+
+use JavaScript::Beautifier to beautify js
+
+=head3 JavaScript Minifier
+
+use JavaScript::Minifier::XS to minify js
+
+=head2 Padre::Plugin::PAR
+
+Padre::Plugin::PAR − PAR generation from Padre
+
+=head2 Padre::Plugin::PerlCritic
+
+This is a simple plugin to run Perl::Critic on your source code.
+
+=head2 Padre::Plugin::PerlTidy
+
+This is a simple plugin to run Perl::Tidy on your source code.
+
+=head2 Padre::Plugin::Pip
+
+=head2 Padre::Plugin::ViewInBrowser
+
+View selected doc in browser for Padre. Basically it’s a shortcut for Wx::LaunchDefaultBrowser( $self−>selected_filename );
+
+=head2 Padre::Plugin::XML
+
+Use XML::Tidy to tidy XML.
 
 =head1 AUTHOR
 
