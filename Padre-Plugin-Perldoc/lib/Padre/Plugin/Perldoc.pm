@@ -38,8 +38,8 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'         => sub { $self->about },
-		'Main'          => sub { $self->main },           
+		'About'         => \&about,
+		'Main'          => \&main,
 	];
 }
 
