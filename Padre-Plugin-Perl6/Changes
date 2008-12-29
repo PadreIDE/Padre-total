@@ -1,5 +1,8 @@
 Changes
 
+0.014 Dec 29 2008
+    - Requires Syntax::Highlight::Perl6 version 0.02961
+
 0.013 Dec 24 2008
     - Added a menu separator before About menu item in Padre::Plugin::Perl6
     - Another message typo fix in Padre::Document::Perl6
