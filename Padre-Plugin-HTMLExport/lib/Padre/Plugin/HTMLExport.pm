@@ -93,7 +93,7 @@ sub export_html {
 	}
 	
 	# highlight
-	my $mimetype = $doc->mimetype;
+	my $mimetype = $doc->get_mimetype;
 	unless ( exists $KATE_ALL{$mimetype} ) {
 		$self->error("$mimetype is not supported");
 		return;
