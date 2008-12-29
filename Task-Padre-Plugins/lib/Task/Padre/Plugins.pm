@@ -12,10 +12,6 @@ __END__
 
 Task::Padre::Plugins - Get many Plugins of Padre at once
 
-=head1 VERSION
-
-Version 0.08
-
 =head1 SYNOPSIS
 
 Most plugins will just run with the text you selected if there is any selection.

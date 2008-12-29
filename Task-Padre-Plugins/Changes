@@ -1,6 +1,9 @@
 Revision history for Task-Padre-Plugins
 
-0/07    2008.12.22
+0.08    2008.12.29
+        updated to newer Padre plugin versions 
+
+0.07    2008.12.22
         typo fix
 
 0.06    2008.12.22
@@ -10,15 +13,15 @@ Revision history for Task-Padre-Plugins
         add Perl6 Plugin
 
 0.04    2008.12.19
-		add Padre::Plugin::HTMLExport
-		add Padre::Plugin::Alarm
-		etc.
+        add Padre::Plugin::HTMLExport
+        add Padre::Plugin::Alarm
+        etc.
 
 0.03    2008.11.12
 
 0.02	2008.11.08
-		add Padre::Plugin::Encrypt
-		remove Padre::Plugin::WordStats/TabAndSpace since it's in core
+        add Padre::Plugin::Encrypt
+        remove Padre::Plugin::WordStats/TabAndSpace since it's in core
 
 0.01    2008.11.07
         First version, released on an unsuspecting world.

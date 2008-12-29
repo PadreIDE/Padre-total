@@ -12,6 +12,7 @@
 \bpm_to_blib$
 \bblibdirs$
 ^MANIFEST\.SKIP$
+\bversion_check.pl
 
 # Avoid VMS specific Makmaker generated files
 \bDescrip.MMS$
