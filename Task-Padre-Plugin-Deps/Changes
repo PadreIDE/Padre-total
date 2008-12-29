@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugin-Deps
 
+0.06    2008.12.29
+        Syntax::Highlight::Perl6 required version is now 0.02961
+        
 0.05    2008.12.22
         from Module::Build to Module::Install
 
@@ -10,9 +13,9 @@ Revision history for Task-Padre-Plugin-Deps
         fix wrong uploaded version
 
 0.02    2008.12.19
-		add Padre::Plugin::HTML::Export
-		add Padre::Plugin::Alarm
-		etc.
+        add Padre::Plugin::HTML::Export
+        add Padre::Plugin::Alarm
+        etc.
 
 0.01    2008.11.12
         First version, released on an unsuspecting world.
