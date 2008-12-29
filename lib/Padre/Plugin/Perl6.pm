@@ -13,7 +13,7 @@ use feature qw(say switch);
 use IO::File;
 use File::Temp;
 
-our $VERSION = '0.013';
+our $VERSION = '0.014';
 
 use URI::file;
 use Syntax::Highlight::Perl6;
