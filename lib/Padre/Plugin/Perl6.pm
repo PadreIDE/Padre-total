@@ -78,6 +78,8 @@ sub text_with_one_nl {
 sub export_html {
     my ($self, $type) = @ARG;
 
+    my $main   = Padre->ide->wx->main_window;
+
     my $doc = Padre::Documents->current;
     if(!defined $doc) {
         return;
@@ -87,7 +89,7 @@ sub export_html {
             'Not a Perl 6 file',
             'Export cancelled',
             Wx::wxOK,
-            Padre->ide->wx->main_window
+            $main,
         );
         return;
     }
@@ -116,7 +118,7 @@ sub export_html {
             qq{STD.pm Parsing Error:\n$EVAL_ERROR},
             'Export cancelled',
             Wx::wxOK,
-            Padre->ide->wx->main_window
+            $main,
         );
         say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
         return;
@@ -131,12 +133,20 @@ sub export_html {
         or croak "Could not close $filename";
 
     # try to open the HTML file
-    my $main   = Padre->ide->wx->main_window;
     $main->setup_editor($filename);
 
-    # launch the HTML file in your default browser
-    my $file_url = URI::file->new($filename);
-    Wx::LaunchDefaultBrowser($file_url);
+    # ask the user if he/she wants to open it in the default browser
+    my $ret = Wx::MessageBox(
+        "Saved to $filename. Do you want to open it now?",
+        "Done",
+        Wx::wxYES_NO|Wx::wxCENTRE,
+        $main,
+    );
+    if ( $ret == Wx::wxYES ) {
+        # launch the HTML file in your default browser
+        my $file_url = URI::file->new($filename);
+        Wx::LaunchDefaultBrowser($file_url);
+    }
 
     return;
 }
