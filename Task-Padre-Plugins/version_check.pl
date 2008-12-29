@@ -27,7 +27,7 @@ my $fh = IO::File->new($filename)
     or croak "Could not open $filename";
 while($line = <$fh>) {
     chomp $line;
-    if($line =~ /requires\s*'(.+)'\s*=>\s*'(.+)'/) {
+    if($line =~ /'(.+)'\s*=>\s*'(.+)'/) {
         my ($module_name,$version) = ($1,$2);
         my $module_path = $module_name;
         $module_path =~ s/::/-/g;
