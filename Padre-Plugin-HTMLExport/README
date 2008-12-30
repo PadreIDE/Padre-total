@@ -7,10 +7,10 @@ INSTALLATION
 
 To install this module, run the following commands:
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+    perl Makefile.PL
+    make
+    make test
+    make install
 
 COPYRIGHT AND LICENCE
 
@@ -18,4 +18,3 @@ Copyright (C) 2008 Fayland Lam
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
-
