@@ -10,17 +10,17 @@ Version 0.09
 
     use Parse::ErrorString::Perl;
 	
-	my $parser = Parse::ErrorString::Perl->new;
-	# or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
+    my $parser = Parse::ErrorString::Perl->new;
+    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
     my @errors = $parser->parse_string($string_containing_stderr_output);
     
     foreach my $error(@errors) {
-	print 'Captured error message "' .
-	    $error->message .
-	    '" in file ' . $error->file .
-	    ' on line ' . $error->line . "\n";
+    print 'Captured error message "' .
+        $error->message .
+        '" in file ' . $error->file .
+        ' on line ' . $error->line . "\n";
     }
-    
+
 
 =head1 METHODS
 
@@ -185,24 +185,24 @@ use strict;
 package Parse::ErrorString::Perl::StackItem;
 
 sub new {
-    my ($class, $self) = @_;
-    bless $self, ref $class || $class;
-    return $self;
+	my ($class, $self) = @_;
+	bless $self, ref $class || $class;
+	return $self;
 }
 
 use Class::XSAccessor
-    getters => {
+	getters => {
 		sub => 'sub',
 		file => 'file',
 		file_abspath => 'file_abspath',
 		file_msgpath => 'file_msgpath',
 		line => 'line',
-    };
+	};
 
 package Parse::ErrorString::Perl::ErrorItem;
 
 use Class::XSAccessor
-    getters => {
+	getters => {
 		type => 'type',
 		type_description => 'type_description',
 		message => 'message',
@@ -213,12 +213,12 @@ use Class::XSAccessor
 		near => 'near',
 		diagnostics => 'diagnostics',
 		at => 'at',
-    };
+	};
 
 sub new {
-    my ($class, $self) = @_;
-    bless $self, ref $class || $class;
-    return $self;
+	my ($class, $self) = @_;
+	bless $self, ref $class || $class;
+	return $self;
 }
 
 sub stack {
@@ -238,36 +238,36 @@ use File::Spec;
 use File::Basename ();
 
 sub new {
-    my $class = shift;
+	my $class = shift;
 	my %options = @_;
-    my $self = bless {}, ref $class || $class;
+	my $self = bless {}, ref $class || $class;
 	$self->_prepare_diagnostics;
 	$self->_prepare_localized_diagnostics(%options);
 	my %error_desc_hash = (
-	    W => 'warning',
-    	D => 'deprecation',
-	    S => 'severe warning',
-    	F => 'fatal error',
-	    P => 'internal error',
-    	X => 'very fatal error',
-	    A => 'alien error message',
+		W => 'warning',
+		D => 'deprecation',
+		S => 'severe warning',
+		F => 'fatal error',
+		P => 'internal error',
+		X => 'very fatal error',
+		A => 'alien error message',
 	);
 	$self->{error_desc_hash} = \%error_desc_hash;
-    return $self;
+	return $self;
 }
 
 sub parse_string {
 	my $self = shift;
-    my $string = shift;
-    my @hash_items = $self->_parse_to_hash($string);
-    my @object_items;
-    
-    foreach my $item (@hash_items) {
+	my $string = shift;
+	my @hash_items = $self->_parse_to_hash($string);
+	my @object_items;
+
+	foreach my $item (@hash_items) {
 		my $error_object = Parse::ErrorString::Perl::ErrorItem->new($item);
 		push @object_items, $error_object;
-    }
-    
-    return @object_items;
+	}
+
+	return @object_items;
 }
 
 sub _prepare_diagnostics {
@@ -283,7 +283,7 @@ sub _prepare_diagnostics {
 	
 		if (!$pod_filename) {
 			carp "Could not locate localised perldiag, trying perldiag in English";
-    	}
+		}
 	}
 	
 	if (!$pod_filename) {
@@ -292,7 +292,7 @@ sub _prepare_diagnostics {
 		if (!$pod_filename) {
 			carp "Could not locate perldiag, diagnostic info will no be added";
 			return;
-    	}
+		}
 	}
 
 
@@ -310,62 +310,61 @@ sub transmo {
 EOFUNC
 	my %errors;
 	foreach my $item ($pom->head1->[1]->over->[0]->item) {
-        my $header = $item->title;
+		my $header = $item->title;
 		
 		my $content = $item->content;
 		$content =~ s/\s*$//;
 		$errors{$header} = $content;
 
-    
 
 		### CODE FROM SPLAIN
 		
 		#$header =~ s/[A-Z]<(.*?)>/$1/g;
 		
-   		my @toks = split( /(%l?[dx]|%c|%(?:\.\d+)?s)/, $header );
+		my @toks = split( /(%l?[dx]|%c|%(?:\.\d+)?s)/, $header );
 		if (@toks > 1) {
-    		my $conlen = 0;
-        	for my $i (0..$#toks){
-	        	if( $i % 2 ) {
-		        	if(      $toks[$i] eq '%c' ) {
-        	        	$toks[$i] = '.';
-	                } elsif( $toks[$i] eq '%d' ) {
-		                $toks[$i] = '\d+';
-        	        } elsif( $toks[$i] eq '%s' ) {
-	        	        $toks[$i] = $i == $#toks ? '.*' : '.*?';
-                	} elsif( $toks[$i] =~ '%.(\d+)s' ) {
-	                	$toks[$i] = ".{$1}";
-		            } elsif( $toks[$i] =~ '^%l*x$' ) {
-		                $toks[$i] = '[\da-f]+';
-        	        }
+			my $conlen = 0;
+			for my $i (0..$#toks){
+				if( $i % 2 ) {
+					if(      $toks[$i] eq '%c' ) {
+						$toks[$i] = '.';
+					} elsif( $toks[$i] eq '%d' ) {
+						$toks[$i] = '\d+';
+					} elsif( $toks[$i] eq '%s' ) {
+						$toks[$i] = $i == $#toks ? '.*' : '.*?';
+					} elsif( $toks[$i] =~ '%.(\d+)s' ) {
+						$toks[$i] = ".{$1}";
+					} elsif( $toks[$i] =~ '^%l*x$' ) {
+						$toks[$i] = '[\da-f]+';
+					}
 				} elsif( length( $toks[$i] ) ) {
-	            	$toks[$i] = quotemeta $toks[$i];
-	                $conlen += length( $toks[$i] );
-    	        }
-            }  
-            my $lhs = join( '', @toks );
-		    $transfmt{$header}{pat} = "    s{^$lhs}\n     {\Q$header\E}s\n\t&& return 1;\n";
-            $transfmt{$header}{len} = $conlen;
+					$toks[$i] = quotemeta $toks[$i];
+					$conlen += length( $toks[$i] );
+				}
+			}
+			my $lhs = join( '', @toks );
+			$transfmt{$header}{pat} = "    s{^$lhs}\n     {\Q$header\E}s\n\t&& return 1;\n";
+			$transfmt{$header}{len} = $conlen;
 		} else {
-            $transfmt{$header}{pat} = "    m{^\Q$header\E} && return 1;\n";
-            $transfmt{$header}{len} = length( $header );
+			$transfmt{$header}{pat} = "    m{^\Q$header\E} && return 1;\n";
+			$transfmt{$header}{len} = length( $header );
 		}
 	}
 
 	$self->{errors} = \%errors;
 
 	# Apply patterns in order of decreasing sum of lengths of fixed parts
-    # Seems the best way of hitting the right one.
-    for my $hdr ( sort { $transfmt{$b}{len} <=> $transfmt{$a}{len} } keys %transfmt ) {
-        $transmo .= $transfmt{$hdr}{pat};
-    }
-    $transmo .= "    return 0;\n}\n";
+	# Seems the best way of hitting the right one.
+	for my $hdr ( sort { $transfmt{$b}{len} <=> $transfmt{$a}{len} } keys %transfmt ) {
+		$transmo .= $transfmt{$hdr}{pat};
+	}
+	$transmo .= "    return 0;\n}\n";
 
 	# installs a sub named 'transmo', which returns the type of the error message
 	{
 		no warnings 'redefine';
 		eval $transmo;
-    	carp $@ if $@;
+		carp $@ if $@;
 	}
 }
 
@@ -390,13 +389,13 @@ sub _get_diagnostics {
 
 sub _parse_to_hash {
 	my $self = shift;
-    my $string = shift;
-    
-    if (!$string) {
+	my $string = shift;
+
+	if (!$string) {
 	carp "parse_string called without an argument";
 	return;
-    }
-    
+	}
+
 	my $error_pattern = qr/
 			^\s*			# optional whitespace
 			(.*)			# $1 - the error message
@@ -417,10 +416,10 @@ sub _parse_to_hash {
 			(?:\s\(\#\d+\))?	# "use diagnostics" appends "(#1)" at the end of error messages
 			$/x;
 
-    my @error_list;
-    
+	my @error_list;
+
 	# check if error messages were split by diagnostics
-    my @unchecked_lines = split(/\n/, $string);
+	my @unchecked_lines = split(/\n/, $string);
 	my @checked_lines;
 	
 	# lines after the start of the stack trace
@@ -451,7 +450,7 @@ sub _parse_to_hash {
 			}
 		}
 	}
-    
+
 	# file and line number where the fatal error occurred
 	my ($die_at_file, $die_at_line);
 	
@@ -474,68 +473,67 @@ sub _parse_to_hash {
 		}
 	}
 
-    # used to check if we are in a multi-line 'near' message
-    my $in_near;
-    
-    foreach my $line (@checked_lines, @stack_trace_errors) {
-	
-	# carriage returns may remain in multi-line 'near' messages and cause problems
-	# $line =~ s/\r/ /g;
-	# $line =~ s/\s+/ /g;
-	if (!$in_near) {
-	    if ($line =~ $error_pattern) {
-			my %err_item = (
-		    	message => $1,
-			    line  => $3,
-			);
-			my $diagnostics = $self->_get_diagnostics($1);
-			if ($diagnostics) {
-				my $err_type = $self->_get_error_type($diagnostics);
-				my $err_desc = $self->_get_error_desc($err_type);
+	# used to check if we are in a multi-line 'near' message
+	my $in_near;
 
-				$err_item{diagnostics} = $diagnostics;
-				$err_item{type} = $err_type;
-				$err_item{type_description} = $err_desc;
-			}
-		    my $file = $2;
-			if ($file =~ /^\(eval\s\d+\)$/) {
-				$err_item{file_msgpath} = $file;
-				$err_item{file} = "eval";
-			} else {
-				$err_item{file_msgpath} = $file;
-				$err_item{file_abspath} = File::Spec->rel2abs($file);
-				$err_item{file} = $self->_get_short_path($file);
-			}
-			my $near     = $4;
-			my $near_end = $5;
-			
-			$err_item{at} = $6 if $6;
+	foreach my $line (@checked_lines, @stack_trace_errors) {
 	
-			if ($near and !$near_end) {
-			    $in_near = ($near . "\n"); 
-			} elsif ($near and $near_end) {
-			    $err_item{near} = $near;
-			}
+		# carriage returns may remain in multi-line 'near' messages and cause problems
+		# $line =~ s/\r/ /g;
+		# $line =~ s/\s+/ /g;
+		if (!$in_near) {
+			if ($line =~ $error_pattern) {
+				my %err_item = (
+					message => $1,
+					line    => $3,
+				);
+				my $diagnostics = $self->_get_diagnostics($1);
+				if ($diagnostics) {
+					my $err_type = $self->_get_error_type($diagnostics);
+					my $err_desc = $self->_get_error_desc($err_type);
+	
+					$err_item{diagnostics} = $diagnostics;
+					$err_item{type} = $err_type;
+					$err_item{type_description} = $err_desc;
+				}
+				my $file = $2;
+				if ($file =~ /^\(eval\s\d+\)$/) {
+					$err_item{file_msgpath} = $file;
+					$err_item{file} = "eval";
+				} else {
+					$err_item{file_msgpath} = $file;
+					$err_item{file_abspath} = File::Spec->rel2abs($file);
+					$err_item{file} = $self->_get_short_path($file);
+				}
+				my $near     = $4;
+				my $near_end = $5;
+				
+				$err_item{at} = $6 if $6;
 		
-			if (!grep {
-					$_->{message} eq $err_item{message} and
-					$_->{line} eq $err_item{line} and
-					$_->{file_msgpath} eq $err_item{file_msgpath}
-				} @error_list) {
-				push @error_list, \%err_item;
+				if ($near and !$near_end) {
+					$in_near = ($near . "\n");
+				} elsif ($near and $near_end) {
+					$err_item{near} = $near;
+				}
+			
+				if (!grep {
+						$_->{message} eq $err_item{message} and
+						$_->{line} eq $err_item{line} and
+						$_->{file_msgpath} eq $err_item{file_msgpath}
+					} @error_list) {
+					push @error_list, \%err_item;
+				}
 			}
-	    } 
-	
-	} else {
-	    if ($line =~ /^(.*)\"$/) {
-			$in_near .= $1;
-			$error_list[-1]->{near} = $in_near;
-			undef $in_near;
-	    } else {
-			$in_near .= ($line . "\n");
-	    }
+		} else {
+			if ($line =~ /^(.*)\"$/) {
+				$in_near .= $1;
+				$error_list[-1]->{near} = $in_near;
+				undef $in_near;
+			} else {
+				$in_near .= ($line . "\n");
+			}
+		}
 	}
-    }
 
 	if (@trace_items) {
 		my @parsed_stack_trace;
@@ -560,7 +558,7 @@ sub _parse_to_hash {
 			}
 		}
 	}
-    
+
 	return @error_list;
 }
 
@@ -617,7 +615,7 @@ sub _prepare_localized_diagnostics {
 	if (!$pod_filename) {
 		carp "Could not locate localised perldiag, will use perldiag in English";
 		return;
-    }
+	}
 	
 	my $parser = Pod::POM->new();
 	my $pom = $parser->parse_file($pod_filename);
@@ -628,7 +626,7 @@ sub _prepare_localized_diagnostics {
 	
 	my %localized_errors;
 	foreach my $item ($pom->head1->[1]->over->[0]->item) {
-        my $header = $item->title;
+		my $header = $item->title;
 		
 		my $content = $item->content;
 		$content =~ s/\s*$//;
@@ -639,3 +637,4 @@ sub _prepare_localized_diagnostics {
 }
 
 1;
+
