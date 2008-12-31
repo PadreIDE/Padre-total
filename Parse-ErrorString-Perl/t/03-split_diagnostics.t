@@ -44,10 +44,10 @@ Uncaught exception from user code:
 ENDofMSG
 
 my @errors_split = $parser->parse_string($msg_split);
-ok(@errors_split, 'msg_split results');
-ok($errors_split[0]->message eq 'Use of uninitialized value $empty in length', 'msg_split 1 message');
-ok($errors_split[0]->file_msgpath eq 'c:\my\very\long\path\to\this\perl\script\called\error.pl', 'msg_split 1 file');
-ok($errors_split[0]->line == 6, 'msg_split 1 line');
-ok($errors_split[1]->message eq 'Illegal division by zero', 'msg_split 2 message');
-ok($errors_split[1]->file_msgpath eq 'c:\my\very\long\path\to\this\perl\script\called\error.pl', 'msg_split 2 file');
-ok($errors_split[1]->line == 9, 'msg_split 2 line');
+is(scalar(@errors_split),           2, 'msg_split results');
+is($errors_split[0]->message,       'Use of uninitialized value $empty in length', 'msg_split 1 message');
+is($errors_split[0]->file_msgpath,  'c:\my\very\long\path\to\this\perl\script\called\error.pl', 'msg_split 1 file');
+is($errors_split[0]->line,          6, 'msg_split 1 line');
+is($errors_split[1]->message,       'Illegal division by zero', 'msg_split 2 message');
+is($errors_split[1]->file_msgpath,  'c:\my\very\long\path\to\this\perl\script\called\error.pl', 'msg_split 2 file');
+is($errors_split[1]->line,          9, 'msg_split 2 line');

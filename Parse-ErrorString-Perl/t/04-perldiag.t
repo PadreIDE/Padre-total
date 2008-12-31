@@ -26,9 +26,9 @@ chomp($diagnostics);
 
 my $parser = Parse::ErrorString::Perl->new;
 my @errors_compile = $parser->parse_string($msg_compile);
-ok($errors_compile[0]->message eq 'Global symbol "$kaboom" requires explicit package name', 'message');
+is($errors_compile[0]->message, 'Global symbol "$kaboom" requires explicit package name', 'message');
 #ok($errors_compile[0]->diagnostics eq $diagnostics, 'diagnostics');
 eq_or_diff($errors_compile[0]->diagnostics, $diagnostics, 'diagnostics');
-ok($errors_compile[0]->type eq 'F', 'type');
-ok($errors_compile[0]->type_description eq 'fatal error', 'diagnostics');
+is($errors_compile[0]->type,              'F', 'type');
+is($errors_compile[0]->type_description,  'fatal error', 'diagnostics');
 

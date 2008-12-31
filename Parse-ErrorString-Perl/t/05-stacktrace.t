@@ -24,14 +24,14 @@ ENDofMSG
 
 my $parser = Parse::ErrorString::Perl->new;
 my @errors = $parser->parse_string($msg);
-ok(@errors, 'message results');
+is(scalar(@errors),              1, 'message results');
 my @stacktrace = $errors[0]->stack;
-ok(@stacktrace, 'stacktrace results');
-ok($stacktrace[0]->sub eq 'main::dying()', 'stack 1 sub');
-ok($stacktrace[0]->file_msgpath eq 'error.pl', 'stack 1 file_msgpath');
-ok($stacktrace[0]->line == 6, 'stack 1 line');
-ok($stacktrace[1]->sub eq 'main::calling()', 'stack 2 sub');
-ok($stacktrace[1]->file_msgpath eq 'error.pl', 'stack 2 file_msgpath');
-ok($stacktrace[1]->line == 8, 'stack 2 line');
+is(scalar(@stacktrace),          2, 'stacktrace results');
+is($stacktrace[0]->sub,          'main::dying()', 'stack 1 sub');
+is($stacktrace[0]->file_msgpath, 'error.pl', 'stack 1 file_msgpath');
+is($stacktrace[0]->line,         6, 'stack 1 line');
+is($stacktrace[1]->sub,          'main::calling()', 'stack 2 sub');
+is($stacktrace[1]->file_msgpath, 'error.pl', 'stack 2 file_msgpath');
+is($stacktrace[1]->line,         8, 'stack 2 line');
 
 
