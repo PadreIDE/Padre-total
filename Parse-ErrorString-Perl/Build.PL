@@ -8,7 +8,8 @@ my $builder = Module::Build->new(
 	dist_author         => 'Petar Shangov <pshangov@yahoo.com>',
 	dist_version_from   => 'lib/Parse/ErrorString/Perl.pm',
 	build_requires => {
-		'Test::More' => 0,
+		'Test::More'        => 0,
+		'Test::Differences' => 0,
 	},
 	requires => {
 		'Class::XSAccessor' => 0,
