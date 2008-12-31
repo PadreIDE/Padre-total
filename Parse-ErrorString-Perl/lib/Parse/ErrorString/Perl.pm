@@ -304,10 +304,6 @@ sub _prepare_diagnostics {
 	}
 	
 	my %transfmt = (); 
-	my $transmo = <<'EOFUNC';
-sub transmo {
-    study;
-EOFUNC
 	my %errors;
 	foreach my $item ($pom->head1->[1]->over->[0]->item) {
 		my $header = $item->title;
@@ -355,10 +351,11 @@ EOFUNC
 
 	# Apply patterns in order of decreasing sum of lengths of fixed parts
 	# Seems the best way of hitting the right one.
+	my $transmo = '';
 	for my $hdr ( sort { $transfmt{$b}{len} <=> $transfmt{$a}{len} } keys %transfmt ) {
 		$transmo .= $transfmt{$hdr}{pat};
 	}
-	$transmo .= "    return 0;\n}\n";
+	$transmo = "sub transmo {\n study;\n $transmo;  return 0;\n}\n";
 
 	# installs a sub named 'transmo', which returns the type of the error message
 	{
