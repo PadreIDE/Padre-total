@@ -1,0 +1,15 @@
+Build.PL
+Changes
+MANIFEST
+README
+lib/Parse/ErrorString/Perl.pm
+bin/check_perldiag
+t/00-load.t
+t/01-errors.t
+t/02-diagnostics.t
+t/03-split_diagnostics.t
+t/04-perldiag.t
+t/05-stacktrace.t
+t/06-short_filename.t
+Makefile.PL
+META.yml

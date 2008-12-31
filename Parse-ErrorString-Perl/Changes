@@ -1,0 +1,30 @@
+Revision history for Parse-ErrorString-Perl
+
+0.09    30 Dec 2008
+        * fixed Makefile.pl to properly build on unix (Gabor Szabo)
+		* fixed t/06-short_filename.t to run properly under unix (Gabor Szabo, Breno G. de Oliveira)
+		* fixed typos in the documentation (Breno G. de Oliveira)
+
+0.08    26 Dec 2008
+        Minor bug fixes
+
+0.07    24 Dec 2008
+        * properly parse error messages messed with by "diagnostics"
+		* properly parse errors with "near" or "at" info at the end
+		* properly parse errors in eval
+		* provide information about the error type
+		* callstack for fatal errors if "use diagnostics" is in force
+		* support for curtailed file paths
+		* fall back to default perldiag if localized does not provide info about an error message
+		* added script "check_perlidag" to check a localized perldiag for consistency
+
+0.03    16 Dec 2008
+        Fixes of tests
+
+0.02    15 Dec 2008
+        Added support for diagnostic messages
+
+0.01    12 Dec 2008
+        First release. Only message, file_path and line are currently supported. Tests need to be added
+
+
