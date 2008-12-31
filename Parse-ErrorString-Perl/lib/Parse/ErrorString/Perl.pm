@@ -322,7 +322,7 @@ sub _prepare_diagnostics {
 			my $conlen = 0;
 			for my $i (0..$#toks){
 				if( $i % 2 ) {
-					if(      $toks[$i] eq '%c' ) {
+					if( $toks[$i] eq '%c' ) {
 						$toks[$i] = '.';
 					} elsif( $toks[$i] eq '%d' ) {
 						$toks[$i] = '\d+';
@@ -363,12 +363,18 @@ sub _prepare_diagnostics {
 		eval $transmo;
 		carp $@ if $@;
 	}
+	return;
 }
 
 sub _get_diagnostics {
 	my $self = shift;
 	local $_ = shift;
-	transmo();
+	eval {
+		transmo();
+	};
+	if ($@) {
+		Carp::cluck($@);
+	}
 	return $self->{localized_errors}{$_} ? $self->{localized_errors}{$_} : $self->{errors}{$_};
 }
 
