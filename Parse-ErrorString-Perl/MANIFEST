@@ -11,5 +11,6 @@ t/03-split_diagnostics.t
 t/04-perldiag.t
 t/05-stacktrace.t
 t/06-short_filename.t
+t/10-check_perldiag.t
 Makefile.PL
 META.yml

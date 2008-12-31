@@ -3,8 +3,8 @@
 use strict;
 use warnings;
 
-use POD::Find;
-use POD::POM;
+use Pod::Find;
+use Pod::POM;
 
 my $localized_perldiag = $ARGV[0];
 
