@@ -2,6 +2,8 @@ Changes
 
 0.015 2009.1.1
     - differentiate between STD warnings and errors in syntax check (ticket:193)
+    - Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32 
+    installation failures.
 
 0.014 2008.12.28
     - export html now asks the user if he/she wants to open the HTML in the default browser
