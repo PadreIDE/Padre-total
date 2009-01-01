@@ -1,25 +1,28 @@
 Changes
 
-0.014 Dec 29 2008
+0.015 2009.1.1
+    - differentiate between STD warnings and errors in syntax check (ticket:193)
+
+0.014 2008.12.28
     - export html now asks the user if he/she wants to open the HTML in the default browser
     - Requires Syntax::Highlight::Perl6 version 0.02961
 
-0.013 Dec 24 2008
+0.013 2008.12.24
     - Added a menu separator before About menu item in Padre::Plugin::Perl6
     - Another message typo fix in Padre::Document::Perl6
     - Show an error message box in the following situations: 
         - exporting a non-Perl6 file 
         - STD.pm parsing error occurs
 
-0.012 Dec 22 2008
+0.012 2008.12.22
     - Added Perl6 Syntax checking.
     - Handled newlines for Mac/Unix and Win platforms in export feature.
     - Added Export simple, snippet and full HTML.
 
-0.011 Dec 21 2008
+0.011 2008.12.21
     - Source cleanup and POD fixes.
 
-0.01 Dec 20 2008
+0.01  2008.12.20
     - Initial release to CPAN
     - Support keyword scintilla auto completion
     - Supports Perl6 highlighting via Syntax::Highlight::Perl6
