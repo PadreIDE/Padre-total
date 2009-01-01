@@ -43,15 +43,21 @@ sub colorize {
     eval { @tokens = $p->tokens;   1; };
     $self->{issues} = [];
     if($EVAL_ERROR) {
-        say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
-        my @errors = split /\n/, $EVAL_ERROR;
-        my $lineno = undef;
-        for my $error (@errors) {
-            if($error =~ /line (\d+):$/) {
+        say "\nSTD.pm error:\n" . $EVAL_ERROR;
+        my @messages = split /\n/, $EVAL_ERROR;
+        my ($lineno,$severity);
+        for my $msg (@messages) {
+            if($msg =~ /error\s.+?line (\d+):$/i) {
+                #an error
                 $lineno = $1;
+                $severity = 'E';
+            } elsif($msg =~ /line (\d+):$/i) {
+                #a warning
+                $lineno = $1;
+                $severity = 'W';
             }
             if($lineno) {
-                push @{$self->{issues}}, { line => $lineno, msg => $error, severity => 'E', };
+                push @{$self->{issues}}, { line => $lineno, msg => $msg, severity => $severity, };
             }
         }
         return;
