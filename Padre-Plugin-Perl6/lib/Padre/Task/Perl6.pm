@@ -1,0 +1,129 @@
+package Padre::Task::Perl6;
+
+use strict;
+use warnings;
+use feature 'say';
+#use English '-no_match_vars';  # Avoids regex performance penalty
+use base 'Padre::Task';
+
+use Carp;
+use IPC::Run qw( start pump timeout );
+use Storable qw( thaw );
+use Benchmark;
+
+# This is run in the main thread before being handed
+# off to a worker (background) thread. The Wx GUI can be
+# polled for information here.
+# If you don't need it, just inherit this default no-op.
+sub prepare {
+    my $self = shift;
+    return 1;
+}
+
+# This is run in the main thread after the task is done.
+# It can update the GUI and do cleanup.
+# You don't have to implement this if you don't need it.
+sub finish {
+    my $self = shift;
+    my $mainwindow = shift;
+print "finish called!!\n";
+    # cleanup!
+    return 1;
+}
+
+sub run {
+    my $self = shift;
+    my $text = $self->{text};
+
+    my $t0 = Benchmark->new;
+
+    # construct the command
+    my @cmd = ();
+    push @cmd, Padre->perl_interpreter;
+    push @cmd, 'C:/tools/Padre/Padre-Plugin-Perl6/lib/Padre/Task/p6tokens.pl';
+#XXX- this should not be hardcoded...
+say "Running @cmd\n";
+    local $/ = undef;
+    my ($in, $out) = ('','');
+    my $h = IPC::Run::start(\@cmd, \$in, \$out, IPC::Run::timeout( 15 ))
+        or say "Command returned $?" ;
+    $in .= 'my $foo;';# . "\n" . 'my $bar;' . "\n";
+    pump $h until ($out =~ /\Z/);
+    my $error;
+    IPC::Run::finish $h or $error = 1;
+    if($error) {
+        say $out;
+    } else {
+        my @tokens = thaw($out);
+        #process it here...
+        use Data::Dumper; say Dumper(@tokens);
+    }
+
+#
+#    $self->{issues} = [];
+#    if($EVAL_ERROR) {
+#        say "\nSTD.pm error:\n" . $EVAL_ERROR;
+#        my @messages = split /\n/, $EVAL_ERROR;
+#        my ($lineno,$severity);
+#        for my $msg (@messages) {
+#            if($msg =~ /error\s.+?line (\d+):$/i) {
+#                #an error
+#                $lineno = $1;
+#                $severity = 'E';
+#            } elsif($msg =~ /line (\d+):$/i) {
+#                #a warning
+#                $lineno = $1;
+#                $severity = 'W';
+#            }
+#            if($lineno) {
+#                push @{$self->{issues}}, { line => $lineno, msg => $msg, severity => $severity, };
+#            }
+#        }
+#        return;
+#    } 
+#
+#    $self->remove_color;
+#
+#    my %colors = (
+#        'comp_unit'  => Px::PADRE_BLUE,
+#        'scope_declarator' => Px::PADRE_RED,
+#        'routine_declarator' => Px::PADRE_RED,
+#        'regex_declarator' => Px::PADRE_RED,
+#        'package_declarator' => Px::PADRE_RED,
+#        'statement_control' => Px::PADRE_RED,
+#        'block' => Px::PADRE_BLACK,
+#        'regex_block' => Px::PADRE_BLACK,
+#        'noun' => Px::PADRE_BLACK,
+#        'sigil' => Px::PADRE_GREEN,
+#        'variable' => Px::PADRE_GREEN,
+#        'assertion' => Px::PADRE_GREEN,
+#        'quote' => Px::PADRE_MAGENTA,
+#        'number' => Px::PADRE_ORANGE,
+#        'infix' => Px::PADRE_DIM_GRAY,
+#        'methodop' => Px::PADRE_BLACK,
+#        'pod_comment' => Px::PADRE_GREEN,
+#        'param_var' => Px::PADRE_CRIMSON,
+#        '_scalar' => Px::PADRE_RED,
+#        '_array' => Px::PADRE_BROWN,
+#        '_hash' => Px::PADRE_ORANGE,
+#        '_comment' => Px::PADRE_GREEN,
+#    );
+#
+#    for my $htoken (@tokens) {
+#        my %token = %{$htoken};
+#        my $color = $colors{ $token{rule} };
+#        if($color) {
+#              my $len = length $token{buffer};
+#              my $start = $token{last_pos} - $len;
+#              $editor->StartStyling($start, $color);
+#              $editor->SetStyling($len, $color);
+#        }
+#    }
+#
+    my $td = timediff(new Benchmark, $t0);
+    say "->colorize took:" . timestr($td) ;
+    
+    return 1;
+};
+
+1;
