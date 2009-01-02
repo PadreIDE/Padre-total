@@ -1,5 +1,8 @@
 Revision history for Parse-ErrorString-Perl
 
+0.11    2 January 2009
+        * moved definition of transmo() to allow Parse::ErrorString::Perl->new to be called within a threads context (required by Padre::Task::ErrorParser)
+
 0.10    2 January 2009
         * fix test script for diagnostic text in perl < 5.10 version
         * some code and test refactoring (Gabor Szabo)
