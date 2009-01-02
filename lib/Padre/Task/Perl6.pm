@@ -13,7 +13,7 @@ use File::Basename;
 use File::Spec;
 use Cwd;
 
-our $thread_running = 0;
+our $queue_size :shared = 0;
 
 # This is run in the main thread before being handed
 # off to a worker (background) thread. The Wx GUI can be
@@ -31,11 +31,8 @@ sub prepare {
     $self->{main_thread_only}{document} = $document;
     $self->{main_thread_only}{editor} = $editor;
 
-    if($thread_running) {
-	say "Skipping";
-	return "break";
-    }
-    $thread_running = 1;
+    # assign a place in the work queue
+    $self->{queue_id} = ++$queue_size;
     return 1;
 }
 
@@ -71,11 +68,9 @@ sub finish {
     my $self = shift;
     my $mainwindow = shift;
 
-    my $doc = $self->{main_thread_only}{document};
-    my $editor = $self->{main_thread_only}{editor};
-    
-    
     if($self->{tokens}) {
+	my $doc = $self->{main_thread_only}{document};
+	my $editor = $self->{main_thread_only}{editor};
 	$doc->remove_color;
 	my @tokens = @{$self->{tokens}};
 	for my $htoken (@tokens) {
@@ -90,15 +85,27 @@ sub finish {
 	}
     }
     # cleanup!
-    $thread_running = 0;
+    $queue_size--;
+    say "Decreasing queue size to $queue_size";
     return 1;
 }
 
-sub run :locked {
+sub run {
     my $self = shift;
     my $text = $self->{text};
     delete $self->{text};
 
+    # wait but not for ever... Only the last thread waits while the first is working hard.
+    # The rest of the threads in between do a simple exit.
+    while($queue_size > 1) {
+	if($self->{queue_id} <= $queue_size) {
+	    say "It makes no sense to wait since im #" . $self->{queue_id}. " in a queue of $queue_size";
+	    return 1;
+	}
+	say "I am going to wait since im #" . $self->{queue_id} . " in a queue of $queue_size";
+	sleep 1;
+    }
+    
     # construct the command
     my @cmd = ();
     push @cmd, Padre->perl_interpreter;
