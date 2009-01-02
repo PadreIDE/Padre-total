@@ -55,6 +55,7 @@ sub show_about {
     $about->SetDescription(
         "Perl6 syntax highlighting that is based on\nSyntax::Highlight::Perl6\n"
     );
+	$about->SetVersion($VERSION);
     Wx::AboutBox( $about );
     return;
 }
