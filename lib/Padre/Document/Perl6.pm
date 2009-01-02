@@ -6,9 +6,9 @@ use warnings;
 use feature qw(say);
 use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
+use Padre::Task::Perl6 ();
 
 use Benchmark;
-use Syntax::Highlight::Perl6;
 
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
@@ -29,80 +29,14 @@ sub text_with_one_nl {
 
 # Naive way to parse and colorize perl6 files
 sub colorize {
-    my ($self, $first) = @_;
+    my ($doc, $first) = @_;
 
-    my $editor = $self->editor;
-    my $text   = $self->text_with_one_nl;
-
-    my $t0 = Benchmark->new;
-    my $p = Syntax::Highlight::Perl6->new(
-        text => $text,
-    );
-
-    my @tokens;
-    eval { @tokens = $p->tokens;   1; };
-    $self->{issues} = [];
-    if($EVAL_ERROR) {
-        say "\nSTD.pm error:\n" . $EVAL_ERROR;
-        my @messages = split /\n/, $EVAL_ERROR;
-        my ($lineno,$severity);
-        for my $msg (@messages) {
-            if($msg =~ /error\s.+?line (\d+):$/i) {
-                #an error
-                $lineno = $1;
-                $severity = 'E';
-            } elsif($msg =~ /line (\d+):$/i) {
-                #a warning
-                $lineno = $1;
-                $severity = 'W';
-            }
-            if($lineno) {
-                push @{$self->{issues}}, { line => $lineno, msg => $msg, severity => $severity, };
-            }
-        }
-        return;
-    } 
-
-    $self->remove_color;
-
-    my %colors = (
-        'comp_unit'  => Px::PADRE_BLUE,
-        'scope_declarator' => Px::PADRE_RED,
-        'routine_declarator' => Px::PADRE_RED,
-        'regex_declarator' => Px::PADRE_RED,
-        'package_declarator' => Px::PADRE_RED,
-        'statement_control' => Px::PADRE_RED,
-        'block' => Px::PADRE_BLACK,
-        'regex_block' => Px::PADRE_BLACK,
-        'noun' => Px::PADRE_BLACK,
-        'sigil' => Px::PADRE_GREEN,
-        'variable' => Px::PADRE_GREEN,
-        'assertion' => Px::PADRE_GREEN,
-        'quote' => Px::PADRE_MAGENTA,
-        'number' => Px::PADRE_ORANGE,
-        'infix' => Px::PADRE_DIM_GRAY,
-        'methodop' => Px::PADRE_BLACK,
-        'pod_comment' => Px::PADRE_GREEN,
-        'param_var' => Px::PADRE_CRIMSON,
-        '_scalar' => Px::PADRE_RED,
-        '_array' => Px::PADRE_BROWN,
-        '_hash' => Px::PADRE_ORANGE,
-        '_comment' => Px::PADRE_GREEN,
-    );
-
-    for my $htoken (@tokens) {
-        my %token = %{$htoken};
-        my $color = $colors{ $token{rule} };
-        if($color) {
-              my $len = length $token{buffer};
-              my $start = $token{last_pos} - $len;
-              $editor->StartStyling($start, $color);
-              $editor->SetStyling($len, $color);
-        }
-    }
-
-      my $td = timediff(new Benchmark, $t0);
-      say "->colorize took:" . timestr($td) ;
+    # Create a coloring task and hand off to the task manager
+    my $task = Padre::Task::Perl6->new(
+	text => $doc->text_with_one_nl, 
+	editor => $doc->editor, 
+	document => $doc);
+    $task->schedule(); 
 }
 
 sub get_command {
@@ -111,14 +45,17 @@ sub get_command {
     my $filename = $self->filename;
 
     if (not $ENV{PARROT_PATH}) {
+	#XXX-this needs to be a message box...
         die "PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.\n";
     }
     my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
     if (not -x $parrot) {
+	#XXX-this needs to be a message box...
         die "$parrot is not an executable.\n";
     }
     my $rakudo = File::Spec->catfile($ENV{PARROT_PATH}, 'languages', 'perl6', 'perl6.pbc');
     if (not -e $rakudo) {
+	#XXX-this needs to be a message box...
         die "Cannot find Rakudo ($rakudo)\n";
     }
 
