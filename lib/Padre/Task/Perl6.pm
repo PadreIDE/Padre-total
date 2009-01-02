@@ -13,6 +13,8 @@ use File::Basename;
 use File::Spec;
 use Cwd;
 
+our $thread_running = 0;
+
 # This is run in the main thread before being handed
 # off to a worker (background) thread. The Wx GUI can be
 # polled for information here.
@@ -29,6 +31,11 @@ sub prepare {
     $self->{main_thread_only}{document} = $document;
     $self->{main_thread_only}{editor} = $editor;
 
+    if($thread_running) {
+	say "Skipping";
+	return "break";
+    }
+    $thread_running = 1;
     return 1;
 }
 
@@ -83,6 +90,7 @@ sub finish {
 	}
     }
     # cleanup!
+    $thread_running = 0;
     return 1;
 }
 
