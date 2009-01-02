@@ -22,6 +22,16 @@ declared beforehand using "our", or explicitly qualified to say
 which package the global variable is in (using "::").
 ENDofMSG
 
+if ($] < 5.010000) {
+$diagnostics = <<'ENDofMSG';
+(F) You've said "use strict vars", which indicates that all variables
+must either be lexically scoped (using "my"), declared beforehand using
+"our", or explicitly qualified to say which package the global variable
+is in (using "::").
+ENDofMSG
+}
+
+
 chomp($diagnostics);
 
 $diagnostics =~ s/\s\n/\n/gs;
