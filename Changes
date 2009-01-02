@@ -1,5 +1,8 @@
 Changes
 
+0.016 2009.1.?????????????
+    - Fixed trac ticket:194, Slow Perl6 syntax highlighting
+
 0.015 2009.1.1
     - differentiate between STD warnings and errors in syntax check (ticket:193)
     - Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32 
