@@ -31,8 +31,6 @@ sub prepare {
     $self->{main_thread_only}{document} = $document;
     $self->{main_thread_only}{editor} = $editor;
 
-    # assign a place in the work queue
-    $self->{queue_id} = ++$queue_size;
     return 1;
 }
 
@@ -85,36 +83,37 @@ sub finish {
 	}
     }
     # cleanup!
-    $queue_size--;
-    say "Decreasing queue size to $queue_size";
     return 1;
 }
 
+# Task thread subroutine
 sub run {
     my $self = shift;
     my $text = $self->{text};
     delete $self->{text};
 
+    # assign a place in the work queue
+    $self->{queue_id} = ++$queue_size;
+
     # wait but not for ever... Only the last thread waits while the first is working hard.
     # The rest of the threads in between do a simple exit.
     while($queue_size > 1) {
 	if($self->{queue_id} <= $queue_size) {
-	    say "It makes no sense to wait since im #" . $self->{queue_id}. " in a queue of $queue_size";
+	    # no need to wait since im not last
+	    $queue_size--;
 	    return 1;
 	}
-	say "I am going to wait since im #" . $self->{queue_id} . " in a queue of $queue_size";
-	sleep 1;
+	threads->yield;
     }
     
     # construct the command
-    my @cmd = ();
-    push @cmd, Padre->perl_interpreter;
-    push @cmd, Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl'));
+    my @cmd = ( Padre->perl_interpreter, 
+	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
     
-say "Running @cmd\n";
+    say "Running @cmd...";
     my ($in, $out) = ($text,'');
     my $error = 0;
-    my $h = IPC::Run::run(\@cmd, \$in, \$out, IPC::Run::timeout( 5 ))
+    my $h = IPC::Run::run(\@cmd, \$in, \$out, IPC::Run::timeout( 15 ))
         or $error = 1;
     if($error) {
 	say "\nSTD.pm error:\n" . $out;
@@ -138,6 +137,9 @@ say "Running @cmd\n";
     } else {
         $self->{tokens} = Storable::thaw($out);
     }
+
+    # finished here
+    $queue_size--;
 
     return 1;
 };
