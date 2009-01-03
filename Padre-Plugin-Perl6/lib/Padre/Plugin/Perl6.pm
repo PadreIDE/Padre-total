@@ -16,7 +16,6 @@ use File::Temp;
 our $VERSION = '0.016';
 
 use URI::file;
-use Syntax::Highlight::Perl6;
 use Readonly;
 
 use Padre::Wx ();
