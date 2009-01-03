@@ -29,17 +29,55 @@ sub padre_interfaces {
     return 'Padre::Plugin'         => 0.20,
 }
 
+sub menu_plugins {
+    my $self        = shift;
+    my $main_window = shift;
 
-sub menu_plugins_simple {
-    my $self = shift;
-    return 'Perl 6' => [
-        'Export Full HTML' => sub { $self->export_html($FULL_HTML); },
-        'Export Simple HTML' => sub { $self->export_html($SIMPLE_HTML); },
-        'Export Snippet HTML' => sub { $self->export_html($SNIPPET_HTML); },
-        "Manual refresh\tCtrl-1" => sub { $self->manual_highlight; },
-        '---' => undef,
-        'About' => sub { $self->show_about },
-    ];
+    # Create a simple menu with a single About entry
+    my $menu = Wx::Menu->new;
+
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->Append( -1, "Manual Perl 6 syntax highlighting\tCtrl-R", ),
+        sub { $self->manual_highlight; },
+    );
+
+
+    # Optional Perl6-based highlighting
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->AppendCheckItem( -1, "Automatic Perl 6 syntax highlighting\tCtrl-Shift-R",),
+        sub { $self->toggle_automatic_highlight; }
+    );
+
+    $menu->AppendSeparator;
+
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->Append( -1, 'Export Full HTML', ),
+        sub { $self->export_html($FULL_HTML); },
+    );
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->Append( -1, 'Export Simple HTML', ),
+        sub { $self->export_html($SIMPLE_HTML); },
+    );
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->Append( -1, 'Export Snippet HTML', ),
+        sub { $self->export_html($SNIPPET_HTML); },
+    );
+
+    $menu->AppendSeparator;
+    
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $menu->Append( -1, 'About', ),
+        sub { $self->show_about },
+    );
+
+    # Return it and the label for our plugin
+    return ( $self->plugin_name => $menu );
 }
 
 sub registered_documents {
@@ -58,6 +96,12 @@ sub show_about {
     $about->SetVersion($VERSION);
     Wx::AboutBox( $about );
     return;
+}
+
+sub toggle_automatic_highlight {
+    my $self = shift;
+    
+    say 'XXX- Toggle Automatic highlight';
 }
 
 sub manual_highlight {
