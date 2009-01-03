@@ -2,6 +2,7 @@ Changes
 
 0.017 2009.1.3
     - Fixed syntax check to work again with Padre-Plugin-Perl6
+    - More stable, one thread solution.
 
 0.016 2009.1.3
     - Possible fix to trac ticket:194, Slow Perl6 syntax highlighting
