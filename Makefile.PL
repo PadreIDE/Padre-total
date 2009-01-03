@@ -9,7 +9,7 @@ all_from       'lib/Padre/Plugin/Perl6.pm';
 requires       'perl'                    => '5.010';
 
 requires       'Padre'                    => '0.22';
-requires       'Syntax::Highlight::Perl6' => '0.02962';
+requires       'Syntax::Highlight::Perl6' => '0.02963';
 requires       'URI'                      => '1.37';
 requires       'Readonly'                 => '1.03';
 

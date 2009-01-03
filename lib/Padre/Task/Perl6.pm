@@ -117,7 +117,6 @@ sub run {
     say "Running @cmd";
     
     my ($in, $out, $err) = ($text,'',undef);
-    my $error = 0;
     my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
     if($err) {
 	my @messages = split /\n/, $err;

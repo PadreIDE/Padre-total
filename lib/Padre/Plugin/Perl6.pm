@@ -7,11 +7,11 @@ package Padre::Plugin::Perl6;
 use 5.010;
 use strict;
 use warnings;
-use English;
 use Carp;
 use feature qw(say switch);
 use IO::File;
 use File::Temp;
+use IPC::Run;
 
 our $VERSION = '0.016';
 
@@ -47,7 +47,7 @@ sub registered_documents {
 
 
 sub show_about {
-    my ($main) = @ARG;
+    my ($main) = @_;
 
     my $about = Wx::AboutDialogInfo->new;
     $about->SetName("Padre::Plugin::Perl6");
@@ -76,7 +76,7 @@ sub text_with_one_nl {
 }
 
 sub export_html {
-    my ($self, $type) = @ARG;
+    my ($self, $type) = @_;
 
     my $main   = Padre->ide->wx->main_window;
 
@@ -95,17 +95,17 @@ sub export_html {
     }
     
     my $text = $self->text_with_one_nl($doc);
-    my $p = Syntax::Highlight::Perl6->new(
-        text => $text,
-        inline_resources => 1,
-    );
+
+    # construct the command
+    my @cmd = ( 'hilitep6' );
+    say "Running @cmd";
 
     my $html;
     eval {
         given($type) {
-            when ($FULL_HTML) { $html = $p->full_html; }
-            when ($SIMPLE_HTML) { $html = $p->simple_html; }
-            when ($SNIPPET_HTML) { $html = $p->snippet_html; }
+            when ($FULL_HTML) { push @cmd, '--full-html=-'; }
+            when ($SIMPLE_HTML) { push @cmd, '--simple-html=-'; }
+            when ($SNIPPET_HTML) { push @cmd, '--snippet-html=-' }
             default {
                 croak "'$type' should full_html, simple_html or snippet_html";
             }
@@ -113,15 +113,19 @@ sub export_html {
         1;
     };
 
-    if($EVAL_ERROR) {
+    my ($in, $out, $err) = ($text,'',undef);
+    my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
+    if($err) {
         Wx::MessageBox(
-            qq{STD.pm Parsing Error:\n$EVAL_ERROR},
+            qq{STD.pm Parsing Error:\n$err},
             'Export cancelled',
             Wx::wxOK,
             $main,
         );
-        say "\nSTD.pm Parsing error\n" . $EVAL_ERROR;
+        say "\nSTD.pm Parsing error\n" . $err;
         return;
+    } else {
+        $html = $out;
     }
 
     # create a temporary HTML file
