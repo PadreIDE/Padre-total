@@ -36,6 +36,7 @@ sub menu_plugins_simple {
         'Export Full HTML' => sub { $self->export_html($FULL_HTML); },
         'Export Simple HTML' => sub { $self->export_html($SIMPLE_HTML); },
         'Export Snippet HTML' => sub { $self->export_html($SNIPPET_HTML); },
+        "Manual refresh\tCtrl-1" => sub { $self->manual_highlight; },
         '---' => undef,
         'About' => sub { $self->show_about },
     ];
@@ -54,9 +55,20 @@ sub show_about {
     $about->SetDescription(
         "Perl6 syntax highlighting that is based on\nSyntax::Highlight::Perl6\n"
     );
-	$about->SetVersion($VERSION);
+    $about->SetVersion($VERSION);
     Wx::AboutBox( $about );
     return;
+}
+
+sub manual_highlight {
+    my $self = shift;
+    say 'XXX- Manual highlight in progress';
+    my $doc = Padre::Documents->current or return;
+    if ($doc->can('colorize')) {
+        my $text = $doc->text_get;
+        $doc->{_text} = $text;
+        $doc->colorize;
+    }
 }
 
 sub text_with_one_nl {
