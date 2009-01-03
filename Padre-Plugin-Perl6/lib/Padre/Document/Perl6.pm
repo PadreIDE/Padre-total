@@ -8,8 +8,6 @@ use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
 
-use Benchmark;
-
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
 
@@ -31,12 +29,16 @@ sub text_with_one_nl {
 sub colorize {
     my ($doc, $first) = @_;
 
-    # Create a coloring task and hand off to the task manager
-    my $task = Padre::Task::Perl6->new(
-	text => $doc->text_with_one_nl, 
-	editor => $doc->editor, 
-	document => $doc);
-    $task->schedule(); 
+    my $config = Padre->ide->config;
+    if($config->{p6_highlight} || $doc->{force_p6_highlight}) {
+        # Create a coloring task and hand off to the task manager
+        my $task = Padre::Task::Perl6->new(
+            text => $doc->text_with_one_nl, 
+            editor => $doc->editor, 
+            document => $doc);
+        $task->schedule();
+    }
+    
 }
 
 sub get_command {
@@ -45,17 +47,17 @@ sub get_command {
     my $filename = $self->filename;
 
     if (not $ENV{PARROT_PATH}) {
-	#XXX-this needs to be a message box...
+        #XXX-this needs to be a message box...
         die "PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.\n";
     }
     my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
     if (not -x $parrot) {
-	#XXX-this needs to be a message box...
+        #XXX-this needs to be a message box...
         die "$parrot is not an executable.\n";
     }
     my $rakudo = File::Spec->catfile($ENV{PARROT_PATH}, 'languages', 'perl6', 'perl6.pbc');
     if (not -e $rakudo) {
-	#XXX-this needs to be a message box...
+        #XXX-this needs to be a message box...
         die "Cannot find Rakudo ($rakudo)\n";
     }
 

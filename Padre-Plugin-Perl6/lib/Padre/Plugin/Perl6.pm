@@ -21,6 +21,7 @@ use Readonly;
 use Padre::Wx ();
 use base 'Padre::Plugin';
 
+# constants for html exporting
 Readonly my $FULL_HTML    => 'full_html';
 Readonly my $SIMPLE_HTML  => 'simple_html';
 Readonly my $SNIPPET_HTML => 'snippet_html';
@@ -34,50 +35,56 @@ sub menu_plugins {
     my $main_window = shift;
 
     # Create a simple menu with a single About entry
-    my $menu = Wx::Menu->new;
+    $self->{menu} = Wx::Menu->new;
 
+    # Manual Perl 6 syntax highlighting
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->Append( -1, "Manual Perl 6 syntax highlighting\tCtrl-R", ),
-        sub { $self->manual_highlight; },
+        $self->{menu}->Append( -1, "Manual Perl 6 syntax highlighting\tCtrl-R", ),
+        sub { $self->highlight(0); },
     );
 
-
-    # Optional Perl6-based highlighting
+    # Toggle Auto Perl 6 syntax highlighting
+    $self->{p6_highlight} = 
+        $self->{menu}->AppendCheckItem( -1, "Automatic Perl 6 syntax highlighting",);
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->AppendCheckItem( -1, "Automatic Perl 6 syntax highlighting\tCtrl-Shift-R",),
-        sub { $self->toggle_automatic_highlight; }
+        $self->{p6_highlight},
+        sub { $self->toggle_highlight; }
     );
+    my $config = Padre->ide->config;
+    $self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
 
-    $menu->AppendSeparator;
+    $self->{menu}->AppendSeparator;
 
+    # export into HTML
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->Append( -1, 'Export Full HTML', ),
+        $self->{menu}->Append( -1, 'Export Full HTML', ),
         sub { $self->export_html($FULL_HTML); },
     );
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->Append( -1, 'Export Simple HTML', ),
+        $self->{menu}->Append( -1, 'Export Simple HTML', ),
         sub { $self->export_html($SIMPLE_HTML); },
     );
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->Append( -1, 'Export Snippet HTML', ),
+        $self->{menu}->Append( -1, 'Export Snippet HTML', ),
         sub { $self->export_html($SNIPPET_HTML); },
     );
 
-    $menu->AppendSeparator;
-    
+    $self->{menu}->AppendSeparator;
+
+    # the famous about menu item...
     Wx::Event::EVT_MENU(
         $main_window,
-        $menu->Append( -1, 'About', ),
+        $self->{menu}->Append( -1, 'About', ),
         sub { $self->show_about },
     );
 
     # Return it and the label for our plugin
-    return ( $self->plugin_name => $menu );
+    return ( $self->plugin_name => $self->{menu} );
 }
 
 sub registered_documents {
@@ -98,20 +105,28 @@ sub show_about {
     return;
 }
 
-sub toggle_automatic_highlight {
+sub toggle_highlight {
     my $self = shift;
-    
-    say 'XXX- Toggle Automatic highlight';
+    if(! defined $self->{p6_highlight}) {
+        return;
+    }
+    my $config = Padre->ide->config;
+    if($config->{p6_highlight}) {
+        $self->highlight;
+    }
+    $config->{p6_highlight} = $self->{p6_highlight}->IsChecked ? 1 : 0;
 }
 
-sub manual_highlight {
+sub highlight {
     my $self = shift;
-    say 'XXX- Manual highlight in progress';
     my $doc = Padre::Documents->current or return;
+    
     if ($doc->can('colorize')) {
         my $text = $doc->text_get;
         $doc->{_text} = $text;
+        $doc->{force_p6_highlight} = 1;
         $doc->colorize;
+        $doc->{force_p6_highlight} = 0;
     }
 }
 
@@ -154,7 +169,6 @@ sub export_html {
 
     # construct the command
     my @cmd = ( 'hilitep6' );
-    say "Running @cmd";
 
     my $html;
     eval {

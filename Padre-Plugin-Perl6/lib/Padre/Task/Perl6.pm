@@ -107,7 +107,6 @@ sub run {
     # construct the command
     my @cmd = ( Padre->perl_interpreter,
 	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
-    say "Running @cmd";
 
     my ($in, $out, $err) = ($text,'',undef);
     my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
