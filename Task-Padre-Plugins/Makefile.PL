@@ -26,7 +26,7 @@ feature 'Install experimental Padre plugin that runs on Parrot?',
 
 feature 'Install Padre plugin for Perl6?',
     -default                => 0,
-    'Padre::Plugin::Perl6' => '0.014';
+    'Padre::Plugin::Perl6' => '0.017';
 
 build_requires 'Test::More';
 
