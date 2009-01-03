@@ -83,6 +83,7 @@ sub finish {
 		$editor->SetStyling($len, $color);
 	    }
 	}
+	$doc->{issues} = [];
     } elsif($self->{issues}) {
 	# pass errors/warnings to document...
 	$doc->{issues} = $self->{issues};
@@ -131,7 +132,7 @@ sub run {
 		($lineno,$severity) = ($1, 'W');
 	    }
 	    if($lineno) {
-		push @{$self->{issues}}, { line => $lineno, msg => $msg, severity => $severity, };
+		push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
 	    }
 	}
 	$self->{issues} = $issues;
