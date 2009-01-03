@@ -12,7 +12,7 @@ use File::Basename;
 use File::Spec;
 use Cwd;
 
-our $queue_size :shared = 0;
+our $thread_running = 0;
 
 # This is run in the main thread before being handed
 # off to a worker (background) thread. The Wx GUI can be
@@ -20,7 +20,7 @@ our $queue_size :shared = 0;
 # If you don't need it, just inherit this default no-op.
 sub prepare {
     my $self = shift;
-    
+
     # put editor into main-thread-only storage
     $self->{main_thread_only} ||= {};
     my $document = $self->{document} || $self->{main_thread_only}{document};
@@ -31,8 +31,10 @@ sub prepare {
     $self->{main_thread_only}{editor} = $editor;
 
     # assign a place in the work queue
-    $self->{queue_id} = ++$queue_size;
-
+    if($thread_running) {
+	return "break";
+    }
+    $thread_running = 1;
     return 1;
 }
 
@@ -91,7 +93,7 @@ sub finish {
     # cleanup!
 
     # finished here
-    --$queue_size;
+    $thread_running = 0;
 
     return 1;
 }
@@ -102,21 +104,11 @@ sub run {
     my $text = $self->{text};
     delete $self->{text};
 
-    # wait but not for ever... Only the last thread waits while the first is working hard.
-    # The rest of the threads in between do a simple exit.
-    while($queue_size > 1) {
-	if($self->{queue_id} < $queue_size) {
-	    # no need to wait since im not last
-	    return 1;
-	}
-	threads->yield;
-    }
-    
     # construct the command
-    my @cmd = ( Padre->perl_interpreter, 
+    my @cmd = ( Padre->perl_interpreter,
 	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
     say "Running @cmd";
-    
+
     my ($in, $out, $err) = ($text,'',undef);
     my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
     if($err) {
