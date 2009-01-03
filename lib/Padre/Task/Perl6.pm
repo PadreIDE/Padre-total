@@ -3,7 +3,6 @@ package Padre::Task::Perl6;
 use strict;
 use warnings;
 use feature 'say';
-#use English '-no_match_vars';  # Avoids regex performance penalty
 use base 'Padre::Task';
 
 use Carp;
@@ -12,6 +11,7 @@ use Storable;
 use File::Basename;
 use File::Spec;
 use Cwd;
+use Benchmark;
 
 our $queue_size :shared = 0;
 
@@ -66,9 +66,9 @@ sub finish {
     my $self = shift;
     my $mainwindow = shift;
 
+    my $doc = $self->{main_thread_only}{document};
+    my $editor = $self->{main_thread_only}{editor};
     if($self->{tokens}) {
-	my $doc = $self->{main_thread_only}{document};
-	my $editor = $self->{main_thread_only}{editor};
 	$doc->remove_color;
 	my @tokens = @{$self->{tokens}};
 	for my $htoken (@tokens) {
@@ -81,6 +81,9 @@ sub finish {
 		$editor->SetStyling($len, $color);
 	    }
 	}
+    } elsif($self->{issues}) {
+	# pass errors/warnings to document...
+	$doc->{issues} = $self->{issues};
     }
     # cleanup!
     return 1;
@@ -106,20 +109,21 @@ sub run {
 	threads->yield;
     }
     
+    my $t0 = Benchmark->new;
+    
     # construct the command
     my @cmd = ( Padre->perl_interpreter, 
 	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
     
-    say "Running @cmd...";
     my ($in, $out) = ($text,'');
     my $error = 0;
-    my $h = IPC::Run::run(\@cmd, \$in, \$out, IPC::Run::timeout( 15 ))
+    my $h = IPC::Run::run(\@cmd, \$in, \$out)
         or $error = 1;
     if($error) {
 	say "\nSTD.pm error:\n" . $out;
 	my @messages = split /\n/, $out;
 	my ($lineno,$severity);
-	$self->{issues} = [];
+	my $issues = [];
 	for my $msg (@messages) {
 	    if($msg =~ /error\s.+?line (\d+):$/i) {
 		#an error
@@ -134,6 +138,7 @@ sub run {
 		push @{$self->{issues}}, { line => $lineno, msg => $msg, severity => $severity, };
 	    }
 	}
+	$self->{issues} = $issues;
     } else {
         $self->{tokens} = Storable::thaw($out);
     }
@@ -141,6 +146,9 @@ sub run {
     # finished here
     $queue_size--;
 
+    my $td = timediff(Benchmark->new, $t0);
+    print "Command took ",timestr($td),"\n";
+    
     return 1;
 };
 
