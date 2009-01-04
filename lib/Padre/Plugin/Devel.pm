@@ -11,7 +11,7 @@ use Padre::Wx      ();
 
 use base 'Padre::Plugin';
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 
 

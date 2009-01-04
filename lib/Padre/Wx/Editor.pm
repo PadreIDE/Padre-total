@@ -9,7 +9,7 @@ use Padre::Wx                 ();
 use Padre::Documents          ();
 use Padre::Wx::FileDropTarget ();
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 our @ISA     = 'Wx::StyledTextCtrl';
 
 our %mode = (
