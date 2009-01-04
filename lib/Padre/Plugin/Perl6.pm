@@ -13,7 +13,7 @@ use IO::File;
 use File::Temp;
 use IPC::Run;
 
-our $VERSION = '0.019';
+our $VERSION = '0.020';
 
 use URI::file;
 use Readonly;
@@ -27,7 +27,7 @@ Readonly my $SIMPLE_HTML  => 'simple_html';
 Readonly my $SNIPPET_HTML => 'snippet_html';
 
 sub padre_interfaces {
-    return 'Padre::Plugin'         => 0.20,
+    return 'Padre::Plugin'         => 0.22,
 }
 
 sub menu_plugins {
@@ -119,7 +119,7 @@ sub toggle_highlight {
 
 sub highlight {
     my $self = shift;
-    my $doc = Padre::Documents->current or return;
+    my $doc = Padre::Current->document or return;
     
     if ($doc->can('colorize')) {
         my $text = $doc->text_get;
@@ -151,7 +151,7 @@ sub export_html {
 
     my $main   = Padre->ide->wx->main_window;
 
-    my $doc = Padre::Documents->current;
+    my $doc = Padre::Current->document;
     if(!defined $doc) {
         return;
     }
