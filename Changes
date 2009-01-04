@@ -1,6 +1,6 @@
 Changes for Perl Application Development and Refactoring Environment 
 
-v0.23 ??????????
+v0.23 2009.01.04
 
     Updated Italian transation.
     Refactored the plugin state hash out into a standalone
