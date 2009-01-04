@@ -13,7 +13,7 @@ use IO::File;
 use File::Temp;
 use IPC::Run;
 
-our $VERSION = '0.020';
+our $VERSION = '0.021';
 
 use URI::file;
 use Readonly;
@@ -37,16 +37,23 @@ sub menu_plugins {
     # Create a simple menu with a single About entry
     $self->{menu} = Wx::Menu->new;
 
+    # Perl 6 S29 documentation
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $self->{menu}->Append( -1, "Show Perl 6 documentation\tF2", ),
+        sub { $self->show_perl6_doc; },
+    );
+
     # Manual Perl 6 syntax highlighting
     Wx::Event::EVT_MENU(
         $main_window,
-        $self->{menu}->Append( -1, "Manual Perl 6 syntax highlighting\tCtrl-R", ),
-        sub { $self->highlight(0); },
+        $self->{menu}->Append( -1, "Manual Perl 6 Syntax Highlighting\tCtrl-R", ),
+        sub { $self->highlight; },
     );
 
     # Toggle Auto Perl 6 syntax highlighting
     $self->{p6_highlight} = 
-        $self->{menu}->AppendCheckItem( -1, "Automatic Perl 6 syntax highlighting",);
+        $self->{menu}->AppendCheckItem( -1, "Automatic Perl 6 Syntax Highlighting",);
     Wx::Event::EVT_MENU(
         $main_window,
         $self->{p6_highlight},
@@ -83,7 +90,7 @@ sub menu_plugins {
         sub { $self->show_about },
     );
 
-    # Return it and the label for our plugin
+    # Return our plugin with its label
     return ( $self->plugin_name => $self->{menu} );
 }
 
@@ -98,11 +105,54 @@ sub show_about {
     my $about = Wx::AboutDialogInfo->new;
     $about->SetName("Padre::Plugin::Perl6");
     $about->SetDescription(
-        "Perl6 syntax highlighting that is based on\nSyntax::Highlight::Perl6\n"
+        "Perl6 syntax highlighting that is based on\n" .
+        "Syntax::Highlight::Perl6\n"
     );
     $about->SetVersion($VERSION);
     Wx::AboutBox( $about );
     return;
+}
+
+sub show_perl6_doc {
+    my $self = shift;
+    
+    say 'XXX- show_perl6_doc';
+    
+    if(! $self->{perl6_functions}) {
+        # no Perl 6 function documentation in memory, then let us create it
+        say 'XXX - Parsing S29-Functions.pod';
+        
+        # open the S29 file
+        my $S29 = IO::File->new(
+            Cwd::realpath(
+                File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod'))) 
+                    or croak "Cannot open $!";
+
+        # read until you find 'Function Packages'
+        until (<$S29> =~ /Function Packages/) {}
+
+        # parse the rest of S29 looking for Perl 6 function documentation
+        $self->{perl6_functions} = ();
+        my $function_name = undef;
+        while (my $line = <$S29>) {
+            if ($line =~ /^=(\S+) (.*)/x) {
+                if ($1 eq 'item') {
+                    # Found Perl6 function name
+                    $function_name = $2;
+                    $function_name =~ s/^\s+//;
+                } else {
+                    $function_name = undef;
+                }
+            } elsif($function_name) {
+                # Adding documentation to the function name
+                $self->{perl6_functions}{$function_name} .= $line;
+            }
+        }
+        say 'XXX - Finished Parsing S29-Functions.pod';
+#        for my $func_name (keys %{$self->{perl6_functions}}) {
+#            say $func_name . "\n" . $self->{perl6_functions}->{$func_name};
+#        }
+    }
 }
 
 sub toggle_highlight {
