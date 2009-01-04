@@ -15,7 +15,7 @@ use File::Find     qw(find);
 use File::Slurp    qw(read_file write_file);
 use File::Temp     ();
 
-my $TRUNK   = "http://svn.perlide.org/padre/trunk/";
+my $SVN     = "http://svn.perlide.org/padre";
 my $TAGS    = "http://svn.perlide.org/padre/tags";
 my $error   = 0;
 
@@ -24,15 +24,40 @@ die "Usage: $0 REV VERSION [--tag]\n"
 	if not $version or $version !~ /^\d\.\d\d$/ or $rev !~ /^\d+$/;
 
 my $start_dir = Cwd::cwd();
-my $name = File::Basename::basename($start_dir);
-#die "'$name'\n";
-$TRUNK .= $name;
+
+my ($URL) = grep {/^URL:\s*/} qx{svn info};
+die "no url" if not $URL;
+chomp $URL;
+$URL =~ s/^URL:\s*//;
+
+
+my $name;
+my $ver;
+
+# URL can be .../trunk/Name     or ../trunk/Name-More-Name
+# or    .../branches/Name or .../barnches/Name-0.12  or the others
+if ($URL =~ m{$SVN/(trunk|branches)/([^/]+)$}) {
+	$name = $2;
+	if ($name =~ /^([\w-]+)-(\d+\.\d+(_\d+)?)$/) {
+		$name = $1;
+		$ver  = $2;
+	}
+}
+
+#my $name = File::Basename::basename($start_dir);
+die "No name" if not $name;
+
+print "name: $name\n";
+print "ver: $ver\n" if $ver;
+if ($ver and $ver ne $version) {
+	die "Invalid version $ver - $version\n";
+}
 
 my $dir = File::Temp::tempdir( CLEANUP => 1 );
 chdir $dir;
 print "DIR $dir\n";
 
-_system("svn export --quiet -r$rev $TRUNK src");
+_system("svn export --quiet -r$rev $URL src");
 chdir 'src';
 
 if ($name eq 'Padre') {
@@ -54,7 +79,7 @@ _system("make disttest");
 _system("make dist");
 copy("$name-$version.tar.gz", $start_dir) or die $!;
 if ($tag) {
-	_system("svn cp -r$rev $TRUNK $TAGS/$name-$version -m'tag $name-$version'");
+	_system("svn cp -r$rev $URL $TAGS/$name-$version -m'tag $name-$version'");
 }
 chdir $start_dir;
 
