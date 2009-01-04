@@ -44,8 +44,8 @@ Padre::Task::SyntaxChecker::Perl6 - Perl document syntax-checking in the backgro
   $task->schedule;
   
   my $task2 = Padre::Task::SyntaxChecker::Perl6->new(
-    text => Padre::Documents->current->text_get,
-    notebook_page => Padre::Documents->current->editor,
+    text => Padre::Current->document->text_get,
+    notebook_page => Padre::Current->document->editor,
     on_finish => sub { my $task = shift; ... },
     newlines => "\r\n", # specify the newline type!
   );
