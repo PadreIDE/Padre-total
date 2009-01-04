@@ -27,7 +27,7 @@ sub menu_plugins_simple {
 sub validate_css {
 	my ( $self ) = @_;
 	
-	my $doc  = $self->selected_document;
+	my $doc  = $self->current->document;
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
@@ -69,8 +69,8 @@ sub _output {
 sub css_minifier {
 	my ( $win) = @_;
 
-	my $src = $win->selected_text;
-	my $doc = $win->selected_document;
+	my $src = $win->current->text;
+	my $doc = $win->current->document;
 	my $code = $src ? $src : $doc->text_get;
 	return unless ( defined $code and length($code) );
 
@@ -80,7 +80,7 @@ sub css_minifier {
 	my $css = minify( $code );
     
     if ( $src ) {
-		my $editor = $win->selected_editor;
+		my $editor = $win->current->editor;
 	    $editor->ReplaceSelection( $css );
 	} else {
 		$doc->text_set( $css );

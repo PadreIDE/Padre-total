@@ -113,9 +113,9 @@ sub show_prompt {
 		$main->on_save;
 		$main->Close;
 	} elsif ($cmd =~ /^\d+$/) {
-		Padre->ide->wx->main_window->selected_editor->GotoLine($cmd-1);
+		Padre->ide->wx->main_window->current->editor->GotoLine($cmd-1);
 	} elsif ($cmd =~ m{%s/}) {
-		my $editor = Padre->ide->wx->main_window->selected_editor;
+		my $editor = Padre->ide->wx->main_window->current->editor;
 		my $text = $editor->GetText;
 		$cmd = substr($cmd, 1);
 		eval "\$text =~ $cmd";

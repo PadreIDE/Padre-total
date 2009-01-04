@@ -65,7 +65,7 @@ sub on_stand_alone {
     #print "Stand alone called\n";
     # get name of the current file, if it is a pl file create the corresponding .exe
 
-    my $doc = $mw->selected_document;
+    my $doc = $mw->current->document;
 
     my $filename = $doc->filename;
     my $tmpfh;

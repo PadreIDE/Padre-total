@@ -30,8 +30,8 @@ sub _play {
 	
 	my $code;
 	
-	my $src = $self->selected_text;
-	my $doc = $self->selected_document;
+	my $src = $self->current->text;
+	my $doc = $self->current->document;
     if ( $src ) {
 		$code = $src;
     } else {
@@ -43,7 +43,7 @@ sub _play {
 	my $played = $playapp->play($code);
 	
 	if ( $src ) {
-		my $editor = $self->selected_editor;
+		my $editor = $self->current->editor;
 	    $editor->ReplaceSelection( $played );
 	} else {
 		$doc->text_set( $played );

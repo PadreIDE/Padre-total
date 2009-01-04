@@ -57,7 +57,7 @@ sub document_remain {
     my $filter = user_input($window, Wx::gettext("Filter: Document Remain"));
     return unless $filter;
 
-    my $doc = $window->selected_document;
+    my $doc = $window->current->document;
     my $src = $doc->text_get;
     return unless $src;
 
@@ -71,7 +71,7 @@ sub document_delete {
     my $filter = user_input($window, Wx::gettext("Filter: Document Delete"));
     return unless $filter;
 
-    my $doc = $window->selected_document;
+    my $doc = $window->current->document;
     my $src = $doc->text_get;
     return unless $src;
 
@@ -85,12 +85,12 @@ sub selection_remain {
     my $filter = user_input($window, Wx::gettext("Filter: Selection Remain"));
     return unless $filter;
 
-    my $src = $window->selected_text;
+    my $src = $window->current->text;
     return unless $src;
 
     my $newtext = filtering($filter, $src);
 
-    my $editor = $window->selected_editor;
+    my $editor = $window->current->editor;
     $editor->ReplaceSelection( $newtext );
     select_all($window);
 }
@@ -101,12 +101,12 @@ sub selection_delete {
     my $filter = user_input($window, Wx::gettext("Filter: Selection Delete"));
     return unless $filter;
 
-    my $src = $window->selected_text;
+    my $src = $window->current->text;
     return unless $src;
 
     my $newtext = filtering($filter, $src, 1);
 
-    my $editor = $window->selected_editor;
+    my $editor = $window->current->editor;
     $editor->ReplaceSelection( $newtext );
     select_all($window);
 }

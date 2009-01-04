@@ -43,7 +43,7 @@ sub _tidy {
 
     return unless defined $src;
 
-    my $doc = $self->selected_document;
+    my $doc = $self->current->document;
 
     if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
         return Wx::MessageBox( 'Document is not a Perl document',
@@ -84,7 +84,7 @@ sub _tidy {
 
 sub tidy_selection {
     my ( $self, $event ) = @_;
-    my $src = $self->selected_text;
+    my $src = $self->current->text;
 
     my $newtext = _tidy( $self, $src );
 
@@ -92,14 +92,14 @@ sub tidy_selection {
 
     $newtext =~ s{\n$}{};
 
-    my $editor = $self->selected_editor;
+    my $editor = $self->current->editor;
     $editor->ReplaceSelection( $newtext );
 }
 
 sub tidy_document {
     my ( $self, $event ) = @_;
 
-    my $doc = $self->selected_document;
+    my $doc = $self->current->document;
     my $src = $doc->text_get;
 
     my $newtext = _tidy( $self, $src );
@@ -112,7 +112,7 @@ sub tidy_document {
 sub _get_filename {
     my $self = shift;
 
-    my $doc     = $self->selected_document or return;
+    my $doc     = $self->current->document or return;
     my $current = $doc->filename;
     my $default_dir = '';
 
@@ -161,7 +161,7 @@ sub _export {
 
     return unless defined $src;
 
-    my $doc = $self->selected_document;
+    my $doc = $self->current->document;
 
     if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
         return Wx::MessageBox( 'Document is not a Perl document',
@@ -207,7 +207,7 @@ sub _export {
 
 sub export_selection {
     my ( $self, $event ) = @_;
-    my $src = $self->selected_text;
+    my $src = $self->current->text;
 
     _export( $self, $src );
     return;
@@ -216,7 +216,7 @@ sub export_selection {
 sub export_document {
     my ( $self, $event ) = @_;
 
-    my $doc = $self->selected_document;
+    my $doc = $self->current->document;
     my $src = $doc->text_get;
 
     _export( $self, $src );

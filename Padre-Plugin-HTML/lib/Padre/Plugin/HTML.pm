@@ -28,7 +28,7 @@ sub menu_plugins_simple {
 sub validate_html {
 	my ( $self ) = @_;
 	
-	my $doc  = $self->selected_document;
+	my $doc  = $self->current->document;
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
@@ -67,8 +67,8 @@ sub _output {
 sub tidy_html {
 	my ( $self ) = @_;
 	
-	my $src = $self->selected_text;
-	my $doc = $self->selected_document;
+	my $src = $self->current->text;
+	my $doc = $self->current->document;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $code and length($code) );
@@ -87,7 +87,7 @@ sub tidy_html {
 	_output($self, $text);
 	
 	if ( $src ) {
-		my $editor = $self->selected_editor;
+		my $editor = $self->current->editor;
 	    $editor->ReplaceSelection( $cleaned_code );
 	} else {
 		$doc->text_set( $cleaned_code );
@@ -97,8 +97,8 @@ sub tidy_html {
 sub html_lint {
 	my ( $self ) = @_;
 	
-	my $src = $self->selected_text;
-	my $doc = $self->selected_document;
+	my $src = $self->current->text;
+	my $doc = $self->current->document;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $code and length($code) );

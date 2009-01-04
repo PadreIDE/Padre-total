@@ -52,7 +52,7 @@ sub menu_plugins_simple {
 sub export_html {
 	my ( $self ) = @_;
 
-	my $doc     = $self->selected_document or return;
+	my $doc     = $self->current->document or return;
 	my $current = $doc->filename;
 	my $default_dir;
 	if ( defined $current ) {
