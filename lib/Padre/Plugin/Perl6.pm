@@ -15,6 +15,7 @@ use IPC::Run;
 
 our $VERSION = '0.022';
 
+use URI::Escape;
 use URI::file;
 use Readonly;
 
@@ -206,12 +207,10 @@ sub show_perl6_doc {
             say "Looking up: " . $function_name;
             my $function_doc = $self->{perl6_functions}{$function_name};
             if($function_doc) {
-                Wx::MessageBox(
-                    $function_doc,
-                    'S29-Functions.pod - ' . $function_name,
-                    Wx::wxOK,
-                    $main,
-                );
+                #launch default browser to see the S29 function documentation
+                Wx::LaunchDefaultBrowser(
+                    q{http://perlcabal.org/syn/S29.html#} . 
+                    URI::Escape::uri_escape_utf8($function_name));
             }
         }
         
