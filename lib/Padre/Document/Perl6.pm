@@ -128,9 +128,7 @@ sub _check_syntax_internals {
 sub keywords {
     my $self = shift;
     if (! defined $self->{keywords}) {
-        $self->{keywords} = YAML::Tiny::LoadFile(
-            Padre::Util::sharefile( 'languages', 'perl6', 'perl6.yml' )
-        );
+        #XXX-get it from Plugin
     }
     return $self->{keywords};
 }
