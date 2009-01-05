@@ -23,7 +23,7 @@ my $builder = Padre::PluginBuilder->new(
         'Data::Dumper'            => 0,
 
         'PAR::Packer'             => 0,
-        'Padre'                   => 0.17,
+        'Padre'                   => 0.24,
     },
     build_requires        => {
         'Test::More'              => '0.47',
