@@ -1,5 +1,8 @@
 Changes
 
+0.021 2009.1.5
+    - S29 function documentation when you hit F2 over a function (or a word)
+
 0.020 2009.1.4
     - Fixed plugin to work with AdamK's r2436 refactoring.
 
