@@ -30,6 +30,12 @@ sub padre_interfaces {
     return 'Padre::Plugin'         => 0.22,
 }
 
+sub plugin_enable {
+    my $self = shift;
+    $self->build_perl6_doc;
+    return 1;
+}
+
 sub menu_plugins {
     my $self        = shift;
     my $main_window = shift;
@@ -145,22 +151,34 @@ sub build_perl6_doc {
             $self->{perl6_functions}{$function_name} .= $line;
         }
     }
+
+    # trim blank lines at the beginning and the end
+    foreach my $function_name (keys %{$self->{perl6_functions}}) {
+        my $docs = $self->{perl6_functions}{$function_name};
+        $docs =~ s/^(\s|\n)+//g;
+        $docs =~ s/(\s|\n)+$//g;
+        $self->{perl6_functions}{$function_name} = $docs;
+    }
+
 }
 
 sub show_perl6_doc {
     my $self = shift;
-    
+    my $main   = Padre->ide->wx->main_window;
+
     if(! $self->{perl6_functions}) {
-        # no Perl 6 function documentation in memory, then let us create it
-        $self->build_perl6_doc;
+        Wx::MessageBox(
+            'Perl6 S29 docs are not available',
+            'Error',
+            Wx::wxOK,
+            $main,
+        );
+        return;
     }
 
     # find the word under the current cursor position
     my $doc = Padre::Current->document;
     if($doc) {
-        
-        my $main   = Padre->ide->wx->main_window;
-        
         # make sure it is a Perl 6 document
         if($doc->get_mimetype ne q{application/x-perl6}) {
             Wx::MessageBox(
