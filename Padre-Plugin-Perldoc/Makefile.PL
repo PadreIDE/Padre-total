@@ -8,7 +8,7 @@ author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/Perldoc.pm';
 
 requires       'Padre'                     => '0.22';
-requries       'Pod::POM::Web'             => '1.11';
+requires       'Pod::POM::Web'             => '1.11';
 requires       'PPI::HTML'                 => '1.07';
 requires       'Search::Indexer'           => '0.75';
 #requires       'AnnoCPAN::Perldoc'         => '0.10';
