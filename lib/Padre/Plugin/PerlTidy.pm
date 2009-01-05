@@ -7,7 +7,7 @@ use base 'Padre::Plugin';
 
 use Padre::Wx ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -24,7 +24,7 @@ file if it exists (see Perl::Tidy documentation).
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.21',
+	'Padre::Plugin' => '0.23',
 }
 
 sub menu_plugins_simple {
@@ -256,7 +256,7 @@ Patrick Donelan
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008 by Patrick Donelan, Brian Cassidy
+Copyright 2008-2009 by Patrick Donelan, Brian Cassidy
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

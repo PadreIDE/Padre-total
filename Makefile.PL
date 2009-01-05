@@ -11,7 +11,7 @@ all_from 'lib/Padre/Plugin/PerlTidy.pm';
 
 test_requires 'Test::More';
 
-requires 'Padre' => '0.21';
+requires 'Padre' => '0.23';
 requires 'Perl::Tidy';
 
 is_padre_plugin;
