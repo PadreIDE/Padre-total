@@ -64,7 +64,7 @@ sub menu_plugins {
 
     $self->{menu}->AppendSeparator;
 
-    # export into HTML
+    # Export into HTML
     Wx::Event::EVT_MENU(
         $main_window,
         $self->{menu}->Append( -1, 'Export Full HTML', ),
@@ -113,45 +113,89 @@ sub show_about {
     return;
 }
 
+#
+# Original code idea from masak++ (http://use.perl.org/~masak/journal/38212)
+#
+sub build_perl6_doc {
+    my $self = shift;
+    
+    # open the S29 file
+    my $S29 = IO::File->new(
+        Cwd::realpath(
+            File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod'))) 
+                or croak "Cannot open $!";
+
+    # read until you find 'Function Packages'
+    until (<$S29> =~ /Function Packages/) {}
+
+    # parse the rest of S29 looking for Perl 6 function documentation
+    $self->{perl6_functions} = ();
+    my $function_name = undef;
+    while (my $line = <$S29>) {
+        if ($line =~ /^=(\S+) (.*)/x) {
+            if ($1 eq 'item') {
+                # Found Perl6 function name
+                $function_name = $2;
+                $function_name =~ s/^\s+//;
+            } else {
+                $function_name = undef;
+            }
+        } elsif($function_name) {
+            # Adding documentation to the function name
+            $self->{perl6_functions}{$function_name} .= $line;
+        }
+    }
+}
+
 sub show_perl6_doc {
     my $self = shift;
     
-    say 'XXX- show_perl6_doc';
-    
     if(! $self->{perl6_functions}) {
         # no Perl 6 function documentation in memory, then let us create it
-        say 'XXX - Parsing S29-Functions.pod';
+        $self->build_perl6_doc;
+    }
+
+    # find the word under the current cursor position
+    my $doc = Padre::Current->document;
+    if($doc) {
         
-        # open the S29 file
-        my $S29 = IO::File->new(
-            Cwd::realpath(
-                File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod'))) 
-                    or croak "Cannot open $!";
+        my $main   = Padre->ide->wx->main_window;
+        
+        # make sure it is a Perl 6 document
+        if($doc->get_mimetype ne q{application/x-perl6}) {
+            Wx::MessageBox(
+                'Not a Perl 6 file',
+                'Operation cancelled',
+                Wx::wxOK,
+                $main,
+            );
+            return;
+        }
 
-        # read until you find 'Function Packages'
-        until (<$S29> =~ /Function Packages/) {}
-
-        # parse the rest of S29 looking for Perl 6 function documentation
-        $self->{perl6_functions} = ();
-        my $function_name = undef;
-        while (my $line = <$S29>) {
-            if ($line =~ /^=(\S+) (.*)/x) {
-                if ($1 eq 'item') {
-                    # Found Perl6 function name
-                    $function_name = $2;
-                    $function_name =~ s/^\s+//;
-                } else {
-                    $function_name = undef;
-                }
-            } elsif($function_name) {
-                # Adding documentation to the function name
-                $self->{perl6_functions}{$function_name} .= $line;
+        my $editor = $doc->editor;
+        my $lineno = $editor->GetCurrentLine();
+        my $line = $editor->GetLine($lineno);
+        my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
+        my $current_word = undef;
+        while( $line =~ m/\G\s*([[:graph:]]+)(\s+|$)/g ) {
+            if(pos($line) >= $current_pos) {
+                $current_word = $1;
+                last;
+            }
+        }        
+        if($current_word =~ /^.*?(\w+)/) {
+            my $function_name = $1;
+            my $function_doc = $self->{perl6_functions}{$function_name};
+            if($function_doc) {
+                Wx::MessageBox(
+                    $function_doc,
+                    'S29-Functions.pod - ' . $function_name,
+                    Wx::wxOK,
+                    $main,
+                );
             }
         }
-        say 'XXX - Finished Parsing S29-Functions.pod';
-#        for my $func_name (keys %{$self->{perl6_functions}}) {
-#            say $func_name . "\n" . $self->{perl6_functions}->{$func_name};
-#        }
+        
     }
 }
 
