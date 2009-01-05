@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'Padre::Plugin';
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Padre::Wx;
 
@@ -18,7 +18,7 @@ Padre::Plugin::PAR - PAR generation from Padre
 =head1 SYNOPIS
 
 This is an experimental version of the plugin using the experimental
-plugin interface of Padre 0.16.
+plugin interface of Padre 0.24.
 
 After installation there should be a menu item I<Padre - PAR - Stand Alone>
 
@@ -30,6 +30,10 @@ file for you.
 
 =cut
 
+sub padre_interfaces {
+  'Padre::Plugin'         => 0.19,
+  'Padre::Current'        => 0.24,
+}
 
 sub menu_plugins_simple {
     my $self = shift;
