@@ -63,7 +63,7 @@ feature 'Install experimental Padre plugin that runs on Parrot?',
 
 feature 'Install Padre plugin for Perl6?',
     -default                   => 0,
-    'Syntax::Highlight::Perl6' => '0.02963',
+    'Syntax::Highlight::Perl6' => '0.0297',
     'URI'                      => '1.37',
     'Readonly'                 => '1.03';
 
