@@ -1,5 +1,9 @@
 Changes
 
+0.022 ??????????????
+    - requires Syntax::Highlight::Perl6 0.0297
+    - requires Padre 0.24
+
 0.021 2009.1.5
     - S29 function documentation when you hit F2 over a function (or a word)
 
