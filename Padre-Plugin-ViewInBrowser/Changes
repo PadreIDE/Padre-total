@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-ViewInBrowser
 
+0.05    2009.1.5
+        for Padre 0.23
+
 0.04	2008.11.24
 		for 'Padre::Plugin' => '0.18'
 

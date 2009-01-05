@@ -3,13 +3,13 @@ package Padre::Plugin::ViewInBrowser;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.23',
 }
 
 sub menu_plugins_simple {

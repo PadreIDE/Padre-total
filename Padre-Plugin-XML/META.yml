@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-XML
-version: 0.03
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: L<Padre> and XML
@@ -8,7 +8,7 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
-  Padre: 0.22
+  Padre: 0.23
   Test::More: 0
   XML::LibXML: 1.67
   XML::Tidy: 0
@@ -18,7 +18,7 @@ provides:
     version: 0.03
   Padre::Plugin::XML:
     file: lib/Padre/Plugin/XML.pm
-    version: 0.03
+    version: 0.04
   Padre::Task::SyntaxChecker::XML:
     file: lib/Padre/Task/SyntaxChecker/XML.pm
     version: 0.01

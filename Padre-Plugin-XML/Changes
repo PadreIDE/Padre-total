@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-XML
 
+0.04    2009.1.5
+        for Padre 0.23
+
 0.03    2008.12.24
         added syntax checking capabilities (HJANSEN)
         comment_lines_str (FAYLAND)
