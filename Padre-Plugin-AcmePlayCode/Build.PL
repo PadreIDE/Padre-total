@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Acme::PlayCode' => 0,
-        'Padre' => '0.18',
+        'Padre' => '0.23',
     },
     add_to_cleanup      => [ 'Padre-Plugin-AcmePlayCode-*' ],
     create_makefile_pl => 'traditional',

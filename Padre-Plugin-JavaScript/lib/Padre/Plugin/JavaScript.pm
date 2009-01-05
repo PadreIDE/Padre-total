@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Class::Autouse 'Padre::Document::JavaScript';
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use base 'Padre::Plugin';
 
@@ -16,7 +16,7 @@ use base 'Padre::Plugin';
 # Padre::Plugin API Methods
 
 sub padre_interfaces {
-	'Padre::Plugin'          => 0.21,
+	'Padre::Plugin'          => 0.23,
 	'Padre::Document'        => 0.21,
 }
 

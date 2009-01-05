@@ -3,13 +3,13 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.21,
+	'Padre::Plugin'   => 0.23,
 	'Padre::Document' => 0.21,
 }
 

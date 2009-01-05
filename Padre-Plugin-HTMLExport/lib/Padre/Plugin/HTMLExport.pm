@@ -4,7 +4,7 @@ use 5.006;
 use warnings;
 use strict;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use File::Basename ();
 
@@ -39,7 +39,7 @@ our %KATE_ALL = (
 );
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.23',
 }
 
 sub menu_plugins_simple {

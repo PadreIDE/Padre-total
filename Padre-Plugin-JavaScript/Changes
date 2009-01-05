@@ -1,4 +1,7 @@
 
+0.24    2009.1.5
+        for Padre 0.23
+
 0.23    2008.12.19
         fix Padre::Document::JavaScript get_functions/get_function_regex for Mac
 

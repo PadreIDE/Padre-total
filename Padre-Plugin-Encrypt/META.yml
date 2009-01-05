@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Encrypt
-version: 0.03
+version: 0.04
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: encrypt/decrypt file in Padre
@@ -10,14 +10,14 @@ resources:
 build_requires:
   Crypt::Blowfish: 0
   Crypt::CBC: 0
-  Padre: 0.18
+  Padre: 0.23
   Padre::Wx::Dialog: 0
   Test::More: 0
 provides:
   Padre::Plugin::Encrypt:
     file: lib/Padre/Plugin/Encrypt.pm
-    version: 0.03
-generated_by: Module::Build version 0.3
+    version: 0.04
+generated_by: Module::Build version 0.31
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

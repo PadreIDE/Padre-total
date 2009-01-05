@@ -3,13 +3,13 @@ package Padre::Plugin::Encrypt;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Padre::Wx::Dialog ();
 use base 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.18',
+	'Padre::Plugin' => '0.23',
 }
 
 sub menu_plugins_simple {

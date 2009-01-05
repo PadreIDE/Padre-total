@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-CSS
 
+0.04    2009.1.5
+        for Padre 0.23
+
 0.03    2008.12.19
         start Padre::Document::CSS
 
