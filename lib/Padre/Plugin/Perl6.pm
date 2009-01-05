@@ -176,8 +176,8 @@ sub show_perl6_doc {
         my $lineno = $editor->GetCurrentLine();
         my $line = $editor->GetLine($lineno);
         my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
-        my $current_word = undef;
-        while( $line =~ m/\G\s*([[:graph:]]+)(\s+|$)/g ) {
+        my $current_word = '';
+        while( $line =~ m/\G.*?([[:alnum:]]+)/g ) {
             if(pos($line) >= $current_pos) {
                 $current_word = $1;
                 last;
@@ -185,6 +185,7 @@ sub show_perl6_doc {
         }        
         if($current_word =~ /^.*?(\w+)/) {
             my $function_name = $1;
+            say "Looking up: " . $function_name;
             my $function_doc = $self->{perl6_functions}{$function_name};
             if($function_doc) {
                 Wx::MessageBox(
