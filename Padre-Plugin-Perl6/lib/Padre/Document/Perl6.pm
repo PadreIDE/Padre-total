@@ -47,17 +47,18 @@ sub get_command {
     my $filename = $self->filename;
 
     if (not $ENV{PARROT_PATH}) {
-        #XXX-this needs to be a message box...
+        #die to display a message box...
         die "PARROT_PATH is not defined. Need to point to trunk of Parrot SVN checkout.\n";
     }
-    my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, 'parrot');
+    my $parrot_exe = ($^O eq 'MSWin32') ? 'parrot.exe' : 'parrot';
+    my $parrot = File::Spec->catfile($ENV{PARROT_PATH}, $parrot_exe);
     if (not -x $parrot) {
-        #XXX-this needs to be a message box...
+        #die to display a message box...
         die "$parrot is not an executable.\n";
     }
     my $rakudo = File::Spec->catfile($ENV{PARROT_PATH}, 'languages', 'perl6', 'perl6.pbc');
     if (not -e $rakudo) {
-        #XXX-this needs to be a message box...
+        #die to display a message box...
         die "Cannot find Rakudo ($rakudo)\n";
     }
 
