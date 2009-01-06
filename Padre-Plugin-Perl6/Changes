@@ -1,5 +1,8 @@
 Changes
 
+0.023 ??????????????????????
+    - Added the lex cache directory cleanup menu option
+
 0.022 2009.1.5
     - Added S29 function documentation calltips
     - F2 now launches the S29 documentation in your default browser

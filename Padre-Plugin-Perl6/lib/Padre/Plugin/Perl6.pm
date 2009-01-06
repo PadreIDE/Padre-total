@@ -13,7 +13,7 @@ use IO::File;
 use File::Temp;
 use IPC::Run;
 
-our $VERSION = '0.022';
+our $VERSION = '0.023';
 
 use URI::Escape;
 use URI::file;
