@@ -69,13 +69,6 @@ sub menu_plugins {
     my $config = Padre->ide->config;
     $self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
 
-    # Cleanup STD.pm lex cache
-    Wx::Event::EVT_MENU(
-        $main_window,
-        $self->{menu}->Append( -1, "Cleanup STD.pm Lex Cache", ),
-        sub { $self->cleanup_std_lex_cache; },
-    );
-
     $self->{menu}->AppendSeparator;
 
     # Export into HTML
@@ -93,6 +86,15 @@ sub menu_plugins {
         $main_window,
         $self->{menu}->Append( -1, 'Export Snippet HTML', ),
         sub { $self->export_html($SNIPPET_HTML); },
+    );
+
+    $self->{menu}->AppendSeparator;
+    
+    # Cleanup STD.pm lex cache
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $self->{menu}->Append( -1, "Cleanup STD.pm Lex Cache", ),
+        sub { $self->cleanup_std_lex_cache; },
     );
 
     $self->{menu}->AppendSeparator;
@@ -152,19 +154,42 @@ sub cleanup_std_lex_cache {
     our @files_to_delete = ();
     my $lex_cache_size = 0;
     find(sub { 
-        $lex_cache_size += -s $_;
-        push @files_to_delete, $File::Find::name;
+        my $file = $_;
+        if(-f $file) {
+            $lex_cache_size += -s $file;
+            push @files_to_delete, $File::Find::name;
+         }
     }, $LEX_STD_DIR);
+    $lex_cache_size = sprintf("%0.3f", $lex_cache_size / (1024 * 1024));
     
     # ask the user if he/she wants to open it in the default browser
-    my $ret = Wx::MessageBox(
-        "Lex cache size is $lex_cache_size. Do you want to clean it up now?",
-        "Confirmation",
-        Wx::wxYES_NO|Wx::wxCENTRE,
-        $main,
-    );
-    if ( $ret == Wx::wxYES ) {
-        #XXX- clean it up...
+    my $num_files_to_delete = scalar @files_to_delete;
+    if($num_files_to_delete > 0) {
+        my $ret = Wx::MessageBox(
+            "STD.pm lex cache has $num_files_to_delete file(s) and $lex_cache_size MB.\n" .
+            "Do you want to clean it up now?",
+            "Confirmation",
+            Wx::wxYES_NO|Wx::wxCENTRE,
+            $main,
+        );
+        if ( $ret == Wx::wxYES ) {
+            #clean it up...
+            my $deleted_count = unlink @files_to_delete;
+            Wx::MessageBox(
+                "STD.pm lex cache should be clean now.\n" .
+                "Deleted $deleted_count out of $num_files_to_delete file(s).",
+                'Information',
+                Wx::wxOK,
+                $main,
+            );
+        }
+    } else {
+        Wx::MessageBox(
+            'STD.pm lex cache is already clean.',
+            'Information',
+            Wx::wxOK,
+            $main,
+        );
     }
 
     return;
