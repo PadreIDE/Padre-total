@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-XML
 
+0.05
+        enable folding (HJANSEN)
+
 0.04    2009.1.5
         for Padre 0.23
 
