@@ -69,6 +69,13 @@ sub menu_plugins {
     my $config = Padre->ide->config;
     $self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
 
+    # Cleanup STD.pm lex cache
+    Wx::Event::EVT_MENU(
+        $main_window,
+        $self->{menu}->Append( -1, "Cleanup STD.pm Lex Cache", ),
+        sub { $self->cleanup_std_lex_cache; },
+    );
+
     $self->{menu}->AppendSeparator;
 
     # Export into HTML
@@ -117,6 +124,49 @@ sub show_about {
     );
     $about->SetVersion($VERSION);
     Wx::AboutBox( $about );
+    return;
+}
+
+#
+# Cleans up STD lex cache after confirming with the user
+#
+sub cleanup_std_lex_cache {
+    my $self = shift;
+    
+    my $main   = Padre->ide->wx->main_window;
+
+    my $LEX_STD_DIR = 'lex/STD';
+    if(! -d $LEX_STD_DIR) {
+        Wx::MessageBox(
+            'Cannot find STD.pm lex cache',
+            'Error',
+            Wx::wxOK,
+            $main,
+        );
+        return;
+    }
+
+
+    #find files in lex cache along with its total size;
+    use File::Find;
+    our @files_to_delete = ();
+    my $lex_cache_size = 0;
+    find(sub { 
+        $lex_cache_size += -s $_;
+        push @files_to_delete, $File::Find::name;
+    }, $LEX_STD_DIR);
+    
+    # ask the user if he/she wants to open it in the default browser
+    my $ret = Wx::MessageBox(
+        "Lex cache size is $lex_cache_size. Do you want to clean it up now?",
+        "Confirmation",
+        Wx::wxYES_NO|Wx::wxCENTRE,
+        $main,
+    );
+    if ( $ret == Wx::wxYES ) {
+        #XXX- clean it up...
+    }
+
     return;
 }
 
