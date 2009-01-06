@@ -289,10 +289,16 @@ sub _build_multipage_layout {
 
 	my $outerBox  = Wx::FlexGridSizer->new( $row_cnt, 1, 0, 0 );
 	$outerBox->SetFlexibleDirection( Wx::wxBOTH );
-	my $nb = Wx::Notebook->new( $dialog, Wx::wxID_ANY, Wx::wxDefaultPosition, Wx::wxDefaultSize, 0 );
+	my $notebook = Wx::Notebook->new(
+		$dialog,
+		Wx::wxID_ANY,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		0,
+	);
 
 	foreach my $i (0..@{$args{layout}}-1) {
-		my $panel = Wx::Panel->new( $nb, Wx::wxID_ANY, Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTAB_TRAVERSAL );
+		my $panel = Wx::Panel->new( $notebook, Wx::wxID_ANY, Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTAB_TRAVERSAL );
 		_build_layout($panel, %args, 'layout', ${$args{layout}}[$i]);
 		foreach my $k ( keys %{$panel->{_widgets_}} ) {
 			$dialog->{_widgets_}{$k} = $panel->{_widgets_}{$k};
@@ -301,9 +307,9 @@ sub _build_multipage_layout {
 		if ( defined $multipage->{pagenames}->[$i] ) {
 			$pagename = $multipage->{pagenames}->[$i];
 		}
-		$nb->AddPage( $panel, $pagename, ( $i == 0 ? 1 : 0 ) );
+		$notebook->AddPage( $panel, $pagename, ( $i == 0 ? 1 : 0 ) );
 	}
-	$outerBox->Add( $nb, 1, wxEXPAND|wxALL, 5 );
+	$outerBox->Add( $notebook, 1, wxEXPAND|wxALL, 5 );
 
 	if ( defined( $multipage->{auto_ok_cancel} ) && $multipage->{auto_ok_cancel} ) {
 		my $button_row = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
