@@ -45,6 +45,18 @@ sub tidy_xml {
 	}
 }
 
+sub editor_enable {
+	my $self     = shift;
+	my $editor   = shift;
+	my $document = shift;
+
+	if ( $document->isa('Padre::Document::XML') ) {
+		$editor->SetProperty('fold.html', '1');
+	}
+
+	return 1;
+}
+
 1;
 __END__
 
