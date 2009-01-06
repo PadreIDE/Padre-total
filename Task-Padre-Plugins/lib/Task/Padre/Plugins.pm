@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 1;
 __END__
@@ -27,6 +27,10 @@ This is a simple plugin to run Acme::PlayCode on your source code.
 =head2 Padre::Plugin::Alarm
 
 Alarm Clock (Audio::Beep)
+
+=head2 Padre::Plugin::CommandLine
+
+vi and emacs in Padre?
 
 =head2 Padre::Plugin::CPAN
 
@@ -55,6 +59,10 @@ use CSS::Minifier::XS to minify css
 =head3 Validate CSS
 
 use WebService::Validator::CSS::W3C to validate the CSS
+
+=head2 Padre::Plugin::Encode
+
+convert file to different encoding in Padre
 
 =head2 Padre::Plugin::Encrypt
 
