@@ -108,8 +108,9 @@ sub run {
         Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
 
     my ($out, $err) = ('',undef);
-    run3 \@cmd, \$text, \$out, \$err;
+    run3 \@cmd, \$text, \$out, \$err, { 'binmode_stdin' => ':utf8' };
     if($err) {
+        say qq{STD.pm warning/error:\n$err};
         my @messages = split /\n/, $err;
         my ($lineno,$severity);
         my $issues = [];
