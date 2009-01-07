@@ -204,10 +204,9 @@ sub build_perl6_doc {
     my $self = shift;
     
     # open the S29 file
-    my $S29 = IO::File->new(
-        Cwd::realpath(
-            File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod'))) 
-                or croak "Cannot open $!";
+	my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod');
+    my $S29 = IO::File->new(Cwd::realpath($s29_file)) 
+                or croak "Cannot open '$s29_file' $!";
 
     # read until you find 'Function Packages'
     until (<$S29> =~ /Function Packages/) {}
