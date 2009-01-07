@@ -359,7 +359,7 @@ sub export_html {
     my $text = $self->text_with_one_nl($doc);
 
     # construct the command
-    my @cmd = ( ($^O eq 'MSWin32') ? 'hilitep6.bat' : 'hilitep6' );
+    my @cmd = ( Padre::Util::WIN32 ? 'hilitep6.bat' : 'hilitep6' );
 
     my $html;
     given($type) {
