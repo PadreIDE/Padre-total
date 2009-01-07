@@ -33,7 +33,10 @@ sub padre_interfaces {
 
 sub plugin_enable {
     my $self = shift;
-    $self->build_perl6_doc;
+	eval {
+    	$self->build_perl6_doc;
+	};
+	warn $@ if $@;
     return 1;
 }
 
