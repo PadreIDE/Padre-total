@@ -7,9 +7,13 @@ use feature qw(say);
 use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
+use Readonly;
 
 our $VERSION = '0.22';
 our @ISA     = 'Padre::Document';
+
+# max lines to display in a calltip
+Readonly my $CALLTIP_DISPLAY_COUNT => 10;
 
 sub text_with_one_nl {
     my $self = shift;
@@ -136,8 +140,15 @@ sub keywords {
             if($plugin) {
                 my %perl6_functions = %{$plugin->object->{perl6_functions}};
                 foreach my $function (keys %perl6_functions) {
+                    my $docs = $perl6_functions{$function};
+                    # limit calltip size to n-lines
+                    my @lines = split /\n/, $docs;
+                    if(scalar @lines > $CALLTIP_DISPLAY_COUNT) {
+                        $docs = (join "\n", @lines[0..$CALLTIP_DISPLAY_COUNT-1]) .
+                            "\n...";
+                    }
                     $self->{keywords}->{$function} = {
-                        'cmd' => $perl6_functions{$function},
+                        'cmd' => $docs,
                         'exp' => '',
                     };
                 }
