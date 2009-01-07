@@ -110,6 +110,8 @@ sub run {
     my ($out, $err) = ('',undef);
     run3 \@cmd, \$text, \$out, \$err, { 'binmode_stdin' => ':utf8' };
     if($err) {
+        # remove ANSI color escape sequences...
+        $err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
         say qq{STD.pm warning/error:\n$err};
         my @messages = split /\n/, $err;
         my ($lineno,$severity);
