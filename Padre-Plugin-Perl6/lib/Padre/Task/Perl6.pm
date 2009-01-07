@@ -32,7 +32,7 @@ sub prepare {
 
     # assign a place in the work queue
     if($thread_running) {
-	return "break";
+        return "break";
     }
     $thread_running = 1;
     return 1;
@@ -73,24 +73,23 @@ sub finish {
     my $doc = $self->{main_thread_only}{document};
     my $editor = $self->{main_thread_only}{editor};
     if($self->{tokens}) {
-	$doc->remove_color;
-	my @tokens = @{$self->{tokens}};
-	for my $htoken (@tokens) {
-	    my %token = %{$htoken};
-	    my $color = $colors{ $token{rule} };
-	    if($color) {
-		my $len = length $token{buffer};
-		my $start = $token{last_pos} - $len;
-		$editor->StartStyling($start, $color);
-		$editor->SetStyling($len, $color);
-	    }
-	}
-	$doc->{issues} = [];
+        $doc->remove_color;
+        my @tokens = @{$self->{tokens}};
+        for my $htoken (@tokens) {
+            my %token = %{$htoken};
+            my $color = $colors{ $token{rule} };
+            if($color) {
+                my $len = length $token{buffer};
+                my $start = $token{last_pos} - $len;
+                $editor->StartStyling($start, $color);
+                $editor->SetStyling($len, $color);
+            }
+        }
+        $doc->{issues} = [];
     } elsif($self->{issues}) {
-	# pass errors/warnings to document...
-	$doc->{issues} = $self->{issues};
+        # pass errors/warnings to document...
+        $doc->{issues} = $self->{issues};
     }
-    # cleanup!
 
     # finished here
     $thread_running = 0;
@@ -106,10 +105,10 @@ sub run {
 
     # construct the command
     my @cmd = ( Padre->perl_interpreter,
-	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
+        Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
 
-    my ($in, $out, $err) = ($text,'',undef);
-    run3 \@cmd, \$in, \$out, \$err;
+    my ($out, $err) = ('',undef);
+    run3 \@cmd, \$text, \$out, \$err;
     if($err) {
         my @messages = split /\n/, $err;
         my ($lineno,$severity);

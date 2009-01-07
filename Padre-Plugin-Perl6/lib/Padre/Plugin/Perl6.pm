@@ -33,10 +33,10 @@ sub padre_interfaces {
 
 sub plugin_enable {
     my $self = shift;
-	eval {
-    	$self->build_perl6_doc;
-	};
-	warn $@ if $@;
+    eval {
+        $self->build_perl6_doc;
+    };
+    warn $@ if $@;
     return 1;
 }
 
@@ -207,7 +207,7 @@ sub build_perl6_doc {
     my $self = shift;
     
     # open the S29 file
-	my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod');
+    my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod');
     my $S29 = IO::File->new(Cwd::realpath($s29_file)) 
                 or croak "Cannot open '$s29_file' $!";
 
@@ -359,23 +359,21 @@ sub export_html {
     my $text = $self->text_with_one_nl($doc);
 
     # construct the command
-    my @cmd = ( 'hilitep6' );
+    my @cmd = ( ($^O eq 'MSWin32') ? 'hilitep6.bat' : 'hilitep6' );
 
     my $html;
-    eval {
-        given($type) {
-            when ($FULL_HTML) { push @cmd, '--full-html=-'; }
-            when ($SIMPLE_HTML) { push @cmd, '--simple-html=-'; }
-            when ($SNIPPET_HTML) { push @cmd, '--snippet-html=-' }
-            default {
-                croak "'$type' should full_html, simple_html or snippet_html";
-            }
+    given($type) {
+        when ($FULL_HTML) { push @cmd, '--full-html=-'; }
+        when ($SIMPLE_HTML) { push @cmd, '--simple-html=-'; }
+        when ($SNIPPET_HTML) { push @cmd, '--snippet-html=-' }
+        default {
+            # default is full html
+            push @cmd, '--full-html=-';
         }
-        1;
-    };
+    }
 
-    my ($in, $out, $err) = ($text,'',undef);
-    run3 \@cmd, \$in, \$out, \$err, { 'binmode_stdin' => ':utf8' } ; 
+    my ($out, $err) = ('',undef);
+    run3 \@cmd, \$text, \$out, \$err, { 'binmode_stdin' => ':utf8' } ; 
     
     if($err) {
         Wx::MessageBox(
