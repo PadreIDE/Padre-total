@@ -1,6 +1,7 @@
 Changes
 
 0.025 2009.1.7
+    - Remove ANSI color escape sequences from STD.pm warnings/errors
     - Fix S29-function.pod parsing case sensitivity bug on *nix platforms.
     - Fix STD.pm highlighting to actually work. ;-)
     - STD.pm errors/warnings are shown on console.

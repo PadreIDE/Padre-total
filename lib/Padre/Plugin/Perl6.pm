@@ -376,6 +376,8 @@ sub export_html {
     run3 \@cmd, \$text, \$out, \$err, { 'binmode_stdin' => ':utf8' } ; 
     
     if($err) {
+        # remove ANSI color escape sequences...
+        $err =~ s/\033\[(\d+)(?:;(\d+)(?:;(\d+))?)?m//g;
         Wx::MessageBox(
             qq{STD.pm warning/error:\n$err},
             'Export cancelled',
