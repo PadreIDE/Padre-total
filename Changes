@@ -5,6 +5,7 @@ Changes
     - STD.pm is now syntax highlighted correctly since we use IPC::Run3 binmode utf8
     - Replaced IPC::Run 0.82 with the improved IPC::Run3 0.42
     - Revised menu structure
+    - Updated to S29-Function.pod revision 24793 to fix some common function docs like say, print ..etc
 
 0.023 2009.1.6
     - Added the lex cache directory cleanup option
