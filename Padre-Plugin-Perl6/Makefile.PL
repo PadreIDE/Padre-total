@@ -12,7 +12,7 @@ requires       'Padre'                    => '0.24';
 requires       'Syntax::Highlight::Perl6' => '0.0297';
 requires       'URI'                      => '1.37';
 requires       'Readonly'                 => '1.03';
-requires       'IPC::Run'                 => '0.82';
+requires       'IPC::Run3'                 => '0.042';
 
 test_requires  'Test::More'              => '0.47';
 test_requires  'Test::Exception'         => '0.27';

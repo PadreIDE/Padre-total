@@ -6,7 +6,7 @@ use feature 'say';
 use base 'Padre::Task';
 
 use Carp;
-use IPC::Run;
+use IPC::Run3;
 use Storable;
 use File::Basename;
 use File::Spec;
@@ -109,24 +109,24 @@ sub run {
 	Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
 
     my ($in, $out, $err) = ($text,'',undef);
-    my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
+    run3 \@cmd, \$in, \$out, \$err;
     if($err) {
-	my @messages = split /\n/, $err;
-	my ($lineno,$severity);
-	my $issues = [];
-	for my $msg (@messages) {
-	    if($msg =~ /error\s.+?line (\d+):$/i) {
-		#an error
-		($lineno,$severity) = ($1, 'E');
-	    } elsif($msg =~ /line (\d+):$/i) {
-		#a warning
-		($lineno,$severity) = ($1, 'W');
-	    }
-	    if($lineno) {
-		push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
-	    }
-	}
-	$self->{issues} = $issues;
+        my @messages = split /\n/, $err;
+        my ($lineno,$severity);
+        my $issues = [];
+        for my $msg (@messages) {
+            if($msg =~ /error\s.+?line (\d+):$/i) {
+                #an error
+                ($lineno,$severity) = ($1, 'E');
+            } elsif($msg =~ /line (\d+):$/i) {
+                #a warning
+                ($lineno,$severity) = ($1, 'W');
+            }
+            if($lineno) {
+                push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
+            }
+        }
+        $self->{issues} = $issues;
     } else {
         $self->{tokens} = Storable::thaw($out);
     }

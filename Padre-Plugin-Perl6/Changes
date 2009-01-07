@@ -1,7 +1,10 @@
 Changes
 
-0.024 2009.1.???????????????????
+0.024 2009.1.7
     - Fix run rakudo script on win32
+    - STD.pm now is syntax highlighted correctly since we use IPC::Run3 binmode utf8
+    - Replaced IPC::Run 0.82 with the better IPC::Run3 0.42
+    - Revised menu structure
 
 0.023 2009.1.6
     - Added the lex cache directory cleanup option
