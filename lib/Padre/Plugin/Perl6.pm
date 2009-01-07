@@ -11,9 +11,9 @@ use Carp;
 use feature qw(say switch);
 use IO::File;
 use File::Temp;
-use IPC::Run;
+use IPC::Run3;
 
-our $VERSION = '0.023';
+our $VERSION = '0.024';
 
 use URI::Escape;
 use URI::file;
@@ -44,23 +44,25 @@ sub menu_plugins {
     # Create a simple menu with a single About entry
     $self->{menu} = Wx::Menu->new;
 
-    # Perl 6 S29 documentation
+    # Perl6 S29 documentation
     Wx::Event::EVT_MENU(
         $main_window,
-        $self->{menu}->Append( -1, "Show Perl 6 documentation\tF2", ),
+        $self->{menu}->Append( -1, "Show Perl6 Help\tF2", ),
         sub { $self->show_perl6_doc; },
     );
 
-    # Manual Perl 6 syntax highlighting
+    $self->{menu}->AppendSeparator;
+
+    # Manual Perl6 syntax highlighting
     Wx::Event::EVT_MENU(
         $main_window,
-        $self->{menu}->Append( -1, "Manual Perl 6 Syntax Highlighting\tCtrl-R", ),
+        $self->{menu}->Append( -1, "Refresh Perl6 Coloring\tCtrl-R", ),
         sub { $self->highlight; },
     );
 
-    # Toggle Auto Perl 6 syntax highlighting
+    # Toggle Auto Perl6 syntax highlighting
     $self->{p6_highlight} = 
-        $self->{menu}->AppendCheckItem( -1, "Automatic Perl 6 Syntax Highlighting",);
+        $self->{menu}->AppendCheckItem( -1, "Toggle Auto Perl6 Coloring",);
     Wx::Event::EVT_MENU(
         $main_window,
         $self->{p6_highlight},
@@ -210,7 +212,7 @@ sub build_perl6_doc {
     # read until you find 'Function Packages'
     until (<$S29> =~ /Function Packages/) {}
 
-    # parse the rest of S29 looking for Perl 6 function documentation
+    # parse the rest of S29 looking for Perl6 function documentation
     $self->{perl6_functions} = ();
     my $function_name = undef;
     while (my $line = <$S29>) {
@@ -255,10 +257,10 @@ sub show_perl6_doc {
     # find the word under the current cursor position
     my $doc = Padre::Current->document;
     if($doc) {
-        # make sure it is a Perl 6 document
+        # make sure it is a Perl6 document
         if($doc->get_mimetype ne q{application/x-perl6}) {
             Wx::MessageBox(
-                'Not a Perl 6 file',
+                'Not a Perl6 file',
                 'Operation cancelled',
                 Wx::wxOK,
                 $main,
@@ -344,7 +346,7 @@ sub export_html {
     }
     if($doc->get_mimetype ne q{application/x-perl6}) {
         Wx::MessageBox(
-            'Not a Perl 6 file',
+            'Not a Perl6 file',
             'Export cancelled',
             Wx::wxOK,
             $main,
@@ -371,7 +373,8 @@ sub export_html {
     };
 
     my ($in, $out, $err) = ($text,'',undef);
-    my $h = IPC::Run::run(\@cmd, \$in, \$out, \$err);
+    run3 \@cmd, \$in, \$out, \$err, { 'binmode_stdin' => ':utf8' } ; 
+    
     if($err) {
         Wx::MessageBox(
             qq{STD.pm Parsing Error:\n$err},
