@@ -111,7 +111,6 @@ sub run {
     run3(\@cmd, \$text, \$out, \$err, { 
           'binmode_stdin' => ':utf8', 
           'binmode_stdout' => 1, 
-          'binmode_stderr' => 1, 
     });
     if($err) {
         # remove ANSI color escape sequences...
