@@ -1,6 +1,6 @@
 Revision history for Task-Padre-Plugins
 
-0.09    2009.1.X
+0.09    2009.1.7
         add Padre::Plugin::Encode
         updated to newer Padre plugin versions
 
