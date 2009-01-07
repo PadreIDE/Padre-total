@@ -9,7 +9,7 @@ use Padre::Document ();
 use Padre::Task::Perl6 ();
 use Readonly;
 
-our $VERSION = '0.22';
+our $VERSION = '0.24';
 our @ISA     = 'Padre::Document';
 
 # max lines to display in a calltip
