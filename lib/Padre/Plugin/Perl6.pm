@@ -13,7 +13,7 @@ use IO::File;
 use File::Temp;
 use IPC::Run3;
 
-our $VERSION = '0.024';
+our $VERSION = '0.025';
 
 use URI::Escape;
 use URI::file;
@@ -59,7 +59,7 @@ sub menu_plugins {
     # Manual Perl6 syntax highlighting
     Wx::Event::EVT_MENU(
         $main_window,
-        $self->{menu}->Append( -1, "Refresh Perl6 Coloring\tCtrl-R", ),
+        $self->{menu}->Append( -1, "Refresh Perl6 Coloring\tF6", ),
         sub { $self->highlight; },
     );
 
@@ -207,7 +207,7 @@ sub build_perl6_doc {
     my $self = shift;
     
     # open the S29 file
-    my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-Functions.pod');
+    my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-functions.pod');
     my $S29 = IO::File->new(Cwd::realpath($s29_file)) 
                 or croak "Cannot open '$s29_file' $!";
 
@@ -377,7 +377,7 @@ sub export_html {
     
     if($err) {
         Wx::MessageBox(
-            qq{STD.pm Parsing Error:\n$err},
+            qq{STD.pm warning/error:\n$err},
             'Export cancelled',
             Wx::wxOK,
             $main,
