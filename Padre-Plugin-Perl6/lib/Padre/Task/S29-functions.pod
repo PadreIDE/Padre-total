@@ -14,8 +14,8 @@ Synopsis 29: Builtin Functions
                 Carl Mäsak <cmasak@gmail.com>
                 Moritz Lenz <moritz@faui2k3.org>
  Date:          12 Mar 2005
- Last Modified: 18 Dec 2008
- Version:       33
+ Last Modified: 7 Jan 2009
+ Version:       37
 
 This document attempts to document the list of builtin functions in Perl 6.
 It assumes familiarity with Perl 5 and prior synopses.
@@ -190,6 +190,22 @@ order.  For equivalence the list is reduced as if using [&&].
 
 =head1 Function Packages
 
+=head2 Object
+
+Every object conforms to the type C<Object>. The following methods are thusly
+available on every object.
+
+=over
+
+=item perl
+
+ our Str multi method perl (Object $o)
+
+Returns a perlish representation of the object, so that calling C<eval>
+on the returned string reproduces the object as accurately as possible.
+
+=back
+
 =head2 Any
 
 The following are defined in the C<Any> role:
@@ -206,6 +222,27 @@ using criteria C<$by> or C<@by> for comparisons. C<@by> differs
 from C<$by> in that each criterion is applied, in order,
 until a non-zero (equivalent) result is achieved.
 
+=item can
+
+ our Callable multi method can ($self:, Str $method)
+
+If there is a multi method of name C<$method> that can be called on
+C<$self>, then a closure is return which has C<$self> bound to the position
+of the invocant.
+
+Otherwise an undefined value is returned.
+
+=item clone
+
+ our multi method clone (::T $self --> T)
+ our multi method clone (::T $self, *%attributes --> T)
+
+The first variant returns  an independent copy of C<$o> that is equivalent
+to C<$o>.
+
+The second variant does the same, but any named arguments override an
+attribute during the cloning process.
+
 =item cmp
 
  our Order multi sub cmp (Ordering @by, $a, $b)
@@ -218,6 +255,19 @@ C<$by> or C<@by> for comparisons. C<@by> differs from C<$by>
 in that each criterion is applied, in order, until a non-zero
 (tie) result is achieved.  If the values are not comparable,
 returns a proto C<Order> object that is undefined.
+
+=item does
+
+ our Bool multi method does ($self:, $type)
+
+Returns C<True> if and only if C<$self> conforms to type C<$type>.
+
+=item isa
+
+ our Bool multi method isa ($self:, $type)
+
+Returns C<True> if a the invocant an instance of class C<$type>, or 
+of a subset type or a derived class (through inheritance) of C<$type>.
 
 =back
 
@@ -236,6 +286,22 @@ them:
 or use the full name, e.g. C<Num::pi>.
 
 =over
+
+=item succ
+
+ our Num multi method succ ( Num $x: ) is export
+ out Int multi method succ ( Int $x: ) is export
+
+Returns the successor of C<$x>. This method is used by C<< prefix:<++> >> and
+C<< postfix:<++> >> to increment the value in a container.
+
+=item pred
+
+ our Num multi method pred ( Num $x: ) is export
+ our Int multi method pred ( Int $x: ) is export
+
+Returns the predeccessor of C<$x>. This method is used by C<< prefix:<--> >>
+and C<< postfix:<--> >> to decrement the value in a container.
 
 =item abs
 
@@ -352,10 +418,16 @@ Returns a complex number specified in polar coordinates.  Angle is in radians.
 
 =head2 Complex
 
+=over 4
+
+=item polar
+
     our Seq multi method polar (Complex $nim:) is export
 
 Returns (magnitude, angle) corresponding to the complex number.
 The magnitude is non-negative, and the angle in the range C<-π ..^ π>.
+
+=back
 
 =head2 The :Trig tag
 
@@ -401,6 +473,22 @@ This second form of C<atan> computes the arctangent of C<$y/$x>, and takes
 the quadrant into account. Otherwise behaves as other trigonometric functions.
 
 =back
+
+=head2 Bool
+
+=over 4
+
+=item succ
+
+ our Bool multi method succ ( Bool $b: ) is export
+
+Returns C<Bool::True>.
+
+=item pred
+
+ our Bool multi method pred ( Bool $b: ) is export
+
+Returns C<Bool::False>.
 
 =head2 Scalar
 
@@ -934,6 +1022,41 @@ adjust the case, sign, or other order sensitivity of C<cmp>.
 is used as an C<Ordering> then sort-specific traits such as C<is
 canonicalized($how)> are allowed on the positional elements.
 
+=item any
+
+ our Junction multi method any( @values: ) is export
+ our Junction multi any( @values ) is export
+
+Returns a junction with all the values of the list C<|>-ed together. The
+junction will only match against another value if at least one of the
+values in the list matches.
+
+=item all
+
+ our Junction multi method all( @values: ) is export
+ our Junction multi all( @values ) is export
+
+Returns a junction with all the values of the list C<&>-ed together. The
+junction will only match against another value if all of the values in the
+list match.
+
+=item one
+
+ our Junction multi method one( @values: ) is export
+ our Junction multi one( @values ) is export
+
+Returns a junction with all the values of the list C<^>-ed together. The
+junction will only match against another value if exactly one of the values
+in the list matches.
+
+=item none
+
+ our Junction multi method none( @values: ) is export
+ our Junction multi none( @values ) is export
+
+Returns a junction which will only match against another value if none of
+the values in the list matches.
+
 =back
 
 =head2 Hash
@@ -995,6 +1118,37 @@ been iterated.
 
 The lvalue form of C<keys> is not longer supported. Use the C<.buckets>
 property instead.
+
+=item any
+
+ our Junction multi method any( %hash: ) is export
+
+Returns a junction with all the keys of the hash C<|>-ed together. The
+junction will only match against another value if at least one of the 
+keys in the hash matches.
+
+=item all
+
+ our Junction multi method all( %hash: ) is export
+
+Returns a junction with all the keys of the hash C<&>-ed together. The 
+junction will only match against another value if all of the keys in the hash
+match.
+
+=item one
+
+ our Junction multi method one( %hash: ) is export
+
+Returns a junction with all the keys of the hash C<^>-ed together. The
+junction will only match against another value if exactly one of the keys
+in the hash matches.  
+
+=item none
+
+ our Junction multi method none( %hash: ) is export
+
+Returns a junction which will only match against another value if none of 
+the keys in the hash matches.
 
 =back
 
@@ -1683,6 +1837,41 @@ object, all of which can be found in the documentation for C<Time>.
 There is, by default, no timezone associated with this Time object, so
 whatever default the system has will take over if timezone-specific
 data is accessed.
+
+=back
+
+=head2 IO
+
+=over 4
+
+=item getc
+
+    our Bool method getc (IO $self: *@LIST)
+
+See C<Synopsis 16: IPC / IO / Signals> for details.
+
+=item print
+
+    our Bool method print (IO $self: *@LIST)
+    our Bool multi print (*@LIST)
+    our Bool method print (Str $self: IO $io)
+
+See C<Synopsis 16: IPC / IO / Signals> for details.
+
+=item say
+
+    our Bool method say (IO $self: *@LIST)
+    our Bool multi say (*@LIST)
+    our Bool method say (Str $self: IO $io)
+
+See C<Synopsis 16: IPC / IO / Signals> for details.
+
+=item printf
+
+    our Bool method printf (IO $self: Str $fmt, *@LIST)
+    our Bool multi printf (Str $fmt, *@LIST)
+
+See C<Synopsis 16: IPC / IO / Signals> for details.
 
 =back
 
