@@ -25,7 +25,7 @@ Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
 			[ 'Wx::Button',     'ok',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     'cancel',       Wx::wxID_CANCEL ],
 		],
-    ];
+	];
 
  	my $dialog = Wx::Perl::Dialog->new(
 		parent => $win,
@@ -36,7 +36,7 @@ Wx::Perl::Dialog - Abstract dialog class for simple dialog creation
 
    	return if not $dialog->show_modal;
 
-    my $data = $dialog->get_data; 
+	my $data = $dialog->get_data; 
 
 	#### You may also create a tabbed dialog for more complex tasks:
 
