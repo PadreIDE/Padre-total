@@ -3,7 +3,7 @@ package Padre::Plugin::Encode;
 use strict;
 use warnings;
 
-use version; our $VERSION = qv('0.1.2');
+use version; our $VERSION = qv('0.1.3');
 
 use base 'Padre::Plugin';
 
@@ -13,6 +13,7 @@ use Wx::Locale qw(:default);
 
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Padre::Locale     ();
 
 my @ENCODINGS = qw(
     cp932
@@ -24,22 +25,43 @@ my @ENCODINGS = qw(
 );
 
 sub padre_interfaces {
-    'Padre::Plugin' => '0.23',
+    'Padre::Plugin' => '0.24',
 }
 
 sub menu_plugins_simple {
     'Convert Encoding' => [
-        Wx::gettext('Encode document to utf-8') => \&encode_document,
-        Wx::gettext('Encode document to ...')   => \&encode_document_to,
+        Wx::gettext('Encode document to System Default') => \&encode_document_to_system_default,
+        Wx::gettext('Encode document to utf-8')          => \&encode_document_to_utf8,
+        Wx::gettext('Encode document to ...')            => \&encode_document_to,
     ];
 }
 
-sub encode_document {
+sub encode_document_to_system_default {
+    my ( $window, $event ) = @_;
+
+    my $doc = $window->current->document;
+    $doc->{encoding} = Padre::Locale::encoding_system_default || 'utf-8';
+    $doc->save_file if $doc->filename;
+    $window->refresh;
+
+    my $string = 'Encode document to System Default('.$doc->{encoding}.')';
+    my $output_panel = $window->{gui}->{output_panel};
+    $output_panel->clear;
+    $output_panel->AppendText( $string . $/ );
+}
+
+sub encode_document_to_utf8 {
     my ( $window, $event ) = @_;
 
     my $doc = $window->current->document;
     $doc->{encoding} = 'utf-8';
     $doc->save_file if $doc->filename;
+    $window->refresh;
+
+    my $string = 'Encode document to '.$doc->{encoding};
+    my $output_panel = $window->{gui}->{output_panel};
+    $output_panel->clear;
+    $output_panel->AppendText( $string . $/ );
 }
 
 sub encode_document_to {
@@ -91,6 +113,12 @@ sub ok_clicked {
     my $doc = $window->current->document;
     $doc->{encoding} = $data->{_encoding_};
     $doc->save_file if $doc->filename;
+    $window->refresh;
+
+    my $string = 'Encode document to '.$doc->{encoding};
+    my $output_panel = $window->{gui}->{output_panel};
+    $output_panel->clear;
+    $output_panel->AppendText( $string . $/ );
 }
 
 1; # Magic true value required at end of module
@@ -105,13 +133,14 @@ Padre::Plugin::Encode - convert file to different encoding in Padre
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Encode version 0.1.2
+This document describes Padre::Plugin::Encode version 0.1.3
 
 
 =head1 SYNOPSIS
 
     $>padre
     Plugins -> Convert Encode -> 
+                                 Encode document to System Default
                                  Encode document to utf-8
                                  Encode document to ...
 
