@@ -12,6 +12,7 @@ use Storable qw( nfreeze );
 # read input from STDIN
 my $text = '';
 my $line;
+binmode STDIN;
 while($line = <STDIN>) {
     $text .= $line;
 }
@@ -22,7 +23,7 @@ my $p = Syntax::Highlight::Perl6->new(
 );
 my @tokens = $p->tokens;
 my $output = nfreeze(\@tokens);
-binmode(STDOUT);
+binmode STDOUT;
 print $output;
 
 0;
