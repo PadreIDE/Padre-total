@@ -28,7 +28,7 @@ Readonly my $SIMPLE_HTML  => 'simple_html';
 Readonly my $SNIPPET_HTML => 'snippet_html';
 
 sub padre_interfaces {
-    return 'Padre::Plugin'         => 0.22,
+    return 'Padre::Plugin'         => 0.24,
 }
 
 sub plugin_enable {
