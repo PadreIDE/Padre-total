@@ -108,7 +108,11 @@ sub run {
         Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
 
     my ($out, $err) = ('',undef);
-    run3 \@cmd, \$text, \$out, \$err, { 'binmode_stdin' => ':utf8' };
+    run3(\@cmd, \$text, \$out, \$err, { 
+          'binmode_stdin' => ':utf8', 
+          'binmode_stdout' => 1, 
+          'binmode_stderr' => 1, 
+    });
     if($err) {
         # remove ANSI color escape sequences...
         $err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
