@@ -28,6 +28,12 @@ sub tidy_xml {
 	
 	my $src = $self->current->text;
 	my $doc = $self->current->document;
+
+	if ( ! $doc->isa('Padre::Document::XML') ) {
+		$self->message( Wx::gettext("This is not a XML document!") );
+		return;
+	}
+
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $code and length($code) );
