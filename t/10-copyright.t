@@ -16,9 +16,9 @@ $copyright    = qr{$copyright# This program is free software; you can redistribu
 $copyright    = qr{$copyright# modify it under the same terms as Perl 5 itself.};
 
 my $cp        = qr{=head1 COPYRIGHT\s+};
-my $cp        = qr{${cp}Copyright 2008 Adam Kennedy.\s*};
-my $cp        = qr{${cp}This program is free software; you can redistribute\s*};
-my $cp        = qr{${cp}it and/or modify it under the same terms as Perl itself.};
+$cp           = qr{${cp}Copyright 2008 Adam Kennedy.\s*};
+$cp           = qr{${cp}This program is free software; you can redistribute\s*};
+$cp           = qr{${cp}it and/or modify it under the same terms as Perl itself.};
 
 
 foreach my $file (@files) {
