@@ -39,16 +39,29 @@ sub tidy_xml {
 	return unless ( defined $code and length($code) );
 	
 	require XML::Tidy;
-	my $tidy_obj = XML::Tidy->new( xml => $code );
-	$tidy_obj->tidy();
+
+	my $tidy_obj = '';
+	my $string   = '';
+	eval {
+		$tidy_obj = XML::Tidy->new( xml => $code );
+		$tidy_obj->tidy();
 	
-	my $string = $tidy_obj->toString();
-	if ( $src ) {
-		my $editor = $self->current->editor;
-		$editor->ReplaceSelection( $string );
-	} else {
-		$doc->text_set( $string );
+		$string = $tidy_obj->toString();
+	};
+
+	if ( ! $@ ) {
+		if ( $src ) {
+			my $editor = $self->current->editor;
+			$editor->ReplaceSelection( $string );
+		} else {
+			$doc->text_set( $string );
+		}
 	}
+	else {
+		$self->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
+	}
+
+	return;
 }
 
 sub editor_enable {
