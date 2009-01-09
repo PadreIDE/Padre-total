@@ -76,6 +76,13 @@ _system("make");
 _system("make manifest");
 _system("make test");
 _system("make disttest");
+
+if ($^O ne 'MSWin32') {
+	print "Turn off DISPLAY\n";
+	local $ENV{DISPLAY} = undef;
+	_system("make disttest");
+}
+
 _system("make dist");
 copy("$name-$version.tar.gz", $start_dir) or die $!;
 if ($tag) {
