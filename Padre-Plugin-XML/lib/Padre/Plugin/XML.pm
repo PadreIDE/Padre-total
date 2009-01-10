@@ -51,6 +51,7 @@ sub tidy_xml {
 
 	if ( ! $@ ) {
 		if ( $src ) {
+			$string =~ s/\A<\?xml.+?\?>\r?\n?//o;
 			my $editor = $self->current->editor;
 			$editor->ReplaceSelection( $string );
 		} else {
