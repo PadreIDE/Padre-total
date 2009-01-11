@@ -2,21 +2,25 @@ use strict;
 use lib 'privinc';
 use inc::Module::Install;
 
-if (not $ENV{PARROT_PATH}) {
-	warn "PARROT_PATH needs to be defined\n";
-	exit 0;
-}
+# probably it is better not to require these 
+# as they are only needed for some of the actions and
+# we can delay their requirement to the run time
 
-unshift @INC, (
-	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/lib",
-	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/arch",
-	"$ENV{PARROT_PATH}/ext/Parrot-Embed/_build/lib",
-);
-require Parrot::Embed;
-if ($@) {
-	warn "Parrot::Embed needs to be compiled\n";
-	exit 0;
-}
+#if (not $ENV{PARROT_PATH}) {
+#	warn "PARROT_PATH needs to be defined\n";
+#	exit 0;
+#}
+#
+#unshift @INC, (
+#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/lib",
+#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/arch",
+#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/_build/lib",
+#);
+#require Parrot::Embed;
+#if ($@) {
+#	warn "Parrot::Embed needs to be compiled\n";
+#	exit 0;
+#}
 
 name           'Padre-Plugin-Parrot';
 license        'perl';
