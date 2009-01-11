@@ -140,7 +140,7 @@ sub show_about {
 sub cleanup_std_lex_cache {
     my $self = shift;
     
-    my $main   = Padre->ide->wx->main_window;
+    my $main   = Padre->ide->wx->main;
 
     my $LEX_STD_DIR = 'lex/STD';
     if(! -d $LEX_STD_DIR) {
@@ -244,7 +244,7 @@ sub build_perl6_doc {
 
 sub show_perl6_doc {
     my $self = shift;
-    my $main   = Padre->ide->wx->main_window;
+    my $main   = Padre->ide->wx->main;
 
     if(! $self->{perl6_functions}) {
         Wx::MessageBox(
@@ -340,7 +340,7 @@ sub text_with_one_nl {
 sub export_html {
     my ($self, $type) = @_;
 
-    my $main   = Padre->ide->wx->main_window;
+    my $main   = Padre->ide->wx->main;
 
     my $doc = Padre::Current->document;
     if(!defined $doc) {
