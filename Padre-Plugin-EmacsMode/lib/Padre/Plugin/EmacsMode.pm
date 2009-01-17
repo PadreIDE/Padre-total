@@ -6,10 +6,8 @@ Padre::Plugin::Emacs - Emacs keys/mode for Padre
 
 =head1 DESCRIPTION
 
-Once installed and enabled the user is in full vi-emulation mode,
-which was partially implemented.
-
-The 3 basic modes of vi are in development:
+Once installed and enables provides a subset of emacs
+keybindings and commands
 
 =cut
 
@@ -19,8 +17,6 @@ use warnings;
 use base 'Padre::Plugin';
 
 our $VERSION = '0.18';
-
-use List::Util ();
 
 my %subs;
 $subs{CTRL} = {
@@ -116,38 +112,76 @@ $subs{CTRL_SHIFT} = {
 };
 
 
-# http://wxruby.rubyforge.org/doc/acceleratortable.html
-# http://www.perl.com/lpt/a/588
-
-# have to create a keyevent object which is called by hotkeys and then handle those events
-# how to get keycode and modifier during event?
-#					my $mod  = $event->GetModifiers || 0;
-#					my $code = $event->GetKeyCode;
-# should be a http://www.wxpython.org/docs/api/wx.KeyEvent-class.html key event
-# which has GetModifiers and GetKeyCode
-# http://osdir.com/ml/lang.perl.wxperl/2005-01/msg00047.html
-# http://kobesearch.cpan.org/htdocs/Wx-Perl-TreeChecker/Wx/Perl/TreeChecker.pm.html
-# http://wolkendek.nl/wx/bug.pl
-# http://markmail.org/message/44t5sk7oosjfxkbr?q=perl+wx+acceleratortable&page=1&refer=x4lo6p7s4krtqpea#query:perl%20wx%20acceleratortable+page:1+mid:7bkbzxzrkewrg2gk+state:results
-
-# set up a new event type
-our $ACCEL_KEY_EVENT : shared = Wx::NewEventType();
-
-sub setup_emacs_accelerator_keys_table {
+# The plugin name to show in the Plugins menu
+# The command structure to show in the Plugins menu
+sub menu_plugins_simple {
   my $self = shift;
-  # Set up the event handler
-  my $main = Padre->ide->wx->main_window;
-  Wx::Event::EVT_COMMAND($main, -1, $ACCEL_KEY_EVENT, \&on_accel_key_event);
-
-  my $ATable = Wx::AcceleratorTable->new(
-					 [wxACCEL_CTRL,ord('X'),$ACCEL_KEY_EVENT],
-					);
-
-  my $main_window = Padre->ide->wx->main_window;
-  $main_window->SetAcceleratorTable($ATable);
+  return 'Emacs Mode' => [
+			  About => sub { $self->show_about },
+			  Commands => [
+				       'Emacs Ctrl Command \tCtrl-X' => $subs{CTRL}{ord('X')},
+				       'Emacs Meta Command \tAlt-X' => $subs{META}{ord('X')},
+				      ]
+			 ],
+			];
 }
 
+sub show_about {
+  my ($main) = @_;
+
+  my $about = Wx::AboutDialogInfo->new;
+  $about->SetName("Padre::Plugin::EmacsMode");
+  $about->SetDescription(
+			 "Emacs Keybindings and stuff\n".
+			 "Much todo here\n"
+			);
+  Wx::AboutBox( $about );
+  return;
+}
+
+sub plugin_enable {
+        my ($self) = @_;
+
+	# get menu keys, store them somewhere
+	# menuitems with emacs in
+
+	# add event handling
+
+	return;
+}
+
+sub plugin_disable {
+        my ($self) = @_;
+
+	# return menu keys from where-ever we stored them
+
+	# remove event handling
+
+        return;
+}
+
+
+
 sub on_accel_key_event {
+  my ($self, $event) = @_;
+
+  my $mod  = $event->GetModifiers || 0;
+  my $code = $event->GetKeyCode;
+
+  $event->Skip(0);
+
+  # remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
+  $mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
+	
+  my $modifier;
+  $modifier = 'CTRL' if ($mod == Wx::wxMOD_CMD() );
+  $modifier = 'CTRL_SHIFT' if ($mod == Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
+  $modifier = 'META' if ($mod == Wx::wxMOD_ALT() );
+
+  unless ($modifier && $subs{$modifier}) {
+    $event->Skip(1);
+    return;
+  }
 
   if (my $sub = $subs{$modifier}{$code}) {
     unless (ref $subs{$modifier}{$code} eq 'CODE') {
@@ -156,67 +190,28 @@ sub on_accel_key_event {
       return;
     }
     $sub->($self);
-  }
+    #		$event->StopPropogation();
+    return 1;
+  } else {
+    $event->Skip(1);
+  } 
+	
+  return;
 }
 
 sub setup_emacs_mode {
 	my ($self) = @_;
-    $self->CmdKeyClear(ord('w'),Wx::wxMOD_ALT());
-    $self->CmdKeyClear(ord('w'),Wx::wxMOD_CMD());
-    $self->CmdKeyClear(ord('W'),Wx::wxMOD_ALT());
-    $self->CmdKeyClear(ord('W'),Wx::wxMOD_CMD());
-    $self->CmdKeyClear(ord('s'),Wx::wxMOD_CMD());
-    $self->CmdKeyClear(ord('S'),Wx::wxMOD_CMD());
-
-	$self->CmdKeyClear(Wx::WXK_SPACE,Wx::wxMOD_CMD());
-
 	$self->SetTabIndents(1);
-
-   my $main_window = Padre->ide->wx->main_window;
-   my $menu = $main_window->{menu};
-    $menu->{win}->CmdKeyClear(ord('w'),Wx::wxMOD_ALT());
-    $menu->{win}->CmdKeyClear(ord('w'),Wx::wxMOD_CMD());
-    $menu->{win}->CmdKeyClear(ord('W'),Wx::wxMOD_ALT());
-    $menu->{win}->CmdKeyClear(ord('W'),Wx::wxMOD_CMD());
-    $menu->{win}->CmdKeyClear(ord('s'),Wx::wxMOD_CMD());
-    $menu->{win}->CmdKeyClear(ord('S'),Wx::wxMOD_CMD());
-
-	$menu->{win}->CmdKeyClear(Wx::WXK_SPACE,Wx::wxMOD_CMD());
-    
-
-   Wx::Event::EVT_KEY_DOWN( $self, sub {
-		my ($self, $event) = @_;
-
-		if (not Padre->ide->config->{emacs_mode}) {
-			$event->Skip(1);
-			return;
-		}
-		$self->emacs_mode($event);
+	Wx::Event::EVT_KEY_DOWN( $self, sub {
+	    my ($self, $event) = @_;
+	    
+	    if (not Padre->ide->config->{emacs_mode}) {
+		$event->Skip(1);
 		return;
-	});
-	
-	Wx::Event::EVT_KEY_UP( $self, sub {
-                my ($self, $event) = @_;
-                
-                unless ( $self->emacs_mode($event) ) {
-					$main_window->refresh_status;
-					$main_window->refresh_toolbar;
-					my $mod  = $event->GetModifiers || 0;
-					my $code = $event->GetKeyCode;
-                
-					# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-					$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-					if ( $mod == Wx::wxMOD_CMD ) { # Ctrl
-                        # Ctrl-TAB  #TODO it is already in the menu
-                        $main_window->on_next_pane if $code == Wx::WXK_TAB;
-					} elsif ( $mod == Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT()) { # Ctrl-Shift
-                        # Ctrl-Shift-TAB #TODO it is already in the menu
-                        $main_window->on_prev_pane if $code == Wx::WXK_TAB;
-					}
-                }
-                return;
-    } );
-
+	    }
+	    $self->emacs_mode($event);
+	    return;
+	  });
 
 	return;
 }
@@ -225,42 +220,6 @@ sub setup_emacs_mode {
 # sub remove_emacs_mode {
 
 		
-sub emacs_mode {
-	my ($self, $event) = @_;
-
-	my $mod  = $event->GetModifiers || 0;
-	my $code = $event->GetKeyCode;
-
-	$event->Skip(0);
-
-	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-	
-	my $modifier;
-	$modifier = 'CTRL' if ($mod == Wx::wxMOD_CMD() );
-	$modifier = 'CTRL_SHIFT' if ($mod == Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-	$modifier = 'META' if ($mod == Wx::wxMOD_ALT() );
-
-    unless ($modifier && $subs{$modifier}) {
-    	$event->Skip(1);
-		return;
-    }
-
-	if (my $sub = $subs{$modifier}{$code}) {
-	    unless (ref $subs{$modifier}{$code} eq 'CODE') {
-			warn "Invalid entry in 'subs' hash for code '$code' - expected code ref got : " . ref $subs{$modifier}{$code} ;
-			$event->Skip(1);
-			return;
-		}
-		$sub->($self);
-#		$event->StopPropogation();
-		return 1;
-	} else {
-		$event->Skip(1);
-	} 
-	
-	return;
-}
 
 sub goto_end_of_line {
 	my $self = shift;
