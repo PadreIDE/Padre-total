@@ -22,7 +22,7 @@ close $fh;
 
 unlink $pot_file;
 system("xgettext --keyword=_T --from-code=utf-8 -o $pot_file -f $pmfiles") == 0
-	or die "xgettext exited with return code " . $? >> 8;
+	or die "xgettext exited with return code " . ($? >> 8);
 
 # cleanup
 unlink $pmfiles;
