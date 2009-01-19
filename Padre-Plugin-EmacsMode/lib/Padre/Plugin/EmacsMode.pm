@@ -160,9 +160,10 @@ sub plugin_enable {
   # get menu keys (FIXME:store them somewhere)
   # skip menuitems with emacs in
   foreach my $mod ( keys %subs ) {
-    foreach my $key (keys %{$subs{$mod}) {
+    foreach my $key (keys %{$subs{$mod}}) {
       # check main menubar accel list
       # update menuitems using/clashing
+#	    $self->{main}{accel_keys}{hotkeys}{uc($mod)}{ord(uc($key))} = $item;
     }
   }
 
@@ -198,7 +199,7 @@ sub on_accel_key_event {
 
   # remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
   $mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-	
+
   my $modifier;
   $modifier = 'CTRL' if ($mod == Wx::wxMOD_CMD() );
   $modifier = 'CTRL_SHIFT' if ($mod == Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
@@ -220,21 +221,9 @@ sub on_accel_key_event {
     return 1;
   } else {
     $event->Skip(1);
-  } 
-	
+  }
   return;
 }
-
-sub setup_emacs_mode {
-  my ($self) = @_;
-
-  return;
-}
-
-# TODO can we somehow remove the event handler when not needed?
-# sub remove_emacs_mode {
-
-		
 
 sub goto_end_of_line {
 	my $self = shift;
