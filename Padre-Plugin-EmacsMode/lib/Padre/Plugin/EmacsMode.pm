@@ -34,7 +34,6 @@ $subs{CTRL} = {
 		}
 	},
 
-	
 	ord('A') => sub { # ctrl-x ...
 		my $self = shift;
 		$self->goto_beginning_of_line;	
@@ -92,7 +91,7 @@ $subs{META} = {
 		my $start_pos = $self->{emacs_select_start_mark};
 		my $end_pos = $self->{emacs_select_end_mark} || $self->GetCurrentPos;
 		$self->SetTargetStart($start_pos);
-	    $self->SetTargetEnd($end_pos);
+		$self->SetTargetEnd($end_pos);
 		$self->SetSelection($start_pos, $end_pos);
 		Padre::Wx::Editor::text_copy_to_clipboard();
 		$self->{emacs_select_start_mark} = undef;
@@ -111,8 +110,11 @@ $subs{CTRL_SHIFT} = {
 		}
 };
 
+sub plugin_name {
+  return 'Emacs Mode for Padre';
+}
 
-# The plugin name to show in the Plugins menu
+
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
   my $self = shift;
@@ -135,26 +137,50 @@ sub show_about {
 			 "Emacs Keybindings and stuff\n".
 			 "Much todo here\n"
 			);
+  $about->SetVersion($Padre::Plugin::EmacsMode::VERSION);
+  $about->SetCopyright(Wx::gettext("Copyright 2009 Aaron Trevena"));
+
+  # Only Unix/GTK native about box supports websites
+  if ( Padre::Util::WXGTK ) {
+    $about->SetWebSite("http://padre.perlide.org/");
+  }
+
+  $about->AddDeveloper("Aaron Trevena : teejay at cpan dot org");
+
   Wx::AboutBox( $about );
   return;
 }
 
 sub plugin_enable {
-        my ($self) = @_;
+  my ($self) = @_;
 
-	# get menu keys, store them somewhere
-	# menuitems with emacs in
+  # behaviour rules (more to come)
+  $self->SetTabIndents(1);
 
-	# add event handling
+  # get menu keys (FIXME:store them somewhere)
+  # skip menuitems with emacs in
+  foreach my $mod ( keys %subs ) {
+    foreach my $key (keys %{$subs{$mod}) {
+      # check main menubar accel list
+      # update menuitems using/clashing
+    }
+  }
 
-	return;
+  # add event handling
+  Wx::Event::EVT_KEY_DOWN( $self, sub {
+			     my ($self, $event) = @_;
+			     $self->on_accel_key_event($event);
+			     return;
+			   });
+
+  return;
 }
 
 sub plugin_disable {
         my ($self) = @_;
 
 	# return menu keys from where-ever we stored them
-
+	warn "we should undo menu changes we made!!!\n";
 	# remove event handling
 
         return;
@@ -200,20 +226,9 @@ sub on_accel_key_event {
 }
 
 sub setup_emacs_mode {
-	my ($self) = @_;
-	$self->SetTabIndents(1);
-	Wx::Event::EVT_KEY_DOWN( $self, sub {
-	    my ($self, $event) = @_;
-	    
-	    if (not Padre->ide->config->{emacs_mode}) {
-		$event->Skip(1);
-		return;
-	    }
-	    $self->emacs_mode($event);
-	    return;
-	  });
+  my ($self) = @_;
 
-	return;
+  return;
 }
 
 # TODO can we somehow remove the event handler when not needed?
