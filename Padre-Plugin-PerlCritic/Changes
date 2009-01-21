@@ -1,0 +1,20 @@
+Revision history for Perl extension Padre::Plugin::PerlCritic.
+
+0.06  Wed Jan 21 2009
+    - Update plugin to use API for output window
+
+0.05  Mon Dec 15 2008
+    - Wish the output window would stay in one place
+
+0.04  Mon Nov 24 2008
+    - Adhere to new Padre::Plugin API
+    - Require instead of Use Perl::Critic
+
+0.03  Sat Nov 8 2008
+    - Say something when we don't have anything to say
+
+0.02  Tue Nov 3 2008
+    - We really only need one menu item
+
+0.01  Tue Nov 3 2008
+    - original version

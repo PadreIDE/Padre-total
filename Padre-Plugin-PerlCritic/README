@@ -1,0 +1,21 @@
+NAME
+    Padre::Plugin::PerlCritic - Analyze perl files with Perl::Critic
+
+SYNOPIS
+    This is a simple plugin to run Perl::Critic on your source code.
+
+    Currently there is no configuration for this plugin, so you have to rely
+    on the default .perlcriticrc configuration. See Perl::Critic for
+    details.
+
+AUTHOR
+    Kaare Rasmussen
+
+    Kaare Rasmussen <kaare@cpan.org>
+
+COPYRIGHT AND LICENSE
+    Copyright 2008 by Kaare Rasmussen
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
