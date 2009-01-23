@@ -93,8 +93,8 @@ sub ok_clicked {
 	
 	my $type = $data->{_type_};
 
-	my $main_window = Padre->ide->wx->main_window;
-	my $doc = $main_window->current->document;
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
 	my $code = $doc->text_get;
 	
 	require Crypt::CBC;

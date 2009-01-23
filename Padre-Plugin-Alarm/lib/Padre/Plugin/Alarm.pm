@@ -81,11 +81,11 @@ sub ok_clicked {
 	my $data = $dialog->get_data;
 	$dialog->Destroy;
 	
-	my $main_window = Padre->ide->wx->main_window;
+	my $main = Padre->ide->wx->main;
 
 	my $alarm_time = $data->{_alarm_time_};
 	if ( $alarm_time !~ /^\d{1,2}\:\d{2}$/ ) {
-		Wx::MessageBox(gettext('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'), gettext("Wrong Alarm Time"), Wx::wxOK, $main_window);
+		Wx::MessageBox(gettext('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'), gettext("Wrong Alarm Time"), Wx::wxOK, $main);
 		return;
 	}
 	
@@ -104,13 +104,13 @@ sub ok_clicked {
 }
 
 sub _set_alarm {
-	my $main = Padre->ide->wx->main_window;
+	my $main = Padre->ide->wx->main;
 
 	$alarm_timer_id = Wx::NewId unless $alarm_timer_id;
 
 	my $timer = Wx::Timer->new( $main, $alarm_timer_id );
 	unless ( $timer->IsRunning ) {
-		Wx::Event::EVT_TIMER($main, Padre::Wx::id_FILECHK_TIMER, \&on_timer_alarm);
+		Wx::Event::EVT_TIMER($main, $alarm_timer_id, \&on_timer_alarm);
 		$timer->Start(60 * 1000, 0); # every minute
 	}
 }
@@ -139,7 +139,7 @@ sub clear_alarm {
 
 sub on_timer_alarm {
 	
-	my $main_window = Padre->ide->wx->main_window;
+	my $main = Padre->ide->wx->main;
 	my $plugin_manager = Padre->ide->plugin_manager;
 	my $config = $plugin_manager->plugin_config('Alarm');
 	

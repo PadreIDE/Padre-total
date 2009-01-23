@@ -82,7 +82,7 @@ sub cancel_clicked {
 sub ok_clicked {
   my ($dialog, $event) = @_;
 
-  my $main_window = Padre->ide->wx->main_window;
+  my $main = Padre->ide->wx->main;
 
   my $data = $dialog->get_data;
   $dialog->Destroy;
@@ -93,7 +93,7 @@ sub ok_clicked {
   
   my $par = $data->{_par_uri_};
   if ( not defined $par or ( not -f $par and not $par =~ /^\w+:/ ) ) {
-    Wx::MessageBox( "No PAR URL or path supplied.", "Failed", Wx::wxOK|Wx::wxCENTRE, $main_window );
+    Wx::MessageBox( "No PAR URL or path supplied.", "Failed", Wx::wxOK|Wx::wxCENTRE, $main );
     return;
   }
 
@@ -103,9 +103,9 @@ sub ok_clicked {
   );
 
   if ($success) {
-    Wx::MessageBox( "Installed '$par' into '$perl'", "Done", Wx::wxOK|Wx::wxCENTRE, $main_window );
+    Wx::MessageBox( "Installed '$par' into '$perl'", "Done", Wx::wxOK|Wx::wxCENTRE, $main );
   } else {
-    Wx::MessageBox( "Error installing '$par' into '$perl'", "Failed", Wx::wxOK|Wx::wxCENTRE, $main_window );
+    Wx::MessageBox( "Error installing '$par' into '$perl'", "Failed", Wx::wxOK|Wx::wxCENTRE, $main );
   }
 }
 

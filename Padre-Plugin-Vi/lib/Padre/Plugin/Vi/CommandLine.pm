@@ -66,7 +66,7 @@ my $dialog;
 sub dialog {
 	my ($class) = @_;
 	
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	if (not $dialog) {
 		$dialog = Wx::Perl::Dialog->new(
 			parent   => $main->{notebook},
@@ -84,7 +84,7 @@ sub dialog {
 
 sub show_prompt {
 	my ($class) = @_;
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	my $dialog = $class->dialog();
 
 #	print "Pos: ", join ":", $main->{notebook}->GetScreenPosition, "\n";
@@ -113,14 +113,14 @@ sub show_prompt {
 		$main->on_save;
 		$main->Close;
 	} elsif ($cmd =~ /^\d+$/) {
-		Padre->ide->wx->main_window->current->editor->GotoLine($cmd-1);
+		Padre->ide->wx->main->current->editor->GotoLine($cmd-1);
 	} elsif ($cmd =~ m{%s/}) {
-		my $editor = Padre->ide->wx->main_window->current->editor;
+		my $editor = Padre->ide->wx->main->current->editor;
 		my $text = $editor->GetText;
 		$cmd = substr($cmd, 1);
 		eval "\$text =~ $cmd";
 		if ($@) {
-			Padre->ide->wx->main_window->error($@);
+			Padre->ide->wx->main->error($@);
 		} else {
 			$editor->SetText($text);
 		}

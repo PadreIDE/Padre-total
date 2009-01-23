@@ -29,7 +29,7 @@ $subs{CTRL} = {
 		my $self = shift;
 		if ($self->{emacs_ctrl_x_mode}) {
 			$self->{emacs_ctrl_x_mode} = 0;
-			my $main = Padre->ide->wx->main_window;
+			my $main = Padre->ide->wx->main;
 			$main->on_save;
 		}
 	},

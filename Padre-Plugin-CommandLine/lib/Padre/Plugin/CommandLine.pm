@@ -78,7 +78,7 @@ my @layout =  (
 my $tab_started;
 my $last_tab;
 sub show_prompt {
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	my $dialog = Padre::Wx::Dialog->new(
 		parent   => $main,
 		title    => "Command Line",
