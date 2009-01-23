@@ -9,7 +9,7 @@ use base 'Padre::Plugin';
 use Padre::Current ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.25',
+	'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
@@ -68,7 +68,7 @@ Padre::Plugin::SpellCheck - Spell Check in Padre
 
 =head1 DESCRIPTION
 
-First of allei, you must have "the aspell binary and dictionary" installed
+First of all, you must have "the aspell binary and dictionary" installed
 
 read L<http://search.cpan.org/dist/Text-Aspell/README> for more details
 
