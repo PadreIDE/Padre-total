@@ -105,7 +105,7 @@ $subs{SHIFT} = {
 $subs{COMMAND} = {
 	ord('N') => sub { # autocompletion
 		print "Ctrl-N $_[0]\n";
-		my $main   = Padre->ide->wx->main_window;
+		my $main   = Padre->ide->wx->main;
 		$main->on_autocompletition;
 	},
 };
@@ -325,7 +325,7 @@ sub move_left {
 
 sub visual_mode {
 	my ($self, $count) = @_;
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	$self->{editor}->text_selection_mark_start($main);
 	$self->{visual_mode} = 1;
 }
@@ -410,7 +410,7 @@ sub paste_before {
 
 sub join_lines {
 	my ($self, $count) = @_;
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	$main->on_join_lines;
 }
 
@@ -491,7 +491,7 @@ sub yank_selection {
 
 sub save_and_quit {
 	my ($self) = @_;
-	my $main   = Padre->ide->wx->main_window;
+	my $main   = Padre->ide->wx->main;
 	$main->on_save;
 	$main->Close;
 	return;

@@ -253,7 +253,7 @@ sub plugin_enable {
 
 	require Padre::Plugin::Vi::Editor;
 	require Padre::Plugin::Vi::CommandLine;
-#	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
+#	foreach my $editor ( Padre->ide->wx->main->pages ) {
 #		$self->editor_enable($editor);
 #	}
 }
@@ -261,7 +261,7 @@ sub plugin_enable {
 sub plugin_disable {
 	my ($self) = @_;
 
-	foreach my $editor ( Padre->ide->wx->main_window->pages ) {
+	foreach my $editor ( Padre->ide->wx->main->pages ) {
 		$self->editor_stop($editor);
 	}
 	delete $INC{"Padre/Plugin/Vi/Editor.pm"};
