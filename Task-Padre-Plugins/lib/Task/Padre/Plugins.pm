@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 1;
 __END__
@@ -31,10 +31,6 @@ Alarm Clock (Audio::Beep)
 =head2 Padre::Plugin::CommandLine
 
 vi and emacs in Padre?
-
-=head2 Padre::Plugin::CPAN
-
-CPAN in Padre
 
 =head3 Edit Config
 

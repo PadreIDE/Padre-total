@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/CSS.pm',
     build_requires => {
         'Test::More' => 0,
-        'Padre' => '0.23',
+        'Padre' => '0.26',
         'WebService::Validator::CSS::W3C' => 0,
         'CSS::Minifier::XS' => 0,
     },

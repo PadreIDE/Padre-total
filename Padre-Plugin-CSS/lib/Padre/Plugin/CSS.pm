@@ -3,13 +3,13 @@ package Padre::Plugin::CSS;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.23,
+	'Padre::Plugin'   => 0.26,
 	'Padre::Document' => 0.21,
 }
 
@@ -61,9 +61,9 @@ sub validate_css {
 sub _output {
 	my ( $self, $text ) = @_;
 	
-	$self->show_output;
-	$self->{gui}->{output_panel}->clear;
-	$self->{gui}->{output_panel}->AppendText($text);
+	$self->show_output(1);
+	$self->output->clear;
+	$self->output->AppendText($text);
 }
 
 sub css_minifier {

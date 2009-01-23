@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugin-Deps
 
+0.07    2009.1.23
+        remove CPAN plugin stuff
+
 0.06    2008.12.29
         Syntax::Highlight::Perl6 required version is now 0.02961
         

@@ -17,9 +17,6 @@ requires 'Audio::Beep';
 requires 'WebService::Validator::CSS::W3C';
 requires 'CSS::Minifier::XS';
 
-# Padre::Plugin::CPAN 0.03
-requires 'CPAN';
-
 # Padre::Plugin::Encrypt  0.01
 requires 'Crypt::CBC';
 requires 'Crypt::Blowfish';
@@ -63,9 +60,10 @@ feature 'Install experimental Padre plugin that runs on Parrot?',
 
 feature 'Install Padre plugin for Perl6?',
     -default                   => 0,
-    'Syntax::Highlight::Perl6' => '0.0297',
+    'Syntax::Highlight::Perl6' => '0.034',
     'URI'                      => '1.37',
-    'Readonly'                 => '1.03';
+    'Readonly'                 => '1.03',
+    'IPC::Run3'                => '0.042';
 
 build_requires 'Test::More';
 build_requires 'Test::NeedsDisplay' => '1.05';

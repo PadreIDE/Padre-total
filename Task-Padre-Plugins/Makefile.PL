@@ -8,7 +8,6 @@ license  'perl';
 requires 'Padre::Plugin::AcmePlayCode'  => '0.06';
 requires 'Padre::Plugin::Alarm'         => '0.02';
 requires 'Padre::Plugin::CommandLine'   => '0.02';
-requires 'Padre::Plugin::CPAN'          => '0.07';
 requires 'Padre::Plugin::CSS'           => '0.04';
 requires 'Padre::Plugin::Encode'        => '0.1.2';
 requires 'Padre::Plugin::Encrypt'	    => '0.04';

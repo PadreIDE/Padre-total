@@ -8,8 +8,6 @@ our $VERSION = '0.01';
 use base 'Padre::Task::SyntaxChecker';
 use XML::LibXML;
 
-use version;
-
 =pod
 
 =head1 NAME
@@ -129,7 +127,7 @@ with L<Storable>.
 
 =head1 AUTHOR
 
-Heiko Jansen C<heiko_jansen@web.de>
+Heiko Jansen, C<< <heiko_jansen@web.de> >>
 
 =head1 COPYRIGHT AND LICENSE
 

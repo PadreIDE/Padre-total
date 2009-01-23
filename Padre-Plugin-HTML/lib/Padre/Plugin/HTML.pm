@@ -3,13 +3,13 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.23,
+	'Padre::Plugin'   => 0.26,
 	'Padre::Document' => 0.21,
 }
 
@@ -59,9 +59,9 @@ sub validate_html {
 sub _output {
 	my ( $self, $text ) = @_;
 	
-	$self->show_output;
-	$self->{gui}->{output_panel}->clear;
-	$self->{gui}->{output_panel}->AppendText($text);
+	$self->show_output(1);
+	$self->output->clear;
+	$self->output->AppendText($text);
 }
 
 sub tidy_html {

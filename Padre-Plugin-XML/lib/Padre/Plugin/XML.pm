@@ -92,6 +92,8 @@ use L<XML::Tidy> to tidy XML
 
 Fayland Lam, C<< <fayland at gmail.com> >>
 
+Heiko Jansen, C<< <heiko_jansen@web.de> >>
+
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2008 Fayland Lam, all rights reserved.
