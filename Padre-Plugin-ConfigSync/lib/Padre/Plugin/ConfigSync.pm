@@ -17,12 +17,12 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Plugin 0.26 ();
+use File::Spec         ();
+use File::Temp         ();
+use YAML::Tiny         ();
+use Padre::Wx          ();
+use Padre::Current     ();
 
-use File::Spec ();
-use File::Temp ();
-use YAML::Tiny ();
-use Padre::Wx  ();
-use Padre::Current::
 our $VERSION = '0.25';
 our @ISA     = 'Padre::Plugin';
 
@@ -71,7 +71,7 @@ sub config_import {
 	# Ask what we should install
 	my $dialog = Wx::TextEntryDialog->new(
 		$main,
-		"Enter URL to install\ne.g. http://svn.ali.as/cpan/releases/Config-Tiny-2.00.tar.gz",
+		"Enter URL to install\ne.g. http://svn.ali.as/users/adamk/config.yml",
 		"pip",
 		'',
 	);
@@ -85,6 +85,7 @@ sub config_import {
 		return;
 	}
 
+	die "CODE INCOMPLETE";
 }
 
 sub show_about {
