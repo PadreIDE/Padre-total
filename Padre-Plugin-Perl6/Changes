@@ -2,7 +2,8 @@ Changes
 
 0.026 2009.1.???????????????????????
     - Depends on Syntax::Highlight::Perl6 0.035 which has the latest STD.pm
-    
+    - Updated to S29-function.pod pugs r25021
+
 0.025 2009.1.8
     - Depends on Syntax::Highlight::Perl6 0.030 which fixes hilitep6 binmode STDIN issue for utf8
     - Limit number of S29 function calltip text to the first 10 lines.

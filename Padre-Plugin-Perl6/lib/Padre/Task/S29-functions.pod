@@ -14,21 +14,14 @@ Synopsis 29: Builtin Functions
                 Carl Mäsak <cmasak@gmail.com>
                 Moritz Lenz <moritz@faui2k3.org>
  Date:          12 Mar 2005
- Last Modified: 7 Jan 2009
- Version:       37
+ Last Modified: 24 Jan 2009
+ Version:       38
 
-This document attempts to document the list of builtin functions in Perl 6.
-It assumes familiarity with Perl 5 and prior synopses.
+The document is a draft.
 
-The document is now the official S29.  It's still here in the pugs
-repository temporarily to allow easy access to pugs implementors,
-but eventually it will be copied over to svn.perl.org.  Despite its
-being "official", feel free to hack on it as long as it's in the pugs
-space.  -law
-
-This document is generated from the pod in the pugs repository under 
-/docs/Perl6/Spec/Functions.pod so edit it there in the SVN repository 
-if you would like to make changes.
+If you read the HTML version, it is generated from the pod in the pugs 
+repository under /docs/Perl6/Spec/Functions.pod so edit it there in the
+SVN repository if you would like to make changes.
 
 =head1 Notes
 
@@ -190,22 +183,6 @@ order.  For equivalence the list is reduced as if using [&&].
 
 =head1 Function Packages
 
-=head2 Object
-
-Every object conforms to the type C<Object>. The following methods are thusly
-available on every object.
-
-=over
-
-=item perl
-
- our Str multi method perl (Object $o)
-
-Returns a perlish representation of the object, so that calling C<eval>
-on the returned string reproduces the object as accurately as possible.
-
-=back
-
 =head2 Any
 
 The following are defined in the C<Any> role:
@@ -268,6 +245,20 @@ Returns C<True> if and only if C<$self> conforms to type C<$type>.
 
 Returns C<True> if a the invocant an instance of class C<$type>, or 
 of a subset type or a derived class (through inheritance) of C<$type>.
+
+=item perl
+
+ our Str multi method perl ( Object $o: ) is export
+
+Returns a perlish representation of the object, so that calling C<eval>
+on the returned string reproduces the object as accurately as possible.
+
+=item warn
+
+ our multi method warn ( Object $o: ) is export
+
+Prints a warning to C<$*DEFERR>, which is usually bound to C<$*ERR>. See
+C<Synopsis 16: IPC / IO / Signals> for details.
 
 =back
 
@@ -353,7 +344,6 @@ constant I<e>.
 Logarithm of base C<$base>, default Natural. Calling with C<$x == 0> is an
 error.
 
-
 =item log10
 
  our Num multi method log10 (Num $x:) is export
@@ -412,6 +402,13 @@ Returns 1.unpolar($angle)
     our Complex multi method unpolar (Num $mag: Num $angle) is export
 
 Returns a complex number specified in polar coordinates.  Angle is in radians.
+
+=item i
+
+ our Num multi method i ( Num $x: )
+
+Returns a complex number representing the parameter multiplied by the imaginary
+unit C<i>.
 
 =back
 
@@ -1759,19 +1756,41 @@ context knows its normalization preferences, and every bytes context
 also knows its encoding preferences. (These are knowable in the
 lexical scope via the $?NF and $?ENC compile-time constants).)
 
-=item list
-
- our List multi list ( *@list )
-
-Forces List Context on it's arguments, and returns them.
-
-
 =item item
 
  our Item multi item ( $item )
 
 Forces generic Item context on its argument, and returns it.
 
+=item list
+
+ our List multi list ( *@list )
+
+Forces List Context on it's arguments, and returns them.
+
+=item slice
+
+ our List multi slice ( *@list )
+
+Forces the argument list to be evaluated in slice context.
+(Slices are considered to be potentially multidimensional in Perl 6.)
+A list of C<Capture>s will be transformed into a list of lists.
+Equivalent to C<@@()> (except that empty C<@@()> means C<@@($/)>, while
+empty C<slice()> means a null slice).
+
+=item hash
+
+The C<hash> contextualizer
+
+ our Hash multi hash ( *@list )
+
+Forces the argument list to be evaluated in hash context.
+The expression is evaluated in list context (flattening any C<Capture>s),
+then a hash will be created from the list, taken as a list of C<Pair>s.
+(Any element in the list that is not a C<Pair> will pretend to be a key
+and grab the next value in the list as its value.)  Equivalent to
+C<%()> (except that empty C<%()> means C<%($/)>, while
+empty C<hash()> means an empty hash).
 
 =item :16, :8, :2, :10
 
