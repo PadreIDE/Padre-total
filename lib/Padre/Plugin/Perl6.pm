@@ -33,6 +33,11 @@ sub padre_interfaces {
 
 sub plugin_enable {
     my $self = shift;
+    $self->{config} = $self->config_read;
+    if($self->{config}) {
+        # no configuration, let us write some defaults
+        say $self->config_write( {p6_highlight => 0} );
+    } 
     eval {
         $self->build_perl6_doc;
     };
@@ -71,8 +76,7 @@ sub menu_plugins {
         $self->{p6_highlight},
         sub { $self->toggle_highlight; }
     );
-    my $config = Padre->ide->config;
-    $self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
+    $self->{p6_highlight}->Check($self->{config}->{p6_highlight} ? 1 : 0);
 
     $self->{menu}->AppendSeparator;
 
@@ -140,7 +144,7 @@ sub show_about {
 sub cleanup_std_lex_cache {
     my $self = shift;
     
-    my $main   = Padre->ide->wx->main;
+    my $main   = $self->main;
 
     my $LEX_STD_DIR = 'lex/STD';
     if(! -d $LEX_STD_DIR) {
@@ -244,7 +248,7 @@ sub build_perl6_doc {
 
 sub show_perl6_doc {
     my $self = shift;
-    my $main   = Padre->ide->wx->main;
+    my $main   = $self->main;
 
     if(! $self->{perl6_functions}) {
         Wx::MessageBox(
@@ -301,7 +305,7 @@ sub toggle_highlight {
     if(! defined $self->{p6_highlight}) {
         return;
     }
-    my $config = Padre->ide->config;
+    my $config = $self->{config};
     if($config->{p6_highlight}) {
         $self->highlight;
     }
@@ -340,7 +344,7 @@ sub text_with_one_nl {
 sub export_html {
     my ($self, $type) = @_;
 
-    my $main   = Padre->ide->wx->main;
+    my $main   = $self->main;
 
     my $doc = Padre::Current->document;
     if(!defined $doc) {
