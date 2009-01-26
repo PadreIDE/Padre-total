@@ -11,10 +11,12 @@ use Carp;
 use feature qw(say switch);
 use IO::File;
 use File::Temp;
-use IPC::Run3;
 
+# exports and version
 our $VERSION = '0.026';
+our @EXPORT_OK = qw(plugin_config);
 
+use IPC::Run3;
 use URI::Escape;
 use URI::file;
 use Readonly;
@@ -27,17 +29,30 @@ Readonly my $FULL_HTML    => 'full_html';
 Readonly my $SIMPLE_HTML  => 'simple_html';
 Readonly my $SNIPPET_HTML => 'snippet_html';
 
-sub padre_interfaces {
-    return 'Padre::Plugin'         => 0.24,
+# static field to contain reference to current plugin configuration
+my $config;
+
+sub plugin_config {
+    return $config;
 }
 
+sub padre_interfaces {
+    return 'Padre::Plugin'         => 0.26,
+}
+
+# called when the plugin is enabled
 sub plugin_enable {
     my $self = shift;
-    $self->{config} = $self->config_read;
-    if($self->{config}) {
+
+    # Read the plugin configuration, and create it if it is not there
+    $config = $self->config_read;
+    if(! $config) {
         # no configuration, let us write some defaults
-        say $self->config_write( {p6_highlight => 0} );
-    } 
+        $config = {p6_highlight => 0};
+        $self->config_write($config);
+    }
+
+    # let us parse some S29-functions.pod documentation (safely)
     eval {
         $self->build_perl6_doc;
     };
@@ -69,14 +84,14 @@ sub menu_plugins {
     );
 
     # Toggle Auto Perl6 syntax highlighting
-    $self->{p6_highlight} = 
+    $self->{p6_highlight} =
         $self->{menu}->AppendCheckItem( -1, "Toggle Auto Perl6 Coloring",);
     Wx::Event::EVT_MENU(
         $main_window,
         $self->{p6_highlight},
         sub { $self->toggle_highlight; }
     );
-    $self->{p6_highlight}->Check($self->{config}->{p6_highlight} ? 1 : 0);
+    $self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
 
     $self->{menu}->AppendSeparator;
 
@@ -98,7 +113,7 @@ sub menu_plugins {
     );
 
     $self->{menu}->AppendSeparator;
-    
+
     # Cleanup STD.pm lex cache
     Wx::Event::EVT_MENU(
         $main_window,
@@ -143,7 +158,7 @@ sub show_about {
 #
 sub cleanup_std_lex_cache {
     my $self = shift;
-    
+
     my $main   = $self->main;
 
     my $LEX_STD_DIR = 'lex/STD';
@@ -162,7 +177,7 @@ sub cleanup_std_lex_cache {
     use File::Find;
     our @files_to_delete = ();
     my $lex_cache_size = 0;
-    find(sub { 
+    find(sub {
         my $file = $_;
         if(-f $file) {
             $lex_cache_size += -s $file;
@@ -170,7 +185,7 @@ sub cleanup_std_lex_cache {
          }
     }, $LEX_STD_DIR);
     $lex_cache_size = sprintf("%0.3f", $lex_cache_size / (1024 * 1024));
-    
+
     # ask the user if he/she wants to open it in the default browser
     my $num_files_to_delete = scalar @files_to_delete;
     if($num_files_to_delete > 0) {
@@ -209,10 +224,10 @@ sub cleanup_std_lex_cache {
 #
 sub build_perl6_doc {
     my $self = shift;
-    
+
     # open the S29 file
     my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-functions.pod');
-    my $S29 = IO::File->new(Cwd::realpath($s29_file)) 
+    my $S29 = IO::File->new(Cwd::realpath($s29_file))
                 or croak "Cannot open '$s29_file' $!";
 
     # read until you find 'Function Packages'
@@ -284,7 +299,7 @@ sub show_perl6_doc {
                 $current_word = $1;
                 last;
             }
-        }        
+        }
         if($current_word =~ /^.*?(\w+)/) {
             my $function_name = $1;
             say "Looking up: " . $function_name;
@@ -292,11 +307,11 @@ sub show_perl6_doc {
             if($function_doc) {
                 #launch default browser to see the S29 function documentation
                 Wx::LaunchDefaultBrowser(
-                    q{http://perlcabal.org/syn/S29.html#} . 
+                    q{http://perlcabal.org/syn/S29.html#} .
                     URI::Escape::uri_escape_utf8($function_name));
             }
         }
-        
+
     }
 }
 
@@ -305,17 +320,17 @@ sub toggle_highlight {
     if(! defined $self->{p6_highlight}) {
         return;
     }
-    my $config = $self->{config};
+    $config->{p6_highlight} = $self->{p6_highlight}->IsChecked ? 1 : 0;
+    $self->config_write($config);
     if($config->{p6_highlight}) {
         $self->highlight;
     }
-    $config->{p6_highlight} = $self->{p6_highlight}->IsChecked ? 1 : 0;
 }
 
 sub highlight {
     my $self = shift;
     my $doc = Padre::Current->document or return;
-    
+
     if ($doc->can('colorize')) {
         my $text = $doc->text_get;
         $doc->{_text} = $text;
@@ -329,7 +344,7 @@ sub text_with_one_nl {
     my $self = shift;
     my $doc = shift;
     my $text = $doc->text_get // '';
-    
+
     my $nlchar = "\n";
     if ( $doc->get_newline_type eq 'WIN' ) {
         $nlchar = "\r\n";
@@ -359,7 +374,7 @@ sub export_html {
         );
         return;
     }
-    
+
     my $text = $self->text_with_one_nl($doc);
 
     # construct the command
@@ -377,9 +392,9 @@ sub export_html {
     }
 
     my ($out, $err) = ('',undef);
-    run3(\@cmd, \$text, \$out, \$err, { 
-          'binmode_stdin' => ':utf8', 
-          'binmode_stdout' => 1, 
+    run3(\@cmd, \$text, \$out, \$err, {
+          'binmode_stdin' => ':utf8',
+          'binmode_stdout' => 1,
     });
     if($err) {
         # remove ANSI color escape sequences...
