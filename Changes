@@ -1,5 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+x.xx
+    - Removed author tests that ran at install time (ADAMK)
+
 0.04  Tue Jan 06 2009
     - Add HTML export feature (HJANSEN)
     - Capture errors from PerlTidy (HJANSEN)
