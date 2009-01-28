@@ -76,8 +76,60 @@ sub install_perl_modules {
 	my $self = shift;
 	$self->SUPER::install_perl_modules(@_);
 
-	# Current Padre encompasses all the stuff we care about
-	$self->install_module( name => 'Padre' );
+	# Manually install our non-Wx dependencies first to isolate
+	# them from the Wx problems
+	$self->install_modules( qw{
+		App::Ack
+		Class::Adapter
+		Class::Autouse
+		Class::Unload
+		Class::XSAccessor
+		Devel::Dumpvar
+		Encode
+		File::Copy::Recursive
+		File::ShareDir
+		File::ShareDir::PAR
+		IPC::Cmd
+		IPC::Run
+		Module::Inspector
+		Module::Refresh
+		Module::Starter
+		ORLite
+		ORLite::Migrate
+		PPI
+		Parse::ErrorString::Perl
+		Pod::POM
+		Pod::Simple
+		Pod::Simple::XHTML
+		Text::Diff
+		Text::FindIndent
+		threads
+		threads::shared
+		Thread::Queue
+		Clone
+		List::MoreUtils
+		Task::Weaken
+		Test::Object
+		Class::Inspector
+		Config::Tiny
+		Hook::LexWrap
+	} );
+
+	# The rest of the modules are order-specific,
+	# for reasons maybe involving CPAN.pm but not fully understodd.
+
+	# Install the Alien module
+	$self->install_module( name => 'Alien::wxWidgets'        );
+
+	# Install the Wx module over the top of alien module
+	$self->install_module( name => 'Wx'                      );
+
+	# Install modules that add more Wx functionality
+	$self->install_module( name => 'Wx::Perl::ProcessStream' );
+	$self->install_module( name => 'Wx::Perl::Dialog'        );
+
+	# And finally, install Padre itself
+	$self->install_module( name => 'Padre'                   );
 
 	return 1;
 }
