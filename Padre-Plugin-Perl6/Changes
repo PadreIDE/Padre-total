@@ -1,7 +1,7 @@
 Changes
 
 0.026 2009.1.COMMING_SOON
-    - Depends on Syntax::Highlight::Perl6 0.037
+    - Depends on Syntax::Highlight::Perl6 0.038
     - Updated to S29-function.pod pugs r25021
     - Works with Padre 0.26
 
