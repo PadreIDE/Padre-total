@@ -1,5 +1,46 @@
 package Wx::Perl::Dialog::Simple;
 
+=pod
+
+=head1 NAME
+
+Wx::Perl::Dialog::Simple - a set of simple dialogs (a partial Zenity clone in wxPerl)
+
+=head1 SYNOPIS
+
+As a module:
+
+  use Wx::Perl::Dialog::Simple;
+  
+  my $name = entry(title => "What is your name?");
+  message(text => "How are you $name today?\n");
+
+On the command line try
+
+  wxer --help
+
+=head1 General Options
+
+There are some common option for every dialog
+
+title
+
+window-icon  NA
+
+width        NA
+
+height       NA
+
+=head1 METHODS
+
+Dialogs
+
+=head2 entry
+
+Display a text entry dialog
+
+=cut
+
 use 5.008;
 use strict;
 use warnings;
@@ -27,52 +68,9 @@ our @EXPORT = qw(
 			);
 #                 print_out close_app open_frame display_text
 
-use Wx                 qw(:everything);
-#qw(wxID_CANCEL wxID_OK wxOK wxFD_OPEN :sizer :datepicker);
-use Wx::STC            ();
-use Wx::Event          qw(:everything);
-
-=head1 NAME
-
-Wx::Perl::Dialog::Simple - a set of simple dialogs (a partial Zenity clone in wxPerl)
-
-=head1 SYNOPIS
-
-As a module:
-
- use Wx::Perl::Dialog::Simple;
-
- my $name = entry(title => "What is your name?");
- message(text => "How are you $name today?\n");
-
-
-On the command line try
-
- wxer --help
-
-=head1 General Options
-
-There are some common option for every dialog
-
-title
-
-window-icon  NA
-
-width        NA
-
-height       NA
-
-=cut
-
-=head1 METHODS
-
-Dialogs
-
-=head2 entry
-
-Display a text entry dialog
-
-=cut
+use Wx        qw(:everything);
+use Wx::STC   ();
+use Wx::Event qw(:everything);
 
 sub entry {
     my ( %args ) = @_;
@@ -209,12 +207,12 @@ sub file_picker {
 sub dir_picker {
 	require Cwd;
 	return dialog(
-				sub { Wx::DirPickerCtrl->new( $_[0] ) },
-				sub { $_[0]->SetPath(Cwd::cwd()) }, # setup
-				sub { $_[0]->GetPath; },            # get data
-				{
-					title => 'Select directory',
-				},
+		sub { Wx::DirPickerCtrl->new( $_[0] ) },
+		sub { $_[0]->SetPath(Cwd::cwd()) }, # setup
+		sub { $_[0]->GetPath; },            # get data
+		{
+			title => 'Select directory',
+		},
 	);
 }
 
@@ -223,14 +221,14 @@ sub dir_picker {
 Generic dialog, with two buttons and a place for some control.
 It needs 4 parameters: 3 subroutines and a hash-ref
 
- dialog(
-   sub { create_and_return_the_control },
-   sub { setup_data_in_the control },
-   sub { fetch_and_return_data_from_the_control },
-   {
-      title => "",
-      other arguments,
-   }
+  dialog(
+      sub { create_and_return_the_control },
+      sub { setup_data_in_the control },
+      sub { fetch_and_return_data_from_the_control },
+      {
+          title => "",
+          other arguments,
+      }
 
 =cut
 
@@ -345,45 +343,9 @@ sub message {
     return;
 }
 
-#=head2 calendar
-#
-#=cut
+1;
 
-#sub calendar {
-#    my ( %args ) = @_;
-#
-#    my $cal = Wx::CalendarCtrl->new();
-#    $cal->Show;
-#
-#    return;
-#}
-#
-
-#=head2 open_frame
-#
-#=cut
-
-#sub open_frame {
-#    my $frame = Wx::Perl::Dialog::Frame->new;
-#    my $output = Wx::StyledTextCtrl->new($frame, -1, [-1, -1], [750, 700]);
-#    $output->SetMarginWidth(1, 0);
-#    $frame->Show( 1 );
-#    return $output;
-#}
-#
-#
-#=head2 close_app
-#
-#=cut
-
-#sub close_app {
-##   $frame->Close;
-#}
-#
-
-
-#our $main;
-#our $app;
+=pod
 
 =head1 SUPPORT
 
@@ -411,7 +373,3 @@ To Mattia Barbon for providing WxPerl.
 The idea was taken from the Zenity project.
 
 =cut
-
-
-
-1;
