@@ -4,15 +4,10 @@ if ( -e 'MANIFEST.SKIP' ) {
     system( 'pod2text lib/Padre/Plugin/PerlTidy.pm > README' );
 }
 
-perl_version '5.008001';
-
-name 'Padre-Plugin-PerlTidy';
-all_from 'lib/Padre/Plugin/PerlTidy.pm';
-
+all_from      'lib/Padre/Plugin/PerlTidy.pm';
+requires      'Padre' => '0.23';
+requires      'Perl::Tidy';
 test_requires 'Test::More';
-
-requires 'Padre' => '0.23';
-requires 'Perl::Tidy';
 
 is_padre_plugin;
 
