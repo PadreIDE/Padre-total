@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-LineFilter
 
-0.0.1  Sun Nov 30 04:54:10 2008
-       Initial release.
+x.y.z
+	Removed release-time tests that ran at install-time (ADAMK)
 
+0.0.1  Sun Nov 30 04:54:10 2008
+	Initial release.
