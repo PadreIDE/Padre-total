@@ -3,28 +3,30 @@ package Padre::Plugin::ViewInBrowser;
 use warnings;
 use strict;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.23',
+	'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
-	'ViewInBrowser' => [
-		'View in Browser', \&view_in_browser,
-	];
+	my $self = shift;
+	return ('ViewInBrowser' => [
+		'View in Browser', sub { $self->view_in_browser },
+	]);
 }
 
 sub view_in_browser {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	my $filename = $self->current->filename;
+	my $filename = $main->current->filename;
 	unless ( $filename ) {
 		Wx::MessageBox( 'What to open? God KNOWS!',
-		'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+		'Error', Wx::wxOK | Wx::wxCENTRE, $main );
 		return;
 	}
 	Wx::LaunchDefaultBrowser($filename);
@@ -44,7 +46,7 @@ Padre::Plugin::ViewInBrowser - view selected doc in browser for L<Padre>
 
 =head1 DESCRIPTION
 
-basically it's a shortcut for Wx::LaunchDefaultBrowser( $self->current->filename );
+basically it's a shortcut for Wx::LaunchDefaultBrowser( $main->current->filename );
 
 =head1 AUTHOR
 
