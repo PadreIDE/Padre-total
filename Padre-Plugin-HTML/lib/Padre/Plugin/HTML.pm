@@ -18,21 +18,23 @@ sub registered_documents {
 }
 
 sub menu_plugins_simple {
-	'HTML' => [
-		'Tidy HTML', \&tidy_html,
-		'HTML Lint', \&html_lint,
-		'Validate HTML',  \&validate_html,
-	];
+	my $self = shift;
+	return ('HTML' => [
+		'Tidy HTML', sub { $self->tidy_html },
+		'HTML Lint', sub { $self->html_lint },
+		'Validate HTML',  sub { $self->validate_html },
+	]);
 }
 
 sub validate_html {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	my $doc  = $self->current->document;
+	my $doc  = $main->current->document;
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
-		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $main );
 	}
 	
 	require WebService::Validator::HTML::W3C;
@@ -42,33 +44,36 @@ sub validate_html {
 
 	if ( $v->validate_markup($code) ) {
         if ( $v->is_valid ) {
-			_output( $self, "HTML is valid\n" );
+			$self->_output( "HTML is valid\n" );
         } else {
 			my $error_text = "HTML is not valid\n";
             foreach my $error ( @{$v->errors} ) {
                 $error_text .= sprintf("%s at line %d\n", $error->msg, $error->line);
             }
-            _output( $self, $error_text );
+            $self->_output( $error_text );
         }
     } else {
         my $error_text = sprintf("Failed to validate the code: %s\n", $v->validator_error);
-        _output( $self, $error_text );
+        $self->_output( $error_text );
     }
 }
 
 sub _output {
 	my ( $self, $text ) = @_;
+	my $main = $self->main;
 	
-	$self->show_output(1);
-	$self->output->clear;
-	$self->output->AppendText($text);
+	$main->show_output(1);
+	$main->output->clear;
+	$main->output->AppendText($text);
 }
 
 sub tidy_html {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	my $src = $self->current->text;
-	my $doc = $self->current->document;
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $code and length($code) );
@@ -84,10 +89,10 @@ sub tidy_html {
     }
     
     $text = 'OK' unless ( length($text) );
-	_output($self, $text);
+	$self->_output($text);
 	
 	if ( $src ) {
-		my $editor = $self->current->editor;
+		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $cleaned_code );
 	} else {
 		$doc->text_set( $cleaned_code );
@@ -96,9 +101,11 @@ sub tidy_html {
 
 sub html_lint {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	my $src = $self->current->text;
-	my $doc = $self->current->document;
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = ( $src ) ? $src : $doc->text_get;
 	
 	return unless ( defined $code and length($code) );
@@ -116,7 +123,7 @@ sub html_lint {
     }
     
     $text = 'OK' unless ( length($text) );
-	_output($self, $text);
+	$self->_output($text);
 }
 
 1;
