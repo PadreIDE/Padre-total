@@ -26,12 +26,13 @@ sub menu_plugins_simple {
 
 sub validate_css {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	my $doc  = $self->current->document;
+	my $doc  = $main->current->document;
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
-		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $self );
+		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $main );
 	}
 	
 	require WebService::Validator::CSS::W3C;
@@ -40,7 +41,7 @@ sub validate_css {
 
 	if ($ok) {
 		if ( $val->is_valid ) {
-			_output( $self, "CSS is valid\n" );
+			$self->_output( "CSS is valid\n" );
 		} else {
 			my $error_text = "CSS is not valid\n";
 			$error_text .= "Errors:\n";
@@ -50,27 +51,30 @@ sub validate_css {
 				$message =~ s/(^\s+|\s+$)//isg;
 				$error_text .= " * $message ($err->{context}) at line $err->{line}\n";
 			}
-			_output( $self, $error_text );
+			$self->_output( $error_text );
 		}
 	} else {
 		my $error_text = sprintf("Failed to validate the code\n");
-        _output( $self, $error_text );
+        $self->_output( $error_text );
 	}
 }
 
 sub _output {
 	my ( $self, $text ) = @_;
+	my $main = $self->main;
 	
-	$self->show_output(1);
-	$self->output->clear;
-	$self->output->AppendText($text);
+	$main->show_output(1);
+	$main->output->clear;
+	$main->output->AppendText($text);
 }
 
 sub css_minifier {
-	my ( $win) = @_;
+	my ( $self ) = @_;
+	my $main = $self->main;
 
-	my $src = $win->current->text;
-	my $doc = $win->current->document;
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = $src ? $src : $doc->text_get;
 	return unless ( defined $code and length($code) );
 
@@ -80,7 +84,7 @@ sub css_minifier {
 	my $css = minify( $code );
     
     if ( $src ) {
-		my $editor = $win->current->editor;
+		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $css );
 	} else {
 		$doc->text_set( $css );
