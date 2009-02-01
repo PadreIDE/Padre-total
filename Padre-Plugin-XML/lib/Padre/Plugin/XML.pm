@@ -3,13 +3,13 @@ package Padre::Plugin::XML;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Wx ':everything';
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.23,
+	'Padre::Plugin'   => 0.26,
 	'Padre::Document' => 0.21,
 }
 
@@ -18,19 +18,22 @@ sub registered_documents {
 }
 
 sub menu_plugins_simple {
-	'XML' => [
-		'Tidy XML', \&tidy_xml,
-	];
+	my $self = shift;
+	return ('XML' => [
+		'Tidy XML', sub { $self->tidy_xml },
+	]);
 }
 
 sub tidy_xml {
 	my ( $self ) = @_;
 	
-	my $src = $self->current->text;
-	my $doc = $self->current->document;
+	my $main = $self->main;
+	
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
 
-	if ( ! $doc->isa('Padre::Document::XML') ) {
-		$self->message( Wx::gettext("This is not a XML document!") );
+	unless ( $doc and $doc->isa('Padre::Document::XML') ) {
+		$main->message( Wx::gettext("This is not a XML document!") );
 		return;
 	}
 
@@ -52,14 +55,14 @@ sub tidy_xml {
 	if ( ! $@ ) {
 		if ( $src ) {
 			$string =~ s/\A<\?xml.+?\?>\r?\n?//o;
-			my $editor = $self->current->editor;
+			my $editor = $main->current->editor;
 			$editor->ReplaceSelection( $string );
 		} else {
 			$doc->text_set( $string );
 		}
 	}
 	else {
-		$self->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
+		$main->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
 	}
 
 	return;

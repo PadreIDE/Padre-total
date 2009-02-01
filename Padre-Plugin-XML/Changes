@@ -1,9 +1,10 @@
 Revision history for Padre-Plugin-XML
 
-0.05
+0.05    2009.2.1
         catch and report some errors (HJANSEN)
         do not try to tidy non-XML documents (HJANSEN)
         enable folding (HJANSEN)
+        for Padre 0.26
 
 0.04    2009.1.5
         for Padre 0.23
