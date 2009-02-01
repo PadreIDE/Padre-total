@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Alarm
 
+0.03    2008.02.01
+        for Padre 0.26
+
 0.02	2008.12.08
 		fix clear_alarm
 

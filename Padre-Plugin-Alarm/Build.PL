@@ -13,7 +13,7 @@ my $builder = Padre::PluginBuilder->new(
     },
     requires => {
         'Padre::Wx::Dialog' => 0,
-        'Padre' 	 => '0.18',
+        'Padre' 	 => '0.26',
         'Audio::Beep' => 0,
     },
     configure_requires => {
