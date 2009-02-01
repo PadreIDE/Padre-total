@@ -6,7 +6,7 @@ license        'perl';
 author         'Gabor Szabo';
 all_from       'lib/Padre/Plugin/HTMLExport.pm';
 
-requires       'Padre'                    => '0.23';
+requires       'Padre'                    => '0.26';
 requires       'Syntax::Highlight::Engine::Kate' => '0';
 
 test_requires  'Test::More'              => '0.47';

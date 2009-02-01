@@ -4,7 +4,7 @@ use 5.006;
 use warnings;
 use strict;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use File::Basename ();
 
@@ -43,16 +43,18 @@ sub padre_interfaces {
 }
 
 sub menu_plugins_simple {
-	'Export Colorful HTML' => [
-		'Export HTML', \&export_html,
-		'Configure Color', \&configure_color,
-	];
+	my $self = shift;
+	return ('Export Colorful HTML' => [
+		'Export HTML', sub { $self->export_html },
+		'Configure Color', sub { $self->configure_color },
+	]);
 }
 
 sub export_html {
 	my ( $self ) = @_;
+	my $main = $self->main;
 
-	my $doc     = $self->current->document or return;
+	my $doc     = $main->current->document or return;
 	my $current = $doc->filename;
 	my $default_dir;
 	if ( defined $current ) {
@@ -63,7 +65,7 @@ sub export_html {
 	my $save_to_file;
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
-			$self,
+			$main,
 			gettext("Save html as..."),
 			$default_dir,
 			"",
@@ -81,7 +83,7 @@ sub export_html {
 				gettext("File already exists. Overwrite it?"),
 				gettext("Exist"),
 				Wx::wxYES_NO,
-				$self,
+				$main,
 			);
 			if ( $res == Wx::wxYES ) {
 				$save_to_file = $path;
@@ -96,7 +98,7 @@ sub export_html {
 	# highlight
 	my $mimetype = $doc->get_mimetype;
 	unless ( exists $KATE_ALL{$mimetype} ) {
-		$self->error("$mimetype is not supported");
+		$main->error("$mimetype is not supported");
 		return;
 	}
 	my $language = $KATE_ALL{$mimetype};
@@ -150,7 +152,7 @@ sub export_html {
 		"Saved to $save_to_file. Do you want to open it now?",
 		gettext("Done"),
 		Wx::wxYES_NO|Wx::wxCENTRE,
-		$self,
+		$main,
 	);
 	if ( $ret == Wx::wxYES ) {
 		Wx::LaunchDefaultBrowser($save_to_file);
@@ -159,8 +161,9 @@ sub export_html {
 
 sub configure_color {
 	my ( $self ) = @_;
+	my $main = $self->main;
 	
-	$self->error('Not implemented, TODO');
+	$main->error('Not implemented, TODO');
 }
 
 1;
