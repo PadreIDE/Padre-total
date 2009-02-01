@@ -5,7 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::ViewInBrowser',
           'VERSION_FROM' => 'lib/Padre/Plugin/ViewInBrowser.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0.23',
+                           'Padre' => '0.26',
                            'Path::Class::File' => '0',
                            'Test::More' => '0'
                          },

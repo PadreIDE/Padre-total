@@ -6,7 +6,7 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Padre/Plugin/AcmePlayCode.pm',
           'PREREQ_PM' => {
                            'Acme::PlayCode' => '0',
-                           'Padre' => '0.23',
+                           'Padre' => '0.26',
                            'Test::More' => '0'
                          },
           'INSTALLDIRS' => 'site',

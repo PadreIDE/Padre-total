@@ -7,7 +7,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'HTML::Lint' => '0',
                            'HTML::Tidy' => '0',
-                           'Padre' => '0.23',
+                           'Padre' => '0.26',
                            'Test::More' => '0',
                            'WebService::Validator::HTML::W3C' => '0',
                            'XML::XPath' => '0'

@@ -7,7 +7,7 @@ WriteMakefile
           'PREREQ_PM' => {
                            'Crypt::Blowfish' => '0',
                            'Crypt::CBC' => '0',
-                           'Padre' => '0.23',
+                           'Padre' => '0.26',
                            'Padre::Wx::Dialog' => '0',
                            'Test::More' => '0'
                          },
