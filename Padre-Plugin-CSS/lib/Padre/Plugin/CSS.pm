@@ -18,10 +18,12 @@ sub registered_documents {
 }
 
 sub menu_plugins_simple {
-	'CSS' => [
-	    'CSS Minifier',   \&css_minifier,
-		'Validate CSS',   \&validate_css,
-	];
+    my $self = shift;
+    
+	return ('CSS' => [
+	    'CSS Minifier',   sub { $self->css_minifier },
+		'Validate CSS',   sub { $self->validate_css },
+	]);
 }
 
 sub validate_css {
