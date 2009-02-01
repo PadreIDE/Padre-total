@@ -16,7 +16,7 @@ use base 'Padre::Plugin';
 # Padre::Plugin API Methods
 
 sub padre_interfaces {
-	'Padre::Plugin'          => 0.23,
+	'Padre::Plugin'          => 0.26,
 	'Padre::Document'        => 0.21,
 }
 
@@ -26,17 +26,20 @@ sub registered_documents {
 }
 
 sub menu_plugins_simple {
-	'JavaScript' => [
-		'JavaScript Beautifier', \&js_eautifier,
-		'JavaScript Minifier',   \&js_minifier,
-	];
+	my $self = shift;
+	return ('JavaScript' => [
+		'JavaScript Beautifier', sub { $self->js_eautifier },
+		'JavaScript Minifier',   sub { $self->js_minifier },
+	]);
 }
 
 sub js_eautifier {
-	my ( $win) = @_;
+	my ( $self ) = @_;
+	my $main = $self->main;
 
-	my $src = $win->current->text;
-	my $doc = $win->current->document;
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = $src ? $src : $doc->text_get;
 	return unless ( defined $code and length($code) );
 
@@ -49,7 +52,7 @@ sub js_eautifier {
     } );
     
     if ( $src ) {
-		my $editor = $win->current->editor;
+		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $pretty_js );
 	} else {
 		$doc->text_set( $pretty_js );
@@ -57,10 +60,12 @@ sub js_eautifier {
 }
 
 sub js_minifier {
-	my ( $win) = @_;
+	my ( $self ) = @_;
+	my $main = $self->main;
 
-	my $src = $win->current->text;
-	my $doc = $win->current->document;
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = $src ? $src : $doc->text_get;
 	return unless ( defined $code and length($code) );
 
@@ -70,7 +75,7 @@ sub js_minifier {
 	my $mjs = minify( $code );
     
     if ( $src ) {
-		my $editor = $win->current->editor;
+		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $mjs );
 	} else {
 		$doc->text_set( $mjs );

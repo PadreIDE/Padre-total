@@ -8,7 +8,7 @@ all_from       'lib/Padre/Plugin/JavaScript.pm';
 
 requires       'perl'                    => '5.008001';
 requires       'Exporter'                => 0;
-requires       'Padre'                   => '0.23';
+requires       'Padre'                   => '0.26';
 requires       'Class::Autouse'          => '1.26';
 requires       'JavaScript::Beautifier'  => '0.03';
 requires       'JavaScript::Minifier::XS';
