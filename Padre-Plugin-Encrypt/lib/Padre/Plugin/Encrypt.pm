@@ -3,32 +3,21 @@ package Padre::Plugin::Encrypt;
 use warnings;
 use strict;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use Padre::Wx::Dialog ();
 use base 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.23',
+	'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
-	'Encrypt <-> Decrpyt' => [
-		'Encrypt', \&encrypt,
-		'Decrypt', \&decrypt,
-	];
-}
-
-sub encrypt {
-	my ( $self ) = @_;
-	
-	_dencrypt( $self, 'encrypt' );
-}
-
-sub decrypt {
-	my ( $self ) = @_;
-	
-	_dencrypt( $self, 'decrypt' );
+	my $self = shift;
+	return ('Encrypt <-> Decrpyt' => [
+		'Encrypt', sub { $self->dencrypt('encrypt') },
+		'Decrypt', sub { $self->dencrypt('decrypt') },
+	]);
 }
 
 sub get_layout {
@@ -52,12 +41,14 @@ sub get_layout {
 	return \@layout;
 }
 
-sub _dencrypt {
+sub dencrypt {
 	my ( $self, $type ) = @_;
+	
+	my $main = $self->main;
 	
 	my $layout = get_layout($type);
 	my $dialog = Padre::Wx::Dialog->new(
-		parent          => $self,
+		parent          => $main,
 		title           => lcfirst $type,
 		layout          => $layout,
 		width           => [100, 100],
@@ -95,6 +86,7 @@ sub ok_clicked {
 
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
+	return unless $doc;
 	my $code = $doc->text_get;
 	
 	require Crypt::CBC;
