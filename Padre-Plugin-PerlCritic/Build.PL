@@ -14,7 +14,7 @@ my $builder = Module::Build->new(
     requires => {
         'perl'       => '5.008',
         'Perl::Critic' => 0,
-        'Padre'      => '0.25',
+        'Padre'      => '0.26',
     },
     build_requires => { 'Test::More' => '0.47', },
 );

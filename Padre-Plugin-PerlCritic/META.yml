@@ -8,7 +8,7 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 requires:
-  Padre: 0.25
+  Padre: 0.26
   Perl::Critic: 0
   perl: 5.008
 build_requires:
