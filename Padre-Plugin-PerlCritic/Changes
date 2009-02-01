@@ -1,6 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlCritic.
 
-0.06  Wed Jan 21 2009
+0.06  Sun Feb 01 2009
+    - Update requirement of Padre to 0.26
     - Update plugin to use API for output window
 
 0.05  Mon Dec 15 2008
