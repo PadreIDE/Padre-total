@@ -3,81 +3,48 @@ package Padre::Plugin::AcmePlayCode;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.23',
+	'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
-	'Acme::PlayCode' => [
-		'Averything',        \&averythig,
-		'DoubleToSingle',    \&doubletoSingle,
-		'ExchangeCondition', \&exchangecondition,
-		'NumberPlus',        \&numberplus,
-		'PrintComma',        \&printcomma,
-	];
+    my $self = shift;
+	return ('Acme::PlayCode' => [
+		'Averything',        sub { $self->play('Averything') },
+		'DoubleToSingle',    sub { $self->play('DoubleToSingle') },
+		'ExchangeCondition', sub { $self->play('ExchangeCondition') },
+		'NumberPlus',        sub { $self->play('NumberPlus') },
+		'PrintComma',        sub { $self->play('PrintComma') },
+	]);
 }
 
-sub _play {
+sub play {
 	my ( $self, $plugin ) = @_;
+
+	my $main = $self->main;
+	my $doc  = $main->current->document;
+	return unless $doc;
+	my $src  = $main->current->text;
+	my $code = $src ? $src : $doc->text_get;
+
+	return unless ( defined $code and length($code) );
 	
 	require Acme::PlayCode;
     my $playapp = new Acme::PlayCode;	
 	$playapp->load_plugin( $plugin );
 	
-	my $code;
-	
-	my $src = $self->current->text;
-	my $doc = $self->current->document;
-    if ( $src ) {
-		$code = $src;
-    } else {
-		$code = $doc->text_get;
-	}
-	
-	return unless ( defined $code and length($code) );
-	
 	my $played = $playapp->play($code);
 	
 	if ( $src ) {
-		my $editor = $self->current->editor;
+		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $played );
 	} else {
 		$doc->text_set( $played );
 	}
-}
-
-sub averythig {
-    my ($self, $event) = @_;
-
-	_play($self, 'Averything');
-}
-
-sub doubletoSingle {
-    my ($self, $event) = @_;
-
-	_play($self, 'DoubleToSingle');
-}
-
-sub exchangecondition {
-    my ($self, $event) = @_;
-
-	_play($self, 'ExchangeCondition');
-}
-
-sub numberplus {
-    my ($self, $event) = @_;
-
-	_play($self, 'NumberPlus');
-}
-
-sub printcomma {
-    my ($self, $event) = @_;
-
-	_play($self, 'PrintComma');
 }
 
 1;

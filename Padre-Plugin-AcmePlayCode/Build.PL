@@ -16,7 +16,7 @@ my $builder = Padre::PluginBuilder->new(
     },
     requires => {
         'Acme::PlayCode' => 0,
-        'Padre' => '0.23',
+        'Padre' => '0.26',
     },
     add_to_cleanup      => [ 'Padre-Plugin-AcmePlayCode-*' ],
     create_makefile_pl => 'traditional',
