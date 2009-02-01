@@ -25,7 +25,7 @@ die "Usage: $0 REV VERSION [--tag]\n"
 
 my $start_dir = Cwd::cwd();
 
-my ($URL) = grep {/^URL:\s*/} qx{svn info};
+my ($URL) = grep {/^URL:\s*/} qx{LC_ALL=C svn info};
 die "no url" if not $URL;
 chomp $URL;
 $URL =~ s/^URL:\s*//;
