@@ -7,8 +7,6 @@ abstract: 'L<Acme::PlayCode> Plugin for L<Padre>'
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
-configure_requires:
-  Padre::PluginBuilder: 0.12
 requires:
   Acme::PlayCode: 0
   Padre: 0.26

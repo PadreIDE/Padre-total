@@ -7,8 +7,6 @@ abstract: Alarm Clock in Padre
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
-configure_requires:
-  Padre::PluginBuilder: 0.12
 requires:
   Audio::Beep: 0
   Padre: 0.26
