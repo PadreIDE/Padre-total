@@ -115,7 +115,6 @@ The rest of the values in the array depend on the widget.
  3. Current value (as text value in wxWidgets; an Integer)
  4. Minimum value allowed (Integer)
  5. Maximum value allowed (Integer)
- 6. Current value (Integer)
 
 =back
 
@@ -440,7 +439,7 @@ sub _build_layout {
 				$default = Wx::Colour->new('#000000') if $@;
 				$widget = $class->new( $dialog, -1, $default, Wx::wxDefaultPosition, $width, Wx::wxCLRP_DEFAULT_STYLE );
 			} elsif ($class eq 'Wx::SpinCtrl') {
-				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, $width, Wx::wxSP_ARROW_KEYS, $params[0], $params[1], $params[2] );
+				$widget = $class->new( $dialog, -1, $arg, Wx::wxDefaultPosition, $width, Wx::wxSP_ARROW_KEYS, $params[0], $params[1], $arg );
 			} else {
 				warn "Unsupported widget $class\n";
 				next;
