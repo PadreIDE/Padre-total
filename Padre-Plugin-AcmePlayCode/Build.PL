@@ -1,16 +1,13 @@
 use strict;
 use warnings;
 
-use Padre::PluginBuilder ();
+use Module::Build;
 
-my $builder = Padre::PluginBuilder->new(
+my $builder = Module::Build->new(
     module_name         => 'Padre::Plugin::AcmePlayCode',
     license             => 'perl',
     dist_author         => 'Fayland Lam <fayland@gmail.com>',
     dist_version_from   => 'lib/Padre/Plugin/AcmePlayCode.pm',
-    configure_requires    => {
-        'Padre::PluginBuilder'    => '0.12',
-    },
     build_requires => {
         'Test::More' => 0,
     },

@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Alarm
 
+0.04    2008.02.03
+        fix http://www.nntp.perl.org/group/perl.cpan.testers/2009/02/msg3185057.html
+
 0.03    2008.02.01
         for Padre 0.26
 
