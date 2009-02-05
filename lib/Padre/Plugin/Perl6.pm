@@ -79,13 +79,13 @@ sub menu_plugins {
     # Manual Perl6 syntax highlighting
     Wx::Event::EVT_MENU(
         $main_window,
-        $self->{menu}->Append( -1, "Refresh Perl6 Coloring\tF6", ),
+        $self->{menu}->Append( -1, "Refresh Coloring\tF6", ),
         sub { $self->highlight; },
     );
 
     # Toggle Auto Perl6 syntax highlighting
     $self->{p6_highlight} =
-        $self->{menu}->AppendCheckItem( -1, "Toggle Auto Perl6 Coloring",);
+        $self->{menu}->AppendCheckItem( -1, "Enable Auto Coloring",);
     Wx::Event::EVT_MENU(
         $main_window,
         $self->{p6_highlight},
