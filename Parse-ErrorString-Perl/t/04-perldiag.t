@@ -22,7 +22,8 @@ declared beforehand using "our", or explicitly qualified to say
 which package the global variable is in (using "::").
 ENDofMSG
 
-if ($] < 5.010000) {
+#if ($] < 5.010000) {
+if ($] < 5.008009) {
 $diagnostics = <<'ENDofMSG';
 (F) You've said "use strict vars", which indicates that all variables
 must either be lexically scoped (using "my"), declared beforehand using

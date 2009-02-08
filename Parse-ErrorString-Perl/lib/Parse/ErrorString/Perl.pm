@@ -4,7 +4,7 @@ Parse::ErrorString::Perl - Parse error messages from the perl interpreter
 
 =head1 VERSION
 
-Version 0.11
+Version 0.12
 
 =head1 SYNOPSIS
 
@@ -229,7 +229,7 @@ sub stack {
 
 package Parse::ErrorString::Perl;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use Carp;
 use Pod::Find;
