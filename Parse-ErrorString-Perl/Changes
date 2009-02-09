@@ -1,5 +1,8 @@
 Revision history for Parse-ErrorString-Perl
 
+0.13    9 February 2009
+        * try to fix test script for diagnostic text in perl = 5.8.9 version again...
+
 0.12    8 February 2009
         * fix test script for diagnostic text in perl = 5.8.9 version
 
