@@ -5,10 +5,11 @@ if ( -e 'MANIFEST.SKIP' ) {
 }
 
 all_from      'lib/Padre/Plugin/PerlTidy.pm';
-requires      'Padre' => '0.23';
+requires      'Padre' => '0.26';
 requires      'Perl::Tidy';
 test_requires 'Test::More';
 
+extra_tests;
 is_padre_plugin;
 
 WriteAll;
