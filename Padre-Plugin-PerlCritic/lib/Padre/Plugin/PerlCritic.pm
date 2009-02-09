@@ -6,7 +6,7 @@ use warnings;
 use base 'Padre::Plugin';
 use Wx qw(wxOK wxCENTRE);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =head1 NAME
 
@@ -22,7 +22,7 @@ on the default .perlcriticrc configuration. See Perl::Critic for details.
 =cut
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => '0.23';
+	return 'Padre::Plugin' => '0.26';
 }
 
 sub menu_plugins_simple {
