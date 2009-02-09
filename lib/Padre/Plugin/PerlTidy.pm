@@ -27,7 +27,7 @@ file if it exists (see Perl::Tidy documentation).
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.23',
+    'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
@@ -78,10 +78,10 @@ sub _tidy {
 
     if ( defined $error ) {
         my $width = length( $doc->filename ) + 2;
-        $main->{ gui }->{ output_panel }->AppendText(
+        Padre::Current->main->output->AppendText(
             "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
-        $main->{ gui }->{ output_panel }->AppendText( "$error\n" );
-        $main->{ gui }->{ output_panel }->select;
+        Padre::Current->main->output->AppendText( "$error\n" );
+        Padre::Current->main->show_output(1);
     }
     return $output;
 }
@@ -201,10 +201,10 @@ sub _export {
 
     if ( defined $error ) {
         my $width = length( $doc->filename ) + 2;
-        $main->{ gui }->{ output_panel }->AppendText(
+        Padre::Current->main->output->AppendText(
             "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
-        $main->{ gui }->{ output_panel }->AppendText( "$error\n" );
-        $main->{ gui }->{ output_panel }->select;
+        Padre::Current->main->output->AppendText( "$error\n" );
+        Padre::Current->main->show_output(1);
     }
 
     return;
