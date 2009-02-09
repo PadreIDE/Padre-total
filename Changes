@@ -1,6 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 0.05  XXX
+    - Use Padre 0.26 API for output window (KAARE)
     - Move author tests to release time checking (ADAMK + BRICAS)
 
 0.04  Tue Jan 06 2009
