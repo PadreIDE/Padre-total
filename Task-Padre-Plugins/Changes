@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugins
 
+0.12    2009.2.11
+        updated for recent changes
+
 0.11    2009.1.23
         remove CPAN plugin since it's merged into the core
 
