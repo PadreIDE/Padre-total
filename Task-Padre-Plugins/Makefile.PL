@@ -33,7 +33,7 @@ feature 'Install Padre plugin for Perl6?',
 
 feature 'Enable spell check in Padre?',
     -default                => 0,
-    'Padre::Plugin::Perl6' => '0.01';
+    'Padre::Plugin::SpellCheck' => '0.01';
 
 build_requires 'Test::More';
 
