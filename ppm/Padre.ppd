@@ -1,0 +1,58 @@
+<SOFTPKG NAME="Padre" VERSION="0,27,0,0">
+    <TITLE>Padre</TITLE>
+    <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
+    <AUTHOR>Gabor Szabo</AUTHOR>
+    <IMPLEMENTATION>
+        <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />
+        <DEPENDENCY NAME="Class-Adapter" VERSION="1,05,0,0" />
+        <DEPENDENCY NAME="Class-Autouse" VERSION="1,26,0,0" />
+        <DEPENDENCY NAME="Class-Unload" VERSION="0,03,0,0" />
+        <DEPENDENCY NAME="Class-XSAccessor" VERSION="0,14,0,0" />
+        <DEPENDENCY NAME="Class-XSAccessor-Array" VERSION="0,14,0,0" />
+        <DEPENDENCY NAME="DBD-SQLite" VERSION="1,10,0,0" />
+        <DEPENDENCY NAME="DBI" VERSION="1,58,0,0" />
+        <DEPENDENCY NAME="Devel-Dumpvar" VERSION="0,04,0,0" />
+        <DEPENDENCY NAME="Digest-MD5" VERSION="0,0,0,0" />
+        <DEPENDENCY NAME="Encode" VERSION="2,26,0,0" />
+        <DEPENDENCY NAME="ExtUtils-MakeMaker" VERSION="6,11,0,0" />
+        <DEPENDENCY NAME="File-Copy-Recursive" VERSION="0,37,0,0" />
+        <DEPENDENCY NAME="File-Find-Rule" VERSION="0,30,0,0" />
+        <DEPENDENCY NAME="File-HomeDir" VERSION="0,82,0,0" />
+        <DEPENDENCY NAME="File-ShareDir" VERSION="1,00,0,0" />
+        <DEPENDENCY NAME="File-ShareDir-PAR" VERSION="0,03,0,0" />
+        <DEPENDENCY NAME="File-Which" VERSION="0,05,0,0" />
+        <DEPENDENCY NAME="Getopt-Long" VERSION="0,0,0,0" />
+        <DEPENDENCY NAME="HTML-Parser" VERSION="3,58,0,0" />
+        <DEPENDENCY NAME="IO-String" VERSION="1,08,0,0" />
+        <DEPENDENCY NAME="IPC-Cmd" VERSION="0,42,0,0" />
+        <DEPENDENCY NAME="Module-Inspector" VERSION="0,04,0,0" />
+        <DEPENDENCY NAME="Module-Refresh" VERSION="0,13,0,0" />
+        <DEPENDENCY NAME="Module-Starter" VERSION="1,50,0,0" />
+        <DEPENDENCY NAME="ORLite" VERSION="1,18,0,0" />
+        <DEPENDENCY NAME="ORLite-Migrate" VERSION="0,01,0,0" />
+        <DEPENDENCY NAME="PAR" VERSION="0,970,0,0" />
+        <DEPENDENCY NAME="PPI" VERSION="1,203,0,0" />
+        <DEPENDENCY NAME="Params-Util" VERSION="0,33,0,0" />
+        <DEPENDENCY NAME="Parse-ErrorString-Perl" VERSION="0,11,0,0" />
+        <DEPENDENCY NAME="Pod-POM" VERSION="0,17,0,0" />
+        <DEPENDENCY NAME="Pod-Simple" VERSION="3,07,0,0" />
+        <DEPENDENCY NAME="Probe-Perl" VERSION="0,01,0,0" />
+        <DEPENDENCY NAME="Storable" VERSION="2,15,0,0" />
+        <DEPENDENCY NAME="Test-Compile" VERSION="0,08,0,0" />
+        <DEPENDENCY NAME="Test-Exception" VERSION="0,27,0,0" />
+        <DEPENDENCY NAME="Test-NoWarnings" VERSION="0,084,0,0" />
+        <DEPENDENCY NAME="Test-Script" VERSION="1,03,0,0" />
+        <DEPENDENCY NAME="Text-Balanced" VERSION="0,0,0,0" />
+        <DEPENDENCY NAME="Text-Diff" VERSION="0,35,0,0" />
+        <DEPENDENCY NAME="Text-FindIndent" VERSION="0,03,0,0" />
+        <DEPENDENCY NAME="Thread-Queue" VERSION="2,11,0,0" />
+        <DEPENDENCY NAME="URI" VERSION="0,0,0,0" />
+        <DEPENDENCY NAME="Wx" VERSION="0,89,0,0" />
+        <DEPENDENCY NAME="Wx-Perl-ProcessStream" VERSION="0,11,0,0" />
+        <DEPENDENCY NAME="YAML-Tiny" VERSION="1,32,0,0" />
+        <DEPENDENCY NAME="threads" VERSION="1,71,0,0" />
+        <DEPENDENCY NAME="threads-shared" VERSION="1,26,0,0" />
+        <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />
+        <CODEBASE HREF="http://www.perlide.org/download/ppm/Padre.tar.gz" />
+    </IMPLEMENTATION>
+</SOFTPKG>
