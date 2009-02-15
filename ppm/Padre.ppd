@@ -4,6 +4,7 @@
     <AUTHOR>Gabor Szabo</AUTHOR>
     <IMPLEMENTATION>
         <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />
+        <DEPENDENCY NAME="ack" VERSION="1,86,0,0" />
         <DEPENDENCY NAME="Class-Adapter" VERSION="1,05,0,0" />
         <DEPENDENCY NAME="Class-Autouse" VERSION="1,26,0,0" />
         <DEPENDENCY NAME="Class-Unload" VERSION="0,03,0,0" />

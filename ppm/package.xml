@@ -5,6 +5,7 @@
     <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
     <AUTHOR>Gabor Szabo</AUTHOR>
     <IMPLEMENTATION>
+        <DEPENDENCY NAME="ack" VERSION="1,86,0,0" />
         <DEPENDENCY NAME="Class-Adapter" VERSION="1,05,0,0" />
         <DEPENDENCY NAME="Class-Autouse" VERSION="1,26,0,0" />
         <DEPENDENCY NAME="Class-Unload" VERSION="0,03,0,0" />
