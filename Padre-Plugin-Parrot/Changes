@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Parrot
 
+0.23    2009.02.18
+        Upgrade to Padre 0.26 Plugin API
+
 0.22    2008.12.21
         Moved Document::PASM and Document::PIR from Padre
         Make sure Parrot::Embed can work (with a workaround for the
