@@ -2,13 +2,15 @@ package Padre::Plugin::Parrot;
 use strict;
 use warnings;
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 use Padre::Wx ();
 
 use base 'Padre::Plugin';
 
 my $parrot;
+
+# TODO get documentation from parrot/src/ops/*.ops and parrot/docs/pdds/pdd19_pir.pod
 
 =head1 NAME
 
@@ -31,15 +33,15 @@ This is an experimental feature.
 
 Download Parrot (or check it out from its version control)
 
-Configure PARROT_PATH to point to the root of parrot
+Configure PARROT_DIR to point to the root of parrot
 
 Configure LD_LIBRARY_PATH
 
-  export LD_LIBRARY_PATH=$PARROT_PATH/blib/lib/
+  export LD_LIBRARY_PATH=$PARROT_DIR/blib/lib/
  
 =head2 Build Parrot
 
-  cd $PARROT_PATH
+  cd $PARROT_DIR
   svn up
   make realclean
   perl Configure.pl
@@ -62,8 +64,14 @@ the individual languages and type C<make>.
 In order to be able to run code written in Perl 6,
 after building Parrot do the following:
 
- cd languages/perl6
+ cd languages/
+ git clone http://github.com/rakudo/rakudo.git
+ cd rakudo
+ perl Configure.pl
  make
+
+Configure RAKUDO_DIR to point to the directory where rakudo was checked out.
+In the above case RAKUDO_DIR=$PARROT_DIR/language/rakudo 
 
 See L<https://trac.parrot.org/parrot/ticket/77>
 
@@ -113,7 +121,7 @@ code written in PASM.
 
 =head1 COPYRIGHT
 
-Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
+Copyright 2008-2009 Gabor Szabo. L<http://www.szabgab.com/>
 
 =head1 LICENSE
 
@@ -121,6 +129,21 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
+
+my $pod = <<"POD";
+
+=head1 Parrot
+
+Some text
+L</home/gabor/work/parrot/docs/intro.pod>
+
+=cut
+
+POD
+
+sub padre_interfaces {
+    return 'Padre::Plugin'         => 0.26,
+}
 
 
 sub plugin_name {
@@ -131,6 +154,24 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About'                                       => sub { $self->about },
+		'Help'                                        => sub { 
+				my $main = Padre->ide->wx->main_window;
+				#print "$main->{help}\n";
+				if ($ENV{PARROT_DIR}) {
+					my $path = File::Spec->catfile($ENV{PARROT_DIR}, 'docs');
+					my $doc    = Padre::Document->new;
+					$doc->{original_content} = $pod;
+					#my $doc = Padre::Document->new( filename => $path );
+					$doc->set_mimetype('application/x-pod');
+					$main->{help}->help($doc); 
+				} else {
+					$main->{help}->help('Padre::Plugin::Parrot');
+				}
+
+				$main->{help}->SetFocus;
+				$main->{help}->Show(1);
+				},
+				
 		"Count characters using Perl5"                => \&on_try_perl5,
 		"Count characters using PIR embedded Parrot"  => \&on_try_pir,
 	];
@@ -144,14 +185,14 @@ sub registered_documents {
 sub plugin_enable {
 	my $self = shift;
 	
-	return if not $ENV{PARROT_PATH};
+	return if not $ENV{PARROT_DIR};
 	
 	return 1 if $main::parrot; # avoid crash when duplicate calling
 	
 	local @INC = (
-		"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/lib",
-		"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/arch",
-		"$ENV{PARROT_PATH}/ext/Parrot-Embed/_build/lib",
+		"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/lib",
+		"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/arch",
+		"$ENV{PARROT_DIR}/ext/Parrot-Embed/_build/lib",
 		@INC);
 
 	# for now we keep the parrot interpreter in a script-global
@@ -174,7 +215,7 @@ sub plugin_enable {
 sub on_try_perl5 {
 	my ($main) = @_;
 	
-	my $doc = Padre::Documents->current;
+    my $doc = Padre::Current->document;
 	my $str = "No file is open";
 	if ($doc) {
 		$str = "Number of characters in the current file: " . length($doc->text_get);
@@ -207,7 +248,7 @@ END_PIR
 	my $eval = $parrot->compile( $code );
 	my $sub  = $parrot->find_global('on_try_pir');
 
-	my $doc = Padre::Documents->current;
+    my $doc = Padre::Current->document;
 	my $str = "No file is open";
 	if ($doc) {
 		my $pmc  = $sub->invoke( 'PS', $doc->text_get ); 
