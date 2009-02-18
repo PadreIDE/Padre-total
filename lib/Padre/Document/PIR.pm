@@ -7,7 +7,7 @@ use Carp            ();
 use Params::Util    '_INSTANCE';
 use Padre::Document ();
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 our @ISA     = 'Padre::Document';
 
 # Naive way to parse and colorize pir files
