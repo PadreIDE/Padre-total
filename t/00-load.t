@@ -1,3 +1,7 @@
+use strict;
+use warnings;
+
+# does not work 'cause of ORLite
 #!perl -T
 
 use Test::More tests => 1;
