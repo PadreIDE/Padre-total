@@ -6,15 +6,15 @@ use inc::Module::Install;
 # as they are only needed for some of the actions and
 # we can delay their requirement to the run time
 
-#if (not $ENV{PARROT_PATH}) {
-#	warn "PARROT_PATH needs to be defined\n";
+#if (not $ENV{PARROT_DIR}) {
+#	warn "PARROT_DIR needs to be defined\n";
 #	exit 0;
 #}
 #
 #unshift @INC, (
-#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/lib",
-#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/blib/arch",
-#	"$ENV{PARROT_PATH}/ext/Parrot-Embed/_build/lib",
+#	"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/lib",
+#	"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/arch",
+#	"$ENV{PARROT_DIR}/ext/Parrot-Embed/_build/lib",
 #);
 #require Parrot::Embed;
 #if ($@) {
