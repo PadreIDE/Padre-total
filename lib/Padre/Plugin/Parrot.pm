@@ -154,26 +154,10 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About'                                       => sub { $self->about },
-		'Help'                                        => sub { 
-				my $main = Padre->ide->wx->main_window;
-				#print "$main->{help}\n";
-				if ($ENV{PARROT_DIR}) {
-					my $path = File::Spec->catfile($ENV{PARROT_DIR}, 'docs');
-					my $doc    = Padre::Document->new;
-					$doc->{original_content} = $pod;
-					#my $doc = Padre::Document->new( filename => $path );
-					$doc->set_mimetype('application/x-pod');
-					$main->{help}->help($doc); 
-				} else {
-					$main->{help}->help('Padre::Plugin::Parrot');
-				}
-
-				$main->{help}->SetFocus;
-				$main->{help}->Show(1);
-				},
+		#'Help'                                        => \&show_help,
 				
-		"Count characters using Perl5"                => \&on_try_perl5,
-		"Count characters using PIR embedded Parrot"  => \&on_try_pir,
+		"Count characters using Perl5"                   => \&on_try_perl5,
+		"Count characters using PIR in embedded Parrot"  => \&on_try_pir,
 	];
 }
 
@@ -266,14 +250,31 @@ sub about {
 	$about->SetName("Padre::Plugin::Parrot");
 	$about->SetDescription(
 		"This plugin currently provides a naive syntax highlighting for PASM files\n" .
-		"If you have Parrot compiled on your system in can also provide execution of\n" .
-		".. files\n"
+		"If you have Parrot compiled on your system it can also provide execution of\n" .
+		"PASM files\n"
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
 	return;
 }
 
+sub show_help { 
+	my $main = Padre->ide->wx->main;
+	#print "$main->{help}\n";
+	if ($ENV{PARROT_DIR}) {
+		my $path = File::Spec->catfile($ENV{PARROT_DIR}, 'docs');
+		my $doc    = Padre::Document->new;
+		$doc->{original_content} = $pod;
+		#my $doc = Padre::Document->new( filename => $path );
+		$doc->set_mimetype('application/x-pod');
+		$main->{help}->help($doc); 
+	} else {
+		$main->{help}->help('Padre::Plugin::Parrot');
+	}
+
+	$main->{help}->SetFocus;
+	$main->{help}->Show(1);
+}
 
 
 package Px;
