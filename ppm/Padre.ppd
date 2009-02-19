@@ -24,6 +24,7 @@
         <DEPENDENCY NAME="File-Which" VERSION="0,05,0,0" />
         <DEPENDENCY NAME="Getopt-Long" VERSION="0,0,0,0" />
         <DEPENDENCY NAME="HTML-Parser" VERSION="3,58,0,0" />
+        <DEPENDENCY NAME="IO-stringy" VERSION="2,110,0,0" />
         <DEPENDENCY NAME="IO-String" VERSION="1,08,0,0" />
         <DEPENDENCY NAME="IPC-Cmd" VERSION="0,42,0,0" />
         <DEPENDENCY NAME="Module-Inspector" VERSION="0,04,0,0" />
