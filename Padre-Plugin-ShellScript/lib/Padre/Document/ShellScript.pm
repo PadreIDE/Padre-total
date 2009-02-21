@@ -10,13 +10,14 @@ our @ISA     = 'Padre::Document';
 
 sub get_command {
         my $self     = shift;
+        my $debug    = shift;
 
         # Check the file name
         my $filename = $self->filename;
 
         my $dir = File::Basename::dirname($filename);
         chdir $dir;
-        return Padre->ide->config->run_stacktrace
+        return $debug
                 ? qq{"sh" "-xv" "$filename"}
                 : qq{"sh" "$filename"};
 }

@@ -33,7 +33,7 @@ sub info {
 
     # Generate the About dialog
     my $about = Wx::AboutDialogInfo->new;
-    $about->SetName("Shell Scripting Plugin");
+    $about->SetName("Shell Script Plugin");
     $about->SetDescription("Use the Run menu to run and debug shell scripts.");
 
     # Show the About dialog
