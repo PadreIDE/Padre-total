@@ -18,4 +18,4 @@ ok( $] >= 5.008, 'Perl version is new enough' );
 
 use_ok( 'Wx'                             );
 diag( "Tests find Wx: $Wx::VERSION " . Wx::wxVERSION_STRING() );
-use_ok( 'Padre::Plugin:ShellScript'      );
+use_ok( 'Padre::Plugin::ShellScript'      );
