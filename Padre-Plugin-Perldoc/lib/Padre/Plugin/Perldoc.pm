@@ -47,8 +47,15 @@ sub menu_plugins_simple {
 sub plugin_enable {
 	my $self = shift;
 	
-	#if ($^O eq 'MSWin32') {
+	my $pid;
 	if ($^O eq 'linux') {
+		my $p = "$^X /home/gabor/worl/padre/trunk/Padre-Plugin-Perldoc/pom_starter.pl &";
+		my $cmd = qq{$^X -e 'print \$\$; system "$p"'};
+		print "$cmd\n";
+		$pid = qx{$cmd};
+	} elsif ($^O eq 'MSWin32') {
+	} else {
+		warn "OS $^O not yet supported. Talk to the Padre developers\n";
 	}
 
 	return 1;
@@ -69,6 +76,9 @@ sub about {
 	return;
 }
 
+sub main {
+	Wx::LaunchDefaultBrowser('http://localhost:8080/');
+}
 
 1;
 
