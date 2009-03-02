@@ -13,8 +13,9 @@ keybindings and commands
 
 use strict;
 use warnings;
+use Padre::Util;
 
-use base 'Padre::Plugin';
+use base qw(Padre::Plugin);
 
 our $VERSION = '0.18';
 
@@ -59,7 +60,7 @@ $subs{CTRL} = {
 		my $start_pos = $self->{emacs_select_start_mark};
 		my $end_pos = $self->{emacs_select_end_mark} || $self->GetCurrentPos;
 		$self->SetTargetStart($start_pos);
-	    $self->SetTargetEnd($end_pos);
+		$self->SetTargetEnd($end_pos);
 		$self->SetSelection($start_pos, $end_pos);
 		Padre::Wx::Editor::text_cut_to_clipboard();
 		$self->{emacs_select_start_mark} = undef;
@@ -71,7 +72,7 @@ $subs{CTRL} = {
 		my $line = $self->LineFromPosition($start_pos);
 		my $end_pos  = $self->GetLineEndPosition($line);
 		$self->SetTargetStart($start_pos);
-	    $self->SetTargetEnd($end_pos);
+		$self->SetTargetEnd($end_pos);
 		$self->SetSelection($start_pos, $end_pos);
 		Padre::Wx::Editor::text_cut_to_clipboard();
 		$self->{emacs_select_start_mark} = undef;
@@ -124,8 +125,7 @@ sub menu_plugins_simple {
 				       'Emacs Ctrl Command \tCtrl-X' => $subs{CTRL}{ord('X')},
 				       'Emacs Meta Command \tAlt-X' => $subs{META}{ord('X')},
 				      ]
-			 ],
-			];
+			 ];
 }
 
 sub show_about {
@@ -163,7 +163,10 @@ sub plugin_enable {
     foreach my $key (keys %{$subs{$mod}}) {
       # check main menubar accel list
       # update menuitems using/clashing
-#	    $self->{main}{accel_keys}{hotkeys}{uc($mod)}{ord(uc($key))} = $item;
+      my $main = Padre::Current->main;
+      my $menuitem = $main->{accel_keys}{hotkeys}{$mod}{$key};
+      (my $new_label = $menuitem->GetText =~ s/[\_\&]\w//g);
+      $menuitem->SetText($new_label); # SetAccel(undef);
     }
   }
 
