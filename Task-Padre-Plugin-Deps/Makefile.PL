@@ -51,6 +51,9 @@ requires 'Perl::Tidy';
 # Padre::Plugin::Pip 0.13
 requires 'pip' => '0.13';
 
+# Padre::Plugin::SVK
+requires 'Capture::Tiny' => '0.03';
+
 # Padre::Plugin::XML
 requires 'XML::Tidy';
 

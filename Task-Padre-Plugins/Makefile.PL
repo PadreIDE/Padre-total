@@ -19,6 +19,7 @@ requires 'Padre::Plugin::PAR'            => '0.04';
 requires 'Padre::Plugin::PerlCritic'     => '0.06';
 requires 'Padre::Plugin::PerlTidy'       => '0.05';
 requires 'Padre::Plugin::Pip'            => '0.13';
+requires 'Padre::Plugin::SVK'            => '0.01';
 requires 'Padre::Plugin::Vi'             => '0.21';		
 requires 'Padre::Plugin::ViewInBrowser'  => '0.06';;
 requires 'Padre::Plugin::XML'            => '0.05';
