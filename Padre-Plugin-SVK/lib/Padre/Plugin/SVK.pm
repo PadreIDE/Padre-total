@@ -8,7 +8,9 @@ use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-use Capture::Tiny qw(capture_merged);
+use Capture::Tiny  qw(capture_merged);
+use File::Basename ();
+use File::Spec;
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -68,7 +70,9 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		'About' => sub { $self->show_about },
 		'Commit' => sub { $self->svk_commit },
-		'Status' => sub { $self->svk_status },
+		'Status of File' => sub { $self->svk_status_of_file },
+		'Status of Dir' => sub { $self->svk_status_of_dir },
+		'Status of Project' => sub { $self->svk_status_of_project },
 	];
 }
 
@@ -114,15 +118,60 @@ sub svk_commit {
 }
 
 sub svk_status {
+	my ($self, $path) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $out = capture_merged(sub { system "svk status $path" });
+	$main->message($out, "SVK Status of $path");
+	return;
+}
+sub svk_status_of_file {
 	my ($self) = @_;
 	
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
-	my $filename = $doc->filename;
-	my $out = capture_merged(sub { system "svk status $filename" });
-	$main->message($out, "SVK Status of $filename");
+	return $main->error("No document found") if not $doc;
+	$self->svk_status($doc->filename);
 	return;
 }
+sub svk_status_of_dir {
+	my ($self) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	return $main->error("No document found") if not $doc;
+	my $filename = $doc->filename;
+	$self->svk_status(File::Basename::dirname($filename));
+
+	return;
+}
+
+# TODO guess current project
+sub svk_status_of_project {
+	my ($self) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	return $main->error("No document found") if not $doc;
+	my $filename = $doc->filename;
+	return $main->error("File type not yet supported") if not $filename =~ /\.pm$/;
+	my $olddir = File::Basename::dirname($filename);
+	my $dir    = File::Basename::dirname($olddir);
+	print "DIR: $olddir\n     $dir\n";
+	while (1) {
+		last if $olddir eq $dir;
+		last if -e File::Spec->catfile($dir, 'Makefile.PL');
+		last if -e File::Spec->catfile($dir, 'Build.PL');
+		print "trying $dir\n";
+		$olddir = $dir;
+		$dir = File::Basename::dirname($dir);
+	}
+	return $main->error("Could not find project root") if $dir eq $olddir;	
+	$self->svk_status($dir);
+
+	return;
+}
+
 
 1;
 

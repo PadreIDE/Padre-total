@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SVK
 
-0.01    
+0.02
+        Add Padre and SVK as dependency
+        Add status of this directory and this project.
+
+0.01    2009.03.03 
         First version, released on an unsuspecting world.
 
