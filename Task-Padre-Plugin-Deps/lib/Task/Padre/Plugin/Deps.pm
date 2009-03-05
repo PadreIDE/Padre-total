@@ -14,7 +14,7 @@ Task::Padre::Plugin::Deps - prereqs of Padre::Plugins
 
 =head1 VERSION
 
-Version 0.08
+Version 0.09
 
 =head1 SYNOPSIS
 
