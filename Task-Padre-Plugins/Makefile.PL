@@ -19,7 +19,6 @@ requires 'Padre::Plugin::PAR'            => '0.04';
 requires 'Padre::Plugin::PerlCritic'     => '0.06';
 requires 'Padre::Plugin::PerlTidy'       => '0.05';
 requires 'Padre::Plugin::Pip'            => '0.13';
-requires 'Padre::Plugin::SVK'            => '0.01';
 requires 'Padre::Plugin::Vi'             => '0.21';		
 requires 'Padre::Plugin::ViewInBrowser'  => '0.06';;
 requires 'Padre::Plugin::XML'            => '0.05';
@@ -29,12 +28,16 @@ feature 'Install experimental Padre plugin that runs on Parrot?',
     'Padre::Plugin::Parrot' => '0.22';
 
 feature 'Install Padre plugin for Perl6?',
-    -default                => 0,
+    -default               => 0,
     'Padre::Plugin::Perl6' => '0.026';
 
 feature 'Enable spell check in Padre?',
-    -default                => 0,
+    -default                    => 0,
     'Padre::Plugin::SpellCheck' => '0.01';
+
+feature 'Install Simple SVK interface for Padre?',
+    -default             => 0,
+    'Padre::Plugin::SVK' => '0.02';
 
 build_requires 'Test::More';
 

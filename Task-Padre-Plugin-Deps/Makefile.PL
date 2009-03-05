@@ -51,9 +51,6 @@ requires 'Perl::Tidy';
 # Padre::Plugin::Pip 0.13
 requires 'pip' => '0.13';
 
-# Padre::Plugin::SVK
-requires 'Capture::Tiny' => '0.03';
-
 # Padre::Plugin::XML
 requires 'XML::Tidy';
 
@@ -67,6 +64,12 @@ feature 'Install Padre plugin for Perl6?',
     'URI'                      => '1.37',
     'Readonly'                 => '1.03',
     'IPC::Run3'                => '0.042';
+
+# Padre::Plugin::SVK
+feature 'Install Simple SVK interface for Padre?',
+    -default        => 0,
+    'Capture::Tiny' => '0.03',
+    'SVK'           => '2.0.2';
 
 build_requires 'Test::More';
 build_requires 'Test::NeedsDisplay' => '1.05';

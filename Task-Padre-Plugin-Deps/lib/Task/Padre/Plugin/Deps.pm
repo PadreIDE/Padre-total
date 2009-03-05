@@ -3,7 +3,7 @@ package Task::Padre::Plugin::Deps;
 use warnings;
 use strict;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 1;
 __END__
