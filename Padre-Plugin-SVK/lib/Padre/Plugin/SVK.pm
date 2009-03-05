@@ -12,8 +12,13 @@ use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
 use File::Spec;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
+
+# TODO
+# diff of file/dir/project
+# commit of file/dir/project
+
 
 =head1 NAME
 
