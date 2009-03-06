@@ -7,6 +7,7 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
+use Padre::Util   ();
 
 use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
@@ -73,11 +74,21 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->show_about },
-		'Commit' => sub { $self->svk_commit },
-		'Status of File' => sub { $self->svk_status_of_file },
-		'Status of Dir' => sub { $self->svk_status_of_dir },
-		'Status of Project' => sub { $self->svk_status_of_project },
+		'About'             => sub { $self->show_about },
+		'Commit...' => [
+			'File'     => sub { $self->svk_commit_file },
+			'Project'  => sub { $self->svk_commit_project },
+		],
+		'Status...' => [
+			'File'    => sub { $self->svk_status_of_file },
+			'Dir'     => sub { $self->svk_status_of_dir },
+			'Project' => sub { $self->svk_status_of_project },
+		],
+		'Diff...' => [
+			'File'    => sub { $self->svk_diff_of_file },
+			'Dir'     => sub { $self->svk_diff_of_dir },
+			'Project' => sub { $self->svk_diff_of_project },
+		],
 	];
 }
 
@@ -105,22 +116,40 @@ END_MESSAGE
 
 
 sub svk_commit {
+	my ($self, $path) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $message = $main->prompt("SVK Commit of $path", "Please type in your message", "MY_SVK_COMMIT");
+	if ($message) {
+		$main->message( $message, 'Filename' );
+		system qq(svk commit $path -m"$message");
+	}
+
+	return;	
+}
+
+sub svk_commit_file {
+	my ($self) = @_;
+
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	my $filename = $doc->filename;
+	$self->svk_commit($filename);
+	return;
+}
+
+sub svk_commit_project {
 	my ($self) = @_;
 	
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	my $filename = $doc->filename;
-	$main->message( "Count: $filename", 'Filename' );
-
-	my $message = $main->prompt("SVK Commit of $filename", "Please type in your message", "MY_SVK_COMMIT");
-	if ($message) {
-		$main->message( $message, 'Filename' );
-		system qq(svk commit $filename -m"$message");
-	}
-
-
-	return;	
+	my $dir = Padre::Util::get_project_dir($filename);
+	$self->svk_commit($dir);
+	return;
 }
+
+
 
 sub svk_status {
 	my ($self, $path) = @_;
@@ -159,20 +188,38 @@ sub svk_status_of_project {
 	my $doc = $main->current->document;
 	return $main->error("No document found") if not $doc;
 	my $filename = $doc->filename;
-	return $main->error("File type not yet supported") if not $filename =~ /\.pm$/;
-	my $olddir = File::Basename::dirname($filename);
-	my $dir    = File::Basename::dirname($olddir);
-	print "DIR: $olddir\n     $dir\n";
-	while (1) {
-		last if $olddir eq $dir;
-		last if -e File::Spec->catfile($dir, 'Makefile.PL');
-		last if -e File::Spec->catfile($dir, 'Build.PL');
-		print "trying $dir\n";
-		$olddir = $dir;
-		$dir = File::Basename::dirname($dir);
-	}
-	return $main->error("Could not find project root") if $dir eq $olddir;	
+	my $dir = Padre::Util::get_project_dir($filename);
+	
+	return $main->error("Could not find project root") if not $dir;
+	
 	$self->svk_status($dir);
+
+	return;
+}
+
+sub svk_diff {
+	my ($self, $path) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $out = capture_merged(sub { system "svk diff $path" });
+	use Padre::Wx::Dialog::Text;
+	Padre::Wx::Dialog::Text->show($main, "SVK Diff of $path", $out);
+#	$main->message($out, "SVK Diff of $path");
+	return;
+}
+
+sub svk_diff_of_project {
+	my ($self) = @_;
+	
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	return $main->error("No document found") if not $doc;
+	my $filename = $doc->filename;
+	my $dir = Padre::Util::get_project_dir($filename);
+	
+	return $main->error("Could not find project root") if not $dir;
+	
+	$self->svk_diff($dir);
 
 	return;
 }
