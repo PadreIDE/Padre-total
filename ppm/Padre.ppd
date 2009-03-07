@@ -1,6 +1,6 @@
-<SOFTPKG NAME="Padre" VERSION="0,27,0,0">
+<SOFTPKG NAME="Padre" VERSION="0,28,0,0">
     <TITLE>Padre</TITLE>
-    <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
+    <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
     <AUTHOR>Gabor Szabo</AUTHOR>
     <IMPLEMENTATION>
         <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />

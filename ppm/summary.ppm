@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <REPOSITORYSUMMARY>
-  <SOFTPKG NAME="Padre" VERSION="0,27,0,0">
+  <SOFTPKG NAME="Padre" VERSION="0,28,0,0">
     <TITLE>Padre</TITLE>
     <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
     <AUTHOR>Gabor Szabo</AUTHOR>
