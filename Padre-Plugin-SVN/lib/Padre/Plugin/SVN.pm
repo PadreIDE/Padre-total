@@ -79,6 +79,12 @@ sub menu_plugins_simple {
 			'Dir'     => sub { $self->svn_diff_of_dir },
 			'Project' => sub { $self->svn_diff_of_project },
 		],
+		'Add...' => [
+			'File'    => sub { $self->svn_add_file },
+#			'Dir'     => sub { $self->svn_diff_of_dir },
+#			'Project' => sub { $self->svn_diff_of_project },
+		],
+		
 	];
 }
 
@@ -125,6 +131,7 @@ sub svn_status_of_project {
 	my $doc = $main->current->document;
 	my $filename = $doc->filename;
 	my $dir = Padre::Util::get_project_dir($filename);
+	return $main->error("Could not find project root") if not $dir;
 	$self->svn_status($dir);
 	return;
 }
@@ -189,6 +196,21 @@ sub svn_commit_project {
 	my $filename = $doc->filename;
 	my $dir = Padre::Util::get_project_dir($filename);
 	$self->svn_commit($dir);
+	return;
+}
+
+sub svn_add {
+	my ($self, $path) = @_;
+	system "svn add $path";
+	return;
+}
+
+sub svn_add_file {
+	my ($self) = @_;
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	my $filename = $doc->filename;
+	$self->svn_add($filename);
 	return;
 }
 

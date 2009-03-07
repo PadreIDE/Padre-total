@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SVN
 
-0.01    
+
+        svn add
+
+0.01    2009.03.07
         First version, released on an unsuspecting world.
 
