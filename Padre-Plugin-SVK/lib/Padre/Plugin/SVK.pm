@@ -25,10 +25,6 @@ our @ISA     = 'Padre::Plugin';
 
 Padre::Plugin::SVK - Simple SVK interface for Padre
 
-=head1 VERSION
-
-Version 0.01
-
 =head1 SYNOPSIS
 
 cpan install Padre::Plugin::SVK
