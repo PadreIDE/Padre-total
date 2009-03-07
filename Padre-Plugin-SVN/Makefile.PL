@@ -7,7 +7,7 @@ license  'perl';
 
 #requires  'Capture::Tiny' => '0.03';
 requires  'Padre'         => '0.27';
-requires  'VCI'           => '0.5.2';
+#requires  'VCI'           => '0.5.2';
 
 build_requires 'Test::More';
 
