@@ -171,8 +171,9 @@ sub svn_commit {
 	my $main = Padre->ide->wx->main;
 	my $message = $main->prompt("SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT");
 	if ($message) {
-		$main->message( $message, 'Filename' );
-		system qq(svn commit $path -m"$message");
+		$message =~ s/"/\\"/g;
+		#$main->message( $message, 'Filename' );
+		system qq(svn commit "$path" -m"$message");
 	}
 
 	return;	
