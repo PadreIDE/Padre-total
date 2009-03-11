@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 1;
 __END__
@@ -101,6 +101,10 @@ This is a simple plugin to run Perl::Critic on your source code.
 This is a simple plugin to run Perl::Tidy on your source code.
 
 =head2 Padre::Plugin::Pip
+
+=head2 Padre::Plugin::SVN
+
+Simple SVN interface for Padre
 
 =head2 Padre::Plugin::SVK
 

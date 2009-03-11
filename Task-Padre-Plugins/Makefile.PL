@@ -35,6 +35,11 @@ feature 'Enable spell check in Padre?',
     -default                    => 0,
     'Padre::Plugin::SpellCheck' => '0.01';
 
+# Padre::Plugin::SVN
+feature 'Install Simple SVN interface for Padre?',
+    -default        => 0,
+    'Padre::Plugin::SVN' => '0.01';
+
 feature 'Install Simple SVK interface for Padre?',
     -default             => 0,
     'Padre::Plugin::SVK' => '0.02';
