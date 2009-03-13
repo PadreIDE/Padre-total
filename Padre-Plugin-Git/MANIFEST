@@ -1,0 +1,7 @@
+Changes
+lib/Padre/Plugin/Git.pm
+Makefile.PL
+MANIFEST
+README
+t/00-load.t
+
