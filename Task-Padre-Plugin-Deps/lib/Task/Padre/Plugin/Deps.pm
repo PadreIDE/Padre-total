@@ -3,7 +3,7 @@ package Task::Padre::Plugin::Deps;
 use warnings;
 use strict;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 1;
 __END__
@@ -14,7 +14,7 @@ Task::Padre::Plugin::Deps - prereqs of Padre::Plugins
 
 =head1 VERSION
 
-Version 0.09
+Version 0.10
 
 =head1 SYNOPSIS
 

@@ -13,6 +13,9 @@ requires 'Acme::PlayCode';
 # Padre::Plugin::Alarm
 requires 'Audio::Beep';
 
+# Padre::Plugin::Autoformat
+requires 'Text::Autoformat';
+
 # Padre::Plugin::CSS 0.02
 requires 'WebService::Validator::CSS::W3C';
 requires 'CSS::Minifier::XS';
@@ -54,6 +57,9 @@ requires 'pip' => '0.13';
 # Padre::Plugin::XML
 requires 'XML::Tidy';
 
+# SVN, Git
+requires 'Capture::Tiny' => '0.03';
+
 feature 'Install experimental Padre plugin that runs on Parrot?',
     -default        => 0,
     'Parrot::Embed' => 0;
@@ -68,7 +74,6 @@ feature 'Install Padre plugin for Perl6?',
 # Padre::Plugin::SVK
 feature 'Install Simple SVK interface for Padre?',
     -default        => 0,
-    'Capture::Tiny' => '0.03',
     'SVK'           => '2.0.2';
 
 build_requires 'Test::More';

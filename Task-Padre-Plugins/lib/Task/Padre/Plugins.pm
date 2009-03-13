@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 1;
 __END__
@@ -27,6 +27,10 @@ This is a simple plugin to run Acme::PlayCode on your source code.
 =head2 Padre::Plugin::Alarm
 
 Alarm Clock (Audio::Beep)
+
+=head2 Padre::Plugin::Autoformat
+
+reformat your text within Padre  
 
 =head2 Padre::Plugin::CommandLine
 
@@ -63,6 +67,10 @@ convert file to different encoding in Padre
 =head2 Padre::Plugin::Encrypt
 
 Encrypt/Decrypt by Crypt::CBC
+
+=head2 Padre::Plugin::Git
+
+Simple Git interface for Padre  
 
 =head2 Padre::Plugin::HTML
 

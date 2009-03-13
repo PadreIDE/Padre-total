@@ -7,6 +7,7 @@ license  'perl';
 
 requires 'Padre::Plugin::AcmePlayCode'   => '0.08';
 requires 'Padre::Plugin::Alarm'          => '0.02';
+requires 'Padre::Plugin::Autoformat'     => '0.2.1';
 requires 'Padre::Plugin::CommandLine'    => '0.04';
 requires 'Padre::Plugin::CSS'            => '0.05';
 requires 'Padre::Plugin::Encode'         => '0.1.3';
@@ -43,6 +44,10 @@ feature 'Install Simple SVN interface for Padre?',
 feature 'Install Simple SVK interface for Padre?',
     -default             => 0,
     'Padre::Plugin::SVK' => '0.02';
+
+feature 'Install Simple Git interface for Padre?',
+    -default             => 0,
+    'Padre::Plugin::Git' => '0.01';
 
 build_requires 'Test::More';
 
