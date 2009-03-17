@@ -13,6 +13,7 @@ requires  'File::Spec'     => '0';
 
 build_requires 'Test::More';
 
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 auto_install;
 
 WriteAll;
