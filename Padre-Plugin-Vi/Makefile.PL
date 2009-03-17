@@ -13,4 +13,6 @@ homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Vi';
 
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+
 WriteAll;

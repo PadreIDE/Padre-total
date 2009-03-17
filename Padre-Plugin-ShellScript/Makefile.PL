@@ -20,5 +20,7 @@ homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-ShellScript';
 #mailinglist    'http://mail.perlide.org/mailman/listinfo/padre-dev';
+
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
  
 WriteAll;
