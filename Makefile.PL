@@ -12,5 +12,7 @@ build_requires 'Test::More';
 
 auto_install;
 
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+
 WriteAll;
 
