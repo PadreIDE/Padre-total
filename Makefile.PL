@@ -11,6 +11,7 @@ requires  'Padre'         => '0.27';
 
 build_requires 'Test::More';
 
+is_padre_plugin;
 auto_install;
 
 WriteAll;
