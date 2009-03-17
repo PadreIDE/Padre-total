@@ -10,6 +10,6 @@ requires      'Perl::Tidy';
 test_requires 'Test::More';
 
 extra_tests;
-is_padre_plugin;
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 
 WriteAll;
