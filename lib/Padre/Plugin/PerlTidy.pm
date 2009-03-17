@@ -32,8 +32,8 @@ sub padre_interfaces {
 
 sub menu_plugins_simple {
     PerlTidy => [
-        Wx::gettext('Tidy the active document') => \&tidy_document,
-        Wx::gettext('Tidy the selected text')   => \&tidy_selection,
+        Wx::gettext("Tidy the active document\tAlt+Shift+F") => \&tidy_document,
+        Wx::gettext("Tidy the selected text\tAlt+Shift+G")   => \&tidy_selection,
         Wx::gettext('Export active document to HTML file') => \&export_document,
         Wx::gettext('Export selected text to HTML file')   => \&export_selection,
     ];
