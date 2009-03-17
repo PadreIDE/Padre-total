@@ -1,5 +1,8 @@
 Release history for Module::Install::PadrePlugin
 
+0.02  2009-03-17
+  - Padre::Config "2.0" compatibility -- compatible with Padre 0.29
+
 0.01  2008-11-14
   - Initial version
 
