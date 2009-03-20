@@ -5,6 +5,7 @@ use warnings;
 use Padre::Task::PPI ();
 use Padre::Wx   ();
 use Scalar::Util qw(blessed);
+use IPC::Cmd ();
 
 our $VERSION = '0.29';
 use base 'Padre::Task::PPI';
@@ -43,7 +44,7 @@ sub process_ppi {
 	}
 	
 	if ($mode eq 'print_report') {
-		$self->print_report();
+		$self->print_report($ppi);
 	}
 	
 	return();
@@ -60,6 +61,7 @@ sub find_document_namespace {
 
 sub print_report {
 	my $self = shift;
+	my $ppi = shift;
 	my $sniff_config = $self->{sniff_config};
 	
 	if (not defined $sniff_config->{class}) {
@@ -67,24 +69,72 @@ sub print_report {
 		return();
 	}
 
-	my $sniff = eval {
-		Class::Sniff->new($sniff_config);
-	};
-	
-	if (not defined $sniff or $@) {
-		$self->task_warn( "Could not create Class::Sniff object" . ($@ ? " ($@)\n" : "\n") );
+	my ($ok, $stdout, $stderr) = $self->run_sniff($sniff_config, $self->{text}||$ppi->serialize());
+	if (!$ok or not defined $stdout) {
+		$self->task_warn(
+			"Error running Class::Sniff on class '"
+			. $sniff_config->{class} . "': "
+			. $stderr
+			. "\n"
+		);
 		return();
 	}
+	if (defined $stderr and $stderr =~ /\S/) {
+		$self->task_warn(
+			"Warning from running Class::Sniff on class '"
+			. $sniff_config->{class} . "': "
+			. $stderr
+			. "\n"
+		);
+	}
 	
-	my $report = $sniff->report();
-	if (defined $report and $report =~ /\S/) {
-		$self->task_print( $report . "\n" );
+	if (defined $stdout and $stdout =~ /\S/) {
+		$self->task_print( $stdout . "\n" );
 	}
 	else {
-		$self->task_print( "No bad smell from class '" . $sniff_config->{class} . "'" );
+		$self->task_print( "No bad smell from class '" . $sniff_config->{class} . "'\n" );
 	}
 	return();
 
+}
+
+sub run_sniff {
+	my $self = shift;
+	my $cfg = shift;
+	my $code = shift;
+	
+	require YAML::Tiny;
+	require IPC::Cmd;
+	require IPC::Open3;
+	
+	my $yaml = YAML::Tiny::Dump($cfg);
+	my @cmd = (
+		Padre->perl_interpreter(),
+		'-Mstrict',
+		'-Mwarnings',
+		'-mYAML::Tiny',
+		'-mClass::Sniff',
+		'-e',
+	);
+	push @cmd, <<'HERE';
+	my $yaml = YAML::Tiny::Load(shift(@ARGV)) or die "Bad config";
+	$yaml = $yaml->[0] if ref($yaml) eq 'ARRAY';
+	my $code = shift(@ARGV);
+	eval $code;
+	die "Could not compile class: $@" if $@;
+	my $sniff = Class::Sniff->new($yaml);
+	die "Could not instantiate Class::Sniff" if not $sniff;
+	print $sniff->report();
+HERE
+	push @cmd, '--', $yaml, $code;
+	
+	my ($ok, $errno, undef, $stdout, $stderr)
+	  = IPC::Cmd::run( command => \@cmd, verbose => 0 );
+	$stdout = join "", @$stdout
+	  if defined $stdout and ref($stdout) eq 'ARRAY';
+	$stderr = join "", @$stderr
+	  if defined $stderr and ref($stderr) eq 'ARRAY';
+	return ($ok, $stdout, $stderr);
 }
 
 1;

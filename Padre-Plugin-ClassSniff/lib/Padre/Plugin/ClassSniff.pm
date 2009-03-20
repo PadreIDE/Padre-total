@@ -8,7 +8,6 @@ use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
-use Class::Sniff;
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -52,10 +51,6 @@ sub padre_interfaces {
 
 sub plugin_name {
 	'Class::Sniff';
-}
-
-sub plugin_enable {
-	require Class::Sniff;
 }
 
 sub menu_plugins_simple {
