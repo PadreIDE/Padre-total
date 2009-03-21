@@ -65,7 +65,6 @@ sub menu_plugins_simple {
 
 sub print_report {
 	my $self = shift;
-	push @INC, '/home/tsee/padre/trunk/Padre-Plugin-ClassSniff/lib';
 	require Padre::Task::ClassSniff;
 	Padre::Task::ClassSniff->new(
 		mode => 'print_report',
