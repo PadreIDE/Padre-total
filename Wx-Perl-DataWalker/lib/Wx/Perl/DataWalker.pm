@@ -101,10 +101,14 @@ sub go_down {
   my $treftype = reftype($target);
   if (not $treftype and reftype(\$target) eq 'GLOB') {
     # work around my sucky understanding of GLOBS. Damn you, GLOB, damn you!
-    $self->current_head(\$target);
-    push @{$self->stack}, \$target;
-    $self->{current_level}->set_data(\$target);
-    return(1);
+#    $self->current_head(\$target);
+#    push @{$self->stack}, \$target;
+#    $self->{current_level}->set_data(\$target);
+#    return(1);
+    # with kudos to Yves!    
+    no strict 'refs';
+    $target = \*{"$target"};
+    $treftype = reftype($target);
   }
   return() if not $treftype or $treftype eq 'CODE';
   # avoid direct recursion into self
