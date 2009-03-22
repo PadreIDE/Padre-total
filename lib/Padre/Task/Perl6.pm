@@ -133,7 +133,12 @@ sub run {
         }
         $self->{issues} = $issues;
     } else {
-        $self->{tokens} = Storable::thaw($out);
+		eval {
+        	$self->{tokens} = Storable::thaw($out);
+		};
+		if ($@) {
+			warn "Exception: $@";
+		}
     }
 
     return 1;
