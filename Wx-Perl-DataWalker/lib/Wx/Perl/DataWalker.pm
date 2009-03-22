@@ -49,12 +49,12 @@ sub new {
   $self->{reset_button} = Wx::Button->new( $self, -1, "Reset" );
   EVT_BUTTON( $self, $self->{back_button}, sub { $self->go_back(); } );
   EVT_BUTTON( $self, $self->{reset_button}, sub { $self->reset_head(); } );
-  $buttonsizer->Add($self->{back_button}, 0, 0, Wx::wxALL|Wx::wxALIGN_CENTER_VERTICAL, 2);
-  $buttonsizer->Add($self->{reset_button}, 0, 0, Wx::wxALL|Wx::wxALIGN_CENTER_VERTICAL, 2);
+  $buttonsizer->Add($self->{back_button}, 0, Wx::wxALL|Wx::wxALIGN_CENTER_VERTICAL, 2);
+  $buttonsizer->Add($self->{reset_button}, 0, Wx::wxALL|Wx::wxALIGN_CENTER_VERTICAL, 2);
 
   # show-size radio boxes
   $self->{size_radio_box} = Wx::RadioBox->new(
-    $self, -1, "Show Sizes",
+    $self, -1, "Show approx. size",
     Wx::wxDefaultPosition, Wx::wxDefaultSize,
     [qw(No Yes Total)],
     Wx::wxRA_SPECIFY_COLS,
@@ -67,7 +67,7 @@ sub new {
       $self->update_size();
     }
   );
-  $buttonsizer->Add($self->{size_radio_box}, 0, 0, Wx::wxLEFT||Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_RIGHT, 10);
+  $buttonsizer->Add($self->{size_radio_box}, 0, Wx::wxLEFT|Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_RIGHT, 10);
 
   my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
   $vsizer->Add($buttonsizer, 0, Wx::wxEXPAND, Wx::wxALL, 2);
@@ -75,10 +75,9 @@ sub new {
   # the current level in the tree...
   my $curl = $self->{current_level} = Wx::Perl::DataWalker::CurrentLevel->new( $self, -1, );
   $self->update_size();
-  $vsizer->Add($self->{current_level}, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
+  $vsizer->Add($self->{current_level}, Wx::wxEXPAND, Wx::wxEXPAND|Wx::wxALL, 2);
   
-  
-  $hsizer->Add($vsizer, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
+  $hsizer->Add($vsizer, Wx::wxEXPAND, Wx::wxEXPAND|Wx::wxALL, 2);
   $self->SetSizer( $hsizer );
   $hsizer->SetSizeHints( $self );
 
