@@ -51,10 +51,54 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About'                          => sub { $self->show_about },
+		'Browse YAML dump file'          => sub { $self->browse_yaml_file },
 		'Browse current document object' => sub { $self->browse_current_document },
 		'Browse Padre IDE object'        => sub { $self->browse_padre },
 		'Browse Padre Main Symbol Table' => sub { $self->browse_padre_stash },
 	];
+}
+
+sub browse_yaml_file {
+	my $self = shift;
+	require YAML::XS;
+	my $main = Padre->ide->wx->main;
+	my $dialog = Wx::FileDialog->new(
+		$main,
+		"Open file",
+		$main->cwd,
+		"",
+		"*.*",
+		Wx::wxFD_OPEN|Wx::wxFD_FILE_MUST_EXIST,
+	);
+	unless ( Padre::Util::WIN32 ) {
+		$dialog->SetWildcard("*");
+	}
+
+	return if $dialog->ShowModal == Wx::wxID_CANCEL;
+	my @filenames = $dialog->GetFilenames or return();
+	my $file = File::Spec->catfile($dialog->GetDirectory(), shift @filenames);
+
+	if (not (-f $file and -r $file)) {
+		Wx::MessageBox(
+			"Could not find the specified file '$file'",
+			"File not found",
+			Wx::wxOK,
+			$main,
+		);
+	}
+
+	my $data = eval {YAML::XS::LoadFile($file)};
+	if (not defined $data or $@) {
+		Wx::MessageBox(
+			"Could not read the YAML file." . ($@ ? "\n$@" : ""),
+			"Invalid YAML file",
+			Wx::wxOK,
+			$main,
+		);
+	}
+
+	$self->_data_walker($data);
+	return();
 }
 
 sub browse_padre_stash {
@@ -67,7 +111,7 @@ sub browse_padre_stash {
 sub browse_current_document {
 	my $self = shift;
 	my $doc = Padre::Current->document;
-        $self->_data_walker($doc);
+	$self->_data_walker($doc);
 	return();
 }
 
