@@ -54,11 +54,10 @@ sub OnInit {
       {data => $data},
       undef, -1,
       "dataWalker",
-      [50, 50], [300, 300],
-      Wx::wxDEFAULT_FRAME_STYLE 
     );
     $self->SetTopWindow($frame);
     $frame->Show(1);
+    $frame->SetSize(500,500);
 
     return 1;
 }
