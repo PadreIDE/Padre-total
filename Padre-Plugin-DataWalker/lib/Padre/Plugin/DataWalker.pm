@@ -51,6 +51,7 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About'                          => sub { $self->show_about },
+		'Browse current document object' => sub { $self->browse_current_document },
 		'Browse Padre IDE object'        => sub { $self->browse_padre },
 		'Browse Padre Main Symbol Table' => sub { $self->browse_padre_stash },
 	];
@@ -61,6 +62,15 @@ sub browse_padre_stash {
 	$self->_data_walker(\%::);
 	return();
 }
+
+
+sub browse_current_document {
+	my $self = shift;
+	my $doc = Padre::Current->document;
+        $self->_data_walker($doc);
+	return();
+}
+
 
 sub browse_padre {
 	my $self = shift;
