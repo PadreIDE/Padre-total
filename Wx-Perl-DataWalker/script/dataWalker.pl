@@ -11,19 +11,38 @@ sub usage {
   warn("$msg\n\n") if defined $msg;
 
   warn <<HERE;
-Usage: $0 YAMLDUMP
+Usage: $0 --eval '{foo => "bar", baz => []}'
+       $0 --yaml YAMLFILE
 HERE
   exit(1);
 }
 
+my $eval;
+my $yamlfile;
 GetOptions(
   'h|help' => \&usage,
+  'e|eval' => \$eval,
+  'y|yaml' => \$yamlfile,
 );
 
-my $datafile = shift(@ARGV);
-usage("Need find YAML input file") unless defined $datafile;
-usage("Could not find YAML input file '$datafile'") unless -f $datafile;
-my $data = YAML::XS::LoadFile($datafile);
+if (1!=grep {defined $_} ($eval, $yamlfile)) {
+  usage("You need to supply exactly one of the --eval or --yaml options");
+}
+
+my $data;
+if (defined $eval) {
+  $data = eval "$eval";
+  if ($@) {
+    usage("Could not eval your expression: $@");
+  }
+}
+elsif (defined $yamlfile) {
+  usage("Could not find YAML input file '$yamlfile'") unless -f $yamlfile;
+  $data = YAML::XS::LoadFile($yamlfile)
+}
+else {
+  die "Should not happen";
+}
 
 package MyApp;
 our @ISA = qw(Wx::App);
@@ -34,13 +53,12 @@ sub OnInit {
     my $frame = Wx::Perl::DataWalker->new(
       {data => $data},
       undef, -1,
-      "Hello World",
-      [250, 250], [300, 300],
+      "dataWalker",
+      [50, 50], [300, 300],
       Wx::wxDEFAULT_FRAME_STYLE 
     );
-    $frame->Show(1);
-
     $self->SetTopWindow($frame);
+    $frame->Show(1);
 
     return 1;
 }
