@@ -16,7 +16,7 @@ use constant {
   DISPLAY_GLOB          => 4,
 };
 
-use constant GLOB_THINGS => [qw(SCALAR ARRAY HASH CODE IO GLOB FORMAT)];
+use constant GLOB_THINGS => [qw(NAME PACKAGE SCALAR ARRAY HASH CODE IO GLOB FORMAT)];
   #$scalarref = *foo{SCALAR};
   #$arrayref  = *ARGV{ARRAY};
   #$hashref   = *ENV{HASH};
@@ -198,7 +198,7 @@ sub _set_glob {
   my $self = shift;
   $self->{display_mode} = DISPLAY_GLOB;
   $self->ClearAll();
-  $self->SetItemCount(7); # 7 things in a glob
+  $self->SetItemCount(scalar @{GLOB_THINGS()});
   $self->InsertColumn(0, "THING");
   $self->InsertColumn(1, "RefType");
   $self->InsertColumn(2, "Class");
