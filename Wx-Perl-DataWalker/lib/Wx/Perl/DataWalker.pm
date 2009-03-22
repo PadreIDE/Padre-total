@@ -176,19 +176,56 @@ Wx::Perl::DataWalker - Perl extension for blah blah blah
 
 =head1 SYNOPSIS
 
+  # alternatively, see the dataWalker.pl script in this distribution!
   use Wx::Perl::DataWalker;
+  
+  my $data_to_browse = {
+    # complex data structure.
+    # Good test: \%::
+  };
+  
+  package MyWalkerDialog;
+  our @ISA = qw(Wx::App);
+  
+  sub OnInit {
+      my $self = shift;
+
+      my $frame = Wx::Perl::DataWalker->new(
+        {data => $data_to_browse},
+        undef, -1,
+        "dataWalker",
+      );
+      $self->SetTopWindow($frame);
+      $frame->Show(1);
+      $frame->SetSize(500,500);
+
+      return 1;
+  }
+  
+  package main;
+  my $app = MyWalkerDialog->new();
+  $app->MainLoop();
+
 
 =head1 DESCRIPTION
 
-Stub documentation for Wx::Perl::DataWalker, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+C<Wx::Perl::DataWalker> implements a C<Wx::Frame> subclass that
+shows a relatively simple Perl data structure browser.
+After opening such a frame and supplying it with a reference to an
+essentially arbitrary data structure, you can visually browse it
+by double-clicking references.
 
-Blah blah blah.
+So far, there is no tree view but only a display of the current level of the
+data structure. You can traverse back up the structure with a I<back> button.
+
+Optionally, C<Wx::Perl::DataWalker> displays the (approximate!) size of the
+data structure using C<Devel::Size>.
 
 =head1 SEE ALSO
 
-L<Wx>
+L<Wx>, L<Devel::Size>
+
+L<Padre::Plugin::DataWalker>
 
 =head1 AUTHOR
 
