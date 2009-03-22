@@ -17,13 +17,6 @@ use constant {
 };
 
 use constant GLOB_THINGS => [qw(NAME PACKAGE SCALAR ARRAY HASH CODE IO GLOB FORMAT)];
-  #$scalarref = *foo{SCALAR};
-  #$arrayref  = *ARGV{ARRAY};
-  #$hashref   = *ENV{HASH};
-  #$coderef   = *handler{CODE};
-  #$ioref     = *STDIN{IO};
-  #$globref   = *foo{GLOB};
-  #$formatref = *foo{FORMAT};
 
 use Class::XSAccessor
   getters => {
@@ -49,7 +42,10 @@ sub new {
       $self->on_list_item_activated($_[1]);
     }
   );
-  
+ 
+  my $imglist = $self->get_icon_list();
+  $self->AssignImageList($imglist, Wx::wxIMAGE_LIST_SMALL);
+
   $self->{show_size} = 0;
   $self->{show_recur_size} = 0;
   $self->{display_mode} = DISPLAY_UNINITIALIZED;
@@ -166,6 +162,32 @@ sub OnGetItemText {
     }
   }
 }
+
+
+sub OnGetItemImage {
+  my $self = shift;
+  my $itemno = shift;
+  my $data = $self->{data};
+
+  if ($self->{display_mode} == DISPLAY_SCALAR) {
+    return $self->ref_to_icon(reftype($$data));
+  }
+  elsif ($self->{display_mode} == DISPLAY_ARRAY) {
+    my $item = $data->[$itemno];
+    return $self->ref_to_icon(reftype($item));
+  }
+  elsif ($self->{display_mode} == DISPLAY_HASH) {
+    my $key = $self->{hash_cache}[$itemno];
+    my $item = $data->{$key};
+    return $self->ref_to_icon(reftype($item));
+  }
+  elsif ($self->{display_mode} == DISPLAY_GLOB) {
+    my $item = *{$data}{GLOB_THINGS->[$itemno]};
+    return $self->ref_to_icon(reftype($item));
+  }
+  return(-1);
+}
+
 
 sub calc_size {
   my $self = shift;
@@ -295,6 +317,104 @@ sub on_list_item_activated {
   $self->parent->go_down($key);
 }
 
+
+###################################
+# icon storage
+
+{
+  my %icons = (
+    'array' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAAU1JREFUOMud0z1IllEYxvGfJPU2CE2FVENEFKQRGURbW7MEOjs1RGs01iBRi63R
+GO2tJUpTS1FDGBGCS5EfQ4RU9qFXy20d5PUtvOAM5zrX+Z/7fs552KJwLNwJL8Nq+BWWwnS4GgZ0
+U9gT7taG9BjL4dLWzZ0wU4Gf4X64EPaF3eFQGA+zDehyC7hX5ocwoofCRFX5IwwJZ8JGWAun/IfC
+jTrwQXv6VBM4HubCSji/WXazfrC8ReFdTUaawOOm1xddAJ3yvgnfa9JpAl/LOxvOdQGMl/eqH33l
+79qm5fVm436M4VZZt4WFop1ugtNNC8+7vIUv4cpm+GGZkw3gRHgTFusjroX3Bb4eBtsruViA1XDU
+ThSeFORtOLITwIEwX5DP4WYYDntrDIVr4XU4uR1kMDz9x4/0LBzuVUlfGA2PwsewHj7VwxrL3yv/
+o99l+f7MpBeL2gAAAABJRU5ErkJggg==
+HERE
+    'scalar' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAAMlJREFUOMulkysOwkAURU+LxIADjWMBSBy2LAAP1SwAywZIMKwC2SBI2AACNB9P
+QoIAEpKLeU0qWmZKJ3mZN5m5531mBhxDoF/7IRVHWBB1KNgI7rZ+CNaCAR4pxwIVmQ/gaodXgrb5
+TUEkSHwAbxM1fJqYB9ga4CiYm98VBL6AjmCfU/9ZMPaFBIK+YGbiUwY0LVuSbJ6kmfwLqBvg4xLs
+BCNBKwXYdS7NvzgjZuyV08zYBegJFoKD4GmimyARRGXrr1X9jc5X+AVi1ZMjWoXKsgAAAABJRU5E
+rkJggg==
+HERE
+    'hash' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAAOtJREFUOMvNk7FqAlEQRU8iWW20sEm37NcIgn+hEfINC1aBZbEUY8g/CP6OiE3U
+TohbJ3DT3MBj2V0tfdV9M+8OM4d5cBdHEAneBRfBt2AheCq9GQm2gqiqQCaQ4EXwav0W5DuCvWBQ
+18HBpr7g2foryM8E66YRfm16ELSsf5xLBGdB3FTgFHTQtz46txGk1yDObRoLJta5YCjYCbqCpQFf
+DDyiBOlTUPjBStCzeViCPLXOrnWVCjYVkP9HPDSZY4NLKiA/hpDrCqwFs+B+vLkDwcBL0wlieRXk
+upXeCkaleFvwYciFdfs+PuIfzS2y8qBa0XcAAAAASUVORK5CYII=
+HERE
+    'code' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAAOlJREFUOMvNk61OQ0EYRE8ABalAFIcAUxJwON4ARQIKAQ7NO+BBIkgwBFLZpL7B
+oRBIRA0IDA0YuOEvHMyImyb3plR13Tc7czY72YWJW8K8cC4MhE/hRtj6D6ArKBwJc8KO8DFqeEb4
+CmC2pO+NClhKWGF73A4eAngRVsYpsBD6gTwKi0Oeb+GpCnCS4HKpzHuhmf0p4Ue4rAIMEppOoe3M
+t0JDWM28UQUoYmiUTjyLdi1cCFd1HfRi3h3Sj6MXwkIdYF14F56FzVyjKRxG/xXuhFYdZE3oCK95
+VH3hVGgJB4G8CfuT8fn+ANlvk1fzzFNCAAAAAElFTkSuQmCC
+HERE
+    'glob' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAAKFJREFUOMvN0k1OAlEQBODvifE+spnhOh7DxJXEJazhRKBbuAPhCMaZcvMWhAw/
+xgX0rrrS3VWV5u4r5Bz/8N8Dj0fXpvjBR+F7QM0TXjEqvA3JXYY+bEJzaCE0td+H5TnPk/AVujAL
+CfOKP0N7TXAlvIRdXbCruPwlxFzAJ6faKrWr0q+3cCHENmwrvzhlYY93jAvrQ6KwwnPl9/fzibev
+X+/lWAPE64K3AAAAAElFTkSuQmCC
+HERE
+    'empty' => <<'HERE',
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A
+/wD/oL2nkwAAABJJREFUOMtjYBgFo2AUjAIIAAAEEAABhT+qcgAAAABJRU5ErkJggg==
+HERE
+  );
+
+  my %ref_to_icon = (
+    qw(
+      SCALAR 1
+      ARRAY 2
+      HASH 3
+      CODE 4
+      GLOB 5
+      REF 1
+    )
+  );
+
+  sub get_icon_list {
+    my $self = shift;
+    _icons_to_objects();
+
+    my $imglist = Wx::ImageList->new(16, 16, 0, 0);
+
+    $imglist->Add( $icons{$_} ) foreach qw(empty scalar array hash code glob);
+
+    return $imglist;
+  }
+
+  sub ref_to_icon {
+    my $self = shift;
+    my $reftype = shift;
+    return(0) if not $reftype;
+    my $icon_no = $ref_to_icon{$reftype};
+    return defined($icon_no) ? $icon_no : 0;
+  }
+  
+  sub _icons_to_objects {
+    return if !values(%icons) or ref((values %icons)[0]);
+
+    require MIME::Base64;
+    my $handler = Wx::PNGHandler->new();
+    Wx::Image::AddHandler($handler);
+    foreach my $icon_name (keys %icons) {
+      my $str = MIME::Base64::decode_base64($icons{$icon_name});
+      open my $fh, '<', \$str or die $!;
+      my $img = Wx::Image->new($fh, Wx::wxBITMAP_TYPE_PNG);
+      close $fh;
+      $icons{$icon_name} = Wx::Bitmap->new($img);
+    }
+  }
+}
 
 1;
 __END__
