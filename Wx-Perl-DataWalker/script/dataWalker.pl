@@ -21,8 +21,8 @@ my $eval;
 my $yamlfile;
 GetOptions(
   'h|help' => \&usage,
-  'e|eval' => \$eval,
-  'y|yaml' => \$yamlfile,
+  'e|eval=s' => \$eval,
+  'y|yaml=s' => \$yamlfile,
 );
 
 if (1!=grep {defined $_} ($eval, $yamlfile)) {
