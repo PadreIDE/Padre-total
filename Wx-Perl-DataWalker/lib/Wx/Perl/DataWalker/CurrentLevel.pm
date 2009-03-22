@@ -100,6 +100,33 @@ sub OnGetItemText {
   }
 }
 
+
+{
+  # this is an optimization explicitly allowed according to the wx docs.
+  my $undef_attr = Wx::ListItemAttr->new();
+  $undef_attr->SetTextColour(Wx::Colour->new("gray"));
+
+  sub OnGetItemAttr {
+    my $self = shift;
+    my $itemno = shift;
+    my $data = $self->{data};
+
+    # colour the undef's gray!
+    if ($self->{display_mode} == DISPLAY_SCALAR) {
+      return defined($$data) ? undef : $undef_attr;
+    }
+    elsif ($self->{display_mode} == DISPLAY_ARRAY) {
+      my $item = $data->[$itemno];
+      return defined($item) ? undef : $undef_attr;
+    }
+    elsif ($self->{display_mode} == DISPLAY_HASH) {
+      my $key = $self->{hash_cache}[$itemno];
+      my $item = $data->{$key};
+      return defined($item) ? undef : $undef_attr;
+    }
+  }
+}
+
 ######################
 # setup the display data type
 
