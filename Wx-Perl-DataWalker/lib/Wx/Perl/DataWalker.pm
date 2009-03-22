@@ -6,7 +6,7 @@ use warnings;
 our $VERSION = '0.01';
 our @ISA = qw(Wx::Frame);
 
-use Scalar::Util qw(reftype blessed);
+use Scalar::Util qw(reftype blessed refaddr);
 use Wx ':everything';
 use Wx::Event ':everything';
 require Wx::Perl::DataWalker::CurrentLevel;
@@ -91,12 +91,17 @@ sub go_down {
   elsif ($reftype eq 'REF') {
     $target = $$data;
   }
+  elsif ($reftype eq 'GLOB') {
+    $target = *{$data}{$where};
+  }
   else {
     return();
   }
 
   my $treftype = reftype($target);
   return() if not $treftype or $treftype eq 'CODE';
+  # avoid direct recursion into self
+  return() if $treftype eq $reftype and refaddr($target) eq refaddr($data);
 
   $self->current_head($target);
   push @{$self->stack}, $target;

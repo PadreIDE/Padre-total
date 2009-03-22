@@ -13,7 +13,17 @@ use constant {
   DISPLAY_SCALAR        => 1,
   DISPLAY_ARRAY         => 2,
   DISPLAY_HASH          => 3,
+  DISPLAY_GLOB          => 4,
 };
+
+use constant GLOB_THINGS => [qw(SCALAR ARRAY HASH CODE IO GLOB FORMAT)];
+  #$scalarref = *foo{SCALAR};
+  #$arrayref  = *ARGV{ARRAY};
+  #$hashref   = *ENV{HASH};
+  #$coderef   = *handler{CODE};
+  #$ioref     = *STDIN{IO};
+  #$globref   = *foo{GLOB};
+  #$formatref = *foo{FORMAT};
 
 use Class::XSAccessor
   getters => {
@@ -61,6 +71,9 @@ sub set_data {
   elsif ($reftype eq 'ARRAY') {
     $self->_set_array();
   }
+  elsif ($reftype eq 'GLOB') {
+    $self->_set_glob();
+  }
   else {
     $self->_set_scalar();
   }
@@ -98,6 +111,14 @@ sub OnGetItemText {
     $colno == 2 and return blessed($item)||'';
     return defined($item)?$item:'undef';
   }
+  elsif ($self->{display_mode} == DISPLAY_GLOB) {
+    $colno == 0 and return GLOB_THINGS->[$itemno];
+    my $item = *{$data}{GLOB_THINGS->[$itemno]};
+    $colno == 1 and return reftype($item)||'';
+    $colno == 2 and return blessed($item)||'';
+    return defined($item)?$item:'undef';
+  }
+
 }
 
 
@@ -122,6 +143,10 @@ sub OnGetItemText {
     elsif ($self->{display_mode} == DISPLAY_HASH) {
       my $key = $self->{hash_cache}[$itemno];
       my $item = $data->{$key};
+      return defined($item) ? undef : $undef_attr;
+    }
+    elsif ($self->{display_mode} == DISPLAY_GLOB) {
+      my $item = *{$data}{GLOB_THINGS->[$itemno]};
       return defined($item) ? undef : $undef_attr;
     }
   }
@@ -169,6 +194,19 @@ sub _set_array {
 }
 
 
+sub _set_glob {
+  my $self = shift;
+  $self->{display_mode} = DISPLAY_GLOB;
+  $self->ClearAll();
+  $self->SetItemCount(7); # 7 things in a glob
+  $self->InsertColumn(0, "THING");
+  $self->InsertColumn(1, "RefType");
+  $self->InsertColumn(2, "Class");
+  $self->InsertColumn(3, "Value");
+  return();
+}
+
+
 sub _set_width {
   my $self = shift;
 # Can't work in virtual mode...
@@ -188,6 +226,9 @@ sub _set_width {
       $widths = [$chars*11, 80, 90, 200];
     }
     elsif ($_ == DISPLAY_HASH) {
+      $widths = [100, 80, 90, 200];
+    }
+    elsif ($_ == DISPLAY_GLOB) {
       $widths = [100, 80, 90, 200];
     }
   }
@@ -217,6 +258,7 @@ sub on_list_item_activated {
     $_ == DISPLAY_SCALAR and $key = undef, last;
     $_ == DISPLAY_ARRAY  and $key = $row, last;
     $_ == DISPLAY_HASH   and $key = $self->{hash_cache}[$row], last;
+    $_ == DISPLAY_GLOB   and $key = GLOB_THINGS->[$row], last;
   }
 
   $self->parent->go_down($key);
