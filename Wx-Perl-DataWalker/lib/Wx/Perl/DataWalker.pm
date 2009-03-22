@@ -26,7 +26,8 @@ sub new {
   my $self = $class->SUPER::new(@_);
 
   $self->{global_head} = $config->{data} or die "Invalid data";
-  die "top-level display of CODE refs not supported!" if reftype($self->{global_head}) eq 'CODE';
+  my $rtype = reftype($self->{global_head});
+  die "top-level display of CODE refs not supported!" if defined $rtype and $rtype eq 'CODE';
 
   $self->{stack}       = [$self->{global_head}];
 

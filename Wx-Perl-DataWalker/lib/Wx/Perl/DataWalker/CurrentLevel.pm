@@ -47,7 +47,7 @@ sub set_data {
   my $data = shift;
 
   my $reftype = reftype($data);
-  return() if $reftype eq 'CODE';
+  return() if defined $reftype and $reftype eq 'CODE';
   
   $self->{data} = $data;
   delete $self->{hash_cache};
