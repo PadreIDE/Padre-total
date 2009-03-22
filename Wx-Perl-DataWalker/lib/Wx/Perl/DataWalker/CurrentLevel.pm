@@ -58,6 +58,11 @@ sub new {
   return $self;
 }
 
+sub refresh {
+  my $self = shift;
+  $self->set_data($self->{data});
+}
+
 sub set_data {
   my $self = shift;
   my $data = shift;
@@ -167,7 +172,7 @@ sub calc_size {
   my $data = shift;
 
   return(
-    $self->show_recur_size() ? Devel::Size::total_size(\$data) : Devel::Size::size(\$data)
+    $self->show_recur_size() ? Devel::Size::total_size(\$data) : Devel::Size::size($data)
   );
 }
 

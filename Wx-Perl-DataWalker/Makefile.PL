@@ -9,6 +9,7 @@ WriteMakefile(
       'Wx' => '0.88',
       'YAML::XS' => '0.32',
       'Scalar::Util' => '0',
+      'Devel::Size' => '0.71',
       'Class::XSAccessor' => '0.06',
     }, # e.g., Module::Name => 1.1
     ABSTRACT_FROM  => 'lib/Wx/Perl/DataWalker.pm', # retrieve abstract from module
