@@ -29,10 +29,6 @@ sub new {
   my $rtype = reftype($self->{global_head});
   die "top-level display of CODE refs not supported!" if defined $rtype and $rtype eq 'CODE';
 
-  $self->{stack}       = [$self->{global_head}];
-
-  $self->current_head($self->{global_head});
-
   my $hsizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 
   # tree view here...
@@ -43,14 +39,23 @@ sub new {
 #  );
 #  $hsizer->Add($self->{current_level2}, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
 
-  # the current level in the tree...
-  my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
+  my $buttonsizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
   $self->{back_button} = Wx::Button->new(
     $self, -1, "<--",
   );
   EVT_BUTTON( $self, $self->{back_button}, sub { $self->go_back(); } );
-  $vsizer->Add($self->{back_button}, 0, 0, Wx::wxALL, 2);
+  $buttonsizer->Add($self->{back_button}, 0, 0, Wx::wxALL, 2);
+  
+  $self->{reset_button} = Wx::Button->new(
+    $self, -1, "Reset",
+  );
+  EVT_BUTTON( $self, $self->{reset_button}, sub { $self->reset(); } );
+  $buttonsizer->Add($self->{reset_button}, 0, 0, Wx::wxALL, 2);
 
+  my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
+  $vsizer->Add($buttonsizer, 0, Wx::wxEXPAND, Wx::wxALL, 2);
+  
+  # the current level in the tree...
   $self->{current_level} = Wx::Perl::DataWalker::CurrentLevel->new(
     $self, -1,
   );
@@ -64,7 +69,7 @@ sub new {
   $self->SetSizer( $hsizer );
   $hsizer->SetSizeHints( $self );
 
-  $self->{current_level}->set_data($self->current_head);
+  $self->reset();
 
   return $self;
 }
@@ -133,6 +138,13 @@ sub go_back {
   return(1);
 }
 
+
+sub reset {
+  my $self = shift;
+  $self->{stack} = [$self->{global_head}];
+  $self->current_head($self->{global_head});
+  $self->{current_level}->set_data($self->current_head);
+}
 
 1;
 __END__
