@@ -99,6 +99,13 @@ sub go_down {
   }
 
   my $treftype = reftype($target);
+  if (not $treftype and reftype(\$target) eq 'GLOB') {
+    # work around my sucky understanding of GLOBS. Damn you, GLOB, damn you!
+    $self->current_head(\$target);
+    push @{$self->stack}, \$target;
+    $self->{current_level}->set_data(\$target);
+    return(1);
+  }
   return() if not $treftype or $treftype eq 'CODE';
   # avoid direct recursion into self
   return() if $treftype eq $reftype and refaddr($target) eq refaddr($data);
