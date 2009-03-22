@@ -7,6 +7,7 @@ our $VERSION = '0.01';
 our @ISA = qw(Wx::Frame);
 
 use Scalar::Util qw(reftype blessed refaddr);
+use Devel::Size ();
 use Wx ':everything';
 use Wx::Event ':everything';
 require Wx::Perl::DataWalker::CurrentLevel;
@@ -29,6 +30,9 @@ sub new {
   my $rtype = reftype($self->{global_head});
   die "top-level display of CODE refs not supported!" if defined $rtype and $rtype eq 'CODE';
 
+  $self->{show_size} = $config->{show_size} || 0;
+  $self->{show_recur_size} = $config->{show_recur_size} || 0;
+  
   my $hsizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 
   # tree view here...
@@ -40,36 +44,31 @@ sub new {
 #  $hsizer->Add($self->{current_level2}, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
 
   my $buttonsizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-  $self->{back_button} = Wx::Button->new(
-    $self, -1, "<--",
-  );
+
+  $self->{back_button} = Wx::Button->new( $self, -1, "<--" );
+  $self->{reset_button} = Wx::Button->new( $self, -1, "Reset" );
   EVT_BUTTON( $self, $self->{back_button}, sub { $self->go_back(); } );
+  EVT_BUTTON( $self, $self->{reset_button}, sub { $self->reset_head(); } );
   $buttonsizer->Add($self->{back_button}, 0, 0, Wx::wxALL, 2);
-  
-  $self->{reset_button} = Wx::Button->new(
-    $self, -1, "Reset",
-  );
-  EVT_BUTTON( $self, $self->{reset_button}, sub { $self->reset(); } );
   $buttonsizer->Add($self->{reset_button}, 0, 0, Wx::wxALL, 2);
 
   my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
   $vsizer->Add($buttonsizer, 0, Wx::wxEXPAND, Wx::wxALL, 2);
   
   # the current level in the tree...
-  $self->{current_level} = Wx::Perl::DataWalker::CurrentLevel->new(
+  my $curl = $self->{current_level} = Wx::Perl::DataWalker::CurrentLevel->new(
     $self, -1,
   );
+  $curl->show_size($self->{show_size});
+  $curl->show_recur_size($self->{show_recur_size});
   $vsizer->Add($self->{current_level}, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
   
-
   
   $hsizer->Add($vsizer, Wx::wxEXPAND, Wx::wxEXPAND, Wx::wxALL, 2);
-
-
   $self->SetSizer( $hsizer );
   $hsizer->SetSizeHints( $self );
 
-  $self->reset();
+  $self->reset_head();
 
   return $self;
 }
@@ -139,7 +138,7 @@ sub go_back {
 }
 
 
-sub reset {
+sub reset_head {
   my $self = shift;
   $self->{stack} = [$self->{global_head}];
   $self->current_head($self->{global_head});

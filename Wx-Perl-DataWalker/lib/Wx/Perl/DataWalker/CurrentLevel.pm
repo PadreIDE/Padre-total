@@ -28,6 +28,10 @@ use constant GLOB_THINGS => [qw(NAME PACKAGE SCALAR ARRAY HASH CODE IO GLOB FORM
 use Class::XSAccessor
   getters => {
     parent => 'parent',
+  },
+  accessors => {
+    show_size       => 'show_size',
+    show_recur_size => 'show_recur_size',
   };
 
 sub new {
@@ -46,6 +50,8 @@ sub new {
     }
   );
   
+  $self->{show_size} = 0;
+  $self->{show_recur_size} = 0;
   $self->{display_mode} = DISPLAY_UNINITIALIZED;
   $self->set_data('');
 
@@ -94,6 +100,7 @@ sub OnGetItemText {
   if ($self->{display_mode} == DISPLAY_SCALAR) {
     $colno == 0 and return reftype($data)||'';
     $colno == 1 and return blessed($data)||'';
+    $colno == 2 and $self->show_size() and return $self->calc_size($$data);
     return defined($$data)?$$data:'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_ARRAY) {
@@ -101,6 +108,7 @@ sub OnGetItemText {
     my $item = $data->[$itemno];
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
+    $colno == 3 and $self->show_size() and return $self->calc_size($item);
     return defined($item)?$item:'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_HASH) {
@@ -109,6 +117,7 @@ sub OnGetItemText {
     my $item = $data->{$key};
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
+    $colno == 3 and $self->show_size() and return $self->calc_size($item);
     return defined($item)?$item:'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_GLOB) {
@@ -116,6 +125,7 @@ sub OnGetItemText {
     my $item = *{$data}{GLOB_THINGS->[$itemno]};
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
+    $colno == 3 and $self->show_size() and return $self->calc_size($item);
     return defined($item)?$item:'undef';
   }
 
@@ -152,6 +162,15 @@ sub OnGetItemText {
   }
 }
 
+sub calc_size {
+  my $self = shift;
+  my $data = shift;
+
+  return(
+    $self->show_recur_size() ? Devel::Size::total_size(\$data) : Devel::Size::size(\$data)
+  );
+}
+
 ######################
 # setup the display data type
 
@@ -160,9 +179,12 @@ sub _set_scalar {
   $self->{display_mode} = DISPLAY_SCALAR;
   $self->ClearAll();
   $self->SetItemCount(1);
+
+  # reverse insert for extensibility
+  $self->InsertColumn(0, "Value");
+  $self->InsertColumn(0, "Size") if $self->show_size();
+  $self->InsertColumn(0, "Class");
   $self->InsertColumn(0, "RefType");
-  $self->InsertColumn(1, "Class");
-  $self->InsertColumn(2, "Value");
   return();
 }
 
@@ -173,10 +195,11 @@ sub _set_hash {
   $self->ClearAll();
   $self->SetItemCount(scalar keys %{$self->{data}});
   $self->{hash_cache} = [sort keys %{$self->{data}}];
+  $self->InsertColumn(0, "Value");
+  $self->InsertColumn(0, "Size") if $self->show_size();
+  $self->InsertColumn(0, "Class");
+  $self->InsertColumn(0, "RefType");
   $self->InsertColumn(0, "Key");
-  $self->InsertColumn(1, "RefType");
-  $self->InsertColumn(2, "Class");
-  $self->InsertColumn(3, "Value");
   return();
 }
 
@@ -186,10 +209,11 @@ sub _set_array {
   $self->{display_mode} = DISPLAY_ARRAY;
   $self->ClearAll();
   $self->SetItemCount(scalar @{$self->{data}});
+  $self->InsertColumn(0, "Value");
+  $self->InsertColumn(0, "Size") if $self->show_size();
+  $self->InsertColumn(0, "Class");
+  $self->InsertColumn(0, "RefType");
   $self->InsertColumn(0, "Index");
-  $self->InsertColumn(1, "RefType");
-  $self->InsertColumn(2, "Class");
-  $self->InsertColumn(3, "Value");
   return();
 }
 
@@ -199,10 +223,11 @@ sub _set_glob {
   $self->{display_mode} = DISPLAY_GLOB;
   $self->ClearAll();
   $self->SetItemCount(scalar @{GLOB_THINGS()});
+  $self->InsertColumn(0, "Value");
+  $self->InsertColumn(0, "Size") if $self->show_size();
+  $self->InsertColumn(0, "Class");
+  $self->InsertColumn(0, "RefType");
   $self->InsertColumn(0, "THING");
-  $self->InsertColumn(1, "RefType");
-  $self->InsertColumn(2, "Class");
-  $self->InsertColumn(3, "Value");
   return();
 }
 
@@ -216,20 +241,21 @@ sub _set_width {
 #  }
   
   my $widths;
+  my $size = $self->show_size();
   for ($self->{display_mode}) {
     if ($_ == DISPLAY_SCALAR) {
-      $widths = [80, 90, 200];
+      $widths = [80, 90, $size?(100):(), 200];
     }
     elsif ($_ == DISPLAY_ARRAY) {
       my $chars = length(scalar(@{$self->{data}}));
       $chars = 6 if $chars < 6;
-      $widths = [$chars*11, 80, 90, 200];
+      $widths = [$chars*11, 80, 90, $size?(100):(), 200];
     }
     elsif ($_ == DISPLAY_HASH) {
-      $widths = [100, 80, 90, 200];
+      $widths = [100, 80, 90, $size?(100):(), 200];
     }
     elsif ($_ == DISPLAY_GLOB) {
-      $widths = [100, 80, 90, 200];
+      $widths = [100, 80, 90, $size?(100):(), 200];
     }
   }
   return() unless $widths;
