@@ -70,7 +70,7 @@ sub new {
   $buttonsizer->Add($self->{size_radio_box}, 0, Wx::wxLEFT|Wx::wxALIGN_CENTER_VERTICAL|Wx::wxALIGN_RIGHT, 10);
 
   my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-  $vsizer->Add($buttonsizer, 0, Wx::wxEXPAND, Wx::wxALL, 2);
+  $vsizer->Add($buttonsizer, 0, Wx::wxEXPAND|Wx::wxALL, 2);
   
   # the current level in the tree...
   my $curl = $self->{current_level} = Wx::Perl::DataWalker::CurrentLevel->new( $self, -1, );
