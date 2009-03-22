@@ -50,26 +50,39 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'             => sub { $self->show_about },
-		'Browse Padre IDE object' => sub { $self->browse_padre },
+		'About'                          => sub { $self->show_about },
+		'Browse Padre IDE object'        => sub { $self->browse_padre },
+		'Browse Padre Main Symbol Table' => sub { $self->browse_padre_stash },
 	];
+}
+
+sub browse_padre_stash {
+	my $self = shift;
+	$self->_data_walker(\%::);
+	return();
 }
 
 sub browse_padre {
 	my $self = shift;
-        require Wx::Perl::DataWalker;
-        
-        my $dialog = Wx::Perl::DataWalker->new(
-          {data => Padre->ide},
-          undef,
-          -1,
-          Wx::wxDefaultPosition,
-	  [750, 700], # FIXME Why doesn't the damn thing honour this?
-        );
-        $dialog->Show(1);
-        return();
+	$self->_data_walker(Padre->ide);
+	return();
 }
 
+sub _data_walker {
+	my $self = shift;
+	my $data = shift;
+	require Wx::Perl::DataWalker;
+        
+	my $dialog = Wx::Perl::DataWalker->new(
+		{data => $data},
+		undef,
+		-1,
+		"DataWalker",
+	);
+	$dialog->SetSize(500, 500);
+	$dialog->Show(1);
+	return();
+}
 
 
 sub show_about {
