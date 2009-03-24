@@ -16,6 +16,7 @@ requires 'Padre::Plugin::HTML'           => '0.08';
 requires 'Padre::Plugin::HTMLExport'     => '0.04';
 requires 'Padre::Plugin::InstallPARDist' => '0.01';
 requires 'Padre::Plugin::JavaScript'     => '0.25';
+requires 'Padre::Plugin::Nopaste'        => '0.1.0';
 requires 'Padre::Plugin::PAR'            => '0.04';
 requires 'Padre::Plugin::PerlCritic'     => '0.06';
 requires 'Padre::Plugin::PerlTidy'       => '0.05';

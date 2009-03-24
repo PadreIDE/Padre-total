@@ -24,6 +24,10 @@ If not, they run with the whole text from selected document.
 
 This is a simple plugin to run Acme::PlayCode on your source code.
 
+=head2 Padre::Plugin::Autoformat
+
+Reformat ASCII text
+
 =head2 Padre::Plugin::Alarm
 
 Alarm Clock (Audio::Beep)
@@ -95,6 +99,10 @@ use JavaScript::Beautifier to beautify js
 =head3 JavaScript Minifier
 
 use JavaScript::Minifier::XS to minify js
+
+=head2 Padre::Plugin::Nopaste
+
+Padre::Plugin::Nopaste − send code on a nopaste website from Padre
 
 =head2 Padre::Plugin::PAR
 
