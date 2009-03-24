@@ -18,7 +18,7 @@
 --nocheck-syntax
 --closing-brace-indentation=0
 --closing-paren-indentation=0
---closing-side-comments
+--noclosing-side-comments
 --closing-side-comment-else-flag=0
 --closing-side-comment-interval=25
 --closing-side-comment-maximum-text=20
