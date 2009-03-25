@@ -13,7 +13,7 @@ use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
 use File::Spec;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 # TODO
@@ -198,6 +198,22 @@ sub git_diff {
 	Padre::Wx::Dialog::Text->show($main, "Git Diff of $path", $out);
 #	$main->message($out, "Git Diff of $path");
 	return;
+}
+
+sub git_diff_of_file {
+	my ($self, $path) = @_;
+
+	$self->git_diff($path);
+
+	return;
+}
+
+sub git_diff_of_dir {
+	my ($self, $path) = @_;
+
+	$self->git_diff($path);
+
+    return;
 }
 
 sub git_diff_of_project {

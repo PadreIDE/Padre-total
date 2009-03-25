@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Git
 
+0.02    2009.03.25
+        Add necessary diff methods for file and dir
+
 0.01    2009.03.13
         First version, released on an unsuspecting world.
         Based on Padre-Plugin-SVK
