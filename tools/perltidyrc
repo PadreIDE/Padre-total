@@ -25,7 +25,7 @@
 --closing-square-bracket-indentation=0
 --comma-arrow-breakpoints=3
 --continuation-indentation=4
---nocuddled-else
+--cuddled-else
 --delete-closing-side-comments
 --delete-old-newlines
 --delete-old-whitespace
