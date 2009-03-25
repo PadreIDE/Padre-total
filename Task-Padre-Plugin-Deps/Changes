@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugin-Deps
 
+0.11
+        Padre::Plugin::Nopaste
+
 0.10    2009.3.14
         Autoformat plugin
 

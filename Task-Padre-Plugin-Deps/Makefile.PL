@@ -42,6 +42,9 @@ requires 'LWP::Simple';
 requires 'JavaScript::Beautifier'   => '0.03';
 requires 'JavaScript::Minifier::XS';
 
+# Padre::Plugin::Nopaste
+requires App::Nopaste;
+
 # Padre::Plugin::PAR',
 requires 'PAR::Packer';
 
