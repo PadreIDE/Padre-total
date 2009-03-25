@@ -38,7 +38,7 @@
 --indent-block-comments
 --indent-columns=4
 --keep-interior-semicolons
---noline-up-parentheses
+--line-up-parentheses
 --nologfile
 --long-block-line-count=8
 --look-for-autoloader
