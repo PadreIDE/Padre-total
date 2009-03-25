@@ -14,7 +14,6 @@
 --brace-vertical-tightness-closing=0
 --break-at-old-comma-breakpoints
 --break-at-old-keyword-breakpoints
---break-at-old-logical-breakpoints
 --break-at-old-ternary-breakpoints
 --nocheck-syntax
 --closing-brace-indentation=0
@@ -38,7 +37,7 @@
 --indent-block-comments
 --indent-columns=4
 --keep-interior-semicolons
---line-up-parentheses
+--no-line-up-parentheses
 --nologfile
 --long-block-line-count=8
 --look-for-autoloader
@@ -72,7 +71,8 @@
 --notabs
 --trim-qw
 --valign
---vertical-tightness=0
+--vertical-tightness=2
+--vertical-tightness-closing=0
 --want-break-before="= % + - * / x != == >= <= =~ !~ < > | & **= += *= &= <<= &&= -= /= |= >>= ||= .= %= ^=x="
 --nowarning-output
 #--entab-leading-whitespace=4
