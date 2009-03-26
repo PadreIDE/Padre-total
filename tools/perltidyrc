@@ -30,6 +30,7 @@
 --delete-old-newlines
 --delete-old-whitespace
 --delete-semicolons
+--entab-leading-whitespace=4
 --format="tidy"
 --format-skipping
 --fuzzy-line-length
