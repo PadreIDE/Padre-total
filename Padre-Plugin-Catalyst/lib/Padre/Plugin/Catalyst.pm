@@ -24,9 +24,6 @@ sub menu_plugins_simple {
     my $self = shift;
     
     return $self->plugin_name  => [
-#            'New Catalyst Application' => sub { require Padre::Plugin::Catalyst::NewApp;
-#                                                \&Padre::Plugin::Catalyst::NewApp::on_newapp
-#                                              },
             'New Catalyst Application' => sub { 
                                 require Padre::Plugin::Catalyst::NewApp;
                                 Padre::Plugin::Catalyst::NewApp::on_newapp();
@@ -44,7 +41,7 @@ sub menu_plugins_simple {
     ];
 }
 
-sub get_base_dir {	
+sub get_document_base_dir {	
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	my $filename = $doc->filename;
@@ -67,7 +64,7 @@ sub create {
 }
 
 sub on_create_model {
-    my $dir = get_base_dir();
+    my $dir = get_document_base_dir();
     create('model', $dir);
 }
 
@@ -78,10 +75,68 @@ sub on_create_controller {
 }
 
 sub on_start_server {
-    Wx::LaunchDefaultBrowser('http://localhost:3000');
+    my $project_dir = get_document_base_dir();
+    print STDERR "doc base dir is $project_dir\n";
+    my $main = Padre->ide->wx->main;
+    
+    # get the Catalyst project name, so we can
+    # figure out the development server's name
+    # TODO: make this code suck less
+    require File::Spec;
+    my @dirs = File::Spec->splitdir($project_dir);
+    my $server_filename = lc($dirs[-1]);
+    $server_filename =~ tr{-}{_};
+    $server_filename .= '_server.pl';
+    
+    my $server_full_path = File::Spec->catfile($project_dir, 'script', $server_filename );
+    if(! -e $server_full_path) {
+        Wx::MessageBox(
+            sprintf("Catalyst development web server not found at\n%s\n\nPlease make sure the active document is from your Catalyst project.", 
+                    $server_full_path
+                   ),
+            'Server not found', Wx::wxOK, $main
+        );
+        return;
+    }
+    
+    # go to the selected file's directory
+    # (catalyst instructs us to always run their scripts
+    #  from the basedir)
+	my $pwd = Cwd::cwd();
+	chdir $project_dir;
+
+    $main->run_command(File::Spec->catfile('script', $server_filename));
+    
+    # restore current dir
+    chdir $pwd;
+    
+    # TODO: actually check whether this is true.
+    my $ret = Wx::MessageBox(
+		'Web server appears to be running. Launch web browser now?',
+		'Start Web Browser?',
+		Wx::wxYES_NO|Wx::wxCENTRE,
+		$main,
+	);
+	if ( $ret == Wx::wxYES ) {
+        Wx::LaunchDefaultBrowser('http://localhost:3000');
+    }
+    
+    #TODO: handle menu greying
+    
+    return;
 }
 
 sub on_stop_server {
+    # TODO: Make this actually call
+    # Run -> Stop
+    my $main = Padre->ide->wx->main;
+    if ( $main->{command} ) {
+        $main->{command}->TerminateProcess;
+    }
+    delete $main->{command};
+    $main->menu->run->enable;
+    $main->output->AppendText("\nWeb server stopped successfully.\n");
+    return;
 }
 
 sub on_show_about {
