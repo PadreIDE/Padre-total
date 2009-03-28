@@ -34,6 +34,7 @@ sub menu_plugins_simple {
                 'View'       => sub { $self->on_create_view       },
                 'Controller' => sub { $self->on_create_controller },
             ],
+			'---'     => undef, # separator
             'Start Web Server' => sub { $self->on_start_server },
             'Stop Web Server'  => sub { $self->on_stop_server  },
             '---'     => undef, # separator
@@ -76,7 +77,6 @@ sub on_create_controller {
 
 sub on_start_server {
     my $project_dir = get_document_base_dir();
-    print STDERR "doc base dir is $project_dir\n";
     my $main = Padre->ide->wx->main;
     
     # get the Catalyst project name, so we can
@@ -237,7 +237,9 @@ L<http://search.cpan.org/dist/Padre-Plugin-Catalyst/>
 =back
 
 
-=head1 ACKNOWLEDGEMENTS
+=head1 SEE ALSO
+
+L<Catalyst>, L<Padre>
 
 
 =head1 COPYRIGHT & LICENSE
