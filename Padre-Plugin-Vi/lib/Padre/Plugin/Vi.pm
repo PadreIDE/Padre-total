@@ -1,6 +1,7 @@
 package Padre::Plugin::Vi;
 use strict;
 use warnings;
+use 5.008005;
 
 use base 'Padre::Plugin';
 
