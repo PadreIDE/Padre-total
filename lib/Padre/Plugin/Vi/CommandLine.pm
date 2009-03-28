@@ -9,6 +9,8 @@ use Padre::Wx        ();
 use File::Spec       ();
 use File::Basename   ();
 
+use Padre::Plugin::Vi::TabCompletition qw(clear_tab handle_tab set_original_cwd);
+
 =head1 NAME
 
 Padre::Plugin::Vi::CommandLine - part of the vi plugin in Padre
@@ -127,9 +129,6 @@ sub show_prompt {
 	return;
 }
 
-my @commands = qw(e w);
-my @current_options;
-
 sub on_key_pressed {
 	my ($text_ctrl, $event) = @_;
 	my $mod  = $event->GetModifiers || 0;
@@ -140,15 +139,14 @@ sub on_key_pressed {
 	
 	# anything but TAB pressed
 	if ($code != Wx::WXK_TAB) {
-		_clear_tab();
+		clear_tab();
 		$event->Skip(1);
 		return;
 	}
+	
+	set_original_cwd(Padre->ide->{original_cwd});
 
-	my $txt = $text_ctrl->GetValue;
-	$txt = '' if not defined $txt; # just in case...
-
-	my $value = _handle_tab( $txt, ($mod == Wx::wxMOD_SHIFT() ? 1 : 0) );
+	my $value = handle_tab( $text_ctrl->GetValue, ($mod == Wx::wxMOD_SHIFT() ? 1 : 0) );
 	return if not defined $value;
 	
 	$text_ctrl->SetValue($value);
@@ -158,86 +156,6 @@ sub on_key_pressed {
 	return;
 }
 
-{
-	my $tab_started;
-	my $last_tab;
-
-sub _clear_tab {
-	$tab_started = undef;
-}
-
-sub _handle_tab {
-	my ($txt, $shift) = @_;
-
-	if (not defined $tab_started) {
-		$last_tab    = '';
-		$tab_started = $txt;
-
-		# setup the loop
-		if ($tab_started eq '') {
-			@current_options = @commands;
-		} elsif ($tab_started =~ /^e\s+(.*)$/) {
-			my $prefix = $1;
-			my $path = Padre->ide->{original_cwd};
-			if ($prefix) {
-				if (File::Spec->file_name_is_absolute( $prefix ) ) {
-					$path = $prefix;
-				} else {
-					$path = File::Spec->catfile($path, $prefix);
-				}
-			}
-			$prefix = '';
-			my $dir = $path;
-			if (-e $path) {
-				if (-f $path) {
-					return;
-				} elsif (-d $path) {
-					$dir = $path;
-					$prefix = '';
-					# go ahead, opening the directory
-				} else {
-					# what shall we do here?
-					return;
-				}
-			} else { # partial file or directory name
-				$dir     = File::Basename::dirname($path);
-				$prefix  = File::Basename::basename($path);
-			}
-			if (opendir my $dh, $dir) {
-				@current_options = sort
-							map {-d File::Spec->catfile($dir, "$prefix$_") ? "$_/" : $_} 
-							map  { $_ =~ s/^$prefix//; $_ }
-							grep { $_ =~ /^$prefix/ }
-							grep {$_ ne '.' and $_ ne '..'} readdir $dh;
-			}
-		} else {
-			@current_options = ();
-		}
-	}
-	
-	return if not @current_options; # somehow alert the user?
-	
-	my $option;
-	if ( $shift ) {
-		if ($last_tab eq 'for') {
-			unshift @current_options, pop @current_options
-		}
-		$option = pop @current_options;
-		unshift @current_options, $option;
-		$last_tab = 'back';
-	} else {
-		if ($last_tab eq 'back') {
-			push @current_options, shift @current_options;
-		}
-		$option = shift @current_options;
-		push @current_options, $option;
-		$last_tab = 'for';
-	}
-
-	return $tab_started . $option;
-}
-
-}
 
 sub about {
 	my ($main) = @_;
