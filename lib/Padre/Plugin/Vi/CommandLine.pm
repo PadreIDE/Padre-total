@@ -11,11 +11,7 @@ use File::Basename   ();
 
 =head1 NAME
 
-Padre::Plugin::Vi::CommandLine - vi plugin in Padre ?
-
-=head1 VERSION
-
-Version 0.01
+Padre::Plugin::Vi::CommandLine - part of the vi plugin in Padre
 
 =cut
 
@@ -25,9 +21,12 @@ our $VERSION = '0.21';
 
 Install L<Padre>, install this plug-in. 
 
+=head1 WARNING 
+
+The module is still experimental
+
 =head1 DESCRIPTION
 
-B<WARNING> The module is still experimental B<WARNING>
 
 When you select the menu item or press the hot-key you should see a new window with
 a place to enter text and an OK and Cancel buttons.
@@ -59,8 +58,6 @@ my @layout =  (
 		['Wx::Button',     'cancel', Wx::wxID_CANCEL],
 	]
 );
-my $tab_started;
-my $last_tab;
 my $dialog;
 
 sub dialog {
@@ -84,6 +81,7 @@ sub dialog {
 
 sub show_prompt {
 	my ($class) = @_;
+
 	my $main   = Padre->ide->wx->main;
 	my $dialog = $class->dialog();
 
@@ -101,7 +99,7 @@ sub show_prompt {
 	if ($cmd =~ /^e\s+(.*)/ and defined $1) {
 		my $file = $1;
 		# try to open file
-		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_dir}, $file));
+		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_cwd}, $file));
 		$main->refresh_all;
 	} elsif ($cmd =~ /^b(\d+)$/) {
 		$main->on_nth_pane($1);
@@ -140,14 +138,37 @@ sub on_key_pressed {
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
 	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
 	
+	# anything but TAB pressed
 	if ($code != Wx::WXK_TAB) {
-		$tab_started = undef;
+		_clear_tab();
 		$event->Skip(1);
 		return;
 	}
 
 	my $txt = $text_ctrl->GetValue;
 	$txt = '' if not defined $txt; # just in case...
+
+	my $value = _handle_tab( $txt, ($mod == Wx::wxMOD_SHIFT() ? 1 : 0) );
+	return if not defined $value;
+	
+	$text_ctrl->SetValue($value);
+	$text_ctrl->SetInsertionPointEnd;
+
+	$event->Skip(0);
+	return;
+}
+
+{
+	my $tab_started;
+	my $last_tab;
+
+sub _clear_tab {
+	$tab_started = undef;
+}
+
+sub _handle_tab {
+	my ($txt, $shift) = @_;
+
 	if (not defined $tab_started) {
 		$last_tab    = '';
 		$tab_started = $txt;
@@ -157,7 +178,7 @@ sub on_key_pressed {
 			@current_options = @commands;
 		} elsif ($tab_started =~ /^e\s+(.*)$/) {
 			my $prefix = $1;
-			my $path = Padre->ide->{original_dir};
+			my $path = Padre->ide->{original_cwd};
 			if ($prefix) {
 				if (File::Spec->file_name_is_absolute( $prefix ) ) {
 					$path = $prefix;
@@ -193,10 +214,11 @@ sub on_key_pressed {
 			@current_options = ();
 		}
 	}
+	
 	return if not @current_options; # somehow alert the user?
 	
 	my $option;
-	if ( $mod == Wx::wxMOD_SHIFT() ) {
+	if ( $shift ) {
 		if ($last_tab eq 'for') {
 			unshift @current_options, pop @current_options
 		}
@@ -212,13 +234,10 @@ sub on_key_pressed {
 		$last_tab = 'for';
 	}
 
-	$text_ctrl->SetValue($tab_started . $option);
-	$text_ctrl->SetInsertionPointEnd;
-
-	$event->Skip(0);
-	return;
+	return $tab_started . $option;
 }
 
+}
 
 sub about {
 	my ($main) = @_;
