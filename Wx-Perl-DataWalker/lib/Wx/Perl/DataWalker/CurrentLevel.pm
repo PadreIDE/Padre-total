@@ -5,6 +5,7 @@ use warnings;
 
 use Scalar::Util qw(blessed reftype weaken);
 use Wx;
+
 our $VERSION = '0.01';
 our @ISA = qw(Wx::ListCtrl);
 
@@ -26,6 +27,8 @@ use Class::XSAccessor
     show_size       => 'show_size',
     show_recur_size => 'show_recur_size',
   };
+
+require overload;
 
 sub new {
   my $class = shift;
@@ -102,7 +105,7 @@ sub OnGetItemText {
     $colno == 0 and return reftype($data)||'';
     $colno == 1 and return blessed($data)||'';
     $colno == 2 and $self->show_size() and return $self->calc_size($$data);
-    return defined($$data)?$$data:'undef';
+    return defined($$data) ? overload::StrVal($$data) : 'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_ARRAY) {
     $colno == 0 and return $itemno;
@@ -110,7 +113,7 @@ sub OnGetItemText {
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
     $colno == 3 and $self->show_size() and return $self->calc_size($item);
-    return defined($item)?$item:'undef';
+    return defined($item) ? overload::StrVal($item) : 'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_HASH) {
     my $key = $self->{hash_cache}[$itemno];
@@ -119,7 +122,7 @@ sub OnGetItemText {
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
     $colno == 3 and $self->show_size() and return $self->calc_size($item);
-    return defined($item)?$item:'undef';
+    return defined($item) ? overload::StrVal($item) : 'undef';
   }
   elsif ($self->{display_mode} == DISPLAY_GLOB) {
     $colno == 0 and return GLOB_THINGS->[$itemno];
@@ -127,7 +130,7 @@ sub OnGetItemText {
     $colno == 1 and return reftype($item)||'';
     $colno == 2 and return blessed($item)||'';
     $colno == 3 and $self->show_size() and return $self->calc_size($item);
-    return defined($item)?$item:'undef';
+    return defined($item) ? overload::StrVal($item) : 'undef';
   }
 
 }
