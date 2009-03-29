@@ -6,7 +6,7 @@ author   'Steffen Mueller <smueller@cpan.org>';
 license  'perl';
 
 requires  'Padre'                => '0.29';
-requires  'Wx::Perl::DataWalker' => '0.01';
+requires  'Wx::Perl::DataWalker' => '0.02';
 requires  'YAML::XS'             => '0';
 
 build_requires 'Test::More';
