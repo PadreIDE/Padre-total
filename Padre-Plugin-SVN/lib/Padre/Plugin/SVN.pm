@@ -127,8 +127,8 @@ sub svn_status_of_file {
 sub svn_status_of_project {
 	my ($self) = @_;
 	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $main = Padre::Current->main;
+	my $doc  = Padre::Current->document;
 	my $filename = $doc->filename;
 	my $dir = Padre::Util::get_project_dir($filename);
 	return $main->error("Could not find project root") if not $dir;
