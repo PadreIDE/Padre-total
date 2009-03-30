@@ -30,3 +30,6 @@ my @pmfiles = grep {/^lib/}
 my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @pmfiles";
 system($cmd) == 0 or die "perltidy exited with return code " . ($? >> 8);
 
+# removing backup files
+unlink map {"$_.bak"} @pmfiles;
+
