@@ -15,7 +15,8 @@ our @EXPORT = qw(sniff);
 #use Data::Dumper;
 #print  Dumper \@INC;
 
-#__END__
+our $VERSION = '0.01';
+
 use Sniffer::HTTP;
 my $VERBOSE = 1;
 
