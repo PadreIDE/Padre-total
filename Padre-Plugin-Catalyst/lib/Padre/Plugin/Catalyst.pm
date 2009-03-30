@@ -30,62 +30,36 @@ sub menu_plugins_simple {
                                 return;
                             },
             'Create new...' => [
-                'Model'      => sub { $self->on_create_model      },
-                'View'       => sub { $self->on_create_view       },
-                'Controller' => sub { $self->on_create_controller },
+                'Model'      => sub { 
+								require Padre::Plugin::Catalyst::Helper;
+								Padre::Plugin::Catalyst::Helper::on_create_model();
+							},
+                'View'       => sub { 
+								require Padre::Plugin::Catalyst::Helper;
+								Padre::Plugin::Catalyst::Helper::on_create_view();
+							},
+                'Controller' => sub {
+								require Padre::Plugin::Catalyst::Helper;
+								Padre::Plugin::Catalyst::Helper::on_create_controller();
+							},
             ],
 			'---'     => undef, # separator
             'Start Web Server' => sub { $self->on_start_server },
             'Stop Web Server'  => sub { $self->on_stop_server  },
-            '---'     => undef, # separator
+            '---'     => undef, # ...and another separator
             'About'   => sub { $self->on_show_about },
     ];
 }
 
-sub get_document_base_dir {	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
-	my $filename = $doc->filename;
-	return Padre::Util::get_project_dir($filename);
-}
-
-sub create {
-    my ($type, $basedir) = (@_);
-   	my $main = Padre->ide->wx->main;
-   	
-   	# TODO: find $project_name ?
-   	# TODO: CWD to the correct dir?
-   	
-   	require File::Spec;
-#   	File::Spec->catfile('script', $project_name . '_create.pl');
-    my $cmd = File::Spec->catfile($basedir);
-	my $status = qx{ls $cmd};
-	$main->message($status, "$cmd");
-	return;
-}
-
-sub on_create_model {
-    my $dir = get_document_base_dir();
-    create('model', $dir);
-}
-
-sub on_create_view {
-}
-
-sub on_create_controller {
-}
 
 sub on_start_server {
-    my $project_dir = get_document_base_dir();
     my $main = Padre->ide->wx->main;
-    
-    # get the Catalyst project name, so we can
-    # figure out the development server's name
-    # TODO: make this code suck less
-    require File::Spec;
-    my @dirs = File::Spec->splitdir($project_dir);
-    my $server_filename = lc($dirs[-1]);
-    $server_filename =~ tr{-}{_};
+
+	require Padre::Plugin::Catalyst::Util;
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+
+	my $server_filename = Padre::Plugin::Catalyst::Util::get_catalyst_project_name($project_dir);
+						
     $server_filename .= '_server.pl';
     
     my $server_full_path = File::Spec->catfile($project_dir, 'script', $server_filename );
@@ -140,11 +114,13 @@ sub on_stop_server {
 }
 
 sub on_show_about {
-    my $self = shift;
-
+	require Catalyst;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Catalyst");
-	$about->SetDescription("Initial Catalyst support for Padre");
+	$about->SetDescription(
+		  "Initial Catalyst support for Padre\n\n"
+		. "This system is running Catalyst version " . $Catalyst::VERSION . "\n"
+	);
 	$about->SetVersion( $VERSION );
 
 	Wx::AboutBox( $about );
@@ -154,6 +130,8 @@ sub on_show_about {
 sub plugin_disable {
     require Class::Unload;
     Class::Unload->unload('Padre::Plugin::Catalyst::NewApp');
+    Class::Unload->unload('Padre::Plugin::Catalyst::Helper');
+    Class::Unload->unload('Padre::Plugin::Catalyst::Util');
 }
 
 42;

@@ -87,10 +87,6 @@ sub ok_clicked {
 	    Wx::MessageBox('You need to select a base directory', 'missing field', Wx::wxOK, $main);
         return;
 	}
-
-    # go to the selected directory
-	my $pwd = Cwd::cwd();
-	chdir $data->{_directory_};
 	
 	# We should probably call Catalyst::Helper directly
 	# (new() and mk_app()) here, as long as we can redirect
@@ -108,10 +104,15 @@ sub ok_clicked {
             'catalyst.pl',
             $data->{'_app_name_'},
         );
+	
+	# go to the selected directory
+	my $pwd = Cwd::cwd();
+	chdir $data->{'_directory_'};
+
 	my $output_text = qx(@command);
 	$main->output->AppendText($output_text);
 	
-	chdir $pwd;
+	chdir $pwd; # restore directory
 
 	my $ret = Wx::MessageBox(
 		sprintf("%s apparantly created. Do you want to open it now?", $data->{_app_name_}),
