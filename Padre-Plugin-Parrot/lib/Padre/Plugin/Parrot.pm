@@ -142,9 +142,8 @@ L</home/gabor/work/parrot/docs/intro.pod>
 POD
 
 sub padre_interfaces {
-    return 'Padre::Plugin'         => 0.26,
+	return 'Padre::Plugin' => 0.26;
 }
-
 
 sub plugin_name {
 	'Parrot';
@@ -153,31 +152,32 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'                                       => sub { $self->about },
+		'About' => sub { $self->about },
+
 		#'Help'                                        => \&show_help,
-				
-		"Count characters using Perl5"                   => \&on_try_perl5,
-		"Count characters using PIR in embedded Parrot"  => \&on_try_pir,
+
+		"Count characters using Perl5"                  => \&on_try_perl5,
+		"Count characters using PIR in embedded Parrot" => \&on_try_pir,
 	];
 }
 
 sub registered_documents {
-	'application/x-pasm'  => 'Padre::Document::PASM',
-	'application/x-pir'   => 'Padre::Document::PIR',
+	'application/x-pasm' => 'Padre::Document::PASM', 'application/x-pir' => 'Padre::Document::PIR',;
 }
 
 sub plugin_enable {
 	my $self = shift;
-	
+
 	return if not $ENV{PARROT_DIR};
-	
-	return 1 if $main::parrot; # avoid crash when duplicate calling
-	
+
+	return 1 if $main::parrot;    # avoid crash when duplicate calling
+
 	local @INC = (
 		"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/lib",
 		"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/arch",
 		"$ENV{PARROT_DIR}/ext/Parrot-Embed/_build/lib",
-		@INC);
+		@INC
+	);
 
 	# for now we keep the parrot interpreter in a script-global
 	# in $main as if we try to reload the Plugin the embedded parrot will
@@ -195,17 +195,16 @@ sub plugin_enable {
 	return 1;
 }
 
-
 sub on_try_perl5 {
 	my ($main) = @_;
-	
-    my $doc = Padre::Current->document;
+
+	my $doc = Padre::Current->document;
 	my $str = "No file is open";
 	if ($doc) {
-		$str = "Number of characters in the current file: " . length($doc->text_get);
+		$str = "Number of characters in the current file: " . length( $doc->text_get );
 	}
-	
-	Wx::MessageBox( "From Perl 5. $str", "Worksforme", Wx::wxOK|Wx::wxCENTRE, $main );
+
+	Wx::MessageBox( "From Perl 5. $str", "Worksforme", Wx::wxOK | Wx::wxCENTRE, $main );
 	return;
 }
 
@@ -213,12 +212,12 @@ sub on_try_pir {
 	my ($main) = @_;
 
 	my $parrot = $main::parrot;
-	if (not $parrot) {
-		Wx::MessageBox( "Parrot is not available", "No luck", Wx::wxOK|Wx::wxCENTRE, $main );
+	if ( not $parrot ) {
+		Wx::MessageBox( "Parrot is not available", "No luck", Wx::wxOK | Wx::wxCENTRE, $main );
 		return;
 	}
-	
-my $code = <<END_PIR;
+
+	my $code = <<END_PIR;
 .sub on_try_pir
 	.param string code
 
@@ -229,17 +228,17 @@ my $code = <<END_PIR;
 .end
 END_PIR
 
-	my $eval = $parrot->compile( $code );
+	my $eval = $parrot->compile($code);
 	my $sub  = $parrot->find_global('on_try_pir');
 
-    my $doc = Padre::Current->document;
+	my $doc = Padre::Current->document;
 	my $str = "No file is open";
 	if ($doc) {
-		my $pmc  = $sub->invoke( 'PS', $doc->text_get ); 
+		my $pmc = $sub->invoke( 'PS', $doc->text_get );
 		$str = "Number of characters in the current file: " . $pmc->get_string;
 	}
 
-	Wx::MessageBox( "From Parrot using PIR: $str", "Worksforme", Wx::wxOK|Wx::wxCENTRE, $main );
+	Wx::MessageBox( "From Parrot using PIR: $str", "Worksforme", Wx::wxOK | Wx::wxCENTRE, $main );
 	return;
 }
 
@@ -248,26 +247,26 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Parrot");
-	$about->SetDescription(
-		"This plugin currently provides a naive syntax highlighting for PASM files\n" .
-		"If you have Parrot compiled on your system it can also provide execution of\n" .
-		"PASM files\n"
-	);
+	$about->SetDescription( "This plugin currently provides a naive syntax highlighting for PASM files\n"
+			. "If you have Parrot compiled on your system it can also provide execution of\n"
+			. "PASM files\n" );
 	$about->SetVersion($VERSION);
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 
-sub show_help { 
+sub show_help {
 	my $main = Padre->ide->wx->main;
+
 	#print "$main->{help}\n";
-	if ($ENV{PARROT_DIR}) {
-		my $path = File::Spec->catfile($ENV{PARROT_DIR}, 'docs');
-		my $doc    = Padre::Document->new;
+	if ( $ENV{PARROT_DIR} ) {
+		my $path = File::Spec->catfile( $ENV{PARROT_DIR}, 'docs' );
+		my $doc = Padre::Document->new;
 		$doc->{original_content} = $pod;
+
 		#my $doc = Padre::Document->new( filename => $path );
 		$doc->set_mimetype('application/x-pod');
-		$main->{help}->help($doc); 
+		$main->{help}->help($doc);
 	} else {
 		$main->{help}->help('Padre::Plugin::Parrot');
 	}
@@ -275,7 +274,6 @@ sub show_help {
 	$main->{help}->SetFocus;
 	$main->{help}->Show(1);
 }
-
 
 package Px;
 
