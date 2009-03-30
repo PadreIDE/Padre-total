@@ -18,8 +18,6 @@ use Padre::Util   ();
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
 
-
-
 =head1 NAME
 
 Padre::Plugin::SVN - Simple SVN interface for Padre
@@ -55,7 +53,7 @@ under the same terms as Perl itself.
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.24
+	'Padre::Plugin' => 0.24;
 }
 
 sub plugin_name {
@@ -65,10 +63,10 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'             => sub { $self->show_about },
+		'About'     => sub { $self->show_about },
 		'Commit...' => [
-			'File'     => sub { $self->svn_commit_file },
-			'Project'  => sub { $self->svn_commit_project },
+			'File'    => sub { $self->svn_commit_file },
+			'Project' => sub { $self->svn_commit_project },
 		],
 		'Status...' => [
 			'File'    => sub { $self->svn_status_of_file },
@@ -80,11 +78,12 @@ sub menu_plugins_simple {
 			'Project' => sub { $self->svn_diff_of_project },
 		],
 		'Add...' => [
-			'File'    => sub { $self->svn_add_file },
-#			'Dir'     => sub { $self->svn_diff_of_dir },
-#			'Project' => sub { $self->svn_diff_of_project },
+			'File' => sub { $self->svn_add_file },
+
+			#			'Dir'     => sub { $self->svn_diff_of_dir },
+			#			'Project' => sub { $self->svn_diff_of_project },
 		],
-		
+
 	];
 }
 
@@ -100,55 +99,57 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Initial SVN support for Padre
 END_MESSAGE
-	$about->SetVersion( $VERSION );
+	$about->SetVersion($VERSION);
 
 	# Show the About dialog
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 
 	return;
 }
 
 sub svn_status {
-	my ($self, $path) = @_;
-	my $main = Padre->ide->wx->main;
+	my ( $self, $path ) = @_;
+	my $main   = Padre->ide->wx->main;
 	my $status = qx{svn status $path};
-	$main->message($status, "$path");
+	$main->message( $status, "$path" );
 	return;
 }
+
 sub svn_status_of_file {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	$self->svn_status($filename);
 	return;
 }
+
 sub svn_status_of_project {
 	my ($self) = @_;
-	
-	my $main = Padre::Current->main;
-	my $doc  = Padre::Current->document;
+
+	my $main     = Padre::Current->main;
+	my $doc      = Padre::Current->document;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
+	my $dir      = Padre::Util::get_project_dir($filename);
 	return $main->error("Could not find project root") if not $dir;
 	$self->svn_status($dir);
 	return;
 }
 
-
 sub svn_diff {
-	my ($self, $path) = @_;
-	my $main = Padre->ide->wx->main;
+	my ( $self, $path ) = @_;
+	my $main   = Padre->ide->wx->main;
 	my $status = qx{svn diff $path};
-	$main->message($status, "$path");
+	$main->message( $status, "$path" );
 	return;
 }
+
 sub svn_diff_of_file {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	$self->svn_diff($filename);
 	return;
@@ -156,34 +157,35 @@ sub svn_diff_of_file {
 
 sub svn_diff_of_project {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
+	my $dir      = Padre::Util::get_project_dir($filename);
 	$self->svn_diff($dir);
 	return;
 }
 
 sub svn_commit {
-	my ($self, $path) = @_;
-	
+	my ( $self, $path ) = @_;
+
 	my $main = Padre->ide->wx->main;
-	my $message = $main->prompt("SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT");
+	my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	if ($message) {
 		$message =~ s/"/\\"/g;
+
 		#$main->message( $message, 'Filename' );
 		system qq(svn commit "$path" -m"$message");
 	}
 
-	return;	
+	return;
 }
 
 sub svn_commit_file {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	$self->svn_commit($filename);
 	return;
@@ -191,30 +193,29 @@ sub svn_commit_file {
 
 sub svn_commit_project {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
-	my $dir = Padre::Util::get_project_dir($filename);
+	my $dir      = Padre::Util::get_project_dir($filename);
 	$self->svn_commit($dir);
 	return;
 }
 
 sub svn_add {
-	my ($self, $path) = @_;
+	my ( $self, $path ) = @_;
 	system "svn add $path";
 	return;
 }
 
 sub svn_add_file {
-	my ($self) = @_;
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my ($self)   = @_;
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	$self->svn_add($filename);
 	return;
 }
-
 
 #sub vci {
 #	my ($self, $path) = @_;
@@ -227,7 +228,7 @@ sub svn_add_file {
 #	}
 #	chomp @info;
 #	my ($repo) = grep { $_ =~ /^Repository Root: / } @info;
-#	$repo =~ s/^Repository Root:\s*//; 
+#	$repo =~ s/^Repository Root:\s*//;
 #	$main->message("'$repo'", "File");
 #	my $repository = VCI->connect(type => 'Svn', repo => $repo);
 #	print "$repository\n";
@@ -239,5 +240,4 @@ sub svn_add_file {
 #
 
 1;
-
 
