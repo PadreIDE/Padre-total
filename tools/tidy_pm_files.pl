@@ -18,13 +18,13 @@ die "cannot find perltidy configuration file: $perltidyrc\n"
 my @pmfiles = grep {/^lib/}
 	File::Find::Rule->file->name("*.pm")->relative->in(cwd);
 
-# FIXME: currently testing on a fixed set of files
-@pmfiles = (
-	"dev.pl",
-	catfile( qw{ lib Padre.pm } ),
-	catfile( qw{ lib Padre Document.pm } ),
-	catfile( qw{ lib Padre Wx StatusBar.pm } ),
-);
+# if one wants to test on a fixed set of files
+#@pmfiles = (
+#	"dev.pl",
+#	catfile( qw{ lib Padre.pm } ),
+#	catfile( qw{ lib Padre Document.pm } ),
+#	catfile( qw{ lib Padre Wx StatusBar.pm } ),
+#);
 
 # formatting documents
 my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @pmfiles";
