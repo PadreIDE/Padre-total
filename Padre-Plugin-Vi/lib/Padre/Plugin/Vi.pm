@@ -246,7 +246,7 @@ r for replacing current character
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.18,
+	'Padre::Plugin' => 0.18;
 }
 
 sub plugin_enable {
@@ -254,9 +254,10 @@ sub plugin_enable {
 
 	require Padre::Plugin::Vi::Editor;
 	require Padre::Plugin::Vi::CommandLine;
-#	foreach my $editor ( Padre->ide->wx->main->pages ) {
-#		$self->editor_enable($editor);
-#	}
+
+	#	foreach my $editor ( Padre->ide->wx->main->pages ) {
+	#		$self->editor_enable($editor);
+	#	}
 }
 
 sub plugin_disable {
@@ -271,28 +272,28 @@ sub plugin_disable {
 }
 
 sub editor_enable {
-	my ($self, $editor, $doc) = @_;
-	
-	$self->{editor}{refaddr $editor} = Padre::Plugin::Vi::Editor->new($editor);
+	my ( $self, $editor, $doc ) = @_;
+
+	$self->{editor}{ refaddr $editor} = Padre::Plugin::Vi::Editor->new($editor);
 
 	Wx::Event::EVT_KEY_DOWN( $editor, sub { $self->evt_key_down(@_) } );
-	Wx::Event::EVT_CHAR(     $editor, sub { $self->evt_char(@_) } );
+	Wx::Event::EVT_CHAR( $editor, sub { $self->evt_char(@_) } );
 
 	return 1;
 }
 
 sub editor_stop {
-	my ($self, $editor, $doc) = @_;
-	
-	delete $self->{editor}{refaddr $editor};
+	my ( $self, $editor, $doc ) = @_;
+
+	delete $self->{editor}{ refaddr $editor};
 	Wx::Event::EVT_KEY_DOWN( $editor, undef );
-	Wx::Event::EVT_CHAR(     $editor, undef );
+	Wx::Event::EVT_CHAR( $editor, undef );
 
 	return 1;
 }
 
 sub menu_plugins_simple {
-	return ("Vi mode" => ['About' => \&about ]);
+	return ( "Vi mode" => [ 'About' => \&about ] );
 }
 
 sub about {
@@ -300,49 +301,47 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Vi");
-	$about->SetDescription(
-		"Try to emulate the vi modes of operation\n"
-	);
+	$about->SetDescription( "Try to emulate the vi modes of operation\n" );
 	$about->SetVersion($Padre::Plugin::Vi::VERSION);
-	$about->SetCopyright(Wx::gettext("Copyright 2008 Gabor Szabo"));
+	$about->SetCopyright( Wx::gettext("Copyright 2008 Gabor Szabo") );
 
 	# Only Unix/GTK native about box supports websites
-	if ( Padre::Util::WXGTK ) {
+	if (Padre::Util::WXGTK) {
 		$about->SetWebSite("http://padre.perlide.org/");
 	}
 
 	$about->AddDeveloper("Gabor Szabo");
 
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 
 sub evt_key_down {
-	my ($self, $editor, $event) = @_;
+	my ( $self, $editor, $event ) = @_;
 
-	my $mod  = $event->GetModifiers || 0;
+	my $mod = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
 	#print("key: '$mod', '$code'\n");
-	if (32 <= $code and $code <= 127) {
+	if ( 32 <= $code and $code <= 127 ) {
 		$event->Skip;
 		return;
 	}
 
-	my $skip = $self->{editor}{refaddr $editor}->key_down($mod, $code);
+	my $skip = $self->{editor}{ refaddr $editor}->key_down( $mod, $code );
 	$event->Skip($skip);
 	return;
 }
 
 sub evt_char {
-	my ($self, $editor, $event) = @_;
+	my ( $self, $editor, $event ) = @_;
 
-	my $mod  = $event->GetModifiers || 0;
+	my $mod = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
 	#printf("char: '$mod', '$code' '%s'\n", chr($code));
-	if (32 <= $code and $code <= 127) {
-		my $skip = $self->{editor}{refaddr $editor}->get_char($mod, $code, chr($code));
+	if ( 32 <= $code and $code <= 127 ) {
+		my $skip = $self->{editor}{ refaddr $editor}->get_char( $mod, $code, chr($code) );
 		$event->Skip($skip);
 	}
 	return;
