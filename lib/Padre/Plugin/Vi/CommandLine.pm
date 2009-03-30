@@ -53,25 +53,24 @@ It does NOT support save-as or providing filename.
 
 =cut
 
-my @layout =  (
-	[
-		['Wx::TextCtrl', 'entry', ''],
-		['Wx::Button',     'ok',     Wx::wxID_OK], 
-		['Wx::Button',     'cancel', Wx::wxID_CANCEL],
+my @layout = (
+	[   [ 'Wx::TextCtrl', 'entry',  '' ],
+		[ 'Wx::Button',   'ok',     Wx::wxID_OK ],
+		[ 'Wx::Button',   'cancel', Wx::wxID_CANCEL ],
 	]
 );
 my $dialog;
 
 sub dialog {
 	my ($class) = @_;
-	
-	my $main   = Padre->ide->wx->main;
-	if (not $dialog) {
+
+	my $main = Padre->ide->wx->main;
+	if ( not $dialog ) {
 		$dialog = Wx::Perl::Dialog->new(
-			parent   => $main->{notebook},
-			title    => "Command Line",
-			layout   => \@layout,
-			width    => [500],
+			parent => $main->{notebook},
+			title  => "Command Line",
+			layout => \@layout,
+			width  => [500],
 		);
 		$dialog->{_widgets_}{entry}->SetFocus;
 		$dialog->{_widgets_}{ok}->SetDefault;
@@ -87,37 +86,40 @@ sub show_prompt {
 	my $main   = Padre->ide->wx->main;
 	my $dialog = $class->dialog();
 
-#	print "Pos: ", join ":", $main->{notebook}->GetScreenPosition, "\n";
-#	print "Size: ", join ":", $main->{notebook}->GetSizeWH, "\n";
+	#	print "Pos: ", join ":", $main->{notebook}->GetScreenPosition, "\n";
+	#	print "Size: ", join ":", $main->{notebook}->GetSizeWH, "\n";
 	$dialog->{_widgets_}{entry}->SetValue('');
+
 	#$dialog->SetPosition($main->{notebook}->GetScreenPosition);
 	my $ret = $dialog->ShowModal;
 	if ( $ret eq Wx::wxID_CANCEL ) {
+
 		#$dialog->Hide;
 		return;
 	}
-	
+
 	my $cmd = $dialog->{_widgets_}{entry}->GetValue;
-	if ($cmd =~ /^e\s+(.*)/ and defined $1) {
+	if ( $cmd =~ /^e\s+(.*)/ and defined $1 ) {
 		my $file = $1;
+
 		# try to open file
-		$main->setup_editor(File::Spec->catfile(Padre->ide->{original_cwd}, $file));
+		$main->setup_editor( File::Spec->catfile( Padre->ide->{original_cwd}, $file ) );
 		$main->refresh_all;
-	} elsif ($cmd =~ /^b(\d+)$/) {
+	} elsif ( $cmd =~ /^b(\d+)$/ ) {
 		$main->on_nth_pane($1);
-	} elsif ($cmd eq 'w') {
+	} elsif ( $cmd eq 'w' ) {
 		$main->on_save;
-	} elsif ($cmd eq 'q') {
+	} elsif ( $cmd eq 'q' ) {
 		$main->Close;
-	} elsif ($cmd eq 'wq') { #TODO shall this be save_all ?
+	} elsif ( $cmd eq 'wq' ) {    #TODO shall this be save_all ?
 		$main->on_save;
 		$main->Close;
-	} elsif ($cmd =~ /^\d+$/) {
-		Padre->ide->wx->main->current->editor->GotoLine($cmd-1);
-	} elsif ($cmd =~ m{%s/}) {
+	} elsif ( $cmd =~ /^\d+$/ ) {
+		Padre->ide->wx->main->current->editor->GotoLine( $cmd - 1 );
+	} elsif ( $cmd =~ m{%s/} ) {
 		my $editor = Padre->ide->wx->main->current->editor;
-		my $text = $editor->GetText;
-		$cmd = substr($cmd, 1);
+		my $text   = $editor->GetText;
+		$cmd = substr( $cmd, 1 );
 		eval "\$text =~ $cmd";
 		if ($@) {
 			Padre->ide->wx->main->error($@);
@@ -125,30 +127,30 @@ sub show_prompt {
 			$editor->SetText($text);
 		}
 	}
-	
+
 	return;
 }
 
 sub on_key_pressed {
-	my ($text_ctrl, $event) = @_;
-	my $mod  = $event->GetModifiers || 0;
+	my ( $text_ctrl, $event ) = @_;
+	my $mod = $event->GetModifiers || 0;
 	my $code = $event->GetKeyCode;
 
 	# remove the bit ( Wx::wxMOD_META) set by Num Lock being pressed on Linux
-	$mod = $mod & (Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT());
-	
+	$mod = $mod & ( Wx::wxMOD_ALT() + Wx::wxMOD_CMD() + Wx::wxMOD_SHIFT() );
+
 	# anything but TAB pressed
-	if ($code != Wx::WXK_TAB) {
+	if ( $code != Wx::WXK_TAB ) {
 		clear_tab();
 		$event->Skip(1);
 		return;
 	}
-	
-	set_original_cwd(Padre->ide->{original_cwd});
 
-	my $value = handle_tab( $text_ctrl->GetValue, ($mod == Wx::wxMOD_SHIFT() ? 1 : 0) );
+	set_original_cwd( Padre->ide->{original_cwd} );
+
+	my $value = handle_tab( $text_ctrl->GetValue, ( $mod == Wx::wxMOD_SHIFT() ? 1 : 0 ) );
 	return if not defined $value;
-	
+
 	$text_ctrl->SetValue($value);
 	$text_ctrl->SetInsertionPointEnd;
 
@@ -156,17 +158,15 @@ sub on_key_pressed {
 	return;
 }
 
-
 sub about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::CommandLine");
-	$about->SetDescription(
-		"Experimental vi-like command line\n"
-	);
+	$about->SetDescription( "Experimental vi-like command line\n" );
+
 	#$about->SetVersion($Padre::VERSION);
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 
