@@ -7,5 +7,4 @@ lib/Padre/Plugin/Catalyst/Helper.pm
 lib/Padre/Plugin/Catalyst/NewApp.pm
 lib/Padre/Plugin/Catalyst/Util.pm
 t/00-load.t
-t/pod-coverage.t
 t/pod.t
