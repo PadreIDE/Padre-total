@@ -1,4 +1,4 @@
-<SOFTPKG NAME="Padre" VERSION="0,29,0,0">
+<SOFTPKG NAME="Padre" VERSION="0,32,0,0">
     <TITLE>Padre</TITLE>
     <ABSTRACT>Perl Application Development and Refactoring Environment</ABSTRACT>
     <AUTHOR>Gabor Szabo</AUTHOR>
@@ -18,7 +18,7 @@
         <DEPENDENCY NAME="ExtUtils-MakeMaker" VERSION="6,11,0,0" />
         <DEPENDENCY NAME="File-Copy-Recursive" VERSION="0,37,0,0" />
         <DEPENDENCY NAME="File-Find-Rule" VERSION="0,30,0,0" />
-        <DEPENDENCY NAME="File-HomeDir" VERSION="0,82,0,0" />
+        <DEPENDENCY NAME="File-HomeDir" VERSION="0,84,0,0" />
         <DEPENDENCY NAME="File-ShareDir" VERSION="1,00,0,0" />
         <DEPENDENCY NAME="File-ShareDir-PAR" VERSION="0,03,0,0" />
         <DEPENDENCY NAME="File-Which" VERSION="0,05,0,0" />
@@ -40,7 +40,6 @@
         <DEPENDENCY NAME="Pod-Simple" VERSION="3,07,0,0" />
         <DEPENDENCY NAME="Probe-Perl" VERSION="0,01,0,0" />
         <DEPENDENCY NAME="Storable" VERSION="2,15,0,0" />
-        <DEPENDENCY NAME="Test-Compile" VERSION="0,08,0,0" />
         <DEPENDENCY NAME="Test-Exception" VERSION="0,27,0,0" />
         <DEPENDENCY NAME="Test-NoWarnings" VERSION="0,084,0,0" />
         <DEPENDENCY NAME="Test-Script" VERSION="1,03,0,0" />
@@ -55,6 +54,6 @@
         <DEPENDENCY NAME="threads" VERSION="1,71,0,0" />
         <DEPENDENCY NAME="threads-shared" VERSION="1,26,0,0" />
         <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />
-        <CODEBASE HREF="http://www.perlide.org/download/ppm/Padre.tar.gz" />
+        <CODEBASE HREF="http://www.perlide.org/download/ppm/Padre-0.32.tar.gz" />
     </IMPLEMENTATION>
 </SOFTPKG>
