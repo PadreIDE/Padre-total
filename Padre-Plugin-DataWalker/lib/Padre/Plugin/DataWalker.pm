@@ -34,7 +34,43 @@ I<enable> for I<DataWalker>.
 
 =head1 DESCRIPTION
 
-TODO to be written
+This plugin uses the L<Wx::Perl::DataWalker> module to
+provide facilities for interactively browsing Perl data structures.
+
+At this time, the plugin offers several menu entries
+in Padre's I<Plugins> menu:
+
+=over 2
+
+=item Browse YAML dump file
+
+If you dump (almost) any data structure from a running program into
+a YAML file, you can use this to open the dump and browse
+it within Padre. Dump a data structure like this:
+
+  use YAML::XS; YAML::XS::Dump(...YourDataStructure...);
+
+This menu entry will show a file-open dialog and let you select the YAML
+file to load.
+
+Let me know if you need any other input format (like Storable's nstore).
+
+=item Browse current document object
+
+Opens the data structure browser on the current document object.
+
+Like all following menu entries, this is mostly useful for the Padre developers.
+
+=item Browse Padre IDE object
+
+Opens the Padre main IDE object in the data structure browser. Useful for debugging Padre.
+
+=item Browse Padre main symbol table
+
+Opens the C<%main::> symbol table of Padre in the data structure browser.
+Certainly only useful for debugging Padre.
+
+=back
 
 =cut
 
@@ -54,7 +90,7 @@ sub menu_plugins_simple {
 		'Browse YAML dump file'          => sub { $self->browse_yaml_file },
 		'Browse current document object' => sub { $self->browse_current_document },
 		'Browse Padre IDE object'        => sub { $self->browse_padre },
-		'Browse Padre Main Symbol Table' => sub { $self->browse_padre_stash },
+		'Browse Padre main symbol table' => sub { $self->browse_padre_stash },
 	];
 }
 
