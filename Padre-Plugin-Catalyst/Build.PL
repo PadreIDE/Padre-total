@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'Module::Build' => 0.30,
         'Padre' => 0.29,
         'Catalyst::Devel' => 1.0,
+        'Module::Pluggable::Object' => 3.9,
     },
     add_to_cleanup      => [ 'Padre-Plugin-Catalyst-*' ],
     create_makefile_pl => 'traditional',

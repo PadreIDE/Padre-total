@@ -25,3 +25,5 @@ sub get_document_base_dir {
 	my $filename = $doc->filename;
 	return Padre::Util::get_project_dir($filename);
 }
+
+42;

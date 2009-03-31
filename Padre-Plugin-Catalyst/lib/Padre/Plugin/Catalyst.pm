@@ -30,18 +30,18 @@ sub menu_plugins_simple {
                                 return;
                             },
             'Create new...' => [
-                'Model'      => sub { 
-								require Padre::Plugin::Catalyst::Helper;
-								Padre::Plugin::Catalyst::Helper::on_create_model();
-							},
+#                'Model'      => sub { 
+#								require Padre::Plugin::Catalyst::Helper;
+#								Padre::Plugin::Catalyst::Helper::on_create_model();
+#							},
                 'View'       => sub { 
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_view();
 							},
-                'Controller' => sub {
-								require Padre::Plugin::Catalyst::Helper;
-								Padre::Plugin::Catalyst::Helper::on_create_controller();
-							},
+#                'Controller' => sub {
+#								require Padre::Plugin::Catalyst::Helper;
+#								Padre::Plugin::Catalyst::Helper::on_create_controller();
+#							},
             ],
 			'---'     => undef, # separator
             'Start Web Server' => sub { $self->on_start_server },
@@ -132,6 +132,7 @@ sub plugin_disable {
     Class::Unload->unload('Padre::Plugin::Catalyst::NewApp');
     Class::Unload->unload('Padre::Plugin::Catalyst::Helper');
     Class::Unload->unload('Padre::Plugin::Catalyst::Util');
+    Class::Unload->unload('Catalyst');
 }
 
 42;

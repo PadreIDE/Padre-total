@@ -115,7 +115,7 @@ sub ok_clicked {
 	chdir $pwd; # restore directory
 
 	my $ret = Wx::MessageBox(
-		sprintf("%s apparantly created. Do you want to open it now?", $data->{_app_name_}),
+		sprintf("%s apparently created. Do you want to open it now?", $data->{_app_name_}),
 		'Done',
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
