@@ -13,6 +13,19 @@ our $VERSION = '0.01';
 sub on_newapp {
     my $main = Padre->ide->wx->main;
     
+    my $has_catalyst_devel = eval 'use Catalyst::Devel; 1;'; ## no critic (ProhibitStringyEval)
+    unless ( $has_catalyst_devel ) {
+	return $main->error(<<ERR);
+To use the Catalyst development tools including catalyst.pl and the
+generated script/myapp_create.pl you need Catalyst::Helper, which is
+part of the Catalyst-Devel distribution. Please install this via a
+vendor package or by running one of -
+
+  perl -MCPAN -e 'install Catalyst::Devel'
+  perl -MCPANPLUS -e 'install Catalyst::Devel'
+ERR
+    }
+    
     my $dialog = dialog($main);
     $dialog->Show(1);
     return;
