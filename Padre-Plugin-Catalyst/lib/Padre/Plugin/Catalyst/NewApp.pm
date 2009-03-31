@@ -104,6 +104,13 @@ sub ok_clicked {
             'catalyst.pl',
             $data->{'_app_name_'},
         );
+        # use catalyst.bat in Win32 is better
+        if ( $^O eq 'MSWin32' ) {
+	    @command = (
+                'catalyst',
+                $data->{'_app_name_'},
+            );
+        }
 	
 	# go to the selected directory
 	my $pwd = Cwd::cwd();
