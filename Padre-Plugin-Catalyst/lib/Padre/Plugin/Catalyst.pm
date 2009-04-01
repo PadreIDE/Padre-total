@@ -79,7 +79,9 @@ sub on_start_server {
 	my $pwd = Cwd::cwd();
 	chdir $project_dir;
 
-    $main->run_command(File::Spec->catfile('script', $server_filename));
+    my $perl = Padre->perl_interpreter;
+    my $command = "$perl " . File::Spec->catfile('script', $server_filename);
+    $main->run_command($command);
     
     # restore current dir
     chdir $pwd;

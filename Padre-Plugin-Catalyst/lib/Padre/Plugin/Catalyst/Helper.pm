@@ -155,7 +155,9 @@ sub create {
 	$main->show_output(1);
 	$main->output->Remove( 0, $main->output->GetLastPosition );
 
+    my $perl = Padre->perl_interpreter;
     push my @cmd, 
+				$perl,
 				File::Spec->catfile('script', $helper_filename),
 				lc $type,
 			;
