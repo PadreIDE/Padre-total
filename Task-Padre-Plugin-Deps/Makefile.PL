@@ -43,7 +43,7 @@ requires 'JavaScript::Beautifier'   => '0.03';
 requires 'JavaScript::Minifier::XS';
 
 # Padre::Plugin::Nopaste
-requires App::Nopaste;
+requires 'App::Nopaste';
 
 # Padre::Plugin::PAR',
 requires 'PAR::Packer';
@@ -53,9 +53,6 @@ requires 'Perl::Critic';
 
 # Padre::Plugin::PerlTidy 0.01
 requires 'Perl::Tidy';
-
-# Padre::Plugin::Pip 0.13
-requires 'pip' => '0.13';
 
 # Padre::Plugin::XML
 requires 'XML::Tidy';
@@ -73,6 +70,11 @@ feature 'Install Padre plugin for Perl6?',
     'URI'                      => '1.37',
     'Readonly'                 => '1.03',
     'IPC::Run3'                => '0.042';
+
+# Padre::Plugin::PSI
+feature 'Install Experimental Padre plugin written in Perl 6?',
+    -default         => 0,
+    'Inline::Rakudo' => '0.02';
 
 # Padre::Plugin::SVK
 feature 'Install Simple SVK interface for Padre?',
