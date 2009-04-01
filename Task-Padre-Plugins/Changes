@@ -1,7 +1,8 @@
 Revision history for Task-Padre-Plugins
 
-0.18
+0.18    2009.4.1
         Nopaste plugin
+        PSI plugin
 
 0.17    2009.3.14
         Git and Autoformat plugin

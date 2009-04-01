@@ -11,7 +11,7 @@ requires 'Padre::Plugin::Autoformat'     => '0.2.1';
 requires 'Padre::Plugin::CommandLine'    => '0.04';
 requires 'Padre::Plugin::CSS'            => '0.05';
 requires 'Padre::Plugin::Encode'         => '0.1.3';
-requires 'Padre::Plugin::Encrypt'	     => '0.05';
+requires 'Padre::Plugin::Encrypt'        => '0.05';
 requires 'Padre::Plugin::HTML'           => '0.08';
 requires 'Padre::Plugin::HTMLExport'     => '0.04';
 requires 'Padre::Plugin::InstallPARDist' => '0.01';
@@ -20,7 +20,6 @@ requires 'Padre::Plugin::Nopaste'        => '0.1.0';
 requires 'Padre::Plugin::PAR'            => '0.04';
 requires 'Padre::Plugin::PerlCritic'     => '0.06';
 requires 'Padre::Plugin::PerlTidy'       => '0.05';
-requires 'Padre::Plugin::Pip'            => '0.13';
 requires 'Padre::Plugin::Vi'             => '0.21';		
 requires 'Padre::Plugin::ViewInBrowser'  => '0.06';;
 requires 'Padre::Plugin::XML'            => '0.05';
@@ -32,6 +31,10 @@ feature 'Install experimental Padre plugin that runs on Parrot?',
 feature 'Install Padre plugin for Perl6?',
     -default               => 0,
     'Padre::Plugin::Perl6' => '0.026';
+
+feature 'Install Experimental Padre plugin written in Perl 6?',
+    -default             => 0,
+    'Padre::Plugin::PSI' => '0.01';
 
 feature 'Enable spell check in Padre?',
     -default                    => 0,
