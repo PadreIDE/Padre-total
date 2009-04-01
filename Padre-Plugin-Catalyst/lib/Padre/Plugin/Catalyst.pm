@@ -107,7 +107,9 @@ sub on_stop_server {
     # Run -> Stop
     my $main = Padre->ide->wx->main;
     if ( $main->{command} ) {
-        $main->{command}->TerminateProcess;
+	my $processid = $main->{command}->GetProcessId();
+	kill(9, $processid);
+        #$main->{command}->TerminateProcess;
     }
     delete $main->{command};
     $main->menu->run->enable;
