@@ -8,14 +8,14 @@ use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub on_newapp {
     my $main = Padre->ide->wx->main;
     
     my $has_catalyst_devel = eval 'use Catalyst::Devel; 1;'; ## no critic (ProhibitStringyEval)
     unless ( $has_catalyst_devel ) {
-	return $main->error(<<ERR);
+		return $main->error(<<ERR);
 To use the Catalyst development tools including catalyst.pl and the
 generated script/myapp_create.pl you need Catalyst::Helper, which is
 part of the Catalyst-Devel distribution. Please install this via a
@@ -114,16 +114,10 @@ sub ok_clicked {
 	$main->output->Remove( 0, $main->output->GetLastPosition );
 
 	my @command = (
-            'catalyst.pl',
-            $data->{'_app_name_'},
-        );
-        # use catalyst.bat in Win32 is better
-        if ( $^O eq 'MSWin32' ) {
-	    @command = (
-                'catalyst',
-                $data->{'_app_name_'},
-            );
-        }
+			# use catalyst.bat on Windows
+			'catalyst' . ($^O =~ /Win/o ? '' : '.pl'),
+			$data->{'_app_name_'},
+		);
 	
 	# go to the selected directory
 	my $pwd = Cwd::cwd();

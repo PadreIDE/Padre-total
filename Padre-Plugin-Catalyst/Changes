@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Catalyst
 
-0.01    Date/time
+0.02    2009-03-31
+        Now working on MS-Windows too  (FAYLAND)
+
+0.01    2009-03-31
         First version, released on an unsuspecting world.
 
