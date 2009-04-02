@@ -20,6 +20,10 @@ requires 'Text::Autoformat';
 requires 'WebService::Validator::CSS::W3C';
 requires 'CSS::Minifier::XS';
 
+# Padre::Plugin::DataWalker
+requires  'Wx::Perl::DataWalker' => '0.02';
+requires  'YAML::XS'             => '0';
+
 # Padre::Plugin::Encrypt  0.01
 requires 'Crypt::CBC';
 requires 'Crypt::Blowfish';
@@ -80,6 +84,12 @@ feature 'Install Experimental Padre plugin written in Perl 6?',
 feature 'Install Simple SVK interface for Padre?',
     -default        => 0,
     'SVK'           => '2.0.2';
+
+# Padre::Plugin::Catalyst
+feature 'Install Simple Catalyst helper interface for Padre?',
+    -default                    => 0,
+    'Module::Pluggable::Object' => 3.9,
+    'Catalyst::Devel'           => '2.0.2';
 
 build_requires 'Test::More';
 build_requires 'Test::NeedsDisplay' => '1.05';

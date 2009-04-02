@@ -1,5 +1,9 @@
 Revision history for Task-Padre-Plugins
 
+0.19    2009.4.2
+        Catalyst Plugin
+        DataWalker plugin
+
 0.18    2009.4.1
         Nopaste plugin
         PSI plugin

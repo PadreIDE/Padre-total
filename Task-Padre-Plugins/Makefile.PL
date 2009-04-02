@@ -10,13 +10,14 @@ requires 'Padre::Plugin::Alarm'          => '0.02';
 requires 'Padre::Plugin::Autoformat'     => '0.2.1';
 requires 'Padre::Plugin::CommandLine'    => '0.04';
 requires 'Padre::Plugin::CSS'            => '0.05';
+requires 'Padre::Plugin::DataWalker'     => '0.01';
 requires 'Padre::Plugin::Encode'         => '0.1.3';
 requires 'Padre::Plugin::Encrypt'        => '0.05';
 requires 'Padre::Plugin::HTML'           => '0.08';
 requires 'Padre::Plugin::HTMLExport'     => '0.04';
 requires 'Padre::Plugin::InstallPARDist' => '0.01';
 requires 'Padre::Plugin::JavaScript'     => '0.25';
-requires 'Padre::Plugin::Nopaste'        => '0.1.0';
+requires 'Padre::Plugin::Nopaste'        => '0.2.0';
 requires 'Padre::Plugin::PAR'            => '0.04';
 requires 'Padre::Plugin::PerlCritic'     => '0.06';
 requires 'Padre::Plugin::PerlTidy'       => '0.05';
@@ -52,6 +53,11 @@ feature 'Install Simple SVK interface for Padre?',
 feature 'Install Simple Git interface for Padre?',
     -default             => 0,
     'Padre::Plugin::Git' => '0.01';
+
+# Padre::Plugin::Catalyst
+feature 'Install Simple Catalyst helper interface for Padre?',
+    -default                    => 0,
+    'Padre::Plugin::Catalyst' => '0.01';
 
 build_requires 'Test::More';
 
