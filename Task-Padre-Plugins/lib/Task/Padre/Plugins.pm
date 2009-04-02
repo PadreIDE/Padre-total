@@ -32,7 +32,7 @@ Alarm Clock (Audio::Beep)
 
 reformat your text within Padre  
 
-=haed2 Padre::Plugin::Catalyst
+=head2 Padre::Plugin::Catalyst
 
 Simple Catalyst helper interface for Padre
 
