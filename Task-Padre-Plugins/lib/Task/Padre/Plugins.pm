@@ -32,6 +32,10 @@ Alarm Clock (Audio::Beep)
 
 reformat your text within Padre  
 
+=haed2 Padre::Plugin::Catalyst
+
+Simple Catalyst helper interface for Padre
+
 =head2 Padre::Plugin::CommandLine
 
 vi and emacs in Padre?
@@ -45,6 +49,10 @@ use CSS::Minifier::XS to minify css
 =head3 Validate CSS
 
 use WebService::Validator::CSS::W3C to validate the CSS
+
+=head2 Padre::Plugin::DataWalker
+
+Simple Perl data structure browser Padre
 
 =head2 Padre::Plugin::Encode
 
