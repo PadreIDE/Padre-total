@@ -48,7 +48,7 @@ sub spell_check {
 		next unless ($word =~ /^\p{L}+$/i);
 		next if $speller->check( $word ) || $word =~ /^\d+$/;
 		my @suggestions = $speller->suggest( $word );
-		Padre::Current->main->output->AppendText("wrong $word, suggest " . join(', ', @suggestions));
+		Padre::Current->main->output->AppendText("wrong $word, suggest " . join(', ', @suggestions) . "\n");
 		$has_bad = 1;
 	}
 	
