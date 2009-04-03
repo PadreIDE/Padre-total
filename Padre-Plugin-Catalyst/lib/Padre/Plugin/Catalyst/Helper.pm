@@ -10,6 +10,15 @@ use Padre::Wx::Dialog ();
 
 our $VERSION = '0.02';
 
+# TODO: these should've been passed as a parameter
+# but I'm too tired to figure how to do it
+# under a Wx::Dialog 
+my $helpers_for = {
+		'view'       => [],
+		'model'      => [],
+		'controller' => [],
+};
+
 sub dialog {
     my $layout = shift;
     my $ok_sub = shift;
@@ -38,7 +47,7 @@ sub get_model_layout {
 }
 
 sub get_view_layout {
-	my $available_views = shift;
+	my $available_views = $helpers_for->{'view'}; #shift; TODO: ungloball this
 		
 	my @layout = (
 		[
@@ -70,16 +79,43 @@ sub find_helpers_for {
 	require Module::Pluggable::Object;
 	my @available_helpers = map { s{Catalyst::Helper::$type\:\:}{}; $_ 
 						    } Module::Pluggable::Object->new(
-									'search_path' => 'Catalyst::Helper::View',
+									'search_path' => "Catalyst::Helper::$type",
 							  )->plugins()
 						;
-	@available_helpers = sort @available_helpers;
+	push @available_helpers, '[none]';
+	
+	## Put preferred types first on the list. For example, 
+	# as a view, TT is preferred.
+	# TODO: make this configurable under a Plugin Preferences window
+	my $favourite = find_favourites($type, \@available_helpers);
+	
+	# puts favourite option always on top of the list
+	@available_helpers = (
+			$favourite,
+			grep {$_ ne $favourite} sort @available_helpers
+	);
 	return \@available_helpers;
 }
 
+sub find_favourites {
+	my $type = shift;
+	my $helpers = shift;
+	if ($type eq 'View') {
+		foreach (@{$helpers}) {
+			return $_ if ($_ eq 'TT');
+		}
+		return '[none]';
+	}
+	else {
+		return '[none]';
+	}
+}
+
+
 sub on_create_view {
-	my $view_helpers = find_helpers_for('View');
-    unless (scalar @{$view_helpers} > 0) {
+	$helpers_for->{'view'} = find_helpers_for('View'); # TODO: unglobal this
+	
+    unless (scalar @{$helpers_for->{'view'}} > 0) {
     	my $main = Padre->ide->wx->main;
 		Wx::MessageBox(
 			'No helper views found.', 
@@ -87,7 +123,7 @@ sub on_create_view {
 		);
 		return;
 	}
-    my $layout = get_view_layout($view_helpers);
+    my $layout = get_view_layout();
     
     my $dialog = dialog($layout, \&create_view);
     $dialog->Show(1);
@@ -122,7 +158,7 @@ sub create_controller {
 }
 
 sub create {
-	my $type = shift;
+	my $type = lc(shift);
 	my $data = shift;
    	my $main = Padre->ide->wx->main;
    	
@@ -159,17 +195,16 @@ sub create {
     push my @cmd, 
 				$perl,
 				File::Spec->catfile('script', $helper_filename),
-				lc $type,
+				$type,
 			;
 	
-	# TODO: this should've been passed as a parameter
-	# but I'm too tired to figure how to do it
-	# under a Wx::Dialog (make it a global in last case)
-	my $helper = find_helpers_for($type);
-	
+	my $helper = $helpers_for->{$type}; #TODO: unglobal this
 	push @cmd, 
 			$data->{'_name_'},
-			${$helper}[$data->{'_type_'}],
+			( ${$helper}[$data->{'_type_'}] eq '[none]' 
+			  ? '' 
+			  : ${$helper}[$data->{'_type_'}] 
+			),
 		;
 
 	if ($data->{'_force_'}) {
@@ -187,32 +222,39 @@ sub create {
 	chdir $pwd; # restore directory
 
 	$main->output->AppendText("\nCatalyst helper script ended.\n");
-	
-	my $ret = Wx::MessageBox(
-		sprintf("%s apparently created. Do you want to open it now?", $type),
-		'Done',
-		Wx::wxYES_NO|Wx::wxCENTRE,
-		$main,
-	);
-	if ( $ret == Wx::wxYES ) {
-		my @dirs = File::Spec->splitdir($project_dir);
-		my @parts = split /-/, $dirs[-1];
 
-		my $file = File::Spec->catfile( $project_dir,
-                                        'lib', 
-                                        @parts,
-                                        $type,
-                                        $data->{'_name_'} . '.pm'
-                                      );
-		Padre::DB::History->create(
-			type => 'files',
-			name => $file,
+	my $file = find_file_from_output($data->{'_name_'}, $output_text);
+	if ($file) {
+		my $ret = Wx::MessageBox(
+			sprintf("%s apparently created. Do you want to open it now?", $type),
+			'Done',
+			Wx::wxYES_NO|Wx::wxCENTRE,
+			$main,
 		);
-		$main->setup_editor($file);
-		$main->refresh;
+		if ( $ret == Wx::wxYES ) {
+			Padre::DB::History->create(
+				type => 'files',
+				name => $file,
+			);
+			$main->setup_editor($file);
+			$main->refresh;
+		}
 	}
-
 	return;
+}
+
+sub find_file_from_output {
+	my $filename = shift;
+	my $output_text = shift;
+	
+	$filename .= '.pm';
+	
+	if ($output_text =~ m{created "(.+$filename(?:\.new)?)"}) {
+		$filename = $1;
+	}
+	else {
+		return; # sorry, not found
+	}
 }
 
 42;

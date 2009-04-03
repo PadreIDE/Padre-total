@@ -103,18 +103,18 @@ sub on_start_server {
 }
 
 sub on_stop_server {
-    # TODO: Make this actually call
-    # Run -> Stop
-    my $main = Padre->ide->wx->main;
-    if ( $main->{command} ) {
-	my $processid = $main->{command}->GetProcessId();
-	kill(9, $processid);
-        #$main->{command}->TerminateProcess;
-    }
-    delete $main->{command};
-    $main->menu->run->enable;
-    $main->output->AppendText("\nWeb server stopped successfully.\n");
-    return;
+	# TODO: Make this actually call
+	# Run -> Stop
+	my $main = Padre->ide->wx->main;
+	if ( $main->{command} ) {
+		my $processid = $main->{command}->GetProcessId();
+		kill(9, $processid);
+		#$main->{command}->TerminateProcess;
+	}
+	delete $main->{command};
+	$main->menu->run->enable;
+	$main->output->AppendText("\nWeb server stopped successfully.\n");
+	return;
 }
 
 sub on_show_about {
