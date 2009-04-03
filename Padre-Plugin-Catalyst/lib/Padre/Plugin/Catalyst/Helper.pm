@@ -114,20 +114,10 @@ sub find_favourites {
 
 sub on_create_view {
 	$helpers_for->{'view'} = find_helpers_for('View'); # TODO: unglobal this
-	
-    unless (scalar @{$helpers_for->{'view'}} > 0) {
-    	my $main = Padre->ide->wx->main;
-		Wx::MessageBox(
-			'No helper views found.', 
-			'Helper error', Wx::wxOK, $main
-		);
-		return;
-	}
-    my $layout = get_view_layout();
-    
-    my $dialog = dialog($layout, \&create_view);
-    $dialog->Show(1);
-    return;
+	my $layout = get_view_layout();
+	my $dialog = dialog($layout, \&create_view);
+	$dialog->Show(1);
+	return;
 }
 
 # stub for now
