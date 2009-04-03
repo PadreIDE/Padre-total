@@ -245,6 +245,7 @@ sub find_file_from_output {
 	else {
 		return; # sorry, not found
 	}
+	$filename = Cwd::realpath($filename); # avoid relative paths
 }
 
 42;
