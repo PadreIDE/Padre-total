@@ -70,9 +70,11 @@ Padre::Plugin::SpellCheck - check spelling in Padre
 
 =head1 DESCRIPTION
 
-First of all, you must have "the aspell binary and dictionary" installed
+This plugins allows one to checking her text spelling within Padre. It
+is using C<Text::Aspell> underneath, so check this module's pod for more
+information.
 
-read L<http://search.cpan.org/dist/Text-Aspell/README> for more details
+Of course, you need to have the aspell binary and dictionnary installed.
 
 
 
@@ -109,6 +111,9 @@ L<http://cpanratings.perl.org/d/Padre-Plugin-SpellCheck>
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-SpellCheck>
 
 =back
+
+
+Everything aspell related: L<http://aspell.net>.
 
 
 
