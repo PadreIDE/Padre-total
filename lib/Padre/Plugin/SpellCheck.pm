@@ -1,3 +1,13 @@
+#
+# This file is part of Padre::Plugin::SpellCheck.
+# Copyright (c) 2009 Fayland Lam, all rights reserved.
+# Copyright (c) 2009 Jerome Quelin, all rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the same terms as Perl itself.
+#
+#
+
 package Padre::Plugin::SpellCheck;
 
 use warnings;
