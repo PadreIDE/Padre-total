@@ -18,6 +18,7 @@ our $VERSION = '0.01';
 use base 'Padre::Plugin';
 use Padre::Current ();
 
+
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
@@ -28,12 +29,15 @@ sub padre_interfaces {
     'Padre::Plugin' => '0.26',
 }
 
-
+# plugin menu.
 sub menu_plugins_simple {
-    return ('Spell Check' => [
-        'Run it', 'spell_check',
-    ]);
+    'Spell Check' => [
+        'Check spelling' => 'spell_check',
+    ];
 }
+
+
+# -- public methods
 
 sub spell_check {
     my ( $self ) = shift;
