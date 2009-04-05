@@ -99,6 +99,39 @@ Of course, you need to have the aspell binary and dictionnary installed.
 
 
 
+=head1 PUBLIC METHODS
+
+=head2 Standard Padre::Plugin API
+
+C<Padre::Plugin::SpellCheck> defines a plugin which follows
+C<Padre::Plugin> API. Refer to this module's documentation for more
+information.
+
+The following methods are implemented:
+
+=over 4
+
+=item menu_plugins_simple()
+
+=item padre_interfaces()
+
+=item plugin_name()
+
+=back
+
+
+=head2 Spell checking methods
+
+=over 4
+
+=item * spell_check()
+
+Spell checks the current selection (or the whole document).
+
+=back
+
+
+
 =head1 BUGS
 
 Please report any bugs or feature requests to C<padre-plugin-spellcheck
@@ -149,6 +182,7 @@ Original version from Fayland Lam, C<< <fayland at gmail.com> >>
 =head1 COPYRIGHT & LICENSE
 
 Copyright (c) 2009 Fayland Lam, all rights reserved.
+
 Copyright (c) 2009 Jerome Quelin, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify
