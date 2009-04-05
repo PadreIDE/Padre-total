@@ -19,54 +19,54 @@ use base 'Padre::Plugin';
 use Padre::Current ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.26',
+    'Padre::Plugin' => '0.26',
 }
 
 sub menu_plugins_simple {
-	return ('Spell Check' => [
-		'Run it', 'spell_check',
-	]);
+    return ('Spell Check' => [
+        'Run it', 'spell_check',
+    ]);
 }
 
 sub spell_check {
-	my ( $self ) = shift;
-	
-	my $speller;
-	eval {
-		require Text::Aspell;
-		$speller = Text::Aspell->new;
-		$speller->set_option('sug-mode', 'fast');
-		# TODO, configurable later
-		$speller->set_option('lang','en_US');
-	};
-	if ( $@ ) {
-		Padre::Current->main->error( $@ );
-		return;
-	}
-	
-	my $src  = Padre::Current->text;
-	my $doc  = Padre::Current->document;
-	my $text = $src ? $src : $doc->text_get;
-	
-	Padre::Current->main->show_output(1);
-	Padre::Current->main->output->clear;
-	my $has_bad = 0;
-	
-	foreach my $word ( split /\b/, $text ){
-		# Skip empty strings and non-spellable words
-		next unless defined $word;
-		next unless ($word =~ /^\p{L}+$/i);
-		next if $speller->check( $word ) || $word =~ /^\d+$/;
-		my @suggestions = $speller->suggest( $word );
-		Padre::Current->main->output->AppendText("wrong $word, suggest " . join(', ', @suggestions) . "\n");
-		$has_bad = 1;
-	}
-	
-	unless ( $has_bad ) {
-		Padre::Current->main->output->AppendText("Everything seems OK around");
-	}
+    my ( $self ) = shift;
+    
+    my $speller;
+    eval {
+        require Text::Aspell;
+        $speller = Text::Aspell->new;
+        $speller->set_option('sug-mode', 'fast');
+        # TODO, configurable later
+        $speller->set_option('lang','en_US');
+    };
+    if ( $@ ) {
+        Padre::Current->main->error( $@ );
+        return;
+    }
+    
+    my $src  = Padre::Current->text;
+    my $doc  = Padre::Current->document;
+    my $text = $src ? $src : $doc->text_get;
+    
+    Padre::Current->main->show_output(1);
+    Padre::Current->main->output->clear;
+    my $has_bad = 0;
+    
+    foreach my $word ( split /\b/, $text ){
+        # Skip empty strings and non-spellable words
+        next unless defined $word;
+        next unless ($word =~ /^\p{L}+$/i);
+        next if $speller->check( $word ) || $word =~ /^\d+$/;
+        my @suggestions = $speller->suggest( $word );
+        Padre::Current->main->output->AppendText("wrong $word, suggest " . join(', ', @suggestions) . "\n");
+        $has_bad = 1;
+    }
+    
+    unless ( $has_bad ) {
+        Padre::Current->main->output->AppendText("Everything seems OK around");
+    }
 
-	return 1;
+    return 1;
 }
 
 1;
