@@ -13,6 +13,10 @@ package Padre::Plugin::SpellCheck;
 use warnings;
 use strict;
 
+use File::Basename        qw{ fileparse };
+use File::Spec::Functions qw{ catfile };
+use Module::Util          qw{ find_installed };
+
 our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
@@ -23,6 +27,18 @@ use Padre::Current ();
 
 # plugin name
 sub plugin_name { 'Spell checking' }
+
+# plugin icon
+sub plugin_icon {
+    # find resource path
+    my $pkgpath = find_installed(__PACKAGE__);
+    my (undef, $dirname, undef) = fileparse($pkgpath);
+    my $iconpath = catfile( $dirname,
+        'SpellCheck', 'share', 'icons', 'spellcheck.png');
+
+    # create and return icon
+    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+}
 
 # padre interfaces
 sub padre_interfaces {
