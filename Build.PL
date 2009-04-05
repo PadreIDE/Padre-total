@@ -25,7 +25,7 @@ my $builder = Module::Build->new(
         'File::Basename'        => 0,
         'File::Spec::Functions' => 0,
         'Module::Util'          => 0,
-        'Padre'                 => '0.30',
+        'Padre'                 => '0.26',
         'Text::Aspell'          => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-SpellCheck-*',
