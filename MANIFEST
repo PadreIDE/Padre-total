@@ -1,20 +1,11 @@
 Build.PL
 Changes
-inc/Module/AutoInstall.pm
-inc/Module/Install.pm
-inc/Module/Install/AutoInstall.pm
-inc/Module/Install/Base.pm
-inc/Module/Install/Can.pm
-inc/Module/Install/Fetch.pm
-inc/Module/Install/Include.pm
-inc/Module/Install/Makefile.pm
-inc/Module/Install/Metadata.pm
-inc/Module/Install/Win32.pm
-inc/Module/Install/WriteAll.pm
 lib/Padre/Plugin/SpellCheck.pm
+LICENSE
 Makefile.PL
 MANIFEST			This list of files
 META.yml
 README
-t/00-load.t
-t/pod.t
+t/0-load.t
+t/9-pod-coverage.t
+t/9-pod.t
