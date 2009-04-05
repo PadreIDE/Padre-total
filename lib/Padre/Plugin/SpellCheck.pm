@@ -13,7 +13,7 @@ package Padre::Plugin::SpellCheck;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
 use Padre::Current ();
