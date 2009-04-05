@@ -143,6 +143,9 @@ notified of progress on your bug as I make changes.
 
 =head1 SEE ALSO
 
+Plugin icon courtesy of Mark James, at
+L<http://www.famfamfam.com/lab/icons/silk/>.
+
 Our svn repository is located at L<http://svn.perlide.org/padre/trunk/Padre-Plugin-
 SpellCheck>, and can be browsed at L<http://padre.perlide.org/browser/trunk/Padre-Plugin-
 SpellCheck>.
