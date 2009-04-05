@@ -1,9 +1,9 @@
 ---
 name: Padre-Plugin-SpellCheck
-version: 0.01
+version: 0.02
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
-abstract: Spell Check in Padre
+abstract: check spelling in Padre
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -11,9 +11,14 @@ requires:
   File::Basename: 0
   File::Spec::Functions: 0
   Module::Util: 0
-  Padre: 0.30
+  Padre: 0.26
+  Text::Aspell: 0
 build_requires:
   Test::More: 0
+provides:
+  Padre::Plugin::SpellCheck:
+    file: lib/Padre/Plugin/SpellCheck.pm
+    version: 0.02
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
