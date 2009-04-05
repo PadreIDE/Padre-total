@@ -3,7 +3,8 @@ Revision history for Padre-Plugin-SpellCheck
 0.02 
  - adding newline between wrongly spelled words
  - changing maintainer
- - moved away from module::install
+ - moving away from module::install
+ - 
 
 0.01 Sun Feb  1 16:03:22 CEST 2009
  - First version, released on an unsuspecting world.
