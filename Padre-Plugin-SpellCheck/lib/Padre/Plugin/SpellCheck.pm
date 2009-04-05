@@ -17,7 +17,7 @@ use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use Module::Util          qw{ find_installed };
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 use Padre::Current ();
