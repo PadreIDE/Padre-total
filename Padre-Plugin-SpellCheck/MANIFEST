@@ -1,6 +1,7 @@
 Build.PL
 Changes
 lib/Padre/Plugin/SpellCheck.pm
+lib/Padre/Plugin/SpellCheck/share/icons/spellcheck.png
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
