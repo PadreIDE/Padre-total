@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
+0.03 Sun Apr  5 17:28:58 CEST 2009
+ - providing an icon for padre's plugin manager
+
 0.02 Sun Apr  5 16:41:42 CEST 2009
  - adding newline between wrongly spelled words
  - changing maintainer
