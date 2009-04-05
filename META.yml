@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-SpellCheck
-version: 0.02
+version: 0.03
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
 abstract: check spelling in Padre
@@ -18,7 +18,7 @@ build_requires:
 provides:
   Padre::Plugin::SpellCheck:
     file: lib/Padre/Plugin/SpellCheck.pm
-    version: 0.02
+    version: 0.03
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

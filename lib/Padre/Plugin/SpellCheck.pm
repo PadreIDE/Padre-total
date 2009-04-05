@@ -131,6 +131,8 @@ The following methods are implemented:
 
 =item padre_interfaces()
 
+=item plugin_icon()
+
 =item plugin_name()
 
 =back
