@@ -64,7 +64,9 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::SpellCheck - Spell Check in Padre
+Padre::Plugin::SpellCheck - check spelling in Padre
+
+
 
 =head1 DESCRIPTION
 
@@ -72,15 +74,58 @@ First of all, you must have "the aspell binary and dictionary" installed
 
 read L<http://search.cpan.org/dist/Text-Aspell/README> for more details
 
+
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<padre-plugin-spellcheck
+at rt.cpan.org>, or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-
+SpellCheck>. I will be notified, and then you'll automatically be
+notified of progress on your bug as I make changes.
+
+
+
+=head1 SEE ALSO
+
+Our svn repository is located at L<http://svn.perlide.org/padre/trunk/Padre-Plugin-
+SpellCheck>, and can be browsed at L<http://padre.perlide.org/browser/trunk/Padre-Plugin-
+SpellCheck>.
+
+
+You can also look for information on this module at:
+
+=over 4
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Padre-Plugin-SpellCheck>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Padre-Plugin-SpellCheck>
+
+=item * Open bugs
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-SpellCheck>
+
+=back
+
+
+
 =head1 AUTHOR
 
-Fayland Lam, C<< <fayland at gmail.com> >>
+Jerome Quelin, C<< <jquelin@cpan.org> >>
+
+Original version from Fayland Lam, C<< <fayland at gmail.com> >>
+
+
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Fayland Lam, all rights reserved.
+Copyright (c) 2009 Fayland Lam, all rights reserved.
+Copyright (c) 2009 Jerome Quelin, all rights reserved.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
 =cut
