@@ -65,6 +65,27 @@ sub menu_plugins_simple {
             'Start Web Server' => sub { $self->on_start_server },
             'Stop Web Server'  => sub { $self->on_stop_server  },
             '---'     => undef, # ...and another separator
+            'Catalyst Online References' => [
+				'Beginner\'s Tutorial' => sub { 
+					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
+				},
+				'Catalyst Cookbook' => sub {
+					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
+				},
+				'Recommended Plugins' => sub {
+					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/recommended_plugins');
+				},
+				'Examples' => sub {
+					Wx::LaunchDefaultBrowser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
+				},
+				'Catalyst Wiki' => sub {
+					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/');
+				},
+				'Catalyst Website' => sub {
+					Wx::LaunchDefaultBrowser('http://www.catalystframework.org/');
+				},
+            ],
+            '---'     => undef, # ...oh
             'About'   => sub { $self->on_show_about },
     ];
 }
