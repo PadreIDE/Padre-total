@@ -44,6 +44,31 @@ sub dialog {
 }
 
 sub get_model_layout {
+	my $available_models 
+		= $helpers_for->{'models'}; #shift; TODO: ungloball this
+		
+	my @layout = (
+		[
+			[ 'Wx::StaticText', undef,                    'Model Name:' ],
+			[ 'Wx::TextCtrl',   '_name_',                 ''            ],
+		],
+		[
+			[ 'Wx::StaticText', undef,                         'Type'   ],
+			[ 'Wx::Choice',     '_type_',            $available_models  ],
+		],
+		[
+			[ 'Wx::StaticText', undef           ,   'Additional Parameters:' ],
+			[ 'Wx::TextCtrl'  , '_extra_params_',   ''                       ],
+		],
+		[
+			[ 'Wx::CheckBox', '_force_', 'force', 0 ], #TODO add -mechanize parameter too
+		],
+		[
+			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
+			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
+		],
+	);
+	return \@layout;
 }
 
 sub get_view_layout {
@@ -154,15 +179,22 @@ sub on_create_controller {
 	return;
 }
 
-# stub for now
+
 sub on_create_model {
+	$helpers_for->{'model'} = find_helpers_for('Model'); # TODO: unglobal this
+	my $layout = get_model_layout();
+	my $dialog = dialog($layout, \&create_model);
+	$dialog->Show(1);
+	return;
 }
+
 
 sub cancel_clicked {
 	my $dialog = shift;
 	$dialog->Destroy;
 	return;
 }
+
 
 sub create_view {
 	my $dialog = shift;
@@ -172,6 +204,10 @@ sub create_view {
 }
 
 sub create_model {
+	my $dialog = shift;
+	my $data = $dialog->get_data;
+	$dialog->Destroy;
+	create('Model', $data);
 }
 
 sub create_controller {

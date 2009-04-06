@@ -48,10 +48,10 @@ sub menu_plugins_simple {
                                 return;
                             },
             'Create new...' => [
-#                'Model'      => sub { 
-#								require Padre::Plugin::Catalyst::Helper;
-#								Padre::Plugin::Catalyst::Helper::on_create_model();
-#							},
+                'Model'      => sub { 
+								require Padre::Plugin::Catalyst::Helper;
+								Padre::Plugin::Catalyst::Helper::on_create_model();
+							},
                 'View'       => sub { 
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_view();
