@@ -140,13 +140,13 @@ sub svn_status_of_file {
 
 sub svn_status_of_project {
 	my ($self) = @_;
-
-	my $main     = Padre::Current->main;
-	my $doc      = Padre::Current->document;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
-	return $main->error("Could not find project root") if not $dir;
-	$self->svn_status($dir);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		my $main     = Padre::Current->main;
+		my $dir      = Padre::Util::get_project_dir($filename);
+		return $main->error("Could not find project root") if not $dir;
+		$self->svn_status($dir);
+	}
 	return;
 }
 
