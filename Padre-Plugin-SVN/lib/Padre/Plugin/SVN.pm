@@ -107,6 +107,20 @@ END_MESSAGE
 	return;
 }
 
+# TODO: I see this a lot. Should something like
+# this be on Padre::Util?
+sub _get_current_filename {
+	my $main = Padre->ide->wx->main;
+	my $filename = $main->current->document->filename;
+	if ($filename) {
+		return $filename;
+	}
+	else {
+		$main->error('File needs to be saved first');
+		return;
+	}
+}
+
 sub svn_status {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
@@ -117,11 +131,10 @@ sub svn_status {
 
 sub svn_status_of_file {
 	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	$self->svn_status($filename);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		$self->svn_status($filename);
+	}
 	return;
 }
 
