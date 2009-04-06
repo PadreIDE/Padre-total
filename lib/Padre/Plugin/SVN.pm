@@ -160,22 +160,20 @@ sub svn_diff {
 
 sub svn_diff_of_file {
 	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	$self->svn_diff($filename);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		$self->svn_diff($filename);
+	}
 	return;
 }
 
 sub svn_diff_of_project {
 	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
-	$self->svn_diff($dir);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		my $dir = Padre::Util::get_project_dir($filename);
+		$self->svn_diff($dir);
+	}
 	return;
 }
 
@@ -196,22 +194,20 @@ sub svn_commit {
 
 sub svn_commit_file {
 	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	$self->svn_commit($filename);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		$self->svn_commit($filename);
+	}
 	return;
 }
 
 sub svn_commit_project {
 	my ($self) = @_;
-
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	my $dir      = Padre::Util::get_project_dir($filename);
-	$self->svn_commit($dir);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		my $dir = Padre::Util::get_project_dir($filename);
+		$self->svn_commit($dir);
+	}
 	return;
 }
 
@@ -223,10 +219,10 @@ sub svn_add {
 
 sub svn_add_file {
 	my ($self)   = @_;
-	my $main     = Padre->ide->wx->main;
-	my $doc      = $main->current->document;
-	my $filename = $doc->filename;
-	$self->svn_add($filename);
+	my $filename = _get_current_filename();
+	if ($filename) {
+		$self->svn_add($filename);
+	}
 	return;
 }
 
