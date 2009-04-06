@@ -56,10 +56,10 @@ sub menu_plugins_simple {
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_view();
 							},
-#                'Controller' => sub {
-#								require Padre::Plugin::Catalyst::Helper;
-#								Padre::Plugin::Catalyst::Helper::on_create_controller();
-#							},
+                'Controller' => sub {
+								require Padre::Plugin::Catalyst::Helper;
+								Padre::Plugin::Catalyst::Helper::on_create_controller();
+							},
             ],
 			'---'     => undef, # separator
             'Start Web Server' => sub { $self->on_start_server },

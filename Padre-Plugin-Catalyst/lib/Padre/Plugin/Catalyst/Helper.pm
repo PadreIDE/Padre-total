@@ -70,6 +70,31 @@ sub get_view_layout {
 }
 
 sub get_controller_layout {
+	my $available_controllers 
+		= $helpers_for->{'controller'}; #shift; TODO: ungloball this
+		
+	my @layout = (
+		[
+			[ 'Wx::StaticText', undef,                    'Controller Name:' ],
+			[ 'Wx::TextCtrl',   '_name_',                 ''                 ],
+		],
+		[
+			[ 'Wx::StaticText', undef,                         'Type'        ],
+			[ 'Wx::Choice',     '_type_',            $available_controllers  ],
+		],
+		[
+			[ 'Wx::StaticText', undef           ,   'Additional Parameters:' ],
+			[ 'Wx::TextCtrl'  , '_extra_params_',   ''                       ],
+		],
+		[
+			[ 'Wx::CheckBox', '_force_', 'force', 0 ], #TODO add -mechanize parameter too
+		],
+		[
+			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
+			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
+		],
+	);
+	return \@layout;
 }
 
 
@@ -120,8 +145,13 @@ sub on_create_view {
 	return;
 }
 
-# stub for now
+
 sub on_create_controller {
+	$helpers_for->{'controller'} = find_helpers_for('Controller'); # TODO: unglobal this
+	my $layout = get_controller_layout();
+	my $dialog = dialog($layout, \&create_controller);
+	$dialog->Show(1);
+	return;
 }
 
 # stub for now
@@ -145,7 +175,12 @@ sub create_model {
 }
 
 sub create_controller {
+	my $dialog = shift;
+	my $data = $dialog->get_data;
+	$dialog->Destroy;
+	create('Controller', $data);
 }
+
 
 sub create {
 	my $type = lc(shift);
@@ -194,6 +229,10 @@ sub create {
 			( ${$helper}[$data->{'_type_'}] eq '[none]' 
 			  ? '' 
 			  : ${$helper}[$data->{'_type_'}] 
+			),
+			( defined $data->{'_extra_params_'}
+			  ? $data->{'_extra_params_'}
+			  : ''
 			),
 		;
 
