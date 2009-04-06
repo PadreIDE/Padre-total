@@ -7,9 +7,7 @@ use strict;
 our $VERSION = '0.02';
 
 # The plugin name to show in the Plugin Manager and menus
-sub plugin_name {
-    'Catalyst';
-}
+sub plugin_name { 'Catalyst' }
   
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
@@ -18,7 +16,27 @@ sub padre_interfaces {
 #    'Padre::Wx::Main'       => 0.16,
 #    'Padre::DB'             => 0.16,
 }
-  
+
+sub plugin_icon {
+	my $icon = [ 
+		'16 16 46 1'   , '   c None'   , '.  c #D15C5C', '+  c #E88888', '@  c #E10000',
+		'#  c #D03131' , '$  c #D26262', '%  c #D26161', '&  c #E99F9F', '*  c #EFACAC',
+		'=  c #EFADAD' , '-  c #E79090', ';  c #D14949', '>  c #D22727', ',  c #E26666',
+		'\'  c #E26363', ')  c #E26464', '!  c #D42A2A', '~  c #D40101', '{  c #D50B0B',
+		']  c #D71313' , '^  c #D50C0C', '/  c #D40404', '(  c #D26767', '_  c #DF5353',
+		':  c #E15B5B' , '<  c #D95D5D', '[  c #D21313', '}  c #D30000', '|  c #DA0000',
+		'1  c #D90000' , '2  c #D31111', '3  c #D14646', '4  c #DC1313', '5  c #EC0000',
+		'6  c #E20000' , '7  c #F00000', '8  c #F20000', '9  c #D33232', '0  c #D64646',
+		'a  c #D46969' , 'b  c #D35555', 'c  c #D23A3A', 'd  c #E89090', 'e  c #E98E8E',
+		'f  c #D60000' , 'g  c #D70101', '                ', '            .   ',
+		'            +   ', '            @#  ', '                '  , '                ',
+		'        $%      ', '       &*=-;    ', '      >,\'\')!    ', '      ~{]]^/    ',
+		'(_: < [}|1}2    ', '345    67869    ', ' 0a         b c ', '              de'  ,
+		'              fg', '                ',
+	];
+	return Wx::Bitmap->newFromXPM( $icon );
+}
+
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
     my $self = shift;
