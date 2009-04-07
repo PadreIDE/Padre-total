@@ -43,6 +43,9 @@ sub get_layout {
 			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
 		],
 		[
+			[ 'Wx::CheckBox', '_short_', 'short names', 0 ],
+		],
+		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
 		],
@@ -116,6 +119,10 @@ sub ok_clicked {
 	my @command = (
 			# use catalyst.bat on Windows
 			'catalyst' . ($^O =~ /Win/o ? '' : '.pl'),
+			( $data->{'_short_'}
+			  ? '-short'
+			  : ''
+			),
 			$data->{'_app_name_'},
 		);
 	
@@ -143,7 +150,7 @@ sub ok_clicked {
 					);
 		$file = File::Spec->catfile( $data->{'_directory_'}, $file );
 		$file = Cwd::realpath($file); # avoid relative paths
-		print STDERR $file . $/;
+
 		Padre::DB::History->create(
 			type => 'files',
 			name => $file,
