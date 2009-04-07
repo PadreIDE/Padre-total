@@ -45,7 +45,7 @@ sub dialog {
 
 sub get_model_layout {
 	my $available_models 
-		= $helpers_for->{'models'}; #shift; TODO: ungloball this
+		= $helpers_for->{'model'}; #shift; TODO: ungloball this
 		
 	my @layout = (
 		[
