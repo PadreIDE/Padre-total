@@ -27,12 +27,11 @@ sub find_file_from_output {
 	$filename .= '.pm';
 	
 	if ($output_text =~ m{created "(.+$filename(?:\.new)?)"}) {
-		$filename = $1;
+		return $1;
 	}
 	else {
 		return; # sorry, not found
 	}
-	$filename = Cwd::realpath($filename); # avoid relative paths
 }
 
 sub get_document_base_dir {	

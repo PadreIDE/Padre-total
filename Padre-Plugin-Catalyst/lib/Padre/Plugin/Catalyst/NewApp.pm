@@ -92,7 +92,7 @@ sub ok_clicked {
 	my $main = Padre->ide->wx->main;
 
 	# TODO improve input validation !
-	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]} ) {
+	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
         Wx::MessageBox('Invalid Application name', 'missing field', Wx::wxOK, $main);
         return;
 	}
@@ -122,11 +122,12 @@ sub ok_clicked {
 	# go to the selected directory
 	my $pwd = Cwd::cwd();
 	chdir $data->{'_directory_'};
-
-	my $output_text = qx(@command);
-	$main->output->AppendText($output_text);
 	
-	chdir $pwd; # restore directory
+	# run command, then immediately restore directory
+	my $output_text = qx(@command);	
+	chdir $pwd;
+
+	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
 		sprintf("%s apparently created. Do you want to open it now?", $data->{_app_name_}),
@@ -135,16 +136,14 @@ sub ok_clicked {
 		$main,
 	);
 	if ( $ret == Wx::wxYES ) {
-		# prepare Foo-Bar/lib/Foo/Bar/Controller/Root.pm
-		my @parts = split('::', $data->{'_app_name_'});
-		my $dir_name = join('-', @parts);
-		my $file = File::Spec->catfile( $data->{_directory_}, 
-                                        $dir_name, 
-                                        'lib', 
-                                        @parts,
-                                        'Controller',
-                                        'Root.pm'
-                                      );
+		require Padre::Plugin::Catalyst::Util;
+		my $file = Padre::Plugin::Catalyst::Util::find_file_from_output(
+						'Root', 
+						$output_text
+					);
+		$file = File::Spec->catfile( $data->{'_directory_'}, $file );
+		$file = Cwd::realpath($file); # avoid relative paths
+		print STDERR $file . $/;
 		Padre::DB::History->create(
 			type => 'files',
 			name => $file,
