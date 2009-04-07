@@ -20,6 +20,20 @@ sub get_catalyst_project_name {
     return $project_name;
 }
 
+sub find_file_from_output {
+	my $filename = shift;
+	my $output_text = shift;
+	
+	$filename .= '.pm';
+	
+	if ($output_text =~ m{created "(.+$filename(?:\.new)?)"}) {
+		$filename = $1;
+	}
+	else {
+		return; # sorry, not found
+	}
+	$filename = Cwd::realpath($filename); # avoid relative paths
+}
 
 sub get_document_base_dir {	
 	my $main = Padre->ide->wx->main;

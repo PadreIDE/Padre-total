@@ -288,7 +288,11 @@ sub create {
 
 	$main->output->AppendText("\nCatalyst helper script ended.\n");
 
-	my $file = find_file_from_output($data->{'_name_'}, $output_text);
+	require Padre::Plugin::Catalyst::Util;
+	my $file = Padre::Plugin::Catalyst::Util::find_file_from_output(
+					$data->{'_name_'}, 
+					$output_text
+			   );
 	if ($file) {
 		my $ret = Wx::MessageBox(
 			sprintf("%s apparently created. Do you want to open it now?", $type),
@@ -306,21 +310,6 @@ sub create {
 		}
 	}
 	return;
-}
-
-sub find_file_from_output {
-	my $filename = shift;
-	my $output_text = shift;
-	
-	$filename .= '.pm';
-	
-	if ($output_text =~ m{created "(.+$filename(?:\.new)?)"}) {
-		$filename = $1;
-	}
-	else {
-		return; # sorry, not found
-	}
-	$filename = Cwd::realpath($filename); # avoid relative paths
 }
 
 42;
