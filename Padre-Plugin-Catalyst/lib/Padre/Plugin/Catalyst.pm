@@ -202,21 +202,42 @@ Once you enable this Plugin under Padre, you'll get a brand new menu with the fo
 
 =head2 'New Catalyst Application'
 
+This options lets you create a new Catalyst application.
+
 =head2 'Create new...'
 
-=head3 'Model'
+The Catalyst helper lets you automatically create stub classes for your application's MVC components. With this menu option not only can you select your component's name but also its type. For instance, if you select "create new view" and have the L<Catalyst::Helper::View::TT> module installed on your system, the "TT" type will be available for you).
 
-=head3 'View'
+Of course, the available components are:
 
-=head3 'Controller'
+=over 4
+
+=item * 'Model'
+
+=item * 'View'
+
+=item * 'Controller'
+
+=back
 
 =head2 'Start Web Server'
 
+This option will automatically spawn your application's development web server. Once it's started, it will ask to open your default web browser to view your application running.
+
+Note that this works like Padre's "run" menu option, so any other execution it will be disabled while your server is running.
+
 =head2 'Stop Web Server'
+
+This option will stop the development web server for you.
+
+=head2 'Catalyst Online References'
+
+This menu option contains a series of external reference links on Catalyst. Clicking on each of them will point your default web browser to their websites.
 
 =head2 'About'
 
 Shows a nice about box with this module's name and version.
+
 
 =head1 AUTHOR
 
