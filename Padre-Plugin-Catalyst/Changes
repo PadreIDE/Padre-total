@@ -1,7 +1,11 @@
 Revision history for Padre-Plugin-Catalyst
 
-0.02    2009-03-31
+0.02    2009-04-08
         Now working on MS-Windows too  (FAYLAND)
+        Added "create new model" window (GARU)
+        Added "create new controller" window (GARU)
+        Added checkbox to shorten MVC names while creating a new app (GARU)
+        Added plugin icon (tiny Catalyst logo) (GARU)
 
 0.01    2009-03-31
         First version, released on an unsuspecting world.
