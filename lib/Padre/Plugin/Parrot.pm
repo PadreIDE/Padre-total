@@ -121,7 +121,7 @@ code written in PASM.
 
 =head1 COPYRIGHT
 
-Copyright 2008-2009 Gabor Szabo. L<http://www.szabgab.com/>
+Copyright 2008-2009 Gabor Szabo. L<http://szabgab.com/>
 
 =head1 LICENSE
 
@@ -246,7 +246,7 @@ sub about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Padre::Plugin::Parrot");
+	$about->SetName(__PACKAGE__);
 	$about->SetDescription( "This plugin currently provides a naive syntax highlighting for PASM files\n"
 			. "If you have Parrot compiled on your system it can also provide execution of\n"
 			. "PASM files\n" );
