@@ -9,7 +9,7 @@ our $VERSION = '0.04';
 use File::Basename ();
 
 use base 'Padre::Plugin';
-use Wx ':everything';
+use Padre::Wx ();
 use Wx::Locale qw(:default);
 
 our %KATE_ALL = (

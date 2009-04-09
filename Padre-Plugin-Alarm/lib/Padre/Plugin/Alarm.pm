@@ -6,8 +6,7 @@ use strict;
 our $VERSION = '0.04';
 
 use base 'Padre::Plugin';
-use Wx         ':everything';
-use Wx::Event  ':everything';
+use Padre::Wx ();
 use Wx::Locale qw(:default);
 use Padre::Wx::Dialog ();
 use vars qw/$alarm_timer_id/;

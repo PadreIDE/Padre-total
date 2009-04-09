@@ -6,7 +6,7 @@ use strict;
 our $VERSION = '0.01';
 
 use base 'Padre::Plugin';
-use Wx ':everything';
+use Padre::Wx ();
 
 sub padre_interfaces {
 	'Padre::Plugin'   => 0.26,

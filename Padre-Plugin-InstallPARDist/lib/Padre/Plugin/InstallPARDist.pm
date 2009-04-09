@@ -3,8 +3,6 @@ use strict;
 use warnings;
 use base 'Padre::Plugin';
 
-#use Wx         qw(:everything);
-#use Wx::Event  qw(:everything);
 use Padre::Wx;
 
 sub require_modules {

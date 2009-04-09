@@ -7,8 +7,6 @@ use version; our $VERSION = qv('0.1.3');
 
 use base 'Padre::Plugin';
 
-use Wx         ':everything';
-use Wx::Event  ':everything';
 use Wx::Locale qw(:default);
 
 use Padre::Wx         ();
@@ -70,7 +68,7 @@ sub encode_document_to {
     my @layout = (
         [
             [ 'Wx::StaticText', undef, Wx::gettext('Encode to:') ],
-            [ 'Wx::ComboBox', '_encoding_', 'utf-8', \@ENCODINGS, wxCB_READONLY ],
+            [ 'Wx::ComboBox', '_encoding_', 'utf-8', \@ENCODINGS, Wx::wxCB_READONLY ],
         ],
         [
             [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],

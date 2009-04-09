@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
-use Wx ':everything';
+use Padre::Wx ();
 
 our $VERSION = '0.23';
 our @ISA     = 'Padre::Document';
