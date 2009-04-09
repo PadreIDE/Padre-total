@@ -50,7 +50,7 @@ sub get_model_layout {
 	my @layout = (
 		[
 			[ 'Wx::StaticText', undef,                    'Model Name:' ],
-			[ 'Wx::TextCtrl',   '_name_',                 ''            ],
+			[ 'Wx::TextCtrl',   '_name_',                 'DB'          ],
 		],
 		[
 			[ 'Wx::StaticText', undef,                         'Type'   ],
@@ -154,11 +154,16 @@ sub find_favourites {
 		foreach (@{$helpers}) {
 			return $_ if ($_ eq 'TT');
 		}
-		return '[none]';
+	}
+	elsif ($type eq 'Model') {
+		foreach (@{$helpers}) {
+			return $_ if ($_ eq 'DBIC::Schema');
+		}
 	}
 	else {
 		return '[none]';
 	}
+	return '[none]';
 }
 
 
