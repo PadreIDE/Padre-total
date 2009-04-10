@@ -7,6 +7,8 @@ use Test::Snapshots;
 
 Test::Snapshots::debug(1);
 Test::Snapshots::set_glob('*.pl');
+Test::Snapshots::set_accessories_dir('t/files');
+
 #Test::Snapshots::multiple_setups('*.out');
 
 bail_on_fail;
