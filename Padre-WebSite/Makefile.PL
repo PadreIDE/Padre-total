@@ -22,7 +22,7 @@ requires       'FindBin'                  => 0;
 requires       'YAML::Tiny'               => '1.32';
 test_requires  'Test::More'               => '0.47';
 test_requires  'Test::Most'               => '0.21';
-#test_requires  'Test::Snapshots'          => '0.01'; # not released yet
+test_requires  'Test::Snapshots'          => '0.02';
 test_requires  'Test::NoWarnings'         => '0.084';
 
 no_index       'directory'                => qw{ t xt eg share inc privinc };
