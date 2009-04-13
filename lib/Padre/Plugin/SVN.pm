@@ -181,11 +181,6 @@ sub svn_commit {
 	my ( $self, $path ) = @_;
 
 	my $main = Padre->ide->wx->main;
-	if( ! defined($path) ) {
-		# error message because we have no path to file for commit.
-		$main->message("Not path to file, have you saved this file yet?");
-		return;
-	}
 	my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	if ($message) {
 		$message =~ s/"/\\"/g;
