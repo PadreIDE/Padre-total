@@ -140,9 +140,16 @@ sub _parrot_color {
 
 	my @data = `"$perl6" --target=parse --dumper=padre "$file"`;
 	chomp @data;
+	my @pd;
 	foreach my $line (@data) {
 		$line =~ s/^\s+//;
 		my ($start, $length, $type, $str) = split /\s+/, $line, 4;
+		push @pd, {
+			start => $start,
+			length => $length,
+			type => $type,
+			str => $str,
+			};
 		if (not exists ($perl6_colors{$type})) {
 			warn "No Perl6 color definiton for '$type':  $str\n";
 			next;
@@ -153,8 +160,7 @@ sub _parrot_color {
         $editor->SetStyling($length, $color);
 
 	}
-	
-	
+	$self->{_parse_tree} = \@pd;
 
 	#use Data::Dumper;
 	#print Dumper \@data;
@@ -276,6 +282,38 @@ sub keywords {
 }
 
 sub comment_lines_str { return '#' }
+
+sub event_on_right_down {
+	my ($self, $editor, $menu, $event ) = @_;
+	#print "event_on_right_down @_\n";
+	my $pos = $editor->GetCurrentPos;
+	
+	return if not $self->{_parse_tree};
+
+	my @things;
+	foreach my $e (@{ $self->{_parse_tree} }) {
+		last if $e->{start} > $pos;
+		next if $e->{start} + $e->{length} < $pos;
+		push @things, {type => $e->{type}, str => $e->{str}};
+	}
+	return if not @things;
+	
+	my $main = $editor->main;
+	$menu->AppendSeparator;
+	
+#	my $perl6 = $menu->Append( -1, Wx::gettext("Perl 6 $pos") );
+#	Wx::Event::EVT_MENU(
+#			$main, $perl6,
+#				sub {
+#					print "$_[0]\n";
+#				},
+#			);
+	foreach my $thing (@things) {
+		$menu->Append( -1, Wx::gettext("$thing->{str} is Perl 6 $thing->{type} ") );
+	}
+	return;
+}
+
 
 1;
 
