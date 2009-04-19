@@ -3,7 +3,7 @@ package Padre::Document::Perl6;
 use 5.010;
 use strict;
 use warnings;
-use feature qw(say);
+#use feature qw(say);
 use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
