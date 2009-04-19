@@ -49,28 +49,11 @@ sub get_command {
 
     my $filename = $self->filename;
 
-    #if (not $ENV{PARROT_DIR}) {
-    #    #die to display a message box...
-    #    die "PARROT_DIR is not defined. Need to point to the directory of the Parrot checkout.\n";
-    #}
     if (not $ENV{RAKUDO_DIR}) {
-        #die to display a message box...
-        die "RAKUDO_DIR is not defined. Need to point to the directory of the Rakudo checkout.\n";
+    	my $main = Padre->ide->wx->main;
+    	$main->error("RAKUDO_DIR is not defined. Need to point to the directory of the Rakudo checkout.");
     }
-    #my $parrot_exe = ($^O eq 'MSWin32') ? 'parrot.exe' : 'parrot';
-    #my $parrot = File::Spec->catfile($ENV{PARROT_DIR}, $parrot_exe);
-    #if (not -x $parrot) {
-        #die to display a message box...
-    #    die "$parrot is not an executable.\n";
-    #}
-    #my $rakudo = File::Spec->catfile($ENV{RAKUDO_DIR}, 'perl6.pbc');
-    #if (not -e $rakudo) {
-        #die to display a message box...
-    #    die "Cannot find Rakudo ($rakudo)\n";
-    #}
-
     my $perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, ($^O eq 'MSWin32') ? 'perl6.exe' : 'perl6');
-    #return qq{"$parrot" "$rakudo" "$filename"};
     return qq{"$perl6" "$filename"};
 }
 
