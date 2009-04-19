@@ -16,6 +16,77 @@ our @ISA     = 'Padre::Document';
 # max lines to display in a calltip
 Readonly my $CALLTIP_DISPLAY_COUNT => 10;
 
+# used for coloring by parrot
+my %perl6_colors = (
+	quote_expression => Px::PADRE_BLUE,
+	parse            => undef,
+	statement_block  => undef,
+	statementlist    => undef,
+	statement        => undef,
+	expr             => undef,
+	'term:'          => undef,
+	noun             => undef,
+	value => undef,
+	quote => undef,
+	quote_concat => undef,
+	quote_term => undef,
+	quote_literal => undef,
+	post => Px::PADRE_MAGENTA,
+	dotty => undef,
+	dottyop => undef,
+	methodop => Px::PADRE_GREEN,
+	name => Px::PADRE_GREEN,
+	identifier => undef,
+	term => undef,
+	args => undef,
+	arglist => undef,
+	EXPR => undef,
+	statement_control => undef,
+	use_statement => undef,
+	sym => Px::PADRE_RED,
+	'infix:='  => Px::PADRE_GREEN,
+	'infix:+'  => Px::PADRE_GREEN,
+#   'infix:*'  => Px::PADRE_GREEN,
+#	'infix:/'  => Px::PADRE_GREEN,
+	'infix:,'  => Px::PADRE_GREEN,
+	'infix:..' => undef,
+	'prefix:=' => undef,
+	'infix:|' => undef,
+	'infix:==' => undef,
+	'infix:*=' => undef,
+	twigil => undef,
+	if_statement => undef,
+	'infix:eq' => undef,
+	semilist => undef,
+	scope_declarator => undef,
+	scoped => undef,
+	variable_declarator => undef,
+	declarator => undef,
+	variable => Px::PADRE_RED, #Px::PADRE_DIM_GRAY,
+	integer => undef,
+	number => Px::PADRE_BROWN,
+	circumfix => undef,
+	param_sep => undef,
+	sigil => undef,
+	desigilname => undef,
+	longname => undef,
+	parameter => undef,
+	param_var => undef,
+	quant => undef,
+	pblock => undef,
+	block => undef,
+	signature => undef,
+	for_statement => undef,
+	xblock => undef,
+	lambda => Px::PADRE_GREEN,
+);
+
+#    'regex_block' => Px::PADRE_BLACK,
+#    'number' => Px::PADRE_ORANGE,
+#    'param_var' => Px::PADRE_CRIMSON,
+#    '_hash' => Px::PADRE_ORANGE,
+
+
 sub text_with_one_nl {
     my $self = shift;
     my $text = $self->text_get;
@@ -32,23 +103,67 @@ sub text_with_one_nl {
 
 # a SLOW WAY to parse and colorize perl6 files
 sub colorize {
-    my $doc = shift;
+    my $self = shift;
+    
+    # temporary overlay using the parse tree given by parrot
+    # TODO: let the user select which one to use
+    # TODO: but the parrot parser in the background
+	my $perl6 = $self->get_perl6;
+	if ($perl6) {
+		$self->_parrot_color($perl6);
+		return;
+	}
 
     my $config = Padre::Plugin::Perl6::plugin_config;
-    if($config->{p6_highlight} || $doc->{force_p6_highlight}) {
+    if($config->{p6_highlight} || $self->{force_p6_highlight}) {
         # Create a coloring task and hand off to the task manager
         my $task = Padre::Task::Perl6->new(
-            text => $doc->text_with_one_nl,
-            editor => $doc->editor,
-            document => $doc);
+            text => $self->text_with_one_nl,
+            editor => $self->editor,
+            document => $self);
         $task->schedule();
     }
 }
 
-sub get_command {
-    my $self     = shift;
+sub _parrot_color {
+	my ($self, $perl6) = @_;
+	
+	my $editor = $self->editor;
 
-    my $filename = $self->filename;
+	use File::Temp qw(tempdir);
+	my $dir = tempdir(CLEANUP => 1);
+	my $file = "$dir/file";
+
+	if (open my $fh, '>', $file) {
+		print $fh $self->text_get;
+	}	
+
+	my @data = `"$perl6" --target=parse --dumper=padre "$file"`;
+	chomp @data;
+	foreach my $line (@data) {
+		$line =~ s/^\s+//;
+		my ($start, $length, $type, $str) = split /\s+/, $line, 4;
+		if (not exists ($perl6_colors{$type})) {
+			warn "No Perl6 color definiton for '$type':  $str\n";
+			next;
+		}
+		next if not defined $perl6_colors{$type}; # no need to color
+		my $color = $perl6_colors{$type};
+		$editor->StartStyling($start, $color);
+        $editor->SetStyling($length, $color);
+
+	}
+	
+	
+
+	#use Data::Dumper;
+	#print Dumper \@data;
+
+	return;
+}
+
+sub get_perl6 {
+    my $self     = shift;
 
 	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
 	my $perl6 = File::Which::which($exe_name);
@@ -59,6 +174,16 @@ sub get_command {
 		}
 		$perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, $exe_name);
 	}
+
+	return $perl6;
+}
+
+sub get_command {
+    my $self     = shift;
+
+    my $filename = $self->filename;
+	my $perl6    = $self->get_perl6;
+
     return qq{"$perl6" "$filename"};
 }
 
