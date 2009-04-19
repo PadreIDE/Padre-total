@@ -8,6 +8,7 @@ use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
 use Readonly;
+use File::Which;
 
 our $VERSION = '0.26';
 our @ISA     = 'Padre::Document';
@@ -49,11 +50,15 @@ sub get_command {
 
     my $filename = $self->filename;
 
-    if (not $ENV{RAKUDO_DIR}) {
-    	my $main = Padre->ide->wx->main;
-    	$main->error("RAKUDO_DIR is not defined. Need to point to the directory of the Rakudo checkout.");
-    }
-    my $perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, ($^O eq 'MSWin32') ? 'perl6.exe' : 'perl6');
+	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
+	my $perl6 = File::Which::which($exe_name);
+	if (not $perl6) {
+		if (not $ENV{RAKUDO_DIR}) {
+			my $main = Padre->ide->wx->main;
+			$main->error("Either $exe_name needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
+		}
+		$perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, $exe_name);
+	}
     return qq{"$perl6" "$filename"};
 }
 
