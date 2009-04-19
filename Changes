@@ -1,5 +1,9 @@
 Changes
 
+0.27 2009.4.19
+    - update the path to reach the perl 6 executable
+    - Changed version numbers so all the modules will have the same number.
+
 0.026 2009.2.04
     - Takes advantage of STD.pm performance improvements by using Syntax::Highlight::Perl6 0.040
     - Updated to S29-function.pod pugs r25021
