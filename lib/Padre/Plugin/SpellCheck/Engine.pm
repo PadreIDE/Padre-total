@@ -100,13 +100,12 @@ Create a new engine to be used later on.
 
 =over 4
 
-=item * my ($word, $pos, $suggestions) = $engine->check($text);
+=item * my ($word, $pos) = $engine->check( $text );
 
 Spell check C<$text> (according to current speller), and return the
 first error encountered (undef if no spelling mistake). An error is
-reported as the faulty C<$word>, the C<$pos> of the word in the text
-(position of the start of the faulty word), and an array reference
-holding the suggestions for the faulty word.
+reported as the faulty C<$word>, as well as the C<$pos> of the word in
+the text (position of the start of the faulty word).
 
 
 =item * my @suggestions = $engine->suggestions( $word );
