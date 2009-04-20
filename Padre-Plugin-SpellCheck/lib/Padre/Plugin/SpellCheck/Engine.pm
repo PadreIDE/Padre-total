@@ -62,6 +62,10 @@ sub check {
     return;
 }
 
+sub suggestions {
+    my ($self, $word) = @_;
+    return $self->_speller->suggest( $word );
+}
 
 1;
 
@@ -103,6 +107,12 @@ first error encountered (undef if no spelling mistake). An error is
 reported as the faulty C<$word>, the C<$pos> of the word in the text
 (position of the start of the faulty word), and an array reference
 holding the suggestions for the faulty word.
+
+
+=item * my @suggestions = $engine->suggestions( $word );
+
+Return suggestions for C<$word>.
+
 
 
 =back
