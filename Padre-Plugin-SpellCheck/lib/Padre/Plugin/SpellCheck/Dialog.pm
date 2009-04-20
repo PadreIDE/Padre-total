@@ -137,6 +137,8 @@ sub _create_labels {
     my $lab1 = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
     my $lab2 = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
     my $labword = Wx::StaticText->new( $self, -1, $self->_error->[0] );
+    $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
+    $labword->Refresh;
 
     # ... and place them
     $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
