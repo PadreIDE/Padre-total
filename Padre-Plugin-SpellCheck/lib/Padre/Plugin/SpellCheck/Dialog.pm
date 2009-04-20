@@ -134,7 +134,7 @@ sub _on_butreplace_clicked {
     my $posnew = $pos + length $new;
     my $text = substr $self->_text, $posold;
     $self->_text( $text );
-    my $offset = $self->_offset + $posnew;
+    $offset += $posnew;
     $self->_offset( $offset );
 
     # try to find next error
