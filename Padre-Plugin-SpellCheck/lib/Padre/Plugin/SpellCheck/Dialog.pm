@@ -74,6 +74,7 @@ sub _create {
     $self->_sizer($sizer);
 
     $self->_create_labels;
+    $self->_create_list;
     $sizer->SetSizeHints($self);
 }
 
@@ -97,6 +98,31 @@ sub _create_labels {
     $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
     $sizer->Add( $lab2,    Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,3), Wx::wxEXPAND );
     $sizer->Add( $labword, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+}
+
+#
+# $dialog->_create_list;
+#
+# create the suggestions list.
+#
+# no params. no return values.
+#
+sub _create_list {
+    my ($self) = @_;
+
+    my $list = Wx::ListView->new(
+        $self,
+        -1,
+        Wx::wxDefaultPosition,
+        Wx::wxDefaultSize,
+        Wx::wxLC_SINGLE_SEL,
+    );
+    $self->_sizer->Add( $list,
+        Wx::GBPosition->new(2,0),
+        Wx::GBSpan->new(1,2),
+        Wx::wxEXPAND
+    );
+
 }
 
 
