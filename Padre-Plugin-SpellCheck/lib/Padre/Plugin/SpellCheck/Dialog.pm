@@ -353,6 +353,11 @@ sub _update {
         my $idx = $list->InsertItem($item);
         last if ++$i == 25; # FIXME: should be a preference
     }
+
+    # select first item
+    my $item = $list->GetItem(0);
+    $item->SetState(Wx::wxLIST_STATE_SELECTED);
+    $list->SetItem($item);
 }
 
 
