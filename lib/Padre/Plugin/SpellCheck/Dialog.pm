@@ -191,8 +191,8 @@ sub _next {
 
     # no mistake means we're done
     if ( not defined $word ) {
-        $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
         $self->Destroy;
+        $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
         return;
     }
 
