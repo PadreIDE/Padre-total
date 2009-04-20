@@ -12,6 +12,16 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 
+# -- constructor
+
+sub new {
+    my ($class) = @_;
+
+    my $self = bless {}, $class;
+
+    return $self;
+}
+
 1;
 
 __END__
@@ -33,6 +43,17 @@ Of course, you need to have the aspell binary and dictionnary installed.
 
 
 =head1 PUBLIC METHODS
+
+=head2 Constructor
+
+=over 4
+
+=item my $engine = PPS::Engine->new;
+
+Create a new engine to be used later on.
+
+
+=back
 
 
 
