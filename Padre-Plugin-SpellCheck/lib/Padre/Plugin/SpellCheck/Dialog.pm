@@ -21,7 +21,7 @@ use base 'Wx::Frame';
 # -- constructor
 
 sub new {
-    my ($class, $text, $word, $pos, $suggestions) = @_;
+    my ($class, %params) = @_;
 
     # create object
     my $self = $class->SUPER::new(
@@ -76,11 +76,24 @@ with the user when mistakes have been spotted.
 
 =item my $dialog = PPS::Dialog->new( $text, $word, $pos, $suggestions );
 
-Create and return a new dialog window. It will be used to spell-check
-C<$text>, and there's already an error being spotted on C<$word> (at
-position C<$pos>), with some associated C<$suggestions> (a list
-reference).
+Create and return a new dialog window. The following params are needed:
 
+=over 4
+
+=item text => $text
+
+The text being spell checked.
+
+=item error => [ $word, $pos, $suggestions ]
+
+The first spotted error, on C<$word> (at position C<$pos>), with some
+associated C<$suggestions> (a list reference).
+
+=item engine => $engine
+
+The $engine being used (a C<Padre::Plugin::SpellCheck::Engine> object).
+
+=back
 
 =back
 
