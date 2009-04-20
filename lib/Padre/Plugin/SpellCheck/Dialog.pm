@@ -23,7 +23,7 @@ use Class::XSAccessor accessors => {
 use Padre::Current;
 use Padre::Wx ();
 
-use base 'Wx::Frame';
+use base 'Wx::Dialog';
 
 
 # -- constructor
@@ -108,7 +108,7 @@ sub _create_buttons {
     my $bra = Wx::Button->new( $self, -1, Wx::gettext('Replace all') );
     my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
     my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
-    my $bc  = Wx::Button->new( $self, -1, Wx::gettext('Close') );
+    my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
     Wx::Event::EVT_BUTTON( $self, $bc, \&_on_butclose_clicked );
 
     my $sizer = $self->_sizer;
