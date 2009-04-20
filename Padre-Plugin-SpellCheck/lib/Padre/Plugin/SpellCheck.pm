@@ -76,7 +76,11 @@ sub spell_check {
         return;
     }
 
-    my $dialog = Padre::Plugin::SpellCheck::Dialog->new;
+    my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
+        text   => $text,
+        error  => [ $word, $pos, $suggestions ],
+        engine => $engine,
+    );
     $dialog->Show;
 
 =pod
