@@ -268,18 +268,28 @@ sub _create_list {
 #
 sub _next {
     my ($self) = @_;
+    my $autoreplace = $self->_autoreplace;
 
-    # try to find next mistake
-    my ($word, $pos) = $self->_engine->check( $self->_text );
-    $self->_error( [$word, $pos] );
+    {
+        # try to find next mistake
+        my ($word, $pos) = $self->_engine->check( $self->_text );
+        $self->_error( [$word, $pos] );
 
-    # no mistake means we're done
-    if ( not defined $word ) {
-        $self->Destroy;
-        $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
-        return;
+        # no mistake means we're done
+        if ( not defined $word ) {
+            $self->Destroy;
+            $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
+            return;
+        }
+
+        # check if we have hit a replace all word
+        if ( exists $autoreplace->{$word} ) {
+            $self->_replace( $autoreplace->{$word} );
+            redo; # move on to next error
+        }
     }
 
+    # update gui with new error
     $self->_update;
 }
 
