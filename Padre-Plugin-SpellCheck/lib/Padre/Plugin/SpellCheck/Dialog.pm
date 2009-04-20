@@ -204,7 +204,19 @@ sub _next {
 #
 sub _populate {
     my ($self) = @_;
-    $self->_label->SetLabel( $self->_error->[0] );
+    my $word = $self->_error->[0];
+
+    # update label
+    $self->_label->SetLabel( $word );
+
+    # update list
+    my $list = $self->_list;
+    $list->DeleteAllItems;
+    foreach my $w ( $self->_engine->suggestions( $word ) ) {
+        my $item = Wx::ListItem->new;
+        $item->SetText($w);
+        my $idx = $list->InsertItem($item);
+    }
 }
 
 
