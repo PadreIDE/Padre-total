@@ -187,6 +187,7 @@ sub _next {
 
     # try to find next mistake
     my ($word, $pos) = $self->_engine->check( $self->_text );
+    $self->_error( [$word, $pos] );
 
     # no mistake means we're done
     if ( not defined $word ) {
@@ -195,6 +196,7 @@ sub _next {
         return;
     }
 
+    $self->_update;
 }
 
 #
