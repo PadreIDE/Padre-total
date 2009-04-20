@@ -9,13 +9,13 @@ all_from       'lib/Padre/Plugin/Perl6.pm';
 requires       'perl'                    => '5.010';
 
 requires       'Padre'                    => '0.25';
-requires       'Syntax::Highlight::Perl6' => '0.040';
+requires       'Syntax::Highlight::Perl6' => '0.041';
 requires       'URI'                      => '1.37';
 requires       'Readonly'                 => '1.03';
 requires       'IPC::Run3'                => '0.042';
 requires       'File::Which'              => '0.05';
 
-test_requires  'Test::More'              => '0.47';
+test_requires  'Test::More'              => '0.86';
 test_requires  'Test::Exception'         => '0.27';
 test_requires  'Test::NoWarnings'        => '0.084';
 test_requires  'Test::NeedsDisplay'      => '1.05';

@@ -1,5 +1,8 @@
 Changes
 
+0.28 2009.4.20
+    - Depends on Syntax::Highlight::Perl6 0.041 which has the newest STD with CORE.pad
+
 0.27 2009.4.19
     - update the path to reach the perl 6 executable
     - Changed version numbers so all the modules will have the same number.
