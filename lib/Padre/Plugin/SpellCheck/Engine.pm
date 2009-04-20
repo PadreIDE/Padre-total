@@ -22,6 +22,36 @@ sub new {
     return $self;
 }
 
+
+# -- public methods
+
+sub check {
+    my ($self, $text) = @_;
+    my $speller = $self->_speller;
+
+    # iterate over word boundaries
+    while ( $text =~ /(.+?)(\b|\z)/g ) {
+        my $word = $1;
+
+        # skip empty strings and non-spellable words
+        next unless defined $word;
+        next unless $word =~ /^\p{Letter}+$/i;
+
+        # check spelling
+        next if $speller->check( $word );
+
+        # oops! spell mistake!
+        my @suggestions = $speller->suggest( $word );
+        my $pos = pos($text) - length($word);
+
+        return $word, $pos, \@suggestions;
+    }
+
+    # $text does not contain any error
+    return;
+}
+
+
 1;
 
 __END__
@@ -45,6 +75,23 @@ Padre::Plugin::SpellCheck::Engine - spell engine for plugin
 =item my $engine = PPS::Engine->new;
 
 Create a new engine to be used later on.
+
+
+=back
+
+
+
+=head2 Instance methods
+
+=over 4
+
+=item * my ($word, $pos, $suggestions) = $engine->check($text);
+
+Spell check C<$text> (according to current speller), and return the
+first error encountered (undef if no spelling mistake). An error is
+reported as the faulty C<$word>, the C<$pos> of the word in the text
+(position of the start of the faulty word), and an array reference
+holding the suggestions for the faulty word.
 
 
 =back
