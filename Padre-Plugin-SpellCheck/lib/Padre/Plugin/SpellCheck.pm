@@ -15,12 +15,12 @@ use strict;
 use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use Module::Util          qw{ find_installed };
-use Padre::Plugin::SpellCheck::Engine;
 
 our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
-use Padre::Current ();
+use Padre::Current;
+use Padre::Plugin::SpellCheck::Engine;
 
 
 # -- padre plugin api, refer to Padre::Plugin
