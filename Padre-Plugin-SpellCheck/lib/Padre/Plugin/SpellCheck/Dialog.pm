@@ -15,6 +15,7 @@ use strict;
 use Class::XSAccessor accessors => {
     _engine => '_engine',       # pps:engine object
     _error  => '_errorpos',     # first error spotted [ $word, $pos, $suggestions ]
+    _sizer  => '_sizer',        # window sizer
     _text   => '_text',         # text being spellchecked
 };
 
@@ -55,7 +56,47 @@ sub new {
 
 # -- private methods
 
+#
+# $self->_create;
+#
+# create the dialog itself.
+#
+# no params, no return values.
+#
 sub _create {
+    my ($self) = @_;
+
+    # create sizer that will host all controls
+    my $sizer = Wx::GridBagSizer->new( 5, 5 );
+    $sizer->AddGrowableCol(1);
+    $sizer->AddGrowableRow(5);
+    $self->SetSizer($sizer);
+    $self->_sizer($sizer);
+
+    $self->_create_labels;
+    $sizer->SetSizeHints($self);
+}
+
+#
+# $dialog->_create_labels;
+#
+# create the top labels.
+#
+# no params. no return values.
+#
+sub _create_labels {
+    my ($self) = @_;
+    my $sizer  = $self->_sizer;
+
+    # create the labels...
+    my $lab1 = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
+    my $lab2 = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
+    my $labword = Wx::StaticText->new( $self, -1, $self->_error->[0] );
+
+    # ... and place them
+    $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
+    $sizer->Add( $lab2,    Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,3), Wx::wxEXPAND );
+    $sizer->Add( $labword, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 }
 
 
