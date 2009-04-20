@@ -73,6 +73,8 @@ sub _on_butignore_clicked {
     $pos += length $word;
     my $text = substr $self->_text, $pos;
     $self->_text( $text );
+    my $offset = $self->_offset + $pos;
+    $self->_offset( $offset );
 
     # try to find next error
     $self->_next;
@@ -228,7 +230,15 @@ sub _next {
 #
 sub _update {
     my ($self) = @_;
-    my $word = $self->_error->[0];
+    my $error = $self->_error;
+    my ($word, $pos) = @$error;
+
+    # update selection in parent window
+    my $editor = Padre::Current->editor;
+    my $offset = $self->_offset;
+    my $from = $offset + $pos;
+    my $to   = $from + length $word;
+    $editor->SetSelection( $from, $to );
 
     # update label
     $self->_label->SetLabel( $word );
