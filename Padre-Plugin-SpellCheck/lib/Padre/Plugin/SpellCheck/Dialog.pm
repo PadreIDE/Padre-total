@@ -90,6 +90,7 @@ sub _create {
     $self->_create_list;
     $self->_create_buttons;
     $sizer->SetSizeHints($self);
+    $self->_list->SetFocus;
 }
 
 #
