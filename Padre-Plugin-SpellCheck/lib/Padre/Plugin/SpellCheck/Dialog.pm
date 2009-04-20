@@ -48,7 +48,7 @@ sub new {
 
     # create dialog
     $self->_create;
-    $self->_populate;
+    $self->_update;
 
     return $self;
 }
@@ -198,11 +198,11 @@ sub _next {
 }
 
 #
-# self->_populate;
+# self->_update;
 #
-# populate the dialog box with current error.
+# update the dialog box with current error.
 #
-sub _populate {
+sub _update {
     my ($self) = @_;
     my $word = $self->_error->[0];
 
