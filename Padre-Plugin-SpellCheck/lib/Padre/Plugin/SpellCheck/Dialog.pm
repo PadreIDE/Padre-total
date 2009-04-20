@@ -103,6 +103,42 @@ sub _on_butignore_clicked {
     $self->_next;
 }
 
+#
+# $self->_on_butreplace_clicked;
+#
+# handler called when the replace button has been clicked.
+#
+sub _on_butreplace_clicked {
+    my ($self) = @_;
+    my $list   = $self->_list;
+    my $editor = Padre::Current->editor;
+
+    # get replacing word
+    my $id  = $list->GetNextItem(-1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED);
+    return if $id == -1;
+    my $new = $list->GetItem($id)->GetText;
+
+    # replace word in editor
+    my $error  = $self->_error;
+    my $offset = $self->_offset;
+    my ($word, $pos) = @$error;
+    my $from = $offset + $pos;
+    my $to   = $from + length $word;
+    $editor->SetSelection( $from, $to );
+    $editor->ReplaceSelection( $new );
+
+    # remove the beginning of the text, up to after replaced word
+    my $posold = $pos + length $word;
+    my $posnew = $pos + length $new;
+    my $text = substr $self->_text, $posold;
+    $self->_text( $text );
+    my $offset = $self->_offset + $posnew;
+    $self->_offset( $offset );
+
+    # try to find next error
+    $self->_next;
+}
+
 
 # -- private methods
 
@@ -146,6 +182,7 @@ sub _create_buttons {
     my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
     my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
     my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
+    Wx::Event::EVT_BUTTON( $self, $br,  \&_on_butreplace_clicked );
     Wx::Event::EVT_BUTTON( $self, $bi,  \&_on_butignore_clicked );
     Wx::Event::EVT_BUTTON( $self, $bia, \&_on_butignore_all_clicked );
     Wx::Event::EVT_BUTTON( $self, $bc,  \&_on_butclose_clicked );
@@ -158,7 +195,7 @@ sub _create_buttons {
     $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 
-    $_->Disable for ($ba, $br, $bra);
+    $_->Disable for ($ba, $bra);
 }
 
 #
