@@ -65,7 +65,8 @@ sub spell_check {
     # fetch text to check
     my $selection = Padre::Current->text;
     my $wholetext = Padre::Current->document->text_get;
-    my $text = $selection || $wholetext;
+    my $text   = $selection || $wholetext;
+    my $offset = $selection ? Padre::Current->editor->GetSelectionStart : 0;
 
     # try to find a mistake
     my ($word, $pos) = $engine->check( $text );
@@ -80,6 +81,7 @@ sub spell_check {
         text   => $text,
         error  => [ $word, $pos ],
         engine => $engine,
+        offset => $offset,
     );
     $dialog->Show;
 
