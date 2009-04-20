@@ -69,13 +69,40 @@ sub _create {
     # create sizer that will host all controls
     my $sizer = Wx::GridBagSizer->new( 5, 5 );
     $sizer->AddGrowableCol(1);
-    $sizer->AddGrowableRow(5);
+    $sizer->AddGrowableRow(6);
     $self->SetSizer($sizer);
     $self->_sizer($sizer);
 
     $self->_create_labels;
     $self->_create_list;
+    $self->_create_buttons;
     $sizer->SetSizeHints($self);
+}
+
+#
+# $dialog->_create_buttons;
+#
+# create the buttons pane.
+#
+# no params. no return values.
+#
+sub _create_buttons {
+    my ($self) = @_;
+
+    my $ba  = Wx::Button->new( $self, -1, Wx::gettext('Add to dictionary') );
+    my $br  = Wx::Button->new( $self, -1, Wx::gettext('Replace') );
+    my $bra = Wx::Button->new( $self, -1, Wx::gettext('Replace all') );
+    my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
+    my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
+    my $bc  = Wx::Button->new( $self, -1, Wx::gettext('Close') );
+
+    my $sizer = $self->_sizer;
+    $sizer->Add( $ba,  Wx::GBPosition->new(0,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+    $sizer->Add( $br,  Wx::GBPosition->new(2,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+    $sizer->Add( $bra, Wx::GBPosition->new(3,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+    $sizer->Add( $bi,  Wx::GBPosition->new(4,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+    $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+    $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 }
 
 #
@@ -119,7 +146,7 @@ sub _create_list {
     );
     $self->_sizer->Add( $list,
         Wx::GBPosition->new(2,0),
-        Wx::GBSpan->new(1,2),
+        Wx::GBSpan->new(5,2),
         Wx::wxEXPAND
     );
 
