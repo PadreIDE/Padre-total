@@ -44,14 +44,16 @@ sub new {
 sub check {
     my ($self, $text) = @_;
     my $speller = $self->_speller;
+    my $ignore  = $self->_ignore;
 
     # iterate over word boundaries
     while ( $text =~ /(.+?)(\b|\z)/g ) {
         my $word = $1;
 
-        # skip empty strings and non-spellable words
-        next unless defined $word;
-        next unless $word =~ /^\p{Letter}+$/i;
+        # skip...
+        next unless defined $word;              # empty strings
+        next unless $word =~ /^\p{Letter}+$/i;  # non-spellable words
+        next if exists $ignore->{$word};        # ignored words
 
         # check spelling
         next if $speller->check( $word );
