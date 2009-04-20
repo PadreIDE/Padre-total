@@ -137,7 +137,7 @@ sub _create_labels {
     # create the labels...
     my $lab1 = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
     my $lab2 = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
-    my $labword = Wx::StaticText->new( $self, -1, $self->_error->[0] );
+    my $labword = Wx::StaticText->new( $self, -1, 'w'x25 );
     $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
     $labword->Refresh;
     $self->_label($labword);
