@@ -84,21 +84,6 @@ sub spell_check {
         offset => $offset,
     );
     $dialog->Show;
-
-=pod
-
-    foreach my $word ( split /\b/, $text ){
-        # Skip empty strings and non-spellable words
-        next unless defined $word;
-        next unless ($word =~ /^\p{L}+$/i);
-        next if $speller->check( $word ) || $word =~ /^\d+$/;
-        my @suggestions = $speller->suggest( $word );
-        Padre::Current->main->output->AppendText("wrong $word, suggest: " . join(', ', @suggestions) . "\n");
-        $has_bad = 1;
-    }
-    
-=cut
-
 }
 
 1;
