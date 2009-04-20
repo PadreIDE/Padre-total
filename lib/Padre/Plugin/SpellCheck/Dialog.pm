@@ -21,7 +21,7 @@ use base 'Wx::Frame';
 # -- constructor
 
 sub new {
-    my ($class, $parent) = @_;
+    my ($class, $text, $word, $pos, $suggestions) = @_;
 
     # create object
     my $self = $class->SUPER::new(
@@ -74,9 +74,12 @@ with the user when mistakes have been spotted.
 
 =over 4
 
-=item my $dialog = PPS::Dialog->new;
+=item my $dialog = PPS::Dialog->new( $text, $word, $pos, $suggestions );
 
-Create and return a new dialog window.
+Create and return a new dialog window. It will be used to spell-check
+C<$text>, and there's already an error being spotted on C<$word> (at
+position C<$pos>), with some associated C<$suggestions> (a list
+reference).
 
 
 =back
