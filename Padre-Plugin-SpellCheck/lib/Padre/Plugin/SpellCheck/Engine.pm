@@ -34,12 +34,6 @@ Padre::Plugin::SpellCheck::Engine - spell engine for plugin
 
 =head1 DESCRIPTION
 
-This plugins allows one to checking her text spelling within Padre. It
-is using C<Text::Aspell> underneath, so check this module's pod for more
-information.
-
-Of course, you need to have the aspell binary and dictionnary installed.
-
 
 
 =head1 PUBLIC METHODS
