@@ -60,6 +60,19 @@ sub new {
 # -- gui handlers
 
 #
+# $self->_on_butignore_all_clicked;
+#
+# handler called when the ignore all button has been clicked.
+#
+sub _on_butignore_all_clicked {
+    my ($self) = @_;
+
+    my $word = $self->_error->[0];
+    $self->_engine->ignore( $word );
+    $self->_on_butignore_clicked;
+}
+
+#
 # $self->_on_butignore_clicked;
 #
 # handler called when the ignore button has been clicked.
@@ -134,8 +147,9 @@ sub _create_buttons {
     my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
     my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
     my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
-    Wx::Event::EVT_BUTTON( $self, $bi, \&_on_butignore_clicked );
-    Wx::Event::EVT_BUTTON( $self, $bc, \&_on_butclose_clicked );
+    Wx::Event::EVT_BUTTON( $self, $bi,  \&_on_butignore_clicked );
+    Wx::Event::EVT_BUTTON( $self, $bia, \&_on_butignore_all_clicked );
+    Wx::Event::EVT_BUTTON( $self, $bc,  \&_on_butclose_clicked );
 
     my $sizer = $self->_sizer;
     $sizer->Add( $ba,  Wx::GBPosition->new(0,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
@@ -145,7 +159,7 @@ sub _create_buttons {
     $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 
-    $_->Disable for ($ba, $br, $bra, $bia);
+    $_->Disable for ($ba, $br, $bra);
 }
 
 #
