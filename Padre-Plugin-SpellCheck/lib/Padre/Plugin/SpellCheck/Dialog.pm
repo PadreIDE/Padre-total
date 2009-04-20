@@ -17,6 +17,7 @@ use Class::XSAccessor accessors => {
     _error  => '_errorpos',     # first error spotted [ $word, $pos ]
     _label  => '_label',        # label hosting the misspelled word
     _list   => '_list',         # listbox listing the suggestions
+    _offset => '_offset',       # offset of _text within the editor
     _sizer  => '_sizer',        # window sizer
     _text   => '_text',         # text being spellchecked
 };
@@ -44,6 +45,7 @@ sub new {
     $self->SetIcon( Wx::GetWxPerlIcon() );
     $self->_error ( $params{error}  );
     $self->_engine( $params{engine} );
+    $self->_offset( $params{offset} );
     $self->_text  ( $params{text}   );
 
     # create dialog
@@ -278,6 +280,10 @@ Create and return a new dialog window. The following params are needed:
 =item text => $text
 
 The text being spell checked.
+
+=item offset => $offset
+
+The offset of C<$text> within the editor. 0 if spell checking the whole file.
 
 =item error => [ $word, $pos ]
 
