@@ -113,29 +113,14 @@ sub _on_butignore_clicked {
 sub _on_butreplace_clicked {
     my ($self) = @_;
     my $list   = $self->_list;
-    my $editor = Padre::Current->editor;
 
     # get replacing word
     my $id  = $list->GetNextItem(-1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED);
     return if $id == -1;
     my $new = $list->GetItem($id)->GetText;
 
-    # replace word in editor
-    my $error  = $self->_error;
-    my $offset = $self->_offset;
-    my ($word, $pos) = @$error;
-    my $from = $offset + $pos;
-    my $to   = $from + length $word;
-    $editor->SetSelection( $from, $to );
-    $editor->ReplaceSelection( $new );
-
-    # remove the beginning of the text, up to after replaced word
-    my $posold = $pos + length $word;
-    my $posnew = $pos + length $new;
-    my $text = substr $self->_text, $posold;
-    $self->_text( $text );
-    $offset += $posnew;
-    $self->_offset( $offset );
+    # actually replace word in editor
+    $self->_replace( $new );
 
     # try to find next error
     $self->_next;
@@ -273,6 +258,35 @@ sub _next {
     }
 
     $self->_update;
+}
+
+#
+# $self->_replace( $word );
+#
+# fix current error by replacing faulty word with $word.
+#
+# no param. no return value.
+#
+sub _replace {
+    my ($self, $new) = @_;
+    my $editor = Padre::Current->editor;
+
+    # replace word in editor
+    my $error  = $self->_error;
+    my $offset = $self->_offset;
+    my ($word, $pos) = @$error;
+    my $from = $offset + $pos;
+    my $to   = $from + length $word;
+    $editor->SetSelection( $from, $to );
+    $editor->ReplaceSelection( $new );
+
+    # remove the beginning of the text, up to after replaced word
+    my $posold = $pos + length $word;
+    my $posnew = $pos + length $new;
+    my $text = substr $self->_text, $posold;
+    $self->_text( $text );
+    $offset += $posnew;
+    $self->_offset( $offset );
 }
 
 #
