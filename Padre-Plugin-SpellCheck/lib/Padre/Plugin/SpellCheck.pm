@@ -15,6 +15,7 @@ use strict;
 use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use Module::Util          qw{ find_installed };
+use Padre::Plugin::SpellCheck::Engine;
 
 our $VERSION = '0.03';
 
@@ -56,28 +57,26 @@ sub menu_plugins_simple {
 
 sub spell_check {
     my ( $self ) = shift;
-    
-    my $speller;
-    eval {
-        require Text::Aspell;
-        $speller = Text::Aspell->new;
-        $speller->set_option('sug-mode', 'fast');
-        # TODO, configurable later
-        $speller->set_option('lang','en_US');
-    };
-    if ( $@ ) {
-        Padre::Current->main->error( $@ );
+
+    my $main   = Padre::Current->main;
+    my $engine = Padre::Plugin::SpellCheck::Engine->new;
+
+    # fetch text to check
+    my $selection = Padre::Current->text;
+    my $wholetext = Padre::Current->document->text_get;
+    my $text = $selection || $wholetext;
+
+    # try to find a mistake
+    my ($word, $pos, $suggestions) = $engine->check( $text );
+
+    # no mistake means we're done
+    if ( not defined $word ) {
+        $main->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
         return;
     }
-    
-    my $src  = Padre::Current->text;
-    my $doc  = Padre::Current->document;
-    my $text = $src ? $src : $doc->text_get;
-    
-    Padre::Current->main->show_output(1);
-    Padre::Current->main->output->clear;
-    my $has_bad = 0;
-    
+
+=pod
+
     foreach my $word ( split /\b/, $text ){
         # Skip empty strings and non-spellable words
         next unless defined $word;
@@ -88,11 +87,8 @@ sub spell_check {
         $has_bad = 1;
     }
     
-    unless ( $has_bad ) {
-        Padre::Current->main->output->AppendText("Everything seems OK around");
-    }
+=cut
 
-    return 1;
 }
 
 1;
