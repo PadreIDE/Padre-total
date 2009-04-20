@@ -12,6 +12,39 @@ package Padre::Plugin::SpellCheck::Dialog;
 use warnings;
 use strict;
 
+use Padre::Current;
+use Padre::Wx ();
+
+use base 'Wx::Frame';
+
+
+# -- constructor
+
+sub new {
+	my ($class, $parent) = @_;
+
+	# create object
+	my $self = $class->SUPER::new(
+		Padre::Current->main,
+		-1,
+		Wx::gettext('Spelling'),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+	);
+	$self->SetIcon( Wx::GetWxPerlIcon() );
+
+	# create dialog
+	$self->_create;
+
+	return $self;
+}
+
+
+# -- private methods
+
+sub _create {
+}
 
 
 1;
