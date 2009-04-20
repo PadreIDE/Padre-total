@@ -15,6 +15,7 @@ use strict;
 use Class::XSAccessor accessors => {
     _engine => '_engine',       # pps:engine object
     _error  => '_errorpos',     # first error spotted [ $word, $pos, $suggestions ]
+    _list   => '_list',         # listbox listing the suggestions
     _sizer  => '_sizer',        # window sizer
     _text   => '_text',         # text being spellchecked
 };
@@ -164,7 +165,7 @@ sub _create_list {
         Wx::GBSpan->new(5,2),
         Wx::wxEXPAND
     );
-
+    $self->_list( $list );
 }
 
 
