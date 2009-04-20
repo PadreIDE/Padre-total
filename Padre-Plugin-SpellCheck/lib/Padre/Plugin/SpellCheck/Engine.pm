@@ -54,10 +54,8 @@ sub check {
         next if $speller->check( $word );
 
         # oops! spell mistake!
-        my @suggestions = $speller->suggest( $word );
         my $pos = pos($text) - length($word);
-
-        return $word, $pos, \@suggestions;
+        return $word, $pos;
     }
 
     # $text does not contain any error
