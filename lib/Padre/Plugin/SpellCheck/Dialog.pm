@@ -232,7 +232,7 @@ with the user when mistakes have been spotted.
 
 =over 4
 
-=item my $dialog = PPS::Dialog->new( $text, $word, $pos, $suggestions );
+=item my $dialog = PPS::Dialog->new( %params );
 
 Create and return a new dialog window. The following params are needed:
 
