@@ -14,7 +14,7 @@ use strict;
 
 use Class::XSAccessor accessors => {
     _engine => '_engine',       # pps:engine object
-    _error  => '_errorpos',     # first error spotted [ $word, $pos, $suggestions ]
+    _error  => '_errorpos',     # first error spotted [ $word, $pos ]
     _label  => '_label',        # label hosting the misspelled word
     _list   => '_list',         # listbox listing the suggestions
     _sizer  => '_sizer',        # window sizer
@@ -186,7 +186,7 @@ sub _next {
     my ($self) = @_;
 
     # try to find next mistake
-    my ($word, $pos, $suggestions) = $self->_engine->check( $self->_text );
+    my ($word, $pos) = $self->_engine->check( $self->_text );
 
     # no mistake means we're done
     if ( not defined $word ) {
@@ -242,7 +242,7 @@ Create and return a new dialog window. The following params are needed:
 
 The text being spell checked.
 
-=item error => [ $word, $pos, $suggestions ]
+=item error => [ $word, $pos ]
 
 The first spotted error, on C<$word> (at position C<$pos>), with some
 associated C<$suggestions> (a list reference).

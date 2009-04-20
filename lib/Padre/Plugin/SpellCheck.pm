@@ -68,7 +68,7 @@ sub spell_check {
     my $text = $selection || $wholetext;
 
     # try to find a mistake
-    my ($word, $pos, $suggestions) = $engine->check( $text );
+    my ($word, $pos) = $engine->check( $text );
 
     # no mistake means we're done
     if ( not defined $word ) {
@@ -78,7 +78,7 @@ sub spell_check {
 
     my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
         text   => $text,
-        error  => [ $word, $pos, $suggestions ],
+        error  => [ $word, $pos ],
         engine => $engine,
     );
     $dialog->Show;
