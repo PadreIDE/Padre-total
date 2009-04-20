@@ -12,6 +12,12 @@ package Padre::Plugin::SpellCheck::Dialog;
 use warnings;
 use strict;
 
+use Class::XSAccessor accessors => {
+    _engine => '_engine',       # pps:engine object
+    _error  => '_errorpos',     # first error spotted [ $word, $pos, $suggestions ]
+    _text   => '_text',         # text being spellchecked
+};
+
 use Padre::Current;
 use Padre::Wx ();
 
@@ -33,6 +39,9 @@ sub new {
         Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
     );
     $self->SetIcon( Wx::GetWxPerlIcon() );
+    $self->_error ( $params{error}  );
+    $self->_engine( $params{engine} );
+    $self->_text  ( $params{text}   );
 
     # create dialog
     $self->_create;
