@@ -13,13 +13,14 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-    _engine => '_engine',       # pps:engine object
-    _error  => '_errorpos',     # first error spotted [ $word, $pos ]
-    _label  => '_label',        # label hosting the misspelled word
-    _list   => '_list',         # listbox listing the suggestions
-    _offset => '_offset',       # offset of _text within the editor
-    _sizer  => '_sizer',        # window sizer
-    _text   => '_text',         # text being spellchecked
+    _engine  => '_engine',      # pps:engine object
+    _error   => '_errorpos',    # first error spotted [ $word, $pos ]
+    _label   => '_label',       # label hosting the misspelled word
+    _list    => '_list',        # listbox listing the suggestions
+    _offset  => '_offset',      # offset of _text within the editor
+    _replace => '_replace',     # list of automatic replaces
+    _sizer   => '_sizer',       # window sizer
+    _text    => '_text',        # text being spellchecked
 };
 
 use Padre::Current;
@@ -42,11 +43,12 @@ sub new {
         Wx::wxDefaultSize,
         Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
     );
-    $self->SetIcon( Wx::GetWxPerlIcon() );
-    $self->_error ( $params{error}  );
-    $self->_engine( $params{engine} );
-    $self->_offset( $params{offset} );
-    $self->_text  ( $params{text}   );
+    $self->SetIcon ( Wx::GetWxPerlIcon() );
+    $self->_error  ( $params{error}  );
+    $self->_engine ( $params{engine} );
+    $self->_offset ( $params{offset} );
+    $self->_text   ( $params{text}   );
+    $self->_replace( {} );
 
     # create dialog
     $self->_create;
