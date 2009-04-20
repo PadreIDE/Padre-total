@@ -21,23 +21,23 @@ use base 'Wx::Frame';
 # -- constructor
 
 sub new {
-	my ($class, $parent) = @_;
+    my ($class, $parent) = @_;
 
-	# create object
-	my $self = $class->SUPER::new(
-		Padre::Current->main,
-		-1,
-		Wx::gettext('Spelling'),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
-	);
-	$self->SetIcon( Wx::GetWxPerlIcon() );
+    # create object
+    my $self = $class->SUPER::new(
+        Padre::Current->main,
+        -1,
+        Wx::gettext('Spelling'),
+        Wx::wxDefaultPosition,
+        Wx::wxDefaultSize,
+        Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+    );
+    $self->SetIcon( Wx::GetWxPerlIcon() );
 
-	# create dialog
-	$self->_create;
+    # create dialog
+    $self->_create;
 
-	return $self;
+    return $self;
 }
 
 # -- public methods
