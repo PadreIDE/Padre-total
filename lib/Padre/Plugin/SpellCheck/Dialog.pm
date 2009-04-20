@@ -52,6 +52,18 @@ sub new {
 
 # -- public methods
 
+# -- gui handlers
+
+#
+# $self->_on_butclose_clicked;
+#
+# handler called when the close button has been clicked.
+#
+sub _on_butclose_clicked {
+    my $self = shift;
+    $self->Destroy;
+}
+
 
 
 # -- private methods
@@ -95,6 +107,7 @@ sub _create_buttons {
     my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
     my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
     my $bc  = Wx::Button->new( $self, -1, Wx::gettext('Close') );
+    Wx::Event::EVT_BUTTON( $self, $bc, \&_on_butclose_clicked );
 
     my $sizer = $self->_sizer;
     $sizer->Add( $ba,  Wx::GBPosition->new(0,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
@@ -104,7 +117,7 @@ sub _create_buttons {
     $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 
-    $_->Disable for ($ba, $br, $bra, $bi, $bia, $bc);
+    $_->Disable for ($ba, $br, $bra, $bi, $bia);
 }
 
 #
