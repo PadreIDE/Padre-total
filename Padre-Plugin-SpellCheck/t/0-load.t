@@ -10,10 +10,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 BEGIN {
     use_ok( 'Padre::Plugin::SpellCheck' );
+    use_ok( 'Padre::Plugin::SpellCheck::Engine' );
 }
 
 diag( "Testing Padre::Plugin::SpellCheck $Padre::Plugin::SpellCheck::VERSION, Perl $], $^X" );
