@@ -169,6 +169,29 @@ sub _create_list {
     $self->_list( $list );
 }
 
+#
+# dialog->_next;
+#
+# try to find next mistake, and update dialog to show this new error. if
+# no error, display a message and exit.
+#
+# no params. no return value.
+#
+sub _next {
+    my ($self) = @_;
+
+    # try to find next mistake
+    my ($word, $pos, $suggestions) = $self->_engine->check( $self->_text );
+
+    # no mistake means we're done
+    if ( not defined $word ) {
+        $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
+        $self->Destroy;
+        return;
+    }
+
+}
+
 
 1;
 
