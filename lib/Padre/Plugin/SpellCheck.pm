@@ -47,7 +47,7 @@ sub padre_interfaces {
 # plugin menu.
 sub menu_plugins_simple {
     'Spell Check' => [
-        'Check spelling' => 'spell_check',
+        "Check spelling\tF7" => 'spell_check',
     ];
 }
 
