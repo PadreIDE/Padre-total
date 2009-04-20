@@ -210,12 +210,15 @@ sub _populate {
     $self->_label->SetLabel( $word );
 
     # update list
+    my @suggestions = $self->_engine->suggestions( $word );
     my $list = $self->_list;
     $list->DeleteAllItems;
-    foreach my $w ( $self->_engine->suggestions( $word ) ) {
+    my $i = 0;
+    foreach my $w ( @suggestions ) {
         my $item = Wx::ListItem->new;
         $item->SetText($w);
         my $idx = $list->InsertItem($item);
+        last if ++$i == 25; # FIXME: should be a preference
     }
 }
 
