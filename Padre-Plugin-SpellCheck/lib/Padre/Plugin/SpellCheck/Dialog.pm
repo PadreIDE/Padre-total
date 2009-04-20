@@ -48,6 +48,7 @@ sub new {
 
     # create dialog
     $self->_create;
+    $self->_populate;
 
     return $self;
 }
@@ -194,6 +195,16 @@ sub _next {
         return;
     }
 
+}
+
+#
+# self->_populate;
+#
+# populate the dialog box with current error.
+#
+sub _populate {
+    my ($self) = @_;
+    $self->_label->SetLabel( $self->_error->[0] );
 }
 
 
