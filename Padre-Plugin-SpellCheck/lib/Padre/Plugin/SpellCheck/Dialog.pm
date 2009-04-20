@@ -15,6 +15,7 @@ use strict;
 use Class::XSAccessor accessors => {
     _engine => '_engine',       # pps:engine object
     _error  => '_errorpos',     # first error spotted [ $word, $pos, $suggestions ]
+    _label  => '_label',        # label hosting the misspelled word
     _list   => '_list',         # listbox listing the suggestions
     _sizer  => '_sizer',        # window sizer
     _text   => '_text',         # text being spellchecked
@@ -139,6 +140,7 @@ sub _create_labels {
     my $labword = Wx::StaticText->new( $self, -1, $self->_error->[0] );
     $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
     $labword->Refresh;
+    $self->_label($labword);
 
     # ... and place them
     $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
