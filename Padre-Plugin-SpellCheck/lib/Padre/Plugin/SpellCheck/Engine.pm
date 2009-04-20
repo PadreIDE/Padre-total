@@ -12,12 +12,25 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 
+use Class::XSAccessor accessors => {
+    _speller => '_speller',
+};
+use Text::Aspell;
+
+
 # -- constructor
 
 sub new {
     my ($class) = @_;
 
     my $self = bless {}, $class;
+
+    # create speller object
+    my $speller = Text::Aspell->new;
+    # TODO: configurable later
+    $speller->set_option('sug-mode', 'fast');
+    $speller->set_option('lang','en_US');
+    $self->_speller( $speller );
 
     return $self;
 }
