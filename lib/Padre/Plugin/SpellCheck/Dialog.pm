@@ -106,6 +106,28 @@ sub _on_butignore_clicked {
 }
 
 #
+# $self->_on_butreplace_all_clicked;
+#
+# handler called when the replace all button has been clicked.
+#
+sub _on_butreplace_all_clicked {
+    my ($self) = @_;
+
+    # get replacing word
+    my $list = $self->_list;
+    my $id   = $list->GetNextItem(-1, Wx::wxLIST_NEXT_ALL, Wx::wxLIST_STATE_SELECTED);
+    return if $id == -1;
+    my $new  = $list->GetItem($id)->GetText;
+
+    # store automatic replacement
+    my $old = $self->_error->[0];
+    $self->_autoreplace->{$old} = $new;
+
+    # do the replacement
+    $self->_on_butreplace_clicked;
+}
+
+#
 # $self->_on_butreplace_clicked;
 #
 # handler called when the replace button has been clicked.
@@ -170,6 +192,7 @@ sub _create_buttons {
     my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
     my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
     Wx::Event::EVT_BUTTON( $self, $br,  \&_on_butreplace_clicked );
+    Wx::Event::EVT_BUTTON( $self, $bra, \&_on_butreplace_all_clicked );
     Wx::Event::EVT_BUTTON( $self, $bi,  \&_on_butignore_clicked );
     Wx::Event::EVT_BUTTON( $self, $bia, \&_on_butignore_all_clicked );
     Wx::Event::EVT_BUTTON( $self, $bc,  \&_on_butclose_clicked );
@@ -182,7 +205,7 @@ sub _create_buttons {
     $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 
-    $_->Disable for ($ba, $bra);
+    $ba->Disable;
 }
 
 #
