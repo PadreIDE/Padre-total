@@ -60,6 +60,16 @@ sub new {
 # -- gui handlers
 
 #
+# $self->_on_butclose_clicked;
+#
+# handler called when the close button has been clicked.
+#
+sub _on_butclose_clicked {
+    my $self = shift;
+    $self->Destroy;
+}
+
+#
 # $self->_on_butignore_all_clicked;
 #
 # handler called when the ignore all button has been clicked.
@@ -92,17 +102,6 @@ sub _on_butignore_clicked {
     # try to find next error
     $self->_next;
 }
-
-#
-# $self->_on_butclose_clicked;
-#
-# handler called when the close button has been clicked.
-#
-sub _on_butclose_clicked {
-    my $self = shift;
-    $self->Destroy;
-}
-
 
 
 # -- private methods
