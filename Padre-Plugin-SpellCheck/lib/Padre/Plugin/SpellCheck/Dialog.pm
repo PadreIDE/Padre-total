@@ -103,6 +103,8 @@ sub _create_buttons {
     $sizer->Add( $bi,  Wx::GBPosition->new(4,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bia, Wx::GBPosition->new(5,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
     $sizer->Add( $bc,  Wx::GBPosition->new(7,2), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
+
+    $_->Disable for ($ba, $br, $bra, $bi, $bia, $bc);
 }
 
 #
