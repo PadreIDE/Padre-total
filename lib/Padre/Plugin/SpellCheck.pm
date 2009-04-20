@@ -20,6 +20,7 @@ our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 use Padre::Current;
+use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
 
 
@@ -74,6 +75,9 @@ sub spell_check {
         $main->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
         return;
     }
+
+    my $dialog = Padre::Plugin::SpellCheck::Dialog->new;
+    $dialog->Show;
 
 =pod
 
