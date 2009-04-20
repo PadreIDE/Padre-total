@@ -214,7 +214,7 @@ sub _populate {
     my $list = $self->_list;
     $list->DeleteAllItems;
     my $i = 0;
-    foreach my $w ( @suggestions ) {
+    foreach my $w ( reverse @suggestions ) {
         my $item = Wx::ListItem->new;
         $item->SetText($w);
         my $idx = $list->InsertItem($item);
