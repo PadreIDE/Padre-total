@@ -40,6 +40,9 @@ sub new {
 	return $self;
 }
 
+# -- public methods
+
+
 
 # -- private methods
 
@@ -83,10 +86,6 @@ Create and return a new dialog window.
 =head2 Instance methods
 
 =over 4
-
-=item * $dialog->show;
-
-Display the dialog window in a modal way.
 
 =back
 
