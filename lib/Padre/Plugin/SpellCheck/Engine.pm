@@ -13,6 +13,7 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
+    _ignore  => '_ignore',
     _speller => '_speller',
 };
 use Text::Aspell;
@@ -23,7 +24,9 @@ use Text::Aspell;
 sub new {
     my ($class) = @_;
 
-    my $self = bless {}, $class;
+    my $self = bless {
+        _ignore => {},
+    }, $class;
 
     # create speller object
     my $speller = Text::Aspell->new;
@@ -60,6 +63,11 @@ sub check {
 
     # $text does not contain any error
     return;
+}
+
+sub ignore {
+    my ($self, $word) = @_;
+    $self->_ignore->{$word} = 1;
 }
 
 sub suggestions {
@@ -106,6 +114,11 @@ Spell check C<$text> (according to current speller), and return the
 first error encountered (undef if no spelling mistake). An error is
 reported as the faulty C<$word>, as well as the C<$pos> of the word in
 the text (position of the start of the faulty word).
+
+
+=item * $engine->ignore( $word );
+
+Tell engine to ignore C<$word> for rest of the spell check.
 
 
 =item * my @suggestions = $engine->suggestions( $word );
