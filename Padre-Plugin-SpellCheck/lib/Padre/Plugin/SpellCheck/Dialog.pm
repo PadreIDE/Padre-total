@@ -338,6 +338,7 @@ sub _update {
     my $from = $offset + $pos;
     my $to   = $from + length $word;
     $editor->SetSelection( $from, $to );
+    $editor->goto_pos_centerize($from);
 
     # update label
     $self->_label->SetLabel( $word );
