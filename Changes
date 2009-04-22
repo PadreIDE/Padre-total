@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.0.0 Wed Apr 22 17:51:37 CEST 2009
+ - using a dedicated spellcheck dialog
+ - on error, possibility to replace, replace all, ignore, ignore all
+
 0.03 Sun Apr  5 17:28:58 CEST 2009
  - providing an icon for padre's plugin manager
 
