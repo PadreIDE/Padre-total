@@ -26,6 +26,7 @@ my $builder = Module::Build->new(
         'Module::Util'          => 0,
         'Padre'                 => '0.26',
         'Text::Aspell'          => 0,
+        'Class::XSAccessor'     => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-SpellCheck-*',
         map { ( '*/' x $_ ) . '*~' } 0..5 ],
