@@ -53,17 +53,32 @@ sub _get_outline {
 	
 	if($self->{tokens}) {
 		my $cur_pkg = {};
+		my $not_first_time = 0;
 		my @tokens = @{$self->{tokens}};
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
 			my $tree = $token{tree};
 			if($tree) {
-				my @nodes = split / /, $tree;
-				for my $node (@nodes) {
-					push @{$outline}, {name=>$node};
-				}
+				if($tree =~ /package_declarator.+package_def.+def_module_name/) {
+					if($not_first_time) {
+						if ( not $cur_pkg->{name} ) {
+							$cur_pkg->{name} = 'main';
+						}
+						push @{$outline}, $cur_pkg;
+						$cur_pkg = {};
+					}
+					$not_first_time = 1;
+					$cur_pkg->{name} = $token{buffer};
+				} elsif($tree =~ /routine_declarator.+(routine_def|method_def) (longname|deflongname)/) {
+					push @{ $cur_pkg->{methods} }, { name => $token{buffer} };
+				} 
 			}
 		}
+
+		if ( not $cur_pkg->{name} ) {
+			$cur_pkg->{name} = 'main';
+		}
+		push @{$outline}, $cur_pkg;
 	}
 
 	$self->{outline} = $outline;
