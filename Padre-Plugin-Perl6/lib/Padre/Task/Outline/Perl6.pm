@@ -47,63 +47,26 @@ sub run {
 }
 
 sub _get_outline {
-
-	# TODO switch to using File::PackageIndexer
-	# (which needs to be modified / extended first)
 	my $self = shift;
 
 	my $outline = [];
+	
+	if($self->{tokens}) {
+		my $cur_pkg = {};
+		my @tokens = @{$self->{tokens}};
+		for my $htoken (@tokens) {
+			my %token = %{$htoken};
+			my $tree = $token{tree};
+			if($tree) {
+				my @nodes = split / /, $tree;
+				for my $node (@nodes) {
+					print $node . "\n";
+					push @{$outline}, {name=>$node};
+				}
+			}
+		}
+	}
 
-#	require PPI::Find;
-#	require PPI::Document;
-#
-#	my $ppi_doc = PPI::Document->new( \$self->{text} );
-#
-#	return {} unless defined($ppi_doc);
-#
-#	$ppi_doc->index_locations;
-#
-#	my $find = PPI::Find->new(
-#		sub {
-#			return 1
-#				if ref $_[0] eq 'PPI::Statement::Package'
-#					or ref $_[0] eq 'PPI::Statement::Include'
-#					or ref $_[0] eq 'PPI::Statement::Sub';
-#		}
-#	);
-#
-#	my @things        = $find->in($ppi_doc);
-#	my $cur_pkg       = {};
-#	my $not_first_one = 0;
-#	foreach my $thing (@things) {
-#		if ( ref $thing eq 'PPI::Statement::Package' ) {
-#			if ($not_first_one) {
-#				if ( not $cur_pkg->{name} ) {
-#					$cur_pkg->{name} = 'main';
-#				}
-#				push @{$outline}, $cur_pkg;
-#				$cur_pkg = {};
-#			}
-#			$not_first_one   = 1;
-#			$cur_pkg->{name} = $thing->namespace;
-#			$cur_pkg->{line} = $thing->location->[0];
-#		} elsif ( ref $thing eq 'PPI::Statement::Include' ) {
-#			next if $thing->type eq 'no';
-#			if ( $thing->pragma ) {
-#				push @{ $cur_pkg->{pragmata} }, { name => $thing->pragma, line => $thing->location->[0] };
-#			} elsif ( $thing->module ) {
-#				push @{ $cur_pkg->{modules} }, { name => $thing->module, line => $thing->location->[0] };
-#			}
-#		} elsif ( ref $thing eq 'PPI::Statement::Sub' ) {
-#			push @{ $cur_pkg->{methods} }, { name => $thing->name, line => $thing->location->[0] };
-#		}
-#	}
-#
-#	if ( not $cur_pkg->{name} ) {
-#		$cur_pkg->{name} = 'main';
-#	}
-#	push @{$outline}, $cur_pkg;
-#
 	$self->{outline} = $outline;
 	return;
 }
@@ -116,17 +79,6 @@ sub update_gui {
 	my $editor       = $self->{main_thread_only}->{editor};
 
 	$outlinebar->Freeze;
-
-	# Clear out the existing stuff
-	# TODO extract data for keeping (sub)trees collapsed/expanded (see below)
-	#if ( $outlinebar->GetCount > 0 ) {
-	#	my $r = $outlinebar->GetRootItem;
-	#	warn ref $r;
-	#	use Data::Dumper;
-	#	my ( $fc, $cookie ) = $outlinebar->GetFirstChild($r);
-	#	warn ref $fc;
-	#	warn $outlinebar->GetItemText($fc) . ': ' . Dumper( $outlinebar->GetPlData($fc) );
-	#}
 	$outlinebar->clear;
 
 	require Padre::Wx;
@@ -152,17 +104,13 @@ sub update_gui {
 	# Update the outline pane
 	_update_treectrl( $outlinebar, $outline, $root );
 
-	# Set Perl5 specific event handler
+	# Set Perl6 specific event handler
 	Wx::Event::EVT_TREE_ITEM_RIGHT_CLICK(
 		$outlinebar,
 		$outlinebar,
 		\&_on_tree_item_right_click,
 	);
 
-	# TODO Expanding all is not acceptable: We need to keep the state
-	# (i.e., keep the pragmata subtree collapsed if it was collapsed
-	# by the user)
-	#$outlinebar->ExpandAll;
 	$outlinebar->GetBestSize;
 
 	$outlinebar->Thaw;

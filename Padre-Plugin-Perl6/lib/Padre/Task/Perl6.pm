@@ -86,9 +86,11 @@ sub finish {
                 $editor->SetStyling($len, $color);
             }
         }
+		$doc->{tokens} = $self->{tokens};
         $doc->{issues} = [];
     } elsif($self->{issues}) {
         # pass errors/warnings to document...
+		$doc->{tokens} = [];
         $doc->{issues} = $self->{issues};
     }
 
