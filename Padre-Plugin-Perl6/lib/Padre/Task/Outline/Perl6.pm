@@ -60,7 +60,6 @@ sub _get_outline {
 			if($tree) {
 				my @nodes = split / /, $tree;
 				for my $node (@nodes) {
-					print $node . "\n";
 					push @{$outline}, {name=>$node};
 				}
 			}
