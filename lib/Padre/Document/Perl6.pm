@@ -107,11 +107,11 @@ sub colorize {
     # temporary overlay using the parse tree given by parrot
     # TODO: let the user select which one to use
     # TODO: but the parrot parser in the background
-	my $perl6 = $self->get_perl6;
-	if ($perl6) {
-		$self->_parrot_color($perl6);
-		return;
-	}
+	#my $perl6 = $self->get_perl6;
+	#if ($perl6) {
+	#	$self->_parrot_color($perl6);
+	#	return;
+	#}
 
     my $config = Padre::Plugin::Perl6::plugin_config;
     if($config->{p6_highlight} || $self->{force_p6_highlight}) {
@@ -317,6 +317,12 @@ sub get_outline {
 	my $self = shift;
 	my %args = @_;
 
+	my $tokens = $self->{tokens};
+	
+	if(not defined $tokens) {
+		return;
+	}
+	
 	my $text = $self->text_get;
 	unless ( defined $text and $text ne '' ) {
 		return [];
@@ -334,17 +340,12 @@ sub get_outline {
 	}
 	$self->{last_outline_md5} = $md5;
 
-	my %check = (
+	require Padre::Task::Outline::Perl6;
+	my $task = Padre::Task::Outline::Perl6->new(
 		editor => $self->editor,
 		text   => $text,
+		tokens => $tokens,
 	);
-	if ( $self->project ) {
-		$check{cwd}      = $self->project->root;
-		$check{perl_cmd} = ['-Ilib'];
-	}
-
-	require Padre::Task::Outline::Perl6;
-	my $task = Padre::Task::Outline::Perl6->new(%check);
 
 	# asynchronous execution (see on_finish hook)
 	$task->schedule;
