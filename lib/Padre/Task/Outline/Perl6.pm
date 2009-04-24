@@ -69,8 +69,12 @@ sub _get_outline {
 					}
 					$not_first_time = 1;
 					$cur_pkg->{name} = $token{buffer};
+					$cur_pkg->{line} = $token{lineno};
 				} elsif($tree =~ /routine_declarator.+(routine_def|method_def) (longname|deflongname)/) {
-					push @{ $cur_pkg->{methods} }, { name => $token{buffer} };
+					push @{ $cur_pkg->{methods} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
 				} 
 			}
 		}
@@ -137,15 +141,6 @@ sub _on_tree_item_right_click {
 
 	my $menu     = Wx::Menu->new;
 	my $itemData = $outlinebar->GetPlData( $event->GetItem );
-
-	if ( defined($itemData) && defined( $itemData->{line} ) && $itemData->{line} > 0 ) {
-		my $goTo = $menu->Append( -1, Wx::gettext("&GoTo Element") );
-		Wx::Event::EVT_MENU(
-			$outlinebar, $goTo,
-			sub { $outlinebar->on_tree_item_activated($event); },
-		);
-		$showMenu++;
-	}
 
 	if (   defined($itemData)
 		&& defined( $itemData->{type} )
