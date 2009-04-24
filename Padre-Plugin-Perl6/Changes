@@ -1,5 +1,10 @@
 Changes
 
+0.32 2009.4.24
+	- Parent nodes have their type between brackets next to their name
+	- use/require-s are now in Modules node.
+	- For P6 code the default package is GLOBAL.
+	
 0.31 2009.4.24
 	- Outline view now handles subroutines, methods, submethods, macros,
 		regexes, tokens and rules.
