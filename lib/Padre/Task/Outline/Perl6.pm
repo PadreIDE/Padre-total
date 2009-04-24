@@ -51,24 +51,31 @@ sub _get_outline {
 	
 	if($self->{tokens}) {
 		my $cur_pkg = {};
-		my $not_first_time = 0;
+		my $first_time = 1;
 		my @tokens = @{$self->{tokens}};
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
 			my $tree = $token{tree};
 			if($tree) {
-				if($tree =~ /package_declarator.+package_def.+def_module_name/) {
-					#XXX implement classes, grammars, modules, packages, roles
-					if($not_first_time) {
+				if($tree =~ /package_declarator__S_\d+(class|grammar|module|package|role) package_def.+def_module_name/) {
+					# (classes, grammars, modules, packages, roles) or main are always parent nodes
+					my $type = $1;
+					if($first_time) {
 						if ( not $cur_pkg->{name} ) {
 							$cur_pkg->{name} = 'main';
 						}
-						push @{$outline}, $cur_pkg;
-						$cur_pkg = {};
+						$first_time = 0;
 					}
-					$not_first_time = 1;
-					$cur_pkg->{name} = $token{buffer};
+					push @{$outline}, $cur_pkg;
+					$cur_pkg = {};
+					$cur_pkg->{name} = $token{buffer} . " ($type)";
 					$cur_pkg->{line} = $token{lineno};
+				} elsif($tree =~ /(package_declarator__S_\d+require module_name)|(statement_control__S_\d+use module_name)/) {
+					# require/use a module
+					push @{ $cur_pkg->{modules} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
 				} elsif($tree =~ /routine_declarator__S_\d+sub routine_def (deflongname)/) {
 					# a subroutine
 					push @{ $cur_pkg->{subroutines} }, { 
