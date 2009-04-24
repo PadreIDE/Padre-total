@@ -1,7 +1,7 @@
 Changes
 
-0.29 ?????????
-	- Initial Perl6 Outline window
+0.29 2009.4.24
+	- Initial Working Perl 6 Outline view
 	- Depends on Syntax::Highlight::Perl6 0.043 which has line number information	
 
 0.28 2009.4.20
