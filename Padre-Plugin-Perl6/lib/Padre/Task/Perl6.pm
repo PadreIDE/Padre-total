@@ -12,7 +12,7 @@ use File::Basename;
 use File::Spec;
 use Cwd;
  
-our $VERSION = '0.29';
+our $VERSION = '0.30';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed
