@@ -96,27 +96,11 @@ sub _get_outline {
 						line => $token{lineno} 
 					};
 				} elsif($tree =~ /regex_declarator__\w+_\d+(regex|token|rule) (regex_def) (deflongname)/) {
-					# a regex declaration
-					my $type = $1;
-					if($type eq 'regex') {
-						# a regex
-						push @{ $cur_pkg->{regexes} }, { 
-							name => $token{buffer}, 
-							line => $token{lineno} 
-						};
-					} elsif($type eq 'token') {
-						# a token
-						push @{ $cur_pkg->{tokens} }, { 
-							name => $token{buffer}, 
-							line => $token{lineno} 
-						};
-					} else {
-						# certainly a rule
-						push @{ $cur_pkg->{rules} }, { 
-							name => $token{buffer}, 
-							line => $token{lineno} 
-						};
-					}
+					# a regex, token or rule declaration
+					push @{ $cur_pkg->{regexes} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
 				} 
 			}
 		}
@@ -228,7 +212,7 @@ sub _update_treectrl {
 				}
 			)
 		);
-		foreach my $type (qw(modules subroutines methods submethods regexes tokens rules macros)) {
+		foreach my $type (qw(modules subroutines methods submethods macros regexes)) {
 			_add_subtree( $outlinebar, $pkg, $type, $branch );
 		}
 		$outlinebar->Expand($branch);
@@ -291,9 +275,7 @@ sub _add_subtree {
 			$type eq 'methods' || 
 			$type eq 'submethods' || 
 			$type eq 'macros' || 
-			$type eq 'regexes' ||
-			$type eq 'tokens' ||
-			$type eq 'rules') 
+			$type eq 'regexes') 
 		{
 			$outlinebar->Expand($type_elem);
 		} else {
