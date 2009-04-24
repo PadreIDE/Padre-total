@@ -62,7 +62,7 @@ sub _get_outline {
 					my $type = $1;
 					if($first_time) {
 						if ( not $cur_pkg->{name} ) {
-							$cur_pkg->{name} = 'main';
+							$cur_pkg->{name} = 'GLOBAL';
 						}
 						$first_time = 0;
 					}
@@ -111,7 +111,7 @@ sub _get_outline {
 		}
 
 		if ( not $cur_pkg->{name} ) {
-			$cur_pkg->{name} = 'main';
+			$cur_pkg->{name} = 'GLOBAL';
 		}
 		push @{$outline}, $cur_pkg;
 	}
