@@ -11,7 +11,7 @@ use IO::File;
 use File::Temp;
 
 # exports and version
-our $VERSION = '0.31';
+our $VERSION = '0.32';
 our @EXPORT_OK = qw(plugin_config);
 
 use IPC::Run3;
