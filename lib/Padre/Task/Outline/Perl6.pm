@@ -60,6 +60,7 @@ sub _get_outline {
 			my $tree = $token{tree};
 			if($tree) {
 				if($tree =~ /package_declarator.+package_def.+def_module_name/) {
+					#XXX implement classes, grammars, modules, packages, roles
 					if($not_first_time) {
 						if ( not $cur_pkg->{name} ) {
 							$cur_pkg->{name} = 'main';
@@ -70,11 +71,52 @@ sub _get_outline {
 					$not_first_time = 1;
 					$cur_pkg->{name} = $token{buffer};
 					$cur_pkg->{line} = $token{lineno};
-				} elsif($tree =~ /routine_declarator.+(routine_def|method_def) (longname|deflongname)/) {
+				} elsif($tree =~ /routine_declarator__S_\d+sub routine_def (deflongname)/) {
+					# a subroutine
+					push @{ $cur_pkg->{subroutines} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
+				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def (longname)/) {
+					# a method
 					push @{ $cur_pkg->{methods} }, { 
 						name => $token{buffer}, 
 						line => $token{lineno} 
 					};
+				} elsif($tree =~ /routine_declarator__\w+_\d+submethod method_def (longname)/) {
+					# a submethod
+					push @{ $cur_pkg->{submethods} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
+				} elsif($tree =~ /routine_declarator__\w+_\d+macro macro_def (deflongname)/) {
+					# a macro
+					push @{ $cur_pkg->{macros} }, { 
+						name => $token{buffer}, 
+						line => $token{lineno} 
+					};
+				} elsif($tree =~ /regex_declarator__\w+_\d+(regex|token|rule) (regex_def) (deflongname)/) {
+					# a regex declaration
+					my $type = $1;
+					if($type eq 'regex') {
+						# a regex
+						push @{ $cur_pkg->{regexes} }, { 
+							name => $token{buffer}, 
+							line => $token{lineno} 
+						};
+					} elsif($type eq 'token') {
+						# a token
+						push @{ $cur_pkg->{tokens} }, { 
+							name => $token{buffer}, 
+							line => $token{lineno} 
+						};
+					} else {
+						# certainly a rule
+						push @{ $cur_pkg->{rules} }, { 
+							name => $token{buffer}, 
+							line => $token{lineno} 
+						};
+					}
 				} 
 			}
 		}
@@ -144,7 +186,7 @@ sub _on_tree_item_right_click {
 
 	if (   defined($itemData)
 		&& defined( $itemData->{type} )
-		&& ( $itemData->{type} eq 'modules' || $itemData->{type} eq 'pragmata' ) )
+		&& $itemData->{type} eq 'modules' )
 	{
 		my $pod = $menu->Append( -1, Wx::gettext("Open &Documentation") );
 		Wx::Event::EVT_MENU(
@@ -186,7 +228,7 @@ sub _update_treectrl {
 				}
 			)
 		);
-		foreach my $type (qw(pragmata modules methods)) {
+		foreach my $type (qw(modules subroutines methods submethods regexes tokens rules macros)) {
 			_add_subtree( $outlinebar, $pkg, $type, $branch );
 		}
 		$outlinebar->Expand($branch);
@@ -209,7 +251,7 @@ sub _add_subtree {
 		);
 
 		my @sorted_entries = ();
-		if ( $type eq 'methods' ) {
+		if ( $type eq 'subroutines' || $type eq 'methods' || $type eq 'submethods' || $type eq 'macros') {
 			my $config = Padre->ide->config;
 			if ( $config->main_functions_order eq 'original' ) {
 
@@ -245,7 +287,14 @@ sub _add_subtree {
 		}
 	}
 	if ( defined $type_elem ) {
-		if ( $type eq 'methods' ) {
+		if ( $type eq 'subroutines' || 
+			$type eq 'methods' || 
+			$type eq 'submethods' || 
+			$type eq 'macros' || 
+			$type eq 'regexes' ||
+			$type eq 'tokens' ||
+			$type eq 'rules') 
+		{
 			$outlinebar->Expand($type_elem);
 		} else {
 			$outlinebar->Collapse($type_elem);
