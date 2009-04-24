@@ -2,7 +2,7 @@ Changes
 
 0.29 ?????????
 	- Initial Perl6 Outline window
-	- Depends on Syntax::Highlight::Perl6 0.042	
+	- Depends on Syntax::Highlight::Perl6 0.043 which has line number information	
 
 0.28 2009.4.20
     - Depends on Syntax::Highlight::Perl6 0.041 which has the newest STD with CORE.pad
