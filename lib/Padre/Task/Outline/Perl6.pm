@@ -108,9 +108,9 @@ sub _get_outline {
 				} else {
 					if($node_type ne '') {
 						push @{ $cur_pkg->{$node_type} }, $node; 
+						$node = {};
+						$node_type = '';
 					}
-					$node = {};
-					$node_type = '';
 				}
 			}
 		}
