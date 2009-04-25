@@ -223,7 +223,6 @@ sub _create_labels {
 
     # create the labels...
     my $lab1 = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
-    my $lab2 = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
     my $labword = Wx::StaticText->new( $self, -1, 'w'x25 );
     $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
     $labword->Refresh;
@@ -231,7 +230,6 @@ sub _create_labels {
 
     # ... and place them
     $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
-    $sizer->Add( $lab2,    Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,3), Wx::wxEXPAND );
     $sizer->Add( $labword, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 }
 
@@ -244,7 +242,10 @@ sub _create_labels {
 #
 sub _create_list {
     my ($self) = @_;
+    my $sizer  = $self->_sizer;
 
+    my $lab  = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
+    $sizer->Add( $lab, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,3), Wx::wxEXPAND );
     my $list = Wx::ListView->new(
         $self,
         -1,
@@ -252,7 +253,7 @@ sub _create_list {
         Wx::wxDefaultSize,
         Wx::wxLC_SINGLE_SEL,
     );
-    $self->_sizer->Add( $list,
+    $sizer->Add( $list,
         Wx::GBPosition->new(2,0),
         Wx::GBSpan->new(5,2),
         Wx::wxEXPAND
