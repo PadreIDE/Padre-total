@@ -95,13 +95,17 @@ sub _create_buttons {
 sub _create_dictionaries {
     my ($self) = @_;
 
+    my $engine  = Padre::Plugin::SpellCheck::Engine->new;
+    my @choices = $engine->dictionaries;
+    my $default = $choices[0];
+
     # create the controls
     my $label = Wx::StaticText->new( $self, -1, Wx::gettext('Dictionary:') );
     my $combo = Wx::ComboBox->new( $self, -1,
-        '',
+        $default,
         Wx::wxDefaultPosition,
         Wx::wxDefaultSize,
-        [],
+        \@choices,
         Wx::wxCB_READONLY|Wx::wxCB_SORT,
     );
 
