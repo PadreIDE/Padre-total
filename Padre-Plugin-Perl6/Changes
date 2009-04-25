@@ -1,5 +1,8 @@
 Changes
 
+0.33 2009.4.25
+	- Depends on Syntax::Highlight::Perl6 0.44 which can parse STD.pm again.
+
 0.32 2009.4.24
 	- Parent nodes have their type between brackets next to their name
 	- use/require-s are now in Modules node.
