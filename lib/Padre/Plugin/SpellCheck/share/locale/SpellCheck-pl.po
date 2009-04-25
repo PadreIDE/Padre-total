@@ -1,0 +1,56 @@
+# translation of SpellCheck-pl.po to
+#
+# Cezary Morga <cm@therek.net>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: SpellCheck-pl\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-25 11:49+0200\n"
+"PO-Revision-Date: 2009-04-25 18:24+0200\n"
+"Last-Translator: Cezary Morga <cm@therek.net>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#: lib/Padre/Plugin/SpellCheck.pm:80 lib/Padre/Plugin/SpellCheck/Dialog.pm:283
+msgid "Spell check finished."
+msgstr "Sprawdzanie pisowni zakończone."
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:41
+msgid "Spelling"
+msgstr "Pisownia"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:190
+msgid "Add to dictionary"
+msgstr "Dodaj do słownika"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:191
+msgid "Replace"
+msgstr "Zastąp"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:192
+msgid "Replace all"
+msgstr "Zastąp wszystkie"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:193
+msgid "Ignore"
+msgstr "Ignoruj"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:194
+msgid "Ignore all"
+msgstr "Ignoruj wszystkie"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:195
+msgid "Close"
+msgstr "Zamknij"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:225
+msgid "Not in dictionary:"
+msgstr "Nieznane słowo:"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:226
+msgid "Suggestions"
+msgstr "Podpowiedzi"
+
