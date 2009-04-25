@@ -102,7 +102,7 @@ sub _sharedir {
     # find resource path
     my $pkgpath = find_installed(__PACKAGE__);
     my (undef, $dirname, undef) = fileparse($pkgpath);
-    return catdir( $dirname, 'share' );
+    return catdir( $dirname, 'SpellCheck', 'share' );
 }
 
 1;
