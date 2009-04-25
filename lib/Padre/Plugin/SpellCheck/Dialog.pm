@@ -162,18 +162,23 @@ sub _create {
     my ($self) = @_;
 
     # create sizer that will host all controls
-    my $vbox  = Wx::BoxSizer->new( Wx::wxVERTICAL );
     my $sizer = Wx::GridBagSizer->new( 5, 5 );
-    $vbox->Add( $sizer, 1, Wx::wxEXPAND|Wx::wxALL, 5 );
     $sizer->AddGrowableCol(1);
     $sizer->AddGrowableRow(6);
     $self->_sizer($sizer);
 
+    # create the controls
     $self->_create_labels;
     $self->_create_list;
     $self->_create_buttons;
+
+    # wrap everything in a vbox to add some padding
+    my $vbox  = Wx::BoxSizer->new( Wx::wxVERTICAL );
+    $vbox->Add( $sizer, 1, Wx::wxEXPAND|Wx::wxALL, 5 );
     $self->SetSizerAndFit($vbox);
     $vbox->SetSizeHints($self);
+
+    # set focus on listbox
     $self->_list->SetFocus;
 }
 
