@@ -150,6 +150,8 @@ The following methods are implemented:
 
 =item plugin_icon()
 
+=item plugin_locale_directory()
+
 =item plugin_name()
 
 =back
