@@ -24,6 +24,8 @@ provides:
     file: lib/Padre/Plugin/SpellCheck/Dialog.pm
   Padre::Plugin::SpellCheck::Engine:
     file: lib/Padre/Plugin/SpellCheck/Engine.pm
+  Padre::Plugin::SpellCheck::Preferences:
+    file: lib/Padre/Plugin/SpellCheck/Preferences.pm
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

@@ -3,6 +3,7 @@ Changes
 lib/Padre/Plugin/SpellCheck.pm
 lib/Padre/Plugin/SpellCheck/Dialog.pm
 lib/Padre/Plugin/SpellCheck/Engine.pm
+lib/Padre/Plugin/SpellCheck/Preferences.pm
 lib/Padre/Plugin/SpellCheck/share/icons/spellcheck.png
 lib/Padre/Plugin/SpellCheck/share/locale/SpellCheck-fr-fr.mo
 LICENSE
