@@ -222,14 +222,14 @@ sub _create_labels {
     my $sizer  = $self->_sizer;
 
     # create the labels...
-    my $lab1 = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
+    my $label   = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
     my $labword = Wx::StaticText->new( $self, -1, 'w'x25 );
     $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
     $labword->Refresh;
     $self->_label($labword);
 
     # ... and place them
-    $sizer->Add( $lab1,    Wx::GBPosition->new(0,0) );
+    $sizer->Add( $label,   Wx::GBPosition->new(0,0) );
     $sizer->Add( $labword, Wx::GBPosition->new(0,1), Wx::GBSpan->new(1,1), Wx::wxEXPAND );
 }
 
