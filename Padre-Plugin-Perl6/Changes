@@ -1,7 +1,13 @@
 Changes
 
 0.33 2009.4.25
-	- Depends on Syntax::Highlight::Perl6 0.44 which can parse STD.pm again.
+	- Displays STD.pm and November fully in Outline view
+	- Updated to the latest S29-functions.pod
+	- Perl 6 Plugin depends now on Syntax::Highlight::Perl6 v0.45 which fixes an 
+		can parse STD.pm again without any warnings.
+	- A new symbol table method is used in outline view since 
+		Perl 6 identifiers/expressions can be multi-token like 
+		set-cache-entry (5 tokens)
 
 0.32 2009.4.24
 	- Parent nodes have their type between brackets next to their name
