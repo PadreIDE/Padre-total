@@ -54,8 +54,8 @@ sub padre_interfaces {
 # plugin menu.
 sub menu_plugins_simple {
     'Spell Check' => [
-        "Check spelling\tF7" => 'spell_check',
-        "Preferences"        => 'spell_preferences',
+        Wx::gettext("Check spelling\tF7") => 'spell_check',
+        Wx::gettext("Preferences")        => 'spell_preferences',
     ];
 }
 
