@@ -13,7 +13,7 @@ use warnings;
 use strict;
 
 use File::Basename        qw{ fileparse };
-use File::Spec::Functions qw{ catfile };
+use File::Spec::Functions qw{ catdir catfile };
 use Module::Util          qw{ find_installed };
 
 our $VERSION = '1.0.0';
@@ -88,6 +88,21 @@ sub spell_check {
         offset => $offset,
     );
     $dialog->Show;
+}
+
+
+# -- private methods
+
+#
+# my $dir = $self->_sharedir;
+#
+# return the private share directory where the module resources are stored.
+#
+sub _sharedir {
+    # find resource path
+    my $pkgpath = find_installed(__PACKAGE__);
+    my (undef, $dirname, undef) = fileparse($pkgpath);
+    return catdir( $dirname, 'share' );
 }
 
 1;
