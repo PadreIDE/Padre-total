@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-spellcheck\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-04-25 11:49+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: lib/Padre/Plugin/SpellCheck.pm:80
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:283
+msgid "Spell check finished."
+msgstr "Vérification orthographique terminée."
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:41
+msgid "Spelling"
+msgstr "Orthographe"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:190
+msgid "Add to dictionary"
+msgstr "Ajouter au dictionnaire"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:191
+msgid "Replace"
+msgstr "Remplacer"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:192
+msgid "Replace all"
+msgstr "Toujours remplacer"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:193
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:194
+msgid "Ignore all"
+msgstr "Toujours ignorer"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:195
+msgid "Close"
+msgstr "Fermer"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:225
+msgid "Not in dictionary:"
+msgstr "Pas dans le dictionnaire :"
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:226
+msgid "Suggestions"
+msgstr "Suggestions"
+
