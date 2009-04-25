@@ -57,6 +57,7 @@ my $builder = $class->new(
         map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
 );
+$builder->add_build_element('mo');
 $builder->add_build_element('png');
 
 $builder->create_build_script();
