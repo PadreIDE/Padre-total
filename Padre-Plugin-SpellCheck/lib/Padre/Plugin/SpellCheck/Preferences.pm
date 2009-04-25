@@ -62,6 +62,7 @@ sub _create {
     $self->_sizer($sizer);
 
     # create the controls
+    $self->_create_dictionaries;
     $self->_create_buttons;
 
     # wrap everything in a vbox to add some padding
@@ -83,6 +84,34 @@ sub _create_buttons {
     my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
     $sizer->Add($butsizer, 0, Wx::wxEXPAND|Wx::wxCENTER, 1 );
 }
+
+#
+# $dialog->_create_dictionaries;
+#
+# create the pane to choose the spelling dictionary.
+#
+# no params. no return values.
+#
+sub _create_dictionaries {
+    my ($self) = @_;
+
+    # create the controls
+    my $label = Wx::StaticText->new( $self, -1, Wx::gettext('Dictionary:') );
+    my $combo = Wx::ComboBox->new( $self, -1,
+        '',
+        Wx::wxDefaultPosition,
+        Wx::wxDefaultSize,
+        [],
+        Wx::wxCB_READONLY|Wx::wxCB_SORT,
+    );
+
+    # pack the controls in a box
+    my $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+    $box->Add( $label, 0, Wx::wxEXPAND|Wx::wxCENTER, 5 );
+    $box->Add( $combo, 1, Wx::wxEXPAND|Wx::wxCENTER, 5 );
+    $self->_sizer->Add( $box, 0, Wx::wxEXPAND|Wx::wxCENTER, 5 );
+}
+
 
 1;
 
