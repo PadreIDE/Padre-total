@@ -52,11 +52,15 @@ sub _get_outline {
 	if($self->{tokens}) {
 		my $cur_pkg = {};
 		my $first_time = 1;
+		my $node_type = '';
+		my $node = {};
 		my @tokens = @{$self->{tokens}};
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
 			my $tree = $token{tree};
 			if($tree) {
+				my $buffer = $token{buffer};
+				my $lineno = $token{lineno};
 				if($tree =~ /package_declarator__S_\d+(class|grammar|module|package|role) package_def.+def_module_name/) {
 					# (classes, grammars, modules, packages, roles) or main are always parent nodes
 					my $type = $1;
@@ -67,46 +71,47 @@ sub _get_outline {
 						$first_time = 0;
 					}
 					push @{$outline}, $cur_pkg;
-					$cur_pkg = {};
-					$cur_pkg->{name} = $token{buffer} . " ($type)";
-					$cur_pkg->{line} = $token{lineno};
+					$cur_pkg = {
+						name => $buffer . " ($type)",
+						line => $lineno,
+					};
 				} elsif($tree =~ /(package_declarator__S_\d+require module_name)|(statement_control__S_\d+use module_name)/) {
 					# require/use a module
-					push @{ $cur_pkg->{modules} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} elsif($tree =~ /routine_declarator__S_\d+sub routine_def (deflongname)/) {
+					$node_type = "modules";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} elsif($tree =~ /routine_declarator__S_\d+sub routine_def deflongname/) {
 					# a subroutine
-					push @{ $cur_pkg->{subroutines} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def (longname)/) {
+					$node_type = "subroutines";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def longname/) {
 					# a method
-					push @{ $cur_pkg->{methods} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} elsif($tree =~ /routine_declarator__\w+_\d+submethod method_def (longname)/) {
+					$node_type = "methods";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} elsif($tree =~ /routine_declarator__\w+_\d+submethod method_def longname/) {
 					# a submethod
-					push @{ $cur_pkg->{submethods} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} elsif($tree =~ /routine_declarator__\w+_\d+macro macro_def (deflongname)/) {
+					$node_type = "submethods";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} elsif($tree =~ /routine_declarator__\w+_\d+macro macro_def deflongname/) {
 					# a macro
-					push @{ $cur_pkg->{macros} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} elsif($tree =~ /regex_declarator__\w+_\d+(regex|token|rule) (regex_def) (deflongname)/) {
+					$node_type = "macros";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} elsif($tree =~ /regex_declarator__\w+_\d+(regex|token|rule) regex_def deflongname/) {
 					# a regex, token or rule declaration
-					push @{ $cur_pkg->{regexes} }, { 
-						name => $token{buffer}, 
-						line => $token{lineno} 
-					};
-				} 
+					$node_type = "regexes";
+					$node->{name} .= $buffer;
+					$node->{line} = $lineno;
+				} else {
+					if($node_type ne '') {
+						push @{ $cur_pkg->{$node_type} }, $node; 
+					}
+					$node = {};
+					$node_type = '';
+				}
 			}
 		}
 
