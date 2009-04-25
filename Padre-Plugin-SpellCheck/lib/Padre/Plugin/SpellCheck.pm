@@ -41,6 +41,10 @@ sub plugin_icon {
     return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
+sub plugin_locale_directory {
+    return "/home/jquelin/prog/padre/Padre-Plugin-SpellCheck/share/locale";
+}
+
 # padre interfaces
 sub padre_interfaces {
     'Padre::Plugin' => '0.26',
