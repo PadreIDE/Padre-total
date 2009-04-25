@@ -34,8 +34,7 @@ sub plugin_icon {
     # find resource path
     my $pkgpath = find_installed(__PACKAGE__);
     my (undef, $dirname, undef) = fileparse($pkgpath);
-    my $iconpath = catfile( $dirname,
-        'SpellCheck', 'share', 'icons', 'spellcheck.png');
+    my $iconpath = catfile( _sharedir(), 'icons', 'spellcheck.png');
 
     # create and return icon
     return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
