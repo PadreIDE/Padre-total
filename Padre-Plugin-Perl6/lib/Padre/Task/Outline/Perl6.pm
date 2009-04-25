@@ -112,7 +112,7 @@ sub _get_outline {
 							}
 							push @{$outline}, $cur_pkg;
 							$cur_pkg = {};
-							$cur_pkg->{name} = $symbol_name;
+							$cur_pkg->{name} = $symbol_name . " ($symbol_type)";
 							$cur_pkg->{line} = $symbol_line;
 						} else {
 							push @{ $cur_pkg->{$symbol_type} }, {
