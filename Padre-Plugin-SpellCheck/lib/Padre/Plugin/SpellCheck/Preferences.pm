@@ -69,6 +69,13 @@ sub _create {
     $sizer->SetSizeHints($self);
 }
 
+#
+# $dialog->_create_buttons;
+#
+# create the buttons pane.
+#
+# no params. no return values.
+#
 sub _create_buttons {
     my ($self) = @_;
     my $sizer  = $self->_sizer;
