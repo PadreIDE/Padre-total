@@ -67,6 +67,15 @@ sub check {
     return;
 }
 
+
+sub dictionaries {
+    my ($self) = @_;
+    return
+        grep { $_=~ /^\w+$/ }
+        map  { $_->{name} }
+        $self->_speller->dictionary_info;
+}
+
 sub ignore {
     my ($self, $word) = @_;
     $self->_ignore->{$word} = 1;
@@ -121,6 +130,14 @@ the text (position of the start of the faulty word).
 =item * $engine->ignore( $word );
 
 Tell engine to ignore C<$word> for rest of the spell check.
+
+
+=item * my @dictionaries = $engine->dictionaries;
+
+Return a (reduced) list of dictionaries installed with aspell. The
+names returned are the dictionary locale names (eg C<en_US>). Note
+that only plain locales are reported, the variations coming with
+aspell are stripped.
 
 
 =item * my @suggestions = $engine->suggestions( $word );
