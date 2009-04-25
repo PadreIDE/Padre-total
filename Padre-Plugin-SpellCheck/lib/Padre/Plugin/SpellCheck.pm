@@ -22,6 +22,7 @@ use base 'Padre::Plugin';
 use Padre::Current;
 use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
+use Padre::Plugin::SpellCheck::Preferences;
 
 
 # -- padre plugin api, refer to Padre::Plugin
@@ -54,6 +55,7 @@ sub padre_interfaces {
 sub menu_plugins_simple {
     'Spell Check' => [
         "Check spelling\tF7" => 'spell_check',
+        "Preferences"        => 'spell_preferences',
     ];
 }
 
@@ -89,6 +91,11 @@ sub spell_check {
     );
     $dialog->Show;
 }
+
+sub spell_preferences {
+    Padre::Plugin::SpellCheck::Preferences->new->Show;
+}
+
 
 
 # -- private methods
@@ -164,6 +171,10 @@ The following methods are implemented:
 =item * spell_check()
 
 Spell checks the current selection (or the whole document).
+
+=item * spell_preferences()
+
+Open the check spelling preferences window.
 
 =back
 
