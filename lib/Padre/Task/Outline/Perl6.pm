@@ -55,6 +55,7 @@ sub _get_outline {
 		my $symbol_type = 'package';
 		my $symbol_name = '';
 		my $symbol_line = -1;
+		my $symbol_suffix = '';
 		my $symbol_context = '';
 		my $context = 'GLOBAL';
 		for my $htoken (@tokens) {
@@ -80,6 +81,10 @@ sub _get_outline {
 					$symbol_line = $lineno;
 				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def (longname|$)/) {
 					# a method
+					if($buffer eq '!') {
+						# private method...
+						$symbol_suffix = " (private)";
+					}
 					$symbol_type = "methods";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
@@ -98,6 +103,12 @@ sub _get_outline {
 					$symbol_type = "regexes";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
+				} elsif($tree =~ /scope_declarator__\w+_\d+(our|my|has|state|constant) scoped declarator variable_declarator variable/) {
+					# a start for an attribute declaration
+					$symbol_type = "attributes";
+					$symbol_name .= $buffer;
+					$symbol_line = $lineno;
+					$symbol_suffix = $1;
 				} else {
 					if($symbol_name ne '') {
 						if( $symbol_type eq 'class' || 
@@ -115,10 +126,14 @@ sub _get_outline {
 							$cur_pkg->{name} = $symbol_name . " ($symbol_type)";
 							$cur_pkg->{line} = $symbol_line;
 						} else {
-							if($symbol_type eq 'methods' && $symbol_name =~ /^!/) {
-								# private method...
-								$symbol_name .= " (private)";
+							if($symbol_type eq 'attributes') {
+								if($symbol_name !~ /\./) {
+									$symbol_suffix = " (private, $symbol_suffix)";
+								} else {
+									$symbol_suffix = " ($symbol_suffix)";
+								}
 							}
+							$symbol_name .= $symbol_suffix;
 							push @{ $cur_pkg->{$symbol_type} }, {
 								name => $symbol_name, 
 								line=>$symbol_line,
@@ -127,6 +142,7 @@ sub _get_outline {
 						$symbol_type = '';
 						$symbol_name = '';
 						$symbol_line = -1;
+						$symbol_suffix = '';
 					}
 				}
 			}
@@ -240,7 +256,7 @@ sub _update_treectrl {
 				}
 			)
 		);
-		foreach my $type (qw(modules subroutines methods submethods macros regexes)) {
+		foreach my $type (qw(modules subroutines methods submethods macros regexes attributes)) {
 			_add_subtree( $outlinebar, $pkg, $type, $branch );
 		}
 		$outlinebar->Expand($branch);
@@ -263,7 +279,7 @@ sub _add_subtree {
 		);
 
 		my @sorted_entries = ();
-		if ( $type eq 'subroutines' || $type eq 'methods' || $type eq 'submethods' || $type eq 'macros') {
+		if ( $type eq 'subroutines' || $type eq 'methods' || $type eq 'submethods' || $type eq 'macros' || $type eq 'attributes') {
 			my $config = Padre->ide->config;
 			if ( $config->main_functions_order eq 'original' ) {
 
@@ -303,7 +319,8 @@ sub _add_subtree {
 			$type eq 'methods' || 
 			$type eq 'submethods' || 
 			$type eq 'macros' || 
-			$type eq 'regexes') 
+			$type eq 'regexes' ||
+			$type eq 'attributes') 
 		{
 			$outlinebar->Expand($type_elem);
 		} else {
