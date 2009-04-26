@@ -1,5 +1,8 @@
 Changes
 
+0.34 2009.4.26
+	- Support for private methods in Outline view
+
 0.33 2009.4.25
 	- Displays STD.pm and November fully in Outline view
 	- Updated to the latest S29-functions.pod
