@@ -1,7 +1,8 @@
 Changes
 
 0.34 2009.4.26
-	- Support for private methods in Outline view
+	- Supports private methods in Outline view
+	- Supports attributes in Outline view
 
 0.33 2009.4.25
 	- Displays STD.pm and November fully in Outline view
