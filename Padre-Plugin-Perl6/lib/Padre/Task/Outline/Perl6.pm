@@ -256,7 +256,7 @@ sub _update_treectrl {
 				}
 			)
 		);
-		foreach my $type (qw(modules subroutines methods submethods macros regexes attributes)) {
+		foreach my $type (qw(modules attributes subroutines methods submethods macros regexes)) {
 			_add_subtree( $outlinebar, $pkg, $type, $branch );
 		}
 		$outlinebar->Expand($branch);
