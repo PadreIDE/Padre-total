@@ -78,7 +78,7 @@ sub _get_outline {
 					$symbol_type = "subroutines";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def longname/) {
+				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def (longname|$)/) {
 					# a method
 					$symbol_type = "methods";
 					$symbol_name .= $buffer;
@@ -115,6 +115,10 @@ sub _get_outline {
 							$cur_pkg->{name} = $symbol_name . " ($symbol_type)";
 							$cur_pkg->{line} = $symbol_line;
 						} else {
+							if($symbol_type eq 'methods' && $symbol_name =~ /^!/) {
+								# private method...
+								$symbol_name .= " (private)";
+							}
 							push @{ $cur_pkg->{$symbol_type} }, {
 								name => $symbol_name, 
 								line=>$symbol_line,
