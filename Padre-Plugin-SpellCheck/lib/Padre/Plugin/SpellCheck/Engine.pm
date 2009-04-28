@@ -32,9 +32,10 @@ sub new {
 
     # create speller object
     my $speller = Text::Aspell->new;
+    my $config  = $plugin->config;
     # TODO: configurable later
     $speller->set_option('sug-mode', 'fast');
-    $speller->set_option('lang','en_US');
+    $speller->set_option('lang', $config->{dictionary});
     $self->_speller( $speller );
 
     return $self;
