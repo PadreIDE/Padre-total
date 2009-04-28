@@ -13,9 +13,9 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-    _ignore  => '_ignore',
+    _ignore  => '_ignore',      # list of words to ignore
     _plugin  => '_plugin',      # ref to spellecheck plugin
-    _speller => '_speller',
+    _speller => '_speller',     # real text::aspell object
 };
 use Text::Aspell;
 
