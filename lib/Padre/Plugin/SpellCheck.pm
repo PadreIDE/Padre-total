@@ -141,9 +141,12 @@ Padre::Plugin::SpellCheck - check spelling in Padre
 =head1 DESCRIPTION
 
 This plugins allows one to checking her text spelling within Padre using
-C<F7> (standard spelling shortcut accross text processors). It is using
-C<Text::Aspell> underneath, so check this module's pod for more
-information.
+C<F7> (standard spelling shortcut accross text processors). One can change
+the dictionary language used in the preferences window (menu Plugins /
+SpellCheck / Preferences).
+
+This plugin is using C<Text::Aspell> underneath, so check this module's
+pod for more information.
 
 Of course, you need to have the aspell binary and dictionnary installed.
 
