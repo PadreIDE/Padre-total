@@ -96,6 +96,7 @@ sub spell_check {
         error  => [ $word, $pos ],
         engine => $engine,
         offset => $offset,
+        plugin => $self,
     );
     $dialog->Show;
 }
