@@ -13,6 +13,7 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
+    _plugin      => '_plugin',       # plugin to be configured
     _sizer       => '_sizer',        # window sizer
 };
 
@@ -37,6 +38,7 @@ sub new {
         Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
     );
     $self->SetIcon( Wx::GetWxPerlIcon() );
+    $self->_plugin($plugin);
 
     # create dialog
     $self->_create;
