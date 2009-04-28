@@ -118,7 +118,7 @@ sub _create_buttons {
 sub _create_dictionaries {
     my ($self) = @_;
 
-    my $engine  = Padre::Plugin::SpellCheck::Engine->new;
+    my $engine  = Padre::Plugin::SpellCheck::Engine->new($self->_plugin);
     my @choices = $engine->dictionaries;
     my $default = $choices[0];
 
