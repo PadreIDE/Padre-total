@@ -357,6 +357,7 @@ sub _update {
     $list->DeleteAllItems;
     my $i = 0;
     foreach my $w ( reverse @suggestions ) {
+        next unless defined $w;
         my $item = Wx::ListItem->new;
         $item->SetText($w);
         my $idx = $list->InsertItem($item);
