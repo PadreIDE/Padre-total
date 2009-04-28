@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-spellcheck\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-28 17:59+0200\n"
+"POT-Creation-Date: 2009-04-28 18:46+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: \n"
@@ -11,6 +11,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
+
+#: lib/Padre/Plugin/SpellCheck.pm:31
+#: lib/Padre/Plugin/SpellCheck.pm:56
+msgid "Spell check"
+msgstr "Vérification orthographique"
 
 #: lib/Padre/Plugin/SpellCheck.pm:57
 msgid "Check spelling\tF7"
@@ -66,7 +71,10 @@ msgstr "Suggestions"
 msgid "Spelling preferences"
 msgstr "Préférences orthographiques"
 
-#: lib/Padre/Plugin/SpellCheck/Preferences.pm:128
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:136
 msgid "Dictionary:"
 msgstr "Dictionnaire :"
+
+#~ msgid "Spelling"
+#~ msgstr "Orthographe"
 
