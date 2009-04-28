@@ -55,7 +55,7 @@ sub _on_butok_clicked {
     my $plugin = $self->_plugin;
 
     # read plugin preferences
-    my $prefs  = $plugin->config_read || {};
+    my $prefs = $plugin->config;
 
     # overwrite dictionary preference
     my $dic = $self->_dict_combo->GetValue;
