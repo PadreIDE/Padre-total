@@ -14,6 +14,7 @@ use strict;
 
 use Class::XSAccessor accessors => {
     _ignore  => '_ignore',
+    _plugin  => '_plugin',      # ref to spellecheck plugin
     _speller => '_speller',
 };
 use Text::Aspell;
@@ -22,10 +23,11 @@ use Text::Aspell;
 # -- constructor
 
 sub new {
-    my ($class) = @_;
+    my ($class, $plugin) = @_;
 
     my $self = bless {
         _ignore => {},
+        _plugin => $plugin,
     }, $class;
 
     # create speller object

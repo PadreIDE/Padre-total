@@ -66,7 +66,7 @@ sub spell_check {
     my ($self) = @_;
 
     my $main   = Padre::Current->main;
-    my $engine = Padre::Plugin::SpellCheck::Engine->new;
+    my $engine = Padre::Plugin::SpellCheck::Engine->new($self);
 
     # fetch text to check
     my $selection = Padre::Current->text;
