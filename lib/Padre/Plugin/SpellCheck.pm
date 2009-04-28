@@ -98,7 +98,7 @@ sub spell_check {
         offset => $offset,
         plugin => $self,
     );
-    $dialog->Show;
+    $dialog->ShowModal;
 }
 
 sub spell_preferences {
