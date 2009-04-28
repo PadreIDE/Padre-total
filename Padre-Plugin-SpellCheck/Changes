@@ -2,6 +2,7 @@ Revision history for Padre-Plugin-SpellCheck
 
 1.1.0 
  - possibility to choose dictionary language
+ - plugin i18n-ed, ready to accept translations
  - arabic translation added (courtesy of azawawi++)
  - french translation added
  - polish translation added (courtesy of therek++)
