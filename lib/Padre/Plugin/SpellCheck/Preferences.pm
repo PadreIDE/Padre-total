@@ -52,6 +52,17 @@ sub new {
 
 sub _on_butok_clicked {
     my ($self) = @_;
+    my $plugin = $self->_plugin;
+
+    # read plugin preferences
+    my $prefs  = $plugin->config_read || {};
+
+    # overwrite dictionary preference
+    my $dic = $self->_dict_combo->GetValue;
+    $prefs->{dictionary} = $dic;
+
+    # store plugin preferences
+    $plugin->config_write($prefs);
     $self->Destroy;
 }
 
