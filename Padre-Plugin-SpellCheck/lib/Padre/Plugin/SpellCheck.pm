@@ -62,6 +62,14 @@ sub menu_plugins_simple {
 
 # -- public methods
 
+sub config {
+    my ($self) = @_;
+    my $config = {
+        dictionary => 'en_US',
+    };
+    return $self->config_read || $config;
+}
+
 sub spell_check {
     my ($self) = @_;
 
@@ -168,6 +176,11 @@ The following methods are implemented:
 =head2 Spell checking methods
 
 =over 4
+
+=item * config()
+
+Return the plugin's configuration, or a suitable default one if none
+exist previously.
 
 =item * spell_check()
 
