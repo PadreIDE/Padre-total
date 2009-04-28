@@ -45,6 +45,14 @@ sub new {
 }
 
 
+# -- event handler
+
+sub _on_butok_clicked {
+    my ($self) = @_;
+    $self->Destroy;
+}
+
+
 # -- private methods
 
 #
@@ -83,6 +91,7 @@ sub _create_buttons {
 
     my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
     $sizer->Add($butsizer, 0, Wx::wxEXPAND|Wx::wxCENTER, 1 );
+    Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK,     \&_on_butok_clicked );
 }
 
 #
