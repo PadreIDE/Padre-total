@@ -25,12 +25,14 @@
 \bBuild.COM$
 \bBUILD.COM$
 \bbuild.com$
+\binc
 
 # Avoid Devel::Cover generated files
 \bcover_db
 
 # Avoid temp and backup files.
 ~$
+\.swp$
 \.tmp$
 \.old$
 \.bak$
