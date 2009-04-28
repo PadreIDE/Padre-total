@@ -13,13 +13,13 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
+    _autoreplace => '_autoreplace',  # list of automatic replaces
     _engine      => '_engine',       # pps:engine object
     _error       => '_errorpos',     # first error spotted [ $word, $pos ]
     _label       => '_label',        # label hosting the misspelled word
     _list        => '_list',         # listbox listing the suggestions
     _offset      => '_offset',       # offset of _text within the editor
     _plugin      => '_plugin',       # reference to spellcheck plugin
-    _autoreplace => '_autoreplace',  # list of automatic replaces
     _sizer       => '_sizer',        # window sizer
     _text        => '_text',         # text being spellchecked
 };
