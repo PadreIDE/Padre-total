@@ -25,7 +25,7 @@ use base 'Wx::Dialog';
 # -- constructor
 
 sub new {
-    my ($class) = @_;
+    my ($class, $plugin) = @_;
 
     # create object
     my $self = $class->SUPER::new(

@@ -93,9 +93,10 @@ sub spell_check {
 }
 
 sub spell_preferences {
-    Padre::Plugin::SpellCheck::Preferences->new->Show;
+    my ($self) = @_;
+    my $prefs  = Padre::Plugin::SpellCheck::Preferences->new($self);
+    $prefs->Show;
 }
-
 
 
 # -- private methods
