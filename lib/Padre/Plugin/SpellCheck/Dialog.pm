@@ -36,10 +36,11 @@ sub new {
     my ($class, %params) = @_;
 
     # create object
-    my $self = $class->SUPER::new(
+    my $config = $params{plugin}->config;
+    my $self   = $class->SUPER::new(
         Padre::Current->main,
         -1,
-        Wx::gettext('Spelling'),
+        sprintf( Wx::gettext('Spelling (%s)'), $config->{dictionary} ),
         Wx::wxDefaultPosition,
         Wx::wxDefaultSize,
         Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
