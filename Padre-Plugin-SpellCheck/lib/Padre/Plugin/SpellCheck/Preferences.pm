@@ -87,6 +87,9 @@ sub _create {
     $self->_create_dictionaries;
     $self->_create_buttons;
 
+    # setting focus on dictionary first
+    $self->_dict_combo->SetFocus;
+
     # wrap everything in a vbox to add some padding
     $self->SetSizerAndFit($sizer);
     $sizer->SetSizeHints($self);
