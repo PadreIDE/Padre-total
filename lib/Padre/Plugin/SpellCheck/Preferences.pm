@@ -13,6 +13,7 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
+    _dict_combo  => '_dict_combo',   # combo box holding dictionary
     _plugin      => '_plugin',       # plugin to be configured
     _sizer       => '_sizer',        # window sizer
 };
@@ -119,6 +120,7 @@ sub _create_dictionaries {
         \@choices,
         Wx::wxCB_READONLY|Wx::wxCB_SORT,
     );
+    $self->_dict_combo( $combo );
 
     # pack the controls in a box
     my $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
