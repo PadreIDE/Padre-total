@@ -28,7 +28,7 @@ use Padre::Plugin::SpellCheck::Preferences;
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
-sub plugin_name { 'Spell checking' }
+sub plugin_name { Wx::gettext('Spell check') }
 
 # plugin icon
 sub plugin_icon {
@@ -53,7 +53,7 @@ sub padre_interfaces {
 
 # plugin menu.
 sub menu_plugins_simple {
-    'Spell Check' => [
+    Wx::gettext('Spell check') => [
         Wx::gettext("Check spelling\tF7") => 'spell_check',
         Wx::gettext("Preferences")        => 'spell_preferences',
     ];
