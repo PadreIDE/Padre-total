@@ -18,6 +18,7 @@ use Class::XSAccessor accessors => {
     _label       => '_label',        # label hosting the misspelled word
     _list        => '_list',         # listbox listing the suggestions
     _offset      => '_offset',       # offset of _text within the editor
+    _plugin      => '_plugin',       # reference to spellcheck plugin
     _autoreplace => '_autoreplace',  # list of automatic replaces
     _sizer       => '_sizer',        # window sizer
     _text        => '_text',         # text being spellchecked
@@ -48,6 +49,7 @@ sub new {
     $self->_engine( $params{engine} );
     $self->_offset( $params{offset} );
     $self->_text  ( $params{text}   );
+    $self->_plugin( $params{plugin} );
     $self->_autoreplace( {} );
 
     # create dialog
