@@ -112,7 +112,7 @@ sub _create_buttons {
     my $sizer  = $self->_sizer;
 
     my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-    $sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxCENTER, 5 );
+    $sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
     Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_butok_clicked );
 }
 
@@ -145,9 +145,9 @@ sub _create_dictionaries {
 
     # pack the controls in a box
     my $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    $box->Add( $label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxCENTER, 5 );
-    $box->Add( $combo, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxCENTER, 5 );
-    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxCENTER, 5 );
+    $box->Add( $label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $combo, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 }
 
 
