@@ -50,6 +50,11 @@ sub new {
 
 # -- event handler
 
+#
+# $self->_on_butok_clicked;
+#
+# handler called when the ok button has been clicked.
+# 
 sub _on_butok_clicked {
     my ($self) = @_;
     my $plugin = $self->_plugin;
