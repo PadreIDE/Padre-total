@@ -5,52 +5,73 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SpellCheck-pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-25 11:49+0200\n"
-"PO-Revision-Date: 2009-04-25 18:24+0200\n"
+"POT-Creation-Date: 2009-04-28 18:46+0200\n"
+"PO-Revision-Date: 2009-04-28 20:09+0200\n"
 "Last-Translator: Cezary Morga <cm@therek.net>\n"
-"Language-Team: \n"
+"Language-Team:  <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: lib/Padre/Plugin/SpellCheck.pm:80 lib/Padre/Plugin/SpellCheck/Dialog.pm:283
+#: lib/Padre/Plugin/SpellCheck.pm:31 lib/Padre/Plugin/SpellCheck.pm:56
+msgid "Spell check"
+msgstr "Sprawdzanie pisowni"
+
+#: lib/Padre/Plugin/SpellCheck.pm:57
+msgid "Check spelling\tF7"
+msgstr "Sprawdź pisownię\tF7"
+
+#: lib/Padre/Plugin/SpellCheck.pm:58
+msgid "Preferences"
+msgstr "Ustawienia"
+
+#: lib/Padre/Plugin/SpellCheck.pm:90 lib/Padre/Plugin/SpellCheck/Dialog.pm:292
 msgid "Spell check finished."
 msgstr "Sprawdzanie pisowni zakończone."
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:41
-msgid "Spelling"
-msgstr "Pisownia"
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:43
+#, perl-format
+msgid "Spelling (%s)"
+msgstr "Sprawdzanie pisowni (%s)"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:190
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:198
 msgid "Add to dictionary"
 msgstr "Dodaj do słownika"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:191
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:199
 msgid "Replace"
 msgstr "Zastąp"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:192
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:200
 msgid "Replace all"
 msgstr "Zastąp wszystkie"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:193
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:201
 msgid "Ignore"
 msgstr "Ignoruj"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:194
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:202
 msgid "Ignore all"
 msgstr "Ignoruj wszystkie"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:195
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:203
 msgid "Close"
 msgstr "Zamknij"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:225
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:233
 msgid "Not in dictionary:"
 msgstr "Nieznane słowo:"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:226
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:255
 msgid "Suggestions"
 msgstr "Podpowiedzi"
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:36
+msgid "Spelling preferences"
+msgstr "Ustawienia pisowni"
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:136
+msgid "Dictionary:"
+msgstr "Słownik:"
 
