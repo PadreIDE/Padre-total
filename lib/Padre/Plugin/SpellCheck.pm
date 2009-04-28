@@ -63,7 +63,7 @@ sub menu_plugins_simple {
 # -- public methods
 
 sub spell_check {
-    my ( $self ) = shift;
+    my ($self) = @_;
 
     my $main   = Padre::Current->main;
     my $engine = Padre::Plugin::SpellCheck::Engine->new;
