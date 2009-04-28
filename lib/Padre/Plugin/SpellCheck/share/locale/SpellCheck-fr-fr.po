@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-spellcheck\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-25 11:49+0200\n"
+"POT-Creation-Date: 2009-04-28 17:59+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: \n"
@@ -12,44 +12,61 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: lib/Padre/Plugin/SpellCheck.pm:80
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:283
+#: lib/Padre/Plugin/SpellCheck.pm:57
+msgid "Check spelling\tF7"
+msgstr "Vérifier l'orthographe\tF7"
+
+#: lib/Padre/Plugin/SpellCheck.pm:58
+msgid "Preferences"
+msgstr "Préférences"
+
+#: lib/Padre/Plugin/SpellCheck.pm:90
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:292
 msgid "Spell check finished."
 msgstr "Vérification orthographique terminée."
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:41
-msgid "Spelling"
-msgstr "Orthographe"
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:43
+#, perl-format
+msgid "Spelling (%s)"
+msgstr "Orthographe (%s)"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:190
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:198
 msgid "Add to dictionary"
 msgstr "Ajouter au dictionnaire"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:191
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:199
 msgid "Replace"
 msgstr "Remplacer"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:192
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:200
 msgid "Replace all"
 msgstr "Toujours remplacer"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:193
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:201
 msgid "Ignore"
 msgstr "Ignorer"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:194
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:202
 msgid "Ignore all"
 msgstr "Toujours ignorer"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:195
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:203
 msgid "Close"
 msgstr "Fermer"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:225
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:233
 msgid "Not in dictionary:"
 msgstr "Pas dans le dictionnaire :"
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:226
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:255
 msgid "Suggestions"
 msgstr "Suggestions"
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:36
+msgid "Spelling preferences"
+msgstr "Préférences orthographiques"
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:128
+msgid "Dictionary:"
+msgstr "Dictionnaire :"
 
