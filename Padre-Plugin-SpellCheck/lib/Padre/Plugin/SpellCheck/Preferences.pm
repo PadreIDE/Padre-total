@@ -120,7 +120,9 @@ sub _create_dictionaries {
 
     my $engine  = Padre::Plugin::SpellCheck::Engine->new($self->_plugin);
     my @choices = $engine->dictionaries;
-    my $default = $choices[0];
+    my %choices = map { $_ => 1 } @choices;
+    my $deflang = $self->_plugin->config->{dictionary};
+    my $default = exists $choices{$deflang} ? $deflang : $choices[0];
 
     # create the controls
     my $label = Wx::StaticText->new( $self, -1, Wx::gettext('Dictionary:') );
