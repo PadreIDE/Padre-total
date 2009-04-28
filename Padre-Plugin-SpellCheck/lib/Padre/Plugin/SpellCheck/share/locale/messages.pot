@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-25 11:49+0200\n"
+"POT-Creation-Date: 2009-04-28 17:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,42 +16,59 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/SpellCheck.pm:80 lib/Padre/Plugin/SpellCheck/Dialog.pm:283
+#: lib/Padre/Plugin/SpellCheck.pm:57
+msgid "Check spelling\tF7"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:58
+msgid "Preferences"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:90 lib/Padre/Plugin/SpellCheck/Dialog.pm:292
 msgid "Spell check finished."
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:41
-msgid "Spelling"
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:43
+#, perl-format
+msgid "Spelling (%s)"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:190
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:198
 msgid "Add to dictionary"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:191
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:199
 msgid "Replace"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:192
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:200
 msgid "Replace all"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:193
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:201
 msgid "Ignore"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:194
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:202
 msgid "Ignore all"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:195
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:203
 msgid "Close"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:225
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:233
 msgid "Not in dictionary:"
 msgstr ""
 
-#: lib/Padre/Plugin/SpellCheck/Dialog.pm:226
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:255
 msgid "Suggestions"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:36
+msgid "Spelling preferences"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:128
+msgid "Dictionary:"
 msgstr ""
