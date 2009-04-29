@@ -1,0 +1,18 @@
+Revision history for Padre-Plugin-SpellCheck
+
+1.0.0 Wed Apr 22 17:51:37 CEST 2009
+ - using a dedicated spellcheck dialog
+ - on error, possibility to replace, replace all, ignore, ignore all
+
+0.03 Sun Apr  5 17:28:58 CEST 2009
+ - providing an icon for padre's plugin manager
+
+0.02 Sun Apr  5 16:41:42 CEST 2009
+ - adding newline between wrongly spelled words
+ - changing maintainer
+ - moving away from module::install
+ - cleaning meta information
+
+0.01 Sun Feb  1 16:03:22 CEST 2009
+ - First version, released on an unsuspecting world.
+
