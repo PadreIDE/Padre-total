@@ -98,7 +98,7 @@ sub _on_butignore_clicked {
     # remove the beginning of the text, up to after current error
     my $error = $self->_error;
     my ($word, $pos) = @$error;
-    $pos += length $word;
+    $pos += $self->_length( $word );
     my $text = substr $self->_text, $pos;
     $self->_text( $text );
     my $offset = $self->_offset + $pos;
@@ -320,13 +320,13 @@ sub _replace {
     my $offset = $self->_offset;
     my ($word, $pos) = @$error;
     my $from = $offset + $pos;
-    my $to   = $from + length $word;
+    my $to   = $from + $self->_length( $word );
     $editor->SetSelection( $from, $to );
     $editor->ReplaceSelection( $new );
 
     # remove the beginning of the text, up to after replaced word
     my $posold = $pos + length $word;
-    my $posnew = $pos + length $new;
+    my $posnew = $pos + $self->_length( $new );
     my $text = substr $self->_text, $posold;
     $self->_text( $text );
     $offset += $posnew;
@@ -347,7 +347,7 @@ sub _update {
     my $editor = Padre::Current->editor;
     my $offset = $self->_offset;
     my $from = $offset + $pos;
-    my $to   = $from + length $word;
+    my $to   = $from + $self->_length( $word );
     $editor->goto_pos_centerize($from);
     $editor->SetSelection( $from, $to );
 
@@ -371,6 +371,28 @@ sub _update {
     my $item = $list->GetItem(0);
     $item->SetState(Wx::wxLIST_STATE_SELECTED);
     $list->SetItem($item);
+}
+
+#
+# FIXME: as soon as STC issue is resolved
+# this sub and all it occurences should be remove
+#
+# This is used to calculate word length for STC display/selection,
+# because current version of STC available in wxWidgets/wxPerl
+# treats UTF8 characters as two separate ones
+#
+sub _length {
+    my ($self, $word) = @_;
+
+    my $word_length = 0;
+
+    foreach ( split //, $word ) {
+        if ( ord($_) >= 128 ) {
+            $word_length = $word_length + 2;
+        } else { $word_length++ }
+    }
+
+    return $word_length;
 }
 
 

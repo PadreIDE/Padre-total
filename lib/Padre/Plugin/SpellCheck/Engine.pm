@@ -13,9 +13,13 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-    _ignore  => '_ignore',      # list of words to ignore
-    _plugin  => '_plugin',      # ref to spellecheck plugin
-    _speller => '_speller',     # real text::aspell object
+    _ignore    => '_ignore',    # list of words to ignore
+    _plugin    => '_plugin',    # ref to spellecheck plugin
+    _speller   => '_speller',   # real text::aspell object
+    _utf_chars => '_utf_chars', # FIXME: as soon as wxWidgets/wxPerl supports
+                                # newer version of STC:
+                                # number of UTF8 characters
+                                # used in calculating current possition
 };
 use Text::Aspell;
 
@@ -59,10 +63,17 @@ sub check {
         next if exists $ignore->{$word};        # ignored words
 
         # check spelling
-        next if $speller->check( $word );
+        if ( $speller->check( $word ) ) {
+            # FIXME: when STC issues will be resolved:
+            # count number of UTF8 characters in correct words
+            # it's going to be used to calculate relative position
+            # of next incorrect word
+            $self->_count_utf_chars( $word );
+            next;
+        }
 
         # oops! spell mistake!
-        my $pos = pos($text) - length($word);
+        my $pos = pos($text) - length($word) + $self->_utf_chars;
         return $word, $pos;
     }
 
@@ -87,6 +98,21 @@ sub ignore {
 sub suggestions {
     my ($self, $word) = @_;
     return $self->_speller->suggest( $word );
+}
+
+# -- private methods
+
+#
+# FIXME: as soon as STC issues is resolved
+#
+sub _count_utf_chars {
+    my ($self, $word) = @_;
+
+    foreach ( split //, $word ) {
+        $self->{_utf_chars}++ if ord($_) >= 128;
+    }
+
+    return;
 }
 
 1;
