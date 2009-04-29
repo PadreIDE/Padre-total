@@ -98,7 +98,7 @@ sub _on_butignore_clicked {
     # remove the beginning of the text, up to after current error
     my $error = $self->_error;
     my ($word, $pos) = @$error;
-    $pos += $self->_length( $word );
+    $pos += length $word;
     my $text = substr $self->_text, $pos;
     $self->_text( $text );
     my $offset = $self->_offset + $pos;
@@ -319,14 +319,20 @@ sub _replace {
     my $error  = $self->_error;
     my $offset = $self->_offset;
     my ($word, $pos) = @$error;
-    my $from = $offset + $pos;
+    my $from = $offset + $pos + $self->_engine->_utf_chars;
     my $to   = $from + $self->_length( $word );
     $editor->SetSelection( $from, $to );
     $editor->ReplaceSelection( $new );
 
+    # FIXME: as soon as STC issue is resolved:
+    # Include UTF8 characters from newly added word
+    # to overall count of UTF8 characters
+    # so we can set proper selections
+    $self->_engine->_count_utf_chars( $new );
+
     # remove the beginning of the text, up to after replaced word
     my $posold = $pos + length $word;
-    my $posnew = $pos + $self->_length( $new );
+    my $posnew = $pos + length $new;
     my $text = substr $self->_text, $posold;
     $self->_text( $text );
     $offset += $posnew;
@@ -346,7 +352,7 @@ sub _update {
     # update selection in parent window
     my $editor = Padre::Current->editor;
     my $offset = $self->_offset;
-    my $from = $offset + $pos;
+    my $from = $offset + $pos + $self->_engine->_utf_chars;
     my $to   = $from + $self->_length( $word );
     $editor->goto_pos_centerize($from);
     $editor->SetSelection( $from, $to );
