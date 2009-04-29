@@ -200,6 +200,13 @@ Open the check spelling preferences window.
 
 =head1 BUGS
 
+Spell-checking non-ascii files has bugs: the selection does not
+match the word boundaries, and as the spell checks moves further in
+the document, offsets are totally irrelevant. This is a bug in
+C<Wx::StyledTextCtrl> that has some unicode problems... So
+unfortunately, there's nothing that I can do in this plugin to
+tackle this bug.
+
 Please report any bugs or feature requests to C<padre-plugin-spellcheck
 at rt.cpan.org>, or through the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-
 SpellCheck>. I will be notified, and then you'll automatically be
