@@ -30,8 +30,9 @@ sub new {
     my ($class, $plugin) = @_;
 
     my $self = bless {
-        _ignore => {},
-        _plugin => $plugin,
+        _ignore    => {},
+        _plugin    => $plugin,
+        _utf_chars => 0,
     }, $class;
 
     # create speller object
@@ -73,7 +74,8 @@ sub check {
         }
 
         # oops! spell mistake!
-        my $pos = pos($text) - length($word) + $self->_utf_chars;
+        my $pos = pos($text) - length($word);
+
         return $word, $pos;
     }
 
