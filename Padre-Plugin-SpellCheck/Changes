@@ -1,7 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
-1.1.0 
+1.1.0 Wed Apr 29 18:03:45 CEST 2009
  - possibility to choose dictionary language
+   (but wx::stc has unicode bugs which prevents this feature to be
+   really useful on non-ascii texts)   
  - plugin i18n-ed, ready to accept translations
  - arabic translation added (courtesy of azawawi++)
  - brazilian portuguese translation added (courtesy of garu++)
