@@ -158,6 +158,7 @@ sub on_stop_server {
 
 sub on_show_about {
 	require Catalyst;
+	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Catalyst");
 	$about->SetDescription(
@@ -165,7 +166,8 @@ sub on_show_about {
 		. "This system is running Catalyst version " . $Catalyst::VERSION . "\n"
 	);
 	$about->SetVersion( $VERSION );
-
+    Class::Unload->unload('Catalyst');
+    
 	Wx::AboutBox( $about );
 	return;
 }
