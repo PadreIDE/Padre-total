@@ -1,5 +1,9 @@
 Changes
 
+0.35 2009.4.30
+	- Depends on S:H:P6 0.48 which contains latest STD that warns about redeclared types.
+	- Update syntax and outline windows when syntax highlighting finishes.
+	
 0.34 2009.4.26
 	- Supports private methods in Outline view
 	- Supports attributes in Outline view
