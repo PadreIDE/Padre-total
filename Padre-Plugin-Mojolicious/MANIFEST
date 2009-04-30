@@ -1,0 +1,11 @@
+Build.PL
+Changes
+MANIFEST
+README
+lib/Padre/Plugin/Mojolicious.pm
+lib/Padre/Plugin/Mojolicious/NewApp.pm
+lib/Padre/Plugin/Mojolicious/Util.pm
+t/00-load.t
+t/pod.t
+Makefile.PL
+META.yml
