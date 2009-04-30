@@ -93,6 +93,9 @@ sub finish {
 		$doc->{tokens} = [];
         $doc->{issues} = $self->{issues};
     }
+	
+	$doc->check_syntax_in_background(force => 1);
+	$doc->get_outline(force => 1);
 
     # finished here
     $thread_running = 0;

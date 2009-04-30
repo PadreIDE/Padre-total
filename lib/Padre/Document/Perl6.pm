@@ -218,18 +218,17 @@ sub _check_syntax_internals {
         return [];
     }
 
-    # Do we really need an update?
-    require Digest::MD5;
-    use Encode qw(encode_utf8);
-    my $md5 = Digest::MD5::md5(encode_utf8($text));
-    unless ( $args->{force} ) {
-        if ( defined( $self->{last_checked_md5} )
-             && $self->{last_checked_md5} eq $md5
-        ) {
-            return;
-        }
-    }
-    $self->{last_checked_md5} = $md5;
+	# Do we really need an update?
+	require Digest::MD5;
+	my $md5 = Digest::MD5::md5_hex( Encode::encode_utf8($text) );
+	unless ( $args->{force} ) {
+		if ( defined( $self->{last_syncheck_md5} )
+			and $self->{last_syncheck_md5} eq $md5 )
+		{
+			return;
+		}
+	}
+	$self->{last_syncheck_md5} = $md5;
 
     require Padre::Task::SyntaxChecker::Perl6;
     my $task = Padre::Task::SyntaxChecker::Perl6->new(
