@@ -61,17 +61,25 @@ sub check {
         # skip...
         next unless defined $word;              # empty strings
         next unless $word =~ /^\p{Letter}+$/i;  # non-spellable words
-        next if exists $ignore->{$word};        # ignored words
 
-        # check spelling
-        if ( $speller->check( $word ) ) {
-            # FIXME: when STC issues will be resolved:
-            # count number of UTF8 characters in correct words
-            # it's going to be used to calculate relative position
-            # of next incorrect word
+        # FIXME: when STC issues will be resolved:
+        # count number of UTF8 characters in ignored/correct words
+        # it's going to be used to calculate relative position
+        # of next problematic word
+        if ( exists $ignore->{$word} ) {
             $self->_count_utf_chars( $word );
             next;
         }
+        if ( $speller->check( $word ) ) {
+            $self->_count_utf_chars( $word );
+            next;
+        }
+
+        # uncomment when fixed above
+#        next if exists $ignore->{$word};        # ignored words
+#
+#        # check spelling
+#        next if $speller->check( $word );
 
         # oops! spell mistake!
         my $pos = pos($text) - length($word);
