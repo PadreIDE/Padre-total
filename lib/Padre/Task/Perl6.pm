@@ -2,16 +2,8 @@ package Padre::Task::Perl6;
 
 use strict;
 use warnings;
-use feature 'say';
 use base 'Padre::Task';
 
-use Carp;
-use IPC::Run3;
-use Storable;
-use File::Basename;
-use File::Spec;
-use Cwd;
- 
 our $VERSION = '0.35';
 our $thread_running = 0;
 
@@ -87,12 +79,16 @@ sub finish {
             }
         }
 		$doc->{tokens} = $self->{tokens};
-        $doc->{issues} = [];
-    } elsif($self->{issues}) {
-        # pass errors/warnings to document...
+    } else {
 		$doc->{tokens} = [];
+	}
+	
+	if($self->{issues}) {
+        # pass errors/warnings to document...
         $doc->{issues} = $self->{issues};
-    }
+    } else {
+		$doc->{issues} = [];
+	}
 	
 	$doc->check_syntax_in_background(force => 1);
 	$doc->get_outline(force => 1);
@@ -106,41 +102,70 @@ sub finish {
 # Task thread subroutine
 sub run {
     my $self = shift;
-    my $text = $self->{text};
-    delete $self->{text};
 
+	# create the temporary file with the text...
+	require File::Temp;
+	my $tmp_out = File::Temp->new( SUFFIX => '_p6out.tmp' );
+	binmode( $tmp_out, ":utf8" );
+	print $tmp_out $self->{text};
+	delete $self->{text};
+
+	# stderr temporay file for the process
+	my $tmp_err = File::Temp->new( SUFFIX => '_p6err.tmp' );
+	binmode( $tmp_err, ":utf8" );
+	close $tmp_err;
+	
     # construct the command
-    my @cmd = ( Padre->perl_interpreter,
-        Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')));
+	require Cwd;
+	require File::Basename;
+	require File::Spec;
+    my $cmd = Padre->perl_interpreter . " " .
+        Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')) . " " .
+		$tmp_out . " 2>$tmp_err |";
 
-    my ($out, $err) = ('',undef);
-    run3(\@cmd, \$text, \$out, \$err, { 
-          'binmode_stdin' => ':utf8', 
-          'binmode_stdout' => 1, 
-    });
+	my ($out, $err);
+	{
+		local $/ = undef;   #enable localized slurp mode
+
+		# slurp the process output...
+		open FILE, $cmd or warn "Cannot run $cmd\n";
+		$out = <FILE>;
+		close FILE or warn "Could not close $cmd\n";
+		
+		open FILE, $tmp_err or warn "Cannot open $tmp_err\n";
+		$err = <FILE>;
+		close FILE or warn "Could not close $tmp_err\n";
+	}
+	
     if($err) {
         # remove ANSI color escape sequences...
         $err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
-        say qq{STD.pm warning/error:\n$err};
+        print qq{STD.pm warning/error:\n$err\n};
         my @messages = split /\n/, $err;
-        my ($lineno,$severity);
-        my $issues = [];
+        my ($lineno, $severity);
+		my $issues = [];
         for my $msg (@messages) {
-            if($msg =~ /error\s.+?line (\d+):$/i) {
-                #an error
-                ($lineno,$severity) = ($1, 'E');
-            } elsif($msg =~ /line (\d+):$/i) {
-                #a warning
-                ($lineno,$severity) = ($1, 'W');
-            }
+			if($msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/) {
+				# the following lines are errors until we see the warnings section
+				$severity = 'E';
+			} elsif($msg =~ /^Potential difficulties/) {
+				# all rest are warnings...
+				$severity = 'W';
+			} elsif($msg =~ /line (\d+):$/i) {
+                #record the line number
+                $lineno = $1;
+            } 
             if($lineno) {
                 push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
             }
         }
         $self->{issues} = $issues;
-    } else {
+    } 
+	
+	if($out) {
 		eval {
-        	$self->{tokens} = Storable::thaw($out);
+			require Storable;
+         	$self->{tokens} = Storable::thaw($out);
 		};
 		if ($@) {
 			warn "Exception: $@";
