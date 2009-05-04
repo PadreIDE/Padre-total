@@ -26,6 +26,7 @@ use Class::XSAccessor accessors => {
 
 use Padre::Current;
 use Padre::Wx ();
+use Encode;
 
 use base 'Wx::Dialog';
 
@@ -326,7 +327,7 @@ sub _replace {
     my $offset = $self->_offset;
     my ($word, $pos) = @$error;
     my $from = $offset + $pos + $self->_engine->_utf_chars;
-    my $to   = $from + $self->_length( $word );
+    my $to   = $from + length Encode::encode_utf8( $word );
     $editor->SetSelection( $from, $to );
     $editor->ReplaceSelection( $new );
 
@@ -359,7 +360,7 @@ sub _update {
     my $editor = Padre::Current->editor;
     my $offset = $self->_offset;
     my $from = $offset + $pos + $self->_engine->_utf_chars;
-    my $to   = $from + $self->_length( $word );
+    my $to   = $from + length Encode::encode_utf8( $word );
     $editor->goto_pos_centerize($from);
     $editor->SetSelection( $from, $to );
 
@@ -383,28 +384,6 @@ sub _update {
     my $item = $list->GetItem(0);
     $item->SetState(Wx::wxLIST_STATE_SELECTED);
     $list->SetItem($item);
-}
-
-#
-# FIXME: as soon as STC issue is resolved
-# this sub and all it occurences should be remove
-#
-# This is used to calculate word length for STC display/selection,
-# because current version of STC available in wxWidgets/wxPerl
-# treats UTF8 characters as two separate ones
-#
-sub _length {
-    my ($self, $word) = @_;
-
-    my $word_length = 0;
-
-    foreach ( split //, $word ) {
-        if ( ord($_) >= 128 ) {
-            $word_length = $word_length + 2;
-        } else { $word_length++ }
-    }
-
-    return $word_length;
 }
 
 
