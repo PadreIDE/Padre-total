@@ -84,6 +84,9 @@ sub _get_outline {
 					if($buffer eq '!') {
 						# private method...
 						$symbol_suffix = " (private)";
+					} elsif($buffer eq '^') {
+						# class or .HOW method
+						$symbol_suffix = " (class)";
 					}
 					$symbol_type = "methods";
 					$symbol_name .= $buffer;
