@@ -104,6 +104,12 @@ sub _on_butignore_clicked {
     my $offset = $self->_offset + $pos;
     $self->_offset( $offset );
 
+    # FIXME: as soon as STC issue is resolved:
+    # Include UTF8 characters from ignored word
+    # to overall count of UTF8 characters
+    # so we can set proper selections
+    $self->_engine->_count_utf_chars( $word );
+
     # try to find next error
     $self->_next;
 }
