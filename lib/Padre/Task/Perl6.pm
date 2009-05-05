@@ -103,38 +103,65 @@ sub finish {
 sub run {
     my $self = shift;
 
-	# create the temporary file with the text...
+	# temporary file for the process STDIN
 	require File::Temp;
-	my $tmp_out = File::Temp->new( SUFFIX => '_p6out.tmp' );
-	binmode( $tmp_out, ":utf8" );
-	print $tmp_out $self->{text};
+	my $tmp_in = File::Temp->new( SUFFIX => '_p6_in.txt' );
+	binmode( $tmp_in, ":utf8" );
+	print $tmp_in $self->{text};
 	delete $self->{text};
+	close $tmp_in or warn "cannot close $tmp_in\n";
 
-	# stderr temporay file for the process
-	my $tmp_err = File::Temp->new( SUFFIX => '_p6err.tmp' );
+	# temporary file for the process STDOUT
+	my $tmp_out = File::Temp->new( SUFFIX => '_p6_out.txt' );
+	binmode( $tmp_out, ":utf8" );
+	close $tmp_out or warn "cannot close $tmp_out\n";
+	
+	# temporary file for the process STDERR
+	my $tmp_err = File::Temp->new( SUFFIX => '_p6_err.txt' );
 	binmode( $tmp_err, ":utf8" );
-	close $tmp_err;
+	close $tmp_err or warn "cannot close $tmp_out\n";
 	
     # construct the command
 	require Cwd;
 	require File::Basename;
 	require File::Spec;
-    my $cmd = Padre->perl_interpreter . " " .
-        Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')) . " " .
-		$tmp_out . " 2>$tmp_err |";
+	my $cmd = Padre->perl_interpreter . " " .
+		Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')) .
+		" $tmp_in $tmp_out $tmp_err 2>output1.txt";
+	
+	# all this is needed to prevent win32 platforms from:
+	# 1. popping out a command line on each run...
+	# 2. STD.pm uses Storable 
+	# 3. Padre TaskManager does not like tasks that do Storable operations...
+	my $is_win32 = ($^O =~ /MSWin/);
+	if($is_win32) {
+		use Win32;
+		use Win32::Process;
 
+		sub print_error {
+		   print Win32::FormatMessage(Win32::GetLastError());
+		}
+
+		my $p_obj;
+		Win32::Process::Create($p_obj, Padre->perl_interpreter, $cmd, 0, DETACHED_PROCESS, '.') 
+			or warn &print_error;
+		$p_obj->Wait(INFINITE);
+	} else {
+		`$cmd`;
+	}
+		
 	my ($out, $err);
 	{
 		local $/ = undef;   #enable localized slurp mode
 
 		# slurp the process output...
-		open FILE, $cmd or warn "Cannot run $cmd\n";
-		$out = <FILE>;
-		close FILE or warn "Could not close $cmd\n";
+		open CHLD_OUT, $tmp_out	or warn "Could not open $tmp_out";
+		$out = <CHLD_OUT>;
+		close CHLD_OUT or warn "Could not close $tmp_out\n";
 		
-		open FILE, $tmp_err or warn "Cannot open $tmp_err\n";
-		$err = <FILE>;
-		close FILE or warn "Could not close $tmp_err\n";
+		open CHLD_ERR, $tmp_err or warn "Cannot open $tmp_err\n";
+		$err = <CHLD_ERR>;
+		close CHLD_ERR or warn "Could not close $tmp_err\n";
 	}
 	
     if($err) {
