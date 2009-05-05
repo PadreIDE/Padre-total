@@ -106,19 +106,17 @@ sub run {
 	# temporary file for the process STDIN
 	require File::Temp;
 	my $tmp_in = File::Temp->new( SUFFIX => '_p6_in.txt' );
-	binmode( $tmp_in, ":utf8" );
+	binmode $tmp_in, ':utf8';
 	print $tmp_in $self->{text};
 	delete $self->{text};
 	close $tmp_in or warn "cannot close $tmp_in\n";
 
 	# temporary file for the process STDOUT
 	my $tmp_out = File::Temp->new( SUFFIX => '_p6_out.txt' );
-	binmode( $tmp_out, ":utf8" );
 	close $tmp_out or warn "cannot close $tmp_out\n";
 	
 	# temporary file for the process STDERR
 	my $tmp_err = File::Temp->new( SUFFIX => '_p6_err.txt' );
-	binmode( $tmp_err, ":utf8" );
 	close $tmp_err or warn "cannot close $tmp_out\n";
 	
     # construct the command
@@ -156,10 +154,12 @@ sub run {
 
 		# slurp the process output...
 		open CHLD_OUT, $tmp_out	or warn "Could not open $tmp_out";
+		binmode CHLD_OUT;
 		$out = <CHLD_OUT>;
 		close CHLD_OUT or warn "Could not close $tmp_out\n";
 		
 		open CHLD_ERR, $tmp_err or warn "Cannot open $tmp_err\n";
+		binmode CHLD_ERR, ':utf8';
 		$err = <CHLD_ERR>;
 		close CHLD_ERR or warn "Could not close $tmp_err\n";
 	}

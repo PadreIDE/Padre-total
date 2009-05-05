@@ -25,6 +25,7 @@ my $text;
 	# slurp the input file
 	# Load file into a scalar without File::Slurp (see perlfaq5)
 	open IN, $in_filename or die "Could not open $in_filename for reading (STDIN)\n";
+	binmode IN;
 	local $/ = undef;   #enable localized slurp mode
 	$text = <IN>;
 	close IN or die "Could not close $in_filename";
