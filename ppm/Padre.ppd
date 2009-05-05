@@ -30,14 +30,15 @@
         <DEPENDENCY NAME="Module-Inspector" VERSION="0,04,0,0" />
         <DEPENDENCY NAME="Module-Refresh" VERSION="0,13,0,0" />
         <DEPENDENCY NAME="Module-Starter" VERSION="1,50,0,0" />
-        <DEPENDENCY NAME="ORLite" VERSION="1,18,0,0" />
-        <DEPENDENCY NAME="ORLite-Migrate" VERSION="0,01,0,0" />
+        <DEPENDENCY NAME="ORLite" VERSION="1,20,0,0" />
+        <DEPENDENCY NAME="ORLite-Migrate" VERSION="0,03,0,0" />
         <DEPENDENCY NAME="PAR" VERSION="0,970,0,0" />
         <DEPENDENCY NAME="PPI" VERSION="1,203,0,0" />
         <DEPENDENCY NAME="Params-Util" VERSION="0,33,0,0" />
         <DEPENDENCY NAME="Parse-ErrorString-Perl" VERSION="0,11,0,0" />
         <DEPENDENCY NAME="Pod-POM" VERSION="0,17,0,0" />
         <DEPENDENCY NAME="Pod-Simple" VERSION="3,07,0,0" />
+        <DEPENDENCY NAME="Portable" VERSION="0,12,0,0" />
         <DEPENDENCY NAME="Probe-Perl" VERSION="0,01,0,0" />
         <DEPENDENCY NAME="Storable" VERSION="2,15,0,0" />
         <DEPENDENCY NAME="Test-Exception" VERSION="0,27,0,0" />
@@ -54,6 +55,6 @@
         <DEPENDENCY NAME="threads" VERSION="1,71,0,0" />
         <DEPENDENCY NAME="threads-shared" VERSION="1,26,0,0" />
         <ARCHITECTURE NAME="MSWin32-x86-multi-thread-5.10" />
-        <CODEBASE HREF="http://www.perlide.org/download/ppm/Padre-0.33.tar.gz" />
+        <CODEBASE HREF="http://www.perlide.org/download/ppm/Padre-0.34.tar.gz" />
     </IMPLEMENTATION>
 </SOFTPKG>
