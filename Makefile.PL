@@ -11,7 +11,9 @@ requires       'perl'                    => '5.010';
 requires       'Padre'                    => '0.33';
 requires       'Syntax::Highlight::Perl6' => '0.51';
 requires       'URI'                      => '1.37';
-requires       'Win32::Process'           => '0.14' if win32;
+if($^O =~ /MSWin32/) {
+    requires       'Win32::Process'           => '0.14';
+}
 requires       'File::Which'              => '0.05';
 
 test_requires  'Test::More'              => '0.86';
