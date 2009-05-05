@@ -4,28 +4,23 @@ use 5.010;
 use strict;
 use warnings;
 
-use feature qw(say);
-
 use Carp;
 use IO::File;
-use File::Temp;
 
 # exports and version
 our $VERSION = '0.35';
 our @EXPORT_OK = qw(plugin_config);
 
-use IPC::Run3;
 use URI::Escape;
 use URI::file;
-use Readonly;
 
 use Padre::Wx ();
 use base 'Padre::Plugin';
 
 # constants for html exporting
-Readonly my $FULL_HTML    => 'full_html';
-Readonly my $SIMPLE_HTML  => 'simple_html';
-Readonly my $SNIPPET_HTML => 'snippet_html';
+my $FULL_HTML    = 'full_html';
+my $SIMPLE_HTML  = 'simple_html';
+my $SNIPPET_HTML = 'snippet_html';
 
 # static field to contain reference to current plugin configuration
 my $config;
@@ -300,7 +295,7 @@ sub show_perl6_doc {
         }
         if($current_word =~ /^.*?(\w+)/) {
             my $function_name = $1;
-            say "Looking up: " . $function_name;
+            print "Looking up: " . $function_name . "\n";
             my $function_doc = $self->{perl6_functions}{$function_name};
             if($function_doc) {
                 #launch default browser to see the S29 function documentation
@@ -375,25 +370,58 @@ sub export_html {
 
     my $text = $self->text_with_one_nl($doc);
 
-    # construct the command
-    my @cmd = ( Padre::Util::WIN32 ? 'hilitep6.bat' : 'hilitep6' );
+	require File::Temp;
+	my $tmp_in = File::Temp->new( SUFFIX => '.p6_in.txt' );
+	binmode( $tmp_in, ":utf8" );
+	print $tmp_in $text;
+	close $tmp_in or warn "cannot close $tmp_in\n";
+    
+    my $tmp_out = File::Temp->new( SUFFIX => '.p6_out.txt' );
+    binmode( $tmp_out, ":utf8" );
+    close $tmp_out or warn "cannot close $tmp_out\n";;
 
-    my $html;
+    my $tmp_err = File::Temp->new( SUFFIX => '.p6_err.txt' );
+    binmode( $tmp_err, ":utf8" );
+    close $tmp_err or warn "cannot close $tmp_err\n";;
+
+    # construct the command
+    require File::Which;
+    my @cmd = (
+		File::Which::which('hilitep6'),
+		$tmp_in,
+	);
+
     given($type) {
-        when ($FULL_HTML) { push @cmd, '--full-html=-'; }
-        when ($SIMPLE_HTML) { push @cmd, '--simple-html=-'; }
-        when ($SNIPPET_HTML) { push @cmd, '--snippet-html=-' }
+        when ($FULL_HTML) { push @cmd, "--full-html=$tmp_out 2>$tmp_err"; }
+        when ($SIMPLE_HTML) { push @cmd, "--simple-html=$tmp_out 2>$tmp_err"; }
+        when ($SNIPPET_HTML) { push @cmd, "--snippet-html=$tmp_out 2>$tmp_err"; }
         default {
             # default is full html
             push @cmd, '--full-html=-';
         }
     }
 
-    my ($out, $err) = ('',undef);
-    run3(\@cmd, \$text, \$out, \$err, {
-          'binmode_stdin' => ':utf8',
-          'binmode_stdout' => 1,
-    });
+	
+    # execute the command...
+    my $cmd = join ' ', @cmd;
+    `$cmd`;
+     
+    # and read its output...
+    my ($out, $err);
+    {
+        local $/ = undef;   #enable localized slurp mode
+
+        # slurp the process output...
+        open CHLD_OUT, $tmp_out	or warn "Could not open $tmp_out";
+        $out = <CHLD_OUT>;
+        close CHLD_OUT or warn "Could not close $tmp_out\n";
+        
+        open CHLD_ERR, $tmp_err or warn "Could not open $tmp_err\n";
+        $err = <CHLD_ERR>;
+        close CHLD_ERR or warn "Could not close $tmp_err\n";
+    }
+    
+    my $html;
     if($err) {
         # remove ANSI color escape sequences...
         $err =~ s/\033\[(\d+)(?:;(\d+)(?:;(\d+))?)?m//g;
@@ -403,7 +431,7 @@ sub export_html {
             Wx::wxOK,
             $main,
         );
-        say "\nSTD.pm Parsing error\n" . $err;
+        print "\nSTD.pm Parsing error\n" . $err . "\n";
         return;
     } else {
         $html = $out;

@@ -6,14 +6,13 @@ use warnings;
 use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
-use Readonly;
 use File::Which;
 
 our $VERSION = '0.35';
 our @ISA     = 'Padre::Document';
 
 # max lines to display in a calltip
-Readonly my $CALLTIP_DISPLAY_COUNT => 10;
+my $CALLTIP_DISPLAY_COUNT = 10;
 
 # used for coloring by parrot
 my %perl6_colors = (
