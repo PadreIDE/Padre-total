@@ -127,7 +127,7 @@ sub run {
 	require File::Spec;
 	my $cmd = Padre->perl_interpreter . " " .
 		Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')) .
-		" $tmp_in $tmp_out $tmp_err 2>output1.txt";
+		" $tmp_in $tmp_out $tmp_err";
 	
 	# all this is needed to prevent win32 platforms from:
 	# 1. popping out a command line on each run...
