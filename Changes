@@ -1,5 +1,9 @@
 Changes
 
+**** Not released yet
+    - Tell the user in the syntax check window when STD lex cache is corrupt.
+    - Depends on S:H:P6 0.51 which contains the tmp_prefix fix and the latest STD
+    
 0.36 2009.5.5
 	- Depends on S:H:P6 0.50 which contains the latest STD.pm parser.
 	- Fixed ticket:302 perl6 syntax highlighting and outline not active on vista using wperl.exe
