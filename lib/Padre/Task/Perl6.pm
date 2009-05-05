@@ -179,9 +179,15 @@ sub run {
 				# all rest are warnings...
 				$severity = 'W';
 			} elsif($msg =~ /line (\d+):$/i) {
-                #record the line number
+                # record the line number
                 $lineno = $1;
-            } 
+            } elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/) {
+                # STD lex cache is corrupt...
+                $msg = qq{'STD Lex Cache' is corrupt. Please use Plugins/Perl6/Cleanup STD Lex Cache.};
+                push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
+                # no need to continue collecting errors...
+                last; 
+            }
             if($lineno) {
                 push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
             }
