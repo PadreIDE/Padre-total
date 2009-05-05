@@ -7,19 +7,27 @@ use warnings;
 
 # parse arguments
 my $num_args = $#ARGV + 1;
-if($num_args != 1) {
-    die "p6tokens.pl needs one file.\n";
+if($num_args < 3) {
+    die "p6tokens.pl needs one file. Got $num_args\n";
 }
 
-# Load file into a scalar without File::Slurp (see perlfaq5)
-my $filename = $ARGV[0];
+# read command-line arguments
+my ($in_filename,$out_filename,$err_filename) = ($ARGV[0],$ARGV[1],$ARGV[2]);
+
+# Redirect STDOUT/ERR to temporary filename.s..
+open STDOUT, ">$out_filename"
+	or die "Could not open $out_filename for writing (STDOUT)\n";
+open STDERR, ">$err_filename"
+	or die "Could not open $err_filename for writing (STDERR)\n";
+
 my $text;
 {
 	# slurp the input file
-	open IN, $filename or die "Could not open $filename for reading";
+	# Load file into a scalar without File::Slurp (see perlfaq5)
+	open IN, $in_filename or die "Could not open $in_filename for reading (STDIN)\n";
 	local $/ = undef;   #enable localized slurp mode
 	$text = <IN>;
-	close IN or die "Could not close $filename";
+	close IN or die "Could not close $in_filename";
 }
 
 # create a syntax highlighter and serialize its tokens to STDOUT
