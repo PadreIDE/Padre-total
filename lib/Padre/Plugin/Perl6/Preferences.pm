@@ -4,7 +4,6 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-    _dict_combo  => '_dict_combo',   # combo box holding dictionary
     _plugin      => '_plugin',       # plugin to be configured
     _sizer       => '_sizer',        # window sizer
 };
@@ -42,11 +41,11 @@ sub new {
 # -- event handler
 
 #
-# $self->_on_butok_clicked;
+# $self->_on_ok_button_clicked;
 #
 # handler called when the ok button has been clicked.
 # 
-sub _on_butok_clicked {
+sub _on_ok_button_clicked {
     my ($self) = @_;
     my $plugin = $self->_plugin;
 
@@ -81,11 +80,8 @@ sub _create {
     $self->_sizer($sizer);
 
     # create the controls
-    $self->_create_dictionaries;
+    $self->_create_controls;
     $self->_create_buttons;
-
-    # setting focus on dictionary first
-    $self->_dict_combo->SetFocus;
 
     # wrap everything in a vbox to add some padding
     $self->SetSizerAndFit($sizer);
@@ -105,41 +101,84 @@ sub _create_buttons {
 
     my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
     $sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_butok_clicked );
+    Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
 }
 
 #
-# $dialog->_create_dictionaries;
+# $dialog->_create_controls;
 #
-# create the pane to choose the spelling dictionary.
+# create the pane to choose the various configuration parameters.
 #
 # no params. no return values.
 #
-sub _create_dictionaries {
+sub _create_controls {
     my ($self) = @_;
 
-    # my $engine  = Padre::Plugin::Perl6::Engine->new($self->_plugin);
-    # my @choices = $engine->dictionaries;
-    # my %choices = map { $_ => 1 } @choices;
-    # my $deflang = $self->_plugin->config->{dictionary};
-    # my $default = exists $choices{$deflang} ? $deflang : $choices[0];
+    # syntax highligher selection
+    my $label0 = Wx::StaticText->new( $self, -1, 'Syntax Highlighting Engine:' );
+    my $field0 = Wx::ListCtrl->new(
+        $self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT | Wx::wxBORDER_NONE,
+    );
+    
+	# Set up one column and populate it
+	$field0->InsertColumn( 0, 'TEST' );
+	$field0->SetColumnWidth( 0, 100);
+    my $item;
+    $item = Wx::ListItem->new;
+    $item->SetText('S:H:P6/STD');
+    $field0->InsertItem($item);
+    $item = Wx::ListItem->new;
+    $item->SetText('Rakudo/PGE');
+    $field0->InsertItem($item);
 
-    # # create the controls
-    # my $label = Wx::StaticText->new( $self, -1, Wx::gettext('Dictionary:') );
-    # my $combo = Wx::ComboBox->new( $self, -1,
-        # $default,
-        # Wx::wxDefaultPosition,
-        # Wx::wxDefaultSize,
-        # \@choices,
-        # Wx::wxCB_READONLY|Wx::wxCB_SORT,
-    # );
-    # $self->_dict_combo( $combo );
+    # mildew directory
+    my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew directory:' );
+    my $mildew_dir_text = Wx::TextCtrl->new(
+        $self,
+        -1,
+        '',
+    );
+    my $mildew_dir_picker = Wx::DirPickerCtrl->new(
+        $self,
+        -1,
+        'Pick mildew Directory',
+    );
 
-    # # pack the controls in a box
-    # my $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    # $box->Add( $label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    # $box->Add( $combo, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    # $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    # rakudo directory
+    my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo directory:' );
+    my $rakudo_dir_text = Wx::TextCtrl->new(
+        $self,
+        -1,
+        '',
+    );
+    my $rakudo_dir_picker = Wx::DirPickerCtrl->new(
+        $self,
+        -1,
+        'Pick rakudo Directory',
+    );
+
+    # pack the controls in a box
+    my $box;
+    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+    $box->Add( $label0, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $field0, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+
+    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+    $box->Add( $mildew_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $mildew_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $mildew_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+
+    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+    $box->Add( $rakudo_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $rakudo_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $rakudo_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 }
 
 

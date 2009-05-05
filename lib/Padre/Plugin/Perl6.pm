@@ -143,6 +143,7 @@ sub registered_documents {
 sub show_preferences {
     my $self = shift;
     
+    require Padre::Plugin::Perl6::Preferences;
     my $prefs  = Padre::Plugin::Perl6::Preferences->new($self);
     $prefs->Show;
 }
