@@ -1,5 +1,10 @@
 Changes
 
+0.36 2009.5.5
+	- Depends on S:H:P6 0.50 which contains the latest STD.pm parser.
+	- Fixed ticket:302 perl6 syntax highlighting and outline not active on vista using wperl.exe
+	- Identify Perl6 .HOW / ^ class methods in outline view...
+
 0.35 2009.4.30
 	- Depends on S:H:P6 0.48 which contains latest STD that warns about redeclared types.
 	- Update syntax and outline windows when syntax highlighting finishes.
