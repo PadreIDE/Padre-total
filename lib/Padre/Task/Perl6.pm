@@ -141,9 +141,9 @@ sub run {
 		}
 
 		my $p_obj;
-		Win32::Process::Create($p_obj, Padre->perl_interpreter, $cmd, 0, DETACHED_PROCESS, '.') 
+		Win32::Process::Create($p_obj, Padre->perl_interpreter, $cmd, 0, DETACHED_PROCESS(), '.') 
 			or warn &print_error;
-		$p_obj->Wait(INFINITE);
+		$p_obj->Wait(INFINITE());
 	} else {
 		`$cmd`;
 	}
