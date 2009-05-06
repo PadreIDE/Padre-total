@@ -8,6 +8,8 @@ use Class::XSAccessor accessors => {
     _sizer       => '_sizer',        # window sizer
 };
 
+our $VERSION = '0.37';
+
 use Padre::Current;
 use Padre::Wx ();
 
