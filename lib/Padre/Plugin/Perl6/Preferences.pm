@@ -116,58 +116,84 @@ sub _create_buttons {
 sub _create_controls {
     my ($self) = @_;
 
+	my @choices = ['S:H:P6/STD','Rakudo/PGE'];
     # syntax highligher selection
-    my $label0 = Wx::StaticText->new( $self, -1, 'Syntax Highlighting Engine:' );
-    my $field0 = Wx::ListCtrl->new(
+    my $selector_label = Wx::StaticText->new( $self, -1, 'Syntax Highlighter:' );
+    my $selector_list = Wx::ListBox->new(
         $self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxLC_SINGLE_SEL | Wx::wxLC_NO_HEADER | Wx::wxLC_REPORT | Wx::wxBORDER_NONE,
+		@choices,
     );
+	
+	# XXX - Select based on configuration variable
+	$selector_list->Select(0);
+	
+	# XXX- fill out these variables with actual configuration variables...
+	my $mildew_dir = Cwd::cwd();
+	my $rakudo_dir = Cwd::cwd();
     
-	# Set up one column and populate it
-	$field0->InsertColumn( 0, 'TEST' );
-	$field0->SetColumnWidth( 0, 100);
-    my $item;
-    $item = Wx::ListItem->new;
-    $item->SetText('S:H:P6/STD');
-    $field0->InsertItem($item);
-    $item = Wx::ListItem->new;
-    $item->SetText('Rakudo/PGE');
-    $field0->InsertItem($item);
-
     # mildew directory
-    my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew directory:' );
+    my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew:' );
     my $mildew_dir_text = Wx::TextCtrl->new(
         $self,
         -1,
-        '',
+        $mildew_dir,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxTE_READONLY,
     );
+	require Cwd;
     my $mildew_dir_picker = Wx::DirPickerCtrl->new(
         $self,
         -1,
+		$mildew_dir,
         'Pick mildew Directory',
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
     );
 
+	Wx::Event::EVT_DIRPICKER_CHANGED(
+		$mildew_dir_picker,
+		$mildew_dir_picker->GetId(),
+		sub {
+			$mildew_dir_text->SetValue($mildew_dir_picker->GetPath());
+		 },
+	);
+
     # rakudo directory
-    my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo directory:' );
+    my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo:' );
     my $rakudo_dir_text = Wx::TextCtrl->new(
         $self,
         -1,
-        '',
+        $rakudo_dir,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxTE_READONLY,
     );
     my $rakudo_dir_picker = Wx::DirPickerCtrl->new(
         $self,
         -1,
+		$rakudo_dir,
         'Pick rakudo Directory',
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
     );
+
+	Wx::Event::EVT_DIRPICKER_CHANGED(
+		$rakudo_dir_picker,
+		$rakudo_dir_picker->GetId(),
+		sub {
+			$rakudo_dir_text->SetValue($rakudo_dir_picker->GetPath());
+		 },
+	);
 
     # pack the controls in a box
     my $box;
     $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    $box->Add( $label0, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $field0, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $selector_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+    $box->Add( $selector_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
     $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
     $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
