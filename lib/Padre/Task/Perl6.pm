@@ -133,8 +133,8 @@ sub run {
 	# 3. Padre TaskManager does not like tasks that do Storable operations...
 	my $is_win32 = ($^O =~ /MSWin/);
 	if($is_win32) {
-		use Win32;
-		use Win32::Process;
+		require Win32;
+		require Win32::Process;
 
 		sub print_error {
 		   print Win32::FormatMessage(Win32::GetLastError());
