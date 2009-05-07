@@ -14,6 +14,9 @@ our $thread_running = 0;
 sub prepare {
     my $self = shift;
 
+	# it is not running yet.
+	$self->{broken} = 0;
+	
     # put editor into main-thread-only storage
     $self->{main_thread_only} ||= {};
     my $document = $self->{document} || $self->{main_thread_only}{document};
@@ -25,10 +28,17 @@ sub prepare {
 
     # assign a place in the work queue
     if($thread_running) {
+		# single thread instance at a time please. aborting...
+		$self->{broken} = 1;
         return "break";
     }
     $thread_running = 1;
     return 1;
+}
+
+sub is_broken {
+	my $self = shift;
+	return $self->{broken};
 }
 
 my %colors = (
