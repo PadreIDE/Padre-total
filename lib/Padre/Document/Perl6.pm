@@ -3,10 +3,8 @@ package Padre::Document::Perl6;
 use 5.010;
 use strict;
 use warnings;
-use English '-no_match_vars';  # Avoids regex performance penalty
 use Padre::Document ();
 use Padre::Task::Perl6 ();
-use File::Which;
 
 our $VERSION = '0.38';
 our @ISA     = 'Padre::Document';
@@ -196,7 +194,8 @@ sub get_perl6 {
     my $self     = shift;
 
 	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
-	my $perl6 = File::Which::which($exe_name);
+	require File::Which;
+    my $perl6 = File::Which::which($exe_name);
 	if (not $perl6) {
 		if (not $ENV{RAKUDO_DIR}) {
 			my $main = Padre->ide->wx->main;
@@ -222,14 +221,14 @@ sub get_command {
 # Implemented as a task. See Padre::Task::SyntaxChecker::Perl6
 sub check_syntax {
     my $self  = shift;
-    my %args  = @ARG;
+    my %args  = @_;
     $args{background} = 0;
     return $self->_check_syntax_internals(\%args);
 }
 
 sub check_syntax_in_background {
     my $self  = shift;
-    my %args  = @ARG;
+    my %args  = @_;
     $args{background} = 1;
     return $self->_check_syntax_internals(\%args);
 }
