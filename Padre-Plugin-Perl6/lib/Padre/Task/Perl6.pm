@@ -131,8 +131,8 @@ sub run {
 	# 1. popping out a command line on each run...
 	# 2. STD.pm uses Storable 
 	# 3. Padre TaskManager does not like tasks that do Storable operations...
-	my $is_win32 = ($^O =~ /MSWin/);
-	if($is_win32) {
+	if($^O =~ /MSWin/) {
+		# on win32 platforms, we need to use this to prevent command line popups when using wperl.exe
 		require Win32;
 		require Win32::Process;
 
@@ -145,6 +145,7 @@ sub run {
 			or warn &print_error;
 		$p_obj->Wait(Win32::Process::INFINITE());
 	} else {
+		# On other platforms, we will simply use the perl way of calling a command
 		`$cmd`;
 	}
 		
