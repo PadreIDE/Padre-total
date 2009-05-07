@@ -404,8 +404,9 @@ sub export_html {
 
     # construct the command
     require File::Which;
+    my $hilitep6 = File::Which::which('hilitep6');
     my @cmd = (
-		File::Which::which('hilitep6'),
+		$hilitep6,
 		$tmp_in,
 	);
 
