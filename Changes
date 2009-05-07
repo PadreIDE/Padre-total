@@ -1,5 +1,9 @@
 Changes
 
+0.38 2009.5.7
+	- Fixed ticket:234 - improve the automatic syntax highlighting of Perl6
+	- Depends on S:H:P6 0.53 which has a better STD error message for 'for lines {...}'
+
 0.37 2009.5.6
     - Issue an error in the syntax check window if the STD lex cache is corrupted
     - Depends on S:H:P6 0.52 which contains the tmp_prefix fix 

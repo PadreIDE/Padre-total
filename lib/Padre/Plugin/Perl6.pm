@@ -8,7 +8,7 @@ use Carp;
 use IO::File;
 
 # exports and version
-our $VERSION = '0.37';
+our $VERSION = '0.38';
 our @EXPORT_OK = qw(plugin_config);
 
 use URI::Escape;
