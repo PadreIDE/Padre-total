@@ -5,14 +5,10 @@ use strict;
 use warnings;
 
 use Carp;
-use IO::File;
 
 # exports and version
 our $VERSION = '0.38';
 our @EXPORT_OK = qw(plugin_config);
-
-use URI::Escape;
-use URI::file;
 
 use Padre::Wx ();
 use base 'Padre::Plugin';
@@ -238,6 +234,7 @@ sub build_perl6_doc {
 
     # open the S29 file
     my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-functions.pod');
+    require IO::File;
     my $S29 = IO::File->new(Cwd::realpath($s29_file))
                 or croak "Cannot open '$s29_file' $!";
 
@@ -317,6 +314,7 @@ sub show_perl6_doc {
             my $function_doc = $self->{perl6_functions}{$function_name};
             if($function_doc) {
                 #launch default browser to see the S29 function documentation
+                require URI::Escape;
                 Wx::LaunchDefaultBrowser(
                     q{http://perlcabal.org/syn/S29.html#} .
                     URI::Escape::uri_escape_utf8($function_name));
@@ -476,6 +474,7 @@ sub export_html {
     );
     if ( $ret == Wx::wxYES ) {
         # launch the HTML file in your default browser
+        require URI::file;
         my $file_url = URI::file->new($filename);
         Wx::LaunchDefaultBrowser($file_url);
     }
