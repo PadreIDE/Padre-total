@@ -14,6 +14,10 @@ our @ISA     = 'Padre::Document';
 # max lines to display in a calltip
 my $CALLTIP_DISPLAY_COUNT = 10;
 
+# colorize timer to make sure that colorize tasks are scheduled properly...
+my $COLORIZE_TIMER;
+my $COLORIZE_TIMEOUT = 1000; # wait n-millisecond before starting the Perl6 colorize task
+
 # used for coloring by parrot
 my %perl6_colors = (
 	quote_expression => Px::PADRE_BLUE,
@@ -114,12 +118,34 @@ sub colorize {
 
     my $config = Padre::Plugin::Perl6::plugin_config;
     if($config->{p6_highlight} || $self->{force_p6_highlight}) {
-        # Create a coloring task and hand off to the task manager
-        my $task = Padre::Task::Perl6->new(
-            text => $self->text_with_one_nl,
-            editor => $self->editor,
-            document => $self);
-        $task->schedule();
+	
+		unless($COLORIZE_TIMER) {
+			my $timer_id = Wx::NewId();
+			my $main = Padre->ide->wx->main;
+			$COLORIZE_TIMER = Wx::Timer->new($main, $timer_id);
+			Wx::Event::EVT_TIMER(
+				$main, $timer_id, 
+				sub { 
+					# Create a coloring task and hand off to the task manager
+					my $task = Padre::Task::Perl6->new(
+						text => $self->text_with_one_nl,
+						editor => $self->editor,
+						document => $self);
+					$task->schedule();
+
+					# and let us schedule that it is running properly or not
+					if($task->is_broken) {
+						# let us reschedule colorizing task to a later date..
+						$COLORIZE_TIMER->Stop;
+						$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
+					}
+				},
+			);
+		}
+
+		# let us reschedule colorizing task to a later date..
+		$COLORIZE_TIMER->Stop;
+		$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
     }
 }
 
