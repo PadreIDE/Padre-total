@@ -12,28 +12,28 @@ our $thread_running = 0;
 # polled for information here.
 # If you don't need it, just inherit this default no-op.
 sub prepare {
-    my $self = shift;
+	my $self = shift;
 
 	# it is not running yet.
 	$self->{broken} = 0;
 	
-    # put editor into main-thread-only storage
-    $self->{main_thread_only} ||= {};
-    my $document = $self->{document} || $self->{main_thread_only}{document};
-    my $editor = $self->{editor} || $self->{main_thread_only}{editor};
-    delete $self->{document};
-    delete $self->{editor};
-    $self->{main_thread_only}{document} = $document;
-    $self->{main_thread_only}{editor} = $editor;
+	# put editor into main-thread-only storage
+	$self->{main_thread_only} ||= {};
+	my $document = $self->{document} || $self->{main_thread_only}{document};
+	my $editor = $self->{editor} || $self->{main_thread_only}{editor};
+	delete $self->{document};
+	delete $self->{editor};
+	$self->{main_thread_only}{document} = $document;
+	$self->{main_thread_only}{editor} = $editor;
 
-    # assign a place in the work queue
-    if($thread_running) {
+	# assign a place in the work queue
+	if($thread_running) {
 		# single thread instance at a time please. aborting...
 		$self->{broken} = 1;
-        return "break";
-    }
-    $thread_running = 1;
-    return 1;
+		return "break";
+	}
+	$thread_running = 1;
+	return 1;
 }
 
 sub is_broken {
@@ -42,76 +42,76 @@ sub is_broken {
 }
 
 my %colors = (
-    'comp_unit'  => Px::PADRE_BLUE,
-    'scope_declarator' => Px::PADRE_RED,
-    'routine_declarator' => Px::PADRE_RED,
-    'regex_declarator' => Px::PADRE_RED,
-    'package_declarator' => Px::PADRE_RED,
-    'statement_control' => Px::PADRE_RED,
-    'block' => Px::PADRE_BLACK,
-    'regex_block' => Px::PADRE_BLACK,
-    'noun' => Px::PADRE_BLACK,
-    'sigil' => Px::PADRE_GREEN,
-    'variable' => Px::PADRE_GREEN,
-    'assertion' => Px::PADRE_GREEN,
-    'quote' => Px::PADRE_MAGENTA,
-    'number' => Px::PADRE_ORANGE,
-    'infix' => Px::PADRE_DIM_GRAY,
-    'methodop' => Px::PADRE_BLACK,
-    'pod_comment' => Px::PADRE_GREEN,
-    'param_var' => Px::PADRE_CRIMSON,
-    '_scalar' => Px::PADRE_RED,
-    '_array' => Px::PADRE_BROWN,
-    '_hash' => Px::PADRE_ORANGE,
-    '_comment' => Px::PADRE_GREEN,
+	'comp_unit'  => Px::PADRE_BLUE,
+	'scope_declarator' => Px::PADRE_RED,
+	'routine_declarator' => Px::PADRE_RED,
+	'regex_declarator' => Px::PADRE_RED,
+	'package_declarator' => Px::PADRE_RED,
+	'statement_control' => Px::PADRE_RED,
+	'block' => Px::PADRE_BLACK,
+	'regex_block' => Px::PADRE_BLACK,
+	'noun' => Px::PADRE_BLACK,
+	'sigil' => Px::PADRE_GREEN,
+	'variable' => Px::PADRE_GREEN,
+	'assertion' => Px::PADRE_GREEN,
+	'quote' => Px::PADRE_MAGENTA,
+	'number' => Px::PADRE_ORANGE,
+	'infix' => Px::PADRE_DIM_GRAY,
+	'methodop' => Px::PADRE_BLACK,
+	'pod_comment' => Px::PADRE_GREEN,
+	'param_var' => Px::PADRE_CRIMSON,
+	'_scalar' => Px::PADRE_RED,
+	'_array' => Px::PADRE_BROWN,
+	'_hash' => Px::PADRE_ORANGE,
+	'_comment' => Px::PADRE_GREEN,
 );
 
 # This is run in the main thread after the task is done.
 # It can update the GUI and do cleanup.
 # You don't have to implement this if you don't need it.
 sub finish {
-    my $self = shift;
-    my $mainwindow = shift;
+	my $self = shift;
+	my $mainwindow = shift;
 
-    my $doc = $self->{main_thread_only}{document};
-    my $editor = $self->{main_thread_only}{editor};
-    if($self->{tokens}) {
-        $doc->remove_color;
-        my @tokens = @{$self->{tokens}};
-        for my $htoken (@tokens) {
-            my %token = %{$htoken};
-            my $color = $colors{ $token{rule} };
-            if($color) {
-                my $len = length $token{buffer};
-                my $start = $token{last_pos} - $len;
-                $editor->StartStyling($start, $color);
-                $editor->SetStyling($len, $color);
-            }
-        }
+	my $doc = $self->{main_thread_only}{document};
+	my $editor = $self->{main_thread_only}{editor};
+	if($self->{tokens}) {
+		$doc->remove_color;
+		my @tokens = @{$self->{tokens}};
+		for my $htoken (@tokens) {
+			my %token = %{$htoken};
+			my $color = $colors{ $token{rule} };
+			if($color) {
+				my $len = length $token{buffer};
+				my $start = $token{last_pos} - $len;
+				$editor->StartStyling($start, $color);
+				$editor->SetStyling($len, $color);
+			}
+		}
 		$doc->{tokens} = $self->{tokens};
-    } else {
+	} else {
 		$doc->{tokens} = [];
 	}
 	
 	if($self->{issues}) {
-        # pass errors/warnings to document...
-        $doc->{issues} = $self->{issues};
-    } else {
+		# pass errors/warnings to document...
+		$doc->{issues} = $self->{issues};
+	} else {
 		$doc->{issues} = [];
 	}
 	
 	$doc->check_syntax_in_background(force => 1);
 	$doc->get_outline(force => 1);
 
-    # finished here
-    $thread_running = 0;
+	# finished here
+	$thread_running = 0;
 
-    return 1;
+	return 1;
 }
 
 # Task thread subroutine
 sub run {
-    my $self = shift;
+	my $self = shift;
 
 	# temporary file for the process STDIN
 	require File::Temp;
@@ -129,7 +129,7 @@ sub run {
 	my $tmp_err = File::Temp->new( SUFFIX => '_p6_err.txt' );
 	close $tmp_err or warn "cannot close $tmp_out\n";
 	
-    # construct the command
+	# construct the command
 	require Cwd;
 	require File::Basename;
 	require File::Spec;
@@ -175,14 +175,14 @@ sub run {
 		close CHLD_ERR or warn "Could not close $tmp_err\n";
 	}
 	
-    if($err) {
-        # remove ANSI color escape sequences...
-        $err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
-        print qq{STD.pm warning/error:\n$err\n};
-        my @messages = split /\n/, $err;
-        my ($lineno, $severity);
+	if($err) {
+		# remove ANSI color escape sequences...
+		$err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
+		print qq{STD.pm warning/error:\n$err\n};
+		my @messages = split /\n/, $err;
+		my ($lineno, $severity);
 		my $issues = [];
-        for my $msg (@messages) {
+		for my $msg (@messages) {
 			if($msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/) {
 				# the following lines are errors until we see the warnings section
 				$severity = 'E';
@@ -190,33 +190,33 @@ sub run {
 				# all rest are warnings...
 				$severity = 'W';
 			} elsif($msg =~ /line (\d+):$/i) {
-                # record the line number
-                $lineno = $1;
-            } elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/) {
-                # STD lex cache is corrupt...
-                $msg = qq{'STD Lex Cache' is corrupt. Please use Plugins/Perl6/Cleanup STD Lex Cache.};
-                push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
-                # no need to continue collecting errors...
-                last; 
-            }
-            if($lineno) {
-                push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
-            }
-        }
-        $self->{issues} = $issues;
-    } 
+				# record the line number
+				$lineno = $1;
+			} elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/) {
+				# STD lex cache is corrupt...
+				$msg = qq{'STD Lex Cache' is corrupt. Please use Plugins/Perl6/Cleanup STD Lex Cache.};
+				push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
+				# no need to continue collecting errors...
+				last; 
+			}
+			if($lineno) {
+				push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
+			}
+		}
+		$self->{issues} = $issues;
+	} 
 	
 	if($out) {
 		eval {
 			require Storable;
-         	$self->{tokens} = Storable::thaw($out);
+		 	$self->{tokens} = Storable::thaw($out);
 		};
 		if ($@) {
 			warn "Exception: $@";
 		}
-    }
+	}
 
-    return 1;
+	return 1;
 };
 
 1;

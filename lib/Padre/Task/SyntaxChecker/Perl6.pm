@@ -8,20 +8,20 @@ our $VERSION = '0.38';
 use base 'Padre::Task::SyntaxChecker';
 
 sub run {
-    my $self = shift;
-    $self->_check_syntax();
-    return 1;
+	my $self = shift;
+	$self->_check_syntax();
+	return 1;
 }
 
 sub _check_syntax {
-    my $self = shift;
-    
-    my $nlchar = $self->{newlines};
-    $self->{text} =~ s/$nlchar/\n/g if defined $nlchar;
+	my $self = shift;
+	
+	my $nlchar = $self->{newlines};
+	$self->{text} =~ s/$nlchar/\n/g if defined $nlchar;
 
-    # Since we have the results ready, 
-    # and yeah this is kind of dumb
-    $self->{syntax_check} = $self->{issues};
+	# Since we have the results ready, 
+	# and yeah this is kind of dumb
+	$self->{syntax_check} = $self->{issues};
 }
 
 1;
@@ -37,15 +37,15 @@ Padre::Task::SyntaxChecker::Perl6 - Perl document syntax-checking in the backgro
   # by default, the text of the current document
   # will be fetched as will the document's notebook page.
   my $task = Padre::Task::SyntaxChecker::Perl6->new(
-    newlines => "\r\n", # specify the newline type!
+	newlines => "\r\n", # specify the newline type!
   );
   $task->schedule;
   
   my $task2 = Padre::Task::SyntaxChecker::Perl6->new(
-    text => Padre::Current->document->text_get,
-    notebook_page => Padre::Current->document->editor,
-    on_finish => sub { my $task = shift; ... },
-    newlines => "\r\n", # specify the newline type!
+	text => Padre::Current->document->text_get,
+	notebook_page => Padre::Current->document->editor,
+	on_finish => sub { my $task = shift; ... },
+	newlines => "\r\n", # specify the newline type!
   );
   $task2->schedule;
 

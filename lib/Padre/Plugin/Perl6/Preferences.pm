@@ -4,8 +4,8 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-    _plugin      => '_plugin',       # plugin to be configured
-    _sizer       => '_sizer',        # window sizer
+	_plugin      => '_plugin',       # plugin to be configured
+	_sizer       => '_sizer',        # window sizer
 };
 
 our $VERSION = '0.38';
@@ -19,24 +19,24 @@ use base 'Wx::Dialog';
 # -- constructor
 
 sub new {
-    my ($class, $plugin) = @_;
+	my ($class, $plugin) = @_;
 
-    # create object
-    my $self = $class->SUPER::new(
-        Padre::Current->main,
-        -1,
-        'Perl6 preferences',
-        Wx::wxDefaultPosition,
-        Wx::wxDefaultSize,
-        Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
-    );
-    $self->SetIcon( Wx::GetWxPerlIcon() );
-    $self->_plugin($plugin);
+	# create object
+	my $self = $class->SUPER::new(
+		Padre::Current->main,
+		-1,
+		'Perl6 preferences',
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+	);
+	$self->SetIcon( Wx::GetWxPerlIcon() );
+	$self->_plugin($plugin);
 
-    # create dialog
-    $self->_create;
+	# create dialog
+	$self->_create;
 
-    return $self;
+	return $self;
 }
 
 
@@ -48,20 +48,20 @@ sub new {
 # handler called when the ok button has been clicked.
 # 
 sub _on_ok_button_clicked {
-    my ($self) = @_;
-    my $plugin = $self->_plugin;
+	my ($self) = @_;
+	my $plugin = $self->_plugin;
 
-    # read plugin preferences
-    #my $prefs = $plugin->config;
+	# read plugin preferences
+	#my $prefs = $plugin->config;
 
-    # overwrite dictionary preference
-    #my $dic = $self->_dict_combo->GetValue;
-    #$prefs->{dictionary} = $dic;
+	# overwrite dictionary preference
+	#my $dic = $self->_dict_combo->GetValue;
+	#$prefs->{dictionary} = $dic;
 
-    # store plugin preferences
-    #$plugin->config_write($prefs);
-    
-    $self->Destroy;
+	# store plugin preferences
+	#$plugin->config_write($prefs);
+	
+	$self->Destroy;
 }
 
 
@@ -75,19 +75,19 @@ sub _on_ok_button_clicked {
 # no params, no return values.
 #
 sub _create {
-    my ($self) = @_;
+	my ($self) = @_;
 
-    # create sizer that will host all controls
-    my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
-    $self->_sizer($sizer);
+	# create sizer that will host all controls
+	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	$self->_sizer($sizer);
 
-    # create the controls
-    $self->_create_controls;
-    $self->_create_buttons;
+	# create the controls
+	$self->_create_controls;
+	$self->_create_buttons;
 
-    # wrap everything in a vbox to add some padding
-    $self->SetSizerAndFit($sizer);
-    $sizer->SetSizeHints($self);
+	# wrap everything in a vbox to add some padding
+	$self->SetSizerAndFit($sizer);
+	$sizer->SetSizeHints($self);
 }
 
 #
@@ -98,12 +98,12 @@ sub _create {
 # no params. no return values.
 #
 sub _create_buttons {
-    my ($self) = @_;
-    my $sizer  = $self->_sizer;
+	my ($self) = @_;
+	my $sizer  = $self->_sizer;
 
-    my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-    $sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
+	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
+	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
 }
 
 #
@@ -114,18 +114,18 @@ sub _create_buttons {
 # no params. no return values.
 #
 sub _create_controls {
-    my ($self) = @_;
+	my ($self) = @_;
 
 	my @choices = ['S:H:P6/STD','Rakudo/PGE'];
-    # syntax highligher selection
-    my $selector_label = Wx::StaticText->new( $self, -1, 'Syntax Highlighter:' );
-    my $selector_list = Wx::ListBox->new(
-        $self,
+	# syntax highligher selection
+	my $selector_label = Wx::StaticText->new( $self, -1, 'Syntax Highlighter:' );
+	my $selector_list = Wx::ListBox->new(
+		$self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		@choices,
-    );
+	);
 	
 	# XXX - Select based on configuration variable
 	$selector_list->Select(0);
@@ -133,26 +133,26 @@ sub _create_controls {
 	# XXX- fill out these variables with actual configuration variables...
 	my $mildew_dir = Cwd::cwd();
 	my $rakudo_dir = Cwd::cwd();
-    
-    # mildew directory
-    my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew:' );
-    my $mildew_dir_text = Wx::TextCtrl->new(
-        $self,
-        -1,
-        $mildew_dir,
+	
+	# mildew directory
+	my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew:' );
+	my $mildew_dir_text = Wx::TextCtrl->new(
+		$self,
+		-1,
+		$mildew_dir,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxTE_READONLY,
-    );
+	);
 	require Cwd;
-    my $mildew_dir_picker = Wx::DirPickerCtrl->new(
-        $self,
-        -1,
+	my $mildew_dir_picker = Wx::DirPickerCtrl->new(
+		$self,
+		-1,
 		$mildew_dir,
-        'Pick mildew Directory',
+		'Pick mildew Directory',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-    );
+	);
 
 	Wx::Event::EVT_DIRPICKER_CHANGED(
 		$mildew_dir_picker,
@@ -162,24 +162,24 @@ sub _create_controls {
 		 },
 	);
 
-    # rakudo directory
-    my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo:' );
-    my $rakudo_dir_text = Wx::TextCtrl->new(
-        $self,
-        -1,
-        $rakudo_dir,
+	# rakudo directory
+	my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo:' );
+	my $rakudo_dir_text = Wx::TextCtrl->new(
+		$self,
+		-1,
+		$rakudo_dir,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxTE_READONLY,
-    );
-    my $rakudo_dir_picker = Wx::DirPickerCtrl->new(
-        $self,
-        -1,
+	);
+	my $rakudo_dir_picker = Wx::DirPickerCtrl->new(
+		$self,
+		-1,
 		$rakudo_dir,
-        'Pick rakudo Directory',
+		'Pick rakudo Directory',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-    );
+	);
 
 	Wx::Event::EVT_DIRPICKER_CHANGED(
 		$rakudo_dir_picker,
@@ -189,24 +189,24 @@ sub _create_controls {
 		 },
 	);
 
-    # pack the controls in a box
-    my $box;
-    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    $box->Add( $selector_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $selector_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	# pack the controls in a box
+	my $box;
+	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$box->Add( $selector_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $selector_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
-    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    $box->Add( $mildew_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $mildew_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $mildew_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$box->Add( $mildew_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $mildew_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $mildew_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
-    $box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-    $box->Add( $rakudo_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $rakudo_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $box->Add( $rakudo_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-    $self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$box->Add( $rakudo_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $rakudo_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $rakudo_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 }
 
 

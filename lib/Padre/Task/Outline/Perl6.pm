@@ -22,8 +22,8 @@ gathering in the background
   $task->schedule;
   
   my $task2 = Padre::Task::Outline::Perl6->new(
-    text          => Padre::Current->document->text_get,
-    editor        => Padre::Current->editor,
+	text          => Padre::Current->document->text_get,
+	editor        => Padre::Current->editor,
   );
   $task2->schedule;
 

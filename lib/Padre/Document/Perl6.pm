@@ -88,34 +88,34 @@ my %perl6_colors = (
 
 
 sub text_with_one_nl {
-    my $self = shift;
-    my $text = $self->text_get;
-    my $nlchar = "\n";
-    if ( $self->get_newline_type eq 'WIN' ) {
-        $nlchar = "\r\n";
-    }
-    elsif ( $self->get_newline_type eq 'MAC' ) {
-        $nlchar = "\r";
-    }
-    $text =~ s/$nlchar/\n/g;
-    return $text;
+	my $self = shift;
+	my $text = $self->text_get;
+	my $nlchar = "\n";
+	if ( $self->get_newline_type eq 'WIN' ) {
+		$nlchar = "\r\n";
+	}
+	elsif ( $self->get_newline_type eq 'MAC' ) {
+		$nlchar = "\r";
+	}
+	$text =~ s/$nlchar/\n/g;
+	return $text;
 }
 
 # a SLOW WAY to parse and colorize perl6 files
 sub colorize {
-    my $self = shift;
-    
-    # temporary overlay using the parse tree given by parrot
-    # TODO: let the user select which one to use
-    # TODO: but the parrot parser in the background
+	my $self = shift;
+	
+	# temporary overlay using the parse tree given by parrot
+	# TODO: let the user select which one to use
+	# TODO: but the parrot parser in the background
 	#my $perl6 = $self->get_perl6;
 	#if ($perl6) {
 	#	$self->_parrot_color($perl6);
 	#	return;
 	#}
 
-    my $config = Padre::Plugin::Perl6::plugin_config;
-    if($config->{p6_highlight} || $self->{force_p6_highlight}) {
+	my $config = Padre::Plugin::Perl6::plugin_config;
+	if($config->{p6_highlight} || $self->{force_p6_highlight}) {
 	
 		unless($COLORIZE_TIMER) {
 			my $timer_id = Wx::NewId();
@@ -144,7 +144,7 @@ sub colorize {
 		# let us reschedule colorizing task to a later date..
 		$COLORIZE_TIMER->Stop;
 		$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
-    }
+	}
 }
 
 sub _parrot_color {
@@ -179,7 +179,7 @@ sub _parrot_color {
 		next if not defined $perl6_colors{$type}; # no need to color
 		my $color = $perl6_colors{$type};
 		$editor->StartStyling($start, $color);
-        $editor->SetStyling($length, $color);
+		$editor->SetStyling($length, $color);
 
 	}
 	$self->{_parse_tree} = \@pd;
@@ -191,11 +191,11 @@ sub _parrot_color {
 }
 
 sub get_perl6 {
-    my $self     = shift;
+	my $self     = shift;
 
 	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
 	require File::Which;
-    my $perl6 = File::Which::which($exe_name);
+	my $perl6 = File::Which::which($exe_name);
 	if (not $perl6) {
 		if (not $ENV{RAKUDO_DIR}) {
 			my $main = Padre->ide->wx->main;
@@ -208,39 +208,39 @@ sub get_perl6 {
 }
 
 sub get_command {
-    my $self     = shift;
+	my $self     = shift;
 
-    my $filename = $self->filename;
+	my $filename = $self->filename;
 	my $perl6    = $self->get_perl6;
 
-    return qq{"$perl6" "$filename"};
+	return qq{"$perl6" "$filename"};
 }
 
 # Checks the syntax of a Perl document.
 # Documented in Padre::Document!
 # Implemented as a task. See Padre::Task::SyntaxChecker::Perl6
 sub check_syntax {
-    my $self  = shift;
-    my %args  = @_;
-    $args{background} = 0;
-    return $self->_check_syntax_internals(\%args);
+	my $self  = shift;
+	my %args  = @_;
+	$args{background} = 0;
+	return $self->_check_syntax_internals(\%args);
 }
 
 sub check_syntax_in_background {
-    my $self  = shift;
-    my %args  = @_;
-    $args{background} = 1;
-    return $self->_check_syntax_internals(\%args);
+	my $self  = shift;
+	my %args  = @_;
+	$args{background} = 1;
+	return $self->_check_syntax_internals(\%args);
 }
 
 sub _check_syntax_internals {
-    my $self = shift;
-    my $args  = shift;
+	my $self = shift;
+	my $args  = shift;
 
-    my $text = $self->text_with_one_nl;
-    unless ( defined $text and $text ne '' ) {
-        return [];
-    }
+	my $text = $self->text_with_one_nl;
+	unless ( defined $text and $text ne '' ) {
+		return [];
+	}
 
 	# Do we really need an update?
 	require Digest::MD5;
@@ -254,53 +254,53 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-    require Padre::Task::SyntaxChecker::Perl6;
-    my $task = Padre::Task::SyntaxChecker::Perl6->new(
-        notebook_page => $self->editor,
-        text => $text,
-        issues => $self->{issues},
-        ( exists $args->{on_finish} ? (on_finish => $args->{on_finish}) : () ),
-    );
-    if ($args->{background}) {
-        # asynchroneous execution (see on_finish hook)
-        $task->schedule();
-        return();
-    }
-    else {
-        # serial execution, returning the result
-        return() if $task->prepare() =~ /^break$/;
-        $task->run();
-        return $task->{syntax_check};
-    }
-    return;
+	require Padre::Task::SyntaxChecker::Perl6;
+	my $task = Padre::Task::SyntaxChecker::Perl6->new(
+		notebook_page => $self->editor,
+		text => $text,
+		issues => $self->{issues},
+		( exists $args->{on_finish} ? (on_finish => $args->{on_finish}) : () ),
+	);
+	if ($args->{background}) {
+		# asynchroneous execution (see on_finish hook)
+		$task->schedule();
+		return();
+	}
+	else {
+		# serial execution, returning the result
+		return() if $task->prepare() =~ /^break$/;
+		$task->run();
+		return $task->{syntax_check};
+	}
+	return;
 }
 
 sub keywords {
-    my $self = shift;
-    if (! defined $self->{keywords}) {
-        #Get keywords from Plugin object
-        my $manager = Padre->ide->plugin_manager;
-        if($manager) {
-            my $plugin = $manager->plugins->{'Perl6'};
-            if($plugin) {
-                my %perl6_functions = %{$plugin->object->{perl6_functions}};
-                foreach my $function (keys %perl6_functions) {
-                    my $docs = $perl6_functions{$function};
-                    # limit calltip size to n-lines
-                    my @lines = split /\n/, $docs;
-                    if(scalar @lines > $CALLTIP_DISPLAY_COUNT) {
-                        $docs = (join "\n", @lines[0..$CALLTIP_DISPLAY_COUNT-1]) .
-                            "\n...";
-                    }
-                    $self->{keywords}->{$function} = {
-                        'cmd' => $docs,
-                        'exp' => '',
-                    };
-                }
-             }
-        }
-    }
-    return $self->{keywords};
+	my $self = shift;
+	if (! defined $self->{keywords}) {
+		#Get keywords from Plugin object
+		my $manager = Padre->ide->plugin_manager;
+		if($manager) {
+			my $plugin = $manager->plugins->{'Perl6'};
+			if($plugin) {
+				my %perl6_functions = %{$plugin->object->{perl6_functions}};
+				foreach my $function (keys %perl6_functions) {
+					my $docs = $perl6_functions{$function};
+					# limit calltip size to n-lines
+					my @lines = split /\n/, $docs;
+					if(scalar @lines > $CALLTIP_DISPLAY_COUNT) {
+						$docs = (join "\n", @lines[0..$CALLTIP_DISPLAY_COUNT-1]) .
+							"\n...";
+					}
+					$self->{keywords}->{$function} = {
+						'cmd' => $docs,
+						'exp' => '',
+					};
+				}
+			 }
+		}
+	}
+	return $self->{keywords};
 }
 
 sub comment_lines_str { return '#' }
