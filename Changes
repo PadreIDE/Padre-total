@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.1.1 Fri May  8 17:37:58 CEST 2009
+ - work-around for unicode texts (therek)
+
 1.1.0 Wed Apr 29 18:03:45 CEST 2009
  - possibility to choose dictionary language
    (but wx::stc has unicode bugs which prevents this feature to be
