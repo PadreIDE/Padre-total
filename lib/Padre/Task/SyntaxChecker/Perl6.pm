@@ -9,19 +9,15 @@ use base 'Padre::Task::SyntaxChecker';
 
 sub run {
 	my $self = shift;
-	$self->_check_syntax();
-	return 1;
-}
 
-sub _check_syntax {
-	my $self = shift;
-	
 	my $nlchar = $self->{newlines};
 	$self->{text} =~ s/$nlchar/\n/g if defined $nlchar;
 
 	# Since we have the results ready, 
 	# and yeah this is kind of dumb
 	$self->{syntax_check} = $self->{issues};
+
+	return 1;
 }
 
 1;
