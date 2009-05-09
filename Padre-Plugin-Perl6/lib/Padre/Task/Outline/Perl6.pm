@@ -64,7 +64,7 @@ sub _get_outline {
 			if($tree) {
 				my $buffer = $token{buffer};
 				my $lineno = $token{lineno};
-				if($tree =~ /package_declarator__S_\d+(class|grammar|module|package|role) package_def.+def_module_name/) {
+				if($tree =~ /package_declarator__S_\d+(class|grammar|module|package|role|knowhow|slang) package_def.+def_module_name/) {
 					# (classes, grammars, modules, packages, roles) or main are always parent nodes
 					$symbol_type = $1;
 					$symbol_name .= $buffer;
@@ -118,7 +118,9 @@ sub _get_outline {
 							$symbol_type eq 'grammar' || 
 							$symbol_type eq 'module' ||
 							$symbol_type eq 'package' ||
-							$symbol_type eq 'role') 
+							$symbol_type eq 'role' ||
+							$symbol_type eq 'knowhow' ||
+							$symbol_type eq 'slang') 
 						{
 							$context = $symbol_name;
 							if(not $cur_pkg->{name}) {
