@@ -95,6 +95,14 @@ sub collect_report {
 
 	my @po_files  = glob "$localedir/*.po";
 	my $pot_file  = catfile( $localedir, 'messages.pot' );
+	if (open my $fh, '<', $pot_file) {
+		while (my $line = <$fh>) {
+			if ($line =~ /^msgid/) {
+				$data{total}++;
+			}
+		}
+	}
+	
 	foreach my $po_file (sort @po_files) {
 		#print "$po_file\n";
 		my $err = "$tempdir/err";
@@ -142,15 +150,20 @@ END_CSS
 
 #die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
-	my @languages = sort keys %{$reports{Padre}};
+	my @languages = sort grep {!/total/} keys %{$reports{Padre}};
 	$html .= "<tr><td>Project</td><td>Total</td>" . (join "", map {"<td>$_</td>"} @languages) . "</tr>\n";
 	
 	foreach my $project (sort keys %reports) {
-		$html .= "<tr><td>$project</td><td></td>";
+		$html .= "<tr><td>$project</td><td>";
+		my $total = $reports{$project}{total};
+		$html .= defined  $total ? $total : 'na';
+		$total ||= 0;
+
+		$html .= "</td>";
 		foreach my $language (@languages) {
-			if ($reports{$project}) {
+			if ($reports{$project}{total}) {
 				if (defined $reports{$project}{$language}{errors}) {
-					if ( $reports{$project}{$language}{errors} > 20 ) {
+					if ( $reports{$project}{$language}{errors} > $total / 20  ) {
 						$html .= q(<td class=red>);
 					} elsif ( $reports{$project}{$language}{errors} > 0 ) {
 						$html .= q(<td class=yellow>);
@@ -159,7 +172,7 @@ END_CSS
 					}
 					$html .= $reports{$project}{$language}{errors};
 				} else {
-					$html .= '<td>na';
+					$html .= '<td>-';
 				}
 			} else {
 				$html .= '<td>na';
