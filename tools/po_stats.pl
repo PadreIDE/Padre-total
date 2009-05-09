@@ -13,33 +13,38 @@ use Getopt::Long          qw{ GetOptions };
 my $text;
 my $html;
 my $dir;
-GetOptions('text' => \$text, 'html' => \$html, 'dir=s' => \$dir)
+my $share;
+GetOptions('text' => \$text, 'html' => \$html, 'dir=s' => \$dir, 'share=s' => \$share)
   or usage();
 usage() if not $text and not $html;
+usage("Invalid share directory '$share'") if $share and not -e $share;
 
 $LANG = 'C';
 
 my $cwd       = cwd;
-my $localedir = catdir ( $cwd, 'share', 'locale' );
-if (not -e $localedir) {
-	my ($sharedir) = File::Find::Rule->directory()->name('share')->in(catdir( $cwd, 'lib'));
-	$localedir = catdir( $sharedir, 'locale' );
+
+if (not $share) {
+	$share = catdir ( $cwd, 'share' );
+	if (not -e $share) {
+		($share) = File::Find::Rule->directory()->name('share')->in(catdir( $cwd, 'lib'));
+	}
 }
+usage("Could not find a 'share' directory") if not $share or not -e $share;
+
+my $localedir = catdir ( $share, 'locale' );
 
 my $pot_file  = catfile( $localedir, 'messages.pot' );
 my $text_report_file = catfile($cwd, 'po_report.txt');
 
-die "Can't find '$localedir' directory. "
-	. "Please run this tool on the 'Padre' base directory"
+usage("Can't find locale directory '$localedir'.\nPlease run this tool on the 'Padre' base directory")
 	if not -d $localedir;
 if ($text) {
 	chdir $localedir;
 	my ($header, $report) = collect_report();
-    save_text_report($header, $report, $text_report_file);
+	save_text_report($header, $report, $text_report_file);
 } elsif ($html) {
 	usage("--dir was missing") if not $dir;
 	usage("--dir $dir does not exist") if -d $dir;
-	
 }
 
 
@@ -84,8 +89,13 @@ sub save_text_report {
 sub usage {
 	my $msg = shift;
 	print "$msg\n\n" if defined $msg;
-	print "Usage: $0 --text | --html --dir DIR\n";
-	
+	print <<"END_USAGE";
+Usage: $0
+        --text 
+        --html --dir DIR
+	--share    path to the share directory (optional)
+END_USAGE
+
 	exit 1;
 }
 
