@@ -7,6 +7,7 @@ use File::Spec::Functions qw{ catfile catdir };
 use File::Find::Rule;
 use File::Basename        qw{ basename };
 use File::Temp            qw{ tempdir };
+use Data::Dumper          qw{ Dumper };
 use Env                   qw{ LANG };
 use Getopt::Long          qw{ GetOptions };
 #use Locale::PO;
@@ -57,11 +58,14 @@ my $text_report_file = catfile($cwd, 'po_report.txt');
 
 if ($text) {
 	save_text_report($text_report_file);
-} elsif ($html) {
+} 
+if ($html) {
 	usage("--dir was missing") if not $dir;
-	usage("--dir $dir does not exist") if -d $dir;
-}
+	usage("--dir $dir does not exist") if not -d $dir;
 
+	save_html_report($dir);
+}
+exit 0;
 
 
 
@@ -69,7 +73,9 @@ sub collect_report {
 	my ($project_dir) = @_;
 
 	my %data;
-        
+	my $plugin_name = basename $project_dir;
+	$plugin_name =~ s/.*-//;
+
 	my $share = catdir ( $project_dir, 'share' );
 	if (not -e $share) {
 		($share) = File::Find::Rule->directory()->name('share')->in(catdir( $project_dir, 'lib'));
@@ -93,7 +99,10 @@ sub collect_report {
 		#print "$po_file\n";
 		my $err = "$tempdir/err";
 		system "msgcmp $po_file $pot_file 2> $err";
-		my $language = basename($po_file);
+		my $language = substr(basename($po_file), 0, -3);
+		if ($plugin_name ne 'Padre') {
+			$language =~ s/^$plugin_name-//;
+		}
 		if (open my $fh, '<', $err) {
 			local $/ = undef;
 			$data{$language}{details} = <$fh>;
@@ -109,6 +118,61 @@ sub collect_report {
 	return \%data;
 }
 
+sub save_html_report {
+	my ($dir) = @_;
+	my $html = "<html><head><title>Padre translation status report</title></head><body>\n";
+	$html .= <<'END_CSS';
+<style type="text/css">
+.red {
+    background-color: red;
+}
+.yellow {
+    background-color: yellow;
+}
+.green {
+    background-color: lightgreen;
+}
+</style>
+END_CSS
+
+	$html .= "<h1>Padre translation status report</h1>\n";
+	$html .= "<p>The numbers showing the number of errors. na means that translation does not exist at all</p>\n";
+	$html .= "<p>Generated on: " . localtime() . "</p>\n";
+	$html .= "<table border=1>\n";
+
+#die Dumper $reports{"Padre-Plugin-SpellCheck"};
+
+	my @languages = sort keys %{$reports{Padre}};
+	$html .= "<tr><td>Project</td><td>Total</td>" . (join "", map {"<td>$_</td>"} @languages) . "</tr>\n";
+	
+	foreach my $project (sort keys %reports) {
+		$html .= "<tr><td>$project</td><td></td>";
+		foreach my $language (@languages) {
+			if ($reports{$project}) {
+				if (defined $reports{$project}{$language}{errors}) {
+					if ( $reports{$project}{$language}{errors} > 20 ) {
+						$html .= q(<td class=red>);
+					} elsif ( $reports{$project}{$language}{errors} > 0 ) {
+						$html .= q(<td class=yellow>);
+					} else {
+						$html .= q(<td class=green>);
+					}
+					$html .= $reports{$project}{$language}{errors};
+				} else {
+					$html .= '<td>na';
+				}
+			} else {
+				$html .= '<td>na';
+			}
+			$html .= '</td>';
+		}
+		$html .= "</tr>\n";
+	}
+	$html .= "</table>\n";
+	$html .= "</body></html>";
+	open my $fh, '>', "$dir/index.html" or die;
+	print $fh $html;
+}
 
 sub save_text_report {
 	my ($text_report_file) = @_;
@@ -130,7 +194,7 @@ sub generate_text_report {
 
 	my $report    .= "Language  Errors\n";
 	foreach my $language (sort keys %$data) {
-		$report .= sprintf("%-10s %s\n", substr($language, 0, -3), $data->{$language}{errors});
+		$report .= sprintf("%-10s %s\n", $language, $data->{$language}{errors});
 	}
 	
 	if ($details) {
