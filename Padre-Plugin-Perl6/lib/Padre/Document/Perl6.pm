@@ -331,7 +331,7 @@ sub event_on_right_down {
 #				},
 #			);
 	foreach my $thing (@things) {
-		$menu->Append( -1, Wx::gettext("$thing->{str} is Perl 6 $thing->{type} ") );
+		$menu->Append( -1, sprintf( Wx::gettext("%s is Perl 6 %s "), $thing->{str}, $thing->{type} ) );
 	}
 	return;
 }
