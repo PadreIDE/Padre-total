@@ -21,6 +21,11 @@ $LANG = 'C';
 
 my $cwd       = cwd;
 my $localedir = catdir ( $cwd, 'share', 'locale' );
+if (not -e $localedir) {
+	my ($sharedir) = File::Find::Rule->directory()->name('share')->in(catdir( $cwd, 'lib'));
+	$localedir = catdir( $sharedir, 'locale' );
+}
+
 my $pot_file  = catfile( $localedir, 'messages.pot' );
 my $text_report_file = catfile($cwd, 'po_report.txt');
 
