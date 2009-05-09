@@ -14,8 +14,14 @@ my $text;
 my $html;
 my $dir;
 my $share;
-GetOptions('text' => \$text, 'html' => \$html, 'dir=s' => \$dir, 'share=s' => \$share)
-  or usage();
+my $details;
+GetOptions(
+	'text'    => \$text, 
+	'html'    => \$html, 
+	'dir=s'   => \$dir, 
+	'share=s' => \$share,
+	'details' => \$details,
+	) or usage();
 usage() if not $text and not $html;
 usage("Invalid share directory '$share'") if $share and not -e $share;
 
@@ -80,7 +86,9 @@ sub save_text_report {
 	my ($header, $report, $text_report_file) = @_;
 	open my $fh, '>', $text_report_file or die;
 	print {$fh} $header;
-	print {$fh} $report;
+	if ($details) {
+		print {$fh} $report;
+	}
 	print "file 'po_report.txt' generated.\n";
 }
 
@@ -94,6 +102,7 @@ Usage: $0
         --text 
         --html --dir DIR
 	--share    path to the share directory (optional)
+	--details
 END_USAGE
 
 	exit 1;
