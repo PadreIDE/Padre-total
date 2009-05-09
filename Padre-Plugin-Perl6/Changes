@@ -1,20 +1,21 @@
 Changes
 
 0.39 2009.5.9
-	F6->F7 refresh coloring since F6 is used by Padre
-	Depends on S:H:P6 0.54 which contains the latest STD with the new slang package declarator keyword.
-	Fixed a bug where File::Which::where should be used in a scalar context and caused export html feature to fail sometimes.
+	- Added support for slang and knowhow package declarators in outline view.
+	- F6->F7 refresh coloring since F6 is used by Padre
+	- Depends on S:H:P6 0.54 which contains the latest STD with the new slang package declarator keyword.
+	- Fixed a bug where File::Which::where should be used in a scalar context and caused export html feature to fail sometimes.
 
 0.38 2009.5.7
 	- Fixed ticket:234 - improve the automatic syntax highlighting of Perl6
 	- Depends on S:H:P6 0.53 which has a better STD error message for 'for lines {...}'
 
 0.37 2009.5.6
-    - Issue an error in the syntax check window if the STD lex cache is corrupted
-    - Depends on S:H:P6 0.52 which contains the tmp_prefix fix 
+	- Issue an error in the syntax check window if the STD lex cache is corrupted
+	- Depends on S:H:P6 0.52 which contains the tmp_prefix fix 
 		and the latest STD and has less depdendencies
 	- Added a preview preferences UI dialog which is not finished btw :)
-    
+
 0.36 2009.5.5
 	- Depends on S:H:P6 0.50 which contains the latest STD.pm parser.
 	- Fixed ticket:302 perl6 syntax highlighting and outline not active on vista using wperl.exe
@@ -54,87 +55,87 @@ Changes
 	- Depends on Syntax::Highlight::Perl6 0.043 which has line number information	
 
 0.28 2009.4.20
-    - Depends on Syntax::Highlight::Perl6 0.041 which has the newest STD with CORE.pad
+	- Depends on Syntax::Highlight::Perl6 0.041 which has the newest STD with CORE.pad
 
 0.27 2009.4.19
-    - update the path to reach the perl 6 executable
-    - Changed version numbers so all the modules will have the same number.
+	- update the path to reach the perl 6 executable
+	- Changed version numbers so all the modules will have the same number.
 
 0.026 2009.2.04
-    - Takes advantage of STD.pm performance improvements by using Syntax::Highlight::Perl6 0.040
-    - Updated to S29-function.pod pugs r25021
-    - Works with Padre 0.26
+	- Takes advantage of STD.pm performance improvements by using Syntax::Highlight::Perl6 0.040
+	- Updated to S29-function.pod pugs r25021
+	- Works with Padre 0.26
 
 0.025 2009.1.8
-    - Depends on Syntax::Highlight::Perl6 0.030 which fixes hilitep6 binmode STDIN issue for utf8
-    - Limit number of S29 function calltip text to the first 10 lines.
-    - Remove ANSI color escape sequences from STD.pm warnings/errors.
-    - Fix S29-function.pod parsing case sensitivity bug on *nix platforms.
-    - Fix STD.pm highlighting to actually work. ;-)
-    - STD.pm errors/warnings are shown on console.
+	- Depends on Syntax::Highlight::Perl6 0.030 which fixes hilitep6 binmode STDIN issue for utf8
+	- Limit number of S29 function calltip text to the first 10 lines.
+	- Remove ANSI color escape sequences from STD.pm warnings/errors.
+	- Fix S29-function.pod parsing case sensitivity bug on *nix platforms.
+	- Fix STD.pm highlighting to actually work. ;-)
+	- STD.pm errors/warnings are shown on console.
 
 0.024 2009.1.7
-    - Fix run rakudo script on win32
-    - STD.pm is now syntax highlighted correctly since we use IPC::Run3 binmode utf8
-    - Replaced IPC::Run 0.82 with the improved IPC::Run3 0.42
-    - Revised menu structure
-    - Updated to S29-Function.pod revision 24793 to fix some common function docs like say, print ..etc
+	- Fix run rakudo script on win32
+	- STD.pm is now syntax highlighted correctly since we use IPC::Run3 binmode utf8
+	- Replaced IPC::Run 0.82 with the improved IPC::Run3 0.42
+	- Revised menu structure
+	- Updated to S29-Function.pod revision 24793 to fix some common function docs like say, print ..etc
 
 0.023 2009.1.6
-    - Added the lex cache directory cleanup option
+	- Added the lex cache directory cleanup option
 
 0.022 2009.1.5
-    - Added S29 function documentation calltips
-    - F2 now launches the S29 documentation in your default browser
-    - requires Syntax::Highlight::Perl6 0.0297
-    - requires Padre 0.24
+	- Added S29 function documentation calltips
+	- F2 now launches the S29 documentation in your default browser
+	- requires Syntax::Highlight::Perl6 0.0297
+	- requires Padre 0.24
 
 0.021 2009.1.5
-    - S29 function documentation when you hit F2 over a function (or a word)
+	- S29 function documentation when you hit F2 over a function (or a word)
 
 0.020 2009.1.4
-    - Fixed plugin to work with AdamK's r2436 refactoring.
+	- Fixed plugin to work with AdamK's r2436 refactoring.
 
 0.019 2009.1.3
-    - Implemented manual refresh and selective of Perl 6 syntax highlighter.
+	- Implemented manual refresh and selective of Perl 6 syntax highlighter.
 
 0.018 2009.1.3
-    - Fixed missing dependency on IPC::Run
-    - Added tests
+	- Fixed missing dependency on IPC::Run
+	- Added tests
 
 0.017 2009.1.3
-    - Fixed syntax check to work again with Padre-Plugin-Perl6
-    - More stable, one thread solution to ticket:194.
+	- Fixed syntax check to work again with Padre-Plugin-Perl6
+	- More stable, one thread solution to ticket:194.
 
 0.016 2009.1.3
-    - Possible fix to trac ticket:194, Slow Perl6 syntax highlighting
+	- Possible fix to trac ticket:194, Slow Perl6 syntax highlighting
 
 0.015 2009.1.1
-    - differentiate between STD warnings and errors in syntax check (ticket:193)
-    - Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32 
-    installation failures.
+	- differentiate between STD warnings and errors in syntax check (ticket:193)
+	- Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32 
+	installation failures.
 
 0.014 2008.12.28
-    - export html now asks the user if he/she wants to open the HTML in the default browser
-    - Requires Syntax::Highlight::Perl6 version 0.02961
+	- export html now asks the user if he/she wants to open the HTML in the default browser
+	- Requires Syntax::Highlight::Perl6 version 0.02961
 
 0.013 2008.12.24
-    - Added a menu separator before About menu item in Padre::Plugin::Perl6
-    - Another message typo fix in Padre::Document::Perl6
-    - Show an error message box in the following situations: 
-        - exporting a non-Perl6 file 
-        - STD.pm parsing error occurs
+	- Added a menu separator before About menu item in Padre::Plugin::Perl6
+	- Another message typo fix in Padre::Document::Perl6
+	- Show an error message box in the following situations: 
+		- exporting a non-Perl6 file 
+		- STD.pm parsing error occurs
 
 0.012 2008.12.22
-    - Added Perl6 Syntax checking.
-    - Handled newlines for Mac/Unix and Win platforms in export feature.
-    - Added Export simple, snippet and full HTML.
+	- Added Perl6 Syntax checking.
+	- Handled newlines for Mac/Unix and Win platforms in export feature.
+	- Added Export simple, snippet and full HTML.
 
 0.011 2008.12.21
-    - Source cleanup and POD fixes.
+	- Source cleanup and POD fixes.
 
 0.01  2008.12.20
-    - Initial release to CPAN
-    - Support keyword scintilla auto completion
-    - Supports Perl6 highlighting via Syntax::Highlight::Perl6
-    - Moving out from the Padre source code
+	- Initial release to CPAN
+	- Support keyword scintilla auto completion
+	- Supports Perl6 highlighting via Syntax::Highlight::Perl6
+	- Moving out from the Padre source code
