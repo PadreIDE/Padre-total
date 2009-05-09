@@ -1,6 +1,7 @@
 Changes
 
 0.39 2009.5.9
+	F6->F7 refresh coloring since F6 is used by Padre
 	Depends on S:H:P6 0.54 which contains the latest STD with the new slang package declarator keyword.
 	Fixed a bug where File::Which::where should be used in a scalar context and caused export html feature to fail sometimes.
 

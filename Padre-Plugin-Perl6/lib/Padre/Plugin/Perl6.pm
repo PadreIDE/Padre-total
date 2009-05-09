@@ -68,7 +68,7 @@ sub menu_plugins {
 	# Manual Perl6 syntax highlighting
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, "Refresh Coloring\tF6", ),
+		$self->{menu}->Append( -1, "Refresh Coloring\tF7", ),
 		sub { $self->highlight; },
 	);
 
