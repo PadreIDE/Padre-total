@@ -6,7 +6,7 @@ use warnings;
 use Padre::Document ();
 use Padre::Task::Perl6 ();
 
-our $VERSION = '0.38';
+our $VERSION = '0.39';
 our @ISA     = 'Padre::Document';
 
 # max lines to display in a calltip
