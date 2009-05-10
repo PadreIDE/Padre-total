@@ -38,8 +38,8 @@ sub padre_interfaces {
 sub menu_plugins_simple {
     my $self = shift;
     return 'PAR' => [
-        'Create Standalone Exe' => \&on_stand_alone,
-        'About' => sub { $self->about },
+        _T('Create Standalone Exe') => \&on_stand_alone,
+        _T('About') => sub { $self->about },
     ];
 }
 
@@ -82,15 +82,15 @@ sub on_stand_alone {
     }
 
     if ($filename !~ /\.pl$/i) {
-        Wx::MessageBox( "Currently we only support exe generation from .pl files", "Cannot create", Wx::wxOK|Wx::wxCENTRE, $mw );
+        Wx::MessageBox( _T("Currently we only support exe generation from .pl files"), _T("Cannot create"), Wx::wxOK|Wx::wxCENTRE, $mw );
         return;
     }
     (my $out = $filename) =~ s/pl$/exe/i;
     my $ret = system("pp", $filename, "-o", $out);
     if ($ret) {
-       Wx::MessageBox( "Error generating '$out': $!", "Failed", Wx::wxOK|Wx::wxCENTRE, $mw );
+       Wx::MessageBox( sprintf(_T("Error generating '%s': %s"), $out, $!) , _T("Failed"), Wx::wxOK|Wx::wxCENTRE, $mw );
     } else {
-       Wx::MessageBox( "$out generated", "Done", Wx::wxOK|Wx::wxCENTRE, $mw );
+       Wx::MessageBox( sprintf(_T("%s generated"), $out), _T("Done"), Wx::wxOK|Wx::wxCENTRE, $mw );
     }
 
     if ($tmpfh) {
