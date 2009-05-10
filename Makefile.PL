@@ -25,5 +25,6 @@ no_index       'directory' => [ qw{ t xt eg share inc privinc} ];
 homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6';
+install_share;
  
 WriteAll;
