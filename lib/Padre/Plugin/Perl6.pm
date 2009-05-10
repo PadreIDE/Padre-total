@@ -59,7 +59,7 @@ sub menu_plugins {
 	# Perl6 S29 documentation
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Show Perl6 Help\tF2"), ),
+		$self->{menu}->Append( -1, _T("Show Perl6 Help\tF2"), ),
 		sub { $self->show_perl6_doc; },
 	);
 
@@ -74,7 +74,7 @@ sub menu_plugins {
 
 	# Toggle Auto Perl6 syntax highlighting
 	$self->{p6_highlight} =
-		$self->{menu}->AppendCheckItem( -1, Wx::gettext("Enable Auto Coloring"),);
+		$self->{menu}->AppendCheckItem( -1, _T("Enable Auto Coloring"),);
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{p6_highlight},
@@ -87,17 +87,17 @@ sub menu_plugins {
 	# Export into HTML
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Export Full HTML"), ),
+		$self->{menu}->Append( -1, _T("Export Full HTML"), ),
 		sub { $self->export_html($FULL_HTML); },
 	);
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Export Simple HTML"), ),
+		$self->{menu}->Append( -1, _T("Export Simple HTML"), ),
 		sub { $self->export_html($SIMPLE_HTML); },
 	);
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Export Snippet HTML"), ),
+		$self->{menu}->Append( -1, _T("Export Snippet HTML"), ),
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
@@ -106,7 +106,7 @@ sub menu_plugins {
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
+		$self->{menu}->Append( -1, _T("Cleanup STD.pm Lex Cache"), ),
 		sub { $self->cleanup_std_lex_cache; },
 	);
 
@@ -115,7 +115,7 @@ sub menu_plugins {
 	# Preferences
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Preferences"), ),
+		$self->{menu}->Append( -1, _T("Preferences"), ),
 		sub { $self->show_preferences; },
 	);
 
@@ -124,7 +124,7 @@ sub menu_plugins {
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("About"), ),
+		$self->{menu}->Append( -1, _T("About"), ),
 		sub { $self->show_about },
 	);
 
@@ -171,7 +171,7 @@ sub cleanup_std_lex_cache {
 	my $LEX_STD_DIR = 'lex/STD';
 	if(! -d $LEX_STD_DIR) {
 		Wx::MessageBox(
-			Wx::gettext("Cannot find STD.pm lex cache"),
+			_T("Cannot find STD.pm lex cache"),
 			'Error',
 			Wx::wxOK,
 			$main,
