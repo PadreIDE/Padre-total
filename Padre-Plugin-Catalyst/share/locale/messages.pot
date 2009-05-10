@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-10 21:01+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Catalyst.pm:45
+msgid "New Catalyst Application"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:50
+msgid "Create new..."
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:51
+msgid "Model"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:55
+msgid "View"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:59
+msgid "Controller"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:65
+msgid "Start Web Server"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:66
+msgid "Stop Web Server"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:68
+msgid "Catalyst Online References"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Catalyst Cookbook"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "Recommended Plugins"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "Examples"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "Catalyst Wiki"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "Catalyst Website"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:89
+msgid "About"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:107
+#, perl-format
+msgid ""
+"Catalyst development web server not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Catalyst project."
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:110
+msgid "Server not found"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:130
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:131
+msgid "Start Web Browser?"
+msgstr ""

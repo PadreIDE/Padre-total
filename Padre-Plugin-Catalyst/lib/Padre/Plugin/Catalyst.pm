@@ -42,51 +42,51 @@ sub menu_plugins_simple {
     my $self = shift;
     
     return $self->plugin_name  => [
-            'New Catalyst Application' => sub { 
+            _T('New Catalyst Application') => sub { 
                                 require Padre::Plugin::Catalyst::NewApp;
                                 Padre::Plugin::Catalyst::NewApp::on_newapp();
                                 return;
                             },
-            'Create new...' => [
-                'Model'      => sub { 
+            _T('Create new...') => [
+                _T('Model')      => sub { 
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_model();
 							},
-                'View'       => sub { 
+                _T('View')       => sub { 
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_view();
 							},
-                'Controller' => sub {
+                _T('Controller') => sub {
 								require Padre::Plugin::Catalyst::Helper;
 								Padre::Plugin::Catalyst::Helper::on_create_controller();
 							},
             ],
 			'---'     => undef, # separator
-            'Start Web Server' => sub { $self->on_start_server },
-            'Stop Web Server'  => sub { $self->on_stop_server  },
+            _T('Start Web Server') => sub { $self->on_start_server },
+            _T('Stop Web Server')  => sub { $self->on_stop_server  },
             '---'     => undef, # ...and another separator
-            'Catalyst Online References' => [
+            _T('Catalyst Online References') => [
 				'Beginner\'s Tutorial' => sub { 
 					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
 				},
-				'Catalyst Cookbook' => sub {
+				_T('Catalyst Cookbook') => sub {
 					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
 				},
-				'Recommended Plugins' => sub {
+				_T('Recommended Plugins') => sub {
 					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/recommended_plugins');
 				},
-				'Examples' => sub {
+				_T('Examples') => sub {
 					Wx::LaunchDefaultBrowser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
 				},
-				'Catalyst Wiki' => sub {
+				_T('Catalyst Wiki') => sub {
 					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/');
 				},
-				'Catalyst Website' => sub {
+				_T('Catalyst Website') => sub {
 					Wx::LaunchDefaultBrowser('http://www.catalystframework.org/');
 				},
             ],
             '---'     => undef, # ...oh
-            'About'   => sub { $self->on_show_about },
+            _T('About')   => sub { $self->on_show_about },
     ];
 }
 
@@ -104,10 +104,10 @@ sub on_start_server {
     my $server_full_path = File::Spec->catfile($project_dir, 'script', $server_filename );
     if(! -e $server_full_path) {
         Wx::MessageBox(
-            sprintf("Catalyst development web server not found at\n%s\n\nPlease make sure the active document is from your Catalyst project.", 
+            sprintf(_T("Catalyst development web server not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."), 
                     $server_full_path
                    ),
-            'Server not found', Wx::wxOK, $main
+            _T('Server not found'), Wx::wxOK, $main
         );
         return;
     }
@@ -127,8 +127,8 @@ sub on_start_server {
     
     # TODO: actually check whether this is true.
     my $ret = Wx::MessageBox(
-		'Web server appears to be running. Launch web browser now?',
-		'Start Web Browser?',
+		_T('Web server appears to be running. Launch web browser now?'),
+		_T('Start Web Browser?'),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
 	);
