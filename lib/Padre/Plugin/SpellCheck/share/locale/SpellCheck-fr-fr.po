@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-spellcheck\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-28 18:46+0200\n"
+"POT-Creation-Date: 2009-04-30 07:18+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: \n"
@@ -25,7 +25,11 @@ msgstr "Vérifier l'orthographe\tF7"
 msgid "Preferences"
 msgstr "Préférences"
 
-#: lib/Padre/Plugin/SpellCheck.pm:90
+#: lib/Padre/Plugin/SpellCheck.pm:80
+msgid "No document opened."
+msgstr "Aucun document ouvert."
+
+#: lib/Padre/Plugin/SpellCheck.pm:97
 #: lib/Padre/Plugin/SpellCheck/Dialog.pm:292
 msgid "Spell check finished."
 msgstr "Vérification orthographique terminée."
