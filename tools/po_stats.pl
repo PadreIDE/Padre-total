@@ -151,7 +151,9 @@ END_CSS
 #die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
 	my @languages = sort grep {!/total/} keys %{$reports{Padre}};
-	$html .= "<tr><td>Project</td><td>Total</td>" . (join "", map {"<td>$_</td>"} @languages) . "</tr>\n";
+	$html .= _header(@languages);
+	
+	my %totals;
 	
 	foreach my $project (sort keys %reports) {
 		$html .= "<tr><td>$project</td><td>";
@@ -160,19 +162,19 @@ END_CSS
 		$total ||= 0;
 
 		$html .= "</td>";
+		if ($reports{$project}{total}) {
+			$totals{total} += $reports{$project}{total};
+		}
 		foreach my $language (@languages) {
 			if ($reports{$project}{total}) {
 				if (defined $reports{$project}{$language}{errors}) {
-					if ( $reports{$project}{$language}{errors} > $total / 20  ) {
-						$html .= q(<td class=red>);
-					} elsif ( $reports{$project}{$language}{errors} > 0 ) {
-						$html .= q(<td class=yellow>);
-					} else {
-						$html .= q(<td class=green>);
-					}
+					$html .= _td_open($reports{$project}{$language}{errors}, $total);
 					$html .= $reports{$project}{$language}{errors};
+					$totals{$language} += $reports{$project}{$language}{errors};
 				} else {
-					$html .= '<td>-';
+					#$html .= '<td class=red>-';
+					$html .= "<td class=red>$reports{$project}{total}";
+					$totals{$language} += $reports{$project}{total};
 				}
 			} else {
 				$html .= '<td>na';
@@ -181,10 +183,35 @@ END_CSS
 		}
 		$html .= "</tr>\n";
 	}
+	$html .= "<tr><td>TOTAL</td><td>$totals{total}</td>";
+	foreach my $language (@languages) {
+		$html .= _td_open($totals{$language}, $totals{total});
+		$html .= $totals{$language};
+		$html .= "</td>";
+	}
+	$html .= "</tr>";
+	
+	$html .= _header(@languages);
+	
 	$html .= "</table>\n";
 	$html .= "</body></html>";
 	open my $fh, '>', "$dir/index.html" or die;
 	print $fh $html;
+}
+
+sub _header {
+	return "<tr><td>Project</td><td>Total</td>" . (join "", map {"<td>$_</td>"} @_) . "</tr>\n";
+}
+
+sub _td_open {
+	my ($errors, $total) = @_;
+	if ( $errors > $total / 20  ) {
+		return q(<td class=red>);
+	} elsif ( $errors > 0 ) {
+		return q(<td class=yellow>);
+	} else {
+		return q(<td class=green>);
+	}
 }
 
 sub save_text_report {
