@@ -111,9 +111,9 @@ Padre::Plugin::Nopaste - send code on a nopaste website from padre
 
 =head1 DESCRIPTION
 
-This plugin allows one to send stuff from Padre to a nopaste website,
-allowing for easy code / whatever sharing without having to open a
-browser.
+This plugin allows one to send stuff from Padre to a nopaste website
+with Ctrl+Shift+V, allowing for easy code / whatever sharing without
+having to open a browser.
 
 It is using C<App::Nopaste> underneath, so check this module's pod for
 more information.
@@ -171,6 +171,9 @@ your bug as I make changes.
 
 
 =head1 SEE ALSO
+
+Plugin icon courtesy of Mark James, at
+L<http://www.famfamfam.com/lab/icons/silk/>.
 
 Our git repository is located at L<git://repo.or.cz/padre-plugin-nopaste.git>,
 and can be browsed at L<http://repo.or.cz/w/padre-plugin-nopaste.git>.
