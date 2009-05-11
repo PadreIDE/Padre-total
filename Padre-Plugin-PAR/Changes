@@ -1,5 +1,6 @@
 0.05 2009-01-05
 
+  - french translation added (jquelin)
   - Follow the API changes of Padre 0.24, be a Padre::Plugin
     and use ->current.
 
