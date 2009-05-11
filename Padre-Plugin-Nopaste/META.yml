@@ -1,20 +1,26 @@
 ---
 name: Padre-Plugin-Nopaste
-version: 0.1.0
+version: 0.2.0
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
 abstract: send code on a nopaste website from padre
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
+requires:
+  File::Basename: 0
+  File::Spec::Functions: 0
+  Module::Util: 0
 build_requires:
   App::Nopaste: 0
   Padre: 0.28
+  Padre::Plugin: 0.28
+  Padre::Task: 0.30
   Test::More: 0
 provides:
   Padre::Plugin::Nopaste:
     file: lib/Padre/Plugin/Nopaste.pm
-    version: 0.1.0
+    version: 0.2.0
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
