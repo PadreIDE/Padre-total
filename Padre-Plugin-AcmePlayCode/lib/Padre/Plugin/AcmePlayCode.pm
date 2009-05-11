@@ -7,6 +7,8 @@ our $VERSION = '0.08';
 
 use base 'Padre::Plugin';
 
+use Padre::Util   ('_T');
+
 sub padre_interfaces {
 	'Padre::Plugin' => '0.26',
 }
@@ -14,11 +16,11 @@ sub padre_interfaces {
 sub menu_plugins_simple {
     my $self = shift;
 	return ('Acme::PlayCode' => [
-		'Averything',        sub { $self->play('Averything') },
-		'DoubleToSingle',    sub { $self->play('DoubleToSingle') },
-		'ExchangeCondition', sub { $self->play('ExchangeCondition') },
-		'NumberPlus',        sub { $self->play('NumberPlus') },
-		'PrintComma',        sub { $self->play('PrintComma') },
+		_T('Averything'),        sub { $self->play('Averything') },
+		_T('DoubleToSingle'),    sub { $self->play('DoubleToSingle') },
+		_T('ExchangeCondition'), sub { $self->play('ExchangeCondition') },
+		_T('NumberPlus'),        sub { $self->play('NumberPlus') },
+		_T('PrintComma'),        sub { $self->play('PrintComma') },
 	]);
 }
 
@@ -34,7 +36,7 @@ sub play {
 	return unless ( defined $code and length($code) );
 	
 	require Acme::PlayCode;
-    my $playapp = new Acme::PlayCode;	
+	my $playapp = new Acme::PlayCode;	
 	$playapp->load_plugin( $plugin );
 	
 	my $played = $playapp->play($code);
