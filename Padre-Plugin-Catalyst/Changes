@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Catalyst
 
+        French translation added (jquelin)
+
 0.02    2009-04-08
         Now working on MS-Windows too  (FAYLAND)
         Added "create new model" window (GARU)
