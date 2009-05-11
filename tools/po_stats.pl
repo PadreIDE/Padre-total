@@ -158,9 +158,9 @@ END_CSS
 <p>Generated on: $time</p>
 	
 <table>
-<tr><td class=red>more than 50% missing</td></tr>
-<tr><td class=yellow>20%-50% missing</td></tr>
-<tr><td class=green>5%-20% missing</td></tr>
+<tr><td class=red>more than 40% missing</td></tr>
+<tr><td class=yellow>10%-40% missing</td></tr>
+<tr><td class=green>less than 10% missing</td></tr>
 <tr><td class=lightgreen>perfect</td></tr>
 </table>
 
@@ -224,11 +224,11 @@ sub _header {
 
 sub _td_open {
 	my ($errors, $total) = @_;
-	if ( $errors > $total * 0.50  ) {
+	if ( $errors > $total * 0.40  ) {
 		return q(<td class=red>);
 #	} elsif ( $errors > $total * 0.20 ) {
 #		return q(<td class=orange>);
-	} elsif ( $errors > $total * 0.05 ) {
+	} elsif ( $errors > $total * 0.10 ) {
 		return q(<td class=yellow>);
 	} elsif ( $errors > 0 ) {
 		return q(<td class=green>);
