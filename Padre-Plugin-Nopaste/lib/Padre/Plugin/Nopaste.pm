@@ -23,7 +23,7 @@ our $VERSION = '0.1.0';
 sub plugin_name { 'Nopaste' }
 
 # padre interface
-sub padre_interface {
+sub padre_interfaces {
     'Padre::Plugin' => 0.28,
     'Padre::Task'   => 0.30,
 }
@@ -116,7 +116,7 @@ The following methods are implemented:
 
 =item menu_plugins_simple()
 
-=item padre_interface()
+=item padre_interfaces()
 
 =item plugin_name()
 
