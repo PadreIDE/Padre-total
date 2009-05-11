@@ -1,5 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlCritic.
 
+    - French translation added (jquelin)
+
 0.06  Sun Feb 01 2009
     - Update requirement of Padre to 0.26
     - Update plugin to use API for output window
