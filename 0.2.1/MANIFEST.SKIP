@@ -1,0 +1,32 @@
+# avoid version control files.
+\B\.git\b
+\B\.gitignore$
+
+# avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+^MANIFEST\.SKIP$
+
+# avoid Module::Build generated and utility files.
+\bBuild$
+\bBuild.bat$
+\b_build
+
+# avoid Devel::Cover generated files
+\bcover_db
+
+# avoid temp and backup files.
+~$
+\.bak$
+\.old$
+\.rej$
+\.swp$
+\.tmp$
+\#$
+\.#
+
+# avoid archives of this distribution
+\bPadre-Plugin-Nopaste-[\d\.\_]+
