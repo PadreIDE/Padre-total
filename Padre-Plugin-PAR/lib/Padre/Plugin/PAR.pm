@@ -6,6 +6,7 @@ use base 'Padre::Plugin';
 our $VERSION = '0.05';
 
 use Padre::Wx;
+use Padre::Util   ('_T');
 
 sub require_modules {
     require File::Temp;

@@ -4,6 +4,8 @@ use base 'Padre::Plugin';
 use warnings;
 use strict;
 
+use Padre::Util   ('_T');
+
 our $VERSION = '0.02';
 
 # The plugin name to show in the Plugin Manager and menus
