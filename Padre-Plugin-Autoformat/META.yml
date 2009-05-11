@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Autoformat
-version: 0.0.1
+version: 0.1.0
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
 abstract: reformat your text within Padre
@@ -10,10 +10,11 @@ resources:
 build_requires:
   Padre: 0.28
   Test::More: 0
+  Text::Autoformat: 0
 provides:
   Padre::Plugin::Autoformat:
     file: lib/Padre/Plugin/Autoformat.pm
-    version: 0.0.1
+    version: 0.1.0
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
