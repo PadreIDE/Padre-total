@@ -24,6 +24,11 @@ my $builder = Module::Build->new(
         'Padre::Plugin' => '0.28',
         'Padre::Task'   => '0.30',
     },
+    requires => {
+        'File::Basename'        => 0,
+        'File::Spec::Functions' => 0,
+        'Module::Util'          => 0,
+    },
     add_to_cleanup      => [ 'Padre-Plugin-Nopaste-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
 );
