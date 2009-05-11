@@ -6,6 +6,7 @@ use strict;
 use Cwd              ();
 use Wx::Perl::Dialog ();
 use Padre::Wx        ();
+use Padre::Util      ('_T');
 use File::Spec       ();
 use File::Basename   ();
 
@@ -56,8 +57,8 @@ It does NOT support save-as or providing filename.
 =cut
 
 my @menu = (
-    ["About",        \&about],
-    ["Show Prompt\tAlt-`",     \&show_prompt],
+    [_T("About"),                 \&about],
+    [_T("Show Prompt\tAlt-`"),    \&show_prompt],
 );
 
 sub menu {
@@ -81,7 +82,7 @@ sub show_prompt {
 	my $main   = Padre->ide->wx->main;
 	my $dialog = Padre::Wx::Dialog->new(
 		parent   => $main,
-		title    => "Command Line",
+		title    => _T("Command Line"),
 		layout   => \@layout,
 		width    => [500],
 	);
