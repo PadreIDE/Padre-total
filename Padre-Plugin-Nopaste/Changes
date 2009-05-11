@@ -1,4 +1,4 @@
 Revision history for Padre-Plugin-Nopaste
 
-0.1.0 Fri Mar 13 14:40:04 CET 2009
- - first version: nopaste selection
+0.1.0 Tue Mar 24 19:22:20 CET 2009
+ - first version: nopaste current selection or file

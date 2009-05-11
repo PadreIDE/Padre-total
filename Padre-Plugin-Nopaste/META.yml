@@ -1,20 +1,20 @@
 ---
 name: Padre-Plugin-Nopaste
-version: 0.2.1
+version: 0.1.0
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
-abstract: reformat your text within Padre
+abstract: send code on a nopaste website from padre
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  App::Nopaste: 0
   Padre: 0.28
   Test::More: 0
-  Text::Nopaste: 0
 provides:
   Padre::Plugin::Nopaste:
     file: lib/Padre/Plugin/Nopaste.pm
-    version: 0.2.1
+    version: 0.1.0
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
