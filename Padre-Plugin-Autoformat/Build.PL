@@ -20,7 +20,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More'       => 0,
         'Text::Autoformat' => 0,
-        'Padre'            => '0.28',
+        'Padre'            => '0.30',
     },
     add_to_cleanup      => [ 'Padre-Plugin-Autoformat-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
