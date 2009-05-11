@@ -48,11 +48,11 @@ sub nopaste {
     return unless $editor;
 
     # no selection means autoformat current paragraph
-    if ( not $editor->GetSelectedText ) {
-        my ($b, $e) = $self->_current_paragraph;
-        return if $b == $e; # in between paragraphs
-        $editor->SetSelection($b, $e);
-    }
+#    if ( not $editor->GetSelectedText ) {
+#        my ($b, $e) = $self->_current_paragraph;
+#        return if $b == $e; # in between paragraphs
+#        $editor->SetSelection($b, $e);
+#    }
 
     require Text::Nopaste;
     my $messy  = $editor->GetSelectedText;
@@ -109,7 +109,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Nopaste - reformat your text within Padre
+Padre::Plugin::Nopaste - send code on a nopaste website from padre
 
 
 
@@ -122,8 +122,11 @@ Padre::Plugin::Nopaste - reformat your text within Padre
 
 =head1 DESCRIPTION
 
-This plugin allows one to reformat her text automatically with Ctrl+Shift+J.
-It is using C<Text::Nopaste> underneath, so check this module's pod for
+This plugin allows one to send stuff from Padre to a nopaste website,
+allowing for easy code / whatever sharing without having to open a
+browser.
+
+It is using C<App::Nopaste> underneath, so check this module's pod for
 more information.
 
 
@@ -151,9 +154,9 @@ The following methods are implemented:
 
 =over 4
 
-=item * autoformat()
+=item * nopaste()
 
-Replace the current selection with its autoformatted content.
+Send the current selection to a nopaste site.
 
 =back
 
@@ -161,7 +164,7 @@ Replace the current selection with its autoformatted content.
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<padre-plugin-autoformat at
+Please report any bugs or feature requests to C<padre-plugin-nopaste at
 rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Nopaste>. I will
 be notified, and then you'll automatically be notified of progress on
@@ -171,8 +174,8 @@ your bug as I make changes.
 
 =head1 SEE ALSO
 
-Our git repository is located at L<git://repo.or.cz/padre-plugin-autoformat.git>,
-and can be browsed at L<http://repo.or.cz/w/padre-plugin-autoformat.git>.
+Our git repository is located at L<git://repo.or.cz/padre-plugin-nopaste.git>,
+and can be browsed at L<http://repo.or.cz/w/padre-plugin-nopaste.git>.
 
 
 You can also look for information on this module at:
