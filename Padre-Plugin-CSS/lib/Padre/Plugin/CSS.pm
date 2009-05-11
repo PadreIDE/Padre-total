@@ -7,6 +7,7 @@ our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
+use Padre::Util   ('_T');
 
 sub padre_interfaces {
 	'Padre::Plugin'   => 0.26,
@@ -21,8 +22,8 @@ sub menu_plugins_simple {
     my $self = shift;
     
 	return ('CSS' => [
-	    'CSS Minifier',   sub { $self->css_minifier },
-		'Validate CSS',   sub { $self->validate_css },
+		_T('CSS Minifier'),   sub { $self->css_minifier },
+		_T('Validate CSS'),   sub { $self->validate_css },
 	]);
 }
 
@@ -34,7 +35,7 @@ sub validate_css {
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
-		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $main );
+		Wx::MessageBox( _T('No Code'), _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
 	}
 	
 	require WebService::Validator::CSS::W3C;
@@ -43,10 +44,10 @@ sub validate_css {
 
 	if ($ok) {
 		if ( $val->is_valid ) {
-			$self->_output( "CSS is valid\n" );
+			$self->_output( _T("CSS is valid\n") );
 		} else {
-			my $error_text = "CSS is not valid\n";
-			$error_text .= "Errors:\n";
+			my $error_text = _T("CSS is not valid\n");
+			$error_text .= _T("Errors:\n");
 			my @errors = $val->errors;
 			foreach my $err (@errors) {
 				my $message = $err->{message};
@@ -56,8 +57,8 @@ sub validate_css {
 			$self->_output( $error_text );
 		}
 	} else {
-		my $error_text = sprintf("Failed to validate the code\n");
-        $self->_output( $error_text );
+		my $error_text = _T("Failed to validate the code\n");
+		$self->_output( $error_text );
 	}
 }
 
@@ -85,9 +86,9 @@ sub css_minifier {
 		
 	my $css = minify( $code );
     
-    if ( $src ) {
+	if ( $src ) {
 		my $editor = $main->current->editor;
-	    $editor->ReplaceSelection( $css );
+		$editor->ReplaceSelection( $css );
 	} else {
 		$doc->text_set( $css );
 	}
