@@ -6,6 +6,7 @@ use 5.008005;
 use base 'Padre::Plugin';
 
 use Scalar::Util qw(refaddr);
+use Padre::Util   ('_T');
 
 our $VERSION = '0.21';
 
@@ -293,7 +294,7 @@ sub editor_stop {
 }
 
 sub menu_plugins_simple {
-	return ( "Vi mode" => [ 'About' => \&about ] );
+	return ( "Vi mode" => [ _T('About') => \&about ] );
 }
 
 sub about {
@@ -303,7 +304,7 @@ sub about {
 	$about->SetName("Padre::Plugin::Vi");
 	$about->SetDescription( "Try to emulate the vi modes of operation\n" );
 	$about->SetVersion($Padre::Plugin::Vi::VERSION);
-	$about->SetCopyright( Wx::gettext("Copyright 2008 Gabor Szabo") );
+	$about->SetCopyright( _T("Copyright 2008 Gabor Szabo") );
 
 	# Only Unix/GTK native about box supports websites
 	if (Padre::Util::WXGTK) {
