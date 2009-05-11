@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use base 'Padre::Plugin';
-use Wx qw(wxOK wxCENTRE);
+use Padre::Wx     ();
+use Padre::Util   ('_T');
 
 our $VERSION = '0.07';
 
@@ -27,7 +28,7 @@ sub padre_interfaces {
 
 sub menu_plugins_simple {
 	return PerlCritic => [
-		Wx::gettext('Run PerlCritic') => \&critic,
+		_T('Run PerlCritic') => \&critic,
 	];
 }
 
@@ -39,7 +40,7 @@ sub critic {
 	return unless defined $src;
 
 	if ( !$doc->isa('Padre::Document::Perl') ) {
-		return Wx::MessageBox( 'Document is not a Perl document', "Error", wxOK | wxCENTRE, $self );
+		return Wx::MessageBox( _T('Document is not a Perl document'), _T('Error'), Wx::wxOK | Wx::wxCENTRE, $self );
 	}
 
 	require Perl::Critic;
