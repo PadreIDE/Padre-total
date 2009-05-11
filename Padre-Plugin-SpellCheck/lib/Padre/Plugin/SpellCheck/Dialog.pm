@@ -26,6 +26,7 @@ use Class::XSAccessor accessors => {
 
 use Padre::Current;
 use Padre::Wx ();
+use Padre::Util           ('_T');
 use Encode;
 
 use base 'Wx::Dialog';
@@ -41,7 +42,7 @@ sub new {
     my $self   = $class->SUPER::new(
         Padre::Current->main,
         -1,
-        sprintf( Wx::gettext('Spelling (%s)'), $config->{dictionary} ),
+        sprintf( _T('Spelling (%s)'), $config->{dictionary} ),
         Wx::wxDefaultPosition,
         Wx::wxDefaultSize,
         Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -202,12 +203,12 @@ sub _create {
 sub _create_buttons {
     my ($self) = @_;
 
-    my $ba  = Wx::Button->new( $self, -1, Wx::gettext('Add to dictionary') );
-    my $br  = Wx::Button->new( $self, -1, Wx::gettext('Replace') );
-    my $bra = Wx::Button->new( $self, -1, Wx::gettext('Replace all') );
-    my $bi  = Wx::Button->new( $self, -1, Wx::gettext('Ignore') );
-    my $bia = Wx::Button->new( $self, -1, Wx::gettext('Ignore all') );
-    my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
+    my $ba  = Wx::Button->new( $self, -1, _T('Add to dictionary') );
+    my $br  = Wx::Button->new( $self, -1, _T('Replace') );
+    my $bra = Wx::Button->new( $self, -1, _T('Replace all') );
+    my $bi  = Wx::Button->new( $self, -1, _T('Ignore') );
+    my $bia = Wx::Button->new( $self, -1, _T('Ignore all') );
+    my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, _T('Close') );
     Wx::Event::EVT_BUTTON( $self, $br,  \&_on_butreplace_clicked );
     Wx::Event::EVT_BUTTON( $self, $bra, \&_on_butreplace_all_clicked );
     Wx::Event::EVT_BUTTON( $self, $bi,  \&_on_butignore_clicked );
@@ -237,7 +238,7 @@ sub _create_labels {
     my $sizer  = $self->_sizer;
 
     # create the labels...
-    my $label   = Wx::StaticText->new( $self, -1, Wx::gettext('Not in dictionary:') );
+    my $label   = Wx::StaticText->new( $self, -1, _T('Not in dictionary:') );
     my $labword = Wx::StaticText->new( $self, -1, 'w'x25 );
     $labword->SetBackgroundColour( Wx::Colour->new('#ffaaaa') );
     $labword->Refresh;
@@ -259,7 +260,7 @@ sub _create_list {
     my ($self) = @_;
     my $sizer  = $self->_sizer;
 
-    my $lab  = Wx::StaticText->new( $self, -1, Wx::gettext('Suggestions') );
+    my $lab  = Wx::StaticText->new( $self, -1, _T('Suggestions') );
     $sizer->Add( $lab, Wx::GBPosition->new(1,0), Wx::GBSpan->new(1,3), Wx::wxEXPAND );
     my $list = Wx::ListView->new(
         $self,
@@ -296,7 +297,7 @@ sub _next {
         # no mistake means we're done
         if ( not defined $word ) {
             $self->Destroy;
-            $self->GetParent->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
+            $self->GetParent->message( _T( 'Spell check finished.' ), 'Padre' );
             return;
         }
 
