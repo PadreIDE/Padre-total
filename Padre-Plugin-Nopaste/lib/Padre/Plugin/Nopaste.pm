@@ -12,6 +12,10 @@ package Padre::Plugin::Nopaste;
 use strict;
 use warnings;
 
+use File::Basename        qw{ fileparse };
+use File::Spec::Functions qw{ catfile };
+use Module::Util          qw{ find_installed };
+
 use parent qw{ Padre::Plugin Padre::Task };
 
 our $VERSION = '0.1.0';
@@ -21,6 +25,18 @@ our $VERSION = '0.1.0';
 
 # plugin name
 sub plugin_name { 'Nopaste' }
+
+# plugin icon
+sub plugin_icon {
+    # find resource path
+    my $pkgpath = find_installed(__PACKAGE__);
+    my (undef, $dirname, undef) = fileparse($pkgpath);
+    my $iconpath = catfile( $dirname,
+        'Nopaste', 'share', 'icons', 'paste.png');
+
+    # create and return icon
+    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+}
 
 # padre interface
 sub padre_interfaces {
@@ -117,6 +133,8 @@ The following methods are implemented:
 =item menu_plugins_simple()
 
 =item padre_interfaces()
+
+=item plugin_icon()
 
 =item plugin_name()
 
