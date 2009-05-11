@@ -31,11 +31,31 @@ sub padre_interface {
 sub menu_plugins_simple {
     my ($self) = @_;
     'Autoformat' => [
-        'About'                    => 'show_about',
-        #'Autoformat\tCtrl+Shift+J' => sub {
+        #'About'                    => 'show_about',
+        "Autoformat\tCtrl+Shift+J" => 'autoformat',
     ];
 }
 
+
+# -- public methods
+
+sub autoformat {
+    my ($self) = @_;
+
+    my $main     = $self->main;
+    my $current  = $main->current;
+    my $document = $current->document;
+    my $editor   = $current->editor;
+    return unless $editor;
+
+    my $selected = $editor->GetSelectedText;
+    return unless $selected;
+
+    require Text::Autoformat;
+    my $reformatted = Text::Autoformat::autoformat($selected);
+
+    $editor->ReplaceSelection($reformatted);
+}
 
 1;
 __END__
@@ -79,6 +99,16 @@ The following methods are implemented:
 
 =back
 
+
+=head2 Formatting methods
+
+=over 4
+
+=item * autoformat()
+
+Replace the current selection with its autoformatted content.
+
+=back
 
 
 
