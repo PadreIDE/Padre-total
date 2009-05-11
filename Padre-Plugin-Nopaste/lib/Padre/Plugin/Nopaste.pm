@@ -54,10 +54,10 @@ sub nopaste {
 #        $editor->SetSelection($b, $e);
 #    }
 
-    require Text::Nopaste;
-    my $messy  = $editor->GetSelectedText;
-    my $tidied = Text::Nopaste::autoformat($messy);
-    $editor->ReplaceSelection($tidied);
+    require App::Nopaste;
+    my $text = $editor->GetSelectedText;
+    my $url  = App::Nopaste::nopaste($text);
+    warn $url;
 }
 
 
