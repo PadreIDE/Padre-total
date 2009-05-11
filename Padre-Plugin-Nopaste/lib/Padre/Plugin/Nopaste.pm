@@ -85,7 +85,7 @@ Padre::Plugin::Nopaste - send code on a nopaste website from padre
 =head1 SYNOPSIS
 
     $ padre
-    Ctrl+Shift+J
+    Ctrl+Shift+V
 
 
 
