@@ -58,45 +58,6 @@ sub nopaste {
 
 # -- private methods
 
-#
-# my ($begin, $end) = $self->_current_paragraph;
-#
-# return $begin and $end position of current paragraph.
-#
-sub _current_paragraph {
-    my ($self) = @_;
-
-    my $editor = $self->main->current->editor;
-    my $curpos = $editor->GetCurrentPos;
-    my $lineno = $editor->LineFromPosition($curpos);
-
-    # check if we're in between paragraphs
-    return ($curpos, $curpos) if $editor->GetLine($lineno) =~ /^\s*$/;
-
-    # find the start of paragraph by searching backwards till we find a
-    # line with only whitespace in it.
-    my $para1 = $lineno;
-    while ( $para1 > 0 ) {
-        my $line = $editor->GetLine($para1);
-        last if $line =~ /^\s*$/;
-        $para1--;
-    }
-
-    # now, find the end of paragraph by searching forwards until we find
-    # only white space
-    my $lastline = $editor->GetLineCount;
-    my $para2 = $lineno;
-    while ( $para2 < $lastline ) {
-        $para2++;
-        my $line = $editor->GetLine($para2);
-        last if $line =~ /^\s*$/;
-    }
-
-    # return the position
-    my $begin = $editor->PositionFromLine($para1+1);
-    my $end   = $editor->PositionFromLine($para2);
-    return ($begin, $end);
-}
 
 
 1;
