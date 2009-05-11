@@ -5,6 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::Mojolicious',
           'VERSION_FROM' => 'lib/Padre/Plugin/Mojolicious.pm',
           'PREREQ_PM' => {
+                           'File::Basename' => 0,
                            'Module::Build' => '0.3',
                            'Module::Pluggable::Object' => '3.9',
                            'Mojo' => '0.9',

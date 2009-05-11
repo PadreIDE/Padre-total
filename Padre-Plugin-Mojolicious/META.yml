@@ -10,6 +10,7 @@ resources:
 configure_requires:
   Padre::PluginBuilder: 0.12
 build_requires:
+  File::Basename: 0
   Module::Build: 0.3
   Module::Pluggable::Object: 3.9
   Mojo: 0.9
@@ -19,15 +20,12 @@ provides:
   Padre::Plugin::Mojolicious:
     file: lib/Padre/Plugin/Mojolicious.pm
     version: 0.01
-  Padre::Plugin::Mojolicious::Helper:
-    file: lib/Padre/Plugin/Mojolicious/Helper.pm
-    version: 0.02
   Padre::Plugin::Mojolicious::NewApp:
     file: lib/Padre/Plugin/Mojolicious/NewApp.pm
-    version: 0.02
+    version: 0.01
   Padre::Plugin::Mojolicious::Util:
     file: lib/Padre/Plugin/Mojolicious/Util.pm
-    version: 0.02
+    version: 0.01
 generated_by: Module::Build version 0.32
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

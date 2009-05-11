@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Catalyst
 
-        French translation added (jquelin)
+0.03	
+		Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
+        French translation added (JQUELIN)
 
 0.02    2009-04-08
         Now working on MS-Windows too  (FAYLAND)
