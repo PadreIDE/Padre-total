@@ -7,7 +7,7 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
-use Padre::Util   ();
+use Padre::Util   ('_T');
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -57,9 +57,9 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'             => sub { $self->show_about },
-		'Print Report'      => sub { $self->print_report },
-#		'Configuration'     => sub { $self->configuration_dialog(Padre->ide->wx) },
+		_T('About')             => sub { $self->show_about },
+		_T('Print Report')      => sub { $self->print_report },
+#		_T('Configuration')     => sub { $self->configuration_dialog(Padre->ide->wx) },
 	];
 }
 

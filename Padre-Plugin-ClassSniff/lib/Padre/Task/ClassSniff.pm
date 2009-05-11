@@ -3,9 +3,10 @@ package Padre::Task::ClassSniff;
 use strict;
 use warnings;
 use Padre::Task::PPI ();
-use Padre::Wx   ();
-use Scalar::Util qw(blessed);
-use IPC::Cmd ();
+use Padre::Wx        ();
+use Padre::Util      ('_T');
+use Scalar::Util     qw(blessed);
+use IPC::Cmd         ();
 
 our $VERSION = '0.29';
 use base 'Padre::Task::PPI';
@@ -65,7 +66,7 @@ sub print_report {
 	my $sniff_config = $self->{sniff_config};
 	
 	if (not defined $sniff_config->{class}) {
-		$self->task_warn("Could not determine class to run Sniff on.\n");
+		$self->task_warn(_T("Could not determine class to run Sniff on.\n"));
 		return();
 	}
 
