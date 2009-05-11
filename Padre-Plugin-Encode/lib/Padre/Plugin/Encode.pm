@@ -12,6 +12,7 @@ use Wx::Locale qw(:default);
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Locale     ();
+use Padre::Util       ('_T');
 
 my @ENCODINGS = qw(
     cp932
@@ -28,9 +29,9 @@ sub padre_interfaces {
 
 sub menu_plugins_simple {
     'Convert Encoding' => [
-        Wx::gettext('Encode document to System Default') => \&encode_document_to_system_default,
-        Wx::gettext('Encode document to utf-8')          => \&encode_document_to_utf8,
-        Wx::gettext('Encode document to ...')            => \&encode_document_to,
+        _T('Encode document to System Default') => \&encode_document_to_system_default,
+        _T('Encode document to utf-8')          => \&encode_document_to_utf8,
+        _T('Encode document to ...')            => \&encode_document_to,
     ];
 }
 
@@ -67,7 +68,7 @@ sub encode_document_to {
 
     my @layout = (
         [
-            [ 'Wx::StaticText', undef, Wx::gettext('Encode to:') ],
+            [ 'Wx::StaticText', undef, _T('Encode to:') ],
             [ 'Wx::ComboBox', '_encoding_', 'utf-8', \@ENCODINGS, Wx::wxCB_READONLY ],
         ],
         [
@@ -78,9 +79,7 @@ sub encode_document_to {
 
     my $dialog = Padre::Wx::Dialog->new(
         parent => $window,
-        title  => gettext(
-            "Encode document to..."
-        ),
+        title  => _T("Encode document to..."),
         layout => \@layout,
         width  => [ 100, 200 ],
         bottom => 20,
