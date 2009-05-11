@@ -24,7 +24,8 @@ sub plugin_name { 'Autformat' }
 
 # padre interface
 sub padre_interface {
-    'Padre::Plugin' => 0.28,
+    'Padre::Plugin'     => 0.28,
+    'Padre::Wx::Editor' => 0.30,
 }
 
 # plugin menu.
