@@ -22,6 +22,11 @@ my $builder = Module::Build->new(
         'Text::Autoformat' => 0,
         'Padre'            => '0.30',
     },
+    requires => {
+        'File::Basename'        => 0,
+        'File::Spec::Functions' => 0,
+        'Module::Util'          => 0,
+    },
     add_to_cleanup      => [ 'Padre-Plugin-Autoformat-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
 );
