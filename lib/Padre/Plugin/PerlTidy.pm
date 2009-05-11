@@ -6,7 +6,8 @@ use warnings;
 
 use base 'Padre::Plugin';
 
-use Padre::Wx ();
+use Padre::Wx     ();
+use Padre::Util   ('_T');
 
 our $VERSION = '0.05';
 
@@ -32,10 +33,10 @@ sub padre_interfaces {
 
 sub menu_plugins_simple {
     PerlTidy => [
-        Wx::gettext("Tidy the active document\tAlt+Shift+F") => \&tidy_document,
-        Wx::gettext("Tidy the selected text\tAlt+Shift+G")   => \&tidy_selection,
-        Wx::gettext('Export active document to HTML file') => \&export_document,
-        Wx::gettext('Export selected text to HTML file')   => \&export_selection,
+        _T("Tidy the active document\tAlt+Shift+F") => \&tidy_document,
+        _T("Tidy the selected text\tAlt+Shift+G")   => \&tidy_selection,
+        _T('Export active document to HTML file')   => \&export_document,
+        _T('Export selected text to HTML file')     => \&export_selection,
     ];
 }
 
@@ -49,8 +50,8 @@ sub _tidy {
     my $doc = $main->current->document;
 
     if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
-        return Wx::MessageBox( 'Document is not a Perl document',
-            "Error", Wx::wxOK | Wx::wxCENTRE, $main );
+        return Wx::MessageBox( _T('Document is not a Perl document'),
+            _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
     }
 
     my ( $output, $error );
@@ -70,7 +71,7 @@ sub _tidy {
         my $error_string = $@;
         Wx::MessageBox(
             $error_string,
-            "PerlTidy Error",
+            _T("PerlTidy Error"),
             Wx::wxOK | Wx::wxCENTRE, $main
         );
         return;
@@ -130,7 +131,7 @@ sub _get_filename {
     while (1) {
         my $dialog = Wx::FileDialog->new(
             $main,
-            Wx::gettext("Save file as..."),
+            _T("Save file as..."),
             $default_dir,
             $doc->filename . '.html',
             "*.*",
@@ -144,8 +145,8 @@ sub _get_filename {
         my $path = File::Spec->catfile($default_dir, $filename);
         if ( -e $path ) {
             my $res = Wx::MessageBox(
-                Wx::gettext("File already exists. Overwrite it?"),
-                Wx::gettext("Exist"),
+                _T("File already exists. Overwrite it?"),
+                _T("Exist"),
                 Wx::wxYES_NO,
                 $main,
             );
@@ -168,8 +169,8 @@ sub _export {
     my $doc = $main->current->document;
 
     if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
-        return Wx::MessageBox( 'Document is not a Perl document',
-            "Error", Wx::wxOK | Wx::wxCENTRE, $main );
+        return Wx::MessageBox( _T('Document is not a Perl document'),
+            _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
     }
 
     my $filename = _get_filename($main);
@@ -193,7 +194,7 @@ sub _export {
         my $error_string = $@;
         Wx::MessageBox(
             $error_string,
-            "PerlTidy Error",
+            _T('PerlTidy Error'),
             Wx::wxOK | Wx::wxCENTRE, $main
         );
         return;
