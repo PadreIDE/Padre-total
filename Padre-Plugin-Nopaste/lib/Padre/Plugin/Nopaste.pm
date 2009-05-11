@@ -18,7 +18,7 @@ use Module::Util          qw{ find_installed };
 
 use parent qw{ Padre::Plugin Padre::Task };
 
-our $VERSION = '0.2.0';
+our $VERSION = '0.2.1';
 
 
 # -- padre plugin api, refer to Padre::Plugin

@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Nopaste
 
+0.2.1 Sun Apr  5 12:46:24 CEST 2009
+ - adding missing prereq
+
 0.2.0 Wed Apr  1 17:09:04 CEST 2009
  - nopasting in a padre::task in order not to freeze padre
  - new icon to be displayed in padre's plugin manager
