@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-11 20:49+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/PerlTidy.pm:36
+msgid "Tidy the active document\tAlt+Shift+F"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:37
+msgid "Tidy the selected text\tAlt+Shift+G"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:38
+msgid "Export active document to HTML file"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:39
+msgid "Export selected text to HTML file"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:53 lib/Padre/Plugin/PerlTidy.pm:172
+msgid "Document is not a Perl document"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:54 lib/Padre/Plugin/PerlTidy.pm:173
+msgid "Error"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:74 lib/Padre/Plugin/PerlTidy.pm:197
+msgid "PerlTidy Error"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:134
+msgid "Save file as..."
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:148
+msgid "File already exists. Overwrite it?"
+msgstr ""
+
+#: lib/Padre/Plugin/PerlTidy.pm:149
+msgid "Exist"
+msgstr ""
