@@ -14,7 +14,7 @@ use warnings;
 
 use base qw{ Padre::Plugin };
 
-our $VERSION = '0.0.1';
+our $VERSION = '0.1.0';
 
 
 # -- padre plugin api, refer to Padre::Plugin
