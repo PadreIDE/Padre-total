@@ -12,6 +12,10 @@ package Padre::Plugin::Autoformat;
 use strict;
 use warnings;
 
+use File::Basename        qw{ fileparse };
+use File::Spec::Functions qw{ catfile };
+use Module::Util          qw{ find_installed };
+
 use base qw{ Padre::Plugin };
 
 our $VERSION = '1.0.0';
@@ -21,6 +25,18 @@ our $VERSION = '1.0.0';
 
 # plugin name
 sub plugin_name { 'Autformat' }
+
+# plugin icon
+sub plugin_icon {
+    # find resource path
+    my $pkgpath = find_installed(__PACKAGE__);
+    my (undef, $dirname, undef) = fileparse($pkgpath);
+    my $iconpath = catfile( $dirname,
+        'Autoformat', 'share', 'icons', 'justify.png');
+
+    # create and return icon
+    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+}
 
 # padre interface
 sub padre_interface {
@@ -103,6 +119,8 @@ The following methods are implemented:
 
 =item padre_interface()
 
+=item plugin_icon()
+
 =item plugin_name()
 
 =back
@@ -131,6 +149,10 @@ your bug as I make changes.
 
 
 =head1 SEE ALSO
+
+Plugin icon courtesy of Mark James, at
+L<http://www.famfamfam.com/lab/icons/silk/>.
+
 
 Our git repository is located at L<git://repo.or.cz/padre-plugin-autoformat.git>,
 and can be browsed at L<http://repo.or.cz/w/padre-plugin-autoformat.git>.
