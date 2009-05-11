@@ -19,6 +19,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/Autoformat.pm',
     build_requires => {
         'Test::More'       => 0,
+        'Text::Autoformat' => 0,
         'Padre'            => '0.28',
     },
     add_to_cleanup      => [ 'Padre-Plugin-ViewInBrowser-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
