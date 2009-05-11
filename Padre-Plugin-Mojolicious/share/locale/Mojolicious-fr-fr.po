@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-mojolicious\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-11 20:45+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
+"Language-Team: jérôme quelin <jquelin@cpan.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: lib/Padre/Plugin/Mojolicious.pm:44
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+msgid "New Mojolicious Application"
+msgstr "Nouvelle application Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:50
+msgid "Start Web Server"
+msgstr "Démarrer le serveur web"
+
+#: lib/Padre/Plugin/Mojolicious.pm:51
+msgid "Stop Web Server"
+msgstr "Arrêter le serveur web"
+
+#: lib/Padre/Plugin/Mojolicious.pm:53
+msgid "Mojolicious Online References"
+msgstr "Références en ligne Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:54
+msgid "Mojolicious Manual"
+msgstr "Manuel Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:57
+msgid "Mojolicious Website"
+msgstr "Site web Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:62
+msgid "About"
+msgstr "A propos"
+
+#: lib/Padre/Plugin/Mojolicious.pm:78
+#, perl-format
+msgid ""
+"Mojolicious application script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Mojolicious project."
+msgstr ""
+"Script d'application Mojolicious non trouvé à\n"
+"%s\n"
+"\n"
+"Merci de vérifier que le document actif appartient bien à votre projet Mojolicious."
+
+#: lib/Padre/Plugin/Mojolicious.pm:81
+msgid "Server not found"
+msgstr "Serveur non trouvé"
+
+#: lib/Padre/Plugin/Mojolicious.pm:103
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "Le serveur web semble démarré. Lancer un navigateur maintenant ?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:104
+msgid "Start Web Browser?"
+msgstr "Démarrer un navigateur web ?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:128
+msgid ""
+"\n"
+"Web server stopped successfully.\n"
+msgstr ""
+"\n"
+"Serveur web arrêté.\n"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+msgid "Application Name:"
+msgstr "Nom de l'application :"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+msgid "Parent Directory:"
+msgstr "Répertoire parent :"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+msgid "Pick parent directory"
+msgstr "Sélectionner le répertoire parent"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+msgid "Invalid Application name"
+msgstr "Nom d'application invalide"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "missing field"
+msgstr "champ manquant"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "You need to select a base directory"
+msgstr "Vous devez sélectionner un répertoire de base"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "%s semble créé. Voulez-vous l'ouvrir maintenant ?"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+msgid "Done"
+msgstr "Terminé"
+
