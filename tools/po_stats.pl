@@ -213,6 +213,18 @@ END_HTML
 	$html .= _header(@languages);
 	
 	$html .= "</table>\n";
+
+	$html .= "<h2>Padre GUI level of completeness</h2>\n";
+	$html .= "<table>";
+	foreach my $language (@languages) {
+		my $p = 100 - int( 100 * $totals{$language} / $totals{total});
+		$html .= "<tr><td>$language</td><td><img src=../img/$p.png /></td><td>$p %</td></tr>\n";
+	}
+	$html .= "</table>";
+	
+
+
+
 	$html .= "</body></html>";
 	open my $fh, '>', "$dir/index.html" or die;
 	print $fh $html;
