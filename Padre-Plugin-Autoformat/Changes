@@ -1,4 +1,7 @@
 Revision history for Padre-Plugin-Autoformat
 
+0.2.0 Fri Mar 13 15:31:24 CET 2009
+ - autoformat paragraph if no selection
+
 0.1.0 Fri Mar 13 14:40:04 CET 2009
  - First version: autoformat selection
