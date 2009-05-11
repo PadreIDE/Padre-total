@@ -23,12 +23,13 @@ use Padre::Current;
 use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
 use Padre::Plugin::SpellCheck::Preferences;
+use Padre::Util           ('_T');
 
 
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
-sub plugin_name { Wx::gettext('Spell check') }
+sub plugin_name { _T('Spell check') }
 
 # plugin icon
 sub plugin_icon {
@@ -53,9 +54,9 @@ sub padre_interfaces {
 
 # plugin menu.
 sub menu_plugins_simple {
-    Wx::gettext('Spell check') => [
-        Wx::gettext("Check spelling\tF7") => 'spell_check',
-        Wx::gettext("Preferences")        => 'spell_preferences',
+    _T('Spell check') => [
+        _T("Check spelling\tF7") => 'spell_check',
+        _T("Preferences")        => 'spell_preferences',
     ];
 }
 
@@ -77,7 +78,7 @@ sub spell_check {
     # TODO: maybe grey out the menu option if
     # no file is opened?
     unless ($main->current->document) {
-        $main->message( Wx::gettext( 'No document opened.' ), 'Padre' );
+        $main->message( _T( 'No document opened.' ), 'Padre' );
 	    return;
     }
     
@@ -94,7 +95,7 @@ sub spell_check {
 
     # no mistake means we're done
     if ( not defined $word ) {
-        $main->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
+        $main->message( _T( 'Spell check finished.' ), 'Padre' );
         return;
     }
 
