@@ -25,6 +25,7 @@ sub plugin_name { 'Nopaste' }
 # padre interface
 sub padre_interface {
     'Padre::Plugin' => 0.28,
+    'Padre::Task'   => 0.30,
 }
 
 # plugin menu.
