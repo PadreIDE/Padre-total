@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr-fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-10 18:30+0200\n"
+"POT-Creation-Date: 2009-05-10 23:25+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: jérôme quelin <jquelin@cpan.org>\n"
@@ -11,14 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
-
-#: lib/Padre/Task/Outline/Perl6.pm:191
-msgid "Outline"
-msgstr "Profil"
-
-#: lib/Padre/Task/Outline/Perl6.pm:224
-msgid "Open &Documentation"
-msgstr "Ouvrir la &documentation"
 
 #: lib/Padre/Plugin/Perl6.pm:62
 msgid "Show Perl6 Help\tF2"
@@ -56,8 +48,32 @@ msgstr "A propos"
 msgid "Cannot find STD.pm lex cache"
 msgstr "Ne peut trouver le cache lex de STD.pm"
 
+#: lib/Padre/Plugin/Perl6/Preferences.pm:28
+msgid "Perl6 preferences"
+msgstr "Préférences Perl6"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:121
+msgid "Syntax Highlighter:"
+msgstr "Coloration syntaxique :"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:152
+msgid "Pick mildew Directory"
+msgstr "Choisir le répertoire de mildew"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:179
+msgid "Pick rakudo Directory"
+msgstr "Choisir le répertoire de rakudo"
+
 #: lib/Padre/Document/Perl6.pm:334
 #, perl-format
 msgid "%s is Perl 6 %s "
 msgstr "%s est %s en Perl6"
+
+#: lib/Padre/Task/Outline/Perl6.pm:191
+msgid "Outline"
+msgstr "Profil"
+
+#: lib/Padre/Task/Outline/Perl6.pm:224
+msgid "Open &Documentation"
+msgstr "Ouvrir la &documentation"
 
