@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Autoformat
 
+1.1.0 Tue Mar 31 18:51:18 CEST 2009
+ - providing plugin icon for new padre's plugin manager
 
 1.0.0 Fri Mar 27 12:24:51 CET 2009
  - current_paragraph() moved to padre::wx::editor
