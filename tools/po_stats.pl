@@ -12,6 +12,9 @@ use Env                   qw{ LANG };
 use Getopt::Long          qw{ GetOptions };
 #use Locale::PO;
 
+# TODO: on the HTML show percentages instead of errors (or have both reports).
+# maybe show some progress bar
+
 my %reports;
 
 my $text;
@@ -134,19 +137,35 @@ sub save_html_report {
 .red {
     background-color: red;
 }
-.yellow {
+.orange {
+    background-color: orange;
+}.yellow {
     background-color: yellow;
 }
 .green {
+    background-color: green;
+}
+.lightgreen {
     background-color: lightgreen;
 }
 </style>
 END_CSS
 
-	$html .= "<h1>Padre translation status report</h1>\n";
-	$html .= "<p>The numbers showing the number of errors. na means that translation does not exist at all</p>\n";
-	$html .= "<p>Generated on: " . localtime() . "</p>\n";
-	$html .= "<table border=1>\n";
+	my $time = localtime();
+	$html .= <<"END_HTML";
+<h1>Padre translation status report</h1>
+<p>The numbers showing the number of errors. na means that translation does not exist at all</p>
+<p>Generated on: $time</p>
+	
+<table>
+<tr><td class=red>more than 50% missing</td></tr>
+<tr><td class=yellow>20%-50% missing</td></tr>
+<tr><td class=green>5%-20% missing</td></tr>
+<tr><td class=lightgreen>perfect</td></tr>
+</table>
+
+<table border=1>
+END_HTML
 
 #die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
@@ -200,17 +219,21 @@ END_CSS
 }
 
 sub _header {
-	return "<tr><td>Project</td><td>Total</td>" . (join "", map {"<td>$_</td>"} @_) . "</tr>\n";
+	return "<tr><td></td><td>Total</td>" . (join "", map {"<td>$_</td>"} @_) . "</tr>\n";
 }
 
 sub _td_open {
 	my ($errors, $total) = @_;
-	if ( $errors > $total / 20  ) {
+	if ( $errors > $total * 0.50  ) {
 		return q(<td class=red>);
-	} elsif ( $errors > 0 ) {
+#	} elsif ( $errors > $total * 0.20 ) {
+#		return q(<td class=orange>);
+	} elsif ( $errors > $total * 0.05 ) {
 		return q(<td class=yellow>);
-	} else {
+	} elsif ( $errors > 0 ) {
 		return q(<td class=green>);
+	} else {
+		return q(<td class=lightgreen>);
 	}
 }
 
