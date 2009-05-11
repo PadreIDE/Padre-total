@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Autoformat
 
+1.1.2 Sun Apr  5 12:05:46 CEST 2009
+ - fix typo in plugin name
+
 1.1.1 Wed Apr  1 16:35:33 CEST 2009
  - fixing method name in padre's plugin interface
 
