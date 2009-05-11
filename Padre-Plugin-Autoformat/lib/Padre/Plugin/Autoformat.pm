@@ -12,7 +12,30 @@ package Padre::Plugin::Autoformat;
 use strict;
 use warnings;
 
+use base qw{ Padre::Plugin };
+
 our $VERSION = '0.0.1';
+
+
+# -- padre plugin api, refer to Padre::Plugin
+
+# plugin name
+sub plugin_name { 'Autformat' }
+
+# padre interface
+sub padre_interface {
+    'Padre::Plugin' => 0.28,
+}
+
+# plugin menu.
+sub menu_plugins_simple {
+    my ($self) = @_;
+    'Autoformat' => [
+        'About'                    => 'show_about',
+        #'Autoformat\tCtrl+Shift+J' => sub {
+    ];
+}
+
 
 1;
 __END__
@@ -35,6 +58,27 @@ Padre::Plugin::Autoformat - reformat your text within Padre
 This plugin allows one to reformat her text automatically with Ctrl+Shift+J.
 It is using C<Text::Autoformat> underneath, so check this module's pod for
 more information.
+
+
+=head1 PUBLIC METHODS
+
+=head2 Standard Padre::Plugin API
+
+C<Padre::Plugin::Autoformat> defines a plugin which follows C<Padre::Plugin>
+API. Refer to this module's documentation for more information.
+
+The following methods are implemented:
+
+=over 4
+
+=item menu_plugins_simple()
+
+=item padre_interface()
+
+=item plugin_name()
+
+=back
+
 
 
 
