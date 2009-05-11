@@ -22,7 +22,7 @@ my $builder = Module::Build->new(
         'Text::Autoformat' => 0,
         'Padre'            => '0.28',
     },
-    add_to_cleanup      => [ 'Padre-Plugin-ViewInBrowser-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
+    add_to_cleanup      => [ 'Padre-Plugin-Autoformat-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
 );
 
