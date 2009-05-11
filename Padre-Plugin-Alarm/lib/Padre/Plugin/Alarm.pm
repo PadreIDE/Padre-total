@@ -6,9 +6,12 @@ use strict;
 our $VERSION = '0.04';
 
 use base 'Padre::Plugin';
+
 use Padre::Wx ();
 use Wx::Locale qw(:default);
 use Padre::Wx::Dialog ();
+use Padre::Util   ('_T');
+
 use vars qw/$alarm_timer_id/;
 
 sub padre_interfaces {
@@ -38,11 +41,11 @@ sub set_alarm_time {
 	my @frequency = ( 'once', 'daily' );
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              gettext('Time (eg: 23:55):')],
+			[ 'Wx::StaticText', undef,              _T('Time (eg: 23:55):')],
 			[ 'Wx::TextCtrl',   '_alarm_time_',    ''],
 		],
 		[
-			[ 'Wx::StaticText', undef,              gettext('Frequency:')],
+			[ 'Wx::StaticText', undef,              _T('Frequency:')],
 			[ 'Wx::ComboBox',   '_frequency_',     'once', \@frequency],
 		],
 		[
@@ -52,7 +55,7 @@ sub set_alarm_time {
 	);
 	my $dialog = Padre::Wx::Dialog->new(
 		parent          => $main,
-		title           => gettext("Set Alarm Time"),
+		title           => _T("Set Alarm Time"),
 		layout          => \@layout,
 		width           => [100, 200],
         bottom => 20,
@@ -85,7 +88,7 @@ sub ok_clicked {
 
 	my $alarm_time = $data->{_alarm_time_};
 	if ( $alarm_time !~ /^\d{1,2}\:\d{2}$/ ) {
-		Wx::MessageBox(gettext('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'), gettext("Wrong Alarm Time"), Wx::wxOK, $main);
+		Wx::MessageBox(_T('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'), _T("Wrong Alarm Time"), Wx::wxOK, $main);
 		return;
 	}
 	
@@ -121,7 +124,7 @@ sub stop_alarm {
 	my $main   = $self->main;
 	
 	if ( not $opts->{no_message} ) {
-	    $main->message('All Alarms are stopped', 'Stop Alarm');
+	    $main->message(_T('All Alarms are stopped'), _T('Stop Alarm'));
 	}
 		
 	return unless $alarm_timer_id;
@@ -140,7 +143,7 @@ sub clear_alarm {
 	$self->config_write($config);
 	
 	$self->stop_alarm( { no_message => 1 } );
-	$main->message('All Alarms are cleared', 'Clear Alarm');
+	$main->message(_T('All Alarms are cleared'), _T('Clear Alarm'));
 }
 
 sub on_timer_alarm {
