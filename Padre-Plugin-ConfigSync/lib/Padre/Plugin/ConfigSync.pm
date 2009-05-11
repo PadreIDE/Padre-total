@@ -22,6 +22,7 @@ use File::Temp         ();
 use YAML::Tiny         ();
 use Padre::Wx          ();
 use Padre::Current     ();
+use Padre::Util        ('_T');
 
 our $VERSION = '0.25';
 our @ISA     = 'Padre::Plugin';
@@ -52,9 +53,9 @@ sub padre_interfaces {
 
 sub menu_plugin {
 	$_[0]->plugin_name => [
-		'Import Config URL' => 'config_import',
-		'---'               => undef,
-		'About'             => 'show_about',
+		_T('Import Config URL') => 'config_import',
+		'---'                   => undef,
+		_T('About')             => 'show_about',
 	],
 }
 
@@ -71,7 +72,7 @@ sub config_import {
 	# Ask what we should install
 	my $dialog = Wx::TextEntryDialog->new(
 		$main,
-		"Enter URL to install\ne.g. http://svn.ali.as/users/adamk/config.yml",
+		_T("Enter URL to install\ne.g. http://svn.ali.as/users/adamk/config.yml"),
 		"pip",
 		'',
 	);
@@ -81,7 +82,7 @@ sub config_import {
 	my $string = $dialog->GetValue;
 	$dialog->Destroy;
 	unless ( defined $string and $string =~ /\S/ ) {
-		$main->error("Did not provide a distribution");
+		$main->error(_T("Did not provide a distribution"));
 		return;
 	}
 
