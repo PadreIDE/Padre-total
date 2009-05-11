@@ -15,6 +15,7 @@ use warnings;
 use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use Module::Util          qw{ find_installed };
+use Padre::Util           ('_T');
 
 use base qw{ Padre::Plugin };
 
@@ -49,7 +50,7 @@ sub menu_plugins_simple {
     my ($self) = @_;
     'Autoformat' => [
         #'About'                    => 'show_about',
-        "Autoformat\tCtrl+Shift+J" => 'autoformat',
+        _T("Autoformat\tCtrl+Shift+J") => 'autoformat',
     ];
 }
 
