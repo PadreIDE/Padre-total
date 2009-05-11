@@ -1,0 +1,14 @@
+Revision history for Padre-Plugin-Autoformat
+
+
+1.0.0 Fri Mar 27 12:24:51 CET 2009
+ - current_paragraph() moved to padre::wx::editor
+
+0.2.1 Fri Mar 13 15:35:31 CET 2009
+ - forgot a spot when renaming a sub
+
+0.2.0 Fri Mar 13 15:31:24 CET 2009
+ - autoformat paragraph if no selection
+
+0.1.0 Fri Mar 13 14:40:04 CET 2009
+ - First version: autoformat selection
