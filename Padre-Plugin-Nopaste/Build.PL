@@ -27,5 +27,6 @@ my $builder = Module::Build->new(
     add_to_cleanup      => [ 'Padre-Plugin-Nopaste-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',
 );
+$builder->add_build_element('png');
 
 $builder->create_build_script();
