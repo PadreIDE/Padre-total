@@ -52,7 +52,20 @@ sub nopaste {
 
     require App::Nopaste;
     my $url  = App::Nopaste::nopaste($text);
-    warn $url;
+
+    # show result in output section
+    $main->show_output(1);
+    my $output = $main->output;
+    $output->AppendText("\n");
+    if ( defined $url ) {
+        $output->style_neutral;
+        my $text = "Text successfully nopasted at: $url\n";
+        $output->AppendText($text);
+    } else {
+        $output->style_bad;
+        my $text = "Error while nopasting text\n";
+        $output->AppendText($text);
+    }
 }
 
 
