@@ -4,6 +4,8 @@ use base 'Padre::Plugin';
 use warnings;
 use strict;
 
+use Padre::Util   ('_T');
+
 our $VERSION = '0.01';
 
 # The plugin name to show in the Plugin Manager and menus
@@ -39,25 +41,25 @@ sub menu_plugins_simple {
     my $self = shift;
     
     return $self->plugin_name  => [
-            'New Mojolicious Application' => sub { 
+            _T('New Mojolicious Application') => sub { 
                                 require Padre::Plugin::Mojolicious::NewApp;
                                 Padre::Plugin::Mojolicious::NewApp::on_newapp();
                                 return;
                             },
 			'---'     => undef, # separator
-            'Start Web Server' => sub { $self->on_start_server },
-            'Stop Web Server'  => sub { $self->on_stop_server  },
+            _T('Start Web Server') => sub { $self->on_start_server },
+            _T('Stop Web Server')  => sub { $self->on_stop_server  },
             '---'     => undef, # ...and another separator
-            'Mojolicious Online References' => [
-				'Mojolicious Manual' => sub {
+            _T('Mojolicious Online References') => [
+				_T('Mojolicious Manual') => sub {
 					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Mojo::Manual::Mojolicious');
 				},
-				'Mojolicious Website' => sub {
+				_T('Mojolicious Website') => sub {
 					Wx::LaunchDefaultBrowser('http://www.mojolicious.org/');
 				},
             ],
-            '---'     => undef, # ...oh
-            'About'   => sub { $self->on_show_about },
+            '---'         => undef, # ...oh
+            _T('About')   => sub { $self->on_show_about },
     ];
 }
 
@@ -65,18 +67,18 @@ sub menu_plugins_simple {
 sub on_start_server {
     my $main = Padre->ide->wx->main;
 
-	require Padre::Plugin::Mojolicious::Util;
+    require Padre::Plugin::Mojolicious::Util;
     my $project_dir = Padre::Plugin::Mojolicious::Util::get_document_base_dir();
 
-	my $server_filename = Padre::Plugin::Mojolicious::Util::get_mojolicious_project_name($project_dir);
-    
+    my $server_filename = Padre::Plugin::Mojolicious::Util::get_mojolicious_project_name($project_dir);
+
     my $server_full_path = File::Spec->catfile($project_dir, 'bin', $server_filename );
     if(! -e $server_full_path) {
         Wx::MessageBox(
-            sprintf("Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project.", 
+            sprintf(_T("Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project."), 
                     $server_full_path
                    ),
-            'Server not found', Wx::wxOK, $main
+            _T('Server not found'), Wx::wxOK, $main
         );
         return;
     }
@@ -98,8 +100,8 @@ sub on_start_server {
     
     # TODO: actually check whether this is true.
     my $ret = Wx::MessageBox(
-		'Web server appears to be running. Launch web browser now?',
-		'Start Web Browser?',
+		_T('Web server appears to be running. Launch web browser now?'),
+		_T('Start Web Browser?'),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
 	);
@@ -123,7 +125,7 @@ sub on_stop_server {
 	}
 	delete $main->{command};
 	$main->menu->run->enable;
-	$main->output->AppendText("\nWeb server stopped successfully.\n");
+	$main->output->AppendText(_T("\nWeb server stopped successfully.\n"));
 	return;
 }
 

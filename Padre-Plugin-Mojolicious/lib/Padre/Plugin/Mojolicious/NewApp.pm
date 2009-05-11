@@ -21,12 +21,12 @@ sub get_layout {
 
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              'Application Name:'],
+			[ 'Wx::StaticText', undef,              _T('Application Name:')],
 			[ 'Wx::TextCtrl',   '_app_name_',    ''],
 		],
 		[
-			[ 'Wx::StaticText',      undef,         'Parent Directory:'],
-			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
+			[ 'Wx::StaticText',      undef,         _T('Parent Directory:')],
+			[ 'Wx::DirPickerCtrl',   '_directory_', '',   _T('Pick parent directory')],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -43,7 +43,7 @@ sub dialog {
 	my $layout = get_layout();
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $parent,
-		title  => 'New Mojolicious Application',
+		title  => _T('New Mojolicious Application'),
 		layout => $layout,
 		width  => [100, 200],
 		bottom => 20,
@@ -79,11 +79,11 @@ sub ok_clicked {
 
 	# TODO improve input validation !
 	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
-        Wx::MessageBox('Invalid Application name', 'missing field', Wx::wxOK, $main);
+        Wx::MessageBox(_T('Invalid Application name'), _T('missing field'), Wx::wxOK, $main);
         return;
 	}
 	elsif (not $data->{'_directory_'}) {
-	    Wx::MessageBox('You need to select a base directory', 'missing field', Wx::wxOK, $main);
+	    Wx::MessageBox(_T('You need to select a base directory'), _T('missing field'), Wx::wxOK, $main);
         return;
 	}
 	
@@ -117,8 +117,8 @@ sub ok_clicked {
 	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
-		sprintf("%s apparently created. Do you want to open it now?", $data->{_app_name_}),
-		'Done',
+		sprintf(_T("%s apparently created. Do you want to open it now?"), $data->{_app_name_}),
+		_T('Done'),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
 	);
