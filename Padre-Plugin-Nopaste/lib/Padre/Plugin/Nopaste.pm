@@ -47,15 +47,10 @@ sub nopaste {
     my $editor   = $current->editor;
     return unless $editor;
 
-    # no selection means autoformat current paragraph
-#    if ( not $editor->GetSelectedText ) {
-#        my ($b, $e) = $self->_current_paragraph;
-#        return if $b == $e; # in between paragraphs
-#        $editor->SetSelection($b, $e);
-#    }
+    # no selection means send current file
+    my $text = $editor->GetSelectedText || $editor->GetText;
 
     require App::Nopaste;
-    my $text = $editor->GetSelectedText;
     my $url  = App::Nopaste::nopaste($text);
     warn $url;
 }
