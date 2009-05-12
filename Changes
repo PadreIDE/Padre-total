@@ -1,5 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.06  XXX
+    - Keyboard shortcuts added (claudio)
     - French translation added (jquelin)
 
 0.05  Mon Feb 09 2009
