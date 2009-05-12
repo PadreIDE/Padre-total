@@ -269,13 +269,15 @@ sub generate_text_report {
 
 	my $report    .= "Language  Errors\n";
 	foreach my $language (sort keys %$data) {
+		next if $language eq 'total';
 		$report .= sprintf("%-10s %s\n", $language, $data->{$language}{errors});
 	}
 	
 	if ($details) {
 		foreach my $language (sort keys %$data) {
+			next if $language eq 'total';
 			$report .= "\n------------------\n";
-			$report .= $language . "\n\n";
+			$report .= "Language: $language \n\n";
 			if ($data->{$language}{errors}) {
 				$report .= "Fatal errors: $data->{$language}{errors}\n\n";
 			}
