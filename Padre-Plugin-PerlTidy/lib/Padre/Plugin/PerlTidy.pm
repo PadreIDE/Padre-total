@@ -9,7 +9,7 @@ use base 'Padre::Plugin';
 use Padre::Wx     ();
 use Padre::Util   ('_T');
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =pod
 
