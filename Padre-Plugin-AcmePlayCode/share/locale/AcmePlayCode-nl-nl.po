@@ -21,7 +21,6 @@ msgid "DoubleToSingle"
 msgstr "DubbelNaarEnkel"
 
 #: lib/Padre/Plugin/AcmePlayCode.pm:21
-#, fuzzy
 msgid "ExchangeCondition"
 msgstr "UitwisselenConditie"
 
