@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Vi
 
-    added french translation (jquelin)
+    Added translations:
+    - French (jquelin)
+    - Polish (therek)
 
 0.21    2009.01.13
 	Moved to its own distribution
