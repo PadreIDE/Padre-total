@@ -1,6 +1,8 @@
 0.05 2009-01-05
 
-  - french translation added (jquelin)
+  - Added translations:
+    - French (jquelin)
+    - Polish (therek)
   - Follow the API changes of Padre 0.24, be a Padre::Plugin
     and use ->current.
 
