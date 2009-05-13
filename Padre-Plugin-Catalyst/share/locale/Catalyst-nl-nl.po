@@ -80,7 +80,7 @@ msgstr ""
 "Catalyst development web server niet gevonden op\n"
 "%s\n"
 "\n"
-"Gelieve te controlen dat het actieve document van uw Catalyst project is."
+"Gelieve te controleren dat het actieve document van uw Catalyst project is."
 
 #: lib/Padre/Plugin/Catalyst.pm:110
 msgid "Server not found"

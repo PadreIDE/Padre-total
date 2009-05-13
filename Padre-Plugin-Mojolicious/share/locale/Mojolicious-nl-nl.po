@@ -1,0 +1,110 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-mojolicious\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-11 20:45+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: ddn <ddn123456 at gmail.com>\n"
+"Language-Team: jérôme quelin <jquelin@cpan.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: lib/Padre/Plugin/Mojolicious.pm:44
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+msgid "New Mojolicious Application"
+msgstr "Nieuwe Mojolicious Toepassing"
+
+#: lib/Padre/Plugin/Mojolicious.pm:50
+msgid "Start Web Server"
+msgstr "Start Web Server"
+
+#: lib/Padre/Plugin/Mojolicious.pm:51
+msgid "Stop Web Server"
+msgstr "Stop Web Server"
+
+#: lib/Padre/Plugin/Mojolicious.pm:53
+msgid "Mojolicious Online References"
+msgstr "Mojolicious Online Referenties"
+
+#: lib/Padre/Plugin/Mojolicious.pm:54
+msgid "Mojolicious Manual"
+msgstr "Mojolicious Handleiding"
+
+#: lib/Padre/Plugin/Mojolicious.pm:57
+msgid "Mojolicious Website"
+msgstr "Mojolicious Website"
+
+#: lib/Padre/Plugin/Mojolicious.pm:62
+msgid "About"
+msgstr "Betreft"
+
+#: lib/Padre/Plugin/Mojolicious.pm:78
+#, perl-format
+msgid ""
+"Mojolicious application script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Mojolicious project."
+msgstr ""
+"Mojolicious toepassings-script niet gevonden op\n"
+"%s\n"
+"\n"
+"Gelieve te controleren dat het actieve document van uw Mojolicious project is."
+
+#: lib/Padre/Plugin/Mojolicious.pm:81
+msgid "Server not found"
+msgstr "Server niet gevonden"
+
+#: lib/Padre/Plugin/Mojolicious.pm:103
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "Web server lijkt te draaien. Web browser nu opstarten?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:104
+msgid "Start Web Browser?"
+msgstr "Web Browser opstarten?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:128
+msgid ""
+"\n"
+"Web server stopped successfully.\n"
+msgstr ""
+"\n"
+"Web server succesvol gestopt.\n"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+msgid "Application Name:"
+msgstr "Toepassingsnaam:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+msgid "Parent Directory:"
+msgstr "Bovenliggende Map:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+msgid "Pick parent directory"
+msgstr "Selecteer bovenliggende map"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+msgid "Invalid Application name"
+msgstr "Invalide toepassingsnaam"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "missing field"
+msgstr "ontbrekend veld"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "You need to select a base directory"
+msgstr "U dient een basismap te selecteren"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "%s blijkbaar aangemaakt. Wenst U het nu te openen?"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+msgid "Done"
+msgstr "Klaar"
+
