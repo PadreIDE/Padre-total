@@ -1,7 +1,9 @@
 Revision history for Padre-Plugin-Autoformat
 
- - french translation added
- - brazilian portuguese translation added
+ - added translations:
+   - brazilian portuguese
+   - french
+   - polish
 
 1.1.2 Sun Apr  5 12:05:46 CEST 2009
  - fix typo in plugin name

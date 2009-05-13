@@ -1,7 +1,9 @@
 Revision history for Padre-Plugin-ClassSniff
 
-  - french translation added (jquelin)
-  - brazilian portuguese translation added (garu)
+  - Added translations:
+    - Brazilian Portuguese (garu)
+    - French (jquelin)
+    - Polish (therek)
 
 0.01    2009-03-19
   - Initial version

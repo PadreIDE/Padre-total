@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-CommandLine
 
-        French translation added (jquelin)
+	Added translations:
+	- French (jquelin)
+	- Polish (therek)
 
 0.02    2008.12.23
         Add prereq Wx::Perl::Dialog
