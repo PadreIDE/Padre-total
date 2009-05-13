@@ -1,10 +1,12 @@
 Revision history for Padre-Plugin-Catalyst
 
 0.03	
-		Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
-		Added translation support (SZABGAB)
-        French translation added (JQUELIN)
-		Brazilian portuguese translation added (GARU)
+	Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
+	Added translation support (SZABGAB)
+	Added translations:
+	- Brazilian Portuguese (GARU)
+	- French (JQUELIN)
+	- Polish (THEREK)
 
 0.02    2009-04-08
         Now working on MS-Windows too  (FAYLAND)
