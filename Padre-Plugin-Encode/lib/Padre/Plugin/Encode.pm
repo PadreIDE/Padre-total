@@ -31,7 +31,7 @@ sub menu_plugins_simple {
     'Convert Encoding' => [
         _T('Encode document to System Default') => \&encode_document_to_system_default,
         _T('Encode document to utf-8')          => \&encode_document_to_utf8,
-        _T('Encode document to ...')            => \&encode_document_to,
+        _T('Encode document to...')             => \&encode_document_to,
     ];
 }
 
