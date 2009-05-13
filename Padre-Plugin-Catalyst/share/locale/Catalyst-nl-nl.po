@@ -45,7 +45,6 @@ msgid "Catalyst Online References"
 msgstr "Catalyst Online Referenties"
 
 #: lib/Padre/Plugin/Catalyst.pm:72
-#, fuzzy
 msgid "Catalyst Cookbook"
 msgstr "Catalyst Cookbook"
 
