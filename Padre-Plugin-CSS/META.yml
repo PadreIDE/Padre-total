@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-CSS
-version: 0.05
+version: 0.06
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: L<Padre> and CSS
@@ -18,7 +18,7 @@ provides:
     version: 0.22
   Padre::Plugin::CSS:
     file: lib/Padre/Plugin/CSS.pm
-    version: 0.05
+    version: 0.06
 generated_by: Module::Build version 0.31
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

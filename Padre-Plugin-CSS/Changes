@@ -1,9 +1,11 @@
 Revision history for Padre-Plugin-CSS
 
+0.06    2009.05.18
 	added translations:
 	- French (jquelin)
 	- Polish (therek)
     - Brazilian portuguese (garu)
+    - Chinese Simpified (fayland)
 
 0.05    2009.2.1
         for Padre 0.26
