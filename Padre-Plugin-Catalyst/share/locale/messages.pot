@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-10 21:01+0300\n"
+"POT-Creation-Date: 2009-05-19 00:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,63 +16,63 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:45
+#: lib/Padre/Plugin/Catalyst.pm:47
 msgid "New Catalyst Application"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:50
+#: lib/Padre/Plugin/Catalyst.pm:52
 msgid "Create new..."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:51
+#: lib/Padre/Plugin/Catalyst.pm:53
 msgid "Model"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:55
+#: lib/Padre/Plugin/Catalyst.pm:57
 msgid "View"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:59
+#: lib/Padre/Plugin/Catalyst.pm:61
 msgid "Controller"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:65
+#: lib/Padre/Plugin/Catalyst.pm:67
 msgid "Start Web Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:66
+#: lib/Padre/Plugin/Catalyst.pm:68
 msgid "Stop Web Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:68
+#: lib/Padre/Plugin/Catalyst.pm:70
 msgid "Catalyst Online References"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:72
+#: lib/Padre/Plugin/Catalyst.pm:74
 msgid "Catalyst Cookbook"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:75
+#: lib/Padre/Plugin/Catalyst.pm:77
 msgid "Recommended Plugins"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:78
+#: lib/Padre/Plugin/Catalyst.pm:80
 msgid "Examples"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:81
+#: lib/Padre/Plugin/Catalyst.pm:83
 msgid "Catalyst Wiki"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:84
+#: lib/Padre/Plugin/Catalyst.pm:86
 msgid "Catalyst Website"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:89
+#: lib/Padre/Plugin/Catalyst.pm:91
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:107
+#: lib/Padre/Plugin/Catalyst.pm:109
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -81,14 +81,14 @@ msgid ""
 "Please make sure the active document is from your Catalyst project."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst.pm:112
 msgid "Server not found"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:130
+#: lib/Padre/Plugin/Catalyst.pm:132
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:131
+#: lib/Padre/Plugin/Catalyst.pm:133
 msgid "Start Web Browser?"
 msgstr ""
