@@ -5,6 +5,7 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
     - Added translations:
       - French (jquelin)
       - Polish (therek)
+      - Chinese (Traditional) translation (BLUET)
 
 0.05  Mon Feb 09 2009
     - Use Padre 0.26 API for output window (KAARE)
