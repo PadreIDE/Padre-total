@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.1.2
+	- Add Chinese (Traditional) translation (BLUET)
+
 1.1.1 Fri May  8 17:37:58 CEST 2009
  - work-around for unicode texts (therek)
 

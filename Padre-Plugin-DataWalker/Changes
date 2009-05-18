@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-ClassSniff
 
+0.02 Tue May 19 03:32:25 CST 2009
+    Add Chinese (Traditional) translation (BLUET)
   - Added translations:
     - French (jquelin)
     - Polish (therek)

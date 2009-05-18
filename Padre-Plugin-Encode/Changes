@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Encode
 
-x.y.z
+
+0.1.4 Tue May 19 03:32:25 CST 2009
+    Add Chinese (Traditional) translation (BLUET)
 	Removed release-time tests that ran at install-time (ADAMK)
 	Added translations:
 	- French (jquelin)

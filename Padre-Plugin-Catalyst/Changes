@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Catalyst
 
+0.04 Tue May 19 03:32:25 CST 2009
+    Add Chinese (Traditional) translation (BLUET)
+
 0.03	
 	Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
 	Added translation support (SZABGAB)
