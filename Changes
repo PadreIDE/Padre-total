@@ -4,6 +4,7 @@ x.xx xxxx.x.x 	NOT RELEASED!
 	- Added localization via Wx::gettext and started a sample Arabic translation.
     - Added French translation (jquelin)
     - Added Polish translation (therek)
+    - Added Chinese (Traditional) translation (BLUET)
 	
 0.39 2009.5.9
 	- Added support for slang and knowhow package declarators in outline view.
