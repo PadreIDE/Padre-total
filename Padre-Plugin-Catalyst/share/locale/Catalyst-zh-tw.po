@@ -49,27 +49,27 @@ msgstr "Catalyst 線上參考"
 
 #: lib/Padre/Plugin/Catalyst.pm:74
 msgid "Catalyst Cookbook"
-msgstr ""
+msgstr "Catalyst 食譜"
 
 #: lib/Padre/Plugin/Catalyst.pm:77
 msgid "Recommended Plugins"
-msgstr ""
+msgstr "建議的外掛"
 
 #: lib/Padre/Plugin/Catalyst.pm:80
 msgid "Examples"
-msgstr ""
+msgstr "範例"
 
 #: lib/Padre/Plugin/Catalyst.pm:83
 msgid "Catalyst Wiki"
-msgstr ""
+msgstr "Catalyst Wiki"
 
 #: lib/Padre/Plugin/Catalyst.pm:86
 msgid "Catalyst Website"
-msgstr ""
+msgstr "Catalyst 網站"
 
 #: lib/Padre/Plugin/Catalyst.pm:91
 msgid "About"
-msgstr ""
+msgstr "關於"
 
 #: lib/Padre/Plugin/Catalyst.pm:109
 #, perl-format
@@ -79,15 +79,19 @@ msgid ""
 "\n"
 "Please make sure the active document is from your Catalyst project."
 msgstr ""
+"Catalyst 開發用網頁伺服器未找到於\n"
+"%s\n"
+"\n"
+"請確認作用中的文件是來自於你的 Catalyst 專案."
 
 #: lib/Padre/Plugin/Catalyst.pm:112
 msgid "Server not found"
-msgstr ""
+msgstr "找不到伺服器"
 
 #: lib/Padre/Plugin/Catalyst.pm:132
 msgid "Web server appears to be running. Launch web browser now?"
-msgstr ""
+msgstr "網頁伺服器似乎是在運作中. 要開起瀏覽器嗎?"
 
 #: lib/Padre/Plugin/Catalyst.pm:133
 msgid "Start Web Browser?"
-msgstr ""
+msgstr "要啟動網頁伺服器嗎?"
