@@ -1,14 +1,16 @@
 Revision history for Padre-Plugin-Alarm
 
+0.05    2009.05.18
 	Added translations:
 		- brazilian portuguese (garu)
 		- french (jquelin)
 		- polish (therek)
+		- Chinese Simpified (fayland)
 
-0.04    2008.02.03
+0.04    2009.02.03
         fix http://www.nntp.perl.org/group/perl.cpan.testers/2009/02/msg3185057.html
 
-0.03    2008.02.01
+0.03    2009.02.01
         for Padre 0.26
 
 0.02	2008.12.08
