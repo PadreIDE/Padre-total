@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-Alarm
-version: 0.04
+version: 0.05
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: Alarm Clock in Padre
@@ -16,8 +16,8 @@ build_requires:
 provides:
   Padre::Plugin::Alarm:
     file: lib/Padre/Plugin/Alarm.pm
-    version: 0.04
-generated_by: Module::Build version 0.31
+    version: 0.05
+generated_by: Module::Build version 0.33
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
