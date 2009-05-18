@@ -1,12 +1,12 @@
 # Chinese translations for PACKAGE package
-# PACKAGE Èí¼þ°üµÄ¼òÌåÖÐÎÄ·­Òë.
+# PACKAGE è½¯ä»¶åŒ…çš„ç®€ä½“ä¸­æ–‡ç¿»è¯‘.
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #  <fayland@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Padre-Plugin-AcmePlayCode\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 19:53+0800\n"
 "PO-Revision-Date: 2009-05-18 01:44-0400\n"
