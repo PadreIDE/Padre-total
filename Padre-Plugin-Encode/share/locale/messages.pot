@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:21+0300\n"
+"POT-Creation-Date: 2009-05-19 01:26+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,14 +24,10 @@ msgstr ""
 msgid "Encode document to utf-8"
 msgstr ""
 
-#: lib/Padre/Plugin/Encode.pm:34
-msgid "Encode document to ..."
+#: lib/Padre/Plugin/Encode.pm:34 lib/Padre/Plugin/Encode.pm:82
+msgid "Encode document to..."
 msgstr ""
 
 #: lib/Padre/Plugin/Encode.pm:71
 msgid "Encode to:"
-msgstr ""
-
-#: lib/Padre/Plugin/Encode.pm:82
-msgid "Encode document to..."
 msgstr ""
