@@ -1,11 +1,13 @@
 Revision history for Padre-Plugin-AcmePlayCode
 
-	Added translations:
-	- Brazilian Portuguese (garu)
+0.09    2009.05.18
+    Added translations:
+	    - Brazilian Portuguese (garu)
         - French (jquelin)
-	- Polish (therek)
+	    - Polish (therek)
+	    - Chinese Simpified (fayland)
 
-0.08    2008.02.03
+0.08    2009.02.03
         fix http://www.nntp.perl.org/group/perl.cpan.testers/2009/02/msg3185057.html
 
 0.07    2009.1.23
