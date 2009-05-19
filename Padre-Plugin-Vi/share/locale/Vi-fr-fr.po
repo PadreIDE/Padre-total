@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-vi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 16:57+0200\n"
+"POT-Creation-Date: 2009-05-19 03:05+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: jérôme quelin <jquelin@cpan.org>\n"
@@ -12,7 +12,11 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: lib/Padre/Plugin/Vi.pm:306
+#: lib/Padre/Plugin/Vi.pm:297
+msgid "About"
+msgstr "A propos"
+
+#: lib/Padre/Plugin/Vi.pm:307
 msgid "Copyright 2008 Gabor Szabo"
 msgstr "Copyright 2008 Gabor Szabo"
 
