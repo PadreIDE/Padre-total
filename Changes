@@ -1,6 +1,7 @@
 Changes
 
 x.xx xxxx.x.x 	NOT RELEASED!
+	- Depends on S:H:P6 0.57 which contains Two important fixes
 	- Added localization via Wx::gettext and started a sample Arabic translation.
     - Added French translation (jquelin)
     - Added Polish translation (therek)
