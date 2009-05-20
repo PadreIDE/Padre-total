@@ -12,6 +12,7 @@ our $VERSION = '0.39';
 
 use Padre::Current;
 use Padre::Wx ();
+use Padre::Util   ('_T');
 
 use base 'Wx::Dialog';
 
