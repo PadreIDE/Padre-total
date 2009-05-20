@@ -34,11 +34,11 @@ msgstr "错误"
 
 #: lib/Padre/Plugin/CSS.pm:47
 msgid "CSS is valid\n"
-msgstr "CSS 合法"
+msgstr "CSS 合法\n"
 
 #: lib/Padre/Plugin/CSS.pm:49
 msgid "CSS is not valid\n"
-msgstr "CSS 不合法"
+msgstr "CSS 不合法\n"
 
 #: lib/Padre/Plugin/CSS.pm:50
 msgid "Errors:\n"
