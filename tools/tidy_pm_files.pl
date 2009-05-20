@@ -15,16 +15,9 @@ die "cannot find perltidy configuration file: $perltidyrc\n"
 	unless -e $perltidyrc;
 
 # build list of perl modules to reformat
-my @pmfiles = grep {/^lib/}
-	File::Find::Rule->file->name("*.pm")->relative->in(cwd);
-
-# if one wants to test on a fixed set of files
-#@pmfiles = (
-#	"dev.pl",
-#	catfile( qw{ lib Padre.pm } ),
-#	catfile( qw{ lib Padre Document.pm } ),
-#	catfile( qw{ lib Padre Wx StatusBar.pm } ),
-#);
+my @pmfiles = @ARGV
+	? @ARGV
+	: grep {/^lib/}	File::Find::Rule->file->name("*.pm")->relative->in(cwd);
 
 # formatting documents
 my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @pmfiles";
