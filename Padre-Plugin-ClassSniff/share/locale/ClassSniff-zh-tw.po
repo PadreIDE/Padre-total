@@ -17,7 +17,7 @@ msgstr ""
 
 #: lib/Padre/Task/ClassSniff.pm:69
 msgid "Could not determine class to run Sniff on.\n"
-msgstr "無法判別類並加以監聽."
+msgstr "無法判別類並加以監聽.\n"
 
 #: lib/Padre/Plugin/ClassSniff.pm:60
 msgid "About"
