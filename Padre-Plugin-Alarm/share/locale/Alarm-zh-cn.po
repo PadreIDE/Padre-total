@@ -1,12 +1,12 @@
 # Chinese translations for PACKAGE package
-# PACKAGE Èí¼ş°üµÄ¼òÌåÖĞÎÄ·­Òë.
+# PACKAGE è½¯ä»¶åŒ…çš„ç®€ä½“ä¸­æ–‡ç¿»è¯‘.
 # Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #  <fayland@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Padre-Plugin-Alarm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 20:03+0800\n"
 "PO-Revision-Date: 2009-05-18 01:35-0400\n"
@@ -18,36 +18,36 @@ msgstr ""
 
 #: lib/Padre/Plugin/Alarm.pm:44
 msgid "Time (eg: 23:55):"
-msgstr "Ê±¼ä (eg: 23:55):"
+msgstr "æ—¶é—´ (eg: 23:55):"
 
 #: lib/Padre/Plugin/Alarm.pm:48
 msgid "Frequency:"
-msgstr "ÆµÂÊ:"
+msgstr "é¢‘ç‡:"
 
 #: lib/Padre/Plugin/Alarm.pm:58
 msgid "Set Alarm Time"
-msgstr "ÉèÖÃÄÖÁåÊ±¼ä"
+msgstr "è®¾ç½®é—¹é“ƒæ—¶é—´"
 
 #: lib/Padre/Plugin/Alarm.pm:91
 msgid "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
-msgstr "¸ñÊ½: \\d:\\d\\d or \\d\\d:\\d\\d ÀàËÆ 6:13 »ò 23:55"
+msgstr "æ ¼å¼: \\d:\\d\\d or \\d\\d:\\d\\d ç±»ä¼¼ 6:13 æˆ– 23:55"
 
 #: lib/Padre/Plugin/Alarm.pm:91
 msgid "Wrong Alarm Time"
-msgstr "´íÎóÄÖÁåÊ±¼ä"
+msgstr "é”™è¯¯é—¹é“ƒæ—¶é—´"
 
 #: lib/Padre/Plugin/Alarm.pm:127
 msgid "All Alarms are stopped"
-msgstr "ËùÓĞÄÖÁåÒÑÍ£Ö¹"
+msgstr "æ‰€æœ‰é—¹é“ƒå·²åœæ­¢"
 
 #: lib/Padre/Plugin/Alarm.pm:127
 msgid "Stop Alarm"
-msgstr "Í£Ö¹ÄÖÁå"
+msgstr "åœæ­¢é—¹é“ƒ"
 
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "All Alarms are cleared"
-msgstr "ËùÓĞÄÖÁåÒÑÇå³ı"
+msgstr "æ‰€æœ‰é—¹é“ƒå·²æ¸…é™¤"
 
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "Clear Alarm"
-msgstr "Çå³ıÄÖÁå"
+msgstr "æ¸…é™¤é—¹é“ƒ"
