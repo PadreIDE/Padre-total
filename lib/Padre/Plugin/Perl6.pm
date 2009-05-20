@@ -11,6 +11,7 @@ our $VERSION = '0.39';
 our @EXPORT_OK = qw(plugin_config);
 
 use Padre::Wx ();
+use Padre::Util   ('_T');
 use base 'Padre::Plugin';
 
 # constants for html exporting
