@@ -1,10 +1,10 @@
-Revision history for Padre-Plugin-ClassSniff
+Revision history for Padre-Plugin-DataWalker
 
-0.02 Tue May 19 03:32:25 CST 2009
-    Add Chinese (Traditional) translation (BLUET)
+0.02    2009-05-21
   - Added translations:
     - French (jquelin)
     - Polish (therek)
+    - Chinese, traditional (BLUET)
 
 0.01    2009-03-19
   - Initial version

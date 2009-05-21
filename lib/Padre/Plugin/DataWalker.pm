@@ -9,7 +9,7 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ('_T');
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 =head1 NAME
