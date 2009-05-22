@@ -5,6 +5,9 @@ all_from 'lib/Padre/Plugin/Git.pm';
 author   'Kaare Rasmussen <kaare@cpan.org>';
 license  'perl';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Git/';
+
 requires  'Capture::Tiny'  => '0.03';
 requires  'Padre'          => '0.27';
 requires  'File::Basename' => '0';

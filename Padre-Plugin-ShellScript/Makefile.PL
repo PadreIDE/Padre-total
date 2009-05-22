@@ -6,6 +6,9 @@ license        'perl';
 author         'Claudio Ramirez';
 all_from       'lib/Padre/Plugin/ShellScript.pm';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-ShellScript/';
+
 requires       'perl'                    => '5.008001';
 requires       'Exporter'                => 0;
 requires       'Padre'                   => '0.27';

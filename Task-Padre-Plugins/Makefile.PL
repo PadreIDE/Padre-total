@@ -5,6 +5,9 @@ all_from 'lib/Task/Padre/Plugins.pm';
 author   'Gabor Szabo';
 license  'perl';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Task-Padre-Plugins/';
+
 requires 'Padre::Plugin::AcmePlayCode'   => '0.08';
 requires 'Padre::Plugin::Alarm'          => '0.02';
 requires 'Padre::Plugin::Autoformat'     => '0.2.1';

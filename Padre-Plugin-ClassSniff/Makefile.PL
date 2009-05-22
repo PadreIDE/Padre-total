@@ -5,6 +5,9 @@ all_from 'lib/Padre/Plugin/ClassSniff.pm';
 author   'Steffen Mueller <smueller@cpan.org>';
 license  'perl';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-ClassSniff/';
+
 requires  'Padre'          => '0.29';
 requires  'Class::Sniff'   => '0.08';
 

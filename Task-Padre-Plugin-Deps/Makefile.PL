@@ -5,6 +5,9 @@ all_from 'lib/Task/Padre/Plugin/Deps.pm';
 author   'Gabor Szabo';
 license  'perl';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Task-Padre-Plugin-Deps/';
+
 requires 'Padre'                   => '0.21';
 
 # Padre::Plugin::AcmePlayCode   0.02,

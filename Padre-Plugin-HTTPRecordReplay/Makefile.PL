@@ -7,6 +7,9 @@ license        'perl';
 author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/HTTPRecordReplay.pm';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-HTTPRecordReplay/';
+
 requires       'Padre'            => '0.32';
 requires       'Sniffer::HTTP'    => '0';
 
