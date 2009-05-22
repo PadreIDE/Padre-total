@@ -5,6 +5,9 @@ all_from 'lib/Padre/Plugin/DataWalker.pm';
 author   'Steffen Mueller <smueller@cpan.org>';
 license  'perl';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-DataWalker/';
+
 requires  'Padre'                => '0.29';
 requires  'Wx::Perl::DataWalker' => '0.02';
 requires  'YAML::XS'             => '0';
