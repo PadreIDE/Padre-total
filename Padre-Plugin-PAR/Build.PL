@@ -28,6 +28,12 @@ my $builder = Padre::PluginBuilder->new(
     build_requires        => {
         'Test::More'              => '0.47',
     },
+    meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-PAR/',
+        }
+    },
 );
 
 $builder->create_build_script();
