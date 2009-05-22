@@ -23,7 +23,7 @@ my $builder = Module::Build->new(
 		resources => {
 			homepage    => 'http://padre.perlide.org/',
 			bugtracker  => 'http://padre.perlide.org/',
-			Repository  => 'http://svn.perlide.org/padre/projects/CPAN-Shell-Wx',
+			Repository  => 'http://svn.perlide.org/padre/trunk/CPAN-Shell-Wx',
 			MailingList => 'http://mail.perlide.org/mailman/listinfo/padre-dev',
 		},
 		no_index => {

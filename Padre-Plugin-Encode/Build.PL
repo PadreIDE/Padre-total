@@ -19,6 +19,12 @@ my $builder = Module::Build->new(
         'Padre'            => '0.23',
         },
     add_to_cleanup      => [ 'Padre-Plugin-Encode-*' ],
+    meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Encode/',
+        }
+    },
 );
 
 $builder->create_build_script();

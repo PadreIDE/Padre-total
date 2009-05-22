@@ -12,6 +12,12 @@ my $builder = Module::Build->new(
         'version'    => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-LineFilter-*' ],
+    meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-LineFilter/',
+        }
+    },
 );
 
 $builder->create_build_script();

@@ -17,6 +17,12 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup      => [ 'Padre-Plugin-AcmePlayCode-*' ],
     create_makefile_pl => 'traditional',
+    meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-AcmePlayCode/',
+        }
+    },
 );
 
 $builder->create_build_script();

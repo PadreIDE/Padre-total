@@ -17,6 +17,12 @@ my $builder = Module::Build->new(
         'Padre'      => '0.26',
     },
     build_requires => { 'Test::More' => '0.47', },
+    meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-PerlCritic/',
+        }
+    },
 );
 
 $builder->create_build_script();

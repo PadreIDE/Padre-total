@@ -20,6 +20,12 @@ my $builder = Module::Build->new(
 	},
 	add_to_cleanup      => [ 'Parse-ErrorString-Perl-*' ],
 	create_makefile_pl => 'traditional',
+	meta_merge     => {
+        resources => {
+            homepage   => 'http://padre.perlide.org/',
+            repository => 'http://svn.perlide.org/padre/trunk/Parse-ErrorString-Perl/',
+        }
+    },
 );
 
 $builder->create_build_script();
