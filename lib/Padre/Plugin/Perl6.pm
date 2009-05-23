@@ -7,7 +7,7 @@ use warnings;
 use Carp;
 
 # exports and version
-our $VERSION = '0.39';
+our $VERSION = '0.40';
 our @EXPORT_OK = qw(plugin_config);
 
 use Padre::Wx ();
