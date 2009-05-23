@@ -1,0 +1,108 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-mojolicious\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-19 01:49+0800\n"
+"PO-Revision-Date: 2009-05-23 17:58+0200\n"
+"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"Language-Team: Arabic\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Mojolicious.pm:44
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+msgid "New Mojolicious Application"
+msgstr "تطبيق Mojolicious جديد"
+
+#: lib/Padre/Plugin/Mojolicious.pm:50
+msgid "Start Web Server"
+msgstr "تشغيل خادم الويب"
+
+#: lib/Padre/Plugin/Mojolicious.pm:51
+msgid "Stop Web Server"
+msgstr "ايقاف خادم الويب"
+
+#: lib/Padre/Plugin/Mojolicious.pm:53
+msgid "Mojolicious Online References"
+msgstr "مراجع Mojolicious  على الانترنت"
+
+#: lib/Padre/Plugin/Mojolicious.pm:54
+msgid "Mojolicious Manual"
+msgstr "دليل Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:57
+msgid "Mojolicious Website"
+msgstr "موقع ويب Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:62
+msgid "About"
+msgstr "عن"
+
+#: lib/Padre/Plugin/Mojolicious.pm:78
+#, perl-format
+msgid ""
+"Mojolicious application script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Mojolicious project."
+msgstr ""
+"فشل العثور على سكريبت تطبيق Mojolicious\n"
+"%s\n"
+"\n"
+"الرجاء التأكد من الوثيقة الحالية في مشروع Mojolicious  الخاص بك."
+
+#: lib/Padre/Plugin/Mojolicious.pm:81
+msgid "Server not found"
+msgstr "الخادم غير موجود"
+
+#: lib/Padre/Plugin/Mojolicious.pm:103
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "ببدو أن خادم الويب شغال. هل تريد تشغيل متصفح الويب الآن؟"
+
+#: lib/Padre/Plugin/Mojolicious.pm:104
+msgid "Start Web Browser?"
+msgstr "تشغيل متصفح الويب؟"
+
+#: lib/Padre/Plugin/Mojolicious.pm:128
+msgid ""
+"\n"
+"Web server stopped successfully.\n"
+msgstr ""
+"\n"
+"تم ايقاف خادم الويب بنجاح.\n"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+msgid "Application Name:"
+msgstr "اسم التطبيق:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+msgid "Parent Directory:"
+msgstr "الدليل الأصل:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+msgid "Pick parent directory"
+msgstr "اختر الدليل الأصل:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+msgid "Invalid Application name"
+msgstr "اسم التطبيق خاطئ"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "missing field"
+msgstr "حقل مفقود"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "You need to select a base directory"
+msgstr "يجب ان تختار دليل البدايه"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "يبدو أن الملف %s موجود. هل تريد فتح الملف؟"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+msgid "Done"
+msgstr "تم"
+
