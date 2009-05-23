@@ -26,8 +26,20 @@ sub plugin_config {
 	return $config;
 }
 
+# private subroutine to return the current share directory location
+sub _sharedir {
+	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'Perl6/share'));
+}
+
+# directory where to find the translations
+sub plugin_locale_directory {
+	my $locale_dir = File::Spec->catdir( _sharedir(), 'locale' );
+	print $locale_dir . "\n";
+	return $locale_dir;
+}
+
 sub padre_interfaces {
-	return 'Padre::Plugin'         => 0.26,
+	return 'Padre::Plugin' => 0.26,
 }
 
 # called when the plugin is enabled
