@@ -7,8 +7,9 @@ use warnings;
 
 # parse arguments
 my $num_args = $#ARGV + 1;
-if($num_args < 3) {
-    die "p6tokens.pl needs one file. Got $num_args\n";
+my $REQ_ARG_COUNT = 3;
+if($num_args < $REQ_ARG_COUNT) {
+    die "Error: p6tokens.pl needs $REQ_ARG_COUNT argument(s) (got $num_args).\n";
 }
 
 # read command-line arguments
