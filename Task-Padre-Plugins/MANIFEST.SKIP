@@ -1,3 +1,7 @@
+# custom
+Makefile.txt
+Plugins.txt
+
 # Avoid version control files.
 \bRCS\b
 \bCVS\b

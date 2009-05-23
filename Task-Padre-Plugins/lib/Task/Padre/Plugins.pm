@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 1;
 __END__
@@ -22,15 +22,19 @@ If not, they run with the whole text from selected document.
 
 =head2 Padre::Plugin::AcmePlayCode
 
-This is a simple plugin to run Acme::PlayCode on your source code.
+L<Acme::PlayCode> Plugin for L<Padre>
 
 =head2 Padre::Plugin::Alarm
 
-Alarm Clock (Audio::Beep)
+Alarm Clock in Padre
 
 =head2 Padre::Plugin::Autoformat
 
-reformat your text within Padre  
+reformat your text within Padre
+
+=head2 Padre::Plugin::CSS
+
+L<Padre> and CSS
 
 =head2 Padre::Plugin::Catalyst
 
@@ -38,21 +42,15 @@ Simple Catalyst helper interface for Padre
 
 =head2 Padre::Plugin::CommandLine
 
-vi and emacs in Padre?
-
-=head2 Padre::Plugin::CSS
-
-=head3 CSS Minifier
-
-use CSS::Minifier::XS to minify css
-
-=head3 Validate CSS
-
-use WebService::Validator::CSS::W3C to validate the CSS
+vi and emacs in Padre ?
 
 =head2 Padre::Plugin::DataWalker
 
 Simple Perl data structure browser Padre
+
+=head2 Padre::Plugin::Debugger
+
+Debug Perl code from Padre editor
 
 =head2 Padre::Plugin::Encode
 
@@ -60,71 +58,83 @@ convert file to different encoding in Padre
 
 =head2 Padre::Plugin::Encrypt
 
-Encrypt/Decrypt by Crypt::CBC
+encrypt/decrypt file in Padre
 
 =head2 Padre::Plugin::Git
 
-Simple Git interface for Padre  
+Simple Git interface for Padre
 
 =head2 Padre::Plugin::HTML
 
-=head3 Validate HTML
-
-use WebService::Validator::HTML::W3C to validate the HTML
-
-=head3 Tidy HTML
-
-use HTML::Tidy to tidy HTML
+L<Padre> and HTML
 
 =head2 Padre::Plugin::HTMLExport
 
-Export a HTML page by using Syntax::Highlight::Engine::Kate
+export highlighted HTML in Padre
+
+=head2 Padre::Plugin::InstallPARDist
+
+Installation of .par archives into the system
 
 =head2 Padre::Plugin::JavaScript
 
-=head3 JavaScript Beautifier
+L<Padre> and JavaScript
 
-use JavaScript::Beautifier to beautify js
+=head2 Padre::Plugin::Mojolicious
 
-=head3 JavaScript Minifier
-
-use JavaScript::Minifier::XS to minify js
+Simple Mojolicious helper interface for Padre
 
 =head2 Padre::Plugin::Nopaste
 
-Padre::Plugin::Nopaste − send code on a nopaste website from Padre
+send code on a nopaste website from padre
 
 =head2 Padre::Plugin::PAR
 
-Padre::Plugin::PAR − PAR generation from Padre
-
-=head2 Padre::Plugin::PerlCritic
-
-This is a simple plugin to run Perl::Critic on your source code.
-
-=head2 Padre::Plugin::PerlTidy
-
-This is a simple plugin to run Perl::Tidy on your source code.
+PAR generation from Padre
 
 =head2 Padre::Plugin::PSI
 
 Experimental Padre plugin written in Perl 6
 
-=head2 Padre::Plugin::SVN
+=head2 Padre::Plugin::Parrot
 
-Simple SVN interface for Padre
+Experimental Padre plugin that runs on Parrot
+
+=head2 Padre::Plugin::Perl6
+
+Padre plugin for Perl6
+
+=head2 Padre::Plugin::PerlCritic
+
+Analyze perl files with Perl::Critic
+
+=head2 Padre::Plugin::PerlTidy
+
+Format perl files using Perl::Tidy
 
 =head2 Padre::Plugin::SVK
 
 Simple SVK interface for Padre
 
+=head2 Padre::Plugin::SVN
+
+Simple SVN interface for Padre
+
+=head2 Padre::Plugin::SpellCheck
+
+check spelling in Padre
+
+=head2 Padre::Plugin::Vi
+
+vi keyboard for Padre
+
 =head2 Padre::Plugin::ViewInBrowser
 
-View selected doc in browser for Padre. Basically it’s a shortcut for Wx::LaunchDefaultBrowser( $self−>selected_filename );
+view selected doc in browser for L<Padre>
 
 =head2 Padre::Plugin::XML
 
-Use XML::Tidy to tidy XML.
+L<Padre> and XML
 
 =head1 AUTHOR
 

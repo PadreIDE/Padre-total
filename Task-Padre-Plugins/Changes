@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugins
 
+0.20    2009.05.23
+        Debugger, Mojolicious Plugins
+
 0.19    2009.4.2
         Catalyst Plugin
         DataWalker plugin
