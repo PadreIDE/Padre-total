@@ -33,9 +33,7 @@ sub _sharedir {
 
 # directory where to find the translations
 sub plugin_locale_directory {
-	my $locale_dir = File::Spec->catdir( _sharedir(), 'locale' );
-	print $locale_dir . "\n";
-	return $locale_dir;
+	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
 sub padre_interfaces {
