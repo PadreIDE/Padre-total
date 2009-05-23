@@ -3,8 +3,8 @@ use warnings;
 
 use Test::More;
 
-unless($ENV{AUTHOR_TEST}) {
-	plan skip_all => 'Author test';
+unless($ENV{PADRE_PLUGIN_PERL6}) {
+	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable.';
 }
 
 my @files = (
@@ -17,6 +17,6 @@ my @files = (
 plan tests => scalar @files;
 require File::Spec;
 foreach my $file ( @files ) {
-	my $f = File::Spec->catfile('blib/lib/auto/share/dist/Padre-Plugin-Perl6/locale', $file);
+	my $f = File::Spec->catfile('blib/lib/Padre/Plugin/Perl6/share/locale', $file);
 	is(-e $f, 1, "$f exists\n");
 }
