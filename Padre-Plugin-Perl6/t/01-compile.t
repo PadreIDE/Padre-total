@@ -1,13 +1,11 @@
 use strict;
 use warnings;
 
-use Test::Most;
+use Test::More;
 
 unless($ENV{PADRE_PLUGIN_PERL6}) {
 	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable.';
 }
-
-bail_on_fail;
 
 require File::Find::Rule;
 require File::Temp;
