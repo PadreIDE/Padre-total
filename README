@@ -6,9 +6,9 @@ perldoc Padre::Plugin::Perl6.
 
 INSTALLATION
 
-To install this module type the following:
+To install this module, type the following: 
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
