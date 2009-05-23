@@ -1,0 +1,23 @@
+Build.PL
+Changes
+lib/Padre/Document/Perl6.pm
+lib/Padre/Plugin/Perl6.pm
+lib/Padre/Plugin/Perl6/Preferences.pm
+lib/Padre/Plugin/Perl6/share/locale/Perl6-ar.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-fr-fr.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-nl-nl.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-pl.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-zh-tw.mo
+lib/Padre/Task/Outline/Perl6.pm
+lib/Padre/Task/p6tokens.pl
+lib/Padre/Task/Perl6.pm
+lib/Padre/Task/S29-functions.pod
+lib/Padre/Task/SyntaxChecker/Perl6.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/00-load.t
+t/01-compile.t
+t/02-pod.t
+t/03-mo.t
