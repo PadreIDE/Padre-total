@@ -3,8 +3,8 @@ use warnings;
 
 use Test::Most;
 
-unless($ENV{AUTHOR_TEST}) {
-	plan skip_all => 'Author test';
+unless($ENV{PADRE_PLUGIN_PERL6}) {
+	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable.';
 }
 
 bail_on_fail;

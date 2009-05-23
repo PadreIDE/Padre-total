@@ -10,7 +10,7 @@ my $class = Module::Build->subclass(
 sub ACTION_build {
     my $self = shift;
 
-	if($ENV{AUTHOR_TEST}) {
+	if($ENV{PERL6_PLUGIN_DEV}) {
 		my $msgfmt = ($^O =~ /win32/i)
 			? qq{c:/Program Files/GnuWin32/bin/msgfmt.exe}
 			: `which msgfmt`; 
@@ -20,14 +20,25 @@ sub ACTION_build {
 			foreach my $pof ( @pofiles ) {
 				my $mof = $pof;
 				$mof =~ s/\.po$/.mo/;
+				print qq{Generating $mof\n};
 				system qq{"$msgfmt" -o $mof $pof};
 			}
 		} else {
 			die "Could not find $msgfmt!\n";
 		}
 	}
-	
-    $self->SUPER::ACTION_build;
+
+    $self->SUPER::ACTION_build;	
+}
+
+sub ACTION_dist {
+		
+	if($ENV{PERL6_PLUGIN_DEV}) {
+		my $self = shift;
+		$self->SUPER::ACTION_dist;
+	} else {
+		die "You did not enable PERL6_PLUGIN_DEV environment variable.";
+	}
 }
 
 SUBCLASS
@@ -60,8 +71,7 @@ my $builder = $class->new(
 	PL_files => {
 		'lib/Padre/Task/p6tokens.pl' => [],  # ignore it please
 	},
-    add_to_cleanup      => [ 'Padre-Plugin-Perl6-*',
-        map { ( '*/' x $_ ) . '*~' } 0..5 ],
+    add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
     create_makefile_pl  => 'traditional',
     meta_merge     => {
         resources => {
