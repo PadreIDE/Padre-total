@@ -114,7 +114,7 @@ sub colorize {
 	#	return;
 	#}
 
-	my $config = Padre::Plugin::Perl6::plugin_config;
+	my $config = Padre::Plugin::Perl6::plugin_config();
 	if($config->{p6_highlight} || $self->{force_p6_highlight}) {
 	
 		unless($COLORIZE_TIMER) {
