@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 
-unless($ENV{AUTHOR_TEST}) {
-	use Test::More skip_all => 'Author test';
-}
-
 use Test::Most;
+
+unless($ENV{AUTHOR_TEST}) {
+	plan skip_all => 'Author test';
+}
 
 bail_on_fail;
 
@@ -13,10 +13,9 @@ require File::Find::Rule;
 require File::Temp;
 use POSIX qw(locale_h);
 
-$ENV{TMP_FOLDER} = File::Temp::tempdir( CLEANUP => 1 );
-
-my $out = File::Spec->catfile($ENV{TMP_FOLDER}, 'out.txt');
-my $err = File::Spec->catfile($ENV{TMP_FOLDER}, 'err.txt');
+my $TMP_FOLDER = File::Temp::tempdir( CLEANUP => 1 );
+my $out = File::Spec->catfile($TMP_FOLDER, 'out.txt');
+my $err = File::Spec->catfile($TMP_FOLDER, 'err.txt');
 
 my @files = File::Find::Rule->relative->file->name('*.pm')->in('lib');
 plan tests => 2 * @files;
@@ -26,10 +25,7 @@ foreach my $file ( @files ) {
 		my $module = $file;
 		$module =~ s/[\/\\]/::/g;
 		$module =~ s/\.pm$//;
-		if ($module eq 'Padre::CPAN') {
-			skip ("Cannot load CPAN shell under the CPAN shell") for 1..2;
-			next;
-		}
+
 		system "$^X -e \"require $module; print 'ok';\" > $out 2>$err";
 		my $err_data = slurp($err);
 		is($err_data, '', "STDERR of $file");
