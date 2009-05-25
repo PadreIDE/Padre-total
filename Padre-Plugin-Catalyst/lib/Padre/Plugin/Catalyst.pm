@@ -6,7 +6,7 @@ use strict;
 
 use Padre::Util   ('_T');
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'Catalyst' }
@@ -190,7 +190,7 @@ Padre::Plugin::Catalyst - Simple Catalyst helper interface for Padre
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =head1 SYNOPSIS
 
@@ -242,6 +242,31 @@ This menu option contains a series of external reference links on Catalyst. Clic
 
 Shows a nice about box with this module's name and version.
 
+=head1 TRANSLATIONS
+
+This plugin has been translated to the folowing languages (alfabetic order):
+
+=over 4
+
+=item Arabic  (AZAWAWI)
+
+=item Brazilian Portuguese (GARU)
+
+=item Chinese (Traditional) (BLUET)
+
+=item Dutch (DDN)
+
+=item French (JQUELIN)
+
+=item Polish (THEREK)
+
+=item Russian (SHARIFULN)
+
+=back
+
+Many thanks to all contributors!
+
+Feel free to help if you find any of the translations need improvement/updating, or if you can add more languages to this list. Thanks!
 
 =head1 AUTHOR
 
