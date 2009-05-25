@@ -518,13 +518,20 @@ sub export_html {
 sub generate_p6_exe {
 	my $self = shift;
 
-# Algorithm: 
-# ---------
-# Check for perl6 existance and that it is executable.
-
-# Check for -e parrot existance and that it is executable.
-
-# Check for -e pbc_to_exe existance and that it is executable.
+	# Check for perl6 existance and that it is executable.
+	require Padre::Plugin::Perl6::Util;
+	my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
+	print "perl6 = " . $perl6 . "\n";
+	if(not $perl6) {
+	}
+	
+	# Check for -e parrot existance and that it is executable.
+	my $parrot = Padre::Plugin::Perl6::Util::get_parrot_command('parrot');
+	print "parrot = " . $parrot . "\n";
+	
+	# Check for -e pbc_to_exe existance and that it is executable.
+	my $pbc_to_exe = Padre::Plugin::Perl6::Util::get_parrot_command('pbc_to_exe');
+	print "pbc_to_exe = " . $pbc_to_exe . "\n";
 
 # Tell the user about the commands that are going to be executed.
 
