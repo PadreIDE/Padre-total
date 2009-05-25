@@ -1,10 +1,11 @@
 Revision history for Padre-Plugin-CommandLine
 
-0.03 Tue May 19 03:32:25 CST 2009
-    Add Chinese (Traditional) translation (BLUET)
+(Not released yet)
 	Added translations:
 	- French (jquelin)
 	- Polish (therek)
+	- Chinese (Traditional) translation (BLUET)
+	- Arabic translation (azawawi)
 
 0.02    2008.12.23
         Add prereq Wx::Perl::Dialog
