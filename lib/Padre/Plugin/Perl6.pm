@@ -526,6 +526,10 @@ Gabor Szabo L<http://szabgab.com/>
 Copyright 2008-2009 Gabor Szabo. L<http://szabgab.com/> and
 Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
 
+The Camelia image is copyright 2009 by Larry Wall.  Permission to use
+is granted under the Artistic License 2.0, or any subsequent version
+of the Artistic License.
+
 =head1 LICENSE
 
 This program is free software; you can redistribute it and/or
