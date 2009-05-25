@@ -201,7 +201,7 @@ sub get_command {
 	
 	if(not $perl6) {
 		my $main = Padre->ide->wx->main;
-		$main->error("Either $exe_name needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
+		$main->error("Either perl6 needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
 	}
 
 	return qq{"$perl6" "$filename"};

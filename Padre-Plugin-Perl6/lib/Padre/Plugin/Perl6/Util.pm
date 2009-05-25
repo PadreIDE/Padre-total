@@ -38,3 +38,20 @@ sub get_parrot_command {
 
 	return $parrot_cmd;
 }
+
+sub get_libparrot {
+	my $lib_name = $^O eq 'MSWin32' ? "libparrot.dll" : 'libparrot.so';
+	my $libparrot;
+	my $env_rakudo = $ENV{RAKUDO_DIR};
+	if ($env_rakudo) {
+		my $parrot_dir = File::Spec->catfile($env_rakudo, 'parrot');
+		my $lib = File::Spec->catfile($parrot_dir, $lib_name);
+		if(-e $lib) {
+			$libparrot = $lib;
+		}
+	}
+
+	return $libparrot;
+}
+
+1;

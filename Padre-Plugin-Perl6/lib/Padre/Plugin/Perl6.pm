@@ -406,7 +406,7 @@ sub export_html {
 	if($doc->get_mimetype ne q{application/x-perl6}) {
 		Wx::MessageBox(
 			'Not a Perl6 file',
-			'Export cancelled',
+			'Operation cancelled',
 			Wx::wxOK,
 			$main,
 		);
@@ -473,7 +473,7 @@ sub export_html {
 		$err =~ s/\033\[(\d+)(?:;(\d+)(?:;(\d+))?)?m//g;
 		Wx::MessageBox(
 			qq{STD.pm warning/error:\n$err},
-			'Export cancelled',
+			'Operation cancelled',
 			Wx::wxOK,
 			$main,
 		);
@@ -518,34 +518,174 @@ sub export_html {
 sub generate_p6_exe {
 	my $self = shift;
 
+	my $main = $self->main;
+
+	my $doc = Padre::Current->document;
+	unless(defined $doc) {
+		return;
+	}
+	if($doc->get_mimetype ne q{application/x-perl6}) {
+		Wx::MessageBox(
+			'Not a Perl6 file',
+			'Operation cancelled',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+
+
 	# Check for perl6 existance and that it is executable.
 	require Padre::Plugin::Perl6::Util;
 	my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
-	print "perl6 = " . $perl6 . "\n";
-	if(not $perl6) {
+	unless($perl6 && -x $perl6) {
+		Wx::MessageBox(
+			'Cannot find a perl6 executable',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
 	}
 	
 	# Check for -e parrot existance and that it is executable.
 	my $parrot = Padre::Plugin::Perl6::Util::get_parrot_command('parrot');
-	print "parrot = " . $parrot . "\n";
+	unless($parrot && -x $parrot) {
+		Wx::MessageBox(
+			'Cannot find a parrot executable',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
 	
 	# Check for -e pbc_to_exe existance and that it is executable.
 	my $pbc_to_exe = Padre::Plugin::Perl6::Util::get_parrot_command('pbc_to_exe');
-	print "pbc_to_exe = " . $pbc_to_exe . "\n";
+	unless($pbc_to_exe && -x $pbc_to_exe) {
+		Wx::MessageBox(
+			'Cannot find a parrot executable',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+	
+	# Check for libparrot existance
+	my $libparrot = Padre::Plugin::Perl6::Util::get_libparrot();
+	unless($libparrot) {
+		Wx::MessageBox(
+			'Cannot find a libparrot shared library',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+	
+	
+	require File::Temp;
+	#XXX- CLEANUP must be enabled once testing is finished...
+	my $tmp_dir = File::Temp->newdir( CLEANUP => 0 );
+	
+	my $hello_pl = File::Spec->catfile($tmp_dir, 'hello.pl');
+	my $hello_pir = File::Spec->catfile($tmp_dir, 'hello.pir');
+	my $hello_pbc = File::Spec->catfile($tmp_dir, 'hello.pbc');
+	my $hello_exe = File::Spec->catfile($tmp_dir, $^O eq 'MSWin32' ? 'hello.exe' : 'hello');
 
-# Tell the user about the commands that are going to be executed.
+	#XXX- quote all those files in win32
+	my $perl6_to_pir_cmd = "$perl6 --target=PIR --output=$hello_pir $hello_pl";
+	my $pir_to_pbc_cmd = "$parrot -o $hello_pbc $hello_pir";
+	my $pbc_to_perl6_exe = "$pbc_to_exe $hello_pbc";
+	# Tell the user about the commands that are going to be executed.
+	Wx::MessageBox(
+		"The following commands are going to be executed:\n\n$perl6_to_pir_cmd\n\n$pir_to_pbc_cmd\n\n$pbc_to_perl6_exe\n",
+		'Error',
+		Wx::wxOK,
+		$main,
+	);
+	
+	
+	open HELLO_PL, ">$hello_pl"
+		or die "Cannot open $hello_pl\n";
+	binmode HELLO_PL, ":utf8";
+	my $text = $doc->text_get;
+	#XXX- check text_get return value
+	print HELLO_PL $text;
+	close HELLO_PL
+		or die "Cannot close $hello_pl\n";
 
-# Run command:
-# $RAKUDO_DIR/perl6 --target=PIR --output hello.pir hello.pl
-#
-# Run command:
-# $RAKUDO_DIR/parrot/parrot -o hello.pbc hello.pir
-#
-# Run command 3.
-# $RAKUDO_DIR/parrot/pbc_to_exe -o hello hello.pbc
-#
-# Check if the executable is there and tell the user if it succeeded or not
-# and give out statistics about it if possible (size, permissions, ...)
+	my $cmd_1_output = "output_1.txt";
+	my $cmd_2_output = "output_2.txt";
+	my $cmd_3_output = "output_3.txt";
+
+	# Prepare the output window for the output
+	$main->show_output(1);
+	my $outpanel = $main->output;
+	$outpanel->Remove( 0, $outpanel->GetLastPosition );
+	
+	#enable localized slurp mode
+	local $/ = undef;   
+	my $out;
+	
+	# Run command:
+	# perl6 --target=PIR --output=hello.pir hello.pl
+	print "Executing:\n $perl6_to_pir_cmd\n";
+	`$perl6_to_pir_cmd 1>$cmd_1_output 2>&1`;
+	$outpanel->style_neutral;
+	
+	# slurp the process output...
+	open OUTPUT, $cmd_1_output or warn "Could not open $cmd_1_output\n";
+	$out = <OUTPUT>;
+	close OUTPUT or warn "Could not close $cmd_1_output\n";
+	$outpanel->AppendText( $out );
+	
+	# Run command:
+	# parrot/parrot -o hello.pbc hello.pir
+	print "Executing:\n $pir_to_pbc_cmd\n";
+	`$pir_to_pbc_cmd 1>$cmd_2_output 2>&1`;
+
+	open OUTPUT, $cmd_2_output or warn "Could not open $cmd_2_output\n";
+	$out = <OUTPUT>;
+	close OUTPUT or warn "Could not close $cmd_2_output\n";
+	$outpanel->AppendText( $out );
+
+	# Run command 3.
+	# parrot/pbc_to_exe hello.pbc
+	print "Executing:\n $pbc_to_perl6_exe\n";
+	`$pbc_to_perl6_exe 1>$cmd_3_output 2>&1`;
+	
+	open OUTPUT, $cmd_3_output or warn "Could not open $cmd_3_output\n";
+	$out = <OUTPUT>;
+	close OUTPUT or warn "Could not close $cmd_3_output\n";
+	$outpanel->AppendText( $out );
+
+	unless(-x $hello_exe) {
+		Wx::MessageBox(
+			'Operation failed. Please check the output.',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+	
+	# Copy the executable to your current folder
+	# Copy libparrot.dll or libparrot.so into current folder
+	my $current_dir = Cwd::getcwd();
+	my $libparrot_name = File::Basename::fileparse($libparrot);
+	my $hello_exe_name = File::Basename::fileparse($hello_exe);
+	my $dest_libparrot = File::Spec->catfile( $current_dir, $libparrot_name );
+	my $dest_hello_exe = File::Spec->catfile( $current_dir, $hello_exe_name);
+	print "Copying $libparrot into $dest_libparrot\n";
+	File::Copy::copy( $libparrot, $dest_libparrot );
+	print "Copying $hello_exe into $dest_hello_exe\n";
+	File::Copy::copy( $hello_exe, $dest_hello_exe );
+
+	#
+	# Check if the executable is there and tell the user if it succeeded or not
+	# and give out statistics about it if possible (size, permissions, ...)
 }
 
 1;
