@@ -6,6 +6,13 @@ lib/Padre/Plugin/Catalyst.pm
 lib/Padre/Plugin/Catalyst/Helper.pm
 lib/Padre/Plugin/Catalyst/NewApp.pm
 lib/Padre/Plugin/Catalyst/Util.pm
+share/locale/Catalyst-ar.po
+share/locale/Catalyst-fr-fr.po
+share/locale/Catalyst-nl-nl.po
+share/locale/Catalyst-pl.po
+share/locale/Catalyst-pt-br.po
+share/locale/Catalyst-ru.po
+share/locale/Catalyst-zh-tw.po
 t/00-load.t
 t/pod.t
 Makefile.PL
