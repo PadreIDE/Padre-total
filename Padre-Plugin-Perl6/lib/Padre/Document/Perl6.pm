@@ -108,7 +108,8 @@ sub colorize {
 	# temporary overlay using the parse tree given by parrot
 	# TODO: let the user select which one to use
 	# TODO: but the parrot parser in the background
-	#my $perl6 = $self->get_perl6;
+	#require Padre::Plugin::Perl6::Util;
+	#my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
 	#if ($perl6) {
 	#	$self->_parrot_color($perl6);
 	#	return;
@@ -190,28 +191,12 @@ sub _parrot_color {
 	return;
 }
 
-sub get_perl6 {
-	my $self     = shift;
-
-	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
-	require File::Which;
-	my $perl6 = File::Which::which($exe_name);
-	if (not $perl6) {
-		if (not $ENV{RAKUDO_DIR}) {
-			my $main = Padre->ide->wx->main;
-			$main->error("Either $exe_name needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
-		}
-		$perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, $exe_name);
-	}
-
-	return $perl6;
-}
-
 sub get_command {
 	my $self     = shift;
 
 	my $filename = $self->filename;
-	my $perl6    = $self->get_perl6;
+	require Padre::Plugin::Perl6::Util;
+	my $perl6    = Padre::Plugin::Perl6::Util::get_perl6();
 
 	return qq{"$perl6" "$filename"};
 }
