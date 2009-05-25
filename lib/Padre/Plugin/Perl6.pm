@@ -88,7 +88,7 @@ sub menu_plugins {
 	# Manual Perl6 syntax highlighting
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, "Refresh Coloring\tF7", ),
+		$self->{menu}->Append( -1, _T("Refresh Coloring\tF7"), ),
 		sub { $self->highlight; },
 	);
 
@@ -119,6 +119,15 @@ sub menu_plugins {
 		$main_window,
 		$self->{menu}->Append( -1, _T("Export Snippet HTML"), ),
 		sub { $self->export_html($SNIPPET_HTML); },
+	);
+
+	$self->{menu}->AppendSeparator;
+
+	# Generate perl6 EXEcutable
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Generate Perl6 EXEcutable"), ),
+		sub { $self->generate_p6_exe; },
 	);
 
 	$self->{menu}->AppendSeparator;
@@ -502,6 +511,35 @@ sub export_html {
 	return;
 }
 
+# Generate a Perl6 executable 
+# The idea came from:
+# "My first executable from Perl 6" by Moritz Lenz
+# http://perlgeek.de/blog-en/perl-6/my-first-executable.writeback
+sub generate_p6_exe {
+	my $self = shift;
+
+# Algorithm: 
+# ---------
+# Check for perl6 existance and that it is executable.
+
+# Check for -e parrot existance and that it is executable.
+
+# Check for -e pbc_to_exe existance and that it is executable.
+
+# Tell the user about the commands that are going to be executed.
+
+# Run command:
+# $RAKUDO_DIR/perl6 --target=PIR --output hello.pir hello.pl
+#
+# Run command:
+# $RAKUDO_DIR/parrot/parrot -o hello.pbc hello.pir
+#
+# Run command 3.
+# $RAKUDO_DIR/parrot/pbc_to_exe -o hello hello.pbc
+#
+# Check if the executable is there and tell the user if it succeeded or not
+# and give out statistics about it if possible (size, permissions, ...)
+}
 
 1;
 
