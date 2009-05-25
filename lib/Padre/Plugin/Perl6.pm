@@ -40,6 +40,15 @@ sub padre_interfaces {
 	return 'Padre::Plugin' => 0.26,
 }
 
+# plugin icon
+sub plugin_icon {
+    # find resource path
+    my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'camelia.png');
+
+    # create and return icon
+    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+}
+
 # called when the plugin is enabled
 sub plugin_enable {
 	my $self = shift;
