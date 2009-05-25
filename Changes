@@ -1,11 +1,12 @@
 Revision history for Padre-Plugin-Autoformat
 
-1.1.3 Tue May 19 03:32:25 CST 2009
-    Add Chinese (Traditional) translation (BLUET)
+(Not released yet)
  - added translations:
+   - Chinese (Traditional) (BLUET)
    - brazilian portuguese
    - french
    - polish
+   - Arabic (AZAWAWI)
 
 1.1.2 Sun Apr  5 12:05:46 CEST 2009
  - fix typo in plugin name
