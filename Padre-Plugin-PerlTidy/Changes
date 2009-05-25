@@ -1,5 +1,9 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+(Not released yet)
+	- Added translations:
+		Arabic (azawawi)
+
 0.06  Wed May 20 2009
     - Keyboard shortcuts added (claudio)
     - Added translations:
