@@ -1,7 +1,10 @@
 use strict;
 use warnings;
-
 use Module::Build;
+
+unless($ENV{PADRE_PLUGIN_PERL6}) {
+	warn "\nWARNING: Please set PADRE_PLUGIN_PERL6 to generate translation files.\n\n";
+}
 
 my $class = Module::Build->subclass(
     class => "Module::Build::Custom",
@@ -10,7 +13,7 @@ my $class = Module::Build->subclass(
 sub ACTION_build {
     my $self = shift;
 
-	if($ENV{PERL6_PLUGIN_DEV}) {
+	if($ENV{PADRE_PLUGIN_PERL6}) {
 		my $msgfmt = ($^O =~ /win32/i)
 			? qq{c:/Program Files/GnuWin32/bin/msgfmt.exe}
 			: `which msgfmt`; 
@@ -82,4 +85,5 @@ my $builder = $class->new(
 );
 
 $builder->add_build_element('mo');
+$builder->add_build_element('png');
 $builder->create_build_script();
