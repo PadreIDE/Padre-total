@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-perltidy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-11 20:49+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+
+#: lib/Padre/Plugin/PerlTidy.pm:36
+msgid "Tidy the active document\tAlt+Shift+F"
+msgstr "ترتيب الوثيقة الحالية\tAlt+Shift+F"
+
+#: lib/Padre/Plugin/PerlTidy.pm:37
+msgid "Tidy the selected text\tAlt+Shift+G"
+msgstr "ترتيب النص المختار\tAlt+Shift+G"
+
+#: lib/Padre/Plugin/PerlTidy.pm:38
+msgid "Export active document to HTML file"
+msgstr "تصدير الوثيقة الحالية إلى ملف HTML"
+
+#: lib/Padre/Plugin/PerlTidy.pm:39
+msgid "Export selected text to HTML file"
+msgstr "تصدير النص المختار إلى ملف HTML"
+
+#: lib/Padre/Plugin/PerlTidy.pm:53
+#: lib/Padre/Plugin/PerlTidy.pm:172
+msgid "Document is not a Perl document"
+msgstr "الوثيقة ليست وثيقة Perl"
+
+#: lib/Padre/Plugin/PerlTidy.pm:54
+#: lib/Padre/Plugin/PerlTidy.pm:173
+msgid "Error"
+msgstr "خطأ"
+
+#: lib/Padre/Plugin/PerlTidy.pm:74
+#: lib/Padre/Plugin/PerlTidy.pm:197
+msgid "PerlTidy Error"
+msgstr "خطأ PerlTidy"
+
+#: lib/Padre/Plugin/PerlTidy.pm:134
+msgid "Save file as..."
+msgstr "حفظ الملف ك..."
+
+#: lib/Padre/Plugin/PerlTidy.pm:148
+msgid "File already exists. Overwrite it?"
+msgstr "Le fichier existe déjà. Le remplacer ?"
+
+#: lib/Padre/Plugin/PerlTidy.pm:149
+msgid "Exist"
+msgstr "موجود"
+
