@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-catalyst\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-10 21:01+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+
+#: lib/Padre/Plugin/Catalyst.pm:45
+msgid "New Catalyst Application"
+msgstr "تطبيق Catalyst جديد"
+
+#: lib/Padre/Plugin/Catalyst.pm:50
+msgid "Create new..."
+msgstr "انشاء جديد..."
+
+#: lib/Padre/Plugin/Catalyst.pm:51
+msgid "Model"
+msgstr "نموذج - Model"
+
+#: lib/Padre/Plugin/Catalyst.pm:55
+msgid "View"
+msgstr "مشهد - View"
+
+#: lib/Padre/Plugin/Catalyst.pm:59
+msgid "Controller"
+msgstr "مراقب - Controller"
+
+#: lib/Padre/Plugin/Catalyst.pm:65
+msgid "Start Web Server"
+msgstr "تشغيل خادم الويب"
+
+#: lib/Padre/Plugin/Catalyst.pm:66
+msgid "Stop Web Server"
+msgstr "ايقاف خادم الويب"
+
+#: lib/Padre/Plugin/Catalyst.pm:68
+msgid "Catalyst Online References"
+msgstr "مراجع Catalyst على الانترنت"
+
+#: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Catalyst Cookbook"
+msgstr "كتاب طهي Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "Recommended Plugins"
+msgstr "البرامج الملحقه الموصى بها"
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "Examples"
+msgstr "أمثلة"
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "Catalyst Wiki"
+msgstr "ويكي Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "Catalyst Website"
+msgstr "موقع Catalyst الاكتروني"
+
+#: lib/Padre/Plugin/Catalyst.pm:89
+msgid "About"
+msgstr "عن"
+
+#: lib/Padre/Plugin/Catalyst.pm:107
+#, perl-format
+msgid ""
+"Catalyst development web server not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Catalyst project."
+msgstr ""
+"لا يمكن العثور على خادم الويب التطويري لCatalyst \n"
+"%s\n"
+"\n"
+"الرجاء التأكد من أن الوثيقة الحالية هي من مشروع Catalyst الخاص بك."
+
+#: lib/Padre/Plugin/Catalyst.pm:110
+msgid "Server not found"
+msgstr "الخادم غير موجود"
+
+#: lib/Padre/Plugin/Catalyst.pm:130
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "يبدو ان خادم الويب مشغل. هل تريد تشغيل متصفح الويب الآن؟"
+
+#: lib/Padre/Plugin/Catalyst.pm:131
+msgid "Start Web Browser?"
+msgstr "هل تريد تشغيل متصفح الويب؟"
+
