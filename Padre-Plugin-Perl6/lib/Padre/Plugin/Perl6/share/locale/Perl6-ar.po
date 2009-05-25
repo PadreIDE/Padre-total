@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-09 20:34+0300\n"
+"POT-Creation-Date: 2009-05-19 02:21+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: \n"
@@ -10,6 +10,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
+
+#: lib/Padre/Task/Outline/Perl6.pm:191
+msgid "Outline"
+msgstr "المخطط"
+
+#: lib/Padre/Task/Outline/Perl6.pm:224
+msgid "Open &Documentation"
+msgstr "فتح الوثائق"
 
 #: lib/Padre/Plugin/Perl6.pm:62
 msgid "Show Perl6 Help\tF2"
@@ -47,16 +55,24 @@ msgstr "عن"
 msgid "Cannot find STD.pm lex cache"
 msgstr "فشل العثور على STD lex cache"
 
+#: lib/Padre/Plugin/Perl6/Preferences.pm:28
+msgid "Perl6 preferences"
+msgstr "تفضيلات Perl6"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:121
+msgid "Syntax Highlighter:"
+msgstr "ملون الجمل:"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:152
+msgid "Pick mildew Directory"
+msgstr "اختر دليل mildew"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:179
+msgid "Pick rakudo Directory"
+msgstr "اختر دليل rakudo"
+
 #: lib/Padre/Document/Perl6.pm:334
 #, perl-format
 msgid "%s is Perl 6 %s "
 msgstr "%s هو Perl 6 %s "
-
-#: lib/Padre/Task/Outline/Perl6.pm:191
-msgid "Outline"
-msgstr "المخطط"
-
-#: lib/Padre/Task/Outline/Perl6.pm:224
-msgid "Open &Documentation"
-msgstr "فتح الوثائق"
 
