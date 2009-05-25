@@ -191,12 +191,18 @@ sub _parrot_color {
 	return;
 }
 
+# get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
 sub get_command {
 	my $self     = shift;
 
 	my $filename = $self->filename;
 	require Padre::Plugin::Perl6::Util;
 	my $perl6    = Padre::Plugin::Perl6::Util::get_perl6();
+	
+	if(not $perl6) {
+		my $main = Padre->ide->wx->main;
+		$main->error("Either $exe_name needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
+	}
 
 	return qq{"$perl6" "$filename"};
 }

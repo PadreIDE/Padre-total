@@ -8,20 +8,33 @@ our $VERSION = '0.40';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = qw(get_perl6);
 
-use Padre ();
-
 # Get perl6 full executable path
 sub get_perl6 {
 	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
 	require File::Which;
 	my $perl6 = File::Which::which($exe_name);
-	if (not $perl6) {
-		if (not $ENV{RAKUDO_DIR}) {
-			my $main = Padre->ide->wx->main;
-			$main->error("Either $exe_name needs to be in the PATH or RAKUDO_DIR must point to the directory of the Rakudo checkout.");
-		}
-		$perl6 = File::Spec->catfile($ENV{RAKUDO_DIR}, $exe_name);
+	my $env_rakudo = $ENV{RAKUDO_DIR};
+	if (not $perl6 && $env_rakudo) {
+		$perl6 = File::Spec->catfile($env_rakudo, $exe_name);
 	}
 
 	return $perl6;
+}
+
+sub get_parrot_command {
+	my $command = shift;
+	
+	my $exe_name = $^O eq 'MSWin32' ? "$command.exe" : $command;
+	require File::Which;
+	my $parrot_cmd = File::Which::which($exe_name);
+	my $env_rakudo = $ENV{RAKUDO_DIR};
+	if (not $parrot_cmd && $env_rakudo) {
+		my $parrot_dir = File::Spec->catfile($env_rakudo, 'parrot');
+		my $cmd = File::Spec->catfile($parrot_dir, $exe_name);
+		if(-x $cmd) {
+			$parrot_cmd = $cmd;
+		}
+	}
+
+	return $parrot_cmd;
 }
