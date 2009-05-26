@@ -1,0 +1,77 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-perl6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-25 02:34+0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
+"Language-Team: Brazilian Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Task/Outline/Perl6.pm:191
+msgid "Outline"
+msgstr "Esboço"
+
+#: lib/Padre/Task/Outline/Perl6.pm:224
+msgid "Open &Documentation"
+msgstr "Abrir &Documentação"
+
+#: lib/Padre/Plugin/Perl6.pm:62
+msgid "Show Perl6 Help\tF2"
+msgstr "Mostrar Ajuda do Perl6\tF2"
+
+#: lib/Padre/Plugin/Perl6.pm:77
+msgid "Enable Auto Coloring"
+msgstr "Ativar Coloração Automática"
+
+#: lib/Padre/Plugin/Perl6.pm:90
+msgid "Export Full HTML"
+msgstr "Exportar HTML Completo"
+
+#: lib/Padre/Plugin/Perl6.pm:95
+msgid "Export Simple HTML"
+msgstr "Exportar HTML Simples"
+
+#: lib/Padre/Plugin/Perl6.pm:100
+msgid "Export Snippet HTML"
+msgstr "Exportar Recorte HTML"
+
+#: lib/Padre/Plugin/Perl6.pm:109
+msgid "Cleanup STD.pm Lex Cache"
+msgstr "Limpar Cache Lex do STD.pm"
+
+#: lib/Padre/Plugin/Perl6.pm:118
+msgid "Preferences"
+msgstr "Preferências"
+
+#: lib/Padre/Plugin/Perl6.pm:127
+msgid "About"
+msgstr "Sobre"
+
+#: lib/Padre/Plugin/Perl6.pm:174
+msgid "Cannot find STD.pm lex cache"
+msgstr "Não foi possível encontrar o cache lex do STD.pm"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:28
+msgid "Perl6 preferences"
+msgstr "Preferências do Perl6"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:121
+msgid "Syntax Highlighter:"
+msgstr "Colorador de Sintaxe:"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:152
+msgid "Pick mildew Directory"
+msgstr "Escolher Diretório do mildew"
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:179
+msgid "Pick rakudo Directory"
+msgstr "Escolher Diretório do rakudo"
+
+#: lib/Padre/Document/Perl6.pm:334
+#, perl-format
+msgid "%s is Perl 6 %s "
+msgstr "%s é Perl 6 %s "
+
