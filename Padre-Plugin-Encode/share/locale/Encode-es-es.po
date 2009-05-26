@@ -1,0 +1,27 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-perlcritic\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-25 02:34+0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Bruno Vecchi <vecchi.v@gmail>\n"
+"Language-Team: Bruno Vecchi <vecchi.b@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Encode.pm:32
+msgid "Encode document to System Default"
+msgstr "Codificar documento al Predeterminado por el Sistema"
+
+#: lib/Padre/Plugin/Encode.pm:33
+msgid "Encode document to utf-8"
+msgstr "Codificar documento a utf-8"
+
+#: lib/Padre/Plugin/Encode.pm:34 lib/Padre/Plugin/Encode.pm:82
+msgid "Encode document to..."
+msgstr "Codificar documento a..."
+
+#: lib/Padre/Plugin/Encode.pm:71
+msgid "Encode to:"
+msgstr "Codificar a:"
