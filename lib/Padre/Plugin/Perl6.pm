@@ -732,7 +732,6 @@ sub generate_p6_pir {
 	}
 	
 	require File::Temp;
-	#XXX- CLEANUP must be enabled once testing is finished...
 	my $tmp_dir = File::Temp->newdir( CLEANUP => 0 );
 	
 	my $hello_pl = File::Spec->catfile($tmp_dir, 'hello.pl');
@@ -758,7 +757,7 @@ sub generate_p6_pir {
 	close HELLO_PL
 		or die "Cannot close $hello_pl\n";
 
-	my $cmd_output = "output_1.txt";
+	my $cmd_output = File::Spec->catfile($tmp_dir, "output.txt");
 
 	# Prepare the output window for the output
 	$main->show_output(1);
