@@ -193,8 +193,8 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		"Perl 6 syntax highlighting that is based on\n" .
-		"Syntax::Highlight::Perl6 v" . $Syntax::Highlight::Perl6::VERSION . "\n"
+		_T("Perl 6 syntax highlighting is based on\n") .
+		_T("Syntax::Highlight::Perl6 version ") . $Syntax::Highlight::Perl6::VERSION . "\n"
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
