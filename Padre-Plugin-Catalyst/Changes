@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Catalyst
 
+(unreleased)
+	Added Spanish translation (BRUNOV)
 
 0.03	
 	Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)

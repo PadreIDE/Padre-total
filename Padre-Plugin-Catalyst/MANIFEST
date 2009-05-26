@@ -13,6 +13,7 @@ share/locale/Catalyst-pl.po
 share/locale/Catalyst-pt-br.po
 share/locale/Catalyst-ru.po
 share/locale/Catalyst-zh-tw.po
+share/locale/Catalyst-es-es.po
 t/00-load.t
 t/pod.t
 Makefile.PL

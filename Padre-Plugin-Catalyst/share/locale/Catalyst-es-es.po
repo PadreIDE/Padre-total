@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-catalyst\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-25 18:23+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Bruno Vecchi <vecch.b@gmail.com>\n"
+"Language-Team: spanish latino\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Catalyst.pm:45
+msgid "New Catalyst Application"
+msgstr "Nueva Aplicación Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:50
+msgid "Create new..."
+msgstr "Crear nuevo..."
+
+#: lib/Padre/Plugin/Catalyst.pm:51
+msgid "Model"
+msgstr "Modelo"
+
+#: lib/Padre/Plugin/Catalyst.pm:55
+msgid "View"
+msgstr "Vista"
+
+#: lib/Padre/Plugin/Catalyst.pm:59
+msgid "Controller"
+msgstr "Controlador"
+
+#: lib/Padre/Plugin/Catalyst.pm:65
+msgid "Start Web Server"
+msgstr "Iniciar Servidor Web"
+
+#: lib/Padre/Plugin/Catalyst.pm:66
+msgid "Stop Web Server"
+msgstr "Parar Servidor Web"
+
+#: lib/Padre/Plugin/Catalyst.pm:68
+msgid "Catalyst Online References"
+msgstr "Referencias Online de Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Catalyst Cookbook"
+msgstr "Libro de Recetas de Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "Recommended Plugins"
+msgstr "Plugins Recomendados"
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "Examples"
+msgstr "Ejemplos"
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "Catalyst Wiki"
+msgstr "Wiki Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "Catalyst Website"
+msgstr "Sitio Web de Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:89
+msgid "About"
+msgstr "Acerca de"
+
+#: lib/Padre/Plugin/Catalyst.pm:107
+#, perl-format
+msgid ""
+"Catalyst development web server not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Catalyst project."
+msgstr ""
+"Servidor web de desarrollo no encontrado en\n"
+"%s\n"
+"\n"
+"Por favor verifique que el documento activo sea parte de su proyecto Catalyst."
+
+#: lib/Padre/Plugin/Catalyst.pm:110
+msgid "Server not found"
+msgstr "Servidor no encontrado"
+
+#: lib/Padre/Plugin/Catalyst.pm:130
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "Servidor web parece estar en ejecución. Iniciar navegador web ahora?"
+
+#: lib/Padre/Plugin/Catalyst.pm:131
+msgid "Start Web Browser?"
+msgstr "Iniciar Navegador Web?"
