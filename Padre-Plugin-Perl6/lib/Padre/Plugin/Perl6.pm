@@ -130,6 +130,13 @@ sub menu_plugins {
 		sub { $self->generate_p6_exe; },
 	);
 
+	# Generate perl6 PIR
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Generate Perl6 PIR"), ),
+		sub { $self->generate_p6_pir; },
+	);
+	
 	$self->{menu}->AppendSeparator;
 
 	# Cleanup STD.pm lex cache
@@ -686,6 +693,97 @@ sub generate_p6_exe {
 	#
 	# Check if the executable is there and tell the user if it succeeded or not
 	# and give out statistics about it if possible (size, permissions, ...)
+}
+
+# Generates Parrot PIR code from rakudo
+# and displays it to the user
+sub generate_p6_pir {
+	my $self = shift;
+	
+	
+	my $main = $self->main;
+
+	my $doc = Padre::Current->document;
+	unless(defined $doc) {
+		return;
+	}
+	if($doc->get_mimetype ne q{application/x-perl6}) {
+		Wx::MessageBox(
+			'Not a Perl6 file',
+			'Operation cancelled',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+
+
+	# Check for perl6 existance and that it is executable.
+	require Padre::Plugin::Perl6::Util;
+	my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
+	unless($perl6 && -x $perl6) {
+		Wx::MessageBox(
+			'Cannot find a perl6 executable',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+	
+	require File::Temp;
+	#XXX- CLEANUP must be enabled once testing is finished...
+	my $tmp_dir = File::Temp->newdir( CLEANUP => 0 );
+	
+	my $hello_pl = File::Spec->catfile($tmp_dir, 'hello.pl');
+	my $hello_pir = File::Spec->catfile($tmp_dir, 'hello.pir');
+
+	#XXX- quote all those files in win32
+	my $perl6_to_pir_cmd = "$perl6 --target=PIR --output=$hello_pir $hello_pl";
+	# Tell the user about the commands that are going to be executed.
+	Wx::MessageBox(
+		"The following command is going to be executed:\n\n$perl6_to_pir_cmd\n",
+		'Error',
+		Wx::wxOK,
+		$main,
+	);
+	
+	
+	open HELLO_PL, ">$hello_pl"
+		or die "Cannot open $hello_pl\n";
+	binmode HELLO_PL, ":utf8";
+	my $text = $doc->text_get;
+	#XXX- check text_get return value
+	print HELLO_PL $text;
+	close HELLO_PL
+		or die "Cannot close $hello_pl\n";
+
+	my $cmd_output = "output_1.txt";
+
+	# Prepare the output window for the output
+	$main->show_output(1);
+	my $outpanel = $main->output;
+	$outpanel->Remove( 0, $outpanel->GetLastPosition );
+	
+	#enable localized slurp mode
+	local $/ = undef;   
+	my $out;
+	
+	# Run command:
+	# perl6 --target=PIR --output=hello.pir hello.pl
+	print "Executing:\n $perl6_to_pir_cmd\n";
+	`$perl6_to_pir_cmd 1>$cmd_output 2>&1`;
+	$outpanel->style_neutral;
+	
+	# slurp the process output...
+	open OUTPUT, $cmd_output or warn "Could not open $cmd_output\n";
+	$out = <OUTPUT>;
+	close OUTPUT or warn "Could not close $cmd_output\n";
+	$outpanel->AppendText( $out );
+
+	# try to open the HTML file
+	$main->setup_editor($hello_pir);
+	
 }
 
 1;
