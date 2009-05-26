@@ -31,6 +31,11 @@ sub _sharedir {
 	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'Perl6/share'));
 }
 
+# Returns the plugin name to Padre
+sub plugin_name {
+	return _T("Perl 6");
+}
+
 # directory where to find the translations
 sub plugin_locale_directory {
 	return File::Spec->catdir( _sharedir(), 'locale' );
@@ -188,7 +193,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		"Perl6 syntax highlighting that is based on\n" .
+		"Perl 6 syntax highlighting that is based on\n" .
 		"Syntax::Highlight::Perl6 v" . $Syntax::Highlight::Perl6::VERSION . "\n"
 	);
 	$about->SetVersion($VERSION);
@@ -311,7 +316,7 @@ sub show_perl6_doc {
 
 	if(! $self->{perl6_functions}) {
 		Wx::MessageBox(
-			'Perl6 S29 docs are not available',
+			'Perl 6 S29 is not available',
 			'Error',
 			Wx::wxOK,
 			$main,
