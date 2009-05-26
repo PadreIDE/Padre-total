@@ -1,0 +1,107 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-pugin-mojolicious\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-19 01:49+0800\n"
+"PO-Revision-Date: 2009-05-25 HO:MI+ZONE\n"
+"Last-Translator: Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Language-Team: Spanish\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Mojolicious.pm:44
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+msgid "New Mojolicious Application"
+msgstr "Nueva Aplicación Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:50
+msgid "Start Web Server"
+msgstr "Iniciar Servidor Web"
+
+#: lib/Padre/Plugin/Mojolicious.pm:51
+msgid "Stop Web Server"
+msgstr "Parar Servidor Web"
+
+#: lib/Padre/Plugin/Mojolicious.pm:53
+msgid "Mojolicious Online References"
+msgstr "Referencias Online de Catalyst"
+
+#: lib/Padre/Plugin/Mojolicious.pm:54
+msgid "Mojolicious Manual"
+msgstr "Manual de Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:57
+msgid "Mojolicious Website"
+msgstr "Sitio Web de Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:62
+msgid "About"
+msgstr "Acerca de"
+
+#: lib/Padre/Plugin/Mojolicious.pm:78
+#, perl-format
+msgid ""
+"Mojolicious application script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Mojolicious project."
+msgstr ""
+"Archivo de aplicación Mojolicious no encontrado en\n"
+"%s\n"
+"\n"
+"Por favor verifique que el documento activo sea parte de su proyecto Mojolicious."
+
+#: lib/Padre/Plugin/Mojolicious.pm:81
+msgid "Server not found"
+msgstr "Servidor no encontrado"
+
+#: lib/Padre/Plugin/Mojolicious.pm:103
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "Servidor web parece estar en ejecución. Iniciar navegador web ahora?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:104
+msgid "Start Web Browser?"
+msgstr "Iniciar Navegador Web?"
+
+#: lib/Padre/Plugin/Mojolicious.pm:128
+msgid ""
+"\n"
+"Web server stopped successfully.\n"
+msgstr ""
+"\n"
+"Servidor Web detenido con éxito.\n"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+msgid "Application Name:"
+msgstr "Nombre de la Aplicación:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+msgid "Parent Directory:"
+msgstr "Directorio principal:"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+msgid "Pick parent directory"
+msgstr "Elegir directorio principal"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+msgid "Invalid Application name"
+msgstr "Nombre de la Aplicación inválido"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "missing field"
+msgstr "campo vacío"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+msgid "You need to select a base directory"
+msgstr "Necesita seleccionar un directorio base"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "%s ha sido creado aparentemente. Quieres abrirlo ahora?"
+
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+msgid "Done"
+msgstr "Hecho"

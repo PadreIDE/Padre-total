@@ -5,6 +5,12 @@ README
 lib/Padre/Plugin/Mojolicious.pm
 lib/Padre/Plugin/Mojolicious/NewApp.pm
 lib/Padre/Plugin/Mojolicious/Util.pm
+share/locale/Mojolicious-ar.po
+share/locale/Mojolicious-es-es.po
+share/locale/Mojolicious-fr-fr.po
+share/locale/Mojolicious-nl-nl.po
+share/locale/Mojolicious-pl.po
+share/locale/Mojolicious-zh-tw.po
 t/00-load.t
 t/pod.t
 Makefile.PL
