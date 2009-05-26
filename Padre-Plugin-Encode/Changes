@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Encode
 
 	Added Spanish translation (brunov)
+	Added Brazilian Portuguese translation (garu)
 
 0.1.4 Tue May 19 03:32:25 CST 2009
 	Removed release-time tests that ran at install-time (ADAMK)
