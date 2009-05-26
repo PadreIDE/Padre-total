@@ -6,6 +6,7 @@ Revision history for Padre-Plugin-CommandLine
 	- Polish (therek)
 	- Chinese (Traditional) translation (BLUET)
 	- Arabic translation (azawawi)
+	- Spanish (brunov)
 
 0.02    2008.12.23
         Add prereq Wx::Perl::Dialog
