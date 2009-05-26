@@ -79,7 +79,7 @@ sub menu_plugins {
 	# Perl6 S29 documentation
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Show Perl6 Help\tF2"), ),
+		$self->{menu}->Append( -1, _T("Show Perl 6 Help\tF2"), ),
 		sub { $self->show_perl6_doc; },
 	);
 
@@ -123,17 +123,17 @@ sub menu_plugins {
 
 	$self->{menu}->AppendSeparator;
 
-	# Generate perl6 EXEcutable
+	# Generate Perl 6 Executable
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Generate Perl6 EXEcutable"), ),
+		$self->{menu}->Append( -1, _T("Generate Perl 6 Executable"), ),
 		sub { $self->generate_p6_exe; },
 	);
 
-	# Generate perl6 PIR
+	# Generate Perl 6 PIR
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Generate Perl6 PIR"), ),
+		$self->{menu}->Append( -1, _T("Generate Perl 6 PIR"), ),
 		sub { $self->generate_p6_pir; },
 	);
 	
@@ -325,7 +325,7 @@ sub show_perl6_doc {
 		# make sure it is a Perl6 document
 		if($doc->get_mimetype ne q{application/x-perl6}) {
 			Wx::MessageBox(
-				'Not a Perl6 file',
+				'Not a Perl 6 file',
 				'Operation cancelled',
 				Wx::wxOK,
 				$main,
@@ -412,7 +412,7 @@ sub export_html {
 	}
 	if($doc->get_mimetype ne q{application/x-perl6}) {
 		Wx::MessageBox(
-			'Not a Perl6 file',
+			'Not a Perl 6 file',
 			'Operation cancelled',
 			Wx::wxOK,
 			$main,
@@ -533,7 +533,7 @@ sub generate_p6_exe {
 	}
 	if($doc->get_mimetype ne q{application/x-perl6}) {
 		Wx::MessageBox(
-			'Not a Perl6 file',
+			'Not a Perl 6 file',
 			'Operation cancelled',
 			Wx::wxOK,
 			$main,
@@ -709,7 +709,7 @@ sub generate_p6_pir {
 	}
 	if($doc->get_mimetype ne q{application/x-perl6}) {
 		Wx::MessageBox(
-			'Not a Perl6 file',
+			'Not a Perl 6 file',
 			'Operation cancelled',
 			Wx::wxOK,
 			$main,
