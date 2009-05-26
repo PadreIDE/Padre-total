@@ -8,7 +8,7 @@ use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub on_newapp {
     my $main = Padre->ide->wx->main;    

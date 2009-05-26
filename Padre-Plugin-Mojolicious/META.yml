@@ -1,12 +1,14 @@
 ---
 name: Padre-Plugin-Mojolicious
-version: 0.01
+version: 0.02
 author:
   - 'Breno G. de Oliveira <garu@cpan.org>'
 abstract: Simple Mojolicious helper interface for Padre
 license: perl
 resources:
-  license: ~
+  homepage: http://padre.perlide.org/
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Mojolicious/
 configure_requires:
   Padre::PluginBuilder: 0.12
 build_requires:
@@ -19,14 +21,14 @@ build_requires:
 provides:
   Padre::Plugin::Mojolicious:
     file: lib/Padre/Plugin/Mojolicious.pm
-    version: 0.01
+    version: 0.02
   Padre::Plugin::Mojolicious::NewApp:
     file: lib/Padre/Plugin/Mojolicious/NewApp.pm
-    version: 0.01
+    version: 0.02
   Padre::Plugin::Mojolicious::Util:
     file: lib/Padre/Plugin/Mojolicious/Util.pm
-    version: 0.01
-generated_by: Module::Build version 0.32
+    version: 0.02
+generated_by: Module::Build version 0.33
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4

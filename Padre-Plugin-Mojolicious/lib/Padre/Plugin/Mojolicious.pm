@@ -6,7 +6,7 @@ use strict;
 
 use Padre::Util   ('_T');
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'Mojolicious' }
