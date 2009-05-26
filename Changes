@@ -1,5 +1,7 @@
 Changes
 
+	- Added Spanish translation (BRUNOV)
+
 =head1 0.40 2009.5.23
 
 	- Now uses Module::Build instead of Module::Install (Thanks for jquelin for the idea)
