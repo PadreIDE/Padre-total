@@ -4,9 +4,8 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
     - Added translations:
       - German (hjansen)
       - Arabic (azawawi)
-	  - Spanish (brunov)
-	  - Brazilian Portuguese (garu)
-    - Added keyboard shortcuts for document and selection (claudio)
+      - Spanish (brunov)
+      - Brazilian Portuguese (garu)
 
 0.06  Wed May 20 2009
     - Keyboard shortcuts added (claudio)
