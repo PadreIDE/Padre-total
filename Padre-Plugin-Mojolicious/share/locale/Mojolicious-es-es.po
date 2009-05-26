@@ -25,7 +25,7 @@ msgstr "Parar Servidor Web"
 
 #: lib/Padre/Plugin/Mojolicious.pm:53
 msgid "Mojolicious Online References"
-msgstr "Referencias Online de Catalyst"
+msgstr "Referencias Online de Mojolicious"
 
 #: lib/Padre/Plugin/Mojolicious.pm:54
 msgid "Mojolicious Manual"
