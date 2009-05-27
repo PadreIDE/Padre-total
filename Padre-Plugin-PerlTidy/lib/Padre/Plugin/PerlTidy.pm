@@ -237,7 +237,6 @@ sub _restore_cursor_position {
         $editor->SetCurrentPos($pos);
         $editor->SetSelection( $pos, $pos );
     }
-    else { print "No party!\n"; print $regex; }
     return;
 }
 
@@ -265,9 +264,8 @@ sub _store_cursor_position {
     my $prefix = $editor->GetTextRange( 0, $pos );
     my $regex;
     eval {
-        $prefix =~ s/(\W)/\\$1/gm;    # Escape non-word chars
-        $prefix =~
-          s/(\\\s+)/(\\s+|\\r*\\n)*/gm;    # Replace whitespace by regex \s+
+        $prefix =~ s/(\W)/\\$1/gm;         # Escape non-word chars
+        $prefix =~           s/(\\\s+)/(\\s+|\\r*\\n)*/gm;    # Replace whitespace by regex \s+
         $regex = qr{$prefix};
     };
     if ($@) {
