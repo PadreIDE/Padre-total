@@ -6,6 +6,8 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
       - Arabic (azawawi)
       - Spanish (brunov)
       - Brazilian Portuguese (garu)
+    - Cursor location is kept after cleaning (instead of beginning document).
+      (claudio)
 
 0.06  Wed May 20 2009
     - Keyboard shortcuts added (claudio)
