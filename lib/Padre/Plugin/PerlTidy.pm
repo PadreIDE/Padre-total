@@ -252,7 +252,7 @@ sub _store_cursor_position {
     my $pos    = $editor->GetCurrentPos;
 
   # A smaller selection to save memory (disabled)
-  #    my $sel_width = 200;                      # chars before and after cursor
+  #    my $sel_width = 200;  # chars before and after cursor
   #    my $pre_start;
   #
   #    if ( ( $pos - $sel_width ) > 0 ) {
