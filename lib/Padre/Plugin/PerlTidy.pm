@@ -6,8 +6,8 @@ use warnings;
 
 use base 'Padre::Plugin';
 
-use Padre::Wx     ();
-use Padre::Util   ('_T');
+use Padre::Wx   ();
+use Padre::Util ('_T');
 
 our $VERSION = '0.06';
 
@@ -29,6 +29,7 @@ file if it exists (see Perl::Tidy documentation).
 
 sub padre_interfaces {
     'Padre::Plugin' => '0.26',
+      ;
 }
 
 sub menu_plugins_simple {
@@ -49,7 +50,7 @@ sub _tidy {
 
     my $doc = $main->current->document;
 
-    if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
+    if ( !$doc->isa('Padre::Document::Perl') ) {
         return Wx::MessageBox( _T('Document is not a Perl document'),
             _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
     }
@@ -67,21 +68,21 @@ sub _tidy {
         );
     };
 
-    if ( $@ ) {
+    if ($@) {
         my $error_string = $@;
-        Wx::MessageBox(
-            $error_string,
-            _T("PerlTidy Error"),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
+        Wx::MessageBox( $error_string, _T("PerlTidy Error"),
+            Wx::wxOK | Wx::wxCENTRE, $main );
         return;
     }
 
     if ( defined $error ) {
         my $width = length( $doc->filename ) + 2;
-        Padre::Current->main->output->AppendText(
-            "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
-        Padre::Current->main->output->AppendText( "$error\n" );
+        Padre::Current->main->output->AppendText( "\n\n"
+              . "-" x $width . "\n"
+              . $doc->filename . "\n"
+              . "-" x $width
+              . "\n" );
+        Padre::Current->main->output->AppendText("$error\n");
         Padre::Current->main->show_output(1);
     }
     return $output;
@@ -98,7 +99,7 @@ sub tidy_selection {
     $newtext =~ s{\n$}{};
 
     my $editor = $main->current->editor;
-    $editor->ReplaceSelection( $newtext );
+    $editor->ReplaceSelection($newtext);
 }
 
 sub tidy_document {
@@ -111,14 +112,16 @@ sub tidy_document {
 
     return unless defined $newtext && length $newtext;
 
-    $doc->text_set( $newtext );
+    my $regex = _store_cursor_position($main);
+    $doc->text_set($newtext);
+    _restore_cursor_position( $main, $regex );
 }
 
 sub _get_filename {
     my $main = shift;
 
-    my $doc     = $main->current->document or return;
-    my $current = $doc->filename;
+    my $doc         = $main->current->document or return;
+    my $current     = $doc->filename;
     my $default_dir = '';
 
     if ( defined $current ) {
@@ -129,31 +132,24 @@ sub _get_filename {
     require File::Spec;
 
     while (1) {
-        my $dialog = Wx::FileDialog->new(
-            $main,
-            _T("Save file as..."),
-            $default_dir,
+        my $dialog =
+          Wx::FileDialog->new( $main, _T("Save file as..."), $default_dir,
             $doc->filename . '.html',
-            "*.*",
-            Wx::wxFD_SAVE,
-        );
+            "*.*", Wx::wxFD_SAVE, );
         if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
             return;
         }
         my $filename = $dialog->GetFilename;
         $default_dir = $dialog->GetDirectory;
-        my $path = File::Spec->catfile($default_dir, $filename);
+        my $path = File::Spec->catfile( $default_dir, $filename );
         if ( -e $path ) {
-            my $res = Wx::MessageBox(
-                _T("File already exists. Overwrite it?"),
-                _T("Exist"),
-                Wx::wxYES_NO,
-                $main,
-            );
+            my $res = Wx::MessageBox( _T("File already exists. Overwrite it?"),
+                _T("Exist"), Wx::wxYES_NO, $main, );
             if ( $res == Wx::wxYES ) {
                 return $path;
             }
-        } else {
+        }
+        else {
             return $path;
         }
     }
@@ -168,7 +164,7 @@ sub _export {
 
     my $doc = $main->current->document;
 
-    if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
+    if ( !$doc->isa('Padre::Document::Perl') ) {
         return Wx::MessageBox( _T('Document is not a Perl document'),
             _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
     }
@@ -190,21 +186,21 @@ sub _export {
         );
     };
 
-    if ( $@ ) {
+    if ($@) {
         my $error_string = $@;
-        Wx::MessageBox(
-            $error_string,
-            _T('PerlTidy Error'),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
+        Wx::MessageBox( $error_string, _T('PerlTidy Error'),
+            Wx::wxOK | Wx::wxCENTRE, $main );
         return;
     }
 
     if ( defined $error ) {
         my $width = length( $doc->filename ) + 2;
-        Padre::Current->main->output->AppendText(
-            "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
-        Padre::Current->main->output->AppendText( "$error\n" );
+        Padre::Current->main->output->AppendText( "\n\n"
+              . "-" x $width . "\n"
+              . $doc->filename . "\n"
+              . "-" x $width
+              . "\n" );
+        Padre::Current->main->output->AppendText("$error\n");
         Padre::Current->main->show_output(1);
     }
 
@@ -227,6 +223,58 @@ sub export_document {
 
     _export( $main, $src );
     return;
+}
+
+sub _restore_cursor_position {
+
+    # parameter: $main, compiled regex
+    my ( $main, $regex, $regex_pos ) = @_;
+    my $doc    = $main->current->document;
+    my $editor = $doc->editor;
+    my $text   = $editor->GetTextRange( 0, $editor->GetLength() );
+    if ( $text =~ /($regex)/ ) {
+        my $pos = length $1;
+        $editor->SetCurrentPos($pos);
+        $editor->SetSelection( $pos, $pos );
+    }
+    else { print "No party!\n"; print $regex; }
+    return;
+}
+
+sub _store_cursor_position {
+
+    # parameter: $main
+    # returns: compiled regex
+    # compiled regex is /^./ if no valid regex can be reconstructed.
+    my $main   = shift;
+    my $doc    = $main->current->document;
+    my $editor = $doc->editor;
+    my $pos    = $editor->GetCurrentPos;
+
+  # A smaller selection to save memory (disabled)
+  #    my $sel_width = 200;                      # chars before and after cursor
+  #    my $pre_start;
+  #
+  #    if ( ( $pos - $sel_width ) > 0 ) {
+  #        $pre_start = $pos - $sel_width;
+  #    }
+  #    else {
+  #        $pre_start = 0;
+  #    }
+  #    my $prefix = $editor->GetTextRange( $pre_start, $pos );
+    my $prefix = $editor->GetTextRange( 0, $pos );
+    my $regex;
+    eval {
+        $prefix =~ s/(\W)/\\$1/gm;    # Escape non-word chars
+        $prefix =~
+          s/(\\\s+)/(\\s+|\\r*\\n)*/gm;    # Replace whitespace by regex \s+
+        $regex = qr{$prefix};
+    };
+    if ($@) {
+        $regex = qw{^.};
+        print @_;
+    }
+    return $regex;
 }
 
 1;
