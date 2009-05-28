@@ -36,11 +36,11 @@ sub ACTION_build {
 
 sub ACTION_dist {
 		
-	if($ENV{Ecliptic_PLUGIN_DEV}) {
+	if($ENV{PADRE_PLUGIN_ECLIPTIC}) {
 		my $self = shift;
 		$self->SUPER::ACTION_dist;
 	} else {
-		die "You did not enable Ecliptic_PLUGIN_DEV environment variable.";
+		die "You did not enable PADRE_PLUGIN_ECLIPTIC environment variable.";
 	}
 }
 
