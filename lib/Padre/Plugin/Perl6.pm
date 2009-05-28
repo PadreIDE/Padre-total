@@ -3,16 +3,15 @@ package Padre::Plugin::Perl6;
 use 5.010;
 use strict;
 use warnings;
-
 use Carp;
+use Padre::Wx   ();
+use Padre::Util ('_T');
+use base 'Padre::Plugin';
 
 # exports and version
-our $VERSION = '0.40';
+our $VERSION   = '0.40';
 our @EXPORT_OK = qw(plugin_config);
 
-use Padre::Wx ();
-use Padre::Util   ('_T');
-use base 'Padre::Plugin';
 
 # constants for html exporting
 my $FULL_HTML    = 'full_html';
@@ -174,7 +173,7 @@ sub menu_plugins {
 }
 
 sub registered_documents {
-	return 'application/x-perl6'    => 'Padre::Document::Perl6',
+	'application/x-perl6' => 'Padre::Document::Perl6',
 }
 
 sub show_preferences {
