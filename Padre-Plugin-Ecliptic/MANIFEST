@@ -7,3 +7,5 @@ README
 t/00-load.t
 t/01-compile.t
 t/02-pod.t
+Makefile.PL
+META.yml
