@@ -6,6 +6,7 @@ use strict;
 use Class::XSAccessor accessors => {
 	_plugin      => '_plugin',       # plugin to be configured
 	_sizer       => '_sizer',        # window sizer
+	_search_text => '_search_text',	 # search text box
 };
 
 our $VERSION = '0.40';
@@ -75,6 +76,9 @@ sub _create {
 	$self->_create_controls;
 	$self->_create_buttons;
 
+	# focus on the search text box
+	$self->_search_text->SetFocus();
+	
 	# wrap everything in a vbox to add some padding
 	$self->SetSizerAndFit($sizer);
 	$sizer->SetSizeHints($self);
@@ -109,7 +113,7 @@ sub _create_controls {
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
 		_T('&Select an item to open (? = any character, * = any string):') );
-	my $search_text = Wx::TextCtrl->new( $self, -1, '' );
+	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, _T('&Matching Items:') );
@@ -120,23 +124,24 @@ sub _create_controls {
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
+	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
 	
 	my @files;
-	Wx::Event::EVT_TEXT( $self, $search_text, sub {
-		my $self  = shift;
+	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
 		if(not @files) {
+			$status_text->SetLabel( _T("Reading current directory. Please wait...") );
 			require File::Find::Rule;
 			@files = File::Find::Rule->file()
 				->name( '*' )
 				->in( Cwd::getcwd() );
+			$status_text->SetLabel( _T("Done") );
 		}
 		$matches_list->Clear();
-		my $search_expr = $search_text->GetValue();
+		my $search_expr = $self->_search_text->GetValue();
 		#XXX - escape search string
 		$search_expr =~ s/\*/.+/g;
 		$search_expr =~ s/\?/./g;
