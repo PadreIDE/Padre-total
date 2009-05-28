@@ -187,7 +187,7 @@ sub _create_controls {
 		my $pos = 0;
 		foreach my $file (@files) {
 			my $filename = File::Basename::fileparse($file);
-			if($filename =~ /^$search_expr/) {
+			if($filename =~ /^$search_expr/i) {
 				$self->_matches_list->Insert($filename, $pos, $file);
 				$pos++;
 			}
