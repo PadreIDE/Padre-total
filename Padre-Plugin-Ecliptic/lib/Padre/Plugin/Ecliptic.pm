@@ -51,8 +51,18 @@ sub menu_plugins {
 	my $self        = shift;
 	my $main_window = shift;
 
-	# Create a simple menu with a single About entry
+	# Create a menu
 	$self->{menu} = Wx::Menu->new;
+
+	# Shows the "Open Resource" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Open Resource\tCTRL-Shift-R"), ),
+		sub { $self->_show_open_resource_dialog(); },
+	);
+
+	#---------
+	$self->{menu}->AppendSeparator;
 
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
@@ -76,6 +86,15 @@ sub show_about {
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
 	return;
+}
+
+# Opens the resource dialog
+sub _show_open_resource_dialog {
+	my $self = shift;
+	
+	require Padre::Plugin::Ecliptic::ResourceDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self);
+	$dialog->Show;
 }
 
 1;
