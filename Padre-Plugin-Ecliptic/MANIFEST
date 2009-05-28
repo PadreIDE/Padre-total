@@ -1,0 +1,9 @@
+Build.PL
+Changes
+lib/Padre/Plugin/Ecliptic.pm
+lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png
+MANIFEST			This list of files
+README
+t/00-load.t
+t/01-compile.t
+t/02-pod.t
