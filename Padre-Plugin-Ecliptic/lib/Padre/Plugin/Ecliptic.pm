@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # exports and version
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @EXPORT_OK = ();
 
 use Padre::Wx ();
@@ -127,7 +127,26 @@ Padre::Plugin::Ecliptic - Padre plugin for Eclipse-like features
 
 =head1 SYNOPSIS
 
-After installation when you run Padre there should be a menu option Plugins/Ecliptic.
+	1. After installation, run Padre.
+	2. Make sure that it is enabled from 'Plugins\Plugin Manager".
+	3. Once enabled, there should be a menu option called Plugins/Ecliptic.
+
+=head1 DESCRIPTION
+
+Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+
+=head2 'Open Resource' (Shortcut: CTRL-Shift-R)
+
+This opens a dialog that allows you to type a search for any file that exists on the same folder as the current Padre document. 
+You can use the ? to replace a single character or * to replace an entire string.
+
+=head2 'Quick Access for menu actions'
+
+Not implemented yet.
+
+=head2 'About'
+
+Shows a classic about box with this module's name and version.
 
 =head1 AUTHOR
 

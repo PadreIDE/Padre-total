@@ -10,7 +10,7 @@ use Class::XSAccessor accessors => {
 	_directory    => '_directory',	     # directory in which the search is performed
 };
 
-our $VERSION = '0.40';
+our $VERSION = '0.02';
 
 use Padre::Wx ();
 use Padre::Current ();

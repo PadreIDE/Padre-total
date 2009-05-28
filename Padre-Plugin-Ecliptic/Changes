@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.02  2009.5.28
+
+	- Implemented "Open Resource" dialog.
+
 =head1 0.01  2009.5.28
 
 	- Initial release to CPAN.
