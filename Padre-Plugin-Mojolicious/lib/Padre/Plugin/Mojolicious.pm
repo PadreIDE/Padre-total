@@ -52,10 +52,10 @@ sub menu_plugins_simple {
             '---'     => undef, # ...and another separator
             _T('Mojolicious Online References') => [
 				_T('Mojolicious Manual') => sub {
-					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Mojo::Manual::Mojolicious');
+					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Mojo::Manual::Mojolicious');
 				},
 				_T('Mojolicious Website') => sub {
-					Wx::LaunchDefaultBrowser('http://www.mojolicious.org/');
+					Padre::Wx::launch_browser('http://www.mojolicious.org/');
 				},
             ],
             '---'         => undef, # ...oh
@@ -106,7 +106,7 @@ sub on_start_server {
 		$main,
 	);
 	if ( $ret == Wx::wxYES ) {
-        Wx::LaunchDefaultBrowser('http://localhost:3000');
+		Padre::Wx::launch_browser('http://localhost:3000');
     }
     
     #TODO: handle menu greying
