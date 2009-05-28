@@ -69,22 +69,22 @@ sub menu_plugins_simple {
             '---'     => undef, # ...and another separator
             _T('Catalyst Online References') => [
 				'Beginner\'s Tutorial' => sub { 
-					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
+					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
 				},
 				_T('Catalyst Cookbook') => sub {
-					Wx::LaunchDefaultBrowser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
+					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
 				},
 				_T('Recommended Plugins') => sub {
-					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/recommended_plugins');
+					Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/recommended_plugins');
 				},
 				_T('Examples') => sub {
-					Wx::LaunchDefaultBrowser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
+					Padre::Wx::launch_browser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
 				},
 				_T('Catalyst Wiki') => sub {
-					Wx::LaunchDefaultBrowser('http://dev.catalystframework.org/wiki/');
+					Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/');
 				},
 				_T('Catalyst Website') => sub {
-					Wx::LaunchDefaultBrowser('http://www.catalystframework.org/');
+					Padre::Wx::launch_browser('http://www.catalystframework.org/');
 				},
             ],
             '---'     => undef, # ...oh
@@ -135,7 +135,7 @@ sub on_start_server {
 		$main,
 	);
 	if ( $ret == Wx::wxYES ) {
-        Wx::LaunchDefaultBrowser('http://localhost:3000');
+        Padre::Wx::launch_browser('http://localhost:3000');
     }
     
     #TODO: handle menu greying
