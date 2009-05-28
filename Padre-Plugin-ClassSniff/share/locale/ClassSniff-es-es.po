@@ -12,7 +12,7 @@ msgstr ""
 
 #: lib/Padre/Task/ClassSniff.pm:69
 msgid "Could not determine class to run Sniff on.\n"
-msgstr "No se pudo determinar la clase en la que ejecutar Sniff"
+msgstr "No se pudo determinar la clase en la que ejecutar Sniff\n"
 
 #: lib/Padre/Plugin/ClassSniff.pm:60
 msgid "About"
