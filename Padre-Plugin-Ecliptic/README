@@ -1,0 +1,14 @@
+Padre-Plugin-Ecliptic
+======================
+
+Padre plugin for providing useful Eclipse features. For more information, please refer to 
+perldoc Padre::Plugin::Ecliptic.
+
+INSTALLATION
+
+To install this module, type the following: 
+
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
