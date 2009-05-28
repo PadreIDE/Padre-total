@@ -81,7 +81,6 @@ sub install_perl_modules {
 	$self->install_modules( qw{
 		App::Ack
 		Class::Adapter
-		Class::Autouse
 		Class::Unload
 		Class::XSAccessor
 		Devel::Dumpvar
