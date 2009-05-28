@@ -8,7 +8,9 @@ our $VERSION = '0.01';
 our @EXPORT_OK = ();
 
 use Padre::Wx ();
+use Padre::Current ();
 use Padre::Util   ('_T');
+
 use base 'Padre::Plugin';
 
 # private subroutine to return the current share directory location
@@ -26,6 +28,7 @@ sub plugin_locale_directory {
 	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
+# This plugin is compatible with the following Padre plugin interfaces version
 sub padre_interfaces {
 	return 'Padre::Plugin' => 0.26,
 }
@@ -41,8 +44,6 @@ sub plugin_icon {
 
 # called when the plugin is enabled
 sub plugin_enable {
-	my $self = shift;
-
 	return 1;
 }
 
@@ -75,6 +76,7 @@ sub menu_plugins {
 	return ( $self->plugin_name => $self->{menu} );
 }
 
+# Shows the infamous about dialog
 sub show_about {
 	my ($main) = @_;
 
@@ -91,10 +93,28 @@ sub show_about {
 # Opens the resource dialog
 sub _show_open_resource_dialog {
 	my $self = shift;
+	my $main = $self->main;
+
+	#Check if we have an open file so we can use its directory
+	my $filename = Padre::Current->filename;
+	if(not $filename) {
+		Wx::MessageBox(
+			_T("'Open Resource' Dialog only works on named documents"),
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		
+		return;
+	}
+
+	my $dir = Padre::Util::get_project_dir($filename) || File::Basename::dirname($filename);
 	
+	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::ResourceDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self);
-	$dialog->Show;
+	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self, directory => $dir);
+	$dialog->ShowModal();
+	
 }
 
 1;
