@@ -1,16 +1,5 @@
 package Padre::Plugin::PerlTidy;
 
-use 5.008001;
-use strict;
-use warnings;
-
-use base 'Padre::Plugin';
-
-use Padre::Wx   ();
-use Padre::Util ('_T');
-
-our $VERSION = '0.06';
-
 =pod
 
 =head1 NAME
@@ -27,9 +16,19 @@ file if it exists (see Perl::Tidy documentation).
 
 =cut
 
+use 5.008001;
+use strict;
+use warnings;
+use Padre::Current ();
+use Padre::Util    ('_T');
+use Padre::Wx      ();
+use Padre::Plugin  ();
+
+our $VERSION = '0.06';
+our @ISA     = 'Padre::Plugin';
+
 sub padre_interfaces {
-    'Padre::Plugin' => '0.26',
-      ;
+    'Padre::Plugin' => '0.26'
 }
 
 sub menu_plugins_simple {
@@ -195,13 +194,14 @@ sub _export {
 
     if ( defined $error ) {
         my $width = length( $doc->filename ) + 2;
-        Padre::Current->main->output->AppendText( "\n\n"
+	my $main  = Padre::Current->main;
+        $main->output->AppendText( "\n\n"
               . "-" x $width . "\n"
               . $doc->filename . "\n"
               . "-" x $width
               . "\n" );
-        Padre::Current->main->output->AppendText("$error\n");
-        Padre::Current->main->show_output(1);
+        $main->output->AppendText("$error\n");
+        $main->show_output(1);
     }
 
     return;
