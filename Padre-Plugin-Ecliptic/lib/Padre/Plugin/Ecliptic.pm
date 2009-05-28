@@ -71,8 +71,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription(
-		_T("Provides useful Eclipse-like to Padre.\n") .
-		
+		_T("Provides useful Eclipse-like to Padre.\n")
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
