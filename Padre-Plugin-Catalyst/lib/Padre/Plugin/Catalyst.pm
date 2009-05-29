@@ -68,7 +68,7 @@ sub menu_plugins_simple {
             _T('Stop Web Server')  => sub { $self->on_stop_server  },
             '---'     => undef, # ...and another separator
             _T('Catalyst Online References') => [
-				_T('Beginner\'s Tutorial') => [ 
+				_T('Beginner\'s Tutorial') => [
 					_T('Overview') => sub { 
 						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
 					},
@@ -108,6 +108,9 @@ sub menu_plugins_simple {
 				},
 				_T('Recommended Plugins') => sub {
 					Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/recommended_plugins');
+				},
+				_T('Catalyst Community Live Support') => sub {
+					Padre::Wx::launch_irc( 'irc.perl.org' => 'catalyst' );
 				},
 				_T('Examples') => sub {
 					Padre::Wx::launch_browser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
