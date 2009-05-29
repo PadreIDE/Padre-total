@@ -130,7 +130,7 @@ a single character or * to replace an entire string. The matched files list
 are sorted alphabetically and you can select one or more files to be opened in Padre
 when you press the OK button.
 
-You can simply ignore .svn and .git folders using a simple checkbox 
+You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
 =head2 'Quick Access for menu actions'
