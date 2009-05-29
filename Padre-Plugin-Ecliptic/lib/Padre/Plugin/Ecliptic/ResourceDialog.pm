@@ -4,11 +4,13 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-	_sizer        => '_sizer',           # window sizer
-	_search_text  => '_search_text',	 # search text control
-	_matches_list => '_matches_list',	 # matches list
-	_status_text  => '_status_text',     # status label
-	_directory    => '_directory',	     # searched directory
+	_sizer             => '_sizer',              # window sizer
+	_search_text       => '_search_text',	     # search text control
+	_matches_list      => '_matches_list',	     # matches list
+	_ignore_dir_check  => '_ignore_dir_check',   # ignore .svn/.git dir checkbox
+	_status_text       => '_status_text',        # status label
+	_directory         => '_directory',	         # searched directory
+	_matched_files     => '_matched_files',		 # matched files list
 };
 
 our $VERSION = '0.03';
@@ -139,6 +141,10 @@ sub _create_controls {
 		_T('&Select an item to open (? = any character, * = any string):') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
+	# ignore .svn/.git checkbox
+	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, _T('Ignore CVS/.svn/.git folders')) );
+	$self->_ignore_dir_check->SetValue(1);
+	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		_T('&Matching Items:') );
@@ -152,6 +158,7 @@ sub _create_controls {
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
+	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
@@ -178,44 +185,19 @@ sub _setup_events {
 
 		$event->Skip(1);		
 	});
-	
-	my @files;
+
+	Wx::Event::EVT_CHECKBOX( $self, $self->_ignore_dir_check, sub {
+		# restart search
+		$self->_search();
+		$self->_update_matches_list_box;
+	});
+
 	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
-		if(not @files) {
-			$self->_status_text->SetLabel( _T("Reading items. Please wait...") );
-
-			# Generate a sorted file-list based on filename
-			require File::Find::Rule;
-			@files = sort { 
-				File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
-			} File::Find::Rule->file()->name( '*' )->in( $self->_directory ); 
-			
-			$self->_status_text->SetLabel( _T("Done") );
+		if(not $self->_matched_files) {
+			$self->_search();
 		}
-
-		my $search_expr = $self->_search_text->GetValue();
-
-		#quote the search string to make it safer
-		#and then tranform * and ? into .* and .
-		$search_expr = quotemeta $search_expr;
-		$search_expr =~ s/\\\*/.*?/g;
-		$search_expr =~ s/\\\?/./g;
-
-		#Populate the list box now
-		$self->_matches_list->Clear();
-		my $pos = 0;
-		foreach my $file (@files) {
-			my $filename = File::Basename::fileparse($file);
-			if($filename =~ /^$search_expr/i) {
-				$self->_matches_list->Insert($filename, $pos, $file);
-				$pos++;
-			}
-		}
-		if($pos > 0) {
-			$self->_matches_list->Select(0);
-		}
-		$self->_status_text->SetLabel("" . ($pos+1) . _T(" item(s) found"));
+		$self->_update_matches_list_box;
 		
 		return;
 	});
@@ -236,5 +218,69 @@ sub _setup_events {
 	});
 	
 }
+
+# Search for files and cache result
+sub _search() {
+	my $self = shift;
+	
+	$self->_status_text->SetLabel( _T("Reading items. Please wait...") );
+
+	my $ignore_dir = $self->_ignore_dir_check->IsChecked();
+	
+	# search and ignore rc folders (CVS,.svn,.git) if the user wants
+	require File::Find::Rule;
+	my $rule = File::Find::Rule->new;
+	if($ignore_dir) {
+		$rule->or( $rule->new
+						->directory
+						->name('CVS', '.svn', '.git')
+						->prune
+						->discard,
+					$rule->new);
+	}
+	$rule->file;
+
+	# Generate a sorted file-list based on filename
+	my @matched_files = sort { 
+			File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
+	} $rule->in( $self->_directory );
+
+	$self->_matched_files( \@matched_files ); 
+	
+	$self->_status_text->SetLabel( _T("Finished Searching") );
+
+	return;
+}
+
+# Update matches list box from matched files list
+sub _update_matches_list_box() {
+	my $self = shift;
+	
+	my $search_expr = $self->_search_text->GetValue();
+
+	#quote the search string to make it safer
+	#and then tranform * and ? into .* and .
+	$search_expr = quotemeta $search_expr;
+	$search_expr =~ s/\\\*/.*?/g;
+	$search_expr =~ s/\\\?/./g;
+
+	#Populate the list box now
+	$self->_matches_list->Clear();
+	my $pos = 0;
+	foreach my $file (@{$self->_matched_files}) {
+		my $filename = File::Basename::fileparse($file);
+		if($filename =~ /^$search_expr/i) {
+			$self->_matches_list->Insert($filename, $pos, $file);
+			$pos++;
+		}
+	}
+	if($pos > 0) {
+		$self->_matches_list->Select(0);
+	}
+	$self->_status_text->SetLabel("" . ($pos+1) . _T(" item(s) found"));
+			
+	return;
+}
+
 
 1;
