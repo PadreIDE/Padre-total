@@ -276,8 +276,10 @@ sub _update_matches_list_box() {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
+		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
+	} else {
+		$self->_status_text->SetLabel(_T('No items found'));
 	}
-	$self->_status_text->SetLabel("" . ($pos+1) . _T(" item(s) found"));
 			
 	return;
 }
