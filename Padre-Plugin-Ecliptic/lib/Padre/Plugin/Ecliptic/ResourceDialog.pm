@@ -7,7 +7,7 @@ use Class::XSAccessor accessors => {
 	_sizer        => '_sizer',           # window sizer
 	_search_text  => '_search_text',	 # search text box
 	_matches_list => '_matches_list',	 # matches list box
-	_directory    => '_directory',	     # directory in which the search is performed
+	_directory    => '_directory',	     # searched directory
 };
 
 our $VERSION = '0.02';
@@ -23,11 +23,16 @@ use base 'Wx::Dialog';
 sub new {
 	my ($class, $plugin, %opt) = @_;
 
-	if(not %opt) {
-		die 'Did not provide a directory';
-	}
-	if(not $opt{directory}) {
-		die 'Did not provide a directory';
+	#Check if we have an open file so we can use its directory
+	my $filename = Padre::Current->filename;
+	my $directory;
+	if($filename) {
+		# current document's project or base directory
+		$directory = Padre::Util::get_project_dir($filename) 
+			|| File::Basename::dirname($filename);
+	} else {
+		# current working directory
+		$directory = Cwd::getcwd();
 	}
 	
 	# create object
@@ -41,7 +46,7 @@ sub new {
 	);
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
-	$self->_directory($opt{directory});
+	$self->_directory($directory);
 
 	# create dialog
 	$self->_create;
@@ -134,8 +139,10 @@ sub _create_controls {
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
-	my $matches_label = Wx::StaticText->new( $self, -1, _T('&Matching Items:') );
-	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [-1, -1], [], Wx::wxLB_EXTENDED ) );
+	my $matches_label = Wx::StaticText->new( $self, -1, 
+		_T('&Matching Items:') );
+	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [-1, -1], [], 
+		Wx::wxLB_EXTENDED ) );
 
 	# Shows how many items are selected and information about what is selected
 	my $status_text =  Wx::StaticText->new( $self, -1, '' );
@@ -205,9 +212,11 @@ sub _create_controls {
 		my @matches = $self->_matches_list->GetSelections();
 		my $num_selected =  scalar @matches;
 		if($num_selected > 1) {
-			$status_text->SetLabel("" . scalar @matches . _T(" items selected"));
+			$status_text->SetLabel(
+				"" . scalar @matches . _T(" items selected"));
 		} else {
-			$status_text->SetLabel($self->_matches_list->GetString($matches[0]));
+			$status_text->SetLabel(
+				$self->_matches_list->GetString($matches[0]));
 		}
 		
 		return;

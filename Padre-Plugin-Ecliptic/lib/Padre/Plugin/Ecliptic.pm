@@ -15,7 +15,8 @@ use base 'Padre::Plugin';
 
 # private subroutine to return the current share directory location
 sub _sharedir {
-	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'Ecliptic/share'));
+	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),
+		'Ecliptic/share'));
 }
 
 # Returns the plugin name to Padre
@@ -87,34 +88,20 @@ sub show_about {
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
+	
 	return;
 }
 
 # Opens the resource dialog
 sub _show_open_resource_dialog {
 	my $self = shift;
-	my $main = $self->main;
 
-	#Check if we have an open file so we can use its directory
-	my $filename = Padre::Current->filename;
-	if(not $filename) {
-		Wx::MessageBox(
-			_T("'Open Resource' Dialog only works on named documents"),
-			'Error',
-			Wx::wxOK,
-			$main,
-		);
-		
-		return;
-	}
-
-	my $dir = Padre::Util::get_project_dir($filename) || File::Basename::dirname($filename);
-	
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::ResourceDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self, directory => $dir);
+	my $dialog  = Padre::Plugin::Ecliptic::ResourceDialog->new($self);
 	$dialog->ShowModal();
-	
+
+	return;
 }
 
 1;
@@ -123,7 +110,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Ecliptic - Padre plugin for Eclipse-like features
+Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse killer features
 
 =head1 SYNOPSIS
 
@@ -133,12 +120,19 @@ Padre::Plugin::Ecliptic - Padre plugin for Eclipse-like features
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+Once you enable this Plugin under Padre, you'll get a brand new menu with the 
+following options:
 
 =head2 'Open Resource' (Shortcut: CTRL-Shift-R)
 
-This opens a dialog that allows you to type a search for any file that exists on the same folder as the current Padre document. 
-You can use the ? to replace a single character or * to replace an entire string.
+This opens a nice dialog that allows you to find any file that exists 
+in the current document or working directory. You can use ? to replace 
+a single character or * to replace an entire string. The matched files list 
+are sorted alphabetically and you can select one or more files to be opened in Padre
+when you press the OK button.
+
+You can simply ignore .svn and .git folders using a simple checkbox 
+(enhancement over Eclipse).
 
 =head2 'Quick Access for menu actions'
 
@@ -147,6 +141,12 @@ Not implemented yet.
 =head2 'About'
 
 Shows a classic about box with this module's name and version.
+
+=head1 Why the name Ecliptic?
+
+I wanted a simple plugin name for including Eclipse-related killer features into 
+Padre. So i came up with Ecliptic and it turned out to be the orbit which the 
+Sun takes. And i love it!
 
 =head1 AUTHOR
 
