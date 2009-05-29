@@ -1,8 +1,21 @@
-package Padre::Plugin::Ecliptic::ResourceDialog;
+package Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
 
 use warnings;
 use strict;
 
+# package exports and version
+our $VERSION = '0.04';
+our @EXPORT_OK = ();
+
+# module imports
+use Padre::Wx ();
+use Padre::Current ();
+use Padre::Util   ('_T');
+
+# is a subclass of Wx::Dialog
+use base 'Wx::Dialog';
+
+# accessors
 use Class::XSAccessor accessors => {
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',	     # search text control
@@ -12,15 +25,6 @@ use Class::XSAccessor accessors => {
 	_directory         => '_directory',	         # searched directory
 	_matched_files     => '_matched_files',		 # matched files list
 };
-
-our $VERSION = '0.03';
-
-use Padre::Wx ();
-use Padre::Current ();
-use Padre::Util   ('_T');
-
-use base 'Wx::Dialog';
-
 
 # -- constructor
 sub new {
@@ -42,7 +46,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Open Resource'),
+		_T('Quick Menu Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -60,8 +64,6 @@ sub new {
 
 # -- event handler
 
-#
-# $self->_on_ok_button_clicked;
 #
 # handler called when the ok button has been clicked.
 # 
@@ -85,11 +87,7 @@ sub _on_ok_button_clicked {
 # -- private methods
 
 #
-# $self->_create;
-#
 # create the dialog itself.
-#
-# no params, no return values.
 #
 sub _create {
 	my ($self) = @_;
@@ -111,11 +109,7 @@ sub _create {
 }
 
 #
-# $dialog->_create_buttons;
-#
 # create the buttons pane.
-#
-# no params. no return values.
 #
 sub _create_buttons {
 	my ($self) = @_;
@@ -127,9 +121,7 @@ sub _create_buttons {
 }
 
 #
-# $dialog->_create_controls;
-#
-# create the pane to choose the various configuration parameters.
+# create controls in the dialog
 #
 # no params. no return values.
 #
@@ -169,7 +161,7 @@ sub _create_controls {
 }
 
 #
-#Adds various events
+# Adds various events
 #
 sub _setup_events {
 	my $self = shift;
@@ -219,7 +211,9 @@ sub _setup_events {
 	
 }
 
+#
 # Search for files and cache result
+#
 sub _search() {
 	my $self = shift;
 	
@@ -252,7 +246,9 @@ sub _search() {
 	return;
 }
 
+#
 # Update matches list box from matched files list
+#
 sub _update_matches_list_box() {
 	my $self = shift;
 	
