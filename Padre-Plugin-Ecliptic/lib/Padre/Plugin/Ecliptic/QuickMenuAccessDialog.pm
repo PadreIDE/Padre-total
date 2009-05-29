@@ -22,6 +22,7 @@ use Class::XSAccessor accessors => {
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
 	_status_text       => '_status_text',        # status label
+	selected_menu_id   => 'selected_menu_id'     # selected menu id
 };
 
 # -- constructor
@@ -60,12 +61,15 @@ sub _on_ok_button_clicked {
 
 	# Open the selected menu item if the user pressed OK
 	my $selection = $self->_matches_list->GetSelection;
-
-	# my $filename = $self->_matches_list->GetClientData($selection);
-		# try to open the file now
-		# $main->setup_editor($filename);
-	# }
-
+	my $selected_menu_item = $self->_matches_list->GetClientData($selection);
+	$self->selected_menu_id(undef);
+	if($selected_menu_item) {
+		$self->selected_menu_id($selected_menu_item->GetId);
+		my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
+			$selected_menu_item->GetId);
+		$main->GetEventHandler->AddPendingEvent( $event );
+	}
+	
 	$self->Destroy;
 }
 
@@ -222,7 +226,7 @@ sub _update_matches_list_box {
 	foreach my $menu_item (@menu_items) {
 		my $menu_item_label = $menu_item->GetLabel;
 		if($menu_item_label =~ /$search_expr/i) {
-			$self->_matches_list->Insert($menu_item_label, $pos);
+			$self->_matches_list->Insert($menu_item_label, $pos, $menu_item);
 			$pos++;
 		}
 	}
