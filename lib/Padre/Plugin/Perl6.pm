@@ -12,7 +12,6 @@ use base 'Padre::Plugin';
 our $VERSION   = '0.40';
 our @EXPORT_OK = qw(plugin_config);
 
-
 # constants for html exporting
 my $FULL_HTML    = 'full_html';
 my $SIMPLE_HTML  = 'simple_html';
@@ -27,7 +26,9 @@ sub plugin_config {
 
 # private subroutine to return the current share directory location
 sub _sharedir {
-	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'Perl6/share'));
+	return Cwd::realpath(
+		File::Spec->join(File::Basename::dirname(__FILE__),'Perl6/share')
+	);
 }
 
 # Returns the plugin name to Padre
@@ -41,7 +42,7 @@ sub plugin_locale_directory {
 }
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26,
+	'Padre::Plugin' => 0.36,
 }
 
 # plugin icon
@@ -74,15 +75,15 @@ sub plugin_enable {
 }
 
 sub menu_plugins {
-	my $self        = shift;
-	my $main_window = shift;
+	my $self = shift;
+	my $main = shift;
 
 	# Create a simple menu with a single About entry
 	$self->{menu} = Wx::Menu->new;
 
 	# Perl6 S29 documentation
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Show Perl 6 Help\tF2"), ),
 		sub { $self->show_perl6_doc; },
 	);
@@ -91,7 +92,7 @@ sub menu_plugins {
 
 	# Manual Perl6 syntax highlighting
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Refresh Coloring\tF7"), ),
 		sub { $self->highlight; },
 	);
@@ -100,7 +101,7 @@ sub menu_plugins {
 	$self->{p6_highlight} =
 		$self->{menu}->AppendCheckItem( -1, _T("Enable Auto Coloring"),);
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{p6_highlight},
 		sub { $self->toggle_highlight; }
 	);
@@ -110,17 +111,17 @@ sub menu_plugins {
 
 	# Export into HTML
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Export Full HTML"), ),
 		sub { $self->export_html($FULL_HTML); },
 	);
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Export Simple HTML"), ),
 		sub { $self->export_html($SIMPLE_HTML); },
 	);
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Export Snippet HTML"), ),
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
@@ -129,14 +130,14 @@ sub menu_plugins {
 
 	# Generate Perl 6 Executable
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Generate Perl 6 Executable"), ),
 		sub { $self->generate_p6_exe; },
 	);
 
 	# Generate Perl 6 PIR
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Generate Perl 6 PIR"), ),
 		sub { $self->generate_p6_pir; },
 	);
@@ -145,7 +146,7 @@ sub menu_plugins {
 
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Cleanup STD.pm Lex Cache"), ),
 		sub { $self->cleanup_std_lex_cache; },
 	);
@@ -154,7 +155,7 @@ sub menu_plugins {
 
 	# Preferences
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("Preferences"), ),
 		sub { $self->show_preferences; },
 	);
@@ -163,7 +164,7 @@ sub menu_plugins {
 
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
-		$main_window,
+		$main,
 		$self->{menu}->Append( -1, _T("About"), ),
 		sub { $self->show_about },
 	);
