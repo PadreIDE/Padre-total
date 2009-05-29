@@ -68,9 +68,41 @@ sub menu_plugins_simple {
             _T('Stop Web Server')  => sub { $self->on_stop_server  },
             '---'     => undef, # ...and another separator
             _T('Catalyst Online References') => [
-				'Beginner\'s Tutorial' => sub { 
-					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
-				},
+				_T('Beginner\'s Tutorial') => [ 
+					_T('Overview') => sub { 
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
+					},
+					_T('1. Introduction') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::01_Intro');
+					},
+					_T('2. Catalyst Basics') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::02_CatalystBasics');
+					},
+					_T('3. More Catalyst Basics') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::03_MoreCatalystBasics');
+					},
+					_T('4. Basic CRUD') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::04_BasicCRUD');
+					},
+					_T('5. Authentication') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::05_Authentication');
+					},
+					_T('6. Authorization') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::06_Authorization');
+					},
+					_T('7. Debugging') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::07_Debugging');
+					},
+					_T('8. Testing') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::08_Testing');
+					},
+					_T('9. Advanced CRUD') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::09_AdvancedCRUD');
+					},
+					_T('10. Appendices') => sub {
+						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::10_Appendices');
+					},
+				],
 				_T('Catalyst Cookbook') => sub {
 					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
 				},
