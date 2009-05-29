@@ -123,8 +123,6 @@ sub _create_buttons {
 #
 # create controls in the dialog
 #
-# no params. no return values.
-#
 sub _create_controls {
 	my ($self) = @_;
 

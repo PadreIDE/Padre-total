@@ -17,31 +17,17 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
+	_plugin            => '_plugin',             # Plugin object
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
-	_ignore_dir_check  => '_ignore_dir_check',   # ignore .svn/.git dir checkbox
 	_status_text       => '_status_text',        # status label
-	_directory         => '_directory',	         # searched directory
-	_matched_files     => '_matched_files',		 # matched files list
 };
 
 # -- constructor
 sub new {
 	my ($class, $plugin, %opt) = @_;
 
-	#Check if we have an open file so we can use its directory
-	my $filename = Padre::Current->filename;
-	my $directory;
-	if($filename) {
-		# current document's project or base directory
-		$directory = Padre::Util::get_project_dir($filename) 
-			|| File::Basename::dirname($filename);
-	} else {
-		# current working directory
-		$directory = Cwd::getcwd();
-	}
-	
 	# create object
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
@@ -52,8 +38,8 @@ sub new {
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
 	);
 
-	$self->SetIcon( Wx::GetWxPerlIcon() );
-	$self->_directory($directory);
+	$self->SetIcon( Wx::GetWxPerlIcon );
+	$self->_plugin($plugin);
 
 	# create dialog
 	$self->_create;
@@ -70,15 +56,15 @@ sub new {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = Padre->ide->wx->main;
+	my $main = $self->_plugin->main;
 
-	#Open the selected resources here if the user pressed OK
-	my @selections = $self->_matches_list->GetSelections();
-	foreach my $selection (@selections) {
-		my $filename = $self->_matches_list->GetClientData($selection);
+	# Open the selected menu item if the user pressed OK
+	my $selection = $self->_matches_list->GetSelection;
+
+	# my $filename = $self->_matches_list->GetClientData($selection);
 		# try to open the file now
-		$main->setup_editor($filename);
-	}
+		# $main->setup_editor($filename);
+	# }
 
 	$self->Destroy;
 }
@@ -105,7 +91,7 @@ sub _create {
 	$sizer->SetSizeHints($self);
 
 	# focus on the search text box
-	$self->_search_text->SetFocus();
+	$self->_search_text->SetFocus;
 }
 
 #
@@ -113,7 +99,7 @@ sub _create {
 #
 sub _create_buttons {
 	my ($self) = @_;
-	my $sizer  = $self->_sizer;
+	my $sizer = $self->_sizer;
 
 	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
 	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
@@ -123,39 +109,31 @@ sub _create_buttons {
 #
 # create controls in the dialog
 #
-# no params. no return values.
-#
 sub _create_controls {
 	my ($self) = @_;
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Select an item to open (? = any character, * = any string):') );
+		_T('&Type a menu item name to access:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
-	
-	# ignore .svn/.git checkbox
-	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, _T('Ignore CVS/.svn/.git folders')) );
-	$self->_ignore_dir_check->SetValue(1);
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Items:') );
+		_T('&Matching Menu Items:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [-1, -1], [], 
-		Wx::wxLB_EXTENDED ) );
+		Wx::wxLB_SINGLE ) );
 
 	# Shows how many items are selected and information about what is selected
-	$self->_status_text( Wx::StaticText->new( $self, -1, 
-		_T('Current Search Directory: ') . $self->_directory ) );
+	$self->_status_text( Wx::StaticText->new( $self, -1, '' ) );
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
-	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
 
-	$self->_setup_events();
+	$self->_setup_events;
 	
 	return;
 }
@@ -172,23 +150,14 @@ sub _setup_events {
 		my $code  = $event->GetKeyCode;
 
 		if ( $code == Wx::WXK_DOWN ) {
-			$self->_matches_list->SetFocus();
+			$self->_matches_list->SetFocus;
 		}
 
 		$event->Skip(1);		
 	});
 
-	Wx::Event::EVT_CHECKBOX( $self, $self->_ignore_dir_check, sub {
-		# restart search
-		$self->_search();
-		$self->_update_matches_list_box;
-	});
-
 	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
-		if(not $self->_matched_files) {
-			$self->_search();
-		}
 		$self->_update_matches_list_box;
 		
 		return;
@@ -196,15 +165,9 @@ sub _setup_events {
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
 		my $self  = shift;
-		my @matches = $self->_matches_list->GetSelections();
-		my $num_selected =  scalar @matches;
-		if($num_selected > 1) {
-			$self->_status_text->SetLabel(
-				"" . scalar @matches . _T(" items selected"));
-		} else {
-			$self->_status_text->SetLabel(
-				$self->_matches_list->GetString($matches[0]));
-		}
+		my $selection = $self->_matches_list->GetSelection;
+		$self->_status_text->SetLabel( 
+			$self->_matches_list->GetString($selection));
 		
 		return;
 	});
@@ -212,61 +175,54 @@ sub _setup_events {
 }
 
 #
-# Search for files and cache result
-#
-sub _search() {
-	my $self = shift;
-	
-	$self->_status_text->SetLabel( _T("Reading items. Please wait...") );
-
-	my $ignore_dir = $self->_ignore_dir_check->IsChecked();
-	
-	# search and ignore rc folders (CVS,.svn,.git) if the user wants
-	require File::Find::Rule;
-	my $rule = File::Find::Rule->new;
-	if($ignore_dir) {
-		$rule->or( $rule->new
-						->directory
-						->name('CVS', '.svn', '.git')
-						->prune
-						->discard,
-					$rule->new);
-	}
-	$rule->file;
-
-	# Generate a sorted file-list based on filename
-	my @matched_files = sort { 
-			File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
-	} $rule->in( $self->_directory );
-
-	$self->_matched_files( \@matched_files ); 
-	
-	$self->_status_text->SetLabel( _T("Finished Searching") );
-
-	return;
-}
-
-#
 # Update matches list box from matched files list
 #
-sub _update_matches_list_box() {
+sub _update_matches_list_box {
 	my $self = shift;
 	
-	my $search_expr = $self->_search_text->GetValue();
+	my $search_expr = $self->_search_text->GetValue;
 
 	#quote the search string to make it safer
-	#and then tranform * and ? into .* and .
 	$search_expr = quotemeta $search_expr;
-	$search_expr =~ s/\\\*/.*?/g;
-	$search_expr =~ s/\\\?/./g;
 
 	#Populate the list box now
-	$self->_matches_list->Clear();
+	$self->_matches_list->Clear;
 	my $pos = 0;
-	foreach my $file (@{$self->_matched_files}) {
-		my $filename = File::Basename::fileparse($file);
-		if($filename =~ /^$search_expr/i) {
-			$self->_matches_list->Insert($filename, $pos, $file);
+	
+	my $main = $self->_plugin->main;
+	my $menu_bar = $main->menu->wx;
+
+	#File/New.../Perl 6 Script
+	sub traverse_menu {
+		my $menu = shift;
+		
+		my @menu_items = ();
+		foreach my $menu_item ($menu->GetMenuItems) {
+			my $sub_menu = $menu_item->GetSubMenu;
+			if($sub_menu) {
+				push @menu_items, traverse_menu($sub_menu);
+			} elsif( not $menu_item->IsSeparator) {
+				push @menu_items, $menu_item;
+			}
+		}
+		
+		return @menu_items;
+	}
+	
+	my $menu_count = $menu_bar->GetMenuCount;
+	my @menu_items = ();
+	foreach my $menu_pos (0..$menu_count-1) {
+		my $main_menu = $menu_bar->GetMenu($menu_pos);
+		my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
+		push @menu_items, traverse_menu($main_menu);
+	}
+	@menu_items = sort { 
+		$a->GetLabel cmp $b->GetLabel
+	} @menu_items;
+	foreach my $menu_item (@menu_items) {
+		my $menu_item_label = $menu_item->GetLabel;
+		if($menu_item_label =~ /$search_expr/i) {
+			$self->_matches_list->Insert($menu_item_label, $pos);
 			$pos++;
 		}
 	}
