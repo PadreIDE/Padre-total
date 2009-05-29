@@ -111,9 +111,9 @@ sub tidy_document {
 
     return unless defined $newtext && length $newtext;
 
-    my $regex = _store_cursor_position($main);
+    my ( $regex, $start ) = _store_cursor_position($main);
     $doc->text_set($newtext);
-    _restore_cursor_position( $main, $regex );
+    _restore_cursor_position( $main, $regex, $start );
 }
 
 sub _get_filename {
@@ -225,55 +225,66 @@ sub export_document {
     return;
 }
 
+
 sub _restore_cursor_position {
 
     # parameter: $main, compiled regex
-    my ( $main, $regex, $regex_pos ) = @_;
-    my $doc    = $main->current->document;
-    my $editor = $doc->editor;
-    my $text   = $editor->GetTextRange( 0, $editor->GetLength() );
-    if ( $text =~ /($regex)/ ) {
-        my $pos = length $1;
-        $editor->SetCurrentPos($pos);
-        $editor->SetSelection( $pos, $pos );
-    }
+    my ( $main, $regex, $start ) = @_;
+    my $shuffle = 80;
+    my $doc     = $main->current->document;
+    my $editor  = $doc->editor;
+    my $text    = $editor->GetTextRange(
+        ( $start - $shuffle ) > 0 ? $start - $shuffle
+        : 0,
+        ( $start + $shuffle < $editor->GetLength() ) ? $start + $shuffle
+        : $editor->GetLength()
+    );
+    eval {
+        if ( $text =~ /($regex)/ ) {
+            my $pos = $start + length $1;
+            $editor->SetCurrentPos($pos);
+            $editor->SetSelection( $pos, $pos );
+        }
+    };
     return;
 }
 
 sub _store_cursor_position {
 
     # parameter: $main
-    # returns: compiled regex
+    # returns: compiled regex, start position
     # compiled regex is /^./ if no valid regex can be reconstructed.
     my $main   = shift;
     my $doc    = $main->current->document;
     my $editor = $doc->editor;
     my $pos    = $editor->GetCurrentPos;
 
-  # A smaller selection to save memory (disabled)
-  #    my $sel_width = 200;  # chars before and after cursor
-  #    my $pre_start;
-  #
-  #    if ( ( $pos - $sel_width ) > 0 ) {
-  #        $pre_start = $pos - $sel_width;
-  #    }
-  #    else {
-  #        $pre_start = 0;
-  #    }
-  #    my $prefix = $editor->GetTextRange( $pre_start, $pos );
-    my $prefix = $editor->GetTextRange( 0, $pos );
+    # A smaller selection to save memory 
+    my $sel_width = 80;    # chars before
+    my $start;
+
+    if ( ( $pos - $sel_width ) > 0 ) {
+        $start = $pos - $sel_width;
+    }
+    else {
+        $start = 0;
+    }
+    my $prefix = $editor->GetTextRange( $start, $pos );
     my $regex;
     eval {
-        $prefix =~ s/(\W)/\\$1/gm;         # Escape non-word chars
-        $prefix =~           s/(\\\s+)/(\\s+|\\r*\\n)*/gm;    # Replace whitespace by regex \s+
+        $prefix =~ s/(\W)/\\$1/gm;    # Escape non-word chars
+        $prefix =~
+          s/(\\\s+)/(\\s+|\\r*\\n)*/gm;    # Replace whitespace by regex \s+
         $regex = qr{$prefix};
     };
     if ($@) {
         $regex = qw{^.};
         print @_;
     }
-    return $regex;
+    return ( $regex, $start );
 }
+
+
 
 1;
 
