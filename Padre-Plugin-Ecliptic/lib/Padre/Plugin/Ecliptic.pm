@@ -4,11 +4,10 @@ use strict;
 use warnings;
 
 # exports and version
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @EXPORT_OK = ();
 
 use Padre::Wx ();
-use Padre::Current ();
 use Padre::Util   ('_T');
 
 use base 'Padre::Plugin';

@@ -5,12 +5,13 @@ use strict;
 
 use Class::XSAccessor accessors => {
 	_sizer        => '_sizer',           # window sizer
-	_search_text  => '_search_text',	 # search text box
-	_matches_list => '_matches_list',	 # matches list box
+	_search_text  => '_search_text',	 # search text control
+	_matches_list => '_matches_list',	 # matches list
+	_status_text  => '_status_text',     # status label
 	_directory    => '_directory',	     # searched directory
 };
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Padre::Wx ();
 use Padre::Current ();
@@ -145,15 +146,27 @@ sub _create_controls {
 		Wx::wxLB_EXTENDED ) );
 
 	# Shows how many items are selected and information about what is selected
-	my $status_text =  Wx::StaticText->new( $self, -1, '' );
+	$self->_status_text( Wx::StaticText->new( $self, -1, 
+		_T('Current Search Directory: ') . $self->_directory ) );
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
+	$self->_sizer->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
 
+	$self->_setup_events();
+	
+	return;
+}
+
+#
+#Adds various events
+#
+sub _setup_events {
+	my $self = shift;
+	
 	Wx::Event::EVT_CHAR( $self->_search_text, sub {
 		my $this  = shift;
 		my $event = shift;
@@ -170,7 +183,7 @@ sub _create_controls {
 	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
 		if(not @files) {
-			$status_text->SetLabel( _T("Reading items. Please wait...") );
+			$self->_status_text->SetLabel( _T("Reading items. Please wait...") );
 
 			# Generate a sorted file-list based on filename
 			require File::Find::Rule;
@@ -178,7 +191,7 @@ sub _create_controls {
 				File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
 			} File::Find::Rule->file()->name( '*' )->in( $self->_directory ); 
 			
-			$status_text->SetLabel( _T("Done") );
+			$self->_status_text->SetLabel( _T("Done") );
 		}
 
 		my $search_expr = $self->_search_text->GetValue();
@@ -202,7 +215,7 @@ sub _create_controls {
 		if($pos > 0) {
 			$self->_matches_list->Select(0);
 		}
-		$status_text->SetLabel("" . ($pos+1) . _T(" item(s) found"));
+		$self->_status_text->SetLabel("" . ($pos+1) . _T(" item(s) found"));
 		
 		return;
 	});
@@ -212,10 +225,10 @@ sub _create_controls {
 		my @matches = $self->_matches_list->GetSelections();
 		my $num_selected =  scalar @matches;
 		if($num_selected > 1) {
-			$status_text->SetLabel(
+			$self->_status_text->SetLabel(
 				"" . scalar @matches . _T(" items selected"));
 		} else {
-			$status_text->SetLabel(
+			$self->_status_text->SetLabel(
 				$self->_matches_list->GetString($matches[0]));
 		}
 		

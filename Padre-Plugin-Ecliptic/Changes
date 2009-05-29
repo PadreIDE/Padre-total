@@ -1,5 +1,10 @@
 Changes
 
+=head1 0.03  2009.5.29
+
+	- More POD fixes.
+	- The "Open Resource" dialog has an ignore svn and git folders checkbox.
+
 =head1 0.02  2009.5.28
 
 	- Implemented "Open Resource" dialog.
