@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 1;
 __END__
@@ -51,6 +51,10 @@ Simple Perl data structure browser Padre
 =head2 Padre::Plugin::Debugger
 
 Debug Perl code from Padre editor
+
+=head2 Padre::Plugin::Ecliptic
+
+Padre plugin that provides Eclipse killer features
 
 =head2 Padre::Plugin::Encode
 

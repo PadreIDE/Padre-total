@@ -15,6 +15,7 @@ requires 'Padre::Plugin::CSS' => '0.06';
 requires 'Padre::Plugin::CommandLine' => '0.02';
 requires 'Padre::Plugin::DataWalker' => '0.01';
 requires 'Padre::Plugin::Debugger' => '0.2';
+requires 'Padre::Plugin::Ecliptic' => '0.03';
 requires 'Padre::Plugin::Encode' => '0.1.3';
 requires 'Padre::Plugin::Encrypt' => '0.05';
 requires 'Padre::Plugin::HTML' => '0.08';
