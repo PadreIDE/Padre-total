@@ -94,6 +94,9 @@ sub _create {
 	$self->SetSizerAndFit($sizer);
 	$sizer->SetSizeHints($self);
 
+	# center the dialog
+	$self->Centre;
+
 	# focus on the search text box
 	$self->_search_text->SetFocus;
 }
@@ -124,7 +127,7 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		_T('&Matching Menu Items:') );
-	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [-1, -1], [], 
+	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
 	# Shows how many items are selected and information about what is selected
