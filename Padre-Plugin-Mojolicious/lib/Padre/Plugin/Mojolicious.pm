@@ -57,6 +57,10 @@ sub menu_plugins_simple {
 				_T('Mojolicious Website') => sub {
 					Padre::Wx::launch_browser('http://www.mojolicious.org/');
 				},
+				_T('Mojolicious Community Live Support') => sub {
+					Padre::Wx::launch_irc( 'irc.perl.org' => 'mojo' );
+				},
+
             ],
             '---'         => undef, # ...oh
             _T('About')   => sub { $self->on_show_about },
