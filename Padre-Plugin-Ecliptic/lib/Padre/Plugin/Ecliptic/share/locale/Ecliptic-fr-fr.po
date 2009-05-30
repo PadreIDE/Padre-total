@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-Ecliptic\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-30 09:15+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
+"Language-Team: Jérôme Quelin <jquelin@cpan.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+
+#: lib/Padre/Plugin/Ecliptic.pm:29
+msgid "Ecliptic"
+msgstr "Ecliptic"
+
+#: lib/Padre/Plugin/Ecliptic.pm:70
+msgid "Open Resource\tCTRL-Shift-R"
+msgstr "Ouvrir la resource\tCtrl-Shift-R"
+
+#: lib/Padre/Plugin/Ecliptic.pm:77
+msgid "Quick Menu Access\tCTRL-3"
+msgstr "Accès rapide au menu\tCtrl-3"
+
+#: lib/Padre/Plugin/Ecliptic.pm:87
+msgid "About"
+msgstr "A propos"
+
+#: lib/Padre/Plugin/Ecliptic.pm:104
+msgid "Provides Eclipse-like useful features to Padre.\n"
+msgstr "Fournit des fonctionnalités équivalentes à Eclipse pour Padre.\n"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:49
+msgid "Open Resource"
+msgstr "Ouvrir la ressource"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:134
+msgid "&Select an item to open (? = any character, * = any string):"
+msgstr "&Sélectionner un item à ouvrir (? = n'importe quel caractère, * = n'importe quelle chaîne) :"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:138
+msgid "Ignore CVS/.svn/.git folders"
+msgstr "Ignorer les répertoires CVS / .svn / .git"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:143
+msgid "&Matching Items:"
+msgstr "Items &correspondants :"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:149
+msgid "Current Search Directory: "
+msgstr "Répertoire de recherche courant :"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:204
+msgid " items selected"
+msgstr "items sélectionnés"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:221
+msgid "Reading items. Please wait..."
+msgstr "Lecture des items. Veuillez patienter..."
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:245
+msgid "Finished Searching"
+msgstr "Recherche terminée"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:276
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:238
+msgid " item(s) found"
+msgstr " item(s) trouvés"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:278
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+msgid "No items found"
+msgstr "Aucun item trouvé"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:36
+msgid "Quick Menu Access"
+msgstr "Accès rapide au menu"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:124
+msgid "&Type a menu item name to access:"
+msgstr "&Taper un nom d'item de menu à accéder"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:129
+msgid "&Matching Menu Items:"
+msgstr "Items de menu &correspondant :"
+

@@ -5,6 +5,7 @@ Changes
 	- Standard minimum size and centering for all dialogs.
 	- Fixed a status message in "Open Resource" dialog.
 	- Added Arabic translation.
+    - Added French translation (jquelin)
 
 =head1 0.03  2009.5.29
 
