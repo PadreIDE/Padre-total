@@ -5,10 +5,13 @@ lib/Padre/Plugin/Perl6.pm
 lib/Padre/Plugin/Perl6/Preferences.pm
 lib/Padre/Plugin/Perl6/share/icons/camelia.png
 lib/Padre/Plugin/Perl6/share/locale/Perl6-ar.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-es-es.mo
 lib/Padre/Plugin/Perl6/share/locale/Perl6-fr-fr.mo
 lib/Padre/Plugin/Perl6/share/locale/Perl6-nl-nl.mo
 lib/Padre/Plugin/Perl6/share/locale/Perl6-pl.mo
+lib/Padre/Plugin/Perl6/share/locale/Perl6-pt-br.mo
 lib/Padre/Plugin/Perl6/share/locale/Perl6-zh-tw.mo
+lib/Padre/Plugin/Perl6/Util.pm
 lib/Padre/Task/Outline/Perl6.pm
 lib/Padre/Task/p6tokens.pl
 lib/Padre/Task/Perl6.pm
