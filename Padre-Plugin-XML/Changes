@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-XML
 
+        removed taint mode for tests, leading to build failures (jquelin)
+
 0.05    2009.2.1
         catch and report some errors (HJANSEN)
         do not try to tidy non-XML documents (HJANSEN)
