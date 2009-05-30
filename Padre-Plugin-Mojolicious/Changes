@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Mojolicious
 
+    removed taint mode for tests, leading to build failure (jquelin)
+
 0.02    
 	Added translation support (SZABGAB)
 	Added translations:
