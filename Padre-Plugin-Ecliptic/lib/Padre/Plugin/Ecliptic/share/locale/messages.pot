@@ -1,0 +1,91 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-30 08:55+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Ecliptic.pm:29
+msgid "Ecliptic"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic.pm:70
+msgid "Open Resource\tCTRL-Shift-R"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic.pm:77
+msgid "Quick Menu Access\tCTRL-3"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic.pm:87
+msgid "About"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic.pm:104
+msgid "Provides useful Eclipse-like to Padre.\n"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:49
+msgid "Open Resource"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:134
+msgid "&Select an item to open (? = any character, * = any string):"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:138
+msgid "Ignore CVS/.svn/.git folders"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:143
+msgid "&Matching Items:"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:149
+msgid "Current Search Directory: "
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:204
+msgid " items selected"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:221
+msgid "Reading items. Please wait..."
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:245
+msgid "Finished Searching"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:276
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:238
+msgid " item(s) found"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:278
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+msgid "No items found"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:36
+msgid "Quick Menu Access"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:124
+msgid "&Type a menu item name to access:"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:129
+msgid "&Matching Menu Items:"
+msgstr ""

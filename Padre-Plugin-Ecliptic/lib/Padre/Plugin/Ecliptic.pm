@@ -169,7 +169,8 @@ You can simply ignore CVS, .svn and .git folders using a simple checkbox
 
 =head2 'Quick Access for menu actions'
 
-Not implemented yet.
+This opens a dialog where you can search for menu labels. When you hit the OK 
+button, the menu item will be selected.
 
 =head2 'About'
 
