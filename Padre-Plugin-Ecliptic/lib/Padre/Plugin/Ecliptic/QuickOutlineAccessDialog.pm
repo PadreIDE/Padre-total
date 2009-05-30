@@ -1,4 +1,4 @@
-package Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
+package Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
 
 use warnings;
 use strict;
@@ -22,7 +22,6 @@ use Class::XSAccessor accessors => {
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
 	_status_text       => '_status_text',        # status label
-	selected_menu_id   => 'selected_menu_id'     # selected menu id
 };
 
 # -- constructor
@@ -33,7 +32,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Quick Menu Access'),
+		_T('Quick Outline Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -59,16 +58,16 @@ sub _on_ok_button_clicked {
 
 	my $main = $self->_plugin->main;
 
-	# Open the selected menu item if the user pressed OK
-	my $selection = $self->_matches_list->GetSelection;
-	my $selected_menu_item = $self->_matches_list->GetClientData($selection);
-	$self->selected_menu_id(undef);
-	if($selected_menu_item) {
-		$self->selected_menu_id($selected_menu_item->GetId);
-		my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
-			$selected_menu_item->GetId);
-		$main->GetEventHandler->AddPendingEvent( $event );
-	}
+	# XXX- Open the selected menu item if the user pressed OK
+	# my $selection = $self->_matches_list->GetSelection;
+	# my $selected_menu_item = $self->_matches_list->GetClientData($selection);
+	# $self->selected_menu_id(undef);
+	# if($selected_menu_item) {
+		# $self->selected_menu_id($selected_menu_item->GetId);
+		# my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
+			# $selected_menu_item->GetId);
+		# $main->GetEventHandler->AddPendingEvent( $event );
+	# }
 	
 	$self->Destroy;
 }
@@ -121,12 +120,12 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Type a menu item name to access:') );
+		_T('&Type a Outline item name to access:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Menu Items:') );
+		_T('&Matching Outline Items:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
@@ -196,43 +195,42 @@ sub _update_matches_list_box {
 	$self->_matches_list->Clear;
 	my $pos = 0;
 	
-	my $main = $self->_plugin->main;
-	my $menu_bar = $main->menu->wx;
+	# my $main = $self->_plugin->main;
+	# my $menu_bar = $main->menu->wx;
 
-	#File/New.../Perl 6 Script
-	sub traverse_menu {
-		my $menu = shift;
+	# sub traverse_menu {
+		# my $menu = shift;
 		
-		my @menu_items = ();
-		foreach my $menu_item ($menu->GetMenuItems) {
-			my $sub_menu = $menu_item->GetSubMenu;
-			if($sub_menu) {
-				push @menu_items, traverse_menu($sub_menu);
-			} elsif( not $menu_item->IsSeparator) {
-				push @menu_items, $menu_item;
-			}
-		}
+		# my @menu_items = ();
+		# foreach my $menu_item ($menu->GetMenuItems) {
+			# my $sub_menu = $menu_item->GetSubMenu;
+			# if($sub_menu) {
+				# push @menu_items, traverse_menu($sub_menu);
+			# } elsif( not $menu_item->IsSeparator) {
+				# push @menu_items, $menu_item;
+			# }
+		# }
 		
-		return @menu_items;
-	}
+		# return @menu_items;
+	# }
 	
-	my $menu_count = $menu_bar->GetMenuCount;
-	my @menu_items = ();
-	foreach my $menu_pos (0..$menu_count-1) {
-		my $main_menu = $menu_bar->GetMenu($menu_pos);
-		my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
-		push @menu_items, traverse_menu($main_menu);
-	}
-	@menu_items = sort { 
-		$a->GetLabel cmp $b->GetLabel
-	} @menu_items;
-	foreach my $menu_item (@menu_items) {
-		my $menu_item_label = $menu_item->GetLabel;
-		if($menu_item_label =~ /$search_expr/i) {
-			$self->_matches_list->Insert($menu_item_label, $pos, $menu_item);
-			$pos++;
-		}
-	}
+	# my $menu_count = $menu_bar->GetMenuCount;
+	# my @menu_items = ();
+	# foreach my $menu_pos (0..$menu_count-1) {
+		# my $main_menu = $menu_bar->GetMenu($menu_pos);
+		# my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
+		# push @menu_items, traverse_menu($main_menu);
+	# }
+	# @menu_items = sort { 
+		# $a->GetLabel cmp $b->GetLabel
+	# } @menu_items;
+	# foreach my $menu_item (@menu_items) {
+		# my $menu_item_label = $menu_item->GetLabel;
+		# if($menu_item_label =~ /$search_expr/i) {
+			# $self->_matches_list->Insert($menu_item_label, $pos, $menu_item);
+			# $pos++;
+		# }
+	# }
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
 		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));

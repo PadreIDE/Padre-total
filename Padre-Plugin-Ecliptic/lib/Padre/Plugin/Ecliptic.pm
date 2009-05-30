@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @EXPORT_OK = ();
 
 # module imports
@@ -67,17 +67,24 @@ sub menu_plugins {
 	# Shows the "Open Resource" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Open Resource\tCTRL-Shift-R"), ),
+		$self->{menu}->Append( -1, _T("Open Resource\tCtrl-Shift-R"), ),
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
-	# Shows the "Open Resource" dialog
+	# Shows the "Quick Menu Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, _T("Quick Menu Access\tCTRL-3"), ),
+		$self->{menu}->Append( -1, _T("Quick Menu Access\tCtrl-3"), ),
 		sub { $self->_show_quick_menu_access_dialog(); },
 	);
 	
+	# Shows the "Quick Outline Access" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Quick Outline Access\tCtrl-4"), ),
+		sub { $self->_show_quick_outline_access_dialog(); },
+	);
+
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -137,6 +144,20 @@ sub _show_quick_menu_access_dialog {
 	return;
 }
 
+#
+# Opens the "Quick Outline Access" dialog
+#
+sub _show_quick_outline_access_dialog {
+	my $self = shift;
+
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
+	$dialog->ShowModal();
+
+	return;
+}
+
 1;
 
 __END__
@@ -156,7 +177,7 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 Once you enable this Plugin under Padre, you'll get a brand new menu with the 
 following options:
 
-=head2 'Open Resource' (Shortcut: CTRL-Shift-R)
+=head2 'Open Resource' (Shortcut: Ctrl-Shift-R)
 
 This opens a nice dialog that allows you to find any file that exists 
 in the current document or working directory. You can use ? to replace 
@@ -167,10 +188,15 @@ when you press the OK button.
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
-=head2 'Quick Access for menu actions'
+=head2 'Quick Menu Access' (Shortcut: Ctrl-3)
 
 This opens a dialog where you can search for menu labels. When you hit the OK 
 button, the menu item will be selected.
+
+=head2 'Quick Outline Access' (Shortcut: Ctrl-4)
+
+This opens a dialog where you can search for outline tree. When you hit the OK 
+button, the outline element in the outline tree will be selected.
 
 =head2 'About'
 
