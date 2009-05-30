@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-AcmePlayCode
 
+    removed taint mode for tests, leading to build failures (jquelin)
+
 0.10    2009.05.26
     Add Chinese (Traditional) translation (BLUET).
 	Added Arabic Translation (AZAWAWI).
