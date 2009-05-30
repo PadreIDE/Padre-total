@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-19 00:04+0800\n"
+"POT-Creation-Date: 2009-05-30 15:40-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,31 +48,83 @@ msgstr ""
 msgid "Catalyst Online References"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:74
+#: lib/Padre/Plugin/Catalyst.pm:71
+msgid "Beginner's Tutorial"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Overview"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "1. Introduction"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "2. Catalyst Basics"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "3. More Catalyst Basics"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "4. Basic CRUD"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:87
+msgid "5. Authentication"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:90
+msgid "6. Authorization"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:93
+msgid "7. Debugging"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:96
+msgid "8. Testing"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:99
+msgid "9. Advanced CRUD"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:102
+msgid "10. Appendices"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:106
 msgid "Catalyst Cookbook"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:77
+#: lib/Padre/Plugin/Catalyst.pm:109
 msgid "Recommended Plugins"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:80
+#: lib/Padre/Plugin/Catalyst.pm:112
+msgid "Catalyst Community Live Support"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:115
 msgid "Examples"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:83
+#: lib/Padre/Plugin/Catalyst.pm:118
 msgid "Catalyst Wiki"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:86
+#: lib/Padre/Plugin/Catalyst.pm:121
 msgid "Catalyst Website"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:91
+#: lib/Padre/Plugin/Catalyst.pm:126
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:109
+#: lib/Padre/Plugin/Catalyst.pm:144
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -81,14 +133,14 @@ msgid ""
 "Please make sure the active document is from your Catalyst project."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:112
+#: lib/Padre/Plugin/Catalyst.pm:147
 msgid "Server not found"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:132
+#: lib/Padre/Plugin/Catalyst.pm:167
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:133
+#: lib/Padre/Plugin/Catalyst.pm:168
 msgid "Start Web Browser?"
 msgstr ""
