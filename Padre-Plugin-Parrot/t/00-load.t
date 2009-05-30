@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 # does not work 'cause of ORLite
-#!perl -T
+#!perl
 
 use Test::More tests => 1;
 
