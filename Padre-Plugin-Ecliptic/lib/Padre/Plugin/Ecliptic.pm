@@ -101,7 +101,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription(
-		_T("Provides useful Eclipse-like to Padre.\n")
+		_T("Provides Eclipse-like useful features to Padre.\n")
 	);
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
@@ -143,7 +143,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse killer features
+Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful features
 
 =head1 SYNOPSIS
 
