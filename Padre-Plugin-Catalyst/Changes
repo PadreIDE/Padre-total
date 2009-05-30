@@ -2,6 +2,7 @@ Revision history for Padre-Plugin-Catalyst
 
 (unreleased)
 	Added Spanish translation (BRUNOV)
+    removed taint mode for test, leading to build failures (jquelin)
 
 0.03	
 	Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
