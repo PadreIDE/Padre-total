@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-10 21:01+0300\n"
+"POT-Creation-Date: 2009-05-30 15:40-0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: brazilian portuguese\n"
@@ -10,63 +10,115 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:45
+#: lib/Padre/Plugin/Catalyst.pm:47
 msgid "New Catalyst Application"
 msgstr "Novo Aplicativo Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:50
+#: lib/Padre/Plugin/Catalyst.pm:52
 msgid "Create new..."
 msgstr "Criar um novo..."
 
-#: lib/Padre/Plugin/Catalyst.pm:51
+#: lib/Padre/Plugin/Catalyst.pm:53
 msgid "Model"
 msgstr "Modelo"
 
-#: lib/Padre/Plugin/Catalyst.pm:55
+#: lib/Padre/Plugin/Catalyst.pm:57
 msgid "View"
 msgstr "Vista"
 
-#: lib/Padre/Plugin/Catalyst.pm:59
+#: lib/Padre/Plugin/Catalyst.pm:61
 msgid "Controller"
 msgstr "Controlador"
 
-#: lib/Padre/Plugin/Catalyst.pm:65
+#: lib/Padre/Plugin/Catalyst.pm:67
 msgid "Start Web Server"
 msgstr "Iniciar Servidor Web"
 
-#: lib/Padre/Plugin/Catalyst.pm:66
+#: lib/Padre/Plugin/Catalyst.pm:68
 msgid "Stop Web Server"
 msgstr "Parar Servidor Web"
 
-#: lib/Padre/Plugin/Catalyst.pm:68
+#: lib/Padre/Plugin/Catalyst.pm:70
 msgid "Catalyst Online References"
 msgstr "Referências do Catalyst Online"
 
+#: lib/Padre/Plugin/Catalyst.pm:71
+msgid "Beginner's Tutorial"
+msgstr "Tutorial para Iniciantes"
+
 #: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Overview"
+msgstr "Visão Geral"
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "1. Introduction"
+msgstr "1. Introdução"
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "2. Catalyst Basics"
+msgstr "2. Catalyst Básico"
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "3. More Catalyst Basics"
+msgstr "3. Mais Catalyst Básico"
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "4. Basic CRUD"
+msgstr "4. CRUD Básico"
+
+#: lib/Padre/Plugin/Catalyst.pm:87
+msgid "5. Authentication"
+msgstr "5. Autenticação"
+
+#: lib/Padre/Plugin/Catalyst.pm:90
+msgid "6. Authorization"
+msgstr "6. Autorização"
+
+#: lib/Padre/Plugin/Catalyst.pm:93
+msgid "7. Debugging"
+msgstr "7. Depurando"
+
+#: lib/Padre/Plugin/Catalyst.pm:96
+msgid "8. Testing"
+msgstr "8. Testando"
+
+#: lib/Padre/Plugin/Catalyst.pm:99
+msgid "9. Advanced CRUD"
+msgstr "9. CRUD Avançado"
+
+#: lib/Padre/Plugin/Catalyst.pm:102
+msgid "10. Appendices"
+msgstr "10. Apêndices"
+
+#: lib/Padre/Plugin/Catalyst.pm:106
 msgid "Catalyst Cookbook"
 msgstr "Livro de Receitas do Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:75
+#: lib/Padre/Plugin/Catalyst.pm:109
 msgid "Recommended Plugins"
 msgstr "Plugins Recomendados"
 
-#: lib/Padre/Plugin/Catalyst.pm:78
+#: lib/Padre/Plugin/Catalyst.pm:112
+msgid "Catalyst Community Live Support"
+msgstr "Suporte Online da Comunidade Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:115
 msgid "Examples"
 msgstr "Exemplos"
 
-#: lib/Padre/Plugin/Catalyst.pm:81
+#: lib/Padre/Plugin/Catalyst.pm:118
 msgid "Catalyst Wiki"
 msgstr "Wiki Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:84
+#: lib/Padre/Plugin/Catalyst.pm:121
 msgid "Catalyst Website"
 msgstr "Site do Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:89
+#: lib/Padre/Plugin/Catalyst.pm:126
 msgid "About"
 msgstr "Sobre"
 
-#: lib/Padre/Plugin/Catalyst.pm:107
+#: lib/Padre/Plugin/Catalyst.pm:144
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -79,15 +131,15 @@ msgstr ""
 "\n"
 "Por favor certifique-se de que o documento ativo faz parte de seu projeto Catalyst."
 
-#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst.pm:147
 msgid "Server not found"
 msgstr "Servidor não encontrado"
 
-#: lib/Padre/Plugin/Catalyst.pm:130
+#: lib/Padre/Plugin/Catalyst.pm:167
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Servidor web parece estar em execução. Iniciar navegador web agora?"
 
-#: lib/Padre/Plugin/Catalyst.pm:131
+#: lib/Padre/Plugin/Catalyst.pm:168
 msgid "Start Web Browser?"
 msgstr "Iniciar Navegador Web?"
 
