@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-30 09:15+0300\n"
+"PO-Revision-Date: 2009-05-30 09:29+0100\n"
+"Last-Translator: ddn <ddn123456 at gmail.com>\n"
+"Language-Team: ddn <ddn123456 at gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: Nederland - België\n"
+
+#: lib/Padre/Plugin/Ecliptic.pm:29
+msgid "Ecliptic"
+msgstr "Ecliptic"
+
+#: lib/Padre/Plugin/Ecliptic.pm:70
+msgid "Open Resource\tCTRL-Shift-R"
+msgstr "Open Bron\tCTRL-Shift-R"
+
+#: lib/Padre/Plugin/Ecliptic.pm:77
+msgid "Quick Menu Access\tCTRL-3"
+msgstr "Snelmenu Toegang\tCTRL-3"
+
+#: lib/Padre/Plugin/Ecliptic.pm:87
+msgid "About"
+msgstr "Betreft"
+
+#: lib/Padre/Plugin/Ecliptic.pm:104
+msgid "Provides Eclipse-like useful features to Padre.\n"
+msgstr "Levert Eclipse-achtige nuttige kenmerken aan Padre\n"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:49
+msgid "Open Resource"
+msgstr "Open Bron"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:134
+msgid "&Select an item to open (? = any character, * = any string):"
+msgstr "&Selecteer een te openen item (? = willekeurig karakter, * = willekeurige karakterreeks):"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:138
+msgid "Ignore CVS/.svn/.git folders"
+msgstr "Negeer CVS/.svn/.git mappen"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:143
+msgid "&Matching Items:"
+msgstr "Overeenste&mmende Items:"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:149
+msgid "Current Search Directory: "
+msgstr "Huidige Zoek Directory:"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:204
+msgid " items selected"
+msgstr "Geselecteerde items"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:221
+msgid "Reading items. Please wait..."
+msgstr "Bezig met het inlezen van de items. Gelieve te wachten."
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:245
+msgid "Finished Searching"
+msgstr "Klaar met zoeken"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:276
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:238
+msgid " item(s) found"
+msgstr "Gevonden item(s)"
+
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:278
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+msgid "No items found"
+msgstr "Geen items gevonden"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:36
+msgid "Quick Menu Access"
+msgstr "Snelmenu Toegang"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:124
+msgid "&Type a menu item name to access:"
+msgstr "&Type te selecteren menu item naam "
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:129
+msgid "&Matching Menu Items:"
+msgstr "Overeenste&mmende Menu Items:"
+
