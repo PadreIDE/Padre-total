@@ -1,5 +1,11 @@
 Changes
 
+=head1 0.04  2009.5.30
+	- Implemented "Quick Menu Access" dialog.
+	- Standard minimum size and centering for all dialogs.
+	- Fixed a status message in "Open Resource" dialog.
+	- Added Arabic translation.
+
 =head1 0.03  2009.5.29
 
 	- More POD fixes.
