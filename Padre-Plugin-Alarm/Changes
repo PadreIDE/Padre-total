@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Alarm
 
+    removed taint mode for test, which lead to some failures (jquelin)
+
 0.06    2009.05.26
     Add Chinese (Traditional) translation (BLUET).
 	Added Arabic translation (AZAWAWI).
