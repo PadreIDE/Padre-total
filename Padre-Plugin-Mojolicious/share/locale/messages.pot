@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-19 01:49+0800\n"
+"POT-Creation-Date: 2009-05-30 16:50-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,11 +41,15 @@ msgstr ""
 msgid "Mojolicious Website"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:62
+#: lib/Padre/Plugin/Mojolicious.pm:60
+msgid "Mojolicious Community Live Support"
+msgstr ""
+
+#: lib/Padre/Plugin/Mojolicious.pm:66
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:78
+#: lib/Padre/Plugin/Mojolicious.pm:82
 #, perl-format
 msgid ""
 "Mojolicious application script not found at\n"
@@ -54,19 +58,19 @@ msgid ""
 "Please make sure the active document is from your Mojolicious project."
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:81
+#: lib/Padre/Plugin/Mojolicious.pm:85
 msgid "Server not found"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:103
+#: lib/Padre/Plugin/Mojolicious.pm:107
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:104
+#: lib/Padre/Plugin/Mojolicious.pm:108
 msgid "Start Web Browser?"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:128
+#: lib/Padre/Plugin/Mojolicious.pm:132
 msgid ""
 "\n"
 "Web server stopped successfully.\n"
