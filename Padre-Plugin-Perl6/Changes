@@ -1,7 +1,17 @@
 Changes
 
+=head1 0.41 2009.5.30
 	- Added Spanish translation (BRUNOV)
 	- Added Brazilian Portuguese translation (GARU)
+	- Added Camelia plugin icon.
+	- Unified usage of PADRE_PLUGIN_PERL6 for author-only stuff across 
+		Build.PL and tests.
+	- Added "Generate Perl6 EXEcutable" feature.
+	- Added "Generate Perl6 PIR" feature.
+	- Fixed name typos "Perl6" is "Perl 6" (Moritz Lenz)++
+	- Added missing dependency to Class::XSAccessor
+	- Switch over to the new constant package for the colour constants
+	- Updated the Padre::Plugin dependency to Padre 0.36
 
 =head1 0.40 2009.5.23
 
