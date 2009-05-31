@@ -187,7 +187,12 @@ sub _setup_events {
 		
 		return;
 	});
-	
+
+	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
+		$self->_on_ok_button_clicked();
+		$self->EndModal(0);
+	});
+
 }
 
 #
