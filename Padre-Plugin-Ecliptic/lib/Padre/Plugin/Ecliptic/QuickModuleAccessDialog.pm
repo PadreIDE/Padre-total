@@ -33,7 +33,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Quick Outline Access'),
+		_T('Quick Module Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
