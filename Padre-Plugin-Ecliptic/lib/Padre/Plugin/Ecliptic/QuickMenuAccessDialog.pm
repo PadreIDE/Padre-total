@@ -22,7 +22,6 @@ use Class::XSAccessor accessors => {
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
 	_status_text       => '_status_text',        # status label
-	selected_menu_id   => 'selected_menu_id'     # selected menu id
 };
 
 # -- constructor
@@ -62,12 +61,10 @@ sub _on_ok_button_clicked {
 	# Open the selected menu item if the user pressed OK
 	my $selection = $self->_matches_list->GetSelection;
 	my $selected_menu_item = $self->_matches_list->GetClientData($selection);
-	$self->selected_menu_id(undef);
 	if($selected_menu_item) {
-		$self->selected_menu_id($selected_menu_item->GetId);
 		my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
 			$selected_menu_item->GetId);
-		$main->GetEventHandler->AddPendingEvent( $event );
+		$main->GetEventHandler->ProcessEvent( $event );
 	}
 	
 	$self->Destroy;
@@ -173,7 +170,7 @@ sub _setup_events {
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
 
 		my $selection = $self->_matches_list->GetSelection;
-		if($selection) {
+		if($selection != Wx::wxNOT_FOUND) {
 			$self->_status_text->SetLabel( 
 				$self->_matches_list->GetString($selection));
 		}

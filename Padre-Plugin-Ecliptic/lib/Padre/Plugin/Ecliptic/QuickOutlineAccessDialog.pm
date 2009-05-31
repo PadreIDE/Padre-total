@@ -166,10 +166,12 @@ sub _setup_events {
 	});
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
+
 		my $selection = $self->_matches_list->GetSelection;
-		$self->_status_text->SetLabel( 
-			$self->_matches_list->GetString($selection));
+		if($selection != Wx::wxNOT_FOUND) {
+			$self->_status_text->SetLabel( 
+				$self->_matches_list->GetString($selection));
+		}
 		
 		return;
 	});
