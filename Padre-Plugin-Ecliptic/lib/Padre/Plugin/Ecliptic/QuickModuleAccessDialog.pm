@@ -180,7 +180,7 @@ sub _setup_events {
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
 
 		my $selection = $self->_matches_list->GetSelection;
-		if($selection) {
+		if($selection != Wx::wxNOT_FOUND) {
 			$self->_status_text->SetLabel( 
 				$self->_matches_list->GetString($selection));
 		}
