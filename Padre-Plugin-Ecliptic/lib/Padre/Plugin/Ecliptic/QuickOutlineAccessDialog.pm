@@ -207,7 +207,9 @@ sub _update_matches_list_box {
 		my $root = shift;
 		my @items = ();
 		if($root && $root->IsOk) {
-			push @items, $root;
+			if($root != $tree->GetRootItem()) {
+				push @items, $root;
+			}
 			if ($tree->GetChildrenCount($root, 0)) {
 				my ($child, $cookie) = $tree->GetFirstChild($root);
 				while ($child && $child->IsOk) {
