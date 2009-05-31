@@ -208,11 +208,12 @@ sub _update_matches_list_box {
 	unless($self->_modules) {
 		$self->_status_text->SetLabel( _T("Reading modules. Please wait...") );
 		require ExtUtils::Installed;
-		$self->_modules( ExtUtils::Installed->new()->modules() );
+		my @modules = ExtUtils::Installed->new()->modules();
+		$self->_modules( \@modules );
 		$self->_status_text->SetLabel( _T("Finished Searching") );
 	}
 	
-	foreach my $module ($self->_modules) {
+	foreach my $module (@{$self->_modules}) {
 		if($module =~ /$search_expr/i) {
 			$self->_matches_list->Insert($module, $pos, $module);
 			$pos++;
