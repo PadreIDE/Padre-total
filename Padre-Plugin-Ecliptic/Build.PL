@@ -46,11 +46,6 @@ sub ACTION_dist {
 
 SUBCLASS
 
-
-my %requires = (
-);
-
-
 my $builder = $class->new(
     module_name         => 'Padre::Plugin::Ecliptic',
     license             => 'perl',
@@ -65,6 +60,7 @@ my $builder = $class->new(
     requires => {
 		'Padre'                    => '0.33',
 		'Class::XSAccessor'		   => '1.02',	
+		'ExtUtils-Install'         => '1.52',
 	},
     add_to_cleanup      => [ 'Padre-Plugin-Ecliptic-*' ],
     create_makefile_pl  => 'traditional',

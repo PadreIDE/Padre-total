@@ -85,6 +85,13 @@ sub menu_plugins {
 		sub { $self->_show_quick_outline_access_dialog(); },
 	);
 
+	# Shows the "Quick Module Access" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Quick Module Access\tCtrl-5"), ),
+		sub { $self->_show_quick_module_access_dialog(); },
+	);
+
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -153,6 +160,20 @@ sub _show_quick_outline_access_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
 	my $dialog  = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
+	$dialog->ShowModal();
+
+	return;
+}
+
+#
+# Opens the "Quick Module Access" dialog
+#
+sub _show_quick_module_access_dialog {
+	my $self = shift;
+
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
