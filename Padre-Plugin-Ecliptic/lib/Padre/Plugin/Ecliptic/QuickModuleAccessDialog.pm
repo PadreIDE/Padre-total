@@ -22,6 +22,7 @@ use Class::XSAccessor accessors => {
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
 	_status_text       => '_status_text',        # status label
+	_modules           => '_modules',            # modules list
 };
 
 # -- constructor
@@ -56,16 +57,27 @@ sub new {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = $self->_plugin->main;
+	# Open the selected module in POD browser if the user pressed OK
+	my $selection = $self->_matches_list->GetSelection;
+	my $selected_module = $self->_matches_list->GetClientData($selection);
+	if($selected_module) {
+		Wx::Event::EVT_IDLE(
+			$self,
+			sub {
+				print "Show DocBrowser for '$selected_module'\n";
+				require Padre::Wx::DocBrowser;
+				my $help = Padre::Wx::DocBrowser->new;
+				$help->help( $selected_module );
+				$help->SetFocus;
+				$help->Show(1);
+				Wx::Event::EVT_IDLE($self, undef);
+			},
+		);
+	}
 
-	# Open the selected outline item if the user pressed OK
-	# my $selection = $self->_matches_list->GetSelection;
-	# my $selected_outline_item = $self->_matches_list->GetClientData($selection);
-	# if($selected_outline_item) {
-		# $main->outline->SelectItem($selected_outline_item);
-	# }
-	
 	$self->Destroy;
+	
+	return;
 }
 
 
@@ -166,10 +178,12 @@ sub _setup_events {
 	});
 	
 	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
+
 		my $selection = $self->_matches_list->GetSelection;
-		$self->_status_text->SetLabel( 
-			$self->_matches_list->GetString($selection));
+		if($selection) {
+			$self->_status_text->SetLabel( 
+				$self->_matches_list->GetString($selection));
+		}
 		
 		return;
 	});
@@ -181,7 +195,7 @@ sub _setup_events {
 #
 sub _update_matches_list_box {
 	my $self = shift;
-	
+
 	my $search_expr = $self->_search_text->GetValue;
 
 	#quote the search string to make it safer
@@ -191,46 +205,20 @@ sub _update_matches_list_box {
 	$self->_matches_list->Clear;
 	my $pos = 0;
 	
+	unless($self->_modules) {
+		$self->_status_text->SetLabel( _T("Reading modules. Please wait...") );
+		require ExtUtils::Installed;
+		$self->_modules( ExtUtils::Installed->new()->modules() );
+		$self->_status_text->SetLabel( _T("Finished Searching") );
+	}
 	
-	my $main = $self->_plugin->main;
-	
-	# # recursively walk tree control
-    # sub walk_tree {
-		# my $tree = shift;
-		# my $root = shift;
-		# my @items = ();
-		# if($root && $root->IsOk) {
-			# push @items, $root;
-			# if ($tree->GetChildrenCount($root, 0)) {
-				# my ($child, $cookie) = $tree->GetFirstChild($root);
-				# while ($child && $child->IsOk) {
-					# push @items, walk_tree($tree, $child);
-					# ($child, $cookie) = $tree->GetNextChild($root, $cookie);
-				# }
-			# }
-		# }
-		
-		# return @items;
-	# }
-	
-	# my $outline_tree = $main->outline;
-	# my @items = walk_tree($outline_tree, $outline_tree->GetRootItem());
-	require ExtUtils::Installed;
-	my ($inst) = ExtUtils::Installed->new();
-  #print $inst;
-   my (@modules) = $inst->modules();
-   print "" . (join "\n", @modules) . "\n";
-	
-	# @items = sort { 
-		# $outline_tree->GetItemText($a) cmp $outline_tree->GetItemText($b)
-	# } @items;
-	# foreach my $item (@items) {
-		# my $item_label = $outline_tree->GetItemText($item);
-		# if($item_label =~ /$search_expr/i) {
-			# $self->_matches_list->Insert($item_label, $pos, $item);
-			# $pos++;
-		# }
-	# }
+	foreach my $module ($self->_modules) {
+		if($module =~ /$search_expr/i) {
+			$self->_matches_list->Insert($module, $pos, $module);
+			$pos++;
+		}
+	}
+
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
 		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
