@@ -1,10 +1,11 @@
 Changes
 
-=head1 0.06  (Not released yet)
+=head1 0.06  2009.5.31
 	- Implemented "Quick Module Access" dialog.
 	- Fixed 'Use of uninitialized value' on linux in
 		"Open Resource" dialog (garu++)
-
+	- Fixed the Kaboom bug in quick menu access in list box selection
+	
 =head1 0.05  2009.5.31
 	- Implemented "Quick Outline Access" dialog.
 	- Added translations:
