@@ -1,12 +1,14 @@
 ---
 name: Padre-Plugin-Encrypt
-version: 0.05
+version: 0.06
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: encrypt/decrypt file in Padre
 license: perl
 resources:
+  homepage: http://padre.perlide.org/
   license: http://dev.perl.org/licenses/
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Encrypt/
 build_requires:
   Crypt::Blowfish: 0
   Crypt::CBC: 0
@@ -16,8 +18,8 @@ build_requires:
 provides:
   Padre::Plugin::Encrypt:
     file: lib/Padre/Plugin/Encrypt.pm
-    version: 0.05
-generated_by: Module::Build version 0.31
+    version: 0.06
+generated_by: Module::Build version 0.33
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4

@@ -1,12 +1,14 @@
 ---
 name: Padre-Plugin-XML
-version: 0.05
+version: 0.06
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: L<Padre> and XML
 license: perl
 resources:
+  homepage: http://padre.perlide.org/
   license: http://dev.perl.org/licenses/
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-XML/
 build_requires:
   Padre: 0.26
   Test::More: 0
@@ -18,11 +20,11 @@ provides:
     version: 0.03
   Padre::Plugin::XML:
     file: lib/Padre/Plugin/XML.pm
-    version: 0.05
+    version: 0.06
   Padre::Task::SyntaxChecker::XML:
     file: lib/Padre/Task/SyntaxChecker/XML.pm
     version: 0.01
-generated_by: Module::Build version 0.31
+generated_by: Module::Build version 0.33
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
