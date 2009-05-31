@@ -3,6 +3,7 @@ Changes
 lib/Padre/Plugin/Ecliptic.pm
 lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
+lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/share/icons/ecliptic.png
 lib/Padre/Plugin/Ecliptic/share/locale/Ecliptic-ar.mo
 Makefile.PL

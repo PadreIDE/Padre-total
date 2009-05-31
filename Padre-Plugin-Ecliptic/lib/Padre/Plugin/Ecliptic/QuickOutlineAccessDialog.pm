@@ -58,16 +58,12 @@ sub _on_ok_button_clicked {
 
 	my $main = $self->_plugin->main;
 
-	# XXX- Open the selected menu item if the user pressed OK
-	# my $selection = $self->_matches_list->GetSelection;
-	# my $selected_menu_item = $self->_matches_list->GetClientData($selection);
-	# $self->selected_menu_id(undef);
-	# if($selected_menu_item) {
-		# $self->selected_menu_id($selected_menu_item->GetId);
-		# my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
-			# $selected_menu_item->GetId);
-		# $main->GetEventHandler->AddPendingEvent( $event );
-	# }
+	# Open the selected outline item if the user pressed OK
+	my $selection = $self->_matches_list->GetSelection;
+	my $selected_outline_item = $self->_matches_list->GetClientData($selection);
+	if($selected_outline_item) {
+		$main->outline->SelectItem($selected_outline_item);
+	}
 	
 	$self->Destroy;
 }
@@ -195,42 +191,41 @@ sub _update_matches_list_box {
 	$self->_matches_list->Clear;
 	my $pos = 0;
 	
-	# my $main = $self->_plugin->main;
-	# my $menu_bar = $main->menu->wx;
-
-	# sub traverse_menu {
-		# my $menu = shift;
-		
-		# my @menu_items = ();
-		# foreach my $menu_item ($menu->GetMenuItems) {
-			# my $sub_menu = $menu_item->GetSubMenu;
-			# if($sub_menu) {
-				# push @menu_items, traverse_menu($sub_menu);
-			# } elsif( not $menu_item->IsSeparator) {
-				# push @menu_items, $menu_item;
-			# }
-		# }
-		
-		# return @menu_items;
-	# }
 	
-	# my $menu_count = $menu_bar->GetMenuCount;
-	# my @menu_items = ();
-	# foreach my $menu_pos (0..$menu_count-1) {
-		# my $main_menu = $menu_bar->GetMenu($menu_pos);
-		# my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
-		# push @menu_items, traverse_menu($main_menu);
-	# }
-	# @menu_items = sort { 
-		# $a->GetLabel cmp $b->GetLabel
-	# } @menu_items;
-	# foreach my $menu_item (@menu_items) {
-		# my $menu_item_label = $menu_item->GetLabel;
-		# if($menu_item_label =~ /$search_expr/i) {
-			# $self->_matches_list->Insert($menu_item_label, $pos, $menu_item);
-			# $pos++;
-		# }
-	# }
+	my $main = $self->_plugin->main;
+	
+	# recursively walk tree control
+    sub walk_tree {
+		my $tree = shift;
+		my $root = shift;
+		my @items = ();
+		if($root && $root->IsOk) {
+			push @items, $root;
+			if ($tree->GetChildrenCount($root, 0)) {
+				my ($child, $cookie) = $tree->GetFirstChild($root);
+				while ($child && $child->IsOk) {
+					push @items, walk_tree($tree, $child);
+					($child, $cookie) = $tree->GetNextChild($root, $cookie);
+				}
+			}
+		}
+		
+		return @items;
+	}
+	
+	my $outline_tree = $main->outline;
+	my @items = walk_tree($outline_tree, $outline_tree->GetRootItem());
+	
+	@items = sort { 
+		$outline_tree->GetItemText($a) cmp $outline_tree->GetItemText($b)
+	} @items;
+	foreach my $item (@items) {
+		my $item_label = $outline_tree->GetItemText($item);
+		if($item_label =~ /$search_expr/i) {
+			$self->_matches_list->Insert($item_label, $pos, $item);
+			$pos++;
+		}
+	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
 		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
