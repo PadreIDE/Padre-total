@@ -1,12 +1,20 @@
 Changes
 
+=head1 0.07  2009.5.31
+
+	- [Open Resource] resource path is now shown in the status label.
+	- Fixed a couple of GTK assertions
+	- Any double-click event on list-box-es have now the same as pressing the OK button [garu++].
+
 =head1 0.06  2009.5.31
+
 	- Implemented "Quick Module Access" dialog.
 	- Fixed 'Use of uninitialized value' on linux in
 		"Open Resource" dialog (garu++)
 	- Fixed the Kaboom bug in quick menu access in list box selection
 	
 =head1 0.05  2009.5.31
+
 	- Implemented "Quick Outline Access" dialog.
 	- Added translations:
 		French (jquelin).
