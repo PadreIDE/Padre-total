@@ -219,6 +219,11 @@ button, the menu item will be selected.
 This opens a dialog where you can search for outline tree. When you hit the OK 
 button, the outline element in the outline tree will be selected.
 
+=head2 'Quick Module Access' (Shortcut: Ctrl-5)
+
+This opens a dialog where you can search for a CPAN module. When you hit the OK 
+button, the selected module will be displayed in Padre's POD browser.
+
 =head2 'About'
 
 Shows a classic about box with this module's name and version.
