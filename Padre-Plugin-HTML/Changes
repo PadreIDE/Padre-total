@@ -1,5 +1,6 @@
 Revision history for Padre-Plugin-HTML
 
+0.09    2009.05.31
         removed taint mode for test, leading to build failure (jquelin)
 
 0.08    2009.1.23

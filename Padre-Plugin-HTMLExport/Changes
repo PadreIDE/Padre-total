@@ -1,5 +1,6 @@
 Revision history for Padre-Plugin-HTMLExport
 
+0.05    2009.05.31
         removed taint mode for tests, leading to build errors (jquelin)
 
 0.04    2009.2.1

@@ -3,7 +3,7 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();

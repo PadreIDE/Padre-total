@@ -1,5 +1,6 @@
 Revision history for Padre-Plugin-ViewInBrowser
 
+0.07    2009.05.31
         removed taint mode for tests, leading to build failures (jquelin)
 
 0.06    2009.2.1
