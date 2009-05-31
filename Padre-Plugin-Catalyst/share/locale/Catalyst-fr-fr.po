@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-10 21:01+0300\n"
+"POT-Creation-Date: 2009-05-30 15:40-0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
 "Language-Team: jérôme quelin <jquelin@cpan.org>\n"
@@ -12,63 +12,115 @@ msgstr ""
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:45
+#: lib/Padre/Plugin/Catalyst.pm:47
 msgid "New Catalyst Application"
 msgstr "Nouvelle application Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:50
+#: lib/Padre/Plugin/Catalyst.pm:52
 msgid "Create new..."
 msgstr "Créer un nouveau..."
 
-#: lib/Padre/Plugin/Catalyst.pm:51
+#: lib/Padre/Plugin/Catalyst.pm:53
 msgid "Model"
 msgstr "Modèle"
 
-#: lib/Padre/Plugin/Catalyst.pm:55
+#: lib/Padre/Plugin/Catalyst.pm:57
 msgid "View"
 msgstr "Vue"
 
-#: lib/Padre/Plugin/Catalyst.pm:59
+#: lib/Padre/Plugin/Catalyst.pm:61
 msgid "Controller"
 msgstr "Contrôleur"
 
-#: lib/Padre/Plugin/Catalyst.pm:65
+#: lib/Padre/Plugin/Catalyst.pm:67
 msgid "Start Web Server"
 msgstr "Démarrer le serveur web"
 
-#: lib/Padre/Plugin/Catalyst.pm:66
+#: lib/Padre/Plugin/Catalyst.pm:68
 msgid "Stop Web Server"
 msgstr "Arrêter le serveur web"
 
-#: lib/Padre/Plugin/Catalyst.pm:68
+#: lib/Padre/Plugin/Catalyst.pm:70
 msgid "Catalyst Online References"
 msgstr "Références Catalyst en ligne"
 
+#: lib/Padre/Plugin/Catalyst.pm:71
+msgid "Beginner's Tutorial"
+msgstr "Tutorial pour débuter"
+
 #: lib/Padre/Plugin/Catalyst.pm:72
+msgid "Overview"
+msgstr "Aperçu"
+
+#: lib/Padre/Plugin/Catalyst.pm:75
+msgid "1. Introduction"
+msgstr "1. Introduction"
+
+#: lib/Padre/Plugin/Catalyst.pm:78
+msgid "2. Catalyst Basics"
+msgstr "2. Les bases de Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:81
+msgid "3. More Catalyst Basics"
+msgstr "3. Autres bases de Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:84
+msgid "4. Basic CRUD"
+msgstr "4. CRUD basique"
+
+#: lib/Padre/Plugin/Catalyst.pm:87
+msgid "5. Authentication"
+msgstr "5. Authentification"
+
+#: lib/Padre/Plugin/Catalyst.pm:90
+msgid "6. Authorization"
+msgstr "6. Autorisation"
+
+#: lib/Padre/Plugin/Catalyst.pm:93
+msgid "7. Debugging"
+msgstr "7. Débuggage"
+
+#: lib/Padre/Plugin/Catalyst.pm:96
+msgid "8. Testing"
+msgstr "8. Test"
+
+#: lib/Padre/Plugin/Catalyst.pm:99
+msgid "9. Advanced CRUD"
+msgstr "9. CRUD avancé"
+
+#: lib/Padre/Plugin/Catalyst.pm:102
+msgid "10. Appendices"
+msgstr "10. Annexes"
+
+#: lib/Padre/Plugin/Catalyst.pm:106
 msgid "Catalyst Cookbook"
 msgstr "Livre de recettes Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:75
+#: lib/Padre/Plugin/Catalyst.pm:109
 msgid "Recommended Plugins"
 msgstr "Greffons recommendés"
 
-#: lib/Padre/Plugin/Catalyst.pm:78
+#: lib/Padre/Plugin/Catalyst.pm:112
+msgid "Catalyst Community Live Support"
+msgstr "Support en direct pour Catalyst"
+
+#: lib/Padre/Plugin/Catalyst.pm:115
 msgid "Examples"
 msgstr "Exemples"
 
-#: lib/Padre/Plugin/Catalyst.pm:81
+#: lib/Padre/Plugin/Catalyst.pm:118
 msgid "Catalyst Wiki"
 msgstr "Wiki Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:84
+#: lib/Padre/Plugin/Catalyst.pm:121
 msgid "Catalyst Website"
 msgstr "Site web Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:89
+#: lib/Padre/Plugin/Catalyst.pm:126
 msgid "About"
 msgstr "A propos"
 
-#: lib/Padre/Plugin/Catalyst.pm:107
+#: lib/Padre/Plugin/Catalyst.pm:144
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -81,15 +133,15 @@ msgstr ""
 "\n"
 "Merci de vérifier que le document actif appartient bien à votre projet Catalyst."
 
-#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst.pm:147
 msgid "Server not found"
 msgstr "Serveur non trouvé"
 
-#: lib/Padre/Plugin/Catalyst.pm:130
+#: lib/Padre/Plugin/Catalyst.pm:167
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Le serveur web semble démarré. Lancer un navigateur web maintenant ?"
 
-#: lib/Padre/Plugin/Catalyst.pm:131
+#: lib/Padre/Plugin/Catalyst.pm:168
 msgid "Start Web Browser?"
 msgstr "Démarrer le navigateur web ?"
 
