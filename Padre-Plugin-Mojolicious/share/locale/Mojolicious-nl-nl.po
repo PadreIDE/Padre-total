@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-mojolicious\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:45+0300\n"
+"POT-Creation-Date: 2009-05-30 16:50-0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -37,11 +37,15 @@ msgstr "Mojolicious Handleiding"
 msgid "Mojolicious Website"
 msgstr "Mojolicious Website"
 
-#: lib/Padre/Plugin/Mojolicious.pm:62
+#: lib/Padre/Plugin/Mojolicious.pm:60
+msgid "Mojolicious Community Live Support"
+msgstr "Mojolicious Community Live Support"
+
+#: lib/Padre/Plugin/Mojolicious.pm:66
 msgid "About"
 msgstr "Betreft"
 
-#: lib/Padre/Plugin/Mojolicious.pm:78
+#: lib/Padre/Plugin/Mojolicious.pm:82
 #, perl-format
 msgid ""
 "Mojolicious application script not found at\n"
@@ -54,19 +58,19 @@ msgstr ""
 "\n"
 "Gelieve te controleren dat het actieve document van uw Mojolicious project is."
 
-#: lib/Padre/Plugin/Mojolicious.pm:81
+#: lib/Padre/Plugin/Mojolicious.pm:85
 msgid "Server not found"
 msgstr "Server niet gevonden"
 
-#: lib/Padre/Plugin/Mojolicious.pm:103
+#: lib/Padre/Plugin/Mojolicious.pm:107
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Web server lijkt te draaien. Web browser nu opstarten?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:104
+#: lib/Padre/Plugin/Mojolicious.pm:108
 msgid "Start Web Browser?"
 msgstr "Web Browser opstarten?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:128
+#: lib/Padre/Plugin/Mojolicious.pm:132
 msgid ""
 "\n"
 "Web server stopped successfully.\n"

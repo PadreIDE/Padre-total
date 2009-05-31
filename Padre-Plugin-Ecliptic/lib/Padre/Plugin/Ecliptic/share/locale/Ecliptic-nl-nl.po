@@ -7,33 +7,41 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 09:15+0300\n"
-"PO-Revision-Date: 2009-05-30 09:29+0100\n"
+"POT-Creation-Date: 2009-05-31 10:15+0300\n"
+"PO-Revision-Date: 2009-05-31 22:28+0100\n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
-"X-Poedit-Country: Nederland - België\n"
+"X-Poedit-Country: Nederland - BelgiÃ«\n"
 
 #: lib/Padre/Plugin/Ecliptic.pm:29
 msgid "Ecliptic"
 msgstr "Ecliptic"
 
 #: lib/Padre/Plugin/Ecliptic.pm:70
-msgid "Open Resource\tCTRL-Shift-R"
+msgid "Open Resource\tCtrl-Shift-R"
 msgstr "Open Bron\tCTRL-Shift-R"
 
 #: lib/Padre/Plugin/Ecliptic.pm:77
-msgid "Quick Menu Access\tCTRL-3"
-msgstr "Snelmenu Toegang\tCTRL-3"
+msgid "Quick Menu Access\tCtrl-3"
+msgstr "Snel Menu Toegang\tCTRL-3"
 
-#: lib/Padre/Plugin/Ecliptic.pm:87
+#: lib/Padre/Plugin/Ecliptic.pm:84
+msgid "Quick Outline Access\tCtrl-4"
+msgstr "Snel Uitlijning Toegang\tCTRL-3"
+
+#: lib/Padre/Plugin/Ecliptic.pm:91
+msgid "Quick Module Access\tCtrl-5"
+msgstr "Snel Module Toegang\tCTRL-3"
+
+#: lib/Padre/Plugin/Ecliptic.pm:101
 msgid "About"
 msgstr "Betreft"
 
-#: lib/Padre/Plugin/Ecliptic.pm:104
+#: lib/Padre/Plugin/Ecliptic.pm:118
 msgid "Provides Eclipse-like useful features to Padre.\n"
 msgstr "Levert Eclipse-achtige nuttige kenmerken aan Padre\n"
 
@@ -66,16 +74,21 @@ msgid "Reading items. Please wait..."
 msgstr "Bezig met het inlezen van de items. Gelieve te wachten."
 
 #: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:245
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:213
 msgid "Finished Searching"
 msgstr "Klaar met zoeken"
 
 #: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:276
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:238
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:225
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:231
 msgid " item(s) found"
 msgstr "Gevonden item(s)"
 
 #: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:278
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:242
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:227
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:233
 msgid "No items found"
 msgstr "Geen items gevonden"
 
@@ -85,9 +98,37 @@ msgstr "Snelmenu Toegang"
 
 #: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:124
 msgid "&Type a menu item name to access:"
-msgstr "&Type te selecteren menu item naam "
+msgstr "&Type de te selecteren menu item naam "
 
 #: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:129
 msgid "&Matching Menu Items:"
 msgstr "Overeenste&mmende Menu Items:"
+
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:36
+msgid "Quick Module Access"
+msgstr "Snel Module Toegang"
+
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:131
+msgid "&Type a module name to access:"
+msgstr "&Type een te openen module naam:"
+
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:136
+msgid "&Matching modules:"
+msgstr "Overeenste&mmende modules:"
+
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:209
+msgid "Reading modules. Please wait..."
+msgstr "Bezig met het inlezen van de modules. Gelieve te wachten."
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:35
+msgid "Quick Outline Access"
+msgstr "Snel Uitlijning Toegang"
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
+msgid "&Type a Outline item name to access:"
+msgstr "&Type de te selecteren Uitlijningsitem naam "
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:124
+msgid "&Matching Outline Items:"
+msgstr "Overeenste&mmende UitlijningsItems:"
 
