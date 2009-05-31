@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 09:15+0300\n"
+"POT-Creation-Date: 2009-05-31 04:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,18 +21,22 @@ msgid "Ecliptic"
 msgstr ""
 
 #: lib/Padre/Plugin/Ecliptic.pm:70
-msgid "Open Resource\tCTRL-Shift-R"
+msgid "Open Resource\tCtrl-Shift-R"
 msgstr ""
 
 #: lib/Padre/Plugin/Ecliptic.pm:77
-msgid "Quick Menu Access\tCTRL-3"
+msgid "Quick Menu Access\tCtrl-3"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:87
+#: lib/Padre/Plugin/Ecliptic.pm:84
+msgid "Quick Outline Access\tCtrl-4"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic.pm:94
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:104
+#: lib/Padre/Plugin/Ecliptic.pm:111
 msgid "Provides Eclipse-like useful features to Padre.\n"
 msgstr ""
 
@@ -70,11 +74,13 @@ msgstr ""
 
 #: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:276
 #: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:238
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:231
 msgid " item(s) found"
 msgstr ""
 
 #: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:278
 #: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:240
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:233
 msgid "No items found"
 msgstr ""
 
@@ -88,4 +94,16 @@ msgstr ""
 
 #: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:129
 msgid "&Matching Menu Items:"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:35
+msgid "Quick Outline Access"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
+msgid "&Type a Outline item name to access:"
+msgstr ""
+
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:124
+msgid "&Matching Outline Items:"
 msgstr ""
