@@ -84,7 +84,7 @@ open(my $fh2, '>', 'Plugins.txt');
 foreach my $dist ( sort (@requires_dists, @feature_dists) ) {
     my $meta = $meta_cache{ $dist };
     my $module = $dist; $module =~ s/\-/\:\:/g;
-    print $fh2 "=head2 $module\n\n$meta->{abstract}\n\n";
+    print $fh2 "=head2 L<$module>\n\n$meta->{abstract}\n\nSee L<$module>\n\n";
 }
 close($fh2);
 
