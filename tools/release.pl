@@ -71,19 +71,20 @@ if ($name eq 'Padre') {
 find(\&check_version, 'lib');
 die if $error;
 
+my $make = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
 _system("$^X Makefile.PL");
-_system("make");
-_system("make manifest");
-_system("make test");
-_system("make disttest");
+_system("$make");
+_system("$make manifest");
+_system("$make test");
+_system("$make disttest");
 
 if ($^O ne 'MSWin32') {
 	print "Turn off DISPLAY\n";
 	local $ENV{DISPLAY} = undef;
-	_system("make disttest");
+	_system("$make disttest");
 }
 
-_system("make dist");
+_system("$make dist");
 copy("$name-$version.tar.gz", $start_dir) or die $!;
 if ($tag) {
 	_system("svn cp -r$rev $URL $TAGS/$name-$version -m'tag $name-$version'");
