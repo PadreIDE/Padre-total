@@ -6,6 +6,8 @@ Changes
 	- Fixed a couple of GTK assertions
 	- Any double-click event on list-box-es have now the same as pressing the OK button [garu++].
 	- Avoid the debug assertion by ignoring the root item.
+	- Added translation:
+		Polish (therek).
 
 =head1 0.06  2009.5.31
 
