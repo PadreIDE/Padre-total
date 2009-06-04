@@ -56,15 +56,17 @@ sub _on_ok_button_clicked {
 
 	my $main = $self->_plugin->main;
 
-#	#XXX- Open the selected menu item if the user pressed OK
-#	my $selection = $self->_matches_list->GetSelection;
-#	my $selected_menu_item = $self->_matches_list->GetClientData($selection);
-#	if($selected_menu_item) {
-#		my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
-#			$selected_menu_item->GetId);
-#		$main->GetEventHandler->ProcessEvent( $event );
-#	}
-#	
+	#Open the selected menu item if the user pressed OK
+	my $selection = $self->_bindings_list->GetFirstSelected;
+	if($selection != -1) {
+		my $selected_menu_item = $self->_bindings_list->GetItem($selection, 0);
+		if($selected_menu_item) {
+			my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
+				$selected_menu_item->GetId);
+			$main->GetEventHandler->ProcessEvent( $event );
+		}
+	}
+	
 	$self->Destroy;
 }
 
@@ -89,7 +91,7 @@ sub _create {
 	$self->SetSizerAndFit($sizer);
 	$sizer->SetSizeHints($self);
 
-	#XXX- the dialog should be right,bottom aligned (Not centered)!
+	# The dialog should be centered (more standard)
 	$self->Centre;
 
 	# focus on the search text box
@@ -130,34 +132,14 @@ sub _create_controls {
 sub _setup_events {
 	my $self = shift;
 	
-	Wx::Event::EVT_CHAR( $self, sub {
-		my $this  = shift;
-		my $event = shift;
-		my $code  = $event->GetKeyCode;
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED( $self, $self->_bindings_list, sub {
 
-		if ( $code == Wx::WXK_ESCAPE ) {
-			#XXX- Cancel the dialog
-		}
-
-		$event->Skip(1);		
+		$self->_on_ok_button_clicked();
+		$self->EndModal(0);
+		
+		return;
 	});
 
-#	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-#
-#		my $selection = $self->_matches_list->GetSelection;
-#		if($selection != Wx::wxNOT_FOUND) {
-#			$self->_status_text->SetLabel( 
-#				$self->_matches_list->GetString($selection));
-#		}
-#		
-#		return;
-#	});
-#	
-#	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
-#		$self->_on_ok_button_clicked();
-#		$self->EndModal(0);
-#	});
-#	
 }
 
 #
@@ -171,7 +153,7 @@ sub _create_key_bindings_list {
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[400,300],
+			[305,300],
 			Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL
 		) 
 	);
@@ -180,7 +162,7 @@ sub _create_key_bindings_list {
 	$self->_bindings_list->InsertColumn( 0, '' );
 	$self->_bindings_list->InsertColumn( 1, '' );
 
-	$self->_bindings_list->SetColumnWidth( 0, 200 );
+	$self->_bindings_list->SetColumnWidth( 0, 180 );
 	$self->_bindings_list->SetColumnWidth( 1, 100 );
 	
 	$self->_bindings_list->SetBackgroundColour(Wx::Colour->new(255,255,225));
@@ -213,7 +195,7 @@ sub _create_key_bindings_list {
 		push @menu_items, walk_menu($main_menu);
 	}
 	
-	@menu_items = sort { 
+	@menu_items = reverse sort { 
 		$a->GetLabel cmp $b->GetLabel
 	} @menu_items;
 	
@@ -232,6 +214,10 @@ sub _create_key_bindings_list {
 					
 			$self->_bindings_list->SetItem( $idx, 1, $menu_item_shortcut );
 		}
+	}
+	
+	if($self->_bindings_list->GetItemCount()) {
+		$self->_bindings_list->Select(0, 1);
 	}
 			
 	return;
