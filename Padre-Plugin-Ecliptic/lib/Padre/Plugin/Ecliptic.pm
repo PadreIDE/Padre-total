@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @EXPORT_OK = ();
 
 # module imports
@@ -71,6 +71,13 @@ sub menu_plugins {
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
+	# Shows the "List Key Bindings" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("List Key Bindings\tCtrl-Shift-L"), ),
+		sub { $self->_show_list_key_bindings_dialog(); },
+	);
+	
 	# Shows the "Quick Menu Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
@@ -132,6 +139,20 @@ sub _show_open_resource_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::OpenResourceDialog;
 	my $dialog  = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
+	$dialog->ShowModal();
+
+	return;
+}
+
+#
+# Opens the "List Key Bindings" dialog
+#
+sub _show_list_key_bindings_dialog {
+	my $self = shift;
+
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::ListKeyBindingsDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::ListKeyBindingsDialog->new($self);
 	$dialog->ShowModal();
 
 	return;

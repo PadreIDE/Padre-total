@@ -1,4 +1,4 @@
-package Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
+package Padre::Plugin::Ecliptic::ListKeyBindingsDialog;
 
 use warnings;
 use strict;
@@ -32,7 +32,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Quick Menu Access'),
+		_T('List Key Bindings'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
