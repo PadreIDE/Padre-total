@@ -1,0 +1,223 @@
+package Padre::Plugin::SQL::SetupConnectionsDialog;
+
+use warnings;
+use strict;
+
+# package exports and version
+our $VERSION = '0.01';
+
+# module imports
+use Padre::Wx ();
+use Padre::Current ();
+use Padre::Util   ('_T');
+
+# is a subclass of Wx::Dialog
+use base 'Wx::Dialog';
+
+# accessors
+use Class::XSAccessor accessors => {
+	_sizer             => '_sizer',              # window sizer
+	_search_text       => '_search_text',	     # search text control
+	_matches_list      => '_matches_list',	     # matches list
+	_ignore_dir_check  => '_ignore_dir_check',   # ignore .svn/.git dir checkbox
+	_status_text       => '_status_text',        # status label
+	_directory         => '_directory',	         # searched directory
+	_matched_files     => '_matched_files',		 # matched files list
+};
+
+# -- constructor
+sub new {
+	my ($class, $plugin, %opt) = @_;
+
+	#Check if we have an open file so we can use its directory
+	my $filename = Padre::Current->filename;
+	my $directory;
+	if($filename) {
+		# current document's project or base directory
+		$directory = Padre::Util::get_project_dir($filename) 
+			|| File::Basename::dirname($filename);
+	} else {
+		# current working directory
+		$directory = Cwd::getcwd();
+	}
+	
+	# create object
+	my $self = $class->SUPER::new(
+		Padre::Current->main,
+		-1,
+		_T('Setup Database connection'),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+	);
+
+	$self->SetIcon( Wx::GetWxPerlIcon() );
+	$self->_directory($directory);
+
+	# create dialog
+	$self->_create;
+
+	return $self;
+}
+
+
+# -- event handler
+
+#
+# handler called when the ok button has been clicked.
+# 
+sub _on_ok_button_clicked {
+	my ($self) = @_;
+
+	my $main = Padre->ide->wx->main;
+
+	#Open the selected resources here if the user pressed OK
+	my @selections = $self->_matches_list->GetSelections();
+	foreach my $selection (@selections) {
+		my $filename = $self->_matches_list->GetClientData($selection);
+		# try to open the file now
+		$main->setup_editor($filename);
+	}
+
+	$self->Destroy;
+}
+
+
+# -- private methods
+
+#
+# create the dialog itself.
+#
+sub _create {
+	my ($self) = @_;
+
+	# create sizer that will host all controls
+	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	$self->_sizer($sizer);
+
+	# create the controls
+	$self->_create_controls;
+	$self->_create_buttons;
+
+	# wrap everything in a vbox to add some padding
+	$self->SetSizerAndFit($sizer);
+	$sizer->SetSizeHints($self);
+
+	# center the dialog
+	$self->Centre;
+
+	# focus on the search text box
+	$self->_search_text->SetFocus();
+}
+
+#
+# create the buttons pane.
+#
+sub _create_buttons {
+	my ($self) = @_;
+	my $sizer  = $self->_sizer;
+
+	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
+	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
+}
+
+#
+# create controls in the dialog
+#
+sub _create_controls {
+	my ($self) = @_;
+
+	# search textbox
+	my $search_label = Wx::StaticText->new( $self, -1, _T('type in the DSN') );
+	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
+	
+	# ignore .svn/.git checkbox
+	#$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, _T('Ignore CVS/.svn/.git folders')) );
+	#$self->_ignore_dir_check->SetValue(1);
+	
+	# matches result list
+	my $matches_label = Wx::StaticText->new( $self, -1, _T('Existing Configurations:') );
+	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
+		Wx::wxLB_EXTENDED ) );
+
+# TODO delete a configuration
+# allow for more detaild configuration including username and password
+
+	$self->_sizer->AddSpacer(10);
+	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
+	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
+
+	$self->_setup_events();
+	
+	return;
+}
+
+#
+# Adds various events
+#
+sub _setup_events {
+	my $self = shift;
+	
+	
+	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
+		my $self  = shift;
+		my @matches = $self->_matches_list->GetSelections();
+		my $num_selected =  scalar @matches;
+		if($num_selected > 1) {
+			$self->_status_text->SetLabel(
+				"" . scalar @matches . _T(" items selected"));
+		} elsif($num_selected == 1) {
+			$self->_status_text->SetLabel(
+				$self->_matches_list->GetClientData($matches[0]));
+		}
+		
+		return;
+	});
+	
+	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
+		$self->_on_ok_button_clicked();
+		$self->EndModal(0);
+	});
+}
+
+#
+# Update matches list box from matched files list
+#
+sub _update_matches_list_box() {
+	my $self = shift;
+	
+	my $search_expr = $self->_search_text->GetValue();
+
+	#quote the search string to make it safer
+	#and then tranform * and ? into .* and .
+	$search_expr = quotemeta $search_expr;
+	$search_expr =~ s/\\\*/.*?/g;
+	$search_expr =~ s/\\\?/./g;
+
+	#Populate the list box now
+	$self->_matches_list->Clear();
+	my $pos = 0;
+	foreach my $file (@{$self->_matched_files}) {
+		my $filename = File::Basename::fileparse($file);
+		if($filename =~ /^$search_expr/i) {
+			$self->_matches_list->Insert($filename, $pos, $file);
+			$pos++;
+		}
+	}
+	if($pos > 0) {
+		$self->_matches_list->Select(0);
+		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
+	} else {
+		$self->_status_text->SetLabel(_T('No items found'));
+	}
+			
+	return;
+}
+
+
+1;
