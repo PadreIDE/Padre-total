@@ -11,7 +11,7 @@ our $VERSION = '0.01';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'NYTProf' }
-  
+
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
     'Padre::Plugin'         => 0.36,
@@ -35,19 +35,23 @@ sub menu_plugins_simple {
     
 }
 
+sub plugin_enable {}
+
 sub plugin_disable {
     require Class::Unload;
     Class::Unload->unload('Padre::Plugin::NYTProf');
-    Class::Unload->unload('NYTProf');
+#    Class::Unload->unload('NYTProf');
 
 }
-
 
 
 sub on_start_profiling {
     my $main = Padre->ide->wx->main;
     
     # hash to hold environment variables
+    # nytprof has a lot of options to set
+    # once it clearer what we do or don't want
+    # we can add sane defaults or set as we need
     my %nytprof;
 
     # $ENV{FOO} = 'bar'
@@ -62,6 +66,7 @@ sub on_start_profiling {
     
     my $perl = Padre->perl_interpreter;
     
+    # Padre current document 
     # Padre->Current
     # ->document
     # ->filename
@@ -80,15 +85,29 @@ sub on_start_profiling {
     
     print "Env: $nytprof_env_vars\n";
     print "cmd: $cmd\n";
-    
+    # run the profiling on the current document
     $main->run_command($cmd);
     
-    # now we need to read in the output file
-    require Devel::NYTProf::Data;
-    my $profile = Devel::NYTProf::Data->new( { filename => $nytprof{file} } );
     
-    print $profile->dump_profile_data();
-        
+    
+    
+    # now we need to read in the output file
+    #require Devel::NYTProf::Data;
+    #my $profile = Devel::NYTProf::Data->new( { filename => $nytprof{file} } );
+    
+    #print $profile->dump_profile_data();
+       
+    # Not completely built into the IDE
+    # for now we'll just launch the brower to 
+    # review the HTML output
+    
+    
+    # create the commandline to create HTML output
+    $cmd = 'nytprofhtml ' . $nytprof{file};
+    print "Generating HTML report: $cmd\n";
+    $main->run_command($cmd);
+    
+    Padre::Wx::launch_browser('file://'. $tmp . '/nytprof/index.html');
     return;
 }
 
