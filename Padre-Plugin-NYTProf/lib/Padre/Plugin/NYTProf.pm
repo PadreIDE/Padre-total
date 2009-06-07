@@ -26,8 +26,7 @@ sub menu_plugins_simple {
     return $self->plugin_name  => [
         
         _T('Run Profile')       => sub { $self->on_start_profiling },
-        
-        
+                
         '---'                   => undef, # ...add a separator
         
         _T('About')             => sub { $self->on_show_about },
@@ -38,10 +37,9 @@ sub menu_plugins_simple {
 
 sub plugin_disable {
     require Class::Unload;
-#    Class::Unload->unload('Padre::Plugin::Catalyst::NewApp');
-#    Class::Unload->unload('Padre::Plugin::Catalyst::Helper');
-#    Class::Unload->unload('Padre::Plugin::Catalyst::Util');
+    Class::Unload->unload('Padre::Plugin::NYTProf');
     Class::Unload->unload('NYTProf');
+
 }
 
 
@@ -80,17 +78,17 @@ sub on_start_profiling {
     
     my $cmd = $perl . " -d:NYTProf $docPath";
     
-#    print "Env: $nytprof_env_vars\n";
-#    print $cmd;
+    print "Env: $nytprof_env_vars\n";
+    print "cmd: $cmd\n";
     
     $main->run_command($cmd);
     
-    # now we need to read in file
+    # now we need to read in the output file
     require Devel::NYTProf::Data;
     my $profile = Devel::NYTProf::Data->new( { filename => $nytprof{file} } );
-#    print $profile->dump_profile_data();
     
-    
+    print $profile->dump_profile_data();
+        
     return;
 }
 
