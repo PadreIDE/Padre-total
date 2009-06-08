@@ -9,6 +9,10 @@ use Padre::Util   ('_T');
 
 our $VERSION = '0.01';
 
+# Need to hold the nytprof variables
+my %nytprofile;
+
+
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'NYTProf' }
 
@@ -25,9 +29,11 @@ sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name  => [
         
-        _T('Run Profile')       => sub { $self->on_start_profiling },
-                
-        '---'                   => undef, # ...add a separator
+        _T('1. Run Profile')                               => sub { $self->on_start_profiling },
+        _T('2. Generate Report - Run Profile First')           => sub { $self->on_generate_report },        
+        _T('3. Show Report -     Run Generate Report First')           => sub { $self->on_show_report },
+        
+        '---'                                           => undef, # ...add a separator
         
         _T('About')             => sub { $self->on_show_about },
         
@@ -35,12 +41,14 @@ sub menu_plugins_simple {
     
 }
 
-sub plugin_enable {}
+sub plugin_enable {
+        return;
+}
 
 sub plugin_disable {
     require Class::Unload;
     Class::Unload->unload('Padre::Plugin::NYTProf');
-#    Class::Unload->unload('NYTProf');
+#    Class::Unload->unload('Devel::NYTProf');
 
 }
 
@@ -52,7 +60,7 @@ sub on_start_profiling {
     # nytprof has a lot of options to set
     # once it clearer what we do or don't want
     # we can add sane defaults or set as we need
-    my %nytprof;
+#    my %nytprof;
 
     # $ENV{FOO} = 'bar'
     
@@ -62,8 +70,8 @@ sub on_start_profiling {
     #TODO: change this to be based on current document
     my $nytprof_out = 'nytprof.out';
     
-    $nytprof{file} = "$tmp/$nytprof_out";
-    
+    $nytprofile{file} = "$tmp/$nytprof_out";
+        
     my $perl = Padre->perl_interpreter;
     
     # Padre current document 
@@ -71,44 +79,65 @@ sub on_start_profiling {
     # ->document
     # ->filename
     
-    foreach my $env( keys %nytprof ) {
-        $nytprof_env_vars .= "$env=$nytprof{$env}:";
+    foreach my $env( keys %nytprofile ) {
+        $nytprof_env_vars .= "$env=$nytprofile{$env}:";
     }
     
+    # before we go any further save the temp directory location
+    # into the hash here
+    $nytprofile{temp} = $tmp;
+    
     $nytprof_env_vars =~ s/\:$//;
+    $ENV{NYTPROF} = $nytprof_env_vars;
     
     my $docPath = Padre::Current->document->filename; 
     
-    $ENV{NYTPROF} = $nytprof_env_vars;
-    
-    my $cmd = $perl . " -d:NYTProf $docPath";
+    # profile command    
+    my $profile = $perl . " -d:NYTProf $docPath";
     
     print "Env: $nytprof_env_vars\n";
-    print "cmd: $cmd\n";
+    print "cmd: $profile\n";
     # run the profiling on the current document
-    $main->run_command($cmd);
+#    $main->run_command($cmd);
+    
+#    sleep(10);
     
     
+
+    $main->run_command($profile);
     
+    return;
     
-    # now we need to read in the output file
-    #require Devel::NYTProf::Data;
-    #my $profile = Devel::NYTProf::Data->new( { filename => $nytprof{file} } );
+}
+sub on_generate_report {
     
-    #print $profile->dump_profile_data();
-       
-    # Not completely built into the IDE
-    # for now we'll just launch the brower to 
-    # review the HTML output
-    
+    my $main    = Padre->ide->wx->main;
+    #my $tmp     =  File::Temp::tempdir;
     
     # create the commandline to create HTML output
-    $cmd = 'nytprofhtml ' . $nytprof{file};
-    print "Generating HTML report: $cmd\n";
-    $main->run_command($cmd);
+    my $report = 'nytprofhtml ' . $nytprofile{file};
+    print "Generating HTML report: $report\n";
+    $main->run_command($report);
+       
+}
+
+sub on_show_report {
+        
+    my $report = $nytprofile{temp} . '/nytprof/index.html';
+    print "Loading report in browser: $report\n";
     
-    Padre::Wx::launch_browser('file://'. $tmp . '/nytprof/index.html');
+    Padre::Wx::launch_browser("file://$report");
+
+    # testing..
+    # now we need to read in the output file
+    #require Devel::NYTProf::Data;
+    my $profile = Devel::NYTProf::Data->new( { filename => $nytprofile{file} } );
+    
+    print $profile->dump_profile_data();
+
+    
     return;
+        
 }
 
 sub on_show_about {
