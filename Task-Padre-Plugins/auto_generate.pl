@@ -54,6 +54,7 @@ my %meta_cache;
 
 open(my $fh, '>', 'Makefile.txt');
 
+print $fh "requires 'Padre' => '" . $padre_dist->[0]->version . "';\n";
 foreach my $dist ( sort @requires_dists ) {
     print $dist . "\n";
     my $meta = LoadURI("http://cpansearch.perl.org/dist/$dist/META.yml");
