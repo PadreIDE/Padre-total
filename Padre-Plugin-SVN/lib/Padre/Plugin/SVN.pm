@@ -72,6 +72,10 @@ sub menu_plugins_simple {
 			'File'    => sub { $self->svn_status_of_file },
 			'Project' => sub { $self->svn_status_of_project },
 		],
+		'Log...' => [
+			'File'    => sub { $self->svn_log_of_file },
+			'Project' => sub { $self->svn_log_of_project },
+		],
 		'Diff...' => [
 			'File'    => sub { $self->svn_diff_of_file },
 			'Dir'     => sub { $self->svn_diff_of_dir },
@@ -149,6 +153,39 @@ sub svn_status_of_project {
 	}
 	return;
 }
+
+
+sub svn_log {
+	my ( $self, $path ) = @_;
+	my $main   = Padre->ide->wx->main;
+	my $out = qx{svn log $path};
+	$main->message( $out, "$path" );
+	return;
+}
+
+sub svn_log_of_file {
+	my ($self) = @_;
+	my $filename = _get_current_filename();
+	if ($filename) {
+		$self->svn_log($filename);
+	}
+	return;
+}
+
+sub svn_log_of_project {
+	my ($self) = @_;
+	my $filename = _get_current_filename();
+	if ($filename) {
+		my $main     = Padre::Current->main;
+		my $dir      = Padre::Util::get_project_dir($filename);
+		return $main->error("Could not find project root") if not $dir;
+		$self->svn_log($dir);
+	}
+	return;
+}
+
+
+
 
 sub svn_diff {
 	my ( $self, $path ) = @_;
