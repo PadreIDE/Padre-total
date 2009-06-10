@@ -99,6 +99,13 @@ sub menu_plugins {
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
+	# "Open in explorer" action
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Open in Explorer\tCtrl-6"), ),
+		sub { $self->_open_in_explorer(); },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -197,6 +204,31 @@ sub _show_quick_module_access_dialog {
 	my $dialog  = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
 	$dialog->ShowModal();
 
+	return;
+}
+
+#
+# For the current "saved" Padre document,
+# On win32, selects it in Windows Explorer
+# On linux, opens the containing folder for it
+#
+sub _open_in_explorer {
+	my $self = shift;
+
+	#XXX- implement "Open in explorer"
+	# In windows,
+	# exec: 
+	# explorer.exe /select,"c:\tools\putty.exe"
+
+	# In KDE, search for defined $ENV{KDEDIR}
+	# kfmclient exec $FILE_PATH
+	# http://developer.kde.org/documentation/other/kfmclient.html
+
+	# How about using FindBin to check whether kfmclient or nautilus is installed and favour KDE in that situation.
+ 
+	# In Gnome, search for defined $ENV{GNOME_DESKTOP_SESSION_ID}
+	# nautilus --nodesktop --browser $FILE_PATH	
+	
 	return;
 }
 
