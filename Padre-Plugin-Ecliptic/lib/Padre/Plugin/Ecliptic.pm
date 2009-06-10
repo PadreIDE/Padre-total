@@ -215,19 +215,10 @@ sub _show_quick_module_access_dialog {
 sub _open_in_explorer {
 	my $self = shift;
 
-	#XXX- implement "Open in explorer"
-	# In windows,
-	# exec: 
-	# explorer.exe /select,"c:\tools\putty.exe"
-
-	# In KDE, search for defined $ENV{KDEDIR}
-	# kfmclient exec $FILE_PATH
-	# http://developer.kde.org/documentation/other/kfmclient.html
-
-	# How about using FindBin to check whether kfmclient or nautilus is installed and favour KDE in that situation.
- 
-	# In Gnome, search for defined $ENV{GNOME_DESKTOP_SESSION_ID}
-	# nautilus --nodesktop --browser $FILE_PATH	
+	#Open the current document in file manager/explorer
+	use Padre::Plugin::Ecliptic::OpenInExplorerAction;
+	my $action = Padre::Plugin::Ecliptic::OpenInExplorerAction->new($self);
+	$action->open_in_explorer;
 	
 	return;
 }
