@@ -64,12 +64,13 @@ sub open_in_explorer {
 		$filename =~ s/\//\\/g;
 		$error = $self->_execute('explorer.exe', "/select,\"$filename\"");
 	} elsif($^O =~ /linux|bsd/i) {
+		my $parent_folder = File::Basename::dirname($filename);
 		if( defined $ENV{KDE_FULL_SESSION} ) {
 			# In KDE, execute: kfmclient exec $filename
-			$error = $self->_execute('kfmclient', "exec $filename");
+			$error = $self->_execute('kfmclient', "exec $parent_folder");
 		} elsif( defined $ENV{GNOME_DESKTOP_SESSION_ID} ) {
 			# In Gnome, execute: nautilus --nodesktop --browser $filename
-			$error = $self->_execute('nautilus', "--nodesktop --browser $filename");
+			$error = $self->_execute('nautilus', "--nodesktop --browser $parent_folder");
 		} else {
 			$error = "Could not find KDE or GNOME";
 		}
