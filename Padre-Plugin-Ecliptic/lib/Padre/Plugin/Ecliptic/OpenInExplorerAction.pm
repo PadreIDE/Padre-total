@@ -64,7 +64,7 @@ sub open_in_explorer {
 		$filename =~ s/\//\\/g;
 		$error = $self->_execute('explorer.exe', "/select,\"$filename\"");
 	} elsif($^O =~ /linux|bsd/i) {
-		if( defined $ENV{KDEDIR} ) {
+		if( defined $ENV{KDE_FULL_SESSION} ) {
 			# In KDE, execute: kfmclient exec $filename
 			$error = $self->_execute('kfmclient', "exec $filename");
 		} elsif( defined $ENV{GNOME_DESKTOP_SESSION_ID} ) {
