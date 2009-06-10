@@ -4,6 +4,8 @@ Changes
 
 	- Implemented "Open in Explorer" action
 	- POD fixes
+	- Removing bad code. Padre::Current->main is now plugin->main
+	- _T -> Wx::gettext. Alias++
 
 =head1 0.08  2009.6.4
 
