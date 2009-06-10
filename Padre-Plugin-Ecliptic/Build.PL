@@ -61,6 +61,7 @@ my $builder = $class->new(
 		'Padre'                    => '0.33',
 		'Class::XSAccessor'		   => '1.02',	
 		'ExtUtils::Install'        => '1.52',
+		'File::Which'              => '0.05',
 	},
     add_to_cleanup      => [ 'Padre-Plugin-Ecliptic-*' ],
     create_makefile_pl  => 'traditional',
