@@ -1,5 +1,12 @@
 Changes
 
+=head1 0.10  2009.6.10
+
+	- Fixed "Open in Explorer" to work in KDE and GNOME
+	- Updated translations:
+		Arabic
+		French (jquelin++)
+
 =head1 0.09  2009.6.10
 
 	- Implemented "Open in Explorer" action
