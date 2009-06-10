@@ -70,7 +70,7 @@ sub open_in_explorer {
 			$error = $self->_execute('kfmclient', "exec", $parent_folder);
 		} elsif( defined $ENV{GNOME_DESKTOP_SESSION_ID} ) {
 			# In Gnome, execute: nautilus --nodesktop --browser $filename
-			$error = $self->_execute('nautilus', "--nodesktop", "--browser", $parent_folder);
+			$error = $self->_execute('nautilus', "--no-desktop", "--browser", $parent_folder);
 		} else {
 			$error = "Could not find KDE or GNOME";
 		}
