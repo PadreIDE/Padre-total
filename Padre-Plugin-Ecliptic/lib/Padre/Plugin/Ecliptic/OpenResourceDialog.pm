@@ -9,7 +9,6 @@ our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Current ();
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -30,7 +29,8 @@ sub new {
 	my ($class, $plugin, %opt) = @_;
 
 	#Check if we have an open file so we can use its directory
-	my $filename = Padre::Current->filename;
+	my $main = $plugin->main;
+	my $filename = (defined $main->current->document) ? $main->current->document->filename : undef;
 	my $directory;
 	if($filename) {
 		# current document's project or base directory
@@ -43,7 +43,7 @@ sub new {
 	
 	# create object
 	my $self = $class->SUPER::new(
-		Padre::Current->main,
+		$main,
 		-1,
 		Wx::gettext('Open Resource'),
 		Wx::wxDefaultPosition,

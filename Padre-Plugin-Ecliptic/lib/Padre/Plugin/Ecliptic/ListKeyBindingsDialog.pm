@@ -9,7 +9,6 @@ our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Current ();
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -27,7 +26,7 @@ sub new {
 
 	# create object
 	my $self = $class->SUPER::new(
-		Padre::Current->main,
+		$plugin->main,
 		-1,
 		Wx::gettext('List Key Bindings'),
 		Wx::wxDefaultPosition,
