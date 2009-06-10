@@ -1,5 +1,10 @@
 Changes
 
+=head1 0.09  2009.6.10
+
+	- Implemented "Open in Explorer" action
+	- POD fixes
+
 =head1 0.08  2009.6.4
 
 	- Implemented "List of key bindings" as detailed in ticket:379
