@@ -2,6 +2,7 @@ Build.PL
 Changes
 lib/Padre/Plugin/Ecliptic.pm
 lib/Padre/Plugin/Ecliptic/ListKeyBindingsDialog.pm
+lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm
 lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm
 lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm
