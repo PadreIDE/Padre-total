@@ -10,7 +10,6 @@ our @EXPORT_OK = ();
 # module imports
 use Padre::Wx ();
 use Padre::Current ();
-use Padre::Util   ('_T');
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -46,7 +45,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Open Resource'),
+		Wx::gettext('Open Resource'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -131,22 +130,22 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Select an item to open (? = any character, * = any string):') );
+		Wx::gettext('&Select an item to open (? = any character, * = any string):') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# ignore .svn/.git checkbox
-	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, _T('Ignore CVS/.svn/.git folders')) );
+	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git folders')) );
 	$self->_ignore_dir_check->SetValue(1);
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Items:') );
+		Wx::gettext('&Matching Items:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_EXTENDED ) );
 
 	# Shows how many items are selected and information about what is selected
 	$self->_status_text( Wx::StaticText->new( $self, -1, 
-		_T('Current Search Directory: ') . $self->_directory ) );
+		Wx::gettext('Current Search Directory: ') . $self->_directory ) );
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
@@ -201,7 +200,7 @@ sub _setup_events {
 		my $num_selected =  scalar @matches;
 		if($num_selected > 1) {
 			$self->_status_text->SetLabel(
-				"" . scalar @matches . _T(" items selected"));
+				"" . scalar @matches . Wx::gettext(" items selected"));
 		} elsif($num_selected == 1) {
 			$self->_status_text->SetLabel(
 				$self->_matches_list->GetClientData($matches[0]));
@@ -222,7 +221,7 @@ sub _setup_events {
 sub _search() {
 	my $self = shift;
 	
-	$self->_status_text->SetLabel( _T("Reading items. Please wait...") );
+	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
 	my $ignore_dir = $self->_ignore_dir_check->IsChecked();
 	
@@ -246,7 +245,7 @@ sub _search() {
 
 	$self->_matched_files( \@matched_files ); 
 	
-	$self->_status_text->SetLabel( _T("Finished Searching") );
+	$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
 
 	return;
 }
@@ -277,9 +276,9 @@ sub _update_matches_list_box() {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
+		$self->_status_text->SetLabel("" . ($pos+1) . Wx::gettext(' item(s) found'));
 	} else {
-		$self->_status_text->SetLabel(_T('No items found'));
+		$self->_status_text->SetLabel(Wx::gettext('No items found'));
 	}
 			
 	return;

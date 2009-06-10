@@ -9,7 +9,6 @@ our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
-use Padre::Util   ('_T');
 
 # accessors
 use Class::XSAccessor accessors => {
@@ -37,7 +36,7 @@ sub _execute {
 		require IPC::Open2;
 		my $pid = IPC::Open2::open2(0, 0, $cmd, $cmd_args);
 	} else {
-		$result = _T("Failed to execute process\n");
+		$result = Wx::gettext("Failed to execute process\n");
 	}
 	return $result;
 }
@@ -53,7 +52,7 @@ sub open_in_explorer {
 	my $main = $self->_plugin->main;
 	my $filename = $main->current->filename;
 	if(not defined $filename) {
-		Wx::MessageBox( _T("No filename"), _T('Error'), Wx::wxOK, $main, );
+		Wx::MessageBox( Wx::gettext("No filename"), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
 
@@ -80,7 +79,7 @@ sub open_in_explorer {
 	}
 
 	if(defined $error) {
-		Wx::MessageBox( $error, _T("Error"), Wx::wxOK, $main, );
+		Wx::MessageBox( $error, Wx::gettext("Error"), Wx::wxOK, $main, );
 	}
 
 	return;

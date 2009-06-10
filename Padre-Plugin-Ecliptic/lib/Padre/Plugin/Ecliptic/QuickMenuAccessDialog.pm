@@ -10,7 +10,6 @@ our @EXPORT_OK = ();
 # module imports
 use Padre::Wx ();
 use Padre::Current ();
-use Padre::Util   ('_T');
 
 # is a subclass of Wx::Dialog
 use base 'Wx::Dialog';
@@ -32,7 +31,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Quick Menu Access'),
+		Wx::gettext('Quick Menu Access'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -118,12 +117,12 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		_T('&Type a menu item name to access:') );
+		Wx::gettext('&Type a menu item name to access:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		_T('&Matching Menu Items:') );
+		Wx::gettext('&Matching Menu Items:') );
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
@@ -239,9 +238,9 @@ sub _update_matches_list_box {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel("" . ($pos+1) . _T(' item(s) found'));
+		$self->_status_text->SetLabel("" . ($pos+1) . Wx::gettext(' item(s) found'));
 	} else {
-		$self->_status_text->SetLabel(_T('No items found'));
+		$self->_status_text->SetLabel(Wx::gettext('No items found'));
 	}
 			
 	return;
