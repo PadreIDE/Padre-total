@@ -234,14 +234,20 @@ sub _open_in_explorer {
 #
 sub _show_quick_fix_dialog {
 	my $self = shift;
- 
+	my $main = $self->main;
 	my $editor = $self->current->editor;
+	
+	if(not $editor) {
+		Wx::MessageBox( Wx::gettext("No filename"), Wx::gettext('Error'), Wx::wxOK, $main, );
+		return;
+	}
+	
 	my $pt = $editor->ClientToScreen( 
 		$editor->PointFromPosition( $editor->GetCurrentPos ) );
 	
 	# create a simple dialog with no border
 	my $win = Wx::Dialog->new(
-		$editor,
+		$main,
 		-1,
 		'',
 		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
