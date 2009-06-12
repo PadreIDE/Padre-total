@@ -105,6 +105,13 @@ sub menu_plugins {
 		sub { $self->_open_in_explorer(); },
 	);
 	
+	# Shows the "Quick Fix" dialog
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-~"), ),
+		sub { $self->_show_quick_fix_dialog },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -218,6 +225,61 @@ sub _open_in_explorer {
 	use Padre::Plugin::Ecliptic::OpenInExplorerAction;
 	my $action = Padre::Plugin::Ecliptic::OpenInExplorerAction->new($self);
 	$action->open_in_explorer;
+	
+	return;
+}
+
+#
+# Shows the quick fix dialog
+#
+sub _show_quick_fix_dialog {
+	my $self = shift;
+ 
+	my $editor = $self->current->editor;
+	my $pt = $editor->ClientToScreen( 
+		$editor->PointFromPosition( $editor->GetCurrentPos ) );
+	
+	# create a simple dialog with no border
+	my $win = Wx::Dialog->new(
+		$editor,
+		-1,
+		'',
+		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
+		[200, 180],
+		Wx::wxBORDER_NONE,
+	);
+
+	my $list = Wx::ListView->new(
+		$win,
+		-1,
+		Wx::wxDefaultPosition,
+		[200,180],
+		Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL | Wx::wxBORDER_SIMPLE
+	);
+ 	
+	Wx::Event::EVT_KILL_FOCUS($list, sub {
+		#list box lost focus, we should kill the dialog
+		$win->Destroy;
+	});
+	$list->SetBackgroundColour(Wx::Colour->new(255,255,225));
+	$list->InsertColumn( 0, '' );
+	$list->SetColumnWidth( 0, 195 );
+	
+	my $item;
+
+	$item = Wx::ListItem->new();
+	$item->SetText("Inline variable...");
+	$list->InsertItem($item);
+	
+	$item = Wx::ListItem->new();
+	$item->SetText("Toggle Comment...");
+	$list->InsertItem($item);
+
+	$list->Select(0, 1);
+
+	$win->Show(1);
+	
+	$list->SetFocus();
 	
 	return;
 }
