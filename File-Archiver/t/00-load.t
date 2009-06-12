@@ -7,3 +7,7 @@ BEGIN {
 }
 
 diag( "Testing File::Archiver $File::Archiver::VERSION, Perl $], $^X" );
+
+
+my $a = File::Archiver->new;
+isa_ok($a, 'File::Archiver');
