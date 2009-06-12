@@ -119,7 +119,7 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("About"), ),
-		sub { $self->show_about },
+		sub { $self->_show_about },
 	);
 
 	# Return our plugin with its label
@@ -129,7 +129,7 @@ sub menu_plugins {
 #
 # Shows the nice about dialog
 #
-sub show_about {
+sub _show_about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
@@ -234,59 +234,12 @@ sub _open_in_explorer {
 #
 sub _show_quick_fix_dialog {
 	my $self = shift;
-	my $main = $self->main;
-	my $editor = $self->current->editor;
-	
-	if(not $editor) {
-		Wx::MessageBox( Wx::gettext("No filename"), Wx::gettext('Error'), Wx::wxOK, $main, );
-		return;
-	}
-	
-	my $pt = $editor->ClientToScreen( 
-		$editor->PointFromPosition( $editor->GetCurrentPos ) );
-	
-	# create a simple dialog with no border
-	my $win = Wx::Dialog->new(
-		$main,
-		-1,
-		'',
-		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
-		[200, 180],
-		Wx::wxBORDER_NONE,
-	);
 
-	my $list = Wx::ListView->new(
-		$win,
-		-1,
-		Wx::wxDefaultPosition,
-		[200,180],
-		Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL | Wx::wxBORDER_SIMPLE
-	);
- 	
-	Wx::Event::EVT_KILL_FOCUS($list, sub {
-		#list box lost focus, we should kill the dialog
-		$win->Destroy;
-	});
-	$list->SetBackgroundColour(Wx::Colour->new(255,255,225));
-	$list->InsertColumn( 0, '' );
-	$list->SetColumnWidth( 0, 195 );
-	
-	my $item;
+	#Create and show the dialog
+	require Padre::Plugin::Ecliptic::QuickFixDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
+	$dialog->Show(1);
 
-	$item = Wx::ListItem->new();
-	$item->SetText("Inline variable...");
-	$list->InsertItem($item);
-	
-	$item = Wx::ListItem->new();
-	$item->SetText("Toggle Comment...");
-	$list->InsertItem($item);
-
-	$list->Select(0, 1);
-
-	$win->Show(1);
-	
-	$list->SetFocus();
-	
 	return;
 }
 
@@ -314,16 +267,16 @@ following options:
 This opens a nice dialog that allows you to find any file that exists 
 in the current document or working directory. You can use ? to replace 
 a single character or * to replace an entire string. The matched files list 
-are sorted alphabetically and you can select one or more files to be opened in Padre
-when you press the OK button.
+are sorted alphabetically and you can select one or more files to be opened in 
+Padre when you press the OK button.
 
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
 =head2 Quick Assist (Shortcut: Ctrl-Shift-L)
 
-This opens a dialog with a yellow list of current Padre actions/shortcuts. When you hit the OK 
-button, the selected Padre action will be performed.
+This opens a dialog with a yellow list of current Padre actions/shortcuts. When 
+you hit the OK button, the selected Padre action will be performed.
 
 =head2 Quick Menu Access (Shortcut: Ctrl-3)
 
@@ -342,9 +295,15 @@ button, the selected module will be displayed in Padre's POD browser.
 
 =head2 Open in Explorer (Shortcut: Ctrl-6)
 
-For the current saved Padre document, open the platform's file manager and tries to select it if possible.
-On win32, opens the containing folder and selects the file in explorer. On *inux KDE/GNOME, 
-opens the containing folder for it.
+For the current saved Padre document, open the platform's file manager and 
+tries to select it if possible. On win32, opens the containing folder and 
+selects the file in explorer. On *inux KDE/GNOME, opens the containing folder 
+for it.
+
+=head2 Quick Fix (Shortcut: Ctrl-~)
+
+This opens a yellow non-modal dialog that lists different actions that relate to 
+fixing the selected code or the code under the cursor.
 
 =head2 'About'
 
