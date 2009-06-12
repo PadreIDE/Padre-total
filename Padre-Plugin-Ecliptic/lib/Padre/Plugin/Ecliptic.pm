@@ -70,11 +70,11 @@ sub menu_plugins {
 		sub { $self->_show_open_resource_dialog(); },
 	);
 
-	# Shows the "List Key Bindings" dialog
+	# Shows the "Quick Assist" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("List Key Bindings\tCtrl-Shift-L"), ),
-		sub { $self->_show_list_key_bindings_dialog(); },
+		$self->{menu}->Append( -1, Wx::gettext("Quick Assist\tCtrl-Shift-L"), ),
+		sub { $self->_show_quick_assist_dialog(); },
 	);
 	
 	# Shows the "Quick Menu Access" dialog
@@ -158,14 +158,14 @@ sub _show_open_resource_dialog {
 }
 
 #
-# Opens the "List Key Bindings" dialog
+# Opens the "Quick Assist" dialog
 #
-sub _show_list_key_bindings_dialog {
+sub _show_quick_assist_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::ListKeyBindingsDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::ListKeyBindingsDialog->new($self);
+	require Padre::Plugin::Ecliptic::QuickAssistDialog;
+	my $dialog  = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -314,7 +314,7 @@ when you press the OK button.
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
-=head2 List Key Bindings (Shortcut: Ctrl-Shift-L)
+=head2 Quick Assist (Shortcut: Ctrl-Shift-L)
 
 This opens a dialog with a yellow list of current Padre actions/shortcuts. When you hit the OK 
 button, the selected Padre action will be performed.
