@@ -1,6 +1,6 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
-0.0X  XXX
+0.07  Fri Jun 12 2009
     - Added translations:
       - German (hjansen)
       - Arabic (azawawi)
@@ -8,6 +8,7 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
       - Brazilian Portuguese (garu)
     - Cursor location is kept after cleaning (instead of beginning document).
       (claudio)
+    - Menu tests are now locale agnostic (BRICAS)
 
 0.06  Wed May 20 2009
     - Keyboard shortcuts added (claudio)
