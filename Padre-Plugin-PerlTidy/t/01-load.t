@@ -16,7 +16,11 @@ diag "Wx Version: $Wx::VERSION " . Wx::wxVERSION_STRING();
     my @menu = Padre::Plugin::PerlTidy->menu_plugins_simple;
     is @menu, 2, 'one menu item';
     is $menu[0], 'PerlTidy', 'plugin name';
-    is $menu[1][0], "Tidy the active document\tAlt+Shift+F", 'menu item 1';
-    is $menu[1][2], "Tidy the selected text\tAlt+Shift+G", 'menu item 2';
+
+    # check for existence and not the actual words as these
+    # are locale specific
+    ok $menu[1][0], 'menu item 1'; 
+    ok $menu[1][2], 'menu item 2';
+
     BEGIN { $tests += 4; }
 }
