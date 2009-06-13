@@ -16,16 +16,24 @@ my %nytprof_envars = (
 		);
 
 sub new {
+	
 	my $class = shift;
+	my $prof_settings = shift ;
+	
 	my $self = $class->SUPER::new(@_);
 	
-	$self->{doc_path} = Padre::Current->document->filename;
-	$self->{temp_dir} = File::Temp::tempdir;
-	$self->{perl} = Padre->perl_interpreter;
+	
+	
+	$self->{prof_settings} = $prof_settings;
+	
+
+	print "Perl is: " . $self->{prof_settings}->{perl} ."\n";
+	
+	
 	$self->{nytprof_envars} = \%nytprof_envars;
 	
-	# write the output to what ever temp is
-	$self->{nytprof_envars}->{file} = $self->{temp_dir} . '/nytprof.out';
+	# write the output to whatever temp is
+	$self->{nytprof_envars}->{file} = $self->{prof_settings}->{report_file};
 	
 	bless( $self, $class );
 	return $self;
@@ -40,20 +48,24 @@ sub run {
 		$nytprof_env_vars .= "$env=" . $self->{nytprof_envars}->{$env} . ":";
 	}
 	$nytprof_env_vars =~ s/\:$//;
-	local $ENV{NYTPROF} = $nytprof_env_vars;
-	my @cmd = ( $self->{perl}, '-d:NYTProf', $self->{doc_path} );
+	
+	# doesn't work as expected
+	# local $ENV{NYTPROF} = $nytprof_env_vars;
+	# my @cmd = ( $self->{perl}, '-d:NYTProf', $self->{doc_path} );
 	
 #	$self->print( "Env: $nytprof_env_vars\n" );
-	$self->task_print( "\nEnv: $nytprof_env_vars\n" . join(' ', @cmd) . "\n\n" );
-	
-	system(@cmd);
+	#$self->task_print( "\nEnv: $nytprof_env_vars\n" . join(' ', @cmd) . "\n\n" );
+	my $cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; " . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
+	$self->task_print("$cmd\n\n");
+	#system("NYTPROF=$nytprof_env_vars; " . join(' ', @cmd) );
+	system($cmd);
 	return 1;
 }
 
 
 sub finish {
 	my $self = shift;
-
+	# get main and write to the output.
 	print "\nFinished profiling...\n";
 	
 	return 1;

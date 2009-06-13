@@ -19,6 +19,7 @@ our $VERSION = '0.01';
 # Need to hold the nytprof variables
 my %nytprofile;
 
+my %prof_settings;
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'NYTProf' }
@@ -54,7 +55,9 @@ sub plugin_enable {
 
 sub plugin_disable {
     require Class::Unload;
+    Class::Unload->unload('Padre::Plugin::NYTProf::ProfilingTask');
     Class::Unload->unload('Padre::Plugin::NYTProf');
+    
 #    Class::Unload->unload('Devel::NYTProf');
 
 }
@@ -63,7 +66,15 @@ sub plugin_disable {
 sub on_start_profiling {
     
     
-    my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new;
+    
+	# need to move these out to the plugin component
+	$prof_settings{doc_path} = Padre::Current->document->filename;
+	$prof_settings{temp_dir} = File::Temp::tempdir;
+	$prof_settings{perl} = Padre->perl_interpreter;
+	$prof_settings{report_file} = $prof_settings{temp_dir} . "/nytprof.out";
+	    
+    my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new(\%prof_settings);
+    
     $prof_task->schedule;
     
     
@@ -129,7 +140,7 @@ sub on_generate_report {
     #my $tmp     =  File::Temp::tempdir;
     
     # create the commandline to create HTML output
-    my $report = 'nytprofhtml ' . $nytprofile{file};
+    my $report = 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
     print "Generating HTML report: $report\n";
     $main->run_command($report);
        
@@ -137,7 +148,7 @@ sub on_generate_report {
 
 sub on_show_report {
         
-    my $report = $nytprofile{temp} . '/nytprof/index.html';
+    my $report = $prof_settings{temp_dir} . '/nytprof/index.html';
     print "Loading report in browser: $report\n";
     
     Padre::Wx::launch_browser("file://$report");
@@ -145,7 +156,7 @@ sub on_show_report {
     # testing..
     # now we need to read in the output file
     #require Devel::NYTProf::Data;
-    my $profile = Devel::NYTProf::Data->new( { filename => $nytprofile{file} } );
+    my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
     
     print $profile->dump_profile_data();
 
