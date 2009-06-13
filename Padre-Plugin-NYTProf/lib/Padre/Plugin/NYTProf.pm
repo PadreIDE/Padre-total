@@ -11,7 +11,7 @@ use base 'Padre::Plugin';
 
 use Padre::Util   ('_T');
 
-require Padre::Plugin::ProfilingTask;
+require Padre::Plugin::NYTProf::ProfilingTask;
 
 
 our $VERSION = '0.01';
@@ -63,10 +63,9 @@ sub plugin_disable {
 sub on_start_profiling {
     
     
-    my $prof_task = Padre::Plugin::ProfilingTask->new;
+    my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new;
     $prof_task->schedule;
     
-#    my $main = Padre->ide->wx->main;
     
     # hash to hold environment variables
     # nytprof has a lot of options to set
@@ -114,14 +113,14 @@ sub on_start_profiling {
 #    print "cmd: $profile\n";
     # run the profiling on the current document
 #    $main->run_command($cmd);
-    
+        
 #    sleep(10);
     
     
 
 #    $main->run_command($profile);
-    
-#    return;
+#    system($profile);    
+    return;
     
 }
 sub on_generate_report {
