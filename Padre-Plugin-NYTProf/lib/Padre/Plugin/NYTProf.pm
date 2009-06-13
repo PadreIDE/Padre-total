@@ -1,11 +1,18 @@
 package Padre::Plugin::NYTProf;
 
-use base 'Padre::Plugin';
+
 
 use warnings;
 use strict;
 
+
+use base 'Padre::Plugin';
+
+
 use Padre::Util   ('_T');
+
+require Padre::Plugin::ProfilingTask;
+
 
 our $VERSION = '0.01';
 
@@ -54,7 +61,12 @@ sub plugin_disable {
 
 
 sub on_start_profiling {
-    my $main = Padre->ide->wx->main;
+    
+    
+    my $prof_task = Padre::Plugin::ProfilingTask->new;
+    $prof_task->schedule;
+    
+#    my $main = Padre->ide->wx->main;
     
     # hash to hold environment variables
     # nytprof has a lot of options to set
@@ -62,41 +74,44 @@ sub on_start_profiling {
     # we can add sane defaults or set as we need
 #    my %nytprof;
 
+    # Environment hash.
     # $ENV{FOO} = 'bar'
     
-    my $tmp = File::Temp::tempdir;
-    my $nytprof_env_vars = '';
+    
+    
+#    my $tmp = File::Temp::tempdir;
+#    my $nytprof_env_vars = '';
     
     #TODO: change this to be based on current document
-    my $nytprof_out = 'nytprof.out';
+#    my $nytprof_out = 'nytprof.out';
     
-    $nytprofile{file} = "$tmp/$nytprof_out";
+#    $nytprofile{file} = "$tmp/$nytprof_out";
         
-    my $perl = Padre->perl_interpreter;
+#    my $perl = Padre->perl_interpreter;
     
     # Padre current document 
     # Padre->Current
     # ->document
     # ->filename
     
-    foreach my $env( keys %nytprofile ) {
-        $nytprof_env_vars .= "$env=$nytprofile{$env}:";
-    }
+#    foreach my $env( keys %nytprofile ) {
+#        $nytprof_env_vars .= "$env=$nytprofile{$env}:";
+#    }
     
     # before we go any further save the temp directory location
     # into the hash here
-    $nytprofile{temp} = $tmp;
+#    $nytprofile{temp} = $tmp;
     
-    $nytprof_env_vars =~ s/\:$//;
-    $ENV{NYTPROF} = $nytprof_env_vars;
+#    $nytprof_env_vars =~ s/\:$//;
+#    $ENV{NYTPROF} = $nytprof_env_vars;
     
-    my $docPath = Padre::Current->document->filename; 
+#    my $docPath = Padre::Current->document->filename; 
     
     # profile command    
-    my $profile = $perl . " -d:NYTProf $docPath";
+#    my $profile = $perl . " -d:NYTProf $docPath";
     
-    print "Env: $nytprof_env_vars\n";
-    print "cmd: $profile\n";
+#    print "Env: $nytprof_env_vars\n";
+#    print "cmd: $profile\n";
     # run the profiling on the current document
 #    $main->run_command($cmd);
     
@@ -104,9 +119,9 @@ sub on_start_profiling {
     
     
 
-    $main->run_command($profile);
+#    $main->run_command($profile);
     
-    return;
+#    return;
     
 }
 sub on_generate_report {
