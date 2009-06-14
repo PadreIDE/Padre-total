@@ -16,9 +16,7 @@ require Padre::Plugin::NYTProf::ProfilingTask;
 
 our $VERSION = '0.01';
 
-# Need to hold the nytprof variables
-my %nytprofile;
-
+# local profile setup
 my %prof_settings;
 
 # The plugin name to show in the Plugin Manager and menus
@@ -72,72 +70,16 @@ sub on_start_profiling {
 	$prof_settings{temp_dir} = File::Temp::tempdir;
 	$prof_settings{perl} = Padre->perl_interpreter;
 	$prof_settings{report_file} = $prof_settings{temp_dir} . "/nytprof.out";
-	    
-    my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new(\%prof_settings);
-    
-    $prof_task->schedule;
-    
-    
-    # hash to hold environment variables
-    # nytprof has a lot of options to set
-    # once it clearer what we do or don't want
-    # we can add sane defaults or set as we need
-#    my %nytprof;
-
-    # Environment hash.
-    # $ENV{FOO} = 'bar'
-    
-    
-    
-#    my $tmp = File::Temp::tempdir;
-#    my $nytprof_env_vars = '';
-    
-    #TODO: change this to be based on current document
-#    my $nytprof_out = 'nytprof.out';
-    
-#    $nytprofile{file} = "$tmp/$nytprof_out";
-        
-#    my $perl = Padre->perl_interpreter;
-    
-    # Padre current document 
-    # Padre->Current
-    # ->document
-    # ->filename
-    
-#    foreach my $env( keys %nytprofile ) {
-#        $nytprof_env_vars .= "$env=$nytprofile{$env}:";
-#    }
-    
-    # before we go any further save the temp directory location
-    # into the hash here
-#    $nytprofile{temp} = $tmp;
-    
-#    $nytprof_env_vars =~ s/\:$//;
-#    $ENV{NYTPROF} = $nytprof_env_vars;
-    
-#    my $docPath = Padre::Current->document->filename; 
-    
-    # profile command    
-#    my $profile = $perl . " -d:NYTProf $docPath";
-    
-#    print "Env: $nytprof_env_vars\n";
-#    print "cmd: $profile\n";
-    # run the profiling on the current document
-#    $main->run_command($cmd);
-        
-#    sleep(10);
-    
+	my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new(\%prof_settings);
+	$prof_task->schedule;
     
 
-#    $main->run_command($profile);
-#    system($profile);    
-    return;
+	return;
     
 }
 sub on_generate_report {
     
     my $main    = Padre->ide->wx->main;
-    #my $tmp     =  File::Temp::tempdir;
     
     # create the commandline to create HTML output
     my $report = 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
@@ -155,10 +97,10 @@ sub on_show_report {
 
     # testing..
     # now we need to read in the output file
-    #require Devel::NYTProf::Data;
-    my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
+    # require Devel::NYTProf::Data;
+    # my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
     
-    print $profile->dump_profile_data();
+    #print $profile->dump_profile_data();
 
     
     return;

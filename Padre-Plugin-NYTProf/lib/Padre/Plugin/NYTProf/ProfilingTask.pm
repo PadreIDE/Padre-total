@@ -75,3 +75,57 @@ sub finish {
 
 1;
 __END__
+=head1 NAME
+
+Padre::Plugin::NYTProf::ProfilingTask - Creates a Padre::Task to do the profiling in the background.
+
+=head1 VERSION
+
+Version 0.01
+
+=head1 SYNOPSIS
+
+Creates and runs the profilng task against your scripts from within Padre.
+
+This should be called from the plugin module.
+
+=head1 DESCRIPTION
+
+Called from the plugin module.
+
+
+=head1 AUTHOR
+
+Peter Lavender, C<< <peter.lavender at gmail.com> >>
+
+=head1 BUGS
+
+Plenty I'm sure, but since this doesn't even load anything I'm fairly safe.
+
+
+
+=head1 SUPPORT
+
+#padre on irc.perl.org
+
+
+=head1 ACKNOWLEDGEMENTS
+
+I'd like to acknowledge the support and patience of the #padre channel.
+
+With nothing more than bravado and ignorance I pulled this together with the help of those in the #padre
+channel answering all my clearly lack of reading questions.
+
+=head1 SEE ALSO
+
+L<Catalyst>, L<Padre>
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
