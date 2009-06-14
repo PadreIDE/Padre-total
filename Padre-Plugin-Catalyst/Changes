@@ -1,11 +1,13 @@
 Revision history for Padre-Plugin-Catalyst
 
+0.05
+	Added option to update application scripts (upgrade your app to a new version of Catalyst) (garu)
+
 0.04
 	Added Spanish translation (BRUNOV)
     removed taint mode for test, leading to build failures (jquelin)
 	Added Catalyst Community Live Support (garu)
 	Expanded Catalyst Tutorial to a submenu, updated to newest version (garu)
-	Added option to update application scripts (upgrade your app to a new version of Catalyst) (garu)
 
 0.03	
 	Default model name set to 'DB', type set to DBIC::Schema (if available) (GARU)
