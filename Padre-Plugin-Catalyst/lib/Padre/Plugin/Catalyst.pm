@@ -6,7 +6,7 @@ use strict;
 
 use Padre::Util   ('_T');
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'Catalyst' }
@@ -122,15 +122,40 @@ sub menu_plugins_simple {
 					Padre::Wx::launch_browser('http://www.catalystframework.org/');
 				},
             ],
-            '---'     => undef, # ...oh
+            '---'     => undef, # what do you know? a separator!
+            _T('Update Application Scripts') => sub { $self->on_update_script },
+			'---'     => undef, # guess I like separators
             _T('About')   => sub { $self->on_show_about },
     ];
 }
 
+sub on_update_script {
+    my $main = Padre->ide->wx->main;
+
+	require File::Spec;
+	require Padre::Plugin::Catalyst::Util;
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+
+	my @dir = File::Spec->splitdir($project_dir);
+	my $project = $dir[-1];
+	$project =~ s{-}{::}g;
+
+    # go to the selected file's PARENT directory
+    # (so we can run catalyst.pl on the project dir)
+	my $pwd = Cwd::cwd();
+	chdir $project_dir;
+	chdir File::Spec->updir;
+
+    $main->run_command("catalyst.pl -force -scripts $project");
+    
+    # restore current dir
+    chdir $pwd;	
+}
 
 sub on_start_server {
     my $main = Padre->ide->wx->main;
 
+	require File::Spec;
 	require Padre::Plugin::Catalyst::Util;
     my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
 
@@ -225,7 +250,7 @@ Padre::Plugin::Catalyst - Simple Catalyst helper interface for Padre
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =head1 SYNOPSIS
 

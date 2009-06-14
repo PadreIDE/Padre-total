@@ -8,7 +8,7 @@ use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # TODO: these should've been passed as a parameter
 # but I'm too tired to figure how to do it
