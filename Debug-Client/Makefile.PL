@@ -8,7 +8,7 @@ use inc::Module::Install 0.86;
 
 
 
-name           'Debug::Client';
+name           'Debug-Client';
 license        'perl';
 author         'Gabor Szabo';
 all_from       'lib/Debug/Client.pm';
@@ -21,7 +21,5 @@ no_index       'directory'                => qw{ t xt eg share inc privinc };
 homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Debug-Client/';
-install_script 'script/padre';
-install_share;
 
 WriteAll;
