@@ -2,9 +2,9 @@ use strict;
 use warnings;
 use Module::Build;
 
-unless($ENV{PADRE_PLUGIN_PERL6}) {
-	warn "\nWARNING: Please set PADRE_PLUGIN_PERL6 to generate translation files.\n\n";
-}
+#unless($ENV{PADRE_PLUGIN_PERL6}) {
+#	warn "\nWARNING: Please set PADRE_PLUGIN_PERL6 to generate translation files.\n\n";
+#}
 
 my $class = Module::Build->subclass(
     class => "Module::Build::Custom",
