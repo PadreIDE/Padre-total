@@ -65,6 +65,7 @@ sub get_perl {
 			error("padre needs to run using wxPerl on OSX");
 		}
 	}
+	return $perl;
 }
 
 1;
