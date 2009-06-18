@@ -1,9 +1,20 @@
 Changes
 
-=head1 0.42 NOT RELEASED!
-	- Depends on S:H:P6 0.60 which fixes ticket:392 undeclared prompt()
+=head1 0.42 2009.6.18
+	- Fixed "p6tokens.pl was not being copied" by renaming it to p6tokens.p5
+	- Depends on S:H:P6 0.61 which fixes ticket:392 undeclared prompt()
+	- Updated to version 43 of S29-functions.pod (30-May-2009)
 	- Major refactoring to stop polluting Padre::Document and Padre::Task 
-		namespaces
+		namespaces.
+	- STD error/warning parsing is now case insensitive. and added support 
+		for "Undeclared routine" warning.
+	- STD lex corruption message was misleading and not localized. This usually 
+		happens when you upgrade Syntax::Highlight::Perl6.
+	- Decreased wait time before starting another colorizing task to 100 ms 
+		instead 1 sec.
+	- A couple of various refactorings:
+		- _T -> Wx::gettext.
+		- use -> require to improve startup speed.
 
 =head1 0.41 2009.5.30
 	- Added Spanish translation (BRUNOV)
