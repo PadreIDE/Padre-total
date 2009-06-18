@@ -36,11 +36,11 @@ sub ACTION_build {
 
 sub ACTION_dist {
 		
-	if($ENV{PERL6_PLUGIN_DEV}) {
+	if($ENV{PADRE_PLUGIN_PERL6}) {
 		my $self = shift;
 		$self->SUPER::ACTION_dist;
 	} else {
-		die "You did not enable PERL6_PLUGIN_DEV environment variable.";
+		die "You did not enable PADRE_PLUGIN_PERL6 environment variable.";
 	}
 }
 
