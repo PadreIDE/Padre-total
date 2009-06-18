@@ -26,18 +26,18 @@ __END__
 
 =head1 NAME
 
-Padre::Task::SyntaxChecker::Perl6 - Perl document syntax-checking in the background
+Padre::Plugin::Perl6::Perl6SyntaxChecker - Perl document syntax-checking in the background
 
 =head1 SYNOPSIS
 
   # by default, the text of the current document
   # will be fetched as will the document's notebook page.
-  my $task = Padre::Task::SyntaxChecker::Perl6->new(
+  my $task = Padre::Plugin::Perl6::Perl6SyntaxChecker->new(
 	newlines => "\r\n", # specify the newline type!
   );
   $task->schedule;
   
-  my $task2 = Padre::Task::SyntaxChecker::Perl6->new(
+  my $task2 = Padre::Plugin::Perl6::Perl6SyntaxChecker->new(
 	text => Padre::Current->document->text_get,
 	notebook_page => Padre::Current->document->editor,
 	on_finish => sub { my $task = shift; ... },
