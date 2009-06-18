@@ -1,4 +1,4 @@
-package Padre::Task::Outline::Perl6;
+package Padre::Plugin::Perl6::Perl6OutlineTask;
 
 use strict;
 use warnings;
@@ -11,17 +11,17 @@ use base 'Padre::Task::Outline';
 
 =head1 NAME
 
-Padre::Task::Outline::Perl6 - Perl6 document outline structure info 
+Padre::Plugin::Perl6::Perl6OutlineTask - Perl6 document outline structure info 
 gathering in the background
 
 =head1 SYNOPSIS
 
   # by default, the text of the current document
   # will be fetched as will the document's notebook page.
-  my $task = Padre::Task::Outline::Perl6->new;
+  my $task = Padre::Plugin::Perl6::Perl6OutlineTask->new;
   $task->schedule;
   
-  my $task2 = Padre::Task::Outline::Perl6->new(
+  my $task2 = Padre::Plugin::Perl6::Perl6OutlineTask->new(
 	text          => Padre::Current->document->text_get,
 	editor        => Padre::Current->editor,
   );

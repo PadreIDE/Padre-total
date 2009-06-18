@@ -174,7 +174,7 @@ sub menu_plugins {
 }
 
 sub registered_documents {
-	'application/x-perl6' => 'Padre::Document::Perl6',
+	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',
 }
 
 sub show_preferences {

@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use Padre::Document ();
-use Padre::Task::Perl6 ();
+use Padre::Plugin::Perl6::Perl6ColorizerTask();
 
 our $VERSION = '0.42';
 our @ISA     = 'Padre::Document';
@@ -126,7 +126,7 @@ sub colorize {
 				$main, $timer_id, 
 				sub { 
 					# Create a coloring task and hand off to the task manager
-					my $task = Padre::Task::Perl6->new(
+					my $task = Padre::Plugin::Perl6::Perl6ColorizerTask->new(
 						text => $self->text_with_one_nl,
 						editor => $self->editor,
 						document => $self);
@@ -209,7 +209,7 @@ sub get_command {
 
 # Checks the syntax of a Perl document.
 # Documented in Padre::Document!
-# Implemented as a task. See Padre::Task::SyntaxChecker::Perl6
+# Implemented as a task. See Padre::Plugin::Perl6::Perl6SyntaxChecker
 sub check_syntax {
 	my $self  = shift;
 	my %args  = @_;
@@ -245,8 +245,8 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-	require Padre::Task::SyntaxChecker::Perl6;
-	my $task = Padre::Task::SyntaxChecker::Perl6->new(
+	require Padre::Plugin::Perl6::Perl6SyntaxCheckerTask;
+	my $task = Padre::Plugin::Perl6::Perl6SyntaxCheckerTask->new(
 		notebook_page => $self->editor,
 		text => $text,
 		issues => $self->{issues},
@@ -354,8 +354,8 @@ sub get_outline {
 	}
 	$self->{last_outline_md5} = $md5;
 
-	require Padre::Task::Outline::Perl6;
-	my $task = Padre::Task::Outline::Perl6->new(
+	require Padre::Plugin::Perl6::Perl6OutlineTask;
+	my $task = Padre::Plugin::Perl6::Perl6OutlineTask->new(
 		editor => $self->editor,
 		text   => $text,
 		tokens => $tokens,
