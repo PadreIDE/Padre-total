@@ -785,6 +785,16 @@ sub generate_p6_pir {
 	close OUTPUT or warn "Could not close $cmd_output\n";
 	$outpanel->AppendText( $out );
 
+	unless(-x $hello_pir) {
+		Wx::MessageBox(
+			'Operation failed. Please check the output.',
+			'Error',
+			Wx::wxOK,
+			$main,
+		);
+		return;
+	}
+	
 	# try to open the HTML file
 	$main->setup_editor($hello_pir);
 	
