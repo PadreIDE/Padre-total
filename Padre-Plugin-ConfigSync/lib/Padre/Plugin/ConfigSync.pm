@@ -69,6 +69,7 @@ sub menu_plugin {
 sub config_import {
 	my $self = shift;
 
+	my $main = Padre->ide->wx->main;
 	# Ask what we should install
 	my $dialog = Wx::TextEntryDialog->new(
 		$main,
