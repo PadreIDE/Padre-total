@@ -16,8 +16,8 @@ use File::Slurp    qw(read_file write_file);
 use File::Temp     ();
 use FindBin;
 
-use lib $FindBin::Bin;
-use lib::Tools;
+use lib "$FindBin::Bin/../Padre";
+use privlib::Tools;
 
 my $SVN     = "http://svn.perlide.org/padre";
 my $TAGS    = "http://svn.perlide.org/padre/tags";

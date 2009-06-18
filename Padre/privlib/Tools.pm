@@ -1,4 +1,4 @@
-package lib::Tools;
+package privlib::Tools;
 use strict;
 use warnings;
 
