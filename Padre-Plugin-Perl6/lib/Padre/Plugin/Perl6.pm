@@ -274,7 +274,8 @@ sub build_perl6_doc {
 	my $self = shift;
 
 	# open the S29 file
-	my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__), '../Task/S29-functions.pod');
+	my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__),
+		'Perl6/S29-functions.pod');
 	require IO::File;
 	my $S29 = IO::File->new(Cwd::realpath($s29_file))
 				or croak "Cannot open '$s29_file' $!";
