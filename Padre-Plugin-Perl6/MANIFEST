@@ -1,7 +1,7 @@
 Build.PL
 Changes
 lib/Padre/Plugin/Perl6.pm
-lib/Padre/Plugin/Perl6/p6tokens.pl
+lib/Padre/Plugin/Perl6/p6tokens.p5
 lib/Padre/Plugin/Perl6/Perl6ColorizerTask.pm
 lib/Padre/Plugin/Perl6/Perl6Document.pm
 lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm
