@@ -1,5 +1,5 @@
 
-package Padre::Task::SyntaxChecker::Perl6;
+package Padre::Plugin::Perl6::Perl6SyntaxCheckerTask;
 use strict;
 use warnings;
 

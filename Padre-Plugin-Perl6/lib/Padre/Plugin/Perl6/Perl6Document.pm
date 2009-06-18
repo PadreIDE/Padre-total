@@ -1,4 +1,4 @@
-package Padre::Document::Perl6;
+package Padre::Plugin::Perl6::Perl6Document;
 
 use 5.010;
 use strict;
