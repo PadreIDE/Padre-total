@@ -3,8 +3,6 @@ package Padre::Plugin::Perl6::Perl6Document;
 use 5.010;
 use strict;
 use warnings;
-use Padre::Document ();
-use Padre::Plugin::Perl6::Perl6ColorizerTask();
 
 our $VERSION = '0.42';
 our @ISA     = 'Padre::Document';
@@ -126,6 +124,7 @@ sub colorize {
 				$main, $timer_id, 
 				sub { 
 					# Create a coloring task and hand off to the task manager
+					require Padre::Plugin::Perl6::Perl6ColorizerTask;
 					my $task = Padre::Plugin::Perl6::Perl6ColorizerTask->new(
 						text => $self->text_with_one_nl,
 						editor => $self->editor,
