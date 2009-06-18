@@ -1,6 +1,7 @@
 package Debug::Client;
 use strict;
 use warnings;
+use 5.006;
 
 our $VERSION = '0.04';
 
