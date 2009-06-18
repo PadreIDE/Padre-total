@@ -12,7 +12,7 @@ my $CALLTIP_DISPLAY_COUNT = 10;
 
 # colorize timer to make sure that colorize tasks are scheduled properly...
 my $COLORIZE_TIMER;
-my $COLORIZE_TIMEOUT = 1000; # wait n-millisecond before starting the Perl6 colorize task
+my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 colorize task
 
 # used for coloring by parrot
 my %perl6_colors = (
