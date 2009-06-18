@@ -28,5 +28,7 @@
 \#$
 \.#
 
+\B.svn
+
 # avoid archives of this distribution
 \bPadre-Plugin-Nopaste-[\d\.\_]+
