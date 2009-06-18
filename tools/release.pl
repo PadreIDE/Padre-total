@@ -14,6 +14,10 @@ use File::Copy     qw(copy);
 use File::Find     qw(find);
 use File::Slurp    qw(read_file write_file);
 use File::Temp     ();
+use FindBin;
+
+use lib $FindBin::Bin;
+use lib::Tools;
 
 my $SVN     = "http://svn.perlide.org/padre";
 my $TAGS    = "http://svn.perlide.org/padre/tags";
@@ -53,31 +57,37 @@ if ($ver and $ver ne $version) {
 	die "Invalid version $ver - $version\n";
 }
 
-my $dir = File::Temp::tempdir( CLEANUP => 1 );
+my $dir = File::Temp::tempdir( CLEANUP => 0 );
 chdir $dir;
 print "DIR $dir\n";
 
 _system("svn export --quiet -r$rev $URL src");
 chdir 'src';
 
-if ($name eq 'Padre') {
-	my @LOCALES = map { substr(File::Basename::basename($_), 0, -3) } glob "share/locale/*.po";
-	for my $locale ( @LOCALES ) {
-		_system("msgfmt -o share/locale/$locale.mo share/locale/$locale.po");
+my $locale_path;
+if (-d 'share/locale') {
+	$locale_path = Cwd::cwd();
+} else {
+	(my $path = $name) =~ s{-}{/}g;
+	if (-d "lib/$path/share/locale") {
+		$locale_path = Cwd::cwd() . "/lib/$path";
 	}
+}
+
+if ($locale_path) {
+	print "locale path: '$locale_path'\n";
+	convert_po_to_mo($locale_path);
 }
 
 #print "Setting VERSION $version\n";
 find(\&check_version, 'lib');
 die if $error;
 
-my $make = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
-my $makefile_pl;
+my $make         = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
+my $makefile_pl  = "Makefile.PL";
 if(-f "Build.PL") {
 	$makefile_pl = "Build.PL";
 	$make = "./Build";
-} else {
-	$makefile_pl = "Makefile.PL";
 }
 _system("$^X $makefile_pl");
 _system("$make");

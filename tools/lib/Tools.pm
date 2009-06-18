@@ -3,7 +3,15 @@ use strict;
 use warnings;
 
 use base 'Exporter';
-our @EXPORT = qw(convert_po_to_mo);
+our @EXPORT = qw(convert_po_to_mo get_perl);
+
+use File::Which    ();
+use Probe::Perl    ();
+use File::Basename ();
+if ( $^O eq 'MSWin32' ) {
+	# "Default glob() will misinterpret spaces in folder names as seperators, install File::Glob::Windows to fix this behavior!");
+	require File::Glob::Windows;
+}
 
 sub convert_po_to_mo {
 	my $path   = shift;
@@ -36,12 +44,6 @@ sub get_msgfmt {
 	if ( $^O =~ /(linux|bsd)/ ) {
 		$msgfmt = scalar File::Which::which('msgfmt');
 	} elsif ( $^O eq 'MSWin32' ) {
-		eval {
-			require File::Glob::Windows;
-		};
-		if( $@ ) {
-			die("Default glob() will misinterpret spaces in folder names as seperators, install File::Glob::Windows to fix this behavior!");
-		}
 		my $p = "C:/Program Files/GnuWin32/bin/msgfmt.exe";
 		if ( -e $p ) {
 			$msgfmt = $p;
@@ -51,6 +53,18 @@ sub get_msgfmt {
 	}
 	
 	return $msgfmt;
+}
+
+sub get_perl {
+	my $perl = Probe::Perl->find_perl_interpreter;
+	if ( $^O eq 'darwin' ) {
+		# I presume there's a proper way to do this?
+		$perl = scalar File::Which::which('wxPerl');
+		chomp($perl);
+		unless ( -e $perl ) {
+			error("padre needs to run using wxPerl on OSX");
+		}
+	}
 }
 
 1;
