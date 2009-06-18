@@ -29,7 +29,8 @@ die "Usage: $0 REV VERSION [--tag]\n"
 
 my $start_dir = Cwd::cwd();
 
-my ($URL) = grep {/^URL:\s*/} qx{LC_ALL=C svn info};
+my @svn_info = ($^O ne 'MSWin32') ? qx{LC_ALL=C svn info} : qx{svn info};
+my ($URL) = grep {/^URL:\s*/} @svn_info;
 die "no url" if not $URL;
 chomp $URL;
 $URL =~ s/^URL:\s*//;
@@ -87,7 +88,7 @@ my $make         = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
 my $makefile_pl  = "Makefile.PL";
 if(-f "Build.PL") {
 	$makefile_pl = "Build.PL";
-	$make = "./Build";
+	$make = ($^O ne 'MSWin32') ? "./Build" : "Build.bat";
 }
 _system("$^X $makefile_pl");
 _system("$make");
