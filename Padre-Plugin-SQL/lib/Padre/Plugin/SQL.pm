@@ -2,6 +2,7 @@ package Padre::Plugin::SQL;
 
 use strict;
 use warnings;
+use 5.008;
 
 # package exports and version
 our $VERSION = '0.01';

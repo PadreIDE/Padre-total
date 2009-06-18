@@ -1,6 +1,9 @@
 package Padre::Plugin::ShellScript;
 
 use strict;
+use warnings;
+use 5.008;
+
 use base 'Padre::Plugin';
 use Class::Autouse 'Padre::Document::ShellScript';
 
