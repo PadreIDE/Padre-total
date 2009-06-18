@@ -2,6 +2,7 @@ package Padre::Plugin::PHP;
 
 use warnings;
 use strict;
+use 5.008;
 
 our $VERSION = '0.01';
 
