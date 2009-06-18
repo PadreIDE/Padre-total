@@ -60,7 +60,7 @@ print "DIR $dir\n";
 _system("svn export --quiet -r$rev $URL src");
 chdir 'src';
 
-if ($name eq 'Padre') {
+if (-d "share/locale/") {
 	my @LOCALES = map { substr(File::Basename::basename($_), 0, -3) } glob "share/locale/*.po";
 	for my $locale ( @LOCALES ) {
 		_system("msgfmt -o share/locale/$locale.mo share/locale/$locale.po");
