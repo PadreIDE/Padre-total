@@ -183,16 +183,22 @@ sub run {
 		my ($lineno, $severity);
 		my $issues = [];
 		for my $msg (@messages) {
-			if($msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/) {
+			if($msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/i) {
 				# the following lines are errors until we see the warnings section
 				$severity = 'E';
-			} elsif($msg =~ /^Potential difficulties/) {
+			} elsif($msg =~ /^Potential difficulties/i) {
 				# all rest are warnings...
 				$severity = 'W';
+			} elsif($msg =~ /^Undeclared routine/i) {
+				# all rest are warnings...
+				$severity = 'W';
+			} elsif($msg =~ /^\s+(.+?)\s+used at (\d+)/i) {
+				# record the line number
+				$lineno = $2;
 			} elsif($msg =~ /line (\d+):$/i) {
 				# record the line number
 				$lineno = $1;
-			} elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/) {
+			} elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/i) {
 				# STD lex cache is corrupt...
 				$msg = Wx::gettext("'STD Lex Cache' is corrupt. Please click on Plugins/Perl6/Cleanup STD Lex Cache and then re-open the file.");
 				push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
