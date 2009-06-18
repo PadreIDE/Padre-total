@@ -134,7 +134,7 @@ sub run {
 	require File::Basename;
 	require File::Spec;
 	my $cmd = Padre->perl_interpreter . " " .
-		Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.pl')) .
+		Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.p5')) .
 		" $tmp_in $tmp_out $tmp_err";
 	
 	# all this is needed to prevent win32 platforms from:

@@ -72,9 +72,6 @@ my $builder = $class->new(
 		'Test::NeedsDisplay'      => '1.05',
 	},
     requires => \%requires,
-	PL_files => {
-		'lib/Padre/Task/p6tokens.pl' => [],  # ignore it please
-	},
     add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
     create_makefile_pl  => 'traditional',
     meta_merge     => {
@@ -87,4 +84,5 @@ my $builder = $class->new(
 
 $builder->add_build_element('mo');
 $builder->add_build_element('png');
+$builder->add_build_element('p5');
 $builder->create_build_script();
