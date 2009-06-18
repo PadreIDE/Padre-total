@@ -1,5 +1,8 @@
 Changes
 
+=head1 0.42 NOT RELEASED!
+	- Depends on S:H:P6 0.60 which fixes ticket:392 undeclared prompt()
+
 =head1 0.41 2009.5.30
 	- Added Spanish translation (BRUNOV)
 	- Added Brazilian Portuguese translation (GARU)
