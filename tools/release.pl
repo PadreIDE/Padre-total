@@ -72,7 +72,14 @@ find(\&check_version, 'lib');
 die if $error;
 
 my $make = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
-_system("$^X Makefile.PL");
+my $makefile_pl;
+if(-f "Build.PL") {
+	$makefile_pl = "Build.PL";
+	$make = "./Build";
+} else {
+	$makefile_pl = "Makefile.PL";
+}
+_system("$^X $makefile_pl");
 _system("$make");
 _system("$make manifest");
 _system("$make test");
