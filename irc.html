@@ -30,19 +30,12 @@ var channels = {
    perl_qa:      {title:"Perl Quality Assurance", host:"irc.perl.org",     channel:"perl-qa"},
    perlfr:       {title:"Perl in French",         host:"irc.perl.org",     channel:"perlfr"},
    poe:          {title:"POE",                    host:"irc.perl.org",     channel:"poe"},   
-   rt:           {title:"POE",                    host:"irc.perl.org",     channel:"rt"},
+   rt:           {title:"RT",                     host:"irc.perl.org",     channel:"rt"},
    perl_help:    {title:"Perl Help",              host:"irc.perl.org",     channel:"perl-help"},
    wxperl:       {title:"Perl Help",              host:"irc.perl.org",     channel:"wxperl"},
    perl6:        {title:"Perl 6 development",     host:"irc.freenode.net", channel:"perl6"},
 };
 
-function on_click(name) {
-    var url = 'http://widget.mibbit.com/?autoConnect=true';
-    url += '&server=' + channels[name].host;
-    url += '&chanel=#' + channels[name].channel;
-    url += '&nick=' + document.forms.n.nickname.value;
-    alert(url);
-}
 
 function get_values() {
     // getting the parameters from the URL
@@ -61,13 +54,37 @@ function get_values() {
     }
 }
 
+function on_click() {
+
+    var name;
+    for (var i = 0; i < document.forms.n.channel.length; i++) {
+	if (document.forms.n.channel[i].checked) {
+	    name = document.forms.n.channel[i].value;
+	}
+    }
+    
+    var url;
+    if (channels[name].host == 'irc.freenode.net') {
+	url =  'http://webchat.freenode.net/?';
+	url += 'channels=' + channels[name].channel;
+	url += '&nick=' + document.forms.n.nickname.value;
+    } else {
+	url = 'http://widget.mibbit.com/?autoConnect=true';
+	url += '&server=' + channels[name].host;
+	url += '&chanel=#' + channels[name].channel;
+	url += '&nick=' + document.forms.n.nickname.value;
+    }
+    //alert(url);
+    window.location = url;
+}
+
 </script>
 <p>
 Please select a nickname and click on one of the links.
 </p>
 <form name="n">
-Nickname: <input name="nickname" value="">
-</form>
+Nickname: <input name="nickname" value=""> <input type="button" OnClick="javascript:on_click()" value="Connect">
+
 
 
 <!--
@@ -78,7 +95,7 @@ todo: check values received on the url:
    have drop-down box with list of channels or radio buttons ??
    show the localized channels first ?
    
-   if all the necessary input is available don't even show this page just redirec to 
+   if all the necessary input is available don't even show this page just redirect to 
    the mibbit service
 
 -->
@@ -95,10 +112,11 @@ if (values["nickname"]) {
 }
 
 for (var i in channels) {
-    document.write('<tr><td><a href="#" onClick="javascript:on_click(\'' + i + '\')">' + channels[i].title + '</a></td></tr>');
+    document.write('<tr><td><input type="radio" name="channel" value="' + i + '">' + channels[i].title + '</td></tr>');
 }
 </script>
 </table>
+</form>
 
 </body>
 </html>
