@@ -77,9 +77,49 @@ sub menu_plugins {
 	my $self = shift;
 	my $main = shift;
 
-	# Create a simple menu with a single About entry
+	# plugin menu
 	$self->{menu} = Wx::Menu->new;
 
+	# New Perl 6... menu
+	my $file_menu = Wx::Menu->new();
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Create Perl 6..."), $file_menu),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Class"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Grammar"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Package"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Module"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Role"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$file_menu->Append( -1, Wx::gettext("Perl 6 in Perl 5"), ),
+		sub { },
+	);
+
+	$self->{menu}->AppendSeparator;
+	
 	# Perl6 S29 documentation
 	Wx::Event::EVT_MENU(
 		$main,
