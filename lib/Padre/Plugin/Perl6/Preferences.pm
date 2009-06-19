@@ -4,8 +4,9 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-	_plugin      => '_plugin',       # plugin to be configured
-	_sizer       => '_sizer',        # window sizer
+	_plugin         => '_plugin',           # plugin to be configured
+	_sizer          => '_sizer',            # window sizer
+	_colorizer_list => '_colorizer_list'    # colorizer list box
 };
 
 our $VERSION = '0.42';
@@ -48,18 +49,19 @@ sub new {
 # handler called when the ok button has been clicked.
 # 
 sub _on_ok_button_clicked {
-	my ($self) = @_;
+	my $self = shift;
+	
 	my $plugin = $self->_plugin;
 
 	# read plugin preferences
-	#my $prefs = $plugin->config;
+	my $prefs = $plugin->config;
 
-	# overwrite dictionary preference
-	#my $dic = $self->_dict_combo->GetValue;
-	#$prefs->{dictionary} = $dic;
+	# update configuration
+	my $selection = $self->_colorizer_list->GetSelection();
+	$prefs->{colorizer} = ($selection == 0) ? 'STD' : 'PGE';
 
 	# store plugin preferences
-	#$plugin->config_write($prefs);
+	$plugin->config_write($prefs);
 	
 	$self->Destroy;
 }
@@ -68,14 +70,10 @@ sub _on_ok_button_clicked {
 # -- private methods
 
 #
-# $self->_create;
-#
 # create the dialog itself.
 #
-# no params, no return values.
-#
 sub _create {
-	my ($self) = @_;
+	my $self = shift;
 
 	# create sizer that will host all controls
 	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
@@ -91,14 +89,10 @@ sub _create {
 }
 
 #
-# $dialog->_create_buttons;
-#
 # create the buttons pane.
 #
-# no params. no return values.
-#
 sub _create_buttons {
-	my ($self) = @_;
+	my $self = shift;
 	my $sizer  = $self->_sizer;
 
 	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
@@ -107,34 +101,35 @@ sub _create_buttons {
 }
 
 #
-# $dialog->_create_controls;
-#
 # create the pane to choose the various configuration parameters.
 #
-# no params. no return values.
-#
 sub _create_controls {
-	my ($self) = @_;
+	my $self = shift;
 
-	my @choices = ['S:H:P6/STD','Rakudo/PGE'];
+	my @choices = [
+		'S:H:P6/STD',
+		'Rakudo/PGE'
+	];
 	# syntax highligher selection
 	my $selector_label = Wx::StaticText->new( $self, -1, Wx::gettext('Syntax Highlighter:') );
-	my $selector_list = Wx::ListBox->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		@choices,
+	$self->_colorizer_list( 
+		Wx::ListBox->new(
+			$self,
+			-1,
+			Wx::wxDefaultPosition,
+			Wx::wxDefaultSize,
+			@choices,
+		)
 	);
 	
-	# XXX - Select based on configuration variable
-	$selector_list->Select(0);
+	# Select based on configuration variable
+	$self->_colorizer_list->Select( ($self->_plugin->config->{colorizer} eq 'STD') ? 0 : 1);
 	
 	# pack the controls in a box
 	my $box;
 	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$box->Add( $selector_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $selector_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $self->_colorizer_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
 }
