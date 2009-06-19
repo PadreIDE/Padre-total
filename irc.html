@@ -28,14 +28,14 @@ var channels = {
    email:        {title:"Perl Email Project",     host:"irc.perl.org",     channel:"email"},
    parrot:       {title:"Parrot",                 host:"irc.perl.org",     channel:"parrot"},
    perl_qa:      {title:"Perl Quality Assurance", host:"irc.perl.org",     channel:"perl-qa"},
-   perlfr:       {title:"Perl in French",         host:"irc.perl.org",     channel:"perlfr"},
+   locale_fr:    {title:"Perl in French",         host:"irc.perl.org",     channel:"perlfr"},
    poe:          {title:"POE",                    host:"irc.perl.org",     channel:"poe"},   
    rt:           {title:"RT",                     host:"irc.perl.org",     channel:"rt"},
    perl_help:    {title:"Perl Help",              host:"irc.perl.org",     channel:"perl-help"},
-   wxperl:       {title:"Perl Help",              host:"irc.perl.org",     channel:"wxperl"},
+   wxperl:       {title:"Wx Perl",                host:"irc.perl.org",     channel:"wxperl"},
    perl6:        {title:"Perl 6 development",     host:"irc.freenode.net", channel:"perl6"},
 };
-
+var default_channel = "general";
 
 function get_values() {
     // getting the parameters from the URL
@@ -80,7 +80,7 @@ function on_click() {
 
 </script>
 <p>
-Please select a nickname and click on one of the links.
+Please select a nickname and a channel and click on Connect.
 </p>
 <form name="n">
 Nickname: <input name="nickname" value=""> <input type="button" OnClick="javascript:on_click()" value="Connect">
@@ -91,13 +91,11 @@ Nickname: <input name="nickname" value=""> <input type="button" OnClick="javascr
 todo: check values received on the url:
    hash_key (maybe that should be host_channel instead of of our own special name)
    
-   redirect to selected url
-   have drop-down box with list of channels or radio buttons ??
    show the localized channels first ?
-   
    if all the necessary input is available don't even show this page just redirect to 
-   the mibbit service
-
+   relevant url
+   
+   Put some explanation on the top of the page (maybe in multiple languages)
 -->
 
 <table>
@@ -110,13 +108,25 @@ if (values["nickname"]) {
     var nick = Math.floor(Math.random()*10000);
     document.forms.n.nickname.value = "user_" + nick;
 }
+var ch = default_channel;
+if (values["channel"]) {
+    if (channels[ values["channel"] ]) {
+	ch = values["channel"];
+    }
+}
 
 for (var i in channels) {
-    document.write('<tr><td><input type="radio" name="channel" value="' + i + '">' + channels[i].title + '</td></tr>');
+    var html = '<tr><td><input type="radio" name="channel" value="' + i + '"';
+    if (i == ch) {
+	html += " CHECKED ";
+    }
+    html    += '>' + channels[i].title + '</td></tr>';
+    document.write(html);
 }
 </script>
 </table>
 </form>
+    
 
 </body>
 </html>
