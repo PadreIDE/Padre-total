@@ -271,6 +271,7 @@ sub _create_list {
         Wx::wxDefaultSize,
         Wx::wxLC_SINGLE_SEL,
     );
+    Wx::Event::EVT_LIST_ITEM_ACTIVATED($self, $list, \&_on_butreplace_clicked);
     $sizer->Add( $list,
         Wx::GBPosition->new(2,0),
         Wx::GBSpan->new(5,2),
