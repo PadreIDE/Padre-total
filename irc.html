@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+ <title>Perl IRC Channels</title>
+ <link rel="stylesheet" href="static.css" type="text/css" />
+</head>
+<body>
+<div id="masthead">
+<!-- <img alt="Padre Logo" src="???" /> -->
+
+<h1>Perl IRC Channels</h1> 
+ <ul class="navigation">
+    <li><a href="/">Home</a></li>
+    <li><a href="/trac/">Trac</a></li>
+    <li><a href="http://blogs.padre.perlide.org/" title="Blogs related to Padre">Blogs</a></li>
+  </ul>
+</div>
+
+<script type="text/javascript">
+var channels = {
+   general: {title:"General Perl Help",   host:"irc.freenode.net", channel:"perl"},
+   win32:   {title:"Win32 specific",      host:"irc.perl.org",     channel:"win32"},
+   padre:   {title:"Padre, the Perl IDE", host:"irc.perl.org",     channel:"padre"},
+};
+
+function on_click(name) {
+    var url = 'http://widget.mibbit.com/?autoConnect=true';
+    url += '&server=' + channels[name].host;
+    url += '&chanel=#' + channels[name].channel;
+    url += '&nick=' + document.forms.n.nickname.value;
+    alert(url);
+}
+
+</script>
+
+<form name="n">
+<input name="nickname" value="">
+</form>
+
+
+<!--
+todo: check values received on the url:
+   nick name, 
+   hash_key (maybe that should be host_channel instead of of our own special name)
+   
+   redirect to selected url
+   have drop-down box with list of channels ?
+   show the localized channels first ?
+   better random nick generator   
+-->
+
+<table>
+<script type="text/javascript">
+var nick = Math.floor(Math.random()*10000);
+document.forms.n.nickname.value = nick;
+
+for (var i in channels) {
+    document.write('<tr><td><a href="#" onClick="javascript:on_click(\'' + i + '\')">' + channels[i].title + '</a></td></tr>');
+}
+</script>
+</table>
+
+</body>
+</html>
