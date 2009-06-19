@@ -25,7 +25,7 @@ my $error   = 0;
 
 my ($rev, $version, $tag) = @ARGV;
 die "Usage: $0 REV VERSION [--tag]\n"
-	if not $version or $version !~ /^\d\.\d\d$/ or $rev !~ /^\d+$/;
+	if not $version or $version !~ /^\d\.\d\.?\d$/ or $rev !~ /^\d+$/;
 
 my $start_dir = Cwd::cwd();
 
