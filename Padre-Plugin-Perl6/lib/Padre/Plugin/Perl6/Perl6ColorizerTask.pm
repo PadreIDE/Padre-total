@@ -182,6 +182,7 @@ sub run {
 		my @messages = split /\n/, $err;
 		my ($lineno, $severity);
 		my $issues = [];
+		my $prefix = '';
 		for my $msg (@messages) {
 			if($msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/i) {
 				# the following lines are errors until we see the warnings section
@@ -191,6 +192,8 @@ sub run {
 				$severity = 'W';
 			} elsif($msg =~ /^Undeclared routine/i) {
 				# all rest are warnings...
+				$prefix = 'Undeclared routine: ';
+				$lineno = undef;
 				$severity = 'W';
 			} elsif($msg =~ /^\s+(.+?)\s+used at (\d+)/i) {
 				# record the line number
@@ -206,7 +209,7 @@ sub run {
 				last; 
 			}
 			if($lineno) {
-				push @{$issues}, { line => $lineno, msg => $msg, severity => $severity, };
+				push @{$issues}, { line => $lineno, msg => $prefix . $msg, severity => $severity, };
 			}
 		}
 		$self->{issues} = $issues;
