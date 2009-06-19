@@ -89,13 +89,6 @@ sub menu_plugins {
 
 	$self->{menu}->AppendSeparator;
 
-	# Manual Perl6 syntax highlighting
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Refresh Coloring\tF7"), ),
-		sub { $self->highlight; },
-	);
-
 	# Toggle Auto Perl6 syntax highlighting
 	$self->{p6_highlight} =
 		$self->{menu}->AppendCheckItem( -1, Wx::gettext("Enable Auto Coloring"),);
