@@ -6,11 +6,11 @@ use v6;
 class Point {
 	# attributes; 
 	# note that variable initialization is not automatic in Perl 6
-	has $.x = 0;
-	has $.y = 0;
+	has Num $.x = 0;
+	has Num $.y = 0;
 
 	# a method to move to a new location
-	method move($new_x, $new_y) {
+	method move(Num $new_x, Num $new_y) {
 		$.x = $new_x;
 		$.y = $new_y;
 	}
