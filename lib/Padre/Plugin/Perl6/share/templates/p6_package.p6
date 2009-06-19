@@ -7,4 +7,5 @@ package My::Package {
 
 }
 
-package Another::Package;
+package Another::Package {
+}
