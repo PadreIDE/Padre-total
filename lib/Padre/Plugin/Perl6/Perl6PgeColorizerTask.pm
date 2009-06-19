@@ -114,6 +114,7 @@ sub finish {
 	my $doc = $self->{main_thread_only}{document};
 	my $editor = $self->{main_thread_only}{editor};
 	if($self->{_parse_tree}) {
+		$doc->remove_color;
 		foreach my $pd (@{$self->{_parse_tree}}) {
 			my $type = $pd->{type};
 			if (not exists ($colors{$type})) {

@@ -62,7 +62,6 @@ sub colorize {
 							text => $self->text_with_one_nl,
 							editor => $self->editor,
 							document => $self);
-						$task->schedule();
 					}
 					# hand off to the task manager
 					$task->schedule();
