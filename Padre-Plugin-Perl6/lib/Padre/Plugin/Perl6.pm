@@ -85,37 +85,37 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("Create Perl 6..."), $file_menu),
-		sub { },
+		sub {},
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Class"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_class','p6') },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Grammar"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_grammar', 'p6') },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Package"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_package', 'p6') },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Module"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_module', 'p6') },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Role"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_role', 'p6') },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Perl 6 in Perl 5"), ),
-		sub { },
+		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
 	);
 
 	$self->{menu}->AppendSeparator;
@@ -213,6 +213,24 @@ sub menu_plugins {
 
 sub registered_documents {
 	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',
+}
+
+# create a Perl 6 file from the template
+sub _create_from_template {
+	my ( $self, $template, $extension ) = @_;
+	
+	$self->main->on_new;
+	
+	my $editor = $self->current->editor or return;
+	my $file   = File::Spec->catdir( _sharedir(), "templates/$template.$extension" );
+	$editor->insert_from_file($file);
+
+	my $document = $editor->{Document};
+	$document->set_mimetype( $document->mime_type_by_extension($extension) );
+	$document->editor->padre_setup;
+	$document->rebless;
+
+	return;
 }
 
 sub show_preferences {
