@@ -14,77 +14,6 @@ my $CALLTIP_DISPLAY_COUNT = 10;
 my $COLORIZE_TIMER;
 my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 colorize task
 
-# used for coloring by parrot
-my %perl6_colors = (
-	quote_expression => Padre::Constant::PADRE_BLUE,
-	parse            => undef,
-	statement_block  => undef,
-	statementlist    => undef,
-	statement        => undef,
-	expr             => undef,
-	'term:'          => undef,
-	noun             => undef,
-	value => undef,
-	quote => undef,
-	quote_concat => undef,
-	quote_term => undef,
-	quote_literal => undef,
-	post => Padre::Constant::PADRE_MAGENTA,
-	dotty => undef,
-	dottyop => undef,
-	methodop => Padre::Constant::PADRE_GREEN,
-	name => Padre::Constant::PADRE_GREEN,
-	identifier => undef,
-	term => undef,
-	args => undef,
-	arglist => undef,
-	EXPR => undef,
-	statement_control => undef,
-	use_statement => undef,
-	sym => Padre::Constant::PADRE_RED,
-	'infix:='  => Padre::Constant::PADRE_GREEN,
-	'infix:+'  => Padre::Constant::PADRE_GREEN,
-#   'infix:*'  => Padre::Constant::PADRE_GREEN,
-#	'infix:/'  => Padre::Constant::PADRE_GREEN,
-	'infix:,'  => Padre::Constant::PADRE_GREEN,
-	'infix:..' => undef,
-	'prefix:=' => undef,
-	'infix:|' => undef,
-	'infix:==' => undef,
-	'infix:*=' => undef,
-	twigil => undef,
-	if_statement => undef,
-	'infix:eq' => undef,
-	semilist => undef,
-	scope_declarator => undef,
-	scoped => undef,
-	variable_declarator => undef,
-	declarator => undef,
-	variable => Padre::Constant::PADRE_RED, #Padre::Constant::PADRE_DIM_GRAY,
-	integer => undef,
-	number => Padre::Constant::PADRE_BROWN,
-	circumfix => undef,
-	param_sep => undef,
-	sigil => undef,
-	desigilname => undef,
-	longname => undef,
-	parameter => undef,
-	param_var => undef,
-	quant => undef,
-	pblock => undef,
-	block => undef,
-	signature => undef,
-	for_statement => undef,
-	xblock => undef,
-	lambda => Padre::Constant::PADRE_GREEN,
-);
-
-#    'regex_block' => Padre::Constant::PADRE_BLACK,
-#    'number' => Padre::Constant::PADRE_ORANGE,
-#    'param_var' => Padre::Constant::PADRE_CRIMSON,
-#    '_hash' => Padre::Constant::PADRE_ORANGE,
-
-
 sub text_with_one_nl {
 	my $self = shift;
 	my $text = $self->text_get;
@@ -103,16 +32,6 @@ sub text_with_one_nl {
 sub colorize {
 	my $self = shift;
 	
-	# temporary overlay using the parse tree given by parrot
-	# TODO: let the user select which one to use
-	# TODO: but the parrot parser in the background
-	#require Padre::Plugin::Perl6::Util;
-	#my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
-	#if ($perl6) {
-	#	$self->_parrot_color($perl6);
-	#	return;
-	#}
-
 	my $config = Padre::Plugin::Perl6::plugin_config();
 	if($config->{p6_highlight} || $self->{force_p6_highlight}) {
 	
@@ -123,12 +42,27 @@ sub colorize {
 			Wx::Event::EVT_TIMER(
 				$main, $timer_id, 
 				sub { 
-					# Create a coloring task and hand off to the task manager
-					require Padre::Plugin::Perl6::Perl6ColorizerTask;
-					my $task = Padre::Plugin::Perl6::Perl6ColorizerTask->new(
-						text => $self->text_with_one_nl,
-						editor => $self->editor,
-						document => $self);
+					# temporary overlay using the parse tree given by parrot
+					# TODO: let the user select which one to use
+					my $colorizer = 'PGE';
+					my $task;
+					if($colorizer eq 'STD') {
+						# Create an STD coloring task 
+						require Padre::Plugin::Perl6::Perl6StdColorizerTask;
+						$task = Padre::Plugin::Perl6::Perl6StdColorizerTask->new(
+							text => $self->text_with_one_nl,
+							editor => $self->editor,
+							document => $self);
+					} else {
+						# Create a PGE coloring task
+						require Padre::Plugin::Perl6::Perl6PgeColorizerTask;
+						$task = Padre::Plugin::Perl6::Perl6PgeColorizerTask->new(
+							text => $self->text_with_one_nl,
+							editor => $self->editor,
+							document => $self);
+						$task->schedule();
+					}
+					# hand off to the task manager
 					$task->schedule();
 
 					# and let us schedule that it is running properly or not
@@ -145,49 +79,6 @@ sub colorize {
 		$COLORIZE_TIMER->Stop;
 		$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
 	}
-}
-
-sub _parrot_color {
-	my ($self, $perl6) = @_;
-	
-	my $editor = $self->editor;
-
-	use File::Temp qw(tempdir);
-	my $dir = tempdir(CLEANUP => 1);
-	my $file = "$dir/file";
-
-	if (open my $fh, '>', $file) {
-		print $fh $self->text_get;
-	}	
-
-	my @data = `"$perl6" --target=parse --dumper=padre "$file"`;
-	chomp @data;
-	my @pd;
-	foreach my $line (@data) {
-		$line =~ s/^\s+//;
-		my ($start, $length, $type, $str) = split /\s+/, $line, 4;
-		push @pd, {
-			start => $start,
-			length => $length,
-			type => $type,
-			str => $str,
-			};
-		if (not exists ($perl6_colors{$type})) {
-			warn "No Perl6 color definiton for '$type':  $str\n";
-			next;
-		}
-		next if not defined $perl6_colors{$type}; # no need to color
-		my $color = $perl6_colors{$type};
-		$editor->StartStyling($start, $color);
-		$editor->SetStyling($length, $color);
-
-	}
-	$self->{_parse_tree} = \@pd;
-
-	#use Data::Dumper;
-	#print Dumper \@data;
-
-	return;
 }
 
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item

@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6ColorizerTask;
+package Padre::Plugin::Perl6::Perl6StdColorizerTask;
 
 use strict;
 use warnings;
