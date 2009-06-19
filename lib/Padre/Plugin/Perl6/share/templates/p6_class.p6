@@ -1,4 +1,27 @@
 use v6;
 
-class Foo {
+=begin Pod
+	An example of a Perl 6 class
+=end Pod
+class Point {
+	# attributes; 
+	# note that variable initialization is not automatic in Perl 6
+	has $.x = 0;
+	has $.y = 0;
+
+	# a method to move to a new location
+	method move($new_x, $new_y) {
+		$.x = $new_x;
+		$.y = $new_y;
+	}
+	
+	method to_string() {
+		return $.x ~ "," ~ $.y; 
+	}
 }
+
+# Create a point and initializes its attributes
+my $pt1 = Point.new();
+my $pt2 = Point.new(:x(7), :y(8));
+say $pt1.to_string;
+say $pt2.to_string;
