@@ -28,7 +28,10 @@ sub text_with_one_nl {
 	return $text;
 }
 
-# a SLOW WAY to parse and colorize perl6 files
+# colorizes a Perl 6 document in a timer
+# one at a time;
+# now the user can choose between PGE and STD colorizers
+# via the preferences
 sub colorize {
 	my $self = shift;
 	
@@ -43,8 +46,7 @@ sub colorize {
 				$main, $timer_id, 
 				sub { 
 					# temporary overlay using the parse tree given by parrot
-					# TODO: let the user select which one to use
-					my $colorizer = 'PGE';
+					my $colorizer = $config->{colorizer};
 					my $task;
 					if($colorizer eq 'STD') {
 						# Create an STD coloring task 

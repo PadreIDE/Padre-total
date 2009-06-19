@@ -59,11 +59,21 @@ sub plugin_enable {
 
 	# Read the plugin configuration, and create it if it is not there
 	$config = $self->config_read;
-	if(! $config) {
+	if(not $config) {
 		# no configuration, let us write some defaults
-		$config = {p6_highlight => 0};
-		$self->config_write($config);
+		$config = {};
 	}
+	
+	# make sure defaults are respected if they are undefined.
+	if(not defined $config->{colorizer}) {
+		$config->{colorizer} = 'STD';
+	}
+	if(not defined $config->{p6_highlight}) {
+		$config->{p6_highlight} = 0;
+	}
+
+	# and write the plugin's configuration
+	$self->config_write($config);
 
 	# let us parse some S29-functions.pod documentation (safely)
 	eval {
