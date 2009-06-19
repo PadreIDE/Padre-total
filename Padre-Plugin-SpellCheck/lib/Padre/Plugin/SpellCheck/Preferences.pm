@@ -12,7 +12,7 @@ package Padre::Plugin::SpellCheck::Preferences;
 use warnings;
 use strict;
 
-our $VERSION = '1.1.1';
+our $VERSION = '1.1.2';
 
 use Class::XSAccessor accessors => {
     _dict_combo  => '_dict_combo',   # combo box holding dictionary

@@ -12,7 +12,7 @@ package Padre::Plugin::SpellCheck::Dialog;
 use warnings;
 use strict;
 
-our $VERSION = '1.1.1';
+our $VERSION = '1.1.2';
 
 use Class::XSAccessor accessors => {
     _autoreplace => '_autoreplace',  # list of automatic replaces

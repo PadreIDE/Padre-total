@@ -12,7 +12,7 @@ package Padre::Plugin::SpellCheck::Engine;
 use warnings;
 use strict;
 
-our $VERSION = '1.1.1';
+our $VERSION = '1.1.2';
 
 use Class::XSAccessor accessors => {
     _ignore    => '_ignore',    # list of words to ignore
