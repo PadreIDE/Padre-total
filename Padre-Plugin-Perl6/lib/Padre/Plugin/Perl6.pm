@@ -16,6 +16,10 @@ my $FULL_HTML    = 'full_html';
 my $SIMPLE_HTML  = 'simple_html';
 my $SNIPPET_HTML = 'snippet_html';
 
+use Class::XSAccessor accessors => {
+	config         => 'config',           # plugin configuration object
+};
+
 # static field to contain reference to current plugin configuration
 my $config;
 
@@ -75,6 +79,9 @@ sub plugin_enable {
 	# and write the plugin's configuration
 	$self->config_write($config);
 
+	# update configuration attribute
+	$self->config( $config );
+	
 	# let us parse some S29-functions.pod documentation (safely)
 	eval {
 		$self->build_perl6_doc;
