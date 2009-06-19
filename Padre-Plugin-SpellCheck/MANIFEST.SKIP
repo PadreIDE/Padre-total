@@ -46,9 +46,8 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 
-# avoid po and pot files (gettext)
+# avoid pot files (gettext)
 \.pot$
-\.po$
 
 # Avoid archives of this distribution
 \bPadre-Plugin-SpellCheck-[\d\.\_]+

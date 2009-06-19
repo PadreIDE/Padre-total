@@ -3,6 +3,8 @@ Revision history for Padre-Plugin-SpellCheck
 1.1.2
  - Add Chinese (Traditional) translation (BLUET)
  - spanish translation added (courtesy of brunov++)
+ - remove .po files from MANIFEST.SKIP, they are needed for Debian
+   since they are the source for the .mo files (ryan52)
 
 1.1.1 Fri May  8 17:37:58 CEST 2009
  - work-around for unicode texts (therek)
