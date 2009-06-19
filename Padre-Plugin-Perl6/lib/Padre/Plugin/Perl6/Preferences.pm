@@ -12,7 +12,6 @@ our $VERSION = '0.42';
 
 use Padre::Current;
 use Padre::Wx ();
-use Padre::Util   ('_T');
 
 use base 'Wx::Dialog';
 
@@ -26,7 +25,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Perl6 preferences'),
+		Wx::gettext('Perl6 preferences'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -119,7 +118,7 @@ sub _create_controls {
 
 	my @choices = ['S:H:P6/STD','Rakudo/PGE'];
 	# syntax highligher selection
-	my $selector_label = Wx::StaticText->new( $self, -1, _T('Syntax Highlighter:') );
+	my $selector_label = Wx::StaticText->new( $self, -1, Wx::gettext('Syntax Highlighter:') );
 	my $selector_list = Wx::ListBox->new(
 		$self,
 		-1,
@@ -131,65 +130,6 @@ sub _create_controls {
 	# XXX - Select based on configuration variable
 	$selector_list->Select(0);
 	
-	# XXX- fill out these variables with actual configuration variables...
-	my $mildew_dir = Cwd::cwd();
-	my $rakudo_dir = Cwd::cwd();
-	
-	# mildew directory
-	my $mildew_dir_label = Wx::StaticText->new( $self, -1, 'mildew:' );
-	my $mildew_dir_text = Wx::TextCtrl->new(
-		$self,
-		-1,
-		$mildew_dir,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTE_READONLY,
-	);
-	require Cwd;
-	my $mildew_dir_picker = Wx::DirPickerCtrl->new(
-		$self,
-		-1,
-		$mildew_dir,
-		_T('Pick mildew Directory'),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-
-	Wx::Event::EVT_DIRPICKER_CHANGED(
-		$mildew_dir_picker,
-		$mildew_dir_picker->GetId(),
-		sub {
-			$mildew_dir_text->SetValue($mildew_dir_picker->GetPath());
-		 },
-	);
-
-	# rakudo directory
-	my $rakudo_dir_label = Wx::StaticText->new( $self, -1, 'rakudo:' );
-	my $rakudo_dir_text = Wx::TextCtrl->new(
-		$self,
-		-1,
-		$rakudo_dir,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTE_READONLY,
-	);
-	my $rakudo_dir_picker = Wx::DirPickerCtrl->new(
-		$self,
-		-1,
-		$rakudo_dir,
-		_T('Pick rakudo Directory'),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-
-	Wx::Event::EVT_DIRPICKER_CHANGED(
-		$rakudo_dir_picker,
-		$rakudo_dir_picker->GetId(),
-		sub {
-			$rakudo_dir_text->SetValue($rakudo_dir_picker->GetPath());
-		 },
-	);
-
 	# pack the controls in a box
 	my $box;
 	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
@@ -197,17 +137,6 @@ sub _create_controls {
 	$box->Add( $selector_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
-	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$box->Add( $mildew_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $mildew_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $mildew_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-
-	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$box->Add( $rakudo_dir_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $rakudo_dir_text, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$box->Add( $rakudo_dir_picker, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 }
 
 
