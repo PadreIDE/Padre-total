@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use Carp;
 use Padre::Wx   ();
-use Padre::Util ('_T');
 use base 'Padre::Plugin';
 
 # exports and version
@@ -110,19 +109,25 @@ sub menu_plugins {
 	$self->{menu}->AppendSeparator;
 
 	# Export into HTML
+	my $export_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Export Full HTML"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Export into HTML..."), $export_menu),
 		sub { $self->export_html($FULL_HTML); },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Export Simple HTML"), ),
+		$export_menu->Append( -1, Wx::gettext("Full"), ),
+		sub { $self->export_html($FULL_HTML); },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$export_menu->Append( -1, Wx::gettext("Simple"), ),
 		sub { $self->export_html($SIMPLE_HTML); },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Export Snippet HTML"), ),
+		$export_menu->Append( -1, Wx::gettext("Snippet"), ),
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
@@ -410,16 +415,18 @@ sub text_with_one_nl {
 sub export_html {
 	my ($self, $type) = @_;
 
-	my $main   = $self->main;
+	my $main = $self->main;
 
-	my $doc = Padre::Current->document;
-	if(!defined $doc) {
+	my $doc = $main->current->document;
+	if(not defined $doc) {
+		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
+	
 	if($doc->get_mimetype ne q{application/x-perl6}) {
 		Wx::MessageBox(
-			'Not a Perl 6 file',
-			'Operation cancelled',
+			Wx::gettext('Not a Perl 6 file'),
+			Wx::gettext('Operation cancelled'),
 			Wx::wxOK,
 			$main,
 		);
