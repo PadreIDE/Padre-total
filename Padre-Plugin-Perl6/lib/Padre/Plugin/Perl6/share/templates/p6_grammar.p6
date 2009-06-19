@@ -1,6 +1,10 @@
 use v6;
 
-grammar Property {
+=begin Pod
+	An example of a Perl 6 grammar for 
+	a Properties string can have key1=value1;key2=value2;...
+=end Pod
+grammar Properties {
 	rule key { 
 		(\w+)
 	}
@@ -13,7 +17,7 @@ grammar Property {
 }
 
 my $text = "foo=bar;me=self;";
-if $text ~~ /^<Property::entry>+$/ {
+if $text ~~ /^<Properties::entry>+$/ {
 	"Matched".say;
 } else {
 	"Not Matched".say;
