@@ -49,25 +49,21 @@ function get_values() {
     var loc = window.location.toString().indexOf('?');
     if (loc > 0) {
         var val = window.location.toString().substr(loc + 1);
-        //alert(val);
         var pairs = val.split("&");
-//alert(pairs);
-//alert(pairs.length);
         var data = Array;
         for (var i = 0; i < pairs.length; i++) {
 	    var pair = pairs[i].split("=");
-//	    alert(pair[0] + " = " + pair[1]);
 	    data[pair[0]] = pair[1];
         }
         return data;
     } else {
-        return;
+        return [];
     }
 }
 
 </script>
 <p>
-Please select a nick name and click on one of the links.
+Please select a nickname and click on one of the links.
 </p>
 <form name="n">
 Nickname: <input name="nickname" value="">
@@ -76,16 +72,15 @@ Nickname: <input name="nickname" value="">
 
 <!--
 todo: check values received on the url:
-   nick name, 
    hash_key (maybe that should be host_channel instead of of our own special name)
    
    redirect to selected url
-   have drop-down box with list of channels ?
+   have drop-down box with list of channels or radio buttons ??
    show the localized channels first ?
-   better random nick generator
    
-   if all the necessary in
-   
+   if all the necessary input is available don't even show this page just redirec to 
+   the mibbit service
+
 -->
 
 <table>
@@ -96,7 +91,7 @@ if (values["nickname"]) {
     document.forms.n.nickname.value = values["nickname"];
 } else {
     var nick = Math.floor(Math.random()*10000);
-    document.forms.n.nickname.value = nick;
+    document.forms.n.nickname.value = "user_" + nick;
 }
 
 for (var i in channels) {
