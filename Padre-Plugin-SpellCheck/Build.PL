@@ -39,7 +39,6 @@ my $builder = Module::Build->new(
     },
 );
 $builder->add_build_element('mo');
-$builder->add_build_element('po');
 $builder->add_build_element('png');
 
 $builder->create_build_script();
