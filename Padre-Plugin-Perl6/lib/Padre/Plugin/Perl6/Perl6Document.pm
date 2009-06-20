@@ -229,13 +229,20 @@ sub event_on_right_down {
 			} elsif($issue_msg =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
 				
 				my $routine_name = $1;
-				#XXX-add more control keywords
-				my @keywords = ('if','unless','loop','for');
-				foreach my $keyword (@keywords) {
+				#flow control keywords
+				my @flow_control_keywords = (
+					'for', 'given', 'if', 'loop', 'repeat', 
+					'unless', 'until', 'when', 'while',
+				);
+				foreach my $keyword (@flow_control_keywords) {
 					if($keyword eq $routine_name) {
 						Wx::Event::EVT_MENU(
 							$main, 
-							$menu->Append( -1, sprintf( Wx::gettext("Did u mean if (...) { }?"), $keyword) ),
+							$menu->Append( -1, 
+								sprintf( 
+									Wx::gettext("Insert a space after $keyword?"), 
+									$keyword
+								)),
 							sub { 
 								#XXX-implement add space before brace
 							},
@@ -248,7 +255,10 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, sprintf( Wx::gettext("Insert routine '%s'"), $routine_name) ),
 					sub { 
-						#XXX-implement insert routine
+						#Insert an empty routine definition before the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						$editor->InsertText($line_start, 
+							"sub $routine_name {$new_line\t#XXX-implement$new_line}$new_line");
 					},
 				);
 				$comment_error_action = 1;
