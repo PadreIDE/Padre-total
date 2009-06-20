@@ -42,4 +42,5 @@ my $builder = Module::Build->new(
 $builder->add_build_element('mo');
 $builder->add_build_element('png');
 $builder->add_build_element('p5');
+$builder->add_build_element('p6');
 $builder->create_build_script();
