@@ -4,9 +4,10 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-	_plugin         => '_plugin',           # plugin to be configured
-	_sizer          => '_sizer',            # window sizer
-	_colorizer_list => '_colorizer_list'    # colorizer list box
+	_plugin           => '_plugin',           # plugin to be configured
+	_sizer            => '_sizer',            # window sizer
+	_colorizer_cb     => '_colorizer_cb',      # colorizer on/off checkbox
+	_colorizer_list   => '_colorizer_list',    # colorizer list box
 };
 
 our $VERSION = '0.42';
@@ -57,11 +58,17 @@ sub _on_ok_button_clicked {
 	my $prefs = $plugin->config;
 
 	# update configuration
-	my $selection = $self->_colorizer_list->GetSelection();
-	$prefs->{colorizer} = ($selection == 0) ? 'STD' : 'PGE';
+	my $old_p6_highlight = $prefs->{p6_highlight};
+	$prefs->{p6_highlight} = $self->_colorizer_cb->GetValue();
+	$prefs->{colorizer} = ($self->_colorizer_list->GetSelection() == 0) ? 
+		'STD' : 'PGE';
 
 	# store plugin preferences
 	$plugin->config_write($prefs);
+
+	if($old_p6_highlight != $prefs->{p6_highlight}) {
+		$plugin->highlight;
+	}
 	
 	$self->Destroy;
 }
@@ -106,12 +113,16 @@ sub _create_buttons {
 sub _create_controls {
 	my $self = shift;
 
+	$self->_colorizer_cb(
+		Wx::CheckBox->new( $self, -1, Wx::gettext('Enable coloring'))
+	);
+	
 	my @choices = [
 		'S:H:P6/STD',
 		'Rakudo/PGE'
 	];
 	# syntax highligher selection
-	my $selector_label = Wx::StaticText->new( $self, -1, Wx::gettext('Syntax Highlighter:') );
+	my $colorizer_list_label = Wx::StaticText->new( $self, -1, Wx::gettext('Colorizer:') );
 	$self->_colorizer_list( 
 		Wx::ListBox->new(
 			$self,
@@ -122,13 +133,19 @@ sub _create_controls {
 		)
 	);
 	
-	# Select based on configuration variable
-	$self->_colorizer_list->Select( ($self->_plugin->config->{colorizer} eq 'STD') ? 0 : 1);
+	# Select based on configuration parameters
+	my $config = $self->_plugin->config;
+	$self->_colorizer_cb->SetValue( $config->{p6_highlight} );
+	$self->_colorizer_list->Select( $config->{colorizer} eq 'STD' ? 0 : 1);
 	
 	# pack the controls in a box
 	my $box;
 	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$box->Add( $selector_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $self->_colorizer_cb, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+
+	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$box->Add( $colorizer_list_label, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 	$box->Add( $self->_colorizer_list, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 
