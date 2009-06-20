@@ -1,8 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
-1.1.2
- - Add Chinese (Traditional) translation (BLUET)
- - spanish translation added (courtesy of brunov++)
+1.1.2 Sat Jun 20 09:00:34 CEST 2009
+ - Add Chinese (Traditional) translation (bluet)
+ - spanish translation added (brunov)
  - remove .po files from MANIFEST.SKIP, they are needed for Debian
    since they are the source for the .mo files (ryan52)
  - if the user selects one of the suggestions, replace it (ryan52)
@@ -15,10 +15,10 @@ Revision history for Padre-Plugin-SpellCheck
    (but wx::stc has unicode bugs which prevents this feature to be
    really useful on non-ascii texts)   
  - plugin i18n-ed, ready to accept translations
- - arabic translation added (courtesy of azawawi++)
- - brazilian portuguese translation added (courtesy of garu++)
+ - arabic translation added (azawawi)
+ - brazilian portuguese translation added (garu)
  - french translation added
- - polish translation added (courtesy of therek++)
+ - polish translation added (therek)
 
 **
 
