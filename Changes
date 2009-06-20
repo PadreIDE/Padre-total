@@ -18,7 +18,7 @@ Changes
 		from Padre :)
 	- Added a bigger Perl 6 Camelia icon in the about box.
 	- No more manual syntax highlighting menu item.
-	- Handled export into HTML no document situation.
+	- Handled no document situation in a couple of actions.
 	- Remove building of .mo files as it is now managed by szabgab++ release.pl
 	- Fixed S29-functions.pod bad location
 	- Fixed "Generate PIR" dying when rakudo does not parse the Perl 6 file.
