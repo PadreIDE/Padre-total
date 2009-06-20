@@ -309,8 +309,16 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, Wx::gettext("Use Perl 6 constructor syntax") ),
 					sub { 
-						#replace first 'new Foo' with 'Foo.new' in the current line
-						
+						#Replace first 'new Foo' with 'Foo.new' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						#new Point or
+						#new Point::Bar or
+						#new Point-In-Box
+						$line_text =~ s/new\s+([\w\-\:\:]+)?/$1.new/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
 					},
 				);
 				$comment_error_action = 1;
