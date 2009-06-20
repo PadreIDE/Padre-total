@@ -244,7 +244,13 @@ sub event_on_right_down {
 									$keyword
 								)),
 							sub { 
-								#XXX-implement add space before brace
+								#Insert a space before brace
+								my $line_start = $editor->PositionFromLine( $current_line_no );
+								my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+								my $line_text  = $editor->GetTextRange($line_start, $line_end);
+								$line_text =~ s/$keyword\(/$keyword \(/;
+								$editor->SetSelection( $line_start, $line_end );
+								$editor->ReplaceSelection( $line_text );
 							},
 						);
 						
@@ -269,7 +275,13 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, Wx::gettext("Use ~ instead of . for string concatenation") ),
 					sub { 
-						#XXX-implement use ~ instead of . for string concatenation
+						#replace first '.' with '~' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\./~/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
 					},
 				);
 				$comment_error_action = 1;
@@ -280,7 +292,13 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, Wx::gettext("Use . instead of -> for method call") ),
 					sub { 
-						#XXX-implement Use . instead of -> for method call
+						#Replace first '->' with '.' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\-\>/\./;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
 					},
 				);
 				$comment_error_action = 1;
@@ -291,7 +309,8 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, Wx::gettext("Use Perl 6 constructor syntax") ),
 					sub { 
-						#XXX-implement Use Perl 6 constructor syntax
+						#replace first 'new Foo' with 'Foo.new' in the current line
+						
 					},
 				);
 				$comment_error_action = 1;
