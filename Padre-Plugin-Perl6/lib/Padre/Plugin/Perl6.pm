@@ -73,7 +73,7 @@ sub plugin_enable {
 		$config->{colorizer} = 'STD';
 	}
 	if(not defined $config->{p6_highlight}) {
-		$config->{p6_highlight} = 0;
+		$config->{p6_highlight} = 1;
 	}
 
 	# and write the plugin's configuration
@@ -134,16 +134,6 @@ sub menu_plugins {
 		$file_menu->Append( -1, Wx::gettext("Perl 6 in Perl 5"), ),
 		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
 	);
-
-	# Toggle Auto Perl6 syntax highlighting
-	$self->{p6_highlight} =
-		$self->{menu}->AppendCheckItem( -1, Wx::gettext("Enable Auto Coloring"),);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{p6_highlight},
-		sub { $self->toggle_highlight; }
-	);
-	$self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
 
 	# Export into HTML
 	my $export_menu = Wx::Menu->new();
@@ -430,18 +420,6 @@ sub show_perl6_doc {
 			}
 		}
 
-	}
-}
-
-sub toggle_highlight {
-	my $self = shift;
-	if(! defined $self->{p6_highlight}) {
-		return;
-	}
-	$config->{p6_highlight} = $self->{p6_highlight}->IsChecked ? 1 : 0;
-	$self->config_write($config);
-	if($config->{p6_highlight}) {
-		$self->highlight;
 	}
 }
 
