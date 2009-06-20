@@ -302,9 +302,11 @@ sub event_on_right_down {
 			if($comment_error_action) {
 				Wx::Event::EVT_MENU(
 					$main, 
-					$menu->Append( -1, Wx::gettext("Comment current error") ),
+					$menu->Append( -1, Wx::gettext("Comment error line") ),
 					sub {
-						#XXX-implement comment current error
+						#comment current error
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						$editor->InsertText($line_start, "#");
 					},
 				);
 			}
