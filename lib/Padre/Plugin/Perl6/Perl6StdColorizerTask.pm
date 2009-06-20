@@ -190,6 +190,7 @@ sub run {
 			} elsif($msg =~ /^Potential difficulties/i) {
 				# all rest are warnings...
 				$severity = 'W';
+				$lineno = undef;
 			} elsif($msg =~ /^Undeclared routine/i) {
 				# all rest are warnings...
 				$prefix = 'Undeclared routine: ';
