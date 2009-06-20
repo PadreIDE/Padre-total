@@ -135,48 +135,42 @@ sub menu_plugins {
 		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
 	);
 
-	# Export into HTML
+	# Export sub menu
 	my $export_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Export into HTML..."), $export_menu),
+		$self->{menu}->Append( -1, Wx::gettext("Export..."), $export_menu),
 		sub { $self->export_html($FULL_HTML); },
 	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$export_menu->Append( -1, Wx::gettext("Full"), ),
-		sub { $self->export_html($FULL_HTML); },
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$export_menu->Append( -1, Wx::gettext("Simple"), ),
-		sub { $self->export_html($SIMPLE_HTML); },
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$export_menu->Append( -1, Wx::gettext("Snippet"), ),
-		sub { $self->export_html($SNIPPET_HTML); },
-	);
-
 	# Generate Perl 6 Executable
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Generate Perl 6 Executable"), ),
+		$export_menu->Append( -1, Wx::gettext("Perl 6 Executable"), ),
 		sub { $self->generate_p6_exe; },
 	);
 
 	# Generate Perl 6 PIR
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Generate Perl 6 PIR"), ),
+		$export_menu->Append( -1, Wx::gettext("Perl 6 PIR"), ),
 		sub { $self->generate_p6_pir; },
 	);
 	
-	# Cleanup STD.pm lex cache
+	# Export into HTML
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
-		sub { $self->cleanup_std_lex_cache; },
+		$export_menu->Append( -1, Wx::gettext("Full html"), ),
+		sub { $self->export_html($FULL_HTML); },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$export_menu->Append( -1, Wx::gettext("Simple html"), ),
+		sub { $self->export_html($SIMPLE_HTML); },
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$export_menu->Append( -1, Wx::gettext("Snippet html"), ),
+		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
 	# Perl6 S29 documentation
@@ -184,6 +178,13 @@ sub menu_plugins {
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("Show Perl 6 Help\tF2"), ),
 		sub { $self->show_perl6_doc; },
+	);
+
+	# Cleanup STD.pm lex cache
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
+		sub { $self->cleanup_std_lex_cache; },
 	);
 
 	# Preferences
