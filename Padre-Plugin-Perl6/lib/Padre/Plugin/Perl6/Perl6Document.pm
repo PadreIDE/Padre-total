@@ -262,13 +262,24 @@ sub event_on_right_down {
 				);
 				$comment_error_action = 1;
 			
-			} elsif($issue_msg =~ /^Obsolete use of C++ constructor syntax/i) {
+			} elsif($issue_msg =~ /^Obsolete use of C\+\+ constructor syntax/i) {
 
 				Wx::Event::EVT_MENU(
 					$main, 
 					$menu->Append( -1, Wx::gettext("Use Perl 6 constructor syntax") ),
 					sub { 
 						#XXX-implement Use Perl 6 constructor syntax
+					},
+				);
+				$comment_error_action = 1;
+			
+			} elsif($issue_msg =~ /^\=begin\s+(.+?)\s+without matching \=end/i) {
+
+				Wx::Event::EVT_MENU(
+					$main, 
+					$menu->Append( -1, Wx::gettext("Fix POD") ),
+					sub { 
+						#XXX-implement Fix POD
 					},
 				);
 				$comment_error_action = 1;
