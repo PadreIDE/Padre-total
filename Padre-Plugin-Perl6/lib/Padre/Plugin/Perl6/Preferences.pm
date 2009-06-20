@@ -59,6 +59,7 @@ sub _on_ok_button_clicked {
 
 	# update configuration
 	my $old_p6_highlight = $prefs->{p6_highlight};
+	my $old_colorizer = $prefs->{colorizer};
 	$prefs->{p6_highlight} = $self->_colorizer_cb->GetValue();
 	$prefs->{colorizer} = ($self->_colorizer_list->GetSelection() == 0) ? 
 		'STD' : 'PGE';
@@ -66,8 +67,11 @@ sub _on_ok_button_clicked {
 	# store plugin preferences
 	$plugin->config_write($prefs);
 
-	if($old_p6_highlight != $prefs->{p6_highlight}) {
-		$plugin->highlight;
+	if($old_p6_highlight != $prefs->{p6_highlight} || $old_colorizer ne $prefs->{colorizer}) {
+		# a configuration change for colorizer
+		if( $prefs->{p6_highlight} ) {
+			$plugin->highlight;
+		}
 	}
 	
 	$self->Destroy;
