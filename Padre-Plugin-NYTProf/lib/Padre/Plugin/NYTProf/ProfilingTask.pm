@@ -55,10 +55,34 @@ sub run {
 	
 #	$self->print( "Env: $nytprof_env_vars\n" );
 	#$self->task_print( "\nEnv: $nytprof_env_vars\n" . join(' ', @cmd) . "\n\n" );
-	my $cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; " . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
-	$self->task_print("$cmd\n\n");
-	#system("NYTPROF=$nytprof_env_vars; " . join(' ', @cmd) );
-	system($cmd);
+	
+	my $cmd = '';
+	if( $^O eq "MSWin32" ) {
+		print "Running on windows\n";
+		$cmd = "set NYTPROF=$nytprof_env_vars && ";
+		
+	}
+	elsif( $^O eq "darwin" ) {
+		print "Running on Darwin\n";
+		
+		
+	}
+	elsif( $^O eq "linux" ) {
+		print "running on linux\n";
+		$cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; "; # . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
+	}
+	
+	# run the command if we can
+	if( $cmd ne '' ) {
+		# append the rest of the command here
+		$cmd .= $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
+		$self->task_print("$cmd\n\n");
+		system($cmd);
+	}
+	else {
+		print "Unable to determine your OS\n";
+	}
+	
 	return 1;
 }
 
