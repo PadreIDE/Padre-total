@@ -196,6 +196,17 @@ sub event_on_right_down {
 	my $main = $editor->main;
 	$menu->AppendSeparator;
 
+	my $new_line;
+	require Padre::Util;
+	my $doc_new_line_type = Padre::Util::newline_type($self->text_get);
+	if($doc_new_line_type eq "WIN") {
+		$new_line = "\r\n";
+	} elsif($doc_new_line_type eq "MAC") {
+		$new_line = "\r";
+	} else {
+		#NONE, UNIX or MIXED
+		$new_line = "\n";
+	}
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
@@ -208,7 +219,9 @@ sub event_on_right_down {
 					$main, 
 					$menu->Append( -1, sprintf( Wx::gettext("Insert declaration for '%s'"), $var_name) ),
 					sub { 
-						#XXX-implement insert variable declaration
+						#Insert a variable declaration before the start of the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						$editor->InsertText($line_start, "my $var_name;$new_line");
 					},
 				);
 				$comment_error_action = 1;
