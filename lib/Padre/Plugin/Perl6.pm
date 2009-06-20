@@ -135,17 +135,6 @@ sub menu_plugins {
 		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
 	);
 
-	$self->{menu}->AppendSeparator;
-	
-	# Perl6 S29 documentation
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Show Perl 6 Help\tF2"), ),
-		sub { $self->show_perl6_doc; },
-	);
-
-	$self->{menu}->AppendSeparator;
-
 	# Toggle Auto Perl6 syntax highlighting
 	$self->{p6_highlight} =
 		$self->{menu}->AppendCheckItem( -1, Wx::gettext("Enable Auto Coloring"),);
@@ -155,8 +144,6 @@ sub menu_plugins {
 		sub { $self->toggle_highlight; }
 	);
 	$self->{p6_highlight}->Check($config->{p6_highlight} ? 1 : 0);
-
-	$self->{menu}->AppendSeparator;
 
 	# Export into HTML
 	my $export_menu = Wx::Menu->new();
@@ -181,8 +168,6 @@ sub menu_plugins {
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
-	$self->{menu}->AppendSeparator;
-
 	# Generate Perl 6 Executable
 	Wx::Event::EVT_MENU(
 		$main,
@@ -197,8 +182,6 @@ sub menu_plugins {
 		sub { $self->generate_p6_pir; },
 	);
 	
-	$self->{menu}->AppendSeparator;
-
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
 		$main,
@@ -206,7 +189,12 @@ sub menu_plugins {
 		sub { $self->cleanup_std_lex_cache; },
 	);
 
-	$self->{menu}->AppendSeparator;
+	# Perl6 S29 documentation
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Show Perl 6 Help\tF2"), ),
+		sub { $self->show_perl6_doc; },
+	);
 
 	# Preferences
 	Wx::Event::EVT_MENU(
@@ -214,8 +202,6 @@ sub menu_plugins {
 		$self->{menu}->Append( -1, Wx::gettext("Preferences"), ),
 		sub { $self->show_preferences; },
 	);
-
-	$self->{menu}->AppendSeparator;
 
 	# the famous about menu item...
 	Wx::Event::EVT_MENU(
