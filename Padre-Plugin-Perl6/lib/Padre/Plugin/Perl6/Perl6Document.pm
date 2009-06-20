@@ -4,6 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 
+use Padre::Wx ();
+
 our $VERSION = '0.43';
 our @ISA     = 'Padre::Document';
 
