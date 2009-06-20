@@ -199,15 +199,35 @@ sub event_on_right_down {
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
-			if($issue->{msg} =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
+			my $issue_msg = $issue->{msg};
+			my $comment_error_action = 0;
+			if($issue_msg =~ /Variable\s+(.+?)\s+is not predeclared at/i) {
+				
+				my $var_name = $1;
+				Wx::Event::EVT_MENU(
+					$main, 
+					$menu->Append( -1, sprintf( Wx::gettext("Insert declaration for '%s'"), $var_name) ),
+					sub { 
+						#XXX-implement insert variable declaration
+					},
+				);
+				$comment_error_action = 1;
+			
+			} elsif($issue_msg =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
+				
 				my $routine_name = $1;
 				Wx::Event::EVT_MENU(
 					$main, 
-					$menu->Append( -1, sprintf( Wx::gettext("Insert sub '%s'\t"), $routine_name) ),
+					$menu->Append( -1, sprintf( Wx::gettext("Insert sub '%s'"), $routine_name) ),
 					sub { 
 						#XXX-implement insert routine
 					},
 				);
+				$comment_error_action = 1;
+			
+			}
+			
+			if($comment_error_action) {
 				Wx::Event::EVT_MENU(
 					$main, 
 					$menu->Append( -1, Wx::gettext("Comment current error") ),
@@ -216,6 +236,7 @@ sub event_on_right_down {
 					},
 				);
 			}
+			
 		}
 	}
 
