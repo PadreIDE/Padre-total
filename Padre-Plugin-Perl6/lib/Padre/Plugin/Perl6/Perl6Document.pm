@@ -216,9 +216,24 @@ sub event_on_right_down {
 			} elsif($issue_msg =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
 				
 				my $routine_name = $1;
+				#XXX-add more control keywords
+				my @keywords = ('if','unless','loop','for');
+				foreach my $keyword (@keywords) {
+					if($keyword eq $routine_name) {
+						Wx::Event::EVT_MENU(
+							$main, 
+							$menu->Append( -1, sprintf( Wx::gettext("Did u mean if (...) { }?"), $keyword) ),
+							sub { 
+								#XXX-implement add space before brace
+							},
+						);
+						
+						last;
+					}
+				}
 				Wx::Event::EVT_MENU(
 					$main, 
-					$menu->Append( -1, sprintf( Wx::gettext("Insert sub '%s'"), $routine_name) ),
+					$menu->Append( -1, sprintf( Wx::gettext("Insert routine '%s'"), $routine_name) ),
 					sub { 
 						#XXX-implement insert routine
 					},
