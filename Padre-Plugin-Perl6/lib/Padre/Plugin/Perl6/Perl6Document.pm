@@ -191,32 +191,34 @@ sub comment_lines_str { return '#' }
 
 sub event_on_right_down {
 	my ($self, $editor, $menu, $event ) = @_;
-	#print "event_on_right_down @_\n";
-	my $pos = $editor->GetCurrentPos;
-	
-	return if not $self->{_parse_tree};
 
-	my @things;
-	foreach my $e (@{ $self->{_parse_tree} }) {
-		last if $e->{start} > $pos;
-		next if $e->{start} + $e->{length} < $pos;
-		push @things, {type => $e->{type}, str => $e->{str}};
-	}
-	return if not @things;
-	
+	my $current_line_no = $editor->GetCurrentLine;
 	my $main = $editor->main;
 	$menu->AppendSeparator;
-	
-#	my $perl6 = $menu->Append( -1, Wx::gettext("Perl 6 $pos") );
-#	Wx::Event::EVT_MENU(
-#			$main, $perl6,
-#				sub {
-#					print "$_[0]\n";
-#				},
-#			);
-	foreach my $thing (@things) {
-		$menu->Append( -1, sprintf( Wx::gettext("%s is Perl 6 %s "), $thing->{str}, $thing->{type} ) );
+
+	foreach my $issue ( @{$self->{issues}} ) {
+		my $issue_line_no = $issue->{line} - 1;
+		if($issue_line_no == $current_line_no) {
+			if($issue->{msg} =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
+				my $routine_name = $1;
+				Wx::Event::EVT_MENU(
+					$main, 
+					$menu->Append( -1, sprintf( Wx::gettext("Insert sub '%s'\t"), $routine_name) ),
+					sub { 
+						#XXX-implement insert routine
+					},
+				);
+				Wx::Event::EVT_MENU(
+					$main, 
+					$menu->Append( -1, Wx::gettext("Comment current error") ),
+					sub {
+						#XXX-implement comment current error
+					},
+				);
+			}
+		}
 	}
+
 	return;
 }
 
