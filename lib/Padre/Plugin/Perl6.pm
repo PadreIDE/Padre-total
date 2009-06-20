@@ -504,7 +504,7 @@ sub export_html {
 		when ($SNIPPET_HTML) { push @cmd, "--snippet-html=$tmp_out 2>$tmp_err"; }
 		default {
 			# default is full html
-			push @cmd, '--full-html=-';
+			push @cmd, "--full-html=$tmp_out 2>$tmp_err";
 		}
 	}
 
