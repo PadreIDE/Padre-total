@@ -201,7 +201,7 @@ sub event_on_right_down {
 		if($issue_line_no == $current_line_no) {
 			my $issue_msg = $issue->{msg};
 			my $comment_error_action = 0;
-			if($issue_msg =~ /Variable\s+(.+?)\s+is not predeclared at/i) {
+			if($issue_msg =~ /^\s*Variable\s+(.+?)\s+is not predeclared at/i) {
 				
 				my $var_name = $1;
 				Wx::Event::EVT_MENU(
@@ -236,6 +236,17 @@ sub event_on_right_down {
 					$menu->Append( -1, sprintf( Wx::gettext("Insert routine '%s'"), $routine_name) ),
 					sub { 
 						#XXX-implement insert routine
+					},
+				);
+				$comment_error_action = 1;
+			
+			} elsif($issue_msg =~ /^Obsolete use of . to concatenate strings/i) {
+
+				Wx::Event::EVT_MENU(
+					$main, 
+					$menu->Append( -1, Wx::gettext("Use ~ instead of . for string concatenation") ),
+					sub { 
+						#XXX-implement use ~ instead of . for string concatenation
 					},
 				);
 				$comment_error_action = 1;
