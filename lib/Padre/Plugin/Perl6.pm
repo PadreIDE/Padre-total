@@ -581,8 +581,9 @@ sub generate_p6_exe {
 
 	my $main = $self->main;
 
-	my $doc = Padre::Current->document;
-	unless(defined $doc) {
+	my $doc = $main->current->document;
+	if(not defined $doc) {
+		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
 	if($doc->get_mimetype ne q{application/x-perl6}) {
@@ -757,8 +758,9 @@ sub generate_p6_pir {
 	
 	my $main = $self->main;
 
-	my $doc = Padre::Current->document;
-	unless(defined $doc) {
+	my $doc = $main->current->document;
+	if(not defined $doc) {
+		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
 	if($doc->get_mimetype ne q{application/x-perl6}) {
