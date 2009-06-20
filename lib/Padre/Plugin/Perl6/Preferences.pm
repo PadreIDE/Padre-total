@@ -132,7 +132,7 @@ sub _create_controls {
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[150,40],
+			[150,50],
 			@choices,
 		)
 	);
