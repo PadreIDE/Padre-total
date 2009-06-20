@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-our $VERSION = '0.42';
+our $VERSION = '0.43';
 our @ISA     = 'Padre::Document';
 
 # max lines to display in a calltip
