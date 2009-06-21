@@ -126,6 +126,7 @@ sub _setup_events {
 			my $listener = $self->_listeners->{$selection};
 			if($listener) {
 				&{$listener}();
+				$self->Destroy;
 			}
 		}
 		return;
@@ -160,10 +161,12 @@ sub _create_list {
 	#try to  call event_on_quick_fix on the current document
 	my $item_count = 0;
 	my %listeners = ();
-	my $doc = $self->_plugin->current;
+	my $doc = $self->_plugin->current->document;
+	my $editor = $self->_plugin->current->editor;	
 	if(defined $doc && $doc->can('event_on_quick_fix')) {
 		# add list items from callbacks
-		foreach my $item (@{ $doc->event_on_quick_fix }) {
+		my @items = $doc->event_on_quick_fix($editor);
+		foreach my $item (@items) {
 			# add the list item
 			$self->_list->InsertStringItem($item_count, $item->{text});
 
