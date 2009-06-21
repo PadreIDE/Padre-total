@@ -10,6 +10,7 @@ Changes
 		- use of C++ constructor syntax
 		- Use . instead of -> for method call
 	- Implemented Comment error line quick fix
+	- Fixed highlighting to work over multiple Perl 6 document tabs
 
 =head1 0.43 2009.6.20
 	- Cleaned up Perl 6 menu to be more elegant.
