@@ -1,5 +1,16 @@
 Changes
 
+=head1 0.44 2009.6.21
+	- A Perl 6 document supports both Ecliptic's event_on_quick_fix and Padre's 
+		right click menu
+	- Implemented quick fixes for the following STD warnings/errors:
+		- Undeclared routine and keywords: foo() or if()
+		- Variable is not predeclared
+		- Use ~ instead of . for string concatenation
+		- use of C++ constructor syntax
+		- Use . instead of -> for method call
+	- Implemented Comment error line quick fix
+
 =head1 0.43 2009.6.20
 	- Cleaned up Perl 6 menu to be more elegant.
 	- Added Create Perl 6 class/grammar/..etc menu
