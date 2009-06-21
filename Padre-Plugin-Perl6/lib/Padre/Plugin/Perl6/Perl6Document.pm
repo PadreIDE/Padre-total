@@ -6,7 +6,7 @@ use warnings;
 
 use Padre::Wx ();
 
-our $VERSION = '0.43';
+our $VERSION = '0.44';
 our @ISA     = 'Padre::Document';
 
 # max lines to display in a calltip

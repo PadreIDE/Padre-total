@@ -10,7 +10,7 @@ use Class::XSAccessor accessors => {
 	_colorizer_list   => '_colorizer_list',    # colorizer list box
 };
 
-our $VERSION = '0.43';
+our $VERSION = '0.44';
 
 use Padre::Current;
 use Padre::Wx ();
