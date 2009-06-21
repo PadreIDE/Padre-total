@@ -3,9 +3,9 @@ package Padre::Plugin::REPL;
 use warnings;
 use strict;
 
-#sub BEGIN {
-#	$ENV{PERL_RL} = "Stub";
-#}
+sub BEGIN {
+	$ENV{PERL_RL} = "Stub";
+}
 
 use base 'Padre::Plugin';
 use Padre::Wx;
