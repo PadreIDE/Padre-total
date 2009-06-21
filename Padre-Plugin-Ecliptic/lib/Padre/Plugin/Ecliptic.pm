@@ -13,6 +13,13 @@ use Padre::Wx ();
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
 
+
+# accessors
+use Class::XSAccessor accessors => {
+	quick_fix_items  => 'quick_fix_items',  # Public Quick fix items
+};
+
+
 #
 # private subroutine to return the current share directory location
 #
@@ -235,6 +242,29 @@ sub _open_in_explorer {
 sub _show_quick_fix_dialog {
 	my $self = shift;
 
+	if(not defined $self->quick_fix_items) {
+		my @empty_list = ();
+		$self->quick_fix_items(\@empty_list);
+
+		my @items = ( 
+			{
+				text     => '123...', 
+				listener => sub { 
+					print "123...\n";
+				} 
+			},
+			{
+				text     => '456...', 
+				listener => sub { 
+					print "456...\n";
+				} 
+			},
+		);
+
+		push @{$self->quick_fix_items}, @items;
+
+	}
+	
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickFixDialog;
 	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);

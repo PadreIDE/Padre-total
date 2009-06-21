@@ -18,6 +18,7 @@ use Class::XSAccessor accessors => {
 	_plugin            => '_plugin',             # Plugin object
 	_sizer             => '_sizer',              # window sizer
 	_list              => '_list',	             # key bindings list
+	_listeners         => '_listeners',			 # hash of quick fix listener
 };
 
 # -- constructor
@@ -105,6 +106,18 @@ sub _setup_events {
 		$self->Destroy;
 	});
 
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED( $self, $self->_list, sub {
+
+		my $selection = $self->_list->GetFirstSelected;
+		if($selection != -1) {
+			my $listener = $self->_listeners->{$selection};
+			if($listener) {
+				&{$listener}();
+			}
+		}
+		return;
+	});
+	
 }
 
 #
@@ -131,17 +144,24 @@ sub _create_list {
 	$self->_list->InsertColumn( 0, '' );
 	$self->_list->SetColumnWidth( 0, $list_width - 5 );
 	
-	my $item;
+	# add list items from callbacks
+	my %listeners = ();
+	my $item_count = 0;
+	foreach my $item (@{ $self->_plugin->quick_fix_items }) {
+		# add the list item
+		$self->_list->InsertStringItem($item_count, $item->{text});
 
-	$item = Wx::ListItem->new();
-	$item->SetText("Inline variable...");
-	$self->_list->InsertItem($item);
+		# and register its action
+		$listeners{$item_count} = $item->{listener}; 
+
+		#next item...
+		$item_count++;
+	}
+	$self->_listeners(\%listeners);
+
+	#XXX- any empty quick fix must display "No suggestions" like Eclipse
 	
-	$item = Wx::ListItem->new();
-	$item->SetText("Toggle Comment...");
-	$self->_list->InsertItem($item);
-	
-	if($self->_list->GetItemCount()) {
+	if($item_count) {
 		$self->_list->Select(0, 1);
 	}
 
