@@ -105,6 +105,19 @@ sub _setup_events {
 		#list box lost focus, we should kill the dialog
 		$self->Destroy;
 	});
+	
+	Wx::Event::EVT_CHAR( $self->_list, sub {
+		my $this  = shift;
+		my $event = shift;
+
+		if ( $event->GetKeyCode == Wx::WXK_ESCAPE ) {
+			# user pressed escape, let us close it...
+			$self->Destroy;
+		}
+
+		$event->Skip(1);		
+	});
+
 
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED( $self, $self->_list, sub {
 
@@ -144,24 +157,30 @@ sub _create_list {
 	$self->_list->InsertColumn( 0, '' );
 	$self->_list->SetColumnWidth( 0, $list_width - 5 );
 	
-	# add list items from callbacks
-	my %listeners = ();
+	#try to  call event_on_quick_fix on the current document
 	my $item_count = 0;
-	foreach my $item (@{ $self->_plugin->quick_fix_items }) {
-		# add the list item
-		$self->_list->InsertStringItem($item_count, $item->{text});
+	my %listeners = ();
+	my $doc = $self->_plugin->current;
+	if(defined $doc && $doc->can('event_on_quick_fix')) {
+		# add list items from callbacks
+		foreach my $item (@{ $doc->event_on_quick_fix }) {
+			# add the list item
+			$self->_list->InsertStringItem($item_count, $item->{text});
 
-		# and register its action
-		$listeners{$item_count} = $item->{listener}; 
+			# and register its action
+			$listeners{$item_count} = $item->{listener}; 
 
-		#next item...
-		$item_count++;
+			#next item...
+			$item_count++;
+		}
 	}
 	$self->_listeners(\%listeners);
 
-	#XXX- any empty quick fix must display "No suggestions" like Eclipse
-	
 	if($item_count) {
+		$self->_list->Select(0, 1);
+	} else {
+		# display No suggestions...
+		$self->_list->InsertStringItem($item_count, Wx::gettext("No suggestions"));
 		$self->_list->Select(0, 1);
 	}
 
