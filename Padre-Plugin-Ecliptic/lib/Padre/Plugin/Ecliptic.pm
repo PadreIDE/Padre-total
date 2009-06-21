@@ -303,8 +303,31 @@ for it.
 
 =head2 Quick Fix (Shortcut: Ctrl-~)
 
-This opens a yellow non-modal dialog that lists different actions that relate to 
-fixing the selected code or the code under the cursor.
+This opens a yellow box that lists different actions that relate to 
+fixing the code at the cursor. It will call B<event_on_quick_fix> method 
+passing a L<Padre::Wx::Editor> object on the current Padre document. 
+Please see the following sample implementation:
+
+	sub event_on_quick_fix {
+		my ($self, $editor) = @_;
+		
+		my @items = ( 
+			{
+				text     => '123...', 
+				listener => sub { 
+					print "123...\n";
+				} 
+			},
+			{
+				text     => '456...', 
+				listener => sub { 
+					print "456...\n";
+				} 
+			},
+		);
+		
+		return @items;
+	}
 
 =head2 'About'
 
