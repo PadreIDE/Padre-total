@@ -3,6 +3,13 @@ use warnings;
 
 use Test::More;
 
+BEGIN {
+	if (not $ENV{DISPLAY} and not $^O eq 'MSWin32') {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+
 unless($ENV{PADRE_PLUGIN_PERL6}) {
 	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable';
 }
