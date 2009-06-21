@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1; 
+use Test::More; 
 
 BEGIN {
 	if (not $ENV{DISPLAY} and not $^O eq 'MSWin32') {
@@ -10,9 +10,6 @@ BEGIN {
 	}
 }
 
-BEGIN {
-	use_ok('Padre::Plugin::Ecliptic');
-}
+plan tests => 1;
 
-
-
+use_ok('Padre::Plugin::Ecliptic');
