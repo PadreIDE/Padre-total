@@ -44,7 +44,19 @@ sub run {
 	my $self = shift;
 	
 	my $nytprof_env_vars = "";
+	my $drive = "";
 	foreach my $env( keys( %{ $self->{nytprof_envars} }  ) ) {
+		# we can't use the full file path because the colon
+		# in the file path is the same delimiter NYTProf uses
+		# for NYTPROF environment variable.
+		# not the best but:
+		print "env: $env\n";
+		if( ($env eq 'file') && ($^O eq 'MSWin32') ) {
+			print "setting drive for win32\n";
+			$self->{nytprof_envars}->{$env} =~ /(\w\:)(.*$)/;
+			$drive = $1;
+			$self->{nytprof_envars}->{$env} = $2;
+		}
 		$nytprof_env_vars .= "$env=" . $self->{nytprof_envars}->{$env} . ":";
 	}
 	$nytprof_env_vars =~ s/\:$//;
@@ -59,8 +71,7 @@ sub run {
 	my $cmd = '';
 	if( $^O eq "MSWin32" ) {
 		print "Running on windows\n";
-		$cmd = "set NYTPROF=$nytprof_env_vars && ";
-		
+		$cmd = "$drive && set NYTPROF=$nytprof_env_vars && ";
 	}
 	elsif( $^O eq "darwin" ) {
 		print "Running on Darwin\n";
