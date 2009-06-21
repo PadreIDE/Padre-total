@@ -1,5 +1,11 @@
 Changes
 
+=head1 0.11  2009.6.21
+
+	- Implemented "Quick Fix" popup list box which finds its list via 
+		Padre::Document::SubClass->event_on_quick_fix.
+	- Renamed List Key bindings into Quick Assist.
+
 =head1 0.10  2009.6.10
 
 	- Fixed "Open in Explorer" to work in KDE and GNOME
