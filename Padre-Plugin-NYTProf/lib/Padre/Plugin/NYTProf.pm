@@ -35,13 +35,13 @@ sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name  => [
         
-        _T('1. Run Profile')                               => sub { $self->on_start_profiling },
-        _T('2. Generate Report - Run Profile First')           => sub { $self->on_generate_report },        
-        _T('3. Show Report -     Run Generate Report First')           => sub { $self->on_show_report },
+        _T('1. Run Profile')                                    => sub { $self->on_start_profiling },
+        _T('2. Generate Report - Run Profile First')            => sub { $self->on_generate_report },        
+        _T('3. Show Report -     Run Generate Report First')    => sub { $self->on_show_report },
         
-        '---'                                           => undef, # ...add a separator
+        '---'                                                   => undef, # ...add a separator
         
-        _T('About')             => sub { $self->on_show_about },
+        _T('About')                                             => sub { $self->on_show_about },
         
      ];
     
@@ -82,10 +82,14 @@ sub on_generate_report {
     my $main    = Padre->ide->wx->main;
     
     # create the commandline to create HTML output
-    my $report = 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
-    print "Generating HTML report: $report\n";
+    # nytprof gets put into the perl bin directory
+    #my $bin_path = $prof_settings{perl};
+    #$bin_path =~ dirname( $bin_path); #s/[^\\\/](perl.*$)//i;
+    
+    my( $fname, $bin_path, $suffix ) = File::Basename::fileparse( $prof_settings{perl} );
+    my $report = $prof_settings{perl} . ' ' . $bin_path . 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
+    print "Generating HTML report:\n$report\n";
     $main->run_command($report);
-       
 }
 
 sub on_show_report {
