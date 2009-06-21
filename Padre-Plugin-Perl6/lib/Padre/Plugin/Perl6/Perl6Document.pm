@@ -40,43 +40,41 @@ sub colorize {
 	my $config = Padre::Plugin::Perl6::plugin_config();
 	if($config->{p6_highlight} || $self->{force_p6_highlight}) {
 	
-		unless($COLORIZE_TIMER) {
-			my $timer_id = Wx::NewId();
-			my $main = Padre->ide->wx->main;
-			$COLORIZE_TIMER = Wx::Timer->new($main, $timer_id);
-			Wx::Event::EVT_TIMER(
-				$main, $timer_id, 
-				sub { 
-					# temporary overlay using the parse tree given by parrot
-					my $colorizer = $config->{colorizer};
-					my $task;
-					if($colorizer eq 'STD') {
-						# Create an STD coloring task 
-						require Padre::Plugin::Perl6::Perl6StdColorizerTask;
-						$task = Padre::Plugin::Perl6::Perl6StdColorizerTask->new(
-							text => $self->text_with_one_nl,
-							editor => $self->editor,
-							document => $self);
-					} else {
-						# Create a PGE coloring task
-						require Padre::Plugin::Perl6::Perl6PgeColorizerTask;
-						$task = Padre::Plugin::Perl6::Perl6PgeColorizerTask->new(
-							text => $self->text_with_one_nl,
-							editor => $self->editor,
-							document => $self);
-					}
-					# hand off to the task manager
-					$task->schedule();
+		my $timer_id = Wx::NewId();
+		my $main = Padre->ide->wx->main;
+		$COLORIZE_TIMER = Wx::Timer->new($main, $timer_id);
+		Wx::Event::EVT_TIMER(
+			$main, $timer_id, 
+			sub { 
+				# temporary overlay using the parse tree given by parrot
+				my $colorizer = $config->{colorizer};
+				my $task;
+				if($colorizer eq 'STD') {
+					# Create an STD coloring task 
+					require Padre::Plugin::Perl6::Perl6StdColorizerTask;
+					$task = Padre::Plugin::Perl6::Perl6StdColorizerTask->new(
+						text => $self->text_with_one_nl,
+						editor => $self->editor,
+						document => $self);
+				} else {
+					# Create a PGE coloring task
+					require Padre::Plugin::Perl6::Perl6PgeColorizerTask;
+					$task = Padre::Plugin::Perl6::Perl6PgeColorizerTask->new(
+						text => $self->text_with_one_nl,
+						editor => $self->editor,
+						document => $self);
+				}
+				# hand off to the task manager
+				$task->schedule();
 
-					# and let us schedule that it is running properly or not
-					if($task->is_broken) {
-						# let us reschedule colorizing task to a later date..
-						$COLORIZE_TIMER->Stop;
-						$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
-					}
-				},
-			);
-		}
+				# and let us schedule that it is running properly or not
+				if($task->is_broken) {
+					# let us reschedule colorizing task to a later date..
+					$COLORIZE_TIMER->Stop;
+					$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
+				}
+			},
+		);
 
 		# let us reschedule colorizing task to a later date..
 		$COLORIZE_TIMER->Stop;
@@ -221,6 +219,7 @@ sub _find_quick_fix {
 	my $current_line_no = $editor->GetCurrentLine;
 	
 	my @items = ();
+	print "Number of issues: " . scalar @{$self->{issues}} . "\n";
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
@@ -361,6 +360,7 @@ sub event_on_right_down {
 	my ($self, $editor, $menu, $event ) = @_;
 
 	my @items = $self->_find_quick_fix($editor);
+	print scalar @items . "\n";
 	my $main = $editor->main;
 	$menu->AppendSeparator;
 	for my $item (@items) {
