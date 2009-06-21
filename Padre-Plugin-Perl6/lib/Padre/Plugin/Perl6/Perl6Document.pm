@@ -189,16 +189,16 @@ sub keywords {
 
 sub comment_lines_str { return '#' }
 
-sub event_on_right_down {
-	my ($self, $editor, $menu, $event ) = @_;
-
-	my $current_line_no = $editor->GetCurrentLine;
-	my $main = $editor->main;
-	$menu->AppendSeparator;
-
-	my $new_line;
+#
+# Guess the new line for the current document
+# can return \r, \r\n, or \n
+#
+sub guess_newline {
+	my $self = shift;
+	
 	require Padre::Util;
 	my $doc_new_line_type = Padre::Util::newline_type($self->text_get);
+	my $new_line;
 	if($doc_new_line_type eq "WIN") {
 		$new_line = "\r\n";
 	} elsif($doc_new_line_type eq "MAC") {
@@ -207,6 +207,20 @@ sub event_on_right_down {
 		#NONE, UNIX or MIXED
 		$new_line = "\n";
 	}
+	
+	return $new_line;
+}
+
+#
+# Tries to find quick fixes for errors in the current line
+#
+sub _find_quick_fix {
+	my ($self, $editor) = @_;
+	
+	my $new_line = $self->guess_newline;
+	my $current_line_no = $editor->GetCurrentLine;
+	
+	my @items = ();
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
@@ -215,15 +229,15 @@ sub event_on_right_down {
 			if($issue_msg =~ /^\s*Variable\s+(.+?)\s+is not predeclared at/i) {
 				
 				my $var_name = $1;
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, sprintf( Wx::gettext("Insert declaration for '%s'"), $var_name) ),
-					sub { 
+
+				push @items, {
+					text     => sprintf( Wx::gettext("Insert declaration for %s"), $var_name),
+					listener => sub { 
 						#Insert a variable declaration before the start of the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						$editor->InsertText($line_start, "my $var_name;$new_line");
 					},
-				);
+				};
 				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
@@ -236,14 +250,9 @@ sub event_on_right_down {
 				);
 				foreach my $keyword (@flow_control_keywords) {
 					if($keyword eq $routine_name) {
-						Wx::Event::EVT_MENU(
-							$main, 
-							$menu->Append( -1, 
-								sprintf( 
-									Wx::gettext("Insert a space after $keyword?"), 
-									$keyword
-								)),
-							sub { 
+						push @items, {
+							text     => sprintf( Wx::gettext("Insert a space after %s"), $keyword ),
+							listener => sub { 
 								#Insert a space before brace
 								my $line_start = $editor->PositionFromLine( $current_line_no );
 								my $line_end   = $editor->GetLineEndPosition( $current_line_no );
@@ -252,29 +261,27 @@ sub event_on_right_down {
 								$editor->SetSelection( $line_start, $line_end );
 								$editor->ReplaceSelection( $line_text );
 							},
-						);
+						};
 						
 						last;
 					}
 				}
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, sprintf( Wx::gettext("Insert routine '%s'"), $routine_name) ),
-					sub { 
+				push @items, {
+					text     => sprintf( Wx::gettext("Insert routine %s"), $routine_name),
+					listener => sub { 
 						#Insert an empty routine definition before the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						$editor->InsertText($line_start, 
 							"sub $routine_name {$new_line\t#XXX-implement$new_line}$new_line");
 					},
-				);
+				};
 				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of . to concatenate strings/i) {
 
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, Wx::gettext("Use ~ instead of . for string concatenation") ),
-					sub { 
+				push @items, {
+					text     => Wx::gettext("Use ~ instead of . for string concatenation"),
+					listener => sub { 
 						#replace first '.' with '~' in the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
@@ -283,15 +290,14 @@ sub event_on_right_down {
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
-				);
+				};
 				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of -> to call a method/i) {
 
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, Wx::gettext("Use . instead of -> for method call") ),
-					sub { 
+				push @items, {
+					text     => Wx::gettext("Use . instead of -> for method call"),
+					listener => sub { 
 						#Replace first '->' with '.' in the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
@@ -300,44 +306,70 @@ sub event_on_right_down {
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
-				);
+				};
 				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of C\+\+ constructor syntax/i) {
 
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, Wx::gettext("Use Perl 6 constructor syntax") ),
-					sub { 
+				push @items, {
+					text     => Wx::gettext("Use Perl 6 constructor syntax"),
+					listener => sub { 
 						#Replace first 'new Foo' with 'Foo.new' in the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
-						#new Point or
-						#new Point::Bar or
-						#new Point-In-Box
+						#new Point/new Point::Bar/new Point-In-Box
 						$line_text =~ s/new\s+([\w\-\:\:]+)?/$1.new/;
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
-				);
+				};
 				$comment_error_action = 1;
 			
 			}
-			
+
 			if($comment_error_action) {
-				Wx::Event::EVT_MENU(
-					$main, 
-					$menu->Append( -1, Wx::gettext("Comment error line") ),
-					sub {
+				push @items, {
+					text     => Wx::gettext("Comment error line"),
+					listener => sub {
 						#comment current error
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						$editor->InsertText($line_start, "#");
 					},
-				);
+				};
 			}
 			
 		}
+	}
+	
+	return @items;
+}
+
+#
+# Called when the user asks for Ecliptic's quick fix dialog via CTRL-~
+#
+sub event_on_quick_fix {
+	my ($self, $editor) = @_;
+
+	return $self->_find_quick_fix($editor);
+}
+
+#
+# Called when the user ask for the right-click menu (ALT-/ in Padre)
+#
+sub event_on_right_down {
+	my ($self, $editor, $menu, $event ) = @_;
+
+	my @items = $self->_find_quick_fix($editor);
+	my $main = $editor->main;
+	$menu->AppendSeparator;
+	for my $item (@items) {
+	
+		Wx::Event::EVT_MENU( 
+			$main,
+			$menu->Append( -1, $item->{text} ),
+			$item->{listener},
+		);
 	}
 
 	return;
