@@ -163,7 +163,7 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::CommandLine");
-	$about->SetDescription( "Experimental vi-like command line\n" );
+	$about->SetDescription("Experimental vi-like command line\n");
 
 	#$about->SetVersion($Padre::VERSION);
 	Wx::AboutBox($about);

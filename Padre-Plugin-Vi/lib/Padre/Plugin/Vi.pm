@@ -6,7 +6,7 @@ use 5.008005;
 use base 'Padre::Plugin';
 
 use Scalar::Util qw(refaddr);
-use Padre::Util   ('_T');
+use Padre::Util ('_T');
 
 our $VERSION = '0.22';
 
@@ -302,7 +302,7 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Vi");
-	$about->SetDescription( "Try to emulate the vi modes of operation\n" );
+	$about->SetDescription("Try to emulate the vi modes of operation\n");
 	$about->SetVersion($Padre::Plugin::Vi::VERSION);
 	$about->SetCopyright( _T("Copyright 2008 Gabor Szabo") );
 
