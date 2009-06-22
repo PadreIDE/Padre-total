@@ -32,7 +32,7 @@ sub padre_interfaces {
 
 sub menu_plugins_simple_DISABLED {
 	return "REPL" => [
-		( _T('Evaluate something') . "\tCtrl+e" ) => \&dialog,
+		( ('Evaluate something') . "\tCtrl+e" ) => \&dialog, ### _T
 	];
 }
 
