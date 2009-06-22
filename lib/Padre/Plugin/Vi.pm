@@ -8,7 +8,7 @@ use base 'Padre::Plugin';
 use Scalar::Util qw(refaddr);
 use Padre::Util   ('_T');
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
