@@ -106,6 +106,11 @@ sub menu_plugins {
 	);
 	Wx::Event::EVT_MENU(
 		$main,
+		$file_menu->Append( -1, Wx::gettext("Script"), ),
+		sub { $self->_create_from_template('p6_script','p6') },
+	);	
+	Wx::Event::EVT_MENU(
+		$main,
 		$file_menu->Append( -1, Wx::gettext("Class"), ),
 		sub { $self->_create_from_template('p6_class','p6') },
 	);
