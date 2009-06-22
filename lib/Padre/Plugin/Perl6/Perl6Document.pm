@@ -576,7 +576,8 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-			}  elsif($issue_msg =~ /^Obsolete use of \$\@ variable as eval error/i) {
+
+			} elsif($issue_msg =~ /^Obsolete use of \$\@ variable as eval error/i) {
 
 				# Fixes the following:
 				# $@;
@@ -590,6 +591,25 @@ sub _find_quick_fix {
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
 						$line_text =~ s/\$\@/\$!/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
+			} elsif($issue_msg =~ /^Obsolete use of \$\] variable/i) {
+
+				# Fixes the following:
+				# $];
+				# into:
+				# $::PERL_VERSION;
+				push @items, {
+					text     => Wx::gettext('Use $::PERL_VERSION'),
+					listener => sub { 
+						#Replace first '$]' with '$::PERL_VERSION' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\$\]/\$::PERL_VERSION/;
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
