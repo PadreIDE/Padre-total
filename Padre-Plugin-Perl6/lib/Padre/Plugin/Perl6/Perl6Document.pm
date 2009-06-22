@@ -334,7 +334,7 @@ sub _find_quick_fix {
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
-						$line_text =~ s/for\s+\(/loop \(/;
+						$line_text =~ s/for\s+\(/loop (/;
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
@@ -350,12 +350,40 @@ sub _find_quick_fix {
 						my $line_start = $editor->PositionFromLine( $current_line_no );
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
-						$line_text =~ s/\[\s*-1\s*\]/\[\*-1\]/;
+						$line_text =~ s/\[\s*-1\s*\]/[*-1]/;
 						$editor->SetSelection( $line_start, $line_end );
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
 			
+			} elsif($issue_msg =~ /^Obsolete use of rand\(N\)/) {
+			
+				push @items, {
+					text     => Wx::gettext("Use N.pick instead of rand(N)"),
+					listener => sub { 
+						#Replace rand(N) with N.pick' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/rand\s*\(\s*(.+?)\s*\)/$1.pick/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+
+				push @items, {
+					text     => Wx::gettext("Use (1..N).pick instead of rand(N)"),
+					listener => sub { 
+						#Replace rand(N) with (1..N).pick' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/rand\s*\(\s*(.+?)\s*\)/(1..$1).pick/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+				
 			}
 
 			if($comment_error_action) {
