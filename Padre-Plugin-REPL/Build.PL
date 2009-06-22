@@ -13,7 +13,8 @@ my $builder = Module::Build->new(
     requires => {
         'Padre' => 0,
         'Capture::Tiny' => 0,
-        'Devel::REPL' => 0
+        'Devel::REPL' => 0,
+        'Class::Unload' => 0
     },
     add_to_cleanup      => [ 'Padre-Plugin-REPL-*' ],
     create_makefile_pl => 'traditional',
