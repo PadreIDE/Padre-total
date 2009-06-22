@@ -185,6 +185,9 @@ sub _create_list {
 		# display No suggestions...
 		$self->_list->InsertStringItem($item_count, Wx::gettext("No suggestions"));
 		$self->_list->Select(0, 1);
+		$listeners{0} = sub { 
+			# do nothing to exit the dialog when "No suggestion" is selected...
+		};
 	}
 
 	# focus on the list box
