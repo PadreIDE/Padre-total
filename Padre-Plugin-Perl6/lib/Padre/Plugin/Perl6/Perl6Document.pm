@@ -506,6 +506,76 @@ sub _find_quick_fix {
 					},
 				};
 			
+			} elsif($issue_msg =~ /^\s*Obsolete use of >> to do right shift/i) {
+
+				# Fixes the following:
+				# 2 >> 1;
+				# into:
+				# 2 +> 1;
+				push @items, {
+					text     => Wx::gettext("Use +> for numeric right shift"),
+					listener => sub { 
+						#Replace first '>>' with '+>' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\>\>/+>/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
+				# Fixes the following:
+				# 100 >> 1;
+				# into:
+				# 100 ~> 1;
+				push @items, {
+					text     => Wx::gettext("Use ~> for string right shift"),
+					listener => sub { 
+						#Replace first '>>' with '~>' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\>\>/~>/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			} elsif($issue_msg =~ /^\s*Obsolete use of << to do left shift/i) {
+
+				# Fixes the following:
+				# 2 << 1;
+				# into:
+				# 2 +< 1;
+				push @items, {
+					text     => Wx::gettext("Use +< for numeric left shift"),
+					listener => sub { 
+						#Replace first '<<' with '+<' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\<\</+</;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
+				# Fixes the following:
+				# 100 << 1;
+				# into:
+				# 100 ~< 1;
+				push @items, {
+					text     => Wx::gettext("Use ~< for string left shift"),
+					listener => sub { 
+						#Replace first '<<' with '~<' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\<\</~</;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
 			}
 
 			if(not $comment_error_added) {
