@@ -1,5 +1,10 @@
 package Padre::Plugin::REPL::Panel;
 
+use strict;
+use warnings;
+
+our $VERSION = '0.01';
+
 use Padre::Wx;
 use Padre::Util qw/_T/;
 use base 'Wx::Panel';
