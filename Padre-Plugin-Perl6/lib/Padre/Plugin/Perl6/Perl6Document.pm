@@ -341,6 +341,21 @@ sub _find_quick_fix {
 				};
 				$comment_error_action = 1;
 				
+			} elsif($issue_msg =~ /^Obsolete use of \[-1\] subscript to access final element/) {
+
+				push @items, {
+					text     => Wx::gettext("Use [*-1] instead of [-1]"),
+					listener => sub { 
+						#Replace first '[-1]' with '[*-1]' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\[\s*-1\s*\]/\[\*-1\]/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
 			}
 
 			if($comment_error_action) {
