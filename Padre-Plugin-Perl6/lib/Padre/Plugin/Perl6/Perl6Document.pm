@@ -337,7 +337,7 @@ sub _find_quick_fix {
 					},
 				};
 				
-			} elsif($issue_msg =~ /^Obsolete use of \[-1\] subscript to access final element/) {
+			} elsif($issue_msg =~ /^Obsolete use of \[-1\] subscript to access final element/i) {
 
 				push @items, {
 					text     => Wx::gettext("Use [*-1] instead of [-1]"),
@@ -352,7 +352,7 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} elsif($issue_msg =~ /^Obsolete use of rand\(N\)/) {
+			} elsif($issue_msg =~ /^Obsolete use of rand\(N\)/i) {
 			
 				push @items, {
 					text     => Wx::gettext("Use N.pick instead of rand(N)"),
@@ -380,7 +380,7 @@ sub _find_quick_fix {
 					},
 				};
 				
-			} elsif($issue_msg =~ /^Please use \.\.\* for indefinite range/) {
+			} elsif($issue_msg =~ /^Please use \.\.\* for indefinite range/i) {
 
 				push @items, {
 					text     => Wx::gettext("Use [N..*] for indefinite range"),
@@ -395,17 +395,32 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} 
-			
-			
+			} elsif($issue_msg =~ /^Please use \!\! rather than \:\:/i) {
 
+				push @items, {
+					text     => Wx::gettext("Use !! instead of ::"),
+					listener => sub { 
+						#Replace first '!!' with '::' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\:\:/!!/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
+			}
+			
 			if(not $comment_error_added) {
 				push @items, {
 					text     => Wx::gettext("Comment error line"),
 					listener => sub {
-						#comment current error
+						# comment current error by putting a hash and a space
+						# since #( is an embedded comment in Perl 6!
+						# see S02:166
 						my $line_start = $editor->PositionFromLine( $current_line_no );
-						$editor->InsertText($line_start, "#");
+						$editor->InsertText($line_start, '# ');
 					},
 				};
 				$comment_error_added = 1;
