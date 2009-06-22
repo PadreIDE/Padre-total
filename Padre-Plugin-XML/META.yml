@@ -9,11 +9,12 @@ resources:
   homepage: http://padre.perlide.org/
   license: http://dev.perl.org/licenses/
   repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-XML/
-build_requires:
+requires:
   Padre: 0.26
-  Test::More: 0
   XML::LibXML: 1.67
   XML::Tidy: 0
+build_requires:
+  Test::More: 0
 provides:
   Padre::Document::XML:
     file: lib/Padre/Document/XML.pm

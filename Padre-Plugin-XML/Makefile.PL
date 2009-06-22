@@ -6,9 +6,9 @@ WriteMakefile
           'VERSION_FROM' => 'lib/Padre/Plugin/XML.pm',
           'PREREQ_PM' => {
                            'Padre' => '0.26',
-                           'Test::More' => '0',
+                           'Test::More' => 0,
                            'XML::LibXML' => '1.67',
-                           'XML::Tidy' => '0'
+                           'XML::Tidy' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

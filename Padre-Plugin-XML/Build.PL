@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Padre/Plugin/XML.pm',
     build_requires => {
         'Test::More'  => 0,
+    },
+    requires => {
         'Padre'       => '0.26',
         'XML::Tidy'   => 0,
         'XML::LibXML' => '1.67',
