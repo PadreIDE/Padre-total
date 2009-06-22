@@ -6,6 +6,8 @@ use 5.008005;
 use base 'Exporter';
 our @EXPORT_OK = qw(clear_tab handle_tab set_original_cwd);
 
+our $VERSION = '0.22';
+
 my @commands = qw(e w);
 my @current_options;
 my $tab_started;

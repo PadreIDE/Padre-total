@@ -8,7 +8,7 @@ use List::Util ();
 use Padre::Wx  ();
 use Padre::Plugin::Vi::CommandLine;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 sub new {
 	my ( $class, $editor ) = @_;

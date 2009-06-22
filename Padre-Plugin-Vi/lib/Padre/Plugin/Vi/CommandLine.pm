@@ -17,7 +17,7 @@ Padre::Plugin::Vi::CommandLine - part of the vi plugin in Padre
 
 =cut
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 SYNOPSIS
 
