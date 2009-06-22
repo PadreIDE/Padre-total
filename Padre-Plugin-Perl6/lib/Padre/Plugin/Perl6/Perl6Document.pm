@@ -430,6 +430,25 @@ sub _find_quick_fix {
 					},
 				};
 			
+			} elsif($issue_msg =~ /^Obsolete use of \?\: for the conditional operator/i) {
+
+				# Fixes the following:
+				# (1 == 1) ? 1 : 2
+				# into:
+				# (1 == 1) ?? 1 !! 2
+				push @items, {
+					text     => Wx::gettext("Use ?? !! instead of ? :"),
+					listener => sub { 
+						#Replace first '? ... :' with '?? ... !!' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\?\s*(.+?)\s*\:/?? $1 !!/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
 			}
 			
 			if(not $comment_error_added) {
