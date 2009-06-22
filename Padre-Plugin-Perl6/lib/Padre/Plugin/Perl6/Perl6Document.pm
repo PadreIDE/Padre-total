@@ -468,8 +468,27 @@ sub _find_quick_fix {
 					},
 				};
 			
-			}
+			} elsif($issue_msg =~ /^\s*Obsolete use of \=\~ to do pattern matching/i) {
+
+				# Fixes the following:
+				# $string =~ /abc/;
+				# into:
+				# $string ~~ /abc/;
+				push @items, {
+					text     => Wx::gettext("Use ~~ instead of =~"),
+					listener => sub { 
+						#Replace first '=.' with '=~' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\=\~/~~/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
 			
+			}
+
 			if(not $comment_error_added) {
 				push @items, {
 					text     => Wx::gettext("Comment error line"),
