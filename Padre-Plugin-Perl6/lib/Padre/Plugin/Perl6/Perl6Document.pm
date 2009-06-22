@@ -219,12 +219,14 @@ sub _find_quick_fix {
 	my $current_line_no = $editor->GetCurrentLine;
 	
 	my @items = ();
-	print "Number of issues: " . scalar @{$self->{issues}} . "\n";
+	my $num_issues = scalar @{$self->{issues}};
+	print "Number of issues: $num_issues\n";
+	my $comment_error_added = 0;
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
 			my $issue_msg = $issue->{msg};
-			my $comment_error_action = 0;
+			
 			if($issue_msg =~ /^\s*Variable\s+(.+?)\s+is not predeclared at/i) {
 				
 				my $var_name = $1;
@@ -237,7 +239,6 @@ sub _find_quick_fix {
 						$editor->InsertText($line_start, "my $var_name;$new_line");
 					},
 				};
-				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Undeclared routine:\s+(.+?)\s+used/i) {
 				
@@ -274,7 +275,6 @@ sub _find_quick_fix {
 							"sub $routine_name {$new_line\t#XXX-implement$new_line}$new_line");
 					},
 				};
-				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of . to concatenate strings/i) {
 
@@ -290,7 +290,6 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of -> to call a method/i) {
 
@@ -306,7 +305,6 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of C\+\+ constructor syntax/i) {
 
@@ -323,7 +321,6 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-				$comment_error_action = 1;
 			
 			} elsif($issue_msg =~ /^Obsolete use of C-style "for \(;;\)" loop/i) {
 
@@ -339,7 +336,6 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-				$comment_error_action = 1;
 				
 			} elsif($issue_msg =~ /^Obsolete use of \[-1\] subscript to access final element/) {
 
@@ -403,7 +399,7 @@ sub _find_quick_fix {
 			
 			
 
-			if($comment_error_action) {
+			if(not $comment_error_added) {
 				push @items, {
 					text     => Wx::gettext("Comment error line"),
 					listener => sub {
@@ -412,6 +408,7 @@ sub _find_quick_fix {
 						$editor->InsertText($line_start, "#");
 					},
 				};
+				$comment_error_added = 1;
 			}
 			
 		}
