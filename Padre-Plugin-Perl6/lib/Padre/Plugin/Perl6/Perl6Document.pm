@@ -384,7 +384,24 @@ sub _find_quick_fix {
 					},
 				};
 				
-			}
+			} elsif($issue_msg =~ /^Please use \.\.\* for indefinite range/) {
+
+				push @items, {
+					text     => Wx::gettext("Use [N..*] for indefinite range"),
+					listener => sub { 
+						#Replace first '[1..]' with '[1..*]' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/\[\s*(.+?)\.\.\s*\]/\[$1..*\]/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
+			} 
+			
+			
 
 			if($comment_error_action) {
 				push @items, {
