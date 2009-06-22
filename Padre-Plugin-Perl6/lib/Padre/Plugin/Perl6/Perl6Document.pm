@@ -325,6 +325,22 @@ sub _find_quick_fix {
 				};
 				$comment_error_action = 1;
 			
+			} elsif($issue_msg =~ /^Obsolete use of C-style "for \(;;\)" loop/i) {
+
+				push @items, {
+					text     => Wx::gettext("Use loop (;;) instead of for (;;)"),
+					listener => sub { 
+						#Replace first 'for (;;)' with 'loop (;;)' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text =~ s/for\s+\(/loop \(/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+				$comment_error_action = 1;
+				
 			}
 
 			if($comment_error_action) {
