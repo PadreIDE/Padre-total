@@ -32,8 +32,10 @@ sub new {
 		-1,
 		"",
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize
+		Wx::wxDefaultSize,
+		Wx::wxTE_PROCESS_ENTER
 	);
+	Wx::Event::EVT_TEXT_ENTER( $self, $input, \&Padre::Plugin::REPL::evaluate );
 	my $button = Wx::Button->new( $self, -1, _T("Evaluate") );
 	Wx::Event::EVT_BUTTON( $self, $button, \&Padre::Plugin::REPL::evaluate );
 	$bottom_box->Add($input);

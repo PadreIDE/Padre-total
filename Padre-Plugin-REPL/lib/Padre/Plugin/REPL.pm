@@ -5,7 +5,7 @@ use strict;
 
 sub BEGIN {
 	$ENV{PERL_RL} = "Stub";
-        $INC{'Term/ReadLine/Stub.pm'} = '/usr/share/perl/5.10/Term/ReadLine.pm';
+	$INC{'Term/ReadLine/Stub.pm'} = '/usr/share/perl/5.10/Term/ReadLine.pm';
 }
 
 use base 'Padre::Plugin';
