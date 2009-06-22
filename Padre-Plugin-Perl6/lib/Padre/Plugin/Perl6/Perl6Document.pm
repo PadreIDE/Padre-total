@@ -410,6 +410,26 @@ sub _find_quick_fix {
 					},
 				};
 			
+			} elsif($issue_msg =~ /^Precedence too loose within \?\?\!\!/i) {
+
+				# Fixes errors like:
+				# 42 ?? 1,2,3 Z 4,5,6 !! 1,2,3 X 4,5,6;
+				# into:
+				# 42 ?? (1,2,3 Z 4,5,6) !! 1,2,3 X 4,5,6;
+				push @items, {
+					text     => Wx::gettext("Use ?? (...) !! instead"),
+					listener => sub { 
+						#Replace '?? ... !!' with '?? (...) !!' in the current line
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						#XXX- handle multiple lines...
+						$line_text =~ s/\?\?(.+?)\!\!/??($1)!!/;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
+					},
+				};
+			
 			}
 			
 			if(not $comment_error_added) {
