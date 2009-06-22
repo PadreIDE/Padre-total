@@ -226,8 +226,8 @@ sub _find_quick_fix {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
 			my $issue_msg = $issue->{msg};
-			
-			if($issue_msg =~ /^\s*Variable\s+(.+?)\s+is not predeclared at/i) {
+			$issue_msg =~ s/^\s+|\s+$//g;
+			if($issue_msg =~ /^Variable\s+(.+?)\s+is not predeclared at/i) {
 				
 				my $var_name = $1;
 
@@ -449,7 +449,7 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} elsif($issue_msg =~ /^\s*Possible obsolete use of \.\= as append operator/i) {
+			} elsif($issue_msg =~ /^Possible obsolete use of \.\= as append operator/i) {
 
 				# Fixes the following:
 				# $string .= "a";
@@ -468,7 +468,7 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} elsif($issue_msg =~ /^\s*Obsolete use of \=\~ to do pattern matching/i) {
+			} elsif($issue_msg =~ /^Obsolete use of \=\~ to do pattern matching/i) {
 
 				# Fixes the following:
 				# $string =~ /abc/;
@@ -487,7 +487,7 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} elsif($issue_msg =~ /^\s*Obsolete use of \!\~ to do negated pattern matching/i) {
+			} elsif($issue_msg =~ /^Obsolete use of \!\~ to do negated pattern matching/i) {
 
 				# Fixes the following:
 				# $string !~ /abc/;
@@ -506,7 +506,7 @@ sub _find_quick_fix {
 					},
 				};
 			
-			} elsif($issue_msg =~ /^\s*Obsolete use of >> to do right shift/i) {
+			} elsif($issue_msg =~ /^Obsolete use of >> to do right shift/i) {
 
 				# Fixes the following:
 				# 2 >> 1;
@@ -541,7 +541,7 @@ sub _find_quick_fix {
 						$editor->ReplaceSelection( $line_text );
 					},
 				};
-			} elsif($issue_msg =~ /^\s*Obsolete use of << to do left shift/i) {
+			} elsif($issue_msg =~ /^Obsolete use of << to do left shift/i) {
 
 				# Fixes the following:
 				# 2 << 1;
