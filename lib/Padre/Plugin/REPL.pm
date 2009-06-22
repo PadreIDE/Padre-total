@@ -14,6 +14,7 @@ use Devel::REPL;
 use Capture::Tiny qw/capture_merged/;
 use Devel::REPL::Script;
 use Class::Unload;
+use Padre::Plugin::REPL::Panel;
 
 our $VERSION = '0.01';
 
