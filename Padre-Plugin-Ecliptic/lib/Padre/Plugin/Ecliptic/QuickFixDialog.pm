@@ -10,8 +10,8 @@ our @EXPORT_OK = ();
 # module imports
 use Padre::Wx ();
 
-# is a subclass of Wx::Dialog
-use base 'Wx::Dialog';
+# is a subclass of Wx::Frame
+use base 'Wx::Frame';
 
 # accessors
 use Class::XSAccessor accessors => {
@@ -38,7 +38,6 @@ sub new {
 	
 	my $pt = $editor->ClientToScreen( 
 		$editor->PointFromPosition( $editor->GetCurrentPos ) );
-	#XXX- handle when the box goes outside the viewable area...
 
 	# create a simple dialog with no border
 	my $self = $class->SUPER::new(
@@ -47,7 +46,7 @@ sub new {
 		Wx::gettext('Quick Fix'),
 		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
 		Wx::wxDefaultSize,
-		Wx::wxBORDER_NONE,
+		Wx::wxBORDER_SIMPLE,
 	);
 
 	$self->_plugin($plugin);
@@ -141,28 +140,28 @@ sub _create_list {
 	my $self = shift;
 
 	my $main = $self->_plugin->main;
-
-	my $list_width = 150;
+	my $current = $self->_plugin->current;
+	my $editor = $current->editor;
+	my $list_width = 260;
+	$self->SetFont($editor->GetFont);
 	$self->_list( 
 		Wx::ListView->new(
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[$list_width,100],
+			[$list_width,190],
 			Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL | 
-			Wx::wxBORDER_SIMPLE
+			Wx::wxBORDER_NONE
 		)
 	);
  	
-	$self->_list->SetBackgroundColour(Wx::Colour->new(255,255,225));
 	$self->_list->InsertColumn( 0, '' );
 	$self->_list->SetColumnWidth( 0, $list_width - 5 );
 	
 	#try to  call event_on_quick_fix on the current document
 	my $item_count = 0;
 	my %listeners = ();
-	my $doc = $self->_plugin->current->document;
-	my $editor = $self->_plugin->current->editor;	
+	my $doc = $current->document;
 	if(defined $doc && $doc->can('event_on_quick_fix')) {
 		# add list items from callbacks
 		my @items = $doc->event_on_quick_fix($editor);

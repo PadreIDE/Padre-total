@@ -239,7 +239,9 @@ sub _show_quick_fix_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickFixDialog;
 	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
-	$dialog->Show(1);
+	if($dialog) {
+		$dialog->Show(1);
+	}
 
 	return;
 }
