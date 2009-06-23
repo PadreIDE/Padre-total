@@ -10,8 +10,8 @@ our @EXPORT_OK = ();
 # module imports
 use Padre::Wx ();
 
-# is a subclass of Wx::Frame
-use base 'Wx::Frame';
+# is a subclass of Wx::Dialog
+use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
