@@ -220,7 +220,7 @@ sub guess_newline {
 sub _find_quick_fix {
 	my ($self, $editor) = @_;
 	
-	my $new_line = $self->guess_newline;
+	my $nl = $self->guess_newline;
 	my $current_line_no = $editor->GetCurrentLine;
 	
 	my @items = ();
@@ -239,7 +239,10 @@ sub _find_quick_fix {
 					listener => sub { 
 						#Insert a variable declaration before the start of the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
-						$editor->InsertText($line_start, "my $var_name;$new_line");
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						my $indent = ($line_text =~ /(^\s+)/) ? $1 : '';
+						$editor->InsertText($line_start, "${indent}my $var_name;$nl");
 					},
 				};
 			
@@ -274,8 +277,13 @@ sub _find_quick_fix {
 					listener => sub { 
 						#Insert an empty routine definition before the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						my $indent = ($line_text =~ /(^\s+)/) ? $1 : '';
 						$editor->InsertText($line_start, 
-							"sub $routine_name {$new_line\t#XXX-implement$new_line}$new_line");
+							"${indent}sub $routine_name {$nl" .
+							"${indent}\t#XXX-implement$nl" .
+							"${indent}}$nl");
 					},
 				};
 			
@@ -657,12 +665,12 @@ sub _find_quick_fix {
 					
 					my $indent = ($selected_text =~ /(^\s+)/) ? $1 : '';
 					$selected_text =~ s/^/\t/gm;
-					my $line_text =  "${indent}try {\n" .
-						"$selected_text\n" . 
-						"${indent}\tCATCH {\n" .
-						"${indent}\t\twarn \"oops: \$!\";\n" .
-						"${indent}\t}\n" .
-						"${indent}}\n";
+					my $line_text =  "${indent}try {$nl" .
+						"$selected_text$nl" . 
+						"${indent}\tCATCH {$nl" .
+						"${indent}\t\twarn \"oops: \$!\";$nl" .
+						"${indent}\t}$nl" .
+						"${indent}}$nl";
 					$editor->SetSelection( $line_start, $line_end );
 					$editor->ReplaceSelection( $line_text );
 				},
