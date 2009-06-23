@@ -109,7 +109,7 @@ sub menu_plugins {
 	# Shows the "Quick Fix" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-~"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-Shift-1"), ),
 		sub { $self->_show_quick_fix_dialog },
 	);
 	
@@ -265,7 +265,7 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 Once you enable this Plugin under Padre, you'll get a brand new menu with the 
 following options:
 
-=head2 'Open Resource' (Shortcut: Ctrl-Shift-R)
+=head2 'Open Resource' (Shortcut: Ctrl + Shift + R)
 
 This opens a nice dialog that allows you to find any file that exists 
 in the current document or working directory. You can use ? to replace 
@@ -276,34 +276,34 @@ Padre when you press the OK button.
 You can simply ignore CVS, .svn and .git folders using a simple checkbox 
 (enhancement over Eclipse).
 
-=head2 Quick Assist (Shortcut: Ctrl-Shift-L)
+=head2 Quick Assist (Shortcut: Ctrl + Shift + L)
 
 This opens a dialog with a yellow list of current Padre actions/shortcuts. When 
 you hit the OK button, the selected Padre action will be performed.
 
-=head2 Quick Menu Access (Shortcut: Ctrl-3)
+=head2 Quick Menu Access (Shortcut: Ctrl + 3)
 
 This opens a dialog where you can search for menu labels. When you hit the OK 
 button, the menu item will be selected.
 
-=head2 Quick Outline Access (Shortcut: Ctrl-4)
+=head2 Quick Outline Access (Shortcut: Ctrl + 4)
 
 This opens a dialog where you can search for outline tree. When you hit the OK 
 button, the outline element in the outline tree will be selected.
 
-=head2 Quick Module Access (Shortcut: Ctrl-5)
+=head2 Quick Module Access (Shortcut: Ctrl + 5)
 
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
 
-=head2 Open in Explorer (Shortcut: Ctrl-6)
+=head2 Open in Explorer (Shortcut: Ctrl + 6)
 
 For the current saved Padre document, open the platform's file manager and 
 tries to select it if possible. On win32, opens the containing folder and 
 selects the file in explorer. On *inux KDE/GNOME, opens the containing folder 
 for it.
 
-=head2 Quick Fix (Shortcut: Ctrl-~)
+=head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
 
 This opens a yellow box that lists different actions that relate to 
 fixing the code at the cursor. It will call B<event_on_quick_fix> method 
