@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use base 'Padre::Task';
 
-our $VERSION = '0.44';
+our $VERSION = '0.45';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed
