@@ -639,16 +639,22 @@ sub _find_quick_fix {
 	if($num_issues) {
 		
 		# add "comment error line" as the last resort to solving an issue
-		push @items, {
-			text     => Wx::gettext('Comment error line'),
-			listener => sub {
-				# comment current error by putting a hash and a space
-				# since #( is an embedded comment in Perl 6!
-				# see S02:166
-				my $line_start = $editor->PositionFromLine( $current_line_no );
-				$editor->InsertText($line_start, '# ');
-			},
-		};
+		foreach my $issue ( @{$self->{issues}} ) {
+			my $issue_line_no = $issue->{line} - 1;
+			if($issue_line_no == $current_line_no) {
+				push @items, {
+					text     => Wx::gettext('Comment error line'),
+					listener => sub {
+						# comment current error by putting a hash and a space
+						# since #( is an embedded comment in Perl 6!
+						# see S02:166
+						my $line_start = $editor->PositionFromLine( $current_line_no );
+						$editor->InsertText($line_start, '# ');
+					},
+				};
+				last;
+			}
+		}
 		
 	} else {
 
