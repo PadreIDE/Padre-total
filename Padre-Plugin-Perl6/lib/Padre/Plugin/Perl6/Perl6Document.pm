@@ -220,6 +220,10 @@ sub guess_newline {
 sub _find_quick_fix {
 	my ($self, $editor) = @_;
 	
+	if(not defined $self->{issues}) {
+		$self->{issues} = [];
+	}
+
 	my $nl = $self->guess_newline;
 	my $current_line_no = $editor->GetCurrentLine;
 	
