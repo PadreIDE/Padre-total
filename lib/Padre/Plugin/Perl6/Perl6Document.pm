@@ -225,8 +225,6 @@ sub _find_quick_fix {
 	
 	my @items = ();
 	my $num_issues = scalar @{$self->{issues}};
-	print "Number of issues: $num_issues\n";
-	my $comment_error_added = 0;
 	foreach my $issue ( @{$self->{issues}} ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if($issue_line_no == $current_line_no) {
@@ -622,19 +620,53 @@ sub _find_quick_fix {
 			
 			}
 
-			if(not $comment_error_added) {
-				push @items, {
-					text     => Wx::gettext('Comment error line'),
-					listener => sub {
-						# comment current error by putting a hash and a space
-						# since #( is an embedded comment in Perl 6!
-						# see S02:166
-						my $line_start = $editor->PositionFromLine( $current_line_no );
-						$editor->InsertText($line_start, '# ');
-					},
-				};
-				$comment_error_added = 1;
-			}
+		}
+
+	}
+	
+	if($num_issues) {
+		
+		# add "comment error line" as the last resort to solving an issue
+		push @items, {
+			text     => Wx::gettext('Comment error line'),
+			listener => sub {
+				# comment current error by putting a hash and a space
+				# since #( is an embedded comment in Perl 6!
+				# see S02:166
+				my $line_start = $editor->PositionFromLine( $current_line_no );
+				$editor->InsertText($line_start, '# ');
+			},
+		};
+		
+	} else {
+
+		# No issues; let us provide a some helpful quick fixes
+		my $selected_text = $editor->GetSelectedText;
+		if($selected_text && $selected_text =~ /[\n\r]/) {
+			
+			push @items, {
+				text     => Wx::gettext('Surround with try { ... }'),
+				listener => sub {
+					# Surround the 'selection' with a try { 'selection'  CATCH { } }
+					my $line_start = $editor->PositionFromLine( 
+						$editor->LineFromPosition($editor->GetSelectionStart) 
+					);
+					my $line_end = $editor->PositionFromLine( 
+						$editor->LineFromPosition($editor->GetSelectionEnd) 
+					);
+					
+					my $indent = ($selected_text =~ /(^\s+)/) ? $1 : '';
+					$selected_text =~ s/^/\t/gm;
+					my $line_text =  "${indent}try {\n" .
+						"$selected_text\n" . 
+						"${indent}\tCATCH {\n" .
+						"${indent}\t\twarn \"oops: \$!\";\n" .
+						"${indent}\t}\n" .
+						"${indent}}\n";
+					$editor->SetSelection( $line_start, $line_end );
+					$editor->ReplaceSelection( $line_text );
+				},
+			};
 			
 		}
 	}
