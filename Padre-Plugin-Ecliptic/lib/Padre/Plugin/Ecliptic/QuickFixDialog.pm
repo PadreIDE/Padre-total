@@ -44,7 +44,7 @@ sub new {
 		$main,
 		-1,
 		Wx::gettext('Quick Fix'),
-		[$pt->x, $pt->y + 18],  # XXX- no hardcoding plz
+		[$pt->x, $pt->y + $editor->TextHeight(0)],
 		Wx::wxDefaultSize,
 		Wx::wxBORDER_SIMPLE,
 	);
@@ -142,14 +142,20 @@ sub _create_list {
 	my $main = $self->_plugin->main;
 	my $current = $self->_plugin->current;
 	my $editor = $current->editor;
-	my $list_width = 260;
-	$self->SetFont($editor->GetFont);
+	my $list_width = 280;
+	my $editor_font = $self->GetFont;
+	my $editor_font_size = $editor->TextHeight(0) - 10;
+	if($editor_font_size < 10) {
+		$editor_font_size = 10;
+	}
+	$editor_font->SetPointSize($editor_font_size);
+	$self->SetFont($editor_font);
 	$self->_list( 
 		Wx::ListView->new(
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[$list_width,190],
+			[$list_width,100],
 			Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL | 
 			Wx::wxBORDER_NONE
 		)
