@@ -4,12 +4,12 @@ Changes
 
 	- Fixed Inlined P6 template to be recognized as Perl 5.
 	- Added "New Perl 6 Script" for consistency.
-	- Implemented 'Use $::PERL_VERSION' quick fix
 	- No more string interpolation (just in case) in quick fix messages.
 	- Quick fix messages are more user friendly.
-	- Implemented 'Use $! instead of $@ for eval errors' quick fix
 	- Error/warnings messages are now trimmed before testing for possible fixes.
 	- Implemented the following quick fixes:
+		- Use $! instead of $@ for eval errors
+		- Use $::PERL_VERSION
 		- Use +> for numeric right shift
 		- Use ~> for string right shift
 		- Use +< for numeric left shift
