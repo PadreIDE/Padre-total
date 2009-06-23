@@ -185,7 +185,12 @@ sub keywords {
 	return $self->{keywords};
 }
 
-sub comment_lines_str { return '#' }
+# In Perl 6 the best way to comment the current error reliably is 
+# by putting a hash and a space since #( is an embedded comment in Perl 6!
+# see S02:166
+sub comment_lines_str { 
+	return '# ';
+}
 
 #
 # Guess the new line for the current document
