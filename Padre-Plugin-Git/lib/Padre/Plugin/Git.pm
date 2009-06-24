@@ -28,7 +28,7 @@ Padre::Plugin::Git - Simple Git interface for Padre
 
 cpan install Padre::Plugin::Git
 
-Acces it via Plugin/Git
+Access it via Plugin/Git
 
 
 =head1 AUTHOR
@@ -65,6 +65,7 @@ sub plugin_name {
 
 sub menu_plugins_simple {
 	my $self = shift;
+
 	return $self->plugin_name => [
 		'About'             => sub { $self->show_about },
 		'Commit...' => [
@@ -132,7 +133,7 @@ sub git_commit_file {
 
 sub git_commit_project {
 	my ($self) = @_;
-	
+
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	my $filename = $doc->filename;
@@ -143,7 +144,7 @@ sub git_commit_project {
 
 sub git_status {
 	my ($self, $path) = @_;
-	
+
 	my $main = Padre->ide->wx->main;
 	my $out = capture_merged(sub { system "git status $path" });
 	$main->message($out, "Git Status of $path");
@@ -152,17 +153,15 @@ sub git_status {
 
 sub git_status_of_file {
 	my ($self) = @_;
-	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
-	return $main->error("No document found") if not $doc;
-	$self->git_status($doc->filename);
+
+#	return $main->error("No document found") if not $doc;
+	$self->git_status(_get_current_filename());
 	return;
 }
 
 sub git_status_of_dir {
 	my ($self) = @_;
-	
+
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	return $main->error("No document found") if not $doc;
@@ -175,7 +174,7 @@ sub git_status_of_dir {
 # TODO guess current project
 sub git_status_of_project {
 	my ($self) = @_;
-	
+
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	return $main->error("No document found") if not $doc;
@@ -191,19 +190,24 @@ sub git_status_of_project {
 
 sub git_diff {
 	my ($self, $path) = @_;
-	
-	my $main = Padre->ide->wx->main;
+
+    use Cwd qw/cwd chdir/;
+    my $cwd = cwd;
+    chdir File::Basename::dirname($path);
 	my $out = capture_merged(sub { system "git diff $path" });
-	use Padre::Wx::Dialog::Text;
+	chdir $cwd;
+	require Padre::Wx::Dialog::Text;
+	my $main = Padre->ide->wx->main;
 	Padre::Wx::Dialog::Text->show($main, "Git Diff of $path", $out);
 #	$main->message($out, "Git Diff of $path");
+
 	return;
 }
 
 sub git_diff_of_file {
-	my ($self, $path) = @_;
+	my ($self) = @_;
 
-	$self->git_diff($path);
+	$self->git_diff(_get_current_filename());
 
 	return;
 }
@@ -230,6 +234,22 @@ sub git_diff_of_project {
 	$self->git_diff($dir);
 
 	return;
+}
+
+sub _get_current_filename {
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+
+	return $doc->filename;
+}
+
+
+sub _get_current_filedir {
+	my $main = Padre->ide->wx->main;
+	my $doc = $main->current->document;
+	return $main->error("No document found") if not $doc;
+
+	return File::Basename::dirname($doc->filename);
 }
 
 1;
