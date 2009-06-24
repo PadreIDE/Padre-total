@@ -657,6 +657,8 @@ sub _find_quick_fix {
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
 						$line_text = "# ${line_text}";
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
 					},
 				};
 				last;
