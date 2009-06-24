@@ -246,7 +246,11 @@ sub _find_quick_fix {
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
 						my $indent = ($line_text =~ /(^\s+)/) ? $1 : '';
-						$editor->InsertText($line_start, "${indent}my $var_name;$nl");
+						$line_text = 
+							"${indent}my $var_name;$nl" .
+							$line_text;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );
 					},
 				};
 			
@@ -284,10 +288,12 @@ sub _find_quick_fix {
 						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
 						my $line_text  = $editor->GetTextRange($line_start, $line_end);
 						my $indent = ($line_text =~ /(^\s+)/) ? $1 : '';
-						$editor->InsertText($line_start, 
-							"${indent}sub $routine_name {$nl" .
+						$line_text =  "${indent}sub $routine_name {$nl" .
 							"${indent}\t#XXX-implement$nl" .
-							"${indent}}$nl");
+							"${indent}}$nl" .
+							$line_text;
+						$editor->SetSelection( $line_start, $line_end );
+						$editor->ReplaceSelection( $line_text );							
 					},
 				};
 			
@@ -646,10 +652,11 @@ sub _find_quick_fix {
 					text     => Wx::gettext('Comment error line'),
 					listener => sub {
 						# comment current error by putting a hash and a space
-						# since #( is an embedded comment in Perl 6!
-						# see S02:166
+						# since #( is an embedded comment in Perl 6! see S02:166
 						my $line_start = $editor->PositionFromLine( $current_line_no );
-						$editor->InsertText($line_start, '# ');
+						my $line_end   = $editor->GetLineEndPosition( $current_line_no );
+						my $line_text  = $editor->GetTextRange($line_start, $line_end);
+						$line_text = "# ${line_text}";
 					},
 				};
 				last;
