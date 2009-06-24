@@ -238,6 +238,11 @@ sub _find_quick_fix {
 				
 				my $var_name = $1;
 
+				# Fixes the following:
+				# 	$foo = 1;
+				# into:
+				# 	my $foo;
+				#	$foo = 1;
 				push @items, {
 					text     => sprintf( Wx::gettext('Insert declaration for %s'), $var_name),
 					listener => sub { 
@@ -264,6 +269,10 @@ sub _find_quick_fix {
 				);
 				foreach my $keyword (@flow_control_keywords) {
 					if($keyword eq $routine_name) {
+						# Fixes the following:
+						# 	if() { }; 
+						# into:
+						# 	if () { };
 						push @items, {
 							text     => sprintf( Wx::gettext('Insert a space after %s'), $keyword ),
 							listener => sub { 
@@ -280,6 +289,13 @@ sub _find_quick_fix {
 						last;
 					}
 				}
+				# Fixes the following:
+				# 	foo();
+				# into:
+				# 	sub foo() {
+				#		#XXX-implement
+				# 	}
+				# 	foo();
 				push @items, {
 					text     => sprintf( Wx::gettext('Insert routine %s'), $routine_name),
 					listener => sub { 
@@ -299,6 +315,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Obsolete use of . to concatenate strings/i) {
 
+				# Fixes the following:
+				# 	$string = "a" . "b";
+				# into:
+				# 	$string = "a" ~ "b";
 				push @items, {
 					text     => Wx::gettext('Use ~ instead of . for string concatenation'),
 					listener => sub { 
@@ -314,6 +334,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Obsolete use of -> to call a method/i) {
 
+				# Fixes the following:
+				# 	P->foo;
+				# into:
+				# 	P.foo;
 				push @items, {
 					text     => Wx::gettext('Use . for method call'),
 					listener => sub { 
@@ -329,6 +353,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Obsolete use of C\+\+ constructor syntax/i) {
 
+				# Fixes the following:
+				# 	new Foo;
+				# into:
+				# 	Foo.new;
 				push @items, {
 					text     => Wx::gettext('Use Perl 6 constructor syntax'),
 					listener => sub { 
@@ -345,6 +373,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Obsolete use of C-style "for \(;;\)" loop/i) {
 
+				# Fixes the following:
+				# 	for(;;) { };
+				# into:
+				# 	loop(;;) { };
 				push @items, {
 					text     => Wx::gettext('Use loop (;;) for looping'),
 					listener => sub { 
@@ -360,6 +392,10 @@ sub _find_quick_fix {
 				
 			} elsif($issue_msg =~ /^Obsolete use of \[-1\] subscript to access final element/i) {
 
+				# Fixes the following:
+				# 	[-1];
+				# into:
+				# 	[*-1];
 				push @items, {
 					text     => Wx::gettext('Use [*-1] to access final element'),
 					listener => sub { 
@@ -375,6 +411,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Obsolete use of rand\(N\)/i) {
 			
+				# Fixes the following:
+				# 	rand(10);
+				# into:
+				# 	10.pick;
 				push @items, {
 					text     => Wx::gettext('Use N.pick for a random number'),
 					listener => sub { 
@@ -388,6 +428,10 @@ sub _find_quick_fix {
 					},
 				};
 
+				# Fixes the following:
+				# 	rand(10);
+				# into:
+				# 	(1..10).pick;
 				push @items, {
 					text     => Wx::gettext('Use (1..N).pick for a random number'),
 					listener => sub { 
@@ -403,6 +447,10 @@ sub _find_quick_fix {
 				
 			} elsif($issue_msg =~ /^Please use \.\.\* for indefinite range/i) {
 
+				# Fixes the following:
+				# 	[1..];
+				# into:
+				# 	[1..*];
 				push @items, {
 					text     => Wx::gettext('Use [N..*] for indefinite range'),
 					listener => sub { 
@@ -418,6 +466,10 @@ sub _find_quick_fix {
 			
 			} elsif($issue_msg =~ /^Please use \!\! rather than \:\:/i) {
 
+				# Fixes the following:
+				# 	1 == 2 ?? 1 :: 2;
+				# into:
+				# 	1 == 2 ?? 1 !! 2;
 				push @items, {
 					text     => Wx::gettext('Use !! for conditional operator else clause'),
 					listener => sub { 
@@ -434,9 +486,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Precedence too loose within \?\?\!\!/i) {
 
 				# Fixes errors like:
-				# 42 ?? 1,2,3 Z 4,5,6 !! 1,2,3 X 4,5,6;
+				# 	42 ?? 1,2,3 Z 4,5,6 !! 1,2,3 X 4,5,6;
 				# into:
-				# 42 ?? (1,2,3 Z 4,5,6) !! 1,2,3 X 4,5,6;
+				# 	42 ?? (1,2,3 Z 4,5,6) !! 1,2,3 X 4,5,6;
 				push @items, {
 					text     => Wx::gettext('Use ?? (...) !! to avoid precedence bugs'),
 					listener => sub { 
@@ -454,9 +506,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of \?\: for the conditional operator/i) {
 
 				# Fixes the following:
-				# (1 == 1) ? 1 : 2
+				# 	(1 == 1) ? 1 : 2
 				# into:
-				# (1 == 1) ?? 1 !! 2
+				# 	(1 == 1) ?? 1 !! 2
 				push @items, {
 					text     => Wx::gettext('Use ?? !! for the conditional operator'),
 					listener => sub { 
@@ -473,9 +525,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Possible obsolete use of \.\= as append operator/i) {
 
 				# Fixes the following:
-				# $string .= "a";
+				# 	$string .= "a";
 				# into:
-				# $string ~= "a";
+				# 	$string ~= "a";
 				push @items, {
 					text     => Wx::gettext('Use ~= for string concatenation'),
 					listener => sub { 
@@ -492,9 +544,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of \=\~ to do pattern matching/i) {
 
 				# Fixes the following:
-				# $string =~ /abc/;
+				# 	$string =~ /abc/;
 				# into:
-				# $string ~~ /abc/;
+				# 	$string ~~ /abc/;
 				push @items, {
 					text     => Wx::gettext('Use ~~ for pattern matching'),
 					listener => sub { 
@@ -511,9 +563,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of \!\~ to do negated pattern matching/i) {
 
 				# Fixes the following:
-				# $string !~ /abc/;
+				# 	$string !~ /abc/;
 				# into:
-				# $string !~~ /abc/;
+				# 	$string !~~ /abc/;
 				push @items, {
 					text     => Wx::gettext('Use !~~ for negated pattern matching'),
 					listener => sub { 
@@ -530,9 +582,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of >> to do right shift/i) {
 
 				# Fixes the following:
-				# 2 >> 1;
+				# 	2 >> 1;
 				# into:
-				# 2 +> 1;
+				# 	2 +> 1;
 				push @items, {
 					text     => Wx::gettext('Use +> for numeric right shift'),
 					listener => sub { 
@@ -547,9 +599,9 @@ sub _find_quick_fix {
 				};
 			
 				# Fixes the following:
-				# 100 >> 1;
+				# 	100 >> 1;
 				# into:
-				# 100 ~> 1;
+				# 	100 ~> 1;
 				push @items, {
 					text     => Wx::gettext('Use ~> for string right shift'),
 					listener => sub { 
@@ -565,9 +617,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of << to do left shift/i) {
 
 				# Fixes the following:
-				# 2 << 1;
+				# 	2 << 1;
 				# into:
-				# 2 +< 1;
+				# 	2 +< 1;
 				push @items, {
 					text     => Wx::gettext('Use +< for numeric left shift'),
 					listener => sub { 
@@ -582,9 +634,9 @@ sub _find_quick_fix {
 				};
 			
 				# Fixes the following:
-				# 100 << 1;
+				# 	100 << 1;
 				# into:
-				# 100 ~< 1;
+				# 	100 ~< 1;
 				push @items, {
 					text     => Wx::gettext('Use ~< for string left shift'),
 					listener => sub { 
@@ -601,9 +653,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of \$\@ variable as eval error/i) {
 
 				# Fixes the following:
-				# $@;
+				# 	$@;
 				# into:
-				# $!;
+				# 	$!;
 				push @items, {
 					text     => Wx::gettext('Use $! for eval errors'),
 					listener => sub { 
@@ -620,9 +672,9 @@ sub _find_quick_fix {
 			} elsif($issue_msg =~ /^Obsolete use of \$\] variable/i) {
 
 				# Fixes the following:
-				# $];
+				# 	$];
 				# into:
-				# $::PERL_VERSION;
+				# 	$::PERL_VERSION;
 				push @items, {
 					text     => Wx::gettext('Use $::PERL_VERSION'),
 					listener => sub { 
@@ -648,6 +700,10 @@ sub _find_quick_fix {
 		foreach my $issue ( @{$self->{issues}} ) {
 			my $issue_line_no = $issue->{line} - 1;
 			if($issue_line_no == $current_line_no) {
+				# Fixes the following:
+				# 	some_weird_error();
+				# into:
+				# 	# some_weird_error();
 				push @items, {
 					text     => Wx::gettext('Comment error line'),
 					listener => sub {
@@ -671,6 +727,17 @@ sub _find_quick_fix {
 		my $selected_text = $editor->GetSelectedText;
 		if($selected_text && $selected_text =~ /[\n\r]/) {
 			
+			# Fixes the following:
+			# 	faulty_code();
+			# into:
+			# 	try {
+			#		faulty_code();
+			#
+			#		CATCH {
+			#			warn "oops: $!";
+			#		}
+			#	}
+
 			push @items, {
 				text     => Wx::gettext('Surround with try { ... }'),
 				listener => sub {
