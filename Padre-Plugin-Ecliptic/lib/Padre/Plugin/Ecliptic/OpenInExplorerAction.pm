@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @EXPORT_OK = ();
 
 # module imports

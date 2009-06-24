@@ -1,5 +1,17 @@
 Changes
 
+=head1 0.12  2009.6.24
+
+	- Quick fix dialog has less size/position hard-coding. Takes a smaller font 
+		than editor's line text height (i.e. works with CTRL +/-)
+	- Ctrl+~ is out, Ctrl + Shift + 1 is now used for quick fix to be easier
+		to use on uk/german keyboard shortcuts.
+	- various POD fixes
+	- POD shortcut update (e.g. Ctrl-3 => CTRL + 3)
+	- a white background with a simple border like in Eclipse
+	- Handled 'no filename' crash
+	- Do nothing to exit the dialog when "No suggestion" is selected...
+
 =head1 0.11  2009.6.21
 
 	- Implemented "Quick Fix" popup list box which finds its list via 
