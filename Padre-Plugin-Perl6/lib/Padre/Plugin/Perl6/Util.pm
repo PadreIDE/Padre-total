@@ -3,7 +3,7 @@ package Padre::Plugin::Perl6::Util;
 use strict;
 use warnings;
 
-our $VERSION = '0.45';
+our $VERSION = '0.46';
 
 our @ISA       = 'Exporter';
 our @EXPORT_OK = qw(get_perl6);
