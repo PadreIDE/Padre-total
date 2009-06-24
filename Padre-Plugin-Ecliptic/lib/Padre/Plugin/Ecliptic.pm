@@ -265,7 +265,7 @@ Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful feature
 Once you enable this Plugin under Padre, you'll get a brand new menu with the 
 following options:
 
-=head2 'Open Resource' (Shortcut: Ctrl + Shift + R)
+=head2 Open Resource (Shortcut: Ctrl + Shift + R)
 
 This opens a nice dialog that allows you to find any file that exists 
 in the current document or working directory. You can use ? to replace 
@@ -278,7 +278,7 @@ You can simply ignore CVS, .svn and .git folders using a simple checkbox
 
 =head2 Quick Assist (Shortcut: Ctrl + Shift + L)
 
-This opens a dialog with a yellow list of current Padre actions/shortcuts. When 
+This opens a dialog with a list of current Padre actions/shortcuts. When 
 you hit the OK button, the selected Padre action will be performed.
 
 =head2 Quick Menu Access (Shortcut: Ctrl + 3)
@@ -305,7 +305,7 @@ for it.
 
 =head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
 
-This opens a yellow box that lists different actions that relate to 
+This opens a dialog that lists different actions that relate to 
 fixing the code at the cursor. It will call B<event_on_quick_fix> method 
 passing a L<Padre::Wx::Editor> object on the current Padre document. 
 Please see the following sample implementation:
@@ -331,9 +331,9 @@ Please see the following sample implementation:
 		return @items;
 	}
 
-=head2 'About'
+=head2 About
 
-Shows a classic about box with this module's name and version.
+Shows a classic about dialog with this module's name and version.
 
 =head1 Why the name Ecliptic?
 
