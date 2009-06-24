@@ -3,6 +3,8 @@ package Locale::Msgfmt::po;
 use strict;
 use warnings;
 
+our $VERSION = '0.01';
+
 sub new {
   my $class = shift;
   return bless shift || {}, $class;
