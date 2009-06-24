@@ -1,5 +1,18 @@
 Changes
 
+=head1 0.46 2009.6.24
+
+	- More source documentation on quick fixes.
+	- No more insertion of text; just current line string replacement.
+	- Comment error line' is more accurate.
+	- Fixed a possible point of failure.
+	- Respect document newline and user's indentation.
+	- Comment error line quick fix is always the last one if an error occurs is 
+		on the current line
+	- Finally implemented 'Surround with try { ... }' quick fix. Perl 6 
+		exception handling with indentation.
+	- use a # and a space to toggle comments to avoid '#(' parametric comments
+
 =head1 0.45 2009.6.23
 
 	- Fixed Inlined P6 template to be recognized as Perl 5.
