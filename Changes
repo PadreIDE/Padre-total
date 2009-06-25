@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.04    Jun 25, 2009
+        if running from CPAN testers, require Locale::Maketext::Gettext too
+
 0.03    Jun 24, 2009
         fix on perl 5.8
 
