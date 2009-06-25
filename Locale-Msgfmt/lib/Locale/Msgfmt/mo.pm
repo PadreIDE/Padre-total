@@ -3,7 +3,7 @@ package Locale::Msgfmt::mo;
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Locale::Msgfmt::Utils;
 
