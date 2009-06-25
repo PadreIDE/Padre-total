@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.05    unreleased
+        don't run the external script from the tests
+
 0.04    Jun 25, 2009
         if running from CPAN testers, require Locale::Maketext::Gettext too
 
