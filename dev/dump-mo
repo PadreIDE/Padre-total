@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-perl -MLocale::Maketext::Gettext -MData::Dumper -e 'my %h = read_mo(shift); foreach(sort keys %h){print $_ . " " . $h{$_} . "\n";}' $1
+use Locale::Maketext::Gettext;
+use Data::Dumper;
+my %h = read_mo(shift);
+foreach(sort keys %h){print $_ . " " . $h{$_} . "\n";};
 
