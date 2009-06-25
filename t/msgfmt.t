@@ -8,8 +8,7 @@ use File::Basename;
 use File::Temp;
 
 SKIP: {
-    eval("use Locale::Maketext::Gettext; 1;");
-    skip "Test needs Locale::Maketext::Gettext", 1 if($@);
+    skip "Test needs Locale::Maketext::Gettext", 1 if(!eval("use Locale::Maketext::Gettext; 1;"));
     my $dump_mo = File::Spec->catfile(dirname($0), "..", "dev", "dump-mo");
     my %h;
     my $good = "";
