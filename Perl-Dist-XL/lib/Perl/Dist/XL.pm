@@ -11,9 +11,15 @@ use LWP::Simple    qw(getstore);
 sub new {
 	my ($class, %args) = @_;
 	my $self = bless \%args, $class;
-	$self->{temp}             ||= tempdir( CLEANUP => 0 );
-	$self->{perl_install_dir} = "$self->{temp}/perl";
-	$self->{cwd}              = cwd;
+
+	$self->{cwd} = cwd;
+
+	if ($self->{temp}) {
+		die "$self->{temp} does not exist\n" if not -d $self->{temp};
+	} else {
+		$self->{temp} = tempdir( CLEANUP => 1 );
+	}
+	$self->{perl_install_dir} = $self->temp_dir . '/' . $self->release_name;
 	return $self;
 }
 DESTROY {
@@ -22,58 +28,24 @@ DESTROY {
 	debug("Done");
 }
 
-sub install_modules {
-	my ($self) = @_;
-	
-	my @modules = (
-		['Test::Simple'     => '0.88'],
-		['Sub::Uplevel'     => '0.2002'],
-		['Array::Compare'   => '1.17'],
-		['Tree::DAG_Node'   => '1.06'],
-		['Test::Exception'  => '0.27'],
-		['Test::Warn'       => '0.11'],
-		['Test::Tester'     => '0'],
-		['Test::NoWarnings' => '0'],
-		['Test::Deep'       => '0'],
-		['IO::Scalar'       => '0'],
-	);
-	foreach my $m (@modules) {
-		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/mycpan.pl $m->[0]");
-	}
-}
 
 sub build {
 	my ($self) = @_;
-	$self->get_perl;
-	$self->build_perl;
 
+	$self->get_perl   unless $self->skip_perl;
+	$self->build_perl unless $self->skip_perl;
 
 	$self->configure_cpan;
 	$self->install_modules;
 	$self->remove_cpan_dir;
 
-	#$self->test_perl;
-	$self->move_to_other_path;
-	#$self->test_perl;
-
+	# TODO: run some tests
 	$self->create_zip;
+	# TODO: unzip and in some other place and run some more tests
+
 	return;
 }
 
-sub configure_cpan {
-	my ($self) = @_;
-	my $from = "$self->{cwd}/share/files/mycpan.pl"; # TODO not from cwd ?
-	my $to   = $self->temp_dir . '/perl/bin/';
-	debug("copy '$from', '$to'");
-	copy $from, $to;
-	return;
-}
-
-sub remove_cpan_dir {
-	my ($self) = @_;
-	_system("rm -rf " . $self->temp_dir . '/perl/.cpan');
-	return;
-}
 
 sub get_perl {
 	my ($self) = @_;
@@ -99,6 +71,7 @@ sub get_perl {
 
 sub build_perl {
 	my ($self) = @_;
+
 	my $dir = $self->cache;
 	my $temp = $self->temp_dir;
 	chdir $self->{perl_source_dir};
@@ -107,6 +80,43 @@ sub build_perl {
 	_system("make");
 	_system("make test");
 	_system("make install");
+
+	return;
+}
+
+sub configure_cpan {
+	my ($self) = @_;
+	my $from = "$self->{cwd}/share/files/mycpan.pl"; # TODO not from cwd ?
+	my $to   = $self->{perl_install_dir} . '/bin/';
+	debug("copy '$from', '$to'");
+	copy $from, $to;
+	return;
+}
+
+sub install_modules {
+	my ($self) = @_;
+	
+	my @modules = (
+		['Test::Simple'     => '0.88'],
+		['Sub::Uplevel'     => '0.2002'],
+		['Array::Compare'   => '1.17'],
+		['Tree::DAG_Node'   => '1.06'],
+		['Test::Exception'  => '0.27'],
+		['Test::Warn'       => '0.11'],
+		['Test::Tester'     => '0'],
+		['Test::NoWarnings' => '0'],
+		['Test::Deep'       => '0'],
+		['IO::Scalar'       => '0'],
+	);
+	foreach my $m (@modules) {
+		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/mycpan.pl $m->[0]");
+	}
+}
+
+sub remove_cpan_dir {
+	my ($self) = @_;
+	_system("rm -rf " . $self->{perl_install_dir} . '/.cpan');
+	return;
 }
 
 
@@ -114,9 +124,12 @@ sub create_zip {
 	my ($self) = @_;
 	chdir $self->temp_dir;
 	my $file = "$self->{cwd}/" . $self->release_name . '.tar.gz';
-	_system("tar czf $file " . $self->release_name);
+	_system("tar czf $file " . $self->{perl_install_dir});
 	return;
 }	
+
+
+#### helper subs
 
 sub temp_dir {
 	my ($self) = @_;
@@ -130,16 +143,6 @@ sub cache {
 	return $dir
 }
 
-sub move_to_other_path {
-	my ($self) = @_;
-	
-	chdir $self->temp_dir;
-	my $release_dir = $self->release_name;
-#	debug(cwd);
-	debug("move perl to $release_dir");
-	rename 'perl', $release_dir or die $!;
-	return;
-}
 
 sub release_name {
 	my ($self) = @_;
@@ -152,6 +155,9 @@ sub _system {
 	system(@args) == 0 or die "system failed with $?\n";
 }
 
+sub skip_perl {
+	return $_[0]->{skipperl};
+}
 
 sub debug {
 	print "@_\n";

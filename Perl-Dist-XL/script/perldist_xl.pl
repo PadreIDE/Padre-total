@@ -15,10 +15,25 @@ my %conf;
 GetOptions(\%conf, 
 	"temp=s",
 	"release=s",
-	) or die;
-die "need --release VERSION\n" if not $conf{release};
+	"skipperl",
+	) or usage();
+usage("need --release VERSION") if not $conf{release};
 
 my $p = Perl::Dist::XL->new(%conf);
 $p->build;
 
+sub usage {
+	my $str = shift;
+	if ($str) {
+		print "\n$str\n\n";
+	}
+	print <<"END_USAGE";
+Usage: $0 --release VERSION    ( e.g. 0.01 )
+
+       --temp  PATH/TO/TEMP/DIR
+       --skipperl       to skip getting and building perl
+
+END_USAGE
+	exit;
+}
 
