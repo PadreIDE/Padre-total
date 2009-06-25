@@ -2,13 +2,15 @@ package Locale::Msgfmt;
 
 use Locale::Msgfmt::mo;
 use Locale::Msgfmt::po;
+use File::Path;
+use File::Spec;
 
 use strict;
 use warnings;
 
 use base 'Exporter';
 
-our @EXPORT = qw/msgfmt/;
+our @EXPORT = qw/msgfmt msgfmt_dir/;
 
 our $VERSION = '0.01';
 
@@ -26,6 +28,38 @@ sub msgfmt {
   $mo->out($hash->{out});
 }
 
+sub msgfmt_dir {
+  my $hash = shift;
+  if(! -d $hash->{in}) {
+    print "error: input directory does not exist\n";
+    exit(1);
+  }
+  if(! defined($hash->{out})) {
+    $hash->{out} = $hash->{in};
+  }
+  if(! -d $hash->{out}) {
+    File::Path::mkpath($hash->{out});
+  }
+  opendir D, $hash->{in};
+  my @list = readdir D;
+  closedir D;
+  @list = grep /\.po$/, @list;
+  my %files;
+  foreach(@list) {
+    my $in = File::Spec->catfile($hash->{in}, $_);
+    my $out = File::Spec->catfile($hash->{out}, substr($_, 0, -3) . ".mo");
+    $files{$in} = $out;
+  }
+  delete $hash->{in};
+  delete $hash->{out};
+  foreach(keys %files) {
+    my %newhash = (%{$hash});
+    $newhash{in} = $_;
+    $newhash{out} = $files{$_};
+    msgfmt(\%newhash);
+  }
+}
+
 1;
 
 =head1 NAME
@@ -39,7 +73,8 @@ except this is pure Perl.
 
     use Locale::Msgfmt;
 
-    msgfmt({in => "po/fr.po", out => "po/fr.mo"})
+    msgfmt({in => "po/fr.po", out => "po/fr.mo"});
+    msgfmt_dir({in => "po/"});
 
 =head1 COPYRIGHT & LICENSE
 

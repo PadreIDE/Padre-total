@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.02    UNRELEASED
+        - add a msgfmt_dir function to convert all of the .po files in a directory
+
 0.01    Jun 24, 2009
         First version, released on an unsuspecting world.
 
