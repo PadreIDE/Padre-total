@@ -7,7 +7,7 @@ use Module::Build;
 my %requires = (
 	'perl'                     => '5.010',
 	'Padre'                    => '0.33',
-	'Syntax::Highlight::Perl6' => '0.63',
+	'Syntax::Highlight::Perl6' => '0.64',
 	'URI'                      => '1.37',
 	'File::Which'              => '0.05',
 	'Class::XSAccessor'        => '1.02',
