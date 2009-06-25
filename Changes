@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.47 unreleased
+
+	- build the .mo files at install time (RSN)
+
 =head1 0.46 2009.6.24
 
 	- More source documentation on quick fixes.

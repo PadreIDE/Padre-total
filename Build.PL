@@ -16,8 +16,13 @@ my %requires = (
 if($^O =~ /win32/i) {
 	$requires{'Win32::Process'} = '0.14';
 }
-
-my $builder = Module::Build->new(
+my $class = Module::Build->subclass(code => <<'EOF');
+use Locale::Msgfmt;
+sub process_mo_files {
+msgfmt_dir({in => "lib/Padre/Plugin/Perl6/share/locale/", out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
+}
+EOF
+my $builder = $class->new(
     module_name         => 'Padre::Plugin::Perl6',
     license             => 'perl',
     dist_author         => 'Ahmad M. Zawawi and Gabor Szabo',
@@ -27,16 +32,18 @@ my $builder = Module::Build->new(
 		'Test::Exception'         => '0.27',
 		'Test::NoWarnings'        => '0.084',
 		'Test::NeedsDisplay'      => '1.05',
+                'Locale::Msgfmt'          => '0.02',
 	},
     requires => \%requires,
     add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
-    create_makefile_pl  => 'traditional',
+    create_makefile_pl  => 'passthrough',
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',
             repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
         }
     },
+
 );
 
 $builder->add_build_element('mo');
