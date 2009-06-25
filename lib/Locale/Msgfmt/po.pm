@@ -11,13 +11,13 @@ sub new {
 }
 
 sub cleanup_string {
-  my $_ = shift;
-  s/\\n/\n/g;
-  s/\\r/\r/g;
-  s/\\t/\t/g;
-  s/\\"/"/g;
-  s/\\\\/\\/g;
-  return $_;
+  my $str = shift;
+  $str =~ s/\\n/\n/g;
+  $str =~ s/\\r/\r/g;
+  $str =~ s/\\t/\t/g;
+  $str =~ s/\\"/"/g;
+  $str =~ s/\\\\/\\/g;
+  return $str;
 }
 
 sub add_string {

@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.03    Jun 24, 2009
+        fix on perl 5.8
+
 0.02    Jun 24, 2009
         add a msgfmt_dir function to convert all of the .po files in a directory
 
