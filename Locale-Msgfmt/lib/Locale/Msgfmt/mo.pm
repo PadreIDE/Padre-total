@@ -38,6 +38,7 @@ sub out {
   my $self = shift;
   my $file = shift;
   open OUT, ">", $file;
+  binmode OUT;
   print OUT Locale::Msgfmt::Utils::from_hex($self->{magic});
   print OUT Locale::Msgfmt::Utils::character($self->{format});
   print OUT Locale::Msgfmt::Utils::character($self->{count});
