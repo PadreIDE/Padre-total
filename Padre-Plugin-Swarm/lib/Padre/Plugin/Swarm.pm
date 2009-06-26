@@ -8,17 +8,21 @@ use Padre::Wx       ();
 use Padre::Plugin   ();
 use Padre::Wx::Icon ();
 use Padre::Swarm::Service::Chat ();
+use Padre::Wx::Swarm::Chat ();
 use File::Spec      ();
 
 use Class::XSAccessor
 	getters => {
 	    get_config => 'config',
 	    get_services => 'services',
+	    # 
+	    get_chat => 'chat',
 	}
 	,
 	setters => {
 	    set_config => 'config',
 	    set_services=>'services',
+	    set_chat => 'chat',
 	};
 
 our $VERSION = '0.01';
@@ -72,7 +76,7 @@ sub plugin_enable {
 	my $self = shift;
 	my $config = $self->config_read;
 	$self->set_config( $config );
-	
+
 	$self->_load_everything;
 	$self->_start_services;
 	
@@ -82,6 +86,7 @@ sub plugin_enable {
 sub plugin_disable {
 	my $self = shift;
 	$self->_shutdown_services;
+	$self->_destroy_ui;
 }
 
 #####################################################################
@@ -126,24 +131,36 @@ sub _load_everything {
 	    }
 	);
 	
-
+	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
+	
+	$self->set_chat( $chatframe );
+	$chatframe->enable;
 }
 
-sub _start_transports {
+sub _destroy_ui {
 	my $self = shift;
-	my $transports = $self->get_transports;
-	while ( my ($name,$transport) = each %$transports ) {
-		$transport->start;
+	if ( my $chat = $self->get_chat ) {
+		$chat->disable;
 	}
+	$self->set_chat(undef);
+
 }
 
-sub _shutdown_transports {
-	my $self = shift;
-	my $transports = $self->get_transports;
-	while ( my ($name,$transport) = each %$transports ) {
-		$transport->shutdown;
-	}
-}
+#sub _start_transports {
+#	my $self = shift;
+#	my $transports = $self->get_transports;
+#	while ( my ($name,$transport) = each %$transports ) {
+#		$transport->start;
+#	}
+#}
+#
+#sub _shutdown_transports {
+#	my $self = shift;
+#	my $transports = $self->get_transports;
+#	while ( my ($name,$transport) = each %$transports ) {
+#		$transport->shutdown;
+#	}
+#}
 
 sub _start_services {
 	my $self = shift;

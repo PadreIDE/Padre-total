@@ -65,4 +65,19 @@ sub send {
     
 }
 
+sub receive {
+    my $self = shift;
+    my $t = $self->get_transport;
+    if ( $t->poll(0) ) {
+        my ($channel,$client,$payload) = $t->receive_from( 12000 );
+        my $message = eval { JSON::XS::decode_json( $payload ); } ;
+        if ($@) {
+            warn "cannot decode message from [$client], $@. Client said\t$message";
+            return;
+        }
+        return $message;
+    }
+    return;
+}
+
 1;
