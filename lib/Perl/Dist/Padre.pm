@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Perl::Dist::Strawberry ();
 
-our $VERSION = '0.25';
+our $VERSION = '0.260_001';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -38,13 +38,20 @@ our @ISA     = 'Perl::Dist::Strawberry';
 sub new {
 	shift->SUPER::new(
 		app_id            => 'padre',
-		app_name          => 'Padre Standalone Win32',
+		app_name          => 'Padre Standalone',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
-		image_dir         => 'C:\\padre',
+		image_dir         => 'C:\strawberry',
 
+		# Set e-mail to something Strawberry-specific.
+		perl_config_cf_email => 'perl.padre@csjewell.fastmail.us',
+
+		# Program version.
+		build_number         => 1,
+		beta_number          => 1,
+		
 		# Build both exe and zip versions
-		exe               => 1,
+		msi               => 1,
 		zip               => 1,
 		@_,
 	);
@@ -52,12 +59,18 @@ sub new {
 
 sub app_ver_name {
 	$_[0]->{app_ver_name} or
-	$_[0]->app_name . ' ' . $_[0]->perl_version_human . ' Alpha 1';
+	$_[0]->app_name
+		. ' ' . $_[0]->perl_version_human
+		. '.' . $_[0]->build_number
+		. ($_[0]->beta_number ? ' Beta ' . $_[0]->beta_number : '');
 }
 
 sub output_base_filename {
 	$_[0]->{output_base_filename} or
-	'padre-standalone-' . $_[0]->perl_version_human . '-alpha-1';
+	'padre-standalone'
+		. '-' . $_[0]->perl_version_human
+		. '.' . $_[0]->build_number
+		. ($_[0]->beta_number ? '-beta-' . $_[0]->beta_number : '')
 }
 
 
@@ -69,7 +82,12 @@ sub output_base_filename {
 
 sub install_perl_588 {
 	my $self = shift;
-	die "Perl 5.8.8 is not available in Chocolate Perl";
+	die "Perl 5.8.8 is not available in Padre Standalone";
+}
+
+sub install_perl_589 {
+	my $self = shift;
+	die "Perl 5.8.9 is not available in Padre Standalone";
 }
 
 sub install_perl_modules {
@@ -79,39 +97,57 @@ sub install_perl_modules {
 	# Manually install our non-Wx dependencies first to isolate
 	# them from the Wx problems
 	$self->install_modules( qw{
+		File::Next
 		App::Ack
 		Class::Adapter
+		Class::Inspector
 		Class::Unload
+		AutoXS::Header
 		Class::XSAccessor
 		Devel::Dumpvar
-		Encode
 		File::Copy::Recursive
 		File::ShareDir
 		File::ShareDir::PAR
-		IPC::Cmd
+		Win32::Process
 		IPC::Run
+		Test::Object
+		Config::Tiny
+		Test::ClassAPI
+		Clone
+		Hook::LexWrap
+		Test::SubCalls
+		List::MoreUtils
+		Task::Weaken
+		PPI
+		File::Find::Rule::Perl
+		File::Find::Rule::VCS
+		Module::Extract
+		Module::Manifest
+		Module::Math::Depends
 		Module::Inspector
 		Module::Refresh
+		Devel::Symdump
+		Pod::Coverage
+		Test::Pod::Coverage
 		Module::Starter
 		ORLite
 		ORLite::Migrate
-		PPI
-		Parse::ErrorString::Perl
+		Text::Diff
+		Test::Differences
+		File::Slurp
 		Pod::POM
+		Parse::ErrorString::Perl
 		Pod::Simple
 		Pod::Simple::XHTML
-		Text::Diff
 		Text::FindIndent
-		threads
-		threads::shared
 		Thread::Queue
-		Clone
-		List::MoreUtils
-		Task::Weaken
-		Test::Object
-		Class::Inspector
-		Config::Tiny
-		Hook::LexWrap
+		Pod::Abstract
+		Test::Most
+		Devel::StackTrace
+		Class::Data::Inheritable
+		Exception::Class
+		Text::Balanced
+		Class::XSAccessor::Array
 	} );
 
 	# The rest of the modules are order-specific,
@@ -147,13 +183,15 @@ Please note that B<only> bugs in the distribution itself or the CPAN
 configuration should be reported to RT. Bugs in individual modules
 should be reported to their respective distributions.
 
-=head1 AUTHOR
+=head1 AUTHORS
+
+Curtis Jewell E<lt>csjewell@cpan.orgE<gt>
 
 Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
 =head1 COPYRIGHT
 
-Copyright 2009 Adam Kennedy.
+Copyright 2009 Adam Kennedy and Curtis Jewell.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
