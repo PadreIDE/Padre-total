@@ -28,14 +28,21 @@ sub add_string {
   my %h = %{$hash};
   return if !(defined($h{msgid}) && defined($h{msgstr}));
   return if ($h{fuzzy} && !$self->{fuzzy} && length($h{msgid}) > 0);
-  return if($h{msgstr} eq "");
+  my $msgstr = join Locale::Msgfmt::Utils::null(), @{$h{msgstr}};
+  return if($msgstr eq "");
   my $context;
+  my $plural;
   if($h{msgctxt}) {
     $context = cleanup_string($h{msgctxt}) . Locale::Msgfmt::Utils::eot();
   } else {
     $context = "";
   }
-  $self->{mo}->add_string($context . cleanup_string($h{msgid}), cleanup_string($h{msgstr}));
+  if($h{msgid_plural}) {
+    $plural = Locale::Msgfmt::Utils::null() . cleanup_string($h{msgid_plural});
+  } else {
+    $plural = "";
+  }
+  $self->{mo}->add_string($context . cleanup_string($h{msgid}) . $plural, cleanup_string($msgstr));
 }
 
 sub read_po {
@@ -47,7 +54,7 @@ sub read_po {
   my $type;
   while (<F>) {
     s/\r\n/\n/;
-    if(/^(msgid|msgstr|msgctxt) +"(.*)" *$/) {
+    if(/^(msgid(?:|_plural)|msgctxt) +"(.*)" *$/) {
       $type = $1;
       if(defined($h{$type})) {
         $self->add_string(\%h);
@@ -55,8 +62,19 @@ sub read_po {
       }
       $h{$type} = $2;
     }
+    elsif(/^msgstr(?:\[(\d*)\])? +"(.*)" *$/) {
+      $type = "msgstr";
+      if(!$h{$type}) {
+        @{$h{$type}} = ();
+      }
+      push @{$h{$type}}, $2;
+    }
     elsif(/^"(.*)" *$/) {
-      $h{$type} .= $1;
+      if($type eq "msgstr") {
+        @{$h{$type}}[scalar(@{$h{$type}}) - 1] .= $1;
+      } else {
+        $h{$type} .= $1;
+      }
     }
     elsif(/^ *$/) {
       $self->add_string(\%h);
