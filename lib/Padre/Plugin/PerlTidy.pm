@@ -230,7 +230,7 @@ sub _restore_cursor_position {
 
     # parameter: $main, compiled regex
     my ( $main, $regex, $start ) = @_;
-    my $shuffle = 80;
+    my $shuffle = 40;
     my $doc     = $main->current->document;
     my $editor  = $doc->editor;
     my $text    = $editor->GetTextRange(
@@ -260,7 +260,7 @@ sub _store_cursor_position {
     my $pos    = $editor->GetCurrentPos;
 
     # A smaller selection to save memory 
-    my $sel_width = 80;    # chars before
+    my $sel_width = 40;    # chars before
     my $start;
 
     if ( ( $pos - $sel_width ) > 0 ) {
@@ -281,6 +281,7 @@ sub _store_cursor_position {
         $regex = qw{^.};
         print @_;
     }
+    $editor->goto_line_centerize($pos);
     return ( $regex, $start );
 }
 
