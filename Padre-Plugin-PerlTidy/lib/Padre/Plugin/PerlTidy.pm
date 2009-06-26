@@ -23,8 +23,10 @@ use Padre::Current ();
 use Padre::Util    ('_T');
 use Padre::Wx      ();
 use Padre::Plugin  ();
-
-our $VERSION = '0.07';
+use constant {  SELECTIONSIZE => 40, }; # this constant is used when storing 
+					# and restoring the cursor position.
+					# Keep it small to limit resource use.
+our $VERSION  = '0.07';
 our @ISA     = 'Padre::Plugin';
 
 sub padre_interfaces {
@@ -230,13 +232,12 @@ sub _restore_cursor_position {
 
     # parameter: $main, compiled regex
     my ( $main, $regex, $start ) = @_;
-    my $shuffle = 40;
     my $doc     = $main->current->document;
     my $editor  = $doc->editor;
     my $text    = $editor->GetTextRange(
-        ( $start - $shuffle ) > 0 ? $start - $shuffle
+        ( $start - SELECTIONSIZE ) > 0 ? $start - SELECTIONSIZE
         : 0,
-        ( $start + $shuffle < $editor->GetLength() ) ? $start + $shuffle
+        ( $start + SELECTIONSIZE < $editor->GetLength() ) ? $start + SELECTIONSIZE
         : $editor->GetLength()
     );
     eval {
@@ -259,13 +260,10 @@ sub _store_cursor_position {
     my $doc    = $main->current->document;
     my $editor = $doc->editor;
     my $pos    = $editor->GetCurrentPos;
-
-    # A smaller selection to save memory 
-    my $sel_width = 40;    # chars before
     my $start;
 
-    if ( ( $pos - $sel_width ) > 0 ) {
-        $start = $pos - $sel_width;
+    if ( ( $pos - SELECTIONSIZE ) > 0 ) {
+        $start = $pos - SELECTIONSIZE;
     }
     else {
         $start = 0;
