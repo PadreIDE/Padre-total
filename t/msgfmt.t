@@ -31,10 +31,6 @@ SKIP: {
     }
     do_one_test("fr-fr");
     do_one_test("context");
-  TODO: {
-      local $TODO = "not yet implemented";
-      
-      do_one_test("ngettext");
-    }
+    do_one_test("ngettext");
 }
 
