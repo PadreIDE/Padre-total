@@ -246,6 +246,7 @@ sub _restore_cursor_position {
             $editor->SetSelection( $pos, $pos );
         }
     };
+    $editor->goto_line_centerize($editor->GetCurrentLine);
     return;
 }
 
@@ -281,7 +282,6 @@ sub _store_cursor_position {
         $regex = qw{^.};
         print @_;
     }
-    $editor->goto_line_centerize($pos);
     return ( $regex, $start );
 }
 
