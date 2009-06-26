@@ -1,5 +1,7 @@
 package Locale::Msgfmt::po;
 
+use Locale::Msgfmt::Utils;
+
 use strict;
 use warnings;
 
@@ -27,7 +29,13 @@ sub add_string {
   return if !(defined($h{msgid}) && defined($h{msgstr}));
   return if ($h{fuzzy} && !$self->{fuzzy} && length($h{msgid}) > 0);
   return if($h{msgstr} eq "");
-  $self->{mo}->add_string(cleanup_string($h{msgid}), cleanup_string($h{msgstr}));
+  my $context;
+  if($h{msgctxt}) {
+    $context = cleanup_string($h{msgctxt}) . Locale::Msgfmt::Utils::eot();
+  } else {
+    $context = "";
+  }
+  $self->{mo}->add_string($context . cleanup_string($h{msgid}), cleanup_string($h{msgstr}));
 }
 
 sub read_po {
@@ -39,9 +47,9 @@ sub read_po {
   my $type;
   while (<F>) {
     s/\r\n/\n/;
-    if(/^(msgid|msgstr) +"(.*)" *$/) {
+    if(/^(msgid|msgstr|msgctxt) +"(.*)" *$/) {
       $type = $1;
-      if($type eq "msgid" && defined($h{msgid})) {
+      if(defined($h{$type})) {
         $self->add_string(\%h);
         %h = ();
       }

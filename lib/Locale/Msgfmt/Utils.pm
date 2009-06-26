@@ -49,4 +49,8 @@ sub null {
   return null_terminate("");
 }
 
+sub eot {
+  return chr(4);
+}
+
 1;
