@@ -67,6 +67,8 @@ sub plugin_enable {
 	my $config = $self->config_read;
 	$self->set_config( $config );
 	
+	$self->_load_everything;
+	
 	$self->_start_transports;
 	$self->_start_services;
 	
@@ -91,7 +93,7 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Surrender to the Swarm!
 END_MESSAGE
-
+	$about->SetIcon( Padre::Wx::Icon::find( 'status/padre-plugin-swarm' ) );
 	# Show the About dialog
 	Wx::AboutBox($about);
 
@@ -101,6 +103,29 @@ END_MESSAGE
 
 ###
 # Private
+
+sub _load_everything {
+	my $self = shift;
+	my $config = $self->get_config; 
+	# TODO bootstrap some config and construct
+	# services/transports. for now just multicast
+	
+	$self->set_transports(
+	    {
+	        Padre::Swarm::Transport::Multicast->transport_name
+	            => Padre::Swarm::Transport::Multicast->new
+	    }
+	);
+	
+	$self->set_services(
+	    {
+	    # Chat, remote cursor/editor damage 
+	    #  , watch this space.
+	    }
+	);
+	
+
+}
 
 sub _start_transports {
 	my $self = shift;
