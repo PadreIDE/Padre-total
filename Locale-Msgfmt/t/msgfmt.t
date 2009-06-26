@@ -1,6 +1,6 @@
 #!perl
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use Locale::Msgfmt;
 use File::Temp;
@@ -32,7 +32,8 @@ SKIP: {
     do_one_test("fr-fr");
   TODO: {
       local $TODO = "not yet implemented";
-      do_one_test("features");
+      do_one_test("context");
+      do_one_test("ngettext");
     }
 }
 
