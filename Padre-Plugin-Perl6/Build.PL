@@ -2,8 +2,6 @@ use strict;
 use warnings;
 use Module::Build;
 
-
-
 my %requires = (
 	'perl'                     => '5.010',
 	'Padre'                    => '0.33',
@@ -17,33 +15,33 @@ if($^O =~ /win32/i) {
 	$requires{'Win32::Process'} = '0.14';
 }
 my $class = Module::Build->subclass(code => <<'EOF');
-use Locale::Msgfmt;
-sub process_mo_files {
-msgfmt_dir({in => "lib/Padre/Plugin/Perl6/share/locale/", out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
-}
+	use Locale::Msgfmt;
+	sub process_mo_files {
+		msgfmt_dir({
+			in => "lib/Padre/Plugin/Perl6/share/locale/",
+			out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
+	}
 EOF
 my $builder = $class->new(
-    module_name         => 'Padre::Plugin::Perl6',
-    license             => 'perl',
-    dist_author         => 'Ahmad M. Zawawi and Gabor Szabo',
-    dist_version_from   => 'lib/Padre/Plugin/Perl6.pm',
-    build_requires => {
+	module_name         => 'Padre::Plugin::Perl6',
+	license             => 'perl',
+	dist_author         => 'Ahmad M. Zawawi and Gabor Szabo',
+	dist_version_from   => 'lib/Padre/Plugin/Perl6.pm',
+	build_requires => {
 		'Test::More'              => '0.86',
 		'Test::Exception'         => '0.27',
 		'Test::NoWarnings'        => '0.084',
-		'Test::NeedsDisplay'      => '1.05',
-                'Locale::Msgfmt'          => '0.02',
+		'Locale::Msgfmt'          => '0.02',
 	},
-    requires => \%requires,
-    add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
-    create_makefile_pl  => 'passthrough',
-    meta_merge     => {
-        resources => {
-            homepage   => 'http://padre.perlide.org/',
-            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
-        }
-    },
-
+	requires => \%requires,
+	add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
+	create_makefile_pl  => 'passthrough',
+	meta_merge     => {
+		resources => {
+			homepage   => 'http://padre.perlide.org/',
+			repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
+		}
+	},
 );
 
 $builder->add_build_element('mo');
