@@ -8,6 +8,35 @@ use File::HomeDir  ();
 use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore);
 
+=head1 NAME
+
+Perl::Dist::XL - Perl distribution for Linux
+
+=head1 SYNOPSIS
+
+The primary objective is to generat an already compiled perl distribution 
+that Padre was already installed in so people can download it, unzip it
+and start running Padre.
+
+
+=head1 DESCRIPTION
+
+=head2 Plans
+
+Once the primary objective is reached we can consider adding more modules
+to include all the Padre Plugins, the EPO recommendations and all the 
+none-windows specific modules that are in Strawberry Perl.
+
+We can also consider including the C level libraries and tool to make sure
+further CPAN modules can be installed without additional configuration.
+
+
+Version control: Currently we just install the latest version of
+each module in XLPerl. We could make sure we know exactly which version
+of each module we install and upgrade only under control.
+
+=cut
+
 sub new {
 	my ($class, %args) = @_;
 	my $self = bless \%args, $class;
@@ -106,7 +135,7 @@ sub install_modules {
 		['Test::Tester'             => '0'],
 		['Test::NoWarnings'         => '0'],
 		['Test::Deep'               => '0'],
-		['IO::Scalar'               => '0'],
+		['IO::Scalar'               => '2.110'],
 		['File::Next'               => '1.02'],
 		['App::Ack'                 => '1.86'],
 		['Class::Adapter'           => '1.05'],
@@ -142,49 +171,63 @@ sub install_modules {
 		['HTML::Tagset'             => '3.20'],
 		['HTML::Entities'           => '3.61'],
 		['HTML::Parser'             => '3.61'], # the same pacakge as HTML::Entities
+		['IO::Socket'               => '1.30'], # IO 1.25
+		['IO::String'               => '1.08'],
+		['IPC::Cmd'                 => '0.46'],
+		['List::Util'               => '1.18'], # Scalar-List-Utils-1.21
+		['List::MoreUtils'          => '0.22'],
+		['File::Temp'               => '0.21'],
+		['ORLite'                   => '1.23'],
+		['ORLite::Migrate'          => '0.03'],
+		['File::pushd'              => '1.00'],
+		['Probe::Perl'              => '0.01'],
+		['File::Slurp'              => '9999.13'],
+		['Pod::POM'                 => '0.25'],
+		['Parse::ErrorString::Perl' => '0.11'],
+		['Module::Refresh'          => '0.13'],
+		['Devel::Symdump'           => '2.08'],
+		['Test::Pod'                => '1.26'],
+		['Pod::Coverage'            => '0.20'],
+		['Test::Pod::Coverage'      => '1.08'],
+		['Module::Starter'          => '1.50'],
+		['Parse::ExuberantCTags'    => '1.00'],
+		['Pod::Simple'              => '3.07'],
+#		['Pod::Simple::XHTML'       => '3.04'], # supplied by Pod::Simple
+		['Task::Weaken'             => '1.03'],
+		['Pod::Abstract'            => '0.19'],
+		['Storable'                 => '2.20'],
+		['URI'                      => '1.38'],
+		['YAML::Tiny'               => '1.39'],
+		['Text::FindIndent'         => '0.03'],
+
+		['File::Remove'             => '1.42'],
+		['Test::Object'             => '0.07'],
+		['Config::Tiny'             => '2.12'],
+		['Test::ClassAPI'           => '1.05'],
+		['Clone'                    => '0.31'],
+		['Hook::LexWrap'            => '0.22'],
+		['Test::SubCalls'           => '1.09'],
+		['PPI'                      => '1.203'],
+		['PPIx::EditorTools'        => '0.04'],
+		['Module::Inspector'        => '0.04'],
 
 
-#requires       'File::ShareDir::PAR'      => '0.04'; # needs PAR
-## In the Padre.ppd file we need to list IO-stringy instead
-#requires       'IO::Scalar'               => '2.110';
-#requires       'IO::Socket'               => '1.30';
-#requires       'IO::String'               => '1.08';
-#requires       'IPC::Cmd'                 => '0.42';
-#requires       'IPC::Open3'               => 0;
-#requires       'IPC::Run'                 => '0.82' if win32;
-#requires       'List::Util'               => '1.18';
-#requires       'List::MoreUtils'          => '0.22';
-#requires       'Module::Inspector'        => '0.04';
-#requires       'Module::Refresh'          => '0.13';
-#requires       'Module::Starter'          => '1.50';
-#requires       'ORLite'                   => '1.20';
-#requires       'ORLite::Migrate'          => '0.03';
-#requires       'PAR'                      => '0.989';
-#requires       'Params::Util'             => '0.33';
-#requires       'Parse::ErrorString::Perl' => '0.11';
-#requires       'Parse::ExuberantCTags'    => '1.00';
-#requires       'Pod::POM'                 => '0.17';
-#requires       'Pod::Simple'              => '3.07';
-#requires       'Pod::Simple::XHTML'       => '3.04';
-#requires       'Pod::Abstract'            => '0.16';
-#requires       'Portable'                 => '0.12' if win32;
-#requires       'POSIX'                    => 0;
-#requires       'PPI'                      => '1.203';
-#requires       'PPIx::EditorTools'        => 0;
-#requires       'Probe::Perl'              => '0.01';
-#requires       'Storable'                 => '2.15';
-#requires       'Term::ReadLine'           => 0;
-#requires       'Text::Balanced'           => 0;
-#requires       'Text::Diff'               => '0.35';
-#requires       'Text::FindIndent'         => '0.03';
-#requires       'Thread::Queue'            => '2.11';
-#requires       'threads'                  => '1.71';
-#requires       'threads::shared'          => '1.26';
-#requires       'URI'                      => '0';
-#requires       'Win32::API'               => '0.58' if win32;
-#requires       'Wx'                       => '0.91';
-#requires       'Wx::Perl::ProcessStream'  => '0.11';
-#requires       'YAML::Tiny'               => '1.32';
+		['PAR::Dist'                => '0.45'],
+		['Archive::Zip'             => '1.28'],
+		['Compress::Raw::Zlib'      => '2.020'],
+		['AutoLoader'               => '5.68'],
+		['PAR'                      => '0.992'],
+		['File::ShareDir::PAR'      => '0.05'],
+
+		['threads'                  => '1.73'],
+		['threads::shared'          => '1.29'],
+		['Thread::Queue'            => '2.11'],
+
+		['ExtUtils::CBuilder'       => '0.24'],
+
+#		['Alien::wxWidgets'         => '0.43'],
+#		['Wx'                       => '0.91'],
+#		['Wx::Perl::ProcessStream'  => '0.11'],
 
 	);
 	foreach my $m (@modules) {
