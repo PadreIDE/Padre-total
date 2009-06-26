@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cd `dirname $0`
+rm *.mo
+for PO in *.po; do
+    MO=$(echo $PO | sed 's/po$/mo/')
+    msgfmt -o $MO $PO
+done
