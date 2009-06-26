@@ -45,14 +45,14 @@ sub new {
 sub chat {
     my ($self,$text) = @_;
     $self->send(
-        { user => getlogin, says=>$text }
+        { user => getlogin, message=>$text }
     );
 }
 
 sub say_to {
     my ($self,$text,$entity) = @_;
     $self->send( 
-        { user => getlogin, says=>$text, to=>$entity }
+        { user => getlogin, message=>$text, to=>$entity }
     );
 }
 

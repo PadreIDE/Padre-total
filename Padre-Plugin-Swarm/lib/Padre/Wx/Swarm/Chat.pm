@@ -21,7 +21,17 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
+	
 	return $self;
+}
+
+sub service {
+	my $self = shift;
+	# Crikey!
+	$self->main->ide
+		->plugin_manager->plugins
+			->{Swarm}->object
+				->get_services->{chat};
 }
 
 sub bottom {
@@ -83,17 +93,25 @@ sub disable {
 
 sub poll_service {
 	my $self = shift;
-	my $main = $self->main;
-	my $swarm = $main->ide->plugin_manager->plugins->{Swarm}->object;
-	if (my $message = $swarm->get_services->{chat}->receive) {
+	my $service = $self->service;
+	if (my $message = $service->receive) {
 		my $user = $message->{user} || 'unknown';
 		my $ip   = $message->{client_address} || 'unknown';
 		my $content = $message->{message};
 		my $output = sprintf( "%s@[%s] :%s\n",
 			$user, $ip, $content
 		);
-		$self->AppendText( $output . "\n" );
+		$self->AppendText( $output );
 	}
+}
+
+sub tell_service {
+	my $self = shift;
+	my $body = shift;
+	my $args = shift;
+	my $service = $self->service;
+	$service->chat( $body );
+	
 }
 1;
 
