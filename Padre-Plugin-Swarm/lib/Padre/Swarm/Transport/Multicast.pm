@@ -74,6 +74,8 @@ sub new {
     return bless \%obj , ref $class || $class;
 }
 
+sub transport_name { 'multicast' }
+
 sub start {
     my ($self) = @_;
     croak "Transport already started" if $self->started;

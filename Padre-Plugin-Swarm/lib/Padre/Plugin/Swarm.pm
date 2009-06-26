@@ -6,9 +6,27 @@ use warnings;
 use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Plugin   ();
+use Padre::Wx::Icon ();
+use Padre::Swarm::Transport::Multicast ();
+use File::Spec      ();
+
+use Class::XSAccessor
+	getters => {
+	    get_config => 'config',
+	    get_services => 'services',
+	    get_transports=>'transports',
+	}
+	,
+	setters => {
+	    set_config => 'config',
+	    set_services=>'services',
+	    set_transports=>'transports',
+	};
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
+
+
 
 
 
@@ -25,6 +43,18 @@ sub plugin_name {
 	'Swarm!';
 }
 
+sub plugin_icon {
+	my $class = shift;
+	# What would be nice is if the icon finder
+	# let me pass my own sharedir to find icons in
+	#  Padre::Wx::Icon::find( 'plugin/padre-plugin-swarm',
+	#	sharedir => $class->plugin_share_directory
+	#  );
+	Padre::Wx::Icon::find( 
+			'status/padre-plugin-swarm',
+	);
+}
+
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
@@ -32,9 +62,22 @@ sub menu_plugins_simple {
 	];
 }
 
+sub plugin_enable {
+	my $self = shift;
+	my $config = $self->config_read;
+	$self->set_config( $config );
+	
+	$self->_start_transports;
+	$self->_start_services;
+	
+	
+}
 
-
-
+sub plugin_disable {
+	my $self = shift;
+	$self->_shutdown_services;
+	$self->_shutdown_transports;
+}
 
 #####################################################################
 # Custom Methods
@@ -55,6 +98,42 @@ END_MESSAGE
 	return;
 }
 
+
+###
+# Private
+
+sub _start_transports {
+	my $self = shift;
+	my $transports = $self->get_transports;
+	while ( my ($name,$transport) = each %$transports ) {
+		$transport->start;
+	}
+}
+
+sub _shutdown_transports {
+	my $self = shift;
+	my $transports = $self->get_transports;
+	while ( my ($name,$transport) = each %$transports ) {
+		$transport->shutdown;
+	}
+}
+
+sub _start_services {
+	my $self = shift;
+	my $services = $self->get_services;
+	while ( my ($name,$service) = each %$services ) {
+		$service->start;
+	}
+}
+
+sub _shutdown_services {
+	my $self = shift;
+	my $services = $self->get_services;
+	while ( my ($name,$service) = each %$services ) {
+		$service->shutdown;
+	}
+
+}
 1;
 
 __END__
