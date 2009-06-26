@@ -37,7 +37,7 @@ sub build {
 
 	$self->configure_cpan;
 	$self->install_modules;
-	$self->remove_cpan_dir;
+#	$self->remove_cpan_dir;
 
 	# TODO: run some tests
 	$self->create_zip;
@@ -97,16 +97,95 @@ sub install_modules {
 	my ($self) = @_;
 	
 	my @modules = (
-		['Test::Simple'     => '0.88'],
-		['Sub::Uplevel'     => '0.2002'],
-		['Array::Compare'   => '1.17'],
-		['Tree::DAG_Node'   => '1.06'],
-		['Test::Exception'  => '0.27'],
-		['Test::Warn'       => '0.11'],
-		['Test::Tester'     => '0'],
-		['Test::NoWarnings' => '0'],
-		['Test::Deep'       => '0'],
-		['IO::Scalar'       => '0'],
+		['Test::Simple'             => '0.88'],
+		['Sub::Uplevel'             => '0.2002'],
+		['Array::Compare'           => '1.17'],
+		['Tree::DAG_Node'           => '1.06'],
+		['Test::Exception'          => '0.27'],
+		['Test::Warn'               => '0.11'],
+		['Test::Tester'             => '0'],
+		['Test::NoWarnings'         => '0'],
+		['Test::Deep'               => '0'],
+		['IO::Scalar'               => '0'],
+		['File::Next'               => '1.02'],
+		['App::Ack'                 => '1.86'],
+		['Class::Adapter'           => '1.05'],
+		['Class::Inspector'         => '1.24'],
+		['Class::Unload'            => '0.03'],
+		['AutoXS::Header'           => '1.02'],
+		['Class::XSAccessor'        => '1.02'],
+		['Class::XSAccessor::Array' => '1.02'],
+		['Cwd'                      => '3.2701'], # PathTools-3.30
+		['DBI'                      => '1.609'],
+		['DBD::SQLite'              => '1.10'],
+		['Devel::Dumpvar'           => '1.05'],
+		['Encode'                   => '2.33'],
+		['IPC::Run3'                => '0.043'],
+		['Test::Script'             => '1.03'],
+		['Test::Harness'            => '3.17'],
+		['Devel::StackTrace'        => '1.20'],
+		['Class::Data::Inheritable' => '0.08'],
+		['Exception::Class'         => '1.29'],
+		['Algorithm::Diff'          => '1.1902'],
+		['Text::Diff'               => '0.35'],
+		['Test::Differences'        => '0.4801'],
+		['Test::Most'               => '0.21'],
+		['File::Copy::Recursive'    => '0.38'],
+		['Text::Glob'               => '0.08'],
+		['Number::Compare'          => '0.01'],
+		['File::Find::Rule'         => '0.30'],
+		['File::HomeDir'            => '0.86'],
+		['Params::Util'             => '1.00'],
+		['File::ShareDir'           => '1.00'],
+#		['File::Spec'               => '3.2701'], # was already installed
+		['File::Which'              => '0.05'],
+		['HTML::Tagset'             => '3.20'],
+		['HTML::Entities'           => '3.61'],
+		['HTML::Parser'             => '3.61'], # the same pacakge as HTML::Entities
+
+
+#requires       'File::ShareDir::PAR'      => '0.04'; # needs PAR
+## In the Padre.ppd file we need to list IO-stringy instead
+#requires       'IO::Scalar'               => '2.110';
+#requires       'IO::Socket'               => '1.30';
+#requires       'IO::String'               => '1.08';
+#requires       'IPC::Cmd'                 => '0.42';
+#requires       'IPC::Open3'               => 0;
+#requires       'IPC::Run'                 => '0.82' if win32;
+#requires       'List::Util'               => '1.18';
+#requires       'List::MoreUtils'          => '0.22';
+#requires       'Module::Inspector'        => '0.04';
+#requires       'Module::Refresh'          => '0.13';
+#requires       'Module::Starter'          => '1.50';
+#requires       'ORLite'                   => '1.20';
+#requires       'ORLite::Migrate'          => '0.03';
+#requires       'PAR'                      => '0.989';
+#requires       'Params::Util'             => '0.33';
+#requires       'Parse::ErrorString::Perl' => '0.11';
+#requires       'Parse::ExuberantCTags'    => '1.00';
+#requires       'Pod::POM'                 => '0.17';
+#requires       'Pod::Simple'              => '3.07';
+#requires       'Pod::Simple::XHTML'       => '3.04';
+#requires       'Pod::Abstract'            => '0.16';
+#requires       'Portable'                 => '0.12' if win32;
+#requires       'POSIX'                    => 0;
+#requires       'PPI'                      => '1.203';
+#requires       'PPIx::EditorTools'        => 0;
+#requires       'Probe::Perl'              => '0.01';
+#requires       'Storable'                 => '2.15';
+#requires       'Term::ReadLine'           => 0;
+#requires       'Text::Balanced'           => 0;
+#requires       'Text::Diff'               => '0.35';
+#requires       'Text::FindIndent'         => '0.03';
+#requires       'Thread::Queue'            => '2.11';
+#requires       'threads'                  => '1.71';
+#requires       'threads::shared'          => '1.26';
+#requires       'URI'                      => '0';
+#requires       'Win32::API'               => '0.58' if win32;
+#requires       'Wx'                       => '0.91';
+#requires       'Wx::Perl::ProcessStream'  => '0.11';
+#requires       'YAML::Tiny'               => '1.32';
+
 	);
 	foreach my $m (@modules) {
 		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/mycpan.pl $m->[0]");
@@ -124,7 +203,7 @@ sub create_zip {
 	my ($self) = @_;
 	chdir $self->temp_dir;
 	my $file = "$self->{cwd}/" . $self->release_name . '.tar.gz';
-	_system("tar czf $file " . $self->{perl_install_dir});
+	_system("tar czf $file " . $self->release_name . ' --exclude .cpan');
 	return;
 }	
 
