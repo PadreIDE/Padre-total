@@ -6,7 +6,7 @@ use Locale::Msgfmt;
 use File::Temp;
 
 SKIP: {
-    skip "Test needs Locale::Maketext::Gettext", 1 if(!eval("use Locale::Maketext::Gettext; 1;"));
+    skip "Test needs Locale::Maketext::Gettext", 3 if(!eval("use Locale::Maketext::Gettext; 1;"));
     sub my_read_mo {
         my $str = "";
         my %h = read_mo(shift);
