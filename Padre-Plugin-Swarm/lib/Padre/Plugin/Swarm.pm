@@ -7,20 +7,18 @@ use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Plugin   ();
 use Padre::Wx::Icon ();
-use Padre::Swarm::Transport::Multicast ();
+use Padre::Swarm::Service::Chat ();
 use File::Spec      ();
 
 use Class::XSAccessor
 	getters => {
 	    get_config => 'config',
 	    get_services => 'services',
-	    get_transports=>'transports',
 	}
 	,
 	setters => {
 	    set_config => 'config',
 	    set_services=>'services',
-	    set_transports=>'transports',
 	};
 
 our $VERSION = '0.01';
@@ -43,6 +41,11 @@ sub plugin_name {
 	'Swarm!';
 }
 
+sub plugin_icons_directory {
+	return File::Spec->catdir( shift->plugin_share_directory(@_), 'icons');
+}
+
+
 sub plugin_icon {
 	my $class = shift;
 	# What would be nice is if the icon finder
@@ -52,8 +55,11 @@ sub plugin_icon {
 	#  );
 	Padre::Wx::Icon::find( 
 			'status/padre-plugin-swarm',
+			{ icons => $class->plugin_icons_directory },
 	);
 }
+
+
 
 sub menu_plugins_simple {
 	my $self = shift;
@@ -68,8 +74,6 @@ sub plugin_enable {
 	$self->set_config( $config );
 	
 	$self->_load_everything;
-	
-	$self->_start_transports;
 	$self->_start_services;
 	
 	
@@ -78,7 +82,6 @@ sub plugin_enable {
 sub plugin_disable {
 	my $self = shift;
 	$self->_shutdown_services;
-	$self->_shutdown_transports;
 }
 
 #####################################################################
@@ -93,7 +96,11 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Surrender to the Swarm!
 END_MESSAGE
-	$about->SetIcon( Padre::Wx::Icon::find( 'status/padre-plugin-swarm' ) );
+	$about->SetIcon( 
+		Padre::Wx::Icon::find( 'status/padre-plugin-swarm',
+			{size => '128x128', icons=>$self->plugin_icons_directory } 
+		) 
+	);
 	# Show the About dialog
 	Wx::AboutBox($about);
 
@@ -108,17 +115,12 @@ sub _load_everything {
 	my $self = shift;
 	my $config = $self->get_config; 
 	# TODO bootstrap some config and construct
-	# services/transports. for now just multicast
-	
-	$self->set_transports(
-	    {
-	        Padre::Swarm::Transport::Multicast->transport_name
-	            => Padre::Swarm::Transport::Multicast->new
-	    }
-	);
-	
+	# services/transports. for now just chat
+
+	my $chat = Padre::Swarm::Service::Chat->new();
 	$self->set_services(
 	    {
+	    	$chat->service_name => $chat,
 	    # Chat, remote cursor/editor damage 
 	    #  , watch this space.
 	    }
