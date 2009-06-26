@@ -278,7 +278,7 @@ sub _store_cursor_position {
     };
     if ($@) {
         $regex = qw{^.};
-        print @_;
+        print STDERR @_;
     }
     return ( $regex, $start );
 }
