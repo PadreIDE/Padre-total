@@ -30,9 +30,10 @@ SKIP: {
         unlink($filename);
     }
     do_one_test("fr-fr");
+    do_one_test("context");
   TODO: {
       local $TODO = "not yet implemented";
-      do_one_test("context");
+      
       do_one_test("ngettext");
     }
 }
