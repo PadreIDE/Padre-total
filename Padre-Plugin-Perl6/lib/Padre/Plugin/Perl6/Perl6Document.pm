@@ -471,7 +471,7 @@ sub _find_quick_fix {
 				# into:
 				# 	1 == 2 ?? 1 !! 2;
 				push @items, {
-					text     => Wx::gettext('Use !! for conditional operator else clause'),
+					text     => Wx::gettext('Use !! for conditional operator'),
 					listener => sub { 
 						#Replace first '!!' with '::' in the current line
 						my $line_start = $editor->PositionFromLine( $current_line_no );

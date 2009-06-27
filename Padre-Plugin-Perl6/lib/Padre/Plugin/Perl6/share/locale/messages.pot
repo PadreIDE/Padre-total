@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-27 08:43+0300\n"
+"POT-Creation-Date: 2009-06-27 10:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,7 @@ msgid "About"
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:253
-msgid "Perl 6 syntax highlighting is based on\n"
+msgid "Perl 6 coloring is based on\n"
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:254
@@ -170,7 +170,7 @@ msgid "Use [N..*] for indefinite range"
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:474
-msgid "Use !! for conditional operator else clause"
+msgid "Use !! for conditional operator"
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:493
@@ -235,8 +235,8 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6StdColorizerTask.pm:207
 msgid ""
-"'STD Lex Cache' is corrupt. Please click on Plugins/Perl6/Cleanup STD Lex "
-"Cache and then re-open the file."
+"'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Cleanup "
+"STD Lex Cache' and then re-open the file."
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Preferences.pm:30

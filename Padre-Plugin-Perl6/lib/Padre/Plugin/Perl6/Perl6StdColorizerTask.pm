@@ -204,7 +204,7 @@ sub run {
 				$lineno = $1;
 			} elsif($msg =~ /^Can't locate object method ".+?" via package "STD"/i) {
 				# STD lex cache is corrupt...
-				$msg = Wx::gettext("'STD Lex Cache' is corrupt. Please click on Plugins/Perl6/Cleanup STD Lex Cache and then re-open the file.");
+				$msg = Wx::gettext("'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Cleanup STD Lex Cache' and then re-open the file.");
 				push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
 				# no need to continue collecting errors...
 				last; 
