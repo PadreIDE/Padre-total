@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-27 08:43+0300\n"
+"POT-Creation-Date: 2009-06-27 10:22+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: \n"
@@ -88,8 +88,8 @@ msgid "About"
 msgstr "عن"
 
 #: lib/Padre/Plugin/Perl6.pm:253
-msgid "Perl 6 syntax highlighting is based on\n"
-msgstr ""
+msgid "Perl 6 coloring is based on\n"
+msgstr "يستند تلوين Perl 6 على\n"
 
 #: lib/Padre/Plugin/Perl6.pm:254
 msgid "Syntax::Highlight::Perl6 version "
@@ -167,8 +167,8 @@ msgid "Use [N..*] for indefinite range"
 msgstr "استخدم [N..*] للنطاق اللانهائي"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:474
-msgid "Use !! for conditional operator else clause"
-msgstr ""
+msgid "Use !! for conditional operator"
+msgstr "استخدم ?? !! للعامل المشروط"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:493
 msgid "Use ?? (...) !! to avoid precedence bugs"
@@ -231,8 +231,8 @@ msgid "Open &Documentation"
 msgstr "فتح الوثائق"
 
 #: lib/Padre/Plugin/Perl6/Perl6StdColorizerTask.pm:207
-msgid "'STD Lex Cache' is corrupt. Please click on Plugins/Perl6/Cleanup STD Lex Cache and then re-open the file."
-msgstr ""
+msgid "'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Cleanup STD Lex Cache' and then re-open the file."
+msgstr "مجلد 'STD Lex Cache' خربان. الرجاء النقر على 'Plugins/Perl6/تنظيف STD Lex Cache' ثم أعد فتح الملف."
 
 #: lib/Padre/Plugin/Perl6/Preferences.pm:30
 msgid "Perl 6 preferences"

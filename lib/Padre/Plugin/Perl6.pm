@@ -250,7 +250,7 @@ sub show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		Wx::gettext("Perl 6 syntax highlighting is based on\n") .
+		Wx::gettext("Perl 6 coloring is based on\n") .
 		Wx::gettext("Syntax::Highlight::Perl6 version ") . $Syntax::Highlight::Perl6::VERSION . "\n"
 	);
 	$about->SetVersion($VERSION);
