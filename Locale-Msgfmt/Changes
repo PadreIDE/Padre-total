@@ -1,5 +1,9 @@
 Revision history for Locale-Msgfmt
 
+0.08    Jun 27, 2009
+        - again remove the dependency on Locale::Maketext::Gettext,
+          there is another problem with its installation
+
 0.07    Jun 26, 2009
         - make the interface a bit nicer
         - remove the msgfmt_dir function (msgfmt now handles this if
