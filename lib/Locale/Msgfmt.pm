@@ -115,7 +115,8 @@ examples:
     # files to the po directory, and include fuzzy translations
     msgfmt({in => "po/", fuzzy => 1});
     # compile all the .po files in the po directory, and write the .mo
-    # files to the output directory
+    # files to the output directory, creating the output directory if
+    # it doesn't already exist
     msgfmt({in => "po/", out => "output/"});
     # compile all the .po files in the po directory, and write the .mo
     # files to the output directory, and include fuzzy translations
