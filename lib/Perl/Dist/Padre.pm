@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Perl::Dist::Strawberry ();
 
-our $VERSION = '0.260_002';
+our $VERSION = '0.260_003';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -51,7 +51,20 @@ sub new {
 		beta_number          => 1,
 		
 		# Temporary.
-		trace => 2
+		trace => 2,
+		
+		# Tell it what additions to the directory tree to use.
+		msi_directory_tree_additions => [qw (
+			perl\site\lib\auto\share\dist
+			perl\site\lib\auto\share\dist\Padre
+			perl\site\lib\auto\share\dist\Padre\icons
+			perl\site\lib\auto\share\dist\Padre\icons\padre
+			perl\site\lib\auto\share\dist\Padre\icons\padre\16x16
+			perl\site\lib\auto\Wx
+			perl\site\lib\auto\Wx\Perl
+			perl\site\lib\Wx
+			perl\site\lib\Wx\Perl
+		)],
 		
 		# Build both exe and zip versions
 		msi               => 1,
@@ -100,6 +113,7 @@ sub install_perl_modules {
 	# Manually install our non-Wx dependencies first to isolate
 	# them from the Wx problems
 	$self->install_modules( qw{
+		File::Glob::Windows
 		File::Next
 		App::Ack
 		Class::Adapter
@@ -147,6 +161,9 @@ sub install_perl_modules {
 		Exception::Class
 		Test::Most
 		Class::XSAccessor::Array
+		Parse::ExuberantCTags
+		CPAN::Mini
+		Portable
 	} );
 
 	# The rest of the modules are order-specific,
@@ -160,7 +177,6 @@ sub install_perl_modules {
 
 	# Install modules that add more Wx functionality
 	$self->install_module( name => 'Wx::Perl::ProcessStream' );
-	$self->install_module( name => 'Wx::Perl::Dialog'        );
 
 	# And finally, install Padre itself
 	$self->install_module( name => 'Padre'                   );
