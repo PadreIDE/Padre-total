@@ -1,5 +1,9 @@
 Changes for Perl Application Development and Refactoring Environment
 
+v0.38 2009.06.27
+
+    Replce regex that needs 5.10 by a split (SZABGAB)
+
 v0.37 2009.06.25
     "Introduce Temporary Variable" refactoring tool (SMUELLER)
     Added a friendly icon on the toolbar to toggle comments (GARU)
