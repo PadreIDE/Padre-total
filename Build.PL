@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Locale/Msgfmt.pm',
     build_requires => {
         'Test::More' => 0,
-        $ENV{AUTOMATED_TESTING} ? ('Locale::Maketext::Gettext' => 0) : (),
+        $ENV{AUTOMATED_TESTING} ? ('Locale::Maketext::Gettext' => '1.28') : (),
     },
     add_to_cleanup      => [ 'Locale-Msgfmt-*' ],
     create_makefile_pl => 'traditional',

@@ -1,5 +1,9 @@
 Revision history for Locale-Msgfmt
 
+0.09    unreleased
+        - still require the newer version of Locale::Maketext::Gettext
+          when running under CPAN Testers
+
 0.08    Jun 27, 2009
         - again remove the dependency on Locale::Maketext::Gettext,
           there is another problem with its installation
