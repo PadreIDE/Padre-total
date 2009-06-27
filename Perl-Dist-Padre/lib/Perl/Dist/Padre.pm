@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Perl::Dist::Strawberry ();
 
-our $VERSION = '0.260_001';
+our $VERSION = '0.260_002';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -137,10 +137,7 @@ sub install_perl_modules {
 		File::Slurp
 		Pod::POM
 		Parse::ErrorString::Perl
-		Pod::Simple
-		Pod::Simple::XHTML
 		Text::FindIndent
-		Thread::Queue
 		Pod::Abstract
 		Test::Most
 		Devel::StackTrace
