@@ -1,28 +1,29 @@
 Revision history for Locale-Msgfmt
 
 0.07    Jun 26, 2009
-        make the interface a bit nicer
-        remove the msgfmt_dir function
-        more tests
-        always build_require Locale::Maketext::Gettext, now it will
-        install correctly
+        - make the interface a bit nicer
+        - remove the msgfmt_dir function (msgfmt now handles this if
+          the input file is a directory)
+        - more tests
+        - always build_require Locale::Maketext::Gettext, now it will
+          install correctly
 
 0.06    Jun 26, 2009
-        add support for contexts
-        add support for ngettext
+        - add support for contexts
+        - add support for ngettext
 
 0.05    Jun 25, 2009
-        don't run the external script from the tests
+        - don't run the external script from the tests
 
 0.04    Jun 25, 2009
-        if running from CPAN testers, require Locale::Maketext::Gettext too
+        - if running from CPAN testers, require Locale::Maketext::Gettext too
 
 0.03    Jun 24, 2009
-        fix on perl 5.8
+        - fix on perl 5.8
 
 0.02    Jun 24, 2009
-        add a msgfmt_dir function to convert all of the .po files in a directory
+        - add a msgfmt_dir function to convert all of the .po files in a directory
 
 0.01    Jun 24, 2009
-        First version, released on an unsuspecting world.
+        - First version, released on an unsuspecting world.
 
