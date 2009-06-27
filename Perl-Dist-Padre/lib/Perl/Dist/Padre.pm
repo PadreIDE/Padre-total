@@ -50,6 +50,9 @@ sub new {
 		build_number         => 1,
 		beta_number          => 1,
 		
+		# Temporary.
+		trace => 2
+		
 		# Build both exe and zip versions
 		msi               => 1,
 		zip               => 1,
@@ -139,11 +142,10 @@ sub install_perl_modules {
 		Parse::ErrorString::Perl
 		Text::FindIndent
 		Pod::Abstract
-		Test::Most
 		Devel::StackTrace
 		Class::Data::Inheritable
 		Exception::Class
-		Text::Balanced
+		Test::Most
 		Class::XSAccessor::Array
 	} );
 
