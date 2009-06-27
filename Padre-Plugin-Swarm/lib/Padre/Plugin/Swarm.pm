@@ -102,9 +102,11 @@ sub show_about {
 Surrender to the Swarm!
 END_MESSAGE
 	$about->SetIcon( 
-		Padre::Wx::Icon::find( 'status/padre-plugin-swarm',
+		Padre::Wx::Icon::cast_to_icon(
+		  Padre::Wx::Icon::find( 'status/padre-plugin-swarm',
 			{size => '128x128', icons=>$self->plugin_icons_directory } 
-		) 
+		  ) 
+		)
 	);
 	# Show the About dialog
 	Wx::AboutBox($about);
