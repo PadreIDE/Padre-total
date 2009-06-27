@@ -12,7 +12,7 @@ use base 'Exporter';
 
 our @EXPORT = qw/msgfmt/;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 sub msgfmt {
   my $hash = shift;
