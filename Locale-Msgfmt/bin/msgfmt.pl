@@ -31,12 +31,4 @@ it will write the .mo files to the same directory.
 
 L<Locale::Msgfmt>
 
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 Ryan Niebur, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-
 =cut
