@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-19 02:21+0800\n"
+"POT-Creation-Date: 2009-06-27 08:43+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: \n"
@@ -11,68 +11,252 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
 
-#: lib/Padre/Task/Outline/Perl6.pm:191
-msgid "Outline"
-msgstr "المخطط"
+#: lib/Padre/Plugin/Perl6.pm:39
+msgid "Perl 6"
+msgstr ""
 
-#: lib/Padre/Task/Outline/Perl6.pm:224
-msgid "Open &Documentation"
-msgstr "فتح الوثائق"
-
-#: lib/Padre/Plugin/Perl6.pm:62
-msgid "Show Perl6 Help\tF2"
-msgstr "اظهار مساعده Perl6\tF2"
-
-#: lib/Padre/Plugin/Perl6.pm:77
-msgid "Enable Auto Coloring"
-msgstr "تمكين التلوين التلقائي"
-
-#: lib/Padre/Plugin/Perl6.pm:90
-msgid "Export Full HTML"
-msgstr "تصدير HTML كامل"
-
-#: lib/Padre/Plugin/Perl6.pm:95
-msgid "Export Simple HTML"
-msgstr "تصدير HTML بسيط"
-
-#: lib/Padre/Plugin/Perl6.pm:100
-msgid "Export Snippet HTML"
-msgstr "تصدير HTML كقصاصه"
+#: lib/Padre/Plugin/Perl6.pm:104
+msgid "Create Perl 6..."
+msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:109
+msgid "Script"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:114
+msgid "Class"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:119
+msgid "Grammar"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:124
+msgid "Package"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:129
+msgid "Module"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:134
+msgid "Role"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:139
+msgid "Inlined in Perl 5"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:147
+msgid "Export..."
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:153
+msgid "Perl 6 Executable"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:160
+msgid "Perl 6 PIR"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:167
+msgid "Full html"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:172
+msgid "Simple html"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:177
+msgid "Snippet html"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:184
+msgid "Show Perl 6 Help\tF2"
+msgstr "اظهار مساعده Perl6\tF2"
+
+#: lib/Padre/Plugin/Perl6.pm:191
 msgid "Cleanup STD.pm Lex Cache"
 msgstr "تنظيف STD.pm Lex Cache"
 
-#: lib/Padre/Plugin/Perl6.pm:118
+#: lib/Padre/Plugin/Perl6.pm:198
 msgid "Preferences"
 msgstr "الاعدادات"
 
-#: lib/Padre/Plugin/Perl6.pm:127
+#: lib/Padre/Plugin/Perl6.pm:205
 msgid "About"
 msgstr "عن"
 
-#: lib/Padre/Plugin/Perl6.pm:174
+#: lib/Padre/Plugin/Perl6.pm:253
+msgid "Perl 6 syntax highlighting is based on\n"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:254
+#, fuzzy
+msgid "Syntax::Highlight::Perl6 version "
+msgstr "ملون الجمل:"
+
+#: lib/Padre/Plugin/Perl6.pm:280
 msgid "Cannot find STD.pm lex cache"
 msgstr "فشل العثور على STD lex cache"
 
-#: lib/Padre/Plugin/Perl6/Preferences.pm:28
-msgid "Perl6 preferences"
+#: lib/Padre/Plugin/Perl6.pm:470
+#: lib/Padre/Plugin/Perl6.pm:593
+#: lib/Padre/Plugin/Perl6.pm:770
+msgid "No document"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:470
+#: lib/Padre/Plugin/Perl6.pm:593
+#: lib/Padre/Plugin/Perl6.pm:770
+msgid "Error"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:476
+msgid "Not a Perl 6 file"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6.pm:477
+msgid "Operation cancelled"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:247
+#, perl-format
+msgid "Insert declaration for %s"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:277
+#, perl-format
+msgid "Insert a space after %s"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:300
+#, perl-format
+msgid "Insert routine %s"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:323
+msgid "Use ~ instead of . for string concatenation"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:342
+msgid "Use . for method call"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:361
+msgid "Use Perl 6 constructor syntax"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:381
+msgid "Use loop (;;) for looping"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:400
+msgid "Use [*-1] to access final element"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:419
+msgid "Use N.pick for a random number"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:436
+msgid "Use (1..N).pick for a random number"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:455
+msgid "Use [N..*] for indefinite range"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:474
+msgid "Use !! for conditional operator else clause"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:493
+msgid "Use ?? (...) !! to avoid precedence bugs"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:513
+msgid "Use ?? !! for the conditional operator"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:532
+msgid "Use ~= for string concatenation"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:551
+msgid "Use ~~ for pattern matching"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:570
+msgid "Use !~~ for negated pattern matching"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:589
+msgid "Use +> for numeric right shift"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:606
+msgid "Use ~> for string right shift"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:624
+msgid "Use +< for numeric left shift"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:641
+msgid "Use ~< for string left shift"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:660
+msgid "Use $! for eval errors"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:679
+msgid "Use $::PERL_VERSION"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:708
+msgid "Comment error line"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:742
+msgid "Surround with try { ... }"
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm:191
+msgid "Outline"
+msgstr "المخطط"
+
+#: lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm:224
+msgid "Open &Documentation"
+msgstr "فتح الوثائق"
+
+#: lib/Padre/Plugin/Perl6/Perl6StdColorizerTask.pm:207
+msgid "'STD Lex Cache' is corrupt. Please click on Plugins/Perl6/Cleanup STD Lex Cache and then re-open the file."
+msgstr ""
+
+#: lib/Padre/Plugin/Perl6/Preferences.pm:30
+msgid "Perl 6 preferences"
 msgstr "تفضيلات Perl6"
 
 #: lib/Padre/Plugin/Perl6/Preferences.pm:121
-msgid "Syntax Highlighter:"
-msgstr "ملون الجمل:"
+msgid "Enable coloring"
+msgstr "تمكين التلوين"
 
-#: lib/Padre/Plugin/Perl6/Preferences.pm:152
-msgid "Pick mildew Directory"
-msgstr "اختر دليل mildew"
+#: lib/Padre/Plugin/Perl6/Preferences.pm:129
+msgid "Colorizer:"
+msgstr "الملون:"
 
-#: lib/Padre/Plugin/Perl6/Preferences.pm:179
-msgid "Pick rakudo Directory"
-msgstr "اختر دليل rakudo"
-
-#: lib/Padre/Document/Perl6.pm:334
-#, perl-format
-msgid "%s is Perl 6 %s "
-msgstr "%s هو Perl 6 %s "
+#~ msgid "Export Full HTML"
+#~ msgstr "تصدير HTML كامل"
+#~ msgid "Export Simple HTML"
+#~ msgstr "تصدير HTML بسيط"
+#~ msgid "Export Snippet HTML"
+#~ msgstr "تصدير HTML كقصاصه"
+#~ msgid "Pick mildew Directory"
+#~ msgstr "اختر دليل mildew"
+#~ msgid "Pick rakudo Directory"
+#~ msgstr "اختر دليل rakudo"
+#~ msgid "%s is Perl 6 %s "
+#~ msgstr "%s هو Perl 6 %s "
 
