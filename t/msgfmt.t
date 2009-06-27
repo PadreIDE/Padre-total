@@ -4,6 +4,7 @@ use Test::More tests => 3;
 
 use Locale::Msgfmt;
 use File::Temp;
+use File::Spec;
 
 SKIP: {
     skip "Test needs Locale::Maketext::Gettext", 3 if(!eval("use Locale::Maketext::Gettext; 1;"));
@@ -21,14 +22,15 @@ SKIP: {
     }
     sub do_one_test {
         my $basename = shift;
-        my $po = "t/samples/" . $basename . ".po";
-        my $mo = "t/samples/" . $basename . ".mo";
+        my $po = File::Spec->catfile("t", "samples", $basename . ".po");
+        my $mo = File::Spec->catfile("t", "samples", $basename . ".mo");
         my $good = my_read_mo($mo);
         my $filename = my_msgfmt($po);
         my $test = my_read_mo($filename);
         is($test, $good);
         unlink($filename);
     }
+    do_one_test("basic");
     do_one_test("fr-fr");
     do_one_test("context");
     do_one_test("ngettext");
