@@ -10,6 +10,18 @@ use File::Find::Rule;
 
 my $cwd       = cwd;
 my $localedir = catdir ( $cwd, 'share', 'locale' );
+unless(-d $localedir) {
+	# Search for the 'locale' directory when 'share/locale'
+	# directory is not found
+	my @files = File::Find::Rule->directory()->
+		name('locale')->relative->in($cwd);
+	if(scalar @files > 0) {
+		$localedir = $files[0];
+	} else {
+		die "locale directory not found.\n";
+	}
+}
+
 my $pot_file  = catfile( $localedir, 'messages.pot' );
 my $pmfiles   = catfile( $cwd, 'files.txt' );
 
