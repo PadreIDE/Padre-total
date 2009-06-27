@@ -16,9 +16,44 @@ our $VERSION = '0.06';
 
 sub msgfmt {
   my $hash = shift;
+  if(!defined($hash)) {
+    die("error: must give input");
+  }
+  if(!(ref($hash) eq "HASH")) {
+    $hash = {in => $hash};
+  }
+  if(!defined($hash->{in}) or !length($hash->{in})) {
+    die("error: must give an input file");
+  }
+  if(! -e $hash->{in}) {
+    die("error: input does not exist");
+  }
+  if(-d $hash->{in}) {
+    return _msgfmt_dir($hash);
+  } else {
+    return _msgfmt($hash);
+  }
+}
+
+sub msgfmt_dir {
+  return msgfmt(@_);
+}
+
+sub _msgfmt {
+  my $hash = shift;
+  if(! defined($hash->{in})) {
+    die("error: must give an input file");
+  }
   if(! -f $hash->{in}) {
-    print "error: input file does not exist\n";
-    exit(1);
+    die("error: input file does not exist");
+  }
+  if(! defined($hash->{out})) {
+    if($hash->{in} =~ /\.po$/) {
+      $hash->{out} = $hash->{in};
+      $hash->{out} =~ s/po$/mo/;
+    } else {
+      die("error: must give an output file");
+    }
   }
   my $mo = Locale::Msgfmt::mo->new();
   $mo->initialize();
@@ -28,11 +63,10 @@ sub msgfmt {
   $mo->out($hash->{out});
 }
 
-sub msgfmt_dir {
+sub _msgfmt_dir {
   my $hash = shift;
   if(! -d $hash->{in}) {
-    print "error: input directory does not exist\n";
-    exit(1);
+    die("error: input directory does not exist");
   }
   if(! defined($hash->{out})) {
     $hash->{out} = $hash->{in};
@@ -56,7 +90,7 @@ sub msgfmt_dir {
     my %newhash = (%{$hash});
     $newhash{in} = $_;
     $newhash{out} = $files{$_};
-    msgfmt(\%newhash);
+    _msgfmt(\%newhash);
   }
 }
 
@@ -74,7 +108,11 @@ except this is pure Perl.
     use Locale::Msgfmt;
 
     msgfmt({in => "po/fr.po", out => "po/fr.mo"});
-    msgfmt_dir({in => "po/"});
+    msgfmt({in => "po/fr.po", out => "po/fr.mo", fuzzy => 1});
+    msgfmt("po/");
+    msgfmt({in => "po/", out => "output/"});
+    msgfmt("po/fr.po");
+    msgfmt({in => "po/fr.po", fuzzy => 1});
 
 =head1 COPYRIGHT & LICENSE
 
