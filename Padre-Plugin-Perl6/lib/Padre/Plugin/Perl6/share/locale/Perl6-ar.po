@@ -49,7 +49,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:147
 msgid "Export..."
-msgstr ""
+msgstr "تصدير..."
 
 #: lib/Padre/Plugin/Perl6.pm:153
 msgid "Perl 6 Executable"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:160
 msgid "Perl 6 PIR"
-msgstr ""
+msgstr "ملف Perl 6 PIR"
 
 #: lib/Padre/Plugin/Perl6.pm:167
 msgid "Full html"
@@ -92,9 +92,8 @@ msgid "Perl 6 syntax highlighting is based on\n"
 msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:254
-#, fuzzy
 msgid "Syntax::Highlight::Perl6 version "
-msgstr "ملون الجمل:"
+msgstr "نسخة Syntax::Highlight::Perl6"
 
 #: lib/Padre/Plugin/Perl6.pm:280
 msgid "Cannot find STD.pm lex cache"
@@ -104,31 +103,31 @@ msgstr "فشل العثور على STD lex cache"
 #: lib/Padre/Plugin/Perl6.pm:593
 #: lib/Padre/Plugin/Perl6.pm:770
 msgid "No document"
-msgstr ""
+msgstr "بلا وثيقة"
 
 #: lib/Padre/Plugin/Perl6.pm:470
 #: lib/Padre/Plugin/Perl6.pm:593
 #: lib/Padre/Plugin/Perl6.pm:770
 msgid "Error"
-msgstr ""
+msgstr "خطأ"
 
 #: lib/Padre/Plugin/Perl6.pm:476
 msgid "Not a Perl 6 file"
-msgstr ""
+msgstr "هذا الملف ليس ملف Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:477
 msgid "Operation cancelled"
-msgstr ""
+msgstr "تم الغاء العملية"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:247
 #, perl-format
 msgid "Insert declaration for %s"
-msgstr ""
+msgstr "اضافة تعريف ل %s"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:277
 #, perl-format
 msgid "Insert a space after %s"
-msgstr ""
+msgstr "اضافة فراغ بعد %s"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:300
 #, perl-format
@@ -145,7 +144,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:361
 msgid "Use Perl 6 constructor syntax"
-msgstr ""
+msgstr "استخدم صيغة Perl 6 constructor"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:381
 msgid "Use loop (;;) for looping"
@@ -209,11 +208,11 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:660
 msgid "Use $! for eval errors"
-msgstr ""
+msgstr "استخدم $! لأخطاء eval"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:679
 msgid "Use $::PERL_VERSION"
-msgstr ""
+msgstr "استخدم $::PERL_VERSION"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:708
 msgid "Comment error line"
@@ -221,7 +220,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:742
 msgid "Surround with try { ... }"
-msgstr ""
+msgstr "احاطة ب try { ... }"
 
 #: lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm:191
 msgid "Outline"
