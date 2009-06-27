@@ -99,15 +99,30 @@ Locale::Msgfmt - Compile .po files to .mo files
 =head1 SYNOPSIS
 
 This module does the same thing as msgfmt from GNU gettext-tools,
-except this is pure Perl.
+except this is pure Perl. The interface is best explained through
+examples:
 
     use Locale::Msgfmt;
 
+    # compile po/fr.po into po/fr.mo
     msgfmt({in => "po/fr.po", out => "po/fr.mo"});
+    # compile po/fr.po into po/fr.mo and include fuzzy translations
     msgfmt({in => "po/fr.po", out => "po/fr.mo", fuzzy => 1});
+    # compile all the .po files in the po directory, and write the .mo
+    # files to the po directory
     msgfmt("po/");
+    # compile all the .po files in the po directory, and write the .mo
+    # files to the po directory, and include fuzzy translations
+    msgfmt({in => "po/", fuzzy => 1});
+    # compile all the .po files in the po directory, and write the .mo
+    # files to the output directory
     msgfmt({in => "po/", out => "output/"});
+    # compile all the .po files in the po directory, and write the .mo
+    # files to the output directory, and include fuzzy translations
+    msgfmt({in => "po/", out => "output/", fuzzy => 1});
+    # compile po/fr.po into po/fr.mo
     msgfmt("po/fr.po");
+    # compile po/fr.po into po/fr.mo and include fuzzy translations
     msgfmt({in => "po/fr.po", fuzzy => 1});
 
 =head1 COPYRIGHT & LICENSE

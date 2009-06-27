@@ -7,6 +7,7 @@ Revision history for Locale-Msgfmt
         - more tests
         - always build_require Locale::Maketext::Gettext, now it will
           install correctly
+        - improved POD
 
 0.06    Jun 26, 2009
         - add support for contexts
