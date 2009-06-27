@@ -29,7 +29,7 @@ my $builder = $class->new(
 		'File::Which'              => '0.05',
 	},
     add_to_cleanup      => [ 'Padre-Plugin-Ecliptic-*' ],
-    create_makefile_pl  => 'traditional',
+    create_makefile_pl  => 'passthrough',
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',
