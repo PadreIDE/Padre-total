@@ -13,35 +13,35 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6.pm:39
 msgid "Perl 6"
-msgstr ""
+msgstr "برنامج Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:104
 msgid "Create Perl 6..."
-msgstr ""
+msgstr "انشاء Perl 6..."
 
 #: lib/Padre/Plugin/Perl6.pm:109
 msgid "Script"
-msgstr ""
+msgstr "ملف نصي"
 
 #: lib/Padre/Plugin/Perl6.pm:114
 msgid "Class"
-msgstr ""
+msgstr "ملف Class"
 
 #: lib/Padre/Plugin/Perl6.pm:119
 msgid "Grammar"
-msgstr ""
+msgstr "ملف Grammar"
 
 #: lib/Padre/Plugin/Perl6.pm:124
 msgid "Package"
-msgstr ""
+msgstr "ملف Package"
 
 #: lib/Padre/Plugin/Perl6.pm:129
 msgid "Module"
-msgstr ""
+msgstr "ملف Module"
 
 #: lib/Padre/Plugin/Perl6.pm:134
 msgid "Role"
-msgstr ""
+msgstr "ملف Role"
 
 #: lib/Padre/Plugin/Perl6.pm:139
 msgid "Inlined in Perl 5"
@@ -53,7 +53,7 @@ msgstr "تصدير..."
 
 #: lib/Padre/Plugin/Perl6.pm:153
 msgid "Perl 6 Executable"
-msgstr ""
+msgstr "برنامج Perl 6 قابل للتنفيذ"
 
 #: lib/Padre/Plugin/Perl6.pm:160
 msgid "Perl 6 PIR"
@@ -61,15 +61,15 @@ msgstr "ملف Perl 6 PIR"
 
 #: lib/Padre/Plugin/Perl6.pm:167
 msgid "Full html"
-msgstr ""
+msgstr "ملف html كامل"
 
 #: lib/Padre/Plugin/Perl6.pm:172
 msgid "Simple html"
-msgstr ""
+msgstr "ملف html بسيط"
 
 #: lib/Padre/Plugin/Perl6.pm:177
 msgid "Snippet html"
-msgstr ""
+msgstr "ملف قصاصة html"
 
 #: lib/Padre/Plugin/Perl6.pm:184
 msgid "Show Perl 6 Help\tF2"
@@ -132,11 +132,11 @@ msgstr "اضافة فراغ بعد %s"
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:300
 #, perl-format
 msgid "Insert routine %s"
-msgstr ""
+msgstr "اضافة الروتين %s"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:323
 msgid "Use ~ instead of . for string concatenation"
-msgstr ""
+msgstr "استخدم ~ بدلا من . لوصل المتسلسلات الحرفية"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:342
 msgid "Use . for method call"
@@ -148,7 +148,7 @@ msgstr "استخدم صيغة Perl 6 constructor"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:381
 msgid "Use loop (;;) for looping"
-msgstr ""
+msgstr "استخدم loop (;;) للتكرار"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:400
 msgid "Use [*-1] to access final element"
@@ -156,11 +156,11 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:419
 msgid "Use N.pick for a random number"
-msgstr ""
+msgstr "استخدم N.pick لرقم عشوائي"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:436
 msgid "Use (1..N).pick for a random number"
-msgstr ""
+msgstr "استخدم (1..N).pick لرقم عشوائي"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:455
 msgid "Use [N..*] for indefinite range"
@@ -180,7 +180,7 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:532
 msgid "Use ~= for string concatenation"
-msgstr ""
+msgstr "استخدم ~= لوصل المتسلسلات الحرفية"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:551
 msgid "Use ~~ for pattern matching"
@@ -192,19 +192,19 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:589
 msgid "Use +> for numeric right shift"
-msgstr ""
+msgstr "استخدم +> لزحزحة رقمية لليمين"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:606
 msgid "Use ~> for string right shift"
-msgstr ""
+msgstr "استخدم ~> لزحزحة متسلسلة حرفية لليمين"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:624
 msgid "Use +< for numeric left shift"
-msgstr ""
+msgstr "استخدم +< لزحزحة رقمية لليسار"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:641
 msgid "Use ~< for string left shift"
-msgstr ""
+msgstr "استخدم ~< لزحزحة متسلسلة حرفية لليسار"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:660
 msgid "Use $! for eval errors"
