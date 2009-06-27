@@ -67,4 +67,18 @@ sub out {
   close OUT;
 }
 
+=head1 NAME
+
+Locale::Msgfmt::mo - class used internally by Locale::Msgfmt
+
+=head1 SYNOPSIS
+
+This module shouldn't be used by other software.
+
+=head1 SEE ALSO
+
+L<Locale::Msgfmt>
+
+=cut
+
 1;

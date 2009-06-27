@@ -53,4 +53,18 @@ sub eot {
   return chr(4);
 }
 
+=head1 NAME
+
+Locale::Msgfmt::Utils - functions used internally by Locale::Msgfmt
+
+=head1 SYNOPSIS
+
+This module shouldn't be used by other software.
+
+=head1 SEE ALSO
+
+L<Locale::Msgfmt>
+
+=cut
+
 1;
