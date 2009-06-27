@@ -29,3 +29,6 @@ ok(-f File::Spec->catfile($dir, "a", "basic.mo"));
 unlink File::Spec->catfile($dir, "a", "basic.mo");
 msgfmt({in => File::Spec->catdir($dir, "a"), out => File::Spec->catdir($dir, "b"),});
 ok(-f File::Spec->catfile($dir, "b", "basic.mo"));
+
+# TODO: test that passing fuzzy in all cases makes a difference
+
