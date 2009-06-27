@@ -43,7 +43,7 @@ SKIP: {
         unlink($filename);
     }
     do_one_test("basic");
-    do_one_test("fr-fr");
+    do_one_test("ja");
     do_one_test("context");
     do_one_test("ngettext");
 }
