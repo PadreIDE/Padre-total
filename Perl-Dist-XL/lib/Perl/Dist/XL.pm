@@ -225,12 +225,13 @@ sub install_modules {
 
 		['ExtUtils::CBuilder'       => '0.24'],
 
-#		['Alien::wxWidgets'         => '0.43'],
-#		['Wx'                       => '0.91'],
-#		['Wx::Perl::ProcessStream'  => '0.11'],
+		['Alien::wxWidgets'         => '0.43'],
+		['Wx'                       => '0.91'],
+		['Wx::Perl::ProcessStream'  => '0.11'],
 
 	);
 	foreach my $m (@modules) {
+		local $ENV{PERL_MM_USE_DEFAULT} = 1;
 		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/mycpan.pl $m->[0]");
 	}
 }
