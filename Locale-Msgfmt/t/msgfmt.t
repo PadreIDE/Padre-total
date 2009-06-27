@@ -1,13 +1,13 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 use Locale::Msgfmt;
 use File::Temp;
 use File::Spec;
 
 SKIP: {
-    skip "Test needs Locale::Maketext::Gettext", 3 if(!eval("use Locale::Maketext::Gettext; 1;"));
+    skip "Test needs Locale::Maketext::Gettext", 5 if(!eval("use Locale::Maketext::Gettext; 1;"));
     sub my_read_mo {
         my $str = "";
         my %h = read_mo(shift);
@@ -17,7 +17,12 @@ SKIP: {
     sub my_msgfmt {
         my ($fh, $filename) = File::Temp::tempfile();
         close $fh;
-        msgfmt({in => shift, out => $filename});
+        my $in = shift;
+        my $fuzzy = 0;
+        if(shift) {
+            $fuzzy = 1;
+        }
+        msgfmt({in => $in, out => $filename, fuzzy => $fuzzy});
         return $filename;
     }
     sub do_one_test {
@@ -28,6 +33,13 @@ SKIP: {
         my $filename = my_msgfmt($po);
         my $test = my_read_mo($filename);
         is($test, $good);
+        if($basename eq "basic") {
+            unlink($filename);
+            $filename = my_msgfmt($po, 1);
+            $good = my_read_mo(File::Spec->catfile("t", "samples", "fuzz.mo"));
+            $test = my_read_mo($filename);
+            is($test, $good);
+        }
         unlink($filename);
     }
     do_one_test("basic");
