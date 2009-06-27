@@ -17,7 +17,7 @@ if($^O =~ /win32/i) {
 my $class = Module::Build->subclass(code => <<'EOF');
 	use Locale::Msgfmt;
 	sub process_mo_files {
-		msgfmt_dir({
+		msgfmt({
 			in => "lib/Padre/Plugin/Perl6/share/locale/",
 			out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
 	}
@@ -31,7 +31,7 @@ my $builder = $class->new(
 		'Test::More'              => '0.86',
 		'Test::Exception'         => '0.27',
 		'Test::NoWarnings'        => '0.084',
-		'Locale::Msgfmt'          => '0.05',
+		'Locale::Msgfmt'          => '0.07',
 	},
 	requires => \%requires,
 	add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
