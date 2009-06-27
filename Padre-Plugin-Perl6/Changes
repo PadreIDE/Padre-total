@@ -1,6 +1,6 @@
 Changes
 
-=head1 0.47 2009.6.26
+=head1 0.47 2009.6.27
 
 	- Updated Arabic translation.
 	- Depends on Locale::Msgfmt to build the .mo files at install time (RSN, Ryan52++)
