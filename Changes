@@ -1,8 +1,10 @@
 Changes
 
-=head1 0.47 unreleased
+=head1 0.47 2009.6.26
 
-	- build the .mo files at install time (RSN)
+	- Updated Arabic translation.
+	- Depends on Locale::Msgfmt to build the .mo files at install time (RSN, Ryan52++)
+	- Depends on S:H:P6 0.64 which allows whitespacey forms on rand(N) and .[-1] checkers.
 
 =head1 0.46 2009.6.24
 

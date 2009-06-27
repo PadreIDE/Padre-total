@@ -8,7 +8,7 @@ use Padre::Wx   ();
 use base 'Padre::Plugin';
 
 # exports and version
-our $VERSION   = '0.46';
+our $VERSION   = '0.47';
 our @EXPORT_OK = qw(plugin_config);
 
 # constants for html exporting
