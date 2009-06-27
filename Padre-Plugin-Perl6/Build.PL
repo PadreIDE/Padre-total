@@ -31,7 +31,7 @@ my $builder = $class->new(
 		'Test::More'              => '0.86',
 		'Test::Exception'         => '0.27',
 		'Test::NoWarnings'        => '0.084',
-		'Locale::Msgfmt'          => '0.07',
+		'Locale::Msgfmt'          => '0.08',
 	},
 	requires => \%requires,
 	add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
