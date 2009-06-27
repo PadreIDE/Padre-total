@@ -45,7 +45,7 @@ msgstr "ملف Role"
 
 #: lib/Padre/Plugin/Perl6.pm:139
 msgid "Inlined in Perl 5"
-msgstr ""
+msgstr "مضمنة في ملف Perl 5"
 
 #: lib/Padre/Plugin/Perl6.pm:147
 msgid "Export..."
@@ -140,7 +140,7 @@ msgstr "استخدم ~ بدلا من . لوصل المتسلسلات الحرف�
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:342
 msgid "Use . for method call"
-msgstr ""
+msgstr "استخدم . لمناداة الطريقة"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:361
 msgid "Use Perl 6 constructor syntax"
@@ -152,7 +152,7 @@ msgstr "استخدم loop (;;) للتكرار"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:400
 msgid "Use [*-1] to access final element"
-msgstr ""
+msgstr "استخدم [*-1] للوصول إلى العنصر الأخير"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:419
 msgid "Use N.pick for a random number"
@@ -164,7 +164,7 @@ msgstr "استخدم (1..N).pick لرقم عشوائي"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:455
 msgid "Use [N..*] for indefinite range"
-msgstr ""
+msgstr "استخدم [N..*] للنطاق اللانهائي"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:474
 msgid "Use !! for conditional operator else clause"
@@ -172,11 +172,11 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:493
 msgid "Use ?? (...) !! to avoid precedence bugs"
-msgstr ""
+msgstr "استخدم ?? (...) !! لتجنب بقات الأسبقية"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:513
 msgid "Use ?? !! for the conditional operator"
-msgstr ""
+msgstr "استخدم ?? !! للعامل المشروط"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:532
 msgid "Use ~= for string concatenation"
@@ -184,11 +184,11 @@ msgstr "استخدم ~= لوصل المتسلسلات الحرفية"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:551
 msgid "Use ~~ for pattern matching"
-msgstr ""
+msgstr "استخدم ~~ لمطابقة الأشكال"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:570
 msgid "Use !~~ for negated pattern matching"
-msgstr ""
+msgstr "استخدم !~~ لعدم مطابقة الأشكال"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:589
 msgid "Use +> for numeric right shift"
@@ -216,7 +216,7 @@ msgstr "استخدم $::PERL_VERSION"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:708
 msgid "Comment error line"
-msgstr ""
+msgstr "تعليق سطر الخطأ"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:742
 msgid "Surround with try { ... }"
