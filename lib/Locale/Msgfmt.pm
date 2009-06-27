@@ -10,7 +10,7 @@ use warnings;
 
 use base 'Exporter';
 
-our @EXPORT = qw/msgfmt msgfmt_dir/;
+our @EXPORT = qw/msgfmt/;
 
 our $VERSION = '0.07';
 
@@ -33,10 +33,6 @@ sub msgfmt {
   } else {
     return _msgfmt($hash);
   }
-}
-
-sub msgfmt_dir {
-  return msgfmt(@_);
 }
 
 sub _msgfmt {

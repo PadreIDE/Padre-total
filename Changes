@@ -2,6 +2,7 @@ Revision history for Locale-Msgfmt
 
 0.07    Jun 26, 2009
         make the interface a bit nicer
+        remove the msgfmt_dir function
 
 0.06    Jun 26, 2009
         add support for contexts
