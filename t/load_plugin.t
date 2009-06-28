@@ -1,6 +1,12 @@
 #!perl
 
-use Test::More tests => 3;
+use Test::More;
+
+if(defined($ENV{DISPLAY})) {
+    plan tests => 3;
+} else {
+    plan skip_all => "this test needs DISPLAY";
+}
 
 use Padre;
 use Padre::PluginManager;
