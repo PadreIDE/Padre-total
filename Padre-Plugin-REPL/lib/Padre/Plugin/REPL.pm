@@ -16,6 +16,7 @@ use Capture::Tiny qw/capture_merged/;
 use Devel::REPL::Script;
 use Class::Unload;
 use Padre::Plugin::REPL::Panel;
+use Padre::Plugin::REPL::History;
 
 our $VERSION = '0.01';
 
@@ -51,11 +52,19 @@ sub dialog {
 	Padre::Current->main->show_output(1);
 }
 
+sub set_text {
+	$input->SetValue(shift);
+}
+
+sub get_text {
+	$input->GetValue();
+}
+
 sub evaluate {
 	my $code = $input->GetValue();
 	my $res  = _eval_repl($code);
+	Padre::Plugin::REPL::History::evalled();
 	$output->AppendText("# $code\n$res\n");
-	$input->SetValue("");
 }
 
 sub _init_repl {
@@ -66,6 +75,7 @@ sub _init_repl {
 	$temp->load_profile( $temp->profile );
 	$temp->load_rcfile( $temp->rcfile );
 	$repl->out_fh( \*STDOUT );
+	Padre::Plugin::REPL::History::init();
 }
 
 sub _eval_repl {
