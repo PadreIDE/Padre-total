@@ -54,6 +54,7 @@ sub dialog {
 
 sub set_text {
 	$input->SetValue(shift);
+	$input->SetInsertionPointEnd();
 }
 
 sub get_text {
