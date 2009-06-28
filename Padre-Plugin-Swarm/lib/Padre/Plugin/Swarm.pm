@@ -7,7 +7,6 @@ use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Plugin   ();
 use Padre::Wx::Icon ();
-use Padre::Swarm::Service::Chat ();
 use Padre::Wx::Swarm::Chat ();
 use File::Spec      ();
 
@@ -52,11 +51,6 @@ sub plugin_icons_directory {
 
 sub plugin_icon {
 	my $class = shift;
-	# What would be nice is if the icon finder
-	# let me pass my own sharedir to find icons in
-	#  Padre::Wx::Icon::find( 'plugin/padre-plugin-swarm',
-	#	sharedir => $class->plugin_share_directory
-	#  );
 	Padre::Wx::Icon::find( 
 			'status/padre-plugin-swarm',
 			{ icons => $class->plugin_icons_directory },
@@ -124,15 +118,7 @@ sub _load_everything {
 	# TODO bootstrap some config and construct
 	# services/transports. for now just chat
 
-	my $chat = Padre::Swarm::Service::Chat->new();
-	$self->set_services(
-	    {
-	    	$chat->service_name => $chat,
-	    # Chat, remote cursor/editor damage 
-	    #  , watch this space.
-	    }
-	);
-	
+
 	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
 	
 	$self->set_chat( $chatframe );

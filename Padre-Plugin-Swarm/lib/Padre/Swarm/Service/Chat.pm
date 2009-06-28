@@ -37,8 +37,8 @@ sub shutdown {
 sub new {
     my ($class,$config) = @_;
 
-    
-    my $self = bless {} , $class;
+    my $running : shared = 0 ;
+    my $self = bless {running=>$running} , $class;
     return $self;
 }
 
@@ -67,8 +67,9 @@ sub send {
 
 sub receive {
     my $self = shift;
+    my $timeout = shift;
     my $t = $self->get_transport;
-    if ( $t->poll(0) ) {
+    if ( $t->poll($timeout) ) {
         my ($channel,$client,$payload) = $t->receive_from( 12000 );
         my $message = eval { JSON::XS::decode_json( $payload ); } ;
         if ($@) {
