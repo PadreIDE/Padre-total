@@ -128,6 +128,7 @@ sub poll_service {
 		my $user = $message->{user} || 'unknown';
 		my $ip   = $message->{client_address} || 'unknown';
 		my $content = $message->{message};
+		return unless $content;
 		my $output = sprintf( "%s@[%s] :%s\n",
 			$user, $ip, $content
 		);
