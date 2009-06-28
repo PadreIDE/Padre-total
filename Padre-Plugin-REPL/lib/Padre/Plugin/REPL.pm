@@ -42,7 +42,8 @@ sub plugin_enable {
 }
 
 sub plugin_disable {
-	Class::Unload->unload('Padre::Plugin::REPL::Frame');
+	Class::Unload->unload('Padre::Plugin::REPL::History');
+	Class::Unload->unload('Padre::Plugin::REPL::Panel');
 }
 
 sub dialog {
