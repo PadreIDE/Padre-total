@@ -115,10 +115,14 @@ sub build_perl {
 
 sub configure_cpan {
 	my ($self) = @_;
-	my $from = "$self->{cwd}/share/files/mycpan.pl"; # TODO not from cwd ?
-	my $to   = $self->{perl_install_dir} . '/bin/';
-	debug("copy '$from', '$to'");
-	copy $from, $to;
+	
+	# TODO not from cwd ?
+	# TODO eliminate this horrible patch!
+	for my $from ("$self->{cwd}/share/files/mycpan.pl", "$self->{cwd}/share/files/mycpan_core.pl") {
+		my $to   = $self->{perl_install_dir} . '/bin/';
+		debug("copy '$from', '$to'");
+		copy $from, $to;
+	}
 	return;
 }
 
@@ -228,11 +232,13 @@ sub install_modules {
 		['Alien::wxWidgets'         => '0.43'],
 		['Wx'                       => '0.91'],
 		['Wx::Perl::ProcessStream'  => '0.11'],
+		['Padre'                    => '0.38'],
 
 	);
 	foreach my $m (@modules) {
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
-		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/mycpan.pl $m->[0]");
+		my $cmd = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
+		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/$cmd $m->[0]");
 	}
 }
 
