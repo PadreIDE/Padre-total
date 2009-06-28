@@ -121,7 +121,7 @@ sub authenticated {
 		room => $room,
 		password => MUCPASS,
 		server => $server,
-		nick => 'padre-swarm-xmpp-test',
+		nick => getlogin ."-$$" ,
 	);
   
 	
