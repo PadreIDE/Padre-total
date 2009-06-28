@@ -3,12 +3,15 @@ use warnings;
 use Module::Build;
 
 my $class = Module::Build->subclass(code => <<'EOF');
-        use Locale::Msgfmt;
+        eval{require Locale::Msgfmt;};
+if(! $@) {
+    Locale::Msgfmt->import();
         sub process_mo_files {
                 msgfmt({
                         in => "share/locale/",
                         out => "blib/lib/Padre/Plugin/REPL/share/locale/"});
         }
+}
 EOF
 my $builder = $class->new(
     module_name         => 'Padre::Plugin::REPL',
