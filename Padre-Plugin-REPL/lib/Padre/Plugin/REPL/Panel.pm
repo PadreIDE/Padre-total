@@ -26,7 +26,7 @@ sub new {
 			| Wx::wxTE_DONTWRAP
 			| Wx::wxNO_FULL_REPAINT_ON_RESIZE,
 	);
-	$box->Add($output, 2, Wx::wxGROW);
+	$box->Add( $output, 2, Wx::wxGROW );
 	my $input = Wx::TextCtrl->new(
 		$self,
 		-1,
@@ -38,9 +38,9 @@ sub new {
 	Wx::Event::EVT_TEXT_ENTER( $self, $input, \&Padre::Plugin::REPL::evaluate );
 	my $button = Wx::Button->new( $self, -1, _T("Evaluate") );
 	Wx::Event::EVT_BUTTON( $self, $button, \&Padre::Plugin::REPL::evaluate );
-	$bottom_box->Add($input, 1);
+	$bottom_box->Add( $input, 1 );
 	$bottom_box->Add($button);
-	$box->Add($bottom_box, 1, Wx::wxGROW);
+	$box->Add( $bottom_box, 1, Wx::wxGROW );
 	$self->SetSizer($box);
 	Padre::Current->main->bottom->show($self);
 	return ( $input, $output );
