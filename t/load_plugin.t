@@ -2,10 +2,10 @@
 
 use Test::More;
 
-if(defined($ENV{DISPLAY}) or $^O eq 'MSWin32') {
-    plan tests => 3;
+if ( defined( $ENV{DISPLAY} ) or $^O eq 'MSWin32' ) {
+	plan tests => 3;
 } else {
-    plan skip_all => "this test needs DISPLAY";
+	plan skip_all => "this test needs DISPLAY";
 }
 
 use Padre;
