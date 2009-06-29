@@ -1,4 +1,4 @@
-use Test::More plan => 1;
+use Test::More tests => 1;
 BEGIN { use_ok( 'IO::Socket::Multicast' ) };
 
 
