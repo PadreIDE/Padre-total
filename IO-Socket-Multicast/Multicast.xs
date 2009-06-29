@@ -1,5 +1,6 @@
 #ifdef WIN32
-#include <windows.h>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #endif
 #include "EXTERN.h"
 #include "perl.h"
@@ -29,7 +30,7 @@ not_here(char *s)
 }
 
 /* Recent versions of Win32 platforms are confused about these constants due to 
- problems in the order of socket header file importation */
+ problems in the order of socket header file importation 
 
 #ifdef WIN32
 #if (PERL_REVISION >=5) && (PERL_VERSION >= 8) && (PERL_SUBVERSION >= 6)
@@ -56,6 +57,8 @@ not_here(char *s)
 #define IP_DONTFRAGMENT    14
 #endif
 #endif
+
+*/
 
 #ifndef HAS_INET_ATON
 static int

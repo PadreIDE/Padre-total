@@ -1,0 +1,28 @@
+--- Multicast.orig	2009-06-26 19:16:11.000000000 +1000
++++ Multicast.xs	2009-06-26 19:33:08.000000000 +1000
+@@ -1,5 +1,6 @@
+ #ifdef WIN32
+-#include <windows.h>
++#include <winsock2.h>
++#include <ws2tcpip.h>
+ #endif
+ #include "EXTERN.h"
+ #include "perl.h"
+@@ -29,7 +30,7 @@
+ }
+ 
+ /* Recent versions of Win32 platforms are confused about these constants due to 
+- problems in the order of socket header file importation */
++ problems in the order of socket header file importation 
+ 
+ #ifdef WIN32
+ #if (PERL_REVISION >=5) && (PERL_VERSION >= 8) && (PERL_SUBVERSION >= 6)
+@@ -57,6 +58,8 @@
+ #endif
+ #endif
+ 
++*/
++
+ #ifndef HAS_INET_ATON
+ static int
+ my_inet_aton(register const char *cp, struct in_addr *addr)

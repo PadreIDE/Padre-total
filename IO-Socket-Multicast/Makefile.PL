@@ -8,7 +8,7 @@ push @libs,'-lresolv' unless $Config{d_inetaton} or $^O eq 'MSWin32';
 
 WriteMakefile(
 	      NAME	=> 'IO::Socket::Multicast',
-	      VERSION_FROM => 'Multicast.pm', # finds $VERSION
+	      VERSION_FROM => 'lib/IO/Socket/Multicast.pm', # finds $VERSION
 	      PREREQ_PM => {
 			    $^O eq 'MSWin32' ? () : ('IO::Interface' => 0.94),
 			   },
