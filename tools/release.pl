@@ -99,7 +99,7 @@ _system("$make manifest");
 _system("$make test");
 _system("$make disttest");
 
-if ( $^O ne 'MSWin32' ) {
+if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
 	print "Turn off DISPLAY\n";
 	my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
 	_system("$make disttest");
