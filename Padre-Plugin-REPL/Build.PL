@@ -3,8 +3,9 @@ use warnings;
 use Module::Build;
 
 my $class = Module::Build->subclass( code => <<'EOF');
-        use Locale::Msgfmt;
+        eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
         sub process_mo_files {
+                die("requires Locale::Msgfmt") if(!$INC{'Locale/Msgfmt.pm'});
                 msgfmt({
                         in => "share/locale/",
                         out => "blib/lib/Padre/Plugin/REPL/share/locale/"});
