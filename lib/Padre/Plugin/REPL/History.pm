@@ -9,6 +9,8 @@ our @history;
 our $current;
 our $walking;
 
+our $VERSION = '0.01';
+
 sub get_text {
 	Padre::Plugin::REPL::get_text();
 }
