@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.14 unreleased
+
+       - Only require Locale::Msgfmt when building the .mo files (RSN)
+
 =head1 0.13  2009.6.27
 
 	- Depends on Locale::Msgfmt to build the .mo files at install time (RSN, Ryan52++)
