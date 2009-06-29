@@ -132,3 +132,35 @@ p {
     margin: 0;
     padding-left: 1em;
 }
+
+/* Translators List */
+ul#translators li {
+    padding: 1em 1em 1em 1em;
+    margin: 1em;
+    border: 1px solid #AA8;
+    background: inherit;
+
+    width: 22%;
+    float: left;
+    clear: none;
+}
+
+ul#translators img {
+    float: right;
+    margin-left: 1em;;
+}
+
+h1.developer {
+    font-weight: bold;
+    font-size: 150%;
+    margin: 0 0 0.5em 0;
+    
+}
+
+ul#translator h2 {
+    display: block;
+    clear: both;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 125%;
+}
