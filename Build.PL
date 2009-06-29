@@ -23,7 +23,8 @@ my $builder = $class->new(
 		'Padre'         => 0,
 		'Capture::Tiny' => 0,
 		'Devel::REPL'   => 0,
-		'Class::Unload' => 0
+		'Class::Unload' => 0,
+		'Wx'            => 0,
 	},
 	add_to_cleanup     => ['Padre-Plugin-REPL-*'],
 	create_makefile_pl => 'passthrough',
