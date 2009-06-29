@@ -11,7 +11,7 @@ my %requires = (
 	'Class::XSAccessor'        => '1.02',
 );
 
-if($^O =~ /win32/i) {
+if ( $^O =~ /win32/i ) {
 	$requires{'Win32::Process'} = '0.14';
 }
 my $class = Module::Build->subclass( code => <<'EOF');
@@ -24,23 +24,24 @@ my $class = Module::Build->subclass( code => <<'EOF');
 	}
 EOF
 my $builder = $class->new(
-	module_name         => 'Padre::Plugin::Perl6',
-	license             => 'perl',
-	dist_author         => 'Ahmad M. Zawawi and Gabor Szabo',
-	dist_version_from   => 'lib/Padre/Plugin/Perl6.pm',
-	build_requires => {
-		'Test::More'              => '0.86',
-		'Test::Exception'         => '0.27',
-		'Test::NoWarnings'        => '0.084',
-		'Locale::Msgfmt'          => '0.08',
+	module_name       => 'Padre::Plugin::Perl6',
+	license           => 'perl',
+	dist_author       => 'Ahmad M. Zawawi and Gabor Szabo',
+	dist_version_from => 'lib/Padre/Plugin/Perl6.pm',
+	build_requires    => {
+		'Test::More'       => '0.86',
+		'Test::Exception'  => '0.27',
+		'Test::NoWarnings' => '0.084',
+		'Locale::Msgfmt'   => '0.08',
 	},
-	requires => \%requires,
-	add_to_cleanup      => [ 'Padre-Plugin-Perl6-*' ],
-	create_makefile_pl  => 'passthrough',
-	meta_merge     => {
+	requires           => \%requires,
+	add_to_cleanup     => ['Padre-Plugin-Perl6-*'],
+	create_makefile_pl => 'passthrough',
+	meta_merge         => {
 		resources => {
-			homepage   => 'http://padre.perlide.org/',
-			repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
+			homepage => 'http://padre.perlide.org/',
+			repository =>
+				'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
 		}
 	},
 );
