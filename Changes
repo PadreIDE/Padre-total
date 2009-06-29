@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.48 unreleased
+
+       - Only require Locale::Msgfmt when building the .mo files (RSN)
+
 =head1 0.47 2009.6.27
 
 	- Updated Arabic translation.
