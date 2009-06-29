@@ -55,15 +55,38 @@ sub new {
 		
 		# Tell it what additions to the directory tree to use.
 		msi_directory_tree_additions => [qw (
+			perl\site\lib\Class
+			perl\site\lib\Class\XSAccessor
+			perl\site\lib\CPAN\Mini
+			perl\site\lib\Devel
+			perl\site\lib\File\Find
+			perl\site\lib\File\Find\Rule
+			perl\site\lib\IPC
+			perl\site\lib\Module
+			perl\site\lib\ORLite
+			perl\site\lib\Pod
+			perl\site\lib\Text
+			perl\site\lib\Wx
+			perl\site\lib\Wx\Perl
+			perl\site\lib\auto\Class
+			perl\site\lib\auto\Class\XSAccessor
+			perl\site\lib\auto\Devel
+			perl\site\lib\auto\File\Find
+			perl\site\lib\auto\File\Find\Rule
+			perl\site\lib\auto\File\ShareDir
+			perl\site\lib\auto\IPC
+			perl\site\lib\auto\Module
+			perl\site\lib\auto\ORLite
+			perl\site\lib\auto\Pod
+			perl\site\lib\auto\Text
+			perl\site\lib\auto\Wx
+			perl\site\lib\auto\Wx\Perl
 			perl\site\lib\auto\share\dist
 			perl\site\lib\auto\share\dist\Padre
 			perl\site\lib\auto\share\dist\Padre\icons
 			perl\site\lib\auto\share\dist\Padre\icons\padre
 			perl\site\lib\auto\share\dist\Padre\icons\padre\16x16
-			perl\site\lib\auto\Wx
-			perl\site\lib\auto\Wx\Perl
-			perl\site\lib\Wx
-			perl\site\lib\Wx\Perl
+			perl\site\lib\auto\share\module
 		)],
 		
 		# Build both exe and zip versions
