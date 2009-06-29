@@ -15,13 +15,13 @@ if($^O =~ /win32/i) {
 	$requires{'Win32::Process'} = '0.14';
 }
 my $class = Module::Build->subclass( code => <<'EOF');
-        eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
-        sub process_mo_files {
-                die("requires Locale::Msgfmt") if(!$INC{'Locale/Msgfmt.pm'});
+	eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
+	sub process_mo_files {
+		die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
 		msgfmt({
 			in => "lib/Padre/Plugin/Perl6/share/locale/",
 			out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
-        }
+	}
 EOF
 my $builder = $class->new(
 	module_name         => 'Padre::Plugin::Perl6',
