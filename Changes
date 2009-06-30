@@ -3,6 +3,8 @@ Revision history for Locale-Msgfmt
 0.09    unreleased
         - still require the newer version of Locale::Maketext::Gettext
           when running under CPAN Testers
+        - use is_deeply instead of making a string out of the hash and
+          then using is
 
 0.08    Jun 27, 2009
         - again remove the dependency on Locale::Maketext::Gettext,

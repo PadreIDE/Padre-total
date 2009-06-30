@@ -9,10 +9,8 @@ use File::Spec;
 SKIP: {
     skip "Test needs Locale::Maketext::Gettext", 5 if(!eval("use Locale::Maketext::Gettext; 1;"));
     sub my_read_mo {
-        my $str = "";
         my %h = read_mo(shift);
-        foreach(sort keys %h){$str .= $_ . " " . $h{$_} . "\n";};
-        return $str;
+        return \%h;
     }
     sub my_msgfmt {
         my ($fh, $filename) = File::Temp::tempfile();
@@ -32,13 +30,13 @@ SKIP: {
         my $good = my_read_mo($mo);
         my $filename = my_msgfmt($po);
         my $test = my_read_mo($filename);
-        is($test, $good);
+        is_deeply($test, $good);
         if($basename eq "basic") {
             unlink($filename);
             $filename = my_msgfmt($po, 1);
             $good = my_read_mo(File::Spec->catfile("t", "samples", "fuzz.mo"));
             $test = my_read_mo($filename);
-            is($test, $good);
+            is_deeply($test, $good);
         }
         unlink($filename);
     }
