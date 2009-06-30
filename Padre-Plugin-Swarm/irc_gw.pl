@@ -28,9 +28,9 @@ sub swarm_relay {
    #my ($channel,$client,$payload) =$swarm->receive_from( 12000 );
    return if ( $con->nick eq $payload->{entity} ) ; # no loops
    warn Dumper $payload;
-   $con->send_chan( '#padre', 'PUBMSG',
+   $con->send_chan( '#padre', 'PRIVMSG',
     '#padre',
-    "$payload->{message}",  "via swarm relay from $payload->{user}"
+    ":$payload->{message}",  "via swarm relay from $payload->{user}"
    );
    
    
