@@ -1,15 +1,15 @@
-package Padre::Task::Buzz;
+package Padre::Service::Swarm;
 
 use strict;
 use warnings;
-use Padre::Task ();
+use Padre::Service ();
 use Padre::Wx   ();
 use Class::Autouse ();
-use Padre::Swarm::Service::Chat;
+#use Padre::Swarm::Service::Chat;
 use Data::Dumper;
 
 our $VERSION = '0.38';
-our @ISA     = 'Padre::Task';
+our @ISA     = 'Padre::Service';
 
 use Class::XSAccessor
 	accessors => {
@@ -28,9 +28,9 @@ use Class::XSAccessor
 #
 =pod
 
-=head1 Padre::Task::Buzz - Buzzing Swarm!
+=head1 Padre::Service::Swarm - Buzzing Swarm!
 
-Join the buzz , schedule a Swarm:: service to throw a event at you 
+Join the buzz , schedule a Swarm service to throw a event at you 
 when something interesting happens.
 
 =head1 SYNOPSIS
@@ -42,46 +42,34 @@ when something interesting happens.
 
 =cut
 
-# set up a new event type
-
-our $registered = undef;
-sub prepare {
+sub hangup {
 	my $self = shift;
-	my $running : shared = 0;
-	$self->{running} = $running;
-
-	return;
+	$self->service->shutdown;
 }
 
-sub running { 
+sub terminate {
 	my $self = shift;
-	my $value= shift;
-	if (defined $value) {
-		return $self->{running} = $value;
-	}
-	else {
-		return $self->{running};
-	}
+	my $service = $self->service(undef);
+	undef $service;
 }
 
-sub run {
+{
+my $service;
+sub service_loop {
 	my $self = shift;
-	$self->running( 1 );
-	#Class::Autouse->autouse( $self->service );
-	my $service = $self->service->new;
-	$service->start;
+	unless ( defined $service ) {
+		$service = $self->service->new;
+		$service->start;
+	}
 	
-	while ( $self->running ) {
-			while (my $message = $service->receive(0.2) ) {
-				$self->handle_message($message);
-			}
-		
+	if (my $message = $service->receive(0.2) ) {
+		$self->handle_message($message);
 	}
-	$service->shutdown;
 	
 	return 1;
 }
 
+}
 sub handle_message {
 	my $self = shift;
 	my $message = shift;

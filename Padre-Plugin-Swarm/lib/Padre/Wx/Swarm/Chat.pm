@@ -5,7 +5,8 @@ use strict;
 use warnings;
 use Params::Util qw{_INSTANCE};
 use Padre::Wx ();
-use Padre::Task::Buzz;
+use Padre::Service::Swarm;
+use Padre::Swarm::Service::Chat;
 use Class::Autouse;
 
 our $VERSION = '0.37';
@@ -81,10 +82,9 @@ sub enable {
 	
 	my $service = Padre::Swarm::Service::Chat->new;
 	
-	my $service_task = Padre::Task::Buzz->new(
+	my $service_task = Padre::Service::Swarm->new(
 		service => 'Padre::Swarm::Service::Chat', 
 		task_event => $task_push_event,
-		#main_thread_only => sub { $self->service_quit }
 	);
 	$self->set_task( $service_task );
 	$self->{service} = $service;
