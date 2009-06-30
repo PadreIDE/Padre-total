@@ -16,16 +16,7 @@ use Class::XSAccessor
 		task_event=>'task_event',
 		service => 'service',
 	};
-	
 
-
-#sub new {
-#	my ($class,@args) = @_;
-#	my $self = $class->SUPER::new(@args);
-#	my $running : shared = 0;
-#	$self->{running} = $running;
-#}
-#
 =pod
 
 =head1 Padre::Service::Swarm - Buzzing Swarm!

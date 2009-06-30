@@ -1,4 +1,7 @@
 Changes for Perl extension Padre-Plugin-Swarm
 
 0.01 to be released
+	- Achieve universal application milestone (embed chat client).
+	- Factor some rude parts out into Padre::Service
+	- Experiments in Multicast and Jabber
 	- Creating the initial skeleton
