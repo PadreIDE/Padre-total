@@ -5,7 +5,7 @@ use warnings;
 use Padre::Service ();
 use Padre::Wx   ();
 use Class::Autouse ();
-#use Padre::Swarm::Service::Chat;
+use Padre::Swarm::Service::Chat;
 use Data::Dumper;
 
 our $VERSION = '0.38';

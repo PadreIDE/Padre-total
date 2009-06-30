@@ -6,6 +6,7 @@ use AnyEvent::IRC::Client;
 use Data::Dumper;
 use JSON::XS;
 use Padre::Swarm::Transport::Multicast;
+my $gatewayid = rand() . $$;
 
 my $swarm = Padre::Swarm::Transport::Multicast->new();
 $swarm->subscribe_channel( 12000 , 1);
@@ -26,8 +27,13 @@ my ($nick, $user, $real) = qw/padre_swarm Padre-Swarm-IRCGW andrewb/;
 sub swarm_relay {
    my ($handle,$payload )= @_;
    #my ($channel,$client,$payload) =$swarm->receive_from( 12000 );
-   return if ( $con->nick eq $payload->{entity} ) ; # no loops
-   warn Dumper $payload;
+   
+   warn "Test for loops ";
+   return if ( $con->nick eq $payload->{entity} ) ; # no loops to self
+   return if ( $payload->{gw} eq $gatewayid ); # dont relay gateways
+   
+   warn "RELAY: " . Dumper $payload;
+   
    $con->send_chan( '#padre', 'PRIVMSG',
     '#padre',
     ":$payload->{message}",  "via swarm relay from $payload->{user}"
@@ -36,29 +42,11 @@ sub swarm_relay {
    
 }
 
-
 my $c = AnyEvent->condvar;
 
-
-
-
-#$con->reg_cb (irc_001 => sub {
-#   my ($con) = @_;
-#   $con->event ('welcome'); # emit a self defined event
-#});
-#
 # display all irc messages for debugging
-$con->reg_cb ('irc_*' => sub { warn "DEBUG: " . join ('|', %{$_[1]}) . "\n"; });
-#$con->reg_cb ('sent'  => sub { shift; warn "DEBUG SENT: " . join ('|', @_) . "\n"; });
+#$con->reg_cb ('irc_*' => sub { warn "DEBUG: " . join ('|', %{$_[1]}) . "\n"; });
 
-# we register now a callback on our self defined event
-#$con->reg_cb (welcome => sub {
-#   my ($con) = @_;
-#   $con->send_msg ("PRIVMSG", "elmex", "Hi!!!");
-#});
-#
-
-# lets 
 $con->reg_cb (
    connect => sub {
       my ($con, $err) = @_;
@@ -69,9 +57,6 @@ $con->reg_cb (
          warn "Connected! Yay!\n";
       }
 
-      # send IRC registration
-      #$con->send_msg ("NICK", $nick);
-      #$con->send_msg ("USER", $user || $nick, "*", "0", $real || $nick);
       $con->send_srv( JOIN => '#padre' );
       $con->register( $nick , $user, $real );
    },
@@ -84,13 +69,15 @@ $con->reg_cb (
 $con->reg_cb(
    publicmsg => sub {
       my ($handle,$channel,$ircmsg)= @_;
-      warn Dumper $ircmsg;
+      my $nick = $con->nick;
+      
       my $body = join (' ',@{ $ircmsg->{params} } );
       my $msg = { 
             user => $ircmsg->{prefix}, 
             message => $body , 
             type => 'chat',
             to => $channel,
+            gw => $gatewayid,
             entity => $con->nick, };
             
       $swarm->tell_channel( 12000, JSON::XS::encode_json $msg );
