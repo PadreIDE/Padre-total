@@ -31,12 +31,6 @@ sub padre_interfaces {
 	return 'Padre::Plugin' => '0.26';
 }
 
-sub menu_plugins_simple_DISABLED {
-	return "REPL" => [
-		( ('Evaluate something') . "\tCtrl+e" ) => \&dialog,    ### _T
-	];
-}
-
 sub plugin_enable {
 	_init_repl();
 }
@@ -44,13 +38,6 @@ sub plugin_enable {
 sub plugin_disable {
 	Class::Unload->unload('Padre::Plugin::REPL::History');
 	Class::Unload->unload('Padre::Plugin::REPL::Panel');
-}
-
-sub dialog {
-	my $code = Wx::GetTextFromUser("What do you want to evaluate?");
-	my $res  = _eval_repl($code);
-	Padre::Current->main->output->AppendText("# $code\n$res\n");
-	Padre::Current->main->show_output(1);
 }
 
 sub set_text {

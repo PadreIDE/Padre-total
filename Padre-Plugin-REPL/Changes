@@ -2,6 +2,7 @@ Revision history for Padre-Plugin-REPL
 
 0.02    unreleased
         change behavior to act more like readline
+        remove unused code
 
 0.01    Jun 28, 2009
         First version, released on an unsuspecting world.
