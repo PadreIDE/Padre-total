@@ -36,19 +36,19 @@ sub validate_walking {
 	$walking = $current if ( $walking > $current );
 }
 
-sub update_current_before_leaving {
-	update_current() if ( $current == $walking );
+sub update_walking_before_leaving {
+	$history[$walking] = get_text();
 }
 
 sub go_previous {
-	update_current_before_leaving();
+	update_walking_before_leaving();
 	$walking--;
 	validate_walking();
 	set_text();
 }
 
 sub go_next {
-	update_current_before_leaving();
+	update_walking_before_leaving();
 	$walking++;
 	validate_walking();
 	set_text();
