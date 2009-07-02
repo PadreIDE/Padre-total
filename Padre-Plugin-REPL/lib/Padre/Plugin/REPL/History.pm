@@ -6,6 +6,7 @@ use strict;
 use Padre::Plugin::REPL;
 
 our @history;
+our @original;
 our $current;
 our $walking;
 
@@ -28,7 +29,8 @@ sub init {
 }
 
 sub update_current {
-	$history[$current] = get_text();
+	$history[$current]  = get_text();
+	$original[$current] = get_text();
 }
 
 sub validate_walking {
@@ -62,6 +64,7 @@ sub evalled {
 	update_current();
 	$current += 1;
 	clear();
+	$history[$walking] = $original[$walking];
 	$walking = $current;
 	set_text();
 }
