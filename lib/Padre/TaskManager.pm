@@ -84,7 +84,6 @@ use Padre::Wx ();
 
 use Class::XSAccessor getters => {
 	task_queue     => 'task_queue',
-	service_queue  => 'service_queue',
 	reap_interval  => 'reap_interval',
 	use_threads    => 'use_threads',
 	max_no_workers => 'max_no_workers',
@@ -111,7 +110,7 @@ our $REAP_TIMER;
 # You can instantiate this class only once.
 our $SINGLETON;
 
-# This is set in the worker threads only!
+# This is set in the worker threads only! 
 our $_main;
 
 sub new {
@@ -120,8 +119,8 @@ sub new {
 	return $SINGLETON if defined $SINGLETON;
 
 	my $self = $SINGLETON = bless {
-		min_no_workers => 2,
-		max_no_workers => 6,
+		min_no_workers => 2, # there were config settings for 
+		max_no_workers => 6, #  these long ago?
 		use_threads    => 1,       # can be explicitly disabled
 		reap_interval  => 15000,
 		@_,
@@ -139,7 +138,7 @@ sub new {
 	_init_events($main);
 
 	$self->{task_queue}    = Thread::Queue->new;
-	$self->{service_queue} = Thread::Queue->new;
+
 
 	# Set up a regular action for reaping dead workers
 	# and setting up new workers
@@ -216,8 +215,10 @@ sub schedule {
 		return;
 	}
 
+
 	my $string;
 	$task->serialize( \$string );
+	
 	if ( $self->use_threads ) {
 		require Time::HiRes;
 
@@ -288,7 +289,10 @@ sub _make_worker_thread {
 	return unless $self->use_threads;
 
 	@_ = ();    # avoid "Scalars leaked"
-	my $worker = threads->create( { 'exit' => 'thread_only' }, \&worker_loop, $main, $self->task_queue );
+	my $worker = threads->create( 
+		{ 'exit' => 'thread_only' }, \&worker_loop,
+		 $main, $self->task_queue 
+	);
 	push @{ $self->{workers} }, $worker;
 }
 
@@ -350,12 +354,6 @@ sub reap {
 		$queue->insert( 0, ("STOP") x $n_threads_to_kill )
 			unless $queue->pending()
 				and not ref( $queue->peek(0) );
-
-		# We don't actually need to wait for the soon-to-be-joinable threads
-		# since reap should be called regularly.
-		#while (threads->list(threads::running) >= $target_n_threads) {
-		#  $_->join for threads->list(threads::joinable);
-		#}
 	}
 
 	$self->setup_workers();
@@ -388,14 +386,20 @@ sub _stop_task {
 
 =head2 cleanup
 
-Stops all worker threads. Called on editor shutdown.
+Shutdown all services with a HANGUP, then stop all worker threads.
+Called on editor shutdown.
 
 =cut
 
 sub cleanup {
 	my $self = shift;
 	return if not $self->use_threads;
-
+	
+	# Send all services a HANGUP , they will (hopefully)
+	# catch this and break the run loop, returning below as
+	# regular tasks. :|
+	$self->shutdown_services;
+	
 	# the nice way:
 	my @workers = $self->workers;
 	$self->task_queue->insert( 0, ("STOP") x scalar(@workers) );
@@ -451,27 +455,21 @@ sub running_tasks {
 
 =pod
 
-=head2 shutdown
+=head2 shutdown_services
 
-Gracefully shutdown the service queue by instructing them to hangup themselves
+Gracefully shutdown the services by instructing them to hangup themselves
 and return via the usual Task mechanism.
 
 =cut
 
-sub shutdown {
+sub shutdown_services {
 	my $self = shift;
-
-	while ( my ( $type, $tasks ) = each %{ $self->{running_tasks} } ) {
-		next unless Params::Util::_CLASSISA( $type, 'Padre::Service' );
-		foreach my $threadid ( keys %$tasks ) {
-			Padre::Util::debug("Hangup $type in $threadid !");
-			$SINGLETON->service_queue->enqueue(
-				"$threadid;HANGUP",
-			);
+	while ( my  ($type,$services) = each %{ $self->{running_services} } ) {
+		while ( my ($threadid,$service) = keys %$services ) {
+			Padre::Util::debug( "Hangup service $type! in $threadid" );
+			$service->shutdown;
 		}
-
 	}
-
 }
 
 =pod
@@ -504,6 +502,9 @@ because C<finish> most likely updates the GUI.)
 sub on_task_done_event {
 	my ( $main, $event ) = @_; @_ = ();    # hack to avoid "Scalars leaked"
 	my $frozen = $event->GetData;
+	
+	# FIXME - can we know the _real_ class so the an extender 
+	#  may hook de/serialize
 	my $task   = Padre::Task->deserialize( \$frozen );
 
 	$task->finish($main);
@@ -635,11 +636,7 @@ sub worker_loop {
 		Wx::PostEvent( $main, $thread_start_event );
 
 		# RUN
-		if ( $task->isa('Padre::Service') ) {
-			$task->run( $SINGLETON->service_queue );
-		} else {
-			$task->run;
-		}
+		$task->run;
 
 		# FREEZE THE PROCESS AND PASS IT BACK
 		undef $frozen_task;
@@ -665,6 +662,9 @@ What if the computer can't keep up with the queued jobs? This needs
 some consideration and probably, the schedule() call needs to block once
 the queue is "full". However, it's not clear how this can work if the
 Wx MainLoop isn't reached for processing finish events.
+
+Polling services 'aliveness' in a useful way , something a Wx::Taskmanager
+might like to display. Ability to selectivly kill tasks/services
 
 =head1 SEE ALSO
 

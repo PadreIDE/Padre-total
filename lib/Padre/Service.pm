@@ -1,6 +1,9 @@
 package Padre::Service;
 use strict;
 use warnings;
+use Carp qw( croak );
+
+use Padre::Wx ();
 
 our @ISA = 'Padre::Task';
 
@@ -35,7 +38,7 @@ To extend this class, inherit it and implement C<service_loop> and preferabbly
 C<hangup>
 
 C<service_loop> should not block forever. If there is no work for the service to do
-then return immediately, allowing the C<<Task->run>> loop to
+then return immediately, allowing the C<<Task->run>> loop to continue.
 
   package Padre::Service::HTTPD
   use base qw( Padre::Service );
@@ -52,8 +55,6 @@ then return immediately, allowing the C<<Task->run>> loop to
   
   sub terminate { # Stop everything, brutally }
   
-  sub service_results { # Returned as the task return to Padre, }
-  
 =head1 METHODS
 
 =head2 run
@@ -65,27 +66,42 @@ by the main thread, otherwise C<service_loop> is called in void context
 with no arguments B<IN A TIGHT LOOP>.
 
 =cut
+{
+my $running = 0;
+sub running { $running };
 
 sub run {
-	my ( $self, $queue ) = @_;
-
-	my $tid   = threads->tid;
-	my $event = $self->{service_event};
-	$self->post_event( $event, "$tid;ALIVE" );
-	my $running = 1;
-
+	croak "Already running!" if $running;
+	
+	my ($self) = @_;
+	my $queue = $self->queue;
+	Padre::Util::debug( "Running queue $queue" );
+	my $tid = threads->tid;
+	my $event  = $self->{__service_event};
+	
+	
+	# Now we're in the worker thread, start our service
+	# and begin the select orbit around the manager's queue
+	#  , the service_loop and throwing ->event back at the main thread
+	$self->start;
+	$running = 1;
+	$self->post_event(  $event , "ALIVE" );
 	while ($running) {
+		# Let the service provider have first chance.
+		#   and if nothing is waiting in the queue - tight loop.
 		$self->service_loop;
 		next unless $queue->pending;
 
-		my $incoming = $queue->peek(0);
-
-		# Peek at the queue - for something addressed to us
-		# YUK - how about a dedicated queue per service
-		# peek and poke went out in the dark ages didn't they
-		if ( $incoming =~ m{$tid;} ) {
-			my $instruction = $queue->dequeue;
-			my ($command) = $instruction =~ m{^$tid;(HANGUP|TERMINATE)};
+		my $command = $queue->dequeue;
+		Padre::Util::debug( "Service dequeued input" );
+		
+		# Respond to HANGUP TERMINATE and PING - 
+		if ( ref($command) ) {
+			$self->service_loop($command);
+		}
+		
+		# Or possibly a signal from the main thread
+		else {
 			if ( $command eq 'HANGUP' ) {
 				$self->hangup;
 				$running = 0;
@@ -93,17 +109,19 @@ sub run {
 				$self->terminate;
 				$running = 0;
 			} elsif ( $command eq 'PING' ) {
-				$self->post_event( $event, "$tid;ALIVE" );
+				$self->post_event( $event, "ALIVE" );
 			} else {
-				$self->task_warn( "$self : Unrecognised command event $command" );
+				Padre::Util::debug("Service does not recognise '$command' signal");
 			}
-
 		}
-
 	}
+	
+	# Loop broken - cleanup
+	$self->shutdown;
 	return;
 }
 
+}
 =head2 hangup
 
 Called on your service when the editor requests a hangup. Your service is obliged
@@ -141,10 +159,14 @@ second before returning control to the loop.
 	my $i = 0;
 
 	sub service_loop {
-		my ($self) = @_;
+		my ($self,$incoming) = @_;
 		my $tid = threads->tid;
 		$self->task_print("Service ($tid) Looped [$i]\n");
+		if (defined $incoming) {
+			$self->task_print("\tcaught '$incoming'");
+		}
 		$i++;
+		thread->yield;
 		sleep 1;
 	}
 }
@@ -157,6 +179,120 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
+
+{
+our %ServiceEvents : shared = ();
+  sub event {
+  	my $self = shift;
+  	if ( exists $ServiceEvents{$self->{__service_refid}} ) {
+  		return $ServiceEvents{ $self->{__service_refid} } ;
+  	}
+  	else {
+  		croak "Cannot lookup shared event for $self";
+  	}
+  }
+ 
+
+my %Queues : shared;
+ sub prepare {
+ 	my $self = shift;
+ 	my $queue : shared;
+ 	$queue = new Thread::Queue;
+  	$Queues{"$self"} = $queue;
+  	$self->{_refid} = "$self";
+  }
+ 
+ sub queue { 
+ 	my $self = shift;
+ 	if ( exists $self->{_refid} 
+		&& exists $Queues{$self->{_refid}} ) {
+ 		return $Queues{$self->{_refid}} ;
+ 	}
+ 	elsif  ( exists $Queues{"$self"} ) {
+ 		return $Queues{"$self"};
+ 	}
+ 	else { croak "No such service queue "; }
+ 
+ }
+ 
+
+  sub serialize {
+  	my $self = shift;
+  #	croak "Serialized!!";
+  	my $service_refid = "$self";
+  	$self->{__service_refid} = $service_refid;
+	
+	# Wait until the last moment before we declare 
+	# the event
+  	my $service_event : shared = Wx::NewEventType;
+  	$ServiceEvents{$service_refid} = $service_event;
+  	
+  	my $wx_attach;
+  	if ( exists $self->{_main_thread_only}
+	     && 
+	     _INSTANCE( $self->{_main_thread_only}, 'Wx::Object' )
+	    )
+	{
+		$wx_attach = $self->{_main_thread_only};
+	}
+	else {  $wx_attach = Padre->ide->wx->main };
+#	if (!exists $self->{__events_init}
+#	    and !defined $self->{__events_init} ) 
+#	{
+#		$self->{__events_init} =
+#		    Wx::Event::EVT_COMMAND(
+#			$wx_attach, -1,
+#			$service_event,
+#			sub{ $self->receive(@_) } ,
+#		);
+#	}
+
+
+  	# FILO
+  	my $payload = $self->SUPER::serialize(@_);
+	
+	
+	return $payload;
+  }
+  
+  sub deserialize {
+  	my $class = shift;
+  	# FILO
+  	my $self = $class->SUPER::deserialize(@_);
+  	
+  	# Shutdown the queue and event;
+  	
+  }
+
+}
+
+  sub shutdown {
+  	my $self = shift;
+  	my $queue =$self->queue;
+  	$queue->enqueue( 'HANGUP' );
+  }
+  
+  sub cleanup {
+  	my $self = shift;
+  	Padre::Util::debug( "cleanup - $self" );
+  }
+  
+  
+  ## MAIN
+  sub tell {
+  	my ($self,$ref) = @_;
+  	my $queue = $self->queue;
+  	$queue->enqueue($ref);
+  	warn "MAIN $self\n";
+  	warn "\t $queue is " . $queue->pending;
+  }
+  
+  sub receive {
+	my $self = shift;
+	my $event= shift;
+	my $data = $event->GetData;
+	warn "Received $data";
+  }
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
