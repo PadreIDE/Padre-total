@@ -27,7 +27,6 @@ requires 'Padre::Plugin::Nopaste' => '0.2.1';
 requires 'Padre::Plugin::PAR' => '0.05';
 requires 'Padre::Plugin::PerlCritic' => '0.06';
 requires 'Padre::Plugin::PerlTidy' => '0.07';
-requires 'Padre::Plugin::REPL' => '0.01';
 requires 'Padre::Plugin::Vi' => '0.22';
 requires 'Padre::Plugin::ViewInBrowser' => '0.07';
 requires 'Padre::Plugin::XML' => '0.06';
@@ -50,6 +49,9 @@ feature 'Experimental Padre plugin that runs on Parrot',
 feature 'Padre plugin for Perl6',
 	-default => 0,
 	'Padre::Plugin::Perl6' => '0.48';
+feature 'read-evaluate-print plugin for Padre',
+	-default => 0,
+	'Padre::Plugin::REPL' => '0.01';
 feature 'Simple SVK interface for Padre',
 	-default => 0,
 	'Padre::Plugin::SVK' => '0.02';

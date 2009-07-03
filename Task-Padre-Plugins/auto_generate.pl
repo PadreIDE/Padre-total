@@ -24,7 +24,8 @@ my @feature_dists = qw/
     Padre-Plugin-Git
     Padre-Plugin-Catalyst
     Padre-Plugin-Mojolicious
-/;
+    Padre-Plugin-REPL
+/; # REPL, FAIL on Win32
 my @requires_dists;
 
 # get all used_by Padre, http://cpants.perl.org/dist/used_by/Padre
