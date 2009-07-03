@@ -42,7 +42,7 @@ print "Range $first_rev - $last_rev\n";
 my $dir = tempdir (CLEANUP => 1);
 my $cwd = cwd();
 END {
-	chdir $cwd;
+	chdir $cwd if $cwd;
 }
 chdir $dir;
 
