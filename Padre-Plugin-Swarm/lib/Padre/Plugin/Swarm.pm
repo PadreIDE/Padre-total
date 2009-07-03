@@ -8,6 +8,10 @@ use Padre::Wx       ();
 use Padre::Plugin   ();
 use Padre::Wx::Icon ();
 use Padre::Wx::Swarm::Chat ();
+
+use Padre::Wx::Swarm::Foo ();
+
+
 use File::Spec      ();
 
 use Class::XSAccessor
@@ -16,12 +20,14 @@ use Class::XSAccessor
 	    get_services => 'services',
 	    # 
 	    get_chat => 'chat',
+	    get_sidebar=>'sidebar',
 	}
 	,
 	setters => {
 	    set_config => 'config',
 	    set_services=>'services',
 	    set_chat => 'chat',
+	    set_sidebar => 'sidebar',
 	};
 
 our $VERSION = '0.01';
@@ -72,14 +78,12 @@ sub plugin_enable {
 	$self->set_config( $config );
 
 	$self->_load_everything;
-	$self->_start_services;
-	
+
 	
 }
 
 sub plugin_disable {
 	my $self = shift;
-	$self->_shutdown_services;
 	$self->_destroy_ui;
 }
 
@@ -117,9 +121,12 @@ sub _load_everything {
 	my $config = $self->get_config; 
 	# TODO bootstrap some config and construct
 	# services/transports. for now just chat
-
-
+	
 	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
+	#my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
+	
+	#my $sidebar = Padre::Wx::Swarm::Foo->new($self->main);
+	#$self->set_sidebar( $sidebar );
 	
 	$self->set_chat( $chatframe );
 	$chatframe->enable;
@@ -150,22 +157,22 @@ sub _destroy_ui {
 #	}
 #}
 
-sub _start_services {
-	my $self = shift;
-	my $services = $self->get_services;
-	while ( my ($name,$service) = each %$services ) {
-		$service->start;
-	}
-}
+#sub _start_services {
+#	my $self = shift;
+#	my $services = $self->get_services;
+#	while ( my ($name,$service) = each %$services ) {
+#		$service->start;
+#	}
+#}
 
-sub _shutdown_services {
-	my $self = shift;
-	my $services = $self->get_services;
-	while ( my ($name,$service) = each %$services ) {
-		$service->shutdown;
-	}
-
-}
+#sub _shutdown_services {
+#	my $self = shift;
+#	my $services = $self->get_services;
+#	while ( my ($name,$service) = each %$services ) {
+#		$service->shutdown;
+#	}
+#
+#}
 1;
 
 __END__

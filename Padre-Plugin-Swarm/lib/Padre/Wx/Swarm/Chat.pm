@@ -21,7 +21,7 @@ use Class::XSAccessor
 		chatframe => 'chatframe',
 	},
 	setters => { 'set_task' => 'task' };
-	
+
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -32,7 +32,10 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
-	
+
+
+	# build large area for chat output , with a 
+	#  single line entry widget for input
 	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	
 	my $text = Wx::TextCtrl->new($self,-1,'',
@@ -51,6 +54,9 @@ sub new {
 	$self->textinput( $text );
 	$self->chatframe( $chat );
 	$self->SetSizer($sizer);
+	
+	my $service = Padre::Swarm::Service::Chat->new();
+	$self->service( $service );
 	
 	Wx::Event::EVT_TEXT_ENTER(
                 $self, $text,
@@ -76,26 +82,15 @@ sub gettext_label {
 
 sub enable {
 	my $self     = shift;
-	
-	my $task_push_event : shared = Wx::NewEventType();
-	
-	
-	my $service = Padre::Swarm::Service::Chat->new;
-	
-	my $service_task = Padre::Service::Swarm->new(
-		service => 'Padre::Swarm::Service::Chat', 
-		task_event => $task_push_event,
-	);
-	$self->set_task( $service_task );
-	$self->{service} = $service;
-	$service->start;
+	Padre::Util::debug( "Enable Chat" );
+	$self->service->schedule;
 	# Set up the event handler, we will 
 	# ->accept_message when the task loop ->post_event($data)
 	#  to us.
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx->main,
 		-1,
-		$task_push_event,
+		$self->service->event,
 		sub { $self->accept_message(@_) }
 	);
 	# Add ourself to the gui;
@@ -106,17 +101,21 @@ sub enable {
 	$self->Show;
 	$bottom->SetSelection($position);
 	$main->aui->Update;
-	$self->task->schedule;
+
 	$self->{enabled} = 1;
 }
 
 sub disable {
 	my $self = shift;
+	Padre::Util::debug( 'Disable Chat' );
 	my $main = $self->main;
 	my $bottom= $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
+	$self->tell_service('HANGUP');
+	
 	$self->Hide;
-	$self->task->running( 0 );
+	
+	
 	$bottom->RemovePage($position);
 	$main->aui->Update;
 	$self->Destroy;
@@ -128,7 +127,13 @@ sub accept_message {
 	my $main = shift;
 	my $evt = shift;
 	
-	my $message = Storable::thaw( $evt->GetData );
+	
+	my $payload = $evt->GetData;
+	my $message = Storable::thaw($payload);
+
+	return unless Params::Util::_HASH( $message );
+	
+	
 	my $user = $message->{user} || 'unknown';
 	my $ip   = $message->{client_address} || 'unknown';
 	my $content = $message->{message};
@@ -142,9 +147,8 @@ sub tell_service {
 	my $self = shift;
 	my $body = shift;
 	my $args = shift;
-	my $service = $self->service;
-	$service->chat( $body );
-	
+	my $message = {message=>$body,user=>getlogin};
+	my $service = $self->service->tell($message) 
 }
 
 sub on_text_enter {

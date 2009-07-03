@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 use lib qw( lib );
+use Data::Dumper;
+
 $|++;
 
 use Padre::Swarm::Transport::Multicast;
@@ -10,6 +12,7 @@ $mc->start;
 while ( 1 ) {
 	$mc->poll(1);
 	my $buffer;
-	my ($channel,$client,$payload) = $mc->receive_from( 12000 );
-	print "[$client], $payload",$\;
+	my ($message,$frame) = $mc->receive_from( 12000 );
+	print Dumper $frame;
+	print Dumper $message;
 }

@@ -124,6 +124,7 @@ sub unsubscribe_channel {
 sub poll {
     my ($self,$timeout) = @_;
     $timeout ||= 0;
+    warn "Polling before service start!!" unless $self->started;
     return $self->selector->can_read($timeout);
     
 }
@@ -145,18 +146,28 @@ sub receive_from {
     my ($self,$channel) = @_;
     if ( exists $self->channels->{$channel} ) {
         my $sock = $self->channels->{$channel};
-        my $buffer;
-        my $remote = $sock->recv( $buffer, 65535 );
-        if  ( $remote ) {
-            my ($rport,$raddr) = sockaddr_in $remote;
-            my $ip = inet_ntoa $raddr;
-            return ($rport,$ip,$buffer);
-        }
-        else { return }
+        return $self->receive_from_sock( $sock );
     }
     else {
         croak "No such channel '$channel'";
     }
+}
+
+sub receive_from_sock {
+    my ($self,$sock) = @_;
+    my $buffer;
+    my $remote = $sock->recv( $buffer, 65535 );
+    if  ( $remote ) {
+        my ($rport,$raddr) = sockaddr_in $remote;
+        my $ip = inet_ntoa $raddr;
+        return ($buffer,
+            {  port=>$rport,address=>$ip ,
+               timestamp => time() # yuk
+                }
+            
+            );
+    }
+    else { return }
 }
 
 sub _connect_socket {
