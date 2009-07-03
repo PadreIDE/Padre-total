@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugins
 
+0.23    2009.07.03
+        REPL plugin
+
 0.22    2009.06.09
         Add links to plugin modules to ease navigation on search.cpan.org
 

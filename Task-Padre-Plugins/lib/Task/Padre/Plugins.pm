@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 1;
 __END__
@@ -114,6 +114,7 @@ See L<Padre::Plugin::InstallPARDist>
 
 L<Padre> and JavaScript
 
+
 See L<Padre::Plugin::JavaScript>
 
 =head2 L<Padre::Plugin::Mojolicious>
@@ -163,6 +164,12 @@ See L<Padre::Plugin::PerlCritic>
 Format perl files using Perl::Tidy
 
 See L<Padre::Plugin::PerlTidy>
+
+=head2 L<Padre::Plugin::REPL>
+
+read-evaluate-print plugin for Padre
+
+See L<Padre::Plugin::REPL>
 
 =head2 L<Padre::Plugin::SVK>
 
