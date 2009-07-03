@@ -122,6 +122,11 @@ sub run {
 }
 
 }
+
+sub start {
+	
+}
+
 =head2 hangup
 
 Called on your service when the editor requests a hangup. Your service is obliged
@@ -156,17 +161,19 @@ second before returning control to the loop.
 =cut
 
 {
-	my $i = 0;
+	
 
 	sub service_loop {
 		my ($self,$incoming) = @_;
+		$self->{iterator} = 0
+			unless exists $self->{iterator};
 		my $tid = threads->tid;
-		$self->task_print("Service ($tid) Looped [$i]\n");
+		$self->task_print("Service ($tid) Looped $self->{iterator}\n");
 		if (defined $incoming) {
 			$self->task_print("\tcaught '$incoming'");
 		}
-		$i++;
-		thread->yield;
+		$self->{iterator}++;
+		$self->tell('HANGUP') if $self->{iterator} > 10;
 		sleep 1;
 	}
 }
