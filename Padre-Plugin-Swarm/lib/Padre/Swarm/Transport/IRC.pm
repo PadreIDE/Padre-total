@@ -29,7 +29,9 @@ sub start {
 		  real => getlogin() 
 		}
 	);
+	
 	$self->{connection} = $con;
+	$self->_register_irc_callbacks($con);
 	my $c = AnyEvent->condvar;
 	$self->{condvar} = $c;
 	
@@ -45,7 +47,7 @@ sub shutdown {
 
 sub _register_irc_callbacks {
 	my ($self,$con) = @_;
-
+warn "REGISTER CALLBACKS";
 
 	$con->reg_cb (
 	   connect => sub {
@@ -54,16 +56,16 @@ sub _register_irc_callbacks {
 		 warn "Connect ERROR! => $err\n";
 		 $self->condvar->broadcast;
 	      } else {
-		 warn "Connected! Yay!\n";
+		 Padre::Util::debug( "Connected! Yay!\n" );
 	      }
 
-		$con->register( 
-		  $self->nickname,
-		  'Padre-Swarm-Transport-IRC',
-		  , getlogin() 
-		);
 		$con->send_srv( JOIN => '#padre' );
-	   
+#		$con->register( 
+#		  $self->nickname,
+#		  'Padre-Swarm-Transport-IRC',
+#		  , getlogin() 
+#		);
+		
 	   },
 	   disconnect => sub {
 	      warn "Oh, got a disconnect: $_[1], exiting...\n";
@@ -108,9 +110,14 @@ sub _connect_channel {
 
 sub poll {
 	my ($self,$time) = @_;
-	warn "Polling for $time:";
-	$self->condvar->recv();
+#	warn "Polling for $time:";
+	my $c = AnyEvent->condvar;
+	my $timer = AnyEvent->timer( after=>$time,
+		cb=>sub{ $c->send } );
+	$c->recv;
+#	warn "Returned from poll wait";
 	if ( keys %{ $self->{incoming_buffer} } ) {
+		warn "DATA IN BUFFER!";
 		return keys %{ $self->{incoming_buffer} };
 	}
 
