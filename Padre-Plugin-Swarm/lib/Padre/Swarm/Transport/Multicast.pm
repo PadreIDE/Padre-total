@@ -189,9 +189,14 @@ sub _shutdown_socket {
     my ($self,$port) = @_;
     my $socket = delete $self->channels->{$port};
     return 1 unless defined $socket;
+    delete $self->subscriptions->{$port};
     $self->selector->remove( $socket );
     $socket->mcast_drop( MCAST_GROUP );
     $socket->shutdown(0);
+    undef $socket;
+    
+    warn Dumper $self;
+    
     return 1;
 }
 

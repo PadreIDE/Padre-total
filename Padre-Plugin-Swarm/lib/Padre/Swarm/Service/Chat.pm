@@ -5,7 +5,7 @@ use warnings;
 use JSON::XS;
 use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
-
+use Padre::Service ();
 my $marshal = JSON::XS->new->allow_blessed->convert_blessed;
     
 our @ISA = 'Padre::Service';
@@ -69,6 +69,7 @@ sub service_loop {
 
 sub shutdown {
         my $self = shift;
+        Padre::Util::debug( 'Requested shutdown of service' );
         return unless $self->running;
         $self->send( { user => getlogin , goodbye=>1 } );
         $self->transport->shutdown;
@@ -80,6 +81,13 @@ sub new {
     my $running : shared = 0 ;
     my $self = bless {running=>$running} , $class;
     return $self;
+}
+
+sub serialize {
+    my ($self) = @_;
+    warn "SERIALIZE ! " . Dumper $self;
+    $self->SUPER::serialize();
+    
 }
 
 sub chat {
@@ -122,8 +130,10 @@ use Data::Dumper;
 sub receive {
     my $self = shift;
     my $message = shift;
-
-    if ( $message->{type} eq 'disco' ) {
+    my $type = $message->{type};
+    $type ||= '';
+    
+    if ( $type eq 'disco' ) {
         $self->promote($message);
     }
 

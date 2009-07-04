@@ -111,7 +111,7 @@ sub disable {
 	my $main = $self->main;
 	my $bottom= $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
-	$self->tell_service('HANGUP');
+	$self->service->tell('HANGUP');
 	
 	$self->Hide;
 	
