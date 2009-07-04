@@ -16,8 +16,9 @@ use base 'Wx::Dialog';
 # accessors
 use Class::XSAccessor accessors => {
 	_sizer             => '_sizer',              # window sizer
-	_search_text       => '_search_text',	     # search text control
-	_matches_list      => '_matches_list',	     # matches list
+	_search_text       => '_search_text',        # search text control
+	_matches_list      => '_matches_list',       # matches list
+	_targets_index     => '_targets_index',      # targets index
 };
 
 # -- constructor
@@ -30,7 +31,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$main,
 		-1,
-		Wx::gettext('Open Resource'),
+		Wx::gettext('Perl 6 Help'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -92,6 +93,8 @@ sub _create {
 
 	# focus on the search text box
 	$self->_search_text->SetFocus();
+	
+	$self->_update_matches_list_box;
 }
 
 #
@@ -154,25 +157,7 @@ sub _setup_events {
 
 	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
-		if(not $self->_matched_files) {
-			$self->_search();
-		}
 		$self->_update_matches_list_box;
-		
-		return;
-	});
-	
-	Wx::Event::EVT_LISTBOX( $self, $self->_matches_list, sub {
-		my $self  = shift;
-		my @matches = $self->_matches_list->GetSelections();
-		my $num_selected =  scalar @matches;
-		if($num_selected > 1) {
-			$self->_status_text->SetLabel(
-				"" . scalar @matches . Wx::gettext(" items selected"));
-		} elsif($num_selected == 1) {
-			$self->_status_text->SetLabel(
-				$self->_matches_list->GetClientData($matches[0]));
-		}
 		
 		return;
 	});
@@ -189,22 +174,13 @@ sub _setup_events {
 sub _search() {
 	my $self = shift;
 	
-	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
-
-	# search and ignore rc folders (CVS,.svn,.git) if the user wants
-	require File::Find::Rule;
-	my $rule = File::Find::Rule->new;
-	$rule->file;
-
 	# Generate a sorted file-list based on filename
-	my @matched_files = sort { 
-			File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
-	} $rule->in( );
+	require App::Grok;
+	my $grok = App::Grok->new;
+	my @targets_index = sort $grok->target_index();
 
-	$self->_matched_files( \@matched_files ); 
+	$self->_targets_index( \@targets_index ); 
 	
-	$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
-
 	return;
 }
 
@@ -214,6 +190,10 @@ sub _search() {
 sub _update_matches_list_box() {
 	my $self = shift;
 	
+	if(not $self->_targets_index) {
+		$self->_search();
+	}
+
 	my $search_expr = $self->_search_text->GetValue();
 
 	#quote the search string to make it safer
@@ -225,7 +205,7 @@ sub _update_matches_list_box() {
 	#Populate the list box now
 	$self->_matches_list->Clear();
 	my $pos = 0;
-	foreach my $file (@{$self->_matched_files}) {
+	foreach my $file (@{$self->_targets_index}) {
 		my $filename = File::Basename::fileparse($file);
 		if($filename =~ /^$search_expr/i) {
 			$self->_matches_list->Insert($filename, $pos, $file);
@@ -234,9 +214,6 @@ sub _update_matches_list_box() {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel("" . ($pos+1) . Wx::gettext(' item(s) found'));
-	} else {
-		$self->_status_text->SetLabel(Wx::gettext('No items found'));
 	}
 			
 	return;
