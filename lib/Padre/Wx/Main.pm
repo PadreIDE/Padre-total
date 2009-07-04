@@ -2132,10 +2132,6 @@ sub on_close_window {
 	Padre::Util::debug("Files saved (or not), hiding window");
 
 
-	Padre::Util::debug("Tell TaskManager to cleanup");
-	# Stop all Task Manager's worker threads
-	$self->ide->task_manager->cleanup;
-	
 	# Immediately hide the window so that the user
 	# perceives the application as closing faster.
 	# This knocks about quarter of a second off the speed
@@ -2180,6 +2176,10 @@ sub on_close_window {
 	# Write the configuration to disk
 	$ide->save_config;
 	$event->Skip;
+
+	Padre::Util::debug("Tell TaskManager to cleanup");
+	# Stop all Task Manager's worker threads
+	$self->ide->task_manager->cleanup;
 
 	Padre::Util::debug("Closing Padre");
 

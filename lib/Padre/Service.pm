@@ -75,6 +75,9 @@ with no arguments B<IN A TIGHT LOOP>.
 my $running = 0;
 sub running { $running };
 
+sub stop { $running = 0 };
+sub start{ $running = 1 }; #??
+
 sub run {
 	croak "Already running!" if $running;
 	
@@ -109,11 +112,9 @@ sub run {
 		else {
 			Padre::Util::debug( "Caught command signal '$command'" );
 			if ( $command eq 'HANGUP' ) {
-				$self->hangup;
-				$running = 0;
+				$self->hangup( \$running );
 			} elsif ( $command eq 'TERMINATE' ) {
-				$self->terminate;
-				$running = 0;
+				$self->terminate( \$running );
 			} elsif ( $command eq 'PING' ) {
 				$self->post_event( $event, "ALIVE" );
 			} else {
@@ -138,10 +139,6 @@ in the service thread immediatly prior to the service loop starting.
 =cut
 
 
-sub start {
-	
-}
-
 =head2 hangup
 
 Called on your service when the editor requests a hangup. Your service is obliged
@@ -150,8 +147,9 @@ to gracefully stop what it is doing and return from this method as soon as possi
 =cut
 
 sub hangup {
-	my ($self) = @_;
-
+	my ($self,$running) = @_;
+	$self->transport->shutdown;
+	$$running = 0;
 }
 
 =head2 terminate
@@ -163,8 +161,9 @@ everything and to hell with the consequences.
 =cut
 
 sub terminate {
-	my ($self) = @_;
-
+	my ($self,$running) = @_;
+	$self->transport->shutdown;
+	$$running = 0;
 }
 
 =head2 service_loop
