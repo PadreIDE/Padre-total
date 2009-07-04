@@ -129,8 +129,11 @@ sub accept_message {
 	
 	
 	my $payload = $evt->GetData;
+	# Hack - the alive should be via service poll event ?
+	return if $payload eq 'ALIVE';
+	
 	my $message = Storable::thaw($payload);
-
+	#my $message = $evt->GetData;
 	return unless Params::Util::_HASH( $message );
 	
 	

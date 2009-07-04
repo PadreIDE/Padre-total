@@ -64,11 +64,12 @@ sub service_loop {
 sub handle_message {
 	my $self = shift;
 	my $message = shift;
-	my $data = Storable::freeze($message);
+	#my $data = Storable::freeze($message);
 	my $ev = $self->task_event;
 	$self->post_event( 
 		$self->task_event, 
-		$data,
+		#$data,
+		$message
 	);
 }
 

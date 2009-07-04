@@ -71,8 +71,19 @@ sub shutdown {
         my $self = shift;
         Padre::Util::debug( 'Requested shutdown of service' );
         return unless $self->running;
-        $self->send( { user => getlogin , goodbye=>1 } );
         $self->transport->shutdown;
+}
+
+sub hangup {
+    my ($self,$running) = @_;
+    $self->transport->shutdown;
+    $$running = 0;
+}
+
+sub terminate {
+    my ($self,$running) = @_;
+    $self->transport->shutdown;
+    $$running = 0;
 }
 
 sub new {
@@ -83,12 +94,6 @@ sub new {
     return $self;
 }
 
-sub serialize {
-    my ($self) = shift;
-    warn "SERIALIZE ! " . Dumper $self;
-    $self->SUPER::serialize(@_);
-    
-}
 
 sub chat {
     my ($self,$text) = @_;
