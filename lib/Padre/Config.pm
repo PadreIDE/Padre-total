@@ -57,6 +57,7 @@ my %settings = (
 		# -- user identity (simplistic initial version)
 		[ 'identity_name',  Padre::Constant::ASCII, '' ],    # Initially, this must be ascii only
 		[ 'identity_email', Padre::Constant::ASCII, '' ],
+		[ 'identity_nickname', Padre::Constant::ASCII, ''],
 
 		# -- for module::starter
 		[ 'license',                Padre::Constant::ASCII, '' ],
