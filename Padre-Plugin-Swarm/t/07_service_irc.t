@@ -22,14 +22,16 @@ my $tm = Padre::TaskManager->new();
 
 my $chat = Padre::Swarm::Service::Chat->new(
 	use_transport => {
-		'Padre::Swarm::Transport::IRC' => {},
+		'Padre::Swarm::Transport::IRC' => {
+			nickname => 'swarm_'.$$ ,
+		},
 	}
 );
 
 $chat->schedule;
-$chat->queue->enqueue({user=>getlogin(),type=>'chat',message=>'test'});
+$chat->queue->enqueue({type=>'chat',message=>'test'});
 
-sleep 90; # sooo long
+sleep 30; # sooo long
 $chat->queue->enqueue('HANGUP');
 $chat->shutdown;
 

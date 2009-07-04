@@ -6,6 +6,7 @@ use JSON::XS;
 use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
+
 my $marshal = JSON::XS->new->allow_blessed->convert_blessed;
     
 our @ISA = 'Padre::Swarm::Service';
@@ -25,6 +26,7 @@ sub service_name { 'chat' };
 sub start { 
     my $self = shift;
     Padre::Util::debug('Starting chat service');
+    my $config = Padre::Config->read;
     $self->_attach_transports;
     Padre::Util::debug('Chat transports attached');  
     Padre::Util::debug( $self->transport );
@@ -37,7 +39,7 @@ sub start {
     Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
     $self->queue->enqueue( { type=>'disco' , want=>['chat'] } );
     
-    $self->queue->enqueue( { user => getlogin , type=>'announce',  } );
+    $self->queue->enqueue( { type=>'announce',  } );
     
 }
 
@@ -100,14 +102,14 @@ sub new {
 sub chat {
     my ($self,$text) = @_;
     $self->send(
-        { user => getlogin, message=>$text }
+        {message=>$text }
     );
 }
 
 sub say_to {
     my ($self,$text,$entity) = @_;
     $self->send( 
-        { user => getlogin, message=>$text, to=>$entity }
+        { message=>$text, to=>$entity }
     );
 }
 

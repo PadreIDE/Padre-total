@@ -10,6 +10,7 @@ use Class::XSAccessor
    getters => {
 	   connection => 'connection',
 	   condvar	=> 'condvar',
+	   nickname    => 'nickname',
    };
    
 use Carp;
@@ -24,7 +25,7 @@ sub start {
 	my $con = AnyEvent::IRC::Client->new;
 	$con->connect (
 		"irc.perl.org" => 6667 ,
-		{ nick => 'swarm_submersible' ,
+		{ nick =>  $self->nickname,
 		  user => 'Padre-Swarm-Transport-IRC' ,
 		  real => getlogin() 
 		}
@@ -47,24 +48,23 @@ sub shutdown {
 
 sub _register_irc_callbacks {
 	my ($self,$con) = @_;
-warn "REGISTER CALLBACKS";
-
 	$con->reg_cb (
 	   connect => sub {
 	      my ($con, $err) = @_;
 	      if (defined $err) {
-		 warn "Connect ERROR! => $err\n";
+		 Padre::Util::debug("Connect ERROR! => $err\n");
 		 $self->condvar->broadcast;
 	      } else {
 		 Padre::Util::debug( "Connected! Yay!\n" );
 	      }
 
-		$con->send_srv( JOIN => '#padre' );
 #		$con->register( 
 #		  $self->nickname,
 #		  'Padre-Swarm-Transport-IRC',
 #		  , getlogin() 
 #		);
+
+		$self->update_channels;
 		
 	   },
 	   disconnect => sub {
@@ -102,10 +102,16 @@ sub _connect_channel {
 	my ($self,$channel) = @_;
 	my $con = $self->connection;
 	my $room = '#padre_swarm_' . $channel;
-	warn "Join #padre";
-	$con->send_srv( JOIN => '#padre' );
+	$con->send_srv( JOIN => $room );
 }
 
+sub update_channels {
+	my ($self) = @_;
+	while ( my ($channel,$loop) = each %{ $self->channels } ) {
+		$self->subscribe_channel($channel,$loop);
+	}
+	
+}
 
 
 sub poll {

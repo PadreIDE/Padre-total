@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Params::Util qw{_INSTANCE};
 use Padre::Wx ();
+use Padre::Config ();
 use Padre::Service::Swarm;
 use Padre::Swarm::Service::Chat;
 use Class::Autouse;
@@ -55,10 +56,13 @@ sub new {
 	$self->chatframe( $chat );
 	$self->SetSizer($sizer);
 	
+	my $config = Padre::Config->read;
 	my $service = Padre::Swarm::Service::Chat->new(
 		use_transport => {
-			#'Padre::Swarm::Transport::Multicast'=>{},
-			'Padre::Swarm::Transport::IRC'=>{},
+			'Padre::Swarm::Transport::Multicast'=>{
+			#'Padre::Swarm::Transport::IRC'=>{
+				nickname => $config->identity_nickname
+			},
 		}
 	);
 	$self->service( $service );
@@ -155,7 +159,7 @@ sub tell_service {
 	my $self = shift;
 	my $body = shift;
 	my $args = shift;
-	my $message = {message=>$body,user=>getlogin};
+	my $message = {message=>$body};
 	my $service = $self->service->tell($message) 
 }
 

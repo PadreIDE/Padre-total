@@ -13,7 +13,7 @@ use Class::XSAccessor
 
 sub new {
     my ($class,%args) = @_;
-    my %obj;
+    my %obj = %args;
     my $selector = IO::Select->new();
     $obj{subscriptions} = {};
     $obj{channels}      = {};
