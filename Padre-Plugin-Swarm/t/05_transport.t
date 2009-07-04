@@ -19,7 +19,13 @@ ok( $tr->started, 'Transport claims to be started' );
 
 my $channel_data = 
   JSON::XS::encode_json(
-	{ message=>'Hello World!', from=>'test' }
+	{ 
+	    message=>
+		  sprintf("%s[%s]\t%s",
+			ref($tr),$$,__FILE__,
+		),
+	    user => getlogin . '_test',
+	}
   );
 
 ok( $tr->tell_channel( CHAT, $channel_data ) , 'Tell channel' );
