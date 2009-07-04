@@ -66,14 +66,20 @@ sub _on_ok_button_clicked {
 	if($help_target) {
 		require App::Grok;
 		my $grok = App::Grok->new;
-		my $grok_text = $grok->render_target($help_target,'text');
+		my $grok_text = $grok->render_target($help_target,'xhtml');
 		if($grok_text) {
-			Wx::MessageBox(
-				$grok_text,
-				'Perl 6 Help',
-				Wx::wxOK,
-				$main,
-			);
+			my $tmp = File::Temp->new(SUFFIX => '.html');
+			$tmp->unlink_on_destroy(0);
+			my $filename = $tmp->filename;
+			print $tmp $grok_text;
+			close $tmp
+				or warn "Could not close $filename";
+
+			# launch the HTML file in your default browser
+			require URI::file;
+			my $file_url = URI::file->new($filename);
+			Wx::LaunchDefaultBrowser($file_url);
+
 		} else {
 			Wx::MessageBox(
 				'Topic not found!',
