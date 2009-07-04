@@ -241,12 +241,16 @@ sub show_about {
 	my $main = shift;
 
 	require Syntax::Highlight::Perl6;
+	require App::Grok;
 	
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
 	$about->SetDescription(
-		Wx::gettext("Perl 6 coloring is based on\n") .
-		Wx::gettext("Syntax::Highlight::Perl6 version ") . $Syntax::Highlight::Perl6::VERSION . "\n"
+		Wx::gettext("This plugin enables useful Perl 6 features on Padre IDE.\n") .
+		Wx::gettext("It integrates Perl 6 coloring and easy access to Perl 6 help documents.\n\n") .
+		Wx::gettext("The following modules are used:\n") .
+		"Syntax::Highlight::Perl6 " . $Syntax::Highlight::Perl6::VERSION . "\n" .
+		"App::Grok " . $App::Grok::VERSION . "\n"
 	);
 	$about->SetVersion($VERSION);
 
