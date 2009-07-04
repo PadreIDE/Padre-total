@@ -82,8 +82,8 @@ sub _on_ok_button_clicked {
 
 		} else {
 			Wx::MessageBox(
-				'Topic not found!',
-				'Perl 6 Help',
+				Wx::gettext('Topic not found!'),
+				Wx::gettext('Perl 6 Help'),
 				Wx::wxOK,
 				$main,
 			);
