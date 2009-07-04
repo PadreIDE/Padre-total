@@ -32,7 +32,7 @@ ok( $tr->tell_channel( CHAT, $channel_data ) , 'Tell channel' );
 
 my @ready = $tr->poll;
 ok( @ready , 'Poll should return some ready handles' );
-my ($message,$frame) = $tr->receive_from( CHAT );
+my ($message,$frame) = $tr->receive_from_channel( CHAT );
 is_deeply( $message, $channel_data , 'Received channel data' );
 ok( !$tr->poll(1) , 'Poll should have no data to read' );
 ok( $tr->shutdown , 'Transport shutdown' );

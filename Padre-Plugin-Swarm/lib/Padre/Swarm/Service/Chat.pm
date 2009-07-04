@@ -5,10 +5,10 @@ use warnings;
 use JSON::XS;
 use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
-use Padre::Service ();
+use Padre::Swarm::Service ();
 my $marshal = JSON::XS->new->allow_blessed->convert_blessed;
     
-our @ISA = 'Padre::Service';
+our @ISA = 'Padre::Swarm::Service';
 
 use Class::XSAccessor
     getters => {
@@ -25,11 +25,15 @@ sub service_name { 'chat' };
 sub start { 
     my $self = shift;
     Padre::Util::debug('Starting chat service');
-    my $mc = Padre::Swarm::Transport::Multicast->new();
-    $mc->subscribe_channel( $_ )
+    $self->_attach_transports;
+    Padre::Util::debug('Chat transports attached');  
+    Padre::Util::debug( $self->transport );
+    
+    $self->transport->subscribe_channel( $_ )
         for $self->service_channels;
-    $mc->start; 
-    $self->set_transport( $mc ); 
+    
+    Padre::Util::debug('Channels subscribed');
+    $self->transport->start; 
     Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
     $self->queue->enqueue( { type=>'disco' , want=>['chat'] } );
     
@@ -49,7 +53,7 @@ sub service_loop {
         Padre::Util::debug("Transport has ready = " . @ready );
         my @messages;
         push @messages,
-            $self->transport->receive_from_sock($_)
+            $self->transport->receive_from_channel($_)
                 for @ready;
         while ( my ($payload,$frame) = splice(@messages,0,2) ) {
             my $message = eval { $marshal->decode( $payload ); };
@@ -87,10 +91,8 @@ sub terminate {
 }
 
 sub new {
-    my ($class,$config) = @_;
-
-    my $running : shared = 0 ;
-    my $self = bless {running=>$running} , $class;
+    my ($class,%config) = @_;
+    my $self = bless {%config} , $class;
     return $self;
 }
 

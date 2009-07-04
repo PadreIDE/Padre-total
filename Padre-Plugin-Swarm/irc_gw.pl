@@ -44,9 +44,6 @@ sub swarm_relay {
 
 my $c = AnyEvent->condvar;
 
-# display all irc messages for debugging
-#$con->reg_cb ('irc_*' => sub { warn "DEBUG: " . join ('|', %{$_[1]}) . "\n"; });
-
 $con->reg_cb (
    connect => sub {
       my ($con, $err) = @_;

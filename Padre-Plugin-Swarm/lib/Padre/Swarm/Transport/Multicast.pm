@@ -4,6 +4,7 @@ use warnings;
 
 use IO::Select       ();
 use IO::Socket::Multicast;
+use Padre::Swarm::Transport;
 use Params::Util     qw( _INSTANCE _POSINT );
 use Carp             qw( confess croak     );
 use Class::XSAccessor
@@ -12,9 +13,12 @@ use Class::XSAccessor
         channels => 'channels',
         selector => 'selector',
         started  => 'started',
+        sockets  => 'sockets',
     };
 
 use constant MCAST_GROUP => '239.255.255.1';
+
+our @ISA = 'Padre::Swarm::Transport';
 
 =pod
 
@@ -68,6 +72,7 @@ sub new {
     my $selector = IO::Select->new();
     $obj{subscriptions} = {};
     $obj{channels}      = {};
+    $obj{sockets}       = {};
     $obj{started}       = 0;
     $obj{selector}      = $selector;
     
@@ -80,7 +85,7 @@ sub start {
     my ($self) = @_;
     croak "Transport already started" if $self->started;
     while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
-        $self->_connect_socket( $channel, $loopback );
+        $self->_connect_channel( $channel, $loopback );
     }
     return $self->started( 1 );
 }
@@ -89,7 +94,7 @@ sub shutdown {
     my ($self) = @_;
     croak "Transport is not started" unless $self->started;
     while ( my ($channel,$socket) = each %{ $self->channels } ) {
-        $self->_shutdown_socket( $channel );
+        $self->_shutdown_channel( $channel );
     }
     $self->started(0);
     return 1;
@@ -101,7 +106,7 @@ sub subscribe_channel {
     if ( _POSINT $channel && $channel <= 65535 ) 
     {
         $self->subscriptions->{$channel} = $loopback;
-        $self->_connect_socket($channel,$loopback) if $self->started ;
+        $self->_connect_channel($channel,$loopback) if $self->started ;
     }
     else {
         croak "'$channel' is not a valid channel"; 
@@ -114,7 +119,7 @@ sub unsubscribe_channel {
     if ( _POSINT $channel && $channel <= 65535 )
     {
         delete $self->subscriptions->{$channel};
-        $self->_shutdown_socket($channel);
+        $self->_shutdown_channel($channel);
     }
     else {
         croak "'$channel' is not a valid channel";
@@ -125,8 +130,9 @@ sub poll {
     my ($self,$timeout) = @_;
     $timeout ||= 0;
     warn "Polling before service start!!" unless $self->started;
-    return $self->selector->can_read($timeout);
-    
+    my @socks =  $self->selector->can_read($timeout);
+    my @channels = map { $self->sockets->{"$_"} } @socks;
+    return @channels;
 }
 
 sub tell_channel {
@@ -142,7 +148,7 @@ sub tell_channel {
     }
 }
 
-sub receive_from {
+sub receive_from_channel {
     my ($self,$channel) = @_;
     if ( exists $self->channels->{$channel} ) {
         my $sock = $self->channels->{$channel};
@@ -158,6 +164,7 @@ sub receive_from_sock {
     my $buffer;
     my $remote = $sock->recv( $buffer, 65535 );
     if  ( $remote ) {
+        #warn "Got remote of '$remote'";
         my ($rport,$raddr) = sockaddr_in $remote;
         my $ip = inet_ntoa $raddr;
         return ($buffer,
@@ -170,7 +177,7 @@ sub receive_from_sock {
     else { return }
 }
 
-sub _connect_socket {
+sub _connect_channel  {
     my ($self,$port,$loopback) = @_;
     confess "Socket '$port' already connected" 
         if exists $self->channels->{$port};
@@ -182,14 +189,16 @@ sub _connect_socket {
     $socket->mcast_loopback( $loopback );
     $self->channels->{$port} = $socket;
     $self->selector->add( $socket );
+    $self->sockets->{"$socket"} = $port;
     return 1;
 }
 
-sub _shutdown_socket {
+sub _shutdown_channel {
     my ($self,$port) = @_;
     my $socket = delete $self->channels->{$port};
     return 1 unless defined $socket;
     delete $self->subscriptions->{$port};
+    delete $self->sockets->{"$socket"};
     $self->selector->remove( $socket );
     $socket->mcast_drop( MCAST_GROUP );
     $socket->shutdown(0);

@@ -123,8 +123,8 @@ sub _load_everything {
 	# services/transports. for now just chat
 	
 	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
-	#my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
 	
+	#my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
 	#my $sidebar = Padre::Wx::Swarm::Foo->new($self->main);
 	#$self->set_sidebar( $sidebar );
 	
@@ -140,6 +140,14 @@ sub _destroy_ui {
 	$self->set_chat(undef);
 
 }
+
+# private subroutine to return the current share directory location
+sub _sharedir {
+	return Cwd::realpath(
+		File::Spec->join(File::Basename::dirname(__FILE__),'Swarm/share')
+	);
+}
+
 
 #sub _start_transports {
 #	my $self = shift;

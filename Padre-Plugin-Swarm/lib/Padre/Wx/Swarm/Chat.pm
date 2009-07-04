@@ -55,7 +55,12 @@ sub new {
 	$self->chatframe( $chat );
 	$self->SetSizer($sizer);
 	
-	my $service = Padre::Swarm::Service::Chat->new();
+	my $service = Padre::Swarm::Service::Chat->new(
+		use_transport => {
+			#'Padre::Swarm::Transport::Multicast'=>{},
+			'Padre::Swarm::Transport::IRC'=>{},
+		}
+	);
 	$self->service( $service );
 	
 	Wx::Event::EVT_TEXT_ENTER(
