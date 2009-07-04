@@ -24,7 +24,7 @@ sub service_name { 'chat' };
 
 sub start { 
     my $self = shift;
-    
+    Padre::Util::debug('Starting chat service');
     my $mc = Padre::Swarm::Transport::Multicast->new();
     $mc->subscribe_channel( $_ )
         for $self->service_channels;
@@ -39,7 +39,7 @@ sub start {
 
 sub service_loop {
     my ($self,$message) = @_;
-    #Padre::Util::debug("Service [$self] loop!\n") ;
+    Padre::Util::debug("Service [$self] loop!\n") ;
     my $queue = $self->queue;
     #Padre::Util::debug("\t$queue " . $queue->pending , $/);
     $self->send( $message ) if $message;
@@ -52,7 +52,7 @@ sub service_loop {
             $self->transport->receive_from_sock($_)
                 for @ready;
         while ( my ($payload,$frame) = splice(@messages,0,2) ) {
-            my $message = eval { $marshal->decode( $payload ) };
+            my $message = eval { $marshal->decode( $payload ); };
             unless ($message) {
                 $self->task_warn($@ );
                 $self->task_warn($message);
@@ -84,9 +84,9 @@ sub new {
 }
 
 sub serialize {
-    my ($self) = @_;
+    my ($self) = shift;
     warn "SERIALIZE ! " . Dumper $self;
-    $self->SUPER::serialize();
+    $self->SUPER::serialize(@_);
     
 }
 
