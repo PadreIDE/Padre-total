@@ -39,24 +39,13 @@ Padre::Swarm::Message - A Swarm message base
 =head1 DESCRIPTION
 
 At transport layer, a  Swarm message has the attributes to, from, title, body and type.
-to from and title are strings
-type is always a string and may be used to subclass by registration
-subclasses must not mutate  title,type,from,to 
-body considered scalar bytes
-  
-  
-=head1 entity
 
-transport entity origin
-
+ title must be a string
+ to and from must be L<Padre::Swarm::Identity> instances.
+ type is always a string and may be used to subclass by registration
+ subclasses must not mutate  title,type,from,to 
+ body considered scalar bytes and entirely the problem of the 'type' implementor
+  
 =cut
 
-sub entity {
-	my $self = shift;
-	my $client_address;
-	my $channel;
-	my $resource;
-	
-	
-}
 1;

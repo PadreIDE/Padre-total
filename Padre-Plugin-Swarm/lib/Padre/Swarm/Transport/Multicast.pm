@@ -135,7 +135,7 @@ sub tell_channel {
         my $sock = $self->channels->{$channel};
         $sock->mcast_send( $payload ,
             MCAST_GROUP . ':' . $channel
-        );
+        ) or die "Failed mcast send $!";
     }
     else {
         croak "'$channel' is not a valid channel";
@@ -162,7 +162,7 @@ sub receive_from_sock {
         my $ip = inet_ntoa $raddr;
         return ($buffer,
             {  port=>$rport,address=>$ip ,
-               timestamp => time() # yuk
+               timestamp => time() # yuk UTC in a portable way how
                 }
             
             );
@@ -194,9 +194,6 @@ sub _shutdown_socket {
     $socket->mcast_drop( MCAST_GROUP );
     $socket->shutdown(0);
     undef $socket;
-    
-    warn Dumper $self;
-    
     return 1;
 }
 
