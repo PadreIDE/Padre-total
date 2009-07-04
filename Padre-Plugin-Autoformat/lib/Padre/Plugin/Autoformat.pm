@@ -109,7 +109,7 @@ more information.
 
 =head2 Standard Padre::Plugin API
 
-C<Padre::Plugin::Autoformat> defines a plugin which follows C<Padre::Plugin>
+L<Padre::Plugin::Autoformat> defines a plugin which follows L<Padre::Plugin>
 API. Refer to this module's documentation for more information.
 
 The following methods are implemented:
