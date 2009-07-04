@@ -1,5 +1,7 @@
 Changes
 
+	- Ignore blib directory as well.
+
 =head1 0.14  2009.6.29
 
 	- Only require Locale::Msgfmt when building the .mo files (RSN)

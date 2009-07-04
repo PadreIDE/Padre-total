@@ -134,7 +134,7 @@ sub _create_controls {
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# ignore .svn/.git checkbox
-	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git folders')) );
+	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git/blib folders')) );
 	$self->_ignore_dir_check->SetValue(1);
 	
 	# matches result list
@@ -231,7 +231,7 @@ sub _search() {
 	if($ignore_dir) {
 		$rule->or( $rule->new
 						->directory
-						->name('CVS', '.svn', '.git')
+						->name('CVS', '.svn', '.git', 'blib')
 						->prune
 						->discard,
 					$rule->new);
