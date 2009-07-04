@@ -17,8 +17,9 @@ use base 'Wx::Dialog';
 use Class::XSAccessor accessors => {
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',        # search text control
-	_matches_list      => '_matches_list',       # matches list
+	_list      => '_list',       # matches list
 	_targets_index     => '_targets_index',      # targets index
+	_plugin            => '_plugin',             # plugin object
 };
 
 # -- constructor
@@ -38,6 +39,7 @@ sub new {
 	);
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
+	$self->_plugin($plugin);
 
 	# create dialog
 	$self->_create;
@@ -51,19 +53,28 @@ sub new {
 #
 # handler called when the ok button has been clicked.
 # 
+		use Padre::Wx ();
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = Padre->ide->wx->main;
+	my $main = $self->_plugin->main;
 
 	#Open the selected resources here if the user pressed OK
-	my @selections = $self->_matches_list->GetSelections();
-	foreach my $selection (@selections) {
-		my $filename = $self->_matches_list->GetClientData($selection);
-		# try to open the file now
-		$main->setup_editor($filename);
-	}
+	my $selection = $self->_list->GetSelection();
+	my $help_target = $self->_list->GetClientData($selection);
+	if($help_target) {
+		require App::Grok;
+		my $grok = App::Grok->new;
+		my $grok_text = $grok->render_target($help_target,'text');
+		print "\n$grok_text\n";
 
+		Wx::MessageBox(
+			$grok_text,
+			'Grok Help',
+			Wx::wxOK,
+			$main,
+		);
+	}
 	$self->Destroy;
 }
 
@@ -94,7 +105,7 @@ sub _create {
 	# focus on the search text box
 	$self->_search_text->SetFocus();
 	
-	$self->_update_matches_list_box;
+	$self->_update_list_box;
 }
 
 #
@@ -123,14 +134,14 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Matching Items:') );
-	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
-		Wx::wxLB_EXTENDED ) );
+	$self->_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
+		Wx::wxLB_SINGLE ) );
 
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 
 	$self->_setup_events();
 	
@@ -149,7 +160,7 @@ sub _setup_events {
 		my $code  = $event->GetKeyCode;
 
 		if ( $code == Wx::WXK_DOWN ) {
-			$self->_matches_list->SetFocus();
+			$self->_list->SetFocus();
 		}
 
 		$event->Skip(1);		
@@ -157,12 +168,12 @@ sub _setup_events {
 
 	Wx::Event::EVT_TEXT( $self, $self->_search_text, sub {
 
-		$self->_update_matches_list_box;
+		$self->_update_list_box;
 		
 		return;
 	});
 	
-	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
+	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_list, sub {
 		$self->_on_ok_button_clicked();
 		$self->EndModal(0);
 	});
@@ -187,7 +198,7 @@ sub _search() {
 #
 # Update matches list box from matched files list
 #
-sub _update_matches_list_box() {
+sub _update_list_box() {
 	my $self = shift;
 	
 	if(not $self->_targets_index) {
@@ -203,17 +214,16 @@ sub _update_matches_list_box() {
 	$search_expr =~ s/\\\?/./g;
 
 	#Populate the list box now
-	$self->_matches_list->Clear();
+	$self->_list->Clear();
 	my $pos = 0;
-	foreach my $file (@{$self->_targets_index}) {
-		my $filename = File::Basename::fileparse($file);
-		if($filename =~ /^$search_expr/i) {
-			$self->_matches_list->Insert($filename, $pos, $file);
+	foreach my $target (@{$self->_targets_index}) {
+		if($target =~ /^$search_expr/i) {
+			$self->_list->Insert($target, $pos, $target);
 			$pos++;
 		}
 	}
 	if($pos > 0) {
-		$self->_matches_list->Select(0);
+		$self->_list->Select(0);
 	}
 			
 	return;
