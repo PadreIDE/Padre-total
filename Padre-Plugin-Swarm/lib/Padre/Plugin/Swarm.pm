@@ -205,6 +205,10 @@ that look shiny in a demo :)
 
 Lessons learned here will be applied to more practical plugins later.
 
+=head1 LICENSE
+
+perl
+
 =head1 COPYRIGHT
 
 Copyright 2009 The Padre develoment team as listed in Padre.pm
