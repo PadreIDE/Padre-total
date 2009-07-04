@@ -88,7 +88,7 @@ sub run {
 	my $queue = $self->queue;
 	Padre::Util::debug( "Running queue $queue" );
 	my $tid = threads->tid;
-	my $event  = $self->{__service_event};
+	my $event  = $self->event;
 	
 	
 	# Now we're in the worker thread, start our service

@@ -508,12 +508,19 @@ by simply running:
 
 =cut
 
+
+use Carp qw( cluck );
+
 sub post_event {
-	my @stuff = @_;
+	my ($self,$eventid,$data) = @_;
 	@_ = ();
+	cluck 'eventid is not defined' unless defined $eventid;
+	cluck "eventid[$eventid] , no data to post" 
+		unless ( defined $data and length($data) );
+		
 	Wx::PostEvent(
 		$Padre::TaskManager::_main,
-		Wx::PlThreadEvent->new( -1, $stuff[1], $stuff[2] ),
+		Wx::PlThreadEvent->new( -1, $eventid, $data ),
 	);
 	return ();
 }
