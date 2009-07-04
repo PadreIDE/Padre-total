@@ -763,6 +763,95 @@ sub _find_quick_fix {
 			};
 			
 		}
+		
+		# Not really a fix but a helper:
+		# 	Converts POD6 to XHTML
+		push @items, {
+			text     => Wx::gettext('Convert POD6 to XHTML'),
+			listener => sub {
+				# Convert POD6 to XHTML using App::Grok
+				my $text = $self->text_get;
+				return if not defined $text;
+				
+				require File::Temp;
+				my $tmp_input = File::Temp->new( SUFFIX => '.p6' );
+				binmode( $tmp_input, ":utf8" );
+				print $tmp_input $text;
+				close $tmp_input or warn "cannot close $tmp_input\n";
+
+				my $main = $editor->main;
+				eval {
+					require App::Grok;
+					my $grok = App::Grok->new;
+					my $grok_text = $grok->render_target($tmp_input->filename,'xhtml');
+
+					# create a temporary HTML file
+					my $tmp_output = File::Temp->new(SUFFIX => '.html');
+					$tmp_output->unlink_on_destroy(0);
+					print $tmp_output $grok_text;
+					my $filename = $tmp_output->filename;
+					close $tmp_output or warn "Could not close $filename";
+
+					# try to open the HTML file
+					$main->setup_editor($filename);
+
+					# launch the HTML file in your default browser
+					require URI::file;
+					my $file_url = URI::file->new($filename);
+					Wx::LaunchDefaultBrowser($file_url);
+				};
+				if($@) {
+					Wx::MessageBox(
+						Wx::gettext('Operation failed!'),
+						Wx::gettext('Error'),
+						Wx::wxOK,
+						$main,
+					);
+				}
+			},
+		};
+		
+		# Not really a fix but a helper:
+		# 	Converts POD6 to Text
+		push @items, {
+			text     => Wx::gettext('Convert POD6 to Text'),
+			listener => sub {
+				# Convert POD6 to Text using App::Grok
+				my $text = $self->text_get;
+				return if not defined $text;
+				
+				require File::Temp;
+				my $tmp_input = File::Temp->new( SUFFIX => '.p6' );
+				binmode( $tmp_input, ":utf8" );
+				print $tmp_input $text;
+				close $tmp_input or warn "cannot close $tmp_input\n";
+
+				my $main = $editor->main;
+				eval {
+					require App::Grok;
+					my $grok = App::Grok->new;
+					my $grok_text = $grok->render_target($tmp_input->filename,'text');
+
+					# create a temporary text file
+					my $tmp_output = File::Temp->new(SUFFIX => '.txt');
+					$tmp_output->unlink_on_destroy(0);
+					print $tmp_output $grok_text;
+					my $filename = $tmp_output->filename;
+					close $tmp_output or warn "Could not close $filename";
+
+					# try to open the text file
+					$main->setup_editor($filename);
+				};
+				if($@) {
+					Wx::MessageBox(
+						Wx::gettext('Operation failed!'),
+						Wx::gettext('Error'),
+						Wx::wxOK,
+						$main,
+					);
+				}
+			},
+		};
 	}
 	
 	return @items;
