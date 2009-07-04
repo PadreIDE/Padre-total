@@ -66,14 +66,21 @@ sub _on_ok_button_clicked {
 		require App::Grok;
 		my $grok = App::Grok->new;
 		my $grok_text = $grok->render_target($help_target,'text');
-		print "\n$grok_text\n";
-
-		Wx::MessageBox(
-			$grok_text,
-			'Grok Help',
-			Wx::wxOK,
-			$main,
-		);
+		if($grok_text) {
+			Wx::MessageBox(
+				$grok_text,
+				'Perl 6 Help',
+				Wx::wxOK,
+				$main,
+			);
+		} else {
+			Wx::MessageBox(
+				'Topic not found!',
+				'Perl 6 Help',
+				Wx::wxOK,
+				$main,
+			);
+		}
 	}
 	$self->Destroy;
 }
