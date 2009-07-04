@@ -3,6 +3,9 @@ use strict;
 use warnings;
 use Carp qw( croak );
 
+use threads;
+use threads::shared;
+
 use Padre::Wx     ();
 use Padre::Task   ();
 use Thread::Queue ();
