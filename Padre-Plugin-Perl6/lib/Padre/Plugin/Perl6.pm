@@ -176,7 +176,7 @@ sub menu_plugins {
 	# Perl6 S29 documentation
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Show Perl 6 Help\tF2"), ),
+		$self->{menu}->Append( -1, Wx::gettext("Perl 6 Help\tF2"), ),
 		sub { $self->show_perl6_doc; },
 	);
 

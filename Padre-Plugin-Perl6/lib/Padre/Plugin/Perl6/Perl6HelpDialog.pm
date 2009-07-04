@@ -173,7 +173,7 @@ sub _setup_events {
 		my $event = shift;
 		my $code  = $event->GetKeyCode;
 
-		if ( $code == Wx::WXK_DOWN ) {
+		if ( $code == Wx::WXK_DOWN || $code == Wx::WXK_PAGEDOWN) {
 			$self->_list->SetFocus();
 		}
 
