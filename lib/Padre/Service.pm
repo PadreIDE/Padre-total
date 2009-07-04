@@ -148,7 +148,6 @@ to gracefully stop what it is doing and return from this method as soon as possi
 
 sub hangup {
 	my ($self,$running) = @_;
-	$self->transport->shutdown;
 	$$running = 0;
 }
 
@@ -162,7 +161,6 @@ everything and to hell with the consequences.
 
 sub terminate {
 	my ($self,$running) = @_;
-	$self->transport->shutdown;
 	$$running = 0;
 }
 
