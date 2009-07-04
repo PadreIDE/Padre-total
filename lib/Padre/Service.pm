@@ -118,7 +118,7 @@ sub run {
 	}
 	
 	# Loop broken - cleanup
-	$self->shutdown;
+	#$self->shutdown;
 	return;
 }
 
@@ -169,13 +169,16 @@ second before returning control to the loop.
 		$self->{iterator} = 0
 			unless exists $self->{iterator};
 		my $tid = threads->tid;
-		$self->task_print("Service ($tid) Looped $self->{iterator}\n");
+		$self->task_print('ok - entered service loop')
+			|| print "ok - entered service loop\n";
+		
+		$self->task_print("# Service ($tid) Looped $self->{iterator}\n");
 		if (defined $incoming) {
-			$self->task_print("\tcaught '$incoming'");
+			$self->task_print("ok - got incoming service data '$incoming'");
 		}
 		$self->{iterator}++;
 		$self->tell('HANGUP') if $self->{iterator} > 10;
-		sleep 1;
+		#sleep 1;
 	}
 }
 
@@ -261,17 +264,13 @@ my %Queues : shared;
   	# FILO
   	my $payload = $self->SUPER::serialize(@_);
 	
-	
 	return $payload;
   }
   
-  sub deserialize {
-  	my $class = shift;
+  sub deserialize_hook {
+  	my $self = shift;
   	# FILO
-  	my $self = $class->SUPER::deserialize(@_);
-  	
-  	# Shutdown the queue and event;
-  	
+  	# Shutdown the queue and event ?;
   }
 
 }
@@ -293,17 +292,15 @@ my %Queues : shared;
   	my ($self,$ref) = @_;
   	my $queue = $self->queue;
   	$queue->enqueue($ref);
-  	warn "MAIN $self\n";
-  	warn "\t $queue is " . $queue->pending;
-  }
-  
-  sub receive {
-	my $self = shift;
-	my $event= shift;
-	my $data = $event->GetData;
-	warn "Received $data";
   }
 
+# NEVER called ??!?  
+#  sub receive {
+#	my $self = shift;
+#	my $event= shift;
+#	my $data = $event->GetData;
+#  }
+#
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or

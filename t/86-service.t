@@ -9,6 +9,9 @@ BEGIN {
 
 use Test::More;
 BEGIN {
+	use threads;         # need to be loaded before Padre
+	use threads::shared; # need to be loaded before Padre
+
 	unless ( $ENV{DISPLAY} or $^O eq 'MSWin32' ) {
 		plan skip_all => 'Needs DISPLAY';
 		exit 0;
@@ -17,9 +20,6 @@ BEGIN {
 }
 use t::lib::Padre;
 
-plan tests => 108;
-use threads;         # need to be loaded before Padre
-use threads::shared; # need to be loaded before Padre
 
 
 require Padre::Service;
@@ -28,8 +28,10 @@ our $TestClass; # secret Task class name accessible in the test threads. See als
 # reminiscent of the in-thread worker loop in Padre::TaskManager:
 sub fake_run_task {
 	my $string = shift;
+	my $spec   = shift;
 	# try to recover the serialized task from its Storable-dumped form to an object
 	my $recovered = Padre::Task->deserialize( \$string );
+
 	ok(defined $recovered, "recovered form defined");
 	isa_ok($recovered, 'Padre::Task');
 	isa_ok($recovered, $TestClass); # a subcalss of Padre::Task
@@ -54,7 +56,6 @@ sub fake_run_task {
 	$string = undef;
 	# ship the thing back at the end
 	$recovered->serialize(\$string);
-	ok(defined $string);
 	return $string;
 }
 
@@ -66,7 +67,7 @@ sub fake_execute_task {
 	my $use_threads     = $test_spec->{threading};
 	my $extra_data      = $test_spec->{extra_data}||{};
 	my $tests_in_thread = $test_spec->{thread_tests}||0;
-
+	my $tb = Test::Builder->new;
 	# normally user code:
 	$class->new(text => 'foo'); # FIXME necessary for the following to pass for Padre::Task::PPITest???
 	ok($class->can('new'), "task can be constructed");
@@ -83,42 +84,44 @@ sub fake_execute_task {
 
 	if ($use_threads) {
 		my $thread = threads->create(
-			\&fake_run_task, $string
+			\&fake_run_task, $string, $test_spec
 		);
 		$string = $thread->join();
-		# modify main thread copy of test counter since
-		# it was copied for the worker thread.
-		my $tb = Test::Builder->new();
-		$tb->current_test( $tb->current_test() + $tests_in_thread ); # XXX - watch out! Magic number of tests in thread
+		$tb->current_test( $tb->current_test()+ $tests_in_thread);
 		isa_ok($thread, 'threads');
 	}
 	else {
 		$string = fake_run_task($string);
-		ok(1);
+		$tb->current_test( $tb->current_test()+ $tests_in_thread);
+		ok($string, 'Returned from unthreaded service !');;
 	}
 
 	# done by the scheduler:
 	my $final = Padre::Task->deserialize( \$string );
 	ok(defined $final);
 	ok(not exists $task->{answer});
-	$task->{answer} = 'succeed';
-	if ($task->isa("Padre::Task::Test")) {
+
+	TODO: { 
+		local $TODO = 'Cleanup the shambolic references in ::Service de/serialize';
 		is_deeply($final, $task);
-	} else {
-		pass("Skipping deep comparison for non-basic tasks");
 	}
+	
+	$task->{answer} = 'succeed';
 	$final->finish();
 }
 
 package main;
 
-# simple task test
+# simple service test
 $TestClass = "Padre::Service";
-my $testspec = { threading => 0, thread_tests => 9, };
-fake_execute_task($TestClass, $testspec);
-$testspec->{threading} = 1;
+my $testspec = { threading => 0, thread_tests => 11, };
 fake_execute_task($TestClass, $testspec);
 
+# threaded service test
+$testspec->{threading} = 1;
+$testspec->{thread_tests} += 4; # serializer/tests 
+fake_execute_task($TestClass, $testspec);
+done_testing();
 =pod
 
 # PPI subtask test

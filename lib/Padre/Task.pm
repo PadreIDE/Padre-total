@@ -325,6 +325,9 @@ SCOPE: {
 		}
 
 		my $obj = bless $padretask => $userclass;
+		# Xtra evil , let a subclass ducktype a hook here
+		$obj->deserialize_hook if $obj->can('deserialize_hook');
+		
 		return $obj;
 	}
 }
