@@ -82,11 +82,6 @@ sub plugin_enable {
 	# update configuration attribute
 	$self->config( $config );
 	
-	# let us parse some S29-functions.pod documentation (safely)
-	eval {
-		$self->build_perl6_doc;
-	};
-	warn $@ if $@;
 	return 1;
 }
 
@@ -330,50 +325,6 @@ sub cleanup_std_lex_cache {
 	}
 
 	return;
-}
-
-#
-# Original code idea from masak++ (http://use.perl.org/~masak/journal/38212)
-#
-sub build_perl6_doc {
-	my $self = shift;
-
-	# open the S29 file
-	my $s29_file = File::Spec->join(File::Basename::dirname(__FILE__),
-		'Perl6/S29-functions.pod');
-	require IO::File;
-	my $S29 = IO::File->new(Cwd::realpath($s29_file))
-				or croak "Cannot open '$s29_file' $!";
-
-	# read until you find 'Function Packages'
-	until (<$S29> =~ /Function Packages/) {}
-
-	# parse the rest of S29 looking for Perl6 function documentation
-	$self->{perl6_functions} = ();
-	my $function_name = undef;
-	while (my $line = <$S29>) {
-		if ($line =~ /^=(\S+) (.*)/x) {
-			if ($1 eq 'item') {
-				# Found Perl6 function name
-				$function_name = $2;
-				$function_name =~ s/^\s+//;
-			} else {
-				$function_name = undef;
-			}
-		} elsif($function_name) {
-			# Adding documentation to the function name
-			$self->{perl6_functions}{$function_name} .= $line;
-		}
-	}
-
-	# trim blank lines at the beginning and the end
-	foreach my $function_name (keys %{$self->{perl6_functions}}) {
-		my $docs = $self->{perl6_functions}{$function_name};
-		$docs =~ s/^(\s|\n)+//g;
-		$docs =~ s/(\s|\n)+$//g;
-		$self->{perl6_functions}{$function_name} = $docs;
-	}
-
 }
 
 sub show_perl6_doc {
