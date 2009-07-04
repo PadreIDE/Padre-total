@@ -14,16 +14,20 @@ our $VERSION = '0.38';
 
 =head1 NAME
 
-Padre::Service - API for non trivial Padre::Task
+Padre::Service - persistent Padre::Task API
 
 =head2 SYNOPSIS
 
   # Create your service, default implementation warns to output
   #  sleeps 1 second and loops over.
-  my $service = Padre::Service->new( 
-	main_thread_only => \&show_my_dialog,
+  my $service = Padre::Service->new();
+  Wx::Event::EVT_COMMAND(
+	$main , -1 , $service->event ,
+	\&receive_data_from_service
   );
   $service->schedule;
+  $service->
+  
   
   # Later
   $service->shutdown; # Your show_my_dialog will be called...,eventually
@@ -103,6 +107,7 @@ sub run {
 		
 		# Or possibly a signal from the main thread
 		else {
+			Padre::Util::debug( "Caught command signal '$command'" );
 			if ( $command eq 'HANGUP' ) {
 				$self->hangup;
 				$running = 0;
@@ -123,6 +128,15 @@ sub run {
 }
 
 }
+
+=head2 start
+
+consider start the background_thread analog of C<prepare> and will be called
+in the service thread immediatly prior to the service loop starting.
+
+
+=cut
+
 
 sub start {
 	
@@ -176,19 +190,20 @@ second before returning control to the loop.
 		if (defined $incoming) {
 			$self->task_print("ok - got incoming service data '$incoming'");
 		}
+		# Tell the main thread some progress.
+		$self->post_event( $self->event , "$self->{iterator}" );
+		
 		$self->{iterator}++;
 		$self->tell('HANGUP') if $self->{iterator} > 10;
-		#sleep 1;
+		sleep 1;
 	}
 }
 
-=head1 COPYRIGHT
+=head2 event
 
-Copyright 2009 The Padre develoment team as listed in Padre.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
-
+Accessor for this service's instance event, in the running service
+data may be posted to this event and the Wx subscribers will be notified
+ 
 =cut
 
 {
@@ -211,7 +226,17 @@ my %Queues : shared;
  	$queue = new Thread::Queue;
   	$Queues{"$self"} = $queue;
   	$self->{_refid} = "$self";
+  	$self->SUPER::prepare(@_);
   }
+ 
+=head2 queue
+
+accessor for the shared queue the service thread is polling for input.
+Calling C<enqueue> on reference sends data to the service thread. Storable
+serialization rules apply. See also L<"event"> for receiving data from 
+the service thread
+ 
+=cut
  
  sub queue { 
  	my $self = shift;
@@ -277,15 +302,23 @@ my %Queues : shared;
 
   sub shutdown {
   	my $self = shift;
+  	Padre::Util::debug( "shutdown - $self");
   	my $queue =$self->queue;
   	$queue->enqueue( 'HANGUP' );
   }
+  
   
   sub cleanup {
   	my $self = shift;
   	Padre::Util::debug( "cleanup - $self" );
   }
-  
+
+=head2 tell
+
+Accepts a reference as it's argument, this is serialized and sent to
+the service thread
+
+=cut  
   
   ## MAIN
   sub tell {
@@ -294,13 +327,16 @@ my %Queues : shared;
   	$queue->enqueue($ref);
   }
 
-# NEVER called ??!?  
-#  sub receive {
-#	my $self = shift;
-#	my $event= shift;
-#	my $data = $event->GetData;
-#  }
-#
+
+=head1 COPYRIGHT
+
+Copyright 2009 The Padre develoment team as listed in Padre.pm
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
+
+=cut
+
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
