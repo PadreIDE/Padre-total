@@ -24,18 +24,7 @@ use Class::XSAccessor accessors => {
 sub new {
 	my ($class, $plugin, %opt) = @_;
 
-	#Check if we have an open file so we can use its directory
 	my $main = $plugin->main;
-	my $filename = (defined $main->current->document) ? $main->current->document->filename : undef;
-	my $directory;
-	if($filename) {
-		# current document's project or base directory
-		$directory = Padre::Util::get_project_dir($filename) 
-			|| File::Basename::dirname($filename);
-	} else {
-		# current working directory
-		$directory = Cwd::getcwd();
-	}
 	
 	# create object
 	my $self = $class->SUPER::new(
@@ -48,7 +37,6 @@ sub new {
 	);
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
-	$self->_directory($directory);
 
 	# create dialog
 	$self->_create;
@@ -211,7 +199,7 @@ sub _search() {
 	# Generate a sorted file-list based on filename
 	my @matched_files = sort { 
 			File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
-	} $rule->in( $self->_directory );
+	} $rule->in( );
 
 	$self->_matched_files( \@matched_files ); 
 	
