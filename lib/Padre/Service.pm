@@ -3,8 +3,9 @@ use strict;
 use warnings;
 use Carp qw( croak );
 
-use Padre::Wx ();
-
+use Padre::Wx     ();
+use Padre::Task   ();
+use Thread::Queue ();
 our @ISA = 'Padre::Task';
 
 our $VERSION = '0.38';
@@ -234,15 +235,17 @@ my %Queues : shared;
   	my $service_event : shared = Wx::NewEventType;
   	$ServiceEvents{$service_refid} = $service_event;
   	
-  	my $wx_attach;
-  	if ( exists $self->{_main_thread_only}
-	     && 
-	     _INSTANCE( $self->{_main_thread_only}, 'Wx::Object' )
-	    )
-	{
-		$wx_attach = $self->{_main_thread_only};
-	}
-	else {  $wx_attach = Padre->ide->wx->main };
+#  	my $wx_attach;
+#  	if ( exists $self->{_main_thread_only}
+#	     && 
+#	     _INSTANCE( $self->{_main_thread_only}, 'Wx::Object' )
+#	    )
+#	{
+#		$wx_attach = $self->{_main_thread_only};
+#	}
+#	else {  $wx_attach = Padre->ide->wx->main };
+
+
 #	if (!exists $self->{__events_init}
 #	    and !defined $self->{__events_init} ) 
 #	{

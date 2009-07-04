@@ -206,6 +206,9 @@ sub schedule {
 	my $task = _INSTANCE( shift, 'Padre::Task' )
 		or die "Invalid task scheduled!";    # TODO: grace
 
+	if ( _INSTANCE( $task , 'Padre::Service' ) ) {
+		$self->{running_services}{$task} = $task;
+	}
 	# Cleanup old threads and refill the pool
 	$self->reap();
 
@@ -398,18 +401,24 @@ sub cleanup {
 	# Send all services a HANGUP , they will (hopefully)
 	# catch this and break the run loop, returning below as
 	# regular tasks. :|
+	Padre::Util::debug( 'Tell services to hangup' );
 	$self->shutdown_services;
 	
 	# the nice way:
+	Padre::Util::debug( 'Tell all tasks to stop' );
 	my @workers = $self->workers;
 	$self->task_queue->insert( 0, ("STOP") x scalar(@workers) );
 	while ( threads->list(threads::running) >= 1 ) {
 		$_->join for threads->list(threads::joinable);
 	}
-	$_->join for threads->list(threads::joinable);
-
+	foreach my $thread ( threads->list(threads::joinable) ) {
+		Padre::Util::debug( 'Joining thread ' . $thread->tid );
+		$thread->join;
+	}
+	
 	# didn't work the nice way?
 	while ( threads->list(threads::running) >= 1 ) {
+		Padre::Util::debug( 'Killing thread ' . $_->tid );
 		$_->detach(), $_->kill() for threads->list(threads::running);
 	}
 
@@ -462,13 +471,14 @@ and return via the usual Task mechanism.
 
 =cut
 
+## ERM FIXME where are is the {running_services} populated then eh?
 sub shutdown_services {
 	my $self = shift;
-	while ( my  ($type,$services) = each %{ $self->{running_services} } ) {
-		while ( my ($threadid,$service) = keys %$services ) {
-			Padre::Util::debug( "Hangup service $type! in $threadid" );
-			$service->shutdown;
-		}
+	Padre::Util::debug( 'Shutdown services' );
+	
+	while ( my  ($sid,$service) = each %{ $self->{running_services} } ) {
+		Padre::Util::debug( "Hangup service $sid!" );
+		$service->shutdown;
 	}
 }
 
