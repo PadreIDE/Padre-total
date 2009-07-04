@@ -53,7 +53,6 @@ sub new {
 #
 # handler called when the ok button has been clicked.
 # 
-		use Padre::Wx ();
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
