@@ -9,7 +9,7 @@ use Padre::Plugin   ();
 use Padre::Wx::Icon ();
 use Padre::Wx::Swarm::Chat ();
 
-use Padre::Wx::Swarm::Foo ();
+#use Padre::Wx::Swarm::Foo ();
 
 
 use File::Spec      ();
