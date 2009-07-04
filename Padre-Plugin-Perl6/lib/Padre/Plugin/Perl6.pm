@@ -334,49 +334,31 @@ sub cleanup_std_lex_cache {
 sub show_perl6_doc {
 	my $self = shift;
 
+	# find the word under the current cursor position
+	my $topic = '';
+	my $doc = $self->current->document;
+	if($doc && $doc->get_mimetype eq q{application/x-perl6}) {
+		# make sure it is a Perl6 document
+		my $editor = $doc->editor;
+		my $lineno = $editor->GetCurrentLine();
+		my $line = $editor->GetLine($lineno);
+		my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
+		my $current_word = '';
+		while( $line =~ m/\G.*?([[:alnum:]]+)/g ) {
+			if(pos($line) >= $current_pos) {
+				$current_word = $1;
+				last;
+			}
+		}
+		if($current_word =~ /^.*?(\w+)/) {
+			$topic = $1;
+		}
+	}
+
 	require Padre::Plugin::Perl6::Perl6HelpDialog;
-	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new($self);
+	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new($self, topic => $topic);
 	$dialog->ShowModal();
 
-	# # find the word under the current cursor position
-	# my $doc = Padre::Current->document;
-	# if($doc) {
-		# # make sure it is a Perl6 document
-		# if($doc->get_mimetype ne q{application/x-perl6}) {
-			# Wx::MessageBox(
-				# 'Not a Perl 6 file',
-				# 'Operation cancelled',
-				# Wx::wxOK,
-				# $main,
-			# );
-			# return;
-		# }
-
-		# my $editor = $doc->editor;
-		# my $lineno = $editor->GetCurrentLine();
-		# my $line = $editor->GetLine($lineno);
-		# my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
-		# my $current_word = '';
-		# while( $line =~ m/\G.*?([[:alnum:]]+)/g ) {
-			# if(pos($line) >= $current_pos) {
-				# $current_word = $1;
-				# last;
-			# }
-		# }
-		# if($current_word =~ /^.*?(\w+)/) {
-			# my $function_name = $1;
-			# print "Looking up: " . $function_name . "\n";
-			# my $function_doc = $self->{perl6_functions}{$function_name};
-			# if($function_doc) {
-				# #launch default browser to see the S29 function documentation
-				# require URI::Escape;
-				# Wx::LaunchDefaultBrowser(
-					# q{http://perlcabal.org/syn/S29.html#} .
-					# URI::Escape::uri_escape_utf8($function_name));
-			# }
-		# }
-
-	# }
 }
 
 sub highlight {

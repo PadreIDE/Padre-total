@@ -17,7 +17,7 @@ use base 'Wx::Dialog';
 use Class::XSAccessor accessors => {
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',        # search text control
-	_list      => '_list',       # matches list
+	_list              => '_list',               # matches list
 	_targets_index     => '_targets_index',      # targets index
 	_plugin            => '_plugin',             # plugin object
 };
@@ -43,6 +43,8 @@ sub new {
 
 	# create dialog
 	$self->_create;
+	
+	$self->_search_text->SetValue($opt{topic} // '');
 
 	return $self;
 }
