@@ -1496,11 +1496,26 @@ sub run_command {
 	my $self = shift;
 	my $cmd  = shift;
 
+	# experimental
+	# TODO: add windows version
+	# when this mode is used the Run menu options are not turned off
+	# and the Run/Stop is not turned on as we currently cannot control
+	# the external execution.
+	my $config = $self->config;
+	if ($config->run_use_external_window) {
+		if (Padre::Util::WIN32) {
+		} else {
+			system qq(xterm -e "$cmd; sleep 1000" &);
+			return;
+		}
+	}
+
 	# Disable access to the run menus
 	$self->menu->run->disable;
 
 	# Clear the error list
 	$self->errorlist->clear;
+
 
 	# Prepare the output window for the output
 	$self->show_output(1);
@@ -2394,6 +2409,7 @@ No return value.
 sub on_open_selection {
 	my $self    = shift;
 	my $current = $self->current;
+	return if not $current->editor;
 	my $text    = $current->text;
 
 	# get selection, ask for it if needed
@@ -2616,9 +2632,20 @@ sub on_save_as {
 		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 			return;
 		}
-		my $filename = $dialog->GetFilename;
+		# GetPath will return the typed in string 
+		# for a file path to be saved to.
+		# now we need to work out if we use GetPath 
+		# or concatinate the two values used.
+		
+		#my $filename = $dialog->GetFilename;
+		#print "FileName: $filename\n";
+		#my $dir = $dialog->GetDirectory;
+		#print "Directory: $dir\n";
+		#print "Path: " . $dialog->GetPath  . "\n";
 		$self->{cwd} = $dialog->GetDirectory;
-		my $path = File::Spec->catfile( $self->cwd, $filename );
+		my $saveto = $dialog->GetPath;
+		#my $path = File::Spec->catfile( $self->cwd, $filename );
+		my $path = File::Spec->catfile( $saveto );
 		if ( -e $path ) {
 			my $response = Wx::MessageBox(
 				Wx::gettext("File already exists. Overwrite it?"),
@@ -4186,6 +4213,30 @@ sub key_up {
 	return;
 }
 
+# TODO enable/disable menu options
+sub show_as_numbers {
+	my ( $self, $event, $form ) = @_;
+
+	my $current = $self->current;
+	return if not $current->editor;
+	my $text    = $current->text;
+	if ($text) {
+		$self->show_output(1);
+		my $output = $self->output;
+		$output->Remove( 0, $output->GetLastPosition );
+		# TODO deal with wide characters ?
+		# TODO split lines, show location ?
+		foreach my $i (0..length($text)) {
+			my $decimal = ord(substr($text, $i, 1));
+			$output->AppendText( ($form eq 'decimal' ? $decimal : uc(sprintf('%0.2x', $decimal))) . ' ' );
+		}
+	} else {
+		$self->message(Wx::gettext('Need to select text in order to translate to hex'));
+	}
+
+	$event->Skip;
+	return;
+}
 
 1;
 
