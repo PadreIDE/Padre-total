@@ -32,7 +32,6 @@ my $builder = $class->new(
 	build_requires    => {
 		'Test::More'       => '0.86',
 		'Test::Exception'  => '0.27',
-		'Test::NoWarnings' => '0.084',
 		'Locale::Msgfmt'   => '0.08',
 	},
 	requires           => \%requires,
