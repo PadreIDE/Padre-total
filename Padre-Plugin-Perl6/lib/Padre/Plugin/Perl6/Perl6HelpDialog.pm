@@ -22,6 +22,7 @@ use Class::XSAccessor accessors => {
 	_targets_index     => '_targets_index',      # targets index
 	_help_viewer       => '_help_viewer',        # HTML Help Viewer
 	_plugin            => '_plugin',             # plugin object
+	_topic             => '_topic',              # default help topic
 };
 
 # -- constructor
@@ -42,12 +43,15 @@ sub new {
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	$self->_plugin($plugin);
+	$self->_topic($opt{topic} // '');
 
 	# create dialog
 	$self->_create;
 	
-	$self->_search_text->SetValue($opt{topic} // '');
-
+	# fit and center the dialog
+	$self->Fit;
+	$self->CentreOnParent;
+	
 	return $self;
 }
 
@@ -97,15 +101,13 @@ sub _create {
 	$self->_create_buttons;
 
 	# wrap everything in a box to add some padding
-	$self->SetSizerAndFit($self->_hbox);
-	$self->_hbox->SetSizeHints($self);
-
-	# center the dialog
-	$self->Centre;
-
+	$self->SetMinSize( [ 640, 480 ] );
+	$self->SetSizer( $self->_hbox );
+	
 	# focus on the search text box
 	$self->_search_text->SetFocus();
 	
+	$self->_search_text->SetValue( $self->_topic );
 	$self->_update_list_box;
 }
 
@@ -133,22 +135,38 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Matching Help Topics:') );
-	$self->_list( Wx::ListBox->new( $self, -1, [-1, -1], [200, 300], [], 
-		Wx::wxLB_SINGLE ) );
+	$self->_list( 
+		Wx::ListBox->new( 
+			$self, 
+			-1,
+			Wx::wxDefaultPosition,
+			Wx::wxDefaultSize, 
+			[], 
+			Wx::wxLB_SINGLE 
+		)
+	);
 		
 	# HTML Help Viewer
 	require Padre::Wx::HtmlWindow;
-	$self->_help_viewer( Padre::Wx::HtmlWindow->new($self, -1, [-1,-1], [350, 300], Wx::wxBORDER_STATIC ) );
+	$self->_help_viewer( 
+		Padre::Wx::HtmlWindow->new(
+			$self,
+			-1, 
+			Wx::wxDefaultPosition,
+			Wx::wxDefaultSize, 
+			Wx::wxBORDER_STATIC
+		) 
+	);
 	$self->_help_viewer->SetPage('');
 
 	
-	$self->_vbox->AddSpacer(10);
 	$self->_vbox->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_vbox->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_vbox->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_vbox->Add( $self->_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_vbox->Add( $self->_list, 1, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $self->_vbox, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_hbox->Add( $self->_help_viewer, 0, Wx::wxALL|Wx::wxEXPAND, 0 );
+	$self->_hbox->Add( $self->_help_viewer, 1, 
+		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND, 1 );
 
 	$self->_setup_events();
 	
