@@ -15,10 +15,12 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
-	_sizer             => '_sizer',              # window sizer
+	_hbox              => '_hbox',               # horizontal box sizer
+	_vbox              => '_vbox',               # vertical box sizer
 	_search_text       => '_search_text',        # search text control
 	_list              => '_list',               # matches list
 	_targets_index     => '_targets_index',      # targets index
+	_help_viewer       => '_help_viewer',        # HTML Help Viewer
 	_plugin            => '_plugin',             # plugin object
 };
 
@@ -32,7 +34,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$main,
 		-1,
-		Wx::gettext('Perl 6 Help'),
+		Wx::gettext('Perl 6 Help (Powered by App::Grok)'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -53,45 +55,30 @@ sub new {
 # -- event handler
 
 #
-# handler called when the ok button has been clicked.
-# 
-sub _on_ok_button_clicked {
-	my ($self) = @_;
+# Fetches the current selection's help HTML via App::Grok
+#
+sub display_help_in_viewer {
+	my $self = shift;
 
-	my $main = $self->_plugin->main;
-
-	#Open the selected resources here if the user pressed OK
 	my $selection = $self->_list->GetSelection();
 	my $help_target = $self->_list->GetClientData($selection);
+	my $help_html;
 	if($help_target) {
 		require App::Grok;
-		my $grok = App::Grok->new;
-		my $grok_text = $grok->render_target($help_target,'xhtml');
-		if($grok_text) {
-			my $tmp = File::Temp->new(SUFFIX => '.html');
-			$tmp->unlink_on_destroy(0);
-			my $filename = $tmp->filename;
-			print $tmp $grok_text;
-			close $tmp
-				or warn "Could not close $filename";
-
-			# launch the HTML file in your default browser
-			require URI::file;
-			my $file_url = URI::file->new($filename);
-			Wx::LaunchDefaultBrowser($file_url);
-
-		} else {
-			Wx::MessageBox(
-				Wx::gettext('Topic not found!'),
-				Wx::gettext('Perl 6 Help'),
-				Wx::wxOK,
-				$main,
-			);
-		}
+		eval {
+			my $grok = App::Grok->new;
+			$help_html = $grok->render_target($help_target,'xhtml');
+		};
 	}
-	$self->Destroy;
-}
+	
+	if(not $help_html) {
+		$help_html = '<b>No Help found</b>';
+	}
+	
+	$self->_help_viewer->SetPage($help_html);
 
+	return;
+}
 
 # -- private methods
 
@@ -99,19 +86,19 @@ sub _on_ok_button_clicked {
 # create the dialog itself.
 #
 sub _create {
-	my ($self) = @_;
+	my $self = shift;
 
 	# create sizer that will host all controls
-	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	$self->_sizer($sizer);
+	$self->_hbox( Wx::BoxSizer->new( Wx::wxHORIZONTAL ) );
+	$self->_vbox( Wx::BoxSizer->new( Wx::wxVERTICAL ) );
 
 	# create the controls
 	$self->_create_controls;
 	$self->_create_buttons;
 
-	# wrap everything in a vbox to add some padding
-	$self->SetSizerAndFit($sizer);
-	$sizer->SetSizeHints($self);
+	# wrap everything in a box to add some padding
+	$self->SetSizerAndFit($self->_hbox);
+	$self->_hbox->SetSizeHints($self);
 
 	# center the dialog
 	$self->Centre;
@@ -126,11 +113,10 @@ sub _create {
 # create the buttons pane.
 #
 sub _create_buttons {
-	my ($self) = @_;
-	my $sizer  = $self->_sizer;
+	my $self = shift;
 
 	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$self->_vbox->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
 	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
 }
 
@@ -138,7 +124,7 @@ sub _create_buttons {
 # create controls in the dialog
 #
 sub _create_controls {
-	my ($self) = @_;
+	my $self = shift;
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
@@ -148,14 +134,22 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Matching Help Topics:') );
-	$self->_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
+	$self->_list( Wx::ListBox->new( $self, -1, [-1, -1], [200, 300], [], 
 		Wx::wxLB_SINGLE ) );
+		
+	# HTML Help Viewer
+	require Padre::Wx::HtmlWindow;
+	$self->_help_viewer( Padre::Wx::HtmlWindow->new($self, -1, [-1,-1], [350, 300] ) );
+	$self->_help_viewer->SetPage('');
 
-	$self->_sizer->AddSpacer(10);
-	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	
+	$self->_vbox->AddSpacer(10);
+	$self->_vbox->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_vbox->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_vbox->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_vbox->Add( $self->_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_hbox->Add( $self->_vbox, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_hbox->Add( $self->_help_viewer, 0, Wx::wxALL|Wx::wxEXPAND, 0 );
 
 	$self->_setup_events();
 	
@@ -187,10 +181,10 @@ sub _setup_events {
 		return;
 	});
 	
-	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_list, sub {
-		$self->_on_ok_button_clicked();
-		$self->EndModal(0);
+	Wx::Event::EVT_LISTBOX( $self, $self->_list, sub {
+		$self->display_help_in_viewer;
 	});
+	
 }
 
 #
@@ -233,6 +227,7 @@ sub _update_list_box() {
 	}
 	if($pos > 0) {
 		$self->_list->Select(0);
+		$self->display_help_in_viewer;
 	}
 			
 	return;
