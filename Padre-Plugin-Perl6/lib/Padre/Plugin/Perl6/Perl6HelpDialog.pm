@@ -138,7 +138,7 @@ sub _create_controls {
 		
 	# HTML Help Viewer
 	require Padre::Wx::HtmlWindow;
-	$self->_help_viewer( Padre::Wx::HtmlWindow->new($self, -1, [-1,-1], [350, 300] ) );
+	$self->_help_viewer( Padre::Wx::HtmlWindow->new($self, -1, [-1,-1], [350, 300], Wx::wxBORDER_STATIC ) );
 	$self->_help_viewer->SetPage('');
 
 	
