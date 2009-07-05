@@ -59,8 +59,8 @@ sub new {
 	my $config = Padre::Config->read;
 	my $service = Padre::Swarm::Service::Chat->new(
 		use_transport => {
-			'Padre::Swarm::Transport::Multicast'=>{
-			#'Padre::Swarm::Transport::IRC'=>{
+			#'Padre::Swarm::Transport::Multicast'=>{
+			'Padre::Swarm::Transport::IRC'=>{
 				nickname => $config->identity_nickname
 			},
 		}

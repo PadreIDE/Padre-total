@@ -23,6 +23,7 @@ sub start {
 	my $self = shift;
 	
 	my $con = AnyEvent::IRC::Client->new;
+
 	$con->connect (
 		"irc.perl.org" => 6667 ,
 		{ nick =>  $self->nickname,
@@ -30,9 +31,9 @@ sub start {
 		  real => getlogin() 
 		}
 	);
-	
-	$self->{connection} = $con;
 	$self->_register_irc_callbacks($con);
+	$self->{connection} = $con;
+
 	my $c = AnyEvent->condvar;
 	$self->{condvar} = $c;
 	
@@ -44,6 +45,7 @@ sub shutdown {
 	my $self = shift;
 	$self->connection->disconnect;
 	delete $self->{connection};
+	delete $self->{condvar};
 }
 
 sub _register_irc_callbacks {
@@ -58,18 +60,20 @@ sub _register_irc_callbacks {
 		 Padre::Util::debug( "Connected! Yay!\n" );
 	      }
 
-#		$con->register( 
-#		  $self->nickname,
-#		  'Padre-Swarm-Transport-IRC',
-#		  , getlogin() 
-#		);
-
-		$self->update_channels;
+		$con->register( 
+		  $self->nickname,
+		  'Padre-Swarm-Transport-IRC',
+		  , getlogin() 
+		);
 		
 	   },
 	   disconnect => sub {
 	      warn "Oh, got a disconnect: $_[1], exiting...\n";
 	      $self->condvar->broadcast;
+	   },
+	   registered => sub {
+		warn "REGISTERED!!";
+		$self->update_channels;
 	   }
 	);
 
@@ -79,17 +83,13 @@ sub _register_irc_callbacks {
 	      my $nick = $con->nick;
 	      
 	      my $body = join (' ',@{ $ircmsg->{params} } );
-	      my $msg = { 
-		    user => $ircmsg->{prefix}, 
-		    message => $body , 
-		    type => 'chat',
-	       };
 	       my $frame = {
 		       address => $handle,
 		       channel => $channel,
 	       };
-	       warn "Publick message in $channel from $handle";
-	       push @{ $self->{incoming_buffer}{$channel} }, [$msg,$frame];
+	       $body =~ s/\Q$channel\E //;
+	       warn "Publick message in $channel '$body'";
+	       push @{ $self->{incoming_buffer}{$channel} }, [$body,$frame];
 		    
 	   }
 	);
@@ -105,10 +105,12 @@ sub _connect_channel {
 	$con->send_srv( JOIN => $room );
 }
 
+
+use Data::Dumper;
 sub update_channels {
 	my ($self) = @_;
-	while ( my ($channel,$loop) = each %{ $self->channels } ) {
-		$self->subscribe_channel($channel,$loop);
+	while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
+		$self->_connect_channel( $channel, $loopback );
 	}
 	
 }
@@ -116,24 +118,32 @@ sub update_channels {
 
 sub poll {
 	my ($self,$time) = @_;
-#	warn "Polling for $time:";
+	#warn "Polling for $time:";
 	my $c = AnyEvent->condvar;
 	my $timer = AnyEvent->timer( after=>$time,
 		cb=>sub{ $c->send } );
+	#warn "$timer running";
 	$c->recv;
-#	warn "Returned from poll wait";
+	#warn "Returned from poll wait";
 	if ( keys %{ $self->{incoming_buffer} } ) {
-		warn "DATA IN BUFFER!";
-		return keys %{ $self->{incoming_buffer} };
+		warn "DATA IN BUFFER!", %{ $self->{incoming_buffer} };
+		return (keys %{ $self->{incoming_buffer} });
 	}
+	return;
 
 }
 
+use Data::Dumper;
 sub receive_from_channel {
 	my ($self,$channel) = @_;
+	warn "Search for $channel";
 	return unless exists $self->{incoming_buffer}{$channel};
-	shift @{ $self->{incoming_buffer}{$channel} };
 	
+	my @queue = @{ delete $self->{incoming_buffer}{$channel} };
+	my $d = shift @queue;
+	$self->{incoming_buffer}{$channel} = \@queue
+		if @queue;
+	my ($msg,$frame) = @$d;
 }
 
 sub tell_channel {

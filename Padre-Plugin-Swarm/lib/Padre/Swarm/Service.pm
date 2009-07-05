@@ -29,11 +29,15 @@ sub _attach_transports {
     my ($self) = @_;
     croak "No use_transport defined" unless exists $self->{use_transport};
     my $transports = $self->{use_transport};
+    
     while ( my ($class,$args) = each %$transports ) {
         Class::Autouse->autouse($class);
         my $transport = $class->new( %$args );
         $self->set_transport( $transport );
     }
+    $self->transport->subscribe_channel( $_ , 1 )
+        for $self->service_channels;
+  
 }
 
 1;

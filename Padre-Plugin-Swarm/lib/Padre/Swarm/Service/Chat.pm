@@ -27,12 +27,12 @@ sub start {
     my $self = shift;
     Padre::Util::debug('Starting chat service');
     my $config = Padre::Config->read;
+
     $self->_attach_transports;
     Padre::Util::debug('Chat transports attached');  
     Padre::Util::debug( $self->transport );
     
-    $self->transport->subscribe_channel( $_ )
-        for $self->service_channels;
+
     
     Padre::Util::debug('Channels subscribed');
     $self->transport->start; 
