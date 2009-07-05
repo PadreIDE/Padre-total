@@ -13,8 +13,12 @@ my $localedir = catdir ( $cwd, 'share', 'locale' );
 unless(-d $localedir) {
 	# Search for the 'locale' directory when 'share/locale'
 	# directory is not found
-	my @files = File::Find::Rule->directory()->
-		name('locale')->relative->in($cwd);
+	# and discard CVS/.svn/.git and blib folders
+	my $rule = File::Find::Rule->new;
+	$rule->or($rule->new->
+		directory->name('CVS', '.svn', '.git', 'blib')->prune->discard,
+		$rule->new);	
+	my @files = $rule->name('locale')->in($cwd);
 	if(scalar @files > 0) {
 		$localedir = $files[0];
 	} else {
