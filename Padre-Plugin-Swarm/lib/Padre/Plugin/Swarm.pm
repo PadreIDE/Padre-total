@@ -149,38 +149,11 @@ sub _sharedir {
 }
 
 
-#sub _start_transports {
-#	my $self = shift;
-#	my $transports = $self->get_transports;
-#	while ( my ($name,$transport) = each %$transports ) {
-#		$transport->start;
-#	}
-#}
-#
-#sub _shutdown_transports {
-#	my $self = shift;
-#	my $transports = $self->get_transports;
-#	while ( my ($name,$transport) = each %$transports ) {
-#		$transport->shutdown;
-#	}
-#}
+# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
 
-#sub _start_services {
-#	my $self = shift;
-#	my $services = $self->get_services;
-#	while ( my ($name,$service) = each %$services ) {
-#		$service->start;
-#	}
-#}
-
-#sub _shutdown_services {
-#	my $self = shift;
-#	my $services = $self->get_services;
-#	while ( my ($name,$service) = each %$services ) {
-#		$service->shutdown;
-#	}
-#
-#}
 1;
 
 __END__
@@ -205,20 +178,15 @@ that look shiny in a demo :)
 
 Lessons learned here will be applied to more practical plugins later.
 
-=head1 LICENSE
-
-perl
-
 =head1 COPYRIGHT
 
 Copyright 2009 The Padre develoment team as listed in Padre.pm
+
+=head1 LICENSE
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
 
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
+
