@@ -142,12 +142,12 @@ sub _create_controls {
 
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
-		Wx::gettext('&Select an item to open (? = any character, * = any string):') );
+		Wx::gettext('&Type a help topic to read:') );
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
 	
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
-		Wx::gettext('&Matching Items:') );
+		Wx::gettext('&Matching Help Topics:') );
 	$self->_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_SINGLE ) );
 
@@ -220,18 +220,13 @@ sub _update_list_box() {
 	}
 
 	my $search_expr = $self->_search_text->GetValue();
-
-	#quote the search string to make it safer
-	#and then tranform * and ? into .* and .
 	$search_expr = quotemeta $search_expr;
-	$search_expr =~ s/\\\*/.*?/g;
-	$search_expr =~ s/\\\?/./g;
 
 	#Populate the list box now
 	$self->_list->Clear();
 	my $pos = 0;
 	foreach my $target (@{$self->_targets_index}) {
-		if($target =~ /^$search_expr/i) {
+		if($target =~ /$search_expr/i) {
 			$self->_list->Insert($target, $pos, $target);
 			$pos++;
 		}
