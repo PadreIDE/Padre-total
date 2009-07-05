@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-05 20:26+0300\n"
+"POT-Creation-Date: 2009-07-05 20:43+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -88,18 +88,16 @@ msgid "About"
 msgstr "عن"
 
 #: lib/Padre/Plugin/Perl6.pm:249
-msgid "This plugin enables useful Perl 6 features on Padre IDE.\n"
-msgstr ""
+msgid "This plugin enables useful Perl 6 features on Padre IDE."
+msgstr "يقوم هذا البرنامج المساعد بتمكين ميزات Perl 6 على Padre IDE."
 
 #: lib/Padre/Plugin/Perl6.pm:250
-msgid ""
-"It integrates Perl 6 coloring and easy access to Perl 6 help documents.\n"
-"\n"
-msgstr ""
+msgid "It integrates coloring and easy access to Perl 6 help documents."
+msgstr "إنه يدمج التلوين Perl 6 وسهولة الوصول إلى وثائق المساعدة."
 
 #: lib/Padre/Plugin/Perl6.pm:251
-msgid "The following modules are used:\n"
-msgstr "تم استخدام الوحدات التالية:\n"
+msgid "The following modules are used:"
+msgstr "تم استخدام الوحدات التالية:"
 
 #: lib/Padre/Plugin/Perl6.pm:279
 msgid "Cannot find STD.pm lex cache"
