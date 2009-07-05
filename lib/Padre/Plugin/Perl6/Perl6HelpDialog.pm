@@ -115,9 +115,8 @@ sub _create {
 sub _create_buttons {
 	my $self = shift;
 
-	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-	$self->_vbox->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
+	my $close_button = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('Close') );
+	$self->_vbox->Add($close_button, 0, Wx::wxALL|Wx::wxALIGN_LEFT, 5 );
 }
 
 #
