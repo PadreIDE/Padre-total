@@ -64,15 +64,18 @@ sub new {
 sub display_help_in_viewer {
 	my $self = shift;
 
-	my $selection = $self->_list->GetSelection();
-	my $help_target = $self->_list->GetClientData($selection);
 	my $help_html;
-	if($help_target) {
-		require App::Grok;
-		eval {
-			my $grok = App::Grok->new;
-			$help_html = $grok->render_target($help_target,'xhtml');
-		};
+	my $selection = $self->_list->GetSelection();
+	if($selection != -1) {
+		my $help_target = $self->_list->GetClientData($selection);
+
+		if($help_target) {
+			eval {
+				require App::Grok;
+				my $grok = App::Grok->new;
+				$help_html = $grok->render_target($help_target,'xhtml');
+			};
+		}
 	}
 	
 	if(not $help_html) {
@@ -211,11 +214,12 @@ sub _search() {
 	my $self = shift;
 	
 	# Generate a sorted file-list based on filename
-	require App::Grok;
-	my $grok = App::Grok->new;
-	my @targets_index = sort $grok->target_index();
-
-	$self->_targets_index( \@targets_index ); 
+	eval {
+		require App::Grok;
+		my $grok = App::Grok->new;
+		my @targets_index = sort $grok->target_index();
+		$self->_targets_index( \@targets_index ); 
+	};
 	
 	return;
 }
@@ -244,8 +248,8 @@ sub _update_list_box() {
 	}
 	if($pos > 0) {
 		$self->_list->Select(0);
-		$self->display_help_in_viewer;
 	}
+	$self->display_help_in_viewer;
 			
 	return;
 }
