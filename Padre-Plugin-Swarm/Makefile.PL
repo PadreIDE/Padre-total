@@ -8,4 +8,3 @@ requires      Params::Util
 requires      Class::XSAccessor
 requires      Class::AutoUse
 test_requires Test::More 0.42
-install_share
