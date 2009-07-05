@@ -13,10 +13,10 @@ use Class::XSAccessor
 	   nickname    => 'nickname',
    };
    
-use Carp;
+use Carp qw( carp );
 
 our @ISA = 'Padre::Swarm::Transport';
-
+use Data::Dumper;
 
 
 sub start {
@@ -60,11 +60,11 @@ sub _register_irc_callbacks {
 		 Padre::Util::debug( "Connected! Yay!\n" );
 	      }
 
-		$con->register( 
-		  $self->nickname,
-		  'Padre-Swarm-Transport-IRC',
-		  , getlogin() 
-		);
+#		$con->register( 
+#		  $self->nickname,
+#		  'Padre-Swarm-Transport-IRC',
+#		  , getlogin() 
+#		);
 		
 	   },
 	   disconnect => sub {
@@ -72,7 +72,6 @@ sub _register_irc_callbacks {
 	      $self->condvar->broadcast;
 	   },
 	   registered => sub {
-		warn "REGISTERED!!";
 		$self->update_channels;
 	   }
 	);
@@ -82,16 +81,25 @@ sub _register_irc_callbacks {
 	      my ($handle,$channel,$ircmsg)= @_;
 	      my $nick = $con->nick;
 	      
-	      my $body = join (' ',@{ $ircmsg->{params} } );
+	      my ($sender,$body) =  @{ $ircmsg->{params} };
+	      
 	       my $frame = {
-		       address => $handle,
+		       entity => $sender,
 		       channel => $channel,
+		       timestamp => time, 
 	       };
-	       $body =~ s/\Q$channel\E //;
-	       warn "Publick message in $channel '$body'";
 	       push @{ $self->{incoming_buffer}{$channel} }, [$body,$frame];
 		    
 	   }
+	);
+	
+	$con->reg_cb(
+		error => sub {
+			my ($con,$code, $message, $ircmsg) = @_;
+			warn "ERROR:[$code] - $message\n";
+			
+		}
+
 	);
 
 
@@ -133,26 +141,31 @@ sub poll {
 
 }
 
-use Data::Dumper;
+
 sub receive_from_channel {
 	my ($self,$channel) = @_;
-	warn "Search for $channel";
 	return unless exists $self->{incoming_buffer}{$channel};
 	
 	my @queue = @{ delete $self->{incoming_buffer}{$channel} };
 	my $d = shift @queue;
-	$self->{incoming_buffer}{$channel} = \@queue
-		if @queue;
-	my ($msg,$frame) = @$d;
+	if ( @queue ) {
+		$self->{incoming_buffer}{$channel} = \@queue
+	}
+	else { warn "Drained '$channel' buffer" }
+	
+	return @$d;
 }
 
 sub tell_channel {
 	my ($self,$channel,$payload) = @_;
 	my $con = $self->connection;
+	carp "Tell $channel - $payload";
+	my $irc_chan = '#padre_swarm_'.$channel;
 	
-	$con->send_chan( '#padre', 'PRIVMSG',
-		'#padre',
+	$con->send_msg( PRIVMSG => $irc_chan,
 		$payload
 	);
+	
+	#$con->send_chan($irc_chan, $payload );
 }
 1;

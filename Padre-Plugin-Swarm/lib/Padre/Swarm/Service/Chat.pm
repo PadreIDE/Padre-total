@@ -7,7 +7,12 @@ use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
 
-my $marshal = JSON::XS->new->allow_blessed->convert_blessed;
+my $marshal = 
+JSON::XS
+    ->new
+    ->allow_blessed
+    ->convert_blessed
+    ->utf8;
     
 our @ISA = 'Padre::Swarm::Service';
 
