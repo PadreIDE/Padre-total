@@ -1,5 +1,7 @@
 Revision history for Locale-Msgfmt
 
+
+0.11    Jul 06, 2009
         - some code improvement in open() and opendir() and error handling (SZABGAB)
 
 0.10    Jul 5, 2009
