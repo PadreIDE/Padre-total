@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-AcmePlayCode
 
+0.12 unreleased
+     actually install translations (RSN)
+
 0.11    2009.05.31
     removed taint mode for tests, leading to build failures (jquelin)
 
