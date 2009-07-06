@@ -68,21 +68,6 @@ print "DIR $dir\n";
 _system("svn export --quiet -r$rev $URL src");
 chdir 'src';
 
-my $locale_path;
-if ( -d 'share/locale' ) {
-	$locale_path = Cwd::cwd();
-} else {
-	( my $path = $name ) =~ s{-}{/}g;
-	if ( -d "lib/$path/share/locale" ) {
-		$locale_path = Cwd::cwd() . "/lib/$path";
-	}
-}
-
-if ($locale_path) {
-	print "locale path: '$locale_path'\n";
-	convert_po_to_mo($locale_path);
-}
-
 #print "Setting VERSION $version\n";
 find( \&check_version, 'lib' );
 die if $error;
