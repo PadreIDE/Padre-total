@@ -9,11 +9,12 @@ use File::Spec;
 use File::Path;
 
 sub slurp {
-	open F, shift;
-	binmode F;
+	my $file = shift;
+	open my $F, '<', $file or die "Could not open ($file) $!";
+	binmode $F;
 	my $s = "";
-	while (<F>) { $s .= $_; }
-	close F;
+	while (<$F>) { $s .= $_; }
+	close $F;
 	return $s;
 }
 

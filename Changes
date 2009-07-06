@@ -1,5 +1,7 @@
 Revision history for Locale-Msgfmt
 
+        - some code improvement in open() and opendir() and error handling (SZABGAB)
+
 0.10    Jul 5, 2009
         - actually upload with Module::Install::Msgfmt this time.
 

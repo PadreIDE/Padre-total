@@ -37,35 +37,35 @@ sub prepare {
 sub out {
 	my $self = shift;
 	my $file = shift;
-	open OUT, ">", $file;
-	binmode OUT;
-	print OUT Locale::Msgfmt::Utils::from_hex( $self->{magic} );
-	print OUT Locale::Msgfmt::Utils::character( $self->{format} );
-	print OUT Locale::Msgfmt::Utils::character( $self->{count} );
-	print OUT Locale::Msgfmt::Utils::character(28);
-	print OUT Locale::Msgfmt::Utils::character( 28 + $self->{count} * 8 );
-	print OUT Locale::Msgfmt::Utils::character(0);
-	print OUT Locale::Msgfmt::Utils::character(0);
+	open my $OUT, ">", $file or die "Could not open ($file) $!";
+	binmode $OUT;
+	print $OUT Locale::Msgfmt::Utils::from_hex( $self->{magic} );
+	print $OUT Locale::Msgfmt::Utils::character( $self->{format} );
+	print $OUT Locale::Msgfmt::Utils::character( $self->{count} );
+	print $OUT Locale::Msgfmt::Utils::character(28);
+	print $OUT Locale::Msgfmt::Utils::character( 28 + $self->{count} * 8 );
+	print $OUT Locale::Msgfmt::Utils::character(0);
+	print $OUT Locale::Msgfmt::Utils::character(0);
 
 	foreach ( @{ $self->{sorted} } ) {
 		my $length = length($_);
-		print OUT Locale::Msgfmt::Utils::character($length);
-		print OUT Locale::Msgfmt::Utils::character( $self->{free_mem} );
+		print $OUT Locale::Msgfmt::Utils::character($length);
+		print $OUT Locale::Msgfmt::Utils::character( $self->{free_mem} );
 		$self->{free_mem} += $length + 1;
 	}
 	foreach ( @{ $self->{translations} } ) {
 		my $length = length($_);
-		print OUT Locale::Msgfmt::Utils::character($length);
-		print OUT Locale::Msgfmt::Utils::character( $self->{free_mem} );
+		print $OUT Locale::Msgfmt::Utils::character($length);
+		print $OUT Locale::Msgfmt::Utils::character( $self->{free_mem} );
 		$self->{free_mem} += $length + 1;
 	}
 	foreach ( @{ $self->{sorted} } ) {
-		print OUT Locale::Msgfmt::Utils::null_terminate($_);
+		print $OUT Locale::Msgfmt::Utils::null_terminate($_);
 	}
 	foreach ( @{ $self->{translations} } ) {
-		print OUT Locale::Msgfmt::Utils::null_terminate($_);
+		print $OUT Locale::Msgfmt::Utils::null_terminate($_);
 	}
-	close OUT;
+	close $OUT;
 }
 
 =head1 NAME
