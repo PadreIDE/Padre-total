@@ -12,7 +12,7 @@ isa_ok($app, 'Padre');
 
 use_ok( 'Padre::TaskManager' );
 use_ok( 'Padre::Swarm::Service::Chat' );
-use_ok( 'Padre::Swarm::Transport::IRC' );
+use_ok( 'Padre::Swarm::Transport::XMPP' );
 }
 
 #Padre::Util::set_logging( 1 );
@@ -22,9 +22,10 @@ my $tm = Padre::TaskManager->new();
 
 my $chat = Padre::Swarm::Service::Chat->new(
 	use_transport => {
-		'Padre::Swarm::Transport::IRC' => {
+		'Padre::Swarm::Transport::XMPP' => {
 			nickname => 'swarm_'.$$ ,
-			enable_ssl=>1,
+			credentials => {
+			}
 		},
 	}
 );

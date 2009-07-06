@@ -11,6 +11,8 @@ use Class::XSAccessor
 	   connection => 'connection',
 	   condvar	=> 'condvar',
 	   nickname    => 'nickname',
+	   
+	   enable_ssl  => 'enable_ssl',
    };
    
 use Carp qw( carp );
@@ -23,6 +25,7 @@ sub start {
 	my $self = shift;
 	
 	my $con = AnyEvent::IRC::Client->new;
+	$con->enable_ssl if $self->enable_ssl;
 
 	$con->connect (
 		"irc.perl.org" => 6667 ,
