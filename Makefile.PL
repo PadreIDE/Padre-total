@@ -15,4 +15,6 @@ repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-PerlTidy';
 extra_tests;
 is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 
+install_share_with_mofiles; # install Locale::Msgfmt
+
 WriteAll;
