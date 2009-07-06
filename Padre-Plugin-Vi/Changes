@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Vi
 
+0.23 unreleased
+     - actually install the translations (RSN)
+
 0.22    2009.06.22
 
 	Added translations:
