@@ -5,6 +5,11 @@ Revision history for Locale-Msgfmt
           when running under CPAN Testers
         - use is_deeply instead of making a string out of the hash and
           then using is
+        - add Module::Install::Msgfmt. just replace install_share with
+          install_share_with_mofiles in your Makefile.PL.
+        - add remove option to remove the source file(s) and all .pot
+          files if a directory is being processed
+        - add verbose option to print the files that were converted
 
 0.08    Jun 27, 2009
         - again remove the dependency on Locale::Maketext::Gettext,

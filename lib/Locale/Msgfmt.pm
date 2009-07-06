@@ -57,6 +57,8 @@ sub _msgfmt {
   $po->parse($hash->{in}, $mo);
   $mo->prepare();
   $mo->out($hash->{out});
+  print $hash->{in} . " -> " . $hash->{out} . "\n" if($hash->{verbose});
+  unlink($hash->{in}) if($hash->{remove});
 }
 
 sub _msgfmt_dir {
@@ -73,6 +75,10 @@ sub _msgfmt_dir {
   opendir D, $hash->{in};
   my @list = readdir D;
   closedir D;
+  my @removelist = ();
+  if($hash->{remove}) {
+    @removelist = grep /\.pot$/, @list;
+  }
   @list = grep /\.po$/, @list;
   my %files;
   foreach(@list) {
@@ -80,13 +86,16 @@ sub _msgfmt_dir {
     my $out = File::Spec->catfile($hash->{out}, substr($_, 0, -3) . ".mo");
     $files{$in} = $out;
   }
-  delete $hash->{in};
-  delete $hash->{out};
   foreach(keys %files) {
     my %newhash = (%{$hash});
     $newhash{in} = $_;
     $newhash{out} = $files{$_};
     _msgfmt(\%newhash);
+  }
+  foreach(@removelist) {
+    my $f = File::Spec->catfile($hash->{in}, $_);
+    print "-$f\n" if($hash->{verbose});
+    unlink($f);
   }
 }
 
