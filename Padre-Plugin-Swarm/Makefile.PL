@@ -6,5 +6,5 @@ requires      IO::Socket::Multicast 0
 requires      IO::Select 0
 requires      Params::Util
 requires      Class::XSAccessor
-requires      Class::AutoUse
+requires      Class::Autouse
 test_requires Test::More 0.42

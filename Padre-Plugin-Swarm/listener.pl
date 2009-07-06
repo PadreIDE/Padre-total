@@ -10,9 +10,11 @@ $mc->subscribe_channel( 12000 );
 $mc->start;
 
 while ( 1 ) {
-	$mc->poll(1);
+	my ($channel) = $mc->poll(1);
+	next unless $channel;
+	warn $sock;
 	my $buffer;
-	my ($message,$frame) = $mc->receive_from( 12000 );
+	my ($message,$frame) = $mc->receive_from_channel( $channel  );
 	print Dumper $frame;
 	print Dumper $message;
 }
