@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-DataWalker
 
-(Not released yet)
+0.02 unreleased
   - Added translations:
     - French (jquelin)
     - Polish (therek)
@@ -8,6 +8,7 @@ Revision history for Padre-Plugin-DataWalker
 	- Arabic (azawawi)
 	- Spanish (brunov)
 	- Brazilian Portuguese (garu)
+  - actually install the translations (RSN)
 
 0.01    2009-03-19
   - Initial version
