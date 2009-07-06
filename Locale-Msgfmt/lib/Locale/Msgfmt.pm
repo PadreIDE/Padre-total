@@ -12,91 +12,91 @@ use base 'Exporter';
 
 our @EXPORT = qw/msgfmt/;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub msgfmt {
-  my $hash = shift;
-  if(!defined($hash)) {
-    die("error: must give input");
-  }
-  if(!(ref($hash) eq "HASH")) {
-    $hash = {in => $hash};
-  }
-  if(!defined($hash->{in}) or !length($hash->{in})) {
-    die("error: must give an input file");
-  }
-  if(! -e $hash->{in}) {
-    die("error: input does not exist");
-  }
-  if(-d $hash->{in}) {
-    return _msgfmt_dir($hash);
-  } else {
-    return _msgfmt($hash);
-  }
+	my $hash = shift;
+	if ( !defined($hash) ) {
+		die("error: must give input");
+	}
+	if ( !( ref($hash) eq "HASH" ) ) {
+		$hash = { in => $hash };
+	}
+	if ( !defined( $hash->{in} ) or !length( $hash->{in} ) ) {
+		die("error: must give an input file");
+	}
+	if ( !-e $hash->{in} ) {
+		die("error: input does not exist");
+	}
+	if ( -d $hash->{in} ) {
+		return _msgfmt_dir($hash);
+	} else {
+		return _msgfmt($hash);
+	}
 }
 
 sub _msgfmt {
-  my $hash = shift;
-  if(! defined($hash->{in})) {
-    die("error: must give an input file");
-  }
-  if(! -f $hash->{in}) {
-    die("error: input file does not exist");
-  }
-  if(! defined($hash->{out})) {
-    if($hash->{in} =~ /\.po$/) {
-      $hash->{out} = $hash->{in};
-      $hash->{out} =~ s/po$/mo/;
-    } else {
-      die("error: must give an output file");
-    }
-  }
-  my $mo = Locale::Msgfmt::mo->new();
-  $mo->initialize();
-  my $po = Locale::Msgfmt::po->new({fuzzy => $hash->{fuzzy}});
-  $po->parse($hash->{in}, $mo);
-  $mo->prepare();
-  $mo->out($hash->{out});
-  print $hash->{in} . " -> " . $hash->{out} . "\n" if($hash->{verbose});
-  unlink($hash->{in}) if($hash->{remove});
+	my $hash = shift;
+	if ( !defined( $hash->{in} ) ) {
+		die("error: must give an input file");
+	}
+	if ( !-f $hash->{in} ) {
+		die("error: input file does not exist");
+	}
+	if ( !defined( $hash->{out} ) ) {
+		if ( $hash->{in} =~ /\.po$/ ) {
+			$hash->{out} = $hash->{in};
+			$hash->{out} =~ s/po$/mo/;
+		} else {
+			die("error: must give an output file");
+		}
+	}
+	my $mo = Locale::Msgfmt::mo->new();
+	$mo->initialize();
+	my $po = Locale::Msgfmt::po->new( { fuzzy => $hash->{fuzzy} } );
+	$po->parse( $hash->{in}, $mo );
+	$mo->prepare();
+	$mo->out( $hash->{out} );
+	print $hash->{in} . " -> " . $hash->{out} . "\n" if ( $hash->{verbose} );
+	unlink( $hash->{in} ) if ( $hash->{remove} );
 }
 
 sub _msgfmt_dir {
-  my $hash = shift;
-  if(! -d $hash->{in}) {
-    die("error: input directory does not exist");
-  }
-  if(! defined($hash->{out})) {
-    $hash->{out} = $hash->{in};
-  }
-  if(! -d $hash->{out}) {
-    File::Path::mkpath($hash->{out});
-  }
-  opendir D, $hash->{in};
-  my @list = readdir D;
-  closedir D;
-  my @removelist = ();
-  if($hash->{remove}) {
-    @removelist = grep /\.pot$/, @list;
-  }
-  @list = grep /\.po$/, @list;
-  my %files;
-  foreach(@list) {
-    my $in = File::Spec->catfile($hash->{in}, $_);
-    my $out = File::Spec->catfile($hash->{out}, substr($_, 0, -3) . ".mo");
-    $files{$in} = $out;
-  }
-  foreach(keys %files) {
-    my %newhash = (%{$hash});
-    $newhash{in} = $_;
-    $newhash{out} = $files{$_};
-    _msgfmt(\%newhash);
-  }
-  foreach(@removelist) {
-    my $f = File::Spec->catfile($hash->{in}, $_);
-    print "-$f\n" if($hash->{verbose});
-    unlink($f);
-  }
+	my $hash = shift;
+	if ( !-d $hash->{in} ) {
+		die("error: input directory does not exist");
+	}
+	if ( !defined( $hash->{out} ) ) {
+		$hash->{out} = $hash->{in};
+	}
+	if ( !-d $hash->{out} ) {
+		File::Path::mkpath( $hash->{out} );
+	}
+	opendir D, $hash->{in};
+	my @list = readdir D;
+	closedir D;
+	my @removelist = ();
+	if ( $hash->{remove} ) {
+		@removelist = grep /\.pot$/, @list;
+	}
+	@list = grep /\.po$/, @list;
+	my %files;
+	foreach (@list) {
+		my $in = File::Spec->catfile( $hash->{in}, $_ );
+		my $out = File::Spec->catfile( $hash->{out}, substr( $_, 0, -3 ) . ".mo" );
+		$files{$in} = $out;
+	}
+	foreach ( keys %files ) {
+		my %newhash = ( %{$hash} );
+		$newhash{in}  = $_;
+		$newhash{out} = $files{$_};
+		_msgfmt( \%newhash );
+	}
+	foreach (@removelist) {
+		my $f = File::Spec->catfile( $hash->{in}, $_ );
+		print "-$f\n" if ( $hash->{verbose} );
+		unlink($f);
+	}
 }
 
 1;

@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'Locale::Msgfmt' );
+	use_ok('Locale::Msgfmt');
 }
 
-diag( "Testing Locale::Msgfmt $Locale::Msgfmt::VERSION, Perl $], $^X" );
+diag("Testing Locale::Msgfmt $Locale::Msgfmt::VERSION, Perl $], $^X");
