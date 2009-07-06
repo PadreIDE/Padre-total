@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-ClassSniff
 
-(Not released yet)
+0.02 unreleased
   - Added translations:
     - Brazilian Portuguese (garu)
     - French (jquelin)
@@ -8,6 +8,7 @@ Revision history for Padre-Plugin-ClassSniff
 	- Chinese (Traditional) translation (BLUET)
 	- Arabic (azawawi)
 	- Spanish (brunov)
+  - actually install the translations (RSN)
 
 0.01    2009-03-19
   - Initial version
