@@ -50,10 +50,10 @@ sub read_po {
 	my $self   = shift;
 	my $pofile = shift;
 	my $mo     = $self->{mo};
-	open F, $pofile;
+	open my $F, '<', $pofile or die "Could not open ($pofile) $!";
 	my %h = ();
 	my $type;
-	while (<F>) {
+	while (<$F>) {
 		s/\r\n/\n/;
 		if (/^(msgid(?:|_plural)|msgctxt) +"(.*)" *$/) {
 			$type = $1;
@@ -93,7 +93,7 @@ sub read_po {
 		}
 	}
 	$self->add_string( \%h );
-	close F;
+	close $F;
 }
 
 sub parse {
