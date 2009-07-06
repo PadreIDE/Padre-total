@@ -24,8 +24,9 @@ use 5.008;
 use strict;
 use warnings;
 use Perl::Dist::Strawberry ();
+use URI::file ();
 
-our $VERSION = '0.260_003';
+our $VERSION = '0.260_004';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -193,8 +194,15 @@ sub install_perl_modules {
 	# for reasons maybe involving CPAN.pm but not fully understodd.
 
 	# Install the Alien module
-	$self->install_module( name => 'Alien::wxWidgets'        );
-
+	if (defined $ENV{PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION}) {
+		my $filelist = $self->install_par(
+			name => 'Alien_wxWidgets', 
+			url => URI::file->new($ENV{PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION})->as_string(),
+		);
+		$self->insert_fragment( 'Alien_wxWidgets', $filelist->files );
+	} else {
+		$self->install_module( name => 'Alien::wxWidgets'        );
+	}
 	# Install the Wx module over the top of alien module
 	$self->install_module( name => 'Wx'                      );
 
