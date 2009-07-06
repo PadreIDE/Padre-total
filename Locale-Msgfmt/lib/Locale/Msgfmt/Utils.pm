@@ -3,7 +3,7 @@ package Locale::Msgfmt::Utils;
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 sub character {
 	return map { pack "N*", $_ } @_;
