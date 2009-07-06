@@ -5,7 +5,7 @@ use Locale::Msgfmt::Utils;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 sub new {
 	my $class = shift;
