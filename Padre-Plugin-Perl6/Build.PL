@@ -32,7 +32,7 @@ my $builder = $class->new(
 	build_requires    => {
 		'Test::More'       => '0.86',
 		'Test::Exception'  => '0.27',
-		'Locale::Msgfmt'   => '0.08',
+		'Locale::Msgfmt'   => '0.10',
 	},
 	requires           => \%requires,
 	add_to_cleanup     => ['Padre-Plugin-Perl6-*'],
