@@ -89,7 +89,7 @@ sub read_po {
 				}
 			}
 		} else {
-			print "unknown line: " . $_ . "\n";
+			die("unknown line: " . $_);
 		}
 	}
 	$self->add_string( \%h );
