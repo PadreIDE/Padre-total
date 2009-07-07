@@ -5,7 +5,7 @@ use File::Spec;
 use Module::Install::Base ();
 use Module::Install::Share;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our @ISA     = 'Module::Install::Base';
 
 sub install_share_with_mofiles {
