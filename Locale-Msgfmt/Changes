@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.12    Jul 06, 2009
+        - unlink the output file before writing to it if it already exists
+        - default to verbose (pass -q to msgfmt.pl or verbose => 0 to msgfmt)
 
 0.11    Jul 06, 2009
         - some code improvement in open() and opendir() and error handling (SZABGAB)
