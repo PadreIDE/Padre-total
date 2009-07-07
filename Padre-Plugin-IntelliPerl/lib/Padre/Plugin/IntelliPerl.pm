@@ -16,7 +16,7 @@ sub plugin_name {
 sub menu_plugins_simple {
   my $self = shift;
   return $self->plugin_name => [
-                                'Intellicomplete\tCtrl-I' => sub { $self->intellicomplete },
+                                _T("Intellicomplete\tAlt-I") => sub { $self->intellicomplete },
                                ];
 }
 
