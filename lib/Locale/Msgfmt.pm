@@ -28,6 +28,9 @@ sub msgfmt {
 	if ( !-e $hash->{in} ) {
 		die("error: input does not exist");
 	}
+	if ( !defined( $hash->{verbose} ) ) {
+		$hash->{verbose} = 1;
+	}
 	if ( -d $hash->{in} ) {
 		return _msgfmt_dir($hash);
 	} else {
@@ -56,6 +59,7 @@ sub _msgfmt {
 	my $po = Locale::Msgfmt::po->new( { fuzzy => $hash->{fuzzy} } );
 	$po->parse( $hash->{in}, $mo );
 	$mo->prepare();
+	unlink( $hash->{out} ) if ( -f $hash->{out} );
 	$mo->out( $hash->{out} );
 	print $hash->{in} . " -> " . $hash->{out} . "\n" if ( $hash->{verbose} );
 	unlink( $hash->{in} ) if ( $hash->{remove} );
