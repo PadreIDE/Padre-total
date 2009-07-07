@@ -76,6 +76,7 @@ sub _msgfmt_dir {
 	if ( !-d $hash->{out} ) {
 		File::Path::mkpath( $hash->{out} );
 	}
+	print $hash->{in} . " -> " . $hash->{out} . "\n" if ( $hash->{verbose} );
 	opendir my $D, $hash->{in} or die "Could not open ($hash->{in}) $!";
 	my @list = readdir $D;
 	closedir $D;
