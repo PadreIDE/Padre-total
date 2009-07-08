@@ -6,6 +6,7 @@
 [% FOREACH d IN developers %]
 
 <li>
+<a name="[% d.nickname %]"></a>
 [% IF d.url %]
 <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
 [% ELSE %]
@@ -17,11 +18,16 @@
 
 [% d.Who %]
 
+[% IF d.Why %]
 <h2>Why are you involved in Padre?</h2>
 [% d.Why %]
+[% END %]
 
+[% IF d.What %]
 <h2>What are you hacking on?</h2>
 [% d.What %]
+[% END %]
+
 </li>
 [% END %]
 

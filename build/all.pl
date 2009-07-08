@@ -56,10 +56,11 @@ sub read_developers {
 
 	my @developers;
 	foreach my $f (@$list) {
-		my $file = "$source_dir/data/developers/$f";
+		my $file = "$source_dir/data/developers/$f.ini";
 		open my $fh, '<', $file or die "Could not open ($file) $!";
 		my $section;
 		my %data;
+		$data{nickname} = $f;
 		while (my $line = <$fh>) {
 			if ($line =~ /^\[([^\]]+)\]/) {
 				$section = $1;
