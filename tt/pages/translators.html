@@ -7,53 +7,26 @@
 <a href="#cz">Česky</a>
 
 
+[% FOREACH t IN translators %]
 
 <li>
- <a name="pt_br"></a>
- <h1 class="translator"><a href="http://onionstand.blogspot.com/">Breno G. de Oliveira</a></h1>
- <h2 class="language">Português Brasileiro</h2>
- <h2>Por que está envolvido no projeto Padre?</h2>
- <p>A idéia de ter um ambiente integrado de desenvolvimento Perl livre e 
- gratuito sempre foi tentadora, especialmente quando vejo o que ferramentas 
- desse tipo podem fazer para iniciantes.
- </p>
- <a href="developers.html#garu">English</a>
-</li>
+ <a name="[% t.language_tag %]"></a>
+[% IF t.url %]
+<h1 class="translator"><a href="[% t.url %]">[% t.name %]</a></h1>
+[% ELSE %]
+<h1 class="translator">[% t.name %]</h1>
+[% END %]
 
-<li>
- <a name="pl"></a>
- <h1 class="translator"><a href="http://morga.net.pl/">Cezary Morga</a></h1>
- <img alt="translator image" src="http://www.gravatar.com/avatar/247fc9361b0bf3a496ec217a7e96e65d.png" />
- <h2 class="language">Polski</h2>
- <h2>Dlaczego jesteś zaangażowany w projekt Padre?</h2>
- <p>Ponieważ jestem już znudzony ciągłymi kłótniami o miejscu Perla w przeszłości czy też,
- że nie ma nawet najprostszego <acronym title="Integrated Development Environment">IDE</acronym>.
- Myślę, że IDE napisane w Perlu jest odpowiednią odpowiedzią na takie zarzuty.</p>
- <p>Jeśli chodzi o to <em>w jaki sposób zostałem zaangażowany</em>, Gabor mnie zmusił :) Dał mi dostęp
- do repozytorium!</p>
- <a href="developers.html#therek">English</a>
-</li>
+[% IF t.img_src %]
+<img alt="[% t.img_alt %]" src="[% t.img_src %]" />
+[% END %]
 
-<li>
- <a name="fr"></a>
- <h1 class="translator"><a href="http://jquelin.blogspot.com">J&eacute;r&ocirc;me Quelin</a></h1>
- <!-- <img alt="translator image" /> -->
- <!-- if you translate more than one language, add more <h2 class="language"></h2> -->
- <h2 class="language">French</h2> 
- <a href="developers.html#jq">English</a>
-</li>
+<h2 class="language">[% t.language %]</h2>
+[% t.Text %]
+<a href="developers.html#[% t.nickname %]">English</a>
 
-<li>
- <a name="cz"></a>
- <h1 class="translator">Marcela Mašláňová</h1>
- <h2 class="language">Česky</h2>
- <p></p>
- <h2>Proč se podílíte na projektu Padre?</h2>
- <p>Možnost podílet se na vývoji IDE napsaného v Perlu se mi zdála zajímavá. Mimo jiné mě Gabor přesvědčil,
- abych zabalila balíčky a něco přeložila. </p>
- <h2 class="language">Czech</h2>
- <a href="developers.html#marcela">English</a>
 </li>
+[% END %]
 
-</ul
+</ul>
 [% END %]

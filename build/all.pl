@@ -32,8 +32,10 @@ my $config = {
 my $tt = Template->new($config);
 my $stash = LoadFile("$source_dir/data/stash.yml");
 
-$stash->{developers} = read_developers($stash->{developers});
+$stash->{developers}  = read_people($stash->{developers},  'developers');
+$stash->{translators} = read_people($stash->{translators}, 'translators');
 #print Dumper $stash->{developers};
+#print Dumper $stash->{translators};
 
 # for now - only a flat directory processed w/ template.
 my $pages_dir = "$source_dir/tt/pages";
@@ -51,12 +53,13 @@ while ( my $file = readdir( $page_handle ) ) {
 
 
 # TODO: add some error checking and data validation (correct sections? correct fields ?)
-sub read_developers {
+sub read_people {
 	my $list = shift;
+    my $dir  = shift;
 
 	my @developers;
 	foreach my $f (@$list) {
-		my $file = "$source_dir/data/developers/$f.ini";
+		my $file = "$source_dir/data/$dir/$f.ini";
 		open my $fh, '<', $file or die "Could not open ($file) $!";
 		my $section;
 		my %data;
