@@ -184,6 +184,18 @@ ul#translator h2 {
 
 
 /* widgets */
+b.shadowed {
+    background:transparent url(shadow_projection.png) no-repeat scroll right bottom;
+    display:block;
+    float:right;
+    height:8px;
+    width:200px;
+}
+
+div.widget_wrapper { 
+    position: relative;
+}
+
 div.widget {
     padding: 0.75em;
     border: 1px solid gray;

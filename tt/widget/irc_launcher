@@ -1,3 +1,4 @@
+[% WRAPPER lib/widget %]
 <div id="irc_launcher" class="widget" >
 <script type="text/javascript" src="static/irc.js" ></script>
 <p>Please select a nickname and a channel and click on Connect.</p>
@@ -17,3 +18,4 @@ todo: check values received on the url:
 -->
 </form>
 </div>
+[% END %]
