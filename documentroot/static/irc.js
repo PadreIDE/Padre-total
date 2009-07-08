@@ -141,7 +141,7 @@ function on_click() {
 	    name = document.forms.n.channel[i].value;
 	}
     }
-    document.setcookie
+    setCookie( "nickname" , document.forms.n.nickname.value , 7 );
     var url;
     if (channels[name].host == 'irc.freenode.net') {
 	url =  'http://webchat.freenode.net/?';
@@ -153,14 +153,17 @@ function on_click() {
 	url += '&channel=%23' + channels[name].channel;
 	url += '&nick=' + document.forms.n.nickname.value;
     }
-    //alert(url);
-    window.location = url;
+    alert(url);
+    //window.location = url;
 }
 
 function setup_page() {
     var values = get_values();
     if (values["nickname"]) {
 	document.forms.n.nickname.value = values["nickname"];
+	setCookie("nickname", values["nickname"]);
+    } else if (getCookie("nickname")) {
+	    document.forms.n.nickname.value = getCookie("nickname");
     } else {
 	var nick = Math.floor(Math.random()*10000);
 	document.forms.n.nickname.value = "user_" + nick;
@@ -182,4 +185,38 @@ function setup_page() {
     }
 }
 
-</script>
+
+
+function getCookie(c_name)
+{
+if (document.cookie.length>0)
+  {
+  c_start=document.cookie.indexOf(c_name + "=");
+  if (c_start!=-1)
+    {
+    c_start=c_start + c_name.length+1;
+    c_end=document.cookie.indexOf(";",c_start);
+    if (c_end==-1) c_end=document.cookie.length;
+    return unescape(document.cookie.substring(c_start,c_end));
+    }
+  }
+return "";
+}
+
+function setCookie(c_name,value,expiredays)
+{
+var exdate=new Date();
+exdate.setDate(exdate.getDate()+expiredays);
+document.cookie=c_name+ "=" +escape(value)+
+((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+}
+
+function checkCookie()
+{
+var username = getCookie('nickname');
+if (username!=null && username!="")
+  {
+    document.getElementById("irc_nickname").value = username;
+  }
+
+}

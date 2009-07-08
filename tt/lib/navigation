@@ -1,9 +1,9 @@
 <div id="masthead">
-<!-- <img alt="Padre Logo" src="???" /> -->
+<img alt="Padre Logo" id="padrelogo" src="static/logo.png" />
 <h1>[% title %]</h1> 
 <ul class="navigation">
-[% FOREACH name IN navigation.keys %]
-  <li><a href="[% navigation.$name %]">[% name %]</a></li>
+[% FOREACH nav IN navigation %]
+  <li><a href="[% nav.href %]">[% nav.name %]</a></li>
 [% END %]
 </ul>
 </div>

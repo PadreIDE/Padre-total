@@ -5,7 +5,7 @@
  <title>[% title | html %]</title>
  <link rel="stylesheet" href="static/static.css" type="text/css" />
 </head>
-<body>
+<body onload="checkCookie()">
 [% content %]
 </body>
 </html>

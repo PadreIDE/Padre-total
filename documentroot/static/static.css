@@ -61,13 +61,18 @@ div#masthead {
     vertical-align: middle;
 }
 
+img#padrelogo {
+    padding: 0.5em;
+    float: left;
+}
+
 div#masthead h1 {
     margin: 0;
     padding: 0.5em;
 }
 
 ul.navigation {
-        background-image: url(/static/grad_flat.png);
+        background-image: url(grad_flat.png);
         background-color: white;
         background-repeat: repeat-x;
         height: 2em;
@@ -88,7 +93,7 @@ ul.navigation li {
 
 
 ul.navigation li:hover {
-    background-image: url(/static/grad_depressed.png);
+    background-image: url(grad_depressed.png);
     background-repeat: repeat-x;
     background-color: white;
 }

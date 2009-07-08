@@ -1,8 +1,16 @@
 ---
 navigation:
-  Home: /index.html
-  Developers: /developers.html
-  Translators: /translators.html
-  Trac: trac/
-  Blogs: http://blogs.padre.perlide.org
-  About: /about.html
+  - name: Home
+    href: index.html
+  - name: Developers
+    href: developers.html
+  - name: Translators
+    href: translators.html
+  - name: Trac
+    href: trac/
+  - name: Blogs
+    href: http://blogs.padre.perlide.org
+  - name: IRC
+    href: irc.html
+  - name: About
+    href: about.html
