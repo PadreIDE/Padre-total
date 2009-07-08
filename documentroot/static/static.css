@@ -46,11 +46,11 @@ body {
 
 div#content {
     padding: 0.75em;
-    width: 75%;
+    width: 73%;
 }
 
 div#widget_stack {
-    max-width: 25%;
+    width: 30%;
     float: right;
     margin-right: 1em;
 }
@@ -194,13 +194,14 @@ b.shadowed {
 
 div.widget_wrapper { 
     position: relative;
+    margin-bottom: 1em;
 }
 
 div.widget {
     padding: 0.75em;
-    border: 1px solid gray;
+    border: 1px solid #ACA;
+        text-align: right;
 }
 div#irc_launcher {
-    text-align: right;
-    
+
 }

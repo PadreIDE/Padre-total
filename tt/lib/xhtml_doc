@@ -9,6 +9,7 @@
 [% INCLUDE lib/navigation %]
 <div id="widget_stack">
 [% INCLUDE widget/irc_launcher %]
+[% INCLUDE widget/ohloh %]
 </div>
 <div id="content">
 [% content %]
