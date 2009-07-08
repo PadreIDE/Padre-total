@@ -6,7 +6,15 @@
 [% FOREACH d IN developers %]
 
 <li>
+[% IF d.url %]
 <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
+[% ELSE %]
+<h1 class="developer">[% d.name %]</h1>
+[% END %]
+[% IF d.img_src %]
+<img alt="[% d.img_alt %]" src="[% d.img_src %]" />
+[% END %]
+
 [% d.Who %]
 
 <h2>Why are you involved in Padre?</h2>
