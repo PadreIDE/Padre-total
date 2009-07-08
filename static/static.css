@@ -67,7 +67,7 @@ div#masthead h1 {
 }
 
 ul.navigation {
-        background-image: url(grad_flat.png);
+        background-image: url(/static/grad_flat.png);
         background-color: white;
         background-repeat: repeat-x;
         height: 2em;
@@ -88,7 +88,7 @@ ul.navigation li {
 
 
 ul.navigation li:hover {
-    background-image: url(grad_depressed.png);
+    background-image: url(/static/grad_depressed.png);
     background-repeat: repeat-x;
     background-color: white;
 }
