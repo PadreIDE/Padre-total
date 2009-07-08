@@ -8,8 +8,9 @@
 <body [% IF onload_handler %][% onload_handler %][% END %]>
 [% INCLUDE lib/navigation %]
 <div id="widget_stack">
-[% INCLUDE widget/irc_launcher %]
 [% INCLUDE widget/ohloh %]
+
+[% INCLUDE widget/irc_launcher %]
 </div>
 <div id="content">
 [% content %]

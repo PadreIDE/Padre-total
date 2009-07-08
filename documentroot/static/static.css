@@ -45,15 +45,15 @@ body {
 }
 
 div#content {
-    padding: 0.75em;
+    margin: 0.75em;
     width: 73%;
 }
 
 div#widget_stack {
     width: 30%;
     float: right;
-    margin-right: 1em;
-}
+    margin: 0.75em;
+} 
 
 ul {
     list-style-image: none;
@@ -182,6 +182,10 @@ ul#translator h2 {
     font-size: 125%;
 }
 
+.spacer {
+    display: block;
+    clear:both;
+}
 
 /* widgets */
 b.shadowed {
@@ -200,8 +204,15 @@ div.widget_wrapper {
 div.widget {
     padding: 0.75em;
     border: 1px solid #ACA;
-        text-align: right;
 }
-div#irc_launcher {
 
+div#irc_launcher {
+    text-align: right;
 }
+
+div#ohloh_graphic {
+    float: right;
+}
+
+div#ohloh_graphic a { clear:right; }
+
