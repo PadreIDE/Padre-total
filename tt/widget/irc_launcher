@@ -1,11 +1,4 @@
-[% DEFAULT  
-   title="Perl IRC Channels" 
-   onload_handler="checkCookie()"
-%]
-[% WRAPPER lib/xhtml_doc %]
-
-
-
+<div id="irc_launcher" class="widget" >
 <script type="text/javascript" src="static/irc.js" ></script>
 <p>Please select a nickname and a channel and click on Connect.</p>
 <form name="n">
@@ -23,4 +16,4 @@ todo: check values received on the url:
    Put some explanation on the top of the page (maybe in multiple languages)
 -->
 </form>
-[% END %]
+</div>

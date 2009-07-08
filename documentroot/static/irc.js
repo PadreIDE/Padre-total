@@ -175,14 +175,16 @@ function setup_page() {
 	}
     }
 
+    var html = '<select name="channel">';
     for (var i in channels) {
-	var html = '<tr><td><input type="radio" name="channel" value="' + i + '"';
-	if (i == ch) {
-	    html += " CHECKED ";
-	}
-	html    += '>' + channels[i].title + '</td></tr>';
-	document.write(html);
+	
+	// '<tr><td><input type="radio" name="channel" value="' + i + '"';
+	html    += '<option value="' + i + '">'  + channels[i].title + '</option>';
+	
+	
     }
+    html    += '</select>';
+    document.write(html);
 }
 
 

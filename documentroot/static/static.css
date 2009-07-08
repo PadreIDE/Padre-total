@@ -46,7 +46,15 @@ body {
 
 div#content {
     padding: 0.75em;
+    width: 75%;
 }
+
+div#widget_stack {
+    max-width: 25%;
+    float: right;
+    margin-right: 1em;
+}
+
 ul {
     list-style-image: none;
     list-style: none;
@@ -172,4 +180,15 @@ ul#translator h2 {
     font-style: italic;
     font-weight: bold;
     font-size: 125%;
+}
+
+
+/* widgets */
+div.widget {
+    padding: 0.75em;
+    border: 1px solid gray;
+}
+div#irc_launcher {
+    text-align: right;
+    
 }
