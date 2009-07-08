@@ -2,9 +2,8 @@
 <!-- <img alt="Padre Logo" src="???" /> -->
 <h1>[% title %]</h1> 
 <ul class="navigation">
-[% FOREACH nav IN navigation %]
-  [% SET link= nav.items %]
-  <li><a href="[% link.1 %]">[% link.0 %]</a></li>
+[% FOREACH name IN navigation.keys %]
+  <li><a href="[% navigation.$name %]">[% name %]</a></li>
 [% END %]
 </ul>
 </div>

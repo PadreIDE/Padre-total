@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Template;
 use File::Spec;
+use YAML::Tiny qw(LoadFile);
 
 
 my $config = {
@@ -12,8 +13,7 @@ my $config = {
 		OUTPUT_PATH   => 'documentroot',
 };
 my $tt = Template->new($config);
-# yank in the global site data - FIXME somebody json or yaml'ify this pls
-my $stash = do 'build/data.perl';
+my $stash = LoadFile('data/stash.yml');
 
 # for now - only a flat directory processed w/ template.
 my $pages_dir = 'tt/pages';
@@ -30,4 +30,3 @@ while ( my $file = readdir( $page_handle ) ) {
 		|| die $tt->error();
 }
 
-symlink( '../static' , 'documentroot/static' );
