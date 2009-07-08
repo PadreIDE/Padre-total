@@ -5,7 +5,10 @@
  <title>[% title | html %]</title>
  <link rel="stylesheet" href="static/static.css" type="text/css" />
 </head>
-<body onload="checkCookie()">
+<body [% IF onload_handler %][% onload_handler %][% END %]>
+[% INCLUDE lib/navigation %]
+<div id="content">
 [% content %]
+</div>
 </body>
 </html>
