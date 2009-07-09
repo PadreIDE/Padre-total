@@ -17,7 +17,8 @@ SKIP: {
 	sub my_msgfmt {
 		my ( $fh, $filename ) = File::Temp::tempfile();
 		close $fh;
-		my $in    = shift;
+		my $in = shift;
+		utime( undef, undef, $in );
 		my $fuzzy = 0;
 		if (shift) {
 			$fuzzy = 1;
