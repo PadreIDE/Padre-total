@@ -54,7 +54,7 @@ sub eot {
 }
 
 sub mtime {
-  return @{[stat(shift)]}[9];
+	return @{ [ stat(shift) ] }[9];
 }
 
 =head1 NAME

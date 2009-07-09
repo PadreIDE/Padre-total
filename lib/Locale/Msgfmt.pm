@@ -55,9 +55,11 @@ sub _msgfmt {
 			die("error: must give an output file");
 		}
 	}
-        unless($hash->{force}) {
-          return if(-f $hash->{out} && Locale::Msgfmt::Utils::mtime($hash->{out}) >= Locale::Msgfmt::Utils::mtime($hash->{in}));
-        }
+	unless ( $hash->{force} ) {
+		return
+			if ( -f $hash->{out}
+			&& Locale::Msgfmt::Utils::mtime( $hash->{out} ) >= Locale::Msgfmt::Utils::mtime( $hash->{in} ) );
+	}
 	my $mo = Locale::Msgfmt::mo->new();
 	$mo->initialize();
 	my $po = Locale::Msgfmt::po->new( { fuzzy => $hash->{fuzzy} } );
