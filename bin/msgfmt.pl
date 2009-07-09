@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use Locale::Msgfmt 0.13;
+use Locale::Msgfmt 0.14;
 use Getopt::Long;
 
 use strict;
