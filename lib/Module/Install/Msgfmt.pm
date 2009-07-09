@@ -12,11 +12,12 @@ sub install_share_with_mofiles {
 	my @orig      = (@_);
 	my $self      = shift;
 	my $class     = ref($self);
-	my $inc_class = join( '::', @{ $self->_top }{qw(prefix name)} );
+	my $prefix    = $self->_top->{prefix};
+	my $name      = $self->_top->{name};
 	my $dir       = @_ ? pop : 'share';
 	my $type      = @_ ? shift : 'dist';
 	my $module    = @_ ? shift : '';
-	$self->build_requires( 'Locale::Msgfmt' => '0.09' );
+	$self->build_requires( 'Locale::Msgfmt' => '0.14' );
 	install_share(@orig);
 	my $distname = "";
 
@@ -29,20 +30,7 @@ sub install_share_with_mofiles {
 	my $path = File::Spec->catfile( 'auto', 'share', $type, $distname );
 	$self->postamble(<<"END_MAKEFILE");
 config ::
-\t\$(NOECHO) \$(PERL) "-M$inc_class" -e "do_msgfmt(q(\$(INST_LIB)), q($path))"
+\t\$(NOECHO) \$(PERL) "-MLocale::Msgfmt" -e "Locale::Msgfmt::do_msgfmt_for_module_install(q(\$(INST_LIB)), q($path))"
 
 END_MAKEFILE
-}
-
-# blib/lib/auto/share/dist/Padre/locale/he.po
-sub do_msgfmt {
-	my $self      = shift;
-	my $lib       = shift;
-	my $sharepath = shift;
-	my $fullpath  = File::Spec->catfile( $lib, $sharepath, 'locale' );
-	if ( !-d $fullpath ) {
-		die("$fullpath isn't a directory");
-	}
-	require Locale::Msgfmt;
-	Locale::Msgfmt::msgfmt( { in => $fullpath, verbose => 1, remove => 1 } );
 }

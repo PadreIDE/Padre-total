@@ -13,7 +13,17 @@ use base 'Exporter';
 
 our @EXPORT = qw/msgfmt/;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
+
+sub do_msgfmt_for_module_install {
+	my $lib       = shift;
+	my $sharepath = shift;
+	my $fullpath  = File::Spec->catfile( $lib, $sharepath, 'locale' );
+	if ( !-d $fullpath ) {
+		die("$fullpath isn't a directory");
+	}
+	msgfmt( { in => $fullpath, verbose => 1, remove => 1 } );
+}
 
 sub msgfmt {
 	my $hash = shift;
