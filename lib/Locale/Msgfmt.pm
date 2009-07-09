@@ -58,7 +58,7 @@ sub _msgfmt {
 	unless ( $hash->{force} ) {
 		return
 			if ( -f $hash->{out}
-			&& Locale::Msgfmt::Utils::mtime( $hash->{out} ) >= Locale::Msgfmt::Utils::mtime( $hash->{in} ) );
+			&& Locale::Msgfmt::Utils::mtime( $hash->{out} ) > Locale::Msgfmt::Utils::mtime( $hash->{in} ) );
 	}
 	my $mo = Locale::Msgfmt::mo->new();
 	$mo->initialize();
