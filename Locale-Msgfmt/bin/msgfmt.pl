@@ -6,11 +6,11 @@ use Getopt::Long;
 use strict;
 use warnings;
 
-my($opt_o, $opt_f, $opt_q);
-GetOptions("output-file|o=s" => \$opt_o, "use-fuzzy|f" => \$opt_f, "quiet|q" => \$opt_q);
+my($opt_o, $opt_f, $opt_q, $opt_force);
+GetOptions("output-file|o=s" => \$opt_o, "use-fuzzy|f" => \$opt_f, "quiet|q" => \$opt_q, "force" => \$opt_force);
 my $in = shift;
 
-msgfmt({in => $in, out => $opt_o, fuzzy => $opt_f, verbose => !$opt_q});
+msgfmt({in => $in, out => $opt_o, fuzzy => $opt_f, verbose => !$opt_q, force => $opt_force});
 
 =head1 NAME
 

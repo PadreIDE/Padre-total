@@ -2,6 +2,7 @@ package Locale::Msgfmt;
 
 use Locale::Msgfmt::mo;
 use Locale::Msgfmt::po;
+use Locale::Msgfmt::Utils;
 use File::Path;
 use File::Spec;
 
@@ -54,6 +55,9 @@ sub _msgfmt {
 			die("error: must give an output file");
 		}
 	}
+        unless($hash->{force}) {
+          return if(-f $hash->{out} && Locale::Msgfmt::Utils::mtime($hash->{out}) >= Locale::Msgfmt::Utils::mtime($hash->{in}));
+        }
 	my $mo = Locale::Msgfmt::mo->new();
 	$mo->initialize();
 	my $po = Locale::Msgfmt::po->new( { fuzzy => $hash->{fuzzy} } );
