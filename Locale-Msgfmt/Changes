@@ -1,5 +1,8 @@
 Revision history for Locale-Msgfmt
 
+0.14    Jul 09, 2009
+        - fix a mess with Module::Install::Msgfmt :P
+
 0.13    Jul 08, 2009
         - act like make when rebuilding, only rebuild things that need to be rebuilt.
           - add a --force option to force the old behavior of always rebuilding
