@@ -1,0 +1,26 @@
+[% DEFAULT  
+   title="Perl IRC Channels" 
+   onload_handler="checkCookie()"
+%]
+[% WRAPPER lib/xhtml_doc %]
+
+
+
+<script type="text/javascript" src="static/irc.js" ></script>
+<p>Please select a nickname and a channel and click on Connect.</p>
+<form name="n">
+<label for="nickname">Nickname</label><input id="irc_nickname" name="nickname" value="">
+<script type="text/javascript">setup_page();</script>
+<input type="button" OnClick="javascript:on_click()" value="Connect">
+<!--
+todo: check values received on the url:
+   hash_key (maybe that should be host_channel instead of of our own special name)
+   
+   show the localized channel first ?
+   if all the necessary input is available don't even show this page just redirect to 
+   the relevant url
+   
+   Put some explanation on the top of the page (maybe in multiple languages)
+-->
+</form>
+[% END %]

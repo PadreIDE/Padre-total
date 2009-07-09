@@ -1,0 +1,279 @@
+/* */
+div#palette {
+    float: right;
+    visibility: visible;
+    width: 15%;
+    clear: none;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
+}
+
+
+
+.colour_tile {
+    width: 16px;
+    height: 16px; 
+    border: solid 1px black;
+    float: left;
+    margin: 0.15em;
+}
+
+.palette_text {
+    color: black;
+    background-color: #F4F0D4 ;
+}
+
+a:link {
+    color: #053935;
+}
+
+a:visited {
+    color: #104440;
+}
+
+a:hover {
+    color: #1D6460;
+}
+
+
+/*   */
+body { 
+    font-size: 0.8em;
+    margin: 0;
+    padding: 0;
+}
+
+div#content {
+    margin: 0.75em;
+    width: 65%;
+}
+
+div#widget_stack {
+    width: 30%;
+    float: right;
+    margin: 0.75em;
+} 
+
+ul {
+    list-style-image: none;
+    list-style: none;
+    padding-left: 0em;
+    margin: 0;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: arial,helvetica,sans-serif;
+}
+
+
+div#masthead {
+    background-color: #63A37E;
+/*    background-color: #637EA3;
+    background-image: url(clouds.png);
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    bottom: 0;
+    height: 100px;
+*/
+    position: relative;
+    vertical-align: middle;
+}
+
+img#padrelogo {
+    padding: 0.5em;
+    float: left;
+}
+
+div#masthead h1 {
+    margin: 0;
+    padding: 0.5em;
+}
+
+ul.navigation {
+        background-image: url(grad_flat.png);
+        background-color: white;
+        background-repeat: repeat-x;
+        height: 2em;
+        width: 100%;
+}
+
+ul.navigation li {
+    vertical-align: middle;
+    font-family: arial,helvetica,sans-serif; 
+    text-align: center;
+    float: left;
+  /*  width: 4em; */
+    height: 2em;
+    line-height: 2em;
+    padding: 0em 2em 0em 1em;
+    border-right: solid #CCC 1px;
+    
+}
+
+
+ul.navigation li:hover {
+    background-image: url(grad_depressed.png);
+    background-repeat: repeat-x;
+    background-color: white;
+}
+
+
+
+
+/* Developers List */
+ul#developers li {
+    padding: 1em 1em 1em 1em;
+    margin: 1em;
+    border: 1px solid #AA8;
+    background: inherit;
+
+    width: 30em;
+    float: left;
+    clear: none;
+}
+
+ul#developers img {
+    float: right;
+    margin-left: 1em;;
+}
+
+h1.developer {
+    font-weight: bold;
+    font-size: 150%;
+    margin: 0 0 0.5em 0;
+    
+}
+
+ul#developers h2 {
+    display: block;
+    clear: both;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 125%;
+}
+p {
+    text-align: justify;
+    margin: 0;
+    padding-left: 1em;
+}
+
+/* Translators List */
+ul#translators li {
+    padding: 1em 1em 1em 1em;
+    margin: 1em;
+    border: 1px solid #AA8;
+    background: inherit;
+
+    width: 22%;
+    float: left;
+    clear: none;
+}
+
+ul#translators img {
+    float: right;
+    margin-left: 1em;;
+}
+
+h1.developer {
+    font-weight: bold;
+    font-size: 150%;
+    margin: 0 0 0.5em 0;
+    
+}
+
+ul#translator h2 {
+    display: block;
+    clear: both;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 125%;
+}
+
+.spacer {
+    display: block;
+    clear:both;
+}
+
+/* chrome - pretty stuff */
+
+.styled_panel_wrapper { 
+    margin-bottom: 1em
+}
+.styled_panel {
+    padding: 0.5em;
+    border: solid 1px #ACA;
+}
+
+
+#sky {
+    background-color: #637EA3;
+    position: relative;
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
+    }
+
+#clouds {
+    background-image: url(clouds.png);
+
+    background-image: url(clouds.png);
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    position: absolute;
+    opacity: 0.9
+}
+#sun { 
+    position: absolute;
+    background-image: url(sun.png);
+    background-repeat: no-repeat;
+    width: 64px; height: 64px ;
+    background-position: center;
+
+    left: 200px;
+    bottom: 0px;
+}
+#sunglow {
+    position: absolute;
+    background-image: url(sunglow.png);
+    background-repeat: no-repeat;
+    
+    width: 64px; height: 64px ;
+    opacity: 0.5;
+    z-index: 2;
+}
+
+/* widgets */
+b.shadowed {
+    background:transparent url(shadow_projection.png) no-repeat scroll right bottom;
+    display:block;
+    float:right;
+    height:8px;
+    width:200px;
+}
+
+div.widget_wrapper { 
+    position: relative;
+    margin-bottom: 1em;
+}
+
+div.widget {
+    padding: 0.75em;
+    border: 1px solid #ACA;
+}
+
+div#irc_launcher {
+    text-align: right;
+}
+
+div#ohloh_graphic a {
+    float: right;
+    margin: 0.5em;
+}
+
+
+

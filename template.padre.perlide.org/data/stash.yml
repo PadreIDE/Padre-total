@@ -1,0 +1,623 @@
+---
+navigation:
+  - name: Home
+    href: index.html
+  - name: Developers
+    href: developers.html
+  - name: Translators
+    href: translators.html
+  - name: Trac
+    href: trac/
+  - name: Blogs
+    href: http://blogs.padre.perlide.org
+  - name: IRC
+    href: irc.html
+  - name: About
+    href: about.html
+about:
+  - title: 2009
+    events:
+      - date: 2009 July 09
+        url: http://szabgab.com/blog/2009/07/1247133713.html
+        title: Padre 0.39 released
+        comment: by Gabor Szabo
+      - date: 2009 July 08
+        url: http://csjewell.dreamwidth.org/802.html
+        title: Strawberry Perl Beta 3 - and a standalone Padre - are both now available.
+        comment: by Curtis Jewell
+      - date: 2009 July 08
+        url: http://perlwannabe.vox.com/library/post/padre.html
+        title: Padre...
+        comment: by Peter Lavender
+      - date: 2009 July 07
+        url: http://ahmadzawawi.blogspot.com/2009/07/whats-new-with-padre-perl-6.html
+        title: What's new with Padre Perl 6?
+        comment: by Ahmad M. Zawawi
+      - date: 2009 July 04
+        url: http://code-and-hacks.blogspot.com/2009/07/stealing-from-padre-for-vim-part-3.html
+        title: Stealing from Padre for Vim part 3
+        comment: by Mark Grimes
+      - date: 2009 July 04
+        url: http://peter.makholm.net/2009/07/04/why-write-an-editor-in-perl/
+        title: Why write an editor in Perl?
+        comment: by Peter Makholm
+      - date: 2009 July 04
+        url: http://blog.patspam.com/2009/padrepluginwebgui
+        title: Padre::Plugin::WebGUI
+        comment: by Patrick Donelan
+      - date: 2009 July 02
+        url: http://szabgab.com/blog/2009/07/1246515871.html
+        title: Why am I writing Padre?
+        comment: by Gabor Szabo
+      - date: 2009 June 27
+        url: http://code-and-hacks.blogspot.com/2009/06/more-theft-from-padre.html 
+        title: More theft from Padre
+        comment: by Mark Grimes
+      - date: 2009 June 25
+        url: http://szabgab.com/blog/2009/06/1245915077.html
+        title: Padre 0.37 released
+        comment: by Gabor Szabo
+      - date: 2009 June 25
+        url: http://use.perl.org/~Alias/journal/39172
+        title: The Swarm - Adding collaborative editing support to Padre
+        comment: by Adam Kennedy
+      - date: 2009 June 25
+        url: http://jquelin.blogspot.com/2009/06/beginning-of-moose-support-in-padre.html
+        title: Beginning of moose suport in Padre
+        comment: by Jerome Quelin
+      - date: 2009 June 22
+        url: http://ahmadzawawi.blogspot.com/2009/06/padres-perl-6-quick-fixes-in-action.html
+        title: Padre's Perl 6 Quick Fixes in Action
+        comment: by Ahmad M. Zawawi
+      - date: 2009 June 21
+        url: http://jquelin.blogspot.com/2009/06/prepender-distzilla-plugin.html
+        title: prepender DistZilla plugin can add boilerplate copyright
+        comment: by Jerome Quelin
+      - date: 2009 June 21
+        url: http://ahmadzawawi.blogspot.com/2009/06/padres-perl-6-support-and-ecliptic.html
+        title: Padre's Perl 6 support and Ecliptic
+        comment: by Ahmad M. Zawawi
+      - date: 2009 June 20
+        url: http://szabgab.com/blog/2009/06/1245497295.html
+        title: Live Help - IRC channels
+        comment: by Gabor Szabo
+      - date: 2009 June 16
+        url: http://peter.makholm.net/2009/06/16/new-version-of-the-padre-debugger-plugin/
+        title: New version of the Padre debugger plugin
+        comment: by Peter Makholm
+      - date: 2009 June 16
+        url: http://code-and-hacks.blogspot.com/2009/06/stealing-from-padre-for-vim.html
+        title: Stealing from Padre for Vim
+        comment: by Mark Grimes
+      - date: 2009 June 16
+        url: http://use.perl.org/~gabor/journal/39127
+        title: Padre related blogs
+        comment: by Gabor Szabo
+      - date: 2009 June 15
+        url: http://onionstand.blogspot.com/2009/06/rate-perl-module-today.html
+        title: Rate a Perl module today!
+        comment: by garu on The Onion Stand
+      - date: 2009 June 14
+        url: http://perlwannabe.vox.com/library/post/does-it-work-yet.html
+        title: Does it work yet?
+        comment: by Peter Lavender
+      - date: 2009 June 14
+        url: http://use.perl.org/~tsee/journal/39121
+        title: More refactoring goodness
+        comment: by Steffen Mueller
+      - date: 2009 June 09
+        url: http://nxadm.wordpress.com/2009/06/09/some-ideas-on-method-auto-completion-in-padre/
+        title: Some ideas on method auto-completion in Padre
+        comment: by Claudio Ramirez
+      - date: 2009 June 05
+        url: http://use.perl.org/~Alias/journal/39081
+        title: Padre Single Instance now correctly foregrounds on Win32
+        comment: by Adam Kennedy
+      - date: 2009 May 31
+        url: http://szabgab.com/blog/2009/05/1243802159.html
+        title: Planning an SQL or DBI plugin for Padre
+        comment: by Gabor Szabo
+      - date: 2009 May 30
+        url: http://it.toolbox.com/blogs/unix-sysadmin/padre-036-released-31932
+        title: Padre 0.36 released
+        comment: by Cezary Morga
+      - date: 2009 May 30
+        url: http://szabgab.com/blog/2009/05/1243684408.html
+        title: Padre 0.36 released
+        comment: by Gabor Szabo
+      - date: 2009 May 28
+        url: http://use.perl.org/~Alias/journal/39042
+        title: Padre now has "Live Support"
+        comment: by Adam Kennedy
+      - date: 2009 May 25
+        url: http://onionstand.blogspot.com/2009/05/catalystmojo-plugins-for-padre-now-in-8.html
+        title: Catalyst/Mojo Plugins for Padre now in 8 languages!
+        comment: by garu on The Onion Stand
+      - date: 2009 May 24
+        url: http://www.fayland.org/blog/2009/05/manage-taskpadreplugins-with-ordbcpants.html
+        title: manage Task::Padre::Plugins with ORDB::CPANTS
+        comment: by Fayland Lam
+      - date: 2009 May 20
+        url: http://it.toolbox.com/blogs/unix-sysadmin/meet-padre-31768
+        title: Meet Padre
+        comment: by Cezary Morga
+      - date: 2009 May 13
+        url: http://use.perl.org/~Alias/journal/38970
+        title: Padre gains first-class HTTP support
+        comment: by Adam Kennedy
+      - date: 2009 May 12
+        url: http://jquelin.blogspot.com/2009/05/autoformat-and-nopaste-plugins-join.html
+        title: Autoformat and Nopaste plugins join Padre's nest
+        comment: by Jerome Quelin
+      - date: 2009 May 12
+        url: http://peter.makholm.net/2009/05/12/what-do-you-need-in-a-debugger/
+        title: What do you need in a debugger?
+        comment: by Peter Makholm
+      - date: 2009 May 11
+        url: http://use.perl.org/~tsee/journal/38955
+        title: Padre usability improvements
+        comment: by Steffen Mueller
+      - date: 2009 May 08
+        url: http://jquelin.blogspot.com/2009/05/padre-035-released.html
+        title: Padre 0.35 released
+        comment: by Jerome Quelin
+      - date: 2009 May 07
+        url: http://use.perl.org/~Alias/journal/38933
+        title: Padre now has working single-instance support
+        comment: by Adam Kennedy
+      - date: 2009 May 05
+        url: http://peter.makholm.net/2009/05/05/padre-debugger/
+        title: Padre, meet Devel::bug
+        comment: by Peter Makholm
+      - date: 2009 May 05
+        url: http://szabgab.com/blog/2009/05/1241470887.html
+        title: Ideas for Padre plugins
+        comment: by Gabor Szabo
+      - date: 2009 May 03
+        url: http://use.perl.org/~Alias/journal/38914
+        title: Vertical Metre of Beer 3 - The Padre Plugin Contest!
+        comment: by Adam Kennedy
+      - date: 2009 May 01
+        url: http://onionstand.blogspot.com/2009/04/padre-mojolicious.html
+        title: Padre + Mojolicious
+        comment: by garu on The Onion Stand
+      - date: 2009 April 30
+        url: http://szabgab.com/blog/2009/04/1241072490.html
+        title: If you can read this then you don't need this
+        comment: by Gabor Szabo
+      - date: 2009 April 29
+        url: http://jquelin.blogspot.com/2009/04/spell-check-in-padre-now-supports.html
+        title: Spell check in Padre  now suppports multiple languages .. kinda
+        comment: by Jerome Quelin
+      - date: 2009 April 28
+        url: http://szabgab.com/blog/2009/04/1240924550.html
+        title: Padre 0.34 Released
+        comment: by Gabor Szabo
+      - date: 2009 April 28
+        url: http://jquelin.blogspot.com/2009/04/plugins-and-translation.html
+        title: Plugins and translation
+        comment: by Jerome Quelin
+      - date: 2009 April 22
+        url: http://jquelin.blogspot.com/2009/04/padre-does-spell-check.html
+        title: Padre does spell check
+        comment: by Jerome Quelin
+      - date: 2009 April 17
+        url: http://perlwannabe.vox.com/library/post/learning-wxperl-by-reading-wxpywiki.html
+        title: Learning wxPerl by reading wxPywiki
+        comment: by Peter Lavender
+      - date: 2009 April 14
+        url: http://onionstand.blogspot.com/2009/04/padre-catalyst.html
+        title: Padre + Catalyst
+        comment: by garu on The Onion Stand
+      - date: 2009 April 10
+        url: http://perlwannabe.vox.com/library/post/why-i-use-perl.html
+        title: Why I use perl...
+        comment: by Peter Lavender
+      - date: 2009 April 05
+        url: http://use.perl.org/~gabor/journal/38758
+        title: Padre 0.33 released
+        comment: by Gabor Szabo
+      - date: 2009 March 31
+        url: http://szabgab.com/blog/2009/03/1237672448.html
+        title: Padre and Google Summer of Code 2009
+        comment: by Gabor Szabo
+      - date: 2009 March 30
+        url: http://jquelin.blogspot.com/2009/03/padre-gets-new-plugin-manager.html
+        title: Padre gets a new plugin manager
+        comment: by Jerome Quelin
+      - date: 2009 March 28
+        url: http://use.perl.org/~gabor/journal/38717
+        title: The first Perl 6 plugin of Padre
+        comment: by Gabor Szabo
+      - date: 2009 March 28
+        url: http://use.perl.org/~tsee/journal/38714
+        title: How Padre saved my day
+        comment: by Steffen Mueller
+      - date: 2009 March 27
+        url: http://use.perl.org/~gabor/journal/38711
+        title: Padre 0.30 released
+        comment: by Gabor Szabo
+      - date: 2009 March 13
+        url: http://jquelin.blogspot.com/2009/03/autoformat-within-padre.html
+        title: Autoformat within Padre
+        comment: by Jerome Quelin
+      - date: 2009 March 09
+        url: http://szabgab.com/blog/2009/03/1236605318.html
+        title: Ending the Padre and Parrot integration grant
+        comment: by Gabor Szabo
+      - date: 2009 March 07
+        url: http://use.perl.org/~gabor/journal/38610
+        title: Padre 0.28 is out
+        comment: by Gabor Szabo
+      - date: 2009 February 21
+        url: http://damienlearnsperl.blogspot.com/2009/02/first-impressions-on-padre-running-on.html
+        title: First impression on Padre (running on Windows Vista)
+        comment: by Damien Learns Perl
+      - date: 2009 February 20
+        url: http://use.perl.org/~gabor/journal/38516
+        title: Padre as ppm for Active Perl on Windows
+        comment: by Gabor Szabo
+      - date: 2009 February 16
+        url: http://nxadm.wordpress.com/2009/02/16/perls-new-wave/
+        title: Perl's new wave
+        comment: by Claudio Ramirez
+      - date: 2009 February 15
+        url: http://jquelin.blogspot.com/2009/02/spoiled-by-padre.html
+        title: Spolied by Padre
+        comment: by Jerome Quelin
+      - date: 2009 February 14
+        url: http://damienlearnsperl.blogspot.com/2009/02/installing-padre-on-windows-via.html
+        title: Installing Padre on Windows via Strawberry Perl
+        comment: by Damien Learns Perl
+      - date: 2009 February 11
+        url: http://meorero.wordpress.com/2009/02/11/print-search-many-ppm/
+        title: Search many PPM’s (ActivePerl packages) and printing multi line results into a file
+        comment: by Oren Maurer
+      - date: 2009 February 10
+        url: http://meorero.wordpress.com/2009/02/10/padre-027-on-mandriva-20090/
+        title: Padre 0.27 – on Mandriva 2009.0
+        comment: by Oren Maurer
+      - date: 2009 Februray 10
+        url: http://use.perl.org/~gabor/journal/38447
+        title: Padre 0.27 released
+        comment: by Gabor Szabo
+      - date: 2009 February 09
+        url: http://redcloudresearch.blogspot.com/2009/02/padre-perl-ide.html
+        title: Padre - a Perl IDE
+        comment: by Red Flag Research
+      - date: 2009 February 08
+        url: http://meorero.wordpress.com/2009/02/08/using-extutilspacklist-to-uninstall-padre-026/
+        title: using ExtUtils: : Packlist to uninstall Padre 0.26
+        comment: by Oren Maurer
+      - date: 2009 February 08
+        url: http://use.perl.org/~Alias/journal/38429
+        title: Heading towards production-grade Perl-on-a-Stick
+        comment: by Adam Kennedy
+      - date: 2009 February 02
+        url: http://szabgab.com/blog/2009/02/1233559550.html
+        title: Padre 0.26 released
+        comment: by Gabor Szabo
+      - date: 2009 February 02
+        url: http://jquelin.blogspot.com/2009/02/padre-026-released.html
+        title: Padre 0.26 released
+        comment: by Jerome Quelin
+      - date: 2009 January 18
+        url: http://use.perl.org/~Alias/journal/38312
+        title: Padre Standalone: Like Strawberry Perl with Chocolate Sauce
+        comment: by Adam Kennedy
+      - date: 2009 January 16
+        url: http://szabgab.com/blog/2009/01/1232096454.html
+        title: Embedding Parrot in Perl 5
+        comment: by Gabor Szabo
+      - date: 2009 January 15
+        url: http://www.fayland.org/blog/2009/01/padre-i18n-translation.html
+        title: Padre I18N translation
+        comment: by Fayland Lam
+      - date: 2009 January 15
+        url: http://jquelin.blogspot.com/2009/01/hats-off-to-translators.html
+        title: Hats off translators!
+        comment: by Jerome Quelin
+      - date: 2009 January 12
+        url: http://use.perl.org/~Alias/journal/38262
+        title: Padre Withdrawal Syndrome
+        comment: by Adam Kennedy
+      - date: 2009 January 12
+        url: http://use.perl.org/~gabor/journal/38264
+        title: Portable Strawberry Perl with Padre, Parrot and Rakud
+        comment: by Gabor Szabo
+      - date: 2009 January 12
+        url: http://szabgab.com/blog/2009/01/1231761972.html
+        title: Getting Started with Perl 6
+        comment: by Gabor Szabo
+      - date: 2009 January 10
+        url: http://szabgab.com/blog/2009/01/1231623898.html
+        title: Perl 6 syntax highlighting
+        comment: by Gabor Szabo
+      - date: 2009 January 09
+        url: http://use.perl.org/~gabor/journal/38250
+        title: Padre 0.25 released
+        comment: by Gabor Szabo
+      - date: 2009 January 07
+        url: http://use.perl.org/~gabor/journal/38227
+        title: Padre 0.24 released
+        comment: by Gabor Szabo
+      - date: 2009 January 05
+        url: http://use.perl.org/~gabor/journal/38220
+        title: Padre 0.23 released
+        comment: by Gabor Szabo
+  - title: 2008
+    events:
+      - date: 2008 December 30
+        url: http://szabgab.com/blog/2008/12/1230666325.html
+        title: PPI based Syntax highlighting for Perl 5
+        comment: by Gabor Szabo
+      - date: 2008 December 29
+        url: http://szabgab.com/blog/2008/12/1230563859.html
+        title: Syntax highlighting for Perl 6
+        comment: by Gabor Szabo
+      - date: 2008 December 23
+        url: http://use.perl.org/~tsee/journal/38141
+        title: Padre 0.22 highlights and checks Perl6 code
+        comment: by Steffen Mueller
+      - date: 2008 December 14
+        url: http://use.perl.org/~tsee/journal/38086
+        title: Padre 0.21 - More improvements than can fit in this margin!
+        comment: by Steffen Mueller
+      - date: 2008 December 11
+        url: http://szabgab.com/blog/2008/12/1229032305.html
+        title: Plans for Integrating Padre with Parrot and Rakudo
+        comment: by Gabor Szabo
+      - date: 2008 December 10
+        url: http://use.perl.org/~Alias/journal/38060
+        title: If you are keeping an eye on Padre...
+        comment: by Adam Kennedy
+      - date: 2008 December 10
+        url: http://szabgab.com/blog/2008/12/1228898258.html
+        title: Grant accepted for Integrating Padre with Parrot and Rakudo
+        comment: by Gabor Szabo
+      - date: 2008 December 10
+        url: http://szabgab.com/blog/2008/12/1228896047.html
+        title: Plans for the next month or two
+        comment: by Gabor Szabo
+      - date: 2008 December 10
+        url: http://meorero.wordpress.com/2008/12/10/my-shameless-expectations-from-padre-for-the-future/
+        title: My (shameless) expectations from Padre for the future
+        comment: by Oren Maurer
+      - date: 2008 December 02
+        url: http://use.perl.org/~gabor/journal/38006
+        title: Padre 0.20 - French translation, running on Mac
+        comment: by Gabor Szabo
+      - date: 2008 November 30
+        url: http://szabgab.com/blog/2008/11/1228059107.html
+        title: Portable Padre 0.19 for Windows
+        comment: by Gabor Szabo
+      - date: 2008 November 29
+        url: http://use.perl.org/~gabor/journal/37973
+        title: Padre 0.19 released - more languages
+        comment: by Gabor Szabo
+      - date: 2008 November 27
+        url: http://use.perl.org/~Alias/journal/37955
+        title: Extending the Padre Plugin API
+        comment: by Adam Kennedy
+      - date: 2008 November 27
+        url: http://szabgab.com/blog/2008/11/1227800986.html
+        title: 10-fold grows in Padre user base
+        comment: by Gabor Szabo
+      - date: 2008 November 25
+        url: http://use.perl.org/~gabor/journal/37940
+        title: vim the best editor on earth
+        comment: by Gabor Szabo
+      - date: 2008 November 23
+        url: http://use.perl.org/~gabor/journal/37926
+        title: Padre 0.18 released
+        comment: by Gabor Szabo
+      - date: 2008 November 20
+        url: http://szabgab.com/blog/2008/11/1227169027.html
+        title: Padre talk in Haifa, reality check
+        comment: by Gabor Szabo
+      - date: 2008 November 17
+        url: http://szabgab.com/blog/2008/11/1226927840.html
+        title: Padre 0.17 released
+        comment: by Gabor Szabo and on <a href="http://use.perl.org/~gabor/journal/37894">use.perl.org</a>
+      - date: 2008 November 17
+        url: http://hashbangperl.livejournal.com/40075.html
+        title: Emacs keybindings for Padre
+        comment: by Aaron 'TEEJAY' Trevena on LiveJournal and on <a href="http://use.perl.org/~TeeJay/journal/37898">use.perl.org</a>
+      - date: 2008 November 16
+        url: http://use.perl.org/~gabor/journal/37891
+        title: vi mode in Padre, now for real :-)
+        comment: by Gabor Szabo
+      - date: 2008 November 13
+        url: http://use.perl.org/~gabor/journal/37867
+        title: vi in Padre?
+        comment: by Gabor Szabo
+      - date: 2008 November 13
+        url: http://www.perlmonks.org/?node_id=723356
+        title: Padre and usage statistics
+        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+      - date: 2008 November 12
+        url: http://use.perl.org/~gabor/journal/37862
+        title: Auto-indentation, type ahead
+        comment: by Gabor Szabo
+      - date: 2008 November 12
+        url: http://szabgab.com/blog/2008/11/1226472178.html
+        title: Talking about Padre and wxPerl in Haifa
+        comment: by Gabor Szabo
+      - date: 2008 November 10
+        url: http://use.perl.org/~gabor/journal/37840
+        title: Padre 0.16 released
+        comment: by Gabor Szabo
+      - date: 2008 November 06
+        url: http://szabgab.com/blog/2008/11/1225946474.html
+        title: Syntax highlighting nightmare
+        comment: by Gabor Szabo
+      - date: 2008 November 06
+        url: http://www.fayland.org/blog/2008/11/padre-committer.html
+        title: Padre committer
+        comment: by Fayland Lam
+      - date: 2008 November 04
+        url: http://szabgab.com/blog/2008/11/1225779093.html
+        title: 2008Q4 TPF Grant Proposals
+        comment: by Gabor Szabo
+      - date: 2008 November 03
+        url: http://www.fayland.org/blog/2008/11/padrepluginwordstats-and.html
+        title: Padre::Plugin::WordStats and Padre::Plugin::Validator
+        comment: by Fayland Lam
+      - date: 2008 November 03
+        url: http://www.fayland.org/blog/2008/11/padreplugintabandspace.html
+        title: Padre::Plugin::TabAndSpace
+        comment: by Fayland Lam
+      - date: 2008 November 03
+        url: http://use.perl.org/~gabor/journal/37789
+        title: Padre 0.15 released - running on Parrot
+        comment: by Gabor Szabo
+      - date: 2008 November 02
+        url: http://www.fayland.org/blog/2008/11/padrepluginacmeplaycode.html
+        title: Padre::Plugin::AcmePlayCode 
+        comment: by Fayland Lam
+      - date: 2008 October 31
+        url: http://www.fayland.org/blog/2008/10/padre.html
+        title: Padre
+        comment: by Fayland Lam
+      - date: 2008 October 28
+        url: http://use.perl.org/~Alias/journal/37758
+        title: Experimenting with Padre 0.14
+        comment: by Adam Kennedy
+      - date: 2008 October 28
+        url: http://use.perl.org/article.pl?sid=08/10/28/1658213
+        title: What is missing from Padre?
+        comment:  <a href="http://use.perl.org/">use.perl.org thread</a>
+      - date: 2008 October 27
+        url: http://use.perl.org/~gabor/journal/37748
+        title: Padre 0.13 released
+        comment: by Gabor Szabo
+      - date: 2008 October 23
+        url: http://use.perl.org/~gabor/journal/37719
+        title: Padre 0.12 released (0.11 was broken)
+        comment: by Gabor Szabo
+      - date: 2008 September 25
+        url: http://use.perl.org/~Alias/journal/37534
+        title: Padre to support "cloudfiguration"
+        comment: by Adam Kennedy
+      - date: 2008 September 23
+        url: http://use.perl.org/~gabor/journal/37513
+        title: Padre 0.10 released - initial Parrot and Perl 6 support
+        comment: by Gabor Szabo
+      - date: 2008 September 24
+        url: http://use.perl.org/~Alias/journal/37523
+        title: The Quest for "Perfect" Tools
+        comment: by Adam Kennedy
+      - date: 2008 September 22
+        url: http://szabgab.com/blog/2008/09/1222115601.html
+        title: The Quest for the Perfect Editor
+        comment: by Gabor Szabo
+      - date: 2008 September 17
+        url: http://use.perl.org/~Alias/journal/37467
+        title: PPI integration added to Padre
+        comment: by Adam Kennedy
+      - date: 2008 September 17
+        url: http://use.perl.org/~gabor/journal/37471
+        title: Padre 0.09 released
+        comment: by Gabor Szabo
+      - date: 2008 September 11
+        url: http://perlmonks.org/?node_id=710625
+        title: Calltips for Padre
+        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+      - date: 2008 September 11
+        url: http://use.perl.org/~gabor/journal/37410
+        title: Padre 0.08 released
+        comment: by Gabor Szabo
+      - date: 2008 September 08
+        url: http://use.perl.org/~gabor/journal/37387
+        title: Padre 0.07 released
+        comment: by Gabor Szabo
+      - date: 2008 August 31
+        url: http://szabgab.com/blog/2008/08/1220171084.html
+        title: Padre - the journey I.
+        comment: by Gabor Szabo
+      - date: 2008 August 28
+        url: http://use.perl.org/~gabor/journal/37292
+        title: Padre 0.06 released
+        comment: by Gabor Szabo
+      - date: 2008 August 21
+        url: http://szabgab.com/blog/2008/08/1219321463.html
+        title: Who needs an IDE for Perl anyway?
+        comment: by Gabor Szabo
+      - date: 2008 August 20
+        url: http://use.perl.org/~gabor/journal/37233
+        title: Padre 0.05 released
+        comment: by Gabor Szabo
+      - date: 2008 August 14
+        url: http://yapc.tv/2008/ye/lt/lt2-07-gabor-padre/
+        title: YAPC::EU::2008 lighting talk of Gabor
+        comment:  (video)
+      - date: 2008 August 09
+        url: http://szabgab.com/blog/2008/08/1218281077.html
+        title: Padre project web site
+        comment: by Gabor Szabo
+      - date: 2008 July 28
+        url: http://perlmonks.org/?node_id=700461
+        title: Padre released
+        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+      - date: 2008 July 28
+        url: http://use.perl.org/~gabor/journal/37029
+        title: Padre 0.03 released
+        comment: by Gabor Szabo
+      - date: 2008 July 27
+        url: http://szabgab.com/blog/2008/07/1217106229.html
+        title: Padre
+        comment: by Gabor Szabo
+  - title: Before Padre
+    events:
+      - date: 2008 July 18
+        url: http://szabgab.com/blog/2008/07/1216370890.html
+        title: Name a Perl IDE - get a Perl book or YAPC ticket
+        comment: by Gabor Szabo also on <a href="http://use.perl.org/~gabor/journal/36948">use.perl.org</a>
+      - date: 2008 May 23
+        url: http://nxadm.wordpress.com/2008/05/23/an-ide-for-perl/
+        title: An IDE for Perl?
+        comment: by Claudio Ramirez
+      - date: 2008 May 22
+        url: http://szabgab.com/blog/2008/05/1211438612.html
+        title: Open Source IDE for Perl
+        comment: by Gabor Szabo
+      - date: 2005 July 03
+        url: http://use.perl.org/~Alias/journal/25492
+        title: PPI Release Candidate 1, Perl::Editor, JSAN ahoy!
+        comment: by Adam Kennedy
+      - date: 2005 June 16
+        url: http://use.perl.org/~Alias/journal/25231
+        title: How I wrote a refactoring Perl editor in 4 hours
+        comment: by Adam Kennedy
+  - title: German
+    events:
+      - date: 2008 December 07
+        url: http://perl-howto.de/2008/12/padre-perl-application-development-and-refactoring-environment.html
+        title: Padre (Perl Application Development and Refactoring Environment) 0.20
+        comment: by Thomas Fahle (German / Deutsch)
+  - title: Arabic
+    events:
+      - date: 2009 May 22
+        url: http://www.youtube.com/watch?v=HSvb2xMbUKw
+        title: Padre (screencast)
+        comment: 
+developers:
+  - alias
+  - azawawi
+  - el_che
+  - garu
+  - jq
+  - marcela
+  - ryan52
+  - submersible
+  - szabgab
+  - teejay
+  - therek
+  - tsee
+translators:
+  - azawawi
+  - garu
+  - jq
+  - marcela
+  - therek
+
