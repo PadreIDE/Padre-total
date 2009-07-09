@@ -17,6 +17,10 @@ navigation:
 about:
   - title: 2009
     events:
+      - date: 2009 July 09
+        url: http://szabgab.com/blog/2009/07/1247133713.html
+        title: Padre 0.39 released
+        comment: by Gabor Szabo
       - date: 2009 July 08
         url: http://csjewell.dreamwidth.org/802.html
         title: Strawberry Perl Beta 3 - and a standalone Padre - are both now available.
@@ -35,7 +39,7 @@ about:
         comment: by Mark Grimes
       - date: 2009 July 04
         url: http://peter.makholm.net/2009/07/04/why-write-an-editor-in-perl/
-        title: Why write and editor in Perl?
+        title: Why write an editor in Perl?
         comment: by Peter Makholm
       - date: 2009 July 04
         url: http://blog.patspam.com/2009/padrepluginwebgui
