@@ -18,6 +18,10 @@ about:
   - title: 2009
     events:
       - date: 2009 July 08
+        url: http://csjewell.dreamwidth.org/802.html
+        title: Strawberry Perl Beta 3 - and a standalone Padre - are both now available.
+        comment: by Curtis Jewell
+      - date: 2009 July 08
         url: http://perlwannabe.vox.com/library/post/padre.html
         title: Padre...
         comment: by Peter Lavender
