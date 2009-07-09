@@ -1,6 +1,6 @@
 Revision history for Locale-Msgfmt
 
-0.13    Jul 06, 2009
+0.13    Jul 08, 2009
         - act like make when rebuilding, only rebuild things that need to be rebuilt.
           - add a --force option to force the old behavior of always rebuilding
 
