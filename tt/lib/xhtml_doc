@@ -5,7 +5,8 @@
  <title>[% title | html %]</title>
  <link rel="stylesheet" href="static/static.css" type="text/css" />
 </head>
-<body [% IF onload_handler %][% onload_handler %][% END %]>
+<body [% IF onload_handler %]onload="[% onload_handler %]"[% END %]>
+
 [% INCLUDE lib/navigation %]
 <div id="widget_stack">
 [% INCLUDE widget/ohloh %]

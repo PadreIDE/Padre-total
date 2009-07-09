@@ -5,7 +5,10 @@
 
 [% FOREACH d IN developers %]
 
+
+[% WRAPPER chrome/styled_panel %]
 <li>
+
 <a name="[% d.nickname %]"></a>
 [% IF d.url %]
 <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
@@ -29,6 +32,8 @@
 [% END %]
 
 </li>
+[% END %]
+
 [% END %]
 
 </ul>

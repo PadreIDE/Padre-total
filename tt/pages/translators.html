@@ -1,15 +1,20 @@
 [% DEFAULT title="Padre Translators" %]
 [% WRAPPER lib/xhtml_doc %]
+
+<!-- table of contents -->
+[%  WRAPPER chrome/styled_panel %]
+<ul class="navigation">
+[% FOREACH t IN translators %]
+ <li><a href="#[% t.language | uri %]">[% t.language %]</a></li>
+[% END %]
+</ul>
+[% END %]
+
 <ul id="translators" class="palette_text" >
-
-<a href="#pt_br">Português Brasileiro</a>
-<a href="#pl">Polski</a>
-<a href="#cz">Česky</a>
-
 
 [% FOREACH t IN translators %]
 
-<li>
+<li id="[% t.language %]" >
  <a name="[% t.language_tag %]"></a>
 [% IF t.url %]
 <h1 class="translator"><a href="[% t.url %]">[% t.name %]</a></h1>

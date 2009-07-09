@@ -1,10 +1,12 @@
 [% WRAPPER lib/widget %]
 <div id="ohloh" class="widget">
-<a href="http://freshmeat.net/projects/padre">Padre on Freshmeat</a>
-
 <div id="ohloh_graphic">
+ <script type="text/javascript" src="http://www.ohloh.net/p/25595/widgets/project_partner_badge.js"></script>
  <script type="text/javascript" src="http://www.ohloh.net/p/25595/widgets/project_users.js?style=green"></script>
+<div><a href="http://freshmeat.net/projects/padre">Padre on Freshmeat</a></div>
 </div>
+
+
 <div class="spacer"></div>
 </div>
 [% END %]
