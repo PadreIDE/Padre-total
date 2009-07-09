@@ -6,7 +6,7 @@ use File::Spec;
 
 sub slurp {
     open F, File::Spec->catfile(@_);
-    my $str, @str;
+    my ($str, @str);
     @str = <F>;
     my $str = join "", @str;
     close F;
