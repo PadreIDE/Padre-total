@@ -53,6 +53,10 @@ sub eot {
 	return chr(4);
 }
 
+sub mtime {
+  return @{[stat(shift)]}[9];
+}
+
 =head1 NAME
 
 Locale::Msgfmt::Utils - functions used internally by Locale::Msgfmt
