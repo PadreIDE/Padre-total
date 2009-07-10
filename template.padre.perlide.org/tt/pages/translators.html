@@ -6,7 +6,7 @@
 </div>
 
 <div id="column_b">
-[%#  INCLUDE lib/widget_stack %]
+[%  INCLUDE lib/widget_stack %]
 </div>
 
 [% END %]
@@ -16,15 +16,15 @@
 <!-- table of contents -->
 [%  INCLUDE chrome/navigation_list
  nav_items=translators
- href_from="language_tag"
- title_from="language"
+ href_from="nickname"
+ title_from="name"
  section_nav=1
  %]
  
  <!-- list of padre translators -->
 <ul id="translators" class="palette_text" >
 [% FOREACH t IN translators %]
-   <li id="[% t.language | id_attr %]" >
+   <li id="[% t.nickname | id_attr %]" >
     [% WRAPPER chrome/styled_panel %]
 
      <a name="[% t.language_tag %]"></a>
