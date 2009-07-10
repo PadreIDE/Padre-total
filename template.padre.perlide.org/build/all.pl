@@ -55,7 +55,9 @@ while ( my $file = readdir( $page_handle ) ) {
 
 	my $template = File::Spec->catfile( 'pages', $file );
 	# OUTPUT_PATH is appended to $file by TT
-	$tt->process($template , $stash, $file )
+	$tt->process($template , $stash, $file,
+		{ binmode => ':utf8' },
+	 )
 		|| die $tt->error();
 }
 
