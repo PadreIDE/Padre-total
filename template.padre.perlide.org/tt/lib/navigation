@@ -7,4 +7,5 @@
 [% FOREACH nav IN navigation %]
   <li><a href="[% nav.href %]">[% nav.name %]</a></li>
 [% END %]
+<div class="spacer"></div>
 </ul>

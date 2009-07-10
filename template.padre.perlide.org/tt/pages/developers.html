@@ -1,38 +1,53 @@
 [% DEFAULT title="Padre Developers" %]
+
 [% WRAPPER lib/xhtml_doc %]
+<div id="column_a">
+[% INCLUDE developers_list %]
+</div>
+<div id="column_b">
+[% INCLUDE lib/widget_stack %]
+</div>
+[% END %]
+
+
+[% BLOCK developers_list %]
+<!-- table of contents -->
+[%  WRAPPER chrome/styled_panel %]
+<ul class="navigation">
+ [% FOREACH d IN developers %]
+  <li><a href="#[% d.nickname%]">[% d.nickname %]</a></li>
+ [% END %]
+ <div class="spacer"></div>
+</ul>
+[% END # WRAPPER  %]
 
 <ul id="developers" class="palette_text" >
-
 [% FOREACH d IN developers %]
+ <li id="#[% d.nickname %]">[% WRAPPER chrome/styled_panel %]
+  <a name="[% d.nickname %]"></a>
+  [% IF d.url %]
+   <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
+  [% ELSE %]
+   <h1 class="developer">[% d.name %]</h1>
+  [% END %]
 
+  [% IF d.img_src %]
+   <img alt="[% d.img_alt %]" src="[% d.img_src %]" />
+  [% END %]
 
-[% WRAPPER chrome/styled_panel %]
-<li>
+  [% d.Who %]
 
-<a name="[% d.nickname %]"></a>
-[% IF d.url %]
-<h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
-[% ELSE %]
-<h1 class="developer">[% d.name %]</h1>
-[% END %]
-[% IF d.img_src %]
-<img alt="[% d.img_alt %]" src="[% d.img_src %]" />
-[% END %]
+  [% IF d.Why %]
+   <h2>Why are you involved in Padre?</h2>
+   [% d.Why %]
+  [% END %]
 
-[% d.Who %]
+  [% IF d.What %]
+   <h2>What are you hacking on?</h2>[% d.What %]
+  [% END %]
 
-[% IF d.Why %]
-<h2>Why are you involved in Padre?</h2>
-[% d.Why %]
-[% END %]
-
-[% IF d.What %]
-<h2>What are you hacking on?</h2>
-[% d.What %]
-[% END %]
-
+  [% END; # WRAPPER %]
 </li>
-[% END %]
 
 [% END %]
 
