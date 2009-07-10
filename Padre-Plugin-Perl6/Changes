@@ -1,5 +1,19 @@
 Changes
 
+=head1 0.50 2009.7.10
+
+	- Wrote a script to read http://www.perlfoundation.org/perl6/index.cgi?perl_table_index 
+		and write a POD named perl6_table_index.pod. Thanks to Herbert Breunung and 
+		Martin Berends.
+	- Extended Grok in an unofficial way to support perl6_table_index.pod and thus 
+		we now have more Perl 6 keywords/builtin and operator documentation.
+	- use only one grok instance per dialog lifetime
+	- require Locale::Msgfmt 0.14
+	- Converted EOL to Unix for some template files
+	- Updated translations:
+		Dutch (ddn123456++)
+		French (jquelin++)
+
 =head1 0.49 2009.7.6
 
 	- Two more helper quick fixes using App::Grok : 
