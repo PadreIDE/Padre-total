@@ -344,13 +344,13 @@ sub show_perl6_doc {
 		my $line = $editor->GetLine($lineno);
 		my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
 		my $current_word = '';
-		while( $line =~ m/\G.*?([[:alnum:]]+)/g ) {
+		while( $line =~ m/\G.*?(\S+)/g ) {
 			if(pos($line) >= $current_pos) {
 				$current_word = $1;
 				last;
 			}
 		}
-		if($current_word =~ /^.*?(\w+)/) {
+		if($current_word =~ /^.*?(\S+)/) {
 			$topic = $1;
 		}
 	}
