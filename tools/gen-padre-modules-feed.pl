@@ -7,6 +7,8 @@ use XML::Feed;
 use URI;
 use DateTime;
 
+my $output = shift or die "Usage: $0 PATH_TO_OUTPUT_FILE (padre-cpan-uploads.rdf)\n";
+
 my $cpan_feed =
     XML::Feed->parse(URI->new("http://search.cpan.org/uploads.rdf"))
     ;
@@ -26,8 +28,8 @@ foreach my $item ($cpan_feed->items())
     }
 }
 
-open my $out, ">", "padre-cpan-uploads.rdf"
-    or die "Could not open padre-cpan-uploads.rdf";
+open my $out, ">", $output
+    or die "Could not open ($output) $!";
 binmode $out, ":utf8";
 print {$out} $padre_feed->as_xml();
 close($out);
