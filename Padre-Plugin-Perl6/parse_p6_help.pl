@@ -50,4 +50,15 @@ sub _perl6_table_index_to_pod {
 }
 
 my $pod = _perl6_table_index_to_pod 'http://www.perlfoundation.org/perl6/index.cgi?perl_table_index';
-print $pod;
+my $filename = 'lib/Padre/Plugin/Perl6/perl6_table_index.pod';
+print "Writing to $filename\n";
+open FILE, ">$filename" or die "Cannot open $filename for writing\n";
+print FILE $pod;
+close FILE;
+
+print "\n\n----- FINISHED -----\n\n";
+
+# Copyright 2008-2009 Ahmad M. Zawawi and Gabor Szabo.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
