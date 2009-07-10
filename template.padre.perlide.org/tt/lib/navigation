@@ -1,11 +1,5 @@
 <div id="masthead">
 <img alt="Padre Logo" id="padrelogo" src="static/logo.png" />
 <h1>[% title %]</h1>
-
 </div>
-<ul class="navigation">
-[% FOREACH nav IN navigation %]
-  <li><a href="[% nav.href %]">[% nav.name %]</a></li>
-[% END %]
-</ul>
-<div class="spacer" />
+[% INCLUDE chrome/navigation_list  %]

@@ -58,9 +58,7 @@ div#column_b { width: 29%;float: right}
 
 
 div#widget_stack {
-    width: 28%;
     float: right;
-    margin: 0.75em;
 } 
 
 ul {
@@ -109,9 +107,7 @@ ul.navigation li {
     text-align: center;
     float: left;
   /*  width: 4em; */
-    height: 2em;
-    line-height: 2em;
-    padding: 0em 2em 0em 1em;
+
     border-right: solid #CCC 1px;
     
         background-image: url(grad_flat.png);
@@ -120,6 +116,13 @@ ul.navigation li {
 
 }
 
+ul.navigation a {
+    height: 2em;
+    line-height: 2em;
+    text-transform: uppercase;
+    padding: 0em 1em 0em 1em;
+    text-decoration: none;
+}
 
 ul.navigation li:hover {
     background-image: url(grad_depressed.png);
@@ -201,6 +204,7 @@ ul#translator h2 {
 .spacer {
     display: block;
     clear:both;
+    width: 100%;
 }
 
 /* chrome - pretty stuff */

@@ -13,7 +13,8 @@ var channels = {
    locale_kr:    {title:"Perl in Korean",                host:"irc.freenode.net", channel:"perl-kr"},
    locale_pl:    {title:"Perl in Polish",                host:"irc.perl.org",     channel:"perl.pl"},
    locale_pt_br: {title:"Perl in Portuguese",            host:"irc.freenode.net", channel:"perl.br"},
-   locale_zh_tw: {title:"Perl in Taiwan (Traditional Chinese)", host:"irc.freenode.net", channel:"perl.tw"},
+   /* removed (Traditional Chinese) from Taiwan.. some pls add the glyphs for this instead) */
+   locale_zh_tw: {title:"Perl in Taiwan", host:"irc.freenode.net", channel:"perl.tw"},
    poe:          {title:"POE",                           host:"irc.perl.org",     channel:"poe"},
    rt:           {title:"RT",                            host:"irc.perl.org",     channel:"rt"},
    perl_help:    {title:"Perl Help",                     host:"irc.perl.org",     channel:"perl-help"},

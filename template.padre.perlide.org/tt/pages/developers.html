@@ -1,53 +1,59 @@
 [% DEFAULT title="Padre Developers" %]
 [% WRAPPER lib/xhtml_doc %]
-<div id="column_a">
-[% INCLUDE developers_list %]
-</div>
-<div id="column_b">
-[% INCLUDE lib/widget_stack %]
-</div>
+ <div id="column_a">
+  [% INCLUDE developers_list %]
+ </div>
+
+ <div id="column_b">
+  [% INCLUDE lib/widget_stack %]
+ </div>
 [% END %]
 
 
 [% BLOCK developers_list %]
 <!-- table of contents -->
-[%  WRAPPER chrome/styled_panel %]
-<ul class="navigation">
- [% FOREACH d IN developers %]
-  <li><a href="#[% d.nickname | id_attr %]">[% d.nickname %]</a></li>
- [% END %]
-</ul>
-<div class="spacer" />
-[% END # WRAPPER  %]
-
+<!-- table of contents -->
+[%  INCLUDE chrome/navigation_list
+ nav_items=developers
+ href_from="nickname"
+ title_from="name"
+  section_nav=1
+ %]
+ 
 <ul id="developers" class="palette_text" >
 [% FOREACH d IN developers %]
- <li id="[% d.nickname | id_attr %]">[% WRAPPER chrome/styled_panel %]
-  [% IF d.url %]
-   <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
-  [% ELSE %]
-   <h1 class="developer">[% d.name %]</h1>
-  [% END %]
-
-  [% IF d.img_src %]
-   <img alt="[% d.img_alt %]" src="[% d.img_src %]" />
-  [% END %]
-
-  [% d.Who %]
-
-  [% IF d.Why %]
-   <h2>Why are you involved in Padre?</h2>
-   [% d.Why %]
-  [% END %]
-
-  [% IF d.What %]
-   <h2>What are you hacking on?</h2>[% d.What %]
-  [% END %]
-
-  [% END; # WRAPPER %]
-</li>
-
+ [% INCLUDE render_developer dev=d %]
+[% END %]
+</ul>
 [% END %]
 
-</ul>
+
+
+[% BLOCK render_developer %]
+ <li id="[% dev.nickname | id_attr %]">
+ [% WRAPPER chrome/styled_panel %]
+  [% IF dev.url %]
+   <h1 class="developer"><a href="[% dev.url %]">[% dev.name %]</a></h1>
+  [% ELSE %]
+   <h1 class="developer">[% dev.name %]</h1>
+  [% END %]
+
+  [% IF dev.img_src %]
+   <img alt="[% dev.img_alt %]" src="[% dev.img_src %]" />
+  [% END %]
+
+  [% dev.Who %]
+
+  [% IF dev.Why %]
+   <h2>Why are you involved in Padre?</h2>
+   [% dev.Why %]
+  [% END %]
+
+  [% IF dev.What %]
+   <h2>What are you hacking on?</h2>[% dev.What %]
+  [% END %]
+
+ [% END %]
+</li>
+
 [% END %]

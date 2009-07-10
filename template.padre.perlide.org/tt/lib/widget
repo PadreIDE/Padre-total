@@ -1,5 +1,2 @@
-<div class="widget_wrapper">
-[% content %]
 
-<b class="shadowed"></b>
-</div>
+[% content %]

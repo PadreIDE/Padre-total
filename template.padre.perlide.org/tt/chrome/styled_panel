@@ -1,6 +1,8 @@
+<!-- begin styled panel -->
 <div class="styled_panel_wrapper">
  <div class="styled_panel">
  [% content %]
  </div>
 <b class="shadowed"></b>
 </div>
+<!-- end styled panel -->
