@@ -1,0 +1,16 @@
+[% DEFAULT
+	nav_items=navigation ,
+	href_from="href" ,
+	title_from="name"
+%]
+<div class="navigation_wrapper">
+
+ <ul class="navigation">
+ [% FOREACH nav IN nav_items %]
+  [% SET link_to = nav.$href_from  %]
+  <li><a href="[% IF section_nav.defined %]#[% END %][% link_to %]">[% nav.$title_from %]</a></li>
+ [% END %]
+ </ul>
+ <div class="spacer"></div>
+
+</div>

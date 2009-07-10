@@ -2,17 +2,26 @@
 [% WRAPPER lib/xhtml_doc %]
 
 <div id="column_a">
-<!-- table of contents -->
-[%  WRAPPER chrome/styled_panel %]
-<ul class="navigation">
- [% FOREACH t IN translators %]
-  <li><a href="#[% t.language | id_attr %]">[% t.language %]</a></li>
- [% END %]
-</ul>
-<div class="spacer" />
-[% END # WRAPPER  %]
+[% INCLUDE translator_list %]
+</div>
 
-<!-- list of padre translators -->
+<div id="column_b">
+[%#  INCLUDE lib/widget_stack %]
+</div>
+
+[% END %]
+
+[% BLOCK translator_list %]
+
+<!-- table of contents -->
+[%  INCLUDE chrome/navigation_list
+ nav_items=translators
+ href_from="language_tag"
+ title_from="language"
+ section_nav=1
+ %]
+ 
+ <!-- list of padre translators -->
 <ul id="translators" class="palette_text" >
 [% FOREACH t IN translators %]
    <li id="[% t.language | id_attr %]" >
@@ -36,10 +45,4 @@
    </li>
   [% END %]
 </ul>
-</div>
-
-<div id="column_b">
-[% INCLUDE lib/widget_stack %]
-</div>
-
 [% END %]

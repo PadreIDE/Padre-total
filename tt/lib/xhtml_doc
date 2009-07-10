@@ -8,11 +8,17 @@
 <body [% IF onload_handler %]onload="[% onload_handler %]"[% END %]>
 
 [% INCLUDE lib/navigation %]
+
 <div id="content_wrapper">
-<div id="content">
-[% content %]
+ <div id="content">
+  <!-- wrap content -->
+  [% content %]
+  <!-- end wrap content -->
+  
+  [% INCLUDE lib/footer %]
+ </div>
 </div>
-</div>
-[% INCLUDE lib/footer %]
+<!-- end content_wrapper -->
+
 </body>
 </html>
