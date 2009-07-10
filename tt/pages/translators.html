@@ -1,37 +1,45 @@
 [% DEFAULT title="Padre Translators" %]
 [% WRAPPER lib/xhtml_doc %]
 
+<div id="column_a">
 <!-- table of contents -->
 [%  WRAPPER chrome/styled_panel %]
 <ul class="navigation">
-[% FOREACH t IN translators %]
- <li><a href="#[% t.language | uri %]">[% t.language %]</a></li>
-[% END %]
+ [% FOREACH t IN translators %]
+  <li><a href="#[% t.language %]">[% t.language %]</a></li>
+ [% END %]
+ <div class="spacer"></div>
 </ul>
-[% END %]
+[% END # WRAPPER  %]
 
+<!-- list of padre translators -->
 <ul id="translators" class="palette_text" >
-
 [% FOREACH t IN translators %]
+   <li id="[% t.language %]" >
+    [% WRAPPER chrome/styled_panel %]
 
-<li id="[% t.language %]" >
- <a name="[% t.language_tag %]"></a>
-[% IF t.url %]
-<h1 class="translator"><a href="[% t.url %]">[% t.name %]</a></h1>
-[% ELSE %]
-<h1 class="translator">[% t.name %]</h1>
-[% END %]
+     <a name="[% t.language_tag %]"></a>
+    [% IF t.url %]
+     <h1 class="translator"><a href="[% t.url | uri %]">[% t.name | html %]</a></h1>
+    [% ELSE %]
+     <h1 class="translator">[% t.name | html %]</h1>
+    [% END %]
 
-[% IF t.img_src %]
-<img alt="[% t.img_alt %]" src="[% t.img_src %]" />
-[% END %]
+    [% IF t.img_src %]
+     <img alt="[% t.img_alt %]" src="[% t.img_src %]" />
+    [% END %]
 
-<h2 class="language">[% t.language %]</h2>
-[% t.Text %]
-<a href="developers.html#[% t.nickname %]">English</a>
-
-</li>
-[% END %]
-
+    <h2 class="language">[% t.language %]</h2>
+     [% t.Text %]
+    <a href="developers.html#[% t.nickname %]">English</a>
+    [% END %]
+   </li>
+  [% END %]
 </ul>
+</div>
+
+<div id="column_b">
+[% INCLUDE lib/widget_stack %]
+</div>
+
 [% END %]

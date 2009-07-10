@@ -9,8 +9,6 @@ div#palette {
     vertical-align: middle;
 }
 
-
-
 .colour_tile {
     width: 16px;
     height: 16px; 
@@ -21,7 +19,7 @@ div#palette {
 
 .palette_text {
     color: black;
-    background-color: #F4F0D4 ;
+    background-color: transparent;
 }
 
 a:link {
@@ -44,13 +42,23 @@ body {
     padding: 0;
 }
 
-div#content {
-    margin: 0.75em;
-    width: 65%;
+div#content_wrapper {
+    width: 100%;
+    margin: 0;
+    margin-top: 1.5em;
 }
 
+div#content { 
+    padding: 0.75em;
+}
+
+div#column_a { width: 69%;float: left }
+div#column_b { width: 29%;float: right}
+
+
+
 div#widget_stack {
-    width: 30%;
+    width: 28%;
     float: right;
     margin: 0.75em;
 } 
@@ -91,11 +99,8 @@ div#masthead h1 {
 }
 
 ul.navigation {
-        background-image: url(grad_flat.png);
-        background-color: white;
-        background-repeat: repeat-x;
-        height: 2em;
-        width: 100%;
+
+   /*     width: 100%; */
 }
 
 ul.navigation li {
@@ -109,6 +114,10 @@ ul.navigation li {
     padding: 0em 2em 0em 1em;
     border-right: solid #CCC 1px;
     
+        background-image: url(grad_flat.png);
+        background-color: white;
+        background-repeat: repeat-x;
+
 }
 
 
@@ -119,19 +128,17 @@ ul.navigation li:hover {
 }
 
 
-
-
-/* Developers List */
-ul#developers li {
-    padding: 1em 1em 1em 1em;
-    margin: 1em;
-    border: 1px solid #AA8;
-    background: inherit;
-
-    width: 30em;
-    float: left;
-    clear: none;
+div.column_a {
+    width: 48%;
+	float: left;
 }
+
+div.column_b {
+	width: 48%;
+	float: right;
+}
+
+
 
 ul#developers img {
     float: right;
@@ -160,7 +167,7 @@ p {
 
 /* Translators List */
 ul#translators li {
-    padding: 1em 1em 1em 1em;
+/*    padding: 1em 1em 1em 1em;
     margin: 1em;
     border: 1px solid #AA8;
     background: inherit;
@@ -168,6 +175,7 @@ ul#translators li {
     width: 22%;
     float: left;
     clear: none;
+    */
 }
 
 ul#translators img {
