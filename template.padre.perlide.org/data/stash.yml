@@ -17,6 +17,10 @@ navigation:
 about:
   - title: 2009
     events:
+      - date: 2009 July 10
+        url: http://ahmadzawawi.blogspot.com/2009/07/padre-perl-6-help-and-tablets.html
+        title: Padre Perl 6 Help and Tablets
+        comment: by Ahmad M. Zawawi
       - date: 2009 July 09
         url: http://szabgab.com/blog/2009/07/1247133713.html
         title: Padre 0.39 released
