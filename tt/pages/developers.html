@@ -1,5 +1,4 @@
 [% DEFAULT title="Padre Developers" %]
-
 [% WRAPPER lib/xhtml_doc %]
 <div id="column_a">
 [% INCLUDE developers_list %]
@@ -15,16 +14,15 @@
 [%  WRAPPER chrome/styled_panel %]
 <ul class="navigation">
  [% FOREACH d IN developers %]
-  <li><a href="#[% d.nickname%]">[% d.nickname %]</a></li>
+  <li><a href="#[% d.nickname | id_attr %]">[% d.nickname %]</a></li>
  [% END %]
- <div class="spacer"></div>
 </ul>
+<div class="spacer" />
 [% END # WRAPPER  %]
 
 <ul id="developers" class="palette_text" >
 [% FOREACH d IN developers %]
- <li id="#[% d.nickname %]">[% WRAPPER chrome/styled_panel %]
-  <a name="[% d.nickname %]"></a>
+ <li id="[% d.nickname | id_attr %]">[% WRAPPER chrome/styled_panel %]
   [% IF d.url %]
    <h1 class="developer"><a href="[% d.url %]">[% d.name %]</a></h1>
   [% ELSE %]

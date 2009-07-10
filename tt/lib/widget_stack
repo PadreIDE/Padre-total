@@ -1,4 +1,4 @@
-<div id="#widget_stack">
+<div id="widget_stack">
 [% INCLUDE widget/ohloh %]
 [% INCLUDE widget/irc_launcher %]
 </div>
