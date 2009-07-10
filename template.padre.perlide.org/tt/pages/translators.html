@@ -6,16 +6,16 @@
 [%  WRAPPER chrome/styled_panel %]
 <ul class="navigation">
  [% FOREACH t IN translators %]
-  <li><a href="#[% t.language %]">[% t.language %]</a></li>
+  <li><a href="#[% t.language | id_attr %]">[% t.language %]</a></li>
  [% END %]
- <div class="spacer"></div>
 </ul>
+<div class="spacer" />
 [% END # WRAPPER  %]
 
 <!-- list of padre translators -->
 <ul id="translators" class="palette_text" >
 [% FOREACH t IN translators %]
-   <li id="[% t.language %]" >
+   <li id="[% t.language | id_attr %]" >
     [% WRAPPER chrome/styled_panel %]
 
      <a name="[% t.language_tag %]"></a>
