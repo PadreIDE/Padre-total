@@ -30,7 +30,7 @@ my $config = {
 };
 
 my $tt = Template->new($config);
-my $stash = LoadFile("$source_dir/data/stash.yml");
+my ($stash) = LoadFile("$source_dir/data/stash.yml"); # older version of YAML::Tiny return list ??
 
 $stash->{developers}  = read_people($stash->{developers},  'developers');
 $stash->{translators} = read_people($stash->{translators}, 'translators');
