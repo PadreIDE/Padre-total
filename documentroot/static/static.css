@@ -108,7 +108,7 @@ ul.navigation li {
     float: left;
   /*  width: 4em; */
 
-    border-right: solid #CCC 1px;
+    border: solid #CCC 1px;
     
         background-image: url(grad_flat.png);
         background-color: white;
@@ -288,4 +288,13 @@ div#ohloh_graphic a {
 }
 
 
+/* evil mozilla-isms */
 
+ul.bottomheavy li {
+    -moz-border-radius: 0px 0px 4px 4px;
+}
+
+
+ul.topheavy li {
+    -moz-border-radius: 4px 4px 0px 0px ;
+}
