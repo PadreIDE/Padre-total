@@ -23,6 +23,7 @@ use Class::XSAccessor accessors => {
 	_help_viewer       => '_help_viewer',        # HTML Help Viewer
 	_plugin            => '_plugin',             # plugin object
 	_topic             => '_topic',              # default help topic
+	_grok              => '_grok',               # Perl 6 documentation reader instance 
 };
 
 # -- constructor
@@ -71,9 +72,7 @@ sub display_help_in_viewer {
 
 		if($help_target) {
 			eval {
-				require App::Grok;
-				my $grok = App::Grok->new;
-				$help_html = $grok->render_target($help_target,'xhtml');
+				$help_html = $self->_grok->render_target($help_target,'xhtml');
 			};
 		}
 	}
@@ -216,8 +215,8 @@ sub _search() {
 	# Generate a sorted file-list based on filename
 	eval {
 		require App::Grok;
-		my $grok = App::Grok->new;
-		my @targets_index = sort $grok->target_index();
+		$self->_grok(App::Grok->new);
+		my @targets_index = sort $self->_grok->target_index();
 		$self->_targets_index( \@targets_index ); 
 	};
 	
