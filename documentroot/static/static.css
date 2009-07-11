@@ -40,6 +40,11 @@ body {
     font-size: 0.8em;
     margin: 0;
     padding: 0;
+        
+        background-image: url(houndstooth_grad.png);
+        background-color: #cfcfcf;
+        background-repeat: repeat-x;
+
 }
 
 div#content_wrapper {
@@ -215,6 +220,7 @@ ul#translator h2 {
 .styled_panel {
     padding: 0.5em;
     border: solid 1px #ACA;
+    background-color: white;
 }
 
 
