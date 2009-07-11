@@ -23,6 +23,7 @@ use Data::Dumper;
 
 sub start {
 	my $self = shift;
+	warn 'Starting ' . __PACKAGE__;
 	
 	my $con = AnyEvent::IRC::Client->new;
 	$con->enable_ssl if $self->enable_ssl;
@@ -80,20 +81,9 @@ sub _register_irc_callbacks {
 	);
 
 	$con->reg_cb(
-	   publicmsg => sub {
-	      my ($handle,$channel,$ircmsg)= @_;
-	      my $nick = $con->nick;
-	      
-	      my ($sender,$body) =  @{ $ircmsg->{params} };
-	      
-	       my $frame = {
-		       entity => $sender,
-		       channel => $channel,
-		       timestamp => time, 
-	       };
-	       push @{ $self->{incoming_buffer}{$channel} }, [$body,$frame];
-		    
-	   }
+	   publicmsg => sub { $self->buffer_incoming(@_) },
+	   privatemsg   => sub { $self->buffer_incoming_private(@_) },
+	  
 	);
 	
 	$con->reg_cb(
@@ -162,7 +152,7 @@ sub receive_from_channel {
 sub tell_channel {
 	my ($self,$channel,$payload) = @_;
 	my $con = $self->connection;
-	carp "Tell $channel - $payload";
+	#carp "Tell $channel - $payload";
 	my $irc_chan = '#padre_swarm_'.$channel;
 	
 	$con->send_msg( PRIVMSG => $irc_chan,
@@ -171,4 +161,27 @@ sub tell_channel {
 	
 	#$con->send_chan($irc_chan, $payload );
 }
+
+sub buffer_incoming_private {
+	my ($self,$nick,$ircmsg) = @_;
+	warn "Got incoming from $nick with $ircmsg";
+	
+	
+}
+sub  buffer_incoming {
+	      my ($self,$handle,$channel,$ircmsg)= @_;
+	      my $con = $self->connection;
+	      my $nick = $con->nick;
+	      
+	      my ($sender,$body) =  @{ $ircmsg->{params} };
+	      warn "Buffering from $sender --- $body";
+	      
+	       my $frame = {
+		       entity => $sender,
+		       channel => $channel,
+		       timestamp => time, 
+	       };
+	       push @{ $self->{incoming_buffer}{$channel} }, [$body,$frame];
+		    
+	   }
 1;

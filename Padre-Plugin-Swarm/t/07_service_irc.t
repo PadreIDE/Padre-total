@@ -24,7 +24,6 @@ my $chat = Padre::Swarm::Service::Chat->new(
 	use_transport => {
 		'Padre::Swarm::Transport::IRC' => {
 			nickname => 'swarm_'.$$ ,
-			enable_ssl=>1,
 		},
 	}
 );

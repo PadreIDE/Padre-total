@@ -61,7 +61,8 @@ sub new {
 		use_transport => {
 			#'Padre::Swarm::Transport::Multicast'=>{
 			'Padre::Swarm::Transport::IRC'=>{
-				nickname => $config->identity_nickname
+				nickname => $config->identity_nickname,
+				loopback => 1,
 			},
 		}
 	);

@@ -39,5 +39,5 @@ $chat->shutdown;
 
 $tm->cleanup;
 
-#ok( $chat->start, 'Started chat' );
-#ok( $chat->shutdown , 'Chat shutdown' );
+ok( $chat->start, 'Started chat' );
+ok( $chat->shutdown , 'Chat shutdown' );

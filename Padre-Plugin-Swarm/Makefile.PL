@@ -7,4 +7,6 @@ requires      IO::Select 0
 requires      Params::Util
 requires      Class::XSAccessor
 requires      Class::Autouse
+requires	AnyEvent::IRC
+requires	AnyEvent::XMPP
 test_requires Test::More 0.42
