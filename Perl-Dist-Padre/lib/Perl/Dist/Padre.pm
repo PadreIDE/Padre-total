@@ -23,7 +23,7 @@ To build Padre Standalone, run the following.
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry 1.1114 ();
+use Perl::Dist::Strawberry 1.11139 (); # To allow 1.11_14 for right now.
 use URI::file ();
 
 our $VERSION = '0.260010';
