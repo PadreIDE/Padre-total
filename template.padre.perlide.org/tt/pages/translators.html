@@ -24,10 +24,9 @@
  <!-- list of padre translators -->
 <ul id="translators" class="palette_text" >
 [% FOREACH t IN translators %]
-   <li id="[% t.nickname | id_attr %]" >
+   <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]" >
     [% WRAPPER chrome/styled_panel %]
 
-     <a name="[% t.language_tag %]"></a>
     [% IF t.url %]
      <h1 class="translator"><a href="[% t.url | uri %]">[% t.name | html %]</a></h1>
     [% ELSE %]
