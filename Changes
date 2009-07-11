@@ -1,4 +1,10 @@
 Changes for Perl extension Perl-Dist-Padre
 
+0.260010 Fri 10 July 2009
+    - First release to CPAN.
+    - Updated module list.	
+	- Updated to use Perl::Dist::WiX 0.192.
+    - Directions to build added.
+	
 0.25 Mon 12 Jan 2009
 	- Created as a subclass of Strawberry

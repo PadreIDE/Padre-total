@@ -20,13 +20,13 @@ To build Padre Standalone, run the following.
 
 =cut
 
-use 5.008;
+use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry ();
+use Perl::Dist::Strawberry 1.1114 ();
 use URI::file ();
 
-our $VERSION = '0.260_004';
+our $VERSION = '0.260010';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -130,6 +130,11 @@ sub install_perl_589 {
 	die "Perl 5.8.9 is not available in Padre Standalone";
 }
 
+sub install_perl_5101 {
+	my $self = shift;
+	die "Perl 5.10.1 is not available in Padre Standalone (yet)";
+}
+
 sub install_perl_modules {
 	my $self = shift;
 	$self->SUPER::install_perl_modules(@_);
@@ -149,7 +154,6 @@ sub install_perl_modules {
 		File::Copy::Recursive
 		File::ShareDir
 		File::ShareDir::PAR
-		Win32::Process
 		IPC::Run
 		Test::Object
 		Config::Tiny
