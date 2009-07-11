@@ -8,6 +8,13 @@ our @ISA = 'Padre::Service';
 
 use Carp qw( croak );
 
+sub entity {
+        my $self = shift;
+        return (exists $self->{entity}) 
+            ? $self->{entity}
+            : undef;
+            
+}
 
 sub hangup {
     my ($self,$running) = @_;

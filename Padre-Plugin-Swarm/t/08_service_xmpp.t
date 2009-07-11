@@ -1,4 +1,5 @@
-use Test::More 'no_plan';
+use Test::More skip_all => 'un finished';
+
 
 use JSON::XS;
 

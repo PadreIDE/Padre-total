@@ -6,19 +6,25 @@ use JSON::XS;
 use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
+use Padre::Swarm::Message ();
+use Params::Util qw( _INSTANCE );
+use Carp qw( croak confess carp );
+use Data::Dumper;
 
 my $marshal = 
 JSON::XS
     ->new
     ->allow_blessed
     ->convert_blessed
-    ->utf8;
+    ->utf8
+    ->filter_json_object(\&synthetic_class );
     
 our @ISA = 'Padre::Swarm::Service';
 
 use Class::XSAccessor
     getters => {
         transport => 'transport',
+
     },
     setters => {
         set_transport => 'transport',
@@ -42,9 +48,12 @@ sub start {
     Padre::Util::debug('Channels subscribed');
     $self->transport->start; 
     Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
-    $self->queue->enqueue( { type=>'disco' , want=>['chat'] } );
+    $self->queue->enqueue(
+        Padre::Swarm::Message->new( {
+            type=>'disco' , want=>['chat'] })
+    );
     
-    $self->queue->enqueue( { type=>'announce',  } );
+    $self->queue->enqueue(Padre::Swarm::Message->new(  {type=>'announce'} ) );
     
 }
 
@@ -53,8 +62,13 @@ sub service_loop {
     Padre::Util::debug("Service [$self] loop!\n") ;
     my $queue = $self->queue;
     #Padre::Util::debug("\t$queue " . $queue->pending , $/);
-    $self->send( $message ) if $message;
-    
+    if ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ){
+        $self->send( $message ) if $message;
+    }
+    elsif( ref $message ) {
+            carp "Was asked to pass $message - " . Dumper $message;
+            
+    }
     
     if ( my @ready =  $self->transport->poll(0.5) ) {
         Padre::Util::debug("Transport has ready = " . @ready );
@@ -62,18 +76,25 @@ sub service_loop {
         push @messages,
             $self->transport->receive_from_channel($_)
                 for @ready;
-        while ( my ($payload,$frame) = splice(@messages,0,2) ) {
+          while ( my ($payload,$frame) = splice(@messages,0,2) ) {
+            #warn 'Decoding ' , Dumper $payload;
             my $message = eval { $marshal->decode( $payload ); };
+
+            
             unless ($message) {
-                $self->task_warn($@ );
-                $self->task_warn($payload);
+                warn "Decode failed for $payload \n\t - with $@";
+                #$self->task_warn($@ );
+                #$self->task_warn($payload);
                 next;
             }
+            
+            warn "DECODED " . Dumper $message;
             
             $message->{$_} = $frame->{$_}
                 for keys %$frame;
                 
-            $self->receive( $message );
+            eval { $self->receive( $message ) };
+            
         }
     }
 }
@@ -107,19 +128,33 @@ sub new {
 sub chat {
     my ($self,$text) = @_;
     $self->send(
-        {message=>$text }
+        Padre::Swarm::Message->new( body => $text)
     );
 }
 
 sub say_to {
     my ($self,$text,$entity) = @_;
-    $self->send( 
-        { message=>$text, to=>$entity }
+    my $msg = Padre::Swarm::Message->new(
+        body => $text ,
+        to => $entity,
     );
+    
+    $self->send( $msg );
 }
 
 sub send {
     my ($self,$message) = @_;
+    if (ref $message) {
+        confess "pass a Padre::Swarm::Message" 
+            unless _INSTANCE( $message, 'Padre::Swarm::Message'  );
+        warn Dumper $message;
+        
+        $message->from( 'unspecified' ) 
+            unless  $message->from;
+        $message->type( 'chat' ) unless $message->type;
+    }    
+    
+    
     unless ( $self->running ) {
         $self->task_warn( "Send ignored. Service not running" );
         return;
@@ -138,15 +173,20 @@ sub promote {
     
     my $service_name = $self->service_name;
     # if $message->wants( $service_name ) ; when message is object!pls!
-    $self->send({type=>'promote', service=>$self});
+    $self->send(
+        Padre::Swarm::Message->new(type=>'promote', service=>$self)
+    );
 
     
 }
 
-use Data::Dumper;
+
 sub receive {
     my $self = shift;
     my $message = shift;
+    confess "Did not receive a message!"
+        unless ( _INSTANCE( $message, 'Padre::Swarm::Message' ) );
+
     my $type = $message->{type};
     $type ||= '';
     
@@ -164,12 +204,18 @@ sub receive {
     return;
 }
 
-sub TO_JSON { 
-    ## really should be the canonical identity
-    my $self = shift;
-    my $ref = {  %$self }       ;
-    $ref->{__origin_class} = ref $self;
-    $ref;
-}
+sub synthetic_class {
+    
+    #confess "SYNTHESISING ! " . Dumper @_; 
+    my $var = shift ;
+    if ( exists $var->{__origin_class} ) {
+
+        my $instance = bless $var , $var->{__origin_class};
+        return $instance;
+    }
+    return $var;
+};
+
+
 
 1;

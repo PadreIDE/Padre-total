@@ -127,7 +127,7 @@ sub poll {
 	$c->recv;
 	#warn "Returned from poll wait";
 	if ( keys %{ $self->{incoming_buffer} } ) {
-		warn "DATA IN BUFFER!", %{ $self->{incoming_buffer} };
+		warn "DATA IN BUFFER!", Dumper $self->{incoming_buffer} ;
 		return (keys %{ $self->{incoming_buffer} });
 	}
 	return;
@@ -165,7 +165,7 @@ sub tell_channel {
 }
 
 sub buffer_incoming_private {
-	my ($self,$nick,$ircmsg) = @_;
+	my ($self,$con,$nick,$ircmsg) = @_;
 	warn "Got incoming from $nick with $ircmsg";
 	
 	

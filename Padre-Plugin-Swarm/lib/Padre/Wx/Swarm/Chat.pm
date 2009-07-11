@@ -149,7 +149,7 @@ sub accept_message {
 	
 	my $user = $message->{user} || 'unknown';
 	my $ip   = $message->{client_address} || 'unknown';
-	my $content = $message->{message};
+	my $content = $message->body;
 	return unless defined $content;
 	my $output = sprintf( "%s@[%s] :%s\n", $user, $ip, $content );
 	$self->chatframe->AppendText( $output );
@@ -160,7 +160,8 @@ sub tell_service {
 	my $self = shift;
 	my $body = shift;
 	my $args = shift;
-	my $message = {message=>$body};
+	my $message = Padre::Swarm::Message->new({body=>$body});
+	
 	my $service = $self->service->tell($message) 
 }
 

@@ -1,17 +1,19 @@
 package Padre::Swarm::Message;
+use base qw( Class::Accessor );
+
 use strict;
 use warnings;
-
-use Class::XSAccessor
-	accessors => {
-		#entity => 'entity',
-		title  => 'title',
-		body   => 'body',
-		type   => 'type',
-		to     => 'to',
-		from   => 'from',
-	};
+__PACKAGE__->mk_accessors(qw(title body type to from));
 	
+	
+sub TO_JSON { 
+    ## really should be the canonical identity
+    my $self = shift;
+    my $ref = {  %$self }       ;
+    $ref->{__origin_class} = ref $self;
+    $ref;
+}
+
 
 =pod
 

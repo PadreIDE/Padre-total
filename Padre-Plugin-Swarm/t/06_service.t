@@ -1,39 +1,45 @@
 use Test::More 'no_plan';
 
 use JSON::XS;
-
-BEGIN {
+use t::lib::Demo;
 	use threads;
 	use threads::shared;
-use_ok( 'Padre' );
-# Create the object so that Padre->ide works
-my $app = Padre->new;
-isa_ok($app, 'Padre');
+BEGIN {
 
-use_ok( 'Padre::TaskManager' );
 use_ok( 'Padre::Swarm::Service::Chat' );
 use_ok( 'Padre::Swarm::Transport::Multicast' );
+use_ok( 'Padre::Swarm::Message' );
 }
 
-Padre::Util::set_logging( 1 );
+my $app = Padre->new;
+isa_ok($app, 'Padre');
+#Padre::Util::set_logging( 1 );
 #Padre::Util::set_tracing( 1 );
-
-my $tm = Padre::TaskManager->new();
-
 my $chat = Padre::Swarm::Service::Chat->new(
 	use_transport => {
 		'Padre::Swarm::Transport::Multicast' => {},
 	}
 );
-
 $chat->schedule;
-$chat->queue->enqueue({user=>getlogin(),type=>'chat',message=>'test'});
 
-sleep 3;
+#my $got_loopback : shared = 0 ;
+#Wx::Event::EVT_COMMAND( $app->wx->main , -1 , $chat->event,
+# sub {warn "LOOPBACK!" ; $got_loopback = 1 }
+#);
+#diag( "WX event is " . $chat->event );
+#
+$chat->queue->enqueue(
+	Padre::Swarm::Message->new(
+		{from=>getlogin(),type=>'chat',body=>'test'}
+	)
+);
+
+sleep 10;
+
+ok( $got_loopback , 'got service event' );
+
 $chat->queue->enqueue('HANGUP');
 $chat->shutdown;
-
-$tm->cleanup;
 
 #ok( $chat->start, 'Started chat' );
 #ok( $chat->shutdown , 'Chat shutdown' );
