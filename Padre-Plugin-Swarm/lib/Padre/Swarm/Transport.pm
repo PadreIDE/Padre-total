@@ -10,6 +10,7 @@ use Class::XSAccessor
         channels => 'channels',
         selector => 'selector',
         started  => 'started',
+        loopback => 'loopback',
     };
 
 sub new {

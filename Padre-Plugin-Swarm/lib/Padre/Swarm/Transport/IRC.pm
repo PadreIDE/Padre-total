@@ -158,7 +158,9 @@ sub tell_channel {
 	$con->send_msg( PRIVMSG => $irc_chan,
 		$payload
 	);
-	
+	if ( $self->loopback ) {
+		push @{ $self->{incoming_buffer}{$channel} }, [$payload,{}];
+    }
 	#$con->send_chan($irc_chan, $payload );
 }
 

@@ -66,7 +66,7 @@ sub service_loop {
             my $message = eval { $marshal->decode( $payload ); };
             unless ($message) {
                 $self->task_warn($@ );
-                $self->task_warn($message);
+                $self->task_warn($payload);
                 next;
             }
             
@@ -128,6 +128,9 @@ sub send {
     $self->transport->tell_channel( 
         12000 => $payload,
     );
+    
+
+    
     
 }
 sub promote {
