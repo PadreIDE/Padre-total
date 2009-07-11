@@ -8,6 +8,6 @@ BEGIN {
 
 use Test::More tests => 2;
 
-ok( $] >= 5.008, 'Perl version is new enough' );
+ok( $] >= 5.008001, 'Perl version is new enough' );
 
 use_ok( 'Perl::Dist::Padre' );

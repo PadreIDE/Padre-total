@@ -1,0 +1,42 @@
+You really need to start with a Bootstrap installation, because at the end of this, this will install into c:\strawberry.
+
+1) Create a par file for Alien::wxWidgets, because we need to install a patched version. ($CPAN is to be replaced by your choice of CPAN mirror.)
+
+cd %USERPROFILE%
+wget $CPAN/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
+wget http://csjewell.comyr.com/perl/version-rc.patch.txt
+wget http://www.commandline.co.uk/mtee/mtee.zip
+gzip -d Alien-wxWidgets-0.43.tar.gz
+tar -xf Alien-wxWidgets-0.43.tar
+./Alien-wxWidgets-0.43/share/bin/patch version-rc.patch.txt 
+cd Alien-wxWidgets-0.43
+perl Makefile.PL
+perl -MPAR::Dist -eblib_to_par
+(wait 40 minutes)
+copy Alien-*.par c:\
+cd ..
+
+2) Install Perl::Dist::WiX from CPAN.
+
+3) Install Perl::Dist::Strawberry from svn.
+
+svn co http://svn.ali.as/cpan/trunk/Perl-Dist-Strawberry
+cd Perl-Dist-Strawberry
+perl Makefile.PL && dmake && dmake test
+dmake install
+cd ..
+
+4) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
+
+svn co https://svn.perlide.org/padre/trunk/Perl-Dist-Padre
+cd Perl-Dist-Padre
+perl Makefile.PL && dmake && dmake test
+dmake install
+cd ..
+
+5) Actually build the dist...
+
+set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4301-MSWin32-x86-multi-thread-5.10.0.par.zip
+perldist Padre 2>&1 | mtee padre-install.txt
+(wait for 3-6 hours)
+

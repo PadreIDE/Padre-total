@@ -29,6 +29,6 @@ use Perl::Dist::Strawberry ();
 #####################################################################
 # Generation Test
 
-my $dist = t::lib::Test->new2(3);
-isa_ok( $dist, 'Perl::Dist::Chocolate' );
+my $dist = t::lib::Test->new2(2);
+isa_ok( $dist, 'Perl::Dist::Padre' );
 ok( $dist->run, '->run ok' );
