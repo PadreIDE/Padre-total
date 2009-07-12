@@ -11,6 +11,7 @@ use Class::XSAccessor
         selector => 'selector',
         started  => 'started',
         loopback => 'loopback',
+        condvar  => 'condvar',
     };
 
 sub new {

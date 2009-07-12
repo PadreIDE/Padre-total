@@ -1,4 +1,4 @@
-use Test::More 'no_plan';
+use Test::More skip_all => 'needs better Taskmanager harness';
 
 use JSON::XS;
 use t::lib::Demo;

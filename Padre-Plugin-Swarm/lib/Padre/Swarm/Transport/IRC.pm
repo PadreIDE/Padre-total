@@ -15,7 +15,7 @@ use Class::XSAccessor
 	   enable_ssl  => 'enable_ssl',
    };
    
-use Carp qw( carp );
+use Carp qw( carp confess );
 
 our @ISA = 'Padre::Swarm::Transport';
 use Data::Dumper;
@@ -23,8 +23,7 @@ use Data::Dumper;
 
 sub start {
 	my $self = shift;
-	warn 'Starting ' . __PACKAGE__;
-	
+
 	my $con = AnyEvent::IRC::Client->new;
 	$con->enable_ssl if $self->enable_ssl;
 
@@ -40,16 +39,20 @@ sub start {
 
 	my $c = AnyEvent->condvar;
 	$self->{condvar} = $c;
-	
+	$self->{started} = 1;
 	
 
 }
 
 sub shutdown {
 	my $self = shift;
+	$self->shutdown_channels;
 	$self->connection->disconnect;
 	delete $self->{connection};
 	delete $self->{condvar};
+	$self->{started} = 0;
+	
+	1;
 }
 
 sub _register_irc_callbacks {
@@ -72,7 +75,7 @@ sub _register_irc_callbacks {
 		
 	   },
 	   disconnect => sub {
-	      warn "Oh, got a disconnect: $_[1], exiting...\n";
+	      warn "Oh, got a disconnect: $_[0], exiting...\n";
 	      $self->condvar->broadcast;
 	   },
 	   registered => sub {
@@ -89,7 +92,7 @@ sub _register_irc_callbacks {
 	$con->reg_cb(
 		error => sub {
 			my ($con,$code, $message, $ircmsg) = @_;
-			warn "ERROR:[$code] - $message\n";
+			#warn "ERROR:[$code] - $message\n";
 			
 		}
 
@@ -106,8 +109,18 @@ sub _connect_channel {
 	$con->send_srv( JOIN => $room );
 }
 
+sub _shutdown_channel {
+	my ($self,$channel) = @_;
+	return 1 unless $self->{started};
+	my $con = $self->connection;
+	confess 'no connection' unless $con;
+	
+	my $room = '#padre_swarm_' . $channel;
+	$con->send_srv( PART => $room );
+	
+}
 
-use Data::Dumper;
+
 sub update_channels {
 	my ($self) = @_;
 	while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
@@ -116,6 +129,12 @@ sub update_channels {
 	
 }
 
+sub shutdown_channels {
+	my ($self) = @_;
+	while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
+		$self->_shutdown_channel( $channel, $loopback );
+	}
+}
 
 sub poll {
 	my ($self,$time) = @_;
@@ -129,10 +148,10 @@ sub poll {
 		while ( my ($channel,$buffer) = each %{ $self->{outgoing_buffer} } ){
 			next unless @$buffer;
 			my $irc_chan = '#padre_swarm_'.$channel;
-			warn "Sending channel $irc_chan data x " . scalar @$buffer, $/;
-			warn Dumper $buffer;
+			#warn "Sending channel $irc_chan data x " . scalar @$buffer, $/;
+			#warn Dumper $buffer;
 			while ( my $msg = shift @$buffer ) {
-				warn "Sending to '$irc_chan' , $msg ";
+				#warn "Sending to '$irc_chan' , $msg ";
 				$self->connection->send_chan( $irc_chan,
 					'PRIVMSG'=>$irc_chan ,
 					$msg 
@@ -145,7 +164,7 @@ sub poll {
 	$c->recv;
 	#warn "Returned from poll wait";
 	if ( keys %{ $self->{incoming_buffer} } ) {
-		warn "DATA IN BUFFER!", Dumper $self->{incoming_buffer} ;
+		#warn "DATA IN BUFFER!", Dumper $self->{incoming_buffer} ;
 		return (keys %{ $self->{incoming_buffer} });
 	}
 	return;
@@ -162,7 +181,7 @@ sub receive_from_channel {
 	if ( @queue ) {
 		$self->{incoming_buffer}{$channel} = \@queue
 	}
-	else { warn "Drained '$channel' buffer" }
+	#else { warn "Drained '$channel' buffer" }
 	
 	return @$d;
 }
@@ -178,7 +197,7 @@ sub tell_channel {
 
 sub buffer_incoming_private {
 	my ($self,$con,$nick,$ircmsg) = @_;
-	warn "Got incoming from $nick with $ircmsg";
+	#warn "Got incoming from $nick with $ircmsg";
 	
 	
 }
@@ -188,7 +207,7 @@ sub  buffer_incoming {
 	      my $nick = $con->nick;
 	      
 	      my ($sender,$body) =  @{ $ircmsg->{params} };
-	      warn "Buffering from $sender --- $body";
+	      #warn "Buffering from $sender --- $body";
 	      
 	       my $frame = {
 		       entity => $sender,
