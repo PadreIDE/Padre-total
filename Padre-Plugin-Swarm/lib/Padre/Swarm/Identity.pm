@@ -12,7 +12,6 @@ use Class::XSAccessor
 		service  => 'service',
 		resource => 'resource',
 		identity => 'identity',
-		canonical=> 'canonical',
 	};
 
 =pod
@@ -50,10 +49,43 @@ sub set_nickname {
 		$arg   =~ /([^\W!])/;
 	croak "Invalid nickname '$arg'" unless $nickname;
 	$self->{nickname} = $nickname;
-	$self->{canonical}= $self->_canonise;
 	
 }
 
-sub set_transport {
+sub set_service  {
+	my ($self,$xport) = @_;
+	$self->{service} = $xport;
 	
 }
+
+
+sub set_transport {
+	my ($self,$xport) = @_;
+	$self->{transport} = $xport;
+	
+}
+
+sub set_resource {
+	my ($self,$xport) = @_;
+	$self->{resource} = $xport;
+	
+}
+
+
+
+sub canonical { 
+	my $self = shift;
+	$self->_canonise;
+}
+sub _canonise {
+	my $self = shift;
+	my $ident =
+		sprintf( '%s!%s|%s@%s' ,
+			$self->{nickname},
+			$self->{service},
+			$self->{transport} ,
+			$self->{resource} );
+	$self->{canonical} = $ident;
+}
+
+1;
