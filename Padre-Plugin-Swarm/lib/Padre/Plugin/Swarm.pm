@@ -51,7 +51,10 @@ sub plugin_name {
 }
 
 sub plugin_icons_directory {
-	return File::Spec->catdir( shift->plugin_share_directory(@_), 'icons');
+	
+	my $dir = File::Spec->catdir( shift->plugin_share_directory(@_), 'icons');
+	warn "sharedir is '$dir'\n";
+	$dir;
 }
 
 

@@ -124,6 +124,24 @@ sub poll {
 	my $timer = AnyEvent->timer( after=>$time,
 		cb=>sub{ $c->send } );
 	#warn "$timer running";
+	
+	if ( keys %{ $self->{outgoing_buffer} } ) {
+		while ( my ($channel,$buffer) = each %{ $self->{outgoing_buffer} } ){
+			next unless @$buffer;
+			my $irc_chan = '#padre_swarm_'.$channel;
+			warn "Sending channel $irc_chan data x " . scalar @$buffer, $/;
+			warn Dumper $buffer;
+			while ( my $msg = shift @$buffer ) {
+				warn "Sending to '$irc_chan' , $msg ";
+				$self->connection->send_chan( $irc_chan,
+					'PRIVMSG'=>$irc_chan ,
+					$msg 
+				) 
+			}
+		}
+	
+	}
+	
 	$c->recv;
 	#warn "Returned from poll wait";
 	if ( keys %{ $self->{incoming_buffer} } ) {
@@ -151,17 +169,11 @@ sub receive_from_channel {
 
 sub tell_channel {
 	my ($self,$channel,$payload) = @_;
-	my $con = $self->connection;
-	#carp "Tell $channel - $payload";
-	my $irc_chan = '#padre_swarm_'.$channel;
-	
-	$con->send_msg( PRIVMSG => $irc_chan,
-		$payload
-	);
+		$self->push_write( $channel, $payload );
 	if ( $self->loopback ) {
 		push @{ $self->{incoming_buffer}{$channel} }, [$payload,{}];
     }
-	#$con->send_chan($irc_chan, $payload );
+
 }
 
 sub buffer_incoming_private {

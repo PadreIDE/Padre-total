@@ -63,7 +63,8 @@ sub service_loop {
     my $queue = $self->queue;
     #Padre::Util::debug("\t$queue " . $queue->pending , $/);
     if ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ){
-        $self->send( $message ) if $message;
+        warn "Chat send $message";
+        $self->send( $message );
     }
     elsif( ref $message ) {
             carp "Was asked to pass $message - " . Dumper $message;
@@ -94,7 +95,7 @@ sub service_loop {
                 for keys %$frame;
                 
             eval { $self->receive( $message ) };
-            
+            warn "FAILED receive $@" if $@;
         }
     }
 }
@@ -155,10 +156,6 @@ sub send {
     }    
     
     
-    unless ( $self->running ) {
-        $self->task_warn( "Send ignored. Service not running" );
-        return;
-    }
     my $payload = $marshal->encode( $message );
     $self->transport->tell_channel( 
         12000 => $payload,
@@ -174,7 +171,7 @@ sub promote {
     my $service_name = $self->service_name;
     # if $message->wants( $service_name ) ; when message is object!pls!
     $self->send(
-        Padre::Swarm::Message->new(type=>'promote', service=>$self)
+        Padre::Swarm::Message->new({type=>'promote', service=>"$self"})
     );
 
     
@@ -187,17 +184,18 @@ sub receive {
     confess "Did not receive a message!"
         unless ( _INSTANCE( $message, 'Padre::Swarm::Message' ) );
 
-    my $type = $message->{type};
+    my $type = $message->type;
     $type ||= '';
     
     if ( $type eq 'disco' ) {
+        warn "DISCO recv";
         $self->promote($message);
     }
 
 # cheap taudry hack
-    my $body = $message->{message};
-    if ( defined $body && $body =~ m|^/disco| ) {
-        $self->promote({});
+    my $body = $message->body;
+    if ( defined $body && $body =~ m|/disco| ) {
+        $self->promote($message);
     }
     
     $self->post_event( $self->event , Storable::freeze($message) );

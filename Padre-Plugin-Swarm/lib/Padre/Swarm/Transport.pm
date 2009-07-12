@@ -21,7 +21,8 @@ sub new {
     $obj{channels}      = {};
     $obj{started}       = 0;
     $obj{selector}      = $selector;
-    
+    $obj{incoming_buffer} = {};
+    $obj{outgoing_buffer} = {};
     return bless \%obj , ref $class || $class;
 }
 
@@ -81,5 +82,12 @@ SCOPE: {
  }
 
 } # SCOPE:
+
+
+sub push_write {
+    my ($self,$channel,$message) = @_;
+    push @{ $self->{outgoing_buffer}{$channel} } , $message;
+    
+}
 
 1;
