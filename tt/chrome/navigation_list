@@ -9,7 +9,7 @@
  <ul class="navigation [% css_class %]">
  [% FOREACH nav IN nav_items %]
   [% SET link_to = nav.$href_from  %]
-  <li><a href="[% IF section_nav.defined %]#[% END %][% link_to %]">[% nav.$title_from %]</a></li>
+  <li><a href="[% IF section_nav.defined %]#[% link_to | id_attr %][% ELSE %][% link_to  %][% END %]">[% nav.$title_from %]</a></li>
  [% END %]
  </ul>
  <div class="spacer"></div>
