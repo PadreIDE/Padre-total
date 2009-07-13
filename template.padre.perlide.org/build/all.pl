@@ -31,8 +31,9 @@ my $config = {
         FILTERS => {
             'id_attr' => sub {
                 my ($text) = @_;
-                $text =~ s/ /_/g;
-                return unac_string $text;
+                my( $rewrite )=  unac_string $text; # list context pls!
+                $rewrite =~ s/\s+/_/g;
+		$rewrite;
               }
           },
 };
