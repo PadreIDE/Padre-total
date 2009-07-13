@@ -38,7 +38,7 @@ sub _attach_transports {
     my $transports = $self->{use_transport};
     
     while ( my ($class,$args) = each %$transports ) {
-        Class::Autouse->autouse($class);
+        Class::Autouse->autouse_recursive( $class )  ;
         my $transport = $class->new( %$args );
         $self->set_transport( $transport );
     }

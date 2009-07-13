@@ -1,0 +1,20 @@
+Swarm Readme
+
+if you are reading this - ++ for bravery. There is much to do in swarm.
+
+Next step is to get the transport layer:
+	a) installable by the masses
+	b) cross linkable via ::Gateway
+	c) a single padre::service that can be called easily from padre to 
+		subscribe/unsubscribe new channels.
+		
+After which:
+
+Fun things. 
+	a) factor our chat in a plugin
+	b) start on collaboration channel / client spec
+	c) start on Swarm::Geometry and SwarmVerse / SwarmSpace
+	d) .. implement asteroids
+	e) .... implement anti-pacman
+	
+	
