@@ -4,13 +4,16 @@ use base qw( Class::Accessor );
 use strict;
 use warnings;
 __PACKAGE__->mk_accessors(qw(title body type to from));
-	
+use Carp qw( croak );
 	
 sub TO_JSON { 
     ## really should be the canonical identity
     my $self = shift;
-    my $ref = {  %$self }       ;
-    $ref->{__origin_class} = ref $self;
+    my $ref = {  %$self } ; # erm - better clone?
+    my $msg = ref $self;
+    croak "Not a swarm message !" unless $msg =~ s/^Padre::Swarm::Message:*//;
+    warn "Sending msg origin class of '$msg'";
+    $ref->{__origin_class} = $msg if $msg; 
     $ref;
 }
 

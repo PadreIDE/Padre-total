@@ -49,7 +49,7 @@ sub start {
     
     Padre::Util::debug('Channels subscribed');
     $self->transport->start; 
-    Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
+    #Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
     $self->queue->enqueue(
         Padre::Swarm::Message->new( {
             type=>'disco' , want=>['chat'] })
@@ -205,15 +205,17 @@ sub receive {
 }
 
 sub synthetic_class {
-    
-    Padre::Util::debug( "SYNTHESISING ! " . Dumper @_);
     my $var = shift ;
     if ( exists $var->{__origin_class} ) {
-
-        my $instance = bless $var , $var->{__origin_class};
+        my $stub = $var->{__origin_class};
+        my $msg_class = 'Padre::Swarm::Message::' . $stub;
+        
+        my $instance = bless $var , $msg_class;
         return $instance;
     }
-    return $var;
+    else {
+        return bless $var , 'Padre::Swarm::Message';
+    }
 };
 
 
