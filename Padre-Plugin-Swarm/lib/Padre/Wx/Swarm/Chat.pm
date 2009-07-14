@@ -8,6 +8,8 @@ use Padre::Wx ();
 use Padre::Config ();
 use Padre::Service::Swarm;
 use Padre::Swarm::Service::Chat;
+use Padre::Current qw{_CURRENT};
+
 use Class::Autouse;
 
 our $VERSION = '0.37';
@@ -160,7 +162,9 @@ sub tell_service {
 	my $self = shift;
 	my $body = shift;
 	my $args = shift;
-	my $message = Padre::Swarm::Message->new({body=>$body});
+	my $message =  _INSTANCE($body,'Padre::Swarm::Message')
+		? $body
+		: Padre::Swarm::Message->new({body=>$body});
 	
 	my $service = $self->service->tell($message) 
 }
@@ -171,6 +175,52 @@ sub on_text_enter {
 	$self->tell_service( $message );
 	$self->textinput->SetValue('');
 	
+}
+
+# largely copied from Padre::Wx::Main;
+
+sub on_diff_snippet {
+	my ($self) = @_;
+	my $document = _CURRENT->document or return;
+	my $text = $document->text_get;
+	my $file = $document->filename;
+	my $message = Padre::Swarm::Message->new({
+		file     => $document->filename,
+		project  => $document->project,
+		project_dir => $document->project_dir,
+		type => 'diff',
+	});
+	
+	unless ($file) {
+		return;
+	}
+	my $external_diff = $self->main->config->external_diff_tool;
+	if ($external_diff) {
+		my $dir = File::Temp::tempdir( CLEANUP => 1 );
+		my $filename = File::Spec->catdir( $dir, 'IN_EDITOR' . File::Basename::basename($file) );
+		if ( open my $fh, '>', $filename ) {
+			print $fh $text;
+			CORE::close($fh);
+			system( $external_diff, $filename, $file );
+		} else {
+			warn $!;
+			#$self->main->errorlist->AppendTe($!);
+		}
+
+		# save current version in a temp directory
+		# run the external diff on the original and the launch the
+	} else {
+		require Text::Diff;
+		my $diff = Text::Diff::diff( $file, \$text );
+		unless ($diff) {
+			#$self->main->errorlist->Append( Wx::gettext("There are no differences\n") );
+			return;
+		}
+		$message->{diff} = $diff;
+	}
+	
+	$self->tell_service( $message );
+	return;
 }
 1;
 

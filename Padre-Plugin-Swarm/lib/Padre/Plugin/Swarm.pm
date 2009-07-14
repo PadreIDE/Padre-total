@@ -75,8 +75,13 @@ sub menu_plugins_simple {
 	];
 }
 
+
+{
+my $instance ; sub instance { $instance };
+
 sub plugin_enable {
 	my $self = shift;
+	$instance = $self;
 	my $config = $self->config_read;
 	$self->set_config( $config );
 
@@ -87,8 +92,30 @@ sub plugin_enable {
 
 sub plugin_disable {
 	my $self = shift;
+	undef $instance;
 	$self->_destroy_ui;
 }
+
+
+
+}
+sub event_on_context_menu {
+	my $self = shift;
+	my $document = shift;
+	my $editor = shift;
+	my $menu   = shift;
+	my $event  = shift;
+	
+	my $diff_snip = $menu->Append( -1, Wx::gettext("Swarm diff snippet") );
+	Wx::Event::EVT_MENU(
+			$editor,
+			$diff_snip,
+			sub {
+				instance()->get_chat->on_diff_snippet;
+			},
+	);
+}
+
 
 #####################################################################
 # Custom Methods
