@@ -1,52 +1,53 @@
 Revision history for Perl extension IO-Socket-Multicast
+
 1.06_02 Tue Jul 14 10:00:00 AEST 2009
-	Adjust some win32 includes involving the ordering
-		of the definition of multicast constants.
-		winsock vs winsock2
-1.05_01 Mon Jun 29 7:00:00 AEST 2009
-	Prepare a developer release addressing test/build
+	- Adjust some win32 includes involving the ordering
+	  of the definition of multicast constants.
+	  winsock vs winsock2
+
+1.06_01 Mon Jun 29 7:00:00 AEST 2009
+	- Prepare a developer release addressing test/build
 
 1.05	Sat Aug 12 17:28:41 EDT 2006
-	Run correctly on Windows platforms under Perl 5.8.8.
+	- Run correctly on Windows platforms under Perl 5.8.8.
 
 1.03-1.04 Fri Dec  2 10:44:35 EST 2005
-	Various fixes to compile cleanly on Windows platforms.
+	- Various fixes to compile cleanly on Windows platforms.
 
 1.02	Thu Nov 17 12:04:21 EST 2005
-	Skip regression test #4 (mcast_drop) because it always fails
-		on windows platforms. This
-		should not affect functionality, as the test asks
-		mcast_drop() to return a false value when dropping
-		an address twice.
+	- Skip regression test #4 (mcast_drop) because it always fails
+	  on windows platforms. This
+	  should not affect functionality, as the test asks
+	  mcast_drop() to return a false value when dropping
+	  an address twice.
 
 1.01	July 5, 2005
-	All symbols now in IO::Socket::Multicast package
-            (some were in IO::Socket in previous versions)
-	Incorporates patches to compile cleanly on Win32 systems,
-		contributed by Thomas Kratz.
+	- All symbols now in IO::Socket::Multicast package
+          (some were in IO::Socket in previous versions)
+	- Incorporates patches to compile cleanly on Win32 systems,
+	  contributed by Thomas Kratz.
 
 1.00	April 9, 2005
-	Reconstructed module after CVS server crash.
-	Fixed documentation errors
+	- Reconstructed module after CVS server crash.
+	- Fixed documentation errors
 
 0.25	August 25, 2001
-        Document ReuseAddr
+        - Document ReuseAddr
 
 0.11	August 1, 2000
-	Fixed core dumps on some systems.
-	Added warnings about broken linuxes.
-	IO::Interface 0.94 is now a prerequisite.
+	- Fixed core dumps on some systems.
+	- Added warnings about broken linuxes.
+	- IO::Interface 0.94 is now a prerequisite.
 
 0.10  July 18, 2000
-	Documentation bug fixes
+	- Documentation bug fixes
 
 0.03  July 18, 2000
-	Turned into a subclass of IO::Socket::INET
+	- Turned into a subclass of IO::Socket::INET
 
 0.02  July 17, 2000
-	First release
+	- First release
 
 0.01  Fri Mar 31 11:28:47 2000
 	- original version; created by h2xs 1.20 with options
-		-n Ioctl::Atmark -cf
-
+	  -n Ioctl::Atmark -cf
