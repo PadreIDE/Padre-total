@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-27 10:22+0300\n"
+"POT-Creation-Date: 2009-07-05 20:43+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -14,107 +14,113 @@ msgstr ""
 msgid "Perl 6"
 msgstr "Perl 6"
 
-#: lib/Padre/Plugin/Perl6.pm:104
+#: lib/Padre/Plugin/Perl6.pm:99
 msgid "Create Perl 6..."
 msgstr "Criar em Perl 6..."
 
-#: lib/Padre/Plugin/Perl6.pm:109
+#: lib/Padre/Plugin/Perl6.pm:104
 msgid "Script"
 msgstr "Script"
 
-#: lib/Padre/Plugin/Perl6.pm:114
+#: lib/Padre/Plugin/Perl6.pm:109
 msgid "Class"
 msgstr "Classe"
 
-#: lib/Padre/Plugin/Perl6.pm:119
+#: lib/Padre/Plugin/Perl6.pm:114
 msgid "Grammar"
 msgstr "Gramática"
 
-#: lib/Padre/Plugin/Perl6.pm:124
+#: lib/Padre/Plugin/Perl6.pm:119
 msgid "Package"
 msgstr "Pacote"
 
-#: lib/Padre/Plugin/Perl6.pm:129
+#: lib/Padre/Plugin/Perl6.pm:124
 msgid "Module"
 msgstr "Módulo"
 
-#: lib/Padre/Plugin/Perl6.pm:134
+#: lib/Padre/Plugin/Perl6.pm:129
 msgid "Role"
 msgstr "Role"
 
-#: lib/Padre/Plugin/Perl6.pm:139
+#: lib/Padre/Plugin/Perl6.pm:134
 msgid "Inlined in Perl 5"
 msgstr "Inline em Perl 5"
 
-#: lib/Padre/Plugin/Perl6.pm:147
+#: lib/Padre/Plugin/Perl6.pm:142
 msgid "Export..."
 msgstr "Exportar..."
 
-#: lib/Padre/Plugin/Perl6.pm:153
+#: lib/Padre/Plugin/Perl6.pm:148
 msgid "Perl 6 Executable"
 msgstr "Executável Perl 6"
 
-#: lib/Padre/Plugin/Perl6.pm:160
+#: lib/Padre/Plugin/Perl6.pm:155
 msgid "Perl 6 PIR"
 msgstr "PIR Perl 6"
 
-#: lib/Padre/Plugin/Perl6.pm:167
+#: lib/Padre/Plugin/Perl6.pm:162
 msgid "Full html"
 msgstr "HTML Completo"
 
-#: lib/Padre/Plugin/Perl6.pm:172
+#: lib/Padre/Plugin/Perl6.pm:167
 msgid "Simple html"
 msgstr "HTML Simples"
 
-#: lib/Padre/Plugin/Perl6.pm:177
+#: lib/Padre/Plugin/Perl6.pm:172
 msgid "Snippet html"
 msgstr "Trecho HTML"
 
-#: lib/Padre/Plugin/Perl6.pm:184
-msgid "Show Perl 6 Help\tF2"
-msgstr "Mostrar Ajuda do Perl6\tF2"
+#: lib/Padre/Plugin/Perl6.pm:179
+msgid "Perl 6 Help\tF2"
+msgstr "Ajuda do Perl6\tF2"
 
-#: lib/Padre/Plugin/Perl6.pm:191
+#: lib/Padre/Plugin/Perl6.pm:186
 msgid "Cleanup STD.pm Lex Cache"
 msgstr "Limpar Cache Lex do STD.pm"
 
-#: lib/Padre/Plugin/Perl6.pm:198
+#: lib/Padre/Plugin/Perl6.pm:193
 msgid "Preferences"
 msgstr "Preferências"
 
-#: lib/Padre/Plugin/Perl6.pm:205
+#: lib/Padre/Plugin/Perl6.pm:200
 msgid "About"
 msgstr "Sobre"
 
-#: lib/Padre/Plugin/Perl6.pm:253
-msgid "Perl 6 coloring is based on\n"
-msgstr "Coloração Perl 6 baseada em\n"
+#: lib/Padre/Plugin/Perl6.pm:249
+msgid "This plugin enables useful Perl 6 features on Padre IDE."
+msgstr "Este plugin ativa elementos úteis do Perl 6 no Padre."
 
-#: lib/Padre/Plugin/Perl6.pm:254
-msgid "Syntax::Highlight::Perl6 version "
-msgstr "Colorização de Sintaxe em Perl 6"
+#: lib/Padre/Plugin/Perl6.pm:250
+msgid "It integrates coloring and easy access to Perl 6 help documents."
+msgstr "Integra colorização e acesso fácil a documentos de ajuda do Perl 6."
 
-#: lib/Padre/Plugin/Perl6.pm:280
+#: lib/Padre/Plugin/Perl6.pm:251
+msgid "The following modules are used:"
+msgstr "Os seguintes módulos são usados:"
+
+#: lib/Padre/Plugin/Perl6.pm:279
 msgid "Cannot find STD.pm lex cache"
 msgstr "Não foi possível encontrar o cache lex do STD.pm"
 
-#: lib/Padre/Plugin/Perl6.pm:470
-#: lib/Padre/Plugin/Perl6.pm:593
-#: lib/Padre/Plugin/Perl6.pm:770
+#: lib/Padre/Plugin/Perl6.pm:400
+#: lib/Padre/Plugin/Perl6.pm:523
+#: lib/Padre/Plugin/Perl6.pm:700
 msgid "No document"
 msgstr "Nenhum documento"
 
-#: lib/Padre/Plugin/Perl6.pm:470
-#: lib/Padre/Plugin/Perl6.pm:593
-#: lib/Padre/Plugin/Perl6.pm:770
+#: lib/Padre/Plugin/Perl6.pm:400
+#: lib/Padre/Plugin/Perl6.pm:523
+#: lib/Padre/Plugin/Perl6.pm:700
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:806
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:848
 msgid "Error"
 msgstr "Erro"
 
-#: lib/Padre/Plugin/Perl6.pm:476
+#: lib/Padre/Plugin/Perl6.pm:406
 msgid "Not a Perl 6 file"
 msgstr "Não é um arquivo Perl 6"
 
-#: lib/Padre/Plugin/Perl6.pm:477
+#: lib/Padre/Plugin/Perl6.pm:407
 msgid "Operation cancelled"
 msgstr "Operação cancelada"
 
@@ -221,6 +227,23 @@ msgstr "Comentar linha com erro"
 msgid "Surround with try { ... }"
 msgstr "Envolva com try { ... }"
 
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:770
+msgid "Convert POD6 to XHTML"
+msgstr "Converter POD6 para XHTML"
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:805
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:847
+msgid "Operation failed!"
+msgstr "Operação falhou!"
+
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:817
+msgid "Convert POD6 to Text"
+msgstr "Converter POD6 para Texto"
+
+#: lib/Padre/Plugin/Perl6/Perl6HelpDialog.pm:38
+msgid "Perl 6 Help (Powered by App::Grok)"
+msgstr "Ajuda do Perl6 (via App::Grok)"
+
 #: lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm:191
 msgid "Outline"
 msgstr "Esboço"
@@ -245,6 +268,10 @@ msgstr "Ativar Colorização Automática"
 msgid "Colorizer:"
 msgstr "Colorizador:"
 
+#~ msgid "Perl 6 coloring is based on\n"
+#~ msgstr "Coloração Perl 6 baseada em\n"
+#~ msgid "Syntax::Highlight::Perl6 version "
+#~ msgstr "Colorização de Sintaxe em Perl 6"
 #~ msgid "Export Full HTML"
 #~ msgstr "Exportar HTML Completo"
 #~ msgid "Export Simple HTML"
