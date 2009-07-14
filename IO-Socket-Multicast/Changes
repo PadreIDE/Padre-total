@@ -1,5 +1,8 @@
 Revision history for Perl extension IO-Socket-Multicast
-
+1.06_02 Tue Jul 14 10:00:00 AEST 2009
+	Adjust some win32 includes involving the ordering
+		of the definition of multicast constants.
+		winsock vs winsock2
 1.05_01 Mon Jun 29 7:00:00 AEST 2009
 	Prepare a developer release addressing test/build
 
