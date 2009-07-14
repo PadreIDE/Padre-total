@@ -12,6 +12,7 @@ unless ( $Config{d_inetaton} or $^O eq 'MSWin32' ) {
 
 WriteMakefile(
 	NAME	     => 'IO::Socket::Multicast',
+	ABSTRACT     => 'Send and receive multicast messages',
 	VERSION_FROM => 'lib/IO/Socket/Multicast.pm',
 	LIBS	     => \@libs, # e.g., '-lm' 
 	DEFINE	     => '',     # e.g., '-DHAVE_SOMETHING' 
