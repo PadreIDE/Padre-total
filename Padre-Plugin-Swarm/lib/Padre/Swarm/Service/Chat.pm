@@ -2,7 +2,7 @@ package Padre::Swarm::Service::Chat;
 
 use strict;
 use warnings;
-use JSON::XS;
+require JSON::XS;
 use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
@@ -11,13 +11,15 @@ use Params::Util qw( _INSTANCE );
 use Carp qw( croak confess carp );
 use Data::Dumper;
 
-my $marshal = 
+sub marshal {
+my   $marshal = 
 JSON::XS
     ->new
     ->allow_blessed
     ->convert_blessed
     ->utf8
     ->filter_json_object(\&synthetic_class );
+}
     
 our @ISA = 'Padre::Swarm::Service';
 
@@ -79,7 +81,7 @@ sub service_loop {
                 for @ready;
           while ( my ($payload,$frame) = splice(@messages,0,2) ) {
             #warn 'Decoding ' , Dumper $payload;
-            my $message = eval { $marshal->decode( $payload ); };
+            my $message = eval { $self->marshal->decode( $payload ); };
 
             
             unless ($message) {
@@ -156,7 +158,7 @@ sub send {
     }    
     
     
-    my $payload = $marshal->encode( $message );
+    my $payload = $self->marshal->encode( $message );
     $self->transport->tell_channel( 
         12000 => $payload,
     );
@@ -204,7 +206,7 @@ sub receive {
 
 sub synthetic_class {
     
-    #confess "SYNTHESISING ! " . Dumper @_; 
+    Padre::Util::debug( "SYNTHESISING ! " . Dumper @_);
     my $var = shift ;
     if ( exists $var->{__origin_class} ) {
 
