@@ -1,27 +1,38 @@
 package IO::Socket::Multicast;
 
-require 5.005;
+use 5.005;
 use strict;
-use vars qw(@ISA @EXPORT_OK @EXPORT %EXPORT_TAGS $VERSION);
-
-use IO::Socket;
 use Carp 'croak';
-require Exporter;
-require DynaLoader;
-eval <<END; # or warn "IO::Interface module not installed; Cannot use interface names.\n";
-  use IO::Interface 0.94 'IFF_MULTICAST';
-END
-
-my @functions = qw(mcast_add mcast_drop mcast_if mcast_loopback 
-		   mcast_ttl mcast_dest mcast_send);
-
-%EXPORT_TAGS = ('all'       => \@functions,
-		'functions' => \@functions);
-@EXPORT = ( );
-@EXPORT_OK = @{ $EXPORT_TAGS{'all'} };
-
-@ISA = qw(Exporter DynaLoader IO::Socket::INET);
-$VERSION = '1.05';
+use Exporter   ();
+use DynaLoader ();
+use IO::Socket;
+BEGIN {
+  eval "use IO::Interface 0.94 'IFF_MULTICAST';";
+}
+use vars qw(@ISA @EXPORT_OK @EXPORT %EXPORT_TAGS $VERSION);
+BEGIN {
+  my @functions = qw(
+    mcast_add
+    mcast_drop
+    mcast_if
+    mcast_loopback
+    mcast_ttl
+    mcast_dest
+    mcast_send
+  );
+  $VERSION = '1.06_02';
+  @ISA = qw(
+    Exporter
+    DynaLoader
+    IO::Socket::INET
+  );
+  @EXPORT = ( );
+  %EXPORT_TAGS = (
+    'all'       => \@functions,
+    'functions' => \@functions,
+  );
+  @EXPORT_OK = @{ $EXPORT_TAGS{'all'} };
+}
 
 my $IP = '\d+\.\d+\.\d+\.\d+';
 
