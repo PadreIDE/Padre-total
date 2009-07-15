@@ -184,16 +184,22 @@ sub on_diff_snippet {
 	my $document = _CURRENT->document or return;
 	my $text = $document->text_get;
 	my $file = $document->filename;
-	my $message = Padre::Swarm::Message->new({
-		file     => $document->filename,
-		project  => $document->project,
-		project_dir => $document->project_dir,
-		type => 'diff',
-	});
-	
 	unless ($file) {
 		return;
 	}
+	my $canonical_file = $file;
+	my $project_dir = $document->project_dir;
+	
+	$canonical_file =~ s/^$project_dir//;
+	
+	my $message = Padre::Swarm::Message->new({
+		file     => $canonical_file,
+		project_name  => $document->project_name,
+		project_dir => $project_dir,
+		type => 'diff',
+	});
+	
+
 	my $external_diff = $self->main->config->external_diff_tool;
 	if ($external_diff) {
 		my $dir = File::Temp::tempdir( CLEANUP => 1 );
