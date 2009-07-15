@@ -8,6 +8,8 @@ var channels = {
    parrot:       {title:"Parrot",                        host:"irc.perl.org",     channel:"parrot"},
    perl_qa:      {title:"Perl Quality Assurance",        host:"irc.perl.org",     channel:"perl-qa"},
    locale_fr:    {title:"Perl in French",                host:"irc.perl.org",     channel:"perlfr"},
+   locale_hu:    {title:"Perl in Hungarian",             host:"irc.perl.org",     channel:"magyar.pm"},
+   locale_il:    {title:"Perl in Israel",                host:"irc.perl.org",     channel:"israel.pm"},
    locale_it:    {title:"Perl in Italian",               host:"irc.freenode.net", channel:"perl.it"},
    locale_jp:    {title:"Perl in Japanese",              host:"irc.freenode.net", channel:"jpa-perl"},
    locale_kr:    {title:"Perl in Korean",                host:"irc.freenode.net", channel:"perl-kr"},
