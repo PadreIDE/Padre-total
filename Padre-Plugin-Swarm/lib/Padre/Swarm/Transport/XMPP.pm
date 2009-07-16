@@ -41,16 +41,18 @@ sub new {
 	my $transport_id = $user . '/' . $resource;
 
 	
-	my $xc = Net::Jabber::Client->new(debug=>2);
-	#my $Debug = new Net::XMPP::Debug();
-	#$Debug->Init(level=>1,file=>"stdout");
-	#$xc->{DEBUG} = $Debug;
+	my $xc = Net::Jabber::Client->new(debug=>1);
+	my $Debug = new Net::XMPP::Debug();
+	$Debug->Init(level=>1,file=>"stdout");
+	$xc->{DEBUG} = $Debug;
 	$xc->SetCallBacks(
-		onconnect=> $self->cb(
+		onconnect=> sub { $self->connected( username=>$username,password=>$pass,resource=>$resource  )},
+		
+		
+		$self->cb(
 			username => $username,
 			password => $pass,
-			resource => $resource,
-			
+			resource => $resource,	
 		)->connected,
 		
 		ondisconnect=> $self->cb()->disconnected,
@@ -84,16 +86,29 @@ sub start {
 	
 
 	warn "Starting $xc";
-	$xc->Execute(
+
+	my $status = $xc->Connect(
 		hostname=>$self->server,
 		processtimeout=>0.5,
 		tls => 0,
+		
 	);
+	$self->{started} = $status;
+	$xc->Execute;
+
+
+}
+
+sub shutdown {
+	my $self = shift;
+	$self->connection->Disconnect;
+	
+	
 }
 
 sub poll {
 	my $self = shift;
-	if ( my $status = $self->Process(0.5) ) {
+	if ( my $status = $self->connection->Process(0.5) ) {
 		warn "Data was processed!";
 		
 	}
@@ -140,8 +155,10 @@ sub _shutdown_channel {
 
 sub connected {
 	my ($self,%args) = @_;
+	warn "Send AUTH!";
 	$self->connection->AuthSend(
-		%args
+		%args,
+		'block' => undef,
 	);
 	
 }

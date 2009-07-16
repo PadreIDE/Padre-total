@@ -67,7 +67,7 @@ sub cb {
     my $cb = Padre::Swarm::Callback::GENERATE(
         $instance, @args
     );
-    
+    warn "GENERATED callback $cb";
     return $cb
 }
 
@@ -82,9 +82,23 @@ sub start { die }
 
 sub shutdown { die };
 
+
+sub receive_from_channel {
+	my ($self,$channel) = @_;
+	return unless exists $self->{incoming_buffer}{$channel};
+	
+	my @queue = @{ delete $self->{incoming_buffer}{$channel} };
+	my $d = shift @queue;
+	if ( @queue ) {
+		$self->{incoming_buffer}{$channel} = \@queue
+	}
+	#else { warn "Drained '$channel' buffer" }
+	
+	return @$d;
+}
+
 sub transport_name { die };
 
-sub receive_from_channel { die } ;
 
 sub tell_channel { die };
 
