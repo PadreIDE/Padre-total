@@ -240,7 +240,10 @@ sub _update_list_box() {
 	$self->_list->Clear();
 	my $pos = 0;
 	foreach my $target (@{$self->_targets_index}) {
-		if($target =~ /$search_expr/i) {
+		if($target =~ /^$search_expr$/i) {
+			$self->_list->Insert($target, 0, $target);
+			$pos++;
+		} elsif($target =~ /$search_expr/i) {
 			$self->_list->Insert($target, $pos, $target);
 			$pos++;
 		}
