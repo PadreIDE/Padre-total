@@ -3,7 +3,7 @@ package Padre::Plugin::Perl6::Perl6OutlineTask;
 use strict;
 use warnings;
 
-our $VERSION = '0.50';
+our $VERSION = '0.51';
 
 use base 'Padre::Task::Outline';
 
