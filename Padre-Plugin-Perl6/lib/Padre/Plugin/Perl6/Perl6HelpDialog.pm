@@ -218,29 +218,6 @@ sub _search() {
 		$self->_grok(App::Grok->new);
 		my @targets_index = sort $self->_grok->target_index();
 		$self->_targets_index( \@targets_index ); 
-
-		#extend grok so it knows about Perl 6 table index
-		my $filename = File::Spec->catdir( 
-			Cwd::realpath( File::Basename::dirname(__FILE__) ),
-			'perl6_table_index.pod' );
-		open FILE, $filename or die "Cannot open $filename\n";    
-		until (<FILE> =~ /=head1 Table index/) {}
-		my $item = undef;
-		while(my $line = <FILE>) {
-			if($line =~ /^=head2\s+(.+?)$/i) {
-				$item = $1;
-			} elsif($item) {
-				if(not $self->_grok->{functions}{$item}) {
-					my @empty = ($item,'');
-					$self->_grok->{functions}{$item} = \@empty;
-				}
-				$self->_grok->{functions}{$item}[1] .= $line;
-			}
-		}
-		close FILE;
-		
-		@targets_index = sort $self->_grok->target_index();
-		$self->_targets_index( \@targets_index ); 
 	};
 	
 	return;
