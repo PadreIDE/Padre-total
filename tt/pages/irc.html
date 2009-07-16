@@ -5,10 +5,11 @@
 [% WRAPPER lib/xhtml_doc %]
 
 
-
+[% WRAPPER chrome/styled_panel %]
 <script type="text/javascript" src="static/irc.js" ></script>
 <p>Please select a nickname and a channel and click on Connect.</p>
-<form action="#" id="n"><div>
+<form action="#" id="n">
+<div>
 <label for="irc_nickname">Nickname</label><input id="irc_nickname" name="nickname" value="" />
 <script type="text/javascript">setup_page();</script>
 <input type="button" onclick="javascript:on_click()" value="Connect" />
@@ -22,5 +23,7 @@ todo: check values received on the url:
 
    Put some explanation on the top of the page (maybe in multiple languages)
 -->
-</div></form>
+</div>
+</form>
+[% END %]
 [% END %]
