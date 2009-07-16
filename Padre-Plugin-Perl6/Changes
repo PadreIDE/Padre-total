@@ -1,5 +1,13 @@
 Changes
 
+=head1 0.51 2009.7.16
+
+	- Exact case-insensitive matches are always displayed first in Perl 6 Help results.
+	- Depends on lucky grok 0.13 which knows about Perl 6 tablets.
+	- No need to extend grok with Perl 6 tablets anymore; grok 0.13 knows about it now.
+	- Updated translations:
+		Brazilian portuguese (garu++)
+
 =head1 0.50 2009.7.10
 
 	- Wrote a script to read http://www.perlfoundation.org/perl6/index.cgi?perl_table_index 
