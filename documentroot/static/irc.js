@@ -83,12 +83,19 @@ function setup_page() {
     }
 
     var html = '<select name="channel">';
+    var selected_index;
+    var cnt = 0;
     for (var i in channels) {
         // '<tr><td><input type="radio" name="channel" value="' + i + '"';
+        if (i == ch) {
+            selected_index = cnt;
+        }
         html    += '<option value="' + i + '">'  + channels[i].title + '</option>';
+        cnt++;
     }
     html    += '</select>';
     document.write(html);
+    document.forms.n.channel.selectedIndex = selected_index;
 }
 
 
