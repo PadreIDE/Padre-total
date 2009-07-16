@@ -17,6 +17,22 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 July 16
+        url: http://ahmadzawawi.blogspot.com/2009/07/padre-perl-6-lucky-grok-release.html
+        title: Padre Perl 6 lucky grok release
+        comment: by Ahmad M. Zawawi
+      - date: 2009 July 16
+        url: http://use.perl.org/~Alias/journal/39300
+        title: The Hazards of Living in the Future (Padre Party on 26th)
+        comment: by Adam Kennedy
+      - date: 2009 July 16
+        url: http://use.perl.org/~Alias/journal/39293
+        title: On July 27th please join us for Padre's 1st Birthday Party!
+        comment: by Adam Kennedy
+      - date: 2009 July 11
+        url: http://szabgab.com/blog/2009/07/1247304075.html
+        title: Padre standalone installer for Windows - first beta version
+        comment: by Gabor Szabo
       - date: 2009 July 10
         url: http://ahmadzawawi.blogspot.com/2009/07/padre-perl-6-help-and-tablets.html
         title: Padre Perl 6 Help and Tablets
