@@ -1,13 +1,16 @@
 package Padre::Swarm::Transport;
 use strict;
 use warnings;
-use Carp qw( croak );
+use Carp qw( croak confess );
 use Params::Util qw( _POSINT _STRING _INSTANCE );
+use Padre::Swarm::Callback;
+
 use IO::Select;
 use Class::XSAccessor
     accessors => {
         subscriptions => 'subscriptions',
         channels => 'channels',
+        identity => 'identity',
         selector => 'selector',
         started  => 'started',
         loopback => 'loopback',
@@ -54,35 +57,19 @@ sub unsubscribe_channel {
     }
 }
 
-## Curry a callback from self-> 
-SCOPE: {
- my %callbacks;   
- 
- sub cb {
+sub cb {
     my $instance = shift;
-    my $method   = shift;
-    
-    croak 'You cannot raise a callback to a class. Pass an object instance'
+    my @args = @_;
+
+    confess  'You cannot raise a callback to a class. Pass an object instance'
         unless _INSTANCE( $instance , __PACKAGE__ );
-    croak 'You must pass a valid method name' 
-        unless _STRING( $instance );
 
-    my $signature = sprintf('%s/%s', $instance, $method );
+    my $cb = Padre::Swarm::Callback::GENERATE(
+        $instance, @args
+    );
     
-    croak "You cannot callback to '$method'. '$instance' has no such method"
-        unless $instance->can( $method );
-        
-    if ( exists $callbacks{"$signature"} ) {
-        return $callbacks{"$signature"};
-    }
-    else {
-        my $cb = sub { $instance->$method( @_ ) };
-        $callbacks{"$signature"} = $cb; 
-        return $cb;
-    }
- }
-
-} # SCOPE:
+    return $cb
+}
 
 
 sub push_write {
@@ -90,5 +77,19 @@ sub push_write {
     push @{ $self->{outgoing_buffer}{$channel} } , $message;
     
 }
+
+sub start { die }
+
+sub shutdown { die };
+
+sub transport_name { die };
+
+sub receive_from_channel { die } ;
+
+sub tell_channel { die };
+
+sub poll { die };
+
+
 
 1;

@@ -188,13 +188,15 @@ sub on_diff_snippet {
 		return;
 	}
 	my $canonical_file = $file;
-	my $project_dir = $document->project_dir;
+	my $project = $document->project;
+	
+	my $project_dir = $project->directory;
 	
 	$canonical_file =~ s/^$project_dir//;
 	
 	my $message = Padre::Swarm::Message->new({
 		file     => $canonical_file,
-		project_name  => $document->project_name,
+		project_name  => $project->name,
 		project_dir => $project_dir,
 		type => 'diff',
 	});
