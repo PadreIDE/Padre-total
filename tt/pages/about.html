@@ -9,6 +9,13 @@
  section_nav=1
  %]
 
+<!--
+The content of this pages is generated from a yaml file maintained manually.
+If you write about Padre, please make sure you also add link here
+or if you don't have commit bit on the Padre repository then tell us about the
+post on our IRC channel.
+-->
+
 [% FOREACH t IN about %]
  [% WRAPPER chrome/styled_panel %]
  <h2><a id="[% t.title | id_attr %]">[% t.title | html %]</a></h2>
