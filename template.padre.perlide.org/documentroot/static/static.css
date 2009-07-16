@@ -17,10 +17,6 @@ div#palette {
     margin: 0.15em;
 }
 
-.palette_text {
-    color: black;
-    background-color: transparent;
-}
 
 a:link {
     color: #053935;
@@ -40,9 +36,11 @@ body {
     font-size: 0.8em;
     margin: 0;
     padding: 0;
-        
-        background-image: url(houndstooth_grad.png);
-        background-color: #cfcfcf;
+    
+    color: #000;
+
+    background-image: url(houndstooth_grad.png);
+    background-color: #cfcfcf;
         background-repeat: repeat-x;
 
 }
@@ -218,7 +216,7 @@ ul#translator h2 {
     margin-bottom: 1em
 }
 .styled_panel {
-    padding: 0.5em;
+    padding: 1em;
     border: solid 1px #ACA;
     background-color: white;
 }
