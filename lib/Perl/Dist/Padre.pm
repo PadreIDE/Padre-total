@@ -26,7 +26,7 @@ use warnings;
 use Perl::Dist::Strawberry 1.11139 (); # To allow 1.11_14 for right now.
 use URI::file ();
 
-our $VERSION = '0.260010';
+our $VERSION = '0.270';
 our @ISA     = 'Perl::Dist::Strawberry';
 
 
@@ -49,7 +49,7 @@ sub new {
 
 		# Program version.
 		build_number         => 1,
-		beta_number          => 1,
+		beta_number          => 2,
 		
 		# Temporary.
 		trace => 2,
@@ -154,7 +154,6 @@ sub install_perl_modules {
 		File::Copy::Recursive
 		File::ShareDir
 		File::ShareDir::PAR
-		IPC::Run
 		Test::Object
 		Config::Tiny
 		Test::ClassAPI
@@ -164,12 +163,6 @@ sub install_perl_modules {
 		List::MoreUtils
 		Task::Weaken
 		PPI
-		File::Find::Rule::Perl
-		File::Find::Rule::VCS
-		Module::Extract
-		Module::Manifest
-		Module::Math::Depends
-		Module::Inspector
 		Module::Refresh
 		Devel::Symdump
 		Pod::Coverage
@@ -192,6 +185,8 @@ sub install_perl_modules {
 		Parse::ExuberantCTags
 		CPAN::Mini
 		Portable
+		Win32API::File
+		Capture::Tiny
 	} );
 
 	# The rest of the modules are order-specific,
