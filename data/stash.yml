@@ -17,6 +17,14 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 July 17
+        url: http://onionstand.blogspot.com/2009/07/padre-040-released.html
+        title: Padre 0.40 released!
+        comment: by garu on The Onion Stand
+      - date: 2009 July 16
+        url: http://szabgab.com/blog/2009/07/1247770275.html
+        title: Why am I writing Padre? - The business aspect
+        comment: by Gabor Szabo
       - date: 2009 July 16
         url: http://ahmadzawawi.blogspot.com/2009/07/padre-perl-6-lucky-grok-release.html
         title: Padre Perl 6 lucky grok release
