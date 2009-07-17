@@ -16,6 +16,41 @@ use Class::XSAccessor
         loopback => 'loopback',
         condvar  => 'condvar',
     };
+    
+    
+=pod
+
+=head1 NAME
+
+Padre::Swarm::Transport - Swarm network transport
+
+=head1 SYNOPSIS
+
+  my $t = Padre::Swarm::Transport->new();
+  $t->subscribe_channel( 65000 );
+  $t->start;
+  my $data = 'Hello world!';
+  $t->tell_channel( 65000 => $data );
+  
+  my @incoming;
+  my @channels = $t->poll(1);
+  foreach my $channel ( @channels ) {
+    my ($payload,$frame) = $t->receive_from_channel( $channel );
+    next if $frame->{address} = $MY_ADDRESS;
+    push @incoming , $payload;
+    
+  }
+  
+=head1 DESCRIPTION
+
+Generic class describing the interface for a Padre::Swarm::Transport
+
+
+=head1 METHODS
+
+
+=cut
+
 
 sub new {
     my ($class,%args) = @_;
