@@ -1,5 +1,7 @@
 Changes
 
+	- eliminate crash (#445 and #299) (szabgab)
+
 =head1 0.51 2009.7.16
 
 	- Exact case-insensitive matches are always displayed first in Perl 6 Help results.
