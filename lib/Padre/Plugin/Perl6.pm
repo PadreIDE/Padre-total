@@ -871,11 +871,11 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Perl6 - Padre plugin for Perl6
+Padre::Plugin::Perl6 - Padre plugin for Perl 6
 
 =head1 SYNOPSIS
 
-After installation when you run Padre there should be a menu option Plugins/Perl6.
+After installation when you run Padre there should be a menu option Plugins/Perl 6.
 
 =head1 AUTHOR
 
