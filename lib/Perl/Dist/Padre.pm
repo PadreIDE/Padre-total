@@ -189,6 +189,33 @@ sub install_perl_modules {
 		Capture::Tiny
 	} );
 
+	# Install the dependencies for Padre::Plugin::Perl6
+	$self->install_modules( qw{
+		Locale::Msgfmt
+		Perl6::Perldoc
+		Perl6::Perldoc::To::Ansi
+		Perl6::Doc
+		Log::Trace
+		Test::Assertions::TestScript
+		Pod::Xhtml
+		Pod::Text::Ansi
+		IO::Interactive
+		App::Grok
+		Data::OptList
+		Sub::Install
+		Sub::Exporter
+		Scope::Guard
+		Devel::GlobalDestruction
+		Sub::Name
+		Algorithim::C3
+		Class::C3
+		MRO::Compat
+		YAML::Syck
+		Class::MOP
+		Moose
+		Syntax::Highlight::Perl6
+	} );
+	
 	# The rest of the modules are order-specific,
 	# for reasons maybe involving CPAN.pm but not fully understodd.
 
@@ -200,7 +227,7 @@ sub install_perl_modules {
 		);
 		$self->insert_fragment( 'Alien_wxWidgets', $filelist->files );
 	} else {
-		$self->install_module( name => 'Alien::wxWidgets'        );
+		$self->install_module( name => 'Alien::wxWidgets'    );
 	}
 	# Install the Wx module over the top of alien module
 	$self->install_module( name => 'Wx'                      );
@@ -210,6 +237,9 @@ sub install_perl_modules {
 
 	# And finally, install Padre itself
 	$self->install_module( name => 'Padre'                   );
+
+	# Last, but least, install Padre::Plugin::Perl6
+	$self->install_module( name => 'Padre::Plugin::Perl6'    );
 
 	return 1;
 }
