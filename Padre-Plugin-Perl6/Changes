@@ -6,6 +6,7 @@ Changes
 	- Fixed ticket:457 "Store Perl 6 temporary folders in a persistent
 		temporary directory"
 	- Cleanup STD lex cache now works with ticket:457
+	- Updated Arabic translation.
 
 =head1 0.52 2009.7.18
 
