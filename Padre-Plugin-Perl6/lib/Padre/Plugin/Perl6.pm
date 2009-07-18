@@ -202,6 +202,28 @@ sub menu_plugins {
 		sub { $self->show_perl6_doc; },
 	);
 
+	# More Help? sub menu
+	my $more_help_menu = Wx::Menu->new();
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("More Help?"), $more_help_menu),
+		sub {  },
+	);
+
+	# Goto #padre
+	Wx::Event::EVT_MENU(
+		$main,
+		$more_help_menu->Append( -1, Wx::gettext("Goto #padre for Padre help"), ),
+		sub { },
+	);
+	
+	# Goto #perl6
+	Wx::Event::EVT_MENU(
+		$main,
+		$more_help_menu->Append( -1, Wx::gettext("Goto #perl6 for Perl 6 help"), ),
+		sub { },
+	);
+	
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
 		$main,
