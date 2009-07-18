@@ -147,14 +147,28 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$refactor_menu->Append( -1, Wx::gettext("Find variable declaration"), ),
-		sub { },
+		sub { 
+			Wx::MessageBox(
+				Wx::gettext('Perl 6 refactoring support is coming soon...'),
+				Wx::gettext('Error'),
+				Wx::wxOK,
+				$main, 
+			);
+		},
 	);
 	
 	# Rename variable
 	Wx::Event::EVT_MENU(
 		$main,
 		$refactor_menu->Append( -1, Wx::gettext("Rename variable"), ),
-		sub { },
+		sub { 
+			Wx::MessageBox(
+				Wx::gettext('Perl 6 refactoring support is coming soon...'),
+				Wx::gettext('Error'),
+				Wx::wxOK,
+				$main, 
+			);
+		},
 	);
 
 	# Export sub menu
