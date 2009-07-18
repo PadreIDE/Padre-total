@@ -3,6 +3,7 @@ package Padre::Plugin::Perl6::Perl6PgeColorizerTask;
 use strict;
 use warnings;
 use base 'Padre::Task';
+use Scalar::Util ();
 
 our $VERSION = '0.51';
 our $thread_running = 0;
@@ -17,14 +18,8 @@ sub prepare {
 	# it is not running yet.
 	$self->{broken} = 0;
 	
-	# put editor into main-thread-only storage
-	$self->{main_thread_only} ||= {};
-	my $document = $self->{document} || $self->{main_thread_only}{document};
-	my $editor = $self->{editor} || $self->{main_thread_only}{editor};
-	delete $self->{document};
-	delete $self->{editor};
-	$self->{main_thread_only}{document} = $document;
-	$self->{main_thread_only}{editor} = $editor;
+	return if $self->{_editor};
+	$self->{_editor} = Scalar::Util::refaddr(Padre::Current->editor);
 
 	# assign a place in the work queue
 	if($thread_running) {
@@ -111,8 +106,20 @@ sub finish {
 	my $self = shift;
 	my $mainwindow = shift;
 
-	my $doc = $self->{main_thread_only}{document};
-	my $editor = $self->{main_thread_only}{editor};
+	my $editor = Padre::Current->editor;
+	my $addr = delete $self->{_editor};
+	if (not $addr or not $editor or $addr ne Scalar::Util::refaddr($editor)) {
+		# shall we try to locate the editor ?
+		$thread_running = 0;
+		return 1;
+	}
+
+	my $doc = Padre::Current->document;
+	if (not $doc) {
+		$thread_running = 0;
+		return 1;
+	}
+
 	if($self->{_parse_tree}) {
 		$doc->remove_color;
 		foreach my $pd (@{$self->{_parse_tree}}) {
