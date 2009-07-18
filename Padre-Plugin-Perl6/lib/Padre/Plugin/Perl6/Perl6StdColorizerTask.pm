@@ -20,7 +20,6 @@ sub prepare {
 	
 	return if $self->{_editor};
 	$self->{_editor} = Scalar::Util::refaddr(Padre::Current->editor);
-	#print "start '$self->{_editor}'\n";
 	
 	# assign a place in the work queue
 	if($thread_running) {
@@ -70,7 +69,6 @@ sub finish {
 	my $mainwindow = shift;
 
 	my $editor = Padre::Current->editor;
-	#print "finish '$self->{_editor}'  '" . Scalar::Util::refaddr($editor). "'\n";
 	my $addr = delete $self->{_editor};
 	if (not $addr or not $editor or $addr ne Scalar::Util::refaddr($editor)) {
 		# shall we try to locate the editor ?
