@@ -249,10 +249,18 @@ sub menu_plugins {
 
 	$self->{menu}->AppendSeparator;
 
+	# Maintenance
+	my $maintenance_menu = Wx::Menu->new();
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Maintenance"), $maintenance_menu),
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre" ); },
+	);
+
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
+		$maintenance_menu->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
 		sub { $self->cleanup_std_lex_cache; },
 	);
 
