@@ -357,8 +357,11 @@ sub cleanup_std_lex_cache {
 
 	my $main   = $self->main;
 
-	my $LEX_STD_DIR = 'lex/STD';
-	if(! -d $LEX_STD_DIR) {
+	my $tmp_dir = File::Spec->catfile( 
+		Padre::Constant::PLUGIN_DIR, 
+		'Padre-Plugin-Perl6' );
+	my $LEX_STD_DIR = "$tmp_dir/lex/STD";
+	if(not -d $LEX_STD_DIR) {
 		Wx::MessageBox(
 			Wx::gettext("Cannot find STD.pm lex cache"),
 			'Error',
