@@ -171,6 +171,27 @@ sub menu_plugins {
 		},
 	);
 
+	# Rakudo sub menu
+	my $rakudo_menu = Wx::Menu->new();
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Rakudo"), $rakudo_menu),
+		sub {},
+	);
+	# Generate Perl 6 Executable
+	Wx::Event::EVT_MENU(
+		$main,
+		$rakudo_menu->Append( -1, Wx::gettext("Perl 6 Executable"), ),
+		sub { $self->generate_p6_exe; },
+	);
+
+	# Generate Perl 6 PIR
+	Wx::Event::EVT_MENU(
+		$main,
+		$rakudo_menu->Append( -1, Wx::gettext("Perl 6 PIR"), ),
+		sub { $self->generate_p6_pir; },
+	);
+
 	# Export sub menu
 	my $export_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
@@ -178,20 +199,6 @@ sub menu_plugins {
 		$self->{menu}->Append( -1, Wx::gettext("Export..."), $export_menu),
 		sub {},
 	);
-	# Generate Perl 6 Executable
-	Wx::Event::EVT_MENU(
-		$main,
-		$export_menu->Append( -1, Wx::gettext("Perl 6 Executable"), ),
-		sub { $self->generate_p6_exe; },
-	);
-
-	# Generate Perl 6 PIR
-	Wx::Event::EVT_MENU(
-		$main,
-		$export_menu->Append( -1, Wx::gettext("Perl 6 PIR"), ),
-		sub { $self->generate_p6_pir; },
-	);
-	
 	# Export into HTML
 	Wx::Event::EVT_MENU(
 		$main,
