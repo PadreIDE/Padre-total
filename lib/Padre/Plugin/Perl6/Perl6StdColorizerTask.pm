@@ -136,13 +136,21 @@ sub run {
 	my $tmp_err = File::Temp->new( SUFFIX => '_p6_err.txt' );
 	close $tmp_err or warn "cannot close $tmp_out\n";
 	
+	my $tmp_dir = File::Spec->catfile( Padre::Constant::PLUGIN_DIR, 
+		'Padre-Plugin-Perl6' );
+	if(not -e $tmp_dir) {
+		require File::Path;
+		File::Path::mkpath($tmp_dir);
+	}
+	$tmp_dir .= '/';
+
 	# construct the command
 	require Cwd;
 	require File::Basename;
 	require File::Spec;
 	my $cmd = Padre->perl_interpreter . " " .
 		Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),'p6tokens.p5')) .
-		" $tmp_in $tmp_out $tmp_err";
+		" \"$tmp_in\" \"$tmp_out\" \"$tmp_err\" $tmp_dir";
 	
 	# all this is needed to prevent win32 platforms from:
 	# 1. popping out a command line on each run...
