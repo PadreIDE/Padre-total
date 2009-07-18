@@ -91,7 +91,7 @@ sub service_loop {
                 next;
             }
             
-            warn "DECODED " . Dumper $message;
+            #warn "DECODED " . Dumper $message;
             
             $message->{$_} = $frame->{$_}
                 for keys %$frame;
@@ -150,7 +150,7 @@ sub send {
     if (ref $message) {
         confess "pass a Padre::Swarm::Message" 
             unless _INSTANCE( $message, 'Padre::Swarm::Message'  );
-        warn Dumper $message;
+        #warn Dumper $message;
         
         $message->from( 'unspecified' ) 
             unless  $message->from;
@@ -190,7 +190,7 @@ sub receive {
     $type ||= '';
     
     if ( $type eq 'disco' ) {
-        warn "DISCO recv";
+        #warn "DISCO recv";
         $self->promote($message);
     }
 
