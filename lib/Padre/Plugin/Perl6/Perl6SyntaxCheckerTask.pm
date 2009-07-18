@@ -62,7 +62,7 @@ with L<Storable>.
 
 =head1 AUTHOR
 
-Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
 
 Gabor Szabo L<http://szabgab.com/>
 
