@@ -195,6 +195,8 @@ sub menu_plugins {
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
+	$self->{menu}->AppendSeparator;
+
 	# Perl6 grok-based Help dialog doc reader
 	Wx::Event::EVT_MENU(
 		$main,
@@ -207,23 +209,32 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("More Help?"), $more_help_menu),
-		sub {  },
+		sub { },
 	);
 
-	# Goto #padre
+	# Goto #padre link
 	Wx::Event::EVT_MENU(
 		$main,
-		$more_help_menu->Append( -1, Wx::gettext("Goto #padre for Padre help"), ),
-		sub { },
+		$more_help_menu->Append( -1, Wx::gettext("#padre for Padre Help"), ),
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre" ); },
 	);
-	
-	# Goto #perl6
+
+	# Goto #perl6 link
 	Wx::Event::EVT_MENU(
 		$main,
-		$more_help_menu->Append( -1, Wx::gettext("Goto #perl6 for Perl 6 help"), ),
-		sub { },
+		$more_help_menu->Append( -1, Wx::gettext("#perl6 for Perl 6 Help"), ),
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=perl6" ); },
 	);
-	
+
+	# Perl 6 projects link
+	Wx::Event::EVT_MENU(
+		$main,
+		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Projects"), ),
+		sub { Wx::LaunchDefaultBrowser("http://perl6-projects.org" ); },
+	);
+
+	$self->{menu}->AppendSeparator;
+
 	# Cleanup STD.pm lex cache
 	Wx::Event::EVT_MENU(
 		$main,
