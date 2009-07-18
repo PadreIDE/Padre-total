@@ -7,13 +7,14 @@ use warnings;
 
 # parse arguments
 my $num_args = $#ARGV + 1;
-my $REQ_ARG_COUNT = 3;
+my $REQ_ARG_COUNT = 4;
 if($num_args < $REQ_ARG_COUNT) {
     die "Error: p6tokens.pl needs $REQ_ARG_COUNT argument(s) (got $num_args).\n";
 }
 
 # read command-line arguments
-my ($in_filename,$out_filename,$err_filename) = ($ARGV[0],$ARGV[1],$ARGV[2]);
+my ($in_filename, $out_filename, $err_filename, $tmp_prefix) = 
+	($ARGV[0],$ARGV[1],$ARGV[2],$ARGV[3]);
 
 # Redirect STDOUT/ERR to temporary filename.s..
 open STDOUT, ">$out_filename"
@@ -36,7 +37,8 @@ my $text;
 require STD;
 require Syntax::Highlight::Perl6;
 my $p = Syntax::Highlight::Perl6->new(
-    text => $text,
+	text => $text,
+	tmp_prefix => $tmp_prefix
 );
 my @tokens = $p->tokens;
 require Storable;
