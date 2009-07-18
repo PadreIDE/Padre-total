@@ -8,10 +8,10 @@ our @ISA = 'Padre::Service';
 
 use Carp qw( croak );
 
-sub entity {
+sub identity {
         my $self = shift;
-        return (exists $self->{entity}) 
-            ? $self->{entity}
+        return (exists $self->{identity}) 
+            ? $self->{identity}
             : undef;
             
 }

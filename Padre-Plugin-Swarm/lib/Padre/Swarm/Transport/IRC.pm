@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Padre::Swarm::Transport;
 
+require Padre::Swarm::Identity; # thread quackery?
 use AnyEvent;
 use AnyEvent::IRC::Client;
 use Class::XSAccessor
@@ -22,6 +23,8 @@ use Data::Dumper;
 sub start {
 	my $self = shift;
 
+	warn ( "START SERVICE : " . Dumper $self );
+	
 	my $con = AnyEvent::IRC::Client->new;
 	$con->enable_ssl if $self->enable_ssl;
 

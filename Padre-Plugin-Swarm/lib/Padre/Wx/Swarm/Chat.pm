@@ -6,6 +6,8 @@ use warnings;
 use Params::Util qw{_INSTANCE};
 use Padre::Wx ();
 use Padre::Config ();
+use Padre::Swarm::Identity;
+
 use Padre::Service::Swarm;
 use Padre::Swarm::Service::Chat;
 use Padre::Current qw{_CURRENT};
@@ -67,6 +69,7 @@ sub new {
 	);
 	
 	my $service = Padre::Swarm::Service::Chat->new(
+		identity => $identity,
 		use_transport => {
 			#'Padre::Swarm::Transport::Multicast'=>{
 			'Padre::Swarm::Transport::IRC'=>{
@@ -156,11 +159,10 @@ sub accept_message {
 	return unless Params::Util::_HASH( $message );
 	
 	
-	my $user = $message->{user} || 'unknown';
-	my $ip   = $message->{client_address} || 'unknown';
+	my $user = $message->from || 'unknown';
 	my $content = $message->body;
 	return unless defined $content;
-	my $output = sprintf( "%s@[%s] :%s\n", $user, $ip, $content );
+	my $output = sprintf( "%s :%s\n", $user, $content );
 	$self->chatframe->AppendText( $output );
 
 }
@@ -171,7 +173,9 @@ sub tell_service {
 	my $args = shift;
 	my $message =  _INSTANCE($body,'Padre::Swarm::Message')
 		? $body
-		: Padre::Swarm::Message->new({body=>$body});
+		: Padre::Swarm::Message->new(
+			{ body=>$body , from=>$self->service->identity->nickname }
+		);
 	
 	my $service = $self->service->tell($message) 
 }
@@ -193,15 +197,16 @@ sub on_diff_snippet {
 		return;
 	}
 	my $canonical_file = $file;
-	my $project = $document->project;
 	
-	my $project_dir = $project->directory;
+	#my $project = $document->project;
 	
+	my $project_dir = $document->project_dir;
+	my $project_name = File::Basename::basename( $project_dir );
 	$canonical_file =~ s/^$project_dir//;
 	
 	my $message = Padre::Swarm::Message->new({
 		file     => $canonical_file,
-		project_name  => $project->name,
+		project_name  => $project_name,
 		project_dir => $project_dir,
 		type => 'diff',
 	});
