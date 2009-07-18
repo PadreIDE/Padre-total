@@ -207,7 +207,7 @@ sub install_perl_modules {
 		Scope::Guard
 		Devel::GlobalDestruction
 		Sub::Name
-		Algorithim::C3
+		Algorithm::C3
 		Class::C3
 		MRO::Compat
 		YAML::Syck
