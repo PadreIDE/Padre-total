@@ -56,7 +56,12 @@ sub start {
             type=>'disco' , want=>['chat'] })
     );
     
-    $self->queue->enqueue(Padre::Swarm::Message->new(  {type=>'announce'} ) );
+    $self->queue->enqueue(
+        Padre::Swarm::Message->new(  
+            {type=>'announce', from=>$self->identity->nickname } 
+        ) 
+        
+        );
     
 }
 
@@ -153,7 +158,7 @@ sub send {
             unless _INSTANCE( $message, 'Padre::Swarm::Message'  );
         #warn Dumper $message;
         
-        $message->from( 'unspecified' ) 
+        $message->from( $self->identity->nickname ) 
             unless  $message->from;
         $message->type( 'chat' ) unless $message->type;
     }    

@@ -4,6 +4,7 @@ use warnings;
 
 use IO::Select       ();
 use IO::Socket::Multicast;
+use Padre::Swarm::Identity;
 use Padre::Swarm::Transport;
 use Params::Util     qw( _INSTANCE _POSINT );
 use Carp             qw( confess croak     );
