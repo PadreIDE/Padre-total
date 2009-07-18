@@ -135,12 +135,34 @@ sub menu_plugins {
 		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
 	);
 
+	# Refactor sub menu
+	my $refactor_menu = Wx::Menu->new();
+	Wx::Event::EVT_MENU(
+		$main,
+		$self->{menu}->Append( -1, Wx::gettext("Refactor..."), $refactor_menu),
+		sub {  },
+	);
+
+	# Find variable declaration
+	Wx::Event::EVT_MENU(
+		$main,
+		$refactor_menu->Append( -1, Wx::gettext("Find variable declaration"), ),
+		sub { },
+	);
+	
+	# Rename variable
+	Wx::Event::EVT_MENU(
+		$main,
+		$refactor_menu->Append( -1, Wx::gettext("Rename variable"), ),
+		sub { },
+	);
+
 	# Export sub menu
 	my $export_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("Export..."), $export_menu),
-		sub { $self->export_html($FULL_HTML); },
+		sub {},
 	);
 	# Generate Perl 6 Executable
 	Wx::Event::EVT_MENU(
@@ -173,7 +195,7 @@ sub menu_plugins {
 		sub { $self->export_html($SNIPPET_HTML); },
 	);
 
-	# Perl6 S29 documentation
+	# Perl6 grok-based Help dialog doc reader
 	Wx::Event::EVT_MENU(
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("Perl 6 Help\tF2"), ),
