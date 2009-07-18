@@ -687,7 +687,7 @@ for now.
 
 Discussion about this module and STD.pm is usually in #perl6
 (irc://irc.freenode.net/perl6). This module lives in 
-http://svn.pugscode.org/pugs/misc/Syntax-Highlight-Perl6 . Larry Wall's 
+http://svn.perlide.org/padre/trunk/Syntax-Highlight-Perl6 . Larry Wall's 
 C<STD.pm> lives in http://svn.pugscode.org/pugs/src/perl6 . 
 
 =head1 BUGS AND LIMITATIONS
