@@ -4,6 +4,17 @@ use warnings;
 use Test::More;
 use File::Find::Rule;
 
+BEGIN {
+	if (not $ENV{DISPLAY} and not $^O eq 'MSWin32') {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+
+unless($ENV{PADRE_PLUGIN_PERL6}) {
+	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable';
+}
+
 my @files = File::Find::Rule->name('*.pm')->file->in('lib');
 plan tests => scalar @files;
 
