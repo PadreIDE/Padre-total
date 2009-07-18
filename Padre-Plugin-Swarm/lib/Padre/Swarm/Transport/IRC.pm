@@ -10,8 +10,6 @@ use Class::XSAccessor
    getters => {
 	   connection => 'connection',
 	   condvar	=> 'condvar',
-	   nickname    => 'nickname',
-	   
 	   enable_ssl  => 'enable_ssl',
    };
    
@@ -29,8 +27,8 @@ sub start {
 
 	$con->connect (
 		"irc.perl.org" => 6667 ,
-		{ nick =>  $self->nickname,
-		  user => 'Padre-Swarm-Transport-IRC' ,
+		{ nick =>  $self->identity->nickname ,
+		  user =>  $self->identity->resource ,
 		  real => getlogin() 
 		}
 	);
@@ -197,7 +195,7 @@ sub tell_channel {
 
 sub buffer_incoming_private {
 	my ($self,$con,$nick,$ircmsg) = @_;
-	#warn "Got incoming from $nick with $ircmsg";
+	warn "Got incoming from $nick with $ircmsg";
 	
 	
 }
@@ -207,7 +205,7 @@ sub  buffer_incoming {
 	      my $nick = $con->nick;
 	      
 	      my ($sender,$body) =  @{ $ircmsg->{params} };
-	      #warn "Buffering from $sender --- $body";
+	      warn "Buffering from $sender --- $body";
 	      
 	       my $frame = {
 		       entity => $sender,

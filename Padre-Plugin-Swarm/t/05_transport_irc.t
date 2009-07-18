@@ -1,5 +1,7 @@
 use Test::More 'no_plan';
 use constant CHAT => 13000;
+use Padre::Swarm::Identity;
+use Data::Dumper;
 
 use JSON::XS;
 BEGIN {
@@ -8,10 +10,16 @@ use_ok( 'Padre::Util' );
 use_ok( 'Padre::Swarm::Message' );
 };
 
+Padre::Util::set_logging(1);
+
+my $id = Padre::Swarm::Identity->new(
+    nickname => 'padre_swarm_test_'.$$,
+    resource => 'irc_transport',
+);
 
 my $tr = Padre::Swarm::Transport::IRC->new(
-      nickname => 'padre_swarm_test_'.$$,
-      loopback => 1,
+    identity => $id,
+    loopback => 1,
 );
 isa_ok( $tr, 'Padre::Swarm::Transport::IRC' );
 
@@ -51,6 +59,7 @@ sub poll_loop {
 		    foreach my $chan ( @ready ) {
 			while ( my($msg,$frame) = $tr->receive_from_channel( $chan ) )
 			{
+				diag( Dumper $frame );
 			    push @messages,$msg;
 			}
 		    }

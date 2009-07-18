@@ -56,6 +56,9 @@ sub new {
     my ($class,%args) = @_;
     my %obj = %args;
     my $selector = IO::Select->new();
+    confess "Requires identity"
+        unless _INSTANCE( $obj{identity} , 'Padre::Swarm::Identity' );
+    
     $obj{subscriptions} = {};
     $obj{channels}      = {};
     $obj{started}       = 0;

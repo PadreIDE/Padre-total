@@ -59,11 +59,18 @@ sub new {
 	$self->SetSizer($sizer);
 	
 	my $config = Padre::Config->read;
+	
+	my $identity = Padre::Swarm::Identity->new(
+		nickname => $config->identity_nickname,
+		service  => 'chat',
+		resource => 'Padre',
+	);
+	
 	my $service = Padre::Swarm::Service::Chat->new(
 		use_transport => {
 			#'Padre::Swarm::Transport::Multicast'=>{
 			'Padre::Swarm::Transport::IRC'=>{
-				nickname => $config->identity_nickname,
+				identity => $identity,
 				loopback => 1,
 			},
 		}
@@ -176,8 +183,6 @@ sub on_text_enter {
 	$self->textinput->SetValue('');
 	
 }
-
-# largely copied from Padre::Wx::Main;
 
 sub on_diff_snippet {
 	my ($self) = @_;
