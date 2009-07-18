@@ -22,9 +22,6 @@ use Data::Dumper;
 
 sub start {
 	my $self = shift;
-
-	warn ( "START SERVICE : " . Dumper $self );
-	
 	my $con = AnyEvent::IRC::Client->new;
 	$con->enable_ssl if $self->enable_ssl;
 
@@ -93,7 +90,7 @@ sub _register_irc_callbacks {
 	$con->reg_cb(
 		error => sub {
 			my ($con,$code, $message, $ircmsg) = @_;
-			#warn "ERROR:[$code] - $message\n";
+			warn "ERROR:[$code] - $message\n";
 			
 		}
 
@@ -191,14 +188,14 @@ sub tell_channel {
 	my ($self,$channel,$payload) = @_;
 		$self->push_write( $channel, $payload );
 	if ( $self->loopback ) {
-		push @{ $self->{incoming_buffer}{$channel} }, [$payload,{}];
+		push @{ $self->{incoming_buffer}{$channel} }, [$payload,{transport=>'loopback',channel=>$channel}];
     }
 
 }
 
 sub buffer_incoming_private {
-	my ($self,$con,$nick,$ircmsg) = @_;
-	warn "Got incoming from $nick with $ircmsg";
+	my ($self,$con,$command,$ircmsg) = @_;
+	#warn "Got incoming $command with " ,Dumper $ircmsg;
 	
 	
 }
@@ -211,7 +208,8 @@ sub  buffer_incoming {
 	      warn "Buffering from $sender --- $body";
 	      
 	       my $frame = {
-		       entity => $sender,
+		       identity => $sender,
+		       transport => 'irc',
 		       channel => $channel,
 		       timestamp => time, 
 	       };

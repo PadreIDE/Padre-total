@@ -53,18 +53,18 @@ sub poll_loop {
 	my $run = 1;
 	my $i = 0;
 	my @messages;
-	while ($run && $i < 10) {
+	while ($run && $i < 3) {
 	    $tr->tell_channel( CHAT , $i++ );
-	    while ( my @ready =$tr->poll(0.5) ) {
+	    while ( my @ready =$tr->poll(0.1) ) {
 		    foreach my $chan ( @ready ) {
 			while ( my($msg,$frame) = $tr->receive_from_channel( $chan ) )
 			{
-				diag( Dumper $frame );
-			    push @messages,$msg;
+			
+			    push @messages,$msg if $frame->{transport} eq 'loopback';
 			}
 		    }
 	    }
 	}
-	ok( 10 == @messages , "total messages " .  @messages );
+	ok( 3 == @messages , "total messages " .  @messages );
 }
 

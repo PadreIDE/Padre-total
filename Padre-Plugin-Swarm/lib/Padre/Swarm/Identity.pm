@@ -83,8 +83,8 @@ sub _canonise {
 		sprintf( '%s!%s|%s@%s' ,
 			$self->{nickname},
 			$self->{service},
-			$self->{transport} ,
-			$self->{resource} );
+			$self->{transport} || 'unknown',
+			$self->{resource} || '' );
 	$self->{canonical} = $ident;
 }
 
