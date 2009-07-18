@@ -3,50 +3,47 @@ package Perl6::Refactor;
 use warnings;
 use strict;
 
+our $VERSION = '0.01';
+
+sub new {
+	#XXX-implement
+}
+
+sub rename_variable {
+	my $self = shift;
+	#XXX-implement
+}
+
+sub find_variable_declaration {
+	my $self = shift;
+	#XXX-implement
+}
+
+# -------------- End of Perl6::Refactor ----------------
+1;
+
+__END__
+
 =head1 NAME
 
 Perl6::Refactor - The great new Perl6::Refactor!
 
-=head1 VERSION
-
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+Perl 6 Refactor includes tools for renaming variables, finding variables 
+declarations and more....
 
 Perhaps a little code snippet.
 
     use Perl6::Refactor;
 
     my $foo = Perl6::Refactor->new();
-    ...
 
-=head1 EXPORT
+=head1 METHODS
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=head2 rename_variable
 
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+=head2 find_variable_declaration
 
 =head1 AUTHOR
 
@@ -90,17 +87,9 @@ L<http://search.cpan.org/dist/Perl6-Refactor/>
 
 =back
 
-
-=head1 ACKNOWLEDGEMENTS
-
-
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Ahmad M. Zawawi, all rights reserved.
+Copyright (C) 2008-2009 by Ahmad Zawawi
 
-This program is released under the following license: artistic_2
-
-
-=cut
-
-1; # End of Perl6::Refactor
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
