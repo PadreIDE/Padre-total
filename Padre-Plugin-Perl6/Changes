@@ -1,8 +1,11 @@
 Changes
 
-=head1 0.53 TO BE RELEASED
+=head1 0.53 2009.7.18
 
-
+	- Moved Rakudo Perl 6 functionality into a separate menu.
+	- Fixed ticket:457 "Store Perl 6 temporary folders in a persistent
+		temporary directory"
+	- Cleanup STD lex cache now works with ticket:457
 
 =head1 0.52 2009.7.18
 
