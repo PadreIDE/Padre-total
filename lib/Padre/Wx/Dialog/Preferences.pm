@@ -61,6 +61,55 @@ sub _external_tools_panel {
 	return $panel;
 }
 
+sub _mime_type_panel {
+	my ( $self, $treebook ) = @_;
+
+	my $highlighters = {
+		'yaml/text'  => ['STC', 'Parrot'],
+		'perl5/text' => ['PPI Traditional', 'STC', 'PPI Experimental'],
+		'perl6/text' => ['Parrot', 'STD'],
+	};
+	my $explanations = {
+		'STC'              => 'Scintilla, fast but might be out of date',
+		'Parrot'           => 'Based on the ...',
+		'PPI Traditional'  => 'Slow but accurate and we have full control so bugs can be fixed',
+		'PPI Experimental' => 'Hopefully faster than the PPI Traditional',
+		'STD'              => 'Slow but accurate',
+	};
+
+	my @mime_types         = sort keys %$highlighters;
+	# get list of mime-types
+	my $table = [
+	
+		[   [ 'Wx::StaticText', undef,          Wx::gettext('Mime type') ],
+			[ 'Wx::Choice',  'mime_type', \@mime_types ]
+		],
+		[   [ 'Wx::StaticText', undef,          Wx::gettext('Select the highlighter:') ],
+			[ 'Wx::Choice',  'highlighters', $highlighters->{ $mime_types[0] } ]
+		],
+	];
+
+	my $panel = $self->_new_panel($treebook);
+	$self->fill_panel_by_table( $panel, $table );
+	Wx::Event::EVT_CHOICE( $panel, $self->get_widget('mime_type'), sub { _list_highlighters($self, $highlighters, @_) } );
+
+	return $panel;
+}
+
+sub _list_highlighters {
+	my ($self, $highlighters, $panel, $event) = @_;
+	#print "xxx @_\n"; 
+	
+	my $selection = $self->get_widget('mime_type')->GetSelection;
+	my @mime_types = sort keys %$highlighters;
+	
+	#Padre::Current->main->message('hello');
+	my $list    = $self->get_widget('highlighters');
+	$list->Clear;
+	$list->AppendItems( $highlighters->{ $mime_types[$selection] } );
+	$list->SetSelection(0);
+}
+
 sub _indentation_panel {
 	my ( $self, $treebook, $editor_autoindent ) = @_;
 
@@ -511,6 +560,9 @@ sub dialog {
 		$self->_run_params_panel($tb),
 		Wx::gettext('Run Parameters')
 	);
+
+	my $mime_types = $self->_mime_type_panel( $tb );
+	$tb->AddPage( $mime_types, Wx::gettext('Mime-types') );
 
 	my $indentation = $self->_indentation_panel( $tb, $editor_autoindent );
 	$tb->AddPage( $indentation, Wx::gettext('Indentation') );
