@@ -15,6 +15,7 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
+	_plugin            => '_plugin',             # plugin instance
 	_sizer             => '_sizer',              # window sizer
 	_search_text       => '_search_text',	     # search text control
 	_matches_list      => '_matches_list',	     # matches list
@@ -53,6 +54,7 @@ sub new {
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	$self->_directory($directory);
+	$self->_plugin($plugin);
 
 	# create dialog
 	$self->_create;
@@ -77,6 +79,9 @@ sub _on_ok_button_clicked {
 		my $filename = $self->_matches_list->GetClientData($selection);
 		# try to open the file now
 		$main->setup_editor($filename);
+		
+		# XXX- push it to configuration object... the last 20 opened resource 
+		# XXX- should appear for instance
 	}
 
 	$self->Destroy;
@@ -175,7 +180,7 @@ sub _setup_events {
 			$self->_matches_list->SetFocus();
 		}
 
-		$event->Skip(1);		
+		$event->Skip(1);
 	});
 
 	Wx::Event::EVT_CHECKBOX( $self, $self->_ignore_dir_check, sub {
