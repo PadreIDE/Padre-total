@@ -78,11 +78,21 @@ sub _on_ok_button_clicked {
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
 
-		# save the file in the plugin's configuration
+		# Keep the last 20 recently opened resources available
+		# and save it to plugin's configuration object
 		my $config = $self->_plugin->config_read;
-		my @recently_opened = split /|/, $config->{recently_opened};
+		my @recently_opened = split /\|/, $config->{recently_opened};
+		if(scalar @recently_opened >= 20) {
+			shift @recently_opened;
+		}
 		push @recently_opened, $filename;
+		my %unique = map { $_, 1 } @recently_opened;
+		@recently_opened = keys %unique;
+		@recently_opened = sort { 
+				File::Basename::fileparse($a) cmp File::Basename::fileparse($b)
+		} @recently_opened;
 		$config->{recently_opened} = join '|', @recently_opened;
+		$self->_plugin->config_write($config);
 
 		# try to open the file now
 		$main->setup_editor($filename);
@@ -241,7 +251,7 @@ sub _show_recently_opened_resources() {
 	my $self = shift;
 	
 	my $config = $self->_plugin->config_read;
-	my @recently_opened = split /|/, $config->{recently_opened};
+	my @recently_opened = split /\|/, $config->{recently_opened};
 	$self->_matched_files( \@recently_opened );
 	$self->_update_matches_list_box;
 	$self->_matched_files( undef );
