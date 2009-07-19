@@ -132,6 +132,10 @@ sub colorize {
 	my $module = $self->get_highlighter;
 
 	eval "use $module";
+	if ($@) {
+		warn "Could not load module '$module' for file '" . ($self->filename || '') . "'\n";
+		return;
+	}
 	$module->colorize(@_);
 	return;
 }
