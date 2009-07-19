@@ -55,6 +55,22 @@ sub plugin_icon {
 }
 
 #
+# Called when the plugin is enabled
+#
+sub plugin_enable {
+	my $self = shift;
+
+	# Read the plugin configuration, and create it if it is not there
+	my $config = $self->config_read;
+	if(not $config) {
+		# no configuration, let us write some defaults
+		$config = {};
+	}
+	# and write the plugin's configuration
+	$self->config_write($config);
+}
+
+#
 # called when Padre needs the plugin's menu
 #
 sub menu_plugins {

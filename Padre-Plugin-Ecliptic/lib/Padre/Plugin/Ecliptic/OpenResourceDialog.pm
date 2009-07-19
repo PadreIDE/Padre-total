@@ -218,6 +218,23 @@ sub _setup_events {
 		$self->_on_ok_button_clicked();
 		$self->EndModal(0);
 	});
+
+	Wx::Event::EVT_IDLE( $self, sub {
+		$self->_display_recently_opened_resources;
+		
+		# focus on the search text box
+		$self->_search_text->SetFocus;
+		
+		# unregister from idle event
+		Wx::Event::EVT_IDLE( $self, undef );
+	});
+}
+
+#
+# Display the recently opened resources
+#
+sub _display_recently_opened_resources() {
+	print "Display recently opened resources\n";
 }
 
 #
