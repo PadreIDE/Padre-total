@@ -8,6 +8,12 @@ use warnings;
 
 our $VERSION = '0.40';
 
+# Finds and returns a single element by mime_type
+sub fetch_module_name {
+	my $row = ( $_[0]->select( 'where mime_type = ?', $_[1] ) )[0];
+	return $row ? $row->{value} : 'stc';
+}
+
 1;
 
 __END__

@@ -376,7 +376,8 @@ sub rebless {
 	# to the the base class,
 	# This isn't exactly the most elegant way to do this, but will
 	# do for a first implementation.
-	my $class = $MIME_CLASS{ $self->get_mimetype } || __PACKAGE__;
+	my $mime_type = $self->get_mimetype;
+	my $class = $MIME_CLASS{ $mime_type} || __PACKAGE__;
 	Padre::Util::debug("Reblessing to mimetype: '$class'");
 	if ($class) {
 		unless ( $class->VERSION ) {
@@ -385,6 +386,14 @@ sub rebless {
 		}
 		bless $self, $class;
 	}
+
+	# TODO: move this to a better place
+	require Padre::DB::SyntaxHighlight;
+	my $module = Padre::DB::SyntaxHighlight->fetch_module_name($mime_type);
+	my $filename = $self->filename || '';
+	warn("No module  mime_type='$mime_type' filename='$filename'\n") if not $module;
+	#warn("Module '$module' mime_type='$mime_type' filename='$filename'\n") if $module;
+	$self->set_highlighter($module);
 
 	return;
 }

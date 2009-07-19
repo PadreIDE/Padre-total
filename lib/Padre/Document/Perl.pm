@@ -106,9 +106,15 @@ sub set_highlighter {
 	# is slow. Probably there is not much use in moving this back to a
 	# configuration variable
 	my $limit = 2000;
-	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: " . $self->editor->GetTextLength  . " limit is $limit");
 
-	if ( $self->editor->GetTextLength > $limit ) {
+	my $length = $self->{original_content} ? length $self->{original_content} : 0;
+	my $editor = $self->editor;
+	if ($editor) {
+		$length = $editor->GetTextLength;
+	}
+
+	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: $length limit is $limit");
+	if ( $length > $limit ) {
 		Padre::Util::debug("Forcing STC highlighting");
 		$module = 'stc';
 	}
