@@ -120,16 +120,15 @@ sub colorize {
 
 	Padre::Util::debug("colorize called");
 
+	my $module = 'Padre::Document::Perl::PPILexer';
+
 	# use pshangov's experimental ppi lexer only when running in development mode
 	if ( $ENV{PADRE_DEV} ) {
-		require Padre::Document::Perl::Lexer;
-		Padre::Document::Perl::Lexer->colorize(@_);
-		return;
-	} else {
-		require Padre::Document::Perl::PPILexer;
-		Padre::Document::Perl::PPILexer->colorize(@_);
-		return;
+		$module = 'Padre::Document::Perl::Lexer';
 	}
+	eval "use $module";
+	$module->colorize(@_);
+	return;
 }
 
 
