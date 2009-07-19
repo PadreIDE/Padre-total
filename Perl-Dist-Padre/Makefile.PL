@@ -10,5 +10,6 @@ resources     'bugtracker'             => 'http://rt.cpan.org/NoAuth/ReportBug.h
 resources     'homepage'               => 'http://padre.perlide.org/';
 resources     'IRC'                    => 'irc://irc.perl.org/#padre';
 resources     'Web2IRC'                => 'http://widget.mibbit.com/?server=irc.perl.org&channel=%23padre';
+install_share;
 
 WriteAll;

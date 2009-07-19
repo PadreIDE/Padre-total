@@ -1,5 +1,7 @@
 You really need to start with a Bootstrap installation, because at the end of this, this will install into c:\strawberry.
 
+It is also assumed that wget, gzip, tar, and svn are available.
+
 1) Create a par file for Alien::wxWidgets, because we need to install a patched version. ($CPAN is to be replaced by your choice of CPAN mirror.)
 
 cd %USERPROFILE%
@@ -34,9 +36,16 @@ perl Makefile.PL && dmake && dmake test
 dmake install
 cd ..
 
+4a) If you want to build off a minicpan, you should get the updated minicpan script, as this wasn't included in Perl::Dist::WiX 0.192.
+
+svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/script
+svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
+perl script/perldist_pdwix --file share/minicpan_filters.txt --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
+
 5) Actually build the dist...
 
 set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4301-MSWin32-x86-multi-thread-5.10.0.par.zip
 perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
+(pass the --cpan file:///C:/Padre-minicpan/ parameter in if 4a was done.)
