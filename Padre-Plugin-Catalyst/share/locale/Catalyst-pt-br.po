@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 15:40-0300\n"
+"POT-Creation-Date: 2009-07-19 18:27-0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: brazilian portuguese\n"
@@ -115,10 +115,14 @@ msgid "Catalyst Website"
 msgstr "Site do Catalyst"
 
 #: lib/Padre/Plugin/Catalyst.pm:126
+msgid "Update Application Scripts"
+msgstr "Atualizar Script da Aplicação"
+
+#: lib/Padre/Plugin/Catalyst.pm:128
 msgid "About"
 msgstr "Sobre"
 
-#: lib/Padre/Plugin/Catalyst.pm:144
+#: lib/Padre/Plugin/Catalyst.pm:169
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -131,15 +135,142 @@ msgstr ""
 "\n"
 "Por favor certifique-se de que o documento ativo faz parte de seu projeto Catalyst."
 
-#: lib/Padre/Plugin/Catalyst.pm:147
+#: lib/Padre/Plugin/Catalyst.pm:172
 msgid "Server not found"
 msgstr "Servidor não encontrado"
 
-#: lib/Padre/Plugin/Catalyst.pm:167
+#: lib/Padre/Plugin/Catalyst.pm:192
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Servidor web parece estar em execução. Iniciar navegador web agora?"
 
-#: lib/Padre/Plugin/Catalyst.pm:168
+#: lib/Padre/Plugin/Catalyst.pm:193
 msgid "Start Web Browser?"
 msgstr "Iniciar Navegador Web?"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:32
+msgid "Create New Component"
+msgstr "Criar Novo Componente"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:53
+msgid "Model Name:"
+msgstr "Nome do Modelo:"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:57
+#: lib/Padre/Plugin/Catalyst/Helper.pm:84
+#: lib/Padre/Plugin/Catalyst/Helper.pm:108
+msgid "Type"
+msgstr "Tipo"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:61
+#: lib/Padre/Plugin/Catalyst/Helper.pm:112
+msgid "Additional Parameters:"
+msgstr "Parâmetros adicionais:"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:80
+msgid "View Name:"
+msgstr "Nome da Vista:"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:88
+msgid "force"
+msgstr "forçar"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:104
+msgid "Controller Name:"
+msgstr "Nome do Controlador:"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:129
+#: lib/Padre/Plugin/Catalyst/Helper.pm:156
+msgid "[none]"
+msgstr "[nenhum]"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:236
+#, perl-format
+msgid "You must provide a name for your %s module"
+msgstr "Você deve fornecer um nome para seu módulo %s"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:237
+msgid "Module name required"
+msgstr "Nome para módulo é obrigatório"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:251
+#, perl-format
+msgid ""
+"Catalyst helper script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Catalyst project."
+msgstr ""
+"Script auxliar do Catalyst não encontrado em\n"
+"%s\n"
+"\n"
+"Por favor certifique-se de que o documento ativo faz parte de seu projeto Catalyst."
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:254
+msgid "Helper not found"
+msgstr "Auxiliar não encontrado"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:287
+msgid "running:"
+msgstr "executando:"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:297
+msgid "Catalyst helper script ended."
+msgstr "Script auxiliar do Catalyst concluído."
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:307
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:144
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "%s aparentemente criado. Gostaria de abri-lo agora?"
+
+#: lib/Padre/Plugin/Catalyst/Helper.pm:308
+msgid "Done"
+msgstr "Concluido"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:21
+msgid ""
+"To use the Catalyst development tools including catalyst.pl and the\n"
+"generated script/myapp_create.pl you need Catalyst::Helper, which is\n"
+"part of the Catalyst-Devel distribution. Please install this via a\n"
+"vendor package or by running one of -\n"
+"\n"
+"  perl -MCPAN -e 'install Catalyst::Devel'\n"
+"  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
+msgstr ""
+"Para usar as ferramentas de desenvolvimento do Catalyst, inclusive\n"
+"o catalyst.pl e o script/myapp_create.pl gerado, você precisa do\n"
+"Catalyst::Helper, parte da distribuição Catalyst-Devel. Por favor, instale-a\n"
+"via pacote para seu sistema ou executando uma das formas abaixo:\n"
+"\n"
+"  perl -MCPAN -e 'install Catalyst::Devel'\n"
+"  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:42
+msgid "Application Name:"
+msgstr "Nome do Aplicativo"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:46
+msgid "Parent Directory:"
+msgstr "Diretório Pai:"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:47
+msgid "Pick parent directory"
+msgstr "Escolha diretório pai"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:50
+msgid "short names"
+msgstr "nomes curtos"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+msgid "Invalid Application name"
+msgstr "Nome de aplicativo inválido"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+msgid "missing field"
+msgstr "campo não preenchido"
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+msgid "You need to select a base directory"
+msgstr "Você precisa selecionar um diretório base"
 
