@@ -325,6 +325,7 @@ use Class::XSAccessor getters => {
 	get_newline_type => 'newline_type',
 	errstr           => 'errstr',
 	tempfile         => 'tempfile',
+	get_highlighter  => 'highlighter',
 	},
 	setters => {
 	_set_filename    => 'filename',    # TODO temporary hack
@@ -333,6 +334,7 @@ use Class::XSAccessor getters => {
 	set_errstr       => 'errstr',
 	set_editor       => 'editor',
 	set_tempfile     => 'tempfile',
+	set_highlighter  => 'highlighter',
 	};
 
 =pod
@@ -397,6 +399,30 @@ sub rebless {
 
 	return;
 }
+
+#####################################################################
+# Padre::Document GUI Integration
+
+sub colorize {
+	my $self = shift;
+
+	Padre::Util::debug("colorize called");
+
+	my $module = $self->get_highlighter;
+	if ($module eq 'stc') {
+		warn "highlighter is set to 'stc' whihle colorize() is called\n";
+		return;
+	}
+
+	eval "use $module";
+	if ($@) {
+		warn "Could not load module '$module' for file '" . ($self->filename || '') . "'\n";
+		return;
+	}
+	$module->colorize(@_);
+	return;
+}
+
 
 sub last_sync {
 	return $_[0]->{_timestamp};
@@ -1243,15 +1269,6 @@ sub autocomplete {
 	return ( length($prefix), @words );
 }
 
-# set/get highlighter class
-sub set_highlighter {
-	my $self = shift;
-	$self->{_highlighter} = shift;
-}
-sub get_highlighter {
-	my $self = shift;
-	return $self->{_highlighter};
-}
 
 1;
 

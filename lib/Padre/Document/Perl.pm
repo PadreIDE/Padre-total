@@ -121,25 +121,6 @@ sub set_highlighter {
 	return $self->SUPER::set_highlighter($module);
 }
 
-#####################################################################
-# Padre::Document GUI Integration
-
-sub colorize {
-	my $self = shift;
-
-	Padre::Util::debug("colorize called");
-
-	my $module = $self->get_highlighter;
-
-	eval "use $module";
-	if ($@) {
-		warn "Could not load module '$module' for file '" . ($self->filename || '') . "'\n";
-		return;
-	}
-	$module->colorize(@_);
-	return;
-}
-
 
 #####################################################################
 # Padre::Document Document Analysis
