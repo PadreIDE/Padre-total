@@ -273,6 +273,31 @@ sub remove_mime_class {
 	delete $MIME_CLASS{$mime};
 }
 
+# TODO maybe move the whole Highlighter related code to another module ?
+my %AVAILABLE_HIGHLIGHTERS;
+sub add_highlighter {
+	my $self   = shift;
+	my $mime   = shift;
+	my $module = shift; # module name or STC to indicate Scintilla
+	my $name   = shift || Wx::gettext('Default using Scintilla');
+	# TODO check overwrite
+	$AVAILABLE_HIGHLIGHTERS{$mime}{$module} = $name;
+}
+sub remove_highlighter {
+	my $self   = shift;
+	my $mime   = shift;
+	my $module = shift;
+	# TODO check overwrite
+	delete $AVAILABLE_HIGHLIGHTERS{$mime}{$module};
+}
+
+foreach my $mime (keys %MIME_LEXER) {
+	__PACKAGE__->add_highlighter($mime, 'stc');
+}
+add_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer',    Wx::gettext('PPI Standard'));
+add_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer', Wx::gettext('PPI Experimental'));
+
+
 sub menu_view_mimes {
 	'00Plain Text'     => 'text/plain',
 		'01Perl'       => 'application/x-perl',
