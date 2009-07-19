@@ -96,6 +96,9 @@ test_requires  'Test::Most'               => '0.21';
 test_requires  'Test::Script'             => '1.03';
 test_requires  'Test::Exception'          => '0.27';
 test_requires  'Test::NoWarnings'         => '0.084';
+recommends	'KinoSearch'		  => '0.30_04';
+
+
 
 # Extra deps to squelch DIE complaints from dev.pl
 if ( author_context ) {

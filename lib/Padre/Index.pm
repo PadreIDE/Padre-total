@@ -1,0 +1,72 @@
+package Padre::Index;
+
+use strict;
+use warnings;
+
+use Params::Util qw( _HASH );
+use Carp qw( croak );
+use Class::XSAccessor 
+	constructor => 'new',
+	accessors => {
+		index_directory => 'index_directory', 
+	};
+	
+=pod
+
+=head1 NAME
+
+Padre::Index - Index/Retrieve utility
+
+=head1 SYNOPSIS
+
+  my $index = Padre::Index->new( index_directory => '/tmp/myindex' );
+  $index->add_doc( $_ ) for @documents;
+  $index->commit;
+  
+  my $iterator = $index->search( 'fast accessor' );
+  while ( my $hit = $iterator->next ) {
+		print $hit->{title} . "\n";
+  }
+  
+=head1 DESCRIPTION
+
+Generic class describing the interface. Provides a constructor and default 
+properties.
+
+=head1 CLASS METHODS
+
+
+=head2 index_fields
+
+Returns a list of key value pairs where keys are field names and values are 
+informal datatype names
+
+=cut
+	
+sub index_fields { 
+	( 
+		title 		=> 'text',
+		content 	=> 'text',
+		keywords	=> 'text',
+		modified 	=> 'number',
+		resource 	=> 'static',
+		file 		=> 'static',
+	)
+};
+
+sub schema { croak "Index subclass must implement schema!"; }
+
+sub query {
+	my ($self,$query) = @_;
+	$self->index->query( $query );
+	
+}
+
+sub add_document {
+	my ($self,$doc) = @_;
+	$self->indexer->add_doc( $doc );
+}
+
+
+
+1;
