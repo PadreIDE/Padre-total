@@ -12,7 +12,6 @@ $mc->start;
 while ( 1 ) {
 	my ($channel) = $mc->poll(1);
 	next unless $channel;
-	warn $sock;
 	my $buffer;
 	my ($message,$frame) = $mc->receive_from_channel( $channel  );
 	print Dumper $frame;

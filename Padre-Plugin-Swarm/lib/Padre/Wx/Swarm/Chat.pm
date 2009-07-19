@@ -71,8 +71,8 @@ sub new {
 	my $service = Padre::Swarm::Service::Chat->new(
 		identity => $identity,
 		use_transport => {
-			#'Padre::Swarm::Transport::Multicast'=>{
-			'Padre::Swarm::Transport::IRC'=>{
+			'Padre::Swarm::Transport::Multicast'=>{
+			#'Padre::Swarm::Transport::IRC'=>{
 				identity => $identity,
 				loopback => 1,
 			},
@@ -156,15 +156,19 @@ sub accept_message {
 	
 	my $message = Storable::thaw($payload);
 	#my $message = $evt->GetData;
-	return unless Params::Util::_HASH( $message );
+	return unless Params::Util::_INSTANCE( $message , 'Padre::Swarm::Message' );
 	
-	
-	my $user = $message->from || 'unknown';
-	my $content = $message->body;
-	return unless defined $content;
-	my $output = sprintf( "%s :%s\n", $user, $content );
-	$self->chatframe->AppendText( $output );
-
+	if ( $message->type eq 'chat' ) {
+		my $user = $message->from || 'unknown';
+		my $content = $message->body;
+		return unless defined $content;
+		my $output = sprintf( "%s :%s\n", $user, $content );
+		$self->chatframe->AppendText( $output );
+	}
+	elsif ( $message->type eq 'diff' ) {
+		$self->on_receive_diff($message);
+		return;
+	}
 }
 
 sub tell_service {
@@ -185,6 +189,40 @@ sub on_text_enter {
 	my $message = $self->textinput->GetValue;
 	$self->tell_service( $message );
 	$self->textinput->SetValue('');
+	
+}
+
+# 
+use Text::Patch ();
+use Data::Dumper;
+## 
+sub on_receive_diff {
+	my ($self,$message) = @_;
+	my $project = $message->{project_name};
+	my $file = $message->{file};
+	my $diff = $message->{diff};
+	
+	my $current = $self->main->current->document;
+	my $editor = $self->main->current->editor;
+	
+	my $p_dir = $current->project_dir;
+	my $p_name = File::Basename::basename( $p_dir );
+	my $p_file = $current->filename;
+	$p_file =~ s/^$p_dir//;
+	
+	warn "Have current doc $p_file, $p_name";
+	return unless $p_dir;
+	return unless ( $p_name eq $project );
+	return if $message->from eq $self->service->identity->nickname;
+	warn "PAtching $file in $project";
+	warn "APPLY PATCH \n" . $diff;
+	eval {
+		my $result = Text::Patch::patch( $current->text_get , $diff , STYLE=>'Unified' );
+		$editor->SetText( $result );
+	};
+	
+	warn $@ if $@;
+	
 	
 }
 
