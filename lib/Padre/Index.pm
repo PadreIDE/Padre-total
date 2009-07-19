@@ -11,6 +11,8 @@ use Class::XSAccessor
 		index_directory => 'index_directory', 
 	};
 	
+our $VERSION = '0.40';
+
 =pod
 
 =head1 NAME
@@ -41,6 +43,13 @@ properties.
 Returns a list of key value pairs where keys are field names and values are 
 informal datatype names
 
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+
+This program is free software; you can redistribute it and/or modify it under the
+same terms as Perl 5 itself.
+
 =cut
 	
 sub index_fields { 
@@ -67,6 +76,9 @@ sub add_document {
 	$self->indexer->add_doc( $doc );
 }
 
-
-
 1;
+
+# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
