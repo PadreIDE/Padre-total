@@ -7,6 +7,8 @@ use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Padre::Util       ('_T');
+
 
 our $VERSION = '0.04';
 
@@ -15,7 +17,7 @@ sub on_newapp {
     
     my $has_catalyst_devel = eval 'use Catalyst::Devel; 1;'; ## no critic (ProhibitStringyEval)
     unless ( $has_catalyst_devel ) {
-		return $main->error(<<ERR);
+    	my $error_str = _T(<<ERR);
 To use the Catalyst development tools including catalyst.pl and the
 generated script/myapp_create.pl you need Catalyst::Helper, which is
 part of the Catalyst-Devel distribution. Please install this via a
@@ -24,6 +26,8 @@ vendor package or by running one of -
   perl -MCPAN -e 'install Catalyst::Devel'
   perl -MCPANPLUS -e 'install Catalyst::Devel'
 ERR
+		return $main->error($error_str);
+
     }
     
     my $dialog = dialog($main);
@@ -35,15 +39,15 @@ sub get_layout {
 
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              'Application Name:'],
+			[ 'Wx::StaticText', undef,              _T('Application Name:') ],
 			[ 'Wx::TextCtrl',   '_app_name_',    ''],
 		],
 		[
-			[ 'Wx::StaticText',      undef,         'Parent Directory:'],
-			[ 'Wx::DirPickerCtrl',   '_directory_', '',   'Pick parent directory'],
+			[ 'Wx::StaticText',      undef,         _T('Parent Directory:')],
+			[ 'Wx::DirPickerCtrl',   '_directory_', '',   _T('Pick parent directory')],
 		],
 		[
-			[ 'Wx::CheckBox', '_short_', 'short names', 0 ],
+			[ 'Wx::CheckBox', '_short_', _T('short names'), 0 ],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -60,7 +64,7 @@ sub dialog {
 	my $layout = get_layout();
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $parent,
-		title  => 'New Catalyst Application',
+		title  => T_('New Catalyst Application'),
 		layout => $layout,
 		width  => [100, 200],
 		bottom => 20,
@@ -96,11 +100,11 @@ sub ok_clicked {
 
 	# TODO improve input validation !
 	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
-        Wx::MessageBox('Invalid Application name', 'missing field', Wx::wxOK, $main);
+        Wx::MessageBox(_T('Invalid Application name'), _T('missing field'), Wx::wxOK, $main);
         return;
 	}
 	elsif (not $data->{'_directory_'}) {
-	    Wx::MessageBox('You need to select a base directory', 'missing field', Wx::wxOK, $main);
+	    Wx::MessageBox(_T('You need to select a base directory'), _T('missing field'), Wx::wxOK, $main);
         return;
 	}
 	
@@ -137,7 +141,7 @@ sub ok_clicked {
 	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
-		sprintf("%s apparently created. Do you want to open it now?", $data->{_app_name_}),
+		sprintf(_T("%s apparently created. Do you want to open it now?"), $data->{_app_name_}),
 		'Done',
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,

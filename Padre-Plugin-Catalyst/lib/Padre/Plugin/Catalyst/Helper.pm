@@ -7,6 +7,7 @@ use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Padre::Util       ('_T');
 
 our $VERSION = '0.04';
 
@@ -28,7 +29,7 @@ sub dialog {
     
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $main,
-		title  => 'Create New Component',
+		title  => _T('Create New Component'),
 		layout => $layout,
 		width  => [100, 200],
 		bottom => 20,
@@ -49,15 +50,15 @@ sub get_model_layout {
 		
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,                    'Model Name:' ],
+			[ 'Wx::StaticText', undef,                    _T('Model Name:') ],
 			[ 'Wx::TextCtrl',   '_name_',                 'DB'          ],
 		],
 		[
-			[ 'Wx::StaticText', undef,                         'Type'   ],
+			[ 'Wx::StaticText', undef,                         _T('Type')   ],
 			[ 'Wx::Choice',     '_type_',            $available_models  ],
 		],
 		[
-			[ 'Wx::StaticText', undef           ,   'Additional Parameters:' ],
+			[ 'Wx::StaticText', undef           ,   _T('Additional Parameters:') ],
 			[ 'Wx::TextCtrl'  , '_extra_params_',   ''                       ],
 		],
 		[
@@ -76,15 +77,15 @@ sub get_view_layout {
 		
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,               'View Name:' ],
+			[ 'Wx::StaticText', undef,               _T('View Name:') ],
 			[ 'Wx::TextCtrl',   '_name_',            'TT'         ],
 		],
 		[
-			[ 'Wx::StaticText', undef,              'Type'        ],
+			[ 'Wx::StaticText', undef,              _T('Type')        ],
 			[ 'Wx::Choice',     '_type_',       $available_views  ],
 		],
 		[
-			[ 'Wx::CheckBox', '_force_', 'force', 0 ], #TODO add -mechanize parameter too
+			[ 'Wx::CheckBox', '_force_', _T('force'), 0 ], #TODO add -mechanize parameter too
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -100,15 +101,15 @@ sub get_controller_layout {
 		
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,                    'Controller Name:' ],
+			[ 'Wx::StaticText', undef,                    _T('Controller Name:') ],
 			[ 'Wx::TextCtrl',   '_name_',                 ''                 ],
 		],
 		[
-			[ 'Wx::StaticText', undef,                         'Type'        ],
+			[ 'Wx::StaticText', undef,                         _T('Type')        ],
 			[ 'Wx::Choice',     '_type_',            $available_controllers  ],
 		],
 		[
-			[ 'Wx::StaticText', undef           ,   'Additional Parameters:' ],
+			[ 'Wx::StaticText', undef           ,   _T('Additional Parameters:') ],
 			[ 'Wx::TextCtrl'  , '_extra_params_',   ''                       ],
 		],
 		[
@@ -125,6 +126,7 @@ sub get_controller_layout {
 
 sub find_helpers_for {
 	my $type = shift;
+	my $none_str = _T('[none]');
 	
 	require Module::Pluggable::Object;
 	my @available_helpers = map { s{Catalyst::Helper::$type\:\:}{}; $_ 
@@ -132,12 +134,13 @@ sub find_helpers_for {
 									'search_path' => "Catalyst::Helper::$type",
 							  )->plugins()
 						;
-	push @available_helpers, '[none]';
+	push @available_helpers, $none_str;
 	
 	## Put preferred types first on the list. For example, 
 	# as a view, TT is preferred.
 	# TODO: make this configurable under a Plugin Preferences window
 	my $favourite = find_favourites($type, \@available_helpers);
+	$favourite ||= $none_str;
 	
 	# puts favourite option always on top of the list
 	@available_helpers = (
@@ -150,6 +153,7 @@ sub find_helpers_for {
 sub find_favourites {
 	my $type = shift;
 	my $helpers = shift;
+	my $none_str = _T('[none]');
 	if ($type eq 'View') {
 		foreach (@{$helpers}) {
 			return $_ if ($_ eq 'TT');
@@ -160,10 +164,9 @@ sub find_favourites {
 			return $_ if ($_ eq 'DBIC::Schema');
 		}
 	}
-	else {
-		return '[none]';
-	}
-	return '[none]';
+	
+	# no favorites found.
+	return;
 }
 
 
@@ -230,8 +233,8 @@ sub create {
    	
 	unless ($data->{'_name_'}) {
 		Wx::MessageBox(
-			"You must provide a name for your $type module",
-		'Module name required', Wx::wxOK, $main
+			sprintf(_T("You must provide a name for your %s module"), $type),
+		    _T('Module name required'), Wx::wxOK, $main
 		);
 		return;
 	}
@@ -245,10 +248,10 @@ sub create {
     my $helper_full_path = File::Spec->catfile($project_dir, 'script', $helper_filename );
     if(! -e $helper_full_path) {
         Wx::MessageBox(
-            sprintf("Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project.", 
+            sprintf(_T("Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."), 
                     $helper_full_path
                    ),
-            'Helper not found', Wx::wxOK, $main
+            _T('Helper not found'), Wx::wxOK, $main
         );
         return;
     }
@@ -281,7 +284,7 @@ sub create {
 		push @cmd, '-force';
 	}
 
-    $main->output->AppendText("running: @cmd\n");
+    $main->output->AppendText(_T('running:') . "@cmd\n");
 	# go to the selected directory
 	my $pwd = Cwd::cwd();
 	chdir $project_dir;
@@ -291,7 +294,7 @@ sub create {
 	
 	chdir $pwd; # restore directory
 
-	$main->output->AppendText("\nCatalyst helper script ended.\n");
+	$main->output->AppendText("\n" . _T("Catalyst helper script ended.") . "\n");
 
 	require Padre::Plugin::Catalyst::Util;
 	my $file = Padre::Plugin::Catalyst::Util::find_file_from_output(
@@ -301,8 +304,8 @@ sub create {
 	$file = Cwd::realpath($file); # avoid relative paths
 	if ($file) {
 		my $ret = Wx::MessageBox(
-			sprintf("%s apparently created. Do you want to open it now?", $type),
-			'Done',
+			sprintf(_T("%s apparently created. Do you want to open it now?"), $type),
+			_T('Done'),
 			Wx::wxYES_NO|Wx::wxCENTRE,
 			$main,
 		);
