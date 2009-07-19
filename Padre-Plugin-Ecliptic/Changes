@@ -1,6 +1,12 @@
 Changes
 
+=head1 0.15  To be released!
+
 	- Ignore blib directory as well.
+	- require Locale::Msgfmt 0.14
+	- ignore the blib directory as well
+	- Fixed ticket:456 "Ecliptic: quick menu access empty filter does not show anything"
+	- Unified behavior on quick menu, module and outline access.
 
 =head1 0.14  2009.6.29
 
