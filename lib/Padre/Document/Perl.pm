@@ -102,6 +102,9 @@ sub set_highlighter {
 	my $self   = shift;
 	my $module = shift;
 
+	# This is a hard coded limit because the PPI highlighter
+	# is slow. Probably there is not much use in moving this back to a
+	# configuration variable
 	my $limit = 2000;
 	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: " . $self->editor->GetTextLength  . " limit is $limit");
 
