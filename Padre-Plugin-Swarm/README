@@ -1,6 +1,9 @@
 Swarm Readme
-
 if you are reading this - ++ for bravery. There is much to do in swarm.
+
+Padre::Plugin::Swarm 
+	Needs a preferences dialog. In the very least a way to pick the 
+	default transport  Multicast/IRC/XMPP/etc
 
 [still needs identity management see ::Swarm::Identity]
 In progress. -submersible

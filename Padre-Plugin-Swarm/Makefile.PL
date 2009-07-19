@@ -12,5 +12,6 @@ requires	AnyEvent::IRC
 requires	Guard
 requires	Net::Jabber
 requires	Text::Patch
+no_index	junkyard
 test_requires Test::More 0.42
 install_share	lib/Padre/Plugin/Swarm/share/
