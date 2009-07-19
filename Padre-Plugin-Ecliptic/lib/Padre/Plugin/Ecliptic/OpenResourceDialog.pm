@@ -77,11 +77,15 @@ sub _on_ok_button_clicked {
 	my @selections = $self->_matches_list->GetSelections();
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
+
+		# save the file in the plugin's configuration
+		my $config = $self->_plugin->config_read;
+		my @recently_opened = split /|/, $config->{recently_opened};
+		push @recently_opened, $filename;
+		$config->{recently_opened} = join '|', @recently_opened;
+
 		# try to open the file now
 		$main->setup_editor($filename);
-		
-		# XXX- push it to configuration object... the last 20 opened resource 
-		# XXX- should appear for instance
 	}
 
 	$self->Destroy;
@@ -220,7 +224,7 @@ sub _setup_events {
 	});
 
 	Wx::Event::EVT_IDLE( $self, sub {
-		$self->_display_recently_opened_resources;
+		$self->_show_recently_opened_resources;
 		
 		# focus on the search text box
 		$self->_search_text->SetFocus;
@@ -231,10 +235,16 @@ sub _setup_events {
 }
 
 #
-# Display the recently opened resources
+# Shows the recently opened resources
 #
-sub _display_recently_opened_resources() {
-	print "Display recently opened resources\n";
+sub _show_recently_opened_resources() {
+	my $self = shift;
+	
+	my $config = $self->_plugin->config_read;
+	my @recently_opened = split /|/, $config->{recently_opened};
+	$self->_matched_files( \@recently_opened );
+	$self->_update_matches_list_box;
+	$self->_matched_files( undef );
 }
 
 #

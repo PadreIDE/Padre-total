@@ -66,6 +66,10 @@ sub plugin_enable {
 		# no configuration, let us write some defaults
 		$config = {};
 	}
+	if(not defined $config->{recently_opened}) {
+		$config->{recently_opened} = '';
+	}
+
 	# and write the plugin's configuration
 	$self->config_write($config);
 }
