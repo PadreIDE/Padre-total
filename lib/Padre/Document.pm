@@ -800,9 +800,16 @@ sub restore_cursor_position {
 sub lexer {
 	my $self = shift;
 	return Wx::wxSTC_LEX_AUTOMATIC unless $self->get_mimetype;
+
+	my $highlighter = $self->get_highlighter;
+	if (not $highlighter) {
+		warn "no highlighter\n";
+		$highlighter = 'stc';
+	}
+	return Wx::wxSTC_LEX_CONTAINER if $highlighter ne 'stc';
 	return Wx::wxSTC_LEX_AUTOMATIC unless defined $MIME_LEXER{ $self->get_mimetype };
 
-	Padre::Util::debug( 'Lexer will be based on mime type "' . $self->get_mimetype . '"' );
+	Padre::Util::debug( 'STC Lexer will be based on mime type "' . $self->get_mimetype . '"' );
 	return $MIME_LEXER{ $self->get_mimetype };
 }
 
@@ -1225,6 +1232,16 @@ sub autocomplete {
 	}
 
 	return ( length($prefix), @words );
+}
+
+# set/get highlighter class
+sub set_highlighter {
+	my $self = shift;
+	$self->{_highlighter} = shift;
+}
+sub get_highlighter {
+	my $self = shift;
+	return $self->{_highlighter};
 }
 
 1;

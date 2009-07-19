@@ -4120,20 +4120,41 @@ sub set_ppi_highlight {
 	# Update the saved config setting
 	$config->set( ppi_highlight => $on );
 
+	if ($on) {
+		# use pshangov's experimental ppi lexer only when running in development mode
+		if ( $ENV{PADRE_DEV} ) {
+			$self->change_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer');
+		} else {
+			$self->change_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer');
+		}
+	} else {
+		$self->change_highlighter('application/x-perl', 'stc');
+	}
+
+	return;
+}
+
+sub change_highlighter {
+	my $self      = shift;
+	my $mime_type = shift;
+	my $module    = shift;
+
 	# Refresh the menu (and MIME_LEXER hook)
 	# probably no need for this
 	# $self->refresh;
 
-	# Update the colourise for each Perl editor
-	# TODO try to delay the actual color updating for the
+	# Update the colourise for each editor of the relevant mime-type
+	# Trying to delay the actual color updating for the
 	# pages that are not in focus till they get in focus
 	my $focused = $self->current->editor;
 	foreach my $editor ( $self->editors ) {
 		my $document = $editor->{Document};
-		next unless $document->isa('Padre::Document::Perl');
-		Padre::Util::debug( "Set ppi to $on for $document in file " . ( $document->filename || '' ) );
+		next unless $document->isa('Padre::Document::Perl'); # should check $mime_type
+		$document->set_highlighter($module);
+		Padre::Util::debug( "Set highlighter to to $module for $document in file " . ( $document->filename || '' ) );
 		my $lexer = $document->lexer;
 		$editor->SetLexer($lexer);
+
 
 		# TODO maybe the document should have a method that tells us if it was setup
 		# to be colored by ppi or not instead of fetching the lexer again.
@@ -4150,6 +4171,7 @@ sub set_ppi_highlight {
 			$editor->needs_manual_colorize(1);
 		}
 	}
+
 	return;
 }
 

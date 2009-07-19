@@ -98,18 +98,18 @@ sub character_position_to_ppi_location {
 	return [ $line, $col, $col ];
 }
 
-sub lexer {
+sub set_highlighter {
 	my $self   = shift;
-	my $config = Padre->ide->config;
+	my $module = shift;
 
-	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: " . $self->editor->GetTextLength );
-	Padre::Util::debug( "Limit " . $config->ppi_highlight_limit );
-	if ( $config->ppi_highlight and $self->editor->GetTextLength < $config->ppi_highlight_limit ) {
-		Padre::Util::debug("Setting ppi highlighting");
-		return Wx::wxSTC_LEX_CONTAINER;
-	} else {
-		return $self->SUPER::lexer();
+	my $limit = 2000;
+	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: " . $self->editor->GetTextLength  . " limit is $limit");
+
+	if ( $self->editor->GetTextLength > $limit ) {
+		Padre::Util::debug("Forcing STC highlighting");
+		$module = 'stc';
 	}
+	return $self->SUPER::set_highlighter($module);
 }
 
 #####################################################################
@@ -120,12 +120,8 @@ sub colorize {
 
 	Padre::Util::debug("colorize called");
 
-	my $module = 'Padre::Document::Perl::PPILexer';
+	my $module = $self->get_highlighter;
 
-	# use pshangov's experimental ppi lexer only when running in development mode
-	if ( $ENV{PADRE_DEV} ) {
-		$module = 'Padre::Document::Perl::Lexer';
-	}
 	eval "use $module";
 	$module->colorize(@_);
 	return;
