@@ -4144,17 +4144,8 @@ sub change_highlighter {
 	# $self->refresh;
 
 	# set the highlighter in the database
-	# TODO move this to a better place
 	require Padre::DB::SyntaxHighlight;
-	Padre::DB->begin;
-	Padre::DB::SyntaxHighlight->delete(
-		'where mime_type = ?', $mime_type,
-	);
-	Padre::DB::SyntaxHighlight->create(
-		mime_type => $mime_type,
-		value     => $module,
-	);
-	Padre::DB->commit;
+	Padre::DB::SyntaxHighlight->set_mime_type($mime_type, $module);
 
 	# Update the colourise for each editor of the relevant mime-type
 	# Trying to delay the actual color updating for the

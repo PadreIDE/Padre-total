@@ -14,6 +14,23 @@ sub fetch_module_name {
 	return $row ? $row->{value} : 'stc';
 }
 
+sub set_mime_type {
+	my $class     = shift;
+	my $mime_type = shift;
+	my $module    = shift;
+	
+	Padre::DB->begin;
+	$class->delete(
+		'where mime_type = ?', $mime_type,
+	);
+	$class->create(
+		mime_type => $mime_type,
+		value     => $module,
+	);
+	Padre::DB->commit;
+	return;
+}
+
 1;
 
 __END__
