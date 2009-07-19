@@ -7,7 +7,7 @@ use Params::Util qw{_INSTANCE};
 use Padre::Wx ();
 use Padre::Config ();
 use Padre::Swarm::Identity;
-
+use Wx::Perl::Dialog::Simple;
 use Padre::Service::Swarm;
 use Padre::Swarm::Service::Chat;
 use Padre::Current qw{_CURRENT};
@@ -71,8 +71,8 @@ sub new {
 	my $service = Padre::Swarm::Service::Chat->new(
 		identity => $identity,
 		use_transport => {
-			'Padre::Swarm::Transport::Multicast'=>{
-			#'Padre::Swarm::Transport::IRC'=>{
+			#'Padre::Swarm::Transport::Multicast'=>{
+			'Padre::Swarm::Transport::IRC'=>{
 				identity => $identity,
 				loopback => 1,
 			},
@@ -192,7 +192,7 @@ sub on_text_enter {
 	
 }
 
-# 
+# 123
 use Text::Patch ();
 use Data::Dumper;
 ## 
@@ -213,7 +213,16 @@ sub on_receive_diff {
 	warn "Have current doc $p_file, $p_name";
 	return unless $p_dir;
 	return unless ( $p_name eq $project );
+	
+	# Ignore my own diffs
 	return if $message->from eq $self->service->identity->nickname;
+	
+	Wx::Perl::Dialog::Simple::dialog( 
+		sub {},
+		sub {},
+		sub {},
+		{ title => 'Swarm Diff' }
+	);
 	warn "PAtching $file in $project";
 	warn "APPLY PATCH \n" . $diff;
 	eval {
