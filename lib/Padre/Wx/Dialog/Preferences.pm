@@ -65,18 +65,16 @@ sub _mime_type_panel {
 	my ( $self, $treebook ) = @_;
 
 	my $mime_types   = Padre::Document->get_mime_type_names;
-	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[0] );
-	my $explanation  = Padre::Document->get_highlighter_explanation( $highlighters->[0] );
-
+	
 	# get list of mime-types
 	my $table = [
 		[   [ 'Wx::StaticText', undef,          Wx::gettext('Mime type') ],
 			[ 'Wx::Choice',  'mime_type', $mime_types ]
 		],
 		[   [ 'Wx::StaticText', undef,          Wx::gettext('Select the highlighter:') ],
-			[ 'Wx::Choice',  'highlighters', $highlighters ]
+			[ 'Wx::Choice',  'highlighters', [] ]
 		],
-		[   [ 'Wx::StaticText', 'description',   $explanation ],
+		[   [ 'Wx::StaticText', 'description',   [] ],
 		],
 	];
 
@@ -86,6 +84,8 @@ sub _mime_type_panel {
 		sub { _on_mime_type_changed($self, @_) } );
 	Wx::Event::EVT_CHOICE( $panel, $self->get_widget('highlighters'), 
 		sub { _on_highlighter_changed($self, @_) } );
+	$self->update_highlighters;
+	$self->update_description;
 	$self->get_widget('description')->Wrap(200); # TODO should be based on the width of the page !
 	return $panel;
 }
@@ -100,26 +100,41 @@ sub update_highlighters {
 
 	my $selection = $self->get_widget('mime_type')->GetSelection;
 	my $mime_types = Padre::Document->get_mime_type_names;
+	my $mime_type_name = $mime_types->[$selection];
+	
+	print "mime '$mime_type_name'\n";
+	$self->{_highlighter_}{$mime_type_name} ||= $self->{_start_highlighters_}{$mime_type_name};
+
+	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_type_name );
+	my ($id) = grep { $highlighters->[$_] eq $self->{_highlighter_}{$mime_type_name} }
+		(0 .. @$highlighters - 1);
+	$id ||= 0;
 
 	my $list    = $self->get_widget('highlighters');
 	$list->Clear;
-	$list->AppendItems( Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[$selection] ) );
-	$list->SetSelection(0);
+	$list->AppendItems( $highlighters );
+	$list->SetSelection($id);
 }
 
 sub _on_highlighter_changed {
 	my ( $self, $panel, $event ) = @_;
 	$self->update_description;
 }
+
 sub update_description {
 	my ($self) = @_;
 
 	my $mime_type_selection = $self->get_widget('mime_type')->GetSelection;
 	my $mime_types   = Padre::Document->get_mime_type_names;
 
-	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[ $mime_type_selection ] ) ; 
+	my $mime_type_name = $mime_types->[ $mime_type_selection ];
+
+	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_type_name ) ; 
 	my $highlighter_selection = $self->get_widget('highlighters')->GetSelection;
 	my $highlighter  = $highlighters->[ $highlighter_selection ];
+
+	$self->{_highlighter_}{$mime_type_name} = $highlighter;
+	print "Highlighter $highlighter\n";
 
 	$self->get_widget('description')->SetLabel( Padre::Document->get_highlighter_explanation( $highlighter ))
 }
@@ -666,6 +681,17 @@ sub run {
 		Wx::gettext('original'),
 		Wx::gettext('alphabetical_private_last'),
 	);
+
+	# array ref of objects with value and mime_type fields that have the raw values
+	my $current_highlighters = Padre::DB::SyntaxHighlight->select || [];
+	#print Data::Dumper::Dumper $current_highlighters;
+	my %current_highlighter_map;
+	foreach my $e (@$current_highlighters) {
+		$self->{_start_highlighters_}{Padre::Document->get_mime_type_name($e->mime_type) }
+			= Padre::Document->get_highlighter_name($e->value);
+	}
+	#TODO: foreach add default highligther to start hash
+
 
 	# Startup preparation
 	my $main_startup       = $config->main_startup;

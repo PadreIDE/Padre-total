@@ -333,6 +333,12 @@ sub get_mime_type_names {
 	my $self = shift;
 	return [ map { $MIME_TYPES{$_}{name} } @{ $self->get_mime_types } ];
 }
+sub get_mime_type_name {
+	my $self      = shift;
+	my $mime_type = shift;
+	return $MIME_TYPES{$mime_type}{name};
+}
+
 sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
 	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters} };
@@ -356,10 +362,10 @@ foreach my $mime (keys %MIME_LEXER) {
 }
 
 __PACKAGE__->add_highlighter('Padre::Document::Perl::Lexer', 
-	Wx::gettext('PPI Standard'),
+	Wx::gettext('PPI Experimental'),
 	Wx::gettext('Slow but accurate and we have full control so bugs can be fixed'));
 __PACKAGE__->add_highlighter('Padre::Document::Perl::PPILexer', 
-	Wx::gettext('PPI Experimental'),
+	Wx::gettext('PPI Standard'),
 	Wx::gettext('Hopefully faster than the PPI Traditional'));
 __PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::Lexer');
 __PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::PPILexer');
