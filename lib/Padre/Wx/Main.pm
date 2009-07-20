@@ -3112,6 +3112,8 @@ Open Padre's preferences dialog. No return value.
 sub on_preferences {
 	my $self = shift;
 
+	my %old_highlighters = Padre::Document->get_current_highlighters;
+	
 	require Padre::Wx::Dialog::Preferences;
 	my $prefDlg = Padre::Wx::Dialog::Preferences->new;
 	if ( $prefDlg->run($self) ) {
@@ -3120,10 +3122,13 @@ sub on_preferences {
 			$editor->set_preferences;
 			$mime_types{$editor->{Document}->get_mimetype} = 1;
 		}
+
+		my %new_highlighters = Padre::Document->get_current_highlighters;
+		
 		foreach my $mime_type (keys %mime_types) {
-			my $current_highlighter = ''; # get current highlighter name
-			my $new_highlighter = ''; # get new highlighter from database
-			if ($current_highlighter ne $new_highlighter) {
+			my $old_highlighter = $old_highlighters{$mime_type};
+			my $new_highlighter = $new_highlighters{$mime_type};
+			if ($old_highlighter ne $new_highlighter) {
 				$self->change_highlighter($mime_type, $new_highlighter);
 			}
 		}
@@ -4152,10 +4157,6 @@ sub change_highlighter {
 	# Refresh the menu (and MIME_LEXER hook)
 	# probably no need for this
 	# $self->refresh;
-
-	# set the highlighter in the database
-	require Padre::DB::SyntaxHighlight;
-	Padre::DB::SyntaxHighlight->set_mime_type($mime_type, $module);
 
 	# Update the colourise for each editor of the relevant mime-type
 	# Trying to delay the actual color updating for the

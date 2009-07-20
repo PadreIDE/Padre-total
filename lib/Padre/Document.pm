@@ -272,6 +272,9 @@ my %MIME_CLASS = (
 	'application/x-perl' => 'Padre::Document::Perl',
 	'text/x-pod'         => 'Padre::Document::POD',
 );
+# array ref of objects with value and mime_type fields that have the raw values
+__PACKAGE__->read_current_highlighters_from_db();
+
 
 sub add_mime_class {
 	my $self  = shift;
@@ -317,14 +320,32 @@ sub get_highlighter_explanation {
 	}
 	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{explanation};
 }
+
 sub get_highlighter_name {
 	my $self        = shift;
 	my $highlighter = shift;
 	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{name};
 }
 
-# array ref of objects with value and mime_type fields that have the raw values
-__PACKAGE__->read_current_highlighters_from_db();
+# get a hash of mime-type => highlighter
+# update the database
+sub change_highlighters {
+	my ($self, $changed_highlighters) = @_;
+
+	my %mtn = map { $MIME_TYPES{$_}{name} => $_ } keys %MIME_TYPES;
+	my %highlighters = map { $AVAILABLE_HIGHLIGHTERS{$_}{name} => $_ } keys %AVAILABLE_HIGHLIGHTERS;
+
+	require Padre::DB::SyntaxHighlight;
+	foreach my $mime_type_name (keys %$changed_highlighters) {
+		my $mime_type   = $mtn{$mime_type_name}; # get mime_type from name
+		my $highlighter = $highlighters{ $changed_highlighters->{$mime_type_name} }; # get highlighter from name
+		Padre::DB::SyntaxHighlight->set_mime_type($mime_type, $highlighter);
+	}
+	
+	$self->read_current_highlighters_from_db();
+}
+
+
 sub read_current_highlighters_from_db {
 	require Padre::DB::SyntaxHighlight;
 
@@ -337,6 +358,16 @@ sub read_current_highlighters_from_db {
 	foreach my $mime_type (keys %MIME_TYPES) {
 		$MIME_TYPES{ $mime_type }{current_highlighter} ||= 'stc';
 	}
+}
+
+# returns hash of mime_type => highlighter
+sub get_current_highlighters {
+	my %MT;
+
+	foreach my $mime_type (keys %MIME_TYPES) {
+		$MT{ $mime_type } = $MIME_TYPES{$mime_type}{current_highlighter};
+	}
+	return %MT;
 }
 
 # returns hash-ref of mime_type_name => highlighter_name
@@ -387,7 +418,7 @@ sub get_mime_type_name {
 	my $self      = shift;
 	my $mime_type = shift;
 	return $MIME_TYPES{$mime_type}{name};
-}
+}	
 
 # given a mime-type 
 # return the display-names of the available highlighters

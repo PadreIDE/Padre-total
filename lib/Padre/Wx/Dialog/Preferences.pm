@@ -103,11 +103,11 @@ sub update_highlighters {
 	my $mime_type_name = $mime_types->[$selection];
 	
 	print "mime '$mime_type_name'\n";
-	$self->{_highlighter_}{$mime_type_name} ||= $self->{_start_highlighters_}{$mime_type_name};
+	$self->{_highlighters_}{$mime_type_name} ||= $self->{_start_highlighters_}{$mime_type_name};
 
 	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_type_name );
 	print "hl '$highlighters'\n";
-	my ($id) = grep { $highlighters->[$_] eq $self->{_highlighter_}{$mime_type_name} }
+	my ($id) = grep { $highlighters->[$_] eq $self->{_highlighters_}{$mime_type_name} }
 		(0 .. @$highlighters - 1);
 	$id ||= 0;
 
@@ -134,7 +134,7 @@ sub update_description {
 	my $highlighter_selection = $self->get_widget('highlighters')->GetSelection;
 	my $highlighter  = $highlighters->[ $highlighter_selection ];
 
-	$self->{_highlighter_}{$mime_type_name} = $highlighter;
+	$self->{_highlighters_}{$mime_type_name} = $highlighter;
 	print "Highlighter $highlighter\n";
 
 	$self->get_widget('description')->SetLabel( Padre::Document->get_highlighter_explanation( $highlighter ))
@@ -727,15 +727,15 @@ sub run {
 		return;
 	}
 
-	# Set and save the highlighters
-	# TODO: is this really the right place to call main ?
-	my $main = Padre::Current->main;
+	# Save the highlighters
+	my %changed_highlighters;
 	foreach my $mime_type_name ( keys %{ $self->{_highlighters_} }  ) {
 		if ( $self->{_start_highlighters_}{$mime_type_name} ne $self->{_highlighters_}{$mime_type_name} ) {
+			$changed_highlighters{$mime_type_name} = $self->{_highlighters_}{$mime_type_name};
 			print "Changing highlighter of $mime_type_name from $self->{_start_highlighters_}{$mime_type_name} to $self->{_highlighters_}{$mime_type_name}\n";
-			# TODO update database or Padre::Document page ?
 		}
 	}
+	Padre::Document->change_highlighters(\%changed_highlighters);
 
 	my $data = $self->get_widgets_values;
 	$config->set(
