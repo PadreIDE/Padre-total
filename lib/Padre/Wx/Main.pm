@@ -4131,12 +4131,11 @@ sub change_highlighter {
 	my $focused = $self->current->editor;
 	foreach my $editor ( $self->editors ) {
 		my $document = $editor->{Document};
-		next unless $document->isa('Padre::Document::Perl'); # should check $mime_type
+		next if $document->get_mimetype ne $mime_type;
 		$document->set_highlighter($module);
 		Padre::Util::debug( "Set highlighter to to $module for $document in file " . ( $document->filename || '' ) );
 		my $lexer = $document->lexer;
 		$editor->SetLexer($lexer);
-
 
 		# TODO maybe the document should have a method that tells us if it was setup
 		# to be colored by ppi or not instead of fetching the lexer again.
