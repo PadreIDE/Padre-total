@@ -12,6 +12,9 @@ our $VERSION = '0.53';
 my $COLORIZE_TIMER;
 my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 colorize task
 
+
+our $colorizer;
+
 sub colorize {
 	my $self = shift;
 
@@ -26,8 +29,6 @@ sub colorize {
 			$main, $timer_id, 
 			sub { 
 				# temporary overlay using the parse tree given by parrot
-				my $colorizer = $config->{colorizer};
-
 				# Create a coloring task
 				my $module = $colorizer eq 'STD'
 					? 'Padre::Plugin::Perl6::Perl6StdColorizerTask'   # STD

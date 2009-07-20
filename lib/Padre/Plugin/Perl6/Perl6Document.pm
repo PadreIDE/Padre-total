@@ -39,7 +39,11 @@ sub colorize {
 	if ($self->can('SUPER::colorize')) {
 		return $self->SUPER::colorize(@_);
 	}
+	
+	
 	require Padre::Plugin::Perl6::Perl6Colorizer;
+	my $config = Padre::Plugin::Perl6::plugin_config();
+	$Padre::Plugin::Perl6::Perl6Colorizer::colorizer = $config->{colorizer};
 	return Padre::Plugin::Perl6::Perl6Colorizer->colorize;
 }
 
