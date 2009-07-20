@@ -244,7 +244,18 @@ my %MIME_LEXER = (
 	'text/plain'          => Wx::wxSTC_LEX_NULL,            # CONFIRMED
 );
 
+# TODO fill this hash and use this name in various places where a human readable
+# display of file type is needed
+# TODO move the whole mime-type and highlighter related code to its own class
+my %AVAILABLE_HIGHLIGHTERS;
+my %MIME_TYPES;
+$MIME_TYPES{'application/x-perl'}{name}  = 'Perl 5';
+$MIME_TYPES{'application/x-perl6'}{name} = 'Perl 6';
+foreach my $mt (keys %MIME_LEXER) {
+	$MIME_TYPES{$mt}{name} = $mt unless $MIME_TYPES{$mt};
+}
 
+# TODO include this data in the MIME_TYPES hash
 # This is the mime-type to document class mapping
 my %MIME_CLASS = (
 	'application/x-perl' => 'Padre::Document::Perl',
@@ -273,50 +284,64 @@ sub remove_mime_class {
 	delete $MIME_CLASS{$mime};
 }
 
-# TODO maybe move the whole Highlighter related code to another module ?
-my %AVAILABLE_HIGHLIGHTERS;
 sub add_highlighter {
+	my $self        = shift;
+	my $module      = shift;
+	my $human       = shift;
+	my $explanation = shift || '';
+	
+	$AVAILABLE_HIGHLIGHTERS{$module} = {
+			name        => $human,
+			explanation => $explanation,
+	};
+}
+sub get_highlighter_explanation {
+	my $self        = shift;
+	my $highlighter = shift;
+	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{explanation};
+}
+sub get_highlighter_name {
+	my $self        = shift;
+	my $highlighter = shift;
+	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{name};
+}
+
+sub add_highlighter_to_mime_type {
 	my $self   = shift;
 	my $mime   = shift;
-	my $module = shift; # module name or STC to indicate Scintilla
-	my $name   = shift || Wx::gettext('Default using Scintilla');
-	# TODO check overwrite
-	$AVAILABLE_HIGHLIGHTERS{$mime}{$module} = $name;
+	my $module = shift; # module name or stc to indicate Scintilla
+	# TODO check overwrite, check if it is listed in HIGHLIGHTER_EXPLANATIONS
+	$MIME_TYPES{$mime}{highlighters}{$module} = 1;
 }
-sub remove_highlighter {
+sub remove_highlighter_from_mime_type {
 	my $self   = shift;
 	my $mime   = shift;
 	my $module = shift;
 	# TODO check overwrite
-	delete $AVAILABLE_HIGHLIGHTERS{$mime}{$module};
+	delete $MIME_TYPES{$mime}{highlighters}{$module};
 }
-
-sub get_explanation {
-	my $self        = shift;
-	my $highlighter = shift;
-	my %exp = (
-		'STC'              => 'Scintilla, fast but might be out of date',
-		'Parrot'           => 'Based on the ...',
-		'PPI Traditional'  => 'Slow but accurate and we have full control so bugs can be fixed',
-		'PPI Experimental' => 'Hopefully faster than the PPI Traditional',
-		'STD'              => 'Slow but accurate',
-	);
-	return $exp{$highlighter};
-}
-
 sub get_mime_types {
-	return [ sort keys %AVAILABLE_HIGHLIGHTERS ];
+	return [ sort keys %MIME_TYPES ];
 }
-sub get_highlighters {
+sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
-	return [sort values %{ $AVAILABLE_HIGHLIGHTERS{$mime_type} } ];
+	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters } };
+	return \@names;
 }
 
+__PACKAGE__->add_highlighter('stc', 'Scintilla', Wx::gettext('Scintilla, fast but might be out of date'));
 foreach my $mime (keys %MIME_LEXER) {
-	__PACKAGE__->add_highlighter($mime, 'stc');
+	__PACKAGE__->add_highlighter_to_mime_type($mime, 'stc');
 }
-__PACKAGE__->add_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer',    Wx::gettext('PPI Standard'));
-__PACKAGE__->add_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer', Wx::gettext('PPI Experimental'));
+
+__PACKAGE__->add_highlighter('Padre::Document::Perl::Lexer', 
+	Wx::gettext('PPI Standard'),
+	Wx::gettext('Slow but accurate and we have full control so bugs can be fixed'));
+__PACKAGE__->add_highlighter('Padre::Document::Perl::PPILexer', 
+	Wx::gettext('PPI Experimental'),
+	Wx::gettext('Hopefully faster than the PPI Traditional'));
+__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::Lexer');
+__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::PPILexer');
 
 
 sub menu_view_mimes {
