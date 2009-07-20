@@ -233,7 +233,7 @@ sub _update_matches_list_box() {
 	my $search_expr = $self->_search_text->GetValue();
 	my $searcher = $self->_index;
 	warn "QUERY : $search_expr";
-	my $hits = $searcher->query( $search_expr );
+	my $hits = $searcher->search( query => $search_expr );
 	warn "HITS OBJECT $hits";
 	warn "\t GOT " . $hits->total_hits;
 	
