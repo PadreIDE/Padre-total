@@ -30,6 +30,8 @@ sub text_with_one_nl {
 # one at a time;
 # now the user can choose between PGE and STD colorizers
 # via the preferences
+# this function can be removed once the transition to the new 
+# highlighter API of Padre is released probably in Padre 0.41
 sub colorize {
 	my $self = shift;
 

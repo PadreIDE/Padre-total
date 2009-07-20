@@ -27,22 +27,16 @@ sub colorize {
 			sub { 
 				# temporary overlay using the parse tree given by parrot
 				my $colorizer = $config->{colorizer};
-				my $task;
-				if($colorizer eq 'STD') {
-					# Create an STD coloring task 
-					require Padre::Plugin::Perl6::Perl6StdColorizerTask;
-					$task = Padre::Plugin::Perl6::Perl6StdColorizerTask->new(
-						text => $doc->text_with_one_nl,
-						editor => $doc->editor,
-						document => $doc);
-				} else {
-					# Create a PGE coloring task
-					require Padre::Plugin::Perl6::Perl6PgeColorizerTask;
-					$task = Padre::Plugin::Perl6::Perl6PgeColorizerTask->new(
-						text => $doc->text_with_one_nl,
-						editor => $doc->editor,
-						document => $doc);
-				}
+
+				# Create a coloring task
+				my $module = $colorizer eq 'STD'
+					? 'Padre::Plugin::Perl6::Perl6StdColorizerTask'   # STD
+					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask';  # PGE
+				eval "use $module";
+				my $task = $module->new(
+					text => $doc->text_with_one_nl,
+					editor => $doc->editor,
+					document => $doc);
 				# hand off to the task manager
 				$task->schedule();
 
