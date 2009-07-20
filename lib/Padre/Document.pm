@@ -199,7 +199,7 @@ my %EXT_MIME = (
 # to confirm that the MIME type is either the official type, or the primary
 # one in use by the relevant language community.
 my %MIME_LEXER = (
-	'text/x-abc' => Wx::wxSTC_LEX_CONTAINER,
+	'text/x-abc' => Wx::wxSTC_LEX_NULL,
 
 	'text/x-adasrc' => Wx::wxSTC_LEX_ADA, # CONFIRMED
 	'text/x-asm'    => Wx::wxSTC_LEX_ASM, # CONFIRMED
@@ -238,11 +238,22 @@ my %MIME_LEXER = (
 	'text/xml' => Wx::wxSTC_LEX_XML,                        # CONFIRMED
 
 	'text/x-yaml'         => Wx::wxSTC_LEX_YAML,            # CONFIRMED
-	'application/x-pir'   => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
-	'application/x-pasm'  => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
-	'application/x-perl6' => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
+	'application/x-pir'   => Wx::wxSTC_LEX_NULL,            # CONFIRMED
+	'application/x-pasm'  => Wx::wxSTC_LEX_NULL,            # CONFIRMED
+	'application/x-perl6' => Wx::wxSTC_LEX_NULL,            # CONFIRMED
 	'text/plain'          => Wx::wxSTC_LEX_NULL,            # CONFIRMED
 );
+#	'text/x-abc' => Wx::wxSTC_LEX_CONTAINER,
+#	'application/x-pir'   => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
+#	'application/x-pasm'  => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
+#	'application/x-perl6' => Wx::wxSTC_LEX_CONTAINER,       # CONFIRMED
+
+# TODO: Set some reasonable default highlighers for each mime-type for when there
+# are no plugins. e.g. For Perl 6 style files that should be plain text.
+# Either allow the plugins to set the defaults (maybe allow the plugin that implements
+# the special features of this mime-type to pick the default or shall we have a list of
+# prefered default values ?
+
 
 # TODO fill this hash and use this name in various places where a human readable
 # display of file type is needed
@@ -326,26 +337,36 @@ sub remove_highlighter_from_mime_type {
 	# TODO check overwrite
 	delete $MIME_TYPES{$mime}{highlighters}{$module};
 }
+
+# return the mime-types ordered according to their display-name
 sub get_mime_types {
 	return [ sort { lc $MIME_TYPES{$a}{name} cmp lc $MIME_TYPES{$b}{name} } keys %MIME_TYPES ];
 }
+
+# return the display-names of the mime-types ordered according to the display-names
 sub get_mime_type_names {
 	my $self = shift;
 	return [ map { $MIME_TYPES{$_}{name} } @{ $self->get_mime_types } ];
 }
+
+# given a mime-type
+# return its display-name
 sub get_mime_type_name {
 	my $self      = shift;
 	my $mime_type = shift;
 	return $MIME_TYPES{$mime_type}{name};
 }
 
+# given a mime-type 
+# return the display-names of the available highlighters
 sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
 	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters} };
 	return \@names;
 }
 
-# getting the display name of
+# given the display-name of a mime-type 
+# return the display-names of the available highlighters
 sub get_highlighters_of_mime_type_name {
 	my ($self, $mime_type_name) = @_;
 	my ($mime_type) = grep { $MIME_TYPES{$_}{name} eq $mime_type_name } keys %MIME_TYPES;

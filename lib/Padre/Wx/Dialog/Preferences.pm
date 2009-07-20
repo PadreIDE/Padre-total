@@ -684,14 +684,14 @@ sub run {
 
 	# array ref of objects with value and mime_type fields that have the raw values
 	my $current_highlighters = Padre::DB::SyntaxHighlight->select || [];
-	#print Data::Dumper::Dumper $current_highlighters;
-	my %current_highlighter_map;
 	foreach my $e (@$current_highlighters) {
-		$self->{_start_highlighters_}{Padre::Document->get_mime_type_name($e->mime_type) }
+		$self->{_start_highlighters_}{ Padre::Document->get_mime_type_name($e->mime_type) }
 			= Padre::Document->get_highlighter_name($e->value);
 	}
-	#TODO: foreach add default highligther to start hash
-
+	# TODO move the name of the default highlighter to hash of the mime-types ?
+	foreach my $name ( @{ Padre::Document->get_mime_type_names } ) {
+		$self->{_start_highlighters_}{$name} ||= 'stc';
+	}
 
 	# Startup preparation
 	my $main_startup       = $config->main_startup;
