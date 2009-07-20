@@ -4115,39 +4115,6 @@ sub setup_bindings {
 	return;
 }
 
-=pod
-
-=item * $main->set_ppi_highlight( $on );
-
-Toggle C<$on> the fact that we're using PPI to highlight current Perl document.
-If not using PPI, we're using syntax highlighting provided by wxSTC.
-
-Note: this is Perl specific but for now we could not find a better place for
-this.
-
-=cut
-
-sub set_ppi_highlight {
-	my $self   = shift;
-	my $on     = shift;
-	my $config = $self->config;
-
-	# Update the saved config setting
-	$config->set( ppi_highlight => $on );
-
-	if ($on) {
-		# use pshangov's experimental ppi lexer only when running in development mode
-		if ( $ENV{PADRE_DEV} ) {
-			$self->change_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer');
-		} else {
-			$self->change_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer');
-		}
-	} else {
-		$self->change_highlighter('application/x-perl', 'stc');
-	}
-
-	return;
-}
 
 sub change_highlighter {
 	my $self      = shift;
