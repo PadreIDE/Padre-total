@@ -1,5 +1,7 @@
 Changes
 
+	- Allow the use of the new syntax highlighter configuration of Padre 0.41 (szabgab)
+
 =head1 0.53 2009.7.18
 
 	- Moved Rakudo Perl 6 functionality into a separate menu.
