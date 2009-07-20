@@ -303,6 +303,19 @@ sub get_explanation {
 	);
 	return $exp{$highlighter};
 }
+my $highlighters = {
+	'yaml/text'  => ['STC', 'Parrot'],
+	'perl5/text' => ['STC', 'PPI Traditional', 'PPI Experimental'],
+	'perl6/text' => ['STD', 'Parrot'],
+};
+
+sub get_mime_types {
+	return [ sort keys %$highlighters ];
+}
+sub get_highlighters {
+	my ($self, $mime_type) = @_;
+	return $highlighters->{$mime_type};
+}
 
 foreach my $mime (keys %MIME_LEXER) {
 	__PACKAGE__->add_highlighter($mime, 'stc');
