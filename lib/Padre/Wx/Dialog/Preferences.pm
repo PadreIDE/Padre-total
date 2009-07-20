@@ -66,8 +66,8 @@ sub _mime_type_panel {
 
 	my $highlighters = {
 		'yaml/text'  => ['STC', 'Parrot'],
-		'perl5/text' => ['PPI Traditional', 'STC', 'PPI Experimental'],
-		'perl6/text' => ['Parrot', 'STD'],
+		'perl5/text' => ['STC', 'PPI Traditional', 'PPI Experimental'],
+		'perl6/text' => ['STD', 'Parrot'],
 	};
 	my $explanations = {
 		'STC'              => 'Scintilla, fast but might be out of date',
@@ -80,35 +80,62 @@ sub _mime_type_panel {
 	my @mime_types         = sort keys %$highlighters;
 	# get list of mime-types
 	my $table = [
-	
 		[   [ 'Wx::StaticText', undef,          Wx::gettext('Mime type') ],
 			[ 'Wx::Choice',  'mime_type', \@mime_types ]
 		],
 		[   [ 'Wx::StaticText', undef,          Wx::gettext('Select the highlighter:') ],
 			[ 'Wx::Choice',  'highlighters', $highlighters->{ $mime_types[0] } ]
 		],
+		[   [ 'Wx::StaticText', 'description',   $explanations->{ $highlighters->{ $mime_types[0] }[0] } ],
+		],
 	];
 
 	my $panel = $self->_new_panel($treebook);
 	$self->fill_panel_by_table( $panel, $table );
-	Wx::Event::EVT_CHOICE( $panel, $self->get_widget('mime_type'), sub { _list_highlighters($self, $highlighters, @_) } );
-
+	Wx::Event::EVT_CHOICE( $panel, $self->get_widget('mime_type'), 
+		sub { _on_mime_type_changed($self, $highlighters, $explanations, @_) } );
+	Wx::Event::EVT_CHOICE( $panel, $self->get_widget('highlighters'), 
+		sub { _on_highlighter_changed($self, $highlighters, $explanations, @_) } );
+	$self->get_widget('description')->Wrap(200); # TODO should be based on the width of the page !
 	return $panel;
 }
 
-sub _list_highlighters {
-	my ($self, $highlighters, $panel, $event) = @_;
-	#print "xxx @_\n"; 
-	
+sub _on_mime_type_changed {
+	my ($self, $highlighters, $explanations, $panel, $event) = @_;
+	$self->update_highlighters($highlighters);
+	$self->update_description($highlighters, $explanations);
+}
+sub update_highlighters {
+	my ($self, $highlighters) = @_;
+
 	my $selection = $self->get_widget('mime_type')->GetSelection;
 	my @mime_types = sort keys %$highlighters;
-	
-	#Padre::Current->main->message('hello');
+
 	my $list    = $self->get_widget('highlighters');
 	$list->Clear;
 	$list->AppendItems( $highlighters->{ $mime_types[$selection] } );
 	$list->SetSelection(0);
 }
+
+sub _on_highlighter_changed {
+	my ( $self, $highlighters, $explanations, $panel, $event ) = @_;
+	$self->update_description($highlighters, $explanations);
+}
+sub update_description {
+	my ($self, $highlighters, $explanations) = @_;
+
+	my $mime_type_selection = $self->get_widget('mime_type')->GetSelection;
+	my @mime_types   = sort keys %$highlighters;
+#	print "M: '$mime_type_selection' $mime_types[ $mime_type_selection ]\n";
+
+	my @highlighters = @{ $highlighters->{ $mime_types[ $mime_type_selection ] } }; 
+	my $highlighter_selection = $self->get_widget('highlighters')->GetSelection;
+	my $highlighter  = $highlighters[ $highlighter_selection ];
+#	print "H: '$highlighter_selection' $highlighter\n";
+
+	$self->get_widget('description')->SetLabel( $explanations->{ $highlighter })
+}
+
 
 sub _indentation_panel {
 	my ( $self, $treebook, $editor_autoindent ) = @_;
