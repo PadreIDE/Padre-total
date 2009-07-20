@@ -17,6 +17,7 @@ use Padre::Wx::AuiManager   ();
 use Padre::Wx::Dialog       ();
 use Padre::Task::DocBrowser ();
 use Padre::DocBrowser       ();
+use Padre::Index::Kinosearch ();
 use Padre::Util qw( _T );
 use Wx::Perl::Dialog::Simple ();
 use Padre::Task::Indexer;
@@ -29,6 +30,7 @@ our @ISA     = 'Wx::Frame';
 use Class::XSAccessor accessors => {
 	notebook => 'notebook',
 	provider => 'provider',
+	index    => 'index',
 };
 
 our %VIEW = (
@@ -86,7 +88,8 @@ sub new {
 	);
 
 	$self->{provider} = Padre::DocBrowser->new;
-
+	my $index = Padre::Index::Kinosearch->new( index_directory=>'/tmp/padre-index' );
+	$self->{index} = $index;
 	# Until we get a real icon use the same one as the others
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 
@@ -281,6 +284,13 @@ sub help {
 
 sub ResolveRef {
 	my ( $self, $ref ) = @_;
+	if ( $self->index ) {
+		my $hits = $self->index->query( $ref );
+		warn "Index hits " . $hits->total_hits;
+		warn "\t" . $hits->next->{title};
+		
+	}
+	
 	my $task = Padre::Task::DocBrowser->new(
 		document         => $ref,
 		type             => 'resolve',

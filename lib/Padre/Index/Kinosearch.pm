@@ -80,6 +80,10 @@ sub index {
     my $search = KinoSearch::Searcher->new( index=> $self->index_directory );
 }
 
+sub searcher { $_[0]->index }
+
+sub query { shift->index->hits( query => shift ) };
+
 
 1;
 
