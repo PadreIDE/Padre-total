@@ -12,10 +12,6 @@ our @ISA     = 'Padre::Document';
 # max lines to display in a calltip
 my $CALLTIP_DISPLAY_COUNT = 10;
 
-# colorize timer to make sure that colorize tasks are scheduled properly...
-my $COLORIZE_TIMER;
-my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 colorize task
-
 sub text_with_one_nl {
 	my $self = shift;
 	my $text = $self->text_get;
@@ -34,52 +30,21 @@ sub text_with_one_nl {
 # one at a time;
 # now the user can choose between PGE and STD colorizers
 # via the preferences
+# this function can be removed once the transition to the new 
+# highlighter API of Padre is released probably in Padre 0.41
 sub colorize {
 	my $self = shift;
-	
-	my $config = Padre::Plugin::Perl6::plugin_config();
-	if($config->{p6_highlight} || $self->{force_p6_highlight}) {
-	
-		my $timer_id = Wx::NewId();
-		my $main = Padre->ide->wx->main;
-		$COLORIZE_TIMER = Wx::Timer->new($main, $timer_id);
-		Wx::Event::EVT_TIMER(
-			$main, $timer_id, 
-			sub { 
-				# temporary overlay using the parse tree given by parrot
-				my $colorizer = $config->{colorizer};
-				my $task;
-				if($colorizer eq 'STD') {
-					# Create an STD coloring task 
-					require Padre::Plugin::Perl6::Perl6StdColorizerTask;
-					$task = Padre::Plugin::Perl6::Perl6StdColorizerTask->new(
-						text => $self->text_with_one_nl,
-						editor => $self->editor,
-						document => $self);
-				} else {
-					# Create a PGE coloring task
-					require Padre::Plugin::Perl6::Perl6PgeColorizerTask;
-					$task = Padre::Plugin::Perl6::Perl6PgeColorizerTask->new(
-						text => $self->text_with_one_nl,
-						editor => $self->editor,
-						document => $self);
-				}
-				# hand off to the task manager
-				$task->schedule();
 
-				# and let us schedule that it is running properly or not
-				if($task->is_broken) {
-					# let us reschedule colorizing task to a later date..
-					$COLORIZE_TIMER->Stop;
-					$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
-				}
-			},
-		);
-
-		# let us reschedule colorizing task to a later date..
-		$COLORIZE_TIMER->Stop;
-		$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );
+	# transition to the new API
+	if ($self->can('SUPER::colorize')) {
+		return $self->SUPER::colorize(@_);
 	}
+	
+	
+	require Padre::Plugin::Perl6::Perl6Colorizer;
+	my $config = Padre::Plugin::Perl6::plugin_config();
+	$Padre::Plugin::Perl6::Perl6Colorizer::colorizer = $config->{colorizer};
+	return Padre::Plugin::Perl6::Perl6Colorizer->colorize;
 }
 
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
