@@ -67,7 +67,10 @@ sub _on_ok_button_clicked {
 	my @selections = $self->_matches_list->GetSelections();
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
-		warn "Selected $filename";
+		my $doc = Padre::Document->new( filename => $filename );
+		warn "Help for $filename ?";
+		#Padre->ide->wx->main->{help}->help( $doc );
+		
 	}
 
 	$self->Destroy;
