@@ -303,25 +303,20 @@ sub get_explanation {
 	);
 	return $exp{$highlighter};
 }
-my $highlighters = {
-	'yaml/text'  => ['STC', 'Parrot'],
-	'perl5/text' => ['STC', 'PPI Traditional', 'PPI Experimental'],
-	'perl6/text' => ['STD', 'Parrot'],
-};
 
 sub get_mime_types {
-	return [ sort keys %$highlighters ];
+	return [ sort keys %AVAILABLE_HIGHLIGHTERS ];
 }
 sub get_highlighters {
 	my ($self, $mime_type) = @_;
-	return $highlighters->{$mime_type};
+	return [sort values %{ $AVAILABLE_HIGHLIGHTERS{$mime_type} } ];
 }
 
 foreach my $mime (keys %MIME_LEXER) {
 	__PACKAGE__->add_highlighter($mime, 'stc');
 }
-add_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer',    Wx::gettext('PPI Standard'));
-add_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer', Wx::gettext('PPI Experimental'));
+__PACKAGE__->add_highlighter('application/x-perl', 'Padre::Document::Perl::Lexer',    Wx::gettext('PPI Standard'));
+__PACKAGE__->add_highlighter('application/x-perl', 'Padre::Document::Perl::PPILexer', Wx::gettext('PPI Experimental'));
 
 
 sub menu_view_mimes {
