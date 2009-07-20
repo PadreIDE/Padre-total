@@ -73,32 +73,36 @@ sub run {
 	my $files = $self->_find_files;
 	Padre::Util::debug "Got files : " . @$files;
 	
-	
-	my $idx = $index->indexer(  ( $self->runmode eq 'clobber' ) ? (clobber=>1) : () );
-	my $total = scalar @$files;
-	
-	my $progress = 0;
-	foreach my $file ( @$files ) {
-		open( my $fh  , $file ) or die "Failed to open $file : $!";
-		my $modified = (stat $file)[9];
-		my $title = File::Basename::basename( $file );
-		Padre::Util::debug "$title , modified $modified\n";
-		#next; ## REMOVE ME
-		my $content;
-		{local $/;$content = <$fh>;}
+	if ( $self->runmode eq 'clobber' ) {
+		my $idx = $index->indexer( clobber=>1 );
+		my $total = scalar @$files;
 		
-		my $doc = {
-			file => $file , modified => $modified , 
-			title => $title ,
-			content=> $content,
-		};
-		$idx->add_doc( $doc );
-		$progress++;
-		$self->post_event( $self->{PROGRESS_EVENT} , 
-			sprintf( '%4f;%s' , (100*$progress/$total), $title)
-		 );
+		my $progress = 0;
+		foreach my $file ( @$files ) {
+			open( my $fh  , $file ) or die "Failed to open $file : $!";
+			my $modified = (stat $file)[9];
+			my $title = File::Basename::basename( $file );
+			Padre::Util::debug "$title , modified $modified\n";
+			#next; ## REMOVE ME
+			my $content;
+			{local $/;$content = <$fh>;}
+			
+			my $doc = {
+				file => $file , modified => $modified , 
+				title => $title ,
+				content=> $content,
+			};
+			$idx->add_doc( $doc );
+			$progress++;
+			$self->post_event( $self->{PROGRESS_EVENT} , 
+				sprintf( '%4f;%s' , (100*$progress/$total), $title)
+			 );
+		}
+		$idx->commit;
 	}
-	$idx->commit;
+	
+	
+	
 	return;
 }
 
