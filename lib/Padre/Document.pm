@@ -327,10 +327,11 @@ sub remove_highlighter_from_mime_type {
 	delete $MIME_TYPES{$mime}{highlighters}{$module};
 }
 sub get_mime_types {
-	return [ sort keys %MIME_TYPES ];
+	return [ sort { lc $MIME_TYPES{$a}{name} cmp lc $MIME_TYPES{$b}{name} } keys %MIME_TYPES ];
 }
 sub get_mime_type_names {
-	return [ map { $MIME_TYPES{$_}{name} } sort keys %MIME_TYPES ];
+	my $self = shift;
+	return [ map { $MIME_TYPES{$_}{name} } @{ $self->get_mime_types } ];
 }
 sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
