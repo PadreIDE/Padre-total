@@ -323,6 +323,38 @@ sub get_highlighter_name {
 	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{name};
 }
 
+# array ref of objects with value and mime_type fields that have the raw values
+__PACKAGE__->read_current_highlighters_from_db();
+sub read_current_highlighters_from_db {
+	require Padre::DB::SyntaxHighlight;
+
+	my $current_highlighters = Padre::DB::SyntaxHighlight->select || [];
+	foreach my $e (@$current_highlighters) {
+		$MIME_TYPES{ $e->mime_type }{current_highlighter} = $e->value;
+	}
+	
+	# set defaults
+	foreach my $mime_type (keys %MIME_TYPES) {
+		$MIME_TYPES{ $mime_type }{current_highlighter} ||= 'stc';
+	}
+}
+
+# returns hash-ref of mime_type_name => highlighter_name
+sub get_current_highlighter_names {
+	my %MT;
+
+	foreach my $mime_type (keys %MIME_TYPES) {
+		$MT{ Padre::Document->get_mime_type_name($mime_type) }
+			= Padre::Document->get_highlighter_name( $MIME_TYPES{$mime_type}{current_highlighter} );
+	}
+	return \%MT;
+}
+
+sub get_current_highlighter_of_mime_type {
+	my ($self, $mime_type) = @_;
+	return $MIME_TYPES{$mime_type}{current_highlighter};
+}
+
 sub add_highlighter_to_mime_type {
 	my $self   = shift;
 	my $mime   = shift;
@@ -372,7 +404,7 @@ sub get_highlighters_of_mime_type_name {
 	my ($mime_type) = grep { $MIME_TYPES{$_}{name} eq $mime_type_name } keys %MIME_TYPES;
 	if (not $mime_type) {
 		warn "Could not find the mime-type of the display name '$mime_type_name'\n";
-		return;
+		return []; # return [] to avoid crash
 	}
 	$self->get_highlighters_of_mime_type($mime_type);
 }
@@ -483,9 +515,7 @@ sub rebless {
 		bless $self, $class;
 	}
 
-	# TODO: move this to a better place
-	require Padre::DB::SyntaxHighlight;
-	my $module = Padre::DB::SyntaxHighlight->fetch_module_name($mime_type);
+	my $module = __PACKAGE__->get_current_highlighter_of_mime_type($mime_type);
 	my $filename = $self->filename || '';
 	warn("No module  mime_type='$mime_type' filename='$filename'\n") if not $module;
 	#warn("Module '$module' mime_type='$mime_type' filename='$filename'\n") if $module;
@@ -504,7 +534,7 @@ sub colorize {
 
 	my $module = $self->get_highlighter;
 	if ($module eq 'stc') {
-		warn "highlighter is set to 'stc' whihle colorize() is called\n";
+		warn "highlighter is set to 'stc' while colorize() is called\n";
 		return;
 	}
 
@@ -582,8 +612,8 @@ sub guess_mimetype {
 		}
 	}
 
-	# Fall back to a null value
-	return '';
+	# Fall back to plain text file
+	return 'text/plain'
 }
 
 sub perl_mime_type {

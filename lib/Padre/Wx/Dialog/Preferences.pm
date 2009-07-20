@@ -106,6 +106,7 @@ sub update_highlighters {
 	$self->{_highlighter_}{$mime_type_name} ||= $self->{_start_highlighters_}{$mime_type_name};
 
 	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_type_name );
+	print "hl '$highlighters'\n";
 	my ($id) = grep { $highlighters->[$_] eq $self->{_highlighter_}{$mime_type_name} }
 		(0 .. @$highlighters - 1);
 	$id ||= 0;
@@ -682,16 +683,7 @@ sub run {
 		Wx::gettext('alphabetical_private_last'),
 	);
 
-	# array ref of objects with value and mime_type fields that have the raw values
-	my $current_highlighters = Padre::DB::SyntaxHighlight->select || [];
-	foreach my $e (@$current_highlighters) {
-		$self->{_start_highlighters_}{ Padre::Document->get_mime_type_name($e->mime_type) }
-			= Padre::Document->get_highlighter_name($e->value);
-	}
-	# TODO move the name of the default highlighter to hash of the mime-types ?
-	foreach my $name ( @{ Padre::Document->get_mime_type_names } ) {
-		$self->{_start_highlighters_}{$name} ||= 'stc';
-	}
+	$self->{_start_highlighters_} = Padre::Document->get_current_highlighter_names;
 
 	# Startup preparation
 	my $main_startup       = $config->main_startup;
@@ -733,6 +725,16 @@ sub run {
 	my $ret = $self->{dialog}->ShowModal;
 	if ( $ret eq Wx::wxID_CANCEL ) {
 		return;
+	}
+
+	# Set and save the highlighters
+	# TODO: is this really the right place to call main ?
+	my $main = Padre::Current->main;
+	foreach my $mime_type_name ( keys %{ $self->{_highlighters_} }  ) {
+		if ( $self->{_start_highlighters_}{$mime_type_name} ne $self->{_highlighters_}{$mime_type_name} ) {
+			print "Changing highlighter of $mime_type_name from $self->{_start_highlighters_}{$mime_type_name} to $self->{_highlighters_}{$mime_type_name}\n";
+			# TODO update database or Padre::Document page ?
+		}
 	}
 
 	my $data = $self->get_widgets_values;

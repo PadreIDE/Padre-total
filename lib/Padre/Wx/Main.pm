@@ -3115,9 +3115,19 @@ sub on_preferences {
 	require Padre::Wx::Dialog::Preferences;
 	my $prefDlg = Padre::Wx::Dialog::Preferences->new;
 	if ( $prefDlg->run($self) ) {
+		my %mime_types; # all the mime-types of currently open files
 		foreach my $editor ( $self->editors ) {
 			$editor->set_preferences;
+			$mime_types{$editor->{Document}->get_mimetype} = 1;
 		}
+		foreach my $mime_type (keys %mime_types) {
+			my $current_highlighter = ''; # get current highlighter name
+			my $new_highlighter = ''; # get new highlighter from database
+			if ($current_highlighter ne $new_highlighter) {
+				$self->change_highlighter($mime_type, $new_highlighter);
+			}
+		}
+
 		$self->refresh_functions( $self->current );
 	}
 	$self->ide->save_config;
