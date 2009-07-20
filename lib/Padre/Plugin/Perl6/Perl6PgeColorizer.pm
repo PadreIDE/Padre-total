@@ -5,8 +5,15 @@ use warnings;
 
 our $VERSION = '0.53';
 
+use Padre::Plugin::Perl6::Perl6Colorizer;
+our @ISA = ('Padre::Plugin::Perl6::Perl6Colorizer');
+
 sub colorize {
+	my $self = shift;
+	$Padre::Plugin::Perl6::Perl6Colorizer::colorizer = 'Pge';
+	$self->SUPER::colorize(@_);
 }
+
 
 1;
 
