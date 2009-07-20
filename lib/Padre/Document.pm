@@ -104,12 +104,14 @@ Perl 6 can use the STD.pm or Rakudo/PGE for syntax highlighting but
 there are two plugins Parrot and Kate that can provide synax 
 highlighting to a wide range of mime-types.
 
- supported_lexers() returns a list of arrays (the name part is optional 
- and defaults to the name of the plugin)
-    [ mime-type => 'Module with a colorize function' => 'Name']
+ provided_highlighters()  returns a lits of arrays like this:
+    ['Module with a colorize function' => 'Human readable Name' => 'Long description']
 
+ highlighting_mime_types() returns a hash where the keys are module
+ names listed in the provided_highlighters the values are array references to mime-types
+     'Module::A' => [ mime-type-1, mime-type-2]
 
-
+    
 
 The user can change the mime-type mapping of individual 
 files and Padre should remember this choice and allow the
@@ -275,6 +277,24 @@ my %MIME_CLASS = (
 # array ref of objects with value and mime_type fields that have the raw values
 __PACKAGE__->read_current_highlighters_from_db();
 
+__PACKAGE__->add_highlighter('stc', 'Scintilla', Wx::gettext('Scintilla, fast but might be out of date'));
+
+foreach my $mime (keys %MIME_LEXER) {
+	__PACKAGE__->add_highlighter_to_mime_type($mime, 'stc');
+}
+
+# Perl 5 specific highlighters
+__PACKAGE__->add_highlighter('Padre::Document::Perl::Lexer', 
+	Wx::gettext('PPI Experimental'),
+	Wx::gettext('Slow but accurate and we have full control so bugs can be fixed'));
+__PACKAGE__->add_highlighter('Padre::Document::Perl::PPILexer', 
+	Wx::gettext('PPI Standard'),
+	Wx::gettext('Hopefully faster than the PPI Traditional'));
+
+__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::Lexer');
+__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::PPILexer');
+
+
 
 sub add_mime_class {
 	my $self  = shift;
@@ -439,20 +459,6 @@ sub get_highlighters_of_mime_type_name {
 	}
 	$self->get_highlighters_of_mime_type($mime_type);
 }
-
-__PACKAGE__->add_highlighter('stc', 'Scintilla', Wx::gettext('Scintilla, fast but might be out of date'));
-foreach my $mime (keys %MIME_LEXER) {
-	__PACKAGE__->add_highlighter_to_mime_type($mime, 'stc');
-}
-
-__PACKAGE__->add_highlighter('Padre::Document::Perl::Lexer', 
-	Wx::gettext('PPI Experimental'),
-	Wx::gettext('Slow but accurate and we have full control so bugs can be fixed'));
-__PACKAGE__->add_highlighter('Padre::Document::Perl::PPILexer', 
-	Wx::gettext('PPI Standard'),
-	Wx::gettext('Hopefully faster than the PPI Traditional'));
-__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::Lexer');
-__PACKAGE__->add_highlighter_to_mime_type('application/x-perl', 'Padre::Document::Perl::PPILexer');
 
 
 sub menu_view_mimes {
