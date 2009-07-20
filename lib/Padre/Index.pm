@@ -10,6 +10,8 @@ use Class::XSAccessor
 	accessors => {
 		index_directory => 'index_directory', 
 		clobber => 'clobber',
+		_writer => '_writer',
+		_reader => '_reader',
 	};
 	
 our $VERSION = '0.40';
@@ -76,6 +78,8 @@ sub add_document {
 	my ($self,$doc) = @_;
 	$self->indexer->add_doc( $doc );
 }
+
+sub commit { croak "Index subclass must implement 'commit'" }
 
 1;
 

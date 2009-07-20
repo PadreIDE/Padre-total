@@ -61,6 +61,8 @@ sub schema {
 
 sub indexer {
     my $self = shift;
+    return $self->{_writer} if $self->{_writer};
+    
     my %args = @_;
     my $schema = $self->schema;
     warn "Indexer in ". $self->index_directory;
@@ -72,18 +74,25 @@ sub indexer {
         create => 1,
         ( $args{clobber} ) ? (truncate => 1 ) : (),
     );
+    
+    $self->{_writer} = $indexer;
 
 }
 
 sub index {
     my $self = shift;
+    return $self->{_reader} if $self->{_reader};
     my $search = KinoSearch::Searcher->new( index=> $self->index_directory );
+    $self->{_reader} = $search;
 }
 
 sub searcher { $_[0]->index }
 
-sub query { shift->index->hits( query => shift ) };
+#sub query { shift->index->hits( query => shift ) };
 
+sub search { shift->index->hits( @_ ) };
+
+sub commit { shift->indexer->commit };
 
 1;
 

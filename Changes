@@ -1,5 +1,8 @@
 Changes for Perl Application Development and Refactoring Environment
 
+0.branches/Padre-Index
+    - Add Padre::Index and Padre::Service::Indexer
+
 0.41 to be released
     - Remove Experimental mode.
     - Fixed a bug in Plugin config_write where ->selectrow_array was used 

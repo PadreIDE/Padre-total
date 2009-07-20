@@ -1,4 +1,4 @@
-package Padre::Task::Indexer;
+package Padre::Service::Indexer;
 
 use strict;
 use warnings;
