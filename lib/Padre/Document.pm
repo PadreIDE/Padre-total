@@ -291,6 +291,19 @@ sub remove_highlighter {
 	delete $AVAILABLE_HIGHLIGHTERS{$mime}{$module};
 }
 
+sub get_explanation {
+	my $self        = shift;
+	my $highlighter = shift;
+	my %exp = (
+		'STC'              => 'Scintilla, fast but might be out of date',
+		'Parrot'           => 'Based on the ...',
+		'PPI Traditional'  => 'Slow but accurate and we have full control so bugs can be fixed',
+		'PPI Experimental' => 'Hopefully faster than the PPI Traditional',
+		'STD'              => 'Slow but accurate',
+	);
+	return $exp{$highlighter};
+}
+
 foreach my $mime (keys %MIME_LEXER) {
 	__PACKAGE__->add_highlighter($mime, 'stc');
 }
