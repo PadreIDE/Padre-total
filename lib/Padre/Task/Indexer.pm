@@ -5,8 +5,8 @@ use warnings;
 use File::Find;
 use Padre::Util;
 
-use Padre::Task;
-our @ISA = qw( Padre::Task );
+use Padre::Service;
+our @ISA = qw( Padre::Service );
 
 use Padre::Wx ();
 
@@ -16,6 +16,7 @@ use Class::XSAccessor
 	accessors => {
 		index_class => 'index_class',
 		index_args => 'index_args',
+		index => 'index',
 		runmode => 'runmode',
 		directory_list => 'directory_list',
 		match_regex   => 'match_regex',
@@ -55,8 +56,9 @@ sub finish {
 
 
 
-sub run {
+sub start {
 	my ($self) = shift;
+	
 	my $index_class = $self->index_class;
 	eval "require $index_class" ;
 	if ($@ ) {
@@ -70,49 +72,73 @@ sub run {
 	}
 	my $index = $index_class->new( @{ $self->index_args } );
 	
-	my $files = $self->_find_files;
-	Padre::Util::debug "Got files : " . @$files;
-	
 	if ( $self->runmode eq 'clobber' ) {
-		my $idx = $index->indexer( clobber=>1 );
-		my $total = scalar @$files;
-		
-		my $progress = 0;
-		foreach my $file ( @$files ) {
-			open( my $fh  , $file ) or die "Failed to open $file : $!";
-			my $modified = (stat $file)[9];
-			my $title = File::Basename::basename( $file );
-			Padre::Util::debug "$title , modified $modified\n";
-			#next; ## REMOVE ME
-			my $content;
-			{local $/;$content = <$fh>;}
-			
-			my $doc = {
-				file => $file , modified => $modified , 
-				title => $title ,
-				content=> $content,
-			};
-			$idx->add_doc( $doc );
-			$progress++;
-			$self->post_event( $self->{PROGRESS_EVENT} , 
-				sprintf( '%4f;%s' , (100*$progress/$total), $title)
-			 );
-		}
-		$idx->commit;
+		$self->{index} = $index->indexer( clobber=>1 );
+	}
+	else {
+		$self->{index} = $index->indexer;
 	}
 	
+	
+	
+	my $files = $self->_find_files;
+	Padre::Util::debug "Got files : " . @$files;
+	$self->{incoming_buffer} = $files;
+	$self->{progress_total} = scalar @$files;
+	$self->{progress} = 0;
+	$self->{started} = 1;
+	
+}
+
+sub service_loop {
+	my $self = shift;
+	
+	my $total = $self->{progress_total};
+	my $idx = $self->index;
+
+	my $file = shift @{ $self->{incoming_buffer} };
+	return $self->shutdown() unless $file;
+	
+	my $doc = $self->generate_document( $file );
+	$idx->add_doc( $doc );
+	$self->{progress}++;
+	$self->post_event( $self->{PROGRESS_EVENT} , 
+		sprintf( '%4f;%s' , (100*$self->{progress} / $total), $doc->{title} )
+	);
 	
 	
 	return;
 }
 
+sub shutdown {
+	my $self = shift;
+	$self->index->commit if $self->index;
+	$self->SUPER::shutdown(@_);	
+}
 
-use Data::Dumper;
+sub generate_document {
+	my ($self,$file) = @_;
+
+	my $modified = (stat $file)[9];	
+	open( my $fh  , $file ) or die "Failed to open $file : $!";
+	my $title = File::Basename::basename( $file );
+	my $content;
+	{local $/;$content = <$fh>;}
+	
+	my $doc = {
+		file => $file ,
+		modified => $modified , 
+		title => $title ,
+		content=> $content,
+	};
+		
+	return $doc;
+}
+
 sub _find_files {
 	my $self = shift;
 	my $dirs = $self->directory_list;
 	my @files;
-	Padre::Util::debug Dumper $dirs;
 	File::Find::find( {
 		wanted => sub {
 			return unless $_ =~ /\.(pod|pm)$/;

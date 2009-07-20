@@ -58,8 +58,8 @@ sub resolve {
 
 	my $pd = Padre::DocBrowser::pseudoPerldoc->new( args => \@args );
 	{
-		local *STDERR = IO::Scalar->new;
-		local *STDOUT = IO::Scalar->new;
+		#local *STDERR = IO::Scalar->new;
+		#local *STDOUT = IO::Scalar->new;
 		eval { $pd->process() };
 	}
 

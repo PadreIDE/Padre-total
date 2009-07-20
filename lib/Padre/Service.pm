@@ -5,7 +5,7 @@ use Carp qw( croak );
 
 use threads;
 use threads::shared;
-
+use Data::Dumper;
 use Padre::Wx     ();
 use Padre::Task   ();
 use Thread::Queue ();
@@ -222,11 +222,14 @@ data may be posted to this event and the Wx subscribers will be notified
 
 	sub prepare {
 		my $self = shift;
+		$self->SUPER::prepare(@_);
 		my $queue : shared;
 		$queue           = new Thread::Queue;
 		$Queues{"$self"} = $queue;
-		$self->{_refid}  = "$self";
-		$self->SUPER::prepare(@_);
+		warn "Prepared [$self] " . Dumper \%Queues;
+		
+		$self->{_service_refid}  = "$self";
+		
 	}
 
 =head2 queue
@@ -240,14 +243,16 @@ the service thread
 
 	sub queue {
 		my $self = shift;
-		if (   exists $self->{_refid}
-			&& exists $Queues{ $self->{_refid} } )
+		if (   exists $self->{__service_refid}
+			&& exists $Queues{ $self->{__service_refid} } )
 		{
-			return $Queues{ $self->{_refid} };
+			return $Queues{ $self->{__service_refid} };
 		} elsif ( exists $Queues{"$self"} ) {
 			return $Queues{"$self"};
 		} else {
-			croak "No such service queue ";
+			croak "No such service queue for [$self] "  ,
+				Dumper $self, 
+				Dumper \%Queues ;
 		}
 
 	}
@@ -263,6 +268,11 @@ the service thread
 		# the event
 		my $service_event : shared = Wx::NewEventType;
 		$ServiceEvents{$service_refid} = $service_event;
+		
+		my $queue : shared;
+		$queue           = new Thread::Queue;
+		$Queues{$service_refid} = $queue;
+		
 
 		#  	my $wx_attach;
 		#  	if ( exists $self->{_main_thread_only}
