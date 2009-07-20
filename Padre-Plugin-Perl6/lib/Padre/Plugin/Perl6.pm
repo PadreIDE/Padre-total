@@ -293,6 +293,20 @@ sub registered_documents {
 	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',
 }
 
+sub provided_highlighters { 
+	return (
+		['Padre::Plugin::Perl6::Perl6StdColorizer', 'STD.pm', 'STD is the definition of Perl 6 written by Larry Wall'],
+		['Padre::Plugin::Perl6::Perl6PgeColorizer', 'PGE/Rakudo',    'PGE using Rakudo'],
+	);
+}
+
+sub highlighting_mime_types {
+	return (
+		'Padre::Plugin::Perl6::Perl6StdColorizer' => ['application/x-perl6'],
+		'Padre::Plugin::Perl6::Perl6PgeColorizer' => ['application/x-perl6'],
+	);
+}
+
 # create a Perl 6 file from the template
 sub _create_from_template {
 	my ( $self, $template, $extension ) = @_;
