@@ -296,8 +296,14 @@ sub add_highlighter {
 	};
 }
 sub get_highlighter_explanation {
-	my $self        = shift;
-	my $highlighter = shift;
+	my $self = shift;
+	my $name = shift;
+	my ($highlighter) = grep { $AVAILABLE_HIGHLIGHTERS{$_}{name} eq $name }	keys %AVAILABLE_HIGHLIGHTERS;
+
+	if (not $highlighter) {
+		warn "Could not find highlighter for '$name'\n";
+		return '';
+	}
 	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{explanation};
 }
 sub get_highlighter_name {
@@ -325,7 +331,7 @@ sub get_mime_types {
 }
 sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
-	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters } };
+	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters} };
 	return \@names;
 }
 
