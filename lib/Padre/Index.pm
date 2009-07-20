@@ -9,6 +9,7 @@ use Class::XSAccessor
 	constructor => 'new',
 	accessors => {
 		index_directory => 'index_directory', 
+		clobber => 'clobber',
 	};
 	
 our $VERSION = '0.40';

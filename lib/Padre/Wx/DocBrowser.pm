@@ -504,15 +504,14 @@ sub _open_doc {
 
 sub _rebuild_index {
 	my $self = shift;
-	my $dialog = Wx::ProgressDialog->new( 'Progress dialog example',
-                                          'An informative message',
+	my $dialog = Wx::ProgressDialog->new( 'DocBrowser index rebuild',
+                                          'Starting indexer',
                                           100, $self,
                                           wxPD_CAN_ABORT|wxPD_AUTO_HIDE|
                                           wxPD_SMOOTH|
                                           wxPD_ELAPSED_TIME|
                                           wxPD_ESTIMATED_TIME|
                                           wxPD_REMAINING_TIME );
-	$dialog->Update( 1 , 'Starting indexer' );
 	my $update_progress = sub { 
 		my $main = shift;
 		my $event = shift;

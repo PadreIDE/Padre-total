@@ -61,6 +61,7 @@ sub schema {
 
 sub indexer {
     my $self = shift;
+    my %args = @_;
     my $schema = $self->schema;
     warn "Indexer in ". $self->index_directory;
     
@@ -69,6 +70,7 @@ sub indexer {
         schema => $schema,   
         index  => $self->index_directory,
         create => 1,
+        ( $args{clobber} ) ? (truncate => 1 ) : (),
     );
 
 }
