@@ -5,10 +5,9 @@ use strict;
 use warnings;
 use Carp ();
 use Params::Util '_INSTANCE';
-use Padre::Document ();
+use Padre::Current;
 
-our $VERSION = '0.23';
-our @ISA     = 'Padre::Document';
+our $VERSION = '0.01';
 
 use Syntax::Highlight::Engine::Kate::All;
 use Syntax::Highlight::Engine::Kate;
@@ -16,12 +15,14 @@ use Syntax::Highlight::Engine::Kate;
 sub colorize {
 	my ( $self, $first ) = @_;
 
+print "colo\n";
+	my $doc = Padre::Current->document;
 	# TODO we might need not remove all the color, just from a certain section
 	# TODO reuse the $first passed to the method
-	$self->remove_color;
+	$doc->remove_color;
 
-	my $editor = $self->editor;
-	my $text   = $self->text_get;
+	my $editor = $doc->editor;
+	my $text   = $doc->text_get;
 
 	my $kate = Syntax::Highlight::Engine::Kate->new(
 		language => 'Perl',
@@ -59,14 +60,6 @@ sub colorize {
 	}
 	return;
 }
-
-sub lexer {
-	my $self   = shift;
-	return Wx::wxSTC_LEX_CONTAINER;
-}
-
-
-sub comment_lines_str { return '#' }
 
 
 1;
