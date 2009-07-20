@@ -64,8 +64,8 @@ sub _external_tools_panel {
 sub _mime_type_panel {
 	my ( $self, $treebook ) = @_;
 
-	my $mime_types   = Padre::Document->get_mime_types;
-	my $highlighters = Padre::Document->get_highlighters_of_mime_type( $mime_types->[0] );
+	my $mime_types   = Padre::Document->get_mime_type_names;
+	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[0] );
 	my $explanation  = Padre::Document->get_highlighter_explanation( $highlighters->[0] );
 
 	# get list of mime-types
@@ -99,11 +99,11 @@ sub update_highlighters {
 	my ($self) = @_;
 
 	my $selection = $self->get_widget('mime_type')->GetSelection;
-	my $mime_types = Padre::Document->get_mime_types;
+	my $mime_types = Padre::Document->get_mime_type_names;
 
 	my $list    = $self->get_widget('highlighters');
 	$list->Clear;
-	$list->AppendItems( Padre::Document->get_highlighters_of_mime_type( $mime_types->[$selection] ) );
+	$list->AppendItems( Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[$selection] ) );
 	$list->SetSelection(0);
 }
 
@@ -115,9 +115,9 @@ sub update_description {
 	my ($self) = @_;
 
 	my $mime_type_selection = $self->get_widget('mime_type')->GetSelection;
-	my $mime_types   = Padre::Document->get_mime_types;
+	my $mime_types   = Padre::Document->get_mime_type_names;
 
-	my $highlighters = Padre::Document->get_highlighters_of_mime_type( $mime_types->[ $mime_type_selection ] ) ; 
+	my $highlighters = Padre::Document->get_highlighters_of_mime_type_name( $mime_types->[ $mime_type_selection ] ) ; 
 	my $highlighter_selection = $self->get_widget('highlighters')->GetSelection;
 	my $highlighter  = $highlighters->[ $highlighter_selection ];
 

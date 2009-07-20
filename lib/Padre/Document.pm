@@ -329,10 +329,24 @@ sub remove_highlighter_from_mime_type {
 sub get_mime_types {
 	return [ sort keys %MIME_TYPES ];
 }
+sub get_mime_type_names {
+	return [ map { $MIME_TYPES{$_}{name} } sort keys %MIME_TYPES ];
+}
 sub get_highlighters_of_mime_type {
 	my ($self, $mime_type) = @_;
 	my @names = map {__PACKAGE__->get_highlighter_name($_)} sort keys %{ $MIME_TYPES{$mime_type}{highlighters} };
 	return \@names;
+}
+
+# getting the display name of
+sub get_highlighters_of_mime_type_name {
+	my ($self, $mime_type_name) = @_;
+	my ($mime_type) = grep { $MIME_TYPES{$_}{name} eq $mime_type_name } keys %MIME_TYPES;
+	if (not $mime_type) {
+		warn "Could not find the mime-type of the display name '$mime_type_name'\n";
+		return;
+	}
+	$self->get_highlighters_of_mime_type($mime_type);
 }
 
 __PACKAGE__->add_highlighter('stc', 'Scintilla', Wx::gettext('Scintilla, fast but might be out of date'));
