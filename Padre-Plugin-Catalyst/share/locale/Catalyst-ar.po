@@ -150,7 +150,7 @@ msgstr "هل تريد تشغيل متصفح الويب؟"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:32
 msgid "Create New Component"
-msgstr ""
+msgstr "انشاء مركب جديد"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:53
 msgid "Model Name:"
@@ -165,11 +165,11 @@ msgstr "نوع"
 #: lib/Padre/Plugin/Catalyst/Helper.pm:61
 #: lib/Padre/Plugin/Catalyst/Helper.pm:112
 msgid "Additional Parameters:"
-msgstr ""
+msgstr "باراميترات اضافية:"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:80
 msgid "View Name:"
-msgstr ""
+msgstr "اسم المشهد View:"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:88
 msgid "force"
@@ -187,21 +187,21 @@ msgstr "[بلا]"
 #: lib/Padre/Plugin/Catalyst/Helper.pm:236
 #, perl-format
 msgid "You must provide a name for your %s module"
-msgstr ""
+msgstr "يجب أن توفر اسما لوحدتك %s"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:237
 msgid "Module name required"
 msgstr "اسم الوحدة مطلوب"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:251
-#, fuzzy, perl-format
+#, perl-format
 msgid ""
 "Catalyst helper script not found at\n"
 "%s\n"
 "\n"
 "Please make sure the active document is from your Catalyst project."
 msgstr ""
-"لا يمكن العثور على خادم الويب التطويري لCatalyst \n"
+"لا يمكن العثور على برنامج Catalyst النصي\n"
 "%s\n"
 "\n"
 "الرجاء التأكد من أن الوثيقة الحالية هي من مشروع Catalyst الخاص بك."
@@ -238,6 +238,13 @@ msgid ""
 "  perl -MCPAN -e 'install Catalyst::Devel'\n"
 "  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
 msgstr ""
+"لاستعمال أدوات تطوير Catalyst التي تشمل catalyst.pl و\n"
+"generated script/myapp_create.pl تحتاج إلى Catalyst::Helper وهو\n"
+"جزء من توزيعة Catalyst-Devel distribution. الرجاء التثبيت عن طريق\n"
+"رزمة من البائع أو تشغيل واحد من هذه الأوامر -\n"
+"\n"
+"  perl -MCPAN -e 'install Catalyst::Devel'\n"
+"  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:42
 msgid "Application Name:"
@@ -245,15 +252,15 @@ msgstr "اسم التطبيق:"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:46
 msgid "Parent Directory:"
-msgstr ""
+msgstr "الدليل الأصل:"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:47
 msgid "Pick parent directory"
-msgstr ""
+msgstr "اختر الدليل الأب"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:50
 msgid "short names"
-msgstr ""
+msgstr "اسماء قصيرة"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:103
 msgid "Invalid Application name"
@@ -266,5 +273,5 @@ msgstr "حقل مفقود"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:107
 msgid "You need to select a base directory"
-msgstr ""
+msgstr "يجب اختيار دليل الأصل"
 
