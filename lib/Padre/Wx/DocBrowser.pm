@@ -19,6 +19,9 @@ use Padre::Task::DocBrowser ();
 use Padre::DocBrowser       ();
 use Padre::Util qw( _T );
 use Wx::Perl::Dialog::Simple ();
+use Padre::Task::Indexer;
+use Padre::Wx ();
+use Wx qw(:progressdialog);
 
 our $VERSION = '0.40';
 our @ISA     = 'Wx::Frame';
@@ -149,9 +152,16 @@ sub new {
 	my $exitID = Wx::NewId;
 
 	$exitMenu->Append( $exitID, Wx::gettext("E&xit\tCtrl+X") );
-
+	my $indexmenu = Wx::Menu->new();
+	my $rebuildID = Wx::NewId;
+	my $updateID = Wx::NewId;
+	$indexmenu->Append( $rebuildID, Wx::gettext("R&ebuild Index") );
+	$indexmenu->Append( $updateID, Wx::gettext("U&pdate Index") );
+	
 	my $menuBar = Wx::MenuBar->new();
 	$menuBar->Append( $exitMenu, "File" );
+	$menuBar->Append( $indexmenu, "Index" );
+	
 	$self->SetMenuBar($menuBar);
 
 	my $table = Wx::AcceleratorTable->new( [ Wx::wxACCEL_NORMAL, Wx::WXK_ESCAPE, $exitID ] );
@@ -162,6 +172,8 @@ sub new {
 	Wx::Event::EVT_MENU( $self, Wx::wxID_CLOSE, sub { $_[0]->_close_tab(); } );
 	Wx::Event::EVT_MENU( $self, Wx::wxID_OPEN,  sub { $_[0]->_open_doc(); } );
 
+	Wx::Event::EVT_MENU( $self, $rebuildID , sub { $_[0]->_rebuild_index(); } );
+	
 	# not sure about this but we want to throw the close X event ot _close so it gets
 	# rid of a busy cursor if it's busy..
 	# bind the close event to our close method
@@ -488,6 +500,50 @@ sub _open_doc {
 		my $doc = Padre::DocBrowser::document->load($filename);
 		$self->help( $doc, $filename );
 	}
+}
+
+sub _rebuild_index {
+	my $self = shift;
+	my $dialog = Wx::ProgressDialog->new( 'Progress dialog example',
+                                          'An informative message',
+                                          100, $self,
+                                          wxPD_CAN_ABORT|wxPD_AUTO_HIDE|
+                                          wxPD_SMOOTH|
+                                          wxPD_ELAPSED_TIME|
+                                          wxPD_ESTIMATED_TIME|
+                                          wxPD_REMAINING_TIME );
+	$dialog->Update( 1 , 'Starting indexer' );
+	my $update_progress = sub { 
+		my $main = shift;
+		my $event = shift;
+		my $data = $event->GetData;
+		my ($val,$info) = split /;/ , $data;
+	
+		if ( $dialog->Update( $val, $info ) ) {
+		return;
+		}
+		else {
+			$dialog->Destroy;
+		} 
+	};
+	
+	
+	my $i = Padre::Task::Indexer->new(
+		index_class => 'Padre::Index::Kinosearch',
+		index_args=>[qw( index_directory /tmp/padre-index )],
+		runmode => 'clobber',
+		directory_list => [ @INC  ],
+		match_regex=> qr/\.(pl|pm|pod)$/,
+	
+		main_thread_only => {
+			notify => $dialog,
+			callback => $update_progress,
+		}
+	);
+
+	$i->schedule;
+
+	
 }
 
 sub viewer_for {

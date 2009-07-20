@@ -5,7 +5,7 @@ use Padre::Task::Indexer;
 use Padre::Wx ();
 use Wx qw(:progressdialog);
 
-my $dialog = Wx::ProgressDialog->new( 'Progress dialog example',
+my $dialog = Wx::ProgressDialog->new( 'DocBrowser index rebuild',
                                           'An informative message',
                                           100, Padre->ide->wx->main,
                                           wxPD_CAN_ABORT|wxPD_AUTO_HIDE|
