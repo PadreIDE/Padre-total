@@ -45,7 +45,7 @@ sub plugin_locale_directory {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.36,
+	'Padre::Plugin' => 0.41,
 }
 
 # plugin icon
