@@ -166,6 +166,74 @@ sub registered_documents {
 	'application/x-pasm' => 'Padre::Document::PASM', 'application/x-pir' => 'Padre::Document::PIR',;
 }
 
+# TODO, Planning the syntax highlighting feature:
+# -------------------------------
+# let the user regiser 
+# mime-type, Path/to/language.pge, Name, Description?
+# or
+# mime-type, Path/to/language.exe, Name, Description?
+
+# Though as this is only for personal use on the users own computer
+# for now, we don't really need a description field but maybe the user
+# wants to add comments.
+# Name must be ASCII string without 
+# We can recognize if this is a .pge file or an executable 
+# (.exe on windows nothing on Unix) but we might also provide a check-box
+# so the user can configure this.
+
+# We ave this information in a database or config file
+# We read this information at load time and based on this change the 
+# provided_highlighters and highlighting_mime_types functions
+#
+# With the module name being Padre::Plugin::HL::Name  (using the Name the user gave us)
+# the module is virtual, only exists in memory
+
+my @highlighters = (
+	['Padre::Document::PIR', 'Parrot in Perl 5', 'PIR syntax highlighting with Perl 5 regular expressions'],
+	['Padre::Plugin::Parrot', 'Parrot PGE', 'Using the PGE engine for highlighting'],
+);
+
+my %highlighter_mimes = (
+	'Padre::Document::PIR' => ['application/x-pir'],
+);
+
+# [mime-type,    path-to-pbc-or-exe,  'NameWithoutSpace', 'Description'] 
+my @config = (
+	['application/x-perl6', "$ENV{RAKUDO_DIR}/perl6.pbc", 'Perl6', 'Perl 6 via Parrot and perl6.pbc'],
+);
+
+use Padre::Plugin::Parrot::HL;
+foreach my $e (@config) {
+	my ($mime_type, $path, $name, $description) = @$e;
+	next if not -e $path;
+	# TODO check other values as well
+
+	my $pbc	= ($path =~ /\.pbc$/ ? 1 : 0);
+	my $module = 'Parrot::Plugin::HL::' . ($pbc ? 'PBC::' : '') . $name;
+	my $display_name = "Parrot/" . ($pbc ? 'PBC' : 'EXE') . "/$name";
+	{
+		# create virtual namespace and colorize() function.
+		# maybe I only need to create 
+		
+		my $sub = sub { return ($pbc, $path) };
+		my $isa = $module . '::ISA';
+		my $function = $module . '::pbc_path';
+		no strict 'refs';
+		@$isa = ('Padre::Plugin::Parrot::HL');
+		*{$function} = $sub;
+	}
+	push @highlighters, [$module, $display_name, $description];
+	$highlighter_mimes{$module} = [$mime_type];
+}
+
+sub provided_highlighters {
+	return @highlighters;
+}
+
+sub highlighting_mime_types {
+	return %highlighter_mimes;
+}
+
 sub plugin_enable {
 	my $self = shift;
 
