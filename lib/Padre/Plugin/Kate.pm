@@ -53,6 +53,7 @@ sub provided_highlighters {
 sub highlighting_mime_types {
 	return (
 		'Padre::Plugin::Kate' => ['application/x-php'],
+		'Padre::Plugin::Kate' => ['application/x-perl'],
 	);
 }
 
@@ -61,7 +62,8 @@ sub highlighting_mime_types {
 # Shall we create a module called Pudre::Plugin::Kate::Colorize that will do the dispatching ?
 # now this is the mapping to the Kate highlighter engine
 my %d = (
-	'application/x-php' => 'Perl',
+	'application/x-php'  => 'Perl', #  why ?
+	'application/x-perl' => 'Perl',
 );
 use Syntax::Highlight::Engine::Kate::All;
 use Syntax::Highlight::Engine::Kate;
@@ -100,6 +102,12 @@ sub colorize {
 		Keyword => 7,
 		Char => 8,
 		Comment => 9,
+		
+		DecVal => 10,
+		Alert => 11,
+		BaseN => 12,
+		Others => 13,
+		
 	);
 
 	my $start = 0;
