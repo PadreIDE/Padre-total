@@ -26,26 +26,6 @@ sub text_with_one_nl {
 	return $text;
 }
 
-# colorizes a Perl 6 document in a timer
-# one at a time;
-# now the user can choose between PGE and STD colorizers
-# via the preferences
-# this function can be removed once the transition to the new 
-# highlighter API of Padre is released probably in Padre 0.41
-sub colorize {
-	my $self = shift;
-
-	# transition to the new API
-	if ($self->can('SUPER::colorize')) {
-		return $self->SUPER::colorize(@_);
-	}
-	
-	
-	require Padre::Plugin::Perl6::Perl6Colorizer;
-	my $config = Padre::Plugin::Perl6::plugin_config();
-	$Padre::Plugin::Perl6::Perl6Colorizer::colorizer = $config->{colorizer};
-	return Padre::Plugin::Perl6::Perl6Colorizer->colorize;
-}
 
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
 sub get_command {
