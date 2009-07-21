@@ -67,6 +67,8 @@
 /DROLSKY/Class-MOP-
 /DROLSKY/Moose-
 /AZAWAZI/Syntax-Highlight-Perl6
+/PETDANCE/Test-Pod-
+/ADAMK/prefork-
 
 
 /MBARBON/Wx-\d
