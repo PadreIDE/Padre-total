@@ -1,5 +1,7 @@
 Changes
 
+=head1 0.54 TO BE RELEASED ONCE PADRE 0.41 IS RELEASED!
+
 	- Allow the use of the new syntax highlighter configuration of Padre 0.41 (szabgab)
 
 =head1 0.53 2009.7.18
