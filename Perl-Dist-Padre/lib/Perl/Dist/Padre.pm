@@ -167,6 +167,7 @@ sub install_perl_modules {
 		Devel::Symdump
 		Pod::Coverage
 		Test::Pod::Coverage
+		Test::Pod
 		Module::Starter
 		ORLite
 		ORLite::Migrate
@@ -187,6 +188,7 @@ sub install_perl_modules {
 		Portable
 		Win32API::File
 		Capture::Tiny
+		prefork
 	} );
 
 	# Install the dependencies for Padre::Plugin::Perl6
