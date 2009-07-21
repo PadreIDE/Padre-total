@@ -15,7 +15,6 @@ use Syntax::Highlight::Engine::Kate;
 sub colorize {
 	my ( $self, $first ) = @_;
 
-print "colo\n";
 	my $doc = Padre::Current->document;
 	# TODO we might need not remove all the color, just from a certain section
 	# TODO reuse the $first passed to the method
@@ -37,6 +36,10 @@ print "colo\n";
 		Function => 3,
 		DataType => 4,
 		Variable => 5,
+		Float => 6,
+		Keyword => 7,
+		Char => 8,
+		Comment => 9,
 	);
 
 	my $start = 0;

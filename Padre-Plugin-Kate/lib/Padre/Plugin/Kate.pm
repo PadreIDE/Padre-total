@@ -69,7 +69,7 @@ sub colorize {
 	
 	if ( $d{$mime_type} ) {
 		my $module = 'Padre::Plugin::Kate::' . $d{$mime_type};
-print "M '$module'\n";
+#print "M '$module'\n";
 		eval "use $module";
 		if ($@) {
 			warn $@;
