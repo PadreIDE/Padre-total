@@ -15,6 +15,11 @@ my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 color
 
 our $colorizer;
 
+# colorizes a Perl 6 document in a timer
+# one at a time;
+# now the user can choose between PGE and STD colorizers
+# via the preferences
+
 sub colorize {
 	my $self = shift;
 
