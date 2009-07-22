@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6PgeColorizerTask;
+package Padre::Plugin::Parrot::ColorizeTask;
 
 use strict;
 use warnings;
@@ -38,6 +38,7 @@ sub is_broken {
 
 # used for coloring by parrot
 my %colors = (
+# Perl 6
 	quote_expression => Padre::Constant::PADRE_BLUE,
 	parse            => undef,
 	statement_block  => undef,
@@ -97,6 +98,26 @@ my %colors = (
 	for_statement => undef,
 	xblock => undef,
 	lambda => Padre::Constant::PADRE_GREEN,
+	
+# Cardinal
+	ident => undef,
+	local_variable => undef,
+	basic_primary => undef,
+	basic_stmt => undef,
+	stmt => undef,
+	before => undef,
+	mrhs => undef,
+	varname => undef,
+	stmts => undef,
+	comp_stmt => undef,
+	assignment => undef,
+	mlhs => undef,
+	literal => undef,
+	arg => undef,
+	call_arsg => undef,
+	funcall => undef,
+	post_primary_expr => undef,
+	call_args => undef,
 );
 
 # This is run in the main thread after the task is done.
@@ -125,7 +146,7 @@ sub finish {
 		foreach my $pd (@{$self->{_parse_tree}}) {
 			my $type = $pd->{type};
 			if (not exists ($colors{$type})) {
-				warn "No Perl6 color definiton for '$type':  " . 
+				warn "No color definiton for '$type':  " . 
 					$pd->{str} . "\n";
 				next;
 			}
@@ -141,8 +162,8 @@ sub finish {
 	$doc->{tokens} = [];
 	$doc->{issues} = [];
 	
-	$doc->check_syntax_in_background(force => 1);
-	$doc->get_outline(force => 1);
+	#$doc->check_syntax_in_background(force => 1); # $task-
+	#$doc->get_outline(force => 1);
 
 	# finished here
 	$thread_running = 0;
@@ -153,34 +174,40 @@ sub finish {
 # Task thread subroutine
 sub run {
 	my $self = shift;
+	
 
-	require Padre::Plugin::Perl6::Util;
-	my $perl6 = Padre::Plugin::Perl6::Util::get_perl6();
-	if ($perl6) {
-		use File::Temp qw(tempdir);
-		my $dir = tempdir(CLEANUP => 1);
-		my $file = "$dir/file";
+	use File::Temp qw(tempdir);
+	my $dir = tempdir(CLEANUP => 1);
+	my $file = "$dir/file";
 
-		open my $fh, '>', $file or warn "Could not open $file for writing\n";
+	if (open my $fh, '>', $file) {
 		print $fh $self->{text};
 		delete $self->{text};
-
-		my @data = `"$perl6" --target=parse --dumper=padre "$file"`;
-		chomp @data;
-		my @pd;
-		foreach my $line (@data) {
-			$line =~ s/^\s+//;
-			my ($start, $length, $type, $str) = split /\s+/, $line, 4;
-			push @pd, {
-				start => $start,
-				length => $length,
-				type => $type,
-				str => $str,
-			};
-		}
-		$self->{_parse_tree} = \@pd;
+	} else {
+		warn "Could not open $file for writing\n";
 		return;
 	}
+
+	# TODO check if the path is there
+	my $cmd = ($self->{pbc} ? qq("$ENV{PARROT_DIR}/parrot" ) : '');
+	$cmd .= qq("$self->{path}");
+	$cmd .= qq( --target=parse --dumper=padre "$file");
+	#print "$cmd\n";
+	my @data = `$cmd`;
+	chomp @data;
+	my @pd;
+	foreach my $line (@data) {
+		$line =~ s/^\s+//;
+		my ($start, $length, $type, $str) = split /\s+/, $line, 4;
+		push @pd, {
+			start => $start,
+			length => $length,
+			type => $type,
+			str => $str,
+		};
+	}
+	$self->{_parse_tree} = \@pd;
+	return;
 	
 	return 1;
 };

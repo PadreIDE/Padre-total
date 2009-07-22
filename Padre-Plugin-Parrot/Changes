@@ -1,19 +1,21 @@
 Revision history for Padre-Plugin-Parrot
 
-        removed taint mode for tests, leading to build failures (jquelin)
+	- removed taint mode for tests, leading to build failures (jquelin)
+	- move the pbc based syntax highlighting from the Perl 6 plugin to 
+	  the Parrot plugin (szabgab)
 
 0.23    2009.02.18
-        Upgrade to Padre 0.26 Plugin API
+	- Upgrade to Padre 0.26 Plugin API
 
 0.22    2008.12.21
-        Moved Document::PASM and Document::PIR from Padre
-        Make sure Parrot::Embed can work (with a workaround for the
-          case when the plugin is reloaded)
+	- Moved Document::PASM and Document::PIR from Padre
+	- Make sure Parrot::Embed can work (with a workaround for the
+	  case when the plugin is reloaded)
 
 0.16    2008.11.09
-        Moved to its own distribution
-        Checking if Parrot::Embed is available
+	- Moved to its own distribution
+	- Checking if Parrot::Embed is available
 
 0.15
-        First version, released on an unsuspecting world as part of Padre.
+	- First version, released on an unsuspecting world as part of Padre.
 

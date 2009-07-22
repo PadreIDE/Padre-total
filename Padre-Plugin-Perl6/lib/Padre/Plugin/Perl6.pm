@@ -296,14 +296,14 @@ sub registered_documents {
 sub provided_highlighters { 
 	return (
 		['Padre::Plugin::Perl6::Perl6StdColorizer', 'STD.pm', 'Larry Wall\'s Perl 6 reference grammar'],
-		['Padre::Plugin::Perl6::Perl6PgeColorizer', 'PGE/Rakudo', 'Parrot Grammar Engine via Rakudo Perl 6'],
+#		['Padre::Plugin::Perl6::Perl6PgeColorizer', 'PGE/Rakudo', 'Parrot Grammar Engine via Rakudo Perl 6'],
 	);
 }
 
 sub highlighting_mime_types {
 	return (
 		'Padre::Plugin::Perl6::Perl6StdColorizer' => ['application/x-perl6'],
-		'Padre::Plugin::Perl6::Perl6PgeColorizer' => ['application/x-perl6'],
+#		'Padre::Plugin::Perl6::Perl6PgeColorizer' => ['application/x-perl6'],
 	);
 }
 
