@@ -64,7 +64,7 @@ sub new {
 	my $self = bless {}, $class;
 
 	$self->name( $opts{name} );
-	$self->id( $opts{id} );   
+	$self->id( $opts{id} || -1 );   
 	$self->label( $opts{label} );
 	$self->icon( $opts{icon} );
 	$self->shortcut( $opts{shortcut} );

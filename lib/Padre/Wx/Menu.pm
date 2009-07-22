@@ -46,14 +46,14 @@ sub Append {
 }
 
 #
-# Add a menu item from a Padre action
+# Add a menu item to menu from a Padre action
 #
 sub add_menu_item {
 	my $self = shift;
-
+	my $menu = shift;
 	require Padre::Action;
 	my $action = Padre::Action->new(@_);
-	my $menu_item = $self->Append(
+	my $menu_item = $menu->Append(
 		$action->id,
 		$action->label . "\t" . $action->shortcut,
 	);
