@@ -26,30 +26,30 @@ sub new {
 	$self->{main} = $main;
 	
 	my $action;
+	my $menu_item;
 
 	# Undo/Redo
-	$self->{undo} = $self->Append(
-		Wx::wxID_UNDO,
-		Wx::gettext("&Undo")
-	);
-	Wx::Event::EVT_MENU(
-		$main, # Ctrl-Z
-		$self->{undo},
-		sub {
-			Padre::Current->editor->Undo;
-		},
+	($self->{undo}, $action) = $self->add_menu_item(
+		$self,
+			name       => 'edit.undo', 
+			id         => Wx::wxID_UNDO,
+			label      => Wx::gettext('&Undo'), 
+			shortcut   => 'Ctrl-Z', 
+			menu_event => sub {
+				Padre::Current->editor->Undo;
+			},
 	);
 
-	$self->{redo} = $self->Append(
-		Wx::wxID_REDO,
-		Wx::gettext("&Redo")
-	);
-	Wx::Event::EVT_MENU(
-		$main, # Ctrl-Y
-		$self->{redo},
-		sub {
-			Padre::Current->editor->Redo;
-		},
+	($self->{redo}, $action) = $self->add_menu_item(
+		$self,
+			name       => 'edit.redo', 
+			id         => Wx::wxID_REDO,
+			label      => Wx::gettext('&Redo'), 
+			shortcut   => 'Ctrl-Y', 
+			menu_event => sub {
+				Padre::Current->editor->Redo;
+			},
+	
 	);
 
 	$self->AppendSeparator;
@@ -61,50 +61,50 @@ sub new {
 		Wx::gettext("Select"),
 		$edit_select
 	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$edit_select->Append(
-			Wx::wxID_SELECTALL,
-			Wx::gettext("Select all\tCtrl-A")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$edit_select,
+		name       => 'edit.select_all', 
+		id         => Wx::wxID_SELECTALL,
+		label      => Wx::gettext('Select all'), 
+		shortcut   => 'Ctrl-A', 
+		menu_event => sub {
 			require Padre::Wx::Editor;
 			Padre::Wx::Editor::text_select_all(@_);
 		},
 	);
 
 	$edit_select->AppendSeparator;
-	Wx::Event::EVT_MENU(
-		$main,
-		$edit_select->Append(
-			-1,
-			Wx::gettext("Mark selection start\tCtrl-[")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$edit_select,
+		name       => 'edit.mark_selection_start', 
+		id         => Wx::wxID_SELECTALL,
+		label      => Wx::gettext('Mark selection start'), 
+		shortcut   => 'Ctrl-[', 
+		menu_event => sub {
 			my $editor = Padre::Current->editor or return;
 			$editor->text_selection_mark_start;
 		},
 	);
 
-	Wx::Event::EVT_MENU(
-		$main,
-		$edit_select->Append(
-			-1,
-			Wx::gettext("Mark selection end\tCtrl-]")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$edit_select,
+		name       => 'edit.mark_selection_end', 
+		id         => Wx::wxID_SELECTALL,
+		label      => Wx::gettext('Mark selection end'), 
+		shortcut   => 'Ctrl-]', 
+		menu_event => sub {
 			my $editor = Padre::Current->editor or return;
 			$editor->text_selection_mark_end;
 		},
 	);
 
-	Wx::Event::EVT_MENU(
-		$main,
-		$edit_select->Append(
-			-1,
-			Wx::gettext("Clear selection marks")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$edit_select,
+		name       => 'edit.mark_selection_end', 
+		id         => Wx::wxID_SELECTALL,
+		label      => Wx::gettext('Clear selection marks'), 
+		shortcut   => '', 
+		menu_event => sub {
 			require Padre::Wx::Editor;
 			Padre::Wx::Editor::text_selection_clear_marks(@_);
 		},
@@ -112,6 +112,7 @@ sub new {
 
 	# Cut and Paste
 	($self->{cut}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.cut', 
 		id         => Wx::wxID_CUT,
 		label      => Wx::gettext('Cu&t'), 
@@ -123,6 +124,7 @@ sub new {
 	);
 
 	($self->{copy}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.copy', 
 		id         => Wx::wxID_COPY,
 		label      => Wx::gettext('&Copy'), 
@@ -134,6 +136,7 @@ sub new {
 	);
 
 	($self->{paste}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.paste', 
 		id         => Wx::wxID_PASTE,
 		label      => Wx::gettext('&Paste'), 
@@ -148,6 +151,7 @@ sub new {
 
 	# Miscellaneous Actions
 	($self->{goto}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.goto', 
 		label      => Wx::gettext('&Goto'), 
 		shortcut   => 'Ctrl-G', 
@@ -157,6 +161,7 @@ sub new {
 	);
 
 	($self->{autocomp}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.autocomp', 
 		label      => Wx::gettext('&AutoComp'), 
 		shortcut   => 'Ctrl-P', 
@@ -166,8 +171,9 @@ sub new {
 	);
 
 	($self->{brace_match}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.brace_match', 
-		label      => Wx::gettext('&&Brace matching'), 
+		label      => Wx::gettext('&Brace matching'), 
 		shortcut   => 'Ctrl-1', 
 		menu_event => sub {
 			Padre::Wx::Main::on_brace_matching(@_);
@@ -175,6 +181,7 @@ sub new {
 	);
 
 	($self->{join_lines}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.join_lines', 
 		label      => Wx::gettext('&Join lines'), 
 		shortcut   => 'Ctrl-J', 
@@ -184,6 +191,7 @@ sub new {
 	);
 
 	($self->{snippets}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.snippets', 
 		label      => Wx::gettext('Snippets'), 
 		shortcut   => 'Ctrl-Shift-A', 
@@ -197,8 +205,9 @@ sub new {
 
 	# Commenting
 	($self->{comment_toggle}, $action) = $self->add_menu_item(
+		$self,
 		name       => 'edit.comment_toggle', 
-		label      => Wx::gettext('&Toggle Comment\t'), 
+		label      => Wx::gettext('&Toggle Comment'), 
 		shortcut   => 'Ctrl-Shift-C', 
 		menu_event => sub {
 			Padre::Wx::Main::on_comment_toggle_block(@_);
