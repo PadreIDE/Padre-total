@@ -40,6 +40,12 @@ sub resolve {
 	if ( _INSTANCE( $ref, 'URI' ) ) {
 		$query = $ref->opaque;
 	}
+
+my $file;
+if ( -f $query ) {
+	$file = $query;
+}
+else {
 	my ( $docname, $section ) = split_link($query);
 
 	# Put Pod::Perldoc to work on $query
@@ -64,10 +70,10 @@ sub resolve {
 	}
 
 	return unless -s $tempfile;
+	$file = $tempfile;
+}
 
-	my $pa = Pod::Abstract->load_file($tempfile);
-	close $fh;
-	unlink($tempfile);
+	my $pa = Pod::Abstract->load_file($file);
 
 	my $doc = Padre::DocBrowser::document->new( body => $pa->pod );
 	$doc->mimetype('application/x-pod');
@@ -89,7 +95,7 @@ sub resolve {
 		|| $pa->select('//item')
 		|| $pa->select('//head1') )
 	{
-		warn "$ref has no pod in" . $pa->ptree;
+		#warn "$ref has no pod in" . $pa->ptree;
 
 		# Unresolvable ?
 		return;

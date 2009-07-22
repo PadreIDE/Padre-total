@@ -20,7 +20,7 @@ use Padre::DocBrowser       ();
 use Padre::Index::Kinosearch ();
 use Padre::Util qw( _T );
 use Wx::Perl::Dialog::Simple ();
-use Padre::Task::Indexer;
+use Padre::Service::Indexer::DocBrowser;
 use Padre::Wx ();
 use Wx qw(:progressdialog);
 
@@ -285,7 +285,7 @@ sub help {
 sub ResolveRef {
 	my ( $self, $ref ) = @_;
 	if ( $self->index ) {
-		my $hits = $self->index->query( $ref );
+		my $hits = $self->index->search( query => $ref );
 		warn "Index hits " . $hits->total_hits;
 		warn "\t" . $hits->next->{title};
 		
@@ -537,13 +537,14 @@ sub _rebuild_index {
 	};
 	
 	
-	my $i = Padre::Task::Indexer->new(
+	my $i = Padre::Service::Indexer::DocBrowser->new(
 		index_class => 'Padre::Index::Kinosearch',
 		index_args=>[qw( index_directory /tmp/padre-index )],
 		runmode => 'clobber',
-		directory_list => [ @INC  ],
+		directory_list => [ grep /^\// , @INC  ],
 		match_regex=> qr/\.(pl|pm|pod)$/,
-	
+		docprovider_class => 'Padre::DocBrowser::POD',
+		hints => {$self->_hints},
 		main_thread_only => {
 			notify => $dialog,
 			callback => $update_progress,

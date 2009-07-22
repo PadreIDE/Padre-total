@@ -45,6 +45,8 @@ sub prepare {
 sub finish {
 	my $self = shift;
 	if ( $self->{main_thread_only} ) {	
+		# EVIL - let the caller provide the object to
+		# notify and the callback.
 		$self->{main_thread_only}{notify}->Destroy;
 		
 	
@@ -100,7 +102,8 @@ sub service_loop {
 	return $self->shutdown() unless $file;
 	
 	my $doc = $self->generate_document( $file );
-	$idx->add_doc( $doc );
+	$idx->add_doc( $doc ) if $doc;
+	
 	$self->{progress}++;
 	$self->post_event( $self->{PROGRESS_EVENT} , 
 		sprintf( '%4f;%s' , (100*$self->{progress} / $total), $doc->{title} )
@@ -118,7 +121,7 @@ sub shutdown {
 
 sub generate_document {
 	my ($self,$file) = @_;
-
+	
 	my $modified = (stat $file)[9];	
 	open( my $fh  , $file ) or die "Failed to open $file : $!";
 	my $title = File::Basename::basename( $file );
@@ -141,13 +144,13 @@ sub _find_files {
 	my @files;
 	File::Find::find( {
 		wanted => sub {
+			return unless -f $_;
 			return unless $_ =~ /\.(pod|pm)$/;
 			#$self->match_regex;
 			push @files,$_;
 		},
 		no_chdir=>1 
 	}, @$dirs );
-	
 	return \@files;
 }
 

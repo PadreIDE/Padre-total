@@ -69,7 +69,7 @@ sub _on_ok_button_clicked {
 		my $filename = $self->_matches_list->GetClientData($selection);
 		my $doc = Padre::Document->new( filename => $filename );
 		warn "Help for $filename ?";
-		#Padre->ide->wx->main->{help}->help( $doc );
+		Padre->ide->wx->main->{help}->help( $doc );
 		
 	}
 
