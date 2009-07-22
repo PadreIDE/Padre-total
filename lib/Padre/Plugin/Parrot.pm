@@ -97,6 +97,22 @@ See L<https://trac.parrot.org/parrot/ticket/79>
 
 =item Cardinal (Ruby)
 
+In order to support Ruby highlighting one needs to configure the CARDINAL_DIR 
+environment variable to point to the place where the cardinal.pbc can be located.
+
+Check out Cardinal to any directory
+
+  $ export CARDINAL_DIR=/path/to/cardinal
+  $ cd $PARROD_DIR
+  $ mkdir languages
+  $ cd language
+  $ ln -s $CARDINAL_DIR
+  $ cd cardinal
+  $ perl Configure.pl
+  $ make
+  
+
+
 See L<https://trac.parrot.org/parrot/ticket/77>
 
 =back
@@ -199,7 +215,8 @@ my %highlighter_mimes = (
 
 # [mime-type,    path-to-pbc-or-exe,  'NameWithoutSpace', 'Description'] 
 my @config = (
-	['application/x-perl6', "$ENV{RAKUDO_DIR}/perl6.pbc", 'Perl6', 'Perl 6 via Parrot and perl6.pbc'],
+	['application/x-perl6', "$ENV{RAKUDO_DIR}/perl6.pbc",       'Perl6', 'Perl 6 via Parrot and perl6.pbc'],
+	['application/x-ruby',  "$ENV{CARDINAL_DIR}/cardinal.pbc",  'Ruby',  'Ruby via Cardinal on Parrot and cardinal.pbc'],
 );
 
 use Padre::Plugin::Parrot::HL;
