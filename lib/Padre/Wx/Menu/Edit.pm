@@ -8,6 +8,7 @@ use warnings;
 use Padre::Current qw{_CURRENT};
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
+use Padre::Action   ();
 
 our $VERSION = '0.40';
 our @ISA     = 'Padre::Wx::Menu';
@@ -122,18 +123,18 @@ sub new {
 		}
 	);
 
-	$self->{copy} = $self->Append(
-		Wx::wxID_COPY,
-		Wx::gettext("&Copy\tCtrl-C")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{copy},
-		sub {
+	my $copy_action = Padre::Action->new( 
+		name       => 'edit.copy', 
+		id         => Wx::wxID_COPY,
+		label      => Wx::gettext('&Copy'), 
+		icon       => '...', 
+		shortcut   => 'Ctrl-C', 
+		menu_event => sub {
 			my $editor = Padre::Current->editor or return;
 			$editor->Copy;
-		}
+		},
 	);
+	$self->{copy} = $self->add_menu_item($copy_action);
 
 	$self->{paste} = $self->Append(
 		Wx::wxID_PASTE,

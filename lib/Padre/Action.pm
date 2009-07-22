@@ -34,8 +34,9 @@ use warnings;
 our $VERSION = '0.40';
 
 # Generate faster accessors
-use Class::XSAccessor => {
+use Class::XSAccessor accessors => {
 	name          => 'name',
+	id            => 'id',
 	label         => 'label',
 	icon          => 'icon',
 	shortcut      => 'shortcut',
@@ -56,18 +57,19 @@ A default contructor for action objects.
 =cut
 
 sub new {
-	my ($class, %opts) = shift;
+	my ($class, %opts) = @_;
 
 	#XXX - validate options
 
-	my $self = bless {@_}, $class;
+	my $self = bless {}, $class;
 
-	$self->{name} = $opts{name};
-	$self->{label} = $opts{label};
-	$self->{icon} = $opts{icon};
-	$self->{shortcut} = $opts{shortcut};
-	$self->{menu_event} = $opts{menu_event};
-	$self->{toolbar_event} = $opts{toolbar_event};
+	$self->name( $opts{name} );
+	$self->id( $opts{id} );   
+	$self->label( $opts{label} );
+	$self->icon( $opts{icon} );
+	$self->shortcut( $opts{shortcut} );
+	$self->menu_event( $opts{menu_event} );
+	$self->toolbar_event( $opts{toolbar_event} );
 
 	return $self;
 }

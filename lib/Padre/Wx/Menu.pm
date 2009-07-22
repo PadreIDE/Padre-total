@@ -45,6 +45,21 @@ sub Append {
 	return $item;
 }
 
+#
+# Add a menu item from a Padre action
+#
+sub add_menu_item {
+	my ($self, $action) = @_;
+
+	my $menu_item = $self->Append(
+		$action->id,
+		$action->label . "\t" . $action->shortcut,
+	);
+	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
+
+	return $menu_item;
+}
+
 1;
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
