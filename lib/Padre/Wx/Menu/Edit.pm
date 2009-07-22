@@ -25,6 +25,8 @@ sub new {
 
 	# Add additional properties
 	$self->{main} = $main;
+	
+	my $action;
 
 	# Undo/Redo
 	$self->{undo} = $self->Append(
@@ -110,43 +112,43 @@ sub new {
 	);
 
 	# Cut and Paste
-	$self->{cut} = $self->Append(
-		Wx::wxID_CUT,
-		Wx::gettext("Cu&t\tCtrl-X")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{cut},
-		sub {
-			my $editor = Padre::Current->editor or return;
-			$editor->Cut;
-		}
+	$self->{cut} = $self->add_menu_item(
+		$action = Padre::Action->new( 
+			name       => 'edit.cut', 
+			id         => Wx::wxID_CUT,
+			label      => Wx::gettext('Cu&t'), 
+			shortcut   => 'Ctrl-X', 
+			menu_event => sub {
+				my $editor = Padre::Current->editor or return;
+				$editor->Cut;
+			},
+		)
 	);
 
-	my $copy_action = Padre::Action->new( 
-		name       => 'edit.copy', 
-		id         => Wx::wxID_COPY,
-		label      => Wx::gettext('&Copy'), 
-		icon       => '...', 
-		shortcut   => 'Ctrl-C', 
-		menu_event => sub {
-			my $editor = Padre::Current->editor or return;
-			$editor->Copy;
-		},
+	$self->{copy} = $self->add_menu_item(
+		$action = Padre::Action->new( 
+			name       => 'edit.copy', 
+			id         => Wx::wxID_COPY,
+			label      => Wx::gettext('&Copy'), 
+			shortcut   => 'Ctrl-C', 
+			menu_event => sub {
+				my $editor = Padre::Current->editor or return;
+				$editor->Copy;
+			},
+		)
 	);
-	$self->{copy} = $self->add_menu_item($copy_action);
 
-	$self->{paste} = $self->Append(
-		Wx::wxID_PASTE,
-		Wx::gettext("&Paste\tCtrl-V")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{paste},
-		sub {
-			my $editor = Padre::Current->editor or return;
-			$editor->Paste;
-		},
+	$self->{paste} = $self->add_menu_item(
+		$action = Padre::Action->new( 
+			name       => 'edit.paste', 
+			id         => Wx::wxID_PASTE,
+			label      => Wx::gettext('&Paste'), 
+			shortcut   => 'Ctrl-V', 
+			menu_event => sub {
+				my $editor = Padre::Current->editor or return;
+				$editor->Paste;
+			},
+		)
 	);
 
 	$self->AppendSeparator;
