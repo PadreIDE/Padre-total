@@ -625,6 +625,12 @@ about:
         url: http://www.youtube.com/watch?v=HSvb2xMbUKw
         title: Padre (screencast)
         comment:
+  - title: Hebrew
+    events:
+      - date: 2009 July 22
+        url: 'http://www.whatsup.org.il/modules.php?op=modload&name=News&file=article&sid=6454'
+        title: Birthday for Padre, the Perl Integrated Development Environment
+        comment: by Shlomi Fish on Whatsup.org.il
 developers:
   - alias
   - azawawi
