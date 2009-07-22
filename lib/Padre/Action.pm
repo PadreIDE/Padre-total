@@ -45,9 +45,6 @@ sub new {
 	my $self = bless {@_}, $class;
 	$SINGLETON = $self;
 
-	# the actions registry...
-	$self->{actions} = ();
-
 	return $self;
 }
 
