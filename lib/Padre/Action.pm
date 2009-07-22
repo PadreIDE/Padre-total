@@ -4,7 +4,16 @@ package Padre::Action;
 
 =head1 NAME
 
-Padre::Action - Padre Action registry
+Padre::Action - Padre Action Object
+
+=head1 SYNOPSIS
+
+	my $action = Padre::Action->new( 
+		name => 'file.save', 
+		label => 'Save', 
+		icon => '...', 
+		shortcut => 'CTRL-S', 
+		menu_event => sub { } );
 
 =head1 DESCRIPTION
 
@@ -24,8 +33,16 @@ use warnings;
 
 our $VERSION = '0.40';
 
-# Singleton object for Action
-my $SINGLETON = undef;
+# Generate faster accessors
+use Class::XSAccessor => {
+	name          => 'name',
+	label         => 'label',
+	icon          => 'icon',
+	shortcut      => 'shortcut',
+	menu_event    => 'menu_event',
+	toolbar_event => 'toolbar_event',
+	actions       => 'actions',
+};
 
 #####################################################################
 # Constructor
@@ -39,82 +56,24 @@ A default contructor for action objects.
 =cut
 
 sub new {
-	my $class = shift;
+	my ($class, %opts) = shift;
 
-	return $SINGLETON if $SINGLETON;
+	#XXX - validate options
+
 	my $self = bless {@_}, $class;
-	$SINGLETON = $self;
+
+	$self->{name} = $opts{name};
+	$self->{label} = $opts{label};
+	$self->{icon} = $opts{icon};
+	$self->{shortcut} = $opts{shortcut};
+	$self->{menu_event} = $opts{menu_event};
+	$self->{toolbar_event} = $opts{toolbar_event};
 
 	return $self;
 }
 
 #####################################################################
 # Main Methods
-
-#
-# Adds a toolbar item to a toolbar and to Padre's Action registry.
-#
-sub add_tool_item {
-	my ( $self, $toolbar, $id, $name, $text, $listener ) = @_;
-
-	my $tool_item = $toolbar->add_tool(
-		id    => $id,
-		icon  => $name,
-		short => $text,
-		event => $listener,
-	);
-
-	$self->_add_action( $name, $toolbar, $tool_item, $listener );
-
-	return;
-}
-
-
-#
-# Adds a menu item to a menu and to Padre's Action registry.
-# Returns the menu item
-#
-sub add_menu_item {
-	my ( $self, $menu, $id, $name, $text, $main, $listener ) = @_;
-
-	my $menu_item = $menu->Append( $id, $text );
-	Wx::Event::EVT_MENU( $main, $menu_item, $listener );
-
-	$self->_add_action( $name, $menu, $menu_item, $listener );
-
-	return $menu_item;
-}
-
-#
-# Adds an action...
-# (private method -- DO NOT USE)
-#
-sub _add_action {
-	my ( $self, $name, $parent, $child, $listener ) = @_;
-
-	push @{ $self->{actions} },
-		{
-		name     => $name,
-		parent   => $parent,
-		child    => $child,
-		listener => $listener,
-		};
-}
-
-#
-# Returns a hash of actions...
-#
-# Possible usage scenarios:
-#  - Call an action's listener directly.
-#  - Detect registered keys.
-#  - change the behavior of an action on the fly.
-#
-sub actions {
-	my $self = shift;
-
-	#XXX- must return a copy of actions (to prevent changing it by mistake)...
-	return $self->{actions};
-}
 
 =pod
 
