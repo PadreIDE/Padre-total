@@ -98,38 +98,36 @@ sub character_position_to_ppi_location {
 	return [ $line, $col, $col ];
 }
 
-sub lexer {
+sub set_highlighter {
 	my $self   = shift;
-	my $config = Padre->ide->config;
+	my $module = shift;
 
-	Padre::Util::debug( "Setting highlighter for Perl 5 code. length: " . $self->editor->GetTextLength );
-	Padre::Util::debug( "Limit " . $config->ppi_highlight_limit );
-	if ( $config->ppi_highlight and $self->editor->GetTextLength < $config->ppi_highlight_limit ) {
-		Padre::Util::debug("Setting ppi highlighting");
-		return Wx::wxSTC_LEX_CONTAINER;
-	} else {
-		return $self->SUPER::lexer();
+	# These are hard coded limits because the PPI highlighter
+	# is slow. Probably there is not much use in moving this back to a
+	# configuration variable
+	my $limit;
+	if ($module eq 'Padre::Document::Perl::PPILexer') {
+		$limit = 2000;
+	} elsif ($module eq 'Padre::Document::Perl::Lexer') {
+		$limit = 2000;
+	} elsif ($module eq 'Padre::Plugin::Kate') {
+		$limit = 2000;
 	}
-}
 
-#####################################################################
-# Padre::Document GUI Integration
-
-sub colorize {
-	my $self = shift;
-
-	Padre::Util::debug("colorize called");
-
-	# use pshangov's experimental ppi lexer only when running in development mode
-	if ( $ENV{PADRE_DEV} ) {
-		require Padre::Document::Perl::Lexer;
-		Padre::Document::Perl::Lexer->colorize(@_);
-		return;
-	} else {
-		require Padre::Document::Perl::PPILexer;
-		Padre::Document::Perl::PPILexer->colorize(@_);
-		return;
+	my $length = $self->{original_content} ? length $self->{original_content} : 0;
+	my $editor = $self->editor;
+	if ($editor) {
+		$length = $editor->GetTextLength;
 	}
+
+	Padre::Util::debug("Setting highlighter for Perl 5 code. length: $length" . 
+		($limit ? " limit is $limit" : '') );
+
+	if ( defined $limit and $length > $limit ) {
+		Padre::Util::debug("Forcing STC highlighting");
+		$module = 'stc';
+	}
+	return $self->SUPER::set_highlighter($module);
 }
 
 
