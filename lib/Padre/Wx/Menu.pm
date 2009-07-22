@@ -55,7 +55,7 @@ sub add_menu_item {
 	my $action = Padre::Action->new(@_);
 	my $menu_item = $menu->Append(
 		$action->id,
-		$action->label . "\t" . $action->shortcut,
+		$action->label . (($action->shortcut) ? ("\t" . $action->shortcut) : ''),
 	);
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 

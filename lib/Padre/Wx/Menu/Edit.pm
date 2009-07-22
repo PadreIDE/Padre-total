@@ -103,7 +103,6 @@ sub new {
 		name       => 'edit.mark_selection_end', 
 		id         => Wx::wxID_SELECTALL,
 		label      => Wx::gettext('Clear selection marks'), 
-		shortcut   => '', 
 		menu_event => sub {
 			require Padre::Wx::Editor;
 			Padre::Wx::Editor::text_selection_clear_marks(@_);
@@ -247,7 +246,6 @@ sub new {
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_system', 
 		label      => Wx::gettext('Encode document to System Default'), 
-		shortcut   => '', 
 		menu_event => sub {
 			require Padre::Wx::Dialog::Encode;
 			Padre::Wx::Dialog::Encode::encode_document_to_system_default(@_);
@@ -258,7 +256,6 @@ sub new {
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_utf8', 
 		label      => Wx::gettext('Encode document to utf-8'), 
-		shortcut   => '', 
 		menu_event => sub {
 			require Padre::Wx::Dialog::Encode;
 			Padre::Wx::Dialog::Encode::encode_document_to_utf8(@_);
@@ -269,7 +266,6 @@ sub new {
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_to', 
 		label      => Wx::gettext('Encode document to...'), 
-		shortcut   => '', 
 		menu_event => sub {
 			require Padre::Wx::Dialog::Encode;
 			Padre::Wx::Dialog::Encode::encode_document_to(@_);
@@ -287,7 +283,6 @@ sub new {
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_windows', 
 		label      => Wx::gettext('EOL to Windows'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->convert_to("WIN");
 		},
@@ -297,7 +292,6 @@ sub new {
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_unix', 
 		label      => Wx::gettext('EOL to Unix'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->convert_to("UNIX");
 		},
@@ -307,7 +301,6 @@ sub new {
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_mac', 
 		label      => Wx::gettext('EOL to Mac Classic'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->convert_to("MAC");
 		},
@@ -325,7 +318,6 @@ sub new {
 		$self->{tabs},
 		name       => 'edit.tabs_to_spaces', 
 		label      => Wx::gettext('Tabs to Spaces...'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->on_tab_and_space('Tab_to_Space');
 		},
@@ -335,7 +327,6 @@ sub new {
 		$self->{tabs},
 		name       => 'edit.spaces_to_tabs', 
 		label      => Wx::gettext('Spaces to Tabs...'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->on_tab_and_space('Space_to_Tab');
 		},
@@ -347,7 +338,6 @@ sub new {
 		$self,
 		name       => 'edit.delete_trailing', 
 		label      => Wx::gettext('Delete Trailing Spaces'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->on_delete_ending_space;
 		},
@@ -357,7 +347,6 @@ sub new {
 		$self,
 		name       => 'edit.delete_leading', 
 		label      => Wx::gettext('Delete Leading Spaces'), 
-		shortcut   => '', 
 		menu_event => sub {
 			$_[0]->on_delete_leading_space;
 		},
@@ -405,7 +394,6 @@ sub new {
 		$self->{diff},
 		name       => 'edit.diff2saved', 
 		label      => Wx::gettext('Diff to Saved Version'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::on_diff(@_);
 		},
@@ -415,7 +403,6 @@ sub new {
 		$self->{diff},
 		name       => 'edit.applydiff2file', 
 		label      => Wx::gettext('Apply Diff to File'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::on_diff(@_);
 		},
@@ -424,7 +411,6 @@ sub new {
 		$self->{diff},
 		name       => 'edit.applydiff2project', 
 		label      => Wx::gettext('Apply Diff to Project'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::on_diff(@_);
 		},
@@ -434,7 +420,6 @@ sub new {
 		$self,
 		name       => 'edit.insert_from_file', 
 		label      => Wx::gettext('Insert From File...'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::on_insert_from_file(@_);
 		},
@@ -453,7 +438,6 @@ sub new {
 		$self->{show_as_number},
 		name       => 'edit.show_as_hex', 
 		label      => Wx::gettext('Show as hexa'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::show_as_numbers( @_, 'hex' );
 		},
@@ -463,7 +447,6 @@ sub new {
 		$self->{show_as_number},
 		name       => 'edit.show_as_decimal', 
 		label      => Wx::gettext('Show as decimal'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::show_as_numbers( @_, 'decimal' );
 		},
@@ -476,7 +459,6 @@ sub new {
 		$self,
 		name       => 'edit.show_as_decimal', 
 		label      => Wx::gettext('Preferences'), 
-		shortcut   => '', 
 		menu_event => sub {
 			Padre::Wx::Main::on_preferences(@_);
 		},
