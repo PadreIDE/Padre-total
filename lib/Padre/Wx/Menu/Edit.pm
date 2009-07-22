@@ -8,7 +8,6 @@ use warnings;
 use Padre::Current qw{_CURRENT};
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
-use Padre::Action   ();
 
 our $VERSION = '0.40';
 our @ISA     = 'Padre::Wx::Menu';
@@ -112,104 +111,83 @@ sub new {
 	);
 
 	# Cut and Paste
-	$self->{cut} = $self->add_menu_item(
-		$action = Padre::Action->new( 
-			name       => 'edit.cut', 
-			id         => Wx::wxID_CUT,
-			label      => Wx::gettext('Cu&t'), 
-			shortcut   => 'Ctrl-X', 
-			menu_event => sub {
-				my $editor = Padre::Current->editor or return;
-				$editor->Cut;
-			},
-		)
+	($self->{cut}, $action) = $self->add_menu_item(
+		name       => 'edit.cut', 
+		id         => Wx::wxID_CUT,
+		label      => Wx::gettext('Cu&t'), 
+		shortcut   => 'Ctrl-X', 
+		menu_event => sub {
+			my $editor = Padre::Current->editor or return;
+			$editor->Cut;
+		},
 	);
 
-	$self->{copy} = $self->add_menu_item(
-		$action = Padre::Action->new( 
-			name       => 'edit.copy', 
-			id         => Wx::wxID_COPY,
-			label      => Wx::gettext('&Copy'), 
-			shortcut   => 'Ctrl-C', 
-			menu_event => sub {
-				my $editor = Padre::Current->editor or return;
-				$editor->Copy;
-			},
-		)
+	($self->{copy}, $action) = $self->add_menu_item(
+		name       => 'edit.copy', 
+		id         => Wx::wxID_COPY,
+		label      => Wx::gettext('&Copy'), 
+		shortcut   => 'Ctrl-C', 
+		menu_event => sub {
+			my $editor = Padre::Current->editor or return;
+			$editor->Copy;
+		},
 	);
 
-	$self->{paste} = $self->add_menu_item(
-		$action = Padre::Action->new( 
-			name       => 'edit.paste', 
-			id         => Wx::wxID_PASTE,
-			label      => Wx::gettext('&Paste'), 
-			shortcut   => 'Ctrl-V', 
-			menu_event => sub {
-				my $editor = Padre::Current->editor or return;
-				$editor->Paste;
-			},
-		)
+	($self->{paste}, $action) = $self->add_menu_item(
+		name       => 'edit.paste', 
+		id         => Wx::wxID_PASTE,
+		label      => Wx::gettext('&Paste'), 
+		shortcut   => 'Ctrl-V', 
+		menu_event => sub {
+			my $editor = Padre::Current->editor or return;
+			$editor->Paste;
+		},
 	);
 
 	$self->AppendSeparator;
 
 	# Miscellaneous Actions
-	$self->{goto} = $self->Append(
-		-1,
-		Wx::gettext("&Goto\tCtrl-G")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{goto},
-		sub {
+	($self->{goto}, $action) = $self->add_menu_item(
+		name       => 'edit.goto', 
+		label      => Wx::gettext('&Goto'), 
+		shortcut   => 'Ctrl-G', 
+		menu_event => sub {
 			Padre::Wx::Main::on_goto(@_);
 		},
 	);
 
-	$self->{autocomp} = $self->Append(
-		-1,
-		Wx::gettext("&AutoComp\tCtrl-P")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{autocomp},
-		sub {
+	($self->{autocomp}, $action) = $self->add_menu_item(
+		name       => 'edit.autocomp', 
+		label      => Wx::gettext('&AutoComp'), 
+		shortcut   => 'Ctrl-P', 
+		menu_event => sub {
 			Padre::Wx::Main::on_autocompletition(@_);
 		},
 	);
 
-	$self->{brace_match} = $self->Append(
-		-1,
-		Wx::gettext("&Brace matching\tCtrl-1")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{brace_match},
-		sub {
+	($self->{brace_match}, $action) = $self->add_menu_item(
+		name       => 'edit.brace_match', 
+		label      => Wx::gettext('&&Brace matching'), 
+		shortcut   => 'Ctrl-1', 
+		menu_event => sub {
 			Padre::Wx::Main::on_brace_matching(@_);
 		},
 	);
 
-	$self->{join_lines} = $self->Append(
-		-1,
-		Wx::gettext("&Join lines\tCtrl-J")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{join_lines},
-		sub {
+	($self->{join_lines}, $action) = $self->add_menu_item(
+		name       => 'edit.join_lines', 
+		label      => Wx::gettext('&Join lines'), 
+		shortcut   => 'Ctrl-J', 
+		menu_event => sub {
 			Padre::Wx::Main::on_join_lines(@_);
 		},
 	);
 
-	$self->{snippets} = $self->Append(
-		-1,
-		Wx::gettext("Snippets\tCtrl-Shift-A")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{snippets},
-		sub {
+	($self->{snippets}, $action) = $self->add_menu_item(
+		name       => 'edit.snippets', 
+		label      => Wx::gettext('Snippets'), 
+		shortcut   => 'Ctrl-Shift-A', 
+		menu_event => sub {
 			require Padre::Wx::Dialog::Snippets;
 			Padre::Wx::Dialog::Snippets->snippets(@_);
 		},
@@ -218,14 +196,11 @@ sub new {
 	$self->AppendSeparator;
 
 	# Commenting
-	$self->{comment_toggle} = $self->Append(
-		-1,
-		Wx::gettext("&Toggle Comment\tCtrl-Shift-C")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{comment_toggle},
-		sub {
+	($self->{comment_toggle}, $action) = $self->add_menu_item(
+		name       => 'edit.comment_toggle', 
+		label      => Wx::gettext('&Toggle Comment\t'), 
+		shortcut   => 'Ctrl-Shift-C', 
+		menu_event => sub {
 			Padre::Wx::Main::on_comment_toggle_block(@_);
 		},
 	);

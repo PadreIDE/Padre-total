@@ -49,15 +49,17 @@ sub Append {
 # Add a menu item from a Padre action
 #
 sub add_menu_item {
-	my ($self, $action) = @_;
+	my $self = shift;
 
+	require Padre::Action;
+	my $action = Padre::Action->new(@_);
 	my $menu_item = $self->Append(
 		$action->id,
 		$action->label . "\t" . $action->shortcut,
 	);
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 
-	return $menu_item;
+	return ($menu_item, $action);
 }
 
 1;
