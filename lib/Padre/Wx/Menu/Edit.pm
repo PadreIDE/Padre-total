@@ -31,25 +31,24 @@ sub new {
 	# Undo/Redo
 	($self->{undo}, $action) = $self->add_menu_item(
 		$self,
-			name       => 'edit.undo', 
-			id         => Wx::wxID_UNDO,
-			label      => Wx::gettext('&Undo'), 
-			shortcut   => 'Ctrl-Z', 
-			menu_event => sub {
-				Padre::Current->editor->Undo;
-			},
+		name       => 'edit.undo', 
+		id         => Wx::wxID_UNDO,
+		label      => Wx::gettext('&Undo'), 
+		shortcut   => 'Ctrl-Z', 
+		menu_event => sub {
+			Padre::Current->editor->Undo;
+		},
 	);
 
 	($self->{redo}, $action) = $self->add_menu_item(
 		$self,
-			name       => 'edit.redo', 
-			id         => Wx::wxID_REDO,
-			label      => Wx::gettext('&Redo'), 
-			shortcut   => 'Ctrl-Y', 
-			menu_event => sub {
-				Padre::Current->editor->Redo;
-			},
-	
+		name       => 'edit.redo', 
+		id         => Wx::wxID_REDO,
+		label      => Wx::gettext('&Redo'), 
+		shortcut   => 'Ctrl-Y', 
+		menu_event => sub {
+			Padre::Current->editor->Redo;
+		},
 	);
 
 	$self->AppendSeparator;
