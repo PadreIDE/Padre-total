@@ -6,7 +6,7 @@ use warnings;
 use Padre::Document ();
 use Padre::Util     ();
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 our @ISA     = 'Padre::Document';
 
 # Slightly less naive way to parse and colorize pasm files
@@ -44,11 +44,11 @@ sub colorize {
 	foreach my $i ( 0 .. @lines - 1 ) {
 		next if $lines[$i] =~ /^\s$/;
 		if ( $lines[$i] =~ /^\s*#/ ) {
-			_color( $editor, 'Padre::Constant::PASM_COMMENT', $i, 0 );
+			_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, 0 );
 			next;
 		}
 		if ( $lines[$i] =~ /^=/ or $in_pod ) {
-			_color( $editor, 'Padre::Constant::PASM_POD', $i, 0 );
+			_color( $editor, 'Padre::Constant::PADRE_GREEN', $i, 0 );
 			if ( $lines[$i] =~ /^=cut/ ) {
 				$in_pod = 0;
 			} else {
@@ -57,23 +57,23 @@ sub colorize {
 			next;
 		}
 		if ( $lines[$i] =~ /^\s*\w*:/m ) {
-			_color( $editor, 'Padre::Constant::PASM_LABEL', $i, 0 );
+			_color( $editor, 'Padre::Constant::PADRE_GREEN', $i, 0 );
 			next;
 		}
 		if ( $lines[$i] =~ /^\s*($keywords)\s*$/ ) {    #   end
-			_color( $editor, 'Padre::Constant::PASM_KEYWORD', $i, 0 );
+			_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, 0 );
 			next;
 		}
 		if ( $lines[$i] =~ /^\s*($keywords)\s*(([\'\"])[^\3]*\3|\$?[ISPN]\d+)\s*$/ ) {    #   print "abc"
 			my $keyword = $1;
 			my $string  = $2;
 			my $loc     = index( $lines[$i], $keyword );
-			_color( $editor, 'Padre::Constant::PASM_KEYWORD', $i, $loc, length($keyword) );
+			_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, $loc, length($keyword) );
 			my $loc2 = index( $lines[$i], $string, $loc + length($keyword) );
 			if ( $string =~ /[\'\"]/ ) {
-				_color( $editor, 'Padre::Constant::PASM_STRING', $i, $loc2, length($string) );
+				_color( $editor, 'Padre::Constant::PADRE_ORANGE', $i, $loc2, length($string) );
 			} else {
-				_color( $editor, 'Padre::Constant::PASM_REGISTER', $i, $loc2, length($string) );
+				_color( $editor, 'Padre::Constant::PADRE_MAGENTA', $i, $loc2, length($string) );
 			}
 			next;
 		}
@@ -82,7 +82,7 @@ sub colorize {
 			my $other   = $2;
 
 			my $loc = index( $lines[$i], $keyword );
-			_color( $editor, 'Padre::Constant::PASM_KEYWORD', $i, $loc, length($keyword) );
+			_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, $loc, length($keyword) );
 
 			my ( $first, $second ) = split /,/, $other, 2;    # breaks if string is the first element
 			my $endloc2 = gg( $editor, $first, $i, $lines[$i], $loc + length($keyword) );
@@ -110,17 +110,17 @@ sub gg {
 	if ( $str =~ /^\s*(\$?[ISPN]\d+)\s*$/ ) {
 		my $substr = $1;
 		my $loc2 = index( $line, $substr, $loc );
-		_color( $editor, 'Padre::Constant::PASM_REGISTER', $i, $loc2, length($substr) );
+		_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, $loc2, length($substr) );
 		return $loc2 + length($substr);
 	} elsif ( $str =~ /^\s*(([\'\"])[^\2]*\2)\s*$/ ) {
 		my $substr = $1;
 		my $loc2 = index( $line, $substr, $loc );
-		_color( $editor, 'Padre::Constant::PASM_STRING', $i, $loc2, length($substr) );
+		_color( $editor, 'Padre::Constant::PADRE_BLUE', $i, $loc2, length($substr) );
 		return $loc2 + length($substr);
 	} elsif ( $str =~ /^\s*(\w\w*)\s*$/ ) {
 		my $substr = $1;
 		my $loc2 = index( $line, $substr, $loc );
-		_color( $editor, 'Padre::Constant::PASM_LABEL', $i, $loc2, length($substr) );
+		_color( $editor, 'Padre::Constant::PADRE_BROWN', $i, $loc2, length($substr) );
 		return $loc2 + length($substr);
 	}
 	return;

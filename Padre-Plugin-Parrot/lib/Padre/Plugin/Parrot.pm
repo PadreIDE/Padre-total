@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 use Padre::Wx ();
 
@@ -261,7 +261,8 @@ my @highlighters = (
 );
 
 my %highlighter_mimes = (
-	'Padre::Document::PIR' => ['application/x-pir'],
+	'Padre::Document::PIR'  => ['application/x-pir'],
+	'Padre::Document::PASM' => ['application/x-pasm'],
 );
 
 # [mime-type,    path-to-pbc-or-exe,  'NameWithoutSpace', 'Description'] 
@@ -414,17 +415,6 @@ sub show_help {
 	$main->{help}->SetFocus;
 	$main->{help}->Show(1);
 }
-
-package Px;
-
-use constant {
-	PASM_KEYWORD  => 1,
-	PASM_REGISTER => 2,
-	PASM_LABEL    => 3,
-	PASM_STRING   => 4,
-	PASM_COMMENT  => 5,
-	PASM_POD      => 6,
-};
 
 1;
 
