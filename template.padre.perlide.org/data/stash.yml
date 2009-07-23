@@ -17,6 +17,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 23 July 2009
+        url: http://use.perl.org/~Alias/journal/39336
+        title: The Padre 1st Birthday Party starts early
+        comment: by Adam Kennedy
       - date: 2009 July 23
         url: http://onionstand.blogspot.com/2009/07/padre-041-released.html
         title: Padre 0.41 released!
