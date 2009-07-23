@@ -1,4 +1,4 @@
-package Padre::Plugin::Ecliptic::OpenInExplorerAction;
+package Padre::Plugin::Ecliptic::OpenInFileBrowserAction;
 
 use strict;
 use warnings;
@@ -46,7 +46,7 @@ sub _execute {
 # On win32, selects it in Windows Explorer
 # On linux, opens the containing folder for it
 #
-sub open_in_explorer {
+sub open_in_file_browser {
 	my $self = shift;
 
 	my $main = $self->_plugin->main;
