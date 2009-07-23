@@ -16,6 +16,35 @@ Padre::Plugin::Kate - Using the Kate syntax highlighter
 
 =head1 SYNOPSIS
 
+This plugin provides an interface to the L<Syntax::Highligh::Engine::Kate>
+which implements syntax highlighting rules taken from the Kate editor.
+
+Currently the plugin only implements Perl 5 and PHP highlighting.
+
+Once this plug-in is installed the user can switch the highlilghting of all 
+Perl 5 or PHP files to use this highlighter via the Preferences menu
+of L<Padre>.
+
+
+=head1 LIMITATION
+
+This is a first attempt to integrate this synatx highlighter with Padre
+and thus many things don't work well. Especially due to speed issues currently
+even if you set the highlighting to use the Kate plugin Padre will do so
+only for small files. The hard-coded limit is in the 
+L<Padre::Document::Perl> class (which probably is a bug in itself) which
+probably means it will only limit Perl files and not PHP files.
+
+There are several ways to improve the situation e.g.
+
+Highlight in the background
+
+Only highlight the currently visible text
+
+Only highlight a few lines around the the last changed character.
+
+Each one has its own advantage and disadvantage. More research is needed.
+
 =head1 COPYRIGHT
 
 Copyright 2009 Gabor Szabo. L<http://szabgab.com/>
@@ -29,7 +58,7 @@ modify it under the same terms as Perl 5 itself.
 
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26;
+	return 'Padre::Plugin' => 0.41;
 }
 
 sub plugin_name {
@@ -147,7 +176,7 @@ sub about {
 
 1;
 
-# Copyright 2008 Gabor Szabo.
+# Copyright 2008-2009 Gabor Szabo.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
