@@ -53,22 +53,22 @@ sub new {
 		icon   => 'actions/document-open',
 	);
 
-	$self->add_tool_item(
+	$self->{save} = $self->add_tool_item(
 		action => 'file.save',
 		icon   => 'actions/document-save',
 	);
 
-	$self->add_tool_item(
+	$self->{save_as} = $self->add_tool_item(
 		action => 'file.save_as',
 		icon   => 'actions/document-save-as',
 	);
 
-	$self->add_tool_item(
+	$self->{save_all} = $self->add_tool_item(
 		action => 'file.save_all',
 		icon   => 'actions/stock_data-save',
 	);
 
-	$self->add_tool_item(
+	$self->{close} = $self->add_tool_item(
 		action => 'file.close',
 		icon   => 'actions/x-document-close',
 	);
@@ -76,12 +76,12 @@ sub new {
 	# Undo/Redo Support
 	$self->AddSeparator;
 
-	$self->add_tool_item(
+	$self->{undo} = $self->add_tool_item(
 		action => 'edit.undo',
 		icon   => 'actions/edit-undo',
 	);
 
-	$self->add_tool_item(
+	$self->{redo} = $self->add_tool_item(
 		action => 'edit.redo',
 		icon   => 'actions/edit-redo',
 	);
@@ -89,22 +89,22 @@ sub new {
 	# Cut/Copy/Paste
 	$self->AddSeparator;
 
-	$self->add_tool_item(
+	$self->{cut} = $self->add_tool_item(
 		action => 'edit.cut',
 		icon   => 'actions/edit-cut',
 	);
 
-	$self->add_tool_item(
+	$self->{copy} = $self->add_tool_item(
 		action => 'edit.copy',
 		icon   => 'actions/edit-copy',
 	);
 
-	$self->add_tool_item(
+	$self->{paste} = $self->add_tool_item(
 		action => 'edit.paste',
 		icon   => 'actions/edit-paste',
 	);
 
-	$self->add_tool_item(
+	$self->{select_all} = $self->add_tool_item(
 		action => 'edit.select_all',
 		icon   => 'actions/edit-select-all',
 	);
@@ -112,12 +112,12 @@ sub new {
 	# find and replace
 	$self->AddSeparator;
 
-	$self->add_tool_item(
+	$self->{find} = $self->add_tool_item(
 		action => 'search.find',
 		icon   => 'actions/edit-find',
 	);
 
-	$self->add_tool_item(
+	$self->{replace} = $self->add_tool_item(
 		action => 'search.replace',
 		icon   => 'actions/edit-find-replace',
 	);
@@ -125,14 +125,14 @@ sub new {
 	# Document Transforms
 	$self->AddSeparator;
 
-	$self->add_tool_item(
+	$self->{comment_toggle} = $self->add_tool_item(
 		action => 'edit.comment_toggle',
 		icon   => 'actions/toggle-comments',
 	);
 
 	$self->AddSeparator;
 
-	$self->add_tool_item(
+	$self->{doc_stat} = $self->add_tool_item(
 		action => 'file.doc_stat',
 		icon   => 'actions/document-properties',
 	);
@@ -171,7 +171,7 @@ sub add_tool_item {
 		$action->menu_event,
 	);
 
-	return;
+	return $id;
 }
 
 sub refresh {
@@ -182,23 +182,23 @@ sub refresh {
 	my $text      = $current->text;
 	my $selection = ( defined $text and $text ne '' ) ? 1 : 0;
 
-	$self->EnableTool( Wx::wxID_SAVE, ( $document and $document->is_modified ? 1 : 0 ) );
-	$self->EnableTool( Wx::wxID_SAVEAS, ($document) );
+	$self->EnableTool( $self->{save}, ( $document and $document->is_modified ? 1 : 0 ) );
+	$self->EnableTool( $self->{save_as}, ($document) );
 
 	# trying out the Comment Code method here
-	$self->EnableTool( 1000, ($document) ); # Save All
+	$self->EnableTool( $self->{save_all}, ($document) ); # Save All
 
-	$self->EnableTool( Wx::wxID_CLOSE, ( $editor ? 1 : 0 ) );
-	$self->EnableTool( Wx::wxID_UNDO,  ( $editor and $editor->CanUndo ) );
-	$self->EnableTool( Wx::wxID_REDO,  ( $editor and $editor->CanRedo ) );
-	$self->EnableTool( Wx::wxID_CUT,   ($selection) );
-	$self->EnableTool( Wx::wxID_COPY,  ($selection) );
-	$self->EnableTool( Wx::wxID_PASTE, ( $editor and $editor->CanPaste ) );
-	$self->EnableTool( Wx::wxID_SELECTALL, ( $editor ? 1 : 0 ) );
-	$self->EnableTool( Wx::wxID_FIND,      ( $editor ? 1 : 0 ) );
-	$self->EnableTool( Wx::wxID_REPLACE,   ( $editor ? 1 : 0 ) );
-	$self->EnableTool( 999,  ( $document ? 1 : 0 ) );
-	$self->EnableTool( 1001, ( $editor   ? 1 : 0 ) );
+	$self->EnableTool( $self->{close}, ( $editor ? 1 : 0 ) );
+	$self->EnableTool( $self->{undo},  ( $editor and $editor->CanUndo ) );
+	$self->EnableTool( $self->{redo},  ( $editor and $editor->CanRedo ) );
+	$self->EnableTool( $self->{cut},   ($selection) );
+	$self->EnableTool( $self->{copy},  ($selection) );
+	$self->EnableTool( $self->{paste}, ( $editor and $editor->CanPaste ) );
+	$self->EnableTool( $self->{select_all}, ( $editor ? 1 : 0 ) );
+	$self->EnableTool( $self->{find},      ( $editor ? 1 : 0 ) );
+	$self->EnableTool( $self->{replace},   ( $editor ? 1 : 0 ) );
+	$self->EnableTool( $self->{comment_toggle},  ( $document ? 1 : 0 ) );
+	$self->EnableTool( $self->{doc_stat}, ( $editor   ? 1 : 0 ) );
 
 	return;
 }
