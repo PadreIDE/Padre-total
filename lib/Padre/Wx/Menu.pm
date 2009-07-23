@@ -51,7 +51,7 @@ sub Append {
 sub add_menu_item {
 	my $self = shift;
 	my $menu = shift;
-	return $self->_add_menu_item($menu, 0, @_);
+	return $self->_add_menu_item($menu, 'normal', @_);
 }
 
 
@@ -61,31 +61,47 @@ sub add_menu_item {
 sub add_checked_menu_item {
 	my $self = shift;
 	my $menu = shift;
-	return $self->_add_menu_item($menu, 1, @_);
+	return $self->_add_menu_item($menu, 'checked', @_);
+}
+
+#
+# Add a radio menu item to menu from a Padre action
+#
+sub add_radio_menu_item {
+	my $self = shift;
+	my $menu = shift;
+	return $self->_add_menu_item($menu, 'radio', @_);
 }
 
 #
 # (Private method)
-# Add a normal/checked menu item to menu from a Padre action
+# Add a normal/checked/radio menu item to menu from a Padre action
 #
 sub _add_menu_item {
 	my $self = shift;
 	my $menu = shift;
-	my $checked = shift;
+	my $type = shift;
 	require Padre::Action;
 	my $action = Padre::Action->new(@_);
 	my $shortcut = $action->shortcut;
 	my $menu_item;
-	if(not $checked) {
+	if($type eq 'normal') {
 		$menu_item = $menu->Append(
 			$action->id,
 			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
 		);
-	} else {
+	} elsif($type eq 'checked') {
 		$menu_item = $menu->AppendCheckItem(
 			$action->id,
 			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
 		);
+	} elsif($type eq 'radio') {
+		$menu_item = $menu->AppendRadioItem(
+			$action->id,
+			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
+		);
+	}  else {
+		die "Unknown menu item type: '$type'";
 	}
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 	push @{Padre::ide->actions}, $action;
