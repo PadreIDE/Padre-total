@@ -38,195 +38,138 @@ sub new {
 	# icon sets we need to be SLIGHTLY bigger.
 	$self->SetToolBitmapSize( Wx::Size->new( 16, 16 ) );
 
-	# toolbar id sequence generater
+	# toolbar id sequence generator
+	# Toolbar likes only unique values. Do otherwise on your own risk.
 	$self->{next_id} = 10000;
 
 	# Populate the toolbar
 	$self->add_tool_item(
-		name  => 'toolbar.document_new',
-		icon  => 'actions/document-new',
-		label => Wx::gettext('New File'),
-		toolbar_event => sub {
-			$_[0]->on_new;
-		},
+		action => 'file.new',
+		icon   => 'actions/document-new',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.document_open',
-		icon  => 'actions/document-open',
-		label => Wx::gettext('Open File'),
-		toolbar_event => sub {
-		},
+		action => 'file.open',
+		icon   => 'actions/document-open',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.document_save',
-		icon  => 'actions/document-save',
-		label => Wx::gettext('Save File'),
-		toolbar_event => sub {
-		},
+		action => 'file.save',
+		icon   => 'actions/document-save',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.document_save_as',
-		icon  => 'actions/document-save-as',
-		label => Wx::gettext('Save as...'),
-		toolbar_event => sub {
-		},
+		action => 'file.save_as',
+		icon   => 'actions/document-save-as',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.save_all',
-		icon  => 'actions/stock_data-save',
-		label => Wx::gettext('Save All'),
-		toolbar_event => sub {
-			Padre::Wx::Main::on_save_all(@_);
-		},
+		action => 'file.save_all',
+		icon   => 'actions/stock_data-save',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.close',
-		icon  => 'actions/x-document-close',
-		label => Wx::gettext('Close File'),
-		toolbar_event => sub {
-			$_[0]->on_close( $_[1] );
-		},
+		action => 'file.close',
+		icon   => 'actions/x-document-close',
 	);
 
 	# Undo/Redo Support
 	$self->AddSeparator;
 
 	$self->add_tool_item(
-		name  => 'toolbar.undo',
-		icon  => 'actions/edit-undo',
-		label => Wx::gettext('Undo'),
-		toolbar_event => sub {
-		},
+		action => 'edit.undo',
+		icon   => 'actions/edit-undo',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.redo',
-		icon  => 'actions/edit-redo',
-		label => Wx::gettext('Redo'),
-		toolbar_event => sub {
-		},
+		action => 'edit.redo',
+		icon   => 'actions/edit-redo',
 	);
 
 	# Cut/Copy/Paste
 	$self->AddSeparator;
 
 	$self->add_tool_item(
-		name  => 'toolbar.cut',
-		icon  => 'actions/edit-cut',
-		label => Wx::gettext('Cut'),
-		toolbar_event => sub {
-			Wx::Window::FindFocus->Cut;
-		},
+		action => 'edit.cut',
+		icon   => 'actions/edit-cut',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.copy',
-		icon  => 'actions/edit-copy',
-		label => Wx::gettext('Copy'),
-		toolbar_event => sub {
-			Wx::Window::FindFocus->Copy;
-		},
+		action => 'edit.copy',
+		icon   => 'actions/edit-copy',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.paste',
-		icon  => 'actions/edit-paste',
-		label => Wx::gettext('Paste'),
-		toolbar_event => sub {
-			my $editor = Padre::Current->editor or return;
-			$editor->Paste;
-		},
+		action => 'edit.paste',
+		icon   => 'actions/edit-paste',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.select_all',
-		icon  => 'actions/edit-select-all',
-		label => Wx::gettext('Select All'),
-		toolbar_event => sub {
-			Wx::Window::FindFocus->SelectAll();
-		},
+		action => 'edit.select_all',
+		icon   => 'actions/edit-select-all',
 	);
 
 	# find and replace
 	$self->AddSeparator;
 
 	$self->add_tool_item(
-		name  => 'toolbar.find',
-		icon  => 'actions/edit-find',
-		label => Wx::gettext('Find'),
-		toolbar_event => sub {
-		}
+		action => 'search.find',
+		icon   => 'actions/edit-find',
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.find_replace',
-		icon  => 'actions/edit-find-replace',
-		label => Wx::gettext('Find and Replace'),
-		toolbar_event => sub {
-		}
+		action => 'search.replace',
+		icon   => 'actions/edit-find-replace',
 	);
 
 	# Document Transforms
 	$self->AddSeparator;
 
 	$self->add_tool_item(
-		name  => 'toolbar.toggle_comments',
-		icon  => 'actions/toggle-comments',
-		label => Wx::gettext('Toggle Comments'),
-		toolbar_event => sub {
-			Padre::Wx::Main::on_comment_toggle_block(@_);
-		},
+		action => 'edit.comment_toggle',
+		icon   => 'actions/toggle-comments',
 	);
 
 	$self->AddSeparator;
 
 	$self->add_tool_item(
-		name  => 'toolbar.document_stats',
-		icon  => 'actions/document-properties',
-		label => Wx::gettext('Document Stats'),
-		toolbar_event => sub {
-			Padre::Wx::Main::on_doc_stats(@_);
-		},
+		action => 'file.doc_stat',
+		icon   => 'actions/document-properties',
 	);
 
 	return $self;
 }
 
 #
-# Add a tool item to the toolbar from a Padre action
+# Add a tool item to the toolbar re-using Padre menu action name
 #
 sub add_tool_item {
-	my $self = shift;
+	my ($self,%args) = @_;
 
 	my $actions = Padre::ide->actions;
-	my $action = Padre::Action->new(@_);
-	my $shortcut = $action->shortcut;
-	$self->_add_tool(
-		id    => $action->id,
-		icon  => $action->icon,
-		short => $action->label . ($shortcut ? ("\t" . $shortcut) : ''),
-		event => $action->toolbar_event,
+
+	my $action = $actions->{$args{action}};
+	die ("No action with the name " . $args{name}) 
+		unless $action;
+
+	# the ID code should be unique otherwise it can break the event system. 
+	# If set to -1 such as in the default call below, it will override 
+	# any previous item with that id.
+	my $id = $self->{next_id}++;
+
+	# Create the tool
+	$self->AddTool(
+		$id, '',
+		Padre::Wx::Icon::find( $args{icon} ),
+		$action->label,
 	);
-	
-	if($actions->{$action->name}) {
-		warn "Found a duplicate action '" . $action->name . "'\n";
-	}
-	if($shortcut) {
-		foreach my $action_name (keys %{$actions}) {
-			my $a = $actions->{$action_name};
-			if($a->shortcut eq $shortcut) {
-				warn "Found a duplicate shortcut '" . $action->shortcut . 
-					"' with " . $a->name . " for '" . $action->name . "'\n";
-				last;
-			}
-		}
-	}
-	$actions->{$action->name} = $action;
+
+	# Add the optional event hook
+	Wx::Event::EVT_TOOL(
+		$self->GetParent,
+		$id,
+		$action->menu_event,
+	);
 
 	return;
 }
@@ -256,37 +199,6 @@ sub refresh {
 	$self->EnableTool( Wx::wxID_REPLACE,   ( $editor ? 1 : 0 ) );
 	$self->EnableTool( 999,  ( $document ? 1 : 0 ) );
 	$self->EnableTool( 1001, ( $editor   ? 1 : 0 ) );
-
-	return;
-}
-
-#####################################################################
-# Toolbar 2.0
-
-sub _add_tool {
-	my $self  = shift;
-	my %param = @_;
-
-	# the ID code should be unique otherwise it can break the event system. 
-	# If set to -1 such as in the default call below, it will override 
-	# any previous item with that id.
-	my $id = $self->{next_id}++;
-
-	# Create the tool
-	$self->AddTool(
-		$id, '',
-		Padre::Wx::Icon::find( $param{icon} ),
-		$param{short},
-	);
-
-	# Add the optional event hook
-	if ( defined $param{event} ) {
-		Wx::Event::EVT_TOOL(
-			$self->GetParent,
-			$id,
-			$param{event},
-		);
-	}
 
 	return;
 }
