@@ -204,10 +204,18 @@ sub add_tool_item {
 	if($actions->{$action->name}) {
 		warn "Found a duplicate action '" . $action->name . "'\n";
 	}
+	if($shortcut) {
+		foreach my $action_name (keys %{$actions}) {
+			my $a = $actions->{$action_name};
+			if($a->shortcut eq $shortcut) {
+				warn "Found a duplicate shortcut '" . $action->shortcut . 
+					"' with " . $a->name . " for '" . $action->name . "'\n";
+				last;
+			}
+		}
+	}
 	$actions->{$action->name} = $action;
 
-	#XXX- more validation of redundant items/ids
-	#XXX- warnings about keyboard conflicts...
 	return;
 }
 
