@@ -40,25 +40,35 @@ sub new {
 
 	# Populate the toolbar
 
-	$self->add_tool(
+	$self->add_tool_item(
+		name  => 'toolbar.new_file',
 		id    => Wx::wxID_NEW,
 		icon  => 'actions/document-new',
-		short => Wx::gettext('New File'),
+		label => Wx::gettext('New File'),
 		event => sub {
 			$_[0]->on_new;
 		},
 	);
 
-	$self->add_tool(
+	$self->add_tool_item(
+		name  => 'toolbar.dummy',
+		id    => Wx::wxID_NEW,
+		icon  => 'actions/document-new',
+		label => Wx::gettext('Dummy!'),
+	);
+	
+	$self->add_tool_item(
+		name  => 'toolbar.open_file',
 		id    => Wx::wxID_OPEN,
 		icon  => 'actions/document-open',
-		short => Wx::gettext('Open File'),
+		label => Wx::gettext('Open File'),
 	);
 
-	$self->add_tool(
+	$self->add_tool_item(
+		name  => 'toolbar.save_file',
 		id    => Wx::wxID_SAVE,
 		icon  => 'actions/document-save',
-		short => Wx::gettext('Save File'),
+		label => Wx::gettext('Save File'),
 	);
 
 	$self->add_tool(
@@ -179,6 +189,29 @@ sub new {
 	);
 
 	return $self;
+}
+
+#
+# Add a tool item to the toolbar from a Padre action
+#
+sub add_tool_item {
+	my $self = shift;
+
+	require Padre::Action;
+	my $action = Padre::Action->new(@_);
+	my $shortcut = $action->shortcut;
+	$self->add_tool(
+		id    => $action->id,
+		icon  => $action->icon,
+		short => $action->label . ($shortcut ? ("\t" . $shortcut) : ''),
+		event => $action->toolbar_event,
+	);
+	
+	push @{Padre::ide->actions}, $action;
+	#XXX- more validation of redundant items/ids
+	#XXX- warnings about keyboard conflicts...
+	print "(toolbar) Number of actions " . scalar @{Padre::ide->actions} . "\n";
+	return;
 }
 
 sub refresh {

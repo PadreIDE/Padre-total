@@ -107,7 +107,7 @@ sub _add_menu_item {
 	push @{Padre::ide->actions}, $action;
 	#XXX- more validation of redundant items/ids
 	#XXX- warnings about keyboard conflicts...
-	print "Number of actions " . scalar @{Padre::ide->actions} . "\n";
+	print "(menu) Number of actions " . scalar @{Padre::ide->actions} . "\n";
 	return $menu_item;
 }
 
