@@ -77,7 +77,7 @@ sub new {
 	);
 	$self->add_menu_item(
 		$file_new,
-		name       => 'file.new_p5_module', 
+		name       => 'file.new_p5_distro', 
 		label      => Wx::gettext('Perl Distribution (Module::Starter)'), 
 		menu_event => sub {
 			require Padre::Wx::Dialog::ModuleStart;

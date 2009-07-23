@@ -69,16 +69,6 @@ sub new {
 		},
 	);
 
-	$self->{window_last_visited_file} = $self->add_menu_item(
-		$self,
-		name       => 'window.last_visited_file', 
-		label      => Wx::gettext('Last Visited File'),
-		shortcut   => 'Ctrl-Shift-P',
-		menu_event => sub {
-			Padre::Wx::Main::on_last_visited_pane(@_);
-		},
-	);
-
 	$self->{window_right_click} = $self->add_menu_item(
 		$self,
 		name       => 'window.right_click', 

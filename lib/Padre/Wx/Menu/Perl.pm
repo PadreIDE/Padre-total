@@ -105,7 +105,7 @@ sub new {
 
 	$self->add_menu_item(
 		$self,
-		name       => 'perl.find_variable', 
+		name       => 'perl.vertically_align_selected', 
 		label      => Wx::gettext('Vertically Align Selected'), 
 		menu_event => sub {
 			my $editor = $_[0]->current->editor or return;

@@ -114,7 +114,7 @@ sub new {
 	# Recursive Search
 	$self->add_menu_item(
 		$self,
-		name       => 'search.replace',
+		name       => 'search.find_in_files',
 		label      => Wx::gettext('Find in Fi&les...'), 
 		menu_event => sub {
 			require Padre::Wx::Ack;
