@@ -60,7 +60,7 @@ sub add_menu_item {
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 	push @{Padre::ide->actions}, $action;
 	print "Number of actions " . scalar @{Padre::ide->actions} . "\n";
-	return ($menu_item, $action);
+	return $menu_item;
 }
 
 1;

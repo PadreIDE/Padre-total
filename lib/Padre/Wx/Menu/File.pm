@@ -30,7 +30,7 @@ sub new {
 
 	# Create new things
 
-	($self->{new}, $action) = $self->add_menu_item(
+	$self->{new} = $self->add_menu_item(
 		$self,
 		name       => 'file.new', 
 		label      => Wx::gettext('&New'), 
@@ -46,7 +46,7 @@ sub new {
 		Wx::gettext("New..."),
 		$file_new,
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$file_new,
 		name       => 'file.new_p5_script', 
 		label      => Wx::gettext('Perl 5 Script'), 
@@ -54,7 +54,7 @@ sub new {
 			$_[0]->on_new_from_template('pl');
 		},
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$file_new,
 		name       => 'file.new_p5_module', 
 		label      => Wx::gettext('Perl 5 Module'), 
@@ -62,7 +62,7 @@ sub new {
 			$_[0]->on_new_from_template('pm');
 		},
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$file_new,
 		name       => 'file.new_p5_test', 
 		label      => Wx::gettext('Perl 5 Test'), 
@@ -70,7 +70,7 @@ sub new {
 			$_[0]->on_new_from_template('t');
 		},
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$file_new,
 		name       => 'file.new_p6_script', 
 		label      => Wx::gettext('Perl 6 Script'), 
@@ -78,7 +78,7 @@ sub new {
 			$_[0]->on_new_from_template('p6');
 		},
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$file_new,
 		name       => 'file.new_p5_module', 
 		label      => Wx::gettext('Perl Distribution (Module::Starter)'), 
@@ -89,7 +89,7 @@ sub new {
 	);
 
 	# Open and close files
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$self,
 		name       => 'file.open', 
 		id         => Wx::wxID_OPEN,
@@ -100,7 +100,7 @@ sub new {
 		},
 	);
 
-	($self->{close}, $action) = $self->add_menu_item(
+	$self->{close} = $self->add_menu_item(
 		$self,
 		name       => 'file.close', 
 		id         => Wx::wxID_CLOSE,
@@ -111,7 +111,7 @@ sub new {
 		},
 	);
 
-	($self->{close_all}, $action) = $self->add_menu_item(
+	$self->{close_all} = $self->add_menu_item(
 		$self,
 		name       => 'file.close_all', 
 		label      => Wx::gettext('Close All'), 
@@ -120,7 +120,7 @@ sub new {
 			$_[0]->on_close_all;
 		},
 	);
-	($self->{close_all_but_current}, $action) = $self->add_menu_item(
+	$self->{close_all_but_current} = $self->add_menu_item(
 		$self,
 		name       => 'file.close_all_but_current', 
 		label      => Wx::gettext('Close All but Current'), 
@@ -128,7 +128,7 @@ sub new {
 			$_[0]->on_close_all_but_current;
 		},
 	);
-	($self->{reload_file}, $action) = $self->add_menu_item(
+	$self->{reload_file} = $self->add_menu_item(
 		$self,
 		name       => 'file.reload_file', 
 		label      => Wx::gettext('Reload File'), 
@@ -140,7 +140,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Save files
-	($self->{save}, $action) = $self->add_menu_item(
+	$self->{save} = $self->add_menu_item(
 		$self,
 		name       => 'file.save', 
 		id         => Wx::wxID_SAVE,
@@ -150,7 +150,7 @@ sub new {
 			$_[0]->on_save;
 		},
 	);
-	($self->{save_as}, $action) = $self->add_menu_item(
+	$self->{save_as} = $self->add_menu_item(
 		$self,
 		name       => 'file.save_as', 
 		id         => Wx::wxID_SAVEAS,
@@ -160,7 +160,7 @@ sub new {
 			$_[0]->on_save_as;
 		},
 	);
-	($self->{save_all}, $action) = $self->add_menu_item(
+	$self->{save_all} = $self->add_menu_item(
 		$self,
 		name       => 'file.save_all', 
 		label      => Wx::gettext('Save All'), 
@@ -172,7 +172,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Specialised open and close functions
-	($self->{open_selection}, $action) = $self->add_menu_item(
+	$self->{open_selection} = $self->add_menu_item(
 		$self,
 		name       => 'file.open_selection', 
 		label      => Wx::gettext('Open Selection'), 
@@ -182,7 +182,7 @@ sub new {
 		},
 	);
 
-	($self->{open_session}, $action) = $self->add_menu_item(
+	$self->{open_session} = $self->add_menu_item(
 		$self,
 		name       => 'file.open_session', 
 		label      => Wx::gettext('Open Session'), 
@@ -193,7 +193,7 @@ sub new {
 		},
 	);
 
-	($self->{save_session}, $action) = $self->add_menu_item(
+	$self->{save_session} = $self->add_menu_item(
 		$self,
 		name       => 'file.save_session', 
 		label      => Wx::gettext('Save Session'), 
@@ -207,7 +207,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Print files
-	($self->{print}, $action) = $self->add_menu_item(
+	$self->{print} = $self->add_menu_item(
 		$self,
 		name       => 'file.print', 
 		id         => Wx::wxID_PRINT,
@@ -234,7 +234,7 @@ sub new {
 		Wx::gettext("&Recent Files"),
 		$self->{recentfiles}
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$self->{recentfiles},
 		name       => 'file.open_recent_files', 
 		label      => Wx::gettext('Open All Recent Files'),
@@ -242,7 +242,7 @@ sub new {
 			$_[0]->on_open_all_recent_files;
 		},
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$self->{recentfiles},
 		name       => 'file.clean_recent_files', 
 		label      => Wx::gettext('Clean Recent Files List'),
@@ -259,7 +259,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Word Stats
-	($self->{docstat}, $action) = $self->add_menu_item(
+	$self->{docstat} = $self->add_menu_item(
 		$self,
 		name       => 'file.doc_stat', 
 		label      => Wx::gettext('Document Statistics'),
@@ -271,7 +271,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Exiting
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$self,
 		name       => 'file.quit', 
 		label      => Wx::gettext('&Quit'),
