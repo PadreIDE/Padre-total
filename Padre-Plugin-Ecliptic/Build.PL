@@ -23,7 +23,7 @@ my $builder = $class->new(
 		'Locale::Msgfmt'   => '0.14',
 	},
 	requires => {
-		'Padre'             => '0.33',
+		'Padre'             => '0.42',
 		'Class::XSAccessor' => '1.02',
 		'ExtUtils::Install' => '1.52',
 		'File::Which'       => '0.05',
