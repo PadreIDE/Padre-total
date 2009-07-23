@@ -160,14 +160,11 @@ sub new {
 			$_[0]->on_save_as;
 		},
 	);
-	$self->{save_all} = $self->Append(
-		-1,
-		Wx::gettext('Save All')
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{save_all},
-		sub {
+	($self->{save_all}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.save_all', 
+		label      => Wx::gettext('Save All'), 
+		menu_event => sub {
 			$_[0]->on_save_all;
 		},
 	);
@@ -175,39 +172,33 @@ sub new {
 	$self->AppendSeparator;
 
 	# Specialised open and close functions
-	$self->{open_selection} = $self->Append(
-		-1,
-		Wx::gettext("Open Selection\tCtrl-Shift-O")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{open_selection},
-		sub {
+	($self->{open_selection}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.open_selection', 
+		label      => Wx::gettext('Open Selection'), 
+		shortcut   => 'Ctrl-Shift-O',
+		menu_event => sub {
 			$_[0]->on_open_selection;
 		},
 	);
 
-	$self->{open_session} = $self->Append(
-		-1,
-		Wx::gettext("Open Session...\tCtrl-Alt-O")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{open_session},
-		sub {
+	($self->{open_session}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.open_session', 
+		label      => Wx::gettext('Open Session'), 
+		shortcut   => 'Ctrl-Alt-O',
+		menu_event => sub {
 			require Padre::Wx::Dialog::SessionManager;
 			Padre::Wx::Dialog::SessionManager->new( $_[0] )->show;
 		},
 	);
 
-	$self->{save_session} = $self->Append(
-		-1,
-		Wx::gettext("Save Session...\tCtrl-Alt-S")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{save_session},
-		sub {
+	($self->{save_session}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.save_session', 
+		label      => Wx::gettext('Save Session'), 
+		shortcut   => 'Ctrl-Alt-S',
+		menu_event => sub {
 			require Padre::Wx::Dialog::SessionSave;
 			Padre::Wx::Dialog::SessionSave->new( $_[0] )->show;
 		},
@@ -216,14 +207,12 @@ sub new {
 	$self->AppendSeparator;
 
 	# Print files
-	$self->{print} = $self->Append(
-		Wx::wxID_PRINT,
-		Wx::gettext('&Print...'),
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{print},
-		sub {
+	($self->{print}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.print', 
+		id         => Wx::wxID_PRINT,
+		label      => Wx::gettext('&Print'), 
+		menu_event => sub {
 			require Wx::Print;
 			require Padre::Wx::Printout;
 			my $printer  = Wx::Printer->new;
@@ -245,23 +234,19 @@ sub new {
 		Wx::gettext("&Recent Files"),
 		$self->{recentfiles}
 	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{recentfiles}->Append(
-			-1,
-			Wx::gettext("Open All Recent Files")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$self->{recentfiles},
+		name       => 'file.open_recent_files', 
+		label      => Wx::gettext('Open All Recent Files'),
+		menu_event => sub {
 			$_[0]->on_open_all_recent_files;
 		},
 	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{recentfiles}->Append(
-			-1,
-			Wx::gettext("Clean Recent Files List")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$self->{recentfiles},
+		name       => 'file.clean_recent_files', 
+		label      => Wx::gettext('Clean Recent Files List'),
+		menu_event => sub {
 			Padre::DB::History->delete( 'where type = ?', 'files' );
 			$self->update_recentfiles;
 		},
@@ -274,14 +259,11 @@ sub new {
 	$self->AppendSeparator;
 
 	# Word Stats
-	$self->{docstat} = $self->Append(
-		-1,
-		Wx::gettext('Document Statistics')
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{docstat},
-		sub {
+	($self->{docstat}, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.doc_stat', 
+		label      => Wx::gettext('Document Statistics'),
+		menu_event => sub {
 			$_[0]->on_doc_stats;
 		},
 	);
@@ -289,13 +271,12 @@ sub new {
 	$self->AppendSeparator;
 
 	# Exiting
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->Append(
-			Wx::wxID_EXIT,
-			Wx::gettext("&Quit\tCtrl-Q")
-		),
-		sub {
+	($menu_item, $action) = $self->add_menu_item(
+		$self,
+		name       => 'file.quit', 
+		label      => Wx::gettext('&Quit'),
+		shortcut   => 'Ctrl-Q',
+		menu_event => sub {
 			$_[0]->Close;
 		},
 	);
