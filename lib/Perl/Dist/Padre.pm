@@ -171,6 +171,7 @@ sub install_perl_modules {
 		Module::Starter
 		ORLite
 		ORLite::Migrate
+		Algorithm::Diff
 		Text::Diff
 		Test::Differences
 		File::Slurp
@@ -189,6 +190,7 @@ sub install_perl_modules {
 		Win32API::File
 		Capture::Tiny
 		prefork
+		PPIx::EditorTools
 	} );
 
 	# Install the dependencies for Padre::Plugin::Perl6
@@ -202,9 +204,19 @@ sub install_perl_modules {
 		Pod::Xhtml
 		Pod::Text::Ansi
 		IO::Interactive
+		Readonly
+		Readonly::XS
+		B::Keywords
+		String::Format
+		Perl::Tidy
+		Regexp::Parser
+		Perl::Critic
+		Test::Perl::Critic
+		Win32::Pipe
+		Win32::Console::ANSI
 		App::Grok
-		Data::OptList
 		Sub::Install
+		Data::OptList
 		Sub::Exporter
 		Scope::Guard
 		Devel::GlobalDestruction
@@ -216,6 +228,7 @@ sub install_perl_modules {
 		Class::MOP
 		Moose
 		Syntax::Highlight::Perl6
+		Perl6::Refactor
 	} );
 	
 	# The rest of the modules are order-specific,
@@ -238,7 +251,7 @@ sub install_perl_modules {
 	$self->install_module( name => 'Wx::Perl::ProcessStream' );
 
 	# And finally, install Padre itself
-	$self->install_module( name => 'Padre'                   );
+	$self->install_module( name => 'Padre', force => 1,      );
 
 	# Last, but least, install Padre::Plugin::Perl6
 	$self->install_module( name => 'Padre::Plugin::Perl6'    );
