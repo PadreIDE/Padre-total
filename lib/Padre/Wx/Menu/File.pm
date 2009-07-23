@@ -25,14 +25,10 @@ sub new {
 	# Add additional properties
 	$self->{main} = $main;
 
-	# Create new things
-	$self->{new} = $self->Append(
-		Wx::wxID_NEW,
-		Wx::gettext("&New\tCtrl-N"),
-	);
-
 	my $action;
 	my $menu_item;
+
+	# Create new things
 
 	($self->{new}, $action) = $self->add_menu_item(
 		$self,
