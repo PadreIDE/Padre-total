@@ -314,13 +314,11 @@ sub update_recentfiles {
 
 	my $idx = 0;
 	foreach my $file ( grep { -f if $_ } Padre::DB::History->recent('files') ) {
-		Wx::Event::EVT_MENU(
-			$self->{main},
-			$self->{recentfiles}->Append(
-				-1,
-				++$idx < 10 ? "&$idx. $file" : "$idx. $file"
-			),
-			sub {
+		$self->add_menu_item(
+			$self->{recentfiles},
+			name       => "view.open_recent_" . $idx, 
+			label      => ++$idx < 10 ? "&$idx. $file" : "$idx. $file",
+			menu_event => sub {
 				$_[0]->setup_editors($file);
 			},
 		);
