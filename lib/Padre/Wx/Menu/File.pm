@@ -112,7 +112,6 @@ sub new {
 		$self,
 		name       => 'file.close_all', 
 		label      => Wx::gettext('Close All'), 
-		shortcut   => 'Ctrl-W',
 		menu_event => sub {
 			$_[0]->on_close_all;
 		},

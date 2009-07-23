@@ -260,7 +260,7 @@ sub new {
 		$self,
 		name       => 'view.font_decrease',
 		label      => Wx::gettext('Decrease Font Size'),
-		shortcut   => 'Ctrl-+',
+		shortcut   => 'Ctrl--',
 		menu_event => sub {
 			$_[0]->zoom(-1);
 		},

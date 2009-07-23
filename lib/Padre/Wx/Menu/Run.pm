@@ -60,7 +60,6 @@ sub new {
 		$self,
 		name       => 'run.run_tests', 
 		label      => Wx::gettext('Run Tests'), 
-		shortcut   => 'Ctrl-F5',
 		menu_event => sub {
 			$_[0]->on_run_tests;
 		},
