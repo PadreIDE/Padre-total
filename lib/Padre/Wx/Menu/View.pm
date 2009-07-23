@@ -30,14 +30,11 @@ sub new {
 	$self->{main} = $main;
 
 	# Can the user move stuff around
-	$self->{lockinterface} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Lock User Interface")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{lockinterface},
-		sub {
+	$self->{lockinterface} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.lockinterface',
+		label      => Wx::gettext('Lock User Interface'), 
+		menu_event => sub {
 			$_[0]->on_toggle_lockinterface( $_[1] );
 		},
 	);
@@ -45,26 +42,20 @@ sub new {
 	$self->AppendSeparator;
 
 	# Show or hide GUI elements
-	$self->{output} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Output")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{output},
-		sub {
+	$self->{output} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.output',
+		label      => Wx::gettext('Show Output'), 
+		menu_event => sub {
 			$_[0]->show_output( $_[1]->IsChecked );
 		},
 	);
 
-	$self->{functions} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Functions")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{functions},
-		sub {
+	$self->{functions} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.functions',
+		label      => Wx::gettext('Show Functions'), 
+		menu_event => sub {
 			if ( $_[1]->IsChecked ) {
 				$_[0]->refresh_functions;
 				$_[0]->show_functions(1);
@@ -75,79 +66,61 @@ sub new {
 	);
 
 	# Show or hide GUI elements
-	$self->{outline} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Outline")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{outline},
-		sub {
+	$self->{outline} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.outline',
+		label      => Wx::gettext('Show Outline'), 
+		menu_event => sub {
 			$_[0]->show_outline( $_[1]->IsChecked );
 		},
 	);
 
-	$self->{directory} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Directory Tree")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{directory},
-		sub {
+	$self->{directory} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.directory',
+		label      => Wx::gettext('Show Directory Tree'), 
+		menu_event => sub {
 			$_[0]->show_directory( $_[1]->IsChecked );
 		},
 	);
 
-	$self->{show_syntaxcheck} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Syntax Check")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{show_syntaxcheck},
-		sub {
+	$self->{show_syntaxcheck} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.show_syntaxcheck',
+		label      => Wx::gettext('Show Syntax Check'), 
+		menu_event => sub {
 			$_[0]->on_toggle_syntax_check( $_[1] );
 		},
 	);
 
-	$self->{show_errorlist} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Error List")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{show_errorlist},
-		sub {
+	$self->{show_errorlist} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.show_errorlist',
+		label      => Wx::gettext('Show Error List'), 
+		menu_event => sub {
 			$_[0]->on_toggle_errorlist( $_[1] );
 		},
 	);
 
 	# On Windows disabling the status bar doesn't work, so don't allow it
 	unless (Padre::Constant::WXWIN32) {
-		$self->{statusbar} = $self->AppendCheckItem(
-			-1,
-			Wx::gettext("Show StatusBar")
-		);
-		Wx::Event::EVT_MENU(
-			$main,
-			$self->{statusbar},
-			sub {
+		$self->{statusbar} = $self->add_checked_menu_item(
+			$self,
+			name       => 'view.statusbar',
+			label      => Wx::gettext('Show StatusBar'), 
+			menu_event => sub {
 				$_[0]->on_toggle_statusbar( $_[1] );
 			},
 		);
 	}
 
-	$self->{toolbar} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Toolbar")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{toolbar},
-		sub {
+	$self->{toolbar} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.toolbar',
+		label      => Wx::gettext('Show Toolbar'), 
+		menu_event => sub {
 			$_[0]->on_toggle_toolbar( $_[1] );
-		}
+		},
 	);
 
 	$self->AppendSeparator;
@@ -164,10 +137,13 @@ sub new {
 	foreach my $name ( sort keys %mimes ) {
 		my $label = $name;
 		$label =~ s/^\d+//;
-		my $radio = $self->{view_as_highlighting}->AppendRadioItem( -1, $label );
-		Wx::Event::EVT_MENU(
-			$main, $radio,
-			sub {
+		my $tag = lc $label;
+		$tag =~ s/\s/_/g;
+		$self->add_radio_menu_item(
+			$self->{view_as_highlighting},
+			name       => $tag,
+			label      => $label, 
+			menu_event => sub {
 				my $doc = $_[0]->current->document;
 				if ($doc) {
 					$doc->set_mimetype( $mimes{$name} );
