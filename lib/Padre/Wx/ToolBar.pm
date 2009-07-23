@@ -33,57 +33,62 @@ sub new {
 		$style,
 		5050,
 	);
-
+	
 	# Default icon size is 16x15 for Wx, to use the 16x16 GPL
 	# icon sets we need to be SLIGHTLY bigger.
 	$self->SetToolBitmapSize( Wx::Size->new( 16, 16 ) );
 
-	# Populate the toolbar
+	# toolbar id sequence generater
+	$self->{next_id} = 10000;
 
+	# Populate the toolbar
 	$self->add_tool_item(
-		name  => 'file.new_file',
+		name  => 'toolbar.document_new',
 		icon  => 'actions/document-new',
 		label => Wx::gettext('New File'),
-		event => sub {
+		toolbar_event => sub {
 			$_[0]->on_new;
 		},
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.open_file',
+		name  => 'toolbar.document_open',
 		icon  => 'actions/document-open',
 		label => Wx::gettext('Open File'),
-		event => sub {
-		},
-	);
-
-	$self->add_tool_item(
-		name  => 'toolbar.save_file',
-		icon  => 'actions/document-save',
-		label => Wx::gettext('Save File'),
-	);
-
-	$self->add_tool(
-		id    => Wx::wxID_SAVEAS,
-		icon  => 'actions/document-save-as',
-		short => Wx::gettext('Save as...'),
 		toolbar_event => sub {
 		},
 	);
 
-	$self->add_tool(
-		id    => 1000,                     # I don't like these hard set ID's for Wx.
+	$self->add_tool_item(
+		name  => 'toolbar.document_save',
+		icon  => 'actions/document-save',
+		label => Wx::gettext('Save File'),
+		toolbar_event => sub {
+		},
+	);
+
+	$self->add_tool_item(
+		name  => 'toolbar.document_save_as',
+		icon  => 'actions/document-save-as',
+		label => Wx::gettext('Save as...'),
+		toolbar_event => sub {
+		},
+	);
+
+	$self->add_tool_item(
+		name  => 'toolbar.save_all',
 		icon  => 'actions/stock_data-save',
-		short => Wx::gettext('Save All'),
-		event => sub {
+		label => Wx::gettext('Save All'),
+		toolbar_event => sub {
 			Padre::Wx::Main::on_save_all(@_);
 		},
 	);
 
-	$self->add_tool(
+	$self->add_tool_item(
+		name  => 'toolbar.close',
 		icon  => 'actions/x-document-close',
-		short => Wx::gettext('Close File'),
-		event => sub {
+		label => Wx::gettext('Close File'),
+		toolbar_event => sub {
 			$_[0]->on_close( $_[1] );
 		},
 	);
@@ -91,54 +96,58 @@ sub new {
 	# Undo/Redo Support
 	$self->AddSeparator;
 
-	$self->add_tool(
-		id    => Wx::wxID_UNDO,
+	$self->add_tool_item(
+		name  => 'toolbar.undo',
 		icon  => 'actions/edit-undo',
-		short => Wx::gettext('Undo'),
+		label => Wx::gettext('Undo'),
+		toolbar_event => sub {
+		},
 	);
 
-	$self->add_tool(
-		id    => Wx::wxID_REDO,
+	$self->add_tool_item(
+		name  => 'toolbar.redo',
 		icon  => 'actions/edit-redo',
-		short => Wx::gettext('Redo'),
+		label => Wx::gettext('Redo'),
+		toolbar_event => sub {
+		},
 	);
 
 	# Cut/Copy/Paste
 	$self->AddSeparator;
 
-	$self->add_tool(
-		id    => Wx::wxID_CUT,
+	$self->add_tool_item(
+		name  => 'toolbar.cut',
 		icon  => 'actions/edit-cut',
-		short => Wx::gettext('Cut'),
-		event => sub {
+		label => Wx::gettext('Cut'),
+		toolbar_event => sub {
 			Wx::Window::FindFocus->Cut;
 		},
 	);
 
-	$self->add_tool(
-		id    => Wx::wxID_COPY,
+	$self->add_tool_item(
+		name  => 'toolbar.copy',
 		icon  => 'actions/edit-copy',
-		short => Wx::gettext('Copy'),
-		event => sub {
+		label => Wx::gettext('Copy'),
+		toolbar_event => sub {
 			Wx::Window::FindFocus->Copy;
 		},
 	);
 
-	$self->add_tool(
-		id    => Wx::wxID_PASTE,
+	$self->add_tool_item(
+		name  => 'toolbar.paste',
 		icon  => 'actions/edit-paste',
-		short => Wx::gettext('Paste'),
-		event => sub {
-			my $editor = Wx::Window::FindFocus() or return;
+		label => Wx::gettext('Paste'),
+		toolbar_event => sub {
+			my $editor = Padre::Current->editor or return;
 			$editor->Paste;
 		},
 	);
 
-	$self->add_tool(
-		id    => Wx::wxID_SELECTALL,
+	$self->add_tool_item(
+		name  => 'toolbar.select_all',
 		icon  => 'actions/edit-select-all',
-		short => Wx::gettext('Select All'),
-		event => sub {
+		label => Wx::gettext('Select All'),
+		toolbar_event => sub {
 			Wx::Window::FindFocus->SelectAll();
 		},
 	);
@@ -146,37 +155,41 @@ sub new {
 	# find and replace
 	$self->AddSeparator;
 
-	$self->add_tool(
-		id    => Wx::wxID_FIND,
+	$self->add_tool_item(
+		name  => 'toolbar.find',
 		icon  => 'actions/edit-find',
-		short => Wx::gettext('Find'),
+		label => Wx::gettext('Find'),
+		toolbar_event => sub {
+		}
 	);
 
-	$self->add_tool(
-		id    => Wx::wxID_REPLACE,
+	$self->add_tool_item(
+		name  => 'toolbar.find_replace',
 		icon  => 'actions/edit-find-replace',
-		short => Wx::gettext('Find and Replace'),
+		label => Wx::gettext('Find and Replace'),
+		toolbar_event => sub {
+		}
 	);
 
 	# Document Transforms
 	$self->AddSeparator;
 
-	$self->add_tool(
-		id    => 999,
+	$self->add_tool_item(
+		name  => 'toolbar.toggle_comments',
 		icon  => 'actions/toggle-comments',
-		short => Wx::gettext('Toggle Comments'),
-		event => sub {
+		label => Wx::gettext('Toggle Comments'),
+		toolbar_event => sub {
 			Padre::Wx::Main::on_comment_toggle_block(@_);
 		},
 	);
 
 	$self->AddSeparator;
 
-	$self->add_tool(
-		id    => 1001,
+	$self->add_tool_item(
+		name  => 'toolbar.document_stats',
 		icon  => 'actions/document-properties',
-		short => Wx::gettext('Document Stats'),
-		event => sub {
+		label => Wx::gettext('Document Stats'),
+		toolbar_event => sub {
 			Padre::Wx::Main::on_doc_stats(@_);
 		},
 	);
@@ -190,17 +203,16 @@ sub new {
 sub add_tool_item {
 	my $self = shift;
 
-	require Padre::Action;
+	my $actions = Padre::ide->actions;
 	my $action = Padre::Action->new(@_);
 	my $shortcut = $action->shortcut;
-	$self->add_tool(
+	$self->_add_tool(
 		id    => $action->id,
 		icon  => $action->icon,
 		short => $action->label . ($shortcut ? ("\t" . $shortcut) : ''),
 		event => $action->toolbar_event,
 	);
 	
-	my $actions = Padre::ide->actions;
 	if($actions->{$action->name}) {
 		warn "Found a duplicate action '" . $action->name . "'\n";
 	}
@@ -251,14 +263,14 @@ sub refresh {
 #####################################################################
 # Toolbar 2.0
 
-sub add_tool {
+sub _add_tool {
 	my $self  = shift;
 	my %param = @_;
 
-	# TODO: the ID code must be unique. If set to -1 such as in
-	# the default call below, it will override any previous item
-	# with that id.
-	my $id = $param{id} || -1;
+	# the ID code should be unique otherwise it can break the event system. 
+	# If set to -1 such as in the default call below, it will override 
+	# any previous item with that id.
+	my $id = $self->{next_id}++;
 
 	# Create the tool
 	$self->AddTool(
