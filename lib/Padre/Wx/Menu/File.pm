@@ -25,9 +25,6 @@ sub new {
 	# Add additional properties
 	$self->{main} = $main;
 
-	my $action;
-	my $menu_item;
-
 	# Create new things
 
 	$self->{new} = $self->add_menu_item(

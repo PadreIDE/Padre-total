@@ -25,11 +25,8 @@ sub new {
 	# Add additional properties
 	$self->{main} = $main;
 	
-	my $action;
-	my $menu_item;
-
 	# Undo/Redo
-	($self->{undo}, $action) = $self->add_menu_item(
+	$self->{undo} = $self->add_menu_item(
 		$self,
 		name       => 'edit.undo', 
 		id         => Wx::wxID_UNDO,
@@ -40,7 +37,7 @@ sub new {
 		},
 	);
 
-	($self->{redo}, $action) = $self->add_menu_item(
+	$self->{redo} = $self->add_menu_item(
 		$self,
 		name       => 'edit.redo', 
 		id         => Wx::wxID_REDO,
@@ -60,7 +57,7 @@ sub new {
 		Wx::gettext("Select"),
 		$edit_select
 	);
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$edit_select,
 		name       => 'edit.select_all', 
 		id         => Wx::wxID_SELECTALL,
@@ -73,7 +70,7 @@ sub new {
 	);
 
 	$edit_select->AppendSeparator;
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$edit_select,
 		name       => 'edit.mark_selection_start', 
 		id         => Wx::wxID_SELECTALL,
@@ -85,7 +82,7 @@ sub new {
 		},
 	);
 
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$edit_select,
 		name       => 'edit.mark_selection_end', 
 		id         => Wx::wxID_SELECTALL,
@@ -97,7 +94,7 @@ sub new {
 		},
 	);
 
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$edit_select,
 		name       => 'edit.mark_selection_end', 
 		id         => Wx::wxID_SELECTALL,
@@ -109,7 +106,7 @@ sub new {
 	);
 
 	# Cut and Paste
-	($self->{cut}, $action) = $self->add_menu_item(
+	$self->{cut} = $self->add_menu_item(
 		$self,
 		name       => 'edit.cut', 
 		id         => Wx::wxID_CUT,
@@ -121,7 +118,7 @@ sub new {
 		},
 	);
 
-	($self->{copy}, $action) = $self->add_menu_item(
+	$self->{copy} = $self->add_menu_item(
 		$self,
 		name       => 'edit.copy', 
 		id         => Wx::wxID_COPY,
@@ -133,7 +130,7 @@ sub new {
 		},
 	);
 
-	($self->{paste}, $action) = $self->add_menu_item(
+	$self->{paste} = $self->add_menu_item(
 		$self,
 		name       => 'edit.paste', 
 		id         => Wx::wxID_PASTE,
@@ -148,7 +145,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Miscellaneous Actions
-	($self->{goto}, $action) = $self->add_menu_item(
+	$self->{goto} = $self->add_menu_item(
 		$self,
 		name       => 'edit.goto', 
 		label      => Wx::gettext('&Goto'), 
@@ -158,7 +155,7 @@ sub new {
 		},
 	);
 
-	($self->{autocomp}, $action) = $self->add_menu_item(
+	$self->{autocomp} = $self->add_menu_item(
 		$self,
 		name       => 'edit.autocomp', 
 		label      => Wx::gettext('&AutoComp'), 
@@ -168,7 +165,7 @@ sub new {
 		},
 	);
 
-	($self->{brace_match}, $action) = $self->add_menu_item(
+	$self->{brace_match} = $self->add_menu_item(
 		$self,
 		name       => 'edit.brace_match', 
 		label      => Wx::gettext('&Brace matching'), 
@@ -178,7 +175,7 @@ sub new {
 		},
 	);
 
-	($self->{join_lines}, $action) = $self->add_menu_item(
+	$self->{join_lines} = $self->add_menu_item(
 		$self,
 		name       => 'edit.join_lines', 
 		label      => Wx::gettext('&Join lines'), 
@@ -188,7 +185,7 @@ sub new {
 		},
 	);
 
-	($self->{snippets}, $action) = $self->add_menu_item(
+	$self->{snippets} = $self->add_menu_item(
 		$self,
 		name       => 'edit.snippets', 
 		label      => Wx::gettext('Snippets'), 
@@ -202,7 +199,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# Commenting
-	($self->{comment_toggle}, $action) = $self->add_menu_item(
+	$self->{comment_toggle} = $self->add_menu_item(
 		$self,
 		name       => 'edit.comment_toggle', 
 		label      => Wx::gettext('&Toggle Comment'), 
@@ -212,7 +209,7 @@ sub new {
 		},
 	);
 
-	($self->{comment_out}, $action) = $self->add_menu_item(
+	$self->{comment_out} = $self->add_menu_item(
 		$self,
 		name       => 'edit.comment_out', 
 		label      => Wx::gettext('&Comment Selected Lines'), 
@@ -222,7 +219,7 @@ sub new {
 		},
 	);
 
-	($self->{uncomment}, $action) = $self->add_menu_item(
+	$self->{uncomment} = $self->add_menu_item(
 		$self,
 		name       => 'edit.uncomment', 
 		label      => Wx::gettext('&Uncomment Selected Lines'), 
@@ -241,7 +238,7 @@ sub new {
 		$self->{convert_encoding}
 	);
 
-	($self->{convert_encoding_system}, $action) = $self->add_menu_item(
+	$self->{convert_encoding_system} = $self->add_menu_item(
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_system', 
 		label      => Wx::gettext('Encode document to System Default'), 
@@ -251,7 +248,7 @@ sub new {
 		},
 	);
 
-	($self->{convert_encoding_utf8}, $action) = $self->add_menu_item(
+	$self->{convert_encoding_utf8} = $self->add_menu_item(
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_utf8', 
 		label      => Wx::gettext('Encode document to utf-8'), 
@@ -261,7 +258,7 @@ sub new {
 		},
 	);
 
-	($self->{convert_encoding_to}, $action) = $self->add_menu_item(
+	$self->{convert_encoding_to} = $self->add_menu_item(
 		$self->{convert_encoding},
 		name       => 'edit.convert_encoding_to', 
 		label      => Wx::gettext('Encode document to...'), 
@@ -278,7 +275,7 @@ sub new {
 		$self->{convert_nl}
 	);
 
-	($self->{convert_nl_windows}, $action) = $self->add_menu_item(
+	$self->{convert_nl_windows} = $self->add_menu_item(
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_windows', 
 		label      => Wx::gettext('EOL to Windows'), 
@@ -287,7 +284,7 @@ sub new {
 		},
 	);
 
-	($self->{convert_nl_unix}, $action) = $self->add_menu_item(
+	$self->{convert_nl_unix} = $self->add_menu_item(
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_unix', 
 		label      => Wx::gettext('EOL to Unix'), 
@@ -296,7 +293,7 @@ sub new {
 		},
 	);
 
-	($self->{convert_nl_mac}, $action) = $self->add_menu_item(
+	$self->{convert_nl_mac} = $self->add_menu_item(
 		$self->{convert_nl},
 		name       => 'edit.convert_nl_mac', 
 		label      => Wx::gettext('EOL to Mac Classic'), 
@@ -313,7 +310,7 @@ sub new {
 		$self->{tabs},
 	);
 
-	($self->{tabs_to_spaces}, $action) = $self->add_menu_item(
+	$self->{tabs_to_spaces} = $self->add_menu_item(
 		$self->{tabs},
 		name       => 'edit.tabs_to_spaces', 
 		label      => Wx::gettext('Tabs to Spaces...'), 
@@ -322,7 +319,7 @@ sub new {
 		},
 	);
 
-	($self->{spaces_to_tabs}, $action) = $self->add_menu_item(
+	$self->{spaces_to_tabs} = $self->add_menu_item(
 		$self->{tabs},
 		name       => 'edit.spaces_to_tabs', 
 		label      => Wx::gettext('Spaces to Tabs...'), 
@@ -333,7 +330,7 @@ sub new {
 
 	$self->{tabs}->AppendSeparator;
 
-	($self->{delete_trailing}, $action) = $self->add_menu_item(
+	$self->{delete_trailing} = $self->add_menu_item(
 		$self,
 		name       => 'edit.delete_trailing', 
 		label      => Wx::gettext('Delete Trailing Spaces'), 
@@ -342,7 +339,7 @@ sub new {
 		},
 	);
 
-	($self->{delete_leading}, $action) = $self->add_menu_item(
+	$self->{delete_leading} = $self->add_menu_item(
 		$self,
 		name       => 'edit.delete_leading', 
 		label      => Wx::gettext('Delete Leading Spaces'), 
@@ -359,7 +356,7 @@ sub new {
 		$self->{case},
 	);
 
-	($self->{case_upper}, $action) = $self->add_menu_item(
+	$self->{case_upper} = $self->add_menu_item(
 		$self->{case},
 		name       => 'edit.case_upper', 
 		label      => Wx::gettext('Upper All'), 
@@ -369,7 +366,7 @@ sub new {
 		},
 	);
 
-	($self->{case_lower}, $action) = $self->add_menu_item(
+	$self->{case_lower} = $self->add_menu_item(
 		$self->{case},
 		name       => 'edit.case_lower', 
 		label      => Wx::gettext('Lower All'), 
@@ -389,7 +386,7 @@ sub new {
 		$self->{diff},
 	);
 
-	($self->{diff2saved}, $action) = $self->add_menu_item(
+	$self->{diff2saved} = $self->add_menu_item(
 		$self->{diff},
 		name       => 'edit.diff2saved', 
 		label      => Wx::gettext('Diff to Saved Version'), 
@@ -398,7 +395,7 @@ sub new {
 		},
 	);
 	$self->{diff}->AppendSeparator;
-	($self->{applydiff2file}, $action) = $self->add_menu_item(
+	$self->{applydiff2file} = $self->add_menu_item(
 		$self->{diff},
 		name       => 'edit.applydiff2file', 
 		label      => Wx::gettext('Apply Diff to File'), 
@@ -406,7 +403,7 @@ sub new {
 			Padre::Wx::Main::on_diff(@_);
 		},
 	);
-	($self->{applydiff2project}, $action) = $self->add_menu_item(
+	$self->{applydiff2project} = $self->add_menu_item(
 		$self->{diff},
 		name       => 'edit.applydiff2project', 
 		label      => Wx::gettext('Apply Diff to Project'), 
@@ -415,7 +412,7 @@ sub new {
 		},
 	);
 
-	($self->{insert_from_file}, $action) = $self->add_menu_item(
+	$self->{insert_from_file} = $self->add_menu_item(
 		$self,
 		name       => 'edit.insert_from_file', 
 		label      => Wx::gettext('Insert From File...'), 
@@ -433,7 +430,7 @@ sub new {
 		$self->{show_as_number}
 	);
 
-	($self->{show_as_hex}, $action) = $self->add_menu_item(
+	$self->{show_as_hex} = $self->add_menu_item(
 		$self->{show_as_number},
 		name       => 'edit.show_as_hex', 
 		label      => Wx::gettext('Show as hexa'), 
@@ -442,7 +439,7 @@ sub new {
 		},
 	);
 
-	($self->{show_as_decimal}, $action) = $self->add_menu_item(
+	$self->{show_as_decimal} = $self->add_menu_item(
 		$self->{show_as_number},
 		name       => 'edit.show_as_decimal', 
 		label      => Wx::gettext('Show as decimal'), 
@@ -454,7 +451,7 @@ sub new {
 	$self->AppendSeparator;
 
 	# User Preferences
-	($menu_item, $action) = $self->add_menu_item(
+	$self->add_menu_item(
 		$self,
 		name       => 'edit.show_as_decimal', 
 		label      => Wx::gettext('Preferences'), 
