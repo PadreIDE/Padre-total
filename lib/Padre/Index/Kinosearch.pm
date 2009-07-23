@@ -32,12 +32,13 @@ same terms as Perl 5 itself.
 
 sub typemap {
     my $polyanalyzer =  KinoSearch::Analysis::PolyAnalyzer->new( language=>'en' );
-    warn $polyanalyzer;
+    #warn $polyanalyzer;
 
     my %typemap = (
         static => KinoSearch::FieldType::StringType->new(),
         number => KinoSearch::FieldType::StringType->new(),
         text   => KinoSearch::FieldType::FullTextType->new(analyzer => $polyanalyzer ),
+        blob   => KinoSearch::FieldType::BlobType->new(),
     );    
     
     %typemap;
@@ -90,7 +91,19 @@ sub searcher { $_[0]->index }
 
 #sub query { shift->index->hits( query => shift ) };
 
-sub search { shift->index->hits( @_ ) };
+sub search { 
+    my $self = shift;
+    my @query = @_;
+    my $parser = KinoSearch::QueryParser->new(
+               schema         => $self->schema,    # required
+               #fields         => ['title','keywords'],             # default: indexed fields
+               default_boolop => 'AND',                    # default: 'OR'
+           );
+    my $q = $parser->parse( join(' ', @query)  ) ;
+    return $self->searcher->hits( $q );
+    
+}
+
 
 sub commit { shift->indexer->commit };
 

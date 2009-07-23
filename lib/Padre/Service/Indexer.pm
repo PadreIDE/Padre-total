@@ -102,13 +102,20 @@ sub service_loop {
 	return $self->shutdown() unless $file;
 	
 	my $doc = $self->generate_document( $file );
-	$idx->add_doc( $doc ) if $doc;
 	
 	$self->{progress}++;
-	$self->post_event( $self->{PROGRESS_EVENT} , 
-		sprintf( '%4f;%s' , (100*$self->{progress} / $total), $doc->{title} )
-	);
 	
+	if ( $doc ) {
+		$idx->add_doc( $doc );
+		$self->post_event( $self->{PROGRESS_EVENT} , 
+			sprintf( '%4f;%s' , (100*$self->{progress} / $total), $doc->{title})
+		);
+	}
+	else { $self->post_event( $self->{PROGRESS_EVENT} ,
+			sprintf( '%4f;%s', (100*$self->{progress}/$total), "Skip: $file" )
+		);
+		warn "SKIP: $file\n";
+	}
 	
 	return;
 }

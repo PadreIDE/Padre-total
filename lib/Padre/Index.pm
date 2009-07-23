@@ -63,6 +63,7 @@ sub index_fields {
 		modified 	=> 'number',
 		resource 	=> 'static',
 		file 		=> 'static',
+		payload		=> 'blob',
 	)
 };
 

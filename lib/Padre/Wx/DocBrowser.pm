@@ -521,7 +521,7 @@ sub _rebuild_index {
                                           wxPD_SMOOTH|
                                           wxPD_ELAPSED_TIME|
                                           wxPD_ESTIMATED_TIME|
-                                          wxPD_REMAINING_TIME );
+                                          wxPD_REMAINING_TIME |  Wx::wxRESIZE_BORDER );
 	my $update_progress = sub { 
 		my $main = shift;
 		my $event = shift;
