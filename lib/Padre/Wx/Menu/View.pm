@@ -137,7 +137,7 @@ sub new {
 	foreach my $name ( sort keys %mimes ) {
 		my $label = $name;
 		$label =~ s/^\d+//;
-		my $tag = lc $label;
+		my $tag = "view.view_as" . lc $label;
 		$tag =~ s/\s/_/g;
 		$self->add_radio_menu_item(
 			$self->{view_as_highlighting},
@@ -319,16 +319,19 @@ sub new {
 	my @order = sort { ( $b eq 'default' ) <=> ( $a eq 'default' ) or $styles{$a} cmp $styles{$b} } keys %styles;
 	foreach my $name (@order) {
 		my $label = $styles{$name};
-		my $radio = $self->{style}->AppendRadioItem( -1, $label );
-		if ( $config->editor_style and $config->editor_style eq $name ) {
-			$radio->Check(1);
-		}
-		Wx::Event::EVT_MENU(
-			$main, $radio,
-			sub {
+		my $tag = "view.view_as_" . lc $label;
+		$tag =~ s/\s/_/g;
+		my $radio =  $self->add_radio_menu_item(
+			$self->{style},
+			name       => $tag,
+			label      => $label,
+			menu_event => sub {
 				$_[0]->change_style($name);
 			},
 		);
+		if ( $config->editor_style and $config->editor_style eq $name ) {
+			$radio->Check(1);
+		}
 	}
 
 	my $dir = File::Spec->catdir( Padre::Constant::CONFIG_DIR, 'styles' );
@@ -338,16 +341,19 @@ sub new {
 		$self->AppendSeparator;
 		foreach my $name (@private) {
 			my $label = $name;
-			my $radio = $self->{style}->AppendRadioItem( -1, $label );
-			if ( $config->editor_style and $config->editor_style eq $name ) {
-				$radio->Check(1);
-			}
-			Wx::Event::EVT_MENU(
-				$main, $radio,
-				sub {
+			my $tag = "view.view_as_" . lc $label;
+			$tag =~ s/\s/_/g;
+			my $radio =  $self->add_radio_menu_item(
+				$self->{style},
+				name       => $tag,
+				label      => $label,
+				menu_event => sub {
 					$_[0]->change_style( $name, 1 );
 				},
 			);
+			if ( $config->editor_style and $config->editor_style eq $name ) {
+				$radio->Check(1);
+			}
 		}
 	}
 
@@ -366,14 +372,11 @@ sub new {
 	);
 
 	# Default menu entry
-	$self->{language_default} = $self->{language}->AppendCheckItem(
-		-1,
-		Wx::gettext("System Default") . " ($default)"
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{language_default},
-		sub {
+	$self->{language_default} = $self->add_checked_menu_item(
+		$self->{language},
+		name       => 'view.language_default',
+		label      => Wx::gettext('System Default') . " ($default)",
+		menu_event => sub {
 			$_[0]->change_locale;
 		},
 	);
@@ -396,10 +399,13 @@ sub new {
 			# speakers, non-English localisations do NOT show this.
 			$label = "English (New Britstralian)";
 		}
-		my $radio = $self->{language}->AppendRadioItem( -1, $label );
-		Wx::Event::EVT_MENU(
-			$main, $radio,
-			sub {
+		my $tag = "view.view_as_" . lc $label;
+		$tag =~ s/\s/_/g;
+		my $radio =  $self->add_radio_menu_item(
+			$self->{language},
+			name       => $tag,
+			label      => $label,
+			menu_event => sub {
 				$_[0]->change_locale($name);
 			},
 		);
@@ -411,13 +417,12 @@ sub new {
 	$self->AppendSeparator;
 
 	# Window Effects
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->Append(
-			-1,
-			Wx::gettext("&Full Screen\tF11")
-		),
-		sub {
+	$self->add_checked_menu_item(
+		$self,
+		name       => 'view.full_screen',
+		label      => Wx::gettext('&Full Screen'),
+		shortcut   => 'F11',
+		menu_event => sub {
 			if ( $_[0]->IsFullScreen ) {
 				$_[0]->ShowFullScreen(0);
 			} else {
