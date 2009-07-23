@@ -164,38 +164,29 @@ sub new {
 	$self->AppendSeparator;
 
 	# Editor Functionality
-	$self->{lines} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Line Numbers")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{lines},
-		sub {
+	$self->{lines} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.lines',
+		label      => Wx::gettext('Show Line Numbers'), 
+		menu_event => sub {
 			$_[0]->on_toggle_line_numbers( $_[1] );
 		},
 	);
 
-	$self->{folding} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Code Folding")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{folding},
-		sub {
+	$self->{folding} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.folding',
+		label      => Wx::gettext('Show Code Folding'), 
+		menu_event => sub {
 			$_[0]->on_toggle_code_folding( $_[1] );
 		},
 	);
 
-	$self->{show_calltips} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Call Tips")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{show_calltips},
-		sub {
+	$self->{show_calltips} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.show_calltips',
+		label      => Wx::gettext('Show Call Tips'), 
+		menu_event => sub {
 			$_[0]->config->set(
 				'editor_calltips',
 				$_[1]->IsChecked ? 1 : 0,
@@ -204,14 +195,11 @@ sub new {
 		},
 	);
 
-	$self->{currentline} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Current Line")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{currentline},
-		sub {
+	$self->{currentline} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.currentline',
+		label      => Wx::gettext('Show Current Line'), 
+		menu_event => sub {
 			$_[0]->on_toggle_currentline( $_[1] );
 		},
 	);
@@ -219,50 +207,38 @@ sub new {
 	$self->AppendSeparator;
 
 	# Editor Whitespace Layout
-	$self->{eol} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Newlines")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{eol},
-		sub {
+	$self->{eol} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.eol',
+		label      => Wx::gettext('Show Newlines'), 
+		menu_event => sub {
 			$_[0]->on_toggle_eol( $_[1] );
 		},
 	);
 
-	$self->{whitespaces} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Whitespaces")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{whitespaces},
-		sub {
+	$self->{whitespaces} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.whitespaces',
+		label      => Wx::gettext('Show Whitespaces'), 
+		menu_event => sub {
 			$_[0]->on_toggle_whitespaces( $_[1] );
 		},
 	);
 
-	$self->{indentation_guide} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Show Indentation Guide")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{indentation_guide},
-		sub {
+	$self->{indentation_guide} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.indentation_guide',
+		label      => Wx::gettext('Show Indentation Guide'), 
+		menu_event => sub {
 			$_[0]->on_toggle_indentation_guide( $_[1] );
 		},
 	);
 
-	$self->{word_wrap} = $self->AppendCheckItem(
-		-1,
-		Wx::gettext("Word-Wrap")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{word_wrap},
-		sub {
+	$self->{word_wrap} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.word_wrap',
+		label      => Wx::gettext('Word-Wrap'), 
+		menu_event => sub {
 			$_[0]->on_word_wrap( $_[1]->IsChecked );
 		},
 	);
@@ -270,38 +246,32 @@ sub new {
 	$self->AppendSeparator;
 
 	# Font Size
-	$self->{font_increase} = $self->Append(
-		-1,
-		Wx::gettext("Increase Font Size\tCtrl-+")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{font_increase},
-		sub {
+	$self->{font_increase} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.font_increase',
+		label      => Wx::gettext('Increase Font Size'),
+		shortcut   => 'Ctrl-+',
+		menu_event => sub {
 			$_[0]->zoom(+1);
 		},
 	);
 
-	$self->{font_decrease} = $self->Append(
-		-1,
-		Wx::gettext("Decrease Font Size\tCtrl--")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{font_decrease},
-		sub {
+	$self->{font_decrease} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.font_decrease',
+		label      => Wx::gettext('Decrease Font Size'),
+		shortcut   => 'Ctrl-+',
+		menu_event => sub {
 			$_[0]->zoom(-1);
 		},
 	);
 
-	$self->{font_reset} = $self->Append(
-		-1,
-		Wx::gettext("Reset Font Size\tCtrl-/")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{font_reset},
-		sub {
+	$self->{font_reset} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.font_reset',
+		label      => Wx::gettext('Reset Font Size'),
+		shortcut   => 'Ctrl-/',
+		menu_event => sub {
 			$_[0]->zoom( -1 * $_[0]->current->editor->GetZoom );
 		},
 	);
@@ -309,27 +279,23 @@ sub new {
 	$self->AppendSeparator;
 
 	# Bookmark Support
-	$self->{bookmark_set} = $self->Append(
-		-1,
-		Wx::gettext("Set Bookmark\tCtrl-B")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{bookmark_set},
-		sub {
+	$self->{bookmark_set} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.bookmark_set',
+		label      => Wx::gettext('Set Bookmark'),
+		shortcut   => 'Ctrl-B',
+		menu_event => sub {
 			require Padre::Wx::Dialog::Bookmarks;
 			Padre::Wx::Dialog::Bookmarks->set_bookmark( $_[0] );
 		},
 	);
 
-	$self->{bookmark_goto} = $self->Append(
-		-1,
-		Wx::gettext("Goto Bookmark\tCtrl-Shift-B")
-	);
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{bookmark_goto},
-		sub {
+	$self->{bookmark_goto} = $self->add_checked_menu_item(
+		$self,
+		name       => 'view.bookmark_goto',
+		label      => Wx::gettext('Goto Bookmark'),
+		shortcut   => 'Ctrl-Shift-B',
+		menu_event => sub {
 			require Padre::Wx::Dialog::Bookmarks;
 			Padre::Wx::Dialog::Bookmarks->goto_bookmark( $_[0] );
 		},
