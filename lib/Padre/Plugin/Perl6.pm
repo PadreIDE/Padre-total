@@ -441,18 +441,21 @@ sub show_perl6_doc {
 	if($doc && $doc->get_mimetype eq q{application/x-perl6}) {
 		# make sure it is a Perl6 document
 		my $editor = $doc->editor;
-		my $lineno = $editor->GetCurrentLine();
-		my $line = $editor->GetLine($lineno);
-		my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
-		my $current_word = '';
-		while( $line =~ m/\G.*?(\S+)/g ) {
-			if(pos($line) >= $current_pos) {
-				$current_word = $1;
-				last;
+		$topic = $editor->GetSelectedText;
+		if (not $topic) {
+			my $lineno = $editor->GetCurrentLine();
+			my $line = $editor->GetLine($lineno);
+			my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
+			my $current_word = '';
+			while( $line =~ m/\G.*?(\S+)/g ) {
+				if(pos($line) >= $current_pos) {
+					$current_word = $1;
+					last;
+				}
 			}
-		}
-		if($current_word =~ /^.*?(\S+)/) {
-			$topic = $1;
+			if($current_word =~ /^.*?(\S+)/) {
+				$topic = $1;
+			}
 		}
 	}
 
