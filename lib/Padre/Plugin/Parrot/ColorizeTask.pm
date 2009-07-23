@@ -5,7 +5,7 @@ use warnings;
 use base 'Padre::Task';
 use Scalar::Util ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.24';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed
@@ -118,6 +118,7 @@ my %colors = (
 	funcall => undef,
 	post_primary_expr => undef,
 	call_args => undef,
+	string => undef,
 );
 
 # This is run in the main thread after the task is done.

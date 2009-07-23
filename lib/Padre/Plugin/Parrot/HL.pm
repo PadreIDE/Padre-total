@@ -2,6 +2,8 @@ package Padre::Plugin::Parrot::HL;
 use strict;
 use warnings;
 
+our $VERSION = '0.24';
+
 # colorize timer to make sure that colorize tasks are scheduled properly...
 my $COLORIZE_TIMER;
 my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the colorize task

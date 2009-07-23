@@ -10,6 +10,8 @@ To install this module, run the following commands:
 	make test
 	make install
 
+For further installation and setup details please see the documentation.
+
 COPYRIGHT AND LICENCE
 
 Copyright (C) 2008-2009 Gabor Szabo

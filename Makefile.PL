@@ -26,7 +26,7 @@ name           'Padre-Plugin-Parrot';
 license        'perl';
 author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/Parrot.pm';
-requires       'Padre' => '0.21';
+requires       'Padre' => '0.41';
 #requires => 'Parrot::Embed' => 0;
 test_requires  'Test::More'              => '0.47';
 no_index       'directory'               => qw{ t xt eg share inc privinc};
