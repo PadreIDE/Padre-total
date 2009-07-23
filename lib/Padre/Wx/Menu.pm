@@ -46,17 +46,47 @@ sub Append {
 }
 
 #
-# Add a menu item to menu from a Padre action
+# Add a normal menu item to menu from a Padre action
 #
 sub add_menu_item {
 	my $self = shift;
 	my $menu = shift;
+	return $self->_add_menu_item($menu, 0, @_);
+}
+
+
+#
+# Add a checked menu item to menu from a Padre action
+#
+sub add_checked_menu_item {
+	my $self = shift;
+	my $menu = shift;
+	return $self->_add_menu_item($menu, 1, @_);
+}
+
+#
+# (Private method)
+# Add a normal/checked menu item to menu from a Padre action
+#
+sub _add_menu_item {
+	my $self = shift;
+	my $menu = shift;
+	my $checked = shift;
 	require Padre::Action;
 	my $action = Padre::Action->new(@_);
-	my $menu_item = $menu->Append(
-		$action->id,
-		$action->label . (($action->shortcut) ? ("\t" . $action->shortcut) : ''),
-	);
+	my $shortcut = $action->shortcut;
+	my $menu_item;
+	if(not $checked) {
+		$menu_item = $menu->Append(
+			$action->id,
+			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
+		);
+	} else {
+		$menu_item = $menu->AppendCheckItem(
+			$action->id,
+			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
+		);
+	}
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 	push @{Padre::ide->actions}, $action;
 	#XXX- more validation of redundant items/ids
