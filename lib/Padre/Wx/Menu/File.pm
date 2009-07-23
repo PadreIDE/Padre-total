@@ -316,7 +316,7 @@ sub update_recentfiles {
 	foreach my $file ( grep { -f if $_ } Padre::DB::History->recent('files') ) {
 		$self->add_menu_item(
 			$self->{recentfiles},
-			name       => "view.open_recent_" . $idx, 
+			name       => "file.open_recent_" . $idx, 
 			label      => ++$idx < 10 ? "&$idx. $file" : "$idx. $file",
 			menu_event => sub {
 				$_[0]->setup_editors($file);
