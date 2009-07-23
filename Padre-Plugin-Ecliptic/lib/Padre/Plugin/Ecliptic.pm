@@ -69,6 +69,9 @@ sub plugin_enable {
 	if(not defined $config->{recently_opened}) {
 		$config->{recently_opened} = '';
 	}
+	if(not defined $config->{quick_menu_history}) {
+		$config->{quick_menu_history} = '';
+	}
 
 	# and write the plugin's configuration
 	$self->config_write($config);

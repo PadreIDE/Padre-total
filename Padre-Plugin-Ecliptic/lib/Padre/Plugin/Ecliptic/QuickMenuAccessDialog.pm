@@ -63,6 +63,20 @@ sub _on_ok_button_clicked {
 	if($menu_action) {
 		my $event = $menu_action->menu_event;
 		if($event && ref($event) eq 'CODE') {
+			# Keep the last 20 recently opened resources available
+			# and save it to plugin's configuration object
+			my $config = $self->_plugin->config_read;
+			my @recent = split /\|/, $config->{quick_menu_history};
+			if(scalar @recent >= 20) {
+				shift @recent;
+			}
+			push @recent, $menu_action->name;
+			my %unique = map { $_, 1 } @recent;
+			@recent = keys %unique;
+			@recent = sort { $a cmp $b } @recent;
+			$config->{quick_menu_history} = join '|', @recent;
+			$self->_plugin->config_write($config);
+
 			&$event($main);
 		}
 	}
@@ -215,7 +229,7 @@ sub _update_matches_list_box {
 		push @menu_actions, $menu_action;
 	}
 	@menu_actions = sort { 
-		$a->label_text eq $b->label_text 
+		$a->label_text cmp $b->label_text 
 	} @menu_actions;
 	foreach my $menu_action (@menu_actions) {
 		my $label = $menu_action->label_text;
