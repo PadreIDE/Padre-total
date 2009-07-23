@@ -62,7 +62,9 @@ sub _on_ok_button_clicked {
 	$self->Destroy;
 	if($menu_action) {
 		my $event = $menu_action->menu_event;
-		&$event($main);
+		if($event && ref($event) eq 'CODE') {
+			&$event($main);
+		}
 	}
 }
 
