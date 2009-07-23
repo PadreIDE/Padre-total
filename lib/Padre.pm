@@ -107,8 +107,8 @@ sub new {
 	$self->{config} = Padre::Config->read;
 
 	# Actions registry
-	my @actions = ();
-	$self->actions( \@actions );
+	my %actions = ();
+	$self->actions( \%actions );
 
 	# Connect to the server if we are running in single instance mode
 	if ( $self->config->main_singleinstance ) {

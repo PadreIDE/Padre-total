@@ -104,10 +104,15 @@ sub _add_menu_item {
 		die "Unknown menu item type: '$type'";
 	}
 	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
-	push @{Padre::ide->actions}, $action;
+
+	my $actions = Padre::ide->actions;
+	if($actions->{$action->name}) {
+		warn "Found a duplicate action '" . $action->name . "'\n";
+	}
+	$actions->{$action->name} = $action;
+
 	#XXX- more validation of redundant items/ids
 	#XXX- warnings about keyboard conflicts...
-	print "(menu) Number of actions " . scalar @{Padre::ide->actions} . "\n";
 	return $menu_item;
 }
 

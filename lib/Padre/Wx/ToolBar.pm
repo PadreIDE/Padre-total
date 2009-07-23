@@ -41,8 +41,7 @@ sub new {
 	# Populate the toolbar
 
 	$self->add_tool_item(
-		name  => 'toolbar.new_file',
-		id    => Wx::wxID_NEW,
+		name  => 'file.new_file',
 		icon  => 'actions/document-new',
 		label => Wx::gettext('New File'),
 		event => sub {
@@ -51,22 +50,15 @@ sub new {
 	);
 
 	$self->add_tool_item(
-		name  => 'toolbar.dummy',
-		id    => Wx::wxID_NEW,
-		icon  => 'actions/document-new',
-		label => Wx::gettext('Dummy!'),
-	);
-	
-	$self->add_tool_item(
 		name  => 'toolbar.open_file',
-		id    => Wx::wxID_OPEN,
 		icon  => 'actions/document-open',
 		label => Wx::gettext('Open File'),
+		event => sub {
+		},
 	);
 
 	$self->add_tool_item(
 		name  => 'toolbar.save_file',
-		id    => Wx::wxID_SAVE,
 		icon  => 'actions/document-save',
 		label => Wx::gettext('Save File'),
 	);
@@ -75,6 +67,8 @@ sub new {
 		id    => Wx::wxID_SAVEAS,
 		icon  => 'actions/document-save-as',
 		short => Wx::gettext('Save as...'),
+		toolbar_event => sub {
+		},
 	);
 
 	$self->add_tool(
@@ -87,7 +81,6 @@ sub new {
 	);
 
 	$self->add_tool(
-		id    => Wx::wxID_CLOSE,
 		icon  => 'actions/x-document-close',
 		short => Wx::gettext('Close File'),
 		event => sub {
@@ -207,10 +200,14 @@ sub add_tool_item {
 		event => $action->toolbar_event,
 	);
 	
-	push @{Padre::ide->actions}, $action;
+	my $actions = Padre::ide->actions;
+	if($actions->{$action->name}) {
+		warn "Found a duplicate action '" . $action->name . "'\n";
+	}
+	$actions->{$action->name} = $action;
+
 	#XXX- more validation of redundant items/ids
 	#XXX- warnings about keyboard conflicts...
-	print "(toolbar) Number of actions " . scalar @{Padre::ide->actions} . "\n";
 	return;
 }
 
