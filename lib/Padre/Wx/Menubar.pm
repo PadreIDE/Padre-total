@@ -17,7 +17,7 @@ use Padre::Wx::Menu::Plugins ();
 use Padre::Wx::Menu::Window  ();
 use Padre::Wx::Menu::Help    ();
 
-our $VERSION = '0.40';
+our $VERSION = '0.41';
 
 #####################################################################
 # Construction, Setup, and Accessors
@@ -28,15 +28,15 @@ use Class::XSAccessor getters => {
 
 	# Don't add accessors to here until they have been
 	# upgraded to be fully encapsulated classes.
-	file         => 'file',
-	edit         => 'edit',
-	search       => 'search',
-	view         => 'view',
-	perl         => 'perl',
-	run          => 'run',
-	plugins      => 'plugins',
-	window       => 'window',
-	help         => 'help',
+	file    => 'file',
+	edit    => 'edit',
+	search  => 'search',
+	view    => 'view',
+	perl    => 'perl',
+	run     => 'run',
+	plugins => 'plugins',
+	window  => 'window',
+	help    => 'help',
 };
 
 sub new {

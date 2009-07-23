@@ -22,7 +22,7 @@ use Padre::Config::Human   ();
 use Padre::Config::Project ();
 use Padre::Config::Host    ();
 
-our $VERSION = '0.40';
+our $VERSION = '0.41';
 
 # Master storage of the settings
 our %SETTING = ();
@@ -209,7 +209,7 @@ setting(
 		# The toolbar can't dynamically switch between
 		# tearable and non-tearable so rebuild it.
 		# TODO: Review this assumption
-		if ( $Padre::Wx::Toolbar::DOCKABLE ) {
+		if ($Padre::Wx::Toolbar::DOCKABLE) {
 			$main->rebuild_toolbar;
 		}
 

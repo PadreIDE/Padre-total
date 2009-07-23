@@ -52,7 +52,7 @@ use YAML::Tiny ();
 use Padre::DB  ();
 use Padre::Wx  ();
 
-our $VERSION    = '0.40';
+our $VERSION    = '0.41';
 our $COMPATIBLE = '0.18';
 
 # Link plugins back to their IDE
@@ -260,7 +260,7 @@ TBD. See Padre::Document
 
 =cut
 
-sub provided_highlighters { 
+sub provided_highlighters {
 	return ();
 }
 

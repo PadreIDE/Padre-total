@@ -6,19 +6,13 @@ package Padre::DB::SyntaxHighlight;
 use strict;
 use warnings;
 
-our $VERSION = '0.40';
-
-# Finds and returns a single element by mime_type
-sub fetch_module_name {
-	my $row = ( $_[0]->select( 'where mime_type = ?', $_[1] ) )[0];
-	return $row ? $row->{value} : 'stc';
-}
+our $VERSION = '0.41';
 
 sub set_mime_type {
 	my $class     = shift;
 	my $mime_type = shift;
 	my $module    = shift;
-	
+
 	Padre::DB->begin;
 	$class->delete(
 		'where mime_type = ?', $mime_type,

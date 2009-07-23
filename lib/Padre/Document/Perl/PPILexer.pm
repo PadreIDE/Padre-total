@@ -6,13 +6,13 @@ use warnings;
 use Padre::Document ();
 use Padre::Util     ();
 
-our $VERSION = '0.40';
+our $VERSION = '0.41';
 
 
 sub colorize {
 	my $self = shift;
 
-	my $doc    = Padre::Current->document;
+	my $doc = Padre::Current->document;
 
 	Padre::Util::debug("PPILexer colorize called");
 

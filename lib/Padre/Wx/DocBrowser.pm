@@ -24,7 +24,7 @@ use Padre::Service::Indexer::DocBrowser;
 use Padre::Wx ();
 use Wx qw(:progressdialog);
 
-our $VERSION = '0.40';
+our $VERSION = '0.41';
 our @ISA     = 'Wx::Frame';
 
 use Class::XSAccessor accessors => {
