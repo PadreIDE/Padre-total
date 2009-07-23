@@ -42,7 +42,6 @@ use Class::XSAccessor accessors => {
 	shortcut      => 'shortcut',
 	menu_event    => 'menu_event',
 	toolbar_event => 'toolbar_event',
-	actions       => 'actions',
 };
 
 #####################################################################
