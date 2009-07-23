@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-Parrot
 
+0.25 2009.07.23
+	- Remove the old Px:: constants
+    - Replace the PASM_XYZ constant names by PADRE_color names to make PASM files highlight
+
 0.24 2009.07.23
 	- removed taint mode for tests, leading to build failures (jquelin)
 	- move the pbc based syntax highlighting from the Perl 6 plugin to 
