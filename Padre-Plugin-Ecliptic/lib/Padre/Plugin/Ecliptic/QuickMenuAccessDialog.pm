@@ -58,14 +58,12 @@ sub _on_ok_button_clicked {
 
 	# Open the selected menu item if the user pressed OK
 	my $selection = $self->_matches_list->GetSelection;
-	my $selected_menu_item = $self->_matches_list->GetClientData($selection);
-	if($selected_menu_item) {
-		my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
-			$selected_menu_item->GetId);
-		$main->GetEventHandler->ProcessEvent( $event );
-	}
-	
+	my $menu_action = $self->_matches_list->GetClientData($selection);
 	$self->Destroy;
+	if($menu_action) {
+		my $event = $menu_action->menu_event;
+		&$event($main);
+	}
 }
 
 
@@ -209,37 +207,12 @@ sub _update_matches_list_box {
 	my $main = $self->_plugin->main;
 	my $menu_bar = $main->menu->wx;
 
-	#File/New.../Perl 6 Script
-	sub traverse_menu {
-		my $menu = shift;
-		
-		my @menu_items = ();
-		foreach my $menu_item ($menu->GetMenuItems) {
-			my $sub_menu = $menu_item->GetSubMenu;
-			if($sub_menu) {
-				push @menu_items, traverse_menu($sub_menu);
-			} elsif( not $menu_item->IsSeparator) {
-				push @menu_items, $menu_item;
-			}
-		}
-		
-		return @menu_items;
-	}
-	
-	my $menu_count = $menu_bar->GetMenuCount;
-	my @menu_items = ();
-	foreach my $menu_pos (0..$menu_count-1) {
-		my $main_menu = $menu_bar->GetMenu($menu_pos);
-		my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
-		push @menu_items, traverse_menu($main_menu);
-	}
-	@menu_items = sort { 
-		$a->GetLabel cmp $b->GetLabel
-	} @menu_items;
-	foreach my $menu_item (@menu_items) {
-		my $menu_item_label = $menu_item->GetLabel;
-		if($menu_item_label =~ /$search_expr/i) {
-			$self->_matches_list->Insert($menu_item_label, $pos, $menu_item);
+	my $actions = Padre::ide->actions;
+	my @menu_actions = sort { $a->label eq $b->label } values %{$actions};
+	foreach my $menu_action (@menu_actions) {
+		my $label = $menu_action->label;
+		if($label =~ /$search_expr/i) {
+			$self->_matches_list->Insert($label, $pos, $menu_action);
 			$pos++;
 		}
 	}
