@@ -210,9 +210,15 @@ sub _update_matches_list_box {
 	my $menu_bar = $main->menu->wx;
 
 	my $actions = Padre::ide->actions;
-	my @menu_actions = sort { $a->label eq $b->label } values %{$actions};
+	my @menu_actions = ();;
+	foreach my $menu_action (values %{$actions}) {
+		push @menu_actions, $menu_action;
+	}
+	@menu_actions = sort { 
+		$a->label_text eq $b->label_text 
+	} @menu_actions;
 	foreach my $menu_action (@menu_actions) {
-		my $label = $menu_action->label;
+		my $label = $menu_action->label_text;
 		if($label =~ /$search_expr/i) {
 			$self->_matches_list->Insert($label, $pos, $menu_action);
 			$pos++;
