@@ -17,6 +17,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 July 23
+        url: http://onionstand.blogspot.com/2009/07/padre-041-released.html
+        title: Padre 0.41 released!
+        comment: by garu on The Onion Stand
       - date: 2009 July 17
         url: http://onionstand.blogspot.com/2009/07/padre-040-released.html
         title: Padre 0.40 released!
