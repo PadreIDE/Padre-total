@@ -220,12 +220,8 @@ sub _update_matches_list_box {
 	$self->_matches_list->Clear;
 	my $pos = 0;
 	
-	my $main = $self->_plugin->main;
-	my $menu_bar = $main->menu->wx;
-
-	my $actions = Padre::ide->actions;
-	my @menu_actions = ();;
-	foreach my $menu_action (values %{$actions}) {
+	my @menu_actions = ();
+	foreach my $menu_action (values %{Padre::ide->actions}) {
 		push @menu_actions, $menu_action;
 	}
 	@menu_actions = sort { 
