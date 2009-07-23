@@ -100,7 +100,7 @@ sub search {
                default_boolop => 'AND',                    # default: 'OR'
            );
     my $q = $parser->parse( join(' ', @query)  ) ;
-    return $self->searcher->hits( $q );
+    return $self->searcher->hits( query => $q );
     
 }
 

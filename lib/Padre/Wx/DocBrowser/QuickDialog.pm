@@ -44,7 +44,6 @@ sub new {
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	my $index = Padre::Index::Kinosearch->new( index_directory=>'/tmp/padre-index' );
 	$self->{_index} = $index;
-	$self->{_searcher} = $index->searcher;
 	
 	# create dialog
 	$self->_create;
@@ -214,8 +213,6 @@ sub _search() {
 	my $self = shift;
 	
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
-	my $searcher = $self->_searcher;
-	
 
 	# Generate a sorted file-list based on filename
 	my @matched_docs;
@@ -234,9 +231,9 @@ sub _update_matches_list_box() {
 	my $self = shift;
 	
 	my $search_expr = $self->_search_text->GetValue();
-	my $searcher = $self->_index;
+	my $index = $self->_index;
 	warn "QUERY : $search_expr";
-	my $hits = $searcher->search( query => $search_expr );
+	my $hits = $index->search( $search_expr );
 	warn "HITS OBJECT $hits";
 	warn "\t GOT " . $hits->total_hits;
 	
