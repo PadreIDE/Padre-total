@@ -28,7 +28,7 @@ sub new {
 	# Search
 	$self->{find} = $self->add_menu_item(
 		$self,
-		name       => 'file.find',
+		name       => 'search.find',
 		id         => Wx::wxID_FIND,
 		label      => Wx::gettext('&Find'), 
 		shortcut   => 'Ctrl-F', 
@@ -39,7 +39,7 @@ sub new {
 
 	$self->{find_next} = $self->add_menu_item(
 		$self,
-		name       => 'file.find_next',
+		name       => 'search.find_next',
 		label      => Wx::gettext('Find Next'), 
 		shortcut   => 'F3', 
 		menu_event => sub {
@@ -49,7 +49,7 @@ sub new {
 
 	$self->{find_previous} = $self->add_menu_item(
 		$self,
-		name       => 'file.find_previous',
+		name       => 'search.find_previous',
 		label      => Wx::gettext('&Find Previous'), 
 		shortcut   => 'Shift-F3', 
 		menu_event => sub {
@@ -62,7 +62,7 @@ sub new {
 	# Quick Find: starts search with selected text
 	$self->{quick_find} = $self->add_checked_menu_item(
 		$self,
-		name       => 'file.quick_find',
+		name       => 'search.quick_find',
 		label      => Wx::gettext('Quick Find'), 
 		menu_event => sub {
 			Padre->ide->config->set(
@@ -78,7 +78,7 @@ sub new {
 	# to F3 and shift-F3 Incremental find (#60)
 	$self->{quick_find_next} = $self->add_menu_item(
 		$self,
-		name       => 'file.quick_find_next',
+		name       => 'search.quick_find_next',
 		label      => Wx::gettext('Find Next'), 
 		shortcut   => 'F4', 
 		menu_event => sub {
@@ -88,7 +88,7 @@ sub new {
 
 	$self->{quick_find_previous} = $self->add_menu_item(
 		$self,
-		name       => 'file.quick_find_previous',
+		name       => 'search.quick_find_previous',
 		label      => Wx::gettext('Find Previous'), 
 		shortcut   => 'Shift-F4', 
 		menu_event => sub {
@@ -101,7 +101,7 @@ sub new {
 	# Search and Replace
 	$self->{replace} = $self->add_menu_item(
 		$self,
-		name       => 'file.replace',
+		name       => 'search.replace',
 		label      => Wx::gettext('Replace'), 
 		shortcut   => 'Ctrl-R', 
 		menu_event => sub {
@@ -114,7 +114,7 @@ sub new {
 	# Recursive Search
 	$self->add_menu_item(
 		$self,
-		name       => 'file.replace',
+		name       => 'search.replace',
 		label      => Wx::gettext('Find in Fi&les...'), 
 		menu_event => sub {
 			require Padre::Wx::Ack;
