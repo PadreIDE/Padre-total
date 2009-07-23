@@ -43,6 +43,10 @@
 /ADAMK/Portable-
 /CHORNY/Win32API-File-
 /DAGOLDEN/Capture-Tiny-
+/TYEMQ/Algorithm-Diff-
+/PETDANCE/Test-Pod-
+/ADAMK/prefork-
+/SZABGAB/PPIx-EditorTools-
 
 /SZABGAB/Locale-Msgfmt-
 /DCONWAY/Perl6-Perldoc-
@@ -53,6 +57,16 @@
 /BBC/Pod-Xhtml-
 /HINRIK/Pod-Text-Ansi-
 /BDFOY/IO-Interactive-
+/ROODE/Readonly-\d
+/ROODE/Readonly-XS-\d
+/JJORE/B-Keywords-
+/DARREN/String-Format-
+/SHANCOCK/Perl-Tidy-
+/PINYAN/Regexp-Parser-
+/JDB/Win32-Pipe-
+/ELLIOTJS/Perl-Critic-\d
+/THALJEF/Test-Perl-Critic-
+/JLMOREL/Win32-Console-ANSI-
 /HINRIK/App-Grok-
 /RJBS/Data-OptList-
 /RJBS/Sub-Install-
@@ -67,9 +81,7 @@
 /DROLSKY/Class-MOP-
 /DROLSKY/Moose-
 /AZAWAZI/Syntax-Highlight-Perl6
-/PETDANCE/Test-Pod-
-/ADAMK/prefork-
-
+/AZAWAZI/Perl6-Refactor-
 
 /MBARBON/Wx-\d
 /MDOOTSON/Wx-Perl-ProcessStream-
