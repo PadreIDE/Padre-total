@@ -18,6 +18,11 @@ sub get_perl6 {
 		$perl6 = File::Spec->catfile($env_rakudo, $exe_name);
 	}
 
+	# hard coded for the Experiemental Strawberry+Rakudo+Padre distribution
+	if (not $perl6 and Padre::Constant::WIN32) {
+		$perl6 = "C:\\strawberry\\six\\perl6.exe";
+	}
+
 	return -e $perl6 ? $perl6 : undef;
 }
 
