@@ -20,7 +20,7 @@ BEGIN {
     mcast_dest
     mcast_send
   );
-  $VERSION = '1.06_02';
+  $VERSION = '1.07_02';
   @ISA = qw(
     Exporter
     DynaLoader
