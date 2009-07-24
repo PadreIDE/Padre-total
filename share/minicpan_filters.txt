@@ -57,16 +57,19 @@
 /BBC/Pod-Xhtml-
 /HINRIK/Pod-Text-Ansi-
 /BDFOY/IO-Interactive-
+# App::Grok does not require Win32-Console-Ansi as of 1.14
+# nor does it require Perl::Critic and Perl::Tidy
+# I'm only being cautious about Readonly.
 /ROODE/Readonly-\d
 /ROODE/Readonly-XS-\d
-/JJORE/B-Keywords-
-/DARREN/String-Format-
-/SHANCOCK/Perl-Tidy-
-/PINYAN/Regexp-Parser-
-/JDB/Win32-Pipe-
-/ELLIOTJS/Perl-Critic-\d
-/THALJEF/Test-Perl-Critic-
-/JLMOREL/Win32-Console-ANSI-
+# /JJORE/B-Keywords-
+# /DARREN/String-Format-
+# /SHANCOCK/Perl-Tidy-
+# /PINYAN/Regexp-Parser-
+# /JDB/Win32-Pipe-
+# /ELLIOTJS/Perl-Critic-\d
+# /THALJEF/Test-Perl-Critic-
+# /JLMOREL/Win32-Console-ANSI-
 /HINRIK/App-Grok-
 /RJBS/Data-OptList-
 /RJBS/Sub-Install-
