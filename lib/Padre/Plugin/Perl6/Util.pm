@@ -18,7 +18,7 @@ sub get_perl6 {
 		$perl6 = File::Spec->catfile($env_rakudo, $exe_name);
 	}
 
-	return $perl6;
+	return -e $perl6 ? $perl6 : undef;
 }
 
 sub get_parrot_command {
