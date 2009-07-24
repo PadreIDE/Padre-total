@@ -4,7 +4,7 @@ package Perl::Dist::Padre;
 
 =head1 NAME
 
-Perl::Dist::Padre - Padre Standalone for Win32 (EXPERIMENTAL)
+Perl::Dist::Padre - Padre Standalone for Win32
 
 =head1 DESCRIPTION
 
@@ -25,6 +25,8 @@ use strict;
 use warnings;
 use Perl::Dist::Strawberry 1.11139 (); # To allow 1.11_14 for right now.
 use URI::file ();
+use English qw( -no-match-vars );
+use File::Spec::Functions qw( catfile );
 
 our $VERSION = '0.270';
 our @ISA     = 'Perl::Dist::Strawberry';
@@ -56,7 +58,7 @@ sub new {
 		msi_banner_side      => catfile($dist_dir, 'PadreDialog.bmp'),
 
 		# Program version.
-		build_number         => 0,
+		build_number         => 1,
 		
 		# Trace level.
 		trace                => 1,
