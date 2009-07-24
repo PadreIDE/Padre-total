@@ -1,5 +1,7 @@
 package Padre::Swarm::Message::Diff;
-use base qw( Class::Accessor );
+use Padre::Swarm::Message;
+
+use base qw( Padre::Swarm::Message );
 
 use strict;
 use warnings;

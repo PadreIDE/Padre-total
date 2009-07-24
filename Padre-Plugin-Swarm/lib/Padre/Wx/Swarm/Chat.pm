@@ -10,6 +10,8 @@ use Padre::Swarm::Identity;
 use Wx::Perl::Dialog::Simple;
 use Padre::Service::Swarm;
 use Padre::Swarm::Service::Chat;
+use Padre::Swarm::Message;
+use Padre::Swarm::Message::Diff;
 use Padre::Current qw{_CURRENT};
 
 use Class::Autouse;
@@ -156,7 +158,7 @@ sub accept_message {
 	
 	my $message = Storable::thaw($payload);
 	#my $message = $evt->GetData;
-	return unless Params::Util::_INSTANCE( $message , 'Padre::Swarm::Message' );
+	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 	
 	if ( $message->type eq 'chat' ) {
 		my $user = $message->from || 'unknown';
@@ -165,9 +167,12 @@ sub accept_message {
 		my $output = sprintf( "%s :%s\n", $user, $content );
 		$self->chatframe->AppendText( $output );
 	}
-	elsif ( $message->type eq 'diff' ) {
+	elsif ( _INSTANCE( $message , 'Padre::Swarm::Message::Diff' ) ) {
 		$self->on_receive_diff($message);
 		return;
+	}
+	else {
+		warn "Discarded $message";
 	}
 }
 
@@ -198,9 +203,11 @@ use Data::Dumper;
 ## 
 sub on_receive_diff {
 	my ($self,$message) = @_;
-	my $project = $message->{project_name};
-	my $file = $message->{file};
-	my $diff = $message->{diff};
+	warn "Received diff $message";
+	
+	my $project = $message->project;
+	my $file = $message->file;
+	my $diff = $message->diff;
 	
 	my $current = $self->main->current->document;
 	my $editor = $self->main->current->editor;
@@ -215,7 +222,10 @@ sub on_receive_diff {
 	return unless ( $p_name eq $project );
 	
 	# Ignore my own diffs
-	return if $message->from eq $self->service->identity->nickname;
+	if ( $message->from eq $self->service->identity->nickname ) {
+		warn "Ignore my own diffs";
+		return;
+	}
 	
 	Wx::Perl::Dialog::Simple::dialog( 
 		sub {},
@@ -251,9 +261,9 @@ sub on_diff_snippet {
 	my $project_name = File::Basename::basename( $project_dir );
 	$canonical_file =~ s/^$project_dir//;
 	
-	my $message = Padre::Swarm::Message->new({
+	my $message = Padre::Swarm::Message::Diff->new({
 		file     => $canonical_file,
-		project_name  => $project_name,
+		project  => $project_name,
 		project_dir => $project_dir,
 		type => 'diff',
 	});

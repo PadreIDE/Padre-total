@@ -1,5 +1,5 @@
 package Padre::Swarm::Service::Chat;
-
+## sdfdf
 use strict;
 use warnings;
 require JSON::XS;
@@ -8,7 +8,7 @@ use Time::HiRes ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
-use Params::Util qw( _INSTANCE );
+use Params::Util qw( _INSTANCE _CLASSISA _INVOCANT);
 use Carp qw( croak confess carp );
 use Data::Dumper;
 
@@ -74,9 +74,8 @@ sub service_loop {
         warn "Chat send $message";
         $self->send( $message );
     }
-    elsif( ref $message ) {
-            carp "Was asked to pass $message - " . Dumper $message;
-            
+    elsif( _INSTANCE( $message, 'Padre::Swarm::Message::Diff' ) ) {
+            $self->send( $message );
     }
     
     if ( my @ready =  $self->transport->poll(0.5) ) {
@@ -153,11 +152,8 @@ sub say_to {
 
 sub send {
     my ($self,$message) = @_;
-    if (ref $message) {
-        confess "pass a Padre::Swarm::Message" 
-            unless _INSTANCE( $message, 'Padre::Swarm::Message'  );
-        #warn Dumper $message;
-        
+    if (_INSTANCE( $message , 'Padre::Swarm::Message')  ) {
+        warn Dumper $message;
         $message->from( $self->identity->nickname ) 
             unless  $message->from;
         $message->type( 'chat' ) unless $message->type;
