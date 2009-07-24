@@ -5,58 +5,86 @@ use warnings;
 
 our $VERSION = '0.54';
 
-our @ISA       = 'Exporter';
-our @EXPORT_OK = qw(get_perl6);
-
 # Get perl6 full executable path
-sub get_perl6 {
-	my $exe_name = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
-	require File::Which;
-	my $perl6 = File::Which::which($exe_name);
-	my $env_rakudo = $ENV{RAKUDO_DIR};
-	if (not $perl6 && $env_rakudo) {
-		$perl6 = File::Spec->catfile($env_rakudo, $exe_name);
-	}
+sub perl6_exe {
+	my $exe = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
 
-	# hard coded for the Experiemental Strawberry+Rakudo+Padre distribution
-	if (not $perl6 and Padre::Constant::WIN32) {
-		$perl6 = "C:\\strawberry\\six\\perl6.exe";
-	}
-
-	return -e $perl6 ? $perl6 : undef;
-}
-
-sub get_parrot_command {
-	my $command = shift;
-	
-	my $exe_name = $^O eq 'MSWin32' ? "$command.exe" : $command;
-	require File::Which;
-	my $parrot_cmd = File::Which::which($exe_name);
-	my $env_rakudo = $ENV{RAKUDO_DIR};
-	if (not $parrot_cmd && $env_rakudo) {
-		my $parrot_dir = File::Spec->catfile($env_rakudo, 'parrot');
-		my $cmd = File::Spec->catfile($parrot_dir, $exe_name);
-		if(-x $cmd) {
-			$parrot_cmd = $cmd;
+	# Look for the explicit environment variable
+	if ( $ENV{RAKUDO_DIR} ) {
+		my $perl6 = File::Spec->catfile( $ENV{RAKUDO_DIR}, $exe );
+		if ( -f $perl6 and -x _ ) {
+			return $perl6;
 		}
 	}
 
-	return $parrot_cmd;
-}
-
-sub get_libparrot {
-	my $lib_name = $^O eq 'MSWin32' ? "libparrot.dll" : 'libparrot.so';
-	my $libparrot;
-	my $env_rakudo = $ENV{RAKUDO_DIR};
-	if ($env_rakudo) {
-		my $parrot_dir = File::Spec->catfile($env_rakudo, 'parrot');
-		my $lib = File::Spec->catfile($parrot_dir, $lib_name);
-		if(-e $lib) {
-			$libparrot = $lib;
+	# On Windows, look for the Six distribution
+	if ( Padre::Constant::WIN32 ) {
+		my $perl6 = "C:\\strawberry\\six\\perl6.exe";
+		if ( -f $perl6 ) {
+			return $perl6;
 		}
 	}
 
-	return $libparrot;
+	# Look on the path
+	require File::Which;
+	my $perl6 = File::Which::which('perl6');
+	if ( defined $perl6 and -f $perl6 and -x _ ) {
+		return $perl6;
+	}
+
+	return undef;
+}
+
+sub parrot_bin {
+	my $bin = shift;
+	my $exe = $^O eq 'MSWin32' ? "$bin.exe" : $bin;
+
+	# Look for the explicit RAKUDO_DIR
+	if ( $ENV{RAKUDO_DIR} ) {
+		my $command = File::Spec->catfile( $ENV{RAKUDO_DIR}, 'parrot', $exe );
+		if ( -f $command and -x _ ) {
+			return $command;
+		}
+	}
+
+	# On Windows, look for the Six distribution
+	if ( Padre::Constant::WIN32 ) {
+		my $command = "C:\\strawberry\\six\\parrot\\$exe";
+		if ( -f $command and -x _ ) {
+			return $command;
+		}
+	}
+
+	# Look in the path for the command, fwiw
+	require File::Which;
+	my $command = File::Which::which($bin);
+	if ( $command and -f $command and -x _ ) {
+		return $command;
+	}
+
+	return undef;
+}
+
+sub libparrot {
+	my $lib = $^O eq 'MSWin32' ? "libparrot.dll" : 'libparrot.so';
+
+	# Look for the explicit RAKUDO_DIR
+	if ( $ENV{RAKUDO_DIR} ) {
+		my $libparrot = File::Spec->catfile( $ENV{RAKUDO_DIR}, 'parrot', $lib );
+		if ( -f $libparrot ) {
+			return $libparrot;
+		}
+	}
+
+	# On Windows, look for the Six distribution
+	if ( Padre::Constant::WIN32 ) {
+		my $libparrot = "C:\\strawberry\\six\\parrot\\libparrot.dll";
+		if ( -f $libparrot ) {
+			return $libparrot;
+		}
+	}
+
+	return undef;
 }
 
 1;

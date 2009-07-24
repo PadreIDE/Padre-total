@@ -19,7 +19,7 @@ sub get_command {
 
 	my $filename = $self->filename;
 	require Padre::Plugin::Perl6::Util;
-	my $perl6    = Padre::Plugin::Perl6::Util::get_perl6();
+	my $perl6    = Padre::Plugin::Perl6::Util::perl6_exe();
 	
 	if(not $perl6) {
 		my $main = Padre->ide->wx->main;
