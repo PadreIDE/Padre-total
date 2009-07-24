@@ -73,6 +73,10 @@ sub display_help_in_viewer {
 		if($help_target) {
 			eval {
 				$help_html = $self->_grok->render_target($help_target,'xhtml');
+				$self->SetTitle( 
+					Wx::gettext('Perl 6 Help (grok)') . 
+					" - " . 
+					$self->_grok->locate_target($help_target) );
 			};
 		}
 	}
