@@ -119,14 +119,16 @@ sub _create {
 	$self->_create_buttons;
 
 	# wrap everything in a vbox to add some padding
-	$self->SetSizerAndFit($sizer);
-	$sizer->SetSizeHints($self);
+	$self->SetMinSize( [ 420, 498 ] );
+	$self->SetSizer($sizer);
 
-	# center the dialog
-	$self->Centre;
 
 	# focus on the search text box
 	$self->_search_text->SetFocus();
+
+	# center the dialog
+	$self->Fit;
+	$self->CentreOnParent;
 }
 
 #
@@ -150,7 +152,8 @@ sub _create_controls {
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Select an item to open (? = any character, * = any string):') );
-	$self->_search_text( Wx::TextCtrl->new( $self, -1, '' ) );
+	$self->_search_text( Wx::TextCtrl->new( $self, -1, '', 
+		Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxBORDER_SIMPLE ) );
 	
 	# ignore .svn/.git checkbox
 	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git/blib folders')) );
@@ -159,21 +162,27 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Matching Items:') );
-	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
-		Wx::wxLB_EXTENDED ) );
+	$self->_matches_list( Wx::ListBox->new( $self, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize, [], 
+		Wx::wxLB_EXTENDED|Wx::wxBORDER_SIMPLE ) );
 
 	# Shows how many items are selected and information about what is selected
-	$self->_status_text( Wx::StaticText->new( $self, -1, 
-		Wx::gettext('Current Directory: ') . $self->_directory ) );
-	
+	$self->_status_text( Wx::StaticText->new( 
+		$self, -1, Wx::gettext('Current Directory: ') . $self->_directory ));
+
+	my $icon = Padre::Wx::Icon::find("places/stock_folder");
+	my $sbmp = Wx::StaticBitmap->new( $self, -1, $icon );
+
+	my $hb = Wx::StaticBoxSizer->new( Wx::StaticBox->new( $self, -1, '', ), 
+		Wx::wxHORIZONTAL );
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_matches_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 10 );
-
+	$self->_sizer->Add( $self->_matches_list, 1, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$hb->Add( $sbmp, 0, 0, 5 );
+	$hb->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM|Wx::wxEXPAND, 5 );
 	$self->_setup_events();
 	
 	return;
@@ -219,7 +228,7 @@ sub _setup_events {
 		my $num_selected =  scalar @matches;
 		if($num_selected >= 1) {
 			$self->_status_text->SetLabel(
-				$self->_matches_list->GetClientData($matches[0]));
+				$self->_shorten($self->_matches_list->GetClientData($matches[0])));
 		}
 		
 		return;
@@ -290,6 +299,21 @@ sub _search() {
 }
 
 #
+# Shorten text that exceed a certain length
+#
+sub _shorten {
+	my ($self, $text) = @_;
+
+	if(length($text) >= 70) {
+		$text = substr( $text, 0, 40 )
+			. '...'
+			. substr( $text, -20 );
+	}
+
+	return $text;
+}
+
+#
 # Update matches list box from matched files list
 #
 sub _update_matches_list_box() {
@@ -316,7 +340,7 @@ sub _update_matches_list_box() {
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
 		$self->_status_text->SetLabel(
-			$self->_matches_list->GetClientData(0));
+			$self->_shorten($self->_matches_list->GetClientData(0)));
 	}
 
 	return;
