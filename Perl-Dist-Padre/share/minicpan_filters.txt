@@ -70,7 +70,7 @@
 # /ELLIOTJS/Perl-Critic-\d
 # /THALJEF/Test-Perl-Critic-
 # /JLMOREL/Win32-Console-ANSI-
-/HINRIK/App-Grok-
+/HINRIK/grok-
 /RJBS/Data-OptList-
 /RJBS/Sub-Install-
 /RJBS/Sub-Exporter-
