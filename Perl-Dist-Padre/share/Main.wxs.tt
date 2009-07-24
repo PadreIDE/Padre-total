@@ -93,7 +93,7 @@
 [% END %]
     <Property Id='ARPNOREPAIR'>1</Property>
     <Property Id='ALLUSERS'>1</Property>
-    <Property Id='ARPCOMMENTS'>[% dist.app_name %] 0.41</Property>
+    <Property Id='ARPCOMMENTS'>[% dist.app_name %] 0.41 on Perl 5.10.0</Property>
     <Property Id='ARPCONTACT'>[% dist.app_publisher %]</Property>
     <Property Id='ARPURLINFOABOUT'>[% dist.app_publisher_url %]</Property>
 [% IF dist.msi_help_url.defined %]
