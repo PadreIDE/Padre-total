@@ -164,7 +164,7 @@ sub _create_controls {
 
 	# Shows how many items are selected and information about what is selected
 	$self->_status_text( Wx::StaticText->new( $self, -1, 
-		Wx::gettext('Current Search Directory: ') . $self->_directory ) );
+		Wx::gettext('Current Directory: ') . $self->_directory ) );
 	
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
@@ -217,10 +217,7 @@ sub _setup_events {
 		my $self  = shift;
 		my @matches = $self->_matches_list->GetSelections();
 		my $num_selected =  scalar @matches;
-		if($num_selected > 1) {
-			$self->_status_text->SetLabel(
-				"" . scalar @matches . Wx::gettext(" items selected"));
-		} elsif($num_selected == 1) {
+		if($num_selected >= 1) {
 			$self->_status_text->SetLabel(
 				$self->_matches_list->GetClientData($matches[0]));
 		}
@@ -318,11 +315,10 @@ sub _update_matches_list_box() {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel("" . ($pos+1) . Wx::gettext(' item(s) found'));
-	} else {
-		$self->_status_text->SetLabel(Wx::gettext('No items found'));
+		$self->_status_text->SetLabel(
+			$self->_matches_list->GetClientData(0));
 	}
-			
+
 	return;
 }
 
