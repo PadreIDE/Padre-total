@@ -56,29 +56,44 @@ sub new {
 		
 		# Tell it what additions to the directory tree to use.
 		msi_directory_tree_additions => [qw (
+			perl\site\lib\Algorithm
 			perl\site\lib\Class
 			perl\site\lib\Class\XSAccessor
 			perl\site\lib\CPAN\Mini
+			perl\site\lib\Data 
 			perl\site\lib\Devel
 			perl\site\lib\File\Find
 			perl\site\lib\File\Find\Rule
-			perl\site\lib\IPC
 			perl\site\lib\Module
 			perl\site\lib\ORLite
-			perl\site\lib\Pod
 			perl\site\lib\Text
 			perl\site\lib\Wx
 			perl\site\lib\Wx\Perl
+			perl\site\lib\Padre
+			perl\site\lib\Padre\Plugin
+			perl\site\lib\Perl
+			perl\site\lib\Perl6
+			perl\site\lib\Perl6\Perldoc 
+			perl\site\lib\Perl6\Perldoc\To
+			perl\site\lib\Sub 
+			perl\site\lib\YAML\Dumper
+			perl\site\lib\YAML\Loader
+			perl\site\lib\auto\Algorithm 
 			perl\site\lib\auto\Class
 			perl\site\lib\auto\Class\XSAccessor
+			perl\site\lib\auto\Data 
 			perl\site\lib\auto\Devel
 			perl\site\lib\auto\File\Find
 			perl\site\lib\auto\File\Find\Rule
 			perl\site\lib\auto\File\ShareDir
-			perl\site\lib\auto\IPC
 			perl\site\lib\auto\Module
 			perl\site\lib\auto\ORLite
-			perl\site\lib\auto\Pod
+			perl\site\lib\auto\Padre 
+			perl\site\lib\auto\Perl 
+			perl\site\lib\auto\Perl6
+			perl\site\lib\auto\Perl6\Perldoc
+			perl\site\lib\auto\Readonly
+			perl\site\lib\auto\Sub 
 			perl\site\lib\auto\Text
 			perl\site\lib\auto\Wx
 			perl\site\lib\auto\Wx\Perl
@@ -87,6 +102,7 @@ sub new {
 			perl\site\lib\auto\share\dist\Padre\icons
 			perl\site\lib\auto\share\dist\Padre\icons\padre
 			perl\site\lib\auto\share\dist\Padre\icons\padre\16x16
+			perl\site\lib\auto\share\dist\Perl6-Doc
 			perl\site\lib\auto\share\module
 		)],
 		
