@@ -1,9 +1,19 @@
 Changes
 
-=head1 0.54 TO BE RELEASED ONCE PADRE 0.41 IS RELEASED!
+=head1 0.54 2009.7.24
 
-	- Allow the use of the new syntax highlighter configuration of Padre 0.41 (szabgab)
-	- Move the Parrot based syntax highlighting to the Parrot plugin (szabgab)
+	- Depends on S:H:P6 version 0.65 to fix ticket:461 "Syntax check hanging 
+		with perl6 infix & regex"
+	- Depends on Padre 0.41. Please upgrade it or otherwise it will not work.
+	- Allow the use of the new syntax highlighter configuration of Padre 0.41 (szabgab++)
+	- Move the Parrot based syntax highlighting to the Parrot plugin (szabgab++)
+	- F2 now works on select text - if there is any (szabgab++)
+	- Updated translations:
+		- Dutch (ddn123456++)
+		- French (jquelin++)
+	- move the text_with_on_nl method from the Perl 6 document to the Padre::Document
+	- Remove obsolete colorizer selection list. It is now handled by Padre.
+	- Updated dutch translation.
 
 =head1 0.53 2009.7.18
 
