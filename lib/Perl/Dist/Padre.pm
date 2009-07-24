@@ -37,23 +37,34 @@ our @ISA     = 'Perl::Dist::Strawberry';
 # Configuration
 
 sub new {
-	shift->SUPER::new(
-		app_id            => 'padre',
-		app_name          => 'Padre Standalone',
-		app_publisher     => 'Padre',
-		app_publisher_url => 'http://padre.perlide.org/',
-		image_dir         => 'C:\strawberry',
+	my $dist_dir = File::ShareDir::dist_dir('Perl-Dist-Padre');
 
-		# Set e-mail to something Strawberry-specific.
-		perl_config_cf_email => 'perl.padre@csjewell.fastmail.us',
+
+	shift->SUPER::new(
+		app_id               => 'padre',
+		app_name             => 'Padre Standalone',
+		app_publisher        => 'Padre',
+		app_publisher_url    => 'http://padre.perlide.org/',
+		image_dir            => 'C:\strawberry',
+
+		# Set e-mail to something Padre-specific.
+		perl_config_cf_email => 'padre-dev@perlide.org',
+
+		msi_product_icon     => catfile($dist_dir, 'padre.ico'),
+		msi_help_url         => undef,
+		msi_banner_top       => catfile($dist_dir, 'PadreBanner.bmp'),
+		msi_banner_side      => catfile($dist_dir, 'PadreDialog.bmp'),
 
 		# Program version.
-		build_number         => 1,
-		beta_number          => 2,
+		build_number         => 0,
 		
-		# Temporary.
-		trace => 2,
+		# Trace level.
+		trace                => 1,
 		
+		# Build both exe and zip versions
+		msi                  => 1,
+		zip                  => 1,
+
 		# Tell it what additions to the directory tree to use.
 		msi_directory_tree_additions => [qw (
 			perl\site\lib\Algorithm
@@ -106,9 +117,6 @@ sub new {
 			perl\site\lib\auto\share\module
 		)],
 		
-		# Build both exe and zip versions
-		msi               => 1,
-		zip               => 1,
 		@_,
 	);
 }
@@ -273,6 +281,60 @@ sub install_perl_modules {
 	$self->install_module( name => 'Padre::Plugin::Perl6'    );
 
 	return 1;
+}
+
+sub install_win32_extras {
+	my $self = shift;
+
+	# Add the rest of the extras
+	$self->SUPER::install_win32_extras(@_);
+
+	# I'm hoping this works in order to create a Padre icon that works correctly.
+	my $launcher = Perl::Dist::Asset::Launcher->new(
+		parent => $self,
+		name => 'Padre',
+		bin  => 'padre',
+	);
+
+	# Check the script exists
+	my $to = 
+	  catfile( $self->image_dir, 'perl', 'bin', 'wperl.exe');
+	$to .= q{ };
+	$to .=
+	  catfile( $self->image_dir, 'perl', 'bin', $launcher->bin);
+	unless ( -f $to ) {
+		PDWiX->throw(
+			q{The script '} . $launcher->bin . q{" does not exist} );
+	}
+
+	my $icon_id = $self->icons->add_icon(
+		catfile( $self->dist_dir, $launcher->bin . '.ico' ),
+		$launcher->bin . '.exe' );
+
+	# Add the icon.
+	$self->add_icon(
+		name     => $launcher->name,
+		filename => $to,
+		fragment => 'Icons',
+		icon_id  => $icon_id
+	);
+}
+
+sub dist_dir {
+	my $self = shift;
+
+	my $dir;
+	
+	unless ( eval { $dir = File::ShareDir::dist_dir('Perl-Dist-Padre'); 1; } )
+	{
+		PDWiX::Caught->throw(
+			message =>
+			  'Could not find distribution directory for Perl::Dist::Padre',
+			info => ( defined $EVAL_ERROR ) ? $EVAL_ERROR : 'Unknown error',
+		);
+	}
+
+	return $dir;
 }
 
 1;
