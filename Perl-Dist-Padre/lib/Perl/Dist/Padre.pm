@@ -230,16 +230,6 @@ sub install_perl_modules {
 		Pod::Xhtml
 		Pod::Text::Ansi
 		IO::Interactive
-		Readonly
-		Readonly::XS
-		B::Keywords
-		String::Format
-		Perl::Tidy
-		Regexp::Parser
-		Perl::Critic
-		Test::Perl::Critic
-		Win32::Pipe
-		Win32::Console::ANSI
 		App::Grok
 		Sub::Install
 		Data::OptList
