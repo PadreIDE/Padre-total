@@ -26,15 +26,15 @@
       Error="A newer version of [% dist.app_name %] is already installed." />
 	<Upgrade Id="[% dist.msi_upgrade_code %]">
 	  <UpgradeVersion
-	    Minimum="[% dist.msi_perl_version %]"
+	    Minimum="0.41.0"
 		IncludeMinimum="yes"
 	    OnlyDetect="yes"
 		Language="1033"
 		Property="NEWERVERSIONDETECTED" />
 	  <UpgradeVersion
-		Minimum="5.0.0"
+		Minimum="0.0.0"
 		IncludeMinimum="yes"
-		Maximum="[% dist.msi_perl_version %]"
+		Maximum="0.41.0"
 	 	IncludeMaximum="no"
 		Language="1033"
 		Property="OLDERVERSIONBEINGUPGRADED" />
