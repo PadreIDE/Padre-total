@@ -3,7 +3,7 @@ package Padre::Plugin::Perl6::Util;
 use strict;
 use warnings;
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 # Get perl6 full executable path
 sub perl6_exe {
