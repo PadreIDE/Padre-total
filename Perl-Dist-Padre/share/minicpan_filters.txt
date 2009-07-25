@@ -83,8 +83,8 @@
 /AUDREYT/YAML-Syck-
 /DROLSKY/Class-MOP-
 /DROLSKY/Moose-
-/AZAWAZI/Syntax-Highlight-Perl6
-/AZAWAZI/Perl6-Refactor-
+/AZAWAWI/Syntax-Highlight-Perl6
+/AZAWAWI/Perl6-Refactor-
 
 /MBARBON/Wx-\d
 /MDOOTSON/Wx-Perl-ProcessStream-
