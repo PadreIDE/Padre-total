@@ -44,7 +44,7 @@ sub plugin_locale_directory {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26,;
+	return 'Padre::Plugin' => 0.42,;
 }
 
 #
