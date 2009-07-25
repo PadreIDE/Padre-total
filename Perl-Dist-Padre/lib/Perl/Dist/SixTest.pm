@@ -1,12 +1,4 @@
-package Perl::Dist::Padre;
-
-=pod
-
-=head1 NAME
-
-Perl::Dist::Sixtest - Test for "six" installation. 
-
-=cut
+package Perl::Dist::SixTest;
 
 use 5.008001;
 use strict;
@@ -17,9 +9,7 @@ use English qw( -no-match-vars );
 use File::Spec::Functions qw( catfile );
 
 our $VERSION = '0.270';
-our @ISA     = 'Perl::Dist::Strawberry';
-
-
+our @ISA = 'Perl::Dist::Strawberry';
 
 
 
@@ -48,7 +38,7 @@ sub new {
 		build_number         => 1,
 		
 		# Trace level.
-		trace                => 1,
+		trace                => 2,
 		
 		# Build both exe and zip versions
 		msi                  => 1,
@@ -149,11 +139,13 @@ sub install_perl_5101 {
 	die "Perl 5.10.1 is not available in Padre Standalone (yet)";
 }
 
-sub install_perl_5100 {
+sub install_perl {
 
 	# We want this to be a quick test, so we don't install Perl 5.
 	return 1;
 }
+
+
 
 sub install_perl_modules {
 	my $self = shift;
@@ -162,6 +154,12 @@ sub install_perl_modules {
 }
 
 sub install_win32_extras {
+	my $self = shift;
+
+	return 1;
+}
+
+sub create_distribution_list {
 	my $self = shift;
 
 	return 1;
@@ -193,17 +191,3 @@ sub install_custom {
 }
 
 1;
-
-=pod
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009 Curtis Jewell.
-
-This program is free software; you can redistribute
-it and/or modify it under the same terms as Perl itself.
-
-The full text of the license can be found in the
-LICENSE file included with this module.
-
-=cut
