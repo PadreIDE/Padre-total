@@ -158,9 +158,6 @@ sub _create_controls {
 		$self, -1,
 		Wx::gettext('&Select an item to open (? = any character, * = any string):')
 	);
-	my $font = $search_label->GetFont;
-	$font->SetWeight(Wx::wxFONTWEIGHT_BOLD);
-	$search_label->SetFont($font);
 	$self->_search_text(
 		Wx::TextCtrl->new(
 			$self,                 -1,                '',
@@ -173,7 +170,6 @@ sub _create_controls {
 		$self, -1,
 		Wx::gettext('&Matching Items:')
 	);
-	$matches_label->SetFont($font);
 
 	$self->_matches_list(
 		Wx::ListBox->new(
@@ -189,7 +185,6 @@ sub _create_controls {
 			Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTE_READONLY | Wx::wxBORDER_SIMPLE
 		)
 	);
-	$self->_status_text->SetFont($font);
 
 	my $folder_image = Wx::StaticBitmap->new(
 		$self, -1,
@@ -223,7 +218,7 @@ sub _create_controls {
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
-	$hb->Add( $self->_search_text,  1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $self->_search_text,  1, Wx::wxALIGN_CENTER_VERTICAL, 2 );
 	$hb->Add( $self->_popup_button, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb,                  0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
@@ -232,7 +227,7 @@ sub _create_controls {
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
 	$hb->Add( $folder_image,       0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$hb->Add( $self->_status_text, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$hb->Add( $self->_status_text, 1, Wx::wxALIGN_CENTER_VERTICAL, 1 );
 	$hb->Add( $self->_copy_button, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
