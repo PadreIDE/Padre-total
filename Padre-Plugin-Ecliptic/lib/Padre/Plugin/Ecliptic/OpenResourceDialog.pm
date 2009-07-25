@@ -364,14 +364,14 @@ sub _search() {
 	$rule->file;
 
 	my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
-	if(-e $manifest_skip_file) {
+	if ( -e $manifest_skip_file ) {
 		use ExtUtils::Manifest qw(maniskip);
 		my $skip_check = maniskip($manifest_skip_file);
 		my $skip_files = sub {
-			my ($shortname, $path, $fullname) = @_;
+			my ( $shortname, $path, $fullname ) = @_;
 			return not $skip_check->($fullname);
 		};
-		$rule->exec( \&$skip_files  );
+		$rule->exec( \&$skip_files );
 	}
 
 	# Generate a sorted file-list based on filename
