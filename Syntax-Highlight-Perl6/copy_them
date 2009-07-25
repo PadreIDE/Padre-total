@@ -6,23 +6,26 @@ use feature 'say';
 use Carp;
 use File::Copy;
 
-my $STD = q{../../src/perl6};
-my $P6VIM = q{../../util};
+my $PUGS = q{../pugs};
+my $STD = q{../pugs/src/perl6};
 my $status;
 
 sub safe_copy {
-    my ($file,$to_file) = @_;
+	my ($file,$to_file) = @_;
 
-    copy($file, $to_file)
-        or croak "Could not copy $file";
+	copy($file, $to_file)
+		or croak "Could not copy $file";
 }
 
 say "\n--Running 'svn update'";
-$status = system('cd ../..; svn update'); 
+$status = system("svn update $PUGS"); 
 die "Could not svn update pugs\n" if $status != 0;
 
+my $make = $^O eq 'MSWin32' ? 'dmake.exe' : 'make';
 say "\n--Running 'make clean all' for STD.pm";
-$status = system('cd ../../src/perl6; make clean all'); 
+chdir "$STD"
+	or die "Could not change dir to $STD\n";
+$status = system("$make clean all"); 
 die "Could not make STD.pm\n" if $status != 0;
 
 say 'Building and copying STD.pm files';
