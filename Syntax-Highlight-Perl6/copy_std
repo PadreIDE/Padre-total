@@ -6,8 +6,8 @@ use feature 'say';
 use Carp;
 use File::Copy;
 
-my $PUGS = q{../pugs};
-my $STD = q{../pugs/src/perl6};
+my $PUGS = '../../pugs';
+my $STD = "$PUGS/src/perl6";
 my $status;
 
 sub safe_copy {
