@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION = '0.15';
+our $VERSION   = '0.15';
 our @EXPORT_OK = ();
 
 # module imports
@@ -18,8 +18,12 @@ use base 'Padre::Plugin';
 # private subroutine to return the current share directory location
 #
 sub _sharedir {
-	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),
-		'Ecliptic/share'));
+	return Cwd::realpath(
+		File::Spec->join(
+			File::Basename::dirname(__FILE__),
+			'Ecliptic/share'
+		)
+	);
 }
 
 #
@@ -40,18 +44,19 @@ sub plugin_locale_directory {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26,
+	return 'Padre::Plugin' => 0.26,;
 }
 
 #
 # plugin icon
 #
 sub plugin_icon {
-    # find resource path
-    my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png');
 
-    # create and return icon
-    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+	# find resource path
+	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png' );
+
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 #
@@ -62,14 +67,15 @@ sub plugin_enable {
 
 	# Read the plugin configuration, and create it if it is not there
 	my $config = $self->config_read;
-	if(not $config) {
+	if ( not $config ) {
+
 		# no configuration, let us write some defaults
 		$config = {};
 	}
-	if(not defined $config->{recently_opened}) {
+	if ( not defined $config->{recently_opened} ) {
 		$config->{recently_opened} = '';
 	}
-	if(not defined $config->{quick_menu_history}) {
+	if ( not defined $config->{quick_menu_history} ) {
 		$config->{quick_menu_history} = '';
 	}
 
@@ -100,14 +106,14 @@ sub menu_plugins {
 		$self->{menu}->Append( -1, Wx::gettext("Quick Assist\tCtrl-Shift-L"), ),
 		sub { $self->_show_quick_assist_dialog(); },
 	);
-	
+
 	# Shows the "Quick Menu Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Menu Access\tCtrl-3"), ),
 		sub { $self->_show_quick_menu_access_dialog(); },
 	);
-	
+
 	# Shows the "Quick Outline Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
@@ -128,14 +134,14 @@ sub menu_plugins {
 		$self->{menu}->Append( -1, Wx::gettext("Open in File Browser\tCtrl-6"), ),
 		sub { $self->_open_in_explorer(); },
 	);
-	
+
 	# Shows the "Quick Fix" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-Shift-1"), ),
 		sub { $self->_show_quick_fix_dialog },
 	);
-	
+
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -158,12 +164,10 @@ sub _show_about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
-	$about->SetDescription(
-		Wx::gettext("Provides Eclipse-like useful features to Padre.\n")
-	);
+	$about->SetDescription( Wx::gettext("Provides Eclipse-like useful features to Padre.\n") );
 	$about->SetVersion($VERSION);
-	Wx::AboutBox( $about );
-	
+	Wx::AboutBox($about);
+
 	return;
 }
 
@@ -175,7 +179,7 @@ sub _show_open_resource_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::OpenResourceDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -189,7 +193,7 @@ sub _show_quick_assist_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickAssistDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -203,7 +207,7 @@ sub _show_quick_menu_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -217,7 +221,7 @@ sub _show_quick_outline_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickOutlineAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickOutlineAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -231,7 +235,7 @@ sub _show_quick_module_access_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickModuleAccessDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
+	my $dialog = Padre::Plugin::Ecliptic::QuickModuleAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
@@ -249,7 +253,7 @@ sub _open_in_explorer {
 	use Padre::Plugin::Ecliptic::OpenInFileBrowserAction;
 	my $action = Padre::Plugin::Ecliptic::OpenInFileBrowserAction->new($self);
 	$action->open_in_file_browser;
-	
+
 	return;
 }
 
@@ -261,8 +265,8 @@ sub _show_quick_fix_dialog {
 
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickFixDialog;
-	my $dialog  = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
-	if($dialog) {
+	my $dialog = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
+	if ($dialog) {
 		$dialog->Show(1);
 	}
 

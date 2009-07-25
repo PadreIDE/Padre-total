@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.15';
+our $VERSION   = '0.15';
 our @EXPORT_OK = ();
 
 # module imports
@@ -15,14 +15,14 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
-	_plugin            => '_plugin',             # Plugin object
-	_sizer             => '_sizer',              # window sizer
-	_bindings_list      => '_bindings_list',	     # key bindings list
+	_plugin        => '_plugin',        # Plugin object
+	_sizer         => '_sizer',         # window sizer
+	_bindings_list => '_bindings_list', # key bindings list
 };
 
 # -- constructor
 sub new {
-	my ($class, $plugin, %opt) = @_;
+	my ( $class, $plugin, %opt ) = @_;
 
 	# create object
 	my $self = $class->SUPER::new(
@@ -31,10 +31,10 @@ sub new {
 		Wx::gettext('Quick Assist'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
 
-	$self->SetIcon( Wx::GetWxPerlIcon );
+	$self->SetIcon(Wx::GetWxPerlIcon);
 	$self->_plugin($plugin);
 
 	# create dialog
@@ -48,7 +48,7 @@ sub new {
 
 #
 # handler called when the ok button has been clicked.
-# 
+#
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
@@ -56,15 +56,16 @@ sub _on_ok_button_clicked {
 
 	#Open the selected menu item if the user pressed OK
 	my $selection = $self->_bindings_list->GetFirstSelected;
-	if($selection != -1) {
-		my $selected_menu_item = $self->_bindings_list->GetItem($selection, 0);
-		if($selected_menu_item) {
-			my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,  
-				$selected_menu_item->GetId);
-			$main->GetEventHandler->ProcessEvent( $event );
+	if ( $selection != -1 ) {
+		my $selected_menu_item = $self->_bindings_list->GetItem( $selection, 0 );
+		if ($selected_menu_item) {
+			my $event = Wx::CommandEvent->new( Wx::wxEVT_COMMAND_MENU_SELECTED,
+				$selected_menu_item->GetId
+			);
+			$main->GetEventHandler->ProcessEvent($event);
 		}
 	}
-	
+
 	$self->Destroy;
 }
 
@@ -78,7 +79,7 @@ sub _create {
 	my ($self) = @_;
 
 	# create sizer that will host all controls
-	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$self->_sizer($sizer);
 
 	# create the controls
@@ -103,8 +104,8 @@ sub _create_buttons {
 	my ($self) = @_;
 	my $sizer = $self->_sizer;
 
-	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	my $butsizer = $self->CreateStdDialogButtonSizer( Wx::wxOK | Wx::wxCANCEL );
+	$sizer->Add( $butsizer, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
 	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
 }
 
@@ -117,10 +118,10 @@ sub _create_controls {
 	$self->_create_key_bindings_list();
 
 	$self->_sizer->AddSpacer(10);
-	$self->_sizer->Add( $self->_bindings_list, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $self->_bindings_list, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 
 	$self->_setup_events;
-	
+
 	return;
 }
 
@@ -129,14 +130,18 @@ sub _create_controls {
 #
 sub _setup_events {
 	my $self = shift;
-	
-	Wx::Event::EVT_LIST_ITEM_ACTIVATED( $self, $self->_bindings_list, sub {
 
-		$self->_on_ok_button_clicked();
-		$self->EndModal(0);
-		
-		return;
-	});
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
+		$self,
+		$self->_bindings_list,
+		sub {
+
+			$self->_on_ok_button_clicked();
+			$self->EndModal(0);
+
+			return;
+		}
+	);
 
 }
 
@@ -146,14 +151,14 @@ sub _setup_events {
 sub _create_key_bindings_list {
 	my $self = shift;
 
-	$self->_bindings_list( 
+	$self->_bindings_list(
 		Wx::ListView->new(
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[305,300],
+			[ 305, 300 ],
 			Wx::wxLC_REPORT | Wx::wxLC_NO_HEADER | Wx::wxLC_SINGLE_SEL
-		) 
+		)
 	);
 
 
@@ -162,46 +167,44 @@ sub _create_key_bindings_list {
 
 	$self->_bindings_list->SetColumnWidth( 0, 180 );
 	$self->_bindings_list->SetColumnWidth( 1, 100 );
-	
-	$self->_bindings_list->SetBackgroundColour(Wx::Colour->new(255,255,225));
-	
-	my $main = $self->_plugin->main;
+
+	$self->_bindings_list->SetBackgroundColour( Wx::Colour->new( 255, 255, 225 ) );
+
+	my $main     = $self->_plugin->main;
 	my $menu_bar = $main->menu->wx;
 
 	#walk the menu items tree
 	sub walk_menu {
 		my $menu = shift;
-		
+
 		my @menu_items = ();
-		foreach my $menu_item ($menu->GetMenuItems) {
+		foreach my $menu_item ( $menu->GetMenuItems ) {
 			my $sub_menu = $menu_item->GetSubMenu;
-			if($sub_menu) {
+			if ($sub_menu) {
 				push @menu_items, walk_menu($sub_menu);
-			} elsif( not $menu_item->IsSeparator) {
+			} elsif ( not $menu_item->IsSeparator ) {
 				push @menu_items, $menu_item;
 			}
 		}
-		
+
 		return @menu_items;
 	}
-	
+
 	my $menu_count = $menu_bar->GetMenuCount;
 	my @menu_items = ();
-	foreach my $menu_pos (0..$menu_count-1) {
-		my $main_menu = $menu_bar->GetMenu($menu_pos);
+	foreach my $menu_pos ( 0 .. $menu_count - 1 ) {
+		my $main_menu       = $menu_bar->GetMenu($menu_pos);
 		my $main_menu_label = $menu_bar->GetMenuLabel($menu_pos);
 		push @menu_items, walk_menu($main_menu);
 	}
-	
-	@menu_items = reverse sort { 
-		$a->GetLabel cmp $b->GetLabel
-	} @menu_items;
-	
+
+	@menu_items = reverse sort { $a->GetLabel cmp $b->GetLabel } @menu_items;
+
 	foreach my $menu_item (@menu_items) {
-		my $menu_item_label = $menu_item->GetLabel;
+		my $menu_item_label    = $menu_item->GetLabel;
 		my $menu_item_shortcut = $menu_item->GetText;
-		
-		if($menu_item_shortcut =~ /\t/) {
+
+		if ( $menu_item_shortcut =~ /\t/ ) {
 			$menu_item_shortcut =~ s/^.+?\t//;
 
 			my $item;
@@ -209,15 +212,15 @@ sub _create_key_bindings_list {
 			$item->SetText($menu_item_label);
 			$item->SetData($menu_item);
 			my $idx = $self->_bindings_list->InsertItem($item);
-					
+
 			$self->_bindings_list->SetItem( $idx, 1, $menu_item_shortcut );
 		}
 	}
-	
-	if($self->_bindings_list->GetItemCount()) {
-		$self->_bindings_list->Select(0, 1);
+
+	if ( $self->_bindings_list->GetItemCount() ) {
+		$self->_bindings_list->Select( 0, 1 );
 	}
-			
+
 	return;
 }
 
