@@ -19,7 +19,6 @@ use Class::XSAccessor accessors => {
 	_sizer            => '_sizer',            # window sizer
 	_search_text      => '_search_text',      # search text control
 	_matches_list     => '_matches_list',     # matches list
-	_ignore_dir_check => '_ignore_dir_check', # ignore .svn/.git dir checkbox
 	_status_text      => '_status_text',      # status label
 	_directory        => '_directory',        # searched directory
 	_matched_files    => '_matched_files',    # matched files list
@@ -170,10 +169,6 @@ sub _create_controls {
 		)
 	);
 
-	# ignore .svn/.git checkbox
-	$self->_ignore_dir_check( Wx::CheckBox->new( $self, -1, Wx::gettext('Ignore CVS/.svn/.git/blib folders') ) );
-	$self->_ignore_dir_check->SetValue(1);
-
 	# matches result list
 	my $matches_label = Wx::StaticText->new(
 		$self, -1,
@@ -222,6 +217,10 @@ sub _create_controls {
 	$self->_skip_using_manifest_skip(
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP")));
 
+	$self->_skip_rcs_files->Check(1);
+	$self->_skip_hidden_files->Check(1);
+	$self->_skip_using_manifest_skip->Check(1);
+
 	my $hb;
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
@@ -231,7 +230,6 @@ sub _create_controls {
 	$hb->Add( $self->_popup_button,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
-	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $matches_label,           0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list,     1, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
@@ -264,14 +262,6 @@ sub _setup_events {
 			}
 
 			$event->Skip(1);
-		}
-	);
-
-	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$self->_ignore_dir_check,
-		sub {
-			$self->_restart_search;
 		}
 	);
 
@@ -408,15 +398,14 @@ sub _search() {
 
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
-	my $ignore_dir = $self->_ignore_dir_check->IsChecked();
-	my $skip_rcs_files = $self->_skip_rcs_files;
-	my $skip_hidden_files = $self->_skip_hidden_files;
-	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip;
+	my $skip_rcs_files = $self->_skip_rcs_files->IsChecked;
+	my $skip_hidden_files = $self->_skip_hidden_files->IsChecked;
+	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip->IsChecked;
 
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
 	require File::Find::Rule;
 	my $rule = File::Find::Rule->new;
-	if ($ignore_dir) {
+	if ($skip_rcs_files) {
 		$rule->or(
 			$rule->new->directory->name( 'CVS', '.svn', '.git', 'blib' )->prune->discard,
 			$rule->new
@@ -424,15 +413,20 @@ sub _search() {
 	}
 	$rule->file;
 
-	my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
-	if ( -e $manifest_skip_file ) {
-		use ExtUtils::Manifest qw(maniskip);
-		my $skip_check = maniskip($manifest_skip_file);
-		my $skip_files = sub {
-			my ( $shortname, $path, $fullname ) = @_;
-			return not $skip_check->($fullname);
-		};
-		$rule->exec( \&$skip_files );
+	if($skip_hidden_files) {
+	}
+
+	if($skip_using_manifest_skip) {
+		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
+		if ( -e $manifest_skip_file ) {
+			use ExtUtils::Manifest qw(maniskip);
+			my $skip_check = maniskip($manifest_skip_file);
+			my $skip_files = sub {
+				my ( $shortname, $path, $fullname ) = @_;
+				return not $skip_check->($fullname);
+			};
+			$rule->exec( \&$skip_files );
+		}
 	}
 
 	# Generate a sorted file-list based on filename
