@@ -9,7 +9,7 @@ use base 'Padre::Plugin';
 use Padre::Plugin::Perl6::Util;
 
 # exports and version
-our $VERSION   = '0.54';
+our $VERSION   = '0.55';
 our @EXPORT_OK = qw(plugin_config);
 
 # constants for html exporting
