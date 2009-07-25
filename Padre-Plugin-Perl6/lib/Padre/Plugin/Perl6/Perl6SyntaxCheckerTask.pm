@@ -13,7 +13,7 @@ sub run {
 	my $nlchar = $self->{newlines};
 	$self->{text} =~ s/$nlchar/\n/g if defined $nlchar;
 
-	# Since we have the results ready, 
+	# Since we have the results ready,
 	# and yeah this is kind of dumb
 	$self->{syntax_check} = $self->{issues};
 

@@ -23,31 +23,36 @@ our $colorizer;
 sub colorize {
 	my $self = shift;
 
-	my $doc = Padre::Current->document;
+	my $doc    = Padre::Current->document;
 	my $config = Padre::Plugin::Perl6::plugin_config();
-	if($config->{p6_highlight} || $doc->{force_p6_highlight}) {
-	
+	if ( $config->{p6_highlight} || $doc->{force_p6_highlight} ) {
+
 		my $timer_id = Wx::NewId();
-		my $main = Padre->ide->wx->main;
-		$COLORIZE_TIMER = Wx::Timer->new($main, $timer_id);
+		my $main     = Padre->ide->wx->main;
+		$COLORIZE_TIMER = Wx::Timer->new( $main, $timer_id );
 		Wx::Event::EVT_TIMER(
-			$main, $timer_id, 
-			sub { 
+			$main,
+			$timer_id,
+			sub {
+
 				# temporary overlay using the parse tree given by parrot
 				# Create a coloring task
 				my $module = $colorizer eq 'STD'
-					? 'Padre::Plugin::Perl6::Perl6StdColorizerTask'   # STD
-					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask';  # PGE
+					? 'Padre::Plugin::Perl6::Perl6StdColorizerTask'  # STD
+					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask'; # PGE
 				eval "use $module";
 				my $task = $module->new(
-					text => $doc->text_with_one_nl,
-					editor => $doc->editor,
-					document => $doc);
+					text     => $doc->text_with_one_nl,
+					editor   => $doc->editor,
+					document => $doc
+				);
+
 				# hand off to the task manager
 				$task->schedule();
 
 				# and let us schedule that it is running properly or not
-				if($task->is_broken) {
+				if ( $task->is_broken ) {
+
 					# let us reschedule colorizing task to a later date..
 					$COLORIZE_TIMER->Stop;
 					$COLORIZE_TIMER->Start( $COLORIZE_TIMEOUT, Wx::wxTIMER_ONE_SHOT );

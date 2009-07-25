@@ -18,7 +18,7 @@ sub perl6_exe {
 	}
 
 	# On Windows, look for the Six distribution
-	if ( Padre::Constant::WIN32 ) {
+	if (Padre::Constant::WIN32) {
 		my $perl6 = "C:\\strawberry\\six\\perl6.exe";
 		if ( -f $perl6 ) {
 			return $perl6;
@@ -48,7 +48,7 @@ sub parrot_bin {
 	}
 
 	# On Windows, look for the Six distribution
-	if ( Padre::Constant::WIN32 ) {
+	if (Padre::Constant::WIN32) {
 		my $command = "C:\\strawberry\\six\\parrot\\$exe";
 		if ( -f $command and -x _ ) {
 			return $command;
@@ -77,7 +77,7 @@ sub libparrot {
 	}
 
 	# On Windows, look for the Six distribution
-	if ( Padre::Constant::WIN32 ) {
+	if (Padre::Constant::WIN32) {
 		my $libparrot = "C:\\strawberry\\six\\parrot\\libparrot.dll";
 		if ( -f $libparrot ) {
 			return $libparrot;
