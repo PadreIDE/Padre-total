@@ -44,7 +44,7 @@ sub new {
 
 	shift->SUPER::new(
 		app_id               => 'padre',
-		app_name             => 'Padre Standalone',
+		app_name             => 'Padre Standalone Plus Six',
 		app_publisher        => 'Padre',
 		app_publisher_url    => 'http://padre.perlide.org/',
 		image_dir            => 'C:\strawberry',
@@ -132,11 +132,12 @@ sub app_ver_name {
 }
 
 sub output_base_filename {
-	$_[0]->{output_base_filename} or
-	'padre-standalone'
-		. '-' . $_[0]->perl_version_human
-		. '.' . $_[0]->build_number
-		. ($_[0]->beta_number ? '-beta-' . $_[0]->beta_number : '')
+#	$_[0]->{output_base_filename} or
+#	'padre-standalone'
+#		. '-' . $_[0]->perl_version_human
+#		. '.' . $_[0]->build_number
+#		. ($_[0]->beta_number ? '-beta-' . $_[0]->beta_number : '')
+	return 'almost-six-0.41';
 }
 
 
@@ -327,6 +328,14 @@ sub dist_dir {
 	}
 
 	return $dir;
+}
+
+sub install_custom {
+	my $self = shift;
+
+	$self->install_six();
+	
+	return 1;
 }
 
 1;

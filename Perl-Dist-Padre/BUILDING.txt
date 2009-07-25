@@ -1,22 +1,24 @@
-You really need to start with a Bootstrap installation, because at the end of this, this will install into c:\strawberry.
+It is assumed that wget, gzip, tar, and svn are available.
 
-It is also assumed that wget, gzip, tar, and svn are available.
+Do this with a Strawberry.
 
 1) Create a par file for Alien::wxWidgets, because we need to install a patched version. ($CPAN is to be replaced by your choice of CPAN mirror.)
 
-cd %USERPROFILE%
+cd C:\
 wget $CPAN/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
 wget http://csjewell.comyr.com/perl/version-rc.patch.txt
 wget http://www.commandline.co.uk/mtee/mtee.zip
 gzip -d Alien-wxWidgets-0.43.tar.gz
 tar -xf Alien-wxWidgets-0.43.tar
-./Alien-wxWidgets-0.43/share/bin/patch version-rc.patch.txt 
+./Alien-wxWidgets-0.43/inc/bin/patch version-rc.patch.txt 
 cd Alien-wxWidgets-0.43
 perl Makefile.PL
 perl -MPAR::Dist -eblib_to_par
 (wait 40 minutes)
 copy Alien-*.par c:\
 cd ..
+
+You really need to use a Bootstrap installation, because at the end of this, this will install into c:\strawberry.
 
 2) Install Perl::Dist::WiX from CPAN.
 
