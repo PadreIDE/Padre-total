@@ -2,6 +2,7 @@ package Padre::Plugin::Perl6::Util;
 
 use strict;
 use warnings;
+use Padre::Constant ();
 
 our $VERSION = '0.55';
 
