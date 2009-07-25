@@ -48,118 +48,137 @@ sub _get_outline {
 	my $self = shift;
 
 	my $outline = [];
-	
-	if($self->{tokens}) {
-		my $cur_pkg = {};
-		my @tokens = @{$self->{tokens}};
-		my $symbol_type = 'package';
-		my $symbol_name = '';
-		my $symbol_line = -1;
-		my $symbol_suffix = '';
+
+	if ( $self->{tokens} ) {
+		my $cur_pkg        = {};
+		my @tokens         = @{ $self->{tokens} };
+		my $symbol_type    = 'package';
+		my $symbol_name    = '';
+		my $symbol_line    = -1;
+		my $symbol_suffix  = '';
 		my $symbol_context = '';
-		my $context = 'GLOBAL';
+		my $context        = 'GLOBAL';
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
-			my $tree = $token{tree};
-			if($tree) {
+			my $tree  = $token{tree};
+			if ($tree) {
 				my $buffer = $token{buffer};
 				my $lineno = $token{lineno};
-				if($tree =~ /package_declarator__S_\d+(class|grammar|module|package|role|knowhow|slang) package_def.+def_module_name/) {
+				if ( $tree
+					=~ /package_declarator__S_\d+(class|grammar|module|package|role|knowhow|slang) package_def.+def_module_name/
+					)
+				{
+
 					# (classes, grammars, modules, packages, roles) or main are always parent nodes
 					$symbol_type = $1;
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /(package_declarator__S_\d+require module_name)|(statement_control__S_\d+use module_name)/) {
+				} elsif ( $tree
+					=~ /(package_declarator__S_\d+require module_name)|(statement_control__S_\d+use module_name)/ )
+				{
+
 					# require/use a module
 					$symbol_type = "modules";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /routine_declarator__S_\d+sub routine_def deflongname/) {
+				} elsif ( $tree =~ /routine_declarator__S_\d+sub routine_def deflongname/ ) {
+
 					# a subroutine
 					$symbol_type = "subroutines";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /routine_declarator__\w+_\d+method method_def (longname|$)/) {
+				} elsif ( $tree =~ /routine_declarator__\w+_\d+method method_def (longname|$)/ ) {
+
 					# a method
-					if($buffer eq '!') {
+					if ( $buffer eq '!' ) {
+
 						# private method...
 						$symbol_suffix = " (private)";
-					} elsif($buffer eq '^') {
+					} elsif ( $buffer eq '^' ) {
+
 						# class or .HOW method
 						$symbol_suffix = " (class)";
 					}
 					$symbol_type = "methods";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /routine_declarator__\w+_\d+submethod method_def longname/) {
+				} elsif ( $tree =~ /routine_declarator__\w+_\d+submethod method_def longname/ ) {
+
 					# a submethod
 					$symbol_type = "submethods";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /routine_declarator__\w+_\d+macro macro_def deflongname/) {
+				} elsif ( $tree =~ /routine_declarator__\w+_\d+macro macro_def deflongname/ ) {
+
 					# a macro
 					$symbol_type = "macros";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /regex_declarator__\w+_\d+(regex|token|rule) regex_def deflongname/) {
+				} elsif ( $tree =~ /regex_declarator__\w+_\d+(regex|token|rule) regex_def deflongname/ ) {
+
 					# a regex, token or rule declaration
 					$symbol_type = "regexes";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
-				} elsif($tree =~ /scope_declarator__\w+_\d+(our|my|has|state|constant) scoped declarator variable_declarator variable/) {
+				} elsif ( $tree
+					=~ /scope_declarator__\w+_\d+(our|my|has|state|constant) scoped declarator variable_declarator variable/
+					)
+				{
+
 					# a start for an attribute declaration
 					$symbol_type = "attributes";
 					$symbol_name .= $buffer;
-					$symbol_line = $lineno;
+					$symbol_line   = $lineno;
 					$symbol_suffix = $1;
 				} else {
-					if($symbol_name ne '') {
-						if( $symbol_type eq 'class' || 
-							$symbol_type eq 'grammar' || 
-							$symbol_type eq 'module' ||
-							$symbol_type eq 'package' ||
-							$symbol_type eq 'role' ||
-							$symbol_type eq 'knowhow' ||
-							$symbol_type eq 'slang') 
+					if ( $symbol_name ne '' ) {
+						if (   $symbol_type eq 'class'
+							|| $symbol_type eq 'grammar'
+							|| $symbol_type eq 'module'
+							|| $symbol_type eq 'package'
+							|| $symbol_type eq 'role'
+							|| $symbol_type eq 'knowhow'
+							|| $symbol_type eq 'slang' )
 						{
 							$context = $symbol_name;
-							if(not $cur_pkg->{name}) {
+							if ( not $cur_pkg->{name} ) {
 								$cur_pkg->{name} = 'GLOBAL';
 							}
 							push @{$outline}, $cur_pkg;
-							$cur_pkg = {};
+							$cur_pkg         = {};
 							$cur_pkg->{name} = $symbol_name . " ($symbol_type)";
 							$cur_pkg->{line} = $symbol_line;
 						} else {
-							if($symbol_type eq 'attributes') {
-								if($symbol_name !~ /\./) {
+							if ( $symbol_type eq 'attributes' ) {
+								if ( $symbol_name !~ /\./ ) {
 									$symbol_suffix = " (private, $symbol_suffix)";
 								} else {
 									$symbol_suffix = " ($symbol_suffix)";
 								}
 							}
 							$symbol_name .= $symbol_suffix;
-							push @{ $cur_pkg->{$symbol_type} }, {
-								name => $symbol_name, 
-								line=>$symbol_line,
-							}; 
+							push @{ $cur_pkg->{$symbol_type} },
+								{
+								name => $symbol_name,
+								line => $symbol_line,
+								};
 						}
-						$symbol_type = '';
-						$symbol_name = '';
-						$symbol_line = -1;
+						$symbol_type   = '';
+						$symbol_name   = '';
+						$symbol_line   = -1;
 						$symbol_suffix = '';
 					}
 				}
 			}
 		}
-		
-		if(not $cur_pkg->{name}) {
+
+		if ( not $cur_pkg->{name} ) {
 			$cur_pkg->{name} = 'GLOBAL';
 		}
 		push @{$outline}, $cur_pkg;
 
 	}
-	
+
 	$self->{outline} = $outline;
 	return;
 }
@@ -284,7 +303,12 @@ sub _add_subtree {
 		);
 
 		my @sorted_entries = ();
-		if ( $type eq 'subroutines' || $type eq 'methods' || $type eq 'submethods' || $type eq 'macros' || $type eq 'attributes') {
+		if (   $type eq 'subroutines'
+			|| $type eq 'methods'
+			|| $type eq 'submethods'
+			|| $type eq 'macros'
+			|| $type eq 'attributes' )
+		{
 			my $config = Padre->ide->config;
 			if ( $config->main_functions_order eq 'original' ) {
 
@@ -320,12 +344,12 @@ sub _add_subtree {
 		}
 	}
 	if ( defined $type_elem ) {
-		if ( $type eq 'subroutines' || 
-			$type eq 'methods' || 
-			$type eq 'submethods' || 
-			$type eq 'macros' || 
-			$type eq 'regexes' ||
-			$type eq 'attributes') 
+		if (   $type eq 'subroutines'
+			|| $type eq 'methods'
+			|| $type eq 'submethods'
+			|| $type eq 'macros'
+			|| $type eq 'regexes'
+			|| $type eq 'attributes' )
 		{
 			$outlinebar->Expand($type_elem);
 		} else {

@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 use Carp;
-use Padre::Wx   ();
+use Padre::Wx ();
 use base 'Padre::Plugin';
 use Padre::Plugin::Perl6::Util;
 
@@ -18,7 +18,7 @@ my $SIMPLE_HTML  = 'simple_html';
 my $SNIPPET_HTML = 'snippet_html';
 
 use Class::XSAccessor accessors => {
-	config         => 'config',           # plugin configuration object
+	config => 'config', # plugin configuration object
 };
 
 # static field to contain reference to current plugin configuration
@@ -30,9 +30,7 @@ sub plugin_config {
 
 # private subroutine to return the current share directory location
 sub _sharedir {
-	return Cwd::realpath(
-		File::Spec->join(File::Basename::dirname(__FILE__),'Perl6/share')
-	);
+	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Perl6/share' ) );
 }
 
 # Returns the plugin name to Padre
@@ -46,13 +44,14 @@ sub plugin_locale_directory {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.41,
+	'Padre::Plugin' => 0.41,;
 }
 
 # plugin icon
 sub plugin_icon {
+
 	# find resource path
-	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'camelia.png');
+	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'camelia.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
@@ -64,16 +63,17 @@ sub plugin_enable {
 
 	# Read the plugin configuration, and create it if it is not there
 	$config = $self->config_read;
-	if(not $config) {
+	if ( not $config ) {
+
 		# no configuration, let us write some defaults
 		$config = {};
 	}
-	
+
 	# make sure defaults are respected if they are undefined.
-	if(not defined $config->{colorizer}) {
+	if ( not defined $config->{colorizer} ) {
 		$config->{colorizer} = 'STD';
 	}
-	if(not defined $config->{p6_highlight}) {
+	if ( not defined $config->{p6_highlight} ) {
 		$config->{p6_highlight} = 1;
 	}
 
@@ -81,8 +81,8 @@ sub plugin_enable {
 	$self->config_write($config);
 
 	# update configuration attribute
-	$self->config( $config );
-	
+	$self->config($config);
+
 	return 1;
 }
 
@@ -97,77 +97,77 @@ sub menu_plugins {
 	my $file_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Create Perl 6..."), $file_menu),
-		sub {},
+		$self->{menu}->Append( -1, Wx::gettext("Create Perl 6..."), $file_menu ),
+		sub { },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Script"), ),
-		sub { $self->_create_from_template('p6_script','p6') },
+		sub { $self->_create_from_template( 'p6_script', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Class"), ),
-		sub { $self->_create_from_template('p6_class','p6') },
+		sub { $self->_create_from_template( 'p6_class', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Grammar"), ),
-		sub { $self->_create_from_template('p6_grammar', 'p6') },
+		sub { $self->_create_from_template( 'p6_grammar', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Package"), ),
-		sub { $self->_create_from_template('p6_package', 'p6') },
+		sub { $self->_create_from_template( 'p6_package', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Module"), ),
-		sub { $self->_create_from_template('p6_module', 'p6') },
+		sub { $self->_create_from_template( 'p6_module', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Role"), ),
-		sub { $self->_create_from_template('p6_role', 'p6') },
+		sub { $self->_create_from_template( 'p6_role', 'p6' ) },
 	);
 	Wx::Event::EVT_MENU(
 		$main,
 		$file_menu->Append( -1, Wx::gettext("Inlined in Perl 5"), ),
-		sub { $self->_create_from_template('p6_inline_in_p5', 'p5') },
+		sub { $self->_create_from_template( 'p6_inline_in_p5', 'p5' ) },
 	);
 
 	# Refactor sub menu
 	my $refactor_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Refactor..."), $refactor_menu),
-		sub {  },
+		$self->{menu}->Append( -1, Wx::gettext("Refactor..."), $refactor_menu ),
+		sub { },
 	);
 
 	# Find variable declaration
 	Wx::Event::EVT_MENU(
 		$main,
 		$refactor_menu->Append( -1, Wx::gettext("Find variable declaration"), ),
-		sub { 
+		sub {
 			Wx::MessageBox(
 				Wx::gettext('Perl 6 refactoring support is coming soon...'),
 				Wx::gettext('Error'),
 				Wx::wxOK,
-				$main, 
+				$main,
 			);
 		},
 	);
-	
+
 	# Rename variable
 	Wx::Event::EVT_MENU(
 		$main,
 		$refactor_menu->Append( -1, Wx::gettext("Rename variable"), ),
-		sub { 
+		sub {
 			Wx::MessageBox(
 				Wx::gettext('Perl 6 refactoring support is coming soon...'),
 				Wx::gettext('Error'),
 				Wx::wxOK,
-				$main, 
+				$main,
 			);
 		},
 	);
@@ -176,8 +176,8 @@ sub menu_plugins {
 	my $rakudo_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Rakudo"), $rakudo_menu),
-		sub {},
+		$self->{menu}->Append( -1, Wx::gettext("Rakudo"), $rakudo_menu ),
+		sub { },
 	);
 
 	# Generate Perl 6 Executable
@@ -203,8 +203,8 @@ sub menu_plugins {
 	my $export_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Export..."), $export_menu),
-		sub {},
+		$self->{menu}->Append( -1, Wx::gettext("Export..."), $export_menu ),
+		sub { },
 	);
 
 	# Export into HTML
@@ -237,7 +237,7 @@ sub menu_plugins {
 	my $more_help_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("More Help?"), $more_help_menu),
+		$self->{menu}->Append( -1, Wx::gettext("More Help?"), $more_help_menu ),
 		sub { },
 	);
 
@@ -245,21 +245,21 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("#padre for Padre Help"), ),
-		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre" ); },
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
 	# Goto #perl6 link
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("#perl6 for Perl 6 Help"), ),
-		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=perl6" ); },
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=perl6"); },
 	);
 
 	# Perl 6 projects link
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Projects"), ),
-		sub { Wx::LaunchDefaultBrowser("http://perl6-projects.org" ); },
+		sub { Wx::LaunchDefaultBrowser("http://perl6-projects.org"); },
 	);
 
 	$self->{menu}->AppendSeparator;
@@ -268,8 +268,8 @@ sub menu_plugins {
 	my $maintenance_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
 		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Maintenance"), $maintenance_menu),
-		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre" ); },
+		$self->{menu}->Append( -1, Wx::gettext("Maintenance"), $maintenance_menu ),
+		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
 	# Cleanup STD.pm lex cache
@@ -298,37 +298,38 @@ sub menu_plugins {
 }
 
 sub registered_documents {
-	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',
+	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',;
 }
 
-sub provided_highlighters { 
+sub provided_highlighters {
 	return (
-		['Padre::Plugin::Perl6::Perl6StdColorizer', 'STD.pm', 'Larry Wall\'s Perl 6 reference grammar'],
-#		['Padre::Plugin::Perl6::Perl6PgeColorizer', 'PGE/Rakudo', 'Parrot Grammar Engine via Rakudo Perl 6'],
+		[ 'Padre::Plugin::Perl6::Perl6StdColorizer', 'STD.pm', 'Larry Wall\'s Perl 6 reference grammar' ],
+
+		#		['Padre::Plugin::Perl6::Perl6PgeColorizer', 'PGE/Rakudo', 'Parrot Grammar Engine via Rakudo Perl 6'],
 	);
 }
 
 sub highlighting_mime_types {
 	return (
 		'Padre::Plugin::Perl6::Perl6StdColorizer' => ['application/x-perl6'],
-#		'Padre::Plugin::Perl6::Perl6PgeColorizer' => ['application/x-perl6'],
+
+		#		'Padre::Plugin::Perl6::Perl6PgeColorizer' => ['application/x-perl6'],
 	);
 }
 
 # create a Perl 6 file from the template
 sub _create_from_template {
 	my ( $self, $template, $extension ) = @_;
-	
+
 	$self->main->on_new;
-	
+
 	my $editor = $self->current->editor or return;
-	my $file   = File::Spec->catdir( _sharedir(), "templates/$template.$extension" );
+	my $file = File::Spec->catdir( _sharedir(), "templates/$template.$extension" );
 	$editor->insert_from_file($file);
 
 	my $document = $editor->{Document};
-	my $mime_type = ($extension eq 'p6') ? 
-		'application/x-perl6' : 'application/x-perl'; 
-	$document->set_mimetype( $mime_type );
+	my $mime_type = ( $extension eq 'p6' ) ? 'application/x-perl6' : 'application/x-perl';
+	$document->set_mimetype($mime_type);
 	$document->editor->padre_setup;
 	$document->rebless;
 
@@ -337,9 +338,9 @@ sub _create_from_template {
 
 sub show_preferences {
 	my $self = shift;
-	
+
 	require Padre::Plugin::Perl6::Preferences;
-	my $prefs  = Padre::Plugin::Perl6::Preferences->new($self);
+	my $prefs = Padre::Plugin::Perl6::Preferences->new($self);
 	$prefs->Show;
 }
 
@@ -348,26 +349,27 @@ sub show_about {
 
 	require Syntax::Highlight::Perl6;
 	require App::Grok;
-	
+
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Perl6");
-	$about->SetDescription(
-		Wx::gettext("This plugin enables useful Perl 6 features on Padre IDE.") . "\n" .
-		Wx::gettext("It integrates coloring and easy access to Perl 6 help documents.") . "\n\n" .
-		Wx::gettext("The following modules are used:") . "\n" .
-		"Syntax::Highlight::Perl6 " . $Syntax::Highlight::Perl6::VERSION . "\n" .
-		"App::Grok " . $App::Grok::VERSION . "\n"
-	);
+	$about->SetDescription( Wx::gettext("This plugin enables useful Perl 6 features on Padre IDE.") . "\n"
+			. Wx::gettext("It integrates coloring and easy access to Perl 6 help documents.") . "\n\n"
+			. Wx::gettext("The following modules are used:") . "\n"
+			. "Syntax::Highlight::Perl6 "
+			. $Syntax::Highlight::Perl6::VERSION . "\n"
+			. "App::Grok "
+			. $App::Grok::VERSION
+			. "\n" );
 	$about->SetVersion($VERSION);
 
 	# create and return the camelia icon
-	my $camelia_path = File::Spec->catfile( _sharedir(), 'icons', 'camelia-big.png');
+	my $camelia_path = File::Spec->catfile( _sharedir(), 'icons', 'camelia-big.png' );
 	my $camelia_bmp = Wx::Bitmap->new( $camelia_path, Wx::wxBITMAP_TYPE_PNG );
 	my $camelia_icon = Wx::Icon->new();
 	$camelia_icon->CopyFromBitmap($camelia_bmp);
 	$about->SetIcon($camelia_icon);
-	
-	Wx::AboutBox( $about );
+
+	Wx::AboutBox($about);
 	return;
 }
 
@@ -377,13 +379,14 @@ sub show_about {
 sub cleanup_std_lex_cache {
 	my $self = shift;
 
-	my $main   = $self->main;
+	my $main = $self->main;
 
-	my $tmp_dir = File::Spec->catfile( 
-		Padre::Constant::PLUGIN_DIR, 
-		'Padre-Plugin-Perl6' );
+	my $tmp_dir = File::Spec->catfile(
+		Padre::Constant::PLUGIN_DIR,
+		'Padre-Plugin-Perl6'
+	);
 	my $LEX_STD_DIR = "$tmp_dir/lex/STD";
-	if(not -d $LEX_STD_DIR) {
+	if ( not -d $LEX_STD_DIR ) {
 		Wx::MessageBox(
 			Wx::gettext("Cannot find STD.pm lex cache"),
 			'Error',
@@ -398,31 +401,35 @@ sub cleanup_std_lex_cache {
 	use File::Find;
 	our @files_to_delete = ();
 	my $lex_cache_size = 0;
-	find(sub {
-		my $file = $_;
-		if(-f $file) {
-			$lex_cache_size += -s $file;
-			push @files_to_delete, $File::Find::name;
-		 }
-	}, $LEX_STD_DIR);
-	$lex_cache_size = sprintf("%0.3f", $lex_cache_size / (1024 * 1024));
+	find(
+		sub {
+			my $file = $_;
+			if ( -f $file ) {
+				$lex_cache_size += -s $file;
+				push @files_to_delete, $File::Find::name;
+			}
+		},
+		$LEX_STD_DIR
+	);
+	$lex_cache_size = sprintf( "%0.3f", $lex_cache_size / ( 1024 * 1024 ) );
 
 	# ask the user if he/she wants to open it in the default browser
 	my $num_files_to_delete = scalar @files_to_delete;
-	if($num_files_to_delete > 0) {
+	if ( $num_files_to_delete > 0 ) {
 		my $ret = Wx::MessageBox(
-			"STD.pm lex cache has $num_files_to_delete file(s) and $lex_cache_size MB.\n" .
-			"Do you want to clean it up now?",
+			"STD.pm lex cache has $num_files_to_delete file(s) and $lex_cache_size MB.\n"
+				. "Do you want to clean it up now?",
 			"Confirmation",
-			Wx::wxYES_NO|Wx::wxCENTRE,
+			Wx::wxYES_NO | Wx::wxCENTRE,
 			$main,
 		);
 		if ( $ret == Wx::wxYES ) {
+
 			#clean it up...
 			my $deleted_count = unlink @files_to_delete;
 			Wx::MessageBox(
-				"STD.pm lex cache should be clean now.\n" .
-				"Deleted $deleted_count out of $num_files_to_delete file(s).",
+				"STD.pm lex cache should be clean now.\n"
+					. "Deleted $deleted_count out of $num_files_to_delete file(s).",
 				'Information',
 				Wx::wxOK,
 				$main,
@@ -445,30 +452,31 @@ sub show_perl6_doc {
 
 	# find the word under the current cursor position
 	my $topic = '';
-	my $doc = $self->current->document;
-	if($doc && $doc->get_mimetype eq q{application/x-perl6}) {
+	my $doc   = $self->current->document;
+	if ( $doc && $doc->get_mimetype eq q{application/x-perl6} ) {
+
 		# make sure it is a Perl6 document
 		my $editor = $doc->editor;
 		$topic = $editor->GetSelectedText;
-		if (not $topic) {
-			my $lineno = $editor->GetCurrentLine();
-			my $line = $editor->GetLine($lineno);
-			my $current_pos = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
+		if ( not $topic ) {
+			my $lineno       = $editor->GetCurrentLine();
+			my $line         = $editor->GetLine($lineno);
+			my $current_pos  = $editor->GetCurrentPos() - $editor->PositionFromLine($lineno);
 			my $current_word = '';
-			while( $line =~ m/\G.*?(\S+)/g ) {
-				if(pos($line) >= $current_pos) {
+			while ( $line =~ m/\G.*?(\S+)/g ) {
+				if ( pos($line) >= $current_pos ) {
 					$current_word = $1;
 					last;
 				}
 			}
-			if($current_word =~ /^.*?(\S+)/) {
+			if ( $current_word =~ /^.*?(\S+)/ ) {
 				$topic = $1;
 			}
 		}
 	}
 
 	require Padre::Plugin::Perl6::Perl6HelpDialog;
-	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new($self, topic => $topic);
+	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new( $self, topic => $topic );
 	$dialog->ShowModal();
 
 }
@@ -477,9 +485,9 @@ sub highlight {
 	my $self = shift;
 	my $doc = Padre::Current->document or return;
 
-	if ($doc->can('colorize')) {
+	if ( $doc->can('colorize') ) {
 		my $text = $doc->text_get;
-		$doc->{_text} = $text;
+		$doc->{_text}              = $text;
 		$doc->{force_p6_highlight} = 1;
 		$doc->colorize;
 		$doc->{force_p6_highlight} = 0;
@@ -488,14 +496,13 @@ sub highlight {
 
 sub text_with_one_nl {
 	my $self = shift;
-	my $doc = shift;
+	my $doc  = shift;
 	my $text = $doc->text_get // '';
 
 	my $nlchar = "\n";
 	if ( $doc->get_newline_type eq 'WIN' ) {
 		$nlchar = "\r\n";
-	}
-	elsif ( $doc->get_newline_type eq 'MAC' ) {
+	} elsif ( $doc->get_newline_type eq 'MAC' ) {
 		$nlchar = "\r";
 	}
 	$text =~ s/$nlchar/\n/g;
@@ -503,17 +510,17 @@ sub text_with_one_nl {
 }
 
 sub export_html {
-	my ($self, $type) = @_;
+	my ( $self, $type ) = @_;
 
 	my $main = $self->main;
 
 	my $doc = $main->current->document;
-	if(not defined $doc) {
+	if ( not defined $doc ) {
 		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
-	
-	if($doc->get_mimetype ne q{application/x-perl6}) {
+
+	if ( $doc->get_mimetype ne q{application/x-perl6} ) {
 		Wx::MessageBox(
 			Wx::gettext('Not a Perl 6 file'),
 			Wx::gettext('Operation cancelled'),
@@ -530,55 +537,57 @@ sub export_html {
 	binmode( $tmp_in, ":utf8" );
 	print $tmp_in $text;
 	close $tmp_in or warn "cannot close $tmp_in\n";
-	
+
 	my $tmp_out = File::Temp->new( SUFFIX => '.p6_out.txt' );
 	binmode( $tmp_out, ":utf8" );
-	close $tmp_out or warn "cannot close $tmp_out\n";;
+	close $tmp_out or warn "cannot close $tmp_out\n";
 
 	my $tmp_err = File::Temp->new( SUFFIX => '.p6_err.txt' );
 	binmode( $tmp_err, ":utf8" );
-	close $tmp_err or warn "cannot close $tmp_err\n";;
+	close $tmp_err or warn "cannot close $tmp_err\n";
 
 	# construct the command
 	require File::Which;
 	my $hilitep6 = File::Which::which('hilitep6');
-	my @cmd = (
+	my @cmd      = (
 		$hilitep6,
 		$tmp_in,
 	);
 
-	given($type) {
-		when ($FULL_HTML) { push @cmd, "--full-html=$tmp_out 2>$tmp_err"; }
-		when ($SIMPLE_HTML) { push @cmd, "--simple-html=$tmp_out 2>$tmp_err"; }
+	given ($type) {
+		when ($FULL_HTML)    { push @cmd, "--full-html=$tmp_out 2>$tmp_err"; }
+		when ($SIMPLE_HTML)  { push @cmd, "--simple-html=$tmp_out 2>$tmp_err"; }
 		when ($SNIPPET_HTML) { push @cmd, "--snippet-html=$tmp_out 2>$tmp_err"; }
 		default {
+
 			# default is full html
 			push @cmd, "--full-html=$tmp_out 2>$tmp_err";
 		}
 	}
 
-	
+
 	# execute the command...
 	my $cmd = join ' ', @cmd;
 	`$cmd`;
-	 
+
 	# and read its output...
-	my ($out, $err);
+	my ( $out, $err );
 	{
-		local $/ = undef;   #enable localized slurp mode
+		local $/ = undef; #enable localized slurp mode
 
 		# slurp the process output...
-		open CHLD_OUT, $tmp_out	or warn "Could not open $tmp_out";
+		open CHLD_OUT, $tmp_out or warn "Could not open $tmp_out";
 		$out = <CHLD_OUT>;
 		close CHLD_OUT or warn "Could not close $tmp_out\n";
-		
+
 		open CHLD_ERR, $tmp_err or warn "Could not open $tmp_err\n";
 		$err = <CHLD_ERR>;
 		close CHLD_ERR or warn "Could not close $tmp_err\n";
 	}
-	
+
 	my $html;
-	if($err) {
+	if ($err) {
+
 		# remove ANSI color escape sequences...
 		$err =~ s/\033\[(\d+)(?:;(\d+)(?:;(\d+))?)?m//g;
 		Wx::MessageBox(
@@ -594,7 +603,7 @@ sub export_html {
 	}
 
 	# create a temporary HTML file
-	my $tmp = File::Temp->new(SUFFIX => '.html');
+	my $tmp = File::Temp->new( SUFFIX => '.html' );
 	$tmp->unlink_on_destroy(0);
 	my $filename = $tmp->filename;
 	print $tmp $html;
@@ -608,10 +617,11 @@ sub export_html {
 	my $ret = Wx::MessageBox(
 		"Saved to $filename. Do you want to open it now?",
 		"Done",
-		Wx::wxYES_NO|Wx::wxCENTRE,
+		Wx::wxYES_NO | Wx::wxCENTRE,
 		$main,
 	);
 	if ( $ret == Wx::wxYES ) {
+
 		# launch the HTML file in your default browser
 		require URI::file;
 		my $file_url = URI::file->new($filename);
@@ -621,7 +631,7 @@ sub export_html {
 	return;
 }
 
-# Generate a Perl6 executable 
+# Generate a Perl6 executable
 # The idea came from:
 # "My first executable from Perl 6" by Moritz Lenz
 # http://perlgeek.de/blog-en/perl-6/my-first-executable.writeback
@@ -648,7 +658,7 @@ sub generate_p6_exe {
 	# Check for perl6 existance and that it is executable.
 	require Padre::Plugin::Perl6::Util;
 	my $perl6 = Padre::Plugin::Perl6::Util->perl6_exe;
-	unless( $perl6 ) {
+	unless ($perl6) {
 		Wx::MessageBox(
 			'Cannot find a perl6 executable',
 			'Error',
@@ -660,7 +670,7 @@ sub generate_p6_exe {
 
 	# Check for -e parrot existance and that it is executable.
 	my $parrot = Padre::Plugin::Perl6::Util::parrot_bin('parrot');
-	unless( $parrot ) {
+	unless ($parrot) {
 		Wx::MessageBox(
 			'Cannot find a parrot executable',
 			'Error',
@@ -672,7 +682,7 @@ sub generate_p6_exe {
 
 	# Check for -e pbc_to_exe existance and that it is executable.
 	my $pbc_to_exe = Padre::Plugin::Perl6::Util::parrot_bin('pbc_to_exe');
-	unless( $pbc_to_exe ) {
+	unless ($pbc_to_exe) {
 		Wx::MessageBox(
 			'Cannot find a parrot executable',
 			'Error',
@@ -684,7 +694,7 @@ sub generate_p6_exe {
 
 	# Check for libparrot existance
 	my $libparrot = Padre::Plugin::Perl6::Util::libparrot();
-	unless( $libparrot ) {
+	unless ($libparrot) {
 		Wx::MessageBox(
 			'Cannot find a libparrot shared library',
 			'Error',
@@ -695,12 +705,13 @@ sub generate_p6_exe {
 	}
 
 	require File::Temp;
+
 	#XXX- CLEANUP must be enabled once testing is finished...
-	my $tmp_dir   = File::Temp->newdir( CLEANUP => 0 );
-	my $hello_pl  = File::Spec->catfile($tmp_dir, 'hello.pl');
-	my $hello_pir = File::Spec->catfile($tmp_dir, 'hello.pir');
-	my $hello_pbc = File::Spec->catfile($tmp_dir, 'hello.pbc');
-	my $hello_exe = File::Spec->catfile($tmp_dir, $^O eq 'MSWin32' ? 'hello.exe' : 'hello');
+	my $tmp_dir = File::Temp->newdir( CLEANUP => 0 );
+	my $hello_pl  = File::Spec->catfile( $tmp_dir, 'hello.pl' );
+	my $hello_pir = File::Spec->catfile( $tmp_dir, 'hello.pir' );
+	my $hello_pbc = File::Spec->catfile( $tmp_dir, 'hello.pbc' );
+	my $hello_exe = File::Spec->catfile( $tmp_dir, $^O eq 'MSWin32' ? 'hello.exe' : 'hello' );
 
 	#XXX- quote all those files in win32
 	my $perl6_to_pir_cmd = "$perl6 --target=PIR --output=$hello_pir $hello_pl";
@@ -719,6 +730,7 @@ sub generate_p6_exe {
 		or die "Cannot open $hello_pl\n";
 	binmode HELLO_PL, ":utf8";
 	my $text = $doc->text_get;
+
 	#XXX- check text_get return value
 	print HELLO_PL $text;
 	close HELLO_PL
@@ -732,9 +744,9 @@ sub generate_p6_exe {
 	$main->show_output(1);
 	my $outpanel = $main->output;
 	$outpanel->Remove( 0, $outpanel->GetLastPosition );
-	
+
 	#enable localized slurp mode
-	local $/ = undef;   
+	local $/ = undef;
 	my $out;
 
 	# Run command:
@@ -747,7 +759,7 @@ sub generate_p6_exe {
 	open OUTPUT, $cmd_1_output or warn "Could not open $cmd_1_output\n";
 	$out = <OUTPUT>;
 	close OUTPUT or warn "Could not close $cmd_1_output\n";
-	$outpanel->AppendText( $out );
+	$outpanel->AppendText($out);
 
 	# Run command:
 	# parrot/parrot -o hello.pbc hello.pir
@@ -757,7 +769,7 @@ sub generate_p6_exe {
 	open OUTPUT, $cmd_2_output or warn "Could not open $cmd_2_output\n";
 	$out = <OUTPUT>;
 	close OUTPUT or warn "Could not close $cmd_2_output\n";
-	$outpanel->AppendText( $out );
+	$outpanel->AppendText($out);
 
 	# Run command 3.
 	# parrot/pbc_to_exe hello.pbc
@@ -767,9 +779,9 @@ sub generate_p6_exe {
 	open OUTPUT, $cmd_3_output or warn "Could not open $cmd_3_output\n";
 	$out = <OUTPUT>;
 	close OUTPUT or warn "Could not close $cmd_3_output\n";
-	$outpanel->AppendText( $out );
+	$outpanel->AppendText($out);
 
-	unless( -x $hello_exe ) {
+	unless ( -x $hello_exe ) {
 		Wx::MessageBox(
 			'Operation failed. Please check the output.',
 			'Error',
@@ -785,7 +797,7 @@ sub generate_p6_exe {
 	my $libparrot_name = File::Basename::fileparse($libparrot);
 	my $hello_exe_name = File::Basename::fileparse($hello_exe);
 	my $dest_libparrot = File::Spec->catfile( $current_dir, $libparrot_name );
-	my $dest_hello_exe = File::Spec->catfile( $current_dir, $hello_exe_name);
+	my $dest_hello_exe = File::Spec->catfile( $current_dir, $hello_exe_name );
 	print "Copying $libparrot into $dest_libparrot\n";
 	File::Copy::copy( $libparrot, $dest_libparrot );
 	print "Copying $hello_exe into $dest_hello_exe\n";
@@ -803,11 +815,11 @@ sub generate_p6_pir {
 	my $main = $self->main;
 	my $doc  = $main->current->document;
 
-	if(not defined $doc) {
+	if ( not defined $doc ) {
 		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
-	if($doc->get_mimetype ne q{application/x-perl6}) {
+	if ( $doc->get_mimetype ne q{application/x-perl6} ) {
 		Wx::MessageBox(
 			'Not a Perl 6 file',
 			'Operation cancelled',
@@ -820,7 +832,7 @@ sub generate_p6_pir {
 	# Check for perl6 existance and that it is executable.
 	require Padre::Plugin::Perl6::Util;
 	my $perl6 = Padre::Plugin::Perl6::Util::perl6_exe();
-	unless($perl6 && -x $perl6) {
+	unless ( $perl6 && -x $perl6 ) {
 		Wx::MessageBox(
 			'Cannot find a perl6 executable',
 			'Error',
@@ -829,14 +841,15 @@ sub generate_p6_pir {
 		);
 		return;
 	}
-	
+
 	require File::Temp;
-	my $tmp_dir   = File::Temp->newdir( CLEANUP => 0 );
-	my $hello_pl  = File::Spec->catfile($tmp_dir, 'hello.pl');
-	my $hello_pir = File::Spec->catfile($tmp_dir, 'hello.pir');
+	my $tmp_dir = File::Temp->newdir( CLEANUP => 0 );
+	my $hello_pl  = File::Spec->catfile( $tmp_dir, 'hello.pl' );
+	my $hello_pir = File::Spec->catfile( $tmp_dir, 'hello.pir' );
 
 	#XXX- quote all those files in win32
 	my $perl6_to_pir_cmd = "$perl6 --target=PIR --output=$hello_pir $hello_pl";
+
 	# Tell the user about the commands that are going to be executed.
 	Wx::MessageBox(
 		"The following command is going to be executed:\n\n$perl6_to_pir_cmd\n",
@@ -844,41 +857,42 @@ sub generate_p6_pir {
 		Wx::wxOK,
 		$main,
 	);
-	
-	
+
+
 	open HELLO_PL, ">$hello_pl"
 		or die "Cannot open $hello_pl\n";
 	binmode HELLO_PL, ":utf8";
 	my $text = $doc->text_get;
+
 	#XXX- check text_get return value
 	print HELLO_PL $text;
 	close HELLO_PL
 		or die "Cannot close $hello_pl\n";
 
-	my $cmd_output = File::Spec->catfile($tmp_dir, "output.txt");
+	my $cmd_output = File::Spec->catfile( $tmp_dir, "output.txt" );
 
 	# Prepare the output window for the output
 	$main->show_output(1);
 	my $outpanel = $main->output;
 	$outpanel->Remove( 0, $outpanel->GetLastPosition );
-	
+
 	#enable localized slurp mode
-	local $/ = undef;   
+	local $/ = undef;
 	my $out;
-	
+
 	# Run command:
 	# perl6 --target=PIR --output=hello.pir hello.pl
 	print "Executing:\n $perl6_to_pir_cmd\n";
 	`$perl6_to_pir_cmd 1>$cmd_output 2>&1`;
 	$outpanel->style_neutral;
-	
+
 	# slurp the process output...
 	open OUTPUT, $cmd_output or warn "Could not open $cmd_output\n";
 	$out = <OUTPUT>;
 	close OUTPUT or warn "Could not close $cmd_output\n";
-	$outpanel->AppendText( $out );
+	$outpanel->AppendText($out);
 
-	unless(-f $hello_pir) {
+	unless ( -f $hello_pir ) {
 		Wx::MessageBox(
 			'Operation failed. Please check the output.',
 			'Error',
@@ -887,10 +901,10 @@ sub generate_p6_pir {
 		);
 		return;
 	}
-	
+
 	# try to open the HTML file
 	$main->setup_editor($hello_pir);
-	
+
 }
 
 1;

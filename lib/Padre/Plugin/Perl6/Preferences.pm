@@ -4,9 +4,9 @@ use warnings;
 use strict;
 
 use Class::XSAccessor accessors => {
-	_plugin           => '_plugin',           # plugin to be configured
-	_sizer            => '_sizer',            # window sizer
-	_colorizer_cb     => '_colorizer_cb',      # colorizer on/off checkbox
+	_plugin       => '_plugin',       # plugin to be configured
+	_sizer        => '_sizer',        # window sizer
+	_colorizer_cb => '_colorizer_cb', # colorizer on/off checkbox
 };
 
 our $VERSION = '0.54';
@@ -20,7 +20,7 @@ use base 'Wx::Dialog';
 # -- constructor
 
 sub new {
-	my ($class, $plugin) = @_;
+	my ( $class, $plugin ) = @_;
 
 	# create object
 	my $self = $class->SUPER::new(
@@ -29,7 +29,7 @@ sub new {
 		Wx::gettext('Perl 6 preferences'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
+		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
 	$self->SetIcon( Wx::GetWxPerlIcon() );
 	$self->_plugin($plugin);
@@ -47,10 +47,10 @@ sub new {
 # $self->_on_ok_button_clicked;
 #
 # handler called when the ok button has been clicked.
-# 
+#
 sub _on_ok_button_clicked {
 	my $self = shift;
-	
+
 	my $plugin = $self->_plugin;
 
 	# read plugin preferences
@@ -58,19 +58,20 @@ sub _on_ok_button_clicked {
 
 	# update configuration
 	my $old_p6_highlight = $prefs->{p6_highlight};
-	my $old_colorizer = $prefs->{colorizer};
+	my $old_colorizer    = $prefs->{colorizer};
 	$prefs->{p6_highlight} = $self->_colorizer_cb->GetValue();
 
 	# store plugin preferences
 	$plugin->config_write($prefs);
 
-	if($old_p6_highlight != $prefs->{p6_highlight} || $old_colorizer ne $prefs->{colorizer}) {
+	if ( $old_p6_highlight != $prefs->{p6_highlight} || $old_colorizer ne $prefs->{colorizer} ) {
+
 		# a configuration change for colorizer
-		if( $prefs->{p6_highlight} ) {
+		if ( $prefs->{p6_highlight} ) {
 			$plugin->highlight;
 		}
 	}
-	
+
 	$self->Destroy;
 }
 
@@ -84,7 +85,7 @@ sub _create {
 	my $self = shift;
 
 	# create sizer that will host all controls
-	my $sizer = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$self->_sizer($sizer);
 
 	# create the controls
@@ -100,11 +101,11 @@ sub _create {
 # create the buttons pane.
 #
 sub _create_buttons {
-	my $self = shift;
-	my $sizer  = $self->_sizer;
+	my $self  = shift;
+	my $sizer = $self->_sizer;
 
-	my $butsizer = $self->CreateStdDialogButtonSizer(Wx::wxOK|Wx::wxCANCEL);
-	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	my $butsizer = $self->CreateStdDialogButtonSizer( Wx::wxOK | Wx::wxCANCEL );
+	$sizer->Add( $butsizer, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
 	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
 }
 
@@ -114,19 +115,17 @@ sub _create_buttons {
 sub _create_controls {
 	my $self = shift;
 
-	$self->_colorizer_cb(
-		Wx::CheckBox->new( $self, -1, Wx::gettext('Enable coloring'))
-	);
-	
+	$self->_colorizer_cb( Wx::CheckBox->new( $self, -1, Wx::gettext('Enable coloring') ) );
+
 	# Select based on configuration parameters
 	my $config = $self->_plugin->config;
 	$self->_colorizer_cb->SetValue( $config->{p6_highlight} );
-	
+
 	# pack the controls in a box
 	my $box;
 	$box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$box->Add( $self->_colorizer_cb, 1, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
-	$self->_sizer->Add( $box, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5 );
+	$box->Add( $self->_colorizer_cb, 1, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+	$self->_sizer->Add( $box, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
 
 }
 
