@@ -204,13 +204,54 @@ sub _create_controls {
 		)
 	);
 
-	my $hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+
+	my $popup_button = Wx::BitmapButton->new(
+		$self, -1,
+		Padre::Wx::Icon::find("actions/down")
+	);
+	my ($skip_rcs_files, $skip_hidden_files, $skip_manifest_skip);
+	my $popup_menu = Wx::Menu->new;
+	Wx::Event::EVT_MENU(
+		$self,
+		$skip_rcs_files = $popup_menu->AppendCheckItem( -1, Wx::gettext("Skip CVS/.svn/.git"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$self,
+		$skip_hidden_files = $popup_menu->AppendCheckItem( -1, Wx::gettext("Skip hidden files"), ),
+		sub { },
+	);
+	Wx::Event::EVT_MENU(
+		$self,
+		$skip_manifest_skip = $popup_menu->AppendCheckItem( -1, Wx::gettext("skip MANIFEST.SKIP"), ),
+		sub { },
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$popup_button,
+		sub {
+			my ($self, $event) = @_;
+			$self->PopupMenu( 
+				$popup_menu, 
+				$popup_button->GetPosition->x, 
+				$popup_button->GetPosition->y + $popup_button->GetSize->GetHeight);
+			}
+	);
+
+	my $hb;
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_search_text,      0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$hb->AddSpacer(2);
+	$hb->Add( $self->_search_text,      1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $popup_button,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->AddSpacer(1);
+	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $matches_label,           0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list,     1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
 	$hb->Add( $folder_image,       0, Wx::wxALL | Wx::wxEXPAND, 1 );
 	$hb->Add( $self->_status_text, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
