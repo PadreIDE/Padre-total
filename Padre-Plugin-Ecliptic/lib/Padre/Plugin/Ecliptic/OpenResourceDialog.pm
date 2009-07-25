@@ -26,7 +26,6 @@ use Class::XSAccessor accessors => {
 	_popup_button     => '_popup_button',                  # popup button for options
 	_popup_menu       => '_popup_menu',                  # options popup menu
 	_skip_vcs_files   => '_skip_vcs_files',                  # Skip RCS files menu item
-	_skip_hidden_files => '_skip_hidden_files',                 # Skip Hidden files menu item
 	_skip_using_manifest_skip => '_skip_using_manifest_skip',          # Skip using MANIFEST.SKIP menu item
 };
 
@@ -212,13 +211,10 @@ sub _create_controls {
 	$self->_popup_menu( Wx::Menu->new );
 	$self->_skip_vcs_files( 
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip VCS files")));
-	$self->_skip_hidden_files( 
-		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip hidden files")));
 	$self->_skip_using_manifest_skip(
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP")));
 
 	$self->_skip_vcs_files->Check(1);
-	$self->_skip_hidden_files->Check(1);
 	$self->_skip_using_manifest_skip->Check(1);
 
 	my $hb;
@@ -346,11 +342,6 @@ sub _setup_events {
 	);
 	Wx::Event::EVT_MENU(
 		$self,
-		$self->_skip_hidden_files,
-		sub { $self->_restart_search; },
-	);
-	Wx::Event::EVT_MENU(
-		$self,
 		$self->_skip_using_manifest_skip,
 		sub { $self->_restart_search; },
 	);
@@ -399,7 +390,6 @@ sub _search() {
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
 	my $skip_vcs_files = $self->_skip_vcs_files->IsChecked;
-	my $skip_hidden_files = $self->_skip_hidden_files->IsChecked;
 	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip->IsChecked;
 
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
@@ -412,9 +402,6 @@ sub _search() {
 		);
 	}
 	$rule->file;
-
-	if($skip_hidden_files) {
-	}
 
 	if($skip_using_manifest_skip) {
 		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
