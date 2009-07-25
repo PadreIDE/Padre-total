@@ -1,5 +1,18 @@
 Changes
 
+=head1 0.55 2009.7.25
+
+	- This is a bugfix release for Padre's Birthday Six Release.
+	- Removed commented highlighter, and tidied the files using Padre's 
+		perltidyrc.
+	- Fixed missing use (szabgab++).
+	- Grok target location is now shown in the dialog's title.
+	- Fixed the environment detection code, disable Perl 6 Executable menu 
+		entry if there's no parrot.exe (adamk++).
+	- Depends on App::Grok 0.14 for less dependencies.
+	- Find the path to hard perl6.exe hard coded in strawberry six (szabgab++).
+	- return the path to the perl6 executable if it exists (szabgab++).
+
 =head1 0.54 2009.7.24
 
 	- Depends on S:H:P6 version 0.65 to fix ticket:461 "Syntax check hanging 
