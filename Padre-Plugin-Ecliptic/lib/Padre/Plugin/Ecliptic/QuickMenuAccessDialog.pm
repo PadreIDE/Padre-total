@@ -65,6 +65,7 @@ sub _on_ok_button_clicked {
 		if ( $event && ref($event) eq 'CODE' ) {
 
 			eval {
+
 				# Keep the last 20 recently opened resources available
 				# and save it to plugin's configuration object
 				my $config = $self->_plugin->config_read;
@@ -88,7 +89,7 @@ sub _on_ok_button_clicked {
 					Wx::wxOK,
 					$main,
 				);
-			} 
+			}
 		}
 	}
 }

@@ -15,18 +15,18 @@ use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
-	_plugin           => '_plugin',           # plugin instance
-	_sizer            => '_sizer',            # window sizer
-	_search_text      => '_search_text',      # search text control
-	_matches_list     => '_matches_list',     # matches list
-	_status_text      => '_status_text',      # status label
-	_directory        => '_directory',        # searched directory
-	_matched_files    => '_matched_files',    # matched files list
-	_copy_button      => '_copy_button',      # copy button
-	_popup_button     => '_popup_button',                  # popup button for options
-	_popup_menu       => '_popup_menu',                  # options popup menu
-	_skip_vcs_files   => '_skip_vcs_files',                  # Skip RCS files menu item
-	_skip_using_manifest_skip => '_skip_using_manifest_skip',          # Skip using MANIFEST.SKIP menu item
+	_plugin                   => '_plugin',                   # plugin instance
+	_sizer                    => '_sizer',                    # window sizer
+	_search_text              => '_search_text',              # search text control
+	_matches_list             => '_matches_list',             # matches list
+	_status_text              => '_status_text',              # status label
+	_directory                => '_directory',                # searched directory
+	_matched_files            => '_matched_files',            # matched files list
+	_copy_button              => '_copy_button',              # copy button
+	_popup_button             => '_popup_button',             # popup button for options
+	_popup_menu               => '_popup_menu',               # options popup menu
+	_skip_vcs_files           => '_skip_vcs_files',           # Skip RCS files menu item
+	_skip_using_manifest_skip => '_skip_using_manifest_skip', # Skip using MANIFEST.SKIP menu item
 };
 
 # -- constructor
@@ -204,30 +204,31 @@ sub _create_controls {
 	);
 
 
-	$self->_popup_button ( Wx::BitmapButton->new(
-		$self, -1,
-		Padre::Wx::Icon::find("actions/down")
-	));
+	$self->_popup_button(
+		Wx::BitmapButton->new(
+			$self, -1,
+			Padre::Wx::Icon::find("actions/down")
+		)
+	);
 	$self->_popup_menu( Wx::Menu->new );
-	$self->_skip_vcs_files( 
-		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip VCS files")));
+	$self->_skip_vcs_files( $self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip VCS files") ) );
 	$self->_skip_using_manifest_skip(
-		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP")));
+		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP") ) );
 
 	$self->_skip_vcs_files->Check(1);
 	$self->_skip_using_manifest_skip->Check(1);
 
 	my $hb;
 	$self->_sizer->AddSpacer(10);
-	$self->_sizer->Add( $search_label,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $search_label, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
-	$hb->Add( $self->_search_text,      1, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$hb->Add( $self->_popup_button,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $self->_search_text,  1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $self->_popup_button, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb->AddSpacer(1);
-	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
-	$self->_sizer->Add( $matches_label,           0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$self->_sizer->Add( $self->_matches_list,     1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$self->_sizer->Add( $hb,                  0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
+	$self->_sizer->Add( $matches_label,       0, Wx::wxALL | Wx::wxEXPAND,    2 );
+	$self->_sizer->Add( $self->_matches_list, 1, Wx::wxALL | Wx::wxEXPAND,    2 );
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
 	$hb->Add( $folder_image,       0, Wx::wxALL | Wx::wxEXPAND, 1 );
@@ -334,7 +335,7 @@ sub _setup_events {
 			Wx::Event::EVT_IDLE( $self, undef );
 		}
 	);
-	
+
 	Wx::Event::EVT_MENU(
 		$self,
 		$self->_skip_vcs_files,
@@ -350,12 +351,13 @@ sub _setup_events {
 		$self,
 		$self->_popup_button,
 		sub {
-			my ($self, $event) = @_;
-			$self->PopupMenu( 
-				$self->_popup_menu, 
-				$self->_popup_button->GetPosition->x, 
-				$self->_popup_button->GetPosition->y + $self->_popup_button->GetSize->GetHeight);
-			}
+			my ( $self, $event ) = @_;
+			$self->PopupMenu(
+				$self->_popup_menu,
+				$self->_popup_button->GetPosition->x,
+				$self->_popup_button->GetPosition->y + $self->_popup_button->GetSize->GetHeight
+			);
+		}
 	);
 }
 
@@ -389,7 +391,7 @@ sub _search() {
 
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
-	my $skip_vcs_files = $self->_skip_vcs_files->IsChecked;
+	my $skip_vcs_files           = $self->_skip_vcs_files->IsChecked;
 	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip->IsChecked;
 
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
@@ -403,7 +405,7 @@ sub _search() {
 	}
 	$rule->file;
 
-	if($skip_using_manifest_skip) {
+	if ($skip_using_manifest_skip) {
 		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
 		if ( -e $manifest_skip_file ) {
 			use ExtUtils::Manifest qw(maniskip);
