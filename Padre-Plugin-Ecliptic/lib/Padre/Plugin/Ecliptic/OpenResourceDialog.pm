@@ -23,6 +23,7 @@ use Class::XSAccessor accessors => {
 	_status_text       => '_status_text',        # status label
 	_directory         => '_directory',	         # searched directory
 	_matched_files     => '_matched_files',		 # matched files list
+	_copy_button       => '_copy_button',        # copy button
 };
 
 # -- constructor
@@ -152,6 +153,9 @@ sub _create_controls {
 	# search textbox
 	my $search_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Select an item to open (? = any character, * = any string):') );
+	my $font  = $search_label->GetFont;	
+	$font->SetWeight(Wx::wxFONTWEIGHT_BOLD);	
+	$search_label->SetFont($font);	
 	$self->_search_text( Wx::TextCtrl->new( $self, -1, '', 
 		Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxBORDER_SIMPLE ) );
 	
@@ -162,26 +166,36 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new( $self, -1, 
 		Wx::gettext('&Matching Items:') );
+	$matches_label->SetFont($font);
+
 	$self->_matches_list( Wx::ListBox->new( $self, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize, [], 
 		Wx::wxLB_EXTENDED|Wx::wxBORDER_SIMPLE ) );
 
 	# Shows how many items are selected and information about what is selected
-	$self->_status_text( Wx::StaticText->new( 
-		$self, -1, Wx::gettext('Current Directory: ') . $self->_directory ));
+	$self->_status_text( 
+		Wx::TextCtrl->new( 
+			$self, -1, Wx::gettext('Current Directory: ') . $self->_directory, 
+			Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTE_READONLY|Wx::wxBORDER_SIMPLE ) );
+	$self->_status_text->SetFont($font);
 
-	my $icon = Padre::Wx::Icon::find("places/stock_folder");
-	my $sbmp = Wx::StaticBitmap->new( $self, -1, $icon );
+	my $folder_image = Wx::StaticBitmap->new( $self, -1, 
+		Padre::Wx::Icon::find("places/stock_folder") );
 
-	my $hb = Wx::StaticBoxSizer->new( Wx::StaticBox->new( $self, -1, '', ), 
-		Wx::wxHORIZONTAL );
+	$self->_copy_button( Wx::BitmapButton->new( $self, -1, 
+		Padre::Wx::Icon::find("actions/edit-copy") ) );
+
+	my $hb = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_search_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL|Wx::wxEXPAND, 5);
 	$self->_sizer->Add( $matches_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
 	$self->_sizer->Add( $self->_matches_list, 1, Wx::wxALL|Wx::wxEXPAND, 2 );
-	$hb->Add( $sbmp, 0, 0, 5 );
-	$hb->Add( $self->_status_text, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
+	$hb->AddSpacer(2);
+	$hb->Add( $folder_image, 0, Wx::wxALL|Wx::wxEXPAND, 1 );
+	$hb->Add( $self->_status_text, 1, Wx::wxALL|Wx::wxEXPAND, 1 );
+	$hb->Add( $self->_copy_button, 0, Wx::wxALL|Wx::wxEXPAND, 1 );
+	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM|Wx::wxEXPAND, 5 );
 	$self->_setup_events();
 	
@@ -226,9 +240,16 @@ sub _setup_events {
 		my $self  = shift;
 		my @matches = $self->_matches_list->GetSelections();
 		my $num_selected =  scalar @matches;
-		if($num_selected >= 1) {
+		if($num_selected == 1) {
 			$self->_status_text->SetLabel(
-				$self->_shorten($self->_matches_list->GetClientData($matches[0])));
+				$self->_matches_list->GetClientData($matches[0]));
+			$self->_copy_button->Enable(1);
+		} elsif($num_selected > 1) {
+			$self->_status_text->SetLabel($num_selected . " items selected");
+			$self->_copy_button->Enable(0);
+		} else {
+			$self->_status_text->SetLabel('');
+			$self->_copy_button->Enable(0);
 		}
 		
 		return;
@@ -237,6 +258,19 @@ sub _setup_events {
 	Wx::Event::EVT_LISTBOX_DCLICK( $self, $self->_matches_list, sub {
 		$self->_on_ok_button_clicked();
 		$self->EndModal(0);
+	});
+
+	Wx::Event::EVT_BUTTON( $self, $self->_copy_button, sub { 
+		my @matches = $self->_matches_list->GetSelections();
+		my $num_selected =  scalar @matches;
+		if($num_selected == 1) {
+			if (Wx::wxTheClipboard->Open())
+			{
+				Wx::wxTheClipboard->SetData( Wx::TextDataObject->new(
+					$self->_matches_list->GetClientData($matches[0]) ));
+				Wx::wxTheClipboard->Close();
+			}
+		}
 	});
 
 	Wx::Event::EVT_IDLE( $self, sub {
@@ -299,21 +333,6 @@ sub _search() {
 }
 
 #
-# Shorten text that exceed a certain length
-#
-sub _shorten {
-	my ($self, $text) = @_;
-
-	if(length($text) >= 70) {
-		$text = substr( $text, 0, 40 )
-			. '...'
-			. substr( $text, -20 );
-	}
-
-	return $text;
-}
-
-#
 # Update matches list box from matched files list
 #
 sub _update_matches_list_box() {
@@ -339,8 +358,13 @@ sub _update_matches_list_box() {
 	}
 	if($pos > 0) {
 		$self->_matches_list->Select(0);
-		$self->_status_text->SetLabel(
-			$self->_shorten($self->_matches_list->GetClientData(0)));
+		$self->_status_text->SetLabel($self->_matches_list->GetClientData(0));
+		$self->_status_text->Enable(1);
+		$self->_copy_button->Enable(1);
+	} else {
+		$self->_status_text->SetLabel('');
+		$self->_status_text->Enable(0);
+		$self->_copy_button->Enable(0);
 	}
 
 	return;
