@@ -25,7 +25,7 @@ use Class::XSAccessor accessors => {
 	_copy_button      => '_copy_button',      # copy button
 	_popup_button     => '_popup_button',                  # popup button for options
 	_popup_menu       => '_popup_menu',                  # options popup menu
-	_skip_rcs_files   => '_skip_rcs_files',                  # Skip RCS files menu item
+	_skip_vcs_files   => '_skip_vcs_files',                  # Skip RCS files menu item
 	_skip_hidden_files => '_skip_hidden_files',                 # Skip Hidden files menu item
 	_skip_using_manifest_skip => '_skip_using_manifest_skip',          # Skip using MANIFEST.SKIP menu item
 };
@@ -210,14 +210,14 @@ sub _create_controls {
 		Padre::Wx::Icon::find("actions/down")
 	));
 	$self->_popup_menu( Wx::Menu->new );
-	$self->_skip_rcs_files( 
+	$self->_skip_vcs_files( 
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip CVS/.svn/.git")));
 	$self->_skip_hidden_files( 
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip hidden files")));
 	$self->_skip_using_manifest_skip(
 		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP")));
 
-	$self->_skip_rcs_files->Check(1);
+	$self->_skip_vcs_files->Check(1);
 	$self->_skip_hidden_files->Check(1);
 	$self->_skip_using_manifest_skip->Check(1);
 
@@ -341,7 +341,7 @@ sub _setup_events {
 	
 	Wx::Event::EVT_MENU(
 		$self,
-		$self->_skip_rcs_files,
+		$self->_skip_vcs_files,
 		sub { $self->_restart_search; },
 	);
 	Wx::Event::EVT_MENU(
@@ -398,14 +398,14 @@ sub _search() {
 
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
-	my $skip_rcs_files = $self->_skip_rcs_files->IsChecked;
+	my $skip_vcs_files = $self->_skip_vcs_files->IsChecked;
 	my $skip_hidden_files = $self->_skip_hidden_files->IsChecked;
 	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip->IsChecked;
 
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
 	require File::Find::Rule;
 	my $rule = File::Find::Rule->new;
-	if ($skip_rcs_files) {
+	if ($skip_vcs_files) {
 		$rule->or(
 			$rule->new->directory->name( 'CVS', '.svn', '.git', 'blib' )->prune->discard,
 			$rule->new
