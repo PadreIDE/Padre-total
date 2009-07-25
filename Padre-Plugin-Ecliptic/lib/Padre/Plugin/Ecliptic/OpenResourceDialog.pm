@@ -24,6 +24,11 @@ use Class::XSAccessor accessors => {
 	_directory        => '_directory',        # searched directory
 	_matched_files    => '_matched_files',    # matched files list
 	_copy_button      => '_copy_button',      # copy button
+	_popup_button     => '_popup_button',                  # popup button for options
+	_popup_menu       => '_popup_menu',                  # options popup menu
+	_skip_rcs_files   => '_skip_rcs_files',                  # Skip RCS files menu item
+	_skip_hidden_files => '_skip_hidden_files',                 # Skip Hidden files menu item
+	_skip_using_manifest_skip => '_skip_using_manifest_skip',          # Skip using MANIFEST.SKIP menu item
 };
 
 # -- constructor
@@ -205,39 +210,17 @@ sub _create_controls {
 	);
 
 
-	my $popup_button = Wx::BitmapButton->new(
+	$self->_popup_button ( Wx::BitmapButton->new(
 		$self, -1,
 		Padre::Wx::Icon::find("actions/down")
-	);
-	my ($skip_rcs_files, $skip_hidden_files, $skip_manifest_skip);
-	my $popup_menu = Wx::Menu->new;
-	Wx::Event::EVT_MENU(
-		$self,
-		$skip_rcs_files = $popup_menu->AppendCheckItem( -1, Wx::gettext("Skip CVS/.svn/.git"), ),
-		sub { },
-	);
-	Wx::Event::EVT_MENU(
-		$self,
-		$skip_hidden_files = $popup_menu->AppendCheckItem( -1, Wx::gettext("Skip hidden files"), ),
-		sub { },
-	);
-	Wx::Event::EVT_MENU(
-		$self,
-		$skip_manifest_skip = $popup_menu->AppendCheckItem( -1, Wx::gettext("skip MANIFEST.SKIP"), ),
-		sub { },
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$popup_button,
-		sub {
-			my ($self, $event) = @_;
-			$self->PopupMenu( 
-				$popup_menu, 
-				$popup_button->GetPosition->x, 
-				$popup_button->GetPosition->y + $popup_button->GetSize->GetHeight);
-			}
-	);
+	));
+	$self->_popup_menu( Wx::Menu->new );
+	$self->_skip_rcs_files( 
+		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip CVS/.svn/.git")));
+	$self->_skip_hidden_files( 
+		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip hidden files")));
+	$self->_skip_using_manifest_skip(
+		$self->_popup_menu->AppendCheckItem( -1, Wx::gettext("Skip using MANIFEST.SKIP")));
 
 	my $hb;
 	$self->_sizer->AddSpacer(10);
@@ -245,7 +228,7 @@ sub _create_controls {
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
 	$hb->Add( $self->_search_text,      1, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$hb->Add( $popup_button,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $self->_popup_button,            0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $self->_ignore_dir_check, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
@@ -288,10 +271,7 @@ sub _setup_events {
 		$self,
 		$self->_ignore_dir_check,
 		sub {
-
-			# restart search
-			$self->_search();
-			$self->_update_matches_list_box;
+			$self->_restart_search;
 		}
 	);
 
@@ -368,6 +348,43 @@ sub _setup_events {
 			Wx::Event::EVT_IDLE( $self, undef );
 		}
 	);
+	
+	Wx::Event::EVT_MENU(
+		$self,
+		$self->_skip_rcs_files,
+		sub { $self->_restart_search; },
+	);
+	Wx::Event::EVT_MENU(
+		$self,
+		$self->_skip_hidden_files,
+		sub { $self->_restart_search; },
+	);
+	Wx::Event::EVT_MENU(
+		$self,
+		$self->_skip_using_manifest_skip,
+		sub { $self->_restart_search; },
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->_popup_button,
+		sub {
+			my ($self, $event) = @_;
+			$self->PopupMenu( 
+				$self->_popup_menu, 
+				$self->_popup_button->GetPosition->x, 
+				$self->_popup_button->GetPosition->y + $self->_popup_button->GetSize->GetHeight);
+			}
+	);
+}
+
+#
+# Restarts search
+#
+sub _restart_search() {
+	my $self = shift;
+	$self->_search();
+	$self->_update_matches_list_box;
 }
 
 #
@@ -392,6 +409,9 @@ sub _search() {
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
 	my $ignore_dir = $self->_ignore_dir_check->IsChecked();
+	my $skip_rcs_files = $self->_skip_rcs_files;
+	my $skip_hidden_files = $self->_skip_hidden_files;
+	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip;
 
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
 	require File::Find::Rule;
