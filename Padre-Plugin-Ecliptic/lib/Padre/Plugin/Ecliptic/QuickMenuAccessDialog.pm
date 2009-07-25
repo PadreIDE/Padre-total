@@ -64,21 +64,31 @@ sub _on_ok_button_clicked {
 		my $event = $menu_action->menu_event;
 		if ( $event && ref($event) eq 'CODE' ) {
 
-			# Keep the last 20 recently opened resources available
-			# and save it to plugin's configuration object
-			my $config = $self->_plugin->config_read;
-			my @recent = split /\|/, $config->{quick_menu_history};
-			if ( scalar @recent >= 20 ) {
-				shift @recent;
-			}
-			push @recent, $menu_action->name;
-			my %unique = map { $_, 1 } @recent;
-			@recent = keys %unique;
-			@recent = sort { $a cmp $b } @recent;
-			$config->{quick_menu_history} = join '|', @recent;
-			$self->_plugin->config_write($config);
+			eval {
+				# Keep the last 20 recently opened resources available
+				# and save it to plugin's configuration object
+				my $config = $self->_plugin->config_read;
+				my @recent = split /\|/, $config->{quick_menu_history};
+				if ( scalar @recent >= 20 ) {
+					shift @recent;
+				}
+				push @recent, $menu_action->name;
+				my %unique = map { $_, 1 } @recent;
+				@recent = keys %unique;
+				@recent = sort { $a cmp $b } @recent;
+				$config->{quick_menu_history} = join '|', @recent;
+				$self->_plugin->config_write($config);
 
-			&$event($main);
+				&$event($main);
+			};
+			if ($@) {
+				Wx::MessageBox(
+					Wx::gettext('Error while trying to perform Padre action'),
+					Wx::gettext('Error'),
+					Wx::wxOK,
+					$main,
+				);
+			} 
 		}
 	}
 }
