@@ -81,8 +81,10 @@ sub provided_highlighters {
 
 sub highlighting_mime_types {
 	return (
-		'Padre::Plugin::Kate' => ['application/x-php'],
-		'Padre::Plugin::Kate' => ['application/x-perl'],
+		'Padre::Plugin::Kate' => [
+			'application/x-php',
+			'application/x-perl',
+		],
 	);
 }
 
