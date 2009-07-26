@@ -264,14 +264,14 @@ sub menu_plugins {
 	# Goto #padre link
 	Wx::Event::EVT_MENU(
 		$main,
-		$more_help_menu->Append( -1, Wx::gettext("#padre for Padre Help"), ),
+		$more_help_menu->Append( -1, Wx::gettext("Visit #padre for Padre Help"), ),
 		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
 	# Goto #perl6 link
 	Wx::Event::EVT_MENU(
 		$main,
-		$more_help_menu->Append( -1, Wx::gettext("#perl6 for Perl 6 Help"), ),
+		$more_help_menu->Append( -1, Wx::gettext("Visit #perl6 for Perl 6 Help"), ),
 		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=perl6"); },
 	);
 
