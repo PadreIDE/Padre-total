@@ -8,7 +8,7 @@ our $VERSION = '0.55';
 
 # Get perl6 full executable path
 sub perl6_exe {
-	my $exe = $^O eq 'MSWin32' ? 'perl6.exe' : 'perl6';
+	my $exe = Padre::Constant::WIN32 ? 'perl6.exe' : 'perl6';
 
 	# Look for the explicit environment variable
 	if ( $ENV{RAKUDO_DIR} ) {
@@ -38,7 +38,7 @@ sub perl6_exe {
 
 sub parrot_bin {
 	my $bin = shift;
-	my $exe = $^O eq 'MSWin32' ? "$bin.exe" : $bin;
+	my $exe = Padre::Constant::WIN32 ? "$bin.exe" : $bin;
 
 	# Look for the explicit RAKUDO_DIR
 	if ( $ENV{RAKUDO_DIR} ) {
@@ -67,7 +67,7 @@ sub parrot_bin {
 }
 
 sub libparrot {
-	my $lib = $^O eq 'MSWin32' ? "libparrot.dll" : 'libparrot.so';
+	my $lib = Padre::Constant::WIN32 ? "libparrot.dll" : 'libparrot.so';
 
 	# Look for the explicit RAKUDO_DIR
 	if ( $ENV{RAKUDO_DIR} ) {
