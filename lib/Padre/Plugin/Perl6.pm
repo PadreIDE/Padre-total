@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Carp;
 use Padre::Wx ();
+use Padre::Constant  ();
 use base 'Padre::Plugin';
 use Padre::Plugin::Perl6::Util;
 
@@ -739,7 +740,7 @@ sub generate_p6_exe {
 	my $hello_pl  = File::Spec->catfile( $tmp_dir, 'hello.pl' );
 	my $hello_pir = File::Spec->catfile( $tmp_dir, 'hello.pir' );
 	my $hello_pbc = File::Spec->catfile( $tmp_dir, 'hello.pbc' );
-	my $hello_exe = File::Spec->catfile( $tmp_dir, $^O eq 'MSWin32' ? 'hello.exe' : 'hello' );
+	my $hello_exe = File::Spec->catfile( $tmp_dir, Padre::Constant::WIN32 ? 'hello.exe' : 'hello' );
 
 	#XXX- quote all those files in win32
 	my $perl6_to_pir_cmd = "$perl6 --target=PIR --output=$hello_pir $hello_pl";
