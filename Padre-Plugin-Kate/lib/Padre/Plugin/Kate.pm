@@ -93,7 +93,7 @@ sub highlighting_mime_types {
 # Shall we create a module called Pudre::Plugin::Kate::Colorize that will do the dispatching ?
 # now this is the mapping to the Kate highlighter engine
 my %d = (
-	'application/x-php'  => 'Perl', #  why ?
+	'application/x-php'  => 'PHP/PHP',
 	'application/x-perl' => 'Perl',
 );
 use Syntax::Highlight::Engine::Kate::All;
