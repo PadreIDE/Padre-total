@@ -295,7 +295,7 @@ sub install_win32_extras {
 	$to .= q{ };
 	$to .=
 	  catfile( $self->image_dir, 'perl', 'bin', $launcher->bin);
-	unless ( -f $catfile( $self->image_dir, 'perl', 'bin', $launcher->bin) ) {
+	unless ( -f catfile( $self->image_dir, 'perl', 'bin', $launcher->bin) ) {
 		PDWiX->throw(
 			q{The script '} . $launcher->bin . q{" does not exist} );
 	}
