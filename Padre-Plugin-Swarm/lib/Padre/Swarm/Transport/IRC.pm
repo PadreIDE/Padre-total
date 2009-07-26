@@ -2,23 +2,21 @@ package Padre::Swarm::Transport::IRC;
 
 use strict;
 use warnings;
+use Carp qw( carp confess );
 use Padre::Swarm::Transport;
-
 require Padre::Swarm::Identity; # thread quackery?
 use AnyEvent;
 use AnyEvent::IRC::Client;
+
+our $VERSION = '0.01';
+our @ISA     = 'Padre::Swarm::Transport';
+
 use Class::XSAccessor
-   getters => {
-	   connection => 'connection',
-	   condvar	=> 'condvar',
-	   enable_ssl  => 'enable_ssl',
-   };
-   
-use Carp qw( carp confess );
-
-our @ISA = 'Padre::Swarm::Transport';
-use Data::Dumper;
-
+	getters => {
+		connection => 'connection',
+		condvar    => 'condvar',
+		enable_ssl => 'enable_ssl',
+	};
 
 sub start {
 	my $self = shift;
@@ -27,19 +25,18 @@ sub start {
 
 	$con->connect (
 		"irc.perl.org" => 6667 ,
-		{ nick =>  $self->identity->nickname ,
-		  user =>  $self->identity->resource ,
+		{ nick => $self->identity->nickname,
+		  user => $self->identity->resource,
 		  real => getlogin() 
 		}
 	);
+
 	$self->_register_irc_callbacks($con);
 	$self->{connection} = $con;
 
 	my $c = AnyEvent->condvar;
 	$self->{condvar} = $c;
 	$self->{started} = 1;
-	
-
 }
 
 sub shutdown {
@@ -91,14 +88,9 @@ sub _register_irc_callbacks {
 		error => sub {
 			my ($con,$code, $message, $ircmsg) = @_;
 			warn "ERROR:[$code] - $message\n";
-			
 		}
-
 	);
-
-
 }
-
 
 sub _connect_channel {
 	my ($self,$channel) = @_;
@@ -117,7 +109,6 @@ sub _shutdown_channel {
 	$con->send_srv( PART => $room );
 	
 }
-
 
 sub update_channels {
 	my ($self) = @_;
@@ -169,7 +160,6 @@ sub poll {
 
 }
 
-
 sub receive_from_channel {
 	my ($self,$channel) = @_;
 	return unless exists $self->{incoming_buffer}{$channel};
@@ -186,34 +176,31 @@ sub receive_from_channel {
 
 sub tell_channel {
 	my ($self,$channel,$payload) = @_;
-		$self->push_write( $channel, $payload );
+	$self->push_write( $channel, $payload );
 	if ( $self->loopback ) {
 		push @{ $self->{incoming_buffer}{$channel} }, [$payload,{transport=>'loopback',channel=>$channel}];
-    }
-
+	}
 }
 
 sub buffer_incoming_private {
 	my ($self,$con,$command,$ircmsg) = @_;
 	#warn "Got incoming $command with " ,Dumper $ircmsg;
-	
-	
 }
-sub  buffer_incoming {
-	      my ($self,$handle,$channel,$ircmsg)= @_;
-	      my $con = $self->connection;
-	      my $nick = $con->nick;
-	      
-	      my ($sender,$body) =  @{ $ircmsg->{params} };
-	      warn "Buffering from $sender --- $body";
-	      
-	       my $frame = {
-		       identity => $sender,
-		       transport => 'irc',
-		       channel => $channel,
-		       timestamp => time, 
-	       };
-	       push @{ $self->{incoming_buffer}{$channel} }, [$body,$frame];
-		    
-	   }
+
+sub buffer_incoming {
+	my ($self,$handle,$channel,$ircmsg)= @_;
+	my $con = $self->connection;
+	my $nick = $con->nick;
+	my ($sender,$body) = @{ $ircmsg->{params} };
+	warn "Buffering from $sender --- $body";
+
+	my $frame = {
+		identity  => $sender,
+		transport => 'irc',
+		channel   => $channel,
+		timestamp => time, 
+	};
+	push @{ $self->{incoming_buffer}{$channel} }, [ $body, $frame ];
+}
+
 1;

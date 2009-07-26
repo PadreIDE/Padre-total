@@ -2,19 +2,17 @@ package Padre::Service::Swarm;
 
 use strict;
 use warnings;
+use Padre::Wx      ();
 use Padre::Service ();
-use Padre::Wx   ();
-use Class::Autouse ();
 use Padre::Swarm::Service::Chat;
-use Data::Dumper;
 
-our $VERSION = '0.38';
+our $VERSION = '0.01';
 our @ISA     = 'Padre::Service';
 
 use Class::XSAccessor
 	accessors => {
-		task_event=>'task_event',
-		service => 'service',
+		task_event => 'task_event',
+		service    => 'service',
 	};
 
 =pod
@@ -26,10 +24,7 @@ when something interesting happens.
 
 =head1 SYNOPSIS
 
-
-
 =head1 METHODS
-
 
 =cut
 
@@ -44,23 +39,23 @@ sub terminate {
 	undef $service;
 }
 
-{
-my $service;
-sub service_loop {
-	my $self = shift;
-	unless ( defined $service ) {
-		$service = $self->service->new;
-		$service->start;
+SCOPE: {
+	my $service;
+	sub service_loop {
+		my $self = shift;
+		unless ( defined $service ) {
+			$service = $self->service->new;
+			$service->start;
+		}
+		
+		if (my $message = $service->receive(0.2) ) {
+			$self->handle_message($message);
+		}
+		
+		return 1;
 	}
-	
-	if (my $message = $service->receive(0.2) ) {
-		$self->handle_message($message);
-	}
-	
-	return 1;
 }
 
-}
 sub handle_message {
 	my $self = shift;
 	my $message = shift;
@@ -74,8 +69,6 @@ sub handle_message {
 }
 
 1;
-
-__END__
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE

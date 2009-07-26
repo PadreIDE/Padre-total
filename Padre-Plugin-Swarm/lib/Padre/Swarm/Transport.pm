@@ -1,23 +1,5 @@
 package Padre::Swarm::Transport;
-use strict;
-use warnings;
-use Carp qw( croak confess );
-use Params::Util qw( _POSINT _STRING _INSTANCE );
-use Padre::Swarm::Callback;
 
-use IO::Select;
-use Class::XSAccessor
-    accessors => {
-        subscriptions => 'subscriptions',
-        channels => 'channels',
-        identity => 'identity',
-        selector => 'selector',
-        started  => 'started',
-        loopback => 'loopback',
-        condvar  => 'condvar',
-    };
-    
-    
 =pod
 
 =head1 NAME
@@ -38,19 +20,35 @@ Padre::Swarm::Transport - Swarm network transport
     my ($payload,$frame) = $t->receive_from_channel( $channel );
     next if $frame->{address} = $MY_ADDRESS;
     push @incoming , $payload;
-    
   }
-  
+
 =head1 DESCRIPTION
 
 Generic class describing the interface for a Padre::Swarm::Transport
 
-
 =head1 METHODS
-
 
 =cut
 
+use strict;
+use warnings;
+use Carp qw( croak confess );
+use IO::Select;
+use Params::Util qw( _POSINT _STRING _INSTANCE );
+use Padre::Swarm::Callback;
+
+our $VERSION = '0.01';
+
+use Class::XSAccessor
+	accessors => {
+		subscriptions => 'subscriptions',
+		channels => 'channels',
+		identity => 'identity',
+		selector => 'selector',
+		started  => 'started',
+		loopback => 'loopback',
+		condvar  => 'condvar',
+	};    
 
 sub new {
     my ($class,%args) = @_;
@@ -68,16 +66,13 @@ sub new {
     return bless \%obj , ref $class || $class;
 }
 
-
 sub subscribe_channel {
     my ($self,$channel,$loopback) = @_;
     $loopback = 1 unless defined $loopback;
-    if ( _POSINT $channel && $channel <= 65535 ) 
-    {
+    if ( _POSINT $channel && $channel <= 65535 ) {
         $self->subscriptions->{$channel} = $loopback;
         $self->_connect_channel($channel,$loopback) if $self->started ;
-    }
-    else {
+    } else {
         croak "'$channel' is not a valid channel"; 
     }
     return 1;
@@ -85,12 +80,10 @@ sub subscribe_channel {
 
 sub unsubscribe_channel {
     my ($self,$channel) = @_;
-    if ( _POSINT $channel && $channel <= 65535 )
-    {
+    if ( _POSINT $channel && $channel <= 65535 ) {
         delete $self->subscriptions->{$channel};
         $self->_shutdown_channel($channel);
-    }
-    else {
+    } else {
         croak "'$channel' is not a valid channel";
     }
 }
@@ -109,7 +102,6 @@ sub cb {
     return $cb
 }
 
-
 sub push_write {
     my ($self,$channel,$message) = @_;
     push @{ $self->{outgoing_buffer}{$channel} } , $message;
@@ -119,7 +111,6 @@ sub push_write {
 sub start { die }
 
 sub shutdown { die };
-
 
 sub receive_from_channel {
 	my ($self,$channel) = @_;
@@ -131,17 +122,14 @@ sub receive_from_channel {
 		$self->{incoming_buffer}{$channel} = \@queue
 	}
 	#else { warn "Drained '$channel' buffer" }
-	
+
 	return @$d;
 }
 
 sub transport_name { die };
 
-
 sub tell_channel { die };
 
 sub poll { die };
-
-
 
 1;

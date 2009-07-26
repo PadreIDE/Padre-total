@@ -3,37 +3,28 @@ package Padre::Plugin::Swarm;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Constant ();
-use Padre::Wx       ();
-use Padre::Plugin   ();
-use Padre::Wx::Icon ();
-use Padre::Wx::Swarm::Chat ();
-
-#use Padre::Wx::Swarm::Foo ();
-
-
-use File::Spec      ();
-
-use Class::XSAccessor
-	getters => {
-	    get_config => 'config',
-	    get_services => 'services',
-	    # 
-	    get_chat => 'chat',
-	    get_sidebar=>'sidebar',
-	}
-	,
-	setters => {
-	    set_config => 'config',
-	    set_services=>'services',
-	    set_chat => 'chat',
-	    set_sidebar => 'sidebar',
-	};
+use File::Spec             ();
+use Padre::Constant        ();
+use Padre::Wx              ();
+use Padre::Plugin          ();
+use Padre::Wx::Icon        ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
 
-
+use Class::XSAccessor
+	getters => {
+		get_config   => 'config',
+		get_services => 'services',
+		get_chat     => 'chat',
+		get_sidebar  =>'sidebar',
+	},
+	setters => {
+		set_config   => 'config',
+		set_services =>'services',
+		set_chat     => 'chat',
+		set_sidebar  => 'sidebar',
+	};
 
 
 
@@ -51,22 +42,21 @@ sub plugin_name {
 }
 
 sub plugin_icons_directory {
-	
-	my $dir = File::Spec->catdir( shift->plugin_share_directory(@_), 'icons');
+	my $dir = File::Spec->catdir(
+		shift->plugin_share_directory(@_),
+		'icons',
+	);
 	warn "sharedir is '$dir'\n";
 	$dir;
 }
 
-
 sub plugin_icon {
 	my $class = shift;
 	Padre::Wx::Icon::find( 
-			'status/padre-plugin-swarm',
-			{ icons => $class->plugin_icons_directory },
+		'status/padre-plugin-swarm',
+		{ icons => $class->plugin_icons_directory },
 	);
 }
-
-
 
 sub menu_plugins_simple {
 	my $self = shift;
@@ -75,46 +65,48 @@ sub menu_plugins_simple {
 	];
 }
 
+# Singleton (I think)
+SCOPE: {
+	my $instance;
 
-{
-my $instance ; sub instance { $instance };
+	sub instance { $instance };
 
-sub plugin_enable {
-	my $self = shift;
-	$instance = $self;
-	my $config = $self->config_read;
-	$self->set_config( $config );
+	sub plugin_enable {
+		require Padre::Wx::Swarm::Chat;
+		my $self   = shift;
+		$instance  = $self;
+		my $config = $self->config_read;
+		$self->set_config( $config );
+		$self->_load_everything;
+	}
 
-	$self->_load_everything;
-
-	
+	sub plugin_disable {
+		my $self = shift;
+		undef $instance;
+		$self->_destroy_ui;
+	}
 }
 
-sub plugin_disable {
-	my $self = shift;
-	undef $instance;
-	$self->_destroy_ui;
-}
-
-
-
-}
 sub event_on_context_menu {
-	my $self = shift;
+	my $self     = shift;
 	my $document = shift;
-	my $editor = shift;
-	my $menu   = shift;
-	my $event  = shift;
-	
-	my $diff_snip = $menu->Append( -1, Wx::gettext("Swarm diff snippet") );
+	my $editor   = shift;
+	my $menu     = shift;
+	my $event    = shift;
+	my $diff     = $menu->Append( -1,
+		Wx::gettext("Swarm diff snippet")
+	);
 	Wx::Event::EVT_MENU(
-			$editor,
-			$diff_snip,
-			sub {
-				instance()->get_chat->on_diff_snippet;
-			},
+		$editor,
+		$diff,
+		sub {
+			instance()->get_chat->on_diff_snippet;
+		},
 	);
 }
+
+
+
 
 
 #####################################################################
@@ -124,18 +116,21 @@ sub show_about {
 	my $self = shift;
 
 	# Generate the About dialog
+	my $icon  = Padre::Wx::Icon::find(
+		'status/padre-plugin-swarm',
+		{
+			size  => '128x128',
+			icons => $self->plugin_icons_directory,
+		} 
+	);
+
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName('Swarm Plugin');
 	$about->SetDescription( <<"END_MESSAGE" );
 Surrender to the Swarm!
 END_MESSAGE
-	$about->SetIcon( 
-		Padre::Wx::Icon::cast_to_icon(
-		  Padre::Wx::Icon::find( 'status/padre-plugin-swarm',
-			{size => '128x128', icons=>$self->plugin_icons_directory } 
-		  ) 
-		)
-	);
+	$about->SetIcon( Padre::Wx::Icon::cast_to_icon($icon) );
+
 	# Show the About dialog
 	Wx::AboutBox($about);
 
@@ -147,16 +142,17 @@ END_MESSAGE
 # Private
 
 sub _load_everything {
-	my $self = shift;
-	my $config = $self->get_config; 
+	my $self   = shift;
+	my $config = $self->get_config;
+
 	# TODO bootstrap some config and construct
 	# services/transports. for now just chat
 	
 	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
 	
-	#my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
-	#my $sidebar = Padre::Wx::Swarm::Foo->new($self->main);
-	#$self->set_sidebar( $sidebar );
+	# my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
+	# my $sidebar = Padre::Wx::Swarm::Foo->new($self->main);
+	# $self->set_sidebar( $sidebar );
 	
 	$self->set_chat( $chatframe );
 	$chatframe->enable;
@@ -174,10 +170,12 @@ sub _destroy_ui {
 # private subroutine to return the current share directory location
 sub _sharedir {
 	return Cwd::realpath(
-		File::Spec->join(File::Basename::dirname(__FILE__),'Swarm/share')
+		File::Spec->join(
+			File::Basename::dirname(__FILE__),
+			'Swarm/share',
+		)
 	);
 }
-
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
@@ -215,8 +213,6 @@ Copyright 2009 The Padre develoment team as listed in Padre.pm
 =head1 LICENSE
 
 This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+modify it under the same terms as Perl itself.
 
 =cut
-
-

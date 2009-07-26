@@ -1,11 +1,11 @@
 package Padre::Swarm::Geometry;
+
 use strict;
 use warnings;
-our $VERSION = '0.1';
-
 use Graph;
 use JSON::XS;
 
+our $VERSION = '0.01';
 
 =pod
 

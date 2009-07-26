@@ -1,10 +1,20 @@
 package Padre::Swarm::Message::Diff;
-use Padre::Swarm::Message;
-
-use base qw( Padre::Swarm::Message );
 
 use strict;
 use warnings;
-__PACKAGE__->mk_accessors(qw(file project project_dir diff comment));
+use Padre::Swarm::Message ();
+
+our $VERSION = '0.01';
+our @ISA     = 'Padre::Swarm::Message';
+
+use Class::XSAccessor
+	constructor => 'new',
+	accessors   => {
+		file        => 'file',
+		project     => 'project',
+		project_dir => 'project_dir',
+		diff        => 'diff',
+		comment     => 'comment',
+	};
 
 1;

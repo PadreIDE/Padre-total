@@ -3,31 +3,31 @@ package Padre::Wx::Swarm::Chat;
 use 5.008;
 use strict;
 use warnings;
+use Text::Patch ();
 use Params::Util qw{_INSTANCE};
+use Wx::Perl::Dialog::Simple;
+use Padre::Current qw{_CURRENT};
 use Padre::Wx ();
 use Padre::Config ();
-use Padre::Swarm::Identity;
-use Wx::Perl::Dialog::Simple;
 use Padre::Service::Swarm;
-use Padre::Swarm::Service::Chat;
+use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
-use Padre::Current qw{_CURRENT};
+use Padre::Swarm::Service::Chat;
 
-use Class::Autouse;
-
-our $VERSION = '0.37';
+our $VERSION = '0.01';
 our @ISA     = 'Wx::Panel';
 
-#our $EVT_Chat = Wx::NewEventType();
 use Class::XSAccessor
 	accessors => {
-		task => 'task',
-		service=>'service',
+		task      => 'task',
+		service   =>'service',
 		textinput => 'textinput',
 		chatframe => 'chatframe',
 	},
-	setters => { 'set_task' => 'task' };
+	setters => {
+		'set_task' => 'task',
+	};
 
 sub new {
 	my $class = shift;
@@ -40,54 +40,56 @@ sub new {
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
 
-
 	# build large area for chat output , with a 
 	#  single line entry widget for input
 	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	
-	my $text = Wx::TextCtrl->new($self,-1,'',
+	my $text = Wx::TextCtrl->new(
+		$self, -1, '',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxTE_PROCESS_ENTER
 	);
-	my $chat = Wx::TextCtrl->new($self,-1,'',
+	my $chat = Wx::TextCtrl->new(
+		$self, -1, '',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxTE_READONLY|Wx::wxTE_MULTILINE|Wx::wxNO_FULL_REPAINT_ON_RESIZE
+		Wx::wxTE_READONLY
+		| Wx::wxTE_MULTILINE
+		| Wx::wxNO_FULL_REPAINT_ON_RESIZE
 	);
 	$sizer->Add($chat,1, Wx::wxGROW );
 	$sizer->Add($text,0, Wx::wxGROW );
-	
+
 	$self->textinput( $text );
 	$self->chatframe( $chat );
 	$self->SetSizer($sizer);
-	
+
 	my $config = Padre::Config->read;
-	
+
 	my $identity = Padre::Swarm::Identity->new(
 		nickname => $config->identity_nickname,
 		service  => 'chat',
 		resource => 'Padre',
 	);
-	
+
 	my $service = Padre::Swarm::Service::Chat->new(
 		identity => $identity,
 		use_transport => {
 			#'Padre::Swarm::Transport::Multicast'=>{
-			'Padre::Swarm::Transport::IRC'=>{
+			'Padre::Swarm::Transport::IRC' => {
 				identity => $identity,
 				loopback => 1,
 			},
 		}
 	);
 	$self->service( $service );
-	
+
 	Wx::Event::EVT_TEXT_ENTER(
                 $self, $text,
                 \&on_text_enter
         );
 
-	
 	return $self;
 }
 
@@ -99,7 +101,6 @@ sub main {
 	$_[0]->GetGrandParent;
 }
 
-	
 sub gettext_label {
 	Wx::gettext('Swarm - Chat');
 }
@@ -139,7 +140,7 @@ sub disable {
 	
 	$self->Hide;
 	
-	
+
 	$bottom->RemovePage($position);
 	$main->aui->Update;
 	$self->Destroy;
@@ -147,11 +148,9 @@ sub disable {
 
 sub accept_message {
 	my $self = shift;
-
 	my $main = shift;
 	my $evt = shift;
-	
-	
+
 	my $payload = $evt->GetData;
 	# Hack - the alive should be via service poll event ?
 	return if $payload eq 'ALIVE';
@@ -177,15 +176,15 @@ sub accept_message {
 }
 
 sub tell_service {
-	my $self = shift;
-	my $body = shift;
-	my $args = shift;
-	my $message =  _INSTANCE($body,'Padre::Swarm::Message')
+	my $self    = shift;
+	my $body    = shift;
+	my $args    = shift;
+	my $message = _INSTANCE($body,'Padre::Swarm::Message')
 		? $body
 		: Padre::Swarm::Message->new(
 			{ body=>$body , from=>$self->service->identity->nickname }
 		);
-	
+
 	my $service = $self->service->tell($message) 
 }
 
@@ -194,13 +193,8 @@ sub on_text_enter {
 	my $message = $self->textinput->GetValue;
 	$self->tell_service( $message );
 	$self->textinput->SetValue('');
-	
 }
 
-# 123
-use Text::Patch ();
-use Data::Dumper;
-## 
 sub on_receive_diff {
 	my ($self,$message) = @_;
 	warn "Received diff $message";
@@ -241,8 +235,6 @@ sub on_receive_diff {
 	};
 	
 	warn $@ if $@;
-	
-	
 }
 
 sub on_diff_snippet {
@@ -267,7 +259,6 @@ sub on_diff_snippet {
 		project_dir => $project_dir,
 		type => 'diff',
 	});
-	
 
 	my $external_diff = $self->main->config->external_diff_tool;
 	if ($external_diff) {
@@ -297,5 +288,5 @@ sub on_diff_snippet {
 	$self->tell_service( $message );
 	return;
 }
-1;
 
+1;

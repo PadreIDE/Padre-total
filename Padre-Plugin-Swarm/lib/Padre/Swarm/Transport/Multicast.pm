@@ -1,71 +1,27 @@
 package Padre::Swarm::Transport::Multicast;
+
 use strict;
 use warnings;
-
-use IO::Select       ();
+use Carp qw( confess croak     );
+use IO::Select ();
 use IO::Socket::Multicast;
+use Params::Util qw( _INSTANCE _POSINT );
 use Padre::Swarm::Identity;
 use Padre::Swarm::Transport;
-use Params::Util     qw( _INSTANCE _POSINT );
-use Carp             qw( confess croak     );
+
+our $VERSION = '0.01';
+our @ISA     = 'Padre::Swarm::Transport';
+
 use Class::XSAccessor
-    accessors => {
-        subscriptions => 'subscriptions',
-        channels => 'channels',
-        selector => 'selector',
-        started  => 'started',
-        sockets  => 'sockets',
-    };
+	accessors => {
+		subscriptions => 'subscriptions',
+		channels => 'channels',
+		selector => 'selector',
+		started  => 'started',
+		sockets  => 'sockets',
+	};
 
 use constant MCAST_GROUP => '239.255.255.1';
-
-our @ISA = 'Padre::Swarm::Transport';
-
-=pod
-
-=head1 NAME
-
-Padre::Swarm::Transport::Multicast
-
-=head1 SYNOPSIS
-
-  my $transport = Padre::Swarm::Transport::Multicast->new();
-  $transport->subscribe_channel( 20000 ) or die $!;
-  $transport->subscribe_channel( 22000 ) or die $!;
-  
-  $transport->start;
-  if ( $transport->started ) {
-      $transport->tell_channel( 22000, 'Hello World!' );
-  }
-  
-  foreach my $channel ( $transport->poll ) {
-      my $payload = $transport->receive_from( $channel );
-      # do something exciting w/ $payload
-   };
-  
-  $transport->unsubscribe_channel( 20000 );
-  $transport->shutdown;
-  
-=head1 METHODS
-
-=head2 start
-
-=head2 shutdown
-
-=head2 started
-
-=head2 subscribe_channel
-
-=head2 unsubscribe_channel
-
-=head2 poll
-
-=head2 receive_from
-
-=head2 tell_channel
-
-
-=cut
 
 sub new {
     my ($class,%args) = @_;
@@ -208,3 +164,50 @@ sub _shutdown_channel {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Padre::Swarm::Transport::Multicast
+
+=head1 SYNOPSIS
+
+  my $transport = Padre::Swarm::Transport::Multicast->new();
+  $transport->subscribe_channel( 20000 ) or die $!;
+  $transport->subscribe_channel( 22000 ) or die $!;
+  
+  $transport->start;
+  if ( $transport->started ) {
+      $transport->tell_channel( 22000, 'Hello World!' );
+  }
+  
+  foreach my $channel ( $transport->poll ) {
+      my $payload = $transport->receive_from( $channel );
+      # do something exciting w/ $payload
+   };
+  
+  $transport->unsubscribe_channel( 20000 );
+  $transport->shutdown;
+  
+=head1 METHODS
+
+=head2 start
+
+=head2 shutdown
+
+=head2 started
+
+=head2 subscribe_channel
+
+=head2 unsubscribe_channel
+
+=head2 poll
+
+=head2 receive_from
+
+=head2 tell_channel
+
+=cut
