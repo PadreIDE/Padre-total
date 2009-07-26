@@ -77,7 +77,8 @@ sub new {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = Padre->ide->wx->main;
+	my $main = $self->_plugin->main;
+	$self->Destroy;
 
 	#Open the selected resources here if the user pressed OK
 	my @selections = $self->_matches_list->GetSelections();
@@ -99,10 +100,14 @@ sub _on_ok_button_clicked {
 		$self->_plugin->config_write($config);
 
 		# try to open the file now
-		$main->setup_editor($filename);
+		if ( my $id = $main->find_editor_of_file($filename) ) {
+			my $page = $main->notebook->GetPage($id);
+			$page->SetFocus;
+		} else {
+			$main->setup_editors($filename);
+		}
 	}
 
-	$self->Destroy;
 }
 
 

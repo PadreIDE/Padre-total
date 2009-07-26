@@ -180,7 +180,7 @@ sub _show_open_resource_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::OpenResourceDialog;
 	my $dialog = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
-	$dialog->ShowModal();
+	$dialog->Show(1);
 
 	return;
 }
