@@ -128,7 +128,7 @@ sub _create {
 	$self->_create_buttons;
 
 	# wrap everything in a vbox to add some padding
-	$self->SetMinSize( [ 420, 498 ] );
+	$self->SetMinSize( [ 315, 315 ] );
 	$self->SetSizer($sizer);
 
 
