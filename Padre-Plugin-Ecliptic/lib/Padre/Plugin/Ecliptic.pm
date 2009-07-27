@@ -131,11 +131,11 @@ sub menu_plugins {
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
-	# "Open in Explorer" action
+	# "Open in File Browser" action
 	Wx::Event::EVT_MENU(
 		$main_window,
 		$self->{menu}->Append( -1, Wx::gettext("Open in File Browser\tCtrl-6"), ),
-		sub { $self->_open_in_explorer(); },
+		sub { $self->_open_in_file_browser(); },
 	);
 
 	# Shows the "Quick Fix" dialog
@@ -253,7 +253,7 @@ sub _show_quick_module_access_dialog {
 # On win32, selects it in Windows Explorer
 # On linux, opens the containing folder for it
 #
-sub _open_in_explorer {
+sub _open_in_file_browser {
 	my $self = shift;
 
 	#Open the current document in file browser
@@ -334,7 +334,7 @@ button, the selected module will be displayed in Padre's POD browser.
 
 For the current saved Padre document, open the platform's file manager/browser and 
 tries to select it if possible. On win32, opens the containing folder and 
-selects the file in explorer. On *inux KDE/GNOME, opens the containing folder 
+selects the file in its explorer. On *inux KDE/GNOME, opens the containing folder 
 for it.
 
 =head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
