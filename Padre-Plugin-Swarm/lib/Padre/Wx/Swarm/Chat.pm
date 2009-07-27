@@ -9,6 +9,7 @@ use Wx::Perl::Dialog::Simple;
 use Padre::Current qw{_CURRENT};
 use Padre::Wx ();
 use Padre::Config ();
+use Padre::Plugin::Swarm ();
 use Padre::Service::Swarm;
 use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
@@ -29,6 +30,8 @@ use Class::XSAccessor
 		'set_task' => 'task',
 	};
 
+use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
+
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -41,10 +44,10 @@ sub new {
 		| Wx::wxLC_SINGLE_SEL
 	);
 
-	# build large area for chat output , with a 
+	# build large area for chat output , with a
 	#  single line entry widget for input
 	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	
+
 	my $text = Wx::TextCtrl->new(
 		$self, -1, '',
 		Wx::wxDefaultPosition,
@@ -81,8 +84,8 @@ sub new {
 	my $service = Padre::Swarm::Service::Chat->new(
 		identity      => $identity,
 		use_transport => {
-			#'Padre::Swarm::Transport::Multicast'=>{
-			'Padre::Swarm::Transport::IRC' => {
+			'Padre::Swarm::Transport::Multicast'=>{
+			#'Padre::Swarm::Transport::IRC' => {
 				identity => $identity,
 				loopback => 1,
 			},
@@ -114,7 +117,7 @@ sub enable {
 	my $self     = shift;
 	Padre::Util::debug( "Enable Chat" );
 	$self->service->schedule;
-	# Set up the event handler, we will 
+	# Set up the event handler, we will
 	# ->accept_message when the task loop ->post_event($data)
 	#  to us.
 	Wx::Event::EVT_COMMAND(
@@ -142,9 +145,9 @@ sub disable {
 	my $bottom= $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
 	$self->service->tell('HANGUP');
-	
+
 	$self->Hide;
-	
+
 
 	$bottom->RemovePage($position);
 	$main->aui->Update;
@@ -159,7 +162,7 @@ sub accept_message {
 	my $payload = $evt->GetData;
 	# Hack - the alive should be via service poll event ?
 	return if $payload eq 'ALIVE';
-	
+
 	my $message = Storable::thaw($payload);
 	#my $message = $evt->GetData;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
@@ -176,7 +179,7 @@ sub accept_message {
 		return;
 	}
 	else {
-		warn "Discarded $message";
+		warn "Discarded $message" if DEBUG;
 	}
 }
 
@@ -191,7 +194,7 @@ sub tell_service {
 			from => $self->service->identity->nickname,
 		);
 
-	my $service = $self->service->tell($message) 
+	my $service = $self->service->tell($message)
 }
 
 sub on_text_enter {
@@ -203,44 +206,46 @@ sub on_text_enter {
 
 sub on_receive_diff {
 	my ($self,$message) = @_;
-	warn "Received diff $message";
-	
+	warn "Received diff $message" if DEBUG;
+
 	my $project = $message->project;
 	my $file = $message->file;
 	my $diff = $message->diff;
-	
+
 	my $current = $self->main->current->document;
 	my $editor = $self->main->current->editor;
-	
+
 	my $p_dir = $current->project_dir;
 	my $p_name = File::Basename::basename( $p_dir );
 	my $p_file = $current->filename;
 	$p_file =~ s/^$p_dir//;
-	
-	warn "Have current doc $p_file, $p_name";
+
+	warn "Have current doc $p_file, $p_name" if DEBUG;
 	return unless $p_dir;
 	return unless ( $p_name eq $project );
-	
+
 	# Ignore my own diffs
 	if ( $message->from eq $self->service->identity->nickname ) {
-		warn "Ignore my own diffs";
+		warn "Ignore my own diffs" if DEBUG;
 		return;
 	}
-	
-	Wx::Perl::Dialog::Simple::dialog( 
+
+	Wx::Perl::Dialog::Simple::dialog(
 		sub {},
 		sub {},
 		sub {},
 		{ title => 'Swarm Diff' }
 	);
-	warn "PAtching $file in $project";
-	warn "APPLY PATCH \n" . $diff;
+	warn "PAtching $file in $project" if DEBUG;
+	warn "APPLY PATCH \n" . $diff if DEBUG;
 	eval {
 		my $result = Text::Patch::patch( $current->text_get , $diff , STYLE=>'Unified' );
 		$editor->SetText( $result );
 	};
-	
-	warn $@ if $@;
+
+	if ( DEBUG ) {
+		warn $@ if $@;
+	}
 }
 
 sub on_diff_snippet {
@@ -248,26 +253,26 @@ sub on_diff_snippet {
 	my $document = _CURRENT->document or return;
 	my $text = $document->text_get;
 	my $file = $document->filename;
-	unless ($file) {
+	unless ( $file ) {
 		return;
 	}
 	my $canonical_file = $file;
-	
+
 	#my $project = $document->project;
-	
+
 	my $project_dir = $document->project_dir;
 	my $project_name = File::Basename::basename( $project_dir );
 	$canonical_file =~ s/^$project_dir//;
-	
-	my $message = Padre::Swarm::Message::Diff->new({
-		file     => $canonical_file,
-		project  => $project_name,
+
+	my $message = Padre::Swarm::Message::Diff->new(
+		file        => $canonical_file,
+		project     => $project_name,
 		project_dir => $project_dir,
-		type => 'diff',
-	});
+		type        => 'diff',
+	);
 
 	my $external_diff = $self->main->config->external_diff_tool;
-	if ($external_diff) {
+	if ( $external_diff ) {
 		my $dir = File::Temp::tempdir( CLEANUP => 1 );
 		my $filename = File::Spec->catdir( $dir, 'IN_EDITOR' . File::Basename::basename($file) );
 		if ( open my $fh, '>', $filename ) {
@@ -275,7 +280,7 @@ sub on_diff_snippet {
 			CORE::close($fh);
 			system( $external_diff, $filename, $file );
 		} else {
-			warn $!;
+			warn $! if DEBUG;
 			#$self->main->errorlist->AppendTe($!);
 		}
 
@@ -290,7 +295,7 @@ sub on_diff_snippet {
 		}
 		$message->{diff} = $diff;
 	}
-	
+
 	$self->tell_service( $message );
 	return;
 }

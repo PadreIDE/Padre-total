@@ -3,7 +3,8 @@ package Padre::Swarm::Transport::IRC;
 use strict;
 use warnings;
 use Carp qw( carp confess );
-use Padre::Swarm::Transport;
+use Padre::Plugin::Swarm    ();
+use Padre::Swarm::Transport ();
 require Padre::Swarm::Identity; # thread quackery?
 use AnyEvent;
 use AnyEvent::IRC::Client;
@@ -17,6 +18,8 @@ use Class::XSAccessor
 		condvar    => 'condvar',
 		enable_ssl => 'enable_ssl',
 	};
+
+use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub start {
 	my $self = shift;
@@ -71,7 +74,7 @@ sub _register_irc_callbacks {
 		
 	   },
 	   disconnect => sub {
-	      warn "Oh, got a disconnect: $_[0], exiting...\n";
+	      warn "Oh, got a disconnect: $_[0], exiting...\n" if DEBUG;
 	      $self->condvar->broadcast;
 	   },
 	   registered => sub {
@@ -88,7 +91,7 @@ sub _register_irc_callbacks {
 	$con->reg_cb(
 		error => sub {
 			my ($con,$code, $message, $ircmsg) = @_;
-			warn "ERROR:[$code] - $message\n";
+			warn "ERROR:[$code] - $message\n" if DEBUG;
 		}
 	);
 }
@@ -193,7 +196,7 @@ sub buffer_incoming {
 	my $con = $self->connection;
 	my $nick = $con->nick;
 	my ($sender,$body) = @{ $ircmsg->{params} };
-	warn "Buffering from $sender --- $body";
+	warn "Buffering from $sender --- $body" if DEBUG;
 
 	my $frame = {
 		identity  => $sender,

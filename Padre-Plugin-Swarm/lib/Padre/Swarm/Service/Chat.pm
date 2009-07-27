@@ -4,8 +4,10 @@ use strict;
 use warnings;
 use Carp qw( croak confess carp );
 use Params::Util qw( _INSTANCE _CLASSISA _INVOCANT);
+use Data::Dumper ();
 require JSON::XS;
 use Time::HiRes ();
+use Padre::Plugin::Swarm ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
 use Padre::Swarm::Transport::Multicast ();
@@ -20,6 +22,8 @@ use Class::XSAccessor
 	setters => {
 		set_transport => 'transport',
 	};
+
+use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub marshal {
 	JSON::XS->new
@@ -66,7 +70,7 @@ sub service_loop {
 	my $queue = $self->queue;
 	#Padre::Util::debug("\t$queue " . $queue->pending , $/);
 	if ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ){
-		warn "Chat send $message";
+		warn "Chat send $message" if DEBUG;
 		$self->send( $message );
 	} elsif( _INSTANCE( $message, 'Padre::Swarm::Message::Diff' ) ) {
 		$self->send( $message );
@@ -79,24 +83,29 @@ sub service_loop {
 			push @messages, $self->transport->receive_from_channel($_);
 		}
 		while ( my ($payload,$frame) = splice(@messages,0,2) ) {
-			#warn 'Decoding ' , Dumper $payload;
+			warn(
+				'Decoding ' .
+				Data::Dumper->Dump( [ $payload ] )
+			) if DEBUG;
 			my $message = eval {
 				$self->marshal->decode( $payload );
 			};
-			unless ($message) {
-				warn "Decode failed for $payload \n\t - with $@";
+			unless ( $message ) {
+				warn "Decode failed for $payload \n\t - with $@" if DEBUG;
 				#$self->task_warn($@ );
 				#$self->task_warn($payload);
 				next;
 			}
 
-			#warn "DECODED " . Dumper $message;
+			#warn "DECODED " . Dumper $message if DEBUG;
 
 			$message->{$_} = $frame->{$_}
 				for keys %$frame;
 
 			eval { $self->receive( $message ) };
-			warn "FAILED receive $@" if $@;
+			if ( DEBUG ) {
+				warn "FAILED receive $@" if $@;
+			}
 		}
 	}
 }
@@ -147,8 +156,9 @@ sub say_to {
 
 sub send {
 	my ($self, $message) = @_;
+
 	if ( _INSTANCE($message, 'Padre::Swarm::Message') ) {
-		warn Dumper $message;
+		warn Dumper $message if DEBUG;
 		unless ( $message->from ) {
 			my $nickname = $self->identity->nickname;
 			$message->from( $self->identity->nickname );

@@ -2,8 +2,8 @@ package t::lib::Demo;
 
 1;
 
-
 package Demo::App;
+
 use strict;
 use warnings;
 use base 'Wx::App';
@@ -12,17 +12,15 @@ sub main { $_[0] };
 
 sub notebook { $_[0] };
 
-
-
 sub OnInit {
-    my $frame = Demo::App::Frame->new;
-    $frame->Show( 1 );
-   
+	my $frame = Demo::App::Frame->new;
+	$frame->Show( 1 );
 }
 
 1;
 
 package Demo::App::Frame;
+
 use strict;
 use warnings;
 use Wx qw(:everything);
@@ -30,18 +28,27 @@ use Wx::Event qw(:everything);
 use base 'Wx::Frame';
 
 sub new {
-    my ($class) = @_;
+	my ($class) = @_;
 
-    my $self = $class->SUPER::new( undef, -1,
-                                 'Demo::App',
-                                  wxDefaultPosition,  wxDefaultSize,
-                                 );
+	my $self = $class->SUPER::new(
+		undef, -1,
+		'Demo::App',
+		wxDefaultPosition,
+		wxDefaultSize,
+	);
 
-    my $button = Wx::Button->new($self, -1, "Press here");
+	my $button = Wx::Button->new( $self, -1, "Press here" );
 
-    EVT_BUTTON( $self, $button, sub {print "button pressed\n"} );
+	EVT_BUTTON(
+		$self, $button,
+		sub {
+			print "button pressed\n"
+		}
+	);
 
-    $self->SetSize($button->GetSizeWH);
+	$self->SetSize( $button->GetSizeWH );
 
-    return $self;
+	return $self;
 }
+
+1;

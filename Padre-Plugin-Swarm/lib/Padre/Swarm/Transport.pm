@@ -33,8 +33,9 @@ Generic class describing the interface for a Padre::Swarm::Transport
 use strict;
 use warnings;
 use Carp qw( croak confess );
-use IO::Select;
 use Params::Util qw( _POSINT _STRING _INSTANCE );
+use IO::Select;
+use Padre::Plugin::Swarm ();
 use Padre::Swarm::Callback;
 
 our $VERSION = '0.01';
@@ -49,6 +50,8 @@ use Class::XSAccessor
 		loopback => 'loopback',
 		condvar  => 'condvar',
 	};    
+
+use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub new {
     my ($class,%args) = @_;
@@ -98,7 +101,7 @@ sub cb {
     my $cb = Padre::Swarm::Callback::GENERATE(
         $instance, @args
     );
-    warn "GENERATED callback $cb";
+    warn "GENERATED callback $cb" if DEBUG;
     return $cb
 }
 
@@ -121,7 +124,7 @@ sub receive_from_channel {
 	if ( @queue ) {
 		$self->{incoming_buffer}{$channel} = \@queue
 	}
-	#else { warn "Drained '$channel' buffer" }
+	# else { warn "Drained '$channel' buffer" if DEBUG; }
 
 	return @$d;
 }

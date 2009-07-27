@@ -26,6 +26,9 @@ use Class::XSAccessor
 		set_sidebar  => 'sidebar',
 	};
 
+# Turn this on to enable warnings
+use constant DEBUG => 0;
+
 
 
 
@@ -46,7 +49,7 @@ sub plugin_icons_directory {
 		shift->plugin_share_directory(@_),
 		'icons',
 	);
-	warn "sharedir is '$dir'\n";
+	warn "sharedir is '$dir'\n" if DEBUG;
 	$dir;
 }
 

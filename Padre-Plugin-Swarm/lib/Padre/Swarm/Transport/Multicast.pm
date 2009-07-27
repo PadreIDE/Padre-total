@@ -6,6 +6,7 @@ use Carp qw( confess croak     );
 use IO::Select ();
 use IO::Socket::Multicast;
 use Params::Util qw( _INSTANCE _POSINT );
+use Padre::Plugin::Swarm ();
 use Padre::Swarm::Identity;
 use Padre::Swarm::Transport;
 
@@ -21,6 +22,7 @@ use Class::XSAccessor
 		sockets  => 'sockets',
 	};
 
+use constant DEBUG       => Padre::Plugin::Swarm::DEBUG;
 use constant MCAST_GROUP => '239.255.255.1';
 
 sub new {
@@ -86,7 +88,9 @@ sub unsubscribe_channel {
 sub poll {
     my ($self,$timeout) = @_;
     $timeout ||= 0;
-    warn "Polling before service start!!" unless $self->started;
+    if ( DEBUG ) {
+        warn "Polling before service start!!" unless $self->started;
+    }
     my @socks =  $self->selector->can_read($timeout);
     my @channels = map { $self->sockets->{"$_"} } @socks;
     return @channels;
@@ -121,7 +125,7 @@ sub receive_from_sock {
     my $buffer;
     my $remote = $sock->recv( $buffer, 65535 );
     if  ( $remote ) {
-        #warn "Got remote of '$remote'";
+        #warn "Got remote of '$remote'" if DEBUG;
         my ($rport,$raddr) = sockaddr_in $remote;
         my $ip = inet_ntoa $raddr;
         return ($buffer,

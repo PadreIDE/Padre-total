@@ -2,6 +2,8 @@ package Padre::Swarm::Callback;
 
 use strict;
 use warnings;
+use Padre::Plugin::Swarm ();
+
 use vars '$AUTOLOAD';
 
 my %callbacks = ();
@@ -30,8 +32,10 @@ sub AUTOLOAD {
 
 	my $callback = sub {
 		$instance->$name( @$args )
-	}; 
-	warn "Curried call on $instance -> $name";
+	};
+	if ( Padre::Plugin::Swarm::DEBUG ) {
+		warn "Curried call on $instance -> $name";
+	}
 	return $callback;
 }
 
