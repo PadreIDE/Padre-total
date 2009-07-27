@@ -66,15 +66,19 @@ sub new {
 	$self->SetSizer($sizer);
 
 	my $config = Padre::Config->read;
+	my $nickname = $config->identity_nickname;
+	unless ( $nickname ) {
+		$nickname = "Anonymous_$$";
+	}
 
 	my $identity = Padre::Swarm::Identity->new(
-		nickname => $config->identity_nickname,
+		nickname => $nickname,
 		service  => 'chat',
 		resource => 'Padre',
 	);
 
 	my $service = Padre::Swarm::Service::Chat->new(
-		identity => $identity,
+		identity      => $identity,
 		use_transport => {
 			#'Padre::Swarm::Transport::Multicast'=>{
 			'Padre::Swarm::Transport::IRC' => {
@@ -158,7 +162,7 @@ sub accept_message {
 	my $message = Storable::thaw($payload);
 	#my $message = $evt->GetData;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
-	
+
 	if ( $message->type eq 'chat' ) {
 		my $user = $message->from || 'unknown';
 		my $content = $message->body;
@@ -182,7 +186,8 @@ sub tell_service {
 	my $message = _INSTANCE($body,'Padre::Swarm::Message')
 		? $body
 		: Padre::Swarm::Message->new(
-			{ body=>$body , from=>$self->service->identity->nickname }
+			body => $body,
+			from => $self->service->identity->nickname,
 		);
 
 	my $service = $self->service->tell($message) 

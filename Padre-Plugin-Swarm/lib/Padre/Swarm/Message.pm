@@ -4,25 +4,56 @@ use strict;
 use warnings;
 use Carp qw( croak );
 
+# Provide a ->Dumper method
+use Data::Dumper 'Dumper';
+
 our $VERSION = '0.01';
 
-use Class::XSAccessor
-	constructor => 'new',
-	accessors   => {
-		title => 'title',
-		body  => 'body',
-		type  => 'type',
-		to    => 'to',
-		from  => 'from',
-	};
+sub new {
+	my $class = shift;
+	my $self  = bless { @_ }, $class;
+	return $self;
+}
 
-sub TO_JSON { 
+sub title {
+	my $self = shift;
+	$self->{title} = shift if @_;
+	$self->{title};
+}
+
+sub body {
+	my $self = shift;
+	$self->{body} = shift if @_;
+	$self->{body};
+}
+
+sub type {
+	my $self = shift;
+	$self->{type} = shift if @_;
+	$self->{type};
+}
+
+sub to {
+	my $self = shift;
+	$self->{to} = shift if @_;
+	$self->{to};
+}
+
+sub from {
+	my $self = shift;
+	$self->{from} = shift if @_;
+	$self->{from};
+}
+
+sub TO_JSON {
 	## really should be the canonical identity
 	my $self = shift;
 	my $ref = { %$self } ; # erm - better clone?
 	my $msg = ref $self;
-	croak "Not a swarm message !" unless $msg =~ s/^Padre::Swarm::Message:*//;
-	warn "Sending msg origin class of '$msg'";
+	unless ( $msg =~ s/^Padre::Swarm::Message:*// ) {
+		croak "Not a swarm message!";
+	}
+	# warn "Sending msg origin class of '$msg'";
 	$ref->{__origin_class} = $msg if $msg; 
 	$ref;
 }

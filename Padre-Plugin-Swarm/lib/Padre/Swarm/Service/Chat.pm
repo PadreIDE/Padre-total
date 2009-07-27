@@ -6,9 +6,9 @@ use Carp qw( croak confess carp );
 use Params::Util qw( _INSTANCE _CLASSISA _INVOCANT);
 require JSON::XS;
 use Time::HiRes ();
-use Padre::Swarm::Transport::Multicast ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
+use Padre::Swarm::Transport::Multicast ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Swarm::Service';
@@ -22,7 +22,7 @@ use Class::XSAccessor
 	};
 
 sub marshal {
-	my $marshal = JSON::XS->new
+	JSON::XS->new
 		->allow_blessed
 		->convert_blessed
 		->utf8
@@ -46,17 +46,17 @@ sub start {
 	$self->transport->start; 
 	#Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
 	$self->queue->enqueue(
-		Padre::Swarm::Message->new( {
+		Padre::Swarm::Message->new(
 			type => 'disco',
 			want => [ 'chat' ],
-		} )
+		)
 	);
 
 	$self->queue->enqueue(
-		Padre::Swarm::Message->new( {
+		Padre::Swarm::Message->new(
 			type => 'announce',
 			from => $self->identity->nickname,
-		} ) 
+		) 
 	);
 }
 
@@ -130,53 +130,58 @@ sub new {
 sub chat {
 	my ($self,$text) = @_;
 	$self->send(
-		Padre::Swarm::Message->new( body => $text)
+		Padre::Swarm::Message->new(
+			body => $text,
+		)
 	);
 }
 
 sub say_to {
 	my ($self,$text,$entity) = @_;
 	my $msg = Padre::Swarm::Message->new(
-	body => $text ,
-	to   => $entity,
+		body => $text,
+		to   => $entity,
 	);
-
 	$self->send( $msg );
 }
 
 sub send {
-	my ($self,$message) = @_;
-	if (_INSTANCE( $message , 'Padre::Swarm::Message')  ) {
+	my ($self, $message) = @_;
+	if ( _INSTANCE($message, 'Padre::Swarm::Message') ) {
 		warn Dumper $message;
-		$message->from( $self->identity->nickname ) 
-			unless $message->from;
-		$message->type( 'chat' ) unless $message->type;
-	}    
+		unless ( $message->from ) {
+			my $nickname = $self->identity->nickname;
+			$message->from( $self->identity->nickname );
+		}
+		unless ( $message->type ) {
+			$message->type('chat');
+		}
+	}
 
 	my $payload = $self->marshal->encode( $message );
 	$self->transport->tell_channel( 
 		12000 => $payload,
-	);    
+	);
 }
 
 sub promote {
-	my ($self,$message) = @_;
+	my ($self, $message) = @_;
 	my $service_name = $self->service_name;
-	# if $message->wants( $service_name ) ; when message is object!pls!
+	# if $message->wants( $service_name ); when message is object!pls!
 	$self->send(
-		Padre::Swarm::Message->new( {
+		Padre::Swarm::Message->new(
 			type    => 'promote',
 			service => "$self",
-		} )
+		)
 	);
 }
 
 sub receive {
-	my $self = shift;
+	my $self    = shift;
 	my $message = shift;
-	unless ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ) {
+	unless ( _INSTANCE($message, 'Padre::Swarm::Message') ) {
 		confess "Did not receive a message!";
-	}	
+	}
 
 	my $type = $message->type;
 	$type ||= '';

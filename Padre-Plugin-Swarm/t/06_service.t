@@ -32,7 +32,9 @@ diag( "WX event is " . $chat->event );
 
 $chat->queue->enqueue(
 	Padre::Swarm::Message->new(
-		{from=>getlogin(),type=>'chat',body=>'test'}
+		from => getlogin(),
+		type =>'chat',
+		body => 'test',
 	)
 );
 

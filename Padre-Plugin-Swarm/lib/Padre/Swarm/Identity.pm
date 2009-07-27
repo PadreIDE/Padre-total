@@ -9,9 +9,13 @@ Padre::Swarm::Identity - represent a unique identity in the swarm
 =head1 SYNOPSIS
 
   my $id = $message->identity;
-  printf( '%s @[%s] using resource %s on service %s',
-	$id->nickname, $id->transport,
-	$id->resource, $id->service );
+  printf(
+      '%s @[%s] using resource %s on service %s',
+      $id->nickname,
+      $id->transport,
+      $id->resource,
+      $id->service,
+  );
   my $swarm_id = $id->canonical;
 
 =head1 DESCRIPTION
@@ -22,22 +26,21 @@ Attempt to make anything and everything addressable. More work needed.
 
 use strict;
 use warnings;
-use Carp qw( croak );
+use Carp         qw( croak );
 use Params::Util qw( _STRING );
 
 use Class::XSAccessor 
 	constructor => 'new',
 	getters     => {
-		nickname => 'nickname',
-		transport=> 'transport',
-		service  => 'service',
-		resource => 'resource',
-		identity => 'identity',
+		nickname  => 'nickname',
+		transport => 'transport',
+		service   => 'service',
+		resource  => 'resource',
+		identity  => 'identity',
 	};
 
 sub is_valid {
-	my $self = shift;
-	defined $self->{canonical};
+	defined $_[0]->{canonical};
 }
 
 sub set_nickname {
