@@ -26,7 +26,7 @@ use Padre::Plugin  ();
 use constant {  SELECTIONSIZE => 40, }; # this constant is used when storing 
 					# and restoring the cursor position.
 					# Keep it small to limit resource use.
-our $VERSION  = '0.07';
+our $VERSION  = '0.08';
 our @ISA     = 'Padre::Plugin';
 
 sub padre_interfaces {
