@@ -48,7 +48,17 @@ sub padre_interfaces {
 	'Padre::Plugin' => 0.41,;
 }
 
-# plugin icon
+# plugin's real icon object
+sub logo_icon {
+	my ($self) = @_;
+
+	my $icon  = Wx::Icon->new;
+	$icon->CopyFromBitmap($self->plugin_icon);
+
+	return $icon;
+}
+
+# plugin bitmap
 sub plugin_icon {
 
 	# find resource path
