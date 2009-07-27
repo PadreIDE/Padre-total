@@ -4,8 +4,8 @@ use 5.010;
 use strict;
 use warnings;
 use Carp;
-use Padre::Wx ();
-use Padre::Constant  ();
+use Padre::Wx       ();
+use Padre::Constant ();
 use base 'Padre::Plugin';
 use Padre::Plugin::Perl6::Util;
 
@@ -52,8 +52,8 @@ sub padre_interfaces {
 sub logo_icon {
 	my ($self) = @_;
 
-	my $icon  = Wx::Icon->new;
-	$icon->CopyFromBitmap($self->plugin_icon);
+	my $icon = Wx::Icon->new;
+	$icon->CopyFromBitmap( $self->plugin_icon );
 
 	return $icon;
 }
@@ -256,7 +256,7 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Introduction"), ),
-		sub { 
+		sub {
 			$self->show_help_dialog('perlintro');
 		},
 	);
@@ -265,7 +265,7 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Syntax"), ),
-		sub { 
+		sub {
 			$self->show_help_dialog('perlsyn');
 		},
 	);
@@ -512,7 +512,7 @@ sub show_perl6_doc {
 # for a certain topic
 #
 sub show_help_dialog {
-	my ($self, $topic) = @_;
+	my ( $self, $topic ) = @_;
 
 	require Padre::Plugin::Perl6::Perl6HelpDialog;
 	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new( $self, topic => $topic );
