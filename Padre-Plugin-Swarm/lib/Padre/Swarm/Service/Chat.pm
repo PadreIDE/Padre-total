@@ -174,7 +174,7 @@ sub promote {
 sub receive {
 	my $self = shift;
 	my $message = shift;
-	unless ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ) }
+	unless ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ) {
 		confess "Did not receive a message!";
 	}	
 
