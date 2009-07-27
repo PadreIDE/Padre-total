@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Ecliptic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-19 20:43+0300\n"
+"POT-Creation-Date: 2009-07-27 15:15+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -11,117 +11,95 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
 
-#: lib/Padre/Plugin/Ecliptic.pm:29
+#: lib/Padre/Plugin/Ecliptic.pm:36
 msgid "Ecliptic"
 msgstr "برنامج اكليبتيك"
 
-#: lib/Padre/Plugin/Ecliptic.pm:70
+#: lib/Padre/Plugin/Ecliptic.pm:114
 msgid "Open Resource\tCtrl-Shift-R"
 msgstr "فتح المصدر\tCtrl-Shift-R"
 
-#: lib/Padre/Plugin/Ecliptic.pm:77
+#: lib/Padre/Plugin/Ecliptic.pm:121
 msgid "Quick Assist\tCtrl-Shift-L"
 msgstr "المساعدة السريعة\tCtrl-Shift-L"
 
-#: lib/Padre/Plugin/Ecliptic.pm:84
+#: lib/Padre/Plugin/Ecliptic.pm:128
 msgid "Quick Menu Access\tCtrl-3"
 msgstr "الوصول السريع للقائمة\tCtrl-3"
 
-#: lib/Padre/Plugin/Ecliptic.pm:91
+#: lib/Padre/Plugin/Ecliptic.pm:135
 msgid "Quick Outline Access\tCtrl-4"
 msgstr "الوصول السريع للمخطط\tCtrl-4"
 
-#: lib/Padre/Plugin/Ecliptic.pm:98
+#: lib/Padre/Plugin/Ecliptic.pm:142
 msgid "Quick Module Access\tCtrl-5"
 msgstr "الوصول السريع للوحدة\tCtrl-5"
 
-#: lib/Padre/Plugin/Ecliptic.pm:105
-msgid "Open in Explorer\tCtrl-6"
-msgstr "فتح الملف في المستكشف\tCtrl-6"
+#: lib/Padre/Plugin/Ecliptic.pm:149
+msgid "Open in File Browser\tCtrl-6"
+msgstr "افتح في متصفح الملفات\tCtrl-6"
 
-#: lib/Padre/Plugin/Ecliptic.pm:112
+#: lib/Padre/Plugin/Ecliptic.pm:156
 msgid "Quick Fix\tCtrl-Shift-1"
 msgstr "الحل السريع\tCtrl-Shift-1"
 
-#: lib/Padre/Plugin/Ecliptic.pm:122
+#: lib/Padre/Plugin/Ecliptic.pm:166
 msgid "About"
 msgstr "عن"
 
-#: lib/Padre/Plugin/Ecliptic.pm:139
+#: lib/Padre/Plugin/Ecliptic.pm:182
 msgid "Provides Eclipse-like useful features to Padre.\n"
 msgstr "يقدم مزايا مفيدة ومشابهة لبرنامج Eclipse  لبرنامج Padre.\n"
 
-#: lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm:39
+#: lib/Padre/Plugin/Ecliptic/OpenInFileBrowserAction.pm:39
 msgid "Failed to execute process\n"
 msgstr "فشل تشغيل البرنامج\n"
 
-#: lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm:55
+#: lib/Padre/Plugin/Ecliptic/OpenInFileBrowserAction.pm:55
 #: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
 msgid "No filename"
 msgstr "لا يوجد اسم للملف"
 
-#: lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm:55
-#: lib/Padre/Plugin/Ecliptic/OpenInExplorerAction.pm:83
+#: lib/Padre/Plugin/Ecliptic/OpenInFileBrowserAction.pm:55
+#: lib/Padre/Plugin/Ecliptic/OpenInFileBrowserAction.pm:87
 #: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:91
 msgid "Error"
 msgstr "خطأ"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:48
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:55
 msgid "Open Resource"
 msgstr "فتح المورد"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:133
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:167
 msgid "&Select an item to open (? = any character, * = any string):"
 msgstr "اختر مادة للفتح (? = أي حرف, * = أي متسلسة حرفية):"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:137
-msgid "Ignore CVS/.svn/.git/blib folders"
-msgstr "تجاهل مجلدات  CVS/.svn/.git/blib"
-
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:142
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:179
 msgid "&Matching Items:"
 msgstr "المواد المطابقة:"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:148
-msgid "Current Search Directory: "
-msgstr "دليل البحث الحالي: "
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:192
+msgid "Current Directory: "
+msgstr "الدليل الحالي:"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:203
-msgid " items selected"
-msgstr " مواد مختارة"
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:217
+msgid "Skip VCS files"
+msgstr "تخطي ملفات VCS"
 
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:224
-msgid "Reading items. Please wait..."
-msgstr "جاري قراءة المواد. الرجاء الانتظار..."
-
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:248
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:224
-msgid "Finished Searching"
-msgstr "تم البحث"
-
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:279
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:248
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:236
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:247
-msgid " item(s) found"
-msgstr "مواد عثر عليها"
-
-#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:281
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:250
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:238
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:249
-msgid "No items found"
-msgstr "لا يوجد أي مادة"
+#: lib/Padre/Plugin/Ecliptic/OpenResourceDialog.pm:219
+msgid "Skip using MANIFEST.SKIP"
+msgstr "تخطي بواسطة MANIFEST.SKIP"
 
 #: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm:31
 msgid "Quick Assist"
 msgstr "المساعدة السريعة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:46
+#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:45
 msgid "Quick Fix"
 msgstr "الحل السريع"
 
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:191
+#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:207
 msgid "No suggestions"
 msgstr "بلا اقتراحات"
 
@@ -129,42 +107,68 @@ msgstr "بلا اقتراحات"
 msgid "Quick Menu Access"
 msgstr "الوصول السريع للقائمة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:116
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:90
+msgid "Error while trying to perform Padre action"
+msgstr "خطأ عند محاولة تأدية عمل Padre"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:146
 msgid "&Type a menu item name to access:"
 msgstr "اطبع اسم مادة القائمة للوصول اليها:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:121
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:153
 msgid "&Matching Menu Items:"
 msgstr "مواد القائمة المطابقة:"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:278
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:265
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:274
+msgid " item(s) found"
+msgstr "مواد عثر عليها"
+
+#: lib/Padre/Plugin/Ecliptic/QuickMenuAccessDialog.pm:280
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:267
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:276
+msgid "No items found"
+msgstr "لا يوجد أي مادة"
 
 #: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:34
 msgid "Quick Module Access"
 msgstr "الوصول السريع للوحدة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:127
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:131
 msgid "&Type a module name to access:"
 msgstr "اطبع اسم مادة الوحدة للوصول اليها:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:132
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:138
 msgid "&Matching modules:"
 msgstr "الوحدات المطابقة:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:220
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:249
 msgid "Reading modules. Please wait..."
 msgstr "جاري قراءة الوحدات. الرجاء الانتظار..."
+
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:253
+msgid "Finished Searching"
+msgstr "تم البحث"
 
 #: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:33
 msgid "Quick Outline Access"
 msgstr "الوصول السريع للمخطط"
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:115
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
 msgid "&Type a Outline item name to access:"
 msgstr "اطبع اسم مادة المخطط للوصول اليها:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:120
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:126
 msgid "&Matching Outline Items:"
 msgstr "مواد المخطط المطابقة:"
 
+#~ msgid "Ignore CVS/.svn/.git/blib folders"
+#~ msgstr "تجاهل مجلدات  CVS/.svn/.git/blib"
+#~ msgid " items selected"
+#~ msgstr " مواد مختارة"
+#~ msgid "Reading items. Please wait..."
+#~ msgstr "جاري قراءة المواد. الرجاء الانتظار..."
 #~ msgid "List Key Bindings"
 #~ msgstr "قائمة اختصارات المفاتيح"
 
