@@ -23,11 +23,12 @@ sub start {
 	my $con = AnyEvent::IRC::Client->new;
 	$con->enable_ssl if $self->enable_ssl;
 
-	$con->connect (
-		"irc.perl.org" => 6667 ,
-		{ nick => $self->identity->nickname,
-		  user => $self->identity->resource,
-		  real => getlogin() 
+	$con->connect(
+		"irc.perl.org" => 6667,
+		{
+			nick => $self->identity->nickname,
+			user => $self->identity->resource,
+			real => getlogin(),
 		}
 	);
 

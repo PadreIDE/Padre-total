@@ -21,7 +21,7 @@ our @ISA     = 'Wx::Panel';
 use Class::XSAccessor
 	accessors => {
 		task      => 'task',
-		service   =>'service',
+		service   => 'service',
 		textinput => 'textinput',
 		chatframe => 'chatframe',
 	},
@@ -33,11 +33,12 @@ sub new {
 	my $class = shift;
 	my $main  = shift;
 	my $self = $class->SUPER::new(
-		$main->bottom,-1,
+		$main->bottom, -1,
 		#'',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
+		Wx::wxLC_REPORT
+		| Wx::wxLC_SINGLE_SEL
 	);
 
 	# build large area for chat output , with a 
