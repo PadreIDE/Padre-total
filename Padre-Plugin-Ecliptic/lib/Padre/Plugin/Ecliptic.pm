@@ -14,7 +14,7 @@ use Padre::Wx ();
 use base 'Padre::Plugin';
 
 use Class::XSAccessor accessors => {
-	_open_resource_dialog => '_open_resource_dialog',  # Open Resource Dialog
+	_open_resource_dialog => '_open_resource_dialog', # Open Resource Dialog
 };
 
 #
@@ -56,8 +56,8 @@ sub padre_interfaces {
 sub logo_icon {
 	my ($self) = @_;
 
-	my $icon  = Wx::Icon->new;
-	$icon->CopyFromBitmap($self->plugin_icon);
+	my $icon = Wx::Icon->new;
+	$icon->CopyFromBitmap( $self->plugin_icon );
 
 	return $icon;
 }
@@ -193,7 +193,7 @@ sub _show_open_resource_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	if($self->_open_resource_dialog && $self->_open_resource_dialog->IsShown) {
+	if ( $self->_open_resource_dialog && $self->_open_resource_dialog->IsShown ) {
 		$self->_open_resource_dialog->SetFocus;
 	} else {
 		require Padre::Plugin::Ecliptic::OpenResourceDialog;

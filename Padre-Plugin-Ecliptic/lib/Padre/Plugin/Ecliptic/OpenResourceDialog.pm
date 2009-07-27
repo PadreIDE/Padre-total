@@ -66,7 +66,7 @@ sub new {
 	$self->_create;
 
 	# Dialog's icon as is the same as plugin's
-	$self->SetIcon($plugin->logo_icon);
+	$self->SetIcon( $plugin->logo_icon );
 
 	return $self;
 }
@@ -227,16 +227,16 @@ sub _create_controls {
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
 	$hb->Add( $self->_search_text,  1, Wx::wxALIGN_CENTER_VERTICAL, 2 );
-	$hb->Add( $self->_popup_button, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$hb->Add( $self->_popup_button, 0, Wx::wxALL | Wx::wxEXPAND,    2 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb,                  0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
 	$self->_sizer->Add( $matches_label,       0, Wx::wxALL | Wx::wxEXPAND,    2 );
 	$self->_sizer->Add( $self->_matches_list, 1, Wx::wxALL | Wx::wxEXPAND,    2 );
 	$hb = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$hb->AddSpacer(2);
-	$hb->Add( $folder_image,       0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$hb->Add( $folder_image,       0, Wx::wxALL | Wx::wxEXPAND,    1 );
 	$hb->Add( $self->_status_text, 1, Wx::wxALIGN_CENTER_VERTICAL, 1 );
-	$hb->Add( $self->_copy_button, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$hb->Add( $self->_copy_button, 0, Wx::wxALL | Wx::wxEXPAND,    1 );
 	$hb->AddSpacer(1);
 	$self->_sizer->Add( $hb, 0, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
 	$self->_setup_events();
