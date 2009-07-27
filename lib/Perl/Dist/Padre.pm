@@ -282,35 +282,12 @@ sub install_win32_extras {
 	# Add the rest of the extras
 	$self->SUPER::install_win32_extras(@_);
 
-	# I'm hoping this works in order to create a Padre icon that works correctly.
-	my $launcher = Perl::Dist::Asset::Launcher->new(
-		parent => $self,
+	$self->install_launcher(
 		name => 'Padre',
 		bin  => 'padre',
 	);
 
-	# Check the script exists
-	my $to = 
-	  catfile( $self->image_dir, 'perl', 'bin', 'wperl.exe');
-	$to .= q{ };
-	$to .=
-	  catfile( $self->image_dir, 'perl', 'bin', $launcher->bin);
-	unless ( -f catfile( $self->image_dir, 'perl', 'bin', $launcher->bin) ) {
-		PDWiX->throw(
-			q{The script '} . $launcher->bin . q{" does not exist} );
-	}
-
-	my $icon_id = $self->icons->add_icon(
-		catfile( $self->dist_dir, $launcher->bin . '.ico' ),
-		$launcher->bin . '.exe' );
-
-	# Add the icon.
-	$self->add_icon(
-		name     => $launcher->name,
-		filename => $to,
-		fragment => 'Icons',
-		icon_id  => $icon_id
-	);
+	return 1;	
 }
 
 sub dist_dir {
