@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-perl6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-05 20:43+0300\n"
+"POT-Creation-Date: 2009-07-18 21:21+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -47,202 +47,245 @@ msgid "Inlined in Perl 5"
 msgstr "Inline em Perl 5"
 
 #: lib/Padre/Plugin/Perl6.pm:142
-msgid "Export..."
-msgstr "Exportar..."
+msgid "Refactor..."
+msgstr "Refatorar..."
 
-#: lib/Padre/Plugin/Perl6.pm:148
-msgid "Perl 6 Executable"
-msgstr "Executável Perl 6"
+#: lib/Padre/Plugin/Perl6.pm:149
+msgid "Find variable declaration"
+msgstr "Encontrar declaração de variável"
 
-#: lib/Padre/Plugin/Perl6.pm:155
-msgid "Perl 6 PIR"
-msgstr "PIR Perl 6"
+#: lib/Padre/Plugin/Perl6.pm:152
+#: lib/Padre/Plugin/Perl6.pm:166
+msgid "Perl 6 refactoring support is coming soon..."
+msgstr "Suporte a refatoração em Perl 6 em breve..."
 
-#: lib/Padre/Plugin/Perl6.pm:162
-msgid "Full html"
-msgstr "HTML Completo"
-
+#: lib/Padre/Plugin/Perl6.pm:153
 #: lib/Padre/Plugin/Perl6.pm:167
-msgid "Simple html"
-msgstr "HTML Simples"
-
-#: lib/Padre/Plugin/Perl6.pm:172
-msgid "Snippet html"
-msgstr "Trecho HTML"
-
-#: lib/Padre/Plugin/Perl6.pm:179
-msgid "Perl 6 Help\tF2"
-msgstr "Ajuda do Perl6\tF2"
-
-#: lib/Padre/Plugin/Perl6.pm:186
-msgid "Cleanup STD.pm Lex Cache"
-msgstr "Limpar Cache Lex do STD.pm"
-
-#: lib/Padre/Plugin/Perl6.pm:193
-msgid "Preferences"
-msgstr "Preferências"
-
-#: lib/Padre/Plugin/Perl6.pm:200
-msgid "About"
-msgstr "Sobre"
-
-#: lib/Padre/Plugin/Perl6.pm:249
-msgid "This plugin enables useful Perl 6 features on Padre IDE."
-msgstr "Este plugin ativa elementos úteis do Perl 6 no Padre."
-
-#: lib/Padre/Plugin/Perl6.pm:250
-msgid "It integrates coloring and easy access to Perl 6 help documents."
-msgstr "Integra colorização e acesso fácil a documentos de ajuda do Perl 6."
-
-#: lib/Padre/Plugin/Perl6.pm:251
-msgid "The following modules are used:"
-msgstr "Os seguintes módulos são usados:"
-
-#: lib/Padre/Plugin/Perl6.pm:279
-msgid "Cannot find STD.pm lex cache"
-msgstr "Não foi possível encontrar o cache lex do STD.pm"
-
-#: lib/Padre/Plugin/Perl6.pm:400
-#: lib/Padre/Plugin/Perl6.pm:523
-#: lib/Padre/Plugin/Perl6.pm:700
-msgid "No document"
-msgstr "Nenhum documento"
-
-#: lib/Padre/Plugin/Perl6.pm:400
-#: lib/Padre/Plugin/Perl6.pm:523
-#: lib/Padre/Plugin/Perl6.pm:700
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:806
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:848
+#: lib/Padre/Plugin/Perl6.pm:487
+#: lib/Padre/Plugin/Perl6.pm:610
+#: lib/Padre/Plugin/Perl6.pm:787
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:778
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:820
 msgid "Error"
 msgstr "Erro"
 
-#: lib/Padre/Plugin/Perl6.pm:406
+#: lib/Padre/Plugin/Perl6.pm:163
+msgid "Rename variable"
+msgstr "Renomear variável"
+
+#: lib/Padre/Plugin/Perl6.pm:178
+msgid "Rakudo"
+msgstr "Rakudo"
+
+#: lib/Padre/Plugin/Perl6.pm:184
+msgid "Perl 6 Executable"
+msgstr "Executável Perl 6"
+
+#: lib/Padre/Plugin/Perl6.pm:191
+msgid "Perl 6 PIR"
+msgstr "PIR Perl 6"
+
+#: lib/Padre/Plugin/Perl6.pm:199
+msgid "Export..."
+msgstr "Exportar..."
+
+#: lib/Padre/Plugin/Perl6.pm:205
+msgid "Full html"
+msgstr "HTML Completo"
+
+#: lib/Padre/Plugin/Perl6.pm:210
+msgid "Simple html"
+msgstr "HTML Simples"
+
+#: lib/Padre/Plugin/Perl6.pm:215
+msgid "Snippet html"
+msgstr "Trecho HTML"
+
+#: lib/Padre/Plugin/Perl6.pm:224
+msgid "Perl 6 Help\tF2"
+msgstr "Ajuda do Perl6\tF2"
+
+#: lib/Padre/Plugin/Perl6.pm:232
+msgid "More Help?"
+msgstr "Mais ajuda?"
+
+#: lib/Padre/Plugin/Perl6.pm:239
+msgid "#padre for Padre Help"
+msgstr "#padre para ajuda com Padre"
+
+#: lib/Padre/Plugin/Perl6.pm:246
+msgid "#perl6 for Perl 6 Help"
+msgstr "#perl6 para ajuda com Perl 6"
+
+#: lib/Padre/Plugin/Perl6.pm:253
+msgid "Perl 6 Projects"
+msgstr "Projetos do Perl 6"
+
+#: lib/Padre/Plugin/Perl6.pm:263
+msgid "Maintenance"
+msgstr "Manutenção"
+
+#: lib/Padre/Plugin/Perl6.pm:270
+msgid "Cleanup STD.pm Lex Cache"
+msgstr "Limpar Cache Lex do STD.pm"
+
+#: lib/Padre/Plugin/Perl6.pm:277
+msgid "Preferences"
+msgstr "Preferências"
+
+#: lib/Padre/Plugin/Perl6.pm:284
+msgid "About"
+msgstr "Sobre"
+
+#: lib/Padre/Plugin/Perl6.pm:333
+msgid "This plugin enables useful Perl 6 features on Padre IDE."
+msgstr "Este plugin ativa elementos úteis do Perl 6 no Padre."
+
+#: lib/Padre/Plugin/Perl6.pm:334
+msgid "It integrates coloring and easy access to Perl 6 help documents."
+msgstr "Integra colorização e acesso fácil a documentos de ajuda do Perl 6."
+
+#: lib/Padre/Plugin/Perl6.pm:335
+msgid "The following modules are used:"
+msgstr "Os seguintes módulos são usados:"
+
+#: lib/Padre/Plugin/Perl6.pm:366
+msgid "Cannot find STD.pm lex cache"
+msgstr "Não foi possível encontrar o cache lex do STD.pm"
+
+#: lib/Padre/Plugin/Perl6.pm:487
+#: lib/Padre/Plugin/Perl6.pm:610
+#: lib/Padre/Plugin/Perl6.pm:787
+msgid "No document"
+msgstr "Nenhum documento"
+
+#: lib/Padre/Plugin/Perl6.pm:493
 msgid "Not a Perl 6 file"
 msgstr "Não é um arquivo Perl 6"
 
-#: lib/Padre/Plugin/Perl6.pm:407
+#: lib/Padre/Plugin/Perl6.pm:494
 msgid "Operation cancelled"
 msgstr "Operação cancelada"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:247
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:219
 #, perl-format
 msgid "Insert declaration for %s"
 msgstr "Insira declaração para %s"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:277
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:249
 #, perl-format
 msgid "Insert a space after %s"
 msgstr "Insira um espaço após %s"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:300
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:272
 #, perl-format
 msgid "Insert routine %s"
 msgstr "Insira rotina %s"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:323
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:295
 msgid "Use ~ instead of . for string concatenation"
 msgstr "Use ~ em vez de . para concatenação de strings"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:342
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:314
 msgid "Use . for method call"
 msgstr "Use . para invocar métodos"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:361
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:333
 msgid "Use Perl 6 constructor syntax"
 msgstr "Use a sintaxe de construtor do Perl 6"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:381
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:353
 msgid "Use loop (;;) for looping"
 msgstr "Use loop (;;) para laços"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:400
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:372
 msgid "Use [*-1] to access final element"
 msgstr "Use [*-1] para acessar o último elemento"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:419
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:391
 msgid "Use N.pick for a random number"
 msgstr "Use N.pick para um número aleatório"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:436
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:408
 msgid "Use (1..N).pick for a random number"
 msgstr "Use (1..N).pick para um número aleatório"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:455
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:427
 msgid "Use [N..*] for indefinite range"
 msgstr "Use [N..*] para intervalos indefinidos"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:474
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:446
 msgid "Use !! for conditional operator"
 msgstr "Use !! para o operador condicional"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:493
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:465
 msgid "Use ?? (...) !! to avoid precedence bugs"
 msgstr "Use ?? (...) !! para evitar erros de precedência"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:513
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:485
 msgid "Use ?? !! for the conditional operator"
 msgstr "Use ?? !! para o operador condicional"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:532
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:504
 msgid "Use ~= for string concatenation"
 msgstr "Use ~= para concatenação de strings"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:551
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:523
 msgid "Use ~~ for pattern matching"
 msgstr "Use ~~ para expressões regulares"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:570
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:542
 msgid "Use !~~ for negated pattern matching"
 msgstr "Use !~~ para expressões regulares negadas"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:589
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:561
 msgid "Use +> for numeric right shift"
 msgstr "Use +> para deslocamento numérico para a direita"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:606
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:578
 msgid "Use ~> for string right shift"
 msgstr "Use ~> para deslocamento de string para a direita"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:624
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:596
 msgid "Use +< for numeric left shift"
 msgstr "Use +< para deslocamento numérico para a esquerda"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:641
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:613
 msgid "Use ~< for string left shift"
 msgstr "Use ~< para deslocamento de string para a esquerda"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:660
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:632
 msgid "Use $! for eval errors"
 msgstr "Use $! para avaliar erros"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:679
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:651
 msgid "Use $::PERL_VERSION"
 msgstr "Use $::PERL_VERSION"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:708
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:680
 msgid "Comment error line"
 msgstr "Comentar linha com erro"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:742
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:714
 msgid "Surround with try { ... }"
 msgstr "Envolva com try { ... }"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:770
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:742
 msgid "Convert POD6 to XHTML"
 msgstr "Converter POD6 para XHTML"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:805
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:847
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:777
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:819
 msgid "Operation failed!"
 msgstr "Operação falhou!"
 
-#: lib/Padre/Plugin/Perl6/Perl6Document.pm:817
+#: lib/Padre/Plugin/Perl6/Perl6Document.pm:789
 msgid "Convert POD6 to Text"
 msgstr "Converter POD6 para Texto"
 
-#: lib/Padre/Plugin/Perl6/Perl6HelpDialog.pm:38
-msgid "Perl 6 Help (Powered by App::Grok)"
-msgstr "Ajuda do Perl6 (via App::Grok)"
+#: lib/Padre/Plugin/Perl6/Perl6HelpDialog.pm:39
+msgid "Perl 6 Help (Powered by grok)"
+msgstr "Ajuda do Perl 6 (via App::Grok)"
 
 #: lib/Padre/Plugin/Perl6/Perl6OutlineTask.pm:191
 msgid "Outline"
@@ -252,9 +295,9 @@ msgstr "Esboço"
 msgid "Open &Documentation"
 msgstr "Abrir &Documentação"
 
-#: lib/Padre/Plugin/Perl6/Perl6StdColorizerTask.pm:207
-msgid "'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Cleanup STD Lex Cache' and then re-open the file."
-msgstr "Diretório 'STD Lex Cache' está corrompido. Por favor clique em 'Plugins/Perl6/Limpar STD Lex Cache' e abra novamente o arquivo."
+#: lib/Padre/Plugin/Perl6/Perl6StdColorizerTask.pm:222
+msgid "'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Maintenance' and then 'Cleanup STD Lex Cache' and then re-open the file."
+msgstr "Diretório 'STD Lex Cache' está corrompido. Por favor clique em 'Plugins/Perl6/Manutenção' e então 'Limpar STD Lex Cache' e abra novamente o arquivo."
 
 #: lib/Padre/Plugin/Perl6/Preferences.pm:30
 msgid "Perl 6 preferences"
