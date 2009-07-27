@@ -43,6 +43,9 @@ sub new {
 	# create dialog
 	$self->_create;
 
+	# Dialog's icon as is the same as plugin's
+	$self->SetIcon($plugin->logo_icon);
+
 	return $self;
 }
 

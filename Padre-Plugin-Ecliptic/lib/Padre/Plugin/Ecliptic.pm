@@ -51,7 +51,19 @@ sub padre_interfaces {
 }
 
 #
-# plugin icon
+# plugin's real icon...
+#
+sub logo_icon {
+	my ($self) = @_;
+
+	my $icon  = Wx::Icon->new;
+	$icon->CopyFromBitmap($self->plugin_icon);
+
+	return $icon;
+}
+
+#
+# plugin's bitmap not icon
 #
 sub plugin_icon {
 
