@@ -78,7 +78,7 @@ sub _on_ok_button_clicked {
 	my ($self) = @_;
 
 	my $main = $self->_plugin->main;
-	$self->Destroy;
+	$self->Hide;
 
 	#Open the selected resources here if the user pressed OK
 	my @selections = $self->_matches_list->GetSelections();
@@ -303,7 +303,6 @@ sub _setup_events {
 		$self->_matches_list,
 		sub {
 			$self->_on_ok_button_clicked();
-			$self->EndModal(0);
 		}
 	);
 

@@ -13,6 +13,9 @@ use Padre::Wx ();
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
 
+use Class::XSAccessor accessors => {
+	_open_resource_dialog => '_open_resource_dialog',  # Open Resource Dialog
+};
 
 #
 # private subroutine to return the current share directory location
@@ -178,9 +181,13 @@ sub _show_open_resource_dialog {
 	my $self = shift;
 
 	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::OpenResourceDialog;
-	my $dialog = Padre::Plugin::Ecliptic::OpenResourceDialog->new($self);
-	$dialog->Show(1);
+	if($self->_open_resource_dialog && $self->_open_resource_dialog->IsShown) {
+		$self->_open_resource_dialog->SetFocus;
+	} else {
+		require Padre::Plugin::Ecliptic::OpenResourceDialog;
+		$self->_open_resource_dialog( Padre::Plugin::Ecliptic::OpenResourceDialog->new($self) );
+		$self->_open_resource_dialog->Show(1);
+	}
 
 	return;
 }
