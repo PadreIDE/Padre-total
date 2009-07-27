@@ -8,7 +8,6 @@ requires      Params::Util          1.00
 requires      Class::XSAccessor     1.03
 requires      AnyEvent::IRC
 requires      Guard
-requires      Net::Jabber
 requires      Text::Patch           1.04
 no_index      junkyard
 test_requires Test::More            0.42
