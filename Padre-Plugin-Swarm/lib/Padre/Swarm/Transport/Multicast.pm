@@ -43,9 +43,15 @@ sub transport_name { 'multicast' }
 sub start {
     my ($self) = @_;
     croak "Transport already started" if $self->started;
+    
+    my $client = IO::Socket::Multicast->new();
+    $client->mcast_add( MCAST_GROUP );
+    $self->{client} = $client;
+    
     while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
         $self->_connect_channel( $channel, $loopback );
     }
+    
     return $self->started( 1 );
 }
 
@@ -55,6 +61,9 @@ sub shutdown {
     while ( my ($channel,$socket) = each %{ $self->channels } ) {
         $self->_shutdown_channel( $channel );
     }
+    $self->{client}->mcast_drop( MCAST_GROUP );
+    $self->{client}->shutdown(0);
+    
     $self->started(0);
     return 1;
 }
@@ -99,7 +108,7 @@ sub poll {
 sub tell_channel {
     my ($self,$channel,$payload) = @_;
     if ( _POSINT $channel && $channel <= 65535 ) {
-        my $sock = $self->channels->{$channel};
+        my $sock = $self->{client};
         $sock->mcast_send( $payload ,
             MCAST_GROUP . ':' . $channel
         ) or die "Failed mcast send $!";
