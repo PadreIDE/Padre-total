@@ -6,7 +6,7 @@ use base 'Padre::Task';
 use Scalar::Util    ();
 use Padre::Constant ();
 
-our $VERSION        = '0.55';
+our $VERSION        = '0.56';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed
