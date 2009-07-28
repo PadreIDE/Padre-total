@@ -154,7 +154,7 @@ END_CSS
 	my $time = localtime();
 	$html .= <<"END_HTML";
 <h1>Padre translation status report</h1>
-<p>The numbers showing the number of errors. na means that translation does not exist at all</p>
+<p>The numbers showing the number of errors. An empty cell means that translation does not exist at all</p>
 <p>Generated on: $time</p>
 	
 <table>
@@ -177,7 +177,7 @@ END_HTML
 	foreach my $project (sort keys %reports) {
 		$html .= "<tr><td>$project</td><td>";
 		my $total = $reports{$project}{total};
-		$html .= defined  $total ? $total : 'na';
+		$html .= defined  $total ? $total : '&nbsp;';
 		$total ||= 0;
 
 		$html .= "</td>";
@@ -196,7 +196,7 @@ END_HTML
 					$totals{$language} += $reports{$project}{total};
 				}
 			} else {
-				$html .= '<td>na';
+				$html .= '<td>&nbsp;';
 			}
 			$html .= '</td>';
 		}
