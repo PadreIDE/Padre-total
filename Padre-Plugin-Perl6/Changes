@@ -1,5 +1,17 @@
 Changes
 
+=head1 0.55 2009.7.28
+
+	- Updated Translations:
+		Arabic
+		Brazilian portuguese (garu++)
+		Japanese (ishigaki++)
+	- Camelia icon on all dialogs.
+	- use Padre::Constant::WIN32 in all locations.
+	- IRC Live support menu items are simpler.
+	- Added an easy-to-use menu option to access perlintro and perlsyn directly (Hinrik++).
+	- Depends on App::Grok 0.17 for more bug fixes/enhancements..
+
 =head1 0.55 2009.7.25
 
 	- This is a bugfix release for Padre's Birthday Six Release.
