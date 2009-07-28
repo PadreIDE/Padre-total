@@ -106,7 +106,8 @@ sub new {
 			perl\site\lib\auto\Perl6
 			perl\site\lib\auto\Perl6\Perldoc
 			perl\site\lib\auto\Readonly
-			perl\site\lib\auto\Sub 
+			perl\site\lib\auto\Sub
+			perl\site\lib\auto\Test\Pod
 			perl\site\lib\auto\Text
 			perl\site\lib\auto\Wx
 			perl\site\lib\auto\Wx\Perl
