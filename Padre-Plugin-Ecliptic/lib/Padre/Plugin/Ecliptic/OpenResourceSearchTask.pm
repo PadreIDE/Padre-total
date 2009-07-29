@@ -9,13 +9,24 @@ use Padre::Constant ();
 our $VERSION        = '0.15';
 our $thread_running = 0;
 
+# accessors
+use Class::XSAccessor accessors => {
+	_directory                => '_directory',                # searched directory
+	_skip_vcs_files           => '_skip_vcs_files',           # Skip VCS files menu item
+	_skip_using_manifest_skip => '_skip_using_manifest_skip', # Skip using MANIFEST.SKIP menu item
+};
+
 #
 # This is run in the main thread before being handed
 # off to a worker (background) thread. The Wx GUI can be
 # polled for information here.
 #
 sub prepare {
-	my $self = shift;
+	my ($self) = @_;
+
+	$self->_directory($self->{directory});
+	$self->_skip_vcs_files($self->{skip_vcs_files});
+	$self->_skip_using_manifest_skip($self->{skip_using_manifest_skip});
 
 	# assign a place in the work queue
 	if ($thread_running) {
@@ -32,6 +43,34 @@ sub prepare {
 sub run {
 	my $self = shift;
 
+	# search and ignore rc folders (CVS,.svn,.git) if the user wants
+	require File::Find::Rule;
+	my $rule = File::Find::Rule->new;
+	if ($self->_skip_vcs_files) {
+		$rule->or(
+			$rule->new->directory->name( 'CVS', '.svn', '.git', 'blib' )->prune->discard,
+			$rule->new
+		);
+	}
+	$rule->file;
+
+	if ($self->_skip_using_manifest_skip) {
+		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
+		if ( -e $manifest_skip_file ) {
+			use ExtUtils::Manifest qw(maniskip);
+			my $skip_check = maniskip($manifest_skip_file);
+			my $skip_files = sub {
+				my ( $shortname, $path, $fullname ) = @_;
+				return not $skip_check->($fullname);
+			};
+			$rule->exec( \&$skip_files );
+		}
+	}
+
+	# Generate a sorted file-list based on filename
+	my @matched_files =
+		sort { File::Basename::fileparse($a) cmp File::Basename::fileparse($b) } $rule->in( $self->_directory );
+
 	return 1;
 }
 
@@ -41,6 +80,10 @@ sub run {
 #
 sub finish {
 	my ($self, $main) = @_;
+
+
+	#$self->_matched_files( \@matched_files );
+	#$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
 
 	# finished here
 	$thread_running = 0;

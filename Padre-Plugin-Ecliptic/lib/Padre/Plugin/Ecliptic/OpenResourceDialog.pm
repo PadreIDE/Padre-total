@@ -25,7 +25,7 @@ use Class::XSAccessor accessors => {
 	_copy_button              => '_copy_button',              # copy button
 	_popup_button             => '_popup_button',             # popup button for options
 	_popup_menu               => '_popup_menu',               # options popup menu
-	_skip_vcs_files           => '_skip_vcs_files',           # Skip RCS files menu item
+	_skip_vcs_files           => '_skip_vcs_files',           # Skip VCS files menu item
 	_skip_using_manifest_skip => '_skip_using_manifest_skip', # Skip using MANIFEST.SKIP menu item
 };
 
@@ -393,40 +393,13 @@ sub _search() {
 
 	$self->_status_text->SetLabel( Wx::gettext("Reading items. Please wait...") );
 
-	my $skip_vcs_files           = $self->_skip_vcs_files->IsChecked;
-	my $skip_using_manifest_skip = $self->_skip_using_manifest_skip->IsChecked;
-
-	# search and ignore rc folders (CVS,.svn,.git) if the user wants
-	require File::Find::Rule;
-	my $rule = File::Find::Rule->new;
-	if ($skip_vcs_files) {
-		$rule->or(
-			$rule->new->directory->name( 'CVS', '.svn', '.git', 'blib' )->prune->discard,
-			$rule->new
-		);
-	}
-	$rule->file;
-
-	if ($skip_using_manifest_skip) {
-		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
-		if ( -e $manifest_skip_file ) {
-			use ExtUtils::Manifest qw(maniskip);
-			my $skip_check = maniskip($manifest_skip_file);
-			my $skip_files = sub {
-				my ( $shortname, $path, $fullname ) = @_;
-				return not $skip_check->($fullname);
-			};
-			$rule->exec( \&$skip_files );
-		}
-	}
-
-	# Generate a sorted file-list based on filename
-	my @matched_files =
-		sort { File::Basename::fileparse($a) cmp File::Basename::fileparse($b) } $rule->in( $self->_directory );
-
-	$self->_matched_files( \@matched_files );
-
-	$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
+	require Padre::Plugin::Ecliptic::OpenResourceSearchTask;
+	my $search_task = Padre::Plugin::Ecliptic::OpenResourceSearchTask->new(
+		directory => $self->_directory,
+		skip_vcs_files => $self->_skip_vcs_files->IsChecked,
+		skip_using_manifest_skip => $self->_skip_using_manifest_skip->IsChecked,
+	);
+	$search_task->schedule;
 
 	return;
 }
@@ -436,6 +409,8 @@ sub _search() {
 #
 sub _update_matches_list_box() {
 	my $self = shift;
+
+	return if not $self->_matched_files;
 
 	my $search_expr = $self->_search_text->GetValue();
 
