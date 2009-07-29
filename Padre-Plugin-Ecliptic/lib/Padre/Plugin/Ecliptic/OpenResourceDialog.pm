@@ -169,7 +169,7 @@ sub _create_controls {
 	$self->_search_text(
 		Wx::TextCtrl->new(
 			$self,                 -1,                '',
-			Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxBORDER_SIMPLE
+			Wx::wxDefaultPosition, Wx::wxDefaultSize,
 		)
 	);
 
@@ -182,7 +182,7 @@ sub _create_controls {
 	$self->_matches_list(
 		Wx::ListBox->new(
 			$self, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize, [],
-			Wx::wxLB_EXTENDED | Wx::wxBORDER_SIMPLE
+			Wx::wxLB_EXTENDED
 		)
 	);
 
@@ -190,7 +190,7 @@ sub _create_controls {
 	$self->_status_text(
 		Wx::TextCtrl->new(
 			$self,                 -1,                Wx::gettext('Current Directory: ') . $self->_directory,
-			Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTE_READONLY | Wx::wxBORDER_SIMPLE
+			Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxTE_READONLY
 		)
 	);
 
