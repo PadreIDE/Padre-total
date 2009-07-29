@@ -389,13 +389,11 @@ Sun takes. And i love it!
 
 =head1 AUTHOR
 
-Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
 
-=head1 COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 LICENSE
+Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
