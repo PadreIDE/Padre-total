@@ -395,6 +395,7 @@ sub _search() {
 
 	require Padre::Plugin::Ecliptic::OpenResourceSearchTask;
 	my $search_task = Padre::Plugin::Ecliptic::OpenResourceSearchTask->new(
+		dialog    => $self,
 		directory => $self->_directory,
 		skip_vcs_files => $self->_skip_vcs_files->IsChecked,
 		skip_using_manifest_skip => $self->_skip_using_manifest_skip->IsChecked,

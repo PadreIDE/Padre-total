@@ -11,7 +11,9 @@ our $thread_running = 0;
 
 # accessors
 use Class::XSAccessor accessors => {
+	_dialog                   => '_dialog',                   # Open Resource dialog instance
 	_directory                => '_directory',                # searched directory
+	_matched_files            => '_matched_files',            # matched files list
 	_skip_vcs_files           => '_skip_vcs_files',           # Skip VCS files menu item
 	_skip_using_manifest_skip => '_skip_using_manifest_skip', # Skip using MANIFEST.SKIP menu item
 };
@@ -24,6 +26,7 @@ use Class::XSAccessor accessors => {
 sub prepare {
 	my ($self) = @_;
 
+	$self->_dialog($self->{dialog});
 	$self->_directory($self->{directory});
 	$self->_skip_vcs_files($self->{skip_vcs_files});
 	$self->_skip_using_manifest_skip($self->{skip_using_manifest_skip});
@@ -70,6 +73,7 @@ sub run {
 	# Generate a sorted file-list based on filename
 	my @matched_files =
 		sort { File::Basename::fileparse($a) cmp File::Basename::fileparse($b) } $rule->in( $self->_directory );
+	$self->_matched_files( \@matched_files );
 
 	return 1;
 }
@@ -82,8 +86,12 @@ sub finish {
 	my ($self, $main) = @_;
 
 
-	#$self->_matched_files( \@matched_files );
-	#$self->_status_text->SetLabel( Wx::gettext("Finished Searching") );
+	print "Finish\n";
+	my $dialog = $self->_dialog;
+	print $dialog . "\n";
+	#$dialog->_matched_files( $self->_matched_files );
+	#$dialog->_status_text->SetLabel( '' );#Wx::gettext("Finished Searching") );
+	#$dialog->_update_matches_list_box;
 
 	# finished here
 	$thread_running = 0;
