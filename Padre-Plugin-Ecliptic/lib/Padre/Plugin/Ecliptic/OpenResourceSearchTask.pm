@@ -11,7 +11,6 @@ our $thread_running = 0;
 
 # accessors
 use Class::XSAccessor accessors => {
-	_dialog                   => '_dialog',                   # Open Resource dialog instance
 	_directory                => '_directory',                # searched directory
 	_matched_files            => '_matched_files',            # matched files list
 	_skip_vcs_files           => '_skip_vcs_files',           # Skip VCS files menu item
@@ -26,7 +25,12 @@ use Class::XSAccessor accessors => {
 sub prepare {
 	my ($self) = @_;
 
-	$self->_dialog($self->{dialog});
+	# move the document to the main-thread-only storage
+	my $mto = $self->{main_thread_only} ||= {};
+	$mto->{dialog} = $self->{dialog}
+		if defined $self->{dialog};
+	delete $self->{dialog};
+
 	$self->_directory($self->{directory});
 	$self->_skip_vcs_files($self->{skip_vcs_files});
 	$self->_skip_using_manifest_skip($self->{skip_using_manifest_skip});
@@ -85,14 +89,11 @@ sub run {
 sub finish {
 	my ($self, $main) = @_;
 
-
-	print "Finish\n";
-	my $dialog = $self->_dialog;
-	print $dialog . "\n";
-	#$dialog->_matched_files( $self->_matched_files );
-	#$dialog->_status_text->SetLabel( '' );#Wx::gettext("Finished Searching") );
-	#$dialog->_update_matches_list_box;
-
+	my $dialog = $self->{main_thread_only}->{dialog};
+	$dialog->_matched_files( $self->_matched_files );
+	$dialog->_status_text->SetLabel( Wx::gettext("Finished Searching") );
+	$dialog->_update_matches_list_box;
+	
 	# finished here
 	$thread_running = 0;
 
