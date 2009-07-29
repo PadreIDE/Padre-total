@@ -70,6 +70,7 @@ sub new {
 		# Tell it what additions to the directory tree to use.
 		msi_directory_tree_additions => [qw (
 			perl\site\lib\Algorithm
+			perl\site\lib\App
 			perl\site\lib\Class
 			perl\site\lib\Class\XSAccessor
 			perl\site\lib\CPAN\Mini
