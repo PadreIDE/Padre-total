@@ -303,3 +303,8 @@ ul.bottomheavy li {
 ul.topheavy li {
     -moz-border-radius: 4px 4px 0px 0px ;
 }
+
+.styled_panel {
+    -moz-border-radius: 1em;
+    -moz-border-radius-bottom-right: 0px;    
+}
