@@ -35,14 +35,9 @@ a:hover {
 body { 
     font-size: 0.8em;
     margin: 0;
-    padding: 0;
-    
+    padding: 0;   
     color: #000;
-
-    background-image: url(houndstooth_grad.png);
     background-color: #cfcfcf;
-        background-repeat: repeat-x;
-
 }
 
 div#content_wrapper {
