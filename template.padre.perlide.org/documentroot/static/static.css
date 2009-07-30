@@ -212,7 +212,12 @@ ul#translator h2 {
 }
 
 /* chrome - pretty stuff */
-
+#spot_topleft {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+}
 .styled_panel_wrapper { 
     margin-bottom: 1em
 }
