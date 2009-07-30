@@ -305,6 +305,6 @@ ul.topheavy li {
 }
 
 .styled_panel {
-    -moz-border-radius: 1em;
+    -moz-border-radius: 0.5em;
     -moz-border-radius-bottom-right: 0px;    
 }
