@@ -5,25 +5,63 @@
 
 <h2>Windows</h2>
 
-<a href="http://perlide.org/download/binary/padre-standalone-5.10.0.1-beta-1.msi">Padre Standalone Beta-1</a> based on Padre 0.38
-
-<h2>Linux</h2>
-
 [% WRAPPER chrome/styled_panel %]
-We do not have an installer for Linux. Please check out the 
-<a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
 
-<h3>Fedora 11</h3>
+The <b>Padre Standalone Plus Six</b> package contains
+<ul>
+ <li>Strawberry Perl 5.10.0.6 plus a few module updates</li>
+ <li>Padre 0.41</li>
+ <li>Padre::Plugin::Perl6 0.55</li>
+ <li>A test compile of Rakudo Perl 6 based on the Chicago release</li>
+</ul>
 
-yum install Padre
+Download frome here:
+<ul>
+  <li><a href="http://strawberryperl.com/download/padre/almost-six-0.41.msi">Padre 0.41 msi</a></li>
+  <li><a href="http://strawberryperl.com/download/padre/almost-six-0.41.zip">Padre 0.41 zip</a></li>
+  <li><a href="http://strawberryperl.com.nyud.net/download/padre/almost-six-0.41.msi">Padre 0.41 msi</a> via CoralCDN edge-cache</li>
+  <li><a href="http://strawberryperl.com.nyud.net/download/padre/almost-six-0.41.zip">Padre 0.41 zip</a> via CoralCDN edge-cache</li>
+</ul>
 
 [% END %]
 
+<h2>Mac OSX</h2>
+[% WRAPPER chrome/styled_panel %]
+
+For installation on Mac OSX, please look at 
+<a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
+
+[% END %]
+
+<h2>Linux and *BSD</h2>
+
+[% WRAPPER chrome/styled_panel %]
+
+<h3>Fedora 11 and later</h3>
+
+yum install Padre
+
+<h3>Mandriva 2009.0 and later</h3>
+
+urpmi perl-Padre
+
+<h3>Other Linux and *BSD</h3>
+
+For installation on other Linux distributions and *BSD, 
+please look at the
+<a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
+
+[% END %]
 
 <h2>Source code</h2>
 
 [% WRAPPER chrome/styled_panel %]
-<a href="http://search.cpan.org/dist/Padre">Padre on CPAN</a>
+
+Released versions of Padre can be downloaded in source code format from the
+<a href="http://search.cpan.org/dist/Padre">CPAN</a>.<br />
+If you are interested in development version, please check out our 
+<a href="/trac/">pages for Padre developers</a>.
+
 [% END %]
 
 [% END %]
