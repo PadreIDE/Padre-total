@@ -89,6 +89,12 @@ img#padrelogo {
     float: left;
 }
 
+#padresplash {
+    background: url(splash.png);
+    background-repeat: no-repeat;
+    width: 300px;
+    height: 400px;
+}
 div#masthead h1 {
     margin: 0;
     padding: 0.5em;
