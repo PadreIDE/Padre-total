@@ -19,19 +19,10 @@ sub run {
 	$self->{search}      = $self->{directory}->{search};
 	$self->{tree}        = $self->{directory}->{tree};
 	$self->{word}        = $self->{search}->GetValue;
-	my $project_dir      = $self->{directoryx}->{project_dir};
 	$self->{tree}        = $self->{directoryx}->{tree};
 
-	# Sleeps of 0.4 seconds to check if the
-	# use is still typing
-	select(undef, undef, undef, 0.4);
-
-	# Returns if the typed word when called the search
-	# is different from the currently word
-	return if $self->{word} ne $self->{search}->GetValue;
-
 	# Searchs below the project directory and caches it
-	@{$self->{result}} = $self->_search( $project_dir );
+	@{$self->{result}} = $self->_search( $self->{directoryx}->{project_dir} );
 
 	return 1;
 }
