@@ -21,7 +21,7 @@ post on our IRC channel.
  <h2><a id="[% t.title | id_attr %]">[% t.title | html %]</a></h2>
  <table>
   [% FOREACH e IN t.events %]
-   <tr><td>[% e.date | html %]</td><td><a href="[% e.url | url %]">[% e.title | html %]</a> [% e.comment %]</td></tr>
+   <tr><td>[% e.date | html %]</td><td><a href="[% e.url | html %]">[% e.title | html %]</a> [% e.comment %]</td></tr>
   [% END %]
  </table>
  [% END %]
