@@ -28,7 +28,7 @@
     [% WRAPPER chrome/styled_panel %]
 
     [% IF t.url %]
-     <h1 class="translator"><a href="[% t.url | uri %]">[% t.name | html %]</a></h1>
+     <h1 class="translator"><a href="[% t.url | html %]">[% t.name | html %]</a></h1>
     [% ELSE %]
      <h1 class="translator">[% t.name | html %]</h1>
     [% END %]
