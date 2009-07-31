@@ -17,7 +17,7 @@ div#palette {
     margin: 0.15em;
 }
 
-
+/*
 a:link {
     color: #053935;
 }
@@ -29,6 +29,7 @@ a:visited {
 a:hover {
     color: #1D6460;
 }
+*/
 
 
 /*   */
@@ -59,12 +60,6 @@ div#widget_stack {
     float: right;
 } 
 
-ul {
-    list-style-image: none;
-    list-style: none;
-    padding-left: 0em;
-    margin: 0;
-}
 
 h1,h2,h3,h4,h5,h6 {
     font-family: arial,helvetica,sans-serif;
@@ -72,15 +67,14 @@ h1,h2,h3,h4,h5,h6 {
 
 
 div#masthead {
-    background-color: #63A37E;
-/*    background-color: #637EA3;
-    background-image: url(clouds.png);
+    background-color: #aa99FF;
+    
+ /*   background-image: url(clouds.png);
     background-repeat: repeat-x;
     background-position: bottom left;
     bottom: 0;
-    height: 100px;
-*/
-    position: relative;
+    position: relative; */
+    
     vertical-align: middle;
 }
 
@@ -93,7 +87,7 @@ img#padrelogo {
     background: url(splash.png);
     background-repeat: no-repeat;
     width: 300px;
-    height: 400px;
+    height: 320px;
 }
 div#masthead h1 {
     margin: 0;
@@ -101,8 +95,10 @@ div#masthead h1 {
 }
 
 ul.navigation {
-
-   /*     width: 100%; */
+    list-style-image: none;
+    list-style: none;
+    padding-left: 0em;
+    margin: 0;
 }
 
 ul.navigation li {
@@ -135,6 +131,13 @@ ul.navigation li:hover {
 }
 
 
+ul.unstyled {
+    list-style-image: none;
+    list-style: none;
+    padding-left: 0em;
+    margin: 0;
+}
+
 div.column_a {
     width: 48%;
 	float: left;
@@ -145,7 +148,11 @@ div.column_b {
 	float: right;
 }
 
-
+.title_image {
+    float: right;
+    margin-left: 1em;
+    clear: none;
+}
 
 ul#developers img {
     float: right;
@@ -218,6 +225,13 @@ ul#translator h2 {
         left: 0;
         z-index: -1;
 }
+#spot_bottomright {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        z-index: -1;
+}
+
 .styled_panel_wrapper { 
     margin-bottom: 1em
 }

@@ -6,7 +6,7 @@
  <link rel="stylesheet" href="static/static.css" type="text/css" />
 </head>
 <body [% IF onload_handler %]onload="[% onload_handler %]"[% END %]>
-<img id="spot_topleft" src="static/spotlight-occlusion-topleft.png"/>
+
 
 [% INCLUDE lib/navigation %]
 
@@ -20,6 +20,7 @@
  </div>
 </div>
 <!-- end content_wrapper -->
+<img id="spot_bottomright" src="static/spotlight-occlusion-bottomright.png"/>
 
 </body>
 </html>
