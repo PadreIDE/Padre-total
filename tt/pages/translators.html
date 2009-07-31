@@ -22,7 +22,7 @@
  %]
  
  <!-- list of padre translators -->
-<ul id="translators" class="palette_text" >
+<ul id="translators" class="unstyled palette_text" >
 [% FOREACH t IN translators %]
    <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]" >
     [% WRAPPER chrome/styled_panel %]

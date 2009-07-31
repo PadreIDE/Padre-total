@@ -3,63 +3,86 @@
 
 %]
 
-<h2>Windows</h2>
 
-[% WRAPPER chrome/styled_panel %]
+<div id="column_a" style="width: 49%; float: left;margin-right: 0.5em;">
+[% INCLUDE dl_windows %]
+[% INCLUDE dl_osx %]
+</div>
 
-The <b>Padre Standalone Plus Six</b> package contains
-<ul>
- <li>Strawberry Perl 5.10.0.6 plus a few module updates</li>
- <li>Padre 0.41</li>
- <li>Padre::Plugin::Perl6 0.55</li>
- <li>A test compile of Rakudo Perl 6 based on the Chicago release</li>
-</ul>
+<div id="column_b" style="width: 49%; float:right;margin-left: 0.5em;">
+[% INCLUDE dl_linux %]
+[% INCLUDE dl_source %]
+</div>
 
-Download frome here:
-<ul>
+[% END %]
+
+[%# Page layout ends ... block templates below per download type %]
+
+[% BLOCK dl_windows %]
+ [% WRAPPER chrome/styled_panel %]
+  <img class="title_image" src="static/alien/windows-logo.png" alt=""/>
+ <h1>Windows</h1>
+
+ 
+ The <b>Padre Standalone Plus Six</b> package contains
+ <ul>
+  <li>Strawberry Perl 5.10.0.6 plus a few module updates</li>
+  <li>Padre 0.41</li>
+  <li>Padre::Plugin::Perl6 0.55</li>
+  <li>A test compile of Rakudo Perl 6 based on the Chicago release</li>
+ </ul>
+
+ Download frome here:
+ <ul>
   <li><a href="http://strawberryperl.com/download/padre/almost-six-0.41.msi">Padre 0.41 msi</a></li>
   <li><a href="http://strawberryperl.com/download/padre/almost-six-0.41.zip">Padre 0.41 zip</a></li>
-</ul>
+ </ul>
+ [% END %]
+[% END ; # dl_windows %]
 
-[% END %]
 
-<h2>Mac OSX</h2>
-[% WRAPPER chrome/styled_panel %]
+[% BLOCK dl_osx %]
+ [% WRAPPER chrome/styled_panel %]
+  <img class="title_image" src="static/alien/macosx-logo.png" alt=""/>
+ <h1>Mac OSX</h1>
 
-For installation on Mac OSX, please look at 
-<a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
 
-[% END %]
+ For installation on Mac OSX, please look at 
+ <a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
+ [% END %]
+[% END ; # dl_osx %]
 
-<h2>Linux and *BSD</h2>
 
-[% WRAPPER chrome/styled_panel %]
+[% BLOCK dl_linux %]
+ [% WRAPPER chrome/styled_panel %]
+  <img class="title_image" src="static/alien/linux-logo.png" alt=""/>
+ <h1>Linux and *BSD</h1>
 
-<h3>Fedora 11 and later</h3>
 
-yum install Padre
-
-<h3>Mandriva 2009.0 and later</h3>
+ <h2>Fedora 11 and later</h2>
+ yum install Padre
+<h2>Mandriva 2009.0 and later</h2>
 
 urpmi perl-Padre
 
-<h3>Other Linux and *BSD</h3>
+<h2>Other Linux and *BSD</h2>
 
 For installation on other Linux distributions and *BSD, 
 please look at the
 <a href="http://padre.perlide.org/trac/wiki/Download">detailed installation instructions</a>.
 
-[% END %]
+ [% END %]
+[% END ; # dl_linux %]
 
-<h2>Source code</h2>
 
-[% WRAPPER chrome/styled_panel %]
+[% BLOCK dl_source %]
+ [% WRAPPER chrome/styled_panel %]
+ <h1>Source code</h1>
+ <p>
+ Released versions of Padre can be downloaded in source code format from the
+ <a href="http://search.cpan.org/dist/Padre">CPAN</a>.<br />
+ If you are interested in development version, please check out our 
+ <a href="/trac/">pages for Padre developers</a>.
 
-Released versions of Padre can be downloaded in source code format from the
-<a href="http://search.cpan.org/dist/Padre">CPAN</a>.<br />
-If you are interested in development version, please check out our 
-<a href="/trac/">pages for Padre developers</a>.
-
-[% END %]
-
-[% END %]
+ [% END %]
+[% END ; # dl_source %]
