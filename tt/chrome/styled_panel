@@ -1,5 +1,5 @@
 <!-- begin styled panel -->
-<div class="styled_panel_wrapper">
+<div class="styled_panel_wrapper[% IF css_class.defined %] [% css_class %][% END %]">
  <div class="styled_panel">
  [% content %]
  </div>
