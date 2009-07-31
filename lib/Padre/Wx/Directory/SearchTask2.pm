@@ -6,23 +6,13 @@ use warnings;
 our $VERSION = '0.41';
 use base 'Padre::Task';
 
-sub current {
-	Padre::Current->new();
-}
-
 # Search recursively in $project_dir for files
 # that its name matchs the type word
 sub run {
-	my $self             = shift;
-	my $current          = $self->current;
-	$self->{directory}   = $current->main->directory;
-	$self->{search}      = $self->{directory}->{search};
-	$self->{tree}        = $self->{directory}->{tree};
-	$self->{word}        = $self->{search}->GetValue;
-	$self->{tree}        = $self->{directoryx}->{tree};
+	my $self = shift;
 
 	# Searchs below the project directory and caches it
-	@{$self->{result}} = $self->_search( $self->{directoryx}->{project_dir} );
+	@{$self->{result}} = $self->_search( $self->{project_dir} );
 
 	return 1;
 }
@@ -30,18 +20,19 @@ sub run {
 sub finish {
 	my $self        = shift;
 	my $directory   = shift->directory;
-	my $project_dir = $directory->project_dir;
+	my $project_dir = $self->{project_dir};
 	my $search      = $directory->{search};
 	my $tree        = $directory->{tree};
 	my $word        = $self->{word};
+	$self->{tree}   = $tree;
 
 	# Returns if there is no result to be displayed
-	return unless $self->{result};
+	return "BREAK" unless $self->{result};
 
 	# Returns if the requested word is not the
 	# currently searched word (e.g. New word typed
 	# during the delayed search)
-	return if $word ne $search->GetValue;
+	return "BREAK" if $word ne $search->GetValue;
 
 	# Cleans the Directory Browser window to
 	# show the result
@@ -49,7 +40,7 @@ sub finish {
 	$tree->DeleteChildren( $root );
 
 	# Displays the cached search result
-	$self->_display_search_result( $tree, $root, $self->{result} );
+	$self->_display_search_result( $root, $self->{result} );
 
 	# Caches the searched word and result to the project
 	$search->{CACHED}->{ $project_dir }->{value} = $word;
@@ -73,7 +64,7 @@ sub _search {
 	my $tree        = $self->{tree};
 	my $search      = $self->{search};
 	my $word        = $self->{word};
-	my $project_dir = $self->{directoryx}->{project_dir};
+	my $project_dir = $self->{project_dir};
 
 	# Fetch the ignore criteria
 # Note: Just works with .pl files
@@ -96,17 +87,7 @@ sub _search {
 	my ($dirs, $files) = $tree->readdir( $path );
 
 	# Quotes meta characters
-	$word = quotemeta( $word );
-
-	# Accept some regex like characters
-	#   ^ = begin with
-	#   $ = end with
-	#   * = any string
-	#   ? = any character
-	$word =~ s/^\\\^/^/g;
-	$word =~ s/\\\$$/\$/g;
-	$word =~ s/\\\*/.*?/g;
-	$word =~ s/\\\?/./g;
+	$word = quoteword( $word );
 
 	# Filter the file list by the search criteria (but not the dir list)
 	@$files = grep { $_ =~ /$word/i } @$files;
@@ -164,17 +145,7 @@ sub _search_in_cache {
 	my $data = shift;
 
 	# Quotes meta characters
-	my $word = quotemeta($self->{word});
-
-	# Accept some regex like characters
-	#   ^ = begin with
-	#   $ = end with
-	#   * = any string
-	#   ? = any character
-	$word =~ s/^\\\^/^/g;
-	$word =~ s/\\\$$/\$/g;
-	$word =~ s/\\\*/.*?/g;
-	$word =~ s/\\\?/./g;
+	my $word = quoteword($self->{word});
 
 	# Goes thought each item from $data, if is a folder , searchs
 	# recursively inside it, if is a file tries to match its name
@@ -204,9 +175,9 @@ sub _search_in_cache {
 	return @result;
 }
 
-
 sub _display_search_result {
-	my ( $self, $tree, $node, $data ) = @_;
+	my ( $self, $node, $data ) = @_;
+	my $tree      = $self->{tree};
 	my $node_data = $tree->GetPlData( $node );
 	my $path = File::Spec->catfile( $node_data->{dir}, $node_data->{name} );
 
@@ -226,7 +197,7 @@ sub _display_search_result {
 				type => 'folder',
 			} )
 		);
-		$self->_display_search_result( $tree, $new_folder, $_->{data} );
+		$self->_display_search_result( $new_folder, $_->{data} );
 	}
 
 	# Adds each matched file
@@ -242,6 +213,22 @@ sub _display_search_result {
 			} )
 		);
 	}
+}
+
+# Quotes meta characters
+# Accept some regex like characters
+#   ^ = begin with
+#   $ = end with
+#   * = any string
+#   ? = any character
+sub quoteword {
+	my $word = quotemeta(shift);
+	$word =~ s/^\\\^/^/g;
+	$word =~ s/\\\$$/\$/g;
+	$word =~ s/\\\*/.*?/g;
+	$word =~ s/\\\?/./g;
+
+	return $word;
 }
 
 1;

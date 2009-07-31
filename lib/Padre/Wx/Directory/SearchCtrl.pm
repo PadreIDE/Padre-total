@@ -49,11 +49,6 @@ sub new {
 		},
 	);
 
-	$self->{task} = Padre::Wx::Directory::SearchTask->new(
-				directoryx => $self->parent,
-				cache => $self->{CACHED},
-			);
-
 	return $self;
 }
 
@@ -240,7 +235,12 @@ sub _on_text {
 	my $locker = $self->main->freezer;
 
 	# Schedules the search in background
-	$self->{task}->schedule;
+	my $task = Padre::Wx::Directory::SearchTask->new(
+			word      => $value,
+			cache     => $self->{CACHED},
+			directory => $self->parent,
+		);
+	$task->schedule;
 
 	return 1;
 }

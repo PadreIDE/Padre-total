@@ -1,5 +1,4 @@
 package Padre::Wx::Directory::SearchTask;
-use Padre::Wx::Directory::SearchTask2;
 use strict;
 use warnings;
 
@@ -12,10 +11,8 @@ sub current {
 
 sub run {
 	my $self      = shift;
-	my $current   = $self->current;
-	my $directory = $current->main->directory;
-	my $search    = $directory->{search};
-	my $word      = $search->GetValue;
+	my $search    = $self->current->main->directory->{search};
+	my $word      = $self->{word};
 
 	# Sleeps of 0.4 seconds to check if the
 	# use is still typing
@@ -23,18 +20,27 @@ sub run {
 
 	# Returns if the typed word when called the search
 	# is different from the currently word
-	return if $word ne $search->GetValue;
+	return "BREAK" if $word ne $search->GetValue;
 
-	my $task = $self->task( $self->{directoryx}, $self->{cache} );
+	my $directory = $self->{directory};
+
+	require Padre::Wx::Directory::SearchTask2;
+	my $task = Padre::Wx::Directory::SearchTask2->new(
+			project_dir => $directory->project_dir,
+			tree        => $directory->{tree},
+			search      => $directory->{search},
+			cache       => $self->{cache},
+			word        => $word,
+		);
 	$task->schedule;
+
+	return 1;
 }
 
-sub task {
-	$_[0]->{task}
-	or
-	$_[0]->{task} = do {
-		Padre::Wx::Directory::SearchTask2->new( directoryx => $_[1], cache => $_[2] );
-	}
+sub finish {
+	my $self = shift;
+	my $word = $self->{word};
+	print "finalized $word$/";
 }
 
 1;
