@@ -3,9 +3,10 @@ package Padre::Plugin::Media;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Config ();
-use Padre::Wx     ();
-use Padre::Plugin ();
+use File::ShareDir ();
+use Padre::Config  ();
+use Padre::Wx      ();
+use Padre::Plugin  ();
 
 our $VERSION = '0.25';
 our @ISA     = 'Padre::Plugin';
@@ -22,7 +23,7 @@ sub padre_interfaces {
 }
 
 sub plugin_name {
-	'Media Plugin (Experimental)';
+	'Media Plugin';
 }
 
 sub menu_plugins_simple {
@@ -46,24 +47,27 @@ sub menu_plugins_simple {
 sub show_about {
 	my $self = shift;
 
-	# Locate this plugin
-	my $path = File::Spec->catfile(
-		Padre::Config->default_dir,
-		qw{ plugins Padre Plugin Media.pm }
+	# Find the audio file
+	my $file = File::ShareDir::dist_file(
+		'Padre-Plugin-Media',
+		'cartman_03.wav',
 	);
+	$file = '' unless -f $file;
+
+	# Attempt to play the file
+	if ( $file ) {
+		my $wave = Wx::Sound->new( $file );
+		$wave->Play( Wx::wxSOUND_ASYNC );
+	}
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("My Plugin");
 	$about->SetDescription( <<"END_MESSAGE" );
-The philosophy behind Padre is that every Perl programmer
-should be able to easily modify and improve their own editor.
+A plugin for testing media support
 
-To help you get started, we've provided you with your own plugin.
+File = '$file'
 
-It is located in your configuration directory at:
-$path
-Open it with with Padre and you'll see an explanation on how to add items.
 END_MESSAGE
 
 	# Show the About dialog
