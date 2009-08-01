@@ -124,6 +124,10 @@ ul.navigation a {
     text-decoration: none;
 }
 
+ul.navigation a:visited {
+    color: #053935;
+}
+
 ul.navigation li:hover {
     background-image: url(grad_depressed.png);
     background-repeat: repeat-x;
