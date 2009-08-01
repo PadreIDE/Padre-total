@@ -121,11 +121,8 @@ ul.navigation a {
     line-height: 2em;
     text-transform: uppercase;
     padding: 0em 1em 0em 1em;
+    color: #33A;
     text-decoration: none;
-}
-
-ul.navigation a:visited {
-    color: #053935;
 }
 
 ul.navigation li:hover {
