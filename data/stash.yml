@@ -19,14 +19,17 @@ navigation:
 about:
   - title: y2009
     events:
-      - date: 23 July 2009
+      - date: 2009 July 31
         url: http://onionstand.blogspot.com/2009/07/on-padres-birthday-gift-to-you-042.html
         title: On Padre's birthday, a gift to you (0.42 released!)
         comment: by garu on The Onion Stand
-      - date: 31 July 2009
+      - date:2009 July 31
         url: http://use.perl.org/~Alias/journal/39336
         title: The Padre 1st Birthday Party starts early
         comment: by Adam Kennedy
+      - date: 2009 July 29
+        url: http://csjewell.dreamwidth.org/2127.html
+        title: Padre Standalone (for Windows) is having some children...
       - date: 2009 July 23
         url: http://onionstand.blogspot.com/2009/07/padre-041-released.html
         title: Padre 0.41 released!
