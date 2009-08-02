@@ -2,5 +2,3 @@
 <img alt="Padre Logo" id="padrelogo" src="static/logo.png" />
 <h1>[% title %]</h1>
 </div>
-
-[% INCLUDE chrome/navigation_list  css_class="bottomheavy"%]
