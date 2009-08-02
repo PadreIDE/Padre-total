@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 1;
 __END__
@@ -49,6 +49,12 @@ See L<Padre::Plugin::CSS>
 Simple Catalyst helper interface for Padre
 
 See L<Padre::Plugin::Catalyst>
+
+=head2 L<Padre::Plugin::ClassSniff>
+
+Simple Class::Sniff interface for Padre
+
+See L<Padre::Plugin::ClassSniff>
 
 =head2 L<Padre::Plugin::CommandLine>
 
@@ -114,8 +120,13 @@ See L<Padre::Plugin::InstallPARDist>
 
 L<Padre> and JavaScript
 
-
 See L<Padre::Plugin::JavaScript>
+
+=head2 L<Padre::Plugin::Kate>
+
+Using the Kate syntax highlighter
+
+See L<Padre::Plugin::Kate>
 
 =head2 L<Padre::Plugin::Mojolicious>
 
@@ -143,13 +154,13 @@ See L<Padre::Plugin::PSI>
 
 =head2 L<Padre::Plugin::Parrot>
 
-Experimental Padre plugin that runs on Parrot
+Experimental Padre plugin for Parrot
 
 See L<Padre::Plugin::Parrot>
 
 =head2 L<Padre::Plugin::Perl6>
 
-Padre plugin for Perl6
+Padre plugin for Perl 6
 
 See L<Padre::Plugin::Perl6>
 

@@ -8,21 +8,23 @@ license  'perl';
 homepage       'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Task-Padre-Plugins/';
 
-requires 'Padre' => '0.38';
+requires 'Padre' => '0.42';
 requires 'Padre::Plugin::AcmePlayCode' => '0.11';
 requires 'Padre::Plugin::Alarm' => '0.07';
 requires 'Padre::Plugin::Autoformat' => '1.1.2';
 requires 'Padre::Plugin::CSS' => '0.08';
+requires 'Padre::Plugin::ClassSniff' => '0.01';
 requires 'Padre::Plugin::CommandLine' => '0.02';
 requires 'Padre::Plugin::DataWalker' => '0.01';
 requires 'Padre::Plugin::Debugger' => '0.3';
-requires 'Padre::Plugin::Ecliptic' => '0.14';
+requires 'Padre::Plugin::Ecliptic' => '0.16';
 requires 'Padre::Plugin::Encode' => '0.1.3';
 requires 'Padre::Plugin::Encrypt' => '0.06';
 requires 'Padre::Plugin::HTML' => '0.09';
 requires 'Padre::Plugin::HTMLExport' => '0.01';
 requires 'Padre::Plugin::InstallPARDist' => '0.01';
 requires 'Padre::Plugin::JavaScript' => '0.25';
+requires 'Padre::Plugin::Kate' => '0.01';
 requires 'Padre::Plugin::Nopaste' => '0.2.1';
 requires 'Padre::Plugin::PAR' => '0.05';
 requires 'Padre::Plugin::PerlCritic' => '0.06';
@@ -43,12 +45,12 @@ feature 'Simple Mojolicious helper interface for Padre',
 feature 'Experimental Padre plugin written in Perl 6',
 	-default => 0,
 	'Padre::Plugin::PSI' => '0.01';
-feature 'Experimental Padre plugin that runs on Parrot',
+feature 'Experimental Padre plugin for Parrot',
 	-default => 0,
-	'Padre::Plugin::Parrot' => '0.23';
-feature 'Padre plugin for Perl6',
+	'Padre::Plugin::Parrot' => '0.25';
+feature 'Padre plugin for Perl 6',
 	-default => 0,
-	'Padre::Plugin::Perl6' => '0.48';
+	'Padre::Plugin::Perl6' => '0.56';
 feature 'read-evaluate-print plugin for Padre',
 	-default => 0,
 	'Padre::Plugin::REPL' => '0.01';
