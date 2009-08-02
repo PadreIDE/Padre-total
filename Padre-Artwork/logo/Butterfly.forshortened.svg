@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg3363"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="Butterfly.forshortened.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs3365">
+    <linearGradient
+       id="linearGradient3222">
+      <stop
+         style="stop-color:#1d4e85;stop-opacity:1;"
+         offset="0"
+         id="stop3224" />
+      <stop
+         style="stop-color:#468dc8;stop-opacity:1;"
+         offset="1"
+         id="stop3226" />
+    </linearGradient>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3371" />
+    <inkscape:perspective
+       id="perspective3386"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3401"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective2414"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective3216"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3222"
+       id="linearGradient3250"
+       gradientUnits="userSpaceOnUse"
+       x1="439.99716"
+       y1="-212.66368"
+       x2="339.99716"
+       y2="-204.09224" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="258.18896"
+     inkscape:cy="558.2811"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1057"
+     inkscape:window-height="780"
+     inkscape:window-x="208"
+     inkscape:window-y="43" />
+  <metadata
+     id="metadata3368">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <path
+       style="fill:#008000;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 484.38301,780.46417 C 471.25103,739.04792 468.81231,712.36553 462.75139,690.14218 C 456.69048,667.91882 448.85437,626.08415 434.71223,611.94201 C 420.57009,597.79987 398.37647,588.29008 398.37647,588.29008 L 401.40693,573.13779 L 436.76227,566.06673 C 436.76227,566.06673 432.72166,560.00581 447.87395,602.43222 C 463.02623,644.85863 475.14806,705.46778 480.19883,722.64037 C 485.24959,739.81297 489.2902,777.18861 493.33081,781.22922 C 497.37142,785.26983 485.39316,780.46417 484.38301,780.46417 z"
+       id="path3580"
+       sodipodi:nodetypes="csscccsssc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 331.7064,379.1885 C 319.58457,387.26972 317.56427,399.39155 316.55412,407.47278 C 315.54396,415.554 326.65564,477.1733 332.71656,486.26467 C 338.77747,495.35605 348.879,517.5794 358.98052,522.63017 C 369.08205,527.68093 377.16327,521.62001 377.16327,521.62001 C 377.16327,521.62001 361.00083,442.82811 359.99068,432.72659 C 358.98052,422.62506 334.73686,379.1885 331.7064,379.1885 z"
+       id="path2430"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 169.07185,476.16316 C 172.8551,487.54508 183.55212,495.54567 195.17998,497.51603 C 218.75029,504.21753 242.3681,510.79215 265.62113,518.5315 C 283.06159,523.66758 301.01445,527.32257 318.06843,533.61027 C 327.88658,539.31033 335.81028,548.21707 346.763,551.92015 C 355.23785,549.62593 359.73299,541.31024 366.31557,536.21533 C 367.97528,528.95868 355.71598,526.56042 351.71989,521.28317 C 342.60088,514.58145 333.88132,507.19913 324.51207,500.92376 C 300.13749,490.45417 276.06794,478.84641 250.56968,471.36007 C 230.01407,467.68701 209.02933,467.39976 188.20968,467.30623 C 181.28958,467.69832 173.00436,469.43352 169.18837,475.7369 L 169.07405,476.15509 L 169.07185,476.16316 z"
+       id="path2432"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 141.79774,515.55911 C 144.94894,508.67719 152.4513,504.83373 159.83897,504.9332 C 176.72709,503.94718 193.73476,503.14708 210.6095,504.73343 C 221.14218,506.88271 231.55477,509.69126 242.00679,512.23861 C 253.25349,515.32487 264.83013,517.90212 275.24514,523.30294 C 280.57578,525.80904 281.13656,532.6707 278.67339,537.40364 C 276.8909,541.68613 274.33759,546.81584 269.13121,543.66454 C 246.56166,538.52736 223.99329,533.07302 201.01681,530.07578 C 193.65441,529.6354 186.21298,529.4207 179.08607,527.26587 C 168.15424,524.49261 157.84064,519.8473 147.62632,515.17758 C 146.73558,514.86293 139.94255,512.70259 141.79774,515.55911 z"
+       id="path2426"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 151.89925,533.74184 C 173.11246,516.56925 186.24444,511.51849 200.38657,511.51849 C 214.52871,511.51849 260.99573,520.60986 266.04649,523.64032 C 271.09725,526.67078 311.50335,545.86367 311.50335,545.86367 L 281.19878,556.97535 C 281.19878,556.97535 231.7013,546.87383 215.53886,546.87383 C 199.37642,546.87383 173.11246,547.88398 167.05154,544.85352 C 160.99063,541.82306 151.89925,534.752 151.89925,533.74184 z"
+       id="path2424"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 165.03124,569.09718 C 175.13276,557.98551 194.32566,556.97535 198.36627,555.9652 C 202.40688,554.95505 262.00588,550.91444 282.20893,550.91444 C 302.41198,550.91444 340.79778,549.90428 351.90945,555.9652 C 363.02113,562.02612 373.12266,569.09718 373.12266,569.09718 C 373.12266,569.09718 313.52366,579.19871 292.31045,580.20886 C 271.09725,581.21901 206.44749,582.22917 196.34596,577.1784 C 186.24444,572.12764 164.02108,568.08703 165.03124,569.09718 z"
+       id="path2422"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 229.681,608.49313 C 235.74191,597.38145 244.83328,592.33069 255.94496,589.30023 C 267.05664,586.26978 287.25969,575.1581 320.59473,572.12764 C 353.92976,569.09718 364.03129,566.06673 375.14296,567.07688 C 386.25464,568.08703 393.32571,575.1581 393.32571,575.1581 L 331.7064,588.29008 L 229.681,608.49313 z"
+       id="path2420"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 345.84854,343.83316 C 336.75717,353.93469 333.72671,362.01591 335.74701,371.10728 C 337.76732,380.19866 350.8993,465.05147 357.97037,473.13269 C 365.04144,481.21391 370.0922,520.60986 379.18357,518.58956 C 388.27495,516.56925 400.39678,514.54895 399.38662,505.45757 C 398.37647,496.3662 375.14296,398.3814 375.14296,393.33064 C 375.14296,388.27988 358.98052,341.81286 358.98052,341.81286 L 345.84854,343.83316 z"
+       id="path2428"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 432.72166,319.5895 C 414.53891,327.67073 411.50845,327.67073 402.41708,342.82301 C 393.32571,357.9753 388.27495,406.46262 388.27495,406.46262 C 388.27495,406.46262 387.26479,470.10223 393.32571,478.18345 C 399.38662,486.26467 418.57952,498.38651 418.57952,498.38651 C 418.57952,498.38651 432.72166,484.24437 430.70135,471.11239 C 428.68105,457.9804 427.6709,465.05147 423.63029,445.85857 C 419.58967,426.66567 425.65059,359.99561 428.68105,349.89408 C 431.71151,339.79256 433.73181,319.5895 432.72166,319.5895 z"
+       id="path3785"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#ffd500;fill-opacity:1;stroke:none;stroke-width:12.56700039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path2437"
+       sodipodi:cx="230.31477"
+       sodipodi:cy="-54.765007"
+       sodipodi:rx="51.51778"
+       sodipodi:ry="28.284271"
+       d="M 281.83255,-54.765007 A 51.51778,28.284271 0 1 1 178.79699,-54.765007 A 51.51778,28.284271 0 1 1 281.83255,-54.765007 z"
+       transform="matrix(1.0196078,-0.1494589,0,1.2833639,156.47465,639.45801)"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:12.56700039;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path3254"
+       sodipodi:cx="322.74374"
+       sodipodi:cy="-71.937599"
+       sodipodi:rx="7.5761442"
+       sodipodi:ry="8.0812206"
+       d="M 330.31989,-71.937599 A 7.5761442,8.0812206 0 1 1 315.1676,-71.937599 A 7.5761442,8.0812206 0 1 1 330.31989,-71.937599 z"
+       transform="translate(44.823078,604.66929)"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <g
+       id="g3246"
+       transform="matrix(0.998004,-6.3150859e-2,6.3150859e-2,0.998004,-57.517304,789.76401)"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45">
+      <path
+         id="path3572"
+         d="M 169.70563,-446.70419 C 157.5838,-443.67374 159.6041,-444.68389 156.57364,-436.60267 C 153.54319,-428.52145 166.67517,-396.19657 173.74624,-388.11535 C 180.81731,-380.03413 209.10158,-353.77016 216.17264,-338.61787 C 223.24371,-323.46558 225.26402,-308.3133 227.28432,-290.13055 C 229.30463,-271.9478 245.46707,-224.47063 260.61936,-208.30819 C 275.77164,-192.14575 297.995,-169.9224 307.08637,-162.85133 C 316.17775,-155.78026 325.26912,-145.67874 328.29958,-140.62797 C 331.33003,-135.57721 348.50263,-140.62797 354.56354,-147.69904 C 360.62446,-154.77011 395.9798,-178.00362 402.04071,-185.07469 C 408.10163,-192.14575 401.03056,-241.64323 392.94934,-249.72445 C 384.86812,-257.80567 318.19805,-341.64833 305.06607,-358.82092 C 291.93409,-375.99352 208.09142,-436.60267 190.91883,-441.65343 C 173.74624,-446.70419 167.68532,-448.7245 169.70563,-446.70419 z"
+         style="fill:#0b4483;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         id="path3550"
+         d="M 391.93919,-507.31335 C 391.93919,-507.31335 386.88842,-480.03923 389.91888,-467.9174 C 392.94934,-455.79557 383.85797,-412.35901 379.81736,-398.21687 C 375.77675,-384.07474 378.8072,-369.9326 373.75644,-359.83108 C 368.70568,-349.72955 360.62446,-325.48589 355.5737,-319.42497 C 350.52293,-313.36406 317.1879,-275.98841 315.16759,-260.83613 C 313.14729,-245.68384 309.10668,-159.82087 331.33003,-140.62797 C 353.55339,-121.43508 355.5737,-157.80057 383.85797,-171.9427 C 412.14224,-186.08484 433.35544,-211.33865 437.39605,-223.46048 C 441.43666,-235.58231 438.4062,-270.93765 438.4062,-270.93765 C 438.4062,-270.93765 404.06102,-490.14075 401.03056,-496.20167 C 398.0001,-502.26258 391.93919,-507.31335 391.93919,-507.31335 z"
+         style="fill:url(#linearGradient3250);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1.47884285px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 389.95022,576.6018 C 369.81973,586.79063 355.88182,600.57941 344.90179,611.25044 C 334.68406,621.18063 313.65964,659.20568 308.4477,657.49299 C 303.23575,655.7803 296.69128,635.62299 297.99426,627.05954 C 299.29726,618.49611 298.0238,597.54895 321.47757,585.56015 C 344.93133,573.57134 347.07081,568.66997 352.41338,567.42313 C 366.71671,564.08504 381.15167,567.20281 389.95022,576.6018 z"
+       id="path3779"
+       sodipodi:nodetypes="csssssc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 383.22418,644.85863 C 403.42723,622.63527 407.46784,596.37131 407.46784,596.37131 C 407.46784,596.37131 404.43739,579.19871 401.40693,574.14795 C 398.37647,569.09718 377.16327,576.16825 370.0922,581.21901 C 363.02113,586.26978 357.97037,596.3713 358.98052,606.47283 C 359.99067,616.57435 368.0719,631.72664 372.11251,636.77741 C 376.15312,641.82817 383.22418,646.87893 383.22418,644.85863 z"
+       id="path3582"
+       sodipodi:nodetypes="ccssssc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 444.84349,592.33069 C 444.84349,592.33069 449.89425,566.06673 444.84349,563.03627 C 439.79273,560.00581 423.63029,555.9652 417.56937,557.98551 C 411.50845,560.00581 399.38662,573.13779 399.38662,573.13779 C 399.38662,573.13779 399.38662,584.24947 404.43739,586.26978 C 409.48815,588.29008 423.63029,596.3713 430.70135,596.3713 C 437.77242,596.3713 443.83334,592.33069 444.84349,592.33069 z"
+       id="path3584"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <image
+       y="317.07056"
+       x="739.70776"
+       id="image3218"
+       height="484.28571"
+       width="645.71429"
+       sodipodi:absref="/home/andrewb/Desktop/ButterFlyREF/blue butterfly_1600.jpg"
+       xlink:href="/home/andrewb/Desktop/ButterFlyREF/blue butterfly_1600.jpg"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 585.25469,529.70123 C 581.21408,516.56925 569.09225,506.46773 556.97042,502.42712 C 544.84859,498.38651 513.53386,500.40681 500.40188,503.43727 C 487.2699,506.46773 452.92471,526.67078 443.83334,531.72154 C 434.74196,536.7723 441.81303,544.85352 441.81303,544.85352 C 441.81303,544.85352 490.30035,531.72154 506.46279,530.71139 C 522.62523,529.70123 566.06179,534.752 566.06179,534.752 L 585.25469,529.70123 z"
+       id="path3771"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 557.98057,573.13779 C 543.83844,551.92459 574.14301,569.09718 543.83844,551.92459 C 513.53386,534.752 485.24959,527.68093 472.11761,527.68093 C 458.98562,527.68093 426.66074,543.84337 421.60998,552.93474 C 416.55922,562.02612 417.56937,560.00581 431.71151,561.01596 C 445.85364,562.02612 469.08715,558.99566 482.21913,564.04642 C 495.35112,569.09718 516.56432,577.1784 525.65569,576.16825 C 534.74707,575.1581 557.98057,574.14795 557.98057,573.13779 z"
+       id="path3586"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 585.25469,395.35095 C 550.90951,410.50323 503.43234,443.83827 485.24959,461.01086 C 467.06684,478.18345 433.73181,524.65047 433.73181,529.70123 C 433.73181,534.752 440.80288,537.78245 440.80288,537.78245 C 440.80288,537.78245 472.11761,486.26467 483.22929,479.19361 C 494.34096,472.12254 525.65569,442.82812 534.74707,437.77735 C 543.83844,432.72659 587.275,395.35095 585.25469,395.35095 z"
+       id="path3777"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 509.49325,318.57935 C 483.22929,334.74179 462.01608,358.98545 449.89425,380.19866 C 437.77242,401.41186 421.60998,450.90934 421.60998,458.99056 C 421.60998,467.07178 412.51861,487.27483 417.56937,496.3662 C 422.62013,505.45757 433.73181,514.54895 433.73181,514.54895 C 433.73181,514.54895 450.9044,467.07178 462.01608,438.78751 C 473.12776,410.50323 504.44249,348.88393 504.44249,344.84332 C 504.44249,340.80271 509.49325,318.57935 509.49325,318.57935 z"
+       id="path3783"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 534.74707,328.68087 C 529.6963,329.69103 500.40188,335.75195 488.28005,348.88393 C 476.15822,362.01591 451.91456,401.41186 446.86379,417.5743 C 441.81303,433.73674 423.63029,486.26467 423.63029,499.39666 C 423.63029,512.52864 430.70135,524.65047 430.70135,524.65047 L 440.80288,527.68093 C 440.80288,527.68093 474.89633,436.67066 493.33081,399.39156 C 504.22806,377.3546 534.74707,328.68087 534.74707,328.68087 z"
+       id="path3781"
+       sodipodi:nodetypes="csssccsc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:#ffffff;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 581.21408,365.04637 C 576.16332,365.04637 546.8689,377.1682 534.74707,386.25957 C 522.62523,395.35095 481.20898,428.68598 474.13791,439.79766 C 467.06684,450.90934 432.72166,504.44742 433.73181,509.49818 C 434.74196,514.54895 435.75212,531.72154 435.75212,531.72154 L 448.8841,535.76215 C 448.8841,535.76215 461.00593,516.56925 466.05669,510.50834 C 471.10745,504.44742 500.40188,454.94995 510.5034,447.87888 C 520.60493,440.80781 551.91966,401.41186 557.98057,395.35095 C 564.04149,389.29003 584.24454,378.17835 584.24454,373.12759 C 584.24454,368.07683 581.21408,365.04637 581.21408,365.04637 z"
+       id="path3773"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <image
+       y="230.89667"
+       x="-796.02905"
+       id="image2416"
+       height="600"
+       width="800"
+       sodipodi:absref="/home/andrewb/Desktop/ButterFlyREF/butterfly-on-the-blue-flower[1]-792821.jpg"
+       xlink:href="/home/andrewb/Desktop/ButterFlyREF/butterfly-on-the-blue-flower[1]-792821.jpg"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 366.69676,526.91177 C 372.09168,512.27299 375.07841,505.45725 382.99872,501.93016"
+       id="path3252"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       d="M 371.53767,530.57528 C 376.93259,515.9365 386.48531,511.64614 396.931,508.62413"
+       id="path3256"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/andrewb/Desktop/Logos-Padre/working.png"
+       inkscape:export-xdpi="45"
+       inkscape:export-ydpi="45" />
+  </g>
+</svg>
