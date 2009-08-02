@@ -31,12 +31,13 @@ sub prepare {
 		if defined $self->{dialog};
 	delete $self->{dialog};
 
-	$self->_directory($self->{directory});
-	$self->_skip_vcs_files($self->{skip_vcs_files});
-	$self->_skip_using_manifest_skip($self->{skip_using_manifest_skip});
+	$self->_directory( $self->{directory} );
+	$self->_skip_vcs_files( $self->{skip_vcs_files} );
+	$self->_skip_using_manifest_skip( $self->{skip_using_manifest_skip} );
 
 	# assign a place in the work queue
 	if ($thread_running) {
+
 		# single thread instance at a time please. aborting...
 		return "break";
 	}
@@ -53,7 +54,7 @@ sub run {
 	# search and ignore rc folders (CVS,.svn,.git) if the user wants
 	require File::Find::Rule;
 	my $rule = File::Find::Rule->new;
-	if ($self->_skip_vcs_files) {
+	if ( $self->_skip_vcs_files ) {
 		$rule->or(
 			$rule->new->directory->name( 'CVS', '.svn', '.git', 'blib' )->prune->discard,
 			$rule->new
@@ -61,7 +62,7 @@ sub run {
 	}
 	$rule->file;
 
-	if ($self->_skip_using_manifest_skip) {
+	if ( $self->_skip_using_manifest_skip ) {
 		my $manifest_skip_file = File::Spec->catfile( $self->_directory, 'MANIFEST.SKIP' );
 		if ( -e $manifest_skip_file ) {
 			use ExtUtils::Manifest qw(maniskip);
@@ -87,13 +88,13 @@ sub run {
 # It can update the GUI and do cleanup.
 #
 sub finish {
-	my ($self, $main) = @_;
+	my ( $self, $main ) = @_;
 
 	my $dialog = $self->{main_thread_only}->{dialog};
 	$dialog->_matched_files( $self->_matched_files );
 	$dialog->_status_text->SetLabel( Wx::gettext("Finished Searching") );
 	$dialog->_update_matches_list_box;
-	
+
 	# finished here
 	$thread_running = 0;
 

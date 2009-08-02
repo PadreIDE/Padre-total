@@ -168,7 +168,7 @@ sub _create_controls {
 	);
 	$self->_search_text(
 		Wx::TextCtrl->new(
-			$self,                 -1,                '',
+			$self,                 -1, '',
 			Wx::wxDefaultPosition, Wx::wxDefaultSize,
 		)
 	);
@@ -395,9 +395,9 @@ sub _search() {
 
 	require Padre::Plugin::Ecliptic::OpenResourceSearchTask;
 	my $search_task = Padre::Plugin::Ecliptic::OpenResourceSearchTask->new(
-		dialog    => $self,
-		directory => $self->_directory,
-		skip_vcs_files => $self->_skip_vcs_files->IsChecked,
+		dialog                   => $self,
+		directory                => $self->_directory,
+		skip_vcs_files           => $self->_skip_vcs_files->IsChecked,
 		skip_using_manifest_skip => $self->_skip_using_manifest_skip->IsChecked,
 	);
 	$search_task->schedule;
