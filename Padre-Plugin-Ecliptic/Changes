@@ -1,5 +1,34 @@
 Changes
 
+=head1 0.16  2009.8.2
+
+	Updated translations:
+		Arabic
+		Brazilian portuguese (garu++)
+		French (jquelin++)
+		Dutch (ddn123456++)
+		Japanese (ishigaki++)
+	Implemented background searching in "Open resource"
+	Added/Updated copyright/license for all the files
+	"Open Resource" is truly a non-modal dialog and is smaller/easier to put on 
+		the side
+	Use plugin's icon on all dialogs...
+	'Borrowed' some code to open files from Padre's Directory browser. 
+	More UI final touches on "Open Resource"... more simpler...
+	Handle Padre crash while calling a Padre action that should be called at that moment
+		e.g. no documents...
+	Display currently searched directory beside "Open Resource" dialog title
+	Added an options popup menu for skip VCS and MANIFEST.SKIP
+	"Open Resource" now respects MANIFEST.SKIP if it exists in project directory.
+	You can now copy the file path.
+	Selecting multiple files displays the number of files selected.
+	Open Resource status label should display files paths all the time mimicking Eclipse's behavior.
+	Changed "Open in Explorer" to "Open in File Browser" to be more less-win32 centric (El_Che++)
+	Make sure the menu event is really valid code before calling it
+	Quick Menu Access shall not crash anymore... A dream finally comes true.
+	Depends on Padre 0.42 for the Padre Actions API
+	Perl tidy and old code cleanup
+
 =head1 0.15  2009.7.20
 
 	- Ignore blib directory as well.
