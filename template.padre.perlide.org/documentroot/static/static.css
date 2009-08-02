@@ -220,6 +220,10 @@ ul#translator h2 {
     font-size: 125%;
 }
 
+code {
+    font-size: 125%;
+}
+
 .spacer {
     display: block;
     clear:both;
