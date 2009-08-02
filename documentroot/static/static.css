@@ -45,15 +45,17 @@ body {
 div#content_wrapper {
     width: 100%;
     margin: 0;
-    margin-top: 1.5em;
     text-align: center;
 }
 
 div#content { 
     padding: 0.75em;
+}
+
+.center_column {
     text-align: left;
     width: 60em;
-    margin: 0 auto; 
+    margin: 0 auto;     
 }
 
 div#column_a { width: 69%;float: left }

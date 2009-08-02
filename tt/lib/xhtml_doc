@@ -7,11 +7,13 @@
 </head>
 <body [% IF onload_handler %]onload="[% onload_handler %]"[% END %]>
 
-
-[% INCLUDE lib/navigation %]
-
+ [% INCLUDE lib/masthead %]
+ <div class="center_column"> [% INCLUDE chrome/navigation_list  css_class="bottomheavy"%]</div>
+ 
 <div id="content_wrapper">
- <div id="content">
+
+ <div id="content" class="center_column" >
+
   <!-- wrap content -->
   [% content %]
   <!-- end wrap content -->
