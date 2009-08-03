@@ -5,6 +5,7 @@ use warnings;
 use feature 'say';
 use Carp;
 use File::Copy;
+use Cwd;
 
 my $PUGS = '../../pugs';
 my $STD = "$PUGS/src/perl6";
@@ -23,12 +24,13 @@ die "Could not svn update pugs\n" if $status != 0;
 
 my $make = $^O eq 'MSWin32' ? 'dmake.exe' : 'make';
 say "\n--Running 'make clean all' for STD.pm";
-chdir "$STD"
-	or die "Could not change dir to $STD\n";
+my $cwd = getcwd;
+chdir $STD or die "Could not change dir to $STD\n";
 $status = system("$make clean all"); 
 die "Could not make STD.pm\n" if $status != 0;
 
 say 'Building and copying STD.pm files';
+chdir $cwd or die "Could not change dir to $cwd\n";
 safe_copy("$STD/Cursor.pmc",'lib/');
 safe_copy("$STD/LazyMap.pm", 'lib/LazyMap.pmc');
 safe_copy("$STD/STD.pmc", 'lib/');
