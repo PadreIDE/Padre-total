@@ -13,7 +13,7 @@ require Exporter;
 
 # exports and version
 our @EXPORT_OK = qw();
-our $VERSION = '0.65';
+our $VERSION = '0.66';
 
 # filename constants
 my $FILE_CSS    = 'p6_style.css';
