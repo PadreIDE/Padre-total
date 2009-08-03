@@ -43,3 +43,4 @@
 
 # Avoid releaserc file
 \breleaserc$
+\bsite_html_config.yaml$
