@@ -1,5 +1,10 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.66  2009.8.3
+
+    - Finally updated to latest STD.pm. This release may be buggy a bit.
+    - require Moose 0.88 to get Class::MOP 0.9x performance fixes...
+
 0.65  2009.7.21
     - Syntax::Highlight::Perl6 lives now in Padre's repository.
     - Fixed ticket:461 "Syntax check hanging with perl6 infix & regex"
