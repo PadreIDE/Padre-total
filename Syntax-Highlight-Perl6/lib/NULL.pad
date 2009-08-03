@@ -1,0 +1,30 @@
+use 5.010;
+use strict;
+use STASH;
+my $core = STASH::->new(
+    _cf => "NULL.pad:1",
+    _file => 'NULL.pad', _line => __LINE__ ,
+);
+
+sub fixup {
+    my $stash = shift;
+    return unless $stash;
+    for my $k (keys %$stash) {
+	next if $k =~ /^\./;
+	my $v = $stash->{$k};
+	if ($k =~ /^\w/) {
+	    next if $k eq 'EXPORT::' or $k =~ /^_/;
+	    $stash->{"&$k"} = $stash->{$k} if $k =~ /^\w+$/;
+	    fixup($v);
+	}
+    }
+    for my $k (keys %$stash) {
+	next if $k =~ /^\_/;
+	my $v = $stash->{$k};
+	if ($v->{export}) {
+	    $stash->{'EXPORT::'}->{ '$v->{export}' . '::' }->{$k} = $v;
+	}
+    }
+}
+fixup($core);
+$core;
