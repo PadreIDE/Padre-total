@@ -1,5 +1,10 @@
 Changes for Perl extension Perl-Dist-Padre
 
+0.270 Sun 2 Aug 2009
+    - Used to make "almost-six-0.41".
+    - Updated module list.
+    - Added author tests.
+
 0.260010 Fri 10 July 2009
     - First release to CPAN.
     - Updated module list.	
