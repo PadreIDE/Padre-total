@@ -26,14 +26,14 @@
 [% BLOCK render_developer %]
  <li id="[% dev.nickname | id_attr %]">
  [% WRAPPER chrome/styled_panel %]
+  [% IF dev.img_src %]
+   <img alt="[% dev.img_alt %]" src="[% dev.img_src %]" />
+  [% END %]
+
   [% IF dev.url %]
    <h1 class="developer"><a href="[% dev.url %]">[% dev.name %]</a></h1>
   [% ELSE %]
    <h1 class="developer">[% dev.name %]</h1>
-  [% END %]
-
-  [% IF dev.img_src %]
-   <img alt="[% dev.img_alt %]" src="[% dev.img_src %]" />
   [% END %]
 
   [% dev.Who %]
