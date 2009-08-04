@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.67  2009.8.4
+
+    - Removed unused YAML::XS dependency in CORE.pad which caused some failures
+
 0.66  2009.8.3
 
     - Finally updated to latest STD.pm. This release may be buggy a bit.
