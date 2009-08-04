@@ -8,6 +8,7 @@ all_from       'lib/Syntax/Highlight/Perl6.pm';
 requires  'Moose'               => '0.88';
 requires  'Term::ANSIColor'     => '2.00';
 requires  'YAML::Syck'          => '1.07';
+requires  'YAML::XS'            => '0.32';
 test_requires  'Test::Exception'     => '0.27';
 test_requires  'Test::More'          => '0.86';
 
