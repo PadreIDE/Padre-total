@@ -19,6 +19,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 05
+        url: http://samdelacruz.blogspot.com/2009/08/i-discovered-padre-new-perl-ide.html
+        title: I discovered Padre, a new Perl IDE
+        comment: by wala lang
       - date: 2009 July 31
         url: http://onionstand.blogspot.com/2009/07/on-padres-birthday-gift-to-you-042.html
         title: On Padre's birthday, a gift to you (0.42 released!)
