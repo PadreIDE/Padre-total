@@ -4,7 +4,7 @@ use Module::Build;
 
 my %requires = (
 	'perl'                     => '5.010',
-	'Padre'                    => '0.41',
+	'Padre'                    => '0.43',
 	'Syntax::Highlight::Perl6' => '0.65',
 	'Perl6::Refactor'          => '0',
 	'URI'                      => '1.37',
