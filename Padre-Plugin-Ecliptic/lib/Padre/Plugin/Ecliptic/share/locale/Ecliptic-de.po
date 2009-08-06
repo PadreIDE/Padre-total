@@ -30,7 +30,7 @@ msgstr "Schnellzugriffsmenü\tStrg+3"
 
 #: lib/Padre/Plugin/Ecliptic.pm:135
 msgid "Quick Outline Access\tCtrl-4"
-msgstr ""
+msgstr "&Übersicht\tStrg+4"
 
 #: lib/Padre/Plugin/Ecliptic.pm:142
 msgid "Quick Module Access\tCtrl-5"
@@ -154,13 +154,13 @@ msgstr "Suchvorgang abgeschlossen"
 
 #: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:33
 msgid "Quick Outline Access"
-msgstr ""
+msgstr "Übersicht anzeigen"
 
 #: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
 msgid "&Type a Outline item name to access:"
-msgstr ""
+msgstr "Name des gewünschten Übersich&ts-Objektes:"
 
 #: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:126
 msgid "&Matching Outline Items:"
-msgstr ""
+msgstr "Passende Übersichts-Objekte:"
 
