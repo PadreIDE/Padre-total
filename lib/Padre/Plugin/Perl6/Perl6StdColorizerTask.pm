@@ -163,7 +163,7 @@ sub run {
 	require File::Basename;
 	require File::Spec;
 	my $cmd =
-		  Padre->perl_interpreter . " "
+		  Padre::Perl->perl . " "
 		. Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'p6tokens.p5' ) )
 		. " \"$tmp_in\" \"$tmp_out\" \"$tmp_err\" \"$tmp_dir\"";
 
@@ -182,7 +182,7 @@ sub run {
 		}
 
 		my $p_obj;
-		Win32::Process::Create( $p_obj, Padre->perl_interpreter, $cmd, 0, Win32::Process::DETACHED_PROCESS(), '.' )
+		Win32::Process::Create( $p_obj, Padre::Perl->perl, $cmd, 0, Win32::Process::DETACHED_PROCESS(), '.' )
 			or warn &print_error;
 		$p_obj->Wait( Win32::Process::INFINITE() );
 	} else {
