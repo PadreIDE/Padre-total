@@ -19,6 +19,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 06
+        url: http://use.perl.org/~Alias/journal/39414
+        title: Padre now supports Acme:: plugins
+        comment: by Adam Kennedy
       - date: 2009 August 05
         url: http://samdelacruz.blogspot.com/2009/08/i-discovered-padre-new-perl-ide.html
         title: I discovered Padre, a new Perl IDE
@@ -38,6 +42,10 @@ about:
         url: http://onionstand.blogspot.com/2009/07/padre-041-released.html
         title: Padre 0.41 released!
         comment: by garu on The Onion Stand
+      - date: 2009 July 22
+        url: http://szabgab.com/blog/2009/07/1248240735.html
+        title: Better collaboration tools
+        comment: by Gabor Szabo
       - date: 2009 July 17
         url: http://onionstand.blogspot.com/2009/07/padre-040-released.html
         title: Padre 0.40 released!
