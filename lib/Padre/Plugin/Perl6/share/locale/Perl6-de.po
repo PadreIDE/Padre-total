@@ -198,11 +198,11 @@ msgstr "Routine %s einfügen"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:235
 msgid "Use ~ instead of . for string concatenation"
-msgstr ""
+msgstr "Bitte  ~ anstatt . für String-Verknüpfungen verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:255
 msgid "Use . for method call"
-msgstr ""
+msgstr "Bitte . für den Aufruf einer Method verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:275
 msgid "Use Perl 6 constructor syntax"
@@ -210,27 +210,27 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:297
 msgid "Use loop (;;) for looping"
-msgstr ""
+msgstr "Bitte loop (;;) für Schleifen verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:317
 msgid "Use [*-1] to access final element"
-msgstr ""
+msgstr "Bitte [*-1] für das letzte Element verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:337
 msgid "Use N.pick for a random number"
-msgstr ""
+msgstr "Bitte N.pick nutzen, um eine Zufallszahl zu generieren."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:355
 msgid "Use (1..N).pick for a random number"
-msgstr ""
+msgstr "Bitte (1..N).pick benutzen, um eine Zufallszahl zu generieren."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:375
 msgid "Use [N..*] for indefinite range"
-msgstr ""
+msgstr "Bitte [N..*] verwenden, um einen unendlichen Bereich anzugeben."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:395
 msgid "Use !! for conditional operator"
-msgstr ""
+msgstr "Bitte !! für Bedingungs-Operatoren verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:415
 msgid "Use ?? (...) !! to avoid precedence bugs"
@@ -242,35 +242,35 @@ msgstr ""
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:457
 msgid "Use ~= for string concatenation"
-msgstr ""
+msgstr "Bitte ~= für Zeichenkettenverknüpfungen verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:477
 msgid "Use ~~ for pattern matching"
-msgstr ""
+msgstr "Bitte ~~ für Pattern Matching verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:497
 msgid "Use !~~ for negated pattern matching"
-msgstr ""
+msgstr "Bitte !~~ für negiertes Pattern Matching verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:517
 msgid "Use +> for numeric right shift"
-msgstr ""
+msgstr "Bitte +> für nummerische Verschiebung nach rechts verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:535
 msgid "Use ~> for string right shift"
-msgstr ""
+msgstr "Bitte ~> für Zeichenkettenverschiebung nach rechts verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:554
 msgid "Use +< for numeric left shift"
-msgstr ""
+msgstr "Bitte +< für nummerische Verschiebung nach Links verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:572
 msgid "Use ~< for string left shift"
-msgstr ""
+msgstr "Bitte ~< für Zeichenkettenverschiebung nach links verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:592
 msgid "Use $! for eval errors"
-msgstr ""
+msgstr "Bitte $! für Eval-Fehlermeldungen verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:612
 msgid "Use $::PERL_VERSION"
@@ -282,7 +282,7 @@ msgstr "Kommandozeilen - Fehler"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:678
 msgid "Surround with try { ... }"
-msgstr ""
+msgstr "Bitte in einen try { ... } - Block setzen."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:705
 msgid "Convert POD6 to XHTML"
