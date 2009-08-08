@@ -245,10 +245,22 @@ sub _behaviour_panel {
 		[   [ 'Wx::StaticText', undef, Wx::gettext('Check for file updates on disk every (seconds):') ],
 			[ 'Wx::SpinCtrl', 'update_file_from_disk_interval', $config->update_file_from_disk_interval, 0, 90 ]
 		],
+#		[   [ 'Wx::StaticText', undef,     Wx::gettext('Shortcuts/Key bindings') ],
+#			[ 'Wx::Button',     '_showkeys_', Wx::gettext('Show...') ]
+#		],
 	];
 
 	my $panel = $self->_new_panel($treebook);
 	$self->fill_panel_by_table( $panel, $table );
+
+#	Wx::Event::EVT_BUTTON(
+#		$panel,
+#		$self->get_widget('_showkeys_'),
+#		sub {
+#			require Padre::Wx::Dialog::Preferences::Keys;
+#			my $Key_Bindings = Padre::Wx::Dialog::Preferences::Keys->new($self);
+#		    },
+#	);
 
 	return $panel;
 }
@@ -294,7 +306,7 @@ sub _appearance_panel {
 		[   [ 'Wx::StaticText', undef, Wx::gettext('Editor Current Line Background Colour:') ],
 			[ 'Wx::ColourPickerCtrl', 'editor_currentline_color', $bgcolor ]
 		],
-	];
+];
 
 	my $settings_subpanel = $self->_new_panel($panel);
 	$self->fill_panel_by_table( $settings_subpanel, $table );
