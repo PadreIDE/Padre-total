@@ -77,7 +77,7 @@ sub collect_report {
 
 	my %data;
 	my $plugin_name = basename $project_dir;
-	$plugin_name =~ s/.*-//;
+	$plugin_name =~ s/-/__/g;
 
 	my $share = catdir ( $project_dir, 'share' );
 	if (not -e $share) {
