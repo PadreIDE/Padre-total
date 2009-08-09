@@ -9,6 +9,10 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
 
+use SVN::Class;
+#use Padre::Plugin::SVN::Wx::Toolbar;
+
+
 #use Capture::Tiny  qw(capture_merged);
 #use File::Basename ();
 #use File::Spec;
@@ -51,6 +55,29 @@ under the same terms as Perl itself.
 
 #####################################################################
 # Padre::Plugin Methods
+
+# need to setup the toolbar and put it in the ide
+sub plugin_enable {
+	
+	my $self = shift;
+	#my $main = Padre->ide->wx->main;
+	#$self->{tb} = Padre::Plugin::SVN::Wx::Toolbar->new($main);
+	#$main->SetToolBar( $self->{tb} );
+	#$main->GetToolBar->Realize;
+	
+	#$main->{toolbar_panel}->{vbox}->Add( $self->{tb}, Wx::wxALL | Wx::wxALIGN_LEFT | Wx::wxEXPAND,4 );
+	
+}
+
+# remove the toolbar from the ide
+sub plugin_disable {
+	my $self = shift;
+	
+	# not ideal... 
+	#$self->{tb} = undef;
+	
+	
+}
 
 sub padre_interfaces {
 	'Padre::Plugin' => 0.24;
@@ -128,8 +155,23 @@ sub _get_current_filename {
 sub svn_status {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-	my $status = qx{svn status $path};
-	$main->message( $status, "$path" );
+#	my $status = qx{svn status $path};
+
+	my $file = svn_file( $path );
+	
+	my $info = "";
+	
+	if( $file->info ) {
+		print $file->info->dump();
+		$info .= "Author: " . $file->info->{author} . "\n";
+		$info .= "Revision: " . $file->info->{rev} . "\n";
+		$info .= "Last Updated: "  . $file->info->{updated} . "\n";
+	}
+	else {
+		$info .= 'File is not managed by SVN';
+	}
+	print $info;
+	$main->message( $info, "$path" );
 	return;
 }
 
@@ -159,7 +201,12 @@ sub svn_log {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
 	my $out = qx{svn log $path};
-	$main->message( $out, "$path" );
+	#$main->message( $out, "$path" );
+	require Padre::Plugin::SVN::Wx::LogDialog;
+	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $out);
+	$log->Show(1);
+	#$log->Destroy();
+	
 	return;
 }
 
