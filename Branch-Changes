@@ -1,0 +1,9 @@
+07/09/2009 
+ - submersible branched the SVN Plugin directory for me
+ 
+ 08/09/2009
+  - first commit on new branch alot of things trialed, like a toolbar in the main window - FAIL
+  - Worked on the first improvement to the SVN GUI stuff and that's a LogDialog.pm
+    LogDialog is a nicer way to show the log information for a file using a text control that allows scolling, rather than the current 
+    dialog with a lot of text that disappears off the screen.
+    
