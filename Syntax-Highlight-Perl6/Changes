@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.68  2009.8.9
+
+    - Fixed "substr outside of string" warning
+
 0.67  2009.8.4
 
     - Removed unused YAML::XS dependency in CORE.pad which caused some failures
