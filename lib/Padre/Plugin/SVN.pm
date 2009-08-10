@@ -162,15 +162,29 @@ sub svn_status {
 	my $info = "";
 	
 	if( $file->info ) {
-		print $file->info->dump();
+		#print $file->info->dump();
 		$info .= "Author: " . $file->info->{author} . "\n";
-		$info .= "Revision: " . $file->info->{rev} . "\n";
-		$info .= "Last Updated: "  . $file->info->{updated} . "\n";
+		$info .= "File Name: " . $file->info->{name} . "\n";
+		$info .= "Last Revision: " . $file->info->{last_rev} . "\n";
+		$info .= "Current Revision: " . $file->info->{rev} . "\n\n";
+				
+		$info .= "File create Date: " . $file->info->{date} . "\n\n";
+				
+		$info .= "Last Updated: "  . $file->info->{updated} . "\n\n";
+		
+		$info .= "File Path: " . $file->info->{path} . "\n";
+		$info .= "File URL: " . $file->info->{_url} . "\n";
+		$info .= "File Root: " . $file->info->{root} . "\n\n";
+				
+		$info .= "Check Sum: " . $file->info->{checksum} . "\n";
+		$info .= "UUID: " . $file->info->{uuid} . "\n";
+		$info .= "Schedule: " . $file->info->{schedule} . "\n";
+		$info .= "Node: " . $file->info->{node} . "\n\n";
 	}
 	else {
 		$info .= 'File is not managed by SVN';
 	}
-	print $info;
+	#print $info;
 	$main->message( $info, "$path" );
 	return;
 }
@@ -205,9 +219,8 @@ sub svn_log {
 	require Padre::Plugin::SVN::Wx::LogDialog;
 	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $out);
 	$log->Show(1);
-	#$log->Destroy();
+
 	
-	return;
 }
 
 sub svn_log_of_file {
