@@ -20,6 +20,10 @@ about:
   - title: y2009
     events:
       - date: 2009 August 06
+        url: http://lastofthecarelessmen.blogspot.com/2009/08/padre-on-windows.html
+        title: Padre on Windows
+        comment: by Last of the Careless Men
+      - date: 2009 August 06
         url: http://use.perl.org/~Alias/journal/39414
         title: Padre now supports Acme:: plugins
         comment: by Adam Kennedy
