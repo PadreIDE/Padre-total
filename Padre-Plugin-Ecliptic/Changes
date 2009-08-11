@@ -1,5 +1,7 @@
 Changes
 
+	remove _sharedir() and use plugin_share_directory provided by the Plugin module
+
 =head1 0.16  2009.8.2
 
 	Updated translations:

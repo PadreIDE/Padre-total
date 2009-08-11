@@ -18,29 +18,10 @@ use Class::XSAccessor accessors => {
 };
 
 #
-# private subroutine to return the current share directory location
-#
-sub _sharedir {
-	return Cwd::realpath(
-		File::Spec->join(
-			File::Basename::dirname(__FILE__),
-			'Ecliptic/share'
-		)
-	);
-}
-
-#
 # Returns the plugin name to Padre
 #
 sub plugin_name {
 	return Wx::gettext("Ecliptic");
-}
-
-#
-# Directory where to find the translations
-#
-sub plugin_locale_directory {
-	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
 #
@@ -66,9 +47,9 @@ sub logo_icon {
 # plugin's bitmap not icon
 #
 sub plugin_icon {
-
+	my $self = shift;
 	# find resource path
-	my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'ecliptic.png' );
+	my $iconpath = File::Spec->catfile( $self->plugin_share_directory, 'icons', 'ecliptic.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
