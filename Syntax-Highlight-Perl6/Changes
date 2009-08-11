@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.69  2009.8.11
+
+    - Updated to the latest STD.pm which has better error messages
+
 0.68  2009.8.9
 
     - Fixed "substr outside of string" warning
