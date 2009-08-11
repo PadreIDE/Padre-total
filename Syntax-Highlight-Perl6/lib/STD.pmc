@@ -2063,7 +2063,7 @@ $self->_MATCHIFYr($S, "category__S_023routine_declarator",
 $C->_PATTERN(qr/\Groutine_declarator/)
 );
 }
-#proto token routine_declarator (:$endsym is context = 'endid') { <...> }
+#proto token routine_declarator (:$endsym is context = 'nofun') { <...> }
 sub routine_declarator__PEEK { $_[0]->_AUTOLEXpeek('routine_declarator:*',$retree); }
 sub routine_declarator {
 my $self = shift;
@@ -3009,7 +3009,7 @@ $C->_PATTERN(qr/\G[\s\#]/)
 );
 }
 ## token nofun
-##      token nofun { <!before '(' | '.(' | '\\' | '\'' | '-' > }
+##      token nofun { <!before '(' | '.(' | '\\' | '\'' | '-' | "'" | \w > }
 
 sub nofun__PEEK { $_[0]->_AUTOLEXpeek('nofun',$retree) }
 sub nofun {
@@ -3066,6 +3066,12 @@ $C->_EXACT('\'')
 },
 sub { my $C=shift;
 $C->_EXACT('-')
+},
+sub { my $C=shift;
+$C->_PATTERN(qr/\G'/)
+},
+sub { my $C=shift;
+$C->_PATTERN(qr/\G\w/)
 },
 )[$try])->($C);
 last if @gather;
@@ -6168,7 +6174,7 @@ else {
 ## token eat_terminator
 ##      token eat_terminator {
 ##          [
-##          || ';' [ <?before $> { $*ORIG ~~ s/\;$//; $¢.<_from> = $¢.<_pos> = $¢.<_pos> - 1; } ]?
+##          || ';' [ <?before $> { $*ORIG ~~ s/\;$/ /; } ]?
 ##          || <?{ @*MEMOS[$¢.pos]<endstmt> }> <.ws>
 ##          || <?terminator>
 ##          || $
@@ -6198,7 +6204,7 @@ if (my ($C) = ($C->before(sub { my $C=shift;
 $C->_PATTERN(qr/\G\z/)
 }))) {
 scalar(do {
-$::ORIG =~ s/\;$//; $C->{'_from'} = $C->{'_pos'} = $C->{'_pos'} - 1; 
+$::ORIG =~ s/\;$/ /; 
 }, $C);
 }
 else {
@@ -11885,7 +11891,7 @@ $C->declarator
 );
 }
 
-## token routine_declarator__S_097sub (:$endsym is context = 'endid', :$sym is context<rw> = 'sub')
+## token routine_declarator__S_097sub (:$endsym is context = 'nofun', :$sym is context<rw> = 'sub')
 ##      token routine_declarator:sub       { <sym> <routine_def> }
 
 sub routine_declarator__S_097sub__PEEK { $_[0]->_AUTOLEXpeek('routine_declarator__S_097sub',$retree) }
@@ -11893,7 +11899,7 @@ sub routine_declarator__S_097sub {
 my $self = shift;
 local $::CTX = $self->callm() if $::DEBUG & DEBUG::trace_call;
 my %args = @_;
-local $endsym = $args{endsym} // 'endid';
+local $endsym = $args{endsym} // 'nofun';
 local $sym = $args{sym} // 'sub';
 
 
@@ -11905,7 +11911,7 @@ $self->_MATCHIFYr($S, "routine_declarator__S_097sub",
 do {
 if (my ($C) = ($C->_PATTERN(qr/\Gsub/))) {
 do {
-if (my ($C) = ($C->endid)) {
+if (my ($C) = ($C->nofun)) {
 $C->_SUBSUMEr(['routine_def'], sub {
 my $C = shift;
 $C->routine_def
@@ -11922,7 +11928,7 @@ else {
 }
 );
 }
-## token routine_declarator__S_098method (:$endsym is context = 'endid', :$sym is context<rw> = 'method')
+## token routine_declarator__S_098method (:$endsym is context = 'nofun', :$sym is context<rw> = 'method')
 ##      token routine_declarator:method    { <sym> <method_def> }
 
 sub routine_declarator__S_098method__PEEK { $_[0]->_AUTOLEXpeek('routine_declarator__S_098method',$retree) }
@@ -11930,7 +11936,7 @@ sub routine_declarator__S_098method {
 my $self = shift;
 local $::CTX = $self->callm() if $::DEBUG & DEBUG::trace_call;
 my %args = @_;
-local $endsym = $args{endsym} // 'endid';
+local $endsym = $args{endsym} // 'nofun';
 local $sym = $args{sym} // 'method';
 
 
@@ -11942,7 +11948,7 @@ $self->_MATCHIFYr($S, "routine_declarator__S_098method",
 do {
 if (my ($C) = ($C->_PATTERN(qr/\Gmethod/))) {
 do {
-if (my ($C) = ($C->endid)) {
+if (my ($C) = ($C->nofun)) {
 $C->_SUBSUMEr(['method_def'], sub {
 my $C = shift;
 $C->method_def
@@ -11959,7 +11965,7 @@ else {
 }
 );
 }
-## token routine_declarator__S_099submethod (:$endsym is context = 'endid', :$sym is context<rw> = 'submethod')
+## token routine_declarator__S_099submethod (:$endsym is context = 'nofun', :$sym is context<rw> = 'submethod')
 ##      token routine_declarator:submethod { <sym> <method_def> }
 
 sub routine_declarator__S_099submethod__PEEK { $_[0]->_AUTOLEXpeek('routine_declarator__S_099submethod',$retree) }
@@ -11967,7 +11973,7 @@ sub routine_declarator__S_099submethod {
 my $self = shift;
 local $::CTX = $self->callm() if $::DEBUG & DEBUG::trace_call;
 my %args = @_;
-local $endsym = $args{endsym} // 'endid';
+local $endsym = $args{endsym} // 'nofun';
 local $sym = $args{sym} // 'submethod';
 
 
@@ -11979,7 +11985,7 @@ $self->_MATCHIFYr($S, "routine_declarator__S_099submethod",
 do {
 if (my ($C) = ($C->_PATTERN(qr/\Gsubmethod/))) {
 do {
-if (my ($C) = ($C->endid)) {
+if (my ($C) = ($C->nofun)) {
 $C->_SUBSUMEr(['method_def'], sub {
 my $C = shift;
 $C->method_def
@@ -11996,7 +12002,7 @@ else {
 }
 );
 }
-## token routine_declarator__S_100macro (:$endsym is context = 'endid', :$sym is context<rw> = 'macro')
+## token routine_declarator__S_100macro (:$endsym is context = 'nofun', :$sym is context<rw> = 'macro')
 ##      token routine_declarator:macro     { <sym> <macro_def> }
 
 sub routine_declarator__S_100macro__PEEK { $_[0]->_AUTOLEXpeek('routine_declarator__S_100macro',$retree) }
@@ -12004,7 +12010,7 @@ sub routine_declarator__S_100macro {
 my $self = shift;
 local $::CTX = $self->callm() if $::DEBUG & DEBUG::trace_call;
 my %args = @_;
-local $endsym = $args{endsym} // 'endid';
+local $endsym = $args{endsym} // 'nofun';
 local $sym = $args{sym} // 'macro';
 
 
@@ -12016,7 +12022,7 @@ $self->_MATCHIFYr($S, "routine_declarator__S_100macro",
 do {
 if (my ($C) = ($C->_PATTERN(qr/\Gmacro/))) {
 do {
-if (my ($C) = ($C->endid)) {
+if (my ($C) = ($C->nofun)) {
 $C->_SUBSUMEr(['macro_def'], sub {
 my $C = shift;
 $C->macro_def
@@ -29142,7 +29148,7 @@ else {
 ##          <.ws>
 ##          [
 ##          | <?before '-->' | ')' | ']' | '{' | ':'\s >
-##          | <parameter>
+##          | [ <parameter> || <.panic: "Malformed parameter"> ]
 ##          ] ** <param_sep>
 ##          <.ws>
 ##          { $*IN_DECL = 0; }
@@ -29280,9 +29286,16 @@ else {
 })
 },
 sub { my $C=shift;
-$C->_SUBSUMEr(['parameter'], sub {
+$C->_BRACKETr( sub { my $C=shift;
+do { my @gather;
+eval { push @gather, $C->_SUBSUMEr(['parameter'], sub {
 my $C = shift;
 $C->parameter
+})} // do {die $@ if $@ and $@ !~ /ABORT/;1} 
+or
+eval { push @gather, $C->panic("Malformed parameter")} or do { die $@ if $@ };
+@gather;
+}
 })
 },
 )[$try])->($C);
@@ -30447,6 +30460,7 @@ else {
 ##              | '!'           { $quant = '!'; $kind //= '!' }
 ##              | <?>
 ##              ]
+##          | {} <name> <.panic("Invalid typename " ~ $<name>.Str)>
 ##          ]
 ##      
 ##          <trait>*
@@ -31096,6 +31110,30 @@ else {
 }
 
 });
+}
+else {
+();
+}
+}
+},
+sub { my $C=shift;
+do {
+if (my ($C) = (scalar(do {
+
+}, $C))) {
+do {
+if (my ($C) = ($C->_SUBSUMEr(['name'], sub {
+my $C = shift;
+$C->name
+}))) {
+do { my $M = $C;
+$C->panic("Invalid typename " . $M->{'name'}->Str)
+; };
+}
+else {
+();
+}
+};
 }
 else {
 ();
@@ -32223,7 +32261,7 @@ $C->_PATTERN(qr/\G\*\*/)
 ##      token infix:lambda ( --> Term) {
 ##          <?before '{' | '->' > {{
 ##              my $line = $¢.lineof($¢.pos);
-##              for 'if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when' {
+##              for 'if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when', 'sub' {
 ##                  my $m = %*MYSTERY{$_};
 ##                  next unless $m;
 ##                  if $line - ($m.<line>//-123) < 5 {
@@ -32309,7 +32347,7 @@ else {
 scalar(do {
 
 my $line = $C->lineof($C->{'_pos'});
-for ('if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when') {
+for ('if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when', 'sub') {
 my $m = $::MYSTERY{$_};
 next unless $m;
 if ($line - ($m->{'line'}//-123) < 5) {
@@ -65229,7 +65267,7 @@ eat_terminator: !!perl/hash:RE
                       min: 0
                       r: 1
                       s: 0
-                      text: " $*ORIG ~~ s/\\;$//; $¢.<_from> = $¢.<_pos> = $¢.<_pos> - 1; "
+                      text: " $*ORIG ~~ s/\\;$/ /; "
               min: 0
               quant: 
                 - "?"
@@ -65862,7 +65900,7 @@ infix__S_278lambda: !!perl/hash:RE
         min: 0
         r: 1
         s: 0
-        text: "\n        my $line = $¢.lineof($¢.pos);\n        for 'if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when' {\n            my $m = %*MYSTERY{$_};\n            next unless $m;\n            if $line - ($m.<line>//-123) < 5 {\n                $¢.panic(\"$_() interpreted as function call at line \" ~ $m.<line> ~\n                \"; please use whitespace instead of parens\\nUnexpected block in infix position (two terms in a row)\");\n            }\n        }\n        return () if $*IN_REDUCE;\n        $¢.panic(\"Unexpected block in infix position (two terms in a row, or previous statement missing semicolon?)\");\n    "
+        text: "\n        my $line = $¢.lineof($¢.pos);\n        for 'if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when', 'sub' {\n            my $m = %*MYSTERY{$_};\n            next unless $m;\n            if $line - ($m.<line>//-123) < 5 {\n                $¢.panic(\"$_() interpreted as function call at line \" ~ $m.<line> ~\n                \"; please use whitespace instead of parens\\nUnexpected block in infix position (two terms in a row)\");\n            }\n        }\n        return () if $*IN_REDUCE;\n        $¢.panic(\"Unexpected block in infix position (two terms in a row, or previous statement missing semicolon?)\");\n    "
 infix__S_278lambda_01: *107
 infix__S_302Dot: !!perl/hash:RE 
   decl: []
@@ -73089,6 +73127,24 @@ nofun: !!perl/hash:RE
               r: 1
               s: 0
               text: "-"
+            - !!perl/hash:RE_double 
+              a: 0
+              alt: nofun_01 5
+              dba: nofun
+              i: 0
+              min: 1
+              r: 1
+              s: 0
+              text: "'"
+            - !!perl/hash:RE_meta 
+              a: 0
+              alt: nofun_01 6
+              dba: nofun
+              i: 0
+              min: 1
+              r: 1
+              s: 0
+              text: \w
       s: 0
 nofun_01: *44
 noun__S_112fatarrow: !!perl/hash:RE 
@@ -76334,6 +76390,38 @@ parameter: !!perl/hash:RE
                           nobind: 1
                           r: 1
                           s: 0
+            - !!perl/hash:RE_sequence 
+              a: 0
+              alt: parameter_01 5
+              dba: parameter
+              i: 0
+              min: 12345
+              r: 1
+              s: 0
+              zyg: 
+                - !!perl/hash:RE_block 
+                  a: 0
+                  context: void
+                  dba: parameter
+                  i: 0
+                  min: 0
+                  r: 1
+                  s: 0
+                  text: ''
+                - !!perl/hash:RE_method 
+                  a: 0
+                  dba: parameter
+                  i: 0
+                  min: 12345
+                  name: name
+                  r: 1
+                  rest: ''
+                  s: 0
+                - !!perl/hash:RE_method 
+                  min: 0
+                  name: panic
+                  nobind: 1
+                  rest: ("Invalid typename " ~ $<name>.Str)
       - !!perl/hash:RE_quantified_atom 
         atom: !!perl/hash:RE_method 
           a: 0
@@ -82796,7 +82884,7 @@ routine_declarator__S_097sub: !!perl/hash:RE
       - !!perl/hash:RE_method 
         a: 0
         dba: routine_declarator__S_097sub
-        endsym: endid
+        endsym: nofun
         i: 0
         min: 12345
         name: sym
@@ -82809,7 +82897,7 @@ routine_declarator__S_097sub: !!perl/hash:RE
         dba: routine_declarator__S_097sub
         i: 0
         min: 12345
-        name: endid
+        name: nofun
         nobind: 1
         r: 1
         rest: ''
@@ -82840,7 +82928,7 @@ routine_declarator__S_098method: !!perl/hash:RE
       - !!perl/hash:RE_method 
         a: 0
         dba: routine_declarator__S_098method
-        endsym: endid
+        endsym: nofun
         i: 0
         min: 12345
         name: sym
@@ -82853,7 +82941,7 @@ routine_declarator__S_098method: !!perl/hash:RE
         dba: routine_declarator__S_098method
         i: 0
         min: 12345
-        name: endid
+        name: nofun
         nobind: 1
         r: 1
         rest: ''
@@ -82884,7 +82972,7 @@ routine_declarator__S_099submethod: !!perl/hash:RE
       - !!perl/hash:RE_method 
         a: 0
         dba: routine_declarator__S_099submethod
-        endsym: endid
+        endsym: nofun
         i: 0
         min: 12345
         name: sym
@@ -82897,7 +82985,7 @@ routine_declarator__S_099submethod: !!perl/hash:RE
         dba: routine_declarator__S_099submethod
         i: 0
         min: 12345
-        name: endid
+        name: nofun
         nobind: 1
         r: 1
         rest: ''
@@ -82928,7 +83016,7 @@ routine_declarator__S_100macro: !!perl/hash:RE
       - !!perl/hash:RE_method 
         a: 0
         dba: routine_declarator__S_100macro
-        endsym: endid
+        endsym: nofun
         i: 0
         min: 12345
         name: sym
@@ -82941,7 +83029,7 @@ routine_declarator__S_100macro: !!perl/hash:RE
         dba: routine_declarator__S_100macro
         i: 0
         min: 12345
-        name: endid
+        name: nofun
         nobind: 1
         r: 1
         rest: ''
@@ -84651,16 +84739,33 @@ signature: !!perl/hash:RE
                               s: 0
                               text: \s
                   s: 0
-              - !!perl/hash:RE_method 
-                a: 0
+              - !!perl/hash:RE_bracket 
                 alt: signature_01 1
-                dba: signature
-                i: 0
-                min: 12345
-                name: parameter
-                r: 1
-                rest: ''
-                s: 0
+                decl: []
+
+                min: 0
+                re: !!perl/hash:RE_first 
+                  a: 0
+                  dba: signature
+                  i: 0
+                  min: 0
+                  r: 1
+                  s: 0
+                  zyg: 
+                    - !!perl/hash:RE_method 
+                      a: 0
+                      dba: signature
+                      i: 0
+                      min: 12345
+                      name: parameter
+                      r: 1
+                      rest: ''
+                      s: 0
+                    - !!perl/hash:RE_method 
+                      min: 0
+                      name: panic
+                      nobind: 1
+                      rest: ("Malformed parameter")
         min: 0
         quant: 
           - "**"
