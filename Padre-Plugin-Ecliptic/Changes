@@ -1,6 +1,10 @@
 Changes
 
-	remove _sharedir() and use plugin_share_directory provided by the Plugin module
+=head1 0.17 NOT RELEASED!
+
+	Remove _sharedir() and use plugin_share_directory provided by the 
+		Plugin module (szabgab++)
+	Moved "Open Resource" dialog into Padre core
 
 =head1 0.16  2009.8.2
 
