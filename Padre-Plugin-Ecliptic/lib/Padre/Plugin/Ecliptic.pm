@@ -68,9 +68,6 @@ sub plugin_enable {
 		# no configuration, let us write some defaults
 		$config = {};
 	}
-	if ( not defined $config->{recently_opened} ) {
-		$config->{recently_opened} = '';
-	}
 	if ( not defined $config->{quick_menu_history} ) {
 		$config->{quick_menu_history} = '';
 	}
@@ -88,13 +85,6 @@ sub menu_plugins {
 
 	# Create a menu
 	$self->{menu} = Wx::Menu->new;
-
-	# Shows the "Open Resource" dialog
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Open Resource\tCtrl-Shift-R"), ),
-		sub { $self->_show_open_resource_dialog(); },
-	);
 
 	# Shows the "Quick Assist" dialog
 	Wx::Event::EVT_MENU(
@@ -163,24 +153,6 @@ sub _show_about {
 	$about->SetDescription( Wx::gettext("Provides Eclipse-like useful features to Padre.\n") );
 	$about->SetVersion($VERSION);
 	Wx::AboutBox($about);
-
-	return;
-}
-
-#
-# Opens the "Open Resource" dialog
-#
-sub _show_open_resource_dialog {
-	my $self = shift;
-
-	#Create and show the dialog
-	if ( $self->_open_resource_dialog && $self->_open_resource_dialog->IsShown ) {
-		$self->_open_resource_dialog->SetFocus;
-	} else {
-		require Padre::Plugin::Ecliptic::OpenResourceDialog;
-		$self->_open_resource_dialog( Padre::Plugin::Ecliptic::OpenResourceDialog->new($self) );
-		$self->_open_resource_dialog->Show(1);
-	}
 
 	return;
 }
