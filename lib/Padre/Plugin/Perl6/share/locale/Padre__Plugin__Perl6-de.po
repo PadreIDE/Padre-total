@@ -234,11 +234,11 @@ msgstr "Bitte !! für Bedingungs-Operatoren verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:415
 msgid "Use ?? (...) !! to avoid precedence bugs"
-msgstr ""
+msgstr "Bitte ?? (...) !! verwenden, um Prioritäts-Bugs zu vermeiden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:437
 msgid "Use ?? !! for the conditional operator"
-msgstr ""
+msgstr "Bitte ?? !! als Bedingungs-Operator verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:457
 msgid "Use ~= for string concatenation"
@@ -274,7 +274,7 @@ msgstr "Bitte $! für Eval-Fehlermeldungen verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:612
 msgid "Use $::PERL_VERSION"
-msgstr ""
+msgstr "Bitte $::PERL_VERSION benutzen"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:643
 msgid "Comment error line"
