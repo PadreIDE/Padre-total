@@ -237,13 +237,6 @@ sub menu_plugins {
 
 	$self->{menu}->AppendSeparator;
 
-	# Perl6 grok-based Help dialog doc reader
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Perl 6 Help\tF2"), ),
-		sub { $self->show_perl6_doc; },
-	);
-
 	# More Help? sub menu
 	my $more_help_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
