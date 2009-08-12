@@ -93,13 +93,6 @@ sub menu_plugins {
 		sub { $self->_show_quick_assist_dialog(); },
 	);
 
-	# Shows the "Quick Menu Access" dialog
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Quick Menu Access\tCtrl-3"), ),
-		sub { $self->_show_quick_menu_access_dialog(); },
-	);
-
 	# Shows the "Quick Outline Access" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
@@ -166,20 +159,6 @@ sub _show_quick_assist_dialog {
 	#Create and show the dialog
 	require Padre::Plugin::Ecliptic::QuickAssistDialog;
 	my $dialog = Padre::Plugin::Ecliptic::QuickAssistDialog->new($self);
-	$dialog->ShowModal();
-
-	return;
-}
-
-#
-# Opens the "Quick Menu Access" dialog
-#
-sub _show_quick_menu_access_dialog {
-	my $self = shift;
-
-	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
-	my $dialog = Padre::Plugin::Ecliptic::QuickMenuAccessDialog->new($self);
 	$dialog->ShowModal();
 
 	return;
