@@ -1,17 +1,14 @@
-package Padre::Plugin::Ecliptic::QuickMenuAccessDialog;
+package Padre::Wx::Dialog::QuickMenuAccess;
 
 use warnings;
 use strict;
 
 # package exports and version
 our $VERSION   = '0.16';
-our @EXPORT_OK = ();
+our @ISA       = 'Wx::Dialog';
 
 # module imports
 use Padre::Wx ();
-
-# is a subclass of Wx::Dialog
-use base 'Wx::Dialog';
 
 # accessors
 use Class::XSAccessor accessors => {
