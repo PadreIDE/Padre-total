@@ -2,10 +2,11 @@
 \blex
 \.tar.gz$
 \.tar$
-\bfoo.pl
-\bbar.pl
-\bFoo.pm
-\bcopy_them
+\bfoo\.pl
+\bbar\.pl
+\bFoo\.pm
+\bcopy_std\.pl
+\btest\.p6
 \.log$
 \.swp$
 
