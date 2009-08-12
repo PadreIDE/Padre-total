@@ -214,7 +214,11 @@ sub svn_status_of_project {
 sub svn_log {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-	my $out = qx{svn log $path};
+	#my $out = qx{svn log $path};
+	my $file = svn_file($path);
+	$self->{_busyCursor} = Wx::BusyCursor->new();
+	my $out = join( "\n", @{ $file->log() } );
+	$self->{_busyCursor} = undef;
 	#$main->message( $out, "$path" );
 	require Padre::Plugin::SVN::Wx::LogDialog;
 	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $out);
