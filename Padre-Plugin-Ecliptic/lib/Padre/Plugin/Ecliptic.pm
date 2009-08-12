@@ -248,11 +248,6 @@ following options:
 This opens a dialog with a list of current Padre actions/shortcuts. When 
 you hit the OK button, the selected Padre action will be performed.
 
-=head2 Quick Menu Access (Shortcut: Ctrl + 3)
-
-This opens a dialog where you can search for menu labels. When you hit the OK 
-button, the menu item will be selected.
-
 =head2 Quick Outline Access (Shortcut: Ctrl + 4)
 
 This opens a dialog where you can search for outline tree. When you hit the OK 
