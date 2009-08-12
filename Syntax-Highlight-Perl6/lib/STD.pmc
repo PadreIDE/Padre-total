@@ -3563,8 +3563,9 @@ $::moreinput->() if $::moreinput;
 ##         | \h+                 {*}                                    #= hwhite
 ##         | <?before '='> ^^ <.pod_comment>  {*}                    #= pod
 ##         | \h* '#' [
-##               |  <?opener>
-##                  [ <!after ^^ . > || <.panic: "Can't use embedded comments in column 1"> ]
+##               |  '`'<?opener>
+##                  <.quibble($¢.cursor_fresh( %*LANG<Q> ))>   {*}                               #= embedded
+##               |  <?opener> <.worry: "Embedded comment without backtick is deprecated">
 ##                  <.quibble($¢.cursor_fresh( %*LANG<Q> ))>   {*}                               #= embedded
 ##               | {} \N*            {*}                                 #= end
 ##               ]
@@ -3684,22 +3685,37 @@ $C->deb("unv_03 trying $tag $try") if $::DEBUG & DEBUG::try_processing;
 push @gather, ((
 sub { my $C=shift;
 do {
+if (my ($C) = ($C->_EXACT('`'))) {
+do {
 if (my ($C) = ($C->before( sub { my $C=shift;
 $C->opener
 }))) {
 do {
-if (my ($C) = ($C->_BRACKETr( sub { my $C=shift;
-do { my @gather;
-eval { push @gather, $C->_NOTBEFORE( sub { my $C=shift;
-$C->after(sub { my $C=shift;
-$C->_PATTERN(qr/\G(?<=(?s:.))(?m:^)/)
-})
-})} // do {die $@ if $@ and $@ !~ /ABORT/;1} 
-or
-eval { push @gather, $C->panic("Can't use embedded comments in column 1")} or do { die $@ if $@ };
-@gather;
+if (my ($C) = ($C->quibble($C->cursor_fresh( $::LANG{'Q'} )))) {
+$C->_REDUCE($S, 'unv', 'embedded');
 }
+else {
+();
+}
+};
+}
+else {
+();
+}
+};
+}
+else {
+();
+}
+}
+},
+sub { my $C=shift;
+do {
+if (my ($C) = ($C->before( sub { my $C=shift;
+$C->opener
 }))) {
+do {
+if (my ($C) = ($C->worry("Embedded comment without backtick is deprecated"))) {
 do {
 if (my ($C) = ($C->quibble($C->cursor_fresh( $::LANG{'Q'} )))) {
 $C->_REDUCE($S, 'unv', 'embedded');
@@ -56021,7 +56037,7 @@ else {
 
 ##     token rx
 ##          token rx {
-##              #[:lang(self.unbalanced(')')) <nibbler>]
+##              # [:lang(self.unbalanced(')')) <nibbler>]
 ##              <nibbler>
 ##              [ <?before ')'> || <.panic: "Unable to parse Perl 5 regex; couldn't find right parenthesis"> ]
 ##          }
@@ -97511,6 +97527,46 @@ unv: !!perl/hash:RE
                     alt: unv_03 0
                     dba: horizontal whitespace
                     i: 0
+                    min: 1
+                    r: 1
+                    s: 0
+                    zyg: 
+                      - !!perl/hash:RE_string 
+                        a: 0
+                        dba: horizontal whitespace
+                        i: 0
+                        min: 1
+                        r: 1
+                        s: 0
+                        text: `
+                      - !!perl/hash:RE_assertion 
+                        assert: "?"
+                        min: 0
+                        re: !!perl/hash:RE_method 
+                          a: 0
+                          dba: horizontal whitespace
+                          i: 0
+                          min: 12345
+                          name: opener
+                          nobind: 1
+                          r: 1
+                          rest: ''
+                          s: 0
+                      - !!perl/hash:RE_method 
+                        min: 0
+                        name: quibble
+                        nobind: 1
+                        rest: ($¢.cursor_fresh( %*LANG<Q> ))
+                      - !!perl/hash:RE_method_internal 
+                        args: $S, 'unv', 'embedded'
+                        max: 0
+                        min: 0
+                        name: _REDUCE
+                  - !!perl/hash:RE_sequence 
+                    a: 0
+                    alt: unv_03 1
+                    dba: horizontal whitespace
+                    i: 0
                     min: 0
                     r: 1
                     s: 0
@@ -97528,63 +97584,11 @@ unv: !!perl/hash:RE
                           r: 1
                           rest: ''
                           s: 0
-                      - !!perl/hash:RE_bracket 
-                        decl: []
-
+                      - !!perl/hash:RE_method 
                         min: 0
-                        re: !!perl/hash:RE_first 
-                          a: 0
-                          dba: horizontal whitespace
-                          i: 0
-                          min: 0
-                          r: 1
-                          s: 0
-                          zyg: 
-                            - !!perl/hash:RE_assertion 
-                              assert: "!"
-                              min: 0
-                              re: !!perl/hash:RE_method_re 
-                                a: 0
-                                dba: horizontal whitespace
-                                i: 0
-                                min: 0
-                                name: after
-                                nobind: 1
-                                r: 1
-                                re: !!perl/hash:RE 
-                                  decl: []
-
-                                  min: 1
-                                  re: !!perl/hash:RE_sequence 
-                                    a: 0
-                                    dba: horizontal whitespace
-                                    i: 0
-                                    min: 1
-                                    r: 1
-                                    s: 0
-                                    zyg: 
-                                      - !!perl/hash:RE_meta 
-                                        a: 0
-                                        dba: horizontal whitespace
-                                        i: 0
-                                        min: 0
-                                        r: 1
-                                        s: 0
-                                        text: "^^"
-                                      - !!perl/hash:RE_meta 
-                                        a: 0
-                                        dba: horizontal whitespace
-                                        i: 0
-                                        min: 1
-                                        r: 1
-                                        s: 0
-                                        text: .
-                                s: 0
-                            - !!perl/hash:RE_method 
-                              min: 0
-                              name: panic
-                              nobind: 1
-                              rest: ("Can't use embedded comments in column 1")
+                        name: worry
+                        nobind: 1
+                        rest: ("Embedded comment without backtick is deprecated")
                       - !!perl/hash:RE_method 
                         min: 0
                         name: quibble
@@ -97597,7 +97601,7 @@ unv: !!perl/hash:RE
                         name: _REDUCE
                   - !!perl/hash:RE_sequence 
                     a: 0
-                    alt: unv_03 1
+                    alt: unv_03 2
                     dba: horizontal whitespace
                     i: 0
                     min: 0
