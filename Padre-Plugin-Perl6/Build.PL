@@ -10,7 +10,7 @@ my %requires = (
 	'URI'                      => '1.37',
 	'File::Which'              => '0.05',
 	'Class::XSAccessor'        => '1.02',
-	'App::Grok'                => '0.17',
+	'App::Grok'                => '0.19',
 );
 
 if ( $^O =~ /win32/i ) {
