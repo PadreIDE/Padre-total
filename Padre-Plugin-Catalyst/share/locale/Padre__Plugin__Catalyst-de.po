@@ -70,11 +70,11 @@ msgstr "4. Einfaches CRUD"
 
 #: lib/Padre/Plugin/Catalyst.pm:87
 msgid "5. Authentication"
-msgstr ""
+msgstr "5. Authentisierung"
 
 #: lib/Padre/Plugin/Catalyst.pm:90
 msgid "6. Authorization"
-msgstr ""
+msgstr "6. Autorisierung"
 
 #: lib/Padre/Plugin/Catalyst.pm:93
 msgid "7. Debugging"
