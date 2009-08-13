@@ -5,17 +5,12 @@ use warnings;
 
 # package exports and version
 our $VERSION   = '0.16';
-our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
 
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
-
-use Class::XSAccessor accessors => {
-	_open_resource_dialog => '_open_resource_dialog', # Open Resource Dialog
-};
 
 #
 # Returns the plugin name to Padre
@@ -107,13 +102,6 @@ sub menu_plugins {
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
-	# "Open in File Browser" action
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Open in File Browser\tCtrl-6"), ),
-		sub { $self->_open_in_file_browser(); },
-	);
-
 	# Shows the "Quick Fix" dialog
 	Wx::Event::EVT_MENU(
 		$main_window,
@@ -193,22 +181,6 @@ sub _show_quick_module_access_dialog {
 }
 
 #
-# For the current "saved" Padre document,
-# On win32, selects it in Windows Explorer
-# On linux, opens the containing folder for it
-#
-sub _open_in_file_browser {
-	my $self = shift;
-
-	#Open the current document in file browser
-	use Padre::Plugin::Ecliptic::OpenInFileBrowserAction;
-	my $action = Padre::Plugin::Ecliptic::OpenInFileBrowserAction->new($self);
-	$action->open_in_file_browser;
-
-	return;
-}
-
-#
 # Shows the quick fix dialog
 #
 sub _show_quick_fix_dialog {
@@ -257,13 +229,6 @@ button, the outline element in the outline tree will be selected.
 
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
-
-=head2 Open in File Browser (Shortcut: Ctrl + 6)
-
-For the current saved Padre document, open the platform's file manager/browser and 
-tries to select it if possible. On win32, opens the containing folder and 
-selects the file in its explorer. On *inux KDE/GNOME, opens the containing folder 
-for it.
 
 =head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
 
