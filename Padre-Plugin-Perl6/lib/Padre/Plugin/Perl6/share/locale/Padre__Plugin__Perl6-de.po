@@ -50,7 +50,7 @@ msgstr "Eingebunden in Perl 5"
 
 #: lib/Padre/Plugin/Perl6.pm:154
 msgid "Refactor..."
-msgstr ""
+msgstr "Überarbeiten..."
 
 #: lib/Padre/Plugin/Perl6.pm:161
 msgid "Find variable declaration"
@@ -59,7 +59,7 @@ msgstr "Variablen-Deklaration finden"
 #: lib/Padre/Plugin/Perl6.pm:164
 #: lib/Padre/Plugin/Perl6.pm:178
 msgid "Perl 6 refactoring support is coming soon..."
-msgstr ""
+msgstr "Die Überstützung für die Überarbeitung von Perl 6 - Scripten folgt in Kürze..."
 
 #: lib/Padre/Plugin/Perl6.pm:165
 #: lib/Padre/Plugin/Perl6.pm:179
@@ -77,7 +77,7 @@ msgstr "Variable umbenennen"
 
 #: lib/Padre/Plugin/Perl6.pm:190
 msgid "Rakudo"
-msgstr ""
+msgstr "Rakudo"
 
 #: lib/Padre/Plugin/Perl6.pm:198
 msgid "Perl 6 Executable"
@@ -206,7 +206,7 @@ msgstr "Bitte . für den Aufruf einer Method verwenden."
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:275
 msgid "Use Perl 6 constructor syntax"
-msgstr ""
+msgstr "Perl6 Syntax benutzen"
 
 #: lib/Padre/Plugin/Perl6/Perl6Document.pm:297
 msgid "Use loop (;;) for looping"
