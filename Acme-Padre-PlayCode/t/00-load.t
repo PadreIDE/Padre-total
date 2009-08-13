@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'Padre::Plugin::AcmePlayCode' );
+	use_ok( 'Acme::Padre::PlayCode' );
 }
 
-diag( "Testing Padre::Plugin::AcmePlayCode $Padre::Plugin::AcmePlayCode::VERSION, Perl $], $^X" );
+diag( "Testing Acme::Padre::PlayCode $Acme::Padre::PlayCode::VERSION, Perl $], $^X" );

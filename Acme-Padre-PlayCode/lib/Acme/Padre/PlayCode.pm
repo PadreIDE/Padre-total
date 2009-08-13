@@ -59,7 +59,7 @@ Acme::Padre::PlayCode - L<Acme::PlayCode> Plugin for L<Padre>
 =head1 SYNOPSIS
 
 	$>padre
-	Plugins -> AcmePlayCode -> *
+	Plugins -> Acme::PlayCode -> *
 
 =head1 DESCRIPTION
 

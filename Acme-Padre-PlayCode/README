@@ -3,7 +3,7 @@ NAME
 
 SYNOPSIS
             $>padre
-            Plugins -> AcmePlayCode -> *
+            Plugins -> Acme::PlayCode -> *
 
 DESCRIPTION
     This is a simple plugin to run Acme::PlayCode on your source code.
