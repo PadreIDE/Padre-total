@@ -1,11 +1,38 @@
 [% DEFAULT title="Padre Translators" %]
 [% WRAPPER lib/xhtml_doc %]
 
-[% INCLUDE translator_list %]
+[% INCLUDE translators_top %]
+[% INCLUDE translators_list %]
 
 [% END %]
 
-[% BLOCK translator_list %]
+
+[% BLOCK translators_top %]
+<div style="float: top;"> 
+[% WRAPPER chrome/styled_panel %]
+<p>
+As with most of the open source projects the default language of Padre is English.
+As with any other technology we believe that removing as many obstacles from the user
+as possible will just make their life easier. Hence we encourage the translation of 
+the Padre GUI (and later on that of the documentation) to other languages as well.
+</p>
+<p>
+This page is here so the translators can write a few words about themselves and/or about
+Padre in their own languages. For every translator there is a link to the 
+<a href="developers.html">developers</a> page with an English description of why are they
+involved in the project.
+</p>
+<p>
+If you would like to get involved in the translation project please check out our
+<a href="/trac/wiki/TranslationIntro">page about translations</a>.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+[% BLOCK translators_list %]
 
 <!-- table of contents -->
 [%  INCLUDE chrome/navigation_list
