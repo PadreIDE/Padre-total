@@ -1,7 +1,8 @@
-Revision history for Padre-Plugin-AcmePlayCode
+Revision history for Acme::Padre::PlayCode
 
 0.12 unreleased
      actually install translations (RSN)
+     Renamed it to Acme::Padre::PlayCode
 
 0.11    2009.05.31
     removed taint mode for tests, leading to build failures (jquelin)

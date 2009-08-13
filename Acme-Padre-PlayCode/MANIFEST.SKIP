@@ -44,7 +44,7 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bPadre-Plugin-AcmePlayCode-[\d\.\_]+
+\bAcme-Padre-PlayCode-[\d\.\_]+
 
 # avoid po and pot files (gettext)
 \.pot$

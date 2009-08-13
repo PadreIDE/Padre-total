@@ -1,4 +1,4 @@
-package Padre::Plugin::AcmePlayCode;
+package Acme::Padre::PlayCode;
 
 use warnings;
 use strict;
@@ -54,7 +54,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::AcmePlayCode - L<Acme::PlayCode> Plugin for L<Padre>
+Acme::Padre::PlayCode - L<Acme::PlayCode> Plugin for L<Padre>
 
 =head1 SYNOPSIS
 

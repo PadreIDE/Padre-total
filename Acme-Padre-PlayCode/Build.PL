@@ -9,28 +9,28 @@ my $class = Module::Build->subclass( code => <<'EOF');
                 die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
                 msgfmt({
                         in => "share/locale/",
-                        out => "blib/lib/Padre/Plugin/AcmePlayCode/share/locale/"});
+                        out => "blib/lib/Acme/Padre/PlayCode/share/locale/"});
         }
 EOF
 my $builder = $class->new(
-    module_name         => 'Padre::Plugin::AcmePlayCode',
+    module_name         => 'Acme::PadrePlayCode',
     license             => 'perl',
     dist_author         => 'Fayland Lam <fayland@gmail.com>',
-    dist_version_from   => 'lib/Padre/Plugin/AcmePlayCode.pm',
+    dist_version_from   => 'lib/Acme/Padre/PlayCode.pm',
     build_requires => {
         'Test::More' => 0,
-        'Locale::Msgfmt'   => '0.08',
+        'Locale::Msgfmt'   => '0.14',
     },
     requires => {
         'Acme::PlayCode' => 0,
-        'Padre' => '0.26',
+        'Padre'          => '0.43',
     },
-    add_to_cleanup      => [ 'Padre-Plugin-AcmePlayCode-*' ],
+    add_to_cleanup      => [ 'Acme-Padre-PlayCode-*' ],
     create_makefile_pl => 'traditional',
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',
-            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-AcmePlayCode/',
+            repository => 'http://svn.perlide.org/padre/trunk/Acme-Plugin-PlayCode/',
         }
     },
 );

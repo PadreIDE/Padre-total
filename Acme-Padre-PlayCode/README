@@ -1,5 +1,5 @@
 NAME
-    Padre::Plugin::AcmePlayCode - Acme::PlayCode Plugin for Padre
+    Acme::Padre::PlayCode - Acme::PlayCode Plugin for Padre
 
 SYNOPSIS
             $>padre
@@ -24,21 +24,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Padre::Plugin::AcmePlayCode
+    perldoc Acme::Padre::PlayCode
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-AcmePlayCode
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Acme-Padre-PlayCode
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Padre-Plugin-AcmePlayCode
+        http://annocpan.org/dist/Acme-Padre-PlayCode
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Padre-Plugin-AcmePlayCode
+        http://cpanratings.perl.org/d/Acme-Padre-PlayCode
 
     Search CPAN
-        http://search.cpan.org/dist/Padre-Plugin-AcmePlayCode/
+        http://search.cpan.org/dist/Acme-Padre-PlayCode/
 
 
 COPYRIGHT AND LICENCE
