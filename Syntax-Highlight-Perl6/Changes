@@ -2,6 +2,8 @@ Revision history for Syntax::Highlight::Perl6.
 
 0.71 2009.8.14
 	- Perl tidied the files to Padre's standards
+	- Added more stuff to MANIFEST.SKIP
+	- Require Moose 0.89
 	- Bundled latest STD.pm that fixes the following:
 		- made comment into a syntax category
 		- deprecate backticklessness
