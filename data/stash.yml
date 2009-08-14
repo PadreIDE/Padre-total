@@ -8,6 +8,8 @@ navigation:
     href: developers.html
   - name: Translators
     href: translators.html
+  - name: Support
+    href: support.html
   - name: Trac
     href: trac/
   - name: Blogs
