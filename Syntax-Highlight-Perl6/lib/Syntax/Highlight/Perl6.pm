@@ -13,7 +13,7 @@ require Exporter;
 
 # exports and version
 our @EXPORT_OK = qw();
-our $VERSION = '0.70';
+our $VERSION   = '0.70';
 
 # filename constants
 my $FILE_CSS    = 'p6_style.css';
@@ -26,40 +26,39 @@ my $FILE_JQUERY = 'jquery-1.3.2.min.js';
 my @loc;
 
 #find out the real path of the rsc directory
-if(! -f __FILE__) {
-    croak 'Syntax::Highlight::Perl6 cannot see where it is installed'
+if ( !-f __FILE__ ) {
+	croak 'Syntax::Highlight::Perl6 cannot see where it is installed';
 }
 
 require File::Basename;
 require File::Spec;
 require Cwd;
 
-my $SHARED = Cwd::realpath(File::Spec->join(
-            File::Basename::dirname(__FILE__),'Perl6'));
+my $SHARED = Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Perl6' ) );
 
 #----------------------------------------------------------------
 # Returns the syntax highlighting object. It needs a hash
 # of options.
 #----------------------------------------------------------------
 sub new {
-    my ($class, %options) = @_;
-    $options{rule} = $options{rule} // 'comp_unit';
-    $options{inline_resources} = $options{inline_resources} // 0;
-    $options{resource_url} = $options{resource_url} // q{};
-    $options{page_title} = $options{page_title} // q{};
-    $options{utf8_decode} = $options{utf8_decode} // 1;
-    $options{tmp_prefix} = $options{tmp_prefix} // q{};
+	my ( $class, %options ) = @_;
+	$options{rule}             = $options{rule}             // 'comp_unit';
+	$options{inline_resources} = $options{inline_resources} // 0;
+	$options{resource_url}     = $options{resource_url}     // q{};
+	$options{page_title}       = $options{page_title}       // q{};
+	$options{utf8_decode}      = $options{utf8_decode}      // 1;
+	$options{tmp_prefix}       = $options{tmp_prefix}       // q{};
 
-    #is 'text' undefined?
-    if(! defined $options{text}) {
-        croak "'text' option is not found in $class->new"
-    }
+	#is 'text' undefined?
+	if ( !defined $options{text} ) {
+		croak "'text' option is not found in $class->new";
+	}
 
-    my $self = bless \%options, $class;
-    $self->{parser} = 0;
-    $self->{src_text} = 0;
-    $self->{parsed_lazily} = 0;
-    return $self;
+	my $self = bless \%options, $class;
+	$self->{parser}        = 0;
+	$self->{src_text}      = 0;
+	$self->{parsed_lazily} = 0;
+	return $self;
 }
 
 #----------------------------------------------------------------
@@ -67,40 +66,41 @@ sub new {
 # (private)
 #----------------------------------------------------------------
 sub _lazy_parse {
-    my $self = shift;
+	my $self = shift;
 
-    if(!$self->{parsed_lazily}) {
+	if ( !$self->{parsed_lazily} ) {
 
-        # utf8-decode if required
-        require Encode;
-        my $src_text = $self->{utf8_decode} ?
-            Encode::decode('utf8', $self->{text} ) :
-            $self->{text};
+		# utf8-decode if required
+		require Encode;
+		my $src_text =
+			$self->{utf8_decode}
+			? Encode::decode( 'utf8', $self->{text} )
+			: $self->{text};
 
-        #grow the loc array while checking for empty strings
-        my $len = length $src_text;
-        if($len == 0) {
-            $src_text = q{ };
-            $len = 1;
-        }
-        $loc[$len - 1] = [];
+		#grow the loc array while checking for empty strings
+		my $len = length $src_text;
+		if ( $len == 0 ) {
+			$src_text = q{ };
+			$len      = 1;
+		}
+		$loc[ $len - 1 ] = [];
 
-        #STD parse the text for the rule provided
-        require STD;
-        $self->{parser} = STD->parse(
-            $src_text, 
-            rule => $self->{rule},
-            actions => __PACKAGE__ . '::Actions',
-            tmp_prefix => $self->{tmp_prefix},
-        );
+		#STD parse the text for the rule provided
+		require STD;
+		$self->{parser} = STD->parse(
+			$src_text,
+			rule       => $self->{rule},
+			actions    => __PACKAGE__ . '::Actions',
+			tmp_prefix => $self->{tmp_prefix},
+		);
 
-        #we parsed it lazily...
-        $self->{src_text} = $src_text;
-        @{$self->{loc}} = @loc;
-        @loc = ();
-        $self->{parsed_lazily} = 1;
-    }
-    return;
+		#we parsed it lazily...
+		$self->{src_text} = $src_text;
+		@{ $self->{loc} } = @loc;
+		@loc = ();
+		$self->{parsed_lazily} = 1;
+	}
+	return;
 }
 
 
@@ -109,56 +109,57 @@ sub _lazy_parse {
 # on your page
 #---------------------------------------------------------------------
 sub snippet_html {
-    my $self = shift;
-    my $str = q{};
+	my $self = shift;
+	my $str  = q{};
 
-    $self->_lazy_parse();
+	$self->_lazy_parse();
 
-    my %colors = _read_css_file();
+	my %colors = _read_css_file();
 
-    $str .= '<pre>';
+	$str .= '<pre>';
 
-    local *spit_snippet_html = sub {
-        my ($i, $buffer, $rule, $tree, $lineno) = @_;
-        $buffer = _escape_html($buffer);
-        my $style = $colors{$rule};
-        if($rule) {
-            $str .= qq{<span style="$style">$buffer</span>};
-        } else {
-            $str .= $buffer;
-        }
-    };
-    $self->_redspans_traverse(\&spit_snippet_html,%colors);
+	local *spit_snippet_html = sub {
+		my ( $i, $buffer, $rule, $tree, $lineno ) = @_;
+		$buffer = _escape_html($buffer);
+		my $style = $colors{$rule};
+		if ($rule) {
+			$str .= qq{<span style="$style">$buffer</span>};
+		} else {
+			$str .= $buffer;
+		}
+	};
+	$self->_redspans_traverse( \&spit_snippet_html, %colors );
 
-    $str .= '</pre>';
+	$str .= '</pre>';
 
-    return $str;
+	return $str;
 }
+
 #---------------------------------------------------------------
 # Returns the Perl 6 highlighted HTML string
 # (without the JavaScript stuff).
 #---------------------------------------------------------------
 sub simple_html {
-    my $self = shift;
-    my $str = q{};
+	my $self = shift;
+	my $str  = q{};
 
-    $self->_lazy_parse();
+	$self->_lazy_parse();
 
-    my %colors = _read_css_file();
+	my %colors = _read_css_file();
 
-    # slurp css inline it
-    my $css;
-    if($self->{inline_resources}) {
-        $css = _slurp(_shared($FILE_CSS))
-            or croak "Error while slurping file: $!\n";
-        $css = qq{<style type="text/css">\n$css\n</style>};
-    } else {
-        my $prefix = $self->{resource_url};
-        $css = qq{<link href="$prefix$FILE_CSS" rel="stylesheet" type="text/css">};
-    }
-    my $page_title = $self->{page_title};
-    my $timestamp = localtime;
-    $str .= <<"HTML";
+	# slurp css inline it
+	my $css;
+	if ( $self->{inline_resources} ) {
+		$css = _slurp( _shared($FILE_CSS) )
+			or croak "Error while slurping file: $!\n";
+		$css = qq{<style type="text/css">\n$css\n</style>};
+	} else {
+		my $prefix = $self->{resource_url};
+		$css = qq{<link href="$prefix$FILE_CSS" rel="stylesheet" type="text/css">};
+	}
+	my $page_title = $self->{page_title};
+	my $timestamp  = localtime;
+	$str .= <<"HTML";
 <html>
 <head>
     <title>$page_title</title>
@@ -171,25 +172,25 @@ sub simple_html {
     <pre>
 HTML
 
-    local *spit_simple_html = sub {
-        my ($i, $buffer, $rule, $tree, $lineno) = @_;
-        $buffer = _escape_html($buffer);
-        if($rule) {
-            $str .= qq{<span class="$rule">$buffer</span>};
-        } else {
-            $str .= $buffer;
-        }
-    };
+	local *spit_simple_html = sub {
+		my ( $i, $buffer, $rule, $tree, $lineno ) = @_;
+		$buffer = _escape_html($buffer);
+		if ($rule) {
+			$str .= qq{<span class="$rule">$buffer</span>};
+		} else {
+			$str .= $buffer;
+		}
+	};
 
-    $self->_redspans_traverse(\&spit_simple_html,%colors);
+	$self->_redspans_traverse( \&spit_simple_html, %colors );
 
-    $str .= <<'HTML';
+	$str .= <<'HTML';
     </pre>
 </body>
 </html>
 HTML
 
-   return $str;
+	return $str;
 }
 
 #-------------------------------------------------------------------
@@ -197,36 +198,35 @@ HTML
 # JavaScript Parse Tree Viewer along with CSS-styling.
 #-------------------------------------------------------------------
 sub full_html {
-    my $self = shift;
-    my $str = q{};
+	my $self = shift;
+	my $str  = q{};
 
-    $self->_lazy_parse();
+	$self->_lazy_parse();
 
-    # slurp libraries and JavaScript to inline them
-    my %colors = _read_css_file();
-    my ($jquery_js,$js,$css);
-    if($self->{inline_resources}) {
-        my $contents;
-        $contents = _slurp(_shared($FILE_JQUERY))
-            or croak "Error while slurping file: $!\n";
-        $jquery_js = qq{<script type="text/javascript">\n$contents\n</script>};
-        $contents = _slurp(_shared($FILE_JS))
-            or croak "Error while slurping file: $!\n";
-        $js = qq{<script type="text/javascript">\n$contents\n</script>};
-        $contents = _slurp(_shared($FILE_CSS))
-            or croak "Error while slurping file: $!\n";
-        $css = qq{<style type="text/css">\n$contents\n</style>};
-    } else {
-        my $prefix = $self->{resource_url};
-        $jquery_js =
-            qq{<script type="text/javascript" src="$prefix$FILE_JQUERY"></script>};
-        $js = qq{<script type="text/javascript" src="$prefix$FILE_JS"></script>};
-        $css = qq{<link href="$prefix$FILE_CSS" rel="stylesheet" type="text/css">};
-    }
+	# slurp libraries and JavaScript to inline them
+	my %colors = _read_css_file();
+	my ( $jquery_js, $js, $css );
+	if ( $self->{inline_resources} ) {
+		my $contents;
+		$contents = _slurp( _shared($FILE_JQUERY) )
+			or croak "Error while slurping file: $!\n";
+		$jquery_js = qq{<script type="text/javascript">\n$contents\n</script>};
+		$contents  = _slurp( _shared($FILE_JS) )
+			or croak "Error while slurping file: $!\n";
+		$js       = qq{<script type="text/javascript">\n$contents\n</script>};
+		$contents = _slurp( _shared($FILE_CSS) )
+			or croak "Error while slurping file: $!\n";
+		$css = qq{<style type="text/css">\n$contents\n</style>};
+	} else {
+		my $prefix = $self->{resource_url};
+		$jquery_js = qq{<script type="text/javascript" src="$prefix$FILE_JQUERY"></script>};
+		$js        = qq{<script type="text/javascript" src="$prefix$FILE_JS"></script>};
+		$css       = qq{<link href="$prefix$FILE_CSS" rel="stylesheet" type="text/css">};
+	}
 
-    my $page_title = $self->{page_title};
-    my $timestamp = localtime;
-    $str .= <<"HTML";
+	my $page_title = $self->{page_title};
+	my $timestamp  = localtime;
+	$str .= <<"HTML";
 <html>
 <head>
     <title>$page_title</title>
@@ -247,55 +247,53 @@ sub full_html {
     <pre>
 HTML
 
-    local *spit_full_html = sub {
-        my ($i, $buffer, $rule, $tree, $lineno) = @_;
-        $buffer = _escape_html($buffer);
-        $str .= qq{<span id="tree_$i" style="display:none;">$tree</span>};
-        if($rule) {
-            $str .= qq{<span id="node_$i" class="$rule">$buffer</span>};
-        } else {
-            $str .= $buffer;
-        }
-    };
+	local *spit_full_html = sub {
+		my ( $i, $buffer, $rule, $tree, $lineno ) = @_;
+		$buffer = _escape_html($buffer);
+		$str .= qq{<span id="tree_$i" style="display:none;">$tree</span>};
+		if ($rule) {
+			$str .= qq{<span id="node_$i" class="$rule">$buffer</span>};
+		} else {
+			$str .= $buffer;
+		}
+	};
 
-    $self->_redspans_traverse(\&spit_full_html,%colors);
+	$self->_redspans_traverse( \&spit_full_html, %colors );
 
-    $str .= <<'HTML';
+	$str .= <<'HTML';
     </pre>
 </body>
 </html>
 HTML
 
-    return $str;
+	return $str;
 }
 
 #---------------------------------------------------------------
 # Returns a Perl highlighted ANSI escape color string.
 #---------------------------------------------------------------
 sub ansi_text {
-    my $self = shift;
-    my $str = q{};
+	my $self = shift;
+	my $str  = q{};
 
-    $self->_lazy_parse();
+	$self->_lazy_parse();
 
-    my %colors = _read_ansi_file();
+	my %colors = _read_ansi_file();
 
-    require Term::ANSIColor;
-    local *spit_ansi_text = sub {
-        my ($i, $buffer, $rule, $tree, $lineno) = @_;
-        if($rule) {
-            my $color = $colors{$rule};
-            $str .= Term::ANSIColor::color($color) . 
-                $buffer .
-                Term::ANSIColor::color('reset');
-        } else {
-            $str .= $buffer;
-        }
-    };
+	require Term::ANSIColor;
+	local *spit_ansi_text = sub {
+		my ( $i, $buffer, $rule, $tree, $lineno ) = @_;
+		if ($rule) {
+			my $color = $colors{$rule};
+			$str .= Term::ANSIColor::color($color) . $buffer . Term::ANSIColor::color('reset');
+		} else {
+			$str .= $buffer;
+		}
+	};
 
-    $self->_redspans_traverse(\&spit_ansi_text,%colors);
+	$self->_redspans_traverse( \&spit_ansi_text, %colors );
 
-    return $str;
+	return $str;
 }
 
 #---------------------------------------------------------------
@@ -304,24 +302,25 @@ sub ansi_text {
 #   ($last_pos, $buffer, $rule, $tree)
 #---------------------------------------------------------------
 sub tokens {
-    my $self = shift;
+	my $self = shift;
 
-    $self->_lazy_parse();
+	$self->_lazy_parse();
 
-    my %colors = _read_ansi_file();
-    my @tokens = ();
-    local *spit_parse_tree = sub {
-        push @tokens, {
-            'last_pos'  => $_[0],
-            'buffer'    => $_[1],
-            'rule'      => $_[2],
-            'tree'      => $_[3],
-            'lineno'    => $_[4],
-        };
-    };
-    $self->_redspans_traverse(\&spit_parse_tree,%colors);
-	
-    return @tokens;
+	my %colors = _read_ansi_file();
+	my @tokens = ();
+	local *spit_parse_tree = sub {
+		push @tokens,
+			{
+			'last_pos' => $_[0],
+			'buffer'   => $_[1],
+			'rule'     => $_[2],
+			'tree'     => $_[3],
+			'lineno'   => $_[4],
+			};
+	};
+	$self->_redspans_traverse( \&spit_parse_tree, %colors );
+
+	return @tokens;
 }
 
 
@@ -330,24 +329,25 @@ sub tokens {
 #--------------------------------------------------------------------
 sub _read_css_file {
 
-    my %colors = ();
-    my $filename = _shared($FILE_CSS);
-    my $fh = IO::File->new($filename)
-        or croak "Could not open $filename: $!\n";
-    my $line;
-    while($line = <$fh>) {
-        if($line =~ /^\s*           # <whitespace>
+	my %colors   = ();
+	my $filename = _shared($FILE_CSS);
+	my $fh       = IO::File->new($filename)
+		or croak "Could not open $filename: $!\n";
+	my $line;
+	while ( $line = <$fh> ) {
+		if ($line =~ /^\s*           # <whitespace>
                     \.(\w+)\s*      # .<css class>
                     {\s*(.+?)\s*}   # { <css style>* }
-                    /x)
-        {
-            $colors{$1} = $2;
-        }
-    }
-    close $fh
-        or croak "Could not close $filename";
+                    /x
+			)
+		{
+			$colors{$1} = $2;
+		}
+	}
+	close $fh
+		or croak "Could not close $filename";
 
-    return %colors;
+	return %colors;
 }
 
 #--------------------------------------------------------------
@@ -355,23 +355,24 @@ sub _read_css_file {
 # the color values in a hash of rule-name,color
 #--------------------------------------------------------------
 sub _read_ansi_file {
-    my %colors = ();
-    my $filename = _shared($FILE_ANSI);
-    my $fh = IO::File->new($filename)
-        or croak "Could not open $filename: $!\n";
-    my $line;
-    while($line = <$fh>) {
-        if($line =~ m{^(\w+)     # <start> <rule-name>
+	my %colors   = ();
+	my $filename = _shared($FILE_ANSI);
+	my $fh       = IO::File->new($filename)
+		or croak "Could not open $filename: $!\n";
+	my $line;
+	while ( $line = <$fh> ) {
+		if ($line =~ m{^(\w+)     # <start> <rule-name>
                     =(.+)$      # <=> <ansi-color> <end>
-                    }x)
-        {
-            $colors{$1} = $2;
-        }
-    }
-    close $fh
-        or croak "Could not close $filename";
+                    }x
+			)
+		{
+			$colors{$1} = $2;
+		}
+	}
+	close $fh
+		or croak "Could not close $filename";
 
-    return %colors;
+	return %colors;
 }
 
 
@@ -381,62 +382,63 @@ sub _read_ansi_file {
 # colors hash.
 #---------------------------------------------------------------
 sub _redspans_traverse {
-    my ($self,$process_buffer,%colors) = @_;
-    my @loc = @{$self->{loc}};
-    my ($last_tree,$buffer, $last_type) = (q{},q{},q{});
-    my $parser = $self->{parser};
-    my $len = length $self->{src_text};
-    for my $i (0 .. $len-1) {
-        if(not defined $loc[$i]) {
-            next;
-        }
-        my $c = substr $self->{src_text}, $i, 1;
-        my $tree = q{};
-        for my $action_ref (@{$loc[$i]}) {
-            $tree .= ${$action_ref} . q{ };
-        }
-        if($tree ne $last_tree) {
-            my $rule_to_color = 0;
-            my @rules = ();
-            if($last_tree ne q{}) {
-                @rules = reverse split / /,$last_tree;
-            }
-            for my $rule (@rules) {
-                if($rule eq 'unv') {
-                    $rule_to_color = '_comment';
-                    last;
-                } elsif($colors{$rule} && $buffer ne q{}) {
-                    $rule_to_color = $rule;
-                    last;
-                }
-            }
-            if($rule_to_color) {
-                if($last_tree =~ /\sidentifier/x) {
-                    if($last_type ne q{}) {
-                        $rule_to_color = $last_type;
-                        $last_type = q{};
-                    }
-                } elsif($last_tree =~ /\ssigil/x) {
-                    given($buffer) {
-                        when ('$') { $last_type = '_scalar'; }
-                        when ('@') { $last_type = '_array'; }
-                        when ('%') { $last_type = '_hash'; }
-                        default { $last_type = q{}; }
-                    };
-                    if($last_type ne q{}) {
-                        $rule_to_color = $last_type;
-                    }
-                }
-            }
-            #now delegate printing to a callback
-            $process_buffer->($i, $buffer, $rule_to_color, $last_tree, $parser->lineof($i));
-            $buffer = $c;
-        } else {
-            $buffer .= $c;
-        }
-        $last_tree = $tree;
-    }
-    return;
+	my ( $self, $process_buffer, %colors ) = @_;
+	my @loc = @{ $self->{loc} };
+	my ( $last_tree, $buffer, $last_type ) = ( q{}, q{}, q{} );
+	my $parser = $self->{parser};
+	my $len    = length $self->{src_text};
+	for my $i ( 0 .. $len - 1 ) {
+		if ( not defined $loc[$i] ) {
+			next;
+		}
+		my $c = substr $self->{src_text}, $i, 1;
+		my $tree = q{};
+		for my $action_ref ( @{ $loc[$i] } ) {
+			$tree .= ${$action_ref} . q{ };
+		}
+		if ( $tree ne $last_tree ) {
+			my $rule_to_color = 0;
+			my @rules         = ();
+			if ( $last_tree ne q{} ) {
+				@rules = reverse split / /, $last_tree;
+			}
+			for my $rule (@rules) {
+				if ( $rule eq 'unv' ) {
+					$rule_to_color = '_comment';
+					last;
+				} elsif ( $colors{$rule} && $buffer ne q{} ) {
+					$rule_to_color = $rule;
+					last;
+				}
+			}
+			if ($rule_to_color) {
+				if ( $last_tree =~ /\sidentifier/x ) {
+					if ( $last_type ne q{} ) {
+						$rule_to_color = $last_type;
+						$last_type     = q{};
+					}
+				} elsif ( $last_tree =~ /\ssigil/x ) {
+					given ($buffer) {
+						when ('$') { $last_type = '_scalar'; }
+						when ('@') { $last_type = '_array'; }
+						when ('%') { $last_type = '_hash'; }
+						default    { $last_type = q{}; }
+					};
+					if ( $last_type ne q{} ) {
+						$rule_to_color = $last_type;
+					}
+				}
+			}
+
+			#now delegate printing to a callback
+			$process_buffer->( $i, $buffer, $rule_to_color, $last_tree, $parser->lineof($i) );
+			$buffer = $c;
+		} else {
+			$buffer .= $c;
+		}
+		$last_tree = $tree;
+	}
+	return;
 }
 
 #------------------------------------------------------------------
@@ -445,37 +447,39 @@ sub _redspans_traverse {
 # and we populate @loc with action references and parse trees...
 #------------------------------------------------------------------
 {
-    package Syntax::Highlight::Perl6::Actions;
 
-    our $AUTOLOAD;
+	package Syntax::Highlight::Perl6::Actions;
 
-    my %action_refs = ();
+	our $AUTOLOAD;
 
-    sub AUTOLOAD {
-        my $self = shift;
-        my $C = shift;
-        my $F = $C->{_from};
-        my $P = $C->{_pos};
-        $AUTOLOAD =~ s/^Syntax::Highlight::Perl6::Actions:://x;
-        if($loc[$P]) {
-            # in case we backtracked to here
-            $loc[$P] = []
-        }
-        my $action = $AUTOLOAD;
-        my $action_ref = $action_refs{$action};
-        if(!$action_ref) {
-            $action_refs{$action} = $action_ref = \$action;
-        }
-        for ($F..$P-1) {
-            unshift @{$loc[$_]}, $action_ref;
-        }
-        return;
-    }
+	my %action_refs = ();
 
-    sub stdstopper { }
-    sub terminator { }
-    sub unitstopper { }
-    sub comp_unit { }
+	sub AUTOLOAD {
+		my $self = shift;
+		my $C    = shift;
+		my $F    = $C->{_from};
+		my $P    = $C->{_pos};
+		$AUTOLOAD =~ s/^Syntax::Highlight::Perl6::Actions:://x;
+		if ( $loc[$P] ) {
+
+			# in case we backtracked to here
+			$loc[$P] = [];
+		}
+		my $action     = $AUTOLOAD;
+		my $action_ref = $action_refs{$action};
+		if ( !$action_ref ) {
+			$action_refs{$action} = $action_ref = \$action;
+		}
+		for ( $F .. $P - 1 ) {
+			unshift @{ $loc[$_] }, $action_ref;
+		}
+		return;
+	}
+
+	sub stdstopper  { }
+	sub terminator  { }
+	sub unitstopper { }
+	sub comp_unit   { }
 }
 
 #---------------------------------------------------------------
@@ -483,24 +487,23 @@ sub _redspans_traverse {
 # html entities.
 #----------------------------------------------------------------
 sub _escape_html {
-    my $str = shift;
-    my %esc = (
-        '<'     => '&lt;',
-        '>'     => '&gt;',
-        '"'     => '&quot;',
-        '&'     => '&amp;',
-    );
-    my $re = join '|',
-        map { quotemeta } keys %esc;
-    $str =~ s/($re)/$esc{$1}/g;
-    return $str;
+	my $str = shift;
+	my %esc = (
+		'<' => '&lt;',
+		'>' => '&gt;',
+		'"' => '&quot;',
+		'&' => '&amp;',
+	);
+	my $re = join '|', map {quotemeta} keys %esc;
+	$str =~ s/($re)/$esc{$1}/g;
+	return $str;
 }
 
 #-----------------------------------------------------
 # convert to shared package real resource path
 #-----------------------------------------------------
 sub _shared {
-    return File::Spec->join($SHARED, shift);
+	return File::Spec->join( $SHARED, shift );
 }
 
 #-----------------------------------------------------
@@ -508,14 +511,14 @@ sub _shared {
 # see perlfaq5
 #-----------------------------------------------------
 sub _slurp {
-    my $filename = shift;
-    my $fh = IO::File->new($filename)
-        or croak "Could not open $filename for reading";
-    local $/ = undef;   #enable localized slurp mode
-    my $contents = <$fh>;
-    close $fh
-        or croak "Could not close $filename";
-    return $contents;
+	my $filename = shift;
+	my $fh       = IO::File->new($filename)
+		or croak "Could not open $filename for reading";
+	local $/ = undef; #enable localized slurp mode
+	my $contents = <$fh>;
+	close $fh
+		or croak "Could not close $filename";
+	return $contents;
 }
 
 1;
@@ -523,6 +526,7 @@ sub _slurp {
 #------------------ T H E   E N D --------------------
 
 __END__
+
 =head1 NAME
 
 Syntax::Highlight::Perl6 - Perl 6 Syntax Highlighter

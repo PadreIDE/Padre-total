@@ -16,27 +16,28 @@ use Carp;
 our $VERSION = '0.70';
 
 # my variables
-my ($clean_html,$help) = (0,0);
-my ($full_html,$simple_html,$snippet_html,$ansi_text) = (0,0,0,0);
+my ( $clean_html, $help ) = ( 0, 0 );
+my ( $full_html, $simple_html, $snippet_html, $ansi_text ) = ( 0, 0, 0, 0 );
 my $file;
 
 #
 # Your standard main method
 #
 sub main {
-    #process the command line
-    require Getopt::Long;
-    Getopt::Long::GetOptions(
-        'clean-html'=>\$clean_html,
-        'full-html=s'=>\$full_html,
-        'simple-html=s'=>\$simple_html,
-        'snippet-html=s'=>\$snippet_html,
-        'ansi-text=s'=>\$ansi_text,
-        'help'=>\$help
-    );
 
-    if ($help) {
-        say <<"HELP";
+	#process the command line
+	require Getopt::Long;
+	Getopt::Long::GetOptions(
+		'clean-html'     => \$clean_html,
+		'full-html=s'    => \$full_html,
+		'simple-html=s'  => \$simple_html,
+		'snippet-html=s' => \$snippet_html,
+		'ansi-text=s'    => \$ansi_text,
+		'help'           => \$help
+	);
+
+	if ($help) {
+		say <<"HELP";
 USAGE:
     $0 [options] [file] [rule]
 
@@ -58,54 +59,56 @@ USAGE:
     --ansi-text=filename
         write simple-mode ansi color text to filename (- for STDOUT)
 HELP
-        return; #exit
-    }
+		return; #exit
+	}
 
-    #default is --simple-html=- if no option is selected
-    if(!($simple_html || $full_html || $snippet_html) && !$ansi_text) {
-        $ansi_text = q{-};
-    }
+	#default is --simple-html=- if no option is selected
+	if ( !( $simple_html || $full_html || $snippet_html ) && !$ansi_text ) {
+		$ansi_text = q{-};
+	}
 
-    #start parsing...
-    $file = shift @ARGV;
-    my $what = shift @ARGV // 'comp_unit';
+	#start parsing...
+	$file = shift @ARGV;
+	my $what = shift @ARGV // 'comp_unit';
 
-    #what is the meaning of your input file?
-    if(!$file || $file eq q{-}) {
-        # i think you mean standard input
-        binmode STDIN;
-        $file = \*STDIN;
-    } else {
-        # no it is should be a file, let me check
-        if(! -r $file) {
-            croak "Could not open '$file' for reading\n";
-        }
-    }
+	#what is the meaning of your input file?
+	if ( !$file || $file eq q{-} ) {
 
-    # and finally print out the html code
-    highlight_match($file);
+		# i think you mean standard input
+		binmode STDIN;
+		$file = \*STDIN;
+	} else {
 
-    return;
+		# no it is should be a file, let me check
+		if ( !-r $file ) {
+			croak "Could not open '$file' for reading\n";
+		}
+	}
+
+	# and finally print out the html code
+	highlight_match($file);
+
+	return;
 }
 
 #
 # Writes the output to a file or STDOUT
 #
 sub write_output {
-    my ($file, $output) = @_;
-    if($file eq q{-}) {
-        say $output;
-    } else {
-        use open OUT => ':utf8';
-        require IO::File;
-        my $fh = IO::File->new(">$file") or
-            croak "Cannot open $file for writing: $!\n";
-        say $fh $output;
-        close $fh
-            or croak "Cannot close $file\n";
-    }
+	my ( $file, $output ) = @_;
+	if ( $file eq q{-} ) {
+		say $output;
+	} else {
+		use open OUT => ':utf8';
+		require IO::File;
+		my $fh = IO::File->new(">$file")
+			or croak "Cannot open $file for writing: $!\n";
+		say $fh $output;
+		close $fh
+			or croak "Cannot close $file\n";
+	}
 
-    return;
+	return;
 }
 
 #-----------------------------------------------------
@@ -113,21 +116,21 @@ sub write_output {
 # see perlfaq5
 #-----------------------------------------------------
 sub _slurp_special {
-    my $filename = shift;
-    my $fh;
-    if(ref $filename) {
-        $fh = $filename;
-    } else {
-        $fh = IO::File->new($filename)
-            or croak "Could not open $filename for reading";
-    }
-    local $/ = undef;   #enable localized slurp mode
-    my $contents = <$fh>;
-    if(! ref $filename) {
-        close $fh
-            or croak "Could not close $filename";
-    }
-    return $contents;
+	my $filename = shift;
+	my $fh;
+	if ( ref $filename ) {
+		$fh = $filename;
+	} else {
+		$fh = IO::File->new($filename)
+			or croak "Could not open $filename for reading";
+	}
+	local $/ = undef; #enable localized slurp mode
+	my $contents = <$fh>;
+	if ( !ref $filename ) {
+		close $fh
+			or croak "Could not close $filename";
+	}
+	return $contents;
 }
 
 #
@@ -135,28 +138,28 @@ sub _slurp_special {
 # Perl6 highlighted format.
 #
 sub highlight_match {
-    my $filename = shift;
+	my $filename = shift;
 
-    use STD;
-    require Syntax::Highlight::Perl6;
-    my $p = new Syntax::Highlight::Perl6(
-        text => _slurp_special($filename),
-        inline_resources => ! $clean_html,
-    );
-    if($full_html) {
-        write_output $full_html, $p->full_html;
-    }
-    if($simple_html) {
-        write_output $simple_html, $p->simple_html;
-    }
-    if($snippet_html) {
-        write_output $snippet_html, $p->snippet_html;
-    }
-    if($ansi_text) {
-        write_output $ansi_text, $p->ansi_text;
-    }
+	use STD;
+	require Syntax::Highlight::Perl6;
+	my $p = new Syntax::Highlight::Perl6(
+		text             => _slurp_special($filename),
+		inline_resources => !$clean_html,
+	);
+	if ($full_html) {
+		write_output $full_html, $p->full_html;
+	}
+	if ($simple_html) {
+		write_output $simple_html, $p->simple_html;
+	}
+	if ($snippet_html) {
+		write_output $snippet_html, $p->snippet_html;
+	}
+	if ($ansi_text) {
+		write_output $ansi_text, $p->ansi_text;
+	}
 
-    return;
+	return;
 }
 
 # exectution start here
