@@ -7,10 +7,10 @@ our $VERSION = '0.01';
 
 use Padre::Wx ();
 use Padre::Current;
-use Regexp::Assemble;
 use IO::Scalar;
 use List::Util qw(first);
 use Data::Dumper qw(Dumper);
+use Perl6::Caller;
 
 use base 'Padre::Plugin';
 
@@ -20,38 +20,23 @@ Padre::Plugin::VimishLexer - Using the Vimish syntax highlighter
 
 =head1 SYNOPSIS
 
-This plugin provides an interface to the L<Syntax::Highligh::Engine::Kate>
-which implements syntax highlighting rules taken from the Kate editor.
+This plugin provides an interface to the L<Syntax::Highligh::Vimish>
+which implements syntax highlighting rules similar to those of the vim editor.
 
-Currently the plugin only implements Perl 5 and PHP highlighting.
+Currently the plugin only implements Perl 5 highlighting.
 
 Once this plug-in is installed the user can switch the highlilghting of all 
-Perl 5 or PHP files to use this highlighter via the Preferences menu
+Perl 5 files to use this highlighter via the Preferences menu
 of L<Padre>.
 
 
 =head1 LIMITATION
 
-This is a first attempt to integrate this synatx highlighter with Padre
-and thus many things don't work well. Especially due to speed issues currently
-even if you set the highlighting to use the Kate plugin Padre will do so
-only for small files. The hard-coded limit is in the 
-L<Padre::Document::Perl> class (which probably is a bug in itself) which
-probably means it will only limit Perl files and not PHP files.
-
-There are several ways to improve the situation e.g.
-
-Highlight in the background
-
-Only highlight the currently visible text
-
-Only highlight a few lines around the the last changed character.
-
-Each one has its own advantage and disadvantage. More research is needed.
+This module is still pretty buggy.
 
 =head1 COPYRIGHT
 
-Copyright 2009 Gabor Szabo. L<http://szabgab.com/>
+Copyright 2009 Peter Shangov. L<http://www.mechanicalrevolution.com/>
 
 =head1 LICENSE
 
@@ -59,6 +44,10 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
+
+########################################################
+### FUNCTIONS REQUIRED BY THE PADRE PLUGIN INTERFACE ###
+########################################################
 
 sub padre_interfaces {
 	return 'Padre::Plugin' => 0.41;
@@ -88,6 +77,17 @@ sub highlighting_mime_types {
 	);
 }
 
+sub about {
+	my ($main) = @_;
+
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName(__PACKAGE__);
+	$about->SetDescription("Trying to use the Vimish lexer for syntax highlighting\n" );
+	$about->SetVersion($VERSION);
+	Wx::AboutBox($about);
+	return;
+}
+
 # TODO shall we create a module for each mime-type and register it as a highlighter
 # or is our dispatching ok?
 # Shall we create a module called Pudre::Plugin::Kate::Colorize that will do the dispatching ?
@@ -96,77 +96,256 @@ my %d = (
 	'application/x-perl' => 'Perl',
 );
 
+################################
+### DEFINE THE PARSING RULES ###
+################################
+
+# All this stuff will ultimately go to a configuration file
+
 my @keywords = qw( 
 	if elsif else unless while for foreach do continue until defined undef
 	and or not bless ref my local our sub package use shift
 );
-
-#my $re = Regexp::Assemble->new;
-#my @prepared_kewords = map { "^" . $_ . "\b"} @keywords;
-#$re->add(@prepared_kewords);
 @keywords = map { $_ . '\b'} @keywords;
-my $re = "^(" . join("|", @keywords, ) . ")";
+my $keywords_re = "^(" . join("|", @keywords, ) . ")";
 
 my @define = (
 	{ type => 'range',    name => 'pod',     start => qr(^=[a-z]), end => qr(=cut\b), start_first => 1, end_first => 1},
 	{ type => 'range',    name => 'string',  start => qr(^"), end => qr(") },
 	{ type => 'range',    name => 'string',  start => qr(^'), end => qr(') },
 	{ type => 'match',    name => 'comment', pattern => qr(^#.*$) },
-	{ type => 'literal',  name => 'keyword', pattern => $re },
+	{ type => 'literal',  name => 'keyword', pattern => $keywords_re },
 );
 
+##################################
+### THE MAIN COLORIZE FUNCTION ###
+##################################
 
-my @matches;
+sub colorize {
+	# colorize() is called as a class method
+	my $class = shift;
+	
+	# colorize() is invoked every time a ON_STYLENEEDED event occurs
+	# it receies two parameters - the start and end position of the section
+	# of the docment that needs styling
+	my ( $start_pos, $end_pos ) = @_;
 
-my $current_range;
-my $current_position;
-my $line_start;
-my $c = 1;
+	# Padre may sometimes call colorize() without arguments when it needs
+	# the whole document styled
+	$start_pos = 0 unless defined $start_pos;
 
-sub parse_doc {
-	my $text_to_parse = shift;
-	my $initial_offset = shift;
-	my $doc = IO::Scalar->new(\$text_to_parse);
-	$current_position = $initial_offset;
+	debug("\n=== COLORIZE($start_pos, $end_pos) CALLED! ===\n");
 
-	while ( defined( my $line = $doc->getline ) ) {
-		my $last;
-		if ($doc->eof) {
-			$last = 1;
-		}
-		$line_start = 1;
-		my $pos = $doc->tell;
-		$pos += $initial_offset;
-		debug( "LINE " . Padre::Current->document->editor->LineFromPosition($pos) . " ===>\n" );
-		parse_line($line, $last);
-		debug( "$current_position - $pos - $initial_offset; line: $line\n" );
-		if ($current_position < $pos) {
-			$current_position = $pos;
-		};
-		debug( "New position: $pos\n" );
+	# both $start_pos and $end_pos may be modified, but we will
+	# need a copy of the original $end_pos below
+	my $original_stc_end_pos = $end_pos;
+
+	my $doc    = Padre::Current->document;
+	my $editor = $doc->editor;
+	my $matches = $doc->{__VimishLexer}{matches};
+
+	### DETERMINE THE $start_pos THAT WE WILL PASS TO parse_code() ###
+	
+	# move start position to begginning of line
+	my $start_pos_line = $editor->LineFromPosition($start_pos);
+	# is the "if" really needed?
+	$start_pos = $editor->PositionFromLine($start_pos_line) if $start_pos;
+	
+	### DETERMINE THE $end_pos THAT WE WILL PASS TO parse_code() ###
+
+	# move end position to end of the 50-th line after the 
+	# last visible line on the screen, or to the end of the file
+	# if nearer
+	my $last_visible_line = $editor->GetFirstVisibleLine + $editor->LinesOnScreen;
+	my $last_visible_line_plus_50 = $last_visible_line + 50;
+	my $total_line_count = $editor->GetLineCount;
+	
+	$last_visible_line_plus_50 > $total_line_count 
+		? $end_pos = $editor->GetLineEndPosition( $total_line_count - 1 )
+		: $end_pos = $editor->GetLineEndPosition( $last_visible_line_plus_50 - 1 );
+
+	
+	
+	### PARSE ###
+	parse_code($doc->text_get, $start_pos, $end_pos, $matches);
+
+	### APPLY THE COLORS ###
+
+	# clear the color from the start of the segment on
+	clear_style($start_pos, $editor->GetLength);
+	# $doc->remove_color;
+	
+	# colorize the segment
+	foreach my $m ($@matches) {
+		$editor->StartStyling( $m->{start}, $m->{color} );
+		$editor->SetStyling( $m->{length}, $m->{color} );	
+
+		debug( $m->{type} . ":"  . $m->{start} . ":" . $m->{length} 
+		      . ":" . substr($full_text, $m->{start}, $m->{length}) . "\n" );
 	}
 
+	$doc->{__VimishLexer}{matches} = $matches)
+	
+
+}
+
+
+#############################
+### PARSE A PIECE OF CODE ###
+#############################
+
+# Returns nothing, it just updates @matches
+# Called by: colorize()
+
+sub parse_code {
+	my ($text, $start_pos, $end_pos, $matches) = @_;
+
+	# can we do away with $start_pos altogether?
+	my $current_position = $start_pos;
+
+	# check if start position is within a range
+	# $current_range - stores the current range object if a range has started but not ended yet
+	my ($current_range, $matches) = get_range_at_pos($start_pos, $matches);
+
+	my $text_to_parse = substr($text, $start_pos, $end_pos - $start_pos);
+	my $code = IO::Scalar->new(\$text_to_parse);
+
+	# $line_start - true if we are at the start of a line, false otherwise
+	my $line_start;
+
+	while ( defined( my $line = $code->getline ) ) {
+		# make sure the parser knows that we are starting to parse a new line
+		$line_start = 1;
+
+		### DEBUG ###
+		debug( "LINE " . Padre::Current->document->editor->LineFromPosition($start_pos) . " ===>\n" );
+		
+		parse_line($line, $current_position, $current_range, $matches);
+
+		# update the current position to the end of the line we just parsed 
+		# requied because of space and newline characters at the end of the lines
+		$current_position = $code->tell + $start_pos;
+	}
+	
+	# if after we finished parsing $current_range is defined,
+	# automatically close the range
 	if ($current_range) {
 		add_match(0, $current_range->{name}, "", $current_range->{start_pos});
-		debug( "### RANGE AUTO END ###\n" );
+		debug( "range auto end!\n" );
+	}
+
+	# make sure that if we are the end of the file the last character is colorized,
+	# otherwise Scintilla will keep firing an ON_STYLENEEDED event every time the
+	# last line is visible
+	my $last_match = $matches[-1];
+	if ($last_match) {
+		my $last_match_start = $last_match->{start} + $last_match->{length};
+		if ($last_match_start >= $editor->GetEndStyled && $original_stc_end_pos == $editor->GetLength) {
+			$editor->StartStyling( $last_match_start, 1 );
+			$editor->SetStyling( 1, 1 );
+			debug( "end" . ":"  . $last_match_start . ":" . 1 
+		    	  . ":" . substr($full_text, $last_match_start, 1) . "\n" );
+			debug("GetEndStyled: " . $editor->GetEndStyled . "\n");
+		}
 	}
 }
 
-sub parse_line {
-	my $line = shift;
-	my $last = shift;
+###########################
+### PARSE A SINGLE LINE ###
+###########################
 
-	# there are no more interesting sybols in the line
+# Returns nothing, it just updates @matches
+# Called by: parse_code()
+
+sub parse_line {
+	my ($line, $current_position, $current_range, $matches) = @_;
+	
+	# if parse_line() has recursively called itself, then we
+	# are not at the start of a line
+	my $line_start = 1 unless caller->subroutine eq "parse_line";
+
+	# there are no interesting sybols in the line
+	# don't bother updating $current_position, parse_code()
+	# takes care of that
 	if ( $line !~ /\S+/ ) {
 		return;
 	}
 
-	my $copy_line = $line;
-	chomp $copy_line;
-	debug( $c++ . " ($current_position): " . $copy_line . "\n" );
+	### DEBUG ###
+	debug( "POS: $current_position, LINE: $line" );
 
-	# are we inside a range?
-	if ($current_range) {
+	# the bulk of the parsing takes place here
+	if (!$current_range) {
+		foreach my $rule (@define) {
+			next if $rule->{start_first} and !$line_start;
+
+			if ( $rule->{type} eq 'range' ) {
+				if ( $line =~ $rule->{start} ) {
+					# $offset contains the number of characters matched 
+					# by the $rule->{start} regex
+					my $offset = $+[0];
+					
+					# set $current_range
+					$current_range = $rule;
+					$current_range->{start_pos} = $current_position;
+					
+					# continue parsing
+					debug( "range start found!\n" );
+					$current_position += $offset;
+					undef $line_start;
+					my $remaining = substr($line, $offset);
+					parse_line($remaining) if $remaining;
+					
+					return;
+				}
+			} elsif ( $rule->{type} eq 'match' ) {
+				if ( $line =~ $rule->{pattern} ) {
+					add_match($+[0], $rule->{name}, $line);
+					debug( "match found!\n" );
+					return;
+				}
+			} elsif ( $rule->{type} eq 'literal' ) {
+				if ( $line =~ $rule->{pattern} ) {
+					add_match($+[0], "keyword", $line);	
+					debug( "keyword found!\n" );
+					return;
+				}
+			}
+		}
+		# we have found nothing, move on
+		debug( "nothing found!\n" );
+		
+		# if a some keyword has started and has not matched, delete till the end of it;
+		# don't do substr if we have already deleted stuff
+		my $modified_chars = 0;
+		$modified_chars += length $1 if $line =~ s/^(((::)*\w+)+)//;
+		$modified_chars += length $1 if $line =~ s/^(\s+)//;
+		
+		# if there is still something in $line after the substitution above
+		if ($line) {
+			my $remaining;
+			
+			if ($modified_chars) {
+				# if we removed any characters above,
+				# just pass the remaining string
+				$remaining = $line;
+				$current_position += $modified_chars;
+				#debug( "Modified chars: $modified_chars\n" );
+			} else { 
+				# else, remove 1 character and continue parsing
+				$current_position++;
+				$remaining = substr($line, 1); 
+			}
+			
+			# continue parsing
+			undef $line_start;
+			parse_line($remaining);
+		}
+	}
+	# if we are inside a range, try to find its end
+	else
+	{
+		# $current_position is updated by parse_code()
 		return if $current_range->{end_first} and !$line_start;
 		
 		# do we have a range end?
@@ -176,77 +355,17 @@ sub parse_line {
 
 			# clear the current range variable
 			undef $current_range;
+			debug( "range end found!\n" );
 					
-			debug( "### RANGE END ###\n" );
 			return;
 		} 
-		# nothing interesting to do
+		# we are inside a range, and it does not end on this line,
+		# there is nothing interesting to do
 		else
 		{
+			# does this need to be here?
 			$current_position += length($line);
 			return;
-		}
-	}
-	# search for interesting patterns
-	else
-	{
-		foreach my $rule (@define) {
-			next if $rule->{start_first} and !$line_start;
-
-			if ( $rule->{type} eq 'range' ) {
-				if ( $line =~ $rule->{start} ) {
-					my $offset = $+[0];
-					
-					debug( "### RANGE START ###\n" );
-
-					$current_range = $rule;
-					$current_range->{start_pos} = $current_position;
-
-					my $remaining = substr($line, $offset);
-					$current_position += $offset;
-
-					undef $line_start;
-					parse_line($remaining) if $remaining;
-
-					return;
-				}
-				debug( "no range " . $rule->{name} . "!\n" );
-			} elsif ( $rule->{type} eq 'match' ) {
-				if ( $line =~ $rule->{pattern} ) {
-					add_match($+[0], $rule->{name}, $line);
-					return;
-				}
-				debug( "no match " . $rule->{name} . "!\n" );
-			} elsif ( $rule->{type} eq 'literal' ) {
-				if ( $line =~ $rule->{pattern} ) {
-					my $end_pos = $+[0];
-					add_match($+[0], "keyword", $line);	
-					return;
-				}
-				debug( "no keyword!\n" );
-			}
-		}
-		
-		# if a some keyword has started and has not matched, delete till the end of it;
-		# don't do substr if we have already deleted stuff
-		my $modified_chars = 0;
-		$modified_chars += length $1 if $line =~ s/^(((::)*\w+)+)//;
-		$modified_chars += length $1 if $line =~ s/^(\s+)//;
-
-		if ($line) {
-			my $remaining;
-			
-			if ($modified_chars) {
-				$remaining = $line;
-				$current_position += $modified_chars;
-				debug( "Modified chars: $modified_chars\n" );
-			} else { 
-				$current_position++;
-				$remaining = substr($line, 1); 
-			}
-			
-			undef $line_start;
-			parse_line($remaining);
 		}
 	}
 }
@@ -281,93 +400,9 @@ sub add_match {
 	parse_line($remaining) if $remaining;
 }
 
-sub colorize {
-	db("COLORIZE\n");
-	my $class = shift;
-
-	my $doc    = Padre::Current->document;
-	my $editor = $doc->editor;
-
-	# 1. get start and end position from Wx::STC
-	my ( $start_pos, $end_pos ) = @_;
-	$start_pos ||= 0;
-	#$end_pos   ||= $editor->GetLength;
-
-	my $saved_end_pos = $end_pos;
-
-	# 2. move start position to begginning of line
-	my $start_pos_line = $editor->LineFromPosition($start_pos);
-	$start_pos = $editor->PositionFromLine($start_pos_line) if $start_pos;
-	
-	my $initial_offset = 0;
-	$initial_offset = $start_pos - 1 if $start_pos > 0;
-
-	# 3. move end position to end of visible area, and then some
-	my $last_visible_line = $editor->GetFirstVisibleLine + $editor->LinesOnScreen;
-	my $last_visible_line_plus_50 = $last_visible_line + 50;
-	my $total_line_count = $editor->GetLineCount;
-	
-	$last_visible_line_plus_50 > $total_line_count 
-		? $end_pos = $editor->GetLineEndPosition( $total_line_count - 1 )
-		: $end_pos = $editor->GetLineEndPosition( $last_visible_line_plus_50 - 1 );
-
-	# 4. parse the segment
-	
-	my $full_text = $doc->text_get;
-	my $text_to_parse = $editor->GetTextRange( $start_pos, $end_pos );
-	return unless $text_to_parse;
-	
-	# prepare
-	$current_position = 0;
-	undef $current_range;
-	undef $line_start;
-	$c = 1;
-
-	# check if start position is within a range
-	(my $start_range, @matches) = get_range_at_pos($start_pos);
-	$current_range = $start_range if $start_range;
-
-	print( "COLORIZE FROM $start_pos =============>\n" );
-	print "CURRENT RANGE: ";
-	if ( defined $current_range ) {
-		print $current_range->{name};
-	} else {
-		print "NONE";
-	}
-	print " =============>\n";
-
-	#parse_doc($text_to_parse, $initial_offset);
-	parse_doc($text_to_parse, $start_pos);
-
-	# 6. clear the color from the start of the segment on
-	clear_style($start_pos, $editor->GetLength);
-	# $doc->remove_color;
-	
-	# 7. colorize the segment
-	foreach my $m (@matches) {
-		$editor->StartStyling( $m->{start}, $m->{color} );
-		$editor->SetStyling( $m->{length}, $m->{color} );	
-
-		debug( $m->{type} . ":"  . $m->{start} . ":" . $m->{length} 
-		      . ":" . substr($full_text, $m->{start}, $m->{length}) . "\n" );
-	}
-
-	my $last_match = $matches[-1];
-	if ($last_match) {
-		my $last_match_start = $last_match->{start} + $last_match->{length};
-		if ($last_match_start >= $editor->GetEndStyled && $saved_end_pos == $editor->GetLength) {
-			$editor->StartStyling( $last_match_start, 1 );
-			$editor->SetStyling( 1, 1 );
-			debug( "end" . ":"  . $last_match_start . ":" . 1 
-		    	  . ":" . substr($full_text, $last_match_start, 1) . "\n" );
-			debug("GetEndStyled: " . $editor->GetEndStyled . "\n");
-		}
-	}
-	# debug("End position passed by Scintilla: $saved_end_pos\n" );
-	# debug("\$last_match_start: $last_match_start\n" );
-	# debug("GetLength: " . $editor->GetLength . "\n" );
-	# debug("GetEndStyled: " . $editor->GetEndStyled . "\n" );
-}
+#########################
+### UTILITY FUNCTIONS ###
+#########################
 
 sub class_to_color {
 	my $css  = shift;
@@ -376,7 +411,7 @@ sub class_to_color {
 		comment       => 2,
 		pod           => 2,
 		string        => 9,
-		end           => 1,
+		plain         => 1,
 	);
 
 	return $colors{$css};
@@ -413,23 +448,8 @@ sub get_range_at_pos {
 	       : return undef, @matches_up_to_pos ;
 }
 
-sub about {
-	my ($main) = @_;
-
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName(__PACKAGE__);
-	$about->SetDescription("Trying to use the Vimish lexer for syntax highlighting\n" );
-	$about->SetVersion($VERSION);
-	Wx::AboutBox($about);
-	return;
-}
-
 sub debug {
 	print @_;
-}
-
-sub db {
-	#print @_;
 }
 
 1;
@@ -438,7 +458,6 @@ sub db {
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
-
 
 
 
