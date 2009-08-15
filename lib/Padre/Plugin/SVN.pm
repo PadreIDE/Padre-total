@@ -221,8 +221,8 @@ sub svn_log {
 	my $out = join( "\n", @{ $file->log() } );
 	$self->{_busyCursor} = undef;
 	#$main->message( $out, "$path" );
-	require Padre::Plugin::SVN::Wx::LogDialog;
-	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $out);
+	require Padre::Plugin::SVN::Wx::SVNDialog;
+	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, $out, 'Log');
 	$log->Show(1);
 
 	
@@ -263,8 +263,8 @@ sub svn_diff {
 	$file->diff();
 	my $status  = join( "\n", @{$file->stdout} );
 	#$main->message( $status, "$path" );
-	require Padre::Plugin::SVN::Wx::LogDialog;
-	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $status);
+	require Padre::Plugin::SVN::Wx::SVNDialog;
+	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, $status, 'Diff');
 	$log->Show(1);
 	
 	return;
@@ -294,12 +294,17 @@ sub svn_commit {
 	my ( $self, $path ) = @_;
 
 	my $main = Padre->ide->wx->main;
-	my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
+	#my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
+	require Padre::Plugin::SVN::Wx::SVNDialog;
+	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, undef, 'Commit File', 1);
+	my $message = $dialog->get_data;
+	
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 		$message =~ s/"/\\"/g;
 
 		#$main->message( $message, 'Filename' );
+		
 		system qq(svn commit "$path" -m"$message");
 		$self->{_busyCursor} = undef;
 	}
