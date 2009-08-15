@@ -864,6 +864,27 @@ sub get_outline {
 	return;
 }
 
+#
+# Render Grok help xhtml for Padre's Help Search facility
+#
+sub on_help_render {
+	require App::Grok;
+	my $grok = App::Grok->new;
+	my $help_html = $grok->render_target( $help_target, 'xhtml' );
+	my $help_location = $grok->locate_target($help_target) );
+	return ($help_html, $help_location);
+}
+
+#
+# Render Grok help list for Padre's Help Search facility
+#
+sub on_help_list {
+	require App::Grok;
+	my $grok = App::Grok->new;
+	return sort $grok->target_index;
+}
+
+
 1;
 
 __END__
