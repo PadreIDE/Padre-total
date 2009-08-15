@@ -23,7 +23,7 @@ sub plugin_name {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.42,;
+	return 'Padre::Plugin' => 0.43;
 }
 
 #
@@ -44,7 +44,7 @@ sub logo_icon {
 sub plugin_icon {
 	my $self = shift;
 	# find resource path
-	my $iconpath = File::Spec->catfile( $self->plugin_share_directory, 'icons', 'ecliptic.png' );
+	my $iconpath = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'ecliptic.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
