@@ -297,6 +297,7 @@ sub svn_commit {
 	#my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	require Padre::Plugin::SVN::Wx::SVNDialog;
 	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, undef, 'Commit File', 1);
+	$dialog->Show(1);
 	my $message = $dialog->get_data;
 	
 	if ($message) {
