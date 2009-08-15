@@ -114,15 +114,16 @@ sub finish {
 	# TODO: understand the case when opening Padre, if there
 	# is a Perl 6 file this will be called and it won't find the method
 	# probably this happens as the current file is different when the finish is called
-	# from the one that was called at the beginning (this is at open time with many 
+	# from the one that was called at the beginning (this is at open time with many
 	# buffers opening). There is a safeguard at the beginning of this sub but it seems
 	# to be failing its job, Maybe the Padre::Task should have a built in suppport to
 	# associate a task with a certain buffer
 	eval {
 		$doc->check_syntax_in_background( force => 1 );
 		$doc->get_outline( force => 1 );
-	}; 
+	};
 	if ($@) { print "$doc\n"; }
+
 	# finished here
 	$thread_running = 0;
 

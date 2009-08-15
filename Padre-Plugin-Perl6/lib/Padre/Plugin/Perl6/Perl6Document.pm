@@ -868,13 +868,13 @@ sub get_outline {
 # Render Grok help xhtml for Padre's Help Search facility
 #
 sub on_help_render {
-	my ($self, $topic) = @_;
+	my ( $self, $topic ) = @_;
 
 	require App::Grok;
-	my $grok = App::Grok->new;
-	my $html = $grok->render_target( $topic, 'xhtml' );
+	my $grok     = App::Grok->new;
+	my $html     = $grok->render_target( $topic, 'xhtml' );
 	my $location = $grok->locate_target($topic);
-	return ($html, $location);
+	return ( $html, $location );
 }
 
 #

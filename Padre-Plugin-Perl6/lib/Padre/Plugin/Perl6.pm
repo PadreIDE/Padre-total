@@ -241,6 +241,7 @@ sub menu_plugins {
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Introduction"), ),
 		sub {
+
 			#XXX display perlintro;
 		},
 	);
@@ -250,6 +251,7 @@ sub menu_plugins {
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Syntax"), ),
 		sub {
+
 			#XXX display perlsyn;
 		},
 	);
