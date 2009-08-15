@@ -322,8 +322,7 @@ sub svn_commit {
 			$main->error( join("\n", @err));
 		}
 		else {
-			my $txt = join("\n", @commit);
-			$main->message( $txt );
+			$main->message( join("\n", @commit) );
 		}
 		
 		#system qq(svn commit "$path" -m"$message");
