@@ -308,12 +308,18 @@ sub svn_commit {
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 		#$message =~ s/"/\\"/g;
+		$message =~ s/\n/\s\s/g;
 		
 		#$main->message( $message, 'Filename' );
 		
 		#$message = "\"" .  $message . "\"";
 		print "This is the commit message: $message";
 		
+		# here's how:
+		#http://svn.haxx.se/tsvnusers/archive-2008-03/0393.shtml
+		# create a text file and use -F or --file option
+		# problem here is the opts that you can pass in 
+		# come after the $message.
 		$file->commit($message);
 		
 		my @commit = @{$file->stdout};
