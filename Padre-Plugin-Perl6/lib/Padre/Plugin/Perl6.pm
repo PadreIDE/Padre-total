@@ -34,14 +34,8 @@ sub plugin_name {
 	return Wx::gettext("Perl 6");
 }
 
-# directory where to find the translations
-sub plugin_locale_directory {
-	my $self = shift;
-	return File::Spec->catdir( $self->plugin_directory_share(), 'locale' );
-}
-
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43,;
+	'Padre::Plugin' => 0.43;
 }
 
 # plugin's real icon object
@@ -59,10 +53,10 @@ sub plugin_icon {
 	my $self = shift;
 
 	# find resource path
-	my $iconpath = File::Spec->catfile( $self->plugin_directory_share(), 'icons', 'camelia.png' );
+	my $icon_path = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'camelia.png' );
 
 	# create and return icon
-	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+	return Wx::Bitmap->new( $icon_path, Wx::wxBITMAP_TYPE_PNG );
 }
 
 # called when the plugin is enabled
@@ -343,7 +337,7 @@ sub _create_from_template {
 	$self->main->on_new;
 
 	my $editor = $self->current->editor or return;
-	my $file = File::Spec->catdir( $self->plugin_directory_share(), "templates/$template.$extension" );
+	my $file = File::Spec->catdir( $self->plugin_directory_share, "templates", "$template.$extension" );
 	$editor->insert_from_file($file);
 
 	my $document = $editor->{Document};
@@ -382,7 +376,7 @@ sub show_about {
 	$about->SetVersion($VERSION);
 
 	# create and return the camelia icon
-	my $camelia_path = File::Spec->catfile( $self->plugin_directory_share(), 'icons', 'camelia-big.png' );
+	my $camelia_path = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'camelia-big.png' );
 	my $camelia_bmp = Wx::Bitmap->new( $camelia_path, Wx::wxBITMAP_TYPE_PNG );
 	my $camelia_icon = Wx::Icon->new();
 	$camelia_icon->CopyFromBitmap($camelia_bmp);
