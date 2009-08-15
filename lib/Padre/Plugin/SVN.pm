@@ -294,10 +294,15 @@ sub svn_commit {
 	my ( $self, $path ) = @_;
 
 	my $main = Padre->ide->wx->main;
+	my $file = svn_file($path);
+	
+	my $info = "$path\n\n";
+	$info .= "Last Revision: " . $file->info->{last_rev};
 	#my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, undef, 'Commit File', 1);
-	$dialog->Show(1);
+	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $info, undef, 'Commit File', 1);
+	$dialog->ShowModal;
+	
 	my $message = $dialog->get_data;
 	
 	if ($message) {
@@ -306,10 +311,20 @@ sub svn_commit {
 
 		#$main->message( $message, 'Filename' );
 		
-		system qq(svn commit "$path" -m"$message");
+		
+		print "This is the commit message: $message";
+		
+		$file->commit($message);
+		
+		my $commit = $file->stdout;
+		$main->message($commit);
+		
+		#system qq(svn commit "$path" -m"$message");
 		$self->{_busyCursor} = undef;
 	}
 
+	# show that the file was committed
+	
 	return;
 }
 
