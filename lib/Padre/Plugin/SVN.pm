@@ -13,6 +13,7 @@ use SVN::Class;
 #use Padre::Plugin::SVN::Wx::Toolbar;
 
 
+
 #use Capture::Tiny  qw(capture_merged);
 #use File::Basename ();
 #use File::Spec;
@@ -254,9 +255,20 @@ sub svn_log_of_project {
 sub svn_diff {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-	my $status = qx{svn diff $path};
-	$main->message( $status, "$path" );
+	#my $status = qx{svn diff $path};
+	my $file = svn_file($path);
+	#print $file->stderr;
+	#print $file->stdout;
+	
+	$file->diff();
+	my $status  = join( "\n", @{$file->stdout} );
+	#$main->message( $status, "$path" );
+	require Padre::Plugin::SVN::Wx::LogDialog;
+	my $log = Padre::Plugin::SVN::Wx::LogDialog->new($main, $path, $status);
+	$log->Show(1);
+	
 	return;
+	
 }
 
 sub svn_diff_of_file {
@@ -284,10 +296,12 @@ sub svn_commit {
 	my $main = Padre->ide->wx->main;
 	my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	if ($message) {
+		$self->{_busyCursor} = Wx::BusyCursor->new();
 		$message =~ s/"/\\"/g;
 
 		#$main->message( $message, 'Filename' );
 		system qq(svn commit "$path" -m"$message");
+		$self->{_busyCursor} = undef;
 	}
 
 	return;
