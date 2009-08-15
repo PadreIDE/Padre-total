@@ -241,7 +241,7 @@ sub menu_plugins {
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Introduction"), ),
 		sub {
-			$self->show_help_dialog('perlintro');
+			#XXX display perlintro;
 		},
 	);
 
@@ -250,7 +250,7 @@ sub menu_plugins {
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Syntax"), ),
 		sub {
-			$self->show_help_dialog('perlsyn');
+			#XXX display perlsyn;
 		},
 	);
 
@@ -487,20 +487,6 @@ sub show_perl6_doc {
 			}
 		}
 	}
-
-	$self->show_help_dialog($topic);
-}
-
-#
-# A helper method to show the help dialog
-# for a certain topic
-#
-sub show_help_dialog {
-	my ( $self, $topic ) = @_;
-
-	require Padre::Plugin::Perl6::Perl6HelpDialog;
-	my $dialog = Padre::Plugin::Perl6::Perl6HelpDialog->new( $self, topic => $topic );
-	$dialog->ShowModal();
 
 }
 
