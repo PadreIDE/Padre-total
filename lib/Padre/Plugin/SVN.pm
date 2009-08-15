@@ -307,17 +307,24 @@ sub svn_commit {
 	
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
-		$message =~ s/"/\\"/g;
-
+		#$message =~ s/"/\\"/g;
+		
 		#$main->message( $message, 'Filename' );
 		
-		
+		#$message = "\"" .  $message . "\"";
 		print "This is the commit message: $message";
 		
 		$file->commit($message);
 		
-		my $commit = $file->stdout;
-		$main->message($commit);
+		my @commit = @{$file->stdout};
+		my @err = @{$file->stderr};
+		if( @err ) {
+			$main->error( join("\n", @err));
+		}
+		else {
+			my $txt = join("\n", @commit);
+			$main->message( $txt );
+		}
 		
 		#system qq(svn commit "$path" -m"$message");
 		$self->{_busyCursor} = undef;
