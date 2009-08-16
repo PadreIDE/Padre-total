@@ -31,7 +31,7 @@ and save them to the configuration file.
 
 my @Func_List = (
 	[ 'bookmark', Wx::gettext('Enable bookmarks') ],
-	[ 'fontsize', Wx::gettext('Change font-size') ],
+	[ 'fontsize', Wx::gettext('Change font size') ],
 	[ 'session',  Wx::gettext('Enable session manager') ],
 );
 
@@ -636,8 +636,9 @@ END_TEXT
 }
 
 sub dialog {
-	my ( $self, $win, $main_startup, $editor_autoindent, $main_functions_order, $perldiag_locales,
-		$default_line_ending ) = @_;
+	my ($self, $win, $main_startup, $editor_autoindent, $main_functions_order, $perldiag_locales,
+		$default_line_ending
+	) = @_;
 
 	my $dialog = Wx::Dialog->new(
 		$win,

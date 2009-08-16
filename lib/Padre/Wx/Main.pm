@@ -2160,14 +2160,14 @@ sub on_uncomment_block {
 
 =head3 on_autocompletion
 
-    $main->on_autocompletition;
+    $main->on_autocompletion;
 
 Try to autocomplete current word being typed, depending on
 document type.
 
 =cut
 
-sub on_autocompletition {
+sub on_autocompletion {
 	my $self = shift;
 	my $document = $self->current->document or return;
 	my ( $length, @words ) = $document->autocomplete;
@@ -2874,6 +2874,7 @@ sub on_save_as {
 	$document->set_mimetype( $document->guess_mimetype );
 	$document->editor->padre_setup;
 	$document->rebless;
+	$document->colourize;
 
 	Padre::DB::History->create(
 		type => 'files',
@@ -4312,9 +4313,11 @@ sub on_new_from_template {
 
 	if ( $editor->insert_from_file($file) ) {
 		my $document = $editor->{Document};
-		$document->set_mimetype( Padre::MimeTypes->mime_type_by_extension($extension) );
+		$document->{original_content} = $document->text_get;
+		$document->set_mimetype( $document->guess_mimetype );
 		$document->editor->padre_setup;
 		$document->rebless;
+		$document->colourize;
 	} else {
 		$self->message( sprintf( Wx::gettext("Error loading template file '%s'"), $file ) );
 	}
@@ -4393,17 +4396,10 @@ sub change_highlighter {
 		my $lexer = $document->lexer;
 		$editor->SetLexer($lexer);
 
-		# TODO maybe the document should have a method that tells us if it was setup
-		# to be colored by ppi or not instead of fetching the lexer again.
 		Padre::Util::debug("Editor $editor focused $focused lexer: $lexer");
 		if ( $editor eq $focused ) {
 			$editor->needs_manual_colorize(0);
-			if ( $lexer == Wx::wxSTC_LEX_CONTAINER ) {
-				$document->colorize;
-			} else {
-				$document->remove_color;
-				$editor->Colourise( 0, $editor->GetLength );
-			}
+			$document->colourize();
 		} else {
 			$editor->needs_manual_colorize(1);
 		}
@@ -4488,6 +4484,54 @@ sub show_as_numbers {
 	}
 
 	return;
+}
+
+# showing the DocBrowser window
+sub help {
+	my $self  = shift;
+	my $param = shift;
+	unless ( $self->{help} ) {
+		require Padre::Wx::DocBrowser;
+		$self->{help} = Padre::Wx::DocBrowser->new;
+		Wx::Event::EVT_CLOSE(
+			$self->{help},
+			sub { $self->on_help_close( $_[1] ) },
+		);
+		$self->{help}->help('Padre');
+	}
+	$self->{help}->SetFocus;
+	$self->{help}->Show(1);
+	if ($param) {
+		$self->{help}->help($param);
+	}
+	return;
+}
+
+# TODO - why do we need the Hide/Destroy pair?
+sub on_help_close {
+	my ( $self, $event ) = @_;
+	my $help = $self->{help};
+
+	if ( $event->CanVeto ) {
+		$help->Hide;
+	} else {
+		delete $self->{help};
+		$help->Destroy;
+	}
+}
+
+sub set_mimetype {
+	my $self      = shift;
+	my $mime_type = shift;
+
+	my $doc = $self->current->document;
+	if ($doc) {
+		$doc->set_mimetype($mime_type);
+		$doc->editor->padre_setup;
+		$doc->rebless;
+		$doc->colourize;
+	}
+	$self->refresh;
 }
 
 1;

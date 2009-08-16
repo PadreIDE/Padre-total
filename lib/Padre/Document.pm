@@ -259,6 +259,21 @@ sub rebless {
 #####################################################################
 # Padre::Document GUI Integration
 
+sub colourize {
+	my $self = shift;
+
+	my $lexer  = $self->lexer;
+	my $editor = $self->editor;
+	$editor->SetLexer($lexer);
+
+	$self->remove_color;
+	if ( $lexer == Wx::wxSTC_LEX_CONTAINER ) {
+		$self->colorize;
+	} else {
+		$editor->Colourise( 0, $editor->GetLength );
+	}
+}
+
 sub colorize {
 	my $self = shift;
 

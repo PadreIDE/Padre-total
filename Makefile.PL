@@ -14,6 +14,9 @@ BEGIN {
 	}
 }
 
+# Configure-time dependencies MUST be done first
+configure_requires 'ExtUtils::MakeMaker' => '6.52';
+
 
 
 
@@ -97,6 +100,8 @@ requires       'Wx'                       => '0.91';
 requires       'Wx::Perl::ProcessStream'  => '0.11';
 requires       'YAML::Tiny'               => '1.32';
 requires       'ExtUtils::Manifest'       => '1.56';
+requires       'Pod::Functions'           => 0;
+requires       'Module::CoreList'         => 0;
 test_requires  'Test::More'               => '0.88';
 test_requires  'Test::Script'             => '1.03';
 test_requires  'Test::Exception'          => '0.27';
@@ -169,12 +174,5 @@ check_wx_version;
 
 # Add the make exe target
 setup_padre;
-
-# EU:MM incorrectly attempts to load all the dependencies.
-# To prevent this happening we populate the %INC hash and create
-# a VERSION method for each module, so that we can prevent loading
-# any modules while convincing EU:MM that we have the right version.
-# This has to be called immediately before calling WriteAll.
-trick_eumm;
 
 WriteAll;

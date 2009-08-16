@@ -37,7 +37,7 @@ sub new {
 		id         => Wx::wxID_HELP,
 		label      => Wx::gettext('Help'),
 		menu_event => sub {
-			$_[0]->menu->help->help( $_[0] );
+			$_[0]->help();
 		},
 	);
 	$self->add_menu_item(
@@ -53,11 +53,7 @@ sub new {
 
 				# TODO This feels wrong, the help menu code shouldn't
 				# populate the main window hash.
-				my $selection = $_[0]->current->text;
-				$_[0]->menu->help->help( $_[0] );
-				if ($selection) {
-					$_[0]->{help}->help($selection);
-				}
+				$_[0]->help( $_[0]->current->text );
 				return;
 			}
 		},
@@ -72,11 +68,7 @@ sub new {
 
 			#Create and show the Help search dialog
 			my $dlg = $_[0]->help_search;
-			if ( $dlg && $dlg->IsShown ) {
-				$dlg->SetFocus;
-			} else {
-				$dlg->Show(1);
-			}
+			$dlg->showIt;
 		},
 	);
 
@@ -85,8 +77,7 @@ sub new {
 		name       => 'help.current',
 		label      => Wx::gettext('Current Document'),
 		menu_event => sub {
-			$_[0]->menu->help->help( $_[0] );
-			$_[0]->{help}->help( $_[0]->current->document );
+			$_[0]->help( $_[0]->current->document );
 		},
 	);
 
@@ -199,37 +190,6 @@ sub refresh {
 	return 1;
 }
 
-# TODO - This violates encapsulation, a menu entry shouldn't be
-#        spawning windows and storing them in the window hash.
-sub help {
-	my $self = shift;
-	my $main = shift;
-	unless ( $main->{help} ) {
-		require Padre::Wx::DocBrowser;
-		$main->{help} = Padre::Wx::DocBrowser->new;
-		Wx::Event::EVT_CLOSE(
-			$main->{help},
-			\&on_help_close,
-		);
-		$main->{help}->help('Padre');
-	}
-	$main->{help}->SetFocus;
-	$main->{help}->Show(1);
-	return;
-}
-
-# TODO - this feels utterly backwards to me
-sub on_help_close {
-	my ( $self, $event ) = @_;
-	my $help = Padre->ide->wx->main->{help};
-
-	if ( $event->CanVeto ) {
-		$help->Hide;
-	} else {
-		delete Padre->ide->wx->main->{help};
-		$help->Destroy;
-	}
-}
 
 1;
 

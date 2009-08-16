@@ -160,17 +160,17 @@ sub new {
 		label      => Wx::gettext('&Next Problem'),
 		shortcut   => 'Ctrl-.',
 		menu_event => sub {
-			print "Next problem Not implemented!\n";
+			$main->{syntax}->select_next_problem;
 		},
 	);
 
 	$self->{autocomp} = $self->add_menu_item(
 		$self,
 		name       => 'edit.autocomp',
-		label      => Wx::gettext('&AutoComp'),
+		label      => Wx::gettext('&AutoComplete'),
 		shortcut   => 'Ctrl-P',
 		menu_event => sub {
-			Padre::Wx::Main::on_autocompletition(@_);
+			Padre::Wx::Main::on_autocompletion(@_);
 		},
 	);
 
