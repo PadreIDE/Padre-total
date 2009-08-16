@@ -33,18 +33,15 @@ sub plugin_name { _T('Spell check') }
 
 # plugin icon
 sub plugin_icon {
+    my $self = shift;
+
     # find resource path
     my $pkgpath = find_installed(__PACKAGE__);
     my (undef, $dirname, undef) = fileparse($pkgpath);
-    my $iconpath = catfile( _sharedir(), 'icons', 'spellcheck.png');
+    my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png');
 
     # create and return icon
     return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-}
-
-# directory where to find the translations
-sub plugin_locale_directory {
-    return catdir( _sharedir(), 'locale' );
 }
 
 # padre interfaces
@@ -116,20 +113,6 @@ sub spell_preferences {
 }
 
 
-# -- private methods
-
-#
-# my $dir = $self->_sharedir;
-#
-# return the private share directory where the module resources are stored.
-#
-sub _sharedir {
-    # find resource path
-    my $pkgpath = find_installed(__PACKAGE__);
-    my (undef, $dirname, undef) = fileparse($pkgpath);
-    return catdir( $dirname, 'SpellCheck', 'share' );
-}
-
 1;
 __END__
 
@@ -177,8 +160,6 @@ The following methods are implemented:
 =item padre_interfaces()
 
 =item plugin_icon()
-
-=item plugin_locale_directory()
 
 =item plugin_name()
 

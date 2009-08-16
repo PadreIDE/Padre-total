@@ -170,16 +170,6 @@ sub _destroy_ui {
 
 }
 
-# private subroutine to return the current share directory location
-sub _sharedir {
-	return Cwd::realpath(
-		File::Spec->join(
-			File::Basename::dirname(__FILE__),
-			'Swarm/share',
-		)
-	);
-}
-
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or

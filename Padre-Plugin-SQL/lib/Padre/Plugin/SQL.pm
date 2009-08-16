@@ -15,25 +15,10 @@ use Padre::Util   ('_T');
 use base 'Padre::Plugin';
 
 #
-# private subroutine to return the current share directory location
-#
-sub _sharedir {
-	return Cwd::realpath(File::Spec->join(File::Basename::dirname(__FILE__),
-		'SQL/share'));
-}
-
-#
 # Returns the plugin name to Padre
 #
 sub plugin_name {
 	return _T("SQL");
-}
-
-#
-# Directory where to find the translations
-#
-sub plugin_locale_directory {
-	return File::Spec->catdir( _sharedir(), 'locale' );
 }
 
 #
@@ -47,8 +32,9 @@ sub padre_interfaces {
 # plugin icon
 #
 #sub plugin_icon {
+#    my $self = shift;
 #    # find resource path
-#    my $iconpath = File::Spec->catfile( _sharedir(), 'icons', 'sql.png');
+#    my $iconpath = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'sql.png');
 #
 #    # create and return icon
 #    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
