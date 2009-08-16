@@ -637,7 +637,6 @@ sub newline_keep_column {
 	my $col    = $pos - $editor->PositionFromLine( $editor->LineFromPosition($pos) );
 
 	$editor->AddText( $self->newline );
-	print STDERR $self->get_newline_type . " " . length( $self->newline ) . "\n";
 
 	$pos   = $editor->GetCurrentPos;
 	$first = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
