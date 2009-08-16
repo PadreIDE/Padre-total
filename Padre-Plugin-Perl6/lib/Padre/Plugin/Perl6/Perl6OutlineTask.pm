@@ -245,8 +245,7 @@ sub _on_tree_item_right_click {
 			$outlinebar,
 			$pod,
 			sub {
-				Padre->ide->wx->main->help( $itemData->{name} )
-				return;
+				Padre->ide->wx->main->help( $itemData->{name} );
 			},
 		);
 		$showMenu++;
