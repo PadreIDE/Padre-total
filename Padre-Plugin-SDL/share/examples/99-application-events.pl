@@ -2,20 +2,24 @@ use strict;
 use warnings;
 
 use SDL::App;
-use SDL::Event;
-use SDL::Constants;
+
+# after launching this script press the keyboard and whach the console
+
 my $window = SDL::App->new(
 	-width => 640,
 	-height => 480,
 	-depth => 16,
 	-title => 'SDL Demo',
 );
-my $event = SDL::Event->new;
-while (1) {
-	while ($event->poll) {
-		my $type = $event->type;
-		exit if ($type == SDL_QUIT);
-	}
-	$window->sync;
-}	
+my %actions = (
+	SDL_QUIT() => sub { exit(0) },
+	SDL_KEYDOWN() => \&keydown,
+);
 
+$window->loop(\%actions);
+
+
+sub keydown {
+	my $event = shift;    # SDL::Event object
+	printf("Key Pressed '%s'  name: '%s'\n",$event, $event->key_name());
+}
