@@ -340,13 +340,17 @@ sub _create_from_template {
 
 	my $editor = $self->current->editor or return;
 	my $file = File::Spec->catdir( $self->plugin_directory_share, "templates", "$template.$extension" );
-	$editor->insert_from_file($file);
 
-	my $document = $editor->{Document};
-	my $mime_type = ( $extension eq 'p6' ) ? 'application/x-perl6' : 'application/x-perl';
-	$document->set_mimetype($mime_type);
-	$document->editor->padre_setup;
-	$document->rebless;
+	if ( $editor->insert_from_file($file) ) {
+		my $document = $editor->{Document};
+		$document->{original_content} = $document->text_get;
+		$document->set_mimetype( $document->guess_mimetype );
+		$document->editor->padre_setup;
+		$document->rebless;
+		$document->colourize;
+	} else {
+		$self->main->message( sprintf( Wx::gettext("Error loading template file '%s'"), $file ) );
+	}
 
 	return;
 }
