@@ -1,12 +1,13 @@
-package Padre::Plugin::SVN::Wx::LogDialog;
+package Padre::Plugin::SVN::Wx::SVNDialog;
 
 
 use 5.008;
 use warnings;
 use strict;
 
-use Padre::Wx     ();
-
+use Padre::Wx     		();
+use Padre::Wx::Dialog 		();
+use Padre::Wx::Icon           	();
 
 our @ISA = 'Wx::Frame';
 
@@ -15,17 +16,20 @@ sub new {
 	my $main = shift;
 	my $filePath = shift;
 	my $log = shift;
+	my $type = shift || '';
 	
 	my $self = $class->SUPER::new (
 		$main,
 		-1,
-		'SVN Log',
+		"SVN $type",
 		[200,300],
 		[600,550],
 	);
+	$self->SetIcon(Padre::Wx::Icon::PADRE);
 	
 	$self->build_dialog($filePath, $log);
 	
+	#$self->build_padre_dialog( $filePath, $log);
 	return $self;
 	
 	
@@ -47,8 +51,8 @@ sub build_dialog {
 						
 	$vbox->Add( $stTxtFile, 0, Wx::wxEXPAND  );
 	
-	print "file: $file\n";
-	print "Log: $log\n";
+	#print "file: $file\n";
+	#print "Log: $log\n";
 	
 	my $txtCtrl = Wx::TextCtrl->new(
                    $self, 
@@ -80,6 +84,33 @@ sub build_dialog {
 	
 	
 	$self->SetSizer($vbox);
+	
+}
+
+sub build_padre_dialog {
+	my( $self, $file, $log) = @_;
+	
+	my $layout = [
+		[
+			['Wx::StaticText', undef, "File: $file"],
+		],
+		[
+			['Wx::TextCtrl', 'name_of', "$log"],
+	
+		],
+		[
+			[ 'Wx::Button',     'ok',           Wx::wxID_OK     ],
+		],
+	];
+	
+        my $dialog = Wx::Perl::Dialog->new(                
+		parent => $self,
+                title  => 'SVN Log',
+                layout => $layout,
+                width  => [600,550],
+        );	
+	#$dialog->show_modal;
+	
 	
 }
 
