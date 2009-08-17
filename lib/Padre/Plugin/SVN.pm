@@ -10,7 +10,6 @@ use Padre::Plugin ();
 use Padre::Util   ();
 
 use SVN::Class;
-#use Padre::Plugin::SVN::Wx::Toolbar;
 
 
 
@@ -29,9 +28,19 @@ Padre::Plugin::SVN - Simple SVN interface for Padre
 
 =head1 SYNOPSIS
 
+Requires SVN client tools to be installed.
+
 cpan install Padre::Plugin::SVN
 
 Acces it via Plugin/SVN
+
+=head1 REQUIREMENTS
+
+The plugin requires that the SVN client tools be installed.
+
+For most of the unices this is a matter of using the package manager to install.
+
+For windows try: http://subversion.tigris.org/getting.html#windows
 
 
 =head1 AUTHOR
