@@ -9,7 +9,7 @@ use Class::XSAccessor accessors => {
 	_colorizer_cb => '_colorizer_cb', # colorizer on/off checkbox
 };
 
-our $VERSION = '0.56';
+our $VERSION = '0.57';
 
 use Padre::Current;
 use Padre::Wx ();
