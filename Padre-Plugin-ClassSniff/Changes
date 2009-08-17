@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-ClassSniff
 
 0.02 unreleased
+  - Renamed to the new Padre 0.43 PO naming scheme (azawawi)
   - Added translations:
     - Brazilian Portuguese (garu)
     - French (jquelin)
