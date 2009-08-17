@@ -330,7 +330,7 @@ sub svn_commit {
 		# problem here is the opts that you can pass in 
 		# come after the $message.
 		$file->commit($message);
-		
+		# and to make it work
 		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
