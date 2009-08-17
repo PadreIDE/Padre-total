@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-CSS
 
+NOT RELEASED!
+	Renamed to the new Padre 0.43 PO naming scheme (azawawi)
+
 0.08    2009.05.31
     removed taint mode for tests, which lead to some fails (jquelin)
 

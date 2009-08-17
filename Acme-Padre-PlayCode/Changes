@@ -2,7 +2,8 @@ Revision history for Acme::Padre::PlayCode
 
 0.12 unreleased
      actually install translations (RSN)
-     Renamed it to Acme::Padre::PlayCode (azawawi++)
+     Renamed to the new Padre 0.43 PO naming scheme (azawawi)
+     Renamed it to Acme::Padre::PlayCode (azawawi)
 
 0.11    2009.05.31
     removed taint mode for tests, leading to build failures (jquelin)
