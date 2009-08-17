@@ -44,9 +44,6 @@ sub draw_frame {
 }
 
 
-        
-
-
 my $event = SDL::Event->new;
 
 while (1) {
