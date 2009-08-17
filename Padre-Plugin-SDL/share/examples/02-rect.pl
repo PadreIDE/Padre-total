@@ -14,12 +14,12 @@ my $window = SDL::App->new(
 );
 
 my $rect = SDL::Rect->new( -height => 10, -width => 20);
-my $color = SDL::Color->new(
+my $blue = SDL::Color->new(
 	-r => 0x00,
 	-g => 0x00,
         -b => 0xff,
         );
-$window->fill($rect, $color);
+$window->fill($rect, $blue);
 $window->update($rect);
 
 sleep 2;
