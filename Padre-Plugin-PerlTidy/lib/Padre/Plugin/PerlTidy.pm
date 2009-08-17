@@ -30,7 +30,7 @@ our $VERSION  = '0.08';
 our @ISA     = 'Padre::Plugin';
 
 sub padre_interfaces {
-    'Padre::Plugin' => '0.26'
+    'Padre::Plugin' => '0.43'
 }
 
 sub menu_plugins_simple {
