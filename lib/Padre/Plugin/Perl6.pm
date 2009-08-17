@@ -240,20 +240,14 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Introduction"), ),
-		sub {
-
-			#XXX display perlintro;
-		},
+		sub { $main->help_search('perlintro'); },
 	);
 
 	# Goto perlsyn
 	Wx::Event::EVT_MENU(
 		$main,
 		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Syntax"), ),
-		sub {
-
-			#XXX display perlsyn;
-		},
+		sub { $main->help_search('perlsyn'); },
 	);
 
 	$more_help_menu->AppendSeparator;
