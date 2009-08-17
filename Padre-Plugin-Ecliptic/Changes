@@ -1,11 +1,18 @@
 Changes
 
-=head1 0.17 NOT RELEASED!
+=head1 0.17  2009.8.17
 
-	Remove _sharedir() and use plugin_share_directory provided by the 
-		Plugin module (szabgab++)
-	Moved "Open Resource" dialog into Padre core
-	Moved "Quick Menu Access" dialog into Padre core
+	Depends on Padre 0.43 in Build.PL
+	Moved the following to Padre 0.43 core:
+		Open resource dialog
+		Quick menu access dialog
+		Open in file browser action (integrated with directory browser)
+	remove private _sharedir and use the one provided by the parent class (szabgab)
+	Reuse Padre::Wx::Main help method (szabgab)
+	POD fixes.
+	Updated translations:
+		German translation (Sewi++)
+		French translation (jquelin++)
 
 =head1 0.16  2009.8.2
 
