@@ -330,7 +330,8 @@ sub svn_commit {
 		# problem here is the opts that you can pass in 
 		# come after the $message.
 		$file->commit($message);
-		# and to make it work
+		# broke this?? 
+		
 		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
@@ -375,7 +376,7 @@ sub svn_add {
 	
 	my $file = svn_file($path);
 	$file->add;
-	my $msg = "$path scheduled to be added to " . $file->info-{_url};
+	my $msg = "$path scheduled to be added to " . $file->info->{_url};
 	$main->message( $msg );
 	
 	#system "svn add $path";
