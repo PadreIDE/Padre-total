@@ -1,5 +1,21 @@
 Changes
 
+=head1 0.57 2009.8.17
+
+	Depends on Padre 0.43 to make use of plugin_directory_share
+	Depends on S:H:P6 0.71 and App::Grok 0.19
+	Perl 6 Help dialog is moved to Padre core as "Help Search"
+	Create Perl 6 menu is working again. (szabgab)
+	Reuse Padre::Wx::Main help method (szabgab)
+	Updated translations:
+		German translation update (Sewi++)
+		French translation (jquelin++)
+		dutch translation (ddn123456++)
+	Renamed to the new Padre 0.43 PO naming scheme
+	use the new Padre::Perl API for findinf perl5 (szabgab)
+	safety crash hiding (szabgab)
+	double quote temporary directory
+
 =head1 0.56 2009.7.28
 
 	- Updated Translations:
