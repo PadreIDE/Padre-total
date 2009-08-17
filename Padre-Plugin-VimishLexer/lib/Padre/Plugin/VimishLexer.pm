@@ -10,7 +10,6 @@ use Padre::Current;
 use IO::Scalar;
 use List::Util qw(first);
 use Data::Dumper qw(Dumper);
-use Perl6::Caller;
 
 use base 'Padre::Plugin';
 
@@ -129,12 +128,12 @@ sub colorize {
 	# it receies two parameters - the start and end position of the section
 	# of the docment that needs styling
 	my ( $start_pos, $end_pos ) = @_;
+	
+	debug("\n=== COLORIZE($start_pos, $end_pos) CALLED! ===\n");
 
 	# Padre may sometimes call colorize() without arguments when it needs
 	# the whole document styled
 	$start_pos = 0 unless defined $start_pos;
-
-	debug("\n=== COLORIZE($start_pos, $end_pos) CALLED! ===\n");
 
 	# both $start_pos and $end_pos may be modified, but we will
 	# need a copy of the original $end_pos below
@@ -165,18 +164,20 @@ sub colorize {
 		: $end_pos = $editor->GetLineEndPosition( $last_visible_line_plus_50 - 1 );
 
 	
-	
+	my $full_text = $doc->text_get;
 	### PARSE ###
-	parse_code($doc->text_get, $start_pos, $end_pos, $matches);
+	$matches = parse_code($full_text, $start_pos, $end_pos, $matches);
 
 	### APPLY THE COLORS ###
 
 	# clear the color from the start of the segment on
 	clear_style($start_pos, $editor->GetLength);
 	# $doc->remove_color;
+
+	print Dumper $matches;
 	
 	# colorize the segment
-	foreach my $m ($@matches) {
+	foreach my $m (@$matches) {
 		$editor->StartStyling( $m->{start}, $m->{color} );
 		$editor->SetStyling( $m->{length}, $m->{color} );	
 
@@ -184,7 +185,7 @@ sub colorize {
 		      . ":" . substr($full_text, $m->{start}, $m->{length}) . "\n" );
 	}
 
-	$doc->{__VimishLexer}{matches} = $matches)
+	$doc->{__VimishLexer}{matches} = $matches;
 	
 
 }
@@ -205,7 +206,8 @@ sub parse_code {
 
 	# check if start position is within a range
 	# $current_range - stores the current range object if a range has started but not ended yet
-	my ($current_range, $matches) = get_range_at_pos($start_pos, $matches);
+	(my $current_range, $matches) = get_range_at_pos($start_pos, $matches);
+	#debug( "CURREN RANGE: $$current_range\n" );
 
 	my $text_to_parse = substr($text, $start_pos, $end_pos - $start_pos);
 	my $code = IO::Scalar->new(\$text_to_parse);
@@ -218,36 +220,38 @@ sub parse_code {
 		$line_start = 1;
 
 		### DEBUG ###
-		debug( "LINE " . Padre::Current->document->editor->LineFromPosition($start_pos) . " ===>\n" );
+		debug( "LINE " . Padre::Current->document->editor->LineFromPosition($current_position) . " ===>\n" );
+		# debug( "CURRENT RANGE: " . $$current_range->{name} . "\n" ) if $$current_range;
 		
-		parse_line($line, $current_position, $current_range, $matches);
+		parse_line($line, \$current_position, $current_range, $matches);
 
 		# update the current position to the end of the line we just parsed 
 		# requied because of space and newline characters at the end of the lines
 		$current_position = $code->tell + $start_pos;
 	}
+
+	debug(Dumper $matches);
 	
 	# if after we finished parsing $current_range is defined,
 	# automatically close the range
-	if ($current_range) {
-		add_match(0, $current_range->{name}, "", $current_range->{start_pos});
+	if ($$current_range->{name}) {
+		add_match(0, $$current_range->{name}, "", $$current_range->{start_pos}, \$current_position, $matches, $$current_range);
 		debug( "range auto end!\n" );
 	}
 
 	# make sure that if we are the end of the file the last character is colorized,
 	# otherwise Scintilla will keep firing an ON_STYLENEEDED event every time the
 	# last line is visible
-	my $last_match = $matches[-1];
+	my $last_match = $matches->[-1];
+	# in the beginning of a new file we may not have any matches yet
 	if ($last_match) {
-		my $last_match_start = $last_match->{start} + $last_match->{length};
-		if ($last_match_start >= $editor->GetEndStyled && $original_stc_end_pos == $editor->GetLength) {
-			$editor->StartStyling( $last_match_start, 1 );
-			$editor->SetStyling( 1, 1 );
-			debug( "end" . ":"  . $last_match_start . ":" . 1 
-		    	  . ":" . substr($full_text, $last_match_start, 1) . "\n" );
-			debug("GetEndStyled: " . $editor->GetEndStyled . "\n");
+		my $last_match_end = $last_match->{start} + $last_match->{length};
+		my $total_chars = length($text);
+		if ( $total_chars > $last_match_end ) {
+			add_match($total_chars - $last_match_end, "plain", undef, undef, \$current_position, $matches);
 		}
 	}
+	return $matches;
 }
 
 ###########################
@@ -258,11 +262,22 @@ sub parse_code {
 # Called by: parse_code()
 
 sub parse_line {
+	# get the name of the invoking sub
 	my ($line, $current_position, $current_range, $matches) = @_;
+	$current_position = $$current_position;
+
+	# get the name of the invoking sub
+	my $caller = (caller(1))[3];
+	$caller =~ s/^.*::(\w+)$/$1/;
+	# debug("PARSE_LINE($current_position) CALLED BY $caller\n");
 	
 	# if parse_line() has recursively called itself, then we
 	# are not at the start of a line
-	my $line_start = 1 unless caller->subroutine eq "parse_line";
+	my $line_start = 1 unless (
+		   $caller eq "parse_line" 
+		|| $caller eq "add_match"
+	);
+	#debug("LINE START: " . ( $line_start ? 1 : 0 ) . "\n");
 
 	# there are no interesting sybols in the line
 	# don't bother updating $current_position, parse_code()
@@ -275,7 +290,7 @@ sub parse_line {
 	debug( "POS: $current_position, LINE: $line" );
 
 	# the bulk of the parsing takes place here
-	if (!$current_range) {
+	if (!$$current_range->{name}) {
 		foreach my $rule (@define) {
 			next if $rule->{start_first} and !$line_start;
 
@@ -286,28 +301,28 @@ sub parse_line {
 					my $offset = $+[0];
 					
 					# set $current_range
-					$current_range = $rule;
-					$current_range->{start_pos} = $current_position;
+					$$current_range = $rule;
+					$$current_range->{start_pos} = $current_position;
 					
 					# continue parsing
 					debug( "range start found!\n" );
 					$current_position += $offset;
 					undef $line_start;
 					my $remaining = substr($line, $offset);
-					parse_line($remaining) if $remaining;
+					parse_line($remaining, \$current_position, $current_range, $matches) if $remaining;
 					
 					return;
 				}
 			} elsif ( $rule->{type} eq 'match' ) {
 				if ( $line =~ $rule->{pattern} ) {
-					add_match($+[0], $rule->{name}, $line);
 					debug( "match found!\n" );
+					add_match($+[0], $rule->{name}, $line, undef, \$current_position, $matches);
 					return;
 				}
 			} elsif ( $rule->{type} eq 'literal' ) {
 				if ( $line =~ $rule->{pattern} ) {
-					add_match($+[0], "keyword", $line);	
 					debug( "keyword found!\n" );
+					add_match($+[0], "keyword", $line, undef, \$current_position, $matches);	
 					return;
 				}
 			}
@@ -339,22 +354,23 @@ sub parse_line {
 			
 			# continue parsing
 			undef $line_start;
-			parse_line($remaining);
+			parse_line($remaining, \$current_position, $current_range, $matches);
 		}
 	}
 	# if we are inside a range, try to find its end
 	else
-	{
+	{ 
+		debug( "INSIDE RANGE " . $$current_range->{name} . "\n" );
 		# $current_position is updated by parse_code()
-		return if $current_range->{end_first} and !$line_start;
+		return if $$current_range->{end_first} and !$line_start;
 		
 		# do we have a range end?
-		if ( $line =~ $current_range->{end} ) 
+		if ( $line =~ $$current_range->{end} ) 
 		{
-			add_match($+[0], $current_range->{name}, $line, $current_range->{start_pos});
+			add_match($+[0], $$current_range->{name}, $line, $$current_range->{start_pos}, \$current_position, $matches, $current_range);
 
 			# clear the current range variable
-			undef $current_range;
+			undef $$current_range;
 			debug( "range end found!\n" );
 					
 			return;
@@ -371,13 +387,14 @@ sub parse_line {
 }
 
 sub add_match {
-	my ($length, $type, $line, $start_pos) = @_;
+	my ($length, $type, $line, $start_pos, $current_position, $matches, $current_range) = @_;
+	$current_position = $$current_position;
+
 	my $offset = 0;
 	
 	if ($start_pos) {
-		debug( "Length: $length, Line: $line, Start: $start_pos, Current: $current_position\n" );
+		#debug( "Length: $length, Line: $line, Start: $start_pos, Current: $current_position\n" );
 		$offset = $current_position - $start_pos;
-		#$length += $offset;
 	} else {
 		 $start_pos = $current_position;
 	}
@@ -387,7 +404,19 @@ sub add_match {
 	# update the global current position
 	$current_position += $length unless $type eq "range";
 
-	push @matches, { 
+	# colorize the empty space, if any
+	my $last_match = $matches->[-1];
+	if ($last_match && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
+		push @$matches, { 
+			start  => $last_match->{start} +  $last_match->{length},
+			length => $start_pos - $last_match->{start} +  $last_match->{length},
+			color  => class_to_color('plain'),
+			type   => 'plain',
+			range  => undef,
+		};	
+	}
+
+	push @$matches, { 
 		start  => $start_pos,
 		length => $length + $offset,
 		color  => class_to_color($type),
@@ -396,8 +425,7 @@ sub add_match {
 	};
 
 	# parse the remainder of the line
-	undef $line_start;
-	parse_line($remaining) if $remaining;
+	parse_line($remaining, \$current_position, $current_range, $matches) if $remaining;
 }
 
 #########################
@@ -430,25 +458,31 @@ sub clear_style {
 }
 
 sub get_range_at_pos {
-	my $pos = shift;
-	my $range;
+	my ($pos, $matches) = @_;
 
-	my @matches_up_to_pos = grep { $_->{start} <= $pos } @matches;
+	@$matches = grep { $_->{start} <= $pos } @$matches;
 
 	my $match = first { 
 		   ( $_->{type} eq "pod" || $_->{type} eq "string" )
 		&& ( ( $_->{start} + $_->{'length'} ) >= $pos )
-	} @matches_up_to_pos;
+	} @$matches;
 
-	#debug("GET_RANGE_AT_POS\n");
-	#debug($match . "\n");
-	debug( Dumper(\@matches_up_to_pos) );
+	#debug( Dumper(\@matches_up_to_pos) );
+	
+	my $range;
 
-	$match ? return $match->{range}, @matches_up_to_pos 
-	       : return undef, @matches_up_to_pos ;
+	$match ? $range = $match->{range}
+		   : $range = undef;
+	
+	return \$range, $matches;
+
 }
 
 sub debug {
+	#print @_;
+}
+
+sub db_match {
 	print @_;
 }
 
@@ -458,6 +492,7 @@ sub debug {
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
+
 
 
 
