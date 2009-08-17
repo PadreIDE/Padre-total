@@ -37,3 +37,6 @@
 \B\._
 # Avoid archives of this distribution
 \bPadre-Plugin-PerlTidy-[\d\.\_]+
+
+# .po template
+messages.pot
