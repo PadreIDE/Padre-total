@@ -10,6 +10,7 @@ use Padre::Current;
 use IO::Scalar;
 use List::Util qw(first);
 use Data::Dumper qw(Dumper);
+use Clone qw(clone);
 
 use base 'Padre::Plugin';
 
@@ -174,7 +175,7 @@ sub colorize {
 	clear_style($start_pos, $editor->GetLength);
 	# $doc->remove_color;
 
-	print Dumper $matches;
+	#print Dumper $matches;
 	
 	# colorize the segment
 	foreach my $m (@$matches) {
@@ -207,6 +208,8 @@ sub parse_code {
 	# check if start position is within a range
 	# $current_range - stores the current range object if a range has started but not ended yet
 	(my $current_range, $matches) = get_range_at_pos($start_pos, $matches);
+	$current_range = $$current_range if $$current_range;
+	db_match(Dumper $current_range);
 	#debug( "CURREN RANGE: $$current_range\n" );
 
 	my $text_to_parse = substr($text, $start_pos, $end_pos - $start_pos);
@@ -230,14 +233,15 @@ sub parse_code {
 		$current_position = $code->tell + $start_pos;
 	}
 
-	debug(Dumper $matches);
-	
+	debug("BEFORE " . Dumper $matches);
 	# if after we finished parsing $current_range is defined,
 	# automatically close the range
 	if ($$current_range->{name}) {
-		add_match(0, $$current_range->{name}, "", $$current_range->{start_pos}, \$current_position, $matches, $$current_range);
+		#print Dumper $current_range;
+		add_match(0, $$current_range->{name}, "", $$current_range->{start_pos}, \$current_position, $matches, $current_range);
 		debug( "range auto end!\n" );
 	}
+	debug("AFTER " . Dumper $matches);
 
 	# make sure that if we are the end of the file the last character is colorized,
 	# otherwise Scintilla will keep firing an ON_STYLENEEDED event every time the
@@ -246,7 +250,7 @@ sub parse_code {
 	# in the beginning of a new file we may not have any matches yet
 	if ($last_match) {
 		my $last_match_end = $last_match->{start} + $last_match->{length};
-		my $total_chars = length($text);
+		my $total_chars = length($text_to_parse);
 		if ( $total_chars > $last_match_end ) {
 			add_match($total_chars - $last_match_end, "plain", undef, undef, \$current_position, $matches);
 		}
@@ -305,6 +309,7 @@ sub parse_line {
 					$$current_range->{start_pos} = $current_position;
 					
 					# continue parsing
+					#debug( "OFFSET: $offset\n");
 					debug( "range start found!\n" );
 					$current_position += $offset;
 					undef $line_start;
@@ -409,20 +414,22 @@ sub add_match {
 	if ($last_match && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
 		push @$matches, { 
 			start  => $last_match->{start} +  $last_match->{length},
-			length => $start_pos - $last_match->{start} +  $last_match->{length},
+			length => $start_pos - ( $last_match->{start} +  $last_match->{length} ),
 			color  => class_to_color('plain'),
 			type   => 'plain',
 			range  => undef,
 		};	
 	}
-
+	
 	push @$matches, { 
 		start  => $start_pos,
 		length => $length + $offset,
 		color  => class_to_color($type),
 		type   => $type,
-		range  => $current_range,
+		range  => clone($current_range),
 	};
+
+	#print Dumper $current_range if $current_range;
 
 	# parse the remainder of the line
 	parse_line($remaining, \$current_position, $current_range, $matches) if $remaining;
@@ -471,9 +478,11 @@ sub get_range_at_pos {
 	
 	my $range;
 
-	$match ? $range = $match->{range}
-		   : $range = undef;
+	if ($match) {
+		$range = $match->{range};
+	}
 	
+	#db_match(Dumper $range);
 	return \$range, $matches;
 
 }
