@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 # package exports and version
-our $VERSION   = '0.17';
+our $VERSION = '0.17';
 
 # module imports
 use Padre::Wx ();
@@ -43,6 +43,7 @@ sub logo_icon {
 #
 sub plugin_icon {
 	my $self = shift;
+
 	# find resource path
 	my $iconpath = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'ecliptic.png' );
 
