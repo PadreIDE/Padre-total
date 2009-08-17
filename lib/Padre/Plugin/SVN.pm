@@ -330,11 +330,12 @@ sub svn_commit {
 		# problem here is the opts that you can pass in 
 		# come after the $message.
 		$file->commit($message);
+		# mmm to remove, needed to allow commit?? 
 		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
 		if( @err ) {
-			$main->error( join("\n", @err));
+			$main->error( join("\n", @err) );
 		}
 		else {
 			$main->message( join("\n", @commit) );
@@ -389,6 +390,7 @@ sub svn_add_file {
 	}
 	return;
 }
+
 
 #sub vci {
 #	my ($self, $path) = @_;
