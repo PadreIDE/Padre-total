@@ -66,7 +66,7 @@ sub _on_ok_button_clicked {
 			$self,
 			sub {
 				#print "Show DocBrowser for '$selected_module'\n";
-				Padre->ide->wx->main->help( $selected_module )
+				Padre->ide->wx->main->help( $selected_module );
 				Wx::Event::EVT_IDLE( $self, undef );
 			},
 		);
