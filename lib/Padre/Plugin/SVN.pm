@@ -36,12 +36,22 @@ Acces it via Plugin/SVN
 
 =head1 REQUIREMENTS
 
-The plugin requires that the SVN client tools be installed.
+The plugin requires that the SVN client tools be installed and setup, this includes any cached authentication.
 
-For most of the unices this is a matter of using the package manager to install.
+For most of the unices this is a matter of using the package manager to install the svn client tools.
 
-For windows try: http://subversion.tigris.org/getting.html#windows
+For windows try: http://subversion.tigris.org/getting.html#windows.
 
+
+=head2 Configuring the SVN client for cached authentication.
+
+Becuase this module uses the installed SVN client actions that require authentication from the server will fail and leave Padre looking as though it's hung.
+
+The way to address this is to run the svn client from the command line when asked for the login and password enter as required.
+
+Once done you should now have your authentication details stored.
+
+More details can be found here: http://svnbook.red-bean.com/nightly/en/svn.serverconfig.netmodel.html#svn.serverconfig.netmodel.credcache
 
 =head1 AUTHOR
 
