@@ -3,9 +3,10 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
 0.08  XXX
     - Center editor on active line after format (claudio)
     - Make cursor location storage less resource hungry (claudio)
-    - actually install the translations (RSN)
+    - Actually install the translations (RSN)
     - Added translations:
       - Japanese (ishigaki)
+    - Updates for latest (0.43) API
 
 0.07  Fri Jun 12 2009
     - Added translations:
