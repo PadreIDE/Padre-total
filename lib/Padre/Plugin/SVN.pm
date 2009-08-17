@@ -370,7 +370,14 @@ sub svn_commit_project {
 
 sub svn_add {
 	my ( $self, $path ) = @_;
-	system "svn add $path";
+	my $main = Padre->ide->wx->main;
+	
+	my $file = svn_file($path);
+	$file->add;
+	my $msg = "$path scheduled to be added to " . $file->info-{_url};
+	$main->message( $msg );
+	
+	#system "svn add $path";
 	return;
 }
 
