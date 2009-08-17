@@ -1,12 +1,13 @@
 Revision history for Padre-Plugin-Autoformat
 
 (Not released yet)
+ - Renamed to the new Padre 0.43 PO naming scheme (azawawi)
  - added translations:
    - Chinese (Traditional) (BLUET)
    - brazilian portuguese
    - french
    - polish
-   - Arabic (AZAWAWI)
+   - Arabic (azawawi)
    - Spanish (BRUNOV)
 
 1.1.2 Sun Apr  5 12:05:46 CEST 2009
