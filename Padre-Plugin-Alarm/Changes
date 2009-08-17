@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Alarm
 
+0.08    NOT RELEASED!
+	Renamed to the new Padre 0.43 PO naming scheme (azawawi)
+
 0.07    2009.05.31
     removed taint mode for test, which lead to some failures (jquelin)
 
