@@ -283,8 +283,6 @@ sub _store_cursor_position {
     return ( $regex, $start );
 }
 
-
-
 1;
 
 =pod
@@ -312,6 +310,32 @@ directory.
 
 Similarly, "make plugin" will just create the PerlTidy.par which you can
 then copy manually.
+
+=head1 METHODS
+
+=head2 padre_interfaces
+
+Indicates our compatibility with Padre.
+
+=head2 menu_plugins_simple
+
+Menu items for this plugin.
+
+=head2 tidy_document
+
+Runs Perl::Tidy on the current document.
+
+=head2 export_document
+
+Export the current document as html.
+
+=head2 tidy_selection
+
+Runs Perl::Tidy on the current code selection.
+
+=head2 export_selection
+
+Export the current code selection as html.
 
 =head1 AUTHOR
 
