@@ -143,14 +143,42 @@ sub set_pen_size_to {
 sub goto_xy {
 	my ($self, $to_x, $to_y) = @_;
 
-	my $xdir = $self->{pen}{x} < $to_x ? 1 : -1;
-	for my $x (0 .. abs($self->{pen}{x} - $to_x)) {
-		$self->{pen}{rect}->x( $self->{pen}{x} + $xdir * $x );
-		my $y = $x * abs($self->{pen}{y} - $to_y)/abs($self->{pen}{x} - $to_x);
-		$self->{pen}{rect}->y( $self->{pen}{y} + $y );
+	# just put something at (x, y);
+	#$self->{pen}{rect}->x($to_x);
+	#$self->{pen}{rect}->y($to_y);
+	#$self->{board}{app}->fill( $self->{pen}{rect}, $self->{pen}{color} );
+	#$self->{board}{app}->update( $self->{board}{bg} );
+	#return;
+	
+	my %to = (x => $to_x, y => $to_y);
+	
+	return if $to{x} == $self->{pen}{x} and $to{y} == $self->{pen}{y};
+	
+	my %diff = (
+		x => abs($self->{pen}{x} - $to{x}),
+		y => abs($self->{pen}{y} - $to{y}),
+	);
+	my ($lead, $follow) = $diff{y} > $diff{x} ? ('y', 'x') : ('x', 'y');
+	#print "lead: $lead, follow: $follow\n";
+	#print "from ($self->{pen}{x}, $self->{pen}{y}) to ($to{x}, $to{y})\n";
+
+	# draw a recangualar?
+	# what if the change in x is smaller than the change in y (or even 0)
+
+	my %dir = (
+		$lead   => $self->{pen}{$lead} < $to{$lead} ? 1 : -1,
+		$follow => $self->{pen}{$follow} < $to{$follow} ? 1 : -1,
+	);
+	for my $lead_coord (0 .. $diff{$lead}) {
+		$self->{pen}{rect}->$lead( $self->{pen}{$lead} + $dir{$lead} * $lead_coord );
+		my $follow_coord = $lead_coord * $diff{$follow}/$diff{$lead};
+		$self->{pen}{rect}->$follow( $self->{pen}{$follow} + $dir{$lead} * $follow_coord );
 		$self->{board}{app}->fill( $self->{pen}{rect}, $self->{pen}{color} );
 		$self->{board}{app}->update( $self->{board}{bg} );
 	}
+
+	$self->{pen}{x} = $to{x};
+	$self->{pen}{y} = $to{y};
 
 	return;
 }
