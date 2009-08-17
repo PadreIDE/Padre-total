@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 17
+        url: http://onionstand.blogspot.com/2009/08/padre-043-released.html
+        title: Padre 0.43 released!
+        comment: by garu on The Onion Stand
       - date: 2009 August 06
         url: http://lastofthecarelessmen.blogspot.com/2009/08/padre-on-windows.html
         title: Padre on Windows
