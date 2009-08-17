@@ -19,9 +19,75 @@ The user should be able to write a script with a simlified language we create.
 As I am planning to implement something similar to Scratch let me write down
 the currently available methods in some of the groups of Scratch 1.4
 
+=cut
+
+use SDL::App;
+
+# create a board optional named params:
+# width, height
+# ->new(width => 1000)
+sub new {
+	my ($class, %args) = @_;
+	my $self = bless {}, $class;
+	$self->{board}{width}  = $args{width}  || 640;
+	$self->{board}{height} = $args{height} || 480;
+
+	$self->{board}{app} = SDL::App->new(
+		-width  => $self->{board}{width},
+		-height => $self->{board}{height},
+		-depth => 16, # TODO
+		-title => 'SDL Padre Logoish', # TODO
+	);
+
+	# TODO pass color as param
+	$self->{board}{bg_color} = SDL::Color->new(
+		-r => 0x00,
+		-g => 0x00,
+		-b => 0x00,
+		);
+
+	$self->{board}{bg} = SDL::Rect->new(
+		-width  => $self->{board}{width},
+		-height => $self->{board}{height},
+	);
+
+
+	$self->{pen}{x}   = int($self->{board}{width}/2);
+	$self->{pen}{y}   = int($self->{board}{height}/2);
+	$self->{pen}{dir} = 'right';
+	
+	$self->set_pen_size_to(2);
+
+	$self->{pen}{color} = SDL::Color->new(
+		-r => 0x00,
+		-g => 0x00,
+		-b => 0xff,
+        );
+        
+	$self->clear;
+	
+	return $self;
+}
+
 =head2 Pen
 
-	Clear
+=over 4
+
+=item clear
+
+clear background
+
+=cut
+
+sub clear {
+	my $self = shift;
+	$self->{board}{app}->fill( $self->{board}{bg}, $self->{board}{bg_color} );
+}
+
+=pod
+
+=item *
+
 	pen down
 	pen up
 	set pen color to (color selector)
@@ -30,17 +96,69 @@ the currently available methods in some of the groups of Scratch 1.4
 	change pen shade by (number)
 	set pen shade to (number)
 	change pen size by (number)
-	set pen size to (number)
 	stamp
+	
+=item set_pen_size_to(number)
+
+=cut
+
+sub set_pen_size_to {
+	my ($self, $size) = @_;
+	
+	$self->{pen}{size} = $size;
+
+	if (not defined $self->{pen}{rect}) {
+		$self->{pen}{rect} = SDL::Rect->new( 
+			-height => $self->{pen}{size}, 
+			-width  => $self->{pen}{size},
+			);
+	} else {
+		$self->{pen}{rect}->width($size);
+		$self->{pen}{rect}->height($size);
+	}
+
+	return;
+}
+
+=pod
+
+=back
 
 =head2 Motion
+
+=over 4
+
+=item *
 
 	move (number) steps
 	turn right (number) degrees
 	turn left (number) degrees
 	point in direction (number)
 	point towards (???)
-	go to x: (number) y: (number)
+
+=item goto_xy(number, number)
+
+=cut 
+
+sub goto_xy {
+	my ($self, $to_x, $to_y) = @_;
+
+	my $xdir = $self->{pen}{x} < $to_x ? 1 : -1;
+	for my $x (0 .. abs($self->{pen}{x} - $to_x)) {
+		$self->{pen}{rect}->x( $self->{pen}{x} + $xdir * $x );
+		my $y = $x * abs($self->{pen}{y} - $to_y)/abs($self->{pen}{x} - $to_x);
+		$self->{pen}{rect}->y( $self->{pen}{y} + $y );
+		$self->{board}{app}->fill( $self->{pen}{rect}, $self->{pen}{color} );
+		$self->{board}{app}->update( $self->{board}{bg} );
+	}
+
+	return;
+}
+
+=pod
+
+=item *
+
 	go to (???)
 	glide (number) secs to x: (number) y: (number)
 	change x by (number)
@@ -53,6 +171,7 @@ the currently available methods in some of the groups of Scratch 1.4
 	the value of y position
 	the value of the direction   (in degrees)
 
+=back
 
 
 =head1 AUTHOR
