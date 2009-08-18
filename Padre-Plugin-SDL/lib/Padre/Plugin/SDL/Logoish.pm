@@ -69,31 +69,7 @@ sub new {
 	return $self;
 }
 
-# temporary name of the method that will 
-#    read the file
-#    parse it, make sure it is correct script
-#    compile it to real perl code and execute it
-sub run {
-	my ($class, $filename) = @_;
-	use File::Temp     qw(tempdir);
-	use File::Basename qw(basename);
-	use File::Spec::Functions qw(catfile);
-	my $dir = tempdir(CLAENUP => 0);
-	
-	my $out_filename = catfile($dir, basename($filename));
-	my $error = $class->_parse_code($filename, $out_filename);
-	return $error if $error;
-
-	# run script
-	# TODO move this padre dependency to the Padre::Plugin::SDL.pm
-	my $perl = Padre::Perl::perl();
-	my $cmd = "$perl $out_filename";
-	my $main = Padre->ide->wx->main;
-	$main->run_command($cmd);
-	return;
-}
-
-sub _parse_code {
+sub compile_to_perl5 {
 	my ($class, $filename, $outfile) = @_;
 	open my $fh,  '<', $filename or return "Could not open file ($filename) $!";
 	open my $out, '>', $outfile or return "Could not open file ($outfile) $!";
