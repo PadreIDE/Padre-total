@@ -212,11 +212,13 @@ sub parse_code {
 	db_match(Dumper $current_range);
 	#debug( "CURREN RANGE: $$current_range\n" );
 
-	my $text_to_parse = substr($text, $start_pos, $end_pos - $start_pos);
+	my $text_to_parse = substr($text, $start_pos, $end_pos - $start_pos + 1);
 	my $code = IO::Scalar->new(\$text_to_parse);
 
 	# $line_start - true if we are at the start of a line, false otherwise
 	my $line_start;
+
+	debug( "TEXT TO PARSE: $text_to_parse\n" );
 
 	while ( defined( my $line = $code->getline ) ) {
 		# make sure the parser knows that we are starting to parse a new line
@@ -224,6 +226,8 @@ sub parse_code {
 
 		### DEBUG ###
 		debug( "LINE " . Padre::Current->document->editor->LineFromPosition($current_position) . " ===>\n" );
+		#debug( "TEXT: $text\n" );
+		
 		# debug( "CURRENT RANGE: " . $$current_range->{name} . "\n" ) if $$current_range;
 		
 		parse_line($line, \$current_position, $current_range, $matches);
@@ -233,7 +237,7 @@ sub parse_code {
 		$current_position = $code->tell + $start_pos;
 	}
 
-	debug("BEFORE " . Dumper $matches);
+	#debug("BEFORE " . Dumper $matches);
 	# if after we finished parsing $current_range is defined,
 	# automatically close the range
 	if ($$current_range->{name}) {
@@ -241,7 +245,6 @@ sub parse_code {
 		add_match(0, $$current_range->{name}, "", $$current_range->{start_pos}, \$current_position, $matches, $current_range);
 		debug( "range auto end!\n" );
 	}
-	debug("AFTER " . Dumper $matches);
 
 	# make sure that if we are the end of the file the last character is colorized,
 	# otherwise Scintilla will keep firing an ON_STYLENEEDED event every time the
@@ -251,10 +254,12 @@ sub parse_code {
 	if ($last_match) {
 		my $last_match_end = $last_match->{start} + $last_match->{length};
 		my $total_chars = length($text_to_parse);
+		debug( "TOTAL CHARS: $total_chars, LAST MATCH END: $last_match_end\n" );
 		if ( $total_chars > $last_match_end ) {
 			add_match($total_chars - $last_match_end, "plain", undef, undef, \$current_position, $matches);
 		}
 	}
+	debug("MATCHES: " . Dumper $matches);
 	return $matches;
 }
 
@@ -291,7 +296,7 @@ sub parse_line {
 	}
 
 	### DEBUG ###
-	debug( "POS: $current_position, LINE: $line" );
+	debug( "POS: $current_position, LINE: $line\n" );
 
 	# the bulk of the parsing takes place here
 	if (!$$current_range->{name}) {
@@ -401,7 +406,11 @@ sub add_match {
 		#debug( "Length: $length, Line: $line, Start: $start_pos, Current: $current_position\n" );
 		$offset = $current_position - $start_pos;
 	} else {
-		 $start_pos = $current_position;
+		if ($type eq "plain") {
+			$start_pos = $current_position - $length;
+		} else {
+			$start_pos = $current_position;
+		}
 	}
 
 	my $remaining = substr($line, $length) if $line;
@@ -411,7 +420,7 @@ sub add_match {
 
 	# colorize the empty space, if any
 	my $last_match = $matches->[-1];
-	if ($last_match && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
+	if ($last_match && $type ne "plain" && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
 		push @$matches, { 
 			start  => $last_match->{start} +  $last_match->{length},
 			length => $start_pos - ( $last_match->{start} +  $last_match->{length} ),
@@ -467,32 +476,29 @@ sub clear_style {
 sub get_range_at_pos {
 	my ($pos, $matches) = @_;
 
-	@$matches = grep { $_->{start} <= $pos } @$matches;
+	@$matches = grep { $_->{start} < $pos } @$matches;
 
 	my $match = first { 
 		   ( $_->{type} eq "pod" || $_->{type} eq "string" )
 		&& ( ( $_->{start} + $_->{'length'} ) >= $pos )
 	} @$matches;
 
-	#debug( Dumper(\@matches_up_to_pos) );
-	
 	my $range;
 
 	if ($match) {
 		$range = $match->{range};
 	}
 	
-	#db_match(Dumper $range);
 	return \$range, $matches;
 
 }
 
 sub debug {
-	#print @_;
+	print @_;
 }
 
 sub db_match {
-	print @_;
+	#print @_;
 }
 
 1;
