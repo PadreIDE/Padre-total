@@ -1,6 +1,6 @@
 package Padre::Plugin::SDL::Logoish;
 
-use 5.008;
+use 5.010;
 use warnings;
 use strict;
 
@@ -67,6 +67,81 @@ sub new {
 	$self->clear;
 	
 	return $self;
+}
+
+# temporary name of the method that will 
+#    read the file
+#    parse it, make sure it is correct script
+#    compile it to real perl code and execute it
+sub run {
+	my ($class, $filename) = @_;
+	use File::Temp     qw(tempdir);
+	use File::Basename qw(basename);
+	use File::Spec::Functions qw(catfile);
+	my $dir = tempdir(CLAENUP => 0);
+	
+	my $out_filename = catfile($dir, basename($filename));
+	my $error = $class->_parse_code($filename, $out_filename);
+	return $error if $error;
+
+	# run script
+	# TODO move this padre dependency to the Padre::Plugin::SDL.pm
+	my $perl = Padre::Perl::perl();
+	my $cmd = "$perl $out_filename";
+	my $main = Padre->ide->wx->main;
+	$main->run_command($cmd);
+	return;
+}
+
+sub _parse_code {
+	my ($class, $filename, $outfile) = @_;
+	open my $fh,  '<', $filename or return "Could not open file ($filename) $!";
+	open my $out, '>', $outfile or return "Could not open file ($outfile) $!";
+	
+	print $out <<'END_OUT';
+use strict;
+use warnings;
+
+#use FindBin;
+#use lib "$FindBin::Bin/../../lib";
+
+use Padre::Plugin::SDL::Logoish;
+
+my $logo = Padre::Plugin::SDL::Logoish->new;
+
+#$event = SDL::Event->new;
+#while ($event->poll) {
+#	say "event";
+#	my $type = $event->type;
+#	exit if ($type == SDL_QUIT());
+#	exit if ($type == SDL_KEYDOWN() && $event->key_name eq 'escape');
+#}
+
+	
+END_OUT
+
+	while (my $line = <$fh>) {
+		chomp $line;
+		#say $line;
+		if ($line =~ /^\s*(#.*)?$/) {
+			say $out $line;
+			next;
+		}
+		if ($line =~ /^goto_xy\(  \s*(\d+)\s* , \s*(\d+)\s* \);$/x) {
+			say $out "\$logo->goto_xy($1, $2);";
+			next;
+		}
+		if ($line =~ /^sleep\( \s*(\d+)\s* \);$/x) {
+			say $out "sleep($1);";
+			next;
+		}
+		if ($line =~ /^clear\(\);$/x) {
+			say $out "\$logo->clear();";
+			next;
+		}
+		return "Invalid line '$line' in line $.\n";
+	}
+	return;
 }
 
 =head2 Pen

@@ -58,13 +58,46 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'     => sub { $self->show_about },
-		'Tutorial'  => sub { Padre->ide->wx->main->help('SDL::Tutorial') },
+		'About'          => sub { $self->show_about },
+		'Tutorial'       => sub { Padre->ide->wx->main->help('SDL::Tutorial') },
+		'Logoish docs'   => sub { Padre->ide->wx->main->help('Padre::Plugin::SDL::Logoish') },
+		'Run in Logoish' => \&run_in_logoish,
+
 	];
 }
 
 #####################################################################
 # Custom Methods
+
+
+sub run_in_logoish {
+	my $main = Padre->ide->wx->main;
+	my $doc = Padre::Current->document;
+
+	if (not $doc) {
+		$main->error("No document is available");
+		return;
+	}
+	
+	my $filename = $doc->filename;
+	if (not $filename) {
+		$main->error("File needs to be saved (no filename found)");
+		return;
+	}
+
+	# save current file
+	$main->on_save;
+
+	require Padre::Plugin::SDL::Logoish;
+	my $result = Padre::Plugin::SDL::Logoish->run($filename);
+	if ($result) {
+		$main->error($result);
+		return;
+	} else {
+		$main->message("OK", "Done");
+	}
+	return;
+}
 
 sub show_about {
 	my $self = shift;
