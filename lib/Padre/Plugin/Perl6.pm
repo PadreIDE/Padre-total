@@ -236,19 +236,22 @@ sub menu_plugins {
 		sub { },
 	);
 
-	# Goto perlintro
-	Wx::Event::EVT_MENU(
-		$main,
-		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Introduction"), ),
-		sub { $main->help_search('perlintro'); },
+	my %topics = (
+		'01perlintro' => Wx::gettext('Perl 6 Introduction'),
+		'02perlsyn' => Wx::gettext('Perl 6 Syntax'),
+		'03perlobjintro' => Wx::gettext('Perl 6 Objects Introduction'),
+		'04perlreintro' => Wx::gettext('Perl 6 Regexes Introduction'),
 	);
 
-	# Goto perlsyn
-	Wx::Event::EVT_MENU(
-		$main,
-		$more_help_menu->Append( -1, Wx::gettext("Perl 6 Syntax"), ),
-		sub { $main->help_search('perlsyn'); },
-	);
+	for my $topic (sort keys %topics) {
+		my $topic_text = $topic;
+		$topic_text =~ s/^\d+//;
+		Wx::Event::EVT_MENU(
+			$main,
+			$more_help_menu->Append( -1, $topics{$topic} ),
+			sub { $main->help_search($topic_text); },
+		);
+	}
 
 	$more_help_menu->AppendSeparator;
 
