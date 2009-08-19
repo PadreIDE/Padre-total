@@ -103,22 +103,33 @@ END_OUT
 			say $out $line;
 			next;
 		}
-		if ($line =~ /^goto_xy\(  \s*(\d+)\s* , \s*(\d+)\s* \);$/x) {
-			say $out "\$logo->goto_xy($1, $2);";
-			next;
-		}
+		# special
 		if ($line =~ /^sleep\( \s*(\d+)\s* \);$/x) {
 			say $out "sleep($1);";
 			next;
 		}
+
+		# no param
 		if ($line =~ /^clear\(\);$/x) {
 			say $out "\$logo->clear();";
 			next;
 		}
+		# one number
 		if ($line =~ /^set_pen_size_to\( \s*(\d+)\s* \);$/x) {
 			say $out "\$logo->set_pen_size_to($1);";
 			next;
 		}
+		# one possibly negative number
+		if ($line =~ /^change_pen_size_by\( \s*(-?\d+)\s* \);$/x) {
+			say $out "\$logo->change_pen_size_by($1);";
+			next;
+		}
+		# two numbers
+		if ($line =~ /^goto_xy\(  \s*(\d+)\s* , \s*(\d+)\s* \);$/x) {
+			say $out "\$logo->goto_xy($1, $2);";
+			next;
+		}
+
 		return "Invalid line '$line' in line $.\n";
 	}
 	return;
@@ -174,7 +185,22 @@ TBD
 
 TBD
 
-=item change_pen_size_by(number) TODO
+=item change_pen_size_by(number)
+
+The number can be either positive or negative integer.
+Change the size of the pen by that number. Effects any new  drawings.
+
+=cut
+
+sub change_pen_size_by {
+	my ($self, $number) = @_;
+	my $new_size = $self->{pen}{size} + $number;
+	if ($new_size <= 0) {
+		# TODO error handling?
+		return;
+	}
+	$self->set_pen_size_to($new_size);
+}
 
 =item stamp TODO
 	

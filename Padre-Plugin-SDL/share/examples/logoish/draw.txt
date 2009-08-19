@@ -1,5 +1,6 @@
 
 goto_xy(10, 10);
+change_pen_size_by(7);
 goto_xy(10, 100);
 set_pen_size_to(5);
 goto_xy(100, 100);
