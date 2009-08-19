@@ -115,6 +115,10 @@ END_OUT
 			say $out "\$logo->clear();";
 			next;
 		}
+		if ($line =~ /^set_pen_size_to\( \s*(\d+)\s* \);$/x) {
+			say $out "\$logo->set_pen_size_to($1);";
+			next;
+		}
 		return "Invalid line '$line' in line $.\n";
 	}
 	return;
@@ -137,19 +141,47 @@ sub clear {
 
 =pod
 
-=item *
+=item pen_down TODO
 
-	pen down
-	pen up
-	set pen color to (color selector)
-	change pen color by (number)
-	set pen color to (number)
-	change pen shade by (number)
-	set pen shade to (number)
-	change pen size by (number)
-	stamp
+The pen stays in the current location but from this point any movement
+of the object will draw a line
+
+=item pen_up TODO
+
+The pen stays in the current location but moving around the object will
+not leave any mark.
+
+
+=item set_pen_color_to(rgb|color selector) TODO
+
+Changes the color of the pen for further drawing to the given rgb value.
+The visual display of this programming element includes a color selector.
+
+
+=itme change_pen_color_by(number) TODO
+
+TBD
+
+=item set_pen_color_to(number) TODO
+
+TBD
+
+=item change_pen_shade_by(number) TODO
+
+TBD
+
+=item set_pen_shade_to(number) TODO
+
+TBD
+
+=item change_pen_size_by(number) TODO
+
+=item stamp TODO
 	
+?
+
 =item set_pen_size_to(number)
+
 
 =cut
 
@@ -272,45 +304,6 @@ under the same terms as Perl itself.
 
 
 =cut
-
-#####################################################################
-# Padre::Plugin Methods
-
-sub padre_interfaces {
-	'Padre::Plugin' => 0.42;
-}
-
-sub plugin_name {
-	'SDL';
-}
-
-sub menu_plugins_simple {
-	my $self = shift;
-	return $self->plugin_name => [
-		'About'     => sub { $self->show_about },
-		'Tutorial'  => sub { Padre->ide->wx->main->help('SDL::Tutorial') },
-	];
-}
-
-#####################################################################
-# Custom Methods
-
-sub show_about {
-	my $self = shift;
-
-	# Generate the About dialog
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Padre::Plugin::SDL");
-	$about->SetDescription( <<"END_MESSAGE" );
-Initial SDL support for Padre
-END_MESSAGE
-	$about->SetVersion($VERSION);
-
-	# Show the About dialog
-	Wx::AboutBox($about);
-
-	return;
-}
 
 1;
 
