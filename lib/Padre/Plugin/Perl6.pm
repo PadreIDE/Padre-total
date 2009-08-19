@@ -237,13 +237,13 @@ sub menu_plugins {
 	);
 
 	my %topics = (
-		'01perlintro' => Wx::gettext('Perl 6 Introduction'),
-		'02perlsyn' => Wx::gettext('Perl 6 Syntax'),
+		'01perlintro'    => Wx::gettext('Perl 6 Introduction'),
+		'02perlsyn'      => Wx::gettext('Perl 6 Syntax'),
 		'03perlobjintro' => Wx::gettext('Perl 6 Objects Introduction'),
-		'04perlreintro' => Wx::gettext('Perl 6 Regexes Introduction'),
+		'04perlreintro'  => Wx::gettext('Perl 6 Regexes Introduction'),
 	);
 
-	for my $topic (sort keys %topics) {
+	for my $topic ( sort keys %topics ) {
 		my $topic_text = $topic;
 		$topic_text =~ s/^\d+//;
 		Wx::Event::EVT_MENU(
