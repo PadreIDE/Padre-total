@@ -130,7 +130,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 June 25
         url: http://jquelin.blogspot.com/2009/06/beginning-of-moose-support-in-padre.html
-        title: Beginning of moose suport in Padre
+        title: Beginning of moose support in Padre
         comment: by Jerome Quelin
       - date: 2009 June 22
         url: http://ahmadzawawi.blogspot.com/2009/06/padres-perl-6-quick-fixes-in-action.html
@@ -250,7 +250,7 @@ about:
         comment: by Gabor Szabo
       - date: 2009 April 29
         url: http://jquelin.blogspot.com/2009/04/spell-check-in-padre-now-supports.html
-        title: Spell check in Padre  now suppports multiple languages .. kinda
+        title: Spell check in Padre now supports multiple languages... kinda
         comment: by Jerome Quelin
       - date: 2009 April 28
         url: http://szabgab.com/blog/2009/04/1240924550.html
@@ -326,7 +326,7 @@ about:
         comment: by Claudio Ramirez
       - date: 2009 February 15
         url: http://jquelin.blogspot.com/2009/02/spoiled-by-padre.html
-        title: Spolied by Padre
+        title: Spoiled by Padre
         comment: by Jerome Quelin
       - date: 2009 February 14
         url: http://damienlearnsperl.blogspot.com/2009/02/installing-padre-on-windows-via.html
@@ -340,7 +340,7 @@ about:
         url: http://meorero.wordpress.com/2009/02/10/padre-027-on-mandriva-20090/
         title: Padre 0.27 – on Mandriva 2009.0
         comment: by Oren Maurer
-      - date: 2009 Februray 10
+      - date: 2009 February 10
         url: http://use.perl.org/~gabor/journal/38447
         title: Padre 0.27 released
         comment: by Gabor Szabo
@@ -386,7 +386,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 January 12
         url: http://use.perl.org/~gabor/journal/38264
-        title: Portable Strawberry Perl with Padre, Parrot and Rakud
+        title: Portable Strawberry Perl with Padre, Parrot and Rakudo
         comment: by Gabor Szabo
       - date: 2009 January 12
         url: http://szabgab.com/blog/2009/01/1231761972.html
@@ -484,7 +484,7 @@ about:
         comment: by Gabor Szabo and on <a href="http://use.perl.org/~gabor/journal/37894">use.perl.org</a>
       - date: 2008 November 17
         url: http://hashbangperl.livejournal.com/40075.html
-        title: Emacs keybindings for Padre
+        title: Emacs key bindings for Padre
         comment: by Aaron 'TEEJAY' Trevena on LiveJournal and on <a href="http://use.perl.org/~TeeJay/journal/37898">use.perl.org</a>
       - date: 2008 November 16
         url: http://use.perl.org/~gabor/journal/37891
