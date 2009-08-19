@@ -864,8 +864,8 @@ sub get_outline {
 # Returns Perl's Help Provider
 #
 sub get_help_provider {
-	require Padre::HelpProvider::Perl;
-	return Padre::HelpProvider::Perl->new;
+	require Padre::Plugin::Perl6::Perl6HelpProvider;
+	return Padre::Plugin::Perl6::Perl6HelpProvider->new;
 }
 
 1;
