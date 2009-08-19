@@ -381,6 +381,25 @@ sub the_value_of_the_direction {
 
 =back
 
+
+=head2 Events
+
+In Scratch these events are under the Controls catgory.
+They all have a hump on the top and cannot connet to anything there
+so they indicate they are starting points of scripts.
+
+=over 4
+
+=item when_started    /green flag clicked/ TODO
+
+=item when (button) key pressed  /where button is a-z0-9 + SPACE + arrows/ TODO
+
+=item when ThisSprite clicked TODO
+
+=item when I received (message name) TODO
+
+=back
+
 =head2 Controls
 
 =over 4
@@ -395,6 +414,36 @@ sub wait {
 	my ($self, $time) = @_;
 	sleep($time);
 }
+
+=item forever /bracket/ TODO
+
+
+=item repeat (number) /bracket , repeat number times/ TODO
+
+
+=item broadcast (message name) TODO
+
+=item broadcast (message name) and wait TODO
+
+=item forever if (condition) /bracket/ TODO
+
+=item if (condition) /bracket/ TODO
+
+=item if (condition) /bracket/ else /bracket/ TODO
+
+=item wait until (condition) TODO
+
+=item repeate until (condition) TODO
+
+
+=item stop_script TODO
+
+This item does not have an outflow. 
+
+=item stop_all TODO
+
+This item does not ave an outflow. It stops the whole event loop. 
+Similar to clicking on the red flag. (Stop button).
 
 =pod
 
