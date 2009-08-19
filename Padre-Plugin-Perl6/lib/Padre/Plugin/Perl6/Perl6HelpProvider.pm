@@ -4,14 +4,14 @@ use strict;
 use warnings;
 
 # For Perl 6 documentation support
-use App::Grok     ();
+use App::Grok           ();
 use Padre::HelpProvider ();
 
 our $VERSION = '0.57';
 our @ISA     = 'Padre::HelpProvider';
 
 use Class::XSAccessor accessors => {
-	_grok       => '_grok',  # App::Grok -> Perl 6 Documentation Reader
+	_grok => '_grok', # App::Grok -> Perl 6 Documentation Reader
 };
 
 
@@ -30,7 +30,7 @@ sub help_init {
 sub help_render {
 	my ( $self, $topic ) = @_;
 
-	my $grok = $self->_grok;
+	my $grok     = $self->_grok;
 	my $html     = $grok->render_target( $topic, 'xhtml' );
 	my $location = $grok->locate_target($topic);
 	return ( $html, $location );
