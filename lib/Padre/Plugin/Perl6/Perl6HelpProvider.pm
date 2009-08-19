@@ -1,12 +1,13 @@
-package Padre::Plugin::Perl6::PerlHelpProvider;
+package Padre::Plugin::Perl6::Perl6HelpProvider;
 
 use strict;
 use warnings;
 
 # For Perl 6 documentation support
 use App::Grok     ();
+use Padre::HelpProvider ();
 
-our $VERSION = '0.43';
+our $VERSION = '0.57';
 our @ISA     = 'Padre::HelpProvider';
 
 use Class::XSAccessor accessors => {
@@ -29,8 +30,9 @@ sub help_init {
 sub help_render {
 	my ( $self, $topic ) = @_;
 
-	my $html     = $self->_grok->render_target( $topic, 'xhtml' );
-	my $location = $self->_grok->locate_target($topic);
+	my $grok = $self->_grok;
+	my $html     = $grok->render_target( $topic, 'xhtml' );
+	my $location = $grok->locate_target($topic);
 	return ( $html, $location );
 }
 
@@ -39,7 +41,14 @@ sub help_render {
 #
 sub help_list {
 	my ($self) = @_;
-	return $self->_grok->target_index;
+
+	# Return Grok's target index
+	my @index = $self->_grok->target_index;
+
+	# Return a unique sorted index
+	my %seen = ();
+	my @unique_sorted_index = sort grep { !$seen{$_}++ } @index;
+	return \@unique_sorted_index;
 }
 
 1;
