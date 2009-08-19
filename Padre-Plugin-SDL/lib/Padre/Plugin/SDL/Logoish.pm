@@ -8,16 +8,38 @@ our $VERSION = '0.01';
 
 =head1 NAME
 
-Padre::Plugin::SDL::Logoish - An experimental LOGO like langauge based on SDL Perl
+Padre::Plugin::SDL::Logoish - An experimental LOGO like language based on SDL Perl
 
 =head1 SYNOPSIS
 
 The user should be able to write a script with a simlified language we create.
 
+=head1 PLANS
+
+The long term project goal is to provide a visual programming environment
+for both children, and grown up professional non-programmers. Bt the latter 
+I mean people who need to do some manipulations with computers but whom
+are not programmers
+
+I am planning to implement something similar to Scratch L<http://scratch.mit.edu/>
+and Yahoo Pipes L<http://pipes.yahoo.com/pipes/> but I am also planning to
+take ideas from LEGO Mindstorms L<http://mindstorms.lego.com/>
+
+See also L<http://howto.wired.com/wiki/Teach_a_Kid_to_Program>
+
+The first step is to re-implement some of the programatic features of Scratch such as
+drawing on a board, moving a sprite around on the the board.
+
+Once the basics are implemented we need to implement the drag-and-drop programming for
+the already implemented language.
+
+Then we can start to think on some challenges to give to the users. I can imagine some kind
+of step-by-step process where the user starts with very few capabilities and simple tasks
+to achive using those tools. Then as she progresses she gets more tools (programming elements)
+and harder challenges.
+
 =head1 DESCRIPTION
 
-As I am planning to implement something similar to Scratch let me write down
-the currently available methods in some of the groups of Scratch 1.4
 
 =cut
 
@@ -54,7 +76,7 @@ sub new {
 
 	$self->{pen}{x}   = int($self->{board}{width}/2);
 	$self->{pen}{y}   = int($self->{board}{height}/2);
-	$self->{pen}{dir} = 'right';
+	$self->{pen}{dir} = 0;
 	
 	$self->set_pen_size_to(2);
 
@@ -104,14 +126,14 @@ END_OUT
 			next;
 		}
 		# special
-		if ($line =~ /^sleep\( \s*(\d+)\s* \);$/x) {
-			say $out "sleep($1);";
+		if ($line =~ /^wait\( \s*(\d+)\s* \);$/x) {
+			say $out "\$logo->wait($1);";
 			next;
 		}
 
 		# no param
-		if ($line =~ /^clear\(\);$/x) {
-			say $out "\$logo->clear();";
+		if ($line =~ /^(the_value_of_the_direction|the_value_of_x_position|the_value_of_y_position|clear)\(\);$/x) {
+			say $out "\$logo->$1();";
 			next;
 		}
 		# one number
@@ -208,6 +230,7 @@ sub change_pen_size_by {
 
 =item set_pen_size_to(number)
 
+Set the width and the height of the pen to the given number (in pixels).
 
 =cut
 
@@ -237,13 +260,26 @@ sub set_pen_size_to {
 
 =over 4
 
-=item *
+=item move(number) TODO
 
-	move (number) steps
-	turn right (number) degrees
-	turn left (number) degrees
-	point in direction (number)
-	point towards (???)
+move number of steps (?)
+
+=item turn_right(number) TODO
+
+Turn the object to the right (clock-wise) by given number of degrees.
+No other movement is visible.
+
+=item turn_left(number) TODO
+
+Turn the object to the left (ant-clock-wise) by given number of degrees.
+No other movement is visible.
+
+=item point_in_direction(number) TODO
+
+Set the direction to the given number in degrees.
+0 is up, 90 is right on the screen.
+
+=item point_towards(???) TODO
 
 =item goto_xy(number, number)
 
@@ -294,22 +330,75 @@ sub goto_xy {
 
 =pod
 
-=item *
+=item goto(???) TODO
 
-	go to (???)
-	glide (number) secs to x: (number) y: (number)
-	change x by (number)
-	set x to (number)
-	change y by (number)
-	set y to (number)
-	if on edge, bounce
+=item glide (number) secs to x: (number) y: (number) TODO
 
-	the value of x position
-	the value of y position
-	the value of the direction   (in degrees)
+=item change x by (number) TODO
+
+=item set x to (number) TODO
+
+=item change y by (number) TODO
+
+=item set y to (number) TODO
+
+=item if on edge, bounce TODO
+
+=item the_value_of_x_position
+
+returns the value of x. (getter)
+
+=cut
+
+sub the_value_of_x_position {
+	my ($self) = @_;
+	return $self->{pen}{x};
+}
+
+=item the_value_of_y_position
+
+Returns the value of y. (getter)
+
+=cut
+
+sub the_value_of_y_position {
+	my ($self) = @_;
+	return $self->{pen}{y};
+}
+
+=item the_value_of_the_direction
+
+Returns the value of the direction in degrees. (getter)
+
+=cut
+
+sub the_value_of_the_direction {
+	my ($self) = @_;
+	return $self->{pen}{dir};
+}	
+
+=pod
 
 =back
 
+=head2 Controls
+
+=over 4
+
+=item wait(number)
+
+Waits number seconds.
+
+=cut
+
+sub wait {
+	my ($self, $time) = @_;
+	sleep($time);
+}
+
+=pod
+
+=back
 
 =head1 AUTHOR
 

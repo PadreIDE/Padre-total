@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# temporary command line tool to use 
+# the Padre::Plugin::SDL::Logoish module
+
+use File::Temp     qw(tempdir);
+use File::Basename qw(basename);
+use File::Spec::Functions qw(catfile);
+
+
+use Padre::Plugin::SDL::Logoish;
+
+# temporary name of the method that will 
+#    read the file
+#    parse it, make sure it is correct script
+#    compile it to real perl code and execute it
+
+my ($filename) = @ARGV;
+die "Usage: $0 FILENAME\n" if not $filename;
+
+my $dir = tempdir(CLAENUP => 1);
+my $out_filename = catfile($dir, basename($filename));
+my $result = Padre::Plugin::SDL::Logoish->compile_to_perl5($filename, $out_filename);
+if ($result) {
+	print $result;
+	exit 1;
+}
+
+do $out_filename;

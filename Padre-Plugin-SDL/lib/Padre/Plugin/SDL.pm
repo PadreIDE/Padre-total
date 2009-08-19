@@ -9,8 +9,7 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
 
-use File::Temp     qw(tempdir);
-use File::Basename qw(basename);
+use File::Basename qw(dirname);
 use File::Spec::Functions qw(catfile);
 
 our $VERSION = '0.01';
@@ -92,34 +91,24 @@ sub run_in_logoish {
 	# save current file
 	$main->on_save;
 
-	my $result = _run($filename);
-	if ($result) {
-		$main->error($result);
-		return;
-	}
-	return;
-}
-
-# temporary name of the method that will 
-#    read the file
-#    parse it, make sure it is correct script
-#    compile it to real perl code and execute it
-sub _run {
-	my ($filename) = @_;
-
-	require Padre::Plugin::SDL::Logoish;
-
-	my $dir = tempdir(CLAENUP => 0);
-
-	my $out_filename = catfile($dir, basename($filename));
-	my $error = Padre::Plugin::SDL::Logoish->compile_to_perl5($filename, $out_filename);
-	return $error if $error;
-
 	# run script
-	my $perl = Padre::Perl::perl();
-	my $cmd = "$perl $out_filename";
-	my $main = Padre->ide->wx->main;
-	$main->run_command($cmd);
+	my $cmd = "padre_logoish";
+	
+	# for the development environment
+	my $sdl_root = dirname(dirname(dirname(dirname(__FILE__))));
+	my $logoish  = catfile($sdl_root, 'script', 'padre_logoish');
+	if (-e $logoish) {
+		my $perl = Padre::Perl::perl();
+		$cmd = "$perl -I$sdl_root/lib $logoish";
+	}
+
+	$cmd .= " $filename";
+	my $result = $main->run_command($cmd);
+
+	#if ($result) {
+		#$main->error($result);
+	#	return;
+	#}
 	return;
 }
 
