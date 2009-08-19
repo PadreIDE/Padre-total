@@ -9,10 +9,6 @@ use Padre::Wx ();
 our $VERSION = '0.57';
 our @ISA     = 'Padre::Document';
 
-# max lines to display in a calltip
-my $CALLTIP_DISPLAY_COUNT = 10;
-
-
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
 sub get_command {
 	my $self = shift;
@@ -865,27 +861,12 @@ sub get_outline {
 }
 
 #
-# Render Grok help xhtml for Padre's Help Search facility
+# Returns Perl's Help Provider
 #
-sub on_help_render {
-	my ( $self, $topic ) = @_;
-
-	require App::Grok;
-	my $grok     = App::Grok->new;
-	my $html     = $grok->render_target( $topic, 'xhtml' );
-	my $location = $grok->locate_target($topic);
-	return ( $html, $location );
+sub get_help_provider {
+	require Padre::HelpProvider::Perl;
+	return Padre::HelpProvider::Perl->new;
 }
-
-#
-# Render Grok help list for Padre's Help Search facility
-#
-sub on_help_list {
-	require App::Grok;
-	my $grok = App::Grok->new;
-	return sort $grok->target_index;
-}
-
 
 1;
 

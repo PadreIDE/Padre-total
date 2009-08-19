@@ -9,36 +9,37 @@ use App::Grok     ();
 our $VERSION = '0.43';
 our @ISA     = 'Padre::HelpProvider';
 
+use Class::XSAccessor accessors => {
+	_grok       => '_grok',  # App::Grok -> Perl 6 Documentation Reader
+};
+
+
 #
 # Initialize help
 #
 sub help_init {
 	my $self = shift;
 
-	my @index = ();
-
-	# Return a unique sorted index
-	my %seen = ();
-	my @unique_sorted_index = sort grep { !$seen{$_}++ } @index;
-	$self->{help_list} = \@unique_sorted_index;
+	$self->_grok( App::Grok->new );
 }
 
 #
-# Renders the help topic content into XHTML
+# Renders the help topic content using App::Grok into XHTML
 #
 sub help_render {
 	my ( $self, $topic ) = @_;
-	my $html;
 
-	return ( $html, $topic );
+	my $html     = $self->_grok->render_target( $topic, 'xhtml' );
+	my $location = $self->_grok->locate_target($topic);
+	return ( $html, $location );
 }
 
 #
 # Returns the help topic list
 #
 sub help_list {
-	my $self = shift;
-	return $self->{help_list};
+	my ($self) = @_;
+	return $self->_grok->target_index;
 }
 
 1;
