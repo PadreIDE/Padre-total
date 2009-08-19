@@ -327,7 +327,7 @@ sub svn_commit {
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 		#$message =~ s/"/\\"/g;
-		$message =~ s/\n\n/  /g;
+		#$message =~ s/\n\n/  /g;
 		
 		#$main->message( $message, 'Filename' );
 		
