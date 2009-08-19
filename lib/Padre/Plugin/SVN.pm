@@ -339,7 +339,7 @@ sub svn_commit {
 		# create a text file and use -F or --file option
 		# problem here is the opts that you can pass in 
 		# come after the $message.
-		$file->commit($message);
+		$file->commit_with_message($message);
 		# broke this?? 
 		
 		
