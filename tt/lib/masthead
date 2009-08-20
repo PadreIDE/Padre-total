@@ -1,4 +1,4 @@
-<div id="masthead">
-<img alt="Padre Logo" id="padrelogo" src="static/logo.png" />
-<h1>[% title %]</h1>
-</div>
+<h1 id="masthead">
+<a href="/"><img alt="" id="padrelogo" src="static/logo.png" /></a>
+<p>[% title %]</p>
+</h1>

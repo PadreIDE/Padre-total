@@ -75,7 +75,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 
-div#masthead {
+#masthead {
     background-color: #aa99FF;
     
  /*   background-image: url(clouds.png);
@@ -85,6 +85,10 @@ div#masthead {
     position: relative; */
     
     vertical-align: middle;
+}
+
+#masthead img {
+    border: none;
 }
 
 img#padrelogo {
@@ -98,7 +102,7 @@ img#padrelogo {
     width: 300px;
     height: 320px;
 }
-div#masthead h1 {
+#masthead p {
     margin: 0;
     padding: 0.5em;
 }
