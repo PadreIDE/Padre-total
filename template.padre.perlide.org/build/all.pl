@@ -11,6 +11,8 @@ use Data::Dumper qw(Dumper);
 use Text::Unaccent::PurePerl qw(unac_string);
 use Pod::Usage::CommandLine qw(GetOptions pod2usage);
 use Time::Piece qw(localtime);
+use LWP::Simple qw(get);
+use HTML::TreeBuilder::XPath qw();
 
 my %opt;
 GetOptions(\%opt, 's|source-directory=s', 'o|output-directory=s') or pod2usage(2);
@@ -45,6 +47,42 @@ my $config = {
 my $tt = Template->new($config);
 my ($stash) = LoadFile("$opt{s}/data/stash.yml"); # older version of YAML::Tiny return list ??
 
+{    # scrape the wiki page to keep screenshots in sync
+    my $screenshots_xml;
+    unless ($screenshots_xml
+        = get 'http://padre.perlide.org/trac/wiki/Screenshots') {
+        die "could not get the screenshots wiki page\n";
+    }
+    my $tree = HTML::TreeBuilder::XPath->new_from_content($screenshots_xml);
+    my @result_nodes;
+    my %seen_version;
+    for my $node (
+        $tree->findnodes('/html/body/div[3]/div[2]/div/*')->get_nodelist) {
+        next if 'h1' eq $node->tag;    # skip page header
+        if ('h2' eq $node->tag) {
+            my ($version) = [$node->content_list]->[0] =~ /(\d+\.\d+)/;
+            if ($version && !exists $seen_version{$version}) {
+                $node->attr('id', "v$version");    # must start with letter
+                $seen_version{$version} = undef;
+            } else {
+                $node->attr('id', undef);
+            }
+            push @result_nodes, $node;
+            next;
+        }
+        if ('p' eq $node->tag) {
+            if (ref [$node->content_list]->[0]) {    # has children
+                my ($img) = [$node->content_list]->[0]->content_list; # /p/a/img
+                $img->attr('title', undef);
+                $img->attr('alt',   '');
+                push @result_nodes, $img;
+            } else {    # has only text
+                push @result_nodes, $node;    # /p
+            }
+        }
+    }
+    $stash->{screenshots_xml} .= $_->as_XML for @result_nodes;
+}
 $stash->{build_date} = localtime->ymd;
 $stash->{developers}  = read_people($stash->{developers},  'developers');
 $stash->{translators} = read_people($stash->{translators}, 'translators');
@@ -154,3 +192,5 @@ Prints the manual page and exits.
 =head1 DESCRIPTION
 
 C<all.pl> builds the files for the web site at L<http://padre.perlide.org>.
+For the screenshots page, HTTP access to
+L<http://padre.perlide.org/trac/wiki/Screenshots> is necessary.
