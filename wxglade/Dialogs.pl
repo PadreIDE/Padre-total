@@ -26,17 +26,16 @@ sub new {
 		unless defined $style;
 
 	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
-	$self->{label_1} = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
-	$self->{combo_box_1} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{static_line_2} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_4} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_6} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_5} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_7} = Wx::CheckBox->new($self, -1, "Close Window on Hit", wxDefaultPosition, wxDefaultSize, );
-	$self->{static_line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{button_1} = Wx::Button->new($self, -1, "Find Next");
-	$self->{button_2} = Wx::Button->new($self, -1, "Count All");
-	$self->{button_3} = Wx::Button->new($self, wxID_CANCEL, "");
+	$self->{find_label} = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
+	$self->{find_regex} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_reverse} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_case} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_first} = Wx::CheckBox->new($self, -1, "Close Window on Hit", wxDefaultPosition, wxDefaultSize, );
+	$self->{line_2} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{button_find} = Wx::Button->new($self, -1, "Find Next");
+	$self->{button_count} = Wx::Button->new($self, -1, "Count All");
+	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -53,7 +52,7 @@ sub __set_properties {
 # begin wxGlade: MyDialog1::__set_properties
 
 	$self->SetTitle("dialog_find");
-	$self->{combo_box_1}->SetSelection(-1);
+	$self->{find_text}->SetSelection(-1);
 
 # end wxGlade
 }
@@ -65,21 +64,22 @@ sub __do_layout {
 
 	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
 	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
-	$self->{sizer_3} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{grid_sizer_1} = Wx::GridSizer->new(2, 2, 5, 5);
-	$self->{sizer_2}->Add($self->{label_1}, 0, 0, 0);
-	$self->{sizer_2}->Add($self->{combo_box_1}, 0, wxTOP|wxEXPAND, 5);
-	$self->{sizer_2}->Add($self->{static_line_2}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{grid_sizer_1}->Add($self->{checkbox_4}, 0, 0, 0);
-	$self->{grid_sizer_1}->Add($self->{checkbox_6}, 0, 0, 0);
-	$self->{grid_sizer_1}->Add($self->{checkbox_5}, 0, 0, 0);
-	$self->{grid_sizer_1}->Add($self->{checkbox_7}, 0, 0, 0);
-	$self->{sizer_2}->Add($self->{grid_sizer_1}, 1, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_2}->Add($self->{static_line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_3}->Add($self->{button_1}, 1, 0, 0);
-	$self->{sizer_3}->Add($self->{button_2}, 1, wxLEFT|wxRIGHT, 5);
-	$self->{sizer_3}->Add($self->{button_3}, 1, 0, 0);
-	$self->{sizer_2}->Add($self->{sizer_3}, 0, 0, 0);
+	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{option_sizer} = Wx::GridSizer->new(2, 2, 5, 5);
+	$self->{sizer_2}->Add($self->{find_label}, 0, 0, 0);
+	$self->{sizer_2}->Add($self->{find_text}, 0, wxTOP|wxEXPAND, 5);
+	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{sizer_2}->Add($line_1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{option_sizer}->Add($self->{find_regex}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{find_reverse}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{find_case}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{find_first}, 0, 0, 0);
+	$self->{sizer_2}->Add($self->{option_sizer}, 1, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{sizer_2}->Add($self->{line_2}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{button_sizer}->Add($self->{button_find}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{button_count}, 1, wxLEFT|wxRIGHT, 5);
+	$self->{button_sizer}->Add($self->{button_cancel}, 1, 0, 0);
+	$self->{sizer_2}->Add($self->{button_sizer}, 0, 0, 0);
 	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_1});
 	$self->{sizer_1}->Fit($self);
@@ -113,19 +113,19 @@ sub new {
 		unless defined $style;
 
 	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
-	$self->{label_2} = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
-	$self->{combo_box_2} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{label_3} = Wx::StaticText->new($self, -1, "Replace Text:", wxDefaultPosition, wxDefaultSize, );
-	$self->{combo_box_3} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{static_line_3} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_8} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_10} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_9} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
-	$self->{checkbox_11} = Wx::CheckBox->new($self, -1, "Replace All", wxDefaultPosition, wxDefaultSize, );
-	$self->{static_line_4} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{button_4} = Wx::Button->new($self, -1, "Find Next");
-	$self->{button_6} = Wx::Button->new($self, -1, "Replace");
-	$self->{button_5} = Wx::Button->new($self, wxID_CANCEL, "");
+	$self->{find_label} = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
+	$self->{replace_label} = Wx::StaticText->new($self, -1, "Replace Text:", wxDefaultPosition, wxDefaultSize, );
+	$self->{replace_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
+	$self->{line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{find_regex} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_reverse} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
+	$self->{find_case} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
+	$self->{replace_all} = Wx::CheckBox->new($self, -1, "Replace All", wxDefaultPosition, wxDefaultSize, );
+	$self->{line_2} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{button_find} = Wx::Button->new($self, -1, "Find Next");
+	$self->{button_replace} = Wx::Button->new($self, -1, "Replace");
+	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -142,8 +142,8 @@ sub __set_properties {
 # begin wxGlade: MyDialog2::__set_properties
 
 	$self->SetTitle("dialog_replace");
-	$self->{combo_box_2}->SetSelection(-1);
-	$self->{combo_box_3}->SetSelection(-1);
+	$self->{find_text}->SetSelection(-1);
+	$self->{replace_text}->SetSelection(-1);
 
 # end wxGlade
 }
@@ -153,28 +153,28 @@ sub __do_layout {
 
 # begin wxGlade: MyDialog2::__do_layout
 
-	$self->{sizer_4} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{sizer_5} = Wx::BoxSizer->new(wxVERTICAL);
-	$self->{sizer_6} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{grid_sizer_2} = Wx::GridSizer->new(2, 2, 5, 20);
-	$self->{sizer_5}->Add($self->{label_2}, 0, 0, 0);
-	$self->{sizer_5}->Add($self->{combo_box_2}, 0, wxTOP|wxEXPAND, 5);
-	$self->{sizer_5}->Add($self->{label_3}, 0, wxTOP, 10);
-	$self->{sizer_5}->Add($self->{combo_box_3}, 0, wxTOP|wxEXPAND, 5);
-	$self->{sizer_5}->Add($self->{static_line_3}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{grid_sizer_2}->Add($self->{checkbox_8}, 0, 0, 0);
-	$self->{grid_sizer_2}->Add($self->{checkbox_10}, 0, 0, 0);
-	$self->{grid_sizer_2}->Add($self->{checkbox_9}, 0, 0, 0);
-	$self->{grid_sizer_2}->Add($self->{checkbox_11}, 0, 0, 0);
-	$self->{sizer_5}->Add($self->{grid_sizer_2}, 1, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_5}->Add($self->{static_line_4}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_6}->Add($self->{button_4}, 1, 0, 0);
-	$self->{sizer_6}->Add($self->{button_6}, 1, wxLEFT|wxRIGHT, 5);
-	$self->{sizer_6}->Add($self->{button_5}, 1, 0, 0);
-	$self->{sizer_5}->Add($self->{sizer_6}, 0, 0, 0);
-	$self->{sizer_4}->Add($self->{sizer_5}, 1, wxALL|wxEXPAND, 5);
-	$self->SetSizer($self->{sizer_4});
-	$self->{sizer_4}->Fit($self);
+	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
+	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{option_sizer} = Wx::GridSizer->new(2, 2, 5, 20);
+	$self->{sizer_2}->Add($self->{find_label}, 0, 0, 0);
+	$self->{sizer_2}->Add($self->{find_text}, 0, wxTOP|wxEXPAND, 5);
+	$self->{sizer_2}->Add($self->{replace_label}, 0, wxTOP, 10);
+	$self->{sizer_2}->Add($self->{replace_text}, 0, wxTOP|wxEXPAND, 5);
+	$self->{sizer_2}->Add($self->{line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{option_sizer}->Add($self->{find_regex}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{find_reverse}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{find_case}, 0, 0, 0);
+	$self->{option_sizer}->Add($self->{replace_all}, 0, 0, 0);
+	$self->{sizer_2}->Add($self->{option_sizer}, 1, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{sizer_2}->Add($self->{line_2}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{button_sizer}->Add($self->{button_find}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{button_replace}, 1, wxLEFT|wxRIGHT, 5);
+	$self->{button_sizer}->Add($self->{button_cancel}, 1, 0, 0);
+	$self->{sizer_2}->Add($self->{button_sizer}, 0, 0, 0);
+	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
+	$self->SetSizer($self->{sizer_1});
+	$self->{sizer_1}->Fit($self);
 	$self->Layout();
 
 # end wxGlade

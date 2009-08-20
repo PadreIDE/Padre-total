@@ -14,14 +14,14 @@
                 <object class="wxBoxSizer">
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                        <object class="wxStaticText" name="label_1">
+                        <object class="wxStaticText" name="find_label">
                             <label>Find Text:</label>
                         </object>
                     </object>
                     <object class="sizeritem">
                         <flag>wxTOP|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxComboBox" name="combo_box_1">
+                        <object class="wxComboBox" name="find_text">
                             <selection>-1</selection>
                             <content>
                             </content>
@@ -30,7 +30,7 @@
                     <object class="sizeritem">
                         <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxStaticLine" name="static_line_2">
+                        <object class="wxStaticLine" name="line_1">
                             <style>wxLI_HORIZONTAL</style>
                         </object>
                     </object>
@@ -44,22 +44,22 @@
                             <cols>2</cols>
                             <vgap>5</vgap>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_4">
+                                <object class="wxCheckBox" name="find_regex">
                                     <label>Regular Expression</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_6">
+                                <object class="wxCheckBox" name="find_reverse">
                                     <label>Search Backwards</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_5">
+                                <object class="wxCheckBox" name="find_case">
                                     <label>Case Insensitive</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_7">
+                                <object class="wxCheckBox" name="find_first">
                                     <label>Close Window on Hit</label>
                                 </object>
                             </object>
@@ -68,7 +68,7 @@
                     <object class="sizeritem">
                         <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxStaticLine" name="static_line_1">
+                        <object class="wxStaticLine" name="line_2">
                             <style>wxLI_HORIZONTAL</style>
                         </object>
                     </object>
@@ -77,7 +77,7 @@
                             <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
                                 <option>1</option>
-                                <object class="wxButton" name="button_1">
+                                <object class="wxButton" name="button_find">
                                     <label>Find Next</label>
                                 </object>
                             </object>
@@ -85,7 +85,7 @@
                                 <option>1</option>
                                 <flag>wxLEFT|wxRIGHT</flag>
                                 <border>5</border>
-                                <object class="wxButton" name="button_2">
+                                <object class="wxButton" name="button_count">
                                     <label>Count All</label>
                                 </object>
                             </object>
@@ -112,14 +112,14 @@
                 <object class="wxBoxSizer">
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                        <object class="wxStaticText" name="label_2">
+                        <object class="wxStaticText" name="find_label">
                             <label>Find Text:</label>
                         </object>
                     </object>
                     <object class="sizeritem">
                         <flag>wxTOP|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxComboBox" name="combo_box_2">
+                        <object class="wxComboBox" name="find_text">
                             <selection>-1</selection>
                             <content>
                             </content>
@@ -128,14 +128,14 @@
                     <object class="sizeritem">
                         <flag>wxTOP</flag>
                         <border>10</border>
-                        <object class="wxStaticText" name="label_3">
+                        <object class="wxStaticText" name="replace_label">
                             <label>Replace Text:</label>
                         </object>
                     </object>
                     <object class="sizeritem">
                         <flag>wxTOP|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxComboBox" name="combo_box_3">
+                        <object class="wxComboBox" name="replace_text">
                             <selection>-1</selection>
                             <content>
                             </content>
@@ -144,7 +144,7 @@
                     <object class="sizeritem">
                         <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxStaticLine" name="static_line_3">
+                        <object class="wxStaticLine" name="line_1">
                             <style>wxLI_HORIZONTAL</style>
                         </object>
                     </object>
@@ -158,22 +158,22 @@
                             <cols>2</cols>
                             <vgap>5</vgap>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_8">
+                                <object class="wxCheckBox" name="find_regex">
                                     <label>Regular Expression</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_10">
+                                <object class="wxCheckBox" name="find_reverse">
                                     <label>Search Backwards</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_9">
+                                <object class="wxCheckBox" name="find_case">
                                     <label>Case Insensitive</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <object class="wxCheckBox" name="checkbox_11">
+                                <object class="wxCheckBox" name="replace_all">
                                     <label>Replace All</label>
                                 </object>
                             </object>
@@ -182,7 +182,7 @@
                     <object class="sizeritem">
                         <flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
                         <border>5</border>
-                        <object class="wxStaticLine" name="static_line_4">
+                        <object class="wxStaticLine" name="line_2">
                             <style>wxLI_HORIZONTAL</style>
                         </object>
                     </object>
@@ -191,7 +191,7 @@
                             <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
                                 <option>1</option>
-                                <object class="wxButton" name="button_4">
+                                <object class="wxButton" name="button_find">
                                     <label>Find Next</label>
                                 </object>
                             </object>
@@ -199,7 +199,7 @@
                                 <option>1</option>
                                 <flag>wxLEFT|wxRIGHT</flag>
                                 <border>5</border>
-                                <object class="wxButton" name="button_6">
+                                <object class="wxButton" name="button_replace">
                                     <label>Replace</label>
                                 </object>
                             </object>
