@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
 my $window = SDL::App->new(
 	-width => 640,

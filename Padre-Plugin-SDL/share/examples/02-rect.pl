@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
-
-#use SDL::Rect;
-#use SDL::Color;
+use SDL::Rect;
+use SDL::Color;
 
 my $window = SDL::App->new(
 	-width => 640,

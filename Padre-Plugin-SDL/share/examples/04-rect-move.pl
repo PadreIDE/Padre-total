@@ -1,7 +1,10 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
+use SDL::Color;
+use SDL::Rect;
 
 # moving a blue rectangle through a window
 

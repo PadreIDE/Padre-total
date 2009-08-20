@@ -1,9 +1,13 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
 
 # after launching this script press the keyboard and whach the console
+
+# this script is using the internal event loop of SDL but as far as I can understand
+# this is not a recommended practice.
 
 my $window = SDL::App->new(
 	-width => 640,

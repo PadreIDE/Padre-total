@@ -1,7 +1,10 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
+use SDL::Color;
+use SDL::Rect;
 
 # after launching this script press the keyboard and whach the console
 
