@@ -9,9 +9,9 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
 
+
+use lib '/home/pete/downloads/perl/SVN-Class-0.14/lib';
 use SVN::Class;
-
-
 
 #use Capture::Tiny  qw(capture_merged);
 #use File::Basename ();
@@ -340,7 +340,7 @@ sub svn_commit {
 		# problem here is the opts that you can pass in 
 		# come after the $message.
 		$file->commit_with_message($message);
-		# broke this?? 
+		
 		
 		
 		my @commit = @{$file->stdout};
