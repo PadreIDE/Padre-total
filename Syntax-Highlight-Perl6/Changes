@@ -1,5 +1,10 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.72 2009.8.20
+	- Bundled STD.pm which has the following changes:
+		- parse #=[...] comments
+		- improve message after map {} @a
+
 0.71 2009.8.14
 	- Perl tidied the files to Padre's standards
 	- Added more stuff to MANIFEST.SKIP
@@ -15,20 +20,16 @@ Revision history for Syntax::Highlight::Perl6.
 		is deprecated" warning
 
 0.69  2009.8.11
-
 	- Updated to the latest STD.pm which has better error messages
 
 0.68  2009.8.9
-
 	- Fixed "substr outside of string" warning
 	- Updated to the latest STD which fixes the TMP_PREFIX not working bug
 
 0.67  2009.8.4
-
 	- Removed unused YAML::XS dependency in CORE.pad which caused some failures
 
 0.66  2009.8.3
-
 	- Finally updated to latest STD.pm. This release may be buggy a bit.
 	- require Moose 0.88 to get Class::MOP 0.9x performance fixes...
 
