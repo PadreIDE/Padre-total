@@ -10,6 +10,7 @@ use YAML::Tiny qw(LoadFile);
 use Data::Dumper qw(Dumper);
 use Text::Unaccent::PurePerl qw(unac_string);
 use Pod::Usage::CommandLine qw(GetOptions pod2usage);
+use Time::Piece qw(localtime);
 
 my %opt;
 GetOptions(\%opt, 's|source-directory=s', 'o|output-directory=s') or pod2usage(2);
@@ -44,6 +45,7 @@ my $config = {
 my $tt = Template->new($config);
 my ($stash) = LoadFile("$opt{s}/data/stash.yml"); # older version of YAML::Tiny return list ??
 
+$stash->{build_date} = localtime->ymd;
 $stash->{developers}  = read_people($stash->{developers},  'developers');
 $stash->{translators} = read_people($stash->{translators}, 'translators');
 #print Dumper $stash->{developers};
