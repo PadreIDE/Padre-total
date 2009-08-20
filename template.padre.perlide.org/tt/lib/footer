@@ -2,6 +2,6 @@
 <div class="spacer"></div>
 [% WRAPPER chrome/styled_panel %]
 <div id="footer">
-<a href="/index.html">index</a>
+last updated [% build_date %], <address>Padre webmasters</address>
 </div>
 [% END %]

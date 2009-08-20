@@ -194,6 +194,10 @@ p {
     padding-left: 1em;
 }
 
+address {
+    display: inline;
+}
+
 /* Translators List */
 ul#translators li {
 /*    padding: 1em 1em 1em 1em;
