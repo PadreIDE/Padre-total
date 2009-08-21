@@ -4,8 +4,6 @@ navigation:
     href: ./
   - name: Download
     href: download.html
-  - name: Screenshots
-    href: screenshots.html
   - name: Developers
     href: developers.html
   - name: Translators
