@@ -34,6 +34,55 @@ of L<Padre>.
 
 This module is still pretty buggy.
 
+=head1 POSITIONING IN SCINTILLA
+
+This is added here for documentation purposes while in development mode.
+
+  GetTextLength:  number of characters
+  GetLineCount:   number of lines
+  LineLength:     number of characters in the current line (inclues "\n" and "\r")
+
+
+  GetCurrentPos:  position:
+                - the position of 1st character is 0
+                - the position of the last character is GetTextLength - 1
+                - the last position in the file, however, is GetTextLength
+
+  PositionFromLine: position of first charcter in line (positions and lines start from 0)
+
+
+  =================== LINES ===================
+
+  GetCurrentLine:     line number (first line is 0)
+
+  GetLineEndPosition: the position *after* the last character in the line, equal to LineLength
+
+  LineFromPosition:   line number (first line is 0)
+                    - the line containing the current position
+                    - LineFromPosition(GetLineEndPosition(x)) = x + 1, 
+
+  LinesOnScreen:      total number of lines on screen, regardless of whether they have text or not
+
+
+  =================== TEXT RETRIEVAL ===================
+
+  GetCharAt: character at specified position. GetCharAt(last position in file) returns undef()
+  GetTextRange(x,y): characters starting from GetCharAt(x) and ending at GetCharAt(y-1)
+
+
+  =================== STYLING ===================
+
+  GetEndStyled: the index *after* the last character that has styling
+              - returns GetTextLength if everything is styled
+
+  EVT_STC_STYLENEEDED(start_pos, end_pos):
+          - start_pos is the position of the first character that needs styling
+          - end_pos is the position *after* the last character that needs styling
+
+  StartStyling(start_pos) - position of first character to style
+  SetStyling(length) - number of characters to style
+  GetEndStyled = start_pos + length
+
 =head1 COPYRIGHT
 
 Copyright 2009 Peter Shangov. L<http://www.mechanicalrevolution.com/>
@@ -131,6 +180,7 @@ sub colorize {
 	my ( $start_pos, $end_pos ) = @_;
 	
 	debug("\n=== COLORIZE($start_pos, $end_pos) CALLED! ===\n");
+	db_pos("\n=== COLORIZE($start_pos, $end_pos) CALLED! ===\n");
 
 	# Padre may sometimes call colorize() without arguments when it needs
 	# the whole document styled
@@ -146,6 +196,28 @@ sub colorize {
 
 	### DETERMINE THE $start_pos THAT WE WILL PASS TO parse_code() ###
 	
+	# db_pos("\n=== COLORIZE ===\n");
+
+	db_pos("GetTextLength: "      . $editor->GetTextLength         . "\n");
+	db_pos("GetCurrentLine: "     . $editor->GetCurrentLine        . "\n");
+	db_pos("GetLineCount: "       . $editor->GetLineCount          . "\n");
+	db_pos("LineLength: "         . $editor->LineLength(0)         . "\n");
+	db_pos("LinesOnScreen: "      . $editor->LinesOnScreen         . "\n");
+	db_pos("GetCurrentPos: "      . $editor->GetCurrentPos         . "\n");
+	db_pos("GetLineEndPosition: " . $editor->GetLineEndPosition(0) . "\n");
+	db_pos("LineFromPosition(0): " . $editor->LineFromPosition(0)  . "\n");
+	db_pos("PositionFromLine(0): " . $editor->PositionFromLine(0)  . "\n");
+	db_pos("GetCharAt(4): "       . $editor->GetCharAt(4)          . "\n");
+	db_pos("GetTextRange(0,4): "  . $editor->GetTextRange(0,4)     . "\n");
+	db_pos("GetEndStyled: "       . $editor->GetEndStyled          . "\n");
+	
+	$editor->StartStyling( 2, 1 );
+	$editor->SetStyling( 1, 1 );
+	
+	db_pos("GetEndStyled: "       . $editor->GetEndStyled          . "\n");
+
+	return;
+
 	# move start position to begginning of line
 	my $start_pos_line = $editor->LineFromPosition($start_pos);
 	# is the "if" really needed?
@@ -163,8 +235,12 @@ sub colorize {
 	$last_visible_line_plus_50 > $total_line_count 
 		? $end_pos = $editor->GetLineEndPosition( $total_line_count - 1 )
 		: $end_pos = $editor->GetLineEndPosition( $last_visible_line_plus_50 - 1 );
+	
+	# why??
+	$end_pos++;
 
 	
+	warn $end_pos;
 	my $full_text = $doc->text_get;
 	### PARSE ###
 	$matches = parse_code($full_text, $start_pos, $end_pos, $matches);
@@ -253,11 +329,13 @@ sub parse_code {
 	# in the beginning of a new file we may not have any matches yet
 	if ($last_match) {
 		my $last_match_end = $last_match->{start} + $last_match->{length};
-		my $total_chars = length($text_to_parse);
-		debug( "TOTAL CHARS: $total_chars, LAST MATCH END: $last_match_end\n" );
-		if ( $total_chars > $last_match_end ) {
-			add_match($total_chars - $last_match_end, "plain", undef, undef, \$current_position, $matches);
+		# my $total_chars = length($text_to_parse);
+		debug( "END POS: $end_pos, LAST MATCH END: $last_match_end\n" );
+		if ( $end_pos > $last_match_end ) {
+			add_match($end_pos - $last_match_end, "plain", undef, undef, \$current_position, $matches);
 		}
+	} else {
+		add_match($end_pos - $start_pos + 1, "plain", undef, undef, \$current_position, $matches);
 	}
 	debug("MATCHES: " . Dumper $matches);
 	return $matches;
@@ -420,14 +498,27 @@ sub add_match {
 
 	# colorize the empty space, if any
 	my $last_match = $matches->[-1];
-	if ($last_match && $type ne "plain" && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
+	if ($last_match) {
+		if ($type ne "plain" && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
+			push @$matches, { 
+				start  => $last_match->{start} +  $last_match->{length},
+				length => $start_pos - ( $last_match->{start} +  $last_match->{length} ),
+				color  => class_to_color('plain'),
+				type   => 'plain',
+				range  => undef,
+			};	
+		} elsif ($type eq "plain" && ( $start_pos > ( $last_match->{start} +  $last_match->{length}) ) ) {
+			warn "kaboom!";
+			$last_match->{length} = $start_pos - $last_match->{start};
+		}
+	} elsif ( $start_pos > 0 ) {
 		push @$matches, { 
-			start  => $last_match->{start} +  $last_match->{length},
-			length => $start_pos - ( $last_match->{start} +  $last_match->{length} ),
+			start  => 0,
+			length => $start_pos,
 			color  => class_to_color('plain'),
 			type   => 'plain',
 			range  => undef,
-		};	
+		};
 	}
 	
 	push @$matches, { 
@@ -494,16 +585,20 @@ sub get_range_at_pos {
 }
 
 sub debug {
-	print @_;
+	#print @_;
 }
 
 sub db_match {
 	#print @_;
 }
 
+sub db_pos {
+	print @_;
+}
+
 1;
 
-# Copyright 2008-2009 Gabor Szabo.
+# Copyright 2009 Peter Shangov.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
