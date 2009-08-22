@@ -38,6 +38,16 @@ sub padre_interfaces {
 	'Padre::Plugin' => 0.43;
 }
 
+#
+# private subroutine to return the current share directory location
+# We will keep this until Module::Build get its own sharedir installation feature
+#
+sub _sharedir {
+	return Cwd::realpath( 
+		File::Spec->join( 
+			File::Basename::dirname(__FILE__), 'Perl6' , 'share' ) );
+}
+
 # plugin's real icon object
 sub logo_icon {
 	my ($self) = @_;
@@ -53,7 +63,7 @@ sub plugin_icon {
 	my $self = shift;
 
 	# find resource path
-	my $icon_path = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'camelia.png' );
+	my $icon_path = File::Spec->catfile( $self->_sharedir, 'icons', 'camelia.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $icon_path, Wx::wxBITMAP_TYPE_PNG );
@@ -324,7 +334,7 @@ sub _create_from_template {
 	$self->main->on_new;
 
 	my $editor = $self->current->editor or return;
-	my $file = File::Spec->catdir( $self->plugin_directory_share, "templates", "$template.$extension" );
+	my $file = File::Spec->catdir( $self->_sharedir, "templates", "$template.$extension" );
 
 	if ( $editor->insert_from_file($file) ) {
 		my $document = $editor->{Document};
@@ -367,7 +377,7 @@ sub show_about {
 	$about->SetVersion($VERSION);
 
 	# create and return the camelia icon
-	my $camelia_path = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'camelia-big.png' );
+	my $camelia_path = File::Spec->catfile( $self->_sharedir, 'icons', 'camelia-big.png' );
 	my $camelia_bmp = Wx::Bitmap->new( $camelia_path, Wx::wxBITMAP_TYPE_PNG );
 	my $camelia_icon = Wx::Icon->new();
 	$camelia_icon->CopyFromBitmap($camelia_bmp);
