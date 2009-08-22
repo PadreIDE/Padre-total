@@ -88,6 +88,29 @@ sub libparrot {
 	return undef;
 }
 
+#
+# Guess the new line for the current document
+# can return \r, \r\n, or \n
+#
+sub guess_newline {
+	my $text = shift;
+
+	require Padre::Util;
+	my $doc_new_line_type = Padre::Util::newline_type( $text );
+	my $new_line;
+	if ( $doc_new_line_type eq "WIN" ) {
+		$new_line = "\r\n";
+	} elsif ( $doc_new_line_type eq "MAC" ) {
+		$new_line = "\r";
+	} else {
+
+		#NONE, UNIX or MIXED
+		$new_line = "\n";
+	}
+
+	return $new_line;
+}
+
 1;
 
 __END__
