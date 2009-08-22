@@ -33,6 +33,9 @@ my $text;
 	close IN or die "Could not close $in_filename";
 }
 
+# No PERL6HERE unicode variable please
+$ENV{PERL6HERE} = '';
+
 # create a syntax highlighter and serialize its tokens to STDOUT
 require STD;
 require Syntax::Highlight::Perl6;
