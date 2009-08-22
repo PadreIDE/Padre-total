@@ -31,7 +31,7 @@ sub _find_quick_fix {
 		$self->{issues} = [];
 	}
 
-	my $nl              = $self->guess_newline;
+	my $nl              = $self->guess_newline($editor->GetText);
 	my $current_line_no = $editor->GetCurrentLine;
 
 	my @items      = ();

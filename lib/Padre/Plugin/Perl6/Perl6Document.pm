@@ -95,29 +95,6 @@ sub comment_lines_str {
 }
 
 #
-# Guess the new line for the current document
-# can return \r, \r\n, or \n
-#
-sub guess_newline {
-	my $self = shift;
-
-	require Padre::Util;
-	my $doc_new_line_type = Padre::Util::newline_type( $self->text_get );
-	my $new_line;
-	if ( $doc_new_line_type eq "WIN" ) {
-		$new_line = "\r\n";
-	} elsif ( $doc_new_line_type eq "MAC" ) {
-		$new_line = "\r";
-	} else {
-
-		#NONE, UNIX or MIXED
-		$new_line = "\n";
-	}
-
-	return $new_line;
-}
-
-#
 # Returns the Outline tree
 #
 sub get_outline {
