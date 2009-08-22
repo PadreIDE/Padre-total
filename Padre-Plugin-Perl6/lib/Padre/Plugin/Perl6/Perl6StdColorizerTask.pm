@@ -218,7 +218,7 @@ sub run {
 		my $issues = [];
 		my $prefix = '';
 		for my $msg (@messages) {
-			if ( $msg =~ /^\#\#\#\#\# PARSE FAILED \#\#\#\#\#/i ) {
+			if ( $msg =~ /^===SORRY!===/i ) {
 
 				# the following lines are errors until we see the warnings section
 				$severity = 'E';
