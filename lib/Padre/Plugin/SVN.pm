@@ -126,7 +126,7 @@ sub menu_plugins_simple {
 			'Project' => sub { $self->svn_log_of_project },
 		],
 		'Diff...' => [
-			'File'    => sub { $self->svn_diff_of_file },
+			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
 			'Dir'     => sub { $self->svn_diff_of_dir },
 			'Project' => sub { $self->svn_diff_of_project },
 		],
@@ -288,6 +288,33 @@ sub svn_diff {
 	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, $status, 'Diff');
 	$log->Show(1);
 	
+	return;
+	
+}
+
+sub svn_diff_in_padre {
+	my ($self) = @_;
+	my $filename = _get_current_filename();
+	my $main = Padre->ide->wx->main;
+	
+	
+	if( $filename ) {
+		my $file = svn_file($filename);
+		my $diff = $file->diff;
+		#$main->on_new();
+		#my $doc = Padre::Document->new();
+		my $diff_str = join( "\n", @{$file->stdout} );
+		$main->on_new();
+		# get the last id created - assume new is created at the end
+		my @ids = $main->pageids;
+		my @docs = $main->documents;
+		#print "pageids: " . join( ",", @ids ) . "\n";
+		#print "docs: " . join( ",", @docs ) . "\n";
+		#print "last element is: " . $ids[-1] . "\n";
+		my $doc = $docs[$ids[-1]];
+		$doc->text_set($diff_str);
+		return 1;
+	}
 	return;
 	
 }
