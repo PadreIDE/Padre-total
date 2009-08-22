@@ -27,6 +27,16 @@ sub padre_interfaces {
 }
 
 #
+# private subroutine to return the current share directory location
+# We will keep this until Module::Build get its own sharedir installation feature
+#
+sub _sharedir {
+	return Cwd::realpath( 
+		File::Spec->join( 
+			File::Basename::dirname(__FILE__), 'Ecliptic' , 'share' ) );
+}
+
+#
 # plugin's real icon...
 #
 sub logo_icon {
@@ -45,7 +55,7 @@ sub plugin_icon {
 	my $self = shift;
 
 	# find resource path
-	my $iconpath = File::Spec->catfile( $self->plugin_directory_share, 'icons', 'ecliptic.png' );
+	my $iconpath = File::Spec->catfile( $self->_sharedir, 'icons', 'ecliptic.png' );
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
