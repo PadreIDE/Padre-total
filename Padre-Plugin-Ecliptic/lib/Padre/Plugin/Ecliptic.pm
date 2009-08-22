@@ -103,13 +103,6 @@ sub menu_plugins {
 		sub { $self->_show_quick_module_access_dialog(); },
 	);
 
-	# Shows the "Quick Fix" dialog
-	Wx::Event::EVT_MENU(
-		$main_window,
-		$self->{menu}->Append( -1, Wx::gettext("Quick Fix\tCtrl-Shift-1"), ),
-		sub { $self->_show_quick_fix_dialog },
-	);
-
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -181,22 +174,6 @@ sub _show_quick_module_access_dialog {
 	return;
 }
 
-#
-# Shows the quick fix dialog
-#
-sub _show_quick_fix_dialog {
-	my $self = shift;
-
-	#Create and show the dialog
-	require Padre::Plugin::Ecliptic::QuickFixDialog;
-	my $dialog = Padre::Plugin::Ecliptic::QuickFixDialog->new($self);
-	if ($dialog) {
-		$dialog->Show(1);
-	}
-
-	return;
-}
-
 1;
 
 __END__
@@ -230,34 +207,6 @@ button, the outline element in the outline tree will be selected.
 
 This opens a dialog where you can search for a CPAN module. When you hit the OK 
 button, the selected module will be displayed in Padre's POD browser.
-
-=head2 Quick Fix (Shortcut: Ctrl + Shift + 1)
-
-This opens a dialog that lists different actions that relate to 
-fixing the code at the cursor. It will call B<event_on_quick_fix> method 
-passing a L<Padre::Wx::Editor> object on the current Padre document. 
-Please see the following sample implementation:
-
-	sub event_on_quick_fix {
-		my ($self, $editor) = @_;
-		
-		my @items = ( 
-			{
-				text     => '123...', 
-				listener => sub { 
-					print "123...\n";
-				} 
-			},
-			{
-				text     => '456...', 
-				listener => sub { 
-					print "456...\n";
-				} 
-			},
-		);
-		
-		return @items;
-	}
 
 =head2 About
 
