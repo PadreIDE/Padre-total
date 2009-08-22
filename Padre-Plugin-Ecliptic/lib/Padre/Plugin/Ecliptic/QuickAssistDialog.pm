@@ -5,7 +5,6 @@ use strict;
 
 # package exports and version
 our $VERSION   = '0.17';
-our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
