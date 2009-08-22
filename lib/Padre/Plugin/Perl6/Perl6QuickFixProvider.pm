@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Padre::Wx ();
+use Padre::Plugin::Perl6::Util ();
 
 our $VERSION = '0.57';
 
@@ -31,7 +32,7 @@ sub _find_quick_fix {
 		$self->{issues} = [];
 	}
 
-	my $nl              = $self->guess_newline($editor->GetText);
+	my $nl              = Padre::Plugin::Perl6::Util::guess_newline($editor->GetText);
 	my $current_line_no = $editor->GetCurrentLine;
 
 	my @items      = ();
