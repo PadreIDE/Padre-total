@@ -96,7 +96,7 @@ sub guess_newline {
 	my $text = shift;
 
 	require Padre::Util;
-	my $doc_new_line_type = Padre::Util::newline_type( $text );
+	my $doc_new_line_type = Padre::Util::newline_type($text);
 	my $new_line;
 	if ( $doc_new_line_type eq "WIN" ) {
 		$new_line = "\r\n";
