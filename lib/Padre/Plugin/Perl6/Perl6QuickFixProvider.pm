@@ -6,8 +6,10 @@ use warnings;
 
 use Padre::Wx ();
 use Padre::Plugin::Perl6::Util ();
+use Padre::QuickFixProvider ();
 
 our $VERSION = '0.57';
+our @ISA = ('Padre::QuickFixProvider');
 
 #
 # Constructor.
@@ -25,19 +27,19 @@ sub new {
 #
 # Tries to find quick fixes for errors in the current line
 #
-sub _find_quick_fix {
-	my ( $self, $editor ) = @_;
+sub quick_fix_list {
+	my ( $self, $doc, $editor ) = @_;
 
-	if ( not defined $self->{issues} ) {
-		$self->{issues} = [];
+	if ( not defined $doc->{issues} ) {
+		$doc->{issues} = [];
 	}
 
 	my $nl              = Padre::Plugin::Perl6::Util::guess_newline($editor->GetText);
 	my $current_line_no = $editor->GetCurrentLine;
 
 	my @items      = ();
-	my $num_issues = scalar @{ $self->{issues} };
-	foreach my $issue ( @{ $self->{issues} } ) {
+	my $num_issues = scalar @{ $doc->{issues} };
+	foreach my $issue ( @{ $doc->{issues} } ) {
 		my $issue_line_no = $issue->{line} - 1;
 		if ( $issue_line_no == $current_line_no ) {
 			my $issue_msg = $issue->{msg};
@@ -532,7 +534,7 @@ sub _find_quick_fix {
 	if ($num_issues) {
 
 		# add "comment error line" as the last resort to solving an issue
-		foreach my $issue ( @{ $self->{issues} } ) {
+		foreach my $issue ( @{ $doc->{issues} } ) {
 			my $issue_line_no = $issue->{line} - 1;
 			if ( $issue_line_no == $current_line_no ) {
 
