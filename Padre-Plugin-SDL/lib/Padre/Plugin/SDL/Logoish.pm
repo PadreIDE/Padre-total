@@ -23,7 +23,8 @@ are not programmers
 
 I am planning to implement something similar to Scratch L<http://scratch.mit.edu/>
 and Yahoo Pipes L<http://pipes.yahoo.com/pipes/> but I am also planning to
-take ideas from LEGO Mindstorms L<http://mindstorms.lego.com/>
+take ideas from LEGO Mindstorms L<http://mindstorms.lego.com/> and
+Sprog L<http://sprog.sourceforge.net/>.
 
 See also L<http://howto.wired.com/wiki/Teach_a_Kid_to_Program>
 

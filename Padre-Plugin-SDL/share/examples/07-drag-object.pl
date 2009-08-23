@@ -28,13 +28,13 @@ $rect->y($y);
 my $bg_color = SDL::Color->new(
 	-r => 0x00,
 	-g => 0x00,
-        -b => 0x00,
-        );
+	-b => 0x00,
+);
 my $color = SDL::Color->new(
 	-r => 0x00,
 	-g => 0x00,
-        -b => 0xff,
-        );
+	-b => 0xff,
+);
 
 my $bg = SDL::Rect->new(
 	-width  => $board_width,
