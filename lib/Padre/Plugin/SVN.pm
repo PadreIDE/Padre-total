@@ -109,6 +109,9 @@ sub menu_plugins_simple {
 			'File'    => sub { $self->svn_commit_file },
 			'Project' => sub { $self->svn_commit_project },
 		],
+		'Blame'	=> [
+			'File'	=> sub { $self->svn_blame },
+		],
 		'Status...' => [
 			'File'    => sub { $self->svn_status_of_file },
 			'Project' => sub { $self->svn_status_of_project },
@@ -164,6 +167,26 @@ sub _get_current_filename {
 		$main->error('File needs to be saved first');
 		return;
 	}
+}
+
+sub svn_blame {
+	my( $self ) = @_;
+	my $filename = _get_current_filename();
+	if ($filename) {
+		my $main = Padre::Current->main;
+		$self->{_busyCursor} = Wx::BusyCursor->new();
+		my $file = svn_file($filename);
+		$file->blame();
+		$self->{_busyCursor} = undef;
+		my $blame = join( "\n", @{$file->stdout} );
+		require Padre::Plugin::SVN::Wx::SVNDialog;
+		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $filename, $blame, 'Blame');
+		$dialog->Show(1);
+		return 1;
+	}
+	
+	return;
+	
 }
 
 sub svn_status {
@@ -292,19 +315,8 @@ sub svn_diff_in_padre {
 	if( $filename ) {
 		my $file = svn_file($filename);
 		my $diff = $file->diff;
-		#$main->on_new();
-		#my $doc = Padre::Document->new();
 		my $diff_str = join( "\n", @{$file->stdout} );
 		$main->new_document_from_string($diff_str);
-		#$main->on_new();
-		# get the last id created - assume new is created at the end
-		#my @ids = $main->pageids;
-		#my @docs = $main->documents;
-		#print "pageids: " . join( ",", @ids ) . "\n";
-		#print "docs: " . join( ",", @docs ) . "\n";
-		#print "last element is: " . $ids[-1] . "\n";
-		#my $doc = $docs[$ids[-1]];
-		#$doc->text_set($diff_str);
 		return 1;
 	}
 	return;
@@ -353,7 +365,7 @@ sub svn_commit {
 		#$main->message( $message, 'Filename' );
 		
 		#$message = "\"" .  $message . "\"";
-		print "This is the commit message: $message";
+		# print "This is the commit message: $message";
 		
 		# here's how:
 		#http://svn.haxx.se/tsvnusers/archive-2008-03/0393.shtml
@@ -374,8 +386,6 @@ sub svn_commit {
 		
 		$self->{_busyCursor} = undef;
 	}
-
-	# show that the file was committed
 	
 	return;
 }
