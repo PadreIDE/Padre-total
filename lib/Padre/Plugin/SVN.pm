@@ -13,15 +13,7 @@ use Padre::Util   ();
 use lib '/home/pete/downloads/perl/SVN-Class-0.14/lib';
 use SVN::Class;
 
-#use Capture::Tiny  qw(capture_merged);
-#use File::Basename ();
-#use File::Spec;
-
-#use VCI;
-
-# because I need a change to commit
-
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 =head1 NAME
@@ -47,11 +39,11 @@ For windows try: http://subversion.tigris.org/getting.html#windows.
 
 =head2 Configuring the SVN client for cached authentication.
 
-Becuase this module uses the installed SVN client actions that require authentication from the server will fail and leave Padre looking as though it's hung.
+Because this module uses the installed SVN client, actions that require authentication from the server will fail and leave Padre looking as though it has hung.
 
-The way to address this is to run the svn client from the command line when asked for the login and password enter as required.
+The way to address this is to run the svn client from the command line when asked for the login and password details, enter as required.
 
-Once done you should now have your authentication details stored.
+Once done you should now have your authentication details cached.
 
 More details can be found here: http://svnbook.red-bean.com/nightly/en/svn.serverconfig.netmodel.html#svn.serverconfig.netmodel.credcache
 
@@ -102,7 +94,7 @@ sub plugin_disable {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.24;
+	'Padre::Plugin' => 0.43;
 }
 
 sub plugin_name {
@@ -177,7 +169,6 @@ sub _get_current_filename {
 sub svn_status {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-#	my $status = qx{svn status $path};
 
 	my $file = svn_file( $path );
 	
@@ -236,7 +227,7 @@ sub svn_status_of_project {
 sub svn_log {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-	#my $out = qx{svn log $path};
+	
 	my $file = svn_file($path);
 	$self->{_busyCursor} = Wx::BusyCursor->new();
 	my $out = join( "\n", @{ $file->log() } );
@@ -276,7 +267,7 @@ sub svn_log_of_project {
 sub svn_diff {
 	my ( $self, $path ) = @_;
 	my $main   = Padre->ide->wx->main;
-	#my $status = qx{svn diff $path};
+	
 	my $file = svn_file($path);
 	#print $file->stderr;
 	#print $file->stdout;
@@ -304,15 +295,16 @@ sub svn_diff_in_padre {
 		#$main->on_new();
 		#my $doc = Padre::Document->new();
 		my $diff_str = join( "\n", @{$file->stdout} );
-		$main->on_new();
+		$main->new_document_from_string($diff_str);
+		#$main->on_new();
 		# get the last id created - assume new is created at the end
-		my @ids = $main->pageids;
-		my @docs = $main->documents;
+		#my @ids = $main->pageids;
+		#my @docs = $main->documents;
 		#print "pageids: " . join( ",", @ids ) . "\n";
 		#print "docs: " . join( ",", @docs ) . "\n";
 		#print "last element is: " . $ids[-1] . "\n";
-		my $doc = $docs[$ids[-1]];
-		$doc->text_set($diff_str);
+		#my $doc = $docs[$ids[-1]];
+		#$doc->text_set($diff_str);
 		return 1;
 	}
 	return;
@@ -370,8 +362,6 @@ sub svn_commit {
 		# come after the $message.
 		$file->commit_with_message($message);
 		
-		
-		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
 		if( @err ) {
@@ -381,7 +371,7 @@ sub svn_commit {
 			$main->message( join("\n", @commit) );
 		}
 		
-		#system qq(svn commit "$path" -m"$message");
+		
 		$self->{_busyCursor} = undef;
 	}
 
@@ -417,8 +407,7 @@ sub svn_add {
 	$file->add;
 	my $msg = "$path scheduled to be added to " . $file->info->{_url};
 	$main->message( $msg );
-	
-	#system "svn add $path";
+
 	return;
 }
 
@@ -430,29 +419,6 @@ sub svn_add_file {
 	}
 	return;
 }
-
-
-#sub vci {
-#	my ($self, $path) = @_;
-#	my $main = Padre->ide->wx->main;
-#	# TODO: connect to SVN repo without this workaround
-#	my @info = qx{svn info $path};
-#	if (not @info) {
-#		$main->error("$path does not seem to be under SVN");
-#		return;
-#	}
-#	chomp @info;
-#	my ($repo) = grep { $_ =~ /^Repository Root: / } @info;
-#	$repo =~ s/^Repository Root:\s*//;
-#	$main->message("'$repo'", "File");
-#	my $repository = VCI->connect(type => 'Svn', repo => $repo);
-#	print "$repository\n";
-#	print "---\n";
-#	print $repository->projects, "\n";
-#
-#	return;
-#}
-#
 
 1;
 
