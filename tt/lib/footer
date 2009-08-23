@@ -2,6 +2,8 @@
 <div class="spacer"></div>
 [% WRAPPER chrome/styled_panel %]
 <div id="footer">
-last updated [% build_date %], <address>Padre webmasters</address>, <a href="code_of_conduct.html">Code of Conduct and Diversity Statement</a>
+last updated [% build_date %], <address>Padre webmasters</address>, <a href="code_of_conduct.html">Code of Conduct and Diversity Statement</a>,
+<a href="legal.html">legal</a>
+
 </div>
 [% END %]
