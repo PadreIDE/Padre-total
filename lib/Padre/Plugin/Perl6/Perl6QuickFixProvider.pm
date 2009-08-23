@@ -4,12 +4,12 @@ use 5.008;
 use strict;
 use warnings;
 
-use Padre::Wx ();
+use Padre::Wx                  ();
 use Padre::Plugin::Perl6::Util ();
-use Padre::QuickFixProvider ();
+use Padre::QuickFixProvider    ();
 
 our $VERSION = '0.57';
-our @ISA = ('Padre::QuickFixProvider');
+our @ISA     = ('Padre::QuickFixProvider');
 
 #
 # Constructor.
@@ -34,7 +34,7 @@ sub quick_fix_list {
 		$doc->{issues} = [];
 	}
 
-	my $nl              = Padre::Plugin::Perl6::Util::guess_newline($editor->GetText);
+	my $nl              = Padre::Plugin::Perl6::Util::guess_newline( $editor->GetText );
 	my $current_line_no = $editor->GetCurrentLine;
 
 	my @items      = ();

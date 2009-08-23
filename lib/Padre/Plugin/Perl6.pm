@@ -43,9 +43,7 @@ sub padre_interfaces {
 # We will keep this until Module::Build get its own sharedir installation feature
 #
 sub _sharedir {
-	return Cwd::realpath( 
-		File::Spec->join( 
-			File::Basename::dirname(__FILE__), 'Perl6' , 'share' ) );
+	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Perl6', 'share' ) );
 }
 
 # plugin's real icon object
