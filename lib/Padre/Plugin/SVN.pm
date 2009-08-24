@@ -10,7 +10,7 @@ use Padre::Plugin ();
 use Padre::Util   ();
 
 
-use lib '/home/pete/downloads/perl/SVN-Class-0.14/lib';
+
 use SVN::Class;
 
 our $VERSION = '0.02';
@@ -105,33 +105,45 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About'     => sub { $self->show_about },
-		'Commit...' => [
-			'File'    => sub { $self->svn_commit_file },
-			'Project' => sub { $self->svn_commit_project },
-		],
-		'Blame'	=> [
-			'File'	=> sub { $self->svn_blame },
-		],
-		'Status...' => [
-			'File'    => sub { $self->svn_status_of_file },
-			'Project' => sub { $self->svn_status_of_project },
-		],
-		'Log...' => [
-			'File'    => sub { $self->svn_log_of_file },
-			'Project' => sub { $self->svn_log_of_project },
-		],
-		'Diff...' => [
-			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
-			'Dir'     => sub { $self->svn_diff_of_dir },
-			'Project' => sub { $self->svn_diff_of_project },
-		],
-		'Add...' => [
-			'File' => sub { $self->svn_add_file },
+		'File'		=> [
+			'Add'	=> sub { $self->svn_add },
+			'Blame'	=> sub { $self->svn_blame },
+			'Commit'=> sub { $self->svn_commit_file },
+			'Diff'	=> [ 	'Show' 		=> sub { $self->svn_diff_of_file },
+					'Open in Padre' => sub { $self->svn_diff_in_padre },
+				],
+			'Log'	=> sub { $self->svn_log_of_file },
+			'Status'=> sub { $self->svn_status_of_file },
 
-			#			'Dir'     => sub { $self->svn_diff_of_dir },
-			#			'Project' => sub { $self->svn_diff_of_project },
 		],
-
+#		'Project - Not Implemented'	=> [],
+#		'Commit...' => [
+#			'File'    => sub { $self->svn_commit_file },
+#			'Project' => sub { $self->svn_commit_project },
+#		],
+#		'Blame'	=> [
+#			'File'	=> sub { $self->svn_blame },
+#		],
+#		'Status...' => [
+#			'File'    => sub { $self->svn_status_of_file },
+#			'Project' => sub { $self->svn_status_of_project },
+#		],
+#		'Log...' => [
+#			'File'    => sub { $self->svn_log_of_file },
+#			'Project' => sub { $self->svn_log_of_project },
+#		],
+#		'Diff...' => [
+#			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
+#			'Dir'     => sub { $self->svn_diff_of_dir },
+#			'Project' => sub { $self->svn_diff_of_project },
+#		],
+#		'Add...' => [
+#			'File' => sub { $self->svn_add_file },
+#
+#			#			'Dir'     => sub { $self->svn_diff_of_dir },
+#			#			'Project' => sub { $self->svn_diff_of_project },
+#		],
+#
 	];
 }
 
@@ -316,7 +328,7 @@ sub svn_diff_in_padre {
 		my $file = svn_file($filename);
 		my $diff = $file->diff;
 		my $diff_str = join( "\n", @{$file->stdout} );
-		$main->new_document_from_string($diff_str);
+		$main->new_document_from_string($diff_str, 'text/x-patch');
 		return 1;
 	}
 	return;
@@ -372,7 +384,7 @@ sub svn_commit {
 		# create a text file and use -F or --file option
 		# problem here is the opts that you can pass in 
 		# come after the $message.
-		$file->commit_with_message($message);
+		$file->commit($message);
 		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
