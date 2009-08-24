@@ -709,7 +709,15 @@ Padre::Plugin::Perl6::Perl6QuickFixProvider - Padre Perl 5 Quick Fix Provider
 
 Perl 5 quick fix are implemented here
 
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
+=head1 AUTHOR
+
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
+
+Gabor Szabo L<http://szabgab.com/>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2008-2009 Padre Developers as in Perl6.pm
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl 5 itself.
