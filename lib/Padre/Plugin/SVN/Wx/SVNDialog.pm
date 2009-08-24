@@ -67,7 +67,7 @@ sub build_dialog {
 			  );
 	}
 	if( $getData ) {
-		print "getting data\n";
+		#print "getting data\n";
 		$txtCtrl = Wx::TextCtrl->new(
 			   $self, 
 			   -1,
@@ -94,7 +94,7 @@ sub build_dialog {
 					);
 
 	if( $getData ) {
-		print "adding cancel\n";
+		#print "adding cancel\n";
 		my $btnCancel = Wx::Button->new( $pnlButtons, Wx::wxID_CANCEL, "Cancel", [50,50]);
 		Wx::Event::EVT_BUTTON( $self, $btnCancel, \&cancel_clicked  );		
 		$btnBox->Add($btnCancel, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT);
@@ -118,10 +118,10 @@ sub build_dialog {
 
 sub ok_clicked {
 	my ($self) = @_;
-	print "OK Clicked\n";
+	#print "OK Clicked\n";
 	my $txt;
 	if( $self->{txtctrl} ) {
-		print "have to return data: " . $self->{txtctrl}->GetValue;
+		#print "have to return data: " . $self->{txtctrl}->GetValue;
 		$txt = $self->{txtctrl}->GetValue;
 	}
 	$self->Hide();
@@ -131,7 +131,7 @@ sub ok_clicked {
 
 sub cancel_clicked {
 	my ($self) = @_;
-	print "Cancel Clicked\n";
+	#print "Cancel Clicked\n";
 	$self->Hide();
 	$self->Destroy;
 	$self->{txtctrl}->SetValue("");
@@ -141,7 +141,7 @@ sub cancel_clicked {
 }
 sub get_data {
 	my( $self ) = @_;
-	print "Getting Data: " . $self->{txtctrl}->GetValue . "\n";
+	#print "Getting Data: " . $self->{txtctrl}->GetValue . "\n";
 	return $self->{txtctrl}->GetValue;
 	#my $txt =  $self->{txtctrl}->GetValue;
 	#use Data::Dumper;
