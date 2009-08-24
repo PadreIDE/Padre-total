@@ -14,15 +14,21 @@ my $board_width = 640;
 my $board_height = 480;
 
 
+my $butterfly_img64 = catfile(dirname($0), 'img', 'padre_logo_64x64.png');
+my $butterfly_frame = SDL::Surface->new( -name => $butterfly_img64 );
 
-my $window = SDL::App->new(
-	-width  => $board_width,
-	-height => $board_height,
-	-depth  => 16,
-	-title  => 'SDL Demo',
-);
+my $x = int( ($board_width  - $butterfly_frame->width) /2);
+my $y = int( ($board_height - $butterfly_frame->height) /2);
 
 my @layers;
+
+my $window = SDL::App->new(
+	-width => $board_width,
+	-height => $board_height,
+	-depth => 16,
+	-title => 'SDL Demo',
+);
+
 push @layers, {
 	surface => SDL::Surface->new(
 		-width => $window->width(),
@@ -42,47 +48,28 @@ push @layers, {
         -x      => 0,
         -y      => 0,
 	),
-};
+	};
 
 
-my @objects = (
-	{
-		name => 'Butterfly 64x64',
-		path => catfile(dirname($0), 'img', 'padre_logo_64x64.png'),
-	},
-	{
-		name => 'FreeBSD 64x64',
-		path => catfile(dirname($0), 'img', 'freebsd-logo.png'),
-	}
+my $butterfly_frame_rect = SDL::Rect->new(
+        -height => $butterfly_frame->height(),
+        -width  => $butterfly_frame->width(),
+        -x      => 0,
+        -y      => 0,
 );
 
-foreach my $o (@objects) {
-	my $surface = SDL::Surface->new( -name => $o->{path} );
-	my $x = int( ($board_width  - $surface->width) /2);
-	my $y = int( ($board_height - $surface->height) /2);
+my $butterfly_location_rect  = SDL::Rect->new(
+        -height => $butterfly_frame->height(),
+        -width  => $butterfly_frame->width(),
+        -x      => $x,
+        -y      => $y,
+);
 
-	my $rect = SDL::Rect->new(
-		-height => $surface->height(),
-		-width  => $surface->width(),
-		-x      => 0,
-		-y      => 0,
-	);
-
-	my $location  = SDL::Rect->new(
-		-height => $surface->height(),
-		-width  => $surface->width(),
-		-x      => $x,
-		-y      => $y,
-	);
-
-	push @layers, {
-		surface => $surface,
-		rect    => $rect,
-		sprite  => $location,
-	};
-}
-
-
+push @layers, {
+	surface => $butterfly_frame,
+	rect    => $butterfly_frame_rect,
+	sprite  => $butterfly_location_rect,
+};
 
 # strategy:
 # 1) every move copy all the elements starting from background and
@@ -112,22 +99,16 @@ while (1) {
 		exit if ($type == SDL_QUIT());
 		exit if ($type == SDL_KEYDOWN() && $event->key_name eq 'escape');
 		if ( $type == SDL_MOUSEBUTTONDOWN()) {
-			#print "Mouse down\n";
-			#printf("Sprite (%s, %s) width %s height %s\n", $butterfly_location_rect->x(), $butterfly_location_rect->y(), $butterfly_location_rect->width, $butterfly_location_rect->height);
-			#printf("Button     (%s, %s)\n", $event->button_x, $event->button_y);
-			foreach my $i (reverse 1..@layers-1) {
-				my $online = $layers[$i]{sprite};
-				if ($online->x < $event->button_x and
-					$event->button_x < $online->x + $online->width and
-					$online->y < $event->button_y and
-					$event->button_y < $online->y + $online->height) {
-
-				push @layers, splice(@layers, $i, 1); # put on the top
+			print "Mouse down\n";
+			printf("Sprite (%s, %s) width %s height %s\n", $butterfly_location_rect->x(), $butterfly_location_rect->y(), $butterfly_location_rect->width, $butterfly_location_rect->height);
+			printf("Button     (%s, %s)\n", $event->button_x, $event->button_y);
+			if ($butterfly_location_rect->x < $event->button_x and
+				$event->button_x < $butterfly_location_rect->x + $butterfly_location_rect->width and
+				$butterfly_location_rect->y < $event->button_y and
+				$event->button_y < $butterfly_location_rect->y + $butterfly_location_rect->height) {
 				# on the object
 				$grab = 1;
 				print "Grab !!!\n";
-				last;
-				}
 			}
 		} elsif ( $type == SDL_MOUSEBUTTONUP()) {
 			$grab = 0;
@@ -146,11 +127,10 @@ sub redraw_image {
 	my ($xrel, $yrel) = @_;
 
 	if (@_) {
-		my $online = $layers[-1]{sprite};
-		$online->x($online->x + $xrel);
-		$online->y($online->y + $yrel);
+		$butterfly_location_rect->x($butterfly_location_rect->x + $xrel);
+		$butterfly_location_rect->y($butterfly_location_rect->y + $yrel);
 	}
-
+	
 	foreach my $thing (@layers) {
 		my $surface = $thing->{surface};
 		my $offline = $thing->{rect};
