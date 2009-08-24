@@ -1,5 +1,12 @@
 Changes
 
+=head1 0.18  2009.8.24
+
+	Removed stupid code from Ecliptic :)
+	Reverting back to _sharedir until we get the Module::Build a sharedir
+	Quick Fix is now in Padre 0.44 core
+	Updated Arabic translation
+
 =head1 0.17  2009.8.17
 
 	Depends on Padre 0.43 in Build.PL
