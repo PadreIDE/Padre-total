@@ -371,32 +371,20 @@ sub svn_commit {
 	
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
-		#$message =~ s/"/\\"/g;
-		#$message =~ s/\n\n/  /g;
+
+		my $revNo = $file->commit($message);
 		
-		#$main->message( $message, 'Filename' );
-		
-		#$message = "\"" .  $message . "\"";
-		# print "This is the commit message: $message";
-		
-		# here's how:
-		#http://svn.haxx.se/tsvnusers/archive-2008-03/0393.shtml
-		# create a text file and use -F or --file option
-		# problem here is the opts that you can pass in 
-		# come after the $message.
-		$file->commit($message);
+		$self->{_busyCursor} = undef;
 		
 		my @commit = @{$file->stdout};
 		my @err = @{$file->stderr};
 		if( @err ) {
-			$main->error( join("\n", @err) );
+			$main->error( join("\n", @err), 'Error - SVN Commit' );
 		}
 		else {
-			$main->message( join("\n", @commit) );
+			$main->message( join("\n", @commit), "Committed Revision number $revNo" );
 		}
-		
-		
-		$self->{_busyCursor} = undef;
+	
 	}
 	
 	return;
