@@ -1,68 +1,29 @@
 use strict;
 use warnings;
 
-#
-# Parse an online perlopref.pod and returns a hash of topics and help
-#
-sub parse_perlopref {
-	my $url = shift;
-	
-	print "Loading $url\n";
-	require LWP::UserAgent;
-	require HTTP::Request;
-	my $ua = LWP::UserAgent->new;
-	my $req = HTTP::Request->new(GET => $url);
-	my $res = $ua->request($req);
-	if(not $res->is_success) {
-		die $res->status_line, "\n";
-	}
-
-	# Open perlopref
-	my $fh;
-	my $content = $res->content;
-	open $fh, "<", \$content;
-
-
-	my %index = ();
-
-	# Add PRECEDENCE to index
-	until (<$fh> =~ /=head1 PRECEDENCE/) { }
-
-	my $line;
-	while($line = <$fh>) {
-		last if($line =~ /=head1 OPERATORS/);
-		$index{PRECEDENCE} .= $line;
-	}
-
-	# Add OPERATORS to index
-	my $op;
-	while($line = <$fh>) {
-		if($line =~ /=head2\s+(.+)$/) {
-			$op = $1;
-		} elsif($op){
-			$index{$op} .= $line;
-		}
-	}
-
-	# and we're done
-	close $fh;
-
-	return %index;
+my $url = 'http://github.com/cowens/perlopref/raw/master/perlopref.pod';
+print "Loading $url\n";
+require LWP::UserAgent;
+require HTTP::Request;
+my $ua = LWP::UserAgent->new;
+my $req = HTTP::Request->new(GET => $url);
+my $res = $ua->request($req);
+if(not $res->is_success) {
+	die $res->status_line, "\n";
 }
 
-my %op_ref = parse_perlopref 'http://github.com/cowens/perlopref/raw/456675100b4e4b7fb048e7fa2b525bcf7145070c/perlopref.pod';
-print "Indexed " . (scalar keys %op_ref) . " topic\n";
+print $res->content;
 
 __END__
 
 =head1 NAME
 
-parse_perlopref.pl - A script to parse perlopref
+update_perlopref.pl - A script to download the latest copy of perlopref.pod from github
 
 =head1 DESCRIPTION
 
-This is a simple script to load perlopref.pod from github and generate an index
-which we can re-use in Padre Help Search.
+This is a simple script to load perlopref.pod from github and write it in its 
+proper Padre folder
 
 =head1 AUTHOR
 
