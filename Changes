@@ -1,5 +1,21 @@
 Changes
 
+=head1 0.58 2009.8.24
+
+	Updated translations:
+		Arabic
+		French (jquelin++)
+		German (Sewi++)
+	Integrated with Padre's 0.44 Quick Fix Helper
+	Integrated with Padre's 0.44 Help Provider
+	Reverting back to _sharedir until we get the Module::Build gets a sharedir property
+	STD.pm error prefix was recently switched from ### PARSE FAILED ### to ===SORRY!===
+	Prevent STD from inserting that block unicode character into error messages. $PERL6HERE
+	Removed "Perl 6 Executable" until rakudo actually supports it again
+	Depends on Syntax:Highlight:Perl6 0.72
+	Depends on Perl6::Doc 0.45
+	Added perlobjintro and perlreintro that Perl6::Doc 0.45 now supports
+
 =head1 0.57 2009.8.17
 
 	Depends on Padre 0.43 to make use of plugin_directory_share
@@ -12,7 +28,7 @@ Changes
 		French translation (jquelin++)
 		dutch translation (ddn123456++)
 	Renamed to the new Padre 0.43 PO naming scheme
-	use the new Padre::Perl API for findinf perl5 (szabgab)
+	use the new Padre::Perl API for finding perl5 (szabgab)
 	safety crash hiding (szabgab)
 	double quote temporary directory
 
