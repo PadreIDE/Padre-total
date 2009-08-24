@@ -14,22 +14,12 @@ my $board_width = 640;
 my $board_height = 480;
 
 
-my $img16 = catfile(dirname($0), 'padre_logo_16x16.png');
-my $img64 = catfile(dirname($0), 'padre_logo_64x64.png');
+my $img16 = catfile(dirname($0), 'img', 'padre_logo_16x16.png');
+my $img64 = catfile(dirname($0), 'img', 'padre_logo_64x64.png');
 my $frame = SDL::Surface->new( -name => $img64 );
 
 my $x = int( ($board_width  - $frame->width) /2);
 my $y = int( ($board_height - $frame->height) /2);
-
-my $bg = SDL::Rect->new(
-	-width  => $board_width,
-	-height => $board_height,
-);
-my $bg_color = SDL::Color->new(
-	-r => 0x00,
-	-g => 0x00,
-	-b => 0x00,
-);
 
 my $window = SDL::App->new(
 	-width => $board_width,
