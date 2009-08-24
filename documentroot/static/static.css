@@ -54,8 +54,7 @@ div#content {
 
 .center_column {
     text-align: left;
-    width: 60em;
-    margin: 0 auto;     
+    margin: 0 50pt;     
 }
 
 div#column_a { width: 69%;float: left }
