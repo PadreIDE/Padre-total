@@ -12,18 +12,29 @@ if(not $res->is_success) {
 	die $res->status_line, "\n";
 }
 
-print $res->content;
+require File::Spec;
+my $file = File::Spec->catfile('lib', 'Padre', 'HelpProvider', 'perlopref.pod');
+if(-f $file) {
+	print "Replacing perlopref.pod...\n";
+	open FILE, '>', $file or die "Could not open $file for writing\n";
+	print FILE $res->content;
+	close FILE;
+} else {
+	print "Could not find $file\n";
+}
 
 __END__
 
 =head1 NAME
 
-update_perlopref.pl - A script to download the latest copy of perlopref.pod from github
+update_perlopref.pl - update perlopref.pod from github
 
 =head1 DESCRIPTION
 
-This is a simple script to load perlopref.pod from github and write it in its 
-proper Padre folder
+FYI, perlopref is Perl Operator Reference.
+
+This is a simple script to obtain the latest perlopref.pod 
+from github and write it in its proper Padre folder
 
 =head1 AUTHOR
 
