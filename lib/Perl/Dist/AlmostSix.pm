@@ -1,4 +1,4 @@
-package Perl::Dist::Padre;
+package Perl::Dist::AlmostSix;
 
 #<<<
 use 5.008001;
@@ -10,7 +10,7 @@ use English                        qw( -no_match_vars );
 use File::Spec::Functions          qw( catfile        );
 use parent                         qw( Perl::Dist::Strawberry );
 
-our $VERSION = '0.270';
+our $VERSION = '0.449';
 #>>>
 
 
@@ -25,7 +25,7 @@ sub new {
 
 	shift->SUPER::new(
 		app_id            => 'padre',
-		app_name          => 'Padre Standalone',
+		app_name          => 'Padre Standalone Plus Six',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
 		image_dir         => 'C:\strawberry',
@@ -124,7 +124,7 @@ sub output_base_filename {
 #		. '-' . $_[0]->perl_version_human
 #		. '.' . $_[0]->build_number
 #		. ($_[0]->beta_number ? '-beta-' . $_[0]->beta_number : '')
-	return 'padre-standalone-0.45';
+	return 'almost-six-0.45';
 }
 
 
@@ -210,6 +210,34 @@ sub install_perl_modules {
 		  PPIx::EditorTools
 	} );
 
+	# Install the dependencies for Padre::Plugin::Perl6
+	$self->install_modules( qw{
+		  Locale::Msgfmt
+		  Perl6::Perldoc
+		  Perl6::Perldoc::To::Ansi
+		  Perl6::Doc
+		  Log::Trace
+		  Test::Assertions::TestScript
+		  Pod::Xhtml
+		  Pod::Text::Ansi
+		  IO::Interactive
+		  App::Grok
+		  Sub::Install
+		  Data::OptList
+		  Sub::Exporter
+		  Scope::Guard
+		  Devel::GlobalDestruction
+		  Sub::Name
+		  Algorithm::C3
+		  Class::C3
+		  MRO::Compat
+		  YAML::Syck
+		  Class::MOP
+		  Moose
+		  Syntax::Highlight::Perl6
+		  Perl6::Refactor
+	} );
+
 	# The rest of the modules are order-specific,
 	# for reasons maybe involving CPAN.pm but not fully understodd.
 
@@ -237,6 +265,9 @@ sub install_perl_modules {
 		name  => 'Padre',
 		force => 1,
 	);
+
+	# Last, but least, install Padre::Plugin::Perl6
+	$self->install_module( name => 'Padre::Plugin::Perl6' );
 
 	return 1;
 } ## end sub install_perl_modules
@@ -289,7 +320,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.449
+Perl::Dist::Padre version 0.270
 
 =end readme
 
@@ -301,7 +332,7 @@ Perl::Dist::Padre - Padre Standalone for Win32 builder
 
 =head1 VERSION
 
-This document describes Perl::Dist::Padre version 0.449.
+This document describes Perl::Dist::Padre version 0.270.
 
 =for readme continue
 
