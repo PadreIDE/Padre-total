@@ -21,6 +21,14 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 25
+        url: http://ahmadzawawi.blogspot.com/2009/08/one-liner-to-upgrade-padres-almost-six.html
+        title: A one-liner to upgrade Padre's "Almost Six" 
+        comment: by Ahmad M. Zawawi
+      - date: 2009 August 25 
+        url: http://pugs.blogs.com/audrey/2009/08/my-hobby-troll-hugging.html
+        title: My hobby: Troll hugging.
+        comment: by Audrey Tang
       - date: 2009 August 25 
         url: http://onionstand.blogspot.com/2009/08/padre-044-released.html
         title: Padre 0.44 released!
