@@ -21,10 +21,38 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 25 
+        url: http://onionstand.blogspot.com/2009/08/padre-044-released.html
+        title: Padre 0.44 released!
+        comment: by garu on The Onion Stand
+      - date: 2009 August 24
+        url: http://cubloid.blogspot.com/2009/08/trying-padre-on-macos.html
+        title: Trying Padre on MacOS
+        comment: Random thoughts of Ruslan Zakirov
+      - date: 2009 August 24
+        url: http://szabgab.com/blog/2009/08/1251089599.html
+        title: Yet another reason why it is important to be nice to newbies
+        comment: by Gabor Szabo
+      - date: 2009 August 24
+        url: http://ahmadzawawi.blogspot.com/2009/08/upgrading-padre-almost-six.html
+        title: Upgrading Padre "Almost Six"
+        comment: by Ahmad M. Zawawi
+      - date: 2009 August 18
+        url: http://stackoverflow.com/questions/1291931/what-are-the-most-important-features-of-an-ide-for-perl-development
+        title: What are the most important features of an IDE for Perl development?
+        comment: On Stack Overflow
       - date: 2009 August 17
         url: http://onionstand.blogspot.com/2009/08/padre-043-released.html
         title: Padre 0.43 released!
         comment: by garu on The Onion Stand
+      - date: 2009 August 15
+        url: http://use.perl.org/~Alias/journal/39468
+        title: Must improve the First Time Experience before we promote Six
+        comment: by Adam Kennedy
+      - date: 2009 August 06
+        url: http://szabgab.com/blog/2009/08/1249553120.html
+        title: Where to find Windows users to try Padre, the Perl IDE?
+        comment: by Gabor Szabo
       - date: 2009 August 06
         url: http://lastofthecarelessmen.blogspot.com/2009/08/padre-on-windows.html
         title: Padre on Windows
@@ -48,6 +76,10 @@ about:
       - date: 2009 July 29
         url: http://csjewell.dreamwidth.org/2127.html
         title: Padre Standalone (for Windows) is having some children...
+      - date: 2009 July 24
+        url: http://ahmadzawawi.blogspot.com/2009/07/padres-perl-6-version-054.html
+        title: Padre's Perl 6 version 0.54
+        comment: by Ahmad M. Zawawi
       - date: 2009 July 23
         url: http://onionstand.blogspot.com/2009/07/padre-041-released.html
         title: Padre 0.41 released!
