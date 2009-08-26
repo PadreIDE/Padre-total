@@ -1,5 +1,8 @@
 It is assumed that wget, gzip, tar, and svn are available.
 
+You can download wget, gzip and tar from http://gnuwin32.sourceforge.net/packages.html
+and svn from http://subversion.tigris.org/getting.html#windows
+
 Do this first step on a Strawberry build.
 
 1) Create a par file for Alien::wxWidgets, because we need to install a patched version. ($CPAN is to be replaced by your choice of CPAN mirror.)
