@@ -4,12 +4,12 @@ diff -u -r -N Alien-wxWidgets-0.43\Changes Alien-wxWidgets-0.44\Changes
 @@ -1,5 +1,8 @@
  Revision history for Perl extension Alien::wxWidgets.
  
-+0.4301  To be released
++0.4401  To be released
 +	- Add a language code to the version resource on Windows (patch by Curtis Jewell).
 +
- 0.43  Sun May 10 09:46:05 CEST 2009
- 	- Fix building under recent FreeBSD versions (patch by Cezary Morga).
- 	- Correctly handle monolithic build on wxWidgets' 2.9.x.
+ 0.44  Sun Aug  9 12:56:05 CEST 2009
+ 	- Rename all command line options to avoid clashing with
+ 	  Module::Build options.
 diff -u -r -N Alien-wxWidgets-0.43\lib\Alien\wxWidgets.pm Alien-wxWidgets-0.44\lib\Alien\wxWidgets.pm
 --- Alien-wxWidgets-0.43\lib\Alien\wxWidgets.pm	Sun May 10 01:48:22 2009
 +++ Alien-wxWidgets-0.44\lib\Alien\wxWidgets.pm	Sun Jul 05 21:52:41 2009
@@ -17,8 +17,8 @@ diff -u -r -N Alien-wxWidgets-0.43\lib\Alien\wxWidgets.pm Alien-wxWidgets-0.44\l
                        instantiate   => 'config';
  
  our $AUTOLOAD;
--our $VERSION = '0.43';
-+our $VERSION = '0.4301';
+-our $VERSION = '0.44';
++our $VERSION = '0.4401';
  our %VALUES;
  our $dont_remap;
  
