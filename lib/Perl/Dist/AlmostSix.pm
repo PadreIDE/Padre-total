@@ -26,6 +26,7 @@ sub new {
 	shift->SUPER::new(
 		app_id            => 'padre',
 		app_name          => 'Padre Standalone Plus Six',
+		app_ver_name      => 'Padre Standalone Plus Six 0.45-Chicago',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
 		image_dir         => 'C:\strawberry',
