@@ -12,7 +12,10 @@ rem Setup CPAN environment variable to point to you choice of CPAN mirror
 set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN/
 cd C:\
 wget %CPAN%/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
+
+rem The patch is required otherwise you will get errors at the end.
 wget http://csjewell.comyr.com/perl/version-rc.patch.txt
+
 wget http://www.commandline.co.uk/mtee/mtee.zip
 gzip -d Alien-wxWidgets-0.43.tar.gz
 tar -xf Alien-wxWidgets-0.43.tar
