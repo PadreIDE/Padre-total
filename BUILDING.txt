@@ -105,7 +105,7 @@ A usable Bootstrap build is at http://strawberryperl.com/download/bootstrap-perl
 
 2) Install Inno Setup from http://www.innosetup.com/download.php/is.exe and WiX from http://wix.sourceforge.net/releases/3.0.5419.0/Wix3.msi
 
-3) Install Perl::Dist::WiX from CPAN.
+3) Install Alien::WiX and Perl::Dist::WiX from CPAN.
 
 4) Install Perl::Dist::Strawberry from CPAN.
 
