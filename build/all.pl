@@ -161,9 +161,9 @@ sub generate_rss {
   }
   $x->channel_close;
   $x->rss_close;
-  open OUT, ">", $output;
-  print OUT $x . "\n";
-  close OUT;
+  open (my $OUT, ">", $output);
+  print $OUT $x . "\n";
+  close $OUT;
 }
 
 generate_rss($stash, File::Spec->catfile($opt{o}, "about.rss"));
