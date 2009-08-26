@@ -57,8 +57,16 @@ div#content {
     margin: 0 50pt;     
 }
 
-div#column_a { width: 69%;float: left }
-div#column_b { width: 29%;float: right}
+div#column_a { 
+    width: 49%; 
+    float: left;
+    margin-right: 5pt;
+}
+div#column_b {
+    width: 49%; 
+    float:right;
+    margin-left: 5pt;
+}
 
 
 
@@ -153,13 +161,15 @@ ul.unstyled {
 }
 
 div.column_a {
-    width: 48%;
+    width: 38%;
 	float: left;
+    margin-right: 3pt;
 }
 
 div.column_b {
-	width: 48%;
+	width: 38%;
 	float: right;
+    margin-left: 3pt;
 }
 
 .title_image {
