@@ -14,14 +14,17 @@ set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN
 rem or the 5-min CPAN mirror
 set CPAN=http://cpan.hexten.net
 
+rem Setup which version of Alien wxWidgets to use
+set ALIEN_WIDGETS=Alien-wxWidgets-0.44
+
 cd C:\
-wget %CPAN%/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
 wget http://www.commandline.co.uk/mtee/mtee.zip
-gzip -d Alien-wxWidgets-0.43.tar.gz
-tar -xf Alien-wxWidgets-0.43.tar
+wget %CPAN%/authors/id/M/MB/MBARBON/%ALIEN_WIDGETS%.tar.gz
+gzip -d %ALIEN_WIDGETS%.tar.gz
+tar -xf %ALIEN_WIDGETS%.tar
 wget http://svn.perlide.org/padre/trunk/Perl-Dist-Padre/version-rc.patch.txt
-Alien-wxWidgets-0.43\inc\bin\patch -p0 < version-rc.patch.txt 
-cd Alien-wxWidgets-0.43
+%ALIEN_WIDGETS%\inc\bin\patch -p0 < version-rc.patch.txt 
+cd %ALIEN_WIDGETS%
 perl Makefile.PL
 perl -MPAR::Dist -eblib_to_par
 rem wait 40 minutes
