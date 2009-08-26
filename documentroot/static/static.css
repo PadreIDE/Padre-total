@@ -101,9 +101,10 @@ img#padrelogo {
     width: 300px;
     height: 320px;
 }
-#masthead p {
+#masthead span {
     margin: 0;
     padding: 0.5em;
+    display: block;
 }
 
 ul.navigation {
