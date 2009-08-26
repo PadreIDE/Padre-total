@@ -5,10 +5,13 @@ and svn from http://subversion.tigris.org/getting.html#windows
 
 Do this first step on a Strawberry build.
 
-1) Create a par file for Alien::wxWidgets, because we need to install a patched version. ($CPAN is to be replaced by your choice of CPAN mirror.)
+1) Create a par file for Alien::wxWidgets, because we need to install a patched 
+version.
 
+rem Setup CPAN environment variable to point to you choice of CPAN mirror
+set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN/
 cd C:\
-wget $CPAN/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
+wget %CPAN%/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
 wget http://csjewell.comyr.com/perl/version-rc.patch.txt
 wget http://www.commandline.co.uk/mtee/mtee.zip
 gzip -d Alien-wxWidgets-0.43.tar.gz
