@@ -139,6 +139,35 @@ sub read_people {
 	return \@developers;
 }
 
+use XML::API;
+use DateTime::Format::Strptime;
+
+sub generate_rss {
+  my $stash = shift;
+  my $output = shift;
+  my $x = XML::API->new(doctype => 'rss');
+  $x->rss_open;
+  $x->channel_open;
+  $x->title("About Padre");
+  $x->link("http://padre.perlide.org/about.html");
+  my @list = @{$stash->{about}[0]->{events}};
+  splice(@list, 10);
+  foreach my $hash (@list) {
+    $x->item_open;
+    $x->title($hash->{title});
+    $x->link($hash->{url});
+    $x->pubDate(DateTime::Format::Strptime->new(pattern => "%a, %d %b %Y 00:00:00 GMT")->format_datetime(DateTime::Format::Strptime->new(pattern => "%Y %B %d")->parse_datetime($hash->{date})));
+    $x->item_close;
+  }
+  $x->channel_close;
+  $x->rss_close;
+  open OUT, ">", $output;
+  print OUT $x . "\n";
+  close OUT;
+}
+
+generate_rss($stash, File::Spec->catfile($opt{o}, "about.rss"));
+
 __END__
 
 =head1 NAME
