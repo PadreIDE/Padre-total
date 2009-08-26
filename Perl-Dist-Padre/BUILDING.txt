@@ -91,7 +91,7 @@ wget %CPAN%/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
 wget http://www.commandline.co.uk/mtee/mtee.zip
 gzip -d Alien-wxWidgets-0.43.tar.gz
 tar -xf Alien-wxWidgets-0.43.tar
-./Alien-wxWidgets-0.43/inc/bin/patch version-rc.patch.txt 
+Alien-wxWidgets-0.43\inc\bin\patch < version-rc.patch.txt 
 cd Alien-wxWidgets-0.43
 perl Makefile.PL
 perl -MPAR::Dist -eblib_to_par
