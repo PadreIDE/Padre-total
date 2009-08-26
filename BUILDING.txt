@@ -1,4 +1,4 @@
-It is assumed that wget, gzip, tar, and svn are available.
+It is assumed that wget, unzip, gzip, tar, and svn are available.
 
 You can download wget, gzip and tar from 
 http://gnuwin32.sourceforge.net/packages.html
@@ -19,6 +19,7 @@ set ALIEN_WIDGETS=Alien-wxWidgets-0.44
 
 cd C:\
 wget http://www.commandline.co.uk/mtee/mtee.zip
+unzip mtee.zip
 wget %CPAN%/authors/id/M/MB/MBARBON/%ALIEN_WIDGETS%.tar.gz
 gzip -d %ALIEN_WIDGETS%.tar.gz
 tar -xf %ALIEN_WIDGETS%.tar
@@ -49,15 +50,17 @@ cpan Alien::WiX Perl::Dist::WiX Perl::Dist::Strawberry
 
 5) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
 
+rem --- install via CPAN
 cpan Perl::Dist::Padre
 
+rem ---- or install from SVN
 svn co https://svn.perlide.org/padre/trunk/Perl-Dist-Padre
 cd Perl-Dist-Padre
 perl Makefile.PL && dmake && dmake test
 dmake install
 cd ..
 
-5a) If you want to build off a minicpan, do this:
+5a) (Optional) If you want to build off a minicpan, do this:
 
 svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/script
 svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
@@ -65,7 +68,7 @@ perl script/perldist_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --di
 
 6) Actually build the dist...
 
-set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4301-MSWin32-x86-multi-thread-5.10.0.par.zip
+set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4401-MSWin32-x86-multi-thread-5.10.0.par.zip
 perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
