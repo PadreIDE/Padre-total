@@ -3,6 +3,82 @@ It is assumed that wget, gzip, tar, and svn are available.
 You can download wget, gzip and tar from http://gnuwin32.sourceforge.net/packages.html
 and svn from http://subversion.tigris.org/getting.html#windows
 
+Save what is between the lines of asterisks below as version-rc.patch.txt.
+
+********************************
+diff -u -r -N Alien-wxWidgets-0.43\Changes Alien-wxWidgets-0.44\Changes
+--- Alien-wxWidgets-0.43\Changes	Sun May 10 01:48:22 2009
++++ Alien-wxWidgets-0.44\Changes	Sun Jul 05 21:50:53 2009
+@@ -1,5 +1,8 @@
+ Revision history for Perl extension Alien::wxWidgets.
+ 
++0.4301  To be released
++	- Add a language code to the version resource on Windows (patch by Curtis Jewell).
++
+ 0.43  Sun May 10 09:46:05 CEST 2009
+ 	- Fix building under recent FreeBSD versions (patch by Cezary Morga).
+ 	- Correctly handle monolithic build on wxWidgets' 2.9.x.
+diff -u -r -N Alien-wxWidgets-0.43\lib\Alien\wxWidgets.pm Alien-wxWidgets-0.44\lib\Alien\wxWidgets.pm
+--- Alien-wxWidgets-0.43\lib\Alien\wxWidgets.pm	Sun May 10 01:48:22 2009
++++ Alien-wxWidgets-0.44\lib\Alien\wxWidgets.pm	Sun Jul 05 21:52:41 2009
+@@ -43,7 +43,7 @@
+                       instantiate   => 'config';
+ 
+ our $AUTOLOAD;
+-our $VERSION = '0.43';
++our $VERSION = '0.4301';
+ our %VALUES;
+ our $dont_remap;
+ 
+diff -u -r -N Alien-wxWidgets-0.43\patches\data Alien-wxWidgets-0.44\patches\data
+--- Alien-wxWidgets-0.43\patches\data	Sun May 10 01:48:23 2009
++++ Alien-wxWidgets-0.44\patches\data	Sun Jul 05 21:51:28 2009
+@@ -9,11 +9,13 @@
+ wxMSW-2.8.0-setup_u.patch
+ wxMSW-2.8.10-config.patch
+ wxMSW-2.8.0-makefiles.patch
++wxMSW-2.8.10-version.patch
+                                ), @common ],
+                ansi    => [ qw(
+ wxMSW-2.8.0-setup.patch
+ wxMSW-2.8.10-config.patch
+ wxMSW-2.8.0-makefiles.patch
++wxMSW-2.8.10-version.patch
+                                ), @common ],
+                },
+   mac     => { unicode => [ qw(
+diff -u -r -N Alien-wxWidgets-0.43\patches\wxMSW-2.8.10-version.patch Alien-wxWidgets-0.44\patches\wxMSW-2.8.10-version.patch
+--- Alien-wxWidgets-0.43\patches\wxMSW-2.8.10-version.patch	Wed Dec 31 17:00:00 1969
++++ Alien-wxWidgets-0.44\patches\wxMSW-2.8.10-version.patch	Sun Jul 05 21:44:13 2009
+@@ -0,0 +1,26 @@
++diff -u src/msw/version.rc src/msw/version.rc
++--- src/msw/version.rc	Fri Mar 06 12:10:00 2009
+++++ src/msw/version.rc	Sun Jul 05 21:41:48 2009
++@@ -27,8 +27,12 @@
++ 
++ #ifdef _UNICODE
++     #define LANG "04090000"
+++    #define LANG2 0x0409
+++    #define LANG3 0
++ #else
++     #define LANG "040904b0"
+++    #define LANG2 0x0409
+++    #define LANG3 1200
++ #endif
++ 
++ 1 VERSIONINFO
++@@ -58,5 +62,9 @@
++             VALUE "ProductVersion", wxVERSION_NUM_DOT_STRING "\0"
++             VALUE "SpecialBuild", "\0"
++         END
+++    END
+++    BLOCK "VarFileInfo"
+++    BEGIN
+++            VALUE "Translation", LANG2, LANG3
++     END
++ END
+********************************
+
 Do this first step on a Strawberry build.
 
 1) Create a par file for Alien::wxWidgets, because we need to install a patched 
@@ -12,10 +88,6 @@ rem Setup CPAN environment variable to point to you choice of CPAN mirror
 set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN/
 cd C:\
 wget %CPAN%/authors/id/M/MB/MBARBON/Alien-wxWidgets-0.43.tar.gz
-
-rem The patch is required otherwise you will get errors at the end.
-wget http://csjewell.comyr.com/perl/version-rc.patch.txt
-
 wget http://www.commandline.co.uk/mtee/mtee.zip
 gzip -d Alien-wxWidgets-0.43.tar.gz
 tar -xf Alien-wxWidgets-0.43.tar
@@ -29,19 +101,13 @@ cd ..
 
 You really need to use a Bootstrap installation for the rest of these steps, because at the end of this, this will install into c:\strawberry, and you can't overwrite the host perl.
 
-A usable Bootstrap build is at http://strawberryperl.com/download/bootstrap-perl-5.10.0.6-beta-2.msi, or you can build one yourself.
+A usable Bootstrap build is at http://strawberryperl.com/download/bootstrap-perl-5.10.0.6-beta-2.msi, or you can build one yourself by going "perldist Bootstrap".
 
 2) Install Inno Setup from http://www.innosetup.com/download.php/is.exe and WiX from http://wix.sourceforge.net/releases/3.0.5419.0/Wix3.msi
 
 3) Install Perl::Dist::WiX from CPAN.
 
-4) Install Perl::Dist::Strawberry from svn.
-
-svn co http://svn.ali.as/cpan/trunk/Perl-Dist-Strawberry
-cd Perl-Dist-Strawberry
-perl Makefile.PL && dmake && dmake test
-dmake install
-cd ..
+4) Install Perl::Dist::Strawberry from CPAN.
 
 5) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
 
@@ -63,4 +129,4 @@ set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4301-MSWin3
 perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
-(pass the --cpan file://C:/Padre-minicpan/ parameter in the last line before the 2>&1 in if 4a was done.)
+(pass the --cpan file://C:/Padre-minicpan/ parameter in the last line before the 2>&1 in if 5a was done.)
