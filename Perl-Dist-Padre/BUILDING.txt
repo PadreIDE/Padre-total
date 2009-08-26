@@ -68,7 +68,7 @@ perl script/perldist_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --di
 
 6) Actually build the dist...
 
-set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4401-MSWin32-x86-multi-thread-5.10.0.par.zip
+set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.4401-MSWin32-x86-multi-thread-5.10.0.par
 perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
