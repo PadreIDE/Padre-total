@@ -1,4 +1,4 @@
 <h1 id="masthead">
 <a href="/"><img alt="" id="padrelogo" src="static/logo.png" /></a>
-<p>[% title %]</p>
+<span>[% title %]</span>
 </h1>
