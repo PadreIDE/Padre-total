@@ -79,7 +79,7 @@ perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
 rem --- with minicpan (5a)
-perldist Padre 2>&1 --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
+perldist Padre --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
 
 Build Troubleshooting
 ---------------------
