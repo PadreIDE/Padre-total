@@ -74,12 +74,12 @@ set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.44-MSWin32-
 rem to make sure the path is correct
 dir %PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION%
 
+rem --- without no minicpan (5a)
 perldist Padre 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
-(pass the --cpan file://C:/Padre-minicpan/ parameter in the last line before 
-the 2>&1 in if 5a was done.)
-
+rem --- with minicpan (5a)
+perldist Padre 2>&1 --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
 
 Build Troubleshooting
 ---------------------
