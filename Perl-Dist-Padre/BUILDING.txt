@@ -46,6 +46,7 @@ from http://wix.sourceforge.net/releases/3.0.5419.0/Wix3.msi
 3) Install Alien::WiX and Perl::Dist::WiX from CPAN.
 4) Install Perl::Dist::Strawberry from CPAN.
 
+rem say [y] install minicpan script ... This is important for optional step 5a
 cpan Alien::WiX Perl::Dist::WiX Perl::Dist::Strawberry
 
 5) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
@@ -64,8 +65,8 @@ cd ..
 5a) (Optional) If you want to build off a minicpan, do this:
 
 svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/script
-svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
-perl script\perldist_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
+wget http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
+perl script\minicpan_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
 
 6) Actually build the dist...
 
