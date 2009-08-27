@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use SDL;
 use SDL::App;
 
 # after launching this script try to grab the blue rectangualar with your mouse
