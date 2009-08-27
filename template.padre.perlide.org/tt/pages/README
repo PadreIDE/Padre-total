@@ -1,0 +1,4 @@
+=pod
+
+Any F<*.html> files in this directory and its subdirectories are processed
+by the templating system kicked off from F<../../Build>.
