@@ -54,6 +54,7 @@ rem --- install via CPAN
 cpan Perl::Dist::Padre
 
 rem ---- or install from SVN
+cpan parent
 svn co https://svn.perlide.org/padre/trunk/Perl-Dist-Padre
 cd Perl-Dist-Padre
 perl Makefile.PL && dmake && dmake test
