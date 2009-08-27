@@ -64,7 +64,7 @@ cd ..
 
 svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/script
 svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
-perl script/perldist_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
+perl script\perldist_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
 
 6) Actually build the dist...
 
