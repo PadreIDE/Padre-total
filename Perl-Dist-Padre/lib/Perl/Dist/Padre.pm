@@ -23,7 +23,7 @@ sub new {
 	my $dist_dir = File::ShareDir::dist_dir('Perl-Dist-Padre');
 
 
-	shift->SUPER::new(
+	return shift->SUPER::new(
 		app_id            => 'padre',
 		app_name          => 'Padre Standalone',
 		app_ver_name      => 'Padre Standalone 0.45',
@@ -107,7 +107,6 @@ sub new {
 		@_,
 	);
 
-	return;
 } ## end sub new
 
 sub app_ver_name {
