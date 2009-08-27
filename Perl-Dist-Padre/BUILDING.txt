@@ -79,3 +79,10 @@ perldist Padre 2>&1 | mtee padre-install.txt
 
 (pass the --cpan file://C:/Padre-minicpan/ parameter in the last line before 
 the 2>&1 in if 5a was done.)
+
+
+Build Troubleshooting
+---------------------
+%TEMP%/perldist/output contains the output of the last command that has been run. 
+(whenever a perl, dmake, or Build.bat command is run, the output in is 
+debug.out and debug.err files in that directory.
