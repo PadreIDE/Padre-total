@@ -208,8 +208,8 @@ sub install_perl_modules {
 		  Capture::Tiny
 		  prefork
 		  PPIx::EditorTools
-		  Test::Base
 		  Spiffy
+		  Test::Base
 		  ExtUtils::XSpp
 	} );
 
