@@ -30,7 +30,7 @@ my $builder = $class->new(
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',
-            repository => 'http://svn.perlide.org/padre/trunk/Acme-Plugin-PlayCode/',
+            repository => 'http://svn.perlide.org/padre/trunk/Acme-Padre-PlayCode/',
         }
     },
 );
