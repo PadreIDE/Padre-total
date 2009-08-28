@@ -3,14 +3,14 @@ package Acme::Padre::PlayCode;
 use warnings;
 use strict;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use base 'Padre::Plugin';
 
 use Padre::Util   ('_T');
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.26',
+	'Padre::Plugin' => '0.43',
 }
 
 sub menu_plugins_simple {

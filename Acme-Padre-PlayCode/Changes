@@ -1,6 +1,6 @@
 Revision history for Acme::Padre::PlayCode
 
-0.12 unreleased
+0.12    2009.08.28
      actually install translations (RSN)
      Renamed to the new Padre 0.43 PO naming scheme (azawawi)
      Renamed it to Acme::Padre::PlayCode (azawawi)
