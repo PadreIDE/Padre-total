@@ -4,15 +4,17 @@ You can download wget, gzip and tar from
 http://gnuwin32.sourceforge.net/packages.html
 and svn from http://subversion.tigris.org/getting.html#windows
 
-Do this first step on a Strawberry build.
-
-1) Create a par file for Alien::wxWidgets, because we need to install a patched 
-version.
-
 rem Setup CPAN environment variable to point to you choice of CPAN mirror
 set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN
 rem or the 5-min CPAN mirror
 set CPAN=http://cpan.hexten.net
+
+------------------- DO THIS FIRST STEP on Strawberry -------------------------
+The reason that you need to do it on c:\strawberry it is that it hardcodes
+Perl interpreter's path that created it
+
+1) Create a par file for Alien::wxWidgets, because we need to install a patched 
+version.
 
 rem Setup which version of Alien wxWidgets to use
 set ALIEN_WIDGETS=Alien-wxWidgets-0.44
@@ -32,6 +34,7 @@ rem wait 40 minutes
 copy Alien-*.par ..
 cd ..
 
+--------------- Bootstrap Perl needed afterwards ---------------------------------
 You really need to use a Bootstrap installation for the rest of these steps, 
 because at the end of this, this will install into c:\strawberry, and you can't 
 overwrite the host perl.
