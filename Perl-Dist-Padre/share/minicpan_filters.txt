@@ -47,6 +47,9 @@
 /PETDANCE/Test-Pod-
 /ADAMK/prefork-
 /SZABGAB/PPIx-EditorTools-
+/INGY/Test-Base-
+/INGY/Spiffy-\d
+/SMUELLER/ExtUtils-XSpp-
 
 /SZABGAB/Locale-Msgfmt-
 /DCONWAY/Perl6-Perldoc-
