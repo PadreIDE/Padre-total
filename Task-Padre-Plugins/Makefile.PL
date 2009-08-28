@@ -17,7 +17,7 @@ requires 'Padre::Plugin::ClassSniff' => '0.01';
 requires 'Padre::Plugin::CommandLine' => '0.02';
 requires 'Padre::Plugin::DataWalker' => '0.01';
 requires 'Padre::Plugin::Debugger' => '0.3';
-requires 'Padre::Plugin::Ecliptic' => '0.16';
+requires 'Padre::Plugin::Ecliptic' => '0.17';
 requires 'Padre::Plugin::Encode' => '0.1.3';
 requires 'Padre::Plugin::Encrypt' => '0.06';
 requires 'Padre::Plugin::HTML' => '0.09';
@@ -28,7 +28,7 @@ requires 'Padre::Plugin::Kate' => '0.01';
 requires 'Padre::Plugin::Nopaste' => '0.2.1';
 requires 'Padre::Plugin::PAR' => '0.05';
 requires 'Padre::Plugin::PerlCritic' => '0.06';
-requires 'Padre::Plugin::PerlTidy' => '0.07';
+requires 'Padre::Plugin::PerlTidy' => '0.08';
 requires 'Padre::Plugin::Vi' => '0.22';
 requires 'Padre::Plugin::ViewInBrowser' => '0.07';
 requires 'Padre::Plugin::XML' => '0.06';
@@ -50,7 +50,7 @@ feature 'Experimental Padre plugin for Parrot',
 	'Padre::Plugin::Parrot' => '0.25';
 feature 'Padre plugin for Perl 6',
 	-default => 0,
-	'Padre::Plugin::Perl6' => '0.56';
+	'Padre::Plugin::Perl6' => '0.57';
 feature 'read-evaluate-print plugin for Padre',
 	-default => 0,
 	'Padre::Plugin::REPL' => '0.01';

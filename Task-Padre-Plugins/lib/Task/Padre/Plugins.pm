@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 1;
 __END__
