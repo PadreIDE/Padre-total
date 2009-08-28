@@ -208,6 +208,9 @@ sub install_perl_modules {
 		  Capture::Tiny
 		  prefork
 		  PPIx::EditorTools
+		  Test::Base
+		  Spiffy
+		  ExtUtils::XSpp
 	} );
 
 	# The rest of the modules are order-specific,
