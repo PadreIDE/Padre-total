@@ -73,9 +73,11 @@ If not, run with the whole text from selected document.
 
 Fayland Lam, C<< <fayland at gmail.com> >>
 
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
+
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Fayland Lam, all rights reserved.
+Copyright 2008-2009 Fayland Lam and Ahmad M. Zawawi all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

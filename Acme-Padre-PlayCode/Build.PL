@@ -13,7 +13,7 @@ my $class = Module::Build->subclass( code => <<'EOF');
         }
 EOF
 my $builder = $class->new(
-    module_name         => 'Acme::PadrePlayCode',
+    module_name         => 'Acme::Padre::PlayCode',
     license             => 'perl',
     dist_author         => 'Fayland Lam <fayland@gmail.com>',
     dist_version_from   => 'lib/Acme/Padre/PlayCode.pm',
