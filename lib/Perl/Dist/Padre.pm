@@ -58,6 +58,7 @@ sub new {
 			  perl\site\lib\CPAN\Mini
 			  perl\site\lib\Data
 			  perl\site\lib\Devel
+			  perl\site\lib\ExtUtils
 			  perl\site\lib\File\Find
 			  perl\site\lib\File\Find\Rule
 			  perl\site\lib\Module
