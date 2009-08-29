@@ -23,16 +23,13 @@ sub new {
 		$main,
 		-1,
 		"SVN $type",
-		[200,300],
-		[600,550],
+		[-1,-1],	# position
+		[700,400],	# size - [wide,high]
 	);
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
-	
 	$self->build_dialog($filePath, $log, $getData);
 	
-	#$self->build_padre_dialog( $filePath, $log);
 	return $self;
-	
 	
 }
 
@@ -63,7 +60,7 @@ sub build_dialog {
 			   "$log", 
 			   Wx::wxDefaultPosition, 
 			   [-1,-1], 
-			   Wx::wxTE_MULTILINE | Wx::wxHSCROLL | Wx::wxVSCROLL
+			   Wx::wxTE_MULTILINE | Wx::wxHSCROLL | Wx::wxVSCROLL | Wx::wxTE_WORDWRAP
 			  );
 	}
 	if( $getData ) {
@@ -74,7 +71,7 @@ sub build_dialog {
 			   "Commit Message", 
 			   Wx::wxDefaultPosition, 
 			   [-1,-1], 
-			   Wx::wxTE_MULTILINE | Wx::wxHSCROLL | Wx::wxVSCROLL
+			   Wx::wxTE_MULTILINE | Wx::wxHSCROLL | Wx::wxVSCROLL | Wx::wxTE_WORDWRAP
 			  );
 		$txtCtrl->SetSelection(-1, -1);
 		$txtCtrl->SetFocus;
@@ -87,23 +84,27 @@ sub build_dialog {
 	
 	my $btnBox = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	my $pnlButtons =  Wx::Panel->new($self,
-					-1,         # id
-					[-1,-1],     # position
-					[-1,-1],     # size
-					0 # border style
+					-1,		# id
+					[-1,-1],	# position
+					[-1,-1],	# size
+					0 		# border style
 					);
 
+	# button height is set to 40 simply to get them to look the same
+	# in GTK.
+	# not sure what this is going to look like in other window managers.
 	if( $getData ) {
-		#print "adding cancel\n";
-		my $btnCancel = Wx::Button->new( $pnlButtons, Wx::wxID_CANCEL, "Cancel", [50,50]);
+		
+		my $btnCancel = Wx::Button->new( $pnlButtons, Wx::wxID_CANCEL, "Cancel", [-1,-1], [-1,40]);
 		Wx::Event::EVT_BUTTON( $self, $btnCancel, \&cancel_clicked  );		
-		$btnBox->Add($btnCancel, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT);
+		$btnBox->Add($btnCancel, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT);
+	
 	}
 	
-	my $btnOK = Wx::Button->new( $pnlButtons, Wx::wxID_OK, "OK", [50,50]);
+	my $btnOK = Wx::Button->new( $pnlButtons, Wx::wxID_OK, "OK", [-1,-1], [-1,40]);
 	Wx::Event::EVT_BUTTON( $self, $btnOK, \&ok_clicked );	
 	
-	$btnBox->Add($btnOK, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT);
+	$btnBox->Add($btnOK, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT);
 
 
 	$pnlButtons->SetSizer($btnBox);
@@ -151,3 +152,35 @@ sub get_data {
 }
 
 1;
+=head1 NAME
+
+Padre::Plugin::SVN::Wx::SVNDialog - Dialog for SVN tasks.
+
+=head1 SYNOPSIS
+
+Provides a Dialog specifically for the SVN Plugin.
+
+=head1 REQUIREMENTS
+
+Nil
+
+=head1 AUTHOR
+
+Peter Lavender, C<< <peter.lavender at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to L<http://padre.perlide.org/>
+
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+
+=cut
+
