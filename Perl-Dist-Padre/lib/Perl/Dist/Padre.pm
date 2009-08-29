@@ -212,6 +212,7 @@ sub install_perl_modules {
 		  Spiffy
 		  Test::Base
 		  ExtUtils::XSpp
+		  Locale::Msgfmt
 	} );
 
 	# The rest of the modules are order-specific,
