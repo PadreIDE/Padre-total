@@ -234,7 +234,10 @@ sub install_perl_modules {
 	$self->install_module( name => 'Wx' );
 
 	# Install modules that add more Wx functionality
-	$self->install_module( name => 'Wx::Perl::ProcessStream' );
+	$self->install_module( 
+		name => 'Wx::Perl::ProcessStream',
+		force => 1 # since it fails on vista
+	);
 
 	# And finally, install Padre itself
 	$self->install_module(
