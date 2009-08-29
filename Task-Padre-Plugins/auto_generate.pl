@@ -2,16 +2,9 @@
 
 use strict;
 use warnings;
-use ORDB::CPANTS;
+use CPANDB;
 use YAML::LoadURI;
 use Data::Dumper;
-
-# Get 'Padre' Dist id
-my $padre_dist = ORDB::CPANTS::Dist->select(
-    'where dist=? LIMIT 1',
-    'Padre'
-);
-my $id = $padre_dist->[0]->id;
 
 # set feature dists
 my @feature_dists = qw/
@@ -28,19 +21,21 @@ my @feature_dists = qw/
 /; # REPL, FAIL on Win32
 my @requires_dists;
 
-# get all used_by Padre, http://cpants.perl.org/dist/used_by/Padre
-my %seen;
-my $padre_prereq = ORDB::CPANTS::Prereq->select(
-    'where in_dist=?',
-    $id
+my $padre_dist = CPANDB::Distribution->select(
+    'where distribution=?',
+    'Padre'
 );
+
+# get all used_by Padre, http://cpants.perl.org/dist/used_by/Padre
+my $padre_prereq = CPANDB::Requires->select(
+    'where module=?',
+    'Padre'
+);
+
+my %seen;
 foreach my $prereq ( @$padre_prereq ) {
-    my $dist = ORDB::CPANTS::Dist->select(
-        'where id = ?',
-        $prereq->dist
-    );
-    my $dist_name = $dist->[0]->dist;
-    if ( $dist_name =~ /^Padre-Plugin-/ ) {
+    my $dist_name = $prereq->distribution;
+    if ( $dist_name =~ /^Padre-Plugin-/ or $dist_name =~ /^Acme-Padre-/ ) {
         # no duplication
         next if $seen{$dist_name};
         $seen{$dist_name} = 1;

@@ -20,11 +20,11 @@ If not, they run with the whole text from selected document.
 
 =head1 MODULES
 
-=head2 L<Padre::Plugin::AcmePlayCode>
+=head2 L<Acme::Padre::PlayCode>
 
 L<Acme::PlayCode> Plugin for L<Padre>
 
-See L<Padre::Plugin::AcmePlayCode>
+See L<Acme::Padre::PlayCode>
 
 =head2 L<Padre::Plugin::Alarm>
 
@@ -119,6 +119,7 @@ See L<Padre::Plugin::InstallPARDist>
 =head2 L<Padre::Plugin::JavaScript>
 
 L<Padre> and JavaScript
+
 
 See L<Padre::Plugin::JavaScript>
 

@@ -8,8 +8,8 @@ license  'perl';
 homepage       'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Task-Padre-Plugins/';
 
-requires 'Padre' => '0.42';
-requires 'Padre::Plugin::AcmePlayCode' => '0.11';
+requires 'Padre' => '0.44';
+requires 'Acme::Padre::PlayCode' => '0.12';
 requires 'Padre::Plugin::Alarm' => '0.07';
 requires 'Padre::Plugin::Autoformat' => '1.1.2';
 requires 'Padre::Plugin::CSS' => '0.08';
@@ -17,7 +17,7 @@ requires 'Padre::Plugin::ClassSniff' => '0.01';
 requires 'Padre::Plugin::CommandLine' => '0.02';
 requires 'Padre::Plugin::DataWalker' => '0.01';
 requires 'Padre::Plugin::Debugger' => '0.3';
-requires 'Padre::Plugin::Ecliptic' => '0.17';
+requires 'Padre::Plugin::Ecliptic' => '0.18';
 requires 'Padre::Plugin::Encode' => '0.1.3';
 requires 'Padre::Plugin::Encrypt' => '0.06';
 requires 'Padre::Plugin::HTML' => '0.09';
@@ -50,7 +50,7 @@ feature 'Experimental Padre plugin for Parrot',
 	'Padre::Plugin::Parrot' => '0.25';
 feature 'Padre plugin for Perl 6',
 	-default => 0,
-	'Padre::Plugin::Perl6' => '0.57';
+	'Padre::Plugin::Perl6' => '0.58';
 feature 'read-evaluate-print plugin for Padre',
 	-default => 0,
 	'Padre::Plugin::REPL' => '0.01';

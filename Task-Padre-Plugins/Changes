@@ -1,7 +1,7 @@
 Revision history for Task-Padre-Plugins
 
-0.25    2009.08.23
-        
+0.25    2009.08.29
+        Acme::Padre::PlayCode
 
 0.24    2009.08.02
         ClassSniff plugin
