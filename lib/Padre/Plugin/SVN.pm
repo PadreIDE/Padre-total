@@ -70,27 +70,16 @@ under the same terms as Perl itself.
 #####################################################################
 # Padre::Plugin Methods
 
-# need to setup the toolbar and put it in the ide
 sub plugin_enable {
-	
 	my $self = shift;
-	#my $main = Padre->ide->wx->main;
-	#$self->{tb} = Padre::Plugin::SVN::Wx::Toolbar->new($main);
-	#$main->SetToolBar( $self->{tb} );
-	#$main->GetToolBar->Realize;
-	
-	#$main->{toolbar_panel}->{vbox}->Add( $self->{tb}, Wx::wxALL | Wx::wxALIGN_LEFT | Wx::wxEXPAND,4 );
-	
 }
 
-# remove the toolbar from the ide
+# clean up modules used.
 sub plugin_disable {
 	my $self = shift;
-	
-	# not ideal... 
-	#$self->{tb} = undef;
-	
-	
+	#require Class::Unload;
+	#Class::Unload->unload('Padre::Plugin::SVN::Wx::SVNDialog');
+	#Class::Unload->unload('Padre::Plugin::SVN');	
 }
 
 sub padre_interfaces {
@@ -104,8 +93,9 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'     => sub { $self->show_about },
-		'File'		=> [
+
+		# only file operations at the moment
+		#'File'		=> [
 			'Add'	=> sub { $self->svn_add },
 			'Blame'	=> sub { $self->svn_blame },
 			'Commit'=> sub { $self->svn_commit_file },
@@ -115,7 +105,8 @@ sub menu_plugins_simple {
 			'Log'	=> sub { $self->svn_log_of_file },
 			'Status'=> sub { $self->svn_status_of_file },
 
-		],
+		#],
+		'About'     => sub { $self->show_about },		
 #		'Project - Not Implemented'	=> [],
 #		'Commit...' => [
 #			'File'    => sub { $self->svn_commit_file },
@@ -362,13 +353,12 @@ sub svn_commit {
 	
 	my $info = "$path\n\n";
 	$info .= "Last Revision: " . $file->info->{last_rev};
-	#my $message = $main->prompt( "SVN Commit of $path", "Please type in your message", "MY_SVN_COMMIT" );
 	require Padre::Plugin::SVN::Wx::SVNDialog;
 	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $info, undef, 'Commit File', 1);
 	$dialog->ShowModal;
 	
 	my $message = $dialog->get_data;
-	
+	# whoops!! This isn't going to work "Commit message" is always set in the text control.
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 
