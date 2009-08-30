@@ -4,13 +4,15 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry 1.11139 qw(); # To allow 1.11_14 for right now.
+use Perl::Dist::Strawberry 2.00    qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars );
 use File::Spec::Functions          qw( catfile        );
 use parent                         qw( Perl::Dist::Strawberry );
 
-our $VERSION = '0.270';
+# http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
+our $VERSION = '0.449';
+$VERSION = eval { $VERSION };
 #>>>
 
 
@@ -100,6 +102,8 @@ sub new {
 			  perl\site\lib\auto\share\dist\Padre\icons
 			  perl\site\lib\auto\share\dist\Padre\icons\padre
 			  perl\site\lib\auto\share\dist\Padre\icons\padre\16x16
+			  perl\site\lib\auto\share\dist\Padre\icons\gnome218
+			  perl\site\lib\auto\share\dist\Padre\icons\gnome218\16x16
 			  perl\site\lib\auto\share\dist\Perl6-Doc
 			  perl\site\lib\auto\share\module
 			  )
