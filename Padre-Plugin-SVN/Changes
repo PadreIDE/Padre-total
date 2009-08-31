@@ -1,5 +1,12 @@
 Revision history for Padre-Plugin-SVN
 
+0.02	2009.08.31 - Peter Lavender (waxhead)
+		Merged in the branch:
+		* Uses SVN::Class for all SVN operations
+		* Reconfigured the Plugin Menuing - flattened to single level as all operations are based on the file in the acitve document
+		* Added "Open Diff in Padre" - required new method in Padre::Main class
+		* Created an "SVNDialog" to handle SVN input and some output - more work to be done
+		* Added some additional documentation
 
         svn add
 
