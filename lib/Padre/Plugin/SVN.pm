@@ -51,6 +51,10 @@ More details can be found here: http://svnbook.red-bean.com/nightly/en/svn.serve
 
 Gabor Szabo, C<< <szabgab at gmail.com> >>
 
+Additional work:
+
+Peter Lavender, C<< <peter.lavender at gmail.com> >>
+
 =head1 BUGS
 
 Please report any bugs or feature requests to L<http://padre.perlide.org/>
