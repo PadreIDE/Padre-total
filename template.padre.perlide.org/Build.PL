@@ -17,6 +17,7 @@ my $self = Local::Padre::Website::Builder->new(
         'HTML::TreeBuilder::XPath' => 0,
         'List::Util'               => 0,
         'LWP::Simple'              => 0,
+        'Module::Build'            => '0.26',
         'Path::Class'              => 0,
         'Template'                 => 0,
         'Test::More'               => '0.87_01',
@@ -26,6 +27,8 @@ my $self = Local::Padre::Website::Builder->new(
     },
 );
 die "Mandatory parameter --destdir was not specified.\n" unless $self->destdir;
+die "Mandatory parameter --sourcedir was not specified.\n" unless $self->args->{sourcedir};
+$self->config_data(sourcedir => $self->args->{sourcedir});
 $self->create_build_script;
 say 'You can run ./Build now.';
 
@@ -37,28 +40,17 @@ Build.PL - build the web site at padre.perlide.org
 
 =head1 SYNOPSIS
 
-    perl Build.PL \
-      -s ~/svn/padre/template.padre.perlide.org \
-      -o ~/public_html/padre.perlide.org
+    perl Build.PL --sourcedir . --destdir ~/public_html/padre.perlide.org
     ./Build
     ./Build test
     ./Build install
     ./Build realclean
 
-Options:
-
-    --source-directory      base directory where templates etc. are located
-    --output-directory      base directory where built web site files go
-    --help                  brief help message
-    --man                   full documentation
-
-Options can be shortened according to L<Getopt::Long/Case and abbreviations>.
-
 =head1 OPTIONS
 
 =over
 
-=item --source-directory
+=item --sourcedir
 
 Mandatory. Specifies the name of the base directory where the web site
 templates, static files and source data are located.
@@ -66,20 +58,12 @@ templates, static files and source data are located.
 This is the checked out local working copy coming from the SVN path
 L<http://svn.perlide.org/padre/trunk/template.padre.perlide.org>.
 
-=item --output-directory
+=item --destdir
 
 Mandatory. Specifies the name of the directory where the web site files
 are output after the build.
 
 This directory already needs to exists.
-
-=item --help
-
-Print a brief help message and exits.
-
-=item --man
-
-Prints the manual page and exits.
 
 =back
 

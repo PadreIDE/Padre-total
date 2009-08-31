@@ -50,7 +50,7 @@ sub ACTION_build {
 
 sub ACTION_copy_static_files {
     my ($self) = @_;
-    my $documentroot = dir($self->base_dir, 'documentroot');
+    my $documentroot = dir($self->config_data('sourcedir'), 'documentroot');
 
     my $iter = File::Next::files({
             descend_filter => sub {$_ ne '.svn'}
@@ -69,7 +69,7 @@ sub ACTION_copy_static_files {
 sub ACTION_process_templates {
     my ($self) = @_;
 
-    my $include_path = dir($self->base_dir, 'tt');
+    my $include_path = dir($self->config_data('sourcedir'), 'tt');
     my $tt = Template->new({
             INCLUDE_PATH => $include_path,
             POST_CHOMP   => 1,                # cleanup whitespace
@@ -86,7 +86,7 @@ sub ACTION_process_templates {
         });
 
     # older version of YAML::Tiny return list ??
-    my ($stash) = LoadFile file($self->base_dir, qw(data stash.yml));
+    my ($stash) = LoadFile file($self->config_data('sourcedir'), qw(data stash.yml));
 
     $stash->{screenshots_xml} = '<div/>';    # FIXME $self->_scrape_screenshots;
     $stash->{build_date} = $self->dist_version;
@@ -168,7 +168,7 @@ sub _read_people {
 
     my @developers;
     foreach my $f (@$list) {
-        my $file = file($self->base_dir, 'data', $dir, "$f.ini");
+        my $file = file($self->config_data('sourcedir'), 'data', $dir, "$f.ini");
         open my $fh, '<:utf8', $file;
         my $section;
         my %data;
