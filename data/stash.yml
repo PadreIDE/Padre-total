@@ -10,6 +10,8 @@ navigation:
     href: translators.html
   - name: Support
     href: support.html
+  - name: Screenshots
+    href: screenshots.html
   - name: Trac
     href: trac/
   - name: Blogs
