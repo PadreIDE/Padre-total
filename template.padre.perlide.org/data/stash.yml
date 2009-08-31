@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 August 31
+        url: http://szabgab.com/blog/2009/08/1251707067.html
+        title: Improving the Padre experience
+        comment: by Gábor Szabó
       - date: 2009 August 26
         url: http://www.asciiville.com/2009/08/padre-041-plus-003.html
         title: Padre 0.41 plus 0.03
