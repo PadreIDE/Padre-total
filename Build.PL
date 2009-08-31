@@ -1,4 +1,4 @@
-use 5.010;
+use 5.008008;
 use utf8;
 use strict;
 use warnings FATAL => 'all';
@@ -30,7 +30,7 @@ die "Mandatory parameter --destdir was not specified.\n" unless $self->destdir;
 die "Mandatory parameter --sourcedir was not specified.\n" unless $self->args->{sourcedir};
 $self->config_data(sourcedir => $self->args->{sourcedir});
 $self->create_build_script;
-say 'You can run ./Build now.';
+print "You can run ./Build now.\n";
 
 __END__
 
