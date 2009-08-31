@@ -1,5 +1,5 @@
 package Local::Padre::Website::Builder;
-use 5.010;
+use 5.008008;
 use utf8;
 use strict;
 use warnings FATAL => 'all';
@@ -45,7 +45,7 @@ sub dist_version {return localtime->ymd}
 sub ACTION_build {
     my ($self) = @_;
     $self->depends_on(qw(copy_static_files process_templates));
-    say 'You can run ./Build test now.';
+    print "You can run ./Build test now.\n";
 }
 
 sub ACTION_copy_static_files {
@@ -116,7 +116,7 @@ sub ACTION_process_templates {
 
 sub ACTION_install {
     my ($self) = @_;
-    say './Build install does nothing yet. Fix me!';
+    print "./Build install does nothing yet. Fix me!\n";
 
     # system qw(rsync -a), $self->destdir, 'padre.perlide.org:';
     # or something like that.
