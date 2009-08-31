@@ -17,12 +17,12 @@ use YAML::Tiny qw(LoadFile);
 use autodie qw(:all copy);
 
 {
-    our @nerfed_methods =    # not applicable for building a website
-      map {"ACTION_$_"}
+    our %nerfed_methods =    # not applicable for building a website
+      map { "ACTION_$_" => 1 },
       qw(code dist distcheck distclean distdir distmeta distsign disttest docs
       html manifest manpages pardist ppd ppmdist skipcheck testcover testpod
       testpodcoverage versioninstall);
-    eval "sub $_ {}" for @nerfed_methods;
+    eval "sub $_ {}" for keys %nerfed_methods;
 
     sub known_actions {
         my ($self) = @_;
@@ -31,7 +31,7 @@ use autodie qw(:all copy);
         foreach my $class ($self->super_classes) {
             foreach (keys %{$class . '::'}) {
                 next
-                  if $_ ~~ @nerfed_methods;   # so ACTION_help works as intended
+                  if $nerfed_methods{$_};   # so ACTION_help works as intended
                 $actions{$1}++ if /^ACTION_(\w+)/;
             }
         }
