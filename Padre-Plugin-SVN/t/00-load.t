@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-use 5.008;
+#use 5.008;
 use strict;
 
 # taken straight from the Padre test 
@@ -9,7 +9,7 @@ use strict;
 use Test::More;
 
 BEGIN {
-	if( $^O eq 'MSWin32' or not $ENV{DISPLAY} ) {
+	if( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
 		plan skip_all => 'Needs DISPLAY';
 		exit 0;
 	}
