@@ -9,7 +9,7 @@ use strict;
 use Test::More;
 
 BEGIN {
-	if( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+	if( $^O eq 'MSWin32' or not $ENV{DISPLAY} ) {
 		plan skip_all => 'Needs DISPLAY';
 		exit 0;
 	}
