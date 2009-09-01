@@ -21,19 +21,72 @@ use FindBin;
 use lib "$FindBin::Bin/../Padre";
 use privlib::Tools;
 
+use Getopt::Long;
+
 my $SVN   = "http://svn.perlide.org/padre";
 my $TAGS  = "http://svn.perlide.org/padre/tags";
 my $error = 0;
 
-my ( $rev, $version, $tag ) = @ARGV;
-die "Usage: $0 REV VERSION [--tag]\n"
-	if not $version
-		or $version !~ /^\d\.\d\.?\d$/
-		or $rev !~ /^r?\d+$/;
 
-my $start_dir = Cwd::cwd();
+# options
+my $path = '';
+my $rev = '';
+my $version = '';
+my $tag = '';
 
-my @svn_info = ( $^O ne 'MSWin32' ) ? qx{LC_ALL=C svn info} : qx{svn info};
+## options checking
+GetOptions( 	'path=s' 	=> \$path,
+		'tag' 		=> \$tag,
+		'version=s'	=> \$version,
+		'revision=s'	=> \$rev
+	);
+
+
+#my ( $rev, $version, $tag ) = @ARGV;
+#die "Usage: $0 REV VERSION [--tag]\n"
+if( 	not $version
+	or $version !~ /^\d\.\d\.?\d$/
+	or $rev !~ /^r?\d+$/
+	) {
+	usage();
+	exit 1;
+}
+
+
+
+
+sub usage {
+	print <<EOM;
+Usage: release.pl --revsion <SVN Revision Number> --version <Your Release Version Number>
+
+Optional Parameters:
+--path <Path to the directory of component to release - typically a Plugin>
+--tag  <will try to create a distribution using a temporary directory and copy the resulting Padre-X.XX.tar.gz in the current directory>
+		
+Full details on the wiki: http://padre.perlide.org/trac/wiki/Release
+
+EOM
+
+}
+
+if( $tag ) {
+	print "Setting tag for this release\n";
+}
+
+my $start_dir;
+if( $path && -d $path ) {
+	$start_dir = $path;
+}
+elsif( $path && ! -d $path ) {
+	die( "\n\nERROR: $path does not exist\n\n" );
+} 
+else {
+	$start_dir = Cwd::cwd();
+}
+
+print "Start dir: $start_dir\n";
+
+my @svn_info = ( $^O ne 'MSWin32' ) ? qx{LC_ALL=C svn info $start_dir} : qx{svn info $start_dir};
 my ($URL) = grep {/^URL:\s*/} @svn_info;
 die "no url" if not $URL;
 chomp $URL;
@@ -68,8 +121,10 @@ print "DIR $dir\n";
 _system("svn export --quiet -r$rev $URL src");
 chdir 'src';
 
+print "CWD: " . Cwd::cwd() . "\n";
+
 #print "Setting VERSION $version\n";
-find( \&check_version, 'lib' );
+find( \&check_version, 'lib' );	
 die if $error;
 
 my $make = $^O eq 'freebsd' ? 'HARNESS_DEBUG=1 gmake' : 'make';
