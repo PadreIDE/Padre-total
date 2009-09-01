@@ -14,9 +14,6 @@ my $self = Local::Padre::Website::Builder->new(
         'File::Copy'               => 0,
         'File::Next'               => 0,
         'File::Which'              => 0,
-        'HTML::TreeBuilder::XPath' => 0,
-        'List::Util'               => 0,
-        'LWP::Simple'              => 0,
         'Module::Build'            => '0.26',
         'Path::Class'              => 0,
         'Template'                 => 0,
@@ -72,9 +69,6 @@ This directory already needs to exists.
 C<Build.PL>, employing a subclass of Module::Build, creates a F<Build> file.
 The F<Build> file is used to build, test and release the files for the web site
 at L<http://padre.perlide.org>.
-
-For the screenshots page, HTTP access to
-L<http://padre.perlide.org/trac/wiki/Screenshots> is necessary.
 
 =head1 SEE ALSO
 
