@@ -3,11 +3,10 @@
 use 5.008;
 use strict;
 
-
-use Test::More;
-
 # taken straight from the Padre test 
 # 01-load.t
+
+use Test::More;
 
 BEGIN {
 	unless ( $ENV{DISPLAY} or $^O eq 'MSWin32' ) {
