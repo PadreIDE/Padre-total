@@ -23,6 +23,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 02
+        url: http://onionstand.blogspot.com/2009/09/padre-045-stable-released.html
+        title: Padre 0.45 "stable" released!
+        comment: by garu on the Onion Stand
       - date: 2009 August 31
         url: http://szabgab.com/blog/2009/08/1251707067.html
         title: Improving the Padre experience
