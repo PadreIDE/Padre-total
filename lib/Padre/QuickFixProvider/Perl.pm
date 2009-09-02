@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Padre::QuickFixProvider ();
+use PPI                     ();
 
 our $VERSION = '0.44';
 our @ISA     = 'Padre::QuickFixProvider';
@@ -26,38 +27,28 @@ sub new {
 # Returns the quick fix list
 #
 sub quick_fix_list {
-	my ( $self, $doc, $editor ) = @_;
+	my ( $self, $document, $editor ) = @_;
 
-	my @items           = ();
-	my $text            = $editor->GetText;
-	my $current_line_no = $editor->GetCurrentLine;
+	my @items = ();
 
-	if ( $text !~ /\s*use\s+strict/msx ) {
-		push @items, {
-			text     => qq{Add 'use strict;'},
-			listener => sub {
-				my $line_start = $editor->PositionFromLine($current_line_no);
-				my $line_end   = $editor->GetLineEndPosition($current_line_no);
-				my $line       = $editor->GetTextRange( $line_start, $line_end );
-				$line = qq{use strict;$line\n};
-				$editor->SetSelection( $line_start, $line_end );
-				$editor->ReplaceSelection($line);
-				}
-		};
+	my $text = $editor->GetText;
+	my $doc  = PPI::Document->new( \$text );
+	$doc->index_locations;
+
+	my @fixes = (
+		'Padre::QuickFixProvider::Perl::StrictWarnings',
+		'Padre::QuickFixProvider::Perl::IncludeModule',
+	);
+
+	foreach my $fix (@fixes) {
+		eval "require $fix;";
+		if ($@) {
+			warn "failed to load $fix\n";
+		} else {
+			push @items, $fix->new->apply( $doc, $document );
+		}
 	}
-	if ( $text !~ /\s*use\s+warnings/msx ) {
-		push @items, {
-			text     => qq{Add 'use warnings;'},
-			listener => sub {
-				my $line_start = $editor->PositionFromLine($current_line_no);
-				my $line_end   = $editor->GetLineEndPosition($current_line_no);
-				my $line       = $editor->GetTextRange( $line_start, $line_end );
-				$line = qq{use warnings;$line\n};
-				$editor->SetSelection( $line_start, $line_end );
-				$editor->ReplaceSelection($line);
-				}
-		};
-	}
+
 
 	return @items;
 }

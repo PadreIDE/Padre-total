@@ -308,10 +308,13 @@ setting(
 	default => 1,
 );
 setting(
-	name    => 'main_toolbar',
-	type    => Padre::Constant::BOOLEAN,
-	store   => Padre::Constant::HUMAN,
-	default => 1,
+	name  => 'main_toolbar',
+	type  => Padre::Constant::BOOLEAN,
+	store => Padre::Constant::HUMAN,
+
+	# Toolbars are not typically used for Mac apps.
+	# Hide it by default so Padre looks "more Mac'ish"
+	default => Padre::Constant::MAC ? 0 : 1,
 );
 
 # Directory Tree Settings
