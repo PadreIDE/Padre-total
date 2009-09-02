@@ -57,7 +57,7 @@ if( 	not $version
 
 sub usage {
 	print <<EOM;
-Usage: release.pl --revsion <SVN Revision Number> --version <Your Release Version Number>
+Usage: release.pl --revision <SVN Revision Number> --version <Your Release Version Number>
 
 Optional Parameters:
 --path <Path to the directory of component to release - typically a Plugin>
