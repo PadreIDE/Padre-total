@@ -45,7 +45,8 @@ If you would like to get involved in the translation project please check out ou
  <!-- list of padre translators -->
 <ul id="translators" class="unstyled palette_text" >
 [% FOREACH t IN translators %]
-   <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]" >
+   <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]" 
+   [% IF t.language_tag == 'ar' %] style="text-align: justify; direction:rtl;" [% END %]>
     [% WRAPPER chrome/styled_panel %]
 
     [% IF t.url %]
