@@ -20,8 +20,8 @@ our @TOKEN_TABLE = ();
 my @context;
 
 sub USAGE {
-	print <<'END';
-viv [switches] filename
+	print <<"END";
+$0 [switches] filename
 where switches can be:
 	--log                              Emit debugging info to standard error
 	--help                             Prints this help
