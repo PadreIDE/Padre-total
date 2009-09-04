@@ -1,7 +1,7 @@
 # The start of a gimme5 replacement based on STD parsing.
 # viv stands for roman numbers VIV (i.e. Perl 5 to 6)
-use strict;
 use 5.010;
+use strict;
 use warnings;
 use lib 'lib';
 use Carp;
@@ -88,57 +88,7 @@ sub MAIN {
 	}
 	
 	if($OPT_color) {
-		#XXX -  should experiment with color information
-		#       from token table 
-		
-		my $text = _slurp($filename);
-		my %colors = (
-			'DeclareVar'     => 'blue',
-			'DeclareRoutine' => 'blue',
-			'FlowControl'    => 'blue',
-			'Module'         => 'blue',
-			'Variable'       => 'red',
-			'Parameter'      => 'red',
-			'VariableName'	 => 'red',
-			'MethodName'     => 'red',
-			'SubName'        => 'red',
-			'GrammarName'    => 'red',
-		);
-		my $buffer = '';
-		my $last_color = '';
-		for(my $i = 0; $i < length $text; $i++) {
-			my $c = substr $text, $i, 1;
-			
-			my $token_to_color = undef;
-			foreach my $token (@TOKEN_TABLE) {
-				my $from = $token->{from};
-				my $token_length = length $token->{name};
-				if($i >= $from && ($i <= $from + $token_length)) {
-					$token_to_color = $token;
-					last;
-				}			
-			}
-			if($token_to_color) {
-				my $type = $token_to_color->{type};
-				if($type) {
-					my $color = $colors{$type};
-					if($color && $color ne $last_color) {
-						if(length $last_color) {
-							$buffer .= "</$last_color>";
-						}
-						$buffer .= "<$color>"; 
-						$last_color = $color;
-					} 
-				}
-			}
-			
-			$buffer .= $c;
-		}
-		if(length $last_color) {
-			$buffer .= "</$last_color>";
-		}
-		
-		print $buffer;
+		show_color($filename);
 	}
 }
 
@@ -295,6 +245,62 @@ sub find_variable_declaration {
 	}
 	
 	return ($declaration_position, @variables);
+}
+
+#
+# Colors tokens based on information from the token table
+#
+sub show_color {
+	my $filename = shift;
+
+	my $text = _slurp($filename);
+	my %colors = (
+		'DeclareVar'     => 'blue',
+		'DeclareRoutine' => 'blue',
+		'FlowControl'    => 'blue',
+		'Module'         => 'blue',
+		'Variable'       => 'red',
+		'Parameter'      => 'red',
+		'VariableName'	 => 'red',
+		'MethodName'     => 'red',
+		'SubName'        => 'red',
+		'GrammarName'    => 'red',
+	);
+	my $buffer = '';
+	my $last_color = '';
+	for(my $i = 0; $i < length $text; $i++) {
+		my $c = substr $text, $i, 1;
+		
+		my $token_to_color = undef;
+		foreach my $token (@TOKEN_TABLE) {
+			my $from = $token->{from};
+			my $token_length = length $token->{name};
+			if($i >= $from && ($i <= $from + $token_length)) {
+				$token_to_color = $token;
+				last;
+			}			
+		}
+		if($token_to_color) {
+			my $type = $token_to_color->{type};
+			if($type) {
+				my $color = $colors{$type};
+				if($color && $color ne $last_color) {
+					if(length $last_color) {
+						$buffer .= "</$last_color>";
+					}
+					$buffer .= "<$color>"; 
+					$last_color = $color;
+				} 
+			}
+		}
+		
+		$buffer .= $c;
+	}
+	if(length $last_color) {
+		$buffer .= "</$last_color>";
+	}
+	
+	print $buffer;
 }
 
 sub dump_token_table {
