@@ -4930,6 +4930,30 @@ sub dump_token_table {
 }
 
 {
+	package VAST::vnum;
+	our @ISA = 'VAST::Base';
+	
+	sub emit_token {
+		my $self = shift;
+		my $lvl  = shift;
+		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->ret(@t);
+	}
+}
+
+{
+	package VAST::version__S_v;
+	our @ISA = 'VAST::Base';
+	
+	sub emit_token {
+		my $self = shift;
+		my $lvl  = shift;
+		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->ret(@t);
+	}
+}
+
+{
 	package VAST::statement_control__S_use;
 	our @ISA = 'VAST::Base';
 	
