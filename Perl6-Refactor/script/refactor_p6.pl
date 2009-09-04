@@ -9,13 +9,13 @@ use STD;
 use utf8;
 use YAML::XS;
 
-my $OPT_log = 0;
+my $OPT_log              = 0;
 my $OPT_find_declaration = undef;
 my $OPT_rename_variable  = undef;
-my $OPT_color = 0;
+my $OPT_color            = 0;
 our $PACKAGE_TYPE = '';
-our $SCOPE = '';
-our @TOKEN_TABLE = ();
+our $SCOPE        = '';
+our @TOKEN_TABLE  = ();
 
 my @context;
 
@@ -38,29 +38,29 @@ sub MAIN {
 	require Getopt::Long;
 	my $help = 0;
 	Getopt::Long::GetOptions(
-		'log',                 =>\$OPT_log,
-		'color',               =>\$OPT_color,
-		'find-declaration=s'   => \$OPT_find_declaration,
-		'rename-var=s',        => \$OPT_rename_variable,
-		'help'                 =>\$help,
+		'log',               => \$OPT_log,
+		'color',             => \$OPT_color,
+		'find-declaration=s' => \$OPT_find_declaration,
+		'rename-var=s',      => \$OPT_rename_variable,
+		'help'               => \$help,
 	);
-	
-	if($help) {
+
+	if ($help) {
 		USAGE;
 	}
 
-	
-	my $variable = '';
-	my $line_number = '';
+
+	my $variable     = '';
+	my $line_number  = '';
 	my $new_variable = '';
-	if(defined $OPT_find_declaration && $OPT_find_declaration =~ /^(.+?)\s*,\s*(\d+)$/) {
-		($variable, $line_number) = ($1, $2);
+	if ( defined $OPT_find_declaration && $OPT_find_declaration =~ /^(.+?)\s*,\s*(\d+)$/ ) {
+		( $variable, $line_number ) = ( $1, $2 );
 	} else {
 		$OPT_find_declaration = undef;
 	}
-	
-	if(defined $OPT_rename_variable && $OPT_rename_variable =~ /^(.+?)\s*,\s*(\d+)\s*,\s*(.+?)$/) {
-		($variable, $line_number, $new_variable) = ($1, $2, $3);
+
+	if ( defined $OPT_rename_variable && $OPT_rename_variable =~ /^(.+?)\s*,\s*(\d+)\s*,\s*(.+?)$/ ) {
+		( $variable, $line_number, $new_variable ) = ( $1, $2, $3 );
 	} else {
 		$OPT_rename_variable = undef;
 	}
@@ -78,16 +78,16 @@ sub MAIN {
 	$r->ret( $r->emit_token(0) );
 
 	dump_token_table();
-	
-	if($OPT_find_declaration) {
-		show_find_variable_declaration($variable, $line_number, $filename);
+
+	if ($OPT_find_declaration) {
+		show_find_variable_declaration( $variable, $line_number, $filename );
 	}
-	
-	if($OPT_rename_variable) {
-		show_rename_variable($variable, $line_number, $new_variable, $filename);
+
+	if ($OPT_rename_variable) {
+		show_rename_variable( $variable, $line_number, $new_variable, $filename );
 	}
-	
-	if($OPT_color) {
+
+	if ($OPT_color) {
 		show_color($filename);
 	}
 }
@@ -97,37 +97,37 @@ sub MAIN {
 # see perlfaq5
 #-----------------------------------------------------
 sub _slurp {
-    my $filename = shift;
-    my $fh = IO::File->new($filename)
-        or croak "Could not open $filename for reading";
-    local $/ = undef;   #enable localized slurp mode
-    my $contents = <$fh>;
-    close $fh
-        or croak "Could not close $filename";
-    return $contents;
+	my $filename = shift;
+	my $fh       = IO::File->new($filename)
+		or croak "Could not open $filename for reading";
+	local $/ = undef; #enable localized slurp mode
+	my $contents = <$fh>;
+	close $fh
+		or croak "Could not close $filename";
+	return $contents;
 }
 
 #
 # Shows the variable declaration..
 #
 sub show_find_variable_declaration {
-	my ($variable, $line_number, $filename) = @_;
+	my ( $variable, $line_number, $filename ) = @_;
 
-	my ($found_symbol_index, @variables) = find_variable_declaration($variable, $line_number);
-	if($found_symbol_index != -1) {
+	my ( $found_symbol_index, @variables ) = find_variable_declaration( $variable, $line_number );
+	if ( $found_symbol_index != -1 ) {
 		my $symbol = $TOKEN_TABLE[$found_symbol_index];
 		printf "Found declaration at line %d.\n", $symbol->{line};
 
 		open FH, $filename or die "cannot open $filename\n";
 		my $count = 1;
 		print "...\n";
-		while(my $line = <FH>) {
+		while ( my $line = <FH> ) {
 			chomp $line;
-			if($count == $symbol->{line} || 
-				($count == $line_number) ) 
+			if ( $count == $symbol->{line}
+				|| ( $count == $line_number ) )
 			{
 				print "#$count: " . $line . "\n...\n";
-			} 
+			}
 			$count++;
 		}
 		close FH;
@@ -140,39 +140,38 @@ sub show_find_variable_declaration {
 
 #
 # rename variable by first finding a variable declaration's
-# and then finding all variables for that declaration within the 
+# and then finding all variables for that declaration within the
 # same/upper lexical scope.
 #
 sub show_rename_variable {
-	my ($variable, $line_number, $new_variable, $filename) = @_;
+	my ( $variable, $line_number, $new_variable, $filename ) = @_;
 
-	my ($found_symbol_index, @variables) = find_variable_declaration($variable, $line_number);
-	if($found_symbol_index != -1) {
+	my ( $found_symbol_index, @variables ) = find_variable_declaration( $variable, $line_number );
+	if ( $found_symbol_index != -1 ) {
 		my $symbol = $TOKEN_TABLE[$found_symbol_index];
 		printf "Found declaration at line %d.\n", $symbol->{line};
 
 		open FH, $filename or die "cannot open $filename\n";
 		my $count = 1;
-		my $pos = 0;
+		my $pos   = 0;
 		$| = 1;
 		print "\n";
-		while(my $line = <FH>) {
+		while ( my $line = <FH> ) {
 			my $len = length $line;
 			chomp $line;
 			foreach my $var (@variables) {
-				if($count == $var->{line}) {
+				if ( $count == $var->{line} ) {
 					print "#$count: " . $line . "\n  -->\n";
 					substr $line, $var->{from} - $pos, $var->{to} - $var->{from}, $new_variable;
 					print "#$count: " . $line . "\n...\n\n";
 					last;
 				}
 			}
-			if( $count == $line_number ) 
-			{
+			if ( $count == $line_number ) {
 				print "#$count: " . $line . "\n-->\n";
 				substr $line, $symbol->{from} - $pos, $symbol->{to} - $symbol->{from}, $new_variable;
 				print "#$count: " . $line . "\n...\n\n";
-			} 
+			}
 			$pos += $len;
 			$count++;
 		}
@@ -185,57 +184,59 @@ sub show_rename_variable {
 }
 
 sub find_token_at {
-	my ($variable, $line_number) = @_;
+	my ( $variable, $line_number ) = @_;
 
-	my ($position,$scope) = (-1, '');
-	for(my $i = 0; $i < scalar @TOKEN_TABLE; $i++ ) {
+	my ( $position, $scope ) = ( -1, '' );
+	for ( my $i = 0; $i < scalar @TOKEN_TABLE; $i++ ) {
 		my $symbol = $TOKEN_TABLE[$i];
-		if( $symbol->{line} == $line_number && 
-			$symbol->{name} eq $variable) 
+		if (   $symbol->{line} == $line_number
+			&& $symbol->{name} eq $variable )
 		{
 			$position = $i;
-			$scope = $symbol->{scope};
+			$scope    = $symbol->{scope};
 			last;
 		}
 	}
-	
-	return ($position, $scope);
+
+	return ( $position, $scope );
 }
 
 #
 # Finds a variable's declaration by poking around in the VIV token table
 #
 sub find_variable_declaration {
-	my ($variable, $line_number) = @_;
+	my ( $variable, $line_number ) = @_;
 
-	my ($symbol_position, $symbol_scope) = find_token_at($variable, $line_number);
-	
+	my ( $symbol_position, $symbol_scope ) = find_token_at( $variable, $line_number );
+
 	my $declaration_position = -1;
-	my @variables = ();
-	if($symbol_position == -1) {
+	my @variables            = ();
+	if ( $symbol_position == -1 ) {
+
 		#Didnt find what you needed
 		print "Did not find any variable named '$variable' at line $line_number\n";
 	} else {
+
 		# Try to find its declaration
-		for(my $i = $symbol_position; $i >= 0; $i--) {
+		for ( my $i = $symbol_position; $i >= 0; $i-- ) {
 			my $symbol = $TOKEN_TABLE[$i];
-			my $type = $symbol->{type};
-			if($symbol->{name} eq $variable && 
-					($type eq 'VariableName' || $type eq 'Parameter') &&
-					(length $symbol_scope) >= (length $symbol->{scope}) )
+			my $type   = $symbol->{type};
+			if (   $symbol->{name} eq $variable
+				&& ( $type eq 'VariableName' || $type eq 'Parameter' )
+				&& ( length $symbol_scope ) >= ( length $symbol->{scope} ) )
 			{
 				$declaration_position = $i;
 				last;
 			}
 		}
-		
-		if($declaration_position != -1) {
-			for(my $i = $declaration_position; $i < scalar @TOKEN_TABLE; $i++) {
+
+		if ( $declaration_position != -1 ) {
+			for ( my $i = $declaration_position; $i < scalar @TOKEN_TABLE; $i++ ) {
 				my $symbol = $TOKEN_TABLE[$i];
-				my $type = $symbol->{type};
-				if($symbol->{name} eq $variable &&
-					$type eq 'Variable' &&
-						(length $symbol_scope) >= (length $symbol->{scope}))
+				my $type   = $symbol->{type};
+				if (   $symbol->{name} eq $variable
+					&& $type eq 'Variable'
+					&& ( length $symbol_scope ) >= ( length $symbol->{scope} ) )
 				{
 					print "found " . $symbol->{name} . " at " . $symbol->{line} . "\n";
 					push @variables, $symbol;
@@ -243,8 +244,8 @@ sub find_variable_declaration {
 			}
 		}
 	}
-	
-	return ($declaration_position, @variables);
+
+	return ( $declaration_position, @variables );
 }
 
 #
@@ -253,7 +254,7 @@ sub find_variable_declaration {
 sub show_color {
 	my $filename = shift;
 
-	my $text = _slurp($filename);
+	my $text   = _slurp($filename);
 	my %colors = (
 		'DeclareVar'     => 'blue',
 		'DeclareRoutine' => 'blue',
@@ -261,63 +262,59 @@ sub show_color {
 		'Module'         => 'blue',
 		'Variable'       => 'red',
 		'Parameter'      => 'red',
-		'VariableName'	 => 'red',
+		'VariableName'   => 'red',
 		'MethodName'     => 'red',
 		'SubName'        => 'red',
 		'GrammarName'    => 'red',
 	);
-	my $buffer = '';
+	my $buffer     = '';
 	my $last_color = '';
-	for(my $i = 0; $i < length $text; $i++) {
+	for ( my $i = 0; $i < length $text; $i++ ) {
 		my $c = substr $text, $i, 1;
-		
+
 		my $token_to_color = undef;
 		foreach my $token (@TOKEN_TABLE) {
-			my $from = $token->{from};
+			my $from         = $token->{from};
 			my $token_length = length $token->{name};
-			if($i >= $from && ($i <= $from + $token_length)) {
+			if ( $i >= $from && ( $i <= $from + $token_length ) ) {
 				$token_to_color = $token;
 				last;
-			}			
-		}
-		if($token_to_color) {
-			my $type = $token_to_color->{type};
-			if($type) {
-				my $color = $colors{$type};
-				if($color && $color ne $last_color) {
-					if(length $last_color) {
-						$buffer .= "</$last_color>";
-					}
-					$buffer .= "<$color>"; 
-					$last_color = $color;
-				} 
 			}
 		}
-		
+		if ($token_to_color) {
+			my $type = $token_to_color->{type};
+			if ($type) {
+				my $color = $colors{$type};
+				if ( $color && $color ne $last_color ) {
+					if ( length $last_color ) {
+						$buffer .= "</$last_color>";
+					}
+					$buffer .= "<$color>";
+					$last_color = $color;
+				}
+			}
+		}
+
 		$buffer .= $c;
 	}
-	if(length $last_color) {
+	if ( length $last_color ) {
 		$buffer .= "</$last_color>";
 	}
-	
+
 	print $buffer;
 }
 
 sub dump_token_table {
 	my $separator = '-' x 76;
-	print "\n" . $separator . "\n";		
+	print "\n" . $separator . "\n";
 	my $format = "| %-15s | %-15s | %-20s | %-4s |\n";
 	printf $format, 'NAME', 'TYPE', 'SCOPE', 'LINE';
 	print $separator . "\n";
-	foreach my $symbol ( @TOKEN_TABLE ) {
-		printf $format, 
-			$symbol->{name},
-			$symbol->{type},
-			$symbol->{scope},
-			$symbol->{line};
+	foreach my $symbol (@TOKEN_TABLE) {
+		printf $format, $symbol->{name}, $symbol->{type}, $symbol->{scope}, $symbol->{line};
 	}
 	print $separator . "\n\n";
-	
+
 	return;
 }
 ###################################################################
@@ -334,9 +331,9 @@ sub dump_token_table {
 	sub AUTOLOAD {
 		my $self  = shift;
 		my $match = shift;
-		return if @_;    # not interested in tagged reductions
+		return if @_; # not interested in tagged reductions
 		return
-		  if $match->{_ast}{_specific} and ref( $match->{_ast} ) =~ /^VAST/;
+			if $match->{_ast}{_specific} and ref( $match->{_ast} ) =~ /^VAST/;
 		my $r = hoistast($match);
 		( my $class = $AUTOLOAD ) =~ s/^Actions/VAST/;
 		$class =~ s/__S_\d\d\d/__S_/ and $r->{_specific} = 1;
@@ -361,56 +358,44 @@ sub dump_token_table {
 				for my $key ( keys %$v ) {
 					$r{$key} = $$v{$key};
 				}
-			}
-			elsif ( $k eq 'PRE' ) {
-			}
-			elsif ( $k eq 'POST' ) {
-			}
-			elsif ( $k eq 'SIGIL' ) {
+			} elsif ( $k eq 'PRE' ) {
+			} elsif ( $k eq 'POST' ) {
+			} elsif ( $k eq 'SIGIL' ) {
 				$r{SIGIL} = $v;
-			}
-			elsif ( $k eq 'sym' ) {
+			} elsif ( $k eq 'sym' ) {
 				if ( ref $v ) {
 					if ( ref($v) eq 'ARRAY' ) {
 						$r{SYM} = ::Dump($v);
-					}
-					elsif ( ref($v) eq 'HASH' ) {
+					} elsif ( ref($v) eq 'HASH' ) {
 						$r{SYM} = ::Dump($v);
-					}
-					elsif ( $v->{_pos} ) {
+					} elsif ( $v->{_pos} ) {
 						$r{SYM} = $v->Str;
-					}
-					else {
+					} else {
 						$r{SYM} = $v->TEXT;
 					}
-				}
-				else {
+				} else {
 					$r{SYM} = $v;
 				}
-			}
-			elsif ( $k eq '_arity' ) {
+			} elsif ( $k eq '_arity' ) {
 				$r{ARITY} = $v;
-			}
-			elsif ( $k eq '~CAPS' ) {
+			} elsif ( $k eq '~CAPS' ) {
 
 				if ( ref $v ) {
 					for (@$v) {
-						next unless ref $_;    # XXX skip keys?
+						next unless ref $_; # XXX skip keys?
 						push @all, $_->{'_ast'};
 					}
 				}
-			}
-			elsif ( $k eq '_from' ) {
+			} elsif ( $k eq '_from' ) {
 				$r{BEG} = $v;
 				$r{END} = $node->{_pos};
 				if ( exists $::MEMOS[$v]{'ws'} ) {
 					my $wsstart = $::MEMOS[$v]{'ws'};
 					$r{WS} = $v - $wsstart
-					  if defined $wsstart and $wsstart < $v;
+						if defined $wsstart and $wsstart < $v;
 				}
-			}
-			elsif ( $k =~ /^[a-zA-Z]/ ) {
-				if ( $k eq 'noun' ) {    # trim off PRE and POST
+			} elsif ( $k =~ /^[a-zA-Z]/ ) {
+				if ( $k eq 'noun' ) { # trim off PRE and POST
 					$r{BEG} = $v->{_from};
 					$r{END} = $v->{_pos};
 				}
@@ -421,27 +406,23 @@ sub dump_token_table {
 							if ( ref($z) eq 'ARRAY' ) {
 								push @$zyg, $z;
 								push @fake, @$z;
-							}
-							elsif ( exists $z->{'_ast'} ) {
+							} elsif ( exists $z->{'_ast'} ) {
 								my $zy = $z->{'_ast'};
 								push @fake, $zy;
 								push @$zyg, $zy;
 							}
-						}
-						else {
+						} else {
 							push @$zyg, $z;
 						}
 					}
 					$r{$k} = $zyg;
 
 					#		    $r{zygs}{$k} = $SEQ++ if @$zyg and $k ne 'sym';
-				}
-				elsif ( ref $v ) {
+				} elsif ( ref $v ) {
 					if ( exists $v->{'_ast'} ) {
 						push @fake, $v->{'_ast'};
 						$r{$k} = $v->{'_ast'};
-					}
-					else {
+					} else {
 						$r{$k} = $v;
 					}
 
@@ -451,22 +432,18 @@ sub dump_token_table {
 						gen_class($class);
 						bless $r{$k}, $class unless ref( $r{$k} ) =~ /^VAST/;
 					}
-				}
-				else {
+				} else {
 					$r{$k} = $v;
 				}
 			}
 		}
 		if ( @all == 1 and defined $all[0] ) {
 			$r{'.'} = $all[0];
-		}
-		elsif (@all) {
+		} elsif (@all) {
 			$r{'.'} = \@all;
-		}
-		elsif (@fake) {
+		} elsif (@fake) {
 			$r{'.'} = \@fake;
-		}
-		else {
+		} else {
 			$r{TEXT} = $text;
 		}
 		\%r;
@@ -570,8 +547,7 @@ sub dump_token_table {
 		my $self  = shift;
 		my $match = shift;
 		my $r     = hoist($match);
-		my $a     = $r->{'.'} =
-		  [ $match->{left}->{_ast}, $match->{_ast}, $match->{right}->{_ast} ];
+		my $a     = $r->{'.'} = [ $match->{left}->{_ast}, $match->{_ast}, $match->{right}->{_ast} ];
 		$r->{BEG} = $a->[0]->{BEG}  // $match->{_from};
 		$r->{END} = $a->[-1]->{END} // $match->{_pos};
 
@@ -653,30 +629,30 @@ sub dump_token_table {
 			if ( $se > $last ) {
 				push @text, substr( $::ORIG, $last, $se - $last );
 			}
-		}
-		else {
+		} else {
 
 			push @text, $self->{TEXT};
 		}
-		
+
 		splice( @context, $lvl );
 		$self->ret(@text);
 	}
-	
+
 	sub add_token {
 		my ( $self, $name, $type ) = @_;
 		$name =~ s/^\s+|\s+$//g;
 		my $from = $self->{BEG};
-		my $to = $self->{END};
+		my $to   = $self->{END};
 		my $line = STD->lineof($from);
-		push @TOKEN_TABLE, {
+		push @TOKEN_TABLE,
+			{
 			name  => $name,
 			type  => $type,
 			line  => $line,
 			from  => $from,
 			to    => $to,
 			scope => $SCOPE,
-		}; 
+			};
 	}
 
 }
@@ -2409,11 +2385,11 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self      = shift;
+		my $lvl       = shift;
 		my $OLD_SCOPE = $SCOPE;
 		$SCOPE .= ':' . $PACKAGE_TYPE;
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$SCOPE = $OLD_SCOPE;
 		$self->add_token( $t[1], 'MethodName' );
 		$self->ret(@t);
@@ -2426,12 +2402,12 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self      = shift;
+		my $lvl       = shift;
 		my $OLD_SCOPE = $SCOPE;
 		$SCOPE .= ':' . $self->{SYM};
-		$self->add_token( $self->{SYM}, 'DeclareRoutine');
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->add_token( $self->{SYM}, 'DeclareRoutine' );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$SCOPE = $OLD_SCOPE;
 		$self->ret(@t);
 	}
@@ -2460,7 +2436,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($t[0], 'MethodCall');
+		$self->add_token( $t[0], 'MethodCall' );
 		$self->ret(@t);
 	}
 }
@@ -2474,7 +2450,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($t[0], 'MethodOp');
+		$self->add_token( $t[0], 'MethodOp' );
 		$self->ret(@t);
 	}
 }
@@ -3046,12 +3022,12 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self             = shift;
+		my $lvl              = shift;
 		my $OLD_PACKAGE_TYPE = $PACKAGE_TYPE;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $PACKAGE_TYPE, 'Module' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$PACKAGE_TYPE = $OLD_PACKAGE_TYPE;
 		$self->ret(@t);
 	}
@@ -3067,7 +3043,7 @@ sub dump_token_table {
 		my $lvl  = shift;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $PACKAGE_TYPE, 'Module' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1, $self->{SYM} );
+		my @t = $self->SUPER::emit_token( $lvl + 1, $self->{SYM} );
 		$self->ret(@t);
 	}
 }
@@ -3081,7 +3057,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$PACKAGE_TYPE = $self->{SYM};
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3096,7 +3072,7 @@ sub dump_token_table {
 		my $lvl  = shift;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $PACKAGE_TYPE, 'Module' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3111,7 +3087,7 @@ sub dump_token_table {
 		my $lvl  = shift;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $PACKAGE_TYPE, 'Module' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3126,7 +3102,7 @@ sub dump_token_table {
 		my $lvl  = shift;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $PACKAGE_TYPE, 'Module' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3137,13 +3113,13 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self      = shift;
+		my $lvl       = shift;
 		my $OLD_SCOPE = $SCOPE;
 		$SCOPE .= ':' . $PACKAGE_TYPE;
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$SCOPE = $OLD_SCOPE;
-		
+
 		$PACKAGE_TYPE =~ s/class/ClassName/;
 		$PACKAGE_TYPE =~ s/slang/SlangName/;
 		$PACKAGE_TYPE =~ s/package/PackageName/;
@@ -3202,11 +3178,11 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self      = shift;
+		my $lvl       = shift;
 		my $OLD_SCOPE = $SCOPE;
 		$SCOPE .= ':' . 'pblock';
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$SCOPE = $OLD_SCOPE;
 		$self->ret(@t);
 	}
@@ -3727,8 +3703,8 @@ sub dump_token_table {
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
-		$self->add_token( $self->{SYM}, 'DeclareRoutine');
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->add_token( $self->{SYM}, 'DeclareRoutine' );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3741,8 +3717,8 @@ sub dump_token_table {
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
-		$self->add_token( $self->{SYM}, 'DeclareRoutine');
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->add_token( $self->{SYM}, 'DeclareRoutine' );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3755,8 +3731,8 @@ sub dump_token_table {
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
-		$self->add_token( $self->{SYM}, 'DeclareRoutine');		
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->add_token( $self->{SYM}, 'DeclareRoutine' );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -3819,12 +3795,12 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self    = shift;
-		my $lvl     = shift;
+		my $self             = shift;
+		my $lvl              = shift;
 		my $OLD_PACKAGE_TYPE = $PACKAGE_TYPE;
 		$PACKAGE_TYPE = $self->{SYM};
 		$self->add_token( $self->{SYM}, 'DeclareRoutine' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$PACKAGE_TYPE = $OLD_PACKAGE_TYPE;
 		$self->ret(@t);
 	}
@@ -3928,11 +3904,11 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self   = shift;
+		my $lvl    = shift;
 		my $symbol = $self->{SYM};
 		$self->add_token( $self->{SYM}, 'DeclareVar' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->add_token( $t[1], "VariableName" );
 		$self->ret(@t);
 	}
@@ -3944,11 +3920,11 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self   = shift;
+		my $lvl    = shift;
 		my $symbol = $self->{SYM};
 		$self->add_token( $symbol, 'DeclareVar' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->add_token( $t[1], "VariableName" );
 		$self->ret(@t);
 	}
@@ -3960,11 +3936,11 @@ sub dump_token_table {
 	our @ISA = 'VAST::Base';
 
 	sub emit_token {
-		my $self = shift;
-		my $lvl  = shift;
+		my $self   = shift;
+		my $lvl    = shift;
 		my $symbol = $self->{SYM};
 		$self->add_token( $symbol, 'DeclareVar' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->add_token( $t[1], "VariableName" );
 		$self->ret(@t);
 	}
@@ -4201,7 +4177,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4215,7 +4191,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4229,7 +4205,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4243,7 +4219,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4257,7 +4233,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4271,7 +4247,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'FlowControl' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4311,7 +4287,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4325,7 +4301,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4339,7 +4315,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4353,7 +4329,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4367,7 +4343,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4381,7 +4357,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4408,7 +4384,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'FlowControl');
+		$self->add_token( $self->{SYM}, 'FlowControl' );
 		$self->ret(@t);
 	}
 }
@@ -4422,7 +4398,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'Exception');
+		$self->add_token( $self->{SYM}, 'Exception' );
 		$self->ret(@t);
 	}
 }
@@ -4586,7 +4562,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		$self->add_token( $self->{SYM}, 'p6Variable' );
-		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		my @t = $self->SUPER::emit_token( $lvl + 1 );
 		$self->ret(@t);
 	}
 }
@@ -4665,7 +4641,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'Trait');
+		$self->add_token( $self->{SYM}, 'Trait' );
 		$self->ret(@t);
 	}
 }
@@ -4679,7 +4655,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'Trait');
+		$self->add_token( $self->{SYM}, 'Trait' );
 		$self->ret(@t);
 	}
 }
@@ -4693,7 +4669,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'Trait');
+		$self->add_token( $self->{SYM}, 'Trait' );
 		$self->ret(@t);
 	}
 }
@@ -4707,7 +4683,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($self->{SYM}, 'Trait');
+		$self->add_token( $self->{SYM}, 'Trait' );
 		$self->ret(@t);
 	}
 }
@@ -4851,7 +4827,7 @@ sub dump_token_table {
 		my $self = shift;
 		my $lvl  = shift;
 		my @t    = $self->SUPER::emit_token( $lvl + 1 );
-		$self->add_token($t[0], 'Number');
+		$self->add_token( $t[0], 'Number' );
 		$self->ret(@t);
 	}
 }
@@ -4936,9 +4912,10 @@ sub dump_token_table {
 }
 
 {
+
 	package VAST::vnum;
 	our @ISA = 'VAST::Base';
-	
+
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
@@ -4948,9 +4925,10 @@ sub dump_token_table {
 }
 
 {
+
 	package VAST::version__S_v;
 	our @ISA = 'VAST::Base';
-	
+
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
@@ -4960,9 +4938,10 @@ sub dump_token_table {
 }
 
 {
+
 	package VAST::statement_control__S_use;
 	our @ISA = 'VAST::Base';
-	
+
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;

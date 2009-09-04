@@ -6,11 +6,13 @@ our $VERSION = '0.02';
 
 sub rename_variable {
 	my $self = shift;
+
 	#XXX-implement
 }
 
 sub find_variable_declaration {
 	my $self = shift;
+
 	#XXX-implement
 }
 
