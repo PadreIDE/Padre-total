@@ -250,12 +250,14 @@ sub find_variable_declaration {
 
 #
 # Colors tokens based on information from the token table
+# This is strictly experimental...
 #
 sub show_color {
 	my $filename = shift;
 
 	my $text   = _slurp($filename);
 	my %colors = (
+		'Comment'        => 'green',
 		'DeclareVar'     => 'blue',
 		'DeclareRoutine' => 'blue',
 		'FlowControl'    => 'blue',
