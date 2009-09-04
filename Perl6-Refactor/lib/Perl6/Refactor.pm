@@ -1,13 +1,8 @@
 package Perl6::Refactor;
 
-use warnings;
-use strict;
+use Moose;
 
-our $VERSION = '0.01';
-
-sub new {
-	#XXX-implement
-}
+our $VERSION = '0.02';
 
 sub rename_variable {
 	my $self = shift;
@@ -26,7 +21,7 @@ __END__
 
 =head1 NAME
 
-Perl6::Refactor - The great new Perl6::Refactor!
+Perl6::Refactor - Refactors Perl 6 code
 
 =head1 SYNOPSIS
 
@@ -54,9 +49,6 @@ Ahmad M. Zawawi, C<< <ahmad.zawawi at gmail.com> >>
 Please report any bugs or feature requests to C<bug-perl6-refactor at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Perl6-Refactor>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
-
 
 =head1 SUPPORT
 
