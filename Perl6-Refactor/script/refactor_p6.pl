@@ -68,7 +68,7 @@ sub MAIN {
 	my $filename = shift @ARGV;
 	my $r;
 	if ( $filename and -f $filename ) {
-		$r = STD->parsefile( $filename, actions => 'Actions' )->{'_ast'};
+		$r = STD->parsefile( $filename, actions => 'Perl6::Refactor::Actions' )->{'_ast'};
 	} else {
 		print "no filename\n\n";
 		USAGE;
@@ -323,7 +323,7 @@ sub dump_token_table {
 
 {
 
-	package Actions;
+	package Perl6::Refactor::Actions;
 
 	# Generic ast translation done via autoload
 
@@ -337,7 +337,7 @@ sub dump_token_table {
 		return
 			if $match->{_ast}{_specific} and ref( $match->{_ast} ) =~ /^VAST/;
 		my $r = hoistast($match);
-		( my $class = $AUTOLOAD ) =~ s/^Actions/VAST/;
+		( my $class = $AUTOLOAD ) =~ s/^Perl6::Refactor::Actions/VAST/;
 		$class =~ s/__S_\d\d\d/__S_/ and $r->{_specific} = 1;
 		gen_class($class);
 		bless $r, $class unless ref($r) =~ /^VAST/;
