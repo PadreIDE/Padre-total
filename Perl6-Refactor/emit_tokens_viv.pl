@@ -4904,9 +4904,35 @@ sub dump_token_table {
 
 {
 
+	package VAST::comment__S_Sharp;
+	our @ISA = 'VAST::Base';
+
+	sub emit_token {
+		my $self = shift;
+		my $lvl  = shift;
+		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->add_token( $t[0], 'Comment' );
+		$self->ret(@t);
+	}
+}
+
+{
+
 	package VAST::ws;
 	our @ISA = 'VAST::Base';
 
+	sub emit_token {
+		my $self = shift;
+		my $lvl  = shift;
+		my @t    = $self->SUPER::emit_token( $lvl + 1 );
+		$self->ret(@t);
+	}
+}
+
+{
+	package VAST::statement_control__S_use;
+	our @ISA = 'VAST::Base';
+	
 	sub emit_token {
 		my $self = shift;
 		my $lvl  = shift;
