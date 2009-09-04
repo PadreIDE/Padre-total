@@ -10,9 +10,6 @@ use utf8;
 use YAML::XS;
 
 my $OPT_log              = 0;
-my $OPT_find_declaration = undef;
-my $OPT_rename_variable  = undef;
-my $OPT_color            = 0;
 our $PACKAGE_TYPE = '';
 our $SCOPE        = '';
 our @TOKEN_TABLE  = ();
@@ -36,16 +33,19 @@ sub MAIN {
 	USAGE unless @_;
 
 	require Getopt::Long;
-	my $help = 0;
+	my $OPT_find_declaration = undef;
+	my $OPT_rename_variable  = undef;
+	my $OPT_color            = 0;
+	my $OPT_help = 0;
 	Getopt::Long::GetOptions(
 		'log',               => \$OPT_log,
 		'color',             => \$OPT_color,
 		'find-declaration=s' => \$OPT_find_declaration,
 		'rename-var=s',      => \$OPT_rename_variable,
-		'help'               => \$help,
+		'help'               => \$OPT_help,
 	);
 
-	if ($help) {
+	if ($OPT_help) {
 		USAGE;
 	}
 
