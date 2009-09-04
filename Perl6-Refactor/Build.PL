@@ -8,8 +8,12 @@ my $builder = Module::Build->new(
 	dist_author         => 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>',
 	dist_version_from   => 'lib/Perl6/Refactor.pm',
 	build_requires => {
-		'Test::More'               => '0.86',
+		'Moose'                    => '0.89',
+		'YAML::XS'                 => '0.32',
 		'Syntax::Highlight::Perl6' => '0.68',
+	},
+	test_requires => {
+		'Test::More'               => '0.86',
 	},
 	add_to_cleanup      => [ 'Perl6-Refactor-*' ],
 	create_makefile_pl => 'traditional',
