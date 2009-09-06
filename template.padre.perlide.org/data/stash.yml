@@ -12,6 +12,8 @@ navigation:
     href: support.html
   - name: Screenshots
     href: screenshots.html
+  - name: Howto
+    href: howto.html
   - name: Trac
     href: trac/
   - name: Blogs
