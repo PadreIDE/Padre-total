@@ -25,6 +25,18 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 04
+        url: http://stevan-little.blogspot.com/2009/09/re-re-re-moose-or-no-moose.html
+        title: Re: Re: Re: Moose Or No Moose
+        comment: by Stevan Little
+      - date: 2009 September 02
+        url: http://stevan-little.blogspot.com/2009/09/re-re-moose-or-no-moose.html
+        title: Re: Re: Moose Or No Moose
+        comment: by Stevan Little
+      - date: 2009 September 01
+        url: http://stevan-little.blogspot.com/2009/09/re-moose-or-no-moose.html
+        title: Re: Moose Or No Moose
+        comment: by Stevan Little
       - date: 2009 September 01
         url: http://jquelin.blogspot.com/2009/09/migrating-to-moose-hell-yeah.html
         title: migrating to moose? hell yeah!
