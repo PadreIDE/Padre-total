@@ -1,5 +1,17 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.73 2009.9.7
+	- Bundled STD.pm which has the following changes:
+		- remove dup our declarations for azawawi++
+		- fix LTA message on my $x = for 1..10 {...}
+		- only default package declarations to 'our'
+		- change to new definitions for contextuals and readonly binding
+		- 2nd-term lookahead should suppress errors
+		- don't complain about ?: unless there's a : before the next ;
+		- don't guess on suspicion of two terms in a row, just check it already.
+		- improve message on unexpected infix
+		- disallow alphanums as delimiters
+
 0.72 2009.8.20
 	- Bundled STD.pm which has the following changes:
 		- parse #=[...] comments
