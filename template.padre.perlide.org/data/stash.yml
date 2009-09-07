@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 Septembet 07
+        url: http://szabgab.com/blog/2009/09/1252306069.html
+        title: How to get started with Padre?
+        comment: by Gábor Szabó
       - date: 2009 September 02
         url: http://onionstand.blogspot.com/2009/09/padre-045-stable-released.html
         title: Padre 0.45 "stable" released!
