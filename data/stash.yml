@@ -29,18 +29,6 @@ about:
         url: http://stevan-little.blogspot.com/2009/09/re-re-re-moose-or-no-moose.html
         title: Re: Re: Re: Moose Or No Moose
         comment: by Stevan Little
-      - date: 2009 September 02
-        url: http://stevan-little.blogspot.com/2009/09/re-re-moose-or-no-moose.html
-        title: Re: Re: Moose Or No Moose
-        comment: by Stevan Little
-      - date: 2009 September 01
-        url: http://stevan-little.blogspot.com/2009/09/re-moose-or-no-moose.html
-        title: Re: Moose Or No Moose
-        comment: by Stevan Little
-      - date: 2009 September 01
-        url: http://jquelin.blogspot.com/2009/09/migrating-to-moose-hell-yeah.html
-        title: migrating to moose? hell yeah!
-        comment: by Jerome Quelin
       - date: 2009 September 03
         url: http://use.perl.org/~Alias/journal/39573?from=rss
         title: Moose, Padre, and why the burden of proof is on the cultists
@@ -50,9 +38,21 @@ about:
         title: "Developer versus Distributor" is Not Even Wrong
         comment: by chromatic
       - date: 2009 September 02
+        url: http://stevan-little.blogspot.com/2009/09/re-re-moose-or-no-moose.html
+        title: Re: Re: Moose Or No Moose
+        comment: by Stevan Little
+      - date: 2009 September 02
         url: http://onionstand.blogspot.com/2009/09/padre-045-stable-released.html
         title: Padre 0.45 "stable" released!
         comment: by garu on the Onion Stand
+      - date: 2009 September 01
+        url: http://stevan-little.blogspot.com/2009/09/re-moose-or-no-moose.html
+        title: Re: Moose Or No Moose
+        comment: by Stevan Little
+      - date: 2009 September 01
+        url: http://jquelin.blogspot.com/2009/09/migrating-to-moose-hell-yeah.html
+        title: migrating to moose? hell yeah!
+        comment: by Jerome Quelin
       - date: 2009 August 31
         url: http://szabgab.com/blog/2009/08/1251707067.html
         title: Improving the Padre experience
