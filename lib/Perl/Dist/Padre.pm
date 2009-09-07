@@ -4,15 +4,15 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry 2.00    qw();
+use Perl::Dist::Strawberry 2.0002  qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars );
 use File::Spec::Functions          qw( catfile        );
-use parent                         qw( Perl::Dist::Strawberry );
+use parent                         qw( Perl::Dist::Padre );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.449';
-$VERSION = eval { $VERSION };
+our $VERSION = '0.450';
+$VERSION = eval $VERSION;
 #>>>
 
 
@@ -51,62 +51,28 @@ sub new {
 		msi => 1,
 		zip => 1,
 
-		# Tell it what additions to the directory tree to use.
-		msi_directory_tree_additions => [ qw (
-			  perl\site\lib\Algorithm
-			  perl\site\lib\App
-			  perl\site\lib\Class
-			  perl\site\lib\Class\XSAccessor
-			  perl\site\lib\CPAN\Mini
-			  perl\site\lib\Data
-			  perl\site\lib\Devel
-			  perl\site\lib\ExtUtils
-			  perl\site\lib\File\Find
-			  perl\site\lib\File\Find\Rule
-			  perl\site\lib\Module
-			  perl\site\lib\ORLite
-			  perl\site\lib\Text
-			  perl\site\lib\Wx
-			  perl\site\lib\Wx\Perl
-			  perl\site\lib\Padre
-			  perl\site\lib\Padre\Plugin
-			  perl\site\lib\Perl
-			  perl\site\lib\Perl6
-			  perl\site\lib\Perl6\Perldoc
-			  perl\site\lib\Perl6\Perldoc\To
-			  perl\site\lib\Sub
-			  perl\site\lib\YAML\Dumper
-			  perl\site\lib\YAML\Loader
-			  perl\site\lib\auto\Algorithm
-			  perl\site\lib\auto\Class
-			  perl\site\lib\auto\Class\XSAccessor
-			  perl\site\lib\auto\Data
-			  perl\site\lib\auto\Devel
-			  perl\site\lib\auto\File\Find
-			  perl\site\lib\auto\File\Find\Rule
-			  perl\site\lib\auto\File\ShareDir
-			  perl\site\lib\auto\Module
-			  perl\site\lib\auto\ORLite
-			  perl\site\lib\auto\Padre
-			  perl\site\lib\auto\Perl
-			  perl\site\lib\auto\Perl6
-			  perl\site\lib\auto\Perl6\Perldoc
-			  perl\site\lib\auto\Readonly
-			  perl\site\lib\auto\Sub
-			  perl\site\lib\auto\Test\Pod
-			  perl\site\lib\auto\Text
-			  perl\site\lib\auto\Wx
-			  perl\site\lib\auto\Wx\Perl
-			  perl\site\lib\auto\share\dist
-			  perl\site\lib\auto\share\dist\Padre
-			  perl\site\lib\auto\share\dist\Padre\icons
-			  perl\site\lib\auto\share\dist\Padre\icons\padre
-			  perl\site\lib\auto\share\dist\Padre\icons\padre\16x16
-			  perl\site\lib\auto\share\dist\Padre\icons\gnome218
-			  perl\site\lib\auto\share\dist\Padre\icons\gnome218\16x16
-			  perl\site\lib\auto\share\dist\Perl6-Doc
-			  perl\site\lib\auto\share\module
-			  )
+		# Tasks to complete to create Strawberry
+		tasklist => [
+			'final_initialization',
+			'install_c_toolchain',
+			'install_strawberry_c_toolchain',
+			'install_c_libraries',
+			'install_strawberry_c_libraries',
+			'install_perl',
+			'install_perl_toolchain',
+			'install_cpan_upgrades',
+			'install_strawberry_modules_1',
+			'install_strawberry_modules_2',
+			'install_strawberry_modules_3',
+			'install_padre_prereq_modules_1',
+			'install_padre_prereq_modules_2',
+			'install_padre_modules',
+			'install_win32_extras',
+			'install_strawberry_extras',
+			'install_padre_extras',
+			'remove_waste',
+			'regenerate_fragments',
+			'write',
 		],
 
 		@_,
@@ -114,27 +80,9 @@ sub new {
 
 } ## end sub new
 
-sub app_ver_name {
-	return $_[0]->{app_ver_name}
-	  or $_[0]->app_name . q{ }
-	  . $_[0]->perl_version_human . q{.}
-	  . $_[0]->build_number
-	  . ( $_[0]->beta_number ? ' Beta ' . $_[0]->beta_number : q{} );
-}
-
 sub output_base_filename {
-
-#	$_[0]->{output_base_filename} or
-#	'padre-standalone'
-#		. '-' . $_[0]->perl_version_human
-#		. '.' . $_[0]->build_number
-#		. ($_[0]->beta_number ? '-beta-' . $_[0]->beta_number : '')
 	return 'padre-standalone-0.45';
 }
-
-
-
-
 
 #####################################################################
 # Customisations for Perl assets
@@ -157,9 +105,8 @@ sub install_perl_5101 {
 	return;
 }
 
-sub install_perl_modules {
+sub install_padre_prereq_modules {
 	my $self = shift;
-	$self->SUPER::install_perl_modules(@_);
 
 	# Manually install our non-Wx dependencies first to isolate
 	# them from the Wx problems
@@ -219,6 +166,12 @@ sub install_perl_modules {
 		  Locale::Msgfmt
 	} );
 
+	return 1;
+}
+	
+sub install_padre_modules {
+	my $self = shift;
+
 	# The rest of the modules are order-specific,
 	# for reasons maybe involving CPAN.pm but not fully understodd.
 
@@ -253,11 +206,8 @@ sub install_perl_modules {
 	return 1;
 } ## end sub install_perl_modules
 
-sub install_win32_extras {
+sub install_padre_extras {
 	my $self = shift;
-
-	# Add the rest of the extras
-	$self->SUPER::install_win32_extras(@_);
 
 	$self->install_launcher(
 		name => 'Padre',
@@ -285,13 +235,7 @@ sub dist_dir {
 	return $dir;
 } ## end sub dist_dir
 
-sub install_custom {
-	my $self = shift;
 
-	$self->install_six();
-
-	return 1;
-}
 
 1;                                     # Magic true value required at end of module
 
@@ -301,7 +245,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.449
+Perl::Dist::Padre version 0.450
 
 =end readme
 
@@ -313,7 +257,7 @@ Perl::Dist::Padre - Padre Standalone for Win32 builder
 
 =head1 VERSION
 
-This document describes Perl::Dist::Padre version 0.449.
+This document describes Perl::Dist::Padre version 0.450.
 
 =for readme continue
 
@@ -374,7 +318,7 @@ You can only build Padre Standalone on Perl 5.10.0.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-File::List::Object requires no configuration files or environment variables.
+Perl::Dist::Padre requires no configuration files or environment variables.
 
 =for readme continue
 
@@ -382,7 +326,7 @@ File::List::Object requires no configuration files or environment variables.
 
 Dependencies of this module that are non-core in perl 5.8.1 (which is the 
 minimum version of Perl required) include 
-L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 1.11_14, and 
+L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.0002, and 
 L<URI::file|URI::file>.
 
 =for readme stop
