@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 07 
+        url: http://szabgab.com/blog/2009/09/1252306069.html 
+        title: How to get started with Padre? 
+        comment: by Gábor Szabó
       - date: 2009 September 04
         url: http://stevan-little.blogspot.com/2009/09/re-re-re-moose-or-no-moose.html
         title: Re: Re: Re: Moose Or No Moose
