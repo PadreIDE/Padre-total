@@ -25,10 +25,14 @@ navigation:
 about:
   - title: y2009
     events:
-      - date: 2009 Septembet 07
-        url: http://szabgab.com/blog/2009/09/1252306069.html
-        title: How to get started with Padre?
-        comment: by Gábor Szabó
+      - date: 2009 September 03
+        url: http://use.perl.org/~Alias/journal/39573?from=rss
+        title: Moose, Padre, and why the burden of proof is on the cultists
+        comment: by Adam Kennedy
+      - date: 2009 September 03
+        url: http://www.modernperlbooks.com/mt/2009/09/developer-versus-distributor-is-not-even-wrong.html
+        title: "Developer versus Distributor" is Not Even Wrong
+        comment: by chromatic
       - date: 2009 September 02
         url: http://onionstand.blogspot.com/2009/09/padre-045-stable-released.html
         title: Padre 0.45 "stable" released!
