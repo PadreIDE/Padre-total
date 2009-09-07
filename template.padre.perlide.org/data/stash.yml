@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 01
+        url: http://jquelin.blogspot.com/2009/09/migrating-to-moose-hell-yeah.html
+        title: migrating to moose? hell yeah!
+        comment: by Jerome Quelin
       - date: 2009 September 03
         url: http://use.perl.org/~Alias/journal/39573?from=rss
         title: Moose, Padre, and why the burden of proof is on the cultists
