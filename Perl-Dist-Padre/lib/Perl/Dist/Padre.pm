@@ -71,6 +71,7 @@ sub new {
 			'install_strawberry_extras',
 			'install_padre_extras',
 			'remove_waste',
+			'add_forgotten_files',
 			'regenerate_fragments',
 			'write',
 		],

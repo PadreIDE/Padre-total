@@ -46,6 +46,7 @@ sub new {
 			'install_padre_extras',
 			'remove_waste',
 			'install_six',
+			'add_forgotten_files',
 			'regenerate_fragments',
 			'write',
 		],
