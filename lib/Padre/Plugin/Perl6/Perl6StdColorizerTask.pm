@@ -213,7 +213,7 @@ sub run {
 
 		# remove ANSI color escape sequences...
 		$err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
-		Padre::Util::debug( qq{STD.pm warning/error:\n$err\n} );
+		Padre::Util::debug(qq{STD.pm warning/error:\n$err\n});
 		my @messages = split /\n/, $err;
 		my ( $lineno, $severity );
 		my $issues = [];
