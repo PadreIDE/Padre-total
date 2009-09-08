@@ -26,6 +26,10 @@ about:
   - title: y2009
     events:
       - date: 2009 September 07 
+        url: http://perlpilot.blogspot.com/2009/09/things-i-wish-were-different-in-padre.html
+        title: Things I wish were different in Padre
+        comment: Navigating the Perliverse by Jonathan Scott Duff
+      - date: 2009 September 07 
         url: http://szabgab.com/blog/2009/09/1252306069.html 
         title: How to get started with Padre? 
         comment: by Gábor Szabó
