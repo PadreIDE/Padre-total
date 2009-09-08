@@ -1,5 +1,10 @@
 Changes
 
+=head1 0.59 2009.9.8
+
+	Find perl6.exe in PDX and later Six releases and stay compatible with 0.41
+	print -> Padre::Util::debug
+
 =head1 0.58 2009.8.24
 
 	Updated translations:
