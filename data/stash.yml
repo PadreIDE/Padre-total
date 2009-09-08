@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 09
+        url: http://ahmadzawawi.blogspot.com/2009/09/upgrading-to-rakudo-perl-6-pdx.html
+        title: Upgrading to Rakudo Perl 6 PDX
+        comment: by Ahmad M. Zawawi
       - date: 2009 September 07 
         url: http://perlpilot.blogspot.com/2009/09/things-i-wish-were-different-in-padre.html
         title: Things I wish were different in Padre
