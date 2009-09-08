@@ -7,7 +7,7 @@
   [% INCLUDE enhance_my_plugin %]
   [% INCLUDE add_syntax_highlighter %]
   [% INCLUDE rename_a_variable %]
-  [% INCLUDE setup_development_environment %]
+  [% INCLUDE get_invloved_in_padre_development %]
 [% END %]
 
 
@@ -50,8 +50,9 @@ aid the learning process and later to turn some of them into screencasts.
       <br />
     <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
     This will open a black window. You'll see text printed in that 
-    window while Padre is being upgraded. The process will take 4-5 minutes 
-    or a lot more if your Internet connection is slow.
+    window while Padre is being upgraded. The process can take anywhere between 
+    4-5 minutes and 70 minutes depending on the speed of your Internet connection 
+    and the phase of the Moon.
     </li>
     <li>Run Padre by clicking on "Start", selecting "Programs", 
        selecting "Padre Standalone Plus Six" and clicking on "Padre". 
@@ -168,12 +169,13 @@ To Be Described
 
 
 
-[% BLOCK setup_development_environment %]
+[% BLOCK get_invloved_in_padre_development %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
-<h1>How to setup a development environment to work on Padre?</h1>
+<h1>How to get involved in the development of Padre and its plugins?</h1>
 <p>
-To Be Described
+Behind this item there are lots of issues. We maintain a separate set of
+<a href="http://padre.perlide.org/trac/wiki/Howto">howtos</a> on the developers wiki.
 </p>
 <div class="spacer" ></div>
 [% END %]
