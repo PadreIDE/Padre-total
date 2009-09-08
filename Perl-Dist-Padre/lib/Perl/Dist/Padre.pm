@@ -8,7 +8,7 @@ use Perl::Dist::Strawberry 2.0002  qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars );
 use File::Spec::Functions          qw( catfile        );
-use parent                         qw( Perl::Dist::Padre );
+use parent                         qw( Perl::Dist::Strawberry );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
 our $VERSION = '0.450';

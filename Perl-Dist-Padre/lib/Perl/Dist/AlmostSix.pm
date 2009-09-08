@@ -22,7 +22,7 @@ sub new {
 
 	my $self = shift->SUPER::new(
 		app_name          => 'Padre Standalone Plus Six',
-		app_ver_name      => 'Padre Standalone Plus Six 0.45-Chicago',
+		app_ver_name      => 'Padre Standalone Plus Six 0.45-PDX',
 		
 		# Tasks to complete to create Padre Standalone Plus Six
 		tasklist => [
