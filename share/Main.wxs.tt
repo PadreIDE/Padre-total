@@ -73,7 +73,7 @@
 
     <Property Id="INSTALLDIR">[% dist.image_dir %]</Property>
     
-[% dist.directories.as_string %]
+[% directory_tree %]
 
 [% dist.feature_tree_obj.as_string %]
 
