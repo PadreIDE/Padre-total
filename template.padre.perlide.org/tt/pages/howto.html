@@ -35,7 +35,7 @@ aid the learning process and later to turn some of them into screencasts.
 <p>
 <ul>
   <li>Download Padre 0.41 from <a href="download.html">download</a> the name of the file to be saved on 
-      the desktop is called almost-six-0.41.msi <!--  (TODO have a clearer name of the package on the website)--></li>
+      the desktop is called almost-six-0.41.msi</li>
   <li>Run this installer by double clicking on the icon.</li>
   <li>It will ask you to accept the terms. Once you did that you can press the Install button.</li>
   <li>Once installation is finished you should be able to see the installed icons by pressing 
@@ -43,12 +43,10 @@ aid the learning process and later to turn some of them into screencasts.
   <li>The package you downloaded is the latest version packaged for Windows but there are 
       newer versions of Padre on CPAN. You should now upgrade by doing the following:
       Click on "Start", "Run", copy the following command and press ENTER:
-      <!--(TODO: Padre, or the installation should have an icon that upgrads Padre)
-      (Better yet, it should wrap a small wx application that shows a progressbar 
-      by default on which one can select to see details which would show the text 
-      as it is printed to the console that can be killed if the installations gets stuck.)-->
       <br />
     <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
+    or maybe better with full path to the perl exe:<br />
+    <code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
     This will open a black window. You'll see text printed in that 
     window while Padre is being upgraded. The process can take anywhere between 
     4-5 minutes and 70 minutes depending on the speed of your Internet connection 
@@ -57,15 +55,15 @@ aid the learning process and later to turn some of them into screencasts.
     <li>Run Padre by clicking on "Start", selecting "Programs", 
        selecting "Padre Standalone Plus Six" and clicking on "Padre". 
        (there will be two windows, a black console and the editor itself).
-       This is considered a bug and it will be fixed in a future version. <!-- (TODO eliminate black window)-->
+       This is considered a bug and it will be fixed in a future version.
     </li>
-    <li>Close the Output window (Uncheck View/Show Output) <!-- (TODO set this the default) --></li>
+    <li>Close the Output window (Uncheck View/Show Output)</li>
     <li>Select "Plugins", "Plugin Manager", you should see a list of plugins. 
       Please make sure at least the the "Perl 6" plugin is enabled but it would 
       be better to enable the "Padre Developer Tools" Plugin and the 
       "Padre Popularity Contest" plugin as well.</li>
     <li>Select "Edit", "Preferences", "Run Parameters" and make sure 
-        "Use external window for execution" is checked. (the word xterm will be gone in the next version)</li>
+        "Use external window for execution" is checked.</li>
     <li>Click on "Files and Colors" (in older versions it was called "Mime-types").
         Select the Perl 6 as "File type" and select "STD.pm" as Highlighter.</li>
     <li>Click on "Save"</li>
