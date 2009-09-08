@@ -20,6 +20,7 @@ sub perl6_exe {
 
 	# On Windows, look for the Six distribution
 	if (Padre::Constant::WIN32) {
+
 		# Find perl6.exe in PDX and later Six releases
 		my $perl6 = 'C:\\strawberry\\six\\bin\\perl6.exe';
 		if ( -f $perl6 ) {
@@ -57,12 +58,13 @@ sub parrot_bin {
 
 	# On Windows, look for the Six distribution
 	if (Padre::Constant::WIN32) {
+
 		# Find parrot binary in PDX and later Six releases
 		my $command = "C:\\strawberry\\six\\bin\\$exe";
 		if ( -f $command and -x _ ) {
 			return $command;
 		}
-		
+
 		# Stay compatible with almost-six 0.41
 		$command = "C:\\strawberry\\six\\parrot\\$exe";
 		if ( -f $command and -x _ ) {
