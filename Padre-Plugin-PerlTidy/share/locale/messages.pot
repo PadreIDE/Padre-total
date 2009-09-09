@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-19 02:39+0800\n"
+"POT-Creation-Date: 2009-09-09 23:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,42 +16,42 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/PerlTidy.pm:36
+#: lib/Padre/Plugin/PerlTidy.pm:38
 msgid "Tidy the active document\tAlt+Shift+F"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:37
+#: lib/Padre/Plugin/PerlTidy.pm:39
 msgid "Tidy the selected text\tAlt+Shift+G"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:38
+#: lib/Padre/Plugin/PerlTidy.pm:40
 msgid "Export active document to HTML file"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:39
+#: lib/Padre/Plugin/PerlTidy.pm:41
 msgid "Export selected text to HTML file"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:53 lib/Padre/Plugin/PerlTidy.pm:172
+#: lib/Padre/Plugin/PerlTidy.pm:55 lib/Padre/Plugin/PerlTidy.pm:169
 msgid "Document is not a Perl document"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:54 lib/Padre/Plugin/PerlTidy.pm:173
+#: lib/Padre/Plugin/PerlTidy.pm:56 lib/Padre/Plugin/PerlTidy.pm:170
 msgid "Error"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:74 lib/Padre/Plugin/PerlTidy.pm:197
+#: lib/Padre/Plugin/PerlTidy.pm:74 lib/Padre/Plugin/PerlTidy.pm:192
 msgid "PerlTidy Error"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:134
+#: lib/Padre/Plugin/PerlTidy.pm:137
 msgid "Save file as..."
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:148
+#: lib/Padre/Plugin/PerlTidy.pm:147
 msgid "File already exists. Overwrite it?"
 msgstr ""
 
-#: lib/Padre/Plugin/PerlTidy.pm:149
+#: lib/Padre/Plugin/PerlTidy.pm:148
 msgid "Exist"
 msgstr ""
