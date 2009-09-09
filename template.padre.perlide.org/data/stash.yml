@@ -14,8 +14,8 @@ navigation:
     href: screenshots.html
   - name: Howto
     href: howto.html
-  - name: Trac
-    href: trac/
+  - name: Getting Involved
+    href: getting_involved.html
   - name: Blogs
     href: http://blogs.padre.perlide.org
   - name: Contact us
