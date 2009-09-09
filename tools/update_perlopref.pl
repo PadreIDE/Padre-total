@@ -13,7 +13,7 @@ if(not $res->is_success) {
 }
 
 require File::Spec;
-my $file = File::Spec->catfile('lib', 'Padre', 'HelpProvider', 'perlopref.pod');
+my $file = File::Spec->catfile('share', 'doc', 'perlopref.pod');
 if(-f $file) {
 	print "Replacing perlopref.pod...\n";
 	open FILE, '>', $file or die "Could not open $file for writing\n";
