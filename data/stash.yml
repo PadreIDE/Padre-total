@@ -18,8 +18,8 @@ navigation:
     href: trac/
   - name: Blogs
     href: http://blogs.padre.perlide.org
-  - name: IRC
-    href: irc.html
+  - name: Contact
+    href: contact.html
   - name: About
     href: about.html
 about:

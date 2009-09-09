@@ -1,6 +1,17 @@
 [% DEFAULT title="About Padre" %]
 [% WRAPPER lib/xhtml_doc %]
 
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>About Padre</h2>
+<p>
+Padre is an open source project with many participants. 
+Below you will find the various announcements made by the Padre developers 
+and blog posts related to Padre.
+</p>
+[% END %]
+
+
 <!-- table of contents -->
 [%  INCLUDE chrome/navigation_list
  nav_items=about
