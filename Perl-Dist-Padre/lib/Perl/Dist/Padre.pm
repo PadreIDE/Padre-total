@@ -106,7 +106,7 @@ sub install_perl_5101 {
 	return;
 }
 
-sub install_padre_prereq_modules {
+sub install_padre_prereq_modules_1 {
 	my $self = shift;
 
 	# Manually install our non-Wx dependencies first to isolate
@@ -129,6 +129,18 @@ sub install_padre_prereq_modules {
 		  Test::ClassAPI
 		  Clone
 		  Hook::LexWrap
+	} );
+
+	return 1;
+}
+
+
+sub install_padre_prereq_modules_2 {
+	my $self = shift;
+
+	# Manually install our non-Wx dependencies first to isolate
+	# them from the Wx problems
+	$self->install_modules( qw{
 		  Test::SubCalls
 		  List::MoreUtils
 		  Task::Weaken
@@ -152,6 +164,7 @@ sub install_padre_prereq_modules {
 		  Devel::StackTrace
 		  Class::Data::Inheritable
 		  Exception::Class
+		  Test::Exception
 		  Test::Most
 		  Class::XSAccessor::Array
 		  Parse::ExuberantCTags
@@ -184,7 +197,6 @@ sub install_padre_modules {
 				$ENV{PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION}
 			  )->as_string(),
 		);
-		$self->insert_fragment( 'Alien_wxWidgets', $filelist->files );
 	} else {
 		$self->install_module( name => 'Alien::wxWidgets' );
 	}
