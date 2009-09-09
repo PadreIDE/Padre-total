@@ -14,9 +14,11 @@
 
 <form action="#" id="n">
 <div>
-<label for="irc_nickname">Nickname</label><input id="irc_nickname" name="nickname" value="" />
-<script type="text/javascript">setup_page();</script>
-<input type="button" onclick="javascript:on_click()" value="Connect" />
+<table>
+<tr><td>Nickname:</td><td><input id="irc_nickname" name="nickname" value="" / ></td></tr>
+<tr><td>Channel:</td><td><script type="text/javascript">setup_page();</script></td></tr>
+<tr><td></td><td><input type="button" onclick="javascript:on_click()" value="Connect" /></td></tr>
+</table>
 <!--
 todo: check values received on the url:
    hash_key (maybe that should be host_channel instead of of our own special name)
