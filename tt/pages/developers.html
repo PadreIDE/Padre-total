@@ -1,5 +1,6 @@
 [% DEFAULT title="Padre Developers" %]
 [% WRAPPER lib/xhtml_doc %]
+  [% INCLUDE getting_involved %]
   [% INCLUDE developers_top %]
   [% INCLUDE developers_list %]
 [% END %]
@@ -54,9 +55,23 @@
 
 [% END %]
 
+[% BLOCK getting_involved %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Getting involved</h2>
+<p>Whe have a separate page about <a href="getting_involved.html">getting involved</a>
+in the development of Padre.
+</p>
+</div>
+<div class="spacer" ></div>
+[% END %]
+[% END %]
+
+
 [% BLOCK developers_top %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
+<h2>About Padre Developers</h2>
 <p>
 Padre is for the developers, especially people writing Perl 5 or Perl 6 code.
 </p>
@@ -79,12 +94,12 @@ are involved in the project.
 developers themselves so you will see only people who added themselves to this page.
 </p>
 <p>
-If you also would like to <a href="/trac/">get involved</a>,
-please follow the instructions on our <a href="/trac/">wiki</a>
+If you would like to <a href="getting_involved.html">get involved</a>,
+please follow the instructions on that page.
 </p>
 
+</div>
 <div class="spacer" ></div>
 [% END %]
-</div>
 
 [% END %]
