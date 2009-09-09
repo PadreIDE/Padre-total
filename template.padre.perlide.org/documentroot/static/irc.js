@@ -21,7 +21,9 @@ var channels = {
    rt:           {title:"RT",                            host:"irc.perl.org",     channel:"rt"},
    perl_help:    {title:"Perl Help",                     host:"irc.perl.org",     channel:"perl-help"},
    wxperl:       {title:"Wx Perl",                       host:"irc.perl.org",     channel:"wxperl"},
-   perl6:        {title:"Perl 6 development",            host:"irc.freenode.net", channel:"perl6"},
+   perl6:        {title:"Perl 6 development",            host:"irc.freenode.net", channel:"perl6"}
+   // do NOT add a trailing , after the last entry as that breaks IE 7 
+   // See http://padre.perlide.org/trac/ticket/521
 };
 var default_channel = "general";
 
