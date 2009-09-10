@@ -25,7 +25,7 @@ navigation:
 about:
   - title: y2009
     events:
-      - date: 2009 Septembet 10
+      - date: 2009 September 10
         url: http://szabgab.com/blog/2009/09/1252571011.html
         title: Help packaging Padre on Linux and Mac OSX
         comment: by Gábor Szabó
