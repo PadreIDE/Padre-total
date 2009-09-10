@@ -1,6 +1,8 @@
 [% DEFAULT title="Contacting the Padre developers" %]
 [% WRAPPER lib/xhtml_doc %]
   [% INCLUDE contact_group %]
+  [% INCLUDE contact_via_irc %]
+  [% INCLUDE contact_via_mailing_list %]
 [% END %]
 
 [% BLOCK contact_group %]
@@ -10,9 +12,60 @@
 <p>
 Padre is an open source project with many participants. 
 There are two main channels to contact us. 
-Via chat (using IRC) and on our mailing list. For details see 
-the <a href="support.html">support</a> page.
+Via chat (using IRC) and on our mailing list. 
 </p>
+<div class="spacer" ></div>
 [% END %]
+</div>
 [% END %]
+
+<!-- The support.html page has almost the same text -->
+
+[% BLOCK contact_via_irc %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>IRC channel</h2>
+<p>
+The primary communication channel is the IRC channel of the Padre developers. It is located
+on the irc.perl.org server and it is called #padre. You can use either an IRC client
+if you have one on your computer or the web-based Mibbit IRC client. For the formers
+you would want to click on <a href="irc://irc.perl.org/#padre">this link</a>. If you prefer
+to use the web based client the you can follow the link to the
+<a href="http://widget.mibbit.com/?server=irc.perl.org&amp;channel=%23padre">web based IRC client to #padre</a>.
+After clicking on that link you will be prompted to give a nickname. The field is filled by
+a random name that you can leave as it is though it is probably better to select
+a nickname that fits your personalty.
+</p>
+<p>
+After clicking on the <i>Connect</i> button you will see the #padre IRC channel. First it will
+print some welcome information that you can usually disregard and then you will be able to say
+hi by just typing it and pressing enter. Then you can proceed to ask your question.
+</p>
+<p>
+After asking a question please be patient as the people might be busy doing other
+things so it can take some time till someone responds.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+[% BLOCK contact_via_mailing_list %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h2>Mailing list</h2>
+<p>
+The Padre development mailing list is another way to ask for help.
+It is usually slower than IRC but it also means you don't have to
+be connected to the channel while waiting someone to answer your
+questions. To join the mailing list please visit the registration page
+of the <a href="http://mail.perlide.org/mailman/listinfo/padre-dev">padre-dev</a>
+mailing list.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
 
