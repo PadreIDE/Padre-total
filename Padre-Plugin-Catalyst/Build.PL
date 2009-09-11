@@ -12,7 +12,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Module::Build' => 0.30,
-        'Padre' => 0.29,
+        'Padre' => 0.41,
         'Catalyst::Devel' => 1.0,
         'Module::Pluggable::Object' => 3.9,
     },
