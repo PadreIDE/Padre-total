@@ -5,6 +5,7 @@ use warnings;
 use strict;
 
 use Padre::Util   ('_T');
+use Padre::Perl;
 
 our $VERSION = '0.04';
 
@@ -180,7 +181,7 @@ sub on_start_server {
 	my $pwd = Cwd::cwd();
 	chdir $project_dir;
 
-    my $perl = Padre->perl_interpreter;
+    my $perl = Padre::Perl->perl;
     my $command = "$perl " . File::Spec->catfile('script', $server_filename);
     $main->run_command($command);
     
