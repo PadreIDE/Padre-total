@@ -1,10 +1,9 @@
 Revision history for Padre-Plugin-Catalyst
 
-NOT RELEASED!
-	Renamed to the new Padre 0.43 PO naming scheme (azawawi)
-
 0.05
 	Added option to update application scripts (upgrade your app to a new version of Catalyst) (garu)
+    Renamed to the new Padre 0.43 PO naming scheme (azawawi)
+    Fixed "start server" helper (jason best)
 
 0.04
 	Added Spanish translation (BRUNOV)

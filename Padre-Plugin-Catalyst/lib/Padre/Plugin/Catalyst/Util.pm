@@ -3,7 +3,7 @@ package Padre::Plugin::Catalyst::Util;
 use Cwd ();
 use File::Spec ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # get the Catalyst project name, so we can
 # figure out the development server's name

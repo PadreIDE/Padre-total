@@ -7,7 +7,7 @@ use strict;
 use Padre::Util   ('_T');
 use Padre::Perl;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'Catalyst' }

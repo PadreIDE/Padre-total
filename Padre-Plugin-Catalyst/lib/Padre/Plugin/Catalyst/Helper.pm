@@ -9,7 +9,7 @@ use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Util       ('_T');
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 # TODO: these should've been passed as a parameter
 # but I'm too tired to figure how to do it

@@ -15,6 +15,7 @@ share/locale/Catalyst-ru.po
 share/locale/Catalyst-zh-tw.po
 share/locale/Catalyst-es-es.po
 t/00-load.t
+t/01-perl_interpreter.t
 t/pod.t
 Makefile.PL
 META.yml
