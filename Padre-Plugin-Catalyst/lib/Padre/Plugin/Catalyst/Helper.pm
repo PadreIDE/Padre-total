@@ -302,8 +302,8 @@ sub create {
 					$data->{'_name_'}, 
 					$output_text
 			   );
-	$file = Cwd::realpath($file); # avoid relative paths
 	if ($file) {
+	    $file = Cwd::realpath($file); # avoid relative paths
 		my $ret = Wx::MessageBox(
 			sprintf(_T("%s apparently created. Do you want to open it now?"), $type),
 			_T('Done'),
