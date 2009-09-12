@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 11
+        url: http://www.modernperlbooks.com/mt/2009/09/aspects-of-a-novice-friendly-distribution.html
+        title: Aspects of a Novice-Friendly Distribution
+        comment: chromatic describes something very similar to our plans
       - date: 2009 September 10
         url: http://szabgab.com/blog/2009/09/1252571011.html
         title: Help packaging Padre on Linux and Mac OSX
