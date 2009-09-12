@@ -64,7 +64,7 @@ sub dialog {
 	my $layout = get_layout();
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $parent,
-		title  => T_('New Catalyst Application'),
+		title  => _T('New Catalyst Application'),
 		layout => $layout,
 		width  => [100, 200],
 		bottom => 20,
