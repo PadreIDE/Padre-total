@@ -8,6 +8,7 @@ use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Util       ('_T');
+use Padre::Perl;
 
 our $VERSION = '0.05';
 
@@ -260,7 +261,7 @@ sub create {
 	$main->show_output(1);
 	$main->output->Remove( 0, $main->output->GetLastPosition );
 
-    my $perl = Padre->perl_interpreter;
+    my $perl = Padre::Perl->perl;
     push my @cmd, 
 				$perl,
 				File::Spec->catfile('script', $helper_filename),
