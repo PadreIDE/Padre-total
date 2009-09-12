@@ -319,6 +319,14 @@ sub create {
 			$main->refresh;
 		}
 	}
+    else {
+        Wx::MessageBox(
+                sprintf(_T("Error creating %s. Please check the error output and try again"), $type),
+                _T('Error'),
+                Wx::wxOK|Wx::wxCENTRE,
+                $main,
+        );
+    }
 	return;
 }
 
