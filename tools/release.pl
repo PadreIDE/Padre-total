@@ -30,7 +30,7 @@ my $error = 0;
 
 # options
 my $path = '';
-my $rev = '';
+my $rev = 'HEAD';
 my $version = '';
 my $tag = '';
 
@@ -46,7 +46,7 @@ GetOptions( 	'path=s' 	=> \$path,
 #die "Usage: $0 REV VERSION [--tag]\n"
 if( 	not $version
 	or $version !~ /^\d\.\d\.?\d$/
-	or $rev !~ /^r?\d+$/
+	or $rev !~ /^(?:r?\d+|HEAD)$/
 	) {
 	usage();
 	exit 1;
@@ -57,12 +57,13 @@ if( 	not $version
 
 sub usage {
 	print <<EOM;
-Usage: release.pl --revision <SVN Revision Number> --version <Your Release Version Number>
+Usage: release.pl --version <Your Release Version Number>
 
 Optional Parameters:
 --path <Path to the directory of component to release - typically a Plugin>
 --tag  <will try to create a distribution using a temporary directory and copy the resulting Padre-X.XX.tar.gz in the current directory>
-		
+--revision <SVN Revision Number, defaults to HEAD (note: not BASE)>
+
 Full details on the wiki: http://padre.perlide.org/trac/wiki/Release
 
 EOM
