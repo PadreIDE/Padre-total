@@ -2,6 +2,7 @@
 [% WRAPPER lib/xhtml_doc %]
   [% INCLUDE howto %]
   [% INCLUDE setup_padre %]
+  [% INCLUDE upgrade_padre %]
   [% INCLUDE first_perl5_script %]
   [% INCLUDE first_perl6_script %]
   [% INCLUDE enhance_my_plugin %]
@@ -79,6 +80,26 @@ run "Start", "Run", type in "cmd" and press enter. In the black window type  <co
 </div>
 [% END %]
 
+
+[% BLOCK upgrade_padre %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h1>Upgrade Padre on Windows</h1>
+<p>
+Assuming you instaled the Almost-Six package you can upgrade it with the following command:
+Click on "Start", "Run", copy the following command and press ENTER:
+<code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
+or maybe better with full path to the perl exe:<br />
+<code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
+This will open a black window. You'll see text printed in that 
+window while Padre is being upgraded. The process can take anywhere between 
+4-5 minutes and 70 minutes depending on the speed of your Internet connection 
+and the phase of the Moon.
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
 
 
 
