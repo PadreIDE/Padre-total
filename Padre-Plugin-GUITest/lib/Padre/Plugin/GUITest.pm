@@ -49,8 +49,8 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->about },
-		'Spy'   => sub { $self->spy },
+		'About'          => sub { $self->about },
+		'Dump all data'  => sub { $self->spy },
 	];
 }
 
@@ -66,12 +66,12 @@ sub about {
 }
 
 # TODO move to be object variable
-my %seen;
-my $root    = 0;
 my $format = "%-10s %-10s, '%-25s', %-10s, Rect:%-3s,%-3s,%-3s,%-3s   '%s'\n";
 sub spy {
 	my ($self) = @_;
 	# need to configure either to do all or a certain title.
+	$self->{root} = 0;
+	$self->{seen} = {};
 
 	my $main = Padre->ide->wx->main;
 
@@ -97,9 +97,9 @@ sub spy {
 		#my @windows = FindWindowLike(0, $opts{title}) if $opts{title};
 		#@windows = FindWindowLike(0, '', $opts{class}) if $opts{class};
 		if (@windows > 1) {
-			_myprint("There are more than one window that fit:\n");
+			$self->_myprint("There are more than one window that fit:\n");
 			foreach my $w (@windows) {
-				_myprint(sprintf("%s | %s | %s\n", $w,  GetClassName($w), GetWindowText($w)));
+				$self->_myprint(sprintf("%s | %s | %s\n", $w,  GetClassName($w), GetWindowText($w)));
 			}
 			exit;
 		}
@@ -107,35 +107,35 @@ sub spy {
 		$start = $windows[0];
 	}
 	#usage() if not defined $start;
-	_myprint(sprintf($format,
+	$self->_myprint(sprintf($format,
 		"Depth",
 		"WindowID",
 		"ClassName",
 		"ParentID",
 		"WindowRect","","","",
 		"WindowText"));
-	parse_tree($start);
+	$self->parse_tree($start);
 }
 
 sub GetImmediateChildWindows {
-	my $WinID = shift;
+	my ($self, $WinID) = @_;
 	grep {GetParent($_) eq $WinID} GetChildWindows $WinID;
 }
     
 sub parse_tree {
-	my $w = shift;
-	if ($seen{$w}++) {
-		_myprint("loop $w\n");
+	my ($self, $w) = @_;
+	if ($self->{seen}{$w}++) {
+		$self->_myprint("loop $w\n");
 		return;
 	}
 
-	prt($w);
+	$self->prt($w);
 	#foreach my $child (GetChildWindows($w)) {
-	#       parse_tree($child);
+	#       $self->parse_tree($child);
 	#}
-	foreach my $child (GetImmediateChildWindows($w)) {
-		_myprint("------------------\n") if $w == 0;
-		parse_tree($child);
+	foreach my $child ($self->GetImmediateChildWindows($w)) {
+		$self->_myprint("------------------\n") if $w == 0;
+		$self->parse_tree($child);
 	}
 }
 
@@ -146,7 +146,7 @@ sub parse_tree {
 # returns -1 if one of the values is not a valid window
 # returns -2 if the given "ancestor" is not really an ancestor of the given "descendant"
 sub MyGetChildDepth {
-	my ($ancestor, $descendant) = @_;
+	my ($self, $ancestor, $descendant) = @_;
 	return -1 if $ancestor and (not IsWindow($ancestor) or not IsWindow($descendant));
 	return 0 if $ancestor == $descendant;
 	my $depth = 0;
@@ -159,9 +159,9 @@ sub MyGetChildDepth {
 
 
 sub prt {
-	my $w = shift;
-	my $depth = MyGetChildDepth($root, $w);
-	_myprint(sprintf($format,
+	my ($self, $w) = @_;
+	my $depth = $self->MyGetChildDepth($self->{root}, $w);
+	$self->_myprint(sprintf($format,
 		(0 <= $depth ? "+" x $depth : $depth),
 		$w, 
 		($w ? GetClassName($w) : ""),
@@ -171,7 +171,7 @@ sub prt {
 }
 
 sub _myprint {
-	my ($txt) = @_;
+	my ($self, $txt) = @_;
 	my $main = Padre->ide->wx->main;
 	$main->output->AppendText($txt)
 }
