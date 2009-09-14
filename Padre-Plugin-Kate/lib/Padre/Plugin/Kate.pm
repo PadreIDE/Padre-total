@@ -28,7 +28,7 @@ of L<Padre>.
 
 =head1 LIMITATION
 
-This is a first attempt to integrate this synatx highlighter with Padre
+This is a first attempt to integrate this syntax highlighter with Padre
 and thus many things don't work well. Especially due to speed issues currently
 even if you set the highlighting to use the Kate plugin Padre will do so
 only for small files. The hard-coded limit is in the 
