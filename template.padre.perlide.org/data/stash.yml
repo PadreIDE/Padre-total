@@ -25,6 +25,9 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 14
+        url: http://blog.ryan52.info/?p=3
+        title: Padre 0.46 released!
       - date: 2009 September 11
         url: http://www.modernperlbooks.com/mt/2009/09/aspects-of-a-novice-friendly-distribution.html
         title: Aspects of a Novice-Friendly Distribution
