@@ -2,6 +2,7 @@
 [% WRAPPER lib/xhtml_doc %]
   [% INCLUDE howto %]
   [% INCLUDE setup_padre %]
+  [% INCLUDE setup_strawberry_six %]
   [% INCLUDE upgrade_padre %]
   [% INCLUDE first_perl5_script %]
   [% INCLUDE first_perl6_script %]
@@ -27,13 +28,54 @@ aid the learning process and later to turn some of them into screencasts.
 </div>
 [% END %]
 
-
-
 [% BLOCK setup_padre %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>Getting Started with Padre on Windows</h1>
 <p>
+<ol>
+  <li>Download Padre 0.45 from <a href="download.html">download</a> the name of the file to be saved on 
+      the desktop is called padre-standalone-0.45.msi</li>
+  <li>Run this installer by double clicking on the icon.</li>
+  <li>It will ask you to accept the terms. Once you did that you can press the Install button.</li>
+  <li>Once installation is finished you should be able to see the installed icons by pressing 
+     on "Start" then on "Programs" and then selecting "Padre Standalone".</li>
+  <li>The package you downloaded is the latest version packaged for Windows but there are 
+      newer versions of Padre on CPAN. You should now upgrade by doing the following:
+      Click on "Start", "Run", copy the following command and press ENTER:
+      <br />
+    <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
+    or maybe better with full path to the perl exe:<br />
+    <code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
+    This will open a black window. You'll see text printed in that 
+    window while Padre is being upgraded. The process can take anywhere between 
+    4-5 minutes and 70 minutes depending on the speed of your Internet connection 
+    and the phase of the Moon.
+    </li>
+    <li>Run Padre by clicking on "Start", selecting "Programs", 
+       selecting "Padre Standalone" and clicking on the "Padre" icon. 
+       (there will be two windows, a black console and the editor itself).
+       This is considered a bug and it will be fixed in a future version.
+    </li>
+    <li>Select "Plugins", "Plugin Manager", you should see a list of plugins. 
+      Please make sure to enable the "Padre Developer Tools" Plugin and the 
+      "Padre Popularity Contest" plugin as well.</li>
+    <li>Click on "Save"</li>
+</ol>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+
+
+[% BLOCK setup_strawberry_six %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h1>Getting Started with Padre Standalone Plus Six on Windows</h1>
+<p>
+This is the previous package that is only recommended for people interested in Perl 6.
+In the future it will be distrubuted directly from the <a href="http://strawberryperl.com/">Strawberry Perl</a> web site.
 <ol>
   <li>Download Padre 0.41 from <a href="download.html">download</a> the name of the file to be saved on 
       the desktop is called almost-six-0.41.msi</li>
@@ -54,7 +96,7 @@ aid the learning process and later to turn some of them into screencasts.
     and the phase of the Moon.
     </li>
     <li>Run Padre by clicking on "Start", selecting "Programs", 
-       selecting "Padre Standalone Plus Six" and clicking on "Padre". 
+       selecting "Padre Standalone Plus Six" and clicking on the "Padre" icon. 
        (there will be two windows, a black console and the editor itself).
        This is considered a bug and it will be fixed in a future version.
     </li>
