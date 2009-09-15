@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 Septemner 15
+        url: http://szabgab.com/blog/2009/09/1252997602.html
+        title: Padre Standalone for Windows 0.45 released
+        comment: by Gábor Szabó
       - date: 2009 September 15
         url: http://damienlearnsperl.blogspot.com/2009/09/installing-padre-on-windows-vista.html
         title: Installing Padre on Windows Vista
