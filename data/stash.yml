@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 15
+        url: http://damienlearnsperl.blogspot.com/2009/09/installing-padre-on-windows-vista.html
+        title: Installing Padre on Windows Vista
+        comment: by Damien Learns Perl
       - date: 2009 September 14
         url: http://blog.ryan52.info/?p=3
         title: Padre 0.46 released!
