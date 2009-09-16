@@ -100,12 +100,13 @@ sub ACTION_process_templates {
             $templates_dir
         );
         while (defined(my $template_file = $iter->())) {
+            my $Source = file($template_file)->relative($include_path)->stringify;
             $tt->process(
-                file($template_file)->relative($include_path)->stringify,
+                $Source,
                 $stash,
                 file($template_file)->relative($templates_dir)->stringify,
                 {binmode => ':utf8'},
-            ) or die $tt->error;
+            ) or die $tt->error.' in '.$Source;
         }
     }
 }
