@@ -789,6 +789,12 @@ about:
         url: 'http://www.whatsup.org.il/modules.php?op=modload&name=News&file=article&sid=6454'
         title: Birthday for Padre, the Perl Integrated Development Environment
         comment: by Shlomi Fish on Whatsup.org.il
+  - title: Russian
+    events:
+      - date: 2009 September 17
+        url: http://onperl.ru/onperl/2009/09/padre.html
+        title: Padre
+        comment: Andrew Shitov on Perl
 developers:
   - alias
   - azawawi
