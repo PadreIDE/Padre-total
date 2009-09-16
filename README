@@ -29,7 +29,8 @@ The list of blog entries is maintained manually in F<data/stash.yml>.
 To setup the environment for building the site perform the follwoing actions:
     1) Make sure you have teh latest sources by choosing  "SVN Update" on the root folder
     2) Open a command prompt Start-->Run-->CMD-->"Enter"
-       To  install the parent, Template tooklkit run "cpan parent Template Text::Unaccent::PurePerl"
+       To  install the parent, Template tooklkit run
+       "cpan parent Template Text::Unaccent::PurePerl autodie IPC::System::Simple"
        Use the defualt settings (when asked questions like about XS just press "Enter")
     2) When the above is finished run the follwing "cpan Path::Class"
     3) When the above is finished run the follwing "cpan YAML::Tiny"
