@@ -25,7 +25,11 @@ navigation:
 about:
   - title: y2009
     events:
-      - date: 2009 Septemner 15
+      - date: 2009 September 16
+        url: http://ahmadzawawi.blogspot.com/2009/09/whats-new-in-padre-046.html
+        title: What's new in Padre 0.46
+        comment: by Ahmad M. Zawawi
+      - date: 2009 September 15
         url: http://szabgab.com/blog/2009/09/1252997602.html
         title: Padre Standalone for Windows 0.45 released
         comment: by Gábor Szabó
