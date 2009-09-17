@@ -1,4 +1,4 @@
-use Padre::Task::Indexer;
+use Padre::Service::Indexer;
 
 
 
@@ -38,7 +38,7 @@ my $update_progress = sub {
 
 
 
-my $i = Padre::Task::Indexer->new(
+my $i = Padre::Service::Indexer->new(
 	index_class => 'Padre::Index::Kinosearch',
 	index_args=>[qw( index_directory /tmp/padre-index )],
 	runmode => 'clobber',
