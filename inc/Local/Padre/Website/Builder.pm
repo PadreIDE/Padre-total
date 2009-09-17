@@ -5,6 +5,7 @@ use strict;
 use warnings FATAL => 'all';
 use parent 'Module::Build';
 use File::Copy qw(copy);
+use File::Basename qw(basename);
 use File::Next qw();
 use Path::Class qw(dir file);
 use Template qw();
@@ -41,8 +42,33 @@ sub dist_version {return localtime->ymd}
 
 sub ACTION_build {
     my ($self) = @_;
-    $self->depends_on(qw(copy_static_files process_templates));
+    $self->depends_on(qw(copy_static_files process_templates build_docs));
     print "You can run ./Build test now.\n";
+}
+
+sub ACTION_build_docs {
+    my ($self) = @_;
+    my $root = dir($self->config_data('sourcedir'), '..');
+    my $dir  = dir($root, 'Padre', 'lib');
+
+    my $iter = File::Next::files({
+            descend_filter => sub {$_ ne '.svn'}
+        },
+        $dir
+    );
+
+    while (defined(my $fullpath = $iter->())) {
+        my $target_dir = dir($self->destdir, 'docs', 'Padre',
+            file($fullpath)->relative($dir)->parent);
+        $target_dir->mkpath;
+		#print file($fullpath)->relative, "\n";
+		my $outfile = substr(dir($target_dir, basename($fullpath)), 0, -2) . 'html';
+
+		#print "$fullpath    $outfile\n";
+		# TODO: this is a really basic first version, we need to make it nicer
+		# TODO we might also want to generate the docs of all the Padre plugins
+		system "pod2html --htmlroot=http://padre.perlide.org/docs/Padre --infile $fullpath --outfile=$outfile 2>/dev/null";
+	}
 }
 
 sub ACTION_copy_static_files {
