@@ -68,6 +68,22 @@ sub new {
 
 	# Form Layout
 
+	my $sizer_1 = Wx::BoxSizer->new(wxHORIZONTAL);
+	my $sizer_2 = Wx::BoxSizer->new(wxVERTICAL);
+	my $button_sizer = Wx::BoxSizer->new(wxHORIZONTAL);
+	my $openurl_label = Wx::StaticText->new($self, -1, "http://svn.perlide.org/padre/trunk/Padre/Makefile.PL", wxDefaultPosition, wxDefaultSize, );
+	$sizer_2->Add($openurl_label, 0, 0, 0);
+	$sizer_2->Add($self->{openurl_text}, 0, wxTOP|wxEXPAND, 5);
+	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$sizer_2->Add($line_1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$button_sizer->Add($self->{button_ok}, 1, 0, 0);
+	$button_sizer->Add($self->{button_cancel}, 1, wxLEFT, 5);
+	$sizer_2->Add($button_sizer, 1, wxALIGN_RIGHT, 5);
+	$sizer_1->Add($sizer_2, 1, wxALL|wxEXPAND, 5);
+	$self->SetSizer($sizer_1);
+	$sizer_1->Fit($self);
+	$self->Layout();
+
 	return $self;
 }
 
