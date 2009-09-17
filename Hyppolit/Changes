@@ -1,0 +1,19 @@
+Changes of Hyppolit the IRC bot
+
+v0.04 2009.03.08
+	Fix karma regex
+	count commits as karma as well
+	allow     Nick, keyword is explanation
+	allow     Nick, keyword is also another explanation
+	Some SVN improvements
+
+v0.03 2009.03.08
+	Add logging support
+	Add some SVN commit support
+
+v0.02 2009.03.01
+	Add karma support
+	Add trust support
+
+v0.01 2009.03.01
+	First ever packaged version 
