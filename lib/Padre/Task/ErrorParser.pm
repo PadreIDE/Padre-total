@@ -1,9 +1,10 @@
 package Padre::Task::ErrorParser;
 
+use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use base 'Padre::Task';
 

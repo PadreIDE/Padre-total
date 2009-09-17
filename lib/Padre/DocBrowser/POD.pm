@@ -11,7 +11,7 @@ use Pod::Abstract               ();
 use Padre::DocBrowser::document ();
 use File::Temp                  ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use Class::XSAccessor constructor => 'new', getters => {
 	get_provider => 'provider',
@@ -58,6 +58,8 @@ else {
 		? ( '-L', ( $hints->{lang} ) )
 		: (),
 		( exists $hints->{perlfunc} ) ? '-f'
+		: (),
+		( exists $hints->{perlvar} ) ? '-v'
 		: (),
 		$query
 	);
@@ -117,9 +119,10 @@ sub render {
 	my $self = shift;
 	my $doc  = shift;
 	my $data = '';
-	my $pod  = IO::Scalar->new( \$doc->body );
-	my $out  = IO::Scalar->new( \$data );
-	my $v    = Pod::Simple::XHTML->new;
+	return if not $doc;
+	my $pod = IO::Scalar->new( \$doc->body );
+	my $out = IO::Scalar->new( \$data );
+	my $v   = Pod::Simple::XHTML->new;
 	$v->perldoc_url_prefix('perldoc:');
 	$v->output_fh($out);
 	$v->parse_file($pod);
@@ -187,6 +190,7 @@ sub process {
 	$self->{'pages'} = \@pages;
 	if    ( $self->opt_f ) { @pages = ("perlfunc") }
 	elsif ( $self->opt_q ) { @pages = ( "perlfaq1" .. "perlfaq9" ) }
+	elsif ( $self->opt_v ) { @pages = ("perlvar") }
 	else                   { @pages = @{ $self->{'args'} }; }
 
 	return $self->usage_brief unless @pages;

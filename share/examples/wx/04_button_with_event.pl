@@ -1,4 +1,4 @@
-#!/use/bin/perl
+#!/usr/bin/perl
 
 package main;
 
@@ -26,6 +26,7 @@ package Demo::App::Frame;
 use strict;
 use warnings;
 use Wx qw(:everything);
+use Wx::Event qw(:everything);
 use base 'Wx::Frame';
 
 sub new {
@@ -36,9 +37,11 @@ sub new {
                                   wxDefaultPosition,  wxDefaultSize,
                                  );
 
-    my $text = Wx::StaticText->new($self, -1, "Hello world");
+    my $button = Wx::Button->new($self, -1, "Press here");
 
-    #$self->SetSize($text->GetSizeWH);
+    EVT_BUTTON( $self, $button, sub {print "button pressed\n"} );
+
+    $self->SetSize($button->GetSizeWH);
 
     return $self;
 }

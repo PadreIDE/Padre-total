@@ -2,13 +2,14 @@ package Padre::Config::Patch;
 
 # Support library for writing config file migration scripts
 
+use 5.008;
 use strict;
 use warnings;
 use YAML::Tiny    ();
 use Exporter      ();
 use Padre::Config ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 1;
 

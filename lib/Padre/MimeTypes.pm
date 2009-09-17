@@ -20,8 +20,10 @@ use warnings;
 use Carp           ();
 use Data::Dumper   ();
 use File::Basename ();
+use Padre::Wx      ();
+use Padre::DB      ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 #####################################################################
 # Document Registration
@@ -51,6 +53,7 @@ sub _initialize {
 		ada   => 'text/x-adasrc',
 		asm   => 'text/x-asm',
 		bat   => 'text/x-bat',
+		bml   => 'text/x-bml',            # dreamwidth file format
 		cpp   => 'text/x-c++src',
 		css   => 'text/css',
 		diff  => 'text/x-patch',
@@ -79,6 +82,9 @@ sub _initialize {
 		pm    => \&perl_mime_type,
 		pod   => \&perl_mime_type,
 		t     => \&perl_mime_type,
+
+		# Compiled Perl Module or gimme5's output
+		pmc   => \&perl_mime_type,
 		conf  => 'text/x-config',
 		sh    => 'application/x-shellscript',
 		ksh   => 'application/x-shellscript',
@@ -89,7 +95,14 @@ sub _initialize {
 		'4th' => 'text/x-forth',
 		pasm  => 'application/x-pasm',
 		pir   => 'application/x-pir',
-		p6    => 'application/x-perl6',
+
+		# See docs/Perl6/Spec/S01-overview.pod for the
+		# list of acceptable Perl 6 extensions
+		p6  => 'application/x-perl6',
+		p6l => 'application/x-perl6',
+		p6m => 'application/x-perl6',
+		pl6 => 'application/x-perl6',
+		pm6 => 'application/x-perl6',
 	);
 
 	# This is the mime-type to Scintilla lexer mapping.
@@ -119,6 +132,11 @@ sub _initialize {
 		'application/x-bat' => {
 			name  => 'BAT',
 			lexer => Wx::wxSTC_LEX_BATCH, # CONFIRMED
+		},
+
+		'application/x-bml' => {
+			name  => 'BML',
+			lexer => Wx::wxSTC_LEX_NULL,  #
 		},
 
 		'text/x-c++src' => {
@@ -259,7 +277,7 @@ sub _initialize {
 	# array ref of objects with value and mime_type fields that have the raw values
 	__PACKAGE__->read_current_highlighters_from_db();
 
-	__PACKAGE__->add_highlighter( 'stc', 'Scintilla', Wx::gettext('Scintilla, fast but might be out of date') );
+	__PACKAGE__->add_highlighter( 'stc', 'Scintilla', Wx::gettext('Fast but might be out of date') );
 
 	foreach my $mime ( keys %MIME_TYPES ) {
 		__PACKAGE__->add_highlighter_to_mime_type( $mime, 'stc' );
@@ -274,7 +292,7 @@ sub _initialize {
 	__PACKAGE__->add_highlighter(
 		'Padre::Document::Perl::PPILexer',
 		Wx::gettext('PPI Standard'),
-		Wx::gettext('Hopefully faster than the PPI Traditional')
+		Wx::gettext('Hopefully faster than the PPI Traditional. Big file will fall back to Scintilla highlighter.')
 	);
 
 	__PACKAGE__->add_highlighter_to_mime_type( 'application/x-perl', 'Padre::Document::Perl::Lexer' );
@@ -383,6 +401,7 @@ sub get_highlighter_name {
 	# TODO this can happen if the user configureda highlighter but on the next start
 	# the highlighter is not available any more
 	# we need to handle this situation
+	return '' if !defined($highlighter);
 	return '' if not $AVAILABLE_HIGHLIGHTERS{$highlighter}; # avoid autovivification
 	return $AVAILABLE_HIGHLIGHTERS{$highlighter}{name};
 }
@@ -395,7 +414,6 @@ sub change_highlighters {
 	my %mtn          = map { $MIME_TYPES{$_}{name}             => $_ } keys %MIME_TYPES;
 	my %highlighters = map { $AVAILABLE_HIGHLIGHTERS{$_}{name} => $_ } keys %AVAILABLE_HIGHLIGHTERS;
 
-	require Padre::DB::SyntaxHighlight;
 	foreach my $mime_type_name ( keys %$changed_highlighters ) {
 		my $mime_type   = $mtn{$mime_type_name};                                     # get mime_type from name
 		my $highlighter = $highlighters{ $changed_highlighters->{$mime_type_name} }; # get highlighter from name
@@ -485,8 +503,8 @@ sub get_mime_type_names {
 # given a mime-type
 # return its display-name
 sub get_mime_type_name {
-	my $self      = shift;
-	my $mime_type = shift;
+	my $self = shift;
+	my $mime_type = shift || '';
 	return $MIME_TYPES{$mime_type}{name};
 }
 
@@ -520,22 +538,36 @@ sub get_highlighters_of_mime_type_name {
 # innappropriate just to get them out of here.
 
 sub _guess_mimetype {
-	my $self     = shift;
-	my $text     = shift;
-	my $filename = shift;
+	warn join( ',', caller ) . ' called MimeTypes::_guess_mimetype which is depreached, use ::guess_mimetype!';
+	return $_[0]->guess_mimetype(@_);
+}
 
-	# Default mime-type of new files, should be configurable in the GUI
-	# TODO: Make it configurable in the GUI :)
-	unless ($filename) {
-		return 'application/x-perl';
+sub guess_mimetype {
+	my $self = shift;
+	my $text = shift;
+	my $file = shift; # Could be a filename or a Padre::File - object
+
+	my $filename;
+
+	if ( ref($file) ) {
+		$filename = $file->{Filename};
+
+		# Combining this to one line would check if the method ->mime exists, not the result!
+		my $MIME = $file->mime;
+		defined($MIME) and return $MIME;
+
+	} else {
+		$filename = $file;
+		undef $file;
 	}
+
 
 	# Try derive the mime type from the file extension
 	if ( $filename and $filename =~ /\.([^.]+)$/ ) {
 		my $ext = lc $1;
 		if ( $EXT_MIME{$ext} ) {
 			if ( ref $EXT_MIME{$ext} ) {
-				return $EXT_MIME{$ext}->($text);
+				return $EXT_MIME{$ext}->( $self, $text );
 			} else {
 				return $EXT_MIME{$ext};
 			}
@@ -543,9 +575,11 @@ sub _guess_mimetype {
 	}
 
 	# Try derive the mime type from the basename
-	my $basename = File::Basename::basename($filename);
-	if ($basename) {
-		return 'text/x-makefile' if $basename =~ /^Makefile\.?/i;
+	if ($filename) {
+		my $basename = File::Basename::basename($filename);
+		if ($basename) {
+			return 'text/x-makefile' if $basename =~ /^Makefile\.?/i;
+		}
 	}
 
 	# Fall back on deriving the type from the content.
@@ -560,6 +594,28 @@ sub _guess_mimetype {
 		if ( $text =~ /\A---/ ) {
 			return 'text/x-yaml';
 		}
+	}
+
+	# Try to identify Perl Scripts based on soft criterias as a last resort
+	# TODO: Improve the tests
+	if ( defined($text) ) {
+		my $Score = 0;
+		if ( $text =~ /(use \w+\:\:\w+.+?\;[\r\n][\r\n.]*){3,}/ )           { $Score += 2; }
+		if ( $text =~ /use \w+\:\:\w+.+?\;[\r\n]/ )                         { $Score += 1; }
+		if ( $text =~ /require ([\"\'])[a-zA-Z0-9\.\-\_]+\1\;[\r\n]/ )      { $Score += 1; }
+		if ( $text =~ /[\r\n]sub \w+ ?(\(\$*\))? ?\{([\s\t]+\#.+)?[\r\n]/ ) { $Score += 1; }
+		if ( $text =~ /\=\~ ?[sm]?\// )                                     { $Score += 1; }
+		if ( $text =~ /\bmy [\$\%\@]/ )                                     { $Score += .5; }
+		if ( $text =~ /1\;[\r\n]+$/ )                                       { $Score += .5; }
+		if ( $text =~ /\$\w+\{/ )                                           { $Score += .5; }
+		if ( $text =~ /\bsplit[ \(]\// )                                    { $Score += .5; }
+		return $self->perl_mime_type($text) if $Score >= 3;
+	}
+
+	# Fallback mime-type of new files, should be configurable in the GUI
+	# TODO: Make it configurable in the GUI :)
+	unless ($filename) {
+		return $self->perl_mime_type($text);
 	}
 
 	# Fall back to plain text file
@@ -589,15 +645,29 @@ sub mime_type_by_extension {
 # but make sure that is real code and not just a comment or doc in some perl 5 code...
 sub is_perl6 {
 	my ($text) = @_;
+
+	# empty/undef text is not Perl 6 :)
 	return if not $text;
+
+	# Perl 6 POD
 	return 1 if $text =~ /^=begin\s+pod/msx;
 
 	# Needed for eg/perl5_with_perl6_example.pod
 	return if $text =~ /^=head[12]/msx;
 
+	# =cut is a sure sign for Perl 5 code (moritz++)
+	return if $text =~ /^=cut/msx;
+
+	# Special case: If MooseX::Declare is there, then we're in Perl 5 land
+	return if $text =~ /^\s*use\s+MooseX::Declare/msx;
+
+	# Perl 6 'use v6;'
 	return 1 if $text =~ /^\s*use\s+v6;/msx;
+
+	# One of Perl 6 compilation units
 	return 1 if $text =~ /^\s*(?:class|grammar|module|role)\s+\w/msx;
 
+	# Not Perl 6 for sure...
 	return;
 }
 

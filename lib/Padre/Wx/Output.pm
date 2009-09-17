@@ -12,7 +12,7 @@ use Encode       ();
 use Params::Util ();
 use Padre::Wx    ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::TextCtrl';
 
 sub new {
@@ -58,11 +58,64 @@ sub gettext_label {
 	Wx::gettext('Output');
 }
 
+
+
+
+
 #####################################################################
-# Main Methods
+# Process Execution
+
+# If this is the first time a command has been run,
+# set up the ProcessStream bindings.
+sub setup_bindings {
+	my $self = shift;
+
+	if ($Wx::Perl::ProcessStream::VERSION) {
+		return 1;
+	}
+
+	require Wx::Perl::ProcessStream;
+	Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
+		$self,
+		sub {
+			$_[1]->Skip(1);
+			$_[0]->style_neutral;
+			$_[0]->AppendText( $_[1]->GetLine . "\n" );
+			return;
+		},
+	);
+
+	Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
+		$self,
+		sub {
+			$_[1]->Skip(1);
+			$_[0]->style_bad;
+			$_[0]->AppendText( $_[1]->GetLine . "\n" );
+			return;
+		},
+	);
+
+	Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
+		$self,
+		sub {
+			$_[1]->Skip(1);
+			$_[1]->GetProcess->Destroy;
+			$_[0]->current->main->menu->run->enable;
+		},
+	);
+
+	return 1;
+}
+
+
+
+
+
+#####################################################################
+# General Methods
 
 # From Sean Healy on wxPerl mailing list.
-# Tweaked to avoid copying as much as possible.
+# Tweaked to avoid strings copying as much as possible.
 sub AppendText {
 	my $self     = shift;
 	my $use_ansi = $self->main->ide->config->main_output_ansi;
@@ -216,23 +269,28 @@ sub clear {
 	my $self = shift;
 	$self->SetBackgroundColour('#FFFFFF');
 	$self->Remove( 0, $self->GetLastPosition );
+	$self->Refresh;
 	return 1;
 }
 
 sub style_good {
 	$_[0]->SetBackgroundColour('#CCFFCC');
+	$_[0]->Refresh;
 }
 
 sub style_bad {
 	$_[0]->SetBackgroundColour('#FFCCCC');
+	$_[0]->Refresh;
 }
 
 sub style_neutral {
 	$_[0]->SetBackgroundColour('#FFFFFF');
+	$_[0]->Refresh;
 }
 
 sub style_busy {
 	$_[0]->SetBackgroundColour('#CCCCCC');
+	$_[0]->Refresh;
 }
 
 sub set_font {

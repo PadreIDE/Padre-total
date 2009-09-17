@@ -1,5 +1,6 @@
 package Padre::Wx::ErrorList;
 
+use 5.008;
 use strict;
 use warnings;
 use Encode          ();
@@ -7,7 +8,7 @@ use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Locale   ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::TreeCtrl';
 
 use Class::XSAccessor getters => {

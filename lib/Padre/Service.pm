@@ -1,4 +1,6 @@
 package Padre::Service;
+
+use 5.008;
 use strict;
 use warnings;
 use Carp qw( croak );
@@ -11,7 +13,7 @@ use Padre::Task   ();
 use Thread::Queue ();
 our @ISA = 'Padre::Task';
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 =pod
 

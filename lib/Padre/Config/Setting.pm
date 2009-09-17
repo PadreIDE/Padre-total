@@ -9,7 +9,7 @@ use Carp            ();
 use Params::Util    ();
 use Padre::Constant ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use Class::XSAccessor getters => {
 	name    => 'name',
@@ -37,6 +37,13 @@ sub new {
 	}
 	unless ( exists $self->{default} ) {
 		Carp::croak("Missing or invalid default for setting $self->{name}");
+	}
+
+	# It is illegal to store paths in the human config
+	if (    $self->type == Padre::Constant::PATH
+		and $self->store == Padre::Constant::HUMAN )
+	{
+		Carp::croak("PATH values must only be placed in the HOST store");
 	}
 
 	# Normalise

@@ -1,7 +1,13 @@
 package Padre::Wx::Dialog::SessionSave;
 
+use 5.008;
 use strict;
 use warnings;
+use Padre::Wx       ();
+use Padre::Wx::Icon ();
+
+our $VERSION = '0.46';
+our @ISA     = 'Wx::Dialog';
 
 use Class::XSAccessor accessors => {
 	_butsave => '_butsave', # save button
@@ -10,11 +16,6 @@ use Class::XSAccessor accessors => {
 	_sizer   => '_sizer',   # the window sizer
 	_text    => '_text',    # text control holding the description
 };
-use Padre::Wx ();
-
-use base 'Wx::Dialog';
-
-our $VERSION = '0.41';
 
 # -- constructor
 
@@ -30,7 +31,7 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
-	$self->SetIcon( Wx::GetWxPerlIcon() );
+	$self->SetIcon(Padre::Wx::Icon::PADRE);
 
 	# create dialog
 	$self->_create;

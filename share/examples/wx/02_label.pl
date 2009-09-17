@@ -1,4 +1,4 @@
-#!/use/bin/perl
+#!/usr/bin/perl
 
 package main;
 
@@ -36,9 +36,9 @@ sub new {
                                   wxDefaultPosition,  wxDefaultSize,
                                  );
 
-    my $button = Wx::Button->new($self, -1, "Press here");
+    my $text = Wx::StaticText->new($self, -1, "Hello world");
 
-    #$self->SetSize($button->GetSizeWH);
+    #$self->SetSize($text->GetSizeWH);
 
     return $self;
 }

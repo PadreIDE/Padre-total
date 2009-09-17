@@ -1,5 +1,70 @@
 package Padre::Action;
 
+use 5.008;
+use strict;
+use warnings;
+
+use Padre::Constant ();
+
+our $VERSION = '0.46';
+
+# Generate faster accessors
+use Class::XSAccessor getters => {
+	id            => 'id',
+	icon          => 'icon',
+	name          => 'name',
+	label         => 'label',
+	shortcut      => 'shortcut',
+	menu_event    => 'menu_event',
+	toolbar_event => 'toolbar_event',
+};
+
+
+
+
+
+#####################################################################
+# Constructor
+
+sub new {
+	my $class = shift;
+	my $self = bless {@_}, $class;
+	$self->{id} ||= -1;
+	return $self;
+}
+
+# A label textual data without any strange menu characters
+sub label_text {
+	my $self  = shift;
+	my $label = $self->label;
+	$label =~ s/\&//g;
+	return $label;
+}
+
+# Label for use with menu (with shortcut)
+# In some cases ( http://padre.perlide.org/trac/ticket/485 )
+# if a stock menu item also gets a short-cut it stops working
+# hence we add the shortcut only if id == -1 indicating this was not a
+# stock menu item
+# The case of F12 is a special case as it uses a stock icon that does not have
+# a shortcut in itself so we added one.
+# (BTW Print does not have a shortcut either)
+sub label_menu {
+	my $self  = shift;
+	my $label = $self->label;
+	if ( $self->shortcut and ( ( $self->shortcut eq 'F12' ) or ( $self->id == -1 or Padre::Constant::WIN32() ) ) ) {
+		$label .= "\t" . $self->shortcut;
+	}
+	return $label;
+}
+
+
+
+
+
+#####################################################################
+# Main Methods
+
 =pod
 
 =head1 NAME
@@ -8,12 +73,13 @@ Padre::Action - Padre Action Object
 
 =head1 SYNOPSIS
 
-	my $action = Padre::Action->new( 
-		name => 'file.save', 
-		label => 'Save', 
-		icon => '...', 
-		shortcut => 'CTRL-S', 
-		menu_event => sub { } );
+  my $action = Padre::Action->new( 
+    name       => 'file.save', 
+    label      => 'Save', 
+    icon       => '...', 
+    shortcut   => 'CTRL-S', 
+    menu_event => sub { },
+  );
 
 =head1 DESCRIPTION
 
@@ -25,68 +91,9 @@ To be documented...
 
 =head1 METHODS
 
-=cut
-
-use 5.008;
-use strict;
-use warnings;
-
-our $VERSION = '0.41';
-
-# Generate faster accessors
-use Class::XSAccessor accessors => {
-	name          => 'name',
-	id            => 'id',
-	label         => 'label',
-	icon          => 'icon',
-	shortcut      => 'shortcut',
-	menu_event    => 'menu_event',
-	toolbar_event => 'toolbar_event',
-};
-
-#####################################################################
-# Constructor
-
-=pod
-
 =head2 new
 
 A default contructor for action objects.
-
-=cut
-
-sub new {
-	my ($class, %opts) = @_;
-
-	#XXX - validate options
-
-	my $self = bless {}, $class;
-
-	$self->name( $opts{name} );
-	$self->id( $opts{id} || -1 );   
-	$self->label( $opts{label} );
-	$self->icon( $opts{icon} );
-	$self->shortcut( $opts{shortcut} );
-	$self->menu_event( $opts{menu_event} );
-	$self->toolbar_event( $opts{toolbar_event} );
-
-	return $self;
-}
-
-#
-# A label textual data without any strange menu characters
-#
-sub label_text {
-	my $self = shift;
-	my $label = $self->label;
-	$label =~ s/\&//g;
-	return $label;
-}
-
-#####################################################################
-# Main Methods
-
-=pod
 
 =head1 COPYRIGHT & LICENSE
 

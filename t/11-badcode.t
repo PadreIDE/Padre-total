@@ -19,7 +19,7 @@ my %modules = map {
 	$class =~ s/\.pm$//;
 	$class => "lib/$_"
 } File::Find::Rule->relative->name('*.pm')->file->in('lib');
-plan( tests => scalar(keys %modules) * 5 );
+plan( tests => scalar(keys %modules) * 6 );
 
 # Compile all of Padre
 use File::Temp;
@@ -47,6 +47,8 @@ foreach my $module ( sort keys %modules ) {
 			eval { $module->can('current') }
 			and
 			$module ne 'Padre::Current'
+			and
+			$module ne 'Padre::Wx::Role::MainChild'
 		) {
 			skip("No ->current method", 1);
 		}
@@ -71,7 +73,7 @@ foreach my $module ( sort keys %modules ) {
 			and
 			$module ne 'Padre::Current'
 		) {
-			skip("No ->ide or ->main method", 1);
+			skip("$module: No ->ide or ->main method", 1);
 		}
 		my $good = ! $document->find_any( sub {
 			$_[1]->isa('PPI::Token::Word')      or return '';
@@ -85,6 +87,11 @@ foreach my $module ( sort keys %modules ) {
 			return 1;
 		} );
 		ok( $good, "$module: Don't use Padre->ide when ->ide or ->main is possible" );
+	}
+	
+	# Advoid expensive regexp result variables
+	SKIP: {
+		ok($document->serialize !~ /[^\$\'\"]\$[\&\'\`]/,$module.': Uses expensive regexp-variable $&, $\' or $`');
 	}
 }
 

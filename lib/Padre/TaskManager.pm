@@ -10,7 +10,7 @@ Padre::TaskManager - Padre Background Task Scheduler
 
   require Padre::Task::Foo;
   my $task = Padre::Task::Foo->new(some => 'data');
-  $task->schedule(); # handed off to the task manager
+  $task->schedule; # handed off to the task manager
 
 =head1 DESCRIPTION
 
@@ -66,7 +66,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use Params::Util qw{_INSTANCE};
 

@@ -2,16 +2,18 @@ package Padre::Wx::Menu;
 
 # Implements additional functionality to support richer menus
 
+use 5.008;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Action ();
+use Padre::Wx     ();
 
 use Class::Adapter::Builder
 	ISA      => 'Wx::Menu',
 	NEW      => 'Wx::Menu',
 	AUTOLOAD => 'PUBLIC';
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use Class::XSAccessor getters => {
 	wx => 'OBJECT',
@@ -23,7 +25,6 @@ sub refresh {1}
 
 # Overrides and then calls XS wx Menu::Append.
 # Adds any hotkeys to global registry of bound keys
-
 sub Append {
 	my $self   = shift;
 	my $string = $_[1];
@@ -45,83 +46,60 @@ sub Append {
 	return $item;
 }
 
-#
 # Add a normal menu item to menu from a Padre action
-#
 sub add_menu_item {
-	my $self = shift;
-	my $menu = shift;
-	return $self->_add_menu_item($menu, 'normal', @_);
+	shift->_add_menu_item( 'Append', @_ );
 }
 
 
-#
 # Add a checked menu item to menu from a Padre action
-#
 sub add_checked_menu_item {
-	my $self = shift;
-	my $menu = shift;
-	return $self->_add_menu_item($menu, 'checked', @_);
+	shift->_add_menu_item( 'AppendCheckItem', @_ );
 }
 
-#
 # Add a radio menu item to menu from a Padre action
-#
 sub add_radio_menu_item {
-	my $self = shift;
-	my $menu = shift;
-	return $self->_add_menu_item($menu, 'radio', @_);
+	shift->_add_menu_item( 'AppendRadioItem', @_ );
 }
 
-#
 # (Private method)
 # Add a normal/checked/radio menu item to menu from a Padre action
-#
 sub _add_menu_item {
-	my $self = shift;
-	my $menu = shift;
-	my $type = shift;
-	require Padre::Action;
-	my $action = Padre::Action->new(@_);
+	my $self     = shift;
+	my $method   = shift;
+	my $menu     = shift;
+	my $action   = Padre::Action->new(@_);
+	my $name     = $action->name;
 	my $shortcut = $action->shortcut;
-	my $menu_item;
-	if($type eq 'normal') {
-		$menu_item = $menu->Append(
-			$action->id,
-			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
-		);
-	} elsif($type eq 'checked') {
-		$menu_item = $menu->AppendCheckItem(
-			$action->id,
-			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
-		);
-	} elsif($type eq 'radio') {
-		$menu_item = $menu->AppendRadioItem(
-			$action->id,
-			$action->label . ($shortcut ? ("\t" . $shortcut) : ''),
-		);
-	}  else {
-		die "Unknown menu item type: '$type'";
-	}
-	Wx::Event::EVT_MENU( $self->{main}, $menu_item, $action->menu_event );
 
-	my $actions = Padre::ide->actions;
-	if($actions->{$action->name}) {
-		warn "Found a duplicate action '" . $action->name . "'\n";
+	my $item = $menu->$method(
+		$action->id,
+		$action->label_menu,
+	);
+	Wx::Event::EVT_MENU(
+		$self->{main},
+		$item,
+		$action->menu_event,
+	);
+
+	my $actions = Padre->ide->actions;
+	if ( $actions->{$name} ) {
+		warn "Found a duplicate action '$name'\n";
 	}
-	if($shortcut) {
-		foreach my $action_name (keys %{$actions}) {
-			my $a = $actions->{$action_name};
-			if($a->shortcut && $a->shortcut eq $shortcut) {
-				warn "Found a duplicate shortcut '" . $action->shortcut . 
-					"' with " . $a->name . " for '" . $action->name . "'\n";
-				last;
-			}
+
+	if ($shortcut) {
+		foreach my $n ( keys %$actions ) {
+			my $a = $actions->{$n};
+			next unless $a->shortcut;
+			next unless $a->shortcut eq $shortcut;
+			warn "Found a duplicate shortcut '$shortcut' with " . $a->name . " for '$name'\n";
+			last;
 		}
 	}
-	$actions->{$action->name} = $action;
 
-	return $menu_item;
+	$actions->{$name} = $action;
+
+	return $item;
 }
 
 1;

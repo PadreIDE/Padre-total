@@ -2,7 +2,7 @@ package t::lib::Padre::Win32;
 
 use strict;
 use warnings;
-use Probe::Perl ();
+use Padre::Perl ();
 
 sub setup {
 	require Win32::GuiTest;
@@ -15,16 +15,8 @@ sub setup {
 	my %existing_windows = map { $_ => 1 } FindWindowLike(0, "^Padre");
 
 	# Find Perl (ideally the gui one)
-	my $perl = Probe::Perl->find_perl_interpreter;
-	#if ( $perl =~ /\bperl\.exe\z/ ) {
-		#my $wperl = $perl;
-		#$wperl =~ s/perl\.exe\z/wperl.exe/;
-		#if ( -f $wperl and -e $wperl ) {
-			#$perl = $wperl;
-		#}
-	#}
-
-	my $cmd = "start $perl script\\padre";
+	my $perl = Padre::Perl::wxperl();
+	my $cmd  = "start $perl script\\padre";
 	#$t->diag($cmd);
 	system $cmd;
 	my $padre;
@@ -38,7 +30,7 @@ sub setup {
 		$padre = shift @wins;
 		last if $padre;
 	}
-	die "Could not find Padre" if not $padre;
+	die "Could not find a running version of Padre" if not $padre;
 
 	SetForegroundWindow($padre);
 	sleep 3; # crap, we have to wait for Padre to come to the foreground

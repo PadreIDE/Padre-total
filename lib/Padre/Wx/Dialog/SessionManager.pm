@@ -2,12 +2,14 @@ package Padre::Wx::Dialog::SessionManager;
 
 # This file is part of Padre, the Perl ide.
 
+use 5.008;
 use strict;
 use warnings;
 use POSIX qw{ strftime };
-use Padre::Wx ();
+use Padre::Wx       ();
+use Padre::Wx::Icon ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::Dialog';
 
 use Class::XSAccessor accessors => {
@@ -35,7 +37,8 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
-	$self->SetIcon( Wx::GetWxPerlIcon() );
+
+	$self->SetIcon(Padre::Wx::Icon::PADRE);
 
 	# create dialog
 	$self->_create;
@@ -93,6 +96,11 @@ sub _on_butdelete_clicked {
 #
 sub _on_butopen_clicked {
 	my $self = shift;
+
+	# prevents crash if user double-clicks on list
+	# item and tries to click buttons
+	$self->_butdelete->Disable;
+	$self->_butopen->Disable;
 
 	# close all open documents
 	my $main = $self->GetParent;

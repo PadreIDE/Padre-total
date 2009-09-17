@@ -9,6 +9,7 @@ BEGIN {
 		exit 0;
 	}
 	plan tests => 29;
+	
 }
 
 use FindBin      qw($Bin);
@@ -47,13 +48,13 @@ SCOPE: {
 SCOPE: {
 	my $manager = Padre::PluginManager->new($padre);
 	is( keys %{$manager->plugins}, 0, 'No plugins loaded' );
-	ok( ! $manager->load_plugin('My'), 'Loaded My Plugin' );
+	ok( ! $manager->load_plugin('Padre::Plugin::My'), 'Loaded My Plugin' );
 	is( keys %{$manager->plugins}, 1, 'Loaded something' );
-	my $handle = $manager->_plugin('My');
+	my $handle = $manager->_plugin('Padre::Plugin::My');
 	isa_ok( $handle, 'Padre::PluginHandle' );
-	is( $handle->name, 'My', 'Loaded My Plugin' );
+	is( $handle->class, 'Padre::Plugin::My', 'Loaded My Plugin' );
 	ok( $handle->disabled, 'My Plugin is disabled' );
-	ok( $manager->unload_plugin('My'), '->unload_plugin ok' );
+	ok( $manager->unload_plugin('Padre::Plugin::My'), '->unload_plugin ok' );
 	ok( ! defined($manager->plugins->{My}), 'Plugin no longer loaded' );
 	is( eval("\$Padre::Plugin::My::VERSION"), undef, 'My Plugin was cleaned up' );
 }
@@ -61,22 +62,24 @@ SCOPE: {
 ## Test With custom plugins
 SCOPE: {
 	my $custom_dir = File::Spec->catfile( $Bin, 'lib' );
-	my $manager  = Padre::PluginManager->new($padre, plugin_dir => $custom_dir);
+	my $manager  = Padre::PluginManager->new( $padre,
+		plugin_dir => $custom_dir,
+	);
 	is( $manager->plugin_dir, $custom_dir );
 	is( keys %{$manager->plugins}, 0 );
 
-	$manager->_load_plugins_from_inc;
+	$manager->load_plugins;
 	# cannot compare with the exact numbers as there might be plugins already installed
 	cmp_ok(keys %{$manager->plugins}, '>=', 3, 'at least 3 plugins')
 	or
 	diag(Dumper(\$manager->plugins));
 
 	ok( ! exists $manager->plugins->{'Development::Tools'},  'no second level plugin' );
-	is( $manager->_plugin('TestPlugin')->class, 'Padre::Plugin::TestPlugin' );
+	is( $manager->_plugin('Padre::Plugin::TestPlugin')->class, 'Padre::Plugin::TestPlugin' );
 	ok( !defined $manager->plugins->{'Test::Plugin'},        'no second level plugin' );
 
 	# try load again
-	my $st = $manager->load_plugin('TestPlugin');
+	my $st = $manager->load_plugin('Padre::Plugin::TestPlugin');
 	is( $st, undef );
 }
 
@@ -88,24 +91,27 @@ unshift @INC, $path;
 my $english = setlocale(LC_CTYPE) eq 'en_US.UTF-8' ? 1 : 0;
 SCOPE: {
 	my $manager  = Padre::PluginManager->new($padre);
-	$manager->load_plugin('A');
-	is $manager->plugins->{'A'}->{status}, 'error', 'error in loading A';
-	my $msg1 = $english ? qr/Plugin:A - Failed to load module/ : qr/.*/;
-	like $manager->plugins->{'A'}->errstr, 
-		qr/^$msg1: Global symbol "\$syntax_error" requires explicit package name at/,
+
+	$manager->load_plugin('Padre::Plugin::A');
+	is $manager->plugins->{'Padre::Plugin::A'}->{status}, 'error', 'error in loading A';
+	my $msg1 = $english ? qr/Padre::Plugin::A - Crashed while loading\:/ : qr/.*/;
+	like $manager->plugins->{'Padre::Plugin::A'}->errstr, 
+		qr/^$msg1 Global symbol "\$syntax_error" requires explicit package name at/,
 		'text of error message';
 
-	$manager->load_plugin('B');
-	is $manager->plugins->{'B'}->{status}, 'error', 'error in loading B';
-	my $msg2 = $english ? qr/Plugin:B - Not compatible with Padre::Plugin API. Need to be subclass of Padre::Plugin/ : qr/.*/;
-	like $manager->plugins->{'B'}->errstr,
+	$manager->load_plugin('Padre::Plugin::B');
+	is $manager->plugins->{'Padre::Plugin::B'}->{status}, 'error', 'error in loading B';
+	my $msg2 = $english ? qr/Padre::Plugin::B - Not a Padre::Plugin subclass/ : qr/.*/;
+	like $manager->plugins->{'Padre::Plugin::B'}->errstr,
 		qr/^$msg2/,
 		'text of error message';
 
-	$manager->load_plugin('C');
-	is $manager->plugins->{'C'}->{status}, 'disabled', 'disabled in loading C';
-	my $msg3 = $english ? qr/Plugin:C - Does not have menus/ : qr/.*/;
-	like $manager->plugins->{'C'}->errstr,
-		qr/$msg3/,
-		'text of error message';
+	$manager->load_plugin('Padre::Plugin::C');
+	is $manager->plugins->{'Padre::Plugin::C'}->{status}, 'disabled', 'disabled in loading C';
+	# Doesn't have an error message since r6891:
+#	my $msg3 = $english ? qr/Padre::Plugin::C - Does not have menus/ : qr/.*/;
+#	like $manager->plugins->{'Padre::Plugin::C'}->errstr,
+#		qr/$msg3/,
+#		'text of error message';
+	is $manager->plugins->{'Padre::Plugin::C'}->errstr, '', 'text of error message';
 }

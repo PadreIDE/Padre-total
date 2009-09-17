@@ -49,7 +49,7 @@ use Padre::Wx       ();
 use constant DEFAULT  => 'en-gb';
 use constant SHAREDIR => File::Spec->rel2abs( Padre::Util::sharedir('locale') );
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # The RFC4646 table is the primary language data table and contains
 # mappings from a Padre-supported language to all the relevant data
@@ -596,6 +596,7 @@ sub encoding_from_string {
 	}
 
 	require Encode::Guess;
+	push @guesses, 'latin1';
 	my $guess = Encode::Guess::guess_encoding( $content, @guesses );
 	unless ( defined $guess ) {
 		$guess = '';                 # to avoid warnings

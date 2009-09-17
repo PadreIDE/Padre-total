@@ -21,7 +21,7 @@ use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use File::Basename    ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 my $iter;
 my %opts;
@@ -436,8 +436,13 @@ sub print_results {
 }
 
 sub _send_text {
-	my $text     = shift;
-	my $frame    = Padre->ide->wx->main;
+	my $text = shift;
+
+	# Reformat the text to remove non-printable characters
+	$text =~ s/\n\z//g;
+	$text =~ s/\t/        /g;
+
+	my $frame = Padre->ide->wx->main;
 	my $threvent = Wx::PlThreadEvent->new( -1, $DONE_EVENT, $text );
 	Wx::PostEvent( $frame, $threvent );
 }

@@ -132,8 +132,13 @@ use Padre::Util      ();
 use Padre::Wx        ();
 use Padre            ();
 use Padre::MimeTypes ();
+use Padre::File      ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
+
+
+
+
 
 #####################################################################
 # Document Registration
@@ -143,7 +148,8 @@ my $unsaved_number = 0;
 
 # TODO generate this from the the MIME_TYPES in the Padre::MimeTypes class?
 sub menu_view_mimes {
-	'00Plain Text'     => 'text/plain',
+	return (
+		'00Plain Text' => 'text/plain',
 		'01Perl'       => 'application/x-perl',
 		'02Shell'      => 'application/x-shellscript',
 		'03HTML'       => 'text/html',
@@ -156,8 +162,12 @@ sub menu_view_mimes {
 		'17VBScript'   => 'text/vbscript',
 		'19SQL'        => 'text/x-sql',
 		'21Perl 6'     => 'application/x-perl6',
-		;
+	);
 }
+
+
+
+
 
 #####################################################################
 # Constructor and Accessors
@@ -165,6 +175,7 @@ sub menu_view_mimes {
 use Class::XSAccessor getters => {
 	editor           => 'editor',
 	filename         => 'filename',    # TODO is this read_only or what?
+	file             => 'file',        # Padre::File - object
 	get_mimetype     => 'mimetype',
 	get_newline_type => 'newline_type',
 	errstr           => 'errstr',
@@ -200,6 +211,25 @@ sub new {
 	my $self = bless {@_}, $class;
 
 	if ( $self->{filename} ) {
+		$self->{file} = Padre::File->new( $self->{filename} );
+
+		if ( $self->{file}->exists ) {
+
+			# Test script must be able to pass an alternate config object:
+			my $config = $self->{config} || Padre->ide->config;
+			if ( $self->{file}->size > $config->editor_file_size_limit ) {
+				$self->error(
+					sprintf(
+						Wx::gettext(
+							"Cannot open %s as it is over the arbitrary file size limit of Padre which is currently %s"
+						),
+						$self->{filename},
+						$config->editor_file_size_limit
+					)
+				);
+				return;
+			}
+		}
 		$self->load_file;
 	} else {
 		$unsaved_number++;
@@ -222,7 +252,7 @@ sub rebless {
 	# to the the base class,
 	# This isn't exactly the most elegant way to do this, but will
 	# do for a first implementation.
-	my $mime_type = $self->get_mimetype;
+	my $mime_type = $self->get_mimetype or return;
 	my $class = Padre::MimeTypes->get_mime_class($mime_type) || __PACKAGE__;
 	Padre::Util::debug("Reblessing to mimetype: '$class'");
 	if ($class) {
@@ -235,7 +265,7 @@ sub rebless {
 
 	my $module = Padre::MimeTypes->get_current_highlighter_of_mime_type($mime_type);
 	my $filename = $self->filename || '';
-	warn("No module  mime_type='$mime_type' filename='$filename'\n") if not $module;
+	warn("No module  mime_type='$mime_type' filename='$filename'\n") unless $module;
 
 	#warn("Module '$module' mime_type='$mime_type' filename='$filename'\n") if $module;
 	$self->set_highlighter($module);
@@ -243,8 +273,26 @@ sub rebless {
 	return;
 }
 
+
+
+
+
 #####################################################################
 # Padre::Document GUI Integration
+
+sub colourize {
+	my $self   = shift;
+	my $lexer  = $self->lexer;
+	my $editor = $self->editor;
+	$editor->SetLexer($lexer);
+
+	$self->remove_color;
+	if ( $lexer == Wx::wxSTC_LEX_CONTAINER ) {
+		$self->colorize;
+	} else {
+		$editor->Colourise( 0, $editor->GetLength );
+	}
+}
 
 sub colorize {
 	my $self = shift;
@@ -266,7 +314,7 @@ sub colorize {
 	}
 
 	# allow virtual modules if they have a colorize method
-	if ( not $module->can('colorize') ) {
+	unless ( $module->can('colorize') ) {
 		eval "use $module";
 		if ($@) {
 			Carp::cluck( "Could not load module '$module' for file '" . ( $self->filename || '' ) . "'\n" );
@@ -280,7 +328,6 @@ sub colorize {
 	}
 	return;
 }
-
 
 sub last_sync {
 	return $_[0]->{_timestamp};
@@ -298,37 +345,42 @@ sub dirname {
 
 #left here a it is used in many places. Maybe we need to remove this sub.
 sub guess_mimetype {
-	my $self     = shift;
-	my $text     = $self->{original_content};
-	my $filename = $self->filename || q{};
+	my $self = shift;
+	my $text = $self->{original_content};
+	my $file = $self->file;
 
-	return Padre::MimeTypes->_guess_mimetype( $text, $filename );
+	return Padre::MimeTypes->guess_mimetype( $text, $file );
 }
-
 
 # For ts without a newline type
 # TODO: get it from config
 sub _get_default_newline_type {
-	Padre::Constant::NEWLINE;
+
+	# Very ugly hack to make the test script work
+	if ( $0 =~ /t.70\-document\.t/ ) {
+		Padre::Constant::NEWLINE;
+	} else {
+		Padre->ide->config->default_line_ending;
+	}
 }
 
-# Where to convert (UNIX, WIN, MAC)
-# or Ask (the user) or Keep (the garbage)
-# mixed files
-# TODO get from config
-sub _mixed_newlines {
-	Padre::Constant::NEWLINE;
+=pod
+
+=head3 error
+
+    $document->error( $msg );
+
+Open an error dialog box with C<$msg> as main text. There's only one OK
+button. No return value.
+
+=cut
+
+# TODO: A globally used error/message box function may be better instead
+#       of replicating the same function in many files:
+sub error {
+	Padre->ide->wx->main->message( $_[1], Wx::gettext('Error') );
 }
 
-# What to do with files that have inconsistent line endings:
-# 0 if keep as they are
-# MAC|UNIX|WIN convert them to the appropriate type
-sub _auto_convert {
-	my ($self) = @_;
-
-	# TODO get from config
-	return 0;
-}
 
 #####################################################################
 # Disk Interaction Methods
@@ -336,7 +388,7 @@ sub _auto_convert {
 # filesystem.
 
 sub is_new {
-	return !!( not defined $_[0]->filename );
+	return !!( not defined $_[0]->file );
 }
 
 sub is_modified {
@@ -344,7 +396,7 @@ sub is_modified {
 }
 
 sub is_saved {
-	return !!( defined $_[0]->filename and not $_[0]->is_modified );
+	return !!( defined $_[0]->file and not $_[0]->is_modified );
 }
 
 # Returns true if this is a new document that is too insignificant to
@@ -366,17 +418,42 @@ sub is_unused {
 # 3) every time we type something ????
 sub has_changed_on_disk {
 	my ($self) = @_;
-	return 0 unless defined $self->filename;
+	return 0 unless defined $self->file;
 	return 0 unless defined $self->last_sync;
-	return 1 unless $self->time_on_file;
-	return $self->last_sync < $self->time_on_file ? 1 : 0;
+
+	# Caching the result for two lines saved one stat-I/O each time this sub is run
+	my $time_on_file = $self->time_on_file;
+
+	# Return -1 if file has been deleted from disk
+	return -1 unless $time_on_file;
+
+	# Return 1 if the file has changed on disk, otherwise 0
+	return $self->last_sync < $time_on_file ? 1 : 0;
 }
 
 sub time_on_file {
+	my $self = shift;
+	my $file = $self->file;
+	return 0 unless defined $file;
+
+	# using one call instead of exists and mtime safes I/O:
+	my $Time = $file->mtime;
+	defined($Time) or return 0;
+	return $Time;
+}
+
+# Generate MD5-checksum for current file stored on disk
+sub checksum_on_file {
+	warn join( ',', caller ) . ' called Document::checksum_on_file which is out-of-service.';
+	return 1;
 	my $filename = $_[0]->filename;
-	return 0 unless defined $filename;
-	return 0 unless -e $filename;
-	return ( stat($filename) )[9];
+	return undef unless defined $filename;
+
+	require Digest::MD5;
+
+	open my $FH, $filename or return;
+	binmode($FH);
+	return Digest::MD5->new->addfile(*$FH)->hexdigest;
 }
 
 =pod
@@ -400,32 +477,27 @@ Returns true on success false on failure. Sets $doc->errstr;
 sub load_file {
 	my ($self) = @_;
 
-	my $file = $self->{filename};
+	my $file = $self->file;
 
-	Padre::Util::debug("Loading file '$file'");
+	Padre::Util::debug("Loading file '$file->{Filename}'");
 
 	# check if file exists
-	if ( !-e $file ) {
+	if ( !$file->exists ) {
 
 		# file doesn't exist, try to create an empty one
-		if ( not open my $fh, '>', $file ) {
+		if ( !$file->write('') ) {
 
 			# oops, error creating file. abort operation
-			print ">>$file $!\n";
-			$self->set_errstr($!);
+			$self->set_errstr( $file->error );
 			return;
 		}
 	}
 
 	# load file
 	$self->set_errstr('');
-	my $content;
-	if ( open my $fh, '<', $file ) {
-		binmode($fh);
-		local $/ = undef;
-		$content = <$fh>;
-	} else {
-		$self->set_errstr($!);
+	my $content = $file->read;
+	if ( !defined($content) ) {
+		$self->set_errstr( $file->error );
 		return;
 	}
 	$self->{_timestamp} = $self->time_on_file;
@@ -442,48 +514,35 @@ sub load_file {
 	return 1;
 }
 
+#
+# New line type can be one of these values:
+# WIN32, MAC (for classic Mac) or UNIX (for Mac OS X and Linux/*BSD)
+#
 sub newline_type {
 	my ($self) = @_;
+	return $self->_get_default_newline_type;
+}
 
-	my $file         = $self->{filename};
-	my $newline_type = $self->_get_default_newline_type;
-	my $convert_to;
-	my $current_type = Padre::Util::newline_type( $self->{original_content} );
-	if ( $current_type eq 'None' ) {
-
-		# keep default
-	} elsif ( $current_type eq 'Mixed' ) {
-		my $mixed = $self->_mixed_newlines();
-		if ( $mixed eq 'Ask' ) {
-			warn "TODO ask the user what to do with $file";
-
-			# $convert_to = $newline_type = ;
-		} elsif ( $mixed eq 'Keep' ) {
-			warn "TODO probably we should not allow keeping garbage ($file) \n";
-		} else {
-
-			#warn "TODO converting $file";
-			$convert_to = $newline_type = $mixed;
-		}
-	} else {
-		$convert_to = $self->_auto_convert;
-		if ($convert_to) {
-
-			#warn "TODO call converting on $file";
-			$newline_type = $convert_to;
-		} else {
-			$newline_type = $current_type;
-		}
+# Get the newline char(s) for this document.
+# TODO: This solution is really terrible - it should be {newline} or at least a caching of the value
+#       because of speed issues:
+sub newline {
+	my $self = shift;
+	if ( $self->get_newline_type eq 'WIN32' ) {
+		return "\r\n";
+	} elsif ( $self->get_newline_type eq 'MAC' ) {
+		return "\r";
 	}
-	return ( $newline_type, $convert_to );
+	return "\n";
 }
 
 sub save_file {
 	my ($self) = @_;
 	$self->set_errstr('');
 
-	my $content  = $self->text_get;
-	my $filename = $self->filename;
+	my $content = $self->text_get;
+	my $file    = $self->file;
+	defined($file) or $file = Padre::File->new( $self->filename );
 
 	# not set when first time to save
 	# allow the upgrade from ascii to utf-8 if there were unicode characters added
@@ -496,16 +555,17 @@ sub save_file {
 	if ( defined $self->{encoding} ) {
 		$encode = ":raw:encoding($self->{encoding})";
 	} else {
-		warn "encoding is not set, (couldn't get from contents) when saving file $filename\n";
+		warn "encoding is not set, (couldn't get from contents) when saving file $file->{Filename}\n";
 	}
 
-	if ( open my $fh, ">$encode", $filename ) {
-		print {$fh} $content;
-	} else {
-		$self->set_errstr($!);
+	if ( !$file->write( $content, $encode ) ) {
+		$self->set_errstr( $file->error );
 		return;
 	}
+
+	# File must be closed at this time, slow fs/userspace-fs may not return the correct result otherwise!
 	$self->{_timestamp} = $self->time_on_file;
+
 	return 1;
 }
 
@@ -524,7 +584,7 @@ TODO: In the future it should backup the changes in case the user regrets the ac
 sub reload {
 	my ($self) = @_;
 
-	my $filename = $self->filename or return;
+	my $file = $self->file or return;
 	return $self->load_file;
 }
 
@@ -827,7 +887,7 @@ sub project {
 	if ( defined $root ) {
 		return Padre->ide->project($root);
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -841,9 +901,12 @@ sub project_find {
 	my $self = shift;
 
 	# Anonymous files don't have a project
-	unless ( defined $self->filename ) {
+	unless ( defined $self->file ) {
 		return;
 	}
+
+	# Currently no project support for remote files:
+	if ($self->{file}->{protocol} ne 'local') { return; }
 
 	# Search upwards from the file to find the project root
 	my ( $v, $d, $f ) = File::Spec->splitpath( $self->filename );
@@ -859,9 +922,9 @@ sub project_find {
 	unless ( defined $dirs ) {
 
 		# This document is part of the null project
-		return File::Spec->catpath( $v, $d, '' );
+		return File::Spec->catpath( $v, File::Spec->catdir(@d), '' );
 	}
-
+	$self->{is_project} = 1;
 	return File::Spec->catpath( $v, $dirs, '' );
 }
 
@@ -1031,8 +1094,7 @@ sub comment_lines_str { }
 # return ($error_message)
 # in case of some error
 sub autocomplete {
-	my $self = shift;
-
+	my $self   = shift;
 	my $editor = $self->editor;
 	my $pos    = $editor->GetCurrentPos;
 	my $line   = $editor->LineFromPosition($pos);
@@ -1041,21 +1103,20 @@ sub autocomplete {
 	# line from beginning to current position
 	my $prefix = $editor->GetTextRange( $first, $pos );
 	$prefix =~ s{^.*?(\w+)$}{$1};
-	my $last      = $editor->GetLength();
-	my $text      = $editor->GetTextRange( 0, $last );
-	my $pre_text  = $editor->GetTextRange( 0, $first + length($prefix) );
-	my $post_text = $editor->GetTextRange( $first, $last );
+	my $last = $editor->GetLength();
+	my $text = $editor->GetTextRange( 0, $last );
+	my $pre  = $editor->GetTextRange( 0, $first + length($prefix) );
+	my $post = $editor->GetTextRange( $first, $last );
 
-	my $regex;
-	eval { $regex = qr{\b($prefix\w+)\b} };
+	my $regex = eval {qr{\b($prefix\w+)\b}};
 	if ($@) {
 		return ("Cannot build regex for '$prefix'");
 	}
 
 	my %seen;
 	my @words;
-	push @words, grep { !$seen{$_}++ } reverse( $pre_text =~ /$regex/g );
-	push @words, grep { !$seen{$_}++ } ( $post_text =~ /$regex/g );
+	push @words, grep { !$seen{$_}++ } reverse( $pre =~ /$regex/g );
+	push @words, grep { !$seen{$_}++ } ( $post =~ /$regex/g );
 
 	if ( @words > 20 ) {
 		@words = @words[ 0 .. 19 ];
@@ -1063,7 +1124,6 @@ sub autocomplete {
 
 	return ( length($prefix), @words );
 }
-
 
 1;
 

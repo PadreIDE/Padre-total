@@ -1,11 +1,12 @@
 package Padre::Wx::Printout;
 
+use 5.008;
 use strict;
 use warnings;
 use Wx::Print;
 use base qw(Wx::Printout);
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 sub new {
 	my $class  = shift;

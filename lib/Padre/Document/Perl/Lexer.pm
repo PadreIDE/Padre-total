@@ -1,12 +1,13 @@
 package Padre::Document::Perl::Lexer;
 
+use 5.008;
 use strict;
 use warnings;
 use PPI::Document;
 use PPI::Dumper;
 use Text::Balanced;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 sub class_to_color {
 	my $class  = shift;
@@ -190,10 +191,12 @@ sub colorize {
 					my @tokens     = $next_ppi_doc->tokens;
 					my $next_token = $tokens[0];
 
-					if (   $next_token->isa("PPI::Token::Quote")
-						or $next_token->isa("PPI::Token::QuoteLike")
-						or $next_token->isa("PPI::Token::Regexp")
-						or $next_token->isa("PPI::Token::Pod") )
+					if ($next_token
+						and (  $next_token->isa("PPI::Token::Quote")
+							or $next_token->isa("PPI::Token::QuoteLike")
+							or $next_token->isa("PPI::Token::Regexp")
+							or $next_token->isa("PPI::Token::Pod") )
+						)
 					{
 						$styling_end_pos = $end_of_next_token;
 					}
@@ -420,7 +423,7 @@ sub class_to_css {
 			if ( $Token->content =~ /^(?:my|local|our)$/ ) {
 				return 'keyword';
 			}
-		} elsif ( $Token->parent->isa('PPI::Statement::Compond') ) {
+		} elsif ( $Token->parent->isa('PPI::Statement::Compound') ) {
 			if ( $Token->content =~ /^(?:if|else|elsif|unless|for|foreach|while|my)$/ ) {
 				return 'keyword';
 			}

@@ -5,7 +5,7 @@ package Padre::Config;
 #
 
 # To help force the break from the first-generate HASH based configuration
-# over to the second-generation method based configuration, initially we
+# over to thdee second-generation method based configuration, initially we
 # will use an ARRAY-based object, so that all existing code is forcefully
 # broken.
 
@@ -22,7 +22,7 @@ use Padre::Config::Human   ();
 use Padre::Config::Project ();
 use Padre::Config::Host    ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # Master storage of the settings
 our %SETTING = ();
@@ -43,6 +43,10 @@ use Class::XSAccessor::Array getters => {
 	human   => Padre::Constant::HUMAN,
 	project => Padre::Constant::PROJECT,
 };
+
+
+
+
 
 #####################################################################
 # Settings Specification
@@ -246,6 +250,34 @@ setting(
 	default => 0,
 );
 setting(
+	name    => 'main_directory_panel',
+	type    => Padre::Constant::ASCII,
+	store   => Padre::Constant::HUMAN,
+	default => 'left',
+	options => [
+		'left'  => _T('Project Tools (Left)'),
+		'right' => _T('Document Tools (Right)'),
+	],
+	apply => sub {
+		my $main  = shift;
+		my $value = shift;
+
+		# Is it visible and on the wrong side?
+		return 1 unless $main->has_directory;
+		my $directory = $main->directory;
+		return 1 unless $directory->IsShown;
+		return 1 unless $directory->side ne $value;
+
+		# Hide and reshow the tool with the new setting
+		$directory->panel->hide($directory);
+		$main->directory_panel->show($directory);
+		$main->Layout;
+		$main->Update;
+
+		return 1;
+	}
+);
+setting(
 	name    => 'main_output',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
@@ -276,10 +308,21 @@ setting(
 	default => 1,
 );
 setting(
-	name    => 'main_toolbar',
-	type    => Padre::Constant::BOOLEAN,
-	store   => Padre::Constant::HUMAN,
-	default => 1,
+	name  => 'main_toolbar',
+	type  => Padre::Constant::BOOLEAN,
+	store => Padre::Constant::HUMAN,
+
+	# Toolbars are not typically used for Mac apps.
+	# Hide it by default so Padre looks "more Mac'ish"
+	default => Padre::Constant::MAC ? 0 : 1,
+);
+
+# Directory Tree Settings
+setting(
+	name    => 'default_projects_directory',
+	type    => Padre::Constant::PATH,
+	store   => Padre::Constant::HOST,
+	default => File::HomeDir->my_documents,
 );
 
 # Editor Settings
@@ -373,6 +416,18 @@ setting(
 	default => 500_000,
 );
 setting(
+	name    => 'editor_right_margin_enable',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 0,
+);
+setting(
+	name    => 'editor_right_margin_column',
+	type    => Padre::Constant::POSINT,
+	store   => Padre::Constant::HUMAN,
+	default => 80,
+);
+setting(
 	name    => 'find_case',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
@@ -404,6 +459,24 @@ setting(
 );
 setting(
 	name    => 'find_quick',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 0,
+);
+setting(
+	name    => 'default_line_ending',
+	type    => Padre::Constant::ASCII,
+	store   => Padre::Constant::HUMAN,
+	default => Padre::Constant::NEWLINE
+);
+setting(
+	name    => 'update_file_from_disk_interval',
+	type    => Padre::Constant::ASCII,
+	store   => Padre::Constant::HUMAN,
+	default => 2,
+);
+setting(
+	name    => 'autocomplete_multiclosebracket',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 0,
@@ -541,6 +614,34 @@ setting(
 	default => '',
 );
 
+# Enable/Disable functions
+setting(
+	name    => 'func_config',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 0,
+);
+setting(
+	name    => 'func_bookmark',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 1,
+);
+setting(
+	name    => 'func_fontsize',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 1,
+);
+setting(
+	name    => 'func_session',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 1,
+);
+
+
+
 #####################################################################
 # Constructor and Accessors
 
@@ -618,6 +719,10 @@ sub default {
 	return $DEFAULT{$name};
 }
 
+
+
+
+
 ######################################################################
 # Main Methods
 
@@ -681,6 +786,10 @@ sub apply {
 
 	return 1;
 }
+
+
+
+
 
 ######################################################################
 # Support Functions

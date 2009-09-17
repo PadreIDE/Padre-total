@@ -15,27 +15,15 @@ are children of L<Padre::Wx::Main>.
 
 =cut
 
+use 5.008;
 use strict;
 use warnings;
+use Params::Util qw{_INSTANCE};
 use Padre::Current ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
-# The three most common things we need are implemented directly
-
-=pod
-
-=head2 main
-
-    my $main = $object->main;
-
-Get the L<Padre::Wx::Main> main window that this object is a child of.
-
-=cut
-
-sub main {
-	$_[0]->GetParent;
-}
+# The four most common things we need are implemented directly
 
 =pod
 
@@ -48,7 +36,11 @@ Get the L<Padre> IDE instance that this object is a child of.
 =cut
 
 sub ide {
-	$_[0]->GetParent->ide;
+	my $main = $_[0]->GetParent;
+	if ( _INSTANCE( $main, 'Padre::Wx::Main' ) ) {
+		return $main->ide;
+	}
+	Padre::Current->ide;
 }
 
 =pod
@@ -63,7 +55,43 @@ convenience because it is needed so often.
 =cut
 
 sub config {
-	$_[0]->GetParent->config;
+	my $main = $_[0]->GetParent;
+	if ( _INSTANCE( $main, 'Padre::Wx::Main' ) ) {
+		return $main->config;
+	}
+	Padre::Current->config;
+}
+
+=pod
+
+=head2 main
+
+    my $main = $object->main;
+
+Get the L<Padre::Wx::Main> main window that this object is a child of.
+
+=cut
+
+sub main {
+	my $main = $_[0]->GetParent;
+	if ( _INSTANCE( $main, 'Padre::Wx::Main' ) ) {
+		return $main;
+	}
+	Padre::Current->main;
+}
+
+=pod
+
+=head2 aui
+
+    my $aui = $object->aui;
+
+Convenient access to the AUI Manager
+
+=cut
+
+sub aui {
+	$_[0]->main->aui;
 }
 
 =pod
@@ -77,14 +105,16 @@ Get a new C<Padre::Current> context object.
 =cut
 
 sub current {
-	Padre::Current->new( main => $_[0]->GetParent );
+	my $main = shift->GetParent;
+	if ( _INSTANCE( $main, 'Padre::Wx::Main' ) ) {
+		return Padre::Current->new( main => $main );
+	}
+	Padre::Current->new;
 }
 
 1;
 
 =pod
-
-=back
 
 =head1 COPYRIGHT & LICENSE
 

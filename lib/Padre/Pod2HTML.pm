@@ -33,12 +33,8 @@ use strict;
 use warnings;
 use Pod::Simple::XHTML ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Pod::Simple::XHTML';
-
-use Class::XSAccessor getters => {
-	html => 'scratch', # Method to fetch out the scratch
-};
 
 #####################################################################
 # One-Shot Method
@@ -47,8 +43,19 @@ sub pod2html {
 	my $class = shift;
 	my $input = shift;
 	my $self  = $class->new(@_);
+
+	$self->{html} = '';
 	$self->parse_string_document($input);
-	return $self->html;
+
+	#FIXME: this takes care of a bug in Pod::Simple::XHTML
+	$self->{html} =~ s/<</&lt&lt;/g;
+	$self->{html} =~ s/< /&lt /g;
+	$self->{html} =~ s/<=/&lt=/g;
+
+	#FIXME: this is incredibly bad, but the anchors are predictible
+	$self->{html} =~ s#<a href=".*?">|</a>##g;
+
+	return $self->{html};
 }
 
 #####################################################################
@@ -57,18 +64,14 @@ sub pod2html {
 # Prevent binding to STDOUT
 sub new {
 	my $class = shift;
-	my $self = $class->SUPER::new( output_fh => 1, @_ );
+	my $self  = $class->SUPER::new(@_);
 
 	# Ignore POD irregularities
 	$self->no_whining(1);
 	$self->no_errata_section(1);
+	$self->output_string( \$self->{html} );
 
 	return $self;
-}
-
-# Disable emit so we build up a giant scratch variable
-sub emit {
-	return;
 }
 
 #####################################################################
@@ -81,6 +84,7 @@ sub emit {
 =head1 AUTHOR
 
 Adam Kennedy C<adamk@cpan.org>
+Ahmad M. Zawawi C<ahmad.zawawi@gmail.com>
 
 =head1 SEE ALSO
 

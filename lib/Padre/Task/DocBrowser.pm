@@ -1,11 +1,12 @@
 package Padre::Task::DocBrowser;
 
+use 5.008;
 use strict;
 use warnings;
 use threads;
 use Padre::Task ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Task';
 
 sub run {

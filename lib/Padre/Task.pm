@@ -104,6 +104,7 @@ CAVEATS section below!)
 
 =cut
 
+use 5.008;
 use strict;
 use warnings;
 use Storable     ();
@@ -112,7 +113,7 @@ use IO::String   ();
 use Scalar::Util ();
 use Params::Util '_INSTANCE';
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # TODO: Why are there require?
 require Padre;

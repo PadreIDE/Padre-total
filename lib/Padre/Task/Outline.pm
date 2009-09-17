@@ -1,5 +1,6 @@
 package Padre::Task::Outline;
 
+use 5.008;
 use strict;
 use warnings;
 use Params::Util qw{_CODE _INSTANCE};
@@ -7,7 +8,7 @@ use Padre::Task    ();
 use Padre::Current ();
 use Padre::Wx      ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Task';
 
 =pod
@@ -41,8 +42,8 @@ gather structure info on the current document
   $task->schedule;
   
   my $task2 = Padre::Task::Outline::MyLanguage->new(
-    text          => Padre::Current->document->text_get,
-    editor => Padre::Current->editor,
+      text   => Padre::Current->document->text_get,
+      editor => Padre::Current->editor,
   );
   $task2->schedule;
 
@@ -81,7 +82,8 @@ sub new {
 	# put notebook page and callback into main-thread-only storage
 	$self->{main_thread_only} ||= {};
 
-	my $editor = $self->{editor} || $self->{main_thread_only}->{editor};
+	my $editor = $self->{editor}
+		|| $self->{main_thread_only}->{editor};
 	delete $self->{editor};
 	unless ( defined $editor ) {
 		$editor = Padre::Current->editor;
@@ -112,16 +114,15 @@ sub prepare {
 }
 
 sub finish {
-	my $self = shift;
-
-	$self->update_gui;
-
+	$_[0]->update_gui;
 	return;
 }
 
 1;
 
 __END__
+
+=pod
 
 =head1 SEE ALSO
 
@@ -133,8 +134,9 @@ with L<Storable>.
 
 =head1 AUTHOR
 
- Steffen Mueller C<smueller@cpan.org>
- Heiko Jansen C<heiko_jansen@web.de>
+Steffen Mueller E<lt>smueller@cpan.orgE<gt>
+
+Heiko Jansen E<lt>heiko_jansen@web.deE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 

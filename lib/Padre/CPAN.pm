@@ -1,10 +1,11 @@
 package Padre::CPAN;
 
+use 5.008;
 use strict;
 use warnings;
 use Carp ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use CPAN ();
 

@@ -3,20 +3,19 @@ package Padre::PluginHandle;
 use 5.008;
 use strict;
 use warnings;
-use Carp 'croak';
-use Params::Util qw{_STRING _IDENTIFIER _CLASS _INSTANCE};
+use Carp           ();
 use Padre::Current ();
 use Padre::Locale  ();
+use Params::Util qw{ _STRING _IDENTIFIER _CLASS _INSTANCE };
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use overload
-	'bool' => sub {1},
-	'""' => 'name',
+	'bool' => sub () {1},
+	'""' => 'plugin_name',
 	'fallback' => 0;
 
 use Class::XSAccessor getters => {
-	name   => 'name',
 	class  => 'class',
 	object => 'object',
 	},
@@ -24,38 +23,57 @@ use Class::XSAccessor getters => {
 	errstr => 'errstr',
 	};
 
+
+
+
+
 #####################################################################
 # Constructor and Accessors
 
 sub new {
 	my $class = shift;
-	my $self = bless { @_, status => 'unloaded', errstr => '' }, $class;
+	my $self  = bless {
+		@_,
+		status => 'unloaded',
+		errstr => '',
+	}, $class;
 
 	# Check params
-	unless ( _IDENTIFIER( $self->name ) ) {
-		croak("Missing or invalid name param for Padre::PluginHandle");
+	if ( exists $self->{name} ) {
+		Carp::confess("PluginHandle->name should no longer be used (foo)");
 	}
 	unless ( _CLASS( $self->class ) ) {
-		croak("Missing or invalid class param for Padre::PluginHandle");
+		Carp::croak("Missing or invalid class param for Padre::PluginHandle");
 	}
 	if ( defined $self->object and not _INSTANCE( $self->object, $self->class ) ) {
-		croak("Invalid object param for Padre::PluginHandle");
+		Carp::croak("Invalid object param for Padre::PluginHandle");
 	}
 	unless ( _STATUS( $self->status ) ) {
-		croak("Missing or invalid status param for Padre::PluginHandle");
+		Carp::croak("Missing or invalid status param for Padre::PluginHandle");
 	}
 
 	return $self;
 }
 
+
+
+
+
 #####################################################################
 # Status Methods
+
+sub locale_prefix {
+	my $self   = shift;
+	my $string = $self->class;
+	$string =~ s/::/__/g;
+	return $string;
+}
 
 sub status {
 	my $self = shift;
 	if (@_) {
 		unless ( _STATUS( $_[0] ) ) {
-			croak("Invalid PluginHandle status '$_[0]'");
+			Carp::croak("Invalid PluginHandle status '$_[0]'");
 		}
 		$self->{status} = $_[0];
 	}
@@ -116,12 +134,21 @@ sub can_editor {
 		and $_[0]->{object}->can('editor_enable');
 }
 
+
+
+
+
 ######################################################################
 # Interface Methods
 
 sub plugin_icon {
-	my $class = shift->class;
-	$class->can('plugin_icon') and $class->plugin_icon;
+	my $self = shift;
+	my $icon = eval { $self->class->plugin_icon; };
+	if ( _INSTANCE( $icon, 'Wx::Bitmap' ) ) {
+		return $icon;
+	} else {
+		return;
+	}
 }
 
 sub plugin_name {
@@ -130,7 +157,7 @@ sub plugin_name {
 	if ( $object and $object->can('plugin_name') ) {
 		return $object->plugin_name;
 	} else {
-		return $self->name;
+		return $self->class;
 	}
 }
 
@@ -144,20 +171,24 @@ sub version {
 	}
 }
 
+
+
+
+
 ######################################################################
 # Pass-Through Methods
 
 sub enable {
 	my $self = shift;
 	unless ( $self->can_enable ) {
-		croak("Cannot enable plugin '$self'");
+		Carp::croak("Cannot enable plugin '$self'");
 	}
 
 	# add the plugin catalog to the locale
 	my $locale = Padre::Current->main->{locale};
 	my $code   = Padre::Locale::rfc4646();
-	my $name   = $self->name;
-	$locale->AddCatalog("$name-$code");
+	my $prefix = $self->locale_prefix;
+	$locale->AddCatalog("$prefix-$code");
 
 	# Call the enable method for the object
 	eval { $self->object->plugin_enable; };
@@ -168,7 +199,7 @@ sub enable {
 		$self->errstr(
 			sprintf(
 				Wx::gettext("Failed to enable plugin '%s': %s"),
-				$self->name,
+				$self->class,
 				$@,
 			)
 		);
@@ -186,7 +217,8 @@ sub enable {
 		Padre::MimeTypes->add_mime_class( $type, $class );
 	}
 
-	# TODO remove these when plugin is disabled (and make sure files are not highlighted with this any more)
+	# TODO remove these when plugin is disabled (and make sure files
+	# are not highlighted with this any more)
 	if ( my @highlighters = $self->object->provided_highlighters ) {
 		require Padre::MimeTypes;
 		foreach my $h (@highlighters) {
@@ -198,7 +230,8 @@ sub enable {
 		}
 	}
 
-	# TODO remove these when plugin is disabled (and make sure files are not highlighted with this any more)
+	# TODO remove these when plugin is disabled (and make sure files
+	# are not highlighted with this any more)
 	if ( my %mime_types = $self->object->highlighting_mime_types ) {
 		require Padre::MimeTypes;
 		foreach my $module ( keys %mime_types ) {
@@ -213,7 +246,7 @@ sub enable {
 	# If the plugin has a hook for the context menu, cache it
 	if ( $self->object->can('event_on_context_menu') ) {
 		my $cxt_menu_hook_cache = Padre->ide->plugin_manager->plugins_with_context_menu;
-		$cxt_menu_hook_cache->{$name} = 1;
+		$cxt_menu_hook_cache->{ $self->class } = 1;
 	}
 
 	# Update the status
@@ -226,7 +259,7 @@ sub enable {
 sub disable {
 	my $self = shift;
 	unless ( $self->can_disable ) {
-		croak("Cannot disable plugin '$self'");
+		Carp::croak("Cannot disable plugin '$self'");
 	}
 
 	# If the plugin defines document types, deregister them
@@ -246,7 +279,7 @@ sub disable {
 		$self->errstr(
 			sprintf(
 				Wx::gettext("Failed to disable plugin '%s': %s"),
-				$self->name,
+				$self->class,
 				$@,
 			)
 		);
@@ -255,7 +288,7 @@ sub disable {
 
 	# If the plugin has a hook for the context menu, cache it
 	my $cxt_menu_hook_cache = Padre->ide->plugin_manager->plugins_with_context_menu;
-	delete $cxt_menu_hook_cache->{ $self->name() };
+	delete $cxt_menu_hook_cache->{ $self->class };
 
 	# Update the status
 	$self->status('disabled');
@@ -264,11 +297,15 @@ sub disable {
 	return 0;
 }
 
+
+
+
+
 ######################################################################
 # Support Methods
 
 sub _STATUS {
-	_STRING( $_[0] ) or return undef;
+	_STRING( $_[0] ) or return;
 	return {
 		error        => 1,
 		unloaded     => 1,

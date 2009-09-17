@@ -1,11 +1,12 @@
 package Wx::Perl::Dialog::SingleChoice;
 
+use 5.008;
 use strict;
 use warnings;
 
 use Wx::Perl::Dialog;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 $| = 1;
 

@@ -2,10 +2,11 @@ package Padre::DB::HostConfig;
 
 # Overlay class for Padre::DB auto-generated default version
 
+use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 sub read {
 	my %config = map { $_->name => $_->value } $_[0]->select;

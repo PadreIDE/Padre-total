@@ -5,10 +5,11 @@
 
 package Padre::DB::LastPositionInFile;
 
+use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 sub get_last_pos {
 	my ( $class, $name ) = @_;

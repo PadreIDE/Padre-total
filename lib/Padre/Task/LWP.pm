@@ -23,6 +23,7 @@ Sending and receiving data via HTTP.
 
 =cut
 
+use 5.008;
 use strict;
 use warnings;
 use Params::Util qw{_INSTANCE};
@@ -30,7 +31,7 @@ use HTTP::Request  ();
 use HTTP::Response ();
 use Padre::Task    ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Task';
 
 use Class::XSAccessor getters => {

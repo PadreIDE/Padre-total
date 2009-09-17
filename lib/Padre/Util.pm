@@ -24,17 +24,22 @@ moved, removed or changed at any time without notice.
 use 5.008;
 use strict;
 use warnings;
-use Exporter   ();
-use FindBin    ();
-use File::Spec ();
-use List::Util qw(first);
-use File::Basename ();
 use Carp           ();
+use Exporter       ();
+use FindBin        ();
+use Cwd            ();
+use File::Spec     ();
+use File::Basename ();
+use List::Util     ();
 use POSIX          ();
 
-our $VERSION   = '0.41';
+our $VERSION   = '0.46';
 our @ISA       = 'Exporter';
-our @EXPORT_OK = qw(newline_type get_matches _T);
+our @EXPORT_OK = qw{ newline_type get_matches _T };
+
+
+
+
 
 #####################################################################
 # Officially Supported Constants
@@ -57,6 +62,10 @@ use constant WXGTK   => UNIX;
 
 # The local newline type
 use constant NEWLINE => WIN32 ? 'WIN' : MAC ? 'MAC' : 'UNIX';
+
+
+
+
 
 #####################################################################
 # Miscellaneous Functions
@@ -122,20 +131,20 @@ sub get_matches {
 	$text = Encode::encode( 'utf-8', $text );
 
 	my @matches;
-	while ( $text =~ /$regex/g ) {
+	while ( $text =~ /($regex)/g ) {
 		my $e = pos($text);
-		my $s = $e - length($&);
+		my $s = $e - length($1);
 		push @matches, [ $s, $e ];
 	}
 
 	my $pair;
 	if ($backward) {
-		$pair = first { $to > $_->[1] } reverse @matches;
+		$pair = List::Util::first { $to > $_->[1] } reverse @matches;
 		if ( not $pair and @matches ) {
 			$pair = $matches[-1];
 		}
 	} else {
-		$pair = first { $from < $_->[0] } @matches;
+		$pair = List::Util::first { $from < $_->[0] } @matches;
 		if ( not $pair and @matches ) {
 			$pair = $matches[0];
 		}
@@ -162,6 +171,32 @@ Functionally, this function is just a direct pass-through with no effect.
 
 =cut
 
+# Pasting more background information for people that don't understand
+# the POD docs, because at least one person has accidentally broken this
+# by changing it (not cxreg, he actually asked first) :)
+#15:31 cxreg Alias: er, how it's just "shift" ?
+#15:31 Alias cxreg: Wx has a gettext implementation
+#15:31 Alias Wx::gettext
+#15:31 Alias That's the "translate right now" function
+#15:31 Alias But we need a late-binding version, for things that need to be translated, but are kept in memory (for various reasons) as English and only get translated at the last second
+#15:32 Alias So in that case, we do a Wx::gettext($string)
+#15:32 Alias The problem is that the translation tools can't tell what $string is
+#15:32 Alias The translation tools DO, however, recognise _T as a translatable string
+#15:33 Alias So we use _T as a silent pass-through specifically to indicate to the translation tools that this string needs translating
+#15:34 Alias If we did everything as an up-front translation we'd need to flush a crapton of stuff and re-initialise it every time someone changed languages
+#15:35 Alias Instead, we flush the hidden dialogs and rebuild the entire menu
+#15:35 Alias But most of the rest we do with the delayed _T strings
+#15:37 cxreg i get the concept, it's just so magical
+#15:38 Alias It works brilliantly :)
+#15:38 cxreg do you replace the _T symbol at runtime?
+#15:39 Alias symbol?
+#15:39 Alias Why would we do that?
+#15:40 cxreg in order to actually instrument the translation, i wasn't sure if you were swapping out the sub behind the _T symbol
+#15:40 Alias oh, no
+#15:40 Alias _T is ONLY there to hint to the translation tools
+#15:40 Alias The PO editors etc
+#15:40 Alias my $english = _T('Hello World!'); $gui->set_title( Wx::gettext($english) );
+#15:41 Alias It does absolutely nothing inside the code itself
 sub _T {
 	shift;
 }
@@ -186,6 +221,10 @@ sub pwhich {
 	my $bin = 1;
 }
 
+
+
+
+
 #####################################################################
 # Developer-Only Functions
 
@@ -205,32 +244,47 @@ sub svn_directory_revision {
 
 	# Find the first number after the first occurance of "dir".
 	unless ( $buffer =~ /\bdir\b\s+(\d+)/m ) {
-		return undef;
+		return;
 	}
 
 	# Quote this to prevent certain aliasing bugs
 	return "$1";
 }
 
+
+
+
+
 #####################################################################
 # Shared Resources
 
 sub share {
-	return File::Spec->catdir( $FindBin::Bin, File::Spec->updir, 'share' ) if $ENV{PADRE_DEV};
-	if ( defined $ENV{PADRE_PAR_PATH} ) {
-
-		# File::ShareDir new style path
-		my $path = File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'auto', 'share', 'dist', 'Padre' );
-		return $path if -d $path;
-
-		# File::ShareDir old style path
-		$path = File::Spec->catdir( $ENV{PADRE_PAR_PATH}, 'inc', 'share' );
-		return $path if -d $path;
+	if ( $ENV{PADRE_DEV} ) {
+		return File::Spec->catdir(
+			$FindBin::Bin,
+			File::Spec->updir, 'share'
+		);
 	}
 
+	#    if ( defined $ENV{PADRE_PAR_PATH} ) {
+	#        # File::ShareDir new style path
+	#        my $path = File::Spec->catdir(
+	#            $ENV{PADRE_PAR_PATH},
+	#            'inc', 'auto', 'share', 'dist', 'Padre'
+	#        );
+	#        return $path if -d $path;
+	#
+	#        # File::ShareDir old style path
+	#        $path = File::Spec->catdir(
+	#            $ENV{PADRE_PAR_PATH},
+	#            'inc', 'share'
+	#        );
+	#        return $path if -d $path;
+	#    }
+
 	# rely on automatic handling of everything
-	require File::ShareDir::PAR;
-	return File::ShareDir::PAR::dist_dir('Padre');
+	require File::ShareDir;
+	return File::ShareDir::dist_dir('Padre');
 }
 
 sub sharedir {
@@ -248,7 +302,8 @@ sub find_perldiag_translations {
 		next if not -e $dir;
 		if ( opendir my $dh, $dir ) {
 			while ( my $lang = readdir $dh ) {
-				next if $lang eq '.' or $lang eq '..';
+				next if $lang eq '.';
+				next if $lang eq '..';
 				if ( -e File::Spec->catfile( $dir, $lang, 'perldiag.pod' ) ) {
 					$languages{$lang} = 1;
 				}
@@ -256,6 +311,36 @@ sub find_perldiag_translations {
 		}
 	}
 	return sort keys %languages;
+}
+
+=pod
+
+=head2 get_project_rcs
+
+Given a project dir (see "get_project_dir"), returns the project's 
+Revision Control System (RCS) by name. This can be either 'CVS', 
+'SVN' or 'GIT'. Returns undef if none was found.
+
+=cut
+
+sub get_project_rcs {
+	my $project_dir = shift;
+
+	my %evidence_of = (
+		'CVS' => 'CVS',
+		'SVN' => '.svn',
+		'GIT' => '.git',
+	);
+
+	foreach my $rcs ( keys %evidence_of ) {
+		my $dir = File::Spec->catdir(
+			$project_dir,
+			$evidence_of{$rcs},
+		);
+		return $rcs if -d $dir;
+	}
+
+	return;
 }
 
 =pod
@@ -269,14 +354,13 @@ support but it is used by some (SVK) plugins.
 =cut
 
 sub get_project_dir {
-	my $filename = shift;
-	return unless $filename;
+	my $filename = shift or return;
 
-	# check for potential relative path on filename
+	# Check for potential relative path on filename
 	if ( $filename =~ m{\.\.} ) {
-		require Cwd;
 		$filename = Cwd::realpath($filename);
 	}
+
 	my $olddir = File::Basename::dirname($filename);
 	my $dir    = $olddir;
 	while (1) {
@@ -284,11 +368,86 @@ sub get_project_dir {
 		return $dir if -e File::Spec->catfile( $dir, 'Build.PL' );
 		$olddir = $dir;
 		$dir    = File::Basename::dirname($dir);
-
 		last if $olddir eq $dir;
 	}
+
 	return;
 }
+
+
+
+
+
+######################################################################
+# Cloned Functions
+
+=pod
+
+=head2 parse_version
+
+B<This is a clone of ExtUtils::MakeMaker parse_version to prevent loading
+a bunch of other modules>
+
+    my $version = Padre::Util::parse_version($file);
+
+Parse a $file and return what $VERSION is set to by the first assignment.
+It will return the string "undef" if it can't figure out what $VERSION
+is. $VERSION should be for all to see, so C<our $VERSION> or plain $VERSION
+are okay, but C<my $VERSION> is not.
+
+parse_version() will try to C<use version> before checking for
+C<$VERSION> so the following will work.
+
+    $VERSION = qv(1.2.3);
+
+=cut
+
+sub parse_version {
+	my $parsefile = shift;
+	my $result;
+	local $/ = "\n";
+	local $_;
+	open( my $fh, '<', $parsefile ) or die "Could not open '$parsefile': $!";
+	my $inpod = 0;
+	while (<$fh>) {
+		$inpod = /^=(?!cut)/ ? 1 : /^=cut/ ? 0 : $inpod;
+		next if $inpod || /^\s*#/;
+		chop;
+		next if /^\s*(if|unless)/;
+		next unless m{(?<!\\) ([\$*]) (([\w\:\']*) \bVERSION)\b .* =}x;
+		my $eval = qq{
+			package Padre::Util::_version;
+			no strict;
+			BEGIN { eval {
+				# Ensure any version() routine which might have leaked
+				# into this package has been deleted.  Interferes with
+				# version->import()
+				undef *version;
+				require version;
+				"version"->import;
+			} }
+			local $1$2;
+			\$$2=undef;
+			do {
+				$_
+			};
+			\$$2;
+		};
+		local $^W = 0;
+		$result = eval($eval);
+		warn "Could not eval '$eval' in $parsefile: $@" if $@;
+		last if defined $result;
+	}
+	close $fh;
+	return $result;
+}
+
+
+
+
+
+######################################################################
+# Logging and Debugging
 
 SCOPE: {
 	my $logging;
@@ -322,7 +481,7 @@ __END__
 
 =pod
 
-=head1 COPYRIGHT & LICENSE
+=head1 COPYRIGHT
 
 Copyright 2008-2009 The Padre development team as listed in Padre.pm.
 

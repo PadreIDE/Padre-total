@@ -22,7 +22,7 @@ use Padre::Util ();
 use Padre::Wx   ();
 use Params::Util qw( _HASH );
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # For now apply a single common configuration
 use constant SIZE   => '16x16';
@@ -48,17 +48,35 @@ my %PREFS = (
 our $DEFAULT_ICON_NAME = 'status/padre-fallback-icon';
 our $DEFAULT_ICON;
 
+# Convenience access to the official Padre icon
+sub PADRE () {
+	icon('logo');
+}
+
+
+
+
+
 #####################################################################
 # Icon Resolver
 
-# For now, assume the people using this are competent and don't
-# bother to check params.
+# Find an icon bitmap and convert to a real Wx::Icon in a single call
+sub icon {
+	my $image = find(@_);
+	my $icon  = Wx::Icon->new;
+	$icon->CopyFromBitmap($image);
+	return $icon;
+}
+
+# For now, assume the people using this are competent
+# and don't bother to check params.
 # TODO: Clearly this assumption can't last...
 sub find {
 	my $name  = shift;
 	my $prefs = shift;
 
-	# If you _really_ are competant ;), prefer size,icons,ext
+	# If you _really_ are competant ;),
+	# prefer size, icons, ext
 	# over the defaults
 	my %pref =
 		_HASH($prefs)
@@ -85,10 +103,9 @@ sub find {
 
 		# fallback with a pretty ?
 		return $DEFAULT_ICON;
-	}
+	} elsif ( $name ne $DEFAULT_ICON_NAME ) {
 
-	# setup and return the default icon
-	elsif ( $name ne $DEFAULT_ICON_NAME ) {
+		# setup and return the default icon
 		$DEFAULT_ICON = find($DEFAULT_ICON_NAME);
 		return $DEFAULT_ICON if defined $DEFAULT_ICON;
 	}

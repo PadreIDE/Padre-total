@@ -9,8 +9,10 @@ use Params::Util '_INSTANCE';
 use YAML::Tiny      ();
 use Padre::Document ();
 use Padre::Util     ();
+use Padre::Perl     ();
+use Padre::Document::Perl::Beginner;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Document';
 
 #####################################################################
@@ -107,11 +109,11 @@ sub set_highlighter {
 	# configuration variable
 	my $limit;
 	if ( $module eq 'Padre::Document::Perl::PPILexer' ) {
-		$limit = 2000;
+		$limit = 4000;
 	} elsif ( $module eq 'Padre::Document::Perl::Lexer' ) {
-		$limit = 2000;
+		$limit = 4000;
 	} elsif ( $module eq 'Padre::Plugin::Kate' ) {
-		$limit = 2000;
+		$limit = 4000;
 	}
 
 	my $length = $self->{original_content} ? length $self->{original_content} : 0;
@@ -175,7 +177,7 @@ sub get_command {
 
 	# Run with the same Perl that launched Padre
 	# TODO: get preferred Perl from configuration
-	my $perl = Padre->perl_interpreter;
+	my $perl = Padre::Perl::perl();
 
 	# Set default arguments
 	my %run_args = (
@@ -189,11 +191,15 @@ sub get_command {
 		$run_args{$arg} = Padre::DB::History->previous($type) if Padre::DB::History->previous($type);
 	}
 
+	# (Ticket #530) Pack args here, because adding the space later confuses the called Perls @ARGV
+	my $Script_Args = '';
+	$Script_Args = ' ' . $run_args{script} if defined( $run_args{script} ) and ( $run_args{script} ne '' );
+
 	my $dir = File::Basename::dirname($filename);
 	chdir $dir;
 	return $debug
-		? qq{"$perl" -Mdiagnostics(-traceonly) $run_args{interpreter} "$filename" $run_args{script}}
-		: qq{"$perl" $run_args{interpreter} "$filename" $run_args{script}};
+		? qq{"$perl" -Mdiagnostics(-traceonly) $run_args{interpreter} "$filename"$Script_Args}
+		: qq{"$perl" $run_args{interpreter} "$filename"$Script_Args};
 }
 
 sub pre_process {
@@ -250,12 +256,7 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-	my $nlchar = "\n";
-	if ( $self->get_newline_type eq 'WIN' ) {
-		$nlchar = "\r\n";
-	} elsif ( $self->get_newline_type eq 'MAC' ) {
-		$nlchar = "\r";
-	}
+	my $nlchar = $self->newline;
 
 	require Padre::Task::SyntaxChecker::Perl;
 	my %check = (
@@ -283,6 +284,29 @@ sub _check_syntax_internals {
 		$task->run();
 		return $task->{syntax_check};
 	}
+}
+
+# Run the checks for common beginner errors
+sub beginner_check {
+	my $self = shift;
+
+	# TODO: Make this cool
+	# It isn't, because it should show _all_ warnings instead of one and
+	# it should at least go to the line it's complaining about.
+
+	my $Beginner = Padre::Document::Perl::Beginner->new();
+
+	$Beginner->check( $self->text_get );
+
+	my $error = $Beginner->error;
+
+	if ($error) {
+		Padre->ide->wx->main->error( sprintf( Wx::gettext("Error:\n%s"), $error ) );
+	} else {
+		Padre->ide->wx->main->message( Wx::gettext('No errors found.') );
+	}
+
+	return 1;
 }
 
 sub get_outline {
@@ -503,7 +527,10 @@ sub autocomplete {
 			while ( defined($tag) ) {
 
 				# TODO check file scope?
-				if ( $tag->{kind} eq 'v' ) {
+				if ( !defined( $tag->{kind} ) ) {
+
+					# This happens with some tagfiles which have no kind
+				} elsif ( $tag->{kind} eq 'v' ) {
 
 					# TODO potentially don't skip depending on circumstances.
 					if ( not $seen{ $tag->{name} }++ ) {
@@ -514,6 +541,33 @@ sub autocomplete {
 			}
 			return ( length($prefix), @words );
 		}
+	}
+
+	# check for hashs
+	elsif ( $prefix =~ /(\$\w+(?:\-\>)?)\{([\'\"]?)([\$\&]?\w*)$/ ) {
+		my $hashname   = $1;
+		my $textmarker = $2;
+		my $keyprefix  = $3;
+
+		my $last = $editor->GetLength();
+		my $text = $editor->GetTextRange( 0, $last );
+
+		my %words;
+		while ( $text =~ /\Q$hashname\E\{(([\'\"]?)\Q$keyprefix\E.+?\2)\}/g ) {
+			$words{$1} = 1;
+		}
+
+		return (
+			length( $textmarker . $keyprefix ),
+			sort {
+				my $a1 = $a;
+				my $b1 = $b;
+				$a1 =~ s/^([\'\"])(.+)\1/$2/;
+				$b1 =~ s/^([\'\"])(.+)\1/$2/;
+				$a1 cmp $b1;
+				} ( keys(%words) )
+		);
+
 	}
 
 	# check for methods
@@ -528,7 +582,10 @@ sub autocomplete {
 
 			# TODO: INHERITANCE!
 			while ( defined($tag) ) {
-				if (    $tag->{kind} eq 's'
+				if ( !defined( $tag->{kind} ) ) {
+
+					# This happens with some tagfiles which have no kind
+				} elsif ( $tag->{kind} eq 's'
 					and defined $tag->{extension}{class}
 					and $tag->{extension}{class} eq $class )
 				{
@@ -551,7 +608,10 @@ sub autocomplete {
 			while ( defined($tag) ) {
 
 				# TODO check file scope?
-				if ( $tag->{kind} eq 'p' ) {
+				if ( !defined( $tag->{kind} ) ) {
+
+					# This happens with some tagfiles which have no kind
+				} elsif ( $tag->{kind} eq 'p' ) {
 
 					# TODO potentially don't skip depending on circumstances.
 					if ( not $seen{ $tag->{name} }++ ) {
@@ -571,7 +631,7 @@ sub autocomplete {
 	my $post_text = $editor->GetTextRange( $first, $last );
 
 	my $regex;
-	eval { $regex = qr{\b($prefix\w+(?:::\w+)*)\b} };
+	eval { $regex = qr{\b(\Q$prefix\E\w+(?:::\w+)*)\b} };
 	if ($@) {
 		return ("Cannot build regex for '$prefix'");
 	}
@@ -588,8 +648,31 @@ sub autocomplete {
 	return ( length($prefix), @words );
 }
 
+sub newline_keep_column {
+	my $self = shift;
+
+	my $editor = $self->editor;
+	my $pos    = $editor->GetCurrentPos;
+	my $line   = $editor->LineFromPosition($pos);
+	my $first  = $editor->PositionFromLine($line);
+	my $col    = $pos - $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+
+	$editor->AddText( $self->newline );
+
+	$pos   = $editor->GetCurrentPos;
+	$first = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+	my $col2 = $pos - $first;
+	$editor->AddText( ' ' x ( $col - $col2 ) );
+	$editor->SetCurrentPos( $first + $col );
+
+	return 1;
+}
+
 sub event_on_char {
 	my ( $self, $editor, $event ) = @_;
+
+	my $config = Padre->ide->config;
+
 	$editor->Freeze;
 
 	my $selection_exists = 0;
@@ -610,26 +693,23 @@ sub event_on_char {
 			123 => 125, # { }
 		);
 		my $pos = $editor->GetCurrentPos;
-		foreach my $code ( keys %table ) {
-			if ( $key == $code ) {
-				if ($selection_exists) {
-					my $start = $editor->GetSelectionStart;
-					my $end   = $editor->GetSelectionEnd;
-					$editor->GotoPos($end);
-					$editor->AddText( chr( $table{$code} ) );
-					$editor->GotoPos($start);
-				} else {
-					my $nextChar;
-					if ( $editor->GetTextLength > $pos ) {
-						$nextChar = $editor->GetTextRange( $pos, $pos + 1 );
-					}
-					unless ( defined($nextChar)
-						&& ord($nextChar) == $table{$code} )
-					{
-						$editor->AddText( chr( $table{$code} ) );
-						$editor->CharLeft;
-						last;
-					}
+		if ( $table{$key} ) {
+			if ($selection_exists) {
+				my $start = $editor->GetSelectionStart;
+				my $end   = $editor->GetSelectionEnd;
+				$editor->GotoPos($end);
+				$editor->AddText( chr( $table{$key} ) );
+				$editor->GotoPos($start);
+			} else {
+				my $nextChar;
+				if ( $editor->GetTextLength > $pos ) {
+					$nextChar = $editor->GetTextRange( $pos, $pos + 1 );
+				}
+				unless ( defined($nextChar) && ord($nextChar) == $table{$key}
+					and ( !$config->autocomplete_multiclosebracket ) )
+				{
+					$editor->AddText( chr( $table{$key} ) );
+					$editor->CharLeft;
 				}
 			}
 		}
@@ -776,6 +856,22 @@ sub event_on_left_up {
 			}
 		}
 	} # end if control-click
+}
+
+#
+# Returns Perl's Help Provider
+#
+sub get_help_provider {
+	require Padre::HelpProvider::Perl;
+	return Padre::HelpProvider::Perl->new;
+}
+
+#
+# Returns Perl's Quick Fix Provider
+#
+sub get_quick_fix_provider {
+	require Padre::QuickFixProvider::Perl;
+	return Padre::QuickFixProvider::Perl->new;
 }
 
 1;

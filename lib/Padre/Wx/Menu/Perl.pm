@@ -14,7 +14,7 @@ use Padre::Wx::Menu ();
 use Padre::Locale   ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -36,8 +36,8 @@ sub new {
 	# Perl-Specific Searches
 	$self->{find_brace} = $self->add_menu_item(
 		$self,
-		name       => 'perl.find_brace', 
-		label      => Wx::gettext('Find Unmatched Brace'), 
+		name       => 'perl.find_brace',
+		label      => Wx::gettext('Find Unmatched Brace'),
 		menu_event => sub {
 			my $doc = $_[0]->current->document;
 			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
@@ -47,12 +47,23 @@ sub new {
 
 	$self->{find_variable} = $self->add_menu_item(
 		$self,
-		name       => 'perl.find_variable', 
-		label      => Wx::gettext('Find Variable Declaration'), 
+		name       => 'perl.find_variable',
+		label      => Wx::gettext('Find Variable Declaration'),
 		menu_event => sub {
 			my $doc = $_[0]->current->document;
 			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
 			$doc->find_variable_declaration;
+		},
+	);
+
+	$self->{find_variable} = $self->add_menu_item(
+		$self,
+		name       => 'perl.beginner_check',
+		label      => Wx::gettext('Check for common (beginner) errors'),
+		menu_event => sub {
+			my $doc = $_[0]->current->document;
+			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
+			$doc->beginner_check;
 		},
 	);
 
@@ -61,8 +72,8 @@ sub new {
 	# Perl-Specific Refactoring
 	$self->{rename_variable} = $self->add_menu_item(
 		$self,
-		name       => 'perl.rename_variable', 
-		label      => Wx::gettext('Lexically Rename Variable'), 
+		name       => 'perl.rename_variable',
+		label      => Wx::gettext('Lexically Rename Variable'),
 		menu_event => sub {
 			my $doc = $_[0]->current->document;
 			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
@@ -81,10 +92,41 @@ sub new {
 		},
 	);
 
+	$self->{extract_subroutine} = $self->add_menu_item(
+		$self,
+		name       => 'perl.extract_subroutine',
+		label      => Wx::gettext('Extract Subroutine'),
+		menu_event => sub {
+			my $doc    = $_[0]->current->document;
+			my $editor = $doc->editor;
+			my $code   = $editor->GetSelectedText();
+			require Padre::Wx::History::TextEntryDialog;
+			my $dialog = Padre::Wx::History::TextEntryDialog->new(
+				$_[0],
+				Wx::gettext("Please enter a name for the new subroutine"),
+				Wx::gettext("New Subroutine Name"),
+				'$foo',
+			);
+			return if $dialog->ShowModal == Wx::wxID_CANCEL;
+			my $newname = $dialog->GetValue;
+			$dialog->Destroy;
+			return unless defined $newname;
+
+			require Devel::Refactor;
+			my $refactory = Devel::Refactor->new;
+			my ( $new_sub_call, $new_code ) = $refactory->extract_subroutine( $newname, $code, 1 );
+			$editor->BeginUndoAction(); # do the edit atomically
+			$editor->ReplaceSelection($new_sub_call);
+			$editor->DocumentEnd();     # TODO: find a better place to put the new subroutine
+			$editor->AddText($new_code);
+			$editor->EndUndoAction();
+		},
+	);
+
 	$self->{introduce_temporary} = $self->add_menu_item(
 		$self,
-		name       => 'perl.introduce_temporary', 
-		label      => Wx::gettext('Introduce Temporary Variable'), 
+		name       => 'perl.introduce_temporary',
+		label      => Wx::gettext('Introduce Temporary Variable'),
 		menu_event => sub {
 			my $doc = $_[0]->current->document;
 			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
@@ -105,11 +147,23 @@ sub new {
 
 	$self->add_menu_item(
 		$self,
-		name       => 'perl.vertically_align_selected', 
-		label      => Wx::gettext('Vertically Align Selected'), 
+		name       => 'perl.vertically_align_selected',
+		label      => Wx::gettext('Vertically Align Selected'),
 		menu_event => sub {
 			my $editor = $_[0]->current->editor or return;
 			$editor->vertically_align;
+		},
+	);
+
+	$self->add_menu_item(
+		$self,
+		name       => 'perl.newline_keep_column',
+		label      => Wx::gettext('Newline same column'),
+		shortcut   => 'Ctrl-Enter',
+		menu_event => sub {
+			my $document = $_[0]->current->document or return;
+			return unless _INSTANCE( $document, 'Padre::Document::Perl' );
+			$document->newline_keep_column;
 		},
 	);
 
@@ -131,9 +185,10 @@ sub new {
 
 	$self->{autocomplete_brackets} = $self->add_checked_menu_item(
 		$self,
-		name       => 'perl.autocomplete_brackets', 
-		label      => Wx::gettext('Automatic bracket completion'), 
+		name       => 'perl.autocomplete_brackets',
+		label      => Wx::gettext('Automatic bracket completion'),
 		menu_event => sub {
+
 			# Update the saved config setting
 			my $config = Padre->ide->config;
 			$config->set( autocomplete_brackets => $_[1]->IsChecked ? 1 : 0 );

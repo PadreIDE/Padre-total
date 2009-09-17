@@ -1,8 +1,10 @@
 package Padre::Task::PPI::FindUnmatchedBrace;
+
+use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 use base 'Padre::Task::PPI';
 use Padre::Wx();
@@ -59,7 +61,9 @@ sub process_ppi {
 		$self->{error} = $@;
 		return;
 	}
-	$self->{bad_element} = $brace->element->location; # remember for gui update
+	if ( defined($brace) ) { # An undef brace throws a die here. undef = no error found.
+		$self->{bad_element} = $brace->element->location; # remember for gui update
+	}
 
 	return ();
 }

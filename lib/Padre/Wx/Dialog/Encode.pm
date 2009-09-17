@@ -1,11 +1,12 @@
 package Padre::Wx::Dialog::Encode;
 
+use 5.008;
 use strict;
 use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # Encode document to System Default
 # Encode document to utf-8

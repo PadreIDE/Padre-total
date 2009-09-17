@@ -1,11 +1,12 @@
 package Padre::Wx::Notebook;
 
+use 5.008;
 use strict;
 use warnings;
 use Padre::Wx                  ();
 use Padre::Wx::Role::MainChild ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::AuiNotebook
@@ -17,7 +18,10 @@ our @ISA     = qw{
 sub new {
 	my $class = shift;
 	my $main  = shift;
-	my $self  = $class->SUPER::new(
+	my $aui   = $main->aui;
+
+	# Create the basic object
+	my $self = $class->SUPER::new(
 		$main,
 		-1,
 		Wx::wxDefaultPosition,
@@ -27,12 +31,24 @@ sub new {
 	);
 
 	# Add ourself to the main window
-	$main->aui->AddPane(
+	$aui->AddPane(
 		$self,
-		Wx::AuiPaneInfo->new->Name('notebook')->CenterPane->Resizable(1)->PaneBorder(0)->Movable(1)->CaptionVisible(0)
-			->CloseButton(0)->MaximizeButton(0)->Floatable(1)->Dockable(1)->Layer(1)
+		Padre::Wx->aui_pane_info(
+			Name           => 'notebook',
+			Resizable      => 1,
+			PaneBorder     => 0,
+			Movable        => 1,
+			CaptionVisible => 0,
+			CloseButton    => 0,
+			MaximizeButton => 0,
+			Floatable      => 1,
+			Dockable       => 1,
+			Layer          => 1,
+			)->CenterPane,
 	);
-	$main->aui->caption( 'notebook' => Wx::gettext('Files') );
+	$aui->caption(
+		'notebook' => Wx::gettext('Files'),
+	);
 
 	Wx::Event::EVT_AUINOTEBOOK_PAGE_CHANGED(
 		$self, $self,

@@ -1,12 +1,13 @@
 package Padre::Wx::Dialog::Bookmarks;
 
+use 5.008;
 use strict;
 use warnings;
 use Padre::DB         ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # workaround: need to be accessible from outside in oder to write unit test ( t/03-wx.t )
 # TODO - Don't store run-time data in package lexicals

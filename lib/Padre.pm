@@ -19,12 +19,13 @@ use Getopt::Long  ();
 use YAML::Tiny    ();
 use DBI           ();
 use DBD::SQLite   ();
+use Padre::Splash ();
 
 # load this before things are messed up to produce versions like '0,76'!
 # TODO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 
 # Since everything is used OO-style,
 # autouse everything other than the bare essentials
@@ -40,35 +41,10 @@ use Class::XSAccessor getters => {
 	wx             => 'wx',
 	task_manager   => 'task_manager',
 	plugin_manager => 'plugin_manager',
-
-}, accessors => {
-	actions        => 'actions',
-};
-
-# Globally shared detection of the "current" Perl
-SCOPE: {
-	my $perl;
-
-	sub perl_interpreter {
-		return $perl if defined $perl;
-		require Probe::Perl;
-		require File::Which;
-
-		# Use the most correct method first
-		require Probe::Perl;
-		my $_perl = Probe::Perl->find_perl_interpreter;
-		if ( defined $_perl ) {
-			$perl = $_perl;
-			return $perl;
-		}
-
-		# Fallback to a simpler way
-		require File::Which;
-		$_perl = scalar File::Which::which('perl');
-		$perl  = $_perl;
-		return $perl;
-	}
-}
+	},
+	accessors => {
+	actions => 'actions',
+	};
 
 my $SINGLETON = undef;
 
@@ -100,6 +76,9 @@ sub new {
 
 	}, $class;
 
+	# Display Padre's Splash Screen.
+	Padre::Splash->show;
+
 	# Save the startup dir before anyone can move us.
 	$self->{original_cwd} = Cwd::cwd();
 
@@ -126,6 +105,9 @@ sub new {
 			my $read = $socket->sysread( $pid, 10 );
 			if ( defined $read and $read == 10 ) {
 
+				# Kill the splash screen
+				Padre::Splash->destroy;
+
 				# Got the single instance PID
 				$pid =~ s/\s+\s//;
 				if (Padre::Constant::WIN32) {
@@ -147,7 +129,8 @@ sub new {
 		}
 	}
 
-	# Load a few more bits and pieces now we know that we'll need them
+	# Load a few more bits and pieces now we know
+	# that we'll need them
 	require Padre::Project;
 
 	# Create the plugin manager
@@ -187,6 +170,9 @@ sub run {
 	#       that are throw silent exceptions.
 	# $SIG{__DIE__} = sub { print @_; die $_[0] };
 
+	# Kill the splash screen
+	Padre::Splash->destroy;
+
 	# Switch into runtime mode
 	$self->wx->MainLoop;
 
@@ -201,6 +187,10 @@ sub run {
 sub save_config {
 	$_[0]->config->write;
 }
+
+
+
+
 
 #####################################################################
 # Project Management
@@ -406,7 +396,7 @@ clicking on the application. It should work...
   Run This (F5) - run the current buffer with the current perl
   this currently only works with files with .pl  extensions.
 
-  Run Any (Ctr-F5) - run any external application
+  Run Any (Ctrl-F5) - run any external application
   First time it will prompt you to a command line that you have to
   type in such as
 
@@ -437,21 +427,24 @@ bookmarks.
 
 =head2 Navigation
 
-  Ctr-1          matching brace
-  Ctr-P          Autocompletition
-  Alt-N          Nth Pane
-  Ctr-TAB        Next Pane
-  Ctr-Shift-TAB  Previous Pane
-  Alt-S          Jump to list of subs window
+  Ctrl-G          Goto Line
+  Ctrl-1          Matching Brace
+  Ctrl-2          Quick Fix
+  Ctrl-.          Next Problem
+  Ctrl-P          Word Auto-completion
+  Alt-N           Nth Pane
+  Ctrl-TAB        Next Pane
+  Ctrl-Shift-TAB  Previous Pane
+  Alt-S           Jump to list of subs window
 
-  Ctr-M Ctr-Shift-M  comment/uncomment selected lines of code
+  Ctrl-M Ctrl-Shift-M  comment/uncomment selected lines of code
 
-  Ctr-H opens a help window where you can see the documentation of
+  Ctrl-H opens a help window where you can see the documentation of
   any perl module. Just use open (in the help window) and type in the name
   of a module.
 
-  Ctr-Shift-H Highlight the name of a module in the editor and then
-  press Ctr-Shift-H. IT will open the help window for the module
+  Ctrl-Shift-H Highlight the name of a module in the editor and then
+  press Ctrl-Shift-H. IT will open the help window for the module
   whose name was highlighted.
 
   In the help window you can also start typing the name of a module. When the
@@ -473,7 +466,7 @@ bookmarks.
 Simple text editors usually only allow you to select contiguous lines of text with your mouse.
 Somtimes, however, it is handy to be able to select a rectangular area of text for more precise
 cutting/copying/pasting or performing search/replace on. You can select a rectangular area in Padre
-by holding down Ctr-Alt whilst selecting text with your mouse.
+by holding down Ctrl-Alt whilst selecting text with your mouse.
 
 For example, imagine you have the following nicely formatted hash assignment in a perl source file:
 
@@ -728,8 +721,7 @@ modules/functions/etc.
 
 There is a highly experimental but quite simple plugin system.
 
-A plugin is a module in the Padre::Plugin::* namespace optionally
-packaged as a L<PAR> archive.
+A plugin is a module in the Padre::Plugin::* namespace.
 
 At startup time Padre looks for all such modules in @INC and
 in its own private directory and loads them.
@@ -1115,56 +1107,103 @@ Petar Shangov (PSHANGOV)
 
 Ryan Niebur (RSN) E<lt>rsn@cpan.orgE<gt>
 
+Sebastian Willing (SEWI)
+
 Steffen Müller (TSEE) E<lt>smueller@cpan.orgE<gt>
 
 Mark Grimes E<lt>mgrimes@cpan.orgE<gt>
 
 =head2 Translators
 
-Arabic - Ahmad M. Zawawi - أحمد محمد زواوي (AZAWAWI)
+=head3 Arabic
 
-Chinese (Simplified) - Fayland Lam (FAYLAND)
+Ahmad M. Zawawi - أحمد محمد زواوي (AZAWAWI)
 
-Chinese (Traditional) - BlueT - Matthew Lien - 練喆明 (BLUET) E<lt>bluet@cpan.orgE<gt>
+=head3 Chinese (Simplified)
 
-Dutch - Dirk De Nijs (ddn123456)
+Fayland Lam (FAYLAND)
 
-English - Everyone on the team
+=head3 Chinese (Traditional)
 
-French - Jérôme Quelin (JQUELIN)
+BlueT - Matthew Lien - 練喆明 (BLUET) E<lt>bluet@cpan.orgE<gt>
 
-German - Heiko Jansen (HJANSEN)
+=head3 Dutch
 
-Hebrew - Omer Zak  - עומר זק, Shlomi Fish  - שלומי פיש (SHLOMIF) and Amir E. Aharoni - אמיר א. אהרוני
+Dirk De Nijs (ddn123456)
 
-Hungarian - György Pásztor (GYU)
+=head3 English
 
-Italian - Simone Blandino (SBLANDIN)
+Everyone on the team
 
-Japanese - Kenichi Ishigaki - 石垣憲一 (ISHIGAKI)
+=head3 French
 
-Korean - Keedi Kim - 김도형 (KEEDI)
+Jérôme Quelin (JQUELIN)
 
-Russian - Andrew Shitov
+=head3 German
 
-Polish - Cezary Morga (THEREK)
+Heiko Jansen (HJANSEN)
+Sebastian Willing (SEWI)
 
-Portuguese (Brazilian) - Breno G. de Oliveira (GARU)
+=head3 Hebrew
 
-Spanish - Paco Alguacil (PacoLinux), Enrique Nell (ENELL)
+Omer Zak  - עומר זק
 
-Czech - Marcela Mašláňová (mmaslano)
+Shlomi Fish  - שלומי פיש (SHLOMIF)
 
-Norwegian - Kjetil Skotheim (KJETIL)
+Amir E. Aharoni - אמיר א. אהרוני
+
+=head3 Hungarian
+
+György Pásztor (GYU)
+
+=head3 Italian
+
+Simone Blandino (SBLANDIN)
+
+=head3 Japanese
+
+Kenichi Ishigaki - 石垣憲一 (ISHIGAKI)
+
+=head3 Korean
+
+Keedi Kim - 김도형 (KEEDI)
+
+=head3 Russian
+
+Andrew Shitov
+
+=head3 Polish
+
+Cezary Morga (THEREK)
+
+=head3 Portugese (Brazilian)
+
+Breno G. de Oliveira (GARU)
+
+=head3 Spanish
+
+Paco Alguacil (PacoLinux)
+
+Enrique Nell (ENELL)
+
+=head3 Czech
+
+Marcela Mašláňová (mmaslano)
+
+=head3 Norwegian
+
+Kjetil Skotheim (KJETIL)
 
 =head2 Thanks
 
-To Mattia Barbon for providing WxPerl.
+Mattia Barbon for providing WxPerl.
 Part of the code was copied from his Wx::Demo application.
 
-To Herbert Breunung for letting me work on Kephra.
+Herbert Breunung for letting me work on Kephra.
 
-To Octavian Rasnita for early testing and bug reports.
+Octavian Rasnita for early testing and bug reports.
+
+Tatsuhiko Miyagawa for consulting on our I18N and L10N support.
 
 =cut
 

@@ -7,14 +7,18 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use Padre::Current ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Plugin';
+
+
+
+
 
 #####################################################################
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.26, 'Padre::Wx::Main' => 0.26,;
+	'Padre::Plugin' => 0.43, 'Padre::Wx::Main' => 0.43,;
 }
 
 sub plugin_name {
@@ -24,7 +28,7 @@ sub plugin_name {
 sub plugin_enable {
 	my $self = shift;
 
-	# Load our non-core dependencies=
+	# Load our non-core dependencies
 	require Devel::Dumpvar;
 
 	# Load our configuration
@@ -53,11 +57,14 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		Wx::gettext('Run Document inside Padre') => 'eval_document',
-		'---'                                    => undef,
-		Wx::gettext('Dump Current Document')     => 'dump_document',
-		Wx::gettext('Dump Top IDE Object')       => 'dump_padre',
-		Wx::gettext('Dump %INC and @INC')        => 'dump_inc',
-		'---'                                    => undef,
+
+		'---' => undef,
+
+		Wx::gettext('Dump Current Document') => 'dump_document',
+		Wx::gettext('Dump Top IDE Object')   => 'dump_padre',
+		Wx::gettext('Dump %INC and @INC')    => 'dump_inc',
+
+		'---' => undef,
 
 		# TODO
 		# Should be checkbox but I am too lazy to turn the whole
@@ -74,12 +81,16 @@ sub menu_plugins_simple {
 		Wx::gettext('Disable trace') => sub {
 			$self->set_trace(0);
 		},
-		'---'                                     => undef,
-		Wx::gettext('Load All Padre Modules')     => 'load_everything',
-		Wx::gettext('Simulate Crash')             => 'simulate_crash',
-		Wx::gettext('Simulate Crashing Bg Task')  => 'simulate_task_crash',
-		'---'                                     => undef,
-		Wx::gettext('wxWidgets 2.8.10 Reference') => sub {
+
+		'---' => undef,
+
+		Wx::gettext('Load All Padre Modules')    => 'load_everything',
+		Wx::gettext('Simulate Crash')            => 'simulate_crash',
+		Wx::gettext('Simulate Crashing Bg Task') => 'simulate_task_crash',
+
+		'---' => undef,
+
+		sprintf( Wx::gettext('wxWidgets %s Reference'), '2.8.10' ) => sub {
 			Padre::Wx::launch_browser('http://docs.wxwidgets.org/2.8.10/');
 		},
 		Wx::gettext('STC Reference') => sub {
@@ -88,10 +99,16 @@ sub menu_plugins_simple {
 		Wx::gettext('wxPerl Live Support') => sub {
 			Padre::Wx::launch_irc('wxperl');
 		},
-		'---'                => undef,
+
+		'---' => undef,
+
 		Wx::gettext('About') => 'show_about',
 	];
 }
+
+
+
+
 
 #####################################################################
 # Plugin Methods

@@ -9,8 +9,12 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Wx::Menu';
+
+
+
+
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -28,8 +32,8 @@ sub new {
 	# Script Execution
 	$self->{run_document} = $self->add_menu_item(
 		$self,
-		name       => 'run.run_document', 
-		label      => Wx::gettext('Run Script'), 
+		name       => 'run.run_document',
+		label      => Wx::gettext('Run Script'),
 		shortcut   => 'F5',
 		menu_event => sub {
 			$_[0]->run_document;
@@ -38,8 +42,8 @@ sub new {
 
 	$self->{run_document_debug} = $self->add_menu_item(
 		$self,
-		name       => 'run.run_document_debug', 
-		label      => Wx::gettext('Run Script (debug info)'), 
+		name       => 'run.run_document_debug',
+		label      => Wx::gettext('Run Script (debug info)'),
 		shortcut   => 'Shift-F5',
 		menu_event => sub {
 			$_[0]->run_document(1); # Enable debug info
@@ -48,8 +52,8 @@ sub new {
 
 	$self->{run_command} = $self->add_menu_item(
 		$self,
-		name       => 'run.run_command', 
-		label      => Wx::gettext('Run Command'), 
+		name       => 'run.run_command',
+		label      => Wx::gettext('Run Command'),
 		shortcut   => 'Ctrl-F5',
 		menu_event => sub {
 			$_[0]->on_run_command;
@@ -58,18 +62,28 @@ sub new {
 
 	$self->{run_tests} = $self->add_menu_item(
 		$self,
-		name       => 'run.run_tests', 
-		label      => Wx::gettext('Run Tests'), 
+		name       => 'run.run_tests',
+		label      => Wx::gettext('Run Tests'),
 		menu_event => sub {
 			$_[0]->on_run_tests;
 		},
 	);
+
+	$self->{run_this_test} = $self->add_menu_item(
+		$self,
+		name       => 'run.run_this_test',
+		label      => Wx::gettext('Run This Test'),
+		menu_event => sub {
+			$_[0]->on_run_this_test;
+		},
+	);
+
 	$self->AppendSeparator;
 
 	$self->{stop} = $self->add_menu_item(
 		$self,
-		name       => 'run.stop', 
-		label      => Wx::gettext('Run Tests'), 
+		name       => 'run.stop',
+		label      => Wx::gettext('Stop execution'),
 		shortcut   => 'F6',
 		menu_event => sub {
 			if ( $_[0]->{command} ) {
@@ -107,9 +121,18 @@ sub refresh {
 		? $self->{run_command}->IsEnabled
 		: 0
 	);
+	$self->{run_this_test}->Enable(
+		  $document && defined( $document->filename ) && $document->filename =~ /\.t$/
+		? $self->{run_command}->IsEnabled
+		: 0
+	);
 
 	return 1;
 }
+
+
+
+
 
 #####################################################################
 # Custom Methods

@@ -10,7 +10,7 @@ use Padre::Wx::Editor                      ();
 use Padre::Wx::Dialog::Preferences::Editor ();
 use Padre::MimeTypes                       ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Padre::Wx::Dialog';
 
 =pod
@@ -28,6 +28,12 @@ In the run() sub add code to take the values from the new panel
 and save them to the configuration file.
 
 =cut
+
+my @Func_List = (
+	[ 'bookmark', Wx::gettext('Enable bookmarks') ],
+	[ 'fontsize', Wx::gettext('Change font size') ],
+	[ 'session',  Wx::gettext('Enable session manager') ],
+);
 
 sub _new_panel {
 	my ( $self, $parent ) = splice( @_, 0, 2 );
@@ -69,13 +75,17 @@ sub _mime_type_panel {
 
 	# get list of mime-types
 	my $table = [
-		[   [ 'Wx::StaticText', undef,       Wx::gettext('Mime type') ],
+		[   [ 'Wx::StaticText', undef,       Wx::gettext('File type:') ],
 			[ 'Wx::Choice',     'mime_type', $mime_types ]
 		],
-		[   [ 'Wx::StaticText', undef, Wx::gettext('Select the highlighter:') ],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Highlighter:') ],
 			[ 'Wx::Choice', 'highlighters', [] ]
 		],
-		[   [ 'Wx::StaticText', 'description', [] ],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Description:') ],
+			[ 'Wx::StaticText', 'description', [] ]
+		],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Content type:') ],
+			[ 'Wx::StaticText', 'mime_type_name', [] ]
 		],
 	];
 
@@ -89,6 +99,15 @@ sub _mime_type_panel {
 		$panel, $self->get_widget('highlighters'),
 		sub { _on_highlighter_changed( $self, @_ ) }
 	);
+
+	# Select the 'Perl 5' file type by default
+	for ( my $i = 0; $i < scalar @{$mime_types}; $i++ ) {
+		if ( $mime_types->[$i] eq 'Perl 5' ) {
+			$self->get_widget('mime_type')->Select($i);
+			last;
+		}
+	}
+
 	$self->update_highlighters;
 	$self->update_description;
 	$self->get_widget('description')->Wrap(200); # TODO should be based on the width of the page !
@@ -132,9 +151,10 @@ sub update_description {
 	my ($self) = @_;
 
 	my $mime_type_selection = $self->get_widget('mime_type')->GetSelection;
-	my $mime_types          = Padre::MimeTypes->get_mime_type_names;
+	my $mime_type_names     = Padre::MimeTypes->get_mime_type_names;
+	my $mime_types          = Padre::MimeTypes->get_mime_types;
 
-	my $mime_type_name = $mime_types->[$mime_type_selection];
+	my $mime_type_name = $mime_type_names->[$mime_type_selection];
 
 	my $highlighters          = Padre::MimeTypes->get_highlighters_of_mime_type_name($mime_type_name);
 	my $highlighter_selection = $self->get_widget('highlighters')->GetSelection;
@@ -145,6 +165,7 @@ sub update_description {
 	#print "Highlighter $highlighter\n";
 
 	$self->get_widget('description')->SetLabel( Padre::MimeTypes->get_highlighter_explanation($highlighter) );
+	$self->get_widget('mime_type_name')->SetLabel( $mime_types->[$mime_type_selection] );
 }
 
 
@@ -189,11 +210,10 @@ sub _indentation_panel {
 }
 
 sub _behaviour_panel {
-	my ( $self, $treebook, $main_startup, $main_functions_order, $perldiag_locales ) = @_;
+	my ( $self, $treebook, $main_startup, $main_functions_order, $perldiag_locales, $default_line_ending ) = @_;
 
 	my $config = Padre->ide->config;
-
-	my $table = [
+	my $table  = [
 		[   [   'Wx::CheckBox', 'editor_wordwrap', ( $config->editor_wordwrap ? 1 : 0 ),
 				Wx::gettext('Default word wrap on for each file')
 			],
@@ -212,6 +232,11 @@ sub _behaviour_panel {
 		[   [ 'Wx::StaticText', undef,          Wx::gettext('Open files:') ],
 			[ 'Wx::Choice',     'main_startup', $main_startup ]
 		],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Default projects directory:') ],
+			[   'Wx::DirPickerCtrl', 'default_projects_directory', $config->default_projects_directory,
+				Wx::gettext('Choose the default projects directory')
+			]
+		],
 		[   [   'Wx::CheckBox', 'main_singleinstance', ( $config->main_singleinstance ? 1 : 0 ),
 				Wx::gettext('Open files in existing Padre')
 			],
@@ -222,6 +247,22 @@ sub _behaviour_panel {
 		],
 		[   [ 'Wx::StaticText', undef,             Wx::gettext('Preferred language for error diagnostics:') ],
 			[ 'Wx::Choice',     'locale_perldiag', $perldiag_locales ]
+		],
+		[   [ 'Wx::StaticText', undef,                 Wx::gettext('Default line ending:') ],
+			[ 'Wx::Choice',     'default_line_ending', $default_line_ending ]
+		],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Check for file updates on disk every (seconds):') ],
+			[ 'Wx::SpinCtrl', 'update_file_from_disk_interval', $config->update_file_from_disk_interval, 0, 90 ]
+		],
+
+		# Will be moved to a own AutoComp-panel as soon as there are enough options for this (and I get the spare time to do it):
+		[   [   'Wx::CheckBox',
+				'autocomplete_multiclosebracket',
+				( $config->autocomplete_multiclosebracket ? 1 : 0 ),
+				Wx::gettext(
+					"Add another closing bracket if there is already one (and the auto-bracket-function is enabled)")
+			],
+			[]
 		],
 	];
 
@@ -261,6 +302,11 @@ sub _appearance_panel {
 			],
 			[]
 		],
+		[   [   'Wx::CheckBox', 'editor_right_margin_enable', ( $config->editor_right_margin_enable ? 1 : 0 ),
+				Wx::gettext('Show right margin at column:')
+			],
+			[ 'Wx::TextCtrl', 'editor_right_margin_column', $config->editor_right_margin_column ]
+		],
 		[   [ 'Wx::StaticText',     'undef',       Wx::gettext('Editor Font:') ],
 			[ 'Wx::FontPickerCtrl', 'editor_font', $font_desc ]
 		],
@@ -295,6 +341,19 @@ sub _appearance_panel {
 		},
 	);
 
+	Wx::Event::EVT_CHECKBOX(
+		$settings_subpanel,
+		$self->get_widget('editor_right_margin_enable'),
+		sub {
+			my $preview = $self->get_widget('preview_editor');
+			my $enabled = $self->get_widget_value('editor_right_margin_enable');
+			my $col     = $self->get_widget_value('editor_right_margin_column');
+
+			$preview->SetEdgeColumn($col);
+			$preview->SetEdgeMode( $enabled ? Wx::wxSTC_EDGE_LINE : Wx::wxSTC_EDGE_NONE );
+		},
+	);
+
 	my $preview_sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$main_sizer->Add( $preview_sizer, 3, Wx::wxGROW | Wx::wxALL, 3 );
 
@@ -317,6 +376,23 @@ sub _appearance_panel {
 	$notebook->AddPage( $editor_panel, Wx::gettext('Settings Demo') );
 
 	$preview_sizer->Add( $notebook, 1, Wx::wxGROW, 5 );
+
+	if ( $config->func_config ) {
+
+		my @table2 =
+			( [ [ 'Wx::StaticText', undef, Wx::gettext('Any changes to these options require a restart:') ] ] );
+
+		for (@Func_List) {
+
+			push @table2,
+				[ [ 'Wx::CheckBox', 'func_' . $_->[0], ( eval( '$config->func_' . $_->[0] ) ? 1 : 0 ), $_->[1] ] ];
+		}
+
+		my $settings_subpanel2 = $self->_new_panel($panel);
+		$self->fill_panel_by_table( $settings_subpanel2, \@table2 );
+
+		$main_sizer->Add($settings_subpanel2);
+	}
 
 	$panel->SetSizerAndFit($main_sizer);
 
@@ -480,7 +556,7 @@ END_TEXT
 			[ 'Wx::TextCtrl',   'run_script_args_default', $config->run_script_args_default ]
 		],
 		[   [   'Wx::CheckBox', 'run_use_external_window', ( $config->run_use_external_window ? 1 : 0 ),
-				Wx::gettext('Use external window for execution (xterm)')
+				Wx::gettext('Use external window for execution')
 			],
 			[]
 		],
@@ -560,7 +636,9 @@ END_TEXT
 }
 
 sub dialog {
-	my ( $self, $win, $main_startup, $editor_autoindent, $main_functions_order, $perldiag_locales ) = @_;
+	my ($self, $win, $main_startup, $editor_autoindent, $main_functions_order, $perldiag_locales,
+		$default_line_ending
+	) = @_;
 
 	my $dialog = Wx::Dialog->new(
 		$win,
@@ -589,6 +667,7 @@ sub dialog {
 		$main_startup,
 		$main_functions_order,
 		$perldiag_locales,
+		$default_line_ending,
 	);
 	$tb->AddPage( $behaviour, Wx::gettext('Behaviour') );
 
@@ -600,7 +679,7 @@ sub dialog {
 	);
 
 	my $mime_types = $self->_mime_type_panel($tb);
-	$tb->AddPage( $mime_types, Wx::gettext('Mime-types') );
+	$tb->AddPage( $mime_types, Wx::gettext('Files and Colors') );
 
 	my $indentation = $self->_indentation_panel( $tb, $editor_autoindent );
 	$tb->AddPage( $indentation, Wx::gettext('Indentation') );
@@ -721,6 +800,12 @@ sub run {
 		$perldiag_locale,
 		grep { $_ ne $perldiag_locale } ( 'EN', Padre::Util::find_perldiag_translations() )
 	);
+	my $default_line_ending       = $config->default_line_ending;
+	my @default_line_ending_items = (
+		$default_line_ending,
+		grep { $_ ne $default_line_ending } qw{WIN32 MAC UNIX}
+	);
+	my @default_line_ending_localized = map { Wx::gettext($_) } @default_line_ending_items;
 
 	$self->{dialog} = $self->dialog(
 		$win,
@@ -728,8 +813,10 @@ sub run {
 		\@editor_autoindent_localized,
 		\@main_functions_order_localized,
 		\@perldiag_locales,
+		\@default_line_ending_localized,
 	);
 	my $ret = $self->{dialog}->ShowModal;
+
 	if ( $ret eq Wx::wxID_CANCEL ) {
 		return;
 	}
@@ -783,6 +870,10 @@ sub run {
 		$data->{editor_beginner} ? 1 : 0
 	);
 	$config->set(
+		'default_projects_directory',
+		$data->{default_projects_directory}
+	);
+	$config->set(
 		'main_singleinstance',
 		$data->{main_singleinstance} ? 1 : 0
 	);
@@ -803,6 +894,14 @@ sub run {
 		$data->{main_output_ansi} ? 1 : 0
 	);
 	$config->set(
+		'editor_right_margin_enable',
+		$data->{editor_right_margin_enable} ? 1 : 0
+	);
+	$config->set(
+		'editor_right_margin_column',
+		$data->{editor_right_margin_column},
+	);
+	$config->set(
 		'run_interpreter_args_default',
 		$data->{run_interpreter_args_default}
 	);
@@ -814,11 +913,29 @@ sub run {
 		'run_use_external_window',
 		$data->{run_use_external_window}
 	);
-
 	$config->set(
 		'external_diff_tool',
 		$data->{external_diff_tool}
 	);
+	$config->set(
+		'default_line_ending',
+		$default_line_ending_items[ $data->{default_line_ending} ]
+	);
+	$config->set(
+		'update_file_from_disk_interval',
+		$data->{update_file_from_disk_interval}
+	);
+	$config->set(
+		'autocomplete_multiclosebracket',
+		$data->{autocomplete_multiclosebracket} ? 1 : 0
+	);
+
+	for (@Func_List) {
+		$config->set(
+			'func_' . $_->[0],
+			$data->{ 'func_' . $_->[0] } ? 1 : 0
+		);
+	}
 
 	# Quite like in _run_params_panel, trap exception if there
 	# is no document currently open

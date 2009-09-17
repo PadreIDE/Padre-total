@@ -9,9 +9,13 @@ use Carp         ();
 use Exporter     ();
 use Params::Util ();
 
-our $VERSION   = '0.41';
+our $VERSION   = '0.46';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = '_CURRENT';
+
+
+
+
 
 #####################################################################
 # Exportable Functions
@@ -38,6 +42,10 @@ sub _CURRENT {
 	return Padre::Current->new;
 }
 
+
+
+
+
 #####################################################################
 # Constructor
 
@@ -45,6 +53,10 @@ sub new {
 	my $class = shift;
 	bless {@_}, $class;
 }
+
+
+
+
 
 #####################################################################
 # Context Methods
@@ -56,7 +68,7 @@ sub project {
 	if ( defined $document ) {
 		return $document->project;
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -76,7 +88,7 @@ sub title {
 	if ( $selected >= 0 ) {
 		return $notebook->GetPageText($selected);
 	} else {
-		return undef;
+		return;
 	}
 }
 
@@ -146,6 +158,14 @@ sub config {
 # Convenience method
 sub main {
 	my $self = ref( $_[0] ) ? $_[0] : $_[0]->new;
+
+	# floating windows (Wx::AuiFloatingFrame) may
+	# call us passing $self as an argument, so
+	# we short-circuit them if they're docked
+	if ( $_[1] ) {
+		my $parent = $_[1]->main;
+		return $parent if ref $parent eq 'Padre::Wx::Main';
+	}
 	unless ( defined $self->{main} ) {
 		if ( defined $self->{ide} ) {
 			$self->{main} = $self->{ide}->wx->main;

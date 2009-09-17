@@ -3,13 +3,14 @@ package Wx::Perl::Dialog;
 use 5.008;
 use strict;
 use warnings;
-
-our $VERSION = '0.41';
-
+use Cwd ();
 use Wx ':everything';
 use Wx::Event ':everything';
 
-use base 'Wx::Dialog';
+our $VERSION = '0.46';
+our @ISA     = 'Wx::Dialog';
+
+=pod
 
 =head1 NAME
 

@@ -13,6 +13,7 @@ use Scalar::Util          ();
 use Params::Util qw(
 	_INSTANCE _INVOCANT _CLASSISA _HASH _STRING
 );
+use Padre::Wx::Icon         ();
 use Padre::Wx::AuiManager   ();
 use Padre::Wx::Dialog       ();
 use Padre::Task::DocBrowser ();
@@ -24,7 +25,7 @@ use Padre::Service::Indexer::DocBrowser;
 use Padre::Wx ();
 use Wx qw(:progressdialog);
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::Frame';
 
 use Class::XSAccessor accessors => {
@@ -91,7 +92,7 @@ sub new {
 	my $index = Padre::Index::Kinosearch->new( index_directory=>'/tmp/padre-index' );
 	$self->{index} = $index;
 	# Until we get a real icon use the same one as the others
-	$self->SetIcon( Wx::GetWxPerlIcon() );
+	$self->SetIcon(Padre::Wx::Icon::PADRE);
 
 	my $top_s = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $but_s = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
@@ -424,8 +425,7 @@ sub padre2docbrowser {
 		filename => $padredoc->filename,
 	);
 
-	# Erk - shouldn't this be ->get_text or something.
-	$doc->body( Encode::encode( 'utf8', $padredoc->{original_content} ) );
+	$doc->body( Encode::encode( 'utf8', $padredoc->text_get ) );
 
 	$doc->mimetype( $doc->guess_mimetype ) unless $doc->mimetype;
 
@@ -474,7 +474,7 @@ sub _hints {
 sub _close {
 	my ($self) = @_;
 
-	print "Going to close the docbrowser\n";
+	#print "Going to close the docbrowser\n";
 
 	# in case we have a busy cursor still:
 	$self->{_busyCursor} = undef;

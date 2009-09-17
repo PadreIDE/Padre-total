@@ -8,7 +8,7 @@ use Padre::Wx         ();
 use Padre::Wx::Icon   ();
 use Padre::Wx::Editor ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::ToolBar';
 
 # NOTE: Something is wrong with dockable toolbars on Windows
@@ -33,7 +33,7 @@ sub new {
 		$style,
 		5050,
 	);
-	
+
 	# Default icon size is 16x15 for Wx, to use the 16x16 GPL
 	# icon sets we need to be SLIGHTLY bigger.
 	$self->SetToolBitmapSize( Wx::Size->new( 16, 16 ) );
@@ -71,6 +71,12 @@ sub new {
 	$self->{close} = $self->add_tool_item(
 		action => 'file.close',
 		icon   => 'actions/x-document-close',
+	);
+
+	$self->AddSeparator;
+	$self->{open_example} = $self->add_tool_item(
+		action => 'file.open_example',
+		icon   => 'stock/generic/stock_example',
 	);
 
 	# Undo/Redo Support
@@ -137,6 +143,18 @@ sub new {
 		icon   => 'actions/document-properties',
 	);
 
+	$self->AddSeparator;
+
+	$self->{open_resource} = $self->add_tool_item(
+		action => 'search.open_resource',
+		icon   => 'places/folder-saved-search',
+	);
+
+	$self->{quick_menu_access} = $self->add_tool_item(
+		action => 'search.quick_menu_access',
+		icon   => 'status/info',
+	);
+
 	return $self;
 }
 
@@ -144,16 +162,16 @@ sub new {
 # Add a tool item to the toolbar re-using Padre menu action name
 #
 sub add_tool_item {
-	my ($self,%args) = @_;
+	my ( $self, %args ) = @_;
 
 	my $actions = Padre::ide->actions;
 
-	my $action = $actions->{$args{action}};
-	die ("No action with the name " . $args{name}) 
+	my $action = $actions->{ $args{action} };
+	die( "No action with the name " . $args{name} )
 		unless $action;
 
-	# the ID code should be unique otherwise it can break the event system. 
-	# If set to -1 such as in the default call below, it will override 
+	# the ID code should be unique otherwise it can break the event system.
+	# If set to -1 such as in the default call below, it will override
 	# any previous item with that id.
 	my $id = $self->{next_id}++;
 
@@ -161,7 +179,7 @@ sub add_tool_item {
 	$self->AddTool(
 		$id, '',
 		Padre::Wx::Icon::find( $args{icon} ),
-		$action->label,
+		$action->label_text,
 	);
 
 	# Add the optional event hook
@@ -194,11 +212,11 @@ sub refresh {
 	$self->EnableTool( $self->{cut},   ($selection) );
 	$self->EnableTool( $self->{copy},  ($selection) );
 	$self->EnableTool( $self->{paste}, ( $editor and $editor->CanPaste ) );
-	$self->EnableTool( $self->{select_all}, ( $editor ? 1 : 0 ) );
-	$self->EnableTool( $self->{find},      ( $editor ? 1 : 0 ) );
-	$self->EnableTool( $self->{replace},   ( $editor ? 1 : 0 ) );
-	$self->EnableTool( $self->{comment_toggle},  ( $document ? 1 : 0 ) );
-	$self->EnableTool( $self->{doc_stat}, ( $editor   ? 1 : 0 ) );
+	$self->EnableTool( $self->{select_all},     ( $editor   ? 1 : 0 ) );
+	$self->EnableTool( $self->{find},           ( $editor   ? 1 : 0 ) );
+	$self->EnableTool( $self->{replace},        ( $editor   ? 1 : 0 ) );
+	$self->EnableTool( $self->{comment_toggle}, ( $document ? 1 : 0 ) );
+	$self->EnableTool( $self->{doc_stat},       ( $editor   ? 1 : 0 ) );
 
 	return;
 }

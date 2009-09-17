@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Wx::Perl::Dialog ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = 'Wx::Perl::Dialog';
 
 sub create_widget {
@@ -22,12 +22,8 @@ sub create_widget {
 		$widget = $widgetClass->new( $parent, -1, $param->[1] );
 	} elsif ( $widgetClass eq 'Wx::DirPickerCtrl' ) {
 		my $title = $param->[1] || '';
-		$widget = $widgetClass->new( $parent, -1, $param->[1], $param->[2] );
-
-		# it seems we cannot set the default directory and
-		# we still have to set this directory in order to get anything back in
-		# GetPath
-		$widget->SetPath( Cwd::cwd() );
+		$widget = $widgetClass->new( $parent, -1, '', $param->[2] );
+		$widget->SetPath( $param->[1] || Cwd::cwd() );
 	} elsif ( $widgetClass eq 'Wx::FilePickerCtrl' ) {
 		$widget = $widgetClass->new( $parent, -1, $param->[1], $param->[2] );
 		$widget->SetPath( Cwd::cwd() );
@@ -109,7 +105,7 @@ sub create_widget {
 	} else {
 
 		#warn "Unsupported widget $widgetClass\n";
-		return undef;
+		return;
 	}
 
 	return $widget;
@@ -120,7 +116,7 @@ sub add_widget {
 	my $name = shift;
 
 	unless ( defined $name and $name ne '' ) {
-		return undef;
+		return;
 	}
 
 	my $widget = '';
@@ -141,7 +137,7 @@ sub add_widget {
 		return $widget;
 	}
 
-	return undef;
+	return;
 }
 
 sub get_widget {
@@ -157,7 +153,7 @@ sub get_widget {
 			delete $self->{_widgets_}->{$name};
 		}
 	}
-	return undef;
+	return;
 }
 
 sub get_widget_value {
@@ -191,11 +187,11 @@ sub get_widget_value {
 			if ( $w->can('GetValue') ) {
 				return $w->GetValue;
 			} else {
-				return undef;
+				return;
 			}
 		}
 	}
-	return undef;
+	return;
 }
 
 sub get_widgets_values {

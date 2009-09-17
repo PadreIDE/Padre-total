@@ -2,13 +2,14 @@ package Padre::Wx::Bottom;
 
 # The bottom notebook
 
+use 5.008;
 use strict;
 use warnings;
 use Padre::Constant            ();
 use Padre::Wx                  ();
 use Padre::Wx::Role::MainChild ();
 
-our $VERSION = '0.41';
+our $VERSION = '0.46';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::AuiNotebook
@@ -24,30 +25,36 @@ sub new {
 		$main,
 		-1,
 		Wx::wxDefaultPosition,
-
-		# Used when pane is floated
-		Wx::Size->new( 350, 300 ),
-		Wx::wxAUI_NB_SCROLL_BUTTONS
-			| Wx::wxAUI_NB_TOP
-			| Wx::wxBORDER_NONE,
+		Wx::Size->new( 350, 300 ), # Used when floating
+		Wx::wxAUI_NB_SCROLL_BUTTONS | Wx::wxAUI_NB_TOP | Wx::wxBORDER_NONE
 	);
 
 	# Add ourself to the window manager
 	$aui->AddPane(
 		$self,
-		Wx::AuiPaneInfo->new->Name('bottom')->Resizable(1)->PaneBorder(0)->Movable(1)->CaptionVisible(1)->CloseButton(0)
-			->DestroyOnClose(0)->MaximizeButton(1)->Floatable(1)->Dockable(1)->Position(2)->Bottom->Layer(4)->Hide
+		Padre::Wx->aui_pane_info(
+			Name           => 'bottom',
+			Resizable      => 1,
+			PaneBorder     => 0,
+			Movable        => 1,
+			CaptionVisible => 1,
+			CloseButton    => 0,
+			DestroyOnClose => 0,
+			MaximizeButton => 1,
+			Floatable      => 1,
+			Dockable       => 1,
+			Position       => 2,
+			Layer          => 4,
+			)->Bottom->Hide,
 	);
-
-	# Set the locale-aware caption
 	$aui->caption( 'bottom' => Wx::gettext('Output View') );
 
 	return $self;
 }
 
-sub aui {
-	$_[0]->GetParent->aui;
-}
+
+
+
 
 #####################################################################
 # Page Management

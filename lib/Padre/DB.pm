@@ -1,25 +1,29 @@
 package Padre::DB;
 
 # Provide an ORLite-based API for the Padre database
-
+use 5.008;
 use strict;
-use File::Spec          ();
-use File::ShareDir::PAR ();
-use Params::Util        ();
-use Padre::Constant     ();
-use Padre::Current      ();
+use warnings;
+use File::Spec      ();
+use File::ShareDir  ();
+use Params::Util    ();
+use Padre::Constant ();
+use Padre::Current  ();
 
-use ORLite 1.17 (); # Need truncate
+# Need truncate
+use ORLite 1.17 ();
+
+# Remove the trailing -DEBUG to get debugging info on ORLite magic
 use ORLite::Migrate 0.01 {
 	create        => 1,
 	tables        => ['Modules'],
 	file          => Padre::Constant::CONFIG_HOST,
-	user_revision => 8,
+	user_revision => 11,
 	timeline      => File::Spec->catdir(
-		File::ShareDir::PAR::dist_dir('Padre'),
+		File::ShareDir::dist_dir('Padre'),
 		'timeline',
 	),
-};                  # add parameter '-DEBUG' after the hash ref to get info on orlite magic
+}; # -DEBUG;
 
 # Overlay classes to enhance the ORLite defaults
 use Padre::DB::Plugin             ();
@@ -30,8 +34,12 @@ use Padre::DB::LastPositionInFile ();
 use Padre::DB::Session            ();
 use Padre::DB::SessionFile        ();
 
-our $VERSION    = '0.41';
+our $VERSION    = '0.46';
 our $COMPATIBLE = '0.26';
+
+
+
+
 
 #####################################################################
 # Snippets
@@ -82,13 +90,9 @@ __END__
 
 Padre::DB - An ORLite-based ORM Database API
 
-
-
 =head1 SYNOPSIS
 
   TO BE COMPLETED
-
-
 
 =head1 DESCRIPTION
 
@@ -96,7 +100,6 @@ This module implements access to the database that Padre is using to
 store bits & pieces. It is using C<ORLite> underneath, for an easy table
 scheme discovery at runtime. See below to learn about how to update the
 database scheme.
-
 
 =head2 Updating database scheme
 
@@ -148,7 +151,6 @@ script in the timeline directory).
             [...]
         };
 
-
 =item *
 
 Once this is done, you can try to load Padre's development and check
@@ -168,7 +170,6 @@ flag to C<ORLite::Migrate> call (add it as the B<last> parameter):
 
 Congratulations! The database has been updated, and will be updated
 automatically when users will run the new Padre version...
-
 
 =head2 Accessing and using the database
 
@@ -204,16 +205,12 @@ C<Padre::DB>.
 
 =back
 
-
-
-
 =head1 METHODS
 
 Those methods are automatically created for each of the tables (see
 above). Note that the modules automatically created provide both class
 methods and instance methods, where the object instances each represent
 a table record.
-
 
 =head2 dsn
 
@@ -389,8 +386,6 @@ no means prohibited.
 The C<pragma> method provides a convenient method for fetching a pragma
 for a datase. See the SQLite documentation for more details.
 
-
-
 =head1 SUPPORT
 
 Padre::DB is based on L<ORLite> 1.18.
@@ -399,8 +394,6 @@ Documentation created by L<ORLite::Pod> 0.06.
 
 For general support please see the support section of the main
 project documentation.
-
-
 
 =head1 COPYRIGHT
 

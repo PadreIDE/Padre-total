@@ -1,22 +1,24 @@
 #!/usr/bin/perl
 
+# This script is only used to run the application from
+# its development location
+# 
+# It should not be distributed on CPAN or downstream distributions
+
 use 5.008005;
 use strict;
 use warnings;
+use FindBin;
 use Config;
 
-# This script is only used to run the application from
-# its development location
-# No need to distribute it
-use FindBin;
-use File::Basename ();
 $ENV{PADRE_DEV}  = 1;
 $ENV{PADRE_HOME} = $FindBin::Bin;
-$ENV{PADRE_DIE}  = 1;
 
-use lib $FindBin::Bin;
+use lib $FindBin::Bin, "$FindBin::Bin/lib";
 use privlib::Tools;
+use File::Basename ();
 use Locale::Msgfmt 0.12;
+use Padre::Perl    ();
 
 # Due to share functionality, we must have run make
 unless ( -d "$FindBin::Bin/blib" ) {
@@ -24,24 +26,30 @@ unless ( -d "$FindBin::Bin/blib" ) {
 	error("You must now have run 'perl Makefile.PL' and '$make' in order to run dev.pl");
 }
 
-sub vmsgfmt {
-    msgfmt({in => (shift() . "/share/locale/"), verbose => 0});
-}
-
 vmsgfmt($FindBin::Bin);
 
-my $perl = get_perl();
+my $perl = ($^O eq 'MSWin32')
+	? Padre::Perl::cperl()
+	: Padre::Perl::wxperl();
+unless ( $perl ) {
+	error("Failed to find windowing Perl to run with");
+}
 
 my @cmd = (
 	qq[$perl],
 	qq[-I$FindBin::Bin/lib],
 	qq[-I$FindBin::Bin/blib/lib],
-    qq[-I$FindBin::Bin/../PPIx-EditorTools/lib],
+	qq[-I$FindBin::Bin/../PPIx-EditorTools/lib],
 );
 if ( grep { $_ eq '-d' } @ARGV ) {
 	# Command line debugging
 	@ARGV = grep { $_ ne '-d' } @ARGV;
 	push @cmd, '-d';
+}
+if ( grep { $_ eq '--die' } @ARGV ) {
+	# Command line debugging
+	@ARGV = grep { $_ ne '--die' } @ARGV;
+	$ENV{PADRE_DIE}  = 1;
 }
 if ( grep { $_ eq '-p' } @ARGV ) {
 	# Profiling
@@ -70,6 +78,13 @@ if ( grep { $_ eq '-h' } @ARGV ) {
 
 system( @cmd, qq[$FindBin::Bin/script/padre], @ARGV );
 
+sub vmsgfmt {
+	msgfmt( {
+		in      => "$_[0]/share/locale/",
+		verbose => 0,
+	} );
+}
+
 sub error {
 	my $msg = shift;
 	$msg =~ s/\n$//s;
@@ -83,7 +98,8 @@ Usage: $0
         -h     show this help
         -d     run Padre in the command line debugger (-d)
         -p     run Padre under -dt:NYTProf
-        -a     add the pathe to the lib directory of all the plugins in trunk/
+        -a     add the path to the lib directory of all the plugins in trunk/
+        --die  add DIE handler
 
        LIST OF FILES    list of files to open
 END_USAGE
