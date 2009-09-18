@@ -7,7 +7,7 @@ use Scalar::Util    ();
 use Padre::Constant ();
 use Padre::Util     ();
 
-our $VERSION        = '0.59';
+our $VERSION        = '0.60';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed

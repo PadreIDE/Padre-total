@@ -1,12 +1,12 @@
 package Padre::Plugin::Perl6::UpgradeTask;
 
-use 5.008;
+use 5.010;
 use strict;
 use warnings;
 use Padre::Task ();
 use Padre::Wx   ();
 
-our $VERSION = '0.46';
+our $VERSION = '0.60';
 our @ISA     = 'Padre::Task';
 
 # set up a new event type
