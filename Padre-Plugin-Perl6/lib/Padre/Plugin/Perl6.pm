@@ -750,7 +750,7 @@ sub generate_p6_pir {
 
 #
 # Updates Six distributon (on win32)
-# 
+#
 sub update_six {
 	my $self = shift;
 
@@ -761,38 +761,39 @@ sub update_six {
 	#     at the server.
 	my $releases = {
 		'01' => {
-			name        => 'Six Test',
-			url         => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
-			info        => 'A sample test...',
+			name => 'Six Test',
+			url  => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
+			info => 'A sample test...',
 		},
 		'02' => {
-			name        => 'Six PDX #20',
-			url         => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
-			info        => 'Rakudo Perl 6 PDX release #20...',
+			name => 'Six PDX #20',
+			url  => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
+			info => 'Rakudo Perl 6 PDX release #20...',
 		},
 		'03' => {
-			name        => 'Six Seattle #21',
-			url         => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
-			info        => 'Rakudo Perl 6 PDX release #21...',
+			name => 'Six Seattle #21',
+			url  => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
+			info => 'Rakudo Perl 6 PDX release #21...',
 		},
 	};
-	my $choices = [ map { $releases->{$_}->{name} } sort keys %$releases ];
+	my $choices     = [ map { $releases->{$_}->{name} } sort keys %$releases ];
 	my $client_data = [ map { $releases->{$_} } sort keys %$releases ];
-	my $dlg = Wx::SingleChoiceDialog->new(
-		$self->main, 
+	my $dlg         = Wx::SingleChoiceDialog->new(
+		$self->main,
 		Wx::gettext('Please select a Six release to install:'),
 		Wx::gettext('Six release selection'),
 		$choices,
-		$client_data);
-	if($dlg->ShowModal == Wx::wxID_OK) {
+		$client_data
+	);
+	if ( $dlg->ShowModal == Wx::wxID_OK ) {
 		my $selection = $dlg->GetSelectionClientData;
 
 		#Start the upgrade task in the background
 		require Padre::Plugin::Perl6::UpgradeTask;
-		my $task = Padre::Plugin::Perl6::UpgradeTask->new(release => $selection);
+		my $task = Padre::Plugin::Perl6::UpgradeTask->new( release => $selection );
 		$task->schedule;
 	} else {
-		$self->main->message(Wx::gettext('Operation cancelled'));
+		$self->main->message( Wx::gettext('Operation cancelled') );
 	}
 
 }
