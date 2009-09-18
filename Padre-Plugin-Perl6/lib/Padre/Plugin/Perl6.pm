@@ -754,17 +754,35 @@ sub generate_p6_pir {
 sub upgrade_six {
 	return if not Padre::Constant::WIN32;
 
-	my $url = 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip';
-	print "Loading $url\n";
+	#my $url = 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip';
+	my $url = 'http://feather.perl6.nl/~azawawi/six/six-test.zip';
+	print "Downloading $url...\n";
 	require LWP::UserAgent;
 	require HTTP::Request;
 	my $ua = LWP::UserAgent->new;
 	my $req = HTTP::Request->new(GET => $url);
 	my $res = $ua->request($req);
 	if(not $res->is_success) {
-		warn $res->status_line, "\n";
+		die "Failed in downloading $url. Please try again:\n" . $res->status_line, "\n";
 	}
 
+	print "Writing zip file...\n";
+	require File::Temp;
+	my $zipFile = File::Temp->new( SUFFIX => '-six-seattle.zip', CLEANUP => 0 );
+	binmode( $zipFile, ":raw" );
+	print $zipFile $res->content;
+	close $zipFile or die "Cannot close temporary file" . $zipFile->filename . "\n";
+
+	my $zipName = $zipFile->filename;
+	my $dest = 'c:/strawberry/';
+
+	print "Unzipping $zipName into $dest\n";
+	require Archive::Zip;
+	my $zip = Archive::Zip->new();
+	my $status = $zip->read( $zipName );
+	die "Read of $zipName failed\n" if $status != Archive::Zip->AZ_OK;
+
+	$zip->extractTree('',$dest);
 }
 
 1;
