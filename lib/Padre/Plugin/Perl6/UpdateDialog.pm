@@ -15,9 +15,10 @@ use Padre::Wx::Icon ();
 # accessors
 use Class::XSAccessor accessors => {
 	_hbox        => '_hbox',        # horizontal box sizer
-	_list        => '_list',        # matches list
-	_help_viewer => '_help_viewer', # HTML Help Viewer
+	_list        => '_list',        # a list
 	_main        => '_main',        # Padre's main window
+	_view_notes_btn  => '_view_notes_btn',   # View release notes button
+	_install_six_btn => '_install_six_btn',  # Install Six button
 };
 
 # -- constructor
@@ -28,7 +29,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$main,
 		-1,
-		Wx::gettext('Six Updater Tool'),
+		Wx::gettext('Six Updater'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
@@ -52,27 +53,6 @@ sub new {
 }
 
 
-#
-# Fetches the current selection's help HTML
-#
-sub _display_help_in_viewer {
-	my $self = shift;
-
-	my ( $html, $location );
-	my $selection = $self->_list->GetSelection();
-	if ( $selection != -1 ) {
-		my $topic = $self->_list->GetClientData($selection);
-	}
-
-	if ( not $html ) {
-		$html = '<b>' . Wx::gettext('Not found') . '</b>';
-	}
-
-	$self->_help_viewer->SetPage($html);
-
-	return;
-}
-
 # -- private methods
 
 #
@@ -88,10 +68,7 @@ sub _create {
 	$self->_create_controls;
 
 	# wrap everything in a box to add some padding
-	$self->SetMinSize( [ 640, 480 ] );
 	$self->SetSizer( $self->_hbox );
-
-	return;
 }
 
 #
@@ -101,7 +78,7 @@ sub _create_controls {
 	my $self = shift;
 
 	# matches result list
-	my $matches_label = Wx::StaticText->new(
+	my $label = Wx::StaticText->new(
 		$self, -1,
 		Wx::gettext('Please select a Six release to install:')
 	);
@@ -110,41 +87,29 @@ sub _create_controls {
 			$self,
 			-1,
 			Wx::wxDefaultPosition,
-			[ 180, -1 ],
+			[ 210, -1 ],
 			[],
 			Wx::wxLB_SINGLE
 		)
 	);
 
-	# HTML Help Viewer
-	require Padre::Wx::HtmlWindow;
-	$self->_help_viewer(
-		Padre::Wx::HtmlWindow->new(
-			$self,
-			-1,
-			Wx::wxDefaultPosition,
-			Wx::wxDefaultSize,
-			Wx::wxBORDER_STATIC
-		)
-	);
-	$self->_help_viewer->SetPage('');
+	my $btn_sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$self->_view_notes_btn( Wx::Button->new( $self, -1, Wx::gettext('View Release Notes') ) );
+	$self->_install_six_btn( Wx::Button->new( $self, -1, Wx::gettext('Install Six') ) );
+	my $cancel_btn = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Cancel') );
 
-	my $close_button = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Close') );
-
+	$btn_sizer->Add( $self->_install_six_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
+	$btn_sizer->Add( $self->_view_notes_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
+	$btn_sizer->Add( $cancel_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
+	
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
-
-	$vbox->Add( $matches_label,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
+	$vbox->Add( $label,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
 	$vbox->Add( $self->_list,  1, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$vbox->Add( $close_button, 0, Wx::wxALL | Wx::wxALIGN_LEFT, 0 );
+	$vbox->Add( $btn_sizer,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
 	$self->_hbox->Add( $vbox, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$self->_hbox->Add(
-		$self->_help_viewer,                                                        1,
-		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND, 1
-	);
 
 	$self->_setup_events();
-
-	return;
+;
 }
 
 #
@@ -153,22 +118,35 @@ sub _create_controls {
 sub _setup_events {
 	my $self = shift;
 
-	Wx::Event::EVT_HTML_LINK_CLICKED(
+	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->_help_viewer,
-		\&on_link_clicked,
-	);
-
-
-	Wx::Event::EVT_LISTBOX(
-		$self,
-		$self->_list,
+		$self->_view_notes_btn,
 		sub {
-			$self->_display_help_in_viewer;
-		}
+			my $selection = $self->_list->GetSelection;
+			if($selection != -1) {
+				my $release = $self->_list->GetClientData($selection);
+				Wx::LaunchDefaultBrowser($release->{desc_url});
+			}
+		},
 	);
 
-	return;
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->_install_six_btn,
+		sub {
+			my $selection = $self->_list->GetSelection;
+			if($selection != -1) {
+				my $release = $self->_list->GetClientData($selection);
+		
+				#Start the update task in the background
+				require Padre::Plugin::Perl6::UpdateTask;
+				my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $release );
+				$task->schedule;
+			}
+		},
+	);
+
 }
 
 #
@@ -197,34 +175,20 @@ sub prepare {
 			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
 		},
 	};
-	my @choices     = map { $releases->{$_}->{name} } sort keys %$releases;
 	my $client_data = [ map { $releases->{$_} } sort keys %$releases ];
 
 
-#	if ( $dlg->ShowModal == Wx::wxID_OK ) {
-#		my $selection = $dlg->GetSelectionClientData;
-#
-#		#Start the update task in the background
-#		require Padre::Plugin::Perl6::UpdateTask;
-#		my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $selection );
-#		$task->schedule;
-#	} else {
-#		$self->main->message( Wx::gettext('Operation cancelled') );
-#	}
-
-	#	#Populate the list box now
+	#Populate the list box now
 	$self->_list->Clear();
 	my $pos = 0;
-	foreach my $target ( @choices ) {
-		$self->_list->Insert( $target, $pos, $target );
+	foreach my $id ( sort keys %$releases ) {
+		my $release = $releases->{$id};
+		$self->_list->Insert( $release->{name}, $pos, $release );
 		$pos++;
 	}
 	if ( $pos > 0 ) {
 		$self->_list->Select(0);
 	}
-	$self->_display_help_in_viewer;
-	
-	return;
 }
 
 #
