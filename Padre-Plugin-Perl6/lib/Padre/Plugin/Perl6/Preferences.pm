@@ -31,7 +31,6 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
-	$self->SetIcon( Wx::GetWxPerlIcon() );
 	$self->_plugin($plugin);
 
 	# create dialog
