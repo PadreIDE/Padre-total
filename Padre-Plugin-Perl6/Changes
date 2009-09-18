@@ -1,5 +1,18 @@
 Changes
 
+=head1 0.60 NOT RELEASED!
+
+	Depends now on Net::HTTP, HTTP::Status and Archive::Zip
+	Depends on S:H:P6 v0.74 for the latest STD
+	First attempt at upgrading Six distribution on win32 via the web
+	"Update Six" is now in the maintenance menu above "Cleanup std lex cache"
+	When "update six" is selected, a dialog is shown and when a release is selected,
+		it is downloaded & then unzipped in c:\strawberry. This is at
+		the moment a win32-only functionality.
+	The Six updater is a background task that downloads six distros, backups
+		up old six and unzips the new downloaded six and it outputs its
+		progress meanwhile to the output panel
+
 =head1 0.59 2009.9.8
 
 	Find perl6.exe in PDX and later Six releases and stay compatible with 0.41
@@ -52,11 +65,11 @@ Changes
 =head1 0.55 2009.7.25
 
 	- This is a bugfix release for Padre's Birthday Six Release.
-	- Removed commented highlighter, and tidied the files using Padre's 
+	- Removed commented highlighter, and tidied the files using Padre's
 		perltidyrc.
 	- Fixed missing use (szabgab++).
 	- Grok target location is now shown in the dialog's title.
-	- Fixed the environment detection code, disable Perl 6 Executable menu 
+	- Fixed the environment detection code, disable Perl 6 Executable menu
 		entry if there's no parrot.exe (adamk++).
 	- Depends on App::Grok 0.14 for less dependencies.
 	- Find the path to hard perl6.exe hard coded in strawberry six (szabgab++).
@@ -64,7 +77,7 @@ Changes
 
 =head1 0.54 2009.7.24
 
-	- Depends on S:H:P6 version 0.65 to fix ticket:461 "Syntax check hanging 
+	- Depends on S:H:P6 version 0.65 to fix ticket:461 "Syntax check hanging
 		with perl6 infix & regex"
 	- Depends on Padre 0.41. Please upgrade it or otherwise it will not work.
 	- Allow the use of the new syntax highlighter configuration of Padre 0.41 (szabgab++)
@@ -87,7 +100,7 @@ Changes
 
 =head1 0.52 2009.7.18
 
-	- Removed parse_perl6_table_index.pl & perl6_table_index.pod since this is 
+	- Removed parse_perl6_table_index.pl & perl6_table_index.pod since this is
 		grok's territory now...
 	- Fixed a couple of Perl6->Perl 6 typos, and added some missing POD.
 	- Unified copyright on all files.
@@ -96,10 +109,10 @@ Changes
 	- #padre, #perl6 and perl6-projects.org are now accessible via the "More Help?" menu
 	- Added a TM to Larry Wall's Camelia icon.
 	- Depends on Perl6::Refactor.
-	- Initial stub implementation of refactoring tools menu with a coming-soon message 
+	- Initial stub implementation of refactoring tools menu with a coming-soon message
 		box to Perl 6 refactoring support.
 	- Don't hold the editor and document objects in the task as they might be gone
-		by the time the background process finished (see bug #445  and #299) 
+		by the time the background process finished (see bug #445  and #299)
 		(szabgab++)
 
 =head1 0.51 2009.7.16
@@ -112,13 +125,13 @@ Changes
 
 =head1 0.50 2009.7.10
 
-	- Wrote a script to read http://www.perlfoundation.org/perl6/index.cgi?perl_table_index 
-		and write a POD named perl6_table_index.pod. Thanks to Herbert Breunung and 
+	- Wrote a script to read http://www.perlfoundation.org/perl6/index.cgi?perl_table_index
+		and write a POD named perl6_table_index.pod. Thanks to Herbert Breunung and
 		Martin Berends.
-	- Extended Grok in an unofficial way to support perl6_table_index.pod and thus 
+	- Extended Grok in an unofficial way to support perl6_table_index.pod and thus
 		we now have more Perl 6 keywords/builtin and operator documentation.
 	- use only one grok instance per dialog lifetime
-	- Help topics can now be anything that is not whitespace which means Perl 6 
+	- Help topics can now be anything that is not whitespace which means Perl 6
 		operators, keywords and built-ins are now supported.
 	- Removed obsolete keywords support. Perl 6 Help now will take its place.
 	- require Locale::Msgfmt 0.14
@@ -129,7 +142,7 @@ Changes
 
 =head1 0.49 2009.7.6
 
-	- Two more helper quick fixes using App::Grok : 
+	- Two more helper quick fixes using App::Grok :
 		Convert POD 6 into HTML
 		Convert POD 6 into Text
 	- Implemented Perl 6 Help free-text search that is powered by App::Grok topics
@@ -157,9 +170,9 @@ Changes
 	- Comment error line' is more accurate.
 	- Fixed a possible point of failure.
 	- Respect document newline and user's indentation.
-	- Comment error line quick fix is always the last one if an error occurs is 
+	- Comment error line quick fix is always the last one if an error occurs is
 		on the current line
-	- Finally implemented 'Surround with try { ... }' quick fix. Perl 6 
+	- Finally implemented 'Surround with try { ... }' quick fix. Perl 6
 		exception handling with indentation.
 	- use a # and a space to toggle comments to avoid '#(' parametric comments
 
@@ -196,7 +209,7 @@ Changes
 
 =head1 0.44 2009.6.21
 
-	- A Perl 6 document supports both Ecliptic's event_on_quick_fix and Padre's 
+	- A Perl 6 document supports both Ecliptic's event_on_quick_fix and Padre's
 		right click menu
 	- Implemented quick fixes for the following STD warnings/errors:
 		- Undeclared routine and keywords: foo() or if()
@@ -216,13 +229,13 @@ Changes
 		- Removed unwanted stuff
 		- Enabled localization
 		- 'Enable coloring' is now in preferences and it is enabled by default.
-	- Depends on S:H:P6 0.62 which fixes the undefined return value from 
+	- Depends on S:H:P6 0.62 which fixes the undefined return value from
 		STD->parse(\s*) bug
-	- Fixed ticket:393 - Perl 6: switching to Parrot based highlighting does 
+	- Fixed ticket:393 - Perl 6: switching to Parrot based highlighting does
 		not work
 	- Refactored colorizer task into separate PGE and STD tasks.
 	- Handle STD's undeclared rountine(s) warning more properly.
-	- Implemented the creation of the Perl 6 template files by borrowing code 
+	- Implemented the creation of the Perl 6 template files by borrowing code
 		from Padre :)
 	- Added a bigger Perl 6 Camelia icon in the about box.
 	- No more manual syntax highlighting menu item.
@@ -236,13 +249,13 @@ Changes
 	- Fixed "p6tokens.pl was not being copied" by renaming it to p6tokens.p5
 	- Depends on S:H:P6 0.61 which fixes ticket:392 undeclared prompt()
 	- Updated to version 43 of S29-functions.pod (30-May-2009)
-	- Major refactoring to stop polluting Padre::Document and Padre::Task 
+	- Major refactoring to stop polluting Padre::Document and Padre::Task
 		namespaces.
-	- STD error/warning parsing is now case insensitive. and added support 
+	- STD error/warning parsing is now case insensitive. and added support
 		for "Undeclared routine" warning.
-	- STD lex corruption message was misleading and not localized. This usually 
+	- STD lex corruption message was misleading and not localized. This usually
 		happens when you upgrade Syntax::Highlight::Perl6.
-	- Decreased wait time before starting another colorizing task to 100 ms 
+	- Decreased wait time before starting another colorizing task to 100 ms
 		instead 1 sec.
 	- A couple of various refactorings:
 		- _T -> Wx::gettext.
@@ -253,7 +266,7 @@ Changes
 	- Added Spanish translation (BRUNOV)
 	- Added Brazilian Portuguese translation (GARU)
 	- Added Camelia plugin icon.
-	- Unified usage of PADRE_PLUGIN_PERL6 for author-only stuff across 
+	- Unified usage of PADRE_PLUGIN_PERL6 for author-only stuff across
 		Build.PL and tests.
 	- Added "Generate Perl6 EXEcutable" feature.
 	- Added "Generate Perl6 PIR" feature.
@@ -289,7 +302,7 @@ Changes
 =head1 0.37 2009.5.6
 
 	- Issue an error in the syntax check window if the STD lex cache is corrupted
-	- Depends on S:H:P6 0.52 which contains the tmp_prefix fix 
+	- Depends on S:H:P6 0.52 which contains the tmp_prefix fix
 		and the latest STD and has less depdendencies
 	- Added a preview preferences UI dialog which is not finished btw :)
 
@@ -313,10 +326,10 @@ Changes
 
 	- Displays STD.pm and November fully in Outline view
 	- Updated to the latest S29-functions.pod
-	- Perl 6 Plugin depends now on Syntax::Highlight::Perl6 v0.45 which fixes an 
+	- Perl 6 Plugin depends now on Syntax::Highlight::Perl6 v0.45 which fixes an
 		can parse STD.pm again without any warnings.
-	- A new symbol table method is used in outline view since 
-		Perl 6 identifiers/expressions can be multi-token like 
+	- A new symbol table method is used in outline view since
+		Perl 6 identifiers/expressions can be multi-token like
 		set-cache-entry (5 tokens)
 
 =head1 0.32 2009.4.24
@@ -411,7 +424,7 @@ Changes
 =head1 0.015 2009.1.1
 
 	- differentiate between STD warnings and errors in syntax check (ticket:193)
-	- Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32 
+	- Requires S::H::P6 version 0.02962 to fix Class:MOP/Moose win32
 	installation failures.
 
 =head1 0.014 2008.12.28
@@ -423,8 +436,8 @@ Changes
 
 	- Added a menu separator before About menu item in Padre::Plugin::Perl6
 	- Another message typo fix in Padre::Document::Perl6
-	- Show an error message box in the following situations: 
-		- exporting a non-Perl6 file 
+	- Show an error message box in the following situations:
+		- exporting a non-Perl6 file
 		- STD.pm parsing error occurs
 
 =head1 0.012 2008.12.22
