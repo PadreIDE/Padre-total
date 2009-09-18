@@ -102,6 +102,38 @@ sub _add_menu_item {
 	return $item;
 }
 
+sub _add_menu_item2 { # Add a menu option by action name
+	my $self     = shift;
+	my $method   = shift;
+	my $menu     = shift;
+	my $actions  = Padre->ide->actions;
+	my $action   = $actions->{ scalar(shift) };
+	my $name     = $action->name;
+	my $shortcut = $action->shortcut;
+
+	my $item = $menu->$method(
+		$action->id,
+		$action->label_menu,
+	);
+	Wx::Event::EVT_MENU(
+		$self->{main},
+		$item,
+		$action->menu_event,
+	);
+
+	if ($shortcut) {
+		foreach my $n ( keys %$actions ) {
+			my $a = $actions->{$n};
+			next unless $a->shortcut;
+			next unless $a->shortcut eq $shortcut;
+			warn "Found a duplicate shortcut '$shortcut' with " . $a->name . " for '$name'\n";
+			last;
+		}
+	}
+
+	return $item;
+}
+
 1;
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.

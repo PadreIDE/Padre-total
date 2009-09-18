@@ -58,8 +58,9 @@ sub label_menu {
 	return $label;
 }
 
-
-
+# Just temporary parking here:
+sub _file_openurl {
+}
 
 
 #####################################################################
