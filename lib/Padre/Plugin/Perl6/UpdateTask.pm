@@ -5,12 +5,17 @@ use strict;
 use warnings;
 use Padre::Task ();
 use Padre::Wx   ();
-
+use File::Copy  ();
+use File::Spec  ();
+use File::Basename ();
 our $VERSION = '0.60';
 our @ISA     = 'Padre::Task';
 
 # set up a new event type
 our $SAY_HELLO_EVENT : shared = Wx::NewEventType();
+
+my $strawberry_dir = 'c:/strawberry/';
+my $six_dir = 'c:/strawberry/six';
 
 sub prepare {
 	my $self = shift;
@@ -34,9 +39,8 @@ sub on_say_hello {
 	@_ = (); # hack to avoid "Scalars leaked"
 
 	# Write a message to the beginning of the document
-	my $editor = $main->current->editor;
-	return if not defined $editor;
-	$editor->InsertText( 0, $event->GetData );
+	$main->show_output(1);
+	$main->output->AppendText($event->GetData);
 }
 
 sub say {
@@ -52,20 +56,22 @@ sub on_progress {
 	#XXX do some progress UI
 }
 
-sub run {
+#
+# Downloads Six distro and provides progress information
+#
+sub download_six {
 	my $self = shift;
 
 	my $url = $self->{release}->{url};
 	require URI;
 	my $uri = URI->new($url);
 
-	my $dest = 'c:/strawberry/';
-
 	$self->say("Downloading $url...");
+
 	require Net::HTTP;
 	require HTTP::Status;
 	my $s = Net::HTTP->new( Host => $uri->host ) || die $@;
-	$s->write_request( GET => $uri->path . '?' . rand(10000), 'User-Agent' => "Mozilla/5.0" );
+	$s->write_request( GET => $uri->path . '?' . rand, 'User-Agent' => "Mozilla/5.0" );
 	my ( $code, $mess, %headers ) = $s->read_response_headers;
 	$self->say("Received $mess ($code)\n");
 	my $content_length = $headers{'Content-Length'};
@@ -89,24 +95,67 @@ sub run {
 		$self->on_progress( $percent, $info );
 		$content .= $buf;
 	}
+	
+	return $content;
+}
 
+#
+# Renaming the old six directory (just in case)
+# XXX-we should restore that in case of installation failure
+#
+sub backup_six {
+	my $self = shift;
+
+	my ($sec,$min,$hour,$day,$mon,$year) = localtime;
+	my $timestamp = sprintf("%4d%02d%02d-%02d%02d%02d", 
+		$year+1900, $mon+1, $day, $hour, $min, $sec);
+	if(-d $six_dir) {
+		my $new_six_dir = $six_dir . "_" . $timestamp;
+		$self->say("Backing up old six directory to $new_six_dir");
+		File::Copy::move($six_dir, $new_six_dir)
+			or die "Cannot rename $six_dir to $new_six_dir\n";
+	}
+}
+
+#
+# unzip six zip file to the destination folder
+#
+sub unzip_six {
+	my ($self, $content) = @_;
+
+	# Write the zip file to a temporary file
 	$self->say( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
 	require File::Temp;
-	my $zipFile = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
-	binmode( $zipFile, ":raw" );
-	print $zipFile $content;
-	my $zipName = $zipFile->filename;
-	close $zipFile or die "Cannot close temporary file" . $zipName . "\n";
+	my $zip_temp = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
+	binmode( $zip_temp, ":raw" );
+	print $zip_temp $content;
+	my $zip_name = $zip_temp->filename;
+	close $zip_temp or die "Cannot close temporary file" . $zip_name . "\n";
 
-	$self->say("Unzipping $zipName into $dest");
+	# and then unzip it to destination
+	$self->say("Unzipping $zip_name into $six_dir");
 	require Archive::Zip;
 	my $zip    = Archive::Zip->new();
-	my $status = $zip->read($zipName);
-	die "Read of $zipName failed\n" if $status != Archive::Zip->AZ_OK;
+	my $status = $zip->read($zip_name);
+	die "Read of $zip_name failed\n" if $status != Archive::Zip->AZ_OK;
+	$zip->extractTree( '', $strawberry_dir );
+}
 
-	$zip->extractTree( '', $dest );
+#
+# In here, we're running in the background :)
+#
+sub run {
+	my $self = shift;
 
-	$self->say("Finished upgrade in %d");
+	# start the clock
+	my $clock = time;
+
+	my $content = $self->download_six;
+	$self->backup_six;
+	$self->unzip_six($content);
+
+	# We're done here...
+	$self->say(sprintf("Finished installation in %d sec(s)", time - $clock));
 
 	return 1;
 }
