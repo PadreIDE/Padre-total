@@ -26,6 +26,10 @@ about:
   - title: y2009
     events:
       - date: 2009 September 17
+        url: http://use.perl.org/~Alias/journal/39642
+        title: Creating GUI code for Padre - A walk through a new feature
+        comment: by Adam Kennedy
+      - date: 2009 September 17
         url: http://use.perl.org/~jjore/journal/39644
         title: Grumble, mutter, Padre's dependencies, Grr, Mutter
         comment: by Joshua ben Jore
