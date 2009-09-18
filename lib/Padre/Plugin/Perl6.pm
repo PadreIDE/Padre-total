@@ -282,12 +282,12 @@ sub menu_plugins {
 		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
-	# Upgrade Six distribution on win32
+	# Update Six distribution on win32
 	if (Padre::Constant::WIN32) {
 		Wx::Event::EVT_MENU(
 			$main,
-			$maintenance_menu->Append( -1, Wx::gettext("Upgrade"), ),
-			sub { $self->upgrade_six; },
+			$maintenance_menu->Append( -1, Wx::gettext("Update Six"), ),
+			sub { $self->update_six; },
 		);
 		$maintenance_menu->AppendSeparator;
 	}
@@ -749,17 +749,51 @@ sub generate_p6_pir {
 }
 
 #
-# Upgrade Six distributon (on win32)
+# Updates Six distributon (on win32)
 # 
-sub upgrade_six {
+sub update_six {
 	my $self = shift;
 
 	return if not Padre::Constant::WIN32;
 
-	# start upgrade task in the background
-	require Padre::Plugin::Perl6::UpgradeTask;
-	my $task = Padre::Plugin::Perl6::UpgradeTask->new;
-	$task->schedule;
+	# Show to the user a list of hardcoded-for-now releases
+	#XXX- remove hardcoding in the future by using an index.yaml file
+	#     at the server.
+	my $releases = {
+		'01' => {
+			name        => 'Six Test',
+			url         => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
+			info        => 'A sample test...',
+		},
+		'02' => {
+			name        => 'Six PDX #20',
+			url         => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
+			info        => 'Rakudo Perl 6 PDX release #20...',
+		},
+		'03' => {
+			name        => 'Six Seattle #21',
+			url         => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
+			info        => 'Rakudo Perl 6 PDX release #21...',
+		},
+	};
+	my $choices = [ map { $releases->{$_}->{name} } sort keys %$releases ];
+	my $client_data = [ map { $releases->{$_} } sort keys %$releases ];
+	my $dlg = Wx::SingleChoiceDialog->new(
+		$self->main, 
+		Wx::gettext('Please select a Six release to install:'),
+		Wx::gettext('Six release selection'),
+		$choices,
+		$client_data);
+	if($dlg->ShowModal == Wx::wxID_OK) {
+		my $selection = $dlg->GetSelectionClientData;
+
+		#Start the upgrade task in the background
+		require Padre::Plugin::Perl6::UpgradeTask;
+		my $task = Padre::Plugin::Perl6::UpgradeTask->new(release => $selection);
+		$task->schedule;
+	} else {
+		$self->main->message(Wx::gettext('Operation cancelled'));
+	}
 
 }
 

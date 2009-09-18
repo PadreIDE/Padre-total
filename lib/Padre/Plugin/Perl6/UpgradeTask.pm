@@ -13,6 +13,9 @@ our @ISA     = 'Padre::Task';
 our $SAY_HELLO_EVENT : shared = Wx::NewEventType();
 
 sub prepare {
+	my $self = shift;
+
+	$self->say("Preparing " . $self->{release}->{name});
 
 	# Set up the event handler
 	Wx::Event::EVT_COMMAND(
@@ -43,20 +46,26 @@ sub say {
 	$self->post_event( $SAY_HELLO_EVENT, $text );
 }
 
+sub on_progress {
+	my ($self, $percent, $text) = @_;
+	
+	#XXX do some progress UI
+}
+
 sub run {
 	my $self = shift;
 
-	my $host = 'feather.perl6.nl';
-	#my $path = '~azawawi/six/six-seattle.zip';
-	my $path = '/~azawawi/six/six-test.zip';
-	my $url = "http://$host$path";
+	my $url = $self->{release}->{url};
+	require URI;
+	my $uri = URI->new($url);
+
 	my $dest = 'c:/strawberry/';
 
 	$self->say("Downloading $url...");
 	require Net::HTTP;
 	require HTTP::Status;
-	my $s = Net::HTTP->new(Host => $host) || die $@;
-	$s->write_request(GET => $path, 'User-Agent' => "Mozilla/5.0");
+	my $s = Net::HTTP->new(Host => $uri->host) || die $@;
+	$s->write_request(GET => $uri->path . '?' . rand(10000), 'User-Agent' => "Mozilla/5.0");
 	my($code, $mess, %headers) = $s->read_response_headers;
 	$self->say("Received $mess ($code)\n");
 	my $content_length = $headers{'Content-Length'};
@@ -72,8 +81,10 @@ sub run {
 		die "read failed: $!" unless defined $n;
 		last unless $n;
 		$downloaded += $n;
-		$self->say(sprintf("Downloaded %d/%d bytes (%2.1f)\n", 
-			$downloaded, $content_length, $downloaded / $content_length * 100.0));
+		my $percent = $downloaded / $content_length * 100.0;
+		my $info = sprintf("Downloaded %d/%d bytes (%2.1f)\n",
+			$downloaded, $content_length, $percent);
+		$self->on_progress($percent, $info);
 		$content .= $buf;
 	}
 
