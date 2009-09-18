@@ -761,19 +761,19 @@ sub update_six {
 	#     at the server.
 	my $releases = {
 		'01' => {
-			name => 'Six Test',
-			url  => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
-			info => 'A sample test...',
+			name     => 'Six Test',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
 		},
 		'02' => {
-			name => 'Six PDX #20',
-			url  => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
-			info => 'Rakudo Perl 6 PDX release #20...',
+			name     => 'Six PDX #20',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-08',
 		},
 		'03' => {
-			name => 'Six Seattle #21',
-			url  => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
-			info => 'Rakudo Perl 6 PDX release #21...',
+			name     => 'Six Seattle #21',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
 		},
 	};
 	my $choices     = [ map { $releases->{$_}->{name} } sort keys %$releases ];
