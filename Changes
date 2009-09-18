@@ -1,6 +1,6 @@
 Changes
 
-=head1 0.60 NOT RELEASED!
+=head1 0.60 2009.9.18
 
 	Depends now on Net::HTTP, HTTP::Status and Archive::Zip
 	Depends on S:H:P6 v0.74 for the latest STD
