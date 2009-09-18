@@ -282,13 +282,6 @@ sub menu_plugins {
 		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
-	# Cleanup STD.pm lex cache
-	Wx::Event::EVT_MENU(
-		$main,
-		$maintenance_menu->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
-		sub { $self->cleanup_std_lex_cache; },
-	);
-
 	# Upgrade Six distribution on win32
 	if (Padre::Constant::WIN32) {
 		Wx::Event::EVT_MENU(
@@ -296,7 +289,15 @@ sub menu_plugins {
 			$maintenance_menu->Append( -1, Wx::gettext("Upgrade"), ),
 			sub { $self->upgrade_six; },
 		);
+		$maintenance_menu->AppendSeparator;
 	}
+
+	# Cleanup STD.pm lex cache
+	Wx::Event::EVT_MENU(
+		$main,
+		$maintenance_menu->Append( -1, Wx::gettext("Cleanup STD.pm Lex Cache"), ),
+		sub { $self->cleanup_std_lex_cache; },
+	);
 
 	# Preferences
 	Wx::Event::EVT_MENU(
