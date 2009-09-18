@@ -14,10 +14,10 @@ use Padre::Wx::Icon ();
 
 # accessors
 use Class::XSAccessor accessors => {
-	_hbox          => '_hbox',          # horizontal box sizer
-	_list          => '_list',          # matches list
-	_help_viewer   => '_help_viewer',   # HTML Help Viewer
-	_main          => '_main',          # Padre's main window
+	_hbox        => '_hbox',        # horizontal box sizer
+	_list        => '_list',        # matches list
+	_help_viewer => '_help_viewer', # HTML Help Viewer
+	_main        => '_main',        # Padre's main window
 };
 
 # -- constructor
@@ -62,7 +62,7 @@ sub _display_help_in_viewer {
 		my $topic = $self->_list->GetClientData($selection);
 	}
 
-	if (not $html) {
+	if ( not $html ) {
 		$html = '<b>' . Wx::gettext('Not found') . '</b>';
 	}
 
@@ -131,8 +131,8 @@ sub _create_controls {
 
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
-	$vbox->Add( $self->_list,        1, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$vbox->Add( $close_button,       0, Wx::wxALL | Wx::wxALIGN_LEFT, 0 );
+	$vbox->Add( $self->_list,  1, Wx::wxALL | Wx::wxEXPAND,     2 );
+	$vbox->Add( $close_button, 0, Wx::wxALL | Wx::wxALIGN_LEFT, 0 );
 	$self->_hbox->Add( $vbox, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add(
 		$self->_help_viewer,                                                        1,
@@ -174,22 +174,22 @@ sub _setup_events {
 sub _update_list_box {
 	my $self = shift;
 
-#	#Populate the list box now
-#	$self->_list->Clear();
-#	my $pos = 0;
-#	foreach my $target ( @{ $self->_index } ) {
-#		if ( $target =~ /^$search_expr$/i ) {
-#			$self->_list->Insert( $target, 0, $target );
-#			$pos++;
-#		} elsif ( $target =~ /$search_expr/i ) {
-#			$self->_list->Insert( $target, $pos, $target );
-#			$pos++;
-#		}
-#	}
-#	if ( $pos > 0 ) {
-#		$self->_list->Select(0);
-#	}
-#	$self->_display_help_in_viewer;
+	#	#Populate the list box now
+	#	$self->_list->Clear();
+	#	my $pos = 0;
+	#	foreach my $target ( @{ $self->_index } ) {
+	#		if ( $target =~ /^$search_expr$/i ) {
+	#			$self->_list->Insert( $target, 0, $target );
+	#			$pos++;
+	#		} elsif ( $target =~ /$search_expr/i ) {
+	#			$self->_list->Insert( $target, $pos, $target );
+	#			$pos++;
+	#		}
+	#	}
+	#	if ( $pos > 0 ) {
+	#		$self->_list->Select(0);
+	#	}
+	#	$self->_display_help_in_viewer;
 
 	return;
 }
@@ -201,7 +201,7 @@ sub _update_list_box {
 sub on_link_clicked {
 	my $self = shift;
 	require URI;
-	my $uri      = URI->new( $_[0]->GetLinkInfo->GetHref );
+	my $uri = URI->new( $_[0]->GetLinkInfo->GetHref );
 
 	# otherwise, let the default browser handle it...
 	Padre::Wx::launch_browser($uri);
