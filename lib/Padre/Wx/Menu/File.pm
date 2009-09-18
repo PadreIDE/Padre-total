@@ -100,18 +100,19 @@ sub new {
 		},
 	);
 
-	$self->add_menu_item(
-		$self,
-		name  => 'file.openurl',
-		label => Wx::gettext('Open &URL...'),
-
-		# Is shown as Ctrl-O and I don't know why
-		# shortcut => 'Ctrl-Shift-O',
-		menu_event => sub {
-			$_[0]->on_open_url;
-		},
-	);
-	$self->_add_menu_item2( 'Append', $self, 'file.openurl' );
+#	$self->add_menu_item(
+#		$self,
+#		name       => 'file.openurl',
+#		label      => Wx::gettext('Open &URL...'),
+#		# Is shown as Ctrl-O and I don't know why
+#		# shortcut => 'Ctrl-Shift-O',
+#		menu_event => sub {
+#			$_[0]->on_open_url;
+#		},
+#	);
+	Padre::Action->_create; # This will live in a better place 
+	
+	$self->add_menu_action( $self, 'file.openurl' );
 
 	$self->{open_example} = $self->add_menu_item(
 		$self,

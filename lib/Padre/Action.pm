@@ -12,6 +12,7 @@ our $VERSION = '0.46';
 use Class::XSAccessor getters => {
 	id            => 'id',
 	icon          => 'icon',
+	menu_method   => 'menu_method',
 	name          => 'name',
 	label         => 'label',
 	shortcut      => 'shortcut',
@@ -59,7 +60,16 @@ sub label_menu {
 }
 
 # Just temporary parking here:
-sub _file_openurl {
+sub _create {
+		Padre->ide->action->{'file.openurl'} = Padre::Action->new(
+		menu_method	   => 'Append',
+		name       => 'file.openurl',
+		label      => Wx::gettext('Open &URL...'),
+		# Is shown as Ctrl-O and I don't know why
+		# shortcut => 'Ctrl-Shift-O',
+		menu_event => sub {
+			$_[0]->on_open_url;
+		},)
 }
 
 

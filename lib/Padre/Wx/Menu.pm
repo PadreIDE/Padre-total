@@ -102,12 +102,12 @@ sub _add_menu_item {
 	return $item;
 }
 
-sub _add_menu_item2 { # Add a menu option by action name
+sub add_menu_action { # Add a menu option by action name
 	my $self     = shift;
-	my $method   = shift;
 	my $menu     = shift;
-	my $actions  = Padre->ide->actions;
-	my $action   = $actions->{ scalar(shift) };
+	my $actions = Padre->ide->actions;
+	my $action   = $actions->{scalar(shift)};
+	my $method   = $action->menu_method;
 	my $name     = $action->name;
 	my $shortcut = $action->shortcut;
 
