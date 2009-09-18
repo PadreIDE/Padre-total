@@ -1,5 +1,13 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.74 2009.9.18
+
+	- Bundled the latest STD which contains the following fixes:
+		- don't record null nibbles unless whole string is ''
+		- fix up nibbler's AST node a bit
+		- trap malformed :3 radix
+		- fix colomon++'s bug on >>->> parsing
+
 0.73 2009.9.7
 	- Bundled STD.pm which has the following changes:
 		- remove dup our declarations for azawawi++
