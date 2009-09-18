@@ -94,8 +94,8 @@ sub _create_controls {
 	);
 
 	my $btn_sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$self->_view_notes_btn( Wx::Button->new( $self, -1, Wx::gettext('View Release Notes') ) );
 	$self->_install_six_btn( Wx::Button->new( $self, -1, Wx::gettext('Install Six') ) );
+	$self->_view_notes_btn( Wx::Button->new( $self, -1, Wx::gettext('View Release Notes') ) );
 	my $cancel_btn = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Cancel') );
 
 	$btn_sizer->Add( $self->_install_six_btn, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
@@ -137,6 +137,10 @@ sub _setup_events {
 			my $selection = $self->_list->GetSelection;
 			if ( $selection != -1 ) {
 				my $release = $self->_list->GetClientData($selection);
+
+				# Show an empty output panel
+				$self->_main->show_output(1);
+				$self->_main->output->Clear;
 
 				#Start the update task in the background
 				require Padre::Plugin::Perl6::UpdateTask;

@@ -41,7 +41,6 @@ sub on_say {
 	@_ = (); # hack to avoid "Scalars leaked"
 
 	# Write a message to the beginning of the document
-	$main->show_output(1);
 	$main->output->AppendText( $event->GetData );
 }
 
