@@ -754,7 +754,17 @@ sub generate_p6_pir {
 sub upgrade_six {
 	return if not Padre::Constant::WIN32;
 
-	print "Upgrading...\n";
+	my $url = 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip';
+	print "Loading $url\n";
+	require LWP::UserAgent;
+	require HTTP::Request;
+	my $ua = LWP::UserAgent->new;
+	my $req = HTTP::Request->new(GET => $url);
+	my $res = $ua->request($req);
+	if(not $res->is_success) {
+		warn $res->status_line, "\n";
+	}
+
 }
 
 1;
