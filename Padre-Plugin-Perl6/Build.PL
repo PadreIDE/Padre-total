@@ -12,8 +12,9 @@ my %requires = (
 	'Class::XSAccessor'        => '1.02',
 	'App::Grok'                => '0.19',
 	'Perl6::Doc'               => '0.45',
-	'LWP::UserAgent'           => '5.829',
-	'HTTP::Request'            => '5.827',
+	'HTTP::Status'             => '5.817',
+	'Net::HTTP'                => '5.831',
+	'Archive::Zip'             => '1.30',
 );
 
 if ( $^O =~ /win32/i ) {
