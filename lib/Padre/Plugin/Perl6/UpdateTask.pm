@@ -12,7 +12,7 @@ our $VERSION = '0.60';
 our @ISA     = 'Padre::Task';
 
 # set up a new event type
-our $SAY_HELLO_EVENT : shared = Wx::NewEventType();
+our $SAY_EVENT : shared = Wx::NewEventType();
 
 my $strawberry_dir = 'c:/strawberry/';
 my $six_dir = 'c:/strawberry/six';
@@ -26,15 +26,17 @@ sub prepare {
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx->main,
 		-1,
-		$SAY_HELLO_EVENT,
-		\&on_say_hello,
+		$SAY_EVENT,
+		\&on_say,
 	);
 
 	return;
 }
 
+#
 # The event handler
-sub on_say_hello {
+#
+sub on_say {
 	my ( $main, $event ) = @_;
 	@_ = (); # hack to avoid "Scalars leaked"
 
@@ -43,17 +45,24 @@ sub on_say_hello {
 	$main->output->AppendText($event->GetData);
 }
 
+#
+# Says stuff :)
+#
 sub say {
 	my ( $self, $text ) = @_;
 	$text .= "\n";
 	print $text;
-	$self->post_event( $SAY_HELLO_EVENT, $text );
+	$self->post_event( $SAY_EVENT, $text );
 }
 
+#
+# Reports progress
+#
 sub on_progress {
 	my ( $self, $percent, $text ) = @_;
 
 	#XXX do some progress UI
+	$self->say($text);
 }
 
 #
@@ -73,7 +82,7 @@ sub download_six {
 	my $s = Net::HTTP->new( Host => $uri->host ) || die $@;
 	$s->write_request( GET => $uri->path . '?' . rand, 'User-Agent' => "Mozilla/5.0" );
 	my ( $code, $mess, %headers ) = $s->read_response_headers;
-	$self->say("Received $mess ($code)\n");
+	$self->say("Received $mess ($code)");
 	my $content_length = $headers{'Content-Length'};
 	if ( $code != HTTP::Status->HTTP_OK ) {
 		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
@@ -89,7 +98,7 @@ sub download_six {
 		$downloaded += $n;
 		my $percent = $downloaded / $content_length * 100.0;
 		my $info    = sprintf(
-			"Downloaded %d/%d bytes (%2.1f)\n",
+			"Downloaded %d/%d bytes (%2.1f)",
 			$downloaded, $content_length, $percent
 		);
 		$self->on_progress( $percent, $info );
