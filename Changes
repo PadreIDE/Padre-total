@@ -12,6 +12,8 @@ Changes
 	The Six updater is a background task that downloads six distros, backups
 		up old six and unzips the new downloaded six and it outputs its
 		progress meanwhile to the output panel
+	The Six updater dialog features a new cool camelia-enabled look and a 
+	"View Release Notes" button
 
 =head1 0.59 2009.9.8
 
