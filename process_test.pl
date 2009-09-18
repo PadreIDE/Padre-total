@@ -20,7 +20,7 @@ print "My PID id $$, my child id $PID\n\n";
 print "Running on $^O\n".
       "Child should be there... ";
 if (kill(0,$PID)) {
- print "is is\n";
+ print "it is\n";
 } else {
  print "no\n";
  die 'Unable to find child at first attempt';
@@ -28,7 +28,7 @@ if (kill(0,$PID)) {
 
 print "Child should still be there... ";
 if (kill(0,$PID)) {
- print "is is\n";
+ print "it is\n";
 } else {
  print "no\n";
  die 'kill0 seems to kill child - bad';
@@ -37,8 +37,10 @@ if (kill(0,$PID)) {
 sleep 2;
 print "Child should be gone... ";
 if ( ! kill(0,$PID)) {
- print "is is\n";
+ print "it is\n";
 } else {
  print "no\n";
  die 'Child seems to be off but detection failed';
 }
+
+print "\nTest succeded!\n";
