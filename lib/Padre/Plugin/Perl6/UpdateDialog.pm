@@ -42,6 +42,8 @@ sub new {
 	# create dialog
 	$self->_create;
 
+	$self->prepare;
+
 	# fit and center the dialog
 	$self->Fit;
 	$self->CentreOnParent;
@@ -101,7 +103,7 @@ sub _create_controls {
 	# matches result list
 	my $matches_label = Wx::StaticText->new(
 		$self, -1,
-		Wx::gettext('&Matching Help Topics:')
+		Wx::gettext('Please select a Six release to install:')
 	);
 	$self->_list(
 		Wx::ListBox->new(
@@ -131,6 +133,7 @@ sub _create_controls {
 
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
+	$vbox->Add( $matches_label,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
 	$vbox->Add( $self->_list,  1, Wx::wxALL | Wx::wxEXPAND,     2 );
 	$vbox->Add( $close_button, 0, Wx::wxALL | Wx::wxALIGN_LEFT, 0 );
 	$self->_hbox->Add( $vbox, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
@@ -169,28 +172,58 @@ sub _setup_events {
 }
 
 #
-# Update matches list box from matched files list
+# Prepares the UI
 #
-sub _update_list_box {
+sub prepare {
 	my $self = shift;
 
-	#	#Populate the list box now
-	#	$self->_list->Clear();
-	#	my $pos = 0;
-	#	foreach my $target ( @{ $self->_index } ) {
-	#		if ( $target =~ /^$search_expr$/i ) {
-	#			$self->_list->Insert( $target, 0, $target );
-	#			$pos++;
-	#		} elsif ( $target =~ /$search_expr/i ) {
-	#			$self->_list->Insert( $target, $pos, $target );
-	#			$pos++;
-	#		}
-	#	}
-	#	if ( $pos > 0 ) {
-	#		$self->_list->Select(0);
-	#	}
-	#	$self->_display_help_in_viewer;
+	# Show to the user a list of hardcoded-for-now releases
+	#XXX- remove hardcoding in the future by using an index.yaml file
+	#     at the server.
+	my $releases = {
+		'01' => {
+			name     => 'Six Seattle #21 (September 2009)',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
+		},
+		'02' => {
+			name     => 'Six PDX #20 (August 2009)',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-08',
+		},
+		'03' => {
+			name     => 'Six Mini (Only for testing. Please ignore)',
+			url      => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
+			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
+		},
+	};
+	my @choices     = map { $releases->{$_}->{name} } sort keys %$releases;
+	my $client_data = [ map { $releases->{$_} } sort keys %$releases ];
 
+
+#	if ( $dlg->ShowModal == Wx::wxID_OK ) {
+#		my $selection = $dlg->GetSelectionClientData;
+#
+#		#Start the update task in the background
+#		require Padre::Plugin::Perl6::UpdateTask;
+#		my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $selection );
+#		$task->schedule;
+#	} else {
+#		$self->main->message( Wx::gettext('Operation cancelled') );
+#	}
+
+	#	#Populate the list box now
+	$self->_list->Clear();
+	my $pos = 0;
+	foreach my $target ( @choices ) {
+		$self->_list->Insert( $target, $pos, $target );
+		$pos++;
+	}
+	if ( $pos > 0 ) {
+		$self->_list->Select(0);
+	}
+	$self->_display_help_in_viewer;
+	
 	return;
 }
 
