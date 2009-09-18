@@ -14,11 +14,11 @@ use Padre::Wx::Icon ();
 
 # accessors
 use Class::XSAccessor accessors => {
-	_hbox        => '_hbox',        # horizontal box sizer
-	_list        => '_list',        # a list
-	_main        => '_main',        # Padre's main window
-	_view_notes_btn  => '_view_notes_btn',   # View release notes button
-	_install_six_btn => '_install_six_btn',  # Install Six button
+	_hbox            => '_hbox',            # horizontal box sizer
+	_list            => '_list',            # a list
+	_main            => '_main',            # Padre's main window
+	_view_notes_btn  => '_view_notes_btn',  # View release notes button
+	_install_six_btn => '_install_six_btn', # Install Six button
 };
 
 # -- constructor
@@ -98,18 +98,17 @@ sub _create_controls {
 	$self->_install_six_btn( Wx::Button->new( $self, -1, Wx::gettext('Install Six') ) );
 	my $cancel_btn = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Cancel') );
 
-	$btn_sizer->Add( $self->_install_six_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$btn_sizer->Add( $self->_view_notes_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$btn_sizer->Add( $cancel_btn,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
-	
+	$btn_sizer->Add( $self->_install_six_btn, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$btn_sizer->Add( $self->_view_notes_btn,  0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$btn_sizer->Add( $cancel_btn,             0, Wx::wxALL | Wx::wxEXPAND, 2 );
+
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vbox->Add( $label,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$vbox->Add( $self->_list,  1, Wx::wxALL | Wx::wxEXPAND,     2 );
-	$vbox->Add( $btn_sizer,  0, Wx::wxALL | Wx::wxEXPAND,     2 );
+	$vbox->Add( $label,       0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $self->_list, 1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $btn_sizer,   0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $vbox, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 
 	$self->_setup_events();
-;
 }
 
 #
@@ -123,9 +122,9 @@ sub _setup_events {
 		$self->_view_notes_btn,
 		sub {
 			my $selection = $self->_list->GetSelection;
-			if($selection != -1) {
+			if ( $selection != -1 ) {
 				my $release = $self->_list->GetClientData($selection);
-				Wx::LaunchDefaultBrowser($release->{desc_url});
+				Wx::LaunchDefaultBrowser( $release->{desc_url} );
 			}
 		},
 	);
@@ -136,9 +135,9 @@ sub _setup_events {
 		$self->_install_six_btn,
 		sub {
 			my $selection = $self->_list->GetSelection;
-			if($selection != -1) {
+			if ( $selection != -1 ) {
 				my $release = $self->_list->GetClientData($selection);
-		
+
 				#Start the update task in the background
 				require Padre::Plugin::Perl6::UpdateTask;
 				my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $release );
