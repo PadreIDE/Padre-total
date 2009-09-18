@@ -289,6 +289,15 @@ sub menu_plugins {
 		sub { $self->cleanup_std_lex_cache; },
 	);
 
+	# Upgrade Six distribution on win32
+	if (Padre::Constant::WIN32) {
+		Wx::Event::EVT_MENU(
+			$main,
+			$maintenance_menu->Append( -1, Wx::gettext("Upgrade"), ),
+			sub { $self->upgrade_six; },
+		);
+	}
+
 	# Preferences
 	Wx::Event::EVT_MENU(
 		$main,
@@ -736,6 +745,15 @@ sub generate_p6_pir {
 	# try to open the HTML file
 	$main->setup_editor($hello_pir);
 
+}
+
+#
+# Upgrade Six distributon (on win32)
+# 
+sub upgrade_six {
+	return if not Padre::Constant::WIN32;
+
+	print "Upgrading...\n";
 }
 
 1;
