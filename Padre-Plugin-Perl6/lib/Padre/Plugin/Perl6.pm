@@ -788,9 +788,9 @@ sub update_six {
 	if ( $dlg->ShowModal == Wx::wxID_OK ) {
 		my $selection = $dlg->GetSelectionClientData;
 
-		#Start the upgrade task in the background
-		require Padre::Plugin::Perl6::UpgradeTask;
-		my $task = Padre::Plugin::Perl6::UpgradeTask->new( release => $selection );
+		#Start the update task in the background
+		require Padre::Plugin::Perl6::UpdateTask;
+		my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $selection );
 		$task->schedule;
 	} else {
 		$self->main->message( Wx::gettext('Operation cancelled') );
