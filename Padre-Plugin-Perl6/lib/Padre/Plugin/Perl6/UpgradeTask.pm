@@ -36,13 +36,64 @@ sub on_say_hello {
 	$editor->InsertText( 0, $event->GetData );
 }
 
+sub say {
+	my ($self, $text) = @_;
+	$text .= "\n";
+	print $text;
+	$self->post_event( $SAY_HELLO_EVENT, $text );
+}
+
 sub run {
 	my $self = shift;
 
-	# post two events for fun
-	$self->post_event( $SAY_HELLO_EVENT, "Hello from thread!\n" );
-	sleep 1;
-	$self->post_event( $SAY_HELLO_EVENT, "Hello again!\n" );
+	my $host = 'feather.perl6.nl';
+	#my $path = '~azawawi/six/six-seattle.zip';
+	my $path = '/~azawawi/six/six-test.zip';
+	my $url = "http://$host$path";
+	my $dest = 'c:/strawberry/';
+
+	$self->say("Downloading $url...");
+	require Net::HTTP;
+	require HTTP::Status;
+	my $s = Net::HTTP->new(Host => $host) || die $@;
+	$s->write_request(GET => $path, 'User-Agent' => "Mozilla/5.0");
+	my($code, $mess, %headers) = $s->read_response_headers;
+	$self->say("Received $mess ($code)\n");
+	my $content_length = $headers{'Content-Length'};
+	if ($code != HTTP::Status->HTTP_OK) {
+		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
+	}
+
+	my $content = '';
+	my $downloaded = 0;
+	while (1) {
+		my $buf;
+		my $n = $s->read_entity_body($buf, 8096);
+		die "read failed: $!" unless defined $n;
+		last unless $n;
+		$downloaded += $n;
+		$self->say(sprintf("Downloaded %d/%d bytes (%2.1f)\n", 
+			$downloaded, $content_length, $downloaded / $content_length * 100.0));
+		$content .= $buf;
+	}
+
+	$self->say(sprintf("Writing zip file (size: %d bytes)", length $content));
+	require File::Temp;
+	my $zipFile = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
+	binmode( $zipFile, ":raw" );
+	print $zipFile $content;
+	my $zipName = $zipFile->filename;
+	close $zipFile or die "Cannot close temporary file" . $zipName . "\n";
+
+	$self->say("Unzipping $zipName into $dest");
+	require Archive::Zip;
+	my $zip = Archive::Zip->new();
+	my $status = $zip->read( $zipName );
+	die "Read of $zipName failed\n" if $status != Archive::Zip->AZ_OK;
+
+	$zip->extractTree('',$dest);
+
+	$self->say("Finished upgrade in %d");
 
 	return 1;
 }

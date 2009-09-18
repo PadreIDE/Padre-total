@@ -752,55 +752,15 @@ sub generate_p6_pir {
 # Upgrade Six distributon (on win32)
 # 
 sub upgrade_six {
+	my $self = shift;
+
 	return if not Padre::Constant::WIN32;
 
-	my $host = 'feather.perl6.nl';
-	#my $path = '~azawawi/six/six-seattle.zip';
-	my $path = '/~azawawi/six/six-test.zip';
-	my $url = "http://$host$path";
+	# start upgrade task in the background
+	require Padre::Plugin::Perl6::UpgradeTask;
+	my $task = Padre::Plugin::Perl6::UpgradeTask->new;
+	$task->schedule;
 
-	print "Downloading $url...\n";
-	require Net::HTTP;
-	require HTTP::Status;
-	my $s = Net::HTTP->new(Host => $host) || die $@;
-	$s->write_request(GET => $path, 'User-Agent' => "Mozilla/5.0");
-	my($code, $mess, %headers) = $s->read_response_headers;
-	print "Received $mess ($code)\n";
-	my $content_length = $headers{'Content-Length'};
-	if ($code != HTTP::Status->HTTP_OK) {
-		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
-	}
-
-	my $content = '';
-	my $downloaded = 0;
-	while (1) {
-		my $buf;
-		my $n = $s->read_entity_body($buf, 8096);
-		die "read failed: $!" unless defined $n;
-		last unless $n;
-		$downloaded += $n;
-		printf("Downloaded %d/%d bytes (%2.1f)\n", 
-			$downloaded, $content_length, $downloaded / $content_length * 100.0);
-		$content .= $buf;
-	}
-
-	printf("Writing zip file (size: %d bytes)\n", length $content);
-	require File::Temp;
-	my $zipFile = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
-	binmode( $zipFile, ":raw" );
-	print $zipFile $content;
-	close $zipFile or die "Cannot close temporary file" . $zipFile->filename . "\n";
-
-	my $zipName = $zipFile->filename;
-	my $dest = 'c:/strawberry/';
-
-	print "Unzipping $zipName into $dest\n";
-	require Archive::Zip;
-	my $zip = Archive::Zip->new();
-	my $status = $zip->read( $zipName );
-	die "Read of $zipName failed\n" if $status != Archive::Zip->AZ_OK;
-
-	$zip->extractTree('',$dest);
 }
 
 1;
