@@ -21864,6 +21864,7 @@ else {
 ##      #      { make radcalc($<radix>, $<intpart>, $<fracpart>, $<base>, $<exp>) }
 ##          || <?before '['> <circumfix>
 ##          || <?before '('> <circumfix>
+##          || <.panic: "Malformed radix number">
 ##          ]
 ##      }
 
@@ -22040,7 +22041,9 @@ $C->circumfix
 else {
 ();
 }
-}} or do { die $@ if $@ };
+}} // do {die $@ if $@ and $@ !~ /ABORT/;1} 
+or
+eval { push @gather, $C->panic("Malformed radix number")} or do { die $@ if $@ };
 @gather;
 }
 });
@@ -23172,7 +23175,7 @@ else {
 ##              [
 ##              || <starter> <nibbler> <stopper>
 ##                              {{
-##                                  push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to );
+##                                  push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;
 ##      
 ##                                  my $n = $<nibbler>[*-1]<nibbles>;
 ##                                  my @n = @$n;
@@ -23185,7 +23188,8 @@ else {
 ##                                  $to = $from = $¢.pos;
 ##                              }}
 ##              || <escape>     {{
-##                                  push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to ), $<escape>[*-1];
+##                                  push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;
+##                                  push @nibbles, $<escape>[*-1];
 ##                                  $text = '';
 ##                                  $to = $from = $¢.pos;
 ##                              }}
@@ -23201,7 +23205,7 @@ else {
 ##              ]
 ##          ]*
 ##          {{
-##              push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to );
+##              push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to or !@nibbles;
 ##              $<nibbles> = \@nibbles;
 ##              $<_pos> = $¢.pos;
 ##              $<nibbler> :delete;
@@ -23268,7 +23272,7 @@ $C->stopper
 }))) {
 scalar(do {
 my $M = $C; 
-push @nibbles, $C->cursor_singleton(TEXT => $text, _from => $from, _pos => $to );
+push @nibbles, $C->makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;
 
 my $n = $M->{'nibbler'}[-1]{'nibbles'};
 my @n = @$n;
@@ -23304,7 +23308,8 @@ $C->escape
 }))) {
 scalar(do {
 my $M = $C; 
-push @nibbles, $C->cursor_singleton(TEXT => $text, _from => $from, _pos => $to ), $M->{'escape'}[-1];
+push @nibbles, $C->makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;
+push @nibbles, $M->{'escape'}[-1];
 $text = '';
 $to = $from = $C->{'_pos'};
 ;
@@ -23344,7 +23349,7 @@ else {
 }))) {
 scalar(do {
 my $M = $C; 
-push @nibbles, $C->cursor_singleton(TEXT => $text, _from => $from, _pos => $to );
+push @nibbles, $C->makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to or !@nibbles;
 $M->{'nibbles'} = \@nibbles;
 $M->{'_pos'} = $C->{'_pos'};
 delete $M->{'nibbler'};
@@ -32480,7 +32485,7 @@ $C->_PATTERN(qr/\G\*\*/)
 
 ## token infix__S_284lambda (  :$*sym = 'lambda' --> Term)
 ##      token infix:lambda ( --> Term) {
-##          <?before '{' | '->' > {{
+##          <?before '{' | '->' > <!{ $*IN_META }> {{
 ##              my $line = $¢.lineof($¢.pos);
 ##              for 'if', 'unless', 'while', 'until', 'for', 'loop', 'given', 'when', 'sub' {
 ##                  my $m = %*MYSTERY{$_};
@@ -32571,6 +32576,12 @@ else {
 }
 
 }))) {
+do {
+if (my ($C) = ($C->_NOTBEFORE( sub { my $C=shift;
+(($C) x !!do {
+$::IN_META 
+})
+}))) {
 scalar(do {
 
 my $line = $C->lineof($C->{'_pos'});
@@ -32592,6 +32603,11 @@ return () if $::IN_REDUCE;
 $C->panic("Unexpected block in infix position (two terms in a row, or previous statement missing semicolon?)");
 
 }, $C);
+}
+else {
+();
+}
+};
 }
 else {
 ();
@@ -66205,6 +66221,19 @@ infix__S_284lambda: !!perl/hash:RE
                   s: 0
                   text: ->
           s: 0
+      - !!perl/hash:RE_assertion 
+        assert: "!"
+        min: 0
+        re: !!perl/hash:RE_block 
+          a: 0
+          context: bool
+          dba: infix__S_284lambda
+          i: 0
+          min: 0
+          nobind: 1
+          r: 1
+          s: 0
+          text: " $*IN_META "
       - !!perl/hash:RE_block 
         a: 0
         context: void
@@ -73395,7 +73424,7 @@ nibbler: !!perl/hash:RE
                           min: 0
                           r: 1
                           s: 0
-                          text: "\n                            push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to );\n\n                            my $n = $<nibbler>[*-1]<nibbles>;\n                            my @n = @$n;\n\n                            push @nibbles, $<starter>;\n                            push @nibbles, @n;\n                            push @nibbles, $<stopper>;\n\n                            $text = '';\n                            $to = $from = $¢.pos;\n                        "
+                          text: "\n                            push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;\n\n                            my $n = $<nibbler>[*-1]<nibbles>;\n                            my @n = @$n;\n\n                            push @nibbles, $<starter>;\n                            push @nibbles, @n;\n                            push @nibbles, $<stopper>;\n\n                            $text = '';\n                            $to = $from = $¢.pos;\n                        "
                     - !!perl/hash:RE_sequence 
                       a: 0
                       dba: nibbler
@@ -73421,7 +73450,7 @@ nibbler: !!perl/hash:RE
                           min: 0
                           r: 1
                           s: 0
-                          text: "\n                            push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to ), $<escape>[*-1];\n                            $text = '';\n                            $to = $from = $¢.pos;\n                        "
+                          text: "\n                            push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to;\n                            push @nibbles, $<escape>[*-1];\n                            $text = '';\n                            $to = $from = $¢.pos;\n                        "
                     - !!perl/hash:RE_sequence 
                       a: 0
                       dba: nibbler
@@ -73461,7 +73490,7 @@ nibbler: !!perl/hash:RE
         min: 0
         r: 1
         s: 0
-        text: "\n        push @nibbles, $¢.cursor_singleton(TEXT => $text, _from => $from, _pos => $to );\n        $<nibbles> = \\@nibbles;\n        $<_pos> = $¢.pos;\n        $<nibbler> :delete;\n        $<escape> :delete;\n        $<starter> :delete;\n        $<stopper> :delete;\n        $*LAST_NIBBLE = $¢;\n        $*LAST_NIBBLE_MULTILINE = $¢ if $multiline;\n    "
+        text: "\n        push @nibbles, $¢.makestr(TEXT => $text, _from => $from, _pos => $to ) if $from != $to or !@nibbles;\n        $<nibbles> = \\@nibbles;\n        $<_pos> = $¢.pos;\n        $<nibbler> :delete;\n        $<escape> :delete;\n        $<starter> :delete;\n        $<stopper> :delete;\n        $*LAST_NIBBLE = $¢;\n        $*LAST_NIBBLE_MULTILINE = $¢ if $multiline;\n    "
 nofun: !!perl/hash:RE 
   decl: []
 
@@ -81963,13 +81992,13 @@ rad_number: !!perl/hash:RE
   decl: []
 
   kind: token
-  min: 5
+  min: 2
   pkg: ~
   re: !!perl/hash:RE_sequence 
     a: 0
     dba: number in radix notation
     i: 0
-    min: 5
+    min: 2
     r: 1
     s: 0
     zyg: 
@@ -82038,12 +82067,12 @@ rad_number: !!perl/hash:RE
       - !!perl/hash:RE_bracket 
         decl: []
 
-        min: 3
+        min: 0
         re: !!perl/hash:RE_first 
           a: 0
           dba: number in radix notation
           i: 0
-          min: 3
+          min: 0
           r: 1
           s: 0
           zyg: 
@@ -82395,6 +82424,11 @@ rad_number: !!perl/hash:RE
                   r: 1
                   rest: ''
                   s: 0
+            - !!perl/hash:RE_method 
+              min: 0
+              name: panic
+              nobind: 1
+              rest: ("Malformed radix number")
 radint: !!perl/hash:RE 
   decl: []
 
