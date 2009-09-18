@@ -15,7 +15,7 @@ our $SAY_HELLO_EVENT : shared = Wx::NewEventType();
 sub prepare {
 	my $self = shift;
 
-	$self->say("Preparing " . $self->{release}->{name});
+	$self->say( "Preparing " . $self->{release}->{name} );
 
 	# Set up the event handler
 	Wx::Event::EVT_COMMAND(
@@ -40,15 +40,15 @@ sub on_say_hello {
 }
 
 sub say {
-	my ($self, $text) = @_;
+	my ( $self, $text ) = @_;
 	$text .= "\n";
 	print $text;
 	$self->post_event( $SAY_HELLO_EVENT, $text );
 }
 
 sub on_progress {
-	my ($self, $percent, $text) = @_;
-	
+	my ( $self, $percent, $text ) = @_;
+
 	#XXX do some progress UI
 }
 
@@ -64,31 +64,33 @@ sub run {
 	$self->say("Downloading $url...");
 	require Net::HTTP;
 	require HTTP::Status;
-	my $s = Net::HTTP->new(Host => $uri->host) || die $@;
-	$s->write_request(GET => $uri->path . '?' . rand(10000), 'User-Agent' => "Mozilla/5.0");
-	my($code, $mess, %headers) = $s->read_response_headers;
+	my $s = Net::HTTP->new( Host => $uri->host ) || die $@;
+	$s->write_request( GET => $uri->path . '?' . rand(10000), 'User-Agent' => "Mozilla/5.0" );
+	my ( $code, $mess, %headers ) = $s->read_response_headers;
 	$self->say("Received $mess ($code)\n");
 	my $content_length = $headers{'Content-Length'};
-	if ($code != HTTP::Status->HTTP_OK) {
+	if ( $code != HTTP::Status->HTTP_OK ) {
 		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
 	}
 
-	my $content = '';
+	my $content    = '';
 	my $downloaded = 0;
 	while (1) {
 		my $buf;
-		my $n = $s->read_entity_body($buf, 8096);
+		my $n = $s->read_entity_body( $buf, 8096 );
 		die "read failed: $!" unless defined $n;
 		last unless $n;
 		$downloaded += $n;
 		my $percent = $downloaded / $content_length * 100.0;
-		my $info = sprintf("Downloaded %d/%d bytes (%2.1f)\n",
-			$downloaded, $content_length, $percent);
-		$self->on_progress($percent, $info);
+		my $info    = sprintf(
+			"Downloaded %d/%d bytes (%2.1f)\n",
+			$downloaded, $content_length, $percent
+		);
+		$self->on_progress( $percent, $info );
 		$content .= $buf;
 	}
 
-	$self->say(sprintf("Writing zip file (size: %d bytes)", length $content));
+	$self->say( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
 	require File::Temp;
 	my $zipFile = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
 	binmode( $zipFile, ":raw" );
@@ -98,11 +100,11 @@ sub run {
 
 	$self->say("Unzipping $zipName into $dest");
 	require Archive::Zip;
-	my $zip = Archive::Zip->new();
-	my $status = $zip->read( $zipName );
+	my $zip    = Archive::Zip->new();
+	my $status = $zip->read($zipName);
 	die "Read of $zipName failed\n" if $status != Archive::Zip->AZ_OK;
 
-	$zip->extractTree('',$dest);
+	$zip->extractTree( '', $dest );
 
 	$self->say("Finished upgrade in %d");
 
