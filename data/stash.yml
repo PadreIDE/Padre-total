@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 17
+        url: http://use.perl.org/~jjore/journal/39644
+        title: Grumble, mutter, Padre's dependencies, Grr, Mutter
+        comment: by Joshua ben Jore
       - date: 2009 September 16
         url: http://ahmadzawawi.blogspot.com/2009/09/whats-new-in-padre-046.html
         title: What's new in Padre 0.46
