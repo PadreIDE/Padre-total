@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::UpgradeTask;
+package Padre::Plugin::Perl6::UpdateTask;
 
 use 5.010;
 use strict;
