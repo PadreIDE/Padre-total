@@ -33,12 +33,14 @@ my $path = '';
 my $rev = 'HEAD';
 my $version = '';
 my $tag = '';
+my $display = 0;
 
 ## options checking
 GetOptions( 	'path=s' 	=> \$path,
 		'tag' 		=> \$tag,
 		'version=s'	=> \$version,
-		'revision=s'	=> \$rev
+		'revision=s'	=> \$rev,
+		'display'   => \$display,
 	);
 
 
@@ -63,6 +65,7 @@ Optional Parameters:
 --path <Path to the directory of component to release - typically a Plugin>
 --tag  <will try to create a distribution using a temporary directory and copy the resulting Padre-X.XX.tar.gz in the current directory>
 --revision <SVN Revision Number, defaults to HEAD (note: not BASE)>
+--display  will skip the tests without DISPLAY
 
 Full details on the wiki: http://padre.perlide.org/trac/wiki/Release
 
@@ -140,12 +143,15 @@ _system("$make manifest");
 _system("$make test");
 _system("$make disttest");
 
-if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
-	print "Turn off DISPLAY\n";
-	my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
-	_system("$make disttest");
-	$sanctify->restore();
+if (not $display) {
+	if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
+		print "Turn off DISPLAY\n";
+		my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
+		_system("$make disttest");
+		$sanctify->restore();
+	}
 }
+
 
 _system("$make dist");
 copy( "$name-$version.tar.gz", $start_dir ) or die $!;
