@@ -756,46 +756,9 @@ sub update_six {
 
 	return if not Padre::Constant::WIN32;
 
-	# Show to the user a list of hardcoded-for-now releases
-	#XXX- remove hardcoding in the future by using an index.yaml file
-	#     at the server.
-	my $releases = {
-		'01' => {
-			name     => 'Six Seattle #21 (September 2009)',
-			url      => 'http://feather.perl6.nl/~azawawi/six/six-seattle.zip',
-			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
-		},
-		'02' => {
-			name     => 'Six PDX #20 (August 2009)',
-			url      => 'http://feather.perl6.nl/~azawawi/six/six-pdx.zip',
-			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-08',
-		},
-		'03' => {
-			name     => 'Six Mini (Only for testing. Please ignore)',
-			url      => 'http://feather.perl6.nl/~azawawi/six/six-test.zip',
-			desc_url => 'http://github.com/rakudo/rakudo/raw/master/docs/announce/2009-09',
-		},
-	};
-	my $choices     = [ map { $releases->{$_}->{name} } sort keys %$releases ];
-	my $client_data = [ map { $releases->{$_} } sort keys %$releases ];
-	my $dlg         = Wx::SingleChoiceDialog->new(
-		$self->main,
-		Wx::gettext('Please select a Six release to install:'),
-		Wx::gettext('Six release selection'),
-		$choices,
-		$client_data
-	);
-	if ( $dlg->ShowModal == Wx::wxID_OK ) {
-		my $selection = $dlg->GetSelectionClientData;
-
-		#Start the update task in the background
-		require Padre::Plugin::Perl6::UpdateTask;
-		my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $selection );
-		$task->schedule;
-	} else {
-		$self->main->message( Wx::gettext('Operation cancelled') );
-	}
-
+	require Padre::Plugin::Perl6::UpdateDialog;
+	my $dlg = Padre::Plugin::Perl6::UpdateDialog->new($self->main);
+	$dlg->ShowModal;
 }
 
 1;
