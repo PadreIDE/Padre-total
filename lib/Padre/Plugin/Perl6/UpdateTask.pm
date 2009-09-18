@@ -3,10 +3,10 @@ package Padre::Plugin::Perl6::UpdateTask;
 use 5.010;
 use strict;
 use warnings;
-use Padre::Task ();
-use Padre::Wx   ();
-use File::Copy  ();
-use File::Spec  ();
+use Padre::Task    ();
+use Padre::Wx      ();
+use File::Copy     ();
+use File::Spec     ();
 use File::Basename ();
 our $VERSION = '0.60';
 our @ISA     = 'Padre::Task';
@@ -15,7 +15,7 @@ our @ISA     = 'Padre::Task';
 our $SAY_EVENT : shared = Wx::NewEventType();
 
 my $strawberry_dir = 'c:/strawberry/';
-my $six_dir = 'c:/strawberry/six';
+my $six_dir        = 'c:/strawberry/six';
 
 sub prepare {
 	my $self = shift;
@@ -42,7 +42,7 @@ sub on_say {
 
 	# Write a message to the beginning of the document
 	$main->show_output(1);
-	$main->output->AppendText($event->GetData);
+	$main->output->AppendText( $event->GetData );
 }
 
 #
@@ -104,7 +104,7 @@ sub download_six {
 		$self->on_progress( $percent, $info );
 		$content .= $buf;
 	}
-	
+
 	return $content;
 }
 
@@ -115,13 +115,15 @@ sub download_six {
 sub backup_six {
 	my $self = shift;
 
-	my ($sec,$min,$hour,$day,$mon,$year) = localtime;
-	my $timestamp = sprintf("%4d%02d%02d-%02d%02d%02d", 
-		$year+1900, $mon+1, $day, $hour, $min, $sec);
-	if(-d $six_dir) {
+	my ( $sec, $min, $hour, $day, $mon, $year ) = localtime;
+	my $timestamp = sprintf(
+		"%4d%02d%02d-%02d%02d%02d",
+		$year + 1900, $mon + 1, $day, $hour, $min, $sec
+	);
+	if ( -d $six_dir ) {
 		my $new_six_dir = $six_dir . "_" . $timestamp;
 		$self->say("Backing up old six directory to $new_six_dir");
-		File::Copy::move($six_dir, $new_six_dir)
+		File::Copy::move( $six_dir, $new_six_dir )
 			or die "Cannot rename $six_dir to $new_six_dir\n";
 	}
 }
@@ -130,7 +132,7 @@ sub backup_six {
 # unzip six zip file to the destination folder
 #
 sub unzip_six {
-	my ($self, $content) = @_;
+	my ( $self, $content ) = @_;
 
 	# Write the zip file to a temporary file
 	$self->say( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
@@ -164,7 +166,7 @@ sub run {
 	$self->unzip_six($content);
 
 	# We're done here...
-	$self->say(sprintf("Finished installation in %d sec(s)", time - $clock));
+	$self->say( sprintf( "Finished installation in %d sec(s)", time - $clock ) );
 
 	return 1;
 }
