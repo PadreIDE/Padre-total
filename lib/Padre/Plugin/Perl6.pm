@@ -757,7 +757,7 @@ sub update_six {
 	return if not Padre::Constant::WIN32;
 
 	require Padre::Plugin::Perl6::UpdateDialog;
-	my $dlg = Padre::Plugin::Perl6::UpdateDialog->new( $self->main );
+	my $dlg = Padre::Plugin::Perl6::UpdateDialog->new( $self );
 	$dlg->ShowModal;
 }
 
