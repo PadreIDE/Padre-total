@@ -16,7 +16,7 @@ use Padre::Wx::Icon ();
 use Class::XSAccessor accessors => {
 	_hbox            => '_hbox',            # horizontal box sizer
 	_list            => '_list',            # a list
-	_plugin            => '_plugin',            # Perl 6 plugin instance
+	_plugin          => '_plugin',          # Perl 6 plugin instance
 	_view_notes_btn  => '_view_notes_btn',  # View release notes button
 	_install_six_btn => '_install_six_btn', # Install Six button
 };
@@ -94,11 +94,9 @@ sub _create_controls {
 		)
 	);
 
-	my $file = File::Spec->catfile( 
-		$self->_plugin->_sharedir, 'icons', 'camelia-big.png' );
-	my $camelia = Wx::StaticBitmap->new(
-		$self, -1, Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG ));
-	
+	my $file = File::Spec->catfile( $self->_plugin->_sharedir, 'icons', 'camelia-big.png' );
+	my $camelia = Wx::StaticBitmap->new( $self, -1, Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG ) );
+
 	my $btn_sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$self->_install_six_btn( Wx::Button->new( $self, -1, Wx::gettext('Install Six') ) );
 	$self->_view_notes_btn( Wx::Button->new( $self, -1, Wx::gettext('View Release Notes') ) );
@@ -112,7 +110,7 @@ sub _create_controls {
 	$vbox->Add( $label,       0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$vbox->Add( $self->_list, 1, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$vbox->Add( $btn_sizer,   0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$self->_hbox->Add( $vbox, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$self->_hbox->Add( $vbox,    0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $camelia, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 
 	$self->_setup_events();
@@ -149,12 +147,12 @@ sub _setup_events {
 				$self->_plugin->main->show_output(1);
 				$self->_plugin->main->output->Clear;
 
+				$self->_install_six_btn->Enable(0);
+
 				#Start the update task in the background
 				require Padre::Plugin::Perl6::UpdateTask;
 				my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $release );
 				$task->schedule;
-				
-				$self->_install_six_btn->Enable(0);
 			}
 		},
 	);
