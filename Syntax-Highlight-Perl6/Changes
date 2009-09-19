@@ -1,5 +1,11 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.75 2009.9.19
+
+	Bundled the latest STD (TimToady++) (TimToady++) innovation:
+		- revise LTA message on $x<10
+		- provide reliable way of resetting position before panic
+
 0.74 2009.9.18
 
 	- Bundled the latest STD which contains the following fixes:
