@@ -67,8 +67,7 @@ sub _on_ok_button_clicked {
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
 		my $doc = Padre::Document->new( filename => $filename );
-		warn "Help for $filename ?";
-		Padre->ide->wx->main->{help}->help( $doc );
+		Padre->ide->wx->main->help( $doc );
 		
 	}
 
@@ -232,11 +231,7 @@ sub _update_matches_list_box() {
 	
 	my $search_expr = $self->_search_text->GetValue();
 	my $index = $self->_index;
-	warn "QUERY : $search_expr";
 	my $hits = $index->search( $search_expr );
-	warn "HITS OBJECT $hits";
-	warn "\t GOT " . $hits->total_hits;
-	
 	$self->_matches_list->Clear();
 	my $pos = 0;
 	while ( my $hit = $hits->next ) {
@@ -248,7 +243,6 @@ sub _update_matches_list_box() {
 		$self->_status_text->SetLabel("" . $hits->total_hits . Wx::gettext(' item(s) found'));
 	} else {
 		$self->_status_text->SetLabel(Wx::gettext('No items found'));
-		warn "No matches";
 	}
 			
 	return;
