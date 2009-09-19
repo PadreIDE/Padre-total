@@ -24,6 +24,7 @@ use Wx::Perl::Dialog::Simple ();
 use Padre::Service::Indexer::DocBrowser;
 use Padre::Wx ();
 use Wx qw(:progressdialog);
+use Data::Dumper;
 
 our $VERSION = '0.46';
 our @ISA     = 'Wx::Frame';
@@ -287,8 +288,10 @@ sub ResolveRef {
 	my ( $self, $ref ) = @_;
 	if ( $self->index ) {
 		my $hits = $self->index->search( query => $ref );
-		warn "Index hits " . $hits->total_hits;
-		warn "\t" . $hits->next->{title};
+		warn "Index hits [$ref] " . $hits->total_hits;
+		if ($hits->total_hits) {
+			warn Dumper $hits->next;
+		}
 		
 	}
 	

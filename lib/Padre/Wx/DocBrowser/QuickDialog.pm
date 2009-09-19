@@ -9,6 +9,7 @@ our @EXPORT_OK = ();
 
 # module imports
 use Padre::Wx ();
+
 use Padre::Index::Kinosearch;
 
 
@@ -66,9 +67,7 @@ sub _on_ok_button_clicked {
 	my @selections = $self->_matches_list->GetSelections();
 	foreach my $selection (@selections) {
 		my $filename = $self->_matches_list->GetClientData($selection);
-		my $doc = Padre::Document->new( filename => $filename );
-		Padre->ide->wx->main->help( $doc );
-		
+			Padre->ide->wx->main->help( $filename );
 	}
 
 	$self->Destroy;
