@@ -88,6 +88,8 @@ sub new { # URL
 	my $class = shift;
 	my $URL   = $_[0];
 
+	return if ( !defined($URL) ) or ( $URL eq '' );
+
 	my $self;
 
 	for ( keys(%Registered_Modules) ) {
@@ -126,6 +128,20 @@ is returned.
 
 # Fallback if the module has no such function:
 sub atime {
+	return;
+}
+
+=head2 basename
+
+  $file->basename;
+
+Returns the plain filename without path if a path/filename structure
+exists for this module.
+
+=cut
+
+# Fallback if the module has no such function:
+sub basename {
 	return;
 }
 
@@ -190,6 +206,20 @@ is returned.
 
 # Fallback if the module has no such function:
 sub dev {
+	return;
+}
+
+=head2 dirname
+
+  $file->dirname;
+
+Returns the plain path without filename if a path/filename structure
+exists for this module.
+
+=cut
+
+# Fallback if the module has no such function:
+sub dirname {
 	return;
 }
 

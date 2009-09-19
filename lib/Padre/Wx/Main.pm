@@ -54,7 +54,9 @@ use Padre::Wx::ErrorList      ();
 use Padre::Wx::AuiManager     ();
 use Padre::Wx::FunctionList   ();
 use Padre::Wx::FileDropTarget ();
-use Padre::Wx::Dialog::Text;
+use Padre::Wx::Dialog::Text   ();
+use Padre::Wx::Progress       ();
+
 
 our $VERSION = '0.46';
 our @ISA     = 'Wx::Frame';
@@ -1659,7 +1661,6 @@ sub on_run_this_test {
 	require File::Which;
 	my $prove = File::Which::which('prove');
 	if (Padre::Util::WIN32) {
-		print qq{"$prove" -bv "$filename"\n};
 		$self->run_command(qq{"$prove" -bv "$filename"});
 	} else {
 		$self->run_command("$prove -bv $filename");
@@ -1928,26 +1929,43 @@ sub open_session {
 	# prevent redrawing until we're done
 	$self->Freeze;
 
-	# Close all files
-	$self->close_all;
-
 	# get list of files in the session
 	my @files = $session->files;
 	return unless @files;
 
+	my $progress = Padre::Wx::Progress->new(
+		$self,
+		sprintf(
+			Wx::gettext('Opening session %s...'),
+			$session->name,
+		),
+		$#files + 1,
+		lazy => 1
+	);
+
+	# Close all files
+	# This takes some time, so do it after the progress dialog was displayed
+	$self->close_all;
+
 	# opening documents
 	my $focus    = undef;
 	my $notebook = $self->notebook;
-	foreach my $document (@files) {
+	foreach my $file_no ( 0 .. $#files ) {
+		my $document = $files[$file_no];
+		$progress->update( $file_no, $document->file );
 		Padre::Util::debug( "Opening '" . $document->file . "' for $document" );
 		my $filename = $document->file;
-		next unless -f $filename;
+		my $file     = Padre::File->new($filename);
+		next unless defined($file);
+		next unless $file->exists;
 		my $id = $self->setup_editor($filename);
 		next unless $id; # documents already opened have undef $id
 		Padre::Util::debug("Setting focus on $filename");
 		$focus = $id if $document->focus;
 		$notebook->GetPage($id)->goto_pos_centerize( $document->position );
 	}
+
+	$progress->update( $#files + 1, Wx::gettext('Restore focus...') );
 	$self->on_nth_pane($focus) if defined $focus;
 
 	# now we can redraw
@@ -2789,9 +2807,9 @@ sub on_open_all_recent_files {
 
 =pod
 
-=head3 on_openurl
+=head3 on_open_url
 
-    $main->on_openurl;
+    $main->on_open_url;
 
 Prompt user for URL to open and open it as a new tab.
 
@@ -2800,12 +2818,14 @@ should be added.
 
 =cut
 
-sub on_openurl {
+sub on_open_url {
+	require Padre::Wx::Dialog::OpenURL;
 	my $self = shift;
-
-	$self->setup_editor( Padre::Wx::Dialog::Text->show( $self, Wx::gettext('Open URL'), '' ) );
-
-	return;
+	my $url  = Padre::Wx::Dialog::OpenURL->modal($self);
+	unless ( defined $url ) {
+		return;
+	}
+	$self->setup_editor($url);
 }
 
 =pod
@@ -3928,10 +3948,11 @@ sub convert_to {
 	my $newline = shift;
 	my $current = $self->current;
 	my $editor  = $current->editor;
-	SCOPE: {
-		no warnings 'once'; # TODO eliminate?
-		$editor->ConvertEOLs( $Padre::Wx::Editor::mode{$newline} );
-	}
+
+	# Convert and Set the EOL mode for pastes to work correctly
+	my $eol_mode = $Padre::Wx::Editor::mode{$newline};
+	$editor->ConvertEOLs($eol_mode);
+	$editor->SetEOLMode($eol_mode);
 
 	# TODO: include the changing of file type in the undo/redo actions
 	# or better yet somehow fetch it from the document when it is needed.

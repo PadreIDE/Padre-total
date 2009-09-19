@@ -34,6 +34,19 @@ sub new {
 	$self->{config} = Padre->ide->config;
 
 	# Perl-Specific Searches
+	$self->{beginner_check} = $self->add_menu_item(
+		$self,
+		name       => 'perl.beginner_check',
+		label      => Wx::gettext('Check for common (beginner) errors'),
+		menu_event => sub {
+			my $doc = $_[0]->current->document;
+			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
+			$doc->beginner_check;
+		},
+	);
+
+	$self->AppendSeparator;
+
 	$self->{find_brace} = $self->add_menu_item(
 		$self,
 		name       => 'perl.find_brace',
@@ -53,17 +66,6 @@ sub new {
 			my $doc = $_[0]->current->document;
 			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
 			$doc->find_variable_declaration;
-		},
-	);
-
-	$self->{find_variable} = $self->add_menu_item(
-		$self,
-		name       => 'perl.beginner_check',
-		label      => Wx::gettext('Check for common (beginner) errors'),
-		menu_event => sub {
-			my $doc = $_[0]->current->document;
-			return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
-			$doc->beginner_check;
 		},
 	);
 
@@ -145,6 +147,8 @@ sub new {
 		},
 	);
 
+	$self->AppendSeparator;
+
 	$self->add_menu_item(
 		$self,
 		name       => 'perl.vertically_align_selected',
@@ -208,7 +212,11 @@ sub refresh {
 	# but not in a Perl document.
 	$self->{find_brace}->Enable($perl);
 	$self->{find_variable}->Enable($perl);
+	$self->{find_variable}->Enable($perl);
 	$self->{rename_variable}->Enable($perl);
+	$self->{introduce_temporary}->Enable($perl);
+	$self->{extract_subroutine}->Enable($perl);
+	$self->{beginner_check}->Enable($perl);
 
 	# Apply config-driven state
 	$self->{autocomplete_brackets}->Check( $config->autocomplete_brackets );

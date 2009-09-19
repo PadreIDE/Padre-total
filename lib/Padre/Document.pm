@@ -334,13 +334,15 @@ sub last_sync {
 }
 
 sub basename {
-	my $filename = $_[0]->filename;
-	defined($filename) ? File::Basename::basename($filename) : undef;
+	my $self = shift;
+	return $self->{file}->basename if defined( $self->{file} );
+	return;
 }
 
 sub dirname {
-	my $filename = $_[0]->filename;
-	defined($filename) ? File::Basename::dirname($filename) : undef;
+	my $self = shift;
+	return $self->{file}->dirname if defined( $self->{file} );
+	return;
 }
 
 #left here a it is used in many places. Maybe we need to remove this sub.
@@ -468,8 +470,6 @@ Sets the B<Encoding> bit using L<Encode::Guess> and tries to figure
 out what kind of newlines are in the file. Defaults to utf-8 if
 could not figure out the encoding.
 
-Currently it autoconverts files with mixed newlines. TODO we should stop autoconverting.
-
 Returns true on success false on failure. Sets $doc->errstr;
 
 =cut
@@ -511,16 +511,22 @@ sub load_file {
 
 	$self->{original_content} = $content;
 
+	# Determine new line type using file content.
+	$self->{newline_type} = Padre::Util::newline_type($content);
+
 	return 1;
 }
 
 #
 # New line type can be one of these values:
-# WIN32, MAC (for classic Mac) or UNIX (for Mac OS X and Linux/*BSD)
+# WIN, MAC (for classic Mac) or UNIX (for Mac OS X and Linux/*BSD)
+# Special cases:
+# 'Mixed' for mixed end of lines,
+# 'None' for one-liners (no EOL)
 #
 sub newline_type {
-	my ($self) = @_;
-	return $self->_get_default_newline_type;
+	my $self = shift;
+	return $self->{newline_type} or $self->_get_default_newline_type;
 }
 
 # Get the newline char(s) for this document.
@@ -528,7 +534,7 @@ sub newline_type {
 #       because of speed issues:
 sub newline {
 	my $self = shift;
-	if ( $self->get_newline_type eq 'WIN32' ) {
+	if ( $self->get_newline_type eq 'WIN' ) {
 		return "\r\n";
 	} elsif ( $self->get_newline_type eq 'MAC' ) {
 		return "\r";
@@ -542,7 +548,10 @@ sub save_file {
 
 	my $content = $self->text_get;
 	my $file    = $self->file;
-	defined($file) or $file = Padre::File->new( $self->filename );
+	if ( !defined($file) ) {
+		$file = Padre::File->new( $self->filename );
+		$self->{file} = $file;
+	}
 
 	# not set when first time to save
 	# allow the upgrade from ascii to utf-8 if there were unicode characters added
@@ -565,6 +574,9 @@ sub save_file {
 
 	# File must be closed at this time, slow fs/userspace-fs may not return the correct result otherwise!
 	$self->{_timestamp} = $self->time_on_file;
+
+	# Determine new line type using file content.
+	$self->{newline_type} = Padre::Util::newline_type($content);
 
 	return 1;
 }
