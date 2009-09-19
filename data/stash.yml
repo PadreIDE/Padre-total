@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 19
+        url: http://ahmadzawawi.blogspot.com/2009/09/new-padre-perl-six-updater.html
+        title: The New Padre Perl Six Updater
+        comment: by Ahmad M. Zawawi
       - date: 2009 September 17
         url: http://use.perl.org/~Alias/journal/39642
         title: Creating GUI code for Padre - A walk through a new feature
