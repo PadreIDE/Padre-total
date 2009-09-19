@@ -20,6 +20,8 @@ navigation:
     href: http://blogs.padre.perlide.org
   - name: Contact us
     href: /contact.html
+  - name: Documentation
+    href: /docs/
   - name: About
     href: /about.html
 about:
