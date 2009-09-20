@@ -159,17 +159,22 @@ sub _setup_events {
 
 				$self->_install_six_btn->Enable(0);
 
+				#XXX enable on_finish and find out what's is its problemo...
+#				my $on_finish = sub {
+#					#$self->_install_six_btn->Enable(0);
+#				};
 				eval {
 					#Start the update task in the background
 					require Padre::Plugin::Perl6::UpdateTask;
 					my $task = Padre::Plugin::Perl6::UpdateTask->new( 
 						release => $release,
 						progress  => $self->_progress,
+						#on_finish => $on_finish,
 					);
 					$task->schedule;
 				};
 				if($@) {
-					$self->main->error("Failed to start installation:\n$@");
+					$self->_plugin->main->error("Failed to start installation:\n$@");
 				}
 			}
 		},

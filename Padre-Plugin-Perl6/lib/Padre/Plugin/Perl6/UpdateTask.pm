@@ -24,7 +24,7 @@ sub prepare {
 	die "no release paramater" if not $self->{release};
 	die "no progress parameter" if not $self->{progress};
 
-	$self->task_print( "Preparing " . $self->{release}->{name} );
+	$self->task_print( "Preparing " . $self->{release}->{name} . "\n" );
 
 	# Set up event handlers
 	Wx::Event::EVT_COMMAND(
@@ -45,8 +45,9 @@ sub on_progress {
 	my ( $main, $event ) = @_;
 	@_ = (); # hack to avoid "Scalars leaked"
 
-	my ($percent, $progress) = $event->GetData;
-	$progress->SetValue( $percent );
+	use Data::Dumper; print Dumper($event);
+	#my ($percent, $progress) = @{$event->GetData};
+	#$progress->SetValue( $percent );
 }
 
 #
@@ -59,14 +60,14 @@ sub download_six {
 	require URI;
 	my $uri = URI->new($url);
 
-	$self->task_print("Downloading $url...");
+	$self->task_print("Downloading $url...\n");
 
 	require Net::HTTP;
 	require HTTP::Status;
 	my $s = Net::HTTP->new( Host => $uri->host ) || die $@;
 	$s->write_request( GET => $uri->path . '?' . rand, 'User-Agent' => "Mozilla/5.0" );
 	my ( $code, $mess, %headers ) = $s->read_response_headers;
-	$self->task_print("Received $mess ($code)");
+	$self->task_print("Received $mess ($code)\n");
 	my $content_length = $headers{'Content-Length'};
 	if ( $code != HTTP::Status->HTTP_OK ) {
 		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
@@ -82,11 +83,11 @@ sub download_six {
 		$downloaded += $n;
 		
 		#Update the progress bar
-		$self->post_event( 
-			$PROGRESS_EVENT, 
-			int($downloaded / $content_length * 100),
-			$self->{progress},
-		);
+#		my %data : shared = (
+#			downloaded => int($downloaded / $content_length * 100),
+#			progress   => $self->{progress},
+#		);
+		$self->post_event( $PROGRESS_EVENT, $downloaded );
 		
 		#Added downloaded stuff...
 		$content .= $buf;
@@ -109,7 +110,7 @@ sub backup_six {
 	);
 	if ( -d $six_dir ) {
 		my $new_six_dir = $six_dir . "_" . $timestamp;
-		$self->task_print("Backing up old six directory to $new_six_dir");
+		$self->task_print("Backing up old six directory to $new_six_dir\n");
 		File::Copy::move( $six_dir, $new_six_dir )
 			or die "Cannot rename $six_dir to $new_six_dir\n";
 	}
@@ -122,7 +123,7 @@ sub unzip_six {
 	my ( $self, $content ) = @_;
 
 	# Write the zip file to a temporary file
-	$self->task_print( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
+	$self->task_print( sprintf( "Writing zip file (size: %d bytes)\n", length $content ) );
 	require File::Temp;
 	my $zip_temp = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
 	binmode( $zip_temp, ":raw" );
@@ -131,7 +132,7 @@ sub unzip_six {
 	close $zip_temp or die "Cannot close temporary file" . $zip_name . "\n";
 
 	# and then unzip it to destination
-	$self->task_print("Unzipping $zip_name into $six_dir");
+	$self->task_print("Unzipping $zip_name into $six_dir\n");
 	require Archive::Zip;
 	my $zip    = Archive::Zip->new();
 	my $status = $zip->read($zip_name);
@@ -154,6 +155,18 @@ sub run {
 
 	# We're done here...
 	$self->task_print( sprintf( "Finished installation in %d sec(s)", time - $clock ) );
+
+	return 1;
+}
+
+#
+# This is run in the main thread after the task is done.
+# It can update the GUI and do cleanup.
+#
+sub finish {
+	my ($self, $main) = @_;
+
+	print "Finished!\n";
 
 	return 1;
 }
