@@ -11,8 +11,8 @@ use File::Basename ();
 our $VERSION = '0.60';
 our @ISA     = 'Padre::Task';
 
-# set up a new event type
-our $SAY_EVENT : shared = Wx::NewEventType();
+# set up new event types
+our $PROGRESS_EVENT : shared = Wx::NewEventType();
 
 my $strawberry_dir = 'c:/strawberry/';
 my $six_dir        = 'c:/strawberry/six';
@@ -20,48 +20,33 @@ my $six_dir        = 'c:/strawberry/six';
 sub prepare {
 	my $self = shift;
 
-	$self->say( "Preparing " . $self->{release}->{name} );
+	# validate parameters...
+	die "no release paramater" if not $self->{release};
+	die "no progress parameter" if not $self->{progress};
 
-	# Set up the event handler
+	$self->task_print( "Preparing " . $self->{release}->{name} );
+
+	# Set up event handlers
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx->main,
 		-1,
-		$SAY_EVENT,
-		\&on_say,
+		$PROGRESS_EVENT,
+		\&on_progress,
 	);
+	
 
 	return;
 }
 
 #
-# The event handler
+# The PROGRESS_EVENT event handler
 #
-sub on_say {
+sub on_progress {
 	my ( $main, $event ) = @_;
 	@_ = (); # hack to avoid "Scalars leaked"
 
-	# Write a message to the beginning of the document
-	$main->output->AppendText( $event->GetData );
-}
-
-#
-# Says stuff :)
-#
-sub say {
-	my ( $self, $text ) = @_;
-	$text .= "\n";
-	print $text;
-	$self->post_event( $SAY_EVENT, $text );
-}
-
-#
-# Reports progress
-#
-sub on_progress {
-	my ( $self, $percent, $text ) = @_;
-
-	#XXX do some progress UI
-	$self->say($text);
+	my ($percent, $progress) = $event->GetData;
+	$progress->SetValue( $percent );
 }
 
 #
@@ -74,14 +59,14 @@ sub download_six {
 	require URI;
 	my $uri = URI->new($url);
 
-	$self->say("Downloading $url...");
+	$self->task_print("Downloading $url...");
 
 	require Net::HTTP;
 	require HTTP::Status;
 	my $s = Net::HTTP->new( Host => $uri->host ) || die $@;
 	$s->write_request( GET => $uri->path . '?' . rand, 'User-Agent' => "Mozilla/5.0" );
 	my ( $code, $mess, %headers ) = $s->read_response_headers;
-	$self->say("Received $mess ($code)");
+	$self->task_print("Received $mess ($code)");
 	my $content_length = $headers{'Content-Length'};
 	if ( $code != HTTP::Status->HTTP_OK ) {
 		die "Could not download:\n\t$url,\n\terror code: $mess $code\n";
@@ -95,12 +80,15 @@ sub download_six {
 		die "read failed: $!" unless defined $n;
 		last unless $n;
 		$downloaded += $n;
-		my $percent = $downloaded / $content_length * 100.0;
-		my $info    = sprintf(
-			"Downloaded %d/%d bytes (%2.1f)",
-			$downloaded, $content_length, $percent
+		
+		#Update the progress bar
+		$self->post_event( 
+			$PROGRESS_EVENT, 
+			int($downloaded / $content_length * 100),
+			$self->{progress},
 		);
-		$self->on_progress( $percent, $info );
+		
+		#Added downloaded stuff...
 		$content .= $buf;
 	}
 
@@ -121,7 +109,7 @@ sub backup_six {
 	);
 	if ( -d $six_dir ) {
 		my $new_six_dir = $six_dir . "_" . $timestamp;
-		$self->say("Backing up old six directory to $new_six_dir");
+		$self->task_print("Backing up old six directory to $new_six_dir");
 		File::Copy::move( $six_dir, $new_six_dir )
 			or die "Cannot rename $six_dir to $new_six_dir\n";
 	}
@@ -134,7 +122,7 @@ sub unzip_six {
 	my ( $self, $content ) = @_;
 
 	# Write the zip file to a temporary file
-	$self->say( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
+	$self->task_print( sprintf( "Writing zip file (size: %d bytes)", length $content ) );
 	require File::Temp;
 	my $zip_temp = File::Temp->new( SUFFIX => '-six.zip', CLEANUP => 0 );
 	binmode( $zip_temp, ":raw" );
@@ -143,7 +131,7 @@ sub unzip_six {
 	close $zip_temp or die "Cannot close temporary file" . $zip_name . "\n";
 
 	# and then unzip it to destination
-	$self->say("Unzipping $zip_name into $six_dir");
+	$self->task_print("Unzipping $zip_name into $six_dir");
 	require Archive::Zip;
 	my $zip    = Archive::Zip->new();
 	my $status = $zip->read($zip_name);
@@ -165,7 +153,7 @@ sub run {
 	$self->unzip_six($content);
 
 	# We're done here...
-	$self->say( sprintf( "Finished installation in %d sec(s)", time - $clock ) );
+	$self->task_print( sprintf( "Finished installation in %d sec(s)", time - $clock ) );
 
 	return 1;
 }
