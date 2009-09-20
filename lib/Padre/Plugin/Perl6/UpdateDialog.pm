@@ -16,6 +16,7 @@ use Padre::Wx::Icon ();
 use Class::XSAccessor accessors => {
 	_hbox            => '_hbox',            # horizontal box sizer
 	_list            => '_list',            # a list
+	_progress        => '_progress',        # a progress bar
 	_plugin          => '_plugin',          # Perl 6 plugin instance
 	_view_notes_btn  => '_view_notes_btn',  # View release notes button
 	_install_six_btn => '_install_six_btn', # Install Six button
@@ -93,6 +94,14 @@ sub _create_controls {
 			Wx::wxLB_SINGLE
 		)
 	);
+	
+	$self->_progress(
+		Wx::Gauge->new(
+			$self,
+			-1,
+			100,
+		)
+	);
 
 	my $file = File::Spec->catfile( $self->_plugin->_sharedir, 'icons', 'camelia-big.png' );
 	my $camelia = Wx::StaticBitmap->new( $self, -1, Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG ) );
@@ -109,6 +118,7 @@ sub _create_controls {
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$vbox->Add( $label,       0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$vbox->Add( $self->_list, 1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $self->_progress, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$vbox->Add( $btn_sizer,   0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $vbox,    0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $camelia, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
@@ -149,10 +159,18 @@ sub _setup_events {
 
 				$self->_install_six_btn->Enable(0);
 
-				#Start the update task in the background
-				require Padre::Plugin::Perl6::UpdateTask;
-				my $task = Padre::Plugin::Perl6::UpdateTask->new( release => $release );
-				$task->schedule;
+				eval {
+					#Start the update task in the background
+					require Padre::Plugin::Perl6::UpdateTask;
+					my $task = Padre::Plugin::Perl6::UpdateTask->new( 
+						release => $release,
+						progress  => $self->_progress,
+					);
+					$task->schedule;
+				};
+				if($@) {
+					$self->main->error("Failed to start installation:\n$@");
+				}
 			}
 		},
 	);
