@@ -14,13 +14,16 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// To use ShellExecute
 	LoadLibrary("shell32");
 
+	char params[MAX_PATH] = "c:\\strawberry\\perl\\bin\\padre ";
+	strncat(params, lpCmdLine, MAX_PATH);
+
 	// Open Padre now..
 	HINSTANCE instance;
 	ShellExecute(
 		NULL,
 		"open",
 		"wperl.exe",
-		"c:\\strawberry\\perl\\bin\\padre",
+		params,
 		NULL,
 		SW_SHOWMAXIMIZED
 	);
