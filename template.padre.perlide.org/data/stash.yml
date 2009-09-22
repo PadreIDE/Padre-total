@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 22
+        url: http://use.perl.org/~Alias/journal/39661
+        title: How I Work - Software Design as a weak Scientific Process
+        comment: by Adam Kennedy
       - date: 2009 September 19
         url: http://ahmadzawawi.blogspot.com/2009/09/new-padre-perl-six-updater.html
         title: The New Padre Perl Six Updater
