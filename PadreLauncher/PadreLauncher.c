@@ -58,35 +58,46 @@ int WINAPI WinMain(
 
 	if (!RegisterClassEx(&wce)) return 0; 
 
-	HWND hWnd = CreateWindowEx(
-	0,                      // Ex Styles
-	"ADPWinClass",
-	"ADP GmbH",
-	 WS_OVERLAPPEDWINDOW,
-	 CW_USEDEFAULT,  // x
-	 CW_USEDEFAULT,  // y
-	 CW_USEDEFAULT,  // Height
-	 CW_USEDEFAULT,  // Width
-	 NULL,           // Parent Window
-	 NULL,           // Menu, or windows id if child
-	 hInstance,      // 
-	 NULL            // Pointer to window specific data
+	LoadLibrary("shell32");
+
+	HINSTANCE instance;
+	ShellExecute(
+		NULL,
+		"open",
+		"wperl.exe",
+		"c:\\strawberry\\perl\\bin\\padre",
+		NULL,
+		SW_SHOWMAXIMIZED
 	);
+	// HWND hWnd = CreateWindowEx(
+	// 0,                      // Ex Styles
+	// "ADPWinClass",
+	// "ADP GmbH",
+	 // WS_OVERLAPPEDWINDOW,
+	 // CW_USEDEFAULT,  // x
+	 // CW_USEDEFAULT,  // y
+	 // CW_USEDEFAULT,  // Height
+	 // CW_USEDEFAULT,  // Width
+	 // NULL,           // Parent Window
+	 // NULL,           // Menu, or windows id if child
+	 // hInstance,      // 
+	 // NULL            // Pointer to window specific data
+	// );
 
-	ShowWindow( hWnd, nCmdShow );
+	// ShowWindow( hWnd, nCmdShow );
 
-	MSG msg;
-	int r;
-	while ((r = GetMessage(&msg, NULL, 0, 0 )) != 0) { 
-		if (r == -1) {
-			// Error!
-		}
-		else {
-			TranslateMessage(&msg); 
-			DispatchMessage(&msg); 
-		}
-	} 
+	// MSG msg;
+	// int r;
+	// while ((r = GetMessage(&msg, NULL, 0, 0 )) != 0) { 
+		// if (r == -1) {
+			// // Error!
+		// }
+		// else {
+			// TranslateMessage(&msg); 
+			// DispatchMessage(&msg); 
+		// }
+	// } 
 
 	// The application's return value
-	return msg.wParam;
+	return 0;
 }
