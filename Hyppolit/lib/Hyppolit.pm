@@ -29,7 +29,7 @@ use 5.008005;
 
 
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Exporter';
 
@@ -38,7 +38,9 @@ use POE::Component::IRC::State;
 use POE::Component::IRC::Plugin::AutoJoin;
 use POE::Component::IRC::Plugin::Logger;
 use POE::Component::IRC::Plugin::FollowTail;
+use DBI;
 
+use Data::Dumper;
 
 use YAML::Syck qw(LoadFile DumpFile);
 my $svnlook = '/usr/bin/svnlook';
@@ -46,6 +48,7 @@ my $svnlook = '/usr/bin/svnlook';
 my @methods = qw(
 	_start irc_join irc_public irc_msg
 	irc_tail_input irc_tail_error irc_tail_reset
+	trac_check
 	);
 our @EXPORT = @methods;
 my $config;
@@ -71,9 +74,8 @@ sub run {
 		not @{ $config->{channels} }) {
 		die "No channels defined\n";
 	}
-	use Data::Dumper;
-	print Dumper $config;
 
+	print Dumper $config;
 
 	POE::Session->create(
 		package_states => [
@@ -84,9 +86,12 @@ sub run {
 	$poe_kernel->run();
 }
 
+# so that it is accessable outside of the PoCo::IRC
+my $irc;
+my $dbh;
 
 sub _start {
-	my $irc = POE::Component::IRC::State->spawn(
+	$irc = POE::Component::IRC::State->spawn(
 		Nick   => $config->{nick},
 		Server => $config->{server},
 	);
@@ -104,25 +109,30 @@ sub _start {
 # Restricted => 0,   #did not help
 			Sort_by_date => 1,
 		));
+		system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
 	}
-	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
-    if ($config->{inputfile}) {
+	if ($config->{inputfile}) {
 		$irc->plugin_add( 'FollowTail' => POE::Component::IRC::Plugin::FollowTail->new( 
 			filename => $config->{inputfile},
 		));
 	}
 
-
 	$irc->yield(register => 'join');
 	#$irc->yield(register => 'all');
 	$irc->yield('connect');
-	# irc_public
+
+	if ($config->{tracdb}) {
+		$dbh = DBI->connect("dbi:SQLite:dbname=".$config->{tracdb},"","");
+		$_[ KERNEL ]->delay(trac_check => 5);
+	}
+
 }
 
 sub irc_public {
 	my $nick = (split /!/, $_[ARG0])[0];
 	my $channel = $_[ARG1];
-	my $irc = $_[SENDER]->get_heap();
+# now unnecessary
+#	my $irc = $_[SENDER]->get_heap();
 
 	my $text = $_[ARG2];
 	
@@ -166,6 +176,19 @@ sub irc_public {
 		}
 	}
 
+	# regexp need adjusting, i'm bad at it ;)...
+	if ($text =~ /\#(\d+)/x) {
+		if ($1+0 > 0) {
+			my $text = trac_ticket_text($1);
+			$irc->yield(privmsg => $channel, $text ) if $text;
+		}
+	}
+
+	# regexp need adjusting, i'm bad at it ;)...
+	if ($text =~ /r(\d+)/x) {
+		# no check at all... TODO
+		$irc->yield(privmsg => $channel, trac_changeset_text($1)) if $1+0 > 0;
+	}
 
 	# TODO karma only users who are around ?
 	# record karma
@@ -188,7 +211,8 @@ sub irc_public {
 sub irc_msg {
 	my $nick = (split /!/, $_[ARG0])[0];
 	#my $channel = $_[ARG1];
-	my $irc = $_[SENDER]->get_heap();
+# now unnecessary
+#	my $irc = $_[SENDER]->get_heap();
 
 	my $text = $_[ARG2];
 
@@ -198,7 +222,8 @@ sub irc_msg {
 sub irc_join {
 	my $nick = (split /!/, $_[ARG0])[0];
 	my $channel = $_[ARG1];
-	my $irc = $_[SENDER]->get_heap();
+# now unnecessary
+#	my $irc = $_[SENDER]->get_heap();
 
 	# only send the message if we were the one joining
 	if ($nick eq $irc->nick_name()) {
@@ -220,13 +245,15 @@ sub set_op {
 	}
 	print "Giving op to '$nick' on '$channel' ($irc)\n";
 	$irc->yield(mode => $channel => "+o $nick");
-	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
+# its already at another place, should be removed here?
+#	system "chmod -R 755 $config->{logdir}"; # TODO move to a better place
 }
 
 sub _default {
 	my $nick = (split /!/, $_[ARG0])[0];
 	print "Default: $nick ", scalar(@_), "\n";
 }
+
 sub irc_all {
 	my $nick = (split /!/, $_[ARG0])[0];
 	print "All: $nick ", scalar(@_), "\n";
@@ -263,7 +290,8 @@ sub irc_tail_error {
 	my ($kernel, $sender, $filename, $errnum, $errstring)
 		= @_[KERNEL, SENDER, ARG0 .. ARG2];
 	$kernel->post( $sender, 'privmsg', $_, "SVN ERROR: $errnum $errstring" ) for @{ $config->{channels} };
-	my $irc = $sender->get_heap();
+# now unnecessary
+#	my $irc = $sender->get_heap();
 	$irc->plugin_del( 'FollowTail' );
 	return;
 }
@@ -274,6 +302,51 @@ sub irc_tail_reset {
 	return;
 }
 
+sub trac_changeset_text {
+	my $changeset_id = shift;
+	return "Changeset #".$changeset_id." http://padre.perlide.org/trac/changeset/".$changeset_id;
+}
+
+sub trac_ticket_text {
+	return if !$config->{tracdb};
+	my $ticket_id = shift;
+	my $ticket = $dbh->selectrow_hashref("
+		select * from ticket
+			where id = ?
+	", {}, $ticket_id);
+	return if !$ticket;
+	my $ticket_comment = $dbh->selectrow_hashref("
+		select oldvalue from ticket_change
+			where ticket = ? and field = 'comment'
+			order by time desc
+	", {}, $ticket_id);
+	my $url = "http://padre.perlide.org/trac/ticket/".$ticket_id;
+	$url .= "#comment:".$ticket_comment->{oldvalue} if $ticket_comment and $ticket_comment->{oldvalue};
+	return "#".$ticket_id.": ".$ticket->{summary}." (".$ticket->{status}." ".$ticket->{type}.") [ ".$url." ]";
+}
+
+sub trac_check {
+	my $trac_check_time = time;
+	my $last_trac_check = $config->{last_trac_check};
+
+	my $tickets = $dbh->selectall_hashref("
+		select id from ticket
+			where changetime > ? and changetime <= ?
+			order by changetime asc
+	", "id", {}, $last_trac_check, $trac_check_time);
+
+	for my $ticket_id (keys %{$tickets}) {
+		my $text = trac_ticket_text($ticket_id);
+		if ($text) {
+			$irc->yield( privmsg => $_, $text) for @{ $config->{channels} };
+		}
+	}
+
+	$config->{last_trac_check} = $trac_check_time;
+	save_config;
+	$_[KERNEL]->delay(trac_check => 30);
+	return;
+}
 
 1;
 

@@ -12,6 +12,8 @@ requires       'POE'                                   => '1.003';
 requires       'POE::Component::IRC::State'            => '2.52';
 requires       'POE::Component::IRC::Plugin::AutoJoin' => '1.2';
 requires       'YAML::Syck'                            => '1.0';
+requires       'DBD::SQLite'                           => '1.25';
+requires       'DBI'                                   => '1.609';
 
 no_index       'directory'                => qw{ t xt eg share inc privinc };
 #homepage       'http://padre.perlide.org/';

@@ -1,5 +1,10 @@
 Changes of Hyppolit the IRC bot
 
+v0.05 2009.09.23
+	Added tracdb config parameter for parsing of tracdb
+	Added reacting on "#<ticketnumber>" on channel
+	Added (primitive) reacting on "r<changeset>" on channel
+
 v0.04 2009.03.08
 	Fix karma regex
 	count commits as karma as well
