@@ -29,7 +29,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//At this point we should check if padre script exists or not
 	if(_access(strWPerl,0)) {
-		MessageBox(NULL, "Cannot find wperl.exe in the current directory", NULL, MB_OK);
+		MessageBox(NULL, "Cannot find 'wperl.exe'", NULL, MB_OK);
 		return 1;
 	}
 
@@ -41,7 +41,7 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	//At this point we should check if padre script exists or not
 	if(_access(strPadre,0)) {
-		MessageBox(NULL, "Cannot find Padre's script in the current directory", NULL, MB_OK);
+		MessageBox(NULL, "Cannot find 'padre'", NULL, MB_OK);
 		return 1;
 	}
 
