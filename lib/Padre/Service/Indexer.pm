@@ -17,6 +17,7 @@ use Class::XSAccessor
 		index_class => 'index_class',
 		index_args => 'index_args',
 		index => 'index',
+		indexer=>'indexer',
 		runmode => 'runmode',
 		directory_list => 'directory_list',
 		match_regex   => 'match_regex',
@@ -73,12 +74,12 @@ sub start {
 		return;
 	}
 	my $index = $index_class->new( @{ $self->index_args } );
-	
+	$self->{index} = $index;	
 	if ( $self->runmode eq 'clobber' ) {
-		$self->{index} = $index->indexer( clobber=>1 );
+		$self->{indexer} = $index->indexer( clobber=>1 );
 	}
 	else {
-		$self->{index} = $index->indexer;
+		$self->{indexer} = $index->indexer;
 	}
 	
 	
@@ -96,25 +97,53 @@ sub service_loop {
 	my $self = shift;
 	
 	my $total = $self->{progress_total};
-	my $idx = $self->index;
+	my $idx = $self->indexer;
 
 	my $file = shift @{ $self->{incoming_buffer} };
 	return $self->shutdown() unless $file;
-	
-	my $doc = $self->generate_document( $file );
-	
+
+	my $doc;
+	if ( $self->runmode eq 'clobber' ) {
+		$doc = $self->generate_document($file);
+	}
+	else {
+
+		my $modified = eval {  (stat($file))[9]  };
+		my $lookup = $self->index->search($file);
+		warn "File $file - modified $modified - $lookup", $/;
+		my $doc;
+
+		unless ($lookup->total_hits)  {
+			# no lookup for this file - new!
+			$doc = $self->generate_document($file);
+		}
+		else {
+			my $hit = $lookup->next ;
+			my $fields = $hit->get_fields;
+			if ( $fields->{file} eq $file 
+			&& $fields->{modified} < $modified ) {
+				warn "Replace doc - Modified! " , $fields->{modified}, $/;
+				$idx->delete_by_term( field=>'file',term => $file );
+				$doc = $self->generate_document( $file );
+			}
+			elsif ( $fields->{file} eq $file ) {
+				# "No changes to $file",$/;
+			}
+		}
+	}
 	$self->{progress}++;
 	
 	if ( $doc ) {
 		$idx->add_doc( $doc );
 		$self->post_event( $self->{PROGRESS_EVENT} , 
 			sprintf( '%4f;%s' , (100*$self->{progress} / $total), $doc->{title})
-		);
+		) if $self->{PROGRESS_EVENT};
 	}
-	else { $self->post_event( $self->{PROGRESS_EVENT} ,
+	else { 
+		$self->post_event( $self->{PROGRESS_EVENT} ,
 			sprintf( '%4f;%s', (100*$self->{progress}/$total), "Skip: $file" )
-		);
-		warn "SKIP: $file\n";
+		) if $self->{PROGRESS_EVENT};
+		#warn "SKIP: $file\n";
 	}
 	
 	return;
@@ -122,7 +151,7 @@ sub service_loop {
 
 sub shutdown {
 	my $self = shift;
-	$self->index->commit if $self->index;
+	$self->indexer->commit if $self->indexer;
 	$self->SUPER::shutdown(@_);	
 }
 

@@ -177,7 +177,9 @@ sub new {
 	Wx::Event::EVT_MENU( $self, Wx::wxID_CLOSE, sub { $_[0]->_close_tab(); } );
 	Wx::Event::EVT_MENU( $self, Wx::wxID_OPEN,  sub { $_[0]->_open_doc(); } );
 
-	Wx::Event::EVT_MENU( $self, $rebuildID , sub { $_[0]->_rebuild_index(); } );
+	Wx::Event::EVT_MENU( $self, $rebuildID , sub { $_[0]->_rebuild_index('clobber'); } );
+        Wx::Event::EVT_MENU( $self, $updateID , sub { $_[0]->_rebuild_index('update'); } );
+
 	
 	# not sure about this but we want to throw the close X event ot _close so it gets
 	# rid of a busy cursor if it's busy..
@@ -288,9 +290,11 @@ sub ResolveRef {
 	my ( $self, $ref ) = @_;
 	if ( $self->index ) {
 		my $hits = $self->index->search( query => $ref );
-		warn "Index hits [$ref] " . $hits->total_hits;
+		# "Index hits [$ref] " . $hits->total_hits;
 		if ($hits->total_hits) {
-			warn Dumper $hits->next;
+			my $hit = $hits->next;
+			$self->display( $hits->{payload}, $ref );
+			return;
 		}
 		
 	}
@@ -517,6 +521,7 @@ sub _open_doc {
 
 sub _rebuild_index {
 	my $self = shift;
+	my $mode = shift;
 	my $dialog = Wx::ProgressDialog->new( 'DocBrowser index rebuild',
                                           'Starting indexer',
                                           100, $self,
@@ -543,7 +548,7 @@ sub _rebuild_index {
 	my $i = Padre::Service::Indexer::DocBrowser->new(
 		index_class => 'Padre::Index::Kinosearch',
 		index_args=>[qw( index_directory /tmp/padre-index )],
-		runmode => 'clobber',
+		runmode => $mode,
 		directory_list => [ grep /^\// , @INC  ],
 		match_regex=> qr/\.(pl|pm|pod)$/,
 		docprovider_class => 'Padre::DocBrowser::POD',

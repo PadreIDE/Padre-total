@@ -1412,7 +1412,7 @@ sub show_output {
 	$self->config->write;
 
 	if ($on) {
-		$self->bottom->show( $self->output );
+		$self->bottom->show( $self->output, sub { $self->show_output(0); } );
 	} else {
 		$self->bottom->hide( $self->output );
 	}
@@ -1445,7 +1445,7 @@ sub show_syntax {
 	}
 
 	if ($on) {
-		$self->bottom->show($syntax);
+		$self->bottom->show( $syntax, sub { $self->show_syntax(0); } );
 		$syntax->start unless $syntax->running;
 	} else {
 		$self->bottom->hide( $self->syntax );
@@ -1616,8 +1616,19 @@ sub on_run_tests {
 	chdir $project_dir;
 	require File::Which;
 	my $prove = File::Which::which('prove');
-	if (Padre::Util::WIN32) {
-		$self->run_command(qq{"$prove" -b "$project_dir\t"});
+	if (Padre::Constant::WIN32) {
+
+		# This is needed since prove does not work with path containing
+		# spaces. Please see ticket:582
+		require File::Temp;
+		require File::Glob::Windows;
+
+		my $tempfile = File::Temp->new( UNLINK => 0 );
+		print $tempfile join( "\n", File::Glob::Windows::glob("$project_dir/t/*.t") );
+		close $tempfile;
+
+		my $things_to_test = $tempfile->filename;
+		$self->run_command(qq{"$prove" - -b < "$things_to_test"});
 	} else {
 		$self->run_command("$prove -b $project_dir/t");
 	}
@@ -1660,8 +1671,17 @@ sub on_run_this_test {
 	chdir $project_dir;
 	require File::Which;
 	my $prove = File::Which::which('prove');
-	if (Padre::Util::WIN32) {
-		$self->run_command(qq{"$prove" -bv "$filename"});
+	if (Padre::Constant::WIN32) {
+
+		# This is needed since prove does not work with path containing
+		# spaces. Please see ticket:582
+		require File::Temp;
+		my $tempfile = File::Temp->new( UNLINK => 0 );
+		print $tempfile $filename;
+		close $tempfile;
+
+		my $things_to_test = $tempfile->filename;
+		$self->run_command(qq{"$prove" - -bv < "$things_to_test"});
 	} else {
 		$self->run_command("$prove -bv $filename");
 	}
@@ -1688,7 +1708,7 @@ sub run_command {
 	# the external execution.
 	my $config = $self->config;
 	if ( $config->run_use_external_window ) {
-		if (Padre::Util::WIN32) {
+		if (Padre::Constant::WIN32) {
 			my $title = $cmd;
 			$title =~ s/"//g;
 			system qq(start "$title" cmd /C "$cmd & pause");
@@ -1743,6 +1763,7 @@ sub run_command {
 			sub {
 				$_[1]->Skip(1);
 				$_[1]->GetProcess->Destroy;
+				delete $self->{command};
 				$self->menu->run->enable;
 				$_[0]->errorlist->populate;
 			},
@@ -1865,8 +1886,8 @@ sub debug_perl {
 	# $self->_setup_debugger($host, $port);
 	local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
 
-	# Run with the same Perl that launched Padre
-	my $perl = Padre::Perl::perl();
+	# Run with console Perl to prevent unexpected results under wperl
+	my $perl = Padre::Perl::cperl();
 	$self->run_command(qq["$perl" -d "$filename"]);
 
 }
@@ -2665,6 +2686,7 @@ Create a new tab in the notebook, and return its id (an integer).
 
 sub create_tab {
 	my ( $self, $editor, $title ) = @_;
+	$title ||= '(' . Wx::gettext('Unknown') . ')';
 	$self->notebook->AddPage( $editor, $title, 1 );
 	$editor->SetFocus;
 	my $id = $self->notebook->GetSelection;
@@ -3265,11 +3287,20 @@ sub close_all {
 	my $self  = shift;
 	my $skip  = shift;
 	my $guard = $self->freezer;
-	foreach my $id ( reverse $self->pageids ) {
-		if ( defined $skip and $skip == $id ) {
+
+	my @pages = reverse $self->pageids;
+
+	my $progress = Padre::Wx::Progress->new(
+		$self, Wx::gettext('Close all'), $#pages,
+		lazy => 1
+	);
+
+	foreach my $no ( 0 .. $#pages ) {
+		$progress->update( $no, ( $no + 1 ) . '/' . scalar(@pages) );
+		if ( defined $skip and $skip == $pages[$no] ) {
 			next;
 		}
-		$self->close($id) or return 0;
+		$self->close( $pages[$no] ) or return 0;
 	}
 	$self->refresh;
 	return 1;

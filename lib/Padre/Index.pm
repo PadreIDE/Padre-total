@@ -57,13 +57,13 @@ same terms as Perl 5 itself.
 	
 sub index_fields { 
 	( 
-		title 		=> 'text',
-		content 	=> 'text',
-		keywords	=> 'text',
-		modified 	=> 'number',
-		resource 	=> 'static',
-		file 		=> 'static',
-		payload		=> 'blob',
+		title 		=> ['text',4],
+		content 	=> ['text',2],
+		keywords	=> ['text',1],
+		modified 	=> ['number',1],
+		resource 	=> ['static',1],
+		file 		=> ['static',1],
+		payload		=> ['blob',1],
 	)
 };
 

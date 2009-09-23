@@ -7,15 +7,13 @@ use File::Copy;
 use File::Spec     ();
 use File::Basename ();
 use Params::Util qw{_INSTANCE};
-use Padre::Current ();
-use Padre::Util    ();
-use Padre::Wx      ();
+use Padre::Current  ();
+use Padre::Util     ();
+use Padre::Wx       ();
+use Padre::Constant ();
 
 our $VERSION = '0.46';
 our @ISA     = 'Wx::TreeCtrl';
-
-use constant IS_MAC => !!( $^O eq 'darwin' );
-use constant IS_WIN32 => !!( $^O =~ /^MSWin/ or $^O eq 'cygwin' );
 
 # Creates a new Directory Browser object
 sub new {
@@ -746,16 +744,26 @@ sub _on_tree_item_menu {
 	);
 
 	# Move item to trash
-	# Note: File::Remove->trash() only works in Win? and Mac
+	# Note: File::Remove->trash() only works on Mac
 	# Please see ticket:553 (http://padre.perlide.org/trac/ticket/553)
-	if (IS_MAC) {
+	if ( Padre::Constant::MAC or Padre::Constant::WIN32 ) {
 		my $trash = $menu->Append( -1, Wx::gettext('Move to trash') );
 		Wx::Event::EVT_MENU(
 			$self, $trash,
 			sub {
 				eval {
-					require File::Remove;
-					File::Remove->trash($selected_path);
+					if (Padre::Constant::WIN32)
+					{
+
+						# WIN32
+						require Padre::Util::Win32;
+						Padre::Util::Win32::Recycle($selected_path);
+					} else {
+
+						# MAC
+						require File::Remove;
+						File::Remove->trash($selected_path);
+					}
 				};
 				if ($@) {
 					my $error_msg = $@;

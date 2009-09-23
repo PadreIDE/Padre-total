@@ -15,6 +15,10 @@ use Padre::Document::Perl::Beginner;
 our $VERSION = '0.46';
 our @ISA     = 'Padre::Document';
 
+
+
+
+
 #####################################################################
 # Padre::Document::Perl Methods
 
@@ -132,8 +136,37 @@ sub set_highlighter {
 }
 
 
+
+
+
 #####################################################################
 # Padre::Document Document Analysis
+
+sub guess_filename {
+	my $self = shift;
+	my $text = $self->text_get;
+
+	# Is this a script?
+	if ( $text =~ /^\#\![^\n]*\bperl\b/s ) {
+
+		# It's impossible to predict the name of a script in
+		# advance, but lets default to a standard "script.pl"
+		return 'script.pl';
+	}
+
+	# Is this a module
+	if ( $text =~ /\bpackage\s*([\w\:]+)/s ) {
+
+		# Take the last section of the package name, and use that
+		# as the file.
+		my $name = $1;
+		$name =~ s/.*\://;
+		return "$name.pm";
+	}
+
+	# Otherwise, no idea
+	return undef;
+}
 
 my $keywords;
 
@@ -175,9 +208,9 @@ sub get_command {
 		? $self->store_in_tempfile
 		: $self->filename;
 
-	# Run with the same Perl that launched Padre
+	# Run with console Perl to prevent unexpected results under wperl
 	# TODO: get preferred Perl from configuration
-	my $perl = Padre::Perl::perl();
+	my $perl = Padre::Perl::cperl();
 
 	# Set default arguments
 	my %run_args = (
@@ -441,6 +474,10 @@ sub find_variable_declaration {
 	return ();
 }
 
+
+
+
+
 #####################################################################
 # Padre::Document Document Manipulation
 
@@ -651,18 +688,25 @@ sub autocomplete {
 sub newline_keep_column {
 	my $self = shift;
 
-	my $editor = $self->editor;
+	my $editor = $self->editor or return;
 	my $pos    = $editor->GetCurrentPos;
 	my $line   = $editor->LineFromPosition($pos);
 	my $first  = $editor->PositionFromLine($line);
 	my $col    = $pos - $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+	my $text   = $editor->GetTextRange( $first, ( $pos - $first ) );
 
 	$editor->AddText( $self->newline );
 
 	$pos   = $editor->GetCurrentPos;
 	$first = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
-	my $col2 = $pos - $first;
-	$editor->AddText( ' ' x ( $col - $col2 ) );
+
+	#	my $col2 = $pos - $first;
+	#	$editor->AddText( ' ' x ( $col - $col2 ) );
+
+	# TODO: Remove the part made by auto-ident before addtext:
+	$text =~ s/[^\s\t\r\n]/ /g;
+	$editor->AddText($text);
+
 	$editor->SetCurrentPos( $first + $col );
 
 	return 1;

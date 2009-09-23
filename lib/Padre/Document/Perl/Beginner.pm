@@ -132,10 +132,10 @@ Warn about Perl-standard package names being reused
   
 =cut
 
-# TODO: Change this to
-#	if ( $text =~ /[^\{\;][\s\t\r\n]*chomp\b/ ) {
-# as soon as this module could set the cursor to the occurence line
-# because it may trigger a higher amount of false positives.
+	# TODO: Change this to
+	#	if ( $text =~ /[^\{\;][\s\t\r\n]*chomp\b/ ) {
+	# as soon as this module could set the cursor to the occurence line
+	# because it may trigger a higher amount of false positives.
 	if ( $text =~ /(print|[\=\.\,])[\s\t\r\n]*chomp\b/ ) {
 		$self->{error} = "chomp doesn't return the chomped value, it modifies the variable given as argument.";
 		return;
@@ -207,11 +207,13 @@ Pipe | in open() not at the end or the beginning.
 
 =item *
 
-Regex starting witha a quantifyer
+Regex starting witha a quantifier such as 
+
+  /+.../
 
 =cut
 
-	if ( $text =~ /\=\~[\s\t\r\n]*\/\^?[\+\*\?\{]/ ) {
+	if ( $text =~ m{\=\~  [\s\t\r\n]*  \/ \^?  [\+\*\?\{] }x ) {
 		$self->{error} =
 			"A regular expression starting with a quantifier ( + * ? { ) doesn't make sense, you may want to escape it with a \\.";
 		return;

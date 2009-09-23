@@ -30,18 +30,20 @@ same terms as Perl 5 itself.
 
 # Create a Schema which defines index fields.
 
-sub typemap {
-    my $polyanalyzer =  KinoSearch::Analysis::PolyAnalyzer->new( language=>'en' );
-    #warn $polyanalyzer;
-
+{
+my $polyanalyzer =  KinoSearch::Analysis::PolyAnalyzer->new( language=>'en' );
     my %typemap = (
-        static => KinoSearch::FieldType::StringType->new(),
-        number => KinoSearch::FieldType::StringType->new(),
-        text   => KinoSearch::FieldType::FullTextType->new(analyzer => $polyanalyzer ),
-        blob   => KinoSearch::FieldType::BlobType->new(),
+        static => sub {KinoSearch::FieldType::StringType->new(@_) },
+        number => sub {KinoSearch::FieldType::StringType->new(@_)},
+        text   => sub {KinoSearch::FieldType::FullTextType->new(@_,analyzer => $polyanalyzer )},
+        blob   => sub {KinoSearch::FieldType::BlobType->new(@_)},
     );    
     
-    %typemap;
+sub typemap {
+    my ($class,$type,@args) = @_;
+    $typemap{$type}->(@args);
+}
+
 }
 
 sub schema { 
@@ -49,9 +51,10 @@ sub schema {
     my $schema = KinoSearch::Schema->new;
 
     my %fields = $class->index_fields;
-    my %typemap = $class->typemap;
-    while ( my ($field,$type) = each %fields ) {
-        my $kinotype = $typemap{$type};
+    while ( my ($field,$attrs) = each %fields ) {
+	my ($type,$boost) = @$attrs;
+        my $kinotype = $class->typemap($type) ;
+	$kinotype->set_boost($boost);
         confess "Cannot map index_field type '$type'" unless $kinotype;
         $schema->spec_field( name => $field , type => $kinotype );
     }
@@ -87,7 +90,7 @@ sub index {
     $self->{_reader} = $search;
 }
 
-sub searcher { $_[0]->index }
+sub searcher { eval { $_[0]->index  };}
 
 #sub query { shift->index->hits( query => shift ) };
 
@@ -97,7 +100,7 @@ sub search {
     my $parser = KinoSearch::QueryParser->new(
                schema         => $self->schema,    # required
                #fields         => ['title','keywords'],             # default: indexed fields
-               default_boolop => 'AND',                    # default: 'OR'
+               #default_boolop => 'AND',                    # default: 'OR'
            );
     my $q = $parser->parse( join(' ', @query)  ) ;
     return $self->searcher->hits( query => $q );

@@ -183,7 +183,6 @@ use Class::XSAccessor getters => {
 	get_highlighter  => 'highlighter',
 	},
 	setters => {
-	_set_filename    => 'filename',    # TODO temporary hack
 	set_newline_type => 'newline_type',
 	set_mimetype     => 'mimetype',
 	set_errstr       => 'errstr',
@@ -213,11 +212,15 @@ sub new {
 	if ( $self->{filename} ) {
 		$self->{file} = Padre::File->new( $self->{filename} );
 
+		# The Padre::File - module knows how to format the filename to the right
+		# syntax to correct (for example) .//file.pl to ./file.pl)
+		$self->{filename} = $self->{file}->{Filename};
+
 		if ( $self->{file}->exists ) {
 
 			# Test script must be able to pass an alternate config object:
 			my $config = $self->{config} || Padre->ide->config;
-			if ( $self->{file}->size > $config->editor_file_size_limit ) {
+			if ( defined( $self->{file}->size ) and ( $self->{file}->size > $config->editor_file_size_limit ) ) {
 				$self->error(
 					sprintf(
 						Wx::gettext(
@@ -336,22 +339,13 @@ sub last_sync {
 sub basename {
 	my $self = shift;
 	return $self->{file}->basename if defined( $self->{file} );
-	return;
+	return $self->{filename};
 }
 
 sub dirname {
 	my $self = shift;
 	return $self->{file}->dirname if defined( $self->{file} );
 	return;
-}
-
-#left here a it is used in many places. Maybe we need to remove this sub.
-sub guess_mimetype {
-	my $self = shift;
-	my $text = $self->{original_content};
-	my $file = $self->file;
-
-	return Padre::MimeTypes->guess_mimetype( $text, $file );
 }
 
 # For ts without a newline type
@@ -382,6 +376,9 @@ button. No return value.
 sub error {
 	Padre->ide->wx->main->message( $_[1], Wx::gettext('Error') );
 }
+
+
+
 
 
 #####################################################################
@@ -517,13 +514,11 @@ sub load_file {
 	return 1;
 }
 
-#
 # New line type can be one of these values:
 # WIN, MAC (for classic Mac) or UNIX (for Mac OS X and Linux/*BSD)
 # Special cases:
 # 'Mixed' for mixed end of lines,
 # 'None' for one-liners (no EOL)
-#
 sub newline_type {
 	my $self = shift;
 	return $self->{newline_type} or $self->_get_default_newline_type;
@@ -542,6 +537,24 @@ sub newline {
 	return "\n";
 }
 
+sub _set_filename {
+	my $self     = shift;
+	my $filename = shift;
+
+	if ( !defined($filename) ) {
+		warn 'Request to set filename to undef from ' . join( ',', caller );
+		return 0;
+	}
+
+	return 1 if defined( $self->{filename} ) and ( $self->{filename} eq $filename );
+
+	undef $self->{file}; # close file object
+	$self->{file} = Padre::File->new($filename);
+
+	# Padre::File reformats filenames to the protocol/OS specific format, so use this:
+	$self->{filename} = $self->{file}->{Filename};
+}
+
 sub save_file {
 	my ($self) = @_;
 	$self->set_errstr('');
@@ -551,6 +564,22 @@ sub save_file {
 	if ( !defined($file) ) {
 		$file = Padre::File->new( $self->filename );
 		$self->{file} = $file;
+	}
+
+	# This is just temporary for security and should prevend data loss:
+	if ( $self->{filename} ne $file->{Filename} ) {
+		my $ret = Wx::MessageBox(
+			sprintf(
+				Wx::gettext('Visual filename %s does not match the internal filename %s, do you want to abort saving?'),
+				$self->{filename},
+				$file->{Filename}
+			),
+			Wx::gettext("Save Warning"),
+			Wx::wxYES_NO | Wx::wxCENTRE,
+			Padre->ide->wx->main,
+		);
+
+		return 0 if $ret == Wx::wxYES;
 	}
 
 	# not set when first time to save
@@ -629,6 +658,10 @@ sub remove_tempfile {
 	return;
 }
 
+
+
+
+
 #####################################################################
 # Basic Content Manipulation
 
@@ -657,9 +690,6 @@ sub text_with_one_nl {
 	$text =~ s/$nlchar/\n/g;
 	return $text;
 }
-
-
-# --
 
 #
 # $doc->store_cursor_position()
@@ -692,6 +722,10 @@ sub restore_cursor_position {
 	$editor->SetCurrentPos($pos);
 	$editor->SetSelection( $pos, $pos );
 }
+
+
+
+
 
 #####################################################################
 # GUI Integration Methods
@@ -794,56 +828,6 @@ sub set_indentation_style {
 	return ();
 }
 
-=head2 guess_indentation_style
-
-Automatically infer the indentation style of the document using
-L<Text::FindIndent>.
-
-Returns a hash reference containing the keys C<use_tabs>,
-C<tabwidth>, and C<indentwidth>. It is suitable for passing
-to C<set_indendentation_style>.
-
-=cut
-
-sub guess_indentation_style {
-	my $self = shift;
-
-	require Text::FindIndent;
-	my $indentation = Text::FindIndent->parse( $self->text_get );
-
-	my $style;
-	if ( $indentation =~ /^t\d+/ ) { # we only do ONE tab
-		$style = {
-			use_tabs    => 1,
-			tabwidth    => 8,
-			indentwidth => 8,
-		};
-	} elsif ( $indentation =~ /^s(\d+)/ ) {
-		$style = {
-			use_tabs    => 0,
-			tabwidth    => 8,
-			indentwidth => $1,
-		};
-	} elsif ( $indentation =~ /^m(\d+)/ ) {
-		$style = {
-			use_tabs    => 1,
-			tabwidth    => 8,
-			indentwidth => $1,
-		};
-	} else {
-
-		# fallback
-		my $config = Padre->ide->config;
-		$style = {
-			use_tabs    => $config->editor_indent_tab,
-			tabwidth    => $config->editor_indent_tab_width,
-			indentwidth => $config->editor_indent_width,
-		};
-	}
-
-	return $style;
-}
-
 =head2 event_on_char
 
 NOT IMPLEMENTED IN THE BASE CLASS
@@ -889,6 +873,10 @@ and the event.
 Returns nothing.
 
 =cut
+
+
+
+
 
 #####################################################################
 # Project Integration Methods
@@ -940,8 +928,97 @@ sub project_find {
 	return File::Spec->catpath( $v, $dirs, '' );
 }
 
+
+
+
+
 #####################################################################
 # Document Analysis Methods
+
+# Unreliable methods that provide heuristic best-attempts at automatically
+# determining various document properties.
+
+# Left here a it is used in many places.
+# Maybe we need to remove this sub.
+sub guess_mimetype {
+	my $self = shift;
+	Padre::MimeTypes->guess_mimetype(
+		$self->{original_content},
+		$self->file,
+	);
+}
+
+=head2 guess_indentation_style
+
+Automatically infer the indentation style of the document using
+L<Text::FindIndent>.
+
+Returns a hash reference containing the keys C<use_tabs>,
+C<tabwidth>, and C<indentwidth>. It is suitable for passing
+to C<set_indendentation_style>.
+
+=cut
+
+sub guess_indentation_style {
+	my $self = shift;
+
+	require Text::FindIndent;
+	my $indentation = Text::FindIndent->parse( $self->text_get );
+
+	my $style;
+	if ( $indentation =~ /^t\d+/ ) { # we only do ONE tab
+		$style = {
+			use_tabs    => 1,
+			tabwidth    => 8,
+			indentwidth => 8,
+		};
+	} elsif ( $indentation =~ /^s(\d+)/ ) {
+		$style = {
+			use_tabs    => 0,
+			tabwidth    => 8,
+			indentwidth => $1,
+		};
+	} elsif ( $indentation =~ /^m(\d+)/ ) {
+		$style = {
+			use_tabs    => 1,
+			tabwidth    => 8,
+			indentwidth => $1,
+		};
+	} else {
+
+		# fallback
+		my $config = Padre->ide->config;
+		$style = {
+			use_tabs    => $config->editor_indent_tab,
+			tabwidth    => $config->editor_indent_tab_width,
+			indentwidth => $config->editor_indent_width,
+		};
+	}
+
+	return $style;
+}
+
+=head2 guess_filename
+
+  my $name = $document->guess_filename
+
+When creating new code, one job that the editor should really be able to do
+for you without needing to be told is to work out where to save the file.
+
+When called on a new unsaved file, this method attempts to guess what the
+name of the file should be based purely on the content of the file.
+
+In the base implementation, this returns C<undef> to indicate that the
+method cannot make a reasonable guess at the name of the file.
+
+Your mime-type specific document subclass should implement any file name
+detection as it sees fit, returning the file name as a string.
+
+=cut
+
+sub guess_filename {
+	return undef;
+}
 
 # Abstract methods, each subclass should implement it
 # TODO: Clearly this isn't ACTUALLY abstract (since they exist)
@@ -1081,6 +1158,10 @@ the C<force =E<gt> 1> parameter to override this.
 
 =cut
 
+
+
+
+
 #####################################################################
 # Document Manipulation Methods
 
@@ -1095,6 +1176,10 @@ the C<force =E<gt> 1> parameter to override this.
 # TODO Remove this base method, and compensate by disabling the menu entries
 # if the document class does not define this method.
 sub comment_lines_str { }
+
+
+
+
 
 #####################################################################
 # Unknown Methods

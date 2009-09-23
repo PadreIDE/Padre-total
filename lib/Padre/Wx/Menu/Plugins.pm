@@ -339,8 +339,8 @@ sub install_pip {
 
 	$main->setup_bindings;
 
-	# Run with the same Perl that launched Padre
-	my $perl = Padre::Perl::perl();
+	# Run with console Perl to prevent unexpected results under wperl
+	my $perl = Padre::Perl::cperl();
 	my $cmd  = qq{"$perl" "$pip" "$module"};
 	local $ENV{AUTOMATED_TESTING} = 1;
 	Wx::Perl::ProcessStream->OpenProcess( $cmd, 'CPAN_mod', $main );

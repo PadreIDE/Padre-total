@@ -9,17 +9,18 @@ use utf8;
 
 # Non-Padre modules we need in order to the single-instance
 # check should be loaded early to simplify the load order.
-use Carp          ();
-use Cwd           ();
-use File::Spec    ();
-use File::HomeDir ();
-use List::Util    ();
-use Scalar::Util  ();
-use Getopt::Long  ();
-use YAML::Tiny    ();
-use DBI           ();
-use DBD::SQLite   ();
-use Padre::Splash ();
+use Carp               ();
+use Cwd                ();
+use File::Spec         ();
+use File::HomeDir      ();
+use List::Util         ();
+use Scalar::Util       ();
+use Getopt::Long       ();
+use YAML::Tiny         ();
+use DBI                ();
+use DBD::SQLite        ();
+use Padre::Splash      ();
+use Padre::Util::Win32 ();
 
 # load this before things are messed up to produce versions like '0,76'!
 # TODO: Bug report dispatched. Likely to be fixed in 0.77.
@@ -111,12 +112,9 @@ sub new {
 				# Got the single instance PID
 				$pid =~ s/\s+\s//;
 				if (Padre::Constant::WIN32) {
-					require Win32::API;
-					Win32::API->new(
-						'User32.dll',
-						'AllowSetForegroundWindow',
-						'N', 'L',
-					)->Call($pid);
+
+					# The whole Win32-API moved to Padre::Util::Win32:
+					Padre::Util::Win32->AllowSetForegroundWindow($pid);
 				}
 			}
 			foreach my $file (@ARGV) {
@@ -128,6 +126,10 @@ sub new {
 			return 0;
 		}
 	}
+
+	# This allows scripts to detect that it is being executed
+	# within Padre or not
+	$ENV{PADRE_VERSION} = $VERSION;
 
 	# Load a few more bits and pieces now we know
 	# that we'll need them
@@ -304,7 +306,6 @@ B<File/Save As> - Offer the user to select a new filename and save the content u
 B<File/Save All> - Save all the currently opened files.
 
 B<File/Convert> - Convert line endings to Windows, Unix or Mac Classic style.
-(TODO stop the autoconversion of mixed files, just report them.)
 
 B<Files/Recent Files> - a list of recently opened files to open them easily.
 (TODO: update the list when we open a file, not only when opening padre)
@@ -393,6 +394,9 @@ option. Currently Ctrl-F5 does not save any file.
 (This will be added later.)
 
 You can edit the command line using the Run/Setup menu item.
+
+Please Note that you can use C<$ENV{PADRE_VERSION}> to detect whether the script 
+is running inside Padre or not.
 
 =head2 Bookmarks
 
