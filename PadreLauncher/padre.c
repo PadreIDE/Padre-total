@@ -12,27 +12,41 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 {
 
 	//Find the the executable's path 
-	char strParams[MAX_PATH] = "";
-	int length = GetModuleFileName(NULL, strParams, MAX_PATH);
+	char strExePath[MAX_PATH] = "";
+	int length = GetModuleFileName(NULL, strExePath, MAX_PATH);
 	if(length) {
-		while( length && strParams[ length ] != '\\' ) {
+		while( length && strExePath[ length ] != '\\' ) {
 			length--;
 		}
 		if( length ) {
-			strParams[ length + 1 ] = '\0';
+			strExePath[ length + 1 ] = '\0';
 		}
 	}
 
-	//add padre script and add the command line
-	strncat(strParams, "padre", MAX_PATH);
+	char strWPerl[MAX_PATH] = "";
+	strncat(strWPerl, strExePath, MAX_PATH);
+	strncat(strWPerl, "wperl.exe", MAX_PATH);
 
 	//At this point we should check if padre script exists or not
-	if(_access(strParams,0)) {
-		MessageBox(NULL, "Cannot find Padre's script in the current directory", NULL, MB_OK);
+	if(_access(strWPerl,0)) {
+		MessageBox(NULL, "Cannot find wperl.exe in the current directory", NULL, MB_OK);
+		return 1;
 	}
+
 	
-	strncat(strParams, " ", MAX_PATH);
-	strncat(strParams, lpCmdLine, MAX_PATH);
+	//add padre script and add the command line
+	char strPadre[MAX_PATH] = "";
+	strncat(strPadre, strExePath, MAX_PATH);
+	strncat(strPadre, "padre", MAX_PATH);
+
+	//At this point we should check if padre script exists or not
+	if(_access(strPadre,0)) {
+		MessageBox(NULL, "Cannot find Padre's script in the current directory", NULL, MB_OK);
+		return 1;
+	}
+
+	strncat(strPadre, " ", MAX_PATH);
+	strncat(strPadre, lpCmdLine, MAX_PATH);
 
 	// To use ShellExecute
 	LoadLibrary("shell32");
@@ -42,8 +56,8 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	ShellExecute(
 		NULL,
 		"open",
-		"wperl.exe",
-		strParams,
+		strWPerl,
+		strPadre,
 		NULL,
 		SW_SHOWMAXIMIZED
 	);
