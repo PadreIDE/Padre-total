@@ -90,6 +90,11 @@ around 'pack' => sub {
 	return $hash;
 };
 
+our %Channel_Text = (
+	'(?<=\\)\#(\d+)' => 'trac_ticket_text',
+	'\b\r(\d+)' => 'trac_changeset_text',
+);
+
 ####################################################################
 
 sub custom_plugins {
