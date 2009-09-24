@@ -18,8 +18,8 @@ sub Check {
  }
  if (defined($_[1])) {
   ok($#Matches == 0,$_[0].': Match count');
-  ok($Matches[0] eq $_[1],$_[0].': Check match')
-  ok($Number == $_[2],$_[0].': Check number')
+  ok($Matches[0] eq $_[1],$_[0].': Check match');
+  ok($Number == $_[2],$_[0].': Check number');
  } else {
   ok($#Matches == -1,$_[0].': Match count');
  }
