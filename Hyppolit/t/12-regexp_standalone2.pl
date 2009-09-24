@@ -14,9 +14,9 @@ sub Check {
  print "\n";
 }
 
-&Check('#123','trac_ticket_text',123);
-&Check('\#123',undef);
+&Check('#123');
+&Check('\#123');
 
 # Check changesets
-&Check('r123','trac_changeset_text',123);
-&Check('border123',undef);
+&Check('r123');
+&Check('border123');
