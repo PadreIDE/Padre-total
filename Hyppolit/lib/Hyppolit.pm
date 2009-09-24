@@ -89,7 +89,7 @@ has tracdbh => (
 	traits => ['DoNotSerialize'],
 	default => sub {
 		my $self = shift;
-		DBI->connect("dbi:SQLite:dbname=".$self->tracdb,"","");
+		DBI->connect("dbi:SQLite:dbname=".$self->tracdb,"","") if $self->tracdb;
 	},
 );
 
