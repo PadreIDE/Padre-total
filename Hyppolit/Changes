@@ -2,6 +2,7 @@ Changes of Hyppolit the IRC bot
 
 v0.06 2009.09.24 - Getty
 	Refactored the complete bot to run with Adam
+	Added profanity check
 
 v0.05 2009.09.23 - Getty
 	Added tracdb config parameter for parsing of tracdb
