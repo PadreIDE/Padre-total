@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 13:48+0300\n"
+"POT-Creation-Date: 2009-09-24 20:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,6 +149,52 @@ msgstr ""
 msgid "Start Web Browser?"
 msgstr ""
 
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:21
+msgid ""
+"To use the Catalyst development tools including catalyst.pl and the\n"
+"generated script/myapp_create.pl you need Catalyst::Helper, which is\n"
+"part of the Catalyst-Devel distribution. Please install this via a\n"
+"vendor package or by running one of -\n"
+"\n"
+"  perl -MCPAN -e 'install Catalyst::Devel'\n"
+"  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:42
+msgid "Application Name:"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:46
+msgid "Parent Directory:"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:47
+msgid "Pick parent directory"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:50
+msgid "short names"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+msgid "Invalid Application name"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+msgid "missing field"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+msgid "You need to select a base directory"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:144
+#: lib/Padre/Plugin/Catalyst/Helper.pm:308
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr ""
+
 #: lib/Padre/Plugin/Catalyst/Helper.pm:33
 msgid "Create New Component"
 msgstr ""
@@ -215,12 +261,6 @@ msgstr ""
 msgid "Catalyst helper script ended."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/Helper.pm:308
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:144
-#, perl-format
-msgid "%s apparently created. Do you want to open it now?"
-msgstr ""
-
 #: lib/Padre/Plugin/Catalyst/Helper.pm:309
 msgid "Done"
 msgstr ""
@@ -232,44 +272,4 @@ msgstr ""
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:325
 msgid "Error"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:21
-msgid ""
-"To use the Catalyst development tools including catalyst.pl and the\n"
-"generated script/myapp_create.pl you need Catalyst::Helper, which is\n"
-"part of the Catalyst-Devel distribution. Please install this via a\n"
-"vendor package or by running one of -\n"
-"\n"
-"  perl -MCPAN -e 'install Catalyst::Devel'\n"
-"  perl -MCPANPLUS -e 'install Catalyst::Devel'\n"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:42
-msgid "Application Name:"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:46
-msgid "Parent Directory:"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:47
-msgid "Pick parent directory"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:50
-msgid "short names"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
-msgid "Invalid Application name"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
-msgid "missing field"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
-msgid "You need to select a base directory"
 msgstr ""
