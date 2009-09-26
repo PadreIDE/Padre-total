@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 September 27
+        url: http://blog.patspam.com/2009/padrepluginwebgui-now-with-remote-editing
+        title: Padre::Plugin::WebGUI now with remote editing
+        comment: by Patrick Donelan
       - date: 2009 September 25
         url: http://blog.ryan52.info/?p=4
         title: Padre 0.47 released!
