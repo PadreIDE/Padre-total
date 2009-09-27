@@ -28,6 +28,10 @@ about:
   - title: y2009
     events:
       - date: 2009 September 27
+        url: http://ahmadzawawi.blogspot.com/2009/09/padre-047-is-out.html
+        title: Padre 0.47 is out
+        comment: by Ahmad M. Zawawi
+      - date: 2009 September 27
         url: http://blog.patspam.com/2009/padrepluginwebgui-now-with-remote-editing
         title: Padre::Plugin::WebGUI now with remote editing
         comment: by Patrick Donelan
