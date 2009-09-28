@@ -28,6 +28,10 @@ about:
   - title: y2009
     events:
       - date: 2009 September 27
+        url: http://use.perl.org/~Alias/journal/39681
+        title: Padre 0.47 is highly recommended for trying Padre again
+        comment: by Adam Kennedy
+      - date: 2009 September 27
         url: http://ahmadzawawi.blogspot.com/2009/09/padre-047-is-out.html
         title: Padre 0.47 is out
         comment: by Ahmad M. Zawawi
