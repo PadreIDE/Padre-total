@@ -1,8 +1,25 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.76 2009.9.29
+
+	Bundled the latest STD innovation (lwall++):
+		- package name refactor; stashes now know their own unique id name
+		  conflicting package symbols now report which package they conflict in
+		  (lexicals are always assumed to conflict in the current scope)
+		- add AttributeDeclarand and ContainerDeclarand roles to CORE.setting
+		- make mechanism for checking infix ops in EXPR reduce
+		- delay .= check till EXPR reduction time
+		- require () on .'foo'() calls
+		- delete obsolete .:foo form
+		- recognize sub stubs and don't complain about redefinition
+		- move pi, e, and i out of term:-space; they are now just CORE constants
+		- make undefined message slightly L LTA
+		- add warning comment to dotty section about starting with dot
+		- catch attempt to declare symbol previously aliased into an outer scope
+		
 0.75 2009.9.19
 
-	Bundled the latest STD (TimToady++) (TimToady++) innovation:
+	Bundled the latest STD innovation (lwall++):
 		- revise LTA message on $x<10
 		- provide reliable way of resetting position before panic
 
