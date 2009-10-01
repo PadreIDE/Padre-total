@@ -192,6 +192,12 @@ sub edit_asset {
     my $id   = $main->find_id_of_editor($editor);
     my $page = $main->notebook->GetPage($id);
     $page->SetSavePoint;
+    
+    # Set tab icon
+    if (my $icon = $self->get_item_icon( $item->{icon} )) {
+        $main->notebook->SetPageBitmap($id, $icon);
+    }
+    
     $main->refresh;
 }
 
@@ -291,6 +297,13 @@ sub get_item_image {
         $image_lookup->{$icon} = $index;
     }
     return $image_lookup->{$icon} || 0;
+}
+
+sub get_item_icon {
+    my $self = shift;
+    my $icon = shift;
+    my $index = $self->get_item_image( $icon );
+    return $self->GetImageList->GetIcon( $index );
 }
 
 sub update_treectrl {

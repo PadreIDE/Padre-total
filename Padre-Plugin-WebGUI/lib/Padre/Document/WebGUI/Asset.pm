@@ -108,9 +108,6 @@ sub process_response {
         my $error = "The server sent an invalid response, please try again (and check the logs)";
         $self->set_errstr($error);
         $self->editor->main->error($error);
-        open my $fh, '>', '/home/patspam/out.txt';
-        print $fh $content;
-        close $fh;
         return;
     }
 
@@ -118,7 +115,8 @@ sub process_response {
     $self->{_timestamp} = $self->time_on_file;
 
     # Set a fake filename, so that we the file isn't considered 'new'
-    $self->{filename} = '[wg] ' . $asset->{menuTitle};
+    #$self->{filename} = "[$asset->{name}] $asset->{menuTitle}"; # asset name not needed now that icon shown
+    $self->{filename} = $asset->{menuTitle};
 
     $self->render;
 
@@ -144,7 +142,7 @@ sub render {
     my $asset = $self->asset;
 
     # Set text (a la Padre::Document::load_file)
-    my $text = $self->get_asset_content;
+    my $text = $self->get_asset_content || q{};
 
     require Padre::Locale;
     $self->{encoding} = Padre::Locale::encoding_from_string($text);

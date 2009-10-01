@@ -6,6 +6,7 @@ author 'Patrick Donelan <pat@patspam.com>';
 license 'perl';
 requires 'Padre' => '0.47';
 requires 'LWP::UserAgent';
+requires 'JSON';
 test_requires 'Test::More';
 recommends 'JSON::XS' => '2.24';
 

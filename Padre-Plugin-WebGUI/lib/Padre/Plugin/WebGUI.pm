@@ -13,11 +13,11 @@ Padre::Plugin::WebGUI - Developer tools for WebGUI
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -30,6 +30,9 @@ Then use it via L<Padre>, The Perl IDE.
 This plugin adds a "WebGUI" item to the Padre plugin menu, with a bunch of WebGUI-oriented features.
 
 =cut
+
+# Used to control dev niceties
+my $DEV_MODE = 0;
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name {
@@ -98,6 +101,11 @@ sub plugin_disable {
     # Unload all private classese here, so that they can be reloaded
     require Class::Unload;
     Class::Unload->unload('Padre::Plugin::WebGUI::Assets');
+    
+    # I think this would be bad if a doc was open when you reloaded the plugin, but handy when developing
+    if ($DEV_MODE) {
+        Class::Unload->unload('Padre::Document::WebGUI::Asset');
+    }
 }
 
 sub menu_plugins {
@@ -127,16 +135,17 @@ sub menu_plugins {
 
     # About
     Wx::Event::EVT_MENU( $main, $self->{menu}->Append( -1, _T("About"), ), sub { $self->show_about }, );
-
-    # --
-    $self->{menu}->AppendSeparator;
-
+    
     # Reload (handy when developing this plugin)
-    Wx::Event::EVT_MENU(
-        $main,
-        $self->{menu}->Append( -1, _T("Reload WebGUI Plugin\tCtrl+Shift+R"), ),
-        sub { $main->ide->plugin_manager->reload_current_plugin },
-    );
+    if ($DEV_MODE) {
+        $self->{menu}->AppendSeparator;
+        
+        Wx::Event::EVT_MENU(
+            $main,
+            $self->{menu}->Append( -1, _T("Reload WebGUI Plugin\tCtrl+Shift+R"), ),
+            sub { $main->ide->plugin_manager->reload_current_plugin },
+        );
+    }
 
     # Return our plugin with its label
     return ( $self->plugin_name => $self->{menu} );
