@@ -6,6 +6,7 @@ use warnings;
 use Carp ();
 use Params::Util '_INSTANCE';
 use Padre::Document ();
+use Padre::Util ();
 
 our $VERSION = '0.25';
 our @ISA     = 'Padre::Document';
@@ -14,10 +15,15 @@ our @ISA     = 'Padre::Document';
 sub colorize {
 	my ( $self, $first ) = @_;
 
-	$self->remove_color;
+	my $doc = Padre::Current->document;
+	Padre::Util::debug(__PACKAGE__ . " colorize called (self: $self) (doc: $doc)");
 
-	my $editor = $self->editor;
-	my $text   = $self->text_get;
+	$doc->remove_color;
+
+	my $editor = $doc->editor;
+	Padre::Util::debug('done');
+	my $text   = $doc->text_get;
+	Padre::Util::debug("text to colorize: $text");
 
 	#	my @lines = split /\n/, $text;
 	#	foreach my $line (@lines) {
@@ -39,6 +45,7 @@ sub colorize {
 			my $end    = pos($text);
 			my $length = length($&);
 			my $start  = $end - $length;
+			Padre::Util::debug("start: $start, length: $length, end: $end");
 			$editor->StartStyling( $start, $color );
 			$editor->SetStyling( $length, $color );
 		}
