@@ -19,10 +19,11 @@ our @ISA     = 'Padre::Document';
 sub colorize {
 	my ( $self, $first ) = @_;
 
-	$self->remove_color;
+	my $doc = Padre::Current->document;
+	$doc->remove_color;
 
-	my $editor = $self->editor;
-	my $text   = $self->text_get;
+	my $editor = $doc->editor;
+	my $text   = $doc->text_get;
 
 	my @keywords = qw(substr save print branch new set end
 		sub abs gt lt eq shift get_params if
