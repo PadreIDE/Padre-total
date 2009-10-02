@@ -9,7 +9,7 @@ use Padre::Document ();
 use Padre::Util ();
 use Padre::Constant;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 our @ISA     = 'Padre::Document';
 
 # Naive way to parse and colorize pir files

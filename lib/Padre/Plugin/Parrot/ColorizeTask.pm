@@ -5,7 +5,7 @@ use warnings;
 use base 'Padre::Task';
 use Scalar::Util ();
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed
