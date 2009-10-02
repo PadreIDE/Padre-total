@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Parrot
 
+    - Allow the execution of PIR files.
+    - Allow the generation of pbc files from pir file.
     - Fix colorize function to use current doc instead of assuming itself 
       being a doc
 

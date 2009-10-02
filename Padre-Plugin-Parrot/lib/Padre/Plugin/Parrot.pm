@@ -220,6 +220,7 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About' => sub { $self->about },
+		'PIR 2 PBC' => sub { $self->pir2pbc },
 
 		#'Help'                                        => \&show_help,
 
@@ -381,6 +382,15 @@ END_PIR
 
 	Wx::MessageBox( "From Parrot using PIR: $str", "Worksforme", Wx::wxOK | Wx::wxCENTRE, $main );
 	return;
+}
+
+sub pir2pbc {
+	my $main = Padre->ide->wx->main;
+	my $doc = Padre::Current->document;
+	return if not $doc;
+	my $filename = $doc->filename;
+	return if not $filename or $filename !~ /\.pir$/i;
+	$doc->pir2pbc;
 }
 
 sub about {
