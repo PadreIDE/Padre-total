@@ -34,4 +34,7 @@ homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Parrot';
 
+install_share;
+#install_share_with_mofiles;
+
 WriteAll;
