@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 October 02
+        url: http://szabgab.com/blog/2009/10/1254515743.html
+        title: My teenage memories and the Parrot Virtual Machine
+        comment: by Gábor Szabó about Padre::Plugin::Parrot
       - date: 2009 October 01
         url: http://blog.patspam.com/2009/padrepluginwebgui-tab-icons
         title: Padre::Plugin::WebGUI Tab Icons
