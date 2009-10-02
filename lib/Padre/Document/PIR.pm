@@ -34,7 +34,7 @@ sub colorize {
 
 	my ( $KEYWORD, $REGISTER, $LABEL, $DIRECTIVES, $STRING, $COMMENT ) = ( 1 .. 6 );
 	my %regex_of = (
-		$KEYWORD    => qr/\b(print|branch|goto|new|set|end|sub|abs|add|inc|mul|if|gt|lt|le|ge|eq)\b/,
+		$KEYWORD    => qr/\b(print|branch|goto|say|new|set|end|sub|abs|add|inc|mul|if|gt|lt|le|ge|eq)\b/,
 		$REGISTER   => qr/I0|N\d+/,
 		$LABEL      => qr/^\w*:/m,
 		$STRING     => qr/(['"]).*\1/,
