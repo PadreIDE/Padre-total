@@ -14,7 +14,7 @@ my $perltidyrc = catfile( $Bin, 'perltidyrc' );
 die "cannot find perltidy configuration file: $perltidyrc\n"
 	unless -e $perltidyrc;
 
-# build list of perl modules to reformat
+# build list of perl files to reformat
 my @pmfiles = @ARGV
 	? @ARGV
 	: grep {/^lib/}	File::Find::Rule->file->name("*.pm")->relative->in(cwd);
@@ -23,8 +23,11 @@ my @tfiles = @ARGV
 	: grep {/^t/}	File::Find::Rule->file->name("*.t")->relative->in(cwd);
 
 my @files = (@pmfiles,@tfiles);
-push @files, 'Makefile.PL' if -f 'Makefile.PL';
-push @files, 'Build.PL' if -f 'Build.PL';
+
+my @extras = ('Makefile.PL', 'Build.PL', 'dev.pl', 'script/padre',);
+for my $extra (@extras) {
+	push @files, $extra if -f $extra;
+}
 
 # formatting documents
 my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @files";
