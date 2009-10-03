@@ -222,11 +222,19 @@ sub run {
 
 __END__
 
+=head1 NAME
+
+Padre::Plugin::Perl6 - Padre plugin for Perl 6
+
+=head1 SYNOPSIS
+
+After installation when you run Padre there should be a menu option Plugins/Perl 6.
+
 =head1 AUTHOR
 
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
 Gabor Szabo L<http://szabgab.com/>
+
+Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
 
 =head1 COPYRIGHT AND LICENSE
 
