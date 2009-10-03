@@ -23,6 +23,8 @@ my @tfiles = @ARGV
 	: grep {/^t/}	File::Find::Rule->file->name("*.t")->relative->in(cwd);
 
 my @files = (@pmfiles,@tfiles);
+push @files, 'Makefile.PL' if -f 'Makefile.PL';
+push @files, 'Build.PL' if -f 'Build.PL';
 
 # formatting documents
 my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @files";
