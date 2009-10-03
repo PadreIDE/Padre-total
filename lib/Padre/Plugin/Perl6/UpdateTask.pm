@@ -21,7 +21,7 @@ sub prepare {
 	my $self = shift;
 
 	# validate parameters...
-	die "no release paramater" if not $self->{release};
+	die "no release paramater"  if not $self->{release};
 	die "no progress parameter" if not $self->{progress};
 
 	$self->task_print( "Preparing " . $self->{release}->{name} . "\n" );
@@ -33,7 +33,7 @@ sub prepare {
 		$PROGRESS_EVENT,
 		\&on_progress,
 	);
-	
+
 
 	return;
 }
@@ -46,6 +46,7 @@ sub on_progress {
 	@_ = (); # hack to avoid "Scalars leaked"
 
 	use Data::Dumper; print Dumper($event);
+
 	#my ($percent, $progress) = @{$event->GetData};
 	#$progress->SetValue( $percent );
 }
@@ -81,14 +82,14 @@ sub download_six {
 		die "read failed: $!" unless defined $n;
 		last unless $n;
 		$downloaded += $n;
-		
+
 		#Update the progress bar
-#		my %data : shared = (
-#			downloaded => int($downloaded / $content_length * 100),
-#			progress   => $self->{progress},
-#		);
+		#		my %data : shared = (
+		#			downloaded => int($downloaded / $content_length * 100),
+		#			progress   => $self->{progress},
+		#		);
 		$self->post_event( $PROGRESS_EVENT, $downloaded );
-		
+
 		#Added downloaded stuff...
 		$content .= $buf;
 	}
@@ -164,7 +165,7 @@ sub run {
 # It can update the GUI and do cleanup.
 #
 sub finish {
-	my ($self, $main) = @_;
+	my ( $self, $main ) = @_;
 
 	print "Finished!\n";
 

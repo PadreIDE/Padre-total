@@ -35,9 +35,9 @@ my $builder = $class->new(
 	dist_author       => 'Ahmad M. Zawawi and Gabor Szabo',
 	dist_version_from => 'lib/Padre/Plugin/Perl6.pm',
 	build_requires    => {
-		'Test::More'       => '0.86',
-		'Test::Exception'  => '0.27',
-		'Locale::Msgfmt'   => '0.14',
+		'Test::More'      => '0.86',
+		'Test::Exception' => '0.27',
+		'Locale::Msgfmt'  => '0.14',
 	},
 	requires           => \%requires,
 	add_to_cleanup     => ['Padre-Plugin-Perl6-*'],

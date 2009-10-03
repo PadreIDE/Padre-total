@@ -5,13 +5,13 @@ use Test::More;
 use File::Find::Rule;
 
 BEGIN {
-	if (not $ENV{DISPLAY} and not $^O eq 'MSWin32') {
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
 		plan skip_all => 'Needs DISPLAY';
 		exit 0;
 	}
 }
 
-unless($ENV{PADRE_PLUGIN_PERL6}) {
+unless ( $ENV{PADRE_PLUGIN_PERL6} ) {
 	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable';
 }
 
@@ -23,12 +23,12 @@ plan tests => scalar @files;
 # that was taken from Padre t/10-copyright.t
 #
 my $copyright = qr{Padre Developers as in Perl6.pm\s*};
-$copyright    = qr{${copyright}This program is free software; you can redistribute it and/or\s*};
-$copyright    = qr{${copyright}modify it under the same terms as Perl 5 itself.};
+$copyright = qr{${copyright}This program is free software; you can redistribute it and/or\s*};
+$copyright = qr{${copyright}modify it under the same terms as Perl 5 itself.};
 
-foreach my $file ( @files ) {
+foreach my $file (@files) {
 	my $content = slurp($file);
-	ok($content =~ qr{$copyright}, $file);
+	ok( $content =~ qr{$copyright}, $file );
 }
 
 sub slurp {
