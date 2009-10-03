@@ -2,6 +2,8 @@ package Padre::Plugin::Parrot::HL;
 use strict;
 use warnings;
 
+use Padre::Wx  ();
+
 our $VERSION = '0.26';
 
 # colorize timer to make sure that colorize tasks are scheduled properly...
