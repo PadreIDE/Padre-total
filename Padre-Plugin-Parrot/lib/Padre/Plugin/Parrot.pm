@@ -273,8 +273,10 @@ if ( $ENV{RAKUDO_DIR} ) {
 }
 if ( $ENV{CARDINAL_DIR} ) {
 	push @config,
-		[ 'application/x-ruby', "$ENV{CARDINAL_DIR}/cardinal.pbc", 'Ruby',
-		'Ruby via Cardinal on Parrot and cardinal.pbc' ];
+		[
+		'application/x-ruby', "$ENV{CARDINAL_DIR}/cardinal.pbc", 'Ruby',
+		'Ruby via Cardinal on Parrot and cardinal.pbc'
+		];
 }
 
 use Padre::Plugin::Parrot::HL;
