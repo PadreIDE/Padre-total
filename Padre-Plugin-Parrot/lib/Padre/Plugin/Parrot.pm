@@ -219,7 +219,7 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->about },
+		'About'     => sub { $self->about },
 		'PIR 2 PBC' => sub { $self->pir2pbc },
 
 		#'Help'                                        => \&show_help,
@@ -235,7 +235,7 @@ sub registered_documents {
 
 # TODO, Planning the syntax highlighting feature:
 # -------------------------------
-# let the user regiser 
+# let the user regiser
 # mime-type, Path/to/language.pge, Name, Description?
 # or
 # mime-type, Path/to/language.exe, Name, Description?
@@ -243,22 +243,22 @@ sub registered_documents {
 # Though as this is only for personal use on the users own computer
 # for now, we don't really need a description field but maybe the user
 # wants to add comments.
-# Name must be ASCII string without 
-# We can recognize if this is a .pge file or an executable 
+# Name must be ASCII string without
+# We can recognize if this is a .pge file or an executable
 # (.exe on windows nothing on Unix) but we might also provide a check-box
 # so the user can configure this.
 
 # We ave this information in a database or config file
-# We read this information at load time and based on this change the 
+# We read this information at load time and based on this change the
 # provided_highlighters and highlighting_mime_types functions
 #
 # With the module name being Padre::Plugin::HL::Name  (using the Name the user gave us)
 # the module is virtual, only exists in memory
 
 my @highlighters = (
-	['Padre::Document::PIR',  'PIR in Perl 5',  'PIR syntax highlighting with Perl 5 regular expressions'],
-	['Padre::Document::PASM', 'PASM in Perl 5', 'PASM syntax highlighting with Perl 5 regular expressions'],
-	['Padre::Plugin::Parrot', 'Parrot PGE',     'Using the PGE engine for highlighting'],
+	[ 'Padre::Document::PIR',  'PIR in Perl 5',  'PIR syntax highlighting with Perl 5 regular expressions' ],
+	[ 'Padre::Document::PASM', 'PASM in Perl 5', 'PASM syntax highlighting with Perl 5 regular expressions' ],
+	[ 'Padre::Plugin::Parrot', 'Parrot PGE',     'Using the PGE engine for highlighting' ],
 );
 
 my %highlighter_mimes = (
@@ -266,36 +266,40 @@ my %highlighter_mimes = (
 	'Padre::Document::PASM' => ['application/x-pasm'],
 );
 
-# [mime-type,    path-to-pbc-or-exe,  'NameWithoutSpace', 'Description'] 
+# [mime-type,    path-to-pbc-or-exe,  'NameWithoutSpace', 'Description']
 my @config;
-if ($ENV{RAKUDO_DIR}) {
-	push @config, ['application/x-perl6', "$ENV{RAKUDO_DIR}/perl6.pbc",       'Perl6', 'Perl 6 via Parrot and perl6.pbc'];
+if ( $ENV{RAKUDO_DIR} ) {
+	push @config, [ 'application/x-perl6', "$ENV{RAKUDO_DIR}/perl6.pbc", 'Perl6', 'Perl 6 via Parrot and perl6.pbc' ];
 }
-if ($ENV{CARDINAL_DIR}) {
-	push @config, ['application/x-ruby',  "$ENV{CARDINAL_DIR}/cardinal.pbc",  'Ruby',  'Ruby via Cardinal on Parrot and cardinal.pbc'];
+if ( $ENV{CARDINAL_DIR} ) {
+	push @config,
+		[ 'application/x-ruby', "$ENV{CARDINAL_DIR}/cardinal.pbc", 'Ruby',
+		'Ruby via Cardinal on Parrot and cardinal.pbc' ];
 }
 
 use Padre::Plugin::Parrot::HL;
 foreach my $e (@config) {
-	my ($mime_type, $path, $name, $description) = @$e;
+	my ( $mime_type, $path, $name, $description ) = @$e;
 	next if not -e $path;
+
 	# TODO check other values as well
 
-	my $pbc	= ($path =~ /\.pbc$/ ? 1 : 0);
-	my $module = 'Parrot::Plugin::HL::' . ($pbc ? 'PBC::' : '') . $name;
-	my $display_name = "Parrot/" . ($pbc ? 'PBC' : 'EXE') . "/$name";
+	my $pbc = ( $path =~ /\.pbc$/ ? 1 : 0 );
+	my $module = 'Parrot::Plugin::HL::' . ( $pbc ? 'PBC::' : '' ) . $name;
+	my $display_name = "Parrot/" . ( $pbc ? 'PBC' : 'EXE' ) . "/$name";
 	{
+
 		# create virtual namespace and colorize() function.
-		# maybe I only need to create 
-		
-		my $sub = sub { return ($pbc, $path) };
-		my $isa = $module . '::ISA';
+		# maybe I only need to create
+
+		my $sub      = sub { return ( $pbc, $path ) };
+		my $isa      = $module . '::ISA';
 		my $function = $module . '::pbc_path';
 		no strict 'refs';
 		@$isa = ('Padre::Plugin::Parrot::HL');
 		*{$function} = $sub;
 	}
-	push @highlighters, [$module, $display_name, $description];
+	push @highlighters, [ $module, $display_name, $description ];
 	$highlighter_mimes{$module} = [$mime_type];
 }
 
@@ -312,7 +316,7 @@ sub plugin_enable {
 
 	return if not $ENV{PARROT_DIR};
 
-	return 1 if $main::parrot;    # avoid crash when duplicate calling
+	return 1 if $main::parrot; # avoid crash when duplicate calling
 
 	local @INC = (
 		"$ENV{PARROT_DIR}/ext/Parrot-Embed/blib/lib",
@@ -386,7 +390,7 @@ END_PIR
 
 sub pir2pbc {
 	my $main = Padre->ide->wx->main;
-	my $doc = Padre::Current->document;
+	my $doc  = Padre::Current->document;
 	return if not $doc;
 	my $filename = $doc->filename;
 	return if not $filename or $filename !~ /\.pir$/i;

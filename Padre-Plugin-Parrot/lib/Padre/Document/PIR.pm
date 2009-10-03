@@ -6,7 +6,7 @@ use warnings;
 use Carp ();
 use Params::Util '_INSTANCE';
 use Padre::Document ();
-use Padre::Util ();
+use Padre::Util     ();
 use Padre::Constant;
 
 our $VERSION = '0.26';
@@ -17,13 +17,13 @@ sub colorize {
 	my ( $self, $first ) = @_;
 
 	my $doc = Padre::Current->document;
-	Padre::Util::debug(__PACKAGE__ . " colorize called (self: $self) (doc: $doc)");
+	Padre::Util::debug( __PACKAGE__ . " colorize called (self: $self) (doc: $doc)" );
 
 	$doc->remove_color;
 
 	my $editor = $doc->editor;
 	Padre::Util::debug('done');
-	my $text   = $doc->text_get;
+	my $text = $doc->text_get;
 	Padre::Util::debug("text to colorize: $text");
 
 	#	my @lines = split /\n/, $text;
@@ -60,7 +60,7 @@ sub get_command {
 	my ($self) = @_;
 
 	return if not $ENV{PARROT_DIR};
-	my $parrot = "$ENV{PARROT_DIR}/parrot" . (Padre::Constant::WIN32 ? '.exe' : '');
+	my $parrot = "$ENV{PARROT_DIR}/parrot" . ( Padre::Constant::WIN32 ? '.exe' : '' );
 
 	return if not -e $parrot;
 	my $filename = $self->filename;
@@ -73,16 +73,17 @@ sub pir2pbc {
 	my ($self) = @_;
 
 	return if not $ENV{PARROT_DIR};
-	my $parrot = "$ENV{PARROT_DIR}/parrot" . (Padre::Constant::WIN32 ? '.exe' : '');
+	my $parrot = "$ENV{PARROT_DIR}/parrot" . ( Padre::Constant::WIN32 ? '.exe' : '' );
 
 	return if not -e $parrot;
 	my $filename = $self->filename;
 	return if not $filename or $filename !~ /\.pir$/i;
-	
-	
-	my $outfile = substr($filename, 0, -3) . 'pbc';
+
+
+	my $outfile = substr( $filename, 0, -3 ) . 'pbc';
 
 	my $cmd = "$parrot -o $outfile $filename";
+
 	#my $main = Padre->ide->wx->main;
 	#$main->message($cmd);
 	system $cmd;
