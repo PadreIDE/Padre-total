@@ -29,6 +29,7 @@ all_from 'lib/Padre/Plugin/Parrot.pm';
 requires 'Padre' => '0.41';
 
 #requires => 'Parrot::Embed' => 0;
+requires => 'File::ShareDir' => 0;
 test_requires 'Test::More' => '0.47';
 no_index 'directory'       => qw{ t xt eg share inc privinc};
 homepage 'http://padre.perlide.org/';

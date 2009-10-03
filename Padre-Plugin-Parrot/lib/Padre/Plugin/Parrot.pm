@@ -219,8 +219,9 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'     => sub { $self->about },
-		'PIR 2 PBC' => sub { $self->pir2pbc },
+		'About'        => sub { $self->about },
+		'Open Example' => sub { $self->open_example },
+		'PIR 2 PBC'    => sub { $self->pir2pbc },
 
 		#'Help'                                        => \&show_help,
 
@@ -399,9 +400,17 @@ sub pir2pbc {
 	$doc->pir2pbc;
 }
 
-sub about {
-	my ($main) = @_;
+sub open_example {
+	require File::ShareDir;
+	my $dir = File::Spec->catdir(
+		File::ShareDir::dist_dir('Padre-Plugin-Parrot'),
+		'examples');
 
+	my $main = Padre->ide->wx->main;
+	return $main->open_file_dialog( $dir );
+}
+
+sub about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
 	$about->SetDescription( "This plugin currently provides a naive syntax highlighting for PASM files\n"

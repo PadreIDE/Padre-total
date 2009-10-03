@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Parrot
 
+	- Add menu option to open one of the installed example files.
+
 0.26 2009.10.02
 	- Allow the execution of PIR files.
 	- Allow the generation of pbc files from pir file.
