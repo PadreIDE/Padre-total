@@ -26,8 +26,11 @@ my @pmfiles = @ARGV
 my @tfiles = @ARGV
 	? @ARGV
 	: grep {/^t/}	File::Find::Rule->file->name("*.t")->relative->in(cwd);
+my @examples  = @ARGV
+	? @ARGV
+	: grep {/^share.examples/} File::Find::Rule->file->name("*.pl")->relative->in(cwd);
 
-my @files = (@pmfiles,@tfiles);
+my @files = (@pmfiles,@tfiles, @examples);
 
 my @extras = ('Makefile.PL', 'Build.PL', 'dev.pl', 'script/padre',);
 for my $extra (@extras) {
