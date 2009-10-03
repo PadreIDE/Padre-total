@@ -18,11 +18,15 @@ die "cannot find perltidy configuration file: $perltidyrc\n"
 my @pmfiles = @ARGV
 	? @ARGV
 	: grep {/^lib/}	File::Find::Rule->file->name("*.pm")->relative->in(cwd);
+my @tfiles = @ARGV
+	? @ARGV
+	: grep {/^t/}	File::Find::Rule->file->name("*.t")->relative->in(cwd);
+
+my @files = (@pmfiles,@tfiles);
 
 # formatting documents
-my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @pmfiles";
+my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @files";
 system($cmd) == 0 or die "perltidy exited with return code " . ($? >> 8);
 
 # removing backup files
-unlink map {"$_.bak"} @pmfiles;
-
+unlink map {"$_.bak"} @files;
