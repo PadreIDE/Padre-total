@@ -4,7 +4,7 @@ use warnings;
 use Test::More;
 
 BEGIN {
-	if (not $ENV{DISPLAY} and not $^O eq 'MSWin32') {
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
 		plan skip_all => 'Needs DISPLAY';
 		exit 0;
 	}

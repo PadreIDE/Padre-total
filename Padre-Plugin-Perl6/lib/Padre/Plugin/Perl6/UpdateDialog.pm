@@ -94,7 +94,7 @@ sub _create_controls {
 			Wx::wxLB_SINGLE
 		)
 	);
-	
+
 	$self->_progress(
 		Wx::Gauge->new(
 			$self,
@@ -116,10 +116,10 @@ sub _create_controls {
 	$btn_sizer->Add( $cancel_btn,             0, Wx::wxALL | Wx::wxEXPAND, 2 );
 
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vbox->Add( $label,       0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$vbox->Add( $self->_list, 1, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $label,           0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $self->_list,     1, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$vbox->Add( $self->_progress, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
-	$vbox->Add( $btn_sizer,   0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$vbox->Add( $btn_sizer,       0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $vbox,    0, Wx::wxALL | Wx::wxEXPAND, 2 );
 	$self->_hbox->Add( $camelia, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
 
@@ -160,20 +160,22 @@ sub _setup_events {
 				$self->_install_six_btn->Enable(0);
 
 				#XXX enable on_finish and find out what's is its problemo...
-#				my $on_finish = sub {
-#					#$self->_install_six_btn->Enable(0);
-#				};
+				#				my $on_finish = sub {
+				#					#$self->_install_six_btn->Enable(0);
+				#				};
 				eval {
+
 					#Start the update task in the background
 					require Padre::Plugin::Perl6::UpdateTask;
-					my $task = Padre::Plugin::Perl6::UpdateTask->new( 
-						release => $release,
-						progress  => $self->_progress,
+					my $task = Padre::Plugin::Perl6::UpdateTask->new(
+						release  => $release,
+						progress => $self->_progress,
+
 						#on_finish => $on_finish,
 					);
 					$task->schedule;
 				};
-				if($@) {
+				if ($@) {
 					$self->_plugin->main->error("Failed to start installation:\n$@");
 				}
 			}
