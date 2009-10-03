@@ -3,6 +3,11 @@
 use strict;
 use warnings;
 
+eval("require Perl::Tidy");
+if($@) {
+	die "Please install Perl::Tidy (e.g. cpan Perl::Tidy)";
+}
+
 #
 use Cwd                   qw{ cwd };
 use File::Spec::Functions qw{ catfile catdir };
