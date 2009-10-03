@@ -1,9 +1,6 @@
 use strict;
 use warnings;
 
-# does not work 'cause of ORLite
-#!perl
-
 use Test::More tests => 1;
 
 BEGIN {
