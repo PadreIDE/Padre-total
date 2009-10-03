@@ -22,7 +22,7 @@ plan tests => scalar @files;
 # a simple way to check if we have copyright information on all files
 # that was taken from Padre t/10-copyright.t
 #
-my $copyright = qr{Padre Developers as in Perl6.pm\s*};
+my $copyright = qr{Padre Developers as in Parrot.pm\s*};
 $copyright    = qr{${copyright}This program is free software; you can redistribute it and/or\s*};
 $copyright    = qr{${copyright}modify it under the same terms as Perl 5 itself.};
 
