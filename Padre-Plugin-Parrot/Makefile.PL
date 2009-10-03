@@ -2,7 +2,7 @@ use strict;
 use lib 'privinc';
 use inc::Module::Install;
 
-# probably it is better not to require these 
+# probably it is better not to require these
 # as they are only needed for some of the actions and
 # we can delay their requirement to the run time
 
@@ -22,19 +22,21 @@ use inc::Module::Install;
 #	exit 0;
 #}
 
-name           'Padre-Plugin-Parrot';
-license        'perl';
-author         'Gabor Szabo <szabgab@gmail.com>';
-all_from       'lib/Padre/Plugin/Parrot.pm';
-requires       'Padre' => '0.41';
+name 'Padre-Plugin-Parrot';
+license 'perl';
+author 'Gabor Szabo <szabgab@gmail.com>';
+all_from 'lib/Padre/Plugin/Parrot.pm';
+requires 'Padre' => '0.41';
+
 #requires => 'Parrot::Embed' => 0;
-test_requires  'Test::More'              => '0.47';
-no_index       'directory'               => qw{ t xt eg share inc privinc};
-homepage       'http://padre.perlide.org/';
-bugtracker     'http://padre.perlide.org/';
-repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Parrot';
+test_requires 'Test::More' => '0.47';
+no_index 'directory'       => qw{ t xt eg share inc privinc};
+homepage 'http://padre.perlide.org/';
+bugtracker 'http://padre.perlide.org/';
+repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Parrot';
 
 install_share;
+
 #install_share_with_mofiles;
 
 WriteAll;
