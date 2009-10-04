@@ -89,6 +89,11 @@ sub pir2pbc {
 	system $cmd;
 }
 
+sub get_help_provider {
+	require Padre::HelpProvider::PIR;
+	return Padre::HelpProvider::PIR->new;
+}
+
 1;
 
 __END__
