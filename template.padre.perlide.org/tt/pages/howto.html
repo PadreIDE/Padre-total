@@ -7,9 +7,10 @@
   [% INCLUDE first_perl5_script %]
   [% INCLUDE first_perl6_script %]
   [% INCLUDE using_help_in_padre %]
+  [% INCLUDE rename_a_variable %]
   [% INCLUDE enhance_my_plugin %]
   [% INCLUDE add_syntax_highlighter %]
-  [% INCLUDE rename_a_variable %]
+  
   [% INCLUDE get_invloved_in_padre_development %]
   
 [% END %]
@@ -338,7 +339,118 @@ To Be Described
 [% WRAPPER chrome/styled_panel %]
 <h1>How to rename a lexical variable?</h1>
 <p>
-To Be Described
+There are times while writing code you come up with variable names that lack imagination and while at the time you 
+can 'get away' with this initial short coming, when you later return to the code, or worse, someone else is now working 
+on it, you realise that initial lack of a suitable name really starts to cause you pain trying to remember just what it 
+is that the variable does.
+</p>
+<p>
+One of the refactoring tools Padres provides you is the ability to "<b>Lexically Rename</b>" a variable.
+</p>
+<p>
+To understand what it is to "Lexically" rename a variable, it's best to think of the renaming of a variable within 
+the current <a href="http://en.wikipedia.org/wiki/Scope_(programming)">scope<a/> the variable was declared within.
+</p>
+<p>
+For the example shown, the scope for all the variables being renamed is confined within the sub routine itself.  
+That means that any variable with the same name in other functions or part of the script are NOT touched.  To do that 
+you would use a "global" find and replace.
+</p>
+<p>
+This howto uses the example taken from one of the Padre contributors who also happened to <a href="http://use.perl.org/~tsee/journal/39121">blog</a> about using Padre to 
+refactor one of his modules.  This I hope is the screen shots he wished he could have included in the blog post. Thanks tsee!
+</p>
+<p>
+First of all, lets see the code as it stands before we make any changes:
+<br>
+<img src="./static/howto/refact-lex-rename-initial.png"/>
+<br>
+</p>
+<p>
+We can see in tsee's blog post that the first thing he wants renamed are the $op1 and $op2 variable names:
+<ul>
+<li>The $op1 and $op2 variables correspond to the function operands y and x respectively. $d_sub is a closure that can derive recursively. The two templates are simply a shorthand so I didn't have to write  someclass->new(...) repeatedly. To make x and y more apparent and to name $d_sub more fitting to its purpose, I open up the file in Padre, right-click each of those variables, select Lexically Replace Variable from the context menu, and provide the new names. Similarly, I replace $inner. </li>
+</ul>
+So, lets do just that!
+</p>
+<p>
+First locate any instance of the variable name and click on it so that the cursor in "inside" the variable name.
+<br>
+<img src="./static/howto/refact-lex-rename-select-variable.png"/>
+<br>
+<br>
+</p>
+<p>
+Unfortunately at the moment I can't get a screenshot while with menuing system is active, however to get the "Lexically 
+Rename Variable" you can either right click on the variable name and you should see "Lexically Rename Variable" in the 
+context menu.  The other place to find it is under "Perl" in the Menu.
+</p>
+<p>
+You will then be presented with a dialog asking for the new name:
+<br>
+<img src="./static/howto/refact-lex-rename-rename-x.png"/>
+<br>
+<br>
+Here we want to rename $op1 to $x.
+</p>
+<p>
+The end result can be seen:
+<br>
+<img src="./static/howto/refact-lex-rename-renamed-x.png">
+<br>
+<br>
+</p>
+<p>
+So now we go ahead and rename all the variables:
+<br>
+<img src="./static/howto/refact-lex-rename-renamed-rest.png"/>
+<br>
+<br>
+</p>
+<p>
+Next tsee laments the complexity of the code block:
+<ul>
+<li>Of course, that leaves the giant expression intact which actually calculates the result. It makes sense to add a few more temporary variables with descriptive names. I select $op->new('^', $x->new(), $two->new()) in the above version of the code, right-click, and select Insert Temporary Variable. Then I type the name of the new variable $x_square. Padre finds the beginning of the current statement for me and inserts a temporary variable declaration for $x_square at that point. It also replaces the selected text with $x_square. I manually replace another occurrance of the new temporary and then select $op->new('^', $y->new(), $two->new()) and have it replaced with $y_square accordingly. There's more that can be cleaned up, but this handful of clicks and practically no typing has improved the code's readability considerably:</li>
+</ul>
+</p>
+<p>
+Thanks to this valid requirement, lets see how this is done in Padre!
+</p>
+<p>
+First of all select the code we want the new temporary variable created for:
+<br>
+<img src="./static/howto/refact-temp-var-select.png"/>
+<br>
+<br>
+</p>
+<p>
+Next either right click the highted code or from the menu click Perl and then "Introduce Temporary Variable".  You will 
+be then asked for a name for the variable.
+<br>
+<img src="./static/howto/refact-temp-var-name.png"/>
+</p>
+<p>
+With the new name decided upon, click OK and the new variable is then created and used:
+<br>
+<img src="./static/howto/refact-temp-var-x-complete.png"/>
+</p>
+<p>
+And the same is done when we want to create a new temporary variable for $y_squared:
+<br>
+<img src="./static/howto/refact-temp-var-select-y.png"/>
+<br>
+<br>
+<img src="./static/howto/refact-temp-var-name-y.png"/>
+<br>
+<br>
+<img src="./static/howto/refact-temp-var-y-complete.png"/>
+<br>
+<br>
+</p>
+<p>
+There you have two useful examples of refactoring your code based upon a real world example.  I'll leave it to tsee to 
+sum up:
+"Thus Padre helps me refactor crufty code with ease."
 </p>
 <div class="spacer" ></div>
 [% END %]
