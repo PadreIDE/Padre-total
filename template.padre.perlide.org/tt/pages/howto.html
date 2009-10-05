@@ -6,10 +6,12 @@
   [% INCLUDE upgrade_padre %]
   [% INCLUDE first_perl5_script %]
   [% INCLUDE first_perl6_script %]
+  [% INCLUDE using_help_in_padre %]
   [% INCLUDE enhance_my_plugin %]
   [% INCLUDE add_syntax_highlighter %]
   [% INCLUDE rename_a_variable %]
   [% INCLUDE get_invloved_in_padre_development %]
+  
 [% END %]
 
 
@@ -162,6 +164,117 @@ and the phase of the Moon.
 <li>A black window should be displayed and inside that window the text "Hello world".</li>
 <li>You should close the window by clicking on the [x] though it will disappear after 1000 secs.</li>
 </ol>
+</p>
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+[% BLOCK using_help_in_padre %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h1>Using Help</h1>
+<p>
+Padre really wants to help you, as such there is no single set of help documentation for now.
+</p>
+<p>
+Key bindings for F1 will bring up the Docbrowser a means to search for and browse Perldoc, F2 searches the core language documentation, such as built in functions ( split, join ), variables and core Modules. 
+</p>
+<h2>Using the Docbrowser</h2>
+<p>
+Perl comes with a wealth of documentation, perldoc is allows the programmer access to documentation on a given module:
+<pre>
+pete@eeeyore~ $ perldoc Net::LDAP
+
+NAME
+       Net::LDAP - Lightweight Directory Access Protocol
+
+SYNOPSIS
+        use Net::LDAP;
+
+        $ldap = Net::LDAP->new( 'ldap.bigfoot.com' ) or die "$@";
+
+
+</pre> 
+or when used with the -f switch, documentation on built-in functions:
+<pre>
+pete@eeeyore~ $ perldoc -f split
+       split /PATTERN/,EXPR,LIMIT
+       split /PATTERN/,EXPR
+       split /PATTERN/
+       split   Splits the string EXPR into a list of strings and returns that list.  By default, empty leading fields are
+               preserved, and empty trailing ones are deleted.  (If all fields are empty, they are considered to be
+               trailing.)
+...
+</pre>
+</p>
+<p>
+However having an open console to alt-tab to typing perldoc "Module::Name" or perldoc -f "function" gets tedious quickly.
+</p>
+<p>
+You can do this in Padre itself.
+</p>
+<h3>Using F1 to access perldoc for Installed Modules</h3>
+<p>
+The current keybinding <b>F1</b> will bring up the "docbrowser":
+<br>
+<img src="./static/howto/padre-f1-initial.png"/>
+<br>
+Here you can see the initial Help opens and presents you with the perldoc from Padre.pm.
+</p>
+<p>
+The docbrowser is your way of searching for and browsing the perldoc-umentation for any installed Perl Modules that contain POD.
+</p>
+<p>
+Now it's time to search for information about the document we are currently interested in using.  In this case Net::LDAP.
+<br>
+<img src="./static/howto/padre-f1-search.png"/>
+<br>
+</p>
+<p>
+The docbrowser will create href links to documentation referenced and linked to within any perldoc.
+<br>
+<img src="./static/howto/padre-f1-links.png"/>
+<br>
+</p>
+<p>
+In this case IO::Socket is referenced and a link has been created, clicking on the link will open a new tab with the IO::Socket POD.
+<br>
+<img src="./static/howto/padre-f1-link-clicked.png"/>
+<br>
+</p>
+<h2>Using F2 for Perl documentation</h2>
+<p>
+To search for help on built in funtions, such as split or join, global variables, such as $$ or $/, 
+or any of the core Modules, the key binding for the Help Search dialog is <b>F2</b>.
+<br>
+<img src="./static/howto/padre-f2-initial.png"/>
+<br>
+</p>
+<p>
+With the dialog box now open, you can type in terms to search for:
+<br>
+<img src="./static/howto/padre-f2-search.png"/>
+<br>
+</p>
+<p>
+This help search is better integrated into Padre, highlight a word or module name ( such as warnings ) and hit F2, Help will 
+show you the documenation related to the item high lighted in the main Padre document window.
+<br>
+<img src="./static/howto/padre-f2-context.png"/>
+<br>
+</p>
+
+<div class="spacer" ></div>
+[% END %]
+</div>
+[% END %]
+
+[% BLOCK vertically_align_selected %]
+<div style="float: top;">
+[% WRAPPER chrome/styled_panel %]
+<h1>Using Vertically Align</h1>
+<p>
 </p>
 <div class="spacer" ></div>
 [% END %]
