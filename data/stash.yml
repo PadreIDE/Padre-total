@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 October 06
+        url: http://use.perl.org/~Alias/journal/39718
+        title: Padre Productivity: 10 seconds here, 10 seconds there
+        comment: by Adam Kennedy on file name guessing in Padre
       - date: 2009 October 05
         url: http://szabgab.com/blog/2009/10/1254721436.html
         title: Helping each other, you and Padre
