@@ -28,6 +28,10 @@ about:
   - title: y2009
     events:
       - date: 2009 October 06
+        url: http://blog.newint.org/tech/2009/10/06/padre-the-perl-ide-on-osx/
+        title: A Perl-based editor for Perl, on a Mac.
+        comment: Phillip Smith gives instructions on buildin Padre on Mac
+      - date: 2009 October 06
         url: http://use.perl.org/~Alias/journal/39718
         title: Padre Productivity: 10 seconds here, 10 seconds there
         comment: by Adam Kennedy on file name guessing in Padre
