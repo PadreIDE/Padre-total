@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+
 =pod
 
 =head1 NAME
@@ -40,11 +41,11 @@ sub start {
 }
 
 sub action {
-	my $self = shift;
+	my $self   = shift;
 	my $action = shift;
-	print "***** ".$action->{name}." *****\n";
-	print 'Default shortcut: '.$action->{shortcut}."\n" if defined($action->{shortcut});
-	print $action->{comment}."\n" if defined($action->{comment});
+	print "***** " . $action->{name} . " *****\n";
+	print 'Default shortcut: ' . $action->{shortcut} . "\n" if defined( $action->{shortcut} );
+	print $action->{comment} . "\n" if defined( $action->{comment} );
 	print "\n";
 }
 
@@ -66,13 +67,13 @@ _EOT_
 }
 
 sub action {
-	my $self = shift;
+	my $self   = shift;
 	my $action = shift;
-	print '<tr>'.
-		'<td>'.$action->{name}.'</td>'.
-		'<td>'.(defined($action->{shortcut}) ? $action->{shortcut} : '').'</td>'.
-		'<td>'.(defined($action->{comment}) ? $action->{comment} : '').'</td>'.
-		"</tr>\n";
+	print '<tr>' . '<td>'
+		. $action->{name} . '</td>' . '<td>'
+		. ( defined( $action->{shortcut} ) ? $action->{shortcut} : '' ) . '</td>' . '<td>'
+		. ( defined( $action->{comment} )  ? $action->{comment}  : '' ) . '</td>'
+		. "</tr>\n";
 }
 
 sub finish {
@@ -89,25 +90,25 @@ our $VAR1;
 my $Formatter = 'Local::Output::Text';
 
 for (@ARGV) {
-	if ($_ eq '--text') {
+	if ( $_ eq '--text' ) {
 		$Formatter = 'Local::Output::Text';
 		next;
-	} elsif ($_ eq '--html') {
+	} elsif ( $_ eq '--html' ) {
 		$Formatter = 'Local::Output::HTML';
 		next;
 	}
 
 	require $_;
 
-	for (keys(%{$VAR1})) {
+	for ( keys( %{$VAR1} ) ) {
 		$actions{$_} = $VAR1->{$_};
 	}
 }
 
 $Formatter->start;
 
-for (sort(keys(%actions))) {
-	$Formatter->action($actions{$_});
+for ( sort( keys(%actions) ) ) {
+	$Formatter->action( $actions{$_} );
 }
 
 $Formatter->finish;
