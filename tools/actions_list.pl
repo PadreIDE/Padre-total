@@ -20,6 +20,7 @@ and outputs it in text or HTML-format. The default is text format.
 use 5.006;
 use strict;
 use warnings;
+use PPI;
 
 our $VERSION = '0.01';
 
@@ -32,7 +33,7 @@ package Padre::Action;
 sub new {
 	my $class = shift;
 	my %data = @_;
-	
+	print "Add\n";
 	$main::actions{$data{name}} = \%data;
 }
 
@@ -42,13 +43,15 @@ package main;
 
 opendir my $mod_dir,'lib/Padre/Action' or die 'Error opening Action-dir';
 for my $Mod (readdir($mod_dir)) {
-	$Mod =~ s/\.pm$// or next;
+	$Mod =~ /\.pm$/ or next;
 	print "Load $Mod\n";
-	print '$Padre::Action::'.$Mod.'::INC{"Padre/Action.pm"} = "internal";'."\n";
-	eval '$Padre::Action::'.$Mod.'::INC{"Padre/Action.pm"} = "internal";';
-	require 'lib/Padre/Action/'.$Mod.'.pm';
-	$Mod = 'Padre::Action::'.$Mod;
-	$Mod->new();
+	my $Document = PPI::Document->new('lib/Padre/Action/'.$Mod);
+	if ( ! defined($Document)) {
+		warn 'Error while parsing '.$Mod;
+		next;
+	}
+	my $New_Sub = (@{$Document->find(sub { $_[1]->isa('PPI::Statement::Sub') and ($_[1]->name eq 'new') })})[0];
+	eval $New_Sub or warn $@;
 }
 close $mod_dir;
 
