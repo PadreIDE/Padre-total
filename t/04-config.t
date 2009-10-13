@@ -49,13 +49,17 @@ foreach my $name (@names) {
 	);
 }
 
+# The config version number is a requirement for every config and
+# the only key which is allowed to life in an empty config.
+my %Test_Config = (Version => $Padre::Config::VERSION);
+
 # ... and that they don't leave a permanent state.
 is_deeply(
-	+{ %{ $config->human } }, {},
+	+{ %{ $config->human } }, \%Test_Config,
 	'Defaults do not leave permanent state (human)',
 );
 is_deeply(
-	+{ %{ $config->host } }, {},
+	+{ %{ $config->host } }, \%Test_Config,
 	'Defaults do not leave permanent state (host)',
 );
 
