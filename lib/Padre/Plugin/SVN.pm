@@ -376,7 +376,7 @@ sub svn_commit {
 			$main->error( join("\n", @err), 'Error - SVN Commit' );
 		}
 		else {
-			$main->message( join("\n", @commit), "Committed Revision number $revNo" );
+			$main->info( join("\n", @commit), "Committed Revision number $revNo" );
 		}
 	
 	}
