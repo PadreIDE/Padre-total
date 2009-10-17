@@ -18,6 +18,7 @@ sub basename     { $_[0]->filename }
 sub dirname      { $_[0]->basename }
 sub time_on_file { $_[0]->asset->{revisionDate} }
 sub load_file    { $_[0]->load_asset }
+sub is_new       { 0 }
 
 # Override this to change the highlighter/lexer
 sub lexer { Padre::MimeTypes->get_lexer('text/html') }
@@ -28,7 +29,7 @@ sub load_asset {
     Padre::Util::debug( "Loading asset $assetId from $url with mimetype " . $self->get_mimetype );
 
     # TODO: Investigate whether we should actually subclass Padre::File rather than faking it
-    $self->{file} = 1;
+#    $self->{file} = {};
 
     $self->{url} = $url;
 
