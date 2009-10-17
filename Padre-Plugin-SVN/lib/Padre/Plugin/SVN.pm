@@ -106,6 +106,7 @@ sub menu_plugins_simple {
 			'Diff'	=> [ 	'Show' 		=> sub { $self->svn_diff_of_file },
 					'Open in Padre' => sub { $self->svn_diff_in_padre },
 				],
+			'Revert'=> sub { $self->svn_revert },
 			'Log'	=> sub { $self->svn_log_of_file },
 			'Status'=> sub { $self->svn_status_of_file },
 
@@ -175,6 +176,50 @@ sub _get_current_filename {
 		return;
 	}
 }
+# TODO Add in a timer so long running calls can be stopped at some point.
+
+# TODO: update!
+
+sub svn_revert {
+	my($self) = @_;
+	
+	# firstly warn the person their actions will
+	# go back to the last version of the file
+	
+	my $main = Padre::Current->main;
+	my $layout = [
+		[
+			['Wx::StaticText', undef, "Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."],
+			
+		],
+		[
+			['Wx::Button',	'ok',	Wx::wxID_OK],
+			['Wx::Button',	'cancel',Wx::wxID_CANCEL]
+		]
+	];
+	my $dialog = Wx::Perl::Dialog->new(
+	    parent	=> $main,
+	    title	=> 'SVN Revert',
+	    layout	=> $layout,
+	    width	=> [500,1200],
+	    
+	);
+	return if not $dialog->show_modal;
+	my $data = $dialog->get_data;
+	if( $data->{cancel} ) {
+		#print "Canceling the revert\n";
+		return;
+	}
+	else {
+		# 
+		my $filename = _get_current_filename();
+		if( $filename ) {
+			my $file = svn_file($filename);
+			$file->revert();
+		}
+	}
+}
+
 
 sub svn_blame {
 	my( $self ) = @_;
