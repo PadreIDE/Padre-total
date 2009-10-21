@@ -3,6 +3,8 @@ package Padre::Plugin::CommandLine;
 use warnings;
 use strict;
 
+our @ISA = 'Padre::Plugin';
+
 use Cwd              ();
 use Wx::Perl::Dialog ();
 use Padre::Wx        ();
