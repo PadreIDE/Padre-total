@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 October 16
+        url: http://www.modernperlbooks.com/mt/2009/10/from-novice-to-adept-cleaning-up-bad-code.html
+        title: From Novice to Adept: Cleaning Up Bad Code
+        comment: by chromatic
       - date: 2009 October 06
         url: http://blog.newint.org/tech/2009/10/06/padre-the-perl-ide-on-osx/
         title: A Perl-based editor for Perl, on a Mac.
