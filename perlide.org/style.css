@@ -1,3 +1,7 @@
+a:hover
+{
+    color: red;
+}
 .styled_table th, .styled_table td
 {
     vertical-align:top;
