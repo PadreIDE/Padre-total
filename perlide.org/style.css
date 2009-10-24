@@ -16,5 +16,6 @@ a:hover
 {
     border: 1.5pt black solid;
     padding: 2pt;
+    padding-right: 20pt;
 }
 
