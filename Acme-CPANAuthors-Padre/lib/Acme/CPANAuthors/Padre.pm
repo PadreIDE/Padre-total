@@ -10,7 +10,8 @@ our $VERSION = '0.01';
 use Acme::CPANAuthors::Register (
 	TEEJAY     => "Aaron Trevena",
 	AZAWAWI    => "Ahmad M. Zawawi أحمد محمد زواوي",
-	ADAMK      => "Adam Kennedy",
+	# Adam K refuses to take part in Acme::CPANAuthors
+	# ADAMK      => "Adam Kennedy",
 	GARU       => "Breno G. de Oliveira",
 	BRICAS     => "Brian Cassidy",
 	THEREK     => "Cezary Morga",
