@@ -872,6 +872,10 @@ about:
         comment: by barlog
   - title: Russian
     events:
+      - date: 2009 October 27
+        url: http://onperl.ru/onperl/2009/10/naim-shafiev-pro-ide-padre.html
+        title: Наим Шафиев про IDE Padre
+        comment: Naim Shafiev talking about Padre (video)
       - date: 2009 September 17
         url: http://onperl.ru/onperl/2009/09/padre.html
         title: Padre
