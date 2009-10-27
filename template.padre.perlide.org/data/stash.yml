@@ -28,6 +28,14 @@ about:
   - title: y2009
     events:
       - date: 2009 October 27
+        url: http://www.slideshare.net/shafiev/padre-free-perl-ide
+        title: Padre, free Perl IDE
+        comment: the slides of Naim Shafiev (partially in Russian)
+      - date: 2009 October 27
+        url: http://id-perl.blogspot.com/2009/10/trying-out-padre-047.html
+        title: Trying out Padre 0.47
+        comment: by Steven Haryanto on Perl Indonesia
+      - date: 2009 October 27
         url: http://use.perl.org/~Alias/journal/39805
         title: Strawberry Professional, Padre, and Ashton's Law
         comment: by Adam Kennedy
