@@ -27,6 +27,14 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 October 27
+        url: http://use.perl.org/~Alias/journal/39805
+        title: Strawberry Professional, Padre, and Ashton's Law
+        comment: by Adam Kennedy
+      - date: 2009 October 26
+        url: http://szabgab.com/blog/2009/10/1256593212.html
+        title: Perl Editor and IDE Poll results
+        comment: by Gábor Szabó 
       - date: 2009 October 16
         url: http://www.modernperlbooks.com/mt/2009/10/from-novice-to-adept-cleaning-up-bad-code.html
         title: From Novice to Adept: Cleaning Up Bad Code
