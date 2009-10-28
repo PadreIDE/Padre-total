@@ -401,7 +401,11 @@ sub svn_commit {
 	my $file = svn_file($path);
 	
 	my $info = "$path\n\n";
-	$info .= "Last Revision: " . $file->info->{last_rev};
+	if (defined($file->info->{last_rev})) {
+		$info .= "Last Revision: " . $file->info->{last_rev};
+	} else { # New files
+		$info .= "Last Revision: (none)";
+	}
 	require Padre::Plugin::SVN::Wx::SVNDialog;
 	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $info, undef, 'Commit File', 1);
 	$dialog->ShowModal;
