@@ -1,5 +1,7 @@
 Revision history for Acme-CPANAuthors-Padre
 
+0.02    2009.10.28
+        POD and svn repo url fixes
+
 0.01    2009.10.27
         First version, released on an unsuspecting world.
-
