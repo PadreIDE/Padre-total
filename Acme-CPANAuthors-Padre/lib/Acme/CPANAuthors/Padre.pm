@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 use Acme::CPANAuthors::Register (
@@ -53,7 +53,7 @@ Acme::CPANAuthors::Padre - We are the Padre CPAN authors
    my @ids      = $authors->id;
    my @distros  = $authors->distributions("sewi");
    my $url      = $authors->avatar_url("szabgab");
-   my $kwalitee = $authors->kwalitee("adamk");
+   my $kwalitee = $authors->kwalitee("fayland");
    my $name     = $authors->name("azawawi");
 
 =head1 DESCRIPTION
