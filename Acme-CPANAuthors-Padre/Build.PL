@@ -19,7 +19,7 @@ my $builder = Module::Build->new(
 		resources => {
 			homepage => 'http://padre.perlide.org/',
 			repository =>
-				'http://svn.perlide.org/padre/trunk/Padre-Plugin-Perl6/',
+				'http://svn.perlide.org/padre/trunk/Acme-CPANAuthors-Padre',
 		}
 	},
 );
