@@ -200,6 +200,8 @@ sub tell_service {
 sub on_text_enter {
     my ($self,$event) = @_;
     my $message = $self->textinput->GetValue;
+    
+    # Handle /nick for now so everyone is not Anonymous_$$
     if ( my ($new_nick) = $message =~ m{^/nick\s+(.+)} ) {
         my $previous =
             $self->service->identity->nickname;	

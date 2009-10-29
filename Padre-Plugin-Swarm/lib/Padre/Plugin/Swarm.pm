@@ -46,7 +46,7 @@ sub plugin_name {
 
 sub plugin_icons_directory {
 	my $dir = File::Spec->catdir(
-		shift->plugin_share_directory(@_),
+		shift->plugin_directory_share(@_),
 		'icons',
 	);
 	warn "sharedir is '$dir'\n" if DEBUG;
@@ -150,13 +150,7 @@ sub _load_everything {
 
 	# TODO bootstrap some config and construct
 	# services/transports. for now just chat
-	
 	my $chatframe = Padre::Wx::Swarm::Chat->new($self->main);
-	
-	# my $sidebar = Padre::Wx::Swarm::VectorScope->new($self->main);
-	# my $sidebar = Padre::Wx::Swarm::Foo->new($self->main);
-	# $self->set_sidebar( $sidebar );
-	
 	$self->set_chat( $chatframe );
 	$chatframe->enable;
 }
