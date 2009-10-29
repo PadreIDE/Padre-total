@@ -1,4 +1,4 @@
-use Test::More 'no_plan';
+use Test::More skip_all => 'unfinished'; 
 use constant CHAT => 13000;
 use Padre::Swarm::Identity;
 use Data::Dumper;

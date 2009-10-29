@@ -85,7 +85,6 @@ sub new {
 		identity      => $identity,
 		use_transport => {
 			'Padre::Swarm::Transport::Multicast'=>{
-			#'Padre::Swarm::Transport::IRC' => {
 				identity => $identity,
 				loopback => 1,
 			},
@@ -164,13 +163,14 @@ sub accept_message {
 	return if $payload eq 'ALIVE';
 
 	my $message = Storable::thaw($payload);
-	#my $message = $evt->GetData;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 
 	if ( $message->type eq 'chat' ) {
 		my $user = $message->from || 'unknown';
 		my $content = $message->body;
 		return unless defined $content;
+		# TODO - some styling would be nice.
+		#  some day colour code each identity
 		my $output = sprintf( "%s :%s\n", $user, $content );
 		$self->chatframe->AppendText( $output );
 	}
@@ -198,10 +198,25 @@ sub tell_service {
 }
 
 sub on_text_enter {
-	my ($self,$event) = @_;
-	my $message = $self->textinput->GetValue;
-	$self->tell_service( $message );
-	$self->textinput->SetValue('');
+    my ($self,$event) = @_;
+    my $message = $self->textinput->GetValue;
+    if ( my ($new_nick) = $message =~ m{^/nick\s+(.+)} ) {
+        my $previous =
+            $self->service->identity->nickname;	
+        eval {
+            $self->service->identity->set_nickname( $new_nick );
+        };
+
+        $self->tell_service( 
+            "was -> ".
+            $previous	
+        ) unless $@;
+
+    } else {
+        $self->tell_service( $message );
+    }
+    
+    $self->textinput->SetValue('');
 }
 
 sub on_receive_diff {
@@ -236,7 +251,7 @@ sub on_receive_diff {
 		sub {},
 		{ title => 'Swarm Diff' }
 	);
-	warn "PAtching $file in $project" if DEBUG;
+	warn "Patching $file in $project" if DEBUG;
 	warn "APPLY PATCH \n" . $diff if DEBUG;
 	eval {
 		my $result = Text::Patch::patch( $current->text_get , $diff , STYLE=>'Unified' );
@@ -271,6 +286,7 @@ sub on_diff_snippet {
 		type        => 'diff',
 	);
 
+	# Cargo from Padre somewhere ?
 	my $external_diff = $self->main->config->external_diff_tool;
 	if ( $external_diff ) {
 		my $dir = File::Temp::tempdir( CLEANUP => 1 );
@@ -281,7 +297,6 @@ sub on_diff_snippet {
 			system( $external_diff, $filename, $file );
 		} else {
 			warn $! if DEBUG;
-			#$self->main->errorlist->AppendTe($!);
 		}
 
 		# save current version in a temp directory

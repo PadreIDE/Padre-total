@@ -46,7 +46,7 @@ sub is_valid {
 sub set_nickname {
 	my $self = shift;
 	my $arg  = shift;
-	my ($nickname) = $arg =~ /([^\W!])/;
+	my ($nickname) = $arg =~ /([^\W!]+)/;
 	croak "Invalid nickname '$arg'" unless $nickname;
 	$self->{nickname} = $nickname;
 }
@@ -74,6 +74,7 @@ sub canonical {
 
 sub _canonise {
 	my $self  = shift;
+	# Revolting!
 	my $ident = sprintf(
 		'%s!%s|%s@%s' ,
 		$self->{nickname},
