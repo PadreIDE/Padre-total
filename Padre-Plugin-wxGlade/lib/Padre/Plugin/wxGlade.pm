@@ -76,6 +76,23 @@ sub wx_constants {
 ######################################################################
 # Support Methods
 
+sub parse_lines {
+	my $self = shift;
+	my $text = shift;
+
+	# Build a statement set
+	my $id    = 0;
+	my @lines = map { +{
+		id      => $id++,
+		content => $_,
+		names   => {
+			map { $_ => 1 } /(\$self->{\w+}|\$\w+)/gs
+		},
+	} } split /\n/, $text;
+
+	return \@lines;
+}
+
 sub isolate_package {
 	my $self    = shift;
 	my $pkg     = shift;
