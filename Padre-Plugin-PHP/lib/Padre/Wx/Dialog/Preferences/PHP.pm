@@ -7,22 +7,22 @@ use 5.008;
 use Padre::Wx::Dialog::Preferences ();
 
 our $VERSION = '0.01';
-our @ISA = 'Padre::Wx::Dialog::Preferences';
+our @ISA     = 'Padre::Wx::Dialog::Preferences';
 
 sub panel {
-	my $self = shift;
-	my $treebook
-	 = shift;
+	my $self     = shift;
+	my $treebook = shift;
 
 	my $config = Padre->ide->config;
-	
-	my $table  = [
-#		[   [   'Wx::CheckBox', 'editor_wordwrap', ( $config->editor_wordwrap ? 1 : 0 ),
-#				Wx::gettext('Default word wrap on for each file')
-#			],
-#			[]
-#		],
-		[   [ 'Wx::StaticText', undef,          Wx::gettext('PHP interpreter:') ],
+
+	my $table = [
+
+		#		[   [   'Wx::CheckBox', 'editor_wordwrap', ( $config->editor_wordwrap ? 1 : 0 ),
+		#				Wx::gettext('Default word wrap on for each file')
+		#			],
+		#			[]
+		#		],
+		[   [ 'Wx::StaticText', undef,     Wx::gettext('PHP interpreter:') ],
 			[ 'Wx::TextCtrl',   'php_cmd', $config->php_cmd ]
 		],
 		[   [ 'Wx::StaticText', undef,                          Wx::gettext('PHP interpreter arguments:') ],
@@ -41,13 +41,13 @@ sub save {
 	my $data = shift;
 
 	my $config = Padre->ide->config;
-	
-		$config->set(
+
+	$config->set(
 		'php_cmd',
 		$data->{php_cmd}
 	);
 
-		$config->set(
+	$config->set(
 		'php_interpreter_args_default',
 		$data->{php_interpreter_args_default}
 	);

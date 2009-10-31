@@ -19,14 +19,15 @@ sub event_on_char {
 
 	$editor->Freeze;
 
-	$self->autocomplete_matching_char($editor,$event,
-			34  => 34,  # " "
-			39  => 39,  # ' '
-			40  => 41,  # ( )
-			60  => 62,  # < >
-			91  => 93,  # [ ]
-			123 => 125, # { }
-		);
+	$self->autocomplete_matching_char(
+		$editor, $event,
+		34  => 34,  # " "
+		39  => 39,  # ' '
+		40  => 41,  # ( )
+		60  => 62,  # < >
+		91  => 93,  # [ ]
+		123 => 125, # { }
+	);
 
 	$editor->Thaw;
 
@@ -143,13 +144,13 @@ sub autoclean {
 	my $self = shift;
 
 	my $editor = $self->editor;
-	my $text = $editor->GetText;
-	
+	my $text   = $editor->GetText;
+
 	$text =~ s/[\s\t]+([\r\n]*?)$/$1/mg;
 	$text .= "\n" if $text !~ /\n$/;
 
 	$editor->SetText($text);
-	
+
 	return 1;
 
 }
@@ -192,7 +193,8 @@ sub get_command {
 	# Set default arguments
 	my %run_args = (
 		interpreter => $config->php_interpreter_args_default,
-#		script      => $config->run_script_args_default,
+
+		#		script      => $config->run_script_args_default,
 	);
 
 	# Overwrite default arguments with the ones preferred for given document

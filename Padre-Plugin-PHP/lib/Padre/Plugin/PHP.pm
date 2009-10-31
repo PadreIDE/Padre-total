@@ -11,29 +11,29 @@ use Padre::Wx ();
 use Padre::Wx::Dialog::Preferences();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.26,
-	'Padre::Document' => 0.21,
+	'Padre::Plugin' => 0.26, 'Padre::Document' => 0.21,;
 }
 
 sub registered_documents {
-	'application/x-php' => 'Padre::Document::PHP',
+	'application/x-php' => 'Padre::Document::PHP',;
 }
 
 sub plugin_enable {
-	 my $self = shift;
-	 
-	 $self->_config_settings;
-	 
-		$Padre::Wx::Dialog::Preferences::PANELS{'Padre::Wx::Dialog::Preferences::PHP'} =
-			'PHP';
+	my $self = shift;
+
+	$self->_config_settings;
+
+	$Padre::Wx::Dialog::Preferences::PANELS{'Padre::Wx::Dialog::Preferences::PHP'} = 'PHP';
 }
 
 sub menu_plugins_simple {
-    my $self = shift;
-    
-	return ('PHP' => [
-	    'About',   sub { $self->about },
-	]);
+	my $self = shift;
+
+	return (
+		'PHP' => [
+			'About', sub { $self->about },
+		]
+	);
 }
 
 sub about {
@@ -41,11 +41,9 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription(
-		"This plugin currently provides naive syntax highlighting for PHP files\n"
-	);
+	$about->SetDescription( "This plugin currently provides naive syntax highlighting for PHP files\n" );
 	$about->SetVersion($VERSION);
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 
@@ -58,17 +56,17 @@ sub _config_settings {
 	my $config = Padre->ide->config;
 
 	$config->setting(
-	name  => 'php_cmd',
-	type  => Padre::Constant::ASCII,
-	store => Padre::Constant::HOST,
-	default => '',
+		name    => 'php_cmd',
+		type    => Padre::Constant::ASCII,
+		store   => Padre::Constant::HOST,
+		default => '',
 	);
 
 	$config->setting(
-	name  => 'php_interpreter_args_default',
-	type  => Padre::Constant::ASCII,
-	store => Padre::Constant::HOST,
-	default => '',
+		name    => 'php_interpreter_args_default',
+		type    => Padre::Constant::ASCII,
+		store   => Padre::Constant::HOST,
+		default => '',
 	);
 
 }
