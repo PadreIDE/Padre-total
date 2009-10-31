@@ -8,6 +8,7 @@ our $VERSION = '0.01';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
+use Padre::Wx::Dialog::Preferences();
 
 sub padre_interfaces {
 	'Padre::Plugin'   => 0.26,
@@ -16,6 +17,15 @@ sub padre_interfaces {
 
 sub registered_documents {
 	'application/x-php' => 'Padre::Document::PHP',
+}
+
+sub plugin_enable {
+	 my $self = shift;
+	 
+	 $self->_config_settings;
+	 
+		$Padre::Wx::Dialog::Preferences::PANELS{'Padre::Wx::Dialog::Preferences::PHP'} =
+			'PHP';
 }
 
 sub menu_plugins_simple {
@@ -37,6 +47,30 @@ sub about {
 	$about->SetVersion($VERSION);
 	Wx::AboutBox( $about );
 	return;
+}
+
+###############################################################################
+# Internal functions
+
+sub _config_settings {
+	my $self = shift;
+
+	my $config = Padre->ide->config;
+
+	$config->setting(
+	name  => 'php_cmd',
+	type  => Padre::Constant::ASCII,
+	store => Padre::Constant::HOST,
+	default => '',
+	);
+
+	$config->setting(
+	name  => 'php_interpreter_args_default',
+	type  => Padre::Constant::ASCII,
+	store => Padre::Constant::HOST,
+	default => '',
+	);
+
 }
 
 
