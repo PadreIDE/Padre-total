@@ -1,6 +1,8 @@
 Changes for Perl extension Padre-Plugin-Swarm
 
 0.01 to be released
+	- add chat-join announcements to chat window (BRAMBLE)
+	- add support for '/nick' change (BRAMBLE)
 	- Moved Padre::Swarm::Transport::XMPP to it's own
 	  distribution (ADAMK)
 	- Made warnings toggle'able with a single constant (ADAMK)
