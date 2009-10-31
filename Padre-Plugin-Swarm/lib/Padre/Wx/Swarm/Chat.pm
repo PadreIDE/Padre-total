@@ -178,6 +178,9 @@ sub accept_message {
 		$self->on_receive_diff($message);
 		return;
 	}
+	elsif ( $message->type eq 'announce' ) {
+	    $self->chatframe->AppendText( $message->from . " has joined the swarm \n" );
+	}
 	else {
 		warn "Discarded $message" if DEBUG;
 	}
