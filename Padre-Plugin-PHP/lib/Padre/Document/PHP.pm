@@ -154,4 +154,67 @@ sub autoclean {
 
 }
 
+sub get_command {
+
+	# This is a very first try for running PHP scripts, treat it as alpha!!!
+
+	my $self  = shift;
+	my $debug = shift;
+
+	my $config = Padre->ide->config;
+
+	# Use a temporary file if run_save is set to 'unsaved'
+	my $filename =
+		  $config->run_save eq 'unsaved' && !$self->is_saved
+		? $self->store_in_tempfile
+		: $self->filename;
+
+	# Run with console Perl to prevent unexpected results under wperl
+	# The configuration values is cheaper to get compared to cperl(),
+	# try it first.
+#	my $php = $config->php_cmd;
+	my $php = 'php';
+
+	# Warn if the PHP interpreter is not executable:
+#	if ( defined($php) and ( $php ne '' ) and ( !-x $php ) ) {
+#		my $ret = Wx::MessageBox(
+#			Wx::gettext(
+#				sprintf( '%s seems to be no executable PHP interpreter, use the system default PHP instead?', $php )
+#			),
+#			Wx::gettext('Run'),
+#			Wx::wxYES_NO | Wx::wxCENTRE,
+#			Padre->ide->wx->main,
+#		);
+#		$perl = Padre::Perl::cperl()
+#			if $ret == Wx::wxYES;
+#
+#	} else {
+#		$perl = Padre::Perl::cperl();
+#	}
+#
+	# Set default arguments
+	my %run_args = (
+#		interpreter => $config->run_interpreter_args_default,
+#		script      => $config->run_script_args_default,
+	);
+
+	# Overwrite default arguments with the ones preferred for given document
+	foreach my $arg ( keys %run_args ) {
+		my $type = "run_${arg}_args_" . File::Basename::fileparse($filename);
+		$run_args{$arg} = Padre::DB::History->previous($type) if Padre::DB::History->previous($type);
+	}
+
+	# (Ticket #530) Pack args here, because adding the space later confuses the called Perls @ARGV
+	my $Script_Args = '';
+	$Script_Args = ' ' . $run_args{script} if defined( $run_args{script} ) and ( $run_args{script} ne '' );
+
+	my $dir = File::Basename::dirname($filename);
+	chdir $dir;
+
+	return $debug
+		? qq{"$php" -d error_reporting=E_ALL $run_args{interpreter} "$filename"$Script_Args}
+		: qq{"$php" $run_args{interpreter} "$filename"$Script_Args};
+}
+
+
 1;
