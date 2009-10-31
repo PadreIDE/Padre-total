@@ -195,7 +195,7 @@ Lessons learned here will be applied to more practical plugins later.
 
 =head1 COPYRIGHT
 
-Copyright 2009 The Padre develoment team as listed in Padre.pm
+Copyright 2009 The Padre development team as listed in Padre.pm
 
 =head1 LICENSE
 
