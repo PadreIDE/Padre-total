@@ -139,4 +139,19 @@ sub autocomplete {
 	return ( length($prefix), @final_words );
 }
 
+sub autoclean {
+	my $self = shift;
+
+	my $editor = $self->editor;
+	my $text = $editor->GetText;
+	
+	$text =~ s/[\s\t]+([\r\n]*?)$/$1/mg;
+	$text .= "\n" if $text !~ /\n$/;
+
+	$editor->SetText($text);
+	
+	return 1;
+
+}
+
 1;
