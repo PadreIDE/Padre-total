@@ -6,7 +6,7 @@ use 5.008;
 
 use Padre::Wx::Dialog::Preferences ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Wx::Dialog::Preferences';
 
 sub panel {
