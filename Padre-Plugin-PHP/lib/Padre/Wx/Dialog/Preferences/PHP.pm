@@ -63,6 +63,12 @@ __END__
 
 Padre::Plugin::PHP - L<Padre> and PHP
 
+=head1 DESCRIPTION
+
+This modules provides preference options for the Padre::Plugin::PHP - module.
+
+It uses the Padre preferences panel.
+
 =head1 AUTHOR
 
 Sebastian Willing
