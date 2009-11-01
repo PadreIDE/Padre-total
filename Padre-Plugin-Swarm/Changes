@@ -1,6 +1,10 @@
 Changes for Perl extension Padre-Plugin-Swarm
+0.02 to be released
+	- add some styling to user chat window , colourize output
+	- attempt to add a list of chat users
+	- apply diff snippets to current documents silently and with deadly force
 
-0.01 to be released
+0.01 - Sun Nov 1 2009 
 	- add chat-join announcements to chat window (BRAMBLE)
 	- add support for '/nick' change (BRAMBLE)
 	- Moved Padre::Swarm::Transport::XMPP to it's own

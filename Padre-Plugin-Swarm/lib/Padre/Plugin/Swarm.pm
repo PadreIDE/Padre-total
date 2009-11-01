@@ -27,7 +27,7 @@ use Class::XSAccessor
 	};
 
 # Turn this on to enable warnings
-use constant DEBUG => 0;
+use constant DEBUG => 1;
 
 
 
