@@ -41,7 +41,7 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription( "This plugin currently provides naive syntax highlighting for PHP files\n" );
+	$about->SetDescription("This plugin currently provides naive syntax highlighting for PHP files\n");
 	$about->SetVersion($VERSION);
 	Wx::AboutBox($about);
 	return;
