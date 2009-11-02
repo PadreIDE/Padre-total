@@ -9,7 +9,7 @@ use Padre::Wx              ();
 use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor
@@ -27,7 +27,7 @@ use Class::XSAccessor
 	};
 
 # Turn this on to enable warnings
-use constant DEBUG => 1;
+use constant DEBUG => 0;
 
 
 
@@ -49,7 +49,6 @@ sub plugin_icons_directory {
 		shift->plugin_directory_share(@_),
 		'icons',
 	);
-	warn "sharedir is '$dir'\n" if DEBUG;
 	$dir;
 }
 

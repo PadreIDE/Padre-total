@@ -92,12 +92,8 @@ sub service_loop {
 			};
 			unless ( $message ) {
 				warn "Decode failed for $payload \n\t - with $@" if DEBUG;
-				#$self->task_warn($@ );
-				#$self->task_warn($payload);
 				next;
 			}
-
-			#warn "DECODED " . Dumper $message if DEBUG;
 
 			$message->{$_} = $frame->{$_}
 				for keys %$frame;

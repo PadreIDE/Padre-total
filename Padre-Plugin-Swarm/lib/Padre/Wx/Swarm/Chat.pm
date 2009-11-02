@@ -25,8 +25,6 @@ use Class::XSAccessor
 		service   => 'service',
 		textinput => 'textinput',
 		chatframe => 'chatframe',
-		userlist  => 'userlist',
-		#
 		users => 'users',
 	},
 	setters => {
@@ -66,16 +64,7 @@ sub new {
 		| Wx::wxNO_FULL_REPAINT_ON_RESIZE
 	);
 	
-	my $users = Wx::ListCtrl->new(
-            $self , -1,  
-            Wx::wxDefaultPosition, Wx::wxDefaultSize,
-            Wx::wxLC_REPORT,
-	);
-	$users->InsertColumn(0,'Users');
-	
-	$self->userlist($users);
 	$hbox->Add( $chat , 1 , Wx::wxGROW );
-	$hbox->Add( $users, 0 , Wx::wxEXPAND );
 	
 	$sizer->Add($hbox,1, Wx::wxGROW );
 	$sizer->Add($text,0, Wx::wxGROW );
@@ -220,13 +209,7 @@ sub accept_announce {
         return
     }
     else {
-        my @rgb = derive_rgb($announce->from);
         $self->chatframe->AppendText( $announce->from . " has joined the swarm \n" );
-        my $col = Wx::Colour->new(@rgb);
-        my $item = Wx::ListItem->new;
-        $item->SetTextColour($col);
-        $item->SetText($announce->from);
-        $self->userlist->InsertItem( $item );
         $self->users->{$nick} = 1;
     }
     
@@ -416,7 +399,6 @@ sub derive_rgb {
     my $digest = md5($string);
     my $word   = substr($digest,0,2);
     my $int    = unpack('%S',$word);
-    warn "derived $int";
     my $hue = 360 * ( $int / 65535 );
     my $norm =  hsv2rgb( $hue, 0.8, 0.75 );
     my @rgb =  map { int(255*$_) } @$norm;
