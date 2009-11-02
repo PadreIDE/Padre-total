@@ -29,7 +29,7 @@ if ($win32) {
   print "ok # Skip. Doesn't work on Win32??\n";
   # What the hell ? Dropping an unsubscribed mcast group on win32 fails to fail?
 } else {
-  ok(!$s->mcast_drop('225.0.1.1'), 'Drop unsbuscribed group returns false'  );
+  ok(!$s->mcast_drop('225.0.1.1'), 'Drop unsubscribed group returns false'  );
 }
 
 SKIP: {
@@ -61,13 +61,9 @@ sub find_a_mcast_if {
   my $s = shift;
   my @ifs = $s->if_list;
   foreach (reverse @ifs) {
-    diag( $_ );
-    diag( $s->if_flags($_) );
     
     next unless $s->if_flags($_) & IFF_MULTICAST();
-    diag( $_ .' Is multicast' );
     next unless $s->if_flags($_) & IFF_RUNNING();
-    diag( $_ . '  Is running' );
     next unless $s->if_addr($_); 
     return $_;
   }
