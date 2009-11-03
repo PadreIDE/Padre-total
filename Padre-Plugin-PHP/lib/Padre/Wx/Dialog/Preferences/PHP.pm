@@ -12,7 +12,7 @@ our @ISA     = 'Padre::Wx::Dialog::Preferences';
 sub panel {
 	my $self     = shift;
 	my $treebook = shift;
-	my $parent = shift;
+	my $parent   = shift;
 
 	my $config = Padre->ide->config;
 
