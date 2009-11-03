@@ -1,5 +1,9 @@
 Changes for Perl extension Padre-Plugin-Swarm
-0.02 to be released
+0.03 in progress
+	- expunge IRC transport (BRAMBLE)
+	- remove list of chat users
+
+0.02 *RELEASED IN ERROR* 
 	- add some styling to user chat window , colourize output
 	- attempt to add a list of chat users
 	- apply diff snippets to current documents silently and with deadly force
