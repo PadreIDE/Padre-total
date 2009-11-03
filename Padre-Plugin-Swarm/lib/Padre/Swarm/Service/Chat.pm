@@ -12,7 +12,7 @@ use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
 use Padre::Swarm::Transport::Multicast ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our @ISA     = 'Padre::Swarm::Service';
 
 use Class::XSAccessor

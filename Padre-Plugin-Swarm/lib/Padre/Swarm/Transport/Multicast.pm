@@ -10,7 +10,7 @@ use Padre::Plugin::Swarm ();
 use Padre::Swarm::Identity;
 use Padre::Swarm::Transport;
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our @ISA     = 'Padre::Swarm::Transport';
 
 use Class::XSAccessor

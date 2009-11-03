@@ -16,7 +16,7 @@ use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Swarm::Service::Chat;
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor
