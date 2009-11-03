@@ -8,9 +8,16 @@ BEGIN {
 use Test::More tests => 14;
 use IO::Socket::Multicast;
 
-# Simple constructor
-my $s = IO::Socket::Multicast->new;
-isa_ok( $s, 'IO::Socket::Multicast' );
+my $MCAST_ADDR = '225.0.0.1';
+my $MCAST_PORT = 9999;
+
+# I think winsock prefers the socket
+#  to be bound to _something_
+my $s = IO::Socket::Multicast->new(
+    LocalPort => $MCAST_PORT,
+    LocalAddr => $MCAST_ADDR,
+    ReuseAddr => 1,
+);
 
 # Platform compatibility
 my $WIN32        = $^O eq 'MSWin32';
@@ -19,13 +26,17 @@ my $OS_OK        = ( $LINUX and $LINUX >= 2.2 );
 my $IO_INTERFACE = eval "use IO::Interface ':flags'; 1;";
 my $INTERFACE    = $IO_INTERFACE && find_a_mcast_if($s);
 
+
+isa_ok( $s, 'IO::Socket::Multicast' );
+
+ok($s->mcast_add($MCAST_ADDR), 'Add socket to Multicast Group' );
+ok($s->mcast_drop($MCAST_ADDR),'Drop Multicast Group' );
+	
 # Some basics
 SKIP: {
 	# Windows doesn't return true for stuff
-	skip("Doesn't work on Win32??", 3) if $WIN32;
-	ok($s->mcast_add('225.0.1.1'), 'Add socket to Multicast Group' );
-	ok($s->mcast_drop(inet_aton('225.0.1.1')),'Drop Multicast Group' );
-	ok( ! $s->mcast_drop('225.0.1.1'), 'Drop unsubscribed group returns false' );
+	skip("Doesn't work on Win32??", 1) if $WIN32;
+	ok( ! $s->mcast_drop($MCAST_ADDR), 'Drop unsubscribed group returns false' );
 }
 
 # More subtle control
@@ -46,7 +57,7 @@ SKIP: {
 	ok ($s->mcast_if  eq 'any' ,    'Default interface "any"');
 	ok ($s->mcast_if($INTERFACE) eq 'any', 'Multicast interface set returns previous value');
 	ok ($s->mcast_if eq $INTERFACE , 'Multicast interface set');
-	ok ($s->mcast_add('225.0.1.1',$INTERFACE), 'Multicast add GROUP,if');
+	ok ($s->mcast_add($MCAST_ADDR,$INTERFACE), 'Multicast add GROUP,if');
 }
 
 sub find_a_mcast_if {
@@ -55,7 +66,7 @@ sub find_a_mcast_if {
 	foreach ( reverse @ifs ) {
 		next unless $s->if_flags($_) & IFF_MULTICAST();
 		next unless $s->if_flags($_) & IFF_RUNNING();
-		next unless $s->if_addr($_); 
+		next unless $s->if_addr($_); # Having an address seems important
 		return $_;
 	}
 }
