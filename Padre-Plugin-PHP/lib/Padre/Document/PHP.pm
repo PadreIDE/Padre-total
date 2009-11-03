@@ -168,9 +168,6 @@ sub get_command {
 		? $self->store_in_tempfile
 		: $self->filename;
 
-	# Run with console Perl to prevent unexpected results under wperl
-	# The configuration values is cheaper to get compared to cperl(),
-	# try it first.
 	my $php = $config->php_cmd;
 
 	# Warn if the PHP interpreter is not executable:
@@ -183,11 +180,11 @@ sub get_command {
 			Wx::wxYES_NO | Wx::wxCENTRE,
 			Padre->ide->wx->main,
 		);
-		$perl = Padre::Perl::cperl()
+		$php = 'php'
 			if $ret == Wx::wxYES;
 
 	} else {
-		$perl = Padre::Perl::cperl();
+		$php = 'php';
 	}
 
 	# Set default arguments
@@ -203,7 +200,7 @@ sub get_command {
 		$run_args{$arg} = Padre::DB::History->previous($type) if Padre::DB::History->previous($type);
 	}
 
-	# (Ticket #530) Pack args here, because adding the space later confuses the called Perls @ARGV
+	# TODO: Pack args here, because adding the space later confuses the called interpreter
 	my $Script_Args = '';
 	$Script_Args = ' ' . $run_args{script} if defined( $run_args{script} ) and ( $run_args{script} ne '' );
 

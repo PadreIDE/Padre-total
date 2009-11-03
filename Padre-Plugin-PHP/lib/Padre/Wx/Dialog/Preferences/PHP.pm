@@ -12,6 +12,7 @@ our @ISA     = 'Padre::Wx::Dialog::Preferences';
 sub panel {
 	my $self     = shift;
 	my $treebook = shift;
+	my $parent = shift;
 
 	my $config = Padre->ide->config;
 
@@ -31,7 +32,7 @@ sub panel {
 	];
 
 	my $panel = $self->_new_panel($treebook);
-	$self->fill_panel_by_table( $panel, $table );
+	$parent->fill_panel_by_table( $panel, $table );
 
 	return $panel;
 }
