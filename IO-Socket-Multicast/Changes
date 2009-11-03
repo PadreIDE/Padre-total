@@ -1,4 +1,8 @@
-Revision history for Perl extension IO::Socket::Multicast
+Revision history for Perl extension IO-Socket-Multicast
+
+1.09
+	Refactored tests to prevent false negatives on Win32 (ADAMK)
+
 1.08	Mon Nov  2 11:23:33 EST 2009
 	Test fixes and spelling corrections (BRAMBLE)
 
