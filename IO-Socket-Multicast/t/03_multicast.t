@@ -5,7 +5,7 @@ BEGIN {
 	$^W = 1;
 }
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 use IO::Socket::Multicast;
 
 # Simple constructor
