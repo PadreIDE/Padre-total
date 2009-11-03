@@ -20,11 +20,11 @@ my $IO_INTERFACE = eval "use IO::Interface ':flags'; 1;";
 my $INTERFACE    = $IO_INTERFACE && find_a_mcast_if($s);
 
 # Some basics
-ok($s->mcast_add('225.0.1.1'), 'Add socket to Multicast Group' );
-ok($s->mcast_drop(inet_aton('225.0.1.1')),'Drop Multicast Group' );
 SKIP: {
-	# What the hell ? Dropping an unsubscribed mcast group on win32 fails to fail?
-	skip("Doesn't work on Win32??", 1) if $WIN32;
+	# Windows doesn't return true for stuff
+	skip("Doesn't work on Win32??", 3) if $WIN32;
+	ok($s->mcast_add('225.0.1.1'), 'Add socket to Multicast Group' );
+	ok($s->mcast_drop(inet_aton('225.0.1.1')),'Drop Multicast Group' );
 	ok( ! $s->mcast_drop('225.0.1.1'), 'Drop unsubscribed group returns false' );
 }
 
