@@ -15,8 +15,6 @@ my $MCAST_PORT = 9999;
 #  to be bound to _something_
 my $s = IO::Socket::Multicast->new(
     LocalPort => $MCAST_PORT,
-    LocalAddr => $MCAST_ADDR,
-    ReuseAddr => 1,
 );
 
 # Platform compatibility

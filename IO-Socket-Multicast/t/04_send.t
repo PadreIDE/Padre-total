@@ -19,8 +19,6 @@ my $MCAST_PORT = 9999;
 
 my $s = IO::Socket::Multicast->new(
     LocalPort => $MCAST_PORT,
-    LocalAddr => $MCAST_ADDR,
-    ReuseAddr => 1,
     Blocking  => 0,
 );
 
