@@ -212,5 +212,11 @@ sub get_command {
 		: qq{"$php" $run_args{interpreter} "$filename"$Script_Args};
 }
 
+sub menu {
+	my $self = shift;
+
+	return [ 'menu.PHP' ];
+}
+
 
 1;
