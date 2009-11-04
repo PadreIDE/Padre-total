@@ -81,9 +81,10 @@ sub plugin_enable {
 # clean up modules used.
 sub plugin_disable {
 	my $self = shift;
+
 	#require Class::Unload;
 	#Class::Unload->unload('Padre::Plugin::SVN::Wx::SVNDialog');
-	#Class::Unload->unload('Padre::Plugin::SVN');	
+	#Class::Unload->unload('Padre::Plugin::SVN');
 }
 
 sub padre_interfaces {
@@ -100,46 +101,48 @@ sub menu_plugins_simple {
 
 		# only file operations at the moment
 		#'File'		=> [
-			'Add'	=> sub { $self->svn_add },
-			'Blame'	=> sub { $self->svn_blame },
-			'Commit'=> sub { $self->svn_commit_file },
-			'Diff'	=> [ 	'Show' 		=> sub { $self->svn_diff_of_file },
-					'Open in Padre' => sub { $self->svn_diff_in_padre },
-				],
-			'Revert'=> sub { $self->svn_revert },
-			'Log'	=> sub { $self->svn_log_of_file },
-			'Status'=> sub { $self->svn_status_of_file },
+		'Add'    => sub { $self->svn_add },
+		'Blame'  => sub { $self->svn_blame },
+		'Commit' => sub { $self->svn_commit_file },
+		'Diff'   => [
+			'Show'          => sub { $self->svn_diff_of_file },
+			'Open in Padre' => sub { $self->svn_diff_in_padre },
+		],
+		'Revert' => sub { $self->svn_revert },
+		'Log'    => sub { $self->svn_log_of_file },
+		'Status' => sub { $self->svn_status_of_file },
 
 		#],
-		'About'     => sub { $self->show_about },		
-#		'Project - Not Implemented'	=> [],
-#		'Commit...' => [
-#			'File'    => sub { $self->svn_commit_file },
-#			'Project' => sub { $self->svn_commit_project },
-#		],
-#		'Blame'	=> [
-#			'File'	=> sub { $self->svn_blame },
-#		],
-#		'Status...' => [
-#			'File'    => sub { $self->svn_status_of_file },
-#			'Project' => sub { $self->svn_status_of_project },
-#		],
-#		'Log...' => [
-#			'File'    => sub { $self->svn_log_of_file },
-#			'Project' => sub { $self->svn_log_of_project },
-#		],
-#		'Diff...' => [
-#			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
-#			'Dir'     => sub { $self->svn_diff_of_dir },
-#			'Project' => sub { $self->svn_diff_of_project },
-#		],
-#		'Add...' => [
-#			'File' => sub { $self->svn_add_file },
-#
-#			#			'Dir'     => sub { $self->svn_diff_of_dir },
-#			#			'Project' => sub { $self->svn_diff_of_project },
-#		],
-#
+		'About' => sub { $self->show_about },
+
+		#		'Project - Not Implemented'	=> [],
+		#		'Commit...' => [
+		#			'File'    => sub { $self->svn_commit_file },
+		#			'Project' => sub { $self->svn_commit_project },
+		#		],
+		#		'Blame'	=> [
+		#			'File'	=> sub { $self->svn_blame },
+		#		],
+		#		'Status...' => [
+		#			'File'    => sub { $self->svn_status_of_file },
+		#			'Project' => sub { $self->svn_status_of_project },
+		#		],
+		#		'Log...' => [
+		#			'File'    => sub { $self->svn_log_of_file },
+		#			'Project' => sub { $self->svn_log_of_project },
+		#		],
+		#		'Diff...' => [
+		#			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
+		#			'Dir'     => sub { $self->svn_diff_of_dir },
+		#			'Project' => sub { $self->svn_diff_of_project },
+		#		],
+		#		'Add...' => [
+		#			'File' => sub { $self->svn_add_file },
+		#
+		#			#			'Dir'     => sub { $self->svn_diff_of_dir },
+		#			#			'Project' => sub { $self->svn_diff_of_project },
+		#		],
+		#
 	];
 }
 
@@ -166,74 +169,77 @@ END_MESSAGE
 # TODO: I see this a lot. Should something like
 # this be on Padre::Util?
 sub _get_current_filename {
-	my $main = Padre->ide->wx->main;
+	my $main     = Padre->ide->wx->main;
 	my $document = $main->current->document;
 	my $filename = $document->filename;
 	if ($filename) {
-		
-		if ($document->is_modified) {
-			my $ret = Wx::MessageBox(
-			sprintf(
-				Wx::gettext('%s has not been saved but SVN would commit the file from disk.'.
-				            "\n\nDo you want to save the file first (No aborts commit)?"),
-				$filename,
-			),
-			Wx::gettext("Commit warning"),
-			Wx::wxYES_NO | Wx::wxCENTRE,
-			Padre->ide->wx->main,
-		);
 
-		return if $ret == Wx::wxNO;
-		
-		$main->on_save;
+		if ( $document->is_modified ) {
+			my $ret = Wx::MessageBox(
+				sprintf(
+					Wx::gettext(
+						      '%s has not been saved but SVN would commit the file from disk.'
+							. "\n\nDo you want to save the file first (No aborts commit)?"
+					),
+					$filename,
+				),
+				Wx::gettext("Commit warning"),
+				Wx::wxYES_NO | Wx::wxCENTRE,
+				Padre->ide->wx->main,
+			);
+
+			return if $ret == Wx::wxNO;
+
+			$main->on_save;
 
 		}
-		
+
 		return $filename;
-	}
-	else {
+	} else {
 		$main->error('File needs to be saved first');
 		return;
 	}
 }
+
 # TODO Add in a timer so long running calls can be stopped at some point.
 
 # TODO: update!
 
 sub svn_revert {
-	my($self) = @_;
-	
+	my ($self) = @_;
+
 	# firstly warn the person their actions will
 	# go back to the last version of the file
-	
-	my $main = Padre::Current->main;
+
+	my $main   = Padre::Current->main;
 	my $layout = [
-		[
-			['Wx::StaticText', undef, "Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."],
-			
+		[   [   'Wx::StaticText', undef,
+				"Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."
+			],
+
 		],
-		[
-			['Wx::Button',	'ok',	Wx::wxID_OK],
-			['Wx::Button',	'cancel',Wx::wxID_CANCEL]
+		[   [ 'Wx::Button', 'ok',     Wx::wxID_OK ],
+			[ 'Wx::Button', 'cancel', Wx::wxID_CANCEL ]
 		]
 	];
 	my $dialog = Wx::Perl::Dialog->new(
-	    parent	=> $main,
-	    title	=> 'SVN Revert',
-	    layout	=> $layout,
-	    width	=> [500,1200],
-	    
+		parent => $main,
+		title  => 'SVN Revert',
+		layout => $layout,
+		width  => [ 500, 1200 ],
+
 	);
 	return if not $dialog->show_modal;
 	my $data = $dialog->get_data;
-	if( $data->{cancel} ) {
+	if ( $data->{cancel} ) {
+
 		#print "Canceling the revert\n";
 		return;
-	}
-	else {
-		# 
+	} else {
+
+		#
 		my $filename = _get_current_filename();
-		if( $filename ) {
+		if ($filename) {
 			my $file = svn_file($filename);
 			$file->revert();
 		}
@@ -242,7 +248,7 @@ sub svn_revert {
 
 
 sub svn_blame {
-	my( $self ) = @_;
+	my ($self) = @_;
 	my $filename = _get_current_filename();
 	if ($filename) {
 		my $main = Padre::Current->main;
@@ -250,48 +256,49 @@ sub svn_blame {
 		my $file = svn_file($filename);
 		$file->blame();
 		$self->{_busyCursor} = undef;
-		my $blame = join( "\n", @{$file->stdout} );
+		my $blame = join( "\n", @{ $file->stdout } );
 		require Padre::Plugin::SVN::Wx::SVNDialog;
-		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $filename, $blame, 'Blame');
+		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $filename, $blame, 'Blame' );
 		$dialog->Show(1);
 		return 1;
 	}
-	
+
 	return;
-	
+
 }
 
 sub svn_status {
 	my ( $self, $path ) = @_;
-	my $main   = Padre->ide->wx->main;
+	my $main = Padre->ide->wx->main;
 
-	my $file = svn_file( $path );
-	
+	my $file = svn_file($path);
+
 	my $info = "";
-	
-	if( $file->info ) {
+
+	if ( $file->info ) {
+
 		#print $file->info->dump();
 		$info .= "Author: " . $file->info->{author} . "\n";
 		$info .= "File Name: " . $file->info->{name} . "\n";
 		$info .= "Last Revision: " . $file->info->{last_rev} . "\n";
 		$info .= "Current Revision: " . $file->info->{rev} . "\n\n";
-				
+
 		$info .= "File create Date: " . $file->info->{date} . "\n\n";
-				
-		$info .= "Last Updated: "  . $file->info->{updated} . "\n\n";
-		
+
+		$info .= "Last Updated: " . $file->info->{updated} . "\n\n";
+
 		$info .= "File Path: " . $file->info->{path} . "\n";
 		$info .= "File URL: " . $file->info->{_url} . "\n";
 		$info .= "File Root: " . $file->info->{root} . "\n\n";
-				
+
 		$info .= "Check Sum: " . $file->info->{checksum} . "\n";
 		$info .= "UUID: " . $file->info->{uuid} . "\n";
 		$info .= "Schedule: " . $file->info->{schedule} . "\n";
 		$info .= "Node: " . $file->info->{node} . "\n\n";
-	}
-	else {
+	} else {
 		$info .= 'File is not managed by SVN';
 	}
+
 	#print $info;
 	$main->message( $info, "$path" );
 	return;
@@ -310,8 +317,8 @@ sub svn_status_of_project {
 	my ($self) = @_;
 	my $filename = _get_current_filename();
 	if ($filename) {
-		my $main     = Padre::Current->main;
-		my $dir      = Padre::Util::get_project_dir($filename);
+		my $main = Padre::Current->main;
+		my $dir  = Padre::Util::get_project_dir($filename);
 		return $main->error("Could not find project root") if not $dir;
 		$self->svn_status($dir);
 	}
@@ -321,18 +328,19 @@ sub svn_status_of_project {
 
 sub svn_log {
 	my ( $self, $path ) = @_;
-	my $main   = Padre->ide->wx->main;
-	
+	my $main = Padre->ide->wx->main;
+
 	my $file = svn_file($path);
 	$self->{_busyCursor} = Wx::BusyCursor->new();
 	my $out = join( "\n", @{ $file->log() } );
 	$self->{_busyCursor} = undef;
+
 	#$main->message( $out, "$path" );
 	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, $out, 'Log');
+	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $path, $out, 'Log' );
 	$log->Show(1);
 
-	
+
 }
 
 sub svn_log_of_file {
@@ -348,8 +356,8 @@ sub svn_log_of_project {
 	my ($self) = @_;
 	my $filename = _get_current_filename();
 	if ($filename) {
-		my $main     = Padre::Current->main;
-		my $dir      = Padre::Util::get_project_dir($filename);
+		my $main = Padre::Current->main;
+		my $dir  = Padre::Util::get_project_dir($filename);
 		return $main->error("Could not find project root") if not $dir;
 		$self->svn_log($dir);
 	}
@@ -361,38 +369,40 @@ sub svn_log_of_project {
 
 sub svn_diff {
 	my ( $self, $path ) = @_;
-	my $main   = Padre->ide->wx->main;
-	
+	my $main = Padre->ide->wx->main;
+
 	my $file = svn_file($path);
+
 	#print $file->stderr;
 	#print $file->stdout;
-	
+
 	$file->diff();
-	my $status  = join( "\n", @{$file->stdout} );
+	my $status = join( "\n", @{ $file->stdout } );
+
 	#$main->message( $status, "$path" );
 	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $path, $status, 'Diff');
+	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $path, $status, 'Diff' );
 	$log->Show(1);
-	
+
 	return;
-	
+
 }
 
 sub svn_diff_in_padre {
-	my ($self) = @_;
+	my ($self)   = @_;
 	my $filename = _get_current_filename();
-	my $main = Padre->ide->wx->main;
-	
-	
-	if( $filename ) {
-		my $file = svn_file($filename);
-		my $diff = $file->diff;
-		my $diff_str = join( "\n", @{$file->stdout} );
-		$main->new_document_from_string($diff_str, 'text/x-patch');
+	my $main     = Padre->ide->wx->main;
+
+
+	if ($filename) {
+		my $file     = svn_file($filename);
+		my $diff     = $file->diff;
+		my $diff_str = join( "\n", @{ $file->stdout } );
+		$main->new_document_from_string( $diff_str, 'text/x-patch' );
 		return 1;
 	}
 	return;
-	
+
 }
 
 sub svn_diff_of_file {
@@ -419,37 +429,37 @@ sub svn_commit {
 
 	my $main = Padre->ide->wx->main;
 	my $file = svn_file($path);
-	
+
 	my $info = "$path\n\n";
-	if (defined($file->info->{last_rev})) {
+	if ( defined( $file->info->{last_rev} ) ) {
 		$info .= "Last Revision: " . $file->info->{last_rev};
 	} else { # New files
 		$info .= "Last Revision: (none)";
 	}
 	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new($main, $info, undef, 'Commit File', 1);
+	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $info, undef, 'Commit File', 1 );
 	$dialog->ShowModal;
-	
+
 	my $message = $dialog->get_data;
+
 	# whoops!! This isn't going to work "Commit message" is always set in the text control.
 	if ($message) {
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 
 		my $revNo = $file->commit($message);
-		
+
 		$self->{_busyCursor} = undef;
-		
-		my @commit = @{$file->stdout};
-		my @err = @{$file->stderr};
-		if( @err ) {
-			$main->error( join("\n", @err), 'Error - SVN Commit' );
+
+		my @commit = @{ $file->stdout };
+		my @err    = @{ $file->stderr };
+		if (@err) {
+			$main->error( join( "\n", @err ), 'Error - SVN Commit' );
+		} else {
+			$main->info( join( "\n", @commit ), "Committed Revision number $revNo" );
 		}
-		else {
-			$main->info( join("\n", @commit), "Committed Revision number $revNo" );
-		}
-	
+
 	}
-	
+
 	return;
 }
 
@@ -475,17 +485,17 @@ sub svn_commit_project {
 sub svn_add {
 	my ( $self, $path ) = @_;
 	my $main = Padre->ide->wx->main;
-	
+
 	my $file = svn_file($path);
 	$file->add;
 	my $msg = "$path scheduled to be added to " . $file->info->{_url};
-	$main->message( $msg );
+	$main->message($msg);
 
 	return;
 }
 
 sub svn_add_file {
-	my ($self)   = @_;
+	my ($self) = @_;
 	my $filename = _get_current_filename();
 	if ($filename) {
 		$self->svn_add($filename);
