@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 november 04
+        url: http://use.perl.org/~Alias/journal/39837
+        title: Padre Sync, Padre Update, and Padre Telemetry
+        comment: by Adam Kennedy about the server-side part of Padre
       - date: 2009 October 27
         url: http://www.slideshare.net/shafiev/padre-free-perl-ide
         title: Padre, free Perl IDE
