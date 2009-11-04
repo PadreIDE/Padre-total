@@ -1,5 +1,8 @@
 Changes for Perl extension Padre-Plugin-Swarm
-0.03 in progress
+0.04 - Wed Nov  4 17:36:05 EST 2009
+	- test updates
+	- version boilerplate (BRAMBLE) 
+0.03 *RELEASED POORLY*
 	- expunge IRC transport (BRAMBLE)
 	- remove list of chat users
 

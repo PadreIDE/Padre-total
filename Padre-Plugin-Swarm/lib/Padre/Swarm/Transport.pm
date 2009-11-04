@@ -38,7 +38,7 @@ use IO::Select;
 use Padre::Plugin::Swarm ();
 use Padre::Swarm::Callback;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Class::XSAccessor
 	accessors => {
