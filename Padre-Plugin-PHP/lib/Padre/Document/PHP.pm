@@ -215,7 +215,7 @@ sub get_command {
 sub menu {
 	my $self = shift;
 
-	return [ 'menu.PHP' ];
+	return ['menu.PHP'];
 }
 
 
