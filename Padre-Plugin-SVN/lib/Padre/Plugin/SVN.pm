@@ -167,8 +167,28 @@ END_MESSAGE
 # this be on Padre::Util?
 sub _get_current_filename {
 	my $main = Padre->ide->wx->main;
-	my $filename = $main->current->document->filename;
+	my $document = $main->current->document;
+	my $filename = $document->filename;
 	if ($filename) {
+		
+		if ($document->is_modified) {
+			my $ret = Wx::MessageBox(
+			sprintf(
+				Wx::gettext('%s has not been saved but SVN would commit the file from disk.'.
+				            "\n\nDo you want to save the file first (No aborts commit)?"),
+				$filename,
+			),
+			Wx::gettext("Commit warning"),
+			Wx::wxYES_NO | Wx::wxCENTRE,
+			Padre->ide->wx->main,
+		);
+
+		return if $ret == Wx::wxNO;
+		
+		$main->on_save;
+
+		}
+		
 		return $filename;
 	}
 	else {
