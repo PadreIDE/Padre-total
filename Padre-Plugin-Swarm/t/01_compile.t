@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 6;
 
 use_ok('Padre::Plugin::Swarm');
 use_ok('Padre::Swarm::Identity');
