@@ -219,4 +219,32 @@ sub menu {
 }
 
 
+sub newline_keep_column {
+	my $self = shift;
+
+	my $editor = $self->editor or return;
+	my $pos    = $editor->GetCurrentPos;
+	my $line   = $editor->LineFromPosition($pos);
+	my $first  = $editor->PositionFromLine($line);
+	my $col    = $pos - $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+	my $text   = $editor->GetTextRange( $first, ( $pos - $first ) );
+
+	$editor->AddText( $self->newline );
+
+	$pos   = $editor->GetCurrentPos;
+	$first = $editor->PositionFromLine( $editor->LineFromPosition($pos) );
+
+	#	my $col2 = $pos - $first;
+	#	$editor->AddText( ' ' x ( $col - $col2 ) );
+
+	# TODO: Remove the part made by auto-ident before addtext:
+	$text =~ s/[^\s\t\r\n]/ /g;
+	$editor->AddText($text);
+
+	$editor->SetCurrentPos( $first + $col );
+
+	return 1;
+}
+
+
 1;
