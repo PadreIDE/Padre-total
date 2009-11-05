@@ -13,9 +13,14 @@ my @files = (
 	'perlopref.pod',
 );
 
+my $dir = File::Spec->join('share', 'doc', 'perlopref');
+unless(-d $dir) {
+	die "Abort! I could not find share/doc/perlopref in the current directory\n";
+}
+
 # Download all files and write them to disk
 for my $file (@files) {
-	
+
 	# Load file from perlopref's github project
 	my $url = "http://github.com/cowens/perlopref/raw/master/$file";
 	print "Loading $url\n";
@@ -27,7 +32,7 @@ for my $file (@files) {
 	}
 
 	# Write file to disk
-	my $file = File::Spec->join('share', 'doc', 'perlopref', $file);
+	my $file = File::Spec->join($dir, $file);
 	print "Writing $file...\n";
 	if(open FILE, '>:raw', $file) {
 		print FILE $res->content;
@@ -47,7 +52,7 @@ update_perlopref.pl - update perlopref.pod from github
 
 FYI, perlopref is Perl Operator Reference.
 
-This is a simple script to obtain the latest perlopref files 
+This is a simple script to obtain the latest perlopref files
 from github and write it in its proper Padre folder
 
 =head1 AUTHOR
