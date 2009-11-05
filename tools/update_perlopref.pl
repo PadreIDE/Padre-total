@@ -23,15 +23,18 @@ for my $file (@files) {
 	my $req = HTTP::Request->new(GET => $url);
 	my $res = $ua->request($req);
 	if(not $res->is_success) {
-		die $res->status_line, "\n";
+		warn $res->status_line, "\n";
 	}
 
 	# Write file to disk
 	my $file = File::Spec->join('share', 'doc', 'perlopref', $file);
 	print "Writing $file...\n";
-	open FILE, '>:raw', $file or die "Could not open $file for writing\n";
-	print FILE $res->content;
-	close FILE;
+	if(open FILE, '>:raw', $file) {
+		print FILE $res->content;
+		close FILE;
+	} else {
+		warn "Could not open $file for writing\n";
+	}
 }
 
 __END__
