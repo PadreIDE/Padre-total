@@ -1,26 +1,37 @@
 use strict;
 use warnings;
 
-my $url = 'http://github.com/cowens/perlopref/raw/master/perlopref.pod';
-print "Loading $url\n";
+require File::Spec;
 require LWP::UserAgent;
 require HTTP::Request;
-my $ua = LWP::UserAgent->new;
-my $req = HTTP::Request->new(GET => $url);
-my $res = $ua->request($req);
-if(not $res->is_success) {
-	die $res->status_line, "\n";
-}
 
-require File::Spec;
-my $file = File::Spec->catfile('share', 'doc', 'perlopref.pod');
-if(-f $file) {
-	print "Replacing perlopref.pod...\n";
+# List of files to update
+my @files = (
+	'Artistic',
+	'Copying',
+	'README',
+	'perlopref.pod',
+);
+
+# Download all files and write them to disk
+for my $file (@files) {
+	
+	# Load file from perlopref's github project
+	my $url = "http://github.com/cowens/perlopref/raw/master/$file";
+	print "Loading $url\n";
+	my $ua = LWP::UserAgent->new;
+	my $req = HTTP::Request->new(GET => $url);
+	my $res = $ua->request($req);
+	if(not $res->is_success) {
+		die $res->status_line, "\n";
+	}
+
+	# Write file to disk
+	my $file = File::Spec->join('share', 'doc', 'perlopref', $file);
+	print "Writing $file...\n";
 	open FILE, '>:raw', $file or die "Could not open $file for writing\n";
 	print FILE $res->content;
 	close FILE;
-} else {
-	print "Could not find $file\n";
 }
 
 __END__
@@ -33,7 +44,7 @@ update_perlopref.pl - update perlopref.pod from github
 
 FYI, perlopref is Perl Operator Reference.
 
-This is a simple script to obtain the latest perlopref.pod 
+This is a simple script to obtain the latest perlopref files 
 from github and write it in its proper Padre folder
 
 =head1 AUTHOR
