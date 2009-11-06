@@ -27,10 +27,28 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 04
+        url: http://padre-ide.de/blog/?p=17
+        title: Hot keys - with problems
+        comment: by Sebastian Willing (SEWI)
+      - date: 2009 November 04
+        url: http://padre-ide.de/blog/?p=15
+        title: Heisse Tasten - mit Problemen
+        language: German
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 november 04
         url: http://use.perl.org/~Alias/journal/39837
         title: Padre Sync, Padre Update, and Padre Telemetry
         comment: by Adam Kennedy about the server-side part of Padre
+      - date: 2009 November 02
+        url: http://padre-ide.de/blog/?p=8
+        title: Padre - mehr als eine Perl IDE
+        language: German
+        comment: by Sebastian Willing (SEWI)
+      - date: 2009 November 02
+        url: http://padre-ide.de/blog/?p=3
+        title: Padre - More than the Perl IDE
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 October 27
         url: http://www.slideshare.net/shafiev/padre-free-perl-ide
         title: Padre, free Perl IDE
