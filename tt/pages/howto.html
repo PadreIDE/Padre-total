@@ -27,7 +27,9 @@ that can be done with Padre. We plan to extend these and add screenshots to
 aid the learning process and later to turn some of them into screencasts.
 </p>
 <p>
-<b>Other languages:</b></p><ul>
+<b>Other languages:</b>
+</p>
+<ul>
 <li><a href="howto.de.html">Deutsches Padre - Howto / German Padre howto</a></li>
 </ul>
 <div class="spacer" ></div>
@@ -39,7 +41,6 @@ aid the learning process and later to turn some of them into screencasts.
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>Getting Started with Padre on Windows</h1>
-<p>
 <ol>
   <li>Download Padre 0.45 from <a href="download.html">download</a> the name of the file to be saved on 
       the desktop is called padre-standalone-0.45.msi</li>
@@ -83,6 +84,7 @@ aid the learning process and later to turn some of them into screencasts.
 <p>
 This is the previous package that is only recommended for people interested in Perl 6.
 In the future it will be distrubuted directly from the <a href="http://strawberryperl.com/">Strawberry Perl</a> web site.
+</p>
 <ol>
   <li>Download Padre 0.41 from <a href="download.html">download</a> the name of the file to be saved on 
       the desktop is called almost-six-0.41.msi</li>
@@ -118,7 +120,6 @@ In the future it will be distrubuted directly from the <a href="http://strawberr
         Select the Perl 6 as "File type" and select "STD.pm" as Highlighter.</li>
     <li>Click on "Save"</li>
 </ol>
-</p>
 <p>
 Help for problem solving:<br />
 
@@ -156,7 +157,7 @@ and the phase of the Moon.
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>First Perl 5 Script: Hello world</h1>
-<p>
+
 <ol>
 <li>Click on "File" and the "New..." and "Perl 5 script"</li>
 <li>Type in your code <code>print "Hello world\n";</code> at the bottom of the file</li>
@@ -165,7 +166,8 @@ and the phase of the Moon.
 <li>A black window should be displayed and inside that window the text "Hello world".</li>
 <li>You should close the window by clicking on the [x] though it will disappear after 1000 secs.</li>
 </ol>
-</p>
+
+
 <div class="spacer" ></div>
 [% END %]
 </div>
@@ -184,6 +186,7 @@ Key bindings for F1 will bring up the Docbrowser a means to search for and brows
 <h2>Using the Docbrowser</h2>
 <p>
 Perl comes with a wealth of documentation, perldoc is allows the programmer access to documentation on a given module:
+</p>
 <pre>
 pete@eeeyore~ $ perldoc Net::LDAP
 
@@ -197,7 +200,9 @@ SYNOPSIS
 
 
 </pre> 
+<p>
 or when used with the -f switch, documentation on built-in functions:
+</p>
 <pre>
 pete@eeeyore~ $ perldoc -f split
        split /PATTERN/,EXPR,LIMIT
@@ -208,7 +213,7 @@ pete@eeeyore~ $ perldoc -f split
                trailing.)
 ...
 </pre>
-</p>
+
 <p>
 However having an open console to alt-tab to typing perldoc "Module::Name" or perldoc -f "function" gets tedious quickly.
 </p>
@@ -287,7 +292,6 @@ show you the documenation related to the item high lighted in the main Padre doc
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>First Perl 6 Script: Hello world</h1>
-<p>
 <ol>
 <li>Click on "File" and the "New..." and "Perl 6 script"</li>
 <li>Type in your code <code> "Hello world".say; </code> at the bottom of the file</li>
@@ -296,7 +300,6 @@ show you the documenation related to the item high lighted in the main Padre doc
 <li>A black window should be displayed and inside that window the text "Hello world".</li>
 <li>You should close the window by clicking on the [x] though it will disappear after 1000 secs.</li>
 </ol>
-</p>
 <div class="spacer" ></div>
 [% END %]
 </div>
@@ -368,11 +371,11 @@ First of all, lets see the code as it stands before we make any changes:
 </p>
 <p>
 We can see in tsee's blog post that the first thing he wants renamed are the $op1 and $op2 variable names:
+</p>
 <ul>
 <li>The $op1 and $op2 variables correspond to the function operands y and x respectively. $d_sub is a closure that can derive recursively. The two templates are simply a shorthand so I didn't have to write  someclass->new(...) repeatedly. To make x and y more apparent and to name $d_sub more fitting to its purpose, I open up the file in Padre, right-click each of those variables, select Lexically Replace Variable from the context menu, and provide the new names. Similarly, I replace $inner. </li>
 </ul>
 So, lets do just that!
-</p>
 <p>
 First locate any instance of the variable name and click on it so that the cursor is "inside" the variable name.
 <br>
@@ -409,10 +412,10 @@ So now we go ahead and rename all the variables:
 </p>
 <p>
 Next tsee laments the complexity of the code block:
+</p>
 <ul>
 <li>Of course, that leaves the giant expression intact which actually calculates the result. It makes sense to add a few more temporary variables with descriptive names. I select $op->new('^', $x->new(), $two->new()) in the above version of the code, right-click, and select Insert Temporary Variable. Then I type the name of the new variable $x_square. Padre finds the beginning of the current statement for me and inserts a temporary variable declaration for $x_square at that point. It also replaces the selected text with $x_square. I manually replace another occurrance of the new temporary and then select $op->new('^', $y->new(), $two->new()) and have it replaced with $y_square accordingly. There's more that can be cleaned up, but this handful of clicks and practically no typing has improved the code's readability considerably:</li>
 </ul>
-</p>
 <p>
 Thanks to this valid requirement, lets see how this is done in Padre!
 </p>
