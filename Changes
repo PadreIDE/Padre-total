@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SVN
 
+0.03	2009.11.7 - Peter Lavender
+		* Added Revert
+		* Added Update
+
 0.02	2009.08.31 - Peter Lavender (waxhead)
 		Merged in the branch:
 		* Uses SVN::Class for all SVN operations
