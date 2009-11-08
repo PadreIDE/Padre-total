@@ -1,6 +1,6 @@
 Changes in Padre::Plugin::PHP
 
-v0.03	to be released
+v0.03	2009.11.08
 	Fixed a bug in the preferences dialog
 	Added a PHP menu to the menu bar
 
