@@ -1,6 +1,8 @@
 Changes in Padre::Plugin::PHP
 
 v0.03	to be released
+	Fixed a bug in the preferences dialog
+	Added a PHP menu to the menu bar
 
 v0.02	2009.11.01
 	Configurable PHP interpreter and args (SEWI)
