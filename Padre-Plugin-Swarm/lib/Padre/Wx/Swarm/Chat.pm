@@ -184,34 +184,62 @@ sub accept_message {
 	elsif ( $message->type eq 'announce' ) {
 	    $self->accept_announce($message);
 	}
+	elsif ( $message->type eq 'promote' ) {
+	    $self->accept_promote( $message );
+	}
 	else {
 		warn "Discarded $message" if DEBUG;
 	}
 }
 
-sub accept_chat {
-    my ($self,$message) = @_;
-    
+sub write_unstyled {
+    my ($self,$text) = @_;
     my $style = $self->chatframe->GetDefaultStyle;
-    my $rgb   = derive_rgb( $message->from );
+    $style->SetTextColour( Wx::Colour->new(0,0,0) );
+    $self->chatframe->SetDefaultStyle($style);
+    $self->chatframe->AppendText($text);
+    
+}
+
+sub write_user_styled { 
+    my ($self,$user,$text) = @_;
+    my $style = $self->chatframe->GetDefaultStyle;
+    my $rgb   = derive_rgb( $user );
     $style->SetTextColour( Wx::Colour->new(@$rgb) );
     $self->chatframe->SetDefaultStyle($style);
-    my $output = sprintf( "%s :%s\n", $message->from, $message->body );
-    $self->chatframe->AppendText( $output );
-    
+    $self->chatframe->AppendText($text);
+}
+
+sub accept_chat {
+    my ($self,$message) = @_;
+    $self->write_user_styled(
+        $message->from,
+        $message->from . ': '
+    );
+    $self->write_unstyled( $message->body . "\n" );
     
 }
 
 sub accept_announce {
     my ($self,$announce) = @_;
-    my $nick = $announce->{from};
+    my $nick = $announce->from;
     if ( exists $self->users->{$nick} ) {
         return
     }
     else {
-        $self->chatframe->AppendText( $announce->from . " has joined the swarm \n" );
+        $self->write_user_styled( $announce->from , $announce->from );
+        $self->write_unstyled(  " has joined the swarm \n" );
         $self->users->{$nick} = 1;
     }
+    
+}
+
+sub accept_promote {
+    my ($self,$message) = @_;
+    next unless $message->{service} =~ m/chat/i;
+    
+    my $text = sprintf '%s promotes a chat service', $message->from;
+    $self->write_user_styled( $message->from,  $text . "\n" );
     
 }
 
