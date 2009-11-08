@@ -14,6 +14,9 @@ requires       'MooseX::Storage'                       => '0.21';
 requires       'DBD::SQLite'                           => '1.25';
 requires       'DBI'                                   => '1.609';
 requires       'Regexp::Common'                        => '2.122';
+requires       'POE::Component::IRC::Plugin::FollowTail';
+requires       'POE::Component::IRC::Plugin::Logger';
+requires       'Module::Pluggable';
 
 no_index       'directory'                => qw{ t xt eg share inc privinc };
 #homepage       'http://padre.perlide.org/';

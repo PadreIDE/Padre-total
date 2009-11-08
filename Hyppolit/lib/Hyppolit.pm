@@ -43,6 +43,11 @@ use POE::Component::IRC::Plugin::FollowTail;
 use DBI;
 use Regexp::Common qw( pattern profanity );
 
+use Module::Pluggable (
+	search_path => ["Hyppolit::Plugin"],
+	sub_name => 'plugin_classes',
+);
+
 use Data::Dumper;
 
 with Storage(
@@ -83,6 +88,10 @@ has calc => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 #
 # internal attributes and special magic
 #
+
+has '+configfile' => (
+	default => sub { 'hyppolit.yaml' },
+);
 
 has tracdbh => (
 	is => 'rw', isa => 'DBI::db', lazy => 1,
@@ -167,19 +176,23 @@ event irc_tail_input => sub {
 	return if not $self->repo;
 	if ($input =~ /^SVN (\d+)$/) {
 		my $id = $1;
-		my $author = qx{$self->svnlook author $self->repo -r $id};
+		my $svnlook = $self->svnlook;
+		my $repo = $self->repo;
+		my $author = qx{$svnlook author $repo -r $id};
 		chomp $author;
 		$self->karma->{$author}++;
-		my $log    = qx{$self->svnlook log $self->repo -r $id};
-		my @dirs   = qx{$self->svnlook dirs-changed $self->repo -r $id};
+		my $log    = qx{$svnlook log $repo -r $id};
+		my @dirs   = qx{$svnlook dirs-changed $repo -r $id};
 		chomp @dirs;
 		my $msg    = "svn: r$id | $author++ | ".$self->tracurl."changeset/$id\n";
 		$self->privmsg( $_ => $msg ) for @{ $self->channels };
 		foreach my $line (split /\n/, $log) {
 			$self->privmsg( $_ => "     $line" ) for @{ $self->get_channels };
 		}
-		my $dirs = join " ", @dirs;
-		$self->privmsg( $_, "     $dirs" ) for @{ $self->get_channels };
+		if (@dirs) {
+			my $dirs = join " ", @dirs;
+			$self->privmsg( $_, "     $dirs" ) for @{ $self->get_channels };
+		}
 	}
 	# TODO report error ?
 	# $kernel->post( $sender, 'privmsg', $_, "$config->{inputfile} $input" ) for @{ $config->{channels} };
@@ -398,5 +411,7 @@ sub trac_ticket_text {
 	$url .= "#comment:".$ticket_comment->{oldvalue} if $ticket_comment and $ticket_comment->{oldvalue};
 	return "#".$ticket_id.": ".$ticket->{summary}." (".$ticket->{status}." ".$ticket->{type}.") [ ".$url." ]";
 }
+
+__PACKAGE__->run unless caller;
 
 1;
