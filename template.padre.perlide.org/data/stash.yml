@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 08
+        url: http://szabgab.com/blog/2009/11/1257675476.html
+        title: Padre 0.50 released
+        comment: by Gábor Szabó 
       - date: 2009 November 04
         url: http://padre-ide.de/blog/?p=17
         title: Hot keys - with problems
