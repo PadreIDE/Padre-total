@@ -1,0 +1,6 @@
+Revision history for Perl extension Padre::Plugin::Autodia.
+
+0.01  Sun Jul  5 19:57:15 2009
+	- original version; created by h2xs 1.23 with options
+		-X Padre::Plugin::Autodia
+

@@ -1,0 +1,6 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+t/Padre-Plugin-Autodia.t
+lib/Padre/Plugin/Autodia.pm
