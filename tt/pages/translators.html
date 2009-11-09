@@ -8,18 +8,18 @@
 
 
 [% BLOCK translators_top %]
-<div style="float: top;"> 
+<div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h2>About the Translators</h2>
 <p>
 As with most of the open source projects the default language of Padre is English.
 As with any other technology we believe that removing as many obstacles from the user
-as possible will just make their life easier. Hence we encourage the translation of 
+as possible will just make their life easier. Hence we encourage the translation of
 the Padre GUI (and later on that of the documentation) to other languages as well.
 </p>
 <p>
 This page is here so the translators can write a few words about themselves and/or about
-Padre in their own languages. For every translator there is a link to the 
+Padre in their own languages. For every translator there is a link to the
 <a href="developers.html">developers</a> page with an English description of why are they
 involved in the project.
 </p>
@@ -42,11 +42,11 @@ If you would like to get involved in the translation project please check out ou
  title_from="name"
  section_nav=1
  %]
- 
+
  <!-- list of padre translators -->
 <ul id="translators" class="unstyled palette_text" >
 [% FOREACH t IN translators %]
-   <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]" 
+   <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]"
    [% IF t.language_tag == 'ar' %] style="text-align: justify; direction:rtl;" [% END %]>
     [% WRAPPER chrome/styled_panel %]
 

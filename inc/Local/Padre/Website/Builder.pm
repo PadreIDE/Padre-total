@@ -8,6 +8,7 @@ use File::Copy qw(copy);
 use File::Basename qw(basename);
 use File::Next qw();
 use Path::Class qw(dir file);
+use Pod::Xhtml qw();
 use Template qw();
 use Text::Unaccent::PurePerl qw(unac_string);
 use Time::Piece qw(localtime);
@@ -57,6 +58,7 @@ sub ACTION_build_docs {
         $dir
     );
 
+    my $parser = Pod::Xhtml->new;
     while (defined(my $fullpath = $iter->())) {
         my $target_dir = dir($self->destdir, 'docs', 'Padre',
             file($fullpath)->relative($dir)->parent);
@@ -64,10 +66,8 @@ sub ACTION_build_docs {
 		#print file($fullpath)->relative, "\n";
 		my $outfile = substr(dir($target_dir, basename($fullpath)), 0, -2) . 'html';
 
-		#print "$fullpath    $outfile\n";
-		# TODO: this is a really basic first version, we need to make it nicer
 		# TODO we might also want to generate the docs of all the Padre plugins
-		system "pod2html --htmlroot=http://padre.perlide.org/docs/Padre --infile $fullpath --outfile=$outfile 2>/dev/null";
+        $parser->parse_from_file($fullpath, $outfile);
 	}
 }
 

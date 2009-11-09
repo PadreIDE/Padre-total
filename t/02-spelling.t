@@ -7,8 +7,11 @@ use autodie qw(:all);
 use Capture::Tiny qw(capture);
 use Encode qw(decode_utf8);
 use File::Next qw();
+use File::Temp qw(tempfile);
 use File::Which qw(which);
 use Test::More;
+use XML::LibXML qw();
+use XML::LibXSLT qw();
 
 # Skip means sweep bugs under the rug.
 # I want this test to be actually run.
@@ -37,14 +40,33 @@ my $iter = File::Next::files({
 );
 
 my $file_counter;
+
+my $stylesheet = XML::LibXSLT->new->parse_stylesheet(
+    XML::LibXML->load_xml(string => <<''));
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml" version="1.0">
+    <xsl:template match="xhtml:*[@xml:lang!='en']"/> <!-- filter non-English -->
+    <xsl:template match="xhtml:pre"/> <!-- filter computerese -->
+    <xsl:template match="xhtml:code"/>
+    <xsl:template match="@* | node()"> <!-- apply identity function to rest of nodes -->
+        <xsl:copy>
+            <xsl:apply-templates select="@* | node()"/>
+        </xsl:copy>
+    </xsl:template>
+</xsl:stylesheet>
+
 while (defined(my $html_file = $iter->())) {
-    next if $html_file =~ /translators.html \z/msx;
     $file_counter++;
+
+    my ($temp_handle, $temp_file) = tempfile;
+    my $transformed = $stylesheet->transform(XML::LibXML->load_xml(location => $html_file));
+    $stylesheet->output_fh($transformed, $temp_handle);
+
     my ($stdout) = capture {
-        system "aspell -H -l en list < $html_file";
+        system "aspell -H --encoding=UTF-8 -l en list < $temp_file";
     };
     my @misspelt_words = grep {!($_ ~~ @stopwords)} split /\n/, decode_utf8 $stdout;
-    ok !@misspelt_words, "$html_file spell-check";
+    ok !@misspelt_words, "$html_file ($temp_file) spell-check";
     diag join "\n", sort @misspelt_words if @misspelt_words;
 }
 
@@ -52,33 +74,48 @@ done_testing($file_counter);
 
 __DATA__
 ## personal names
+barlog
+# Joshua ben Jore
+ben
 Breno
 Cassidy
 Cezary
 # Breno G. de Oliveira
 de
 Donelan
+draegtun
 Fahle
 Fayland
 Gábor
 Gábor's
 garu
+Haryanto
+Ishigaki
 Jérôme
+Jore
+Kenichi
 lang
 Makholm
 Mašláňová
 Maurer
 Morga
 Müller
+Naim
 Niebur
 Oliveira
 Quelin
 Presta
 Ruslan
+SEWI
+Shafiev
+Shitov
 Shlomi
+Stevan
 Szabó
 TEEJAY
 Trevena
+tsee
+tsee's
 wala
 Zakirov
 Zawawi
@@ -121,6 +158,7 @@ DocBrowser
 EmacsMode
 Msgfmt
 Nopaste
+PDX
 # Padre::Plugin
 Plugin
 # Task::Padre::Plugins
@@ -148,9 +186,11 @@ Packlist
 PerlTidy
 PPI
 prepender
+refactor
 refactoring
 Refactoring
 REPL
+screenshot
 SQL
 # svn commit
 svn
@@ -162,11 +202,16 @@ TT
 ## neologisms
 cloudfiguration
 hackathon
+Netbook
 neurodiversity
+Perliverse
 screencast
+screencasts
 technopeasant
 
 ## compound
+# multi-lingual and multi-technology
+multi
 # July 27th
 th
 # perl-Padre
@@ -180,6 +225,7 @@ Multi
 dev
 
 ## slang
+Grr
 
 ## things that should be in the dictionary, but are not
 blog
@@ -192,12 +238,12 @@ natively
 oversized
 screenshots
 Screenshots
+uncheck
 uninstall
 Validator
 wiki
 
 ## single foreign words
-Deutsch
 hijab
 kippah
 

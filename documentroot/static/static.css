@@ -11,7 +11,7 @@ div#palette {
 
 .colour_tile {
     width: 16px;
-    height: 16px; 
+    height: 16px;
     border: solid 1px black;
     float: left;
     margin: 0.15em;
@@ -33,10 +33,10 @@ a:hover {
 
 
 /*   */
-body { 
+body {
     font-size: 1.0em;
     margin: 0;
-    padding: 0;   
+    padding: 0;
     color: #000;
     background-color: #dfdfdf;
 /*    background-image: url(bg-hexel.png); */
@@ -48,22 +48,22 @@ div#content_wrapper {
     text-align: center;
 }
 
-div#content { 
+div#content {
     padding: 0.75em;
 }
 
 .center_column {
     text-align: left;
-    margin: 0 50pt;     
+    margin: 0 50pt;
 }
 
-div#column_a { 
-    width: 49%; 
+div#column_a {
+    width: 49%;
     float: left;
     margin-right: 5pt;
 }
 div#column_b {
-    width: 49%; 
+    width: 49%;
     float:right;
     margin-left: 5pt;
 }
@@ -72,7 +72,7 @@ div#column_b {
 
 div#widget_stack {
     float: right;
-} 
+}
 
 
 h1,h2,h3,h4,h5,h6 {
@@ -84,13 +84,13 @@ h1,h2,h3,h4,h5,h6 {
 
 #masthead {
     background-color: #aa99FF;
-    
+
  /*   background-image: url(clouds.png);
     background-repeat: repeat-x;
     background-position: bottom left;
     bottom: 0;
     position: relative; */
-    
+
     vertical-align: middle;
 }
 
@@ -124,13 +124,13 @@ ul.navigation {
 
 ul.navigation li {
     vertical-align: middle;
-    font-family: arial,helvetica,sans-serif; 
+    font-family: arial,helvetica,sans-serif;
     text-align: center;
     float: left;
   /*  width: 4em; */
 
     border: solid #CCC 1px;
-    
+
         background-image: url(grad_flat.png);
         background-color: white;
         background-repeat: repeat-x;
@@ -187,7 +187,7 @@ h1.developer {
     font-weight: bold;
     font-size: 150%;
     margin: 0 0 0.5em 0;
-    
+
 }
 
 ul#developers h2 {
@@ -230,7 +230,7 @@ h1.developer {
     font-weight: bold;
     font-size: 150%;
     margin: 0 0 0.5em 0;
-    
+
 }
 
 ul#translator h2 {
@@ -265,7 +265,7 @@ code {
         z-index: -1;
 }
 
-.styled_panel_wrapper { 
+.styled_panel_wrapper {
     margin-bottom: 1em
 }
 .styled_panel {
@@ -296,7 +296,7 @@ code {
     position: absolute;
     opacity: 0.9
 }
-#sun { 
+#sun {
     position: absolute;
     background-image: url(sun.png);
     background-repeat: no-repeat;
@@ -310,7 +310,7 @@ code {
     position: absolute;
     background-image: url(sunglow.png);
     background-repeat: no-repeat;
-    
+
     width: 64px; height: 64px ;
     opacity: 0.5;
     z-index: 2;
@@ -325,7 +325,7 @@ b.shadowed {
     width:200px;
 }
 
-div.widget_wrapper { 
+div.widget_wrapper {
     position: relative;
     margin-bottom: 1em;
 }
@@ -358,5 +358,5 @@ ul.topheavy li {
 
 .styled_panel {
     -moz-border-radius: 0.5em;
-    -moz-border-radius-bottom-right: 0px;    
+    -moz-border-radius-bottom-right: 0px;
 }
