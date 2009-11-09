@@ -27,6 +27,15 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 09
+        url: http://padre-ide.de/blog/?p=37
+        title: New: Padre::Plugin::PHP 0.03
+        comment: by Sebastian Willing (SEWI)
+      - date: 2009 November 09
+        url: http://padre-ide.de/blog/?p=39
+        title: Neu: Padre::Plugin::PHP 0.03
+        language: German
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 November 08
         url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
         title: Best things in life come in threes
