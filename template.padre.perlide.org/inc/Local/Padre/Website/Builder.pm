@@ -98,6 +98,7 @@ sub ACTION_process_templates {
             POST_CHOMP   => 1,                # cleanup whitespace
             EVAL_PERL    => 0,                # evaluate Perl code blocks
             OUTPUT_PATH  => $self->destdir,
+            ENCODING     => 'utf8',
             FILTERS      => {
                 'id_attr' => sub {
                     my ($text)    = @_;
