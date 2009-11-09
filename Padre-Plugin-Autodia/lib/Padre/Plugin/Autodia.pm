@@ -10,6 +10,8 @@ Padre::Plugin::Autodia - Autodia plugin for Padre
 
 Padre plugin to integrate Autodia.
 
+Provides an Autodia menu under 'plugins' with options to create UML diagrams for the current or selected files.
+
 =cut
 
 use base 'Padre::Plugin';
@@ -44,16 +46,18 @@ sub plugin_name {
 
 =head2 padre_interfaces
 
+Declare the Padre interfaces this plugin uses
+
 =cut
 
-# Declare the Padre interfaces this plugin uses
 sub padre_interfaces { }
 
 =head2 menu_plugins_simple
 
-=cut
+The command structure to show in the Plugins menu
 
-# The command structure to show in the Plugins menu
+=cut
+ 
 sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name => [
@@ -226,6 +230,10 @@ sub _get_handler {
 =head1 SEE ALSO
 
 Autodia, Padre
+
+=head1 CREDITS
+
+Development sponsered by Connected-uk
 
 =head1 AUTHOR
 
