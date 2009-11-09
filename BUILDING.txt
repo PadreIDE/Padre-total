@@ -11,13 +11,15 @@ set CPAN=http://cpan.hexten.net
 
 ------------------- DO THIS FIRST STEP on Strawberry -------------------------
 The reason that you need to do it on c:\strawberry it is that it hardcodes
-Perl interpreter's path that created it
+Perl interpreter's path that created it.
+
+[I need to verify that Alien::wxWidgets 0.46 takes out the Strawberry requirement.]
 
 1) Create a par file for Alien::wxWidgets, because we need to install a patched 
 version.
 
 rem Setup which version of Alien wxWidgets to use
-set ALIEN_WIDGETS=Alien-wxWidgets-0.44
+set ALIEN_WIDGETS=Alien-wxWidgets-0.46
 
 cd C:\
 wget http://www.commandline.co.uk/mtee/mtee.zip
@@ -40,7 +42,7 @@ because at the end of this, this will install into c:\strawberry, and you can't
 overwrite the host perl.
 
 A usable Bootstrap build is at 
-http://strawberryperl.com/download/bootstrap-perl-5.10.0.6-beta-2.msi, or you 
+http://strawberryperl.com/download/bootstrap/bootstrap-perl-5.10.1.0.msi, or you 
 can build one yourself by going "perldist Bootstrap".
 
 2) Install Inno Setup from http://www.innosetup.com/download.php/is.exe and WiX 
@@ -87,5 +89,5 @@ perldist Padre --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
 Build Troubleshooting
 ---------------------
 %TEMP%/perldist/output contains the output of the last command that has been run. 
-(whenever a perl, dmake, or Build.bat command is run, the output in is 
-debug.out and debug.err files in that directory.
+(whenever a perl, dmake, or Build.bat command is run, the output is in 
+debug.out and debug.err files in that directory.)

@@ -11,7 +11,7 @@ use File::Spec::Functions          qw( catfile        );
 use parent                         qw( Perl::Dist::Strawberry );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.450';
+our $VERSION = '0.500';
 $VERSION = eval $VERSION;
 #>>>
 
@@ -28,10 +28,10 @@ sub new {
 	return shift->SUPER::new(
 		app_id            => 'padre',
 		app_name          => 'Padre Standalone',
-		app_ver_name      => 'Padre Standalone 0.45',
+		app_ver_name      => 'Padre Standalone 0.50',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
-		image_dir         => 'C:\strawberry',
+		image_dir         => 'C:\padre',
 
 		# Set e-mail to something Padre-specific.
 		perl_config_cf_email => 'padre-dev@perlide.org',
@@ -41,6 +41,9 @@ sub new {
 		msi_banner_top   => catfile( $dist_dir, 'PadreBanner.bmp' ),
 		msi_banner_side  => catfile( $dist_dir, 'PadreDialog.bmp' ),
 
+		# Perl version
+		perl_version => '5101',
+		
 		# Program version.
 		build_number => 1,
 
@@ -64,6 +67,7 @@ sub new {
 			'install_strawberry_modules_1',
 			'install_strawberry_modules_2',
 			'install_strawberry_modules_3',
+			'install_strawberry_modules_4',
 			'install_padre_prereq_modules_1',
 			'install_padre_prereq_modules_2',
 			'install_padre_modules',
@@ -82,7 +86,7 @@ sub new {
 } ## end sub new
 
 sub output_base_filename {
-	return 'padre-standalone-0.45';
+	return 'padre-standalone-0.50';
 }
 
 #####################################################################
@@ -100,9 +104,9 @@ sub install_perl_589 {
 	return;
 }
 
-sub install_perl_5101 {
+sub install_perl_5100 {
 	my $self = shift;
-	PDWiX->throw('Perl 5.10.1 is not available in Padre Standalone');
+	PDWiX->throw('Perl 5.10.0 is not available in Padre Standalone');
 	return;
 }
 
@@ -153,8 +157,6 @@ sub install_padre_prereq_modules_2 {
 		  Module::Starter
 		  ORLite
 		  ORLite::Migrate
-		  Algorithm::Diff
-		  Text::Diff
 		  Test::Differences
 		  File::Slurp
 		  Pod::POM
@@ -170,7 +172,6 @@ sub install_padre_prereq_modules_2 {
 		  Parse::ExuberantCTags
 		  CPAN::Mini
 		  Portable
-		  Win32API::File
 		  Capture::Tiny
 		  prefork
 		  PPIx::EditorTools
@@ -258,7 +259,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.450
+Perl::Dist::Padre version 0.500
 
 =end readme
 
@@ -304,7 +305,7 @@ Unlike Strawberry, Padre Standalone does not have a standalone build script.
 
 To build Padre Standalone, run the following.
 
-	perldist Padre
+	perldist_w Padre
 
 You may wish to view the BUILDING.txt file in the distribution for more 
 information.
@@ -325,7 +326,7 @@ L<File::ShareDir|File::ShareDir> could not find the share directory for this mod
 
 =item C<< Perl %s is not available in Padre Standalone >>
 
-You can only build Padre Standalone on Perl 5.10.0.
+You can only build Padre Standalone on Perl 5.10.1.
 
 =back
 
