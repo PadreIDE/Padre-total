@@ -31,11 +31,6 @@ about:
         url: http://padre-ide.de/blog/?p=37
         title: New: Padre::Plugin::PHP 0.03
         comment: by Sebastian Willing (SEWI)
-      - date: 2009 November 09
-        url: http://padre-ide.de/blog/?p=39
-        title: Neu: Padre::Plugin::PHP 0.03
-        language: German
-        comment: by Sebastian Willing (SEWI)
       - date: 2009 November 08
         url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
         title: Best things in life come in threes
@@ -48,20 +43,10 @@ about:
         url: http://padre-ide.de/blog/?p=17
         title: Hot keys - with problems
         comment: by Sebastian Willing (SEWI)
-      - date: 2009 November 04
-        url: http://padre-ide.de/blog/?p=15
-        title: Heisse Tasten - mit Problemen
-        language: German
-        comment: by Sebastian Willing (SEWI)
       - date: 2009 november 04
         url: http://use.perl.org/~Alias/journal/39837
         title: Padre Sync, Padre Update, and Padre Telemetry
         comment: by Adam Kennedy about the server-side part of Padre
-      - date: 2009 November 02
-        url: http://padre-ide.de/blog/?p=8
-        title: Padre - mehr als eine Perl IDE
-        language: German
-        comment: by Sebastian Willing (SEWI)
       - date: 2009 November 02
         url: http://padre-ide.de/blog/?p=3
         title: Padre - More than the Perl IDE
@@ -887,6 +872,21 @@ about:
         comment: by Adam Kennedy
   - title: German
     events:
+      - date: 2009 November 09
+        url: http://padre-ide.de/blog/?p=39
+        title: Neu: Padre::Plugin::PHP 0.03
+        language: German
+        comment: by Sebastian Willing (SEWI)
+      - date: 2009 November 04
+        url: http://padre-ide.de/blog/?p=15
+        title: Heisse Tasten - mit Problemen
+        language: German
+        comment: by Sebastian Willing (SEWI)
+      - date: 2009 November 02
+        url: http://padre-ide.de/blog/?p=8
+        title: Padre - mehr als eine Perl IDE
+        language: German
+        comment: by Sebastian Willing (SEWI)
       - date: 2008 December 07
         url: http://perl-howto.de/2008/12/padre-perl-application-development-and-refactoring-environment.html
         title: Padre (Perl Application Development and Refactoring Environment) 0.20
