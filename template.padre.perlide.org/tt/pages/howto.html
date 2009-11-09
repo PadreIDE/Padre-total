@@ -1,6 +1,6 @@
 [% DEFAULT title="How to do it in Padre?" %]
 [% WRAPPER lib/xhtml_doc %]
-  [% INCLUDE instructions %]
+  [% INCLUDE howto %]
   [% INCLUDE setup_padre %]
   [% INCLUDE setup_strawberry_six %]
   [% INCLUDE upgrade_padre %]
@@ -17,12 +17,12 @@
 
 
 
-[% BLOCK instructions %]
+[% BLOCK howto %]
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>How to?</h1>
 <p>
-The following instructions are meant to go through step-by-step various tasks
+The following howto entries are meant to go through step-by-step various tasks
 that can be done with Padre. We plan to extend these and add screenshots to
 aid the learning process and later to turn some of them into screencasts.
 </p>
@@ -30,7 +30,7 @@ aid the learning process and later to turn some of them into screencasts.
 <b>Other languages:</b>
 </p>
 <ul>
-<li><a href="instructions.de.html" xml:lang="de">Anleitungen für Padre auf deutsch</a></li>
+<li><a href="howto.de.html" xml:lang="de">Anleitungen für Padre auf deutsch</a></li>
 </ul>
 <div class="spacer" ></div>
 [% END %]
@@ -53,7 +53,7 @@ aid the learning process and later to turn some of them into screencasts.
       Click on "Start", "Run", copy the following command and press ENTER:
       <br />
     <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
-    or maybe better with full path to the Perl executable:<br />
+    or maybe better with full path to the Perl executable (perl.exe):<br />
     <code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
     This will open a black window. You'll see text printed in that
     window while Padre is being upgraded. The process can take anywhere between
@@ -97,7 +97,7 @@ In the future it will be distributed directly from the <a href="http://strawberr
       Click on "Start", "Run", copy the following command and press ENTER:
       <br />
     <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
-    or maybe better with full path to the Perl executable:<br />
+    or maybe better with full path to the Perl executable (perl.exe):<br />
     <code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
     This will open a black window. You'll see text printed in that
     window while Padre is being upgraded. The process can take anywhere between
@@ -139,7 +139,7 @@ run "Start", "Run", type in <code>cmd</code> and press enter. In the black windo
 Assuming you installed the Almost-Six package you can upgrade it with the following command:
 Click on "Start", "Run", copy the following command and press ENTER:
 <code>perl -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
-or maybe better with full path to the Perl executable:<br />
+or maybe better with full path to the Perl executable (perl.exe):<br />
 <code>c:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</code><br />
 This will open a black window. You'll see text printed in that
 window while Padre is being upgraded. The process can take anywhere between
@@ -224,7 +224,7 @@ You can do this in Padre itself.
 <p>
 The current key binding <b>F1</b> will bring up the "DocBrowser":
 <br />
-<img src="./static/instructions/padre-f1-initial.png"/>
+<img src="./static/howto/padre-f1-initial.png"/>
 <br />
 Here you can see the initial Help opens and presents you with the documentation from Padre.pm.
 </p>
@@ -234,19 +234,19 @@ The DocBrowser is your way of searching for and browsing the documentation for a
 <p>
 Now it's time to search for information about the document we are currently interested in using.  In this case <code>Net::LDAP</code>.
 <br />
-<img src="./static/instructions/padre-f1-search.png"/>
+<img src="./static/howto/padre-f1-search.png"/>
 <br />
 </p>
 <p>
 The DocBrowser will create links to documentation referenced and linked to within any documentation file.
 <br />
-<img src="./static/instructions/padre-f1-links.png"/>
+<img src="./static/howto/padre-f1-links.png"/>
 <br />
 </p>
 <p>
 In this case IO::Socket is referenced and a link has been created, clicking on the link will open a new tab with the IO::Socket POD.
 <br />
-<img src="./static/instructions/padre-f1-link-clicked.png"/>
+<img src="./static/howto/padre-f1-link-clicked.png"/>
 <br />
 </p>
 <h2>Using F2 for Perl documentation</h2>
@@ -254,20 +254,20 @@ In this case IO::Socket is referenced and a link has been created, clicking on t
 To search for help on built in functions, such as split or join, global variables, such as $$ or $/,
 or any of the core Modules, the key binding for the Help Search dialog is <b>F2</b>.
 <br />
-<img src="./static/instructions/padre-f2-initial.png"/>
+<img src="./static/howto/padre-f2-initial.png"/>
 <br />
 </p>
 <p>
 With the dialog box now open, you can type in terms to search for:
 <br />
-<img src="./static/instructions/padre-f2-search.png"/>
+<img src="./static/howto/padre-f2-search.png"/>
 <br />
 </p>
 <p>
 This help search is better integrated into Padre, highlight a word or module name ( such as warnings ) and hit F2, Help will
 show you the documentation related to the item high lighted in the main Padre document window.
 <br />
-<img src="./static/instructions/padre-f2-context.png"/>
+<img src="./static/howto/padre-f2-context.png"/>
 <br />
 </p>
 
@@ -360,13 +360,13 @@ That means that any variable with the same name in other functions or part of th
 you would use a "global" find and replace.
 </p>
 <p>
-This instruction uses the example taken from one of the Padre contributors who also happened to <a href="http://use.perl.org/~tsee/journal/39121">blog</a> about using Padre to
+This howto uses the example taken from one of the Padre contributors who also happened to <a href="http://use.perl.org/~tsee/journal/39121">blog</a> about using Padre to
 refactor one of his modules.  This I hope is the screen shots he wished he could have included in the blog post. Thanks tsee!
 </p>
 <p>
 First of all, lets see the code as it stands before we make any changes:
 <br />
-<img src="./static/instructions/refact-lex-rename-initial.png"/>
+<img src="./static/howto/refact-lex-rename-initial.png"/>
 <br />
 </p>
 <p>
@@ -379,7 +379,7 @@ So, lets do just that!
 <p>
 First locate any instance of the variable name and click on it so that the cursor is "inside" the variable name.
 <br />
-<img src="./static/instructions/refact-lex-rename-select-variable.png"/>
+<img src="./static/howto/refact-lex-rename-select-variable.png"/>
 <br />
 <br />
 </p>
@@ -391,7 +391,7 @@ context menu.  The other place to find it is under "Perl" in the Menu.
 <p>
 You will then be presented with a dialog asking for the new name:
 <br />
-<img src="./static/instructions/refact-lex-rename-rename-x.png"/>
+<img src="./static/howto/refact-lex-rename-rename-x.png"/>
 <br />
 <br />
 Here we want to rename $op1 to $x.
@@ -399,14 +399,14 @@ Here we want to rename $op1 to $x.
 <p>
 The end result can be seen:
 <br />
-<img src="./static/instructions/refact-lex-rename-renamed-x.png"/>
+<img src="./static/howto/refact-lex-rename-renamed-x.png"/>
 <br />
 <br />
 </p>
 <p>
 So now we go ahead and rename all the variables:
 <br />
-<img src="./static/instructions/refact-lex-rename-renamed-rest.png"/>
+<img src="./static/howto/refact-lex-rename-renamed-rest.png"/>
 <br />
 <br />
 </p>
@@ -422,7 +422,7 @@ Thanks to this valid requirement, lets see how this is done in Padre!
 <p>
 First of all select the code we want the new temporary variable created for:
 <br />
-<img src="./static/instructions/refact-temp-var-select.png"/>
+<img src="./static/howto/refact-temp-var-select.png"/>
 <br />
 <br />
 </p>
@@ -430,23 +430,23 @@ First of all select the code we want the new temporary variable created for:
 Next either right click the highlighted code or from the menu click Perl and then "Introduce Temporary Variable".  You will
 be then asked for a name for the variable.
 <br />
-<img src="./static/instructions/refact-temp-var-name.png"/>
+<img src="./static/howto/refact-temp-var-name.png"/>
 </p>
 <p>
 With the new name decided upon, click OK and the new variable is then created and used:
 <br />
-<img src="./static/instructions/refact-temp-var-x-complete.png"/>
+<img src="./static/howto/refact-temp-var-x-complete.png"/>
 </p>
 <p>
 And the same is done when we want to create a new temporary variable for $y_squared:
 <br />
-<img src="./static/instructions/refact-temp-var-select-y.png"/>
+<img src="./static/howto/refact-temp-var-select-y.png"/>
 <br />
 <br />
-<img src="./static/instructions/refact-temp-var-name-y.png"/>
+<img src="./static/howto/refact-temp-var-name-y.png"/>
 <br />
 <br />
-<img src="./static/instructions/refact-temp-var-y-complete.png"/>
+<img src="./static/howto/refact-temp-var-y-complete.png"/>
 <br />
 <br />
 </p>
@@ -468,7 +468,7 @@ sum up:
 <h1>How to get involved in the development of Padre and its plug-ins?</h1>
 <p>
 Behind this item there are lots of issues. We maintain a separate set of
-<a href="http://padre.perlide.org/trac/wiki/Howto">instructions</a> on the developers wiki.
+<a href="http://padre.perlide.org/trac/wiki/Howto">Howto's</a> on the developers wiki.
 </p>
 <div class="spacer" ></div>
 [% END %]
