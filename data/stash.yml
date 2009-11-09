@@ -28,6 +28,10 @@ about:
   - title: y2009
     events:
       - date: 2009 November 08
+        url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
+        title: Best things in life come in threes
+        comment: Barry Walsh (draegtun) explains how he built Padre on Mac-OSX
+      - date: 2009 November 08
         url: http://szabgab.com/blog/2009/11/1257675476.html
         title: Padre 0.50 released
         comment: by Gábor Szabó 
