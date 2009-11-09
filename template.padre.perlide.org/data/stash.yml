@@ -12,8 +12,8 @@ navigation:
     href: /support.html
   - name: Screenshots
     href: /screenshots.html
-  - name: Howto
-    href: /howto.html
+  - name: Instructions
+    href: /instructions.html
   - name: Getting Involved
     href: /getting_involved.html
   - name: Blogs
@@ -34,16 +34,16 @@ about:
       - date: 2009 November 08
         url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
         title: Best things in life come in threes
-        comment: Barry Walsh (draegtun) explains how he built Padre on Mac-OSX
+        comment: Barry Walsh (draegtun) explains how he built Padre on Mac OS X
       - date: 2009 November 08
         url: http://szabgab.com/blog/2009/11/1257675476.html
         title: Padre 0.50 released
-        comment: by Gábor Szabó 
+        comment: by Gábor Szabó
       - date: 2009 November 04
         url: http://padre-ide.de/blog/?p=17
         title: Hot keys - with problems
         comment: by Sebastian Willing (SEWI)
-      - date: 2009 november 04
+      - date: 2009 November 04
         url: http://use.perl.org/~Alias/journal/39837
         title: Padre Sync, Padre Update, and Padre Telemetry
         comment: by Adam Kennedy about the server-side part of Padre
@@ -66,7 +66,7 @@ about:
       - date: 2009 October 26
         url: http://szabgab.com/blog/2009/10/1256593212.html
         title: Perl Editor and IDE Poll results
-        comment: by Gábor Szabó 
+        comment: by Gábor Szabó
       - date: 2009 October 16
         url: http://www.modernperlbooks.com/mt/2009/10/from-novice-to-adept-cleaning-up-bad-code.html
         title: From Novice to Adept: Cleaning Up Bad Code
@@ -74,7 +74,7 @@ about:
       - date: 2009 October 06
         url: http://blog.newint.org/tech/2009/10/06/padre-the-perl-ide-on-osx/
         title: A Perl-based editor for Perl, on a Mac.
-        comment: Phillip Smith gives instructions on buildin Padre on Mac
+        comment: Phillip Smith gives instructions on building Padre on Mac
       - date: 2009 October 06
         url: http://use.perl.org/~Alias/journal/39718
         title: Padre Productivity: 10 seconds here, 10 seconds there
@@ -145,19 +145,19 @@ about:
         comment: chromatic describes something very similar to our plans
       - date: 2009 September 10
         url: http://szabgab.com/blog/2009/09/1252571011.html
-        title: Help packaging Padre on Linux and Mac OSX
+        title: Help packaging Padre on Linux and Mac OS X
         comment: by Gábor Szabó
       - date: 2009 September 09
         url: http://ahmadzawawi.blogspot.com/2009/09/upgrading-to-rakudo-perl-6-pdx.html
         title: Upgrading to Rakudo Perl 6 PDX
         comment: by Ahmad M. Zawawi
-      - date: 2009 September 07 
+      - date: 2009 September 07
         url: http://perlpilot.blogspot.com/2009/09/things-i-wish-were-different-in-padre.html
         title: Things I wish were different in Padre
         comment: Navigating the Perliverse by Jonathan Scott Duff
-      - date: 2009 September 07 
-        url: http://szabgab.com/blog/2009/09/1252306069.html 
-        title: How to get started with Padre? 
+      - date: 2009 September 07
+        url: http://szabgab.com/blog/2009/09/1252306069.html
+        title: How to get started with Padre?
         comment: by Gábor Szabó
       - date: 2009 September 04
         url: http://stevan-little.blogspot.com/2009/09/re-re-re-moose-or-no-moose.html
@@ -195,19 +195,19 @@ about:
         url: http://www.asciiville.com/2009/08/padre-041-plus-003.html
         title: Padre 0.41 plus 0.03
         comment: by Todd Presta on asciiville
-      - date: 2009 august 25
+      - date: 2009 August 25
         url: http://dw-community-promo.dreamwidth.org/141598.html
         title: Padre, the Perl IDE - make it easy to write Perl code
         comment: Promoting Padre to Dreamwidth users by Gábor Szabó
       - date: 2009 August 25
         url: http://ahmadzawawi.blogspot.com/2009/08/one-liner-to-upgrade-padres-almost-six.html
-        title: A one-liner to upgrade Padre's "Almost Six" 
+        title: A one-liner to upgrade Padre's "Almost Six"
         comment: by Ahmad M. Zawawi
-      - date: 2009 August 25 
+      - date: 2009 August 25
         url: http://pugs.blogs.com/audrey/2009/08/my-hobby-troll-hugging.html
         title: My hobby: Troll hugging.
         comment: by Audrey Tang
-      - date: 2009 August 25 
+      - date: 2009 August 25
         url: http://onionstand.blogspot.com/2009/08/padre-044-released.html
         title: Padre 0.44 released!
         comment: by garu on The Onion Stand
@@ -871,45 +871,47 @@ about:
         title: How I wrote a refactoring Perl editor in 4 hours
         comment: by Adam Kennedy
   - title: German
+    ISO_639: de
     events:
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=39
         title: Neu: Padre::Plugin::PHP 0.03
-        language: German
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 04
         url: http://padre-ide.de/blog/?p=15
-        title: Heisse Tasten - mit Problemen
-        language: German
+        title: Heiße Tasten - mit Problemen
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 02
         url: http://padre-ide.de/blog/?p=8
         title: Padre - mehr als eine Perl IDE
-        language: German
         comment: by Sebastian Willing (SEWI)
       - date: 2008 December 07
         url: http://perl-howto.de/2008/12/padre-perl-application-development-and-refactoring-environment.html
         title: Padre (Perl Application Development and Refactoring Environment) 0.20
-        comment: by Thomas Fahle (German / Deutsch)
+        comment: by Thomas Fahle
   - title: Arabic
+    ISO_639: ar
     events:
       - date: 2009 May 22
         url: http://www.youtube.com/watch?v=HSvb2xMbUKw
         title: Padre (screencast)
         comment: Padre screencast in Arabic.
   - title: Hebrew
+    ISO_639: he
     events:
       - date: 2009 July 22
         url: 'http://www.whatsup.org.il/modules.php?op=modload&name=News&file=article&sid=6454'
         title: Birthday for Padre, the Perl Integrated Development Environment
         comment: by Shlomi Fish on Whatsup.org.il
   - title: Japanese
+    ISO_639: ja
     events:
       - date: 2009 September 21
         url: http://barca.daa.jp/archives/2009/09/padre-on-win7-vista.php
         title: Padre does not start in the Win7/Vista
         comment: by barlog
   - title: Russian
+    ISO_639: ru
     events:
       - date: 2009 October 27
         url: http://onperl.ru/onperl/2009/10/naim-shafiev-pro-ide-padre.html

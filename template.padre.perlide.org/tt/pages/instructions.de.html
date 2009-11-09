@@ -1,4 +1,5 @@
 [% DEFAULT title="Padre Installation unter Windows" %]
+[% DEFAULT doc_lang="de" %]
 [% WRAPPER lib/xhtml_doc %]
   [% INCLUDE language_warning %]
   [% INCLUDE what_is_padre_de %]
@@ -9,14 +10,14 @@
 
 
 [% BLOCK language_warning %]
-<div style="float: top;">
+<div style="float: top;" xml:lang="en">
 [% WRAPPER chrome/styled_panel %]
 <h1>Don't speak German?</h1>
 <p>
-Hinweis f&uuml;r englischsprachige Besucher:<br>
+Note for English speaking visitors:<br/>
 This page is written in German for German users, if you don't speak German,
- it will be of little use to you and you may want to visit the
- <a href="howto.html">english Padre howto - page</a>.
+ it will be of little use to you and you may want to visit
+ <a href="instructions.html">Padre instructions in English</a>.
 </p>
 <div class="spacer" ></div>
 [% END %]
@@ -28,8 +29,8 @@ This page is written in German for German users, if you don't speak German,
 [% WRAPPER chrome/styled_panel %]
 <h1>Was ist Padre?</h1>
 <p>
-Padre ist nicht nur eine Perl - Entwicklungsumgebung, sondern auch ein Perl - Projekt.<br>
- Padre ist komplett in Perl geschrieben und unterst&uuml;tzt die Entwicklung von Projekten
+Padre ist nicht nur eine Perl - Entwicklungsumgebung, sondern auch ein Perl - Projekt.<br/>
+ Padre ist komplett in Perl geschrieben und unterstützt die Entwicklung von Projekten
  in Perl 5, Perl 6 und diversen weiteren Programmiersprachen.</p>
 <div class="spacer" ></div>
 [% END %]
@@ -41,17 +42,17 @@ Padre ist nicht nur eine Perl - Entwicklungsumgebung, sondern auch ein Perl - Pr
 [% WRAPPER chrome/styled_panel %]
 <h1>Padre - Installation unter Windows</h1>
 <p>
-Diese Anleitung ben&ouml;tigt kein vorinstalliertes Perl, das Installationspaket
- enth&auml;lt alle notwendigen Komponenten.</p>
+Diese Anleitung benötigt kein vorinstalliertes Perl, das Installationspaket
+ enthält alle notwendigen Komponenten.</p>
 <ol>
 <li>Padre von der <a href="http://padre.perlide.org/download.html">offiziellen Padre Download-Seite</a> herunterladen.
  Diese Anleitung basiert auf dem <em>Padre Standalone</em> - Paket in der Version 0.45, sie sollte aber auch mit jeder
- sp&auml;teren Version funktionieren.</li>
+ späteren Version funktionieren.</li>
 <li>Die heruntergeladene .msi - Datei doppelt anklicken.</li>
 <li>Sofern die Nutzungs- und Lizenzbedingungen akzeptiert wurden, reicht ein Klick auf den <em>Install</em> - Button,
  um die Installation zu starten.</li>
 <li>Padre kann jetzt via <em>Start</em>, <em>Programme</em>, <em>Padre Standalone</em> und <em>Padre</em> gestartet werden.</li>
-<li>Das CPAN - Perl-Archiv verf&uuml;gt m&ouml;glicherweise &uuml;ber eine neuere Version als
+<li>Das CPAN - Perl-Archiv verfügt möglicherweise über eine neuere Version als
  das aktuellste Installationspaket, ein Update ist also zu empfehlen.</li>
 </ol>
  <div class="spacer" ></div>
@@ -63,15 +64,15 @@ Diese Anleitung ben&ouml;tigt kein vorinstalliertes Perl, das Installationspaket
 <div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h1>Padre - Update unter Windows</h1>
-<p>Padre wird st&auml;ndig weiterentwickelt, durchschnittlich alle zwei Wochen, je nach Umfang der
- &Auml;nderungen aber teilweise auch w&ouml;chentlich erscheinen neue Versionen. Ein Update aktualisiert
+<p>Padre wird ständig weiterentwickelt, durchschnittlich alle zwei Wochen, je nach Umfang der
+ änderungen aber teilweise auch wöchentlich erscheinen neue Versionen. Ein Update aktualisiert
  Padre auf die neuste stabile Version und ist i.d.R. zu empfehlen:</p>
 <ol>
 <li>Auf <em>Start</em> klicken</li>
-<li>Auf <em>Ausf&uuml;hren</em> klicken (entf&auml;llt ab Vista)</li>
+<li>Auf <em>Ausführen</em> klicken (entfällt ab Vista)</li>
 <li>(Den Standardpfad vorausgesetzt) folgende Zeile eingeben oder reinkopieren:
  <tt>C:\strawberry\perl\bin\perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</tt></li>
-<li>Der Updateprozess kann bis zu 70 Minuten dauern (abh&auml;ngig von der Anzahl der notwendigen Updates und
+<li>Der Updateprozess kann bis zu 70 Minuten dauern (abhängig von der Anzahl der notwendigen Updates und
  der Geschwindigkeit der Internetverbindung).</li>
 <li>Sollte das Update nicht starten, den o.g. Vorgang mit folgender Zeile wiederholen:
  <tt>perl.exe -MCPAN -e "CPAN->upgrade('/^Padre/')"</tt></li>

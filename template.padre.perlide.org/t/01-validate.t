@@ -3,7 +3,6 @@ use 5.010;
 use utf8;
 use strict;
 use warnings FATAL => 'all';
-use autodie qw(:all);
 use Capture::Tiny qw(capture);
 use File::Next qw();
 use File::Which qw(which);
@@ -34,7 +33,7 @@ my $file_counter;
 while (defined(my $html_file = $iter->())) {
     $file_counter++;
     my (undef, $stderr) = capture {
-        system qw(xmllint --html --noout), $html_file;
+        system qw(xmllint --noout), $html_file;
     };
     ok !$stderr, "$html_file validates";
     diag $stderr if $stderr;

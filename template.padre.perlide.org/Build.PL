@@ -17,10 +17,13 @@ my $self = Local::Padre::Website::Builder->new(
         'File::Which'              => 0,
         'Module::Build'            => '0.26',
         'Path::Class'              => 0,
+        'Pod::Xhtml'               => 0,
         'Template'                 => 0,
         'Test::More'               => '0.87_01',
         'Text::Unaccent::PurePerl' => 0,
         'Time::Piece'              => 0,
+        'XML::LibXML'              => 0,
+        'XML::LibXSLT'             => 0,
         'YAML::Tiny'               => 0,
     },
 );
