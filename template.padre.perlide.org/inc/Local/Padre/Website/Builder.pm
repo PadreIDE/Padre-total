@@ -82,10 +82,18 @@ sub ACTION_copy_static_files {
     );
 
     while (defined(my $fullpath = $iter->())) {
-        my $target_dir = dir($self->destdir,
-            file($fullpath)->relative($documentroot)->parent);
+        my $target_file = file($self->destdir,
+            file($fullpath)->relative($documentroot));
+	my $target_dir = dir($target_file)->parent;
         $target_dir->mkpath;
-        copy $fullpath, $target_dir;
+	# Skip existing destination files whose modified
+	#  time is newer than the checkout 
+	next if (-e $target_file &&
+		(stat $target_file)[9] 
+		 >= 
+		(stat $fullpath   )[9] );
+
+        copy $fullpath, $target_dir; 
     }
 }
 
