@@ -9,14 +9,30 @@ set CPAN=http://theoryx5.uwinnipeg.ca/pub/CPAN
 rem or the 5-min CPAN mirror
 set CPAN=http://cpan.hexten.net
 
-------------------- DO THIS FIRST STEP on Strawberry -------------------------
-The reason that you need to do it on c:\strawberry it is that it hardcodes
-Perl interpreter's path that created it.
+You really need to use a Bootstrap installation for these steps, 
+because at the end of this, this will install into c:\strawberry, and you can't 
+overwrite the host perl.
 
-[I need to verify that Alien::wxWidgets 0.46 takes out the Strawberry requirement.]
+A usable Bootstrap build is at 
+http://strawberryperl.com/download/bootstrap/bootstrap-perl-5.10.1.0.msi, or you 
+can build one yourself by going "perldist Bootstrap" once steps 2 and 3 are done.
 
-1) Create a par file for Alien::wxWidgets, because we need to install a patched 
-version.
+1) To speed up the build, we either need to get (1a) or build (1b) a .par file for
+Alien::wxWidgets.
+
+NOTE: There used to be a requirement that the steps in 1b were performed in a 
+Strawberry build, because Alien::wxWidgets hard-coded the library locations.
+Version 0.46 removed this problem (it adjusts the location on the fly.)
+
+1a) Getting the Alien::wxWidgets .par file.
+
+cd C:\
+wget http://www.commandline.co.uk/mtee/mtee.zip
+unzip mtee.zip
+wget http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.46-MSWin32-x86-multi-thread-5.10.1.par
+
+1b) [Only needed if an updated version of Alien::wxWidgets is wanted from the one
+above] Create a par file for Alien::wxWidgets.
 
 rem Setup which version of Alien wxWidgets to use
 set ALIEN_WIDGETS=Alien-wxWidgets-0.46
@@ -36,25 +52,13 @@ rem wait 40 minutes
 copy Alien-*.par ..
 cd ..
 
---------------- Bootstrap Perl needed afterwards ---------------------------------
-You really need to use a Bootstrap installation for the rest of these steps, 
-because at the end of this, this will install into c:\strawberry, and you can't 
-overwrite the host perl.
-
-A usable Bootstrap build is at 
-http://strawberryperl.com/download/bootstrap/bootstrap-perl-5.10.1.0.msi, or you 
-can build one yourself by going "perldist Bootstrap".
-
-2) Install Inno Setup from http://www.innosetup.com/download.php/is.exe and WiX 
-from http://wix.sourceforge.net/releases/3.0.5419.0/Wix3.msi
-
-3) Install Alien::WiX and Perl::Dist::WiX from CPAN.
-4) Install Perl::Dist::Strawberry from CPAN.
+2) Install Alien::WiX and Perl::Dist::WiX from CPAN.
+3) Install Perl::Dist::Strawberry from CPAN.
 
 rem say [y] install minicpan script ... This is important for optional step 5a
 cpan Alien::WiX Perl::Dist::WiX Perl::Dist::Strawberry
 
-5) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
+4) Install Perl::Dist::Padre from svn or from CPAN. SVN directions are below.
 
 rem --- install via CPAN
 cpan Perl::Dist::Padre
@@ -67,24 +71,24 @@ perl Makefile.PL && dmake && dmake test
 dmake install
 cd ..
 
-5a) (Optional) If you want to build off a minicpan, do this:
+4a) (Optional) If you want to build off a minicpan, do this:
 
-svn co http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/script
-wget http://svn.ali.as/cpan/trunk/Perl-Dist-WiX/share/minicpan_filters.txt
-perl script\minicpan_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\
+minicpan_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\ --cpan %CPAN%
 
-6) Actually build the dist...
+5) Actually build the dist...
 
-set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.44-MSWin32-x86-multi-thread-5.10.0.par
+set PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION=C:\Alien-wxWidgets-0.46-MSWin32-x86-multi-thread-5.10.1.par
 rem to make sure the path is correct
 dir %PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION%
 
-rem --- without minicpan (5a)
-perldist Padre 2>&1 | mtee padre-install.txt
+rem --- without minicpan (4a)
+perldist_w Padre --cpan %CPAN% 2>&1 | mtee padre-install.txt
 (wait for 3-6 hours)
 
-rem --- with minicpan (5a)
-perldist Padre --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
+rem --- with minicpan (4a)
+perldist_w Padre --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
+
+[If you want more information during the build, put "--trace 2" between "perldist_w" and "Padre" 
 
 Build Troubleshooting
 ---------------------
