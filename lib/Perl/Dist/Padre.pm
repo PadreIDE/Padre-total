@@ -7,7 +7,7 @@ use warnings;
 use Perl::Dist::Strawberry 2.0002  qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars );
-use File::Spec::Functions          qw( catfile        );
+use File::Spec::Functions          qw( catfile catdir );
 use parent                         qw( Perl::Dist::Strawberry );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
@@ -31,7 +31,7 @@ sub new {
 		app_ver_name      => 'Padre Standalone 0.50',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
-		image_dir         => 'C:\padre',
+		image_dir         => 'C:\strawberry',
 
 		# Set e-mail to something Padre-specific.
 		perl_config_cf_email => 'padre-dev@perlide.org',
@@ -223,9 +223,33 @@ sub install_padre_modules {
 sub install_padre_extras {
 	my $self = shift;
 
-	$self->install_launcher(
-		name => 'Padre',
-		bin  => 'padre',
+	# Check that the padre.exe exists
+	my $to =
+	  catfile( $self->image_dir(), 'perl', 'bin', 'padre.exe' );
+	unless ( -f $to ) {
+		PDWiX->throw(q{The "padre.exe" file does not exist});
+	}
+
+	# Get the Id for directory object that stores the filename passed in.
+	my $dir_id = $self->directories()->search_dir(
+		path_to_find => catdir( $self->image_dir(), 'perl', 'bin' ),
+		exact        => 1,
+		descend      => 1,
+	)->get_id();
+
+	my $icon_id =
+	  $self->icons()
+	  ->add_icon( catfile( $self->dist_dir(), 'padre.ico' ),
+		'padre.exe' );
+
+	# Add the start menu icon.
+	$self->{fragments}->{StartMenuIcons}->add_shortcut(
+		name        => 'Padre',
+		description => 'Perl Application Development and Refactoring Environment - a Perl IDE',
+		target      => "[D_$dir_id]padre.exe",
+		id          => 'Padre',
+		working_dir => $dir_id,
+		icon_id     => $icon_id,
 	);
 
 	return 1;
