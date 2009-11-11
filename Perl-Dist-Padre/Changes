@@ -1,5 +1,10 @@
 Changes for Perl extension Perl-Dist-Padre
 
+0.500 Wed 11 Nov 2009
+    - Used to make Padre Standalone 0.50.
+    - Updated to new version of Strawberry.
+    - Added padre.exe launcher.
+	
 0.270 Sun 2 Aug 2009
     - Used to make "almost-six-0.41".
     - Updated module list.

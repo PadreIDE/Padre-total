@@ -1,8 +1,8 @@
 verbose = %f:%l:%c:\n %p: %m\n
 theme = (core || more)
 
-#[CodeLayout::RequireTidyCode]
-#perltidyrc = t/settings/perltidy.txt
+[CodeLayout::RequireTidyCode]
+perltidyrc = t/settings/perltidy.txt
 
 [ControlStructures::ProhibitPostfixControls]
 allow = if unless
@@ -35,7 +35,7 @@ allowed_values = -1 0 1 2
 [-NamingConventions::Capitalization]
 
 # I like use version, but not the results of using qv!
-#[-ValuesAndExpressions::RequireConstantVersion]
+[-ValuesAndExpressions::RequireConstantVersion]
 
 # I have routines that just pass @_ on.
 [-Subroutines::RequireArgUnpacking]
