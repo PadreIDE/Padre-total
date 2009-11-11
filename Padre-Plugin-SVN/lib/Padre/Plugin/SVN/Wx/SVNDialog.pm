@@ -99,6 +99,7 @@ sub build_dialog {
 	# not sure what this is going to look like in other window managers.
 	if ($getData) {
 
+		$self->{cancelled} = 0;
 		my $btnCancel = Wx::Button->new( $pnlButtons, Wx::wxID_CANCEL, "Cancel", [ -1, -1 ], [ -1, 40 ] );
 		Wx::Event::EVT_BUTTON( $self, $btnCancel, \&cancel_clicked );
 		$btnBox->Add( $btnCancel, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
@@ -139,6 +140,7 @@ sub ok_clicked {
 sub cancel_clicked {
 	my ($self) = @_;
 
+	$self->{cancelled} = 1;
 	#print "Cancel Clicked\n";
 	$self->Hide();
 	$self->Destroy;
