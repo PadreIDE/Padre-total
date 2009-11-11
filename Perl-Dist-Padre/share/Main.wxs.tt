@@ -83,6 +83,7 @@
 
 <InstallExecuteSequence>
   <Custom Action='CA_ClearFolder' Before='InstallInitialize'>REMOVE="ALL"</Custom>
+  <ScheduleReboot After="InstallFinalize"/>
 </InstallExecuteSequence>
 
 <Binary Id='B_ClearFolder' SourceFile='[% dist.wix_dist_dir %]\ClearFolderCA.dll' />
