@@ -185,7 +185,7 @@ sub _get_current_filename {
 				),
 				Wx::gettext("Commit warning"),
 				Wx::wxYES_NO | Wx::wxCENTRE,
-				Padre->ide->wx->main,
+				$main,
 			);
 
 			return if $ret == Wx::wxNO;
@@ -196,7 +196,7 @@ sub _get_current_filename {
 
 		return $filename;
 	} else {
-		$main->error('File needs to be saved first');
+		$main->error('File needs to be saved first.');
 		return;
 	}
 }
@@ -436,14 +436,21 @@ sub svn_commit {
 	} else { # New files
 		$info .= "Last Revision: (none)";
 	}
+	
 	require Padre::Plugin::SVN::Wx::SVNDialog;
 	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $info, undef, 'Commit File', 1 );
 	$dialog->ShowModal;
 
+	# check Cancel!!!!
+	return if( $dialog->{cancelled});
+	
 	my $message = $dialog->get_data;
 
+	
+	
+
 	# whoops!! This isn't going to work "Commit message" is always set in the text control.
-	if ($message) {
+	if ($message && $message ne 'Commit Message') { # "Commit Message" come from SVNDialog
 		$self->{_busyCursor} = Wx::BusyCursor->new();
 
 		my $revNo = $file->commit($message);
@@ -455,9 +462,38 @@ sub svn_commit {
 		if (@err) {
 			$main->error( join( "\n", @err ), 'Error - SVN Commit' );
 		} else {
-			$main->info( join( "\n", @commit ), "Committed Revision number $revNo" );
+			$main->info( join( "\n", @commit ), "Committed Revision number $revNo." );
 		}
 
+	}
+	else {
+	    my $ret = Wx::MessageBox( Wx::gettext(
+				  'You really should commit with a useful message'
+				  .  "\n\nDo you really want to commit with out a message?"
+			    ),
+				    Wx::gettext("Commit warning"),
+				    Wx::wxYES_NO | Wx::wxCENTRE,
+				    $main,
+			    );
+	    if( $ret == Wx::wxYES ) {
+		$self->{_busyCursor} = Wx::BusyCursor->new();
+
+		my $revNo = $file->commit($message);
+
+		$self->{_busyCursor} = undef;
+
+		my @commit = @{ $file->stdout };
+		my @err    = @{ $file->stderr };
+		if (@err) {
+			$main->error( join( "\n", @err ), 'Error - SVN Commit' );
+		} else {
+			$main->info( join( "\n", @commit ), "Committed Revision number $revNo." );
+		}		    
+	    }
+	    else {
+		$self->svn_commit($path);    
+	    }
+	
 	}
 
 	return;
