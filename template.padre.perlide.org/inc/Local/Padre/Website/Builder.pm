@@ -121,6 +121,7 @@ sub ACTION_process_templates {
     my ($stash) = LoadFile file($self->config_data('sourcedir'), qw(data stash.yml));
 
     $stash->{build_date} = $self->dist_version;
+    $stash->{base} = $self->config_data('base') if $self->config_data('base');
     $stash->{developers}
       = $self->_read_people($stash->{developers}, 'developers');
     $stash->{translators}

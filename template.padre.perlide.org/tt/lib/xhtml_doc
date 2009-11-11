@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="[% IF doc_lang %][% doc_lang %][% ELSE %]en[% END %]">
 <head>
  <title>[% title | html %]</title>
+ [% IF base %]<base href="[% base %]" />[% END %]
  <link rel="stylesheet" href="/static/static.css" type="text/css" />
 </head>
 <body[% IF onload_handler %] onload="[% onload_handler %]"[% END %]>
