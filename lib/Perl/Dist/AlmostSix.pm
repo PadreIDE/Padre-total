@@ -1,17 +1,19 @@
 package Perl::Dist::AlmostSix;
 
+#<<<
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Padre       0.450  qw();
+use Perl::Dist::Padre       0.500  qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars    );
 use File::Spec::Functions          qw( catfile           );
 use parent                         qw( Perl::Dist::Padre );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.450';
-$VERSION = eval $VERSION;
+our $VERSION = '0.500';
+$VERSION =~ s/_//ms;
+#>>>
 
 
 ######################################################################
@@ -21,9 +23,9 @@ sub new {
 	my $dist_dir = File::ShareDir::dist_dir('Perl-Dist-Padre');
 
 	my $self = shift->SUPER::new(
-		app_name          => 'Padre Standalone Plus Six',
-		app_ver_name      => 'Padre Standalone Plus Six 0.45-PDX',
-		
+		app_name     => 'Padre Standalone Plus Six',
+		app_ver_name => 'Padre Standalone Plus Six 0.50-PDX',
+
 		# Tasks to complete to create Padre Standalone Plus Six
 		tasklist => [
 			'final_initialization',
@@ -54,12 +56,12 @@ sub new {
 		@_,
 
 	);
-	
+
 	return $self;
 } ## end sub new
 
 sub output_base_filename {
-	return 'almost-six-0.45';
+	return 'almost-six-0.50';
 }
 
 
@@ -104,7 +106,7 @@ sub install_six_modules {
 	$self->install_module( name => 'Padre::Plugin::Perl6' );
 
 	return 1;
-} ## end sub install_perl_modules
+} ## end sub install_six_modules
 
 #=pod
 #
@@ -143,7 +145,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::AlmostSix version 0.450
+Perl::Dist::AlmostSix version 0.500
 
 =end readme
 
@@ -155,7 +157,7 @@ Perl::Dist::AlmostSix - Padre Standalone Plus Six for Win32 builder
 
 =head1 VERSION
 
-This document describes Perl::Dist::AlmostSix version 0.450.
+This document describes Perl::Dist::AlmostSix version 0.500.
 
 =for readme continue
 
@@ -210,7 +212,7 @@ L<File::ShareDir|File::ShareDir> could not find the share directory for this mod
 
 =item C<< Perl %s is not available in Padre Standalone >>
 
-You can only build Padre Standalone on Perl 5.10.0.
+You can only build Padre Standalone on Perl 5.10.1.
 
 =back
 
@@ -224,7 +226,7 @@ Perl::Dist::AlmostSix requires no configuration files or environment variables.
 
 Dependencies of this module that are non-core in perl 5.8.1 (which is the 
 minimum version of Perl required) include 
-L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 1.11_14, and 
+L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.01, and 
 L<URI::file|URI::file>.
 
 =for readme stop

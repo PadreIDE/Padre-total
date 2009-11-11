@@ -4,7 +4,7 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry 2.0002  qw();
+use Perl::Dist::Strawberry   2.01  qw();
 use URI::file                      qw();
 use English                        qw( -no_match_vars );
 use File::Spec::Functions          qw( catfile catdir );
@@ -12,7 +12,7 @@ use parent                         qw( Perl::Dist::Strawberry );
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
 our $VERSION = '0.500';
-$VERSION = eval $VERSION;
+$VERSION =~ s/_//ms;
 #>>>
 
 
@@ -43,7 +43,7 @@ sub new {
 
 		# Perl version
 		perl_version => '5101',
-		
+
 		# Program version.
 		build_number => 1,
 
@@ -136,7 +136,7 @@ sub install_padre_prereq_modules_1 {
 	} );
 
 	return 1;
-}
+} ## end sub install_padre_prereq_modules_1
 
 
 sub install_padre_prereq_modules_2 {
@@ -182,8 +182,8 @@ sub install_padre_prereq_modules_2 {
 	} );
 
 	return 1;
-}
-	
+} ## end sub install_padre_prereq_modules_2
+
 sub install_padre_modules {
 	my $self = shift;
 
@@ -206,9 +206,9 @@ sub install_padre_modules {
 	$self->install_module( name => 'Wx' );
 
 	# Install modules that add more Wx functionality
-	$self->install_module( 
-		name => 'Wx::Perl::ProcessStream',
-		force => 1 # since it fails on vista
+	$self->install_module(
+		name  => 'Wx::Perl::ProcessStream',
+		force => 1                     # since it fails on vista
 	);
 
 	# And finally, install Padre itself
@@ -218,15 +218,14 @@ sub install_padre_modules {
 	);
 
 	return 1;
-} ## end sub install_perl_modules
+} ## end sub install_padre_modules
 
 sub install_padre_extras {
 	my $self = shift;
 
 	# Check that the padre.exe exists
-	my $to =
-	  catfile( $self->image_dir(), 'perl', 'bin', 'padre.exe' );
-	unless ( -f $to ) {
+	my $to = catfile( $self->image_dir(), 'perl', 'bin', 'padre.exe' );
+	if ( not -f $to ) {
 		PDWiX->throw(q{The "padre.exe" file does not exist});
 	}
 
@@ -239,13 +238,13 @@ sub install_padre_extras {
 
 	my $icon_id =
 	  $self->icons()
-	  ->add_icon( catfile( $self->dist_dir(), 'padre.ico' ),
-		'padre.exe' );
+	  ->add_icon( catfile( $self->dist_dir(), 'padre.ico' ), 'padre.exe' );
 
 	# Add the start menu icon.
 	$self->{fragments}->{StartMenuIcons}->add_shortcut(
-		name        => 'Padre',
-		description => 'Perl Application Development and Refactoring Environment - a Perl IDE',
+		name => 'Padre',
+		description =>
+'Perl Application Development and Refactoring Environment - a Perl IDE',
 		target      => "[D_$dir_id]padre.exe",
 		id          => 'Padre',
 		working_dir => $dir_id,
@@ -253,7 +252,7 @@ sub install_padre_extras {
 	);
 
 	return 1;
-} ## end sub install_win32_extras
+} ## end sub install_padre_extras
 
 sub dist_dir {
 	my $self = shift;
@@ -364,7 +363,7 @@ Perl::Dist::Padre requires no configuration files or environment variables.
 
 Dependencies of this module that are non-core in perl 5.8.1 (which is the 
 minimum version of Perl required) include 
-L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.0002, and 
+L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.01, and 
 L<URI::file|URI::file>.
 
 =for readme stop
