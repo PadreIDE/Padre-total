@@ -30,6 +30,7 @@ my $self = Local::Padre::Website::Builder->new(
 die "Mandatory parameter --destdir was not specified.\n" unless $self->destdir;
 die "Mandatory parameter --sourcedir was not specified.\n" unless $self->args->{sourcedir};
 $self->config_data(sourcedir => $self->args->{sourcedir});
+$self->config_data(base => $self->args->{base}) if $self->args->{base};
 $self->create_build_script;
 print "You can run ./Build now.\n";
 
@@ -65,6 +66,13 @@ Mandatory. Specifies the name of the directory where the web site files
 are output after the build.
 
 This directory already needs to exists.
+
+=item --base
+
+Optional. Specifies the target of the XHTML base link. Useful for off-line
+testing. Sample values are C<http://padre.perlide.org/> or
+C<file:///var/tmp/out/> (URI-fied version of L</"--destdir">).
+Default is nothing; no C<base> element will be written.
 
 =back
 
