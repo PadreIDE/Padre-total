@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2008 November 10
+        url: http://id-perl.blogspot.com/2009/11/regex-editor-in-padre-050.html
+        title: Regex Editor in Padre 0.50
+        comment: by Steven Haryanto on Perl Indonesia
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=37
         title: New: Padre::Plugin::PHP 0.03
