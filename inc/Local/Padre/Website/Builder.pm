@@ -66,7 +66,7 @@ sub ACTION_build_docs {
 		#print file($fullpath)->relative, "\n";
 		my $outfile = substr(dir($target_dir, basename($fullpath)), 0, -2) . 'html';
 
-		# TODO we might also want to generate the docs of all the Padre plugins
+		# TO DO we might also want to generate the docs of all the Padre plug-ins
         $parser->parse_from_file($fullpath, $outfile);
 	}
 }
@@ -155,7 +155,7 @@ sub ACTION_install {
     # or something like that.
 }
 
-# TODO: add some error checking and data validation (correct sections? correct fields ?)
+# TO DO: add some error checking and data validation (correct sections? correct fields ?)
 sub _read_people {
     my ($self, $list, $dir) = @_;
 

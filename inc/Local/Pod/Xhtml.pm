@@ -26,8 +26,8 @@ sub _setTitle {
     my ($self, $paragraph) = @_;
 
     {
-        $paragraph =~ s|</?code>||gmsx;
-        # undo the <code/> wrapper for the <title/> element content
+        $paragraph =~ s|\A <code>(\S+)</code>|$1|msx;
+        # undo the first <code/> wrapper for the <title/> element content
     }
 
     if ($paragraph =~ m/^(.+?) - /) {

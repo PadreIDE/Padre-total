@@ -48,6 +48,10 @@ my $stylesheet = XML::LibXSLT->new->parse_stylesheet(
     <xsl:template match="xhtml:*[@xml:lang!='en']"/> <!-- filter non-English -->
     <xsl:template match="xhtml:pre"/> <!-- filter computerese -->
     <xsl:template match="xhtml:code"/>
+    <xsl:template match="xhtml:cite"/>
+    <xsl:template match="xhtml:title"/>
+    <xsl:template match="xhtml:abbr"/>
+    <xsl:template match="xhtml:acronym"/>
     <xsl:template match="@* | node()"> <!-- apply identity function to rest of nodes -->
         <xsl:copy>
             <xsl:apply-templates select="@* | node()"/>
@@ -74,48 +78,104 @@ done_testing($file_counter);
 
 __DATA__
 ## personal names
+ADAMK
+Aharoni
+Alguacil
+Amir
+AZAWAWI
+Barbon
+Barbon
 barlog
 # Joshua ben Jore
 ben
+Blandino
+BlueT
 Breno
+Breunung
+BRICAS
 Cassidy
 Cezary
+CHRISDOLAN
+CORION
+ddn
 # Breno G. de Oliveira
 de
+Dolan
 Donelan
 draegtun
+ENELL
 Fahle
 Fayland
+FAYLAND
 Gábor
 Gábor's
+GABRIELMAD
 garu
+GARU
+GYU
 Haryanto
+Heiko
+HJANSEN
 Ishigaki
+ISHIGAKI
 Jérôme
 Jore
+JQUELIN
+Kaare
+KAARE
+Keedi
+KEEDI
 Kenichi
+Kephra
+Kjetil
+KJETIL
 lang
+Maischein
 Makholm
 Mašláňová
+Mattia
+Mattia
 Maurer
+Miyagawa
+mmaslano
 Morga
 Müller
+Murias
 Naim
 Niebur
+Nijs
 Oliveira
-Quelin
+Omer
+PacoLinux
+PATSPAM
+Pawe
+Petar
+PMURIAS
 Presta
+PSHANGOV
+Quelin
+Rasnita
+RSN
 Ruslan
+SBLANDIN
 SEWI
 Shafiev
+Shangov
 Shitov
 Shlomi
+SHLOMIF
+Skotheim
 Stevan
+SZABGAB
 Szabó
+Tatsuhiko
 TEEJAY
+THEREK
 Trevena
 tsee
+TSEE
 tsee's
+Vieira
 wala
 Zakirov
 Zawawi
@@ -123,12 +183,15 @@ Zawawi
 ## proper names
 ActivePerl
 asciiville
+Autodia
 Debian
 Dreamwidth
 FreeBSD
 Google
 gvim
+IRC
 JSAN
+KDE
 KinoSearch
 LiveJournal
 MacOS
@@ -137,8 +200,15 @@ Mibbit
 Mojo
 Mojolicious
 MSI
+ORLite
+ORLite's
 PerlMonks
+PDX
+PGE
+PHP
 Rakudo
+SQL
+SQLite
 SVN
 TPF
 Trac
@@ -148,54 +218,38 @@ WebGUI
 Wx
 wxPerl
 wxPywiki
+wxWidgets
+YAML
 YAPC
+Zenity
 
 ## Padre-specific
-AcmePlayCode
-Autoformat
-Calltips
-DocBrowser
-EmacsMode
-Msgfmt
-Nopaste
-PDX
-# Padre::Plugin
-Plugin
-# Task::Padre::Plugins
-Plugins
-PodFrame
-TabAndSpace
-WordStats
 
 ## computerese
+accessor
+Accessor
+accessors
+Accessors
 API
-Autodia
-CPAN
-CPANTS
-cperl
-DBI
-DBIx
-Devel
-DistZilla
-ExtUtils
-GPL
+committer
+deserializes
+getters
 IDE
-IRC
-ORDB
-Packlist
-PerlTidy
-PPI
+inode
+metadata
+mutator
+namespace
+ORM
 prepender
 refactor
+Refactor
 refactoring
 Refactoring
-REPL
-screenshot
-SQL
-# svn commit
-svn
-urpmi
-TT
+reflow
+runtime
+timestamp
+Uncomment
+uninstall
 
 ## other jargon
 
@@ -210,19 +264,14 @@ screencasts
 technopeasant
 
 ## compound
-# multi-lingual and multi-technology
-multi
 # July 27th
 th
-# perl-Padre
-perl
-# zh_CN
-zh
-CN
-# Multi-platform
+# multi-lingual and multi-technology
+multi
+# Multi-line
 Multi
-# padre-dev
-dev
+# vice-versa
+versa
 
 ## slang
 Grr
@@ -232,15 +281,17 @@ blog
 bloggers
 blogs
 Blogs
-committer
 crafters
+executables
 natively
-oversized
+pragma
+pragmas
+screenshot
 screenshots
 Screenshots
-uncheck
-uninstall
-Validator
+subdirectory
+Subdirectory
+versioned
 wiki
 
 ## single foreign words

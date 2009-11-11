@@ -33,7 +33,7 @@ about:
         comment: by Steven Haryanto on Perl Indonesia
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=37
-        title: New: Padre::Plugin::PHP 0.03
+        title: New: <code>Padre::Plugin::PHP</code> 0.03
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 08
         url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
@@ -53,11 +53,11 @@ about:
         comment: by Adam Kennedy about the server-side part of Padre
       - date: 2009 November 02
         url: http://padre-ide.de/blog/?p=3
-        title: Padre - More than the Perl IDE
+        title: Padre - More than the Perl <acronym>IDE</acronym>
         comment: by Sebastian Willing (SEWI)
       - date: 2009 October 27
         url: http://www.slideshare.net/shafiev/padre-free-perl-ide
-        title: Padre, free Perl IDE
+        title: Padre, free Perl <acronym>IDE</acronym>
         comment: the slides of Naim Shafiev (partially in Russian)
       - date: 2009 October 27
         url: http://id-perl.blogspot.com/2009/10/trying-out-padre-047.html
@@ -69,7 +69,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 October 26
         url: http://szabgab.com/blog/2009/10/1256593212.html
-        title: Perl Editor and IDE Poll results
+        title: Perl Editor and <acronym>IDE</acronym> Poll results
         comment: by Gábor Szabó
       - date: 2009 October 16
         url: http://www.modernperlbooks.com/mt/2009/10/from-novice-to-adept-cleaning-up-bad-code.html
@@ -90,10 +90,10 @@ about:
       - date: 2009 October 02
         url: http://szabgab.com/blog/2009/10/1254515743.html
         title: My teenage memories and the Parrot Virtual Machine
-        comment: by Gábor Szabó about Padre::Plugin::Parrot
+        comment: by Gábor Szabó about <code>Padre::Plugin::Parrot</code>
       - date: 2009 October 01
         url: http://blog.patspam.com/2009/padrepluginwebgui-tab-icons
-        title: Padre::Plugin::WebGUI Tab Icons
+        title: <code>Padre::Plugin::WebGUI</code> Tab Icons
         comment: by Patrick Donelan
       - date: 2009 September 27
         url: http://use.perl.org/~Alias/journal/39681
@@ -105,7 +105,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 September 27
         url: http://blog.patspam.com/2009/padrepluginwebgui-now-with-remote-editing
-        title: Padre::Plugin::WebGUI now with remote editing
+        title: <code>Padre::Plugin::WebGUI</code> now with remote editing
         comment: by Patrick Donelan
       - date: 2009 September 25
         url: http://blog.ryan52.info/?p=4
@@ -173,7 +173,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 September 03
         url: http://www.modernperlbooks.com/mt/2009/09/developer-versus-distributor-is-not-even-wrong.html
-        title: \"Developer versus Distributor\" is Not Even Wrong
+        title: '"Developer versus Distributor" is Not Even Wrong'
         comment: by chromatic
       - date: 2009 September 02
         url: http://stevan-little.blogspot.com/2009/09/re-re-moose-or-no-moose.html
@@ -201,7 +201,7 @@ about:
         comment: by Todd Presta on asciiville
       - date: 2009 August 25
         url: http://dw-community-promo.dreamwidth.org/141598.html
-        title: Padre, the Perl IDE - make it easy to write Perl code
+        title: Padre, the Perl <acronym>IDE</acronym> - make it easy to write Perl code
         comment: Promoting Padre to Dreamwidth users by Gábor Szabó
       - date: 2009 August 25
         url: http://ahmadzawawi.blogspot.com/2009/08/one-liner-to-upgrade-padres-almost-six.html
@@ -229,7 +229,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 August 18
         url: http://stackoverflow.com/questions/1291931/what-are-the-most-important-features-of-an-ide-for-perl-development
-        title: What are the most important features of an IDE for Perl development?
+        title: What are the most important features of an <acronym>IDE</acronym> for Perl development?
         comment: On Stack Overflow
       - date: 2009 August 17
         url: http://onionstand.blogspot.com/2009/08/padre-043-released.html
@@ -241,7 +241,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 August 06
         url: http://szabgab.com/blog/2009/08/1249553120.html
-        title: Where to find Windows users to try Padre, the Perl IDE?
+        title: Where to find Windows users to try Padre, the Perl <acronym>IDE</acronym>?
         comment: by Gábor Szabó
       - date: 2009 August 06
         url: http://lastofthecarelessmen.blogspot.com/2009/08/padre-on-windows.html
@@ -249,11 +249,11 @@ about:
         comment: by Last of the Careless Men
       - date: 2009 August 06
         url: http://use.perl.org/~Alias/journal/39414
-        title: Padre now supports Acme:: plug-ins
+        title: Padre now supports <code>Acme::</code> plug-ins
         comment: by Adam Kennedy
       - date: 2009 August 05
         url: http://samdelacruz.blogspot.com/2009/08/i-discovered-padre-new-perl-ide.html
-        title: I discovered Padre, a new Perl IDE
+        title: I discovered Padre, a new Perl <acronym>IDE</acronym>
         comment: by wala lang
       - date: 2009 July 31
         url: http://onionstand.blogspot.com/2009/07/on-padres-birthday-gift-to-you-042.html
@@ -332,7 +332,7 @@ about:
         comment: by Peter Makholm
       - date: 2009 July 04
         url: http://blog.patspam.com/2009/padrepluginwebgui
-        title: Padre::Plugin::WebGUI
+        title: <code>Padre::Plugin::WebGUI</code>
         comment: by Patrick Donelan
       - date: 2009 July 02
         url: http://szabgab.com/blog/2009/07/1246515871.html
@@ -360,7 +360,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 June 21
         url: http://jquelin.blogspot.com/2009/06/prepender-distzilla-plugin.html
-        title: prepender DistZilla plug-in can add boilerplate copyright
+        title: prepender <code>DistZilla</code> plug-in can add boilerplate copyright
         comment: by Jerome Quelin
       - date: 2009 June 21
         url: http://ahmadzawawi.blogspot.com/2009/06/padres-perl-6-support-and-ecliptic.html
@@ -368,7 +368,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 June 20
         url: http://szabgab.com/blog/2009/06/1245497295.html
-        title: Live Help - IRC channels
+        title: Live Help - <acronym>IRC</acronym> channels
         comment: by Gábor Szabó
       - date: 2009 June 16
         url: http://peter.makholm.net/2009/06/16/new-version-of-the-padre-debugger-plugin/
@@ -404,7 +404,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 May 31
         url: http://szabgab.com/blog/2009/05/1243802159.html
-        title: Planning an SQL or DBI plug-in for Padre
+        title: Planning an <acronym>SQL</acronym> or <acronym>DBI</acronym> plug-in for Padre
         comment: by Gábor Szabó
       - date: 2009 May 30
         url: http://it.toolbox.com/blogs/unix-sysadmin/padre-036-released-31932
@@ -420,7 +420,7 @@ about:
         comment: by garu on The Onion Stand
       - date: 2009 May 24
         url: http://www.fayland.org/blog/2009/05/manage-taskpadreplugins-with-ordbcpants.html
-        title: manage Task::Padre::Plugins with ORDB::CPANTS
+        title: manage <code>Task::Padre::Plugins</code> with <code>ORDB::CPANTS</code>
         comment: by Fayland Lam
       - date: 2009 May 20
         url: http://it.toolbox.com/blogs/unix-sysadmin/meet-padre-31768
@@ -432,7 +432,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 May 12
         url: http://jquelin.blogspot.com/2009/05/autoformat-and-nopaste-plugins-join.html
-        title: Autoformat and Nopaste plug-ins join Padre's nest
+        title: Auto-format and No-paste plug-ins join Padre's nest
         comment: by Jerome Quelin
       - date: 2009 May 12
         url: http://peter.makholm.net/2009/05/12/what-do-you-need-in-a-debugger/
@@ -452,7 +452,7 @@ about:
         comment: by Adam Kennedy
       - date: 2009 May 05
         url: http://peter.makholm.net/2009/05/05/padre-debugger/
-        title: Padre, meet Devel::bug
+        title: Padre, meet <code>Devel::bug</code>
         comment: by Peter Makholm
       - date: 2009 May 05
         url: http://szabgab.com/blog/2009/05/1241470887.html
@@ -524,7 +524,7 @@ about:
         comment: by Gábor Szabó
       - date: 2009 March 13
         url: http://jquelin.blogspot.com/2009/03/autoformat-within-padre.html
-        title: Autoformat within Padre
+        title: Auto-format within Padre
         comment: by Jerome Quelin
       - date: 2009 March 09
         url: http://szabgab.com/blog/2009/03/1236605318.html
@@ -568,11 +568,11 @@ about:
         comment: by Gábor Szabó
       - date: 2009 February 09
         url: http://redcloudresearch.blogspot.com/2009/02/padre-perl-ide.html
-        title: Padre - a Perl IDE
+        title: Padre - a Perl <acronym>IDE</acronym>
         comment: by Red Flag Research
       - date: 2009 February 08
         url: http://meorero.wordpress.com/2009/02/08/using-extutilspacklist-to-uninstall-padre-026/
-        title: using ExtUtils: : Packlist to uninstall Padre 0.26
+        title: using <code>ExtUtils::Packlist</code> to uninstall Padre 0.26
         comment: by Oren Maurer
       - date: 2009 February 08
         url: http://use.perl.org/~Alias/journal/38429
@@ -634,7 +634,7 @@ about:
     events:
       - date: 2008 December 30
         url: http://szabgab.com/blog/2008/12/1230666325.html
-        title: PPI based Syntax highlighting for Perl 5
+        title: <acronym>PPI</acronym> based Syntax highlighting for Perl 5
         comment: by Gábor Szabó
       - date: 2008 December 29
         url: http://szabgab.com/blog/2008/12/1230563859.html
@@ -682,7 +682,7 @@ about:
         comment: by Gábor Szabó
       - date: 2008 November 27
         url: http://use.perl.org/~Alias/journal/37955
-        title: Extending the Padre Plug-in API
+        title: Extending the Padre Plug-in <acronym>API</acronym>
         comment: by Adam Kennedy
       - date: 2008 November 27
         url: http://szabgab.com/blog/2008/11/1227800986.html
@@ -746,11 +746,11 @@ about:
         comment: by Gábor Szabó
       - date: 2008 November 03
         url: http://www.fayland.org/blog/2008/11/padrepluginwordstats-and.html
-        title: Padre::Plugin::WordStats and Padre::Plugin::Validator
+        title: <code>Padre::Plugin::WordStats</code> and <code>Padre::Plugin::Validator</code>
         comment: by Fayland Lam
       - date: 2008 November 03
         url: http://www.fayland.org/blog/2008/11/padreplugintabandspace.html
-        title: Padre::Plugin::TabAndSpace
+        title: <code>Padre::Plugin::TabAndSpace</code>
         comment: by Fayland Lam
       - date: 2008 November 03
         url: http://use.perl.org/~gabor/journal/37789
@@ -758,7 +758,7 @@ about:
         comment: by Gábor Szabó
       - date: 2008 November 02
         url: http://www.fayland.org/blog/2008/11/padrepluginacmeplaycode.html
-        title: Padre::Plugin::AcmePlayCode
+        title: <code>Padre::Plugin::AcmePlayCode</code>
         comment: by Fayland Lam
       - date: 2008 October 31
         url: http://www.fayland.org/blog/2008/10/padre.html
@@ -798,7 +798,7 @@ about:
         comment: by Gábor Szabó
       - date: 2008 September 17
         url: http://use.perl.org/~Alias/journal/37467
-        title: PPI integration added to Padre
+        title: <acronym>PPI</acronym> integration added to Padre
         comment: by Adam Kennedy
       - date: 2008 September 17
         url: http://use.perl.org/~gabor/journal/37471
@@ -806,7 +806,7 @@ about:
         comment: by Gábor Szabó
       - date: 2008 September 11
         url: http://perlmonks.org/?node_id=710625
-        title: Calltips for Padre
+        title: Call-tips for Padre
         comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
       - date: 2008 September 11
         url: http://use.perl.org/~gabor/journal/37410
@@ -826,7 +826,7 @@ about:
         comment: by Gábor Szabó
       - date: 2008 August 21
         url: http://szabgab.com/blog/2008/08/1219321463.html
-        title: Who needs an IDE for Perl anyway?
+        title: Who needs an <acronym>IDE</acronym> for Perl anyway?
         comment: by Gábor Szabó
       - date: 2008 August 20
         url: http://use.perl.org/~gabor/journal/37233
@@ -856,19 +856,19 @@ about:
     events:
       - date: 2008 July 18
         url: http://szabgab.com/blog/2008/07/1216370890.html
-        title: Name a Perl IDE - get a Perl book or YAPC ticket
+        title: Name a Perl <acronym>IDE</acronym> - get a Perl book or <acronym>YAPC</acronym> ticket
         comment: by Gábor Szabó also on <a href="http://use.perl.org/~gabor/journal/36948">use.perl.org</a>
       - date: 2008 May 23
         url: http://nxadm.wordpress.com/2008/05/23/an-ide-for-perl/
-        title: An IDE for Perl?
+        title: An <acronym>IDE</acronym> for Perl?
         comment: by Claudio Ramirez
       - date: 2008 May 22
         url: http://szabgab.com/blog/2008/05/1211438612.html
-        title: Open Source IDE for Perl
+        title: Open Source <acronym>IDE</acronym> for Perl
         comment: by Gábor Szabó
       - date: 2005 July 03
         url: http://use.perl.org/~Alias/journal/25492
-        title: PPI Release Candidate 1, Perl::Editor, JSAN ahoy!
+        title: <acronym>PPI</acronym> Release Candidate 1, <code>Perl::Editor</code>, <acronym>JSAN</acronym> ahoy!
         comment: by Adam Kennedy
       - date: 2005 June 16
         url: http://use.perl.org/~Alias/journal/25231
@@ -879,7 +879,7 @@ about:
     events:
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=39
-        title: Neu: Padre::Plugin::PHP 0.03
+        title: Neu: <code>Padre::Plugin::PHP</code> 0.03
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 04
         url: http://padre-ide.de/blog/?p=15
@@ -887,7 +887,7 @@ about:
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 02
         url: http://padre-ide.de/blog/?p=8
-        title: Padre - mehr als eine Perl IDE
+        title: Padre - mehr als eine Perl-<acronym>IDE</acronym>
         comment: by Sebastian Willing (SEWI)
       - date: 2008 December 07
         url: http://perl-howto.de/2008/12/padre-perl-application-development-and-refactoring-environment.html
@@ -919,7 +919,7 @@ about:
     events:
       - date: 2009 October 27
         url: http://onperl.ru/onperl/2009/10/naim-shafiev-pro-ide-padre.html
-        title: Наим Шафиев про IDE Padre
+        title: Наим Шафиев про <acronym>IDE</acronym> Padre
         comment: Naim Shafiev talking about Padre (video)
       - date: 2009 September 17
         url: http://onperl.ru/onperl/2009/09/padre.html
