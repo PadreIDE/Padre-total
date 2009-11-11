@@ -8,7 +8,7 @@ use File::Copy qw(copy);
 use File::Basename qw(basename);
 use File::Next qw();
 use Path::Class qw(dir file);
-use Pod::Xhtml qw();
+use inc::Local::Pod::Xhtml qw();
 use Template qw();
 use Text::Unaccent::PurePerl qw(unac_string);
 use Time::Piece qw(localtime);
@@ -58,7 +58,7 @@ sub ACTION_build_docs {
         $dir
     );
 
-    my $parser = Pod::Xhtml->new;
+    my $parser = Local::Pod::Xhtml->new;
     while (defined(my $fullpath = $iter->())) {
         my $target_dir = dir($self->destdir, 'docs', 'Padre',
             file($fullpath)->relative($dir)->parent);
