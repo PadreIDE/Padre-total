@@ -92,6 +92,11 @@ about:
         url: http://szabgab.com/blog/2009/10/1254721436.html
         title: Helping each other, you and Padre
         comment: by Gábor Szabó trying to get more people involved in Padre
+      - date: 2009 October 05
+        url: http://gihyo.jp/dev/serial/01/modern-perl/0017
+        title: モダンPerlの世界へようこそ第17回　Padre：Perlで拡張できるコミュニティのための開発環境
+        comment: by Kenichi Ishigaki (in Japanese)
+        language: Japanese
       - date: 2009 October 02
         url: http://szabgab.com/blog/2009/10/1254515743.html
         title: My teenage memories and the Parrot Virtual Machine
