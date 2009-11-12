@@ -27,7 +27,12 @@ navigation:
 about:
   - title: y2009
     events:
-      - date: 2008 November 10
+      - date: 2009 November 12
+        url: http://www.forest.impress.co.jp/docs/review/20091112_328216.html
+        title: 初心者にもお勧めのスクリプト言語“Perl”向け統 合開発環境「Padre」
+        comment: About Strawberry Perl and Padre in Japanese
+        language: Japanese
+      - date: 2009 November 10
         url: http://id-perl.blogspot.com/2009/11/regex-editor-in-padre-050.html
         title: Regex Editor in Padre 0.50
         comment: by Steven Haryanto on Perl Indonesia
