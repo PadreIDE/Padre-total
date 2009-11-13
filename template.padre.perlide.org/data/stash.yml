@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 13
+        url: http://use.perl.org/~tsee/journal/39893
+        title: Long time no hacking!
+        comment: by Steffen Mueller on adding XS document type to Padre
       - date: 2009 November 12
         url: http://www.forest.impress.co.jp/docs/review/20091112_328216.html
         title: 初心者にもお勧めのスクリプト言語“Perl”向け統合開発環境「Padre」
