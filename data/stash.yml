@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 14
+        url: http://padre-ide.de/blog/?p=54
+        title: How to write a test (explaining t/94-padre-file-remote.t)
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 November 13
         url: http://use.perl.org/~tsee/journal/39893
         title: Long time no hacking!
