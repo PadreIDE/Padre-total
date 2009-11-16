@@ -27,6 +27,36 @@ sub help_init {
 	my %index;
 	#foreach my $file ('io.pod') {
 		#my $path = "$dir/$file";
+	foreach my $path ("$ENV{PARROT_DIR}/docs/pdds/pdd19_pir.pod") {
+		open my $fh, '<', $path;
+		if (!$fh) {
+			warn "Could not open $path $!";
+			next;
+		}
+		my %item;
+		my $cnt = 0;
+		my $topic;
+		while (my $line = <$fh>) {
+			$cnt++;
+			if ($line =~ /=item\s+(\.\w+)/) {
+				if ($topic) {
+					Padre::Util::debug($topic);
+					$item{end} = $cnt - 1;
+					push @{ $index{$topic} }, { %item };
+				}
+				$topic = $1;
+				%item = (start => $cnt, file => $path);
+				next;
+			}
+			if ($line =~ /^=/ and $topic) {
+				$item{end} = $cnt - 1;
+				push @{ $index{$topic} }, { %item };
+				$topic = undef;
+				%item = ();
+				next;
+			}
+		}
+	}
 	foreach my $path (glob "$dir/*.pod") {
 		if (open my $fh, '<', $path) {
 			my %item;

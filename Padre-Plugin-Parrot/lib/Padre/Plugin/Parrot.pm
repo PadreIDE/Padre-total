@@ -338,7 +338,7 @@ sub plugin_enable {
 	};
 	if ($@) {
 		warn $@;
-		return;
+		return 1;
 	}
 
 	return 1;
