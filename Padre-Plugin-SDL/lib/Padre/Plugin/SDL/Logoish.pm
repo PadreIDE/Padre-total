@@ -34,6 +34,13 @@ drawing on a board, moving a sprite around on the the board.
 Once the basics are implemented we need to implement the drag-and-drop programming for
 the already implemented language.
 
+Create the background of two panes, on the left pane add various programmatic elements
+and allow the user to drag and drop them to the right.
+
+Have a button to run them.
+
+Open/Save file 
+
 Then we can start to think on some challenges to give to the users. I can imagine some kind
 of step-by-step process where the user starts with very few capabilities and simple tasks
 to achive using those tools. Then as she progresses she gets more tools (programming elements)
