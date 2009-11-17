@@ -35,7 +35,7 @@ no_index       'directory'                => qw{ t xt eg share inc };
 homepage       'http://padre.perlide.org/';
 bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Perl-Dist-XL/';
-install_script 'script/perldist_xl';
+install_script 'script/perldist_xl.pl';
 install_share;
 
 WriteAll;

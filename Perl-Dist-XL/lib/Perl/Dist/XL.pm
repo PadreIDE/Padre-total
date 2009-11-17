@@ -1,6 +1,7 @@
 package Perl::Dist::XL;
 use strict;
 use warnings;
+use 5.010;
 
 use Cwd            qw(cwd);
 use File::Copy     qw(copy);
