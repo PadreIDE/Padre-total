@@ -7,6 +7,7 @@ use base 'Padre::Plugin';
 
 use Scalar::Util qw(refaddr);
 use Padre::Util ('_T');
+use Padre::Constants ();
 
 our $VERSION = '0.22';
 
@@ -307,7 +308,7 @@ sub about {
 	$about->SetCopyright( _T("Copyright 2008 Gabor Szabo") );
 
 	# Only Unix/GTK native about box supports websites
-	if (Padre::Util::WXGTK) {
+	if (Padre::Constants::WXGTK) {
 		$about->SetWebSite("http://padre.perlide.org/");
 	}
 
