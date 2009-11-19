@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 18
+        url: http://szabgab.com/blog/2009/11/1258578873.html
+        title:Padre supporting technologies in addition to Perl
+        comment: by Gábor Szabó on the results of the 2nd perl editor poll
       - date: 2009 November 14
         url: http://padre-ide.de/blog/?p=54
         title: How to write a test (explaining t/94-padre-file-remote.t)
