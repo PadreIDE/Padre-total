@@ -1,0 +1,12 @@
+
+
+
+
+Cheat sheet:
+#sub SDL_QUIT { SDL::Event::SDL_QUIT() }
+#sub SDL_KEYDOWN { SDL::Event::SDL_KEYDOWN() }
+#sub SDL_MOUSEBUTTONDOWN { SDL::Event::SDL_MOUSEBUTTONDOWN() }
+#sub SDL_MOUSEBUTTONUP { SDL::Event::SDL_MOUSEBUTTONUP() }
+#sub SDL_MOUSEMOTION { SDL::Event::SDL_MOUSEMOTION() }
+
+
