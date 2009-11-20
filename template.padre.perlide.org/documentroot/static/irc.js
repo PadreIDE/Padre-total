@@ -9,6 +9,7 @@ var channels = {
    perl_qa:      {title:"Perl Quality Assurance",        host:"irc.perl.org",     channel:"perl-qa"},
    locale_fr:    {title:"Perl in French",                host:"irc.perl.org",     channel:"perlfr"},
    locale_hu:    {title:"Perl in Hungarian",             host:"irc.perl.org",     channel:"magyar.pm"},
+   locale_de:    {title:"Perl in German",                host:"irc.perl.org",     channel:"perlde"},
    locale_il:    {title:"Perl in Israel",                host:"irc.perl.org",     channel:"israel.pm"},
    locale_it:    {title:"Perl in Italian",               host:"irc.freenode.net", channel:"perl.it"},
    locale_jp:    {title:"Perl in Japanese",              host:"irc.freenode.net", channel:"jpa-perl"},
@@ -21,7 +22,10 @@ var channels = {
    rt:           {title:"RT",                            host:"irc.perl.org",     channel:"rt"},
    perl_help:    {title:"Perl Help",                     host:"irc.perl.org",     channel:"perl-help"},
    wxperl:       {title:"Wx Perl",                       host:"irc.perl.org",     channel:"wxperl"},
-   perl6:        {title:"Perl 6 development",            host:"irc.freenode.net", channel:"perl6"}
+   perl6:        {title:"Perl 6 development",            host:"irc.freenode.net", channel:"perl6"},
+   sdl:          {title:"SDL - Games",                   host:"irc.perl.org",     channel:"sdl"}
+   pdl:          {title:"PDL - Perl Data Language",      host:"irc.perl.org",     channel:"pdl"}
+// austria.pm
    // do NOT add a trailing , after the last entry as that breaks IE 7
    // See http://padre.perlide.org/trac/ticket/521
 };
