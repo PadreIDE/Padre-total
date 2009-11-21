@@ -160,6 +160,12 @@ sub about {
 
 __END__
 
+=head1 ACKNOWLEDGMENTS
+
+Many thanks to Gabor Szabo, who wrote the Kate plugin upon this is based.
+I'm grateful to Herbert Breunung for writing Kephra and getting STC syntax highlighting more
+right that us. Looking at his code has helped me write this.
+
 =head1 AUTHOR
 
 Steffen Mueller, C<smueller@cpan.org>
@@ -172,3 +178,4 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
+
