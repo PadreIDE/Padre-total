@@ -20,10 +20,19 @@ This plugin is intended to extend Padre's support for editing XS
 and C-using-perlapi.
 
 Currently the plugin implements limited syntax highlighting and
-calltips using a configurable version of the perlapi.
+calltips using a configurable version of the perlapi. After installing
+this plugin, you can enable XS calltips in the C<View> menu of Padre
+and enjoy the full perlapi of various releases of perl while writing
+XS code. You can configure the version of perlapi you write against in
+the padre.yml of your project (key C<xs_calltips_perlapi_version>).
+By default, the newest available perlapi will be used.
 
 Once this plug-in is installed the user can switch the highlighting of
 XS files to use the highlighter via the Preferences menu of L<Padre>.
+The default XS syntax highlighting of Padre is abysmal. You're very
+encouraged to enable the C<XS highlighter> feature.
+
+This is an early release.
 
 =cut
 
