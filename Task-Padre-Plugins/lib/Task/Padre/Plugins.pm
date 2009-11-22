@@ -3,7 +3,7 @@ package Task::Padre::Plugins;
 use warnings;
 use strict;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 1;
 __END__
@@ -92,6 +92,12 @@ encrypt/decrypt file in Padre
 
 See L<Padre::Plugin::Encrypt>
 
+=head2 L<Padre::Plugin::Filter>
+
+Unix-like external filters in Padre
+
+See L<Padre::Plugin::Filter>
+
 =head2 L<Padre::Plugin::Git>
 
 Simple Git interface for Padre
@@ -147,6 +153,12 @@ PAR generation from Padre
 
 See L<Padre::Plugin::PAR>
 
+=head2 L<Padre::Plugin::PHP>
+
+L<Padre> and PHP
+
+See L<Padre::Plugin::PHP>
+
 =head2 L<Padre::Plugin::PSI>
 
 Experimental Padre plugin written in Perl 6
@@ -201,6 +213,18 @@ check spelling in Padre
 
 See L<Padre::Plugin::SpellCheck>
 
+=head2 L<Padre::Plugin::Swarm>
+
+Experimental plugin for collaborative editing
+
+See L<Padre::Plugin::Swarm>
+
+=head2 L<Padre::Plugin::Template>
+
+Use external tools with Padre
+
+See L<Padre::Plugin::Template>
+
 =head2 L<Padre::Plugin::Vi>
 
 vi keyboard for Padre
@@ -218,6 +242,12 @@ See L<Padre::Plugin::ViewInBrowser>
 L<Padre> and XML
 
 See L<Padre::Plugin::XML>
+
+=head2 L<Padre::Plugin::XS>
+
+Padre support for perl XS (and perlapi) 
+
+See L<Padre::Plugin::XS>
 
 =head1 AUTHOR
 

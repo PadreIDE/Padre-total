@@ -1,5 +1,8 @@
 Revision history for Task-Padre-Plugins
 
+0.26    2009.11.22
+        PHP, Filter, Template, XS and Swarm
+
 0.25    2009.08.29
         Acme::Padre::PlayCode
 
