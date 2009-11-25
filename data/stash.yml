@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 25
+        url: http://szabgab.com/blog/2009/11/1259131466.html
+        title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl IDE
+        comment: screencast by Gábor Szabó
       - date: 2009 November 18
         url: http://szabgab.com/blog/2009/11/1258578873.html
         title:Padre supporting technologies in addition to Perl
