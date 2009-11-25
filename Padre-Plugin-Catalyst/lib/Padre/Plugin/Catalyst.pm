@@ -263,7 +263,7 @@ Then use it via L<Padre>, The Perl IDE.
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the following options:
+Once you enable this Plugin under Padre, you'll get a brand new menu (Plugins->Catalyst) with the following options:
 
 =head2 'New Catalyst Application'
 
