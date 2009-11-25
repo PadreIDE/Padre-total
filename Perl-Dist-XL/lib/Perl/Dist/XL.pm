@@ -82,7 +82,7 @@ sub get_perl {
 
 	my $dir = $self->cache();
 	my $url = 'http://www.cpan.org/src';
-	my $perl = 'perl-5.10.0.tar.gz';
+	my $perl = 'perl-5.10.1.tar.gz';
 	if (not -e "$dir/$perl") {
 		debug("Getting $url/$perl");
 		getstore("$url/$perl", "$dir/$perl");

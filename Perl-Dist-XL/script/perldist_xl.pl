@@ -13,9 +13,9 @@ use Perl::Dist::XL;
 use Getopt::Long qw(GetOptions);
 my %conf;
 GetOptions(\%conf, 
-	"temp=s",
-	"release=s",
-	"skipperl",
+	'temp=s',
+	'release=s',
+	'skipperl',
 	) or usage();
 usage("need --release VERSION") if not $conf{release};
 
