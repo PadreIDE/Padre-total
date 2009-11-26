@@ -4,10 +4,12 @@ use warnings;
 use 5.010;
 
 use Cwd            qw(cwd);
+use CPAN::Mini     ();
+use Data::Dumper   qw(Dumper);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
 use File::Temp     qw(tempdir);
-use LWP::Simple    qw(getstore);
+use LWP::Simple    qw(getstore mirror);
 
 =head1 NAME
 
@@ -21,6 +23,37 @@ and start running Padre.
 
 
 =head1 DESCRIPTION
+
+=head2 Process plan
+
+1] Download
+  1) download perl and the modules listed and put them in a cache
+  2) check if the version numbers listed in the file are the latest from cpan and report the differences
+  3) Download the additional files needed (e.g. wxwidgets)
+
+2] Building in steps and on condition
+3) build perl - if it is not built yet
+4) foreach module
+     if it is not yet in the distribution
+     unzip it
+     run perl Makefile.PL or perl Build.PL and check for errors
+     make; make test; make install
+
+   have special case for Alien::wxWidgets to build from a downloaded version of wxwidgets
+     
+=head2 Building on Ubuntu 9.10
+
+sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
+sudo aptitude install libcpan-mini-perl perl-doc
+
+
+svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
+mkdir ~/padre
+cd Perl-Dist-XL
+perl script/perldist_xl.pl --temp ~/padre --release 0.0
+
+TODO: set perl version number (and allow command line option to configure it)
+
 
 =head2 Plans
 
@@ -62,7 +95,9 @@ DESTROY {
 sub build {
 	my ($self) = @_;
 
-	$self->get_perl   unless $self->skip_perl;
+	$self->download if $self->{download};
+	return;
+
 	$self->build_perl unless $self->skip_perl;
 
 	$self->configure_cpan;
@@ -86,19 +121,23 @@ sub get_perl {
 	my $perl = 'perl-5.10.1.tar.gz';
 	if (not -e "$dir/$perl") {
 		debug("Getting $url/$perl");
-		getstore("$url/$perl", "$dir/$perl");
+		mirror("$url/$perl", "$dir/$perl");
 	}
 	die "Could not find $perl\n" if not -e "$dir/$perl";
-	
-	my $temp = $self->temp_dir;
-	chdir $temp;
-	debug("temp directory: $temp");
-	_system("tar xzf $dir/$perl");
 
-	$self->{perl_source_dir} = substr("$temp/$perl", 0, -7);
-	debug("Perl dir: $self->{perl_source_dir}");
 	return;
 }
+
+	
+#	my $temp = $self->temp_dir;
+#	chdir $temp;
+#	debug("temp directory: $temp");
+#	_system("tar xzf $dir/$perl");
+#
+#	$self->{perl_source_dir} = substr("$temp/$perl", 0, -7);
+#	debug("Perl dir: $self->{perl_source_dir}");
+#	return;
+#}
 
 sub build_perl {
 	my ($self) = @_;
@@ -128,10 +167,8 @@ sub configure_cpan {
 	return;
 }
 
-sub install_modules {
-	my ($self) = @_;
-	
-	my @modules = (
+sub modules {
+	return [ 
 		['Test::Simple'             => '0.88'],
 		['Sub::Uplevel'             => '0.2002'],
 		['Array::Compare'           => '1.17'],
@@ -236,10 +273,17 @@ sub install_modules {
 		['Wx::Perl::ProcessStream'  => '0.11'],
 		['Padre'                    => '0.38'],
 
-	);
-	foreach my $m (@modules) {
+	];
+}
+
+
+sub install_modules {
+	my ($self) = @_;
+
+	foreach my $m (@{ $self->modules }) {
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
-		my $cmd = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
+		#my $cmd = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
+		my $cmd = 'mycpan.pl';
 		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/$cmd $m->[0]");
 	}
 }
@@ -278,7 +322,7 @@ sub cache {
 sub release_name {
 	my ($self) = @_;
 
-	return "perl-5.10.0-xl-" . $self->{release};
+	return "perl-5.10.0-xl-" . ($self->{release} || 0);
 }
 sub _system {
 	my @args = @_;
@@ -293,6 +337,57 @@ sub skip_perl {
 sub debug {
 	print "@_\n";
 }
+
+sub download {
+	my ($self) = @_;
+
+	$self->get_perl;
+
+	my $cpan = 'http://cpan.hexten.net/';
+	my $minicpan = $self->cache() . "/cpan";
+	my $verbose = 0;
+	my $force   = 1;
+
+	CPAN::Mini->update_mirror(
+		remote       => $cpan,
+		local        => $minicpan,
+		trace        => $verbose,
+		force        => $force,
+		path_filters => [ sub { $self->filter(@_) } ],
+	);
+
+	return;
+}
+
+{
+	my %modules;
+	my %seen;
+
+	sub filter {
+		my ($self, $path) = @_;
+
+		return $seen{$path} if exists $seen{$path};
+
+		if (not %modules) {
+			foreach my $pair (@{ $self->modules }) {
+				my ($name, $version) = @$pair;
+				$name =~ s/::/-/g;
+				$modules{$name} = $version;
+			}
+		}
+		foreach my $module (keys %modules) {
+			if ($path =~ m{/$module-\d}) {
+				# TODO cache names and skip if it as already seen?
+				#print "Mirror: $path\n";
+				return $seen{$path} = 0;
+			}
+		}
+		#die Dumper \%modules;
+		#warn "@_\n";
+		return $seen{$path} = 1;
+	}
+}
+
 
 1;
 

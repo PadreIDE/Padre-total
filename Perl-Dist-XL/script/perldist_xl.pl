@@ -13,11 +13,13 @@ use Perl::Dist::XL;
 use Getopt::Long qw(GetOptions);
 my %conf;
 GetOptions(\%conf, 
+	'download',
 	'temp=s',
 	'release=s',
 	'skipperl',
 	) or usage();
-usage("need --release VERSION") if not $conf{release};
+usage("need --download or ..") if not $conf{download};
+#usage("need --release VERSION") if not $conf{release};
 
 my $p = Perl::Dist::XL->new(%conf);
 $p->build;
@@ -29,6 +31,8 @@ sub usage {
 	}
 	print <<"END_USAGE";
 Usage: $0 --release VERSION    ( e.g. 0.01 )
+
+       --download      will dowsnload perl, CPAN modules, ...
 
        --temp  PATH/TO/TEMP/DIR
        --skipperl       to skip getting and building perl
