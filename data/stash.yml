@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 26
+        url: http://use.perl.org/~Alias/journal/39948
+        title: Padre Standalone 0.50 for Mac (Experimental)
+        comment: by Adam Kennedy 
       - date: 2009 November 25
         url: http://szabgab.com/blog/2009/11/1259131466.html
         title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl IDE
