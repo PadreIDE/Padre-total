@@ -44,7 +44,7 @@ Usage: $0
 
        --download      will dowsnload perl, CPAN modules, ...
        --clean         removes build files
-       --build [perl|all]
+       --build [perl|cpan|wx|all]   where 'all' indicated all the others as well
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
 

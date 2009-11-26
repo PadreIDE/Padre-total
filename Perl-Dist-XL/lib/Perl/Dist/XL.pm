@@ -8,7 +8,7 @@ use CPAN::Mini     ();
 use Data::Dumper   qw(Dumper);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
-use File::Path     qw(rmtree);
+use File::Path     qw(rmtree mkpath);
 #use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore mirror);
 
@@ -39,6 +39,9 @@ and start running Padre.
      make; make test; make install
 
    have special case for Alien::wxWidgets to build from a downloaded version of wxwidgets
+
+TODO: create snapsshots at the various steps of the build process so
+      we can restart from there
      
 =head2 Building on Ubuntu 9.10
 
@@ -74,7 +77,7 @@ of each module we install and upgrade only under control.
 sub new {
 	my ($class, %args) = @_;
 
-	my @steps = qw(perl);
+	my @steps = qw(perl cpan wx padre);
 	if ($args{build}) {
 		my $build = $args{build};
 		my %b = map {$_ => 1} @$build;
@@ -92,10 +95,10 @@ sub new {
 		my $home    = File::HomeDir->my_home;
 		$self->{dir} = "$home/.perldist_xl";
 	}
-	mkdir $self->{dir} if not -e $self->{dir};
+	mkpath("$self->{dir}/src") if not -e "$self->{dir}/src";
 	debug("directory: $self->{dir}");
 
-	$self->{perl_install_dir} = $self->dir . '/perl/' . $self->release_name;
+	$self->{perl_install_dir} = $self->dir . '/' . $self->release_name  . '/perl/';
 	return $self;
 }
 DESTROY {
@@ -111,19 +114,17 @@ sub run {
 	$self->clean       if $self->{clean};
 
 	$self->build_perl  if $self->{build}{perl};
-	# wxperl
-	# cpan
+	$self->configure_cpan if $self->{build}{cpan};
+	$self->build_wx    if $self->{build}{wx};
+	$self->install_modules($self->padre_modules) if $self->{build}{padre};
 
-	return;
-}
-
-#	$self->configure_cpan;
-#	$self->install_modules;
 #	$self->remove_cpan_dir;
-
 	# TODO: run some tests
 #	$self->create_zip;
 	# TODO: unzip and in some other place and run some more tests
+
+	return;
+}
 
 sub build_perl {
 	my ($self) = @_;
@@ -138,7 +139,7 @@ sub build_perl {
 	debug("Perl source dir: $self->{perl_source_dir}");
 
 	if (not -e $self->{perl_source_dir}) {
-		_system("tar xzf $dir/$perl");
+		_system("tar xzf $dir/src/$perl");
 	}
 
 	chdir $self->{perl_source_dir};
@@ -151,41 +152,55 @@ sub build_perl {
 	return;
 }
 
-
-sub get_perl {
+sub build_wx {
 	my ($self) = @_;
-	debug("Downloading perl");
-	my $dir = $self->dir;
-	my $url = 'http://www.cpan.org/src';
-	# TODO: allow building with development version as well 5.11.2
-	my $perl = $self->perl_file;
-	if (not -e "$dir/$perl") {
-		debug("Getting $url/$perl");
-		mirror("$url/$perl", "$dir/$perl");
-	} else {
-		debug("Skipped");
-	}
-	die "Could not find $perl\n" if not -e "$dir/$perl";
+	$self->install_modules($self->wx_modules);
 
 	return;
 }
-
 	
 sub configure_cpan {
 	my ($self) = @_;
 	
 	# TODO not from cwd ?
 	# TODO eliminate this horrible patch!
-	for my $from ("$self->{cwd}/share/files/mycpan.pl", "$self->{cwd}/share/files/mycpan_core.pl") {
-		my $to   = $self->{perl_install_dir} . '/bin/';
-		debug("copy '$from', '$to'");
-		copy $from, $to;
-	}
+	#for my $from ("$self->{cwd}/share/files/mycpan.pl", "$self->{cwd}/share/files/mycpan_core.pl") {
+	#for my $from ("$self->{cwd}/share/files/mycpan.pl") {
+	#	my $to   = $self->{perl_install_dir} . '/bin/';
+	#	debug("copy '$from', '$to'");
+	#	copy $from, $to;
+	#}
+	copy "$self->{cwd}/share/files/mycpan.pl.tmpl", "$self->{perl_install_dir}/bin/mycpan.pl";
+	my $from = "$self->{cwd}/share/files/Config.pm.tmpl";
+	my $to   = "$self->{perl_install_dir}/.cpan/CPAN/Config.pm";
+	mkpath "$self->{perl_install_dir}/.cpan/CPAN/";
+	open my $in,  '<', $from  or die "Could not open source '$from' $!";
+	open my $out, '>', $to    or die "Could not open target '$to' $!";
+	my $minicpan = $self->minicpan;
+	my @lines = map { s{URL}{file:///$minicpan}; $_} <$in>;
+	print $out @lines;
+	close $in;
+	close $out;
+
 	return;
 }
 
 sub perl_file { return 'perl-5.10.1.tar.gz'; }
-sub modules {
+sub all_modules {
+	my ($self) = @_;
+	my $pm = $self->padre_modules;
+	my $wx = $self->wx_modules;
+
+	return [ @$pm, @$wx];
+}
+
+sub wx_modules {
+	return [
+		['ExtUtils::CBuilder'       => '0.24'],
+#		['Alien::wxWidgets'         => '0.46'],
+	];
+}
+sub padre_modules {
 	return [ 
 		['Test::Simple'             => '0.88'],
 		['Sub::Uplevel'             => '0.2002'],
@@ -284,9 +299,6 @@ sub modules {
 		['threads::shared'          => '1.29'],
 		['Thread::Queue'            => '2.11'],
 
-		['ExtUtils::CBuilder'       => '0.24'],
-
-		['Alien::wxWidgets'         => '0.43'],
 		['Wx'                       => '0.91'],
 		['Wx::Perl::ProcessStream'  => '0.11'],
 		['Padre'                    => '0.38'],
@@ -294,11 +306,10 @@ sub modules {
 	];
 }
 
-
 sub install_modules {
-	my ($self) = @_;
+	my ($self, $modules) = @_;
 
-	foreach my $m (@{ $self->modules }) {
+	foreach my $m (@$modules) {
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
 		#my $cmd = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
 		my $cmd = 'mycpan.pl';
@@ -324,19 +335,14 @@ sub create_zip {
 
 #### helper subs
 
-sub dir {
-	my ($self) = @_;
-	return $self->{dir};
-}
-sub dir_build {
-	my ($self) = @_;
-	return "$self->{dir}/build";
-}
+sub dir       { return $_[0]->{dir};         }
+sub minicpan  { return "$_[0]->{dir}/cpan_mirror";  }
+sub dir_build { return "$_[0]->{dir}/build"; }
 
 sub release_name {
 	my ($self) = @_;
-
-	return "perl-5.10.0-xl-" . ($self->{release} || 0);
+	my $perl = substr(perl_file(), 0, -7);
+	return "$perl-xl-" . ($self->{release} || 0);
 }
 sub _system {
 	my @args = @_;
@@ -376,8 +382,42 @@ sub download {
 
 	$self->get_perl;
 	$self->get_cpan;
-	#$self->get_other;
+	$self->get_other;
 
+	return;
+}
+
+sub get_perl {
+	my ($self) = @_;
+	debug("Downloading perl");
+	my $dir = $self->dir;
+	my $url = 'http://www.cpan.org/src';
+	# TODO: allow building with development version as well 5.11.2
+	my $perl = $self->perl_file;
+	my $local = "$dir/src/$perl";
+	if (not -e $local) {
+		debug("Getting $url/$perl");
+		mirror("$url/$perl", $local);
+	} else {
+		debug("Skipped");
+	}
+	die "Could not find $local\n" if not -e $local;
+
+	return;
+}
+
+sub get_other {
+	my ($self) = @_;
+
+	my @resources = (
+		'http://prdownloads.sourceforge.net/wxwindows/wxWidgets-2.8.10.tar.gz',
+	);
+	my $dir = $self->dir . "/src";
+	foreach my $url (@resources) {
+		my $filename = (split "/", $url)[-1];
+		debug("getting $url to   $dir/$filename");
+		mirror($url, "$dir/$filename"); 
+	}
 	return;
 }
 
@@ -386,7 +426,7 @@ sub get_cpan {
 	
 	debug("Get CPAN");
 	my $cpan = 'http://cpan.hexten.net/';
-	my $minicpan = $self->dir . "/cpan";
+	my $minicpan = $self->minicpan;
 	my $verbose = 0;
 	my $force   = 1;
 
@@ -411,7 +451,7 @@ sub get_cpan {
 		return $seen{$path} if exists $seen{$path};
 
 		if (not %modules) {
-			foreach my $pair (@{ $self->modules }) {
+			foreach my $pair (@{ $self->all_modules }) {
 				my ($name, $version) = @$pair;
 				$name =~ s/::/-/g;
 				$modules{$name} = $version;
