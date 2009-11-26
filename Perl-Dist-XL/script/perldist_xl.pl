@@ -7,23 +7,32 @@ use warnings;
 
 $ENV{PERL6LIB} = $ENV{PERL5LIB} = $ENV{PERLLIB} = '';
 
+use Data::Dumper qw(Dumper);
 use FindBin;
+use Getopt::Long qw(GetOptions);
+
 use lib "$FindBin::Bin/../lib";
 use Perl::Dist::XL;
-use Getopt::Long qw(GetOptions);
+
 my %conf;
 GetOptions(\%conf, 
-	'download',
 	'clean',
 	'dir=s',
-	'release=s',
-	'skipperl',
+	'download',
+	'help',
+	'build=s@',
 	) or usage();
-usage("need --download or --clean") if not $conf{download} and not $conf{clean};
+usage() if $conf{help};
+usage("need --download or --clean")
+	if not $conf{download} 
+	and not $conf{clean}
+	and not $conf{build};
 #usage("need --release VERSION") if not $conf{release};
+#die Dumper \%conf;
 
 my $p = Perl::Dist::XL->new(%conf);
 $p->run;
+exit;
 
 sub usage {
 	my $str = shift;
@@ -31,13 +40,15 @@ sub usage {
 		print "\n$str\n\n";
 	}
 	print <<"END_USAGE";
-Usage: $0 --release VERSION    ( e.g. 0.01 )
+Usage: $0
 
        --download      will dowsnload perl, CPAN modules, ...
        --clean         removes build files
+       --build [perl|all]
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
-       --skipperl       to skip getting and building perl
+
+       --help          This help
 
 END_USAGE
 	exit;

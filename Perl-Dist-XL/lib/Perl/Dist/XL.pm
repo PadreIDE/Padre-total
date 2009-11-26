@@ -9,7 +9,7 @@ use Data::Dumper   qw(Dumper);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
 use File::Path     qw(rmtree);
-use File::Temp     qw(tempdir);
+#use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore mirror);
 
 =head1 NAME
@@ -74,6 +74,16 @@ of each module we install and upgrade only under control.
 sub new {
 	my ($class, %args) = @_;
 
+	my @steps = qw(perl);
+	if ($args{build}) {
+		my $build = $args{build};
+		my %b = map {$_ => 1} @$build;
+		$args{build} = \%b;
+		if ($args{build}{all}) {
+			$args{build}{$_} = 1 for @steps;
+		}
+	}
+
 	my $self = bless \%args, $class;
 
 	$self->{cwd} = cwd;
@@ -83,6 +93,7 @@ sub new {
 		$self->{dir} = "$home/.perldist_xl";
 	}
 	mkdir $self->{dir} if not -e $self->{dir};
+	debug("directory: $self->{dir}");
 
 	$self->{perl_install_dir} = $self->dir . '/perl/' . $self->release_name;
 	return $self;
@@ -96,24 +107,46 @@ DESTROY {
 sub run {
 	my ($self) = @_;
 
-	$self->download if $self->{download};
-	$self->clean    if $self->{clean};
+	$self->download    if $self->{download};
+	$self->clean       if $self->{clean};
+
+	$self->build_perl  if $self->{build}{perl};
+	# wxperl
+	# cpan
 
 	return;
 }
 
-sub build {
-	my ($self) = @_;
-
-	$self->build_perl unless $self->skip_perl;
-
-	$self->configure_cpan;
-	$self->install_modules;
+#	$self->configure_cpan;
+#	$self->install_modules;
 #	$self->remove_cpan_dir;
 
 	# TODO: run some tests
-	$self->create_zip;
+#	$self->create_zip;
 	# TODO: unzip and in some other place and run some more tests
+
+sub build_perl {
+	my ($self) = @_;
+
+	my $build_dir = $self->dir_build;
+	mkdir $build_dir if not -e $build_dir;
+	my $dir       = $self->dir;
+
+	chdir $build_dir;
+	my $perl = $self->perl_file;
+	$self->{perl_source_dir} = substr("$build_dir/$perl", 0, -7);
+	debug("Perl source dir: $self->{perl_source_dir}");
+
+	if (not -e $self->{perl_source_dir}) {
+		_system("tar xzf $dir/$perl");
+	}
+
+	chdir $self->{perl_source_dir};
+	my $cmd = "sh Configure -Dusethreads -Duserelocatableinc -Dprefix='$self->{perl_install_dir}' -de";
+	_system($cmd);
+	_system("make");
+	_system("make test");
+	_system("make install");
 
 	return;
 }
@@ -125,7 +158,7 @@ sub get_perl {
 	my $dir = $self->dir;
 	my $url = 'http://www.cpan.org/src';
 	# TODO: allow building with development version as well 5.11.2
-	my $perl = 'perl-5.10.1.tar.gz';
+	my $perl = $self->perl_file;
 	if (not -e "$dir/$perl") {
 		debug("Getting $url/$perl");
 		mirror("$url/$perl", "$dir/$perl");
@@ -138,31 +171,6 @@ sub get_perl {
 }
 
 	
-#	my $temp = $self->temp_dir;
-#	chdir $temp;
-#	debug("temp directory: $temp");
-#	_system("tar xzf $dir/$perl");
-#
-#	$self->{perl_source_dir} = substr("$temp/$perl", 0, -7);
-#	debug("Perl dir: $self->{perl_source_dir}");
-#	return;
-#}
-
-sub build_perl {
-	my ($self) = @_;
-
-	my $dir = $self->dir;
-	my $temp = $self->temp_dir;
-	chdir $self->{perl_source_dir};
-	my $cmd = "sh Configure -Dusethreads -Duserelocatableinc -Dprefix='$self->{perl_install_dir}' -de";
-	_system($cmd);
-	_system("make");
-	_system("make test");
-	_system("make install");
-
-	return;
-}
-
 sub configure_cpan {
 	my ($self) = @_;
 	
@@ -176,6 +184,7 @@ sub configure_cpan {
 	return;
 }
 
+sub perl_file { return 'perl-5.10.1.tar.gz'; }
 sub modules {
 	return [ 
 		['Test::Simple'             => '0.88'],
@@ -319,6 +328,10 @@ sub dir {
 	my ($self) = @_;
 	return $self->{dir};
 }
+sub dir_build {
+	my ($self) = @_;
+	return "$self->{dir}/build";
+}
 
 sub release_name {
 	my ($self) = @_;
@@ -329,10 +342,6 @@ sub _system {
 	my @args = @_;
 	debug(join " ", @args);
 	system(@args) == 0 or die "system failed with $?\n";
-}
-
-sub skip_perl {
-	return $_[0]->{skipperl};
 }
 
 sub debug {
@@ -348,7 +357,7 @@ Remove the directories where perl was unzipped, built and where it was "installe
 sub clean {
 	my ($self) = @_;
 
-	my $dir = $self->dir . "/build";
+	my $dir = $self->dir_build;
 	rmtree $dir if $dir;
 	return;
 }
