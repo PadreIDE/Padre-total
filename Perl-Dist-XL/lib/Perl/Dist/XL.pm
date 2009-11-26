@@ -8,6 +8,7 @@ use CPAN::Mini     ();
 use Data::Dumper   qw(Dumper);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
+use File::Path     qw(rmtree);
 use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore mirror);
 
@@ -17,23 +18,21 @@ Perl::Dist::XL - Perl distribution for Linux
 
 =head1 SYNOPSIS
 
-The primary objective is to generat an already compiled perl distribution 
+The primary objective is to generate an already compiled perl distribution 
 that Padre was already installed in so people can download it, unzip it
 and start running Padre.
-
 
 =head1 DESCRIPTION
 
 =head2 Process plan
 
 1] Download
-  1) download perl and the modules listed and put them in a cache
-  2) check if the version numbers listed in the file are the latest from cpan and report the differences
-  3) Download the additional files needed (e.g. wxwidgets)
+  1) check if the version numbers listed in the file are the latest from cpan and report the differences
+  2) Download the additional files needed (e.g. wxwidgets)
 
 2] Building in steps and on condition
-3) build perl - if it is not built yet
-4) foreach module
+  1) build perl - if it is not built yet
+  2) foreach module
      if it is not yet in the distribution
      unzip it
      run perl Makefile.PL or perl Build.PL and check for errors
@@ -43,14 +42,15 @@ and start running Padre.
      
 =head2 Building on Ubuntu 9.10
 
-sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
-sudo aptitude install libcpan-mini-perl perl-doc
+  sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
+  sudo aptitude install libcpan-mini-perl perl-doc
 
 
-svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
-mkdir ~/padre
-cd Perl-Dist-XL
-perl script/perldist_xl.pl --temp ~/padre --release 0.0
+  svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
+  cd Perl-Dist-XL
+  perl script/perldist_xl.pl --download 
+  perl script/perldist_xl.pl --clean
+  perl script/perldist_xl.pl --build --release 0.01
 
 TODO: set perl version number (and allow command line option to configure it)
 
@@ -73,16 +73,18 @@ of each module we install and upgrade only under control.
 
 sub new {
 	my ($class, %args) = @_;
+
 	my $self = bless \%args, $class;
 
 	$self->{cwd} = cwd;
 
-	if ($self->{temp}) {
-		die "$self->{temp} does not exist\n" if not -d $self->{temp};
-	} else {
-		$self->{temp} = tempdir( CLEANUP => 1 );
+	if (not $self->{dir}) {
+		my $home    = File::HomeDir->my_home;
+		$self->{dir} = "$home/.perldist_xl";
 	}
-	$self->{perl_install_dir} = $self->temp_dir . '/' . $self->release_name;
+	mkdir $self->{dir} if not -e $self->{dir};
+
+	$self->{perl_install_dir} = $self->dir . '/perl/' . $self->release_name;
 	return $self;
 }
 DESTROY {
@@ -91,12 +93,17 @@ DESTROY {
 	debug("Done");
 }
 
-
-sub build {
+sub run {
 	my ($self) = @_;
 
 	$self->download if $self->{download};
+	$self->clean    if $self->{clean};
+
 	return;
+}
+
+sub build {
+	my ($self) = @_;
 
 	$self->build_perl unless $self->skip_perl;
 
@@ -114,14 +121,16 @@ sub build {
 
 sub get_perl {
 	my ($self) = @_;
-
-	my $dir = $self->cache();
+	debug("Downloading perl");
+	my $dir = $self->dir;
 	my $url = 'http://www.cpan.org/src';
 	# TODO: allow building with development version as well 5.11.2
 	my $perl = 'perl-5.10.1.tar.gz';
 	if (not -e "$dir/$perl") {
 		debug("Getting $url/$perl");
 		mirror("$url/$perl", "$dir/$perl");
+	} else {
+		debug("Skipped");
 	}
 	die "Could not find $perl\n" if not -e "$dir/$perl";
 
@@ -142,7 +151,7 @@ sub get_perl {
 sub build_perl {
 	my ($self) = @_;
 
-	my $dir = $self->cache;
+	my $dir = $self->dir;
 	my $temp = $self->temp_dir;
 	chdir $self->{perl_source_dir};
 	my $cmd = "sh Configure -Dusethreads -Duserelocatableinc -Dprefix='$self->{perl_install_dir}' -de";
@@ -306,18 +315,10 @@ sub create_zip {
 
 #### helper subs
 
-sub temp_dir {
+sub dir {
 	my ($self) = @_;
-	return $self->{temp};
+	return $self->{dir};
 }
-
-sub cache {
-	my $home    = File::HomeDir->my_home;
-	my $dir = "$home/.perldist_xl";
-	mkdir $dir if not -e $dir;
-	return $dir
-}
-
 
 sub release_name {
 	my ($self) = @_;
@@ -338,13 +339,45 @@ sub debug {
 	print "@_\n";
 }
 
+=head2 clean
+
+Remove the directories where perl was unzipped, built and where it was "installed"
+
+=cut
+
+sub clean {
+	my ($self) = @_;
+
+	my $dir = $self->dir . "/build";
+	rmtree $dir if $dir;
+	return;
+}
+
+=head2 download
+
+Downloading the source code of perl, the CPAN modules
+and in the future also wxwidgets
+
+See get_perl and get_cpan for the actual code.
+
+=cut
+
 sub download {
 	my ($self) = @_;
 
 	$self->get_perl;
+	$self->get_cpan;
+	#$self->get_other;
 
+	return;
+}
+
+sub get_cpan {
+	my ($self) = @_;
+	
+	debug("Get CPAN");
 	my $cpan = 'http://cpan.hexten.net/';
-	my $minicpan = $self->cache() . "/cpan";
+	my $minicpan = $self->dir . "/cpan";
 	my $verbose = 0;
 	my $force   = 1;
 

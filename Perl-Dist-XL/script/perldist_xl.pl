@@ -14,15 +14,16 @@ use Getopt::Long qw(GetOptions);
 my %conf;
 GetOptions(\%conf, 
 	'download',
-	'temp=s',
+	'clean',
+	'dir=s',
 	'release=s',
 	'skipperl',
 	) or usage();
-usage("need --download or ..") if not $conf{download};
+usage("need --download or --clean") if not $conf{download} and not $conf{clean};
 #usage("need --release VERSION") if not $conf{release};
 
 my $p = Perl::Dist::XL->new(%conf);
-$p->build;
+$p->run;
 
 sub usage {
 	my $str = shift;
@@ -33,8 +34,9 @@ sub usage {
 Usage: $0 --release VERSION    ( e.g. 0.01 )
 
        --download      will dowsnload perl, CPAN modules, ...
+       --clean         removes build files
 
-       --temp  PATH/TO/TEMP/DIR
+       --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
        --skipperl       to skip getting and building perl
 
 END_USAGE
