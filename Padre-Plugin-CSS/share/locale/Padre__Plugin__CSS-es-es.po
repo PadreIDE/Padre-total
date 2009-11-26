@@ -4,15 +4,15 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-25 02:34+0800\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Bruno Vecchi <vecchi.v@gmail>\n"
-"Language-Team: Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Last-Translator: Enrique Nell <blas.gordon@gmail.com>\n"
+"Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Padre/Plugin/CSS.pm:25
 msgid "CSS Minifier"
-msgstr "Minificador CSS"
+msgstr "Compactador de CSS"
 
 #: lib/Padre/Plugin/CSS.pm:26
 msgid "Validate CSS"
@@ -20,7 +20,7 @@ msgstr "Validar CSS"
 
 #: lib/Padre/Plugin/CSS.pm:38
 msgid "No Code"
-msgstr "Sin Código"
+msgstr "Sin código"
 
 #: lib/Padre/Plugin/CSS.pm:38
 msgid "Error"
@@ -40,4 +40,5 @@ msgstr "Errores:\n"
 
 #: lib/Padre/Plugin/CSS.pm:60
 msgid "Failed to validate the code\n"
-msgstr "Fallo al validar el código\n"
+msgstr "No se pudo validar el código\n"
+
