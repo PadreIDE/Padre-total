@@ -4,13 +4,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-25 02:34+0800\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Bruno Vecchi <vecchi.v@gmail>\n"
-"Language-Team: Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Last-Translator: Enrique Nell <blas.gordon@gmail.com>\n"
+"Language-Team: Spanish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/SpellCheck.pm:31 lib/Padre/Plugin/SpellCheck.pm:56
+#: lib/Padre/Plugin/SpellCheck.pm:31
+#: lib/Padre/Plugin/SpellCheck.pm:56
 msgid "Spell check"
 msgstr "Corrección ortográfica"
 
@@ -26,9 +27,10 @@ msgstr "Preferencias"
 msgid "No document opened."
 msgstr "Ningún documento abierto."
 
-#: lib/Padre/Plugin/SpellCheck.pm:97 lib/Padre/Plugin/SpellCheck/Dialog.pm:292
+#: lib/Padre/Plugin/SpellCheck.pm:97
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:292
 msgid "Spell check finished."
-msgstr "Comprobación ortográfica concluída."
+msgstr "Comprobación ortográfica finalizada."
 
 #: lib/Padre/Plugin/SpellCheck/Dialog.pm:43
 #, perl-format
@@ -49,11 +51,11 @@ msgstr "Reemplazar todo"
 
 #: lib/Padre/Plugin/SpellCheck/Dialog.pm:201
 msgid "Ignore"
-msgstr "Ignorar"
+msgstr "Omitir"
 
 #: lib/Padre/Plugin/SpellCheck/Dialog.pm:202
 msgid "Ignore all"
-msgstr "Ignorar todo"
+msgstr "Omitir todo"
 
 #: lib/Padre/Plugin/SpellCheck/Dialog.pm:203
 msgid "Close"
@@ -74,3 +76,4 @@ msgstr "Preferencias ortográficas"
 #: lib/Padre/Plugin/SpellCheck/Preferences.pm:136
 msgid "Dictionary:"
 msgstr "Diccionario:"
+
