@@ -14,6 +14,7 @@ use Getopt::Long qw(GetOptions);
 use lib "$FindBin::Bin/../lib";
 use Perl::Dist::XL;
 
+usage() if not @ARGV;
 my %conf;
 GetOptions(\%conf, 
 	'clean',
@@ -21,13 +22,14 @@ GetOptions(\%conf,
 	'download',
 	'help',
 	'build=s@',
+	'zip',
 	) or usage();
 usage() if $conf{help};
-usage("need --download or --clean")
-	if not $conf{download} 
-	and not $conf{clean}
-	and not $conf{build};
-#usage("need --release VERSION") if not $conf{release};
+#usage("need --download or --clean")
+#	if not $conf{download} 
+#	and not $conf{clean}
+#	and not $conf{build}
+#	and not $conf{zip};
 #die Dumper \%conf;
 
 my $p = Perl::Dist::XL->new(%conf);
@@ -44,7 +46,8 @@ Usage: $0
 
        --download      will dowsnload perl, CPAN modules, ...
        --clean         removes build files
-       --build [perl|cpan|wx|all]   where 'all' indicated all the others as well
+       --build [perl|cpan|wx|padre|all]   where 'all' indicated all the others as well
+       --zip           create the zip file
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
 

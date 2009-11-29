@@ -7,7 +7,7 @@ use File::Basename ();
 
 my $cpan;
 BEGIN { 
-	$cpan = File::Basename::dirname( File::Basename::dirname(File::Spec->rel2abs($0)) ) . "/.cpan";
+	$cpan = File::Basename::dirname( File::Basename::dirname(File::Spec->rel2abs(__FILE__)) );
 }
 
 
@@ -46,7 +46,7 @@ $CPAN::Config = {
   'ncftpget' => q[],
   'no_proxy' => q[],
   'pager' => q[/usr/bin/less],
-  'prerequisites_policy' => q[nothing],
+  'prerequisites_policy' => q[follow],
   'scan_cache' => q[atstart],
   'shell' => q[/bin/bash],
   'tar' => q[/bin/tar],

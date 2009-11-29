@@ -9,6 +9,10 @@ BEGIN {
 }
 
 use CPAN;
+
 CPAN::Shell->install($ARGV[0]);
+
+#use Data::Dumper;
+#die Dumper $CPAN::Config;
 
 

@@ -12,6 +12,8 @@ use File::Path     qw(rmtree mkpath);
 #use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore mirror);
 
+our $VERSION = '0.01';
+
 =head1 NAME
 
 Perl::Dist::XL - Perl distribution for Linux
@@ -46,14 +48,14 @@ TODO: create snapsshots at the various steps of the build process so
 =head2 Building on Ubuntu 9.10
 
   sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
-  sudo aptitude install libcpan-mini-perl perl-doc
+  sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev
 
 
   svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
   cd Perl-Dist-XL
   perl script/perldist_xl.pl --download 
   perl script/perldist_xl.pl --clean
-  perl script/perldist_xl.pl --build --release 0.01
+  perl script/perldist_xl.pl --build
 
 TODO: set perl version number (and allow command line option to configure it)
 
@@ -118,9 +120,8 @@ sub run {
 	$self->build_wx    if $self->{build}{wx};
 	$self->install_modules($self->padre_modules) if $self->{build}{padre};
 
-#	$self->remove_cpan_dir;
 	# TODO: run some tests
-#	$self->create_zip;
+	$self->create_zip  if $self->{zip};
 	# TODO: unzip and in some other place and run some more tests
 
 	return;
@@ -154,6 +155,9 @@ sub build_perl {
 
 sub build_wx {
 	my ($self) = @_;
+
+	my $dir = $self->dir . "/src";
+	$ENV{AWX_URL} = "file:///$dir";
 	$self->install_modules($self->wx_modules);
 
 	return;
@@ -177,7 +181,7 @@ sub configure_cpan {
 	open my $in,  '<', $from  or die "Could not open source '$from' $!";
 	open my $out, '>', $to    or die "Could not open target '$to' $!";
 	my $minicpan = $self->minicpan;
-	my @lines = map { s{URL}{file:///$minicpan}; $_} <$in>;
+	my @lines = map { s{URL}{file://$minicpan}; $_} <$in>;
 	print $out @lines;
 	close $in;
 	close $out;
@@ -196,15 +200,32 @@ sub all_modules {
 
 sub wx_modules {
 	return [
+		['YAML'    => '0'],
 		['ExtUtils::CBuilder'       => '0.24'],
-#		['Alien::wxWidgets'         => '0.46'],
+		['Alien::wxWidgets'         => '0.46'],
 	];
 }
+#sub padre_modules {
+#	return [ 
+#		['Padre'             => '0'],
+#	];
+#}
+
 sub padre_modules {
 	return [ 
+		['CPAN::Inject' =>  '0.07'],
+		['LWP::Online'  =>  '1.06'],
+		['LWP::Simple'  => '0'],
+		['libwww::perl' => '0'],
+		['Spiffy'                => '0.30'],
 		['Test::Simple'             => '0.88'],
+		['Test::Base'        => '0.59'],
+		['Devel::Refactor'          => '0.05'],
 		['Sub::Uplevel'             => '0.2002'],
-		['Array::Compare'           => '1.17'],
+		#['Moose'  => '0'],
+		#['Array::Compare'           => '1.17'],
+		['Data::Compare'            => '1.2101'],
+		['File::chmod'              => '0.32'],
 		['Tree::DAG_Node'           => '1.06'],
 		['Test::Exception'          => '0.27'],
 		['Test::Warn'               => '0.11'],
@@ -226,6 +247,9 @@ sub padre_modules {
 		['Devel::Dumpvar'           => '1.05'],
 		['Encode'                   => '2.33'],
 		['IPC::Run3'                => '0.043'],
+		['CPAN::Checksums'          => '2.04'],
+		['Compress::Bzip2'          => '2.09'],
+		['Probe::Perl'              => '0.01'],
 		['Test::Script'             => '1.03'],
 		['Test::Harness'            => '3.17'],
 		['Devel::StackTrace'        => '1.20'],
@@ -243,7 +267,9 @@ sub padre_modules {
 		['Params::Util'             => '1.00'],
 		['File::ShareDir'           => '1.00'],
 #		['File::Spec'               => '3.2701'], # was already installed
-		['File::Which'              => '0.05'],
+		['File::Which'              => '1.08'],
+		['Format::Human::Bytes'     => '0'],
+		['Locale::Msgfmt'           => '0.14'],
 		['HTML::Tagset'             => '3.20'],
 		['HTML::Entities'           => '3.61'],
 		['HTML::Parser'             => '3.61'], # the same pacakge as HTML::Entities
@@ -253,10 +279,15 @@ sub padre_modules {
 		['List::Util'               => '1.18'], # Scalar-List-Utils-1.21
 		['List::MoreUtils'          => '0.22'],
 		['File::Temp'               => '0.21'],
+		['File::Remove'             => '1.42'],
+		['File::Find::Rule::Perl'   => '0'],
+		['File::Find::Rule::VCS'    => '1.02'],
+		['Module::Extract'          => '0.01'],
+		['Module::Manifest'         => '0.01'],
+		['Module::Math::Depends'    => '0.02'],
 		['ORLite'                   => '1.23'],
 		['ORLite::Migrate'          => '0.03'],
 		['File::pushd'              => '1.00'],
-		['Probe::Perl'              => '0.01'],
 		['File::Slurp'              => '9999.13'],
 		['Pod::POM'                 => '0.25'],
 		['Parse::ErrorString::Perl' => '0.11'],
@@ -271,13 +302,21 @@ sub padre_modules {
 #		['Pod::Simple::XHTML'       => '3.04'], # supplied by Pod::Simple
 		['Task::Weaken'             => '1.03'],
 		['Pod::Abstract'            => '0.19'],
+		['Pod::Perldoc'             => '3.15'],
 		['Storable'                 => '2.20'],
 		['URI'                      => '1.38'],
 		['YAML::Tiny'               => '1.39'],
 		['Text::FindIndent'         => '0.03'],
-
-		['File::Remove'             => '1.42'],
+		['pip'                      => '0.13'],
+		['Class::MOP'               => '0.94'],
+		['Data::OptList'            => '0'],
+		['Sub::Install'             => '0.92'],
+		['MRO::Compat'              => '0.11'],
+		['Sub::Exporter'            => '0.980'],
+		['Sub::Name'                => '0'],
+		['Try::Tiny'                => '0.02'],
 		['Test::Object'             => '0.07'],
+		['Devel::GlobalDestruction' => '0.02'],
 		['Config::Tiny'             => '2.12'],
 		['Test::ClassAPI'           => '1.05'],
 		['Clone'                    => '0.31'],
@@ -299,6 +338,7 @@ sub padre_modules {
 		['threads::shared'          => '1.29'],
 		['Thread::Queue'            => '2.11'],
 
+		['ExtUtils::XSpp'           => '0'],
 		['Wx'                       => '0.91'],
 		['Wx::Perl::ProcessStream'  => '0.11'],
 		['Padre'                    => '0.38'],
@@ -310,25 +350,41 @@ sub install_modules {
 	my ($self, $modules) = @_;
 
 	foreach my $m (@$modules) {
+		local $ENV{PATH} = "$self->{perl_install_dir}/bin:$ENV{PATH}";
+		local $ENV{HOME} = $self->{perl_install_dir};
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
-		#my $cmd = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
-		my $cmd = 'mycpan.pl';
-		_system("$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/$cmd $m->[0]");
+		#my $cmd0 = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
+		my $cmd0 = 'mycpan.pl';
+		my $cmd = "$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
+		debug("system $cmd");
+		_system($cmd);
+		# check for
+		# Result: FAIL
 	}
 }
 
 sub remove_cpan_dir {
 	my ($self) = @_;
-	_system("rm -rf " . $self->{perl_install_dir} . '/.cpan');
+	rmtree($self->{perl_install_dir} . '/.cpan/build');
+	rmtree($self->{perl_install_dir} . '/.cpan/sources');
+	rmtree($self->{perl_install_dir} . '/.cpan/Metadata');
+	rmtree($self->{perl_install_dir} . '/.cpan/FTPstats.yml');
 	return;
 }
 
 
 sub create_zip {
 	my ($self) = @_;
-	chdir $self->temp_dir;
+
+	$self->remove_cpan_dir;
+
+	chdir $self->dir;
 	my $file = "$self->{cwd}/" . $self->release_name . '.tar.gz';
-	_system("tar czf $file " . $self->release_name . ' --exclude .cpan');
+	if (-e $file) {
+		print "File '$file' already exists\n";
+		return;
+	}
+	_system("tar czf $file " . $self->release_name); # . ' --exclude .cpan');
 	return;
 }	
 
@@ -342,7 +398,7 @@ sub dir_build { return "$_[0]->{dir}/build"; }
 sub release_name {
 	my ($self) = @_;
 	my $perl = substr(perl_file(), 0, -7);
-	return "$perl-xl-" . ($self->{release} || 0);
+	return "$perl-xl-$VERSION";
 }
 sub _system {
 	my @args = @_;
