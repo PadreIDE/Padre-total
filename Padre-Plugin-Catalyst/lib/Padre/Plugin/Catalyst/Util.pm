@@ -1,7 +1,11 @@
 package Padre::Plugin::Catalyst::Util;
+use strict;
+use warnings;
+
 # some code used all around the Plugin
 use Cwd ();
 use File::Spec ();
+use Padre::Util   ('_T');
 
 our $VERSION = '0.05';
 
@@ -39,6 +43,48 @@ sub get_document_base_dir {
 	my $doc = $main->current->document;
 	my $filename = $doc->filename;
 	return Padre::Util::get_project_dir($filename);
+}
+
+
+#TODO: maybe this function (or some mutation of it)
+# is useful to other plugin authors. In this case, we
+# should move it to Padre::Plugin or similar
+sub get_plugin_menu_item_by_label {
+    my $menu_item = shift;
+    my $main = Padre::ide->wx->main;
+
+    # find plugin menu
+    my $menu = $main->menu->{'plugins'}->{'plugin_menus'};
+    my $plugin_menu;
+    foreach (@{$menu}) {
+        if ($_->GetLabel eq 'Catalyst') {
+            $plugin_menu = $_;
+            last;
+        }
+    }
+    return unless $plugin_menu;
+
+    # find requested menu element
+    my $submenu = $plugin_menu->GetSubMenu;
+    foreach my $item ($submenu->GetMenuItems) {
+        return $item if $item->GetLabel eq $menu_item;
+    }
+    return;
+}
+
+sub toggle_server_menu {
+    my $toggle = shift;
+
+    my $menu_start = get_plugin_menu_item_by_label(
+        _T('Start Web Server')
+    );
+    my $menu_stop = get_plugin_menu_item_by_label(
+        _T('Stop Web Server')
+    );
+    if ($menu_start and $menu_stop) {
+        $menu_start->Enable(!$toggle);
+        $menu_stop->Enable($toggle);
+    }
 }
 
 42;

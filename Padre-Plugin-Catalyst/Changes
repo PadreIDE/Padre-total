@@ -3,6 +3,7 @@ Revision history for Padre-Plugin-Catalyst
 0.06 (to be released)
     updated documentation for better clarification (Philip Potter)
     menu redone with menu_plugins(), allowing us to gray-out menu options
+    now "start server" and "stop server" enable/disable each other
 
 0.05
 	Added option to update application scripts (upgrade your app to a new version of Catalyst) (garu)
