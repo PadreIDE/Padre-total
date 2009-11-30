@@ -1,9 +1,5 @@
 Padre::Plugin::Catalyst - TODO list!
 
-	* Make "Start Server" and "Stop Server" enable/disable themselves. 
-	  Better yet, make it just one button, changing labels and sub calls 
-	  accordingly.
-	
 	* Maker 'stop server' work as if the user clicked on the stop button.
 	  (That is, as long as the stop button works under win32)
 
