@@ -7,7 +7,7 @@ use Cwd ();
 use File::Spec ();
 use Padre::Util   ('_T');
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 # get the Catalyst project name, so we can
 # figure out the development server's name
