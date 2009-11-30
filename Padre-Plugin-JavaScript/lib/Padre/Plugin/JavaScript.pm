@@ -30,18 +30,13 @@ sub menu_plugins_simple {
 	return ('JavaScript' => [
 		'JavaScript Beautifier', sub { $self->js_eautifier },
 		'JavaScript Minifier',   sub { $self->js_minifier },
+		'JavaScript Syntax Check', sub { $self->js_syntax_check },
 	]);
 }
 
 sub js_eautifier {
 	my ( $self ) = @_;
-	my $main = $self->main;
-
-	my $src = $main->current->text;
-	my $doc = $main->current->document;
-	return unless $doc;
-	my $code = $src ? $src : $doc->text_get;
-	return unless ( defined $code and length($code) );
+	my ($main,$src,$doc,$code) = $self->_get_code; return unless $code;
 
 	require JavaScript::Beautifier;
 	JavaScript::Beautifier->import('js_beautify');
@@ -61,13 +56,7 @@ sub js_eautifier {
 
 sub js_minifier {
 	my ( $self ) = @_;
-	my $main = $self->main;
-
-	my $src = $main->current->text;
-	my $doc = $main->current->document;
-	return unless $doc;
-	my $code = $src ? $src : $doc->text_get;
-	return unless ( defined $code and length($code) );
+	my ($main,$src,$doc,$code) = $self->_get_code; return unless $code;
 
 	require JavaScript::Minifier::XS;
 	JavaScript::Minifier::XS->import('minify');
@@ -80,6 +69,36 @@ sub js_minifier {
 	} else {
 		$doc->text_set( $mjs );
 	}
+}
+
+sub js_syntax_check
+{
+	my ( $self ) = @_;
+	my ($main,$src,$doc,$code) = $self->_get_code; return unless $code;
+
+	require JE;
+
+	if ( JE->new->parse($code) )
+	{
+		$main->message( Wx::gettext('Syntax ok'), 'Info' );
+	}
+	else
+	{
+		$main->message( Wx::gettext($@), 'Info' );
+	}
+}
+
+sub _get_code
+{
+	my ( $self ) = @_;
+	my $main = $self->main;
+
+	my $src = $main->current->text;
+	my $doc = $main->current->document;
+	return unless $doc;
+	my $code = $src ? $src : $doc->text_get;
+	return unless ( defined $code and length($code) );
+	return ($main,$src,$doc,$code);
 }
 
 1;

@@ -12,6 +12,7 @@ requires       'Padre'                   => '0.26';
 requires       'Class::Autouse'          => '1.26';
 requires       'JavaScript::Beautifier'  => '0.03';
 requires       'JavaScript::Minifier::XS';
+requires       'JE';
 
 test_requires  'Test::More'              => '0.47';
 test_requires  'Test::NeedsDisplay'      => '1.05';
