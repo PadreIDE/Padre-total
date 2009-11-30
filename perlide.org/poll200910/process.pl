@@ -7,7 +7,7 @@ use Text::CSV_XS;
 use File::Basename qw(dirname);
 
 my $csv = Text::CSV_XS->new;
-open my $fh, '<', dirname($0) . '/answers.csv';
+open my $fh, '<', 'answers.csv';
 my $total = 0;
 my %data;
 <$fh>;
