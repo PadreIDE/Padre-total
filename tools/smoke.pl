@@ -16,9 +16,11 @@ use warnings;
 use Getopt::Long qw(GetOptions);
 my $path;
 my $help;
+my $sleep;
 GetOptions(
-	'path=s' => \$path,
-	'help'   => \$help,
+	'path=s'  => \$path,
+	'help'    => \$help,
+	'sleep=s' => \$sleep,
 ) or usage();
 usage() if $help;
 usage('Needs --path') if not $path;
@@ -31,18 +33,31 @@ chomp $username;
 chomp $password;
 
 my $SVN = 'svn';
-my @status = `$SVN st -u`;
-exit if @status <= 1;
 
-system "$SVN up";
-system "perl Makefile.PL";
-# TODO - report if requirements changed and stop running
-system "make";
-my $file = 'tap.tar.gz';
-unlink $file;
-system "prove -ba $file t/ xt/";
-system "smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre";
+while (1) {
+	print "\n";
+	print scalar localtime;
 
+	my @diff = `$SVN diff -rHEAD`;
+	
+	if (@diff) {
+		print " - running\n";
+		#print "status @diff";
+
+		system "$SVN up";
+		system "perl Makefile.PL";
+		# TODO - report if requirements changed and stop running
+		system "make";
+		my $file = 'tap.tar.gz';
+		unlink $file;
+		system "prove -ba $file t/ xt/";
+		system "smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre";
+	} else {
+		print " - skipping\n";
+	}
+	last if not $sleep;
+	sleep $sleep;
+}
 
 sub usage {
 	my $msg = shift;
