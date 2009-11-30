@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 November 29
+        url: http://use.perl.org/~Alias/journal/39962
+        title: Some interesting group dynamics in Padre
+        comment: by Adam Kennedy 
       - date: 2009 November 26
         url: http://use.perl.org/~Alias/journal/39948
         title: Padre Standalone 0.50 for Mac (Experimental)
