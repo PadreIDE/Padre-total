@@ -469,9 +469,15 @@ This plugin has been translated to the folowing languages (alfabetic order):
 
 =item French (JQUELIN)
 
+=item German (Sebastian Willing)
+
+=item Japanese (ISHIGAKI)
+
 =item Polish (THEREK)
 
 =item Russian (SHARIFULN)
+
+=item Spanish (BRUNOV)
 
 =back
 
