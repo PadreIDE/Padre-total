@@ -40,7 +40,7 @@ system "perl Makefile.PL";
 system "make";
 my $file = 'tap.tar.gz';
 unlink $file;
-system "prove -ba $file t/";  # xt/ as well ?
+system "prove -ba $file t/ xt/";
 system "smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre";
 
 
