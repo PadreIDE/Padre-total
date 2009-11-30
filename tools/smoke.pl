@@ -3,15 +3,24 @@ use strict;
 use warnings;
 
 # first attempt to build a smoke client for padre
-# install TAP::Harness::Archive
+# install WWW::Mechanize and TAP::Harness::Archive, 
+# fetch the smolder_smoke_signal script from the Smolder package
+# and put it in the PATH
+# TODO: check out App-Smolder-Report 
 
-# manually check out the svn repository of Padre
-# in the Padre/ dir create file called smoke.conf with
+# manually check out the svn repository of Padre:
+#   svn co  http://svn.perlide.org/padre/trunk/Padre
+
+# in the new Padre/ directory create file called smoke.conf with
+# put your username and passoworf on http://smolder.plusthree.com/ in the file
+# and make sure they are associated with the Padre project on that smolder installation
 #   username
 #   password
-# in it your user on http://smolder.plusthree.com/
-# which needs to be associated with the Padre project
+
+# make sure all the prereqisites are installed
+
 # then you can run this script with --path pointing to the Padre directory
+# provide --sleep 60 if you would like to have the script executed every 60 second
 
 use Getopt::Long qw(GetOptions);
 my $path;
