@@ -40,95 +40,239 @@ sub plugin_icon {
 	return Wx::Bitmap->newFromXPM( $icon );
 }
 
-# The command structure to show in the Plugins menu
-sub menu_plugins_simple {
+
+# we used to be happy and innocent users of
+# menu_plugins_simple() interface, until we figured
+# we needed to disable one of the menu items upon startup.
+# Currently the only way (to our knowledge) to do so
+# is to loose the "simple" interface and go hardcore
+# with menu_plugins(). However, this did rose the issue
+# that maybe there should be a quick access to plugin
+# menus, and/or an extra parameter to simple() that would
+# set the menu item as disabled.
+#
+# another thing that isn't currently found is an event hook to
+# document change, like the one that shows/hides the "Perl" menu.
+# having this to plugins would be sweet, or at least a menu
+# construction hook called just before the menu is displayed,
+# like a menu_plugins_on_sight()  :)
+
+sub menu_plugins {
     my $self = shift;
+    my $main = shift;
     
-    return $self->plugin_name  => [
-            _T('New Catalyst Application') => sub { 
-                                require Padre::Plugin::Catalyst::NewApp;
-                                Padre::Plugin::Catalyst::NewApp::on_newapp();
-                                return;
-                            },
-            _T('Create new...') => [
-                _T('Model')      => sub { 
-								require Padre::Plugin::Catalyst::Helper;
-								Padre::Plugin::Catalyst::Helper::on_create_model();
-							},
-                _T('View')       => sub { 
-								require Padre::Plugin::Catalyst::Helper;
-								Padre::Plugin::Catalyst::Helper::on_create_view();
-							},
-                _T('Controller') => sub {
-								require Padre::Plugin::Catalyst::Helper;
-								Padre::Plugin::Catalyst::Helper::on_create_controller();
-							},
-            ],
-			'---'     => undef, # separator
-            _T('Start Web Server') => sub { $self->on_start_server },
-            _T('Stop Web Server')  => sub { $self->on_stop_server  },
-            '---'     => undef, # ...and another separator
-            _T('Catalyst Online References') => [
-				_T('Beginner\'s Tutorial') => [
-					_T('Overview') => sub { 
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
-					},
-					_T('1. Introduction') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::01_Intro');
-					},
-					_T('2. Catalyst Basics') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::02_CatalystBasics');
-					},
-					_T('3. More Catalyst Basics') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::03_MoreCatalystBasics');
-					},
-					_T('4. Basic CRUD') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::04_BasicCRUD');
-					},
-					_T('5. Authentication') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::05_Authentication');
-					},
-					_T('6. Authorization') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::06_Authorization');
-					},
-					_T('7. Debugging') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::07_Debugging');
-					},
-					_T('8. Testing') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::08_Testing');
-					},
-					_T('9. Advanced CRUD') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::09_AdvancedCRUD');
-					},
-					_T('10. Appendices') => sub {
-						Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::10_Appendices');
-					},
-				],
-				_T('Catalyst Cookbook') => sub {
-					Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
-				},
-				_T('Recommended Plugins') => sub {
-					Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/recommended_plugins');
-				},
-				_T('Catalyst Community Live Support') => sub {
-					Padre::Wx::launch_irc( 'irc.perl.org' => 'catalyst' );
-				},
-				_T('Examples') => sub {
-					Padre::Wx::launch_browser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
-				},
-				_T('Catalyst Wiki') => sub {
-					Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/');
-				},
-				_T('Catalyst Website') => sub {
-					Padre::Wx::launch_browser('http://www.catalystframework.org/');
-				},
-            ],
-            '---'     => undef, # what do you know? a separator!
-            _T('Update Application Scripts') => sub { $self->on_update_script },
-			'---'     => undef, # guess I like separators
-            _T('About')   => sub { $self->on_show_about },
-    ];
+    # Create a simple menu with a single About entry
+    my $menu = Wx::Menu->new;
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu->Append(-1, _T('New Catalyst Application')),
+        sub { 
+            require Padre::Plugin::Catalyst::NewApp;
+            Padre::Plugin::Catalyst::NewApp::on_newapp();
+            return;
+        },
+    );
+    my $menu_new = Wx::Menu->new;
+    $menu->Append(-1, _T('Create new...'), $menu_new);
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu_new->Append(-1, _T('Model')),
+        sub {
+            require Padre::Plugin::Catalyst::Helper;
+            Padre::Plugin::Catalyst::Helper::on_create_model();
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu_new->Append(-1, _T('View')),
+        sub {
+            require Padre::Plugin::Catalyst::Helper;
+            Padre::Plugin::Catalyst::Helper::on_create_view();
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu_new->Append(-1, _T('Controller')),
+        sub {
+            require Padre::Plugin::Catalyst::Helper;
+            Padre::Plugin::Catalyst::Helper::on_create_controller();
+        },
+    );
+
+    $menu->AppendSeparator;
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu->Append(-1, _T('Start Web Server')),
+        sub { $self->on_start_server },
+    );
+    # when we start the plugin, the "stop web server" option
+    # is disabled.
+    my $stop_server_item = $menu->Append(-1, _T('Stop Web Server'));
+    Wx::Event::EVT_MENU(
+        $main,
+        $stop_server_item,
+        sub { $self->on_stop_server },
+    );
+    $stop_server_item->Enable(0);
+    
+    $menu->AppendSeparator;
+    my $docs_menu = Wx::Menu->new;
+    $menu->Append(-1, _T('Catalyst Online References'), $docs_menu);
+    
+    my $tutorial_menu = Wx::Menu->new;
+    $docs_menu->Append(-1, _T('Beginner\'s Tutorial'), $tutorial_menu);
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('Overview')),
+        sub { 
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial');
+        },
+    );
+    
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('1. Introduction')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::01_Intro');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('2. Catalyst Basics')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::02_CatalystBasics');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('3. More Catalyst Basics')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::03_MoreCatalystBasics');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('4. Basic CRUD')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::04_BasicCRUD');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('5. Authentication')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::05_Authentication');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('6. Authorization')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::06_Authorization');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('7. Debugging')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::07_Debugging');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('8. Testing')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::08_Testing');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('9. Advanced CRUD')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::09_AdvancedCRUD');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $tutorial_menu->Append(-1, _T('10. Appendices')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Tutorial::10_Appendices');
+        },
+    );
+    
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Catalyst Cookbook')),
+        sub {
+            Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Catalyst::Manual::Cookbook');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Recommended Plugins')),
+        sub {
+            Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/recommended_plugins');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Catalyst Community Live Support')),
+        sub {
+            Padre::Wx::launch_irc( 'irc.perl.org' => 'catalyst' );
+        },
+    );
+    
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Examples')),
+        sub {
+            Padre::Wx::launch_browser('http://dev.catalyst.perl.org/repos/Catalyst/trunk/examples/');
+        },
+    );
+    
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Catalyst Wiki')),
+        sub {
+            Padre::Wx::launch_browser('http://dev.catalystframework.org/wiki/');
+        },
+    );
+    Wx::Event::EVT_MENU(
+        $main,
+        $docs_menu->Append(-1, _T('Catalyst Website')),
+        sub {
+            Padre::Wx::launch_browser('http://www.catalystframework.org/');
+        },
+    );
+
+    
+    $menu->AppendSeparator;
+    Wx::Event::EVT_MENU(
+        $main,
+        $menu->Append(-1, _T('Update Application Scripts')),
+        sub { $self->on_update_script },
+    );
+    
+	$menu->AppendSeparator;
+	Wx::Event::EVT_MENU(
+        $main,
+        $menu->Append(-1, _T('About')),
+        sub { $self->on_show_about },
+    );
+
+#    $menu->AppendSeparator;
+#    my $about = $menu->Append( -1, 'About' );
+#    Wx::Event::EVT_MENU(
+#        $main,
+#        $about,
+#        sub { $self->on_show_about },
+#    );
+#    $about->Enable(0);
+    
+    # Return it and the label for our plug-in
+    return ( $self->plugin_name => $menu );   
 }
+
 
 sub on_update_script {
     my $main = Padre->ide->wx->main;
@@ -188,6 +332,9 @@ sub on_start_server {
     # restore current dir
     chdir $pwd;
     
+    # handle menu graying
+    Padre::Plugin::Catalyst::Util::toggle_server_menu(1);
+    
     # TODO: actually check whether this is true.
     my $ret = Wx::MessageBox(
 		_T('Web server appears to be running. Launch web browser now?'),
@@ -198,9 +345,7 @@ sub on_start_server {
 	if ( $ret == Wx::wxYES ) {
         Padre::Wx::launch_browser('http://localhost:3000');
     }
-    
-    #TODO: handle menu greying
-    
+        
     return;
 }
 
@@ -216,10 +361,15 @@ sub on_stop_server {
 	delete $main->{command};
 	$main->menu->run->enable;
 	$main->output->AppendText("\nWeb server stopped successfully.\n");
+	
+    # handle menu graying
+    require Padre::Plugin::Catalyst::Util;
+    Padre::Plugin::Catalyst::Util::toggle_server_menu(0);
+
 	return;
 }
 
-sub on_show_about {
+sub on_show_about {    
 	require Catalyst;
 	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
