@@ -1,5 +1,10 @@
 Padre::Plugin::Catalyst - TODO list!
 
+    * show the server in a special panel (zamolxes)
+    * jump from current action to corresponding template and back (zamolxes)
+    * option to add a new action + corresponding template + mechanize test (zamolxes)
+
+
 	* Maker 'stop server' work as if the user clicked on the stop button.
 	  (That is, as long as the stop button works under win32)
 
