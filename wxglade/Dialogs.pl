@@ -11,6 +11,7 @@ use Wx qw[:everything];
 use base qw(Wx::Frame);
 use strict;
 
+use Wx::Locale gettext => '_T';
 sub new {
 	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
 	$parent = undef              unless defined $parent;
@@ -42,7 +43,7 @@ sub __set_properties {
 
 # begin wxGlade: MyFrame::__set_properties
 
-	$self->SetTitle("frame_1");
+	$self->SetTitle(_T("frame_1"));
 
 # end wxGlade
 }
@@ -65,12 +66,13 @@ sub __do_layout {
 
 1;
 
-package MyDialog3;
+package Find;
 
 use Wx qw[:everything];
 use base qw(Wx::Dialog);
 use strict;
 
+use Wx::Locale gettext => '_T';
 sub new {
 	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
 	$parent = undef              unless defined $parent;
@@ -80,92 +82,19 @@ sub new {
 	$size   = wxDefaultSize      unless defined $size;
 	$name   = ""                 unless defined $name;
 
-# begin wxGlade: MyDialog3::new
-
-	$style = wxDEFAULT_DIALOG_STYLE 
-		unless defined $style;
-
-	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
-	$self->{openurl_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{button_ok} = Wx::Button->new($self, wxID_OK, "");
-	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
-
-	$self->__set_properties();
-	$self->__do_layout();
-
-# end wxGlade
-	return $self;
-
-}
-
-
-sub __set_properties {
-	my $self = shift;
-
-# begin wxGlade: MyDialog3::__set_properties
-
-	$self->SetTitle("dialog_1");
-	$self->{openurl_text}->SetSelection(-1);
-
-# end wxGlade
-}
-
-sub __do_layout {
-	my $self = shift;
-
-# begin wxGlade: MyDialog3::__do_layout
-
-	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
-	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
-	my $openurl_label = Wx::StaticText->new($self, -1, "http://svn.perlide.org/padre/trunk/Padre/Makefile.PL", wxDefaultPosition, wxDefaultSize, );
-	$self->{sizer_2}->Add($openurl_label, 0, 0, 0);
-	$self->{sizer_2}->Add($self->{openurl_text}, 0, wxTOP|wxEXPAND, 5);
-	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{sizer_2}->Add($line_1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{button_sizer}->Add($self->{button_ok}, 1, 0, 0);
-	$self->{button_sizer}->Add($self->{button_cancel}, 1, wxLEFT, 5);
-	$self->{sizer_2}->Add($self->{button_sizer}, 1, wxALIGN_RIGHT, 5);
-	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
-	$self->SetSizer($self->{sizer_1});
-	$self->{sizer_1}->Fit($self);
-	$self->Layout();
-
-# end wxGlade
-}
-
-# end of class MyDialog3
-
-1;
-
-package MyDialog1;
-
-use Wx qw[:everything];
-use base qw(Wx::Dialog);
-use strict;
-
-sub new {
-	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
-	$parent = undef              unless defined $parent;
-	$id     = -1                 unless defined $id;
-	$title  = ""                 unless defined $title;
-	$pos    = wxDefaultPosition  unless defined $pos;
-	$size   = wxDefaultSize      unless defined $size;
-	$name   = ""                 unless defined $name;
-
-# begin wxGlade: MyDialog1::new
+# begin wxGlade: Find::new
 
 	$style = wxDEFAULT_DIALOG_STYLE 
 		unless defined $style;
 
 	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
 	$self->{find_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{find_regex} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
-	$self->{find_reverse} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
-	$self->{find_case} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
-	$self->{find_first} = Wx::CheckBox->new($self, -1, "Close Window on Hit", wxDefaultPosition, wxDefaultSize, );
-	$self->{button_find} = Wx::Button->new($self, -1, "Find Next");
-	$self->{button_count} = Wx::Button->new($self, -1, "Count All");
+	$self->{find_regex} = Wx::CheckBox->new($self, -1, _T("Regular Expression"), wxDefaultPosition, wxDefaultSize, );
+	$self->{find_reverse} = Wx::CheckBox->new($self, -1, _T("Search Backwards"), wxDefaultPosition, wxDefaultSize, );
+	$self->{find_case} = Wx::CheckBox->new($self, -1, _T("Case Insensitive"), wxDefaultPosition, wxDefaultSize, );
+	$self->{find_first} = Wx::CheckBox->new($self, -1, _T("Close Window on Hit"), wxDefaultPosition, wxDefaultSize, );
+	$self->{button_find} = Wx::Button->new($self, -1, _T("Find Next"));
+	$self->{button_count} = Wx::Button->new($self, -1, _T("Count All"));
 	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
@@ -180,9 +109,9 @@ sub new {
 sub __set_properties {
 	my $self = shift;
 
-# begin wxGlade: MyDialog1::__set_properties
+# begin wxGlade: Find::__set_properties
 
-	$self->SetTitle("dialog_find");
+	$self->SetTitle(_T("dialog_find"));
 	$self->{find_text}->SetSelection(-1);
 
 # end wxGlade
@@ -191,13 +120,13 @@ sub __set_properties {
 sub __do_layout {
 	my $self = shift;
 
-# begin wxGlade: MyDialog1::__do_layout
+# begin wxGlade: Find::__do_layout
 
 	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
 	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
 	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
 	$self->{option_sizer} = Wx::GridSizer->new(2, 2, 5, 5);
-	my $find_label = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
+	my $find_label = Wx::StaticText->new($self, -1, _T("Find Text:"), wxDefaultPosition, wxDefaultSize, );
 	$self->{sizer_2}->Add($find_label, 0, 0, 0);
 	$self->{sizer_2}->Add($self->{find_text}, 0, wxTOP|wxEXPAND, 5);
 	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
@@ -221,16 +150,17 @@ sub __do_layout {
 # end wxGlade
 }
 
-# end of class MyDialog1
+# end of class Find
 
 1;
 
-package MyDialog2;
+package Replace;
 
 use Wx qw[:everything];
 use base qw(Wx::Dialog);
 use strict;
 
+use Wx::Locale gettext => '_T';
 sub new {
 	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
 	$parent = undef              unless defined $parent;
@@ -240,7 +170,7 @@ sub new {
 	$size   = wxDefaultSize      unless defined $size;
 	$name   = ""                 unless defined $name;
 
-# begin wxGlade: MyDialog2::new
+# begin wxGlade: Replace::new
 
 	$style = wxDEFAULT_DIALOG_STYLE 
 		unless defined $style;
@@ -248,12 +178,12 @@ sub new {
 	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
 	$self->{find_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
 	$self->{replace_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{find_regex} = Wx::CheckBox->new($self, -1, "Regular Expression", wxDefaultPosition, wxDefaultSize, );
-	$self->{find_reverse} = Wx::CheckBox->new($self, -1, "Search Backwards", wxDefaultPosition, wxDefaultSize, );
-	$self->{find_case} = Wx::CheckBox->new($self, -1, "Case Insensitive", wxDefaultPosition, wxDefaultSize, );
-	$self->{replace_all} = Wx::CheckBox->new($self, -1, "Replace All", wxDefaultPosition, wxDefaultSize, );
-	$self->{button_find} = Wx::Button->new($self, -1, "Find Next");
-	$self->{button_replace} = Wx::Button->new($self, -1, "Replace");
+	$self->{find_regex} = Wx::CheckBox->new($self, -1, _T("Regular Expression"), wxDefaultPosition, wxDefaultSize, );
+	$self->{find_reverse} = Wx::CheckBox->new($self, -1, _T("Search Backwards"), wxDefaultPosition, wxDefaultSize, );
+	$self->{find_case} = Wx::CheckBox->new($self, -1, _T("Case Insensitive"), wxDefaultPosition, wxDefaultSize, );
+	$self->{replace_all} = Wx::CheckBox->new($self, -1, _T("Replace All"), wxDefaultPosition, wxDefaultSize, );
+	$self->{button_find} = Wx::Button->new($self, -1, _T("Find Next"));
+	$self->{button_replace} = Wx::Button->new($self, -1, _T("Replace"));
 	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
@@ -268,9 +198,9 @@ sub new {
 sub __set_properties {
 	my $self = shift;
 
-# begin wxGlade: MyDialog2::__set_properties
+# begin wxGlade: Replace::__set_properties
 
-	$self->SetTitle("dialog_replace");
+	$self->SetTitle(_T("dialog_replace"));
 	$self->{find_text}->SetSelection(-1);
 	$self->{replace_text}->SetSelection(-1);
 
@@ -280,16 +210,16 @@ sub __set_properties {
 sub __do_layout {
 	my $self = shift;
 
-# begin wxGlade: MyDialog2::__do_layout
+# begin wxGlade: Replace::__do_layout
 
 	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
 	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
 	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
 	$self->{option_sizer} = Wx::GridSizer->new(2, 2, 5, 20);
-	my $find_label = Wx::StaticText->new($self, -1, "Find Text:", wxDefaultPosition, wxDefaultSize, );
+	my $find_label = Wx::StaticText->new($self, -1, _T("Find Text:"), wxDefaultPosition, wxDefaultSize, );
 	$self->{sizer_2}->Add($find_label, 0, 0, 0);
 	$self->{sizer_2}->Add($self->{find_text}, 0, wxTOP|wxEXPAND, 5);
-	my $replace_label = Wx::StaticText->new($self, -1, "Replace Text:", wxDefaultPosition, wxDefaultSize, );
+	my $replace_label = Wx::StaticText->new($self, -1, _T("Replace Text:"), wxDefaultPosition, wxDefaultSize, );
 	$self->{sizer_2}->Add($replace_label, 0, wxTOP, 10);
 	$self->{sizer_2}->Add($self->{replace_text}, 0, wxTOP|wxEXPAND, 5);
 	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
@@ -313,7 +243,152 @@ sub __do_layout {
 # end wxGlade
 }
 
-# end of class MyDialog2
+# end of class Replace
+
+1;
+
+package OpenURL;
+
+use Wx qw[:everything];
+use base qw(Wx::Dialog);
+use strict;
+
+use Wx::Locale gettext => '_T';
+sub new {
+	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
+	$parent = undef              unless defined $parent;
+	$id     = -1                 unless defined $id;
+	$title  = ""                 unless defined $title;
+	$pos    = wxDefaultPosition  unless defined $pos;
+	$size   = wxDefaultSize      unless defined $size;
+	$name   = ""                 unless defined $name;
+
+# begin wxGlade: OpenURL::new
+
+	$style = wxDEFAULT_DIALOG_STYLE 
+		unless defined $style;
+
+	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
+	$self->{openurl_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
+	$self->{button_ok} = Wx::Button->new($self, wxID_OK, "");
+	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
+
+	$self->__set_properties();
+	$self->__do_layout();
+
+# end wxGlade
+	return $self;
+
+}
+
+
+sub __set_properties {
+	my $self = shift;
+
+# begin wxGlade: OpenURL::__set_properties
+
+	$self->SetTitle(_T("dialog_1"));
+	$self->{openurl_text}->SetSelection(-1);
+
+# end wxGlade
+}
+
+sub __do_layout {
+	my $self = shift;
+
+# begin wxGlade: OpenURL::__do_layout
+
+	$self->{sizer_1} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{sizer_2} = Wx::BoxSizer->new(wxVERTICAL);
+	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
+	my $openurl_label = Wx::StaticText->new($self, -1, _T("http://svn.perlide.org/padre/trunk/Padre/Makefile.PL"), wxDefaultPosition, wxDefaultSize, );
+	$self->{sizer_2}->Add($openurl_label, 0, 0, 0);
+	$self->{sizer_2}->Add($self->{openurl_text}, 0, wxTOP|wxEXPAND, 5);
+	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{sizer_2}->Add($line_1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{button_sizer}->Add($self->{button_ok}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{button_cancel}, 1, wxLEFT, 5);
+	$self->{sizer_2}->Add($self->{button_sizer}, 1, wxALIGN_RIGHT, 5);
+	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
+	$self->SetSizer($self->{sizer_1});
+	$self->{sizer_1}->Fit($self);
+	$self->Layout();
+
+# end wxGlade
+}
+
+# end of class OpenURL
+
+1;
+
+package Warning;
+
+use Wx qw[:everything];
+use base qw(Wx::Dialog);
+use strict;
+
+use Wx::Locale gettext => '_T';
+sub new {
+	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
+	$parent = undef              unless defined $parent;
+	$id     = -1                 unless defined $id;
+	$title  = ""                 unless defined $title;
+	$pos    = wxDefaultPosition  unless defined $pos;
+	$size   = wxDefaultSize      unless defined $size;
+	$name   = ""                 unless defined $name;
+
+# begin wxGlade: Warning::new
+
+	$style = wxDEFAULT_DIALOG_STYLE 
+		unless defined $style;
+
+	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
+	$self->{warning_label} = Wx::StaticText->new($self, -1, _T("See http://padre.perlide.org/ for update information"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
+	$self->{warning_checkbox} = Wx::CheckBox->new($self, -1, _T("Do not show this again"), wxDefaultPosition, wxDefaultSize, );
+	$self->{line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{ok_button} = Wx::Button->new($self, wxID_OK, "");
+
+	$self->__set_properties();
+	$self->__do_layout();
+
+# end wxGlade
+	return $self;
+
+}
+
+
+sub __set_properties {
+	my $self = shift;
+
+# begin wxGlade: Warning::__set_properties
+
+	$self->SetTitle(_T("Warning"));
+
+# end wxGlade
+}
+
+sub __do_layout {
+	my $self = shift;
+
+# begin wxGlade: Warning::__do_layout
+
+	$self->{sizer_4} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{sizer_5} = Wx::BoxSizer->new(wxVERTICAL);
+	$self->{sizer_6} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{sizer_5}->Add($self->{warning_label}, 0, 0, 0);
+	$self->{sizer_5}->Add($self->{warning_checkbox}, 0, wxTOP|wxEXPAND, 5);
+	$self->{sizer_5}->Add($self->{line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{sizer_6}->Add($self->{ok_button}, 0, 0, 0);
+	$self->{sizer_5}->Add($self->{sizer_6}, 1, wxALIGN_CENTER_HORIZONTAL, 5);
+	$self->{sizer_4}->Add($self->{sizer_5}, 1, wxALL|wxEXPAND, 5);
+	$self->SetSizer($self->{sizer_4});
+	$self->{sizer_4}->Fit($self);
+	$self->Layout();
+
+# end wxGlade
+}
+
+# end of class Warning
 
 1;
 
@@ -322,13 +397,16 @@ sub __do_layout {
 package main;
 
 unless(caller){
+	my $local = Wx::Locale->new("English", "en", "en"); # replace with ??
+	$local->AddCatalog("app"); # replace with the appropriate catalog name
+
 	local *Wx::App::OnInit = sub{1};
 	my $app = Wx::App->new();
 	Wx::InitAllImageHandlers();
 
-	my $dialog_find = MyDialog1->new();
+	my $frame_1 = MyFrame->new();
 
-	$app->SetTopWindow($dialog_find);
-	$dialog_find->Show(1);
+	$app->SetTopWindow($frame_1);
+	$frame_1->Show(1);
 	$app->MainLoop();
 }
