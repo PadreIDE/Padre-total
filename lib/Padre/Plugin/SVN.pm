@@ -430,6 +430,11 @@ sub svn_commit {
 	my $main = Padre->ide->wx->main;
 	my $file = svn_file($path);
 
+	if (( ! defined($file)) or ($file == 0)){
+		$main->error(Wx::gettext('Unable to find SVN file!'),Wx::gettext('Error - SVN Commit'));
+		return;
+	}
+
 	my $info = "$path\n\n";
 	if ( defined( $file->info->{last_rev} ) ) {
 		$info .= "Last Revision: " . $file->info->{last_rev};
@@ -460,7 +465,7 @@ sub svn_commit {
 		my @commit = @{ $file->stdout };
 		my @err    = @{ $file->stderr };
 		if (@err) {
-			$main->error( join( "\n", @err ), 'Error - SVN Commit' );
+			$main->error( join( "\n", @err ), Wx::gettext('Error - SVN Commit') );
 		} else {
 			$main->info( join( "\n", @commit ), "Committed Revision number $revNo." );
 		}
