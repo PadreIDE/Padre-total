@@ -45,6 +45,12 @@ sub plugin_name {
 	'wxGlade Tools';
 }
 
+# Clean up our classes
+sub plugin_disable {
+	require Class::Unload;
+	Class::Unload->unload('Padre::Plugin::wxGlade::WXG');
+}
+
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
