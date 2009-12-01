@@ -53,26 +53,6 @@ sub path {
 	$_[0]->{attrib}->{path};
 }
 
-# Smarter equivalent for path
-sub file {
-	my $self = shift;
-
-	# Handle null cases
-	unless ( defined _STRING($self->path) ) {
-		return $self->path;
-	}
-
-	# Handle the trivial positive case
-	if ( -f $self->path ) {
-		return $self->path;
-	}
-
-	# Because wxGlade saves absolute paths, they don't transport well.
-	# If the literal path doesn't exist, add support for the generated
-	# file being in the same directory as the WXG file itself.
-	die( "CODE INCOMPLETE" );
-}
-
 # Valid usable top level objects
 sub objects {
 	grep {
@@ -140,7 +120,7 @@ sub extract {
 	my $window  = shift;
 
 	# Load the Perl file and localize newlines
-	my $file = $self->file;
+	my $file = $self->path;
 	my $perl = _lslurp($file);
 
 	# Extract the class from the overall file
