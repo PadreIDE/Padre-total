@@ -3,7 +3,7 @@
 use 5.006;
 use strict;
 use warnings;
-use Test::More tests => 7;
+use Test::More tests => 6;
 use Padre::Plugin::wxGlade ();
 use PPI::Document          ();
 
@@ -14,10 +14,6 @@ my $ide = bless {}, 'Padre';
 my $plugin = Padre::Plugin::wxGlade->new( $ide );
 isa_ok( $plugin, 'Padre::Plugin::wxGlade' );
 
-# Get the list of installed constants
-my $hash = $plugin->constant_mapping;
-is( ref($hash), 'HASH', '->constant_mapping returns a HASH' );
-
 
 
 
@@ -26,15 +22,15 @@ is( ref($hash), 'HASH', '->constant_mapping returns a HASH' );
 # Processing content with nothing in it
 
 SCOPE: {
-	my $doc = PPI::Document->new( \<<'END_PERL' );
+	my $text = <<'END_PERL';
 package Foo;
 
 print;
 END_PERL
-	isa_ok( $doc, 'PPI::Document' );
 	is(
-		$plugin->constant_normalise($doc), 0,
-		'->constant_normalise(none) ok'
+		$plugin->normalise_constants($text),
+		$text,
+		'->normalise_constants(none) ok'
 	);
 }
 
@@ -46,17 +42,26 @@ END_PERL
 # Process with a single known-good constant
 
 SCOPE: {
-	my $doc = PPI::Document->new( \<<'END_PERL' );
-package Foo;
-print wxRED;
-END_PERL
-	isa_ok( $doc, 'PPI::Document' );
-	is(
-		$plugin->constant_normalise($doc), 1,
-		'->constant_normalise(one) ok'
-	);
-	is( $doc->serialize, <<'END_PERL', 'Converted ok' );
-package Foo;
-print Wx::wxRED;
-END_PERL
+	my $input    = "package Foo;\nprint wxRED;\n";
+	my $output   = $plugin->normalise_constants($input);
+	my $expected = "package Foo;\nprint Wx::wxRED;\n";
+	is( $output, $expected, '->normalise_constants(one) ok' );
+	$output = $plugin->normalise_constants($output);
+	is( $output, $expected, '->normalise_constants(one) ok' );
+}
+
+
+
+
+
+######################################################################
+# Process with a single known-good event
+
+SCOPE: {
+	my $input    = "package Foo;\nprint EVT_MAXIMIZE;\n";
+	my $output   = $plugin->normalise_constants($input);
+	my $expected = "package Foo;\nprint Wx::Event::EVT_MAXIMIZE;\n";
+	is( $output, $expected, '->normalise_constants(one) ok' );
+	$output = $plugin->normalise_constants($output);
+	is( $output, $expected, '->normalise_constants(one) ok' );
 }

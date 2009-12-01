@@ -21,17 +21,21 @@ isa_ok( $plugin, 'Padre::Plugin::wxGlade' );
 ######################################################################
 # Main Tests
 
-my $input    = test_input();
-my $packages = $plugin->package_list(\$input);
-is_deeply(
-	$packages,
-	[ qw{ MyDialog4 MyFrame } ],
-	'Found expected packages',
-);
+SCOPE: {
+	# Tests for package_list
+	my $input    = test_input();
+	my $packages = $plugin->package_list(\$input);
+	is_deeply(
+		$packages,
+		[ qw{ MyDialog4 MyFrame } ],
+		'Found expected packages',
+	);
 
-my $expected = test_output();
-my $output   = $plugin->isolate_package( \$input, $packages->[0] );
-is( $output, $expected, '->isolate_package ok' );
+	# Tests for isolate_package
+	my $expected = test_output();
+	my $output   = $plugin->isolate_package( \$input, $packages->[0] );
+	is( $output, $expected, '->isolate_package ok' );
+}
 
 
 
@@ -196,20 +200,20 @@ unless(caller){
 END_PERL
 
 sub test_output { <<'END_PERL' }
-	$self->{warning_label} = Wx::StaticText->new($self, -1, "See http://padre.perlide.org/ for update information", wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-	$self->{warning_checkbox} = Wx::CheckBox->new($self, -1, "Do not show this again", wxDefaultPosition, wxDefaultSize);
-	$self->{line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize);
-	$self->{ok_button} = Wx::Button->new($self, wxID_OK, "");
+	$self->{warning_label} = Wx::StaticText->new($self, -1, "See http://padre.perlide.org/ for update information", Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxALIGN_CENTRE);
+	$self->{warning_checkbox} = Wx::CheckBox->new($self, -1, "Do not show this again", Wx::wxDefaultPosition, Wx::wxDefaultSize);
+	my $line_1 = Wx::StaticLine->new($self, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize);
+	$self->{ok_button} = Wx::Button->new($self, Wx::wxID_OK, "");
 	$self->SetTitle("Warning");
-	$self->{sizer_4} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{sizer_5} = Wx::BoxSizer->new(wxVERTICAL);
-	$self->{sizer_6} = Wx::BoxSizer->new(wxHORIZONTAL);
-	$self->{sizer_5}->Add($self->{warning_label}, 0, 0, 0);
-	$self->{sizer_5}->Add($self->{warning_checkbox}, 0, wxTOP|wxEXPAND, 5);
-	$self->{sizer_5}->Add($self->{line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_6}->Add($self->{ok_button}, 0, 0, 0);
-	$self->{sizer_5}->Add($self->{sizer_6}, 1, wxALIGN_CENTER_HORIZONTAL, 5);
-	$self->{sizer_4}->Add($self->{sizer_5}, 1, wxALL|wxEXPAND, 5);
-	$self->SetSizer($self->{sizer_4});
-	$self->{sizer_4}->Fit($self);
+	my $sizer_4 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	my $sizer_5 = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	my $sizer_6 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$sizer_5->Add($self->{warning_label}, 0, 0, 0);
+	$sizer_5->Add($self->{warning_checkbox}, 0, Wx::wxTOP|Wx::wxEXPAND, 5);
+	$sizer_5->Add($line_1, 0, Wx::wxTOP|Wx::wxBOTTOM|Wx::wxEXPAND, 5);
+	$sizer_6->Add($self->{ok_button}, 0, 0, 0);
+	$sizer_5->Add($sizer_6, 1, Wx::wxALIGN_CENTER_HORIZONTAL, 5);
+	$sizer_4->Add($sizer_5, 1, Wx::wxALL|Wx::wxEXPAND, 5);
+	$self->SetSizer($sizer_4);
+	$sizer_4->Fit($self);
 END_PERL
