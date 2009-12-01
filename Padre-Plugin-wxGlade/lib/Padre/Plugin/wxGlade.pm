@@ -23,6 +23,7 @@ wxGlade to something that will work properly with Padre.
 use 5.006;
 use strict;
 use warnings;
+use Params::Util  ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 
@@ -41,7 +42,7 @@ sub padre_interfaces {
 }
 
 sub plugin_name {
-	'wxGlade Tools';
+	'Padre wxGlade Tools';
 }
 
 # Clean up our classes
@@ -77,6 +78,8 @@ sub menu_new_dialog_perl {
 	my $self = shift;
 	my $main = $self->main;
 
+	$DB::single = 1;
+
 	# Load the wxGlade-generated Perl file
 	my $perl = $self->dialog_perl or return;
 
@@ -84,15 +87,23 @@ sub menu_new_dialog_perl {
 	my $packages = $self->package_list($perl);
 	my $package  = $self->dialog_function($packages) or return;
 
-	# Extract, clean and convert the package
+	# Extract, clean and convert the constructor code
 	my $clean = $self->isolate_package( $perl, $package );
 	unless ( $clean ) {
 		$main->error("Failed to extract package '$package'");
 		return;
 	}
 
+	# Convert to the final class
+	my $new = $self->dialog_class(
+		Params::Util::_IDENTIFIER($package) ? "Padre::Wx::Dialog::$package" : $package
+	) or return;
+
 	# Create a new document
-	$main->new_document_from_string( $clean, 'application/x-perl' );
+	$main->new_document_from_string(
+		$self->wrap( $clean, $new ),
+		'application/x-perl',
+	);
 
 	return;
 }
@@ -142,6 +153,7 @@ sub dialog_perl {
 		Wx::wxFD_OPEN
 		| Wx::wxFD_FILE_MUST_EXIST,
 	);
+	$dialog->CenterOnParent;
 
 	# File select loop
 	while ( $dialog->ShowModal != Wx::wxID_CANCEL ) {
@@ -171,16 +183,47 @@ sub dialog_function {
 	my $dialog = Wx::SingleChoiceDialog->new(
 		$main,
 		Wx::gettext('Select Dialog Package'),
-		'Dialog Caption',
+		$self->plugin_name,
 		$_[0], # Package ARRAY reference
 		undef,
 		Wx::wxDEFAULT_DIALOG_STYLE
 		| Wx::wxOK
 		| Wx::wxCANCEL,
 	);
+	$dialog->CenterOnParent;
+
 	my $rv = $dialog->ShowModal;
 	if ( $rv == Wx::wxID_OK ) {
 		return $dialog->GetStringSelection;
+	}
+
+	return;
+}
+
+sub dialog_class {
+	my $self = shift;
+	my $name = shift || '';
+	my $main = $self->main;
+
+	# What class name?
+	my $dialog = Wx::TextEntryDialog->new(
+		$main,
+		Wx::gettext("Enter Class Name"),
+		$self->plugin_name,
+		$name,
+	);
+	while ( $dialog->ShowModal != Wx::wxID_CANCEL ) {
+		my $package = $dialog->GetValue;
+		unless ( defined $package and length $package ) {
+			$main->error("Did not provide a class name");
+			next;
+		}
+		unless ( Params::Util::_CLASS($package) ) {
+			$main->error("Not a valid class name");
+			next;
+		}
+
+		return $package;
 	}
 
 	return;
@@ -270,6 +313,76 @@ sub normalise_constants {
 	/ges;
 
 	return $text;
+}
+
+sub wrap {
+	my $self    = shift;
+	my $text    = shift;
+	my $package = shift;
+	return <<"END_PERL";
+package $package;
+
+use 5.008;
+use strict;
+use warnings;
+use Padre::Wx                  ();
+use Padre::Wx::Role::MainChild ();
+
+our \$VERSION = '0.01';
+our \@ISA     = qw{
+	Padre::Wx::Role::MainChild
+	Wx::Dialog
+};
+
+=pod
+
+=head1 NAME
+
+$package - A Dialog
+
+=cut
+
+sub new {
+	my \$class = shift;
+	my \$main  = shift;
+
+	# Create the Wx dialog
+	my \$self = \$class->SUPER::new(
+		\$main,
+		-1,
+		Wx::gettext('A Dialog'),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxCAPTION
+		| Wx::wxCLOSE_BOX
+		| Wx::wxSYSTEM_MENU
+	);
+
+$text
+	return \$self;
+}
+
+1;
+
+=pod
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=cut
+
+# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
+END_PERL
 }
 
 # Reorder statements so they are bunched in an appropriate order
