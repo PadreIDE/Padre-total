@@ -51,6 +51,9 @@ sub menu_plugins_simple {
 		'Wx::wxConstants' => sub {
 			$self->wx_constants;
 		},
+		'Import Dialog' => sub {
+			$self->create_dialog;
+		},
 	];
 }
 
@@ -67,6 +70,11 @@ sub wx_constants {
 	unless ( Params::Util::_INSTANCE($document, 'PPI::Document') ) {
 		croak("Did not provide a PPI document to wx_constants");
 	}
+}
+
+sub create_dialog {
+	my $self = shift;
+	
 }
 
 
@@ -112,8 +120,9 @@ sub isolate_package {
 	$text =~ s/^\S[^\n]*?\n//gm;
 	$text =~ s/^\tmy \$self = shift;\n//gm;
 	$text =~ s/^\treturn \$self;\n//gm;
-	$text =~ s/^\t\$self-\>__set_properties\(\);\n//gm;
-	$text =~ s/^\t\$self-\>__do_layout\(\);\n//gm;
+	$text =~ s/^\t\$self->__set_properties\(\);\n//gm;
+	$text =~ s/^\t\$self->__do_layout\(\);\n//gm;
+	$text =~ s/^\t\$self->Layout\(\);//gm;
 	$text =~ s/,\s+\);\n/);\n/gs;
 	$text =~ s/(-\>\w+)\(\)/$1/gs;
 	$text =~ s/\s*\n\t\t/ /gs;
@@ -144,6 +153,24 @@ sub constant_normalise {
 	}
 
 	return $changes;
+}
+
+# Any variable that has an underscore and numbers at the end is considered
+# something we won't need to address later, so turn them from object HASH
+# elements into ordinary lexical variables.
+sub lexify_unimportant_variables {
+	my $self = shift;
+	my $text = shift;
+	my %seen = ();
+	$text =~ s/\$self->{(\w+_\d+)}/ ($seen{$1}++ ? '' : 'my ') . "\$$1" /ges;
+	return $text;
+}
+
+# Reorder statements so they are bunched in an appropriate order
+sub reorder_statements {
+	my $self  = shift;
+	my @lines = @{$_[0]};
+	
 }
 
 # Get the list of real installed constants that are provided by
