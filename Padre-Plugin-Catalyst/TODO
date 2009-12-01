@@ -4,8 +4,11 @@ Padre::Plugin::Catalyst - TODO list!
     * jump from current action to corresponding template and back (zamolxes)
     * option to add a new action + corresponding template + mechanize test (zamolxes)
 
+    * some sort of integration with Catalyst::Dispatcher::AsGraph
+    * an outline-like panel that showed all actions and where they resolve to (code-wise)
 
-	* Maker 'stop server' work as if the user clicked on the stop button.
+
+	* Make 'stop server' work as if the user clicked on the stop button.
 	  (That is, as long as the stop button works under win32)
 
 	* Add some catalyst.pl project options, such as -makefile, -scripts 
