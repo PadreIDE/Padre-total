@@ -78,8 +78,6 @@ sub menu_new_dialog_perl {
 	my $self = shift;
 	my $main = $self->main;
 
-	$DB::single = 1;
-
 	# Load the wxGlade-generated Perl file
 	my $perl = $self->dialog_perl or return;
 
@@ -273,12 +271,19 @@ sub isolate_package {
 	$code =~ s/(-\>\w+)\(\)/$1/gs;
 	$code =~ s/\s*\n\t\t/ /gs;
 	$code =~ s/\n+/\n/gs;
+	$code =~ s/\s*\|\s*/ | /gs;
+
+	# Convert _T locale calls to Wx::gettext
+	$code =~ s/\b_T\(/Wx::gettext\(/g;
 
 	# Lexify unimportant variables
 	$code = $self->lexify_unimportant($code);
 
 	# Normalise constants
 	$code = $self->normalise_constants($code);
+
+	# Shorten some of the lines
+	$code = $self->expand($code);
 
 	return $code;
 }
@@ -315,6 +320,27 @@ sub normalise_constants {
 	return $text;
 }
 
+sub expand {
+	join '', map { $_[0]->expand_line($_) . "\n" } split /\n/, $_[1];
+}
+
+sub expand_line {
+	my $self = shift;
+	my $line = shift;
+
+	# Ignore short lines
+	unless ( $line =~ /\b->new\(.+\,.+\)/ ) {
+		return $line;
+	}
+
+	# Indent the parameters to a long line
+	$line =~ s/\s*,\s*/,\n\t\t/gs;
+	$line =~ s/\);$/,\n\t\);/s;
+	$line =~ s/\(\s*/(\n\t\t/s;
+
+	return $line;
+}
+
 sub wrap {
 	my $self    = shift;
 	my $text    = shift;
@@ -327,6 +353,7 @@ use strict;
 use warnings;
 use Padre::Wx                  ();
 use Padre::Wx::Role::MainChild ();
+use Padre::Locale              ();
 
 our \$VERSION = '0.01';
 our \@ISA     = qw{

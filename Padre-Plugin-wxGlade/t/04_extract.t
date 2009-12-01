@@ -92,7 +92,7 @@ sub __set_properties {
 
 # begin wxGlade: MyDialog4::__set_properties
 
-	$self->SetTitle("Warning");
+	$self->SetTitle(_T("Warning"));
 
 # end wxGlade
 }
@@ -200,20 +200,42 @@ unless(caller){
 END_PERL
 
 sub test_output { <<'END_PERL' }
-	$self->{warning_label} = Wx::StaticText->new($self, -1, "See http://padre.perlide.org/ for update information", Wx::wxDefaultPosition, Wx::wxDefaultSize, Wx::wxALIGN_CENTRE);
-	$self->{warning_checkbox} = Wx::CheckBox->new($self, -1, "Do not show this again", Wx::wxDefaultPosition, Wx::wxDefaultSize);
-	my $line_1 = Wx::StaticLine->new($self, -1, Wx::wxDefaultPosition, Wx::wxDefaultSize);
-	$self->{ok_button} = Wx::Button->new($self, Wx::wxID_OK, "");
-	$self->SetTitle("Warning");
+	$self->{warning_label} = Wx::StaticText->new(
+		$self,
+		-1,
+		"See http://padre.perlide.org/ for update information",
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxALIGN_CENTRE,
+	);
+	$self->{warning_checkbox} = Wx::CheckBox->new(
+		$self,
+		-1,
+		"Do not show this again",
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+	my $line_1 = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+	$self->{ok_button} = Wx::Button->new(
+		$self,
+		Wx::wxID_OK,
+		"",
+	);
+	$self->SetTitle(Wx::gettext("Warning"));
 	my $sizer_4 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	my $sizer_5 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $sizer_6 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$sizer_5->Add($self->{warning_label}, 0, 0, 0);
-	$sizer_5->Add($self->{warning_checkbox}, 0, Wx::wxTOP|Wx::wxEXPAND, 5);
-	$sizer_5->Add($line_1, 0, Wx::wxTOP|Wx::wxBOTTOM|Wx::wxEXPAND, 5);
+	$sizer_5->Add($self->{warning_checkbox}, 0, Wx::wxTOP | Wx::wxEXPAND, 5);
+	$sizer_5->Add($line_1, 0, Wx::wxTOP | Wx::wxBOTTOM | Wx::wxEXPAND, 5);
 	$sizer_6->Add($self->{ok_button}, 0, 0, 0);
 	$sizer_5->Add($sizer_6, 1, Wx::wxALIGN_CENTER_HORIZONTAL, 5);
-	$sizer_4->Add($sizer_5, 1, Wx::wxALL|Wx::wxEXPAND, 5);
+	$sizer_4->Add($sizer_5, 1, Wx::wxALL | Wx::wxEXPAND, 5);
 	$self->SetSizer($sizer_4);
 	$sizer_4->Fit($self);
 END_PERL

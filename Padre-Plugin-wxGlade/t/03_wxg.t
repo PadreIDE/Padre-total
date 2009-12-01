@@ -36,7 +36,7 @@ my $wxg = new_ok(
 is( $wxg->wxg,         $SAMPLE, '->file ok'        );
 is( $wxg->language,    'perl',  '->language ok'    );
 is( $wxg->for_version, '2.8',   '->for_version ok' );
-is( $wxg->path, 'F:\padre\wxglade\Dialogs.pl', '->path ok' );
+is( $wxg->path, 'F:\padre\Padre-Plugin-wxGlade\t\sample\Dialogs.pl', '->path ok' );
 
 # Get the list of windows
 my @windows = $wxg->windows;
