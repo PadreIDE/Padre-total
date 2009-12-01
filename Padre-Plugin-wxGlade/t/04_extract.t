@@ -3,7 +3,7 @@
 use 5.006;
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 3;
 use Padre::Plugin::wxGlade ();
 use PPI::Document          ();
 
@@ -19,14 +19,19 @@ isa_ok( $plugin, 'Padre::Plugin::wxGlade' );
 
 
 ######################################################################
-# Processing content with nothing in it
+# Main Tests
 
-SCOPE: {
-	my $input    = test_input();
-	my $expected = test_output();
-	my $output   = $plugin->isolate_package('MyDialog4', $input);
-	is( $output, $expected, '->isolate_package ok' );
-}
+my $input    = test_input();
+my $packages = $plugin->package_list(\$input);
+is_deeply(
+	$packages,
+	[ qw{ MyDialog4 MyFrame } ],
+	'Found expected packages',
+);
+
+my $expected = test_output();
+my $output   = $plugin->isolate_package( \$input, $packages->[0] );
+is( $output, $expected, '->isolate_package ok' );
 
 
 
@@ -207,5 +212,4 @@ sub test_output { <<'END_PERL' }
 	$self->{sizer_4}->Add($self->{sizer_5}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_4});
 	$self->{sizer_4}->Fit($self);
-	$self->Layout;
 END_PERL
