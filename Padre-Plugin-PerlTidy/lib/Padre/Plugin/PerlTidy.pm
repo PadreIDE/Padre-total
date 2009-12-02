@@ -60,7 +60,7 @@ sub _tidy {
 
     # TODO: suppress the senseless warning from PerlTidy
     eval {
-        my $argv = '';
+        my $argv = '-nse -nst';
         Perl::Tidy::perltidy(
             argv        => \$argv,
             source      => \$src,
