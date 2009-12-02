@@ -178,7 +178,7 @@ sub _export {
 
     # TODO: suppress the senseless warning from PerlTidy
     eval {
-        my $argv = '-html -nnn';
+        my $argv = '-html -nnn -nst -nse';
         Perl::Tidy::perltidy(
             argv        => \$argv,
             source      => \$src,
