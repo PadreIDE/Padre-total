@@ -59,7 +59,7 @@ while (1) {
 		system "make";
 		my $file = 'tap.tar.gz';
 		unlink $file;
-		system "prove -ba $file t/ xt/";
+		system "prove --merge -ba $file t/ xt/";
 		system "smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre";
 	} else {
 		print " - skipping\n";
