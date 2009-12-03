@@ -30,8 +30,10 @@ my $help;
 my $sleep;
 my $force;
 my $verbose;
+my $to;
 GetOptions(
 	'path=s'  => \$path,
+	'to=s'    => \$to,
 	'help'    => \$help,
 	'sleep=s' => \$sleep,
 	'force'   => \$force,
@@ -39,6 +41,7 @@ GetOptions(
 ) or usage();
 usage() if $help;
 usage('Needs --path') if not $path;
+usage('Needs --to')   if not $to;
 
 chdir $path;
 open my $fh, '<', 'smoke.conf' or die;
@@ -67,13 +70,13 @@ while (1) {
 		my $rev = svn_revision();
 		if ($rev == $old_rev and not $force) {
 			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
-			$status = "MAJOR FAIL at $rev - could not update";
+			$status = "MAJOR FAIL at r$rev - could not update svn";
 		}
 		if (not $status) {
 			my $make_out = _system("$^X Makefile.PL");
 			if ($make_out =~ /Warning: prerequisite (.*)/) {
 				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
-				$status = "MAJOR FAIL at $rev - missing prereq";
+				$status = "MAJOR FAIL at r$rev - missing prereq";
 			}
 		}
 		if (not $status) {
@@ -84,12 +87,12 @@ while (1) {
 			unlink $file;
 			my $test_out = _system("prove --merge -ba $file t/ xt/");
 			if ($test_out =~ /Result: FAIL/) {
-				$status = "FAIL at $rev";
+				$status = "FAIL at r$rev - testing";
 			}
 			_system("smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev");
 		}
 
-		$status ||= "SUCCESS - $rev";
+		$status ||= "SUCCESS at r$rev";
 		send_message($rev, $status, $output);
 	} else {
 		print " - skipping\n";
@@ -106,8 +109,12 @@ sub svn_revision {
 };
 sub _system {
 	my $cmd = shift;
-	$output .= "\n\n$cmd\n\n";
-	print $cmd if $verbose;
+
+	# Let's not send out the password of the smoke server to the mailing list
+	if ($cmd !~ /--password/) {
+		$output .= "\n\n$cmd\n\n";
+	}
+	print "$cmd\n" if $verbose;
 	my $out = capture_merged { system $cmd; };
 	#print $out if $verbose;
 	$output .= $out;
@@ -118,8 +125,7 @@ sub send_message {
 	my ($rev, $status, $text) = @_;
 	my $msg = MIME::Lite->new(
 		From     => 'svn@perlide.org',
-		#To       => 'padre-commit@perlide.org',
-		To       => 'gabor@perl.org.il',
+		To       => $to,
 		Subject  => "Smoke test $status",
 		Type     => 'multipart/mixed',
 	);
@@ -141,6 +147,7 @@ sub usage {
 
 Usage: $0
        --path PATH/TO/SVN/DIR
+       --to EMAIL                where to send the report (e.g. gabor\@perl.org.il or padre-commit\@perlide.org)
        --help                    this help
        --sleep N                 after each run sleep N and then rerun (without this runs only once)
        --force                   force a build and report even if there were no changes (for the first run only)
