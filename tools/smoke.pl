@@ -59,6 +59,7 @@ while (1) {
 		print " - running\n";
 		#print "status @diff";
 
+		system "make realclean";
 		_system("$SVN up");
 		my $rev = svn_revision();
 		if ($rev == $old_rev and not $force) {
