@@ -4,23 +4,12 @@ use warnings;
 
 # first attempt to build a smoke client for padre
 # install WWW::Mechanize and TAP::Harness::Archive, 
+# install MIME::Lite
 # fetch the smolder_smoke_signal script from the Smolder package
 # and put it in the PATH
-# TODO: check out App-Smolder-Report 
+# TODO: check out App-Smolder-Report or Create Smolder::Client
+# TODO: include the plugins as well in the smoking
 
-# manually check out the svn repository of Padre:
-#   svn co  http://svn.perlide.org/padre/trunk/Padre
-
-# in the new Padre/ directory create file called smoke.conf with
-# put your username and passoworf on http://smolder.plusthree.com/ in the file
-# and make sure they are associated with the Padre project on that smolder installation
-#   username
-#   password
-
-# make sure all the prereqisites are installed
-
-# then you can run this script with --path pointing to the Padre directory
-# provide --sleep 60 if you would like to have the script executed every 60 second
 
 use Capture::Tiny qw(capture_merged);
 use Getopt::Long  qw(GetOptions);
@@ -31,6 +20,7 @@ my $sleep;
 my $force;
 my $verbose;
 my $to;
+my $smolder;
 GetOptions(
 	'path=s'  => \$path,
 	'to=s'    => \$to,
@@ -38,19 +28,22 @@ GetOptions(
 	'sleep=s' => \$sleep,
 	'force'   => \$force,
 	'verbose' => \$verbose,
+	'smolder' => \$smolder,
 ) or usage();
 usage() if $help;
-usage('Needs --path') if not $path;
-usage('Needs --to')   if not $to;
+usage('Needs --path')    if not $path;
+usage('Needs --to')      if not $to;
+usage('Needs --smolder') if not $smolder;
 
 chdir $path;
-open my $fh, '<', 'smoke.conf' or die;
+open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
 my $username = <$fh>;
 my $password = <$fh>;
 chomp $username;
 chomp $password;
 
-my $SVN = 'svn';
+my $SVN  = 'svn';
+my $MAKE = $^O =~ /Win32/i ? 'dmake' : 'make';
 
 my $output;
 while (1) {
@@ -76,11 +69,13 @@ while (1) {
 			my $make_out = _system("$^X Makefile.PL");
 			if ($make_out =~ /Warning: prerequisite (.*)/) {
 				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
+				$output = "\n\nThere might be more missing\n";
 				$status = "MAJOR FAIL at r$rev - missing prereq";
+				# TODO, list al the missing prereqs
 			}
 		}
 		if (not $status) {
-			_system("make");
+			_system($MAKE);
 		}
 		if (not $status) {
 			my $file = 'tap.tar.gz';
@@ -89,7 +84,7 @@ while (1) {
 			if ($test_out =~ /Result: FAIL/) {
 				$status = "FAIL at r$rev - testing";
 			}
-			_system("smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev");
+			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev");
 			$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
@@ -153,6 +148,28 @@ Usage: $0
        --sleep N                 after each run sleep N and then rerun (without this runs only once)
        --force                   force a build and report even if there were no changes (for the first run only)
        --verbose                 print output to screen
+       --smolder PATH            path to the smolder_smoke_signal script
+
+Setup:
+  Install command line Subversion client.
+  (For windows download it from http://www.collab.net/downloads/subversion/
+   where free registration required)
+  
+  Manually check out the svn repository of Padre:
+  svn co  http://svn.perlide.org/padre/trunk/Padre
+
+  In the new Padre/ directory create file called smoke.conf with
+    your username and password on http://smolder.plusthree.com/ in the file
+  Make sure they are associated with the Padre project on that smolder installation
+   username
+   password
+
+  Make sure all the prereqisites are installed
+
+  Then you can run this script with --path pointing to the Padre directory, 
+  --to being your e-mail 
+  provide --sleep 60 if you would like to have the script executed every 60 second
+
 END
 	exit;
 }
