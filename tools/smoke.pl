@@ -10,7 +10,6 @@ use warnings;
 # TODO: check out App-Smolder-Report or Create Smolder::Client
 # TODO: include the plugins as well in the smoking
 
-
 use Capture::Tiny qw(capture_merged);
 use Getopt::Long  qw(GetOptions);
 use MIME::Lite;
@@ -22,13 +21,13 @@ my $verbose;
 my $to;
 my $smolder;
 GetOptions(
-	'path=s'  => \$path,
-	'to=s'    => \$to,
-	'help'    => \$help,
-	'sleep=s' => \$sleep,
-	'force'   => \$force,
-	'verbose' => \$verbose,
-	'smolder' => \$smolder,
+	 'path=s'    => \$path,
+	 'to=s'      => \$to,
+	 'help'      => \$help,
+	 'sleep=s'   => \$sleep,
+	 'force'     => \$force,
+	 'verbose'   => \$verbose,
+	 'smolder=s' => \$smolder,
 ) or usage();
 usage() if $help;
 usage('Needs --path')    if not $path;
@@ -44,6 +43,7 @@ chomp $password;
 
 my $SVN  = 'svn';
 my $MAKE = $^O =~ /Win32/i ? 'dmake' : 'make';
+my $architecture = $^O;
 
 my $output;
 while (1) {
@@ -63,14 +63,14 @@ while (1) {
 		my $rev = svn_revision();
 		if ($rev == $old_rev and not $force) {
 			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
-			$status = "MAJOR FAIL at r$rev - could not update svn";
+			$status = "FAIL - could not update svn";
 		}
 		if (not $status) {
 			my $make_out = _system("$^X Makefile.PL");
 			if ($make_out =~ /Warning: prerequisite (.*)/) {
 				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
 				$output = "\n\nThere might be more missing\n";
-				$status = "MAJOR FAIL at r$rev - missing prereq";
+				$status = "FAIL - missing prereq";
 				# TODO, list al the missing prereqs
 			}
 		}
@@ -82,14 +82,14 @@ while (1) {
 			unlink $file;
 			my $test_out = _system("prove --merge -ba $file t/ xt/");
 			if ($test_out =~ /Result: FAIL/) {
-				$status = "FAIL at r$rev - testing";
+				$status = "FAIL - testing";
 			}
-			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev");
+			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --architecture $architecture");
 			$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
-		$status ||= "SUCCESS at r$rev";
-		send_message($rev, $status, $output);
+		$status ||= "SUCCESS";
+		send_message($rev, "rev $rev - $architecture - $status", $output);
 	} else {
 		print " - skipping\n";
 	}
@@ -120,7 +120,7 @@ sub _system {
 sub send_message {
 	my ($rev, $status, $text) = @_;
 	my $msg = MIME::Lite->new(
-		From     => 'svn@perlide.org',
+		From     => "$username <svn\@perlide.org>",
 		To       => $to,
 		Subject  => "Smoke test $status",
 		Type     => 'multipart/mixed',
