@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 03
+        url: http://www.catalyzed.org/2009/12/look-at-padre.html
+        title: Look at Padre!
+        comment: by Jay Kuri
       - date: 2009 November 29
         url: http://use.perl.org/~Alias/journal/39962
         title: Some interesting group dynamics in Padre
