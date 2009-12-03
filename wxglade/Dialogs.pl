@@ -95,7 +95,7 @@ sub new {
 	$self->{find_first} = Wx::CheckBox->new($self, -1, _T("Close Window on Hit"), wxDefaultPosition, wxDefaultSize, );
 	$self->{button_find} = Wx::Button->new($self, -1, _T("Find Next"));
 	$self->{button_count} = Wx::Button->new($self, -1, _T("Count All"));
-	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
+	$self->{cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -140,7 +140,7 @@ sub __do_layout {
 	$self->{sizer_2}->Add($line_2, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
 	$self->{button_sizer}->Add($self->{button_find}, 1, 0, 0);
 	$self->{button_sizer}->Add($self->{button_count}, 1, wxLEFT|wxRIGHT, 5);
-	$self->{button_sizer}->Add($self->{button_cancel}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{cancel}, 1, 0, 0);
 	$self->{sizer_2}->Add($self->{button_sizer}, 0, 0, 0);
 	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_1});
@@ -184,7 +184,7 @@ sub new {
 	$self->{replace_all} = Wx::CheckBox->new($self, -1, _T("Replace All"), wxDefaultPosition, wxDefaultSize, );
 	$self->{button_find} = Wx::Button->new($self, -1, _T("Find Next"));
 	$self->{button_replace} = Wx::Button->new($self, -1, _T("Replace"));
-	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
+	$self->{cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -233,7 +233,7 @@ sub __do_layout {
 	$self->{sizer_2}->Add($line_2, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
 	$self->{button_sizer}->Add($self->{button_find}, 1, 0, 0);
 	$self->{button_sizer}->Add($self->{button_replace}, 1, wxLEFT|wxRIGHT, 5);
-	$self->{button_sizer}->Add($self->{button_cancel}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{cancel}, 1, 0, 0);
 	$self->{sizer_2}->Add($self->{button_sizer}, 1, wxEXPAND, 5);
 	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_1});
@@ -270,8 +270,8 @@ sub new {
 
 	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
 	$self->{openurl_text} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
-	$self->{button_ok} = Wx::Button->new($self, wxID_OK, "");
-	$self->{button_cancel} = Wx::Button->new($self, wxID_CANCEL, "");
+	$self->{ok} = Wx::Button->new($self, wxID_OK, "");
+	$self->{cancel} = Wx::Button->new($self, wxID_CANCEL, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -306,8 +306,8 @@ sub __do_layout {
 	$self->{sizer_2}->Add($self->{openurl_text}, 0, wxTOP|wxEXPAND, 5);
 	my $line_1 = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
 	$self->{sizer_2}->Add($line_1, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{button_sizer}->Add($self->{button_ok}, 1, 0, 0);
-	$self->{button_sizer}->Add($self->{button_cancel}, 1, wxLEFT, 5);
+	$self->{button_sizer}->Add($self->{ok}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{cancel}, 1, wxLEFT, 5);
 	$self->{sizer_2}->Add($self->{button_sizer}, 1, wxALIGN_RIGHT, 5);
 	$self->{sizer_1}->Add($self->{sizer_2}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_1});
@@ -346,7 +346,7 @@ sub new {
 	$self->{warning_label} = Wx::StaticText->new($self, -1, _T("See http://padre.perlide.org/ for update information"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
 	$self->{warning_checkbox} = Wx::CheckBox->new($self, -1, _T("Do not show this again"), wxDefaultPosition, wxDefaultSize, );
 	$self->{line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
-	$self->{ok_button} = Wx::Button->new($self, wxID_OK, "");
+	$self->{ok} = Wx::Button->new($self, wxID_OK, "");
 
 	$self->__set_properties();
 	$self->__do_layout();
@@ -378,12 +378,13 @@ sub __do_layout {
 	$self->{sizer_5}->Add($self->{warning_label}, 0, 0, 0);
 	$self->{sizer_5}->Add($self->{warning_checkbox}, 0, wxTOP|wxEXPAND, 5);
 	$self->{sizer_5}->Add($self->{line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
-	$self->{sizer_6}->Add($self->{ok_button}, 0, 0, 0);
+	$self->{sizer_6}->Add($self->{ok}, 0, 0, 0);
 	$self->{sizer_5}->Add($self->{sizer_6}, 1, wxALIGN_CENTER_HORIZONTAL, 5);
 	$self->{sizer_4}->Add($self->{sizer_5}, 1, wxALL|wxEXPAND, 5);
 	$self->SetSizer($self->{sizer_4});
 	$self->{sizer_4}->Fit($self);
 	$self->Layout();
+	$self->Centre();
 
 # end wxGlade
 }
