@@ -43,7 +43,7 @@ chomp $password;
 
 my $SVN  = 'svn';
 my $MAKE = $^O =~ /Win32/i ? 'dmake' : 'make';
-my $architecture = $^O;
+my $platform = $^O;
 
 my $output;
 while (1) {
@@ -84,12 +84,12 @@ while (1) {
 			if ($test_out =~ /Result: FAIL/) {
 				$status = "FAIL - testing";
 			}
-			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --architecture $architecture");
+			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
 			$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
 		$status ||= "SUCCESS";
-		send_message($rev, "rev $rev - $architecture - $status", $output);
+		send_message($rev, "rev $rev - $platform - $status", $output);
 	} else {
 		print " - skipping\n";
 	}
