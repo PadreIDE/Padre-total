@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+# 
+# This script was copied from the Smolder distributin. 
+# Please do not make any changes to this copy!  ~ szabgab
+#
 use strict;
 use warnings;
 use Getopt::Long;
