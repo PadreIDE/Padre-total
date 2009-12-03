@@ -90,6 +90,7 @@ while (1) {
 				$status = "FAIL at r$rev - testing";
 			}
 			_system("smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev");
+			$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
 		$status ||= "SUCCESS at r$rev";
