@@ -22,14 +22,18 @@ use warnings;
 # then you can run this script with --path pointing to the Padre directory
 # provide --sleep 60 if you would like to have the script executed every 60 second
 
-use Getopt::Long qw(GetOptions);
+use Capture::Tiny qw(capture_merged);
+use Getopt::Long  qw(GetOptions);
+use MIME::Lite;
 my $path;
 my $help;
 my $sleep;
+my $force;
 GetOptions(
 	'path=s'  => \$path,
 	'help'    => \$help,
 	'sleep=s' => \$sleep,
+	'force'   => \$force,
 ) or usage();
 usage() if $help;
 usage('Needs --path') if not $path;
@@ -43,30 +47,84 @@ chomp $password;
 
 my $SVN = 'svn';
 
+my $output;
 while (1) {
 	print "\n";
 	print scalar localtime;
+	$output = '';
 
-	my @diff = `$SVN diff -rHEAD`;
+	my $old_rev = svn_revision();
+	my @diff = qx{$SVN diff -rHEAD};
+	my $status = '';
 	
-	if (@diff) {
+	if (@diff or $force) {
 		print " - running\n";
 		#print "status @diff";
 
-		system "$SVN up";
-		system "perl Makefile.PL";
-		# TODO - report if requirements changed and stop running
-		system "make";
-		my $file = 'tap.tar.gz';
-		unlink $file;
-		system "prove --merge -ba $file t/ xt/";
-		system "smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre";
+		_system("$SVN up");
+		my $rev = svn_revision();
+		if ($rev == $old_rev and not $force) {
+			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
+			$status = "MAJOR FAIL at $rev - could not update";
+		}
+		if (not $status) {
+			my $make_out = _system("$^X Makefile.PL");
+			if ($make_out =~ /Warning: prerequisite (.*)/) {
+				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
+				$status = "MAJOR FAIL at $rev - missing prereq";
+			}
+		}
+		if (not $status) {
+			_system("make");
+		}
+		if (not $status) {
+			my $file = 'tap.tar.gz';
+			unlink $file;
+			_system("prove --merge -ba $file t/ xt/");
+			_system("smolder_smoke_signal --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revsion $rev");
+		}
+
+		$status ||= "SUCCESS - $rev";
+		send_message($rev, $status, $output);
 	} else {
 		print " - skipping\n";
 	}
 	last if not $sleep;
 	sleep $sleep;
+	$force = 0;
 }
+
+sub svn_revision { 
+	#my ($rev) = map {/(\d+)/} grep {/^Last Changed Rev:/} qx{$SVN info};
+	my ($rev) = map {/(\d+)/} grep {/^Revision:/} qx{$SVN info};
+	return $rev;
+};
+sub _system {
+	my $cmd = shift;
+	$output .= "\n\n$cmd\n\n";
+	#print $cmd;
+	my $out = capture_merged { system $cmd; };
+	$output .= $out;
+	return $out;
+}
+
+sub send_message {
+	my ($rev, $status, $text) = @_;
+	my $msg = MIME::Lite->new(
+		From     => 'svn@perlide.org',
+		#To       => 'padre-commit@perlide.org',
+		To       => 'gabor@perl.org.il',
+		Subject  => "Smoke test $status",
+		Type     => 'multipart/mixed',
+	);
+	$msg->attach(
+		Type     => 'TEXT',
+		Data     => $text,
+	);
+
+	$msg->send('smtp','mail.perlide.org', Debug => 0 );
+}
+
 
 sub usage {
 	my $msg = shift;
@@ -78,6 +136,8 @@ sub usage {
 Usage: $0
        --path PATH/TO/SVN/DIR
        --help                    this help
+       --sleep N                 after each run sleep N and then rerun (without this runs only once)
+       --force                   force a build and report even if there were no changes (for the first run only)
 END
 	exit;
 }
