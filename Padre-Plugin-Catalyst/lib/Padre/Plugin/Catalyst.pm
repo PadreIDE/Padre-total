@@ -450,7 +450,7 @@ sub on_show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Catalyst");
 	$about->SetDescription( _T('Catalyst support for Padre') . "\n\n"
-		. _T('This system is running Catalyst version ') . $Catalyst::VERSION . "\n"
+		. _T('This system is running Catalyst version') . " $Catalyst::VERSION\n"
 	);
 	$about->SetVersion( $VERSION );
     Class::Unload->unload('Catalyst');
