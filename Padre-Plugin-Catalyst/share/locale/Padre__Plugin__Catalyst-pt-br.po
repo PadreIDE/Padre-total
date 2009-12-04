@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-12 00:52-0300\n"
+"POT-Creation-Date: 2009-12-04 14:56-0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: brazilian portuguese\n"
@@ -10,120 +10,122 @@ msgstr ""
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:48
+#: lib/Padre/Plugin/Catalyst.pm:68
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:67
 msgid "New Catalyst Application"
 msgstr "Novo Aplicativo Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:53
+#: lib/Padre/Plugin/Catalyst.pm:76
 msgid "Create new..."
 msgstr "Criar um novo..."
 
-#: lib/Padre/Plugin/Catalyst.pm:54
+#: lib/Padre/Plugin/Catalyst.pm:79
 msgid "Model"
 msgstr "Modelo"
 
-#: lib/Padre/Plugin/Catalyst.pm:58
+#: lib/Padre/Plugin/Catalyst.pm:87
 msgid "View"
 msgstr "Vista"
 
-#: lib/Padre/Plugin/Catalyst.pm:62
+#: lib/Padre/Plugin/Catalyst.pm:95
 msgid "Controller"
 msgstr "Controlador"
 
-#: lib/Padre/Plugin/Catalyst.pm:68
+#: lib/Padre/Plugin/Catalyst.pm:105
+#: lib/Padre/Plugin/Catalyst/Util.pm:79
 msgid "Start Web Server"
 msgstr "Iniciar Servidor Web"
 
-#: lib/Padre/Plugin/Catalyst.pm:69
+#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst/Util.pm:82
 msgid "Stop Web Server"
 msgstr "Parar Servidor Web"
 
-#: lib/Padre/Plugin/Catalyst.pm:71
+#: lib/Padre/Plugin/Catalyst.pm:120
 msgid "Catalyst Online References"
 msgstr "Referências do Catalyst Online"
 
-#: lib/Padre/Plugin/Catalyst.pm:72
+#: lib/Padre/Plugin/Catalyst.pm:123
 msgid "Beginner's Tutorial"
 msgstr "Tutorial para Iniciantes"
 
-#: lib/Padre/Plugin/Catalyst.pm:73
+#: lib/Padre/Plugin/Catalyst.pm:126
 msgid "Overview"
 msgstr "Visão Geral"
 
-#: lib/Padre/Plugin/Catalyst.pm:76
+#: lib/Padre/Plugin/Catalyst.pm:134
 msgid "1. Introduction"
 msgstr "1. Introdução"
 
-#: lib/Padre/Plugin/Catalyst.pm:79
+#: lib/Padre/Plugin/Catalyst.pm:141
 msgid "2. Catalyst Basics"
 msgstr "2. Catalyst Básico"
 
-#: lib/Padre/Plugin/Catalyst.pm:82
+#: lib/Padre/Plugin/Catalyst.pm:148
 msgid "3. More Catalyst Basics"
 msgstr "3. Mais Catalyst Básico"
 
-#: lib/Padre/Plugin/Catalyst.pm:85
+#: lib/Padre/Plugin/Catalyst.pm:155
 msgid "4. Basic CRUD"
 msgstr "4. CRUD Básico"
 
-#: lib/Padre/Plugin/Catalyst.pm:88
+#: lib/Padre/Plugin/Catalyst.pm:162
 msgid "5. Authentication"
 msgstr "5. Autenticação"
 
-#: lib/Padre/Plugin/Catalyst.pm:91
+#: lib/Padre/Plugin/Catalyst.pm:169
 msgid "6. Authorization"
 msgstr "6. Autorização"
 
-#: lib/Padre/Plugin/Catalyst.pm:94
+#: lib/Padre/Plugin/Catalyst.pm:176
 msgid "7. Debugging"
 msgstr "7. Depurando"
 
-#: lib/Padre/Plugin/Catalyst.pm:97
+#: lib/Padre/Plugin/Catalyst.pm:183
 msgid "8. Testing"
 msgstr "8. Testando"
 
-#: lib/Padre/Plugin/Catalyst.pm:100
+#: lib/Padre/Plugin/Catalyst.pm:190
 msgid "9. Advanced CRUD"
 msgstr "9. CRUD Avançado"
 
-#: lib/Padre/Plugin/Catalyst.pm:103
+#: lib/Padre/Plugin/Catalyst.pm:197
 msgid "10. Appendices"
 msgstr "10. Apêndices"
 
-#: lib/Padre/Plugin/Catalyst.pm:107
+#: lib/Padre/Plugin/Catalyst.pm:205
 msgid "Catalyst Cookbook"
 msgstr "Livro de Receitas do Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst.pm:212
 msgid "Recommended Plugins"
 msgstr "Plugins Recomendados"
 
-#: lib/Padre/Plugin/Catalyst.pm:113
+#: lib/Padre/Plugin/Catalyst.pm:219
 msgid "Catalyst Community Live Support"
 msgstr "Suporte Online da Comunidade Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:116
+#: lib/Padre/Plugin/Catalyst.pm:227
 msgid "Examples"
 msgstr "Exemplos"
 
-#: lib/Padre/Plugin/Catalyst.pm:119
+#: lib/Padre/Plugin/Catalyst.pm:235
 msgid "Catalyst Wiki"
 msgstr "Wiki Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:122
+#: lib/Padre/Plugin/Catalyst.pm:242
 msgid "Catalyst Website"
 msgstr "Site do Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:127
+#: lib/Padre/Plugin/Catalyst.pm:251
 msgid "Update Application Scripts"
 msgstr "Atualizar Script da Aplicação"
 
-#: lib/Padre/Plugin/Catalyst.pm:129
+#: lib/Padre/Plugin/Catalyst.pm:258
 msgid "About"
 msgstr "Sobre"
 
-#: lib/Padre/Plugin/Catalyst.pm:170
+#: lib/Padre/Plugin/Catalyst.pm:307
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -136,17 +138,48 @@ msgstr ""
 "\n"
 "Por favor certifique-se de que o documento ativo faz parte de seu projeto Catalyst."
 
-#: lib/Padre/Plugin/Catalyst.pm:173
+#: lib/Padre/Plugin/Catalyst.pm:310
 msgid "Server not found"
 msgstr "Servidor não encontrado"
 
-#: lib/Padre/Plugin/Catalyst.pm:193
+#: lib/Padre/Plugin/Catalyst.pm:337
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Servidor web parece estar em execução. Iniciar navegador web agora?"
 
-#: lib/Padre/Plugin/Catalyst.pm:194
+#: lib/Padre/Plugin/Catalyst.pm:338
 msgid "Start Web Browser?"
 msgstr "Iniciar Navegador Web?"
+
+#: lib/Padre/Plugin/Catalyst.pm:365
+#, perl-format
+msgid ""
+"Wx::Perl::ProcessStream is version %s which is known to cause problems. Get at least 0.20 by typing\n"
+"cpan Wx::Perl::ProcessStream"
+msgstr ""
+"O Wx::Perl::ProcessStream versão %s é conhecido por causar problemas. Por favor obtenha o 0.20 ou superior digitando\n"
+"cpan Wx::Perl::ProcessStream"
+
+#: lib/Padre/Plugin/Catalyst.pm:419
+#, perl-format
+msgid "Failed to start server via '%s'"
+msgstr "Erro ao iniciar servidor via '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:420
+#: lib/Padre/Plugin/Catalyst/Helper.pm:325
+msgid "Error"
+msgstr "Erro"
+
+#: lib/Padre/Plugin/Catalyst.pm:438
+msgid "Web server stopped successfully."
+msgstr "Servidor web interrompido com sucesso."
+
+#: lib/Padre/Plugin/Catalyst.pm:452
+msgid "Catalyst support for Padre"
+msgstr "Suporte Catalyst para o Padre"
+
+#: lib/Padre/Plugin/Catalyst.pm:453
+msgid "This system is running Catalyst version"
+msgstr "O sistema possui Catalyst versão"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:33
 msgid "Create New Component"
@@ -233,10 +266,6 @@ msgstr "Concluido"
 msgid "Error creating %s. Please check the error output and try again"
 msgstr "Erro criando %s. Por favor verifique a saída do erro e tente novamente"
 
-#: lib/Padre/Plugin/Catalyst/Helper.pm:325
-msgid "Error"
-msgstr "Erro"
-
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:21
 msgid ""
 "To use the Catalyst development tools including catalyst.pl and the\n"
@@ -283,4 +312,8 @@ msgstr "campo não preenchido"
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:107
 msgid "You need to select a base directory"
 msgstr "Você precisa selecionar um diretório base"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:30
+msgid "Catalyst Dev Server"
+msgstr "Servidor Desenv. Catalyst"
 
