@@ -23,9 +23,13 @@ sub new {
 
 	$self->SetSizer($box);
 	Padre::Current->main->bottom->show($self);
+	
+	$self->{output} = $output;
 
-    return $output;
+    return $self;
 }
+
+sub output { return shift->{output} }
 
 sub gettext_label {	return _T('Catalyst Dev Server') }
 

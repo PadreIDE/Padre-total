@@ -289,7 +289,11 @@ sub on_update_script {
 
 sub on_start_server {
     my $self = shift;
-    $self->plugin_enable unless $self->{panel};
+
+    #TODO FIXME: if the user closed the panel,
+    # how do we know? and how do we show it again?
+    # as it is, Padre crashes :(
+	#Padre::Current->main->bottom->show($self->panel);
     
     my $main = Padre->ide->wx->main;
     
@@ -352,7 +356,7 @@ sub run_command {
     my ($self, $command)= (@_);
     
     # clear the panel
-    $self->{panel}->Remove( 0, $self->{panel}->GetLastPosition );
+    $self->panel->output->Remove( 0, $self->panel->output->GetLastPosition );
     
     # If this is the first time a command has been run,
 	# set up the ProcessStream bindings.
@@ -373,7 +377,7 @@ sub run_command {
 		}
 
 		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
-			$self->{panel},
+			$self->panel->output,
 			sub {
 				$_[1]->Skip(1);
 				my $outpanel = $_[0];#->{panel};
@@ -383,7 +387,7 @@ sub run_command {
 			},
 		);
 		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
-			$self->{panel},
+			$self->panel->output,
 			sub {
 				$_[1]->Skip(1);
 				my $outpanel = $_[0];#->{panel};
@@ -394,7 +398,7 @@ sub run_command {
 			},
 		);
 		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
-			$self->{panel},
+			$self->panel->output,
 			sub {
 				$_[1]->Skip(1);
 				$_[1]->GetProcess->Destroy;
@@ -407,7 +411,7 @@ sub run_command {
 	my $process = Wx::Perl::ProcessStream::Process->new( 
 	                           $command, 
 	                           "Run $command", 
-	                           $self->{panel} 
+	                           $self->panel->output
 	            );
 	$self->{server} = $process->Run;
 
@@ -427,6 +431,11 @@ sub run_command {
 
 sub on_stop_server {
     my $self = shift;
+
+    #TODO FIXME: if the user closed the panel,
+    # how do we know? and how do we show it again?
+    # as it is, Padre crashes :(
+	#Padre::Current->main->bottom->show($self->panel);
         
 	if ( $self->{server} ) {
 		my $processid = $self->{server}->GetProcessId();
@@ -435,7 +444,7 @@ sub on_stop_server {
 	}
 	delete $self->{server};
 
-	$self->{panel}->AppendText("\n" . _T('Web server stopped successfully.') . "\n");
+	$self->panel->output->AppendText("\n" . _T('Web server stopped successfully.') . "\n");
 	
     # handle menu graying
     require Padre::Plugin::Catalyst::Util;
@@ -464,6 +473,8 @@ sub plugin_enable {
     require Padre::Plugin::Catalyst::Panel;
     $self->{panel} = Padre::Plugin::Catalyst::Panel->new();
 }
+
+sub panel { return shift->{panel} }
 
 sub plugin_disable {
     require Class::Unload;
