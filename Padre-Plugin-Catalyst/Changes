@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Catalyst
 
 0.06
+    now plugin uses its very own panel (zamolxes' wishlist) 
     updated documentation for better clarification (Philip Potter)
     menu redone with menu_plugins(), allowing us to gray-out menu options
     now "start server" and "stop server" enable/disable each other

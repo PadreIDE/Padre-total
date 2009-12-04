@@ -244,7 +244,6 @@ sub menu_plugins {
             Padre::Wx::launch_browser('http://www.catalystframework.org/');
         },
     );
-
     
     $menu->AppendSeparator;
     Wx::Event::EVT_MENU(
@@ -259,15 +258,6 @@ sub menu_plugins {
         $menu->Append(-1, _T('About')),
         sub { $self->on_show_about },
     );
-
-#    $menu->AppendSeparator;
-#    my $about = $menu->Append( -1, 'About' );
-#    Wx::Event::EVT_MENU(
-#        $main,
-#        $about,
-#        sub { $self->on_show_about },
-#    );
-#    $about->Enable(0);
     
     # Return it and the label for our plug-in
     return ( $self->plugin_name => $menu );   
@@ -298,8 +288,11 @@ sub on_update_script {
 }
 
 sub on_start_server {
+    my $self = shift;
+    $self->plugin_enable unless $self->{panel};
+    
     my $main = Padre->ide->wx->main;
-
+    
 	require File::Spec;
 	require Padre::Plugin::Catalyst::Util;
     my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
@@ -327,7 +320,11 @@ sub on_start_server {
 
     my $perl = Padre::Perl->perl;
     my $command = "$perl " . File::Spec->catfile('script', $server_filename);
-    $main->run_command($command);
+
+    #$main->run_command($command);    
+    # somewhat the same as $main->run_command,
+    # but in our very own panel, and with our own rigs
+    $self->run_command($command);
     
     # restore current dir
     chdir $pwd;
@@ -349,18 +346,96 @@ sub on_start_server {
     return;
 }
 
-sub on_stop_server {
-	# TODO: Make this actually call
-	# Run -> Stop
-	my $main = Padre->ide->wx->main;
-	if ( $main->{command} ) {
-		my $processid = $main->{command}->GetProcessId();
-		kill(9, $processid);
-		#$main->{command}->TerminateProcess;
+
+### run_command() adapted from Padre::Wx::Main's version
+sub run_command {
+    my ($self, $command)= (@_);
+    
+    # clear the panel
+    $self->{panel}->Remove( 0, $self->{panel}->GetLastPosition );
+    
+    # If this is the first time a command has been run,
+	# set up the ProcessStream bindings.
+	unless ($Wx::Perl::ProcessStream::VERSION) {
+		require Wx::Perl::ProcessStream;
+		if ( $Wx::Perl::ProcessStream::VERSION < .20 ) {
+			$self->main->error(
+				sprintf(
+					_T(
+						      'Wx::Perl::ProcessStream is version %s'
+							. ' which is known to cause problems. Get at least 0.20 by typing'
+							. "\ncpan Wx::Perl::ProcessStream"
+					),
+					$Wx::Perl::ProcessStream::VERSION
+				)
+			);
+			return 1;
+		}
+
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDOUT(
+			$self->{panel},
+			sub {
+				$_[1]->Skip(1);
+				my $outpanel = $_[0];#->{panel};
+				$outpanel->style_good;
+				$outpanel->AppendText( $_[1]->GetLine . "\n" );
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_STDERR(
+			$self->{panel},
+			sub {
+				$_[1]->Skip(1);
+				my $outpanel = $_[0];#->{panel};
+				$outpanel->style_neutral;
+				$outpanel->AppendText( $_[1]->GetLine . "\n" );
+
+				return;
+			},
+		);
+		Wx::Perl::ProcessStream::EVT_WXP_PROCESS_STREAM_EXIT(
+			$self->{panel},
+			sub {
+				$_[1]->Skip(1);
+				$_[1]->GetProcess->Destroy;
+				delete $self->{server};
+			},
+		);
 	}
-	delete $main->{command};
-	$main->menu->run->enable;
-	$main->output->AppendText("\nWeb server stopped successfully.\n");
+
+	# Start the command
+	my $process = Wx::Perl::ProcessStream::Process->new( 
+	                           $command, 
+	                           "Run $command", 
+	                           $self->{panel} 
+	            );
+	$self->{server} = $process->Run;
+
+	# Check if we started the process or not
+	unless ( $self->{server} ) {
+
+		# Failed to start the command. Clean up.
+		Wx::MessageBox(
+			sprintf( _T("Failed to start server via '%s'"), $command ),
+			_T("Error"), Wx::wxOK, $self
+		);
+#		$self->menu->run->enable;
+	}
+
+	return;
+}
+
+sub on_stop_server {
+    my $self = shift;
+        
+	if ( $self->{server} ) {
+		my $processid = $self->{server}->GetProcessId();
+		kill(9, $processid);
+		#$self->{server}->TerminateProcess;
+	}
+	delete $self->{server};
+
+	$self->{panel}->AppendText("\nWeb server stopped successfully.\n");
 	
     # handle menu graying
     require Padre::Plugin::Catalyst::Util;
@@ -385,11 +460,18 @@ sub on_show_about {
 	return;
 }
 
+sub plugin_enable {
+    my $self = shift;
+    require Padre::Plugin::Catalyst::Panel;
+    $self->{panel} = Padre::Plugin::Catalyst::Panel->new();
+}
+
 sub plugin_disable {
     require Class::Unload;
     Class::Unload->unload('Padre::Plugin::Catalyst::NewApp');
     Class::Unload->unload('Padre::Plugin::Catalyst::Helper');
     Class::Unload->unload('Padre::Plugin::Catalyst::Util');
+    Class::Unload->unload('Padre::Plugin::Catalyst::Panel');
     Class::Unload->unload('Catalyst');
 }
 
