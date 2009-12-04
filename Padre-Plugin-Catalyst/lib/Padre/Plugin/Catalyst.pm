@@ -435,7 +435,7 @@ sub on_stop_server {
 	}
 	delete $self->{server};
 
-	$self->{panel}->AppendText("\nWeb server stopped successfully.\n");
+	$self->{panel}->AppendText("\n" . _T('Web server stopped successfully.') . "\n");
 	
     # handle menu graying
     require Padre::Plugin::Catalyst::Util;
@@ -449,9 +449,8 @@ sub on_show_about {
 	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Catalyst");
-	$about->SetDescription(
-		  "Initial Catalyst support for Padre\n\n"
-		. "This system is running Catalyst version " . $Catalyst::VERSION . "\n"
+	$about->SetDescription( _T('Catalyst support for Padre') . "\n\n"
+		. _T('This system is running Catalyst version ') . $Catalyst::VERSION . "\n"
 	);
 	$about->SetVersion( $VERSION );
     Class::Unload->unload('Catalyst');
