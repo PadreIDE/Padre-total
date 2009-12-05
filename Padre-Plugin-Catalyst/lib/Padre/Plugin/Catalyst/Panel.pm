@@ -29,21 +29,12 @@ sub new {
 	# the other controls do centralize them (vertically).
 	# Maybe we need a Wx::GridSizer
 	my $top_box    = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	
-#	my $led = Wx::StaticBitmap->new( $self, -1, $self->led('red') );
-	my $led = Wx::StaticBitmap->new( $self, -1, Wx::wxNullBitmap );
-	my $img = $self->led('red');
-	$led->SetBitmap( $img );
-	$top_box->Add( $led );
 
-	# visual led showing server state
-	# TODO
-    #my $led = Wx::StaticBitmap->new( $self, -1, $icon );
-    #$led->SetBitmap( wxNullBitmap );
-    #my $led = $self->led('red');
-#    $led->Refresh;
-    #$top_box->Add($led);
-#    $self->{led} = $led;
+	# visual led showing server state	
+	my $led = Wx::StaticBitmap->new( $self, -1, Wx::wxNullBitmap );
+	$led->SetBitmap( $self->led('red') );
+	$top_box->Add( $led );
+    $self->{led} = $led;
 	
 	# button to toggle server
 	my $button = Wx::Button->new( $self, -1, _T('Start Server') );
@@ -97,6 +88,8 @@ sub toggle_panel {
     
     $self->{checkbox}->Enable($enable);
     $self->{button}->SetLabel( $new_label->[$enable] );
+    
+    $self->{led}->SetBitmap( $self->led( $enable == 1 ? 'red' : 'green' ) );
 }
 
 # dirty hack to allow seamless use of Padre::Wx::Output
