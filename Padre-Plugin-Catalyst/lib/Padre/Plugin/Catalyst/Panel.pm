@@ -41,7 +41,18 @@ sub new {
 	
 	# button to toggle server
 	my $button = Wx::Button->new( $self, -1, _T('Start Server') );
-	Wx::Event::EVT_BUTTON( $self, $button, \&Padre::Plugin::Catalyst::toggle_server );
+	#Wx::Event::EVT_BUTTON( $self, $button, \&Padre::Plugin::Catalyst::toggle_server );
+	Wx::Event::EVT_BUTTON( $self, $button, 
+        sub {
+            my $panel = shift;
+            if ( $panel->{button}->GetLabel eq _T('Start Server') ) {
+                $panel->{main}->on_start_server;
+            }
+            else {
+                $panel->{main}->on_stop_server;
+            }
+        },
+    );
 	$top_box->Add($button);
 	
 	# checkbox to auto-restart
@@ -72,6 +83,15 @@ sub new {
 sub output { return shift->{output} }
 
 sub gettext_label {	return _T('Catalyst Dev Server') }
+
+sub toggle_panel {
+    my ($self, $enable) = (@_);
+    
+    my $new_label = [ _T('Stop Server'), _T('Start Server') ];
+    
+    $self->{checkbox}->Enable($enable);
+    $self->{button}->SetLabel( $new_label->[$enable] );
+}
 
 # dirty hack to allow seamless use of Padre::Wx::Output
 sub bottom { return $_[0] }

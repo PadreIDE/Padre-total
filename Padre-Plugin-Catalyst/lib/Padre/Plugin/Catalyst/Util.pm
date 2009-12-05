@@ -82,8 +82,8 @@ sub toggle_server_menu {
         _T('Stop Web Server')
     );
     if ($menu_start and $menu_stop) {
-        $menu_start->Enable(!$toggle);
-        $menu_stop->Enable($toggle);
+        $menu_start->Enable($toggle);
+        $menu_stop->Enable(!$toggle);
     }
 }
 

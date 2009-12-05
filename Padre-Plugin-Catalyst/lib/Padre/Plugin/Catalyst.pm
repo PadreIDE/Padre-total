@@ -287,31 +287,6 @@ sub on_update_script {
     chdir $pwd;	
 }
 
-sub toggle_server {
-    my $panel = shift;
-    my $self = $panel->{main};
-    
-    # TODO: I'm not happy at all with this logic. If you can
-    # fix this without using an if clause, please fix this.
-    my $toggle = [ _T('Start Server'), _T('Stop Server') ];
-    
-    my ($new_label, $enable, $method);
-    if ( $panel->{button}->GetLabel eq $toggle->[0] ) {
-        $new_label = $toggle->[1];
-        $enable = 0;
-        $method = 'on_start_server';
-    }
-    else {
-        $new_label = $toggle->[0];
-        $enable = 1;
-        $method = 'on_stop_server';        
-    }
-    
-    $panel->{checkbox}->Enable($enable);
-    $panel->{button}->SetLabel( $new_label );
-    $self->$method;
-}
-
 sub on_start_server {
     my $self = shift;
 
@@ -349,6 +324,7 @@ sub on_start_server {
 
     my $perl = Padre::Perl->perl;
     my $command = "$perl " . File::Spec->catfile('script', $server_filename);
+    $command .= ' -r ' if $self->panel->{checkbox}->IsChecked;
 
     #$main->run_command($command);    
     # somewhat the same as $main->run_command,
@@ -359,7 +335,8 @@ sub on_start_server {
     chdir $pwd;
     
     # handle menu graying
-    Padre::Plugin::Catalyst::Util::toggle_server_menu(1);
+    Padre::Plugin::Catalyst::Util::toggle_server_menu(0);
+    $self->panel->toggle_panel(0);
     
     # TODO: actually check whether this is true.
     my $ret = Wx::MessageBox(
@@ -473,7 +450,8 @@ sub on_stop_server {
 	
     # handle menu graying
     require Padre::Plugin::Catalyst::Util;
-    Padre::Plugin::Catalyst::Util::toggle_server_menu(0);
+    Padre::Plugin::Catalyst::Util::toggle_server_menu(1);
+    $self->panel->toggle_panel(1);
 
 	return;
 }
