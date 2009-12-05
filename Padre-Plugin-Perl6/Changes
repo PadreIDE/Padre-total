@@ -1,5 +1,7 @@
 Changes
 
+	Replaced debug called with new TRACE() call
+
 =head1 0.60 2009.9.18
 
 	Depends now on Net::HTTP, HTTP::Status and Archive::Zip
