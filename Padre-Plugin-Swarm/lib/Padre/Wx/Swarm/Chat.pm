@@ -6,7 +6,9 @@ use warnings;
 use Text::Patch ();
 use Params::Util qw{_INSTANCE};
 use Wx::Perl::Dialog::Simple;
+
 use Padre::Current qw{_CURRENT};
+use Padre::Debug;
 use Padre::Wx ();
 use Padre::Config ();
 use Padre::Plugin::Swarm ();
@@ -31,7 +33,7 @@ use Class::XSAccessor
 		'set_task' => 'task',
 	};
                 
-use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
+#use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub new {
 	my $class = shift;
@@ -118,7 +120,7 @@ sub gettext_label {
 
 sub enable {
 	my $self     = shift;
-	Padre::Util::debug( "Enable Chat" );
+	TRACE( "Enable Chat" ) if DEBUG;
 	$self->service->schedule;
 	# Set up the event handler, we will
 	# ->accept_message when the task loop ->post_event($data)
@@ -143,7 +145,7 @@ sub enable {
 
 sub disable {
 	my $self = shift;
-	Padre::Util::debug( 'Disable Chat' );
+	TRACE( 'Disable Chat' ) if DEBUG;
 	my $main = $self->main;
 	my $bottom= $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
@@ -188,7 +190,7 @@ sub accept_message {
 	    $self->accept_promote( $message );
 	}
 	else {
-		warn "Discarded $message" if DEBUG;
+		TRACE("Discarded $message") if DEBUG;
 	}
 }
 
@@ -284,7 +286,7 @@ sub on_text_enter {
 
 sub on_receive_diff {
 	my ($self,$message) = @_;
-	warn "Received diff $message" if DEBUG;
+	TRACE("Received diff $message") if DEBUG;
 
 	my $project = $message->project;
 	my $file = $message->file;
@@ -298,13 +300,13 @@ sub on_receive_diff {
 	my $p_file = $current->filename;
 	$p_file =~ s/^$p_dir//;
 
-	warn "Have current doc $p_file, $p_name" if DEBUG;
+	TRACE("Have current doc $p_file, $p_name") if DEBUG;
 	return unless $p_dir;
 	return unless ( $p_name eq $project );
 
 	# Ignore my own diffs
 	if ( $message->from eq $self->service->identity->nickname ) {
-		warn "Ignore my own diffs" if DEBUG;
+		TRACE("Ignore my own diffs") if DEBUG;
 		return;
 	}
 
@@ -314,15 +316,15 @@ sub on_receive_diff {
 #		sub {},
 #		{ title => 'Swarm Diff' }
 #	);
-	warn "Patching $file in $project" if DEBUG;
-	warn "APPLY PATCH \n" . $diff if DEBUG;
+	TRACE("Patching $file in $project") if DEBUG;
+	TRACE("APPLY PATCH \n" . $diff) if DEBUG;
 	eval {
 		my $result = Text::Patch::patch( $current->text_get , $diff , STYLE=>'Unified' );
 		$editor->SetText( $result );
 	};
 
-	if ( DEBUG ) {
-		warn $@ if $@;
+	if ( $@ ) {
+		TRACE($@) if DEBUG;
 	}
 }
 
@@ -359,7 +361,7 @@ sub on_diff_snippet {
 			CORE::close($fh);
 			system( $external_diff, $filename, $file );
 		} else {
-			warn $! if DEBUG;
+			TRACE($!) if DEBUG;
 		}
 
 		# save current version in a temp directory

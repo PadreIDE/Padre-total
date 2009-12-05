@@ -2,11 +2,15 @@ package Padre::Swarm::Service::Chat;
 
 use strict;
 use warnings;
+
 use Carp qw( croak confess carp );
 use Params::Util qw( _INSTANCE _CLASSISA _INVOCANT);
 use Data::Dumper ();
+
 require JSON::XS;
 use Time::HiRes ();
+
+use Padre::Debug;
 use Padre::Plugin::Swarm ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
@@ -23,7 +27,7 @@ use Class::XSAccessor
 		set_transport => 'transport',
 	};
 
-use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
+#use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub marshal {
 	JSON::XS->new
@@ -39,14 +43,14 @@ sub service_name { 'chat' };
 
 sub start { 
 	my $self = shift;
-	Padre::Util::debug('Starting chat service');
+	TRACE('Starting chat service') if DEBUG;
 	my $config = Padre::Config->read;
 
 	$self->_attach_transports;
-	Padre::Util::debug('Chat transports attached');  
-	Padre::Util::debug( $self->transport );
+	TRACE('Chat transports attached') if DEBUG;
+	TRACE( $self->transport ) if DEBUG;
 
-	Padre::Util::debug('Channels subscribed');
+	TRACE('Channels subscribed') if DEBUG;
 	$self->transport->start; 
 	#Time::HiRes::sleep(0.5); # QUACKERY.. socket construction?
 	$self->queue->enqueue(
@@ -66,18 +70,18 @@ sub start {
 
 sub service_loop {
 	my ($self,$message) = @_;
-	Padre::Util::debug("Service [$self] loop!\n") ;
+	TRACE("Service [$self] loop!\n") if DEBUG;
 	my $queue = $self->queue;
-	#Padre::Util::debug("\t$queue " . $queue->pending , $/);
+	#TRACE("\t$queue " . $queue->pending , $/) if DEBUG;
 	if ( _INSTANCE( $message, 'Padre::Swarm::Message' ) ){
-		warn "Chat send $message" if DEBUG;
+		TRACE("Chat send $message") if DEBUG;
 		$self->send( $message );
 	} elsif( _INSTANCE( $message, 'Padre::Swarm::Message::Diff' ) ) {
 		$self->send( $message );
 	}
 
 	if ( my @ready =  $self->transport->poll(0.5) ) {
-		Padre::Util::debug("Transport has ready = " . @ready );
+		TRACE("Transport has ready = " . @ready ) if DEBUG;
 		my @messages;
 		foreach ( @ready ) {
 			push @messages, $self->transport->receive_from_channel($_);
@@ -91,7 +95,7 @@ sub service_loop {
 				$self->marshal->decode( $payload );
 			};
 			unless ( $message ) {
-				warn "Decode failed for $payload \n\t - with $@" if DEBUG;
+				TRACE("Decode failed for $payload \n\t - with $@") if DEBUG;
 				next;
 			}
 
@@ -99,8 +103,8 @@ sub service_loop {
 				for keys %$frame;
 
 			eval { $self->receive( $message ) };
-			if ( DEBUG ) {
-				warn "FAILED receive $@" if $@;
+			if ( $@ ) {
+				TRACE("FAILED receive $@") if DEBUG;
 			}
 		}
 	}
@@ -108,7 +112,7 @@ sub service_loop {
 
 sub shutdown {
         my $self = shift;
-        Padre::Util::debug( 'Requested shutdown of service' );
+        TRACE( 'Requested shutdown of service' ) if DEBUG;
         return unless $self->running;
         $self->transport->shutdown;
 }
@@ -154,7 +158,7 @@ sub send {
 	my ($self, $message) = @_;
 
 	if ( _INSTANCE($message, 'Padre::Swarm::Message') ) {
-		warn Dumper $message if DEBUG;
+		TRACE(Dumper $message) if DEBUG;
 		unless ( $message->from ) {
 			my $nickname = $self->identity->nickname;
 			$message->from( $self->identity->nickname );

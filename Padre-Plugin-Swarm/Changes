@@ -2,6 +2,7 @@ Changes for Perl extension Padre-Plugin-Swarm
 0.05 in progress
 	- chat text restyled
 	- chat accept message type 'promote' 
+	- Replaced debug called with new TRACE() call
 0.04 - Wed Nov  4 17:36:05 EST 2009
 	- test updates
 	- version boilerplate (BRAMBLE) 
