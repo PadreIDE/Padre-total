@@ -3,9 +3,12 @@ package Padre::Plugin::WebGUI::Assets;
 use 5.008;
 use strict;
 use warnings;
+
 use Padre::Current ();
+use Padre::Debug;
 use Padre::Util    ();
 use Padre::Wx      ();
+
 use base 'Wx::TreeCtrl';
 
 # generate fast accessors
@@ -144,12 +147,12 @@ sub build_asset_tree {
 
     my $assets = $response->content;
 
-    # Padre::Util::debug($assets);
+    # TRACE($assets) if DEBUG;
 
     use JSON;
     $assets = eval { from_json($assets) };
     if ($@) {
-        Padre::Util::debug($@);
+        TRACE($@) if DEBUG;
         $self->main->error("The server sent an invalid response, please try again (and check the logs)");
         return;
     }
@@ -176,7 +179,7 @@ sub edit_asset {
 
     # Fall-back to generic 'asset' mime-type
     $mimetype = "application/x-webgui-asset" unless $registered_documents{$mimetype};
-    Padre::Util::debug("Using mimetype: $mimetype for $item->{className}");
+    TRACE("Using mimetype: $mimetype for $item->{className}") if DEBUG;
     $doc->set_mimetype($mimetype);
 
     # Rebless

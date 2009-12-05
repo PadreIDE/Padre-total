@@ -3,7 +3,9 @@ package Padre::Plugin::WebGUI;
 use 5.008;
 use strict;
 use warnings;
+
 use base 'Padre::Plugin';
+use Padre::Debug;
 use Padre::Util ('_T');
 use Padre::Plugin::WebGUI::Assets;
 
@@ -70,7 +72,7 @@ sub plugin_directory_share {
 sub plugin_enable {
     my $self = shift;
 
-    Padre::Util::debug('Enabling Padre::Plugin::WebGUI');
+    TRACE('Enabling Padre::Plugin::WebGUI') if DEBUG;
 
     # workaround Padre bug
     my %registered_documents = $self->registered_documents;
@@ -91,7 +93,7 @@ sub plugin_enable {
 sub plugin_disable {
     my $self = shift;
 
-    Padre::Util::debug('Disabling Padre::Plugin::WebGUI');
+    TRACE('Disabling Padre::Plugin::WebGUI') if DEBUG;
 
     if ( my $asset_tree = $self->{asset_tree} ) {
         $self->main->right->hide($asset_tree);
