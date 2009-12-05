@@ -65,6 +65,7 @@ while (1) {
 		if ($rev == $old_rev and not $force) {
 			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
 			$status = "FAIL - could not update svn";
+			next; # Let's not send an e-mail now
 		}
 		if (not $status) {
 			my $make_out = _system("$^X Makefile.PL");
@@ -94,6 +95,7 @@ while (1) {
 	} else {
 		print " - skipping\n";
 	}
+} continue {
 	last if not $sleep;
 	sleep $sleep;
 	$force = 0;
