@@ -475,6 +475,9 @@ sub plugin_enable {
     my $self = shift;
     require Padre::Plugin::Catalyst::Panel;
     $self->{panel} = Padre::Plugin::Catalyst::Panel->new($self);
+    
+    require Padre::Plugin::Catalyst::Outline;
+    $self->{outline} = Padre::Plugin::Catalyst::Outline->new($self);
 }
 
 sub panel { return shift->{panel} }
