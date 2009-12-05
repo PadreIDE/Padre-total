@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use Cwd                    ();
+use Padre::Debug;
 use Padre::HelpProvider    ();
 use Padre::DocBrowser::POD ();
 use Padre::Pod2HTML        ();
@@ -40,7 +41,7 @@ sub help_init {
 			$cnt++;
 			if ($line =~ /=item\s+(\.\w+)/) {
 				if ($topic) {
-					Padre::Util::debug($topic);
+					TRACE($topic) if DEBUG;
 					$item{end} = $cnt - 1;
 					push @{ $index{$topic} }, { %item };
 				}
@@ -66,7 +67,7 @@ sub help_init {
 				$cnt++;
 				if ($line =~ /=item\s+B<(\w+)>/) {
 					if ($topic) {
-						Padre::Util::debug($topic);
+						TRACE($topic) if DEBUG;
 						$item{end} = $cnt - 1;
 						push @{ $index{$topic} }, { %item };
 					}
@@ -98,9 +99,9 @@ sub help_render {
 	my ( $self, $topic ) = @_;
 	my ( $html, $location );
 
-	Padre::Util::debug("render '$topic'");
+	TRACE("render '$topic'") if DEBUG;
 	#use Data::Dumper;
-	#Padre::Util::debug(Dumper $self->{pir});
+	#TRACE(Dumper $self->{pir}) if DEBUG;
 	return if not $self->{pir}->{$topic};
 	my $pod;
 	# TODO read the files only once!?
@@ -113,9 +114,9 @@ sub help_render {
 						$x->{end} ];
 		}
 	}
-	Padre::Util::debug($pod);
+	TRACE($pod) if DEBUG;
 	$html = Padre::Pod2HTML->pod2html( $pod );
-	Padre::Util::debug($html);
+	TRACE($html) if DEBUG;
 		# Render using perldoc pseudo code package
 		#my $pod      = Padre::DocBrowser::POD->new;
 		#my $doc      = $pod->resolve( $topic, $hints );

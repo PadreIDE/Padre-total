@@ -3,8 +3,10 @@ package Padre::Document::PIR;
 use 5.008;
 use strict;
 use warnings;
+
 use Carp ();
 use Params::Util '_INSTANCE';
+use Padre::Debug;
 use Padre::Document ();
 use Padre::Util     ();
 use Padre::Constant;
@@ -17,14 +19,14 @@ sub colorize {
 	my ( $self, $first ) = @_;
 
 	my $doc = Padre::Current->document;
-	Padre::Util::debug( __PACKAGE__ . " colorize called (self: $self) (doc: $doc)" );
+	TRACE( __PACKAGE__ . " colorize called (self: $self) (doc: $doc)" ) if DEBUG;
 
 	$doc->remove_color;
 
 	my $editor = $doc->editor;
-	Padre::Util::debug('done');
+	TRACE('done') if DEBUG;
 	my $text = $doc->text_get;
-	Padre::Util::debug("text to colorize: $text");
+	TRACE("text to colorize: $text") if DEBUG;
 
 	#	my @lines = split /\n/, $text;
 	#	foreach my $line (@lines) {
@@ -46,7 +48,7 @@ sub colorize {
 			my $end    = pos($text);
 			my $length = length($&);
 			my $start  = $end - $length;
-			Padre::Util::debug("start: $start, length: $length, end: $end");
+			TRACE("start: $start, length: $length, end: $end") if DEBUG;
 			$editor->StartStyling( $start, $color );
 			$editor->SetStyling( $length, $color );
 		}
