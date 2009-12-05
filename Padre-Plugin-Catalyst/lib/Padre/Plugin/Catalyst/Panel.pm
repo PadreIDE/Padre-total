@@ -30,6 +30,12 @@ sub new {
 	# Maybe we need a Wx::GridSizer
 	my $top_box    = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	
+#	my $led = Wx::StaticBitmap->new( $self, -1, $self->led('red') );
+	my $led = Wx::StaticBitmap->new( $self, -1, Wx::wxNullBitmap );
+	my $img = $self->led('red');
+	$led->SetBitmap( $img );
+	$top_box->Add( $led );
+
 	# visual led showing server state
 	# TODO
     #my $led = Wx::StaticBitmap->new( $self, -1, $icon );
