@@ -287,6 +287,31 @@ sub on_update_script {
     chdir $pwd;	
 }
 
+sub toggle_server {
+    my $panel = shift;
+    my $self = $panel->{main};
+    
+    # TODO: I'm not happy at all with this logic. If you can
+    # fix this without using an if clause, please fix this.
+    my $toggle = [ _T('Start Server'), _T('Stop Server') ];
+    
+    my ($new_label, $enable, $method);
+    if ( $panel->{button}->GetLabel eq $toggle->[0] ) {
+        $new_label = $toggle->[1];
+        $enable = 0;
+        $method = 'on_start_server';
+    }
+    else {
+        $new_label = $toggle->[0];
+        $enable = 1;
+        $method = 'on_stop_server';        
+    }
+    
+    $panel->{checkbox}->Enable($enable);
+    $panel->{button}->SetLabel( $new_label );
+    $self->$method;
+}
+
 sub on_start_server {
     my $self = shift;
 
@@ -471,7 +496,7 @@ sub on_show_about {
 sub plugin_enable {
     my $self = shift;
     require Padre::Plugin::Catalyst::Panel;
-    $self->{panel} = Padre::Plugin::Catalyst::Panel->new();
+    $self->{panel} = Padre::Plugin::Catalyst::Panel->new($self);
 }
 
 sub panel { return shift->{panel} }
