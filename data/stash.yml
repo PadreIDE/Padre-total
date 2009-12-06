@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 03
+        url: http://perlwannabe.vox.com/library/post/padre-051-is-on-the-way-to-cpan.html
+        title: Padre 0.51 is on the way to CPAN.
+        comment: A new release of Padre!
       - date: 2009 December 6
         url: http://szabgab.com/blog/2009/12/1260086317.html
         title: Promoting Padre using Social networks
