@@ -7,10 +7,14 @@ our $VERSION = '0.01';
 
 use Padre::Wx ();
 use Padre::Current;
+use Padre::Constant ();
 
 use base 'Padre::Plugin';
 
-use Win32::GuiTest qw(:ALL);
+BEGIN {
+	# Trying to use this on Linux crashes the module loading
+	eval 'use Win32::GuiTest qw(:ALL)' if Padre::Constant::WIN32;
+}
 
 =head1 NAME
 

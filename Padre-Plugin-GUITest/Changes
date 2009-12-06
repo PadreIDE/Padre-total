@@ -1,4 +1,7 @@
 
+v0.02 to be released
+    - Use Win32 modules only on Win32 (SEWI)
+
 v0.01
     First version released to the already suspicious world.
 
