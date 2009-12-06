@@ -29,7 +29,7 @@
 			<Contact_Email/>
 		</Contact_Info>
 		<Support_Info>
-			<Sales_Email/></Sales_Email>
+			<Sales_Email/>
 			<Support_Email>padre-dev@perlide.org</Support_Email>
 			<General_Email>padre-dev@perlide.org</General_Email>
 			<Sales_Phone/>
