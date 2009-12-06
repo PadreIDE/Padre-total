@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 6
+        url: http://szabgab.com/blog/2009/12/1260086317.html
+        title: Promoting Padre using Social networks
+        comment: by Gábor Szabó
       - date: 2009 December 03
         url: http://www.catalyzed.org/2009/12/look-at-padre.html
         title: Look at Padre!
