@@ -2,6 +2,9 @@
 <!--
      See http://www.asp-shareware.org/pad/padfaq.php 
      file based on http://www.asp-shareware.org/padinfo/padgen.xml
+     List of sites using Pad files: http://padsites.asp-shareware.org/
+
+     2009.12.06 Submitted to http://www.softpedia.com/user/submit.shtml
 -->
 <XML_DIZ_INFO>
 	<!--
@@ -87,7 +90,7 @@
 			<Application_Order_URL/>
 			<Application_Screenshot_URL>http://padre.perlide.org/screenshots.html</Application_Screenshot_URL>
 			<Application_Icon_URL>http://padre.perlide.org/static/logo.png</Application_Icon_URL>
-			<Application_XML_File_URL/>
+			<Application_XML_File_URL>http://padre.perlide.org/pad.xml</Application_XML_File_URL>
 		</Application_URLs>
 		<Download_URLs>
 			<Primary_Download_URL>http://padre.perlide.org/download.html</Primary_Download_URL>
