@@ -9,6 +9,7 @@ Revision history for Padre-Plugin-DataWalker
 	- Spanish (brunov)
 	- Brazilian Portuguese (garu)
   - actually install the translations (RSN)
+  - Removed warning due to missing () (SEWI)
 
 0.01    2009-03-19
   - Initial version
