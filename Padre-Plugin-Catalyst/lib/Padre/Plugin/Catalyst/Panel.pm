@@ -20,20 +20,15 @@ sub new {
 	Scalar::Util::weaken($self->{main});
 
     # main container
-	my $box        = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	my $box = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	
 	# top box, holding buttons, icons and checkboxes
-	
-	#TODO FIXME: the top bar is too big, it would be nice to
-	# make it fit just the size of the button, and vertically align
-	# the other controls do centralize them (vertically).
-	# Maybe we need a Wx::GridSizer
-	my $top_box    = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	my $top_box = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 
 	# visual led showing server state	
 	my $led = Wx::StaticBitmap->new( $self, -1, Wx::wxNullBitmap );
 	$led->SetBitmap( $self->led('red') );
-	$top_box->Add( $led );
+	$top_box->Add( $led, 0, Wx::wxALIGN_CENTER_VERTICAL );
     $self->{led} = $led;
 	
 	# button to toggle server
@@ -50,20 +45,21 @@ sub new {
             }
         },
     );
-	$top_box->Add($button);
+	$top_box->Add($button, 0, Wx::wxALIGN_CENTER_VERTICAL);
 	
 	# checkbox to auto-restart
 	my $checkbox = Wx::CheckBox->new($self, -1, _T('auto-restart'));
 	Wx::Event::EVT_CHECKBOX( $self, $checkbox, sub { shift->{config}->{auto_restart} ^= 1 } );
-	$top_box->Add( $checkbox );
+	$top_box->Add( $checkbox, 0, Wx::wxALIGN_CENTER_VERTICAL );
 	
 	# finishing up the top_box
-	$box->Add( $top_box, 1, Wx::wxGROW );
+	#$box->Add( $top_box, 1, Wx::wxGROW );
+	$box->Add( $top_box, 0, Wx::wxALIGN_LEFT | Wx::wxALIGN_CENTER_VERTICAL );
 
     # output panel for server
     require Padre::Wx::Output;
     my $output = Padre::Wx::Output->new($self);
-	$box->Add( $output, 2, Wx::wxGROW );
+	$box->Add( $output, 1, Wx::wxGROW );
 
     # wrapping it up and showing on the screen
 	$self->SetSizer($box);
