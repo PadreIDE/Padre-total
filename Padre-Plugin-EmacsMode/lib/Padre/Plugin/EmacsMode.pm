@@ -141,7 +141,7 @@ sub show_about {
   $about->SetCopyright(Wx::gettext("Copyright 2009 Aaron Trevena"));
 
   # Only Unix/GTK native about box supports websites
-  if ( Padre::Util::WXGTK ) {
+  if ( Padre::Util::WXGTK() ) {
     $about->SetWebSite("http://padre.perlide.org/");
   }
 
