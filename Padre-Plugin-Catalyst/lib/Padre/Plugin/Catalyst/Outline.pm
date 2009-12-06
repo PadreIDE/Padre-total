@@ -15,9 +15,10 @@ our $VERSION = '0.06';
 sub new {
 	my $class = shift;
 	my $plugin  = shift;
+	my $main = Padre::Current->main;
 	
 	my $self  = $class->SUPER::new(
-		Padre::Current->main->right,
+		$main->right,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
@@ -41,8 +42,9 @@ sub new {
 		}
 	);
 
-#	$self->Hide;
-    $self->Show;
+	$self->Hide;
+#    $self->Show;
+    $main->right->show($self);    
 
 	return $self;
 }
