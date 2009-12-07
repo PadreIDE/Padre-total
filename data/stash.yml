@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 07
+        url: http://padre-ide.de/blog/?p=69
+        title: The Padre 0.51 story
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 December 03
         url: http://perlwannabe.vox.com/library/post/padre-051-is-on-the-way-to-cpan.html
         title: Padre 0.51 is on the way to CPAN.
@@ -923,6 +927,10 @@ about:
   - title: German
     ISO_639: de
     events:
+      - date: 2009 December 07
+        url: http://padre-ide.de/blog/?p=66
+        title: Deutsche Padre 0.51 Releasemeldung
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 November 15
         url: http://padre-ide.de/blog/?p=56
         title: Test-Tutorial (am Beispiel von t/94-padre-file-remote.t)
