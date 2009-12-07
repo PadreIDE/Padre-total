@@ -14,8 +14,10 @@ keybindings and commands
 use strict;
 use warnings;
 use Padre::Util;
+use Padre::Plugin;
 
 use base qw(Padre::Plugin);
+our @ISA     = 'Padre::Plugin';
 
 our $VERSION = '0.18';
 
