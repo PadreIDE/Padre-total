@@ -591,15 +591,21 @@ Version 0.07
 
 =head1 SYNOPSIS
 
-B<WARNING: CODE IN PROGRESS>
-
 	cpan install Padre::Plugin::Catalyst;
 
 Then use it via L<Padre>, The Perl IDE.
 
+=head1 IDEAS WANTED!
+
+How can this Plugin further improve your Catalyst development experience? Please let us know! We are always looking for new ideas and wishlists on how to improve it even more, so drop us a line via email, RT or by joining us via IRC in #padre, right at irc.perl.org (if you are using Padre, you can do this by choosing 'Help->Live Support->Padre Support').
+
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu (Plugins->Catalyst) with the following options:
+As all Padre plugins, after installation you need to enable it via "Plugins->Plugin Manager".
+
+Once you enable it, you should see a 'Catalyst Dev Server' panel on the bottom of your screen (probably next to your 'output' tab). This panel lets you start/stop your application's development server, and also set the auto-restart option for the server to reload itself whenever you change your application's modules or configuration files.
+
+You'll also get a brand new menu (Plugins->Catalyst) with the following options:
 
 =head2 'New Catalyst Application'
 
@@ -625,7 +631,7 @@ Of course, the available components are:
 
 This option will automatically spawn your application's development web server. Once it's started, it will ask to open your default web browser to view your application running.
 
-Note that this works like Padre's "run" menu option, so any other execution it will be disabled while your server is running.
+The server output should appear in your "Catalyst Dev Server" panel.
 
 =head2 'Stop Web Server'
 
@@ -635,9 +641,13 @@ This option will stop the development web server for you.
 
 This menu option contains a series of external reference links on Catalyst. Clicking on each of them will point your default web browser to their websites.
 
+=head2 'Update Application Scripts'
+
+This option lets you update your application's scripts, upgrading it to a new version of Catalyst (if available)
+
 =head2 'About'
 
-Shows a nice about box with this module's name and version.
+Shows a nice about box with this module's name and version, as well as your installed Catalyst version.
 
 =head1 TRANSLATIONS
 
@@ -655,7 +665,7 @@ This plugin has been translated to the folowing languages (alfabetic order):
 
 =item French (JQUELIN)
 
-=item German (Sebastian Willing)
+=item German (SEWI)
 
 =item Japanese (ISHIGAKI)
 
