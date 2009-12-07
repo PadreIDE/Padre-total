@@ -264,6 +264,89 @@ sub menu_plugins {
 }
 
 
+sub event_on_context_menu {
+    my ($self, $document, $editor, $menu, $event) = (@_);
+    
+	my $pos;
+	if ( $event->isa("Wx::MouseEvent") ) {
+		my $point = $event->GetPosition();
+		if ( $point != Wx::wxDefaultPosition ) {
+
+			# Then it is really a mouse event...
+			# On Windows, context menu is faked
+			# as a Mouse event
+			$pos = $editor->PositionFromPoint($point);
+		}
+	}
+
+	# Fall back to the cursor position if necessary
+    $pos = $editor->GetCurrentPos()	unless ($pos);
+
+    my $template = _get_template($editor, $pos);
+    if ($template) {
+        $menu->AppendSeparator;
+        my $item = $menu->Append( -1, 
+            sprintf(_T("Open Template '%s'"), $template),
+        );
+        Wx::Event::EVT_MENU(
+            $self->main,
+            $item,
+            sub { \&_open_template(shift, $template) },
+        );    
+    }
+    
+}
+
+sub _open_template {
+    my ($main, $template) = (@_);
+    
+    require File::Spec;
+    require File::Find;
+    require Padre::Plugin::Catalyst::Util;
+    
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+    my $template_dir = File::Spec->catdir( $project_dir, 'root' );
+    
+    my @files;
+    File::Find::find(
+        sub {
+            if($File::Find::name =~ /$template$/ ) {
+                push @files, $File::Find::name;
+            }
+        }, $template_dir
+    );
+    
+    unless (@files) {
+        Wx::MessageBox(
+            sprintf(_T("Template '%s' not found in '%s'"),
+            $template, $template_dir
+            ), _T('Error'), Wx::wxOK, $main);   
+    }
+    
+    # if we get over one result, we default to the
+    # shortest path
+    my $file = shift @files;
+    foreach (@files) {
+        $file = $_ if length($file) > length($_);
+    }
+    $main->setup_editors($file);
+}
+
+sub _get_template {
+    my ($editor, $pos) = (@_);
+    
+    my $line = $editor->LineFromPosition($pos);
+    my $line_start   = $editor->PositionFromLine($line);
+	my $line_end     = $editor->GetLineEndPosition($line);
+	my $cursor_col   = $pos - $line_start;
+	my $line_content = $editor->GetTextRange( $line_start, $line_end );
+	
+	#TODO: improve template detection
+	if ($line_content =~ /([\/\w]+\.tt\d?)/ ) {
+	    return $1;
+	}
+}
+
 sub on_update_script {
     my $main = Padre->ide->wx->main;
 
