@@ -651,7 +651,7 @@ Shows a nice about box with this module's name and version, as well as your inst
 
 =head1 TRANSLATIONS
 
-This plugin has been translated to the folowing languages (alfabetic order):
+This plugin has been translated to the folowing languages (alphabetic order):
 
 =over 4
 
