@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-04 14:56-0200\n"
+"POT-Creation-Date: 2009-12-07 01:41-0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -128,7 +128,22 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:307
+#: lib/Padre/Plugin/Catalyst.pm:289
+#, perl-format
+msgid "Open Template '%s'"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:321
+#, perl-format
+msgid "Template '%s' not found in '%s'"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:323 lib/Padre/Plugin/Catalyst.pm:509
+#: lib/Padre/Plugin/Catalyst/Helper.pm:325
+msgid "Error"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst.pm:394
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -137,19 +152,19 @@ msgid ""
 "Please make sure the active document is from your Catalyst project."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:310
+#: lib/Padre/Plugin/Catalyst.pm:397
 msgid "Server not found"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:337
+#: lib/Padre/Plugin/Catalyst.pm:426
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:338
+#: lib/Padre/Plugin/Catalyst.pm:427
 msgid "Start Web Browser?"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:365
+#: lib/Padre/Plugin/Catalyst.pm:454
 #, perl-format
 msgid ""
 "Wx::Perl::ProcessStream is version %s which is known to cause problems. Get "
@@ -157,24 +172,20 @@ msgid ""
 "cpan Wx::Perl::ProcessStream"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:419
+#: lib/Padre/Plugin/Catalyst.pm:508
 #, perl-format
 msgid "Failed to start server via '%s'"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:420 lib/Padre/Plugin/Catalyst/Helper.pm:325
-msgid "Error"
-msgstr ""
-
-#: lib/Padre/Plugin/Catalyst.pm:438
+#: lib/Padre/Plugin/Catalyst.pm:532
 msgid "Web server stopped successfully."
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:452
+#: lib/Padre/Plugin/Catalyst.pm:547
 msgid "Catalyst support for Padre"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:453
+#: lib/Padre/Plugin/Catalyst.pm:548
 msgid "This system is running Catalyst version"
 msgstr ""
 
@@ -299,6 +310,23 @@ msgstr ""
 msgid "You need to select a base directory"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:30
+#: lib/Padre/Plugin/Catalyst/Outline.pm:102
+msgid "Catalyst"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:35 lib/Padre/Plugin/Catalyst/Panel.pm:40
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Start Server"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:51
+msgid "auto-restart"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:78
 msgid "Catalyst Dev Server"
+msgstr ""
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Stop Server"
 msgstr ""
