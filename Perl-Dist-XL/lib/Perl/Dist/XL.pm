@@ -63,7 +63,7 @@ as only that is available in 8.04.3
   cd Perl-Dist-XL
   perl script/perldist_xl.pl --download 
   perl script/perldist_xl.pl --clean
-  perl script/perldist_xl.pl --build
+  perl script/perldist_xl.pl --build all
 
 TODO: set perl version number (and allow command line option to configure it)
 
@@ -128,6 +128,8 @@ sub run {
 	$self->build_wx    if $self->{build}{wx};
 	$self->install_modules($self->padre_modules) if $self->{build}{padre};
 
+
+
 	# TODO: run some tests
 	$self->create_zip  if $self->{zip};
 	# TODO: unzip and in some other place and run some more tests
@@ -183,6 +185,10 @@ sub configure_cpan {
 	#	copy $from, $to;
 	#}
 	copy "$self->{cwd}/share/files/mycpan.pl.tmpl", "$self->{perl_install_dir}/bin/mycpan.pl";
+
+	# TODO: make this a template, replace perl version number in file!
+	copy "$self->{cwd}/share/files/padre.sh", "$self->{perl_install_dir}/bin/padre.sh";
+	chmod 0755, "$self->{perl_install_dir}/bin/padre.sh";
 	my $from = "$self->{cwd}/share/files/Config.pm.tmpl";
 	my $to   = "$self->{perl_install_dir}/.cpan/CPAN/Config.pm";
 	mkpath "$self->{perl_install_dir}/.cpan/CPAN/";
