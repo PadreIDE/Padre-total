@@ -7,7 +7,7 @@ use strict;
 use Padre::Util   ('_T');
 use Padre::Perl;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name { 'Catalyst' }
@@ -583,11 +583,11 @@ sub plugin_disable {
 __END__
 =head1 NAME
 
-Padre::Plugin::Catalyst - Simple Catalyst helper interface for Padre
+Padre::Plugin::Catalyst - Catalyst helper interface for Padre
 
 =head1 VERSION
 
-Version 0.04
+Version 0.07
 
 =head1 SYNOPSIS
 

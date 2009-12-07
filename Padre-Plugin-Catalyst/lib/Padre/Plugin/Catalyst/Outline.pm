@@ -9,7 +9,7 @@ use Wx;
 
 use base 'Wx::TreeCtrl';
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 
 sub new {
