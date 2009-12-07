@@ -1,7 +1,7 @@
 package Perl::Dist::XL;
 use strict;
 use warnings;
-use 5.010;
+use 5.008;
 
 use Cwd            qw(cwd);
 use CPAN::Mini     ();
@@ -44,11 +44,19 @@ and start running Padre.
 
 TODO: create snapsshots at the various steps of the build process so
       we can restart from there
+
+TODO: eliminate the need for Module::Install or reduce the dependency to 0.68 
+as only that is available in 8.04.3
      
+=head2 Building on Ubuntu 8.04.3
+
+  sudo aptitude install subversion libfile-homedir-perl libmodule-install-perl 
+  sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev g++
+
 =head2 Building on Ubuntu 9.10
 
   sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
-  sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev
+  sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev g++
 
 
   svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
