@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-04 14:56-0200\n"
+"POT-Creation-Date: 2009-12-07 01:41-0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: brazilian portuguese\n"
@@ -125,7 +125,23 @@ msgstr "Atualizar Script da Aplicação"
 msgid "About"
 msgstr "Sobre"
 
-#: lib/Padre/Plugin/Catalyst.pm:307
+#: lib/Padre/Plugin/Catalyst.pm:289
+#, perl-format
+msgid "Open Template '%s'"
+msgstr "Abrir Template '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:321
+#, perl-format
+msgid "Template '%s' not found in '%s'"
+msgstr "Template '%s' não encontrado em '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:323
+#: lib/Padre/Plugin/Catalyst.pm:509
+#: lib/Padre/Plugin/Catalyst/Helper.pm:325
+msgid "Error"
+msgstr "Erro"
+
+#: lib/Padre/Plugin/Catalyst.pm:394
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -138,19 +154,19 @@ msgstr ""
 "\n"
 "Por favor certifique-se de que o documento ativo faz parte de seu projeto Catalyst."
 
-#: lib/Padre/Plugin/Catalyst.pm:310
+#: lib/Padre/Plugin/Catalyst.pm:397
 msgid "Server not found"
 msgstr "Servidor não encontrado"
 
-#: lib/Padre/Plugin/Catalyst.pm:337
+#: lib/Padre/Plugin/Catalyst.pm:426
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Servidor web parece estar em execução. Iniciar navegador web agora?"
 
-#: lib/Padre/Plugin/Catalyst.pm:338
+#: lib/Padre/Plugin/Catalyst.pm:427
 msgid "Start Web Browser?"
 msgstr "Iniciar Navegador Web?"
 
-#: lib/Padre/Plugin/Catalyst.pm:365
+#: lib/Padre/Plugin/Catalyst.pm:454
 #, perl-format
 msgid ""
 "Wx::Perl::ProcessStream is version %s which is known to cause problems. Get at least 0.20 by typing\n"
@@ -159,25 +175,20 @@ msgstr ""
 "O Wx::Perl::ProcessStream versão %s é conhecido por causar problemas. Por favor obtenha o 0.20 ou superior digitando\n"
 "cpan Wx::Perl::ProcessStream"
 
-#: lib/Padre/Plugin/Catalyst.pm:419
+#: lib/Padre/Plugin/Catalyst.pm:508
 #, perl-format
 msgid "Failed to start server via '%s'"
 msgstr "Erro ao iniciar servidor via '%s'"
 
-#: lib/Padre/Plugin/Catalyst.pm:420
-#: lib/Padre/Plugin/Catalyst/Helper.pm:325
-msgid "Error"
-msgstr "Erro"
-
-#: lib/Padre/Plugin/Catalyst.pm:438
+#: lib/Padre/Plugin/Catalyst.pm:532
 msgid "Web server stopped successfully."
 msgstr "Servidor web interrompido com sucesso."
 
-#: lib/Padre/Plugin/Catalyst.pm:452
+#: lib/Padre/Plugin/Catalyst.pm:547
 msgid "Catalyst support for Padre"
 msgstr "Suporte Catalyst para o Padre"
 
-#: lib/Padre/Plugin/Catalyst.pm:453
+#: lib/Padre/Plugin/Catalyst.pm:548
 msgid "This system is running Catalyst version"
 msgstr "O sistema possui Catalyst versão"
 
@@ -313,7 +324,25 @@ msgstr "campo não preenchido"
 msgid "You need to select a base directory"
 msgstr "Você precisa selecionar um diretório base"
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:30
+#: lib/Padre/Plugin/Catalyst/Outline.pm:102
+msgid "Catalyst"
+msgstr "Catalyst"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:35
+#: lib/Padre/Plugin/Catalyst/Panel.pm:40
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Start Server"
+msgstr "Iniciar Servidor"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:51
+msgid "auto-restart"
+msgstr "auto-reiniciar"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:78
 msgid "Catalyst Dev Server"
 msgstr "Servidor Desenv. Catalyst"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Stop Server"
+msgstr "Parar Servidor"
 
