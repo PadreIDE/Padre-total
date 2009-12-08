@@ -430,7 +430,9 @@ sub svn_commit {
 	my $main = Padre->ide->wx->main;
 	my $file = svn_file($path);
 
-	if (( ! defined($file)) or ($file == 0)){
+# 	== 0 seems to produce false errors here
+#	if (( ! defined($file)) or ($file == 0)){
+	if ( ! defined($file)){
 		$main->error(Wx::gettext('Unable to find SVN file!'),Wx::gettext('Error - SVN Commit'));
 		return;
 	}
