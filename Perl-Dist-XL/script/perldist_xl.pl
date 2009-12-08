@@ -23,6 +23,7 @@ GetOptions(\%conf,
 	'help',
 	'build=s@',
 	'zip',
+	'devperl',
 	) or usage();
 usage() if $conf{help};
 #usage("need --download or --clean")
@@ -48,6 +49,9 @@ Usage: $0
        --clean         removes build files
        --build [perl|cpan|wx|padre|all]   where 'all' indicated all the others as well
        --zip           create the zip file
+
+       --devperl       given this flag we will use the latest development version of perl
+                       without this flag the latest stable version. (5.11.2 vs 5.10.1)
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
 

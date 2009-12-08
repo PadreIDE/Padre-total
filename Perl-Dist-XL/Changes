@@ -1,6 +1,7 @@
 
-
-	eliminate existing PERL5LIB= in run time
+v0.02
+	Eliminate existing PERL5LIB= in run time
+	Allow both stable and development releases of perl
 
 v0.01 2009.12.07
 	First version released publicly

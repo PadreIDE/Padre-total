@@ -15,6 +15,8 @@ use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.02';
 
+sub perl_version { return $_[0]->{devperl} ? '5.11.2' : '5.10.1'; }
+
 =head1 NAME
 
 Perl::Dist::XL - Perl distribution for Linux
@@ -48,7 +50,11 @@ TODO: create snapsshots at the various steps of the build process so
 
 TODO: eliminate the need for Module::Install or reduce the dependency to 0.68 
 as only that is available in 8.04.3
-     
+
+TODO: list the actual versions of CPAN modules used and add this list to distributed perl
+
+TODO: allow the (optional) use of the development version of wxWidgets
+
 =head2 Building on Ubuntu 8.04.3 or 9.10
 
   sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
@@ -220,7 +226,6 @@ sub process_template {
 	return;
 }
 
-sub perl_version { return '5.10.1'; }
 sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.gz'; }
 sub all_modules {
 	my ($self) = @_;
@@ -481,7 +486,6 @@ sub get_other {
 	my ($self) = @_;
 
 	my $perl = $self->perl_file;
-	# TODO: allow building with development version as well 5.11.2
 	my @resources = (
 		"http://www.cpan.org/src/$perl",
 		'http://prdownloads.sourceforge.net/wxwindows/wxWidgets-2.8.10.tar.gz',
@@ -535,7 +539,6 @@ sub get_cpan {
 		}
 		foreach my $module (keys %modules) {
 			if ($path =~ m{/$module-\d}) {
-				# TODO cache names and skip if it as already seen?
 				#print "Mirror: $path\n";
 				return $seen{$path} = 0;
 			}
