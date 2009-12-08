@@ -14,6 +14,7 @@ use File::Path     qw(rmtree mkpath);
 use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.02';
+my $perl_version = '5.10.1';
 
 =head1 NAME
 
@@ -49,16 +50,10 @@ TODO: create snapsshots at the various steps of the build process so
 TODO: eliminate the need for Module::Install or reduce the dependency to 0.68 
 as only that is available in 8.04.3
      
-=head2 Building on Ubuntu 8.04.3
-
-  sudo aptitude install subversion libfile-homedir-perl libmodule-install-perl 
-  sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev g++
-
-=head2 Building on Ubuntu 9.10
+=head2 Building on Ubuntu 8.04.3 or 9.10
 
   sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
   sudo aptitude install libcpan-mini-perl perl-doc libgtk2.0-dev g++
-
 
   svn co http://svn.perlide.org/padre/trunk/Perl-Dist-XL/
   cd Perl-Dist-XL
@@ -185,10 +180,18 @@ sub configure_cpan {
 	#	debug("copy '$from', '$to'");
 	#	copy $from, $to;
 	#}
-	copy "$self->{cwd}/share/files/mycpan.pl.tmpl", "$self->{perl_install_dir}/bin/mycpan.pl";
+
+	process_template (
+		"$self->{cwd}/share/files/mycpan.pl.tmpl", 
+		"$self->{perl_install_dir}/bin/mycpan.pl",
+	);
 
 	# TODO: make this a template, replace perl version number in file!
-	copy "$self->{cwd}/share/files/padre.sh.tmpl", "$self->{perl_install_dir}/bin/padre.sh";
+	process_template (
+		"$self->{cwd}/share/files/padre.sh.tmpl",
+		"$self->{perl_install_dir}/bin/padre.sh",
+		PERL_VERSION => $perl_version,
+	);
 	chmod 0755, "$self->{perl_install_dir}/bin/padre.sh";
 
 	process_template(
@@ -218,7 +221,7 @@ sub process_template {
 	return;
 }
 
-sub perl_file { return 'perl-5.10.1.tar.gz'; }
+sub perl_file { return "perl-${perl_version}.tar.gz"; }
 sub all_modules {
 	my ($self) = @_;
 	my $pm = $self->padre_modules;
