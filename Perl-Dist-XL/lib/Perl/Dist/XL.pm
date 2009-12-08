@@ -156,6 +156,7 @@ sub build_perl {
 
 	chdir $self->{perl_source_dir};
 	my $cmd = "sh Configure -Dusethreads -Duserelocatableinc -Dprefix='$self->{perl_install_dir}' -de";
+	$cmd .= " -Dusedevel" if $self->{devperl};
 	_system($cmd);
 	_system("make");
 	_system("make test");
@@ -238,6 +239,7 @@ sub all_modules {
 sub wx_modules {
 	return [
 		['YAML'    => '0'],
+		['YAML::Tiny'               => '1.39'],
 		['ExtUtils::CBuilder'       => '0.24'],
 		['Alien::wxWidgets'         => '0.46'],
 	];
@@ -342,7 +344,6 @@ sub padre_modules {
 		['Pod::Perldoc'             => '3.15'],
 		['Storable'                 => '2.20'],
 		['URI'                      => '1.38'],
-		['YAML::Tiny'               => '1.39'],
 		['Text::FindIndent'         => '0.03'],
 		['pip'                      => '0.13'],
 		['Class::MOP'               => '0.94'],
@@ -394,7 +395,9 @@ sub install_modules {
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
 		#my $cmd0 = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
 		my $cmd0 = 'mycpan.pl';
-		my $cmd = "$self->{perl_install_dir}/bin/perl $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
+		my $PERL = "$self->{perl_install_dir}/bin/perl";
+		$PERL .= $self->perl_version if $self->{devperl};
+		my $cmd = "$PERL $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
 		debug("system $cmd");
 		_system($cmd);
 		# check for
