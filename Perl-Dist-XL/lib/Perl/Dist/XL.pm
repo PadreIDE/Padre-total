@@ -14,7 +14,6 @@ use File::Path     qw(rmtree mkpath);
 use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.02';
-my $perl_version = '5.10.1';
 
 =head1 NAME
 
@@ -190,7 +189,7 @@ sub configure_cpan {
 	process_template (
 		"$self->{cwd}/share/files/padre.sh.tmpl",
 		"$self->{perl_install_dir}/bin/padre.sh",
-		PERL_VERSION => $perl_version,
+		PERL_VERSION => $self->perl_version,
 	);
 	chmod 0755, "$self->{perl_install_dir}/bin/padre.sh";
 
@@ -221,7 +220,8 @@ sub process_template {
 	return;
 }
 
-sub perl_file { return "perl-${perl_version}.tar.gz"; }
+sub perl_version { return '5.10.1'; }
+sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.gz'; }
 sub all_modules {
 	my ($self) = @_;
 	my $pm = $self->padre_modules;
@@ -254,7 +254,7 @@ sub padre_modules {
 		['Test::Base'        => '0.59'],
 		['Devel::Refactor'          => '0.05'],
 		['Sub::Uplevel'             => '0.2002'],
-		#['Moose'  => '0'],
+		['Moose'  => '0'],
 		#['Array::Compare'           => '1.17'],
 		['Data::Compare'            => '1.2101'],
 		['File::chmod'              => '0.32'],
@@ -375,6 +375,8 @@ sub padre_modules {
 		['Wx::Perl::ProcessStream'  => '0.11'],
 		['Padre'                    => '0.38'],
 
+		['Padre::Plugin::Perl6'     => '0'],
+
 	];
 }
 
@@ -429,7 +431,7 @@ sub dir_build { return "$_[0]->{dir}/build"; }
 
 sub release_name {
 	my ($self) = @_;
-	my $perl = substr(perl_file(), 0, -7);
+	my $perl = substr($self->perl_file(), 0, -7);
 	return "$perl-xl-$VERSION";
 }
 sub _system {
@@ -461,50 +463,36 @@ sub clean {
 Downloading the source code of perl, the CPAN modules
 and in the future also wxwidgets
 
-See get_perl and get_cpan for the actual code.
+See get_other and get_cpan for the actual code.
 
 =cut
 
 sub download {
 	my ($self) = @_;
 
-	$self->get_perl;
 	$self->get_cpan;
 	$self->get_other;
 
 	return;
 }
 
-sub get_perl {
-	my ($self) = @_;
-	debug("Downloading perl");
-	my $dir = $self->dir;
-	my $url = 'http://www.cpan.org/src';
-	# TODO: allow building with development version as well 5.11.2
-	my $perl = $self->perl_file;
-	my $local = "$dir/src/$perl";
-	if (not -e $local) {
-		debug("Getting $url/$perl");
-		mirror("$url/$perl", $local);
-	} else {
-		debug("Skipped");
-	}
-	die "Could not find $local\n" if not -e $local;
-
-	return;
-}
 
 sub get_other {
 	my ($self) = @_;
 
+	my $perl = $self->perl_file;
+	# TODO: allow building with development version as well 5.11.2
 	my @resources = (
+		"http://www.cpan.org/src/$perl",
 		'http://prdownloads.sourceforge.net/wxwindows/wxWidgets-2.8.10.tar.gz',
+
 	);
-	my $dir = $self->dir . "/src";
+
+	my $src = $self->dir . "/src";
 	foreach my $url (@resources) {
 		my $filename = (split "/", $url)[-1];
-		debug("getting $url to   $dir/$filename");
-		mirror($url, "$dir/$filename"); 
+		debug("getting $url to   $src/$filename");
+		mirror($url, "$src/$filename"); 
 	}
 	return;
 }
