@@ -6,6 +6,7 @@ use 5.008;
 use Cwd            qw(cwd);
 use CPAN::Mini     ();
 use Data::Dumper   qw(Dumper);
+use File::Basename qw(dirname);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
 use File::Path     qw(rmtree mkpath);
@@ -189,14 +190,28 @@ sub configure_cpan {
 	# TODO: make this a template, replace perl version number in file!
 	copy "$self->{cwd}/share/files/padre.sh.tmpl", "$self->{perl_install_dir}/bin/padre.sh";
 	chmod 0755, "$self->{perl_install_dir}/bin/padre.sh";
-	my $from = "$self->{cwd}/share/files/Config.pm.tmpl";
-	my $to   = "$self->{perl_install_dir}/.cpan/CPAN/Config.pm";
-	mkpath "$self->{perl_install_dir}/.cpan/CPAN/";
+
+	process_template(
+		"$self->{cwd}/share/files/Config.pm.tmpl",
+		"$self->{perl_install_dir}.cpan/CPAN/Config.pm",
+
+		URL => 'file://' . $self->minicpan,
+	);
+}
+
+sub process_template {
+	my ($from, $to, %map) = @_;
+	
+	mkpath dirname($to);
 	open my $in,  '<', $from  or die "Could not open source '$from' $!";
 	open my $out, '>', $to    or die "Could not open target '$to' $!";
-	my $minicpan = $self->minicpan;
-	my @lines = map { s{URL}{file://$minicpan}; $_} <$in>;
-	print $out @lines;
+	local $/ = undef;
+	my $content = <$in>;
+	foreach my $k (sort {length $b <=> length $a} keys %map) {
+		$content =~ s{$k}{$map{$k}}g; 
+	}
+	print $out $content;
+
 	close $in;
 	close $out;
 
