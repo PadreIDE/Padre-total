@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 08
+        url: http://padre-ide.de/blog/?p=72
+        title: How to debug Padre (or other Perl projects)
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 December 07
         url: http://padre-ide.de/blog/?p=69
         title: The Padre 0.51 story
