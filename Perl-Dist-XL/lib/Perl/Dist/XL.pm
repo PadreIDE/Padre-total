@@ -187,7 +187,7 @@ sub configure_cpan {
 	copy "$self->{cwd}/share/files/mycpan.pl.tmpl", "$self->{perl_install_dir}/bin/mycpan.pl";
 
 	# TODO: make this a template, replace perl version number in file!
-	copy "$self->{cwd}/share/files/padre.sh", "$self->{perl_install_dir}/bin/padre.sh";
+	copy "$self->{cwd}/share/files/padre.sh.tmpl", "$self->{perl_install_dir}/bin/padre.sh";
 	chmod 0755, "$self->{perl_install_dir}/bin/padre.sh";
 	my $from = "$self->{cwd}/share/files/Config.pm.tmpl";
 	my $to   = "$self->{perl_install_dir}/.cpan/CPAN/Config.pm";
