@@ -14,7 +14,6 @@ use Getopt::Long qw(GetOptions);
 use lib "$FindBin::Bin/../lib";
 use Perl::Dist::XL;
 
-usage() if not @ARGV;
 my %conf;
 GetOptions(\%conf, 
 	'clean',
@@ -26,12 +25,12 @@ GetOptions(\%conf,
 	'perl=s',
 	) or usage();
 usage() if $conf{help};
-usage('--perl is required') if not $conf{perl};
-#usage("need --download or --clean")
-#	if not $conf{download} 
-#	and not $conf{clean}
-#	and not $conf{build}
-#	and not $conf{zip};
+usage('--perl is required') if not $conf{perl} or ($conf{perl} ne 'stable' and $conf{perl} ne 'dev');
+usage("need one of theses: --download, --clean, --build or --zip")
+	if not $conf{download} 
+	and not $conf{clean}
+	and not $conf{build}
+	and not $conf{zip};
 #die Dumper \%conf;
 
 my $p = Perl::Dist::XL->new(%conf);
