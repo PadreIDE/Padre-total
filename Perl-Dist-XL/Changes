@@ -1,5 +1,8 @@
 
-v0.02
+v0.03
+
+
+v0.02 2009.12.08
 	Eliminate existing PERL5LIB= in run time
 	Allow both stable and development releases of perl
 

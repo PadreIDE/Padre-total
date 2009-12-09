@@ -10,10 +10,10 @@ use File::Basename qw(dirname);
 use File::Copy     qw(copy);
 use File::HomeDir  ();
 use File::Path     qw(rmtree mkpath);
-#use File::Temp     qw(tempdir);
+use File::Temp     qw(tempdir);
 use LWP::Simple    qw(getstore mirror);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub perl_version { return $_[0]->{perl} eq 'dev' ? '5.11.2' : '5.10.1'; }
 
@@ -54,6 +54,9 @@ as only that is available in 8.04.3
 TODO: list the actual versions of CPAN modules used and add this list to distributed perl
 
 TODO: allow the (optional) use of the development version of wxWidgets
+
+TODO: fetch the list of modules installed from 
+      $self->{perl_install_dir}/lib/$perl_version/i686-linux-thread-multi/perllocal.pod
 
 =head2 Building on Ubuntu 8.04.3 or 9.10
 
@@ -230,10 +233,12 @@ sub process_template {
 sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.gz'; }
 sub all_modules {
 	my ($self) = @_;
-	my $pm = $self->padre_modules;
-	my $wx = $self->wx_modules;
+	my @all;
+	push @all, @{ $self->padre_modules };
+	push @all, @{ $self->padre_prereqs };
+	push @all, @{ $self->wx_modules    };
 
-	return [ @$pm, @$wx];
+	return \@all;
 }
 
 sub wx_modules {
@@ -242,15 +247,22 @@ sub wx_modules {
 		['YAML::Tiny'               => '1.39'],
 		['ExtUtils::CBuilder'       => '0.24'],
 		['Alien::wxWidgets'         => '0.46'],
+
+		#['Module::Signature'        => '0'],  # optional Module::Build prereq
+		#['Pod::Readme'              => '0'],  # optional Module::Build prereq
+		['Module::Build'            => '0.35'],
 	];
 }
-#sub padre_modules {
-#	return [ 
-#		['Padre'             => '0'],
-#	];
-#}
+#sub wx_prereqs
 
 sub padre_modules {
+	return [
+		['Capture::Tiny'            => '0.06'],
+		['Padre'                    => '0.38'],
+		['Padre::Plugin::Perl6'     => '0'],
+	];
+}
+sub padre_prereqs {
 	return [ 
 		['CPAN::Inject' =>  '0.07'],
 		['LWP::Online'  =>  '1.06'],
@@ -379,10 +391,6 @@ sub padre_modules {
 		['ExtUtils::XSpp'           => '0'],
 		['Wx'                       => '0.91'],
 		['Wx::Perl::ProcessStream'  => '0.11'],
-		['Padre'                    => '0.38'],
-
-		['Padre::Plugin::Perl6'     => '0'],
-
 	];
 }
 
@@ -390,18 +398,23 @@ sub install_modules {
 	my ($self, $modules) = @_;
 
 	foreach my $m (@$modules) {
+		print "Installing $m->[0]\n";
 		local $ENV{PATH} = "$self->{perl_install_dir}/bin:$ENV{PATH}";
 		local $ENV{HOME} = $self->{perl_install_dir};
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
-		#my $cmd0 = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
 		my $cmd0 = 'mycpan.pl';
 		my $PERL = "$self->{perl_install_dir}/bin/perl";
 		$PERL .= $self->perl_version if $self->{perl} ne 'stable';
 		my $cmd = "$PERL $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
-		debug("system $cmd");
-		_system($cmd);
-		# check for
-		# Result: FAIL
+		my $out = _system($cmd);
+		if ($out =~ /Result: FAIL/) {
+			print $out;
+			exit;
+		}
+		if ($out =~ /Warning: no success downloading /) {
+			print $out;
+			exit;
+		}
 	}
 }
 
@@ -443,9 +456,22 @@ sub release_name {
 	return "$perl-xl-$VERSION";
 }
 sub _system {
-	my @args = @_;
-	debug(join " ", @args);
-	system(@args) == 0 or die "system failed with $?\n";
+	my $cmd = shift;
+	debug("system: $cmd");
+	my $tempdir = tempdir(CLEANUP => 1);
+	my $error = system("$cmd >  $tempdir/out 2>&1");
+
+	my $out;
+	if (open my $fh, '<', "$tempdir/out") {
+		local $/= undef;
+		$out = <$fh>;
+	}
+ 	if ($error) {
+		print $out;
+		die "\nsystem failed with $?\n";
+	}
+
+	return $out;
 }
 
 sub debug {
@@ -542,7 +568,7 @@ sub get_cpan {
 		}
 		foreach my $module (keys %modules) {
 			if ($path =~ m{/$module-\d}) {
-				#print "Mirror: $path\n";
+				print "Mirror: $path\n";
 				return $seen{$path} = 0;
 			}
 		}
