@@ -582,15 +582,14 @@ sub plugin_disable {
 
 sub editor_changed {
     my $self = shift;
+    my $document = $self->main->current->document || return;
 
-    return; # TODO: remove this line as soon as the following are working.
-
-    my $document = undef; # TODO: Fill with the current document
-    
     $document->{menu} = [] if (!defined($document->{menu})) or (ref($document->{menu}) ne 'ARRAY');
-    $document ->{menu} = [grep (!/^menu\.catalyst$/,@{$document->{menu}}) ];
-    if (my $document_is_from_catalyst_project) {
-        push @{$document->{menu}},'menu.catalyst';
+    $document->{menu} = [grep (!/^menu\.Catalyst$/,@{$document->{menu}}) ];
+
+    require Padre::Plugin::Catalyst::Util;
+    if (Padre::Plugin::Catalyst::Util::in_catalyst_project($document->filename)) {
+        push @{$document->{menu}}, 'menu.Catalyst';
     }
 }
 

@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
+use Params::Util '_INSTANCE';
+use Padre::Current '_CURRENT';
 
 our $VERSION = '0.51';
 our @ISA     = 'Padre::Wx::Menu';
@@ -56,10 +58,13 @@ sub refresh {
 
 	# Disable document-specific entries if we are in a Perl project
 	# but not in a Perl document.
-	$self->{beginner_check}->Enable($perl);
+# FIXME: the two commands below crash unless they are defined. Should they
+# ALWAYS be defined or should we leave them like so? (garu)
+	$self->{beginner_check}->Enable($perl) if defined $self->{beginner_check};
 
 	# Apply config-driven state
-	$self->{autocomplete_brackets}->Check( $config->autocomplete_brackets );
+	$self->{autocomplete_brackets}->Check( $config->autocomplete_brackets )
+        if defined $self->{autocomplete_brackets};
 
 	return;
 }
