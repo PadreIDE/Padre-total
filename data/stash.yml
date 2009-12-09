@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 09
+        url: http://www.catalystframework.org/calendar/2009/9
+        title: Developing Catalyst Applications with Padre
+        comment: by garu on the Catalyst Advent Calendar
       - date: 2009 December 08
         url: http://padre-ide.de/blog/?p=72
         title: How to debug Padre (or other Perl projects)
