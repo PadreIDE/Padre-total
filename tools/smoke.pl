@@ -71,7 +71,7 @@ while (1) {
 			my $make_out = _system("$^X Makefile.PL");
 			if ($make_out =~ /Warning: prerequisite (.*)/) {
 				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
-				$output = "\n\nThere might be more missing\n";
+				$output .= "\n\nThere might be more missing\n";
 				$status = "FAIL - missing prereq";
 				# TODO, list al the missing prereqs
 			}
