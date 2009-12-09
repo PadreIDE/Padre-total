@@ -562,6 +562,7 @@ sub plugin_enable {
 # TODO: Please uncomment this to test the Catalyst side-panel
 #    require Padre::Plugin::Catalyst::Outline;
 #    $self->{outline} = Padre::Plugin::Catalyst::Outline->new($self);
+
 }
 
 sub panel { return shift->{panel} }
@@ -578,6 +579,21 @@ sub plugin_disable {
     Class::Unload->unload('Padre::Plugin::Catalyst::Panel');
     Class::Unload->unload('Catalyst');
 }
+
+sub editor_changed {
+    my $self = shift;
+
+    return; # TODO: remove this line as soon as the following are working.
+
+    my $document = undef; # TODO: Fill with the current document
+    
+    $document->{menu} = [] if (!defined($document->{menu})) or (ref($document->{menu}) ne 'ARRAY');
+    $document ->{menu} = [grep (!/^menu\.catalyst$/,@{$document->{menu}}) ];
+    if (my $document_is_from_catalyst_project) {
+        push @{$document->{menu}},'menu.catalyst';
+    }
+}
+
 
 42;
 __END__
