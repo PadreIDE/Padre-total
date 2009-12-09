@@ -58,6 +58,28 @@ TODO: allow the (optional) use of the development version of wxWidgets
 TODO: fetch the list of modules installed from 
       $self->{perl_install_dir}/lib/$perl_version/i686-linux-thread-multi/perllocal.pod
 
+
+=head2 Plan 2
+
+1) Full Mini-CPAN mirror + Perl + wxWidgets
+
+2) build Perl
+
+3) Configure CPAN client
+
+4a) Install Alien::wxWidgets
+
+4b) Install Wx
+
+4c) Install Padre
+
+Install Plugins: Perl 6, Catalyst
+
+
+
+
+
+
 =head2 Building on Ubuntu 8.04.3 or 9.10
 
   sudo aptitude install subversion vim libfile-homedir-perl libmodule-install-perl 
@@ -249,8 +271,14 @@ sub wx_modules {
 		['Alien::wxWidgets'         => '0.46'],
 
 		#['Module::Signature'        => '0'],  # optional Module::Build prereq
-		#['Pod::Readme'              => '0'],  # optional Module::Build prereq
+		['Regexp::Common'           => '0'],  # prereq of Pod::Readme
+		['Pod::Readme'              => '0'],  # optional Module::Build prereq
 		['Module::Build'            => '0.35'],
+
+
+		['Module::ScanDeps'       => '0.96'], # prereq of Module::Install
+		['JSON'                   => '2.16'], # prereq of Module::Install
+		['Module::Install'        => '0.91'],
 	];
 }
 #sub wx_prereqs
@@ -259,11 +287,33 @@ sub padre_modules {
 	return [
 		['Capture::Tiny'            => '0.06'],
 		['Padre'                    => '0.38'],
-		['Padre::Plugin::Perl6'     => '0'],
+
+		['Padre::Plugin::Perl6'     => '0.60'],
+#		['Padre::Plugin::Catalyst'  => '0'],
 	];
 }
 sub padre_prereqs {
 	return [ 
+
+		['Perl6::Refactor'          => '0'], # prereqs of Perl6 plugin
+		['Perl6::Doc'               => '0.45'],
+		['App::Grok'                => '0'],
+		['grok'                     => '0.19'],
+		['Perl6::Perldoc::To::Ansi' => '0'],
+		['Perl6::Perldoc'           => '0'],
+		['Pod::Text::Ansi'          => '0.04'],
+		['IO::Interactive'          => '0'],
+		['YAML::Syck'               => '0'],
+		['Log::Trace'               => '1.070'],
+		['Scope::Guard'             => '0'],
+		['Sub::Exporter'            => '0'],
+		['Test::Assertions'         => '1.054'],
+		['Test::Assertions::TestScript' => '0'],
+		['Pod::Xhtml'               => '1.59'],
+		['Syntax::Highlight::Perl6' => '0'],
+
+
+
 		['CPAN::Inject' =>  '0.07'],
 		['LWP::Online'  =>  '1.06'],
 		['LWP::Simple'  => '0'],
@@ -283,9 +333,11 @@ sub padre_prereqs {
 		['Test::Tester'             => '0'],
 		['Test::NoWarnings'         => '0'],
 		['Test::Deep'               => '0'],
+		['IO::stringy'              => '0'], # needed by IO::Scalar ??
 		['IO::Scalar'               => '2.110'],
 		['File::Next'               => '1.02'],
 		['App::Ack'                 => '1.86'],
+		['ack'                      => '1.86'],  # ack is the name of the package, App::Ack is the name of module
 		['Class::Adapter'           => '1.05'],
 		['Class::Inspector'         => '1.24'],
 		['Class::Unload'            => '0.03'],
@@ -398,7 +450,7 @@ sub install_modules {
 	my ($self, $modules) = @_;
 
 	foreach my $m (@$modules) {
-		print "Installing $m->[0]\n";
+		print "XL: Installing $m->[0]\n";
 		local $ENV{PATH} = "$self->{perl_install_dir}/bin:$ENV{PATH}";
 		local $ENV{HOME} = $self->{perl_install_dir};
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
@@ -567,7 +619,7 @@ sub get_cpan {
 			}
 		}
 		foreach my $module (keys %modules) {
-			if ($path =~ m{/$module-\d}) {
+			if ($path =~ m{/$module-v?\d}) { # Damian use a v prefix in the module name
 				print "Mirror: $path\n";
 				return $seen{$path} = 0;
 			}
