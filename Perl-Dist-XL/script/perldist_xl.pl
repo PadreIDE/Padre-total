@@ -23,9 +23,10 @@ GetOptions(\%conf,
 	'help',
 	'build=s@',
 	'zip',
-	'devperl',
+	'perl=s',
 	) or usage();
 usage() if $conf{help};
+usage('--perl is required') if not $conf{perl};
 #usage("need --download or --clean")
 #	if not $conf{download} 
 #	and not $conf{clean}
@@ -50,8 +51,10 @@ Usage: $0
        --build [perl|cpan|wx|padre|all]   where 'all' indicated all the others as well
        --zip           create the zip file
 
-       --devperl       given this flag we will use the latest development version of perl
-                       without this flag the latest stable version. (5.11.2 vs 5.10.1)
+       --perl [dev|stable|git]      which version of perl to use
+                       dev    = 5.11.2
+                       stable = 5.10.1
+                       git    = ????
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
 

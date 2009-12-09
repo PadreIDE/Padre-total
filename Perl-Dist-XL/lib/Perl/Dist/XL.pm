@@ -15,7 +15,7 @@ use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.02';
 
-sub perl_version { return $_[0]->{devperl} ? '5.11.2' : '5.10.1'; }
+sub perl_version { return $_[0]->{perl} eq 'dev' ? '5.11.2' : '5.10.1'; }
 
 =head1 NAME
 
@@ -156,7 +156,7 @@ sub build_perl {
 
 	chdir $self->{perl_source_dir};
 	my $cmd = "sh Configure -Dusethreads -Duserelocatableinc -Dprefix='$self->{perl_install_dir}' -de";
-	$cmd .= " -Dusedevel" if $self->{devperl};
+	$cmd .= " -Dusedevel" if $self->{perl} ne 'stable';
 	_system($cmd);
 	_system("make");
 	_system("make test");
@@ -396,7 +396,7 @@ sub install_modules {
 		#my $cmd0 = $m->[0] eq 'Pod::Simple' ? 'mycpan_core.pl' : 'mycpan.pl';
 		my $cmd0 = 'mycpan.pl';
 		my $PERL = "$self->{perl_install_dir}/bin/perl";
-		$PERL .= $self->perl_version if $self->{devperl};
+		$PERL .= $self->perl_version if $self->{perl} ne 'stable';
 		my $cmd = "$PERL $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
 		debug("system $cmd");
 		_system($cmd);
