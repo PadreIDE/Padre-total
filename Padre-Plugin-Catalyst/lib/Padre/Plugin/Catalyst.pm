@@ -561,6 +561,9 @@ sub plugin_enable {
     $self->{panel} = Padre::Plugin::Catalyst::Panel->new($self);
 
     Padre::Current->main->bottom->show($self->{panel});
+    
+    # load Catalyst main menu
+    $self->editor_changed;
 
 # TODO: Please uncomment this to test the Catalyst side-panel
 #    require Padre::Plugin::Catalyst::Outline;
