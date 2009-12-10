@@ -1,6 +1,11 @@
 Padre::Plugin::Catalyst - TODO list!
 
+bug: no files open, selecting "new model"
+
     * jump from current action to corresponding template and back (zamolxes)
+      --> look for the functions method or "find method declaration", maybe they have a good way to detect the method we're at.
+
+
     * option to add a new action + corresponding template + mechanize test (zamolxes)
 
     * some sort of integration with Catalyst::Dispatcher::AsGraph
