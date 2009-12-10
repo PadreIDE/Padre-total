@@ -45,6 +45,19 @@ sub get_document_base_dir {
 	return Padre::Util::get_project_dir($filename);
 }
 
+# returns true if given filename (looks like) is inside a
+# Catalyst project
+sub in_catalyst_project {
+    require File::Spec;
+    my $filename = shift or return;
+
+    my $project_dir = Padre::Util::get_project_dir($filename);
+    
+    foreach my $dir ( qw(lib root script t) ) {
+        return unless -d File::Spec->catdir( $project_dir, $dir );
+    }
+    return 1;
+}
 
 #TODO: maybe this function (or some mutation of it)
 # is useful to other plugin authors. In this case, we
