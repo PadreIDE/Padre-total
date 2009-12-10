@@ -7,7 +7,7 @@ use warnings;
 use App::Grok           ();
 use Padre::HelpProvider ();
 
-our $VERSION = '0.60';
+our $VERSION = '0.61';
 our @ISA     = 'Padre::HelpProvider';
 
 use Class::XSAccessor accessors => {

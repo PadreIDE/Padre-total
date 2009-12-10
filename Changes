@@ -1,5 +1,7 @@
 Changes
 
+=head1 0.61 2009.12.10
+
 	Replaced debug called with new TRACE() call
 
 =head1 0.60 2009.9.18
