@@ -556,8 +556,11 @@ sub on_show_about {
 
 sub plugin_enable {
     my $self = shift;
+
     require Padre::Plugin::Catalyst::Panel;
     $self->{panel} = Padre::Plugin::Catalyst::Panel->new($self);
+
+    Padre::Current->main->bottom->show($self->{panel});
 
 # TODO: Please uncomment this to test the Catalyst side-panel
 #    require Padre::Plugin::Catalyst::Outline;
@@ -569,7 +572,10 @@ sub panel { return shift->{panel} }
 
 sub plugin_disable {
     my $self = shift;
-    $self->panel->Destroy;
+#    $self->panel->Destroy;
+    Padre::Current->main->bottom->hide($self->{panel});
+    $self->on_stop_server;
+    
     
     # cleanup loaded classes
     require Class::Unload;
