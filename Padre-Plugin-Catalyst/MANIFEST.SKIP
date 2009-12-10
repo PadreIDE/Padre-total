@@ -31,6 +31,8 @@
 \#$
 \.#
 \.rej$
+\btmp
+\bTODO
 
 # Avoid OS-specific files/dirs
 #   Mac OSX metadata
@@ -42,3 +44,4 @@
 
 # avoid pot files (gettext)
 \.pot$
+
