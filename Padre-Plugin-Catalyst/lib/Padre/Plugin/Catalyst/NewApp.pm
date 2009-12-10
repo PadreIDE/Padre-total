@@ -46,14 +46,20 @@ sub get_layout {
 			[ 'Wx::StaticText',      undef,         _T('Parent Directory:')],
 			[ 'Wx::DirPickerCtrl',   '_directory_', '',   _T('Pick parent directory')],
 		],
+	);
+	require Catalyst;
+	if ($Catalyst::VERSION < 5.80013) {
+		push @layout,
 		[
 			[ 'Wx::CheckBox', '_short_', _T('short names'), 0 ],
-		],
+		];
+	}
+	push @layout,
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
 			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
-		],
-	);
+		];
+
 	return \@layout;
 }
 
