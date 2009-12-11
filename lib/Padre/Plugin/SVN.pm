@@ -11,7 +11,7 @@ use Padre::Util   ();
 
 
 
-use SVN::Class;
+use SVN::Class qw(svn_file);
 
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin';
@@ -101,7 +101,7 @@ sub menu_plugins_simple {
 
 		# only file operations at the moment
 		#'File'		=> [
-		'Add'    => sub { $self->svn_add },
+		'Add'    => sub { $self->svn_add_file },
 		'Blame'  => sub { $self->svn_blame },
 		'Commit' => sub { $self->svn_commit_file },
 		'Diff'   => [
@@ -527,12 +527,16 @@ sub svn_commit_project {
 
 sub svn_add {
 	my ( $self, $path ) = @_;
+	
 	my $main = Padre->ide->wx->main;
 
 	my $file = svn_file($path);
 	$file->add;
-	my $msg = "$path scheduled to be added to " . $file->info->{_url};
-	$main->message($msg);
+	if ($file->errstr) {
+		$main->error($file->errstr);
+	} else {
+		$main->message("$path scheduled to be added to " . $file->info->{_url});
+	}
 
 	return;
 }
