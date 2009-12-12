@@ -5,6 +5,7 @@ Revision history for Syntax::Highlight::Perl6.
 	Bundled the latest STD innovation (lwall++) r29330
 	Default rule in constructor is now TOP instead of comp_unit
 	Commented a failing STD parsing test
+	Switch back from YAML::Syck to YAML::XS (Cursor.pmc)
 
 0.76 2009.9.29
 
