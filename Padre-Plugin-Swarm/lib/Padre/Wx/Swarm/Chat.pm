@@ -187,6 +187,9 @@ sub accept_message {
 	    warn "Got announce" if DEBUG;
 	    $self->accept_announce($message);
 	}
+	elsif ( $message->type eq 'leave' ) {
+	    $self->accept_leave( $message );
+	}
 	elsif ( $message->type eq 'promote' ) {
 	    $self->accept_promote( $message );
 	}
@@ -243,6 +246,14 @@ sub accept_promote {
     
     my $text = sprintf '%s promotes a chat service', $message->from;
     $self->write_user_styled( $message->from,  $text . "\n" );
+    
+}
+
+sub accept_leave {
+    my ($self,$message) = @_;
+    my $identity = $message->from;
+    $self->write_user_styled( $identity , $identity );
+    $self->write_unstyled( ' has left the swarm.' );
     
 }
 
