@@ -36,7 +36,6 @@ safe_copy("$STD/LazyMap.pm", 'lib/LazyMap.pmc');
 safe_copy("$STD/STD.pmc", 'lib/');
 safe_copy("$STD/CORE.pad", 'lib/');
 safe_copy("$STD/NAME.pmc", 'lib/');
-safe_copy("$STD/STASH.pmc", 'lib/');
 safe_copy("$STD/NULL.pad", 'lib/');
 safe_copy("$STD/DEBUG.pmc", 'lib/');
 
