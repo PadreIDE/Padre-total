@@ -38,4 +38,4 @@ safe_copy("$STD/CORE.pad", 'lib/');
 safe_copy("$STD/NAME.pmc", 'lib/');
 safe_copy("$STD/NULL.pad", 'lib/');
 safe_copy("$STD/DEBUG.pmc", 'lib/');
-
+safe_copy("$STD/Stash.pmc", 'lib/');
