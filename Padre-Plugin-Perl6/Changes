@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.62 TO BE RELEASED
+
+	Depends on S:H:P6 v0.77 for the latest STD
+
 =head1 0.61 2009.12.10
 
 	Replaced debug called with new TRACE() call
