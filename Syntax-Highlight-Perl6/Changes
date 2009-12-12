@@ -1,5 +1,11 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.77 2009.12.12
+
+    Bundled the latest STD innovation (lwall++) r29330
+    Default rule in constructor is now TOP instead of comp_unit
+    Commented a failing STD parsing test
+
 0.76 2009.9.29
 
 	Bundled the latest STD innovation (lwall++):
