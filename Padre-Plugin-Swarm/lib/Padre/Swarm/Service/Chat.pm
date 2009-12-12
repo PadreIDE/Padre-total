@@ -16,9 +16,9 @@ use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Util;
-use Data::Dumper;
 our $VERSION = '0.05';
 our @ISA     = 'Padre::Swarm::Service';
+
 
 use Class::XSAccessor
 	getters => {
@@ -114,21 +114,27 @@ sub service_loop {
 sub shutdown {
         my $self = shift;
         TRACE( 'Requested shutdown of service' ) if DEBUG;
-        warn "SHUTDOWN " , Dumper $self;
+        return unless $self->running;
+        $self->send( 
+          Padre::Swarm::Message->new(
+            type => 'leave', 
+          )
+        );
         
         return unless $self->running;
         $self->transport->shutdown;
 }
 
+use Carp qw( cluck );
 sub hangup {
 	my ($self,$running) = @_;
-	$self->transport->shutdown;
+	$self->shutdown;
 	$$running = 0;
 }
 
 sub terminate {
 	my ($self,$running) = @_;
-	$self->transport->shutdown;
+	$self->shutdown;
 	$$running = 0;
 }
 
@@ -200,7 +206,6 @@ sub receive {
 	$type ||= '';
     
 	if ( $type eq 'disco' ) {
-		#warn "DISCO recv";
 		$self->promote($message);
 	}
 

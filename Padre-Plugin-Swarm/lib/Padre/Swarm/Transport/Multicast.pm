@@ -64,6 +64,7 @@ sub shutdown {
     }
     $self->{client}->mcast_drop( MCAST_GROUP );
     $self->{client}->shutdown(0);
+    delete $self->{client};
     
     $self->started(0);
     return 1;
