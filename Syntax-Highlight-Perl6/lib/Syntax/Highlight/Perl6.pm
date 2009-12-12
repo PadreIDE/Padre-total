@@ -42,7 +42,7 @@ my $SHARED = Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__),
 #----------------------------------------------------------------
 sub new {
 	my ( $class, %options ) = @_;
-	$options{rule}             = $options{rule}             // 'comp_unit';
+	$options{rule}             = $options{rule}             // 'TOP';
 	$options{inline_resources} = $options{inline_resources} // 0;
 	$options{resource_url}     = $options{resource_url}     // q{};
 	$options{page_title}       = $options{page_title}       // q{};
@@ -599,7 +599,7 @@ This is where you should provide the Perl 6 code.
 
 =item * rule
 
-parse rule name for STD.pm to parse against (default: comp_unit)
+parse rule name for STD.pm to parse against (default: TOP)
 
 =item * inline_resources
 
