@@ -15,8 +15,9 @@ use Padre::Plugin::Swarm ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
 use Padre::Swarm::Transport::Multicast ();
-
-our $VERSION = '0.04';
+use Padre::Util;
+use Data::Dumper;
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Swarm::Service';
 
 use Class::XSAccessor
@@ -113,6 +114,8 @@ sub service_loop {
 sub shutdown {
         my $self = shift;
         TRACE( 'Requested shutdown of service' ) if DEBUG;
+        warn "SHUTDOWN " , Dumper $self;
+        
         return unless $self->running;
         $self->transport->shutdown;
 }

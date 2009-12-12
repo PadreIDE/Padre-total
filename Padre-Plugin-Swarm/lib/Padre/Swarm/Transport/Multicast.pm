@@ -10,7 +10,7 @@ use Padre::Plugin::Swarm ();
 use Padre::Swarm::Identity;
 use Padre::Swarm::Transport;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Swarm::Transport';
 
 use Class::XSAccessor
@@ -44,6 +44,7 @@ sub start {
     my ($self) = @_;
     croak "Transport already started" if $self->started;
     
+    # REALLY would be wise to select a usable interface here
     my $client = IO::Socket::Multicast->new();
     $client->mcast_add( MCAST_GROUP );
     $self->{client} = $client;

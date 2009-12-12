@@ -6,7 +6,7 @@ use Padre::Wx      ();
 use Padre::Service ();
 use Padre::Swarm::Service::Chat;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Service';
 
 use Class::XSAccessor

@@ -5,7 +5,7 @@ use warnings;
 use Carp qw( croak );
 use Padre::Service ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Service';
 
 sub identity {

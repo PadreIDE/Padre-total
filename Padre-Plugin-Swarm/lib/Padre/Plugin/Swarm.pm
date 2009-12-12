@@ -9,7 +9,7 @@ use Padre::Wx              ();
 use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor
@@ -27,7 +27,7 @@ use Class::XSAccessor
 	};
 
 # Turn this on to enable warnings
-use constant DEBUG => 0;
+use constant DEBUG => 1;
 
 
 
@@ -37,7 +37,7 @@ use constant DEBUG => 0;
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.37;
+	'Padre::Plugin' => 0.51;
 }
 
 sub plugin_name {

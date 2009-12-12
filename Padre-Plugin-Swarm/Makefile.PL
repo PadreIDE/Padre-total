@@ -1,7 +1,7 @@
 use inc::Module::Install::DSL 0.91;
 
 all_from      lib/Padre/Plugin/Swarm.pm
-requires      Padre                 0.36
+requires      Padre                 0.51
 requires      IO::Socket::Multicast 1.07
 requires      IO::Select
 requires      Params::Util          1.00

@@ -17,8 +17,8 @@ use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Swarm::Service::Chat;
-
-our $VERSION = '0.04';
+use Padre::Util;
+our $VERSION = '0.05';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor
@@ -169,21 +169,22 @@ sub accept_message {
 	return if $payload eq 'ALIVE';
 
 	my $message = Storable::thaw($payload);
+	warn "accepted $message" if DEBUG;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 
 	if ( $message->type eq 'chat' ) {
 		my $user = $message->from || 'unknown';
 		my $content = $message->body;
 		return unless defined $content;
-		# TODO - some styling would be nice.
-		#  some day colour code each identity
 		$self->accept_chat($message);
 	}
 	elsif ( _INSTANCE( $message , 'Padre::Swarm::Message::Diff' ) ) {
+                warn "Got diff -- " if DEBUG;
 		$self->on_receive_diff($message);
 		return;
 	}
 	elsif ( $message->type eq 'announce' ) {
+	    warn "Got announce" if DEBUG;
 	    $self->accept_announce($message);
 	}
 	elsif ( $message->type eq 'promote' ) {
@@ -245,6 +246,40 @@ sub accept_promote {
     
 }
 
+sub command_nick {
+    my ($self,$new_nick) = @_;
+    
+    my $previous =
+            $self->service->identity->nickname;	
+        eval {
+            $self->service->identity->set_nickname( $new_nick );
+        };
+
+        $self->tell_service( 
+            "was -> ".
+            $previous	
+        ) unless $@;
+    
+}
+
+sub command_spam {
+    my ($self,$data) = @_;
+    
+    my $icon  = Padre::Wx::Icon::find(
+        'status/padre-plugin-swarm',
+        {
+                size  => '128x128',
+                icons => $self->plugin_icons_directory,
+        } 
+    );
+    $icon->Show;
+    
+}
+
+sub command_disco {
+    
+}
+
 
 sub tell_service {
 	my $self    = shift;
@@ -263,25 +298,28 @@ sub tell_service {
 sub on_text_enter {
     my ($self,$event) = @_;
     my $message = $self->textinput->GetValue;
+    $self->textinput->SetValue('');
     
-    # Handle /nick for now so everyone is not Anonymous_$$
-    if ( my ($new_nick) = $message =~ m{^/nick\s+(.+)} ) {
-        my $previous =
-            $self->service->identity->nickname;	
-        eval {
-            $self->service->identity->set_nickname( $new_nick );
-        };
-
-        $self->tell_service( 
-            "was -> ".
-            $previous	
-        ) unless $@;
-
-    } else {
+    if ( $message =~ m{^/(\w+)\s+} ) {
+        $self->accept_command( $message ) 
+    }    
+    else {
         $self->tell_service( $message );
     }
+}
+
+sub accept_command {
+    my ($self,$message) = @_;
+    # Handle /nick for now so everyone is not Anonymous_$$
+    my ($command,$data) = $message =~ m{^/(\w+)\s+(.+)} ;
+    if ( 'nick' eq $command ) {
+        $self->command_nick( $data );
+    } 
+    elsif ( 'spam' eq $command ) {
+        $self->command_spam( $data );
+    }
+    else { $self->tell_service( $message ); }
     
-    $self->textinput->SetValue('');
 }
 
 sub on_receive_diff {
