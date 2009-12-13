@@ -12,9 +12,12 @@ use File::Basename qw(basename);
 use Capture::Tiny  qw(tee);
 
 my %SKIP = (
+	'Acme-CPANAuthors-Padre'    => 'not a plugin',
+	'Padre-Artwork'             => 'not code',
 	'Padre-Plugin-Encode'       => 'due to be integrated',
 	'Padre-Plugin-HTML'         => 'HTML::Tidy is a broken prereq',
 	'Padre-Plugin-NYTProf'      => 'TODO',
+	'Padre-Plugin-Alarm'        => 'broken translation files?',
 	'Padre-Plugin-Perldoc'      => 'irrelevant, broken prereq',
 	'Padre-Plugin-Swarm'        => 'just a skeleton',
 	'Perl-Dist-Padre'           => 'needs Perl::Dist::Strawberry',
