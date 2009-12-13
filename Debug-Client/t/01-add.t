@@ -3,10 +3,7 @@ use warnings;
 
 use t::lib::Debugger;
 
-use File::Temp qw(tempdir);
-my $dir = tempdir(CLEANUP => 1);
-
-my $pid = start_script('t/eg/01-add.pl', $dir);
+my ($dir, $pid) = start_script('t/eg/01-add.pl');
 
 require Test::More;
 import Test::More;

@@ -2,6 +2,9 @@ package t::lib::Debugger;
 use strict;
 use warnings;
 
+use File::Temp qw(tempdir);
+
+
 use Exporter;
 use vars qw(@ISA @EXPORT);
 @ISA = ('Exporter');
@@ -12,8 +15,10 @@ my $host = 'localhost';
 my $port = 12345 + int rand(1000);
 
 sub start_script {
-    my ($file, $dir) = @_;
+    my ($file) = @_;
     my $pid = fork();
+    my $dir = tempdir(CLEANUP => 1);
+
     die if not defined $pid;
 
     if (not $pid) {
@@ -23,7 +28,7 @@ sub start_script {
         exit 0;
     }
 
-    return $pid;
+    return ($dir, $pid);
 }
 
 sub start_debugger {
