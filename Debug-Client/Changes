@@ -1,3 +1,10 @@
+v0.05
+    Try to eliminate infinite loop
+    Try to make sure tests are not hung by calling quit at the end of each
+    Put the STDOUT and STDERR files in temp directory
+    Use Module::Install instead of Module::Build
+
+
 v0.04 2008.09.16
     Add more methods
     Add more tests
