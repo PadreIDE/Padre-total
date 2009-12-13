@@ -9,22 +9,28 @@ use Exporter;
 use vars qw(@ISA @EXPORT);
 @ISA = ('Exporter');
 
-@EXPORT = qw(start_script start_debugger);
+@EXPORT = qw(start_script start_debugger slurp);
 
 my $host = 'localhost';
 my $port = 12345 + int rand(1000);
 
 sub start_script {
     my ($file) = @_;
+    my $dir = tempdir(CLEANUP => 0);
+    my $path = $dir;
+    if ($^O =~ /Win32/i) {
+        require Win32;
+        $path = Win32::GetLongPathName($path);
+    }
+    
     my $pid = fork();
-    my $dir = tempdir(CLEANUP => 1);
-
     die if not defined $pid;
 
     if (not $pid) {
         local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
         sleep 1;
-        exec "$^X -d $file > $dir/out 2> $dir/err";
+        #warn "path '$path'";
+        exec qq($^X -d $file > "$path/out" 2> "$path/err");
         exit 0;
     }
 
@@ -38,6 +44,12 @@ sub start_debugger {
     return $debugger;
 }
 
+sub slurp {
+    my ($file) = @_;
 
+    open my $fh, '<', $file or die "Could not open '$file' $!";
+    local $/ = undef;
+    return <$fh>;
+}
 1;
 
