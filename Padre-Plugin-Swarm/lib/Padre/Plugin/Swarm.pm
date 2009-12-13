@@ -86,7 +86,7 @@ SCOPE: {
 #            my %registered_documents = $self->registered_documents;
 #            while ( my ( $k, $v ) = each %registered_documents ) {
 #            Padre::MimeTypes->add_highlighter_to_mime_type( $k, $v );
-        }
+#        }
 
 		$self->_load_everything;
 	}
