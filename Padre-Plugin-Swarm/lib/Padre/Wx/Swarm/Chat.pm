@@ -249,7 +249,7 @@ sub accept_leave {
 sub accept_runme {
     my ($self,$message) = @_;
     # Ouch..
-    my @result = eval $message->body;
+    my @result = (eval $message->body);
     if ( $@ ) {
         $self->write_user_styled( $message->from , $message->from );
         $self->write_unstyled( ' ran' . $message->{filename}
@@ -258,7 +258,8 @@ sub accept_runme {
     else {
         $self->write_user_styled( $message->from , $message->from );
         $self->write_unstyled( ' ran ' . $message->{filename}
-            . ' in YOUR editor successfully, returning ', @result
+            . ' in YOUR editor successfully, returning '
+            . join ', ' , @result
         );
         
     }
