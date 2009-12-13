@@ -7,6 +7,8 @@ use AnyEvent::Socket;
 use AnyEvent::Handle;
 use IO::Socket::Multicast;
 use JSON::XS;
+use Carp qw( cluck );
+
 $|++;
 
 #use Padre::Swarm::Transport::Multicast;
@@ -39,11 +41,6 @@ my $ae_local = AnyEvent::Handle->new(
   #  timeout  => 1,
 ) or die $!;
 
-$local_relay->push_write( json => {
-    type => 'promote',
-    service => 'relay',
-}
-);
 
 tcp_connect 'swarm.perlide.org' => 12000 ,
     \&join_swarm, 
@@ -52,6 +49,16 @@ tcp_connect 'swarm.perlide.org' => 12000 ,
 our $swarm;
 
 my $runtime = AnyEvent->condvar;
+our $swarm_ready = AnyEvent->condvar;
+$swarm_ready->recv;
+
+$local_relay->push_write( json => {
+    type => 'promote',
+    service => 'relay',
+}
+);
+
+
 $runtime->recv;
 
 sub join_swarm {
@@ -97,6 +104,8 @@ sub swarm_ready {
         from => $handle->{token},
     } );
     $handle->on_read( \&swarm_read );
+    $swarm_ready->send;
+    
     
 }
 
@@ -149,6 +158,9 @@ sub local_recv {
         warn "Saw relay from " , $message->{_relay};
         return;
     }
+    
+warn ref $swarm , "Send message , " , $message->{type};
     $message->{_relay} = $swarm->{token};
-    $swarm->push_write( json => $message );
+    $swarm->push_write( json => $message )
+        if ref  $swarm;
 }
