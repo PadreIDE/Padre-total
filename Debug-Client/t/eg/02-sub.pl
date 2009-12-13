@@ -9,7 +9,6 @@ my $q = f($x, $y);
 my $z = $x + $y;
 
 
-
 sub f {
    my ($q, $w) = @_;
    my $multi = $q * $w;
