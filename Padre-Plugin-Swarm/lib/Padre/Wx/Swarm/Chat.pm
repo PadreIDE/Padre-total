@@ -106,6 +106,8 @@ sub new {
 	return $self;
 }
 
+sub plugin { Padre::Plugin::Swarm->instance };
+
 sub bottom {
 	$_[0]->GetParent;
 }
@@ -115,7 +117,7 @@ sub main {
 }
 
 sub gettext_label {
-	Wx::gettext('Swarm - Chat');
+	Wx::gettext('Chat');
 }
 
 sub enable {
@@ -135,7 +137,11 @@ sub enable {
 	my $main     = $self->main;
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageCount;
-	$bottom->InsertPage( $position, $self, gettext_label(), 0 );
+	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
+
+    my $icon = $self->plugin->plugin_icon;  
+	$bottom->SetPageBitmap($pos, $icon );
+	
 	$self->Show;
 	$bottom->SetSelection($position);
 	$main->aui->Update;
@@ -231,7 +237,7 @@ sub accept_announce {
 
 sub accept_promote {
     my ($self,$message) = @_;
-    next unless $message->{service} =~ m/chat/i;
+    return unless $message->{service} =~ m/chat/i;
     
     my $text = sprintf '%s promotes a chat service', $message->from;
     $self->write_user_styled( $message->from,  $text . "\n" );
@@ -253,13 +259,14 @@ sub accept_runme {
     if ( $@ ) {
         $self->write_user_styled( $message->from , $message->from );
         $self->write_unstyled( ' ran' . $message->{filename}
-            . ' in YOUR editor but failed!! ' . $@ );
+            . ' in YOUR editor but failed!! ' . $@. "\n" );
     }
     else {
         $self->write_user_styled( $message->from , $message->from );
         $self->write_unstyled( ' ran ' . $message->{filename}
             . ' in YOUR editor successfully, returning '
-            . join ', ' , @result
+            . join (', ' , @result)
+            . "\n"
         );
         
     }
