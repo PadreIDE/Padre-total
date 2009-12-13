@@ -1,4 +1,4 @@
-v0.05
+v0.05 2009.12.13
     Try to eliminate infinite loop
     Try to make sure tests are not hung by calling quit at the end of each
     Put the STDOUT and STDERR files in temp directory
