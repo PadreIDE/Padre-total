@@ -9,18 +9,17 @@ use vars qw(@ISA @EXPORT);
 @EXPORT = qw(start_script start_debugger);
 
 my $host = 'localhost';
-my $port = 12345;
+my $port = 12345 + int rand(1000);
 
 sub start_script {
-    my ($file) = @_;
+    my ($file, $dir) = @_;
     my $pid = fork();
     die if not defined $pid;
 
     if (not $pid) {
         local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port";
-        unlink 'out', 'err';
         sleep 1;
-        exec "$^X -d $file > out 2> err";
+        exec "$^X -d $file > $dir/out 2> $dir/err";
         exit 0;
     }
 
