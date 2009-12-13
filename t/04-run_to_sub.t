@@ -52,3 +52,7 @@ my $debugger = start_debugger();
     my $out = $debugger->run;
     like($out, qr/Debugged program terminated/);
 }
+
+{
+    $debugger->quit;
+}
