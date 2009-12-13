@@ -3,7 +3,7 @@ use warnings;
 
 use t::lib::Debugger;
 
-my $pid = start_script('t/eg/02-sub.pl');
+my ($dir, $pid) = start_script('t/eg/02-sub.pl');
 
 require Test::More;
 import Test::More;
@@ -67,4 +67,8 @@ my $debugger = start_debugger();
 #   DB<1> 
     my $out = $debugger->step_in;
     like($out, qr/Debugged program terminated/);
+}
+
+{
+    $debugger->quit;
 }

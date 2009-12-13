@@ -3,7 +3,7 @@ use warnings;
 
 use t::lib::Debugger;
 
-my $pid = start_script('t/eg/04-fib.pl');
+my ($dir, $pid) = start_script('t/eg/04-fib.pl');
 
 require Test::More;
 import Test::More;
@@ -71,4 +71,8 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
     cmp_deeply(\@out, [$trace, $D], 'stack trace')
         or diag($debugger->buffer);
+}
+
+{
+    $debugger->quit;
 }
