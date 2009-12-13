@@ -231,12 +231,24 @@ sub _parse_dumper {
     my ($str) = @_;    
 }
 
+# TODO shall we add a timeout and/or a number to count down the number
+# sysread calls that return 0 before deciding it is really done
 sub _get {
     my ($self) = @_;
 
     #my $remote_host = gethostbyaddr($sock->sockaddr(), AF_INET) || 'remote';
     my $buf = '';
-    $self->{new_sock}->sysread($buf, 1024, length $buf) while $buf !~ /DB<\d+>/;
+    while ($buf !~ /DB<\d+>/) {
+        my $ret = $self->{new_sock}->sysread($buf, 1024, length $buf);
+        if (not defined $ret) {
+            die $!; # TODO better error handling?
+        }
+        logger("---- ret '$ret'\n$buf\n---");
+        if (not $ret) {
+            last;
+        }
+    }
+    logger("_get done");
 
     $self->{buffer} = $buf;
     return $buf;
@@ -295,6 +307,11 @@ sub send_get {
 
     return $self->get;
 }
+
+sub logger {
+    print "$_[0]\n" if $ENV{DEBUG_LOGGER};
+}
+
 
 =head1 See Also
 
