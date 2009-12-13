@@ -9,15 +9,6 @@ make test
 make install
 
 
-   or
-
-perl Build.PL
-./Build
-./Build test
-./Build install
-
-
-
 Debug::Client was spun off from Padre.
 For details look at
 
