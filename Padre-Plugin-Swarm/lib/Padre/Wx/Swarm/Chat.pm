@@ -172,30 +172,19 @@ sub accept_message {
 	warn "accepted $message" if DEBUG;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 
-	if ( $message->type eq 'chat' ) {
-		my $user = $message->from || 'unknown';
-		my $content = $message->body;
-		return unless defined $content;
-		$self->accept_chat($message);
-	}
-	elsif ( _INSTANCE( $message , 'Padre::Swarm::Message::Diff' ) ) {
-                warn "Got diff -- " if DEBUG;
-		$self->on_receive_diff($message);
-		return;
-	}
-	elsif ( $message->type eq 'announce' ) {
-	    warn "Got announce" if DEBUG;
-	    $self->accept_announce($message);
-	}
-	elsif ( $message->type eq 'leave' ) {
-	    $self->accept_leave( $message );
-	}
-	elsif ( $message->type eq 'promote' ) {
-	    $self->accept_promote( $message );
-	}
-	else {
-		TRACE("Discarded $message") if DEBUG;
-	}
+        my $handler = 'accept_' . $message->type;
+        if ( $self->can( $handler ) ) {
+            eval {
+                $self->$handler($message);
+            };
+            if ($@) {
+                $self->write_user_styled( $message->from,$message->from );
+                $self->write_unstyled(" sent unhandled message " 
+                    . $message->type . "\n" );
+                    
+            }
+        }
+
 }
 
 sub write_unstyled {
@@ -253,7 +242,26 @@ sub accept_leave {
     my ($self,$message) = @_;
     my $identity = $message->from;
     $self->write_user_styled( $identity , $identity );
-    $self->write_unstyled( ' has left the swarm.' );
+    $self->write_unstyled( " has left the swarm.\n" );
+    
+}
+
+sub accept_runme {
+    my ($self,$message) = @_;
+    # Ouch..
+    my @result = eval $message->body;
+    if ( $@ ) {
+        $self->write_user_styled( $message->from , $message->from );
+        $self->write_unstyled( ' ran' . $message->{filename}
+            . ' in YOUR editor but failed!! ' . $@ );
+    }
+    else {
+        $self->write_user_styled( $message->from , $message->from );
+        $self->write_unstyled( ' ran ' . $message->{filename}
+            . ' in YOUR editor successfully, returning ', @result
+        );
+        
+    }
     
 }
 
@@ -333,7 +341,7 @@ sub accept_command {
     
 }
 
-sub on_receive_diff {
+sub accept_diff {
 	my ($self,$message) = @_;
 	TRACE("Received diff $message") if DEBUG;
 

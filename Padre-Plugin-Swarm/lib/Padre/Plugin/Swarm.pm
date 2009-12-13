@@ -63,6 +63,7 @@ sub plugin_icon {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
+            'Run in Other Editor' => sub { $self->run_in_other_editor },
 		'About' => sub { $self->show_about },
 	];
 }
@@ -79,6 +80,14 @@ SCOPE: {
 		$instance  = $self;
 		my $config = $self->config_read;
 		$self->set_config( $config );
+		
+#            # Cargo WebGui
+#            # workaround Padre bug
+#            my %registered_documents = $self->registered_documents;
+#            while ( my ( $k, $v ) = each %registered_documents ) {
+#            Padre::MimeTypes->add_highlighter_to_mime_type( $k, $v );
+        }
+
 		$self->_load_everything;
 	}
 
@@ -89,27 +98,41 @@ SCOPE: {
 	}
 }
 
-sub event_on_context_menu {
-	my $self     = shift;
-	my $document = shift;
-	my $editor   = shift;
-	my $menu     = shift;
-	my $event    = shift;
-	my $diff     = $menu->Append( -1,
-		Wx::gettext("Swarm diff snippet")
-	);
-	Wx::Event::EVT_MENU(
-		$editor,
-		$diff,
-		sub {
-			instance()->get_chat->on_diff_snippet;
-		},
-	);
+
+#sub registered_documents {
+#    'application/x-swarm-document' =>    
+#        'Padre::Plugin::Swarm::Document',
+#}
+#
+#
+#sub editor_enable {
+#	my ( $self, $editor, $doc ) = @_;
+#	$self->{editor}{ refaddr $editor} = 1; 
+#	return 1;
+#}
+#
+## Does this really happen ? # cargo from Plugin::Vi
+#sub editor_stop {
+#	my ( $self, $editor, $doc ) = @_;
+#	delete $self->{editor}{ refaddr $editor};
+#
+#	return 1;
+#}
+
+# oh noes!
+sub run_in_other_editor {
+    my $self = shift;
+    my $ed = $self->current->editor;
+    my $doc = $self->current->document;
+    $self->get_chat->tell_service(
+        Padre::Swarm::Message->new(
+            type => 'runme',
+            body => $ed->GetText,
+            filename => $doc->filename,
+        )
+    );
+    
 }
-
-
-
-
 
 #####################################################################
 # Custom Methods
