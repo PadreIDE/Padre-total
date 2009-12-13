@@ -16,7 +16,7 @@ use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();
 use Padre::Swarm::Transport::Multicast ();
 use Padre::Util;
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our @ISA     = 'Padre::Swarm::Service';
 
 
