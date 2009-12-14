@@ -30,9 +30,9 @@ Debug::Client - client side code for perl debugger
   $out = $debugger->step_over;
 
 
-  my ($module, $file, $row, $content, $prompt) = $debugger->step_in;
-  my ($module, $file, $row, $content, $prompt, $return_value) = $debugger->step_out;
-  my ($value, $prompt) = $debugger->get_value('$x');
+  my ($prompt, $module, $file, $row, $content) = $debugger->step_in;
+  my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out;
+  my ($prompt, $value) = $debugger->get_value('$x');
 
   $debugger->run();         # run till end of breakpoint or watch
   $debugger->run( 42 );     # run till line 42  (c in the debugger)
@@ -42,11 +42,11 @@ Debug::Client - client side code for perl debugger
 
   $debugger->execute_code( '@name = qw(foo bar)' );
 
-  my ($value, $prompt) = $debugger->get_value('@name');  $value is the dumped data?
+  my ($prompt, $value) = $debugger->get_value('@name');  $value is the dumped data?
 
   $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
 
-  my ($value, $prompt) = $debugger->get_value('%phone_book');  $value is the dumped data?
+  my ($prompt, $value) = $debugger->get_value('%phone_book');  $value is the dumped data?
   
   
   $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
@@ -69,7 +69,21 @@ Other planned methods:
 
 =cut
 
+=head2 new
 
+The constructor can get two parameters: host and port.
+
+  my $d = Debug::Client->new;
+
+  my $d = Debug::Client->new(host => 'remote.hots.com', port => 4242);
+   
+Immediately after the object creation one needs to call
+
+  $d->listen;
+  
+TODO: Is there any reason to separate the two?
+
+=cut
 
 sub new {
     my ($class, %args) = @_;
@@ -92,17 +106,23 @@ sub new {
     return $self;
 }
 
+=head2 listen
+
+See C<new>
+
+=cut
+
 sub listen {
     my ($self) = @_;
 
     $self->{new_sock} = $self->{sock}->accept();
-    return;
 
+    return;
 }
 
 =head2 buffer
 
-return the content of the buffer since the last command
+Returns the content of the buffer since the last command
 
   $debugger->buffer;
 
@@ -144,6 +164,7 @@ sub step_over { $_[0]->send_get('n') }
 
 sub step_out  { 
     my ($self) = @_;
+
     $self->_send('r');
     my $buf = $self->_get;
 
@@ -169,7 +190,7 @@ sub step_out  {
         #if ($context and $context eq 'list') {
             # TODO can we parse this inteligently in the general case?
         #}
-        return (@line, $prompt, $ret);
+        return ($prompt, @line, $ret);
     } else {
         return $buf;
     }
@@ -187,13 +208,21 @@ sub get_stack_trace {
 
     if (wantarray) {
         my $prompt = _prompt(\$buf);
-        return($buf, $prompt);
+        return($prompt, $buf);
     } else {
         return $buf;
     }
 }
 
 =head2 run
+
+  $d->run;
+  
+Will run till the next breakpoint or watch or the end of
+the script. (Like pressing c in the debugger).
+
+  $d->run($param)
+
 
 =cut
 sub run       { 
@@ -207,6 +236,8 @@ sub run       {
 
 
 =head2 set_breakpoint
+
+ $d->set_breakpoint($file, $line, $condition);
 
 =cut
 
@@ -222,7 +253,7 @@ sub set_breakpoint {
     my $buf = $self->_get;
     if (wantarray) {
         my $prompt = _prompt(\$buf);
-        return($buf, $prompt);
+        return($prompt, $buf);
     } else {
         return $buf;
     }
@@ -239,7 +270,7 @@ sub execute_code {
     my $buf = $self->_get;
     if (wantarray) {
        my $prompt = _prompt(\$buf);
-       return ($buf, $prompt);
+       return ($prompt, $buf);
     } else {
        return $buf;
     }
@@ -260,7 +291,7 @@ sub get_value {
         my $buf = $self->_get;
         if (wantarray) {
             my $prompt = _prompt(\$buf);
-            return ($buf, $prompt);
+            return ($prompt, $buf);
         } else {
             return $buf
         }
@@ -270,7 +301,7 @@ sub get_value {
         if (wantarray) {
             my $prompt = _prompt(\$buf);
             my $data_ref = _parse_dumper($buf);
-            return ($data_ref, $prompt);
+            return ($prompt, $data_ref);
         } else {
             return $buf
         }
@@ -340,7 +371,7 @@ sub get {
     if (wantarray) {
         my $prompt = _prompt(\$buf);
         my ($module, $file, $row, $content) = _process_line(\$buf);
-        return ($module, $file, $row, $content, $prompt);
+        return ($prompt, $module, $file, $row, $content);
     } else {
         return $buf;
     }

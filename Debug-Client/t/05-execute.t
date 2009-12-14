@@ -9,7 +9,7 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $D = re('\d+');
+my $PROMPT = re('\d+');
 
 our $TODO; # needed becasue Test::More is required and not used
 
@@ -34,61 +34,61 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;', $D], 'line 6')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;', $D], 'line 7')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->execute_code('$abc = 23');
-    cmp_deeply(\@out, ['', $D], 'execute 1')
+    cmp_deeply(\@out, [$PROMPT, ''], 'execute 1')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->get_value('$abc');
-    cmp_deeply(\@out, [23, $D], 'execute 1')
+    cmp_deeply(\@out, [$PROMPT, 23], 'execute 1')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->execute_code('@qwe = (23, 42)');
-    cmp_deeply(\@out, ['', $D], 'execute 2')
+    cmp_deeply(\@out, [$PROMPT, ''], 'execute 2')
         or diag($debugger->buffer);
 }
 
 TODO: {
     local $TODO = 'get_value of array';
     my @out = $debugger->get_value('@qwe');
-    cmp_deeply(\@out, [23, 42, $D], 'get_value of array')
+    cmp_deeply(\@out, [$PROMPT, 23, 42], 'get_value of array')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->execute_code('%h = (fname => "foo", lname => "bar")');
-    cmp_deeply(\@out, ['', $D], 'execute 3')
+    cmp_deeply(\@out, [$PROMPT, ''], 'execute 3')
         or diag($debugger->buffer);
 }
 
 TODO: {
     local $TODO = 'get_value of hash';
     my @out = $debugger->get_value('%h');
-    cmp_deeply(\@out, [$D], 'get_value of hash')
+    cmp_deeply(\@out, [$PROMPT], 'get_value of hash')
         or diag($debugger->buffer);
 }
 
 
 {
     my @out = $debugger->set_breakpoint( 't/eg/02-sub.pl', 15 );
-    cmp_deeply(\@out, ['', $D], 'set_breakpoint')
+    cmp_deeply(\@out, [$PROMPT, ''], 'set_breakpoint')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->run;
-    cmp_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;', $D], 'line 15')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;'], 'line 15')
         or diag($debugger->buffer);
 }
 
