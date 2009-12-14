@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-15 13:48+0300\n"
+"POT-Creation-Date: 2009-12-07 01:41-0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -11,120 +11,138 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:48
+#: lib/Padre/Plugin/Catalyst.pm:68
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:67
 msgid "New Catalyst Application"
 msgstr "تطبيق Catalyst جديد"
 
-#: lib/Padre/Plugin/Catalyst.pm:53
+#: lib/Padre/Plugin/Catalyst.pm:76
 msgid "Create new..."
 msgstr "انشاء جديد..."
 
-#: lib/Padre/Plugin/Catalyst.pm:54
+#: lib/Padre/Plugin/Catalyst.pm:79
 msgid "Model"
 msgstr "نموذج - Model"
 
-#: lib/Padre/Plugin/Catalyst.pm:58
+#: lib/Padre/Plugin/Catalyst.pm:87
 msgid "View"
 msgstr "مشهد - View"
 
-#: lib/Padre/Plugin/Catalyst.pm:62
+#: lib/Padre/Plugin/Catalyst.pm:95
 msgid "Controller"
 msgstr "مراقب - Controller"
 
-#: lib/Padre/Plugin/Catalyst.pm:68
+#: lib/Padre/Plugin/Catalyst.pm:105
+#: lib/Padre/Plugin/Catalyst/Util.pm:79
 msgid "Start Web Server"
 msgstr "تشغيل خادم الويب"
 
-#: lib/Padre/Plugin/Catalyst.pm:69
+#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst/Util.pm:82
 msgid "Stop Web Server"
 msgstr "ايقاف خادم الويب"
 
-#: lib/Padre/Plugin/Catalyst.pm:71
+#: lib/Padre/Plugin/Catalyst.pm:120
 msgid "Catalyst Online References"
 msgstr "مراجع Catalyst على الانترنت"
 
-#: lib/Padre/Plugin/Catalyst.pm:72
+#: lib/Padre/Plugin/Catalyst.pm:123
 msgid "Beginner's Tutorial"
 msgstr "دروس المبتدئ"
 
-#: lib/Padre/Plugin/Catalyst.pm:73
+#: lib/Padre/Plugin/Catalyst.pm:126
 msgid "Overview"
 msgstr "نظرة عامة"
 
-#: lib/Padre/Plugin/Catalyst.pm:76
+#: lib/Padre/Plugin/Catalyst.pm:134
 msgid "1. Introduction"
 msgstr "1. مقدمة"
 
-#: lib/Padre/Plugin/Catalyst.pm:79
+#: lib/Padre/Plugin/Catalyst.pm:141
 msgid "2. Catalyst Basics"
 msgstr "2. أساسيات Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:82
+#: lib/Padre/Plugin/Catalyst.pm:148
 msgid "3. More Catalyst Basics"
 msgstr "3. المزيد من أساسيات Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:85
+#: lib/Padre/Plugin/Catalyst.pm:155
 msgid "4. Basic CRUD"
 msgstr "4. مبدأ CRUD"
 
-#: lib/Padre/Plugin/Catalyst.pm:88
+#: lib/Padre/Plugin/Catalyst.pm:162
 msgid "5. Authentication"
 msgstr "5. التأكد من الهوية"
 
-#: lib/Padre/Plugin/Catalyst.pm:91
+#: lib/Padre/Plugin/Catalyst.pm:169
 msgid "6. Authorization"
 msgstr "6. السماح بالدخول"
 
-#: lib/Padre/Plugin/Catalyst.pm:94
+#: lib/Padre/Plugin/Catalyst.pm:176
 msgid "7. Debugging"
 msgstr "7. تصحيح الأخطاء"
 
-#: lib/Padre/Plugin/Catalyst.pm:97
+#: lib/Padre/Plugin/Catalyst.pm:183
 msgid "8. Testing"
 msgstr "8. الاختبار"
 
-#: lib/Padre/Plugin/Catalyst.pm:100
+#: lib/Padre/Plugin/Catalyst.pm:190
 msgid "9. Advanced CRUD"
 msgstr "9. CRUD متقدم"
 
-#: lib/Padre/Plugin/Catalyst.pm:103
+#: lib/Padre/Plugin/Catalyst.pm:197
 msgid "10. Appendices"
 msgstr "10. الملحقات"
 
-#: lib/Padre/Plugin/Catalyst.pm:107
+#: lib/Padre/Plugin/Catalyst.pm:205
 msgid "Catalyst Cookbook"
 msgstr "كتاب طهي Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:110
+#: lib/Padre/Plugin/Catalyst.pm:212
 msgid "Recommended Plugins"
 msgstr "البرامج الملحقه الموصى بها"
 
-#: lib/Padre/Plugin/Catalyst.pm:113
+#: lib/Padre/Plugin/Catalyst.pm:219
 msgid "Catalyst Community Live Support"
 msgstr "دعم مجتمع Catalyst المباشر"
 
-#: lib/Padre/Plugin/Catalyst.pm:116
+#: lib/Padre/Plugin/Catalyst.pm:227
 msgid "Examples"
 msgstr "أمثلة"
 
-#: lib/Padre/Plugin/Catalyst.pm:119
+#: lib/Padre/Plugin/Catalyst.pm:235
 msgid "Catalyst Wiki"
 msgstr "ويكي Catalyst"
 
-#: lib/Padre/Plugin/Catalyst.pm:122
+#: lib/Padre/Plugin/Catalyst.pm:242
 msgid "Catalyst Website"
 msgstr "موقع Catalyst الاكتروني"
 
-#: lib/Padre/Plugin/Catalyst.pm:127
+#: lib/Padre/Plugin/Catalyst.pm:251
 msgid "Update Application Scripts"
 msgstr "تحديث برامج التطبيق النصية"
 
-#: lib/Padre/Plugin/Catalyst.pm:129
+#: lib/Padre/Plugin/Catalyst.pm:258
 msgid "About"
 msgstr "عن"
 
-#: lib/Padre/Plugin/Catalyst.pm:170
+#: lib/Padre/Plugin/Catalyst.pm:289
+#, perl-format
+msgid "Open Template '%s'"
+msgstr "فتح القالب '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:321
+#, perl-format
+msgid "Template '%s' not found in '%s'"
+msgstr "القالب '%s' غير موجود في '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:323
+#: lib/Padre/Plugin/Catalyst.pm:509
+#: lib/Padre/Plugin/Catalyst/Helper.pm:325
+msgid "Error"
+msgstr "خطأ"
+
+#: lib/Padre/Plugin/Catalyst.pm:394
 #, perl-format
 msgid ""
 "Catalyst development web server not found at\n"
@@ -137,17 +155,43 @@ msgstr ""
 "\n"
 "الرجاء التأكد من أن الوثيقة الحالية هي من مشروع Catalyst الخاص بك."
 
-#: lib/Padre/Plugin/Catalyst.pm:173
+#: lib/Padre/Plugin/Catalyst.pm:397
 msgid "Server not found"
 msgstr "الخادم غير موجود"
 
-#: lib/Padre/Plugin/Catalyst.pm:193
+#: lib/Padre/Plugin/Catalyst.pm:426
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "يبدو ان خادم الويب مشغل. هل تريد تشغيل متصفح الويب الآن؟"
 
-#: lib/Padre/Plugin/Catalyst.pm:194
+#: lib/Padre/Plugin/Catalyst.pm:427
 msgid "Start Web Browser?"
 msgstr "هل تريد تشغيل متصفح الويب؟"
+
+#: lib/Padre/Plugin/Catalyst.pm:454
+#, perl-format
+msgid ""
+"Wx::Perl::ProcessStream is version %s which is known to cause problems. Get at least 0.20 by typing\n"
+"cpan Wx::Perl::ProcessStream"
+msgstr ""
+"الوحدة Wx::Perl::ProcessStream نسخة %s معروف عنها انها تسبب المشاكل. احصل على نسخة 0.20 على الأقل بطباعة الأمر\n"
+"cpan Wx::Perl::ProcessStream"
+
+#: lib/Padre/Plugin/Catalyst.pm:508
+#, perl-format
+msgid "Failed to start server via '%s'"
+msgstr "فشل تشغيل الخادم ب '%s'"
+
+#: lib/Padre/Plugin/Catalyst.pm:532
+msgid "Web server stopped successfully."
+msgstr "تم ايقاف خادم الويب بنجاح"
+
+#: lib/Padre/Plugin/Catalyst.pm:547
+msgid "Catalyst support for Padre"
+msgstr "دعم Catalyst لPadre"
+
+#: lib/Padre/Plugin/Catalyst.pm:548
+msgid "This system is running Catalyst version"
+msgstr "هذا النظام يقوم بتشغيل Catalyst اصدار"
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:33
 msgid "Create New Component"
@@ -234,10 +278,6 @@ msgstr "تم"
 msgid "Error creating %s. Please check the error output and try again"
 msgstr "حدث خطأ خلال انشاء %s. الرجاء التأكد من نتائج الخطأ والمحاولة مرة أخرى"
 
-#: lib/Padre/Plugin/Catalyst/Helper.pm:325
-msgid "Error"
-msgstr "خطأ"
-
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:21
 msgid ""
 "To use the Catalyst development tools including catalyst.pl and the\n"
@@ -284,4 +324,26 @@ msgstr "حقل مفقود"
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:107
 msgid "You need to select a base directory"
 msgstr "يجب اختيار دليل الأصل"
+
+#: lib/Padre/Plugin/Catalyst/Outline.pm:102
+msgid "Catalyst"
+msgstr "Catalyst"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:35
+#: lib/Padre/Plugin/Catalyst/Panel.pm:40
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Start Server"
+msgstr "تشغيل خادم الويب"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:51
+msgid "auto-restart"
+msgstr "اعادة تشغيل تلقائي"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:78
+msgid "Catalyst Dev Server"
+msgstr "تشغيل خادم الويب للتطوير"
+
+#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+msgid "Stop Server"
+msgstr "ايقاف الخادم"
 
