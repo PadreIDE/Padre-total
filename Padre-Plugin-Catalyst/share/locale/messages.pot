@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-07 01:41-0200\n"
+"POT-Creation-Date: 2009-12-14 12:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Catalyst.pm:68 lib/Padre/Plugin/Catalyst/NewApp.pm:67
+#: lib/Padre/Plugin/Catalyst.pm:68 lib/Padre/Plugin/Catalyst/NewApp.pm:73
 msgid "New Catalyst Application"
 msgstr ""
 
@@ -36,11 +36,11 @@ msgstr ""
 msgid "Controller"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:105 lib/Padre/Plugin/Catalyst/Util.pm:79
+#: lib/Padre/Plugin/Catalyst.pm:105 lib/Padre/Plugin/Catalyst/Util.pm:92
 msgid "Start Web Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst.pm:110 lib/Padre/Plugin/Catalyst/Util.pm:82
+#: lib/Padre/Plugin/Catalyst.pm:110 lib/Padre/Plugin/Catalyst/Util.pm:95
 msgid "Stop Web Server"
 msgstr ""
 
@@ -256,7 +256,7 @@ msgid "Catalyst helper script ended."
 msgstr ""
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:308
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:144
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:150
 #, perl-format
 msgid "%s apparently created. Do you want to open it now?"
 msgstr ""
@@ -293,20 +293,20 @@ msgstr ""
 msgid "Pick parent directory"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:50
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:54
 msgid "short names"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:109
 msgid "Invalid Application name"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:109
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "missing field"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "You need to select a base directory"
 msgstr ""
 
@@ -315,7 +315,7 @@ msgid "Catalyst"
 msgstr ""
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:35 lib/Padre/Plugin/Catalyst/Panel.pm:40
-#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+#: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Start Server"
 msgstr ""
 
@@ -323,10 +323,14 @@ msgstr ""
 msgid "auto-restart"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:78
+#: lib/Padre/Plugin/Catalyst/Panel.pm:77
 msgid "Catalyst Dev Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+#: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Stop Server"
+msgstr ""
+
+#: lib/Padre/Wx/Menu/Catalyst.pm:47
+msgid "&Catalyst"
 msgstr ""
