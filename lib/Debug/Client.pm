@@ -261,11 +261,15 @@ sub set_breakpoint {
 
 =head2 execute_code
 
+  $d->execute_code($some_code_to_execute);
+
 =cut
 
 sub execute_code {
     my ($self, $code) = @_;
+    
     return if not defined $code;
+
     $self->_send($code);
     my $buf = $self->_get;
     if (wantarray) {
