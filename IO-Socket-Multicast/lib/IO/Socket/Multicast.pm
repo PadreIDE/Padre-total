@@ -215,7 +215,7 @@ the B<Proto> argument, rather than defaulting to "tcp", will default
 to "udp", which is more appropriate for multicasting.
 
 To create a UDP socket suitable for sending outgoing multicast
-messages, call new() without no arguments (or with
+messages, call new() without arguments (or with
 C<Proto=E<gt>'udp'>).  To create a UDP socket that can also receive
 incoming multicast transmissions on a specific port, call new() with
 the B<LocalPort> argument.
