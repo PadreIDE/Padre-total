@@ -39,10 +39,13 @@ isa_ok($debugger, 'Debug::Client');
     cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;'], 'line 6')
         or diag($debugger->buffer);
 }
+
 {
-    my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/01-add.pl', 7, 'my $y = 2;'], 'line 7')
-        or diag($debugger->buffer);
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<1> ", 'line 7') or do {
+        $out =~ s/ /S/g;
+        diag($out);
+    }
 }
 
 {
