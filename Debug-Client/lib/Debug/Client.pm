@@ -69,8 +69,6 @@ sub new {
     %args = (host => 'localhost', port => 12345,
              %args);
 
-    die("Usage: $0 hostname portno") unless ($args{host} =~ /\w+/ && $args{port} =~ /^\d+$/);
-
     # Open the socket the debugger will connect to.
     my $sock = IO::Socket::INET->new(
                    LocalHost => $args{host},
@@ -78,8 +76,8 @@ sub new {
                    Proto     => 'tcp',
                    Listen    => SOMAXCONN,
                    Reuse     => 1);
-    $sock or die "no socket :$!";
-    #print "listening on $args{host}:$args{port}\n";
+    $sock or die "Could not connect to '$args{host}' '$args{port}' no socket :$!";
+    logger("listening on '$args{host}:$args{port}'");
     $self->{sock} = $sock;
 
     return $self;
