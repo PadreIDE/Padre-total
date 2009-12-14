@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 13);
+plan(tests => 20);
 
 my $debugger = start_debugger();
 
@@ -49,25 +49,25 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;'], 'line 13')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;'], 'line 16')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;'], 'line 14')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;'], 'line 17')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;'], 'line 15')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 16, '   return $multi;'], 'line 16')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 19, '   return $multi;'], 'line 19')
         or diag($debugger->buffer);
 }
 
@@ -87,6 +87,43 @@ my $debugger = start_debugger();
     cmp_deeply(\@out, [$PROMPT, ''], '$z is empty')
         or diag($debugger->buffer);
 }
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::f(t/eg/02-sub.pl:16):\t   my (\$q, \$w) = \@_;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::f(t/eg/02-sub.pl:17):\t   my \$multi = \$q * \$w;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::f(t/eg/02-sub.pl:18):\t   my \$add   = \$q + \$w;\n  DB<3> ", 'out');
+}
+
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::f(t/eg/02-sub.pl:19):\t   return \$multi;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/02-sub.pl:12):\t\$z++;\n  DB<3> ", 'out');
+}
+
 
 {
 # Debugged program terminated.  Use q to quit or R to restart,

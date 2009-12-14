@@ -40,7 +40,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->run('f');
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;'], 'line 13')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;'], 'line 16')
         or diag($debugger->buffer);
 }
 

@@ -39,8 +39,8 @@ my $debugger = start_debugger();
 }
 
 {
-    my @out = $debugger->run(14);
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;'], 'line 14')
+    my @out = $debugger->run(17);
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;'], 'line 17')
         or diag($debugger->buffer);
 }
 

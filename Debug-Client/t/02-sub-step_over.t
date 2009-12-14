@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 9);
+plan(tests => 12);
 
 my $debugger = start_debugger();
 
@@ -60,6 +60,23 @@ my $debugger = start_debugger();
 {
     my @out = $debugger->get_value('$z');
     cmp_deeply(\@out, [$PROMPT, ''], '$z is empty');
+}
+
+
+{
+    my $out = $debugger->step_over;
+    is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<3> ", 'step over on simple statement');
+}
+
+{
+    my $out = $debugger->step_over;
+    is($out, "main::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<3> ", 'step over in scalar context');
+}
+
+{
+    my @out = $debugger->step_over;
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 12, '$z++;'], 'line 12')
+        or diag($debugger->buffer);
 }
 
 {
