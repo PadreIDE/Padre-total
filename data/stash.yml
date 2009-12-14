@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 14
+        url: http://perlwannabe.vox.com/library/post/padre-052-is-heading-to-cpan.html
+        title: Padre 0.52 is heading to CPAN.
+        comment: A new release of Padre!
       - date: 2009 December 09
         url: http://www.catalystframework.org/calendar/2009/9
         title: Developing Catalyst Applications with Padre
@@ -935,6 +939,10 @@ about:
   - title: German
     ISO_639: de
     events:
+      - date: 2009 December 14
+        url: http://padre-ide.de/blog/?p=78
+        title: Padre 0.52 ist da
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 December 07
         url: http://padre-ide.de/blog/?p=66
         title: Deutsche Padre 0.51 Releasemeldung
