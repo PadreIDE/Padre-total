@@ -38,8 +38,17 @@ Debug::Client - client side code for perl debugger
   $debugger->run( 42 );     # run till line 42  (c in the debugger)
   $debugger->run( 'foo' );  # tun till beginning of sub
 
-  $debugger->execute_code
+  $debugger->execute_code( '$answer = 42' );
 
+  $debugger->execute_code( '@name = qw(foo bar)' );
+
+  my ($value, $prompt) = $debugger->get_value('@name');  $value is the dumped data?
+
+  $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
+
+  my ($value, $prompt) = $debugger->get_value('%phone_book');  $value is the dumped data?
+  
+  
   $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
 
   $debugger->get_stack_trace
@@ -77,7 +86,7 @@ sub new {
                    Listen    => SOMAXCONN,
                    Reuse     => 1);
     $sock or die "Could not connect to '$args{host}' '$args{port}' no socket :$!";
-    logger("listening on '$args{host}:$args{port}'");
+    _logger("listening on '$args{host}:$args{port}'");
     $self->{sock} = $sock;
 
     return $self;
@@ -104,34 +113,34 @@ sub buffer {
     return $self->{buffer};
 }
 
-sub step_in   { $_[0]->send_get('s') }
-sub step_over { $_[0]->send_get('n') }
+=head2 quit
+
+=cut
+
 sub quit      { $_[0]->_send('q')    }
+
+=head2 show_line
+
+=cut
+
 sub show_line { $_[0]->send_get('.') }
 
-sub get_stack_trace {
-    my ($self) = @_;
-    $self->_send('T');
-    my $buf = $self->_get;
 
-    if (wantarray) {
-        my $prompt = _prompt(\$buf);
-        return($buf, $prompt);
-    } else {
-        return $buf;
-    }
-}
+=head2 step_in
 
+=cut
 
+sub step_in   { $_[0]->send_get('s') }
 
-sub run       { 
-    my ($self, $param) = @_;
-    if (not defined $param) {
-        $self->send_get('c');
-    } else {
-        $self->send_get("c $param");
-    }
-}
+=head2 step_over
+
+=cut
+
+sub step_over { $_[0]->send_get('n') }
+
+=head2 step_out
+
+=cut
 
 sub step_out  { 
     my ($self) = @_;
@@ -166,6 +175,41 @@ sub step_out  {
     }
 }
 
+
+=head2 get_stack_trace
+
+=cut
+
+sub get_stack_trace {
+    my ($self) = @_;
+    $self->_send('T');
+    my $buf = $self->_get;
+
+    if (wantarray) {
+        my $prompt = _prompt(\$buf);
+        return($buf, $prompt);
+    } else {
+        return $buf;
+    }
+}
+
+=head2 run
+
+=cut
+sub run       { 
+    my ($self, $param) = @_;
+    if (not defined $param) {
+        $self->send_get('c');
+    } else {
+        $self->send_get("c $param");
+    }
+}
+
+
+=head2 set_breakpoint
+
+=cut
+
 #  TODO: Line 15 not breakable.
 sub set_breakpoint {
     my ($self, $file, $line, $cond) = @_;
@@ -184,6 +228,9 @@ sub set_breakpoint {
     }
 }
 
+=head2 execute_code
+
+=cut
 
 sub execute_code {
     my ($self, $code) = @_;
@@ -198,6 +245,12 @@ sub execute_code {
     }
 }
 
+=head2 get_value
+
+=cut
+
+# TODO if the given $x is a reference then something (either this module
+# or its user) should actually call   x $var 
 sub get_value {
     my ($self, $var) = @_;
     die "no parameter given\n" if not defined $var;
@@ -226,7 +279,8 @@ sub get_value {
 }
 
 sub _parse_dumper {
-    my ($str) = @_;    
+    my ($str) = @_;
+    return $str;
 }
 
 # TODO shall we add a timeout and/or a number to count down the number
@@ -241,12 +295,12 @@ sub _get {
         if (not defined $ret) {
             die $!; # TODO better error handling?
         }
-        logger("---- ret '$ret'\n$buf\n---");
+        _logger("---- ret '$ret'\n$buf\n---");
         if (not $ret) {
             last;
         }
     }
-    logger("_get done");
+    _logger("_get done");
 
     $self->{buffer} = $buf;
     return $buf;
@@ -306,7 +360,7 @@ sub send_get {
     return $self->get;
 }
 
-sub logger {
+sub _logger {
     print "$_[0]\n" if $ENV{DEBUG_LOGGER};
 }
 
