@@ -11,7 +11,9 @@ require Test::Deep;
 import Test::Deep;
 my $D = re('\d+');
 
-plan(tests => 10);
+our $TODO; # needed becasue Test::More is required and not used
+
+plan(tests => 13);
 
 my $debugger = start_debugger();
 
@@ -57,12 +59,26 @@ my $debugger = start_debugger();
         or diag($debugger->buffer);
 }
 
-# TODO check the get_value on hash and array
-#{
-#    my @out = $debugger->get_value('@qwe');
-#    cmp_deeply(\@out, [23, 42, $D], 'execute 1')
-#        or diag($debugger->buffer);
-#}
+TODO: {
+    local $TODO = 'get_value of array';
+    my @out = $debugger->get_value('@qwe');
+    cmp_deeply(\@out, [23, 42, $D], 'get_value of array')
+        or diag($debugger->buffer);
+}
+
+{
+    my @out = $debugger->execute_code('%h = (fname => "foo", lname => "bar")');
+    cmp_deeply(\@out, ['', $D], 'execute 3')
+        or diag($debugger->buffer);
+}
+
+TODO: {
+    local $TODO = 'get_value of hash';
+    my @out = $debugger->get_value('%h');
+    cmp_deeply(\@out, [$D], 'get_value of hash')
+        or diag($debugger->buffer);
+}
+
 
 {
     my @out = $debugger->set_breakpoint( 't/eg/02-sub.pl', 15 );
