@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 8);
+plan(tests => 10);
 
 my $debugger = start_debugger();
 
@@ -55,6 +55,11 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
     cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
         or diag($debugger->buffer);
+
+    my $out = $debugger->get_stack_trace;
+    is($out, q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
+$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
+  DB<3> ), 'stack trace in scalar context');
 }
 
 {
@@ -71,6 +76,11 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
     cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
         or diag($debugger->buffer);
+    my $out = $debugger->get_stack_trace;
+    is($out, q($ = main::fib(9) called from file `t/eg/04-fib.pl' line 18
+$ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
+$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
+  DB<4> ), 'stack trace in scalar context');
 }
 
 {

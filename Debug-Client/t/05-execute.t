@@ -13,7 +13,7 @@ my $PROMPT = re('\d+');
 
 our $TODO; # needed becasue Test::More is required and not used
 
-plan(tests => 14);
+plan(tests => 18);
 
 my $debugger = start_debugger();
 
@@ -42,6 +42,23 @@ my $debugger = start_debugger();
     cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
         or diag($debugger->buffer);
 }
+
+{
+    my @out = $debugger->execute_code();
+    cmp_deeply(\@out, [], 'no code')
+        or diag($debugger->buffer);
+    my $out = $debugger->execute_code();
+    is($out, undef, 'no code in scalar context');
+}
+
+{
+    my @out = $debugger->execute_code('19+23');
+    cmp_deeply(\@out, ['2', ''], 'no code')
+        or diag($debugger->buffer);
+    my $out = $debugger->execute_code('19+23');
+    is($out, "\n  DB<3> ", 'no code in scalar context');
+}
+
 
 {
     my @out = $debugger->execute_code('$abc = 23');
