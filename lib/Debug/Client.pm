@@ -357,7 +357,11 @@ sub _process_line {
     my ($module, $file, $row, $content);
     # the last line before 
     # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
-    if ($line =~ /^([\w:]*)\(([^\)]*):(\d+)\):\t(.*)/m) {
+    if ($line =~ /^([\w:]*)                  # module
+                  \(   ([^\)]*):(\d+)   \)   # (file:row)
+                  :\t                        # :
+                  (.*)                       # content
+                  /mx) {
         ($module, $file, $row, $content) = ($1, $2, $3, $4);
     }
     return ($module, $file, $row, $content);
