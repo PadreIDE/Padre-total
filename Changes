@@ -1,3 +1,8 @@
+v0.06
+    Prompt is now the first return paramter
+    Added more tests
+    Added more documentation
+    
 v0.05 2009.12.13
     Try to eliminate infinite loop
     Try to make sure tests are not hung by calling quit at the end of each

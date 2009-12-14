@@ -9,7 +9,7 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $D = re('\d+');
+my $PROMPT = re('\d+');
 
 plan(tests => 13);
 
@@ -32,33 +32,33 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 6, 'my $x = 11;', $D], 'line 6')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 6, 'my $x = 11;'], 'line 6')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 7, 'my $q = f("foo\nbar");', $D], 'line 7')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 7, 'my $q = f("foo\nbar");'], 'line 7')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::f', 't/eg/03-return.pl', 16, '   my ($in) = @_;', $D], 'line 16')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/03-return.pl', 16, '   my ($in) = @_;'], 'line 16')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 8, '$x++;', $D, "'foo\nbar'"], 'line 8')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'"], 'line 8')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 9, q{my @q = g('baz', "foo\nbar", 'moo');}, $D], 'line 9')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 9, q{my @q = g('baz', "foo\nbar", 'moo');}], 'line 9')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::g', 't/eg/03-return.pl', 22, '   my (@in) = @_;', $D], 'line 22')
+    cmp_deeply(\@out, [$PROMPT, 'main::g', 't/eg/03-return.pl', 22, '   my (@in) = @_;'], 'line 22')
         or diag($debugger->buffer);
 }
 
@@ -69,19 +69,19 @@ my $expected = q(0  'baz'
 bar'
 2  'moo');
 
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 10, '$x++;', $D, $expected], 'line 10')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 10, '$x++;', $expected], 'line 10')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 11, q{my %q = h(bar => "foo\nbar", moo => 42);}, $D], 'line 11')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 11, q{my %q = h(bar => "foo\nbar", moo => 42);}], 'line 11')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::h', 't/eg/03-return.pl', 28, '   my (%in) = @_;', $D], 'line 28')
+    cmp_deeply(\@out, [$PROMPT, 'main::h', 't/eg/03-return.pl', 28, '   my (%in) = @_;'], 'line 28')
         or diag($debugger->buffer);
 }
 {
@@ -90,7 +90,7 @@ my $received = $out[5];
 $out[5] = '';
 # TODO check how to test the return data in this case as it looks like an array
 
-    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 12, '$x++;', $D, ''], 'line 12')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 12, '$x++;', ''], 'line 12')
         or diag($debugger->buffer);
 }
 

@@ -14,7 +14,7 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $D = re('\d+');
+my $PROMPT = re('\d+');
 
 plan(tests => 23);
 
@@ -39,13 +39,13 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 6, 'print "One\n";', $D], 'line 6')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 6, 'print "One\n";'], 'line 6')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 7, 'print STDERR "Two\n";', $D], 'line 7')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 7, 'print STDERR "Two\n";'], 'line 7')
         or diag($debugger->buffer);
 }
 
@@ -58,7 +58,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 8, 'print "Three\n";', $D], 'line 8')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 8, 'print "Three\n";'], 'line 8')
         or diag($debugger->buffer);
 }
 
@@ -71,7 +71,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 9, 'print "Four";', $D], 'line 9')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 9, 'print "Four";'], 'line 9')
         or diag($debugger->buffer);
 }
 
@@ -86,7 +86,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 10, 'print "\n";', $D], 'line 10')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 10, 'print "\n";'], 'line 10')
         or diag($debugger->buffer);
 }
 
@@ -99,7 +99,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/05-io.pl', 11, 'print STDERR "Five";', $D], 'line 11')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 11, 'print STDERR "Five";'], 'line 11')
         or diag($debugger->buffer);
 }
 

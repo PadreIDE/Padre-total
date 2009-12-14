@@ -10,7 +10,7 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $D = re('\d+');
+my $PROMPT = re('\d+');
 
 plan(tests => 5);
 
@@ -34,13 +34,13 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;', $D], 'line 6')
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->run(14);
-    cmp_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;', $D], 'line 14')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;'], 'line 14')
         or diag($debugger->buffer);
 }
 
