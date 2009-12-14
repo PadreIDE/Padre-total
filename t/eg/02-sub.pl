@@ -7,6 +7,9 @@ my $x = 11;
 my $y = 22;
 my $q = f($x, $y);
 my $z = $x + $y;
+my $t = f(19, 23);
+$t++;
+$z++;
 
 
 sub f {

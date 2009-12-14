@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 11);
+plan(tests => 16);
 
 my $debugger = start_debugger();
 
@@ -46,12 +46,12 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 13, '   my ($q, $w) = @_;'], 'line 13');
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;'], 'line 16');
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 14, '   my $multi = $q * $w;'], 'line 14')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 17, '   my $multi = $q * $w;'], 'line 17')
         or diag($debugger->buffer);
 }
 
@@ -68,6 +68,32 @@ my $debugger = start_debugger();
 {
     my @out = $debugger->get_value('$z');
     cmp_deeply(\@out, [$PROMPT, ''], '$z is empty');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<3> ", 'out');
+}
+
+{
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 16, '   my ($q, $w) = @_;'], 'line 17')
+        or diag($debugger->buffer);
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::f(t/eg/02-sub.pl:17):\t   my \$multi = \$q * \$w;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_out;
+    is($out, "scalar context return from main::f: 437\nmain::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<3> ", 'out');
+}
+
+{
+    my $out = $debugger->step_in;
+    is($out, "main::(t/eg/02-sub.pl:12):\t\$z++;\n  DB<3> ", 'out');
 }
 
 {

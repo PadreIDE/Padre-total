@@ -13,7 +13,7 @@ my $PROMPT = re('\d+');
 
 our $TODO; # needed becasue Test::More is required and not used
 
-plan(tests => 13);
+plan(tests => 14);
 
 my $debugger = start_debugger();
 
@@ -81,17 +81,23 @@ TODO: {
 
 
 {
-    my @out = $debugger->set_breakpoint( 't/eg/02-sub.pl', 15 );
+    my @out = $debugger->set_breakpoint( 't/eg/02-sub.pl', 18 );
     cmp_deeply(\@out, [$PROMPT, ''], 'set_breakpoint')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->run;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 15, '   my $add   = $q + $w;'], 'line 15')
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
         or diag($debugger->buffer);
 }
 
+# TODO maybe check if we can remove the breakpoint
+{
+    my @out = $debugger->run;
+    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
+        or diag($debugger->buffer);
+}
 
 {
 # Debugged program terminated.  Use q to quit or R to restart,
