@@ -42,7 +42,8 @@ isa_ok($debugger, 'Debug::Client');
 
 {
     my $out = $debugger->step_in;
-    is($out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<1> ", 'line 7') or do {
+    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    is($out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<> ", 'line 7') or do {
         $out =~ s/ /S/g;
         diag($out);
     }
