@@ -4,6 +4,7 @@ all_from      lib/Padre/Plugin/Swarm.pm
 requires      Padre                 0.51
 requires      IO::Socket::Multicast 1.07
 requires      IO::Select
+requires      IO::Interface
 requires      Params::Util          1.00
 requires      Class::XSAccessor     1.03
 requires      Guard                 1.01

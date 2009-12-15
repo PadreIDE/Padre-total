@@ -186,7 +186,7 @@ sub accept_message {
             if ($@) {
                 $self->write_user_styled( $message->from,$message->from );
                 $self->write_unstyled(" sent unhandled message " 
-                    . $message->type . "\n" );
+                    . $message->type .  $@ . "\n" );
                     
             }
         }
@@ -270,6 +270,21 @@ sub accept_runme {
         );
         
     }
+    
+}
+
+sub accept_openme {
+    my ($self,$message) = @_;
+    
+    $self->main
+         ->new_document_from_string( $message->body );
+    
+    $self->write_unstyled( 
+        sprintf("Opened document %s from " ,
+            $message->{filename} )
+    );
+    $self->write_user_styled( $message->from, $message->from );
+        
     
 }
 

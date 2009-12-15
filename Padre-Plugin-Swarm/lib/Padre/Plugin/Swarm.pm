@@ -61,11 +61,15 @@ sub plugin_icon {
 }
 
 sub menu_plugins_simple {
-	my $self = shift;
-	return $self->plugin_name => [
-            'Run in Other Editor' => sub { $self->run_in_other_editor },
-		'About' => sub { $self->show_about },
-	];
+    my $self = shift;
+    return $self->plugin_name => [
+        'Run in Other Editor' => 
+            sub { $self->run_in_other_editor },
+        'Open in Other Editor' => 
+            sub { $self->open_in_other_editor },
+            
+        'About' => sub { $self->show_about },
+    ];
 }
 
 # Singleton (I think)
@@ -134,8 +138,17 @@ sub run_in_other_editor {
     
 }
 
-#####################################################################
-# Custom Methods
+sub open_in_other_editor {
+    my $self = shift;
+    my $doc = $self->current->document;
+    my $message = Padre::Swarm::Message->new(
+        type => 'openme',
+        body => $doc->text_get,
+        filename => $doc->filename,
+    );
+    $self->get_chat->tell_service($message);
+    
+}
 
 sub show_about {
 	my $self = shift;
