@@ -37,6 +37,12 @@ my $debugger = start_debugger();
     like($out, qr{main::\(t/eg/05-io.pl:4\):\s*\$\| = 1;}, 'line 4');
 }
 
+diag("Perl version '$]'");
+my $prefix = (substr($], 0, 5) eq '5.006') ? "Default die handler restored.\n" : '';
+# see relevant fail report here:
+# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6486949.html
+# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6481372.html
+
 {
     my @out = $debugger->step_in;
     cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/05-io.pl', 6, 'print "One\n";'], 'line 6')
@@ -53,7 +59,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\n", 'STDOUT has One');
     my $err = slurp("$path/err");
-    is($err, "", 'STDERR is empty');
+    is($err, "${prefix}", 'STDERR is empty');
 }
 
 {
@@ -66,7 +72,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\n", 'STDOUT has One');
     my $err = slurp("$path/err");
-    is($err, "Two\n", 'STDERR has Two');
+    is($err, "${prefix}Two\n", 'STDERR has Two');
 }
 
 {
@@ -79,7 +85,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\nThree\n", 'STDOUT has One Three');
     my $err = slurp("$path/err");
-    is($err, "Two\n", 'STDERR has Two');
+    is($err, "${prefix}Two\n", 'STDERR has Two');
 }
 
 
@@ -94,7 +100,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\nThree\nFour", 'STDOUT has One Three Four');
     my $err = slurp("$path/err");
-    is($err, "Two\n", 'STDERR has Two');
+    is($err, "${prefix}Two\n", 'STDERR has Two');
 }
 
 {
@@ -107,7 +113,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\nThree\nFour\n", 'STDOUT has One Three Four');
     my $err = slurp("$path/err");
-    is($err, "Two\n", 'STDERR has Two');
+    is($err, "${prefix}Two\n", 'STDERR has Two');
 }
 
 {
@@ -120,7 +126,7 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\nThree\nFour\n", 'STDOUT has everything before quit');
     my $err = slurp("$path/err");
-    is($err, "Two\nFive\n", 'STDERR has everything before quit');
+    is($err, "${prefix}Two\nFive\n", 'STDERR has everything before quit');
 }
 
 {
@@ -133,5 +139,5 @@ my $debugger = start_debugger();
     my $out = slurp("$path/out");
     is($out, "One\nThree\nFour\n", 'STDOUT has everything');
     my $err = slurp("$path/err");
-    is($err, "Two\nFive\n", 'STDERR has everything');
+    is($err, "${prefix}Two\nFive\n", 'STDERR has everything');
 }
