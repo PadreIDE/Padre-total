@@ -44,9 +44,7 @@ sub new {
         $interface = $i;
     } continue { last if $interface }
     croak "No usable multicast interface" unless $interface;
-    warn "Using network interface $interface , " ,
-        $interface->address;
-    $obj{interface} = $interface;
+   $obj{interface} = $interface;
     
     return bless \%obj , ref $class || $class;
 }
