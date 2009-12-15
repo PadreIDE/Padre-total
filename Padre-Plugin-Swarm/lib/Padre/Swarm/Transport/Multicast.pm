@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Carp qw( confess croak     );
 use IO::Select ();
+use IO::Interface::Simple;
 use IO::Socket::Multicast;
 use Params::Util qw( _INSTANCE _POSINT );
 use Padre::Plugin::Swarm ();
@@ -35,6 +36,18 @@ sub new {
     $obj{started}       = 0;
     $obj{selector}      = $selector;
     
+    my $interface;
+    foreach my $i ( IO::Interface::Simple->interfaces ) {
+        next unless $i->is_multicast
+            && $i->is_running
+            && $i->address;
+        $interface = $i;
+    } continue { last if $interface }
+    croak "No usable multicast interface" unless $interface;
+    warn "Using network interface $interface , " ,
+        $interface->address;
+    $obj{interface} = $interface;
+    
     return bless \%obj , ref $class || $class;
 }
 
@@ -44,9 +57,7 @@ sub start {
     my ($self) = @_;
     croak "Transport already started" if $self->started;
     
-    # REALLY would be wise to select a usable interface here
     my $client = IO::Socket::Multicast->new();
-    $client->mcast_add( MCAST_GROUP );
     $self->{client} = $client;
     
     while ( my ($channel,$loopback) = each %{ $self->subscriptions } ) {
@@ -59,13 +70,12 @@ sub start {
 sub shutdown {
     my ($self) = @_;
     croak "Transport is not started" unless $self->started;
-    while ( my ($channel,$socket) = each %{ $self->channels } ) {
+    while ( my ($channel,$socket) = each %{ $self->channels } )    {
         $self->_shutdown_channel( $channel );
     }
-    $self->{client}->mcast_drop( MCAST_GROUP );
     $self->{client}->shutdown(0);
     delete $self->{client};
-    
+    delete $self->{interface};
     $self->started(0);
     return 1;
 }
@@ -76,7 +86,8 @@ sub subscribe_channel {
     if ( _POSINT $channel && $channel <= 65535 ) 
     {
         $self->subscriptions->{$channel} = $loopback;
-        $self->_connect_channel($channel,$loopback) if $self->started ;
+        $self->_connect_channel($channel,$loopback) 
+            if $self->started ;
     }
     else {
         croak "'$channel' is not a valid channel"; 
