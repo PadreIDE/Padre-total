@@ -282,6 +282,13 @@ sub execute_code {
 
 =head2 get_value
 
+
+ my ($prompt, $value) = $d->get_value($x);
+
+If $x is a scalar value, $value will contain that value.
+If it is a reference to a SCALAR, ARRAY or HASH then $value should be the
+value of that reference?
+
 =cut
 
 # TODO if the given $x is a reference then something (either this module
@@ -370,6 +377,23 @@ sub _process_line {
     }
     return ($module, $file, $row, $content);
 }
+
+=head get
+
+Actually I think this is an internal method....
+
+In SCALAR context will return all the buffer collected since the last command.
+
+In LIST context will return ($prompt, $module, $file, $row, $content)
+Where $prompt is the what the standard debugger uses for prompt. Probably not too
+interesting.
+$file and $row describe the location of the next instructions.
+$content is the actual line - this is probably not too interesting as it is 
+in the editor. $module is just the name of the module in which the current execution is.
+
+
+
+=cut
 
 sub get {
     my ($self) = @_;
