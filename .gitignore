@@ -1,0 +1,14 @@
+# /*/META.yml
+Debug-Client/META.yml
+Debug-Client/Makefile
+Debug-Client/blib/
+Debug-Client/inc/
+Debug-Client/pm_to_blib
+Padre/.padre/
+Padre/META.yml
+Padre/Makefile
+Padre/blib/
+Padre/inc/
+Padre/pm_to_blib
+
+Padre/share/locale/*.mo
