@@ -51,13 +51,7 @@ our $swarm;
 my $runtime = AnyEvent->condvar;
 our $swarm_ready = AnyEvent->condvar;
 $swarm_ready->recv;
-
-$local_relay->push_write( json => {
-    type => 'promote',
-    service => 'relay',
-}
-);
-
+warn "Relay ready";
 
 $runtime->recv;
 
@@ -103,6 +97,13 @@ sub swarm_ready {
         want => 'relay',
         from => $handle->{token},
     } );
+    
+    $local_relay->push_write( json => {
+        type => 'promote',
+        from => $handle->{token},
+        service => 'relay',
+    });
+    
     $handle->on_read( \&swarm_read );
     $swarm_ready->send;
     
