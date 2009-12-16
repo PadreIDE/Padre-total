@@ -160,6 +160,19 @@ sub step_over { $_[0]->send_get('n') }
 
 =head2 step_out
 
+ my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out;
+
+Where $prompt is just a number, probably useless
+
+$return_value  will be undef if the function was called in VOID context
+
+It will hold a scalar value if called in SCALAR context
+
+It will hold a reference to an array if called in LIST context.
+
+TODO: check what happens when the return value is a reference to a complex data structure
+or when some of the elements of the returned array are themselves references
+
 =cut
 
 sub step_out  { 
@@ -168,7 +181,11 @@ sub step_out  {
     $self->_send('r');
     my $buf = $self->_get;
 
+    # void context return from main::f
     # scalar context return from main::f: 242
+    # list  context return from main::f:
+    # 0 22
+    # 1 34
     # main::(t/eg/02-sub.pl:9):	my $z = $x + $y;
 
     # list context return from main::g:
