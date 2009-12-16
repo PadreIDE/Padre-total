@@ -37,9 +37,7 @@ my $debugger = start_debugger();
 }
 
 {
-    my @out = $debugger->set_breakpoint('t/eg/03-return.pl', 'g');
-    cmp_deeply(\@out, [$PROMPT, ''], 'set_breakpoint')
-        or diag($debugger->buffer);
+    ok($debugger->set_breakpoint('t/eg/03-return.pl', 'g'), 'set_breakpoint');
 }
 
 {

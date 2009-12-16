@@ -99,9 +99,7 @@ TODO: {
 
 
 {
-    my @out = $debugger->set_breakpoint( 't/eg/02-sub.pl', 18 );
-    cmp_deeply(\@out, [$PROMPT, ''], 'set_breakpoint')
-        or diag($debugger->buffer);
+    ok($debugger->set_breakpoint( 't/eg/02-sub.pl', 18 ), 'set_breakpoint');
 }
 
 {
