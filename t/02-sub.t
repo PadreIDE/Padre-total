@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 20);
+plan(tests => 27);
 
 my $debugger = start_debugger();
 
@@ -90,44 +90,44 @@ my $debugger = start_debugger();
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<> ", 'out');
 }
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::f(t/eg/02-sub.pl:16):\t   my (\$q, \$w) = \@_;\n  DB<> ", 'out');
 }
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::f(t/eg/02-sub.pl:17):\t   my \$multi = \$q * \$w;\n  DB<> ", 'out');
 }
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::f(t/eg/02-sub.pl:18):\t   my \$add   = \$q + \$w;\n  DB<> ", 'out');
 }
 
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::f(t/eg/02-sub.pl:19):\t   return \$multi;\n  DB<> ", 'out');
 }
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<> ", 'out');
 }
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::(t/eg/02-sub.pl:12):\t\$z++;\n  DB<> ", 'out');
 }
 
