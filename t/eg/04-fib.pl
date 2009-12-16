@@ -24,7 +24,7 @@ print "$res\n";
 
 
 sub fiball {
-    my $n = shift;
+    my ($n) = @_;
     return 1     if $n == 1;
     return (1,1) if $n == 2;
     my @fib = (1, 1);

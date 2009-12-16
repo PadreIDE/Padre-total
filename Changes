@@ -1,3 +1,10 @@
+v0.08
+    Added more tests.
+    Fixing some tests.
+    set_breakpoint now returns true/false
+    remove_breakpoint added
+    list_break_watch_action added
+
 v0.07 2009.12.15
     Added more test.
 

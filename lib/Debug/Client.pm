@@ -225,7 +225,7 @@ the script. (Like pressing c in the debugger).
 
 
 =cut
-sub run       { 
+sub run { 
     my ($self, $param) = @_;
     if (not defined $param) {
         $self->send_get('c');
@@ -241,7 +241,7 @@ sub run       {
 
 =cut
 
-#  TODO: Line 15 not breakable.
+
 sub set_breakpoint {
     my ($self, $file, $line, $cond) = @_;
 
@@ -250,14 +250,37 @@ sub set_breakpoint {
     # Already in t/eg/02-sub.pl.
 
     $self->_send("b $line");
+    # if it was successful no reply
+    # if it failed we saw two possible replies
     my $buf = $self->_get;
-    if (wantarray) {
-        my $prompt = _prompt(\$buf);
-        return($prompt, $buf);
-    } else {
-        return $buf;
+    my $prompt = _prompt(\$buf);
+    if ($buf =~ /^Subroutine [\w:]+ not found\./) {
+        # failed
+        return 0;
+    } elsif ($buf =~ /^Line \d+ not breakable\./) {
+        # faild to set on line number
+        return 0;
+    } elsif ($buf =~ /\S/) {
+        return 0;
     }
+
+    return 1;
 }
+
+# apparently no clear success/error report for this
+sub remove_breakpoint {
+    my ($self, $file, $line) = @_;
+
+    $self->_send("f $file");
+    my $b = $self->_get;
+
+    $self->_send("B $line");
+    my $buf = $self->_get;
+    return 1;
+}
+
+sub list_break_watch_action { $_[0]->send_get('L') }
+
 
 =head2 execute_code
 
