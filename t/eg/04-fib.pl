@@ -21,3 +21,21 @@ sub fibx {
 
 my $res = fib(10);
 print "$res\n";
+
+
+sub fiball {
+    my $n = shift;
+    return 1     if $n == 1;
+    return (1,1) if $n == 2;
+    my @fib = (1, 1);
+    for (3..$n) {
+        push @fib, $fib[-1]+$fib[-2];
+    }
+}
+
+fib(3);
+my $f4 = fib(4);
+my @f5 = fib(5);
+
+print "$f4; @f5\n";
+
