@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 7);
+plan(tests => 8);
 
 diag("PID $pid");
 my $debugger = start_debugger();
@@ -42,7 +42,7 @@ isa_ok($debugger, 'Debug::Client');
 
 {
     my $out = $debugger->step_in;
-    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, "main::(t/eg/01-add.pl:7):\tmy \$y = 2;\n  DB<> ", 'line 7') or do {
         $out =~ s/ /S/g;
         diag($out);
