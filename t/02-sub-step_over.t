@@ -65,12 +65,14 @@ my $debugger = start_debugger();
 
 {
     my $out = $debugger->step_over;
-    is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<3> ", 'step over on simple statement');
+    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    is($out, "main::(t/eg/02-sub.pl:10):\tmy \$t = f(19, 23);\n  DB<> ", 'step over on simple statement');
 }
 
 {
     my $out = $debugger->step_over;
-    is($out, "main::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<3> ", 'step over in scalar context');
+    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    is($out, "main::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<> ", 'step over in scalar context');
 }
 
 {

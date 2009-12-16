@@ -53,10 +53,11 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->execute_code('19+23');
-    cmp_deeply(\@out, ['2', ''], 'no code')
+    cmp_deeply(\@out, [$PROMPT, ''], 'no code')
         or diag($debugger->buffer);
     my $out = $debugger->execute_code('19+23');
-    is($out, "\n  DB<3> ", 'no code in scalar context');
+    substr($out, -3, 1, ''); #replace number as it can be different on other versions of perl
+    is($out, "\n  DB<> ", 'no code in scalar context');
 }
 
 
