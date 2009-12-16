@@ -1,14 +1,32 @@
 # /*/META.yml
+Padre-Plugin-Alarm/share/locale/*.mo
+Padre-Plugin-Autoformat/lib/Padre/Plugin/Autoformat/share/locale/*.mo
 Debug-Client/META.yml
 Debug-Client/Makefile
 Debug-Client/blib/
 Debug-Client/inc/
 Debug-Client/pm_to_blib
+Padre-Plugin-CSS/share/locale/*.mo
+Padre-Plugin-Catalyst/share/locale/*.mo
+Padre-Plugin-ClassSniff/share/locale/*.mo
+Padre-Plugin-CommandLine/share/locale/*.mo
+Padre-Plugin-DataWalker/share/locale/*.mo
+Padre-Plugin-Ecliptic/lib/Padre/Plugin/Ecliptic/share/locale/*.mo
+Padre-Plugin-Mojolicious/share/locale/*.mo
+Padre-Plugin-PAR/share/locale/*.mo
+Padre-Plugin-Perl6/lib/Padre/Plugin/Perl6/share/locale/*.mo
+Padre-Plugin-PerlCritic/share/locale/*.mo
+Padre-Plugin-PerlTidy/share/locale/*.mo
+Padre-Plugin-REPL/share/locale/*.mo
+Padre-Plugin-SpellCheck/lib/Padre/Plugin/SpellCheck/share/locale/*.mo
+Padre-Plugin-Vi/share/locale/*.mo
+
 Padre/.padre/
 Padre/META.yml
 Padre/Makefile
 Padre/blib/
 Padre/inc/
 Padre/pm_to_blib
-
 Padre/share/locale/*.mo
+
+nothing added to commit but untracked files present (use "git add" to track)
