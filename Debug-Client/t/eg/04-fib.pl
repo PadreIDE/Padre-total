@@ -31,11 +31,12 @@ sub fiball {
     for (3..$n) {
         push @fib, $fib[-1]+$fib[-2];
     }
+    return @fib;
 }
 
-fib(3);
-my $f4 = fib(4);
-my @f5 = fib(5);
+fiball(3);
+my $f4 = fiball(4);
+my @f5 = fiball(5);
 
 print "$f4; @f5\n";
 

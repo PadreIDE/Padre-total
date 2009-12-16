@@ -11,7 +11,8 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 26);
+plan(tests => 37);
+our $TODO;
 
 use Data::Dumper qw(Dumper);
 
@@ -138,6 +139,73 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
   DB<> ', 'run till breakpoint');
 }
 
+{
+    $debugger->step_in;
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+        or diag($debugger->buffer);
+}
+  
+{
+    my @out = $debugger->get_stack_trace;
+    my $trace = q(. = main::fiball(3) called from file `t/eg/04-fib.pl' line 37);
+    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+        or diag($debugger->buffer);
+}
+
+{
+    my @out = $debugger->step_out;
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 38, 'my $f4 = fiball(4);', undef]);
+    # It think the last undef is the return value in void context
+}
+
+{
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+        or diag($debugger->buffer);
+}
+{
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
+        or diag($debugger->buffer);
+}
+{
+    my @out = $debugger->get_stack_trace;
+    my $trace = q($ = main::fiball(4) called from file `t/eg/04-fib.pl' line 38);
+    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+        or diag($debugger->buffer);
+}
+
+{
+    my @out = $debugger->step_out;
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 39, 'my @f5 = fiball(5);', 4]);
+    # array returned in scalar context so we get 4 as the last parameter, the number of elements
+}
+
+
+{
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+        or diag($debugger->buffer);
+}
+{
+    my @out = $debugger->step_in;
+    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
+        or diag($debugger->buffer);
+}
+{
+    my @out = $debugger->get_stack_trace;
+    my $trace = q(@ = main::fiball(5) called from file `t/eg/04-fib.pl' line 39);
+    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+        or diag($debugger->buffer);
+}
+
+TODO: {
+    local $TODO = 'handle complex return value from subroutines';
+
+    my @out = $debugger->step_out;
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 41, 'print "$f4; @f5\n";', [1, 1, 2, 3, 5]]);
+}
 
 {
     $debugger->quit;
