@@ -19,7 +19,7 @@ Version 0.03
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
@@ -121,11 +121,12 @@ sub menu_plugins {
     Wx::Event::EVT_MENU( $main, $self->{asset_tree_toggle}, sub { $self->toggle_asset_tree } );
 
     # Turn on Asset Tree as soon as Plugin is enabled
-    # Todo - find a better place to put this
-    if ( $self->config_read->{show_asset_tree} ) {
-        $self->{asset_tree_toggle}->Check(1);
-        $self->toggle_asset_tree;
-    }
+    # Disabled - we can't have this here because menu_plugins is called repeatedly
+#    if ( $self->config_read->{show_asset_tree} ) {
+#        $self->{asset_tree_toggle}->Check(1);
+#        
+#        $self->toggle_asset_tree;
+#    }
 
     # Online Resources
     my $resources_submenu = Wx::Menu->new;
