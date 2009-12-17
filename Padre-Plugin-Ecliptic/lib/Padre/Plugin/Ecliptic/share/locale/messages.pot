@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-18 11:32+0300\n"
+"POT-Creation-Date: 2009-12-17 21:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,88 +20,68 @@ msgstr ""
 msgid "Ecliptic"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:88
+#: lib/Padre/Plugin/Ecliptic.pm:96
 msgid "Quick Assist\tCtrl-Shift-L"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:95
+#: lib/Padre/Plugin/Ecliptic.pm:103
 msgid "Quick Outline Access\tCtrl-4"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:102
+#: lib/Padre/Plugin/Ecliptic.pm:110
 msgid "Quick Module Access\tCtrl-5"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:109
-msgid "Quick Fix\tCtrl-Shift-1"
-msgstr ""
-
-#: lib/Padre/Plugin/Ecliptic.pm:119
+#: lib/Padre/Plugin/Ecliptic.pm:120
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic.pm:135
+#: lib/Padre/Plugin/Ecliptic.pm:136
 msgid "Provides Eclipse-like useful features to Padre.\n"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm:31
+#: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm:30
 msgid "Quick Assist"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
-msgid "No filename"
-msgstr ""
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
-msgid "Error"
-msgstr ""
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:45
-msgid "Quick Fix"
-msgstr ""
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:207
-msgid "No suggestions"
-msgstr ""
-
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:34
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:33
 msgid "Quick Module Access"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:128
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:127
 msgid "&Type a module name to access:"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:135
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:134
 msgid "&Matching modules:"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:246
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:245
 msgid "Reading modules. Please wait..."
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:250
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:257
 msgid "Finished Searching"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:262
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:274
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:269
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:273
 msgid " item(s) found"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:264
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:276
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:271
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:275
 msgid "No items found"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:33
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:32
 msgid "Quick Outline Access"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:118
 msgid "&Type a Outline item name to access:"
 msgstr ""
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:126
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:125
 msgid "&Matching Outline Items:"
 msgstr ""
