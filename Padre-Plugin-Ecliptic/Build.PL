@@ -25,7 +25,6 @@ my $builder = $class->new(
 	requires => {
 		'Padre'             => '0.43',
 		'Class::XSAccessor' => '1.02',
-		'ExtUtils::Install' => '1.52',
 		'File::Which'       => '0.05',
 	},
 	add_to_cleanup     => ['Padre-Plugin-Ecliptic-*'],
