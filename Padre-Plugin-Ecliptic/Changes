@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.19  2009.12.17
+
+	Fixed ticket:471 "Ecliptic Quick Module Access should use CPAN::SQLite::Search"
+
 =head1 0.18  2009.8.24
 
 	Removed stupid code from Ecliptic :)
