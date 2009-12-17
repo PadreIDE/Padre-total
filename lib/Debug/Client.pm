@@ -402,6 +402,10 @@ sub _prompt {
 sub _process_line {
     my ($buf) = @_;
 
+    if ($$buf =~ /Debugged program terminated/) {
+            return '<TERMINATED>';
+    }
+
     my @parts = split /\n/, $$buf;
     my $line = pop @parts;
     _logger("Line: '$line'");

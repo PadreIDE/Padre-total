@@ -1,5 +1,6 @@
 v0.09
     Add case when content of the line is shown on a separate line
+    Mark when a call has terminated the debugger.
 
 v0.08 2009.12.16
     Added more tests.
