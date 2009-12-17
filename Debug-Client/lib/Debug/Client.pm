@@ -398,22 +398,34 @@ sub _prompt {
     return $prompt;
 }
 
+# see 00-internal.t for test cases
 sub _process_line {
     my ($buf) = @_;
 
     my @parts = split /\n/, $$buf;
     my $line = pop @parts;
-    $$buf = join "\n", @parts;
+    _logger("Line: '$line'");
+    my $cont;
+    if ($line =~ /^\d+:   \s*  (.*)$/x) {
+        $cont = $1;
+        $line = pop @parts;
+        _logger("Line2: '$line'");
+    }
 
+    $$buf = join "\n", @parts;
     my ($module, $file, $row, $content);
+
     # the last line before 
     # main::(t/eg/01-add.pl:8):  my $z = $x + $y;
     if ($line =~ /^([\w:]*)                  # module
                   \(   ([^\)]*):(\d+)   \)   # (file:row)
-                  :\t                        # :
+                  :\t?                        # :
                   (.*)                       # content
                   /mx) {
         ($module, $file, $row, $content) = ($1, $2, $3, $4);
+    }
+    if ($cont) {
+        $content = $cont;
     }
     return ($module, $file, $row, $content);
 }
@@ -464,7 +476,7 @@ sub send_get {
 }
 
 sub _logger {
-    print "$_[0]\n" if $ENV{DEBUG_LOGGER};
+    print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
 }
 
 
