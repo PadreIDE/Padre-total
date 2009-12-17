@@ -11,23 +11,14 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 27);
+plan(tests => 26);
 
 my $debugger = start_debugger();
 
 {
-    my $out = $debugger->get;
- 
-# Loading DB routines from perl5db.pl version 1.28
-# Editor support available.
-# 
-# Enter h or `h h' for help, or `man perldebug' for more help.
-# 
-# main::(t/eg/01-add.pl:4):	$| = 1;
-#   DB<1> 
-
-    like($out, qr/Loading DB routines from perl5db.pl version/, 'loading line');
-    like($out, qr{main::\(t/eg/02-sub.pl:4\):\s*\$\| = 1;}, 'line 4');
+    my @out = $debugger->get;
+    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 4, '$| = 1;'], 'line 4')
+        or diag($debugger->buffer);
 }
 
 {
