@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Ecliptic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-08-18 11:32+0300\n"
+"POT-Creation-Date: 2009-12-17 21:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -15,92 +15,82 @@ msgstr ""
 msgid "Ecliptic"
 msgstr "برنامج اكليبتيك"
 
-#: lib/Padre/Plugin/Ecliptic.pm:88
+#: lib/Padre/Plugin/Ecliptic.pm:96
 msgid "Quick Assist\tCtrl-Shift-L"
 msgstr "المساعدة السريعة\tCtrl-Shift-L"
 
-#: lib/Padre/Plugin/Ecliptic.pm:95
+#: lib/Padre/Plugin/Ecliptic.pm:103
 msgid "Quick Outline Access\tCtrl-4"
 msgstr "الوصول السريع للمخطط\tCtrl-4"
 
-#: lib/Padre/Plugin/Ecliptic.pm:102
+#: lib/Padre/Plugin/Ecliptic.pm:110
 msgid "Quick Module Access\tCtrl-5"
 msgstr "الوصول السريع للوحدة\tCtrl-5"
 
-#: lib/Padre/Plugin/Ecliptic.pm:109
-msgid "Quick Fix\tCtrl-Shift-1"
-msgstr "الحل السريع\tCtrl-Shift-1"
-
-#: lib/Padre/Plugin/Ecliptic.pm:119
+#: lib/Padre/Plugin/Ecliptic.pm:120
 msgid "About"
 msgstr "عن"
 
-#: lib/Padre/Plugin/Ecliptic.pm:135
+#: lib/Padre/Plugin/Ecliptic.pm:136
 msgid "Provides Eclipse-like useful features to Padre.\n"
 msgstr "يقدم مزايا مفيدة ومشابهة لبرنامج Eclipse  لبرنامج Padre.\n"
 
-#: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm:31
+#: lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm:30
 msgid "Quick Assist"
 msgstr "المساعدة السريعة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
-msgid "No filename"
-msgstr "لا يوجد اسم للملف"
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:33
-msgid "Error"
-msgstr "خطأ"
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:45
-msgid "Quick Fix"
-msgstr "الحل السريع"
-
-#: lib/Padre/Plugin/Ecliptic/QuickFixDialog.pm:207
-msgid "No suggestions"
-msgstr "بلا اقتراحات"
-
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:34
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:33
 msgid "Quick Module Access"
 msgstr "الوصول السريع للوحدة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:128
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:127
 msgid "&Type a module name to access:"
 msgstr "اطبع اسم مادة الوحدة للوصول اليها:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:135
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:134
 msgid "&Matching modules:"
 msgstr "الوحدات المطابقة:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:246
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:245
 msgid "Reading modules. Please wait..."
 msgstr "جاري قراءة الوحدات. الرجاء الانتظار..."
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:250
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:257
 msgid "Finished Searching"
 msgstr "تم البحث"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:262
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:274
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:269
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:273
 msgid " item(s) found"
 msgstr "مواد عثر عليها"
 
-#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:264
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:276
+#: lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm:271
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:275
 msgid "No items found"
 msgstr "لا يوجد أي مادة"
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:33
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:32
 msgid "Quick Outline Access"
 msgstr "الوصول السريع للمخطط"
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:119
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:118
 msgid "&Type a Outline item name to access:"
 msgstr "اطبع اسم مادة المخطط للوصول اليها:"
 
-#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:126
+#: lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm:125
 msgid "&Matching Outline Items:"
 msgstr "مواد المخطط المطابقة:"
 
+#~ msgid "Quick Fix\tCtrl-Shift-1"
+#~ msgstr "الحل السريع\tCtrl-Shift-1"
+#~ msgid "No filename"
+#~ msgstr "لا يوجد اسم للملف"
+#~ msgid "Error"
+#~ msgstr "خطأ"
+#~ msgid "Quick Fix"
+#~ msgstr "الحل السريع"
+#~ msgid "No suggestions"
+#~ msgstr "بلا اقتراحات"
 #~ msgid "Open Resource\tCtrl-Shift-R"
 #~ msgstr "فتح المصدر\tCtrl-Shift-R"
 #~ msgid "Quick Menu Access\tCtrl-3"
