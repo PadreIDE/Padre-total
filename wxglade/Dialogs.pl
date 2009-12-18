@@ -289,6 +289,7 @@ sub __set_properties {
 
 	$self->SetTitle(_T("dialog_1"));
 	$self->{openurl_text}->SetSelection(-1);
+	$self->{ok}->SetDefault();
 
 # end wxGlade
 }
@@ -390,6 +391,92 @@ sub __do_layout {
 }
 
 # end of class Warning
+
+1;
+
+package Form;
+
+use Wx qw[:everything];
+use base qw(Wx::Dialog);
+use strict;
+
+use Wx::Locale gettext => '_T';
+sub new {
+	my( $self, $parent, $id, $title, $pos, $size, $style, $name ) = @_;
+	$parent = undef              unless defined $parent;
+	$id     = -1                 unless defined $id;
+	$title  = ""                 unless defined $title;
+	$pos    = wxDefaultPosition  unless defined $pos;
+	$size   = wxDefaultSize      unless defined $size;
+	$name   = ""                 unless defined $name;
+
+# begin wxGlade: Form::new
+
+	$style = wxDEFAULT_DIALOG_STYLE 
+		unless defined $style;
+
+	$self = $self->SUPER::new( $parent, $id, $title, $pos, $size, $style, $name );
+	$self->{label_1} = Wx::StaticText->new($self, -1, _T("Label One"), wxDefaultPosition, wxDefaultSize, );
+	$self->{text_ctrl_1} = Wx::TextCtrl->new($self, -1, "", wxDefaultPosition, wxDefaultSize, );
+	$self->{label_2} = Wx::StaticText->new($self, -1, _T("Second Label"), wxDefaultPosition, wxDefaultSize, );
+	$self->{combo_box_1} = Wx::ComboBox->new($self, -1, "", wxDefaultPosition, wxDefaultSize, [], wxCB_DROPDOWN);
+	$self->{label_3} = Wx::StaticText->new($self, -1, _T("Whatever"), wxDefaultPosition, wxDefaultSize, );
+	$self->{choice_1} = Wx::Choice->new($self, -1, wxDefaultPosition, wxDefaultSize, [], );
+	$self->{static_line_1} = Wx::StaticLine->new($self, -1, wxDefaultPosition, wxDefaultSize, );
+	$self->{ok} = Wx::Button->new($self, wxID_OK, "");
+	$self->{cancel} = Wx::Button->new($self, wxID_CANCEL, "");
+
+	$self->__set_properties();
+	$self->__do_layout();
+
+# end wxGlade
+	return $self;
+
+}
+
+
+sub __set_properties {
+	my $self = shift;
+
+# begin wxGlade: Form::__set_properties
+
+	$self->SetTitle(_T("Padre"));
+	$self->{combo_box_1}->SetSelection(-1);
+	$self->{choice_1}->SetSelection(0);
+	$self->{ok}->SetDefault();
+
+# end wxGlade
+}
+
+sub __do_layout {
+	my $self = shift;
+
+# begin wxGlade: Form::__do_layout
+
+	$self->{sizer_7} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{sizer_8} = Wx::BoxSizer->new(wxVERTICAL);
+	$self->{button_sizer} = Wx::BoxSizer->new(wxHORIZONTAL);
+	$self->{form_sizer} = Wx::GridSizer->new(3, 2, 5, 5);
+	$self->{form_sizer}->Add($self->{label_1}, 0, wxALIGN_CENTER_VERTICAL, 0);
+	$self->{form_sizer}->Add($self->{text_ctrl_1}, 0, 0, 0);
+	$self->{form_sizer}->Add($self->{label_2}, 0, wxALIGN_CENTER_VERTICAL, 0);
+	$self->{form_sizer}->Add($self->{combo_box_1}, 0, 0, 0);
+	$self->{form_sizer}->Add($self->{label_3}, 0, wxALIGN_CENTER_VERTICAL, 0);
+	$self->{form_sizer}->Add($self->{choice_1}, 0, 0, 0);
+	$self->{sizer_8}->Add($self->{form_sizer}, 1, wxEXPAND, 0);
+	$self->{sizer_8}->Add($self->{static_line_1}, 0, wxTOP|wxBOTTOM|wxEXPAND, 5);
+	$self->{button_sizer}->Add($self->{ok}, 1, 0, 0);
+	$self->{button_sizer}->Add($self->{cancel}, 1, wxLEFT, 5);
+	$self->{sizer_8}->Add($self->{button_sizer}, 0, wxALIGN_RIGHT, 5);
+	$self->{sizer_7}->Add($self->{sizer_8}, 1, wxALL|wxEXPAND, 5);
+	$self->SetSizer($self->{sizer_7});
+	$self->{sizer_7}->Fit($self);
+	$self->Layout();
+
+# end wxGlade
+}
+
+# end of class Form
 
 1;
 
