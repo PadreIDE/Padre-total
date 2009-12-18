@@ -6,6 +6,7 @@ use 5.006;
 our $VERSION = '0.09';
 
 use IO::Socket;
+use Carp ();
 
 =head1 NAME
 
@@ -408,6 +409,12 @@ sub _process_line {
 
     my @parts = split /\n/, $$buf;
     my $line = pop @parts;
+
+	# try to debug some test reports
+	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
+	if (not defined $line) {
+		Carp::croak("Line is undef. Buffer is '$$buf'");
+	}
     _logger("Line: '$line'");
     my $cont;
     if ($line =~ /^\d+:   \s*  (.*)$/x) {
