@@ -1,4 +1,4 @@
-v0.09
+v0.09 2009.12.18
     Add case when content of the line is shown on a separate line
     Mark when a call has terminated the debugger.
 
