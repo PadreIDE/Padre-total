@@ -1,5 +1,7 @@
 
     Add some code to debuge certain test failures
+    Turn _prompt and _process_line into method calls
+    Keep the current filename and row number in the debugger object
 
 v0.09 2009.12.18
     Add case when content of the line is shown on a separate line

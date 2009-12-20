@@ -93,16 +93,8 @@ sub new {
     %args = (host => 'localhost', port => 12345,
              %args);
 
-    # Open the socket the debugger will connect to.
-    my $sock = IO::Socket::INET->new(
-                   LocalHost => $args{host},
-                   LocalPort => $args{port},
-                   Proto     => 'tcp',
-                   Listen    => SOMAXCONN,
-                   Reuse     => 1);
-    $sock or die "Could not connect to '$args{host}' '$args{port}' no socket :$!";
-    _logger("listening on '$args{host}:$args{port}'");
-    $self->{sock} = $sock;
+    $self->{host} = $args{host};
+    $self->{port} = $args{port};
 
     return $self;
 }
@@ -115,6 +107,17 @@ See C<new>
 
 sub listen {
     my ($self) = @_;
+
+    # Open the socket the debugger will connect to.
+    my $sock = IO::Socket::INET->new(
+                   LocalHost => $self->{host},
+                   LocalPort => $self->{port},
+                   Proto     => 'tcp',
+                   Listen    => SOMAXCONN,
+                   Reuse     => 1);
+    $sock or die "Could not connect to '$self->{host}' '$self->{port}' no socket :$!";
+    _logger("listening on '$self->{host}:$self->{port}'");
+    $self->{sock} = $sock;
 
     $self->{new_sock} = $self->{sock}->accept();
 
@@ -197,8 +200,8 @@ sub step_out  {
     # main::(t/eg/03-return.pl:10):	$x++;
 
     if (wantarray) {
-        my $prompt = _prompt(\$buf);
-        my @line = _process_line(\$buf);
+        my $prompt = $self->_prompt(\$buf);
+        my @line = $self->_process_line(\$buf);
         my $ret;
         my $context;
         if ($buf =~ /^(scalar|list) context return from (\S+):\s*(.*)/s) {
@@ -225,7 +228,7 @@ sub get_stack_trace {
     my $buf = $self->_get;
 
     if (wantarray) {
-        my $prompt = _prompt(\$buf);
+        my $prompt = $self->_prompt(\$buf);
         return($prompt, $buf);
     } else {
         return $buf;
@@ -271,7 +274,7 @@ sub set_breakpoint {
     # if it was successful no reply
     # if it failed we saw two possible replies
     my $buf = $self->_get;
-    my $prompt = _prompt(\$buf);
+    my $prompt = $self->_prompt(\$buf);
     if ($buf =~ /^Subroutine [\w:]+ not found\./) {
         # failed
         return 0;
@@ -314,7 +317,7 @@ sub execute_code {
     $self->_send($code);
     my $buf = $self->_get;
     if (wantarray) {
-       my $prompt = _prompt(\$buf);
+       my $prompt = $self->_prompt(\$buf);
        return ($prompt, $buf);
     } else {
        return $buf;
@@ -342,7 +345,7 @@ sub get_value {
         $self->_send("p $var");
         my $buf = $self->_get;
         if (wantarray) {
-            my $prompt = _prompt(\$buf);
+            my $prompt = $self->_prompt(\$buf);
             return ($prompt, $buf);
         } else {
             return $buf
@@ -351,7 +354,7 @@ sub get_value {
         $self->_send("x \\$var");
         my $buf = $self->_get;
         if (wantarray) {
-            my $prompt = _prompt(\$buf);
+            my $prompt = $self->_prompt(\$buf);
             my $data_ref = _parse_dumper($buf);
             return ($prompt, $data_ref);
         } else {
@@ -390,7 +393,7 @@ sub _get {
 }
 
 sub _prompt {
-    my ($buf) = @_;
+    my ($self, $buf) = @_;
     my $prompt;
     if ($$buf =~ s/\s*DB<(\d+)>\s*$//) {
         $prompt = $1;
@@ -401,7 +404,7 @@ sub _prompt {
 
 # see 00-internal.t for test cases
 sub _process_line {
-    my ($buf) = @_;
+    my ($self, $buf) = @_;
 
     if ($$buf =~ /Debugged program terminated/) {
             return '<TERMINATED>';
@@ -438,6 +441,8 @@ sub _process_line {
     if ($cont) {
         $content = $cont;
     }
+    $self->{filename} = $file;
+    $self->{row}      = $row;
     return ($module, $file, $row, $content);
 }
 
@@ -464,8 +469,8 @@ sub get {
     my $buf = $self->_get;
 
     if (wantarray) {
-        my $prompt = _prompt(\$buf);
-        my ($module, $file, $row, $content) = _process_line(\$buf);
+        my $prompt = $self->_prompt(\$buf);
+        my ($module, $file, $row, $content) = $self->_process_line(\$buf);
         return ($prompt, $module, $file, $row, $content);
     } else {
         return $buf;
@@ -485,6 +490,9 @@ sub send_get {
 
     return $self->get;
 }
+
+sub filename { return $_[0]->{filename} };
+sub row      { return $_[0]->{row} };
 
 sub _logger {
     print "LOG: $_[0]\n" if $ENV{DEBUG_LOGGER};
