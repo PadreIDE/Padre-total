@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 37);
+plan(tests => 40);
 our $TODO;
 
 use Data::Dumper qw(Dumper);
@@ -40,6 +40,18 @@ my $debugger = start_debugger();
 }
 
 {
+    my $out = $debugger->list_break_watch_action;
+    like($out, qr/^\s*DB<\d+> $/, 'no breakpoint in scalar context');
+}
+
+SKIP: {
+    skip('Fix list_break_watch_action in LIST context', 1);
+    my @out = $debugger->list_break_watch_action;
+    cmp_deeply(\@out, re('^DB<\d+> $'), 'no breakpoint in list context')
+        or diag($debugger->buffer);
+}
+
+{
     ok($debugger->set_breakpoint('t/eg/04-fib.pl', 'fibx'), 'set_breakpoint');
 
     my $out = $debugger->list_break_watch_action;
@@ -48,6 +60,13 @@ my $debugger = start_debugger();
  17:	    my $n = shift;
    break if (1)
   DB<> ', 'list_break_wath_action');
+}
+
+SKIP: {
+    skip('Fix list_break_watch_action in LIST context', 1);
+    my @out = $debugger->list_break_watch_action;
+    cmp_deeply(\@out, [$PROMPT, undef, undef, undef, undef], 'breakpoints in list context') or
+        diag($debugger->buffer);
 }
 
 {

@@ -416,7 +416,7 @@ sub _process_line {
 	# try to debug some test reports
 	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
 	if (not defined $line) {
-		Carp::croak("Line is undef. Buffer is '$$buf'");
+		Carp::croak("Debug::Client: Line is undef. Buffer is '$$buf'");
 	}
     _logger("Line: '$line'");
     my $cont;
