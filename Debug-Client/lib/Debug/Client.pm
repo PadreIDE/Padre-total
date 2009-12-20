@@ -220,6 +220,11 @@ sub step_out  {
 
 =head2 get_stack_trace
 
+Sends the stack trace command C<T> to the remote debugger
+and returns it as a string if called in scalar context.
+Returns the prompt number and the stack trace string
+when called in array context.
+
 =cut
 
 sub get_stack_trace {
@@ -244,8 +249,8 @@ the script. (Like pressing c in the debugger).
 
   $d->run($param)
 
-
 =cut
+
 sub run { 
     my ($self, $param) = @_;
     if (not defined $param) {
@@ -326,7 +331,6 @@ sub execute_code {
 
 =head2 get_value
 
-
  my ($prompt, $value) = $d->get_value($x);
 
 If $x is a scalar value, $value will contain that value.
@@ -348,7 +352,7 @@ sub get_value {
             my $prompt = $self->_prompt(\$buf);
             return ($prompt, $buf);
         } else {
-            return $buf
+            return $buf;
         }
     } elsif ($var =~ /\@/ or $var =~ /\%/) {
         $self->_send("x \\$var");
@@ -358,7 +362,7 @@ sub get_value {
             my $data_ref = _parse_dumper($buf);
             return ($prompt, $data_ref);
         } else {
-            return $buf
+            return $buf;
         }
     }
     die "Unknown parameter '$var'\n";
@@ -413,11 +417,11 @@ sub _process_line {
     my @parts = split /\n/, $$buf;
     my $line = pop @parts;
 
-	# try to debug some test reports
-	# http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
-	if (not defined $line) {
-		Carp::croak("Debug::Client: Line is undef. Buffer is '$$buf'");
-	}
+    # try to debug some test reports
+    # http://www.nntp.perl.org/group/perl.cpan.testers/2009/12/msg6542852.html
+    if (not defined $line) {
+            Carp::croak("Debug::Client: Line is undef. Buffer is '$$buf'");
+    }
     _logger("Line: '$line'");
     my $cont;
     if ($line =~ /^\d+:   \s*  (.*)$/x) {
@@ -458,8 +462,6 @@ interesting.
 $file and $row describe the location of the next instructions.
 $content is the actual line - this is probably not too interesting as it is 
 in the editor. $module is just the name of the module in which the current execution is.
-
-
 
 =cut
 
@@ -505,7 +507,7 @@ L<GRID::Machine::remotedebugtut>
 
 =head1 COPYRIGHT
 
-Copyright 2008 Gabor Szabo. L<http://www.szabgab.com/>
+Copyright 2008-2009 Gabor Szabo. L<http://www.szabgab.com/>
 
 =head1 LICENSE
 
