@@ -45,9 +45,10 @@ push @tests, {
 
 plan tests => scalar @tests;
 
+my $d = Debug::Client->new;
 foreach my $t (@tests) {
         my $out = $t->{out};
-        my $prompt = Debug::Client::_prompt(\$out);
-        my @res = Debug::Client::_process_line(\$out);
+        my $prompt = $d->_prompt(\$out);
+        my @res = $d->_process_line(\$out);
         cmp_deeply([$prompt, @res], $t->{exp});
 }
