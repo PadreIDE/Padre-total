@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Padre::Current ();
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Util    ();
 use Padre::Wx      ();
 

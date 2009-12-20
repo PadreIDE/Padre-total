@@ -6,7 +6,7 @@ use warnings;
 
 use Carp ();
 use Params::Util '_INSTANCE';
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Document ();
 use Padre::Util     ();
 use Padre::Constant;

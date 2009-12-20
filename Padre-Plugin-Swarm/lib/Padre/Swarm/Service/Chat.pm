@@ -10,7 +10,7 @@ use Data::Dumper ();
 require JSON::XS;
 use Time::HiRes ();
 
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Plugin::Swarm ();
 use Padre::Swarm::Service ();
 use Padre::Swarm::Message ();

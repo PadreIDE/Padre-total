@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use base 'Padre::Plugin';
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Util ('_T');
 use Padre::Plugin::WebGUI::Assets;
 

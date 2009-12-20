@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Cwd                    ();
-use Padre::Debug;
+use Padre::Logger;
 use Padre::HelpProvider    ();
 use Padre::DocBrowser::POD ();
 use Padre::Pod2HTML        ();

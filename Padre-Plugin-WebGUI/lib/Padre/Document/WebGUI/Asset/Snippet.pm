@@ -3,7 +3,7 @@ package Padre::Document::WebGUI::Asset::Snippet;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Document::WebGUI::Asset;
 
 our @ISA = 'Padre::Document::WebGUI::Asset';

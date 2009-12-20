@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Carp;
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Document ();
 
 our @ISA = 'Padre::Document';

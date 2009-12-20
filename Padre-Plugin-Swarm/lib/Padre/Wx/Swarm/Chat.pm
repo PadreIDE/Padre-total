@@ -8,7 +8,7 @@ use Params::Util qw{_INSTANCE};
 use Wx::Perl::Dialog::Simple;
 
 use Padre::Current qw{_CURRENT};
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Wx ();
 use Padre::Config ();
 use Padre::Plugin::Swarm ();

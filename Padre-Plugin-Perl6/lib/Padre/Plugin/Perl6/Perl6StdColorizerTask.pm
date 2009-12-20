@@ -5,7 +5,7 @@ use warnings;
 use base 'Padre::Task';
 use Scalar::Util    ();
 use Padre::Constant ();
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Util     ();
 
 our $VERSION        = '0.61';
