@@ -1,4 +1,4 @@
-
+v0.10 2009.12.20
     Add some code to debuge certain test failures
     Turn _prompt and _process_line into method calls
     Keep the current filename and row number in the debugger object
