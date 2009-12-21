@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-catalyst\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-07 01:41-0200\n"
+"POT-Creation-Date: 2009-12-14 12:20+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
 "Language-Team: brazilian portuguese\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Padre/Plugin/Catalyst.pm:68
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:67
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:73
 msgid "New Catalyst Application"
 msgstr "Novo Aplicativo Catalyst"
 
@@ -32,12 +32,12 @@ msgid "Controller"
 msgstr "Controlador"
 
 #: lib/Padre/Plugin/Catalyst.pm:105
-#: lib/Padre/Plugin/Catalyst/Util.pm:79
+#: lib/Padre/Plugin/Catalyst/Util.pm:92
 msgid "Start Web Server"
 msgstr "Iniciar Servidor Web"
 
 #: lib/Padre/Plugin/Catalyst.pm:110
-#: lib/Padre/Plugin/Catalyst/Util.pm:82
+#: lib/Padre/Plugin/Catalyst/Util.pm:95
 msgid "Stop Web Server"
 msgstr "Parar Servidor Web"
 
@@ -263,7 +263,7 @@ msgid "Catalyst helper script ended."
 msgstr "Script auxiliar do Catalyst concluído."
 
 #: lib/Padre/Plugin/Catalyst/Helper.pm:308
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:144
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:150
 #, perl-format
 msgid "%s apparently created. Do you want to open it now?"
 msgstr "%s aparentemente criado. Gostaria de abri-lo agora?"
@@ -307,20 +307,20 @@ msgstr "Diretório Pai:"
 msgid "Pick parent directory"
 msgstr "Escolha diretório pai"
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:50
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:54
 msgid "short names"
 msgstr "nomes curtos"
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:109
 msgid "Invalid Application name"
 msgstr "Nome de aplicativo inválido"
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:103
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:109
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "missing field"
 msgstr "campo não preenchido"
 
-#: lib/Padre/Plugin/Catalyst/NewApp.pm:107
+#: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "You need to select a base directory"
 msgstr "Você precisa selecionar um diretório base"
 
@@ -330,7 +330,7 @@ msgstr "Catalyst"
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:35
 #: lib/Padre/Plugin/Catalyst/Panel.pm:40
-#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+#: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Start Server"
 msgstr "Iniciar Servidor"
 
@@ -338,11 +338,15 @@ msgstr "Iniciar Servidor"
 msgid "auto-restart"
 msgstr "auto-reiniciar"
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:78
+#: lib/Padre/Plugin/Catalyst/Panel.pm:77
 msgid "Catalyst Dev Server"
 msgstr "Servidor Desenv. Catalyst"
 
-#: lib/Padre/Plugin/Catalyst/Panel.pm:83
+#: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Stop Server"
 msgstr "Parar Servidor"
+
+#: lib/Padre/Wx/Menu/Catalyst.pm:47
+msgid "&Catalyst"
+msgstr "&Catalyst"
 
