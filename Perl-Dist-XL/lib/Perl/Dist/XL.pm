@@ -76,6 +76,10 @@ TODO: fetch the list of modules installed from
 Install Plugins: Perl 6, Catalyst
 
 
+Task::CatInABox
+Tast::Catalyst::Tutorial
+
+
 
 
 
@@ -146,7 +150,7 @@ DESTROY {
 sub run {
 	my ($self) = @_;
 
-	$self->download    if $self->{download};
+	$self->download    if $self->{download} or $self->{mirror};
 	$self->clean       if $self->{clean};
 
 	$self->build_perl  if $self->{build}{perl};
@@ -289,7 +293,7 @@ sub padre_modules {
 		['Padre'                    => '0.38'],
 
 		['Padre::Plugin::Perl6'     => '0.60'],
-#		['Padre::Plugin::Catalyst'  => '0'],
+		['Padre::Plugin::Catalyst'  => '0'],
 	];
 }
 sub padre_prereqs {
@@ -591,12 +595,17 @@ sub get_cpan {
 	my $verbose = 0;
 	my $force   = 1;
 
+	my @filter;
+	if (not $self->{full}) {
+		# comment out so won't delete mirror accidentally
+		#@filter = (path_filters => [ sub { $self->filter(@_) } ]);
+	}
 	CPAN::Mini->update_mirror(
 		remote       => $cpan,
 		local        => $minicpan,
 		trace        => $verbose,
 		force        => $force,
-		path_filters => [ sub { $self->filter(@_) } ],
+		@filter,
 	);
 
 	return;

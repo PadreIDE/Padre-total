@@ -23,11 +23,12 @@ GetOptions(\%conf,
 	'build=s@',
 	'zip',
 	'perl=s',
+	'full',
 	) or usage();
 usage() if $conf{help};
 usage('--perl is required') if not $conf{perl} or ($conf{perl} ne 'stable' and $conf{perl} ne 'dev');
 usage("need one of theses: --download, --clean, --build or --zip")
-	if not $conf{download} 
+	if  not $conf{download} 
 	and not $conf{clean}
 	and not $conf{build}
 	and not $conf{zip};
@@ -45,10 +46,14 @@ sub usage {
 	print <<"END_USAGE";
 Usage: $0
 
+
        --download      will dowsnload perl, CPAN modules, ...
        --clean         removes build files
        --build [perl|cpan|wx|padre|all]   where 'all' indicated all the others as well
        --zip           create the zip file
+
+  Alternative:
+       --download --full       full Mini CPAN mirror
 
        --perl [dev|stable|git]      which version of perl to use
                        dev    = 5.11.2
@@ -56,6 +61,7 @@ Usage: $0
                        git    = ????
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
+
 
        --help          This help
 
