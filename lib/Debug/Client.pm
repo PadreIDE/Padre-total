@@ -32,7 +32,7 @@ Debug::Client - client side code for perl debugger
 
 
   my ($prompt, $module, $file, $row, $content) = $debugger->step_in;
-  my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out;
+  my ($module, $file, $row, $content, $return_value) = $debugger->step_out;
   my $value = $debugger->get_value('$x');
 
   $debugger->run();         # run till end of breakpoint or watch
@@ -315,12 +315,8 @@ sub execute_code {
 
     $self->_send($code);
     my $buf = $self->_get;
-    if (wantarray) {
-       my $prompt = $self->_prompt(\$buf);
-       return ($prompt, $buf);
-    } else {
-       return $buf;
-    }
+    $self->_prompt(\$buf);
+    return $buf;
 }
 
 =head2 get_value
