@@ -1,5 +1,5 @@
-v0.11
-    Eliminate list/scalar context separation from methods.
+v0.11 2009.12.22
+    Eliminate most of the list/scalar context separation from methods.
 
 v0.10 2009.12.20
     Add some code to debuge certain test failures
