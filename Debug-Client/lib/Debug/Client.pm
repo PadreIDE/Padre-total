@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.006;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use IO::Socket;
 use Carp ();
