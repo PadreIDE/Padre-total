@@ -174,7 +174,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 
 {
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 38, 'my $f4 = fiball(4);', undef]);
+    cmp_deeply(\@out, ['main::', 't/eg/04-fib.pl', 38, 'my $f4 = fiball(4);', undef]);
     # It think the last undef is the return value in void context
 }
 
@@ -197,7 +197,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 
 {
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 39, 'my @f5 = fiball(5);', 4]);
+    cmp_deeply(\@out, ['main::', 't/eg/04-fib.pl', 39, 'my @f5 = fiball(5);', 4]);
     # array returned in scalar context so we get 4 as the last parameter, the number of elements
 }
 
@@ -223,7 +223,7 @@ TODO: {
     local $TODO = 'handle complex return value from subroutines';
 
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 41, 'print "$f4; @f5\n";', [1, 1, 2, 3, 5]]);
+    cmp_deeply(\@out, ['main::', 't/eg/04-fib.pl', 41, 'print "$f4; @f5\n";', [1, 1, 2, 3, 5]]);
 }
 
 {

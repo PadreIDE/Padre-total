@@ -48,7 +48,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'"], 'line 8')
+    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 8, '$x++;', "'foo\nbar'"], 'line 8')
         or diag($debugger->buffer);
 }
 {
@@ -69,7 +69,7 @@ my $expected = q(0  'baz'
 bar'
 2  'moo');
 
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 10, '$x++;', $expected], 'line 10')
+    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 10, '$x++;', $expected], 'line 10')
         or diag($debugger->buffer);
 }
 
@@ -86,11 +86,11 @@ bar'
 }
 {
     my @out = $debugger->step_out;
-my $received = $out[5];
-$out[5] = '';
+my $received = $out[4];
+$out[4] = '';
 # TODO check how to test the return data in this case as it looks like an array
 
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/03-return.pl', 12, '$x++;', ''], 'line 12')
+    cmp_deeply(\@out, ['main::', 't/eg/03-return.pl', 12, '$x++;', ''], 'line 12')
         or diag($debugger->buffer);
 }
 

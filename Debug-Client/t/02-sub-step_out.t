@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 20);
+plan(tests => 19);
 
 my $debugger = start_debugger();
 
@@ -57,7 +57,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_out;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 242], 'line 9')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;', 242], 'line 9')
         or diag($debugger->buffer);
 }
 
@@ -89,9 +89,8 @@ my $debugger = start_debugger();
 }
 
 {
-    my $out = $debugger->step_out;
-    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
-    is($out, "scalar context return from main::f: 437\nmain::(t/eg/02-sub.pl:11):\t\$t++;\n  DB<> ", 'out');
+    my @out = $debugger->step_out;
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 11, '$t++;', 437], 'out');
 }
 
 {

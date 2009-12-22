@@ -182,6 +182,8 @@ or when some of the elements of the returned array are themselves references
 sub step_out  { 
     my ($self) = @_;
 
+    Carp::croak('Must call step_out in list context') if not wantarray;
+
     $self->_send('r');
     my $buf = $self->_get;
 
@@ -199,22 +201,18 @@ sub step_out  {
     # 2  'moo'
     # main::(t/eg/03-return.pl:10):	$x++;
 
-    if (wantarray) {
-        my $prompt = $self->_prompt(\$buf);
-        my @line = $self->_process_line(\$buf);
-        my $ret;
-        my $context;
-        if ($buf =~ /^(scalar|list) context return from (\S+):\s*(.*)/s) {
-            $context = $1;
-            $ret = $3;
-        }
-        #if ($context and $context eq 'list') {
-            # TODO can we parse this inteligently in the general case?
-        #}
-        return ($prompt, @line, $ret);
-    } else {
-        return $buf;
+    $self->_prompt(\$buf);
+    my @line = $self->_process_line(\$buf);
+    my $ret;
+    my $context;
+    if ($buf =~ /^(scalar|list) context return from (\S+):\s*(.*)/s) {
+        $context = $1;
+        $ret = $3;
     }
+    #if ($context and $context eq 'list') {
+        # TODO can we parse this inteligently in the general case?
+    #}
+    return (@line, $ret);
 }
 
 
