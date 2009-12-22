@@ -13,7 +13,7 @@ my $PROMPT = re('\d+');
 
 our $TODO; # needed becasue Test::More is required and not used
 
-plan(tests => 19);
+plan(tests => 18);
 
 my $debugger = start_debugger();
 
@@ -53,17 +53,16 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->execute_code('19+23');
-    cmp_deeply(\@out, [$PROMPT, ''], 'no code')
+    cmp_deeply(\@out, [''], 'no code')
         or diag($debugger->buffer);
     my $out = $debugger->execute_code('19+23');
-    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
-    is($out, "\n  DB<> ", 'no code in scalar context');
+    is($out, "", 'no code in scalar context');
 }
 
 
 {
     my @out = $debugger->execute_code('$abc = 23');
-    cmp_deeply(\@out, [$PROMPT, ''], 'execute 1')
+    cmp_deeply(\@out, [''], 'execute 1')
         or diag($debugger->buffer);
 }
 {
@@ -73,7 +72,7 @@ my $debugger = start_debugger();
 }
 {
     my @out = $debugger->execute_code('@qwe = (23, 42)');
-    cmp_deeply(\@out, [$PROMPT, ''], 'execute 2')
+    cmp_deeply(\@out, [''], 'execute 2')
         or diag($debugger->buffer);
 }
 
@@ -86,7 +85,7 @@ TODO: {
 
 {
     my @out = $debugger->execute_code('%h = (fname => "foo", lname => "bar")');
-    cmp_deeply(\@out, [$PROMPT, ''], 'execute 3')
+    cmp_deeply(\@out, [''], 'execute 3')
         or diag($debugger->buffer);
 }
 
