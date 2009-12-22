@@ -230,12 +230,8 @@ sub get_stack_trace {
     $self->_send('T');
     my $buf = $self->_get;
 
-    if (wantarray) {
-        my $prompt = $self->_prompt(\$buf);
-        return($prompt, $buf);
-    } else {
-        return $buf;
-    }
+    $self->_prompt(\$buf);
+    return $buf;
 }
 
 =head2 run
