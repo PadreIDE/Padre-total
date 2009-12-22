@@ -9,7 +9,6 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $PROMPT = re('\d+');
 
 plan(tests => 38);
 our $TODO;
@@ -35,7 +34,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/04-fib.pl', 22, 'my $res = fib(10);'], 'line 22')
+    cmp_deeply(\@out, ['main::', 't/eg/04-fib.pl', 22, 'my $res = fib(10);'], 'line 22')
         or diag($debugger->buffer);
 }
 
@@ -65,13 +64,13 @@ SKIP: {
 SKIP: {
     skip('Fix list_break_watch_action in LIST context', 1);
     my @out = $debugger->list_break_watch_action;
-    cmp_deeply(\@out, [$PROMPT, undef, undef, undef, undef], 'breakpoints in list context') or
+    cmp_deeply(\@out, [undef, undef, undef, undef], 'breakpoints in list context') or
         diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->run;
-    cmp_deeply(\@out, [$PROMPT, 'main::fibx', 't/eg/04-fib.pl', 17, '    my $n = shift;'], 'line 17')
+    cmp_deeply(\@out, ['main::fibx', 't/eg/04-fib.pl', 17, '    my $n = shift;'], 'line 17')
         or diag($debugger->buffer);
 }
 
@@ -90,7 +89,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in sc
 
 {
     my @out = $debugger->run(10);
-    cmp_deeply(\@out, [$PROMPT, 'main::fib', 't/eg/04-fib.pl', 10, '    return 0 if $n == 0;'], 'line 10')
+    cmp_deeply(\@out, ['main::fib', 't/eg/04-fib.pl', 10, '    return 0 if $n == 0;'], 'line 10')
         or diag($debugger->buffer);
 }
 
@@ -157,7 +156,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in sc
 {
     $debugger->step_in;
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+    cmp_deeply(\@out, ['main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
         or diag($debugger->buffer);
 }
   
@@ -176,12 +175,12 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in sc
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+    cmp_deeply(\@out, ['main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
+    cmp_deeply(\@out, ['main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
         or diag($debugger->buffer);
 }
 {
@@ -200,12 +199,12 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in sc
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
+    cmp_deeply(\@out, ['main::fiball', 't/eg/04-fib.pl', 27, '    my ($n) = @_;'], 'line 27')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
+    cmp_deeply(\@out, ['main::fiball', 't/eg/04-fib.pl', 28, '    return 1     if $n == 1;'], 'line 28')
         or diag($debugger->buffer);
 }
 {
