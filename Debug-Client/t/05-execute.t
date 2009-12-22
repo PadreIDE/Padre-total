@@ -68,7 +68,7 @@ my $debugger = start_debugger();
 }
 {
     my @out = $debugger->get_value('$abc');
-    cmp_deeply(\@out, [$PROMPT, 23], 'execute 1')
+    cmp_deeply(\@out, [23], 'execute 1')
         or diag($debugger->buffer);
 }
 {
@@ -80,7 +80,7 @@ my $debugger = start_debugger();
 TODO: {
     local $TODO = 'get_value of array';
     my @out = $debugger->get_value('@qwe');
-    cmp_deeply(\@out, [$PROMPT, 23, 42], 'get_value of array')
+    cmp_deeply(\@out, [23, 42], 'get_value of array')
         or diag($debugger->buffer);
 }
 
@@ -93,7 +93,7 @@ TODO: {
 TODO: {
     local $TODO = 'get_value of hash';
     my @out = $debugger->get_value('%h');
-    cmp_deeply(\@out, [$PROMPT], 'get_value of hash')
+    cmp_deeply(\@out, [], 'get_value of hash')
         or diag($debugger->buffer);
 }
 
