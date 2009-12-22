@@ -63,11 +63,11 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->get_value('$q');
-    cmp_deeply(\@out, [$PROMPT, 242], '$q is 11*22=242');
+    cmp_deeply(\@out, [242], '$q is 11*22=242');
 }
 {
     my @out = $debugger->get_value('$z');
-    cmp_deeply(\@out, [$PROMPT, ''], '$z is empty');
+    cmp_deeply(\@out, [''], '$z is empty');
 }
 
 {

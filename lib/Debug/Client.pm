@@ -33,7 +33,7 @@ Debug::Client - client side code for perl debugger
 
   my ($prompt, $module, $file, $row, $content) = $debugger->step_in;
   my ($prompt, $module, $file, $row, $content, $return_value) = $debugger->step_out;
-  my ($prompt, $value) = $debugger->get_value('$x');
+  my $value = $debugger->get_value('$x');
 
   $debugger->run();         # run till end of breakpoint or watch
   $debugger->run( 42 );     # run till line 42  (c in the debugger)
@@ -43,11 +43,11 @@ Debug::Client - client side code for perl debugger
 
   $debugger->execute_code( '@name = qw(foo bar)' );
 
-  my ($prompt, $value) = $debugger->get_value('@name');  $value is the dumped data?
+  my $value = $debugger->get_value('@name');  $value is the dumped data?
 
   $debugger->execute_code( '%phone_book = (foo => 123, bar => 456)' );
 
-  my ($prompt, $value) = $debugger->get_value('%phone_book');  $value is the dumped data?
+  my $value = $debugger->get_value('%phone_book');  $value is the dumped data?
   
   
   $debugger->set_breakpoint( "file", 23 ); # 	set breakpoint on file, line
@@ -331,7 +331,7 @@ sub execute_code {
 
 =head2 get_value
 
- my ($prompt, $value) = $d->get_value($x);
+ my $value = $d->get_value($x);
 
 If $x is a scalar value, $value will contain that value.
 If it is a reference to a SCALAR, ARRAY or HASH then $value should be the
@@ -348,22 +348,14 @@ sub get_value {
     if ($var =~ /^\$/) {
         $self->_send("p $var");
         my $buf = $self->_get;
-        if (wantarray) {
-            my $prompt = $self->_prompt(\$buf);
-            return ($prompt, $buf);
-        } else {
-            return $buf;
-        }
+        $self->_prompt(\$buf);
+        return $buf;
     } elsif ($var =~ /\@/ or $var =~ /\%/) {
         $self->_send("x \\$var");
         my $buf = $self->_get;
-        if (wantarray) {
-            my $prompt = $self->_prompt(\$buf);
-            my $data_ref = _parse_dumper($buf);
-            return ($prompt, $data_ref);
-        } else {
-            return $buf;
-        }
+        $self->_prompt(\$buf);
+        my $data_ref = _parse_dumper($buf);
+        return $data_ref;
     }
     die "Unknown parameter '$var'\n";
 }
@@ -403,7 +395,8 @@ sub _prompt {
         $prompt = $1;
     }
     chomp($$buf);
-    return $prompt;
+
+    return $self->{prompt} = $prompt;
 }
 
 # see 00-internal.t for test cases
