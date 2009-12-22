@@ -29,4 +29,26 @@ Padre/inc/
 Padre/pm_to_blib
 Padre/share/locale/*.mo
 
-nothing added to commit but untracked files present (use "git add" to track)
+Padre-Plugin-Git/META.yml
+Padre-Plugin-Git/Makefile
+Padre-Plugin-Git/inc/
+Padre-Plugin-Kate/META.yml
+Padre-Plugin-Kate/Makefile
+Padre-Plugin-Kate/inc/
+Padre-Plugin-PSI/META.yml
+Padre-Plugin-PSI/Makefile
+Padre-Plugin-PSI/inc/
+Padre-Plugin-Parrot/META.yml
+Padre-Plugin-Parrot/Makefile
+Padre-Plugin-Parrot/inc/
+Padre-Plugin-Perl6/Build
+Padre-Plugin-Perl6/_build/
+Padre-Plugin-PerlCritic/Makefile
+Padre-Plugin-PerlTidy/META.yml
+Padre-Plugin-PerlTidy/Makefile
+Padre-Plugin-PerlTidy/README
+Padre-Plugin-PerlTidy/inc/
+Padre-Plugin-SVN/META.yml
+Padre-Plugin-SVN/Makefile
+Padre-Plugin-SVN/inc/
+
