@@ -11,7 +11,7 @@ require Test::Deep;
 import Test::Deep;
 my $PROMPT = re('\d+');
 
-plan(tests => 40);
+plan(tests => 38);
 our $TODO;
 
 use Data::Dumper qw(Dumper);
@@ -80,14 +80,12 @@ SKIP: {
     my $trace = q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
 $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
-    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+    cmp_deeply(\@out, [$trace], 'stack trace')
         or diag($debugger->buffer);
 
     my $out = $debugger->get_stack_trace;
-    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
-$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
-  DB<> ), 'stack trace in scalar context');
+$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in scalar context');
 }
 
 {
@@ -102,14 +100,12 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 $ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
 $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
-    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+    cmp_deeply(\@out, [$trace], 'stack trace')
         or diag($debugger->buffer);
     my $out = $debugger->get_stack_trace;
-    ok($out =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl');
     is($out, q($ = main::fib(9) called from file `t/eg/04-fib.pl' line 18
 $ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
-$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
-  DB<> ), 'stack trace in scalar context');
+$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in scalar context');
 }
 
 # apparently  c 10 adds a breakpoint
@@ -168,7 +164,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 {
     my @out = $debugger->get_stack_trace;
     my $trace = q(. = main::fiball(3) called from file `t/eg/04-fib.pl' line 37);
-    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+    cmp_deeply(\@out, [$trace], 'stack trace')
         or diag($debugger->buffer);
 }
 
@@ -191,7 +187,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 {
     my @out = $debugger->get_stack_trace;
     my $trace = q($ = main::fiball(4) called from file `t/eg/04-fib.pl' line 38);
-    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+    cmp_deeply(\@out, [$trace], 'stack trace')
         or diag($debugger->buffer);
 }
 
@@ -215,7 +211,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22
 {
     my @out = $debugger->get_stack_trace;
     my $trace = q(@ = main::fiball(5) called from file `t/eg/04-fib.pl' line 39);
-    cmp_deeply(\@out, [$PROMPT, $trace], 'stack trace')
+    cmp_deeply(\@out, [$trace], 'stack trace')
         or diag($debugger->buffer);
 }
 
