@@ -454,9 +454,9 @@ sub get {
     my $buf = $self->_get;
 
     if (wantarray) {
-        my $prompt = $self->_prompt(\$buf);
+        $self->_prompt(\$buf);
         my ($module, $file, $row, $content) = $self->_process_line(\$buf);
-        return ($prompt, $module, $file, $row, $content);
+        return ($module, $file, $row, $content);
     } else {
         return $buf;
     }

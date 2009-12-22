@@ -9,7 +9,6 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $PROMPT = re('\d+');
 
 our $TODO; # needed becasue Test::More is required and not used
 
@@ -34,12 +33,12 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
         or diag($debugger->buffer);
 }
 
@@ -103,14 +102,14 @@ TODO: {
 
 {
     my @out = $debugger->run;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
+    cmp_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
         or diag($debugger->buffer);
 }
 
 # TODO maybe check if we can remove the breakpoint
 {
     my @out = $debugger->run;
-    cmp_deeply(\@out, [$PROMPT, 'main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
+    cmp_deeply(\@out, ['main::f', 't/eg/02-sub.pl', 18, '   my $add   = $q + $w;'], 'line 18')
         or diag($debugger->buffer);
 }
 

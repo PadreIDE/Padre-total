@@ -9,7 +9,6 @@ require Test::More;
 import Test::More;
 require Test::Deep;
 import Test::Deep;
-my $PROMPT = re('\d+');
 
 plan(tests => 14);
 
@@ -32,24 +31,24 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 6, 'my $x = 11;'], 'line 6')
         or diag($debugger->buffer);
 }
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 7, 'my $y = 22;'], 'line 7')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_in;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);'], 'line 8')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 8, 'my $q = f($x, $y);'], 'line 8')
         or diag($debugger->buffer);
 }
 
 {
     my @out = $debugger->step_over;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;'], 'line 9')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 9, 'my $z = $x + $y;'], 'line 9')
         or diag($debugger->buffer);
 }
 {
@@ -77,7 +76,7 @@ my $debugger = start_debugger();
 
 {
     my @out = $debugger->step_over;
-    cmp_deeply(\@out, [$PROMPT, 'main::', 't/eg/02-sub.pl', 12, '$z++;'], 'line 12')
+    cmp_deeply(\@out, ['main::', 't/eg/02-sub.pl', 12, '$z++;'], 'line 12')
         or diag($debugger->buffer);
 }
 
