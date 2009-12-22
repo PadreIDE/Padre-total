@@ -99,50 +99,38 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 
-		# only file operations at the moment
+		# maybe reorganize according to File/Directory/Project ?
 		#'File'		=> [
-		'Add'    => sub { $self->svn_add_file },
+		'Add...' => [
+			'File' => sub { $self->svn_add_file },
+			'Dir'     => sub { $self->svn_diff_of_dir },
+			'Project' => sub { $self->svn_diff_of_project },
+		],
 		'Blame'  => sub { $self->svn_blame },
-		'Commit' => sub { $self->svn_commit_file },
-		'Diff'   => [
-			'Show'          => sub { $self->svn_diff_of_file },
-			'Open in Padre' => sub { $self->svn_diff_in_padre },
+		'Commit...' => [
+			'File'    => sub { $self->svn_commit_file },
+			'Project' => sub { $self->svn_commit_project },
+		],
+		'Diff...'   => [
+			'File'    => [ 
+				'Show'          => sub { $self->svn_diff_of_file }, 
+				'Open in Padre' => sub {$self->svn_diff_in_padre },
+				],
+				'Dir'     => sub { $self->svn_diff_of_dir },
+				'Project' => sub { $self->svn_diff_of_project },
+
 		],
 		'Revert' => sub { $self->svn_revert },
-		'Log'    => sub { $self->svn_log_of_file },
-		'Status' => sub { $self->svn_status_of_file },
+		'Log...' => [
+			'File'    => sub { $self->svn_log_of_file },
+			'Project' => sub { $self->svn_log_of_project },
+		],
+		'Status...' => [
+			'File'    => sub { $self->svn_status_of_file },
+			'Project' => sub { $self->svn_status_of_project },
+		],
 
-		#],
 		'About' => sub { $self->show_about },
-
-		#		'Project - Not Implemented'	=> [],
-		#		'Commit...' => [
-		#			'File'    => sub { $self->svn_commit_file },
-		#			'Project' => sub { $self->svn_commit_project },
-		#		],
-		#		'Blame'	=> [
-		#			'File'	=> sub { $self->svn_blame },
-		#		],
-		#		'Status...' => [
-		#			'File'    => sub { $self->svn_status_of_file },
-		#			'Project' => sub { $self->svn_status_of_project },
-		#		],
-		#		'Log...' => [
-		#			'File'    => sub { $self->svn_log_of_file },
-		#			'Project' => sub { $self->svn_log_of_project },
-		#		],
-		#		'Diff...' => [
-		#			'File'    => [ 'Show Diff' => sub { $self->svn_diff_of_file }, 'Open in Padre' => sub {$self->svn_diff_in_padre } ],
-		#			'Dir'     => sub { $self->svn_diff_of_dir },
-		#			'Project' => sub { $self->svn_diff_of_project },
-		#		],
-		#		'Add...' => [
-		#			'File' => sub { $self->svn_add_file },
-		#
-		#			#			'Dir'     => sub { $self->svn_diff_of_dir },
-		#			#			'Project' => sub { $self->svn_diff_of_project },
-		#		],
-		#
 	];
 }
 
