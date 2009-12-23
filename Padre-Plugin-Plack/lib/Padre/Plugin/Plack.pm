@@ -7,7 +7,7 @@ use strict;
 use Padre::Util ('_T');
 use Padre::Debug;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
@@ -160,6 +160,7 @@ sub on_panel_load {
         $doc->panel(undef); 
         $self->on_panel_load($doc); 
     });
+    Padre::Current->main->refresh;
 }
 
 sub on_panel_close {
@@ -634,9 +635,13 @@ You can also look for information at:
 
 =over 4
 
-=item * RT: CPAN's request tracker
+=item * GitHub Project Page
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Plack>
+L<http://github.com/pdonelan/Padre-Plugin-Plack>
+
+=item * GitHub Issue Tracker
+
+L<http://github.com/pdonelan/Padre-Plugin-Plack/issues>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 

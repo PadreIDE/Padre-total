@@ -11,14 +11,9 @@ inc/Module/Install/Metadata.pm
 inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
-lib/Padre/Document/Plack.pm
 lib/Padre/Document/PSGI.pm
 lib/Padre/Plugin/Plack.pm
-lib/Padre/Plugin/Plack/Helper.pm
-lib/Padre/Plugin/Plack/Outline.pm
 lib/Padre/Plugin/Plack/Panel.pm
-lib/Padre/Plugin/Plack/Util.pm
-lib/Padre/Wx/Menu/Plack.pm
 Makefile.PL
 MANIFEST			This list of files
 META.yml
@@ -52,5 +47,3 @@ share/icons/16x16/logo.png
 t/00-load.t
 t/01-perl_interpreter.t
 t/pod.t
-test.psgi
-test2.psgi
