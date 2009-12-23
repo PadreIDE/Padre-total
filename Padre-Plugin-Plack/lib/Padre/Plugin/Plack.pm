@@ -636,13 +636,9 @@ You can also look for information at:
 
 =over 4
 
-=item * GitHub Project Page
+=item * RT: CPAN's request tracker
 
-L<http://github.com/pdonelan/Padre-Plugin-Plack>
-
-=item * GitHub Issue Tracker
-
-L<http://github.com/pdonelan/Padre-Plugin-Plack/issues>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Catalyst>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 

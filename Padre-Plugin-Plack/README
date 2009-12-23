@@ -86,13 +86,9 @@ SUPPORT
 
     You can also look for information at:
 
-    *   GitHub Project Page
+    *   RT: CPAN's request tracker
 
-        <http://github.com/pdonelan/Padre-Plugin-Plack>
-
-    *   GitHub Issue Tracker
-
-        <http://github.com/pdonelan/Padre-Plugin-Plack/issues>
+        <http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Catalyst>
 
     *   AnnoCPAN: Annotated CPAN documentation
 

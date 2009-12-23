@@ -19,6 +19,10 @@ requires 'Scalar::Util';
 
 test_requires 'Test::More';
 
+homepage       'http://padre.perlide.org/';
+repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Plack';
+is_padre_plugin; # authors: install Module::Install::PadrePlugin
+
 install_share_with_mofiles; # install Locale::Msgfmt
 
 auto_install;
