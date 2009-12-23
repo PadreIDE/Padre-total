@@ -27,6 +27,9 @@ navigation:
 about:
   - title: y2009
     events:
+      - date: 2009 December 23
+        url: http://perlwannabe.vox.com/library/post/padre-053-is-released.html
+        comment: Padre 0.53 media release!
       - date: 2009 December 14
         url: http://perlwannabe.vox.com/library/post/padre-052-is-heading-to-cpan.html
         title: Padre 0.52 is heading to CPAN.
@@ -1019,6 +1022,7 @@ developers:
   - therek
   - tsee
   - patspam
+  - waxhead
 translators:
   - azawawi
   - fayland
