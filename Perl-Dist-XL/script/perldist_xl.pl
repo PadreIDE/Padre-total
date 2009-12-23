@@ -20,17 +20,20 @@ GetOptions(\%conf,
 	'dir=s',
 	'download',
 	'help',
-	'build=s@',
+	'build=s',
+	'module=s',
 	'zip',
 	'perl=s',
 	'full',
+	'verbose',
 	) or usage();
 usage() if $conf{help};
 usage('--perl is required') if not $conf{perl} or ($conf{perl} ne 'stable' and $conf{perl} ne 'dev');
-usage("need one of theses: --download, --clean, --build or --zip")
+usage("need one of theses: --download, --clean, --build, --module or --zip")
 	if  not $conf{download} 
 	and not $conf{clean}
 	and not $conf{build}
+	and not $conf{module}
 	and not $conf{zip};
 #die Dumper \%conf;
 
@@ -46,13 +49,16 @@ sub usage {
 
 	my $perl_dev  = Perl::Dist::XL::perl_dev();
 	my $perl_prod = Perl::Dist::XL::perl_prod();
+	my $steps     = join '|', Perl::Dist::XL::get_steps();
 	print <<"END_USAGE";
 Usage: $0
 
 
        --download      will dowsnload perl, CPAN modules, ...
        --clean         removes build files
-       --build [perl|cpan|wx|padre|all]   where 'all' indicated all the others as well
+       --build [$steps|all]   where 'all' indicated all the others as well
+       --module Module::Name
+       --verbose              display all the output
        --zip           create the zip file
 
   Alternative:

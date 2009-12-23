@@ -99,6 +99,25 @@ Tast::Catalyst::Tutorial
 
 TODO: set perl version number (and allow command line option to configure it)
 
+=head2 Building on perl 5.11.3
+
+Pod-POM-0.25 warned about 
+   defined(%hash) is deprecated at .../perl/lib/site_perl/5.11.3/Pod/POM/Node.pm line 82.
+and one of our modules checked for warnings I patched it after installation. REPORTED to author
+
+Pod::Abstract 0.19 warned about
+  UNIVERSAL->import is deprecated and will be removed in a future perl 
+   at ..../perl/lib/site_perl/5.11.3/Pod/Abstract/Path.pm line 7
+and one of our modules checked for warnings I patched it after installation. REPORTED to author.
+
+CPAN::Inject 0.11 failed as ~/.perldist_xl/perl-5.11.3-xl-0.03/perl/.cpan/sources directory did not exist.
+I had to create it manually.
+
+Test::Exception 0.27 - one of the tests failed. I force installed the module and REPORTED to the
+author and to p5p.
+
+I had to patch t/71-perl.t of Padre due to a change in a warning perl gives.
+(change in Padre SVN as well after 0.53 was released)
 
 =head2 Plans
 
@@ -119,15 +138,15 @@ of each module we install and upgrade only under control.
 sub new {
 	my ($class, %args) = @_;
 
-	my @steps = qw(perl cpan wx padre);
-	if ($args{build}) {
-		my $build = $args{build};
-		my %b = map {$_ => 1} @$build;
-		$args{build} = \%b;
-		if ($args{build}{all}) {
-			$args{build}{$_} = 1 for @steps;
-		}
-	}
+	my @steps = get_steps();
+	#if ($args{build}) {
+	#	my $build = $args{build};
+	#	my %b = map {$_ => 1} @$build;
+	#	$args{build} = \%b;
+	#	if ($args{build}{all}) {
+	#		$args{build}{$_} = 1 for @steps;
+	#	}
+	#}
 
 	my $self = bless \%args, $class;
 
@@ -155,11 +174,24 @@ sub run {
 	$self->download    if $self->{download} or $self->{mirror};
 	$self->clean       if $self->{clean};
 
-	$self->build_perl  if $self->{build}{perl};
-	$self->configure_cpan if $self->{build}{cpan};
-	$self->build_wx    if $self->{build}{wx};
-	$self->install_modules($self->padre_modules) if $self->{build}{padre};
+	if ($self->{module}) {
+		$self->install_modules( [$self->{module}] );
+	}
 
+	if ($self->{build}) {
+		$self->build_perl     if $self->{build} eq 'perl';
+		$self->configure_cpan if $self->{build} eq 'cpan';
+
+		# Needed by Alien::wxWidgets
+		my $dir = $self->dir . "/src";
+		$ENV{AWX_URL} = "file:///$dir";
+
+		my %modules = steps();
+		if ($modules{$self->{build}} ) {
+			#print join "|", @{ $modules{$self->{build}} };
+			$self->install_modules( $modules{$self->{build}} );
+		}
+	}
 
 
 	# TODO: run some tests
@@ -177,12 +209,12 @@ sub build_perl {
 	my $dir       = $self->dir;
 
 	chdir $build_dir;
-	my $perl = $self->perl_file;
-	$self->{perl_source_dir} = substr("$build_dir/$perl", 0, -7);
+	my $perl_src_file = $self->perl_file;
+	$self->{perl_source_dir} = substr("$build_dir/$perl_src_file", 0, -7);
 	debug("Perl source dir: $self->{perl_source_dir}");
 
 	if (not -e $self->{perl_source_dir}) {
-		_system("tar xzf $dir/src/$perl");
+		_system("tar xzf $dir/src/$perl_src_file");
 	}
 
 	chdir $self->{perl_source_dir};
@@ -193,19 +225,13 @@ sub build_perl {
 	_system("make test");
 	_system("make install");
 
-	return;
-}
-
-sub build_wx {
-	my ($self) = @_;
-
-	my $dir = $self->dir . "/src";
-	$ENV{AWX_URL} = "file:///$dir";
-	$self->install_modules($self->wx_modules);
+	my $perl = "$self->{perl_install_dir}/bin/perl";
+	my $src  = "$self->{perl_install_dir}/bin/perl" . $self->perl_version;
+	copy($src, $perl);
 
 	return;
 }
-	
+
 sub configure_cpan {
 	my ($self) = @_;
 	
@@ -262,216 +288,219 @@ sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.gz'; }
 sub all_modules {
 	my ($self) = @_;
 	my @all;
-	push @all, @{ $self->padre_modules };
-	push @all, @{ $self->padre_prereqs };
-	push @all, @{ $self->wx_modules    };
 
 	return \@all;
 }
 
-sub wx_modules {
-	return [
-		['YAML'    => '0'],
-		['YAML::Tiny'               => '1.39'],
-		['ExtUtils::CBuilder'       => '0.24'],
-		['Alien::wxWidgets'         => '0.46'],
+sub get_steps { return ('perl', 'cpan', grep /^\w+$/, steps()) };
+sub steps {
+	return (
+		alien => [
+			'YAML',
+			'YAML::Tiny',
+			'ExtUtils::CBuilder',
+			'Alien::wxWidgets',
+		],
+		mbuild => [
+			#'Module::Signature',   # optional Module::Build prereq
+			'Regexp::Common',        # prereq of Pod::Readme
+			'Pod::Readme',           # optional Module::Build prereq
+			'Module::Build',
+		],
+		minstall => [
+			'Module::ScanDeps',      # prereq of Module::Install
+			'JSON',                  # prereq of Module::Install
+			'Module::Install',
+		],
+		wx => [
+			'ExtUtils::XSpp',
+			'Wx',
+			'Wx::Perl::ProcessStream',
+		],
 
-		#['Module::Signature'        => '0'],  # optional Module::Build prereq
-		['Regexp::Common'           => '0'],  # prereq of Pod::Readme
-		['Pod::Readme'              => '0'],  # optional Module::Build prereq
-		['Module::Build'            => '0.35'],
+		padre => [
+			'Capture::Tiny',
+			'Padre',
+		],
 
-
-		['Module::ScanDeps'       => '0.96'], # prereq of Module::Install
-		['JSON'                   => '2.16'], # prereq of Module::Install
-		['Module::Install'        => '0.91'],
-	];
+		perl6 => [
+			'Padre::Plugin::Perl6',
+		],
+		catalyst => [
+			'Padre::Plugin::Catalyst',
+		],
+	);
 }
-#sub wx_prereqs
 
-sub padre_modules {
-	return [
-		['Capture::Tiny'            => '0.06'],
-		['Padre'                    => '0.38'],
-
-		['Padre::Plugin::Perl6'     => '0.60'],
-		['Padre::Plugin::Catalyst'  => '0'],
-	];
-}
-sub padre_prereqs {
-	return [ 
-
-		['Perl6::Refactor'          => '0'], # prereqs of Perl6 plugin
-		['Perl6::Doc'               => '0.45'],
-		['App::Grok'                => '0'],
-		['grok'                     => '0.19'],
-		['Perl6::Perldoc::To::Ansi' => '0'],
-		['Perl6::Perldoc'           => '0'],
-		['Pod::Text::Ansi'          => '0.04'],
-		['IO::Interactive'          => '0'],
-		['YAML::Syck'               => '0'],
-		['Log::Trace'               => '1.070'],
-		['Scope::Guard'             => '0'],
-		['Sub::Exporter'            => '0'],
-		['Test::Assertions'         => '1.054'],
-		['Test::Assertions::TestScript' => '0'],
-		['Pod::Xhtml'               => '1.59'],
-		['Syntax::Highlight::Perl6' => '0'],
-
-
-
-		['CPAN::Inject' =>  '0.07'],
-		['LWP::Online'  =>  '1.06'],
-		['LWP::Simple'  => '0'],
-		['libwww::perl' => '0'],
-		['Spiffy'                => '0.30'],
-		['Test::Simple'             => '0.88'],
-		['Test::Base'        => '0.59'],
-		['Devel::Refactor'          => '0.05'],
-		['Sub::Uplevel'             => '0.2002'],
-		['Moose'  => '0'],
-		#['Array::Compare'           => '1.17'],
-		['Data::Compare'            => '1.2101'],
-		['File::chmod'              => '0.32'],
-		['Tree::DAG_Node'           => '1.06'],
-		['Test::Exception'          => '0.27'],
-		['Test::Warn'               => '0.11'],
-		['Test::Tester'             => '0'],
-		['Test::NoWarnings'         => '0'],
-		['Test::Deep'               => '0'],
-		['IO::stringy'              => '0'], # needed by IO::Scalar ??
-		['IO::Scalar'               => '2.110'],
-		['File::Next'               => '1.02'],
-		['App::Ack'                 => '1.86'],
-		['ack'                      => '1.86'],  # ack is the name of the package, App::Ack is the name of module
-		['Class::Adapter'           => '1.05'],
-		['Class::Inspector'         => '1.24'],
-		['Class::Unload'            => '0.03'],
-		['AutoXS::Header'           => '1.02'],
-		['Class::XSAccessor'        => '1.02'],
-		['Class::XSAccessor::Array' => '1.02'],
-		['Cwd'                      => '3.2701'], # PathTools-3.30
-		['DBI'                      => '1.609'],
-		['DBD::SQLite'              => '1.10'],
-		['Devel::Dumpvar'           => '1.05'],
-		['Encode'                   => '2.33'],
-		['IPC::Run3'                => '0.043'],
-		['CPAN::Checksums'          => '2.04'],
-		['Compress::Bzip2'          => '2.09'],
-		['Probe::Perl'              => '0.01'],
-		['Test::Script'             => '1.03'],
-		['Test::Harness'            => '3.17'],
-		['Devel::StackTrace'        => '1.20'],
-		['Class::Data::Inheritable' => '0.08'],
-		['Exception::Class'         => '1.29'],
-		['Algorithm::Diff'          => '1.1902'],
-		['Text::Diff'               => '0.35'],
-		['Test::Differences'        => '0.4801'],
-		['Test::Most'               => '0.21'],
-		['File::Copy::Recursive'    => '0.38'],
-		['Text::Glob'               => '0.08'],
-		['Number::Compare'          => '0.01'],
-		['File::Find::Rule'         => '0.30'],
-		['File::HomeDir'            => '0.86'],
-		['Params::Util'             => '1.00'],
-		['File::ShareDir'           => '1.00'],
-#		['File::Spec'               => '3.2701'], # was already installed
-		['File::Which'              => '1.08'],
-		['Format::Human::Bytes'     => '0'],
-		['Locale::Msgfmt'           => '0.14'],
-		['HTML::Tagset'             => '3.20'],
-		['HTML::Entities'           => '3.61'],
-		['HTML::Parser'             => '3.61'], # the same pacakge as HTML::Entities
-		['IO::Socket'               => '1.30'], # IO 1.25
-		['IO::String'               => '1.08'],
-		['IPC::Cmd'                 => '0.46'],
-		['List::Util'               => '1.18'], # Scalar-List-Utils-1.21
-		['List::MoreUtils'          => '0.22'],
-		['File::Temp'               => '0.21'],
-		['File::Remove'             => '1.42'],
-		['File::Find::Rule::Perl'   => '0'],
-		['File::Find::Rule::VCS'    => '1.02'],
-		['Module::Extract'          => '0.01'],
-		['Module::Manifest'         => '0.01'],
-		['Module::Math::Depends'    => '0.02'],
-		['ORLite'                   => '1.23'],
-		['ORLite::Migrate'          => '0.03'],
-		['File::pushd'              => '1.00'],
-		['File::Slurp'              => '9999.13'],
-		['Pod::POM'                 => '0.25'],
-		['Parse::ErrorString::Perl' => '0.11'],
-		['Module::Refresh'          => '0.13'],
-		['Devel::Symdump'           => '2.08'],
-		['Test::Pod'                => '1.26'],
-		['Pod::Coverage'            => '0.20'],
-		['Test::Pod::Coverage'      => '1.08'],
-		['Module::Starter'          => '1.50'],
-		['Parse::ExuberantCTags'    => '1.00'],
-		['Pod::Simple'              => '3.07'],
-#		['Pod::Simple::XHTML'       => '3.04'], # supplied by Pod::Simple
-		['Task::Weaken'             => '1.03'],
-		['Pod::Abstract'            => '0.19'],
-		['Pod::Perldoc'             => '3.15'],
-		['Storable'                 => '2.20'],
-		['URI'                      => '1.38'],
-		['Text::FindIndent'         => '0.03'],
-		['pip'                      => '0.13'],
-		['Class::MOP'               => '0.94'],
-		['Data::OptList'            => '0'],
-		['Sub::Install'             => '0.92'],
-		['MRO::Compat'              => '0.11'],
-		['Sub::Exporter'            => '0.980'],
-		['Sub::Name'                => '0'],
-		['Try::Tiny'                => '0.02'],
-		['Test::Object'             => '0.07'],
-		['Devel::GlobalDestruction' => '0.02'],
-		['Config::Tiny'             => '2.12'],
-		['Test::ClassAPI'           => '1.05'],
-		['Clone'                    => '0.31'],
-		['Hook::LexWrap'            => '0.22'],
-		['Test::SubCalls'           => '1.09'],
-		['PPI'                      => '1.203'],
-		['PPIx::EditorTools'        => '0.04'],
-		['Module::Inspector'        => '0.04'],
-
-
-		['PAR::Dist'                => '0.45'],
-		['Archive::Zip'             => '1.28'],
-		['Compress::Raw::Zlib'      => '2.020'],
-		['AutoLoader'               => '5.68'],
-		['PAR'                      => '0.992'],
-		['File::ShareDir::PAR'      => '0.05'],
-
-		['threads'                  => '1.73'],
-		['threads::shared'          => '1.29'],
-		['Thread::Queue'            => '2.11'],
-
-		['ExtUtils::XSpp'           => '0'],
-		['Wx'                       => '0.91'],
-		['Wx::Perl::ProcessStream'  => '0.11'],
-	];
-}
+#		'Perl6::Refactor', # prereqs of Perl6 plugin
+#		'Perl6::Doc',
+#		'App::Grok',
+#		'grok',
+#		'Perl6::Perldoc::To::Ansi',
+#		'Perl6::Perldoc',
+#		'Pod::Text::Ansi',
+#		'IO::Interactive',
+#		'YAML::Syck',
+#		'Log::Trace',
+#		'Scope::Guard',
+#		'Sub::Exporter',
+#		'Test::Assertions',
+#		'Test::Assertions::TestScript',
+#		'Pod::Xhtml',
+#		'Syntax::Highlight::Perl6',
+#
+#
+#
+#		'CPAN::Inject',
+#		'LWP::Online',
+#		'LWP::Simple',
+#		'libwww::perl',
+#		'Spiffy',
+#		'Test::Simple',
+#		'Test::Base',
+#		'Devel::Refactor',
+#		'Sub::Uplevel',
+#		'Moose',
+#		'Data::Compare',
+#		'File::chmod',
+#		'Tree::DAG_Node',
+#		'Test::Exception',
+#		'Test::Warn',
+#		'Test::Tester',
+#		'Test::NoWarnings',
+#		'Test::Deep',
+#		'IO::stringy', # needed by IO::Scalar ??
+#		'IO::Scalar',
+#		'File::Next',
+#		'App::Ack',
+#		'ack',  # ack is the name of the package, App::Ack is the name of module
+#		'Class::Adapter',
+#		'Class::Inspector',
+#		'Class::Unload',
+#		'AutoXS::Header',
+#		'Class::XSAccessor',
+#		'Class::XSAccessor::Array',
+#		'Cwd', # PathTools-3.30
+#		'DBI',
+#		'DBD::SQLite',
+#		'Devel::Dumpvar',
+#		'Encode',
+#		'IPC::Run3',
+#		'CPAN::Checksums',
+#		'Compress::Bzip2',
+#		'Probe::Perl',
+#		'Test::Script',
+#		'Test::Harness',
+#		'Devel::StackTrace',
+#		'Class::Data::Inheritable',
+#		'Exception::Class',
+#		'Algorithm::Diff',
+#		'Text::Diff',
+#		'Test::Differences',
+#		'Test::Most',
+#		'File::Copy::Recursive',
+#		'Text::Glob',
+#		'Number::Compare',
+#		'File::Find::Rule',
+#		'File::HomeDir',
+#		'Params::Util',
+#		'File::ShareDir',
+##		'File::Spec', # was already installed
+#		'File::Which',
+#		'Format::Human::Bytes',
+#		'Locale::Msgfmt',
+#		'HTML::Tagset',
+#		'HTML::Entities',
+#		'HTML::Parser', # the same pacakge as HTML::Entities
+#		'IO::Socket', # IO 1.25
+#		'IO::String',
+#		'IPC::Cmd',
+#		'List::Util', # Scalar-List-Utils-1.21
+#		'List::MoreUtils',
+#		'File::Temp',
+#		'File::Remove',
+#		'File::Find::Rule::Perl',
+#		'File::Find::Rule::VCS',
+#		'Module::Extract',
+#		'Module::Manifest',
+#		'Module::Math::Depends',
+#		'ORLite',
+#		'ORLite::Migrate',
+#		'File::pushd',
+#		'File::Slurp',
+#		'Pod::POM',
+#		'Parse::ErrorString::Perl',
+#		'Module::Refresh',
+#		'Devel::Symdump',
+#		'Test::Pod',
+#		'Pod::Coverage',
+#		'Test::Pod::Coverage',
+#		'Module::Starter',
+#		'Parse::ExuberantCTags',
+#		'Pod::Simple',
+##		'Pod::Simple::XHTML', # supplied by Pod::Simple
+#		'Task::Weaken',
+#		'Pod::Abstract',
+#		'Pod::Perldoc',
+#		'Storable',
+#		'URI',
+#		'Text::FindIndent',
+#		'pip',
+#		'Class::MOP',
+#		'Data::OptList',
+#		'Sub::Install',
+#		'MRO::Compat',
+#		'Sub::Exporter',
+#		'Sub::Name',
+#		'Try::Tiny',
+#		'Test::Object',
+#		'Devel::GlobalDestruction',
+#		'Config::Tiny',
+#		'Test::ClassAPI',
+#		'Clone',
+#		'Hook::LexWrap'            => '0.22'],
+#		'Test::SubCalls'           => '1.09'],
+#		'PPI'                      => '1.203'],
+#		'PPIx::EditorTools'        => '0.04'],
+#		'Module::Inspector'        => '0.04'],
+#
+#
+#		'PAR::Dist'                => '0.45'],
+#		'Archive::Zip'             => '1.28'],
+#		'Compress::Raw::Zlib'      => '2.020'],
+#		'AutoLoader'               => '5.68'],
+#		'PAR'                      => '0.992'],
+#		'File::ShareDir::PAR'      => '0.05'],
+#
+#		'threads'                  => '1.73'],
+#		'threads::shared'          => '1.29'],
+#		'Thread::Queue'            => '2.11'],
 
 sub install_modules {
 	my ($self, $modules) = @_;
 
 	foreach my $m (@$modules) {
-		print "XL: Installing $m->[0]\n";
+		print "XL: Installing $m\n";
 		local $ENV{PATH} = "$self->{perl_install_dir}/bin:$ENV{PATH}";
 		local $ENV{HOME} = $self->{perl_install_dir};
 		local $ENV{PERL_MM_USE_DEFAULT} = 1;
 		my $cmd0 = 'mycpan.pl';
 		my $PERL = "$self->{perl_install_dir}/bin/perl";
-		$PERL .= $self->perl_version if $self->{perl} ne 'stable';
-		my $cmd = "$PERL $self->{perl_install_dir}/bin/$cmd0 $m->[0]";
+		#$PERL .= $self->perl_version if $self->{perl} ne 'stable'; # no need as we copy the perl5.11.3 to be also perl
+		my $cmd = "$PERL $self->{perl_install_dir}/bin/$cmd0 $m";
 		my $out = _system($cmd);
-		if ($out =~ /Result: FAIL/) {
-			print $out;
-			exit;
+		foreach my $re (
+			qr/Result: FAIL/,
+			qr/Warning: no success downloading/,
+			qr/Make had returned bad status/,
+			) {
+			if ($out =~ $re ) {
+				print $out;
+				exit;
+			}
 		}
-		if ($out =~ /Warning: no success downloading /) {
+		if ($self->{verbose}) {
 			print $out;
-			exit;
 		}
 	}
 }
