@@ -28,13 +28,17 @@ about:
   - title: y2009
     events:
       - date: 2009 December 23
+        url: http://blog.patspam.com/2009/padrepluginplack
+        title: Padre::Plugin::Plack
+        comment: by Patrick Donelan
+      - date: 2009 December 23
         url: http://perlwannabe.vox.com/library/post/padre-053-is-released.html
-        title:: Padre 0.53 media release!
+        title: Padre 0.53 media release!
         comment: by Peter Lavender
       - date: 2009 December 14
         url: http://perlwannabe.vox.com/library/post/padre-052-is-heading-to-cpan.html
         title: Padre 0.52 is heading to CPAN.
-        comment: A new release of Padre!
+        comment: A new release of Padre!  by Peter Lavender
       - date: 2009 December 09
         url: http://www.catalystframework.org/calendar/2009/9
         title: Developing Catalyst Applications with Padre
