@@ -1,0 +1,351 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-Plack\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-12-07 01:41-0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
+"Language-Team: Jerome Quelin <jquelin@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: lib/Padre/Plugin/Plack.pm:68
+#: lib/Padre/Plugin/Plack/NewApp.pm:67
+msgid "New Plack Application"
+msgstr "Nouvelle Application Plack"
+
+#: lib/Padre/Plugin/Plack.pm:76
+msgid "Create new..."
+msgstr "Créer un nouveau..."
+
+#: lib/Padre/Plugin/Plack.pm:79
+msgid "Model"
+msgstr "Modèle"
+
+#: lib/Padre/Plugin/Plack.pm:87
+msgid "View"
+msgstr "Vue"
+
+#: lib/Padre/Plugin/Plack.pm:95
+msgid "Controller"
+msgstr "Contrôleur"
+
+#: lib/Padre/Plugin/Plack.pm:105
+#: lib/Padre/Plugin/Plack/Util.pm:79
+msgid "Start Web Server"
+msgstr "Démarrer le serveur web"
+
+#: lib/Padre/Plugin/Plack.pm:110
+#: lib/Padre/Plugin/Plack/Util.pm:82
+msgid "Stop Web Server"
+msgstr "Arrêter le serveur web"
+
+#: lib/Padre/Plugin/Plack.pm:120
+msgid "Plack Online References"
+msgstr "Références Plack en ligne"
+
+#: lib/Padre/Plugin/Plack.pm:123
+msgid "Beginner's Tutorial"
+msgstr "Tutoriel du débutant"
+
+#: lib/Padre/Plugin/Plack.pm:126
+msgid "Overview"
+msgstr "Aperçu"
+
+#: lib/Padre/Plugin/Plack.pm:134
+msgid "1. Introduction"
+msgstr "1. Introduction"
+
+#: lib/Padre/Plugin/Plack.pm:141
+msgid "2. Plack Basics"
+msgstr "2. Les bases de Plack"
+
+#: lib/Padre/Plugin/Plack.pm:148
+msgid "3. More Plack Basics"
+msgstr "3. Autres bases de Plack"
+
+#: lib/Padre/Plugin/Plack.pm:155
+msgid "4. Basic CRUD"
+msgstr "4. CRUD basique"
+
+#: lib/Padre/Plugin/Plack.pm:162
+msgid "5. Authentication"
+msgstr "5. Authentification"
+
+#: lib/Padre/Plugin/Plack.pm:169
+msgid "6. Authorization"
+msgstr "6. Autorisation"
+
+#: lib/Padre/Plugin/Plack.pm:176
+msgid "7. Debugging"
+msgstr "7. Débuggage"
+
+#: lib/Padre/Plugin/Plack.pm:183
+msgid "8. Testing"
+msgstr "8. Test"
+
+#: lib/Padre/Plugin/Plack.pm:190
+msgid "9. Advanced CRUD"
+msgstr "9. CRUD avancé"
+
+#: lib/Padre/Plugin/Plack.pm:197
+msgid "10. Appendices"
+msgstr "10. Annexes"
+
+#: lib/Padre/Plugin/Plack.pm:205
+msgid "Plack Cookbook"
+msgstr "Livre de recettes Plack"
+
+#: lib/Padre/Plugin/Plack.pm:212
+msgid "Recommended Plugins"
+msgstr "Greffons recommendés"
+
+#: lib/Padre/Plugin/Plack.pm:219
+msgid "Plack Community Live Support"
+msgstr "Support live de la communauté Plack"
+
+#: lib/Padre/Plugin/Plack.pm:227
+msgid "Examples"
+msgstr "Exemples"
+
+#: lib/Padre/Plugin/Plack.pm:235
+msgid "Plack Wiki"
+msgstr "Wiki Plack"
+
+#: lib/Padre/Plugin/Plack.pm:242
+msgid "Plack Website"
+msgstr "Site web Plack"
+
+#: lib/Padre/Plugin/Plack.pm:251
+msgid "Update Application Scripts"
+msgstr "Mettre à jour les scripts d'application"
+
+#: lib/Padre/Plugin/Plack.pm:258
+msgid "About"
+msgstr "A propos"
+
+#: lib/Padre/Plugin/Plack.pm:289
+#, perl-format
+msgid "Open Template '%s'"
+msgstr "Ouvrir le modèle '%s'"
+
+#: lib/Padre/Plugin/Plack.pm:321
+#, perl-format
+msgid "Template '%s' not found in '%s'"
+msgstr "Modèle '%s' non trouvé dans '%s'"
+
+#: lib/Padre/Plugin/Plack.pm:323
+#: lib/Padre/Plugin/Plack.pm:509
+#: lib/Padre/Plugin/Plack/Helper.pm:325
+msgid "Error"
+msgstr "Erreur"
+
+#: lib/Padre/Plugin/Plack.pm:394
+#, perl-format
+msgid ""
+"Plack development web server not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Plack project."
+msgstr ""
+"Serveur web de développement non trouvé à\n"
+"%s\n"
+"\n"
+"Vérifiez que le document courant fait partie de votre projet Plack."
+
+#: lib/Padre/Plugin/Plack.pm:397
+msgid "Server not found"
+msgstr "Serveur non trouvé"
+
+#: lib/Padre/Plugin/Plack.pm:426
+msgid "Web server appears to be running. Launch web browser now?"
+msgstr "Le serveur web a l'air d'être lancé. Ouvrir un navigateur web maintenant ?"
+
+#: lib/Padre/Plugin/Plack.pm:427
+msgid "Start Web Browser?"
+msgstr "Ouvrir un navigateur web ?"
+
+#: lib/Padre/Plugin/Plack.pm:454
+#, perl-format
+msgid ""
+"Wx::Perl::ProcessStream is version %s which is known to cause problems. Get at least 0.20 by typing\n"
+"cpan Wx::Perl::ProcessStream"
+msgstr ""
+"La version %s de Wx::Perl::ProcessStream est connue pour causer des problèmes. Installer la version 0.20 minimum en tapant\n"
+"cpan Wx::Perl::ProcessStream"
+
+#: lib/Padre/Plugin/Plack.pm:508
+#, perl-format
+msgid "Failed to start server via '%s'"
+msgstr "Erreur lors du lancement du serveur via '%s'"
+
+#: lib/Padre/Plugin/Plack.pm:532
+msgid "Web server stopped successfully."
+msgstr "Serveur web arrêté correctement."
+
+#: lib/Padre/Plugin/Plack.pm:547
+msgid "Plack support for Padre"
+msgstr "Support Plack pour Padre"
+
+#: lib/Padre/Plugin/Plack.pm:548
+msgid "This system is running Plack version"
+msgstr "Ce système exécute Plack version"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:33
+msgid "Create New Component"
+msgstr "Créer un nouveau composant"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:54
+msgid "Model Name:"
+msgstr "Nom du modèle :"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:58
+#: lib/Padre/Plugin/Plack/Helper.pm:85
+#: lib/Padre/Plugin/Plack/Helper.pm:109
+msgid "Type"
+msgstr "Type"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:62
+#: lib/Padre/Plugin/Plack/Helper.pm:113
+msgid "Additional Parameters:"
+msgstr "Paramètres additionnels :"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:81
+msgid "View Name:"
+msgstr "Nom de la vue :"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:89
+msgid "force"
+msgstr "forcer"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:105
+msgid "Controller Name:"
+msgstr "Nom du contrôleur :"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:130
+#: lib/Padre/Plugin/Plack/Helper.pm:157
+msgid "[none]"
+msgstr "[aucun]"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:237
+#, perl-format
+msgid "You must provide a name for your %s module"
+msgstr "Vous devez fournir un nom pour votre module %s"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:238
+msgid "Module name required"
+msgstr "Nom du module requis"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:252
+#, perl-format
+msgid ""
+"Plack helper script not found at\n"
+"%s\n"
+"\n"
+"Please make sure the active document is from your Plack project."
+msgstr ""
+"Script d'aide Plack non trouvé à\n"
+"%s\n"
+"\n"
+"Vérifiez que le document courant fait partie de votre projet Plack."
+
+#: lib/Padre/Plugin/Plack/Helper.pm:255
+msgid "Helper not found"
+msgstr "Aide non trouvée"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:288
+msgid "running:"
+msgstr "en cours :"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:298
+msgid "Plack helper script ended."
+msgstr "Script d'aide Plack terminé."
+
+#: lib/Padre/Plugin/Plack/Helper.pm:308
+#: lib/Padre/Plugin/Plack/NewApp.pm:144
+#, perl-format
+msgid "%s apparently created. Do you want to open it now?"
+msgstr "%s apparemment créé. Voulez-vous l'ouvrir maintenant ?"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:309
+msgid "Done"
+msgstr "Terminé"
+
+#: lib/Padre/Plugin/Plack/Helper.pm:324
+#, perl-format
+msgid "Error creating %s. Please check the error output and try again"
+msgstr "Erreur lors de la création de %s. Vérifier la sortie d'erreur et essayer à nouveau"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:21
+msgid ""
+"To use the Plack development tools including catalyst.pl and the\n"
+"generated script/myapp_create.pl you need Plack::Helper, which is\n"
+"part of the Plack-Devel distribution. Please install this via a\n"
+"vendor package or by running one of -\n"
+"\n"
+"  perl -MCPAN -e 'install Plack::Devel'\n"
+"  perl -MCPANPLUS -e 'install Plack::Devel'\n"
+msgstr ""
+"Vous avez besoin de Plack::Helper pour utiliser les outils de développement\n"
+"Plack, y compris catalyst.pl et le script généré script/myapp_create.pl. Il fait\n"
+"partie de la distribution Plack-Devel. Veuillez l'installer via un package vendeur\n"
+"ou en lançant: \n"
+"\n"
+"  soit : perl -MCPAN -e 'install Plack::Devel'\n"
+"  soit : perl -MCPANPLUS -e 'install Plack::Devel'\n"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:42
+msgid "Application Name:"
+msgstr "Nom de l'application :"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:46
+msgid "Parent Directory:"
+msgstr "Répertoire parent :"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:47
+msgid "Pick parent directory"
+msgstr "Choisir un répertoire parent"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:50
+msgid "short names"
+msgstr "noms courts"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:103
+msgid "Invalid Application name"
+msgstr "Nom d'application invalide"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:103
+#: lib/Padre/Plugin/Plack/NewApp.pm:107
+msgid "missing field"
+msgstr "champ manquant"
+
+#: lib/Padre/Plugin/Plack/NewApp.pm:107
+msgid "You need to select a base directory"
+msgstr "Vous devez choisir un répertoire de base"
+
+#: lib/Padre/Plugin/Plack/Outline.pm:102
+msgid "Plack"
+msgstr "Plack"
+
+#: lib/Padre/Plugin/Plack/Panel.pm:35
+#: lib/Padre/Plugin/Plack/Panel.pm:40
+#: lib/Padre/Plugin/Plack/Panel.pm:83
+msgid "Start Server"
+msgstr "Démarrer le serveur"
+
+#: lib/Padre/Plugin/Plack/Panel.pm:51
+msgid "auto-restart"
+msgstr "redémarrage automatique"
+
+#: lib/Padre/Plugin/Plack/Panel.pm:78
+msgid "Plack Dev Server"
+msgstr "Serveur de développement Plack"
+
+#: lib/Padre/Plugin/Plack/Panel.pm:83
+msgid "Stop Server"
+msgstr "Arrêter le serveur"
+
