@@ -8,6 +8,7 @@ inc/Module/Install/Fetch.pm
 inc/Module/Install/Include.pm
 inc/Module/Install/Makefile.pm
 inc/Module/Install/Metadata.pm
+inc/Module/Install/Msgfmt.pm
 inc/Module/Install/Share.pm
 inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
@@ -44,6 +45,7 @@ share/dot-psgi/static/test.css
 share/dot-psgi/static/test.js
 share/dot-psgi/twitter-stream.psgi
 share/icons/16x16/logo.png
+share/locale/Padre__Plugin__Plack-fr-fr.po
 t/00-load.t
 t/01-perl_interpreter.t
 t/pod.t

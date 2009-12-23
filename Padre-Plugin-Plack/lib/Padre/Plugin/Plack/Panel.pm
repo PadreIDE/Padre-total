@@ -44,7 +44,7 @@ sub gettext_label {
     if (my $filename = $doc && $doc->filename) {
         return File::Basename::basename($filename);
     } else {
-        return _T( 'Plackup' );
+        return 'Plackup';
     }
 }
 

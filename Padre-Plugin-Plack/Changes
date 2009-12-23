@@ -1,7 +1,5 @@
 Revision history for Padre-Plugin-Plack
 
-        french translation (jquelin)
-
 0.01    2009-12-22
         First version, released on an unsuspecting world.
         Much code stolen from Padre::Plugin::Catalyst

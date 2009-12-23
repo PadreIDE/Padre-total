@@ -1,43 +1,115 @@
-Padre-Plugin-Plack
+NAME
+    Padre::Plugin::Plack - PSGI/Plack plugin for Padre
 
-INSTALLATION
+VERSION
+    Version 0.01
 
-To install this module, run the following commands:
+SYNOPSIS
+            cpan install Padre::Plugin::Plack;
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+    Then enable it via Padre, The Perl IDE:
 
-SUPPORT AND DOCUMENTATION
+            Padre > Plugins > Plugin Manager > Plack > enable
 
-After installing, you can find documentation for this module with the
-perldoc command.
+DESCRIPTION
+    As the name suggests, Padre::Plugin::Plack adds Plack awareness to
+    Padre.
 
-    perldoc Padre::Plugin::Plack
+    With the plugin installed, opening *.psgi files causes some special
+    things to happen.
 
-You can also look for information at:
+    PSGI files are really just ordinary Perl files, so Padre does its normal
+    Perl lexing/syntax highlighting magic on them, but the real fun starts
+    with the Plack-specific features that appear in the per-file graphical
+    plackup control panel that shows up.
 
-    GitHub Project Page
-        http://github.com/pdonelan/Padre-Plugin-Plack
-        
-    GitHub Issue Tracker
-        http://github.com/pdonelan/Padre-Plugin-Plack/issues
+    The panel lets you run your web app in a Plack server at the click of a
+    button, view server output, configure plackup options and launch a web
+    browser on the appropriate port.
 
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Padre-Plugin-Plack
+    The great thing about Plack/PSGI is that unlike my previous plugin
+    (Padre::Plugin::WebGUI) which was specific to a single web app (albeit a
+    big one), this plugin can be used for any web app built in a web
+    framework that supports Plack (Catalyst, CGI::Application, HTTP::Engine,
+    etc..). This is the same motivating factor that excites
+    Plack::Middleware authors.
 
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Padre-Plugin-Plack
+    The plugin turns on plackup’s "--reload" option by default, which
+    conveniently causes the plack server to reload every time you modify
+    your source files in Padre. This makes for quite a nice, if somewhat
+    minimal "Plack IDE" experience (this is version 0.01 after all).
 
-    Search CPAN
-        http://search.cpan.org/dist/Padre-Plugin-Plack/
+    The plugin integrates all of the Plack example "dot-psgi”"files as
+    templates that can be used to create different types of Plack apps
+    straight from the GUI menu.
 
+    The pre-populated list of Plack servers and the simple start/stop button
+    makes for a nice way of exploring the Plack server ecosystem. You can
+    use the other panel options to enter a specific port to run on, toggle
+    auto-start mode and pass additional options to plackup (options that
+    start with "--" are passed through to the backend server).
 
-COPYRIGHT AND LICENCE
+    The output panel is similar to the output panel that Padre normally
+    displays when you execute Perl files, except that you get one panel per
+    .psgi file meaning that you can run multiple plack servers
+    simultaneously and independently view their output. The appropriate
+    panel is automatically selected when you click on the corresponding file
+    tab, and running processes are stopped when you close the tab.
 
-Copyright (C) 2009 Patrick Donelan
+    It should be really easy to turn Padre::Plugin::Plack into new plugins
+    that involve the same basic ingredients, namely a file extension and an
+    external command for running those files, with a per-file panel for
+    command options and output. So I encourage anyone who has a similar
+    plugin in mind to steal liberally from Padre::Plugin::Plack (as I did
+    from Padre::Plugin::Catalyst - thanks garu++). Ruby Rack support comes
+    to mind as a trivial example.
 
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+    Make Padre your domain-specific IDE today :)
+
+    Blog post with screenshots:
+    <http://blog.patspam.com/2009/padrepluginplack>
+
+AUTHOR
+    Patrick Donelan, "<pdonelan at cpan.org>"
+
+BUGS
+    Please report any bugs or feature requests to "bug-padre-plugin-plack at
+    rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Plack>. I
+    will be notified, and then you'll automatically be notified of progress
+    on your bug as I make changes.
+
+SUPPORT
+    You can find documentation for this module with the perldoc command.
+
+        perldoc Padre::Plugin::Plack
+
+    You can also look for information at:
+
+    *   GitHub Project Page
+
+        <http://github.com/pdonelan/Padre-Plugin-Plack>
+
+    *   GitHub Issue Tracker
+
+        <http://github.com/pdonelan/Padre-Plugin-Plack/issues>
+
+    *   AnnoCPAN: Annotated CPAN documentation
+
+        <http://annocpan.org/dist/Padre-Plugin-Plack>
+
+    *   CPAN Ratings
+
+        <http://cpanratings.perl.org/d/Padre-Plugin-Plack>
+
+    *   Search CPAN
+
+        <http://search.cpan.org/dist/Padre-Plugin-Plack/>
+
+SEE ALSO
+    Plack, Padre
+
+COPYRIGHT & LICENSE
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
