@@ -28,6 +28,10 @@ about:
   - title: y2009
     events:
       - date: 2009 December 23
+        url: http://szabgab.com/blog/2009/12/1261601193.html
+        title: Padre 0.53 Stand Alone for Linux on perl 5.11.3 released
+        comment: by Gábor Szabó
+      - date: 2009 December 23
         url: http://blog.patspam.com/2009/padrepluginplack
         title: Padre::Plugin::Plack
         comment: by Patrick Donelan
