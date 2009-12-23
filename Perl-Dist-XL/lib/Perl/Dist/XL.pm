@@ -15,7 +15,9 @@ use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.03';
 
-sub perl_version { return $_[0]->{perl} eq 'dev' ? '5.11.2' : '5.10.1'; }
+sub perl_dev  { '5.11.3' }
+sub perl_prod { '5.10.1' }
+sub perl_version { return $_[0]->{perl} eq 'dev' ? perl_dev() : perl_prod(); }
 
 =head1 NAME
 

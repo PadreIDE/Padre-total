@@ -43,6 +43,9 @@ sub usage {
 	if ($str) {
 		print "\n$str\n\n";
 	}
+
+	my $perl_dev  = Perl::Dist::XL::perl_dev();
+	my $perl_prod = Perl::Dist::XL::perl_prod();
 	print <<"END_USAGE";
 Usage: $0
 
@@ -56,8 +59,8 @@ Usage: $0
        --download --full       full Mini CPAN mirror
 
        --perl [dev|stable|git]      which version of perl to use
-                       dev    = 5.11.2
-                       stable = 5.10.1
+                       dev    = $perl_dev
+                       stable = $perl_prod
                        git    = ????
 
        --dir           PATH/TO/DIR (defaults to ~/.perldist_xl)
