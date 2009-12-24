@@ -10,6 +10,11 @@ use warnings;
 # TODO: check out App-Smolder-Report or Create Smolder::Client
 # TODO: include the plugins as well in the smoking
 
+# these two are actually needed externally but we load
+# them here now to make sure the user does not forget to install them
+use TAP::Harness::Archive;
+use WWW::Mechanize;
+
 use Capture::Tiny qw(capture_merged);
 use Getopt::Long  qw(GetOptions);
 use MIME::Lite;
