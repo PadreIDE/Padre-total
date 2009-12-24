@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-use Padre::Debug;
+use Padre::Logger;
 use Padre::Document::Perl;
 use Padre::MimeTypes;
 

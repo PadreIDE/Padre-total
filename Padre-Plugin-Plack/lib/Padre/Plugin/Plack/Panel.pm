@@ -10,7 +10,7 @@ use Padre::Util ('_T');
 use Wx          ();
 use base 'Wx::Panel';
 use Padre::Current;
-use Padre::Debug;
+use Padre::Logger;
 
 sub new {
     my $class = shift;

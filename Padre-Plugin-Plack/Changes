@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Plack
 
+
+        Replace Padre::Debug by Padre::Logger which is used in Padre 0.53
+
 0.01    2009-12-22
         First version, released on an unsuspecting world.
         Much code stolen from Padre::Plugin::Catalyst

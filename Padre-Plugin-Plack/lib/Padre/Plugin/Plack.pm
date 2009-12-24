@@ -5,7 +5,7 @@ use warnings;
 use strict;
 
 use Padre::Util ('_T');
-use Padre::Debug;
+use Padre::Logger;
 
 our $VERSION = '0.02';
 
