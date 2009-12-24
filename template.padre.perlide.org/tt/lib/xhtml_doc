@@ -5,6 +5,8 @@
  <title>[% title | html %]</title>
  [% IF base %]<base href="[% base %]" />[% END %]
  <link rel="stylesheet" href="/static/static.css" type="text/css" />
+ <meta name="google-site-verification" content="PyvQrmPiXQVIb4G4iB2JR_wF2YPl5QvLGrc23xXEdKk" />
+ <meta name="description" content="[% description %]" />
 </head>
 <body[% IF onload_handler %] onload="[% onload_handler %]"[% END %]>
 
