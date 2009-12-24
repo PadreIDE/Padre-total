@@ -119,7 +119,7 @@ sub ACTION_process_templates {
 
     # older version of YAML::Tiny return list ??
     my ($stash) = LoadFile file($self->config_data('sourcedir'), qw(data stash.yml));
-    die keys %{$stash->{about}[0]};
+    #die keys %{$stash->{about}[0]};
 
     $stash->{build_date} = $self->dist_version;
     $stash->{base} = $self->config_data('base') if $self->config_data('base');
