@@ -3,11 +3,12 @@ use base 'Padre::Plugin';
 
 use warnings;
 use strict;
+use utf8;
 
 use Padre::Util ('_T');
 use Padre::Logger;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
@@ -616,9 +617,13 @@ Make Padre your domain-specific IDE today :)
 
 Blog post with screenshots: L<http://blog.patspam.com/2009/padrepluginplack>
 
-=head1 AUTHOR
+=head1 ACKNOWLEDGEMENTS
 
-Patrick Donelan, C<< <pdonelan at cpan.org> >>
+=encoding utf8
+
+Patrick Donelan (PDONELAN) E<lt>pat@patspam.comE<gt>
+
+Gábor Szabó - גאבור סבו (SZABGAB) E<lt>szabgab@gmail.comE<gt>
 
 =head1 BUGS
 

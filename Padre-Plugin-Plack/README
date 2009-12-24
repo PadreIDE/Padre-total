@@ -69,8 +69,10 @@ DESCRIPTION
     Blog post with screenshots:
     <http://blog.patspam.com/2009/padrepluginplack>
 
-AUTHOR
-    Patrick Donelan, "<pdonelan at cpan.org>"
+ACKNOWLEDGEMENTS
+    Patrick Donelan (PDONELAN) <pat@patspam.com>
+
+    Gábor Szabó - גאבור סבו (SZABGAB) <szabgab@gmail.com>
 
 BUGS
     Please report any bugs or feature requests to "bug-padre-plugin-plack at

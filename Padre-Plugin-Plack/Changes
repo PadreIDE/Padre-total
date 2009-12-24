@@ -1,7 +1,11 @@
 Revision history for Padre-Plugin-Plack
 
-
+0.03	2009-12-24
         Replace Padre::Debug by Padre::Logger which is used in Padre 0.53
+	Included French translation
+
+0.02	2009-12-23
+	Mostly minor tweaking
 
 0.01    2009-12-22
         First version, released on an unsuspecting world.

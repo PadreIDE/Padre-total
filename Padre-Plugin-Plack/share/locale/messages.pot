@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-23 11:05-0500\n"
+"POT-Creation-Date: 2009-12-24 10:38-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,60 +16,60 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Plack.pm:33
+#: lib/Padre/Plugin/Plack.pm:34
 msgid "New PSGI App"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:47
+#: lib/Padre/Plugin/Plack.pm:48
 msgid "Online References"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:59
+#: lib/Padre/Plugin/Plack.pm:60
 msgid "Plack Advent Calendar"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:67
+#: lib/Padre/Plugin/Plack.pm:68
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:86
+#: lib/Padre/Plugin/Plack.pm:87
 #, perl-format
 msgid "Failed to open template file %s"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:157
+#: lib/Padre/Plugin/Plack.pm:158
 msgid ""
 "'Sorry Dave, I can't do that - you need to close the corresponding file tab "
 "to close this panel"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:190 lib/Padre/Plugin/Plack.pm:212
+#: lib/Padre/Plugin/Plack.pm:191 lib/Padre/Plugin/Plack.pm:213
 #, perl-format
 msgid "Expected a PSGI document, but instead got: %s"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:225
+#: lib/Padre/Plugin/Plack.pm:226
 msgid "PSGI/Plack support for Padre"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:226
+#: lib/Padre/Plugin/Plack.pm:227
 msgid "by"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:228
+#: lib/Padre/Plugin/Plack.pm:229
 msgid "This system is running Plack version"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:287 lib/Padre/Plugin/Plack.pm:472
+#: lib/Padre/Plugin/Plack.pm:288 lib/Padre/Plugin/Plack.pm:473
 msgid "Let plackup guess"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:299
+#: lib/Padre/Plugin/Plack.pm:300
 msgid ""
 "plackup command not found, please check your Plack installation and $PATH"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:366
+#: lib/Padre/Plugin/Plack.pm:367
 #, perl-format
 msgid ""
 "Wx::Perl::ProcessStream is version %s which is known to cause problems. Get "
@@ -77,36 +77,36 @@ msgid ""
 "cpan Wx::Perl::ProcessStream"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:428
+#: lib/Padre/Plugin/Plack.pm:429
 #, perl-format
 msgid "Failed to start server via '%s'"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:428
+#: lib/Padre/Plugin/Plack.pm:429
 msgid "Error"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:474
+#: lib/Padre/Plugin/Plack.pm:475
 msgid "Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:480
+#: lib/Padre/Plugin/Plack.pm:481
 msgid "Port"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:486
+#: lib/Padre/Plugin/Plack.pm:487
 msgid "Options"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:492
+#: lib/Padre/Plugin/Plack.pm:493
 msgid "Auto-Restart"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:505 lib/Padre/Plugin/Plack/Panel.pm:33
+#: lib/Padre/Plugin/Plack.pm:506 lib/Padre/Plugin/Plack/Panel.pm:33
 msgid "Start"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:517
+#: lib/Padre/Plugin/Plack.pm:518
 msgid "View in Browser"
 msgstr ""
 
