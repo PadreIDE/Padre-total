@@ -1019,6 +1019,13 @@ about:
         url: http://onperl.ru/onperl/2009/09/padre.html
         title: Padre
         comment: Andrew Shitov on Perl
+  - title: Chinese
+    ISO_639: cn
+    events:
+      - date: 2009 December 10
+        url: http://perlchina.org/advent/2009/Padre.html
+        title: Padre
+        comment: Fayland Lam during the CN Perl Advent Calendar
 developers:
   - alias
   - azawawi
