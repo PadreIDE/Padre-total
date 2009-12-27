@@ -52,3 +52,10 @@ Padre-Plugin-SVN/META.yml
 Padre-Plugin-SVN/Makefile
 Padre-Plugin-SVN/inc/
 
+Padre-Plugin-Plack/share/locale/*.mo
+Padre-Plugin-Plack/META.yml
+Padre-Plugin-Plack/Makefile
+Padre-Plugin-Plack/blib/
+Padre-Plugin-Plack/inc/
+Padre-Plugin-Plack/pm_to_blib
+
