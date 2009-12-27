@@ -5,6 +5,7 @@ use 5.008;
 use warnings;
 use strict;
 
+use Padre::Util       ('_T');
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Wx::Icon   ();
@@ -42,7 +43,7 @@ sub build_dialog {
 	my $stTxtFile = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("File: $file"),
+		_T("File: $file"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		0,

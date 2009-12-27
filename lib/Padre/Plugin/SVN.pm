@@ -7,7 +7,7 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
-use Padre::Util   ();
+use Padre::Util   ('_T');
 
 
 
@@ -165,13 +165,13 @@ sub _get_current_filename {
 		if ( $document->is_modified ) {
 			my $ret = Wx::MessageBox(
 				sprintf(
-					Wx::gettext(
+					_T(
 						      '%s has not been saved but SVN would commit the file from disk.'
 							. "\n\nDo you want to save the file first (No aborts commit)?"
 					),
 					$filename,
 				),
-				Wx::gettext("Commit warning"),
+				_T("Commit warning"),
 				Wx::wxYES_NO | Wx::wxCENTRE,
 				$main,
 			);
@@ -421,7 +421,7 @@ sub svn_commit {
 # 	== 0 seems to produce false errors here
 #	if (( ! defined($file)) or ($file == 0)){
 	if ( ! defined($file)){
-		$main->error(Wx::gettext('Unable to find SVN file!'),Wx::gettext('Error - SVN Commit'));
+		$main->error(_T('Unable to find SVN file!'),_T('Error - SVN Commit'));
 		return;
 	}
 
@@ -455,18 +455,18 @@ sub svn_commit {
 		my @commit = @{ $file->stdout };
 		my @err    = @{ $file->stderr };
 		if (@err) {
-			$main->error( join( "\n", @err ), Wx::gettext('Error - SVN Commit') );
+			$main->error( join( "\n", @err ), _T('Error - SVN Commit') );
 		} else {
 			$main->info( join( "\n", @commit ), "Committed Revision number $revNo." );
 		}
 
 	}
 	else {
-	    my $ret = Wx::MessageBox( Wx::gettext(
+	    my $ret = Wx::MessageBox( _T(
 				  'You really should commit with a useful message'
 				  .  "\n\nDo you really want to commit with out a message?"
 			    ),
-				    Wx::gettext("Commit warning"),
+				    _T("Commit warning"),
 				    Wx::wxYES_NO | Wx::wxCENTRE,
 				    $main,
 			    );
