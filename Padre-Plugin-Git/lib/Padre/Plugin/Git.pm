@@ -7,7 +7,7 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
-use Padre::Util   ();
+use Padre::Util   ('_T');
 
 use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
@@ -85,10 +85,34 @@ sub menu_plugins_simple {
 	];
 }
 
-
-
 #####################################################################
 # Custom Methods
+
+# should be called once when loading the plugin
+sub define_actions {
+	Padre::Action->new(
+		name        => 'git.about',
+		label       => _T('About'),
+		comment     => _T('Show information about the Git plugin'),
+		need_editor => 0,
+		menu_event  => sub {
+			$_[0]->show_about;
+		},
+	);
+	return;
+}
+
+sub menu_actions {
+	my $self = shift;
+	return $self->plugin_name => [
+		'About'             => 'git.about',
+	];	
+}
+
+sub rightclick_actions {
+	my $self = shift;
+	return $self->menu_actions;
+}
 
 sub show_about {
 	my $self = shift;
@@ -268,7 +292,7 @@ sub event_on_context_menu {
 
 	$menu->AppendSeparator;
 	my $menu_rcs = Wx::Menu->new;
-	$menu->Append(-1, Wx::gettext('Git'), $menu_rcs);
+	$menu->Append(-1, _T('Git'), $menu_rcs);
 
 
 	return;

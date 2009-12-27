@@ -6,6 +6,7 @@ use strict;
 our $VERSION = '0.06';
 
 use base 'Padre::Plugin';
+use Padre::Util ('_T');
 use Padre::Wx ();
 
 sub padre_interfaces {
@@ -33,7 +34,7 @@ sub tidy_xml {
 	my $doc = $main->current->document;
 
 	unless ( $doc and $doc->isa('Padre::Document::XML') ) {
-		$main->message( Wx::gettext("This is not a XML document!") );
+		$main->message( _T("This is not a XML document!") );
 		return;
 	}
 
@@ -62,7 +63,7 @@ sub tidy_xml {
 		}
 	}
 	else {
-		$main->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
+		$main->message( _T("Tidying failed due to error(s):") . "\n\n" . $@ );
 	}
 
 	return;
