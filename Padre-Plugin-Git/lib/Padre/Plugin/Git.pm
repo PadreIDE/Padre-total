@@ -63,56 +63,143 @@ sub plugin_name {
 	'Git';
 }
 
-sub menu_plugins_simple {
-	my $self = shift;
-
-	return $self->plugin_name => [
-		'About'             => sub { $self->show_about },
-		'Commit...' => [
-			'File'     => sub { $self->git_commit_file },
-			'Project'  => sub { $self->git_commit_project },
-		],
-		'Status...' => [
-			'File'    => sub { $self->git_status_of_file },
-			'Dir'     => sub { $self->git_status_of_dir },
-			'Project' => sub { $self->git_status_of_project },
-		],
-		'Diff...' => [
-			'File'    => sub { $self->git_diff_of_file },
-			'Dir'     => sub { $self->git_diff_of_dir },
-			'Project' => sub { $self->git_diff_of_project },
-		],
-	];
-}
-
 #####################################################################
-# Custom Methods
 
 # should be called once when loading the plugin
+my $ONCE;
 sub define_actions {
+	my $self = shift;
+	return if $ONCE;
+	$ONCE = 1;
 	Padre::Action->new(
 		name        => 'git.about',
 		label       => _T('About'),
 		comment     => _T('Show information about the Git plugin'),
 		need_editor => 0,
 		menu_event  => sub {
-			$_[0]->show_about;
+			$self->show_about;
 		},
 	);
+
+	Padre::Action->new(
+		name        => 'git.commit_file',
+		label       => _T('Commit File'),
+		comment     => _T('Commit File'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_commit_file;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.commit_project',
+		label       => _T('Commit Project'),
+		comment     => _T('Commit Project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_commit_file;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.status_of_file',
+		label       => _T('File Status'),
+		comment     => _T('Show the status of the current file'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_file;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.status_of_dir',
+		label       => _T('Directory Status'),
+		comment     => _T('Show the status of the current directory'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_dir;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.status_of_project',
+		label       => _T('Project Status'),
+		comment     => _T('Show the status of the current project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_status_of_project;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.diff_of_file',
+		label       => _T('Diff of File'),
+		comment     => _T('Diff of File'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_file;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.diff_of_dir',
+		label       => _T('Diff of Dir'),
+		comment     => _T('Diff of Dir'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_dir;
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'git.diff_of_project',
+		label       => _T('Diff of Project'),
+		comment     => _T('Diff of Project'),
+		need_editor => 0,
+		menu_event  => sub {
+			$self->git_diff_of_project;
+		},
+	);
+
+
 	return;
 }
 
 sub menu_actions {
 	my $self = shift;
+	$self->define_actions();
+
 	return $self->plugin_name => [
-		'About'             => 'git.about',
-	];	
+		'git.about',
+		[
+			'Commit...',
+			'git.commit_file',
+			'git.commit_project',
+		],
+		[
+			'Status...',
+			'git.status_of_file',
+			'git.status_of_dir',
+			'git.status_of_project',
+		],
+
+		[
+			'Diff...',
+			'git.diff_of_file',
+			'git.diff_of_dir',
+			'git.diff_of_project',
+		],
+	];
 }
 
 sub rightclick_actions {
 	my $self = shift;
 	return $self->menu_actions;
 }
+
+
+#####################################################################
+# Custom Methods
 
 sub show_about {
 	my $self = shift;
