@@ -252,6 +252,29 @@ sub _get_current_filedir {
 	return File::Basename::dirname($doc->filename);
 }
 
+# This thing should just list a few actions
+sub event_on_context_menu {
+	my ( $self, $doc, $editor, $menu, $event ) = @_;
+
+	# Same code for all VCS
+	my $filename = $doc->filename;
+	return if not $filename;
+
+	my $project_dir = Padre::Util::get_project_dir($filename);
+	return if not $project_dir;
+	
+	my $rcs = Padre::Util::get_project_rcs($project_dir);
+	return if $rcs ne 'Git';
+
+	$menu->AppendSeparator;
+	my $menu_rcs = Wx::Menu->new;
+	$menu->Append(-1, Wx::gettext('Git'), $menu_rcs);
+
+
+	return;
+}
+
+
 1;
 
 # Copyright 2008-2009 The Padre development team as listed in Padre.pm.
