@@ -7,7 +7,7 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
-use Padre::Util   ('_T');
+use Padre::Util   ();
 
 use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
@@ -62,6 +62,8 @@ sub padre_interfaces {
 sub plugin_name {
 	'Git';
 }
+
+
 
 #####################################################################
 
@@ -379,7 +381,7 @@ sub event_on_context_menu {
 
 	$menu->AppendSeparator;
 	my $menu_rcs = Wx::Menu->new;
-	$menu->Append(-1, _T('Git'), $menu_rcs);
+	$menu->Append(-1, Wx::gettext('Git'), $menu_rcs);
 
 
 	return;
