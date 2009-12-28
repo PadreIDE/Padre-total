@@ -75,8 +75,8 @@ sub define_actions {
 	$ONCE = 1;
 	Padre::Action->new(
 		name        => 'git.about',
-		label       => _T('About'),
-		comment     => _T('Show information about the Git plugin'),
+		label       => Wx::gettext('About'),
+		comment     => Wx::gettext('Show information about the Git plugin'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->show_about;
@@ -85,8 +85,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.commit_file',
-		label       => _T('Commit File'),
-		comment     => _T('Commit File'),
+		label       => Wx::gettext('Commit File'),
+		comment     => Wx::gettext('Commit File'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_commit_file;
@@ -95,8 +95,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.commit_project',
-		label       => _T('Commit Project'),
-		comment     => _T('Commit Project'),
+		label       => Wx::gettext('Commit Project'),
+		comment     => Wx::gettext('Commit Project'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_commit_file;
@@ -105,8 +105,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.status_of_file',
-		label       => _T('File Status'),
-		comment     => _T('Show the status of the current file'),
+		label       => Wx::gettext('File Status'),
+		comment     => Wx::gettext('Show the status of the current file'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_status_of_file;
@@ -115,8 +115,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.status_of_dir',
-		label       => _T('Directory Status'),
-		comment     => _T('Show the status of the current directory'),
+		label       => Wx::gettext('Directory Status'),
+		comment     => Wx::gettext('Show the status of the current directory'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_status_of_dir;
@@ -125,8 +125,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.status_of_project',
-		label       => _T('Project Status'),
-		comment     => _T('Show the status of the current project'),
+		label       => Wx::gettext('Project Status'),
+		comment     => Wx::gettext('Show the status of the current project'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_status_of_project;
@@ -135,8 +135,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.diff_of_file',
-		label       => _T('Diff of File'),
-		comment     => _T('Diff of File'),
+		label       => Wx::gettext('Diff of File'),
+		comment     => Wx::gettext('Diff of File'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_diff_of_file;
@@ -145,8 +145,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.diff_of_dir',
-		label       => _T('Diff of Dir'),
-		comment     => _T('Diff of Dir'),
+		label       => Wx::gettext('Diff of Dir'),
+		comment     => Wx::gettext('Diff of Dir'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_diff_of_dir;
@@ -155,8 +155,8 @@ sub define_actions {
 
 	Padre::Action->new(
 		name        => 'git.diff_of_project',
-		label       => _T('Diff of Project'),
-		comment     => _T('Diff of Project'),
+		label       => Wx::gettext('Diff of Project'),
+		comment     => Wx::gettext('Diff of Project'),
 		need_editor => 0,
 		menu_event  => sub {
 			$self->git_diff_of_project;
