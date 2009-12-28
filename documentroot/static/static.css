@@ -54,7 +54,10 @@ div#content {
 
 .center_column {
     text-align: left;
-    margin: 0 50pt;
+    width: 950px;
+    position: relative;
+    margin: auto;
+
 }
 
 div#column_a {
@@ -84,14 +87,10 @@ h1,h2,h3,h4,h5,h6 {
 
 #masthead {
     background-color: #aa99FF;
-
- /*   background-image: url(clouds.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-    bottom: 0;
-    position: relative; */
-
+    margin-bottom: 0;
     vertical-align: middle;
+    height: 85px;
+
 }
 
 #masthead img {
@@ -139,8 +138,8 @@ ul.navigation li {
 
 ul.navigation a {
     height: 2em;
-    line-height: 2em;
-    text-transform: uppercase;
+ /*   line-height: 2em;
+    text-transform: uppercase; */
     padding: 0em 1em 0em 1em;
     color: #33A;
     text-decoration: none;
@@ -266,7 +265,7 @@ ul#translator h2 {
 }
 .styled_panel {
     padding: 1em;
-    border: solid 1px #ACA;
+    border: solid 1px grey;
     background-color: white;
 }
 
@@ -341,7 +340,7 @@ div#ohloh_graphic a {
 }
 
 
-/* evil mozilla-isms */
+/* evil mozilla-isms 
 
 ul.bottomheavy li {
     -moz-border-radius: 0px 0px 4px 4px;
@@ -352,7 +351,4 @@ ul.topheavy li {
     -moz-border-radius: 4px 4px 0px 0px ;
 }
 
-.styled_panel {
-    -moz-border-radius: 0.5em;
-    -moz-border-radius-bottom-right: 0px;
-}
+*/

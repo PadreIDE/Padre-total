@@ -1,15 +1,16 @@
 [% DEFAULT
-   title="Padre, the Perl IDE - Perl Application Development and Refactoring Environment"
-   description="Padre is an editor or IDE designed for the development and maintenance of Perl scripts and applications."
+   title="Padre, the Perl IDE"
+   description="Perl Application Development and Refactoring Environment"
 %]
 [% WRAPPER lib/xhtml_doc
 
 %]
 
-<div style="float: top;">
-[% WRAPPER chrome/styled_panel %]
-<h2>Padre, the Perl <acronym>IDE</acronym></h2>
 
+[% WRAPPER chrome/styled_panel %]
+<div id="padresplash" style="float:right;" ></div>
+<div>
+<h2>Padre, the Perl <acronym>IDE</acronym></h2>
 <p>
 Padre is a Perl <acronym>IDE</acronym>, an Integrated Development environment, or in other words a <b>text editor</b>
 that is simple to use for new Perl programmers but also supports large multi-lingual and multi-technology projects.
@@ -20,17 +21,8 @@ creating Perl scripts, modules and distributions, with an extensible plug-in
 system to support the addition of related functionality and languages and
 to support advanced developers taking the editor anywhere they want it to go.
 </p>
-<div class="spacer" ></div>
-[% END %]
-</div>
 
-
-<div id="padresplash" style="float:left;" ></div>
-
-<div style="float: right;">
-[% WRAPPER chrome/styled_panel %]
 <h2>Features</h2>
-
 <ul>
 <li>Customizable syntax highlighting of many languages</li>
 <li>Syntax checking for Perl 5 and Perl 6</li>
@@ -43,10 +35,9 @@ to support advanced developers taking the editor anywhere they want it to go.
 <li>Written in Perl 5</li>
 <li>... list of <a href="/trac/wiki/Features">features</a></li>
 </ul>
-
+</div>
 <div class="spacer" ></div>
 [% END %]
-</div>
 
 
 [% END %]

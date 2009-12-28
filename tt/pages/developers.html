@@ -11,7 +11,9 @@
 
 
 [% BLOCK developers_list %]
-<!-- table of contents -->
+
+[% WRAPPER chrome/styled_panel %]
+
 <!-- table of contents -->
 [%  INCLUDE chrome/navigation_list
  nav_items=developers
@@ -23,15 +25,16 @@
 <ul id="developers" class="unstyled palette_text" >
 [% FOREACH d IN developers %]
  [% INCLUDE render_developer dev=d %]
+  [% UNLESS loop.last %]<hr/>[% END %]
 [% END %]
 </ul>
+[% END %]
 [% END %]
 
 
 
 [% BLOCK render_developer %]
  <li id="[% dev.nickname | id_attr %]">
- [% WRAPPER chrome/styled_panel %]
   [% IF dev.img_src %]
    <img alt="[% dev.img_alt %]" src="[% dev.img_src %]" />
   [% END %]
@@ -53,26 +56,22 @@
    <h2>What are you hacking on?</h2>[% dev.What %]
   [% END %]
 
- [% END %]
 </li>
 
 [% END %]
 
 [% BLOCK getting_involved %]
-<div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h2>Getting involved</h2>
 <p>We have a separate page about <a href="getting_involved.html">getting involved</a>
 in the development of Padre.
 </p>
-</div>
 <div class="spacer" ></div>
 [% END %]
 [% END %]
 
 
 [% BLOCK developers_top %]
-<div style="float: top;">
 [% WRAPPER chrome/styled_panel %]
 <h2>About Padre Developers</h2>
 <p>
@@ -100,8 +99,6 @@ developers themselves so you will see only people who added themselves to this p
 If you would like to <a href="getting_involved.html">get involved</a>,
 please follow the instructions on that page.
 </p>
-
-</div>
 <div class="spacer" ></div>
 [% END %]
 

@@ -11,7 +11,7 @@
 
 
 [% BLOCK translators_top %]
-<div style="float: top;">
+
 [% WRAPPER chrome/styled_panel %]
 <h2>About the Translators</h2>
 <p>
@@ -32,12 +32,11 @@ If you would like to get involved in the translation project please check out ou
 </p>
 <div class="spacer" ></div>
 [% END %]
-</div>
 [% END %]
 
 
 [% BLOCK translators_list %]
-
+[% WRAPPER chrome/styled_panel %]
 <!-- table of contents -->
 [%  INCLUDE chrome/navigation_list
  nav_items=translators
@@ -51,7 +50,7 @@ If you would like to get involved in the translation project please check out ou
 [% FOREACH t IN translators %]
    <li id="[% t.nickname | id_attr %]" xml:lang="[% t.language_tag %]"
    [% IF t.language_tag == 'ar' %] style="text-align: justify; direction:rtl;" [% END %]>
-    [% WRAPPER chrome/styled_panel %]
+
 
     [% IF t.url %]
      <h1 class="translator"><a href="[% t.url | html %]">[% t.name | html %]</a></h1>
@@ -66,8 +65,10 @@ If you would like to get involved in the translation project please check out ou
     <h2 class="language">[% t.language %]</h2>
      [% t.Text %]
     <a href="developers.html#[% t.nickname %]">English</a>
-    [% END %]
+    <hr/>
    </li>
-  [% END %]
+   [% END %]
+
 </ul>
+[% END %]
 [% END %]

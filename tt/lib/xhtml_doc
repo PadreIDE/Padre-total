@@ -24,8 +24,10 @@ pageTracker._trackPageview();
 
 <body[% IF onload_handler %] onload="[% onload_handler %]"[% END %]>
 
+
+ <div class="center_column"> 
  [% INCLUDE lib/masthead %]
- <div class="center_column"> [% INCLUDE chrome/navigation_list  css_class="bottomheavy"%]</div>
+ [% INCLUDE chrome/navigation_list  css_class="bottomheavy"%]</div>
 
 <div id="content_wrapper">
 

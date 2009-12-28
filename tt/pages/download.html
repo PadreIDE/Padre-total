@@ -1,6 +1,6 @@
 [% DEFAULT
   title="Download Padre, the Perl IDE"
-  description="Ready made packages of Padre for Windows, Linux and Mac OSX and instruction how to install from source code."
+  description="Ready made packages of Padre for Windows, Linux and Mac OSX."
 %]
 [% WRAPPER lib/xhtml_doc
 
@@ -17,25 +17,25 @@
 <div id="column_a">
 [% INCLUDE dl_windows %]
 [% INCLUDE dl_osx %]
+[% INCLUDE dl_source %]
 </div>
 
 <div id="column_b">
 [% INCLUDE dl_linux %]
 [%# Not ready for prime time .  INCLUDE dl_freebsd %]
-[% INCLUDE dl_source %]
+
 </div>
 
 
 <div class="spacer"></div>
+
 [% WRAPPER chrome/styled_panel %]
  <h1>Notice</h1>
  <p>Padre is not affiliated with or endorsed by the entities listed herein.
  All logos and trademarks remain the property of their respective registered owners.</p>
 
-[% END %]
 
-<div class="spacer"></div>
-[% WRAPPER chrome/styled_panel %]
+
  <h1>License</h1>
 
  <p>
@@ -45,10 +45,6 @@
  license or <a href="http://svn.perlide.org/padre/trunk/Padre/COPYING"><acronym>GPL</acronym> I</a>.
  </p>
 
-[% END %]
-
-<div class="spacer"></div>
-[% WRAPPER chrome/styled_panel %]
  <h1>Copyright</h1>
 
  <p>
@@ -57,7 +53,7 @@
  </p>
 
 
-[% END %]
+ [% END %]
 
 
 [% END %]
