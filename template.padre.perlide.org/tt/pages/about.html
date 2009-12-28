@@ -15,13 +15,7 @@ and blog posts related to Padre.
 [% END %]
 </div>
 
-<!-- table of contents -->
-[%  INCLUDE chrome/navigation_list
- nav_items=about
- href_from="title"
- title_from="title"
- section_nav=1
- %]
+
 
 <!--
 The content of this pages is generated from a yaml file maintained manually.
@@ -29,18 +23,30 @@ If you write about Padre, please make sure you also add link here
 or if you don't have commit bit on the Padre repository then tell us about the
 post on our IRC channel.
 -->
-
+[% WRAPPER chrome/styled_panel %]
+<!-- table of contents -->
+[%  INCLUDE chrome/navigation_list
+ nav_items=about
+ href_from="title"
+ title_from="title"
+ section_nav=1
+ %]
+ 
 [% FOREACH t IN about %]
- [% WRAPPER chrome/styled_panel %]
  <h2 id="[% t.title | id_attr %]">[% t.title | html %]</h2>
  <table>
   [% FOREACH e IN t.events %]
-   <tr><td>[% e.date | html %]</td><td><a href="[% e.url | html %]"[% IF t.ISO_639 %] xml:lang="[% t.ISO_639 %]"[% END %]>[% e.title %]</a> [% e.comment %]</td></tr>
+   <tr style="vertical-align: top;"><td style="width: 12em;">[% e.date | html %]</td>
+       <td ><a href="[% e.url | html %]"[% IF t.ISO_639 %] xml:lang="[% t.ISO_639 %]"[% END %]>[% e.title %]</a> [% e.comment %]</td>
+    </tr>
   [% END %]
  </table>
+ [% UNLESS loop.last %]<hr/>[% END %]
  [% END %]
-[% END %]
 
+ [% END %]
+
+[% END %]
 
  <!--
  * [http://www.fayland.org/blog/labels/Padre.html Fayland blogging about Padre]
@@ -48,4 +54,3 @@ post on our IRC channel.
  * [http://jquelin.blogspot.com/search/label/padre Jq blogging about Padre]
 -->
 
-[% END %]

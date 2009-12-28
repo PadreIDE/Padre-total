@@ -1,4 +1,7 @@
-<h1 id="masthead">
-<a href="/"><img alt="" id="padrelogo" src="/static/logo.png" /></a>
-<span>[% title %]</span>
-</h1>
+<div id="masthead">
+ <a href="/"><img alt="" id="padrelogo" src="/static/logo.png" /></a>
+ <div style="padding-top: 12px">
+  <h1 style="margin-bottom: 0.25em">[% title %]</h1>
+  <span style="padding: 0;">[% description %]</span>
+ </div>
+</div> 
