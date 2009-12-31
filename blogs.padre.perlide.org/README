@@ -1,0 +1,11 @@
+
+This directory controls the http://blogs.padre.perlide.org/ site
+
+data/config.ini holds the list of the feeds.
+
+There is a cronjob on the server to pull the feeds every few hours.
+
+After making any changes please ask Gabor to upload the new files to the server.
+
+
+
