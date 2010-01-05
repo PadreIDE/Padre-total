@@ -25,6 +25,12 @@ navigation:
   - name: About
     href: /about.html
 about:
+  - title: y2010
+    events:
+      - date: 2010 January 04
+        url: http://use.perl.org/~Alias/journal/40077
+        title: Padre in 2010 - The year Padre becomes a team player
+        comment: by Adam Kennedy 
   - title: y2009
     events:
       - date: 2009 December 24
