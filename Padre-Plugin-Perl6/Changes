@@ -1,8 +1,9 @@
 Changes
 
-=head1 0.62 TO BE RELEASED
+=head1 0.62 2010.01.07
 
 	Depends on S:H:P6 v0.77 for the latest STD
+    Replace Padre::Debug by Padre::Logger
 
 =head1 0.61 2009.12.10
 
