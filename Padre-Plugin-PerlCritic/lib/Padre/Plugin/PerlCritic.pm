@@ -2,12 +2,13 @@ package Padre::Plugin::PerlCritic;
 
 use strict;
 use warnings;
-
-use base 'Padre::Plugin';
 use Padre::Wx     ();
 use Padre::Util   ('_T');
+use Padre::Plugin ();
 
 our $VERSION = '0.07';
+
+=pod
 
 =head1 NAME
 
@@ -63,9 +64,13 @@ sub critic {
 	return;
 }
 
-=head1 AUTHOR
+1;
 
-Kaare Rasmussen
+__END__
+
+=pod
+
+=head1 AUTHOR
 
 Kaare Rasmussen E<lt>kaare@cpan.orgE<gt>
 
@@ -77,5 +82,3 @@ This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 
 
 =cut
-
-1;
