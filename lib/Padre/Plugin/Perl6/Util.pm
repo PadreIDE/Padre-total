@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Padre::Constant ();
 
-our $VERSION = '0.61';
+our $VERSION = '0.62';
 
 # Get perl6 full executable path
 sub perl6_exe {
