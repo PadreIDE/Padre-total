@@ -7,6 +7,7 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 
 our $VERSION = '0.07';
+our @ISA     = 'Padre::Plugin';
 
 =pod
 
