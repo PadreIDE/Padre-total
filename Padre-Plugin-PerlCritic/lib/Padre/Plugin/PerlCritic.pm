@@ -29,10 +29,14 @@ sub padre_interfaces {
 	'Padre::Config' => '0.54',
 }
 
+sub plugin_name {
+	Wx::gettext('Perl Critic');
+}
+
 sub menu_plugins_simple {
 	my $self = shift;
-	return PerlCritic => [
-		Wx::gettext('Run PerlCritic') => sub {
+	return $self->plugin_name => [
+		Wx::gettext('Padre::Critic Current Document') => sub {
 			$self->critic(@_);
 		}
 	];
@@ -57,11 +61,23 @@ sub critic {
 	return unless defined $text;
 
 	# Do we have a project-specific configuration
-	my $project = $document->project;
-	my $config  = $project->config;
-	my @params  = $config->config_perlcritic
-		? ( -profile => $config->config_perlcritic )
+	my $project           = $document->project;
+	my $config            = $project->config;
+	my $config_perlcritic = $config->config_perlcritic;
+	my @params            = $config_perlcritic
+		? ( -profile => $config_perlcritic )
 		: ();
+
+	# Open and start output from the critic run
+	my $main   = $current->main;
+	my $output = $main->output;
+	$output->clear;
+	$main->show_output(1);
+	if ( @params ) {
+		$output->AppendText('Perl::Critic running with project-specific configuration $config_perlcritic');
+	} else {
+		$output->AppendText('Perl::Critic running with default or user configuration');
+	}
 
 	# Hand off to Perl::Critic
 	require Perl::Critic;
@@ -69,9 +85,6 @@ sub critic {
 	my @violations = $critic->critique( \$text );
 
 	# Write the results to the Output window
-	my $main   = $current->main;
-	my $output = $main->output;
-	$output->clear;
 	if ( @violations ) {
 		$output->AppendText(join '', @violations);
 	} else {
@@ -79,7 +92,6 @@ sub critic {
 			Wx::gettext('Perl::Critic found nothing to say about this code')
 		);
 	}
-	$main->show_output(1);
 
 	return;
 }
