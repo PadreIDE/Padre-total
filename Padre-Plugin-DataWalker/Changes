@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-DataWalker
 
-0.02 unreleased
+0.02 2010-01-12
+  - Fix compatibility with Padre >= 0.47 (Jens Rehsack)
   - Added translations:
     - French (jquelin)
     - Polish (therek)
