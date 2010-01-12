@@ -8,7 +8,7 @@ license  'perl';
 homepage       'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-DataWalker/';
 
-requires  'Padre'                => '0.29';
+requires  'Padre'                => '0.47';
 requires  'Wx::Perl::DataWalker' => '0.02';
 requires  'YAML::XS'             => '0';
 
