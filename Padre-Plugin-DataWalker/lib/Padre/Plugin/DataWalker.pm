@@ -106,7 +106,7 @@ sub browse_yaml_file {
 		"*.*",
 		Wx::wxFD_OPEN|Wx::wxFD_FILE_MUST_EXIST,
 	);
-	unless ( Padre::Util::WIN32() ) {
+	unless ( Padre::Constant::WIN32() ) {
 		$dialog->SetWildcard("*");
 	}
 
