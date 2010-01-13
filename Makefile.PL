@@ -5,7 +5,7 @@ if ( -e 'MANIFEST.SKIP' ) {
 }
 
 all_from      'lib/Padre/Plugin/PerlTidy.pm';
-requires      'Padre' => '0.43';
+requires      'Padre' => '0.54';
 requires      'Perl::Tidy';
 test_requires 'Test::More';
 

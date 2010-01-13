@@ -8,7 +8,7 @@ use Padre::Plugin::PerlTidy;
 {
     my @menu = Padre::Plugin::PerlTidy->menu_plugins_simple;
     is @menu, 2, 'one menu item';
-    is $menu[0], 'PerlTidy', 'plugin name';
+    is $menu[0], 'Perl Tidy', 'plugin name';
 
     # check for existence and not the actual words as these
     # are locale specific
