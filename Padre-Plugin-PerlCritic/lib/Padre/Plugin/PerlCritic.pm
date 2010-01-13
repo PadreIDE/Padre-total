@@ -74,9 +74,9 @@ sub critic {
 	$output->clear;
 	$main->show_output(1);
 	if ( @params ) {
-		$output->AppendText("Perl::Critic running with project-specific configuration $config_perlcritic");
+		$output->AppendText("Perl\::Critic running with project-specific configuration $config_perlcritic\n");
 	} else {
-		$output->AppendText('Perl::Critic running with default or user configuration');
+		$output->AppendText("Perl\::Critic running with default or user configuration\n");
 	}
 
 	# Hand off to Perl::Critic
@@ -89,7 +89,7 @@ sub critic {
 		$output->AppendText(join '', @violations);
 	} else {
 		$output->AppendText(
-			Wx::gettext('Perl::Critic found nothing to say about this code')
+			Wx::gettext("Perl\::Critic found nothing to say about this code\n")
 		);
 	}
 
