@@ -1,4 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
+0.1
+        - internal reworking
 0.06 
 	- add feature Open in Other Editor
 	- attempt to select a usable multicast interface

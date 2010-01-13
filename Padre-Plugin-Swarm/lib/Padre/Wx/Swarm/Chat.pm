@@ -8,7 +8,6 @@ use Params::Util qw{_INSTANCE};
 use Wx::Perl::Dialog::Simple;
 
 use Padre::Current qw{_CURRENT};
-use Padre::Logger;
 use Padre::Wx ();
 use Padre::Config ();
 use Padre::Plugin::Swarm ();
@@ -87,16 +86,6 @@ sub new {
 		resource => 'Padre',
 	);
 
-	my $service = Padre::Swarm::Service::Chat->new(
-		identity      => $identity,
-		use_transport => {
-			'Padre::Swarm::Transport::Multicast'=>{
-				identity => $identity,
-				loopback => 1,
-			},
-		}
-	);
-	$self->service( $service );
         $self->users( {} );
 	Wx::Event::EVT_TEXT_ENTER(
                 $self, $text,
@@ -123,14 +112,11 @@ sub gettext_label {
 sub enable {
 	my $self     = shift;
 	TRACE( "Enable Chat" ) if DEBUG;
-	$self->service->schedule;
-	# Set up the event handler, we will
-	# ->accept_message when the task loop ->post_event($data)
-	#  to us.
+	
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx->main,
 		-1,
-		$self->service->event,
+		$self->plugin->message_event,
 		sub { $self->accept_message(@_) }
 	);
 	# Add ourself to the gui;
@@ -139,7 +125,7 @@ sub enable {
 	my $position = $bottom->GetPageCount;
 	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
 
-    my $icon = $self->plugin->plugin_icon;  
+	my $icon = $self->plugin->plugin_icon;  
 	$bottom->SetPageBitmap($pos, $icon );
 	
 	$self->Show;
@@ -155,8 +141,6 @@ sub disable {
 	my $main = $self->main;
 	my $bottom= $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
-	$self->service->tell('HANGUP');
-
 	$self->Hide;
 
 
@@ -171,11 +155,7 @@ sub accept_message {
 	my $evt = shift;
 
 	my $payload = $evt->GetData;
-	# Hack - the alive should be via service poll event ?
-	return if $payload eq 'ALIVE';
-
 	my $message = Storable::thaw($payload);
-	warn "accepted $message" if DEBUG;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 
         my $handler = 'accept_' . $message->type;
@@ -244,6 +224,12 @@ sub accept_promote {
     
 }
 
+sub accept_disco {
+	my ($self,$message) = @_;
+	$self->plugin->send( {type=>'promote',service=>'chat'} );
+	
+}
+
 sub accept_leave {
     my ($self,$message) = @_;
     my $identity = $message->from;
@@ -290,11 +276,12 @@ sub accept_openme {
 
 sub command_nick {
     my ($self,$new_nick) = @_;
-    
     my $previous =
-            $self->service->identity->nickname;	
+            $self->plugin->identity->nickname;
         eval {
-            $self->service->identity->set_nickname( $new_nick );
+            my $config = Padre::Config->read;
+            $config->set( identity_nickname => $new_nick );
+            $config->write;
         };
 
         $self->tell_service( 
@@ -304,22 +291,9 @@ sub command_nick {
     
 }
 
-sub command_spam {
-    my ($self,$data) = @_;
-    
-    my $icon  = Padre::Wx::Icon::find(
-        'status/padre-plugin-swarm',
-        {
-                size  => '128x128',
-                icons => $self->plugin_icons_directory,
-        } 
-    );
-    $icon->Show;
-    
-}
-
 sub command_disco {
-    
+    my $self = shift;
+    $self->plugin->send({type=>'disco'});
 }
 
 
@@ -331,10 +305,9 @@ sub tell_service {
 		? $body
 		: Padre::Swarm::Message->new(
 			body => $body,
-			from => $self->service->identity->nickname,
+			type => 'chat',
 		);
-
-	my $service = $self->service->tell($message)
+	$self->plugin->send($message)
 }
 
 sub on_text_enter {
@@ -342,7 +315,7 @@ sub on_text_enter {
     my $message = $self->textinput->GetValue;
     $self->textinput->SetValue('');
     
-    if ( $message =~ m{^/(\w+)\s+} ) {
+    if ( $message =~ m{^/(\w+)} ) {
         $self->accept_command( $message ) 
     }    
     else {
@@ -352,15 +325,15 @@ sub on_text_enter {
 
 sub accept_command {
     my ($self,$message) = @_;
+    $message =~ s|/||;
     # Handle /nick for now so everyone is not Anonymous_$$
-    my ($command,$data) = $message =~ m{^/(\w+)\s+(.+)} ;
-    if ( 'nick' eq $command ) {
-        $self->command_nick( $data );
-    } 
-    elsif ( 'spam' eq $command ) {
-        $self->command_spam( $data );
-    }
-    else { $self->tell_service( $message ); }
+    my ($command,$data) = split /\s/ , $message ,2 ;
+    
+    my $handler = 'command_' . $command;
+    if ( $self->can( $handler ) ) {
+	$self->$handler($data);
+    	
+    } else { $self->tell_service( $message ); }
     
 }
 
