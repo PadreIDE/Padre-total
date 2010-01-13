@@ -36,7 +36,7 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('Padre::Critic Current Document') => sub {
+		Wx::gettext('Perl::Critic Current Document') => sub {
 			$self->critic(@_);
 		}
 	];
@@ -74,7 +74,7 @@ sub critic {
 	$output->clear;
 	$main->show_output(1);
 	if ( @params ) {
-		$output->AppendText('Perl::Critic running with project-specific configuration $config_perlcritic');
+		$output->AppendText("Perl::Critic running with project-specific configuration $config_perlcritic");
 	} else {
 		$output->AppendText('Perl::Critic running with default or user configuration');
 	}
