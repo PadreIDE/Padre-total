@@ -69,11 +69,6 @@ SCOPE: {
 	sub service_loop {
 		my $self = shift;
 		
-		
-#		unless ( defined $self->{client} ) {
-#			$self->start;
-#		}
-		
 		if (my ($message) = $self->poll(0.2) ) {
 			$self->handle_message($message);
 		}
@@ -106,6 +101,7 @@ sub receive {
 		my ($rport,$raddr) = sockaddr_in $remote;
 		my $ip = inet_ntoa $raddr;
 		my $message = eval { $self->marshal->decode( $buffer ) };
+		# todo - include the transport info in the message
 		if ( $@ ) {
 			warn "Swarm Failed decoding ! $@ --- '$buffer'";
 		}
@@ -163,7 +159,6 @@ sub handle_message {
 	my $self = shift;
 	my $message = shift;
 	return unless $message;
-	TRACE( "Post to event" ) if DEBUG;
 	$self->post_event( 
 		$self->event, 
 		Storable::freeze ($message)
