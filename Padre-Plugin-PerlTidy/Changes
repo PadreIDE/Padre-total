@@ -1,6 +1,6 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
-0.09  to be released
+0.09  Thu Jan 14 2010
     - Fixed #776: PerlTidy needs -nse and -nst options (MRWHIPPLE)
     - _T() replaced with Wx::gettext() (BRICAS)
     - Use new project config setting (config_perltidy) if available (BRICAS)
