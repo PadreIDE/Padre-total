@@ -9,7 +9,7 @@ my $class = Module::Build->subclass( code => <<'EOF');
                 die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
                 msgfmt({
                         in => "share/locale/",
-                        out => "blib/lib/Acme/Padre/PlayCode/share/locale/"});
+                        out => "blib/share/locale/"});
         }
 EOF
 my $builder = $class->new(
