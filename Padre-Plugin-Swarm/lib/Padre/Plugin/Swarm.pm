@@ -9,9 +9,6 @@ use Padre::Wx              ();
 use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
 use Padre::Service::Swarm  ();
-
-use Padre::Logger;
-
 use Wx::Socket ();
 
 our $VERSION = '0.07';
@@ -83,7 +80,6 @@ sub _send {
 	my $self = shift;
 	my $message = shift;
 	$message->{from} = $self->identity->nickname;
-	TRACE( '_send' ) if DEBUG;
 	my $data =  $SERVICE->marshal->encode( $message );
 	$SOCK_SEND->SendTo($WxSwarmAddr, $data, length($data) );
 	
@@ -94,7 +90,6 @@ sub _send {
 
 sub accept_message { 
 	my ($self,$main,$event) = @_;
-	TRACE( "accept_message" , @_ ) if DEBUG;
 	
 	my $data = $event->GetData;
 	if ( $data eq 'ALIVE' ) {

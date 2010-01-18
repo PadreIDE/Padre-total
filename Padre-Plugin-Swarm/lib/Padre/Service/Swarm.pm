@@ -8,8 +8,6 @@ use Padre::Service ();
 use Padre::Swarm::Message;
 use IO::Select;
 use IO::Socket::Multicast;
-use Padre::Logger;
-
 
 our $VERSION = '0.07';
 our @ISA     = 'Padre::Service';
