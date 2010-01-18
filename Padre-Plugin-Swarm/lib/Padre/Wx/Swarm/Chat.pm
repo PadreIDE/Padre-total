@@ -31,8 +31,6 @@ use Class::XSAccessor
 	setters => {
 		'set_task' => 'task',
 	};
-                
-#use constant DEBUG => Padre::Plugin::Swarm::DEBUG;
 
 sub new {
 	my $class = shift;
@@ -123,13 +121,13 @@ sub enable {
 	my $main     = $self->main;
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageCount;
-	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
-
-	my $icon = $self->plugin->plugin_icon;  
-	$bottom->SetPageBitmap($pos, $icon );
 	
+	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
 	$self->Show;
+	my $icon = $self->plugin->plugin_icon;  
+	$bottom->SetPageBitmap($position, $icon );
 	$bottom->SetSelection($position);
+	$self->textinput->SetFocus;
 	$main->aui->Update;
 
 	$self->{enabled} = 1;
