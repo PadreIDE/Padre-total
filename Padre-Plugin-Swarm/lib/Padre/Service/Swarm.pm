@@ -2,6 +2,7 @@ package Padre::Service::Swarm;
 
 use strict;
 use warnings;
+use JSON::XS;
 use Padre::Wx      ();
 use Padre::Service ();
 use Padre::Swarm::Message;

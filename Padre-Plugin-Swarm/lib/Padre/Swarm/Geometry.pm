@@ -5,7 +5,7 @@ use warnings;
 use Graph;
 use JSON::XS;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =pod
 

@@ -14,7 +14,7 @@ use Padre::Logger;
 
 use Wx::Socket ();
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @ISA     = 'Padre::Plugin';
 
 # The padre multicast group (unofficial)
