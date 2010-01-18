@@ -6,13 +6,11 @@ use Padre::Wx      ();
 use Padre::Service ();
 use Padre::Swarm::Message;
 use IO::Select;
-use IO::Interface;
-use IO::Interface::Simple;
 use IO::Socket::Multicast;
 use Padre::Logger;
 
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @ISA     = 'Padre::Service';
 
 use Class::XSAccessor
@@ -20,8 +18,6 @@ use Class::XSAccessor
 		task_event => 'task_event',
 		service    => 'service',
 		client     => 'client',
-		sender     => 'sender',
-		interface  => 'interface',
 	};
 
 =pod
@@ -46,10 +42,6 @@ sub hangup {
 	$$running = 0;
 	$self->client->shutdown(1);
 	$self->client(undef);
-	$self->interface(undef);
-	$self->sender->shutdown(1);
-	$self->sender(undef);
-	
 	
 }
 
@@ -58,9 +50,6 @@ sub terminate {
 	my $running = shift;
 	$$running=0;
 	$self->client(undef);
-	$self->interface(undef);
-	$self->sended(undef);
-	
 
 }
 
@@ -112,47 +101,18 @@ sub receive {
 
 sub start {
 	my $self = shift;
-	$self->find_multicast_interface;
-	
-	my $sender = IO::Socket::Multicast->new();
-	$self->{sender} = $sender;
 	
 	my $client = IO::Socket::Multicast->new(
 		LocalPort => 12000,
 		ReuseAddr => 1,
-		#PeerAddr=>$self->interface->address,
-		#Proto=>'udp',
 	) or die $!;
-	$client->mcast_add('239.255.255.1', $self->interface );
+	$client->mcast_add('239.255.255.1'); #should have the interface
 	$client->mcast_loopback( 1 );
 	
 	$self->{client} = $client;
 	$self->{running} = 1;
 
 
-}
-
-sub find_multicast_interface {
-	my $self = shift;
-    my $interface;
-    foreach my $i ( IO::Interface::Simple->interfaces ) {
-        next unless $i->is_multicast
-            && $i->is_running
-            && $i->address;
-        $interface = $i;
-    } continue { last if $interface }
-    die "No usable multicast interface" unless $interface;
-   $self->interface($interface);
-}
-
-sub send_message {
-	my $self = shift;
-	my $message = shift;
-	my $data = $self->marshal->encode($message);
-	return unless $self->{sender};
-	$self->{sender}->mcast_send($data,'239.255.255.1:12000' );
-	
-	
 }
 
 sub handle_message {
