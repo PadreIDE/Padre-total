@@ -64,7 +64,6 @@ SCOPE: {
   	
   	$SERVICE->tell('HANGUP');
   	$self->send( {type=>'leave'} );
-  	#return;
   	undef $EVT_RECV;
   	undef $SOCK_SEND;
   	undef $EVT_SWARM_RECV;
@@ -117,7 +116,7 @@ sub accept_message {
 	Wx::PostEvent(
                 $main,
                 Wx::PlThreadEvent->new( -1, $self->message_event , $data ),
-        ) if $self->message_event;;
+        ) if $self->message_event;
 }
 
 sub accept_disco {
