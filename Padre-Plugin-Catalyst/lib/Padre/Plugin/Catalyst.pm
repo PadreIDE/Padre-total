@@ -260,7 +260,10 @@ sub menu_plugins {
     );
     
     # Return it and the label for our plug-in
-    return ( $self->plugin_name => $menu );   
+    return ( $self->plugin_name => $menu );  
+    
+    #TODO: add status bar comment for each menu entry.
+    # look into Padre::Wx::Menu and wxWidgets for $item->SetHelp('foo')
 }
 
 
@@ -304,7 +307,7 @@ sub _open_template {
     require File::Find;
     require Padre::Plugin::Catalyst::Util;
     
-    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir() || return;
     my $template_dir = File::Spec->catdir( $project_dir, 'root' );
     
     my @files;
@@ -352,7 +355,7 @@ sub on_update_script {
 
 	require File::Spec;
 	require Padre::Plugin::Catalyst::Util;
-    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir() || return;
 
 	my @dir = File::Spec->splitdir($project_dir);
 	my $project = $dir[-1];
@@ -382,7 +385,7 @@ sub on_start_server {
     
 	require File::Spec;
 	require Padre::Plugin::Catalyst::Util;
-    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir();
+    my $project_dir = Padre::Plugin::Catalyst::Util::get_document_base_dir() || return;
 
 	my $server_filename = Padre::Plugin::Catalyst::Util::get_catalyst_project_name($project_dir);
 						
@@ -589,6 +592,7 @@ sub plugin_disable {
     Class::Unload->unload('Catalyst');
 }
 
+# FIXME: Padre does *NOT* seem to call this if a document is closed.
 sub editor_changed {
     my $self = shift;
     my $document = $self->main->current->document || return $self->enable(0);
@@ -616,6 +620,7 @@ sub enable {
     my $is_server_on = (defined $self->{server} ? 1 : 0);
     
     # freeze menu entries
+    # FIXME: this isn't working during startup
     require Padre::Plugin::Catalyst::Util;
     Padre::Plugin::Catalyst::Util::toggle_menu_items($toggle, $is_server_on);
 

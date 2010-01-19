@@ -38,9 +38,18 @@ sub find_file_from_output {
 	}
 }
 
-sub get_document_base_dir {	
+sub get_document_base_dir {
 	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
+	
+	unless ($doc) {
+        Wx::MessageBox(
+            _T('Could not open current document. Please make sure you have at least one document open.'), 
+            _T('Catalyst project dir not found'), Wx::wxOK, $main
+        );
+        return;
+    }
+
 	my $filename = $doc->filename;
 	return Padre::Util::get_project_dir($filename);
 }
