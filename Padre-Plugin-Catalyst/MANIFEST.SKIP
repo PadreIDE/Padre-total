@@ -45,3 +45,4 @@
 # avoid pot files (gettext)
 \.pot$
 
+^MYMETA.yml$
