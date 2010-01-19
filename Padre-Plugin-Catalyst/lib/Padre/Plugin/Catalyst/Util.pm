@@ -100,4 +100,26 @@ sub toggle_server_menu {
     }
 }
 
+sub toggle_menu_items {
+    my ($toggle, $is_server_on) = (@_);
+    
+    #TODO: caching this on startup would probably make things marginally faster
+    my $menu_helpers = get_plugin_menu_item_by_label(_T('Create new...'));
+    my $menu_start   = get_plugin_menu_item_by_label(_T('Start Web Server'));
+    my $menu_stop    = get_plugin_menu_item_by_label(_T('Stop Web Server'));
+    my $menu_update  = get_plugin_menu_item_by_label(_T('Update Application Scripts'));
+    
+    $menu_helpers->Enable($toggle) if $menu_helpers;
+    $menu_update->Enable($toggle) if $menu_update;
+    
+    if ($toggle == 0) {
+        $menu_start->Enable($toggle) if $menu_start;
+        $menu_stop->Enable($toggle) if $menu_stop;
+    }
+    else {
+        $menu_start->Enable(! $is_server_on) if $menu_start;
+        $menu_stop->Enable($is_server_on) if $menu_stop;
+    }
+}
+
 42;

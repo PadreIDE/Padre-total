@@ -591,14 +591,38 @@ sub plugin_disable {
 
 sub editor_changed {
     my $self = shift;
-    my $document = $self->main->current->document || return;
+    my $document = $self->main->current->document || return $self->enable(0);
 
-    $document->{menu} = [] if (!defined($document->{menu})) or (ref($document->{menu}) ne 'ARRAY');
-    $document->{menu} = [grep (!/^menu\.Catalyst$/,@{$document->{menu}}) ];
+    #$document->{menu} = [] if (!defined($document->{menu})) or (ref($document->{menu}) ne 'ARRAY');
+    #$document->{menu} = [grep (!/^menu\.Catalyst$/,@{$document->{menu}}) ];
 
+    # when not inside a catalyst project, disable stuff
+    my $toggle = 0;
     require Padre::Plugin::Catalyst::Util;
     if (Padre::Plugin::Catalyst::Util::in_catalyst_project($document->filename)) {
-        push @{$document->{menu}}, 'menu.Catalyst';
+        
+        # enable Catalyst main menu
+        #push @{$document->{menu}}, 'menu.Catalyst';
+        $toggle = 1;
+    }
+    # enable/disable Catalyst panel and menu entries
+    $self->enable($toggle);
+}
+
+# this method is invoked when the active document
+# is **NOT** part of a Catalyst project
+sub enable {
+    my ($self, $toggle) = (@_);
+    my $is_server_on = (defined $self->{server} ? 1 : 0);
+    
+    # freeze menu entries
+    require Padre::Plugin::Catalyst::Util;
+    Padre::Plugin::Catalyst::Util::toggle_menu_items($toggle, $is_server_on);
+
+    # freeze the panel
+    $self->panel->{button}->Enable($toggle);
+    unless ($is_server_on) {
+        $self->panel->{checkbox}->Enable($toggle);
     }
 }
 
