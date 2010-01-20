@@ -16,316 +16,320 @@ file if it exists (see Perl::Tidy documentation).
 
 =cut
 
-use 5.008001;
+use 5.008002;
 use strict;
 use warnings;
+use Params::Util   ();
 use Padre::Current ();
 use Padre::Wx      ();
 use Padre::Plugin  ();
-use constant { SELECTIONSIZE => 40, };  # this constant is used when storing
-                                        # and restoring the cursor position.
-                                        # Keep it small to limit resource use.
-our $VERSION = '0.09';
+
+our $VERSION = '0.10';
 our @ISA     = 'Padre::Plugin';
 
+# This constant is used when storing
+# and restoring the cursor position.
+# Keep it small to limit resource use.
+use constant {
+	SELECTIONSIZE => 40,
+};
+
 sub padre_interfaces {
-    return 'Padre::Plugin' => '0.43',
-        'Padre::Config'    => '0.54';
+	'Padre::Plugin' => '0.43', 'Padre::Config' => '0.54';
 }
 
 sub plugin_name {
-    Wx::gettext( 'Perl Tidy' );
+	Wx::gettext('Perl Tidy');
 }
 
 sub menu_plugins_simple {
-    my $self = shift;
-    return $self->plugin_name => [
-        Wx::gettext( "Tidy the active document\tAlt+Shift+F" ) =>
-            \&tidy_document,
-        Wx::gettext( "Tidy the selected text\tAlt+Shift+G" ) =>
-            \&tidy_selection,
-        Wx::gettext( 'Export active document to HTML file' ) =>
-            \&export_document,
-        Wx::gettext( 'Export selected text to HTML file' ) =>
-            \&export_selection,
-    ];
+	my $self = shift;
+	return $self->plugin_name => [
+		Wx::gettext("Tidy the active document\tAlt+Shift+F") => \&tidy_document,
+		Wx::gettext("Tidy the selected text\tAlt+Shift+G") =>
+			\&tidy_selection,
+		'---' => undef,
+		Wx::gettext('Export active document to HTML file') =>
+			\&export_document,
+		Wx::gettext('Export selected text to HTML file') =>
+			\&export_selection,
+	];
 }
 
 sub _tidy {
-    my ( $main, $src ) = @_;
+	my $main     = shift;
+	my $current  = shift;
+	my $source   = shift;
+	my $document = $current->document;
 
-    require Perl::Tidy;
+	# Check for problems
+	unless ( defined $source ) {
+		return;
+	}
+	unless ( $document->isa('Padre::Document::Perl') ) {
+		return Wx::MessageBox(
+			Wx::gettext('Document is not a Perl document'),
+			Wx::gettext('Error'),
+			Wx::wxOK | Wx::wxCENTRE,
+			$main
+		);
+	}
 
-    return unless defined $src;
+	my $destination = undef;
+	my $errorfile   = undef;
+	my %tidyargs    = (
+		argv        => \'-nse -nst',
+		source      => \$source,
+		destination => \$destination,
+		errorfile   => \$errorfile,
+	);
 
-    my $doc = $main->current->document;
+	my $output     = $main->output;
+	my $perltidyrc = $document->project->config->config_perltidy;
+	if ($perltidyrc) {
+		$tidyargs{perltidyrc} = $perltidyrc;
+		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
+	} else {
+		$output->AppendText("Perl::Tidy running with default or user configuration\n");
+	}
 
-    if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
-        return Wx::MessageBox(
-            Wx::gettext( 'Document is not a Perl document' ),
-            Wx::gettext( 'Error' ),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
-    }
+	# TODO: suppress the senseless warning from PerlTidy
+	require Perl::Tidy;
+	eval { Perl::Tidy::perltidy(%tidyargs); };
 
-    my ( $output, $error );
-    my %tidyargs = (
-        argv        => \'-nse -nst',
-        source      => \$src,
-        destination => \$output,
-        errorfile   => \$error,
-    );
+	if ($@) {
+		Wx::MessageBox(
+			$@,
+			Wx::gettext("PerlTidy Error"),
+			Wx::wxOK | Wx::wxCENTRE,
+			$main
+		);
+		return;
+	}
 
-    if ( my $tidyrc = $doc->project->config->config_perltidy ) {
-        $tidyargs{ perltidyrc } = $tidyrc;
-        Padre::Current->main->output->AppendText(
-            "Perl\::Tidy running with project-specific configuration $tidyrc\n"
-        );
-    }
-    else {
-        Padre::Current->main->output->AppendText(
-            "Perl\::Tidy running with default or user configuration\n" );
-    }
+	if ( defined $errorfile ) {
+		my $filename = $document->filename;
+		my $width    = length($filename) + 2;
+		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
+		$output->AppendText("$errorfile\n");
+		$main->show_output(1);
+	}
 
-    # TODO: suppress the senseless warning from PerlTidy
-    eval { Perl::Tidy::perltidy( %tidyargs ); };
-
-    if ( $@ ) {
-        my $error_string = $@;
-        Wx::MessageBox(
-            $error_string,
-            Wx::gettext( "PerlTidy Error" ),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
-        return;
-    }
-
-    if ( defined $error ) {
-        my $width = length( $doc->filename ) + 2;
-        Padre::Current->main->output->AppendText( "\n\n"
-                . "-" x $width . "\n"
-                . $doc->filename . "\n"
-                . "-" x $width
-                . "\n" );
-        Padre::Current->main->output->AppendText( "$error\n" );
-        Padre::Current->main->show_output( 1 );
-    }
-    return $output;
+	return $destination;
 }
 
 sub tidy_selection {
-    my ( $main, $event ) = @_;
-    my $src = $main->current->text;
+	my $main = shift;
 
-    my $newtext = _tidy( $main, $src );
+	# Tidy the current selected text
+	my $current = $main->current;
+	my $text    = $current->text;
+	my $tidy    = _tidy( $main, $current, $text );
+	unless ( defined Params::Util::_STRING($tidy) ) {
+		return;
+	}
 
-    return unless defined $newtext && length $newtext;
+	# If the selected text does not have a newline at the end,
+	# trim off any that Perl::Tidy has added.
+	unless ( $text =~ /\n\z/ ) {
+		$tidy =~ s{\n\z}{};
+	}
 
-    $newtext =~ s{\n$}{};
-
-    my $editor = $main->current->editor;
-    $editor->ReplaceSelection( $newtext );
+	# Overwrite the selected text
+	$current->editor->ReplaceSelection($tidy);
 }
 
 sub tidy_document {
-    my ( $main, $event ) = @_;
+	my $main = shift;
 
-    my $doc = $main->current->document;
-    my $src = $doc->text_get;
+	# Tidy the entire current document
+	my $current  = $main->current;
+	my $document = $current->document;
+	my $text     = $document->text_get;
+	my $tidy     = _tidy( $main, $current, $text );
+	unless ( defined Params::Util::_STRING($tidy) ) {
+		return;
+	}
 
-    my $newtext = _tidy( $main, $src );
-
-    return unless defined $newtext && length $newtext;
-
-    my ( $regex, $start ) = _store_cursor_position( $main );
-    $doc->text_set( $newtext );
-    _restore_cursor_position( $main, $regex, $start );
+	# Overwrite the entire document
+	my ( $regex, $start ) = _store_cursor_position($current);
+	$document->text_set($tidy);
+	_restore_cursor_position( $current, $regex, $start );
 }
 
 sub _get_filename {
-    my $main = shift;
+	my $main = shift;
 
-    my $doc         = $main->current->document or return;
-    my $current     = $doc->filename;
-    my $default_dir = '';
+	my $doc         = $main->current->document or return;
+	my $current     = $doc->filename;
+	my $default_dir = '';
 
-    if ( defined $current ) {
-        require File::Basename;
-        $default_dir = File::Basename::dirname( $current );
-    }
+	if ( defined $current ) {
+		require File::Basename;
+		$default_dir = File::Basename::dirname($current);
+	}
 
-    require File::Spec;
+	require File::Spec;
 
-    while ( 1 ) {
-        my $dialog = Wx::FileDialog->new(
-            $main, Wx::gettext( "Save file as..." ),
-            $default_dir, $doc->filename . '.html',
-            "*.*", Wx::wxFD_SAVE,
-        );
-        if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-            return;
-        }
-        my $filename = $dialog->GetFilename;
-        $default_dir = $dialog->GetDirectory;
-        my $path = File::Spec->catfile( $default_dir, $filename );
-        if ( -e $path ) {
-            my $res = Wx::MessageBox(
-                Wx::gettext( "File already exists. Overwrite it?" ),
-                Wx::gettext( "Exist" ),
-                Wx::wxYES_NO, $main,
-            );
-            if ( $res == Wx::wxYES ) {
-                return $path;
-            }
-        }
-        else {
-            return $path;
-        }
-    }
+	while (1) {
+		my $dialog = Wx::FileDialog->new(
+			$main,        Wx::gettext("Save file as..."),
+			$default_dir, $doc->filename . '.html',
+			"*.*",        Wx::wxFD_SAVE,
+		);
+		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+			return;
+		}
+		my $filename = $dialog->GetFilename;
+		$default_dir = $dialog->GetDirectory;
+		my $path = File::Spec->catfile( $default_dir, $filename );
+		if ( -e $path ) {
+			my $res = Wx::MessageBox(
+				Wx::gettext("File already exists. Overwrite it?"),
+				Wx::gettext("Exist"),
+				Wx::wxYES_NO, $main,
+			);
+			if ( $res == Wx::wxYES ) {
+				return $path;
+			}
+		} else {
+			return $path;
+		}
+	}
 }
 
 sub _export {
-    my ( $main, $src ) = @_;
+	my ( $main, $src ) = @_;
 
-    require Perl::Tidy;
+	require Perl::Tidy;
 
-    return unless defined $src;
+	return unless defined $src;
 
-    my $doc = $main->current->document;
+	my $doc = $main->current->document;
 
-    if ( !$doc->isa( 'Padre::Document::Perl' ) ) {
-        return Wx::MessageBox(
-            Wx::gettext( 'Document is not a Perl document' ),
-            Wx::gettext( 'Error' ),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
-    }
+	if ( !$doc->isa('Padre::Document::Perl') ) {
+		return Wx::MessageBox(
+			Wx::gettext('Document is not a Perl document'),
+			Wx::gettext('Error'),
+			Wx::wxOK | Wx::wxCENTRE, $main
+		);
+	}
 
-    my $filename = _get_filename( $main );
+	my $filename = _get_filename($main);
 
-    return unless defined $filename;
+	return unless defined $filename;
 
-    my ( $output, $error );
-    my %tidyargs = (
-        argv        => \'-html -nnn -nse -nst',
-        source      => \$src,
-        destination => $filename,
-        errorfile   => \$error,
-    );
+	my ( $output, $error );
+	my %tidyargs = (
+		argv        => \'-html -nnn -nse -nst',
+		source      => \$src,
+		destination => $filename,
+		errorfile   => \$error,
+	);
 
-    if ( my $tidyrc = $doc->project->config->config_perltidy ) {
-        $tidyargs{ perltidyrc } = $tidyrc;
-        Padre::Current->main->output->AppendText(
-            "Perl\::Tidy running with project-specific configuration $tidyrc\n"
-        );
-    }
+	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
+		$tidyargs{perltidyrc} = $tidyrc;
+		Padre::Current->main->output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
+	}
 
-    else {
-        Padre::Current->main->output->AppendText(
-            "Perl::Tidy running with default or user configuration\n" );
-    }
+	else {
+		Padre::Current->main->output->AppendText("Perl::Tidy running with default or user configuration\n");
+	}
 
-    # TODO: suppress the senseless warning from PerlTidy
-    eval { Perl::Tidy::perltidy( %tidyargs ); };
+	# TODO: suppress the senseless warning from PerlTidy
+	eval { Perl::Tidy::perltidy(%tidyargs); };
 
-    if ( $@ ) {
-        my $error_string = $@;
-        Wx::MessageBox(
-            $error_string,
-            Wx::gettext( 'PerlTidy Error' ),
-            Wx::wxOK | Wx::wxCENTRE, $main
-        );
-        return;
-    }
+	if ($@) {
+		my $error_string = $@;
+		Wx::MessageBox(
+			$error_string,
+			Wx::gettext('PerlTidy Error'),
+			Wx::wxOK | Wx::wxCENTRE, $main
+		);
+		return;
+	}
 
-    if ( defined $error ) {
-        my $width = length( $doc->filename ) + 2;
-        my $main  = Padre::Current->main;
-        $main->output->AppendText( "\n\n"
-                . "-" x $width . "\n"
-                . $doc->filename . "\n"
-                . "-" x $width
-                . "\n" );
-        $main->output->AppendText( "$error\n" );
-        $main->show_output( 1 );
-    }
+	if ( defined $error ) {
+		my $width = length( $doc->filename ) + 2;
+		my $main  = Padre::Current->main;
+		$main->output->AppendText( "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
+		$main->output->AppendText("$error\n");
+		$main->show_output(1);
+	}
 
-    return;
+	return;
 }
 
 sub export_selection {
-    my ( $main, $event ) = @_;
-    my $src = $main->current->text;
-
-    _export( $main, $src );
-    return;
+	my $main = shift;
+	my $text = $main->current->text;
+	_export( $main, $text );
+	return;
 }
 
 sub export_document {
-    my ( $main, $event ) = @_;
-
-    my $doc = $main->current->document;
-    my $src = $doc->text_get;
-
-    _export( $main, $src );
-    return;
+	my $main = shift;
+	my $text = $main->current->document->text_get;
+	_export( $main, $text );
+	return;
 }
 
+# parameter: $main, compiled regex
 sub _restore_cursor_position {
-
-    # parameter: $main, compiled regex
-    my ( $main, $regex, $start ) = @_;
-    my $doc    = $main->current->document;
-    my $editor = $doc->editor;
-    my $text   = $editor->GetTextRange(
-        ( $start - SELECTIONSIZE ) > 0 ? $start - SELECTIONSIZE
-        : 0,
-        ( $start + SELECTIONSIZE < $editor->GetLength() )
-        ? $start + SELECTIONSIZE
-        : $editor->GetLength()
-    );
-    eval {
-        if ( $text =~ /($regex)/ )
-        {
-            my $pos = $start + length $1;
-            $editor->SetCurrentPos( $pos );
-            $editor->SetSelection( $pos, $pos );
-        }
-    };
-    $editor->goto_line_centerize( $editor->GetCurrentLine );
-    return;
+	my $current = shift;
+	my $regex   = shift;
+	my $start   = shift;
+	my $editor  = $current->editor;
+	my $text    = $editor->GetTextRange(
+		( $start - SELECTIONSIZE ) > 0 ? $start - SELECTIONSIZE
+		: 0,
+		( $start + SELECTIONSIZE < $editor->GetLength ) ? $start + SELECTIONSIZE
+		: $editor->GetLength
+	);
+	eval {
+		if ( $text =~ /($regex)/ )
+		{
+			my $pos = $start + length $1;
+			$editor->SetCurrentPos($pos);
+			$editor->SetSelection( $pos, $pos );
+		}
+	};
+	$editor->goto_line_centerize( $editor->GetCurrentLine );
+	return;
 }
 
+# parameter: $current
+# returns: compiled regex, start position
+# compiled regex is /^./ if no valid regex can be reconstructed.
 sub _store_cursor_position {
+	my $current = shift;
+	my $editor  = $current->editor;
+	my $pos     = $editor->GetCurrentPos;
 
-    # parameter: $main
-    # returns: compiled regex, start position
-    # compiled regex is /^./ if no valid regex can be reconstructed.
-    my $main   = shift;
-    my $doc    = $main->current->document;
-    my $editor = $doc->editor;
-    my $pos    = $editor->GetCurrentPos;
-    my $start;
+	my $start;
+	if ( ( $pos - SELECTIONSIZE ) > 0 ) {
+		$start = $pos - SELECTIONSIZE;
+	} else {
+		$start = 0;
+	}
 
-    if ( ( $pos - SELECTIONSIZE ) > 0 ) {
-        $start = $pos - SELECTIONSIZE;
-    }
-    else {
-        $start = 0;
-    }
-    my $prefix = $editor->GetTextRange( $start, $pos );
-    my $regex;
-    eval {
-        $prefix =~ s/(\W)/\\$1/gm;    # Escape non-word chars
-        $prefix
-            =~ s/(\\\s+)/(\\s+|\\r*\\n)*/gm; # Replace whitespace by regex \s+
-        $regex = qr{$prefix};
-    };
-    if ( $@ ) {
-        $regex = qw{^.};
-        print STDERR @_;
-    }
-    return ( $regex, $start );
+	my $prefix = $editor->GetTextRange( $start, $pos );
+	my $regex;
+	eval {
+
+		# Escape non-word chars
+		$prefix =~ s/(\W)/\\$1/gm;
+
+		# Replace whitespace by regex \s+
+		$prefix =~ s/(\\\s+)/(\\s+|\\r*\\n)*/gm;
+
+		$regex = qr{$prefix};
+	};
+	if ($@) {
+		$regex = qw{^.};
+		print STDERR @_;
+	}
+	return ( $regex, $start );
 }
 
 1;
