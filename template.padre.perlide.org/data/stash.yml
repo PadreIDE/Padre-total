@@ -27,6 +27,18 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 January 20
+        url: http://jquelin.blogspot.com/2010/01/next-padre-version-will-finally.html
+        title: next Padre version will (finally) recognize dist-zilla projects
+        comment: by Jerome Quelin
+      - date: 2010 January 16
+        url: http://pkgsrc.se/editors/p5-Padre
+        title: Padre 0.54 in NetBSD
+        comment: pkgsrc.se
+      - date: 2010 January 15
+        url: http://perlisalive.com/users/ajt/weblog/18
+        title: Padre in Debian
+        comment: by ajt (Adam Trickett) on Perl is Alive
       - date: 2010 January 14
         url: http://mmaslano.livejournal.com/2207.html
         title: new Padre arrived into rawhide
