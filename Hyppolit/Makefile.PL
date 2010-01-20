@@ -18,6 +18,8 @@ requires       'POE::Component::IRC::Plugin::FollowTail';
 requires       'POE::Component::IRC::Plugin::Logger';
 requires       'Module::Pluggable';
 
+requires       'Best'; #  MooseX::Storage::Format::YAML needs it but does not say so
+
 no_index       'directory'                => qw{ t xt eg share inc privinc };
 #homepage       'http://padre.perlide.org/';
 #bugtracker     'http://padre.perlide.org/';
