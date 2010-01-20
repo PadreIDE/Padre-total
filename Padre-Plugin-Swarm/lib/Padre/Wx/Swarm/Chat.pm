@@ -203,7 +203,7 @@ sub accept_announce {
     my ($self,$announce) = @_;
     my $nick = $announce->from;
     if ( exists $self->users->{$nick} ) {
-        return
+        return;
     }
     else {
         $self->write_user_styled( $announce->from , $announce->from );
@@ -231,6 +231,7 @@ sub accept_disco {
 sub accept_leave {
     my ($self,$message) = @_;
     my $identity = $message->from;
+    delete $self->users->{$identity};
     $self->write_user_styled( $identity , $identity );
     $self->write_unstyled( " has left the swarm.\n" );
     
