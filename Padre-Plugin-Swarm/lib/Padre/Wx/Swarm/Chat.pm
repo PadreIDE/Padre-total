@@ -268,6 +268,7 @@ sub accept_openme {
             $message->{filename} )
     );
     $self->write_user_styled( $message->from, $message->from );
+    $self->write_unstyled( "\n" );
         
     
 }
