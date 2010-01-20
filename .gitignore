@@ -59,3 +59,7 @@ Padre-Plugin-Plack/blib/
 Padre-Plugin-Plack/inc/
 Padre-Plugin-Plack/pm_to_blib
 
+Hyppolit/META.yml
+Hyppolit/Makefile
+Hyppolit/inc
+
