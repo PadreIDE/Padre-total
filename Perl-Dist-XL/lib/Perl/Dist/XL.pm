@@ -15,7 +15,7 @@ use LWP::Simple    qw(getstore mirror);
 
 our $VERSION = '0.03';
 
-sub perl_dev  { '5.11.3' }
+sub perl_dev  { '5.11.4' }
 sub perl_prod { '5.10.1' }
 sub perl_version { return $_[0]->{perl} eq 'dev' ? perl_dev() : perl_prod(); }
 
@@ -106,16 +106,42 @@ and one of our modules checked for warnings I patched it after installation. REP
 Pod::Abstract 0.19 warned about
   UNIVERSAL->import is deprecated and will be removed in a future perl 
    at ..../perl/lib/site_perl/5.11.3/Pod/Abstract/Path.pm line 7
-and one of our modules checked for warnings I patched it after installation. REPORTED to author.
+and one of our modules checked for warnings I patched it after installation. REPORTED to author who fixed it
 
 CPAN::Inject 0.11 failed as ~/.perldist_xl/perl-5.11.3-xl-0.03/perl/.cpan/sources directory did not exist.
-I had to create it manually.
+I had to create it manually. (now included in build cpan)
 
 Test::Exception 0.27 - one of the tests failed. I force installed the module and REPORTED to the
 author and to p5p.
 
 I had to patch t/71-perl.t of Padre due to a change in a warning perl gives.
 (change in Padre SVN as well after 0.53 was released)
+
+=head2 Building Padre 0.55 on perl 5.11.4
+
+Pod-POM-0.25 warned about 
+   defined(%hash) is deprecated at .../perl/lib/site_perl/5.11.3/Pod/POM/Node.pm line 82.
+and one of our modules checked for warnings I patched that file after installation.
+
+I had CPAN::Inject issue again but fixed in Perl::Dist::XL so it should not happen next time
+
+Plugins:
+
+PerlCritic installed
+
+PerlTidy installed
+
+Perl 6
+
+  Cannot install because of the YAML::LibYAML 0.32 failure
+
+Catalyst
+
+  Cannot install because of Devel::Caller 2.03 fails to install
+
+Plack
+
+
 
 =head2 Plans
 
@@ -208,11 +234,13 @@ sub build_perl {
 
 	chdir $build_dir;
 	my $perl_src_file = $self->perl_file;
-	$self->{perl_source_dir} = substr("$build_dir/$perl_src_file", 0, -7);
+	my $perl_no_ext   = $self->perl_file_no_ext;
+	$self->{perl_source_dir} = "$build_dir/$perl_no_ext";
 	debug("Perl source dir: $self->{perl_source_dir}");
 
 	if (not -e $self->{perl_source_dir}) {
-		_system("tar xzf $dir/src/$perl_src_file");
+		my $flags = $perl_src_file =~ /bz2$/ ? 'xjf' : 'xzf';
+		_system("tar $flags $dir/src/$perl_src_file");
 	}
 
 	chdir $self->{perl_source_dir};
@@ -226,6 +254,7 @@ sub build_perl {
 	my $perl = "$self->{perl_install_dir}/bin/perl";
 	my $src  = "$self->{perl_install_dir}/bin/perl" . $self->perl_version;
 	copy($src, $perl);
+	chmod 0755, $perl;
 
 	return;
 }
@@ -261,6 +290,9 @@ sub configure_cpan {
 
 		URL => 'file://' . $self->minicpan,
 	);
+	mkpath "$self->{perl_install_dir}/.cpan/sources";
+
+	return;
 }
 
 sub process_template {
@@ -282,7 +314,14 @@ sub process_template {
 	return;
 }
 
-sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.gz'; }
+# sometimes released as tar.gz and sometimes as tar.bz2 ?
+sub perl_file { return 'perl-' . $_[0]->perl_version() . '.tar.bz2'; }
+sub perl_file_no_ext {
+	my $self = shift;
+	(my $perl = $self->perl_file()) =~ s/\.tar\.(bz2|gz)$//;
+	return $perl;
+}
+
 sub all_modules {
 	my ($self) = @_;
 	my @all;
@@ -542,12 +581,12 @@ sub create_zip {
 	$self->remove_cpan_dir;
 
 	chdir $self->dir;
-	my $file = "$self->{cwd}/" . $self->release_name . '.tar.gz';
+	my $file = "$self->{cwd}/" . $self->release_name . '.tar.bz2';
 	if (-e $file) {
 		print "File '$file' already exists\n";
 		return;
 	}
-	_system("tar czf $file " . $self->release_name); # . ' --exclude .cpan');
+	_system("tar cjf $file " . $self->release_name); # . ' --exclude .cpan');
 	return;
 }	
 
@@ -560,7 +599,7 @@ sub dir_build { return "$_[0]->{dir}/build"; }
 
 sub release_name {
 	my ($self) = @_;
-	my $perl = substr($self->perl_file(), 0, -7);
+	my $perl = $self->perl_file_no_ext();
 	return "$perl-xl-$VERSION";
 }
 sub _system {
