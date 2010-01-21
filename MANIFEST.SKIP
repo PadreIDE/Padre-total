@@ -40,3 +40,6 @@
 
 # .po template
 messages.pot
+
+# project config
+padre.yml
