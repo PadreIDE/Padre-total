@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 January 21
+        url: http://perlwannabe.vox.com/library/post/padre-055-released.html
+        title: Padre 0.55 Released
+        comment: by Peter Lavender (Release Manager).  
       - date: 2010 January 20
         url: http://jquelin.blogspot.com/2010/01/next-padre-version-will-finally.html
         title: next Padre version will (finally) recognize dist-zilla projects
