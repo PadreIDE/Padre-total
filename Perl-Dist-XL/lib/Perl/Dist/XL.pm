@@ -78,8 +78,6 @@ TODO: fetch the list of modules installed from
 Install Plugins: Perl 6, Catalyst
 
 
-Task::CatInABox
-Tast::Catalyst::Tutorial
 
 
 
@@ -324,13 +322,6 @@ sub steps {
 		],
 
 		perl6 => [
-			'Padre::Plugin::Perl6',
-		],
-		catalyst => [
-			'Padre::Plugin::Catalyst',
-		],
-	);
-}
 
 #		'Perl6::Refactor', # prereqs of Perl6 plugin
 #		'Perl6::Doc',
@@ -348,9 +339,39 @@ sub steps {
 #		'Test::Assertions::TestScript',
 #		'Pod::Xhtml',
 #		'Syntax::Highlight::Perl6',
-#
-#
-#
+
+			'Padre::Plugin::Perl6',
+		],
+		catalyst => [
+			'Catalyst::Runtime',
+# Catalyst::Test
+# Catalyst-Action-RenderView
+# Catalyst::Util
+			'Catalyst::Devel',
+			'Padre::Plugin::Catalyst',
+
+# 'Task::CatInABox',
+# 'Tast::Catalyst::Tutorial',
+		],
+
+		svn => [
+			'Padre::Plugin::SVN',
+		],
+		git => [
+			'Padre::Plugin::Git',
+		],
+		plack => [
+			'Padre::Plugin::Plack',
+		],
+		tidy => [
+			'Padre::Plugin::PerlTidy',
+		],
+		critic => [
+			'Padre::Plugin::PerlCritic',
+		],
+	);
+}
+
 #		'CPAN::Inject',
 #		'LWP::Online',
 #		'LWP::Simple',
