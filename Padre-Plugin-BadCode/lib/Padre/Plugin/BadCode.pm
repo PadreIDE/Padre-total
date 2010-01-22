@@ -19,24 +19,12 @@ our @ISA     = 'Padre::Plugin';
 #####################################################################
 # Padre::Plugin Methods
 
-sub plugin_name {
-	'Padre Developer Bad Code Tools';
-}
-
 sub padre_interfaces {
 	'Padre::Plugin' => 0.43;
 }
 
-sub menu_plugins_simple {
-	my $self = shift;
-	return $self->plugin_name => [
-		'About' => sub { $self->show_about },
-
-		# 'Another Menu Entry' => sub { $self->about },
-		# 'A Sub-Menu...' => [
-		#     'Sub-Menu Entry' => sub { $self->about },
-		# ],
-	];
+sub plugin_name {
+	'Padre Developer Bad Code Tools';
 }
 
 sub plugin_enable {
@@ -50,12 +38,12 @@ sub plugin_enable {
 	require Aspect;
 
 	# Create the aspect hook.
-	# Because we load Aspect at run-time we have to 
+	# Because we load Aspect at run-time we have to .
 	$self->{hook} = Aspect::before(
 		sub {
-			TRACE($_[0]->sub_name)
+			TRACE( ' - Fired ' . $_[0]->sub_name )
 		},
-		Aspect::call( qr/^Padre:.*:_?on_\w+\z/ )
+		Aspect::call( qr/^Padre:.*:_?(?:on|timer|refresh)(?:_\w+)?\z/ )
 	);
 
 	return 1;
@@ -70,6 +58,13 @@ sub plugin_disable {
 	return 1;
 }
 
+sub menu_plugins_simple {
+	my $self = shift;
+	return $self->plugin_name => [
+		'About' => sub { $self->show_about },
+	];
+}
+
 
 
 
@@ -79,12 +74,6 @@ sub plugin_disable {
 
 sub show_about {
 	my $self = shift;
-
-	# Locate this plugin
-	my $path = File::Spec->catfile(
-		Padre::Constant::CONFIG_DIR,
-		qw{ plugins Padre Plugin My.pm }
-	);
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
