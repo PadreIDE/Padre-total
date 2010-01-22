@@ -20,7 +20,7 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub plugin_name {
-	'Padre Developer BadCode Tools';
+	'Padre Developer Bad Code Tools';
 }
 
 sub padre_interfaces {
@@ -48,12 +48,15 @@ sub plugin_enable {
 
 	# Load Aspect support
 	require Aspect;
-	Aspect->import;
 
-	# Create the aspect hooks
-	my $self->{hook} = before {
-		TRACE($_[0]->sub_name)
-	} call qr/^Padre:.*:_?on_\w+\z/;
+	# Create the aspect hook.
+	# Because we load Aspect at run-time we have to 
+	$self->{hook} = Aspect::before(
+		sub {
+			TRACE($_[0]->sub_name)
+		},
+		Aspect::call( qr/^Padre:.*:_?on_\w+\z/ )
+	);
 
 	return 1;
 }
@@ -85,7 +88,7 @@ sub show_about {
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName('Padre Developer BadCode Tools');
+	$about->SetName($self->plugin_name);
 	$about->SetDescription( <<"END_MESSAGE" );
 Pay no attention to this plugin for now.
 
