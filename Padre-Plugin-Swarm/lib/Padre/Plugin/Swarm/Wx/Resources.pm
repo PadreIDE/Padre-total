@@ -7,7 +7,7 @@ use Padre::Wx                        ();
 use Padre::Wx::Directory::TreeCtrl   ();
 use Padre::Wx::Directory::SearchCtrl ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.07';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor {
@@ -50,26 +50,38 @@ sub new {
 	$sizerv->Add( $self->tree,   1, Wx::wxALL | Wx::wxEXPAND, 0 );
 	$sizerh->Add( $sizerv,       1, Wx::wxALL | Wx::wxEXPAND, 0 );
 
-
-	warn "About to do AUI guff";
-
-	my $left = $main->directory_panel;
-	my $position = $left->GetPageCount;
-	my $pos = $left->InsertPage( $position, $self, gettext_label(), 0 );
-	my $icon = Padre::Plugin::Swarm->plugin_icon;
-	warn "Adding plugin icon $icon at pos $position";
-
-
-	$left->SetPageBitmap($position, $icon );
-	$left->SetSelection($position);
-	
 	# Fits panel layout
 	$self->SetSizerAndFit($sizerh);
 	$sizerh->SetSizeHints($self);
 	
+	return $self;
+	
+}
+
+
+sub enable {
+	my $self = shift;
+	my $left = $self->main->directory_panel;
+	my $position = $left->GetPageCount;
+	my $pos = $left->InsertPage( $position, $self, gettext_label(), 0 );
+	my $icon = Padre::Plugin::Swarm->plugin_icon;
+	
+	$left->SetPageBitmap($position, $icon );
+	$left->SetSelection($position);
+
 	$self->Show;
 	
 	return $self;
+}
+
+sub disable {
+	my $self = shift;
+	my $left = $self->main->directory_panel;
+	my $pos = $left->GetPageIndex($self);
+	$self->Hide;
+	$left->RemovePage($pos);
+	$self->Destroy;
+	
 }
 
 # The parent panel
@@ -104,6 +116,7 @@ sub clear {
 # Called outside Directory.pm, on directory browser focus and item dragging
 sub refresh {
 	my $self     = shift;
+	
 	my $current  = $self->current;
 	my $document = $current->document;
 

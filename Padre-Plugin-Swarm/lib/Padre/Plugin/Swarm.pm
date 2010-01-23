@@ -11,14 +11,17 @@ use Padre::Wx::Icon        ();
 use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Wx::Swarm::Chat ();
-
 use Padre::Plugin::Swarm::Wx::Resources ();
+use Padre::Plugin::Swarm::Wx::Editor ();
 
 
 use Class::XSAccessor 
 	accessors => {
 		geometry => 'geometry',
 		resources=> 'resources',
+		editor   => 'editor',
+		chat     => 'chat',
+		config   => 'config',
 	};
 	
 use Wx::Socket ();
@@ -148,14 +151,7 @@ sub identity {
 }
 
 
-use Class::XSAccessor
-	accessors => {
-		'config' => 'config',
-		'chat'   => 'chat',
-	};
-	
-# Turn this on to enable warnings
-use constant DEBUG => 1;
+
 
 
 
@@ -216,14 +212,17 @@ SCOPE: {
 		$self->geometry( Padre::Swarm::Geometry->new );
 		$self->connect();
 		
-				
+		$self->editor( Padre::Plugin::Swarm::Wx::Editor->new );
+		$self->editor->enable;
+		
 		my $chat = Padre::Wx::Swarm::Chat->new( $self->main );
 		$chat->enable;
 		$self->chat( $chat );
-#		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
-#			$self->main
-#		);
-#		$self->resources( $directory );
+		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
+			$self->main
+		);
+		$self->resources( $directory );
+		$directory->enable;
 		
 		1;
 	}
@@ -232,7 +231,12 @@ SCOPE: {
 		my $self = shift;
 		$self->chat->disable;
 		$self->chat(undef);
-		#$self->resources(undef);
+		
+		$self->editor->disable;
+		$self->editor(undef);
+		
+		$self->resources->disable;
+		$self->resources(undef);
 	
 		$self->disconnect;
 	
@@ -240,6 +244,16 @@ SCOPE: {
 	
 		
 	}
+}
+
+sub editor_enable {
+	my $self = shift;
+	$self->editor->editor_enable(@_);
+}
+
+sub editor_disable {
+	my $self = shift;
+	$self->editor->editor_disable(@_);
 }
 
 # oh noes!
