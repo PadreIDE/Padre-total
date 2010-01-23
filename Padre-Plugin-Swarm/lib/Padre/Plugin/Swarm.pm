@@ -9,6 +9,18 @@ use Padre::Wx              ();
 use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
 use Padre::Service::Swarm  ();
+use Padre::Swarm::Geometry ();
+use Padre::Wx::Swarm::Chat ();
+
+use Padre::Plugin::Swarm::Wx::Resources ();
+
+
+use Class::XSAccessor 
+	accessors => {
+		geometry => 'geometry',
+		resources=> 'resources',
+	};
+	
 use Wx::Socket ();
 
 our $VERSION = '0.07';
@@ -107,6 +119,7 @@ sub accept_message {
 	if ( $self->can( $handler ) ) {
 		eval { $self->$handler( $message ); };
 	}
+	$self->geometry->On_SwarmMessage( $message );
 	
 	Wx::PostEvent(
                 $main,
@@ -199,20 +212,27 @@ SCOPE: {
 		$instance  = $self;
 		my $config = $self->config_read;
 		$self->config( $config );
+		
+		$self->geometry( Padre::Swarm::Geometry->new );
 		$self->connect();
 		
 				
 		my $chat = Padre::Wx::Swarm::Chat->new( $self->main );
 		$chat->enable;
 		$self->chat( $chat );
+#		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
+#			$self->main
+#		);
+#		$self->resources( $directory );
 		
+		1;
 	}
 
 	sub plugin_disable {
 		my $self = shift;
 		$self->chat->disable;
 		$self->chat(undef);
-	
+		#$self->resources(undef);
 	
 		$self->disconnect;
 	

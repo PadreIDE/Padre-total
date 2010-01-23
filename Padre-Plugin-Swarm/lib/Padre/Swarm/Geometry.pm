@@ -2,9 +2,14 @@ package Padre::Swarm::Geometry;
 
 use strict;
 use warnings;
+use Params::Util qw( _INSTANCE );
 use Graph;
+use Graph::Directed;
 use JSON::XS;
-
+use Class::XSAccessor 
+    accessors => {
+	graph => 'graph',
+    };
 our $VERSION = '0.07';
 
 =pod
@@ -34,6 +39,65 @@ that geometry arrives in the swarm it may be connected to any existing swarm
 geometries that refer to it.
 
 =cut
+
+sub new {
+	my $class = shift;
+	my %args = @_;
+	$args{graph} ||= new Graph::Directed
+	    unless _INSTANCE( $args{graph}, 'Graph::Directed' );
+	
+	return bless \%args, ref($class) || $class;
+}
+
+sub plugin {
+    return Padre::Plugin::Swarm->instance;
+}
+
+sub On_SwarmMessage {
+    my ($self,$message) = @_;
+    my $handler = 'accept_'  . $message->{type};
+    eval { $self->$handler($message) };
+}
+
+sub accept_promote {
+	my $self = shift;
+	my $message = shift;
+	$self->graph->add_edge( 'service' => $message->{service} );
+	$self->graph->add_edge( $message->{service} , $message->{from} );
+	
+
+}
+
+sub accept_disco {
+	my $self = shift;
+	my $message = shift;
+	my $g = $self->graph;
+	warn "$g";
+}
+
+sub accept_announce {
+	my $self = shift;
+	my $message = shift;
+	$self->graph->add_edge( 'identity' => $message->{from} );
+	if ( exists $message->{resource} ) {
+		$self->graph->add_edge( 
+		    $message->{from} ,
+		    $message->{resource},
+		)
+	}
+	
+}
+
+sub accept_leave {
+	my $self = shift;
+	my $message = shift;
+	my @s = $self->graph->all_successors( $message->{from} );
+	$self->graph->delete_vertex( $_ )
+	    for @s, $message->{from};
+	
+	
+}
+
 
 sub TO_JSON {
 	
