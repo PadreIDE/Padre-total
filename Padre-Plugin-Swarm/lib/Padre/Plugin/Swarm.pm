@@ -11,7 +11,7 @@ use Padre::Wx::Icon        ();
 use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Wx::Swarm::Chat ();
-use Padre::Plugin::Swarm::Wx::Resources ();
+#use Padre::Plugin::Swarm::Wx::Resources ();
 use Padre::Plugin::Swarm::Wx::Editor ();
 
 
@@ -218,11 +218,11 @@ SCOPE: {
 		my $chat = Padre::Wx::Swarm::Chat->new( $self->main );
 		$chat->enable;
 		$self->chat( $chat );
-		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
-			$self->main
-		);
-		$self->resources( $directory );
-		$directory->enable;
+#		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
+#			$self->main
+#		);
+#		$self->resources( $directory );
+#		$directory->enable;
 		
 		1;
 	}
@@ -235,8 +235,8 @@ SCOPE: {
 		$self->editor->disable;
 		$self->editor(undef);
 		
-		$self->resources->disable;
-		$self->resources(undef);
+#		$self->resources->disable;
+#		$self->resources(undef);
 	
 		$self->disconnect;
 	

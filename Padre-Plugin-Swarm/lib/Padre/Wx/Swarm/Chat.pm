@@ -26,6 +26,7 @@ use Class::XSAccessor
 		service   => 'service',
 		textinput => 'textinput',
 		chatframe => 'chatframe',
+		userlist  => 'userlist',
 		users => 'users',
 	},
 	setters => {
@@ -63,7 +64,18 @@ sub new {
 		| Wx::wxNO_FULL_REPAINT_ON_RESIZE
 	);
 	
+	my $userlist = Wx::ListView->new(
+		$self, -1 ,
+                Wx::wxDefaultPosition,
+                Wx::wxDefaultSize,
+                Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
+        );
+        $userlist->InsertColumn( 0, 'Users' );
+        $userlist->SetColumnWidth( 0, -1 );
+	$self->userlist($userlist);
+	
 	$hbox->Add( $chat , 1 , Wx::wxGROW );
+	$hbox->Add( $userlist, 0 , Wx::wxGROW );
 	
 	$sizer->Add($hbox,1, Wx::wxGROW );
 	$sizer->Add($text,0, Wx::wxGROW );
@@ -85,6 +97,7 @@ sub new {
 	);
 
         $self->users( {} );
+        
 	Wx::Event::EVT_TEXT_ENTER(
                 $self, $text,
                 \&on_text_enter
@@ -122,6 +135,8 @@ sub enable {
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageCount;
 	
+	$self->update_userlist;
+	
 	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
 	$self->Show;
 	my $icon = $self->plugin->plugin_icon;  
@@ -145,6 +160,24 @@ sub disable {
 	$bottom->RemovePage($position);
 	$main->aui->Update;
 	$self->Destroy;
+}
+
+sub update_userlist {
+	my $self = shift;
+	my $userlist = $self->userlist;
+	my $geo = $self->plugin->geometry;
+	my @users = $geo->get_users();
+	
+	$userlist->DeleteAllItems;
+	foreach my $user ( @users ) {
+		my $item = Wx::ListItem->new( );
+		$item->SetText( $user );
+		$item->SetTextColour( 
+			Wx::Colour->new( @{ derive_rgb($user) } )  
+		);
+		$userlist->InsertItem( $item );
+	}
+	
 }
 
 sub accept_message {
@@ -210,6 +243,7 @@ sub accept_announce {
         $self->write_unstyled(  " has joined the swarm \n" );
         $self->users->{$nick} = 1;
     }
+     $self->update_userlist;
     
 }
 
@@ -219,7 +253,7 @@ sub accept_promote {
     
     my $text = sprintf '%s promotes a chat service', $message->from;
     $self->write_user_styled( $message->from,  $text . "\n" );
-    
+   
 }
 
 sub accept_disco {
@@ -234,6 +268,7 @@ sub accept_leave {
     delete $self->users->{$identity};
     $self->write_user_styled( $identity , $identity );
     $self->write_unstyled( " has left the swarm.\n" );
+    $self->update_userlist;
     
 }
 

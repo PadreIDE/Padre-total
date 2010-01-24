@@ -53,6 +53,12 @@ sub plugin {
     return Padre::Plugin::Swarm->instance;
 }
 
+sub get_users {
+	my $self = shift;
+	return $self->graph->successors( '~identity' );
+	
+}
+
 sub On_SwarmMessage {
     my ($self,$message) = @_;
     my $handler = 'accept_'  . $message->{type};
@@ -62,8 +68,10 @@ sub On_SwarmMessage {
 sub accept_promote {
 	my $self = shift;
 	my $message = shift;
-	$self->graph->add_edge( 'service' => $message->{service} );
+	$self->graph->add_edge( '~service' => $message->{service} );
 	$self->graph->add_edge( $message->{service} , $message->{from} );
+	# just in case
+	$self->graph->add_edge( '~identity' => $message->{from} );
 	
 
 }
@@ -78,7 +86,7 @@ sub accept_disco {
 sub accept_announce {
 	my $self = shift;
 	my $message = shift;
-	$self->graph->add_edge( 'identity' => $message->{from} );
+	$self->graph->add_edge( '~identity' => $message->{from} );
 	if ( exists $message->{resource} ) {
 		$self->graph->add_edge( 
 		    $message->{from} ,

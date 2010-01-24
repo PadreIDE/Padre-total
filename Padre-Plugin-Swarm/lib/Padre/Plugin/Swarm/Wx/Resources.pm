@@ -4,8 +4,8 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Wx                        ();
-use Padre::Wx::Directory::TreeCtrl   ();
 use Padre::Wx::Directory::SearchCtrl ();
+use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 
 our $VERSION = '0.07';
 our @ISA     = 'Wx::Panel';
@@ -37,23 +37,21 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-	warn "Adding to ", $main->directory_panel;
-	
+
 	# Creates the Search Field and the Directory Browser
-	$self->{tree}   = Padre::Wx::Directory::TreeCtrl->new($self);
-	$self->{search} = Padre::Wx::Directory::SearchCtrl->new($self);
+	$self->{tree}   = 
+		Padre::Plugin::Swarm::Wx::Resources::TreeCtrl->new($self);
 
 	# Fill the panel
 	my $sizerv = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $sizerh = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$sizerv->Add( $self->search, 0, Wx::wxALL | Wx::wxEXPAND, 0 );
 	$sizerv->Add( $self->tree,   1, Wx::wxALL | Wx::wxEXPAND, 0 );
-	$sizerh->Add( $sizerv,       1, Wx::wxALL | Wx::wxEXPAND, 0 );
-
+	$sizerh->Add( $sizerv,   1, Wx::wxALL | Wx::wxEXPAND, 0 );
+	
 	# Fits panel layout
 	$self->SetSizerAndFit($sizerh);
 	$sizerh->SetSizeHints($self);
-	
+	warn "Ready - ", $self->tree;
 	return $self;
 	
 }
@@ -136,22 +134,7 @@ sub refresh {
 		return;
 	}
 
-	$self->{projects}->{$dir}->{dir} ||= $dir;
-	$self->{projects}->{$dir}->{mode} ||=
-		$document->{is_project}
-		? 'tree'
-		: 'navigate';
-
-	# The currently view mode
-	$self->mode( $self->{projects}->{$dir}->{mode} );
-
-	# Save the current project path
-	$self->project_dir( $self->{projects}->{$dir}->{dir} );
-	$self->project_dir_original($dir);
-
-	# Calls Searcher and Browser refresh
 	$self->tree->refresh;
-	$self->search->refresh;
 
 	# Sets the last project to the current one
 	$self->previous_dir( $self->{projects}->{$dir}->{dir} );
