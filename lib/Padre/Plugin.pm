@@ -53,7 +53,7 @@ use YAML::Tiny     ();
 use Padre::DB      ();
 use Padre::Wx      ();
 
-our $VERSION    = '0.54';
+our $VERSION    = '0.55';
 our $COMPATIBLE = '0.43';
 
 # Link plug-ins back to their IDE
@@ -154,11 +154,6 @@ sub plugin_directory_locale {
 	my $class = shift;
 	my $share = $class->plugin_directory_share or return;
 	return File::Spec->catdir( $share, 'locale' );
-}
-
-# NOTE Back-compatibility
-sub plugin_locale_directory {
-	shift->plugin_directory_locale(@_);
 }
 
 =pod
@@ -777,7 +772,7 @@ sub editor_enable {
 
 The C<editor_disable> method is the twin of the previous C<editor_enable>
 method. It is called as the file in the editor is being closed, B<after> the
-used has confirmed the file is to be closed.
+user has confirmed the file is to be closed.
 
 It provides the plug-in with an opportunity to clean up, remove any GUI
 customisations, and complete any other shutdown/close processes.

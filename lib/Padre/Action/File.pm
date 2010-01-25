@@ -10,7 +10,7 @@ use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 use Padre::Logger;
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -83,7 +83,7 @@ sub new {
 		comment    => Wx::gettext('Setup a skeleton Perl distribution using Module::Starter'),
 		menu_event => sub {
 			require Padre::Wx::Dialog::ModuleStart;
-			Padre::Wx::Dialog::ModuleStart->start($_[0]);
+			Padre::Wx::Dialog::ModuleStart->start( $_[0] );
 		},
 	);
 
@@ -94,7 +94,7 @@ sub new {
 	Padre::Action->new(
 		name       => 'file.open',
 		id         => Wx::wxID_OPEN,
-		label      => Wx::gettext('&Open...'),
+		label      => Wx::gettext('&Open'),
 		comment    => Wx::gettext('Browse directory of the current document to open a file'),
 		shortcut   => 'Ctrl-O',
 		toolbar    => 'actions/document-open',
@@ -145,10 +145,10 @@ sub new {
 		need_editor => 1,
 		label       => Wx::gettext('Close This Project'),
 		comment     => Wx::gettext('Close all the files belonging to the current project'),
+		shortcut    => 'Ctrl-Shift-W',
 		menu_event  => sub {
-			my $doc = $_[0]->current->document;
-			return if not $doc;
-			my $dir = $doc->project_dir;
+			my $document = $_[0]->current->document or return;
+			my $dir = $document->project_dir;
 			unless ( defined $dir ) {
 				$_[0]->error( Wx::gettext("File is not in a project") );
 			}

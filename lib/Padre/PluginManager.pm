@@ -41,7 +41,7 @@ use Padre::PluginHandle      ();
 use Padre::Wx                ();
 use Padre::Wx::Menu::Plugins ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 
 
@@ -169,8 +169,8 @@ sub relocale {
 
 		# Add the plug-in locale dir to search path
 		my $object = $plugin->{object};
-		if ( $object->can('plugin_locale_directory') ) {
-			my $dir = $object->plugin_locale_directory;
+		if ( $object->can('plugin_directory_locale') ) {
+			my $dir = $object->plugin_directory_locale;
 			if ( defined $dir and -d $dir ) {
 				$locale->AddCatalogLookupPathPrefix($dir);
 			}
@@ -514,6 +514,7 @@ sub _load_plugin {
 
 	# Attempt to load the plug-in
 	SCOPE: {
+
 		# Suppress warnings while loading plugins
 		local $SIG{__WARN__} = sub () { };
 		eval "use $module ();";
@@ -583,8 +584,8 @@ sub _load_plugin {
 	}
 
 	# Add a new directory for locale to search translation catalogs.
-	if ( $object->can('plugin_locale_directory') ) {
-		my $dir = $object->plugin_locale_directory;
+	if ( $object->can('plugin_directory_locale') ) {
+		my $dir = $object->plugin_directory_locale;
 		if ( defined $dir and -d $dir ) {
 			my $locale = Padre::Current->main->{locale};
 			$locale->AddCatalogLookupPathPrefix($dir);
@@ -808,6 +809,12 @@ sub editor_enable {
 	#	return;
 
 	return $self->plugin_event( 'editor_enable', $editor, $editor->{Document} );
+}
+
+sub editor_disable {
+	my $self   = shift;
+	my $editor = shift;
+	return $self->plugin_event( 'editor_disable', $editor, $editor->{Document} );
 }
 
 sub enable_editors_for_all {

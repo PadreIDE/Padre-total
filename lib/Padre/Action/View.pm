@@ -12,7 +12,7 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Locale   ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -62,6 +62,21 @@ sub new {
 				$_[0]->show_functions(1);
 			} else {
 				$_[0]->show_functions(0);
+			}
+		},
+	);
+
+	Padre::Action->new(
+		name        => 'view.todo',
+		label       => Wx::gettext('Show To-do List'),
+		comment     => Wx::gettext('Show a window listing all todo items in the current document'),
+		menu_method => 'AppendCheckItem',
+		menu_event  => sub {
+			if ( $_[1]->IsChecked ) {
+				$_[0]->refresh_todo( $_[0]->current );
+				$_[0]->show_todo(1);
+			} else {
+				$_[0]->show_todo(0);
 			}
 		},
 	);

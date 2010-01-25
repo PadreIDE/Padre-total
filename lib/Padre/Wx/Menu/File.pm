@@ -10,7 +10,7 @@ use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 use Padre::Logger;
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -81,13 +81,25 @@ sub new {
 		'file.open',
 	);
 
+	my $file_open = Wx::Menu->new;
+	$self->Append(
+		-1,
+		Wx::gettext("Open..."),
+		$file_open,
+	);
+
 	$self->add_menu_action(
-		$self,
+		$file_open,
 		'file.openurl',
 	);
 
+	$self->{open_selection} = $self->add_menu_action(
+		$file_open,
+		'file.open_selection',
+	);
+
 	$self->{open_example} = $self->add_menu_action(
-		$self,
+		$file_open,
 		'file.open_example',
 	);
 
@@ -165,11 +177,6 @@ sub new {
 		$self->AppendSeparator;
 
 		# Specialised open and close functions
-		$self->{open_selection} = $self->add_menu_action(
-			$self,
-			'file.open_selection',
-		);
-
 		$self->{open_session} = $self->add_menu_action(
 			$self,
 			'file.open_session',

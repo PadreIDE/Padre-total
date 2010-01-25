@@ -17,7 +17,7 @@ use warnings;
 use Padre::Action ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 #####################################################################
 
@@ -73,7 +73,7 @@ sub new {
 		name        => 'run.run_tdd_tests',
 		need_file   => 1,
 		need_editor => 1,
-		label       => Wx::gettext('Build + run all Tests'),
+		label       => Wx::gettext('Run Build and Tests'),
 		comment     => Wx::gettext('Builds the current project, then run all tests.'),
 		shortcut    => 'Ctrl-Shift-F5',
 		menu_event  => sub {

@@ -9,7 +9,7 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -132,7 +132,7 @@ sub refresh {
 			}
 			$windows{$label} = {
 				pane_index => $tab_index,
-				project    => Padre::Util::get_project_dir( $doc->filename ) || '',
+				project    => $doc->project_dir || '',
 			};
 		}
 

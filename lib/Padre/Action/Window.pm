@@ -8,7 +8,7 @@ use warnings;
 use Padre::Action;
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -107,6 +107,19 @@ sub new {
 			$_[0]->refresh_functions( $_[0]->current );
 			$_[0]->show_functions(1);
 			$_[0]->functions->focus_on_search;
+		},
+	);
+
+	# Window Navigation
+	Padre::Action->new(
+		name       => 'window.goto_todo_window',
+		label      => Wx::gettext('GoTo Todo Window'),
+		comment    => Wx::gettext('Set the focus to be the todo window'),
+		shortcut   => 'Alt-T',
+		menu_event => sub {
+			$_[0]->refresh_todo( $_[0]->current );
+			$_[0]->show_todo(1);
+			$_[0]->todo->focus_on_search;
 		},
 	);
 

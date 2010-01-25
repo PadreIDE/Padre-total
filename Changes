@@ -1,6 +1,35 @@
 Changes for Perl Application Development and Refactoring Environment
 
-0.55 To Be Released
+0.56 To Be Released
+    - Plugins may now add their GUI elements to the view menu (SEWI)
+    - Padre now displays a dynamic to-do list generated from comments
+      in your source code (CORION)
+    - Landed new Padre::Startup module which is dramatically faster
+      when loading files into an existing Padre via the single instance
+      server, and finally provides a mechanism for allowing configuration
+      to disable the startup splash image (ADAMK)
+    - Changed a few configuration settings to create a more consistent
+      naming pattern for them (ADAMK)
+    - Audited dependencies and updated a variety of them (ADAMK)
+    - Ctrl-Shift-W is now bound to "Close This Project" (ADAMK)
+    - Added an option for traceing Padre subroutine calls to the
+      developer plugin (SEWI)
+    - Uses correct make from Config.pm for the run menu item -> Build and
+      run tests (KTHAKORE)
+    - Speedup and less false-shows for autocomplete (SEWI)
+    - Speedup while changing tabs (use the correct project dir) (SEWI)
+    - Simple refocus on document after command run (KTHAKORE)
+    - Fixed ticket #822: main window could be off screen on start (BLAKEW)
+    - padre-client allows you to use Padre for commit messages and other
+      synchronous edit events
+    - WIN32, Converted the --desktop registry code to Win32::TieRegistry 
+      and removed hardcoded strawberry paths (AZAWAWI)
+    - WIN32, padre.exe will run with the same UAC privileges as same as
+      the invoker (AZAWAWI)
+    - Disable debugger menu items when there is no document (AZAWAWI)
+    - Fix a Padre debugger crash when an unsaved document is debugged (AZAWAWI)
+
+0.55 2010.01.21
     - Add full list of file types to the View Document As menu (SZABGAB)
     - dist-zilla projects detection finally fixed (#489) (JQUELIN)
     - The directory tree refresh method will shortcut if nothing has
@@ -26,6 +55,14 @@ Changes for Perl Application Development and Refactoring Environment
     - Delay loading some additional GUI classes and objects until they
       definitely needed (ADAMK)
     - Suppress warnings that occur during plugin loading (ADAMK)
+    - 'Simple' possible fix for #331 to update the tabs when 'save all' is 
+      run in Padre. (PLAVEN)
+    - Fixed #819: Don't crash on missing project dir (SEWI)
+    - Upgrading --desktop option from VBScript to a new Win32::Shortcut-based
+      Padre::Desktop. Desktop link creation works on Vista and newer
+      operating systems again (ADAMK)
+    - Tuned menubar refresh to only fire if we change document mimetype,
+      which saves a ton of CPU and seems to reduce flicker (ADAMK)
 
 0.54 2010.01.07
     - Added experimental support for clickable filenames in Output panel.

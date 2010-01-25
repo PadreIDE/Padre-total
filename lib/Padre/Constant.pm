@@ -10,11 +10,7 @@ use File::Path    ();
 use File::Spec    ();
 use File::HomeDir ();
 
-#use Padre::Util   ();
-
-our $VERSION = '0.54';
-
-my $revision;
+our $VERSION = '0.55';
 
 # Convenience constants for the operating system
 use constant WIN32 => !!( ( $^O eq 'MSWin32' ) or ( $^O eq 'cygwin' ) );
@@ -78,8 +74,7 @@ use constant {
 };
 
 # Syntax Highlighter Colours.
-# Note: It's not clear why these need "PADRE_" in the name,
-# but they do.
+# NOTE: It's not clear why these need "PADRE_" in the name, but they do.
 use constant {
 	PADRE_BLACK    => 0,
 	PADRE_BLUE     => 1,
@@ -106,11 +101,12 @@ use constant CONFIG_DIR => File::Spec->rel2abs(
 	)
 );
 
-use constant CONFIG_HUMAN => File::Spec->catfile( CONFIG_DIR, 'config.yml' );
-use constant CONFIG_HOST  => File::Spec->catfile( CONFIG_DIR, 'config.db' );
+use constant LOG_FILE => File::Spec->catfile( CONFIG_DIR, 'debug.log' );
 use constant PLUGIN_DIR => File::Spec->catdir( CONFIG_DIR, 'plugins' );
 use constant PLUGIN_LIB => File::Spec->catdir( PLUGIN_DIR, 'Padre', 'Plugin' );
-use constant LOG_FILE => File::Spec->catfile( CONFIG_DIR, 'debug.log' );
+use constant CONFIG_HOST    => File::Spec->catfile( CONFIG_DIR, 'config.db' );
+use constant CONFIG_HUMAN   => File::Spec->catfile( CONFIG_DIR, 'config.yml' );
+use constant CONFIG_STARTUP => File::Spec->catfile( CONFIG_DIR, 'startup.yml' );
 
 # Check and create the directories that need to exist
 unless ( -e CONFIG_DIR or File::Path::mkpath(CONFIG_DIR) ) {
@@ -120,11 +116,39 @@ unless ( -e PLUGIN_LIB or File::Path::mkpath(PLUGIN_LIB) ) {
 	Carp::croak( "Cannot create plug-ins directory '" . PLUGIN_LIB . "': $!" );
 }
 
+
+
+
+
+#####################################################################
+# Config Defaults Needed At Startup
+
+# Unlike on Linux, on Windows there's not really
+# any major reason we should avoid the single-instance
+# server by default.
+# However during tests or in the debugger we need to make
+# sure we don't accidentally connect to a running
+# system-installed Padre while running the test suite.
+# NOTE: The only reason this is here is that it is needed both during
+# main configuration, and also during Padre::Startup.
+use constant DEFAULT_SINGLEINSTANCE => ( WIN32 and not( $ENV{HARNESS_ACTIVE} or $^P ) ) ? 1 : 0;
+
+use constant DEFAULT_SINGLEINSTANCE_PORT => 4444;
+
+
+
+
+
+#####################################################################
+# Pseudo Constants
+
+my $revision;
+
 # Get the svn revision of the currently running Padre once:
-#eval 'use constant PADRE_REVISION => Padre::Util::revision;';
+# eval 'use constant PADRE_REVISION => Padre::Util::revision;';
 # This needs to be a pseudo constant as it requires Padre::Util which
 # requires Padre::Constant (this module).
-sub PADRE_REVISION {
+sub PADRE_REVISION () {
 
 	# Get and keep the revision at the first call of this pseudo-constant
 	# (usually at Padre start)
@@ -132,7 +156,6 @@ sub PADRE_REVISION {
 	$revision ||= Padre::Util::revision();
 	return $revision;
 }
-
 
 1;
 
@@ -158,13 +181,28 @@ is defined in this module.
 
 =head1 CONSTANTS
 
+=head2 C<WIN32>, C<MAC>, C<UNIX>
+
+Operating Systems.
+
+=head2 C<WXWIN32>, C<WXMAC>, C<WXGTK>
+
+Padre targets the three largest Wx backends and maps to the OS constants.
+	WXWIN32 => WIN32,
+	WXMAC   => MAC,
+	WXGTK   => UNIX,
+
 =head2 C<BOOLEAN>, C<POSINT>, C<INTEGER>, C<ASCII>, C<PATH>
 
-Settings data types.
+Settings data types (based on Firefox types).
 
 =head2 C<HOST>, C<HUMAN>, C<PROJECT>
 
 Settings storage back-ends.
+
+=head2 C<PADRE_REVISION>
+
+The SVN Revision ( when running dev ).
 
 =head2 C<PADRE_BLACK>, C<PADRE_BLUE>, C<PADRE_RED>, C<PADRE_GREEN>, C<PADRE_MAGENTA>, C<PADRE_ORANGE>,
 C<PADRE_DIM_GRAY>, C<PADRE_CRIMSON>, C<PADRE_BROWN>
@@ -203,7 +241,7 @@ Newline style (UNIX, WIN or MAC) on the currently used operating system.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2010 The Padre development team as listed in Padre.pm.
+Copyright 2008 - 2010 The Padre development team as listed in Padre.pm.
 
 This program is free software; you can redistribute it and/or modify it under the
 same terms as Perl 5 itself.

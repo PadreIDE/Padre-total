@@ -12,8 +12,20 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Locale   ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Padre::Wx::Menu';
+
+my @GUI_ELEMENTS = (
+	'output',
+	'functions',
+	'todo',
+	'outline',
+	'directory',
+	'show_syntaxcheck',
+	'show_errorlist',
+	'statusbar',
+	'toolbar',
+);
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -38,46 +50,21 @@ sub new {
 	$self->AppendSeparator;
 
 	# Show or hide GUI elements
-	$self->{output} = $self->add_menu_action(
-		$self,
-		'view.output',
-	);
+	for my $element (@GUI_ELEMENTS) {
 
-	$self->{functions} = $self->add_menu_action(
-		$self,
-		'view.functions',
-	);
+		next unless defined($element);
 
-	# Show or hide GUI elements
-	$self->{outline} = $self->add_menu_action(
-		$self,
-		'view.outline',
-	);
+		my $action = 'view.' . $element;
 
-	$self->{directory} = $self->add_menu_action(
-		$self,
-		'view.directory',
-	);
+		if ( ref($element) eq 'ARRAY' ) {
+			( $element, $action ) = @{$element};
+		}
 
-	$self->{show_syntaxcheck} = $self->add_menu_action(
-		$self,
-		'view.show_syntaxcheck',
-	);
-
-	$self->{show_errorlist} = $self->add_menu_action(
-		$self,
-		'view.show_errorlist',
-	);
-
-	$self->{statusbar} = $self->add_menu_action(
-		$self,
-		'view.statusbar',
-	);
-
-	$self->{toolbar} = $self->add_menu_action(
-		$self,
-		'view.toolbar',
-	);
+		$self->{$element} = $self->add_menu_action(
+			$self,
+			$action,
+		);
+	}
 
 	$self->AppendSeparator;
 
@@ -90,7 +77,7 @@ sub new {
 	);
 
 	my %mimes = Padre::MimeTypes::menu_view_mimes();
-	foreach my $name ( sort keys %mimes ) {
+	foreach my $name ( sort { lc($a) cmp lc($b) } keys %mimes ) {
 		my $label = $name;
 		$label =~ s/^\d+//;
 		my $tag = "view.view_as" . lc $label;
@@ -357,6 +344,7 @@ sub refresh {
 	$self->{outline}->Check( $config->main_outline );
 	$self->{directory}->Check( $config->main_directory );
 	$self->{functions}->Check( $config->main_functions );
+	$self->{todo}->Check( $config->main_todo );
 	$self->{lockinterface}->Check( $config->main_lockinterface );
 	$self->{indentation_guide}->Check( $config->editor_indentationguides );
 	$self->{show_calltips}->Check( $config->editor_calltips );
@@ -405,6 +393,32 @@ sub refresh {
 	}
 
 	return;
+}
+
+sub gui_element_add {
+	my $self = shift;
+	my ( $element, $action, $id ) = @_;
+
+	# Don't add duplicates
+	return 1 if grep {/^\Q$id\E$/} ( map { return '' unless ref($_) eq 'ARRAY'; $_->[2]; } (@GUI_ELEMENTS) );
+
+	push @GUI_ELEMENTS, [ $element, $action, $id ];
+
+	return 1;
+}
+
+sub gui_element_remove {
+	my $self = shift;
+	my $id   = shift;
+
+	my @new_gui_elements;
+
+	for (@GUI_ELEMENTS) {
+		next if ( ref($_) eq 'ARRAY' ) and ( $_->[2] eq $id );
+		push @new_gui_elements, $_;
+	}
+
+	return 1;
 }
 
 1;

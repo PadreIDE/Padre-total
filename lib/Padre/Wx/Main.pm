@@ -27,6 +27,7 @@ use warnings;
 use FindBin;
 use Cwd                           ();
 use Carp                          ();
+use Config                        ();
 use IPC::Open3                    ();
 use File::Spec                    ();
 use File::HomeDir                 ();
@@ -59,7 +60,7 @@ use Padre::Wx::Dialog::Text       ();
 use Padre::Wx::Dialog::FilterTool ();
 use Padre::Logger;
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Wx::Frame';
 
 use constant SECONDS => 1000;
@@ -103,7 +104,6 @@ sub new {
 	my $style  = Wx::wxDEFAULT_FRAME_STYLE;
 	if ( $config->main_maximized ) {
 		$style |= Wx::wxMAXIMIZE;
-		$style |= Wx::wxCLIP_CHILDREN;
 	}
 
 	# Create the underlying Wx frame
@@ -222,6 +222,7 @@ sub new {
 	# Show the tools that the configuration dictates.
 	# Use the fast and crude internal versions here only,
 	# so we don't accidentally trigger any configuration writes.
+	$self->_show_todo( $self->config->main_todo );
 	$self->_show_functions( $self->config->main_functions );
 	$self->_show_outline( $self->config->main_outline );
 	$self->_show_directory( $self->config->main_directory );
@@ -292,6 +293,8 @@ Accessors to GUI elements:
 
 =item * C<functions>
 
+=item * C<todo>
+
 =item * C<outline>
 
 =item * C<directory>
@@ -326,6 +329,7 @@ Accessors that may not belong to this class:
 
 use Class::XSAccessor {
 	predicates => {
+
 		# Needed for lazily-constructed gui elements
 		has_about     => 'about',
 		has_left      => 'left',
@@ -335,6 +339,7 @@ use Class::XSAccessor {
 		has_ack       => 'ack',
 		has_syntax    => 'syntax',
 		has_functions => 'functions',
+		has_todo      => 'todo',
 		has_debugger  => 'debugger',
 		has_find      => 'find',
 		has_replace   => 'replace',
@@ -343,6 +348,7 @@ use Class::XSAccessor {
 		has_errorlist => 'errorlist',
 	},
 	getters => {
+
 		# GUI Elements
 		ide                 => 'ide',
 		config              => 'config',
@@ -412,6 +418,15 @@ sub functions {
 		$self->{functions} = Padre::Wx::FunctionList->new($self);
 	}
 	return $self->{functions};
+}
+
+sub todo {
+	my $self = shift;
+	unless ( defined $self->{todo} ) {
+		require Padre::Wx::TodoList;
+		$self->{todo} = Padre::Wx::TodoList->new($self);
+	}
+	return $self->{todo};
 }
 
 sub syntax {
@@ -558,7 +573,7 @@ sub load_files {
 	my $self    = shift;
 	my $ide     = $self->ide;
 	my $config  = $self->config;
-	my $startup = $config->main_startup;
+	my $startup = $config->startup_files;
 
 	# explicit session on command line takes precedence
 	if ( defined $ide->opts->{session} ) {
@@ -627,6 +642,20 @@ sub load_files {
 	return;
 }
 
+sub _xy_on_screen {
+
+	# Returns true if the initial xy coordinate is on the screen
+	# See ticket #822
+	my $self   = shift;
+	my $config = $self->config;
+	if ( $config->main_top < 0 or $config->main_left < 0 ) {
+		return 0;
+	}
+
+	# TODO: Add check for values > screen size?
+	return 1;
+}
+
 sub _timer_post_init {
 	my $self    = shift;
 	my $config  = $self->config;
@@ -644,7 +673,7 @@ sub _timer_post_init {
 	# size, reposition to the defaults).
 	# This must happen AFTER the initial ->Show(1) because otherwise
 	# ->IsShownOnScreen returns a false-negative result.
-	unless ( $self->IsShownOnScreen ) {
+	unless ( $self->IsShownOnScreen and $self->_xy_on_screen ) {
 		$self->SetSize(
 			Wx::Size->new(
 				$config->default('main_width'),
@@ -893,7 +922,7 @@ sub single_instance_connect {
 			while ( $_[0]->Read( $buffer, 128 ) ) {
 				$command .= $buffer;
 				while ( $command =~ s/^(.*?)[\012\015]+//s ) {
-					$_[1]->single_instance_command("$1");
+					$_[1]->single_instance_command( "$1", $_[0] );
 				}
 			}
 			return 1;
@@ -922,8 +951,9 @@ $file> and C<focus>.
 =cut
 
 sub single_instance_command {
-	my $self = shift;
-	my $line = shift;
+	my $self   = shift;
+	my $line   = shift;
+	my $socket = shift;
 
 	# $line should be defined
 	return 1 unless defined $line && length $line;
@@ -954,6 +984,30 @@ sub single_instance_command {
 			$self->notebook->show_file($line)
 				or $self->setup_editors($line);
 		}
+
+	} elsif ( $1 eq 'open-sync' ) {
+
+		# XXX: This should be two commands, 'open'+'wait-for-close'
+		my $editor;
+		if ( -f $line ) {
+
+			# If a file is already loaded switch to it instead
+			$editor = $self->notebook->show_file($line);
+			$editor ||= $self->setup_editors($line);
+		}
+
+		# Notify the client when we close
+		# this window
+		$self->{on_close_watchers} ||= {};
+		$self->{on_close_watchers}->{$line} ||= [];
+		push @{ $self->{on_close_watchers}->{$line} }, sub {
+
+			#warn "Closing $line / " . $_[0]->filename;
+			my $buf = "closed:$line\r\n"
+				; # XXX Should we worry about encoding things as utf-8 or do we rely on both client and server speaking the same filesystem encoding?
+			$socket->Write( $buf, length($buf) ); # XXX length is encoding-sensitive!
+			return 1;                             # signal that we want to be removed
+		};
 
 	} else {
 
@@ -1049,12 +1103,26 @@ sub refresh {
 	my $lock    = $self->lock('UPDATE');
 	my $current = $self->current;
 
+	# Refresh the highest and quickest things first,
+	# and work downwards and slower from there.
+	# Humans tend to look at the top of the screen first.
+	$self->refresh_title($current);
 	$self->refresh_menubar($current);
 	$self->refresh_toolbar($current);
-	$self->refresh_status($current);
 	$self->refresh_functions($current);
 	$self->refresh_directory($current);
-	$self->refresh_title;
+	$self->refresh_status($current);
+
+	# Now signal the refresh to all remaining listeners
+	# weed out expired weak references
+	@{ $self->{refresh_listeners} } = grep { ; defined } @{ $self->{refresh_listeners} };
+	for ( @{ $self->{refresh_listeners} } ) {
+		if ( my $refresh = $_->can('refresh') ) {
+			$_->refresh($current);
+		} else {
+			$_->($current);
+		}
+	}
 
 	my $notebook = $self->notebook;
 	if ( $notebook->GetPageCount ) {
@@ -1069,6 +1137,34 @@ sub refresh {
 	}
 
 	return;
+}
+
+=pod
+
+=head3 C<add_refresh_listener>
+
+Adds an object which will have its C<< ->refresh() >> method
+called whenever the main refresh event is triggered. The
+refresh listener is stored as a weak reference so make sure
+that you keep the listener alive elsewhere.
+
+If your object does not have a C<< ->refresh() >> method, pass in
+a code reference - it will be called instead.
+
+Note that this method must return really quick. If you plan to
+do work that takes longer, launch it via the L<Action::Queue> mechanism
+and perform it in the background.
+
+=cut
+
+sub add_refresh_listener {
+	my ( $self, @listeners ) = @_;
+	for my $l (@listeners) {
+		if ( !grep { $_ eq $l } @{ $self->{refresh_listeners} } ) {
+			Scalar::Util::weaken($l);
+			push @{ $self->{refresh_listeners} }, $l;
+		}
+	}
 }
 
 =pod
@@ -1123,7 +1219,7 @@ sub refresh_title {
 	}
 
 	# Keep it for later usage
-	$self->{title} = $config->window_title;
+	$self->{title} = $config->main_title;
 
 	my $Vars = join( '', keys(%variable_data) );
 
@@ -1291,6 +1387,18 @@ sub refresh_functions {
 	return if $self->locked('REFRESH');
 	return unless $self->menu->view->{functions}->IsChecked;
 	$self->functions->refresh(@_);
+	return;
+}
+
+# TO DO now on every ui change (move of the mouse) we refresh
+# this even though that should not be necessary can that be
+# eliminated ?
+sub refresh_todo {
+	my $self = shift;
+	return unless $self->has_todo;
+	return if $self->locked('REFRESH');
+	return unless $self->menu->view->{todo}->IsChecked;
+	$self->todo->refresh(@_);
 	return;
 }
 
@@ -1478,6 +1586,7 @@ sub reconfig {
 	# Show or hide all the main gui elements
 	# TO DO - Move this into the config ->apply logic
 	$self->show_functions( $config->main_functions );
+	$self->show_todo( $config->main_todo );
 	$self->show_outline( $config->main_outline );
 	$self->show_directory( $config->main_directory );
 	$self->show_output( $config->main_output );
@@ -1560,6 +1669,44 @@ sub _show_functions {
 	} elsif ( $self->has_functions ) {
 		$self->right->hide( $self->functions );
 		delete $self->{functions};
+	}
+}
+
+=head3 C<show_todo>
+
+    $main->show_todo( $visible );
+
+Show the todo panel on the right if C<$visible> is true. Hide it
+otherwise. If C<$visible> is not provided, the method defaults to show
+the panel.
+
+=cut
+
+sub show_todo {
+	my $self = shift;
+	my $on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	unless ( $on == $self->menu->view->{todo}->IsChecked ) {
+		$self->menu->view->{todo}->Check($on);
+	}
+	$self->config->set( main_todo => $on );
+	$self->config->write;
+
+	$self->_show_todo($on);
+
+	$self->aui->Update;
+	$self->ide->save_config;
+
+	return;
+}
+
+# XXX This should be merged with _show_functions again
+sub _show_todo {
+	my $self = shift;
+	if ( $_[0] ) {
+		$self->right->show( $self->todo );
+	} elsif ( $self->has_todo ) {
+		$self->right->hide( $self->todo );
+		delete $self->{todo};
 	}
 }
 
@@ -1674,9 +1821,9 @@ sub show_directory {
 sub _show_directory {
 	my $self = shift;
 	if ( $_[0] ) {
-		$self->directory_panel->show($self->directory);
+		$self->directory_panel->show( $self->directory );
 	} elsif ( $self->has_directory ) {
-		$self->directory_panel->hide($self->directory);
+		$self->directory_panel->hide( $self->directory );
 		delete $self->{directory};
 	}
 }
@@ -1695,7 +1842,7 @@ the panel.
 
 sub show_output {
 	my $self = shift;
-	my $on   = @_ ? $_[0] ? 1 : 0 : 1;
+	my $on = @_ ? $_[0] ? 1 : 0 : 1;
 	unless ( $on == $self->menu->view->{output}->IsChecked ) {
 		$self->menu->view->{output}->Check($on);
 	}
@@ -1762,7 +1909,7 @@ sub _show_syntax {
 		$syntax->start unless $syntax->running;
 	} elsif ( $self->has_syntax ) {
 		my $syntax = $self->syntax;
-		$self->bottom->hide( $syntax );
+		$self->bottom->hide($syntax);
 		$syntax->stop if $syntax->running;
 		delete $self->{syntax};
 	}
@@ -1872,11 +2019,11 @@ Note: it probably needs to be combined with C<run_command()> itself.
 =cut
 
 sub on_run_command {
-	my $main = shift;
+	my $self = shift;
 
 	require Padre::Wx::History::TextEntryDialog;
 	my $dialog = Padre::Wx::History::TextEntryDialog->new(
-		$main,
+		$self,
 		Wx::gettext("Command line"),
 		Wx::gettext("Run setup"),
 		"run_command",
@@ -1889,7 +2036,7 @@ sub on_run_command {
 	unless ( defined $command and $command ne '' ) {
 		return;
 	}
-	$main->run_command($command);
+	$self->run_command($command);
 	return;
 }
 
@@ -1934,7 +2081,8 @@ sub on_run_tdd_tests {
 			$self->run_command("$perl Build test");
 		} elsif ( -e 'Makefile.PL' ) {
 			$self->run_command("$perl Makefile.PL");
-			my $make = 'make'; # TODO this should do dmake, nmake on Win32
+			my $make = $Config::Config{make};
+			$make = 'make' unless defined $make;
 			$self->run_command("$make test");
 		} elsif ( -e 'dist.ini' ) {
 			$self->run_command("dzil test");
@@ -2158,7 +2306,7 @@ sub run_command {
 		$self->error( sprintf( Wx::gettext("Failed to start '%s' command"), $cmd ) );
 		$self->menu->run->enable;
 	}
-
+	$self->current->editor->SetFocus();
 	return;
 }
 
@@ -2710,8 +2858,12 @@ sub on_comment_block {
 	my $end             = $editor->LineFromPosition($selection_end);
 	my $string          = $document->comment_lines_str;
 	if ( not defined $string ) {
-		$self->error(sprintf( Wx::gettext("Could not determine the comment character for %s document type"), 
-			Padre::MimeTypes->get_mime_type_name( $document->get_mimetype ) ));
+		$self->error(
+			sprintf(
+				Wx::gettext("Could not determine the comment character for %s document type"),
+				Padre::MimeTypes->get_mime_type_name( $document->get_mimetype )
+			)
+		);
 		return;
 	}
 
@@ -2848,7 +3000,7 @@ sub on_close_window {
 
 	# Check that all files have been saved
 	if ( $event->CanVeto ) {
-		if ( $config->main_startup eq 'same' ) {
+		if ( $config->startup_files eq 'same' ) {
 
 			# Save the files, but don't close
 			my $saved = $self->on_save_all;
@@ -2860,7 +3012,7 @@ sub on_close_window {
 			}
 		} else {
 			my $closed = $self->close_all;
-			unless ( $closed ) {
+			unless ($closed) {
 
 				# They cancelled at some point
 				$event->Veto;
@@ -2952,8 +3104,8 @@ sub update_last_session {
 	my $self = shift;
 
 	# Only save if the user cares about sessions
-	my $main_startup = $self->config->main_startup;
-	unless ( $main_startup eq 'last' or $main_startup eq 'session' ) {
+	my $startup_files = $self->config->startup_files;
+	unless ( $startup_files eq 'last' or $startup_files eq 'session' ) {
 		return;
 	}
 
@@ -3055,7 +3207,7 @@ sub setup_editor {
 
 	TRACE( "setup_editor called for '" . ( $file || '' ) . "'" ) if DEBUG;
 
-	if ( $file ) {
+	if ($file) {
 
 		# Get the absolute path
 		# Please Dont use Cwd::realpath, UNC paths do not work on win32)
@@ -3097,7 +3249,7 @@ sub setup_editor {
 		}
 	}
 
-	my $lock     = $self->lock('REFRESH');
+	my $lock = $self->lock('REFRESH');
 	my $document = Padre::Document->new( filename => $file, );
 
 	# Catch critical errors:
@@ -3132,6 +3284,7 @@ sub setup_editor {
 	}
 
 	if ( $document->is_new ) {
+
 		# The project is probably the same as the previous file we had open
 		$document->{project_dir} =
 			  $self->current->document
@@ -3462,9 +3615,9 @@ sub open_file_dialog {
 		push @files, $FN;
 	}
 
-	my $lock = $self->lock('REFRESH', 'DB');
+	my $lock = $self->lock( 'REFRESH', 'DB' );
 	$self->setup_editors(@files) if $#files > -1;
-	$self->save_current_session if $self->ide->{session_autosave};
+	$self->save_current_session  if $self->ide->{session_autosave};
 
 	return;
 }
@@ -3718,7 +3871,7 @@ sub on_save_as {
 		# lock method for this non-guard-object case.
 		# We also need to refresh the directory list, in case a change
 		# in file name means the project context has changed.
-		$self->lock('refresh_recent', 'refresh_directory');
+		$self->lock( 'refresh_recent', 'refresh_directory' );
 	}
 
 	$self->refresh;
@@ -3841,13 +3994,22 @@ saved, false otherwise.
 
 sub on_save_all {
 	my $self = shift;
+
+	# TODO: Discuss this implementation
+	# trac ticket is: http://padre.perlide.org/trac/ticket/331
+	my $currentID = $self->notebook->GetSelection;
 	foreach my $id ( $self->pageids ) {
 		my $editor = $self->notebook->GetPage($id) or next;
+
 		my $doc = $editor->{Document}; # TO DO no accessor for document?
 		if ( $doc->is_modified ) {
+			$editor->SetFocus;
 			$self->on_save($doc) or return 0;
 		}
 	}
+
+	# set focus back to the currentDocument
+	$self->notebook->SetSelection($currentID);
 	return 1;
 }
 
@@ -3953,6 +4115,7 @@ sub close {
 	my $editor = $notebook->GetPage($id) or return;
 	my $doc    = $editor->{Document}     or return;
 	my $lock = $self->lock( 'REFRESH', 'refresh_directory', 'refresh_menu' );
+	TRACE( join ' ', "Closing ", ref $doc, $doc->filename ) if DEBUG;
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
 		my $ret = Wx::MessageBox(
@@ -3972,6 +4135,19 @@ sub close {
 			return 0;
 		}
 	}
+
+	# Ticket #828 - ordering is probably important here
+	#   when should plugins be notified ?
+	$self->ide->plugin_manager->editor_disable($editor);
+
+	# Also, if any padre-client or other listeners to this file exist,
+	# notify it that we're done with it:
+	my $fn = $doc->filename;
+	@{ $self->{on_close_watchers}->{$fn} } = map {
+		warn "Calling on_close() callback";
+		my $remove = $_->($doc);
+		$remove ? () : $_
+	} @{ $self->{on_close_watchers}->{$fn} };
 
 	$doc->store_cursor_position;
 	$doc->remove_tempfile if $doc->tempfile;

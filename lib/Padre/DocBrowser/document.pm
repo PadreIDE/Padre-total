@@ -6,7 +6,7 @@ use warnings;
 use File::Basename ();
 use Class::XSAccessor {
 	constructor => 'new',
-	accessors => {
+	accessors   => {
 		mimetype => 'mime_type',
 		body     => 'body',
 		title    => 'title',
@@ -14,7 +14,7 @@ use Class::XSAccessor {
 	},
 };
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 
 =pod
 

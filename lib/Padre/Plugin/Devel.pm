@@ -7,7 +7,7 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use Padre::Current ();
 
-our $VERSION = '0.54';
+our $VERSION = '0.55';
 our @ISA     = 'Padre::Plugin';
 
 
@@ -66,6 +66,7 @@ sub menu_plugins_simple {
 		Wx::gettext('Dump Top IDE Object')   => 'dump_padre',
 		Wx::gettext('Dump Current PPI Tree') => 'dump_ppi',
 		Wx::gettext('Dump %INC and @INC')    => 'dump_inc',
+		Wx::gettext('Start/Stop sub trace')  => 'trace_sub_startstop',
 
 		'---' => undef,
 
@@ -176,6 +177,35 @@ sub dump_padre {
 
 sub dump_inc {
 	$_[0]->_dump( \%INC, \@INC );
+}
+
+sub trace_sub_startstop {
+	my $self = shift;
+	my $main = $self->current->main;
+
+	if ( defined( $self->{trace_sub_before} ) ) {
+		delete $self->{trace_sub_before};
+		delete $self->{trace_sub_after};
+		$main->info( Wx::gettext('Sub-tracing stopped') );
+		return;
+	}
+
+	eval 'use Aspect;';
+	if ($@) {
+		$main->error( Wx::gettext( 'Error while loading Aspect, is it installed?' . "\n$@" ) );
+		return;
+	}
+
+	eval '
+	$self->{trace_sub_before} = before {
+			print STDERR "enter ".shift->{sub_name}."\n";
+		} call qr/^Padre::/;
+	$self->{trace_sub_after} = after {
+			print STDERR "leave ".shift->{sub_name}."\n";
+		} call qr/^Padre::/;
+';
+	$main->info( Wx::gettext('Sub-tracing started') );
+
 }
 
 sub simulate_crash {
