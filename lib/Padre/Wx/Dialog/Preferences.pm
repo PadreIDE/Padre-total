@@ -311,6 +311,13 @@ sub _behaviour_panel {
 		[   [ 'Wx::StaticText', 'undef',       Wx::gettext('RegExp for TODO-panel:') ],
 			[ 'Wx::TextCtrl',   'todo_regexp', $config->todo_regexp ],
 		],
+		[   [   'Wx::CheckBox',
+				'startup_splash',
+				( $config->startup_splash ? 1 : 0 ),
+				Wx::gettext("Use Splash Screen?")
+			],
+			[]
+		],
 	];
 
 	my $panel = $self->_new_panel($treebook);
@@ -848,7 +855,7 @@ sub dialog {
 
 sub guess_indentation_settings {
 	my $self   = shift;
-	my $doc    = Padre::Current->document;
+	my $doc    = Padre::Current->document or return;
 	my $indent = $doc->guess_indentation_style;
 	$self->get_widget('editor_indent_tab')->SetValue( $indent->{use_tabs} );
 	$self->get_widget('editor_indent_tab_width')->SetValue( $indent->{tabwidth} );
@@ -1099,6 +1106,10 @@ sub run {
 	$config->set(
 		'mid_button_paste',
 		$data->{mid_button_paste} ? 1 : 0
+	);
+	$config->set(
+		'startup_splash',
+		$data->{startup_splash} ? 1 : 0
 	);
 	$config->set(
 		'todo_regexp',
