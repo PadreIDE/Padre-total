@@ -1,18 +1,15 @@
 Revision history for Syntax::Highlight::Perl6.
 
 0.78 2010.1.10
-
-    Bundled the latest STD.pm from lwall++ r10112
+	Bundled the latest STD.pm from lwall++ r10112
 
 0.77 2009.12.12
-
 	Bundled the latest STD innovation (lwall++) r29330
 	Default rule in constructor is now TOP instead of comp_unit
 	Commented a failing STD parsing test
 	Switch back from YAML::Syck to YAML::XS (Cursor.pmc)
 
 0.76 2009.9.29
-
 	Bundled the latest STD innovation (lwall++):
 		- package name refactor; stashes now know their own unique id name
 		  conflicting package symbols now report which package they conflict in
@@ -29,13 +26,11 @@ Revision history for Syntax::Highlight::Perl6.
 		- catch attempt to declare symbol previously aliased into an outer scope
 		
 0.75 2009.9.19
-
 	Bundled the latest STD innovation (lwall++):
 		- revise LTA message on $x<10
 		- provide reliable way of resetting position before panic
 
 0.74 2009.9.18
-
 	- Bundled the latest STD which contains the following fixes:
 		- don't record null nibbles unless whole string is ''
 		- fix up nibbler's AST node a bit
