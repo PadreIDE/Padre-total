@@ -63,6 +63,8 @@ sub On_SwarmMessage {
     my ($self,$message) = @_;
     my $handler = 'accept_'  . $message->{type};
     eval { $self->$handler($message) };
+    warn "Geometry handler error - $@" if $@;
+    
 }
 
 sub accept_promote {
@@ -99,7 +101,7 @@ sub accept_announce {
 sub accept_leave {
 	my $self = shift;
 	my $message = shift;
-	my @s = $self->graph->all_successors( $message->{from} );
+	my @s = $self->graph->successors( $message->{from} );
 	$self->graph->delete_vertex( $_ )
 	    for @s, $message->{from};
 	

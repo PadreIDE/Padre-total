@@ -167,7 +167,7 @@ sub update_userlist {
 	my $userlist = $self->userlist;
 	my $geo = $self->plugin->geometry;
 	my @users = $geo->get_users();
-	
+	warn "Update userlist w/ " , @users;
 	$userlist->DeleteAllItems;
 	foreach my $user ( @users ) {
 		my $item = Wx::ListItem->new( );
@@ -249,17 +249,18 @@ sub accept_announce {
 
 sub accept_promote {
     my ($self,$message) = @_;
-    return unless $message->{service} =~ m/chat/i;
+    if ( $message->{service} eq 'chat' ) {
+	$self->update_userlist;
+	my $text = sprintf '%s promotes a chat service', $message->from;
+	$self->write_user_styled( $message->from,  $text . "\n" );
+    }
     
-    my $text = sprintf '%s promotes a chat service', $message->from;
-    $self->write_user_styled( $message->from,  $text . "\n" );
-   
+    
 }
 
 sub accept_disco {
 	my ($self,$message) = @_;
 	$self->plugin->send( {type=>'promote',service=>'chat'} );
-	
 }
 
 sub accept_leave {
@@ -269,7 +270,6 @@ sub accept_leave {
     $self->write_user_styled( $identity , $identity );
     $self->write_unstyled( " has left the swarm.\n" );
     $self->update_userlist;
-    
 }
 
 sub accept_runme {
