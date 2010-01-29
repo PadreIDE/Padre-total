@@ -4,16 +4,17 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::Strawberry   2.01  qw();
-use URI::file                      qw();
-use English                        qw( -no_match_vars );
-use File::Spec::Functions          qw( catfile catdir );
-use parent                         qw( Perl::Dist::Strawberry );
+use Perl::Dist::WiX          1.102002
+use Perl::Dist::Strawberry   2.02     qw();
+use URI::file                         qw();
+use English                           qw( -no_match_vars );
+use File::Spec::Functions             qw( catfile catdir );
+use parent                            qw( Perl::Dist::Strawberry );
+#>>>
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.500';
+our $VERSION = '0.560';
 $VERSION =~ s/_//ms;
-#>>>
 
 
 
@@ -27,8 +28,8 @@ sub new {
 
 	return shift->SUPER::new(
 		app_id            => 'padre',
-		app_name          => 'Padre Standalone',
-		app_ver_name      => 'Padre Standalone 0.50',
+		app_name          => 'Padre plus Strawberry',
+		app_ver_name      => 'Padre plus Strawberry 0.50',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
 		image_dir         => 'C:\strawberry',
@@ -54,20 +55,15 @@ sub new {
 		msi => 1,
 		zip => 1,
 
+		# These are the locations to pull down the msm.
+		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.1.msm'
+		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.1.zip',
+		msm_code   => '12345678-1111-122345678-1111-1111-1111',
+
 		# Tasks to complete to create Strawberry
 		tasklist => [
 			'final_initialization',
-			'install_c_toolchain',
-			'install_strawberry_c_toolchain',
-			'install_c_libraries',
-			'install_strawberry_c_libraries',
-			'install_perl',
-			'install_perl_toolchain',
-			'install_cpan_upgrades',
-			'install_strawberry_modules_1',
-			'install_strawberry_modules_2',
-			'install_strawberry_modules_3',
-			'install_strawberry_modules_4',
+			'initialize_using_msm',
 			'install_padre_prereq_modules_1',
 			'install_padre_prereq_modules_2',
 			'install_padre_modules',
@@ -86,7 +82,7 @@ sub new {
 } ## end sub new
 
 sub output_base_filename {
-	return 'padre-standalone-0.50';
+	return 'padre-strawberry-0.56';
 }
 
 #####################################################################
