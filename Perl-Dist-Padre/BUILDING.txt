@@ -14,7 +14,7 @@ because at the end of this, this will install into c:\strawberry, and you can't
 overwrite the host perl.
 
 A usable Bootstrap build is at 
-http://strawberryperl.com/download/bootstrap/bootstrap-perl-5.10.1.0.msi, or you 
+http://strawberryperl.com/download/bootstrap/bootstrap-perl-5.10.1.1.msi, or you 
 can build one yourself by going "perldist Bootstrap" once steps 2 and 3 are done.
 
 1) To speed up the build, we either need to get (1a) or build (1b) a .par file for
@@ -35,7 +35,7 @@ wget http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.46-MSWin32-x
 above] Create a par file for Alien::wxWidgets.
 
 rem Setup which version of Alien wxWidgets to use
-set ALIEN_WIDGETS=Alien-wxWidgets-0.46
+set ALIEN_WIDGETS=Alien-wxWidgets-0.50
 
 cd C:\
 wget http://www.commandline.co.uk/mtee/mtee.zip
@@ -43,14 +43,15 @@ unzip mtee.zip
 wget %CPAN%/authors/id/M/MB/MBARBON/%ALIEN_WIDGETS%.tar.gz
 gzip -d %ALIEN_WIDGETS%.tar.gz
 tar -xf %ALIEN_WIDGETS%.tar
-wget http://svn.perlide.org/padre/trunk/Perl-Dist-Padre/version-rc.patch.txt
-%ALIEN_WIDGETS%\inc\bin\patch -p0 < version-rc.patch.txt 
 cd %ALIEN_WIDGETS%
 perl Makefile.PL
 perl -MPAR::Dist -eblib_to_par
 rem wait 40 minutes
 copy Alien-*.par ..
 cd ..
+
+(NOTE: 0.46 and below used to require a patch in order to avoid warnings when linking the MSI.
+This patch was incorporated into 0.46_01 and later versions of Alien::wxWidgets.)
 
 2) Install Alien::WiX and Perl::Dist::WiX from CPAN.
 3) Install Perl::Dist::Strawberry from CPAN.
@@ -73,7 +74,7 @@ cd ..
 
 4a) (Optional) If you want to build off a minicpan, do this:
 
-minicpan_pdwix --dist Perl-Dist-WiX --dist Perl-Dist-Strawberry --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\ --cpan %CPAN%
+minicpan_pdwix --dist Perl-Dist-Padre --minicpan C:\Padre-minicpan\ --cpan %CPAN%
 
 5) Actually build the dist...
 
@@ -83,7 +84,7 @@ dir %PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION%
 
 rem --- without minicpan (4a)
 perldist_w Padre --cpan %CPAN% 2>&1 | mtee padre-install.txt
-(wait for 3-6 hours)
+(wait for 2-3 hours)
 
 rem --- with minicpan (4a)
 perldist_w Padre --cpan file://C:/Padre-minicpan/ 2>&1 | mtee padre-install.txt
