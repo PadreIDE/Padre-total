@@ -652,7 +652,6 @@ sub _xy_on_screen {
 		return 0;
 	}
 
-	# TODO: Add check for values > screen size?
 	return 1;
 }
 
@@ -1215,7 +1214,7 @@ sub refresh_title {
 		my ($session) = Padre::DB::Session->select(
 			'where id = ?', $self->ide->{session},
 		);
-		$variable_data{'p'} = $session->{name};
+		$variable_data{'p'} = $session->name;
 	}
 
 	# Keep it for later usage
@@ -2356,7 +2355,11 @@ sub run_document {
 	}
 	if ($cmd) {
 		if ( $document->pre_process ) {
-			$self->run_command($cmd);
+			SCOPE: {
+				require File::pushd;
+				my $pushd = File::pushd::pushd( $document->project_dir );
+				$self->run_command($cmd);
+			}
 		} else {
 			my $styles = Wx::wxCENTRE | Wx::wxICON_HAND | Wx::wxYES_NO;
 			my $ret    = Wx::MessageBox(
@@ -2366,7 +2369,11 @@ sub run_document {
 				$self,
 			);
 			if ( $ret == Wx::wxYES ) {
-				$self->run_command($cmd);
+				SCOPE: {
+					require File::pushd;
+					my $pushd = File::pushd::pushd( $document->project_dir );
+					$self->run_command($cmd);
+				}
 			}
 		}
 	}
@@ -2474,7 +2481,7 @@ sub open_session {
 	$progress->update( $#files + 1, Wx::gettext('Restore focus...') );
 	$self->on_nth_pane($focus) if defined $focus;
 
-	$self->ide->{session}          = $session->{id};
+	$self->ide->{session}          = $session->id;
 	$self->ide->{session_autosave} = $autosave;
 
 	# now we can redraw
@@ -2503,7 +2510,7 @@ sub save_session {
 
 	my $transaction = $self->lock('DB');
 	foreach my $file (@session) {
-		$file->{session} = $session->id;
+		$file->set( session => $session->id );
 		$file->insert;
 	}
 
@@ -3308,7 +3315,9 @@ sub setup_editor {
 	# $editor->padre_setup;
 	Wx::Event::EVT_MOTION( $editor, \&Padre::Wx::Editor::on_mouse_motion );
 
-	$document->restore_cursor_position;
+	if ( $config->feature_cursormemory ) {
+		$document->restore_cursor_position;
+	}
 
 	# Update and refresh immediately if not locked
 	$self->lock( 'update_last_session', 'refresh_menu' );
@@ -3685,10 +3694,11 @@ sub reload_file {
 		$editor = $document->editor;
 	}
 
-	$document->store_cursor_position;
+	my $pos  = $self->config->feature_cursormemory;
+	$document->store_cursor_position if $pos;
 	if ( $document->reload ) {
 		$document->editor->configure_editor($document);
-		$document->restore_cursor_position;
+		$document->restore_cursor_position if $pos;
 	} else {
 		$self->error(
 			sprintf(
@@ -4114,7 +4124,7 @@ sub close {
 
 	my $editor = $notebook->GetPage($id) or return;
 	my $doc    = $editor->{Document}     or return;
-	my $lock = $self->lock( 'REFRESH', 'refresh_directory', 'refresh_menu' );
+	my $lock = $self->lock( 'REFRESH', 'DB', 'refresh_directory', 'refresh_menu' );
 	TRACE( join ' ', "Closing ", ref $doc, $doc->filename ) if DEBUG;
 
 	if ( $doc->is_modified and not $doc->is_unused ) {
@@ -4150,11 +4160,21 @@ sub close {
 			$remove ? () : $_
 		} @{ $self->{on_close_watchers}->{$fn} };
 	}
-	$doc->store_cursor_position;
-	$doc->remove_tempfile if $doc->tempfile;
+
+	if ( $self->config->feature_cursormemory ) {
+		$doc->store_cursor_position;
+	}
+	if ( $doc->tempfile ) {
+		$doc->remove_tempfile;
+	}
+
+	# Now we are past the confirmation, apply an update lock as well
+	my $lock2 = $self->lock('UPDATE');
 
 	$self->notebook->DeletePage($id);
 
+	# NOTE: Why are we doing an explicit clear?
+	# Wouldn't a refresh to them clear if needed anyway?
 	if ( $self->has_syntax ) {
 		$self->syntax->clear;
 	}
@@ -4239,13 +4259,18 @@ sub close_where {
 	my $self     = shift;
 	my $where    = shift;
 	my $notebook = $self->notebook;
-	my $lock     = $self->lock('UPDATE');
-	foreach my $id ( reverse $self->pageids ) {
-		if ( $where->( $notebook->GetPage($id)->{Document} ) ) {
+
+	# Generate the list of ids to close before we go to the
+	# expensive of taking any locks.
+	my @close = grep {
+		$where->( $notebook->GetPage($_)->{Document} )
+	} reverse $self->pageids;
+	if ( @close ) {
+		my $lock = $self->lock('UPDATE', 'DB', 'refresh');
+		foreach my $id ( @close ) {
 			$self->close($id) or return 0;
 		}
 	}
-	$self->refresh;
 	return 1;
 }
 

@@ -26,9 +26,14 @@ use strict;
 use warnings;
 
 use Padre::Constant ();
+use Padre::Logger;
 
 # This module may be loaded by others, so don't crash on Linux when just being loaded:
-require Win32::API if Padre::Constant::WIN32;
+if ( Padre::Constant::WIN32 ) {
+	require Win32::API;
+} else {
+	TRACE("WARN: Inefficiently loading Padre::Util::Win32 when not on Win32");
+}
 
 our $VERSION = '0.55';
 
@@ -135,10 +140,7 @@ CODE
 # If you set Show to 0, then you have an invisible command line window on win32!
 #
 sub ExecuteProcessAndWait {
-
 	die "Win32 function called!" unless Padre::Constant::WIN32;
-
-	my ( $App_Name, $Cmd_Line, $Show ) = @_;
 
 	unless ( $Types{SHELLEXECUTEINFO} ) {
 		Win32::API::Struct->typedef(
@@ -166,13 +168,16 @@ sub ExecuteProcessAndWait {
 	# XXX Ignore Win32::API warnings. It's ugly but it works :)
 	local $SIG{__WARN__} = sub { };
 
-	my $info = Win32::API::Struct->new('SHELLEXECUTEINFO');
+	# Set up for the API call
+	my %params = @_;
+	my $info   = Win32::API::Struct->new('SHELLEXECUTEINFO');
 	$info->{cbSize}       = $info->sizeof;
 	$info->{lpVerb}       = 'open';
-	$info->{lpFile}       = $App_Name;
-	$info->{lpParameters} = $Cmd_Line;
-	$info->{nShow}        = $Show;
-	$info->{fMask}        = 0x40;         #SEE_MASK_NOCLOSEPROCESS
+	$info->{lpDirectory}  = $params{directory} if $params{directory};
+	$info->{lpFile}       = $params{file};
+	$info->{lpParameters} = $params{parameters};
+	$info->{nShow}        = $params{show} ? 1 : 0;
+	$info->{fMask}        = 0x40; # SEE_MASK_NOCLOSEPROCESS
 	my $ShellExecuteEx = Win32::API->new( shell32 => <<'CODE');
 		BOOL ShellExecuteEx(
 			LPSHELLEXECUTEINFO lpExecInfo

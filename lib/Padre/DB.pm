@@ -12,18 +12,22 @@ use Padre::Current  ();
 use Padre::Logger;
 
 # Need truncate
-use ORLite 1.17 ();
+use ORLite 1.36 ();
 
 # Remove the trailing -DEBUG to get debugging info on ORLite magic
 use Padre::DB::Migrate {
 	create        => 1,
-	tables        => ['Modules'],
+	tables        => [ 'Modules' ],
 	file          => Padre::Constant::CONFIG_HOST,
 	user_revision => 11,
 	timeline      => File::Spec->catdir(
 		File::ShareDir::dist_dir('Padre'),
 		'timeline',
 	),
+
+	# Acceleration options (remove these if they cause trouble)
+	array      => 1,
+	xsaccessor => 1,
 }; #, '-DEBUG';
 
 # Overlay classes to enhance the ORLite defaults

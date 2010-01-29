@@ -261,10 +261,10 @@ Accepts one optional argument: a debug flag.
 =cut
 
 sub get_command {
-	my $self  = shift;
-	my $debug = shift;
-
-	my $config = Padre->ide->config;
+	my $self    = shift;
+	my $debug   = shift;
+	my $current = Padre::Current->new( document => $self );
+	my $config  = $current->config;
 
 	# Use a temporary file if run_save is set to 'unsaved'
 	my $filename =
@@ -288,7 +288,7 @@ sub get_command {
 				),
 				Wx::gettext('Run'),
 				Wx::wxYES_NO | Wx::wxCENTRE,
-				Padre->ide->wx->main,
+				$current->main,
 			);
 			if ( $ret == Wx::wxYES ) {
 				$perl = Padre::Perl::cperl();
@@ -1077,7 +1077,7 @@ sub autocomplete {
 
 	# The second parameter may be a reference to the current event or the next
 	# char which will be added to the editor:
-	my $nextchar;
+	my $nextchar = ''; # Use empty instead of undef
 	if ( defined($event) and ( ref($event) eq 'Wx::KeyEvent' ) ) {
 		my $key = $event->GetUnicodeKey;
 		$nextchar = chr($key);
