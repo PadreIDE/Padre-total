@@ -28,8 +28,8 @@ sub new {
 
 	return shift->SUPER::new(
 		app_id            => 'padre',
-		app_name          => 'Padre plus Strawberry',
-		app_ver_name      => 'Padre plus Strawberry 0.50',
+		app_name          => 'Strawberry Perl plus Padre',
+		app_ver_name      => 'Strawberry Perl 5.10.1.1 plus Padre 0.56',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
 		image_dir         => 'C:\strawberry',
