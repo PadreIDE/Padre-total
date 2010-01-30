@@ -140,6 +140,7 @@ sub install_padre_prereq_modules_2 {
 
 	# Manually install our non-Wx dependencies first to isolate
 	# them from the Wx problems
+	# Note: ORLite::Migrate goes after ORLite once they don't clone it privately.
 	$self->install_modules( qw{
 		  Test::SubCalls
 		  List::MoreUtils
@@ -152,7 +153,6 @@ sub install_padre_prereq_modules_2 {
 		  Test::Pod
 		  Module::Starter
 		  ORLite
-		  ORLite::Migrate
 		  Test::Differences
 		  File::Slurp
 		  Pod::POM
@@ -164,7 +164,6 @@ sub install_padre_prereq_modules_2 {
 		  Exception::Class
 		  Test::Exception
 		  Test::Most
-		  Class::XSAccessor::Array
 		  Parse::ExuberantCTags
 		  CPAN::Mini
 		  Portable
@@ -177,6 +176,19 @@ sub install_padre_prereq_modules_2 {
 		  Locale::Msgfmt
 	} );
 
+	# These were new between 0.50 and 0.55
+	$self->install_modules( qw{
+		  Format::Human::Bytes
+		  Template::Tiny
+		  Win32::Shortcut
+		  Debug::Client
+	} );
+	
+	# These were new between 0.55 and svn trunk, AFAICT.
+	$self->install_modules( qw{
+		  Devel::Refactor
+	} );
+	
 	return 1;
 } ## end sub install_padre_prereq_modules_2
 
@@ -186,17 +198,13 @@ sub install_padre_modules {
 	# The rest of the modules are order-specific,
 	# for reasons maybe involving CPAN.pm but not fully understodd.
 
-	# Install the Alien module
-	if ( defined $ENV{PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION} ) {
-		my $filelist = $self->install_par(
-			name => 'Alien_wxWidgets',
-			url  => URI::file->new(
-				$ENV{PERL_DIST_PADRE_ALIENWXWIDGETS_PAR_LOCATION}
-			  )->as_string(),
-		);
-	} else {
-		$self->install_module( name => 'Alien::wxWidgets' );
-	}
+	# Install the Alien::wxWidgets module from a precompiled .par
+	my $par_url = 
+		'http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
+	my $filelist = $self->install_par(
+		name => 'Alien_wxWidgets',
+		url  => $par_url,
+	);
 
 	# Install the Wx module over the top of alien module
 	$self->install_module( name => 'Wx' );
