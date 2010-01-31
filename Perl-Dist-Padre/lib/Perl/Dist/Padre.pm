@@ -4,7 +4,7 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::WiX          1.102002
+use Perl::Dist::WiX          1.102002;
 use Perl::Dist::Strawberry   2.02     qw();
 use URI::file                         qw();
 use English                           qw( -no_match_vars );
@@ -56,7 +56,7 @@ sub new {
 		zip => 1,
 
 		# These are the locations to pull down the msm.
-		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.1.msm'
+		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.1.msm',
 		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.1.zip',
 		msm_code   => '12345678-1111-122345678-1111-1111-1111',
 
@@ -178,6 +178,8 @@ sub install_padre_prereq_modules_2 {
 
 	# These were new between 0.50 and 0.55
 	$self->install_modules( qw{
+		  Module::ScanDeps
+		  Module::Install
 		  Format::Human::Bytes
 		  Template::Tiny
 		  Win32::Shortcut
@@ -234,18 +236,18 @@ sub install_padre_extras {
 	}
 
 	# Get the Id for directory object that stores the filename passed in.
-	my $dir_id = $self->directories()->search_dir(
+	my $dir_id = $self->get_directory_tree()->search_dir(
 		path_to_find => catdir( $self->image_dir(), 'perl', 'bin' ),
 		exact        => 1,
 		descend      => 1,
 	)->get_id();
 
 	my $icon_id =
-	  $self->icons()
+	  $self->_icons()
 	  ->add_icon( catfile( $self->dist_dir(), 'padre.ico' ), 'padre.exe' );
 
 	# Add the start menu icon.
-	$self->{fragments}->{StartMenuIcons}->add_shortcut(
+	$self->get_fragment_object('StartMenuIcons')->add_shortcut(
 		name => 'Padre',
 		description =>
 'Perl Application Development and Refactoring Environment - a Perl IDE',
@@ -276,8 +278,6 @@ sub dist_dir {
 	return $dir;
 } ## end sub dist_dir
 
-
-
 1;                                     # Magic true value required at end of module
 
 __END__
@@ -286,7 +286,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.500
+Perl::Dist::Padre version 0.560
 
 =end readme
 
@@ -367,8 +367,8 @@ Perl::Dist::Padre requires no configuration files or environment variables.
 
 Dependencies of this module that are non-core in perl 5.8.1 (which is the 
 minimum version of Perl required) include 
-L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.01, and 
-L<URI::file|URI::file>.
+L<Perl::Dist::Strawberry|Perl::Dist::Strawberry> version 2.02, 
+L<URI::file|URI::file>, and L<parent|parent>.
 
 =for readme stop
 
