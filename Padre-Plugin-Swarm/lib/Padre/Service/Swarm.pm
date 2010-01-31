@@ -107,7 +107,6 @@ sub start {
 	) or die $!;
 	$client->mcast_add('239.255.255.1'); #should have the interface
 	$client->mcast_loopback( 1 );
-	$client->mcast_ttl( 10 ); # Fudge , pass this through TEN routers :(
 	
 	$self->{client} = $client;
 	$self->{running} = 1;

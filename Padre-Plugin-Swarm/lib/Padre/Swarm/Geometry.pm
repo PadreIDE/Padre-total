@@ -62,7 +62,7 @@ sub get_users {
 sub On_SwarmMessage {
     my ($self,$message) = @_;
     my $handler = 'accept_'  . $message->{type};
-    eval { $self->$handler($message) };
+    eval { $self->$handler($message) } if $self->can($handler) ;
     warn "Geometry handler error - $@" if $@;
     
 }

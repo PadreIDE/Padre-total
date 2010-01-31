@@ -66,7 +66,7 @@ SCOPE: {
 		sub { $self->accept_message(@_) }
 	);
 	
-
+	
 	
   }
   
@@ -112,7 +112,7 @@ sub accept_message {
 			{ type=>'announce', service=>'swarm' }
 		);
 		$self->send(
-		{ type=>'disco', service=>'swarm' }
+			{ type=>'disco', service=>'swarm' }
 		);
 		return;
 	}

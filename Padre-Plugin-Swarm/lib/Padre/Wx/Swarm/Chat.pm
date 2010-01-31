@@ -177,6 +177,7 @@ sub update_userlist {
 		);
 		$userlist->InsertItem( $item );
 	}
+	$userlist->SetColumnWidth( 0, -1 );
 	
 }
 
