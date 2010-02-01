@@ -993,6 +993,10 @@ about:
   - title: German
     ISO_639: de
     events:
+      - date: 2010 February 01
+        url: http://padre-ide.de/blog/?p=91
+        title: Padre 0.56
+        comment: by Sebastian Willing (SEWI)
       - date: 2009 December 14
         url: http://padre-ide.de/blog/?p=78
         title: Padre 0.52 ist da
