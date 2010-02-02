@@ -603,6 +603,10 @@ about:
         title: Padre does spell check
         comment: by Jerome Quelin
       - date: 2009 April 17
+        url: http://www.docstoc.com/docs/24009888/MiltonKeynespm-Perl-Technical-Talk
+        title: Introduction to WxWidgets
+        comment: Slides of Peter Edwards on MiltonKeynes.pm Perl Technical Talk
+      - date: 2009 April 17
         url: http://perlwannabe.vox.com/library/post/learning-wxperl-by-reading-wxpywiki.html
         title: Learning wxPerl by reading wxPywiki
         comment: by Peter Lavender
