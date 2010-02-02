@@ -63,3 +63,5 @@ Hyppolit/META.yml
 Hyppolit/Makefile
 Hyppolit/inc
 
+template.padre.perlide.org/Build
+template.padre.perlide.org/_build
