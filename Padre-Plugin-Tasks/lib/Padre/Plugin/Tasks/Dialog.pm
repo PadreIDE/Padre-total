@@ -37,7 +37,8 @@ sub dialog {
 		-1,
 		Wx::gettext('TODO'),
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		#Wx::wxDefaultSize,
+		[500,300],
 		Wx::wxCAPTION | Wx::wxRESIZE_BORDER | Wx::wxCLOSE_BOX | Wx::wxSYSTEM_MENU,
 	);
 
@@ -46,7 +47,8 @@ sub dialog {
 		$dialog,
 		-1,
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		#Wx::wxDefaultSize,
+		[400,200],
 		Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
 	);
 	$list->InsertColumn( $_, _get_title($_) ) for 0 .. 3;
