@@ -6,7 +6,7 @@
 	Manufacturer="[% dist.app_publisher %]"
 	Name="[% dist.app_name %]"
 	UpgradeCode="[% dist.msi_upgrade_code %]"
-	Version="0.45.0" >
+	Version="0.56.0" >
 
     [% IF dist.msi_debug %]
     <Package Description='Perl for Win32 operating systems.' Id='*' Languages='1033'
@@ -18,7 +18,7 @@
       Platform='x86' InstallerVersion='200' Compressed='yes' InstallPrivileges='elevated' />
     [% END %]
 
-    <Media Id="1" Cabinet="Perl.cab" CompressionLevel="high" EmbedCab="yes" />
+    <Media Id="1" Cabinet="Padre.cab" CompressionLevel="high" EmbedCab="yes" />
     
     [%# Upgrade Support %]
     <CustomAction 
@@ -26,7 +26,7 @@
       Error="A newer version of [% dist.app_name %] is already installed." />
 	<Upgrade Id="[% dist.msi_upgrade_code %]">
 	  <UpgradeVersion
-	    Minimum="0.45.0"
+	    Minimum="0.56.0"
 		IncludeMinimum="yes"
 	    OnlyDetect="yes"
 		Language="1033"
@@ -34,7 +34,7 @@
 	  <UpgradeVersion
 		Minimum="0.0.0"
 		IncludeMinimum="yes"
-		Maximum="0.45.0"
+		Maximum="0.56.0"
 	 	IncludeMaximum="no"
 		Language="1033"
 		Property="OLDERVERSIONBEINGUPGRADED" />
@@ -79,22 +79,27 @@
 
 [% dist.icons.as_string %]
 
-<CustomAction Id='CA_ClearFolder' BinaryKey='B_ClearFolder' DllEntry='ClearFolder' />
+    <CustomAction Id='CA_ClearSiteFolder' BinaryKey='B_ClearFolder' DllEntry='ClearSiteFolder' />
+    <InstallExecuteSequence>
+      <Custom Action='CA_ClearSiteFolder' Before='InstallInitialize'>
+        <![CDATA[UNINSTALL_SITE OR (Installed AND NOT OLDERVERSIONBEINGUPGRADED)]]>
+      </Custom>
+    </InstallExecuteSequence>
 
-<InstallExecuteSequence>
-  <Custom Action='CA_ClearFolder' Before='InstallInitialize'>REMOVE="ALL"</Custom>
-  <ScheduleReboot After="InstallFinalize"/>
-</InstallExecuteSequence>
-
-<Binary Id='B_ClearFolder' SourceFile='[% dist.wix_dist_dir %]\ClearFolderCA.dll' />
-<UI><ProgressText Action="CA_ClearFolder">Scanning for added files to delete... (please wait a minute)</ProgressText></UI>
+    <Binary Id='B_ClearFolder' SourceFile='[% dist.wix_dist_dir %]\ClearFolderCA.dll' />
+    <UI>
+   	  <ProgressText Action="CA_ClearSiteFolder">Preparing the site folder for cleaning... (please wait a while)</ProgressText>
+    </UI>
 
 [% IF dist.msi_feature_tree.defined %]
     <Property Id='ARPNOMODIFY'>1</Property>
 [% END %]
     <Property Id='ARPNOREPAIR'>1</Property>
+    <Property Id='MSIFASTINSTALL'>1</Property>
+    <!-- Property Id='MSIDEPLOYMENTCOMPLIANT'>1</Property -->
+	<Property Id='PerlModuleID'>[% dist.msm_code_property %]</Property>
     <Property Id='ALLUSERS'>1</Property>
-    <Property Id='ARPCOMMENTS'>[% dist.app_name %] 0.41 on Perl 5.10.0</Property>
+    <Property Id='ARPCOMMENTS'>[% dist.app_name %] 0.56 on Perl 5.10.1</Property>
     <Property Id='ARPCONTACT'>[% dist.app_publisher %]</Property>
     <Property Id='ARPURLINFOABOUT'>[% dist.app_publisher_url %]</Property>
 [% IF dist.msi_help_url.defined %]
