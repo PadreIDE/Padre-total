@@ -140,8 +140,28 @@ if ( -f "Build.PL" ) {
 _system("$^X $makefile_pl");
 _system("$make");
 _system("$make manifest");
+
+# check and set RELEASE_TESTING if needs be
+my $sanc;
+print "RELEASE_TESTING envorinment variable is: ";
+if( ! defined( $ENV{RELEASE_TESTING} ) ) {
+	print "not set... setting RELEASE_TESTING\n";
+	$sanc = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 1 } );
+}
+else {
+	print "set to " .  $ENV{RELEASE_TESTING} . "\n";
+	print "Release Testing will ";
+	if( ! $ENV{RELEASE_TESTING} ) {
+		print "NOT ";
+	}
+	print " be done this pass.\n";
+}
 _system("$make test");
 _system("$make disttest");
+
+if( defined($sanc) ) {
+	$sanc->restore;
+}
 
 if (not $display) {
 	if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
