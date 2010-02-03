@@ -121,7 +121,8 @@ sub accept_message {
 	}
 	my $message = eval {  Storable::thaw( $data ); };
 	TRACE( "Got $message from service" ) if DEBUG;
-	
+	# TODO can i use 'SWARM' instead?
+	my $lock = $main->lock('UPDATE'); 
 	my $handler = 'accept_' . $message->type;
 	if ( $self->can( $handler ) ) {
 		TRACE( $handler ) if DEBUG;
