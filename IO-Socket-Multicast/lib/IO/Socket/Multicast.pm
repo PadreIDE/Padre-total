@@ -185,7 +185,7 @@ to receive transmissions to it, and tunes out when it no longer
 wishes to receive the transmissions.
 
 To receive transmissions B<from> a multicast group, you will use
-IO::Socket::INET->new() to create a UDP socket and bind it to a local
+IO::Socket::Multicast->new() to create a UDP socket and bind it to a local
 network port.  You will then subscribe one or more multicast groups
 using the mcast_add() method.  Subsequent calls to the standard recv()
 method will now receive messages incoming messages transmitted to the
@@ -349,7 +349,7 @@ Example:
   $socket->mcast_send('Hi there group members!','225.0.1.1:1900') || die;
   $socket->mcast_send("How's the weather?") || die;
 
-Note that you may still call IO::Socket::INET->new() with a
+Note that you may still call IO::Socket::Multicast->new() with a
 B<PeerAddr>, and IO::Socket::INET will perform a connect(), creating a
 default destination for calls to send().
 
