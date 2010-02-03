@@ -123,9 +123,10 @@ sub gettext_label {
 sub enable {
 	my $self     = shift;
 	TRACE( "Enable Chat" ) if DEBUG;
-	
+	TRACE( " main window is " . $self->main ) if DEBUG;
+	TRACE( " message event is " . $self->plugin->message_event ) if DEBUG;	
 	Wx::Event::EVT_COMMAND(
-		Padre->ide->wx->main,
+		$self->main,
 		-1,
 		$self->plugin->message_event,
 		sub { $self->accept_message(@_) }
@@ -167,7 +168,6 @@ sub update_userlist {
 	my $userlist = $self->userlist;
 	my $geo = $self->plugin->geometry;
 	my @users = $geo->get_users();
-	warn "Update userlist w/ " , @users;
 	$userlist->DeleteAllItems;
 	foreach my $user ( @users ) {
 		my $item = Wx::ListItem->new( );
@@ -191,6 +191,7 @@ sub accept_message {
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
 
         my $handler = 'accept_' . $message->type;
+	TRACE( $handler ) if DEBUG;
         if ( $self->can( $handler ) ) {
             eval {
                 $self->$handler($message);
@@ -275,6 +276,8 @@ sub accept_leave {
 
 sub accept_runme {
     my ($self,$message) = @_;
+    # Previously the honour system - now pure evil.
+    return if $message->from ne $self->plugin->identity->nickname;
     # Ouch..
     my @result = (eval $message->body);
     if ( $@ ) {
@@ -294,21 +297,6 @@ sub accept_runme {
     
 }
 
-sub accept_openme {
-    my ($self,$message) = @_;
-    
-    $self->main
-         ->new_document_from_string( $message->body );
-    
-    $self->write_unstyled( 
-        sprintf("Opened document %s from " ,
-            $message->{filename} )
-    );
-    $self->write_user_styled( $message->from, $message->from );
-    $self->write_unstyled( "\n" );
-        
-    
-}
 
 sub command_nick {
     my ($self,$new_nick) = @_;

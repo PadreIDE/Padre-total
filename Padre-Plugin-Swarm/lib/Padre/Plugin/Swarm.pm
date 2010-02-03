@@ -10,9 +10,7 @@ use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
 use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
-use Padre::Wx::Swarm::Chat ();
-#use Padre::Plugin::Swarm::Wx::Resources ();
-use Padre::Plugin::Swarm::Wx::Editor ();
+use Padre::Logger;
 
 
 use Class::XSAccessor 
@@ -22,6 +20,7 @@ use Class::XSAccessor
 		editor   => 'editor',
 		chat     => 'chat',
 		config   => 'config',
+		message_event => 'message_event',
 	};
 	
 use Wx::Socket ();
@@ -56,11 +55,11 @@ SCOPE: {
 	$EVT_RECV = $listen_service->event;
 	$SERVICE = $listen_service;
 	$SOCK_SEND = Wx::DatagramSocket->new( $WxLocalAddr );
-	$EVT_SWARM_RECV = Wx::NewEventType;
+	
 
 	#EVT_SOCKET_INPUT($self->main , $sock , \&onConnect ) ;
 	Wx::Event::EVT_COMMAND(
-		Padre->ide->wx->main,
+		$self->main,
 		-1,
 		$EVT_RECV,
 		sub { $self->accept_message(@_) }
@@ -84,7 +83,6 @@ SCOPE: {
   }
 
 sub event { $EVT_RECV }
-sub message_event { $EVT_SWARM_RECV }
 
 sub send {
 	return unless $SOCK_SEND;
@@ -105,9 +103,14 @@ sub _send {
 
 sub accept_message { 
 	my ($self,$main,$event) = @_;
-	
 	my $data = $event->GetData;
+	unless ( __PACKAGE__->instance ) {
+		TRACE( "Caught message event late/early '$data'" ) if DEBUG;
+		return;
+	}
+
 	if ( $data eq 'ALIVE' ) {
+		TRACE( "Swarm service is alive" ) if DEBUG;
 		$self->send(
 			{ type=>'announce', service=>'swarm' }
 		);
@@ -117,13 +120,21 @@ sub accept_message {
 		return;
 	}
 	my $message = eval {  Storable::thaw( $data ); };
+	TRACE( "Got $message from service" ) if DEBUG;
 	
 	my $handler = 'accept_' . $message->type;
 	if ( $self->can( $handler ) ) {
+		TRACE( $handler ) if DEBUG;
 		eval { $self->$handler( $message ); };
 	}
+	
+	# TODO - make these parts use the message event! srsly
 	$self->geometry->On_SwarmMessage( $message );
 	
+	# TODO resource browser should trap the event itself. 
+	$self->resources->refresh;
+	
+	# 
 	Wx::PostEvent(
                 $main,
                 Wx::PlThreadEvent->new( -1, $self->message_event , $data ),
@@ -199,31 +210,45 @@ sub menu_plugins_simple {
 # Singleton (I think)
 SCOPE: {
 	my $instance;
+	sub new { $instance = shift->SUPER::new(@_); }
 
 	sub instance { $instance };
 
 	sub plugin_enable {
-		require Padre::Wx::Swarm::Chat;
+
 		my $self   = shift;
+		# TODO - enforce singleton!! 
 		$instance  = $self;
+		
+		my $message_event  = Wx::NewEventType;
+		$self->message_event($message_event);
+
+		require Padre::Wx::Swarm::Chat;
+		require Padre::Plugin::Swarm::Wx::Resources;
+		require Padre::Plugin::Swarm::Wx::Editor;
+
+		
 		my $config = $self->config_read;
 		$self->config( $config );
+
+		my $editor = Padre::Plugin::Swarm::Wx::Editor->new();
+		$self->editor($editor);
+		$editor->enable;
 		
 		$self->geometry( Padre::Swarm::Geometry->new );
-		$self->connect();
-		
-		$self->editor( Padre::Plugin::Swarm::Wx::Editor->new );
-		$self->editor->enable;
-		
+
 		my $chat = Padre::Wx::Swarm::Chat->new( $self->main );
-		$chat->enable;
 		$self->chat( $chat );
-#		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
-#			$self->main
-#		);
-#		$self->resources( $directory );
-#		$directory->enable;
-		
+		$chat->enable;
+
+
+		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
+			$self->main
+		);
+		$self->resources( $directory );
+		$directory->enable;
+
+		$self->connect();
 		1;
 	}
 
@@ -232,12 +257,12 @@ SCOPE: {
 		$self->chat->disable;
 		$self->chat(undef);
 		
+		$self->resources->disable;
+		$self->resources(undef);
+	
 		$self->editor->disable;
 		$self->editor(undef);
 		
-#		$self->resources->disable;
-#		$self->resources(undef);
-	
 		$self->disconnect;
 	
 		undef $instance;
@@ -245,6 +270,7 @@ SCOPE: {
 		
 	}
 }
+
 
 sub editor_enable {
 	my $self = shift;
@@ -255,6 +281,10 @@ sub editor_disable {
 	my $self = shift;
 	$self->editor->editor_disable(@_);
 }
+
+
+
+
 
 # oh noes!
 sub run_in_other_editor {

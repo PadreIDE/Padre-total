@@ -6,6 +6,8 @@ use warnings;
 use Padre::Wx                        ();
 use Padre::Wx::Directory::SearchCtrl ();
 use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
+use Padre::Logger;
+
 
 our $VERSION = '0.07';
 our @ISA     = 'Wx::Panel';
@@ -38,7 +40,6 @@ sub new {
 		Wx::wxDefaultSize,
 	);
 
-	# Creates the Search Field and the Directory Browser
 	$self->{tree}   = 
 		Padre::Plugin::Swarm::Wx::Resources::TreeCtrl->new($self);
 
@@ -51,7 +52,7 @@ sub new {
 	# Fits panel layout
 	$self->SetSizerAndFit($sizerh);
 	$sizerh->SetSizeHints($self);
-	warn "Ready - ", $self->tree;
+	TRACE( "Resource tree Ready - ", $self->tree );
 	return $self;
 	
 }
@@ -59,6 +60,7 @@ sub new {
 
 sub enable {
 	my $self = shift;
+	TRACE( "Enable" );
 	my $left = $self->main->directory_panel;
 	my $position = $left->GetPageCount;
 	my $pos = $left->InsertPage( $position, $self, gettext_label(), 0 );
@@ -67,6 +69,8 @@ sub enable {
 	$left->SetPageBitmap($position, $icon );
 	$left->SetSelection($position);
 
+	$self->refresh;
+
 	$self->Show;
 	
 	return $self;
@@ -74,6 +78,7 @@ sub enable {
 
 sub disable {
 	my $self = shift;
+	TRACE( "Disabled" );
 	my $left = $self->main->directory_panel;
 	my $pos = $left->GetPageIndex($self);
 	$self->Hide;
@@ -114,31 +119,15 @@ sub clear {
 # Called outside Directory.pm, on directory browser focus and item dragging
 sub refresh {
 	my $self     = shift;
-	
+	TRACE( "Refresh" );	
 	my $current  = $self->current;
 	my $document = $current->document;
 
-	# Finds project base
-	my $dir;
-	if ( defined($document) ) {
-		$dir = $document->project_dir;
-		$self->{file} = $document->{file};
-	} else {
-		$dir = $self->main->config->default_projects_directory;
-		delete $self->{file};
-	}
 
-	# Shortcut if there's no directory, or we haven't changed directory
-	return unless $dir;
-	if ( defined $self->project_dir and $self->project_dir eq $dir ) {
-		return;
-	}
 
 	$self->tree->refresh;
 
-	# Sets the last project to the current one
-	$self->previous_dir( $self->{projects}->{$dir}->{dir} );
-	$self->previous_dir_original($dir);
+
 
 	# Update the panel label
 	$self->panel->refresh;

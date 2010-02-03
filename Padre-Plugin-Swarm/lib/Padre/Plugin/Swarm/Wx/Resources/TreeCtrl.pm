@@ -53,28 +53,28 @@ sub new {
 		$self, $self,
 		\&_on_tree_item_activated
 	);
-
-	Wx::Event::EVT_SET_FOCUS(
-		$self,
-		sub {
-			$_[0]->parent->refresh;
-		},
-	);
-
-	Wx::Event::EVT_TREE_ITEM_MENU(
-		$self, $self,
-		\&_on_tree_item_menu,
-	);
-
-	Wx::Event::EVT_TREE_SEL_CHANGED(
-		$self, $self,
-		\&_on_tree_sel_changed,
-	);
-
-	Wx::Event::EVT_TREE_ITEM_EXPANDING(
-		$self, $self,
-		\&_on_tree_item_expanding,
-	);
+#
+#	Wx::Event::EVT_SET_FOCUS(
+#		$self,
+#		sub {
+#			$_[0]->parent->refresh;
+#		},
+#	);
+#
+#	Wx::Event::EVT_TREE_ITEM_MENU(
+#		$self, $self,
+#		\&_on_tree_item_menu,
+#	);
+#
+#	Wx::Event::EVT_TREE_SEL_CHANGED(
+#		$self, $self,
+#		\&_on_tree_sel_changed,
+#	);
+#
+#	Wx::Event::EVT_TREE_ITEM_EXPANDING(
+#		$self, $self,
+#		\&_on_tree_item_expanding,
+#	);
 	
 # who cares?
 #	Wx::Event::EVT_TREE_ITEM_COLLAPSING(
@@ -100,16 +100,16 @@ sub new {
 
 	# Set up the root
 	my $root = $self->AddRoot(
-		Wx::gettext('Directory'),
+		Wx::gettext('Swarm'),
 		-1, -1,
 		Wx::TreeItemData->new(
-			{   dir  => '',
-				name => '',
+			{       
+				node => 'swarm',
 				type => 'folder',
 			}
 		),
 	);
-
+	$self->_update_root_data;
 	# Ident to sub nodes
 	$self->SetIndent(10);
 
@@ -138,11 +138,6 @@ sub current {
 # Updates the gui if needed
 sub refresh {
 	my $self   = shift;
-	my $parent = $self->parent;
-	my $search = $parent->search;
-
-	
-
 	# Gets Root node
 	my $root = $self->GetRootItem;
 
@@ -156,6 +151,7 @@ sub refresh {
 	#$_update_subdirs( $self, $root );
 }
 
+sub plugin { Padre::Plugin::Swarm->instance }
 
 # Updates root nodes data to the current project
 # Called when turned beteween projects
@@ -166,9 +162,25 @@ sub _update_root_data {
 
 	# Updates Root node data
 	my $root = $self->GetRootItem;
+	$self->DeleteChildren($root);
 	my $data = $self->GetPlData($root);
-	warn "Root PLData " , Dumper $data;
 	my $geo = $self->plugin->geometry;
+	foreach my $user ( $geo->get_users ) {
+		my $user_node = 
+			$self->AppendItem( $root, $user , -1 , -1 ,
+			Wx::TreeItemData->new(	{ type => 'user' , node=>$user })
+		);
+		
+		my @resources = $geo->graph->successors($user);
+		foreach my $resource ( @resources ) {
+			$self->AppendItem( 
+				$user_node , $resource , -1 , -1 ,
+				Wx::TreeItemData->new(	
+					{ type =>'editor'  , resource=>$resource } 
+				)
+			);
+		}
+	}
 	
 }
 
@@ -203,37 +215,17 @@ sub _list_resources {
 
 # Runs thought a directory content recursively looking if each EXPANDED item   #
 # has changed and updates it                                                   #
-sub _update_subdirs {
+sub _update_subnodes {
 	my ( $self, $root ) = @_;
 	my $parent  = $self->parent;
 	my $plugin = $self->plugin;
 	my $geometry = $plugin->geometry;
+	my $node = $root->GetData;
+	my @children = $geometry->successors( $node );
+	my $new_root = $self->AppendItem( $root , "$node" );
+	$self->AppendItem( $new_root, "$_" ) for @children;
 	
-	my $cookie;
 
-	# Loops thought the node's total children
-	for my $item ( 1 .. $self->GetChildrenCount($root) ) {
-
-		( my $node, $cookie ) = $item == 1 ? $self->GetFirstChild($root) : $self->GetNextChild( $root, $cookie );
-		next if not $node->IsOk;
-
-		my $node_data = $self->GetPlData($node);
-		
-		# If the item (folder) was expanded, then expands its node and updates
-		# its content recursively
-		if ( defined $self->{CACHED}->{$project}->{Expanded}->{$path} ) {
-
-			# Expands the folder node
-			$self->Expand($node);
-
-			# Updates the folder node if its content has any change
-			$self->_list_dir($node) if $self->_updated_dir($path);
-
-			# Runs thought its content
-			_update_subdirs( $self, $node );
-		}
-
-	}
 }
 
 
@@ -252,13 +244,15 @@ sub _on_tree_item_activated {
 	# of the mode view
 	if ( $node_data->{type} eq 'folder' ) {
 			$self->Toggle($node);
-		}
-		return;
 	}
-
-	# Returns if the selected FILE have no path
-	my $path = File::Spec->catfile( $node_data->{dir}, $node_data->{name} );
-	return if not defined $path;
+	
+	if ($node_data->{type} eq 'editor' ) {
+		warn "Clicked a resource to open!";
+		$self->plugin->send(
+			{ type=>'gimme',
+			  resource => $node_data->{resource} }
+		);
+	}
 
 	# Open the clicked resource
 

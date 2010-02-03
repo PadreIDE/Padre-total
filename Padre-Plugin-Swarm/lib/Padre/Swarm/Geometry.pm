@@ -71,18 +71,38 @@ sub accept_promote {
 	my $self = shift;
 	my $message = shift;
 	$self->graph->add_edge( '~service' => $message->{service} );
-	$self->graph->add_edge( $message->{service} , $message->{from} );
+	#$self->graph->add_edge( $message->{service} , $message->{from} );
 	# just in case
 	$self->graph->add_edge( '~identity' => $message->{from} );
 	
+	if ($message->{resource}) {
+		$self->graph->add_edge( 
+			$message->{from} , 
+			':' . $message->{resource} );
+	}
+	
 
 }
+
+sub accept_destroy {
+	my $self = shift;
+	my $message = shift;
+	$self->graph->delete_edge( $message->{from} ,
+		':' . $message->{resource}
+	);
+		
+	$self->graph->delete_edge( ':' . $message->{resource} ,
+		$message->{service}
+	);
+	
+}
+
 
 sub accept_disco {
 	my $self = shift;
 	my $message = shift;
 	my $g = $self->graph;
-	warn "$g";
+	# TODO - if this disco is targeted to us do something interesting
 }
 
 sub accept_announce {
