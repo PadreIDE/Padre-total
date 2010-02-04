@@ -7,6 +7,8 @@ use Padre::Wx                              ();
 use Padre::Wx::Dialog                      ();
 use Padre::Util   ('_T');
 
+use Wx::TreeListCtrl 0.06;
+
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Wx::Dialog';
 
