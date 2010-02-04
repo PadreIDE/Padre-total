@@ -231,7 +231,7 @@ sub _update_subnodes {
 
 
 
-# Action that must be executaded when a item is activated
+# Action that must be executed when a item is activated
 # Called when the item is actived
 sub _on_tree_item_activated {
 	my ( $self, $event ) = @_;
@@ -247,7 +247,6 @@ sub _on_tree_item_activated {
 	}
 	
 	if ($node_data->{type} eq 'editor' ) {
-		warn "Clicked a resource to open!";
 		$self->plugin->send(
 			{ type=>'gimme',
 			  resource => $node_data->{resource} }

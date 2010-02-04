@@ -126,7 +126,7 @@ sub enable {
 	TRACE( " main window is " . $self->main ) if DEBUG;
 	TRACE( " message event is " . $self->plugin->message_event ) if DEBUG;	
 	Wx::Event::EVT_COMMAND(
-		$self->main,
+		$self->plugin->wx,
 		-1,
 		$self->plugin->message_event,
 		sub { $self->accept_message(@_) }
@@ -187,12 +187,14 @@ sub accept_message {
 	my $evt = shift;
 
 	my $payload = $evt->GetData;
+	$evt->Skip(1);
+
 	my $message = Storable::thaw($payload);
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
-
         my $handler = 'accept_' . $message->type;
 	TRACE( $handler ) if DEBUG;
         if ( $self->can( $handler ) ) {
+        	TRACE( $message->{from} . ' sent ' . $message->{type} ) if DEBUG;
             eval {
                 $self->$handler($message);
             };

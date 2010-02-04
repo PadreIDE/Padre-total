@@ -12,8 +12,7 @@ use Class::XSAccessor
         
     };
 
-# TODO 
-# Register events , catch swarm messages and apply them to open documents
+# TODO Register events , catch swarm messages and apply them to open documents
 # 
 sub new {
 	my $class = shift;
@@ -26,15 +25,17 @@ sub new {
 
 sub enable {
 	my $self = shift;
-#	eval {
-#	Wx::Event::EVT_COMMAND(
-#	    $self->plugin->main,
-#	    -1,
-#	    $self->plugin->message_event,
-#	    sub { $self->on_swarm_message(@_) },
-#	);
-#	};
-#	
+	eval {
+	Wx::Event::EVT_COMMAND(
+	    $self->plugin->wx,
+	    -1,
+	    $self->plugin->message_event,
+	    sub { $self->on_swarm_message(@_) },
+	);
+	};
+	
+	# TODO - when enabled - announce the open editor tabs!
+	# TODO - when disco - announce the open editor tabs
 	TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
 }
 
@@ -68,6 +69,7 @@ sub editor_enable {
 
 sub editor_disable {
 	my ($self,$editor,$document) = @_;
+	return unless $document->filename;
 	
 	eval {
             $self->plugin->send( {
@@ -75,34 +77,46 @@ sub editor_disable {
                 service => 'editor',
                 resource => $document->filename}
             );
-        };
+
         delete $self->editors->{refaddr $editor};
-        delete $self->resources->{refaddr $document};
-        
+        delete $self->resources->{$document->filename};
+	};
         TRACE( "Failed to promote editor close! $@" ) if DEBUG && $@;
 }
 
 sub on_swarm_message {
 	my ($self,$main,$event) = @_;
-	my $message = $event->GetData;
-	TRACE( "Got message event $event from $main" ) if DEBUG;
+	my $data = $event->GetData;
+	my $message = Storable::thaw( $data );
+	# TODO - perform the geometry manipulation here and only update when 
+	# necessary
+
 	
+	my $handler = 'accept_' . $message->{type};
+	TRACE( $handler ) if DEBUG;
+	if ($self->can($handler)) {
+		eval { $self->$handler($message) };
+		TRACE( "$handler failed - $@" ) if DEBUG && $@;
+	}
+	
+	# don't hog the troff
+	$event->Skip(1);
 	
 }
 # message handlers
 
 sub accept_openme {
     my ($self,$message) = @_;
-    eval {
-	$self->main->new_document_from_string( $message->body );
-    };
+    $self->plugin->main->new_document_from_string( $message->body );
 }
 
 sub accept_gimme {
 	my ($self,$message) = @_;
 	
 	my $r = $message->{resource};
-	
+	$r =~ s/^://;
+	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
+
 	if ( exists $self->resources->{$r} ) {
 		my $document = $self->resources->{$r};
 		$self->plugin->send(
@@ -117,7 +131,7 @@ sub accept_gimme {
 
 sub accept_disco {
 	my ($self,$message) = @_;
-
+	TRACE( $message->{from} . " disco" ) if DEBUG;
 	foreach my $doc ( values %{ $self->resources } ) {
 	    eval  {
 		$self->plugin->send(
@@ -128,5 +142,6 @@ sub accept_disco {
 	}
 	
 }
+
 
 1;

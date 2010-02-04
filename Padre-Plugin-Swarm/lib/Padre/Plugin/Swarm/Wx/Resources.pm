@@ -7,7 +7,7 @@ use Padre::Wx                        ();
 use Padre::Wx::Directory::SearchCtrl ();
 use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 use Padre::Logger;
-
+use Params::Util qw( _INSTANCE ) ;
 
 our $VERSION = '0.07';
 our @ISA     = 'Wx::Panel';
@@ -26,6 +26,8 @@ use Class::XSAccessor {
 	},
 };
 
+sub plugin { Padre::Plugin::Swarm->instance }
+
 # Creates the Directory Left Panel with a Search field
 # and the Directory Browser
 sub new {
@@ -39,7 +41,7 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-
+	$self->Hide;
 	$self->{tree}   = 
 		Padre::Plugin::Swarm::Wx::Resources::TreeCtrl->new($self);
 
@@ -69,7 +71,15 @@ sub enable {
 	$left->SetPageBitmap($position, $icon );
 	$left->SetSelection($position);
 
+	# TODO - use wx event to catch messages. 
 	$self->refresh;
+	Wx::Event::EVT_COMMAND(
+		$self->plugin->wx,
+		-1,
+		$self->plugin->message_event,
+		sub { $self->on_swarm_message(@_) },
+	);
+	
 
 	$self->Show;
 	
@@ -113,6 +123,45 @@ sub clear {
 	$_[0]->refresh;
 	return;
 }
+
+sub on_swarm_message {
+	my $self = shift;
+	my $wx = shift;
+	my $event = shift;
+	my $data = $event->GetData;
+	$event->Skip(1);
+	my $message = Storable::thaw( $data );
+	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
+
+	my $handler = 'accept_' . $message->type;
+	TRACE( $handler ) if DEBUG;
+        if ( $self->can( $handler ) ) {
+            eval {
+                $self->$handler($message);
+            };
+            TRACE( $handler . ' failed with ' . $@ ) if DEBUG && $@;
+            
+        }
+	
+}
+
+sub accept_promote {
+	my ($self,$message) = @_;
+	if ( $message->{resource} ) {
+		$self->refresh;
+	}
+}
+
+sub accept_destroy {
+	my ($self,$message) = @_;
+	if ( $message->{resource} ) {
+		$self->refresh;
+	}
+}
+
+sub accept_disco {}
+
+
 
 # Updates the gui if needed, calling Searcher and Browser respectives
 # refresh function.

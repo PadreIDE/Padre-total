@@ -21,6 +21,7 @@ use Class::XSAccessor
 		chat     => 'chat',
 		config   => 'config',
 		message_event => 'message_event',
+		wx => 'wx',
 	};
 	
 use Wx::Socket ();
@@ -49,7 +50,6 @@ SCOPE: {
   my $SERVICE;
   sub connect {
 	my $self = shift;
-
 	my $listen_service = Padre::Service::Swarm->new;
 	$listen_service->schedule;
 	$EVT_RECV = $listen_service->event;
@@ -133,11 +133,11 @@ sub accept_message {
 	$self->geometry->On_SwarmMessage( $message );
 	
 	# TODO resource browser should trap the event itself. 
-	$self->resources->refresh;
+	#$self->resources->refresh;
 	
 	# 
 	Wx::PostEvent(
-                $main,
+                $self->wx,
                 Wx::PlThreadEvent->new( -1, $self->message_event , $data ),
         ) if $self->message_event;
 }
@@ -220,7 +220,9 @@ SCOPE: {
 		my $self   = shift;
 		# TODO - enforce singleton!! 
 		$instance  = $self;
-		
+		my $wxobj = new Wx::Panel $self->main;
+		$self->wx( $wxobj );
+		$wxobj->Hide;
 		my $message_event  = Wx::NewEventType;
 		$self->message_event($message_event);
 
@@ -232,11 +234,13 @@ SCOPE: {
 		my $config = $self->config_read;
 		$self->config( $config );
 
+
+		
+		$self->geometry( Padre::Swarm::Geometry->new );
+		
 		my $editor = Padre::Plugin::Swarm::Wx::Editor->new();
 		$self->editor($editor);
 		$editor->enable;
-		
-		$self->geometry( Padre::Swarm::Geometry->new );
 
 		my $chat = Padre::Wx::Swarm::Chat->new( $self->main );
 		$self->chat( $chat );
