@@ -87,6 +87,7 @@ sub accept_promote {
 sub accept_destroy {
 	my $self = shift;
 	my $message = shift;
+        return unless $message->{resource};
 	$self->graph->delete_edge( $message->{from} ,
 		':' . $message->{resource}
 	);
