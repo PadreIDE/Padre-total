@@ -81,7 +81,7 @@ sub plugin { Padre::Plugin::Swarm->instance }
 
 sub editor_enable {
 	my ($self,$editor,$document) = @_;
-	return unless $document->filename;
+	return unless $document && $document->filename;
 	
         eval  {
 	    $self->plugin->send(
