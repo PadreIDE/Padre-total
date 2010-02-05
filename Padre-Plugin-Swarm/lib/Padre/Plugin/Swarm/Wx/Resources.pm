@@ -54,7 +54,6 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-	$self->Hide;
 	$self->{tree}   = 
 		Padre::Plugin::Swarm::Wx::Resources::TreeCtrl->new($self);
 
@@ -67,6 +66,7 @@ sub new {
 	# Fits panel layout
 	$self->SetSizerAndFit($sizerh);
 	$sizerh->SetSizeHints($self);
+	$self->Hide;
 	TRACE( "Resource tree Ready - ", $self->tree );
 	return $self;
 	
