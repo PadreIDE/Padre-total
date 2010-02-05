@@ -11,8 +11,11 @@ use Padre::Util     ();
 use Padre::Wx       ();
 use Padre::Constant ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @ISA     = 'Wx::TreeCtrl';
+
+
+## ALMOST all cargo from the Padre directory class
 
 # Creates a new Directory Browser object
 sub new {
@@ -136,6 +139,8 @@ sub current {
 }
 
 # Updates the gui if needed
+# TODO refresh should be passed the node to refresh
+# and maintain the expand/collapse state of the control
 sub refresh {
 	my $self   = shift;
 	# Gets Root node

@@ -9,7 +9,7 @@ use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 use Padre::Logger;
 use Params::Util qw( _INSTANCE ) ;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor {
@@ -26,6 +26,20 @@ use Class::XSAccessor {
 	},
 };
 
+=pod
+
+=head1 NAME
+
+Padre::Plugin::Swarm::Wx::Resources - Tree view panel of swarm resources
+
+=head1 DESCRIPTION
+
+As swarmers open and close documents in their editor this control updates
+a tree view of each swarmers open documents.
+
+=cut
+
+
 sub plugin { Padre::Plugin::Swarm->instance }
 
 # Creates the Directory Left Panel with a Search field
@@ -33,8 +47,7 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub new {
 	my $class = shift;
 	my $main  = shift;
-
-	# Create the parent panel, which will contain the search and tree
+	
 	my $self = $class->SUPER::new(
 		$main->directory_panel,
 		-1,
@@ -163,9 +176,8 @@ sub accept_disco {}
 
 
 
-# Updates the gui if needed, calling Searcher and Browser respectives
-# refresh function.
-# Called outside Directory.pm, on directory browser focus and item dragging
+# Perform a full redraw :(
+
 sub refresh {
 	my $self     = shift;
 	TRACE( "Refresh" );	

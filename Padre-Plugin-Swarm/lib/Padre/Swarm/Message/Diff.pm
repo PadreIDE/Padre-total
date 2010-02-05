@@ -4,7 +4,7 @@ use strict;
 use warnings;
 use Padre::Swarm::Message ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @ISA     = 'Padre::Swarm::Message';
 
 sub new {

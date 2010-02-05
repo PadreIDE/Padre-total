@@ -11,6 +11,40 @@ use Class::XSAccessor
         resources=> 'resources',
         
     };
+    
+=pod
+
+=head1 NAME
+
+Padre::Plugin::Swarm::Wx::Editor - Padre editor collaboration
+
+=head1 DESCRIPTION
+
+Hijack the padre editor for the purposes of collaboration. 
+
+=head1 TODO
+
+Shared/Ghost cursors/document
+
+Trap editor cursor movement for common documents and ghost the
+remote users' cursors in the local editor.
+
+
+=head2 Operational transform - concurrent remote edits
+
+Trap the editor CHANGE event and try to transmit quanta
+of operations against a document.
+Trap received quanta and apply to open documents, adjusting 
+local quanta w/ OT if required.
+
+=head2 Code/Commit Review Mode.
+
+Find the current project, find it's VCS if possible and send
+the repo details and local diff to the swarm for somebody? to 
+respond to.
+
+=cut
+
 
 # TODO Register events , catch swarm messages and apply them to open documents
 # 
@@ -35,7 +69,9 @@ sub enable {
 	};
 	
 	# TODO - when enabled - announce the open editor tabs!
-	# TODO - when disco - announce the open editor tabs
+	$self->editor_enable( $_ )
+	    for $self->plugin->main->editors;
+	    
 	TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
 }
 
@@ -84,6 +120,8 @@ sub editor_disable {
         TRACE( "Failed to promote editor close! $@" ) if DEBUG && $@;
 }
 
+
+# Swarm event handler
 sub on_swarm_message {
 	my ($self,$main,$event) = @_;
 	my $data = $event->GetData;
@@ -105,10 +143,29 @@ sub on_swarm_message {
 }
 # message handlers
 
+=head1 MESSAGE HANDLERS
+
+For a given message->type
+
+=head2 openme
+
+Accept an openme message and open a new editor window 
+with the contents of message->body
+
+=cut
+
+
 sub accept_openme {
     my ($self,$message) = @_;
     $self->plugin->main->new_document_from_string( $message->body );
 }
+
+=head2 gimme
+
+Give the requested message->resource to the sender in an 'openme'
+if the resource matches one of our open documents.
+
+=cut
 
 sub accept_gimme {
 	my ($self,$message) = @_;
@@ -128,6 +185,14 @@ sub accept_gimme {
 	}
 	
 }
+
+=head1 disco
+
+Respond to discovery messages by transmitting a promote for 
+each known resource
+
+=cut
+
 
 sub accept_disco {
 	my ($self,$message) = @_;

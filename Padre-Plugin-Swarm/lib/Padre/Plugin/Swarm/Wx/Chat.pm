@@ -1,4 +1,4 @@
-package Padre::Wx::Swarm::Chat;
+package Padre::Plugin::Swarm::Wx::Chat;
 
 use 5.008;
 use strict;
@@ -17,7 +17,7 @@ use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Util;
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor

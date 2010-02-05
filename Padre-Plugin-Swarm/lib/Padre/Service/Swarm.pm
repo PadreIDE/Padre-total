@@ -9,7 +9,7 @@ use Padre::Swarm::Message;
 use IO::Select;
 use IO::Socket::Multicast;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 our @ISA     = 'Padre::Service';
 
 use Class::XSAccessor
