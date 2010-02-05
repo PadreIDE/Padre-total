@@ -2,6 +2,7 @@ use inc::Module::Install::DSL 0.91;
 
 all_from      lib/Padre/Plugin/Swarm.pm
 requires      Padre                 0.56
+requires      JSON::XS              2.26
 requires      IO::Socket::Multicast 1.11
 requires      IO::Select
 requires      Graph
