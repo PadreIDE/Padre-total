@@ -57,7 +57,7 @@ SCOPE: {
 	$SOCK_SEND = Wx::DatagramSocket->new( $WxLocalAddr );
 	
 	Wx::Event::EVT_COMMAND(
-		$self->main,
+		Padre->ide->wx,
 		-1,
 		$EVT_RECV,
 		sub { $self->accept_message(@_) }
@@ -100,7 +100,8 @@ sub _send {
 }
 
 sub accept_message { 
-	my ($self,$main,$event) = @_;
+	my ($self,$wx,$event) = @_;
+	my $main = $wx->main;
 	my $data = $event->GetData;
 	unless ( __PACKAGE__->instance ) {
 		TRACE( "Caught message event late/early '$data'" ) if DEBUG;
