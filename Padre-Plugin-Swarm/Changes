@@ -1,4 +1,8 @@
 Changes for Perl extension Padre-Plugin-Swarm
+0.09 -
+	- prevent loopback of openme message type
+	- add preferences dialog
+
 0.08 - in progress
 	- add pod - mostly TODO 
 	- stop squatting in padre::wx namespace

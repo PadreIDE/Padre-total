@@ -305,11 +305,14 @@ sub command_nick {
     my $previous =
             $self->plugin->identity->nickname;
         eval {
+            $self->plugin->identity->set_nickname($new_nick);
             my $config = Padre::Config->read;
             $config->set( identity_nickname => $new_nick );
             $config->write;
         };
 
+	warn $@ if $@;
+	
         $self->tell_service( 
             "was -> ".
             $previous	

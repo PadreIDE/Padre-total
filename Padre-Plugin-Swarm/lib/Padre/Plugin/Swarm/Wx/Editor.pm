@@ -157,6 +157,7 @@ with the contents of message->body
 
 sub accept_openme {
     my ($self,$message) = @_;
+    return if $message->from eq $self->plugin->identity->nickname;
     $self->plugin->main->new_document_from_string( $message->body );
 }
 

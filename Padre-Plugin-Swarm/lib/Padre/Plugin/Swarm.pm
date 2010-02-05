@@ -150,15 +150,23 @@ sub accept_disco {
 
 
 sub identity {
-	my $config = Padre::Config->read;
-	my $nickname = $config->identity_nickname;
-	unless ( $nickname ) {
-		$nickname = "Anonymous_$$";
+	my $self = shift;
+	unless ($self->{identity}) {
+		my $config = Padre::Config->read;
+		# Default to your padre nickname.
+		my $nickname = $config->identity_nickname;
+		#my $id = $$ . time(). $config . $self;
+		
+		unless ( $nickname ) {
+			$nickname = "Anonymous_$$";
+		}
+		$self->{identity} = 
+			Padre::Swarm::Identity->new( 
+				nickname => $nickname,
+				service => 'swarm',
+			);
 	}
-	Padre::Swarm::Identity->new( 
-		nickname => $nickname,
-		service => 'swarm',
-	);
+	return $self->{identity};
 }
 
 
@@ -228,7 +236,7 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Wx::Chat;
 		require Padre::Plugin::Swarm::Wx::Resources;
 		require Padre::Plugin::Swarm::Wx::Editor;
-
+		require Padre::Plugin::Swarm::Wx::Preferences;
 		
 		my $config = $self->config_read;
 		$self->config( $config );
@@ -273,6 +281,20 @@ SCOPE: {
 	
 		
 	}
+}
+
+sub plugin_preferences {
+	my $self = shift;
+	my $wx = shift;
+	eval { 
+	my $dialog = Padre::Plugin::Swarm::Wx::Preferences->new($wx);
+	$dialog->ShowModal;
+	$dialog->Destroy;
+	
+};
+	warn $@ if $@;
+	
+	return;
 }
 
 
