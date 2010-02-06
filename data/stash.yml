@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 February 06
+        url: http://ahmadzawawi.blogspot.com/2010/02/padre-and-firefox.html
+        title: Padre, Firefox and Chrome
+        comment: by Ahmad M. Zawawi
       - date: 2010 February 01
         url: http://ahmadzawawi.blogspot.com/2010/02/stable-padre-056-is-out.html
         title: Stable Padre 0.56 is out!
