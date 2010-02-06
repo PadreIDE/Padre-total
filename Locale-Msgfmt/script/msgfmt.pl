@@ -1,16 +1,28 @@
 #!/usr/bin/perl
 
-use Locale::Msgfmt 0.14;
-use Getopt::Long;
-
 use strict;
 use warnings;
+use Getopt::Long;
+use Locale::Msgfmt 0.15;
 
-my($opt_o, $opt_f, $opt_q, $opt_force);
-GetOptions("output-file|o=s" => \$opt_o, "use-fuzzy|f" => \$opt_f, "quiet|q" => \$opt_q, "force" => \$opt_force);
-my $in = shift;
+our $VERSION = '0.15';
 
-msgfmt({in => $in, out => $opt_o, fuzzy => $opt_f, verbose => !$opt_q, force => $opt_force});
+my ( $opt_o, $opt_f, $opt_q, $opt_force );
+
+GetOptions(
+	"output-file|o=s" => \$opt_o,
+	"use-fuzzy|f"     => \$opt_f,
+	"quiet|q"         => \$opt_q,
+	"force"           => \$opt_force,
+);
+
+msgfmt( {
+	in      => $_[0],
+	out     => $opt_o,
+	fuzzy   => $opt_f,
+	verbose => !$opt_q,
+	force   => $opt_force,
+} );
 
 =head1 NAME
 

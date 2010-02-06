@@ -1,11 +1,11 @@
 package Locale::Msgfmt::po;
 
-use Locale::Msgfmt::Utils;
-
+use 5.008005;
 use strict;
 use warnings;
+use Locale::Msgfmt::Utils ();
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 sub new {
 	my $class = shift;
@@ -103,6 +103,12 @@ sub parse {
 	$self->read_po($pofile);
 }
 
+1;
+
+__END__
+
+=pod
+
 =head1 NAME
 
 Locale::Msgfmt::po - class used internally by Locale::Msgfmt
@@ -116,5 +122,3 @@ This module shouldn't be used by other software.
 L<Locale::Msgfmt>
 
 =cut
-
-1;

@@ -1,5 +1,14 @@
 Revision history for Locale-Msgfmt
 
+0.15    Feb 06, 2010
+        - General code cleaning
+        - Changes to Module::Install::Msgfmt to make it compatible with
+	  Module::Install::Share.
+        - Moved script from bin/ to script/
+        - Moved private tools from dev to private
+        - Picking 5.008005 as our minimum Perl to ensure solid Unicode support
+	- Converted the Build.PL to a Module::Install Makefile.PL
+
 0.14    Jul 09, 2009
         - fix a mess with Module::Install::Msgfmt :P
 

@@ -1,9 +1,10 @@
 package Locale::Msgfmt::Utils;
 
+use 5.008005;
 use strict;
 use warnings;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 sub character {
 	return map { pack "N*", $_ } @_;
@@ -57,9 +58,15 @@ sub mtime {
 	return @{ [ stat(shift) ] }[9];
 }
 
+1;
+
+__END__
+
+=pod
+
 =head1 NAME
 
-Locale::Msgfmt::Utils - functions used internally by Locale::Msgfmt
+Locale::Msgfmt::Utils - Functions used internally by Locale::Msgfmt
 
 =head1 SYNOPSIS
 
@@ -70,5 +77,3 @@ This module shouldn't be used by other software.
 L<Locale::Msgfmt>
 
 =cut
-
-1;

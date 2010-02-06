@@ -1,11 +1,11 @@
 package Locale::Msgfmt::mo;
 
+use 5.008005;
 use strict;
 use warnings;
+use Locale::Msgfmt::Utils ();
 
-our $VERSION = '0.14';
-
-use Locale::Msgfmt::Utils;
+our $VERSION = '0.15';
 
 sub new {
 	return bless {}, shift;
@@ -19,19 +19,17 @@ sub initialize {
 }
 
 sub add_string {
-	my ( $self, $string, $translation ) = @_;
-	$self->{strings}->{$string} = $translation;
+	$_[0]->{strings}->{$_[1]} = $_[2];
 }
 
 sub prepare {
 	my $self = shift;
-	$self->{count}    = scalar keys %{ $self->{strings} };
-	$self->{free_mem} = 28 + $self->{count} * 16;
-	@{ $self->{sorted} }       = sort keys %{ $self->{strings} };
-	@{ $self->{translations} } = ();
-	foreach ( @{ $self->{sorted} } ) {
-		push @{ $self->{translations} }, $self->{strings}->{$_};
-	}
+	$self->{count}        = scalar keys %{ $self->{strings} };
+	$self->{free_mem}     = 28 + $self->{count} * 16;
+	$self->{sorted}       = [ sort keys %{ $self->{strings} } ];
+	$self->{translations} = [
+		map { $self->{strings}->{$_} } @{ $self->{sorted} }
+	];
 }
 
 sub out {
@@ -68,6 +66,12 @@ sub out {
 	close $OUT;
 }
 
+1;
+
+__END__
+
+=pod
+
 =head1 NAME
 
 Locale::Msgfmt::mo - class used internally by Locale::Msgfmt
@@ -81,5 +85,3 @@ This module shouldn't be used by other software.
 L<Locale::Msgfmt>
 
 =cut
-
-1;

@@ -1,17 +1,22 @@
-#!perl
+#!/usr/bin/perl
 
+use strict;
+BEGIN {
+	$|  = 1;
+	$^W = 1;
+}
 use Test::More tests => 5;
-
-use Locale::Msgfmt;
-use File::Temp;
 use File::Spec;
+use File::Temp;
+use Locale::Msgfmt;
 
 SKIP: {
-	skip "Test needs Locale::Maketext::Gettext", 5 if ( !eval("use Locale::Maketext::Gettext; 1;") );
+	unless ( eval("use Locale::Maketext::Gettext; 1;") ) {
+		skip( "Test needs Locale::Maketext::Gettext", 5 );
+	}
 
 	sub my_read_mo {
-		my %h = read_mo(shift);
-		return \%h;
+		return +{ read_mo(shift) };
 	}
 
 	sub my_msgfmt {
@@ -19,10 +24,7 @@ SKIP: {
 		close $fh;
 		my $in = shift;
 		utime( undef, undef, $in );
-		my $fuzzy = 0;
-		if (shift) {
-			$fuzzy = 1;
-		}
+		my $fuzzy = $_[0] ? 1 : 0;
 		msgfmt( { in => $in, out => $filename, fuzzy => $fuzzy } );
 		return $filename;
 	}
@@ -49,4 +51,3 @@ SKIP: {
 	do_one_test("context");
 	do_one_test("ngettext");
 }
-

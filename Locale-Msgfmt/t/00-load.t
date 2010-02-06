@@ -1,9 +1,10 @@
-#!perl -T
+#!/usr/bin/perl
 
+use strict;
+BEGIN {
+	$|  = 1;
+	$^W = 1;
+}
 use Test::More tests => 1;
 
-BEGIN {
-	use_ok('Locale::Msgfmt');
-}
-
-diag("Testing Locale::Msgfmt $Locale::Msgfmt::VERSION, Perl $], $^X");
+use_ok('Locale::Msgfmt');
