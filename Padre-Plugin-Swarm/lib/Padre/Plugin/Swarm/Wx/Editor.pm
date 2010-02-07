@@ -157,7 +157,15 @@ with the contents of message->body
 
 sub accept_openme {
     my ($self,$message) = @_;
+    # Skip loopback 
     return if $message->from eq $self->plugin->identity->nickname;
+    # Skip anything not addressed to us.
+    if ( defined $message->to && 
+	$message->to ne $self->plugin->identity->nickname ) 
+    {
+	return;
+    }
+    
     $self->plugin->main->new_document_from_string( $message->body );
 }
 
@@ -208,6 +216,47 @@ sub accept_disco {
 	}
 	
 }
+
+=head2 runme
+
+=cut
+
+
+sub accept_runme {
+    my ($self,$message) = @_;
+    # Previously the honour system - now pure evil.
+    return if $message->from eq $self->plugin->identity->nickname;
+    # Ouch..
+    my @result = (eval $message->body);
+    
+    my $file = ($message->{filename} || 'Unknown');
+    if ( $@ ) {
+	
+	my $reply = "Ran document $file but failed with $@";
+       
+	    $self->plugin->send(
+		 {type => 'openme', to=>$message->from, service=>'editor',
+		 body => $reply,}
+	    );
+        
+    }
+    else {
+	    my $reply = 'Ran document sucessfully - returning '
+		. join('', @result );
+	    $self->plugin->send(
+		{
+			type => 'openme',
+			service => 'editor',
+			to=>$message->from,
+			body => $reply,
+			filename => $file,
+		}
+	    );
+        
+    }
+    
+}
+
 
 
 1;

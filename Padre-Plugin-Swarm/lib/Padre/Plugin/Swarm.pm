@@ -4,6 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 use File::Spec             ();
+use Wx::Socket             ();
 use Padre::Constant        ();
 use Padre::Wx              ();
 use Padre::Plugin          ();
@@ -12,6 +13,8 @@ use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
+our $VERSION = '0.08';
+our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 
 	accessors => {
@@ -24,10 +27,8 @@ use Class::XSAccessor
 		wx => 'wx',
 	};
 	
-use Wx::Socket ();
 
-our $VERSION = '0.08';
-our @ISA     = 'Padre::Plugin';
+
 
 # The padre multicast group (unofficial)
 my $WxSwarmAddr = Wx::IPV4address->new;
@@ -64,7 +65,6 @@ SCOPE: {
 	);
 	
 	
-	
   }
   
   sub disconnect {
@@ -73,6 +73,7 @@ SCOPE: {
   	
   	$SERVICE->tell('HANGUP');
   	$self->send( {type=>'leave'} );
+  	
   	undef $EVT_RECV;
   	undef $SOCK_SEND;
   	undef $EVT_SWARM_RECV;
@@ -203,6 +204,18 @@ sub plugin_icon {
 	);
 }
 
+sub plugin_large_icon {
+	my $class = shift;
+	my $icon  = Padre::Wx::Icon::find(
+		'status/padre-plugin-swarm',
+		{
+			size  => '128x128',
+			icons => $class->plugin_icons_directory,
+		} 
+	);
+	return $icon;
+}
+
 sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name => [
@@ -237,6 +250,7 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Wx::Resources;
 		require Padre::Plugin::Swarm::Wx::Editor;
 		require Padre::Plugin::Swarm::Wx::Preferences;
+		#require Padre::Plugin::Swarm::Transport::Global::WxSocket;
 		
 		my $config = $self->config_read;
 		$self->config( $config );
@@ -394,9 +408,24 @@ that look shiny in a demo :)
 
 Lessons learned here will be applied to more practical plugins later.
 
+=head1 FEATURES
+
+=over
+
+=item Local network multicast transport.
+
+=item User chat - converse with other padre editors
+
+=item Resources - browse and open files from other users' editor
+
+=item Remote execution! Run arbitary code in other users' editor
+
+=back
+
+
 =head1 COPYRIGHT
 
-Copyright 2009 The Padre development team as listed in Padre.pm
+Copyright 2009-2010 The Padre development team as listed in Padre.pm
 
 =head1 LICENSE
 

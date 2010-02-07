@@ -253,10 +253,12 @@ sub accept_announce {
 
 sub accept_promote {
     my ($self,$message) = @_;
+    
+    ## Todo - manipulate the geometry ourselves for
+    # 'chat' promote. stop spewing into the chat 
+    # console.
     if ( $message->{service} eq 'chat' ) {
 	$self->update_userlist;
-	my $text = sprintf '%s promotes a chat service', $message->from;
-	$self->write_user_styled( $message->from,  $text . "\n" );
     }
     
     
@@ -274,29 +276,6 @@ sub accept_leave {
     $self->write_user_styled( $identity , $identity );
     $self->write_unstyled( " has left the swarm.\n" );
     $self->update_userlist;
-}
-
-sub accept_runme {
-    my ($self,$message) = @_;
-    # Previously the honour system - now pure evil.
-    return if $message->from ne $self->plugin->identity->nickname;
-    # Ouch..
-    my @result = (eval $message->body);
-    if ( $@ ) {
-        $self->write_user_styled( $message->from , $message->from );
-        $self->write_unstyled( ' ran' . $message->{filename}
-            . ' in YOUR editor but failed!! ' . $@. "\n" );
-    }
-    else {
-        $self->write_user_styled( $message->from , $message->from );
-        $self->write_unstyled( ' ran ' . $message->{filename}
-            . ' in YOUR editor successfully, returning '
-            . join (', ' , @result)
-            . "\n"
-        );
-        
-    }
-    
 }
 
 
