@@ -5,39 +5,74 @@ package Padre::Project::Perl;
 use 5.008;
 use strict;
 use warnings;
+use File::Spec     ();
 use Padre::Project ();
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Project';
 
-sub from_file {
-	my $class = shift;
 
-	# Check the file argument
-	my $focus_file = shift;
-	unless ( -f $focus_file ) {
-		return;
+
+
+
+######################################################################
+# Configuration and Intuition
+
+sub headline {
+	my $self = shift;
+	$self->{headline}
+		or $self->{headline} = $self->_headline;
+}
+
+sub _headline {
+	my $self = shift;
+	my $root = $self->root;
+
+	# The intuitive approach is to find the top-most .pm file
+	# in the lib directory.
+	my $cursor = File::Spec->catdir( $root, 'lib' );
+	unless ( -d $cursor ) {
+
+		# Weird-looking Perl distro...
+		return undef;
 	}
 
-	# Search upwards from the file to find the project root
-	my ( $v, $d, $f ) = File::Spec->splitpath($focus_file);
-	my @d = File::Spec->splitdir($d);
-	pop @d if $d[-1] eq '';
-	my $dirs = List::Util::first {
-		       -f File::Spec->catpath( $v, $_, 'Makefile.PL' )
-			or -f File::Spec->catpath( $v, $_, 'Build.PL' )
-			or -f File::Spec->catpath( $v, $_, 'dist.ini' )
-			or -f File::Spec->catpath( $v, $_, 'padre.yml' );
-	}
-	map { File::Spec->catdir( @d[ 0 .. $_ ] ) } reverse( 0 .. $#d );
-	unless ( defined $dirs ) {
-		return;
+	while (1) {
+		local *DIRECTORY;
+		opendir( DIRECTORY, $cursor ) or last;
+		my @files = readdir(DIRECTORY) or last;
+		closedir(DIRECTORY) or last;
+
+		# Can we find a single dominant module?
+		my @modules = grep {/\.pm\z/} @files;
+		if ( @modules == 1 ) {
+			return File::Spec->catfile( $cursor, $modules[0] );
+		}
+
+		# Can we find a single subdirectory without punctuation to descend?
+		# We use a slightly unusual checking process, because we want to abort
+		# as soon as we see the second subdirectory (because this scanning
+		# happens in the foreground and we don't want to overblock)
+		my $candidate = undef;
+		foreach my $file (@files) {
+			next if $file =~ /\./;
+			my $path = File::Spec->catdir( $cursor, $file );
+			next unless -d $path;
+			if ($candidate) {
+
+				# Shortcut, more than one
+				last;
+			} else {
+				$candidate = $path;
+			}
+		}
+
+		# Did we find a single candidate?
+		last unless $candidate;
+		$cursor = $candidate;
 	}
 
-	# Hand off to the regular constructor
-	return $class->new(
-		root => File::Spec->catpath( $v, $dirs ),
-	);
+	return undef;
 }
 
 
@@ -51,16 +86,12 @@ sub ignore_rule {
 	return sub {
 
 		# Default filter as per normal
-		if ( $_->{name} =~ /^\./ ) {
-			return 0;
-		}
+		return 0 if $_->{name} =~ /^\./;
 
 		# In a distribution, we can ignore more things
-		if ( $_->{name} =~ /^(?:blib|_build|inc|Makefile|pm_to_blib)\z/ ) {
-			return 0;
-		}
+		return 0 if $_->{name} =~ /^(?:blib|_build|inc|Makefile|pm_to_blib)\z/;
 
-		# Everything left, we show
+		# Everything left, so we show it
 		return 1;
 	};
 }

@@ -17,7 +17,7 @@ use Padre::File                     ();
 use Padre::Document::Perl::Beginner ();
 use Padre::Logger;
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Document';
 
 
@@ -1077,7 +1077,7 @@ sub autocomplete {
 
 	# The second parameter may be a reference to the current event or the next
 	# char which will be added to the editor:
-	my $nextchar = ''; # Use empty instead of undef
+	my $nextchar = '';                   # Use empty instead of undef
 	if ( defined($event) and ( ref($event) eq 'Wx::KeyEvent' ) ) {
 		my $key = $event->GetUnicodeKey;
 		$nextchar = chr($key);
@@ -1574,6 +1574,19 @@ sub event_on_right_down {
 				$doc->introduce_temporary_variable($replacement);
 			},
 		);
+
+		my $edit_regex = $menu->Append( -1, Wx::gettext("Edit with Regex Editor") );
+		Wx::Event::EVT_MENU(
+			$editor,
+			$edit_regex,
+			sub {
+				my $editor = shift;
+				my $doc    = $self;
+				return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
+				$editor->main->open_regex_editor;
+			},
+		);
+
 	} # end if something's selected
 }
 

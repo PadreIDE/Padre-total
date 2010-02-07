@@ -7,7 +7,7 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use Padre::Current ();
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Plugin';
 
 
@@ -192,7 +192,7 @@ sub trace_sub_startstop {
 
 	eval 'use Aspect;';
 	if ($@) {
-		$main->error( Wx::gettext( 'Error while loading Aspect, is it installed?' . "\n$@" ) );
+		$main->error( Wx::gettext('Error while loading Aspect, is it installed?') . "\n$@" );
 		return;
 	}
 

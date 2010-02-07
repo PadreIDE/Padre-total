@@ -10,7 +10,7 @@ use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 use Padre::Logger;
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -139,15 +139,39 @@ sub new {
 		'file.close_all_but_current',
 	);
 
+	$file_close->AppendSeparator;
+
+	$self->{close_some} = $self->add_menu_action(
+		$file_close,
+		'file.close_some',
+	);
+
+	### End of close submenu
+
+	# Reload file(s)
+	my $file_reload = Wx::Menu->new;
+	$self->Append(
+		-1,
+		Wx::gettext("Reload..."),
+		$file_reload,
+	);
+
 	$self->{reload_file} = $self->add_menu_action(
-		$self,
+		$file_reload,
 		'file.reload_file',
 	);
 
 	$self->{reload_all} = $self->add_menu_action(
-		$self,
+		$file_reload,
 		'file.reload_all',
 	);
+
+	$self->{reload_all} = $self->add_menu_action(
+		$file_reload,
+		'file.reload_some',
+	);
+
+	### End of reload submenu
 
 	$self->AppendSeparator;
 

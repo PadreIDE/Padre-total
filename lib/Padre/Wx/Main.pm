@@ -60,7 +60,7 @@ use Padre::Wx::Dialog::Text       ();
 use Padre::Wx::Dialog::FilterTool ();
 use Padre::Logger;
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Wx::Frame';
 
 use constant SECONDS => 1000;
@@ -1419,6 +1419,22 @@ sub refresh_directory {
 
 =pod
 
+=head2 C<refresh_aui>
+
+This is a refresh method wrapper around the AUI C<Update> method so
+that it can be lock-managed by the existing locking system.
+
+=cut
+
+sub refresh_aui {
+	my $self = shift;
+	return if $self->locked('refresh_aui');
+	$self->aui->Update;
+	return;
+}
+
+=pod
+
 =head2 Interface Rebuilding Methods
 
 Those methods reconfigure Padre's main window in case of drastic changes
@@ -1646,15 +1662,14 @@ the panel.
 
 sub show_functions {
 	my $self = shift;
-	my $on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE', 'refresh_functions' );
 	unless ( $on == $self->menu->view->{functions}->IsChecked ) {
 		$self->menu->view->{functions}->Check($on);
 	}
+
 	$self->config->set( main_functions => $on );
-	$self->config->write;
-
 	$self->_show_functions($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -2944,25 +2959,19 @@ sub on_autocompletion {
 
     $main->on_goto;
 
-Prompt user for a line, and jump to this line in current document.
+Prompt user for a line or character position, and jump to this line 
+or character position in current document.
 
 =cut
 
 sub on_goto {
 	my $self = shift;
 
-	my $editor      = $self->current->editor;
-	my $max         = $editor->GetLineCount;
-	my $line_number = $self->prompt(
-		sprintf( Wx::gettext("Line number between (1-%s):"), $max ),
-		Wx::gettext("Go to line number"),
-		"GOTO_LINE_NUMBER"
-	);
-	return if not defined $line_number or $line_number !~ /^\d+$/;
-
-	$line_number = $max if $line_number > $max;
-	$line_number--;
-	$editor->goto_line_centerize($line_number);
+	unless ( defined $self->{goto} ) {
+		require Padre::Wx::Dialog::Goto;
+		$self->{goto} = Padre::Wx::Dialog::Goto->new($self);
+	}
+	$self->{goto}->show;
 
 	return;
 }
@@ -3667,6 +3676,66 @@ sub reload_all {
 	return 1;
 }
 
+=pod
+
+=head3 C<reload_some>
+
+    my $success = $main->reload_some(@pages_to_reload);
+
+Reloads the given documents. Return true upon success, false otherwise.
+
+=cut
+
+sub on_reload_some {
+	my $self = shift;
+	my $lock = $self->lock('UPDATE');
+
+	require Padre::Wx::Dialog::WindowList;
+	Padre::Wx::Dialog::WindowList->new(
+		$self,
+		title      => Wx::gettext('Reload some files'),
+		list_title => Wx::gettext('Select files to reload:'),
+		buttons    => [ [ 'Reload selected', sub { Padre->ide->wx->main->reload_some(@_); } ] ],
+	)->show;
+}
+
+sub reload_some {
+	my $self         = shift;
+	my @reload_pages = @_;
+
+	my $notebook = $self->notebook;
+
+	my $manager = $self->{ide}->plugin_manager;
+
+	require Padre::Wx::Progress;
+	my $progress = Padre::Wx::Progress->new(
+		$self, Wx::gettext('Reload some'), $#reload_pages,
+		lazy => 1
+	);
+
+	SCOPE: {
+		my $lock = $self->lock('refresh');
+		for my $reload_page_no ( 0 .. $#reload_pages ) {
+			$progress->update( $reload_page_no, ( $reload_page_no + 1 ) . '/' . scalar(@reload_pages) );
+
+			foreach my $pageid ( $self->pageids ) {
+				my $page = $notebook->GetPage($pageid);
+				next unless defined($page);
+				next unless $page eq $reload_pages[$reload_page_no];
+				$self->reload_file($pageid) or return 0;
+			}
+		}
+	}
+
+	# Recalculate window title
+	$self->refresh_title;
+
+	$manager->plugin_event('editor_changed');
+
+	return 1;
+}
+
+
 =head3 C<reload_file>
 
     $main->reload_file;
@@ -3694,7 +3763,7 @@ sub reload_file {
 		$editor = $document->editor;
 	}
 
-	my $pos  = $self->config->feature_cursormemory;
+	my $pos = $self->config->feature_cursormemory;
 	$document->store_cursor_position if $pos;
 	if ( $document->reload ) {
 		$document->editor->configure_editor($document);
@@ -4238,6 +4307,65 @@ sub close_all {
 
 =pod
 
+=head3 C<close_some>
+
+    my $success = $main->close_some(@pages_to_close);
+
+Try to close all documents. Return true upon success, false otherwise.
+
+=cut
+
+sub on_close_some {
+	my $self = shift;
+	my $lock = $self->lock('UPDATE');
+
+	require Padre::Wx::Dialog::WindowList;
+	Padre::Wx::Dialog::WindowList->new(
+		$self,
+		title      => Wx::gettext('Close some files'),
+		list_title => Wx::gettext('Select files to close:'),
+		buttons    => [ [ 'Close selected', sub { Padre->ide->wx->main->close_some(@_); } ] ],
+	)->show;
+}
+
+sub close_some {
+	my $self        = shift;
+	my @close_pages = @_;
+
+	my $notebook = $self->notebook;
+
+	my $manager = $self->{ide}->plugin_manager;
+
+	require Padre::Wx::Progress;
+	my $progress = Padre::Wx::Progress->new(
+		$self, Wx::gettext('Close some'), $#close_pages,
+		lazy => 1
+	);
+
+	SCOPE: {
+		my $lock = $self->lock('refresh');
+		for my $close_page_no ( 0 .. $#close_pages ) {
+			$progress->update( $close_page_no, ( $close_page_no + 1 ) . '/' . scalar(@close_pages) );
+
+			foreach my $pageid ( $self->pageids ) {
+				my $page = $notebook->GetPage($pageid);
+				next unless defined($page);
+				next unless $page eq $close_pages[$close_page_no];
+				$self->close($pageid) or return 0;
+			}
+		}
+	}
+
+	# Recalculate window title
+	$self->refresh_title;
+
+	$manager->plugin_event('editor_changed');
+
+	return 1;
+}
+
+=pod
+
 =head3 C<close_where>
 
     # Close all files in current project
@@ -4262,12 +4390,10 @@ sub close_where {
 
 	# Generate the list of ids to close before we go to the
 	# expensive of taking any locks.
-	my @close = grep {
-		$where->( $notebook->GetPage($_)->{Document} )
-	} reverse $self->pageids;
-	if ( @close ) {
-		my $lock = $self->lock('UPDATE', 'DB', 'refresh');
-		foreach my $id ( @close ) {
+	my @close = grep { $where->( $notebook->GetPage($_)->{Document} ) } reverse $self->pageids;
+	if (@close) {
+		my $lock = $self->lock( 'UPDATE', 'DB', 'refresh' );
+		foreach my $id (@close) {
 			$self->close($id) or return 0;
 		}
 	}
@@ -4484,9 +4610,11 @@ Open Padre's regular expression editor. No return value.
 sub open_regex_editor {
 	my $self = shift;
 
-	require Padre::Wx::Dialog::RegexEditor;
-	my $regex = Padre::Wx::Dialog::RegexEditor->new($self);
-	$regex->show();
+	unless ( defined $self->{regex_editor} ) {
+		require Padre::Wx::Dialog::RegexEditor;
+		$self->{regex_editor} = Padre::Wx::Dialog::RegexEditor->new($self);
+	}
+	$self->{regex_editor}->show;
 
 	return;
 }

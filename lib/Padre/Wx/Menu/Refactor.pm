@@ -14,7 +14,7 @@ use Padre::Wx::Menu ();
 use Padre::Locale   ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Wx::Menu';
 
 #####################################################################
@@ -37,17 +37,17 @@ sub new {
 	# Perl-Specific Refactoring
 	$self->{rename_variable} = $self->add_menu_action(
 		$self,
-		'perl.rename_variable',
+		'refactor.rename_variable',
 	);
 
 	$self->{extract_subroutine} = $self->add_menu_action(
 		$self,
-		'perl.extract_subroutine',
+		'refactor.extract_subroutine',
 	);
 
 	$self->{introduce_temporary} = $self->add_menu_action(
 		$self,
-		'perl.introduce_temporary',
+		'refactor.introduce_temporary',
 	);
 
 

@@ -34,7 +34,7 @@ use List::Util      ();
 use POSIX           ();
 use Padre::Constant ();
 
-our $VERSION   = '0.55';
+our $VERSION   = '0.56';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = '_T';
 
@@ -291,9 +291,12 @@ sub svn_directory_revision {
 
 sub share {
 	if ( $ENV{PADRE_DEV} ) {
-		return File::Spec->catdir(
-			$FindBin::Bin,
-			File::Spec->updir, 'share'
+		return File::Spec->rel2abs(
+			File::Spec->catdir(
+				$FindBin::Bin,
+				File::Spec->updir,
+				'share',
+			),
 		);
 	}
 
@@ -315,7 +318,7 @@ sub share {
 
 	# Rely on automatic handling of everything
 	require File::ShareDir;
-	return File::ShareDir::dist_dir('Padre');
+	return File::Spec->rel2abs( File::ShareDir::dist_dir('Padre') );
 }
 
 sub sharedir {

@@ -9,7 +9,7 @@ use Padre::Current qw{_CURRENT};
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 
 
 #####################################################################
@@ -220,8 +220,8 @@ sub new {
 	# Miscellaneous Actions
 	Padre::Action->new(
 		name       => 'edit.goto',
-		label      => Wx::gettext('&Goto Line'),
-		comment    => Wx::gettext('Ask the user for a row number and jump there'),
+		label      => Wx::gettext('&Goto'),
+		comment    => Wx::gettext('Ask the user for a line number or a character position and jump there'),
 		shortcut   => 'Ctrl-G',
 		menu_event => sub {
 			Padre::Wx::Main::on_goto(@_);
@@ -577,7 +577,7 @@ sub new {
 
 	Padre::Action->new(
 		name    => 'edit.regex',
-		label   => Wx::gettext('Regex editor'),
+		label   => Wx::gettext('Regex Editor'),
 		comment => Wx::gettext('Open the regular expression editing window'),
 
 		menu_event => sub {

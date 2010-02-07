@@ -10,7 +10,7 @@ use Padre::Wx::Editor                      ();
 use Padre::Wx::Dialog::Preferences::Editor ();
 use Padre::MimeTypes                       ();
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 our @ISA     = 'Padre::Wx::Dialog';
 
 our %PANELS = (
@@ -478,7 +478,8 @@ sub _appearance_panel {
 		for (@Func_List) {
 
 			push @table2,
-				[ [ 'Wx::CheckBox', 'feature_' . $_->[0], ( eval( '$config->feature_' . $_->[0] ) ? 1 : 0 ), $_->[1] ] ];
+				[
+				[ 'Wx::CheckBox', 'feature_' . $_->[0], ( eval( '$config->feature_' . $_->[0] ) ? 1 : 0 ), $_->[1] ] ];
 		}
 
 		my $settings_subpanel2 = $self->_new_panel($panel);

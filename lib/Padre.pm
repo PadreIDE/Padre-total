@@ -24,7 +24,7 @@ use DBD::SQLite   ();
 # TO DO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION = '0.55';
+our $VERSION = '0.56';
 
 # Since everything is used OO-style, we will be require'ing
 # everything other than the bare essentials
@@ -264,12 +264,8 @@ sub project {
 	my $self = shift;
 	my $root = shift;
 	unless ( $self->{project}->{$root} ) {
-		my $class = Padre::Project->class($root);
-		unless ( $class->VERSION ) {
-			eval "require $class;";
-			die("Failed to load $class: $@") if $@;
-		}
-		$self->{project}->{$root} = $class->new( root => $root, );
+		my $nofile = File::Spec->catfile( $root, 'a' );
+		$self->{project}->{$root} = Padre::Project->from_file($nofile);
 	}
 	return $self->{project}->{$root};
 }

@@ -5,12 +5,19 @@ package Padre::Wx::Dialog::RegexEditor;
 use 5.008;
 use strict;
 use warnings;
-use Carp            ();
-use Padre::Wx       ();
-use Padre::Wx::Icon ();
+use Padre::Wx                  ();
+use Padre::Wx::Icon            ();
+use Padre::Wx::Role::MainChild ();
+use Padre::Wx::HtmlWindow      ();
 
-our $VERSION = '0.55';
-our @ISA     = 'Wx::Dialog';
+# RichTextCtrl
+use Wx::RichText ();
+
+our $VERSION = '0.56';
+our @ISA     = qw{
+	Padre::Wx::Role::MainChild
+	Wx::Dialog
+};
 
 
 ######################################################################
@@ -32,182 +39,16 @@ sub new {
 
 	# Set basic dialog properties
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
-	$self->SetMinSize( [ 750, 550 ] );
+	$self->SetMinSize( [ 380, 500 ] );
 
-	# Dialog Controls
-
-	$self->{regex} = Wx::TextCtrl->new(
-		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
-		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
-	);
-
-	$self->{substitute} = Wx::TextCtrl->new(
-		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
-		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
-	);
-
-	$self->{original_text} = Wx::TextCtrl->new(
-		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
-		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
-	);
-
-	$self->{matched_text} = Wx::TextCtrl->new(
-		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
-		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
-	);
-
-	Wx::Event::EVT_TEXT(
-		$self,
-		$self->{regex},
-		sub { $_[0]->run; },
-	);
-	Wx::Event::EVT_TEXT(
-		$self,
-		$self->{substitute},
-		sub { $_[0]->run; },
-	);
-	Wx::Event::EVT_TEXT(
-		$self,
-		$self->{original_text},
-		sub { $_[0]->run; },
-	);
-
-	# Modifiers
-	my %m = _modifiers();
-	foreach my $name ( keys %m ) {
-		$self->{$name} = Wx::CheckBox->new(
-			$self,
-			-1,
-			$m{$name}{name},
-		);
-		Wx::Event::EVT_CHECKBOX(
-			$self,
-			$self->{$name},
-			sub {
-				$_[0]->box_clicked($name);
-			},
-		);
-	}
-
-	$self->{matching} = Wx::RadioButton->new(
-		$self,
-		-1,
-		'Matching',
-	);
-	Wx::Event::EVT_RADIOBUTTON( $self, $self->{matching}, sub { $_[0]->run; } );
-	$self->{substituting} = Wx::RadioButton->new(
-		$self,
-		-1,
-		'Substituting',
-	);
-	Wx::Event::EVT_RADIOBUTTON( $self, $self->{substituting}, sub { $_[0]->run; } );
-
-	# Buttons
-	#	$self->{button_match} = Wx::Button->new(
-	#		$self,
-	#		-1,
-	#		Wx::gettext('&Match'),
-	#	);
-	#	Wx::Event::EVT_BUTTON(
-	#		$self,
-	#		$self->{button_match},
-	#		sub {
-	#			$_[0]->button_match;
-	#		},
-	#	);
-	#
-	#	# Preferences Button
-	#	$self->{button_replace} = Wx::Button->new(
-	#		$self,
-	#		-1,
-	#		Wx::gettext('&Replace'),
-	#	);
-	#	Wx::Event::EVT_BUTTON(
-	#		$self,
-	#		$self->{button_replace},
-	#		sub {
-	#			$_[0]->button_replace;
-	#		},
-	#	);
-
-	# Close Button
-	$self->{button_close} = Wx::Button->new(
-		$self,
-		Wx::wxID_CANCEL,
-		Wx::gettext('&Close'),
-	);
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{button_close},
-		sub {
-			$_[0]->button_close;
-		},
-	);
-
-	# Dialog Layout
-
-	# Horizontal button sizer
-	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$buttons->AddStretchSpacer;
-	$buttons->Add( $self->{button_match},   0, Wx::wxALL, 1 );
-	$buttons->Add( $self->{button_replace}, 0, Wx::wxALL, 1 );
-	$buttons->AddStretchSpacer;
-	$buttons->Add( $self->{button_close}, 0, Wx::wxALL, 1 );
-	$buttons->AddStretchSpacer;
-
-
-	my $modifiers = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$modifiers->AddStretchSpacer;
-	$modifiers->Add( $self->{ignore_case}, 0, Wx::wxALL, 1 );
-	$modifiers->Add( $self->{single_line}, 0, Wx::wxALL, 1 );
-	$modifiers->Add( $self->{multi_line},  0, Wx::wxALL, 1 );
-	$modifiers->Add( $self->{extended},    0, Wx::wxALL, 1 );
-
-	my $operation = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$operation->AddStretchSpacer;
-	$operation->Add( $self->{matching},     0, Wx::wxALL, 1 );
-	$operation->Add( $self->{substituting}, 0, Wx::wxALL, 1 );
-
-	# Vertical layout of the left hand side
-	my $left = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$left->Add( $modifiers, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$left->Add( $operation, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$left->Add(
-		$self->{regex},
-		1,
-		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND,
-		1
-	);
-	$left->Add(
-		$self->{substitute},
-		1,
-		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND,
-		1
-	);
-
-
-	# Vertical layout of the right hand side
-	my $right = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$right->Add(
-		$self->{original_text},
-		1,
-		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND,
-		1
-	);
-	$right->Add(
-		$self->{matched_text},
-		1,
-		Wx::wxALL | Wx::wxALIGN_TOP | Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxEXPAND,
-		1
-	);
-	$right->Add( $buttons, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-
-
-
-	# Main sizer
+	# create sizer that will host all controls
 	my $sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$sizer->Add( $left,  0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$sizer->Add( $right, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
+
+	# Create the controls
+	$self->_create_controls($sizer);
+
+	# Bind the control events
+	$self->_bind_events;
 
 	# Tune the size and position it appears
 	$self->SetSizer($sizer);
@@ -218,12 +59,303 @@ sub new {
 }
 
 
-sub _modifiers {
+#
+# A private method that returns a hash of regex groups along with their meaning
+#
+sub _regex_groups {
+	my $self = shift;
+
 	return (
-		ignore_case => { mod => 'i', name => sprintf( Wx::gettext('Ignore case (%s)'), 'i' ) },
-		single_line => { mod => 's', name => sprintf( Wx::gettext('Single-line (%s)'), 's' ) },
-		multi_line  => { mod => 'm', name => sprintf( Wx::gettext('Multi-line (%s)'),  'm' ) },
-		extended    => { mod => 'x', name => sprintf( Wx::gettext('Extended (%s)'),    'x' ) },
+		'00' => {
+			label => Wx::gettext('&Character classes'),
+			value => {
+				'00.'  => Wx::gettext('Any character except a newline'),
+				'01\d' => Wx::gettext('Any decimal digit'),
+				'02\D' => Wx::gettext('Any non-digit'),
+				'03\s' => Wx::gettext('Any whitespace character'),
+				'04\S' => Wx::gettext('Any non-whitespace character'),
+				'05\w' => Wx::gettext('Any word character'),
+				'06\W' => Wx::gettext('Any non-word character'),
+			}
+		},
+		'01' => {
+			label => Wx::gettext('&POSIX Character classes'),
+			value => {
+				'00[:alpha:]'  => Wx::gettext('Alphabetic characters'),
+				'01[:alnum:])' => Wx::gettext('Alphanumeric characters'),
+				'02[:ascii:]'  => Wx::gettext('7-bit US-ASCII character'),
+				'03[:blank:]'  => Wx::gettext('Space and tab'),
+				'04[:cntrl:]'  => Wx::gettext('Control characters'),
+				'05[:digit:]'  => Wx::gettext('Digits'),
+				'06[:graph:]'  => Wx::gettext('Visible characters'),
+				'07[:lower:]'  => Wx::gettext('Lowercase characters'),
+				'08[:print:]'  => Wx::gettext('Visible characters and spaces'),
+				'09[:punct:]'  => Wx::gettext('Punctuation characters'),
+				'10[:space:]'  => Wx::gettext('Whitespace characters'),
+				'11[:upper:]'  => Wx::gettext('Uppercase characters'),
+				'12[:word:]'   => Wx::gettext('Alphanumeric characters plus "_"'),
+				'13[:xdigit:]' => Wx::gettext('Hexadecimal digits'),
+			}
+		},
+		'02' => {
+			label => Wx::gettext('&Quantifiers'),
+			value => {
+				'00*'     => Wx::gettext('Match 0 or more times'),
+				'01+'     => Wx::gettext('Match 1 or more times'),
+				'02?'     => Wx::gettext('Match 1 or 0 times'),
+				'03{m}'   => Wx::gettext('Match exactly n times'),
+				'05{n,}'  => Wx::gettext('Match at least n times'),
+				'05{m,n}' => Wx::gettext('Match at least n but not more than m times'),
+			}
+		},
+		'03' => {
+			label => Wx::gettext('&Miscellaneous'),
+			value => {
+				'00|'     => Wx::gettext('Alternation'),
+				'01[ ]'   => Wx::gettext('Character set'),
+				'02^'     => Wx::gettext('Beginning of line'),
+				'03$'     => Wx::gettext('End of line'),
+				'04\b'    => Wx::gettext('A word boundary'),
+				'05\B'    => Wx::gettext('Not a word boundary'),
+				'06(?# )' => Wx::gettext('A comment'),
+			}
+		},
+		'04' => {
+			label => Wx::gettext('&Grouping constructs'),
+			value => {
+				'00( )'    => Wx::gettext('A group'),
+				'01(?: )'  => Wx::gettext('Non-capturing group'),
+				'02(?= )'  => Wx::gettext('Positive lookahead assertion'),
+				'03(?! )'  => Wx::gettext('Negative lookahead assertion'),
+				'04(?< )'  => Wx::gettext('Positive lookbehind assertion'),
+				'05(?<! )' => Wx::gettext('Negative lookbehind assertion'),
+				'06\n'     => Wx::gettext('Backreference to the nth group'),
+			}
+		}
+	);
+}
+
+sub _create_controls {
+	my ( $self, $sizer ) = @_;
+
+	# Dialog Controls
+
+	# Regex text field
+	my $regex_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Regular expression:') );
+	$self->{regex} = Wx::RichTextCtrl->new(
+		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
+		Wx::wxRE_MULTILINE | Wx::wxWANTS_CHARS # Otherwise arrows will not work on win32
+	);
+
+	# Replace regex text field
+	my $replace_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Replace text with:') );
+	$self->{replace} = Wx::TextCtrl->new(
+		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
+		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
+	);
+
+	# Describe-the-regex text field
+	my $description_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Description:') );
+	$self->{description_text} = Wx::TextCtrl->new(
+		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
+		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
+	);
+
+	# Original input text field
+	my $original_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Original text:') );
+	$self->{original_text} = Wx::TextCtrl->new(
+		$self, -1, '', Wx::wxDefaultPosition, Wx::wxDefaultSize,
+		Wx::wxTE_MULTILINE | Wx::wxNO_FULL_REPAINT_ON_RESIZE
+	);
+
+	# Matched readonly text field
+	my $matched_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Matched text:') );
+	$self->{matched_text} = Padre::Wx::HtmlWindow->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxBORDER_STATIC
+	);
+
+	# Result from replace text field
+	my $result_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Result from replace:') );
+	$self->{result_text} = Padre::Wx::HtmlWindow->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxBORDER_STATIC
+	);
+
+	# Modifiers
+	my %m = $self->_modifiers();
+	foreach my $name ( keys %m ) {
+		$self->{$name} = Wx::CheckBox->new(
+			$self,
+			-1,
+			$m{$name}{name},
+		);
+	}
+
+	my %regex_groups = $self->_regex_groups;
+	foreach my $code ( sort keys %regex_groups ) {
+		my %sub_group   = %{ $regex_groups{$code} };
+		my $button_name = $code . '_button';
+		$self->{$button_name} = Wx::Button->new(
+			$self, -1, $sub_group{label},
+		);
+
+		my $menu_name = $code . '_menu';
+
+		Wx::Event::EVT_BUTTON(
+			$self,
+			$self->{$button_name},
+			sub {
+				my @pos  = $self->{$button_name}->GetPositionXY;
+				my @size = $self->{$button_name}->GetSizeWH;
+				$self->PopupMenu( $self->{$menu_name}, $pos[0], $pos[1] + $size[1] );
+			},
+		);
+
+		$self->{$menu_name} = Wx::Menu->new;
+		my %sub_group_value = %{ $sub_group{value} };
+		foreach my $element ( sort keys %sub_group_value ) {
+			my $label = $element;
+			$label =~ s/^\d{2}//;
+			my $menu_item = $self->{$menu_name}->Append( -1, $label . "     " . $sub_group_value{$element} );
+
+			Wx::Event::EVT_MENU(
+				$self,
+				$menu_item,
+				sub {
+					$_[0]->{regex}->WriteText($label);
+				},
+			);
+		}
+	}
+
+
+	# Insert regex into current document button_name
+	$self->{insert_button} = Wx::Button->new(
+		$self, -1, Wx::gettext('&Insert'),
+	);
+
+	# Close button
+	$self->{close_button} = Wx::Button->new(
+		$self, Wx::wxID_CANCEL, Wx::gettext('&Close'),
+	);
+
+	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$buttons->AddStretchSpacer;
+	$buttons->Add( $self->{insert_button}, 0, Wx::wxALL, 1 );
+	$buttons->Add( $self->{close_button},  0, Wx::wxALL, 1 );
+	$buttons->AddStretchSpacer;
+
+	# Dialog Layout
+
+	my $modifiers = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$modifiers->AddStretchSpacer;
+	$modifiers->Add( $self->{ignore_case}, 0, Wx::wxALL, 1 );
+	$modifiers->Add( $self->{single_line}, 0, Wx::wxALL, 1 );
+	$modifiers->Add( $self->{multi_line},  0, Wx::wxALL, 1 );
+	$modifiers->Add( $self->{extended},    0, Wx::wxALL, 1 );
+	$modifiers->Add( $self->{global},      0, Wx::wxALL, 1 );
+
+	$modifiers->AddStretchSpacer;
+
+	my $regex = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	$regex->Add( $self->{regex}, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
+
+	my $regex_groups = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	foreach my $code ( sort keys %regex_groups ) {
+		my $button_name = $code . '_button';
+		$regex_groups->Add( $self->{$button_name}, 0, Wx::wxEXPAND, 1 );
+	}
+
+	my $combined = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$combined->Add( $regex,        2, Wx::wxALL | Wx::wxEXPAND, 0 );
+	$combined->Add( $regex_groups, 0, Wx::wxALL | Wx::wxEXPAND, 0 );
+
+	# Vertical layout of the left hand side
+	my $left = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	$left->Add( $modifiers, 0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$left->AddSpacer(5);
+	$left->Add( $regex_label,              0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $combined,                 0, Wx::wxALL | Wx::wxEXPAND, 2 );
+	$left->Add( $description_label,        0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{description_text}, 2, Wx::wxALL | Wx::wxEXPAND, 1 );
+
+	$left->Add( $replace_label,   0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{replace}, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
+
+	$left->Add( $original_label,        0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{original_text}, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $matched_label,         0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{matched_text},  1, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $result_label,          0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{result_text},   1, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->AddSpacer(5);
+	$left->Add( $buttons, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
+
+	# Main sizer
+	$sizer->Add( $left, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+}
+
+sub _bind_events {
+	my $self = shift;
+
+	Wx::Event::EVT_TEXT(
+		$self,
+		$self->{regex},
+		sub { $_[0]->run; },
+	);
+	Wx::Event::EVT_TEXT(
+		$self,
+		$self->{replace},
+		sub { $_[0]->run; },
+	);
+	Wx::Event::EVT_TEXT(
+		$self,
+		$self->{original_text},
+		sub { $_[0]->run; },
+	);
+
+	# Modifiers
+	my %modifiers = $self->_modifiers();
+	foreach my $name ( keys %modifiers ) {
+		Wx::Event::EVT_CHECKBOX(
+			$self,
+			$self->{$name},
+			sub {
+				$_[0]->box_clicked($name);
+			},
+		);
+	}
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{insert_button},
+		sub {
+			my $self = shift;
+			my $editor = $self->current->editor or return;
+			$editor->InsertText( $editor->GetCurrentPos, $self->{regex}->GetValue );
+		},
+	);
+}
+
+
+#
+# A private method that returns a hash of regex modifiers
+#
+sub _modifiers {
+	my $self = shift;
+	return (
+		ignore_case => { mod => 'i', name => sprintf( Wx::gettext('&Ignore case (%s)'), 'i' ) },
+		single_line => { mod => 's', name => sprintf( Wx::gettext('&Single-line (%s)'), 's' ) },
+		multi_line  => { mod => 'm', name => sprintf( Wx::gettext('&Multi-line (%s)'),  'm' ) },
+		extended    => { mod => 'x', name => sprintf( Wx::gettext('&Extended (%s)'),    'x' ) },
+		global      => { mod => 'g', name => sprintf( Wx::gettext('&Global (%s)'),      'g' ) },
 	);
 }
 
@@ -233,23 +365,73 @@ sub _modifiers {
 sub show {
 	my $self = shift;
 
-	$self->{regex}->AppendText("regex");
-	$self->{substitute}->AppendText("substitute");
-	$self->{original_text}->AppendText("Original text");
-	$self->{matching}->SetValue(1);
+	if ( $self->IsShown ) {
+		$self->SetFocus;
+	} else {
+		my $editor = $self->current->editor;
+		if ($editor) {
+			my $selection        = $editor->GetSelectedText;
+			my $selection_length = length $selection;
+			if ( $selection_length > 0 ) {
+				$self->{regex}->ChangeValue($selection);
+			} else {
+				$self->{regex}->ChangeValue('\w+');
+			}
+		} else {
+			$self->{regex}->ChangeValue('\w+');
+		}
 
-	$self->Show;
+		$self->{replace}->ChangeValue("Baz");
+		$self->{original_text}->AppendText("Foo Bar");
+
+		$self->Show;
+	}
+
+	$self->{regex}->SetFocus;
+
+	return;
 }
 
 #
-# $self->button_match;
+# Private method to dump the regular expression
+# description as text
 #
-# handler called when the Match button has been clicked.
+sub _dump_regex {
+	my ( $self, $parent, $str, $level ) = @_;
+	$str   = '' unless $str;
+	$level = 0  unless $level;
+	my @children = $parent->children if $parent->isa('PPIx::Regexp::Node');
+	for my $child (@children) {
+		next if $child->content eq '';
+		my $class_name = $child->class;
+		$class_name =~ s/PPIx::Regexp:://;
+		$str .= ( " " x ( $level * 4 ) ) . $class_name . "     (" . $child->content . ")\n";
+		$str = $self->_dump_regex( $child, $str, $level + 1 );
+	}
+	return $str;
+}
+
 #
-sub button_match {
-	my $self = shift;
-	$self->run();
-	return;
+# Private method to return all the parsed regex elements as an array
+#
+sub _parse_regex_elements {
+	my ( $parent, $position, @array ) = @_;
+	$position   = 0 unless $position;
+	@array   = () unless @array;
+	my @elements = $parent->elements if $parent->isa('PPIx::Regexp::Node');
+	for my $element (@elements) {
+		my $content = $element->content;
+		next if $content eq '';
+		my $class_name = $element->class;
+		push @array, {
+			element  => $element,
+			offset   => $position,
+			len      => length $content
+		};
+		@array = _parse_regex_elements( $element, $position, @array );
+		$position += length $content;
+	}
+	return @array;
 }
 
 sub run {
@@ -257,83 +439,114 @@ sub run {
 
 	my $regex = $self->{regex}->GetRange( 0, $self->{regex}->GetLastPosition );
 	my $original_text = $self->{original_text}->GetRange( 0, $self->{original_text}->GetLastPosition );
-	my $substitute = $self->{substitute}->GetRange( 0, $self->{substitute}->GetLastPosition );
+	my $replace = $self->{replace}->GetRange( 0, $self->{replace}->GetLastPosition );
+	my $result_text = $original_text;
 
 
-	my $start = '';
-	my $end   = '';
-	my %m     = _modifiers();
-	foreach my $name ( keys %m ) {
+	my $start     = '';
+	my $end       = '';
+	my %modifiers = $self->_modifiers();
+	foreach my $name ( keys %modifiers ) {
 		if ( $self->{$name}->IsChecked ) {
-			$start .= $m{$name}{mod};
+			$start .= $modifiers{$name}{mod};
 		} else {
-			$end .= $m{$name}{mod};
+			$end .= $modifiers{$name}{mod};
 		}
 	}
 	my $xism = "$start-$end";
 
-	$self->{matched_text}->Clear;
+	my $matched_html = '';
+	my $result_html  = '';
 
-	if ( $self->{matching}->GetValue ) {
-		my $match;
-		eval {
-			if ( $original_text =~ /(?$xism:$regex)/ )
-			{
-				$match = substr( $original_text, $-[0], $+[0] - $-[0] );
-			}
-		};
-		if ($@) {
-			my $main = Padre->ide->wx->main;
+	my $match;
+	my $match_start;
+	my $match_end;
 
-			#$main->message("Match failure in $regex:  $@");
-			$self->{matched_text}->AppendText("Match failure in $regex:  $@");
-			return;
+	my $warning;
+
+	# XXX Ignore Win32::API warnings. It's ugly but it works :)
+	local $SIG{__WARN__} = sub { $warning = $_[0] };
+
+	eval {
+
+		# /g modifier is useless in this case
+		# TODO loop on all matches
+		$xism =~ s/g//g;
+		if ( $original_text =~ /(?$xism:$regex)/ ) {
+			$match_start = $-[0];
+			$match_end   = $+[0];
+			$match       = substr( $original_text, $match_start, $match_end - $match_start );
 		}
-
-		if ( defined $match ) {
-			$self->{matched_text}->AppendText("Matched '$match'");
-		} else {
-			$self->{matched_text}->AppendText("No match");
-		}
-	} else {
-		$self->{matched_text}->AppendText("Substitute not yet implemented");
+	};
+	if ($@) {
+		$matched_html .= '<font color="red">' . "Match failure in $regex:  $@" . '</font>';
+		$self->{matched_text}->SetPage($matched_html);
+		return;
 	}
 
+	if ($warning) {
+		$matched_html .= '<font color="red">' . "Match warning in $regex:  $warning" . '</font>';
+		$self->{matched_text}->SetPage($matched_html);
+		return;
+	}
+
+	if ( defined $match ) {
+		my @chars = split( //, $original_text );
+		my $pos = 0;
+		for my $char (@chars) {
+			if ( $pos == $match_start ) {
+				$matched_html .= '<font color="red"><u>';
+			} elsif ( $pos == $match_end ) {
+				$matched_html .= '</u></font>';
+			}
+			$matched_html .= $char;
+			$pos++;
+		}
+	} else {
+		$matched_html = Wx::gettext("No match");
+	}
+
+	eval { $result_text =~ s{$regex}{$replace}; };
+	if ($@) {
+		$result_html .= '<font color="red">' . "Replace failure in $regex:  $@" . '</font>';
+		return;
+	}
+
+	if ( defined $result_text ) {
+		$result_html .= $result_text;
+	}
+
+	require PPIx::Regexp;
+	my $regexp = PPIx::Regexp->new("/$regex/");
+	$self->{description_text}->SetValue( $self->_dump_regex($regexp) );
+
+	$self->{matched_text}->SetPage($matched_html);
+	$self->{result_text}->SetPage($result_html);
+
+#	$self->{regex}->Clear;
+#	my @elements = _parse_regex_elements;
+#	for my $element (@elements) {
+#		my $class_name = $element->element->class;
+#		if ($class_name eq 'PPIx::Regexp::Token::CharClass::Simple') {
+#			$self->{regex}->BeginTextColour(Wx::wxRED);
+#		} elsif( $class_name eq 'PPIx::Regexp::Token::Quantifier') {
+#			$self->{regex}->BeginTextColour(Wx::wxBLUE);
+#		} elsif( $class_name eq 'PPIx::Regexp::Token::Operator') {
+#			$self->{regex}->BeginTextColour(Wx::wxLIGHT_GREY);
+#		} elsif( $class_name eq 'PPIx::Regexp::Structure::Capture') {
+#			$self->{regex}->BeginTextColour(Wx::wxCYAN);
+#		}
+#		$self->{regex}->AppendText($element->content);
+#	$self->{regex}->EndTextColour;
+#	}
+
 	return;
 }
-
-#
-# $self->button_replace;
-#
-# handler called when the Match button has been clicked.
-#
-sub button_replace {
-	my $self = shift;
-	my $main = Padre->ide->wx->main;
-	$main->message("Replace");
-	return;
-}
-
 
 sub box_clicked {
 	my $self = shift;
-
-	#my $box  = shift;
 	$self->run();
-
-	#my $main = Padre->ide->wx->main;
-	#$main->message("Box $box");
 	return;
-
-}
-
-#
-# $self->button_close;
-#
-# handler called when the close button has been clicked.
-#
-sub button_close {
-	$_[0]->Destroy;
 }
 
 1;
@@ -371,10 +584,6 @@ regular expression modifiers:
 =item Extended (x)
 
 =back
-
-=head1 TO DO
-
-Implement substitute as well
 
 Global match
 

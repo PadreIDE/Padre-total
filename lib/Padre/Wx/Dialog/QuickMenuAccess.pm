@@ -10,19 +10,20 @@ use Padre::Wx::Icon ();
 use Padre::Logger;
 
 # package exports and version
-our $VERSION = '0.55';
-our @ISA     = 'Wx::Dialog';
+our $VERSION = '0.56';
+our @ISA     = qw{
+	Padre::Wx::Role::MainChild
+	Wx::Dialog
+};
 
 # accessors
 use Class::XSAccessor {
 	accessors => {
-		_main            => '_main',            # Padre main window
 		_sizer           => '_sizer',           # window sizer
 		_search_text     => '_search_text',     # search text control
 		_list            => '_list',            # matching items list
 		_status_text     => '_status_text',     # status label
 		_matched_results => '_matched_results', # matched results
-		_ok_button       => '_ok_button'        # OK button
 	}
 };
 
@@ -39,8 +40,6 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
-
-	$self->_main($main);
 
 	# Dialog's icon as is the same as Padre
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
@@ -60,7 +59,7 @@ sub new {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = $self->_main;
+	my $main = $self->main;
 
 	# Open the selected menu item if the user pressed OK
 	my $selection = $self->_list->GetSelection;
@@ -147,10 +146,21 @@ sub _create_buttons {
 	my ($self) = @_;
 	my $sizer = $self->_sizer;
 
-	my $butsizer = $self->CreateStdDialogButtonSizer( Wx::wxOK | Wx::wxCANCEL );
-	$sizer->Add( $butsizer, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+	$self->{ok_button} = Wx::Button->new(
+		$self, Wx::wxID_OK, Wx::gettext('&OK'),
+	);
+	$self->{ok_button}->SetDefault;
+	$self->{cancel_button} = Wx::Button->new(
+		$self, Wx::wxID_CANCEL, Wx::gettext('&Cancel'),
+	);
+
+	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$buttons->AddStretchSpacer;
+	$buttons->Add( $self->{ok_button},     0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$buttons->Add( $self->{cancel_button}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer->Add( $buttons, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+
 	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
-	$self->_ok_button( Wx::Window::FindWindowById( Wx::wxID_OK, $self ) );
 }
 
 #
@@ -371,14 +381,35 @@ sub _update_list_box {
 	$self->_list->Clear;
 	my $pos = 0;
 
+	#TODO: think how to make actions and menus relate to each other
+	my %menu_name_by_prefix = (
+		"file"     => Wx::gettext('File'),
+		"edit"     => Wx::gettext('Edit'),
+		"search"   => Wx::gettext('Search'),
+		"view"     => Wx::gettext('View'),
+		"perl"     => Wx::gettext('Perl'),
+		"refactor" => Wx::gettext('Refactor'),
+		"run"      => Wx::gettext('Run'),
+		"debug"    => Wx::gettext('Debug'),
+		"plugins"  => Wx::gettext('Plugins'),
+		"window"   => Wx::gettext('Window'),
+		"help"     => Wx::gettext('Help'),
+	);
+
 	my $first_label = undef;
 	foreach my $action ( @{ $self->_matched_results } ) {
 		my $label = $action->{value};
 		if ( $label =~ /$search_expr/i ) {
+			my $action_name = $action->{name};
 			if ( not $first_label ) {
-				$first_label = $self->_label( $label, $action->{name} );
+				$first_label = $self->_label( $label, $action_name );
 			}
-			$self->_list->Insert( $label, $pos, $action );
+			my $label_suffix = '';
+			my $prefix       = $action_name;
+			$prefix =~ s/^(\w+)\.\w+/$1/s;
+			my $menu_name = $menu_name_by_prefix{$prefix};
+			$label_suffix = "  ($menu_name)" if $menu_name;
+			$self->_list->Insert( $label . $label_suffix, $pos, $action );
 			$pos++;
 		}
 	}
@@ -387,12 +418,12 @@ sub _update_list_box {
 		$self->_status_text->SetPage($first_label);
 		$self->_list->Enable(1);
 		$self->_status_text->Enable(1);
-		$self->_ok_button->Enable(1);
+		$self->{ok_button}->Enable(1);
 	} else {
 		$self->_status_text->SetPage('');
 		$self->_list->Enable(0);
 		$self->_status_text->Enable(0);
-		$self->_ok_button->Enable(0);
+		$self->{ok_button}->Enable(0);
 	}
 
 	return;

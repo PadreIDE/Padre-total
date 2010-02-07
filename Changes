@@ -1,6 +1,27 @@
 Changes for Perl Application Development and Refactoring Environment
 
-0.56 To Be Released
+0.57 To Be Released
+    - Fix pluginmanager error dialog for plugin-event failure (BRAMBLE)
+    - Add status messages for Padre::File operations (SEWI)
+    - Select some files to close (SEWI)
+    - Select some files to reload (SEWI)
+    - GotoLine is now called Goto dialog (AZAWAWI)
+    - Goto dialog is now non-modal lazy single instance dialog (AZAWAWI)
+    - Goto dialog has a current positon/line number field (AZAWAWI)
+    - Regex editor dialog is now more compact and it includes regex helper
+      buttons (AZAWAWI)
+    - Regex editor dialog can now highlight matched text (AZAWAWI)
+    - Regex editor dialog can now display regex description (AZAWAWI)
+    - Implemented Replace (aka substitution) in Regex editor (AZAWAWI)
+    - Right click "Edit with Regex Editor" now works on user-selected
+      text (AZAWAWI)
+    - Added "headline" method to Padre::Project, which allows a project
+      to try and intuit the "primary" file in the project (for a CPAN
+      distribution of Foo::Bar this will be lib/Foo/Bar.pm) (ADAMK)
+    - Removed the final usage of the "Provider" phrasing, and made more
+      of the modules used by the Perl help provider run-time loaded (ADAMK)
+
+0.56 2010.02.01
     - Plugins may now add their GUI elements to the view menu (SEWI)
     - Padre now displays a dynamic to-do list generated from comments
       in your source code (CORION)
@@ -57,6 +78,25 @@ Changes for Perl Application Development and Refactoring Environment
       changes to the database) disable synchronous SQLite writes. This will
       reduce the time that Padre blocks, at the risk of config.db corruption
       if there is a hardware failure or operating system crash. (ADAMK)
+    - Fixed ticket #837: padre.exe should be able to be placed in
+      c:\strawberry\perl\site\bin (AZAWAWI)
+    - Improved "Goto Line" dialog to be smarter with better validation/error
+      messages (AZAWAWI)
+    - Open Resource can now display Perl package names for matching resources
+      (AZAWAWI)
+    - Fixed #838: Author tests should all check RELEASE_TESTING and/or
+      AUTOMATED_TESTING (RHEBUS, AZAWAWI)
+    - Fixed Regex Editor dialog destruction bug where multiple ->Show and
+      ->Destroy could lead to a Padre crash on WIN32 (AZAWAWI)
+    - Project detection differentiates between four different subclasses
+      of Perl build systems (three of those correctly) (ADAMK)
+    - Function List has resource locking around it and properly triggers a
+      refresh when we show it for an already open document (ADAMK)
+    - "Goto Line" dialog now supports going to lines and positions (AZAWAWI)
+    - Fixed perl to refactor action prefix for refactor menu for 
+      consistency (AZAWAWI)
+    - Fixed ticket #841: Quick Menu Access should show the location of the 
+      menu item on the menu system (AZAWAWI)
 
 0.55 2010.01.21
     - Add full list of file types to the View Document As menu (SZABGAB)

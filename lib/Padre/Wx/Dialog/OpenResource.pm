@@ -3,24 +3,26 @@ package Padre::Wx::Dialog::OpenResource;
 use 5.008;
 use strict;
 use warnings;
-use Cwd             ();
-use Padre::DB       ();
-use Padre::Wx       ();
-use Padre::Wx::Icon ();
+use Cwd              ();
+use Padre::DB        ();
+use Padre::Wx        ();
+use Padre::Wx::Icon  ();
+use Padre::MimeTypes ();
 
-our $VERSION = '0.55';
-our @ISA     = 'Wx::Dialog';
+our $VERSION = '0.56';
+our @ISA     = qw{
+	Padre::Wx::Role::MainChild
+	Wx::Dialog
+};
 
 use Class::XSAccessor {
 	accessors => {
-		_main                     => '_main',                     # Padre's main window
 		_sizer                    => '_sizer',                    # window sizer
 		_search_text              => '_search_text',              # search text control
 		_matches_list             => '_matches_list',             # matches list
 		_status_text              => '_status_text',              # status label
 		_directory                => '_directory',                # searched directory
 		_matched_files            => '_matched_files',            # matched files list
-		_ok_button                => '_ok_button',                # OK button
 		_copy_button              => '_copy_button',              # copy button
 		_popup_button             => '_popup_button',             # popup button for options
 		_popup_menu               => '_popup_menu',               # options popup menu
@@ -43,7 +45,6 @@ sub new {
 		Wx::wxDEFAULT_FRAME_STYLE | Wx::wxTAB_TRAVERSAL,
 	);
 
-	$self->_main($main);
 	$self->init_search;
 
 	# Dialog's icon as is the same as Padre
@@ -63,7 +64,7 @@ sub init_search {
 	my $self = shift;
 
 	#Check if we have an open file so we can use its directory
-	my $doc = $self->_main->current->document;
+	my $doc = $self->current->document;
 	my $filename = ( defined $doc ) ? $doc->filename : undef;
 	my $dir;
 	if ($filename) {
@@ -97,7 +98,7 @@ sub init_search {
 sub _on_ok_button_clicked {
 	my ($self) = @_;
 
-	my $main = $self->_main;
+	my $main = $self->main;
 	$self->Hide;
 
 	#Open the selected resources here if the user pressed OK
@@ -183,10 +184,21 @@ sub _create_buttons {
 	my ($self) = @_;
 	my $sizer = $self->_sizer;
 
-	my $butsizer = $self->CreateStdDialogButtonSizer( Wx::wxOK | Wx::wxCANCEL );
-	$sizer->Add( $butsizer, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+	$self->{ok_button} = Wx::Button->new(
+		$self, Wx::wxID_OK, Wx::gettext('&OK'),
+	);
+	$self->{ok_button}->SetDefault;
+	$self->{cancel_button} = Wx::Button->new(
+		$self, Wx::wxID_CANCEL, Wx::gettext('&Cancel'),
+	);
+
+	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$buttons->AddStretchSpacer;
+	$buttons->Add( $self->{ok_button},     0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$buttons->Add( $self->{cancel_button}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer->Add( $buttons, 0, Wx::wxALL | Wx::wxEXPAND | Wx::wxALIGN_CENTER, 5 );
+
 	Wx::Event::EVT_BUTTON( $self, Wx::wxID_OK, \&_on_ok_button_clicked );
-	$self->_ok_button( Wx::Window::FindWindowById( Wx::wxID_OK, $self ) );
 }
 
 #
@@ -406,7 +418,7 @@ sub show {
 	if ( $self->IsShown ) {
 		$self->SetFocus;
 	} else {
-		my $editor = $self->_main->current->editor;
+		my $editor = $self->current->editor;
 		if ($editor) {
 			my $selection        = $editor->GetSelectedText;
 			my $selection_length = length $selection;
@@ -511,7 +523,17 @@ sub _update_matches_list_box {
 	foreach my $file ( @{ $self->_matched_files } ) {
 		my $filename = File::Basename::fileparse($file);
 		if ( $filename =~ /^$search_expr/i ) {
-			$self->_matches_list->Insert( $filename, $pos, $file );
+
+			# Display package name if it is a Perl file
+			my $pkg = '';
+			my $mime_type = Padre::MimeTypes->guess_mimetype( undef, $file );
+			if ( $mime_type eq 'application/x-perl' or $mime_type eq 'application/x-perl6' ) {
+				my $contents = Padre::Util::slurp($file);
+				if ( $contents && $$contents =~ /\s*package\s+(.+);/ ) {
+					$pkg = "  ($1)";
+				}
+			}
+			$self->_matches_list->Insert( $filename . $pkg, $pos, $file );
 			$pos++;
 		}
 	}
@@ -520,12 +542,12 @@ sub _update_matches_list_box {
 		$self->_status_text->ChangeValue( $self->_path( $self->_matches_list->GetClientData(0) ) );
 		$self->_status_text->Enable(1);
 		$self->_copy_button->Enable(1);
-		$self->_ok_button->Enable(1);
+		$self->{ok_button}->Enable(1);
 	} else {
 		$self->_status_text->ChangeValue('');
 		$self->_status_text->Enable(0);
 		$self->_copy_button->Enable(0);
-		$self->_ok_button->Enable(0);
+		$self->{ok_button}->Enable(0);
 	}
 
 	return;

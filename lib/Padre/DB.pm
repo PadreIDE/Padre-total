@@ -17,7 +17,7 @@ use ORLite 1.36 ();
 # Remove the trailing -DEBUG to get debugging info on ORLite magic
 use Padre::DB::Migrate {
 	create        => 1,
-	tables        => [ 'Modules' ],
+	tables        => ['Modules'],
 	file          => Padre::Constant::CONFIG_HOST,
 	user_revision => 11,
 	timeline      => File::Spec->catdir(
@@ -39,7 +39,7 @@ use Padre::DB::LastPositionInFile ();
 use Padre::DB::Session            ();
 use Padre::DB::SessionFile        ();
 
-our $VERSION    = '0.55';
+our $VERSION    = '0.56';
 our $COMPATIBLE = '0.26';
 
 
