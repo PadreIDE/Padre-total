@@ -106,6 +106,7 @@ sub on_session_start {
     while ( $sock->Read( $data , 1024,  length($data) ) ) {
         $message = eval { $marshal->incr_parse($data) }; 
         if ( $@ ) { $marshal->incr_skip }
+        TRACE( "Skipped unparsable incremental $@" ) if DEBUG;
         last if $message;
         $data='';
     }
@@ -148,24 +149,30 @@ sub on_socket_input {
     my @messages;
     my $data = '';
     # TODO - can we yield to WxIdle in here? .. safely?
-    while ( $sock->Read( $data, 1024 ) ) {
-        my $m = eval { $marshal->incr_parse($data) };
+    while ( $sock->Read( $data, 1024, length($data)  ) ) {
+        my @m = eval { $marshal->incr_parse($data) };
         if ($@) {
             TRACE( "Unparsable message - $@" ) if DEBUG;
             $data = '';
             $marshal->incr_skip;
         } else {
-            push @messages ,$m if $m;
+            push @messages ,@m if @m;
         }
         $data='';
     }
     
     foreach my $m ( @messages ) {
         next unless ref $m eq 'HASH';
+        
+        $m->{transport} = 'global';
         my $type = $m->{type};
         my $origin = $m->{__origin_class};
-        my $class = $origin || 'Padre::Swarm::Message::'.ucfirst($type);
+        
+        # TODO proper rebless 
+        #my $class = $origin || 'Padre::Swarm::Message::'.ucfirst($type);
+        my $class = 'Padre::Swarm::Message';
         bless $m , $class;
+        TRACE( " Got " . $m->type . " from " . $m->from ) if DEBUG;
         $self->on_recv->($m) if $self->on_recv;
     }
     

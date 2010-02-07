@@ -58,7 +58,8 @@ SCOPE: {
 	$SOCK_SEND = Wx::DatagramSocket->new( $WxLocalAddr );
 	
 	my $global = new Padre::Plugin::Swarm::Transport::Global::WxSocket
-		wx => $self->wx;
+		wx => $self->wx,
+		on_recv => sub { $self->accept_message(@_) };
 		
 		
 	$global->enable;
@@ -68,7 +69,7 @@ SCOPE: {
 		Padre->ide->wx,
 		-1,
 		$EVT_RECV,
-		sub { $self->accept_message(@_) }
+		sub { $self->on_message_recv(@_) }
 	);
 	
 	
@@ -112,9 +113,8 @@ sub _send {
 
 }
 
-sub accept_message { 
+sub on_message_recv {
 	my ($self,$wx,$event) = @_;
-	my $main = $wx->main;
 	my $data = $event->GetData;
 	unless ( __PACKAGE__->instance ) {
 		TRACE( "Caught message event late/early '$data'" ) if DEBUG;
@@ -133,9 +133,17 @@ sub accept_message {
 	}
 	my $message = eval {  Storable::thaw( $data ); };
 	TRACE( "Got $message from service" ) if DEBUG;
+	$self->accept_message($message);
+}
+
+
+sub accept_message { 
+	my $self = shift;
+	my $message = shift;
 	# TODO can i use 'SWARM' instead?
-	my $lock = $main->lock('UPDATE'); 
+	my $lock = $self->main->lock('UPDATE'); 
 	my $handler = 'accept_' . $message->type;
+	
 	if ( $self->can( $handler ) ) {
 		TRACE( $handler ) if DEBUG;
 		eval { $self->$handler( $message ); };
@@ -147,17 +155,18 @@ sub accept_message {
 	# TODO resource browser should trap the event itself. 
 	#$self->resources->refresh;
 	
-	# 
+	#
+	my $data = Storable::freeze( $message ); 
 	Wx::PostEvent(
                 $self->wx,
                 Wx::PlThreadEvent->new( -1, $self->message_event , $data ),
         ) if $self->message_event;
+
 }
 
 sub accept_disco {
 	my ($self,$message) = @_;
 	$self->send( {type=>'promote',service=>'swarm'} );
-	
 }
 
 

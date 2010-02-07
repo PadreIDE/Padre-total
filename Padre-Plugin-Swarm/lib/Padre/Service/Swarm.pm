@@ -118,6 +118,7 @@ sub handle_message {
 	my $self = shift;
 	my $message = shift;
 	return unless $message;
+	$message->{transport} = 'local';
 	$self->post_event( 
 		$self->event, 
 		Storable::freeze ($message)
