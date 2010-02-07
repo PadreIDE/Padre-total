@@ -57,6 +57,13 @@ SCOPE: {
 	$SERVICE = $listen_service;
 	$SOCK_SEND = Wx::DatagramSocket->new( $WxLocalAddr );
 	
+	my $global = new Padre::Plugin::Swarm::Transport::Global::WxSocket
+		wx => $self->wx;
+		
+		
+	$global->enable;
+	$self->{global} = $global;
+	
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx,
 		-1,
@@ -72,6 +79,10 @@ SCOPE: {
   	
   	
   	$SERVICE->tell('HANGUP');
+  	
+  	$self->{global}->disable;
+  	delete $self->{global};
+  	
   	$self->send( {type=>'leave'} );
   	
   	undef $EVT_RECV;
@@ -95,6 +106,7 @@ sub _send {
 	my $data =  $SERVICE->marshal->encode( $message );
 	$SOCK_SEND->SendTo($WxSwarmAddr, $data, length($data) );
 	
+	$self->{global}->write( $data ) if $self->{global};
 }
 
 
@@ -250,7 +262,7 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Wx::Resources;
 		require Padre::Plugin::Swarm::Wx::Editor;
 		require Padre::Plugin::Swarm::Wx::Preferences;
-		#require Padre::Plugin::Swarm::Transport::Global::WxSocket;
+		require Padre::Plugin::Swarm::Transport::Global::WxSocket;
 		
 		my $config = $self->config_read;
 		$self->config( $config );
