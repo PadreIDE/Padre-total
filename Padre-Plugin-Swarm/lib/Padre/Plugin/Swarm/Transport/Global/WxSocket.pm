@@ -1,7 +1,7 @@
 package Padre::Plugin::Swarm::Transport::Global::WxSocket;
 use strict;
 use warnings;
-use JSON::XS;
+use JSON;
 use Wx qw( :socket );
 use Padre::Wx ();
 use Padre::Logger;
@@ -25,7 +25,7 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub enable {
     my $self = shift;
     
-    my $marshal = JSON::XS->new;
+    my $marshal = JSON->new;
     $self->{marshal} = $marshal;
 #    my $config = $self->plugin->config_read;
 #    my $servername = $config->{global_server};

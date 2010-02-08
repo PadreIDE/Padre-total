@@ -2,7 +2,7 @@ package Padre::Service::Swarm;
 
 use strict;
 use warnings;
-use JSON::XS;
+use JSON;
 use Padre::Wx      ();
 use Padre::Service ();
 use Padre::Swarm::Message;
@@ -126,7 +126,7 @@ sub handle_message {
 }
 
 sub marshal {
-	JSON::XS->new
+	JSON->new
 		->allow_blessed
 		->convert_blessed
 		->utf8

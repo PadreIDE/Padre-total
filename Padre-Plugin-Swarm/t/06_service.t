@@ -1,5 +1,5 @@
 use Test::More skip_all => 'Still trouble driving padre in testing';
-use JSON::XS;
+use JSON;
 use t::lib::Demo;
 
 use threads;         # need to be loaded before Padre
@@ -25,7 +25,7 @@ diag( "WX event is " . $chat->event );
 
 
 $socket->mcast_send(
-        JSON::XS::encode_json( {
+        JSON::encode_json( {
 		from => getlogin(),
 		type =>'chat',
 		body => 'test',

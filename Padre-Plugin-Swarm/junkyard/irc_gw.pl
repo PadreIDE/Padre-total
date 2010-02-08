@@ -4,7 +4,7 @@ use strict;
 use AnyEvent;
 use AnyEvent::IRC::Client;
 use Data::Dumper;
-use JSON::XS;
+use JSON;
 use Padre::Swarm::Transport::Multicast;
 my $gatewayid = rand() . $$;
 
@@ -77,7 +77,7 @@ $con->reg_cb(
             gw => $gatewayid,
             entity => $con->nick, };
             
-      $swarm->tell_channel( 12000, JSON::XS::encode_json $msg );
+      $swarm->tell_channel( 12000, JSON::encode_json $msg );
       #$io->push_write( json => $msg );
    }
 );

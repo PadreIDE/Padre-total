@@ -5,7 +5,6 @@ use warnings;
 use Params::Util qw( _INSTANCE );
 use Graph;
 use Graph::Directed;
-use JSON::XS;
 use Class::XSAccessor 
     accessors => {
 	graph => 'graph',

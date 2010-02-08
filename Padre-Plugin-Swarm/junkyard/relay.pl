@@ -6,7 +6,7 @@ use AnyEvent;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use IO::Socket::Multicast;
-use JSON::XS;
+use JSON;
 use Carp qw( cluck );
 
 $|++;
@@ -132,7 +132,7 @@ sub swarm_recv {
         
     }
     $message->{_relay} = $handle->{token};
-    my $payload = JSON::XS::encode_json($message);
+    my $payload = JSON::encode_json($message);
     #$ae_local->fh->mcast_send(
     #    $payload,
     #    '239.255.255.1:12000', 
