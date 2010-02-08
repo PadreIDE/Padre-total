@@ -58,7 +58,7 @@ sub new {
 		# These are the locations to pull down the msm.
 		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.1.msm',
 		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.1.zip',
-		msm_code   => '25668C6A-4ECB-3842-B85F-6F663B4E3A38',
+		msm_code   => 'BC4B680E-4871-31E7-9883-3E2C74EA4F3C',
 
 		# Tasks to complete to create Strawberry + Padre.
 		tasklist => [
