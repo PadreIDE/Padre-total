@@ -222,7 +222,7 @@ sub accept_disco {
 =cut
 
 
-sub accept_runme {
+sub NEVER_accept_runme {
     my ($self,$message) = @_;
     # Previously the honour system - now pure evil.
     return if $message->from eq $self->plugin->identity->nickname;
