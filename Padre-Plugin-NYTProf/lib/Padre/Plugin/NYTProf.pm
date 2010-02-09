@@ -68,7 +68,7 @@ sub on_start_profiling {
 	# need to move these out to the plugin component
 	$prof_settings{doc_path} = Padre::Current->document->filename;
 	$prof_settings{temp_dir} = File::Temp::tempdir;
-	$prof_settings{perl} = Padre->perl_interpreter;
+	$prof_settings{perl} = Padre::Perl->perl;
 	$prof_settings{report_file} = $prof_settings{temp_dir} . "/nytprof.out";
 	my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new(\%prof_settings);
 	$prof_task->schedule;
@@ -85,6 +85,11 @@ sub on_generate_report {
     # nytprof gets put into the perl bin directory
     #my $bin_path = $prof_settings{perl};
     #$bin_path =~ dirname( $bin_path); #s/[^\\\/](perl.*$)//i;
+    
+    # TODO the path to nytprofhtml has changed to /usr/local/bin
+    # I'm not sure if this is due to the way I installed it or
+    # if this is a change with the install location with nytprof.
+    # so this needs to be done better.
     
     my( $fname, $bin_path, $suffix ) = File::Basename::fileparse( $prof_settings{perl} );
     my $report = $prof_settings{perl} . ' ' . $bin_path . 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
