@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 Febuary 09
+        url: http://csjewell.dreamwidth.org/8334.html
+        title: Release announcements
+        comment: by Curtis Jewell
       - date: 2010 Febuary 07
         url: http://perlwannabe.vox.com/library/post/padre-056-the-missing-release-announcement.html
         title: Padre 0.56 the Missing Release Announcement
