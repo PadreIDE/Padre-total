@@ -171,7 +171,7 @@ channel answering all my clearly lack of reading questions.
 
 =head1 SEE ALSO
 
-L<Catalyst>, L<Padre>
+L<Padre>
 
 
 =head1 COPYRIGHT & LICENSE
