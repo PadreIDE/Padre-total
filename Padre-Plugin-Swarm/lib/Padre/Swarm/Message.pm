@@ -53,8 +53,7 @@ sub TO_JSON {
 	unless ( $msg =~ s/^Padre::Swarm::Message:*// ) {
 		croak "Not a swarm message!";
 	}
-	# warn "Sending msg origin class of '$msg'";
-	$ref->{__origin_class} = $msg if $msg; 
+	$ref->{__origin_class} = $msg if $msg;  # see Transport::_marshal
 	$ref;
 }
 

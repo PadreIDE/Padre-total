@@ -1,10 +1,10 @@
 package Padre::Plugin::Swarm::Transport::Global::WxSocket;
 use strict;
 use warnings;
-use JSON;
 use Wx qw( :socket );
 use Padre::Wx ();
 use Padre::Logger;
+use base qw( Padre::Plugin::Swarm::Transport );
 
 our $VERSION = '0.08';
 
@@ -13,6 +13,7 @@ use Class::XSAccessor
     accessors => {
         socket => 'socket',
         config => 'config',
+        token  => 'token',
         on_connect => 'on_connect',
         on_disconnect => 'on_disconnect',
         on_recv => 'on_recv',
@@ -20,24 +21,16 @@ use Class::XSAccessor
     };
     
 
-sub plugin { Padre::Plugin::Swarm->instance }
 
 sub enable {
     my $self = shift;
-    
-    my $marshal = JSON->new;
-    $self->{marshal} = $marshal;
-#    my $config = $self->plugin->config_read;
-#    my $servername = $config->{global_server};
     my $servername = 'swarm.perlide.org';
-
     $self->connect( $servername ) ;
 }
 
 sub disable { 
     my $self = shift;
-    $self->socket->Destroy;
-    
+    $self->disconnect;
 }
 
 sub connect {
@@ -61,8 +54,11 @@ sub connect {
     
 
 
-    #                         Don't wait for it!
-    $sock->Connect( $addr , 12000, 0 );
+    $sock->Connect( 
+        $addr , # Host 
+        12000,  # Port
+        0       # blocking/nonblocking
+    );
     
     
 
@@ -70,7 +66,7 @@ sub connect {
 
 sub disconnect {
     my $self = shift;
-    warn "Disconnect!";
+    TRACE( "Disconnecting!" ) if DEBUG;
     $self->socket->Destroy;
     
 }
@@ -86,17 +82,20 @@ sub on_socket_connect {
             { type=>'session' , trustme=>'foo' }
         );
 
+    # TODO - check for errors after writing, wx only throws
+    # SOCKET_LOST events, errors are for us to catch
     $sock->Write( $payload , length($payload) );
+    
     
     Wx::Event::EVT_SOCKET_INPUT($wx, $sock ,
         sub { $self->on_session_start(@_ ) }
     ) ;
     
 
-   # TODO set a timer to wait for the session response
+   # TODO set a timer to check for the session response
+   # and do something if it does not work
 
 }
-use Data::Dumper;
 
 sub on_session_start {
     my ($self,$sock,$wx,$evt) = @_;
@@ -105,25 +104,32 @@ sub on_session_start {
     my $marshal = $self->marshal;
     while ( $sock->Read( $data , 1024,  length($data) ) ) {
         $message = eval { $marshal->incr_parse($data) }; 
-        if ( $@ ) { $marshal->incr_skip }
-        TRACE( "Skipped unparsable incremental $@" ) if DEBUG;
+        if ( $@ ) { 
+            $marshal->incr_skip
+            TRACE( "Skipped unparsable incremental $@" ) if DEBUG;
+        }
         last if $message;
         $data='';
     }
+    
+    return unless $message;
 
     if ( $message->{session} eq 'authorized' ) {
         $self->{token} = $message->{token};
         TRACE( "Authorized with " . $message->{token} ) if DEBUG;
        
+        # Now hook the event to our input filter
         Wx::Event::EVT_SOCKET_INPUT($wx, $sock ,
             sub { $self->on_socket_input(@_ ) }
         ) ;
         
-        # Send any buffered messages
+        # Send any buffered messages now that the session
+        # is 'authorized'
         if ($self->{write_queue}) {
             $self->write( $_ ) for @{ $self->{write_queue} }
         }
         
+        # Notify the callback
         $self->on_connect->() if $self->on_connect;
         
     }
@@ -141,19 +147,19 @@ sub on_socket_lost {
 
 sub on_socket_input {
     my ($self,$sock,$wx,$evt) = @_;
-    $evt->Skip(0) unless $self->{token};
     
     TRACE( "Socket Input" ) if DEBUG;
     my $marshal = $self->marshal;
     
     my @messages;
     my $data = '';
+    # Read chunks of data from the socket until there is
+    # no more to read, feeding it into the decoder.
     # TODO - can we yield to WxIdle in here? .. safely?
     while ( $sock->Read( $data, 1024, length($data)  ) ) {
         my @m = eval { $marshal->incr_parse($data) };
         if ($@) {
             TRACE( "Unparsable message - $@" ) if DEBUG;
-            $data = '';
             $marshal->incr_skip;
         } else {
             push @messages ,@m if @m;
@@ -162,7 +168,7 @@ sub on_socket_input {
     }
     
     foreach my $m ( @messages ) {
-        next unless ref $m eq 'HASH';
+        #next unless ref $m eq 'HASH';
         
         $m->{transport} = 'global';
         my $type = $m->{type};
@@ -170,9 +176,11 @@ sub on_socket_input {
         
         # TODO proper rebless 
         #my $class = $origin || 'Padre::Swarm::Message::'.ucfirst($type);
-        my $class = 'Padre::Swarm::Message';
-        bless $m , $class;
+        #my $class = 'Padre::Swarm::Message';
+        #bless $m , $class;
+        
         TRACE( " Got " . $m->type . " from " . $m->from ) if DEBUG;
+        # Notify the on_recv callback
         $self->on_recv->($m) if $self->on_recv;
     }
     

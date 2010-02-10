@@ -69,9 +69,9 @@ sub enable {
 	};
 	
 	# TODO - when enabled - announce the open editor tabs!
-	$self->editor_enable( $_ )
-	    for $self->plugin->main->editors;
-	    
+	foreach my $editor ( $self->plugin->main->editors ) {
+	    $self->editor_enable( $editor, $editor->{Document} )
+	}
 	TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
 }
 

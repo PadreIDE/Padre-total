@@ -104,6 +104,7 @@ sub _send {
 	my $self = shift;
 	my $message = shift;
 	$message->{from} = $self->identity->nickname;
+	
 	my $data =  $SERVICE->marshal->encode( $message );
 	$SOCK_SEND->SendTo($WxSwarmAddr, $data, length($data) );
 	
@@ -272,11 +273,11 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Wx::Editor;
 		require Padre::Plugin::Swarm::Wx::Preferences;
 		require Padre::Plugin::Swarm::Transport::Global::WxSocket;
+		require Padre::Plugin::Swarm::Transport::Local::Multicast;
 		
 		my $config = $self->config_read;
 		$self->config( $config );
-
-
+		
 		
 		$self->geometry( Padre::Swarm::Geometry->new );
 		
@@ -301,6 +302,7 @@ SCOPE: {
 
 	sub plugin_disable {
 		my $self = shift;
+		
 		$self->chat->disable;
 		$self->chat(undef);
 		
@@ -322,12 +324,12 @@ sub plugin_preferences {
 	my $self = shift;
 	my $wx = shift;
 	eval { 
-	my $dialog = Padre::Plugin::Swarm::Wx::Preferences->new($wx);
-	$dialog->ShowModal;
-	$dialog->Destroy;
+		my $dialog = Padre::Plugin::Swarm::Wx::Preferences->new($wx);
+		$dialog->ShowModal;
+		$dialog->Destroy;
+	};
 	
-};
-	warn $@ if $@;
+	TRACE( "Preferences error $@" ) if DEBUG && $@;
 	
 	return;
 }
@@ -342,9 +344,6 @@ sub editor_disable {
 	my $self = shift;
 	$self->editor->editor_disable(@_);
 }
-
-
-
 
 
 # oh noes!
