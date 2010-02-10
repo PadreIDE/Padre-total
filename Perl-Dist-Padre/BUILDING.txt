@@ -1,10 +1,10 @@
-It is assumed that wget, unzip, and svn are available.
+It is assumed that unzip and svn are available.
 
-You can download wget and unzip from 
+You can download unzip from 
 http://gnuwin32.sourceforge.net/packages.html
 and svn from http://subversion.tigris.org/getting.html#windows
 
-It is also assumed that Archive::Tar and IO::Compress::Gzip are installed.
+It is also assumed that LWP, Archive::Tar and IO::Compress::Gzip are installed.
 (this is the case for any Strawberry Perl distribution.)
 
 rem Setup CPAN environment variable to point to you choice of CPAN mirror
@@ -30,9 +30,9 @@ Version 0.46 removed this problem (it adjusts the location on the fly.)
 1a) Getting the Alien::wxWidgets .par file.
 
 cd C:\
-wget http://www.commandline.co.uk/mtee/mtee.zip
+lwp-download http://www.commandline.co.uk/mtee/mtee.zip
 unzip mtee.zip
-wget http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par
+lwp-download http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par
 
 NOTE: This .par includes wxWidgets 2.9.0. Previous .par files included 2.8.10.
 
@@ -43,9 +43,9 @@ rem Setup which version of Alien wxWidgets to use
 set ALIEN_WIDGETS=Alien-wxWidgets-0.50
 
 cd C:\
-wget http://www.commandline.co.uk/mtee/mtee.zip
+lwp-download http://www.commandline.co.uk/mtee/mtee.zip
 unzip mtee.zip
-wget %CPAN%/authors/id/M/MB/MBARBON/%ALIEN_WIDGETS%.tar.gz
+lwp-download %CPAN%/authors/id/M/MB/MBARBON/%ALIEN_WIDGETS%.tar.gz
 ptar -x -z -f %ALIEN_WIDGETS%.tar.gz
 cd %ALIEN_WIDGETS%
 perl Makefile.PL
