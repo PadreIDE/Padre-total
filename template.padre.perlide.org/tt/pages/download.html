@@ -82,17 +82,26 @@
   <li><a href="http://strawberryperl.com/download/padre/strawberry-plus-padre-0.56.zip">Padre 0.56 zip</a></li>
  </ul>
 <p><b>Warning:</b> there is a known bug in the 0.56 Stand Alone Padre for Windows.<br />
-rem These 2 lines delete the old version, just to be safe.<br />
-del /F c:\strawberry\perl\vendor\lib\Alien\wxWidgets.pm<br />
-del /F /S c:\strawberry\perl\vendor\lib\Alien\wxWidgets\*.*<br />
-<br /><br />
-rem The next command should all be on one line,<br />
-rem and will install the fixed libraries.<br />
-perl -MPAR::Dist -e"install_par<br />
-q(http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par)"<br />
-<br /><br />
-rem This rebuilds the Wx perl connector.<br />
-cpan -f Wx<br />
+
+<div style="border: 1px solid grey; background-color: #F8F8F8; padding: 5px">
+<pre style="font-family: Consolas, Courier New, Courier, monospace; font-size: 10pt;">
+<span style="color: #FF00FF;">@</span><span style="font-weight: bold; color: #0000FF;">echo</span><span> off
+</span><span style="color: #008000;">rem These 2 lines delete the old version, just to be safe.
+</span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Deleting the old Alien::wxWidgets version (just to be safe).
+</span><span style="font-weight: bold; color: #0000FF;">del</span><span> /Q /F c:\strawberry\perl\vendor\lib\Alien\wxWidgets.pm
+</span><span style="font-weight: bold; color: #0000FF;">del</span><span> /Q /F /S c:\strawberry\perl\vendor\lib\Alien\wxWidgets\</span><span style="font-weight: bold; color: #FF0000;">*</span><span>.</span><span style="font-weight: bold; color: #FF0000;">*</span><span>
+
+</span><span style="color: #008000;">rem The next command should all be on one line and will install the fixed libraries.
+</span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Installing fixed libraries (6.7MB)
+</span><span style="color: #0080FF;">perl</span><span> -MPAR::Dist -e"install_par q(<a href="http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par">http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par</a>)"
+
+</span><span style="color: #008000;">rem This rebuilds the Wx perl connector. 
+</span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Rebuilding the Wx perl connector
+</span><span style="font-weight: bold; color: #0000FF;">call</span><span style="color: #0080FF;"> cpan</span><span> -f Wx
+
+</span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Patch is installed. This prevents Padre from crashing on exit</span>
+<pre>
+</div>
 <br /><br />
 (The .par file has now been updated to use wxWidgets 2.8.10 instead of
 the 2.9.0 that was used.)
