@@ -73,16 +73,29 @@
  The <b>Padre Standalone</b> package contains
 </p>
 <ul>
-  <li>Strawberry Perl 5.10.1.0</li>
-  <li>Padre 0.50</li>
+  <li>Strawberry Perl 5.10.1.1</li>
+  <li>Padre 0.56</li>
 </ul>
  <p>Download from here:</p>
  <ul>
-  <li><a href="http://www.strawberryperl.com/download/padre/padre-standalone-0.50.msi">Padre 0.50 MSI</a> (recommended)</li>
-  <li><a href="http://www.strawberryperl.com/download/padre/padre-standalone-0.50.zip">Padre 0.50 zip</a></li>
+  <li><a href="http://strawberryperl.com/download/padre/strawberry-plus-padre-0.56.msi">Padre 0.56 MSI</a> (recommended)</li>
+  <li><a href="http://strawberryperl.com/download/padre/strawberry-plus-padre-0.56.zip">Padre 0.56 zip</a></li>
  </ul>
-<p><b>Warning:</b> there is a known bug in the 0.50 Stand Alone Padre for Windows. After installation the first time you
-will need to launch the c:\strawberry\perl\bin\padre.bat and only after that you can use the Padre icon.
+<p><b>Warning:</b> there is a known bug in the 0.56 Stand Alone Padre for Windows.<br />
+rem These 2 lines delete the old version, just to be safe.<br />
+del /F c:\strawberry\perl\vendor\lib\Alien\wxWidgets.pm<br />
+del /F /S c:\strawberry\perl\vendor\lib\Alien\wxWidgets\*.*<br />
+<br /><br />
+rem The next command should all be on one line,<br />
+rem and will install the fixed libraries.<br />
+perl -MPAR::Dist -e"install_par<br />
+q(http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par)"<br />
+<br /><br />
+rem This rebuilds the Wx perl connector.<br />
+cpan -f Wx<br />
+<br /><br />
+(The .par file has now been updated to use wxWidgets 2.8.10 instead of
+the 2.9.0 that was used.)
 </p>
 
  <p>
@@ -127,14 +140,14 @@ will need to launch the c:\strawberry\perl\bin\padre.bat and only after that you
 
 The experimental <b>Padre Stand Alone for Linux</b> contains
  <ul>
-  <li>perl 5.11.3</li>
-  <li>Padre 0.53</li>
+  <li>perl 5.11.4</li>
+  <li>Padre 0.55</li>
  </ul>
 <p>Download from here:</p>
 <ul>
- <li><a href="http://perlide.org/download/binary/perl-5.11.3-xl-0.03.tar.gz">perl-5.11.3-xl-0.03.tar.gz</a></li>
- <li>unzip it using <code>tar xzf perl-5.11.3-xl-0.03.tar.gz</code></li>
- <li>Run <code>./perl-5.11.3-xl-0.03/perl/bin/padre.sh</code> (the .sh file!)</li>
+ <li><a href="http://perlide.org/download/binary/perl-5.11.4-xl-0.03.tar.bz2">perl-5.11.4-xl-0.03.tar.bz2</a></li>
+ <li>unzip it using <code>tar xjf perl-5.11.4-xl-0.03.tar.bz2</code></li>
+ <li>Run <code>./perl-5.11.4-xl-0.03/perl/bin/padre.sh</code> (the .sh file!)</li>
 </ul>
 
 <p>Previous version contained</p>
