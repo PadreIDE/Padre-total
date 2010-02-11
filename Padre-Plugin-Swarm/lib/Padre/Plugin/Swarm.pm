@@ -44,14 +44,6 @@ sub connect {
 	$global->enable;
 	$self->transport( $global );
 	
-	Wx::Event::EVT_COMMAND(
-		Padre->ide->wx,
-		-1,
-		$EVT_RECV,
-		sub { $self->on_message_recv(@_) }
-	);
-	
-	
 }
 
 sub disconnect {
@@ -98,9 +90,6 @@ sub on_recv {
 	
 	# TODO - make these parts use the message event! srsly
 	$self->geometry->On_SwarmMessage( $message );
-	
-	# TODO resource browser should trap the event itself. 
-	#$self->resources->refresh;
 	
 	#
 	my $data = Storable::freeze( $message ); 
