@@ -25,45 +25,24 @@ use Class::XSAccessor
 		config   => 'config',
 		message_event => 'message_event',
 		wx => 'wx',
+		transport => 'transport',
 	};
 	
 
 
-
-# The padre multicast group (unofficial)
-my $WxSwarmAddr = Wx::IPV4address->new;
-$WxSwarmAddr->SetHostname('239.255.255.1');
-$WxSwarmAddr->SetService(12000);
-
-# Local address 
-my $WxLocalAddr = Wx::IPV4address->new;
-$WxLocalAddr->SetAnyAddress;
-$WxLocalAddr->SetService( 0 );
-
-
-
-
-
-SCOPE: {
-  my $SOCK_SEND;
-  my $EVT_RECV;
-  my $EVT_SWARM_RECV ;
-  my $SERVICE;
-  sub connect {
+sub connect {
 	my $self = shift;
-	my $listen_service = Padre::Service::Swarm->new;
-	$listen_service->schedule;
-	$EVT_RECV = $listen_service->event;
-	$SERVICE = $listen_service;
-	$SOCK_SEND = Wx::DatagramSocket->new( $WxLocalAddr );
-	
+
+	# For now - use global
 	my $global = new Padre::Plugin::Swarm::Transport::Global::WxSocket
 		wx => $self->wx,
-		on_recv => sub { $self->accept_message(@_) };
+		on_recv => sub { $self->accept_message(@_) } ,
+		on_connect => sub { $self->on_transport_connect(@_) },
+		on_disconnect => sub { $self->on_transport_disconnect(@_) };
 		
 		
 	$global->enable;
-	$self->{global} = $global;
+	$self->transport( $global );
 	
 	Wx::Event::EVT_COMMAND(
 		Padre->ide->wx,
@@ -73,72 +52,39 @@ SCOPE: {
 	);
 	
 	
-  }
-  
-  sub disconnect {
-  	my $self = shift;
-  	
-  	
-  	$SERVICE->tell('HANGUP');
-  	
-  	$self->{global}->disable;
-  	delete $self->{global};
-  	
-  	$self->send( {type=>'leave'} );
-  	
-  	undef $EVT_RECV;
-  	undef $SOCK_SEND;
-  	undef $EVT_SWARM_RECV;
-  	
-  	
-  }
-
-sub event { $EVT_RECV }
-
-sub send {
-	return unless $SOCK_SEND;
-	shift->_send(@_);
 }
 
-sub _send {
+sub disconnect {
+	my $self = shift;
+
+	$self->send( {type=>'leave'} );
+	$self->transport->disable;
+	$self->transport(undef);
+
+}
+
+sub send {
 	my $self = shift;
 	my $message = shift;
 	$message->{from} = $self->identity->nickname;
+	$self->transport->send( $data );
+}
+
+sub on_transport_connect {
+	my ($self) = @_;
 	
-	my $data =  $SERVICE->marshal->encode( $message );
-	$SOCK_SEND->SendTo($WxSwarmAddr, $data, length($data) );
-	
-	$self->{global}->write( $data ) if $self->{global};
+	TRACE( "Swarm transport connected" ) if DEBUG;
+	$self->send(
+		{ type=>'announce', service=>'swarm' }
+	);
+	$self->send(
+		{ type=>'disco', service=>'swarm' }
+	);
+	return;
 }
 
 
-}
-
-sub on_message_recv {
-	my ($self,$wx,$event) = @_;
-	my $data = $event->GetData;
-	unless ( __PACKAGE__->instance ) {
-		TRACE( "Caught message event late/early '$data'" ) if DEBUG;
-		return;
-	}
-
-	if ( $data eq 'ALIVE' ) {
-		TRACE( "Swarm service is alive" ) if DEBUG;
-		$self->send(
-			{ type=>'announce', service=>'swarm' }
-		);
-		$self->send(
-			{ type=>'disco', service=>'swarm' }
-		);
-		return;
-	}
-	my $message = eval {  Storable::thaw( $data ); };
-	TRACE( "Got $message from service" ) if DEBUG;
-	$self->accept_message($message);
-}
-
-
-sub accept_message { 
+sub on_recv { 
 	my $self = shift;
 	my $message = shift;
 	# TODO can i use 'SWARM' instead?
