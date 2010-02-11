@@ -250,7 +250,6 @@ SCOPE: {
 
 	sub plugin_disable {
 		my $self = shift;
-		
 		$self->chat->disable;
 		$self->chat(undef);
 		
@@ -260,7 +259,10 @@ SCOPE: {
 		$self->editor->disable;
 		$self->editor(undef);
 		
+		$self->wx->Destroy;
+		$self->wx(undef);
 		$self->disconnect;
+		
 	
 		undef $instance;
 	
