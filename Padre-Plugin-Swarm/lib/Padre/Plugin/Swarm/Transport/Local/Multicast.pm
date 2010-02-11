@@ -2,7 +2,6 @@ package Padre::Plugin::Swarm::Transport::Local::Multicast;
 use strict;
 use warnings;
 use Wx qw( :socket );
-use Wx::IPV4Address;
 use Padre::Wx ();
 use Padre::Logger;
 use base qw( Padre::Plugin::Swarm::Transport );
@@ -35,7 +34,7 @@ sub connect {
     my $local_address = Wx::IPV4address->new;
     $local_address->SetAnyAddress;
     $local_address->SetService( 0 ); # 0 == random source port
-    my $transmitter = Wx::DatagramSocket->new( $WxLocalAddr );
+    my $transmitter = Wx::DatagramSocket->new( $local_address );
 
     $self->socket( $transmitter );
 

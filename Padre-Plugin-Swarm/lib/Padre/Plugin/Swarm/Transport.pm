@@ -1,19 +1,35 @@
 package Padre::Plugin::Swarm::Transport;
 use strict;
 use warnings;
-
+use Padre::Logger;
 use JSON::PP;
-
 
 sub new {
 	my $class = shift;
 	my %args = @_;
 	$args{marshal} ||= $class->_marshal;
-	return $class->SUPER::new(%args);
+	bless \%args, $class;
 }
 
-
 sub plugin { Padre::Plugin::Swarm->instance }
+
+sub loopback { 0 }
+
+sub send {
+	my $self = shift;
+	my $message = shift;
+	my $data = eval { $self->marshal->encode( $message ) };
+	if ($data) {
+		$self->write($data);
+		$self->on_recv->($message)
+			if $self->on_recv && $self->loopback;
+		TRACE( "Sent message " . $message->type ) if DEBUG;
+	}
+	else {
+		TRACE( "Failed to encode message - $@" ) if DEBUG;
+	}
+	
+}
 
 sub _marshal {
 	JSON::PP->new

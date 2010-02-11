@@ -34,15 +34,17 @@ sub connect {
 	my $self = shift;
 
 	# For now - use global
-	my $global = new Padre::Plugin::Swarm::Transport::Global::WxSocket
+	my $global = 
+	Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
 		wx => $self->wx,
-		on_recv => sub { $self->accept_message(@_) } ,
+		on_recv => sub { $self->on_recv(@_) } ,
 		on_connect => sub { $self->on_transport_connect(@_) },
-		on_disconnect => sub { $self->on_transport_disconnect(@_) };
+		on_disconnect => sub { $self->on_transport_disconnect(@_) }
+	);
 		
-		
-	$global->enable;
 	$self->transport( $global );
+	$global->enable;
+
 	
 }
 
@@ -58,6 +60,10 @@ sub disconnect {
 sub send {
 	my $self = shift;
 	my $message = shift;
+	my $mclass = ref $message;
+	unless ( $mclass =~ /^Padre::Swarm::Message/ ) {
+		bless $message , 'Padre::Swarm::Message';
+	}
 	$message->{from} = $self->identity->nickname;
 	$self->transport->send( $message );
 }
@@ -75,10 +81,17 @@ sub on_transport_connect {
 	return;
 }
 
+sub on_transport_disconnect {
+	my ($self) = @_;
+	TRACE( "Swarm transport disconnected" ) if DEBUG;
+	
+}
+
 
 sub on_recv { 
 	my $self = shift;
 	my $message = shift;
+	TRACE( "on_recv handler for " . $message->type ) if DEBUG;
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE'); 
 	my $handler = 'accept_' . $message->type;

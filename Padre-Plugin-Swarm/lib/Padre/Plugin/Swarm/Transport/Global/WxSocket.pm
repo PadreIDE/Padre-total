@@ -9,7 +9,7 @@ use base qw( Padre::Plugin::Swarm::Transport );
 our $VERSION = '0.08';
 
 use Class::XSAccessor
-    constructor => 'new',
+#    constructor => 'new', # 
     accessors => {
         socket => 'socket',
         config => 'config',
@@ -20,7 +20,7 @@ use Class::XSAccessor
         marshal => 'marshal',
     };
     
-
+sub loopback { 1 }
 
 sub enable {
     my $self = shift;
@@ -105,7 +105,7 @@ sub on_session_start {
     while ( $sock->Read( $data , 1024,  length($data) ) ) {
         $message = eval { $marshal->incr_parse($data) }; 
         if ( $@ ) { 
-            $marshal->incr_skip
+            $marshal->incr_skip;
             TRACE( "Skipped unparsable incremental $@" ) if DEBUG;
         }
         last if $message;
