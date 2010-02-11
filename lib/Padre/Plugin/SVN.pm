@@ -523,7 +523,7 @@ sub svn_add {
 	if ($file->errstr) {
 		$main->error($file->errstr);
 	} else {
-		$main->message("$path scheduled to be added to " . $file->info->{_url});
+		$main->info("$path scheduled to be added to " . $file->info->{_url});
 	}
 
 	return;
