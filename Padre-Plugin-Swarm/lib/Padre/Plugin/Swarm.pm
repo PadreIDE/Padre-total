@@ -59,7 +59,7 @@ sub send {
 	my $self = shift;
 	my $message = shift;
 	$message->{from} = $self->identity->nickname;
-	$self->transport->send( $data );
+	$self->transport->send( $message );
 }
 
 sub on_transport_connect {
