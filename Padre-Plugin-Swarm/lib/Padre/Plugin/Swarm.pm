@@ -273,7 +273,8 @@ SCOPE: {
 	}
 }
 
-sub plugin_preferences {
+# TODO Re-anable this when padre can survive plugin_preferences death
+sub NOT_plugin_preferences {
 	my $self = shift;
 	my $wx = shift;
 	if  ( $self->instance ) {
@@ -400,6 +401,17 @@ Lessons learned here will be applied to more practical plugins later.
 =item Remote execution! Run arbitary code in other users' editor
 
 =back
+
+=head1 SEE ALSO
+
+L<Padre::Swarm::Manual>
+
+=head1 BUGS
+
+Many. Identity management and interaction with L<Padre::Swarm::Geometry> is
+rather poor.
+
+Crashes when 'Reload All Plugins' is called from the padre plugin manager
 
 
 =head1 COPYRIGHT

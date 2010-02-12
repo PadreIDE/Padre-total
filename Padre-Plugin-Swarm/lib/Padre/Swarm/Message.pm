@@ -45,6 +45,13 @@ sub from {
 	$self->{from};
 }
 
+sub service {
+	my $self = shift;
+	$self->{service} = shift if @_;
+	$self->{service};
+	
+}
+
 sub TO_JSON {
 	## really should be the canonical identity
 	my $self = shift;
