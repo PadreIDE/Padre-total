@@ -33,8 +33,10 @@ use Class::XSAccessor
 sub connect {
 	my $self = shift;
 
-	# For now - use global
-	my $global = 
+	# For now - use global, 
+	#  could be Padre::Plugin::Swarm::Transport::Local::Multicast
+	#   based on preferences
+	my $transport = 
 	Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
 		wx => $self->wx,
 		on_recv => sub { $self->on_recv(@_) } ,
@@ -42,8 +44,8 @@ sub connect {
 		on_disconnect => sub { $self->on_transport_disconnect(@_) }
 	);
 		
-	$self->transport( $global );
-	$global->enable;
+	$self->transport( $transport );
+	$transport->enable;
 
 	
 }
@@ -91,6 +93,7 @@ sub on_transport_disconnect {
 sub on_recv { 
 	my $self = shift;
 	my $message = shift;
+	
 	TRACE( "on_recv handler for " . $message->type ) if DEBUG;
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE'); 
@@ -273,6 +276,10 @@ SCOPE: {
 sub plugin_preferences {
 	my $self = shift;
 	my $wx = shift;
+	if  ( $self->instance ) {
+		die "Please disable plugin before editing preferences\n";
+		
+	}
 	eval { 
 		my $dialog = Padre::Plugin::Swarm::Wx::Preferences->new($wx);
 		$dialog->ShowModal;

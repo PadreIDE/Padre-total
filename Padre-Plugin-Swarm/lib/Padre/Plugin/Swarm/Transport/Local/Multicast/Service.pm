@@ -1,9 +1,4 @@
-package Padre::Plugin::Swarm::Transport::Multicast::Service;
-use strict;
-use warnings;
-
-package Padre::Service::Swarm;
-
+package Padre::Plugin::Swarm::Transport::Local::Multicast::Service;
 use strict;
 use warnings;
 use JSON;
@@ -29,7 +24,7 @@ sub hangup {
 	my $self = shift;
 	my $running = shift;
 	$$running = 0;
-	$self->client->shutdown(1);
+	$self->client->shutdown(1) if $self->client;
 	$self->client(undef);
 	
 }
@@ -69,7 +64,7 @@ sub poll  {
 			return $message;
 		}
 	}
-	
+	return ();
 }
 
 sub receive {
@@ -98,16 +93,13 @@ sub start {
 	
 	$self->{client} = $client;
 	$self->{running} = 1;
-
-
-}
-
-sub handle_message {
-	my $self = shift;
-	my $message = shift;
-	return unless $message;
+	$self->post_event(
+		$self->event,
+		'ALIVE'
+	);
 
 }
+
 
 
 1;
