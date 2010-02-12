@@ -172,8 +172,16 @@ sub accept_destroy {
 	}
 }
 
-sub accept_disco {}
+sub accept_disco {
+	my ($self,$message) = @_;
+	
+}
 
+sub accept_leave {
+	my ($self,$message) = @_;
+	$self->refresh;
+	
+}
 
 
 # Perform a full redraw :(
