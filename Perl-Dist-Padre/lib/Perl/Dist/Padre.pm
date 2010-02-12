@@ -13,7 +13,7 @@ use parent                            qw( Perl::Dist::Strawberry );
 #>>>
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.560';
+our $VERSION = '0.561';
 $VERSION =~ s/_//ms;
 
 
@@ -159,6 +159,8 @@ sub install_padre_prereq_modules_2 {
 		  List::MoreUtils
 		  Task::Weaken
 		  PPI
+		  Module::Locate
+		  Perl::Tags
 		  Module::Refresh
 		  Devel::Symdump
 		  Pod::Coverage
@@ -216,7 +218,7 @@ sub install_padre_modules {
 
 	# Install the Alien::wxWidgets module from a precompiled .par
 	my $par_url = 
-		'http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
+		'http://strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
 	my $filelist = $self->install_par(
 		name => 'Alien_wxWidgets',
 		url  => $par_url,
