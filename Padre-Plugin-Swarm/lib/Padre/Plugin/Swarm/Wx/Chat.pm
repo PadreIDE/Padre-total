@@ -17,7 +17,7 @@ use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Util;
-our $VERSION = '0.09';
+our $VERSION = '0.091';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor

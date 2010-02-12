@@ -6,7 +6,7 @@ use Padre::Wx ();
 use Padre::Logger;
 use base qw( Padre::Plugin::Swarm::Transport );
 
-our $VERSION = '0.09';
+our $VERSION = '0.091';
 
 use Class::XSAccessor
 #    constructor => 'new', # 

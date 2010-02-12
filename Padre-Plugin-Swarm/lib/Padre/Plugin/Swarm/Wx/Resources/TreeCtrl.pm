@@ -11,7 +11,7 @@ use Padre::Util     ();
 use Padre::Wx       ();
 use Padre::Constant ();
 
-our $VERSION = '0.09';
+our $VERSION = '0.091';
 our @ISA     = 'Wx::TreeCtrl';
 
 

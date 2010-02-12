@@ -13,7 +13,7 @@ use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
-our $VERSION = '0.09';
+our $VERSION = '0.091';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 

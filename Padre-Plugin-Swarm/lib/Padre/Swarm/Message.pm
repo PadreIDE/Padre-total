@@ -7,7 +7,7 @@ use Carp qw( croak );
 # Provide a ->Dumper method
 use Data::Dumper 'Dumper';
 
-our $VERSION = '0.09';
+our $VERSION = '0.091';
 
 sub new {
 	my $class = shift;
