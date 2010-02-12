@@ -13,7 +13,7 @@ use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 
@@ -388,6 +388,8 @@ Lessons learned here will be applied to more practical plugins later.
 =head1 FEATURES
 
 =over
+
+=item Global server transport
 
 =item Local network multicast transport.
 
