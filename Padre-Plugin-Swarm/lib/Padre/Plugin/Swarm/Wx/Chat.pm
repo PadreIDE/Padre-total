@@ -532,7 +532,32 @@ sub derive_rgb {
     return \@rgb;
 }
 
+=pod
 
+=head1 NAME
+
+Padre::Plugin::Swarm::Wx::Chat - Swarm chat console
+
+=head1 DESCRIPTION
+
+Basic chat client for Padre swarm users. 
+
+=head1 COMMANDS
+
+Slash type commands are supported in the chat console
+
+=head2 /nick
+
+Change nickname. 
+
+eg;
+     /nick my_name_is
+     
+=head2 /disco
+
+Send a discovery message to the swarm.
+
+=cut
 
 
 1;

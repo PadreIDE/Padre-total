@@ -393,7 +393,7 @@ Lessons learned here will be applied to more practical plugins later.
 
 =item Local network multicast transport.
 
-=item User chat - converse with other padre editors
+=item L<User chat|Padre::Plugin::Swarm::Wx::Chat> - converse with other padre editors
 
 =item Resources - browse and open files from other users' editor
 
@@ -403,7 +403,7 @@ Lessons learned here will be applied to more practical plugins later.
 
 =head1 SEE ALSO
 
-L<Padre::Swarm::Manual>
+L<Padre::Swarm::Manual> L<Padre::Plugin::Swarm::Wx::Chat>
 
 =head1 BUGS
 
