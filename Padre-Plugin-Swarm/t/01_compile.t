@@ -12,11 +12,10 @@ BEGIN {
         }
 }
 
-plan tests => 5;
+plan tests => 4;
 
 use_ok('Padre::Plugin::Swarm');
 use_ok('Padre::Swarm::Identity');
 use_ok('Padre::Swarm::Message');
 use_ok('Padre::Swarm::Message::Diff');
 
-use_ok('Padre::Swarm::Service' );
