@@ -188,6 +188,7 @@ sub accept_gimme {
 		    { 	type => 'openme',
 			service => 'editor',
 			body => $document->text_get,
+			to   => $message->from ,
 		}
 		);
 	}
