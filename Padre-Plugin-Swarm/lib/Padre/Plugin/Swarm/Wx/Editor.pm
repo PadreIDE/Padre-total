@@ -160,8 +160,7 @@ sub accept_openme {
     # Skip loopback 
     return if $message->from eq $self->plugin->identity->nickname;
     # Skip anything not addressed to us.
-    if ( defined $message->to && 
-	$message->to ne $self->plugin->identity->nickname ) 
+    if ( $message->to ne $self->plugin->identity->nickname ) 
     {
 	return;
     }
