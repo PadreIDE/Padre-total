@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.093 -
+	- make chat text font fixed-width
 	- add tab completion of nickname in chat text entry
 0.092 - Sat Feb 13 13:47:38 EST 2010
 	- remove references to packages lost after refactor

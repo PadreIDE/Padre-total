@@ -60,8 +60,13 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxTE_READONLY
 		| Wx::wxTE_MULTILINE
+		| Wx::wxTE_RICH
 		| Wx::wxNO_FULL_REPAINT_ON_RESIZE
 	);
+	my $style = $chat->GetDefaultStyle;
+	my $font   = Wx::Font->new( 10, Wx::wxTELETYPE, Wx::wxNORMAL, Wx::wxNORMAL );
+	$style->SetFont($font);
+	$chat->SetDefaultStyle( $style );
 	
 	my $userlist = Wx::ListView->new(
 		$self, -1 ,
@@ -69,6 +74,7 @@ sub new {
                 Wx::wxDefaultSize,
                 Wx::wxLC_REPORT | Wx::wxLC_SINGLE_SEL
         );
+        
         $userlist->InsertColumn( 0, 'Users' );
         $userlist->SetColumnWidth( 0, -1 );
 	$self->userlist($userlist);
