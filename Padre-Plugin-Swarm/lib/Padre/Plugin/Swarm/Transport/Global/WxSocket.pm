@@ -151,20 +151,22 @@ sub on_socket_input {
     TRACE( "Socket Input" ) if DEBUG;
     my $marshal = $self->marshal;
     
-    my @messages;
     my $data = '';
+    my $buffer;
     # Read chunks of data from the socket until there is
     # no more to read, feeding it into the decoder.
     # TODO - can we yield to WxIdle in here? .. safely?
-    while ( $sock->Read( $data, 1024, length($data)  ) ) {
-        my @m = eval { $marshal->incr_parse($data) };
-        if ($@) {
-            TRACE( "Unparsable message - $@" ) if DEBUG;
-            $marshal->incr_skip;
-        } else {
-            push @messages ,@m if @m;
-        }
+    while ( $sock->Read( $data, 1024, 0  ) ) {
+        $buffer .= $data;
         $data='';
+    }
+    eval { $marshal->incr_parse($buffer) }; # VOID context pls!!
+    TRACE( "Pumped $buffer from socket" ) if DEBUG;
+    my @messages;
+    push @messages , eval { $marshal->incr_parse() };
+    if ($@) {
+            TRACE( "Unparsable message - $@" ) if DEBUG;
+            #$marshal->incr_skip;
     }
     
     foreach my $m ( @messages ) {
