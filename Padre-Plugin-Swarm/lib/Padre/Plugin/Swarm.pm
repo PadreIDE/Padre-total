@@ -9,7 +9,6 @@ use Padre::Constant        ();
 use Padre::Wx              ();
 use Padre::Plugin          ();
 use Padre::Wx::Icon        ();
-use Padre::Service::Swarm  ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 

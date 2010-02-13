@@ -12,7 +12,6 @@ use Padre::Logger;
 use Padre::Wx ();
 use Padre::Config ();
 use Padre::Plugin::Swarm ();
-use Padre::Service::Swarm;
 use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
