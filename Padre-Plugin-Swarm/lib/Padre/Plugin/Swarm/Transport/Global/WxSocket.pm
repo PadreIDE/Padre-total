@@ -8,10 +8,14 @@ use base qw( Padre::Plugin::Swarm::Transport );
 
 our $VERSION = '0.092';
 
+our $KEEPALIVE_TIMER_ID = Wx::NewId;
+
+
+
 use Class::XSAccessor
-#    constructor => 'new', # 
     accessors => {
         socket => 'socket',
+        keepalive=>'keepalive',
         config => 'config',
         token  => 'token',
         on_connect => 'on_connect',
@@ -53,7 +57,6 @@ sub connect {
     ) ;
     
 
-
     $sock->Connect( 
         $addr , # Host 
         12000,  # Port
@@ -68,7 +71,10 @@ sub disconnect {
     my $self = shift;
     TRACE( "Disconnecting!" ) if DEBUG;
     $self->socket->Destroy;
+
+    $self->keepalive->Stop if $self->keepalive;
     
+    ();
 }
 
 
@@ -130,12 +136,33 @@ sub on_session_start {
         }
         
         # Notify the callback
-        $self->on_connect->() if $self->on_connect;
+        $self->on_connect->() if $self->on_connect;        
+        
+        my $timer = Wx::Timer->new( 
+            $self->plugin->wx, 
+            $KEEPALIVE_TIMER_ID 
+        );
+        $self->keepalive($timer);
+        
+        unless ( $timer->IsRunning ) {
+                Wx::Event::EVT_TIMER(
+                    $self->plugin->wx, 
+                    $KEEPALIVE_TIMER_ID, 
+                    sub { $self->on_timer_alarm(@_) } 
+                );
+                $timer->Start(60 * 1000, 0); # every minute
+        }
+
         
     }
     
 }
 
+sub on_timer_alarm {
+    my $self = shift;
+    $self->write(' ') ; # waste a packet :(
+    
+}
 
 sub on_socket_lost {
     my ($self,$sock,$wx,$evt) = @_;
