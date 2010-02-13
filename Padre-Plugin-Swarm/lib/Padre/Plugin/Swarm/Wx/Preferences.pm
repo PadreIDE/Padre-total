@@ -7,7 +7,7 @@ use Wx qw[:everything];
 use base qw(Wx::Dialog);
 use strict;
 
-our $VERSION = '0.091';
+our $VERSION = '0.092';
 
 
 sub new {

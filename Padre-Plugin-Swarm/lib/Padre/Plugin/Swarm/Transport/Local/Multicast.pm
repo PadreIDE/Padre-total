@@ -7,7 +7,7 @@ use Padre::Logger;
 use base qw( Padre::Plugin::Swarm::Transport );
 use Padre::Plugin::Swarm::Transport::Local::Multicast::Service;
 
-our $VERSION = '0.091';
+our $VERSION = '0.092';
 
 use Class::XSAccessor
     accessors => {
