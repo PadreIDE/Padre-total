@@ -52,7 +52,7 @@ sub new {
 		$self, -1, '',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxTE_PROCESS_ENTER
+		Wx::wxTE_PROCESS_ENTER | Wx::wxTE_PROCESS_TAB
 	);
 	my $chat = Wx::TextCtrl->new(
 		$self, -1, '',
@@ -100,6 +100,11 @@ sub new {
 	Wx::Event::EVT_TEXT_ENTER(
                 $self, $text,
                 \&on_text_enter
+        );
+        
+        Wx::Event::EVT_CHAR(
+		$text,
+		sub{ $self->on_text_char(@_) },
         );
 
 	return $self;
@@ -328,6 +333,32 @@ sub on_text_enter {
     else {
         $self->tell_service( $message );
     }
+}
+
+sub on_text_char {
+	my ($self,$ctrl,$event) = @_;
+	my $code = $event->GetKeyCode;
+        if ($code != Wx::WXK_TAB) {
+                $event->Skip(1);
+                return;
+        }
+        my $partial = $ctrl->GetValue;
+        my ($fragment) = $partial =~ /(\w+)$/;
+        return unless $fragment;
+        
+        my @users = $self->plugin->geometry->get_users;
+        my @possible = grep { $_ =~ /^$fragment/ } @users;
+        if ( scalar @possible == 1 ) {
+        	my $replace = shift @possible;
+        	my $fragment_size = length($fragment);
+        	substr( $partial, 
+			-$fragment_size, $fragment_size, 
+			$replace );
+        	$ctrl->SetValue($partial) ;
+        	$ctrl->SetInsertionPointEnd;
+        }
+	return;
+	
 }
 
 sub accept_command {
