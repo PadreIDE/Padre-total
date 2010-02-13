@@ -12,7 +12,7 @@ use Padre::Wx::Icon        ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
-our $VERSION = '0.092';
+our $VERSION = '0.093';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 

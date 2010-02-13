@@ -6,7 +6,7 @@ use Padre::Wx ();
 use Padre::Logger;
 use base qw( Padre::Plugin::Swarm::Transport );
 
-our $VERSION = '0.092';
+our $VERSION = '0.093';
 
 our $KEEPALIVE_TIMER_ID = Wx::NewId;
 
