@@ -28,6 +28,10 @@ about:
   - title: y2010
     events:
       - date: 2010 February 17
+        url: http://richard.wallman.org.uk/2010/02/padre-the-perl-ide/
+        title: local::lib and Padre - the Perl IDE
+        comment: by Richard Wallman
+      - date: 2010 February 17
         url: http://padre-ide.de/blog/?p=95
         title: 24/7 commercial quality support - for an open source project
         comment: by Sebastian Willing
