@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 February 17
+        url: http://padre-ide.de/blog/?p=95
+        title: 24/7 commercial quality support - for an open source project
+        comment: by Sebastian Willing
       - date: 2010 February 15
         url: http://szabgab.com/blog/2010/02/1266260384.html
         title: Is Padre really beter than vi, emacs or Eclipse + EPIC?
