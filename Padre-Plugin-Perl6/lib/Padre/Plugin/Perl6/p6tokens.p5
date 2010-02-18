@@ -44,8 +44,8 @@ my $p = Syntax::Highlight::Perl6->new(
 	tmp_prefix => $tmp_prefix
 );
 my @tokens = $p->tokens;
-require Storable;
-my $output = Storable::nfreeze(\@tokens);
+require YAML::XS;
+my $output = YAML::XS::Dump(\@tokens);
 binmode STDOUT;
 print $output;
 

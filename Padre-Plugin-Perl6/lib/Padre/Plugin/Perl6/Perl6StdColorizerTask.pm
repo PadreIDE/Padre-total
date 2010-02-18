@@ -263,8 +263,8 @@ sub run {
 
 	if ($out) {
 		eval {
-			require Storable;
-			$self->{tokens} = Storable::thaw($out);
+			require YAML::XS;
+			$self->{tokens} = YAML::XS::Load($out);
 		};
 		if ($@) {
 			warn "Exception: $@";
