@@ -1,7 +1,7 @@
 Revision history for Syntax::Highlight::Perl6.
 
 0.79 2010.2.18
-    Bundled the latest awesome STD.pm (lwall++) r29773
+	Bundled the latest awesome STD.pm (lwall++) r29773
 
 0.78 2010.1.10
 	Bundled the latest STD.pm from lwall++
