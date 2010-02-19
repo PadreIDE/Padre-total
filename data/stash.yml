@@ -1104,6 +1104,10 @@ about:
   - title: Chinese
     ISO_639: cn
     events:
+      - date: 2010 February 19
+        url: http://linuxtoy.org/archives/padre.html
+        title: Padre: Perl IDE
+        comment: ???
       - date: 2009 December 10
         url: http://perlchina.org/advent/2009/Padre.html
         title: Padre
