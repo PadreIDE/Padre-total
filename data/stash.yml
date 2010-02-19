@@ -74,7 +74,7 @@ about:
       - date: 2010 January 21
         url: http://perlwannabe.vox.com/library/post/padre-055-released.html
         title: Padre 0.55 Released
-        comment: by Peter Lavender (Release Manager).  
+        comment: by Peter Lavender (Release Manager).
       - date: 2010 January 20
         url: http://jquelin.blogspot.com/2010/01/next-padre-version-will-finally.html
         title: next Padre version will (finally) recognize dist-zilla projects
@@ -98,13 +98,13 @@ about:
       - date: 2010 January 04
         url: http://use.perl.org/~Alias/journal/40077
         title: Padre in 2010 - The year Padre becomes a team player
-        comment: by Adam Kennedy 
+        comment: by Adam Kennedy
   - title: y2009
     events:
       - date: 2009 December 24
         url: http://use.perl.org/~Alias/journal/40049
         title: Padre Ticket #1 Fixed! - How our new locking code works
-        comment: by Adam Kennedy 
+        comment: by Adam Kennedy
       - date: 2009 December 23
         url: http://szabgab.com/blog/2009/12/1261601193.html
         title: Padre 0.53 Stand Alone for Linux on perl 5.11.3 released
@@ -148,11 +148,11 @@ about:
       - date: 2009 November 29
         url: http://use.perl.org/~Alias/journal/39962
         title: Some interesting group dynamics in Padre
-        comment: by Adam Kennedy 
+        comment: by Adam Kennedy
       - date: 2009 November 26
         url: http://use.perl.org/~Alias/journal/39948
         title: Padre Standalone 0.50 for Mac (Experimental)
-        comment: by Adam Kennedy 
+        comment: by Adam Kennedy
       - date: 2009 November 25
         url: http://szabgab.com/blog/2009/11/1259131466.html
         title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl IDE
@@ -1102,12 +1102,12 @@ about:
         title: Padre
         comment: Andrew Shitov on Perl
   - title: Chinese
-    ISO_639: cn
+    ISO_639: zh
     events:
       - date: 2010 February 19
         url: http://linuxtoy.org/archives/padre.html
         title: Padre: Perl IDE
-        comment: ???
+        comment: Free software application listing
       - date: 2009 December 10
         url: http://perlchina.org/advent/2009/Padre.html
         title: Padre
