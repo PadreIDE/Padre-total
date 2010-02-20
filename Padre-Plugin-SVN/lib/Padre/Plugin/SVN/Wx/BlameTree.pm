@@ -42,21 +42,34 @@ sub populate {
 	my $self = shift;
 	my $blame = shift;
 	
+	my $altColor = 0;
+	
 	my @tbl;
+	my $lastSeen = "";
 	foreach my $line (@$blame) {
 		
 		chomp($line);
 		$line =~ s/^\s+//s;
+		$line =~ m/^(\d+)\s/;
+		my $revNo = $1;
+		
 		#print "$line\n";
 		#push @tbl, [ split(/\s+/,$line,3) ];
-		$self->AppendItem(
+		my $item = $self->AppendItem(
 			$self->{root}, 
 			$line, 
 			-1,
 			-1,
 			Wx::TreeItemData->new($line)
 		);
+		$altColor++ if( $lastSeen != $revNo );
 		
+		
+		if( $altColor % 2 == 0 ) {
+			$self->SetItemBackgroundColour( $item, Wx::wxBLUE );
+		}
+
+		$lastSeen = $revNo;
 	}
 	
 }
