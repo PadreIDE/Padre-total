@@ -244,9 +244,10 @@ sub svn_blame {
 		my $file = svn_file($filename);
 		$file->blame();
 		$self->{_busyCursor} = undef;
-		my $blame = join( "\n", @{ $file->stdout } );
+		#my $blame = join( "\n", @{ $file->stdout } );
+		my @blame = @{ $file->stdout };
 		require Padre::Plugin::SVN::Wx::SVNDialog;
-		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $filename, $blame, 'Blame' );
+		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new( $main, $filename, \@blame, 'Blame' );
 		$dialog->Show(1);
 		return 1;
 	}

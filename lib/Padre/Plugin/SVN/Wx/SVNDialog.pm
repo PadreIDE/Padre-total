@@ -28,7 +28,13 @@ sub new {
 		[ 700, 400 ], # size - [wide,high]
 	);
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
-	$self->build_dialog( $filePath, $log, $getData );
+	
+	if( lc($type) eq 'blame' ) {
+		$self->build_blame_dialog($filePath, $log);
+	}
+	else {
+		$self->build_dialog( $filePath, $log, $getData );
+	}
 
 	return $self;
 
@@ -122,6 +128,50 @@ sub build_dialog {
 
 }
 
+
+sub build_blame_dialog {
+	print "In Blame Dialog\n";
+	my ( $self, $file, $log ) = @_;
+	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
+
+	require Padre::Plugin::SVN::Wx::BlameTree;
+	my $blame = Padre::Plugin::SVN::Wx::BlameTree->new($self);
+	$blame->populate($log);
+	$vbox->Add( $blame, 0, Wx::wxEXPAND );
+
+	#print "file: $file\n";
+	#print "Log: $log\n";
+
+	my $btnBox     = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	my $pnlButtons = Wx::Panel->new(
+		$self,
+		-1, # id
+		[ -1, -1 ], # position
+		[ -1, -1 ], # size
+		0           # border style
+	);
+
+	# button height is set to 40 simply to get them to look the same
+	# in GTK.
+	# not sure what this is going to look like in other window managers.
+	my $btnOK = Wx::Button->new( $pnlButtons, Wx::wxID_OK, "OK", [ -1, -1 ], [ -1, 40 ] );
+	Wx::Event::EVT_BUTTON( $self, $btnOK, \&ok_clicked );
+
+	$btnBox->Add( $btnOK, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
+
+
+	$pnlButtons->SetSizer($btnBox);
+
+	#$btnBox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT | Wx::wxEXPAND);
+	$vbox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
+
+
+	$self->SetSizer($vbox);
+
+}
+
+
+
 sub ok_clicked {
 	my ($self) = @_;
 
@@ -162,6 +212,8 @@ sub get_data {
 	#return $txt ;
 
 }
+
+
 
 1;
 
