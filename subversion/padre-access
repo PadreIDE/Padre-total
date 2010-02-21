@@ -1,10 +1,6 @@
 [/]
 * =
 
-# super users who can add more commit bits
-[padre:/subversion]
-* = r
-
 [padre:/]
 * = r
 szabgab = rw
@@ -71,4 +67,10 @@ cmihai = rw
 Corion = rw
 chorny = rw
 vrobin = rw
+
+
+# super users who can add more commit bits
+[padre:/subversion]
+* = r
+
 
