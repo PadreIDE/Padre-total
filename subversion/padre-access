@@ -70,7 +70,7 @@ vrobin = rw
 
 
 # super users who can add more commit bits
-[padre:/subversion]
+[padre:/subversion/]
 * = r
 
 
