@@ -25,7 +25,7 @@ sub new {
 		-1,
 		"SVN $type",
 		[ -1,  -1 ],  # position
-		[ 700, 400 ], # size - [wide,high]
+		[ 700, 600 ], # size - [wide,high]
 	);
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
 	
@@ -130,7 +130,7 @@ sub build_dialog {
 
 
 sub build_blame_dialog {
-	print "In Blame Dialog\n";
+	
 	my ( $self, $file, $log ) = @_;
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
