@@ -43,6 +43,9 @@ sub new {
 
 sub build_dialog {
 	my ( $self, $file, $log, $getData ) = @_;
+	
+	
+	
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
 	my $stTxtFile = Wx::StaticText->new(
@@ -132,12 +135,15 @@ sub build_dialog {
 sub build_blame_dialog {
 	
 	my ( $self, $file, $log ) = @_;
+	
+	#$self->{_busyCursor} = Wx::BusyCursor->new();
+	
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
 	require Padre::Plugin::SVN::Wx::BlameTree;
-	my $blame = Padre::Plugin::SVN::Wx::BlameTree->new($self);
-	$blame->populate($log);
-	$vbox->Add( $blame, 0, Wx::wxEXPAND );
+	$self->{blame} = Padre::Plugin::SVN::Wx::BlameTree->new($self);
+	$self->{blame}->populate($log);
+	$vbox->Add( $self->{blame}, 0, Wx::wxEXPAND );
 
 	#print "file: $file\n";
 	#print "Log: $log\n";
@@ -154,6 +160,17 @@ sub build_blame_dialog {
 	# button height is set to 40 simply to get them to look the same
 	# in GTK.
 	# not sure what this is going to look like in other window managers.
+	
+	my $btnExpandAll = Wx::Button->new( $pnlButtons, -1, "Expand", [ -1, -1 ], [ -1, 40 ] );
+	Wx::Event::EVT_BUTTON( $self, $btnExpandAll, \&expand_clicked );
+	$btnBox->Add( $btnExpandAll, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_LEFT );
+	
+	my $btnCollapseAll = Wx::Button->new( $pnlButtons, -1, "Collapse", [ -1, -1 ], [ -1, 40 ] );
+	Wx::Event::EVT_BUTTON( $self, $btnCollapseAll, \&collapse_clicked );
+	$btnBox->Add( $btnCollapseAll, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_LEFT );
+	
+
+
 	my $btnOK = Wx::Button->new( $pnlButtons, Wx::wxID_OK, "OK", [ -1, -1 ], [ -1, 40 ] );
 	Wx::Event::EVT_BUTTON( $self, $btnOK, \&ok_clicked );
 
@@ -167,10 +184,21 @@ sub build_blame_dialog {
 
 
 	$self->SetSizer($vbox);
-
+	#$self->{_busyCursor} = undef;
 }
 
-
+sub collapse_clicked {
+	my( $self ) = @_;
+	$self->{_busyCursor} = Wx::BusyCursor->new();
+	$self->{blame}->CollapseAll();
+	$self->{_busyCursor} = undef;
+}
+sub expand_clicked {
+	my ($self) = @_;
+	$self->{_busyCursor} = Wx::BusyCursor->new();
+	$self->{blame}->ExpandAll();
+	$self->{_busyCursor} = undef;
+}
 
 sub ok_clicked {
 	my ($self) = @_;
