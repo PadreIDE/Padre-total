@@ -1,0 +1,7 @@
+---
+topics:
+  padding: length | percentage (REPLACE_four), inherit  REPLACE_content_model
+  color:  Color of an element. Values can be RGB: #AABBCC
+replace:
+  four: 4 values corresponding to: top right bottom left
+  content_model: (see also content -> padding -> border -> margin)
