@@ -5,10 +5,10 @@ use warnings;
 
 # For Perl 6 documentation support
 use App::Grok           ();
-use Padre::HelpProvider ();
+use Padre::Help         ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::HelpProvider';
+our @ISA     = 'Padre::Help';
 
 use Class::XSAccessor accessors => {
 	_grok => '_grok', # App::Grok -> Perl 6 Documentation Reader
