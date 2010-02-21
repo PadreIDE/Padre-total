@@ -113,7 +113,9 @@ sub populate {
 		}
 		$alt++;
 		$lastSeen = $revNo;
+		$self->Expand($item);
 	}
+	
 	
 }
 
