@@ -1,7 +1,13 @@
 ---
 topics:
-  padding: length | percentage (REPLACE_four), inherit  REPLACE_content_model
+  padding: length | percentage (REPLACE_four), inherit - REPLACE_content_model
   color:  Color of an element. Values can be RGB: #AABBCC
+  float: The direction in which the element should try to move. Values: left|right|none|inherit
+  background: [background-color background-image background-repeat background-attachment background-position]  | inherit
+  background-attachment: Values: scroll | fixed | inherit
+  background-color: <color> | transparent | inherit
+  background-image: <uri> | none | inherit
+  background-position: [[ <pectentage> | <length> ... ]] | inherit
 replace:
   four: 4 values corresponding to: top right bottom left
   content_model: (see also content -> padding -> border -> margin)

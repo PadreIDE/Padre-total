@@ -18,7 +18,6 @@ my $data;
 sub help_init {
 	my ($self) = @_;
 
-	# TODO read the "topics" from some external file?
 	my $help_file = File::Spec->catfile(Padre::Util::share('CSS'), 'css.yml');
 	$data = LoadFile($help_file);
 
