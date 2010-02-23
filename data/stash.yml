@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 February 22
+        url: http://szabgab.com/blog/2010/02/1266868643.html
+        title: Help learning and writing CSS - is there a parsable version of the documentation?
+        comment: by Gábor Szabó on how to add contextual help to Padre.
       - date: 2010 Febuary 18
         url: http://perlwannabe.vox.com/library/post/padre-057---bleeding-edge-stuff.html
         title: Padre 0.57 - Bleeding Edge Stuff!
@@ -47,6 +51,10 @@ about:
         url: http://szabgab.com/blog/2010/02/1266258560.html
         title: Video of the Padre talk on FOSDEM
         comment: by Gábor Szabó
+      - date: 2010 February 13
+        url: http://perlwannabe.vox.com/library/post/installing-padre-from-cpan.html
+        title: Installing Padre on Ubuntu from CPAN
+        comment: by Peter Lavender.
       - date: 2010 February 11
         url: http://ahmadzawawi.blogspot.com/2010/02/upcoming-features-in-padre.html
         title: Upcoming features in Padre
