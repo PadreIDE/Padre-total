@@ -12,8 +12,3 @@ my $tmp = File::Temp->newdir();
 my $r = STD->parse('', tmp_prefix => $tmp);
 ok(defined $r, 'STD->parse() returned something on a empty string');
 isa_ok( $r, 'STD', 'STD->parse() return type');
-
-##check redeclared Bar STD bug
-##my $s = STD->parse('module Foo::Bar { }; module Moo::Bar;');
-##ok(defined $s, 'STD->parse() worked');
-##isa_ok( $s, 'STD', 'STD->parse() return type');
