@@ -10,13 +10,18 @@ BEGIN {
     use_ok('Syntax::Highlight::Perl6'); 
 }
 
+# Create a temporary folder to store STD' artifacts
+require File::Temp;
+my $tmp = File::Temp->newdir();
+
 #text option is a required option in new()
 dies_ok { Syntax::Highlight::Perl6->new(); } 'text option is required in new()';
-ok(defined Syntax::Highlight::Perl6->new(text => q{}), 'text option can be empty');
+ok(defined Syntax::Highlight::Perl6->new(text => q{}, tmp_prefix => $tmp), 'text option can be empty');
 
 #check if new(...) works
 my $p = Syntax::Highlight::Perl6->new(
-    text => 'my $foo;'
+    text        => 'my $foo;',
+    tmp_prefix  => $tmp
 );
 ok(defined $p, 'new() returned something');
 isa_ok( $p, 'Syntax::Highlight::Perl6', ' And it is the right class');
@@ -65,7 +70,8 @@ ok(defined $rec{lineno}, '%rec has a lineno');
 
 #tests for static behavior between different instances
 my $q = Syntax::Highlight::Perl6->new(
-    text => q{my $bar = "&<>";}
+    text        => q{my $bar = "&<>";},
+    tmp_prefix  => $tmp
 );
 like( $q->snippet_html, '/bar/i', 'second instance worked perfectly');
 like( $p->snippet_html, '/foo/i', 'and first instance is not affected');
