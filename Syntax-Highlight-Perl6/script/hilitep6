@@ -140,11 +140,16 @@ sub _slurp_special {
 sub highlight_match {
 	my $filename = shift;
 
+	# Create a temporary folder to store STD' artifacts
+	require File::Temp;
+	my $tmp = File::Temp->newdir();
+
 	use STD;
 	require Syntax::Highlight::Perl6;
 	my $p = new Syntax::Highlight::Perl6(
 		text             => _slurp_special($filename),
 		inline_resources => !$clean_html,
+		tmp_prefix       => $tmp,
 	);
 	if ($full_html) {
 		write_output $full_html, $p->full_html;
