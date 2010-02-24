@@ -1,9 +1,16 @@
 Changes
 
+=head1 0.63 2010.02.24
+
+	Depends on Padre 0.56 and later
+	Depends on S:H:P6 0.79 for the latest STD innovation
+	Fixed Help provider API change that was introduced in Padre 0.56
+	Ignore MYMETA.yml
+
 =head1 0.62 2010.01.07
 
 	Depends on S:H:P6 v0.77 for the latest STD
-    Replace Padre::Debug by Padre::Logger
+	Replace Padre::Debug by Padre::Logger
 
 =head1 0.61 2009.12.10
 
