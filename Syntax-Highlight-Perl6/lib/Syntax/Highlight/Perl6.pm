@@ -1,6 +1,3 @@
-#
-# $Id: Perl6.pm 27478 2009-07-08 06:34:56Z azawawi $
-#
 package Syntax::Highlight::Perl6;
 
 # core modules & directives
@@ -740,7 +737,7 @@ Thanks guys. I could not have done it without you ;-)
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (C) 2008-2009 by Ahmad Zawawi
+Copyright (C) 2008-2010 by Ahmad Zawawi
 
 This program is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
