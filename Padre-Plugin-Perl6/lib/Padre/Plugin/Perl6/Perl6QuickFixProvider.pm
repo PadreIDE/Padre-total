@@ -8,7 +8,7 @@ use Padre::Wx                  ();
 use Padre::Plugin::Perl6::Util ();
 use Padre::QuickFixProvider    ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.63';
 our @ISA     = ('Padre::QuickFixProvider');
 
 #

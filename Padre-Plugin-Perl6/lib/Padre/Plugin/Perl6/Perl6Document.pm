@@ -6,7 +6,7 @@ use warnings;
 
 use Padre::Wx ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.63';
 our @ISA     = 'Padre::Document';
 
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
