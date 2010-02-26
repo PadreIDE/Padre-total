@@ -37,6 +37,7 @@ sub connect {
 	#   based on preferences
 	my $transport = 
 	Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
+		token => $self->config->{token},
 		wx => $self->wx,
 		on_recv => sub { $self->on_recv(@_) } ,
 		on_connect => sub { $self->on_transport_connect(@_) },
@@ -153,7 +154,7 @@ sub identity {
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.51;
+	'Padre::Plugin' => 0.56;
 }
 
 sub plugin_name {
@@ -191,11 +192,6 @@ sub plugin_large_icon {
 sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name => [
-        'Run in Other Editor' => 
-            sub { $self->run_in_other_editor },
-        'Open in Other Editor' => 
-            sub { $self->open_in_other_editor },
-            
         'About' => sub { $self->show_about },
     ];
 }
@@ -225,7 +221,8 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Transport::Global::WxSocket;
 		require Padre::Plugin::Swarm::Transport::Local::Multicast;
 		
-		my $config = $self->config_read;
+		my $config = $self->bootstrap_config;
+		
 		$self->config( $config );
 		
 		
@@ -273,7 +270,7 @@ SCOPE: {
 }
 
 # TODO Re-anable this when padre can survive plugin_preferences death
-sub NOT_plugin_preferences {
+sub plugin_preferences {
 	my $self = shift;
 	my $wx = shift;
 	if  ( $self->instance ) {
@@ -291,6 +288,30 @@ sub NOT_plugin_preferences {
 	return;
 }
 
+sub bootstrap_config {
+	my $self = shift;
+	my $config = $self->config_read;
+	#warn 'Got ' , join "\t" , %$config;
+	@$config{qw/
+		nickname
+		token
+		transport
+		local_multicast
+		global_server
+		bootstrap
+	/} = (
+		'Anonymous_'.$$,
+		crypt ( rand.$$.time, 'swarm' ) ,
+		'global',
+		'239.255.255.1',
+		'swarm.perlide.org',
+		$VERSION
+		) ;
+		
+	$self->config_write( $config );
+	return $config;
+	
+}
 
 sub editor_enable {
 	my $self = shift;
@@ -302,33 +323,6 @@ sub editor_disable {
 	$self->editor->editor_disable(@_);
 }
 
-
-# oh noes!
-sub run_in_other_editor {
-    my $self = shift;
-    my $ed = $self->current->editor;
-    my $doc = $self->current->document;
-    $self->send(
-        Padre::Swarm::Message->new(
-            type => 'runme',
-            body => $ed->GetText,
-            filename => $doc->filename,
-        )
-    );
-    
-}
-
-sub open_in_other_editor {
-    my $self = shift;
-    my $doc = $self->current->document;
-    my $message = Padre::Swarm::Message->new(
-        type => 'openme',
-        body => $doc->text_get,
-        filename => $doc->filename,
-    );
-    $self->send($message);
-    
-}
 
 sub show_about {
 	my $self = shift;

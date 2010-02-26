@@ -14,6 +14,7 @@ use Class::XSAccessor
         socket => 'socket',
         service => 'service',
         config => 'config',
+        token  => 'token',
         mcast_address => 'mcast_addr',
         on_connect => 'on_connect',
         on_disconnect => 'on_disconnect',
@@ -88,6 +89,8 @@ sub on_service_recv {
 sub send {
     my $self = shift;
     my $message = shift;
+    $message->{token} ||= $self->{token};
+    
     my $data = eval { $self->marshal->encode( $message ) };
     if ($@) { 
         TRACE( "Failed to encode $message - $@" ) if DEBUG;

@@ -85,7 +85,7 @@ sub on_socket_connect {
    TRACE( "Connected!" ) if DEBUG;
    # Send a primative session start
     my $payload =  $self->marshal->encode(
-            { type=>'session' , trustme=>'foo' }
+            { type=>'session' , trustme=>$self->token }
         );
 
     # TODO - check for errors after writing, wx only throws
@@ -179,22 +179,30 @@ sub on_socket_input {
     my $marshal = $self->marshal;
     
     my $data = '';
-    my $buffer;
+    
     # Read chunks of data from the socket until there is
     # no more to read, feeding it into the decoder.
     # TODO - can we yield to WxIdle in here? .. safely?
-    while ( $sock->Read( $data, 1024, 0  ) ) {
-        $buffer .= $data;
+    while ( $sock->Read( $data, 65535, 0  ) ) {
+        eval { $marshal->incr_parse($data) }; # VOID context pls!
         $data='';
     }
-    eval { $marshal->incr_parse($buffer) }; # VOID context pls!!
-    TRACE( "Pumped $buffer from socket" ) if DEBUG;
+
     my @messages;
-    push @messages , eval { $marshal->incr_parse() };
-    if ($@) {
-            TRACE( "Unparsable message - $@" ) if DEBUG;
-            #$marshal->incr_skip;
-    }
+    my $fragment;
+    while ( my $m =  eval { $marshal->incr_parse() } ) {
+        $fragment = $marshal->incr_text;
+        TRACE( ' Decoded with fragment , '. $fragment ) if DEBUG;
+        
+        push @messages,$m if $m;
+        
+        if ($@) {
+                TRACE( "Unparsable message, $@" ) if DEBUG;
+                TRACE( " BUFFER: " .  $fragment ) if $fragment && DEBUG;
+                $marshal->incr_skip;
+                $marshal->incr_parse($fragment);
+        }
+    } ;
     
     foreach my $m ( @messages ) {
         #next unless ref $m eq 'HASH';
@@ -227,7 +235,5 @@ sub write {
     }
     
 }
-
-sub DESTROY { warn "DESTROYED " , shift };
 
 1;

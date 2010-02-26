@@ -15,9 +15,12 @@ sub plugin { Padre::Plugin::Swarm->instance }
 
 sub loopback { 0 }
 
+sub token { $_[0]->{token} }
+
 sub send {
 	my $self = shift;
 	my $message = shift;
+	$message->{token} ||= $self->token;
 	my $data = eval { $self->marshal->encode( $message ) };
 	if ($data) {
 		$self->write($data);
