@@ -23,7 +23,7 @@
 <div id="column_b">
 [% INCLUDE dl_linux %]
 [%# Not ready for prime time .  INCLUDE dl_freebsd %]
-
+[% INCLUDE dl_activestate %]
 </div>
 
 
@@ -224,3 +224,41 @@ please look at the
  </p>
  [% END %]
 [% END ; # dl_source %]
+
+[% BLOCK dl_activestate %]
+ [% WRAPPER chrome/styled_panel %]
+ <img class="title_image" src="static/alien/macosx-logo.png" alt=""/>
+ <h1>ActiveState Perl</h1>
+ <p>
+ Mark Dootson has rolled up his sleeves and provided PPMs for Padre. His announcement to the dev list is 
+ <a href="http://mail.perlide.org/pipermail/padre-dev/2010-February/001602.html">http://mail.perlide.org/pipermail/padre-dev/2010-February/001602.html</a>.
+ 
+ </p>
+ <p>
+ There are Padre PPMs available for:
+ <ul>
+ <li>MSWin  - Perl 5.10 / 5.8</li>
+ <li>Linux  - Perl 5.10</li>
+ <li>MacOSX - Perl 5.10</li>
+ </ul>
+ </p>
+ <p>
+ To install Padre through PPM, add the following URL to your list of Repositories:
+ <br>
+ <a href="http://www.wxperl.co.uk/repository/ppm-repository.html">http://www.wxperl.co.uk/repository/ppm-repository.html</a>
+ </p>
+ <p>
+ The follwoing is from Mark in the thread of the orginal announcement regarding the use of PPM:
+ <pre>
+  For info, I fixed most of the PPM issues so now you can just select 
+  Padre for install and all dependencies are properly met.
+
+ The one remaining caveat is that the executable on MSWin does not work. 
+ (fails in search for wperl.exe). But, assuming your <ppminstallbin> is 
+ on your path (which it should be) then 'padre.bat' on the command line 
+ should work.
+ </pre>
+ </p>
+ 
+ [% END %]
+[% END ; # dl_activestate %]
