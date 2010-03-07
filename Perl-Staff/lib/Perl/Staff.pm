@@ -3,17 +3,19 @@ package Perl::Staff;
 use warnings;
 use strict;
 
+=encoding utf8
+
 =head1 NAME
 
 Perl::Staff - People working for Perl
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -40,6 +42,10 @@ where you'd like to give a Perl talk or export Perl to non-community
 people in any way. Join the events mailing list for more information on events
 and how you could help, come to the event and we'll try to get you a
 Perl::Staff t-shirt and add you to the list.
+
+When you're thinking about running a booth or helping there on an event and got
+any questions, feel free to contact any of the Perl::Staff (contact information
+are usually shown on the blog pages).
 
 =head1 EVENTS 2010
 
@@ -70,16 +76,27 @@ Event planning page: L<http://www.perlfoundation.org/perl5/index.cgi?events_2010
 
 (main coordinator)
 
-=head3 Renee B\x{00e4}cker
+Event report: L<http://szabgab.com/blog/2010/03/1267974609.html>
+
+=head3 Renee Bäcker
 
 (main coordinator)
+
 Did a talk on Perl on CeBit.
+
+Event reports:
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-0.html>
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-1.html>
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-2.html>
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-3.html>
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-4.html>
+	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-5.html>
 
 =head3 Sebastian Willing
 
-Event report: L<http://padre-ide.de/blog/?p=101>
+Event report: L<http://padre-ide.de/blog/?p=111>
 
-=head3 Thorsten Raudssus
+=head3 Torsten Raudssus
 
 use Moose;
 
@@ -87,7 +104,7 @@ use Moose;
 
 =head3 Bernhard Schmalhofer
 
-=head3 Oliver Kr\x{00fc}ger
+=head3 Oliver Krüger
 
 =head3 Michael Daum
 
@@ -100,8 +117,6 @@ Perl event staff
 =head1 SUPPORT
 
 Look at the Perl foundation events list at http://www.perlfoundation.org/perl5/index.cgi?events
-
-=back
 
 =head1 COPYRIGHT & LICENSE
 
