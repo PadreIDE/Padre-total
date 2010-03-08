@@ -13,6 +13,9 @@ use Test::More;
 use XML::LibXML qw();
 use XML::LibXSLT qw();
 
+binmode Test::More->builder->$_, ':encoding(UTF-8)'
+    for qw(output failure_output todo_output);
+
 # Skip means sweep bugs under the rug.
 # I want this test to be actually run.
 BAIL_OUT 'aspell is not installed.' unless which 'aspell';
