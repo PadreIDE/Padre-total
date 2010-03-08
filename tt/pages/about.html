@@ -1,5 +1,5 @@
 [% DEFAULT
-  title="About Padre, the perl editor"
+  title="About Padre, the Perl editor"
   description="Links to blogs about Padre, the Perl IDE"
 %]
 [% WRAPPER lib/xhtml_doc %]
@@ -31,7 +31,7 @@ post on our IRC channel.
  title_from="title"
  section_nav=1
  %]
- 
+
 [% FOREACH t IN about %]
  <h2 id="[% t.title | id_attr %]">[% t.title | html %]</h2>
  <table>

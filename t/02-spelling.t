@@ -83,10 +83,11 @@ __DATA__
 ## personal names
 ADAMK
 Aharoni
+ajt
 Alguacil
 Amir
 AZAWAWI
-Barbon
+Bäcker
 Barbon
 barlog
 # Joshua ben Jore
@@ -96,6 +97,8 @@ BlueT
 Breno
 Breunung
 BRICAS
+BURAK
+Burak
 Cassidy
 Cezary
 CHRISDOLAN
@@ -105,6 +108,7 @@ ddn
 de
 Dolan
 Donelan
+Dootson
 draegtun
 ENELL
 Fahle
@@ -115,6 +119,8 @@ Gábor's
 GABRIELMAD
 garu
 GARU
+Gürsoy
+György
 GYU
 Haryanto
 Heiko
@@ -132,6 +138,7 @@ Kenichi
 Kephra
 Kjetil
 KJETIL
+Kuri
 lang
 Maischein
 Makholm
@@ -150,14 +157,17 @@ Nijs
 Oliveira
 Omer
 PacoLinux
+Pásztor
 PATSPAM
 Pawe
+PDONELAN
 Petar
 PMURIAS
 Presta
 PSHANGOV
 Quelin
 Rasnita
+Renée
 RSN
 Ruslan
 SBLANDIN
@@ -175,18 +185,22 @@ Tatsuhiko
 TEEJAY
 THEREK
 Trevena
+Trickett
 tsee
 TSEE
 tsee's
 Vieira
 wala
+Wallman
 Zakirov
 Zawawi
 
 ## proper names
 ActivePerl
+ActiveState
 asciiville
 Autodia
+Datapoint
 Debian
 Dreamwidth
 FreeBSD
@@ -200,15 +214,20 @@ LiveJournal
 MacOS
 Mandriva
 Mibbit
+# MiltonKeynes.pm
+MiltonKeynes
 Mojo
 Mojolicious
+Mozilla
 MSI
+NetBSD
 ORLite
 ORLite's
 PerlMonks
 PDX
 PGE
 PHP
+POSIX
 Rakudo
 SQL
 SQLite
@@ -239,10 +258,12 @@ deserializes
 getters
 IDE
 inode
+keypress
 metadata
 mutator
 namespace
 ORM
+PPMs
 prepender
 refactor
 Refactor
@@ -253,6 +274,7 @@ runtime
 timestamp
 Uncomment
 uninstall
+versioning
 
 ## other jargon
 
@@ -287,6 +309,7 @@ Blogs
 crafters
 executables
 natively
+parsable
 pragma
 pragmas
 screenshot

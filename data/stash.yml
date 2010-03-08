@@ -33,15 +33,15 @@ about:
         comment: by Peter Lavender (Release Manager)
       - date: 2010 February 22
         url: http://szabgab.com/blog/2010/02/1266868643.html
-        title: Help learning and writing CSS - is there a parsable version of the documentation?
+        title: Help learning and writing <acronym>CSS</acronym> - is there a parsable version of the documentation?
         comment: by Gábor Szabó on how to add contextual help to Padre.
-      - date: 2010 Febuary 18
+      - date: 2010 February 18
         url: http://perlwannabe.vox.com/library/post/padre-057---bleeding-edge-stuff.html
         title: Padre 0.57 - Bleeding Edge Stuff!
         comment: by Peter Lavender (Release Manager).
       - date: 2010 February 17
         url: http://richard.wallman.org.uk/2010/02/padre-the-perl-ide/
-        title: local::lib and Padre - the Perl IDE
+        title: local::lib and Padre - the Perl <acronym>IDE</acronym>
         comment: by Richard Wallman
       - date: 2010 February 17
         url: http://padre-ide.de/blog/?p=95
@@ -49,29 +49,29 @@ about:
         comment: by Sebastian Willing
       - date: 2010 February 15
         url: http://szabgab.com/blog/2010/02/1266260384.html
-        title: Is Padre really beter than vi, emacs or Eclipse + EPIC?
+        title: Is Padre really better than vi, Emacs or Eclipse + EPIC?
         comment: by Gábor Szabó
       - date: 2010 February 15
         url: http://szabgab.com/blog/2010/02/1266258560.html
-        title: Video of the Padre talk on FOSDEM
+        title: Video of the Padre talk on <acronym>FOSDEM</acronym>
         comment: by Gábor Szabó
       - date: 2010 February 13
         url: http://perlwannabe.vox.com/library/post/installing-padre-from-cpan.html
-        title: Installing Padre on Ubuntu from CPAN
+        title: Installing Padre on Ubuntu from <acronym>CPAN</acronym>
         comment: by Peter Lavender.
       - date: 2010 February 11
         url: http://ahmadzawawi.blogspot.com/2010/02/upcoming-features-in-padre.html
         title: Upcoming features in Padre
         comment: by Ahmad M. Zawawi
-      - date: 2010 Febuary 09
+      - date: 2010 February 09
         url: http://csjewell.dreamwidth.org/8490.html
         title: Problem with strawberry + padre 0.56
         comment: by Curtis Jewell
-      - date: 2010 Febuary 09
+      - date: 2010 February 09
         url: http://csjewell.dreamwidth.org/8334.html
         title: Release announcements
         comment: by Curtis Jewell
-      - date: 2010 Febuary 07
+      - date: 2010 February 07
         url: http://perlwannabe.vox.com/library/post/padre-056-the-missing-release-announcement.html
         title: Padre 0.56 the Missing Release Announcement
         comment: by Peter Lavender (Release Manager).
@@ -93,12 +93,12 @@ about:
         comment: by Peter Lavender (Release Manager).
       - date: 2010 January 20
         url: http://jquelin.blogspot.com/2010/01/next-padre-version-will-finally.html
-        title: next Padre version will (finally) recognize dist-zilla projects
+        title: next Padre version will (finally) recognize <code>Dist::Zilla</code> projects
         comment: by Jerome Quelin
       - date: 2010 January 16
         url: http://pkgsrc.se/editors/p5-Padre
         title: Padre 0.54 in NetBSD
-        comment: pkgsrc.se
+        comment: by <code>pkgsrc-users@NetBSD.org</code>
       - date: 2010 January 15
         url: http://perlisalive.com/users/ajt/weblog/18
         title: Padre in Debian
@@ -123,11 +123,11 @@ about:
         comment: by Adam Kennedy
       - date: 2009 December 23
         url: http://szabgab.com/blog/2009/12/1261601193.html
-        title: Padre 0.53 Stand Alone for Linux on perl 5.11.3 released
+        title: Padre 0.53 Stand Alone for Linux on Perl 5.11.3 released
         comment: by Gábor Szabó
       - date: 2009 December 23
         url: http://blog.patspam.com/2009/padrepluginplack
-        title: Padre::Plugin::Plack
+        title: <code>Padre::Plugin::Plack</code>
         comment: by Patrick Donelan
       - date: 2009 December 23
         url: http://perlwannabe.vox.com/library/post/padre-053-is-released.html
@@ -135,7 +135,7 @@ about:
         comment: by Peter Lavender
       - date: 2009 December 14
         url: http://perlwannabe.vox.com/library/post/padre-052-is-heading-to-cpan.html
-        title: Padre 0.52 is heading to CPAN.
+        title: Padre 0.52 is heading to <acronym>CPAN</acronym>.
         comment: A new release of Padre!  by Peter Lavender
       - date: 2009 December 09
         url: http://www.catalystframework.org/calendar/2009/9
@@ -151,7 +151,7 @@ about:
         comment: by Sebastian Willing (SEWI)
       - date: 2009 December 03
         url: http://perlwannabe.vox.com/library/post/padre-051-is-on-the-way-to-cpan.html
-        title: Padre 0.51 is on the way to CPAN.
+        title: Padre 0.51 is on the way to <acronym>CPAN</acronym>.
         comment: A new release of Padre!
       - date: 2009 December 06
         url: http://szabgab.com/blog/2009/12/1260086317.html
@@ -171,12 +171,12 @@ about:
         comment: by Adam Kennedy
       - date: 2009 November 25
         url: http://szabgab.com/blog/2009/11/1259131466.html
-        title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl IDE
+        title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl <acronym>IDE</acronym>
         comment: screencast by Gábor Szabó
       - date: 2009 November 18
         url: http://szabgab.com/blog/2009/11/1258578873.html
         title: Padre supporting technologies in addition to Perl
-        comment: by Gábor Szabó on the results of the 2nd perl editor poll
+        comment: by Gábor Szabó on the results of the second Perl editor poll
       - date: 2009 November 14
         url: http://padre-ide.de/blog/?p=54
         title: How to write a test (explaining t/94-padre-file-remote.t)
@@ -192,7 +192,7 @@ about:
         language: Japanese
       - date: 2009 November 10
         url: http://id-perl.blogspot.com/2009/11/regex-editor-in-padre-050.html
-        title: Regex Editor in Padre 0.50
+        title: Regular expressions editor in Padre 0.50
         comment: by Steven Haryanto on Perl Indonesia
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=37
@@ -528,7 +528,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 June 21
         url: http://jquelin.blogspot.com/2009/06/prepender-distzilla-plugin.html
-        title: prepender <code>DistZilla</code> plug-in can add boilerplate copyright
+        title: prepender <code>Dist::Zilla</code> plug-in can add boilerplate copyright
         comment: by Jerome Quelin
       - date: 2009 June 21
         url: http://ahmadzawawi.blogspot.com/2009/06/padres-perl-6-support-and-ecliptic.html
@@ -656,7 +656,7 @@ about:
         comment: by Jerome Quelin
       - date: 2009 April 17
         url: http://www.docstoc.com/docs/24009888/MiltonKeynespm-Perl-Technical-Talk
-        title: Introduction to WxWidgets
+        title: Introduction to wxWidgets
         comment: Slides of Peter Edwards on MiltonKeynes.pm Perl Technical Talk
       - date: 2009 April 17
         url: http://perlwannabe.vox.com/library/post/learning-wxperl-by-reading-wxpywiki.html
@@ -1122,12 +1122,12 @@ about:
     events:
       - date: 2010 February 19
         url: http://linuxtoy.org/archives/padre.html
-        title: Padre: Perl IDE
+        title: Padre: Perl <acronym>IDE</acronym>
         comment: Free software application listing
       - date: 2009 December 10
         url: http://perlchina.org/advent/2009/Padre.html
         title: Padre
-        comment: Fayland Lam during the CN Perl Advent Calendar
+        comment: Fayland Lam during the Perl China Advent Calendar
 developers:
   - alias
   - azawawi
