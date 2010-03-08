@@ -53,7 +53,7 @@ are usually shown on the blog pages).
 
 Event planning page: L<http://www.perlfoundation.org/perl5/index.cgi?events_2010_fosdem>
 
-=head3 Gabor Szabo
+=head3 Gábor Szabó
 
 (main coordinator)
 Event report: L<http://szabgab.com/blog/2010/02/1266052953.html>
@@ -68,15 +68,23 @@ Event report: L<http://nxadm.wordpress.com/2010/02/19/fosdem-2010-impressions/>
 
 =head3 Erik Colson
 
+=head3 Salve J. Nilsen
+
+L<http://www.nuug-foundation.no/no/FOSDEM-2010/> in Norwegian
+
 =head2 CeBit
 
 Event planning page: L<http://www.perlfoundation.org/perl5/index.cgi?events_2010_cebit>
 
-=head3 Gabor Szabo
+=head3 Gábor Szabó
 
 (main coordinator)
 
-Event report: L<http://szabgab.com/blog/2010/03/1267974609.html>
+Event reports:
+
+L<http://szabgab.com/blog/2010/03/1267676778.html>
+
+L<http://szabgab.com/blog/2010/03/1267974609.html>
 
 =head3 Renee Bäcker
 
@@ -85,12 +93,18 @@ Event report: L<http://szabgab.com/blog/2010/03/1267974609.html>
 Did a talk on Perl on CeBit.
 
 Event reports:
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-0.html>
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-1.html>
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-2.html>
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-3.html>
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-4.html>
-	L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-5.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-0.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-1.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-2.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-3.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-4.html>
+
+L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-5.html>
 
 =head3 Sebastian Willing
 
