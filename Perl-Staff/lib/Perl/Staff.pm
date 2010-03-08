@@ -56,11 +56,28 @@ Event planning page: L<http://www.perlfoundation.org/perl5/index.cgi?events_2010
 =head3 Gábor Szabó
 
 (main coordinator)
-Event report: L<http://szabgab.com/blog/2010/02/1266052953.html>
+
+Event report: 
+
+=over 4
+
+=item * FOSDEM report
+
+L<http://szabgab.com/blog/2010/02/1266052953.html>
+
+=back
 
 =head3 Claudio Ramirez
 
-Event report: L<http://nxadm.wordpress.com/2010/02/19/fosdem-2010-impressions/>
+Event report: 
+
+=over 4
+
+=item * Fosdem 2010 impressions
+
+L<http://nxadm.wordpress.com/2010/02/19/fosdem-2010-impressions/>
+
+=back
 
 =head3 Dirk DeNijs
 
@@ -82,39 +99,105 @@ Event planning page: L<http://www.perlfoundation.org/perl5/index.cgi?events_2010
 
 Event reports:
 
+=over 4
+
+=item * Two days into CeBIT
+
 L<http://szabgab.com/blog/2010/03/1267676778.html>
 
+=item * Perl on CeBIT
+
 L<http://szabgab.com/blog/2010/03/1267974609.html>
+
+=back
 
 =head3 Renee Bäcker
 
 (main coordinator)
 
-Did a talk on Perl on CeBit.
+Did a talk on Perl on CeBit:
+
+=over 4
+
+=item * Slides
+
+L<http://renee-baecker.de/talks/CeBIT2010.pdf>
+
+=item * Skript 
+
+L<http://renee-baecker.de/talks/CeBIT2010_Skript.pdf>
+
+=back
 
 Event reports:
 
+=over 4
+
+=item * Perl@CeBIT - Tag 0
+
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-0.html>
+
+=item * Perl@CeBIT - Tag 1
 
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-1.html>
 
+=item * Perl@CeBIT - Tag 2
+
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-2.html>
+
+=item * Perl@CeBIT - Tag 3
 
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-3.html>
 
+=item * Perl@CeBIT - Tag 4
+
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-4.html>
+
+=item * Perl@CeBIT - Tag 5
 
 L<http://reneeb-perlblog.blogspot.com/2010/03/perlcebit-tag-5.html>
 
+=back
+
+=head3 Robert 'phaylon' Sedlacek
+
+Event report: 
+
+=over 4
+
+=item * Perl in Germany - My CeBIT Recap
+
+L<http://blogs.perl.org/user/robert_phaylon_sedlacek/2010/03/perl-in-germany-my-cebit-recap.html>
+
+=back
+
 =head3 Sebastian Willing
 
-Event report: L<http://padre-ide.de/blog/?p=111>
+Event report:
+
+=over 4
+
+=item * CeBit 2010 is over
+
+L<http://padre-ide.de/blog/?p=111>
+
+=back
 
 =head3 Torsten Raudssus
 
 use Moose;
 
 =head3 Thomas Fahle
+
+Event report: 
+
+=over 4
+
+=item * Perl@CeBIT2010
+
+L<http://thomas-fahle.blogspot.com/2010/03/perlcebit2010.html>
+
+=back
 
 =head3 Bernhard Schmalhofer
 
