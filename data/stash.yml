@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 March 08
+        url: http://perlwannabe.vox.com/library/post/padre-058---its-still-a-case-of-careful-as-you-go.html
+        title: Padre 0.58 - It's still a case of careful as you go.....
+        comment: by Peter Lavender (Release Manager)
       - date: 2010 February 22
         url: http://szabgab.com/blog/2010/02/1266868643.html
         title: Help learning and writing CSS - is there a parsable version of the documentation?
