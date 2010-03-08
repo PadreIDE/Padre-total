@@ -66,7 +66,7 @@ while (defined(my $html_file = $iter->())) {
     $file_counter++;
 
     my ($temp_handle, $temp_file) = tempfile;
-    my $transformed = $stylesheet->transform(XML::LibXML->load_xml(location => $html_file));
+    my $transformed = $stylesheet->transform(XML::LibXML->load_xml(location => $html_file, load_ext_dtd => 0,));
     $stylesheet->output_fh($transformed, $temp_handle);
 
     my ($stdout) = capture {
