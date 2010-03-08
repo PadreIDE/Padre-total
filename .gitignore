@@ -75,5 +75,12 @@ Hyppolit/META.yml
 Hyppolit/Makefile
 Hyppolit/inc
 
+Perl-Staff/MANIFEST
+Perl-Staff/META.yml
+Perl-Staff/Makefile
+Perl-Staff/blib/
+Perl-Staff/inc/
+Perl-Staff/pm_to_blib
+
 template.padre.perlide.org/Build
 template.padre.perlide.org/_build
