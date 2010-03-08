@@ -81,7 +81,7 @@
   <li><a href="http://padre-perl-ide.googlecode.com/files/strawberry-plus-padre-0.56.msi">Padre 0.56 MSI</a> (recommended)</li>
   <li><a href="http://padre-perl-ide.googlecode.com/files/strawberry-plus-padre-0.56.zip">Padre 0.56 zip</a></li>
  </ul>
-<p><b>Warning:</b> there is a known bug in the 0.56 Stand Alone Padre for Windows.<br />
+<p><b>Warning:</b> there is a known bug in the 0.56 Stand Alone Padre for Windows.</p>
 
 <div style="border: 1px solid grey; background-color: #F8F8F8; padding: 5px; overflow: auto;">
 <pre style="font-family: Consolas, Courier New, Courier, monospace; font-size: 10pt;">
@@ -95,14 +95,14 @@
 </span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Installing fixed libraries (6.7MB)
 </span><span style="color: #0080FF;">perl</span><span> -MPAR::Dist -e"install_par q(<a href="http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par">http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par</a>)"
 
-</span><span style="color: #008000;">rem This rebuilds the Wx perl connector. 
+</span><span style="color: #008000;">rem This rebuilds the Wx perl connector.
 </span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Rebuilding the Wx perl connector
 </span><span style="font-weight: bold; color: #0000FF;">call</span><span style="color: #0080FF;"> cpan</span><span> -f Wx
 
 </span><span style="font-weight: bold; color: #0000FF;">echo</span><span> Patch is installed. This prevents Padre from crashing on exit</span>
-<pre>
+</pre>
 </div>
-<br /><br />
+<p>
 (The .par file has now been updated to use wxWidgets 2.8.10 instead of
 the 2.9.0 that was used.)
 </p>
@@ -135,7 +135,7 @@ the 2.9.0 that was used.)
  </p>
  <p>There is an experimental DMG download here: <a href="http://ali.as/Padre.dmg">Padre.dmg</a> (58 MB).
     Please help us by reporting bugs or installation failures to the
-    <a href="http://widget.mibbit.com/?server=irc.perl.org&channel=%23padre">Padre IRC Channel</a>
+    <a href="http://widget.mibbit.com/?server=irc.perl.org&amp;channel=%23padre">Padre IRC Channel</a>
     or <a href="http://padre.perlide.org/trac/">Padre trac</a>.
  </p>
  [% END %]
@@ -232,9 +232,9 @@ please look at the
  <img class="title_image" src="static/alien/active-perl.jpg" alt=""/>
  <h1>ActiveState Perl</h1>
  <p>
- Mark Dootson has rolled up his sleeves and provided PPMs for Padre. His announcement to the dev list is 
+ Mark Dootson has rolled up his sleeves and provided PPMs for Padre. His announcement to the dev list is
  <a href="http://mail.perlide.org/pipermail/padre-dev/2010-February/001602.html">http://mail.perlide.org/pipermail/padre-dev/2010-February/001602.html</a>.
- 
+
  </p>
  <p>
  There are Padre PPMs available for:
@@ -246,21 +246,25 @@ please look at the
  </p>
  <p>
  To install Padre through PPM, add the following URL to your list of Repositories:
- <br>
+ <code>
  <a href="http://www.wxperl.co.uk/repository/ppm-repository.html">http://www.wxperl.co.uk/repository/ppm-repository.html</a>
+ </code>
  </p>
  <p>
  The following is from Mark in the thread of the orginal announcement regarding the use of PPM:
- <pre>
-  For info, I fixed most of the PPM issues so now you can just select 
-  Padre for install and all dependencies are properly met.
-
- The one remaining caveat is that the executable on MSWin does not work. 
- (fails in search for wperl.exe). But, assuming your <ppminstallbin> is 
- on your path (which it should be) then 'padre.bat' on the command line 
- should work.
- </pre>
  </p>
- 
+ <blockquote>
+ <p>
+  For info, I fixed most of the PPM issues so now you can just select
+  Padre for install and all dependencies are properly met.
+ </p>
+ <p>
+ The one remaining caveat is that the executable on MSWin does not work.
+ (fails in search for wperl.exe). But, assuming your &lt;ppminstallbin&gt; is
+ on your path (which it should be) then 'padre.bat' on the command line
+ should work.
+ </p>
+ </blockquote>
+
  [% END %]
 [% END ; # dl_activestate %]
