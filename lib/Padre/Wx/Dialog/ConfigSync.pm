@@ -487,6 +487,7 @@ sub btn_login {
          Wx::wxOK,
          $self,
       );
+      return;
    }
 
    # attempt login

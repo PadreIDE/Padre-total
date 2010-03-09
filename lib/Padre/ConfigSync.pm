@@ -185,7 +185,7 @@ sub login {
 
    my $resp = $self->ua->request( POST "$server/login", $params );
 
-   if ($resp->content !~ /Wrong username or password/i) { 
+   if ($resp->content !~ /Wrong username or password/i && $resp->code == 200) { 
       $self->{state} = 'logged_in';
       return 'Logged in successfully.';
    }
