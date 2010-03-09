@@ -205,6 +205,12 @@ L<http://thomas-fahle.blogspot.com/2010/03/perlcebit2010.html>
 
 =head3 Michael Daum
 
+=item * Foswiki on CeBit 2010
+
+L<http://blog.foswiki.org/2010/03/foswiki-on-cebit-2010/>
+
+=back
+
 =cut
 
 =head1 AUTHOR
