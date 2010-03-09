@@ -1,0 +1,5 @@
+TODO list:
+   -rename project?
+   -crypt passwords in database, they are clear plaintext now
+   -SSL traffic through catalyst?
+   -email client verification on registration

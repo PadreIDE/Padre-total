@@ -1,0 +1,20 @@
+user:
+Not Logged In : 
+PUT account creation
+
+Logged In:
+POST account modification
+GET retrieve account
+DELETE remove account
+
+Config:
+Logged In:
+PUT Config Creation
+POST Config modification (is this necessary?)
+GET retrieve config if it exists
+DELETE delete config
+
+
+question to answer : multiple configs ? or just one
+for prototype I think sticking to a single config is best
+
