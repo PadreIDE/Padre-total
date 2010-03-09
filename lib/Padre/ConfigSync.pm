@@ -75,6 +75,7 @@ sub new {
       autosave => 1,
    );
    $ua->cookie_jar($cookie_jar);
+   $ua->timeout(2);
 
 	my $self = bless {
 		parent   => $parent,
