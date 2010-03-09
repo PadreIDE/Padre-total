@@ -50,7 +50,7 @@ sub parrot_bin {
 
 	# Look for the explicit RAKUDO_DIR
 	if ( $ENV{RAKUDO_DIR} ) {
-		my $command = File::Spec->catfile( $ENV{RAKUDO_DIR}, 'parrot', $exe );
+		my $command = File::Spec->catfile( $ENV{RAKUDO_DIR}, 'parrot_install', $exe );
 		if ( -f $command and -x _ ) {
 			return $command;
 		}
