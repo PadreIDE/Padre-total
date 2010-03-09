@@ -147,7 +147,7 @@ sub dialog_perl {
 		Wx::gettext("Select Perl File"),
 		$main->cwd,
 		"",
-		"",
+		"*.pl",
 		Wx::wxFD_OPEN
 		| Wx::wxFD_FILE_MUST_EXIST,
 	);
