@@ -12,7 +12,7 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 
-our $VERSION = '0.58';
+our $VERSION = '0.57';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -43,6 +43,20 @@ sub new {
 		$self,
 		'tools.key_bindings',
 	);
+
+	$self->AppendSeparator;
+
+   $self->add_menu_action(
+      $self,
+      'tools.config_sync',
+   );
+
+   #my $config_sync = Wx::Menu->new;
+   #$self->Apeend(
+   #   -1,
+   #   Wx::gettext('Config Sync'),
+   #   $config_sync
+   #);
 
 	$self->AppendSeparator;
 

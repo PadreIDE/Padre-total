@@ -12,7 +12,7 @@ use Padre::Wx       ();
 use Padre::Action   ();
 use Padre::Current qw{_CURRENT};
 
-our $VERSION = '0.58';
+our $VERSION = '0.57';
 
 
 
@@ -53,7 +53,19 @@ sub new {
 				Padre->ide->plugin_manager,
 			)->show;
 		},
-	);
+   );
+
+   Padre::Action->new(
+      name     => 'tools.config_sync',
+      label    => Wx::gettext('Config Sync'),
+      comment  => Wx::gettext('Show the preferences for configuration sync'),
+      menu_event => sub { 
+         require Padre::Wx::Dialog::ConfigSync;
+         Padre::Wx::Dialog::ConfigSync->new(
+            $_[0],
+         );
+      },
+   );
 
 	# TO DO: should be replaced by a link to http://cpan.uwinnipeg.ca/chapter/World_Wide_Web_HTML_HTTP_CGI/Padre
 	# better yet, by a window that also allows the installation of all the plug-ins that can take into account

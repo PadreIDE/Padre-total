@@ -22,7 +22,7 @@ use Padre::Config::Project ();
 use Padre::Config::Host    ();
 use Padre::Config::Upgrade ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.57';
 
 our ( %SETTING, %DEFAULT, %STARTUP, $REVISION, $SINGLETON );
 
@@ -1189,6 +1189,29 @@ setting(
 	name    => 'config_perlcritic',
 	type    => Padre::Constant::PATH,
 	store   => Padre::Constant::PROJECT,
+	default => '',
+);
+
+
+# ConfigSync settings
+setting(
+	name    => 'cs_default_server',
+	type    => Padre::Constant::ASCII,
+   store   => Padre::Constant::HUMAN,
+	default => 'http://escher.ath.cx:3000',
+);
+
+setting(
+	name    => 'cs_username',
+	type    => Padre::Constant::ASCII,
+   store   => Padre::Constant::HUMAN,
+	default => '',
+);
+
+setting(
+	name    => 'cs_password',
+	type    => Padre::Constant::ASCII,
+   store   => Padre::Constant::HUMAN,
 	default => '',
 );
 

@@ -24,7 +24,7 @@ use DBD::SQLite   ();
 # TO DO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.57';
 
 # Since everything is used OO-style, we will be require'ing
 # everything other than the bare essentials
@@ -39,6 +39,7 @@ use Class::XSAccessor 1.05 {
 		original_cwd   => 'original_cwd',
 		opts           => 'opts',
 		config         => 'config',
+      config_sync    => 'config_sync',
 		wx             => 'wx',
 		task_manager   => 'task_manager',
 		plugin_manager => 'plugin_manager',
@@ -155,6 +156,10 @@ sub new {
 	$self->{task_manager} = Padre::TaskManager->new(
 		use_threads => $self->config->threads,
 	);
+
+   # create the ConfigSync manager
+   require Padre::ConfigSync;
+   $self->{config_sync} = Padre::ConfigSync->new($self);
 
 	# Create the action queue
 	$self->{actionqueue} = Padre::Action::Queue->new();
@@ -972,7 +977,7 @@ know about Wx, but currently it still does.
 
 =item L<Padre::Wx::Ack>
 
-Implementation of the L<ack> integration in C<Edit/Ack> menu item.
+Implementation of the L<ack> integration in Edit/Ack menu item.
 It probably should be either under Dialog or moved out to be a
 plug-in.
 
@@ -1120,8 +1125,6 @@ Adam Kennedy (ADAMK) E<lt>adamk@cpan.orgE<gt>
 Breno G. de Oliveira (GARU)
 
 Brian Cassidy (BRICAS)
-
-Burak Gürsoy (BURAK) E<lt>burak@cpan.orgE<gt>
 
 Cezary Morga (THEREK) E<lt>cm@therek.netE<gt>
 
