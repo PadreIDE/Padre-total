@@ -3,6 +3,7 @@ package Padre::Wx::Dialog::ConfigSync;
 use 5.008;
 use strict;
 use warnings;
+
 use Padre::Wx                  ();
 use Padre::Wx::Dialog          ();
 use Padre::Wx::Role::MainChild ();
@@ -123,6 +124,7 @@ sub new {
 		$config->cs_password ? $config->cs_password : '',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
+      Wx::wxTE_PASSWORD 
 	);
 	$self->{btn_login} = Wx::Button->new(
 		$self->{Login_Pane},
@@ -163,6 +165,7 @@ sub new {
 		"",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
+      Wx::wxTE_PASSWORD
 	);
 	$self->{lbl_pw2} = Wx::StaticText->new(
 		$self->{Register_Pane},
@@ -177,6 +180,7 @@ sub new {
 		"",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
+      Wx::wxTE_PASSWORD
 	);
 	$self->{lbl_email1} = Wx::StaticText->new(
 		$self->{Register_Pane},
