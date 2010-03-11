@@ -109,6 +109,10 @@ L<http://szabgab.com/blog/2010/03/1267676778.html>
 
 L<http://szabgab.com/blog/2010/03/1267974609.html>
 
+=item * Another report about CeBIT, Perl and the community
+
+L<http://szabgab.com/blog/2010/03/1268387636.html>
+
 =back
 
 =head3 Renee Bäcker
