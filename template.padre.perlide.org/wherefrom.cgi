@@ -1,4 +1,6 @@
 #!/usr/bin/perl -l
+use strict;
+use warnings;
 
 use CGI;
 
