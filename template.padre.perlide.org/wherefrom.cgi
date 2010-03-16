@@ -1,7 +1,6 @@
 #!/usr/bin/perl -l
 
 use CGI;
-use DBI;
 
 my $q = CGI->new;
 
