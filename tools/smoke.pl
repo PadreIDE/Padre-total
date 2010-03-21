@@ -39,6 +39,9 @@ usage('Needs --path')    if not $path;
 usage('Needs --to')      if not $to;
 usage('Needs --smolder') if not $smolder;
 
+$ENV{AUTOMATED_TESTING} = 1;
+$ENV{RELEASE_TESTING}   = 1;
+
 chdir $path;
 open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
 my $username = <$fh>;
@@ -88,7 +91,7 @@ while (1) {
 			my $file = 'tap.tar.gz';
 			unlink $file;
 			my $test_out = _system("prove --merge -ba $file t/ xt/");
-			if ($test_out =~ /Result: FAIL/) {
+			if ($test_out =~ /Result: FAIL|FAILED|Bailout called/) {
 				$status = "FAIL - testing";
 			}
 			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
