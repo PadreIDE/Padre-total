@@ -86,7 +86,8 @@ sub on_transport_connect {
 sub on_transport_disconnect {
 	my ($self) = @_;
 	TRACE( "Swarm transport disconnected" ) if DEBUG;
-	
+	$self->chat->write_unstyled( "swarm transport disconnected!\n" );
+
 }
 
 
@@ -269,7 +270,6 @@ SCOPE: {
 	}
 }
 
-# TODO Re-anable this when padre can survive plugin_preferences death
 sub plugin_preferences {
 	my $self = shift;
 	my $wx = shift;

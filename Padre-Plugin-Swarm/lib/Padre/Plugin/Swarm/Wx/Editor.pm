@@ -46,8 +46,6 @@ respond to.
 =cut
 
 
-# TODO Register events , catch swarm messages and apply them to open documents
-# 
 sub new {
 	my $class = shift;
 	my %args  = @_;
@@ -67,8 +65,7 @@ sub enable {
 	    sub { $self->on_swarm_message(@_) },
 	);
 	};
-	
-	# TODO - when enabled - announce the open editor tabs!
+
 	foreach my $editor ( $self->plugin->main->editors ) {
 	    $self->editor_enable( $editor, $editor->{Document} )
 	}
@@ -126,9 +123,6 @@ sub on_swarm_message {
 	my ($self,$main,$event) = @_;
 	my $data = $event->GetData;
 	my $message = Storable::thaw( $data );
-	# TODO - perform the geometry manipulation here and only update when 
-	# necessary
-
 	
 	my $handler = 'accept_' . $message->{type};
 	TRACE( $handler ) if DEBUG;

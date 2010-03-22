@@ -218,6 +218,13 @@ sub accept_message {
 
 }
 
+sub write_timestamp {
+	my $self = shift;
+	$self->chatframe->AppendText(
+		join( ':', (localtime())[2,1,0]  ) . ' '
+	);
+}
+
 sub write_unstyled {
     my ($self,$text) = @_;
     my $style = $self->chatframe->GetDefaultStyle;
@@ -238,6 +245,7 @@ sub write_user_styled {
 
 sub accept_chat {
     my ($self,$message) = @_;
+    $self->write_timestamp;
     $self->write_user_styled(
         $message->from,
         $message->from . ': '
@@ -253,6 +261,7 @@ sub accept_announce {
         return;
     }
     else {
+    	$self->write_timestamp;
         $self->write_user_styled( $announce->from , $announce->from );
         $self->write_unstyled(  " has joined the swarm \n" );
         $self->users->{$nick} = 1;
@@ -283,6 +292,7 @@ sub accept_leave {
     my ($self,$message) = @_;
     my $identity = $message->from;
     delete $self->users->{$identity};
+    $self->write_timestamp;
     $self->write_user_styled( $identity , $identity );
     $self->write_unstyled( " has left the swarm.\n" );
     $self->update_userlist;
