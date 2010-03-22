@@ -1,13 +1,10 @@
 use inc::Module::Install 0.91;
 
-if ( -e 'MANIFEST.SKIP' ) {
-    system( 'pod2text lib/Padre/Plugin/Plack.pm > README' );
-}
-
 name 'Padre-Plugin-Plack';
 all_from 'lib/Padre/Plugin/Plack.pm';
 author 'Patrick Donelan <pdonelan@cpan.org>';
 license 'perl';
+readme_from 'lib/Padre/Plugin/Plack.pm';
 
 requires 'Padre' => '0.53';
 requires 'Plack' => '0.9021';

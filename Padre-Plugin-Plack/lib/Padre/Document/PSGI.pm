@@ -10,7 +10,7 @@ use Padre::MimeTypes;
 
 our @ISA = 'Padre::Document::Perl';
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Class::XSAccessor accessors => [qw(icon_path icon_set panel plugin process)];
 

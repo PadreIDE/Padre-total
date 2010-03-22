@@ -3,7 +3,7 @@ package Padre::Plugin::Plack::Panel;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use Padre::Wx   ();
 use Padre::Util ('_T');

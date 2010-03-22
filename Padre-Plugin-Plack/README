@@ -2,7 +2,7 @@ NAME
     Padre::Plugin::Plack - PSGI/Plack plugin for Padre
 
 VERSION
-    Version 0.01
+    Version 0.04
 
 SYNOPSIS
             cpan install Padre::Plugin::Plack;
@@ -69,10 +69,18 @@ DESCRIPTION
     Blog post with screenshots:
     <http://blog.patspam.com/2009/padrepluginplack>
 
-ACKNOWLEDGEMENTS
+AUTHOR
     Patrick Donelan (PDONELAN) <pat@patspam.com>
 
-    Gábor Szabó - גאבור סבו (SZABGAB) <szabgab@gmail.com>
+CONTRIBUTORS
+    *   Gábor Szabó - גאבור סבו (SZABGAB) <szabgab@gmail.com>
+
+TRANSLATORS
+    *   French - Jerome Quelin (jquelin)
+
+    *   Dutch - Dirk De Nijs (ddn123456)
+
+    *   Brazilian Portuguese - Breno G. de Oliveira (garu)
 
 BUGS
     Please report any bugs or feature requests to "bug-padre-plugin-plack at

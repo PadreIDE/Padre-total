@@ -8,11 +8,12 @@ use utf8;
 use Padre::Util ('_T');
 use Padre::Logger;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin' => 0.29;
+    'Padre::Plugin' => 0.43,
+    'Padre::Document' => 0.57;
 }
 
 # Declare ourselves as the handler for .psgi files
@@ -107,7 +108,7 @@ sub is_psgi_doc {
     my $self = shift;
     my $doc = shift;
     
-    return $doc->isa('Padre::Document::PSGI') && $doc->can('get_mimetype') && $doc->get_mimetype eq 'application/x-psgi';
+    return $doc->isa('Padre::Document::PSGI') && $doc->can('mimetype') && $doc->mimetype eq 'application/x-psgi';
 }
 
 sub editor_enable {
@@ -456,19 +457,26 @@ sub build_panel {
     # Servers
     my @servers = sort qw(
         Standalone
-        Standalone::Prefork
-        Standalone::Prefork::Server::Starter
-        FCGI 
-        FCGI::EV 
-        CGI 
-        AnyEvent 
-        Coro 
-        POE 
-        Danga::Socket 
-        Server::Simple
-        ReverseHTTP
         Apache1
         Apache2
+        Apache2::RegistryAnyEvent
+        AnyEvent::HTTPD
+        AnyEvent::ReverseHTTP
+        AnyEvent::SCGI
+        AnyEvent::Server::Starter
+        CGI 
+        Corona
+        FCGI
+        FCGI::Engine
+        HTTP::Server::PSGI
+        HTTP::Server::Simple
+        Server::Simple
+        SCGI
+        Standalone::Prefork::Server::Starter
+        Starman
+        Twiggy
+        POE
+        ReverseHTTP
     );
     unshift @servers, _T('Let plackup guess');
     $top_box->AddSpacer(5);
@@ -552,7 +560,7 @@ Padre::Plugin::Plack - PSGI/Plack plugin for Padre
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =head1 SYNOPSIS
 
@@ -617,13 +625,39 @@ Make Padre your domain-specific IDE today :)
 
 Blog post with screenshots: L<http://blog.patspam.com/2009/padrepluginplack>
 
-=head1 ACKNOWLEDGEMENTS
-
-=encoding utf8
+=head1 AUTHOR
 
 Patrick Donelan (PDONELAN) E<lt>pat@patspam.comE<gt>
 
+=head1 CONTRIBUTORS
+
+=encoding utf8
+
+=over 4
+
+=item *
+
 Gábor Szabó - גאבור סבו (SZABGAB) E<lt>szabgab@gmail.comE<gt>
+
+=back
+
+=head1 TRANSLATORS
+
+=over 4
+
+=item *
+
+French - Jerome Quelin (jquelin)
+
+=item *
+
+Dutch - Dirk De Nijs (ddn123456)
+
+=item *
+
+Brazilian Portuguese - Breno G. de Oliveira (garu)
+
+=back
 
 =head1 BUGS
 

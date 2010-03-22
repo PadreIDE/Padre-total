@@ -1,11 +1,19 @@
 Revision history for Padre-Plugin-Plack
 
+0.04    2010-03-22
+        Fixes crashes and weird behaviour with newer versions of Padre
+         (Padre::Document::get_mimetype was renamed to Padre::Document::mimetype)
+        Adds Dutch translation (ddn123456++)
+        Adds Brazilian Portuguese translation (garu)
+        Updated list of Plack::HandlerS
+        Updated dot-psgi examples from Plack distro
+
 0.03	2009-12-24
         Replace Padre::Debug by Padre::Logger which is used in Padre 0.53
-	Included French translation
+        Included French translation
 
 0.02	2009-12-23
-	Mostly minor tweaking
+        Mostly minor tweaking
 
 0.01    2009-12-22
         First version, released on an unsuspecting world.
