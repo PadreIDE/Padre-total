@@ -2,6 +2,7 @@ Changes
 
 =head1 0.64 2010.03.24
 
+	Depends on Padre 0.57 for various module naming changes
 	Fixed ticket #883: Opening an existing Perl 6 script Hangs Padre on win32
 
 =head1 0.63 2010.02.24
