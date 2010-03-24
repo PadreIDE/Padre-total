@@ -9,7 +9,7 @@ use Padre::Plugin::Perl6::Util ();
 use Padre::QuickFixProvider    ();
 
 our $VERSION = '0.64';
-our @ISA     = ('Padre::QuickFixProvider');
+our @ISA     = ('Padre::QuickFix');
 
 #
 # Constructor.
