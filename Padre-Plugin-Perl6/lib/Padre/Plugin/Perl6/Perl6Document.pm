@@ -67,7 +67,7 @@ sub _check_syntax_internals {
 
 	require Padre::Plugin::Perl6::Perl6SyntaxCheckerTask;
 	my $task = Padre::Plugin::Perl6::Perl6SyntaxCheckerTask->new(
-		notebook_page => $self->editor,
+		editor        => $self->editor,
 		text          => $text,
 		issues        => $self->{issues},
 		( exists $args->{on_finish} ? ( on_finish => $args->{on_finish} ) : () ),
