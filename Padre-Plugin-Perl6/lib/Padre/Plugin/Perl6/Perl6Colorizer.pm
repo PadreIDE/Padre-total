@@ -43,8 +43,6 @@ sub colorize {
 				eval "use $module";
 				my $task = $module->new(
 					text     => $doc->text_with_one_nl,
-					editor   => $doc->editor,
-					document => $doc
 				);
 
 				# hand off to the task manager
