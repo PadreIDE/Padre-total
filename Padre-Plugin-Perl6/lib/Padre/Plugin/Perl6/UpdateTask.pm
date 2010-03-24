@@ -8,7 +8,7 @@ use Padre::Wx      ();
 use File::Copy     ();
 use File::Spec     ();
 use File::Basename ();
-our $VERSION = '0.63';
+our $VERSION = '0.64';
 our @ISA     = 'Padre::Task';
 
 # set up new event types
