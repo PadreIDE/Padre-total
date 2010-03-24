@@ -6,7 +6,7 @@ use base 'Padre::Task';
 use Scalar::Util    ();
 use Padre::Constant ();
 use Padre::Logger;
-use Padre::Util     ();
+use Padre::Util ();
 
 our $VERSION        = '0.63';
 our $thread_running = 0;

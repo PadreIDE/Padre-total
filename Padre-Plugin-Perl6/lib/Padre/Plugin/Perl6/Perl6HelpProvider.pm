@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 # For Perl 6 documentation support
-use App::Grok           ();
-use Padre::Help         ();
+use App::Grok   ();
+use Padre::Help ();
 
 our $VERSION = '0.63';
 our @ISA     = 'Padre::Help';
