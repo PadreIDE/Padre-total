@@ -1,6 +1,6 @@
 use strict;
 use lib 'privinc';
-use inc::Module::Install;
+use inc::Module::Install 0.92;
 
 
 name 'Padre-Plugin-PHP';
