@@ -1,9 +1,5 @@
 #!/usr/bin/perl
 
-#
-# $Id: hilitep6 27214 2009-06-25 06:50:08Z azawawi $
-#
-
 # Core modules
 use 5.010;
 use strict;
