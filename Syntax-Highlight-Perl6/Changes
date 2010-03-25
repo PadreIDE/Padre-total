@@ -1,5 +1,8 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.80 2010.3.25
+	Bundled the cooler STD.pm (lwall++) r30194
+
 0.79 2010.2.23
 	Bundled the latest awesome STD.pm (lwall++) r29781
 	Used temporary folders for STD artifacts while testing
