@@ -24,6 +24,7 @@ Padre-Plugin-Vi/share/locale/*.mo
 Padre/.padre/
 Padre/META.yml
 Padre/Makefile
+Padre/Makefile.old
 Padre/blib/
 Padre/inc/
 Padre/pm_to_blib
