@@ -26,6 +26,11 @@ in order to align with Padre.
 
 =cut
 
+# things to note - certain elements interact with the $config_sync object
+# to update state. Ie user logged in / not logged in
+# certain messages are defined in the Padre::ConfigSync class, this is most definitely
+# not the proper location for such things
+
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -261,7 +266,7 @@ sub new {
 	$self->{lbl_help} = Wx::StaticText->new(
 		$self->{Help_Pane},
 		-1,
-		"help message",
+		"This should contain a helpful message for how to use the system",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);

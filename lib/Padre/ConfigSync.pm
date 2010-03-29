@@ -9,7 +9,8 @@ Padre::ConfigSync - Utility functions for handling remote Configuration Syncing
 =head1 DESCRIPTION
 
 The C<ConfigSync> class contains logic for communicating with a remote 
-ConfigSync server. 
+ConfigSync server. This class interacts with the Padre::Wx::Dialog::ConfigSync 
+class for user interface display.
 
 =head1 METHODS
 
@@ -100,6 +101,12 @@ sub main {
 	$_[0]->parent->wx->main;
 }
 
+=head2 C<config>
+
+A convenience method to get to the config object
+
+=cut
+
 sub config { 
    $_[0]->{config};
 }
@@ -150,6 +157,7 @@ sub register {
       return 'Failure: cannot register account, user already logged in.';
    }
 
+   # this crashes if server is unavailable. FIXME
    my $resp = $self->ua->request( POST "$server/register", 'Content-Type' => 'application/json', 'Content' => $self->_objToJson($params) );
 
    if ($resp->code == 200) {
