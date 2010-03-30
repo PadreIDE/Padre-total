@@ -19,27 +19,16 @@ our $SEQUENCE = 0;
 sub new {
 	my $class = shift;
 	my $self  = bless {
-		id          => ++$SEQUENCE,
-		task_object => shift,
+		hid  => ++$SEQUENCE,
+		task => shift,
 	}, $class;
 	return $self;
 }
 
-sub id {
-	$_[0]->{id};
+sub hid {
+	$_[0]->{hid};
 }
 
-sub task_object {
-	$_[0]->{task_object};
-}
-
-sub task_class {
-	$_[0]->{task_class};
-}
-
-sub task_string {
-	$_[0]->{task_string};
-}
 
 
 
@@ -47,5 +36,60 @@ sub task_string {
 
 ######################################################################
 # Message Passing
+
+sub on_message {
+	my $self   = shift;
+	my $method = shift;
+
+	# Does the method exist
+	unless ( $self->{task}->can($method) ) {
+		# A method name provided directly by the Task
+		# doesn't exist in the Task. Naughty Task!!!
+		# Lacking anything more sane to do, squelch it.
+		return;
+	}
+
+	# Pass the call down to the task and protect it from itself
+	local $@;
+	eval {
+		$self->{task}->$method(@_);
+	};
+	if ( $@ ) {
+		# A method in the main thread blew up.
+		# Beyond catching it and preventing it killing
+		# Padre entirely, I'm not sure what else we can
+		# really do about it at this point.
+		return;
+	}
+
+	return;
+}
+
+sub on_stopped {
+	my $self = shift;
+
+	# The first parameter is the updated Task object.
+	# Replace all content in the stored version with that from the
+	# event-provided version.
+	my $new  = shift;
+	my $task = $self->{task};
+	%$task = %$new;
+	%$new  = ();
+
+	# Execute the finish method in the updated Task object
+	local $@;
+	eval {
+		$self->{task}->finish;
+	};
+	if ( $@ ) {
+		# A method in the main thread blew up.
+		# Beyond catching it and preventing it killing
+		# Padre entirely, I'm not sure what else we can
+		# really do about it at this point.
+		return;
+	}
+
+	return;
+}
 
 1;
