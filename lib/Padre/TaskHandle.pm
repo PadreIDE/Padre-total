@@ -5,6 +5,7 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
+use Storable ();
 
 our $VERSION  = '0.58';
 our $SEQUENCE = 0;
@@ -35,7 +36,14 @@ sub hid {
 
 
 ######################################################################
-# Message Passing
+# Message Handling
+
+# Serialize and pass-through to the Wx signal dispatch
+sub message {
+	Wx::App::GetInstance()->signal(
+		Storable::freeze( [ shift->hid, @_ ] )
+	);
+}
 
 sub on_message {
 	my $self   = shift;
@@ -63,6 +71,19 @@ sub on_message {
 	}
 
 	return;
+}
+
+# Task startup handling
+sub started {
+	$_[0]->message( 'STARTED' );
+}
+
+# There is no on_stopped atm... not sure if it's needed.
+# sub on_started { ... }
+
+# Task shutdown handling
+sub stopped {
+	$_[0]->message( 'STOPPED', $_[0]->{task} );
 }
 
 sub on_stopped {
