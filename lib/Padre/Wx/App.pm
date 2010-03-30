@@ -36,6 +36,12 @@ use Padre::Wx ();
 our $VERSION = '0.58';
 our @ISA     = 'Wx::App';
 
+# Primary thread signalling event
+our $SIGNAL : shared;
+BEGIN {
+	$SIGNAL = Wx::NewEventType();
+}
+
 
 
 
@@ -46,15 +52,16 @@ our @ISA     = 'Wx::App';
 sub create {
 	my $self = shift->new;
 
-	# Check IDE param
-	my $ide = shift;
-	require Params::Util;
-	unless ( Params::Util::_INSTANCE( $ide, 'Padre' ) ) {
-		Carp::croak("Did not provide the ide object to Padre::App->create");
-	}
-
 	# Save a link back to the parent ide
-	$self->{ide} = $ide;
+	$self->{ide} = shift;
+
+	# Bind the thread event handler
+	Wx::Event::EVT_COMMAND(
+		$self,
+		-1,
+		$SIGNAL,
+		\&on_signal,
+	);
 
 	# Immediately populate the main window
 	require Padre::Wx::Main;
@@ -102,7 +109,24 @@ sub config {
 #####################################################################
 # Wx Methods
 
-sub OnInit {1}
+sub OnInit { 1 }
+
+
+
+
+
+#####################################################################
+# Thread Event Handling
+
+sub on_signal {
+	my $self  = shift;
+	my $event = shift;
+	@_ = (); # Avoid scalar leak (cargo culted)
+
+	# Pass the event through to the task manager (if it exists)
+	$self->{ide}->{task_manager} and
+	$self->{ide}->{task_manager}->on_signal( $event );
+}
 
 1;
 
