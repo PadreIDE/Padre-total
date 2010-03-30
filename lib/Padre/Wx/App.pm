@@ -116,7 +116,14 @@ sub OnInit { 1 }
 
 
 #####################################################################
-# Thread Event Handling
+# Thread Signal Handling
+
+sub signal {
+	Wx::PostEvent(
+		shift,
+		Wx::PlThreadEvent->new( -1, $SIGNAL, shift )
+	);
+}
 
 sub on_signal {
 	my $self  = shift;
