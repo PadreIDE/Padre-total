@@ -27,6 +27,14 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 March 25
+        url: http://perlwannabe.vox.com/library/post/when-will-we-see-059.html
+        title: When will we see 0.59??
+        comment: by Peter Lavender (Release Manager)
+      - date: 2010 March 12
+        url: http://use.perl.org/~Alias/journal/40241
+        title: Making threads suck less in Padre
+        comment: by Adam Kennedy
       - date: 2010 March 08
         url: http://perlwannabe.vox.com/library/post/padre-058---its-still-a-case-of-careful-as-you-go.html
         title: Padre 0.58 - It's still a case of careful as you go.....
@@ -173,6 +181,10 @@ about:
         url: http://szabgab.com/blog/2009/11/1259131466.html
         title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl <acronym>IDE</acronym>
         comment: screencast by Gábor Szabó
+      - date: 2009 November 22
+        url: http://use.perl.org/~Tlousky/journal/39928
+        title: Padre - coding and editing in comfort
+        comment: by Tamir Lousky
       - date: 2009 November 18
         url: http://szabgab.com/blog/2009/11/1258578873.html
         title: Padre supporting technologies in addition to Perl
