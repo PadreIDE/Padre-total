@@ -1,10 +1,13 @@
 Revision history for Perl::Staff
 
+0.04    to be released
+
 0.03    2010-03-31
         Added unit test
         Added missing name of SJN
 
 0.02
+        Added CeBit blogs
 
 0.01    2010-02-03 too late at night
         First version, released on an unsuspecting world.
