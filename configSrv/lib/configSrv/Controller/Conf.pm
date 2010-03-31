@@ -9,14 +9,21 @@ use JSON::Any;
 =head1 NAME
 
 configSrv::Controller::Conf - Catalyst Controller
-I should rewrite this to just use ActionClass('REST'), , to remove the redundant serialization/deserialization
 
 
 =head1 DESCRIPTION
 
-Catalyst Controller.
+Provides interface to the conf/config resource for the REST webservice.
+TODO: I should rewrite this to just use ActionClass('REST'), , to remove the redundant serialization/deserialization
 
 =head1 METHODS
+
+=cut
+
+=head2 conf 
+
+Global REST actionclass method. Provides private POST and PUT methods for logged-in
+users.  If not logged in, registration attempt will fail with a 302 bad request response.
 
 =cut
 
@@ -24,6 +31,14 @@ sub conf
 :Chained('/login/required')
 :PathPart('user/config')
 :ActionClass('REST') { }
+
+=head2 conf_GET 
+
+private GET method for conf, provides GET handling. If logged in, tries to retrieve 
+the user config currently stored in the database. If it exists, returns a serialized 
+version of it.
+
+=cut
 
 sub conf_GET {
    my ($self, $c) = @_;
@@ -37,6 +52,14 @@ sub conf_GET {
       entity => JSON::Any->jsonToObj($config),
    );
 }
+
+=head2 conf_PUT 
+
+private PUT method for conf, provides PUT handling. If the given perl data structure
+passed in through the request validates, will store it serialized in the database. 
+If this fails, will return 302 bad request.
+
+=cut
 
 sub conf_PUT {
    my ($self, $c) = @_;
@@ -52,8 +75,7 @@ sub conf_PUT {
       if ($@) { 
          $c->log->debug("Config storage failure: $@");
          $self->status_bad_request(
-            $c,
-            message => 'Config storage failure.',
+            $c, message => 'Config storage failure.',
          );
          return;
       }
@@ -67,6 +89,17 @@ sub conf_PUT {
 *conf_POST = *conf_PUT;
 
 
+
+=head2 conf_DELETE
+
+private DELETE method for conf, provides DELETE handling. 
+Will always return 200 stats ok, whether or not a config 
+was successfully deleted or not. 
+TODO: add specific logic for returning 302 bad request when 
+a config doesn't exist in the database but a delete is 
+attempted anyways? 
+
+=cut
 
 sub conf_DELETE { 
    my ($self, $c) = @_;
@@ -83,7 +116,6 @@ sub conf_DELETE {
 =head1 AUTHOR
 
 ,,,
-
 =head1 LICENSE
 
 This library is free software. You can redistribute it and/or modify

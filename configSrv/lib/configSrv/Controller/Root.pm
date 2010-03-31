@@ -16,13 +16,17 @@ configSrv::Controller::Root - Root Controller for configSrv
 
 =head1 DESCRIPTION
 
-[enter your description here]
+configSrv is a Catalyst webservice designed to handle requests
+passed in by a remote Padre::ConfigSync instance. It provides 
+a user registration / login mechanism as well as configuration
+storage / retrieval / deletion. 
 
 =head1 METHODS
 
 =head2 index
 
 The root page (/)
+TODO: get rid of this 
 
 =cut
 

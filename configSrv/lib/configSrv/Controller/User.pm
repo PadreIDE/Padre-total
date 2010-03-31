@@ -10,23 +10,32 @@ configSrv::Controller::User - Catalyst Controller
 
 =head1 DESCRIPTION
 
-Catalyst Controller.
+Provides interface to the user and register resource for the REST webservice.
 
 =head1 METHODS
 
 =cut
 
 
-=head2 index
+=head2 register 
+
+Global REST actionclass method. Provides private POST and PUT methods for unlogged-in
+users. If logged in, registration attempt will fail with a 302 bad request response.
 
 =cut
-
 
 # we differentiate register and user in the User controller because we need
 # to be able to accept POSTs without login
 sub register 
 :Global 
 :ActionClass('REST') { }
+
+=head2 register_PUT
+
+private PUT method for register, provides PUT handling. 
+
+=cut
+
 
 sub register_PUT {
    my ($self, $c) = @_;
@@ -65,6 +74,15 @@ sub register_PUT {
 
 *register_POST = *register_PUT;
 
+=head2 user
+
+Global REST actionclass method. Provides access to the user resource. Login is required
+to interact with this resource through  the /login/required chain. provides POST, PUT 
+and DELETE HTTP actions. If not logged in, registration attempt will fail with a 
+302 bad request response.
+
+=cut
+
 # handle all LOGGED IN user interaction
 sub user 
 :Chained('/login/required') 
@@ -76,6 +94,13 @@ sub user
    $c->stash(users_rs => $c->model('padreDB::User'));
    $c->stash(roles_rs => $c->model('padreDB::Role'));
 }
+
+=head2 user_GET 
+
+private GET method for user, provides GET handling. 
+
+=cut
+
 
 sub user_GET { 
    my ($self, $c) = @_;
@@ -89,7 +114,14 @@ sub user_GET {
    );
 }
 
-# 
+
+=head2 user_POST
+
+private POST method for user, provides POST handling. 
+Synonymous with user PUT.
+
+=cut
+
 sub user_POST { 
    my ($self, $c) = @_;
    my $data = $c->request->data;
@@ -121,6 +153,13 @@ sub user_POST {
 }
 
 *user_PUT = *user_POST;
+
+=head2 user_DELETE
+
+private DELETE method for user, provides DELETE handling. 
+Synonymous with user PUT.
+
+=cut
 
 # delete account
 sub user_DELETE { 

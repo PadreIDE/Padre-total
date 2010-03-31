@@ -33,13 +33,6 @@ $VERSION = eval $VERSION;
 
 # Configure the application.
 #
-# Note that settings in configsrv.conf (or other external
-# configuration file that you set up manually) take precedence
-# over this when using ConfigLoader. Thus configuration
-# details given here can function as a default configuration,
-# with an external configuration file acting as an override for
-# local deployment.
-
 __PACKAGE__->config(
    name => 'configSrv',
    #'default'   => 'text/x-yaml',
@@ -72,17 +65,25 @@ __PACKAGE__->setup();
 
 configSrv - Catalyst based application
 
+
 =head1 SYNOPSIS
 
     script/configsrv_server.pl
 
 =head1 DESCRIPTION
 
-[enter your description here]
+Server-side component to configSync - an extension to Padre to allow 
+remote sync'ing / storage of Padre user configurations. All interactions
+are RESTful.
+
+=head1 DEPLOYMENT 
+
+Follow standard catalyst application deployment procedures for configSrv.
+Any database (including SQLite) should suffice for db support.
 
 =head1 SEE ALSO
 
-L<configSrv::Controller::Root>, L<Catalyst>
+L<configSrv::Controller::User>, L<configSrv::Controller::Conf>,  L<configSrv::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 
