@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 March 31
+        url: http://perlwannabe.vox.com/library/post/padre-059-has-been-released.html
+        title: Padre 0.59 has been Released...
+        comment: by Peter Lavender (Release Manager)
       - date: 2010 March 25
         url: http://perlwannabe.vox.com/library/post/when-will-we-see-059.html
         title: When will we see 0.59??
