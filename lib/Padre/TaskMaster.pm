@@ -45,9 +45,15 @@ sub queue {
 
 
 
+######################################################################
+# Main Thread Methods
+
+
+
+
 
 ######################################################################
-# Thread-Only Methods
+# Master Thread Methods
 
 sub thread {
 	my $self  = shift;
