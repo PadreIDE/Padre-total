@@ -1,9 +1,6 @@
-package Padre::TaskMaster;
+package Padre::TaskWorker;
 
-# Replacement for the current slave driver class.
-# Unlike the previous mechanism, the TaskMaster class will only act as
-# a router and start/stop controller for threads.
-# Worker thread controllers will be contained in a different dedicated class.
+# Object that represents the worker thread
 
 use 5.008005;
 use strict;
@@ -14,21 +11,16 @@ use Thread::Queue 2.11;
 use Params::Util ();
 
 our $VERSION = '0.58';
-sub new {
+
+sub new {
 	my $class = shift;
 
 	# Create the object so it can be cloned into the thread
 	my $self = bless {
 		thread => undef, # Added to the parent after it is spawned
 		queue  => Thread::Queue->new,
-		hosts  => [ ],
+		task   => undef, # The current active task
 	}, $class;
-
-	# Spawn the object in the thread.
-	# (Done as two lines just to be sure there isn't some kind
-	# of weird entanglement if I do it as $self->{thread} = .... $self;
-	my $thread = threads->create( \&thread, $self );
-	$self->{thread} = $thread;
 
 	return $self;
 }
@@ -41,6 +33,9 @@ sub queue {
 	$_[0]->{queue};
 }
 
+sub task {
+	$_[0]->{task};
+}
 
 
 
