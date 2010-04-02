@@ -8,7 +8,6 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Params::Util ();
 
 our $VERSION = '0.58';
 
@@ -64,7 +63,7 @@ sub thread {
 
 	# Loop over inbound requests
 	while ( my $message = $queue->dequeue ) {
-		unless ( Params::Util::_ARRAY($message) ) {
+		unless ( defined $message and not ref $message and ref $message eq 'ARRAY' ) {
 			# warn("Message is not an ARRAY reference");
 			next;
 		}

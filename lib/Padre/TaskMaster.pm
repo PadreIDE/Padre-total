@@ -1,9 +1,16 @@
 package Padre::TaskMaster;
 
 # Replacement for the current slave driver class.
+#
 # Unlike the previous mechanism, the TaskMaster class will only act as
 # a router and start/stop controller for threads.
-# Worker thread controllers will be contained in a different dedicated class.
+#
+# Worker thread implementation code will be contained in a different
+# dedicated class.
+#
+# This module needs to be ABSOLUTELY ruthless about loading as few
+# modules as possible. Every byte we consume here will need to be spent
+# again for every single worker thread.
 
 use 5.008005;
 use strict;
@@ -11,7 +18,6 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Params::Util ();
 
 our $VERSION = '0.58';
 sub new {
@@ -61,7 +67,7 @@ sub thread {
 
 	# Loop over inbound requests
 	while ( my $message = $queue->dequeue ) {
-		unless ( Params::Util::_ARRAY($message) ) {
+		unless ( defined $message and not ref $message and ref $message eq 'ARRAY' ) {
 			# warn("Message is not an ARRAY reference");
 			next;
 		}
