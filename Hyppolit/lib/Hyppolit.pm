@@ -328,6 +328,10 @@ sub parsetext {
 		} else {
 			#$self->privmsg( $from => "I don't know what $1 is" );
 		}
+	} elsif ($text =~ /^\s*  $botnick [,:]? \s* list \s* $/x ) {
+		foreach my $key ($self->calc) {
+			$self->privmsg( $from => "$key" );
+		}
 	}
 
 	#
