@@ -1,4 +1,5 @@
 package Padre::Plugin::Plack;
+# ABSTRACT: PSGI/Plack plugin for Padre
 use base 'Padre::Plugin';
 
 use warnings;
@@ -7,8 +8,6 @@ use utf8;
 
 use Padre::Util ('_T');
 use Padre::Logger;
-
-our $VERSION = '0.04';
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
@@ -231,7 +230,7 @@ sub on_about_load {
           . " $Plack::VERSION\n"
           . 'http://plackperl.org'
     );
-    $about->SetVersion($VERSION);
+    $about->SetVersion($Padre::Plugin::Plack::VERSION);
     Class::Unload->unload('Plack');
 
     Wx::AboutBox($about);
@@ -554,21 +553,11 @@ sub build_panel {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Plack - PSGI/Plack plugin for Padre
-
-=head1 VERSION
-
-Version 0.04
-
 =head1 SYNOPSIS
 
-	cpan install Padre::Plugin::Plack;
-
-Then enable it via L<Padre>, The Perl IDE:
-
-        Padre > Plugins > Plugin Manager > Plack > enable
+    # cpan install Padre::Plugin::Plack;
+    # Then enable it via L<Padre>, The Perl IDE: 
+    # Padre > Plugins > Plugin Manager > Plack > enable
 
 =head1 DESCRIPTION
 
@@ -625,10 +614,6 @@ Make Padre your domain-specific IDE today :)
 
 Blog post with screenshots: L<http://blog.patspam.com/2009/padrepluginplack>
 
-=head1 AUTHOR
-
-Patrick Donelan (PDONELAN) E<lt>pat@patspam.comE<gt>
-
 =head1 CONTRIBUTORS
 
 =encoding utf8
@@ -659,47 +644,8 @@ Brazilian Portuguese - Breno G. de Oliveira (garu)
 
 =back
 
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-padre-plugin-plack at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Padre-Plugin-Plack>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Padre::Plugin::Plack
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Catalyst>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Padre-Plugin-Plack>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Padre-Plugin-Plack>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Padre-Plugin-Plack/>
-
-=back
-
-
 =head1 SEE ALSO
 
 L<Plack>, L<Padre>
 
-
-=head1 COPYRIGHT & LICENSE
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+=cut

@@ -50,6 +50,7 @@ sub gettext_label {
 
 # dirty hack to allow seamless use of Padre::Wx::Output
 sub bottom { return $_[0] }
+sub main { warn "here"; return Padre::Current->main }
 
 # taken from Padre::Plugin::Catalyst
 sub led {

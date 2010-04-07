@@ -1,4 +1,5 @@
 package Padre::Document::PSGI;
+# ABSTRACT: Handlers PSGI files in Padre
 
 use 5.008;
 use strict;
@@ -9,8 +10,6 @@ use Padre::Document::Perl;
 use Padre::MimeTypes;
 
 our @ISA = 'Padre::Document::Perl';
-
-our $VERSION = '0.04';
 
 use Class::XSAccessor accessors => [qw(icon_path icon_set panel plugin process)];
 
