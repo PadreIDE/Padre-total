@@ -11,6 +11,9 @@ our $VERSION = '0.01';
 use Padre::Wx ();
 use Padre::Util   ('_T');
 
+
+use Padre::Plugin::SQL::DBConnection;
+
 # is a subclass of Padre::Plugin
 use base 'Padre::Plugin';
 
@@ -25,7 +28,35 @@ sub plugin_name {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.26,
+	return 'Padre::Plugin' => 0.59,
+}
+
+
+sub plugin_enable {
+
+	my $self = shift;
+	
+	require Padre::Plugin::SQL::MessagePanel;
+	$self->{msg_panel} = Padre::Plugin::SQL::MessagePanel->new($self);
+	
+	#$self->{msg_panel}->show;
+	
+	require Padre::Plugin::SQL::ResultsPanel;
+	$self->{results_panel} = Padre::Plugin::SQL::ResultsPanel->new($self);
+	
+	
+}
+
+sub plugin_disable {
+	
+	my $self = shift;
+	
+	Padre::Current->main->bottom->hide($self->{msg_panel});	
+	Padre::Current->main->bottom->hide($self->{results_panel});	
+	require Class::Unload;
+	Class::Unload->unload('Padre::Plugin::SQL::MessagePanel');
+	Class::Unload->unload('Padre::Plugin::SQL::ResultsPanel');
+	Class::Unload->unload('Padre::Plugin::SQL');
 }
 
 #
@@ -56,7 +87,18 @@ sub menu_plugins {
 		sub { $self->setup_connection(); },
 	);
 
-
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Execute Query"), ),
+		sub { $self->run_query(); },
+	);
+	
+	Wx::Event::EVT_MENU(
+		$main_window,
+		$self->{menu}->Append( -1, _T("Disconnect from Database"), ),
+		sub { $self->disconnectDB(); },
+	);
+	
 	#---------
 	$self->{menu}->AppendSeparator;
 
@@ -99,10 +141,136 @@ sub setup_connection {
 	my $dialog  = Padre::Plugin::SQL::SetupConnectionsDialog->new($self);
 	$dialog->ShowModal();
 
+	$self->{conn_details} = $dialog->get_connection();
+	
+	$dialog->Destroy();
+	
+	print "conn_details = " . $self->{conn_details} . "\n";
+	
+	
+	$self->connectDB();
 	return;
 }
 
 
+
+
+sub connectDB {
+	my( $self ) = @_;
+	print "connectDB()\n";
+	print "details: \n";
+	foreach my $detail ( keys ( %{ $self->{conn_details} } ) ){
+		print "$detail: " . $self->{conn_details}->{$detail} . "\n";
+		
+	}
+	
+	if( ! defined $self->{connection} ) {
+		$self->{connection} = Padre::Plugin::SQL::DBConnection->new($self->{conn_details});
+	}
+	
+	
+	if( $self->{connection}->is_connected ) {
+		$self->{connection}->disconnect();
+		$self->{connection}->connect($self->{conn_details});
+		
+		
+	}
+	else {
+	
+		my $connection = Padre::Plugin::SQL::DBConnection->new($self->{conn_details});
+		if( $connection->err ) {
+			print "Error: " . $connection->errstr;
+			
+		}
+		$self->{connection} = $connection;
+		
+	}
+	
+	# if it all goes well 
+	# We need to open a document window that 'belongs' to
+	# the plugin
+	if( defined( $self->{connection} ) ) {
+		my $main = Padre->ide->wx->main;
+		$main->new_document_from_string( "select *\nfrom ", 'text/x-sql' );
+		
+		Padre::Current->main->bottom->show($self->{results_panel});
+		Padre::Current->main->bottom->show($self->{msg_panel});	
+		
+	}
+	
+}
+
+
+sub run_query {
+	my $self = shift;
+	my $query = shift;
+	
+	if( ! defined($query) ) {
+		my $editor = Padre::Current->editor;
+		#my $editor = $current->editor;
+		my $string  = $editor->GetSelectedText();
+		$query = $string;
+		print "Selected Text: $query\n";
+	}
+	if( ! defined($query) || $query eq '' ) {
+		$self->{msg_panel}->update_messages("No string highlighted for query.");
+		return;
+	}
+	
+	$self->{connection}->run_query($query);
+	#my $sth = $self->{dbh}->prepare($query);
+	# handle error from DB here
+	if( $self->{connection}->err ) {
+		$self->{msg_panel}->update_messages($self->{connection}->errstr);
+		
+		return;
+	}
+	
+	
+	#$sth->execute();
+	# handle error
+	if( $self->{connection}->err ) {
+		$self->{msg_panel}->update_messages($self->{connection}->errstr);
+		return;
+	}
+	#my @results;
+	#$results[0] = $sth->{NAME};
+	#$results[1] = $sth->fetchall_arrayref();
+	
+	my $results = $self->{connection}->get_results;
+	
+ 	my $msg = "Returned: " . scalar( @{ $results->[1] } ) . " rows.\n";
+ 	print $msg;
+ 	
+ 	$self->{msg_panel}->update_messages($msg);
+	$self->{results_panel}->update_grid($results);
+	
+}
+
+sub disconnectDB {
+	my ( $self, $connDetails ) = @_;
+	print "disconnectDB()\n";
+	if( defined $self->{connection} ) {
+		$self->{connection}->disconnect();
+	}
+	else {
+		print "No DB connection defined yet\n";
+	}
+	#$self->{msg_panel}->hide;
+	#$self->{results_panel}->hide;
+	Padre::Current->main->bottom->hide($self->{msg_panel});	
+	Padre::Current->main->bottom->hide($self->{results_panel});	
+	#$self->{msg_panel}->Destroy;
+	#$self->{results_panel}->Destroy;
+	
+	#$self->{msg_panel} = undef;
+	#$self->{results_panel} = undef;
+	
+}
+
+
+sub msg_panel { return shift->{msg_panel}; }
+sub result_panel{ return shift->{result_panel}; }
 1;
 
 __END__
@@ -114,7 +282,7 @@ Padre::Plugin::SQL - Padre plugin that provides database access
 =head1 SYNOPSIS
 
 	1. After installation, run Padre.
-	2. Make sure that it is enabled from 'Plugins\Plugin Manager".
+	2. Make sure that it is enabled from 'Plugins/Plugin Manager".
 	3. Once enabled, there should be a menu option called Plugins/SQL.
 
 =head1 DESCRIPTION
@@ -148,3 +316,7 @@ modify it under the same terms as Perl 5 itself.
 
 =cut
 
+# Copyright 2008-2010 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
