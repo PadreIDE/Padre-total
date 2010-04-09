@@ -58,28 +58,29 @@ sub new {
 
 	
 	# we need the share directory
+	
 	my $share_dir = $plugin->plugin_directory_share;
+	
+	# this doesn't seem to work when running dev.pl -a
 	if( ! defined( $share_dir) || $share_dir eq '' ) {
 		
 		$share_dir = '/tmp';
 		
 	}
+	
 	my $db_connections;
 	my $path = File::Spec->catfile($share_dir, $config_file);	
 	if( ! -e $path ) {
-		print "No config file exists\n";
+		#print "No config file exists\n";
 	}
 	else {
-		print "Loading config file $path\n";
+		#print "Loading config file $path\n";
 		$db_connections = YAML::Tiny->read($path);
 		if( ! defined $db_connections ) {
+			# create error dialog here.
 			print "failed to read config " . YAML::Tiny->errstr . "\n";
 		}
 	}
-
-	
-
-	
 	
 	# create object
 	my $self = $class->SUPER::new(
@@ -92,6 +93,7 @@ sub new {
 	);
 
 	$self->SetIcon( Wx::GetWxPerlIcon() );
+
 	$self->_directory($directory);
 	
 	$self->{db_connections} = $db_connections;
@@ -218,7 +220,7 @@ sub _create_buttons {
 		sub { $_[0]->_delete_config; }
 	);
 	
-		Wx::Event::EVT_BUTTON(
+	Wx::Event::EVT_BUTTON(
 		$self,
 		$btnCancel,
 		sub { $_[0]->_on_cancel_button_clicked; }
@@ -234,8 +236,10 @@ sub _delete_config {
 	print "deleting: $connname\n";
 	delete $self->{db_connections}->[0]->{$connname};
 	my $ok = $self->{db_connections}->write( $self->{config_path} );
+	
 	if( ! $ok ) {
-		print "Error??? " . $self->{db_connections}->errstr . "\n";
+		# TODO DIALOG 
+		#print "Error??? " . $self->{db_connections}->errstr . "\n";
 	}
 	
 	$self->_reset_form();
@@ -249,6 +253,7 @@ sub _read_config {
 
 	my $ok = $self->{db_connections}->read( $self->{config_path} );
 	if( ! $ok ) {
+		
 		print "Error??? " . $self->{db_connections}->errstr . "\n";
 	}
 	
@@ -290,16 +295,15 @@ sub _save_config {
 	#if( ! $self->{db_connections}->[0]->{$dbconnname} ) {
 		#$self->{db_connections}->[0]->{connection} = $dbconnname;
 		#$self->{db_connections}->[0]->{connection}{$dbconnname} = {
-		$self->{db_connections}->[0]->{$dbconnname} = {
-			dbtype => $dbtype,
-			dbhost => $dbhost,
-			dbport => $dbport,
-			dbname => $dbname,
-			dbinstance => $dbinstance,
-			username => $username,
-			password => $password,  # needs to be hashsed
-			
-			};
+	$self->{db_connections}->[0]->{$dbconnname} = {
+		dbtype => $dbtype,
+		dbhost => $dbhost,
+		dbport => $dbport,
+		dbname => $dbname,
+		dbinstance => $dbinstance,
+		username => $username,
+		password => $password,  # needs to be hashsed
+		};
 	
 	#}
 	#else {
@@ -339,11 +343,14 @@ sub _validate_form_fields {
 	
 	# need a dbconn name
 	if( $dbconnname eq '' ) {
+		# TODO DIALOG - Missing connection name
 		print "No Conn Name, can't go on\n";
 		return undef;
 		
 	}
+	
 	if( $dbtype eq '' ) {
+		# TODO DIALOG - Missing DBType
 		print "dbtype has not been defined\n";
 		return undef;
 	}

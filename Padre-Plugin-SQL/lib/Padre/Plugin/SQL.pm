@@ -50,6 +50,13 @@ sub plugin_enable {
 sub plugin_disable {
 	
 	my $self = shift;
+
+
+	$self->{connection}->disconnect;
+	
+	# remove the SQL panels from Padre.
+	#$self->{results_panel}->hide;
+	#$self->{msg_panel}->hide;
 	
 	Padre::Current->main->bottom->hide($self->{msg_panel});	
 	Padre::Current->main->bottom->hide($self->{results_panel});	
@@ -296,6 +303,16 @@ This opens a dialog that allows you to select one of the already configured
 database connections or setup a new one.
 
 
+=head2 'Execute Query'
+
+Takes what ever text is highlighted in the editor and passes that
+to the db handle to first 'prepare'.  If it parses ok by the database
+it then executes the query.
+
+=head2  Disconnect
+
+Disconnects from the database.
+
 =head2 'About'
 
 Shows a classic about box with this module's name and version.
@@ -303,7 +320,17 @@ Shows a classic about box with this module's name and version.
 
 =head1 AUTHOR
 
-Gabor Szabo, C<< <szabgab at gmail.com> >>
+Original Author: 0.01
+	Gabor Szabo, C<< <szabgab at gmail.com> >>
+
+Follow up work: 0.02
+	More workable Main Dialog
+	Actually connects to a database
+	Actually queries a database
+	Added SQL Messages and Database Results as output panels
+	
+	Peter Lavender, C<< <peter.lavender at gmail.com> >>
+
 
 =head1 COPYRIGHT
 

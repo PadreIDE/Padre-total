@@ -20,8 +20,6 @@ sub new {
 	$self->{err} = undef;
 	$self->{errstr} = undef;
 	
-	#$self->{dbh} = $self->_get_connection_driver($connection);
-
 	$self->connect($connection);
 	
 	return $self;	
@@ -77,9 +75,10 @@ sub run_query {
 	my $self = shift;
 	my $query = shift;
 	
-	# check we still have a connection to the database!
+	$self->{err} = undef;
+	$self->{errstr}  = undef;
 	
-	
+	# check we still have a connection to the database
 	if( ! defined($query) || $query eq '' ) {
 		$self->{err} = 1;
 		$self->{errstr} = 'No query string passed in.';
