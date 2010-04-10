@@ -72,6 +72,8 @@ sub new {
 	my $path = File::Spec->catfile($share_dir, $config_file);	
 	if( ! -e $path ) {
 		#print "No config file exists\n";
+		$db_connections = YAML::Tiny->new();
+		
 	}
 	else {
 		#print "Loading config file $path\n";
