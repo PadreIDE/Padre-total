@@ -547,7 +547,7 @@ sub _setup_db_conn {
 	my($self) = @_;
 	my $sizer = $self->_sizer;
 	
-	my $connName_sizer =  Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+	
 	my $dbHostName_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	my $dbInstance_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	my $dbName_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
@@ -556,11 +556,13 @@ sub _setup_db_conn {
 	my $dbPassword_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	my $dbConnString_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	
-	my $lblConnName = Wx::StaticText->new($self, -1, _T('Connection Name:'), [-1, -1], [170,-1], Wx::wxALIGN_CENTRE|Wx::wxALIGN_RIGHT );
-	my $txtConnName = Wx::TextCtrl->new( $self, -1, '' );
+	# not needed as this is provided in the dropdown list
+	#my $connName_sizer =  Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+	#my $lblConnName = Wx::StaticText->new($self, -1, _T('Connection Name:'), [-1, -1], [170,-1], Wx::wxALIGN_CENTRE|Wx::wxALIGN_RIGHT );
+	#my $txtConnName = Wx::TextCtrl->new( $self, -1, '' );
 	
-	$connName_sizer->Add($lblConnName, 0, Wx::wxALIGN_CENTRE|Wx::wxALIGN_RIGHT|Wx::wxEXPAND, 2);
-	$connName_sizer->Add($txtConnName, 1); # , 1, Wx::wxEXPAND, 2
+	#$connName_sizer->Add($lblConnName, 0, Wx::wxALIGN_CENTRE|Wx::wxALIGN_RIGHT|Wx::wxEXPAND, 2);
+	#$connName_sizer->Add($txtConnName, 1); # , 1, Wx::wxEXPAND, 2
 	
 	my $lblDBHostName = Wx::StaticText->new($self, -1, _T('Database Host Name:'), [-1, -1], [170,-1], Wx::wxALIGN_CENTRE|Wx::wxALIGN_RIGHT );
 	my $txtDBHostName = Wx::TextCtrl->new( $self, -1, '' );
@@ -616,7 +618,7 @@ sub _setup_db_conn {
 	#$dbConnString_sizer->Add($lblDBConnString); # , 0, Wx::wxALL|Wx::wxEXPAND, 2
 	#$dbConnString_sizer->Add($txtDBConnTxt); # , 0, Wx::wxALL|Wx::wxEXPAND, 2
 	
-	$sizer->Add($connName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
+	#$sizer->Add($connName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	
 	$sizer->Add($dbHostName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	$sizer->Add($dbName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
