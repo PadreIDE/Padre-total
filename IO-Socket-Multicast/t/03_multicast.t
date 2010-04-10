@@ -25,10 +25,13 @@ my $IO_INTERFACE = eval "use IO::Interface ':flags'; 1;";
 my $INTERFACE    = $IO_INTERFACE && find_a_mcast_if($s);
 
 
-isa_ok( $s, 'IO::Socket::Multicast' );
-
-ok($s->mcast_add($MCAST_ADDR), 'Add socket to Multicast Group' );
-ok($s->mcast_drop($MCAST_ADDR),'Drop Multicast Group' );
+SKIP: {
+	# run only if there is an interface
+	skip("There is no interface, so we can't check", 3) unless $INTERFACE;
+	isa_ok( $s, 'IO::Socket::Multicast' );
+	ok($s->mcast_add($MCAST_ADDR), 'Add socket to Multicast Group' );
+	ok($s->mcast_drop($MCAST_ADDR),'Drop Multicast Group' );
+}
 	
 # Some basics
 SKIP: {
