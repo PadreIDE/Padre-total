@@ -1,0 +1,11 @@
+
+
+2010.04.09
+
+Changed the Dialog to capture relevant database connection details
+Added two results panels to the bottom of the IDE
+Initial DB connection work done - Postgres currently supported
+
+2010.04.02 - v0.01
+
+Started work on the implimetation started by Gabor.
