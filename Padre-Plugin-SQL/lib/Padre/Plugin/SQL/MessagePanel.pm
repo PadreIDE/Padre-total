@@ -32,6 +32,9 @@ sub new {
 	$self->SetSizer($box);
 	$self->{output} = $output;
 	
+	
+	#Padre::Current->main->bottom->hide($self);
+	
 	#$self->show;
 	return $self;
 	

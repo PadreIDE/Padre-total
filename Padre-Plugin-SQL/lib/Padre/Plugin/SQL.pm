@@ -38,12 +38,12 @@ sub plugin_enable {
 	
 	require Padre::Plugin::SQL::MessagePanel;
 	$self->{msg_panel} = Padre::Plugin::SQL::MessagePanel->new($self);
-	
+	Padre::Current->main->bottom->hide($self->{msg_panel});
 	#$self->{msg_panel}->show;
 	
 	require Padre::Plugin::SQL::ResultsPanel;
 	$self->{results_panel} = Padre::Plugin::SQL::ResultsPanel->new($self);
-	
+	Padre::Current->main->bottom->hide($self->{reults_panel});
 	
 }
 
@@ -186,11 +186,15 @@ sub connectDB {
 	
 		my $connection = Padre::Plugin::SQL::DBConnection->new($self->{conn_details});
 		if( $connection->err ) {
+			
 			print "Error: " . $connection->errstr;
 			
 		}
-		$self->{connection} = $connection;
+		$self->{connection} = undef;
 		
+		my $main = Padre::Current->main;
+		$main->error("Error: " . $connection->errstr);
+		return;
 	}
 	
 	# if it all goes well 

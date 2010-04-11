@@ -50,6 +50,8 @@ sub new {
 	
 	$self->{grid} = $grid;
 	
+	#Padre::Current->main->bottom->hide($self);
+	
 	return $self;
 }
 

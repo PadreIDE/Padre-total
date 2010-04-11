@@ -36,7 +36,7 @@ use Class::XSAccessor accessors => {
 # terms of the ones we support.
 my %dbTypes = (
 		'Postgres' 	=> { port => 5432 },
-		'MySQL'		=> { port => 3301 },
+		'MySQL'		=> { port => 3306 },
 	);
 
 # config file name

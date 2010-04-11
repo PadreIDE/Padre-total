@@ -46,29 +46,30 @@ sub connect {
 	
 	print "in _get_connection_driver\nhost: $host,dbname: $dbname, instance: $instance, username:$username,port: $port\n";
 	
+	my $dbh;
+	
 	# postgres
 	if( lc($connection->{dbtype}) eq 'postgres' ) {
 		require DBD::Pg;
-		my $dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;", $username, $password );
-		if( $DBI::err ) {
-			$self->{err} = $DBI::err;
-			$self->{errstr} = $DBI::errstr;
-			return;
-		}
-		
-		$self->{dbh} = $dbh;
+		$dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port", $username, $password );
+	}
+	
+	
+	if( lc($connection->{dbtype}) eq 'mysql' ) {
+		require DBD::mysql;
+		$dbh = DBI->connect("dbi:mysql:dbname=$dbname;host=$host;port=$port", $username, $password);
+	}
+
+
+	# check if any of the connections have an error
+	if( $DBI::err ) {
+		$self->{err} = $DBI::err;
+		$self->{errstr} = $DBI::errstr;
 		return;
 	}
 	
-	my $mysql= 0;
-	if( lc($connection->{dbtype}) eq 'mysql' ) {
-		require DBD::MySQL;
-		my $dbh = DBI->connect("dbi:mysql:dbname=testing", $connection->{'username'}, $connection->{'password'});
-		
-		$self->{dbh} = $dbh;
-		#return $dbh;
-	}
-	
+	$self->{dbh} = $dbh;
+
 }
 
 sub run_query {
