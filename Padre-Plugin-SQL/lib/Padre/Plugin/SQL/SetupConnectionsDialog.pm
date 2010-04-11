@@ -30,13 +30,16 @@ use Class::XSAccessor accessors => {
 };
 
 
-#my @dbTypes = ( 'Postgres', 'MySQL', 'SQLite', 'ODBC' );
-
+# we could make it dynamic in terms of the DBD's availalbe
+# however there are a few DBD's installed that require 
+# special handling, so for now we'll handle them this way in 
+# terms of the ones we support.
 my %dbTypes = (
 		'Postgres' 	=> { port => 5432 },
 		'MySQL'		=> { port => 3301 },
 	);
 
+# config file name
 my $config_file = 'db_connections.yml';
 
 # -- constructor
@@ -58,7 +61,6 @@ sub new {
 
 	
 	# we need the share directory
-	
 	my $share_dir = $plugin->plugin_directory_share;
 	
 	# this doesn't seem to work when running dev.pl -a
@@ -384,8 +386,8 @@ sub _create_controls {
 	$self->_matches_list( Wx::ListBox->new( $self, -1, [-1, -1], [400, 300], [], 
 		Wx::wxLB_EXTENDED ) );
 
-# TODO delete a configuration
-# allow for more detaild configuration including username and password
+	# TODO delete a configuration
+	# allow for more detaild configuration including username and password
 
 	$self->_sizer->AddSpacer(10);
 	$self->_sizer->Add( $search_label, 0, Wx::wxALL|Wx::wxEXPAND, 2 );
@@ -621,8 +623,8 @@ sub _setup_db_conn {
 	#$sizer->Add($connName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	
 	$sizer->Add($dbHostName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
-	$sizer->Add($dbName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	$sizer->Add($dbInstance_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
+	$sizer->Add($dbName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	$sizer->Add($dbPort_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	$sizer->Add($dbUserName_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
 	$sizer->Add($dbPassword_sizer, 0, Wx::wxALL|Wx::wxEXPAND, 2);
@@ -704,13 +706,6 @@ sub _on_db_connlist_select {
 	my $self = shift;
 	my $dbConn = $self->{dbConnList_combo}->GetValue();
 	print "Connecting to: $dbConn\n";
-	
-	# $self->{txtDBHostName} = $txtDBHostName;
-	# $self->{txtDBPort} = $txtDBPort;
-	# $self->{txtDBUserName} = $txtDBUserName;
-	# $self->{txtDBPassword} = $txtDBPassword;
-	# $self->{txtDBName} = $txtDBName;
-	# $self->{txtDBInstance} = $txtDBInstance;
 	
 	$self->{db_combo}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbtype} );
 	$self->{txtDBHostName}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbhost} );
