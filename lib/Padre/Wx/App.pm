@@ -65,7 +65,7 @@ sub create {
 
 	# Immediately populate the main window
 	require Padre::Wx::Main;
-	$self->{main} = Padre::Wx::Main->new($ide);
+	$self->{main} = Padre::Wx::Main->new( $self->{ide} );
 
 	return $self;
 }

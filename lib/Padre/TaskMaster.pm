@@ -61,7 +61,7 @@ sub queue {
 ######################################################################
 # Master Thread Methods
 
-sub thread {
+sub run {
 	my $self  = shift;
 	my $queue = $self->queue;
 

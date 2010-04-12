@@ -57,7 +57,7 @@ sub task {
 ######################################################################
 # Worker Thread Methods
 
-sub thread {
+sub run {
 	my $self  = shift;
 	my $queue = $self->queue;
 
