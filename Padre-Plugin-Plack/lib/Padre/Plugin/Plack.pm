@@ -538,7 +538,8 @@ sub build_panel {
 
     # output panel for server
     require Padre::Wx::Output;
-    my $output = Padre::Wx::Output->new($panel);
+    my $output = Padre::Wx::Output->new($self->main, $panel);
+    
     $box->Add( $output, 1, Wx::wxGROW );
 
     # wrapping it up
