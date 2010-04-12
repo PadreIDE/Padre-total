@@ -1,4 +1,4 @@
-package Padre::TaskWorker;
+package Padre::Task2Worker;
 
 # Object that represents the worker thread
 

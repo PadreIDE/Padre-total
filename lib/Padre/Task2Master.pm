@@ -1,4 +1,4 @@
-package Padre::TaskMaster;
+package Padre::Task2Master;
 
 # Replacement for the current slave driver class.
 #
