@@ -34,6 +34,33 @@ sub hid {
 
 
 
+######################################################################
+# Worker Methods
+
+sub run {
+	my $self = shift;
+	my $task = $self->task;
+
+	# Create a circular reference back from the task
+	$self->{handle} = $self;
+
+	# Call the task's run method
+	eval {
+		$task->run();
+	};
+
+	# Save the exception if thrown
+	$self->{exception} = $@ if $@;
+
+	# Clean up the circular
+	delete $self->{handle};
+
+	return 1;
+}
+
+
+
+
 
 ######################################################################
 # Message Handling
