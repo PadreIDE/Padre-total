@@ -1,4 +1,4 @@
-package Padre::TaskHandle;
+package Padre::Task2Handle;
 
 use strict;
 use warnings;
