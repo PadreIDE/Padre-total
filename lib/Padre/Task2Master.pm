@@ -41,11 +41,27 @@ our $VERSION = '0.58';
 }
 
 sub thread {
-	$_[0]->{thread};
+	$_[0]->{thread} or threads->self
 }
 
 sub queue {
 	$_[0]->{queue};
+}
+
+sub is_thread {
+	! defined $_[0]->{thread};
+}
+
+sub is_running {
+	$_[0]->thread->is_running;
+}
+
+sub is_joinable {
+	$_[0]->thread->is_joinable;
+}
+
+sub is_detached {
+	$_[0]->thread->is_detached;
 }
 
 
