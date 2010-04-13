@@ -15,108 +15,32 @@ package Padre::Task2Master;
 use 5.008005;
 use strict;
 use warnings;
-use threads;
-use threads::shared;
-use Thread::Queue 2.11;
-use Scalar::Util ();
+use Padre::Task2Thread ();
 
 our $VERSION = '0.58';
+our @ISA     = 'Padre::Task2Thread';
 sub new {
-	my $class = shift;
+	my $self = shift->SUPER::new(@_);
 
-	# Create the object so it can be cloned into the thread
-	my $self = bless {
-		thread => undef, # Added to the parent after it is spawned
-		queue  => Thread::Queue->new,
-		hosts  => [ ],
-	}, $class;
-
-	# Spawn the object in the thread.
-	# (Done as two lines just to be sure there isn't some kind
-	# of weird entanglement if I do it as $self->{thread} = .... $self;
-	my $thread = threads->create( \&run, $self );
-	$self->{thread} = $thread;
+	# Add the host store
+	$self->{hosts} = [ ];
 
 	return $self;
 }
 
-sub thread {
-	$_[0]->{thread} or threads->self
-}
 
-sub queue {
-	$_[0]->{queue};
-}
 
-sub is_thread {
-	! defined $_[0]->{thread};
-}
 
-sub is_running {
-	$_[0]->thread->is_running;
-}
 
-sub is_joinable {
-	$_[0]->thread->is_joinable;
-}
-
-sub is_detached {
-	$_[0]->thread->is_detached;
-}
+#######################################################################
+# Parent Thread Methods
 
 
 
 
 
 ######################################################################
-# Main Thread Methods
-
-sub send {
-	my $self   = shift;
-	my $method = shift;
-	unless ( _CAN($self, $method) ) {
-		die("Attempted to send message to non-existant method '$method'");
-	}
-
-	# Add the message to the queue
-	$self->queue->enqueue( [ $method, @_ ] );
-
-	return 1;
-}
-
-
-
-
-
-######################################################################
-# Master Thread Methods
-
-sub run {
-	my $self  = shift;
-	my $queue = $self->queue;
-
-	# Loop over inbound requests
-	while ( my $message = $queue->dequeue ) {
-		unless ( _ARRAY($message) ) {
-			# warn("Message is not an ARRAY reference");
-			next;
-		}
-
-		# Check the message type
-		my $method = shift @$message;
-		unless ( _CAN($self, $method) ) {
-			# warn("Illegal message type");
-			next;
-		}
-
-		# Hand off to the appropriate method.
-		# Methods must return true, otherwise the thread
-		# will abort processing and end.
-		$self->$method(@$message) or last;
-	}
-
-	return;
-}
+# Child Thread Methods
 
 # Cleans up running hosts and then returns false,
 # which instructs the main loop to exit and return.
@@ -129,21 +53,6 @@ sub shutdown {
 	}
 
 	return 0;
-}
-
-
-
-
-
-######################################################################
-# Support Methods
-
-sub _ARRAY ($) {
-	(ref $_[0] eq 'ARRAY' and @{$_[0]}) ? $_[0] : undef;
-}
-
-sub _CAN ($$) {
-	(Scalar::Util::blessed($_[0]) and $_[0]->can($_[1])) ? $_[0] : undef;
 }
 
 1;
