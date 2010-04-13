@@ -33,14 +33,14 @@ our @ISA     = 'Padre::Task2Thread';
 
 
 #######################################################################
-# Parent Thread Methods
+# Parent Methods
 
 
 
 
 
 ######################################################################
-# Child Thread Methods
+# Child Methods
 
 # Cleans up running hosts and then returns false,
 # which instructs the main loop to exit and return.
