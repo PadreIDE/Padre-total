@@ -9,7 +9,7 @@ use Test::NoWarnings;
 use Padre::Task2Master;
 
 # Create the master thread
-my $master = Padre::Task2Master->new;
+my $master = Padre::Task2Master->new->spawn;
 isa_ok( $master, 'Padre::Task2Master' );
 isa_ok( $master->queue, 'Thread::Queue' );
 isa_ok( $master->thread, 'threads' );

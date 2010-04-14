@@ -37,4 +37,10 @@ sub task {
 ######################################################################
 # Worker Thread Methods
 
+# If we are waiting for a new task, there's nothing for us
+# to do other than return false.
+sub shutdown {
+	return 0;
+}
+
 1;
