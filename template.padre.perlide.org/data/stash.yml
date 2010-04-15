@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 April 15
+        url: http://perlwannabe.vox.com/library/post/padre-059-running-on-latest-perl-5120.html
+        title: Padre 0.59 running on LATEST Perl 5.12.0!!!
+        comment: Peter Lavender
       - date: 2010 March 31
         url: http://perlwannabe.vox.com/library/post/padre-059-has-been-released.html
         title: Padre 0.59 has been Released...
