@@ -8,6 +8,8 @@ use Test::More tests => 18;
 use Test::NoWarnings;
 use Padre::Task2Master;
 use Padre::Task2Worker;
+use Devel::Dumpvar;
+use Diagnostics;
 
 # Do we start with the one thread we expect
 is( scalar(threads->list), 0, 'One thread exists' );

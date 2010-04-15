@@ -9,6 +9,7 @@ use warnings;
 use Test::More tests => 19;
 use Test::NoWarnings;
 use Padre::Task2Worker;
+use Devel::Dumpvar;
 
 # Create the master thread
 my $worker = Padre::Task2Worker->new( wid => 2 )->spawn;

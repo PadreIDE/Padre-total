@@ -11,7 +11,7 @@ our $VERSION = '0.58';
 our @ISA     = 'Padre::Task2Thread';
 
 sub new {
-	print "Padre::Task2Worker::new\n";
+	_DEBUG(@_);
 	my $self = shift->SUPER::new(@_);
 
 	# Add the storage for the currently active task handle
@@ -27,12 +27,12 @@ sub new {
 }
 
 sub wid {
-	print "Padre::Task2Worker::wid\n";
+	_DEBUG(@_);
 	$_[0]->{wid};
 }
 
 sub task {
-	print "Padre::Task2Worker::task\n";
+	_DEBUG(@_);
 	$_[0]->{task};
 }
 
@@ -53,8 +53,27 @@ sub task {
 # If we are waiting for a new task, there's nothing for us
 # to do other than return false.
 sub shutdown {
-	print "Padre::Task2Worker::shutdown\n";
+	_DEBUG(@_);
 	return 0;
+}
+
+sub _DEBUG {
+	print '# '
+		. threads->self->tid
+		. " "
+		. (caller(1))[3]
+		. "("
+		. (
+			ref($_[0])
+			? Devel::Dumpvar->_refstring($_[0])
+			: Devel::Dumpvar->_scalar($_[0])
+		)
+		. (
+			threads::shared::is_shared($_[0])
+			? ':shared'
+			: ''
+		)
+		. ")\n";
 }
 
 1;

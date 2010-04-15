@@ -28,7 +28,7 @@ our @ISA     = 'Padre::Task2Thread';
 # Main Thread Methods
 
 sub new {
-	print "Padre::Task2Master::new\n";
+	_DEBUG(@_);
 	my $self = shift->SUPER::new(@_);
 
 	# Worker storage
@@ -39,7 +39,7 @@ sub new {
 
 # Add a worker object to the pool, spawning it from the master
 sub add {
-	print "Padre::Task2Master::add\n";
+	_DEBUG(@_);
 	shift->send( 'spawn_child', @_ );
 }
 
@@ -53,17 +53,36 @@ sub add {
 # Cleans up running hosts and then returns false,
 # which instructs the main loop to exit and return.
 sub shutdown {
-	print "Padre::Task2Master::shutdown\n";
+	_DEBUG(@_);
 	return 0;
 }
 
 # Spawn a worker object off the current thread
 sub spawn_child {
-	print "Padre::Task2Master::spawn_child\n";
+	_DEBUG(@_);
 	$_[0]->{workers}->{ $_[1]->wid } = $_[1]->spawn;
 
 	# Do not exit after this command
 	return 1;
+}
+
+sub _DEBUG {
+	print '# '
+		. threads->self->tid
+		. " "
+		. (caller(1))[3]
+		. "("
+		. (
+			ref($_[0])
+			? Devel::Dumpvar->_refstring($_[0])
+			: Devel::Dumpvar->_scalar($_[0])
+		)
+		. (
+			threads::shared::is_shared($_[0])
+			? ' :shared'
+			: ''
+		)
+		. ")\n";
 }
 
 1;
