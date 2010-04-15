@@ -19,40 +19,44 @@ use Padre::Task2Thread ();
 
 our $VERSION = '0.58';
 our @ISA     = 'Padre::Task2Thread';
-sub new {
-	my $self = shift->SUPER::new(@_);
-
-	# Add the host store
-	$self->{hosts} = [ ];
-
-	return $self;
-}
 
 
 
 
 
 #######################################################################
-# Parent Methods
+# Main Thread Methods
+
+sub new {
+	my $self = shift->SUPER::new(@_);
+
+	# Worker storage
+	$self->{workers} = { };
+
+	return $self;
+}
+
+# Add a worker object to the pool, spawning it from the master
+sub add {
+	shift->send( 'spawn_child', @_ );
+}
 
 
 
 
 
 ######################################################################
-# Child Methods
+# Master Thread Methods
 
 # Cleans up running hosts and then returns false,
 # which instructs the main loop to exit and return.
 sub shutdown {
-	my $self = shift;
-
-	# Kill all running task hosts
-	foreach my $host ( @{$self->{hosts}} ) {
-		die "CODE INCOMPLETE";
-	}
-
 	return 0;
+}
+
+# Spawn a worker object off the current thread
+sub spawn_child {
+	$_[0]->{workers}->{ $_[1]->wid } = $_[1]->spawn;
 }
 
 1;

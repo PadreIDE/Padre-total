@@ -16,7 +16,17 @@ sub new {
 	# Add the storage for the currently active task handle
 	$self->{task} = undef;
 
+	# Without a worker id, we have no way to map task
+	# operations through to the right worker.
+	unless ( $self->wid ) {
+		die("Did not provide an 'wid' worker identifier");
+	}
+
 	return $self;
+}
+
+sub wid {
+	$_[0]->{wid};
 }
 
 sub task {
@@ -28,7 +38,7 @@ sub task {
 
 
 #######################################################################
-# Parent Methods
+# Main Thread Methods
 
 
 
