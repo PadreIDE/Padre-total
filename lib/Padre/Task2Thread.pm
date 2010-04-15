@@ -10,6 +10,7 @@ use threads;
 use threads::shared;
 use Thread::Queue 2.11;
 use Scalar::Util ();
+use Carp ();
 
 our $VERSION = '0.58';
 sub new {
@@ -19,8 +20,12 @@ our $VERSION = '0.58';
 	my $self = bless {
 		# Added to the parent after it is spawned
 		thread => undef,
-		queue  => Thread::Queue->new,
+		queue  => undef,
+		@_,
 	}, $class;
+
+	# Set the queue if none was provided
+	$self->{queue} ||= Thread::Queue->new;
 
 	return $self;
 }
@@ -29,16 +34,29 @@ sub spawn {
 	my $self = shift;
 
 	# Spawn the object into the thread and enter the main runloop
-	$self->{thread} = threads->create(
-		sub { return $_[0]->run },
-		$self,
-	);
+	eval {
+		my $thread = threads->create( \&_run, $self );
+		
+		
+		
+		$self->{thread} = $thread;
+	};
+	if ( $@ ) {
+		print "Class:  " . ref($self) . "\n";
+		print "Thread: " . threads->self->tid . "\n";
+		print "Error:  $@\n";
+		Carp::confess($@);
+	}
 
 	return $self;
 }
 
 sub thread {
-	$_[0]->{thread} or threads->self
+	$_[0]->{thread} or threads->self;
+}
+
+sub join {
+	$_[0]->thread->join;
 }
 
 sub queue {
@@ -88,28 +106,39 @@ sub send {
 ######################################################################
 # Child Thread Methods
 
+# Launch hook to allow run itself to be overloaded
+sub _run {
+	shift->run(@_);
+}
+
 sub run {
 	my $self  = shift;
 	my $queue = $self->queue;
 
-	# Loop over inbound requests
-	while ( my $message = $queue->dequeue ) {
-		unless ( _ARRAY($message) ) {
-			# warn("Message is not an ARRAY reference");
-			next;
-		}
+	# Crash protection
+	eval {
+		# Loop over inbound requests
+		while ( my $message = $queue->dequeue ) {
+			unless ( _ARRAY($message) ) {
+				# warn("Message is not an ARRAY reference");
+				next;
+			}
 
-		# Check the message type
-		my $method = shift @$message;
-		unless ( _CAN($self, $method) ) {
-			# warn("Illegal message type");
-			next;
-		}
+			# Check the message type
+			my $method = shift @$message;
+			unless ( _CAN($self, $method) ) {
+				# warn("Illegal message type");
+				next;
+			}
 
-		# Hand off to the appropriate method.
-		# Methods must return true, otherwise the thread
-		# will abort processing and end.
-		$self->$method(@$message) or last;
+			# Hand off to the appropriate method.
+			# Methods must return true, otherwise the thread
+			# will abort processing and end.
+			$self->$method(@$message) or last;
+		}
+	};
+	if ( $@ ) {
+		print $@;
 	}
 
 	return;

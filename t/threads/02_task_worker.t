@@ -6,13 +6,14 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 19;
 use Test::NoWarnings;
 use Padre::Task2Worker;
 
 # Create the master thread
-my $worker = Padre::Task2Worker->new->spawn;
+my $worker = Padre::Task2Worker->new( wid => 2 )->spawn;
 isa_ok( $worker, 'Padre::Task2Worker' );
+is( $worker->wid, 2, '->wid ok' );
 isa_ok( $worker->queue, 'Thread::Queue' );
 isa_ok( $worker->thread, 'threads' );
 ok( ! $worker->is_thread, '->is_thread is false' );

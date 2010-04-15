@@ -5,6 +5,7 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
+use Params::Util ();
 
 our $VERSION = '0.58';
 
@@ -22,14 +23,35 @@ sub new {
 
 	my $class = shift;
 	my $self  = $SINGLETON = bless {
-		# Handle objects
-		handles => { },
+		# Worker management
+		minimum_workers => 2,
+		maximum_workers => 6,
 
-		# Handle objects for running tasks indexed by handle id
+		# Handle objects, plus index for those running
+		handles => { },
 		running => { },
+
+		# Unallocated tasks, to be run in FIFO order
+		queue => [ ],
 	}, $class;
 
 	return $self;
+}
+
+
+
+
+
+######################################################################
+# Task Management
+
+sub schedule {
+	my $self = shift;
+	my $task = Params::Util::_INSTANCE( shift, 'Padre::Task' )
+		or die "Invalid task scheduled!"; # TO DO: grace
+
+	# Add to the queue of pending events
+	push @{$self->{queue}}, $task;
 }
 
 
@@ -93,3 +115,8 @@ sub on_signal {
 }
 
 1;
+
+# Copyright 2008-2010 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
