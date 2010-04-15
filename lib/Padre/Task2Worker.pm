@@ -11,6 +11,7 @@ our $VERSION = '0.58';
 our @ISA     = 'Padre::Task2Thread';
 
 sub new {
+	print "Padre::Task2Worker::new\n";
 	my $self = shift->SUPER::new(@_);
 
 	# Add the storage for the currently active task handle
@@ -26,10 +27,12 @@ sub new {
 }
 
 sub wid {
+	print "Padre::Task2Worker::wid\n";
 	$_[0]->{wid};
 }
 
 sub task {
+	print "Padre::Task2Worker::task\n";
 	$_[0]->{task};
 }
 
@@ -50,6 +53,7 @@ sub task {
 # If we are waiting for a new task, there's nothing for us
 # to do other than return false.
 sub shutdown {
+	print "Padre::Task2Worker::shutdown\n";
 	return 0;
 }
 
