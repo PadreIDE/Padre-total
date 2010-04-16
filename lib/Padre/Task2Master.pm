@@ -40,7 +40,7 @@ sub new {
 # Add a worker object to the pool, spawning it from the master
 sub add {
 	_DEBUG(@_);
-	shift->send( 'spawn_child', @_ );
+	shift->send('spawn_child', @_);
 }
 
 
@@ -60,9 +60,21 @@ sub shutdown {
 # Spawn a worker object off the current thread
 sub spawn_child {
 	_DEBUG(@_);
-	$_[0]->{workers}->{ $_[1]->wid } = $_[1]->spawn;
+	my $self   = shift;
+	my $worker = shift;
+	_DEBUG($worker);
+	_DEBUG($worker->{wid});
 
-	# Do not exit after this command
+	# The worker objects need to be non-shared, but will
+	# emerge from the inbound message queue automatically :shared.
+	# To fix this, we need to clone the object into a fresh
+	# non-:shared version (which still continues the :shared queue).
+	my $copy = $worker->unshare;
+
+	# Spawn the worker thread
+	$self->{workers}->{ $copy->wid } = $copy->spawn;
+
+	# Wait for the next instruction
 	return 1;
 }
 

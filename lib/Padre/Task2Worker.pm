@@ -36,6 +36,16 @@ sub task {
 	$_[0]->{task};
 }
 
+sub unshare {
+	_DEBUG(@_);
+	my $self = shift;
+	my $copy = ref($self)->new(
+		queue => $self->queue, # Keep the shared queue
+		wid   => $self->wid + 0,
+	);
+	return $copy;
+}
+
 
 
 

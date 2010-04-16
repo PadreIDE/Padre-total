@@ -36,28 +36,7 @@ sub spawn {
 	my $self = shift;
 
 	# Spawn the object into the thread and enter the main runloop
-	eval {
-		my $thread = threads->create( \&_run, $self );
-		print(
-			(
-				threads::shared::is_shared($thread)
-					? "#   Thread object is_shared\n"
-					: "#   Thread object not shared\n"
-			)
-			. (
-				threads::shared::is_shared($self)
-					? "#   Worker object is_shared\n"
-					: "#   Worker object not shared\n"
-			)
-		);
-		$self->{thread} = $thread;
-	};
-	if ( $@ ) {
-		print "#   Class:  " . ref($self) . "\n";
-		print "#   Thread: " . threads->self->tid . "\n";
-		print "#   Error:  $@\n";
-		Carp::confess($@);
-	}
+	$self->{thread} = threads->create( \&_run, $self );
 
 	return $self;
 }
