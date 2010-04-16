@@ -13,42 +13,31 @@ use Scalar::Util ();
 use Carp ();
 
 our $VERSION = '0.58';
+
+# Worker id sequence, so identifiers will be available in objects
+# across all instances and threads before the thread has been spawned.
+my $SEQUENCE : shared = 0;
+
+# Worker id to native thread id mapping
+my %WID2TID : shared = ();
+
+
+
+
+
+######################################################################
+# Constructor and Accessors
 sub new {
 	_DEBUG(@_);
-	my $class = shift;
-
-	# Create the object so it can be cloned into the thread
-	my $self = bless {
-		# Added to the parent after it is spawned
-		thread => undef,
-		queue  => undef,
-		@_,
-	}, $class;
-
-	# Set the queue if none was provided
-	$self->{queue} ||= Thread::Queue->new;
-
-	return $self;
+	bless {
+		wid   => ++$SEQUENCE,
+		queue => Thread::Queue->new,
+	}, $_[0];
 }
 
-sub spawn {
+sub wid {
 	_DEBUG(@_);
-	my $self = shift;
-
-	# Spawn the object into the thread and enter the main runloop
-	$self->{thread} = threads->create( \&_run, $self );
-
-	return $self;
-}
-
-sub thread {
-	_DEBUG(@_);
-	$_[0]->{thread} or threads->self;
-}
-
-sub join {
-	_DEBUG(@_);
-	$_[0]->thread->join;
+	$_[0]->{wid};
 }
 
 sub queue {
@@ -56,9 +45,46 @@ sub queue {
 	$_[0]->{queue};
 }
 
+
+
+
+
+######################################################################
+# Main Methods
+
+sub spawn {
+	_DEBUG(@_);
+	my $self = shift;
+
+	# Spawn the object into the thread and enter the main runloop
+	$WID2TID{ $self->wid } = threads->create(
+		sub {
+			$_[0]->run;
+		},
+		$self,
+	)->tid;
+
+	return $self;
+}
+
+sub tid {
+	_DEBUG(@_);
+	$WID2TID{$_[0]->wid};
+}
+
+sub thread {
+	_DEBUG(@_);
+	threads->object( $_[0]->tid );
+}
+
+sub join {
+	_DEBUG(@_);
+	$_[0]->thread->join;
+}
+
 sub is_thread {
 	_DEBUG(@_);
-	! defined $_[0]->{thread};
+	$_[0]->tid == threads->self->tid
 }
 
 sub is_running {
@@ -92,22 +118,7 @@ sub send {
 	}
 
 	# Add the message to the queue
-	_DEBUG(@_);
-	_DEBUG($_[0]->{queue});
 	$self->queue->enqueue( [ $method, @_ ] );
-	_DEBUG(@_);
-	_DEBUG($_[0]->{queue});
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG(@_);
-	_DEBUG($_[0]->{queue});
 
 	return 1;
 }
@@ -119,12 +130,6 @@ sub send {
 ######################################################################
 # Child Thread Methods
 
-# Launch hook to allow run itself to be overloaded
-sub _run {
-	_DEBUG(@_);
-	shift->run(@_);
-}
-
 sub run {
 	_DEBUG(@_);
 	my $self  = shift;
@@ -134,9 +139,7 @@ sub run {
 	eval {
 		# Loop over inbound requests
 		while ( my $message = $queue->dequeue ) {
-			_DEBUG($message);
-			_DEBUG($message->[1]);
-			_DEBUG($message->[1]->{queue});
+			print "# Got message - " . scalar(@$message) . " parts\n";
 			unless ( _ARRAY($message) ) {
 				# warn("Message is not an ARRAY reference");
 				next;

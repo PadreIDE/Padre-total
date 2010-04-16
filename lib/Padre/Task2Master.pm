@@ -27,18 +27,8 @@ our @ISA     = 'Padre::Task2Thread';
 #######################################################################
 # Main Thread Methods
 
-sub new {
-	_DEBUG(@_);
-	my $self = shift->SUPER::new(@_);
-
-	# Worker storage
-	$self->{workers} = { };
-
-	return $self;
-}
-
 # Add a worker object to the pool, spawning it from the master
-sub add {
+sub child {
 	_DEBUG(@_);
 	shift->send('spawn_child', @_);
 }
@@ -60,19 +50,12 @@ sub shutdown {
 # Spawn a worker object off the current thread
 sub spawn_child {
 	_DEBUG(@_);
-	my $self   = shift;
-	my $worker = shift;
-	_DEBUG($worker);
-	_DEBUG($worker->{wid});
 
 	# The worker objects need to be non-shared, but will
 	# emerge from the inbound message queue automatically :shared.
 	# To fix this, we need to clone the object into a fresh
 	# non-:shared version (which still continues the :shared queue).
-	my $copy = $worker->unshare;
-
-	# Spawn the worker thread
-	$self->{workers}->{ $copy->wid } = $copy->spawn;
+	$_[1]->unshare->spawn;
 
 	# Wait for the next instruction
 	return 1;

@@ -38,12 +38,12 @@ sub task {
 
 sub unshare {
 	_DEBUG(@_);
-	my $self = shift;
-	my $copy = ref($self)->new(
-		queue => $self->queue, # Keep the shared queue
+	my $self  = shift;
+	my $class = ref($self);
+	return bless {
+		queue => $self->queue,
 		wid   => $self->wid + 0,
-	);
-	return $copy;
+	}, $class;
 }
 
 

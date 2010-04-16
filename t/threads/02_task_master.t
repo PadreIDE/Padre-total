@@ -4,7 +4,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 18;
+use Test::More tests => 32;
 use Test::NoWarnings;
 use Padre::Task2Master;
 use Padre::Task2Worker;
@@ -76,11 +76,11 @@ SCOPE: {
 	ok( $master->is_running, 'Master is_running' );
 
 	# Create a single worker
-	my $worker = Padre::Task2Worker->new( wid => 2 );
+	my $worker = Padre::Task2Worker->new;
 	isa_ok( $worker, 'Padre::Task2Worker' );
 
 	# Start the worker inside the master
-	ok( $master->add( $worker ), '->add ok' );
+	ok( $master->child( $worker ), '->add ok' );
 	diag("Pausing to allow worker thread startup...");
 	sleep 1;
 	is( scalar(threads->list), 2, 'Found 2 threads' );
