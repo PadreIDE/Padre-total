@@ -4,10 +4,17 @@
 # Done in similar style to the task master to help encourage
 # implementation similarity in the future.
 
+BEGIN {
+	$Padre::Task2Master::DEBUG = 1;
+	$Padre::Task2Worker::DEBUG = 1;
+	$Padre::Task2Thread::DEBUG = 1;
+}
+
 use strict;
 use warnings;
 use Test::More tests => 19;
 use Test::NoWarnings;
+use Padre::Logger;
 use Padre::Task2Worker;
 use Devel::Dumpvar;
 
@@ -32,7 +39,7 @@ ok( ! $worker->is_joinable, 'Thread is not is_joinable' );
 ok( ! $worker->is_detached, 'Thread is not is_detached' );
 
 # It should stay running
-diag("Pausing to allow clean thread startup...");
+TRACE("Pausing to allow clean thread startup...") if DEBUG;
 sleep 1;
 ok(   $worker->is_running,  'Thread is_running' );
 ok( ! $worker->is_joinable, 'Thread is not is_joinable' );
@@ -40,7 +47,7 @@ ok( ! $worker->is_detached, 'Thread is not is_detached' );
 
 # Instruct the master to shutdown, and give it a brief time to do so.
 ok( $worker->send('shutdown'), '->send(shutdown) ok' );
-diag("Pausing to allow clean thread shutdown...");
+TRACE("Pausing to allow clean thread shutdown...") if DEBUG;
 sleep 1;
 ok( ! $worker->is_running,  'Thread is not is_running' );
 ok(   $worker->is_joinable, 'Thread is_joinable' );

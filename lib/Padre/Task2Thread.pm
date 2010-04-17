@@ -9,17 +9,17 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
+use Carp         ();
 use Scalar::Util ();
-use Carp ();
+use Padre::Logger;
 
 our $VERSION = '0.58';
 
 # Worker id sequence, so identifiers will be available in objects
 # across all instances and threads before the thread has been spawned.
+# We map the worker ID to the thread id, once it exists.
 my $SEQUENCE : shared = 0;
-
-# Worker id to native thread id mapping
-my %WID2TID : shared = ();
+my %WID2TID  : shared = ();
 
 
 
@@ -28,7 +28,7 @@ my %WID2TID : shared = ();
 ######################################################################
 # Constructor and Accessors
 sub new {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	bless {
 		wid   => ++$SEQUENCE,
 		queue => Thread::Queue->new,
@@ -36,12 +36,13 @@ my %WID2TID : shared = ();
 }
 
 sub wid {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{wid};
 }
 
 sub queue {
-	_DEBUG(@_);
+	TRACE($_[0])          if DEBUG;
+	TRACE($_[0]->{queue}) if DEBUG;
 	$_[0]->{queue};
 }
 
@@ -53,11 +54,11 @@ sub queue {
 # Main Methods
 
 sub spawn {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 
 	# Spawn the object into the thread and enter the main runloop
-	$WID2TID{ $self->wid } = threads->create(
+	$WID2TID{ $self->{wid} } = threads->create(
 		sub {
 			$_[0]->run;
 		},
@@ -68,37 +69,37 @@ sub spawn {
 }
 
 sub tid {
-	_DEBUG(@_);
-	$WID2TID{$_[0]->wid};
+	TRACE($_[0]) if DEBUG;
+	$WID2TID{ $_[0]->{wid} };
 }
 
 sub thread {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	threads->object( $_[0]->tid );
 }
 
 sub join {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->thread->join;
 }
 
 sub is_thread {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->tid == threads->self->tid
 }
 
 sub is_running {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_running;
 }
 
 sub is_joinable {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_joinable;
 }
 
 sub is_detached {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_detached;
 }
 
@@ -110,7 +111,7 @@ sub is_detached {
 # Parent Thread Methods
 
 sub send {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $method = shift;
 	unless ( _CAN($self, $method) ) {
@@ -131,38 +132,38 @@ sub send {
 # Child Thread Methods
 
 sub run {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $queue = $self->queue;
 
-	# Crash protection
-	eval {
-		# Loop over inbound requests
-		while ( my $message = $queue->dequeue ) {
-			print "# Got message - " . scalar(@$message) . " parts\n";
-			unless ( _ARRAY($message) ) {
-				# warn("Message is not an ARRAY reference");
-				next;
-			}
-
-			# Check the message type
-			my $method = shift @$message;
-			unless ( _CAN($self, $method) ) {
-				# warn("Illegal message type");
-				next;
-			}
-
-			print "Padre::Task2Thread::run (got message $method)\n";
-
-			# Hand off to the appropriate method.
-			# Methods must return true, otherwise the thread
-			# will abort processing and end.
-			$self->$method(@$message) or last;
+	# Loop over inbound requests
+	while ( my $message = $queue->dequeue ) {
+		unless ( _ARRAY($message) ) {
+			# warn("Message is not an ARRAY reference");
+			next;
 		}
-	};
-	print $@ if $@;
+
+		# Check the message type
+		my $method = shift @$message;
+		unless ( _CAN($self, $method) ) {
+			# warn("Illegal message type");
+			next;
+		}
+
+		# Hand off to the appropriate method.
+		# Methods must return true, otherwise the thread
+		# will abort processing and end.
+		$self->$method(@$message) or last;
+	}
 
 	return;
+}
+
+# Cleans up running hosts and then returns false,
+# which instructs the main loop to exit and return.
+sub shutdown {
+	TRACE($_[0]) if DEBUG;
+	return 0;
 }
 
 
@@ -173,32 +174,11 @@ sub run {
 # Support Methods
 
 sub _ARRAY ($) {
-	_DEBUG(@_);
 	(ref $_[0] eq 'ARRAY' and @{$_[0]}) ? $_[0] : undef;
 }
 
 sub _CAN ($$) {
-	_DEBUG(@_);
 	(Scalar::Util::blessed($_[0]) and $_[0]->can($_[1])) ? $_[0] : undef;
-}
-
-sub _DEBUG {
-	print '# '
-		. threads->self->tid
-		. " "
-		. (caller(1))[3]
-		. "("
-		. (
-			ref($_[0])
-			? Devel::Dumpvar->_refstring($_[0])
-			: Devel::Dumpvar->_scalar($_[0])
-		)
-		. (
-			threads::shared::is_shared($_[0])
-			? ' :shared'
-			: ''
-		)
-		. ")\n";
 }
 
 1;

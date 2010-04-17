@@ -6,38 +6,33 @@ use 5.008005;
 use strict;
 use warnings;
 use Padre::Task2Thread ();
+use Padre::Logger;
 
 our $VERSION = '0.58';
 our @ISA     = 'Padre::Task2Thread';
 
 sub new {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	my $self = shift->SUPER::new(@_);
 
 	# Add the storage for the currently active task handle
 	$self->{task} = undef;
 
-	# Without a worker id, we have no way to map task
-	# operations through to the right worker.
-	unless ( $self->wid ) {
-		die("Did not provide an 'wid' worker identifier");
-	}
-
 	return $self;
 }
 
 sub wid {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{wid};
 }
 
 sub task {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{task};
 }
 
 sub unshare {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $class = ref($self);
 	return bless {
@@ -63,27 +58,8 @@ sub unshare {
 # If we are waiting for a new task, there's nothing for us
 # to do other than return false.
 sub shutdown {
-	_DEBUG(@_);
+	TRACE($_[0]) if DEBUG;
 	return 0;
-}
-
-sub _DEBUG {
-	print '# '
-		. threads->self->tid
-		. " "
-		. (caller(1))[3]
-		. "("
-		. (
-			ref($_[0])
-			? Devel::Dumpvar->_refstring($_[0])
-			: Devel::Dumpvar->_scalar($_[0])
-		)
-		. (
-			threads::shared::is_shared($_[0])
-			? ':shared'
-			: ''
-		)
-		. ")\n";
 }
 
 1;
