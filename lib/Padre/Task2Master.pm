@@ -29,9 +29,9 @@ our @ISA     = 'Padre::Task2Thread';
 # Main Thread Methods
 
 # Add a worker object to the pool, spawning it from the master
-sub child {
+sub start {
 	TRACE($_[0]) if DEBUG;
-	shift->send('spawn_child', @_);
+	shift->send('start_child', @_);
 }
 
 
@@ -42,7 +42,7 @@ sub child {
 # Master Thread Methods
 
 # Spawn a worker object off the current thread
-sub spawn_child {
+sub start_child {
 	TRACE($_[0]) if DEBUG;
 
 	# The worker objects need to be non-shared, but will

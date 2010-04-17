@@ -80,7 +80,7 @@ SCOPE: {
 	isa_ok( $worker, 'Padre::Task2Worker' );
 
 	# Start the worker inside the master
-	ok( $master->child($worker), '->add ok' );
+	ok( $master->start($worker), '->add ok' );
 	TRACE("Pausing to allow worker thread startup...") if DEBUG;
 	sleep 1;
 	is( scalar(threads->list), 2, 'Found 2 threads' );
