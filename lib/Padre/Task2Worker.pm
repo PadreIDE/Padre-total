@@ -31,16 +31,6 @@ sub task {
 	$_[0]->{task};
 }
 
-sub unshare {
-	TRACE($_[0]) if DEBUG;
-	my $self  = shift;
-	my $class = ref($self);
-	return bless {
-		queue => $self->queue,
-		wid   => $self->wid + 0,
-	}, $class;
-}
-
 
 
 
@@ -54,13 +44,6 @@ sub unshare {
 
 ######################################################################
 # Worker Thread Methods
-
-# If we are waiting for a new task, there's nothing for us
-# to do other than return false.
-sub shutdown {
-	TRACE($_[0]) if DEBUG;
-	return 0;
-}
 
 1;
 

@@ -2,23 +2,21 @@
 
 # Spawn and then shut down the task master object
 
-BEGIN {
-	$Padre::Task2Master::DEBUG = 1;
-	$Padre::Task2Worker::DEBUG = 1;
-	$Padre::Task2Thread::DEBUG = 1;
-}
+#BEGIN {
+#$Padre::Task2Master::DEBUG = 1;
+#$Padre::Task2Worker::DEBUG = 1;
+#$Padre::Task2Thread::DEBUG = 1;
+#}
 
 use strict;
 use warnings;
-use Test::More tests => 32;
+use Test::More tests => 35;
 use Test::NoWarnings;
 use Padre::Logger;
-use Padre::Task2Master;
-use Padre::Task2Worker;
-use Devel::Dumpvar;
-use Diagnostics;
+use Padre::Task2Master ();
+use Padre::Task2Worker ();
 
-# Do we start with the one thread we expect
+# Do we start with no threads as expected
 is( scalar(threads->list), 0, 'One thread exists' );
 
 
@@ -56,17 +54,12 @@ SCOPE: {
 	ok( ! $master->is_detached, 'Master is not is_detached' );
 
 	# Instruct the master to shutdown, and give it a brief time to do so.
-	ok( $master->send('shutdown'), '->send(shutdown) ok' );
+	ok( $master->shutdown, '->shutdown ok' );
 	TRACE("Pausing to allow clean thread shutdown...") if DEBUG;
 	sleep 1;
-	ok( ! $master->is_running,  'Master is not is_running' );
-	ok(   $master->is_joinable, 'Master is_joinable' );
-	ok( ! $master->is_detached, 'Master is not is_detached' );
-
-	# Clean up and confirm it worked
-	$master->join;
-	is( scalar(threads->list), 0, 'Thread is gone' );
 }
+
+is( scalar(threads->list), 0, 'Thread is gone' );
 
 
 
@@ -87,7 +80,7 @@ SCOPE: {
 	isa_ok( $worker, 'Padre::Task2Worker' );
 
 	# Start the worker inside the master
-	ok( $master->child( $worker ), '->add ok' );
+	ok( $master->child($worker), '->add ok' );
 	TRACE("Pausing to allow worker thread startup...") if DEBUG;
 	sleep 1;
 	is( scalar(threads->list), 2, 'Found 2 threads' );
@@ -99,14 +92,13 @@ SCOPE: {
 	ok( ! $worker->is_detached, 'Worker is not is_detached' );
 
 	# Shut down the worker but leave the master running
-	$worker->send('shutdown');
+	ok( $worker->shutdown, '->shutdown ok' );
 	TRACE("Pausing to allow worker thread shutdown...") if DEBUG;
 	sleep 1;
-	is( scalar(threads->list), 1, 'Found 1 thread' );
 	ok(   $master->is_running,  'Master is_running' );
 	ok( ! $master->is_joinable, 'Master is not is_joinable' );
 	ok( ! $master->is_detached, 'Master is not is_detached' );
-	ok( ! $worker->is_running,  'Worker is_running' );
-	ok(   $worker->is_joinable, 'Worker is not is_joinable' );
-	ok(   $worker->is_detached, 'Worker is not is_detached' );
+	ok( ! $worker->thread, 'Worker thread has ended' );
 }
+
+is( scalar(threads->list), 1, 'Thread is gone' );

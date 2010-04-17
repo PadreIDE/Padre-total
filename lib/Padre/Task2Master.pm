@@ -49,7 +49,7 @@ sub spawn_child {
 	# emerge from the inbound message queue automatically :shared.
 	# To fix this, we need to clone the object into a fresh
 	# non-:shared version (which still continues the :shared queue).
-	$_[1]->unshare->spawn;
+	$_[1]->spawn;
 
 	# Wait for the next instruction
 	return 1;

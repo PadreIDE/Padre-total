@@ -50,6 +50,7 @@ sub queue {
 
 
 
+
 ######################################################################
 # Main Methods
 
@@ -70,7 +71,7 @@ sub spawn {
 
 sub tid {
 	TRACE($_[0]) if DEBUG;
-	$WID2TID{ $_[0]->{wid} };
+	$WID2TID{$_[0]->{wid}};
 }
 
 sub thread {
@@ -114,14 +115,20 @@ sub send {
 	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $method = shift;
-	unless ( _CAN($self, $method) ) {
+	unless ( _CAN($self, $method) or $method eq '0' ) {
 		die("Attempted to send message to non-existant method '$method'");
 	}
 
 	# Add the message to the queue
-	$self->queue->enqueue( [ $method, @_ ] );
+	$self->{queue}->enqueue( [ $method, @_ ] );
 
 	return 1;
+}
+
+# Immediately detach and terminate when queued jobs are completed
+sub shutdown {
+	$_[0]->thread->detach;
+	$_[0]->send('shutdown_child');
 }
 
 
@@ -134,10 +141,12 @@ sub send {
 sub run {
 	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
-	my $queue = $self->queue;
+	my $queue = $self->{queue};
 
 	# Loop over inbound requests
+	TRACE("Entering worker run-time loop") if DEBUG;
 	while ( my $message = $queue->dequeue ) {
+		TRACE("Worker received message $message->[0]") if DEBUG;
 		unless ( _ARRAY($message) ) {
 			# warn("Message is not an ARRAY reference");
 			next;
@@ -156,14 +165,12 @@ sub run {
 		$self->$method(@$message) or last;
 	}
 
+	TRACE("Exited worker run-time loop") if DEBUG;
 	return;
 }
 
-# Cleans up running hosts and then returns false,
-# which instructs the main loop to exit and return.
-sub shutdown {
-	TRACE($_[0]) if DEBUG;
-	return 0;
+sub shutdown_child {
+	return 0;	
 }
 
 
