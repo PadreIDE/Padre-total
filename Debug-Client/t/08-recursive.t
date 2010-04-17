@@ -10,7 +10,7 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-plan( tests => 38 );
+plan( tests => 42 );
 our $TODO;
 
 use Data::Dumper qw(Dumper);
@@ -76,17 +76,28 @@ SKIP: {
 }
 
 {
-	my @out   = $debugger->get_stack_trace;
-	my $trace = q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
+	my @out    = $debugger->get_stack_trace;
+	my $trace1 = q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
 $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
-	cmp_deeply( \@out, [$trace], 'stack trace' )
+	my $buffer1 = $debugger->buffer;
+	ok( $buffer1 =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
+	is($buffer1, "$trace1\n  DB<> ");
+
+	cmp_deeply( \@out, [$trace1], 'stack trace' )
 		or diag( $debugger->buffer );
 
+	my $trace2 = q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
+$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
+
 	my $out = $debugger->get_stack_trace;
-	is( $out, q($ = main::fibx(9) called from file `t/eg/04-fib.pl' line 12
-$ = main::fib(10) called from file `t/eg/04-fib.pl' line 22), 'stack trace in scalar context'
-	);
+	is( $out, $trace2, 'stack trace in scalar context');
+
+	my $buffer2 = $debugger->buffer;
+	ok( $buffer2 =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
+	is($buffer2, "$trace2\n  DB<> ");
+
+
 }
 
 {
