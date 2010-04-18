@@ -30,6 +30,10 @@ sub hid {
 	$_[0]->{hid};
 }
 
+sub task {
+	$_[0]->{task};
+}
+
 
 
 
