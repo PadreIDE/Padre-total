@@ -23,6 +23,28 @@ my %WID2TID  : shared = ();
 
 
 
+######################################################################
+# Slave Master Support (main thread only)
+
+my $SINGLETON = undef;
+
+sub master {
+	$SINGLETON or
+	$SINGLETON = shift->new;
+}
+
+sub import {
+	my $class = shift;
+
+	# Handle master initialisation
+	if ( defined $_[0] and $_[0] eq ':master' ) {
+		$class->master->spawn;
+	}
+}
+
+	
+
+
 
 ######################################################################
 # Constructor and Accessors

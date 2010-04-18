@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Spawn and then shut down the task master object
+# Start a worker thread from inside another thread
 
 #BEGIN {
 #$Padre::Task2Thread::DEBUG = 1;
