@@ -8,7 +8,7 @@ author         'Steffen Mueller <smueller@cpan.org>';
 all_from       'lib/Padre/Plugin/XS.pm';
 
 requires       'Padre'                           => '0.49';
-requires       'Perl::APIReference'              => '0.03';
+requires       'Perl::APIReference'              => '0.04';
 
 test_requires  'Test::More'              => '0.47';
 
