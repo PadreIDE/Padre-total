@@ -19,8 +19,9 @@ BEGIN {
 sub new {
 	bless {
 		# Worker management
-		minimum_workers => 2,
-		maximum_workers => 6,
+		workers => [ ],
+		minimum => 2,
+		maximum => 6,
 
 		# Handle objects, plus index for those running
 		handles => { },
@@ -31,9 +32,34 @@ sub new {
 	}, $_[0];
 }
 
-sub init {
+sub start {
+	my $self = shift;
+	foreach ( 0 .. $self->{minimum} - 1 ) {
+		$self->start_child($_);
+	}
+	return 1;
+}
+
+sub start_child {
 	my $self   = shift;
 	my $master = Padre::Task2Thread->master;
+	my $worker = Padre::Task2Worker->new->spawn;
+	$self->{workers}->[$_[0]] = $worker;
+	return 1;
+}
+
+sub stop {
+	my $self = shift;
+	Padre::Task2Thread->master->stop;
+	foreach ( 0 .. $#{$self->{workers}} ) {
+		$self->stop_child($_);
+	}
+	return 1;
+}
+
+sub stop_child {
+	my $self = shift;
+	delete( $self->{workers}->[$_[0]] )->stop;
 	return 1;
 }
 
