@@ -1,28 +1,23 @@
 package Padre::Task2Manager;
 
+use 5.008005;
 use strict;
 use warnings;
-use threads;
-use threads::shared;
-use Thread::Queue 2.11;
-use Params::Util ();
+use Params::Util       ();
+use Padre::Task2Thread ();
+use Padre::Task2Worker ();
+use Padre::Wx          ();
 
 our $VERSION = '0.58';
 
 # Set up the primary integration event
 our $THREAD_SIGNAL : shared;
 BEGIN {
-	$THREAD_SIGNAL = Wx::NewEventType;
+	$THREAD_SIGNAL = Wx::NewEventType();
 }
 
-# You can instantiate this class only once.
-our $SINGLETON;
-
 sub new {
-	return $SINGLETON if defined $SINGLETON;
-
-	my $class = shift;
-	my $self  = $SINGLETON = bless {
+	bless {
 		# Worker management
 		minimum_workers => 2,
 		maximum_workers => 6,
@@ -33,9 +28,13 @@ sub new {
 
 		# Unallocated tasks, to be run in FIFO order
 		queue => [ ],
-	}, $class;
+	}, $_[0];
+}
 
-	return $self;
+sub init {
+	my $self   = shift;
+	my $master = Padre::Task2Thread->master;
+	return 1;
 }
 
 
