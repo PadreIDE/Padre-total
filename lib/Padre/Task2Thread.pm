@@ -30,7 +30,7 @@ my $SINGLETON = undef;
 
 sub master {
 	$SINGLETON or
-	$SINGLETON = shift->new;
+	$SINGLETON = shift->new->spawn;
 }
 
 sub import {
@@ -38,7 +38,7 @@ sub import {
 
 	# Handle master initialisation
 	if ( defined $_[0] and $_[0] eq ':master' ) {
-		$class->master->spawn;
+		$class->master;
 	}
 }
 
