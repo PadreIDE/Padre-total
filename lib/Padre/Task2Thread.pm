@@ -9,7 +9,6 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Carp         ();
 use Scalar::Util ();
 use Padre::Logger;
 
@@ -115,7 +114,7 @@ sub send {
 	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $method = shift;
-	unless ( _CAN($self, $method) or $method eq '0' ) {
+	unless ( _CAN($self, $method) ) {
 		die("Attempted to send message to non-existant method '$method'");
 	}
 
@@ -125,10 +124,17 @@ sub send {
 	return 1;
 }
 
+# Add a worker object to the pool, spawning it from the master
+sub start {
+	TRACE($_[0]) if DEBUG;
+	shift->send('start_child', @_);
+}
+
 # Immediately detach and terminate when queued jobs are completed
-sub shutdown {
+sub stop {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->thread->detach;
-	$_[0]->send('shutdown_child');
+	$_[0]->send('stop_child');
 }
 
 
@@ -169,7 +175,15 @@ sub run {
 	return;
 }
 
-sub shutdown_child {
+# Spawn a worker object off the current thread
+sub start_child {
+	TRACE($_[0]) if DEBUG;
+	$_[1]->spawn;
+	return 1;
+}
+
+sub stop_child {
+	TRACE($_[0]) if DEBUG;
 	return 0;	
 }
 
