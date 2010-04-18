@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use Padre::Wx ();
 use Padre::Current;
@@ -162,7 +162,7 @@ sub about {
 
 1;
 
-# Copyright 2009 Steffen Mueller.
+# Copyright 2009-2010 Steffen Mueller.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
@@ -181,7 +181,7 @@ Steffen Mueller, C<smueller@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 Steffen Mueller
+Copyright 2009-2010 Steffen Mueller
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.

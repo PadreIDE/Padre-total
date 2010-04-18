@@ -1,5 +1,8 @@
 This is the change log for the Padre::Plugin::XS module:
 
+0.02 2010-04-18
+    Bump dependency on Perl::APIReference for 5.12.0 support.
+
 0.01 2009-11-21
     First version unleashed on the unsuspecting world.
 
