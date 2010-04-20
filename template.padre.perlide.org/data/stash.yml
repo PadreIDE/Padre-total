@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 April 20
+        url: http://perlwannabe.vox.com/library/post/blink-and-youll-miss-it-padre-060-has-been-released.html
+        title: Blink and you'll miss it.. Padre 0.60 has been released!
+        comment: Peter Lavender (Release Manager)
       - date: 2010 April 15
         url: http://perlwannabe.vox.com/library/post/padre-059-running-on-latest-perl-5120.html
         title: Padre 0.59 running on LATEST Perl 5.12.0!!!
