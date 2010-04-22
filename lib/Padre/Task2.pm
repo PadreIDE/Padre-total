@@ -3,6 +3,8 @@ package Padre::Task2;
 use 5.008;
 use strict;
 use warnings;
+use Storable     ();
+use Scalar::Util ();
 
 our $VERSION = '0.59';
 
@@ -32,7 +34,7 @@ sub running {
 
 
 ######################################################################
-# Task API
+# Task API - Based on Process.pm
 
 # Called in the parent thread immediately before being passed
 # to the worker thread. This method should compensate for
@@ -60,6 +62,30 @@ sub run {
 # has been completed.
 sub finish {
 	return 1;
+}
+
+
+
+
+
+######################################################################
+# Serialization - Based on Process::Serializable and Process::Storable
+
+# my $string = $task->serialize;
+sub serialize {
+	Storable::nfreeze($_[0]);
+}
+
+# my $task = Class::Name->deserialize($string);
+sub deserialize {
+	my $class = shift;
+	my $self  = Storable::thaw($_[0]);
+	unless ( Scalar::Util::blessed($self) eq $class ) {
+		# Because this is an internal API we can be brutally
+		# unforgiving is we aren't use the right way.
+		die("Task did not deserialize as a $class");
+	}
+	return $self;
 }
 
 1;

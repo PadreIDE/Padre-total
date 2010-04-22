@@ -11,7 +11,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 21;
+use Test::More tests => 24;
 use Test::NoWarnings;
 use Padre::Task2Handle     ();
 use Padre::Task2::Addition ();
@@ -41,6 +41,16 @@ SCOPE: {
 	is( $addition->{x},     2, '->{x} matches expected' );
 	is( $addition->{y},     3, '->{y} matches expected' );
 	is( $addition->{z},     5, '->{z} matches expected' );
+
+	# Check round-trip serialization
+	my $string = $addition->serialize;
+	ok(
+		(defined $string and ! ref $string and length $string),
+		'->serialize ok',
+	);
+	my $round = Padre::Task2::Addition->deserialize( $string );
+	isa_ok( $round, 'Padre::Task2::Addition' );
+	is_deeply( $round, $addition, 'Task round-trips ok' );
 }
 
 
