@@ -443,6 +443,10 @@ about:
         url: http://use.perl.org/~Alias/journal/39414
         title: Padre now supports <code>Acme::</code> plug-ins
         comment: by Adam Kennedy
+      - date: 2009 August 06
+        url: http://samdelacruz.blogspot.com/2009/08/how-to-install-aranight-color-theme.html
+        title: How to Install Aranight Color Theme (Style) for Padre
+        comment: by wala lang
       - date: 2009 August 05
         url: http://samdelacruz.blogspot.com/2009/08/i-discovered-padre-new-perl-ide.html
         title: I discovered Padre, a new Perl <acronym>IDE</acronym>
