@@ -471,8 +471,8 @@ sub build_panel {
         HTTP::Server::Simple
         Server::Simple
         SCGI
-        Standalone::Prefork::Server::Starter
         Starman
+        Starlet
         Twiggy
         POE
         ReverseHTTP
