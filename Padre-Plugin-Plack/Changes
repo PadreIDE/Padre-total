@@ -1,6 +1,8 @@
 Revision history for Padre::Plugin::Plack
 
 {{$NEXT}}
+
+0.101150  2010-04-24 21:32:22 EST5EDT
 * Now works more seamlessly with Padre::Wx::Output
 * Requires Padre 0.60
 

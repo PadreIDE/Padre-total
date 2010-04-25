@@ -1,4 +1,5 @@
 package Padre::Plugin::Plack::Panel;
+# ABSTRACT: Plack control panel
 
 use strict;
 use warnings;
