@@ -221,7 +221,7 @@ sub accept_message {
 sub write_timestamp {
 	my $self = shift;
 	$self->chatframe->AppendText(
-		join( ':', (localtime())[2,1,0]  ) . ' '
+		sprintf( '%02d:%02d:%02d', (localtime())[2,1,0]  ) ) . ' '
 	);
 }
 
