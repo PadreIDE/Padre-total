@@ -506,6 +506,10 @@ sub _setup_db_conn {
 sub get_connection {
 	my $self = shift;
 	
+	if( $self->_is_empty() ) {
+		return undef;
+	}
+	
 	my $username = $self->{txtDBUserName}->GetValue();
 	my $password = $self->{txtDBPassword}->GetValue();
 	my $dbtype = $self->{dbType}->GetValue();
@@ -526,6 +530,44 @@ sub get_connection {
 	return \%connDetails;
 	
 }
+
+=pod
+
+=head2 _is_empty()
+
+Returns true when the dialog has not been filled out.
+
+=cut
+
+sub _is_empty {
+	my $self = shift;
+	
+	
+	if(  $self->{txtDBUserName}->GetValue() ne '' ) {
+		return 0;
+	}
+	if( $self->{txtDBPassword}->GetValue() ne '' ) {
+		return 0;
+	}
+	if( $self->{dbType}->GetValue() ne '' ) {
+		return 0;
+	}
+	if ( $self->{txtDBHostName}->GetValue() ne '' ) {
+		return 0;
+	}
+	if( $self->{txtDBName}->GetValue() ne '' ) {
+		return 0;
+	}
+	if( $self->{txtDBInstance}->GetValue() ne '' ) {
+		return 0;
+	}
+	if( $self->{txtDBPort}->GetValue() ne '' ) {
+		return 0;
+	}
+	
+	return 1;
+}
+
 
 sub _update_conn_string {
 	my($self, $field, $value) = @_;
