@@ -98,7 +98,7 @@ sub new {
 #
 # handler called when the ok button has been clicked.
 # 
-sub _on_ok_button_clicked {
+sub _on_connect_button_clicked {
 	my ($self) = @_;
 
 	# my $main = Padre->ide->wx->main;
@@ -152,26 +152,35 @@ sub _create_buttons {
 	my $btnCancel = Wx::Button->new($self, -1, 'Cancel');
 	
 	#my $okID = Wx::NewId();
-	my $btnOK = Wx::Button->new($self, -1, 'OK');
+	my $btnOK = Wx::Button->new($self, -1, 'Connect');
 	
 	#my $saveID = Wx::NewId();
+	my $btnNew = Wx::Button->new($self, -1,  'New Connection');
 	my $btnSave = Wx::Button->new($self, -1,  'Save Connection');
 	
 	#my $delID = Wx::NewId();
 	my $btnDelete = Wx::Button->new($self, -1, 'Delete Connection');
 	
 	
+	$butsizer->Add($btnNew, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5);
 	$butsizer->Add($btnSave, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5);
 	$butsizer->Add($btnDelete, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5);
+	
 	$butsizer->Add($btnOK, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5);
 	$butsizer->Add($btnCancel, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_CENTER, 5);
 	
 	$sizer->Add($butsizer, 0, Wx::wxALL|Wx::wxEXPAND|Wx::wxALIGN_RIGHT, 5 );
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$btnNew,
+		sub { $_[0]->_reset_form; }  # rathan an on_new we just clear the form
+	);
 	
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$btnOK,
-		sub { $_[0]->_on_ok_button_clicked; } 
+		sub { $_[0]->_on_connect_button_clicked; } 
 	);
 	Wx::Event::EVT_BUTTON(
 		$self,
@@ -234,6 +243,12 @@ This checks and saves the current config details in the form
 sub _save_config {
 	my $self = shift;
 	print "_save_config\n";
+	
+	if( $self->_is_empty() ) {
+		#TODO Dialog saying it's empty
+		return;
+	}
+	
 	#YAML::Tiny->write($self->{db_connections});
 	
 	my $dbconnname = $self->{dbConnList_combo}->GetValue();
