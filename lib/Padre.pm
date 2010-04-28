@@ -156,6 +156,12 @@ sub new {
 		use_threads => $self->config->threads,
 	);
 
+	# Create the second-generation task manager
+	requires Padre::Task2Manager;
+	$self->{task2_manager} = Padre::Task2Manager->new(
+		use_threads => 1,
+	);
+
 	# Create the action queue
 	$self->{actionqueue} = Padre::Action::Queue->new;
 

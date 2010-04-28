@@ -4,6 +4,7 @@ use 5.008005;
 use strict;
 use warnings;
 use Params::Util       ();
+use Padre::Task2Handle ();
 use Padre::Task2Thread ();
 use Padre::Task2Worker ();
 use Padre::Wx          ();
@@ -18,17 +19,11 @@ BEGIN {
 
 sub new {
 	bless {
-		# Worker management
-		workers => [ ],
-		minimum => 2,
-		maximum => 6,
-
-		# Handle objects, plus index for those running
-		handles => { },
-		running => { },
-
-		# Unallocated tasks, to be run in FIFO order
-		queue => [ ],
+		workers => [ ], # All workers
+		minimum => 2,   # Workers to launch at startup
+		handles => { }, # Handles for all active tasks
+		running => { }, # Mapping from tid back to parent handle
+		queue   => [ ], # Pending tasks to run in FIFO order
 	}, $_[0];
 }
 
@@ -72,11 +67,42 @@ sub stop_child {
 
 sub schedule {
 	my $self = shift;
-	my $task = Params::Util::_INSTANCE( shift, 'Padre::Task' )
-		or die "Invalid task scheduled!"; # TO DO: grace
+	my $task = Params::Util::_INSTANCE(shift, 'Padre::Task');
+	unless ( $task ) {
+		die "Invalid task scheduled!"; # TO DO: grace
+	}
 
 	# Add to the queue of pending events
 	push @{$self->{queue}}, $task;
+
+	# Iterate the management run-loop
+	$self->step;
+}
+
+sub step {
+	my $self    = shift;
+	my $queue   = $self->{queue};
+	my $running = $self->{running};
+
+	# Is there anything in the queue to run
+	return unless @$queue;
+
+	# Is there anywhere to run the task
+	return unless $self->{minimum} > scalar @$running;
+
+	# Fetch and prepare the next task
+	my $task   = shift @$queue;
+	my $handle = Padre::Task2Handle->new( $task );
+	my $hid    = $handle->hid;
+
+	# Run the pre-run step in the main thread
+	unless ( $handle->prepare ) {
+		die "Task ->prepare method failed";
+	}
+
+	# Mark the task as running
+	$running->{$hid} = $handle;
+
 }
 
 
@@ -110,7 +136,7 @@ sub on_signal {
 	my $method = shift @$message;
 	if ( $method eq 'STARTED' ) {
 		# Register the task as running
-		$self->{running}->{hid} = $handle;
+		$self->{running}->{$hid} = $handle;
 		return;
 	}
 

@@ -1,5 +1,6 @@
 package Padre::Task2Handle;
 
+use 5.008005;
 use strict;
 use warnings;
 use threads;

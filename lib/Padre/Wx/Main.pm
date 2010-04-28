@@ -374,6 +374,9 @@ sub timer_start {
 	);
 	$timer->Start( $config->update_file_from_disk_interval * SECONDS, 0 );
 
+	# Start the second-generation task manager
+	$self->task2_manager->start;
+
 	return;
 }
 
