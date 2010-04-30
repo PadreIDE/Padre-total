@@ -116,8 +116,15 @@ sub startup {
 	# wasted memory copying to a minimum.
 	if ( $setting{threads} ) {
 		require Padre::SlaveDriver;
-
 		# Padre::SlaveDriver->new;
+	}
+
+	# Second-generation version of the above optimisation.
+	# This one is much safer because we start with zero existing tasks
+	# and no expectation of existing load behaviour.
+	if ( $setting{threads} ) {
+		require Padre::Task2Thread;
+		Padre::Task2Thread->master;
 	}
 
 	# Show the splash image now we are starting a new instance

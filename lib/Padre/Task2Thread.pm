@@ -33,16 +33,14 @@ sub master {
 	$SINGLETON = shift->new->spawn;
 }
 
+# Handle master initialisation
 sub import {
-	my $class = shift;
-
-	# Handle master initialisation
-	if ( defined $_[0] and $_[0] eq ':master' ) {
-		$class->master;
+	if ( defined $_[1] and $_[1] eq ':master' ) {
+		$_[0]->master;
 	}
 }
 
-	
+
 
 
 
