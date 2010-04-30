@@ -42,7 +42,7 @@ use_ok('Padre::Plugin::My');
 use_ok('Padre::Task2'       );
 use_ok('Padre::Task2Handle' );
 use_ok('Padre::Task2Manager');
-use_ok('Padre::Task2Master' );
+use_ok('Padre::Task2Thread' );
 use_ok('Padre::Task2Process');
 use_ok('Padre::Task2Worker' );
 

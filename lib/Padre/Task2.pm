@@ -36,6 +36,11 @@ sub running {
 ######################################################################
 # Task API - Based on Process.pm
 
+sub schedule {
+	require Padre::Current;
+	
+}
+
 # Called in the parent thread immediately before being passed
 # to the worker thread. This method should compensate for
 # potential time difference between when C<new> is original

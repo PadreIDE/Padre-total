@@ -375,7 +375,7 @@ sub timer_start {
 	$timer->Start( $config->update_file_from_disk_interval * SECONDS, 0 );
 
 	# Start the second-generation task manager
-	$self->task2_manager->start;
+	$self->ide->task2_manager->start;
 
 	return;
 }
@@ -3181,6 +3181,9 @@ sub on_close_window {
 
 	# Stop all Task Manager's worker threads
 	$self->ide->task_manager->cleanup;
+
+	# Stop the second-generation task manager
+	$self->ide->task2_manager->stop;
 
 	# Vacuum database on exit so that it does not grow.
 	# Since you can't VACUUM inside a transaction, finish it here.

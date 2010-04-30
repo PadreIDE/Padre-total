@@ -179,7 +179,7 @@ print "Found locale    $locale\n";
 # What tests should we run?
 my @TESTS = qw{
 	t/*.t
-	t/threads*.t
+	t/threads/*.t
 };
 if ( win32 and $locale =~ /^English/ ) {
 	push @TESTS, 't/win32/*.t';

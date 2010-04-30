@@ -41,6 +41,7 @@ use Class::XSAccessor 1.05 {
 		config         => 'config',
 		wx             => 'wx',
 		task_manager   => 'task_manager',
+		task2_manager  => 'task2_manager',
 		plugin_manager => 'plugin_manager',
 	},
 	accessors => {
@@ -157,7 +158,7 @@ sub new {
 	);
 
 	# Create the second-generation task manager
-	requires Padre::Task2Manager;
+	require Padre::Task2Manager;
 	$self->{task2_manager} = Padre::Task2Manager->new(
 		use_threads => 1,
 	);
