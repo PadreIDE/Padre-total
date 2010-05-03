@@ -10,7 +10,7 @@ use Padre::Task2Worker ();
 use Padre::Wx          ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.59';
 
 # Set up the primary integration event
 our $THREAD_SIGNAL : shared;

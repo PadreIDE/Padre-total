@@ -8,7 +8,7 @@ use threads::shared;
 use Thread::Queue 2.11;
 use Storable ();
 
-our $VERSION  = '0.58';
+our $VERSION  = '0.59';
 our $SEQUENCE = 0;
 
 
@@ -19,12 +19,10 @@ our $SEQUENCE = 0;
 # Constructor and Accessors
 
 sub new {
-	my $class = shift;
-	my $self  = bless {
+	bless {
 		hid  => ++$SEQUENCE,
-		task => shift,
-	}, $class;
-	return $self;
+		task => $_[1],
+	}, $_[0];
 }
 
 sub hid {
@@ -49,8 +47,7 @@ sub prepare {
 		$task->prepare;
 	};
 	if ( $@ ) {
-		warn $@;
-		return !1;
+		return ! 1;
 	}
 	return !! $rv;
 }
@@ -62,8 +59,7 @@ sub finish {
 		$task->finish;
 	};
 	if ( $@ ) {
-		warn $@;
-		return !1;
+		return ! 1;
 	}
 	return !! $rv;
 }
@@ -80,18 +76,21 @@ sub run {
 	my $task = $self->task;
 
 	# Create a circular reference back from the task
-	$self->{handle} = $self;
+	$task->{handle} = $self;
 
 	# Call the task's run method
 	eval {
 		$task->run();
 	};
 
-	# Save the exception if thrown
-	$self->{exception} = $@ if $@;
-
 	# Clean up the circular
-	delete $self->{handle};
+	delete $task->{handle};
+
+	# Save the exception if thrown
+	if ( $@ ) {
+		$self->{exception} = $@;
+		return ! 1;
+	}
 
 	return 1;
 }

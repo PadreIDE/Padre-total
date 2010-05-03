@@ -8,7 +8,7 @@ use warnings;
 use Padre::Task2Thread ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.59';
 our @ISA     = 'Padre::Task2Thread';
 
 sub task {

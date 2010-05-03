@@ -12,7 +12,7 @@ use Thread::Queue 2.11;
 use Scalar::Util ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.59';
 
 # Worker id sequence, so identifiers will be available in objects
 # across all instances and threads before the thread has been spawned.
