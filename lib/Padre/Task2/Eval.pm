@@ -46,7 +46,7 @@ use strict;
 use warnings;
 use Padre::Task2 ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.59';
 our @ISA     = 'Padre::Task2';
 
 sub prepare {
