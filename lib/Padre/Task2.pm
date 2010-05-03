@@ -3,8 +3,9 @@ package Padre::Task2;
 use 5.008;
 use strict;
 use warnings;
-use Storable     ();
-use Scalar::Util ();
+use Storable       ();
+use Scalar::Util   ();
+use Padre::Current ();
 
 our $VERSION = '0.59';
 
@@ -36,9 +37,9 @@ sub running {
 ######################################################################
 # Task API - Based on Process.pm
 
+# Send the task to the task manager to be executed
 sub schedule {
-	require Padre::Current;
-	
+	Padre::Current->ide->task2_manager->schedule(@_);
 }
 
 # Called in the parent thread immediately before being passed

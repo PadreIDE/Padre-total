@@ -207,6 +207,12 @@ sub stop_child {
 	return 0;	
 }
 
+# Host a task
+sub start_task {
+	TRACE($_[0]) if DEBUG;
+	my $handle = shift;
+	
+}
 
 
 

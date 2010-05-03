@@ -40,6 +40,39 @@ sub task {
 
 
 ######################################################################
+# Parent Methods
+
+sub prepare {
+	my $self = shift;
+	my $task = $self->{task};
+	my $rv   = eval {
+		$task->prepare;
+	};
+	if ( $@ ) {
+		warn $@;
+		return !1;
+	}
+	return !! $rv;
+}
+
+sub finish {
+	my $self = shift;
+	my $task = $self->{task};
+	my $rv   = eval {
+		$task->finish;
+	};
+	if ( $@ ) {
+		warn $@;
+		return !1;
+	}
+	return !! $rv;
+}
+
+
+
+
+
+######################################################################
 # Worker Methods
 
 sub run {

@@ -8,6 +8,7 @@ use Padre::Task2Handle ();
 use Padre::Task2Thread ();
 use Padre::Task2Worker ();
 use Padre::Wx          ();
+use Padre::Logger;
 
 our $VERSION = '0.58';
 
@@ -18,6 +19,7 @@ BEGIN {
 }
 
 sub new {
+	TRACE($_[0]) if DEBUG;
 	bless {
 		workers => [ ], # All workers
 		minimum => 2,   # Workers to launch at startup
@@ -28,6 +30,7 @@ sub new {
 }
 
 sub start {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	foreach ( 0 .. $self->{minimum} - 1 ) {
 		$self->start_child($_);
@@ -36,6 +39,7 @@ sub start {
 }
 
 sub start_child {
+	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $master = Padre::Task2Thread->master;
 	my $worker = Padre::Task2Worker->new->spawn;
@@ -44,6 +48,7 @@ sub start_child {
 }
 
 sub stop {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	Padre::Task2Thread->master->stop;
 	foreach ( 0 .. $#{$self->{workers}} ) {
@@ -53,9 +58,21 @@ sub stop {
 }
 
 sub stop_child {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	delete( $self->{workers}->[$_[0]] )->stop;
 	return 1;
+}
+
+# Get the next available free child
+sub free_child {
+	TRACE($_[0]) if DEBUG;
+	my $self = shift;
+	foreach my $worker ( @{$self->{workers}} ) {
+		# HACK: Always run it in the first one
+		return $worker;
+	}
+	return undef;
 }
 
 
@@ -66,8 +83,9 @@ sub stop_child {
 # Task Management
 
 sub schedule {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
-	my $task = Params::Util::_INSTANCE(shift, 'Padre::Task');
+	my $task = Params::Util::_INSTANCE(shift, 'Padre::Task2');
 	unless ( $task ) {
 		die "Invalid task scheduled!"; # TO DO: grace
 	}
@@ -75,11 +93,12 @@ sub schedule {
 	# Add to the queue of pending events
 	push @{$self->{queue}}, $task;
 
-	# Iterate the management run-loop
+	# Iterate the management loop
 	$self->step;
 }
 
 sub step {
+	TRACE($_[0]) if DEBUG;
 	my $self    = shift;
 	my $queue   = $self->{queue};
 	my $running = $self->{running};
@@ -88,7 +107,7 @@ sub step {
 	return unless @$queue;
 
 	# Is there anywhere to run the task
-	return unless $self->{minimum} > scalar @$running;
+	return unless $self->{minimum} > scalar keys %$running;
 
 	# Fetch and prepare the next task
 	my $task   = shift @$queue;
@@ -113,6 +132,7 @@ sub step {
 # Signal Handling
 
 sub on_signal {
+	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $event = shift;
 
