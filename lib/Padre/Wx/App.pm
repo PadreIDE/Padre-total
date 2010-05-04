@@ -141,10 +141,10 @@ sub OnInit {
 
 sub signal {
 	TRACE($_[0]) if DEBUG;
-	Wx::PostEvent(
-		shift,
-		Wx::PlThreadEvent->new( -1, $SIGNAL, shift )
+	$_[0]->AddPendingEvent(
+		Wx::PlThreadEvent->new( -1, $SIGNAL, $_[1] )
 	);
+	TRACE('->AddPendingEvent ok') if DEBUG;
 }
 
 sub on_signal {

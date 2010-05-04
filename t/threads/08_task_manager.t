@@ -14,10 +14,10 @@ use strict;
 use warnings;
 use Test::More tests => 14;
 use Test::NoWarnings;
-use Time::HiRes ();
-use Padre::Logger;
+use Time::HiRes            ();
 use Padre::Task2Manager    ();
 use Padre::Task2::Addition ();
+use Padre::Logger;
 
 # Do we start with no threads as expected
 is( scalar(threads->list), 0, 'No threads' );

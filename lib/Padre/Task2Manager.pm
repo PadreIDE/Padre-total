@@ -64,10 +64,10 @@ sub stop {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	if ( $self->{threads} ) {
-		Padre::Task2Thread->master->stop;
 		foreach ( 0 .. $#{$self->{workers}} ) {
 			$self->stop_thread($_);
 		}
+		Padre::Task2Thread->master->stop;
 	}
 	return 1;
 }

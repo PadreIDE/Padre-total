@@ -72,7 +72,7 @@ sub TRACE {
 	foreach ( @_ ) {
 		# print $fh sprintf(
 		print sprintf(
-			"%s %s%s %s\n",
+			"# %s %s%s %s\n",
 			$time,
 			$thread,
 			$caller,

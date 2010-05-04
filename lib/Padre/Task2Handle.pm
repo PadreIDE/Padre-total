@@ -139,7 +139,7 @@ sub from_array {
 # Serialize and pass-through to the Wx signal dispatch
 sub message {
 	TRACE($_[0]) if DEBUG;
-	Wx::App::GetInstance()->signal(
+	Padre::Wx::App->new->signal(
 		Storable::freeze( [ shift->hid, @_ ] )
 	);
 }
