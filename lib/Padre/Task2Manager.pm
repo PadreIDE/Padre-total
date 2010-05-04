@@ -8,6 +8,7 @@ use Padre::Task2Handle ();
 use Padre::Task2Thread ();
 use Padre::Task2Worker ();
 use Padre::Wx          ();
+use Padre::Wx::App     ();
 use Padre::Logger;
 
 our $VERSION = '0.59';
@@ -43,11 +44,17 @@ sub minimum {
 sub start {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
+
+	# Register to receive events from the threads
+	Padre::Wx::App->handler($self);
+
+	# Spawn off the threads
 	if ( $self->{threads} ) {
 		foreach ( 0 .. $self->{minimum} - 1 ) {
 			$self->start_thread($_);
 		}
 	}
+
 	return 1;
 }
 

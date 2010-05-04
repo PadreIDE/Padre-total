@@ -139,6 +139,12 @@ sub OnInit {
 #####################################################################
 # Thread Signal Handling
 
+my $HANDLER = undef;
+
+sub handler {
+	$HANDLER = $_[0];
+}
+
 sub signal {
 	TRACE($_[0]) if DEBUG;
 	$_[0]->AddPendingEvent(
@@ -151,11 +157,11 @@ sub on_signal {
 	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $event = shift;
-	@_ = (); # Avoid scalar leak (cargo culted)
 
-	# Pass the event through to the task manager (if it exists)
-	$self->{ide}->{task_manager} and
-	$self->{ide}->{task_manager}->on_signal( $event );
+	# Pass the event through to the event handler
+	$HANDLER->on_signal( $event ) if $HANDLER;
+
+	return 1;
 }
 
 1;
