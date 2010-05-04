@@ -20,25 +20,38 @@ BEGIN {
 
 sub new {
 	TRACE($_[0]) if DEBUG;
-	bless {
-		workers => [ ], # All workers
+	my $class = shift;
+	my $self  = bless {
+		threads => 1,   # Are threads enabled
 		minimum => 2,   # Workers to launch at startup
+		@_,
+		workers => [ ], # List of all workers
 		handles => { }, # Handles for all active tasks
 		running => { }, # Mapping from tid back to parent handle
 		queue   => [ ], # Pending tasks to run in FIFO order
-	}, $_[0];
+	}, $class;
+}
+
+sub threads {
+	$_[0]->{threads};
+}
+
+sub minimum {
+	$_[0]->{minimum};
 }
 
 sub start {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
-	foreach ( 0 .. $self->{minimum} - 1 ) {
-		$self->start_child($_);
+	if ( $self->{threads} ) {
+		foreach ( 0 .. $self->{minimum} - 1 ) {
+			$self->start_thread($_);
+		}
 	}
 	return 1;
 }
 
-sub start_child {
+sub start_thread {
 	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $master = Padre::Task2Thread->master;
@@ -50,14 +63,16 @@ sub start_child {
 sub stop {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
-	Padre::Task2Thread->master->stop;
-	foreach ( 0 .. $#{$self->{workers}} ) {
-		$self->stop_child($_);
+	if ( $self->{threads} ) {
+		Padre::Task2Thread->master->stop;
+		foreach ( 0 .. $#{$self->{workers}} ) {
+			$self->stop_thread($_);
+		}
 	}
 	return 1;
 }
 
-sub stop_child {
+sub stop_thread {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	delete( $self->{workers}->[$_[0]] )->stop;
@@ -65,7 +80,7 @@ sub stop_child {
 }
 
 # Get the next available free child
-sub free_child {
+sub next_thread {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	foreach my $worker ( @{$self->{workers}} ) {
@@ -106,8 +121,12 @@ sub step {
 	# Is there anything in the queue to run
 	return unless @$queue;
 
-	# Is there anywhere to run the task
-	return unless $self->{minimum} > scalar keys %$running;
+	# Shortcut if there is nowhere to run the task
+	if ( $self->{threads} ) {
+		unless ( $self->{minimum} > scalar keys %$running ) {
+			return;
+		}
+	}
 
 	# Fetch and prepare the next task
 	my $task   = shift @$queue;
@@ -119,9 +138,21 @@ sub step {
 		die "Task ->prepare method failed";
 	}
 
-	# Mark the task as running
+	# Register the handle for Wx event callbacks
 	$running->{$hid} = $handle;
 
+	# Find the next available worker
+	my $worker = $self->next_thread;
+	unless ( $worker ) {
+		die "Unexpectedly failed to find a free worker thread";
+	}
+
+	# Generate the message to the thread
+	$DB::single = $DB::single = 1;
+	my $message = [
+		'run_task',
+		1,
+	];
 }
 
 

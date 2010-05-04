@@ -6,7 +6,8 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Storable ();
+use Scalar::Util ();
+use Storable     ();
 
 our $VERSION  = '0.59';
 our $SEQUENCE = 0;
@@ -100,7 +101,31 @@ sub run {
 
 
 ######################################################################
-# Message Handling
+# Message Passing
+
+sub as_array {
+	my $self = shift;
+	my $task = $self->task;
+	return [
+		$self->hid,
+		Scalar::Util::blessed($task),
+		$task->as_string,
+	];
+}
+
+sub from_array {
+	my $class = shift;
+	my $array = shift;
+
+	# Load the task class first so we can deserialize
+	eval "require $array->[0];";
+	die $@ if $@;
+
+	return bless {
+		hid  => $array->[0] + 0,
+		task => $array->[1]->from_string( $array->[2] ),
+	}, $class;
+}
 
 # Serialize and pass-through to the Wx signal dispatch
 sub message {

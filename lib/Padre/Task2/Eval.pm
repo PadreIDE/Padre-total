@@ -46,8 +46,9 @@ use strict;
 use warnings;
 use Padre::Task2 ();
 
-our $VERSION = '0.59';
-our @ISA     = 'Padre::Task2';
+our $VERSION  = '0.59';
+our @ISA      = 'Padre::Task2';
+our $AUTOLOAD = undef;
 
 sub prepare {
 	if ( exists $_[0]->{prepare} ) {
@@ -72,6 +73,20 @@ sub finish {
 	}
 	return 1;
 }
+
+sub AUTOLOAD {
+	my $self = shift;
+	my $slot = $AUTOLOAD =~ m/^.*::(.*)\z/s;
+	if ( exists $self->{$slot} ) {
+		$self->{$slot} = eval $_[0]->{$slot};
+		die $@ if $@;
+	} else {
+		die("No such handler '$slot'");
+	}
+	return 1;
+}
+
+sub DESTROY { }
 
 1;
 

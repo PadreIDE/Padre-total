@@ -195,6 +195,13 @@ sub run {
 	return;
 }
 
+
+
+
+
+######################################################################
+# Message Handlers
+
 # Spawn a worker object off the current thread
 sub start_child {
 	TRACE($_[0]) if DEBUG;
@@ -202,17 +209,19 @@ sub start_child {
 	return 1;
 }
 
+# Stop the current child
 sub stop_child {
 	TRACE($_[0]) if DEBUG;
 	return 0;	
 }
 
-# Host a task
-sub start_task {
+# Execute a task
+sub task {
 	TRACE($_[0]) if DEBUG;
-	my $handle = shift;
-	
+	require Padre::Task2Handle;
+	Padre::Task2Handle->from_array($_[1]);
 }
+
 
 
 

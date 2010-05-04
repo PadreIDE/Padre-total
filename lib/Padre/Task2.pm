@@ -77,19 +77,19 @@ sub finish {
 ######################################################################
 # Serialization - Based on Process::Serializable and Process::Storable
 
-# my $string = $task->serialize;
-sub serialize {
+# my $string = $task->as_string;
+sub as_string {
 	Storable::nfreeze($_[0]);
 }
 
-# my $task = Class::Name->deserialize($string);
-sub deserialize {
+# my $task = Class::Name->from_string($string);
+sub from_string {
 	my $class = shift;
 	my $self  = Storable::thaw($_[0]);
 	unless ( Scalar::Util::blessed($self) eq $class ) {
 		# Because this is an internal API we can be brutally
 		# unforgiving is we aren't use the right way.
-		die("Task did not deserialize as a $class");
+		die("Task unexpectedly did not deserialize as a $class");
 	}
 	return $self;
 }

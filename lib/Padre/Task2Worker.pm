@@ -11,9 +11,9 @@ use Padre::Logger;
 our $VERSION = '0.59';
 our @ISA     = 'Padre::Task2Thread';
 
-sub task {
+sub handle {
 	TRACE($_[0]) if DEBUG;
-	$_[0]->{task};
+	$_[0]->{handle};
 }
 
 

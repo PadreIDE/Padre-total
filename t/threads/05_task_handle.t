@@ -11,7 +11,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 38;
+use Test::More tests => 41;
 use Test::NoWarnings;
 use Padre::Task2Handle     ();
 use Padre::Task2::Addition ();
@@ -51,13 +51,13 @@ SCOPE: {
 	is( $addition->{y},     3, '->{y} matches expected' );
 	is( $addition->{z},     5, '->{z} matches expected' );
 
-	# Check round-trip serialization
-	my $string = $addition->serialize;
+	# Check task round-trip serialization
+	my $string = $addition->as_string;
 	ok(
 		(defined $string and ! ref $string and length $string),
-		'->serialize ok',
+		'->as_string ok',
 	);
-	my $round = Padre::Task2::Addition->deserialize( $string );
+	my $round = Padre::Task2::Addition->from_string( $string );
 	isa_ok( $round, 'Padre::Task2::Addition' );
 	is_deeply( $round, $addition, 'Task round-trips ok' );
 }
@@ -95,4 +95,11 @@ SCOPE: {
 	is( $handle->task->{x}, 2, '->{x} matches expected' );
 	is( $handle->task->{y}, 3, '->{y} matches expected' );
 	is( $handle->task->{z}, 5, '->{z} matches expected' );
+
+	# Check handle round-trip serialisation
+	my $array = $handle->as_array;
+	is( ref($array), 'ARRAY', '->as_array ok' );
+	my $round = Padre::Task2Handle->from_array($array);
+	isa_ok( $round, 'Padre::Task2Handle' );
+	is_deeply( $round, $handle, 'Round trip serialisation ok' );
 }
