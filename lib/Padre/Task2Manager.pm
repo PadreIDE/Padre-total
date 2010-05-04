@@ -147,12 +147,8 @@ sub step {
 		die "Unexpectedly failed to find a free worker thread";
 	}
 
-	# Generate the message to the thread
-	$DB::single = $DB::single = 1;
-	my $message = [
-		'run_task',
-		1,
-	];
+	# Send the message into the worker
+	$worker->send( 'task', $handle->as_array );
 }
 
 

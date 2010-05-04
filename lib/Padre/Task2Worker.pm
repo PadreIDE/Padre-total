@@ -5,6 +5,7 @@ package Padre::Task2Worker;
 use 5.008005;
 use strict;
 use warnings;
+use Scalar::Util       ();
 use Padre::Task2Thread ();
 use Padre::Logger;
 
@@ -30,9 +31,32 @@ sub handle {
 ######################################################################
 # Worker Thread Methods
 
+sub task {
+	TRACE($_[0]) if DEBUG;
+	my $self = shift;
 
+	# Deserialize the task handle
+	TRACE("Loading Padre::Task2Handle") if DEBUG;
+	require Padre::Task2Handle;
+	TRACE("Inflating handle object") if DEBUG;
+	my $handle = Padre::Task2Handle->from_array( shift );
 
+	# Execute the task (ignore the result) and signal as we go
+	eval {
+		TRACE("Calling ->started") if DEBUG;
+		$handle->started;
+		TRACE("Calling ->run") if DEBUG;
+		$handle->run;
+		TRACE("Calling ->stopped") if DEBUG;
+		$handle->stopped;
+	};
+	if ( $@ ) {
+		TRACE($@) if DEBUG;
+	};
 
+	# Continue to the next task
+	return 1;
+}
 
 1;
 

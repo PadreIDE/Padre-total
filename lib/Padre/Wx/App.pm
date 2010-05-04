@@ -32,6 +32,7 @@ use strict;
 use warnings;
 use Carp      ();
 use Padre::Wx ();
+use Padre::Logger;
 
 our $VERSION = '0.58';
 our @ISA     = 'Wx::App';
@@ -46,10 +47,26 @@ BEGIN {
 
 
 
+######################################################################
+# Singleton Support
+
+my $SINGLETON = undef;
+
+sub new {
+	TRACE($_[0]) if DEBUG;
+	$SINGLETON or
+	$SINGLETON = shift->SUPER::new;
+}
+
+
+
+
+
 #####################################################################
 # Constructor and Accessors
 
 sub create {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift->new;
 
 	# Save a link back to the parent ide
@@ -99,6 +116,7 @@ The C<config> accessor returns the L<Padre::Config> for the application.
 =cut
 
 sub config {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->ide->config;
 }
 
@@ -109,7 +127,10 @@ sub config {
 #####################################################################
 # Wx Methods
 
-sub OnInit { 1 }
+sub OnInit {
+	TRACE($_[0]) if DEBUG;
+	return 1;
+}
 
 
 
@@ -119,6 +140,7 @@ sub OnInit { 1 }
 # Thread Signal Handling
 
 sub signal {
+	TRACE($_[0]) if DEBUG;
 	Wx::PostEvent(
 		shift,
 		Wx::PlThreadEvent->new( -1, $SIGNAL, shift )
@@ -126,6 +148,7 @@ sub signal {
 }
 
 sub on_signal {
+	TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $event = shift;
 	@_ = (); # Avoid scalar leak (cargo culted)

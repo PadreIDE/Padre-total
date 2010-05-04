@@ -8,6 +8,7 @@ use threads::shared;
 use Thread::Queue 2.11;
 use Scalar::Util ();
 use Storable     ();
+use Padre::Logger;
 
 our $VERSION  = '0.59';
 our $SEQUENCE = 0;
@@ -20,6 +21,7 @@ our $SEQUENCE = 0;
 # Constructor and Accessors
 
 sub new {
+	TRACE($_[0]) if DEBUG;
 	bless {
 		hid  => ++$SEQUENCE,
 		task => $_[1],
@@ -27,10 +29,12 @@ sub new {
 }
 
 sub hid {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{hid};
 }
 
 sub task {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{task};
 }
 
@@ -42,6 +46,7 @@ sub task {
 # Parent Methods
 
 sub prepare {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	my $task = $self->{task};
 	my $rv   = eval {
@@ -54,6 +59,7 @@ sub prepare {
 }
 
 sub finish {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	my $task = $self->{task};
 	my $rv   = eval {
@@ -73,6 +79,7 @@ sub finish {
 # Worker Methods
 
 sub run {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	my $task = $self->task;
 
@@ -104,6 +111,7 @@ sub run {
 # Message Passing
 
 sub as_array {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 	my $task = $self->task;
 	return [
@@ -114,6 +122,7 @@ sub as_array {
 }
 
 sub from_array {
+	TRACE($_[0]) if DEBUG;
 	my $class = shift;
 	my $array = shift;
 
@@ -129,12 +138,14 @@ sub from_array {
 
 # Serialize and pass-through to the Wx signal dispatch
 sub message {
+	TRACE($_[0]) if DEBUG;
 	Wx::App::GetInstance()->signal(
 		Storable::freeze( [ shift->hid, @_ ] )
 	);
 }
 
 sub on_message {
+	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $method = shift;
 
@@ -164,6 +175,7 @@ sub on_message {
 
 # Task startup handling
 sub started {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->message( 'STARTED' );
 }
 
@@ -172,10 +184,12 @@ sub started {
 
 # Task shutdown handling
 sub stopped {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->message( 'STOPPED', $_[0]->{task} );
 }
 
 sub on_stopped {
+	TRACE($_[0]) if DEBUG;
 	my $self = shift;
 
 	# The first parameter is the updated Task object.

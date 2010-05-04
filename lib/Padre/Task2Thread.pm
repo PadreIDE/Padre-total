@@ -9,7 +9,9 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Scalar::Util ();
+use Scalar::Util   ();
+use Padre::Wx      (); # HACK - Temporary workaround
+use Padre::Wx::App (); # HACK - Temporary workaround
 use Padre::Logger;
 
 our $VERSION = '0.59';
@@ -29,8 +31,14 @@ my %WID2TID  : shared = ();
 my $SINGLETON = undef;
 
 sub master {
-	$SINGLETON or
-	$SINGLETON = shift->new->spawn;
+	my $class = shift;
+	unless ( $SINGLETON ) {
+		# Make sure the root application object exists before
+		# we spawn the first thread.
+		Padre::Wx::App->new;
+		$SINGLETON = $class->new->spawn;
+	}
+	return $SINGLETON;
 }
 
 # Handle master initialisation
@@ -172,7 +180,7 @@ sub run {
 	# Loop over inbound requests
 	TRACE("Entering worker run-time loop") if DEBUG;
 	while ( my $message = $queue->dequeue ) {
-		TRACE("Worker received message $message->[0]") if DEBUG;
+		TRACE("Worker received message '$message->[0]'") if DEBUG;
 		unless ( _ARRAY($message) ) {
 			# warn("Message is not an ARRAY reference");
 			next;

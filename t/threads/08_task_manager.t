@@ -2,6 +2,14 @@
 
 # Create the task manager
 
+BEGIN {
+	$Padre::Task2Handle::DEBUG  = 1;
+	$Padre::Task2Thread::DEBUG  = 1;
+	$Padre::Task2Worker::DEBUG  = 1;
+	$Padre::Task2Manager::DEBUG = 1;
+	$Padre::Wx::App::DEBUG      = 1;
+}
+
 use strict;
 use warnings;
 use Test::More tests => 14;
@@ -40,6 +48,7 @@ SCOPE: {
 
 	# Schedule the task (which should trigger it's execution)
 	ok( $manager->schedule($addition), '->schedule ok' );
+	Time::HiRes::sleep( 1 );
 
 	# Only the prepare phase should run (for now)
 	is( $addition->{prepare}, 1, '->{prepare} is false' );
