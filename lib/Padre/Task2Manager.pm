@@ -34,10 +34,12 @@ sub new {
 }
 
 sub threads {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{threads};
 }
 
 sub minimum {
+	TRACE($_[0]) if DEBUG;
 	$_[0]->{minimum};
 }
 
