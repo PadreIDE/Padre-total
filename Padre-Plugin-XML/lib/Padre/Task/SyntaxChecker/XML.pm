@@ -22,9 +22,8 @@ Padre::Task::SyntaxChecker::XML - XML document syntax-checking in the background
   $task->schedule;
   
   my $task2 = Padre::Task::SyntaxChecker::XML->new(
-    text => Padre::Documents->current->text_get,
-    notebook_page => Padre::Documents->current->editor,
-    on_finish => sub { my $task = shift; ... },
+    text          => Padre::Documents->current->text_get,
+    on_finish     => sub { my $task = shift; ... },
   );
   $task2->schedule;
 

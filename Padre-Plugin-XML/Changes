@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-XML
 
+0.07	to be released
+	fix ticket #943: crash on serialization of Task::SyntaxChecker::XML
+        (Zeno Gantner)
+
 0.06    2009.05.31
         removed taint mode for tests, leading to build failures (jquelin)
 

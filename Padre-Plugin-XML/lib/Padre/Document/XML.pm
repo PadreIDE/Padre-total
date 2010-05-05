@@ -47,8 +47,7 @@ sub _check_syntax_internals {
 
 	require Padre::Task::SyntaxChecker::XML;
 	my $task = Padre::Task::SyntaxChecker::XML->new(
-		notebook_page => $self->editor,
-		text => $text,
+		text     => $text,
 		filename => $self->editor->{Document}->filename,
 		( exists $args->{on_finish} ? (on_finish => $args->{on_finish}) : () ),
 	);
