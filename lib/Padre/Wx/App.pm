@@ -72,14 +72,6 @@ sub create {
 	# Save a link back to the parent ide
 	$self->{ide} = shift;
 
-	# Bind the thread event handler
-	Wx::Event::EVT_COMMAND(
-		$self,
-		-1,
-		$SIGNAL,
-		\&on_signal,
-	);
-
 	# Immediately populate the main window
 	require Padre::Wx::Main;
 	$self->{main} = Padre::Wx::Main->new( $self->{ide} );
@@ -129,6 +121,10 @@ sub config {
 
 sub OnInit {
 	TRACE($_[0]) if DEBUG;
+
+	# Bind the thread event handler
+	Wx::Event::EVT_COMMAND( $_[0], -1, $SIGNAL, \&on_signal );
+
 	return 1;
 }
 
@@ -142,7 +138,7 @@ sub OnInit {
 my $HANDLER = undef;
 
 sub handler {
-	$HANDLER = $_[0];
+	$HANDLER = $_[1];
 }
 
 sub signal {
@@ -155,10 +151,12 @@ sub signal {
 
 sub on_signal {
 	TRACE($_[0]) if DEBUG;
+	TRACE($_[1]) if DEBUG;
 	my $self  = shift;
 	my $event = shift;
 
 	# Pass the event through to the event handler
+	$DB::single = $DB::single = 1;
 	$HANDLER->on_signal( $event ) if $HANDLER;
 
 	return 1;

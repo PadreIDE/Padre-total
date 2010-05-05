@@ -1,25 +1,17 @@
 #!/usr/bin/perl
 
-# Create the task manager
-
-#BEGIN {
-#	$Padre::Task2Handle::DEBUG  = 1;
-#	$Padre::Task2Thread::DEBUG  = 1;
-#	$Padre::Task2Worker::DEBUG  = 1;
-#	$Padre::Task2Manager::DEBUG = 1;
-#	$Padre::Wx::App::DEBUG      = 1;
-#}
+# Create and test the task manager
 
 use strict;
 use warnings;
 use Test::More tests => 14;
 use Test::NoWarnings;
+use Padre::Logger ':ALL';
 use Time::HiRes            ();
 use Padre::Wx              ();
 use Padre::Wx::App         ();
 use Padre::Task2Manager    ();
 use Padre::Task2::Addition ();
-use Padre::Logger;
 
 # We will need a running application so the main thread can
 # receive events thrown from the child thread.

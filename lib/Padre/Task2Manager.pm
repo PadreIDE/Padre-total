@@ -125,14 +125,14 @@ sub step {
 	TRACE($_[0]) if DEBUG;
 	my $self    = shift;
 	my $queue   = $self->{queue};
-	my $running = $self->{running};
+	my $handles = $self->{handles};
 
 	# Is there anything in the queue to run
 	return unless @$queue;
 
 	# Shortcut if there is nowhere to run the task
 	if ( $self->{threads} ) {
-		unless ( $self->{minimum} > scalar keys %$running ) {
+		unless ( $self->{minimum} > scalar keys %$handles ) {
 			return;
 		}
 	}
@@ -148,7 +148,7 @@ sub step {
 	}
 
 	# Register the handle for Wx event callbacks
-	$running->{$hid} = $handle;
+	$handles->{$hid} = $handle;
 
 	# Find the next available worker
 	my $worker = $self->next_thread;
@@ -174,7 +174,13 @@ sub on_signal {
 
 	# Deserialize and squelch bad messages
 	my $frozen  = $event->GetData;
-	my $message = Storable::thaw( \$frozen );
+	my $message = eval {
+		Storable::thaw( $frozen );
+	};
+	if ( $@ ) {
+		# warn("Exception deserialising message from thread ('$frozen')");
+		return;
+	}
 	unless ( ref $message eq 'ARRAY' ) {
 		# warn("Unrecognised non-ARRAY message received by a thread");
 		return;

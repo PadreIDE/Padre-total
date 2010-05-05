@@ -42,6 +42,9 @@ use Padre::Constant ();
 our $VERSION = '0.58';
 
 sub import {
+	if ( $_[1] and $_[1] eq ':ALL' ) {
+		$Padre::Logger::DEBUG = 1;
+	}
 	my $pkg = ( caller() )[0];
 	eval <<"END_PERL";
 package $pkg;
