@@ -62,7 +62,7 @@ Please report any bugs or feature requests to L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+Copyright 2008, 2009, 2010 The Padre development team as listed in Padre.pm.
 all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
@@ -101,36 +101,35 @@ sub menu_plugins_simple {
 
 		# maybe reorganize according to File/Directory/Project ?
 		#'File'		=> [
-		'Add...' => [
-			'File' => sub { $self->svn_add_file },
-			'Dir'     => sub { $self->svn_diff_of_dir },
-			'Project' => sub { $self->svn_diff_of_project },
+		Wx::gettext('Add') => [
+			Wx::gettext('File')    => sub { $self->svn_add_file },
+			Wx::gettext('Dir')     => sub { $self->svn_diff_of_dir },
+			Wx::gettext('Project') => sub { $self->svn_diff_of_project },
 		],
-		'Blame'  => sub { $self->svn_blame },
-		'Commit...' => [
-			'File'    => sub { $self->svn_commit_file },
-			'Project' => sub { $self->svn_commit_project },
+		Wx::gettext('Blame') => sub { $self->svn_blame },
+		Wx::gettext('Commit') => [
+			Wx::gettext('File')    => sub { $self->svn_commit_file },
+			Wx::gettext('Project') => sub { $self->svn_commit_project },
 		],
-		'Diff...'   => [
-			'File'    => [ 
-				'Show'          => sub { $self->svn_diff_of_file }, 
-				'Open in Padre' => sub {$self->svn_diff_in_padre },
-				],
-				'Dir'     => sub { $self->svn_diff_of_dir },
-				'Project' => sub { $self->svn_diff_of_project },
+		Wx::gettext('Diff') => [
+			Wx::gettext('File') => [ 
+				Wx::gettext('Show')          => sub { $self->svn_diff_of_file }, 
+				Wx::gettext('Open in Padre') => sub {$self->svn_diff_in_padre },
+			],
+			Wx::gettext('Dir')     => sub { $self->svn_diff_of_dir },
+			Wx::gettext('Project') => sub { $self->svn_diff_of_project },
 
 		],
-		'Revert' => sub { $self->svn_revert },
-		'Log...' => [
-			'File'    => sub { $self->svn_log_of_file },
-			'Project' => sub { $self->svn_log_of_project },
+		Wx::gettext('Revert') => sub { $self->svn_revert },
+		Wx::gettext('Log') => [
+			Wx::gettext('File')    => sub { $self->svn_log_of_file },
+			Wx::gettext('Project') => sub { $self->svn_log_of_project },
 		],
-		'Status...' => [
-			'File'    => sub { $self->svn_status_of_file },
-			'Project' => sub { $self->svn_status_of_project },
+		Wx::gettext('Status') => [
+			Wx::gettext('File')    => sub { $self->svn_status_of_file },
+			Wx::gettext('Project') => sub { $self->svn_status_of_project },
 		],
-
-		'About' => sub { $self->show_about },
+		Wx::gettext('About') => sub { $self->show_about },
 	];
 }
 
@@ -309,7 +308,7 @@ sub svn_status_of_project {
 	if ($filename) {
 		my $main = Padre::Current->main;
 		my $dir  = Padre::Util::get_project_dir($filename);
-		return $main->error("Could not find project root") if not $dir;
+		return $main->error( Wx::gettext('Could not find project root') ) if not $dir;
 		$self->svn_status($dir);
 	}
 	return;
@@ -348,7 +347,7 @@ sub svn_log_of_project {
 	if ($filename) {
 		my $main = Padre::Current->main;
 		my $dir  = Padre::Util::get_project_dir($filename);
-		return $main->error("Could not find project root") if not $dir;
+		return $main->error( Wx::gettext('Could not find project root') ) if not $dir;
 		$self->svn_log($dir);
 	}
 	return;
