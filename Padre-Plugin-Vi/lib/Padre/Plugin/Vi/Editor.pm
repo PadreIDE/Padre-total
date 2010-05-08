@@ -33,6 +33,7 @@ $subs{CHAR} = {
 	j => \&line_down,
 	w => \&word_right,
 	b => \&word_left,
+	e => \&word_right_end,
 
 	G => \&goto_line,
 
@@ -205,7 +206,7 @@ sub get_char {
 		$self->{buffer} = '';
 		return 0;
 	}
-	if (   $self->{buffer} =~ /^(\d*)([wblhjkvaioxupOJPG\$^{}])$/
+	if (   $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/ )
 	{
 		my $count   = $1;
@@ -522,6 +523,11 @@ sub word_right {
 sub word_left {
 	my ( $self, $count ) = @_;
 	$self->{editor}->WordLeft for 1 .. $count;
+}
+
+sub word_right_end {
+	my ( $self, $count ) = @_;
+	$self->{editor}->WordRightEnd for 1 .. $count;
 }
 
 sub paragraph_up {
