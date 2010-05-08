@@ -63,6 +63,7 @@ $subs{CHAR} = {
 	ZZ  => \&save_and_quit,
 	'$' => \&goto_end_of_line,          # Shift-4 is $   End
 	'^' => \&goto_beginning_of_line,    # Shift-6 is ^   Home
+	'0' => \&goto_beginning_of_line,
 
     '{' => \&paragraph_up,
     '}' => \&paragraph_down,
@@ -206,7 +207,8 @@ sub get_char {
 		$self->{buffer} = '';
 		return 0;
 	}
-	if (   $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}])$/
+	if (   $self->{buffer} =~ /^()(0)$/
+	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/ )
 	{
 		my $count   = $1;
