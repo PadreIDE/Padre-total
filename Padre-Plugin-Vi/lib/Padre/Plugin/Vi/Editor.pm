@@ -38,7 +38,7 @@ $subs{CHAR} = {
 
 	# selection
 	v => \&visual_mode,
-	### swictch to insert mode
+	### switch to insert mode
 	a => \&append_mode,
 	i => \&insert_mode,
 	o => \&open_below,
@@ -62,6 +62,9 @@ $subs{CHAR} = {
 	ZZ  => \&save_and_quit,
 	'$' => \&goto_end_of_line,          # Shift-4 is $   End
 	'^' => \&goto_beginning_of_line,    # Shift-6 is ^   Home
+
+    '{' => \&paragraph_up,
+    '}' => \&paragraph_down,
 };
 
 $subs{PLAIN} = {
@@ -202,7 +205,7 @@ sub get_char {
 		$self->{buffer} = '';
 		return 0;
 	}
-	if (   $self->{buffer} =~ /^(\d*)([wblhjkvaioxupOJPG\$^])$/
+	if (   $self->{buffer} =~ /^(\d*)([wblhjkvaioxupOJPG\$^{}])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/ )
 	{
 		my $count   = $1;
@@ -519,6 +522,39 @@ sub word_right {
 sub word_left {
 	my ( $self, $count ) = @_;
 	$self->{editor}->WordLeft for 1 .. $count;
+}
+
+sub paragraph_up {
+    my ($self,$count) = @_;
+
+	my $pos       = $self->{editor}->GetCurrentPos;
+	my $line_no   = $self->{editor}->LineFromPosition($pos);
+
+    while ($line_no-- > 0 && $count) {
+        my $line = $self->{editor}->GetLine($line_no);
+        if ($line =~ /^\s*$/) {
+            $count--;
+            last if $count < 1;
+        }
+    }
+	$self->{editor}->GotoLine( $line_no );
+}
+
+sub paragraph_down {
+    my ($self,$count) = @_;
+
+	my $pos       = $self->{editor}->GetCurrentPos;
+	my $line_no   = $self->{editor}->LineFromPosition($pos);
+    my $num_lines = $self->{editor}->GetLineCount;
+
+    while ($line_no++ < $num_lines && $count) {
+        my $line = $self->{editor}->GetLine($line_no);
+        if ($line =~ /^\s*$/) {
+            $count--;
+            last if $count < 1;
+        }
+    }
+	$self->{editor}->GotoLine( $line_no );
 }
 
 1;
