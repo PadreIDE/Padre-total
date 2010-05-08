@@ -56,9 +56,14 @@ $subs{CHAR} = {
 	dd   => \&delete_lines,
 	dw   => \&delete_words,
 	'd$' => \&delete_till_end_of_line,
+	'D'  => \&delete_till_end_of_line,
 	yy   => \&yank_lines,
 	yw   => \&yank_words,
 	'y$' => \&yank_till_end_of_line,
+
+	'c$' => \&change_till_end_of_line,
+	'C'  => \&change_till_end_of_line,
+	cw   => \&change_words,
 
 	ZZ  => \&save_and_quit,
 	'$' => \&goto_end_of_line,          # Shift-4 is $   End
@@ -208,8 +213,8 @@ sub get_char {
 		return 0;
 	}
 	if (   $self->{buffer} =~ /^()(0)$/
-	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}])$/
-		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$])$/ )
+	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}CD])$/
+		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$]|c[w\$])$/ )
 	{
 		my $count   = $1;
 		my $command = $2;
@@ -564,6 +569,21 @@ sub paragraph_down {
     }
 	$self->{editor}->GotoLine( $line_no );
 }
+
+sub change_words  {
+	my ( $self, $count ) = @_;
+
+    $self->delete_words($count);
+    $self->{insert_mode} = 1;
+}
+
+sub change_till_end_of_line  {
+	my ( $self, $count ) = @_;
+
+    $self->delete_till_end_of_line($count);
+    $self->{insert_mode} = 1;
+}
+
 
 1;
 
