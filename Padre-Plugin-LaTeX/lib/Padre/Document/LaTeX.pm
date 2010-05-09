@@ -9,6 +9,6 @@ use Padre::Document ();
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Document';
 
-sub comment_lines_str { return [ '%', '' ] }
+sub comment_lines_str { return '%' }
 
 1;
