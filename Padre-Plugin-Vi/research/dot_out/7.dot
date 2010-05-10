@@ -1,0 +1,17 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="'[: cursor to first non blank char in first line of previously changed or yanked text\n']: cursor to first non blank char in last line of previously changed or yanked text\n'<: cursor to first non blank char in first line of last selected visual area\n'>: cursor to first non blank char in last line of last selected visual area\n'': cursor to first non blank char in line of position before last jump, or to m' mark\n'\": cursor to first non blank char in line of position when last exiting buffer\n'^: cursor to first non blank char in line of position when insert mode was last stopped\n'.: cursor to first non blank char in line of position where last change was made\n'(: cursor to first non blank char in line starting current sentence\n'): cursor to first non blank char in line ending current sentence\n'{: cursor to first non blank char in line starting current paragraph\n'}: cursor to first non blank char in line ending current paragraph"];
+  "init" [label="init"];
+  "key1" [label="'"];
+  "key2" [label="[ ] < > ' \" ^ . ( ) { }"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "command";
+  "op" -> "key1";
+}

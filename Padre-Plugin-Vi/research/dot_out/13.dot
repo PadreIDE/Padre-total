@@ -1,0 +1,21 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="[[: cursor N sections backward or to previous \"{\" in 1st column, special with operator\n[]: cursor N sections forward or to next \"{\" in 1st column\n[`: cursor N times to previous lowercase mark\n[': cursor N times to first non blank char in line of  previous lowercase mark\n[(: cursor to Nth previous unmatched (\n[{: cursor to Nth previous unmatched {"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="["];
+  "key2" [label="[ ] ` ' ( {"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "command";
+  "op" -> "count";
+  "op" -> "key1";
+}

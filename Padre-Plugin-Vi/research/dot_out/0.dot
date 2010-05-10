@@ -1,0 +1,17 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="`: cursor to mark\n': cursor to first non blank char in line of mark"];
+  "init" [label="init"];
+  "key1" [label="` '"];
+  "letter" [label="letter"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "letter";
+  "letter" -> "command";
+  "op" -> "key1";
+}

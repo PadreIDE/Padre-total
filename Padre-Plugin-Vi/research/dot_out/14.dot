@@ -1,0 +1,21 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="g_: cursor to last non-blank char of Nth next line\ng$: cursor to end of Nth next screen line\ngk: cursor N screen lines upward when wrap is on, else like k\ngj: cursor N screen lines downward  when wrap is on, else like j\ngg: cursor to line N, default first line, on 1st non blank char\ngo: cursor to byte N of buffer, default first byte\nge: cursor N words backward to end of word\ngE: cursor N WORDs backward to end of word"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="g"];
+  "key2" [label="_ $ k j g o e E"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "command";
+  "op" -> "count";
+  "op" -> "key1";
+}

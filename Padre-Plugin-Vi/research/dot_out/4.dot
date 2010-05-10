@@ -1,0 +1,14 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="m': set previous context mark at cursor position\nm[: set the '[ mark at cursor position\nm]: set the '] mark at cursor position"];
+  "init" [label="init"];
+  "key1" [label="m"];
+  "key2" [label="' [ ]"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "key1" -> "key2";
+  "key2" -> "command";
+}

@@ -1,0 +1,19 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="aw: select N words\naW: select N WORDs\nas: select N sentences\nap: select N paragraphs, blank line is also a paragraph boundary\na(: select N [] blocks\na(: select N () blocks\na<: select N <> blocks\nat: select N tag blocks\na{: select N {} blocks\na\": select N quote blocks"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="a"];
+  "key2" [label="w W s p ( < t { \""];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "command";
+  "op" -> "count";
+  "op" -> "key1";
+}

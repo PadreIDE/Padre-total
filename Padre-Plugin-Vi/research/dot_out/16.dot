@@ -1,0 +1,15 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="CTRL-O: cursor to N older position in jump list\nCTRL-I: cursor to N newer position in jump list"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="CTRL-O CTRL-I"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "key1" -> "command";
+}

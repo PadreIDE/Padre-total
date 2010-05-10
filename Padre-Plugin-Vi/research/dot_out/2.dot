@@ -1,0 +1,21 @@
+digraph g
+{
+
+  /* list of nodes */
+  "char" [label="char"];
+  "command" [label="f: cursor to Nth occurrence of {char} to the right\nF: cursor to Nth occurrence of {char} to the left\nt: cursor till before Nth occurrence of {char} to the right\nT: cursor till before Nth occurrence of {char} to the left"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="f F t T"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "char" -> "command";
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "char";
+  "op" -> "count";
+  "op" -> "key1";
+}

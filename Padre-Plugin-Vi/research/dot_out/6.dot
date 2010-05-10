@@ -1,0 +1,17 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="%: cursor to N percentage of buffer, on 1st non blank char, must include count"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="%"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "op";
+  "key1" -> "command";
+  "op" -> "count";
+}

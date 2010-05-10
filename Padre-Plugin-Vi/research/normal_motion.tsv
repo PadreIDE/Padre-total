@@ -1,0 +1,114 @@
+keys	synonyms	count?	exclusive?	jump?	char?	letter?	op?	xwise	chapter	help
+h	<Left> CTRL-H <BS>	●	●	◌	◌	◌	●	C	LRM	cursor N chars to the left
+l	<Right> <Space>	●	●	◌	◌	◌	●	C	LRM	cursor N chars to the right
+@	<Home>	◌	●	◌	◌	◌	●	C	LRM	cursor to 1st char of line
+^		◌	●	◌	◌	◌	●	C	LRM	cursor to 1st non-blank char of line
+$	<End>	●	◌	◌	◌	◌	●	C	LRM	cursor to end of Nth next line
+g_		●	◌	◌	◌	◌	●	C	LRM	cursor to last non-blank char of Nth next line
+g0	g<Home>	◌	●	◌	◌	◌	●	C	LRM	cursor to 1st screen char of line
+g^		◌	●	◌	◌	◌	●	C	LRM	cursor to 1st non-blank screen char of line
+gm		◌	●	◌	◌	◌	●	C	LRM	cursor to char in middle of line
+g$	g<End>	●	◌	◌	◌	◌	●	C	LRM	cursor to end of Nth next screen line
+|		●	●	◌	◌	◌	●	C	LRM	cursor to column N
+f		●	◌	◌	●	◌	●	C	LRM	cursor to Nth occurrence of {char} to the right
+F		●	●	◌	●	◌	●	C	LRM	cursor to Nth occurrence of {char} to the left
+t		●	◌	◌	●	◌	●	C	LRM	cursor till before Nth occurrence of {char} to the right
+T		●	●	◌	●	◌	●	C	LRM	cursor till before Nth occurrence of {char} to the left
+;		●	◌●	◌	◌	◌	●	C	LRM	repeat latest f, t, F or T N times
+,		●	◌●	◌	◌	◌	●	C	LRM	repeat latest f, t, F or T in opposite direction N times
+k	<Up> CTRL-P	●	◌	◌	◌	◌	●	L	UDM	cursor N lines upward
+j	<Down> CTRL-J <NL> CTRL-N	●	◌	◌	◌	◌	●	L	UDM	cursor N lines downward
+gk	g<Up>	●	●	◌	◌	◌	●	C	UDM	cursor N screen lines upward when wrap is on, else like k
+gj	g<Down>	●	●	◌	◌	◌	●	C	UDM	cursor N screen lines downward  when wrap is on, else like j
+-		●	◌	◌	◌	◌	●	L	UDM	cursor to the first char N lines higher
++	CTRL-M <CR>	●	◌	◌	◌	◌	●	L	UDM	cursor to the first char N lines lower
+_		●	◌	◌	◌	◌	●	L	UDM	cursor to the first char N-1 lines lower
+G		●	◌	●	◌	◌	●	L	UDM	cursor to line N, default last line, on 1st non blank char
+<C-End>		●	◌	◌	◌	◌	●	L	UDM	cursor to line N, default last line, on last char
+gg	<C-Home>	●	◌	◌	◌	◌	●	L	UDM	cursor to line N, default first line, on 1st non blank char
+%		█	◌	◌	◌	◌	●	L	UDM	cursor to N percentage of buffer, on 1st non blank char, must include count
+go		●	◌	◌	◌	◌	●	L	UDM	cursor to byte N of buffer, default first byte
+w	<S-Right>	●	●	◌	◌	◌	●	C	WM	cursor N words forward
+W	<C-Left>	●	●	◌	◌	◌	●	C	WM	cursor N WORDs forward
+e		●	◌	◌	◌	◌	●	C	WM	cursor forward to end of word N, does not stop in empty line
+E 		●	◌	◌	◌	◌	●	C	WM	cursor forward to end of WORD N, does not stop in empty line
+b	<S-Left>	●	●	◌	◌	◌	●	C	WM	cursor N words backward   
+B 	<C-Left>	●	●	◌	◌	◌	●	C	WM	cursor N WORDs backward  
+ge		●	◌	◌	◌	◌	●	C	WM	cursor N words backward to end of word
+gE		●	◌	◌	◌	◌	●	C	WM	cursor N WORDs backward to end of word
+(		●	●	●	◌	◌	●	C	TOM	cursor N sentences backward
+)		●	●	●	◌	◌	●	C	TOM	cursor N sentences forward
+{		●	●	●	◌	◌	●	C	TOM	cursor N paragraphs backward
+}		●	●	●	◌	◌	●	C	TOM	cursor N paragraphs forward
+[[		●	●	●	◌	◌	●	C	TOM	cursor N sections backward or to previous "{" in 1st column, special with operator
+][		●	●	●	◌	◌	●	C	TOM	cursor N sections backward or to previous "{" in 1st column
+]]		●	●	●	◌	◌	●	C	TOM	cursor N sections forward or to next "{" in 1st column, special with operator
+[]		●	●	●	◌	◌	●	C	TOM	cursor N sections forward or to next "{" in 1st column
+aw		●	X	◌	◌	◌	█	C	TOS	select N words
+iw		●	 X	◌	◌	◌	█	C	TOS	select N inner words
+aW		●	X	◌	◌	◌	█	C	TOS	select N WORDs
+iW		●	X	◌	◌	◌	█	C	TOS	select N inner WORDs
+as		●	X	◌	◌	◌	█	C	TOS	select N sentences
+is		●	X	◌	◌	◌	█	C	TOS	select N inner sentences
+ap		●	X	◌	◌	◌	█	C	TOS	select N paragraphs, blank line is also a paragraph boundary
+ip		●	X	◌	◌	◌	█	C	TOS	select N inner paragraphs, blank line is also a paragraph boundary
+a(	a]	●	X	◌	◌	◌	█	C	TOS	select N [] blocks
+i[	i]	●	X	◌	◌	◌	█	C	TOS	select N inner [] blocks
+a(	a) ab	●	X	◌	◌	◌	█	C	TOS	select N () blocks
+i(	i) ib	●	X	◌	◌	◌	█	C	TOS	select N inner () blocks
+a<	a>	●	X	◌	◌	◌	█	C	TOS	select N <> blocks
+i>	i>	●	X	◌	◌	◌	█	C	TOS	select N inner <> blocks
+at		●	X	◌	◌	◌	█	C	TOS	select N tag blocks
+it		●	X	◌	◌	◌	█	C	TOS	select N inner tag blocks
+a{	a} aB	●	X	◌	◌	◌	█	C	TOS	select N {} blocks
+i{	i} iB	●	X	◌	◌	◌	█	C	TOS	select N inner {} blocks
+a"	a' a`	●	X	◌	◌	◌	█	C	TOS	select N quote blocks
+i"	i' i`	●	X	◌	◌	◌	█	C	TOS	select N inner quote blocks
+m		◌	X	◌	◌	●	◌	X	M	set mark at cursor position
+m'	m`	◌	X	◌	◌	◌	◌	X	M	set previous context mark at cursor position
+m[		◌	X	◌	◌	◌	◌	X	M	set the '[ mark at cursor position
+m]		◌	X	◌	◌	◌	◌	X	M	set the '] mark at cursor position
+`		◌	●	●	◌	●	●	C	M	cursor to mark
+'		◌	◌	●	◌	●	●	L	M	cursor to first non blank char in line of mark
+g`		◌	●	◌	◌	●	●	C	M	cursor to mark but don't add to jump list
+g'		◌	◌	◌	◌	●	●	L	M	cursor to first non blank char in line of mark but don't add to jump list
+`[		◌	◌	●	◌	◌	●	C	M	cursor to first char of previously changed or yanked text
+'[		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in first line of previously changed or yanked text
+`]		◌	◌	●	◌	◌	●	C	M	cursor to last char of previously changed or yanked text
+']		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in last line of previously changed or yanked text
+`<		◌	◌	●	◌	◌	●	C	M	cursor to first char of last selected visual area
+'<		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in first line of last selected visual area
+`>		◌	◌	●	◌	◌	●	C	M	cursor to last char of last selected visual area
+'>		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in last line of last selected visual area
+``		◌	◌	●	◌	◌	●	C	M	cursor to position before last jump, or to m' mark
+''		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line of position before last jump, or to m' mark
+`"		◌	◌	●	◌	◌	●	C	M	cursor to position when last exiting buffer
+'"  		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line of position when last exiting buffer
+`^		◌	◌	●	◌	◌	●	C	M	cursor to position when insert mode was last stopped
+'^		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line of position when insert mode was last stopped
+`.		◌	◌	●	◌	◌	●	C	M	cursor to position where last change was made
+'.		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line of position where last change was made
+`(		◌	●	●	◌	◌	●	C	M	cursor to start of current sentence
+'(		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line starting current sentence
+`)		◌	●	●	◌	◌	●	C	M	cursor to end of current sentence
+')		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line ending current sentence
+`{		◌	●	●	◌	◌	●	C	M	cursor to start of current paragraph
+'{		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line starting current paragraph
+`}		◌	●	●	◌	◌	●	C	M	cursor to end of current paragraph
+'}		◌	◌	●	◌	◌	●	L	M	cursor to first non blank char in line ending current paragraph
+]`		●	●	●	◌	◌	●	C	M	cursor N times to next lowercase mark
+]'		●	◌	●	◌	◌	●	L	M	cursor N times to first non blank char in line of  next lowercase mark
+[`		●	●	●	◌	◌	●	C	M	cursor N times to previous lowercase mark
+['		●	◌	●	◌	◌	●	L	M	cursor N times to first non blank char in line of  previous lowercase mark
+CTRL-O		●	X	◌	◌	◌	◌	X	J	cursor to N older position in jump list
+CTRL-I	<Tab>	●	X	◌	◌	◌	◌	X	J	cursor to N newer position in jump list
+g;		●	X	◌	◌	◌	◌	X	CLJ	cursor to N older position in change list
+g,		●	X	◌	◌	◌	◌	X	CLJ	cursor to N newer position in change list
+%		◌	◌	●	◌	◌	●	C	VM	cursor to next match of item in this line at or after the cursor 
+[(		●	●	◌	◌	◌	●	C	VM	cursor to Nth previous unmatched (
+[{		●	●	◌	◌	◌	●	C	VM	cursor to Nth previous unmatched {
+](		●	●	◌	◌	◌	●	C	VM	cursor to Nth next unmatched (
+]{		●	●	◌	◌	◌	●	C	VM	cursor to Nth next unmatched {
+H		●	◌	●	◌	◌	●	L	VM	cursor to Nth line count from top of window on first non-blank char
+M		◌	◌	●	◌	◌	●	L	VM	cursor to middle line of window on first non-blank char
+L		●	◌	●	◌	◌	●	L	VM	cursor to Nth line count from bottom of window on first non-blank char

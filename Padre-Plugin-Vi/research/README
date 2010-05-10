@@ -1,0 +1,79 @@
+
+Research Related Stuff
+======================
+
+
+What is the plan?
+-----------------
+
+Find a way to improve the current design for the VI plugin, by starting with
+lots of analysis on VIM.
+
+
+What can I find here?
+---------------------
+
+Perl code to parse the normal motion commands from this spreadsheet:
+
+    http://bit.ly/b3Q4Qd (email ran.eilam@gmail.com if you want edit rights)
+
+Into a Graph (CPAN Graph module). The graph is a DAG of all possible syntax
+paths for these commands. A syntax path describes what needs to by typed to
+trigger the command, and ends in the command itself.
+
+For example, the command "%" has this graph:
+
+init -> op -> count -> % -> cursor to N percentage of buffer
+ |             ^
+ |             |
+ ---------------
+
+Which means that "10%" is legal, "d10%" is legal as well. "d%" is not a path
+here, and this is indeed a different command.
+
+
+Why?
+----
+
+This DAG can be used to write a function that takes a string (what the user
+typed) and returns one of:
+
+1- command to be run, with count, mark, op, and all other details parsed
+2- "we are waiting for more keys"
+3- error (yes there are illegal key sequences in normal mode ;)
+
+This is currently handled by the hash dispatch mechanism. It will eventually
+have a hard time dealing with the rich (for a text editor) syntax of VIM.
+
+Being entirely data driven from the spreadsheet =  mapping keys is easy.
+
+
+How do I run it?
+----------------
+
+  > ./vim_graph.pl
+
+But you don't need to, because the output is already in the dot_out dir. These
+are GraphViz dot files of all normal motion commands.
+
+
+Other VIM emulations which seem to have done big design
+-------------------------------------------------------
+
+VsVim   http://github.com/jaredpar/VsVim/tree/master/VimCore/
+Yi      http://code.haskell.org/yi/src/Yi/Keymap/Vim.hs
+
+
+Pedagogical aids for understanding VIM
+--------------------------------------
+
+For now just word motion symmetries:
+
+https://sites.google.com/site/whatisvim/
+
+Note
+----
+
+None of this code is meant to go into the plugin. It's research stuff.
+
+

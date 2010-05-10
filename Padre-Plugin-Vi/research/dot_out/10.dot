@@ -1,0 +1,15 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="@: cursor to 1st char of line\n^: cursor to 1st non-blank char of line\n%: cursor to next match of item in this line at or after the cursor\nM: cursor to middle line of window on first non-blank char"];
+  "init" [label="init"];
+  "key1" [label="@ ^ % M"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "command";
+  "op" -> "key1";
+}

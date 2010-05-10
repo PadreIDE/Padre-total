@@ -1,0 +1,17 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="g;: cursor to N older position in change list\ng,: cursor to N newer position in change list"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="g"];
+  "key2" [label="; ,"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "key1" -> "key2";
+  "key2" -> "command";
+}

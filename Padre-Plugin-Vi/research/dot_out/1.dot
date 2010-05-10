@@ -1,0 +1,19 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="iw: select N inner words\niW: select N inner WORDs\nis: select N inner sentences\nip: select N inner paragraphs, blank line is also a paragraph boundary\ni[: select N inner [] blocks\ni(: select N inner () blocks\ni>: select N inner <> blocks\nit: select N inner tag blocks\ni{: select N inner {} blocks\ni\": select N inner quote blocks"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="i"];
+  "key2" [label="w W s p [ ( > t { \""];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "command";
+  "op" -> "count";
+  "op" -> "key1";
+}

@@ -1,0 +1,19 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="g`: cursor to mark but don't add to jump list\ng': cursor to first non blank char in line of mark but don't add to jump list"];
+  "init" [label="init"];
+  "key1" [label="g"];
+  "key2" [label="` '"];
+  "letter" [label="letter"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "key2";
+  "key2" -> "letter";
+  "letter" -> "command";
+  "op" -> "key1";
+}

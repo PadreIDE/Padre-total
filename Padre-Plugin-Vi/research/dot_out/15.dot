@@ -1,0 +1,14 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="m: set mark at cursor position"];
+  "init" [label="init"];
+  "key1" [label="m"];
+  "letter" [label="letter"];
+
+  /* list of edges */
+  "init" -> "key1";
+  "key1" -> "letter";
+  "letter" -> "command";
+}

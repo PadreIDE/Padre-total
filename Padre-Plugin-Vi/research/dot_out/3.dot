@@ -1,0 +1,19 @@
+digraph g
+{
+
+  /* list of nodes */
+  "command" [label="h: cursor N chars to the left\nl: cursor N chars to the right\n$: cursor to end of Nth next line\n|: cursor to column N\n;: repeat latest f, t, F or T N times\n,: repeat latest f, t, F or T in opposite direction N times\nk: cursor N lines upward\nj: cursor N lines downward\n-: cursor to the first char N lines higher\n+: cursor to the first char N lines lower\n_: cursor to the first char N-1 lines lower\nG: cursor to line N, default last line, on 1st non blank char\n<C-End>: cursor to line N, default last line, on last char\nw: cursor N words forward\nW: cursor N WORDs forward\ne: cursor forward to end of word N, does not stop in empty line\nE: cursor forward to end of WORD N, does not stop in empty line\nb: cursor N words backward\nB: cursor N WORDs backward\n(: cursor N sentences backward\n): cursor N sentences forward\n{: cursor N paragraphs backward\n}: cursor N paragraphs forward\nH: cursor to Nth line count from top of window on first non-blank char\nL: cursor to Nth line count from bottom of window on first non-blank char"];
+  "count" [label="count"];
+  "init" [label="init"];
+  "key1" [label="h l $ | ; , k j - + _ G <C-End> w W e E b B ( ) { } H L"];
+  "op" [label="op"];
+
+  /* list of edges */
+  "count" -> "key1";
+  "init" -> "count";
+  "init" -> "key1";
+  "init" -> "op";
+  "key1" -> "command";
+  "op" -> "count";
+  "op" -> "key1";
+}
