@@ -2,7 +2,7 @@
 name: Padre-Plugin-LaTeX
 version: 0.01
 author:
-  - 'Zeno Gantner <zeno.gantner@gmail.com>'
+  - 'Zeno Gantner <ZENOG@cpan.org>'
 abstract: L<Padre> and LaTeX
 license: perl
 resources:

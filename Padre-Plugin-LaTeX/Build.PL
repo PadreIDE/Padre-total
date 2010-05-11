@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name         => 'Padre::Plugin::LaTeX',
     license             => 'perl',
-    dist_author         => 'Zeno Gantner <zeno.gantner@gmail.com>',
+    dist_author         => 'Zeno Gantner <ZENOG@cpan.org>',
     dist_version_from   => 'lib/Padre/Plugin/LaTeX.pm',
     build_requires => {
         'Test::More'  => 0,

@@ -81,7 +81,7 @@ Padre::Plugin::LaTeX - L<Padre> and LaTeX
 
 =head1 AUTHOR
 
-Zeno Gantner, C<< <zeno.gantner at gmail.com> >>
+Zeno Gantner, C<< <ZENOG at cpan.org> >>
 
 =head1 COPYRIGHT & LICENSE
 
