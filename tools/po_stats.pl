@@ -295,15 +295,20 @@ sub usage {
 	print "$msg\n\n" if defined $msg;
 	print <<"END_USAGE";
 Usage: $0
-        --text 
-	--details
-        --html --dir DIR
+        --text            generate text report
+        --html            generate html report
 
-	--project         path to the project directory
-	--all             all the projects
-	--trunk  PATH     to root of all the projects
-	
+        --details         provides details (in text report only)
+        --dir DIR         where to save the html report
+
+        --project PATH    path to the project directory (e.g. ~/padre/Padre-Plugin-Vi)
+        --all             all the projects
+        --trunk  PATH     to root of all the projects
+
+
         --all and --project are mutually exclusive
+        At least one of --html and --text need to be given
+
 END_USAGE
 
 	exit 1;
