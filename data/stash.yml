@@ -27,7 +27,11 @@ navigation:
 about:
   - title: y2010
     events:
-      -date: 2010 April 29
+      - date: 2010 May 16
+        url: http://szabgab.com/blog/2010/05/1274072207.html
+        title: Fixing my editor
+        comment: by Gábor Szabó
+      - date: 2010 April 29
         url: http://samcrawley.wordpress.com/2010/04/29/why-padre-is-important/
         title: Why Padre is important
         comment: The Tech Blog of Sam Crawley
