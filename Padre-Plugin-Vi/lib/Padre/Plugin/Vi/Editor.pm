@@ -240,8 +240,8 @@ sub get_char {
 
 sub line_down {
 	my ( $self, $count ) = @_;
-	if ( $self->{visual_mode} ) {    # TODO moer than one lines
-		$self->{editor}->LineDownExtend;
+	if ( $self->{visual_mode} ) {
+		$self->{editor}->LineDownExtend for 1 .. $count;
 		return;
 	}
 
@@ -258,7 +258,7 @@ sub line_up {
 	my ( $self, $count ) = @_;
 
 	if ( $self->{visual_mode} ) {
-		$self->{editor}->LineUpExtend;
+		$self->{editor}->LineUpExtend for 1 .. $count;
 		return;
 	}
 
@@ -322,7 +322,7 @@ sub move_right {
 	#print "COUNT $count\n";
 	$self->{end_pressed} = 0;
 	if ( $self->{visual_mode} ) {
-		$self->{editor}->CharRightExtend();    # TODO use $count
+		$self->{editor}->CharRightExtend() for 1 .. $count;
 	} else {
 		my $pos = $self->{editor}->GetCurrentPos;
 		$self->{editor}->GotoPos( $pos + $count );
@@ -333,7 +333,7 @@ sub move_left {
 	my ( $self, $count ) = @_;
 	$self->{end_pressed} = 0;
 	if ( $self->{visual_mode} ) {
-		$self->{editor}->CharLeftExtend;       # TODO use $count
+		$self->{editor}->CharLeftExtend for 1 .. $count;
 	} else {
 		my $pos = $self->{editor}->GetCurrentPos;
 		$self->{editor}->GotoPos( List::Util::max( $pos - $count, 0 ) );
