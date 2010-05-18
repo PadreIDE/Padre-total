@@ -1,6 +1,6 @@
 package Padre::Plugin::HTMLExport;
 
-use 5.006;
+use 5.008005;
 use warnings;
 use strict;
 
@@ -39,13 +39,13 @@ our %KATE_ALL = (
 );
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.23',
+	'Padre::Plugin' => '0.43',
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return ('Export Colorful HTML' => [
-		'Export HTML', sub { $self->export_html },
+		'Export HTML...',  sub { $self->export_html },
 		'Configure Color', sub { $self->configure_color },
 	]);
 }
@@ -66,10 +66,10 @@ sub export_html {
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
 			$main,
-			gettext("Save html as..."),
+			Wx::gettext('Save as HTML...'),
 			$default_dir,
 			"",
-			"*.*",
+			"*.html",
 			Wx::wxFD_SAVE,
 		);
 		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
@@ -80,8 +80,8 @@ sub export_html {
 		my $path = File::Spec->catfile($default_dir, $filename);
 		if ( -e $path ) {
 			my $res = Wx::MessageBox(
-				gettext("File already exists. Overwrite it?"),
-				gettext("Exist"),
+				Wx::gettext('File already exists. Overwrite it?'),
+				Wx::gettext('Exist'),
 				Wx::wxYES_NO,
 				$main,
 			);
@@ -96,9 +96,9 @@ sub export_html {
 	}
 	
 	# highlight
-	my $mimetype = $doc->get_mimetype;
+	my $mimetype = $doc->mimetype;
 	unless ( exists $KATE_ALL{$mimetype} ) {
-		$main->error("$mimetype is not supported");
+		$main->error( sprintf( gettext('%s is not supported'), $mimetype ) );
 		return;
 	}
 	my $language = $KATE_ALL{$mimetype};
@@ -149,8 +149,8 @@ sub export_html {
 	close($fh);
 
 	my $ret = Wx::MessageBox(
-		"Saved to $save_to_file. Do you want to open it now?",
-		gettext("Done"),
+		sprintf( Wx::gettext('Saved to %s. Do you want to open it now?'), $save_to_file ),
+		Wx::gettext('Done'),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
 	);
@@ -163,7 +163,7 @@ sub configure_color {
 	my ( $self ) = @_;
 	my $main = $self->main;
 	
-	$main->error('Not implemented, TODO');
+	$main->error( Wx::gettext('Not implemented, TODO') );
 }
 
 1;

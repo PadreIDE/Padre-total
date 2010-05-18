@@ -1,6 +1,6 @@
 ---
 name: Padre-Plugin-HTMLExport
-version: 0.01
+version: 0.06
 author:
   - 'Fayland Lam <fayland@gmail.com>'
 abstract: export highlighted HTML in Padre
@@ -8,13 +8,14 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
-  Padre: 0.18
+  Padre: 0.43
   Syntax::Highlight::Engine::Kate: 0
   Test::More: 0
+  Locale::Msgfmt: 0.14
 provides:
   Padre::Plugin::HTMLExport:
     file: lib/Padre/Plugin/HTMLExport.pm
-    version: 0.01
+    version: 0.05
 generated_by: Module::Build version 0.3
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

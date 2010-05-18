@@ -1,5 +1,10 @@
 Revision history for Padre-Plugin-HTMLExport
 
+0.06	?
+	added translation files (ZENOG)
+	minor message changes (ZENOG)
+	for Padre 0.43 and later (ZENOG)
+
 0.05    2009.05.31
         removed taint mode for tests, leading to build errors (jquelin)
 
