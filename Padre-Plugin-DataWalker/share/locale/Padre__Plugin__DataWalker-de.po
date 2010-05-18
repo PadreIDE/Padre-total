@@ -18,7 +18,7 @@ msgstr "Über"
 
 #: lib/Padre/Plugin/DataWalker.pm:90
 msgid "Browse YAML dump file"
-msgstr "YAML dump Datei durchsuchen"
+msgstr "YAML-Dump-Datei durchsuchen"
 
 #: lib/Padre/Plugin/DataWalker.pm:91
 msgid "Browse current document object"
@@ -26,11 +26,11 @@ msgstr "Aktuelles Dokumentenobjekt ansehen"
 
 #: lib/Padre/Plugin/DataWalker.pm:92
 msgid "Browse Padre IDE object"
-msgstr "Padre IDE Objekt ansehen"
+msgstr "Padre-IDE-Objekt ansehen"
 
 #: lib/Padre/Plugin/DataWalker.pm:93
 msgid "Browse Padre main symbol table"
-msgstr "Padre Symboltabelle ansehen"
+msgstr "Padre-Symboltabelle ansehen"
 
 #: lib/Padre/Plugin/DataWalker.pm:103
 msgid "Open file"
