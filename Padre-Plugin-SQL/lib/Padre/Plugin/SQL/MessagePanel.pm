@@ -19,14 +19,16 @@ sub new {
 	my $main       = shift;
 	my $self       = $class->SUPER::new( Padre::Current->main->bottom );
 
-	require Scalar::Util;;
+	
+
+	require Scalar::Util;
 	$self->{main} = $main;
 	Scalar::Util::weaken($self->{main});
 	
 	my $box = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	# output panel for server
 	require Padre::Wx::Output;
-	my $output = Padre::Wx::Output->new($self);
+	my $output = Padre::Wx::Output->new($main, $self);
 	$box->Add( $output, 1, Wx::wxGROW );	
 	
 	$self->SetSizer($box);
@@ -40,8 +42,9 @@ sub new {
 	
 }
 
-sub output { return shift->{output} }
-sub gettext_label { return _T('SQL Messages') }
+
+sub output { return shift->{output}; }
+sub gettext_label { return _T('SQL Messages'); }
 
 # dirty hack to allow seamless use of Padre::Wx::Output
 sub bottom { return $_[0] }
