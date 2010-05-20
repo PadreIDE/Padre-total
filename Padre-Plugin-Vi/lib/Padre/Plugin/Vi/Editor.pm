@@ -24,6 +24,8 @@ sub new {
 
 sub editor { return $_[0]->{editor} }
 
+# TODO:  Should i write the combinations as anonym function,
+#        if they are too long to suit in a line?
 $subs{CHAR} = {
 
 	# movements
@@ -44,6 +46,7 @@ $subs{CHAR} = {
 	a => \&append_mode,
 	A => \&append_line_end,
 	i => \&insert_mode,
+	I => \&insert_at_first_non_blank,
 	o => \&open_below,
 	O => \&open_above,
 
@@ -215,7 +218,7 @@ sub get_char {
 		return 0;
 	}
 	if (   $self->{buffer} =~ /^()(0)$/
-	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAioxupOJPG\$^{}CD ])$/
+	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAiIoxupOJPG\$^{}CD ])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$]|c[w\$])$/ )
 	{
 		my $count   = $1;
@@ -315,15 +318,14 @@ sub goto_first_non_blank {
 	my $text = $self->{editor}->_get_line_by_number($line);
 
 	$text =~ /^(\s*)/;
-	my $pos_first_char = $self->{editor}->PositionFromLine($line) + length($1);
+	my $offset = length($1) + 1;  # + 1 for normal mode !
+	my $start = $self->{editor}->PositionFromLine($line);
 
 	if ( $self->{visual_mode} ) {
-		# my $sel_start = $self->{editor}->GetSelectionStart;
-		# $self->{editor}->SetSelection($sel_start, $pos_first_char);
-		$self->{editor}->GotoPos($pos_first_char);
-		$self->{editor}->text_selection_mark_end($pos_first_char);
+		$self->{editor}->HomeExtend;
+		$self->{editor}->CharRightExtend() for 1 .. $offset;
 	} else {
-		$self->{editor}->GotoPos($pos_first_char);
+		$self->{editor}->GotoPos($start + $offset);
 	}
 }
 
@@ -368,6 +370,7 @@ sub visual_mode {
 	my ( $self, $count ) = @_;
 	my $main = Padre->ide->wx->main;
 	$self->{editor}->text_selection_mark_start($main);
+	$self->{editor}->CharLeftExtend();
 	$self->{visual_mode} = 1;
 }
 
@@ -392,6 +395,13 @@ sub insert_mode {                 # insert
 	$self->{editor}->GotoPos( $pos - 1 );
 
 	# change cursor
+}
+
+sub insert_at_first_non_blank {
+	my ($self) = @_;
+
+	$self->goto_first_non_blank;
+	$self->insert_mode;
 }
 
 sub open_below {
