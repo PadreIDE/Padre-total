@@ -41,6 +41,7 @@ $subs{CHAR} = {
 	v => \&visual_mode,
 	### switch to insert mode
 	a => \&append_mode,
+	A => \&append_line_end,
 	i => \&insert_mode,
 	o => \&open_below,
 	O => \&open_above,
@@ -213,7 +214,7 @@ sub get_char {
 		return 0;
 	}
 	if (   $self->{buffer} =~ /^()(0)$/
-	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaioxupOJPG\$^{}CD])$/
+	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAioxupOJPG\$^{}CD])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$]|c[w\$])$/ )
 	{
 		my $count   = $1;
@@ -353,6 +354,12 @@ sub append_mode {    # append
 	$self->{insert_mode} = 1;
 
 	# change cursor
+}
+
+sub append_line_end {  # combination with $ and a
+	my ($self) = @_;    # do NOT use $count
+	$self->goto_end_of_line;
+	$self->{insert_mode} = 1;
 }
 
 sub insert_mode {                 # insert
