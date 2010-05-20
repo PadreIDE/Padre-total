@@ -34,6 +34,7 @@ $subs{CHAR} = {
 	w => \&word_right,
 	b => \&word_left,
 	e => \&word_right_end,
+	' ' => \&move_right,
 
 	G => \&goto_line,
 
@@ -214,7 +215,7 @@ sub get_char {
 		return 0;
 	}
 	if (   $self->{buffer} =~ /^()(0)$/
-	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAioxupOJPG\$^{}CD])$/
+	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAioxupOJPG\$^{}CD ])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$]|c[w\$])$/ )
 	{
 		my $count   = $1;
