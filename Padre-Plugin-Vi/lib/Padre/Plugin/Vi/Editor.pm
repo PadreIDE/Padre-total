@@ -69,7 +69,7 @@ $subs{CHAR} = {
 
 	ZZ  => \&save_and_quit,
 	'$' => \&goto_end_of_line,          # Shift-4 is $   End
-	'^' => \&goto_beginning_of_line,    # Shift-6 is ^   Home
+	'^' => \&goto_first_non_blank,
 	'0' => \&goto_beginning_of_line,
 
     '{' => \&paragraph_up,
@@ -302,6 +302,28 @@ sub goto_beginning_of_line {
 		$self->{editor}->HomeExtend;
 	} else {
 		$self->{editor}->Home;
+	}
+}
+
+sub goto_first_non_blank {
+	# goto first non-blank char
+
+	# FIXME: may be the function name is too long :(
+
+	my ($self) = @_;
+	my $line = $self->{editor}->GetCurrentLine;
+	my $text = $self->{editor}->_get_line_by_number($line);
+
+	$text =~ /^(\s*)/;
+	my $pos_first_char = $self->{editor}->PositionFromLine($line) + length($1);
+
+	if ( $self->{visual_mode} ) {
+		# my $sel_start = $self->{editor}->GetSelectionStart;
+		# $self->{editor}->SetSelection($sel_start, $pos_first_char);
+		$self->{editor}->GotoPos($pos_first_char);
+		$self->{editor}->text_selection_mark_end($pos_first_char);
+	} else {
+		$self->{editor}->GotoPos($pos_first_char);
 	}
 }
 
