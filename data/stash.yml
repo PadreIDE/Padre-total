@@ -27,6 +27,14 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 May 21
+        url: http://perlwannabe.vox.com/library/post/padre-062-released.html
+        title: Padre 0.62 Released
+        comment: by Peter Lavender (Release Manager)
+      - date: 2010 May 21
+        url: http://perlwannabe.vox.com/library/post/finding-your-way-around-padre-one-mistake-at-a-time.html
+        title: Finding your way around Padre, one mistake at a time...
+        comment: by Peter Lavender
       - date: 2010 May 16
         url: http://szabgab.com/blog/2010/05/1274072207.html
         title: Fixing my editor
