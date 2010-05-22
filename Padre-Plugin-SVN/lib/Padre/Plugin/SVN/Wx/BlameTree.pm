@@ -10,7 +10,7 @@ use Padre::Locale   ();
 
 use Wx qw(:treectrl :window wxDefaultPosition wxDefaultSize);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Wx::TreeCtrl';
 
 
