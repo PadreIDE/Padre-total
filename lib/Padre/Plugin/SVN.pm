@@ -13,7 +13,7 @@ use Padre::Util   ();
 
 use SVN::Class qw(svn_file);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our @ISA     = 'Padre::Plugin';
 
 =head1 NAME
