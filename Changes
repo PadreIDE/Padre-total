@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-SVN
 
-0.05	To Be Released
+0.05	2010.05.23
 		* Changed the blame (log) display to show as a tree view.
 		* gettext-ified some messages (Zeno Gantner)
 
