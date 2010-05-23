@@ -15,7 +15,9 @@ requires 'SVN::Class' => '0.15';
 
 build_requires 'Test::More';
 
-is_padre_plugin;
+# what is this??
+#is_padre_plugin;
+
 auto_install;
 
 WriteAll;
