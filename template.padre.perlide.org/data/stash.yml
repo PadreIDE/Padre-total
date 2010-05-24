@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 May 24
+        url: http://perl-hunting.blogspot.com/2010/05/installing-padre-062-on-debian-sid.html
+        title: installing padre 0.62 on debian sid
+        comment: Perl Hunting by Emil Perhinschi
       - date: 2010 May 21
         url: http://perlwannabe.vox.com/library/post/padre-062-released.html
         title: Padre 0.62 Released
