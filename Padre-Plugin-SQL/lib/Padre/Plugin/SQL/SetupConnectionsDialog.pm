@@ -4,7 +4,7 @@ use warnings;
 use strict;
 
 # package exports and version
-our $VERSION = '0.02';
+our $VERSION = '0.01';
 
 # module imports
 use Padre::Wx ();
@@ -45,13 +45,12 @@ sub new {
 	
 	# this doesn't work when running dev.pl -a
 	if( ! defined( $share_dir) || $share_dir eq '' ) {
-		
 		$share_dir = '/tmp';
-		
 	}
-	
+
 	my $db_connections;
 	my $path = File::Spec->catfile($share_dir, $config_file);	
+
 	if( ! -e $path ) {
 		#print "No config file exists\n";
 		$db_connections = YAML::Tiny->new();
@@ -62,7 +61,8 @@ sub new {
 		$db_connections = YAML::Tiny->read($path);
 		if( ! defined $db_connections ) {
 			# create error dialog here.
-			print "failed to read config " . YAML::Tiny->errstr . "\n";
+			#print "failed to read config " . YAML::Tiny->errstr . "\n";
+			#Padre::Main::error("Failed to read the config file" . YAML::Tiny->errstr );
 		}
 	}
 	
@@ -70,7 +70,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		Padre::Current->main,
 		-1,
-		_T('Setup Database connection'),
+		_T('Setup Database Connection'),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_FRAME_STYLE|Wx::wxTAB_TRAVERSAL,
@@ -174,7 +174,7 @@ sub _create_buttons {
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$btnNew,
-		sub { $_[0]->_reset_form; }  # rathan an on_new we just clear the form
+		sub { $_[0]->_reset_form; }  # rathar than on_new we just clear the form
 	);
 	
 	Wx::Event::EVT_BUTTON(
@@ -185,12 +185,12 @@ sub _create_buttons {
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$btnSave,
-		sub { $_[0]->_save_config; }
+		sub { $_[0]->_on_save_config; }
 	);
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$btnDelete,
-		sub { $_[0]->_delete_config; }
+		sub { $_[0]->_on_delete_config; }
 	);
 	
 	Wx::Event::EVT_BUTTON(
@@ -202,11 +202,11 @@ sub _create_buttons {
 	
 }
 
-sub _delete_config {
+sub _on_delete_config {
 	my $self = shift;
-	print "_delete_config\n";
+	#print "_delete_config\n";
 	my $connname = $self->{dbConnList_combo}->GetValue();
-	print "deleting: $connname\n";
+	#print "deleting: $connname\n";
 	delete $self->{db_connections}->[0]->{$connname};
 	my $ok = $self->{db_connections}->write( $self->{config_path} );
 	
@@ -216,8 +216,7 @@ sub _delete_config {
 	}
 	
 	$self->_reset_form();
-	
-	
+
 }
 
 
@@ -227,22 +226,22 @@ sub _read_config {
 	my $ok = $self->{db_connections}->read( $self->{config_path} );
 	if( ! $ok ) {
 		
-		print "Error??? " . $self->{db_connections}->errstr . "\n";
+		#print "Error??? " . $self->{db_connections}->errstr . "\n";
 	}
 	
 }
 
 =pod
 
-=head2 _save_config
+=head2 _on_save_config
 
 This checks and saves the current config details in the form
 
 =cut
 
-sub _save_config {
+sub _on_save_config {
 	my $self = shift;
-	print "_save_config\n";
+	#print "_save_config\n";
 	
 	if( $self->_is_empty() ) {
 		#TODO Dialog saying it's empty
@@ -262,7 +261,7 @@ sub _save_config {
 	my $dbport = $self->{txtDBPort}->GetValue();
 	
 	if( $dbconnname eq '' ) {
-		print "no db connection name\n";
+		#print "no db connection name\n";
 		return 0;
 	}
 
@@ -291,7 +290,7 @@ sub _save_config {
 	#}
 	my $ok = $self->{db_connections}->write( $self->{config_path} );
 	if( ! $ok ) {
-		print "Error??? " . $self->{db_connections}->errstr . "\n";
+		#print "Error??? " . $self->{db_connections}->errstr . "\n";
 	}
 }
 
@@ -307,7 +306,7 @@ Validates the form and returns a hash of the values
 
 sub _validate_form_fields {
 	my $self = shift;
-	print "Checking that form is filled out\n";
+	#print "Checking that form is filled out\n";
 	
 	my $dbconnname = $self->{dbConnList_combo}->GetValue();
 	
@@ -323,14 +322,14 @@ sub _validate_form_fields {
 	# need a dbconn name
 	if( $dbconnname eq '' ) {
 		# TODO DIALOG - Missing connection name
-		print "No Conn Name, can't go on\n";
+		#print "No Conn Name, can't go on\n";
 		return undef;
 		
 	}
 	
 	if( $dbtype eq '' ) {
 		# TODO DIALOG - Missing DBType
-		print "dbtype has not been defined\n";
+		#print "dbtype has not been defined\n";
 		return undef;
 	}
 	
@@ -343,6 +342,7 @@ sub _validate_form_fields {
 }
 
 =pod
+
 
 
 =cut 
@@ -394,7 +394,7 @@ sub _existing_db_connections {
 	#my @documents = Load( $self->{db_connections} );
 	#print "Dumper:\n" . Dumper(@documents) . "\n";
 	my @connectionList = keys( %{ $self->{db_connections}->[0] } );
-	print "Dumper:\n" . Dumper($self->{db_connections} ) . "\n";
+	#print "Dumper:\n" . Dumper($self->{db_connections} ) . "\n";
 	my $sizer = $self->_sizer;
 	
 	my $dbConnList_sizer = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
@@ -608,7 +608,7 @@ sub on_db_select {
 	my ($self) = @_;
 	
 	my $dbType = $self->{db_combo}->GetValue();
-	print "DBType is: $dbType\n";
+	#print "DBType is: $dbType\n";
 	
 	$self->{txtDBPort}->SetValue($dbTypes{ $self->{db_combo}->GetValue() }->{port} );
 	
@@ -624,13 +624,13 @@ sub on_db_select {
 sub _on_db_connlist_select {
 	my $self = shift;
 	my $dbConn = $self->{dbConnList_combo}->GetValue();
-	print "Connecting to: $dbConn\n";
+	#print "Connecting to: $dbConn\n";
 	
 	$self->{db_combo}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbtype} );
 	$self->{txtDBHostName}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbhost} );
 	$self->{txtDBPort}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbport} );
 	$self->{txtDBName}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbname} );
-	$self->{txtDBInstance}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbinstsance} );
+	$self->{txtDBInstance}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{dbinstsance} || '');
 	
 	$self->{txtDBUserName}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{username} );
 	$self->{txtDBPassword}->SetValue( $self->{db_connections}->[0]->{$dbConn}->{password} );

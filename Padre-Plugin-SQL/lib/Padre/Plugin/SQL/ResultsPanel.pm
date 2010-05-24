@@ -35,24 +35,16 @@ sub new {
 		
 	);
 	
-	# output panel for server
-	#require Padre::Wx::Output;
-	#my $output = Padre::Wx::Output->new($self);
-	
-	#$box->Add( $output, 1, Wx::wxGROW );
-	#$box->Add( $output, 1, Wx::wxGROW );	
-	#$self->{output} = $output;
-	
-	$grid->CreateGrid( 5, 5 );
+	# set a starting grid purely to show something is there.
+	$grid->CreateGrid( 15, 25 );
 	$box->Add($grid, 1, Wx::wxGROW);
 	$self->SetSizer($box);
 	
 	
 	$self->{grid} = $grid;
 	
-	#Padre::Current->main->bottom->hide($self);
-	
 	return $self;
+
 }
 
 
@@ -66,36 +58,26 @@ sub update_grid {
 	my $self = shift;
 	my $results = shift;
 	
-	print "update_grid()\n";
+	#print "update_grid()\n";
 	my $numCols = scalar( @{ $results->[0] } );
 	my $numRows = scalar(@{ $results->[1] } );
 		
-	print "rows: $numRows\n";
-	print "columns $numCols\n";
-	
-	#my $grid = Wx::Grid->new(
-	#	$self,
-	#	-1,
-	#	[-1,-1],
-	#	[-1,-1],
-	#	
-	#);
-	
-	#
+	#print "rows: $numRows\n";
+	#print "columns $numCols\n";
 	
 	$self->{grid}->ClearGrid;
 	$self->{grid}->DeleteRows(0, $self->{grid}->GetNumberRows);
 	$self->{grid}->DeleteCols(0, $self->{grid}->GetNumberCols);
 	
-	#$self->{grid}->CreateGrid($numRows, $numCols);
+	
 	$self->{grid}->AppendCols( $numCols );
 	$self->{grid}->AppendRows( $numRows );
 	
-	
+	# set the columns returned
 	for( my $i = 0; $i < $numCols; $i++ ) {
 		$self->{grid}->SetColLabelValue($i, $results->[0][$i]);
 	}
-	
+	# fill in the grid
 	for( my $i = 0; $i < $numRows; $i++ ) {
 		for(my $j = 0; $j < $numCols; $j++ ) {
 			$self->{grid}->SetCellValue($i, $j, $results->[1]->[$i]->[$j] );
@@ -105,19 +87,16 @@ sub update_grid {
 	
 	$self->{grid}->AutoSize;
 	
-	print join( ',', @{ $results->[0] } ) . "\n";
+	#print join( ',', @{ $results->[0] } ) . "\n";
 	#print out for now
-	my $rowNum = 1;	
-	foreach my $row( @{ $results->[1] } ) {
+	#my $rowNum = 1;	
+	#foreach my $row( @{ $results->[1] } ) {
 		#foreach my $col( @{ $row } ) {
-		my $prtRow = "$rowNum: " . join(',', @{ $row } ) . "\n";
+	#	my $prtRow = "$rowNum: " . join(',', @{ $row } ) . "\n";
 		#$msg_output->AppendText( $prtRow );
-		print $prtRow;
-		$rowNum++;
-	}
-	
-	
-	
+	#	print $prtRow;
+	#	$rowNum++;
+	#}
 
 }
 

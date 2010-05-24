@@ -44,20 +44,33 @@ sub connect {
 	my $password = $connection->{password};
 	# do the checks here
 	
-	print "in _get_connection_driver\nhost: $host,dbname: $dbname, instance: $instance, username:$username,port: $port\n";
+	#print "in _get_connection_driver\nhost: $host,dbname: $dbname, instance: $instance, username:$username,port: $port\n";
 	
 	my $dbh;
+	
+	my $dbString = "";
+	if( defined($host) && $host ne '' ) {
+		$dbString = "host=$host";
+	}
+	if( defined($port) && $port ne '' ) {
+		if( length($dbString) > 0 ) {
+			$dbString .= ";port=$port";
+		}
+		else {
+			$dbString = "port=$port";
+		}
+	}
 	
 	# postgres
 	if( lc($connection->{dbtype}) eq 'postgres' ) {
 		require DBD::Pg;
-		$dbh = DBI->connect("dbi:Pg:dbname=$dbname;host=$host;port=$port", $username, $password );
+		$dbh = DBI->connect("dbi:Pg:dbname=$dbname;$dbString", $username, $password );
 	}
 	
 	
 	if( lc($connection->{dbtype}) eq 'mysql' ) {
 		require DBD::mysql;
-		$dbh = DBI->connect("dbi:mysql:dbname=$dbname;host=$host;port=$port", $username, $password);
+		$dbh = DBI->connect("dbi:mysql:dbname=$dbname;$dbString", $username, $password);
 	}
 
 
@@ -134,7 +147,7 @@ sub disconnect {
 		$self->{dbh} = undef; # don't know about this
 	}
 	else {
-		print "not connected... silently ignored\n";
+		#print "not connected... silently ignored\n";
 	}
 	
 	

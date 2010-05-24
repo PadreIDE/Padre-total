@@ -36,14 +36,17 @@ sub plugin_enable {
 
 	my $self = shift;
 	
+	# move the panel stuff to when
+	# the connection is established.
 	require Padre::Plugin::SQL::MessagePanel;
-	$self->{msg_panel} = Padre::Plugin::SQL::MessagePanel->new($self);
-	Padre::Current->main->bottom->hide($self->{msg_panel});
+	#$self->{msg_panel} = Padre::Plugin::SQL::MessagePanel->new($self);
+	#Padre::Current->main->bottom->hide($self->{msg_panel});
 	#$self->{msg_panel}->show;
 	
 	require Padre::Plugin::SQL::ResultsPanel;
-	$self->{results_panel} = Padre::Plugin::SQL::ResultsPanel->new($self);
-	Padre::Current->main->bottom->hide($self->{reults_panel});
+	#$self->{results_panel} = Padre::Plugin::SQL::ResultsPanel->new($self);
+	#Padre::Current->main->bottom->hide($self->{reults_panel});
+
 	
 }
 
@@ -147,15 +150,14 @@ sub setup_connection {
 	require Padre::Plugin::SQL::SetupConnectionsDialog;
 	my $dialog  = Padre::Plugin::SQL::SetupConnectionsDialog->new($self);
 	$dialog->ShowModal();
-
 	$self->{conn_details} = $dialog->get_connection();
 	
 	$dialog->Destroy();
 	
-	print "conn_details = " . $self->{conn_details} . "\n";
-	
-	
-	$self->connectDB();
+	if( defined( $self->{conn_details} ) ) {
+		#print "conn_details = " . $self->{conn_details} . "\n";
+		$self->connectDB();
+	}
 	return;
 }
 
@@ -164,12 +166,11 @@ sub setup_connection {
 
 sub connectDB {
 	my( $self ) = @_;
-	print "connectDB()\n";
-	print "details: \n";
-	foreach my $detail ( keys ( %{ $self->{conn_details} } ) ){
-		print "$detail: " . $self->{conn_details}->{$detail} . "\n";
-		
-	}
+	#print "connectDB()\n";
+	#print "details: \n";
+	#foreach my $detail ( keys ( %{ $self->{conn_details} } ) ){
+	#	print "$detail: " . $self->{conn_details}->{$detail} . "\n";
+	#}
 	
 	if( ! defined $self->{connection} ) {
 		$self->{connection} = Padre::Plugin::SQL::DBConnection->new($self->{conn_details});
@@ -192,7 +193,7 @@ sub connectDB {
 		}
 		$self->{connection} = undef;
 		
-		my $main = Padre::Current->main;
+		my $main = Padre->ide->wx->main;
 		$main->error("Error: " . $connection->errstr);
 		return;
 	}
@@ -203,6 +204,9 @@ sub connectDB {
 	if( defined( $self->{connection} ) ) {
 		my $main = Padre->ide->wx->main;
 		$main->new_document_from_string( "select *\nfrom ", 'text/x-sql' );
+		
+		$self->{results_panel} = Padre::Plugin::SQL::ResultsPanel->new($self);
+		$self->{msg_panel} = Padre::Plugin::SQL::MessagePanel->new($self);
 		
 		Padre::Current->main->bottom->show($self->{results_panel});
 		Padre::Current->main->bottom->show($self->{msg_panel});	
@@ -221,7 +225,7 @@ sub run_query {
 		#my $editor = $current->editor;
 		my $string  = $editor->GetSelectedText();
 		$query = $string;
-		print "Selected Text: $query\n";
+		#print "Selected Text: $query\n";
 	}
 	if( ! defined($query) || $query eq '' ) {
 		$self->{msg_panel}->update_messages("No string highlighted for query.");
@@ -229,29 +233,18 @@ sub run_query {
 	}
 	
 	$self->{connection}->run_query($query);
-	#my $sth = $self->{dbh}->prepare($query);
+	
 	# handle error from DB here
 	if( $self->{connection}->err ) {
 		$self->{msg_panel}->update_messages($self->{connection}->errstr);
 		
 		return;
 	}
-	
-	
-	#$sth->execute();
-	# handle error
-	if( $self->{connection}->err ) {
-		$self->{msg_panel}->update_messages($self->{connection}->errstr);
-		return;
-	}
-	#my @results;
-	#$results[0] = $sth->{NAME};
-	#$results[1] = $sth->fetchall_arrayref();
-	
+
 	my $results = $self->{connection}->get_results;
 	
  	my $msg = "Returned: " . scalar( @{ $results->[1] } ) . " rows.\n";
- 	print $msg;
+ 	#print $msg;
  	
  	$self->{msg_panel}->update_messages($msg);
 	$self->{results_panel}->update_grid($results);
@@ -260,28 +253,22 @@ sub run_query {
 
 sub disconnectDB {
 	my ( $self, $connDetails ) = @_;
-	print "disconnectDB()\n";
+	#print "disconnectDB()\n";
 	if( defined $self->{connection} ) {
 		$self->{connection}->disconnect();
 	}
 	else {
-		print "No DB connection defined yet\n";
+		#print "No DB connection defined yet\n";
 	}
-	#$self->{msg_panel}->hide;
-	#$self->{results_panel}->hide;
+
 	Padre::Current->main->bottom->hide($self->{msg_panel});	
 	Padre::Current->main->bottom->hide($self->{results_panel});	
-	#$self->{msg_panel}->Destroy;
-	#$self->{results_panel}->Destroy;
-	
-	#$self->{msg_panel} = undef;
-	#$self->{results_panel} = undef;
 	
 }
 
 
 sub msg_panel { return shift->{msg_panel}; }
-sub result_panel{ return shift->{result_panel}; }
+sub result_panel { return shift->{result_panel}; }
 1;
 
 __END__

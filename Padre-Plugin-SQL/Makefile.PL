@@ -6,7 +6,7 @@ name           'Padre-Plugin-SQL';
 license        'perl';
 author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/SQL.pm';
-requires       'Padre'                   => '0.35';
+requires       'Padre'                   => '0.62';
 test_requires  'Test::More'              => '0.47';
 no_index       'directory'               => qw{ t xt eg share inc};
 homepage       'http://padre.perlide.org/';
