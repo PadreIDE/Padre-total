@@ -109,8 +109,8 @@ sub LaunchDefaultBrowser {
 }
 
 sub launch_browser {
-	require Padre::Task::LaunchDefaultBrowser;
-	Padre::Task::LaunchDefaultBrowser->new(
+	require Padre::Task2::LaunchDefaultBrowser;
+	Padre::Task2::LaunchDefaultBrowser->new(
 		url => $_[0],
 	)->schedule;
 }
