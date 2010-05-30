@@ -162,6 +162,9 @@ sub start {
 sub stop {
 	TRACE($_[0]) if DEBUG;
 	TRACE("Detaching thread") if DEBUG;
+	BEGIN {
+		$DB::single = 1;
+	}
 	$_[0]->thread->detach;
 	$_[0]->send('stop_child');
 }

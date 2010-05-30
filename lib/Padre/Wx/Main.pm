@@ -3196,11 +3196,13 @@ sub on_close_window {
 
 	TRACE("Tell TaskManager to cleanup") if DEBUG;
 
+	# Stop the second-generation task manager.
+	# Do this one first, because the shutdown process for the
+	# first-generation task manager just kills EVERY thread.
+	$self->ide->task2_manager->stop;
+
 	# Stop all Task Manager's worker threads
 	$self->ide->task_manager->cleanup;
-
-	# Stop the second-generation task manager
-	$self->ide->task2_manager->stop;
 
 	# Vacuum database on exit so that it does not grow.
 	# Since you can't VACUUM inside a transaction, finish it here.
