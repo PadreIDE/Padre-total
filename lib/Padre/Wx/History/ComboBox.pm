@@ -9,14 +9,17 @@ use Padre::Wx          ();
 use Padre::DB          ();
 use Padre::DB::History ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::ComboBox';
 
 sub new {
 	my $class  = shift;
 	my @params = @_;
 	my $type   = $params[5];
+
 	$params[5] = [ Padre::DB::History->recent($type) ];
+	$params[2] ||= $params[5][0] || ''; # Initial text set to first history item by default
+
 	my $self = $class->SUPER::new(@params);
 	$self->{type} = $type;
 	$self;
@@ -43,7 +46,7 @@ sub GetValue {
 
 	# If this is a value is not in our recent list, save it.
 	if ( defined $value and length $value ) {
-		unless ( $self->FindString($value) == Wx::wxNOT_FOUND ) {
+		if ( $self->FindString($value) == Wx::wxNOT_FOUND ) {
 			Padre::DB::History->create(
 				type => $self->{type},
 				name => $value,

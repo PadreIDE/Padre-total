@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 use Padre::Wx ();
 use Padre::Logger;
@@ -186,7 +186,12 @@ sub debugger_is_running {
 	my $main = Padre->ide->wx->main;
 
 	if ( not $self->{_debugger_} ) {
-		$main->error( Wx::gettext('Debugger not running') );
+		$main->message(
+			Wx::gettext(
+				"The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
+			),
+			Wx::gettext('Debugger not running')
+		);
 		return;
 	}
 	my $editor = $main->current->editor;
@@ -432,14 +437,20 @@ sub debug_perl_show_value {
 sub _debug_get_variable {
 	my $self = shift;
 
-	my $main = Padre->ide->wx->main;
+	my $main     = Padre->ide->wx->main;
+	my $document = $main->current->document;
+	return unless $document;
 
-	my $current = $main->current;
-
-	return unless $current->editor;
-	my $text = $current->text;
+	#my $text = $current->text;
+	my ( $location, $text ) = $document->get_current_symbol();
 	if ( not $text or $text !~ /^[\$@%\\]/ ) {
-		$main->error( sprintf( Wx::gettext("'%s' does not look like a variable"), $text ) );
+		$main->error(
+			sprintf(
+				Wx::gettext(
+					"'%s' does not look like a variable. First select a variable in the code and then try again."),
+				$text
+			)
+		);
 		return;
 	}
 	return $text;
@@ -464,8 +475,6 @@ sub debug_perl_display_value {
 	#	} else {
 	#		$debugger->SetItem( $idx, 1, $value );
 	#	}
-
-	return;
 }
 
 sub debug_perl_evaluate_expression {
@@ -494,6 +503,9 @@ sub quit {
 
 1;
 
+# TODO:
+# Keep the debugger window open even after ending the script
+#
 
 # Copyright 2008-2010 The Padre development team as listed in Padre.pm.
 # LICENSE

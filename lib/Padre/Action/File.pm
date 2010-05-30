@@ -10,7 +10,7 @@ use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -93,7 +93,7 @@ sub new {
 		name       => 'file.open',
 		id         => Wx::wxID_OPEN,
 		label      => Wx::gettext('&Open'),
-		comment    => Wx::gettext('Browse directory of the current document to open a file'),
+		comment    => Wx::gettext('Browse directory of the current document to open one or several files'),
 		shortcut   => 'Ctrl-O',
 		toolbar    => 'actions/document-open',
 		menu_event => sub {
@@ -117,7 +117,7 @@ sub new {
 		name        => 'file.open_in_file_browser',
 		need_editor => 1,
 		need_file   => 1,
-		label       => Wx::gettext('Open In File Browser'),
+		label       => Wx::gettext('Open in File Browser'),
 		comment     => Wx::gettext('Opens the current document using the file browser'),
 		menu_event  => sub {
 			my $document = $_[0]->current->document or return;
@@ -127,7 +127,7 @@ sub new {
 
 	Padre::Action->new(
 		name        => 'file.open_with_default_system_editor',
-		label       => Wx::gettext('Open With Default System Editor'),
+		label       => Wx::gettext('Open with Default System Editor'),
 		need_editor => 1,
 		need_file   => 1,
 		comment     => Wx::gettext('Opens the file with the default system editor'),
@@ -141,7 +141,7 @@ sub new {
 		name        => 'file.open_in_command_line',
 		need_editor => 1,
 		need_file   => 1,
-		label       => Wx::gettext('Open In Command Line'),
+		label       => Wx::gettext('Open in Command Line'),
 		comment     => Wx::gettext('Opens a command line using the current document folder'),
 		menu_event  => sub {
 			my $document = $_[0]->current->document or return;
@@ -177,7 +177,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.close_current_project',
 		need_editor => 1,
-		label       => Wx::gettext('Close This Project'),
+		label       => Wx::gettext('Close this Project'),
 		comment     => Wx::gettext('Close all the files belonging to the current project'),
 		shortcut    => 'Ctrl-Shift-W',
 		menu_event  => sub {
@@ -198,7 +198,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.close_other_projects',
 		need_editor => 1,
-		label       => Wx::gettext('Close Other Projects'),
+		label       => Wx::gettext('Close other Projects'),
 		comment     => Wx::gettext('Close all the files that do not belong to the current project'),
 		menu_event  => sub {
 			my $doc = $_[0]->current->document;
@@ -219,7 +219,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.close_all',
 		need_editor => 1,
-		label       => Wx::gettext('Close All Files'),
+		label       => Wx::gettext('Close all Files'),
 		comment     => Wx::gettext('Close all the files open in the editor'),
 		menu_event  => sub {
 			$_[0]->close_all;
@@ -229,7 +229,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.close_all_but_current',
 		need_editor => 1,
-		label       => Wx::gettext('Close All Other Files'),
+		label       => Wx::gettext('Close all other Files'),
 		comment     => Wx::gettext('Close all the files except the current one'),
 		menu_event  => sub {
 			$_[0]->close_all( $_[0]->notebook->GetSelection );
@@ -239,7 +239,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.close_some',
 		need_editor => 1,
-		label       => Wx::gettext('Close Files Dialog...'),
+		label       => Wx::gettext('Close Files...'),
 		comment     => Wx::gettext('Select some open files for closing'),
 		menu_event  => sub {
 			$_[0]->on_close_some;
@@ -269,7 +269,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'file.reload_some',
 		need_editor => 1,
-		label       => Wx::gettext('Reload Some Dialog...'),
+		label       => Wx::gettext('Reload Some...'),
 		comment     => Wx::gettext('Select some open files for reload'),
 		menu_event  => sub {
 			$_[0]->on_reload_some;
@@ -295,7 +295,7 @@ sub new {
 		name        => 'file.save_as',
 		id          => Wx::wxID_SAVEAS,
 		need_editor => 1,
-		label       => Wx::gettext('Save &As'),
+		label       => Wx::gettext('Save &As...'),
 		comment     => Wx::gettext('Allow the selection of another name to save the current document'),
 		shortcut    => 'F12',
 		toolbar     => 'actions/document-save-as',
@@ -341,7 +341,7 @@ sub new {
 
 	Padre::Action->new(
 		name  => 'file.open_session',
-		label => Wx::gettext('Open Session'),
+		label => Wx::gettext('Open Session...'),
 		comment =>
 			Wx::gettext('Select a session. Close all the files currently open and open all the listed in the session'),
 		shortcut   => 'Ctrl-Alt-O',
@@ -353,7 +353,7 @@ sub new {
 
 	Padre::Action->new(
 		name       => 'file.save_session',
-		label      => Wx::gettext('Save Session'),
+		label      => Wx::gettext('Save Session...'),
 		comment    => Wx::gettext('Ask for a session name and save the list of files currently opened'),
 		shortcut   => 'Ctrl-Alt-S',
 		menu_event => sub {
@@ -368,7 +368,7 @@ sub new {
 
 		# TO DO: As long as the ID is here, the shortcut won't work on Ubuntu.
 		id         => Wx::wxID_PRINT,
-		label      => Wx::gettext('&Print'),
+		label      => Wx::gettext('&Print...'),
 		comment    => Wx::gettext('Print the current document'),
 		shortcut   => 'Ctrl-P',
 		menu_event => sub {

@@ -12,7 +12,7 @@ use Padre::Wx::Role::MainChild ();
 # RichTextCtrl
 use Wx::RichText ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::Dialog
@@ -126,7 +126,7 @@ sub _regex_groups {
 				'01(?: )'  => Wx::gettext('Non-capturing group'),
 				'02(?= )'  => Wx::gettext('Positive lookahead assertion'),
 				'03(?! )'  => Wx::gettext('Negative lookahead assertion'),
-				'04(?< )'  => Wx::gettext('Positive lookbehind assertion'),
+				'04(?<=)'  => Wx::gettext('Positive lookbehind assertion'),
 				'05(?<! )' => Wx::gettext('Negative lookbehind assertion'),
 				'06\n'     => Wx::gettext('Backreference to the nth group'),
 			}
@@ -216,7 +216,7 @@ sub _create_controls {
 		foreach my $element ( sort keys %sub_group_value ) {
 			my $label = $element;
 			$label =~ s/^\d{2}//;
-			my $menu_item = $self->{$menu_name}->Append( -1, $label . "     " . $sub_group_value{$element} );
+			my $menu_item = $self->{$menu_name}->Append( -1, $label . '  ' . $sub_group_value{$element} );
 
 			Wx::Event::EVT_MENU(
 				$self,
@@ -502,14 +502,21 @@ sub run {
 		}
 	} else {
 		$self->{matched_text}->BeginTextColour(Wx::wxRED);
-		$self->{matched_text}->SetValue( Wx::gettext("No match") );
+		$self->{matched_text}->SetValue( Wx::gettext('No match') );
 		$self->{matched_text}->EndTextColour;
 	}
 
-	eval { $result_text =~ s{$regex}{$replace}; };
+	eval {
+		if ( $self->{global}->IsChecked )
+		{
+			$result_text =~ s{(?$xism:$regex)}{$replace}g;
+		} else {
+			$result_text =~ s{(?$xism:$regex)}{$replace};
+		}
+	};
 	if ($@) {
 		$self->{result_text}->BeginTextColour(Wx::wxRED);
-		$self->{result_text}->AppendText("Replace failure in $regex:  $@");
+		$self->{result_text}->AppendText( sprintf( Wx::gettext('Replace failure in %s:  %s'), $regex, $@ ) );
 		$self->{result_text}->EndTextColour;
 		return;
 	}

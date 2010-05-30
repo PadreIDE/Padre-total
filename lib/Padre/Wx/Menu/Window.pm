@@ -10,7 +10,7 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -129,16 +129,20 @@ sub refresh_windowlist {
 
 	# Overwrite the labels of existing entries where possible
 	foreach my $nth ( 0 .. List::Util::min( $previous, $pages ) ) {
-		$self->FindItemByPosition( $self->{base} + $nth + 1 )->SetText( $label[ $order[$nth] ] );
+		my $item = $self->FindItemByPosition( $self->{base} + $nth + 1 );
+		$item->SetText( $label[ $order[$nth] ] );
 	}
 
 	# Add menu entries if we have extra labels
 	foreach my $nth ( $previous + 1 .. $pages ) {
+		my $item = $self->Append( -1, $label[ $order[$nth] ] );
 		Wx::Event::EVT_MENU(
 			$self->{main},
-			$self->Append( -1, $label[ $order[$nth] ] ),
+			$item,
 			sub {
-				$_[0]->on_nth_pane( $order[$nth] );
+				my $id = $notebook->find_pane_by_label( $item->GetLabel );
+				return if not defined $id; # TODO warn if this happens!
+				$_[0]->on_nth_pane($id);
 			},
 		);
 	}

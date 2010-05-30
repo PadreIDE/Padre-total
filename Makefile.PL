@@ -130,6 +130,7 @@ requires 'Pod::Simple'              => '3.07';
 requires 'Pod::Simple::XHTML'       => '3.04';
 requires 'Pod::Abstract'            => '0.16';
 requires 'Pod::Perldoc'             => '3.15';
+requires 'POD2::Base'               => '0.043';
 
 # Add later, once we native support portability
 #requires 'Portable'                => '0.12' if win32;
@@ -165,6 +166,7 @@ requires 'Pod::Functions'          => 0;
 requires 'Module::CoreList'        => 0;
 test_requires 'Capture::Tiny'      => '0.06';
 test_requires 'Test::More'         => '0.88';
+test_requires 'Test::MockObject'   => '1.09';
 test_requires 'Test::Script'       => '1.07';
 test_requires 'Test::Exception'    => '0.27';
 test_requires 'Test::NoWarnings'   => '0.084';

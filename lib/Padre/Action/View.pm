@@ -12,7 +12,7 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Locale   ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 #####################################################################
 # Padre::Wx::Menu Methods
@@ -27,7 +27,7 @@ sub new {
 	Padre::Action->new(
 		name        => 'view.lockinterface',
 		label       => Wx::gettext('Lock User Interface'),
-		comment     => Wx::gettext('Allow the user to move around some of the windows'),
+		comment     => Wx::gettext('If activated, do not allow moving around some of the windows'),
 		menu_method => 'AppendCheckItem',
 		menu_event  => sub {
 			$_[0]->on_toggle_lockinterface( $_[1] );
@@ -52,12 +52,7 @@ sub new {
 		comment     => Wx::gettext('Show a window listing all the functions in the current document'),
 		menu_method => 'AppendCheckItem',
 		menu_event  => sub {
-			if ( $_[1]->IsChecked ) {
-				$_[0]->refresh_functions( $_[0]->current );
-				$_[0]->show_functions(1);
-			} else {
-				$_[0]->show_functions(0);
-			}
+			$_[0]->show_functions( $_[1]->IsChecked );
 		},
 	);
 
@@ -109,7 +104,7 @@ sub new {
 
 	Padre::Action->new(
 		name        => 'view.show_errorlist',
-		label       => Wx::gettext('Show Error List'),
+		label       => Wx::gettext('Show Errors'),
 		comment     => Wx::gettext('Show the list of errors received during execution of a script'),
 		menu_method => 'AppendCheckItem',
 		menu_event  => sub {

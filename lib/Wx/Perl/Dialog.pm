@@ -7,7 +7,7 @@ use Cwd ();
 use Wx ':everything';
 use Wx::Event ':everything';
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::Dialog';
 
 =pod
@@ -324,12 +324,14 @@ sub _build_multipage_layout {
 		my $size = Wx::Button::GetDefaultSize;
 
 		my $ok_btn = Wx::Button->new( $dialog, Wx::wxID_OK, '', Wx::wxDefaultPosition, $size );
-		if ( my $ok_id = ( defined $multipage->{ok_widgetid} ? $multipage->{ok_widgetid} : '' ) ) {
+		my $ok_id = ( defined $multipage->{ok_widgetid} ? $multipage->{ok_widgetid} : '' );
+		if ($ok_id) {
 			$dialog->{_widgets_}{$ok_id} = $ok_btn;
 		}
 
 		my $cancel_btn = Wx::Button->new( $dialog, Wx::wxID_CANCEL, '', Wx::wxDefaultPosition, $size );
-		if ( my $cancel_id = ( defined $multipage->{cancel_id} ? $multipage->{cancel_id} : '' ) ) {
+		my $cancel_id = ( defined $multipage->{cancel_id} ? $multipage->{cancel_id} : '' );
+		if ($cancel_id) {
 			$dialog->{_widgets_}{$cancel_id} = $cancel_btn;
 		}
 
@@ -367,7 +369,7 @@ sub _build_layout {
 	$box->Add( 0, $args{top}, 0 ) if $args{top};
 
 	ROW:
-	foreach my $i ( 0 .. @{ $args{layout} } - 1 ) {  ## Z-TODO: normal for loop
+	foreach my $i ( 0 .. @{ $args{layout} } - 1 ) { ## Z-TODO: normal for loop
 		my $row = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 		$box->Add( 0, $args{element_spacing}[1], 0 ) if $args{element_spacing}[1] and $i;
 		$box->Add($row);
@@ -376,10 +378,10 @@ sub _build_layout {
 		$row->Add( $args{left}, 0, 0 ) if $args{left};
 
 		COL:
-		foreach my $j ( 0 .. @{ $args{layout}[$i] } - 1 ) {  ## Z-TODO: normal for loop
+		foreach my $j ( 0 .. @{ $args{layout}[$i] } - 1 ) { ## Z-TODO: normal for loop
 			my $width = [ $args{width}[$j], -1 ];
 
-			if ( not @{ $args{layout}[$i][$j] } ) { # [] means Expand
+			if ( not @{ $args{layout}[$i][$j] } ) {         # [] means Expand
 				$row->Add( $args{width}[$j], 0, 0, Wx::wxEXPAND, 0 );
 				next;
 			}

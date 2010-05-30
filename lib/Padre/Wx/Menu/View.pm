@@ -12,15 +12,15 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Locale   ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Wx::Menu';
 
 my @GUI_ELEMENTS = (
-	'output',
 	'functions',
 	'todo',
 	'outline',
 	'directory',
+	'output',
 	'show_syntaxcheck',
 	'show_errorlist',
 	'statusbar',

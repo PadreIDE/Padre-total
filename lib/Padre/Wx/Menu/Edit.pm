@@ -9,7 +9,7 @@ use Padre::Current qw{_CURRENT};
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -323,7 +323,7 @@ sub new {
 	$self->{show_as_number} = Wx::Menu->new;
 	$self->Append(
 		-1,
-		Wx::gettext("Show as ..."),
+		Wx::gettext('Show as'),
 		$self->{show_as_number}
 	);
 

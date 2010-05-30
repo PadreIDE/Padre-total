@@ -3,12 +3,12 @@ package Padre::Task2Manager;
 use 5.008005;
 use strict;
 use warnings;
-use Params::Util       ();
-use Padre::Task2Handle ();
-use Padre::Task2Thread ();
-use Padre::Task2Worker ();
-use Padre::Wx          ();
-use Padre::Wx::App     ();
+use Params::Util                 ();
+use Padre::Task2Handle           ();
+use Padre::Task2Thread           ();
+use Padre::Task2Worker           ();
+use Padre::Wx                    ();
+use Padre::Wx::Role::EventTarget ();
 use Padre::Logger;
 
 our $VERSION = '0.59';
@@ -21,16 +21,26 @@ BEGIN {
 
 sub new {
 	TRACE($_[0]) if DEBUG;
-	my $class = shift;
-	my $self  = bless {
+	my $class   = shift;
+	my %param   = @_;
+	my $conduit = delete $param{conduit};
+	my $self    = bless {
 		threads => 1,   # Are threads enabled
 		minimum => 2,   # Workers to launch at startup
-		@_,
+		%param,
 		workers => [ ], # List of all workers
 		handles => { }, # Handles for all active tasks
 		running => { }, # Mapping from tid back to parent handle
 		queue   => [ ], # Pending tasks to run in FIFO order
 	}, $class;
+
+	# Do the initialisation needed for the event conduit
+	unless ( Params::Util::_INSTANCE($conduit, 'Padre::Wx::Role::EventTarget') ) {
+		die("Failed to provide an event conduit for the Task2Manager");
+	}
+	$conduit->event_target_init($self);
+
+	return $self;
 }
 
 sub threads {
@@ -46,17 +56,11 @@ sub minimum {
 sub start {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
-
-	# Register to receive events from the threads
-	Padre::Wx::App->handler($self);
-
-	# Spawn off the threads
 	if ( $self->{threads} ) {
 		foreach ( 0 .. $self->{minimum} - 1 ) {
 			$self->start_thread($_);
 		}
 	}
-
 	return 1;
 }
 

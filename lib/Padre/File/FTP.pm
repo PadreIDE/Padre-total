@@ -5,10 +5,13 @@ use strict;
 use warnings;
 
 use Padre::File;
+use Wx::Perl::Dialog::Simple ();
 use File::Temp;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::File';
+
+my %connection_cache;
 
 use Class::XSAccessor {
 	false => [qw/can_run/],
@@ -37,7 +40,6 @@ sub new {
 	$self->_info( Wx::gettext('Looking for Net::FTP...') );
 	eval { require Net::FTP; };
 	if ($@) {
-
 		$self->{error} = 'Net::FTP is not installed, Padre::File::FTP currently depends on it.';
 		return $self;
 	}
@@ -73,49 +75,84 @@ sub new {
 
 ##### END URL parsing, regex is allowed again #####
 
-	if ( !defined( $self->{_pass} ) ) {
-
-		# TO DO: Ask the user for a password
-	}
-
-	# TO DO: Handle aborted/timed out connections
-
-	# Create FTP object and connection
-	$self->_info( sprintf( Wx::gettext('Connecting to FTP server %s...'), $self->{_host} . ':' . $self->{_port} ) );
-	$self->{_ftp} = Net::FTP->new(
-		Host    => $self->{_host},
-		Port    => $self->{_port},
-		Timeout => $self->{_timeout},
-		Passive => $self->{_passive},
-
-		# Debug => 3, # Enable for FTP-debugging to STDERR
-	);
-
-	if ( !defined( $self->{_ftp} ) ) {
-
-		$self->{error} = 'Error connecting to ' . $self->{_host} . ':' . $self->{_port} . ': ' . $@;
-		return $self;
-	}
-
-	# Log into the FTP server
-	$self->_info( sprintf( Wx::gettext('Logging into FTP server as %s...'), $self->{_user} ) );
-	if ( !$self->{_ftp}->login( $self->{_user}, $self->{_pass} ) ) {
-
-		$self->{error} = 'Error logging in on ' . $self->{_host} . ':' . $self->{_port} . ': ' . $@;
-		return $self;
-	}
-
-	$self->{_ftp}->binary;
-
 	$self->{protocol} = 'ftp'; # Should not be overridden
 
 	$self->{_file_temp} = File::Temp->new( UNLINK => 1 );
 	$self->{_tmpfile} = $self->{_file_temp}->filename;
 
-	$self->_info( Wx::gettext('Connection to FTP server successful!') );
-
 	return $self;
 }
+
+sub _ftp {
+	my $self = shift;
+
+	my $cache_key = join( "\x00", $self->{_host}, $self->{_port}, $self->{_user} );
+
+	# NOOP is used to check if the connection is alive, the server will return
+	# 200 if the command is successful
+	if ( defined( $connection_cache{$cache_key} ) ) {
+		if ( ( $self->{_last_noop} || 0 ) == time ) {
+			return $connection_cache{$cache_key};
+		} elsif ( $self->{_no_noop} ) {
+			$self->{_last_noop} = time;
+
+			# NOOP is not supported
+			return $connection_cache{$cache_key} if $connection_cache{$cache_key}->quot('PWD');
+		} else {
+			$self->{_last_noop} = time;
+
+			# NOOP is supported
+			return $connection_cache{$cache_key} if $connection_cache{$cache_key}->quot('NOOP') == 2;
+		}
+	}
+
+	# Create FTP object and connection
+	$self->_info( sprintf( Wx::gettext('Connecting to FTP server %s...'), $self->{_host} . ':' . $self->{_port} ) );
+	my $ftp = Net::FTP->new(
+		Host => $self->{_host},
+		Port => $self->{_port},
+		exists $self->{_timeout} ? ( Timeout => $self->{_timeout} ) : (),
+		exists $self->{_passive} ? ( Passive => $self->{_passive} ) : (),
+
+		#		Debug => 3, # Enable for FTP-debugging to STDERR
+	);
+
+	if ( !defined($ftp) ) {
+		$self->{error} = sprintf( Wx::gettext('Error connecting to %s:%s: %s'), $self->{_host}, $self->{_port}, $@ );
+		return;
+	}
+
+	if ( !defined( $self->{_pass} ) ) {
+		$self->{_pass} = Wx::Perl::Dialog::Simple::password(
+			title  => Wx::gettext('FTP Password'),
+			prompt => sprintf( Wx::gettext("Password for user '%s' at %s:"), $self->{_user}, $self->{_host} ),
+		) || ''; # Use empty password (not undef) if nothing was entered
+		         # TODO: offer an option to store the password
+	}
+
+	# Log into the FTP server
+	$self->_info( sprintf( Wx::gettext('Logging into FTP server as %s...'), $self->{_user} ) );
+	if ( !$ftp->login( $self->{_user}, $self->{_pass} ) ) {
+		$self->{error} = sprintf(
+			Wx::gettext('Error logging in on %s:%s: %s'), $self->{_host}, $self->{_port},
+			defined $@ ? $@ : Wx::gettext('Unknown error')
+		);
+		return;
+	}
+
+	$self->{_no_noop} = 1 unless $ftp->quot('NOOP') == 2;
+
+	$ftp->binary;
+
+	$connection_cache{$cache_key} = $ftp;
+
+	$self->_info( Wx::gettext('Connection to FTP server successful.') );
+
+	$self->{_last_noop} = time;
+
+	return $ftp;
+}
+
 
 sub clone {
 	my $origin = shift;
@@ -126,7 +163,7 @@ sub clone {
 	my $self = bless { filename => $url }, ref($origin);
 
 	# Copy the common values
-	for ( '_timeout', '_passive', '_user', '_pass', '_port', '_host', '_ftp' ) {
+	for ( '_timeout', '_passive', '_user', '_pass', '_port', '_host' ) {
 		$self->{$_} = $origin->{$_};
 	}
 
@@ -139,7 +176,7 @@ sub clone {
 
 		# URL parsing failed
 		# TO DO: Warning should go to a user popup not to the text console
-		$self->{error} = 'Unable to parse ' . $url;
+		$self->{error} = sprintf( Wx::gettext('Unable to parse %s'), $url );
 		return $self;
 	}
 
@@ -158,8 +195,8 @@ sub clone {
 
 sub size {
 	my $self = shift;
-	return if !defined( $self->{_ftp} );
-	return $self->{_ftp}->size( $self->{_file} );
+	return if !defined( $self->_ftp );
+	return $self->_ftp->size( $self->{_file} );
 }
 
 sub _todo_mode {
@@ -175,7 +212,7 @@ sub mtime {
 		return $self->{_cached_mtime_value};
 	}
 
-	$self->{_cached_mtime_value} = $self->{_ftp}->mdtm( $self->{_file} );
+	$self->{_cached_mtime_value} = $self->_ftp->mdtm( $self->{_file} );
 	$self->{_cached_mtime_time}  = time;
 
 	return $self->{_cached_mtime_value};
@@ -185,17 +222,19 @@ sub browse_mtime {
 	my $self     = shift;
 	my $filename = shift;
 
-	return $self->{_ftp}->mdtm($filename);
+	return $self->_ftp->mdtm($filename);
 }
 
 sub exists {
 	my $self = shift;
-	return if !defined( $self->{_ftp} );
+
+	my $ftp = $self->_ftp;
+	return if !defined $ftp;
 
 	# Cache basename value
 	my $basename = $self->basename;
 
-	for ( $self->{_ftp}->ls( $self->{_file} ) ) {
+	for ( $ftp->ls( $self->{_file} ) ) {
 		return 1 if $_ eq $self->{_file};
 		return 1 if $_ eq $basename;
 	}
@@ -238,12 +277,12 @@ sub servername {
 sub read {
 	my $self = shift;
 
-	return if !defined( $self->{_ftp} );
+	return if !defined( $self->_ftp );
 
 	$self->_info( Wx::gettext('Reading file from FTP server...') );
 
 	# TO DO: Better error handling
-	$self->{_ftp}->get( $self->{_file}, $self->{_tmpfile} ) or $self->{error} = $@;
+	$self->_ftp->get( $self->{_file}, $self->{_tmpfile} ) or $self->{error} = $@;
 	open my $tmpfh, '<', $self->{_tmpfile};
 	my $rv = join( '', <$tmpfh> );
 	close $tmpfh;
@@ -261,7 +300,7 @@ sub write {
 	my $content = shift;
 	my $encode  = shift || ''; # undef encode = default, but undef will trigger a warning
 
-	return unless defined $self->{_ftp};
+	return unless defined $self->_ftp;
 
 	$self->_info( Wx::gettext('Writing file to FTP server...') );
 	if ( open my $fh, ">$encode", $self->{_tmpfile} ) {
@@ -269,7 +308,7 @@ sub write {
 		close $fh;
 
 		# TO DO: Better error handling
-		$self->{_ftp}->put( $self->{_tmpfile}, $self->{_file} ) or warn $@;
+		$self->_ftp->put( $self->{_tmpfile}, $self->{_file} ) or warn $@;
 
 		return 1;
 	}

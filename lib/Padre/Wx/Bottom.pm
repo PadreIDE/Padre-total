@@ -9,7 +9,7 @@ use Padre::Constant            ();
 use Padre::Wx                  ();
 use Padre::Wx::Role::MainChild ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::AuiNotebook
@@ -63,7 +63,7 @@ sub new {
 # Page Management
 
 sub show {
-	my ( $self, $page, $on_close ) = @_;
+	my ( $self, $page ) = @_;
 
 	# Are we currently showing the page
 	my $position = $self->GetPageIndex($page);
@@ -85,7 +85,7 @@ sub show {
 	$self->Show;
 	$self->aui->GetPane($self)->Show;
 
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $self, $self, $on_close );
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $self, $self, \&_on_close );
 
 	return;
 }
@@ -118,7 +118,44 @@ sub relocale {
 	foreach my $i ( 0 .. $self->GetPageCount - 1 ) {
 		$self->SetPageText( $i, $self->GetPage($i)->gettext_label );
 	}
+
+	return;
 }
+
+sub _on_close {
+	my ( $self, $event ) = @_;
+
+	my $pos  = $event->GetSelection;
+	my $type = ref $self->GetPage($pos);
+	$self->RemovePage($pos);
+
+	# De-activate in the menu and in the configuration
+	my %menu_name = (
+		'Padre::Wx::ErrorList' => 'show_errorlist',
+		'Padre::Wx::Syntax'    => 'show_syntaxcheck',
+		'Padre::Wx::Output'    => 'output',
+	);
+	my %config_name = (
+		'Padre::Wx::ErrorList' => 'main_errorlist',
+		'Padre::Wx::Syntax'    => 'main_syntaxcheck',
+		'Padre::Wx::Output'    => 'main_output',
+	);
+	if ( exists $menu_name{$type} ) {
+		$self->main->menu->view->{ $menu_name{$type} }->Check(0);
+		$self->main->config->set( $config_name{$type}, 0 );
+	} else {
+		warn "Unknown page type: '$type'\n";
+	}
+
+	# Is this the last page?
+	if ( $self->GetPageCount == 0 ) {
+		$self->Hide;
+		$self->aui->GetPane($self)->Hide;
+	}
+
+	return;
+}
+
 
 1;
 

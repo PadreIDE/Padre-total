@@ -13,7 +13,7 @@ use Padre::Util             ();
 use Wx::Perl::ProcessStream ();
 use PPI                     ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::Dialog';
 
 sub new {
@@ -24,7 +24,7 @@ sub new {
 		-1,
 		Wx::gettext('About Padre'),
 		Wx::wxDefaultPosition,
-		[ 700, 530 ],
+		[ 700, 600 ],
 	);
 
 	# Until we get a real icon use the same one as the others
@@ -97,10 +97,12 @@ sub new {
 sub _content_about {
 
 	# Create the content for the About window
-	my $self               = shift;
-	my $splash             = Padre::Util::splash();
-	my $created_by         = Wx::gettext('Created by');
-	my $padre_dev_team     = Wx::gettext('The Padre Development Team');
+	my $self           = shift;
+	my $splash         = Padre::Util::splash();
+	my $created_by     = Wx::gettext('Created by');
+	my $padre_dev_team = Wx::gettext('The Padre Development Team');
+	my $license_info =
+		Wx::gettext('Padre is free software; you can redistribute it and/or modify it under the same terms as Perl 5.');
 	my $splash_name        = Wx::gettext('Blue butterfly on a green leaf');
 	my $splash_description = Wx::gettext('splash image is based on work by');
 	$self->{about}->SetPage( $self->_rtl(<<"END_HTML") );
@@ -111,12 +113,15 @@ sub _content_about {
     <font size="+1">&nbsp;&nbsp;Perl Application Development and Refactoring Environment</font>
     </strong>
     <p>$created_by Gábor Szabó</p>
-    <p>Copyright 2008 - 2010 $padre_dev_team</p>
-    <p>"$splash_name" - $splash_description Jerry Charlotte (blackbutterfly)</p>
     <p>
     <center>
         <img src="$splash">
     </center>
+    </p>
+    <p><small>"$splash_name" - $splash_description Jerry Charlotte (blackbutterfly)</small></p>
+    <p>
+      Copyright 2008 - 2010 $padre_dev_team<br>
+      $license_info
     </p>
   </body>
 </html>
@@ -286,7 +291,10 @@ sub _content_translators {
             Enrique Nell<br>
             <br>
             <b>$language{'ru'}</b><br>
-            Andrew Shitov
+            Andrew Shitov<br>
+            <br>
+            <b>$language{'tr'}</b><br>
+            Burak Gürsoy
           </p>
         </td>
       </td>

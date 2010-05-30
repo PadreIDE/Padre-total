@@ -9,7 +9,7 @@ use Padre::Util ();
 use Padre::Help ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Help';
 
 # for caching help list (for faster access)
@@ -153,6 +153,9 @@ sub _find_installed_modules {
 	my %seen;
 	require File::Find::Rule;
 	foreach my $path (@INC) {
+		next if $path eq '.'; # traversion this is a bad idea
+		                      # as it may be the root of the file
+		                      # system or the home directory
 		foreach my $file ( File::Find::Rule->name('*.pm')->in($path) ) {
 			my $module = substr( $file, length($path) + 1 );
 			$module =~ s/.pm$//;

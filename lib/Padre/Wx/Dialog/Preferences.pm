@@ -10,7 +10,7 @@ use Padre::Wx::Editor                      ();
 use Padre::Wx::Dialog::Preferences::Editor ();
 use Padre::MimeTypes                       ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Wx::Dialog';
 
 our %PANELS = (
@@ -40,6 +40,8 @@ my @Func_List = (
 	[ 'session',  Wx::gettext('Enable session manager') ],
 );
 
+# should we have an additional parameter to
+# allow setting colums to stretch rather than assume?
 sub _new_panel {
 	my ( $self, $parent ) = splice( @_, 0, 2 );
 	my $cols = shift || 2;
@@ -52,6 +54,18 @@ sub _new_panel {
 		Wx::wxTAB_TRAVERSAL,
 	);
 	my $fgs = Wx::FlexGridSizer->new( 0, $cols, 0, 0 );
+
+	# make the columns flexible - not sure yet
+	#$fgs->SetFlexibleDirection(Wx::wxHORIZONTAL);
+
+	# TODO: This needs more thought.
+	# set column 2 to stretchable??
+	#if we get a table with 3 columns it could be a lable,text entry, button - ie a file location
+	#
+	if ( $cols == 3 ) {
+		$fgs->AddGrowableCol( 1, 1 );
+	}
+
 	$panel->SetSizer($fgs);
 
 	return $panel;

@@ -12,7 +12,7 @@ use Encode       ();
 use Params::Util ();
 use Padre::Wx    ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 use Wx::RichText;
 our @ISA = 'Wx::RichTextCtrl';
 
@@ -20,9 +20,13 @@ sub new {
 	my $class = shift;
 	my $main  = shift;
 
+	# Bottom defaults to $main's bottom panel, but can be
+	# something different (for example see Padre::Plugin::Plack's usage)
+	my $bottom = shift || $main->bottom;
+
 	# Create the underlying object
 	my $self = $class->SUPER::new(
-		$main->bottom,
+		$bottom,
 		-1,
 		"",
 		Wx::wxDefaultPosition,
@@ -36,7 +40,8 @@ sub new {
 	# Do custom start-up stuff here
 	$self->clear;
 	$self->set_font;
-	$self->{main} = $main;
+	$self->{main}   = $main;
+	$self->{bottom} = $bottom;
 
 	# see #351: output should be blank by default at start-up.
 	#$self->AppendText( Wx::gettext('No output') );
@@ -62,9 +67,10 @@ sub new {
 
 			return unless -e $path;
 
-			$self->main->setup_editor($path);
-			if ( $self->main->current->document->filename eq $path ) {
-				$self->main->current->editor->goto_line_centerize( $line - 1 );
+			my $main = $self->main;
+			$main->setup_editor($path);
+			if ( $main->current->document->filename eq $path ) {
+				$main->current->editor->goto_line_centerize( $line - 1 );
 			} else {
 				TRACE(" Current doc does not match our expectations") if DEBUG;
 			}
@@ -75,11 +81,11 @@ sub new {
 }
 
 sub bottom {
-	$_[0]->GetParent;
+	$_[0]->{bottom} || $_[0]->GetParent;
 }
 
 sub main {
-	$_[0]->GetGrandParent;
+	$_[0]->{main} || $_[0]->GetGrandParent;
 }
 
 sub current {

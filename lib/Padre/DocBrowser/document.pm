@@ -14,7 +14,7 @@ use Class::XSAccessor {
 	},
 };
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 =pod
 

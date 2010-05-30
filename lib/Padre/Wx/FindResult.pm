@@ -21,7 +21,7 @@ use Padre::Wx;
 use Wx::Event qw( EVT_BUTTON );
 
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::ListView';
 my $LineCount; # Global fid count so it can be used in the label
 
@@ -79,7 +79,7 @@ Sets the label of the tab. Called automatically when the object is created.
 =cut
 
 sub gettext_label {
-	Wx::gettext( 'Find Results (' . $LineCount . ')' );
+	sprintf( Wx::gettext('Find Results (%s)'), $LineCount );
 }
 
 
@@ -121,7 +121,7 @@ sub on_list_item_activated {
 	#If the user has closed the editor the search was originally performed on
 	if ( !defined $main->find_id_of_editor($editor) ) {
 		$self->DeleteAllItems;
-		my $message_item->[0]->{line} = Wx::gettext('Related Editor Has been Closed');
+		my $message_item->[0]->{line} = Wx::gettext('Related editor has been closed');
 		$message_item->[0]->{lineNumber} = '*';
 		$self->populate_list($message_item);
 		return;

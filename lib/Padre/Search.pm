@@ -32,7 +32,7 @@ use Encode     ();
 use List::Util ();
 use Params::Util '_INSTANCE';
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 use Class::XSAccessor {
 	getters => {
@@ -363,7 +363,8 @@ sub matches {
 	my $text = Encode::encode( 'utf-8', shift );
 
 	# Find all matches for the regex
-	my $regex   = shift;
+	my $regex = shift;
+	$regex = Encode::encode( 'utf-8', $regex );
 	my @matches = ();
 	while ( $text =~ /$regex/g ) {
 		push @matches, [ $-[0], $+[0] ];

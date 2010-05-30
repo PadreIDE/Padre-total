@@ -8,7 +8,7 @@ use Padre::Util::SVN ();
 
 # Use all modules which may provide services for us:
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @DRIVERS = qw{
 	Padre::Task::HTTPClient::LWP
 };
@@ -50,7 +50,7 @@ sub new {
 	}
 
 	# Prepare information
-	my $revision = Padre::Util::SVN->padre_revision();
+	my $revision = Padre::Util::SVN->padre_revision() || 'na';
 	$args{method} ||= 'GET';
 	$args{headers}->{'X-Padre'} ||= "Padre version $VERSION $revision";
 

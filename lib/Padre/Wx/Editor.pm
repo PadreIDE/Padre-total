@@ -11,7 +11,7 @@ use Padre::Wx                 ();
 use Padre::Wx::FileDropTarget ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::StyledTextCtrl';
 
 # End-Of-Line modes:
@@ -89,6 +89,7 @@ sub new {
 	Wx::Event::EVT_CHAR( $self, \&on_char );
 	Wx::Event::EVT_SET_FOCUS( $self, \&on_focus );
 	Wx::Event::EVT_MIDDLE_UP( $self, \&on_middle_up );
+	Wx::Event::EVT_MOTION( $self, \&on_mouse_moving );
 
 	# Smart highlighting:
 	# Selecting a word or small block of text causes all other occurrences to be highlighted
@@ -283,7 +284,13 @@ sub on_key_up {
 		$self->on_smart_highlight_begin($event);
 	}
 
-	$event->Skip(1);     # we need to keep processing this event
+	# Doc specific processing
+	my $doc = $self->{Document};
+	if ( $doc->can('event_key_up') ) {
+		$doc->event_key_up( $self, $event );
+	}
+
+	$event->Skip(1); # we need to keep processing this event
 
 }
 
@@ -1097,6 +1104,23 @@ sub on_left_up {
 	return;
 }
 
+sub on_mouse_moving {
+	my ( $self, $event ) = @_;
+
+	if ( $event->Moving ) {
+		my $doc = $self->{Document};
+		if ( $doc->can('event_mouse_moving') ) {
+			$doc->event_mouse_moving( $self, $event );
+		}
+	} else {
+
+		# For a drag event...
+	}
+
+	$event->Skip;
+
+}
+
 sub on_middle_up {
 	my ( $self, $event ) = @_;
 
@@ -1383,7 +1407,8 @@ sub get_text_from_clipboard {
 # uncommented lines).
 sub comment_toggle_lines {
 	my ( $self, $begin, $end, $str ) = @_;
-	if ( _get_line_by_number( $self, $begin ) =~ /\s*$str/ ) {
+
+	if ( _get_line_by_number( $self, $begin ) =~ /^\s*\Q$str\E/ ) {
 		uncomment_lines(@_);
 	} else {
 		comment_lines(@_);
@@ -1393,6 +1418,12 @@ sub comment_toggle_lines {
 # $editor->comment_lines($begin, $end, $str);
 # $str is either # for perl or // for Javascript, etc.
 # $str might be ['<--', '-->] for html
+#
+# Change: for Single lines comments, it will (un)comment with indent:
+# <indent>$comment_characters<space>XXXXXXX
+# If someone has idee for commenting Haskell Guards in Single lines,
+# (well, ('-- |') is a symbol for haddock.) please fix it.
+#
 sub comment_lines {
 	my ( $self, $begin, $end, $str ) = @_;
 
@@ -1403,16 +1434,24 @@ sub comment_lines {
 		$pos = $self->GetLineEndPosition($end);
 		$self->InsertText( $pos, $str->[1] );
 	} else {
-		my $is_first_column = $self->GetColumn( $self->GetCurrentPos ) == 0;
-		if ( $is_first_column && $end > $begin ) {
-			$end--;
-		}
-		foreach my $line ( $begin .. $end ) {
+		## it is not enough, only current position to check :(
+		# my $is_first_column = $self->GetColumn( $self->GetCurrentPos ) == 0;
+		# if ( $is_first_column && $end > $begin ) {
+		# $end--;
+		# }
 
-			# insert $str (# or //)
-			my $pos = $self->PositionFromLine($line);
-			$self->InsertText( $pos, $str );
+		foreach my $line ( $begin .. $end ) {
+			my $text = _get_line_by_number( $self, $line );
+
+			# next if (length($text) == 0);  # should i do this?
+
+			if ( $text =~ /^(\s*)/ ) {
+				my $pos = $self->PositionFromLine($line);
+				$pos += length($1);
+				$self->InsertText( $pos, $str . ' ' );
+			}
 		}
+
 	}
 	$self->EndUndoAction;
 	return;
@@ -1422,6 +1461,7 @@ sub comment_lines {
 # $editor->uncomment_lines($begin, $end, $str);
 #
 # uncomment lines $begin..$end
+# Change: see comments for `comment_lines()`
 #
 sub uncomment_lines {
 	my ( $self, $begin, $end, $str ) = @_;
@@ -1443,17 +1483,21 @@ sub uncomment_lines {
 			$self->ReplaceSelection('');
 		}
 	} else {
-		my $length          = length $str;
-		my $is_first_column = $self->GetColumn( $self->GetCurrentPos ) == 0;
-		if ( $is_first_column && $end > $begin ) {
-			$end--;
-		}
+
+		# my $is_first_column = $self->GetColumn( $self->GetCurrentPos ) == 0;
+		# if ( $is_first_column && $end > $begin ) {
+		# $end--;
+		# }
 		foreach my $line ( $begin .. $end ) {
-			my $first = $self->PositionFromLine($line);
-			my $last  = $first + $length;
-			my $text  = $self->GetTextRange( $first, $last );
-			if ( $text eq $str ) {
-				$self->SetSelection( $first, $last );
+			my $text = _get_line_by_number( $self, $line );
+
+			# the first line starting with '#!' can't be uncommented!
+			next if ( $line == 0 && $text =~ /^#!/ );
+
+			if ( $text =~ /^(\s*)(\Q$str\E\s*)/ ) {
+				my $start = $self->PositionFromLine($line) + length($1);
+
+				$self->SetSelection( $start, $start + length($2) );
 				$self->ReplaceSelection('');
 			}
 		}

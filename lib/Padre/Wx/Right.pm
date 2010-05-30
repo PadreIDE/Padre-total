@@ -8,7 +8,7 @@ use warnings;
 use Padre::Constant ();
 use Padre::Wx       ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::AuiNotebook
@@ -26,7 +26,7 @@ sub new {
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::Size->new( 160, 500 ), # Used when floating
-		Wx::wxAUI_NB_SCROLL_BUTTONS | Wx::wxAUI_NB_TOP | Wx::wxBORDER_NONE
+		Wx::wxAUI_NB_SCROLL_BUTTONS | Wx::wxAUI_NB_TOP | Wx::wxBORDER_NONE | Wx::wxAUI_NB_CLOSE_ON_ACTIVE_TAB
 	);
 
 	# Add ourself to the window manager
@@ -34,10 +34,6 @@ sub new {
 		$self,
 		Padre::Wx->aui_pane_info(
 			Name           => 'right',
-			CaptionVisible => $unlock,
-			Floatable      => $unlock,
-			Dockable       => $unlock,
-			Movable        => $unlock,
 			Resizable      => 1,
 			PaneBorder     => 0,
 			CloseButton    => 0,
@@ -45,6 +41,10 @@ sub new {
 			MaximizeButton => 0,
 			Position       => 3,
 			Layer          => 3,
+			CaptionVisible => $unlock,
+			Floatable      => $unlock,
+			Dockable       => $unlock,
+			Movable        => $unlock,
 			)->Right->Hide,
 	);
 	$aui->caption(
@@ -62,8 +62,7 @@ sub new {
 # Page Management
 
 sub show {
-	my $self = shift;
-	my $page = shift;
+	my ( $self, $page, $on_close ) = @_;
 
 	# Are we currently showing the page
 	my $position = $self->GetPageIndex($page);
@@ -84,6 +83,8 @@ sub show {
 	$page->Show;
 	$self->Show;
 	$self->aui->GetPane($self)->Show;
+
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $self, $self, \&_on_close );
 
 	return;
 }
@@ -116,6 +117,42 @@ sub relocale {
 	foreach my $i ( 0 .. $self->GetPageCount - 1 ) {
 		$self->SetPageText( $i, $self->GetPage($i)->gettext_label );
 	}
+
+	return;
+}
+
+sub _on_close {
+	my ( $self, $event ) = @_;
+
+	my $pos  = $event->GetSelection;
+	my $type = ref $self->GetPage($pos);
+	$self->RemovePage($pos);
+
+	# De-activate in the menu
+	my %menu_name = (
+		'Padre::Wx::Outline'      => 'outline',
+		'Padre::Wx::TodoList'     => 'todo',
+		'Padre::Wx::FunctionList' => 'functions',
+	);
+	my %config_name = (
+		'Padre::Wx::Outline'      => 'main_outline',
+		'Padre::Wx::TodoList'     => 'main_todo',
+		'Padre::Wx::FunctionList' => 'main_functions',
+	);
+	if ( exists $menu_name{$type} ) {
+		$self->main->menu->view->{ $menu_name{$type} }->Check(0);
+		$self->main->config->set( $config_name{$type}, 0 );
+	} else {
+		warn "Unknown page type: '$type'\n";
+	}
+
+	# Is this the last page?
+	if ( $self->GetPageCount == 0 ) {
+		$self->Hide;
+		$self->aui->GetPane($self)->Hide;
+	}
+
+	return;
 }
 
 1;

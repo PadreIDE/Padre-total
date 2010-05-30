@@ -30,18 +30,16 @@ From the main L<Padre> object, it can be accessed via the C<wx> method.
 use 5.008;
 use strict;
 use warnings;
-use Carp      ();
-use Padre::Wx ();
+use Carp                         ();
+use Padre::Wx                    ();
+use Padre::Wx::Role::EventTarget ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
-our @ISA     = 'Wx::App';
-
-# Primary thread signalling event
-our $SIGNAL : shared;
-BEGIN {
-	$SIGNAL = Wx::NewEventType();
-}
+our $VERSION = '0.62';
+our @ISA     = qw{
+	Wx::App
+};
+#	Padre::Wx::Role::EventTarget
 
 
 
@@ -121,44 +119,9 @@ sub config {
 
 sub OnInit {
 	TRACE($_[0]) if DEBUG;
-
-	# Bind the thread event handler
-	Wx::Event::EVT_COMMAND( $_[0], -1, $SIGNAL, \&on_signal );
-
-	return 1;
-}
-
-
-
-
-
-#####################################################################
-# Thread Signal Handling
-
-my $HANDLER = undef;
-
-sub handler {
-	$HANDLER = $_[1];
-}
-
-sub signal {
-	TRACE($_[0]) if DEBUG;
-	$_[0]->AddPendingEvent(
-		Wx::PlThreadEvent->new( -1, $SIGNAL, $_[1] )
-	);
-	TRACE('->AddPendingEvent ok') if DEBUG;
-}
-
-sub on_signal {
-	TRACE($_[0]) if DEBUG;
-	TRACE($_[1]) if DEBUG;
-	my $self  = shift;
-	my $event = shift;
-
-	# Pass the event through to the event handler
-	$DB::single = $DB::single = 1;
-	$HANDLER->on_signal( $event ) if $HANDLER;
-
+	if ( $_[0]->can('event_target_init') ) {
+		$_[0]->event_target_init;
+	}
 	return 1;
 }
 

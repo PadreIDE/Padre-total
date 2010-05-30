@@ -8,7 +8,7 @@ use Padre::Task    ();
 use Padre::Current ();
 use Padre::Wx      ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Task';
 
 =pod
@@ -78,6 +78,9 @@ sub new {
 	unless ( defined $self->{text} ) {
 		$self->{text} = Padre::Current->document->text_get;
 	}
+
+	my %args = @_;
+	$self->{filename} = $args{filename};
 
 	# put notebook page and callback into main-thread-only storage
 	$self->{main_thread_only} ||= {};

@@ -8,7 +8,7 @@ use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Locale   ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Wx::TreeCtrl';
 
 use Class::XSAccessor {
@@ -67,7 +67,8 @@ sub config {
 }
 
 sub enable {
-	my $self     = shift;
+	my $self = shift;
+
 	my $main     = $self->main;
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageCount;
@@ -79,7 +80,8 @@ sub enable {
 }
 
 sub disable {
-	my $self     = shift;
+	my $self = shift;
+
 	my $main     = $self->main;
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageIndex($self);
@@ -90,7 +92,7 @@ sub disable {
 }
 
 sub gettext_label {
-	return Wx::gettext("Error List");
+	return Wx::gettext('Errors');
 }
 
 sub populate {

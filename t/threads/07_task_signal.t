@@ -4,12 +4,13 @@
 
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 16;
 use Test::NoWarnings;
 use Time::HiRes ();
 use Padre::Logger;
-use Padre::Task2Manager    ();
-use Padre::Task2::Addition ();
+use Padre::Task2Manager       ();
+use Padre::Task2::Addition    ();
+use t::lib::Padre::NullWindow ();
 
 # Do we start with no threads as expected
 is( scalar(threads->list), 0, 'No threads' );
@@ -22,7 +23,13 @@ is( scalar(threads->list), 0, 'No threads' );
 # Basic Creation
 
 SCOPE: {
-	my $manager = Padre::Task2Manager->new;
+	my $wxapp = Padre::Wx::App->new;
+	isa_ok( $wxapp, 'Padre::Wx::App' );
+
+	my $window = t::lib::Padre::NullWindow->new;
+	isa_ok( $window, 't::lib::Padre::NullWindow' );
+
+	my $manager = Padre::Task2Manager->new( conduit => $window );
 	isa_ok( $manager, 'Padre::Task2Manager' );
 	is( scalar(threads->list), 0, 'No threads' );
 

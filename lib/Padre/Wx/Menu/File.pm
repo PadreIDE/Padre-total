@@ -10,7 +10,7 @@ use Padre::Wx::Menu ();
 use Padre::Current  ('_CURRENT');
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -83,7 +83,7 @@ sub new {
 	my $file_open = Wx::Menu->new;
 	$self->Append(
 		-1,
-		Wx::gettext('Open'),
+		Wx::gettext('Open...'),
 		$file_open,
 	);
 
@@ -322,7 +322,7 @@ sub refresh_recent {
 
 	# menu entry count starts at 0
 	# first 3 entries are "open all", "clean list" and a separator
-	foreach ( my $i = $self->{recentfiles}->GetMenuItemCount - 1; $i >= 3; $i-- ) {
+	foreach my $i ( reverse( 3 .. $self->{recentfiles}->GetMenuItemCount - 1 ) ) {
 		if ( my $item = $self->{recentfiles}->FindItemByPosition($i) ) {
 			$self->{recentfiles}->Delete($item);
 		}

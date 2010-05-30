@@ -24,7 +24,7 @@ use DBD::SQLite   ();
 # TO DO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 # Since everything is used OO-style, we will be require'ing
 # everything other than the bare essentials
@@ -160,7 +160,8 @@ sub new {
 	# Create the second-generation task manager
 	require Padre::Task2Manager;
 	$self->{task2_manager} = Padre::Task2Manager->new(
-		use_threads => 1,
+		threads => 1,
+		conduit => $self->{wx}->{main},
 	);
 
 	# Create the action queue
@@ -1186,6 +1187,8 @@ Fayland Lam (FAYLAND)
 
 BlueT - Matthew Lien - 練喆明 (BLUET) E<lt>bluet@cpan.orgE<gt>
 
+Chuanren Wu
+
 =head3 Dutch
 
 Dirk De Nijs (ddn123456)
@@ -1203,7 +1206,9 @@ Olivier MenguE<eacute> (DOLMEN)
 =head3 German
 
 Heiko Jansen (HJANSEN)
+
 Sebastian Willing (SEWI)
+
 Zeno Gantner
 
 =head3 Hebrew
@@ -1255,6 +1260,10 @@ Marcela Mašláňová (mmaslano)
 =head3 Norwegian
 
 Kjetil Skotheim (KJETIL)
+
+=head3 Turkish
+
+Burak Gürsoy (BURAK) E<lt>burak@cpan.orgE<gt>
 
 =head2 Thanks
 

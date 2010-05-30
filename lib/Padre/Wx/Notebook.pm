@@ -7,7 +7,7 @@ use Params::Util               ();
 use Padre::Wx                  ();
 use Padre::Wx::Role::MainChild ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::AuiNotebook
@@ -201,6 +201,16 @@ sub labels {
 	}
 
 	return @labels;
+}
+
+sub find_pane_by_label {
+	my $self  = shift;
+	my $label = shift;
+
+	my @labels = $self->labels;
+	my ($id) = grep { $label eq $labels[$_] } 0 .. $#labels;
+
+	return $id;
 }
 
 1;

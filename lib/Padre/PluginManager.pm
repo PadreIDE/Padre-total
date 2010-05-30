@@ -41,7 +41,7 @@ use Padre::PluginHandle    ();
 use Padre::Wx              ();
 use Padre::Wx::Menu::Tools ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 
 
@@ -868,7 +868,7 @@ sub get_menu {
 	}
 	my ( $label, $menu ) = eval { $plugin->{object}->menu_plugins($main) };
 	if ($@) {
-		$plugin->errstr( Wx::gettext("Error when calling menu for plug-in") . "'$module': $@" );
+		$plugin->errstr( Wx::gettext('Error when calling menu for plug-in ') . "'$module': $@" );
 		$plugin->{status} = 'error';
 
 		# TO DO: make sure these error messages show up somewhere or it will drive

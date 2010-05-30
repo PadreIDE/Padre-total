@@ -9,7 +9,7 @@ use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Current    ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 my $categories = {
 	Wx::gettext('Date/Time') => [
@@ -19,9 +19,19 @@ my $categories = {
 		{ label => Wx::gettext('Epoch'), action => _get_date_info('epoch') },
 	],
 	Wx::gettext('File') => [
-		{ label => Wx::gettext('Size'),            action => _get_file_info('size') },
-		{ label => Wx::gettext('Name'),            action => _get_file_info('name') },
-		{ label => Wx::gettext('Number of lines'), action => _get_file_info('number of lines') },
+		{   label  => Wx::gettext('Size'),
+			action => sub { _get_file_info('size') }
+		},
+		{   label  => Wx::gettext('Name'),
+			action => sub {
+				_get_file_info('name');
+				}
+		},
+		{   label  => Wx::gettext('Number of lines'),
+			action => sub {
+				_get_file_info('number of lines');
+				}
+		},
 	],
 };
 
@@ -56,8 +66,8 @@ sub dialog {
 	);
 
 	Wx::Event::EVT_CHOICE( $dialog, $dialog->{_widgets_}->{_find_cat_}, \&find_category );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_insert_},   \&get_value );
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_cancel_},   \&cancel_clicked );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_insert_}, \&get_value );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_cancel_}, \&cancel_clicked );
 
 	$dialog->{_widgets_}->{_find_cat_}->SetFocus;
 	$dialog->{_widgets_}->{_insert_}->SetDefault;
@@ -145,29 +155,22 @@ sub _get_date_info {
 }
 
 sub _get_file_info {
-	my $type     = shift;
-	my $doc = Padre::Current->document;
+	my $type = shift;
+	my $doc  = Padre::Current->document;
 	my ($lines, $chars_with_space, $chars_without_space, $words, $newline_type,
-	    $encoding) = $doc->stats;
+		$encoding
+	) = $doc->stats;
 
 	if ( $type eq 'name' ) {
-		return sub {
-			return defined $doc->file ? $doc->{file}->filename : $doc->get_title;;
-		};
+		return defined $doc->file ? $doc->{file}->filename : $doc->get_title;
 	} elsif ( $type eq 'size' ) {
-		return sub {
-			my $filename = $doc->filename || $doc->tempfile;
-			return ($filename) ? -s $filename : 0;
-		};
+		my $filename = $doc->filename || $doc->tempfile;
+		return ($filename) ? -s $filename : 0;
 	} elsif ( $type eq 'number of lines' ) {
-		return sub {
-			return $lines;
-		};
+		return $lines;
 	} else {
-		return sub {
-			warn "file info $type not implemented yet\n";
-			return '';
-			}
+		warn "file info $type not implemented yet\n";
+		return '';
 	}
 }
 

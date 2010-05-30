@@ -1,7 +1,72 @@
 Changes for Perl Application Development and Refactoring Environment
 NOTE: Do not "tidy" or change the indenting here, or we break svn annotate
 
-0.59 To Be Released
+0.63 To be released
+    - Autocomplete "sub new" for Perl modules (SEWI)
+
+0.62 2010.05.21
+    - Any 3 column table layout in the preferences dialog now has a 
+      stretched middle column. (PLAVEN)
+    - Add a warning for versions of Wx.pm with broken HTML rendering
+      (ZENOG)
+    - Mousing over a sub/method name with ctrl pressed now highlights it
+      to indicate it can be clicked on (Sam Crawley) 
+    - Regex editor: Support global flag for substitute (ZENOG)
+    - Updated Turkish translation (Burak Gürsoy)
+ 
+0.61 2010.05.12
+    - MIME types: added a few C++ file extensions, added LaTeX .sty files
+      (Zeno Gantner)
+    - About dialog: increase height of the window so that the translated
+      licensing terms also fit in without a scrollbar (Zeno Gantner)
+    - Debugger: improved variable detection in the document (Zeno Gantner)
+    - Menu: More consistent capitalization of menu entries (Zeno Gantner)
+    - Updated German translation (Zeno Gantner)
+    - fixed ticket #538: "outline view info takes too long to refresh" by
+      adding an outline cache (Zeno Gantner)
+    - fixed ticket #541: "wrong outline can get displayed for a document"
+      (Zeno Gantner)
+    - fixed ticket #940: "crashes when right clicking in code editing area"
+      (Zeno Gantner)
+    - fixed ticket #878: "Tabs like 'Outline', 'Functions'... should have
+      a close button, just like the documents tabs" (Zeno Gantner)
+    - fixed behaviour of the close button for the bottom tabs (Output,
+      Errors, Syntax Check): closing a tab now toggles the corresponding
+      menu and config items (Zeno Gantner)
+    - Updated German translation (Zeno Gantner)
+    - Updated Chinese translation (Chuanren Wu)
+    - fixed ticket #939: "Padre 'help' depends on POD2-Base on Strawberry
+      Perl on Windows XP" (ADAMK)
+    - Updated Italian translation (SBLANDIN)
+    - Updated Brazilian Portuguese translation (GARU)
+    - Updated Dutch translation (Dirk De Nijs)
+    - Updated Spanish translation (ENELL)
+
+0.60 2010.04.20
+    - Add FTP connection caching/sharing (SEWI)
+    - Add interactive template functions (SEWI)
+    - Fixed ticket #900: opening binary files may crash Padre (Zeno Gantner)
+    - Improved some menu entries: added missing "...", better labels, better
+      comments (Zeno Gantner)
+    - Clearer error message if debugger is not started yet (Zeno Gantner)
+    - Complete language/locale switch on Unix platforms: also correctly
+      translate the Wx default labels (Zeno Gantner)
+    - Fixed ticket #921: regex syntax error in Regex Editor
+      (reported by leprevost)
+    - Updated German and Turkish translation (Zeno Gantner, SEWI and Burak
+      Gürsoy)
+    - Added licensing information to About dialog (Zeno Gantner)
+    - Skip '.' when indexing installed modules in @INC (dam)
+    - Fixed bug related to search history (Sam Crawley)
+    - Added file type filter "script file" (which includes Unix shell scripts
+      and Windows .bat files) to the Open dialog (Zeno Gantner)
+    - MIME types: added .mo to the list of binary file extensions, 
+      improved/gettext-ified some descriptions, changed LaTeX extension from
+      latex to tex (Zeno Gantner)
+    - Autocomplete no longer displays the dialog when only one option is
+      available (unless 'Autocomplete while typing' is on) (Sam Crawley - #927)
+
+0.59 2010.03.31 
     - Don't crash open file list dialog on unsaved files or without
       files (SEWI)
     - Added a small survey for new Padre installation (SEWI)
@@ -29,19 +94,19 @@ NOTE: Do not "tidy" or change the indenting here, or we break svn annotate
     - Fixed ticket #889: Padre saves non-ASCII characters as \x{XXXX} (AZAWAWI)
     - New Win32 launcher #677: the Padre process is now named "padre.exe"
       in the Task Manager (instead of wperl.exe) and it embeds the Perl
-      interpreter instead of being just a launcher.
+      interpreter instead of being just a launcher (DOLMEN)
     - On Win32 the manifest file (which tells Windows to use new Vista/7
       styles on such systems) is now embedded as a resource in the binary, so
       any wperl.exe.manifest containing the string 'name="Padre"' is obsolete
-      and must be removed. (DOLMEN)
+      and must be removed (DOLMEN)
     - Fixed ticket #904: Win32 taskbar icon is only 16x16 (Windows 7 may uses
       48x48) (AZAWAWI)
-    - Small improvements/fixes to some dialogs: Refactoring dialogs, Open URL,
+    - Small improvements/fixes to some dialogs: Refactoring, Open URL, Goto,
       Save as, Preferences, Insert File, New Perl Distribution (Zeno Gantner)
-    - New document statistics dialog (Zeno Gantner)
-    - Redirect stdout/err IO handles to the WinNT+ NUL device when started under
-      wperl.exe or padre.exe. This prevents Module Tools from crashing Padre (AZAWAWI)
+    - New document statistics dialog, faster computation of document statistics
+      (Zeno Gantner)
     - Added missing File::pushd Padre dependency (AZAWAWI)
+    - Fixed ticket #894: search for non-ASCII characters (Zeno Gantner)
 
 0.58 2010.03.08  **WARNING Still not stable**
     - Fixed "Open File In Existing Padre" for non-win32 (PDONELAN)

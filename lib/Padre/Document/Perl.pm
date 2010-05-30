@@ -17,7 +17,7 @@ use Padre::File                     ();
 use Padre::Document::Perl::Beginner ();
 use Padre::Logger;
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Document';
 
 
@@ -346,7 +346,9 @@ sub pre_process {
 # Implemented as a task. See Padre::Task::SyntaxChecker::Perl
 sub check_syntax {
 	shift->_check_syntax_internals(
-		{   @_,
+
+		# Passing all arguments is ok, but critic complains
+		{   @_, ## no critic (ProhibitCommaSeparatedStatements)
 			background => 0
 		}
 	);
@@ -354,7 +356,9 @@ sub check_syntax {
 
 sub check_syntax_in_background {
 	shift->_check_syntax_internals(
-		{   @_,
+
+		# Passing all arguments is ok, but critic complains
+		{   @_, ## no critic (ProhibitCommaSeparatedStatements)
 			background => 1
 		}
 	);
@@ -470,17 +474,18 @@ sub get_outline {
 	}
 	$self->{last_outline_md5} = $md5;
 
-	my %check = (
-		editor => $self->editor,
-		text   => $text,
+	my %arg = (
+		editor   => $self->editor,
+		text     => $text,
+		filename => defined $self->filename ? $self->filename : $self->get_title,
 	);
 	if ( $self->project ) {
-		$check{cwd}      = $self->project->root;
-		$check{perl_cmd} = ['-Ilib'];
+		$arg{cwd}      = $self->project->root;
+		$arg{perl_cmd} = ['-Ilib'];
 	}
 
 	require Padre::Task::Outline::Perl;
-	my $task = Padre::Task::Outline::Perl->new(%check);
+	my $task = Padre::Task::Outline::Perl->new(%arg);
 
 	# asynchronous execution (see on_finish hook)
 	$task->schedule;
@@ -512,17 +517,22 @@ sub find_unmatched_brace {
 # current symbol means in the context something remotely similar
 # to what PPI considers a PPI::Token::Symbol, but since we're doing
 # it the manual, stupid way, this may also work within quotelikes and regexes.
-sub _get_current_symbol {
-	my $editor = shift;
-	my $pos    = shift;
+sub get_current_symbol {
+	my $self = shift;
+	my $pos  = shift;
+
+	my $editor = $self->editor;
 	$pos = $editor->GetCurrentPos if not defined $pos;
-	my $line         = $editor->LineFromPosition($pos);
-	my $line_start   = $editor->PositionFromLine($line);
-	my $line_end     = $editor->GetLineEndPosition($line);
-	my $cursor_col   = $pos - $line_start;
+
+	my $line       = $editor->LineFromPosition($pos);
+	my $line_start = $editor->PositionFromLine($line);
+	my $line_end   = $editor->GetLineEndPosition($line);
+
+	my $cursor_col = $pos - $line_start;
 	my $line_content = $editor->GetTextRange( $line_start, $line_end );
 	$cursor_col = length($line_content) - 1 if $cursor_col >= length($line_content);
-	my $col = $cursor_col;
+	my $col              = $cursor_col;
+	my $symbol_start_pos = $pos;
 
 	# find start of symbol
 	# TO DO: This could be more robust, no?
@@ -532,6 +542,7 @@ sub _get_current_symbol {
 	while (1) {
 		last if $col <= 0 or substr( $line_content, $col, 1 ) =~ /^[^#\w:\']$/;
 		$col--;
+		$symbol_start_pos--;
 	}
 
 	return () if $col >= length($line_content);
@@ -552,17 +563,17 @@ sub _get_current_symbol {
 		$token = $1;
 	}
 
-	# remove garbage first charactor from the token in case it's
+	# remove garbage first character from the token in case it's
 	# not a variable (Example: ->foo becomes >foo but should be foo)
 	$token =~ s/^[^\w\$\@\%\*\&:]//;
 
-	return ( [ $line + 1, $col + 1 ], $token );
+	return ( [ $line + 1, $col + 1, $symbol_start_pos + 1 ], $token );
 }
 
 sub find_variable_declaration {
 	my ($self) = @_;
 
-	my ( $location, $token ) = _get_current_symbol( $self->editor );
+	my ( $location, $token ) = $self->get_current_symbol;
 	unless ( defined $location ) {
 		Wx::MessageBox(
 			Wx::gettext("Current cursor does not seem to point at a variable"),
@@ -586,7 +597,7 @@ sub find_variable_declaration {
 sub find_method_declaration {
 	my ($self) = @_;
 
-	my ( $location, $token ) = _get_current_symbol( $self->editor );
+	my ( $location, $token ) = $self->get_current_symbol;
 	unless ( defined $location ) {
 		Wx::MessageBox(
 			Wx::gettext("Current cursor does not seem to point at a method"),
@@ -721,10 +732,19 @@ sub _find_method {
 	return;
 }
 
-# TO DO temp function given a name of a subroutine and move the cursor
-# to its develaration, need to be improved ~ szabgab
+# Go to the named subroutine
+# Uses the outline if there is one (if the user has opened the outline tree)
+# If not, falls back to a regex, which is pretty basic at the moment
+# Perhaps we could always run the outline task, even if the tree is not open?
 sub goto_sub {
 	my ( $self, $name ) = @_;
+
+	if ( my $line = $self->get_sub_line_number($name) ) {
+		$self->editor->goto_line_centerize($line);
+		return;
+	}
+
+	# Fall back to regexs if there's no outline
 	my $text = $self->text_get;
 	my @lines = split /\n/, $text;
 
@@ -740,6 +760,32 @@ sub goto_sub {
 	return;
 }
 
+# Check the outline data to see if we have a particular sub
+sub has_sub {
+	my $self = shift;
+	my $sub  = shift;
+
+	return $self->get_sub_line_number($sub) ? 1 : 0;
+}
+
+# Returns the line number of a sub (or undef if it doesn't exist) based on the outline data
+sub get_sub_line_number {
+	my $self = shift;
+	my $sub  = shift;
+
+	return unless $sub;
+
+	return unless $self->outline_data;
+
+	foreach my $package ( @{ $self->outline_data } ) {
+		foreach my $method ( @{ $package->{methods} } ) {
+			return $method->{line} if $method->{name} eq $sub;
+		}
+	}
+
+	return;
+
+}
 
 #####################################################################
 # Padre::Document Document Manipulation
@@ -747,7 +793,7 @@ sub goto_sub {
 sub lexical_variable_replacement {
 	my ( $self, $replacement ) = @_;
 
-	my ( $location, $token ) = _get_current_symbol( $self->editor );
+	my ( $location, $token ) = $self->get_current_symbol;
 	if ( not defined $location ) {
 		Wx::MessageBox(
 			Wx::gettext("Current cursor does not seem to point at a variable"),
@@ -1398,13 +1444,19 @@ sub event_on_char {
 			# which match the last key pressed (which is not part of
 			# $linetext at this moment:
 
-			if ( $linetext =~ /^sub[\s\t]+\w+$/ ) {
+			if ( $linetext =~ /^sub[\s\t]+(\w+)$/ ) {
+				my $subname = $1;
+
 				my $indent_string = $self->get_indentation_level_string(1);
 
 				# Add the default skeleton of a method
 				my $newline            = $self->newline;
 				my $text_before_cursor = " {$newline${indent_string}my \$self = shift;$newline$indent_string";
+				$text_before_cursor = " {$newline${indent_string}my \$class = shift;$newline$newline".
+							$indent_string."my \$self = bless {\@_}, \$class;$newline$newline".
+							$indent_string if $subname eq 'new';
 				my $text_after_cursor  = "$newline}$newline";
+				$text_after_cursor = $newline.$indent_string."return \$self;".$text_after_cursor if $subname eq 'new';
 				$editor->AddText( $text_before_cursor . $text_after_cursor );
 
 				# Ready for typing in the new method:
@@ -1485,7 +1537,7 @@ sub event_on_right_down {
 
 	my $introduced_separator = 0;
 
-	my ( $location, $token ) = _get_current_symbol( $self->editor, $pos );
+	my ( $location, $token ) = $self->get_current_symbol($pos);
 
 	# Append variable specific menu items if it's a variable
 	if ( defined $location and $token =~ /^[\$\*\@\%\&]/ ) {
@@ -1503,7 +1555,7 @@ sub event_on_right_down {
 			},
 		);
 
-		my $lexRepl = $menu->Append( -1, Wx::gettext("Lexically Rename Variable") );
+		my $lexRepl = $menu->Append( -1, Wx::gettext('Rename Variable') );
 		Wx::Event::EVT_MENU(
 			$editor, $lexRepl,
 			sub {
@@ -1596,40 +1648,75 @@ sub event_on_left_up {
 	my $event  = shift;
 
 	if ( $event->ControlDown ) {
-
-		my $pos;
-		if ( $event->isa("Wx::MouseEvent") ) {
-			my $point = $event->GetPosition();
-			$pos = $editor->PositionFromPoint($point);
-		} else {
-
-			# Fall back to the cursor position
-			$editor->GetCurrentPos();
-		}
-
-		my ( $location, $token ) = _get_current_symbol( $self->editor, $pos );
+		my ( $location, $token ) = $self->get_current_symbol;
 
 		# Does it look like a variable?
 		if ( defined $location and $token =~ /^[\$\*\@\%\&]/ ) {
-
-			# FIX ME editor document accessor?
-			$editor->{Document}->find_variable_declaration();
+			$self->find_variable_declaration();
 		}
 
 		# Does it look like a function?
-		elsif ( defined $location ) {
-			my ( $start, $end ) = Padre::Util::get_matches(
-				$editor->GetText,
-				$self->get_function_regex($token),
-				$editor->GetSelection, # Provides two params
-			);
-			if ( defined $start ) {
-
-				# Move the selection to the sub location
-				$editor->goto_pos_centerize($start);
-			}
+		elsif ( defined $location && $self->has_sub($token) ) {
+			$self->goto_sub($token);
 		}
 	} # end if control-click
+}
+
+sub event_mouse_moving {
+	my $self   = shift;
+	my $editor = shift;
+	my $event  = shift;
+
+	if ( $event->Moving && $event->ControlDown ) {
+
+		# Mouse is moving with ctrl pressed. If anything under the cursor looks like it can be
+		#  clicked on to take us somewhere, highlight it.
+		# TODO: currently only supports subs/methods in the same file
+		my $point = $event->GetPosition();
+		my $pos   = $editor->PositionFromPoint($point);
+		my ( $location, $token ) = $self->get_current_symbol($pos);
+
+		$token ||= '';
+
+		if ( $self->{last_highlight} && $token ne $self->{last_highlight}{token} ) {
+
+			# No longer mousing over the same token, so un-highlight it
+			$self->_clear_highlight($editor);
+		}
+
+		return unless $self->has_sub($token);
+
+		$editor->StartStyling( $location->[2], Wx::wxSTC_INDICS_MASK );
+		$editor->SetStyling( length($token), Wx::wxSTC_INDIC2_MASK );
+
+		$self->{last_highlight} = {
+			token => $token,
+			pos   => $location->[2],
+		};
+	}
+}
+
+sub event_key_up {
+	my $self   = shift;
+	my $editor = shift;
+	my $event  = shift;
+
+	if ( $event->GetKeyCode == Wx::WXK_CONTROL ) {
+
+		# Ctrl key has been released, clear any highlighting
+		$self->_clear_highlight($editor);
+	}
+}
+
+sub _clear_highlight {
+	my $self   = shift;
+	my $editor = shift;
+
+	return unless $self->{last_highlight};
+
+	$editor->StartStyling( $self->{last_highlight}{pos}, Wx::wxSTC_INDICS_MASK );
+	$editor->SetStyling( length( $self->{last_highlight}{token} ), 0 );
+	undef $self->{last_highlight};
 }
 
 #

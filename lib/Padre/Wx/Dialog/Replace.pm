@@ -24,7 +24,7 @@ use Padre::Wx                    ();
 use Padre::Wx::Role::MainChild   ();
 use Padre::Wx::History::ComboBox ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Wx::Role::MainChild
 	Wx::Dialog
@@ -185,11 +185,11 @@ sub new {
 	);
 	$self->{replace}->SetDefault;
 
-	# The "Cancel" button
+	# The "Close" button
 	$self->{cancel_button} = Wx::Button->new(
 		$self,
 		Wx::wxID_CANCEL,
-		Wx::gettext("&Cancel"),
+		Wx::gettext("&Close"),
 	);
 	Wx::Event::EVT_BUTTON(
 		$self,

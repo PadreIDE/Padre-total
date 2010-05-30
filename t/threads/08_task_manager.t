@@ -7,20 +7,35 @@ use warnings;
 use Test::More tests => 14;
 use Test::NoWarnings;
 use Padre::Logger ':ALL';
-use Time::HiRes            ();
-use Padre::Wx              ();
-use Padre::Wx::App         ();
-use Padre::Task2Manager    ();
-use Padre::Task2::Addition ();
+use Time::HiRes               ();
+use Padre::Wx                 ();
+use Padre::Wx::App            ();
+use Padre::Task2Manager       ();
+use Padre::Task2::Addition    ();
+use t::lib::Padre::NullWindow ();
+
+sub order_is {
+	
+}
+
+
+
+
+
+######################################################################
+# Main Test Sequence
 
 # We will need a running application so the main thread can
 # receive events thrown from the child thread.
 my $wxapp = Padre::Wx::App->new;
 isa_ok( $wxapp, 'Padre::Wx::App' );
 
-my $manager = Padre::Task2Manager->new;
+# We also need a main window of some kind to handle events
+my $window = t::lib::Padre::NullWindow->new;
+isa_ok( $window, 't::lib::Padre::NullWindow' );
+
+my $manager = Padre::Task2Manager->new( conduit => $window );
 isa_ok( $manager, 'Padre::Task2Manager' );
-is( scalar(threads->list), 0, 'No threads' );
 
 # Schedule the startup timer
 Wx::Event::EVT_TIMER( $wxapp, Padre::Wx::ID_TIMER_POSTINIT, \&startup );
@@ -45,6 +60,7 @@ $timer2->Start( 10000, 1 );
 is( scalar(threads->list), 0, 'No threads' );
 
 # Enter the wx loop
+# $window->Show(1) if $window;
 $wxapp->MainLoop;
 
 # We end with no threads
@@ -83,5 +99,6 @@ sub timeout {
 	$timer2 = undef;
 	ok( $manager->stop, '->stop ok' );
 	sleep(1);
+	# $window->Show(0) if $window;
 	$wxapp->ExitMainLoop;
 }

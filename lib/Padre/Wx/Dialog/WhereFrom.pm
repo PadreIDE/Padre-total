@@ -6,7 +6,7 @@ use warnings;
 use Padre::Wx               ();
 use Padre::Task::HTTPClient ();
 
-our $VERSION = '0.58';
+our $VERSION = '0.62';
 
 our @ISA = 'Wx::Dialog';
 
@@ -162,7 +162,7 @@ sub WhereFrom_ok_clicked {
 
 	if ( !$config->feedback_done ) {
 
-		my $url  = 'http://padre.perlide.org/wherefrom.cgi';
+		my $url  = 'http://perlide.org/popularity/v1/wherefrom.html';
 		my $args = { from => $dialog->{wherefrom}->GetValue };
 		my $http = Padre::Task::HTTPClient->new(
 			URL   => $url,
