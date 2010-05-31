@@ -191,6 +191,8 @@ L<http://padre-ide.de/blog/?p=111>
 
 use Moose;
 
+L<http://www.raudssus.de/blog/totally-latest-cebit-report-ever>
+
 =head3 Thomas Fahle
 
 Event report: 
