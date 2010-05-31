@@ -9,22 +9,12 @@ use Padre::Current ();
 
 our $VERSION = '0.59';
 
-
-
-
-
-##################################################
-# Constructor and Accessors
-
-sub new {
-	my $class = shift;
-	my $self  = bless { @_ }, $class;
-	return $self;
-}
-
-sub handle {
-	$_[0]->{handle};
-}
+use Class::XSAccessor {
+	constructor => 'new',
+	getters     => {
+		handle => 'handle',
+	},
+};
 
 sub running {
 	defined $_[0]->{handle};
