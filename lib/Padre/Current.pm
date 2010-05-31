@@ -225,8 +225,8 @@ Padre::Current - convenient access to current objects within Padre
 
 =head1 SYNOPSIS
 
-	my $main = Padre::Current->main;
-	...
+    my $main = Padre::Current->main;
+    # ...
 
 =head1 DESCRIPTION
 
@@ -242,11 +242,11 @@ retrieve whatever current object you need.
 
 =head2 new
 
-  # Vanilla constructor
-  Padre::Current->new;
-
-  # Seed the object with some context
-  Padre::Current->new( document => $document );
+    # Vanilla constructor
+    Padre::Current->new;
+    
+    # Seed the object with some context
+    Padre::Current->new( document => $document );
 
 The C<new> constructor creates a new context object, it optionally takes
 one or more named parameters which should be any context the caller is
