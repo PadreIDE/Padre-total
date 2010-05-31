@@ -1,6 +1,6 @@
 package Padre::Task2;
 
-use 5.008;
+use 5.008005;
 use strict;
 use warnings;
 use Storable       ();

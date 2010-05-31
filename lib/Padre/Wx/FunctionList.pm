@@ -3,7 +3,8 @@ package Padre::Wx::FunctionList;
 use 5.008005;
 use strict;
 use warnings;
-use Params::Util          ('_STRING');
+use Scalar::Util          ();
+use Params::Util          ();
 use Padre::Current        ('_CURRENT');
 use Padre::Wx             ();
 use Padre::Wx::Role::View ();
@@ -170,7 +171,7 @@ sub on_list_item_activated {
 
 	# Which sub did they click
 	my $subname = $self->{functions}->GetStringSelection;
-	unless ( defined _STRING($subname) ) {
+	unless ( defined Params::Util::_STRING($subname) ) {
 		return;
 	}
 
@@ -238,65 +239,51 @@ sub refresh {
 	}
 	$self->{_document} = $document;
 
-	my $config  = $self->{main}->config;
-	my @methods = $document->get_functions;
+	# Launch the background task
+	require Padre::Task2::FunctionList;
+	Padre::Task2::FunctionList->new(
+		class => Scalar::Util::blessed($document),
+		order => $self->{main}->config->main_functions_order,
+		text  => $document->text_get,
+		list  => undef,
+	)->schedule;
 
-	if ( scalar @methods == 0 ) {
-		$functions->Clear;
-		$self->{names} = [];
-		return;
-	}
+	return 1;
+}
 
-	if ( $config->main_functions_order eq 'original' ) {
-
-		# That should be the one we got from get_functions
-	} elsif ( $config->main_functions_order eq 'alphabetical_private_last' ) {
-
-		# ~ comes after \w
-		tr/_/~/ foreach @methods;
-		@methods = sort { lc($a) cmp lc($b) } @methods;
-		tr/~/_/ foreach @methods;
-	} else {
-
-		# Alphabetical (aka 'abc')
-		@methods = sort { lc($a) cmp lc($b) } @methods;
-	}
-
-	if ( scalar(@methods) == scalar( @{ $self->{names} } ) ) {
-		my $new = join ';', @methods;
-		my $old = join ';', @{ $self->{names} };
-		return if $old eq $new;
-	}
-
-	$self->{names} = \@methods;
-
-	# Show them again
-	$self->{search}->Show;
-	$self->{functions}->Show;
-
-	$self->_update_functions_list;
+# Set an updated method list from the task
+sub set {
+	my $self = shift;
+	$self->{names} = shift;
+	$self->render;
 }
 
 # Populate the functions list with search results
-sub _update_functions_list {
+sub render {
 	my $self      = shift;
+	my $names     = $self->{names};
+	my $search    = $self->{search};
 	my $functions = $self->{functions};
 
 	#quote the search string to make it safer
-	my $search_expr = $self->{search}->GetValue();
-	if ( $search_expr eq '' ) {
-		$search_expr = '.*';
+	my $string = $search->GetValue;
+	if ( $string eq '' ) {
+		$string = '.*';
 	} else {
-		$search_expr = quotemeta $search_expr;
+		$string = quotemeta $string;
 	}
 
-	# Populate the function list with matching functions
+	# Show the components and populate the function list
+	$search->Show;
+	$functions->Show;
 	$functions->Clear;
-	foreach my $method ( reverse @{ $self->{names} } ) {
-		if ( $method =~ /$search_expr/i ) {
+	foreach my $method ( reverse @$names ) {
+		if ( $method =~ /$string/i ) {
 			$functions->Insert( $method, 0 );
 		}
 	}
+
+	return 1;
 }
 
 1;

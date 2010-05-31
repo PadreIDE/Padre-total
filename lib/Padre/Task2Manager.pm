@@ -25,6 +25,7 @@ sub new {
 	my %param   = @_;
 	my $conduit = delete $param{conduit};
 	my $self    = bless {
+		active  => 0,   # Are we running at the moment
 		threads => 1,   # Are threads enabled
 		minimum => 2,   # Workers to launch at startup
 		%param,
@@ -41,6 +42,11 @@ sub new {
 	$conduit->event_target_init($self);
 
 	return $self;
+}
+
+sub active {
+	TRACE($_[0]) if DEBUG;
+	$_[0]->{active};
 }
 
 sub threads {
@@ -61,7 +67,8 @@ sub start {
 			$self->start_thread($_);
 		}
 	}
-	return 1;
+	$self->{active} = 1;
+	$self->step;
 }
 
 sub start_thread {
@@ -76,6 +83,7 @@ sub start_thread {
 sub stop {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
+	$self->{active} = 0;
 	if ( $self->{threads} ) {
 		foreach ( 0 .. $#{$self->{workers}} ) {
 			$self->stop_thread($_);
@@ -131,7 +139,8 @@ sub step {
 	my $queue   = $self->{queue};
 	my $handles = $self->{handles};
 
-	# Is there anything in the queue to run
+	# Shortcut if not allowed to run, or nothing to do
+	return unless $self->active;
 	return unless @$queue;
 
 	# Shortcut if there is nowhere to run the task

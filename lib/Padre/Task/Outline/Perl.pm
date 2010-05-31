@@ -13,7 +13,7 @@ gathering in the background
   # will be fetched as will the document's notebook page.
   my $task = Padre::Task::Outline::Perl->new;
   $task->schedule;
-
+  
   my $task2 = Padre::Task::Outline::Perl->new(
     text          => Padre::Current->document->text_get,
     editor        => Padre::Current->editor,
@@ -24,9 +24,12 @@ gathering in the background
 
 This class implements structure info gathering of Perl documents in
 the background.
+
 Also the updating of the GUI is implemented here, because other
 languages might have different outline structures.
+
 It inherits from L<Padre::Task::Outline>.
+
 Please read its documentation!
 
 =cut
@@ -43,7 +46,6 @@ our @ISA     = 'Padre::Task::Outline';
 sub new {
 	my $class = shift;
 	my $self  = $class->SUPER::new(@_);
-
 	return $self;
 }
 

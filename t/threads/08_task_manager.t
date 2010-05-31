@@ -14,10 +14,6 @@ use Padre::Task2Manager       ();
 use Padre::Task2::Addition    ();
 use t::lib::Padre::NullWindow ();
 
-sub order_is {
-	
-}
-
 
 
 

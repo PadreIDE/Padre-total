@@ -5,8 +5,8 @@
 use strict;
 use warnings;
 use Test::More tests => 16;
-use Test::NoWarnings;
-use Time::HiRes ();
+use Test::NoWarnings; 
+use Time::HiRes (); 
 use Padre::Logger;
 use Padre::Task2Manager       ();
 use Padre::Task2::Addition    ();

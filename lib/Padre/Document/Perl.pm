@@ -225,12 +225,20 @@ sub keywords {
 	return $keywords;
 }
 
-sub get_functions {
-	my $self = shift;
+# This emulates qr/(?<=^|[\012\015])sub\s$name\b/ but without
+# triggering a "Variable length lookbehind not implemented" error.
+# return qr/(?:(?<=^)\s*sub\s+$_[1]|(?<=[\012\015])\s*sub\s+$_[1])\b/;
+sub get_function_regex {
+	qr/(?:^|[^# \t])[ \t]*(sub\s+$_[1])\b/;
+}
 
-	# Filter out POD
+sub get_functions {
+	$_[0]->find_functions( $_[0]->text_get );
+}
+
+sub find_functions {
 	my $n = "\\cM?\\cJ";
-	return grep { defined $_ } $self->text_get =~ m/
+	return grep { defined $_ } $_[1] =~ m/
 		(?:
 		(?:$n)*__(?:DATA|END)__\b.*
 		|
@@ -239,14 +247,6 @@ sub get_functions {
 		(?:^|$n)\s*sub\s+(\w+(?:::\w+)*)
 		)
 	/sgx;
-}
-
-sub get_function_regex {
-
-	# This emulates qr/(?<=^|[\012\015])sub\s$name\b/ but without
-	# triggering a "Variable length lookbehind not implemented" error.
-	#	return qr/(?:(?<=^)\s*sub\s+$_[1]|(?<=[\012\015])\s*sub\s+$_[1])\b/;
-	return qr/(?:^|[^# \t])[ \t]*(sub\s+$_[1])\b/;
 }
 
 =pod
@@ -1550,7 +1550,7 @@ sub event_on_right_down {
 			sub {
 				my $editor = shift;
 				my $doc    = $self; # FIX ME if Padre::Wx::Editor had a method to access its Document...
-				return unless Params::Util::_INSTANCE( $doc, 'Padre::Document::Perl' );
+				return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
 				$doc->find_variable_declaration;
 			},
 		);
@@ -1563,7 +1563,7 @@ sub event_on_right_down {
 				# FIX ME near duplication of the code in Padre::Wx::Menu::Perl
 				my $editor = shift;
 				my $doc    = $self; # FIX ME if Padre::Wx::Editor had a method to access its Document...
-				return unless Params::Util::_INSTANCE( $doc, 'Padre::Document::Perl' );
+				return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
 				require Padre::Wx::History::TextEntryDialog;
 				my $dialog = Padre::Wx::History::TextEntryDialog->new(
 					$editor->main,
@@ -1589,7 +1589,7 @@ sub event_on_right_down {
 			sub {
 				my $editor = shift;
 				my $doc    = $self; # FIX ME if Padre::Wx::Editor had a method to access its Document...
-				return unless Params::Util::_INSTANCE( $doc, 'Padre::Document::Perl' );
+				return unless _INSTANCE( $doc, 'Padre::Document::Perl' );
 				$doc->find_method_declaration;
 			},
 		);
