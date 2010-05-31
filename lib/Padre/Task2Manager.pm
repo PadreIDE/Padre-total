@@ -223,7 +223,7 @@ sub on_signal {
 		$handle->on_stopped( @$message );
 
 		# Remove from the task list to destroy the task
-		delete $self->{task};
+		delete $self->{handles}->{$hid};
 		return;
 	}
 

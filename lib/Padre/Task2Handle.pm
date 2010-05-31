@@ -128,7 +128,8 @@ sub from_array {
 	my $array = shift;
 
 	# Load the task class first so we can deserialize
-	eval "require $array->[0];";
+	TRACE("$class: Loading $array->[1]") if DEBUG;
+	eval "require $array->[1];";
 	die $@ if $@;
 
 	return bless {
