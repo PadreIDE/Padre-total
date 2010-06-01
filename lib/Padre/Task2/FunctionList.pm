@@ -5,12 +5,12 @@ package Padre::Task2::FunctionList;
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Task2   ();
-use Padre::Current ();
+use Padre::Task2::View ();
+use Padre::Current     ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
-	
+our @ISA     = 'Padre::Task2::View';
+
 
 
 
@@ -21,6 +21,10 @@ our @ISA     = 'Padre::Task2';
 sub run {
 	my $self  = shift;
 
+	# Pull the text off the task so we won't need to serialize
+	# it back up to the parent Wx thread at the end of the task.
+	my $text = delete $self->{text};
+
 	# Load the document class
 	SCOPE: {
 		local $@;
@@ -29,7 +33,7 @@ sub run {
 	}
  
 	# Get the function list
-	my @functions = $self->{class}->find_functions( $self->{text} );
+	my @functions = $self->{class}->find_functions( $text );
 	if ( $self->{order} eq 'alphabetical' ) {
 		# Alphabetical (aka 'abc')
 		@functions = sort { lc($a) cmp lc($b) } @functions;
@@ -46,10 +50,10 @@ sub run {
 
 sub finish {
 	my $self = shift;
+	my $view = $self->view or return;
 	my $list = $self->{list} or return;
-	my $wx   = Padre::Current->main->functions; # HACK: Terribly naive
-	$wx->set( $list );
-	$wx->render;
+	$view->set( $list );
+	$view->render;
 	return 1;
 }
 

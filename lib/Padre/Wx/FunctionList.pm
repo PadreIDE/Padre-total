@@ -242,6 +242,7 @@ sub refresh {
 	# Launch the background task
 	require Padre::Task2::FunctionList;
 	Padre::Task2::FunctionList->new(
+		view  => $self,
 		class => Scalar::Util::blessed($document),
 		order => $self->{main}->config->main_functions_order,
 		text  => $document->text_get,
