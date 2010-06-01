@@ -3,7 +3,6 @@ package Padre::Task::HTTPClient;
 use 5.008;
 use strict;
 use warnings;
-
 use Padre::Util::SVN ();
 
 # Use all modules which may provide services for us:

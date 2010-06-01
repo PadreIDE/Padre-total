@@ -3,21 +3,34 @@ package Padre::Task2;
 use 5.008005;
 use strict;
 use warnings;
-use Storable       ();
-use Scalar::Util   ();
-use Padre::Current ();
+use Storable          ();
+use Scalar::Util      ();
+use Padre::Current    ();
+use Padre::Task2Owner ();
 
 our $VERSION = '0.59';
 
 use Class::XSAccessor {
-	constructor => 'new',
-	getters     => {
+	getters => {
 		handle => 'handle',
 	},
 };
 
+sub new {
+	my $class = shift;
+	my $self  = bless { @_ }, $class;
+	if ( $self->{owner} ) {
+		$self->{owner} = $self->{owner}->revision;
+	}
+	return $self;
+}
+
 sub running {
 	defined $_[0]->{handle};
+}
+
+sub owner {
+	Padre::Task2Owner->revision_fetch($_[0]->{owner});
 }
 
 

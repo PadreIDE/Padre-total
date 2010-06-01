@@ -20,50 +20,6 @@ use Scalar::Util ();
 
 our $VERSION = '0.62';
 
-# Use a shared sequence for widget statefulness
-my $SEQUENCE = 0;
-my %INDEX    = ();
-
-
-
-
-
-######################################################################
-# Statefulness
-
-# Get the view's current revision
-sub revision {
-	my $self = shift;
-
-	# Set a revision if this is the first time
-	unless ( defined $self->{revision} ) {
-		$self->{revision} = ++$SEQUENCE;
-	}
-
-	# Optimisation hack: Only populate the index when
-	# the revision is queried from the view.
-	unless ( exists $INDEX{$self->{revision}} ) {
-		$INDEX{$self->{revision}} = $self;
-		Scalar::Util::weaken($INDEX{$self->{revision}});
-	}
-
-	return $self->{revision};
-}
-
-# Widget state has changed, update revision and flush index.
-sub revision_change {
-	my $self = shift;
-	if ( $self->{revision} ) {
-		delete $INDEX{$self->{revision}};
-	}
-	$self->{revision} = ++$SEQUENCE;
-}
-
-# Locate an active widget by revision
-sub revision_fetch {
-	$INDEX{$_[1]};
-}
-
 1;
 
 =pod

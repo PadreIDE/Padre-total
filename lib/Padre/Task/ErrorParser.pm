@@ -17,9 +17,8 @@ use Class::XSAccessor {
 	}
 };
 
-require Parse::ErrorString::Perl;
-
 sub run {
+	require Parse::ErrorString::Perl;
 	my $self = shift;
 	unless ( $self->parser and ( ( !$self->cur_lang and !$self->old_lang ) or ( $self->cur_lang eq $self->old_lang ) ) )
 	{

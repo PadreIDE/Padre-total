@@ -5,11 +5,11 @@ package Padre::Task2::FunctionList;
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Task2::View ();
-use Padre::Current     ();
+use Padre::Task2   ();
+use Padre::Current ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::View';
+our @ISA     = 'Padre::Task2';
 
 
 
@@ -49,11 +49,11 @@ sub run {
 }
 
 sub finish {
-	my $self = shift;
-	my $view = $self->view or return;
-	my $list = $self->{list} or return;
-	$view->set( $list );
-	$view->render;
+	my $self  = shift;
+	my $list  = $self->{list} or return;
+	my $owner = $self->owner  or return;
+	$owner->set( $list );
+	$owner->render;
 	return 1;
 }
 

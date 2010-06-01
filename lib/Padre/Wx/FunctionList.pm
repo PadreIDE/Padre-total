@@ -6,11 +6,13 @@ use warnings;
 use Scalar::Util          ();
 use Params::Util          ();
 use Padre::Current        ('_CURRENT');
-use Padre::Wx             ();
+use Padre::Task2Owner     ();
 use Padre::Wx::Role::View ();
+use Padre::Wx             ();
 
 our $VERSION = '0.62';
 our @ISA     = qw{
+	Padre::Task2Owner
 	Padre::Wx::Role::View
 	Wx::Panel
 };
@@ -242,7 +244,7 @@ sub refresh {
 	# Launch the background task
 	require Padre::Task2::FunctionList;
 	Padre::Task2::FunctionList->new(
-		view  => $self,
+		owner => $self,
 		class => Scalar::Util::blessed($document),
 		order => $self->{main}->config->main_functions_order,
 		text  => $document->text_get,
