@@ -5,12 +5,12 @@ package Padre::Plugin::PopularityContest::Ping;
 use 5.008;
 use strict;
 use warnings;
-use URI              ();
-use HTTP::Request    ();
-use Padre::Task::LWP ();
+use URI               ();
+use HTTP::Request     ();
+use Padre::Task2::LWP ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task::LWP';
+our @ISA     = 'Padre::Task2::LWP';
 
 sub new {
 	my $class = shift;
@@ -34,7 +34,11 @@ sub new {
 	$url->query_form( \%data, ';' );
 
 	# Hand off to the parent constructor
-	return $class->SUPER::new( request => HTTP::Request->new( GET => $url->as_string ) );
+	return $class->SUPER::new(
+		request => HTTP::Request->new(
+			GET => $url->as_string
+		)
+	);
 }
 
 1;
