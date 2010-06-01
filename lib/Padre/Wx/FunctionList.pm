@@ -43,6 +43,9 @@ sub new {
 	# Temporary store for the function list.
 	$self->{names} = [];
 
+	# Remember the last document we were looking at
+	$self->{document} = '';
+
 	# Create the search control
 	$self->{search} = Wx::TextCtrl->new(
 		$self, -1, '',
@@ -139,7 +142,7 @@ sub new {
 		$self,
 		$self->{search},
 		sub {
-			$self->_update_functions_list;
+			$self->render;
 		}
 	);
 
@@ -214,41 +217,41 @@ sub gettext_label {
 	Wx::gettext('Functions');
 }
 
-# Refresh the functions list
 sub refresh {
-	my ( $self, $current ) = @_;
-
-	# Flush the list if there is no active document
-	return unless $current;
+	my $self      = shift;
+	my $current   = shift or return;
 	my $document  = $current->document;
+	my $search    = $self->{search};
 	my $functions = $self->{functions};
 
 	# Hide the widgets when no files are open
-	if ($document) {
-		$self->{search}->Show(1);
-		$self->{functions}->Show(1);
-	} else {
+	unless ( $document ) {
+		$search->Hide;
+		$functions->Hide;
 		$functions->Clear;
-		$self->{search}->Hide;
-		$self->{functions}->Hide;
-		$self->{names} = [];
+		$self->{names}    = [];
+		$self->{document} = '';
 		return;
 	}
 
+	# Ensure the widget is visible
+	$search->Show(1);
+	$functions->Show(1);
+
 	# Clear search when it is a different document
-	if ( $self->{_document} && $document != $self->{_document} ) {
-		$self->{search}->ChangeValue('');
+	my $docaddr = Scalar::Util::refaddr($document);
+	if ( $document ne $self->{document} ) {
+		$search->ChangeValue('');
+		$self->{document} = $document;
 	}
-	$self->{_document} = $document;
 
 	# Launch the background task
 	require Padre::Task2::FunctionList;
 	Padre::Task2::FunctionList->new(
 		owner => $self,
 		class => Scalar::Util::blessed($document),
-		order => $self->{main}->config->main_functions_order,
+		order => $current->config->main_functions_order,
 		text  => $document->text_get,
-		list  => undef,
 	)->schedule;
 
 	return 1;
