@@ -9,12 +9,12 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Task2 ();
-use Padre::Wx    ();
 
 our $VERSION = '0.59';
 our @ISA     = 'Padre::Task2';
 
 sub run {
+	require Wx;
 	Wx::LaunchDefaultBrowser( $_[0]->{url} );
 	return 1;
 }
