@@ -140,13 +140,13 @@ sub step {
 	my $handles = $self->{handles};
 
 	# Shortcut if not allowed to run, or nothing to do
-	return unless $self->active;
-	return unless @$queue;
+	return 1 unless $self->active;
+	return 1 unless @$queue;
 
 	# Shortcut if there is nowhere to run the task
 	if ( $self->{threads} ) {
 		unless ( $self->{minimum} > scalar keys %$handles ) {
-			return;
+			return 1;
 		}
 	}
 
