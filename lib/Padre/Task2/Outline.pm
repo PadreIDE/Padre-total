@@ -1,4 +1,4 @@
-package Padre::Task::Outline;
+package Padre::Task2::Outline;
 
 use 5.008;
 use strict;
@@ -9,20 +9,20 @@ use Padre::Current ();
 use Padre::Wx      ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task';
+our @ISA     = 'Padre::Task2';
 
 =pod
 
 =head1 NAME
 
-Padre::Task::Outline - Generic background processing task to
+Padre::Task2::Outline - Generic background processing task to
 gather structure info on the current document
 
 =head1 SYNOPSIS
 
-  package Padre::Task::Outline::MyLanguage;
+  package Padre::Task2::Outline::MyLanguage;
   
-  use base 'Padre::Task::Outline';
+  use base 'Padre::Task2::Outline';
   
   sub run {
           my $self = shift;
@@ -38,10 +38,10 @@ gather structure info on the current document
   
   # by default, the text of the current document
   # will be fetched as will the document's notebook page.
-  my $task = Padre::Task::Outline::MyLanguage->new();
+  my $task = Padre::Task2::Outline::MyLanguage->new();
   $task->schedule;
   
-  my $task2 = Padre::Task::Outline::MyLanguage->new(
+  my $task2 = Padre::Task2::Outline::MyLanguage->new(
       text   => Padre::Current->document->text_get,
       editor => Padre::Current->editor,
   );
@@ -52,7 +52,7 @@ gather structure info on the current document
 This is a base class for all tasks that need to do
 expensive structure info gathering in a background task.
 
-You can either let C<Padre::Task::Outline> fetch the
+You can either let C<Padre::Task2::Outline> fetch the
 Perl code for parsing from the current document
 or specify it as the "C<text>" parameter to
 the constructor.
@@ -77,23 +77,10 @@ sub new {
 	my $self  = $class->SUPER::new(@_);
 	unless ( defined $self->{text} ) {
 		$self->{text} = Padre::Current->document->text_get;
-	}
+	} # TODO check whether this is necessary
 
 	my %args = @_;
 	$self->{filename} = $args{filename};
-
-	# put notebook page and callback into main-thread-only storage
-	$self->{main_thread_only} ||= {};
-
-	my $editor = $self->{editor}
-		|| $self->{main_thread_only}->{editor};
-	delete $self->{editor};
-	unless ( defined $editor ) {
-		$editor = Padre::Current->editor;
-	}
-	return if not defined $editor;
-
-	$self->{main_thread_only}->{editor} = $editor;
 
 	return $self;
 }
@@ -108,10 +95,6 @@ sub prepare {
 	unless ( defined $self->{text} ) {
 		require Carp;
 		Carp::croak("Could not find the document's text.");
-	}
-	unless ( defined $self->{main_thread_only}->{editor} ) {
-		require Carp;
-		Carp::croak("Could not find the reference to the notebook page for GUI updating.");
 	}
 	return 1;
 }

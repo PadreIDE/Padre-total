@@ -1,10 +1,10 @@
-package Padre::Task::Outline::Perl;
+package Padre::Task2::Outline::Perl;
 
 =pod
 
 =head1 NAME
 
-Padre::Task::Outline::Perl - Perl document outline structure info
+Padre::Task2::Outline::Perl - Perl document outline structure info
 gathering in the background
 
 =head1 SYNOPSIS
@@ -14,9 +14,8 @@ gathering in the background
   my $task = Padre::Task::Outline::Perl->new;
   $task->schedule;
   
-  my $task2 = Padre::Task::Outline::Perl->new(
-    text          => Padre::Current->document->text_get,
-    editor        => Padre::Current->editor,
+  my $task2 = Padre::Task2::Outline::Perl->new(
+    text          => Padre::Current->document->text_get
   );
   $task2->schedule;
 
@@ -38,10 +37,10 @@ use 5.008;
 use strict;
 use warnings;
 use version;
-use Padre::Task::Outline ();
+use Padre::Task2::Outline ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task::Outline';
+our @ISA     = 'Padre::Task2::Outline';
 
 sub new {
 	my $class = shift;
@@ -66,7 +65,11 @@ sub _get_outline {
 	require PPI::Find;
 	require PPI::Document;
 
-	my $ppi_doc = PPI::Document->new( \$self->{text} );
+	# Pull the text off the task so we won't need to serialize
+	# it back up to the parent Wx thread at the end of the task.
+	my $text = delete $self->{text};
+
+	my $ppi_doc = PPI::Document->new( \$text );
 
 	return {} unless defined($ppi_doc);
 
@@ -134,12 +137,6 @@ sub _get_outline {
 
 	$self->{outline} = $outline;
 
-	my $current_filename =
-		defined Padre::Current->filename ? Padre::Current->filename : Padre::Current->document->get_title;
-	if ( $self->{filename} eq $current_filename ) {
-		Padre::Current->document->set_outline_data($outline);
-	}
-
 	return;
 }
 
@@ -150,10 +147,14 @@ sub update_gui {
 	my $outlinebar = Padre->ide->wx->main->outline;
 
 	# only update the outline pane if we still have the same filename
-	my $current_filename =
-		defined Padre::Current->filename ? Padre::Current->filename : Padre::Current->document->get_title;
+	my $current_filename = Padre::Current->filename;
+	$current_filename = Padre::Current->document->get_title if !defined($current_filename);
+
 	if ( $filename eq $current_filename ) {
 		$outlinebar->update_data( $outline, $filename, \&_on_tree_item_right_click );
+
+		# store data for further use by other components
+		Padre::Current->document->set_outline_data($outline);
 	} else {
 		$outlinebar->store_in_cache( $filename, [ $outline, \&_on_tree_item_right_click ] );
 	}
@@ -167,7 +168,7 @@ sub _on_tree_item_right_click {
 	my $itemData = $outlinebar->GetPlData( $event->GetItem );
 
 	if ( defined($itemData) && defined( $itemData->{line} ) && $itemData->{line} > 0 ) {
-		my $goTo = $menu->Append( -1, Wx::gettext("&Go to Element") );
+		my $goTo = $menu->Append( -1, Wx::gettext('&Go to Element') );
 		Wx::Event::EVT_MENU(
 			$outlinebar, $goTo,
 			sub { $outlinebar->on_tree_item_set_focus($event); },
@@ -179,7 +180,7 @@ sub _on_tree_item_right_click {
 		&& defined( $itemData->{type} )
 		&& ( $itemData->{type} eq 'modules' || $itemData->{type} eq 'pragmata' ) )
 	{
-		my $pod = $menu->Append( -1, Wx::gettext("Open &Documentation") );
+		my $pod = $menu->Append( -1, Wx::gettext('Open &Documentation') );
 		Wx::Event::EVT_MENU(
 			$outlinebar,
 			$pod,
@@ -213,13 +214,13 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from L<Padre::Task::Outline> which
-in turn is a L<Padre::Task> and its instances can be scheduled
-using L<Padre::TaskManager>.
+This class inherits from L<Padre::Task2::Outline> which
+in turn is a L<Padre::Task2> and its instances can be scheduled
+using L<Padre::TaskManager2>.
 
 =head1 AUTHOR
 
-Heiko Jansen C<heiko_jansen@web.de>
+Heiko Jansen C<heiko_jansen@web.de>, Zeno Gantner
 
 =head1 COPYRIGHT AND LICENSE
 
