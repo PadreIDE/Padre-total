@@ -4,7 +4,7 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::WiX          1.200001;
+use Perl::Dist::WiX          1.200002;
 use Perl::Dist::Strawberry   2.10     qw();
 use URI::file                         qw();
 use English                           qw( -no_match_vars );
@@ -149,7 +149,6 @@ sub install_padre_prereq_modules_2 {
 	$self->install_modules( qw{
 		  Test::SubCalls
 		  List::MoreUtils
-		  Task::Weaken
 		  PPI
 		  Module::Locate
 		  Perl::Tags
@@ -161,7 +160,6 @@ sub install_padre_prereq_modules_2 {
 		  Module::Starter
 		  ORLite
 		  Test::Differences
-		  File::Slurp
 		  Pod::POM
 		  Parse::ErrorString::Perl
 		  Text::FindIndent
