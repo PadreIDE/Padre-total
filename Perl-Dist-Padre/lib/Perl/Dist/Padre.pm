@@ -85,7 +85,7 @@ sub new {
 
 
 sub output_base_filename {
-	return 'strawberry-plus-padre-0.61';
+	return 'strawberry-plus-padre-0.62';
 }
 
 
