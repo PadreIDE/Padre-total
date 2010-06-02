@@ -3,10 +3,8 @@ package Padre::Task2::Outline;
 use 5.008;
 use strict;
 use warnings;
-use Params::Util qw{_CODE _INSTANCE};
-use Padre::Task    ();
+use Padre::Task2   ();
 use Padre::Current ();
-use Padre::Wx      ();
 
 our $VERSION = '0.62';
 our @ISA     = 'Padre::Task2';

@@ -65,22 +65,6 @@ sub new {
 	return;
 }
 
-#=head2 atime
-#
-#  $file->atime;
-#
-#Returns the last-access time of the file.
-#
-#This is usually not possible for non-local files, in these cases, undef
-#is returned.
-#
-#=cut
-#
-## Fallback if the module has no such function:
-#sub atime {
-#	return;
-#}
-#
 1;
 
 # Copyright 2008-2010 The Padre development team as listed in Padre.pm.

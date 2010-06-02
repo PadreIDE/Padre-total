@@ -4,18 +4,17 @@ package Padre::Task2::Outline::Perl;
 
 =head1 NAME
 
-Padre::Task2::Outline::Perl - Perl document outline structure info
-gathering in the background
+Padre::Task2::Outline::Perl - Background task for generating Perl content structure
 
 =head1 SYNOPSIS
 
-  # by default, the text of the current document
+  # By default the text of the current document
   # will be fetched as will the document's notebook page.
   my $task = Padre::Task::Outline::Perl->new;
   $task->schedule;
   
   my $task2 = Padre::Task2::Outline::Perl->new(
-    text          => Padre::Current->document->text_get
+      text => Padre::Current->document->text_get
   );
   $task2->schedule;
 
@@ -37,16 +36,11 @@ use 5.008;
 use strict;
 use warnings;
 use version;
+use Padre::Current        ();
 use Padre::Task2::Outline ();
 
 our $VERSION = '0.62';
 our @ISA     = 'Padre::Task2::Outline';
-
-sub new {
-	my $class = shift;
-	my $self  = $class->SUPER::new(@_);
-	return $self;
-}
 
 sub run {
 	my $self = shift;
@@ -55,37 +49,31 @@ sub run {
 }
 
 sub _get_outline {
-
-	# TO DO switch to using File::PackageIndexer
-	# (which needs to be modified / extended first)
-	my $self = shift;
-
+	my $self    = shift;
 	my $outline = [];
-
-	require PPI::Find;
-	require PPI::Document;
 
 	# Pull the text off the task so we won't need to serialize
 	# it back up to the parent Wx thread at the end of the task.
 	my $text = delete $self->{text};
 
-	my $ppi_doc = PPI::Document->new( \$text );
+	# Parse the document
+	require PPI::Document;
+	my $ppi = PPI::Document->new( \$text );
+	return {} unless defined $ppi;
+	$ppi->index_locations;
 
-	return {} unless defined($ppi_doc);
-
-	$ppi_doc->index_locations;
-
+	# Execute the search
+	require PPI::Find;
 	my $find = PPI::Find->new(
 		sub {
-			return 1
-				if ref $_[0] eq 'PPI::Statement::Package'
-					or ref $_[0] eq 'PPI::Statement::Include'
-					or ref $_[0] eq 'PPI::Statement::Sub'
-					or ref $_[0] eq 'PPI::Statement';
+			return 1 if ref $_[0] eq 'PPI::Statement::Package';
+			return 1 if ref $_[0] eq 'PPI::Statement::Include';
+			return 1 if ref $_[0] eq 'PPI::Statement::Sub';
+			return 1 if ref $_[0] eq 'PPI::Statement';
 		}
 	);
 
-	my @things        = $find->in($ppi_doc);
+	my @things        = $find->in($ppi);
 	my $cur_pkg       = {};
 	my $not_first_one = 0;
 	foreach my $thing (@things) {
@@ -141,37 +129,39 @@ sub _get_outline {
 }
 
 sub update_gui {
-	my $self       = shift;
-	my $outline    = $self->{outline};
-	my $filename   = $self->{filename};
-	my $outlinebar = Padre->ide->wx->main->outline;
+	my $self     = shift;
+	my $data     = $self->{outline};
+	my $current  = Padre::Current->new;
+	my $outline  = $current->main->outline;
+	my $document = $current->document;
+	my $filename = $current->filename;
+	unless ( defined $filename ) {
+		$filename = $document->get_title;
+	}
 
-	# only update the outline pane if we still have the same filename
-	my $current_filename = Padre::Current->filename;
-	$current_filename = Padre::Current->document->get_title if !defined($current_filename);
+	# Only update the outline pane if we still have the same filename
+	if ( $self->{filename} eq $filename ) {
+		$outline->update_data( $data, $self->{filename}, \&_on_tree_item_right_click );
 
-	if ( $filename eq $current_filename ) {
-		$outlinebar->update_data( $outline, $filename, \&_on_tree_item_right_click );
-
-		# store data for further use by other components
-		Padre::Current->document->set_outline_data($outline);
+		# Store data for further use by other components
+		$document->set_outline_data($data);
 	} else {
-		$outlinebar->store_in_cache( $filename, [ $outline, \&_on_tree_item_right_click ] );
+		$outline->store_in_cache( $self->{filename}, [ $data, \&_on_tree_item_right_click ] );
 	}
 }
 
 sub _on_tree_item_right_click {
-	my ( $outlinebar, $event ) = @_;
+	my ( $outline, $event ) = @_;
 	my $showMenu = 0;
 
 	my $menu     = Wx::Menu->new;
-	my $itemData = $outlinebar->GetPlData( $event->GetItem );
+	my $itemData = $outline->GetPlData( $event->GetItem );
 
 	if ( defined($itemData) && defined( $itemData->{line} ) && $itemData->{line} > 0 ) {
 		my $goTo = $menu->Append( -1, Wx::gettext('&Go to Element') );
 		Wx::Event::EVT_MENU(
-			$outlinebar, $goTo,
-			sub { $outlinebar->on_tree_item_set_focus($event); },
+			$outline, $goTo,
+			sub { $outline->on_tree_item_set_focus($event); },
 		);
 		$showMenu++;
 	}
@@ -182,7 +172,7 @@ sub _on_tree_item_right_click {
 	{
 		my $pod = $menu->Append( -1, Wx::gettext('Open &Documentation') );
 		Wx::Event::EVT_MENU(
-			$outlinebar,
+			$outline,
 			$pod,
 			sub {
 
@@ -201,7 +191,7 @@ sub _on_tree_item_right_click {
 	if ( $showMenu > 0 ) {
 		my $x = $event->GetPoint->x;
 		my $y = $event->GetPoint->y;
-		$outlinebar->PopupMenu( $menu, $x, $y );
+		$outline->PopupMenu( $menu, $x, $y );
 	}
 	return;
 }

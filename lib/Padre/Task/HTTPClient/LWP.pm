@@ -1,21 +1,10 @@
 package Padre::Task::HTTPClient::LWP;
 
-use 5.008;
-use strict;
-use warnings;
-use Params::Util qw{_CODE _INSTANCE};
-use Padre::Task::HTTPClient;
-
-our $VERSION = '0.62';
-our @ISA     = 'Padre::Task::HTTPClient';
-
 =pod
 
 =head1 NAME
 
 Padre::Task::HTTPClient::LWP - Generic HTTP client processing task using L<LWP>
-
-=head1 SYNOPSIS
 
 =head1 DESCRIPTION
 
@@ -25,13 +14,22 @@ See L<Padre::Task::HTTPClient> for details.
 
 This module uses "require" instead of "use" to load the required modules
 
-	LWP::UserAgent
-	HTTP::Request
+    LWP::UserAgent
+    HTTP::Request
 
 because it need to be loaded without failing on dependencies which are no
 global Padre dependencies.
 
 =cut
+
+use 5.008;
+use strict;
+use warnings;
+use Params::Util qw{_CODE _INSTANCE};
+use Padre::Task::HTTPClient;
+
+our $VERSION = '0.62';
+our @ISA     = 'Padre::Task::HTTPClient';
 
 sub new {
 	my $class = shift;
