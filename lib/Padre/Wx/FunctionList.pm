@@ -278,12 +278,15 @@ sub render {
 	}
 
 	# Show the components and populate the function list
-	$search->Show;
-	$functions->Show;
-	$functions->Clear;
-	foreach my $method ( reverse @$names ) {
-		if ( $method =~ /$string/i ) {
-			$functions->Insert( $method, 0 );
+	SCOPE: {
+		my $lock = $self->{main}->lock('UPDATE');
+		$search->Show(1);
+		$functions->Show(1);
+		$functions->Clear;
+		foreach my $method ( reverse @$names ) {
+			if ( $method =~ /$string/i ) {
+				$functions->Insert( $method, 0 );
+			}
 		}
 	}
 
