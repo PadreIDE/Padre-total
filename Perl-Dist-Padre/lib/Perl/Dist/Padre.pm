@@ -205,7 +205,6 @@ sub install_padre_prereq_modules_2 {
 		  POD2::Base
 		  Readonly
 		  Readonly::XS
-		  Params::Util
 		  PPIx::Regexp
 		  UNIVERSAL::isa
 		  UNIVERSAL::can		  
