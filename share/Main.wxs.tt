@@ -6,7 +6,7 @@
 	Manufacturer="[% dist.app_publisher %]"
 	Name="[% dist.app_name %]"
 	UpgradeCode="[% dist.msi_upgrade_code %]"
-	Version="0.56.0" >
+	Version="0.63.0" >
 
     [% IF dist.msi_debug %]
     <Package Description='Perl for Win32 operating systems.' Id='*' Languages='1033'
@@ -26,7 +26,7 @@
       Error="A newer version of [% dist.app_name %] is already installed." />
 	<Upgrade Id="[% dist.msi_upgrade_code %]">
 	  <UpgradeVersion
-	    Minimum="0.56.0"
+	    Minimum="0.63.0"
 		IncludeMinimum="yes"
 	    OnlyDetect="yes"
 		Language="1033"
@@ -34,7 +34,7 @@
 	  <UpgradeVersion
 		Minimum="0.0.0"
 		IncludeMinimum="yes"
-		Maximum="0.56.0"
+		Maximum="0.63.0"
 	 	IncludeMaximum="no"
 		Language="1033"
 		Property="OLDERVERSIONBEINGUPGRADED" />
