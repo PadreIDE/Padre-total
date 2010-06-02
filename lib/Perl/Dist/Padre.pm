@@ -240,7 +240,6 @@ sub install_padre_modules {
 	# And finally, install Padre itself
 	$self->install_module(
 		name  => 'Padre',
-		force => 1,
 	);
 
 	return 1;
