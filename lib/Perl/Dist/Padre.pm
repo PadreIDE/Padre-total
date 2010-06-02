@@ -13,7 +13,7 @@ use parent                            qw( Perl::Dist::Strawberry );
 #>>>
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.620';
+our $VERSION = '0.630';
 $VERSION =~ s/_//ms;
 
 
@@ -85,7 +85,7 @@ sub new {
 
 
 sub output_base_filename {
-	return 'strawberry-plus-padre-0.62';
+	return 'strawberry-plus-padre-0.63';
 }
 
 
@@ -104,6 +104,22 @@ sub install_perl_589 {
 sub install_perl_5100 {
 	my $self = shift;
 	PDWiX->throw('Perl 5.10.0 is not available in Padre Standalone');
+	return;
+}
+
+
+
+sub install_perl_5120 {
+	my $self = shift;
+	PDWiX->throw('Perl 5.12.0 is not available in Padre Standalone');
+	return;
+}
+
+
+
+sub install_perl_5121 {
+	my $self = shift;
+	PDWiX->throw('Perl 5.12.1 is not available in Padre Standalone');
 	return;
 }
 
@@ -178,20 +194,12 @@ sub install_padre_prereq_modules_2 {
 		  Test::Base
 		  ExtUtils::XSpp
 		  Locale::Msgfmt
-	} );
-
-	# These were new between 0.50 and 0.55
-	$self->install_modules( qw{
 		  Module::ScanDeps
 		  Module::Install
 		  Format::Human::Bytes
 		  Template::Tiny
 		  Win32::Shortcut
 		  Debug::Client
-	} );
-	
-	# These were new between 0.55 and svn trunk, AFAICT.
-	$self->install_modules( qw{
 		  Devel::Refactor
 	} );
 	
@@ -202,9 +210,6 @@ sub install_padre_prereq_modules_2 {
 
 sub install_padre_modules {
 	my $self = shift;
-
-	# The rest of the modules are order-specific,
-	# for reasons maybe involving CPAN.pm but not fully understood.
 
 	# Install the Alien::wxWidgets module from a precompiled .par
 	my $par_url = 
@@ -294,7 +299,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.620
+Perl::Dist::Padre version 0.630
 
 =end readme
 
@@ -306,7 +311,7 @@ Perl::Dist::Padre - Strawberry + Padre for Win32 builder
 
 =head1 VERSION
 
-This document describes Perl::Dist::Padre version 0.620.
+This document describes Perl::Dist::Padre version 0.630.
 
 =for readme continue
 
