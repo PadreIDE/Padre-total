@@ -66,6 +66,19 @@ sub revision_fetch {
 	$INDEX{$_[1]};
 }
 
+# Create a new task bound to the owner
+sub task_request {
+	my $self  = shift;
+	my %param = @_;
+	my $class = Params::Util::_DRIVER(
+		delete $param{task},
+		'Padre::Task2',
+	) or Carp::croak("Missing or invalid task param");
+
+	# Create and start the task with ourself as the owner
+	$class->new( owner => $self, %param )->schedule;
+}
+
 1;
 
 =pod
