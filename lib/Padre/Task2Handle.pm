@@ -6,9 +6,9 @@ use warnings;
 use threads;
 use threads::shared;
 use Thread::Queue 2.11;
-use Scalar::Util                 ();
-use Storable                     ();
-use Padre::Wx::Role::EventTarget ();
+use Scalar::Util             ();
+use Storable                 ();
+use Padre::Wx::Role::Conduit ();
 use Padre::Logger;
 
 our $VERSION  = '0.59';
@@ -141,7 +141,7 @@ sub from_array {
 # Serialize and pass-through to the Wx signal dispatch
 sub message {
 	TRACE($_[0]) if DEBUG;
-	Padre::Wx::Role::EventTarget->signal(
+	Padre::Wx::Role::Conduit->signal(
 		Storable::freeze( [ shift->hid, @_ ] )
 	);
 }

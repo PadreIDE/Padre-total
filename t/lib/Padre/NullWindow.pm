@@ -11,7 +11,7 @@ use Padre::Logger;
 
 our $VERSION = '0.58';
 our @ISA     = qw{
-	Padre::Wx::Role::EventTarget
+	Padre::Wx::Role::Conduit
 	Wx::Frame
 };
 

@@ -30,16 +30,13 @@ From the main L<Padre> object, it can be accessed via the C<wx> method.
 use 5.008;
 use strict;
 use warnings;
-use Carp                         ();
-use Padre::Wx                    ();
-use Padre::Wx::Role::EventTarget ();
+use Carp                     ();
+use Padre::Wx                ();
+use Padre::Wx::Role::Conduit ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
-our @ISA     = qw{
-	Wx::App
-};
-#	Padre::Wx::Role::EventTarget
+our @ISA     = 'Wx::App';
 
 
 

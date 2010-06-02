@@ -1,10 +1,10 @@
-package Padre::Wx::Role::EventTarget;
+package Padre::Wx::Role::Conduit;
 
 =pod
 
 =head1 NAME
 
-Padre::Wx::Role::EventTarget - Role to allows an object to receive Wx events
+Padre::Wx::Role::Conduit - Role to allows an object to receive Wx events
 
 =head1 DESCRIPTION
 

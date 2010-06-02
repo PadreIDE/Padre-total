@@ -3,12 +3,12 @@ package Padre::Task2Manager;
 use 5.008005;
 use strict;
 use warnings;
-use Params::Util                 ();
-use Padre::Task2Handle           ();
-use Padre::Task2Thread           ();
-use Padre::Task2Worker           ();
-use Padre::Wx                    ();
-use Padre::Wx::Role::EventTarget ();
+use Params::Util             ();
+use Padre::Task2Handle       ();
+use Padre::Task2Thread       ();
+use Padre::Task2Worker       ();
+use Padre::Wx                ();
+use Padre::Wx::Role::Conduit ();
 use Padre::Logger;
 
 our $VERSION = '0.59';
@@ -36,7 +36,7 @@ sub new {
 	}, $class;
 
 	# Do the initialisation needed for the event conduit
-	unless ( Params::Util::_INSTANCE($conduit, 'Padre::Wx::Role::EventTarget') ) {
+	unless ( Params::Util::_INSTANCE($conduit, 'Padre::Wx::Role::Conduit') ) {
 		die("Failed to provide an event conduit for the Task2Manager");
 	}
 	$conduit->event_target_init($self);

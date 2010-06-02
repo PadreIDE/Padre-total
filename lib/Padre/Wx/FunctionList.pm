@@ -41,7 +41,7 @@ sub new {
 	$self->{main} = $main;
 
 	# Temporary store for the function list.
-	$self->{names} = [];
+	$self->{model} = [];
 
 	# Remember the last document we were looking at
 	$self->{document} = '';
@@ -229,7 +229,7 @@ sub refresh {
 		$search->Hide;
 		$functions->Hide;
 		$functions->Clear;
-		$self->{names}    = [];
+		$self->{model}    = [];
 		$self->{document} = '';
 		return;
 	}
@@ -258,14 +258,14 @@ sub refresh {
 
 # Set an updated method list from the task
 sub set {
-	$_[0]->{names} = $_[1];
+	$_[0]->{model} = $_[1];
 	$_[0]->render;
 }
 
 # Populate the functions list with search results
 sub render {
 	my $self      = shift;
-	my $names     = $self->{names};
+	my $names     = $self->{model};
 	my $search    = $self->{search};
 	my $functions = $self->{functions};
 

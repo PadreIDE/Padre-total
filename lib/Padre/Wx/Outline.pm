@@ -117,12 +117,8 @@ sub clear {
 sub response {
 	my $self = shift;
 	my $task = shift;
-	my $data = $task->{data};
+	my $data = Params::Util::_ARRAY($task->{data}) or return;
 	my $lock = Padre::Current->main->lock('UPDATE');
-
-	# If there is no structure do nothing (we are already cleared)
-	return   unless $data;
-	return 1 unless @$data;
 
 	# Add the hidden unused root
 	my $root = $self->AddRoot(

@@ -59,12 +59,12 @@ use Padre::Wx::AuiManager         ();
 use Padre::Wx::FileDropTarget     ();
 use Padre::Wx::Dialog::Text       ();
 use Padre::Wx::Dialog::FilterTool ();
-use Padre::Wx::Role::EventTarget  ();
+use Padre::Wx::Role::Conduit      ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Wx::Role::EventTarget
+	Padre::Wx::Role::Conduit
 	Wx::Frame
 };
 
