@@ -4,8 +4,8 @@ package Perl::Dist::Padre;
 use 5.008001;
 use strict;
 use warnings;
-use Perl::Dist::WiX          1.102002;
-use Perl::Dist::Strawberry   2.02     qw();
+use Perl::Dist::WiX          1.200001;
+use Perl::Dist::Strawberry   2.10     qw();
 use URI::file                         qw();
 use English                           qw( -no_match_vars );
 use File::Spec::Functions             qw( catfile catdir );
@@ -13,7 +13,7 @@ use parent                            qw( Perl::Dist::Strawberry );
 #>>>
 
 # http://www.dagolden.com/index.php/369/version-numbers-should-be-boring/
-our $VERSION = '0.561';
+our $VERSION = '0.620';
 $VERSION =~ s/_//ms;
 
 
@@ -28,7 +28,7 @@ sub new {
 		# Define the distribution information and where it goes.
 		app_id            => 'padre',
 		app_name          => 'Strawberry Perl plus Padre',
-		app_ver_name      => 'Strawberry Perl 5.10.1.1 plus Padre 0.56',
+		app_ver_name      => 'Strawberry Perl 5.10.1.2 plus Padre 0.62',
 		app_publisher     => 'Padre',
 		app_publisher_url => 'http://padre.perlide.org/',
 		image_dir         => 'C:\strawberry',
@@ -56,8 +56,8 @@ sub new {
 		zip => 1,
 
 		# These are the locations to pull down the msm.
-		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.1.msm',
-		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.1.zip',
+		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.2.msm',
+		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.2.zip',
 		msm_code   => 'BC4B680E-4871-31E7-9883-3E2C74EA4F3C',
 
 		# Tasks to complete to create Strawberry + Padre.
@@ -85,21 +85,13 @@ sub new {
 
 
 sub output_base_filename {
-	return 'strawberry-plus-padre-0.56';
+	return 'strawberry-plus-padre-0.61';
 }
 
 
 
 #####################################################################
 # Customisations for Perl assets
-
-sub install_perl_588 {
-	my $self = shift;
-	PDWiX->throw('Perl 5.8.8 is not available in Padre Standalone');
-	return;
-}
-
-
 
 sub install_perl_589 {
 	my $self = shift;
@@ -304,7 +296,7 @@ __END__
 
 =begin readme text
 
-Perl::Dist::Padre version 0.560
+Perl::Dist::Padre version 0.620
 
 =end readme
 
@@ -316,7 +308,7 @@ Perl::Dist::Padre - Strawberry + Padre for Win32 builder
 
 =head1 VERSION
 
-This document describes Perl::Dist::Padre version 0.450.
+This document describes Perl::Dist::Padre version 0.620.
 
 =for readme continue
 
