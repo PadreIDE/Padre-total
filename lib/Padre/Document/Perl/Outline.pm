@@ -3,17 +3,17 @@ package Padre::Document::Perl::Outline;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2::Outline2 ();
+use Padre::Task2::Outline ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::Outline2';
+our @ISA     = 'Padre::Task2::Outline';
 
 
 
 
 
 ######################################################################
-# Padre::Task2::Outline2 Methods
+# Padre::Task2::Outline Methods
 
 sub find {
 	my $self = shift;

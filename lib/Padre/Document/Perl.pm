@@ -468,44 +468,6 @@ sub beginner_check {
 	return 1;
 }
 
-sub get_outline {
-	my $self = shift;
-	my %args = @_;
-
-	my $text = $self->text_get;
-	unless ( defined $text and $text ne '' ) {
-		return [];
-	}
-
-	# Do we really need an update?
-	require Digest::MD5;
-	my $md5 = Digest::MD5::md5_hex( Encode::encode_utf8($text) );
-	unless ( $args{force} ) {
-		if ( defined( $self->{last_outline_md5} )
-			and $self->{last_outline_md5} eq $md5 )
-		{
-			return;
-		}
-	}
-	$self->{last_outline_md5} = $md5;
-
-	my %arg = (
-		text     => $text,
-		filename => defined $self->filename ? $self->filename : $self->get_title,
-	);
-	if ( $self->project ) {
-		$arg{cwd}      = $self->project->root;
-		$arg{perl_cmd} = ['-Ilib'];
-	}
-
-	require Padre::Task2::Outline::Perl;
-	my $task = Padre::Task2::Outline::Perl->new(%arg);
-
-	# asynchronous execution (see on_finish hook)
-	$task->schedule;
-	return;
-}
-
 sub comment_lines_str {
 	return '#';
 }

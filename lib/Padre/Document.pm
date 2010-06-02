@@ -864,6 +864,10 @@ sub text_get {
 	$_[0]->editor->GetText;
 }
 
+sub text_length {
+	$_[0]->editor->GetLength;
+}
+
 sub text_set {
 	$_[0]->editor->SetText( $_[1] );
 }

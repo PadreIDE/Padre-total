@@ -3,6 +3,7 @@ package Padre::Wx::Outline;
 use 5.008;
 use strict;
 use warnings;
+use Scalar::Util      ();
 use Params::Util      ();
 use Padre::Wx         ();
 use Padre::Current    ();
@@ -52,6 +53,14 @@ sub new {
 
 	$self->Hide;
 
+	# Track state so we can do shortcutting
+	$self->{document} = '';
+	$self->{length}   = -1;
+
+	# Cache document metadata for use when changing documents.
+	# By substituting old metadata before we scan for new metadata,
+	# we can make the widget APPEAR to be faster than it is and
+	# offset the cost of doing the PPI parse in the background.
 	$self->{cache} = {};
 
 	return $self;
@@ -105,7 +114,7 @@ sub get_from_cache {
 #####################################################################
 # GUI routines
 
-sub task_response {
+sub response {
 	my $self = shift;
 	my $task = shift;
 	my $data = $task->{data};
@@ -303,13 +312,23 @@ sub on_timer {
 sub refresh {
 	my $self = shift;
 
-	# Flush the old state
+	# Shortcut if nothing has changed.
+	# NOTE: Given the speed at which the timer fires,
+	# a cheap length check is better than an expensive MD5 check.
+	my $document = Padre::Current->document or return;
+	my $length   = $document->text_length;
+	if ( $document eq $self->{document} and $length eq $self->{length} ) {
+		return;
+	}
+	$self->{document} = $document;
+	$self->{length}   = $length;
+
+	# We need to refresh, so flush out old state
 	$self->clear;
 	$self->revision_change;
 
-	# Fire the task to get the new state
-	my $document = Padre::Current->document or return;
-	my $task     = $document->task_outline  or return;
+	# Fire the task to generate the new outline
+	my $task = $document->task_outline  or return;
 	$self->schedule(
 		task => $task,
 		text => $document->text_get,
