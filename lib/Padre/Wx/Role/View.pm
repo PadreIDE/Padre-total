@@ -16,7 +16,6 @@ live in the left, right or bottom panels of Padre.
 use 5.008005;
 use strict;
 use warnings;
-use Scalar::Util ();
 
 our $VERSION = '0.62';
 
