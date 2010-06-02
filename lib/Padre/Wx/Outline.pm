@@ -61,7 +61,7 @@ sub new {
 	# By substituting old metadata before we scan for new metadata,
 	# we can make the widget APPEAR to be faster than it is and
 	# offset the cost of doing the PPI parse in the background.
-	$self->{cache} = {};
+	# $self->{cache} = {};
 
 	return $self;
 }
@@ -89,23 +89,23 @@ sub clear {
 ################################################################
 # Cache routines
 
-sub store_in_cache {
-	my ( $self, $cache_key, $content ) = @_;
-
-	if ( defined $cache_key ) {
-		$self->{cache}->{$cache_key} = $content;
-	}
-	return;
-}
-
-sub get_from_cache {
-	my ( $self, $cache_key ) = @_;
-
-	if ( defined $cache_key and exists $self->{cache}->{$cache_key} ) {
-		return $self->{cache}->{$cache_key};
-	}
-	return;
-}
+# sub store_in_cache {
+	# my ( $self, $cache_key, $content ) = @_;
+# 
+	# if ( defined $cache_key ) {
+		# $self->{cache}->{$cache_key} = $content;
+	# }
+	# return;
+# }
+# 
+# sub get_from_cache {
+	# my ( $self, $cache_key ) = @_;
+# 
+	# if ( defined $cache_key and exists $self->{cache}->{$cache_key} ) {
+		# return $self->{cache}->{$cache_key};
+	# }
+	# return;
+# }
 
 
 
@@ -121,7 +121,7 @@ sub response {
 	my $lock = Padre::Current->main->lock('UPDATE');
 
 	# If there is no structure do nothing (we are already cleared)
-	return unless $data;
+	return   unless $data;
 	return 1 unless @$data;
 
 	# Add the hidden unused root
@@ -165,7 +165,6 @@ sub response {
 	# by the user)
 	#$self->ExpandAll;
 	$self->GetBestSize;
-	$self->Thaw;
 
 	# Disable caching for the moment
 	# $self->store_in_cache( $filename, [ $data, $right_click_handler ] );
