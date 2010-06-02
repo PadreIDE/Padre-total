@@ -201,6 +201,15 @@ sub install_padre_prereq_modules_2 {
 		  Win32::Shortcut
 		  Debug::Client
 		  Devel::Refactor
+		  App::cpanminus
+		  POD2::Base
+		  Readonly
+		  Readonly::XS
+		  Params::Util
+		  PPIx::Regexp
+		  UNIVERSAL::isa
+		  UNIVERSAL::can		  
+		  Test::MockObject
 	} );
 	
 	return 1;
