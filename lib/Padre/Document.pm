@@ -143,6 +143,21 @@ our $VERSION = '0.62';
 
 
 #####################################################################
+# Task Integration
+
+sub task_functions {
+	return '';
+}
+
+sub task_outline {
+	return '';
+}
+
+
+
+
+
+#####################################################################
 # Document Registration
 
 # NOTE: This is probably a bad place to store this

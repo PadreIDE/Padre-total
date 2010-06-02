@@ -67,7 +67,7 @@ sub revision_fetch {
 }
 
 # Create a new task bound to the owner
-sub task_request {
+sub schedule {
 	my $self  = shift;
 	my %param = @_;
 	my $class = Params::Util::_DRIVER(

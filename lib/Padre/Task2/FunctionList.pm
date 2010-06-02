@@ -25,15 +25,10 @@ sub run {
 	# it back up to the parent Wx thread at the end of the task.
 	my $text = delete $self->{text};
 
-	# Load the document class
-	SCOPE: {
-		local $@;
-		eval "require $self->{class};";
-		return if $@;
-	}
- 
 	# Get the function list
-	my @functions = $self->{class}->find_functions( $text );
+	my @functions = $self->find( $text );
+
+	# Sort it appropriately
 	if ( $self->{order} eq 'alphabetical' ) {
 		# Alphabetical (aka 'abc')
 		@functions = sort { lc($a) cmp lc($b) } @functions;
@@ -53,8 +48,19 @@ sub finish {
 	my $list  = $self->{list} or return;
 	my $owner = $self->owner  or return;
 	$owner->set( $list );
-	$owner->render;
 	return 1;
+}
+
+
+
+
+
+######################################################################
+# Padre::Task2::FunctionList API
+
+# Show an empty function list by default
+sub find {
+	return ();
 }
 
 1;

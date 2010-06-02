@@ -25,6 +25,21 @@ our @ISA     = 'Padre::Document';
 
 
 #####################################################################
+# Task Integration
+
+sub task_functions {
+	return 'Padre::Document::Perl::FunctionList';
+}
+
+sub task_outline {
+	return 'Padre::Document::Perl::Outline';
+}
+
+
+
+
+
+#####################################################################
 # Padre::Document::Perl Methods
 
 # Ticket #637:

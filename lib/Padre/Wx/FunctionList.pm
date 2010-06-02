@@ -239,29 +239,27 @@ sub refresh {
 	$functions->Show(1);
 
 	# Clear search when it is a different document
-	my $docaddr = Scalar::Util::refaddr($document);
-	if ( $document ne $self->{document} ) {
+	my $id = Scalar::Util::refaddr($document);
+	if ( $id ne $self->{document} ) {
 		$search->ChangeValue('');
-		$self->{document} = $document;
+		$self->{document} = $id;
 	}
 
 	# Launch the background task
-	require Padre::Task2::FunctionList;
-	Padre::Task2::FunctionList->new(
-		owner => $self,
-		class => Scalar::Util::blessed($document),
-		order => $current->config->main_functions_order,
+	my $task = $document->task_functions or return;
+	$self->schedule(
+		task  => $task,
 		text  => $document->text_get,
-	)->schedule;
+		order => $current->config->main_functions_order,
+	);
 
 	return 1;
 }
 
 # Set an updated method list from the task
 sub set {
-	my $self = shift;
-	$self->{names} = shift;
-	$self->render;
+	$_[0]->{names} = $_[1];
+	$_[0]->render;
 }
 
 # Populate the functions list with search results
