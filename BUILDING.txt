@@ -34,8 +34,6 @@ lwp-download http://www.commandline.co.uk/mtee/mtee.zip
 unzip mtee.zip
 lwp-download http://www.strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par
 
-NOTE: This .par includes wxWidgets 2.9.0. Previous .par files included 2.8.10.
-
 1b) [Only needed if an updated version of Alien::wxWidgets is wanted from the one
 above] Create a par file for Alien::wxWidgets.
 
