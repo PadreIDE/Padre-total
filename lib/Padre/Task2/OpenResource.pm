@@ -46,18 +46,6 @@ sub run {
 	return 1;
 }
 
-#
-# This is run in the main thread after the task is done.
-# It can update the GUI and do cleanup.
-#
-sub finish {
-	my $self    = shift;
-	my $owner   = $self->owner     or return;
-	my $matched = $self->{matched} or return;
-	$owner->search_response( $self->{matched} );
-	return 1;
-}
-
 1;
 
 __END__

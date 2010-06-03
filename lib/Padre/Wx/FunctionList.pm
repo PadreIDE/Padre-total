@@ -247,7 +247,7 @@ sub refresh {
 
 	# Launch the background task
 	my $task = $document->task_functions or return;
-	$self->schedule(
+	$self->task_request(
 		task  => $task,
 		text  => $document->text_get,
 		order => $current->config->main_functions_order,
@@ -257,9 +257,12 @@ sub refresh {
 }
 
 # Set an updated method list from the task
-sub set {
-	$_[0]->{model} = $_[1];
-	$_[0]->render;
+sub task_response {
+	my $self = shift;
+	my $task = shift;
+	my $list = $task->{list} or return;
+	$self->{model} = $list;
+	$self->render;
 }
 
 # Populate the functions list with search results

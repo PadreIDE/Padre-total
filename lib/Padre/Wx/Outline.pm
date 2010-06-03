@@ -114,7 +114,7 @@ sub clear {
 #####################################################################
 # GUI routines
 
-sub response {
+sub task_response {
 	my $self = shift;
 	my $task = shift;
 	my $data = Params::Util::_ARRAY($task->{data}) or return;
@@ -320,11 +320,11 @@ sub refresh {
 
 	# We need to refresh, so flush out old state
 	$self->clear;
-	$self->revision_change;
+	$self->task_reset;
 
 	# Fire the task to generate the new outline
-	my $task = $document->task_outline  or return;
-	$self->schedule(
+	my $task = $document->task_outline or return;
+	$self->task_request(
 		task => $task,
 		text => $document->text_get,
 	);

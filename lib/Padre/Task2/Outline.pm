@@ -15,7 +15,7 @@ our @ISA     = 'Padre::Task2';
 
 
 ######################################################################
-# Padre::Task2 API
+# Padre::Task2 Methods
 
 sub run {
 	my $self  = shift;
@@ -30,22 +30,12 @@ sub run {
 	return 1;
 }
 
-sub finish {
-	my $self  = shift;
-	my $data  = $self->{data} or return;
-	my $owner = $self->owner  or return;
-	if ( $owner->can('response') ) {
-		$owner->response($self);
-	}
-	return 1;
-}
-
 
 
 
 
 ######################################################################
-# Padre::Task2::FunctionList API
+# Padre::Task2::Outline Methods
 
 # Show an empty function list by default
 sub find {

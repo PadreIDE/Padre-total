@@ -20,7 +20,7 @@ sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
 	if ( $self->{owner} ) {
-		$self->{owner} = $self->{owner}->revision;
+		$self->{owner} = $self->{owner}->task_revision;
 	}
 	return $self;
 }
@@ -30,7 +30,7 @@ sub running {
 }
 
 sub owner {
-	Padre::Task2Owner->revision_fetch($_[0]->{owner});
+	Padre::Task2Owner->task_owner($_[0]->{owner});
 }
 
 
@@ -70,6 +70,11 @@ sub run {
 # The object may be destroyed at any time after this method
 # has been completed.
 sub finish {
+	my $self = shift;
+	if ( $self->{owner} ) {
+		my $owner = $self->owner or return;
+		$owner->task_response( $self );
+	}
 	return 1;
 }
 

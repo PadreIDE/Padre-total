@@ -34,40 +34,40 @@ my %INDEX    = ();
 # Statefulness
 
 # Get the object's current revision
-sub revision {
+sub task_revision {
 	my $self = shift;
 
 	# Set a revision if this is the first time
-	unless ( defined $self->{revision} ) {
-		$self->{revision} = ++$SEQUENCE;
+	unless ( defined $self->{task_revision} ) {
+		$self->{task_revision} = ++$SEQUENCE;
 	}
 
 	# Optimisation hack: Only populate the index when
 	# the revision is queried from the view.
-	unless ( exists $INDEX{$self->{revision}} ) {
-		$INDEX{$self->{revision}} = $self;
-		Scalar::Util::weaken($INDEX{$self->{revision}});
+	unless ( exists $INDEX{$self->{task_revision}} ) {
+		$INDEX{$self->{task_revision}} = $self;
+		Scalar::Util::weaken($INDEX{$self->{task_revision}});
 	}
 
-	return $self->{revision};
+	return $self->{task_revision};
 }
 
 # Object state has changed, update revision and flush index.
-sub revision_change {
+sub task_reset {
 	my $self = shift;
-	if ( $self->{revision} ) {
-		delete $INDEX{$self->{revision}};
+	if ( $self->{task_revision} ) {
+		delete $INDEX{$self->{task_revision}};
 	}
-	$self->{revision} = ++$SEQUENCE;
+	$self->{task_revision} = ++$SEQUENCE;
 }
 
 # Locate an object by revision
-sub revision_fetch {
+sub task_owner {
 	$INDEX{$_[1]};
 }
 
 # Create a new task bound to the owner
-sub schedule {
+sub task_request {
 	my $self  = shift;
 	my %param = @_;
 	my $class = Params::Util::_DRIVER(
@@ -77,6 +77,13 @@ sub schedule {
 
 	# Create and start the task with ourself as the owner
 	$class->new( owner => $self, %param )->schedule;
+}
+
+# By default, ignore task responses
+sub task_response {
+	my $class = ref($_[0]) || $_[0];
+	my $task  = ref($_[1]) || $_[1];
+	die "Unhandled task_response for $class (recieved $task)";
 }
 
 1;

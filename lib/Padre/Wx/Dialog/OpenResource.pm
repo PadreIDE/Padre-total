@@ -315,7 +315,7 @@ sub _setup_events {
 		$self->{search_text},
 		sub {
 			unless ( $self->{matched_files} ) {
-				$self->search_request;
+				$self->search;
 			}
 			$self->render;
 			return;
@@ -408,7 +408,7 @@ sub _setup_events {
 #
 sub restart {
 	my $self = shift;
-	$self->search_request;
+	$self->search;
 	$self->render;
 }
 
@@ -491,7 +491,7 @@ sub _show_recently_opened_resources {
 #
 # Search for files and cache result
 #
-sub search_request {
+sub search {
 	my $self = shift;
 
 	$self->{status_text}->ChangeValue(
@@ -499,7 +499,7 @@ sub search_request {
 	);
 
 	# Kick off the resource search
-	$self->schedule(
+	$self->task_request(
 		task                     => 'Padre::Task2::OpenResource',
 		directory                => $self->{directory},
 		skip_vcs_files           => $self->{skip_vcs_files}->IsChecked,
@@ -509,9 +509,11 @@ sub search_request {
 	return;
 }
 
-sub search_response {
-	my $self = shift;
-	$self->{matched_files} = shift;
+sub task_response {
+	my $self    = shift;
+	my $task    = shift;
+	my $matched = $task->{matched} or return;
+	$self->{matched} = $matched;
 	$self->render;
 	return 1;
 }
