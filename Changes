@@ -1,6 +1,9 @@
 Changes for Perl extension Perl-Dist-Padre
 
-0.560 To be released
+0.630 Thu 3 Jun 2010
+    - Used to make Padre plus Strawberry 0.63.
+
+0.560 Tue 9 Feb 2010
     - Used to make Padre plus Strawberry 0.56.
     - Updated to new version of Strawberry.
 	- Uses Strawberry merge module.
