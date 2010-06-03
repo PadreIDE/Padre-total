@@ -27,6 +27,14 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 June 03
+        url: http://use.perl.org/~Alias/journal/40377
+        title: Padre::Task 2.0 - Making Wx + Perl threading suck faster
+        comment: by Adam Kennedy
+      - date: 2010 June 02
+        url: http://perlwannabe.vox.com/library/post/padre-063-bugfix-release.html
+        title: Padre 0.63 Bugfix Release
+        comment: by Peter Lavender (Release Manager)
       - date: 2010 May 24
         url: http://perl-hunting.blogspot.com/2010/05/installing-padre-062-on-debian-sid.html
         title: installing padre 0.62 on debian sid
@@ -49,7 +57,7 @@ about:
         comment: The Tech Blog of Sam Crawley
       - date: 2010 April 20
         url: http://perlwannabe.vox.com/library/post/blink-and-youll-miss-it-padre-060-has-been-released.html
-        title: Blink and you'll miss it.. Padre 0.60 has been released!
+        title: Blink and you will miss it.. Padre 0.60 has been released!
         comment: Peter Lavender (Release Manager)
       - date: 2010 April 15
         url: http://perlwannabe.vox.com/library/post/padre-059-running-on-latest-perl-5120.html
