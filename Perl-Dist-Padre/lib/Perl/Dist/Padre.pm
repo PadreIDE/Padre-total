@@ -25,6 +25,7 @@ sub new {
 	my $dist_dir = File::ShareDir::dist_dir('Perl-Dist-Padre');
 
 	return shift->SUPER::new(
+
 		# Define the distribution information and where it goes.
 		app_id            => 'padre',
 		app_name          => 'Strawberry Perl plus Padre',
@@ -56,9 +57,11 @@ sub new {
 		zip => 1,
 
 		# These are the locations to pull down the msm.
-		msm_to_use => 'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.2.msm',
-		msm_zip    => 'http://strawberryperl.com/download/strawberry-perl-5.10.1.2.zip',
-		msm_code   => 'BC4B680E-4871-31E7-9883-3E2C74EA4F3C',
+		msm_to_use =>
+'http://strawberryperl.com/download/strawberry-msm/strawberry-perl-5.10.1.2.msm',
+		msm_zip =>
+		  'http://strawberryperl.com/download/strawberry-perl-5.10.1.2.zip',
+		msm_code => 'BC4B680E-4871-31E7-9883-3E2C74EA4F3C',
 
 		# Tasks to complete to create Strawberry + Padre.
 		tasklist => [
@@ -75,8 +78,8 @@ sub new {
 			'write',
 		],
 
-		# Other parameters passed in override the ones 
-		# here and in Strawberrry. 
+		# Other parameters passed in override the ones
+		# here and in Strawberrry.
 		@_,
 	);
 
@@ -158,10 +161,10 @@ sub install_padre_prereq_modules_1 {
 sub install_padre_prereq_modules_2 {
 	my $self = shift;
 
-	# Manually install our non-Wx dependencies first to isolate
-	# them from the Wx problems
-	# NOTE: ORLite::Migrate goes after ORLite once they don't clone it privately.
-	# NOTE: Test::Exception goes before Test::Most when it's not in Strawberry.
+# Manually install our non-Wx dependencies first to isolate
+# them from the Wx problems
+# NOTE: ORLite::Migrate goes after ORLite once they don't clone it privately.
+# NOTE: Test::Exception goes before Test::Most when it's not in Strawberry.
 	$self->install_modules( qw{
 		  Test::SubCalls
 		  List::MoreUtils
@@ -207,10 +210,10 @@ sub install_padre_prereq_modules_2 {
 		  Readonly::XS
 		  PPIx::Regexp
 		  UNIVERSAL::isa
-		  UNIVERSAL::can		  
+		  UNIVERSAL::can
 		  Test::MockObject
 	} );
-	
+
 	return 1;
 } ## end sub install_padre_prereq_modules_2
 
@@ -219,9 +222,10 @@ sub install_padre_prereq_modules_2 {
 sub install_padre_modules {
 	my $self = shift;
 
+	## no critic(RestrictLongStrings)
 	# Install the Alien::wxWidgets module from a precompiled .par
-	my $par_url = 
-		'http://strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
+	my $par_url =
+'http://strawberryperl.com/download/padre/Alien-wxWidgets-0.50-MSWin32-x86-multi-thread-5.10.1.par';
 	my $filelist = $self->install_par(
 		name => 'Alien_wxWidgets',
 		url  => $par_url,
@@ -237,9 +241,7 @@ sub install_padre_modules {
 	);
 
 	# And finally, install Padre itself
-	$self->install_module(
-		name  => 'Padre',
-	);
+	$self->install_module( name => 'Padre', );
 
 	return 1;
 } ## end sub install_padre_modules
