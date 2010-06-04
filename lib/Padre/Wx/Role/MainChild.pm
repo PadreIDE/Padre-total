@@ -8,8 +8,11 @@ Padre::Wx::Role::MainChild - Convenience methods for children of the main window
 
 =head1 DESCRIPTION
 
-This pseudo-role implements the fairly common method pattern for Wx elements that
+This role implements the fairly common method pattern for Wx elements that
 are children of L<Padre::Wx::Main>.
+
+It provides accessors for easy access to the most commonly needed elements,
+and shortcut integration with the L<Padre::Current> context system.
 
 =head1 METHODS
 
@@ -76,7 +79,7 @@ sub main {
 
     my $aui = $object->aui;
 
-Convenient access to the C<AUI> Manager.
+Convenient access to the Wx Advanced User Interface (AUI) Manager object.
 
 =cut
 
