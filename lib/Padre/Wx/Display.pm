@@ -39,6 +39,45 @@ use constant GOLDEN => 1.618;
 
 =pod
 
+=head2 perfect
+
+  my $boolean = Padre::Wx::Display->perfect(
+      [ $left, $top     ],
+      [ $width, $height ],
+  );
+
+The default Wx implementation of IsShownOnScreen is a bit weird,
+and while it may technically be correct it does not necesarily
+represent what a typical human expects, which is that the application
+is on an active plugged in monitor and that it is entirely on the
+monitor.
+
+The C<perfect> method takes the same C< position, size > pair as the
+L<Wx::Window> constructor, and checks to see if the window is entirely
+within one of the active displays.
+
+Returns true if so, or false otherwise.
+
+=cut
+
+sub perfect {
+	my $class  = shift;
+	my $window = shift;
+	my $rect   = $window->GetScreenRect;
+
+	# Check all of the displays
+	foreach ( 0 .. Wx::Display::GetCount() - 1 ) {
+		my $display = Wx::Display->new($_);
+		if ( $display->GetGeometry->ContainsRect($rect) ) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+=pod
+
 =head2 primary
 
 Locates and returns the primary display as a L<Wx::Display> object.

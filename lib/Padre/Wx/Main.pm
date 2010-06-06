@@ -50,6 +50,7 @@ use Padre::Util::Template         ();
 use Padre::Wx                     ();
 use Padre::Wx::Icon               ();
 use Padre::Wx::Debugger           ();
+use Padre::Wx::Display            ();
 use Padre::Wx::Editor             ();
 use Padre::Wx::Menubar            ();
 use Padre::Wx::ToolBar            ();
@@ -120,7 +121,6 @@ sub new {
 
 	# Generate a smarter default size than Wx does
 	if ( $size->[0] == -1 ) {
-		require Padre::Wx::Display;
 		my $rect = Padre::Wx::Display::primary_default();
 		$size     = $rect->GetSize;
 		$position = $rect->GetPosition;
@@ -310,14 +310,9 @@ sub timer_start {
 	# size, reposition to the defaults).
 	# This must happen AFTER the initial ->Show(1) because otherwise
 	# ->IsShownOnScreen returns a false-negative result.
-	unless ( $self->IsShownOnScreen and $self->_xy_on_screen ) {
-		$self->SetSize(
-			Wx::Size->new(
-				$config->default('main_width'),
-				$config->default('main_height'),
-			)
-		);
-		$self->CentreOnScreen;
+	unless ( Padre::Wx::Display->perfect($self) ) {
+		my $rect = Padre::Wx::Display::primary_default();
+		$self->SetSizeRect($rect);
 	}
 
 	# Lock everything during the initial opening of files.
