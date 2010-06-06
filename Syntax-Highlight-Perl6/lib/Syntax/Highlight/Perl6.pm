@@ -59,7 +59,7 @@ sub new {
 }
 
 #----------------------------------------------------------------
-# Lazily parses the source string using STD.pm (only once)
+# Lazily parses the source string using STD.pm6 (only once)
 # (private)
 #----------------------------------------------------------------
 sub _lazy_parse {
@@ -374,7 +374,7 @@ sub _read_ansi_file {
 
 
 #---------------------------------------------------------------
-#    Helper private method that traverses STD.pm's parse
+#    Helper private method that traverses STD.pm6's parse
 # tree array. It needs a callback process_buffer and a
 # colors hash.
 #---------------------------------------------------------------
@@ -440,7 +440,7 @@ sub _redspans_traverse {
 
 #------------------------------------------------------------------
 # R E D S P A N S
-# STD.pm calls this method when you call STD->parse(...)
+# STD.pm6 calls this method when you call STD->parse(...)
 # and we populate @loc with action references and parse trees...
 #------------------------------------------------------------------
 {
@@ -556,11 +556,11 @@ Syntax::Highlight::Perl6 - Perl 6 Syntax Highlighter
 
 =head1 DESCRIPTION
 
-C<Syntax::Highlight::Perl6> parses Perl 6 source code using an embedded STD.pm. 
+C<Syntax::Highlight::Perl6> parses Perl 6 source code using an embedded STD.pm6. 
 It matches parse tree nodes to colors then returns them in different output formats.
 It can be used to create web pages with colorful source code samples in its
 simple and snippet html modes, or it can be used as a learning tool in examining
-STD.pm's output using the JavaScript node viewer in its full html mode. Or you can
+STD.pm6's output using the JavaScript node viewer in its full html mode. Or you can
 use its parse tree Perl 5 records to build your next great idea.
 
 The available output formats are:
@@ -596,7 +596,7 @@ This is where you should provide the Perl 6 code.
 
 =item * rule
 
-parse rule name for STD.pm to parse against (default: TOP)
+parse rule name for STD.pm6 to parse against (default: TOP)
 
 =item * inline_resources
 
@@ -682,15 +682,15 @@ The shortened output looks like:
 =head1 INCOMPATIBILITIES
 
 This module is dependent on Perl 5.10 features namely the regex engine 
-and state variables (for STD.pm). So Perl 5.8.x support will NOT be available
+and state variables (for STD.pm6). So Perl 5.8.x support will NOT be available
 for now.
 
 =head1 SEE ALSO
 
-Discussion about this module and STD.pm is usually in #perl6
+Discussion about this module and STD.pm6 is usually in #perl6
 (irc://irc.freenode.net/perl6). This module lives in 
 http://svn.perlide.org/padre/trunk/Syntax-Highlight-Perl6 . Larry Wall's 
-C<STD.pm> lives in http://svn.pugscode.org/pugs/src/perl6 . 
+C<STD.pm6> lives in http://svn.pugscode.org/pugs/src/perl6 . 
 
 =head1 BUGS AND LIMITATIONS
 
@@ -701,7 +701,7 @@ These are the bugs that i am currently aware of:
 
 =over 4
 
-=item * Can't call method "bless" on an undefined value at STD.pm line 5269.
+=item * Can't call method "bless" on an undefined value at STD.pm6 line 5269.
 
 You have to put "use STD;" before using this module.
 
@@ -710,12 +710,12 @@ You have to put "use STD;" before using this module.
 
 =item * Directory 'lex' is created when using this module.
 
-STD.pm caches digraphs and the matched rules in there.
+STD.pm6 caches digraphs and the matched rules in there.
 So this is Pretty Voodoo Stuff. Otherwise it will be pretty slow.
 
 =item * Slow startup when using the module for the first time
 
-That is related to the creation of the cached 'lex'ing directory by STD.pm.
+That is related to the creation of the cached 'lex'ing directory by STD.pm6.
 I<This happens only once.>
 
 =back
@@ -744,6 +744,6 @@ it under the same terms as Perl itself.
 
 This library also includes the following libraries:
 
-STD.pm by Larry Wall (Artistic License 2.0)
+STD.pm6 by Larry Wall (Artistic License 2.0)
 
 JQuery by John Resig (dual licensed under the MIT and GPL licenses).
