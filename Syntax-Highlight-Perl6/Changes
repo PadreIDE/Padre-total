@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.81 2010.6.7
+	Bundled the new STD.pm6 r31158 (lwall++, sorear++) 
+	POD fix for renaming STD.pm to STD.pm6
+
 0.80 2010.3.25
 	Bundled the cooler STD.pm (lwall++) r30194
 	POD fixes
