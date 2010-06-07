@@ -31,6 +31,7 @@ die "Could not make STD.pm\n" if $status != 0;
 
 say 'Building and copying STD.pm files';
 chdir $cwd or die "Could not change dir to $cwd\n";
+safe_copy("$STD/CursorBase.pmc", 'lib/');
 safe_copy("$STD/Cursor.pmc",'lib/');
 safe_copy("$STD/LazyMap.pm", 'lib/LazyMap.pmc');
 safe_copy("$STD/STD.pmc", 'lib/');
