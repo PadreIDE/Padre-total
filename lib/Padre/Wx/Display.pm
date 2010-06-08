@@ -63,9 +63,14 @@ Returns true if so, or false otherwise.
 sub perfect {
 	my $class  = shift;
 	my $window = shift;
-	my $rect   = $window->GetScreenRect;
+
+	# A maximised window is a perfect window
+	if ( $window->IsMaximised ) {
+		return 1;
+	}
 
 	# Check all of the displays
+	my $rect = $window->GetScreenRect;
 	foreach ( 0 .. Wx::Display::GetCount() - 1 ) {
 		my $display = Wx::Display->new($_);
 		if ( $display->GetGeometry->ContainsRect($rect) ) {
