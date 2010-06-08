@@ -170,13 +170,9 @@ sub _on_close {
 	# De-activate in the menu and in the configuration
 	my %menu_name = (
 		'Padre::Wx::ErrorList' => 'show_errorlist',
-		'Padre::Wx::Syntax'    => 'show_syntaxcheck',
-		'Padre::Wx::Output'    => 'output',
 	);
 	my %config_name = (
 		'Padre::Wx::ErrorList' => 'main_errorlist',
-		'Padre::Wx::Syntax'    => 'main_syntaxcheck',
-		'Padre::Wx::Output'    => 'main_output',
 	);
 	if ( exists $menu_name{$type} ) {
 		$self->main->menu->view->{ $menu_name{$type} }->Check(0);
