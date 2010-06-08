@@ -93,7 +93,8 @@ sub aui {
 
     my $current = $object->current;
 
-Get a new C<Padre::Current> context object.
+Get a new C<Padre::Current> context object, for access to other parts of
+the current context.
 
 =cut
 
