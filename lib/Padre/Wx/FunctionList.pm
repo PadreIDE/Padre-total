@@ -3,17 +3,18 @@ package Padre::Wx::FunctionList;
 use 5.008005;
 use strict;
 use warnings;
-use Scalar::Util          ();
-use Params::Util          ();
-use Padre::Current        ('_CURRENT');
-use Padre::Task2Owner     ();
-use Padre::Wx::Role::View ();
-use Padre::Wx             ();
+use Scalar::Util               ();
+use Params::Util               ();
+use Padre::Task2Owner          ();
+use Padre::Wx::Role::View      ();
+use Padre::Wx::Role::MainChild ();
+use Padre::Wx                  ();
 
 our $VERSION = '0.62';
 our @ISA     = qw{
 	Padre::Task2Owner
 	Padre::Wx::Role::View
+	Padre::Wx::Role::MainChild
 	Wx::Panel
 };
 
@@ -29,16 +30,13 @@ sub new {
 	my $main  = shift;
 	my $panel = shift || $main->right;
 
-	# Create the parent panel, which will contain the search and tree
+	# Create the parent panel which will contain the search and tree
 	my $self = $class->SUPER::new(
 		$panel,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-
-	# Store main for other methods
-	$self->{main} = $main;
 
 	# Temporary store for the function list.
 	$self->{model} = [];
@@ -126,11 +124,8 @@ sub new {
 				# Escape key clears search and returns focus
 				# to the editor
 				$self->{search}->SetValue('');
-				my $current  = _CURRENT( $self->{main}->current );
-				my $document = $current->document;
-				if ($document) {
-					$document->editor->SetFocus;
-				}
+				my $editor = $self->current->editor;
+				$editor->SetFocus if $editor;
 			}
 
 			$event->Skip(1);
@@ -164,6 +159,10 @@ sub view_label {
 	shift->gettext_label;
 }
 
+sub view_close {
+	shift->main->show_functions(0);
+}
+
 
 
 
@@ -181,8 +180,7 @@ sub on_list_item_activated {
 	}
 
 	# Locate the function
-	my $current  = _CURRENT( $self->{main}->current );
-	my $document = $current->document or return;
+	my $document = $self->current->document or return;
 	my $editor   = $document->editor;
 	my ( $start, $end ) = Padre::Util::get_matches(
 		$editor->GetText,
@@ -282,7 +280,7 @@ sub render {
 
 	# Show the components and populate the function list
 	SCOPE: {
-		my $lock = $self->{main}->lock('UPDATE');
+		my $lock = $self->main->lock('UPDATE');
 		$search->Show(1);
 		$functions->Show(1);
 		$functions->Clear;

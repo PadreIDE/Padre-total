@@ -45,7 +45,7 @@ sub new {
 			Floatable      => $unlock,
 			Dockable       => $unlock,
 			Movable        => $unlock,
-			)->Right->Hide,
+		)->Right->Hide,
 	);
 	$aui->caption(
 		right => Wx::gettext('Document Tools'),
@@ -84,7 +84,13 @@ sub show {
 	$self->Show;
 	$self->aui->GetPane($self)->Show;
 
-	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE( $self, $self, \&_on_close );
+	Wx::Event::EVT_AUINOTEBOOK_PAGE_CLOSE(
+		$self,
+		$self,
+		sub {
+			shift->on_close(@_);
+		}
+	);
 
 	return;
 }
@@ -121,8 +127,28 @@ sub relocale {
 	return;
 }
 
+# It is unscalable for the view notebooks to have to know what they might contain
+# and then re-implement the show/hide logic (probably wrong).
+# Instead, tunnel the close action to the tool and let the tool decide how to go
+# about closing itself (which will usually be by delegating up to the main window).
+sub on_close {
+	my $self  = shift;
+	my $event = shift;
+
+	# Tunnel the request through to the tool if possible.
+	my $position = $event->GetSelection;
+	my $tool     = $self->GetPage($position);
+	if ( $tool->can('view_close') ) {
+		return $tool->view_close;
+	}
+
+	# Fall back to the older mechanism
+	return $self->_on_close($event);
+}
+
 sub _on_close {
-	my ( $self, $event ) = @_;
+	my $self  = shift;
+	my $event = shift;
 
 	my $pos  = $event->GetSelection;
 	my $type = ref $self->GetPage($pos);
