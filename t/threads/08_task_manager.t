@@ -7,6 +7,7 @@ use warnings;
 use Test::More tests => 14;
 use Test::NoWarnings;
 use Padre::Logger ':ALL';
+use Storable                  ();
 use Time::HiRes               ();
 use Padre::Wx                 ();
 use Padre::Wx::App            ();

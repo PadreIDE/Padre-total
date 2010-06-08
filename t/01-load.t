@@ -11,7 +11,7 @@ BEGIN {
 		exit 0;
 	}
 }
-plan( tests => 43 );
+plan( tests => 44 );
 
 use Test::Script;
 use Test::NoWarnings;
@@ -45,6 +45,7 @@ use_ok('Padre::Task2Handle' );
 use_ok('Padre::Task2Manager');
 use_ok('Padre::Task2Process');
 use_ok('Padre::Task2Worker' );
+use_ok('Padre::Task2Owner'  );
 
 # Now load everything else
 my $loaded = Padre->import(':everything');

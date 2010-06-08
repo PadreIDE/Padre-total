@@ -64,8 +64,11 @@ sub project {
 sub text {
 	my $self   = ref( $_[0] ) ? $_[0] : $_[0]->new;
 	my $editor = $self->editor;
-	return '' unless defined $editor;
-	return $editor->GetSelectedText;
+	if ( defined $editor ) {
+		return $editor->GetSelectedText;
+	} else {
+		return '';
+	}
 }
 
 # Get the title of the current editor window (and don't cache)
