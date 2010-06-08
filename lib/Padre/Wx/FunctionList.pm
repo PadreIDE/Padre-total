@@ -53,7 +53,7 @@ sub new {
 	);
 
 	# Create the functions list
-	$self->{functions} = Wx::ListBox->new(
+	$self->{list} = Wx::ListBox->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -66,7 +66,7 @@ sub new {
 	my $sizerv = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $sizerh = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$sizerv->Add( $self->{search},    0, Wx::wxALL | Wx::wxEXPAND );
-	$sizerv->Add( $self->{functions}, 1, Wx::wxALL | Wx::wxEXPAND );
+	$sizerv->Add( $self->{list}, 1, Wx::wxALL | Wx::wxEXPAND );
 	$sizerh->Add( $sizerv,            1, Wx::wxALL | Wx::wxEXPAND );
 
 	# Fits panel layout
@@ -75,7 +75,7 @@ sub new {
 
 	# Grab the kill focus to prevent deselection
 	Wx::Event::EVT_KILL_FOCUS(
-		$self->{functions},
+		$self->{list},
 		sub {
 			return;
 		},
@@ -84,7 +84,7 @@ sub new {
 	# Double-click a function name
 	Wx::Event::EVT_LISTBOX_DCLICK(
 		$self,
-		$self->{functions},
+		$self->{list},
 		sub {
 			$self->on_list_item_activated( $_[1] );
 		}
@@ -92,7 +92,7 @@ sub new {
 
 	# Handle key events
 	Wx::Event::EVT_KEY_UP(
-		$self->{functions},
+		$self->{list},
 		sub {
 			my ( $this, $event ) = @_;
 			if ( $event->GetKeyCode == Wx::WXK_RETURN ) {
@@ -112,12 +112,12 @@ sub new {
 			if ( $code == Wx::WXK_DOWN || $code == Wx::WXK_UP || $code == Wx::WXK_RETURN ) {
 
 				# Up/Down and return keys focus on the functions lists
-				$self->{functions}->SetFocus;
-				my $selection = $self->{functions}->GetSelection;
-				if ( $selection == -1 && $self->{functions}->GetCount > 0 ) {
+				$self->{list}->SetFocus;
+				my $selection = $self->{list}->GetSelection;
+				if ( $selection == -1 && $self->{list}->GetCount > 0 ) {
 					$selection = 0;
 				}
-				$self->{functions}->Select($selection);
+				$self->{list}->Select($selection);
 
 			} elsif ( $code == Wx::WXK_ESCAPE ) {
 
@@ -171,10 +171,11 @@ sub view_close {
 # Event Handlers
 
 sub on_list_item_activated {
-	my ( $self, $event ) = @_;
+	my $self  = shift;
+	my $event = shift;
 
 	# Which sub did they click
-	my $subname = $self->{functions}->GetStringSelection;
+	my $subname = $self->{list}->GetStringSelection;
 	unless ( defined Params::Util::_STRING($subname) ) {
 		return;
 	}
@@ -216,17 +217,17 @@ sub gettext_label {
 }
 
 sub refresh {
-	my $self      = shift;
-	my $current   = shift or return;
-	my $document  = $current->document;
-	my $search    = $self->{search};
-	my $functions = $self->{functions};
+	my $self     = shift;
+	my $current  = shift or return;
+	my $document = $current->document;
+	my $search   = $self->{search};
+	my $list     = $self->{list};
 
 	# Hide the widgets when no files are open
 	unless ( $document ) {
 		$search->Hide;
-		$functions->Hide;
-		$functions->Clear;
+		$list->Hide;
+		$list->Clear;
 		$self->{model}    = [];
 		$self->{document} = '';
 		return;
@@ -234,7 +235,7 @@ sub refresh {
 
 	# Ensure the widget is visible
 	$search->Show(1);
-	$functions->Show(1);
+	$list->Show(1);
 
 	# Clear search when it is a different document
 	my $id = Scalar::Util::refaddr($document);
@@ -265,12 +266,12 @@ sub task_response {
 
 # Populate the functions list with search results
 sub render {
-	my $self      = shift;
-	my $names     = $self->{model};
-	my $search    = $self->{search};
-	my $functions = $self->{functions};
+	my $self   = shift;
+	my $model  = $self->{model};
+	my $search = $self->{search};
+	my $list   = $self->{list};
 
-	#quote the search string to make it safer
+	# Quote the search string to make it safer
 	my $string = $search->GetValue;
 	if ( $string eq '' ) {
 		$string = '.*';
@@ -282,11 +283,11 @@ sub render {
 	SCOPE: {
 		my $lock = $self->main->lock('UPDATE');
 		$search->Show(1);
-		$functions->Show(1);
-		$functions->Clear;
-		foreach my $method ( reverse @$names ) {
+		$list->Show(1);
+		$list->Clear;
+		foreach my $method ( reverse @$model ) {
 			if ( $method =~ /$string/i ) {
-				$functions->Insert( $method, 0 );
+				$list->Insert( $method, 0 );
 			}
 		}
 	}
