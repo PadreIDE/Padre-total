@@ -1,4 +1,4 @@
-package Padre::Task::ErrorParser;
+package Padre::Task2::ErrorList;
 
 use 5.008;
 use strict;
@@ -8,31 +8,70 @@ use Padre::Task ();
 our $VERSION = '0.62';
 our @ISA     = 'Padre::Task';
 
-use Class::XSAccessor {
-	getters => {
-		parser   => 'parser',
-		old_lang => 'old_lang',
-		cur_lang => 'cur_lang',
-		data     => 'data',
-	}
-};
+sub new {
+	my $class = shift;
+	my $self  = $class->SUPER::new(@_);
+	$self->{data}     ||= '';
+	$self->{cur_lang} ||= '';
+	$self->{old_lang} ||= '';
+	return $self;
+}
 
 sub run {
-	require Parse::ErrorString::Perl;
 	my $self = shift;
-	unless ( $self->parser and ( ( !$self->cur_lang and !$self->old_lang ) or ( $self->cur_lang eq $self->old_lang ) ) )
-	{
 
-		if ( $self->cur_lang ) {
-			$self->{parser} = Parse::ErrorString::Perl->new( lang => $self->cur_lang );
-		} else {
-			$self->{parser} = Parse::ErrorString::Perl->new;
+	# Shortcut if nothing to do.
+	# TODO: Make sure this never happens, then remove the code
+	if ( $self->{old_lang} eq $self->{cur_lang} ) {
+		return 1;
+	}
+
+	# Build the parser
+	require Parse::ErrorString::Perl;
+	my $parser = $self->{cur_lang}
+		? Parser::ErrorString::Perl->new(
+			lang => $self->{cur_lang},
+		)
+		: Parser::ErrorString::Perl->new;
+
+	# Parse and process the file to produce the model
+	my @model  = ();
+	my @errors = $parser->parse_string( delete $self->{text} );
+	foreach my $error ( @errors ) {
+		my $line = $error->message
+		         . " at " . $error->file
+		         . " line " . $error->line;
+
+		#$line = encode('utf8', $line);
+		if ( $error->near ) {
+			my $near = $error->near;
+
+			# some day when we have unicode in wx ...
+			#$near =~ s/\n/\x{c2b6}/g;
+			$near =~ s/\n/\\n/g;
+			$near =~ s/\r//g;
+			$line .= ", near \"$near\"";
+		} elsif ( $error->at ) {
+			my $at = $error->at;
+			$line .= ", at $at";
+		}
+
+		push @model, [ 0, $line, $error ];
+
+		foreach my $stack ( $error->stack ) {
+			my $line = $stack->sub
+			         . " called at " . $stack->file
+			         . " line " . $stack->line;
+			push @model, [ 1, $line, $stack ];
 		}
 	}
+
+	# Save the model and we're done
+	$self->{model} = \@model;
 	return 1;
 }
 
-sub finish {
+sub finish2 {
 	my $self = shift;
 
 	# my $main = shift;
@@ -63,6 +102,7 @@ sub finish {
 			my $at = $err->at;
 			$message .= ", at $at";
 		}
+
 		my $err_tree_item = $errorlist->AppendItem( $errorlist->root, $message, -1, -1, Wx::TreeItemData->new($err) );
 
 		if ( $err->stack ) {

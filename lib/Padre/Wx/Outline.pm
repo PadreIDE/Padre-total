@@ -167,9 +167,7 @@ sub running {
 
 sub start {
 	my $self = shift;
-	@_ = (); # Feeble attempt to kill Scalars Leaked ($self is leaking)
-
-	# TO DO: GUI on-start initialisation here
+	TRACE("Starting Outline timer") if DEBUG;
 
 	# Set up or reinitialise the timer
 	if ( Params::Util::_INSTANCE( $self->{timer}, 'Wx::Timer' ) ) {
@@ -183,33 +181,27 @@ sub start {
 			$self,
 			Padre::Wx::ID_TIMER_OUTLINE,
 			sub {
-				$self->on_timer( $_[1], $_[2] );
+				$_[0]->on_timer( $_[1], $_[2] );
 			},
 		);
 	}
-	$self->{timer}->Start(1000);
-	$self->on_timer( undef, 1 );
+	$self->{timer}->Start(5000);
 
-	return ();
+	return;
 }
 
 sub stop {
 	my $self = shift;
-
-	TRACE("stopping Outline") if DEBUG;
+	TRACE("Stopping Outline timer") if DEBUG;
 
 	# Stop the timer
 	if ( Params::Util::_INSTANCE( $self->{timer}, 'Wx::Timer' ) ) {
 		$self->{timer}->Stop if $self->{timer}->IsRunning;
 	}
 
-	$self->clear;
-
-	# TO DO: GUI on-stop cleanup here
-
-	return ();
+	return;
 }
-
+	
 
 
 

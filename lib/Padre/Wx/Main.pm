@@ -1785,15 +1785,14 @@ the panel.
 
 sub show_todo {
 	my $self = shift;
-	my $on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE', 'refresh_todo' );
 	unless ( $on == $self->menu->view->{todo}->IsChecked ) {
 		$self->menu->view->{todo}->Check($on);
 	}
+
 	$self->config->set( main_todo => $on );
-	$self->config->write;
-
 	$self->_show_todo($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -1826,16 +1825,14 @@ the panel.
 
 sub show_outline {
 	my $self = shift;
-
-	my $on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE', 'refresh_outline' );
 	unless ( $on == $self->menu->view->{outline}->IsChecked ) {
 		$self->menu->view->{outline}->Check($on);
 	}
+
 	$self->config->set( main_outline => $on );
-	$self->config->write;
-
 	$self->_show_outline($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -1848,11 +1845,11 @@ sub _show_outline {
 	if ( $_[0] ) {
 		my $outline = $self->outline;
 		$self->right->show($outline);
-		$outline->start unless $outline->running;
+		$outline->start;
 	} elsif ( $self->has_outline ) {
 		my $outline = $self->outline;
 		$self->right->hide($outline);
-		$outline->stop if $outline->running;
+		$outline->stop;
 		delete $self->{outline};
 	}
 }
@@ -1904,16 +1901,14 @@ the panel.
 
 sub show_directory {
 	my $self = shift;
-
-	my $on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE', 'refresh_directory' );
 	unless ( $on == $self->menu->view->{directory}->IsChecked ) {
 		$self->menu->view->{directory}->Check($on);
 	}
+
 	$self->config->set( main_directory => $on );
-	$self->config->write;
-
 	$self->_show_directory($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -1945,15 +1940,14 @@ the panel.
 
 sub show_output {
 	my $self = shift;
-	my $on = @_ ? $_[0] ? 1 : 0 : 1;
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock('UPDATE');
 	unless ( $on == $self->menu->view->{output}->IsChecked ) {
 		$self->menu->view->{output}->Check($on);
 	}
+
 	$self->config->set( main_output => $on );
-	$self->config->write;
-
 	$self->_show_output($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -1964,10 +1958,7 @@ sub _show_output {
 	my $self = shift;
 	my $lock = $self->lock('UPDATE');
 	if ( $_[0] ) {
-		$self->bottom->show(
-			$self->output,
-			sub { $self->show_output(0) },
-		);
+		$self->bottom->show( $self->output );
 	} elsif ( $self->has_output ) {
 		$self->bottom->hide( $self->output );
 		delete $self->{output};
@@ -1988,14 +1979,14 @@ the panel.
 
 sub show_syntax {
 	my $self = shift;
-
-	my $on = @_ ? $_[0] ? 1 : 0 : 1;
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE', 'refresh_syntaxcheck' );
 	unless ( $on == $self->menu->view->{show_syntaxcheck}->IsChecked ) {
 		$self->menu->view->{show_syntaxcheck}->Check($on);
 	}
 
+	$self->config->set( main_syntaxcheck => $on );
 	$self->_show_syntax($on);
-
 	$self->aui->Update;
 	$self->ide->save_config;
 
@@ -2017,6 +2008,33 @@ sub _show_syntax {
 		$self->bottom->hide($syntax);
 		$syntax->stop if $syntax->running;
 		delete $self->{syntax};
+	}
+}
+
+sub show_errorlist {
+	my $self = shift;
+	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $lock = $self->lock( 'UPDATE' );
+	unless ( $on == $self->menu->view->{show_errorlist}->IsChecked ) {
+		$self->menu->view->{show_errorlist}->Check($on);
+	}
+
+	$self->config->set( main_errorlist => $on );
+	$self->_show_errorlist($on);
+	$self->aui->Update;
+	$self->ide->save_config;
+
+	return;
+}
+
+sub _show_errorlist {
+	my $self = shift;
+	my $lock = $self->lock('UPDATE');
+	if ( $_[0] ) {
+		$self->bottom->show( $self->errorlist );
+	} elsif ( $self->has_errorlist ) {
+		$self->bottom->hide( $self->errorlist );
+		delete $self->{errorlist};
 	}
 }
 
@@ -4939,49 +4957,6 @@ sub on_toggle_right_margin {
 
 	$config->write;
 
-	return;
-}
-
-=pod
-
-=head3 C<on_toggle_syntax_check>
-
-    $main->on_toggle_syntax_check;
-
-Toggle visibility of syntax panel. No return value.
-
-=cut
-
-sub on_toggle_syntax_check {
-	my $self  = shift;
-	my $event = shift;
-	$self->config->set( 'main_syntaxcheck', $event->IsChecked ? 1 : 0, );
-	$self->show_syntax( $self->config->main_syntaxcheck );
-	$self->ide->save_config;
-	return;
-}
-
-=pod
-
-=head3 C<on_toggle_errorlist>
-
-    $main->on_toggle_errorlist;
-
-Toggle visibility of error-list panel. No return value.
-
-=cut
-
-sub on_toggle_errorlist {
-	my $self  = shift;
-	my $event = shift;
-
-	$self->config->set( 'main_errorlist', $event->IsChecked ? 1 : 0, );
-	if ( $self->config->main_errorlist ) {
-		$self->errorlist->enable;
-	} else {
-		$self->errorlist->disable;
-	}
-	$self->ide->save_config;
 	return;
 }
 

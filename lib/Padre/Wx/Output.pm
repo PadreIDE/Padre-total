@@ -15,7 +15,7 @@ use Padre::Wx::Role::View      ();
 use Padre::Wx::Role::MainChild ();
 use Padre::Wx                  ();
 use Padre::Logger;
-use Wx::RichText; # Is this needed?
+use Wx::RichText; # Is this necesary?
 
 our $VERSION = '0.62';
 our @ISA     = qw{
@@ -100,7 +100,7 @@ sub on_text_url {
 
 	require URI;
 	my $uri = URI->new($string) or return;
-	TRACE(" onclick for URI: $uri") if DEBUG;
+	TRACE("Output URI clicked: $uri") if DEBUG;
 
 	my $file = $uri->file or return;
 	my $path = File::Spec->rel2abs($file) or return;

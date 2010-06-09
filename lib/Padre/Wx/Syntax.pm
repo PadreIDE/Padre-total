@@ -86,6 +86,8 @@ sub view_close {
 
 sub start {
 	my $self = shift;
+	$self->running and return;
+	TRACE('Starting the syntax checker') if DEBUG;
 
 	# Add the margins for the syntax markers
 	foreach my $editor ( $self->main->editors ) {
@@ -97,7 +99,6 @@ sub start {
 		$editor->SetMarginWidth( 1, 16 );
 	}
 
-	TRACE('still starting the syntax checker') if DEBUG;
 
 	# List appearance: Initialize column widths
 	$self->set_column_widths;
@@ -125,19 +126,21 @@ sub start {
 
 sub stop {
 	my $self = shift;
+	$self->running or return;
+	TRACE('Stopping the syntax checker') if DEBUG;
 
 	# Stop the timer
 	if ( Params::Util::_INSTANCE( $self->{timer}, 'Wx::Timer' ) ) {
 		$self->{timer}->Stop;
 	}
 
-	# Clear out the existing data
-	$self->clear;
-
 	# Remove the editor margin
 	foreach my $editor ( $self->main->editors ) {
 		$editor->SetMarginWidth( 1, 0 );
 	}
+
+	# Clear out the existing data
+	$self->clear;
 
 	return;
 }
@@ -170,7 +173,6 @@ sub on_list_item_activated {
 
 	return;
 }
-
 
 # Called when the user presses a right click or a context menu key (on win32)
 sub on_right_down {
@@ -294,7 +296,7 @@ sub on_timer {
 # General Methods
 
 sub bottom {
-	warn "Unexpectedly called Padre::Wx::Output::bottom, it should be deprecated";
+	TRACE("DEPRECATED") if DEBUG;
 	shift->main->bottom;
 }
 

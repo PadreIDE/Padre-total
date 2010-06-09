@@ -51,26 +51,38 @@ our @ISA      = 'Padre::Task2';
 our $AUTOLOAD = undef;
 
 sub prepare {
-	if ( exists $_[0]->{prepare} ) {
-		$_[0]->{prepare} = eval $_[0]->{prepare};
-		die $@ if $@;
+	# Only optionally override
+	unless ( exists $_[0]->{prepare} ) {
+		return shift->SUPER::prepare(@_);
 	}
+
+	$_[0]->{prepare} = eval $_[0]->{prepare};
+	die $@ if $@;
+
 	return 1;
 }
 
 sub run {
-	if ( exists $_[0]->{run} ) {
-		$_[0]->{run} = eval $_[0]->{run};
-		die $@ if $@;
+	# Only optionally override
+	unless ( exists $_[0]->{run} ) {
+		return shift->SUPER::run(@_);
 	}
+
+	$_[0]->{run} = eval $_[0]->{run};
+	die $@ if $@;
+
 	return 1;
 }
 
 sub finish {
-	if ( exists $_[0]->{finish} ) {
-		$_[0]->{finish} = eval $_[0]->{finish};
-		die $@ if $@;
+	# Only optionally override
+	unless ( exists $_[0]->{run} ) {
+		return shift->SUPER::finish(@_);
 	}
+
+	$_[0]->{finish} = eval $_[0]->{finish};
+	die $@ if $@;
+
 	return 1;
 }
 

@@ -76,6 +76,7 @@ sub show {
 	}
 
 	# Add the page
+	# NOTE: Only the Right panel adds tools at the left, the rest do so on the right
 	$self->InsertPage(
 		0,
 		$page,

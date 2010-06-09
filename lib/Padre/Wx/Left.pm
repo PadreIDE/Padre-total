@@ -76,8 +76,7 @@ sub show {
 	}
 
 	# Add the page
-	$self->InsertPage(
-		0,
+	$self->AddPage(
 		$page,
 		$page->gettext_label,
 		1,
