@@ -71,6 +71,9 @@ sub run {
 	return 1;
 }
 
+# TO DO: Finish porting this to the new Task API style once someone
+# demonstrates what, if anything, is actually using the ErrorList GUI
+# at the moment.
 sub finish2 {
 	my $self = shift;
 
