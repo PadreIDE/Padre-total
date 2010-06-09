@@ -52,29 +52,30 @@ use Class::XSAccessor {
 
 =head2 new
 
-  my $task = Padre::Task3::LWP->new(
-      request => HTTP::Request->new(
-          GET => 'http://perlide.org',
-      ),
+  my $task = Padre::Task2::LWP->new(
+      method => 'GET',
+      url    => 'http://perlide.org',
   );
 
-The C<new> constructor creates a L<Padre::Task3> for a background HTTP request.
+The C<new> constructor creates a L<Padre::Task2> for a background HTTP request.
 
 It takes a single addition parameter C<request> which is a fully-prepared
 L<HTTP::Request> object for the request.
 
-Returns a new L<Padre::Task3::LWP> object, or throws an exception on error.
+Returns a new L<Padre::Task2::LWP> object, or throws an exception on error.
 
 =cut
 
 sub new {
 	my $self = shift->SUPER::new(
 		@_,
+
+		# Temporarily disable the ability to fully specify the request
+		request  => undef, 
 		response => undef,
 	);
-
-	unless ( Params::Util::_INSTANCE( $self->request, 'HTTP::Request' ) ) {
-		Carp::croak("Missing or invalid 'request' for Padre::Task::LWP");
+	unless ( $self->{url} ) {
+		Carp::croak("Missing or invalid 'request' for Padre::Task2::LWP");
 	}
 
 	return $self;
@@ -102,16 +103,51 @@ of the HTTP call.
 =cut
 
 ######################################################################
-# Padre::Task Methods
+# Padre::Task2 Methods
 
 sub run {
 	my $self = shift;
 
-	# Execute the web request
+	# Generate the formal request
+	my $method = $self->{method} || 'GET';
+	my $url    = $self->{url};
+	my $query  = $self->{query};
+	if ( Params::Util::_HASH0($query) ) {
+		$query = join '&',
+			map {
+				my $value = $query->{$_} || '';
+				$value =~ s/(\W)/"%".uc(unpack("H*",$1))/ge;
+				$value =~ s/\%20/\+/g;
+				$_ . '=' . $value;
+			} ( sort keys %$query );
+		);
+	}
+	if ( $method eq 'GET' and defined $query ) {
+		$url .= '?' . $query;
+	}
+	my $request = HTTP::Request->new( $self->{method}, $url );
+	if ( $method eq 'POST' ) {
+		$request->content_type( $self->{content_type} || 'application/x-www-form-urlencoded' );
+		$request->content( $query || '' );
+	}
+	my $headers = Params::Util::_HASH0($self->{headers}) || {};
+	foreach my $name ( sort keys %headers ) {
+		$request->header( $name => $headers->{$name} );
+	}
+	$self->{request} = $request;
+
+	# Initialise the user agent
 	require LWP::UserAgent;
-	$self->{response} = LWP::UserAgent->new(
-		agent => "Padre/$VERSION",
-	)->request( $self->request );
+	my $useragent = LWP::UserAgent->new(
+		agent   => "Padre/$VERSION",
+		timeout => 60,
+	);
+	$useragent->env_proxy;
+
+	# Execute the request.
+	# It's not up to us to judge success or failure at this point,
+	# we just do the heavy lifting of the request itself.
+	$self->{response} = $useragent->request( $request );
 
 	# Remove the CODE references from the response.
 	# They aren't needed any more, and they won't survive

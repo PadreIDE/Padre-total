@@ -358,7 +358,7 @@ sub timer_start {
 	# Check for new plug-ins and alert the user to them
 	$manager->alert_new;
 
-	unless ($Padre::Test::VERSION) {
+	unless ( $Padre::Test::VERSION or $config->feedback_done ) {
 		require Padre::Wx::Dialog::WhereFrom;
 		Padre::Wx::Dialog::WhereFrom->new($self);
 	}
