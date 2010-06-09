@@ -114,6 +114,7 @@ requires 'IPC::Open2'      => 0;
 requires 'IPC::Open3'      => 0;
 requires 'List::Util'      => '1.18';
 requires 'List::MoreUtils' => '0.22';
+requires 'LWP'             => '5.815';
 requires 'Module::Build'   => '0.3603';
 requires 'Module::Refresh' => '0.13';
 requires 'Module::Starter' => '1.50';
