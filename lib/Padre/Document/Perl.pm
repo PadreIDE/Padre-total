@@ -35,6 +35,10 @@ sub task_outline {
 	return 'Padre::Document::Perl::Outline';
 }
 
+sub task_syntax {
+	return 'Padre::Document::Perl::Syntax';
+}
+
 
 
 
