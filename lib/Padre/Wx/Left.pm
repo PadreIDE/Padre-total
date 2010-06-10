@@ -46,7 +46,7 @@ sub new {
 			MaximizeButton => 0,
 			Position       => 4,
 			Layer          => 2,
-			)->Left->Hide,
+		)->Left->Hide,
 	);
 	$aui->caption(
 		left => Wx::gettext('Project Tools'),
