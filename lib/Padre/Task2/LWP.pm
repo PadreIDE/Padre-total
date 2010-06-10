@@ -120,7 +120,6 @@ sub run {
 				$value =~ s/\%20/\+/g;
 				$_ . '=' . $value;
 			} ( sort keys %$query );
-		);
 	}
 	if ( $method eq 'GET' and defined $query ) {
 		$url .= '?' . $query;
@@ -131,7 +130,7 @@ sub run {
 		$request->content( $query || '' );
 	}
 	my $headers = Params::Util::_HASH0($self->{headers}) || {};
-	foreach my $name ( sort keys %headers ) {
+	foreach my $name ( sort keys %$headers ) {
 		$request->header( $name => $headers->{$name} );
 	}
 	$self->{request} = $request;
