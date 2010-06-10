@@ -56,7 +56,7 @@ sub run {
 	return 1;
 }
 
-sub model {
+sub syntax {
 	return [];
 }
 

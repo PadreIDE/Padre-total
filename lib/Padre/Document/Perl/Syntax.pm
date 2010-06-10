@@ -9,7 +9,7 @@ use Padre::Task2::Syntax ();
 our $VERSION = '0.62';
 our @ISA     = 'Padre::Task2::Syntax';
 
-sub model {
+sub syntax {
 	my $self = shift;
 	my $text = shift;
 

@@ -403,33 +403,23 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-	my $nlchar = $self->newline;
-
 	require Padre::Document::Perl::Syntax;
-	my %check = (
-		editor   => $self->editor,
-		text     => $text,
-		newlines => $nlchar,
+	my $task = Padre::Document::Perl::Syntax->new(
+		document => $self,
 	);
-	if ( exists $args->{on_finish} ) {
-		$check{on_finish} = $args->{on_finish};
-	}
-	if ( $self->project ) {
-		$check{cwd}      = $self->project->root;
-		$check{perl_cmd} = ['-Ilib'];
-	}
-	my $task = Padre::Document::Perl::Syntax->new(%check);
+
 	if ( $args->{background} ) {
 
 		# asynchroneous execution (see on_finish hook)
 		$task->schedule;
-		return ();
+		return;
 	} else {
 
 		# serial execution, returning the result
-		return () if $task->prepare() =~ /^break$/;
-		$task->run();
-		return $task->{syntax_check};
+		$task->prepare or return;
+		$task->run;
+		$task->finish;
+		return $task->{model};
 	}
 }
 
