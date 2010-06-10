@@ -25,6 +25,8 @@ use warnings;
 use Padre::Wx ();
 use Padre::Logger;
 
+our $VERSION = '0.62';
+
 our $SIGNAL : shared;
 BEGIN {
 	$SIGNAL = Wx::NewEventType();

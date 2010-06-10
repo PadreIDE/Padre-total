@@ -10,13 +10,14 @@ use strict;
 use warnings;
 use Padre::Task2 ();
 
-# We don't need to load all of Padre::Wx for this
-use Wx (); 
-
-our $VERSION = '0.59';
+our $VERSION = '0.62';
 our @ISA     = 'Padre::Task2';
 
 sub run {
+	# We don't need to load all of Padre::Wx for this,
+	# but we do need the minimum bits of wxWidgets.
+	require Wx;
+
 	Wx::LaunchDefaultBrowser( $_[0]->{url} );
 	return 1;
 }
