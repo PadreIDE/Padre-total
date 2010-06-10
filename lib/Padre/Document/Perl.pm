@@ -362,7 +362,7 @@ sub pre_process {
 
 # Checks the syntax of a Perl document.
 # Documented in Padre::Document!
-# Implemented as a task. See Padre::Task::SyntaxChecker::Perl
+# Implemented as a task. See Padre::Document::Perl::Syntax
 sub check_syntax {
 	shift->_check_syntax_internals(
 
@@ -405,7 +405,7 @@ sub _check_syntax_internals {
 
 	my $nlchar = $self->newline;
 
-	require Padre::Task::SyntaxChecker::Perl;
+	require Padre::Document::Perl::Syntax;
 	my %check = (
 		editor   => $self->editor,
 		text     => $text,
@@ -418,7 +418,7 @@ sub _check_syntax_internals {
 		$check{cwd}      = $self->project->root;
 		$check{perl_cmd} = ['-Ilib'];
 	}
-	my $task = Padre::Task::SyntaxChecker::Perl->new(%check);
+	my $task = Padre::Document::Perl::Syntax->new(%check);
 	if ( $args->{background} ) {
 
 		# asynchroneous execution (see on_finish hook)
