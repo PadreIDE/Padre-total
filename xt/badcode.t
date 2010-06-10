@@ -65,12 +65,14 @@ my %TODO = map { $_ => 1 } qw(
 	Padre::PluginManager
 	Padre::Service
 	Padre::Splash
-	Padre::Task::LaunchDefaultBrowser
 	Padre::Task::PPI::FindVariableDeclaration
 	Padre::Task::PPI::IntroduceTemporaryVariable
 	Padre::Task::PPI::LexicalReplaceVariable
+	Padre::Task::PPI::FindUnmatchedBrace
 	Padre::TaskManager
 	Padre::Task2::LaunchDefaultBrowser
+	Padre::Task2Handle
+	Padre::Task2Manager
 );
 
 foreach my $module ( sort keys %modules ) {
