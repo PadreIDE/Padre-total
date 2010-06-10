@@ -271,7 +271,7 @@ sub on_tree_item_right_click {
 
 # Method alias
 sub on_tree_item_activated {
-	shift->on_item_set_focus(@_);
+	shift->on_tree_item_set_focus(@_);
 }
 
 sub on_tree_item_set_focus {
