@@ -30,7 +30,7 @@ BEGIN {
 }
 
 use_ok('Padre::DocBrowser');
-use_ok('Padre::Task::DocBrowser');
+use_ok('Padre::Task2::DocBrowser');
 use_ok('Padre::DocBrowser::document');
 
 my $db = Padre::DocBrowser->new();

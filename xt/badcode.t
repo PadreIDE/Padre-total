@@ -71,6 +71,7 @@ my %TODO = map { $_ => 1 } qw(
 	Padre::Task::PPI::FindUnmatchedBrace
 	Padre::TaskManager
 	Padre::Task2::LaunchDefaultBrowser
+	Padre::Task2Thread
 	Padre::Task2Handle
 	Padre::Task2Manager
 );

@@ -54,7 +54,8 @@ sub import {
 
 ######################################################################
 # Constructor and Accessors
-sub new {
+
+sub new {
 	TRACE($_[0]) if DEBUG;
 	bless {
 		wid   => ++$SEQUENCE,

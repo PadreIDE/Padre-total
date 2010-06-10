@@ -1,21 +1,5 @@
 package Padre::DocBrowser::document;
 
-use 5.008;
-use strict;
-use warnings;
-use File::Basename ();
-use Class::XSAccessor {
-	constructor => 'new',
-	accessors   => {
-		mimetype => 'mime_type',
-		body     => 'body',
-		title    => 'title',
-		filename => 'filename',
-	},
-};
-
-our $VERSION = '0.62';
-
 =pod
 
 =head1 NAME
@@ -31,6 +15,23 @@ Until this is a better copy of Padre::Document or the similar parts converge,
 it will probably change.
 
 =cut
+
+use 5.008;
+use strict;
+use warnings;
+use File::Basename ();
+
+our $VERSION = '0.62';
+
+use Class::XSAccessor {
+	constructor => 'new',
+	accessors   => {
+		mimetype => 'mime_type',
+		body     => 'body',
+		title    => 'title',
+		filename => 'filename',
+	},
+};
 
 sub load {
 	my ( $class, $path ) = @_;
