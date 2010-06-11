@@ -5,6 +5,7 @@ use strict;
 use warnings;
 use Storable          ();
 use Scalar::Util      ();
+use Params::Util      ();
 use Padre::Current    ();
 use Padre::Task2Owner ();
 
@@ -12,16 +13,28 @@ our $VERSION = '0.59';
 
 use Class::XSAccessor {
 	getters => {
-		handle => 'handle',
+		handle   => 'handle',
 	},
 };
 
 sub new {
 	my $class = shift;
 	my $self  = bless { @_ }, $class;
-	if ( $self->{owner} ) {
+
+	# Check parameters for the object that owns the task
+	if ( exists $self->{owner} ) {
+		if ( exists $self->{callback} ) {
+			unless ( Params::Util::_IDENTIFIER($self->{callback}) ) {
+				die "Task 'callback' must be a method name";
+			}
+		}
+		my $callback = $self->callback;
+		unless ( $self->{owner}->can($callback) ) {
+			die "Task callback '$callback' is not defined";
+		}
 		$self->{owner} = $self->{owner}->task_revision;
 	}
+
 	return $self;
 }
 
@@ -31,6 +44,10 @@ sub running {
 
 sub owner {
 	Padre::Task2Owner->task_owner($_[0]->{owner});
+}
+
+sub callback {
+	$_[0]->{callback} || 'task_response';
 }
 
 
@@ -72,8 +89,9 @@ sub run {
 sub finish {
 	my $self = shift;
 	if ( $self->{owner} ) {
-		my $owner = $self->owner or return;
-		$owner->task_response( $self );
+		my $owner    = $self->owner or return;
+		my $callback = $self->callback;
+		$owner->$callback( $self );
 	}
 	return 1;
 }
