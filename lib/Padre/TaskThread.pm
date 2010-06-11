@@ -12,7 +12,6 @@ use Thread::Queue 2.11;
 use Scalar::Util   ();
 use Padre::Wx      (); # HACK - Temporary workaround
 use Padre::Wx::App (); # HACK - Temporary workaround
-use Padre::Logger;
 
 our $VERSION = '0.59';
 
@@ -56,7 +55,7 @@ sub import {
 # Constructor and Accessors
 
 sub new {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	bless {
 		wid   => ++$SEQUENCE,
 		queue => Thread::Queue->new,
@@ -64,13 +63,13 @@ sub new {
 }
 
 sub wid {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->{wid};
 }
 
 sub queue {
-	TRACE($_[0])          if DEBUG;
-	TRACE($_[0]->{queue}) if DEBUG;
+	# TRACE($_[0])          if DEBUG;
+	# TRACE($_[0]->{queue}) if DEBUG;
 	$_[0]->{queue};
 }
 
@@ -83,7 +82,7 @@ sub queue {
 # Main Methods
 
 sub spawn {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	my $self = shift;
 
 	# Spawn the object into the thread and enter the main runloop
@@ -98,37 +97,37 @@ sub spawn {
 }
 
 sub tid {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$WID2TID{$_[0]->{wid}};
 }
 
 sub thread {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	threads->object( $_[0]->tid );
 }
 
 sub join {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->thread->join;
 }
 
 sub is_thread {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->tid == threads->self->tid
 }
 
 sub is_running {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_running;
 }
 
 sub is_joinable {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_joinable;
 }
 
 sub is_detached {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->thread->is_detached;
 }
 
@@ -140,7 +139,7 @@ sub is_detached {
 # Parent Thread Methods
 
 sub send {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	my $self   = shift;
 	my $method = shift;
 	unless ( _CAN($self, $method) ) {
@@ -155,14 +154,14 @@ sub send {
 
 # Add a worker object to the pool, spawning it from the master
 sub start {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	shift->send('start_child', @_);
 }
 
 # Immediately detach and terminate when queued jobs are completed
 sub stop {
-	TRACE($_[0]) if DEBUG;
-	TRACE("Detaching thread") if DEBUG;
+	# TRACE($_[0]) if DEBUG;
+	# TRACE("Detaching thread") if DEBUG;
 	$_[0]->thread->detach;
 	$_[0]->send('stop_child');
 }
@@ -175,14 +174,14 @@ sub stop {
 # Child Thread Methods
 
 sub run {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	my $self  = shift;
 	my $queue = $self->{queue};
 
 	# Loop over inbound requests
-	TRACE("Entering worker run-time loop") if DEBUG;
+	# TRACE("Entering worker run-time loop") if DEBUG;
 	while ( my $message = $queue->dequeue ) {
-		TRACE("Worker received message '$message->[0]'") if DEBUG;
+		# TRACE("Worker received message '$message->[0]'") if DEBUG;
 		unless ( _ARRAY($message) ) {
 			# warn("Message is not an ARRAY reference");
 			next;
@@ -201,7 +200,7 @@ sub run {
 		$self->$method(@$message) or last;
 	}
 
-	TRACE("Exited worker run-time loop") if DEBUG;
+	# TRACE("Exited worker run-time loop") if DEBUG;
 	return;
 }
 
@@ -214,20 +213,20 @@ sub run {
 
 # Spawn a worker object off the current thread
 sub start_child {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[1]->spawn;
 	return 1;
 }
 
 # Stop the current child
 sub stop_child {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	return 0;	
 }
 
 # Execute a task
 sub task {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	require Padre::TaskHandle;
 	Padre::TaskHandle->from_array($_[1]);
 }

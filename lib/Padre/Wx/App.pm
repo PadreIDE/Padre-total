@@ -30,10 +30,9 @@ From the main L<Padre> object, it can be accessed via the C<wx> method.
 use 5.008;
 use strict;
 use warnings;
-use Carp                     ();
-use Padre::Wx                ();
-use Padre::Wx::Role::Conduit ();
-use Padre::Logger;
+use Carp      ();
+use Padre::Wx ();
+# use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = 'Wx::App';
@@ -48,7 +47,7 @@ our @ISA     = 'Wx::App';
 my $SINGLETON = undef;
 
 sub new {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$SINGLETON or
 	$SINGLETON = shift->SUPER::new;
 }
@@ -61,7 +60,7 @@ sub new {
 # Constructor and Accessors
 
 sub create {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	my $self = shift->new;
 
 	# Save a link back to the parent ide
@@ -80,6 +79,14 @@ sub create {
 
 The C<ide> accessor provides a link back to the parent L<Padre> IDE object.
 
+=cut
+
+sub ide {
+	$_[0]->{ide};
+}
+
+=pod
+
 =head2 C<main>
 
 The C<main> accessor returns the L<Padre::Wx::Main> object for the
@@ -87,12 +94,9 @@ application.
 
 =cut
 
-use Class::XSAccessor {
-	getters => {
-		ide  => 'ide',
-		main => 'main',
-	}
-};
+sub main {
+	$_[0]->{main};
+}
 
 =pod
 
@@ -103,7 +107,7 @@ The C<config> accessor returns the L<Padre::Config> for the application.
 =cut
 
 sub config {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	$_[0]->ide->config;
 }
 
@@ -115,7 +119,7 @@ sub config {
 # Wx Methods
 
 sub OnInit {
-	TRACE($_[0]) if DEBUG;
+	# TRACE($_[0]) if DEBUG;
 	if ( $_[0]->can('event_target_init') ) {
 		$_[0]->event_target_init;
 	}
