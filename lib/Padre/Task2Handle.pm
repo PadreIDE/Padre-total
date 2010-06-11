@@ -54,6 +54,7 @@ sub prepare {
 		$task->prepare;
 	};
 	if ( $@ ) {
+		TRACE("Exception in task during 'prepare': $@") if DEBUG;
 		return ! 1;
 	}
 	return !! $rv;
@@ -67,6 +68,7 @@ sub finish {
 		$task->finish;
 	};
 	if ( $@ ) {
+		TRACE("Exception in task during 'finish': $@") if DEBUG;
 		return ! 1;
 	}
 	return !! $rv;
@@ -97,6 +99,7 @@ sub run {
 
 	# Save the exception if thrown
 	if ( $@ ) {
+		TRACE("Exception in task during 'run': $@") if DEBUG;
 		$self->{exception} = $@;
 		return ! 1;
 	}

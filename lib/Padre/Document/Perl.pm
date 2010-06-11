@@ -839,22 +839,52 @@ sub lexical_variable_replacement {
 }
 
 sub introduce_temporary_variable {
-	my ( $self, $varname ) = @_;
+	my $self   = shift;
+	my $name   = shift;
+	my $editor = $self->editor;
 
-	my $editor         = $self->editor;
-	my $start_position = $editor->GetSelectionStart;
-	my $end_position   = $editor->GetSelectionEnd - 1;
-
-	# create a new object of the task class and schedule it
-	require Padre::Task::PPI::IntroduceTemporaryVariable;
-	Padre::Task::PPI::IntroduceTemporaryVariable->new(
+	# Run the replacement in the background
+	$self->task_request(
+		task           => 'Padre::Task2::PPI::IntroduceTemporaryVariable',
 		document       => $self,
-		start_location => $start_position,
-		end_location   => $end_position,
-		varname        => $varname,
-	)->schedule;
+		varname        => $name,
+		start_location => $editor->GetSelectionStart,
+		end_location   => $editor->GetSelectionEnd - 1,
+		callback       => 'introduce_temporary_variable_response',
+	);
 
-	return ();
+	return;
+}
+
+sub introduce_temporary_variable_response {
+	my $self = shift;
+	my $task = shift;
+
+	if ( defined $self->{munged} ) {
+
+		# GUI update
+		# TO DO: What if the document changed? Bad luck for now.
+		$self->editor->SetText( $self->{munged} );
+		$self->ppi_select( $self->{location} );
+		return;
+	}
+
+	# Explain why it didn't work
+	my $text;
+	my $error = $self->{error} || '';
+	if ( $error =~ /no token/ ) {
+		$text = Wx::gettext("First character of selection does not seem to point at a token.");
+	} elsif ( $error =~ /no statement/ ) {
+		$text = Wx::gettext("Selection not part of a Perl statement?");
+	} else {
+		$text = Wx::gettext("Unknown error");
+	}
+	Wx::MessageBox(
+		$text,
+		Wx::gettext("Replace Operation Canceled"),
+		Wx::wxOK,
+		$self->current->main,
+	);
 }
 
 # this method takes the new subroutine name
