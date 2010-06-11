@@ -40,7 +40,6 @@ use Class::XSAccessor 1.05 {
 		opts           => 'opts',
 		config         => 'config',
 		wx             => 'wx',
-		task_manager   => 'task_manager',
 		task2_manager  => 'task2_manager',
 		plugin_manager => 'plugin_manager',
 	},
@@ -152,12 +151,6 @@ sub new {
 	$self->{wx} = Padre::Wx::App->create($self);
 
 	# Create the task manager
-	require Padre::TaskManager;
-	$self->{task_manager} = Padre::TaskManager->new(
-		use_threads => $self->config->threads,
-	);
-
-	# Create the second-generation task manager
 	require Padre::Task2Manager;
 	$self->{task2_manager} = Padre::Task2Manager->new(
 		threads => 1,
@@ -954,11 +947,11 @@ Abstract class understanding what a project is.
 Is a Perl specific project. These are work in process.
 Not yet used.
 
-=item L<Padre::TaskManager>
+=item L<Padre::Task2Manager>
 
 Managing background tasks.
 
-=item L<Padre::Task>
+=item L<Padre::Task2>
 
 Background tasks.
 

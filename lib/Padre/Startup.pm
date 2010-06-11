@@ -119,14 +119,6 @@ sub startup {
 		Padre::Task2Thread->master;
 	}
 
-	# If we are going to use threading, spawn off the slave
-	# driver as early as we possibly can so we reduce the amount of
-	# wasted memory copying to a minimum.
-	if ( $setting{threads} ) {
-		require Padre::SlaveDriver;
-		# Padre::SlaveDriver->new;
-	}
-
 	# Show the splash image now we are starting a new instance
 	# Shows Padre's splash screen if this is the first time
 	# It is saved as BMP as it seems (from wxWidgets documentation)
@@ -143,6 +135,7 @@ sub startup {
 			my $share = undef;
 			if ( $ENV{PADRE_DEV} ) {
 				require FindBin;
+				no warnings;
 				$share = File::Spec->catdir(
 					$FindBin::Bin,
 					File::Spec->updir,

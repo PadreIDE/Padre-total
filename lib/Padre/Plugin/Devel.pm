@@ -254,7 +254,7 @@ sub simulate_crash {
 
 sub simulate_task_crash {
 	require Padre::Plugin::Devel::Crash;
-	Padre::Task::Debug::Crashing->new->schedule;
+	Padre::Plugin::Devel::Crash->new->schedule;
 }
 
 sub show_about {

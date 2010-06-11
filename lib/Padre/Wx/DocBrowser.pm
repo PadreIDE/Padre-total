@@ -94,7 +94,7 @@ sub new {
 	);
 	$self->{search}->SetToolTip(
 		Wx::ToolTip->new(
-			Wx::gettext('Search for perldoc - e.g. Padre::Task, Net::LDAP')
+			Wx::gettext('Search for perldoc - e.g. Padre::Task2, Net::LDAP')
 		)
 	);
 
@@ -111,7 +111,7 @@ sub new {
 		Wx::wxDefaultPosition, [ 50, -1 ],
 		Wx::wxALIGN_RIGHT
 	);
-	$label->SetToolTip( Wx::ToolTip->new( Wx::gettext('Search for perldoc - e.g. Padre::Task, Net::LDAP') ) );
+	$label->SetToolTip( Wx::ToolTip->new( Wx::gettext('Search for perldoc - e.g. Padre::Task2, Net::LDAP') ) );
 
 	my $close_button = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Close') );
 

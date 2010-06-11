@@ -12,7 +12,7 @@ our @ISA     = 'Padre::Task2';
 
 =head1 NAME
 
-Padre::Task::PPI - Generic L<PPI> background processing task
+Padre::Task2::PPI - Generic L<PPI> background processing task
 
 =head1 SYNOPSIS
 
@@ -33,7 +33,7 @@ Padre::Task::PPI - Generic L<PPI> background processing task
   
   # elsewhere:
   
-  Padre::Task::PPI::MyFancyTest->new(
+  Padre::Task2::PPI::MyFancyTest->new(
       text => 'parse-this!',
   )->schedule;
 
@@ -46,7 +46,7 @@ code and then call the C<process_ppi> method on
 the task object and pass the L<PPI::Document> as
 first argument.
 
-You can either let C<Padre::Task::PPI> fetch the
+You can either let C<Padre::Task2::PPI> fetch the
 Perl code for parsing from the current document
 or specify it as the "C<text>" parameter to
 the constructor.
@@ -54,7 +54,7 @@ the constructor.
 Note: If you don't supply the document text and
 there is no currently open document to fetch it from,
 C<new()> will simply return the empty list instead
-of a C<Padre::Task::PPI> object.
+of a C<Padre::Task2::PPI> object.
 
 =cut
 
@@ -85,8 +85,8 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task> and its instances can be scheduled
-using C<Padre::TaskManager>.
+This class inherits from C<Padre::Task2> and its instances can be scheduled
+using C<Padre::Task2Manager>.
 
 The transfer of the objects to and from the worker threads is implemented
 with L<Storable>.

@@ -13,11 +13,11 @@ our @ISA     = 'Padre::Task2::PPI';
 
 =head1 NAME
 
-Padre::Task::PPI::FindUnmatchedBrace - C<PPI> based unmatched brace finder
+Padre::Task2::PPI::FindUnmatchedBrace - C<PPI> based unmatched brace finder
 
 =head1 SYNOPSIS
 
-  my $task = Padre::Task::PPI::FindUnmatchedBrace->new(
+  my $task = Padre::Task2::PPI::FindUnmatchedBrace->new(
           document => $padre_document,
   );
   $task->schedule;
@@ -61,7 +61,7 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task::PPI>.
+This class inherits from C<Padre::Task2::PPI>.
 
 =head1 AUTHOR
 

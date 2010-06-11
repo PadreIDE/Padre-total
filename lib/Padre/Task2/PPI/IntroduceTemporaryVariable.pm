@@ -12,11 +12,11 @@ our @ISA     = 'Padre::Task2::PPI';
 
 =head1 NAME
 
-Padre::Task::PPI::IntroduceTemporaryVariable - Introduces a temporary variable using L<PPI>
+Padre::Task2::PPI::IntroduceTemporaryVariable - Introduces a temporary variable using L<PPI>
 
 =head1 SYNOPSIS
 
-  my $tempvarmaker = Padre::Task::PPI::IntroduceTemporaryVariable->new(
+  my $tempvarmaker = Padre::Task2::PPI::IntroduceTemporaryVariable->new(
           document       => $document_obj,
           start_location => [$line, $column], # or just character position
           end_location   => [$line, $column], # or ppi-style location
@@ -68,7 +68,7 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task::PPI>.
+This class inherits from C<Padre::Task2::PPI>.
 
 =head1 AUTHOR
 

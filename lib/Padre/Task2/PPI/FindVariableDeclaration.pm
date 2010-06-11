@@ -12,12 +12,12 @@ our @ISA     = 'Padre::Task2::PPI';
 
 =head1 NAME
 
-Padre::Task::PPI::FindVariableDeclaration - Finds where a variable was declared using L<PPI>
+Padre::Task2::PPI::FindVariableDeclaration - Finds where a variable was declared using L<PPI>
 
 =head1 SYNOPSIS
 
   # Find declaration of variable at cursor
-  my $task = Padre::Task::PPI::FindVariableDeclaration->new(
+  my $task = Padre::Task2::PPI::FindVariableDeclaration->new(
           document => $document_obj,
           location => [ $line, $column ], # ppi-style location is okay, too
   );
@@ -63,7 +63,7 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task::PPI>.
+This class inherits from C<Padre::Task2::PPI>.
 
 =head1 AUTHOR
 

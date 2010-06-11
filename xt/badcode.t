@@ -63,13 +63,7 @@ my %TODO = map { $_ => 1 } qw(
 	Padre::Plugin::Devel
 	Padre::Plugin::My
 	Padre::PluginManager
-	Padre::Service
 	Padre::Splash
-	Padre::Task::PPI::FindVariableDeclaration
-	Padre::Task::PPI::IntroduceTemporaryVariable
-	Padre::Task::PPI::LexicalReplaceVariable
-	Padre::Task::PPI::FindUnmatchedBrace
-	Padre::TaskManager
 	Padre::Task2::LaunchDefaultBrowser
 	Padre::Task2Thread
 	Padre::Task2Handle

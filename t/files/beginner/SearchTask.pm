@@ -1,4 +1,4 @@
-package Padre::Task::OpenResource::SearchTask;
+package Padre::Task2::OpenResource::SearchTask;
 
 use 5.008;
 use strict;
