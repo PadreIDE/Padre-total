@@ -814,28 +814,62 @@ sub get_sub_line_number {
 # Padre::Document Document Manipulation
 
 sub lexical_variable_replacement {
-	my ( $self, $replacement ) = @_;
+	my $self = shift;
+	my $name = shift;
 
+	# Can we find something to replace
 	my ( $location, $token ) = $self->get_current_symbol;
 	if ( not defined $location ) {
 		Wx::MessageBox(
 			Wx::gettext("Current cursor does not seem to point at a variable"),
 			Wx::gettext("Check cancelled"),
 			Wx::wxOK,
-			Padre->ide->wx->main
+			$self->current->main,
 		);
-		return ();
+		return;
 	}
 
-	# create a new object of the task class and schedule it
-	require Padre::Task::PPI::LexicalReplaceVariable;
-	Padre::Task::PPI::LexicalReplaceVariable->new(
-		document    => $self,
-		location    => $location,
-		replacement => $replacement,
-	)->schedule;
+	# Launch the background task
+	$self->task_request(
+		task => 'Padre::Task2::PPI::LexicalReplaceVariable',
+		document => $self,
+		location => $location,
+		replacement => $name,
+		callback => 'lexical_variable_replacement_response',
+	);
 
-	return ();
+	return;
+}
+
+sub lexical_variable_replacement_response {
+	my $self = shift;
+	my $task = shift;
+
+	if ( defined $task->{munged} ) {
+
+		# GUI update
+		# TO DO: What if the document changed? Bad luck for now.
+		$self->editor->SetText( $task->{munged} );
+		$self->ppi_select( $task->{location} );
+		return;
+	}
+
+	# Explain why it didn't work
+	my $text;
+	my $error = $self->{error} || '';
+	if ( $error =~ /no token/ ) {
+		$text = Wx::gettext("Current cursor does not seem to point at a variable");
+	} elsif ( $error =~ /no declaration/ ) {
+		$text = Wx::gettext("No declaration could be found for the specified (lexical?) variable");
+	} else {
+		$text = Wx::gettext("Unknown error");
+	}
+	Wx::MessageBox(
+		$text,
+		Wx::gettext("Replace Operation Canceled"),
+		Wx::wxOK,
+		$self->current->main,
+	);
 }
 
 sub introduce_temporary_variable {
@@ -860,12 +894,12 @@ sub introduce_temporary_variable_response {
 	my $self = shift;
 	my $task = shift;
 
-	if ( defined $self->{munged} ) {
+	if ( defined $task->{munged} ) {
 
 		# GUI update
 		# TO DO: What if the document changed? Bad luck for now.
-		$self->editor->SetText( $self->{munged} );
-		$self->ppi_select( $self->{location} );
+		$self->editor->SetText( $task->{munged} );
+		$self->ppi_select( $task->{location} );
 		return;
 	}
 

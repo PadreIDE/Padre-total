@@ -70,6 +70,7 @@ sub run {
 	my $self = shift;
 	my $text = delete $self->{text};
 
+	# Parse the document and hand off to the task
 	require PPI::Document;
 	$self->process(
 		PPI::Document->new( \$text )
