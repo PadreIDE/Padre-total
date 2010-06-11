@@ -40,7 +40,7 @@ use Class::XSAccessor 1.05 {
 		opts           => 'opts',
 		config         => 'config',
 		wx             => 'wx',
-		task2_manager  => 'task2_manager',
+		task_manager  => 'task_manager',
 		plugin_manager => 'plugin_manager',
 	},
 	accessors => {
@@ -152,7 +152,7 @@ sub new {
 
 	# Create the task manager
 	require Padre::Task2Manager;
-	$self->{task2_manager} = Padre::Task2Manager->new(
+	$self->{task_manager} = Padre::Task2Manager->new(
 		threads => 1,
 		conduit => $self->{wx}->{main},
 	);

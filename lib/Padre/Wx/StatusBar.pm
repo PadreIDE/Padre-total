@@ -357,7 +357,7 @@ sub on_resize {
 #
 sub _get_task_status {
 	my $self    = shift;
-	my $manager = undef; # $self->current->ide->task2_manager;
+	my $manager = undef; # $self->current->ide->task_manager;
 
 	# still in editor start-up phase, default to idle
 	return 'idle' unless defined $manager;

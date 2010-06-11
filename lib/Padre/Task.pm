@@ -59,7 +59,7 @@ sub callback {
 
 # Send the task to the task manager to be executed
 sub schedule {
-	Padre::Current->ide->task2_manager->schedule(@_);
+	Padre::Current->ide->task_manager->schedule(@_);
 }
 
 # Called in the parent thread immediately before being passed
