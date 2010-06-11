@@ -1,10 +1,9 @@
-package Padre::Task2::PPI::FindUnmatchedBrace;
+package Padre::Task2::PPI::FindVariableDeclaration;
 
 use 5.008;
 use strict;
 use warnings;
 use Padre::Task2::PPI ();
-use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = 'Padre::Task2::PPI';
@@ -13,40 +12,45 @@ our @ISA     = 'Padre::Task2::PPI';
 
 =head1 NAME
 
-Padre::Task::PPI::FindUnmatchedBrace - C<PPI> based unmatched brace finder
+Padre::Task::PPI::FindVariableDeclaration - Finds where a variable was declared using L<PPI>
 
 =head1 SYNOPSIS
 
-  my $task = Padre::Task::PPI::FindUnmatchedBrace->new(
-          document => $padre_document,
+  # Find declaration of variable at cursor
+  my $task = Padre::Task::PPI::FindVariableDeclaration->new(
+          document => $document_obj,
+          location => [ $line, $column ], # ppi-style location is okay, too
   );
+
   $task->schedule;
 
 =head1 DESCRIPTION
 
-Finds the location of unmatched braces in a C<Padre::Document::Perl>.
-If there is no unmatched brace, a message box tells the user about
-that glorious fact. If there is one, the cursor will jump to it.
+Finds out where a variable has been declared.
+If unsuccessful, a message box tells the user about
+that glorious fact. If a declaration is found, the cursor will jump to it.
 
 =cut
 
 sub process {
-	TRACE('process') if DEBUG;
-	my $self   = shift;
-	my $ppi    = shift or return;
-	my $result = eval {
-		require PPIx::EditorTools::FindUnmatchedBrace;
-		PPIx::EditorTools::FindUnmatchedBrace->new->find( ppi => $ppi );
+	my $self     = shift;
+	my $ppi      = shift or return;
+	my $location = $self->{location};
+	my $result  = eval {
+		require PPIx::EditorTools::FindVariableDeclaration;
+		PPIx::EditorTools::FindVariableDeclaration->new->find(
+			ppi    => $ppi,
+			line   => $location->[0],
+			column => $location->[1]
+		);
 	};
-	if ( $@ ) {
+	if ($@) {
 		$self->{error} = $@;
 		return;
 	}
 
-	# An undef brace throws a die here.
-	# undef = no error found.
+	# If we found it, save the location
 	if ( defined $result ) {
-		# Remember for gui update
 		$self->{location} = $result->element->location;
 	}
 
@@ -56,8 +60,6 @@ sub process {
 1;
 
 __END__
-
-=pod
 
 =head1 SEE ALSO
 

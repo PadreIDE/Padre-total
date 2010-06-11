@@ -61,7 +61,7 @@ of a C<Padre::Task::PPI> object.
 sub new {
 	my $self = shift->SUPER::new(@_);
 	if ( $self->{document} ) {
-		$self->{text} = $self->{document}->text_get;
+		$self->{text} = delete($self->{document})->text_get;
 	}
 	return $self;
 }

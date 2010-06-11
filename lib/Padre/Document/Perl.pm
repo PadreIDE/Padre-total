@@ -489,7 +489,7 @@ sub find_unmatched_brace_response {
 	my $self = shift;
 	my $task = shift;
 
-	# Handle an unmatched brace
+	# Found what we were looking for
 	if ( $task->{location} ) {
 		$self->ppi_select( $task->{location} );
 		return;
@@ -564,7 +564,7 @@ sub get_current_symbol {
 }
 
 sub find_variable_declaration {
-	my ($self) = @_;
+	my $self = shift;
 
 	my ( $location, $token ) = $self->get_current_symbol;
 	unless ( defined $location ) {
@@ -572,19 +572,49 @@ sub find_variable_declaration {
 			Wx::gettext("Current cursor does not seem to point at a variable"),
 			Wx::gettext("Check cancelled"),
 			Wx::wxOK,
-			Padre->ide->wx->main
+			$self->current->main,
 		);
-		return ();
+		return;
 	}
 
-	# create a new object of the task class and schedule it
-	require Padre::Task::PPI::FindVariableDeclaration;
-	Padre::Task::PPI::FindVariableDeclaration->new(
+	# Create a new object of the task class and schedule it
+	$self->task_request(
+		task     => 'Padre::Task2::PPI::FindVariableDeclaration',
 		document => $self,
 		location => $location,
-	)->schedule;
+		callback => 'find_variable_declaration_response',
+	);
 
-	return ();
+	return;
+}
+
+sub find_variable_declaration_response {
+	my $self = shift;
+	my $task = shift;
+
+	# Found what we were looking for
+	if ( $task->{location} ) {
+		$self->ppi_select( $task->{location} );
+		return;
+	}
+
+	# Couldn't find the variable declaration.
+	# TO DO: Convert this to a call to ->main that doesn't require
+	# us to use Wx directly.
+	my $text;
+	if ( $self->{error} =~ /no token/ ) {
+		$text = Wx::gettext("Current cursor does not seem to point at a variable");
+	} elsif ( $self->{error} =~ /no declaration/ ) {
+		$text = Wx::gettext("No declaration could be found for the specified (lexical?) variable");
+	} else {
+		$text = Wx::gettext("Unknown error");
+	}
+	Wx::MessageBox(
+		$text,
+		Wx::gettext("Search Canceled"),
+		Wx::wxOK,
+		$self->current->main,
+	);
 }
 
 sub find_method_declaration {
