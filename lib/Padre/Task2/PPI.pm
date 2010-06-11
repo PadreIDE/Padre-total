@@ -1,14 +1,12 @@
-package Padre::Task::PPI;
+package Padre::Task2::PPI;
 
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task    ();
-use Padre::Current ();
-use Padre::Logger;
+use Padre::Task2 ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task';
+our @ISA     = 'Padre::Task2';
 
 =pod
 
@@ -18,37 +16,26 @@ Padre::Task::PPI - Generic L<PPI> background processing task
 
 =head1 SYNOPSIS
 
-  package Padre::Task::PPI::MyFancyTest;
-  use base 'Padre::Task::PPI';
-
-  # will be called after ppi-parsing:
-  sub process_ppi  {
-          my $self = shift;
-          my $ppi  = shift or return;
-          my $result = ...expensive_calculation_using_ppi...
-          $self->{result} = $result;
-          return();
-  },
-
-  sub finish {
-          my $self = shift;
-          my $result = $self->{result};
-          # update GUI here...
-  };
-
+  package Padre::Task2::PPI::MyFancyTest;
+  
+  use base 'Padre::Task2::PPI';
+  
+  # Will be called after ppi-parsing:
+  sub process {
+      my $self   = shift;
+      my $ppi    = shift or return;
+      my $result = ...expensive_calculation_using_ppi...
+      $self->{result} = $result;
+      return;
+  }
+  
   1;
-
+  
   # elsewhere:
-
-  # by default, the text of the current document
-  # will be fetched.
-  my $task = Padre::Task::PPI::MyFancyTest->new();
-  $task->schedule;
-
-  my $task2 = Padre::Task::PPI::MyFancyTest->new(
-    text => 'parse-this!',
-  );
-  $task2->schedule;
+  
+  Padre::Task::PPI::MyFancyTest->new(
+      text => 'parse-this!',
+  )->schedule;
 
 =head1 DESCRIPTION
 
@@ -72,35 +59,22 @@ of a C<Padre::Task::PPI> object.
 =cut
 
 sub new {
-	TRACE('new') if DEBUG;
-	my $class = shift;
-	my $self  = $class->SUPER::new(@_);
-	unless ( defined $self->{text} ) {
-		my $doc = Padre::Current->document;
-		return () if not defined $doc;
-		$self->{text} = $doc->text_get;
+	my $self = shift->SUPER::new(@_);
+	if ( $self->{document} ) {
+		$self->{text} = $self->{document}->text_get;
 	}
-	return bless $self => $class;
+	return $self;
 }
 
 sub run {
-	TRACE('run') if DEBUG;
 	my $self = shift;
-	require PPI;
-	require PPI::Document;
-	my $ppi = PPI::Document->new( \( $self->{text} ) );
-	delete $self->{text};
-	$self->process_ppi($ppi) if $self->can('process_ppi');
-	return 1;
-}
+	my $text = delete $self->{text};
 
-sub prepare {
-	TRACE('prepare') if DEBUG;
-	my $self = shift;
-	unless ( defined $self->{text} ) {
-		require Carp;
-		Carp::croak("Could not find the document's text for PPI parsing.");
-	}
+	require PPI::Document;
+	$self->process(
+		PPI::Document->new( \$text )
+	);
+
 	return 1;
 }
 

@@ -3,22 +3,25 @@ package Padre::Document::Perl;
 use 5.008;
 use strict;
 use warnings;
-use Carp                            ();
-use Encode                          ();
-use File::Spec                      ();
-use File::Temp                      ();
-use File::Find::Rule                ();
-use Params::Util                    ('_INSTANCE');
-use YAML::Tiny                      ();
-use Padre::Util                     ();
-use Padre::Perl                     ();
-use Padre::Document                 ();
-use Padre::File                     ();
-use Padre::Document::Perl::Beginner ();
+use Carp              ();
+use Encode            ();
+use File::Spec        ();
+use File::Temp        ();
+use File::Find::Rule  ();
+use Params::Util      ('_INSTANCE');
+use YAML::Tiny        ();
+use Padre::Util       ();
+use Padre::Perl       ();
+use Padre::Document   ();
+use Padre::File       ();
+use Padre::Task2Owner ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Document';
+our @ISA     = qw{
+	Padre::Task2Owner
+	Padre::Document
+};
 
 
 
@@ -49,7 +52,7 @@ sub task_syntax {
 # Ticket #637:
 # TO DO watch out! These PPI methods may be VERY expensive!
 # (Ballpark: Around 1 Gigahertz-second of *BLOCKING* CPU per 1000 lines)
-# Check out Padre::Task::PPI and its subclasses instead!
+# Check out Padre::Task2::PPI and children instead!
 sub ppi_get {
 	my $self = shift;
 	my $text = $self->text_get;
@@ -444,6 +447,7 @@ sub beginner_check {
 	# it should at least go to the line it's complaining about.
 	# Ticket #534
 
+	require Padre::Document::Perl::Beginner;
 	my $Beginner = Padre::Document::Perl::Beginner->new(
 		document => $self,
 		editor   => $self->editor
@@ -467,20 +471,39 @@ sub comment_lines_str {
 }
 
 sub find_unmatched_brace {
-	my ($self) = @_;
+	TRACE("find_unmatched_brace") if DEBUG;
+	my $self = shift;
 
-	# create a new object of the task class and schedule it
-	require Padre::Task::PPI::FindUnmatchedBrace;
-	Padre::Task::PPI::FindUnmatchedBrace->new(
-
-		# for parsing
-		text => $self->text_get,
-
-		# will be available in "finish" but not in "run"/"process_ppi"
+	# Fire the task
+	$self->task_request(
+		task     => 'Padre::Task2::PPI::FindUnmatchedBrace',
 		document => $self,
-	)->schedule;
+		callback => 'find_unmatched_brace_response',
+	);
 
-	return ();
+	return;
+}
+
+sub find_unmatched_brace_response {
+	TRACE("find_unmatched_brace_response") if DEBUG;
+	my $self = shift;
+	my $task = shift;
+
+	# Handle an unmatched brace
+	if ( $task->{location} ) {
+		$self->ppi_select( $task->{location} );
+		return;
+	}
+
+	# Must have been a clean result
+	# TO DO: Convert this to a call to ->main that doesn't require
+	# us to use Wx directly.
+	Wx::MessageBox(
+		Wx::gettext("All braces appear to be matched"),
+		Wx::gettext("Check Complete"),
+		Wx::wxOK,
+		$self->current->main,
+	);
 }
 
 # finds the start of the current symbol.
