@@ -4,11 +4,6 @@
 # Done in similar style to the task master to help encourage
 # implementation similarity in the future.
 
-#BEGIN {
-#$Padre::Task2Master::DEBUG = 1;
-#$Padre::Task2Thread::DEBUG = 1;
-#}
-
 use strict;
 use warnings;
 use Test::More tests => 23;
