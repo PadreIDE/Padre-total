@@ -64,10 +64,10 @@ my %TODO = map { $_ => 1 } qw(
 	Padre::Plugin::My
 	Padre::PluginManager
 	Padre::Splash
-	Padre::Task2::LaunchDefaultBrowser
-	Padre::Task2Thread
-	Padre::Task2Handle
-	Padre::Task2Manager
+	Padre::Task::LaunchDefaultBrowser
+	Padre::TaskThread
+	Padre::TaskHandle
+	Padre::TaskManager
 );
 
 foreach my $module ( sort keys %modules ) {

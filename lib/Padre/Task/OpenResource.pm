@@ -1,11 +1,11 @@
-package Padre::Task2::OpenResource;
+package Padre::Task::OpenResource;
 
 use 5.008;
 use strict;
 use warnings;
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub run {
 	my $self = shift;

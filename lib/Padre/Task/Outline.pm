@@ -1,21 +1,21 @@
-package Padre::Task2::Outline;
+package Padre::Task::Outline;
 
 # Function list refresh task, done mainly as a full-feature proof of concept.
 
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Task2   ();
+use Padre::Task   ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 
 
 
 
 ######################################################################
-# Padre::Task2 Methods
+# Padre::Task Methods
 
 sub run {
 	my $self  = shift;
@@ -35,7 +35,7 @@ sub run {
 
 
 ######################################################################
-# Padre::Task2::Outline Methods
+# Padre::Task::Outline Methods
 
 # Show an empty function list by default
 sub find {

@@ -1,4 +1,4 @@
-package Padre::Task2Thread;
+package Padre::TaskThread;
 
 # Cleanly encapsulated object for a thread that does work based 
 # on packaged method calls passed via a shared queue.
@@ -228,8 +228,8 @@ sub stop_child {
 # Execute a task
 sub task {
 	TRACE($_[0]) if DEBUG;
-	require Padre::Task2Handle;
-	Padre::Task2Handle->from_array($_[1]);
+	require Padre::TaskHandle;
+	Padre::TaskHandle->from_array($_[1]);
 }
 
 

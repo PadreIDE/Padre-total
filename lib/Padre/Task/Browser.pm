@@ -1,13 +1,13 @@
-package Padre::Task2::Browser;
+package Padre::Task::Browser;
 
 use 5.008;
 use strict;
 use warnings;
 use threads;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub prepare {
 	my $self = shift;

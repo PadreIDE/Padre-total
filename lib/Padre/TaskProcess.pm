@@ -1,13 +1,13 @@
-package Padre::Task2Process;
+package Padre::TaskProcess;
 
 use 5.008;
 use strict;
 use warnings;
 use Carp         ();
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.59';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 
 

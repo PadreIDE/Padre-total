@@ -9,11 +9,11 @@ use Padre::Wx                  ();
 use Padre::Wx::Icon            ();
 use Padre::Wx::Role::MainChild ();
 use Padre::MimeTypes           ();
-use Padre::Task2Owner          ();
+use Padre::TaskOwner          ();
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Padre::Wx::Role::MainChild
 	Wx::Dialog
 };
@@ -500,7 +500,7 @@ sub search {
 
 	# Kick off the resource search
 	$self->task_request(
-		task                     => 'Padre::Task2::OpenResource',
+		task                     => 'Padre::Task::OpenResource',
 		directory                => $self->{directory},
 		skip_vcs_files           => $self->{skip_vcs_files}->IsChecked,
 		skip_using_manifest_skip => $self->{skip_using_manifest_skip}->IsChecked,

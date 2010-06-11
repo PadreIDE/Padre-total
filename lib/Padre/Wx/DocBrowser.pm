@@ -28,19 +28,19 @@ use List::MoreUtils          ();
 use Params::Util             ( qw{ _INSTANCE _INVOCANT _HASH _STRING } );
 use Padre::Util              ('_T');
 use Padre::DocBrowser        ();
-use Padre::Task2::Browser    ();
+use Padre::Task::Browser    ();
 use Padre::Wx                ();
 use Padre::Wx::HtmlWindow    ();
 use Padre::Wx::Icon          ();
 use Padre::Wx::AuiManager    ();
 use Padre::Wx::Dialog        ();
-use Padre::Task2Owner        ();
+use Padre::TaskOwner        ();
 use Wx::Perl::Dialog::Simple ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Wx::Dialog
 };
 
@@ -94,7 +94,7 @@ sub new {
 	);
 	$self->{search}->SetToolTip(
 		Wx::ToolTip->new(
-			Wx::gettext('Search for perldoc - e.g. Padre::Task2, Net::LDAP')
+			Wx::gettext('Search for perldoc - e.g. Padre::Task, Net::LDAP')
 		)
 	);
 
@@ -111,7 +111,7 @@ sub new {
 		Wx::wxDefaultPosition, [ 50, -1 ],
 		Wx::wxALIGN_RIGHT
 	);
-	$label->SetToolTip( Wx::ToolTip->new( Wx::gettext('Search for perldoc - e.g. Padre::Task2, Net::LDAP') ) );
+	$label->SetToolTip( Wx::ToolTip->new( Wx::gettext('Search for perldoc - e.g. Padre::Task, Net::LDAP') ) );
 
 	my $close_button = Wx::Button->new( $self, Wx::wxID_CANCEL, Wx::gettext('&Close') );
 
@@ -233,7 +233,7 @@ sub help {
 
 		if ($generate) {
 			$self->task_request(
-				task     => 'Padre::Task2::Browser',
+				task     => 'Padre::Task::Browser',
 				document => $document,
 				method   => 'docs',
 				args     => \%hints,
@@ -243,7 +243,7 @@ sub help {
 		}
 		if ($render) {
 			$self->task_request(
-				task     => 'Padre::Task2::Browser',
+				task     => 'Padre::Task::Browser',
 				document => $document,
 				method   => 'browse',
 				args     => \%hints,
@@ -255,7 +255,7 @@ sub help {
 		return;
 	} elsif ( defined $document ) {
 		$self->task_request(
-			task     => 'Padre::Task2::Browser',
+			task     => 'Padre::Task::Browser',
 			document => $document,
 			method   => 'resolve',
 			args     => \%hints,
@@ -271,7 +271,7 @@ sub resolve {
 	my $self     = shift;
 	my $document = shift;
 	$self->task_request(
-		task     => 'Padre::Task2::Browser',
+		task     => 'Padre::Task::Browser',
 		document => $document,
 		method   => 'resolve',
 		args     => { $self->_hints },
@@ -306,7 +306,7 @@ sub display {
 		}
 
 		$self->task_request(
-			task     => 'Padre::Task2::Browser',
+			task     => 'Padre::Task::Browser',
 			method   => 'browse',
 			document => $docs,
 			then     => 'display',
@@ -488,7 +488,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<Padre::DocBrowser> L<Padre::Task2::Browser>
+L<Padre::DocBrowser> L<Padre::Task::Browser>
 
 =cut
 

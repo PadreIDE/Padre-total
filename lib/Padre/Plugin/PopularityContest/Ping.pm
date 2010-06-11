@@ -6,10 +6,10 @@ use 5.008;
 use strict;
 use warnings;
 use URI               ();
-use Padre::Task2::LWP ();
+use Padre::Task::LWP ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::LWP';
+our @ISA     = 'Padre::Task::LWP';
 
 sub new {
 	my $class = shift;

@@ -151,8 +151,8 @@ sub new {
 	$self->{wx} = Padre::Wx::App->create($self);
 
 	# Create the task manager
-	require Padre::Task2Manager;
-	$self->{task_manager} = Padre::Task2Manager->new(
+	require Padre::TaskManager;
+	$self->{task_manager} = Padre::TaskManager->new(
 		threads => 1,
 		conduit => $self->{wx}->{main},
 	);
@@ -947,11 +947,11 @@ Abstract class understanding what a project is.
 Is a Perl specific project. These are work in process.
 Not yet used.
 
-=item L<Padre::Task2Manager>
+=item L<Padre::TaskManager>
 
 Managing background tasks.
 
-=item L<Padre::Task2>
+=item L<Padre::Task>
 
 Background tasks.
 

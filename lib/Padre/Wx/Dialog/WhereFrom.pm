@@ -3,13 +3,13 @@ package Padre::Wx::Dialog::WhereFrom;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2Owner          ();
+use Padre::TaskOwner          ();
 use Padre::Wx::Role::MainChild ();
 use Padre::Wx                  ();
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Padre::Wx::Role::MainChild
 	Wx::Dialog
 };
@@ -172,7 +172,7 @@ sub button_ok {
 
 	# Fire and forget the HTTP request to the server
 	$self->task_request(
-		task => 'Padre::Task2::LWP',
+		task => 'Padre::Task::LWP',
 		url   => SERVER,
 		query => { from => $from },
 	);

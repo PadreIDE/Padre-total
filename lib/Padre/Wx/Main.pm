@@ -3208,7 +3208,7 @@ sub on_close_window {
 	$event->Skip;
 
 	# Stop the task manager.
-	TRACE("Shutting down Task2Manager") if DEBUG;
+	TRACE("Shutting down TaskManager") if DEBUG;
 	$self->ide->task_manager->stop;
 
 	# Vacuum database on exit so that it does not grow.

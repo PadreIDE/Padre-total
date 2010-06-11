@@ -1,4 +1,4 @@
-package Padre::Task2::LaunchDefaultBrowser;
+package Padre::Task::LaunchDefaultBrowser;
 
 # The Wx::LaunchDefaultBrowser function blocks until the default
 # browser has been launched. For something like a heavily loaded down
@@ -8,10 +8,10 @@ package Padre::Task2::LaunchDefaultBrowser;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub run {
 	# We don't need to load all of Padre::Wx for this,

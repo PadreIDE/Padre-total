@@ -9,8 +9,8 @@ use warnings;
 use Test::More tests => 23;
 use Test::NoWarnings;
 use Test::Exception;
-use Padre::Task2Handle ();
-use Padre::Task2::Eval ();
+use Padre::TaskHandle ();
+use Padre::Task::Eval ();
 use Padre::Logger;
 
 
@@ -21,20 +21,20 @@ use Padre::Logger;
 # Run a straight forwards eval task via a handle
 
 SCOPE: {
-	my $task = Padre::Task2::Eval->new(
+	my $task = Padre::Task::Eval->new(
 		prepare => '1 + 2',
 		run     => '3 + 4',
 		finish  => '5 + 6',
 	);
-	isa_ok( $task, 'Padre::Task2::Eval' );
+	isa_ok( $task, 'Padre::Task::Eval' );
 	is( $task->{prepare}, '1 + 2', '->{prepare} is false' );
 	is( $task->{run},     '3 + 4', '->{run} is false'     );
 	is( $task->{finish},  '5 + 6', '->{finish} is false'  );
 
 	# Wrap a handle around it
-	my $handle = Padre::Task2Handle->new( $task );		
-	isa_ok( $handle, 'Padre::Task2Handle' );
-	isa_ok( $handle->task, 'Padre::Task2::Eval' );
+	my $handle = Padre::TaskHandle->new( $task );		
+	isa_ok( $handle, 'Padre::TaskHandle' );
+	isa_ok( $handle->task, 'Padre::Task::Eval' );
 	is( $handle->hid, 1, '->hid ok' );
 
 	# Run the task
@@ -54,12 +54,12 @@ SCOPE: {
 # Exceptions without a handle
 
 SCOPE: {
-	my $task = Padre::Task2::Eval->new(
+	my $task = Padre::Task::Eval->new(
 		prepare => 'die "foo";',
 		run     => 'die "bar";',
 		finish  => 'die "baz";',
 	);
-	isa_ok( $task, 'Padre::Task2::Eval' );
+	isa_ok( $task, 'Padre::Task::Eval' );
 
 	# Do they throw normal exceptions
 	throws_ok( sub { $task->prepare }, qr/foo/ );
@@ -75,14 +75,14 @@ SCOPE: {
 # Repeat with the handle
 
 SCOPE: {
-	my $task = Padre::Task2::Eval->new(
+	my $task = Padre::Task::Eval->new(
 		prepare => 'die "foo";',
 		run     => 'die "bar";',
 		finish  => 'die "baz";',
 	);
-	my $handle = Padre::Task2Handle->new( $task );
-	isa_ok( $task,   'Padre::Task2::Eval' );
-	isa_ok( $handle, 'Padre::Task2Handle' );
+	my $handle = Padre::TaskHandle->new( $task );
+	isa_ok( $task,   'Padre::Task::Eval' );
+	isa_ok( $handle, 'Padre::TaskHandle' );
 
 	# Do they throw normal exceptions
 	is( $handle->prepare, '', '->prepare ok' );

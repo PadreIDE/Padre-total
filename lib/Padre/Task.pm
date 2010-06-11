@@ -1,4 +1,4 @@
-package Padre::Task2;
+package Padre::Task;
 
 use 5.008005;
 use strict;
@@ -7,7 +7,7 @@ use Storable          ();
 use Scalar::Util      ();
 use Params::Util      ();
 use Padre::Current    ();
-use Padre::Task2Owner ();
+use Padre::TaskOwner ();
 
 our $VERSION = '0.59';
 
@@ -43,7 +43,7 @@ sub running {
 }
 
 sub owner {
-	Padre::Task2Owner->task_owner($_[0]->{owner});
+	Padre::TaskOwner->task_owner($_[0]->{owner});
 }
 
 sub callback {

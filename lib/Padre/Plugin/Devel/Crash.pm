@@ -14,16 +14,16 @@ package Padre::Plugin::Devel::Crash;
 # ...
 # ...
 
-# TO DO: Replace this with some use of Padre::Task2::Eval so we don't need
+# TO DO: Replace this with some use of Padre::Task::Eval so we don't need
 # an entire dedicated class just for this.
 
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub run {
 	sleep 5;

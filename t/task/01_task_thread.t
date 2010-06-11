@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Test::More tests => 19;
 use Test::NoWarnings;
-use Padre::Task2Thread ();
+use Padre::TaskThread ();
 use Padre::Logger;
 
 # Do we start with no threads as expected
@@ -23,8 +23,8 @@ is( scalar(threads->list), 0, 'One thread exists' );
 
 SCOPE: {
 	# Create the master thread
-	my $thread = Padre::Task2Thread->new->spawn;
-	isa_ok( $thread, 'Padre::Task2Thread' );
+	my $thread = Padre::TaskThread->new->spawn;
+	isa_ok( $thread, 'Padre::TaskThread' );
 	is( $thread->wid, 1, '->wid ok' );
 	isa_ok( $thread->queue, 'Thread::Queue' );
 	isa_ok( $thread->thread, 'threads' );

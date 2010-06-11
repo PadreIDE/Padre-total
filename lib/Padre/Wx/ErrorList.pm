@@ -205,7 +205,7 @@ sub populate {
 
 	# Kick off the parsing
 	$self->task_request(
-		task     => 'Padre::Task2::ErrorList',
+		task     => 'Padre::Task::ErrorList',
 		text     => $data,
 		cur_lang => $lang,
 		old_lang => $old,

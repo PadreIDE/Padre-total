@@ -115,8 +115,8 @@ sub startup {
 	# This one is much safer because we start with zero existing tasks
 	# and no expectation of existing load behaviour.
 	if ( $setting{threads} ) {
-		require Padre::Task2Thread;
-		Padre::Task2Thread->master;
+		require Padre::TaskThread;
+		Padre::TaskThread->master;
 	}
 
 	# Show the splash image now we are starting a new instance

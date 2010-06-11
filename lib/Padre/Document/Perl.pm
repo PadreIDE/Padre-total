@@ -14,12 +14,12 @@ use Padre::Util       ();
 use Padre::Perl       ();
 use Padre::Document   ();
 use Padre::File       ();
-use Padre::Task2Owner ();
+use Padre::TaskOwner ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Padre::Document
 };
 
@@ -52,7 +52,7 @@ sub task_syntax {
 # Ticket #637:
 # TO DO watch out! These PPI methods may be VERY expensive!
 # (Ballpark: Around 1 Gigahertz-second of *BLOCKING* CPU per 1000 lines)
-# Check out Padre::Task2::PPI and children instead!
+# Check out Padre::Task::PPI and children instead!
 sub ppi_get {
 	my $self = shift;
 	my $text = $self->text_get;
@@ -476,7 +476,7 @@ sub find_unmatched_brace {
 
 	# Fire the task
 	$self->task_request(
-		task     => 'Padre::Task2::PPI::FindUnmatchedBrace',
+		task     => 'Padre::Task::PPI::FindUnmatchedBrace',
 		document => $self,
 		callback => 'find_unmatched_brace_response',
 	);
@@ -579,7 +579,7 @@ sub find_variable_declaration {
 
 	# Create a new object of the task class and schedule it
 	$self->task_request(
-		task     => 'Padre::Task2::PPI::FindVariableDeclaration',
+		task     => 'Padre::Task::PPI::FindVariableDeclaration',
 		document => $self,
 		location => $location,
 		callback => 'find_variable_declaration_response',
@@ -831,7 +831,7 @@ sub lexical_variable_replacement {
 
 	# Launch the background task
 	$self->task_request(
-		task => 'Padre::Task2::PPI::LexicalReplaceVariable',
+		task => 'Padre::Task::PPI::LexicalReplaceVariable',
 		document => $self,
 		location => $location,
 		replacement => $name,
@@ -879,7 +879,7 @@ sub introduce_temporary_variable {
 
 	# Run the replacement in the background
 	$self->task_request(
-		task           => 'Padre::Task2::PPI::IntroduceTemporaryVariable',
+		task           => 'Padre::Task::PPI::IntroduceTemporaryVariable',
 		document       => $self,
 		varname        => $name,
 		start_location => $editor->GetSelectionStart,

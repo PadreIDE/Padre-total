@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Scalar::Util               ();
 use Params::Util               ();
-use Padre::Task2Owner          ();
+use Padre::TaskOwner          ();
 use Padre::Wx::Role::View      ();
 use Padre::Wx::Role::MainChild ();
 use Padre::Wx                  ();
@@ -13,7 +13,7 @@ use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Padre::Wx::Role::View
 	Padre::Wx::Role::MainChild
 	Wx::TreeCtrl
@@ -98,7 +98,7 @@ sub view_close {
 
 
 ######################################################################
-# Padre::Task2Owner Methods
+# Padre::TaskOwner Methods
 
 sub task_response {
 	my $self = shift;

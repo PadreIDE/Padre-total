@@ -1,4 +1,4 @@
-package Padre::Task2Manager;
+package Padre::TaskManager;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use threads::shared;
 use Thread::Queue;
 
 require Padre;
-use Padre::Task2;
+use Padre::Task;
 use Padre::Wx;
 use Wx::Event qw(EVT_COMMAND EVT_CLOSE);
 
@@ -28,7 +28,7 @@ our $SINGLETON;
 sub schedule {
 	my $self = shift;
 	my $process = shift;
-	if (not ref($process) or not $process->isa("Padre::Task2")) {
+	if (not ref($process) or not $process->isa("Padre::Task")) {
 		die "Invalid task scheduled!"; # TODO: grace
 	}
 

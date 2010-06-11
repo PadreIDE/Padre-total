@@ -1,12 +1,12 @@
-package Padre::Task2::ErrorList;
+package Padre::Task::ErrorList;
 
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub new {
 	my $class = shift;

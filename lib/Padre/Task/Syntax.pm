@@ -1,14 +1,14 @@
-package Padre::Task2::Syntax;
+package Padre::Task::Syntax;
 
 use 5.008;
 use strict;
 use warnings;
 use Carp         ();
 use Params::Util ('_INSTANCE');
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 
 
@@ -41,7 +41,7 @@ sub new {
 
 
 ######################################################################
-# Padre::Task2 Methods
+# Padre::Task Methods
 
 sub run {
 	my $self  = shift;

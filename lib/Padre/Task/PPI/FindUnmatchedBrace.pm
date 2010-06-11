@@ -1,23 +1,23 @@
-package Padre::Task2::PPI::FindUnmatchedBrace;
+package Padre::Task::PPI::FindUnmatchedBrace;
 
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2::PPI ();
+use Padre::Task::PPI ();
 use Padre::Logger;
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::PPI';
+our @ISA     = 'Padre::Task::PPI';
 
 =pod
 
 =head1 NAME
 
-Padre::Task2::PPI::FindUnmatchedBrace - C<PPI> based unmatched brace finder
+Padre::Task::PPI::FindUnmatchedBrace - C<PPI> based unmatched brace finder
 
 =head1 SYNOPSIS
 
-  my $task = Padre::Task2::PPI::FindUnmatchedBrace->new(
+  my $task = Padre::Task::PPI::FindUnmatchedBrace->new(
           document => $padre_document,
   );
   $task->schedule;
@@ -61,7 +61,7 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task2::PPI>.
+This class inherits from C<Padre::Task::PPI>.
 
 =head1 AUTHOR
 

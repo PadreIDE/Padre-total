@@ -1,14 +1,14 @@
-package Padre::Task2::Eval;
+package Padre::Task::Eval;
 
 =pod
 
 =head1 NAME
 
-Padre::Task2::Eval - Task for executing arbitrary code via a string eval
+Padre::Task::Eval - Task for executing arbitrary code via a string eval
 
 =head1 SYNOPSIS
 
-  my $task = Padre::Task2::Eval->new(
+  my $task = Padre::Task::Eval->new(
       prepare => '1 + 1',
       run     => 'my $foo = sub { 2 + 3 }; $foo->();',
       finish  => '$_[0]->{prepare}',
@@ -20,7 +20,7 @@ Padre::Task2::Eval - Task for executing arbitrary code via a string eval
 
 =head1 DESCRIPTION
 
-B<Padre::Task2::Eval> is a stub class used to implement testing and other
+B<Padre::Task::Eval> is a stub class used to implement testing and other
 miscellaneous functionality.
 
 It takes three named string parameters matching each of the three execution
@@ -37,17 +37,17 @@ of a task handle it should be caught by the handle).
 =head1 METHODS
 
 This class contains now additional methods beyond the defaults provided by
-the L<Padre::Task2> API.
+the L<Padre::Task> API.
 
 =cut
 
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION  = '0.59';
-our @ISA      = 'Padre::Task2';
+our @ISA      = 'Padre::Task';
 our $AUTOLOAD = undef;
 
 sub prepare {

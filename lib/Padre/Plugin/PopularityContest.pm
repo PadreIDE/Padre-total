@@ -276,7 +276,7 @@ sub report {
 
 	# TO DO: Enable as soon as the server is functional:
 	#	$self->task_request(
-	#		task   => 'Padre::Task2::LWP'->new(
+	#		task   => 'Padre::Task::LWP'->new(
 	#		method => 'POST',
 	#		url    => 'http://padre.perlide.org/popularity_contest.cgi',
 	#		query  => \%STATS,

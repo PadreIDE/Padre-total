@@ -4,10 +4,10 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Constant      ();
-use Padre::Task2::Syntax ();
+use Padre::Task::Syntax ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::Syntax';
+our @ISA     = 'Padre::Task::Syntax';
 
 sub syntax {
 	my $self = shift;

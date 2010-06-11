@@ -11,8 +11,8 @@ use Storable                  ();
 use Time::HiRes               ();
 use Padre::Wx                 ();
 use Padre::Wx::App            ();
-use Padre::Task2Manager       ();
-use Padre::Task2::Addition    ();
+use Padre::TaskManager       ();
+use Padre::Task::Addition    ();
 use t::lib::Padre::NullWindow ();
 
 
@@ -31,8 +31,8 @@ isa_ok( $wxapp, 'Padre::Wx::App' );
 my $window = t::lib::Padre::NullWindow->new;
 isa_ok( $window, 't::lib::Padre::NullWindow' );
 
-my $manager = Padre::Task2Manager->new( conduit => $window );
-isa_ok( $manager, 'Padre::Task2Manager' );
+my $manager = Padre::TaskManager->new( conduit => $window );
+isa_ok( $manager, 'Padre::TaskManager' );
 
 # Schedule the startup timer
 Wx::Event::EVT_TIMER( $wxapp, Padre::Wx::ID_TIMER_POSTINIT, \&startup );
@@ -77,11 +77,11 @@ sub startup {
 	is( scalar(threads->list), 3, 'Three threads exists' );
 
 	# Create the sample task
-	my $addition = Padre::Task2::Addition->new(
+	my $addition = Padre::Task::Addition->new(
 		x => 2,
 		y => 3,
 	);
-	isa_ok( $addition, 'Padre::Task2::Addition' );
+	isa_ok( $addition, 'Padre::Task::Addition' );
 
 	# Schedule the task (which should trigger it's execution)
 	ok( $manager->schedule($addition), '->schedule ok' );

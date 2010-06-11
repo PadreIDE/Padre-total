@@ -39,13 +39,13 @@ use_ok('Padre::Plugin::Devel');
 use_ok('Padre::Plugin::My');
 
 # Load all the second-generation modules
-use_ok('Padre::Task2'       );
-use_ok('Padre::Task2Thread' );
-use_ok('Padre::Task2Handle' );
-use_ok('Padre::Task2Manager');
-use_ok('Padre::Task2Process');
-use_ok('Padre::Task2Worker' );
-use_ok('Padre::Task2Owner'  );
+use_ok('Padre::Task'       );
+use_ok('Padre::TaskThread' );
+use_ok('Padre::TaskHandle' );
+use_ok('Padre::TaskManager');
+use_ok('Padre::TaskProcess');
+use_ok('Padre::TaskWorker' );
+use_ok('Padre::TaskOwner'  );
 
 # Now load everything else
 my $loaded = Padre->import(':everything');

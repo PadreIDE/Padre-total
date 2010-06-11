@@ -1,12 +1,12 @@
-package Padre::Task2::Addition;
+package Padre::Task::Addition;
 
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Task2 ();
+use Padre::Task ();
 
 our $VERSION = '0.59';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 sub new {
 	shift->SUPER::new(

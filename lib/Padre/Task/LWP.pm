@@ -1,15 +1,15 @@
-package Padre::Task2::LWP;
+package Padre::Task::LWP;
 
 =pod
 
 =head1 NAME
 
-Padre::Task2::LWP - Generic HTTP client background processing task
+Padre::Task::LWP - Generic HTTP client background processing task
 
 =head1 SYNOPSIS
 
   # Fire and forget HTTP request
-  Padre::Task2::LWP->new(
+  Padre::Task::LWP->new(
       request => HTTP::Request->new(
           GET => 'http://perlide.org',
       ),
@@ -29,10 +29,10 @@ use warnings;
 use Params::Util   ();
 use HTTP::Request  ();
 use HTTP::Response ();
-use Padre::Task2   ();
+use Padre::Task   ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2';
+our @ISA     = 'Padre::Task';
 
 use Class::XSAccessor {
 	getters => {
@@ -52,17 +52,17 @@ use Class::XSAccessor {
 
 =head2 new
 
-  my $task = Padre::Task2::LWP->new(
+  my $task = Padre::Task::LWP->new(
       method => 'GET',
       url    => 'http://perlide.org',
   );
 
-The C<new> constructor creates a L<Padre::Task2> for a background HTTP request.
+The C<new> constructor creates a L<Padre::Task> for a background HTTP request.
 
 It takes a single addition parameter C<request> which is a fully-prepared
 L<HTTP::Request> object for the request.
 
-Returns a new L<Padre::Task2::LWP> object, or throws an exception on error.
+Returns a new L<Padre::Task::LWP> object, or throws an exception on error.
 
 =cut
 
@@ -75,7 +75,7 @@ sub new {
 		response => undef,
 	);
 	unless ( $self->{url} ) {
-		Carp::croak("Missing or invalid 'request' for Padre::Task2::LWP");
+		Carp::croak("Missing or invalid 'request' for Padre::Task::LWP");
 	}
 
 	return $self;
@@ -103,7 +103,7 @@ of the HTTP call.
 =cut
 
 ######################################################################
-# Padre::Task2 Methods
+# Padre::Task Methods
 
 sub run {
 	my $self = shift;
@@ -164,8 +164,8 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task2> and its instances can be scheduled
-using C<Padre::Task2Manager>.
+This class inherits from C<Padre::Task> and its instances can be scheduled
+using C<Padre::TaskManager>.
 
 The transfer of the objects to and from the worker threads is implemented
 with L<Storable>.

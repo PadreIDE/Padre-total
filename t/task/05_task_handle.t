@@ -8,8 +8,8 @@ use strict;
 use warnings;
 use Test::More tests => 41;
 use Test::NoWarnings;
-use Padre::Task2Handle     ();
-use Padre::Task2::Addition ();
+use Padre::TaskHandle     ();
+use Padre::Task::Addition ();
 use Padre::Logger;
 
 
@@ -20,11 +20,11 @@ use Padre::Logger;
 # Check the raw task
 
 SCOPE: {
-	my $addition = Padre::Task2::Addition->new(
+	my $addition = Padre::Task::Addition->new(
 		x => 2,
 		y => 3,
 	);
-	isa_ok( $addition, 'Padre::Task2::Addition' );
+	isa_ok( $addition, 'Padre::Task::Addition' );
 	is( $addition->{x}, 2, '->{x} matches expected' );
 	is( $addition->{y}, 3, '->{y} matches expected' );
 	is( $addition->{z}, undef, '->{z} matches expected' );
@@ -52,8 +52,8 @@ SCOPE: {
 		(defined $string and ! ref $string and length $string),
 		'->as_string ok',
 	);
-	my $round = Padre::Task2::Addition->from_string( $string );
-	isa_ok( $round, 'Padre::Task2::Addition' );
+	my $round = Padre::Task::Addition->from_string( $string );
+	isa_ok( $round, 'Padre::Task::Addition' );
 	is_deeply( $round, $addition, 'Task round-trips ok' );
 }
 
@@ -65,10 +65,10 @@ SCOPE: {
 # Run the task via a handle object
 
 SCOPE: {
-	my $task   = Padre::Task2::Addition->new( x => 2, y => 3 );
-	my $handle = Padre::Task2Handle->new( $task );		
-	isa_ok( $handle, 'Padre::Task2Handle' );
-	isa_ok( $handle->task, 'Padre::Task2::Addition' );
+	my $task   = Padre::Task::Addition->new( x => 2, y => 3 );
+	my $handle = Padre::TaskHandle->new( $task );		
+	isa_ok( $handle, 'Padre::TaskHandle' );
+	isa_ok( $handle->task, 'Padre::Task::Addition' );
 	is( $handle->hid, 1, '->hid ok' );
 	is( $handle->task->{x}, 2, '->{x} matches expected' );
 	is( $handle->task->{y}, 3, '->{y} matches expected' );
@@ -94,7 +94,7 @@ SCOPE: {
 	# Check handle round-trip serialisation
 	my $array = $handle->as_array;
 	is( ref($array), 'ARRAY', '->as_array ok' );
-	my $round = Padre::Task2Handle->from_array($array);
-	isa_ok( $round, 'Padre::Task2Handle' );
+	my $round = Padre::TaskHandle->from_array($array);
+	isa_ok( $round, 'Padre::TaskHandle' );
 	is_deeply( $round, $handle, 'Round trip serialisation ok' );
 }

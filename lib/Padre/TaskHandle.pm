@@ -1,4 +1,4 @@
-package Padre::Task2Handle;
+package Padre::TaskHandle;
 
 use 5.008005;
 use strict;

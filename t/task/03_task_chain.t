@@ -3,8 +3,8 @@
 # Start a worker thread from inside another thread
 
 #BEGIN {
-#$Padre::Task2Thread::DEBUG = 1;
-#$Padre::Task2Worker::DEBUG = 1;
+#$Padre::TaskThread::DEBUG = 1;
+#$Padre::TaskWorker::DEBUG = 1;
 #}
 
 use strict;
@@ -13,8 +13,8 @@ use Test::More tests => 20;
 use Test::NoWarnings;
 use Time::HiRes 'sleep';
 use Padre::Logger;
-use Padre::Task2Thread ();
-use Padre::Task2Worker ();
+use Padre::TaskThread ();
+use Padre::TaskWorker ();
 
 # Do we start with no threads as expected
 is( scalar(threads->list), 0, 'One thread exists' );
@@ -28,14 +28,14 @@ is( scalar(threads->list), 0, 'One thread exists' );
 
 SCOPE: {
 	# Create the master thread
-	my $master = Padre::Task2Thread->new->spawn;
-	isa_ok( $master, 'Padre::Task2Thread' );
+	my $master = Padre::TaskThread->new->spawn;
+	isa_ok( $master, 'Padre::TaskThread' );
 	is( scalar(threads->list), 1, 'Found 1 thread' );
 	ok( $master->is_running, 'Master is_running' );
 
 	# Create a single worker
-	my $worker = Padre::Task2Worker->new;
-	isa_ok( $worker, 'Padre::Task2Worker' );
+	my $worker = Padre::TaskWorker->new;
+	isa_ok( $worker, 'Padre::TaskWorker' );
 
 	# Start the worker inside the master
 	ok( $master->start($worker), '->add ok' );

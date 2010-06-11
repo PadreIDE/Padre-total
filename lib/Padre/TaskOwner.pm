@@ -1,10 +1,10 @@
-package Padre::Task2Owner;
+package Padre::TaskOwner;
 
 =pod
 
 =head1 NAME
 
-Padre::Task2Owner - A role for objects that commission tasks
+Padre::TaskOwner - A role for objects that commission tasks
 
 =head1 DESCRIPTION
 
@@ -72,7 +72,7 @@ sub task_request {
 	my %param = @_;
 	my $class = Params::Util::_DRIVER(
 		delete $param{task},
-		'Padre::Task2',
+		'Padre::Task',
 	) or Carp::croak("Missing or invalid task param");
 
 	# Create and start the task with ourself as the owner

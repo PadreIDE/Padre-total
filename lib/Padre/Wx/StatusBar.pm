@@ -104,8 +104,8 @@ sub new {
 	# Wx::Event::EVT_LEFT_DOWN(
 		# $sbmp,
 		# sub {
-			# require Padre::Task2Manager;
-			# Padre::Task2Manager::on_dump_running_tasks(@_);
+			# require Padre::TaskManager;
+			# Padre::TaskManager::on_dump_running_tasks(@_);
 		# },
 	# );
  

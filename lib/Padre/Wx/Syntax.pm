@@ -4,7 +4,7 @@ use 5.008;
 use strict;
 use warnings;
 use Params::Util               ();
-use Padre::Task2Owner          ();
+use Padre::TaskOwner          ();
 use Padre::Wx::Role::View      ();
 use Padre::Wx::Role::MainChild ();
 use Padre::Wx                  ();
@@ -13,7 +13,7 @@ use Padre::Logger;
 
 our $VERSION = '0.62';
 our @ISA     = qw{
-	Padre::Task2Owner
+	Padre::TaskOwner
 	Padre::Wx::Role::View
 	Padre::Wx::Role::MainChild
 	Wx::ListView

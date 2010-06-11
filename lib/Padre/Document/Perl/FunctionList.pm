@@ -3,17 +3,17 @@ package Padre::Document::Perl::FunctionList;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task2::FunctionList ();
+use Padre::Task::FunctionList ();
 
 our $VERSION = '0.62';
-our @ISA     = 'Padre::Task2::FunctionList';
+our @ISA     = 'Padre::Task::FunctionList';
 
 
 
 
 
 ######################################################################
-# Padre::Task2::FunctionList Methods
+# Padre::Task::FunctionList Methods
 
 sub find {
 	my $n = "\\cM?\\cJ";

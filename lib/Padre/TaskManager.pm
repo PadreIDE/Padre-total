@@ -1,12 +1,12 @@
-package Padre::Task2Manager;
+package Padre::TaskManager;
 
 use 5.008005;
 use strict;
 use warnings;
 use Params::Util             ();
-use Padre::Task2Handle       ();
-use Padre::Task2Thread       ();
-use Padre::Task2Worker       ();
+use Padre::TaskHandle       ();
+use Padre::TaskThread       ();
+use Padre::TaskWorker       ();
 use Padre::Wx                ();
 use Padre::Wx::Role::Conduit ();
 use Padre::Logger;
@@ -37,7 +37,7 @@ sub new {
 
 	# Do the initialisation needed for the event conduit
 	unless ( Params::Util::_INSTANCE($conduit, 'Padre::Wx::Role::Conduit') ) {
-		die("Failed to provide an event conduit for the Task2Manager");
+		die("Failed to provide an event conduit for the TaskManager");
 	}
 	$conduit->event_target_init($self);
 
@@ -74,8 +74,8 @@ sub start {
 sub start_thread {
 	TRACE($_[0]) if DEBUG;
 	my $self   = shift;
-	my $master = Padre::Task2Thread->master;
-	my $worker = Padre::Task2Worker->new->spawn;
+	my $master = Padre::TaskThread->master;
+	my $worker = Padre::TaskWorker->new->spawn;
 	$self->{workers}->[$_[0]] = $worker;
 	return 1;
 }
@@ -88,7 +88,7 @@ sub stop {
 		foreach ( 0 .. $#{$self->{workers}} ) {
 			$self->stop_thread($_);
 		}
-		Padre::Task2Thread->master->stop;
+		Padre::TaskThread->master->stop;
 	}
 	return 1;
 }
@@ -121,7 +121,7 @@ sub next_thread {
 sub schedule {
 	TRACE($_[0]) if DEBUG;
 	my $self = shift;
-	my $task = Params::Util::_INSTANCE(shift, 'Padre::Task2');
+	my $task = Params::Util::_INSTANCE(shift, 'Padre::Task');
 	unless ( $task ) {
 		die "Invalid task scheduled!"; # TO DO: grace
 	}
@@ -152,7 +152,7 @@ sub step {
 
 	# Fetch and prepare the next task
 	my $task   = shift @$queue;
-	my $handle = Padre::Task2Handle->new( $task );
+	my $handle = Padre::TaskHandle->new( $task );
 	my $hid    = $handle->hid;
 
 	# Run the pre-run step in the main thread
