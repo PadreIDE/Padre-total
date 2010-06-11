@@ -11,7 +11,7 @@ use Padre::Wx::Role::MainChild ();
 use Padre::MimeTypes           ();
 use Padre::TaskOwner          ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.64';
 our @ISA     = qw{
 	Padre::TaskOwner
 	Padre::Wx::Role::MainChild

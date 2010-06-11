@@ -34,7 +34,7 @@ use List::Util      ();
 use POSIX           ();
 use Padre::Constant ();
 
-our $VERSION   = '0.62';
+our $VERSION   = '0.64';
 our @ISA       = 'Exporter';
 our @EXPORT_OK = '_T';
 
@@ -302,32 +302,25 @@ sub share {
 	my $plugin = shift;
 
 	if ( $ENV{PADRE_DEV} ) {
-		if ( $plugin ) {
-			my $root = File::Spec->rel2abs(
-				File::Spec->catdir(
-					$FindBin::Bin,
-					File::Spec->updir,
-					File::Spec->updir
-				)
-			);
-
-			# two cases: share in the Padre-Plugin-Name/share
-			# or share in the Padre-Plugin-Name/lib/Padre/Plugin/Name/share directory
-			my $plugin_dir = File::Spec->catdir( $root, "Padre-Plugin-$plugin", 'share' );
-			if ( -d $plugin_dir ) {
-				return $plugin_dir;
-			}
-			$plugin_dir = File::Spec->catdir( $root, "Padre-Plugin-$plugin", 'lib', 'Padre', 'Plugin', $plugin, 'share' );
-			return $plugin_dir;			
-		} else {
-			return File::Spec->rel2abs(
-				File::Spec->catdir(
-					$FindBin::Bin,
-					File::Spec->updir,
-					'share',
-				)
-			);
+		my $root = File::Spec->rel2abs(
+			File::Spec->catdir(
+				$FindBin::Bin,
+				File::Spec->updir,
+				File::Spec->updir
+			)
+		);
+		if ( not $plugin ) {
+			return File::Spec->catdir( $root, 'Padre', 'share' );
 		}
+
+		# two cases: share in the Padre-Plugin-Name/share
+		# or share in the Padre-Plugin-Name/lib/Padre/Plugin/Name/share directory
+		my $plugin_dir = File::Spec->catdir( $root, "Padre-Plugin-$plugin", 'share' );
+		if ( -d $plugin_dir ) {
+			return $plugin_dir;
+		}
+		$plugin_dir = File::Spec->catdir( $root, "Padre-Plugin-$plugin", 'lib', 'Padre', 'Plugin', $plugin, 'share' );
+		return $plugin_dir;
 	}
 
 	#    if ( defined $ENV{PADRE_PAR_PATH} ) {

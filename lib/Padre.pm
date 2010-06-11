@@ -24,7 +24,7 @@ use DBD::SQLite   ();
 # TO DO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.64';
 
 # Since everything is used OO-style, we will be require'ing
 # everything other than the bare essentials
@@ -40,7 +40,7 @@ use Class::XSAccessor 1.05 {
 		opts           => 'opts',
 		config         => 'config',
 		wx             => 'wx',
-		task_manager  => 'task_manager',
+		task_manager   => 'task_manager',
 		plugin_manager => 'plugin_manager',
 	},
 	accessors => {

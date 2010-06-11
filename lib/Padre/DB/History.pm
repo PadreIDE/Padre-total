@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Params::Util ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.64';
 
 sub recent {
 	my $class  = shift;

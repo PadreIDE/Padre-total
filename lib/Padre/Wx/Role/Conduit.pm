@@ -25,7 +25,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Logger;
 
-our $VERSION = '0.62';
+our $VERSION = '0.64';
 
 our $SIGNAL : shared;
 BEGIN {

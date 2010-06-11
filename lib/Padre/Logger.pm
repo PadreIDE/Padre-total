@@ -39,7 +39,7 @@ use threads;
 use threads::shared;
 use Padre::Constant ();
 
-our $VERSION = '0.62';
+our $VERSION = '0.64';
 
 sub import {
 	if ( $_[1] and $_[1] eq ':ALL' ) {

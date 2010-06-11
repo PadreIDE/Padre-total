@@ -1,8 +1,12 @@
 Changes for Perl Application Development and Refactoring Environment
 NOTE: Do not "tidy" or change the indenting here, or we break svn annotate
 
-0.63 To be released
+0.64 To be released
+
+
+0.63 2010.05.02
     - Autocomplete "sub new" for Perl modules (SEWI)
+    - fixed ticket #956: crashes if Outline is active (ZENOG)
 
 0.62 2010.05.21
     - Any 3 column table layout in the preferences dialog now has a 
