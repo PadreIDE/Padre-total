@@ -103,7 +103,7 @@ sub colorize {
 	my ( $self, $first ) = @_;
 
 	my $doc = Padre::Current->document;
-	my $mime_type = $doc->get_mimetype;
+	my $mime_type = $doc->mimetype;
 	if ( not $d{$mime_type} ) {
 		warn("Invalid mime-type ($mime_type) passed to the Kate highlighter");
 		return;
