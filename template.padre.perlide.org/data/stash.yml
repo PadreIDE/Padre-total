@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 June 12
+        url: http://perlwannabe.vox.com/library/post/padre-064-has-been-released.html
+        title: Padre 0.64 has been released
+        comment: Peter Lavender (Release Manager)
       - date: 2010 June 03
         url: http://use.perl.org/~Alias/journal/40377
         title: Padre::Task 2.0 - Making Wx + Perl threading suck faster
