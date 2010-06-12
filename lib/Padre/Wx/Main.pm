@@ -6016,13 +6016,13 @@ sub show_as_numbers {
 	return;
 }
 
-# showing the DocBrowser window
+# showing the Browser window
 sub help {
 	my $self  = shift;
 	my $param = shift;
 	unless ( $self->{help} ) {
-		require Padre::Wx::DocBrowser;
-		$self->{help} = Padre::Wx::DocBrowser->new;
+		require Padre::Wx::Browser;
+		$self->{help} = Padre::Wx::Browser->new;
 		Wx::Event::EVT_CLOSE(
 			$self->{help},
 			sub { $self->on_help_close( $_[1] ) },

@@ -249,8 +249,8 @@ sub on_tree_item_right_click {
 			sub {
 
 				# TO DO Fix this wasting of objects (cf. Padre::Wx::Menu::Help)
-				require Padre::Wx::DocBrowser;
-				my $help = Padre::Wx::DocBrowser->new;
+				require Padre::Wx::Browser;
+				my $help = Padre::Wx::Browser->new;
 				$help->help( $pldata->{name} );
 				$help->SetFocus;
 				$help->Show(1);

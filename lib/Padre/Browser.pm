@@ -1,11 +1,11 @@
-package Padre::DocBrowser;
+package Padre::Browser;
 
 use 5.008;
 use strict;
 use warnings;
 use Carp                   ();
 use Scalar::Util           ();
-use Padre::DocBrowser::POD ();
+use Padre::Browser::POD ();
 
 our $VERSION = '0.64';
 
@@ -26,7 +26,7 @@ use Class::XSAccessor {
 
 =head1 NAME
 
-Padre::DocBrowser -- documentation browser for Padre
+Padre::Browser -- documentation browser for Padre
 
 =head1 DESCRIPTION
 
@@ -41,19 +41,19 @@ B<NOTE:> I think all the method names are wrong. Blast it.
 
 =head1 SYNOPSIS
 
-  # Does perlish things by default via 'Padre::DocBrowser::POD'
-  my $browser = Padre::DocBrowser->new();
+  # Does perlish things by default via 'Padre::Browser::POD'
+  my $browser = Padre::Browser->new();
   my $source = Padre::Document->new( filename=>'source/Package.pm' );
 
   my $docs = $browser->docs( $source );
-  # $docs provided by DocBrowser::POD->generate
-  #  should be Padre::DocBrowser::document , application/x-pod
+  # $docs provided by Browser::POD->generate
+  #  should be Padre::Browser::Document , application/x-pod
 
   my $output = $browser->browse( $docs );
-  # $output provided by DocBrowser::POD->render
+  # $output provided by Browser::POD->render
   #  should be Padre::Document , text/x-html
 
-  $browser->load_viewer( 'Padre::DocBrowser::PodAdvanced' );
+  $browser->load_viewer( 'Padre::Browser::PodAdvanced' );
   # PodAdvanced->render might add an html TOC in addition to
   #  just pod2html
 
@@ -91,7 +91,7 @@ Accepts a URI or scalar
 
 =head1 EXTENDING
 
-  package My::DocBrowser::Doxygen;
+  package My::Browser::Doxygen;
 
   # URI of doxygen:$string or doxygen://path?query
   sub accept_schemes {
@@ -149,10 +149,10 @@ sub new {
 	$self->set_schemes(   {} ) unless $args{schemes};
 
 	# Provides pod from perl, pod: perldoc: schemes
-	$self->load_provider('Padre::DocBrowser::POD');
+	$self->load_provider('Padre::Browser::POD');
 
 	# Produces html view of POD
-	$self->load_viewer('Padre::DocBrowser::POD');
+	$self->load_viewer('Padre::Browser::POD');
 
 	return $self;
 }

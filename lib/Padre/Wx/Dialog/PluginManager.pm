@@ -233,8 +233,8 @@ sub list_item_selected {
 	$self->{label}->SetLabel( $plugin->plugin_name );
 
 	# Update plug-in documentation
-	require Padre::DocBrowser;
-	my $browser = Padre::DocBrowser->new;
+	require Padre::Browser;
+	my $browser = Padre::Browser->new;
 	my $class   = $plugin->class;
 	my $doc     = $browser->resolve($class);
 	my $output  = eval { $browser->browse($doc) };

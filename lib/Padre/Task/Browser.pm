@@ -20,8 +20,8 @@ sub run {
 	my $self   = shift;
 	my $method = $self->{method};
 
-	require Padre::DocBrowser;
-	my $browser = Padre::DocBrowser->new;
+	require Padre::Browser;
+	my $browser = Padre::Browser->new;
 	unless ( $browser->can($method) ) {
 		die "Browser does not support '$method'";
 	}

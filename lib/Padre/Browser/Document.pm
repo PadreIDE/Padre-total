@@ -1,12 +1,12 @@
-package Padre::DocBrowser::document;
+package Padre::Browser::Document;
 
 =pod
 
 =head1 NAME
 
-Padre::DocBrowser::document - is an afterthought
+Padre::Browser::Document - is an afterthought
 
-L<Padre::DocBrowser> began using <Padre::Document> for internal representation
+L<Padre::Browser> began using <Padre::Document> for internal representation
 of documents. This module aims to be less costly to serialize.
 
 =head1 CAVEATS

@@ -1,4 +1,4 @@
-package Padre::DocBrowser::PseudoPerldoc;
+package Padre::Browser::PseudoPerldoc;
 
 use 5.008;
 use strict;

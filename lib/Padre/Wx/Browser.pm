@@ -1,18 +1,18 @@
-package Padre::Wx::DocBrowser;
+package Padre::Wx::Browser;
 
 =pod
 
 =head1 NAME
 
-Padre::Wx::DocBrowser - Wx front-end for C<Padre::DocBrowser>
+Padre::Wx::Browser - Wx front-end for C<Padre::Browser>
 
-=head1 Welcome to Padre C<DocBrowser>
+=head1 Welcome to Padre C<Browser>
 
-C<Padre::Wx::DocBrowser> ( C<Wx::Frame> )
+C<Padre::Wx::Browser> ( C<Wx::Frame> )
 
 =head1 DESCRIPTION
 
-User interface for C<Padre::DocBrowser>.
+User interface for C<Padre::Browser>.
 
 =head1 METHODS
 
@@ -27,7 +27,7 @@ use Scalar::Util             ();
 use List::MoreUtils          ();
 use Params::Util             ( qw{ _INSTANCE _INVOCANT _HASH _STRING } );
 use Padre::Util              ('_T');
-use Padre::DocBrowser        ();
+use Padre::Browser        ();
 use Padre::Task::Browser    ();
 use Padre::Wx                ();
 use Padre::Wx::HtmlWindow    ();
@@ -69,7 +69,7 @@ sub new {
 		Wx::wxDEFAULT_FRAME_STYLE,
 	);
 
-	$self->{provider} = Padre::DocBrowser->new;
+	$self->{provider} = Padre::Browser->new;
 
 	# Until we get a real icon use the same one as the others
 	$self->SetIcon( Padre::Wx::Icon::PADRE );
@@ -204,7 +204,7 @@ sub on_html_link_clicked {
 
 Accepts a string, L<URI> or L<Padre::Document> and attempts to render
 documentation for such in a new C<AuiNoteBook> tab. Links matching a scheme
-accepted by L<Padre::DocBrowser> will (when clicked) be resolved and
+accepted by L<Padre::Browser> will (when clicked) be resolved and
 displayed in a new tab.
 
 =cut
@@ -223,7 +223,7 @@ sub help {
 		_HASH($hint) ? %$hint : (),
 	);
 
-	if ( _INVOCANT($document) and $document->isa('Padre::DocBrowser::document') ) {
+	if ( _INVOCANT($document) and $document->isa('Padre::Browser::Document') ) {
 		if ( $self->viewer_for( $document->guess_mimetype ) ) {
 			return $self->display($document);
 		}
@@ -297,7 +297,7 @@ sub display {
 	my $docs  = shift;
 	my $query = shift;
 
-	if ( _INSTANCE( $docs, 'Padre::DocBrowser::document' ) ) {
+	if ( _INSTANCE( $docs, 'Padre::Browser::Document' ) ) {
 
 		# if doc is html just display it
 		# TO DO, a means to register other wx display windows such as ?!
@@ -340,7 +340,7 @@ sub show_page {
 	my $docs  = shift;
 	my $query = shift;
 
-	unless ( _INSTANCE( $docs, 'Padre::DocBrowser::document' ) ) {
+	unless ( _INSTANCE( $docs, 'Padre::Browser::Document' ) ) {
 		return $self->not_found($query);
 	}
 
@@ -349,7 +349,7 @@ sub show_page {
 
 	# Best effort to title the tab ANYTHING more useful
 	# than 'Untitled'
-	if ( _INSTANCE( $query, 'Padre::DocBrowser::document' ) ) {
+	if ( _INSTANCE( $query, 'Padre::Browser::Document' ) ) {
 		$title = $query->title;
 	} elsif ( $docs->title ) {
 		$title = $docs->title;
@@ -411,7 +411,7 @@ sub new_page {
 			$self->{notebook}->AddPage( $panel, $title, 1 );
 			$panel;
 		} else {
-			$self->debug( sprintf( Wx::gettext('DocBrowser: no viewer for %s'), $mime ) );
+			$self->debug( sprintf( Wx::gettext('Browser: no viewer for %s'), $mime ) );
 		}
 	};
 	return $page;
@@ -420,7 +420,7 @@ sub new_page {
 sub padre2docbrowser {
 	my $class    = shift;
 	my $padredoc = shift;
-	my $doc      = Padre::DocBrowser::document->new(
+	my $doc      = Padre::Browser::Document->new(
 		mimetype => $padredoc->mimetype,
 		title    => $padredoc->get_title,
 		filename => $padredoc->filename,
@@ -488,7 +488,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<Padre::DocBrowser> L<Padre::Task::Browser>
+L<Padre::Browser> L<Padre::Task::Browser>
 
 =cut
 

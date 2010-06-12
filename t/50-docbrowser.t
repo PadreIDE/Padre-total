@@ -29,27 +29,27 @@ BEGIN {
 	$ENV{PADRE_HOME} = File::Temp::tempdir( CLEANUP => 1 );
 }
 
-use_ok('Padre::DocBrowser');
-use_ok('Padre::Task::DocBrowser');
-use_ok('Padre::DocBrowser::document');
+use_ok('Padre::Browser');
+use_ok('Padre::Task::Browser');
+use_ok('Padre::Browser::Document');
 
-my $db = Padre::DocBrowser->new();
+my $db = Padre::Browser->new();
 
-ok( $db, 'instance Padre::DocBrowser' );
+ok( $db, 'instance Padre::Browser' );
 
-my $doc = Padre::DocBrowser::document->load( catfile( 'lib', 'Padre', 'DocBrowser.pm' ) );
-isa_ok( $doc, 'Padre::DocBrowser::document' );
+my $doc = Padre::Browser::Document->load( catfile( 'lib', 'Padre', 'Browser.pm' ) );
+isa_ok( $doc, 'Padre::Browser::Document' );
 ok( $doc->mimetype eq 'application/x-perl', 'Mimetype is sane' );
 my $docs = $db->docs($doc);
-isa_ok( $docs, 'Padre::DocBrowser::document' );
+isa_ok( $docs, 'Padre::Browser::Document' );
 
 my $tm = $db->resolve( URI->new('perldoc:Test::More') );
-isa_ok( $tm, 'Padre::DocBrowser::document' );
+isa_ok( $tm, 'Padre::Browser::Document' );
 ok( $tm->mimetype eq 'application/x-pod', 'Resolve from uri' );
 cmp_ok( $tm->title, 'eq', 'Test::More', 'Doc title discovered' );
 
 my $view = $db->browse($tm);
-isa_ok( $view, 'Padre::DocBrowser::document' );
+isa_ok( $view, 'Padre::Browser::Document' );
 ok( $view->mimetype eq 'text/xhtml', 'Got html view' );
 cmp_ok( $view->title, 'eq', 'Test::More', 'Title' );
 

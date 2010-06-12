@@ -1,16 +1,16 @@
-package Padre::DocBrowser::POD;
+package Padre::Browser::POD;
 
 use 5.008;
 use strict;
 use warnings;
-use Config                           ();
-use File::Temp                       ();
-use IO::Scalar                       ();
-use Params::Util                     ();
-use Pod::Simple::XHTML               ();
-use Pod::Abstract                    ();
-use Padre::DocBrowser::document      ();
-use Padre::DocBrowser::PseudoPerldoc ();
+use Config                        ();
+use File::Temp                    ();
+use IO::Scalar                    ();
+use Params::Util                  ();
+use Pod::Simple::XHTML            ();
+use Pod::Abstract                 ();
+use Padre::Browser::Document      ();
+use Padre::Browser::PseudoPerldoc ();
 
 our $VERSION = '0.64';
 
@@ -61,7 +61,7 @@ sub resolve {
 		$query
 	);
 
-	my $pd = Padre::DocBrowser::PseudoPerldoc->new( args => \@args );
+	my $pd = Padre::Browser::PseudoPerldoc->new( args => \@args );
 	SCOPE: {
 		local *STDERR = IO::Scalar->new;
 		local *STDOUT = IO::Scalar->new;
@@ -74,7 +74,7 @@ sub resolve {
 	close $fh;
 	unlink($tempfile);
 
-	my $doc = Padre::DocBrowser::document->new( body => $pa->pod );
+	my $doc = Padre::Browser::Document->new( body => $pa->pod );
 	$doc->mimetype('application/x-pod');
 	my $title_from = $hints->{title_from_section} || 'NAME';
 	my $name;
@@ -125,7 +125,7 @@ sub render {
 	$v->perldoc_url_prefix('perldoc:');
 	$v->output_fh($out);
 	$v->parse_file($pod);
-	my $response = Padre::DocBrowser::document->new;
+	my $response = Padre::Browser::Document->new;
 	$response->body( ${ $out->sref } );
 	$response->mimetype('text/xhtml');
 	$response->title( $doc->title );
