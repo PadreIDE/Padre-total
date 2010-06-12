@@ -34,13 +34,13 @@ use Padre::Wx::HtmlWindow    ();
 use Padre::Wx::Icon          ();
 use Padre::Wx::AuiManager    ();
 use Padre::Wx::Dialog        ();
-use Padre::TaskOwner        ();
+use Padre::Role::Task        ();
 use Wx::Perl::Dialog::Simple ();
 use Padre::Logger;
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::TaskOwner
+	Padre::Role::Task
 	Wx::Dialog
 };
 

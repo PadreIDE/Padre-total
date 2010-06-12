@@ -3,13 +3,13 @@ package Padre::Wx::Dialog::WhereFrom;
 use 5.008;
 use strict;
 use warnings;
-use Padre::TaskOwner          ();
+use Padre::Role::Task          ();
 use Padre::Wx::Role::Main ();
 use Padre::Wx                  ();
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::TaskOwner
+	Padre::Role::Task
 	Padre::Wx::Role::Main
 	Wx::Dialog
 };

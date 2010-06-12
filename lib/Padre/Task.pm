@@ -7,7 +7,7 @@ use Storable          ();
 use Scalar::Util      ();
 use Params::Util      ();
 use Padre::Current    ();
-use Padre::TaskOwner ();
+use Padre::Role::Task ();
 
 our $VERSION = '0.59';
 
@@ -43,7 +43,7 @@ sub running {
 }
 
 sub owner {
-	Padre::TaskOwner->task_owner($_[0]->{owner});
+	Padre::Role::Task->task_owner($_[0]->{owner});
 }
 
 sub callback {

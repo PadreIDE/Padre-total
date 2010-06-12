@@ -14,12 +14,12 @@ use Padre::Util       ();
 use Padre::Perl       ();
 use Padre::Document   ();
 use Padre::File       ();
-use Padre::TaskOwner ();
+use Padre::Role::Task ();
 use Padre::Logger;
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::TaskOwner
+	Padre::Role::Task
 	Padre::Document
 };
 

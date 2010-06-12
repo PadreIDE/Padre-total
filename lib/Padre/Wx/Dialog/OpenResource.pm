@@ -9,11 +9,11 @@ use Padre::Wx                  ();
 use Padre::Wx::Icon            ();
 use Padre::Wx::Role::Main ();
 use Padre::MimeTypes           ();
-use Padre::TaskOwner          ();
+use Padre::Role::Task          ();
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::TaskOwner
+	Padre::Role::Task
 	Padre::Wx::Role::Main
 	Wx::Dialog
 };

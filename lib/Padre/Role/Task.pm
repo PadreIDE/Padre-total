@@ -1,10 +1,10 @@
-package Padre::TaskOwner;
+package Padre::Role::Task;
 
 =pod
 
 =head1 NAME
 
-Padre::TaskOwner - A role for objects that commission tasks
+Padre::Role::Task - A role for objects that commission tasks
 
 =head1 DESCRIPTION
 

@@ -5,14 +5,14 @@ use strict;
 use warnings;
 use Scalar::Util               ();
 use Params::Util               ();
-use Padre::TaskOwner          ();
+use Padre::Role::Task          ();
 use Padre::Wx::Role::View      ();
 use Padre::Wx::Role::Main ();
 use Padre::Wx                  ();
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::TaskOwner
+	Padre::Role::Task
 	Padre::Wx::Role::View
 	Padre::Wx::Role::Main
 	Wx::Panel
