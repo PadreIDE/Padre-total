@@ -76,6 +76,8 @@ Hyppolit/META.yml
 Hyppolit/Makefile
 Hyppolit/inc
 
+Padre-Plugin-HTMLExport/share/locale/*.mo
+
 Perl-Staff/MANIFEST
 Perl-Staff/META.yml
 Perl-Staff/Makefile
