@@ -4,13 +4,13 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::TaskOwner          ();
-use Padre::Wx::Role::MainChild ();
+use Padre::Wx::Role::Main ();
 use Padre::Wx                  ();
 
 our $VERSION = '0.64';
 our @ISA     = qw{
 	Padre::TaskOwner
-	Padre::Wx::Role::MainChild
+	Padre::Wx::Role::Main
 	Wx::Dialog
 };
 

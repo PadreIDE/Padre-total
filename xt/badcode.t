@@ -107,7 +107,7 @@ foreach my $module ( sort keys %modules ) {
 	SKIP: {
 		unless (eval { $module->can('current') }
 			and $module ne 'Padre::Current'
-			and $module ne 'Padre::Wx::Role::MainChild' )
+			and $module ne 'Padre::Wx::Role::Main' )
 		{
 			skip( "No ->current method", 1 );
 		}

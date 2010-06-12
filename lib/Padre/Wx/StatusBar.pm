@@ -42,7 +42,7 @@ use Padre::Current             ();
 use Padre::Util                ();
 use Padre::Wx                  ();
 use Padre::Wx::Icon            ();
-use Padre::Wx::Role::MainChild ();
+use Padre::Wx::Role::Main ();
 use Padre::MimeTypes           ();
 
 use Class::XSAccessor {
@@ -55,7 +55,7 @@ use Class::XSAccessor {
 
 our $VERSION = '0.64';
 our @ISA     = qw{
-	Padre::Wx::Role::MainChild
+	Padre::Wx::Role::Main
 	Wx::StatusBar
 };
 

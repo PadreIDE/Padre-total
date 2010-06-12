@@ -7,14 +7,14 @@ use Scalar::Util               ();
 use Params::Util               ();
 use Padre::TaskOwner          ();
 use Padre::Wx::Role::View      ();
-use Padre::Wx::Role::MainChild ();
+use Padre::Wx::Role::Main ();
 use Padre::Wx                  ();
 
 our $VERSION = '0.64';
 our @ISA     = qw{
 	Padre::TaskOwner
 	Padre::Wx::Role::View
-	Padre::Wx::Role::MainChild
+	Padre::Wx::Role::Main
 	Wx::Panel
 };
 

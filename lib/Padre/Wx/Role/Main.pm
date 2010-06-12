@@ -1,10 +1,10 @@
-package Padre::Wx::Role::MainChild;
+package Padre::Wx::Role::Main;
 
 =pod
 
 =head1 NAME
 
-Padre::Wx::Role::MainChild - Convenience methods for children of the main window
+Padre::Wx::Role::Main - Convenience methods for children of the main window
 
 =head1 DESCRIPTION
 
