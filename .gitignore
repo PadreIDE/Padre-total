@@ -53,6 +53,7 @@ Padre-Plugin-Parrot/inc/
 
 Padre-Plugin-Perl6/Build
 Padre-Plugin-Perl6/_build/
+Padre-Plugin-Perl6/MYMETA.yml
 
 Padre-Plugin-PerlCritic/Makefile
 
