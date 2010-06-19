@@ -67,6 +67,17 @@ method _build_syntax_paths() {
     return \@paths;
 }
 
+# what kind of count node for this command
+# for this command, for this type of node, what are node types that are predecessors
+method count_node_kind {
+    !$self->count   ? 'none'       : # no path with count syntax path node in it
+     $self->op == 2 ? 'op_pred'    : # must have only op predecessor node
+     $self->op == 0 ? 'init_pred'  : # must have only init predecessor node
+                      'op_and_init'; # has both init and op as predecessors
+}
+
+method key1_node_kind { $self->count. '_'. $self->op. '_'. $self->first_key }
+
 # find all possible values in a combination of several params
 # in  - list of array refs, in each a list of possible values for some param
 # out - list of array refs, in each a list of the values chosen for each param

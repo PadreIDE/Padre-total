@@ -53,8 +53,15 @@ How do I run it?
 
   > ./vim_graph.pl
 
-But you don't need to, because the output is already in the dot_out dir. These
-are GraphViz dot files of all normal motion commands.
+Will write the graph for normal mode motion commands to .dot and to .png using
+GraphViz.
+
+
+What use is it?
+---------------
+
+From this graph object, produced during design time, we can generate the matcher
+function (run during run-time) to find the correct command for a key sequence.
 
 
 Other VIM emulations which seem to have done big design

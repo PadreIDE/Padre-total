@@ -14,10 +14,10 @@ has idx => (ro, required, isa => Int);
 
 method to_string { 'key'. $self->idx. ':'. $self->key }
 
-method graph_label { $self->key }
-method graph_name  { 'key'. $self->idx }
-method bag_key     { 'vimperKeys' }
-method label_sep   { " " }
+method graph_label    { $self->key }
+method graph_name     { 'key'. $self->idx }
+method bag_key        { 'vimperKeys' }
+method label_sep      { " " }
 
 method escaped_key {
     my $key = $self->key;

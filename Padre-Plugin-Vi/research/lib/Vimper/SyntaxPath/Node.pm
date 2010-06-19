@@ -24,10 +24,14 @@ method type {
     return lc($class);
 }
 
-method graph_label { $self->type }
-method graph_name  { $self->type }
-method bag_key     { undef }
-method label_sep   { undef }
+method graph_name     { $self->type }
+method graph_label    { $self->type }
+method bag_key        { undef }
+method label_sep      { undef }
+method must_merge     { 0 }            # init & op nodes must be merged when merging
+method must_not_merge { 0 }            # command,letter,char nodes can't be merged
+                                       # count node could be merged, key-1 nodes could
+                                       # be merged if key is 'g' or 'm'
 
 method to_string { die "Abstract method called" }
 

@@ -8,6 +8,7 @@ use MooseX::Has::Sugar;
 
 extends 'Vimper::SyntaxPath::Node';
 
-method to_string { 'op' }
+method to_string  { 'op' }
+method must_merge { 1 }
 
 1;

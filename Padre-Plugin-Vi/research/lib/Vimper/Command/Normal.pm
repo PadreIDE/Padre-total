@@ -16,9 +16,9 @@ use aliased 'Vimper::SyntaxPath::Node::Key' => 'KeyNode';
 # they all have help
 
 map { has $_->[0], isa => $_->[1], ro, required, coerce }
-     [keys     => Str],
+     [keys     => Str]
     ,[synonyms => StrList] # TODO not used yet
-    ,[help     => Str],
+    ,[help     => Str]
     ;
 
 has key_list     => (ro, lazy_build, isa => ArrayRef[KeyNode]);
