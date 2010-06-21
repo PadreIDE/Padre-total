@@ -11,11 +11,11 @@ Perl::Staff - People working for Perl
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
@@ -211,11 +211,61 @@ L<http://thomas-fahle.blogspot.com/2010/03/perlcebit2010.html>
 
 =head3 Michael Daum
 
+=over 4
+
 =item * Foswiki on CeBit 2010
 
 L<http://blog.foswiki.org/2010/03/foswiki-on-cebit-2010/>
 
 =back
+
+=head2 LinuxTag 2010
+
+=head3 Gábor Szabó
+
+(main coordinator)
+
+=head3 Thomas Fahle
+
+=over 4
+
+=item * Perl@Linuxtag 2010
+
+L<http://www.thomas-fahle.de/2010/06/kurzbericht-perllinuxtag-2010-berlin-09-12-juni-2010.html>
+
+=back
+
+=head3 Renee Bäcker
+
+=head3 Viacheslav Tykhanovskyi
+
+=over 4
+
+=item * Photos Setup Day
+
+L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010SetupDay>
+
+=item * Photos Day 1
+
+L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day1>
+
+=item * Photos Day 2
+
+L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day2>
+
+=item * Photos Day 3
+
+L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day3>
+
+=back
+
+=head3 Michael Lang
+
+=head3 Gabi Hack
+
+=head3 Jochen Hayek
+
+=head3 Frank Wiegand
 
 =cut
 
