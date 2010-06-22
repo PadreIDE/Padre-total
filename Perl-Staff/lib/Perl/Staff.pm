@@ -235,8 +235,6 @@ L<http://www.thomas-fahle.de/2010/06/kurzbericht-perllinuxtag-2010-berlin-09-12-
 
 =back
 
-=head3 Renee Bäcker
-
 =head3 Viacheslav Tykhanovskyi
 
 =over 4
@@ -266,6 +264,8 @@ L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day3>
 =head3 Jochen Hayek
 
 =head3 Frank Wiegand
+
+=head3 Tina Müller
 
 =cut
 
