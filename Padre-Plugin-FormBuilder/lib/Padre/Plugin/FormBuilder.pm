@@ -19,12 +19,12 @@ based on wxFormBuilder designs.
 
 =cut
 
-use 5.006;
+use 5.008005;
 use strict;
 use warnings;
-use Params::Util  ();
-use Padre::Wx     ();
-use Padre::Plugin ();
+use Params::Util  1.00 ();
+use Padre::Wx          ();
+use Padre::Plugin 0.64 ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -37,18 +37,24 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.42,
-	'Padre::Task'   => 0.65,
+	'Padre::Plugin' => 0.64,
+	'Padre::Task'   => 0.64,
 }
 
 sub plugin_name {
-	'Padre wxFormBuilder Plugin';
+	'wxFormBuilder';
+}
+
+# Clean up our classes
+sub plugin_disable {
+	require Class::Unload;
+	Class::Unload->unload('Padre::Plugin::FormBuilder::Perl');
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'Generate wxFormBuilder Dialog Class' => sub {
+		'Generate Dialog' => sub {
 			$self->menu_new_dialog_perl;
 		},
 	];
@@ -77,6 +83,9 @@ sub menu_new_dialog_perl {
 		Params::Util::_IDENTIFIER($name) ? "Padre::Wx::Dialog::$name" : $name
 	) or return;
 
+	# Create the dialog
+	$self->generate_dialog( $fbp, $name, $new );
+
 	return;
 }
 
@@ -87,7 +96,7 @@ sub menu_new_dialog_perl {
 ######################################################################
 # Dialog Functions
 
-sub dialog_perl {
+sub dialog_fbp {
 	my $self = shift;
 	my $main = $self->main;
 
@@ -193,9 +202,58 @@ sub package_list {
 	}
 
 	return [
-		'Padre::Wx::Dialog::Foo',
-		'Bar',
+		grep { defined $_ and length $_ }
+		map  { $_->name }
+		$fbp->find( isa => 'FBP::Dialog' )
 	];
+}
+
+# Generate the class code
+sub generate_dialog {
+	$DB::single = 1;
+	my $self = shift;
+	my $file = shift;
+	my $name = shift;
+	my $pkg  = shift;
+
+	# Load the file
+	require FBP;
+	my $fbp = FBP->new;
+	my $ok  = $fbp->parse_file($file);
+	unless ( $ok ) {
+		$self->main->error("Failed to load $file");
+		return;
+	}
+
+	# Find the dialog
+	my $project = $fbp->find_first(
+		isa  => 'FBP::Project',
+	);
+	my $dialog = $project->find_first(
+		isa  => 'FBP::Dialog',
+		name => $name,
+	);
+	unless ( $dialog ) {
+		$self->main->error("Failed to find dialog $name");
+		return;
+	}
+
+	# Generate the perl dialog code
+	require Padre::Plugin::FormBuilder::Perl;
+	my $perl = Padre::Plugin::FormBuilder::Perl->new(
+		project => $project,
+	);
+	my $string = $perl->flatten(
+		$perl->dialog_class($dialog)
+	);
+
+	# Open the generated code as a new file
+	$self->main->new_document_from_string(
+		$string,
+		'application/x-perl',
+	);
+
+	return;
 }
 
 1;
@@ -220,7 +278,7 @@ L<Padre>
 
 =head1 COPYRIGHT
 
-Copyright 2009 Adam Kennedy.
+Copyright 2010 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
