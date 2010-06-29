@@ -23,21 +23,20 @@ $status = system("svn update $PUGS");
 die "Could not svn update pugs\n" if $status != 0;
 
 my $make = $^O eq 'MSWin32' ? 'dmake.exe' : 'make';
-say "\n--Running 'make clean all' for STD.pm";
+say "\n--Running 'make clean all' for STD.pm6";
 my $cwd = getcwd;
 chdir $STD or die "Could not change dir to $STD\n";
-$status = system("$make clean all"); 
-die "Could not make STD.pm\n" if $status != 0;
+$status = system("$make clean all dist"); 
+die "Could not make STD.pm6\n" if $status != 0;
 
-say 'Building and copying STD.pm files';
+say 'Building and copying STD.pm6 files';
 chdir $cwd or die "Could not change dir to $cwd\n";
-safe_copy("$STD/CursorBase.pmc", 'lib/');
-safe_copy("$STD/Cursor.pmc",'lib/');
-safe_copy("$STD/LazyMap.pm", 'lib/LazyMap.pmc');
-safe_copy("$STD/STD.pmc", 'lib/');
-safe_copy("$STD/CORE.pad", 'lib/');
-safe_copy("$STD/NAME.pmc", 'lib/');
-safe_copy("$STD/NULL.pad", 'lib/');
-safe_copy("$STD/DEBUG.pmc", 'lib/');
-safe_copy("$STD/Stash.pmc", 'lib/');
-safe_copy("$STD/RE_ast.pmc", 'lib/');
+
+$status = system("cp $STD/dist/lib/* lib");
+die "Could not copy dist/lib") if $status != 0;
+
+$status = system("cp $STD/dist/lib6/* lib");
+die "Could not copy dist/lib") if $status != 0;
+
+$status = system("cp $STD/dist/syml/* lib");
+die "Could not copy dist/syml" if $status != 0;
