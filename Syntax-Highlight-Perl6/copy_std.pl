@@ -4,19 +4,11 @@ use strict;
 use warnings;
 use feature 'say';
 use Carp;
-use File::Copy;
 use Cwd;
 
 my $PUGS = '../../pugs';
 my $STD = "$PUGS/src/perl6";
 my $status;
-
-sub safe_copy {
-	my ($file,$to_file) = @_;
-
-	copy($file, $to_file)
-		or croak "Could not copy $file";
-}
 
 say "\n--Running 'svn update'";
 $status = system("svn update $PUGS"); 
@@ -33,10 +25,10 @@ say 'Building and copying STD.pm6 files';
 chdir $cwd or die "Could not change dir to $cwd\n";
 
 $status = system("cp $STD/dist/lib/* lib");
-die "Could not copy dist/lib") if $status != 0;
+die "Could not copy dist/lib" if $status != 0;
 
 $status = system("cp $STD/dist/lib6/* lib");
-die "Could not copy dist/lib") if $status != 0;
+die "Could not copy dist/lib" if $status != 0;
 
 $status = system("cp $STD/dist/syml/* lib");
 die "Could not copy dist/syml" if $status != 0;
