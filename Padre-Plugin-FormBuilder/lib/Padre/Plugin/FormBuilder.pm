@@ -210,7 +210,6 @@ sub package_list {
 
 # Generate the class code
 sub generate_dialog {
-	$DB::single = 1;
 	my $self = shift;
 	my $file = shift;
 	my $name = shift;
