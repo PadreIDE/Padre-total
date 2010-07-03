@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Mouse 0.61;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 extends 'FBP::Perl';
 

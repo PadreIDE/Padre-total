@@ -24,9 +24,9 @@ use strict;
 use warnings;
 use Params::Util  1.00 ();
 use Padre::Wx          ();
-use Padre::Plugin 0.64 ();
+use Padre::Plugin 0.65 ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 
@@ -37,8 +37,8 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.64,
-	'Padre::Task'   => 0.64,
+	'Padre::Plugin' => 0.65,
+	'Padre::Task'   => 0.65,
 }
 
 sub plugin_name {
