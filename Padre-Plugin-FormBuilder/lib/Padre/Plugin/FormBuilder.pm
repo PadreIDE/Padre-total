@@ -49,6 +49,7 @@ sub plugin_name {
 sub plugin_disable {
 	require Class::Unload;
 	Class::Unload->unload('Padre::Plugin::FormBuilder::Perl');
+	Class::Unload->unload('Padre::Plugin::FormBuilder::Dialog');
 }
 
 sub menu_plugins_simple {
