@@ -301,6 +301,7 @@ sub load_perl_lex {
     my $store = "$syml/$setting.lex.store";
     mkdir $syml unless -d $syml;
     if (-f $store and -M $file and -M $file > -M $store) {
+        # HACK we get hashes with strangely aliased keys from Storable
         $LEXS{$setting} = retrieve($store);
     }
     else {
@@ -338,7 +339,8 @@ sub load_yaml_lex {
         $LEXS{$setting} = retrieve($store);
     }
     else {
-        $LEXS{$setting} = LoadFile($file);
+        # HACK YAML::XS is horribly broken see https://rt.cpan.org/Public/Bug/Display.html?id=53278
+        $LEXS{$setting} = {%{LoadFile($file)}};
         store($LEXS{$setting}, $store);
     }
     # say join ' ', sort keys %{ $LEXS{$setting} };
@@ -1733,7 +1735,7 @@ sub _REDUCE { my $self = shift;
     $self->{_from} = $S;
     if ($::ACTIONS) {
         eval { $::ACTIONS->$meth($self, @_) };
-        warn $@ if $@ and not $@ =~ /locate/;
+        warn $@ if $@ and not $@ =~ /locate object method "\Q$meth/;
     }
     $self->deb("REDUCE $key from " . $S . " to " . $self->{_pos}) if DEBUG & DEBUG::matchers;
     $self;

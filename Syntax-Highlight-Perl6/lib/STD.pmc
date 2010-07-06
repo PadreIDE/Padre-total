@@ -461,18 +461,11 @@ charname: !!perl/hash:RE_ast
         - !!perl/hash:RE_sequence
           alt: charname_0 1
           zyg:
-          - !!perl/hash:RE_cclass
-            i: 0
-            text: '[a..z A..Z]'
-          - !!perl/hash:RE_quantified_atom
-            atom: !!perl/hash:RE_cclass
-              i: 0
-              text: -[ \] , \# ]
-            quant:
-            - '*'
-          - !!perl/hash:RE_cclass
-            i: 0
-            text: '[a..z A..Z ) ]'
+          - !!perl/hash:RE_method
+            name: alpha
+            rest: ''
+          - !!perl/hash:RE_meta
+            text: .*?
           - !!perl/hash:RE_assertion
             assert: '?'
             re: !!perl/hash:RE_method_re
@@ -486,9 +479,24 @@ charname: !!perl/hash:RE_ast
                     text: \s
                   quant:
                   - '*'
-                - !!perl/hash:RE_cclass
-                  i: 0
-                  text: '[ \] , \# ]'
+                - !!perl/hash:RE_bracket
+                  re: &2 !!perl/hash:RE_any
+                    altname: charname_1
+                    dba: charname
+                    dic: STD
+                    zyg:
+                    - !!perl/hash:RE_string
+                      alt: charname_1 0
+                      i: 0
+                      text: ','
+                    - !!perl/hash:RE_string
+                      alt: charname_1 1
+                      i: 0
+                      text: '#'
+                    - !!perl/hash:RE_string
+                      alt: charname_1 2
+                      i: 0
+                      text: ']'
     - !!perl/hash:RE_sequence
       zyg:
       - !!perl/hash:RE_method
@@ -502,6 +510,7 @@ charname: !!perl/hash:RE_ast
           name: terminator
           rest: ''
 charname_0: *1
+charname_1: *2
 charnames: !!perl/hash:RE_ast
   dba: charnames
   dic: STD
@@ -509,9 +518,6 @@ charnames: !!perl/hash:RE_ast
     atom: !!perl/hash:RE_bracket
       re: !!perl/hash:RE_sequence
         zyg:
-        - !!perl/hash:RE_method
-          name: ws
-          rest: ''
         - !!perl/hash:RE_method
           name: charname
           rest: ''
@@ -521,20 +527,57 @@ charnames: !!perl/hash:RE_ast
     quant:
     - '**'
     - ':'
-    - !!perl/hash:RE_string
+    - !!perl/hash:RE_bracket
       a: 0
       dba: charnames
+      decl: []
       dic: STD
       i: 0
-      i_needed: 1
       r: 1
+      re: !!perl/hash:RE_sequence
+        a: 0
+        dba: charnames
+        dic: STD
+        i: 0
+        r: 1
+        s: 0
+        zyg:
+        - !!perl/hash:RE_string
+          a: 0
+          dba: charnames
+          dic: STD
+          i: 0
+          i_needed: 1
+          r: 1
+          s: 0
+          text: ','
+        - !!perl/hash:RE_quantified_atom
+          a: 0
+          atom: !!perl/hash:RE_meta
+            a: 0
+            dba: charnames
+            dic: STD
+            i: 0
+            min: 1
+            r: 1
+            s: 0
+            text: \s
+          dba: charnames
+          dic: STD
+          i: 0
+          quant:
+          - '*'
+          - ':'
+          - ''
+          - 0
+          r: 1
+          s: 0
       s: 0
-      text: ','
 charspec: !!perl/hash:RE_ast
   dba: charspec
   dic: STD
   re: !!perl/hash:RE_bracket
-    re: &2 !!perl/hash:RE_any
+    re: &3 !!perl/hash:RE_any
       altname: charspec_0
       dba: character name
       dic: STD
@@ -583,7 +626,7 @@ charspec: !!perl/hash:RE_ast
         - !!perl/hash:RE_meta
           min: 1
           text: .
-charspec_0: *2
+charspec_0: *3
 circumfix:*:
   dic: STD
 circumfix__S_051Fre_Nch: !!perl/hash:RE_ast
@@ -756,7 +799,7 @@ comment__S_055SharpParenDotDotDotThesis: !!perl/hash:RE_ast
                 quant:
                 - '*'
               - !!perl/hash:RE_bracket
-                re: &3 !!perl/hash:RE_any
+                re: &4 !!perl/hash:RE_any
                   altname: comment__S_055SharpParenDotDotDotThesis_0
                   dba: comment
                   dic: STD
@@ -775,7 +818,7 @@ comment__S_055SharpParenDotDotDotThesis: !!perl/hash:RE_ast
       assert: '!'
       re: !!perl/hash:RE_noop
         nobind: 1
-comment__S_055SharpParenDotDotDotThesis_0: *3
+comment__S_055SharpParenDotDotDotThesis_0: *4
 comment__S_056SharpEqualParenDotDotDotThesis: !!perl/hash:RE_ast
   dba: comment
   dic: STD
@@ -833,7 +876,7 @@ dec_number: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &4 !!perl/hash:RE_any
+      re: &5 !!perl/hash:RE_any
         altname: dec_number_0
         dba: decimal number
         dic: STD
@@ -959,7 +1002,7 @@ dec_number: !!perl/hash:RE_ast
             rest: 1
       quant:
       - '?'
-dec_number_0: *4
+dec_number_0: *5
 decint: !!perl/hash:RE_ast
   dba: decint
   dic: STD
@@ -1187,7 +1230,7 @@ integer: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &5 !!perl/hash:RE_any
+      re: &6 !!perl/hash:RE_any
         altname: integer_0
         dba: integer
         dic: STD
@@ -1199,7 +1242,7 @@ integer: !!perl/hash:RE_ast
             i: 0
             text: '0'
           - !!perl/hash:RE_bracket
-            re: &6 !!perl/hash:RE_any
+            re: &7 !!perl/hash:RE_any
               altname: integer_1
               dba: integer
               dic: STD
@@ -1301,7 +1344,7 @@ integer: !!perl/hash:RE_ast
                   re: !!perl/hash:RE_method_re
                     name: before
                     nobind: 1
-                    re: &7 !!perl/hash:RE_any
+                    re: &8 !!perl/hash:RE_any
                       altname: integer_2
                       dba: integer
                       dic: STD
@@ -1355,9 +1398,9 @@ integer: !!perl/hash:RE_ast
             rest: 1
       quant:
       - '?'
-integer_0: *5
-integer_1: *6
-integer_2: *7
+integer_0: *6
+integer_1: *7
+integer_2: *8
 longname: !!perl/hash:RE_ast
   dba: longname
   dic: STD
@@ -1405,7 +1448,7 @@ morename: !!perl/hash:RE_ast
               re: !!perl/hash:RE_method_re
                 name: before
                 nobind: 1
-                re: &8 !!perl/hash:RE_any
+                re: &9 !!perl/hash:RE_any
                   altname: morename_0
                   dba: morename
                   dic: STD
@@ -1419,7 +1462,7 @@ morename: !!perl/hash:RE_ast
                     name: alpha
                     rest: ''
             - !!perl/hash:RE_bracket
-              re: &9 !!perl/hash:RE_any
+              re: &10 !!perl/hash:RE_any
                 altname: morename_1
                 dba: indirect name
                 dic: STD
@@ -1463,15 +1506,15 @@ morename: !!perl/hash:RE_ast
               rest: 1
       quant:
       - '?'
-morename_0: *8
-morename_1: *9
+morename_0: *9
+morename_1: *10
 multi_declarator:*:
   dic: STD
 name: !!perl/hash:RE_ast
   dba: name
   dic: STD
   re: !!perl/hash:RE_bracket
-    re: &10 !!perl/hash:RE_any
+    re: &11 !!perl/hash:RE_any
       altname: name_0
       dba: name
       dic: STD
@@ -1495,7 +1538,7 @@ name: !!perl/hash:RE_ast
           rest: ''
         quant:
         - +
-name_0: *10
+name_0: *11
 nibbler: !!perl/hash:RE_ast
   dba: nibbler
   dic: STD
@@ -1552,7 +1595,7 @@ nofun: !!perl/hash:RE_ast
     re: !!perl/hash:RE_method_re
       name: before
       nobind: 1
-      re: &11 !!perl/hash:RE_any
+      re: &12 !!perl/hash:RE_any
         altname: nofun_0
         dba: nofun
         dic: STD
@@ -1585,7 +1628,7 @@ nofun: !!perl/hash:RE_ast
           alt: nofun_0 6
           min: 1
           text: \w
-nofun_0: *11
+nofun_0: *12
 octint: !!perl/hash:RE_ast
   dba: octint
   dic: STD
@@ -1672,7 +1715,7 @@ pod_comment: !!perl/hash:RE_ast
       quant:
       - '?'
     - !!perl/hash:RE_bracket
-      re: &12 !!perl/hash:RE_any
+      re: &13 !!perl/hash:RE_any
         altname: pod_comment_0
         dba: pod_comment
         dic: STD
@@ -1939,7 +1982,7 @@ pod_comment: !!perl/hash:RE_ast
               text: \N
             quant:
             - '*'
-pod_comment_0: *12
+pod_comment_0: *13
 postcircumfix:*:
   dic: STD
 postfix:*:
@@ -2032,7 +2075,7 @@ quotepair: !!perl/hash:RE_ast
       i: 0
       text: ':'
     - !!perl/hash:RE_bracket
-      re: &13 !!perl/hash:RE_any
+      re: &14 !!perl/hash:RE_any
         altname: quotepair_0
         dba: colon pair (restricted)
         dic: STD
@@ -2139,7 +2182,7 @@ quotepair: !!perl/hash:RE_ast
             - '?'
           - !!perl/hash:RE_block {}
     - !!perl/hash:RE_block {}
-quotepair_0: *13
+quotepair_0: *14
 rad_number: !!perl/hash:RE_ast
   dba: number in radix notation
   dic: STD
@@ -2172,7 +2215,7 @@ rad_number: !!perl/hash:RE_ast
             i: 0
             text: <
           - !!perl/hash:RE_bracket
-            re: &14 !!perl/hash:RE_any
+            re: &15 !!perl/hash:RE_any
               altname: rad_number_0
               dba: number in radix notation
               dic: STD
@@ -2272,12 +2315,12 @@ rad_number: !!perl/hash:RE_ast
         - !!perl/hash:RE_method
           name: panic
           rest: 1
-rad_number_0: *14
+rad_number_0: *15
 radint: !!perl/hash:RE_ast
   dba: radint
   dic: STD
   re: !!perl/hash:RE_bracket
-    re: &15 !!perl/hash:RE_any
+    re: &16 !!perl/hash:RE_any
       altname: radint_0
       dba: radint
       dic: STD
@@ -2309,7 +2352,7 @@ radint: !!perl/hash:RE_ast
           assert: '?'
           re: !!perl/hash:RE_block
             nobind: 1
-radint_0: *15
+radint_0: *16
 regex_declarator:*:
   dic: STD
 routine_declarator:*:
@@ -2384,7 +2427,7 @@ stdstopper: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &16 !!perl/hash:RE_any
+      re: &17 !!perl/hash:RE_any
         altname: stdstopper_0
         dba: standard stopper
         dic: STD
@@ -2414,7 +2457,7 @@ stdstopper: !!perl/hash:RE_ast
           alt: stdstopper_0 3
           text: $
     - !!perl/hash:RE_block {}
-stdstopper_0: *16
+stdstopper_0: *17
 stopper: !!perl/hash:RE_ast
   dba: stopper
   dic: STD
@@ -2615,7 +2658,7 @@ unsp: !!perl/hash:RE_ast
         name: before
         nobind: 1
         re: !!perl/hash:RE_bracket
-          re: &17 !!perl/hash:RE_any
+          re: &18 !!perl/hash:RE_any
             altname: unsp_0
             dba: unsp
             dic: STD
@@ -2630,7 +2673,7 @@ unsp: !!perl/hash:RE_ast
               text: '#'
     - !!perl/hash:RE_quantified_atom
       atom: !!perl/hash:RE_bracket
-        re: &18 !!perl/hash:RE_any
+        re: &19 !!perl/hash:RE_any
           altname: unsp_1
           dba: unspace
           dic: STD
@@ -2651,8 +2694,8 @@ unsp: !!perl/hash:RE_ast
             - !!perl/hash:RE_block {}
       quant:
       - '*'
-unsp_0: *17
-unsp_1: *18
+unsp_0: *18
+unsp_1: *19
 unspacey: !!perl/hash:RE_ast
   dba: unspacey
   dic: STD
@@ -2666,7 +2709,7 @@ unv: !!perl/hash:RE_ast
   dba: horizontal whitespace
   dic: STD
   re: !!perl/hash:RE_bracket
-    re: &19 !!perl/hash:RE_any
+    re: &20 !!perl/hash:RE_any
       altname: unv_0
       dba: horizontal whitespace
       dic: STD
@@ -2698,7 +2741,7 @@ unv: !!perl/hash:RE_ast
                 i: 0
                 text: =
               - !!perl/hash:RE_bracket
-                re: &20 !!perl/hash:RE_any
+                re: &21 !!perl/hash:RE_any
                   altname: unv_1
                   dba: horizontal whitespace
                   dic: STD
@@ -2728,8 +2771,8 @@ unv: !!perl/hash:RE_ast
         - !!perl/hash:RE_method
           name: comment
           rest: ''
-unv_0: *19
-unv_1: *20
+unv_0: *20
+unv_1: *21
 value:*:
   dic: STD
 version:*:
@@ -2740,7 +2783,7 @@ vws: !!perl/hash:RE_ast
   re: !!perl/hash:RE_quantified_atom
     atom: !!perl/hash:RE_bracket
       re: !!perl/hash:RE_bracket
-        re: &21 !!perl/hash:RE_any
+        re: &22 !!perl/hash:RE_any
           altname: vws_0
           dba: vertical whitespace
           dic: STD
@@ -2838,14 +2881,14 @@ vws: !!perl/hash:RE_ast
               text: \v
     quant:
     - +
-vws_0: *21
+vws_0: *22
 ws: !!perl/hash:RE_ast
   dba: whitespace
   dic: STD
   re: !!perl/hash:RE_first
     zyg:
     - !!perl/hash:RE_bracket
-      re: &22 !!perl/hash:RE_any
+      re: &23 !!perl/hash:RE_any
         altname: ws_0
         dba: whitespace
         dic: STD
@@ -2895,7 +2938,7 @@ ws: !!perl/hash:RE_ast
       zyg:
       - !!perl/hash:RE_quantified_atom
         atom: !!perl/hash:RE_bracket
-          re: &23 !!perl/hash:RE_any
+          re: &24 !!perl/hash:RE_any
             altname: ws_1
             dba: whitespace
             dic: STD
@@ -2926,8 +2969,8 @@ ws: !!perl/hash:RE_ast
         quant:
         - '*'
       - !!perl/hash:RE_block {}
-ws_0: *22
-ws_1: *23
+ws_0: *23
+ws_1: *24
 RETREE_END
 ;
 use DEBUG;
@@ -2935,12 +2978,17 @@ use NAME;
 use Stash;
 use Cursor;
 our $ALL;
+## method p6class ()
+sub p6class {
+no warnings 'recursion';
+my $self = shift;
+'STD::P6' };
 ## method TOP ($STOP = '')
 sub TOP {
 no warnings 'recursion';
 my $self = shift;
 my $STOP = @_ ? shift() : '';
-my $lang = $self->cursor_fresh( 'STD::P6' );
+my $lang = $self->cursor_fresh( $self->p6class );
 if ($STOP) {
 local $::GOAL = $STOP;
 $lang->unitstop($STOP)->comp_unit;
@@ -6960,24 +7008,77 @@ $C->radint
 sub {
 my $C=shift;
 if (my ($C) = (do {
-if (my ($C) = ($C->_PATTERN(qr/\G[a-zA-Z]/))) {
+if (my ($C) = ($C->_PATTERN(qr/\G[_[:alpha:]]/))) {
 LazyMap::lazymap(sub {
-my $C=shift;
-if (($C) = ($C->_PATTERN(qr/\G[a-zA-Z)]/))
-and ($C) = ($C->before(sub {
 my $C=shift;
 if (my ($C) = ($C->before(sub {
 my $C=shift;
-$C->_PATTERN(qr/\G\s*+[\],\#]/)
-}))) { ($C) } else { () }
+if (my ($C) = ($C->before(sub {
+my $C=shift;
+do {
+my $C = $C;
+if (($C) = ($C->_PATTERN(qr/\G\s*+/))
+and ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {
+    my ($tag, $try);
+    my @try;
+    my $relex;
+
+    my $fate;
+    my $x;
+    if ($fate = $C->{'_fate'} and $fate->[1] eq 'charname_1') {
+        $C->deb("Fate passed to charname_1: ", ::fatestr($fate)) if $::DEBUG & DEBUG::fates;
+        ($C->{'_fate'}, $tag, $try) = @$fate;
+        @try = ($try);
+        $x = 'ALT charname_1';    # some outer ltm is controlling us
+    }
+    else {
+        $x = 'ALTLTM charname_1'; # we are top level ltm
+    }
+    my $C = $C->cursor_xact($x);
+    my $xact = $C->{_xact};
+
+    my @gather = ();
+    for (;;) {
+        unless (@try) {
+            $relex //= $C->cursor_fate('STD', 'charname_1', $retree);
+            @try = $relex->($C) or last;
+        }
+        $try = shift(@try) // next;
+
+        if (ref $try) {
+            ($C->{'_fate'}, $tag, $try) = @$try;   # next candidate fate
+        }
+
+        $C->deb("charname_1 trying $tag $try") if $::DEBUG & DEBUG::try_processing;
+        push @gather, ((
+sub {
+my $C=shift;
+$C->_EXACT("\,")
+},
+sub {
+my $C=shift;
+$C->_EXACT("\#")
+},
+sub {
+my $C=shift;
+$C->_EXACT("\]")
+}
+        )[$try])->($C);
+        last if @gather;
+        last if $xact->[-2];  # committed?
+    }
+    @gather;
+};
 }))) {
 $C
 } else { () }
+};
+}))) { ($C) } else { () }
+}))) { ($C) } else { () }
 },
-$C->_STARf(sub {
-my $C=shift;
-$C->_PATTERN(qr/\G[^\],\#]/)
-}))
+$C->_SCANf())
 } else { () }
 
 })) { ($C) } else { () }
@@ -7015,7 +7116,7 @@ $C->_SCANf())
 });
 }
 ;
-## token charnames { [<.ws><charname><.ws>] ** ',' }
+## token charnames { [<charname><.ws>] ** [','\s*] }
 sub charnames__PEEK { $_[0]->_AUTOLEXpeek('charnames', $retree) }
 sub charnames {
 no warnings 'recursion';
@@ -7030,13 +7131,15 @@ my $S = $C->{'_pos'};
 $C->{'charname'} = [];
 $self->_MATCHIFYr($S, "charnames", $C->_REPSEPr( sub {
 my $C=shift;
-$C->_EXACT("\,")
+if (my ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+$C->_PATTERN(qr/\G\,\s*+/)
+}))) { ($C) } else { () }
 }, sub {
 my $C=shift;
 if (my ($C) = ($C->_BRACKETr(sub {
 my $C=shift;
-if (($C) = ($C->ws)
-and ($C) = ($C->_SUBSUMEr(['charname'], sub {
+if (($C) = ($C->_SUBSUMEr(['charname'], sub {
 my $C = shift;
 $C->charname
 }))
@@ -10568,7 +10671,7 @@ use Encode;
 moose_extends('STD');
 our $ALLROLES = { 'STD::P6', 1 };
 our $REGEXES = {
-    ALL => [ qw/POST PRE arglist args blast block blockoid capterm capture circumfix coloncircumfix colonpair comp_unit curlycheck declarator default_value deflongname desigilname dotty dottyop dottyopish eat_terminator fakesignature fatarrow infix infix_circumfix_meta_operator infix_postfix_meta_operator infix_prefix_meta_operator infixish infixstopper label lambda macro_def method_def methodop modifier_expr module_name multi_declarator multisig named_param nullterm nulltermish number old_rx_mods old_tr_mods package_declarator package_def param_sep param_var parameter pblock post_constraint postcircumfix postfix postfix_prefix_meta_operator postop prefix prefix_circumfix_meta_operator prefix_postfix_meta_operator privop quasiquibble quote quote_mod regex_block regex_declarator regex_def routine_declarator routine_def scope_declarator scoped semiarglist semilist sibble signature sigterm special_variable statement statement_control statement_mod_cond statement_mod_loop statement_prefix statementlist strtonum sublongname subshortname term terminator termish trait trait_mod tribble type_constraint type_declarator typename value variable variable_declarator version vnum xblock/ ],
+    ALL => [ qw/POST PRE arglist args blast block blockoid capterm capture circumfix coloncircumfix colonpair comp_unit curlycheck declarator default_value deflongname desigilname dotty dottyop dottyopish eat_terminator fakesignature fatarrow infix infix_circumfix_meta_operator infix_postfix_meta_operator infix_prefix_meta_operator infixish infixstopper label lambda macro_def method_def methodop modifier_expr module_name multi_declarator multisig named_param nullterm nulltermish number old_rx_mods old_tr_mods package_declarator package_def param_sep param_var parameter pblock post_constraint postcircumfix postfix postfix_prefix_meta_operator postop prefix prefix_circumfix_meta_operator prefix_postfix_meta_operator privop quasiquibble quote quote_mod regex_block regex_declarator regex_def routine_declarator routine_def scope_declarator scoped semiarglist semilist sibble signature sigterm special_variable statement statement_control statement_mod_cond statement_mod_loop statement_prefix statementlist strtonum sublongname subshortname term terminator termish trait trait_mod tribble type_constraint type_declarator typename unitstart value variable variable_declarator version vnum xblock/ ],
     circumfix => [ qw/circumfix__S_191sigil__PEEK circumfix__S_192Paren_Thesis__PEEK circumfix__S_193Bra_Ket__PEEK circumfix__S_214Cur_Ly__PEEK/ ],
     dotty => [ qw/dotty__S_194DotStar__PEEK dotty__S_195Dot__PEEK/ ],
     infix => [ qw/infix__S_190lambda__PEEK infix__S_216Dot__PEEK infix__S_222StarStar__PEEK infix__S_237Star__PEEK infix__S_238Slash__PEEK infix__S_239div__PEEK infix__S_240Percent__PEEK infix__S_241PercentPercent__PEEK infix__S_242mod__PEEK infix__S_243PlusAmp__PEEK infix__S_244LtLt__PEEK infix__S_245GtGt__PEEK infix__S_246TildeAmp__PEEK infix__S_247QuestionAmp__PEEK infix__S_248TildeLt__PEEK infix__S_249TildeGt__PEEK infix__S_250PlusLt__PEEK infix__S_251PlusGt__PEEK infix__S_252Plus__PEEK infix__S_253Minus__PEEK infix__S_254PlusVert__PEEK infix__S_255PlusCaret__PEEK infix__S_256TildeVert__PEEK infix__S_257TildeCaret__PEEK infix__S_258QuestionVert__PEEK infix__S_259QuestionCaret__PEEK infix__S_260x__PEEK infix__S_261xx__PEEK infix__S_262Tilde__PEEK infix__S_263Amp__PEEK infix__S_264Vert__PEEK infix__S_265Caret__PEEK infix__S_270LtEqualGt__PEEK infix__S_271cmp__PEEK infix__S_272leg__PEEK infix__S_273but__PEEK infix__S_274does__PEEK infix__S_275DotDot__PEEK infix__S_276CaretDotDot__PEEK infix__S_277DotDotCaret__PEEK infix__S_278CaretDotDotCaret__PEEK infix__S_279EqualEqual__PEEK infix__S_280BangEqual__PEEK infix__S_281Lt__PEEK infix__S_282LtEqual__PEEK infix__S_283Gt__PEEK infix__S_284GtEqual__PEEK infix__S_285TildeTilde__PEEK infix__S_286BangTilde__PEEK infix__S_287EqualTilde__PEEK infix__S_288eq__PEEK infix__S_289ne__PEEK infix__S_290lt__PEEK infix__S_291le__PEEK infix__S_292gt__PEEK infix__S_293ge__PEEK infix__S_294EqualColonEqual__PEEK infix__S_295EqualEqualEqual__PEEK infix__S_296eqv__PEEK infix__S_297before__PEEK infix__S_298after__PEEK infix__S_299AmpAmp__PEEK infix__S_300VertVert__PEEK infix__S_301CaretCaret__PEEK infix__S_302SlashSlash__PEEK infix__S_303min__PEEK infix__S_304max__PEEK infix__S_305QuestionQuestion_BangBang__PEEK infix__S_306BangBang__PEEK infix__S_307Question__PEEK infix__S_308ff__PEEK infix__S_309Caretff__PEEK infix__S_310ffCaret__PEEK infix__S_311CaretffCaret__PEEK infix__S_312fff__PEEK infix__S_313Caretfff__PEEK infix__S_314fffCaret__PEEK infix__S_315CaretfffCaret__PEEK infix__S_316Equal__PEEK infix__S_317ColonEqual__PEEK infix__S_318ColonColonEqual__PEEK infix__S_319DotEqual__PEEK infix__S_320EqualGt__PEEK infix__S_323Comma__PEEK infix__S_324Colon__PEEK infix__S_325X__PEEK infix__S_326Z__PEEK infix__S_327minmax__PEEK infix__S_328DotDotDot__PEEK infix__S_334and__PEEK infix__S_335andthen__PEEK infix__S_336or__PEEK infix__S_337orelse__PEEK infix__S_338xor__PEEK infix__S_339LtEqualEqual__PEEK infix__S_340EqualEqualGt__PEEK infix__S_341LtLtEqualEqual__PEEK infix__S_342EqualEqualGtGt__PEEK/ ],
@@ -11367,6 +11470,12 @@ comp_unit: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_block {}
+    - !!perl/hash:RE_method
+      name: unitstart
+      rest: ''
+    - !!perl/hash:RE_method
+      name: ws
+      rest: ''
     - !!perl/hash:RE_method
       name: statementlist
       rest: ''
@@ -18417,76 +18526,129 @@ signature: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-    - !!perl/hash:RE_quantified_atom
-      atom: !!perl/hash:RE_bracket
-        re: &70 !!perl/hash:RE_any
-          altname: signature_0
-          dba: signature
-          dic: STD::P6
+    - !!perl/hash:RE_bracket
+      re: &70 !!perl/hash:RE_any
+        altname: signature_0
+        dba: signature
+        dic: STD::P6
+        zyg:
+        - !!perl/hash:RE_sequence
+          alt: signature_0 0
           zyg:
-          - !!perl/hash:RE_assertion
-            alt: signature_0 0
-            assert: '?'
-            re: !!perl/hash:RE_method_re
-              name: before
-              nobind: 1
-              re: &71 !!perl/hash:RE_any
-                altname: signature_1
-                dba: signature
-                dic: STD::P6
-                zyg:
-                - !!perl/hash:RE_string
-                  alt: signature_1 0
-                  i: 0
-                  text: -->
-                - !!perl/hash:RE_string
-                  alt: signature_1 1
-                  i: 0
-                  text: )
-                - !!perl/hash:RE_string
-                  alt: signature_1 2
-                  i: 0
-                  text: ']'
-                - !!perl/hash:RE_string
-                  alt: signature_1 3
-                  i: 0
-                  text: '{'
-                - !!perl/hash:RE_sequence
-                  alt: signature_1 4
-                  zyg:
-                  - !!perl/hash:RE_string
-                    i: 0
-                    text: ':'
-                  - !!perl/hash:RE_meta
-                    min: 1
-                    text: \s
-                - !!perl/hash:RE_string
-                  alt: signature_1 5
-                  i: 0
-                  text: ;;
+          - !!perl/hash:RE_string
+            i: 0
+            text: \|
           - !!perl/hash:RE_bracket
-            alt: signature_0 1
             re: !!perl/hash:RE_first
               zyg:
               - !!perl/hash:RE_method
-                name: parameter
+                name: param_var
                 rest: ''
               - !!perl/hash:RE_method
                 name: panic
                 rest: 1
-      quant:
-      - '**'
-      - ':'
-      - !!perl/hash:RE_method
-        a: 0
-        dba: signature
-        dic: STD::P6
-        i: 0
-        name: param_sep
-        need_match: 0
-        r: 1
-        rest: ~
-        s: 0
+          - !!perl/hash:RE_method
+            name: ws
+            rest: ''
+          - !!perl/hash:RE_bracket
+            re: !!perl/hash:RE_first
+              zyg:
+              - !!perl/hash:RE_assertion
+                assert: '?'
+                re: !!perl/hash:RE_method_re
+                  name: before
+                  nobind: 1
+                  re: &71 !!perl/hash:RE_any
+                    altname: signature_1
+                    dba: signature
+                    dic: STD::P6
+                    zyg:
+                    - !!perl/hash:RE_string
+                      alt: signature_1 0
+                      i: 0
+                      text: -->
+                    - !!perl/hash:RE_string
+                      alt: signature_1 1
+                      i: 0
+                      text: )
+                    - !!perl/hash:RE_string
+                      alt: signature_1 2
+                      i: 0
+                      text: ']'
+              - !!perl/hash:RE_method
+                name: panic
+                rest: 1
+        - !!perl/hash:RE_quantified_atom
+          alt: signature_0 1
+          atom: !!perl/hash:RE_bracket
+            re: &72 !!perl/hash:RE_any
+              altname: signature_2
+              dba: signature
+              dic: STD::P6
+              zyg:
+              - !!perl/hash:RE_assertion
+                alt: signature_2 0
+                assert: '?'
+                re: !!perl/hash:RE_method_re
+                  name: before
+                  nobind: 1
+                  re: &73 !!perl/hash:RE_any
+                    altname: signature_3
+                    dba: signature
+                    dic: STD::P6
+                    zyg:
+                    - !!perl/hash:RE_string
+                      alt: signature_3 0
+                      i: 0
+                      text: -->
+                    - !!perl/hash:RE_string
+                      alt: signature_3 1
+                      i: 0
+                      text: )
+                    - !!perl/hash:RE_string
+                      alt: signature_3 2
+                      i: 0
+                      text: ']'
+                    - !!perl/hash:RE_string
+                      alt: signature_3 3
+                      i: 0
+                      text: '{'
+                    - !!perl/hash:RE_sequence
+                      alt: signature_3 4
+                      zyg:
+                      - !!perl/hash:RE_string
+                        i: 0
+                        text: ':'
+                      - !!perl/hash:RE_meta
+                        min: 1
+                        text: \s
+                    - !!perl/hash:RE_string
+                      alt: signature_3 5
+                      i: 0
+                      text: ;;
+              - !!perl/hash:RE_bracket
+                alt: signature_2 1
+                re: !!perl/hash:RE_first
+                  zyg:
+                  - !!perl/hash:RE_method
+                    name: parameter
+                    rest: ''
+                  - !!perl/hash:RE_method
+                    name: panic
+                    rest: 1
+          quant:
+          - '**'
+          - ':'
+          - !!perl/hash:RE_method
+            a: 0
+            dba: signature
+            dic: STD::P6
+            i: 0
+            name: param_sep
+            need_match: 0
+            r: 1
+            rest: ~
+            s: 0
     - !!perl/hash:RE_method
       name: ws
       rest: ''
@@ -18501,31 +18663,25 @@ signature: !!perl/hash:RE_ast
           - !!perl/hash:RE_method
             name: ws
             rest: ''
-          - !!perl/hash:RE_method
-            name: typename
-            rest: ''
+          - !!perl/hash:RE_bracket
+            re: !!perl/hash:RE_first
+              zyg:
+              - !!perl/hash:RE_method
+                name: type_constraint
+                rest: ''
+              - !!perl/hash:RE_method
+                name: panic
+                rest: 1
           - !!perl/hash:RE_method
             name: ws
             rest: ''
-          - !!perl/hash:RE_quantified_atom
-            atom: !!perl/hash:RE_bracket
-              re: !!perl/hash:RE_sequence
-                zyg:
-                - !!perl/hash:RE_assertion
-                  assert: '?'
-                  re: !!perl/hash:RE_block
-                    nobind: 1
-                - !!perl/hash:RE_method
-                  name: sorry
-                  rest: 1
-            quant:
-            - '?'
-          - !!perl/hash:RE_block {}
       quant:
       - '?'
     - !!perl/hash:RE_block {}
 signature_0: *70
 signature_1: *71
+signature_2: *72
+signature_3: *73
 sigterm: !!perl/hash:RE_ast
   dba: signature
   dic: STD::P6
@@ -18590,7 +18746,7 @@ special_variable__S_093DollarBangCur_Ly: !!perl/hash:RE_ast
           text: '{'
         - !!perl/hash:RE_block {}
         - !!perl/hash:RE_bracket
-          re: &72 !!perl/hash:RE_any
+          re: &74 !!perl/hash:RE_any
             altname: special_variable__S_093DollarBangCur_Ly_0
             dba: special_variable
             dic: STD::P6
@@ -18613,7 +18769,7 @@ special_variable__S_093DollarBangCur_Ly: !!perl/hash:RE_ast
               name: FAILGOAL
               rest: 1
     - !!perl/hash:RE_block {}
-special_variable__S_093DollarBangCur_Ly_0: *72
+special_variable__S_093DollarBangCur_Ly_0: *74
 special_variable__S_094DollarSlash: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18672,7 +18828,7 @@ special_variable__S_095DollarTilde: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &73 !!perl/hash:RE_any
+        re: &75 !!perl/hash:RE_any
           altname: special_variable__S_095DollarTilde_0
           dba: special_variable
           dic: STD::P6
@@ -18696,7 +18852,7 @@ special_variable__S_095DollarTilde: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_095DollarTilde_0: *73
+special_variable__S_095DollarTilde_0: *75
 special_variable__S_096DollarGrave: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18714,7 +18870,7 @@ special_variable__S_096DollarGrave: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &74 !!perl/hash:RE_any
+        re: &76 !!perl/hash:RE_any
           altname: special_variable__S_096DollarGrave_0
           dba: special_variable
           dic: STD::P6
@@ -18734,7 +18890,7 @@ special_variable__S_096DollarGrave: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_096DollarGrave_0: *74
+special_variable__S_096DollarGrave_0: *76
 special_variable__S_097DollarAt: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18811,7 +18967,7 @@ special_variable__S_099DollarDollar: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &75 !!perl/hash:RE_any
+        re: &77 !!perl/hash:RE_any
           altname: special_variable__S_099DollarDollar_0
           dba: special_variable
           dic: STD::P6
@@ -18831,7 +18987,7 @@ special_variable__S_099DollarDollar: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_099DollarDollar_0: *75
+special_variable__S_099DollarDollar_0: *77
 special_variable__S_100DollarPercent: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18899,7 +19055,7 @@ special_variable__S_102DollarCaret: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &76 !!perl/hash:RE_any
+        re: &78 !!perl/hash:RE_any
           altname: special_variable__S_102DollarCaret_0
           dba: special_variable
           dic: STD::P6
@@ -18923,7 +19079,7 @@ special_variable__S_102DollarCaret: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_102DollarCaret_0: *76
+special_variable__S_102DollarCaret_0: *78
 special_variable__S_103DollarAmp: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18941,7 +19097,7 @@ special_variable__S_103DollarAmp: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &77 !!perl/hash:RE_any
+        re: &79 !!perl/hash:RE_any
           altname: special_variable__S_103DollarAmp_0
           dba: special_variable
           dic: STD::P6
@@ -18961,7 +19117,7 @@ special_variable__S_103DollarAmp: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_103DollarAmp_0: *77
+special_variable__S_103DollarAmp_0: *79
 special_variable__S_104DollarStar: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -18979,7 +19135,7 @@ special_variable__S_104DollarStar: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &78 !!perl/hash:RE_any
+        re: &80 !!perl/hash:RE_any
           altname: special_variable__S_104DollarStar_0
           dba: special_variable
           dic: STD::P6
@@ -19003,7 +19159,7 @@ special_variable__S_104DollarStar: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_104DollarStar_0: *78
+special_variable__S_104DollarStar_0: *80
 special_variable__S_105DollarThesis: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19023,7 +19179,7 @@ special_variable__S_105DollarThesis: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &79 !!perl/hash:RE_any
+        re: &81 !!perl/hash:RE_any
           altname: special_variable__S_105DollarThesis_0
           dba: special_variable
           dic: STD::P6
@@ -19043,7 +19199,7 @@ special_variable__S_105DollarThesis: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_105DollarThesis_0: *79
+special_variable__S_105DollarThesis_0: *81
 special_variable__S_106DollarMinus: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19061,7 +19217,7 @@ special_variable__S_106DollarMinus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &80 !!perl/hash:RE_any
+        re: &82 !!perl/hash:RE_any
           altname: special_variable__S_106DollarMinus_0
           dba: special_variable
           dic: STD::P6
@@ -19085,7 +19241,7 @@ special_variable__S_106DollarMinus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_106DollarMinus_0: *80
+special_variable__S_106DollarMinus_0: *82
 special_variable__S_107DollarEqual: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19103,7 +19259,7 @@ special_variable__S_107DollarEqual: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &81 !!perl/hash:RE_any
+        re: &83 !!perl/hash:RE_any
           altname: special_variable__S_107DollarEqual_0
           dba: special_variable
           dic: STD::P6
@@ -19127,7 +19283,7 @@ special_variable__S_107DollarEqual: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_107DollarEqual_0: *81
+special_variable__S_107DollarEqual_0: *83
 special_variable__S_108AtPlus: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19145,7 +19301,7 @@ special_variable__S_108AtPlus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &82 !!perl/hash:RE_any
+        re: &84 !!perl/hash:RE_any
           altname: special_variable__S_108AtPlus_0
           dba: special_variable
           dic: STD::P6
@@ -19165,7 +19321,7 @@ special_variable__S_108AtPlus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_108AtPlus_0: *82
+special_variable__S_108AtPlus_0: *84
 special_variable__S_109PercentPlus: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19183,7 +19339,7 @@ special_variable__S_109PercentPlus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &83 !!perl/hash:RE_any
+        re: &85 !!perl/hash:RE_any
           altname: special_variable__S_109PercentPlus_0
           dba: special_variable
           dic: STD::P6
@@ -19203,7 +19359,7 @@ special_variable__S_109PercentPlus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_109PercentPlus_0: *83
+special_variable__S_109PercentPlus_0: *85
 special_variable__S_110DollarPlusBra_Ket: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19254,7 +19410,7 @@ special_variable__S_113AtMinus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &84 !!perl/hash:RE_any
+        re: &86 !!perl/hash:RE_any
           altname: special_variable__S_113AtMinus_0
           dba: special_variable
           dic: STD::P6
@@ -19274,7 +19430,7 @@ special_variable__S_113AtMinus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_113AtMinus_0: *84
+special_variable__S_113AtMinus_0: *86
 special_variable__S_114PercentMinus: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19292,7 +19448,7 @@ special_variable__S_114PercentMinus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &85 !!perl/hash:RE_any
+        re: &87 !!perl/hash:RE_any
           altname: special_variable__S_114PercentMinus_0
           dba: special_variable
           dic: STD::P6
@@ -19312,7 +19468,7 @@ special_variable__S_114PercentMinus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_114PercentMinus_0: *85
+special_variable__S_114PercentMinus_0: *87
 special_variable__S_115DollarMinusBra_Ket: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19363,7 +19519,7 @@ special_variable__S_118DollarPlus: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &86 !!perl/hash:RE_any
+        re: &88 !!perl/hash:RE_any
           altname: special_variable__S_118DollarPlus_0
           dba: special_variable
           dic: STD::P6
@@ -19383,7 +19539,7 @@ special_variable__S_118DollarPlus: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_118DollarPlus_0: *86
+special_variable__S_118DollarPlus_0: *88
 special_variable__S_119DollarCurCaret_Ly: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19460,7 +19616,7 @@ special_variable__S_122DollarBra: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &87 !!perl/hash:RE_any
+        re: &89 !!perl/hash:RE_any
           altname: special_variable__S_122DollarBra_0
           dba: special_variable
           dic: STD::P6
@@ -19484,7 +19640,7 @@ special_variable__S_122DollarBra: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_122DollarBra_0: *87
+special_variable__S_122DollarBra_0: *89
 special_variable__S_123DollarKet: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19502,7 +19658,7 @@ special_variable__S_123DollarKet: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &88 !!perl/hash:RE_any
+        re: &90 !!perl/hash:RE_any
           altname: special_variable__S_123DollarKet_0
           dba: special_variable
           dic: STD::P6
@@ -19522,7 +19678,7 @@ special_variable__S_123DollarKet: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_123DollarKet_0: *88
+special_variable__S_123DollarKet_0: *90
 special_variable__S_124DollarBack: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19540,7 +19696,7 @@ special_variable__S_124DollarBack: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &89 !!perl/hash:RE_any
+        re: &91 !!perl/hash:RE_any
           altname: special_variable__S_124DollarBack_0
           dba: special_variable
           dic: STD::P6
@@ -19564,7 +19720,7 @@ special_variable__S_124DollarBack: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_124DollarBack_0: *89
+special_variable__S_124DollarBack_0: *91
 special_variable__S_125DollarVert: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19582,7 +19738,7 @@ special_variable__S_125DollarVert: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &90 !!perl/hash:RE_any
+        re: &92 !!perl/hash:RE_any
           altname: special_variable__S_125DollarVert_0
           dba: special_variable
           dic: STD::P6
@@ -19606,7 +19762,7 @@ special_variable__S_125DollarVert: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_125DollarVert_0: *90
+special_variable__S_125DollarVert_0: *92
 special_variable__S_126DollarColon: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19645,7 +19801,7 @@ special_variable__S_127DollarSemi: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &91 !!perl/hash:RE_any
+        re: &93 !!perl/hash:RE_any
           altname: special_variable__S_127DollarSemi_0
           dba: special_variable
           dic: STD::P6
@@ -19669,7 +19825,7 @@ special_variable__S_127DollarSemi: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_127DollarSemi_0: *91
+special_variable__S_127DollarSemi_0: *93
 special_variable__S_128DollarSingle: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19687,7 +19843,7 @@ special_variable__S_128DollarSingle: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &92 !!perl/hash:RE_any
+        re: &94 !!perl/hash:RE_any
           altname: special_variable__S_128DollarSingle_0
           dba: special_variable
           dic: STD::P6
@@ -19707,7 +19863,7 @@ special_variable__S_128DollarSingle: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_128DollarSingle_0: *92
+special_variable__S_128DollarSingle_0: *94
 special_variable__S_129DollarDouble: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19729,7 +19885,7 @@ special_variable__S_129DollarDouble: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &93 !!perl/hash:RE_any
+        re: &95 !!perl/hash:RE_any
           altname: special_variable__S_129DollarDouble_0
           dba: special_variable
           dic: STD::P6
@@ -19753,7 +19909,7 @@ special_variable__S_129DollarDouble: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_129DollarDouble_0: *93
+special_variable__S_129DollarDouble_0: *95
 special_variable__S_130DollarComma: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19771,7 +19927,7 @@ special_variable__S_130DollarComma: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &94 !!perl/hash:RE_any
+        re: &96 !!perl/hash:RE_any
           altname: special_variable__S_130DollarComma_0
           dba: special_variable
           dic: STD::P6
@@ -19791,7 +19947,7 @@ special_variable__S_130DollarComma: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_130DollarComma_0: *94
+special_variable__S_130DollarComma_0: *96
 special_variable__S_131DollarLt: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19854,7 +20010,7 @@ special_variable__S_132DollarGt: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &95 !!perl/hash:RE_any
+        re: &97 !!perl/hash:RE_any
           altname: special_variable__S_132DollarGt_0
           dba: special_variable
           dic: STD::P6
@@ -19874,7 +20030,7 @@ special_variable__S_132DollarGt: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_132DollarGt_0: *95
+special_variable__S_132DollarGt_0: *97
 special_variable__S_133DollarDot: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19892,7 +20048,7 @@ special_variable__S_133DollarDot: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &96 !!perl/hash:RE_any
+        re: &98 !!perl/hash:RE_any
           altname: special_variable__S_133DollarDot_0
           dba: special_variable
           dic: STD::P6
@@ -19912,7 +20068,7 @@ special_variable__S_133DollarDot: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_133DollarDot_0: *96
+special_variable__S_133DollarDot_0: *98
 special_variable__S_134DollarQuestion: !!perl/hash:RE_ast
   dba: special_variable
   dic: STD::P6
@@ -19930,7 +20086,7 @@ special_variable__S_134DollarQuestion: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &97 !!perl/hash:RE_any
+        re: &99 !!perl/hash:RE_any
           altname: special_variable__S_134DollarQuestion_0
           dba: special_variable
           dic: STD::P6
@@ -19950,7 +20106,7 @@ special_variable__S_134DollarQuestion: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: obs
       rest: 1
-special_variable__S_134DollarQuestion_0: *97
+special_variable__S_134DollarQuestion_0: *99
 statement: !!perl/hash:RE_ast
   dba: statement
   dic: STD::P6
@@ -19972,7 +20128,7 @@ statement: !!perl/hash:RE_ast
         re: !!perl/hash:RE_block
           nobind: 1
     - !!perl/hash:RE_bracket
-      re: &98 !!perl/hash:RE_any
+      re: &100 !!perl/hash:RE_any
         altname: statement_0
         dba: statement end
         dic: STD::P6
@@ -20010,7 +20166,7 @@ statement: !!perl/hash:RE_ast
                   rest: ''
                 - !!perl/hash:RE_quantified_atom
                   atom: !!perl/hash:RE_bracket
-                    re: &99 !!perl/hash:RE_any
+                    re: &101 !!perl/hash:RE_any
                       altname: statement_1
                       dba: statement modifier loop
                       dic: STD::P6
@@ -20092,7 +20248,7 @@ statement: !!perl/hash:RE_ast
             re: !!perl/hash:RE_method_re
               name: before
               nobind: 1
-              re: &100 !!perl/hash:RE_any
+              re: &102 !!perl/hash:RE_any
                 altname: statement_2
                 dba: statement
                 dic: STD::P6
@@ -20124,9 +20280,9 @@ statement: !!perl/hash:RE_ast
             rest: 1
       quant:
       - '?'
-statement_0: *98
-statement_1: *99
-statement_2: *100
+statement_0: *100
+statement_1: *101
+statement_2: *102
 statement_control__S_000need: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -20146,7 +20302,7 @@ statement_control__S_000need: !!perl/hash:RE_ast
       rest: ''
     - !!perl/hash:RE_quantified_atom
       atom: !!perl/hash:RE_bracket
-        re: &101 !!perl/hash:RE_any
+        re: &103 !!perl/hash:RE_any
           altname: statement_control__S_000need_0
           dba: statement_control
           dic: STD::P6
@@ -20185,7 +20341,7 @@ statement_control__S_000need: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-statement_control__S_000need_0: *101
+statement_control__S_000need_0: *103
 statement_control__S_001import: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -20240,7 +20396,7 @@ statement_control__S_002use: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &102 !!perl/hash:RE_any
+      re: &104 !!perl/hash:RE_any
         altname: statement_control__S_002use_0
         dba: statement_control
         dic: STD::P6
@@ -20275,7 +20431,7 @@ statement_control__S_002use: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: explain_mystery
       rest: ''
-statement_control__S_002use_0: *102
+statement_control__S_002use_0: *104
 statement_control__S_003no: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -20345,7 +20501,7 @@ statement_control__S_004if: !!perl/hash:RE_ast
             name: ws
             rest: ''
           - !!perl/hash:RE_bracket
-            re: &103 !!perl/hash:RE_any
+            re: &105 !!perl/hash:RE_any
               altname: statement_control__S_004if_0
               dba: statement_control
               dic: STD::P6
@@ -20430,7 +20586,7 @@ statement_control__S_004if: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-statement_control__S_004if_0: *103
+statement_control__S_004if_0: *105
 statement_control__S_005unless: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -20639,7 +20795,7 @@ statement_control__S_008repeat: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &104 !!perl/hash:RE_any
+      re: &106 !!perl/hash:RE_any
         altname: statement_control__S_008repeat_0
         dba: statement_control
         dic: STD::P6
@@ -20649,7 +20805,7 @@ statement_control__S_008repeat: !!perl/hash:RE_ast
           zyg:
           - !!perl/hash:RE_bindnamed
             atom: !!perl/hash:RE_bracket
-              re: &105 !!perl/hash:RE_any
+              re: &107 !!perl/hash:RE_any
                 altname: statement_control__S_008repeat_1
                 dba: statement_control
                 dic: STD::P6
@@ -20685,7 +20841,7 @@ statement_control__S_008repeat: !!perl/hash:RE_ast
             rest: ''
           - !!perl/hash:RE_bindnamed
             atom: !!perl/hash:RE_bracket
-              re: &106 !!perl/hash:RE_any
+              re: &108 !!perl/hash:RE_any
                 altname: statement_control__S_008repeat_2
                 dba: statement_control
                 dic: STD::P6
@@ -20716,9 +20872,9 @@ statement_control__S_008repeat: !!perl/hash:RE_ast
           - !!perl/hash:RE_method
             name: ws
             rest: ''
-statement_control__S_008repeat_0: *104
-statement_control__S_008repeat_1: *105
-statement_control__S_008repeat_2: *106
+statement_control__S_008repeat_0: *106
+statement_control__S_008repeat_1: *107
+statement_control__S_008repeat_2: *108
 statement_control__S_009loop: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -21052,7 +21208,7 @@ statement_control__S_013when: !!perl/hash:RE_ast
               rest: ''
             - !!perl/hash:RE_bindpos
               atom: !!perl/hash:RE_paren
-                re: &107 !!perl/hash:RE_any
+                re: &109 !!perl/hash:RE_any
                   altname: statement_control__S_013when_0
                   dba: statement_control
                   dic: STD::P6
@@ -21081,7 +21237,7 @@ statement_control__S_013when: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-statement_control__S_013when_0: *107
+statement_control__S_013when_0: *109
 statement_control__S_014default: !!perl/hash:RE_ast
   dba: statement_control
   dic: STD::P6
@@ -21256,7 +21412,7 @@ statement_mod_cond__S_034when: !!perl/hash:RE_ast
               - '*'
             - !!perl/hash:RE_bindpos
               atom: !!perl/hash:RE_paren
-                re: &108 !!perl/hash:RE_any
+                re: &110 !!perl/hash:RE_any
                   altname: statement_mod_cond__S_034when_0
                   dba: statement_mod_cond
                   dic: STD::P6
@@ -21285,7 +21441,7 @@ statement_mod_cond__S_034when: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-statement_mod_cond__S_034when_0: *108
+statement_mod_cond__S_034when_0: *110
 statement_mod_loop__S_035while: !!perl/hash:RE_ast
   dba: statement_mod_loop
   dic: STD::P6
@@ -21702,7 +21858,7 @@ statementlist: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &109 !!perl/hash:RE_any
+      re: &111 !!perl/hash:RE_any
         altname: statementlist_0
         dba: statement list
         dic: STD::P6
@@ -21751,7 +21907,7 @@ statementlist: !!perl/hash:RE_ast
             name: ws
             rest: ''
           - !!perl/hash:RE_block {}
-statementlist_0: *109
+statementlist_0: *111
 strtonum__S_138rational: !!perl/hash:RE_ast
   dba: strtonum
   dic: STD::P6
@@ -21843,7 +21999,7 @@ subshortname: !!perl/hash:RE_ast
   dba: subshortname
   dic: STD::P6
   re: !!perl/hash:RE_bracket
-    re: &110 !!perl/hash:RE_any
+    re: &112 !!perl/hash:RE_any
       altname: subshortname_0
       dba: subshortname
       dic: STD::P6
@@ -21864,7 +22020,7 @@ subshortname: !!perl/hash:RE_ast
         alt: subshortname_0 1
         name: desigilname
         rest: ''
-subshortname_0: *110
+subshortname_0: *112
 term__S_076fatarrow: !!perl/hash:RE_ast
   dba: term
   dic: STD::P6
@@ -21902,7 +22058,7 @@ term__S_080multi_declarator: !!perl/hash:RE_ast
       re: !!perl/hash:RE_method_re
         name: before
         nobind: 1
-        re: &111 !!perl/hash:RE_any
+        re: &113 !!perl/hash:RE_any
           altname: term__S_080multi_declarator_0
           dba: term
           dic: STD::P6
@@ -21922,7 +22078,7 @@ term__S_080multi_declarator: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: multi_declarator
       rest: ''
-term__S_080multi_declarator_0: *111
+term__S_080multi_declarator_0: *113
 term__S_081routine_declarator: !!perl/hash:RE_ast
   dba: term
   dic: STD::P6
@@ -22255,7 +22411,7 @@ term__S_187rand: !!perl/hash:RE_ast
                   quant:
                   - '*'
                 - !!perl/hash:RE_bracket
-                  re: &112 !!perl/hash:RE_any
+                  re: &114 !!perl/hash:RE_any
                     altname: term__S_187rand_0
                     dba: term
                     dic: STD::P6
@@ -22293,7 +22449,7 @@ term__S_187rand: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: O
       rest: 1
-term__S_187rand_0: *112
+term__S_187rand_0: *114
 term__S_188Star: !!perl/hash:RE_ast
   dba: term
   dic: STD::P6
@@ -22412,7 +22568,7 @@ term__S_332identifier: !!perl/hash:RE_ast
         nobind: 1
         re: !!perl/hash:RE_quantified_atom
           atom: !!perl/hash:RE_bracket
-            re: &113 !!perl/hash:RE_any
+            re: &115 !!perl/hash:RE_any
               altname: term__S_332identifier_0
               dba: term
               dic: STD::P6
@@ -22442,7 +22598,7 @@ term__S_332identifier: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: O
       rest: 1
-term__S_332identifier_0: *113
+term__S_332identifier_0: *115
 term__S_333name: !!perl/hash:RE_ast
   dba: term
   dic: STD::P6
@@ -22503,7 +22659,7 @@ term__S_333name: !!perl/hash:RE_ast
                     name: before
                     nobind: 1
                     re: !!perl/hash:RE_bracket
-                      re: &114 !!perl/hash:RE_any
+                      re: &116 !!perl/hash:RE_any
                         altname: term__S_333name_0
                         dba: namespace variable lookup
                         dic: STD::P6
@@ -22540,7 +22696,7 @@ term__S_333name: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: O
       rest: 1
-term__S_333name_0: *114
+term__S_333name_0: *116
 terminator__S_343Semi: !!perl/hash:RE_ast
   dba: terminator
   dic: STD::P6
@@ -22696,7 +22852,7 @@ termish: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &115 !!perl/hash:RE_any
+      re: &117 !!perl/hash:RE_any
         altname: termish_0
         dba: prefix or term
         dic: STD::P6
@@ -22827,7 +22983,7 @@ termish: !!perl/hash:RE_ast
             quant:
             - '*'
     - !!perl/hash:RE_block {}
-termish_0: *115
+termish_0: *117
 trait: !!perl/hash:RE_ast
   dba: trait
   dic: STD::P6
@@ -22837,7 +22993,7 @@ trait: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &116 !!perl/hash:RE_any
+      re: &118 !!perl/hash:RE_any
         altname: trait_0
         dba: trait
         dic: STD::P6
@@ -22860,7 +23016,7 @@ trait: !!perl/hash:RE_ast
           - !!perl/hash:RE_method
             name: ws
             rest: ''
-trait_0: *116
+trait_0: *118
 trait_mod__S_069is: !!perl/hash:RE_ast
   dba: trait_mod
   dic: STD::P6
@@ -22972,7 +23128,7 @@ trait_mod__S_073of: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &117 !!perl/hash:RE_any
+      re: &119 !!perl/hash:RE_any
         altname: trait_mod__S_073of_0
         dba: trait_mod
         dic: STD::P6
@@ -23017,7 +23173,7 @@ trait_mod__S_073of: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_block {}
-trait_mod__S_073of_0: *117
+trait_mod__S_073of_0: *119
 trait_mod__S_074as: !!perl/hash:RE_ast
   dba: trait_mod
   dic: STD::P6
@@ -23121,7 +23277,7 @@ type_constraint: !!perl/hash:RE_ast
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &118 !!perl/hash:RE_any
+      re: &120 !!perl/hash:RE_any
         altname: type_constraint_0
         dba: type_constraint
         dic: STD::P6
@@ -23177,7 +23333,7 @@ type_constraint: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: ws
       rest: ''
-type_constraint_0: *118
+type_constraint_0: *120
 type_declarator__S_165subset: !!perl/hash:RE_ast
   dba: type_declarator
   dic: STD::P6
@@ -23290,7 +23446,7 @@ type_declarator__S_166enum: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &119 !!perl/hash:RE_any
+      re: &121 !!perl/hash:RE_any
         altname: type_declarator__S_166enum_0
         dba: type_declarator
         dic: STD::P6
@@ -23341,7 +23497,7 @@ type_declarator__S_166enum: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_block {}
-type_declarator__S_166enum_0: *119
+type_declarator__S_166enum_0: *121
 type_declarator__S_167constant: !!perl/hash:RE_ast
   dba: type_declarator
   dic: STD::P6
@@ -23360,7 +23516,7 @@ type_declarator__S_167constant: !!perl/hash:RE_ast
       name: ws
       rest: ''
     - !!perl/hash:RE_bracket
-      re: &120 !!perl/hash:RE_any
+      re: &122 !!perl/hash:RE_any
         altname: type_declarator__S_167constant_0
         dba: type_declarator
         dic: STD::P6
@@ -23432,14 +23588,14 @@ type_declarator__S_167constant: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: getdecl
       rest: ''
-type_declarator__S_167constant_0: *120
+type_declarator__S_167constant_0: *122
 typename: !!perl/hash:RE_ast
   dba: typename
   dic: STD::P6
   re: !!perl/hash:RE_sequence
     zyg:
     - !!perl/hash:RE_bracket
-      re: &121 !!perl/hash:RE_any
+      re: &123 !!perl/hash:RE_any
         altname: typename_0
         dba: typename
         dic: STD::P6
@@ -23529,7 +23685,14 @@ typename: !!perl/hash:RE_ast
             rest: ''
       quant:
       - '?'
-typename_0: *121
+typename_0: *123
+unitstart: !!perl/hash:RE_ast
+  dba: unitstart
+  dic: STD::P6
+  re: !!perl/hash:RE_assertion
+    assert: '?'
+    re: !!perl/hash:RE_noop
+      nobind: 1
 value__S_135quote: !!perl/hash:RE_ast
   dba: value
   dic: STD::P6
@@ -23590,7 +23753,7 @@ variable: !!perl/hash:RE_ast
                   i: 0
                   text: '::'
                 - !!perl/hash:RE_bracket
-                  re: &122 !!perl/hash:RE_any
+                  re: &124 !!perl/hash:RE_any
                     altname: variable_0
                     dba: variable
                     dic: STD::P6
@@ -23616,7 +23779,7 @@ variable: !!perl/hash:RE_ast
             i: 0
             text: '&'
           - !!perl/hash:RE_bracket
-            re: &123 !!perl/hash:RE_any
+            re: &125 !!perl/hash:RE_any
               altname: variable_1
               dba: infix noun
               dic: STD::P6
@@ -23674,7 +23837,7 @@ variable: !!perl/hash:RE_ast
             name: name
             rest: ''
         - !!perl/hash:RE_bracket
-          re: &124 !!perl/hash:RE_any
+          re: &126 !!perl/hash:RE_any
             altname: variable_2
             dba: variable
             dic: STD::P6
@@ -23720,7 +23883,7 @@ variable: !!perl/hash:RE_ast
                 re: !!perl/hash:RE_method_re
                   name: before
                   nobind: 1
-                  re: &125 !!perl/hash:RE_any
+                  re: &127 !!perl/hash:RE_any
                     altname: variable_3
                     dba: variable
                     dic: STD::P6
@@ -23764,7 +23927,7 @@ variable: !!perl/hash:RE_ast
             re: !!perl/hash:RE_block
               nobind: 1
           - !!perl/hash:RE_bracket
-            re: &126 !!perl/hash:RE_any
+            re: &128 !!perl/hash:RE_any
               altname: variable_4
               dba: variable
               dic: STD::P6
@@ -23795,11 +23958,11 @@ variable: !!perl/hash:RE_ast
             rest: ''
       quant:
       - '?'
-variable_0: *122
-variable_1: *123
-variable_2: *124
-variable_3: *125
-variable_4: *126
+variable_0: *124
+variable_1: *125
+variable_2: *126
+variable_3: *127
+variable_4: *128
 variable_declarator: !!perl/hash:RE_ast
   dba: variable_declarator
   dic: STD::P6
@@ -23822,7 +23985,7 @@ variable_declarator: !!perl/hash:RE_ast
           - !!perl/hash:RE_bindnamed
             atom: !!perl/hash:RE_quantified_atom
               atom: !!perl/hash:RE_bracket
-                re: &127 !!perl/hash:RE_any
+                re: &129 !!perl/hash:RE_any
                   altname: variable_declarator_0
                   dba: shape definition
                   dic: STD::P6
@@ -23931,7 +24094,7 @@ variable_declarator: !!perl/hash:RE_ast
     - !!perl/hash:RE_method
       name: getdecl
       rest: ''
-variable_declarator_0: *127
+variable_declarator_0: *129
 version__S_040v: !!perl/hash:RE_ast
   dba: version
   dic: STD::P6
@@ -23978,7 +24141,7 @@ version__S_040v: !!perl/hash:RE_ast
 vnum: !!perl/hash:RE_ast
   dba: vnum
   dic: STD::P6
-  re: &128 !!perl/hash:RE_any
+  re: &130 !!perl/hash:RE_any
     altname: vnum_0
     dba: vnum
     dic: STD::P6
@@ -23994,7 +24157,7 @@ vnum: !!perl/hash:RE_ast
       alt: vnum_0 1
       i: 0
       text: '*'
-vnum_0: *128
+vnum_0: *130
 xblock: !!perl/hash:RE_ast
   dba: xblock
   dic: STD::P6
@@ -24048,6 +24211,8 @@ $::UNIT = $::CURLEX;
 $ALL->{'UNIT'} = $::UNIT;
 $self->finishlex;
 }}, $C))
+and ($C) = ($C->unitstart)
+and ($C) = ($C->ws)
 and ($C) = ($C->_SUBSUMEr(['statementlist'], sub {
 my $C = shift;
 $C->statementlist
@@ -24278,6 +24443,24 @@ $C
 } else { () }
 
 });
+}
+;
+## token unitstart { <?> }
+sub unitstart__PEEK { $_[0]->_AUTOLEXpeek('unitstart', $retree) }
+sub unitstart {
+no warnings 'recursion';
+my $self = shift;
+
+
+local $::CTX = $self->callm() if $::DEBUG & DEBUG::trace_call;
+
+my $C = $self->cursor_xact("RULE unitstart");
+my $xact = $C->xact;
+my $S = $C->{'_pos'};
+$self->_MATCHIFYr($S, "unitstart", $C->before(sub {
+my $C=shift;
+$C
+}));
 }
 ;
 ## token lambda { '->' | '<->' }
@@ -25547,7 +25730,7 @@ my $M = $C;
 local $::IN_DECL = 'use';
 local $::SCOPE = 'use';
 $longname = $M->{'module_name'}->[-1]->{'longname'};
-$C->do_need($longname);
+$C->do_need($longname->{'name'});
 }}, $C)
 } else { () }
 }
@@ -25720,7 +25903,7 @@ $C->arglist
 scalar(do {
 my $M = $C;
 {
-$C->do_use($longname, $M->{'arglist'})}}, $C)
+$C->do_use($longname->{'name'}, $M->{'arglist'})}}, $C)
 } else { () }
 
 }
@@ -25729,7 +25912,7 @@ or $xact->[-2] or
 do {
 push @gather, scalar(do {
 {
-$C->do_use($longname, '')}}, $C)
+$C->do_use($longname->{'name'}, '')}}, $C)
 };
 @gather;
 }
@@ -28625,7 +28808,7 @@ and ($C) = ($C->ws)) {
 scalar(do {
 my $M = $C;
 $longname = $M->{'longname'}->[0];
-$C->add_name($longname->Str);
+$C->add_name($longname->{'name'}->Str);
 }, $C)
 } else { () }
 }))) { ($C) } else { () }
@@ -28725,7 +28908,7 @@ $self->deb("added my " . $::CURPKG->id) if $::DEBUG & DEBUG::symtab;
 };
 };
 $::begin_compunit = 0;
-$::UNIT->{'$?LONGNAME'} ||= $longname->Str;
+$::UNIT->{'$?LONGNAME'} ||= $longname ? $longname->{'name'}->Str : '';
 }}, $C))
 and ($C) = ($C->_SUBSUMEr(['blockoid'], sub {
 my $C = shift;
@@ -28787,7 +28970,7 @@ CORE => $::UNIT,
                                 $::UNIT->id => $::UNIT,
                             };
 };
-$::UNIT->{'$?LONGNAME'} = $longname->Str;
+$::UNIT->{'$?LONGNAME'} = $longname->{'name'}->Str;
 }}, $C))
 and ($C) = ($C->_SUBSUMEr(['statementlist'], sub {
 my $C = shift;
@@ -37908,19 +38091,11 @@ my $xact = $C->xact;
 my $S = $C->{'_pos'};
 $C->{'param_sep'} = [];
 $C->{'parameter'} = [];
-$C->{'typename'} = [];
+$C->{'type_constraint'} = [];
 $self->_MATCHIFYr($S, "signature", do {
 my $C = $C;
 if (($C) = ($C->ws)
-and ($C) = ($C->_REPSEPr( sub {
-my $C=shift;
-$C->_SUBSUMEr(['param_sep'], sub {
-my $C = shift;
-$C->param_sep
-})
-}, sub {
-my $C=shift;
-if (my ($C) = ($C->_BRACKETr(sub {
+and ($C) = ($C->_BRACKETr(sub {
 my $C=shift;
 do {
     my ($tag, $try);
@@ -37957,6 +38132,36 @@ do {
         push @gather, ((
 sub {
 my $C=shift;
+if (($C) = ($C->_EXACT("\\\|"))
+and ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {my $C = $C->cursor_xact('ALT ||');
+my $xact = $C->xact;
+my @gather;
+do {
+push @gather, $C->_SUBSUMEr(['param_var'], sub {
+my $C = shift;
+$C->param_var
+})
+}
+or $xact->[-2] or
+do {
+push @gather, do {
+if (my ($C) = ($C->panic("\\| signature must contain one variable"))) { ($C) } else { () }
+
+}
+};
+@gather;
+}
+}))
+and ($C) = ($C->ws)
+and ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {my $C = $C->cursor_xact('ALT ||');
+my $xact = $C->xact;
+my @gather;
+do {
+push @gather, do {
 if (my ($C) = ($C->before(sub {
 my $C=shift;
 if (my ($C) = ($C->before(sub {
@@ -37994,6 +38199,129 @@ do {
         }
 
         $C->deb("signature_1 trying $tag $try") if $::DEBUG & DEBUG::try_processing;
+        push @gather, ((
+sub {
+my $C=shift;
+$C->_EXACT("\-\-\>")
+},
+sub {
+my $C=shift;
+$C->_EXACT("\)")
+},
+sub {
+my $C=shift;
+$C->_EXACT("\]")
+}
+        )[$try])->($C);
+        last if @gather;
+        last if $xact->[-2];  # committed?
+    }
+    @gather;
+};
+
+})) { ($C) } else { () }
+}))) { ($C) } else { () }
+}))) { ($C) } else { () }
+
+}
+}
+or $xact->[-2] or
+do {
+push @gather, do {
+if (my ($C) = ($C->panic("\\| signature may contain only a variable"))) { ($C) } else { () }
+
+}
+};
+@gather;
+}
+}))) {
+$C
+} else { () }
+},
+sub {
+my $C=shift;
+$C->_REPSEPr( sub {
+my $C=shift;
+$C->_SUBSUMEr(['param_sep'], sub {
+my $C = shift;
+$C->param_sep
+})
+}, sub {
+my $C=shift;
+if (my ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {
+    my ($tag, $try);
+    my @try;
+    my $relex;
+
+    my $fate;
+    my $x;
+    if ($fate = $C->{'_fate'} and $fate->[1] eq 'signature_2') {
+        $C->deb("Fate passed to signature_2: ", ::fatestr($fate)) if $::DEBUG & DEBUG::fates;
+        ($C->{'_fate'}, $tag, $try) = @$fate;
+        @try = ($try);
+        $x = 'ALT signature_2';    # some outer ltm is controlling us
+    }
+    else {
+        $x = 'ALTLTM signature_2'; # we are top level ltm
+    }
+    my $C = $C->cursor_xact($x);
+    my $xact = $C->{_xact};
+
+    my @gather = ();
+    for (;;) {
+        unless (@try) {
+            $relex //= $C->cursor_fate('STD::P6', 'signature_2', $retree);
+            @try = $relex->($C) or last;
+        }
+        $try = shift(@try) // next;
+
+        if (ref $try) {
+            ($C->{'_fate'}, $tag, $try) = @$try;   # next candidate fate
+        }
+
+        $C->deb("signature_2 trying $tag $try") if $::DEBUG & DEBUG::try_processing;
+        push @gather, ((
+sub {
+my $C=shift;
+if (my ($C) = ($C->before(sub {
+my $C=shift;
+if (my ($C) = ($C->before(sub {
+my $C=shift;
+if (my ($C) = (do {
+do {
+    my ($tag, $try);
+    my @try;
+    my $relex;
+
+    my $fate;
+    my $x;
+    if ($fate = $C->{'_fate'} and $fate->[1] eq 'signature_3') {
+        $C->deb("Fate passed to signature_3: ", ::fatestr($fate)) if $::DEBUG & DEBUG::fates;
+        ($C->{'_fate'}, $tag, $try) = @$fate;
+        @try = ($try);
+        $x = 'ALT signature_3';    # some outer ltm is controlling us
+    }
+    else {
+        $x = 'ALTLTM signature_3'; # we are top level ltm
+    }
+    my $C = $C->cursor_xact($x);
+    my $xact = $C->{_xact};
+
+    my @gather = ();
+    for (;;) {
+        unless (@try) {
+            $relex //= $C->cursor_fate('STD::P6', 'signature_3', $retree);
+            @try = $relex->($C) or last;
+        }
+        $try = shift(@try) // next;
+
+        if (ref $try) {
+            ($C->{'_fate'}, $tag, $try) = @$try;   # next candidate fate
+        }
+
+        $C->deb("signature_3 trying $tag $try") if $::DEBUG & DEBUG::try_processing;
         push @gather, ((
 sub {
 my $C=shift;
@@ -38061,6 +38389,14 @@ if (my ($C) = ($C->panic("Malformed parameter"))) { ($C) } else { () }
     @gather;
 };
 }))) { ($C) } else { () }
+})
+}
+        )[$try])->($C);
+        last if @gather;
+        last if $xact->[-2];  # committed?
+    }
+    @gather;
+};
 }))
 and ($C) = ($C->ws)
 and ($C) = (scalar(do {
@@ -38071,28 +38407,29 @@ if (my ($C) = ($C->_BRACKETr(sub {
 my $C=shift;
 if (($C) = ($C->_EXACT("\-\-\>"))
 and ($C) = ($C->ws)
-and ($C) = ($C->_SUBSUMEr(['typename'], sub {
+and ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {my $C = $C->cursor_xact('ALT ||');
+my $xact = $C->xact;
+my @gather;
+do {
+push @gather, $C->_SUBSUMEr(['type_constraint'], sub {
 my $C = shift;
-$C->typename
+$C->type_constraint
+})
+}
+or $xact->[-2] or
+do {
+push @gather, do {
+if (my ($C) = ($C->panic("No type found after -->"))) { ($C) } else { () }
+
+}
+};
+@gather;
+}
 }))
-and ($C) = ($C->ws)
-and ($C) = ($C->_OPTr(sub {
-my $C=shift;
-if (my ($C) = ($C->_BRACKETr(sub {
-my $C=shift;
-if (($C) = ($C->before(sub {
-my $C=shift;
-(($C) x !!do {
-$::OFTYPE })
-}))
-and ($C) = ($C->sorry("Extra 'of' type; already declared as type " . $::OFTYPE->Str))) {
+and ($C) = ($C->ws)) {
 $C
-} else { () }
-}))) { ($C) } else { () }
-}))) {
-scalar(do {
-my $M = $C;
-$::OFTYPE = $M->{'typename'}->[0]}, $C)
 } else { () }
 }))) { ($C) } else { () }
 }))) {
@@ -55758,62 +56095,76 @@ termish: !!perl/hash:RE_ast
     - !!perl/hash:RE_bracket
       re: !!perl/hash:RE_first
         zyg:
-        - !!perl/hash:RE_bindnamed
-          atom: !!perl/hash:RE_method
-            name: quant_atom_list
+        - !!perl/hash:RE_sequence
+          zyg:
+          - !!perl/hash:RE_bindnamed
+            atom: !!perl/hash:RE_method
+              name: quant_atom_list
+              rest: ''
+          - !!perl/hash:RE_assertion
+            assert: '?'
+            re: !!perl/hash:RE_block
+              nobind: 1
+        - !!perl/hash:RE_sequence
+          zyg:
+          - !!perl/hash:RE_method
+            name: normspace
             rest: ''
-        - !!perl/hash:RE_sequence
-          zyg:
-          - !!perl/hash:RE_assertion
-            assert: '?'
-            re: !!perl/hash:RE_method_re
-              name: before
-              nobind: 1
-              re: &30 !!perl/hash:RE_any
-                altname: termish_0
-                dba: termish
-                dic: STD::Regex
+          - !!perl/hash:RE_bracket
+            re: !!perl/hash:RE_first
+              zyg:
+              - !!perl/hash:RE_sequence
                 zyg:
+                - !!perl/hash:RE_assertion
+                  assert: '?'
+                  re: !!perl/hash:RE_method_re
+                    name: before
+                    nobind: 1
+                    re: &30 !!perl/hash:RE_any
+                      altname: termish_0
+                      dba: termish
+                      dic: STD::Regex
+                      zyg:
+                      - !!perl/hash:RE_method
+                        alt: termish_0 0
+                        name: stopper
+                        rest: ''
+                      - !!perl/hash:RE_cclass
+                        alt: termish_0 1
+                        i: 0
+                        text: '[&|~]'
                 - !!perl/hash:RE_method
-                  alt: termish_0 0
-                  name: stopper
-                  rest: ''
-                - !!perl/hash:RE_cclass
-                  alt: termish_0 1
-                  i: 0
-                  text: '[&|~]'
-          - !!perl/hash:RE_method
-            name: panic
-            rest: 1
-        - !!perl/hash:RE_sequence
-          zyg:
-          - !!perl/hash:RE_assertion
-            assert: '?'
-            re: !!perl/hash:RE_method_re
-              name: before
-              nobind: 1
-              re: !!perl/hash:RE_cclass
-                i: 0
-                text: '[ \] \) \> ]'
-          - !!perl/hash:RE_block {}
-        - !!perl/hash:RE_sequence
-          zyg:
-          - !!perl/hash:RE_meta
-            text: $$
-          - !!perl/hash:RE_method
-            name: panic
-            rest: 1
-        - !!perl/hash:RE_sequence
-          zyg:
-          - !!perl/hash:RE_meta
-            min: 1
-            text: \W
-          - !!perl/hash:RE_method
-            name: sorry
-            rest: 1
-        - !!perl/hash:RE_method
-          name: panic
-          rest: 1
+                  name: panic
+                  rest: 1
+              - !!perl/hash:RE_sequence
+                zyg:
+                - !!perl/hash:RE_assertion
+                  assert: '?'
+                  re: !!perl/hash:RE_method_re
+                    name: before
+                    nobind: 1
+                    re: !!perl/hash:RE_cclass
+                      i: 0
+                      text: '[ \] \) \> ]'
+                - !!perl/hash:RE_block {}
+              - !!perl/hash:RE_sequence
+                zyg:
+                - !!perl/hash:RE_meta
+                  text: $$
+                - !!perl/hash:RE_method
+                  name: panic
+                  rest: 1
+              - !!perl/hash:RE_sequence
+                zyg:
+                - !!perl/hash:RE_meta
+                  min: 1
+                  text: \W
+                - !!perl/hash:RE_method
+                  name: sorry
+                  rest: 1
+              - !!perl/hash:RE_method
+                name: panic
+                rest: 1
 termish_0: *30
 unsp: !!perl/hash:RE_ast
   dba: unsp
@@ -56616,12 +56967,36 @@ do {my $C = $C->cursor_xact('ALT ||');
 my $xact = $C->xact;
 my @gather;
 do {
-push @gather, $C->_SUBSUMEr(['term'], sub {
+push @gather, do {
+my $C = $C;
+if (($C) = ($C->_SUBSUMEr(['term'], sub {
 my $C = shift;
 $C->quant_atom_list
-})
+}))
+and ($C) = ($C->before(sub {
+my $C=shift;
+(($C) x !!do {
+my $M = $C;
+$::RX{'s'} or $M->{'term'}->Str =~ /\S/ })
+}))) {
+$C
+} else { () }
+
+}
 }
 or $xact->[-2] or
+do {
+push @gather, do {
+my $C = $C;
+if (($C) = ($C->_SUBSUMEr(['normspace'], sub {
+my $C = shift;
+$C->normspace
+}))
+and ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+do {my $C = $C->cursor_xact('ALT ||');
+my $xact = $C->xact;
+my @gather;
 do {
 push @gather, do {
 my $C = $C;
@@ -56738,6 +57113,14 @@ or $xact->[-2] or
 do {
 push @gather, do {
 if (my ($C) = ($C->panic("Regex not terminated"))) { ($C) } else { () }
+
+}
+};
+@gather;
+}
+}))) {
+$C
+} else { () }
 
 }
 };
@@ -62600,7 +62983,7 @@ return @::LANG{substr($name,2)}}
 when ('?') {
 if ($name =~ /\:\:/) {
 my ($first) = $self->canonicalize_name($name);
-$variable->worry("Unrecognized variable: $name") unless $first =~ /^(CALLER|CONTEXT|OUTER|MY|SETTING|CORE)$/;
+$variable->worry("Unrecognized variable: $name") unless $first =~ /^(CALLER|CONTEXT|OUTER|MY|SETTING|CORE)\:\:$/;
 }
 else {
 my $v = $variable->lookup_compiler_var($name);
