@@ -1,4 +1,4 @@
-package Padre::Plugin::FormBuilder::Dialog;
+package Padre::Plugin::FormBuilder::FBP;
 
 use 5.008;
 use strict;
@@ -59,23 +59,39 @@ sub new {
 		'Preview',
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{preview},
+		sub {
+			shift->preview(@_);
+		},
+	);
+
 	$self->{generate} = Wx::Button->new(
 		$self,
 		-1,
 		'Generate',
 	);
 
-	$self->{close} = Wx::Button->new(
+	Wx::Event::EVT_BUTTON(
 		$self,
-		-1,
-		'Close',
+		$self->{generate},
+		sub {
+			shift->generate(@_);
+		},
+	);
+
+	$self->{cancel} = Wx::Button->new(
+		$self,
+		Wx::wxID_CANCEL,
+		'Cancel',
 	);
 
 	my $buttons = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	$buttons->Add( $self->{preview}, 0, Wx::wxALL, 5 );
 	$buttons->Add( $self->{generate}, 0, Wx::wxBOTTOM | Wx::wxTOP, 5 );
 	$buttons->AddSpacer(50);
-	$buttons->Add( $self->{close}, 0, Wx::wxALL, 5 );
+	$buttons->Add( $self->{cancel}, 0, Wx::wxALL, 5 );
 
 	my $sizer2 = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	$sizer2->Add( $file, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
@@ -92,6 +108,20 @@ sub new {
 	$sizer1->SetSizeHints($self);
 
 	return $self;
+}
+
+sub preview {
+	my $self  = shift;
+	my $event = shift;
+
+	die 'TO BE COMPLETED';
+}
+
+sub generate {
+	my $self  = shift;
+	my $event = shift;
+
+	die 'TO BE COMPLETED';
 }
 
 1;

@@ -37,8 +37,8 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.65,
-	'Padre::Task'   => 0.65,
+	'Padre::Plugin' => 0.66,
+	'Padre::Task'   => 0.66,
 }
 
 sub plugin_name {
@@ -47,16 +47,20 @@ sub plugin_name {
 
 # Clean up our classes
 sub plugin_disable {
-	require Class::Unload;
-	Class::Unload->unload('Padre::Plugin::FormBuilder::Perl');
-	Class::Unload->unload('Padre::Plugin::FormBuilder::Dialog');
+	my $self = shift;
+	$self->unload('Padre::Plugin::FormBuilder::Dialog');
+	$self->unload('Padre::Plugin::FormBuilder::FBP');
+	$self->unload('Padre::Plugin::FormBuilder::Perl');
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'Generate Dialog' => sub {
+		'Generate Dialog (Old)' => sub {
 			$self->menu_new_dialog_perl;
+		},
+		'Generate Dialog (New)' => sub {
+			$self->menu_dialog;
 		},
 	];
 }
@@ -77,7 +81,11 @@ sub menu_new_dialog_perl {
 
 	# Which package do they want?
 	my $list = $self->package_list($fbp);
-	my $name = $self->dialog_function($list) or return;
+	my $name = $main->single_choice(
+		Wx::gettext('Select Dialog Package'),
+		$self->plugin_name,
+		$list,
+	) or return;
 
 	# Convert to the final class
 	my $new = $self->dialog_class(
@@ -90,6 +98,21 @@ sub menu_new_dialog_perl {
 	return;
 }
 
+sub menu_dialog {
+	my $self = shift;
+	my $main = $self->main;
+
+	# Load the wxGlade-generated Perl file
+	my $fbp = $self->dialog_fbp or return;
+
+	# Show the main dialog
+	require Padre::Plugin::FormBuilder::Dialog;
+	Padre::Plugin::FormBuilder::Dialog->new($main)->ShowModal;
+
+	return;
+}
+
+
 
 
 
@@ -98,14 +121,15 @@ sub menu_new_dialog_perl {
 # Dialog Functions
 
 sub dialog_fbp {
-	my $self = shift;
-	my $main = $self->main;
+	my $self    = shift;
+	my $main    = $self->main;
+	my $project = $main->current->project;
 
 	# Where is the wxGlade-generated Perl file
 	my $dialog = Wx::FileDialog->new(
 		$main,
 		Wx::gettext("Select wxFormBuilder File"),
-		$main->cwd,
+		$project ? $project->root : $main->cwd,
 		"",
 		"*.fbp",
 		Wx::wxFD_OPEN | Wx::wxFD_FILE_MUST_EXIST,
@@ -124,32 +148,7 @@ sub dialog_fbp {
 		return $path;
 	}
 
-	return;
-}
-
-sub dialog_function {
-	my $self = shift;
-	my $main = $self->main;
-
-	# Single choice dialog
-	my $dialog = Wx::SingleChoiceDialog->new(
-		$main,
-		Wx::gettext('Select Dialog Package'),
-		$self->plugin_name,
-		$_[0], # Package ARRAY reference
-		undef,
-		Wx::wxDEFAULT_DIALOG_STYLE
-		| Wx::wxOK
-		| Wx::wxCANCEL,
-	);
-	$dialog->CenterOnParent;
-
-	my $rv = $dialog->ShowModal;
-	if ( $rv == Wx::wxID_OK ) {
-		return $dialog->GetStringSelection;
-	}
-
-	return;
+	return undef;
 }
 
 sub dialog_class {
