@@ -22,7 +22,7 @@ sub new {
 		'',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE,
+		Wx::wxDEFAULT_DIALOG_STYLE
 	);
 
 	my $file = Wx::StaticText->new(
@@ -90,14 +90,14 @@ sub new {
 	my $buttons = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
 	$buttons->Add( $self->{preview}, 0, Wx::wxALL, 5 );
 	$buttons->Add( $self->{generate}, 0, Wx::wxBOTTOM | Wx::wxTOP, 5 );
-	$buttons->AddSpacer(50);
+	$buttons->Add( 50, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $self->{cancel}, 0, Wx::wxALL, 5 );
 
 	my $sizer2 = Wx::BoxSizer->new( Wx::wxVERTICAL );
-	$sizer2->Add( $file, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $file, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $line1, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
 	$sizer2->Add( $self->{select}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$sizer2->AddSpacer(50);
+	$sizer2->Add( 0, 50, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $line2, 0, Wx::wxEXPAND, 0 );
 	$sizer2->Add( $buttons, 0, Wx::wxEXPAND, 5 );
 
@@ -105,7 +105,8 @@ sub new {
 	$sizer1->Add( $sizer2, 1, Wx::wxEXPAND, 5 );
 
 	$self->SetSizer($sizer1);
-	$sizer1->SetSizeHints($self);
+	$self->Layout;
+	$sizer1->Fit($self);
 
 	return $self;
 }
