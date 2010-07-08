@@ -23,8 +23,8 @@ use 5.008005;
 use strict;
 use warnings;
 use Params::Util  1.00 ();
-use Padre::Wx          ();
-use Padre::Plugin 0.65 ();
+use Padre::Wx     0.66 ();
+use Padre::Plugin 0.66 ();
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
