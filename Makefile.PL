@@ -8,7 +8,7 @@ license        'perl';
 author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/Kate.pm';
 
-requires       'Padre'                           => '0.41';
+requires       'Padre'                           => '0.65';
 requires       'Syntax::Highlight::Engine::Kate' => '0.05';
 
 test_requires  'Test::More'              => '0.47';
