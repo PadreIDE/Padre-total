@@ -41,9 +41,12 @@ usage('Needs --to')      if not $to;
 usage('Needs --smolder') if not $smolder;
 
 my %MAIL = (
-	adamk   => 'adamk@cpan.org',
-	Sewi    => 's.willing@tsbz.de',
-	waxhead => 'plaven@bigpond.net.au',
+	adamk   => 'adamk@perlide.org',
+	Sewi    => 'sewi@perlide.org',
+	waxhead => 'waxhead@perlide.org',
+#	adamk   => 'adamk@cpan.org',
+#	Sewi    => 's.willing@tsbz.de',
+#	waxhead => 'plaven@bigpond.net.au',
 );
 
 $ENV{AUTOMATED_TESTING} = 1;
@@ -144,12 +147,12 @@ sub send_message {
 	my %message = (
 		From     => "$username <svn\@perlide.org>",
 		To       => $to,
-		Subject  => "Smoke test $status",
+		Subject  => "Padre Smoke test $status",
 		Type     => 'multipart/mixed',
 	);
-	#if ($MAIL{$author}) {
-	#	$message{CC} = $MAIL{$author}
-	#}
+	if ($MAIL{$author}) {
+		$message{CC} = $MAIL{$author}
+	}
 	#print Dumper \%message;
 
 	my $msg = MIME::Lite->new(%message);
