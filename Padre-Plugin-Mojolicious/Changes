@@ -1,17 +1,19 @@
 Revision history for Padre-Plugin-Mojolicious
 
-    removed taint mode for tests, leading to build failure (jquelin)
+0.03
+	- Removed taint mode for tests, leading to build failure (JQUELIN)
+	- General modernisation to allow it to support Padre 0.64 (ADAMK)
 
 0.02    
-	Added translation support (SZABGAB)
-	Added translations:
-        - French (jquelin)
-        - Polish (THEREK)
-		- Chinese (Traditional) translation (BLUET)
-		- Arabic translation (AZAWAWI)
-		- Spanish translation (BRUNOV)
-		- Brazilian Portuguese (GARU)
+	- Added translation support (SZABGAB)
+	- Added translations:
+	- French (jquelin)
+	- Polish (THEREK)
+	- Chinese (Traditional) translation (BLUET)
+	- Arabic translation (AZAWAWI)
+	- Spanish translation (BRUNOV)
+	- Brazilian Portuguese (GARU)
 
 0.01    2009-04-27
-        First version, released on an unsuspecting world.
+	- First version, released on an unsuspecting world.
 

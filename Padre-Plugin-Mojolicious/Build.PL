@@ -8,13 +8,16 @@ my $builder = Module::Build->new(
     dist_author         => 'Breno G. de Oliveira <garu@cpan.org>',
     dist_version_from   => 'lib/Padre/Plugin/Mojolicious.pm',
     dist_abstract       => 'Simple Mojolicious helper interface for Padre',
-    configure_requires  => { 'Padre::PluginBuilder' => 0.12, },
+    configure_requires  => {
+        'Padre::PluginBuilder' => 0.12,
+    },
     build_requires => {
-        'Test::More' => 0,
-        'Module::Build' => 0.30,
-        'File::Basename' => 0,
-        'Padre' => 0.29,
-        'Mojo' => 0.9,
+        'Test::More'                => 0,
+	'Test::NoWarnings'          => 0,
+        'Module::Build'             => 0.30,
+        'File::Basename'            => 0,
+        'Padre'                     => 0.64,
+        'Mojo'                      => 0.9,
         'Module::Pluggable::Object' => 3.9,
     },
     add_to_cleanup      => [ 'Padre-Plugin-Mojolicious-*' ],
@@ -28,4 +31,4 @@ my $builder = Module::Build->new(
 );
 
 $builder->add_build_element('mo');
-$builder->create_build_script();
+$builder->create_build_script;

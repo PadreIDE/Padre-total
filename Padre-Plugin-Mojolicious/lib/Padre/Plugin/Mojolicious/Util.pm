@@ -1,10 +1,15 @@
 package Padre::Plugin::Mojolicious::Util;
-# some code used all around the Plugin
+
+# Some code used all around the Plugin
+
+use 5.008;
+use strict;
+use warnings;
 use Cwd            ();
 use File::Spec     ();
 use File::Basename ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 # get the Mojolicious project name, so we can
 # figure out the development server's name
@@ -13,31 +18,30 @@ sub get_mojolicious_project_name {
 	my $project_dir = shift;
 	return unless $project_dir;
 
-    require File::Spec;
-    my @dirs = File::Spec->splitdir($project_dir);
-    my $project_name = lc($dirs[-1]);
-    $project_name =~ tr{-}{_};
-    
-    return $project_name;
+	require File::Spec;
+	my @dirs = File::Spec->splitdir($project_dir);
+	my $project_name = lc($dirs[-1]);
+	$project_name =~ tr{-}{_};
+
+	return $project_name;
 }
 
 sub find_file_from_output {
-	my $filename = shift;
+	my $filename    = shift;
 	my $output_text = shift;
 	
 	$filename .= '.pm';
 	
 	if ($output_text =~ m{\[write\] (.+$filename)}) {
 		return $1;
-	}
-	else {
+	} else {
 		return; # sorry, not found
 	}
 }
 
 sub get_document_base_dir {	
-	my $main = Padre->ide->wx->main;
-	my $doc = $main->current->document;
+	my $main     = Padre->ide->wx->main;
+	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
 	
 	return unless $filename;
@@ -70,4 +74,4 @@ sub get_document_base_dir {
 	return;
 }
 
-42;
+1;
