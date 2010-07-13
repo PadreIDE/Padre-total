@@ -16,6 +16,7 @@ use TAP::Harness::Archive;
 use WWW::Mechanize;
 
 use Capture::Tiny qw(capture_merged);
+use Data::Dumper qw(Dumper);
 use Getopt::Long  qw(GetOptions);
 use MIME::Lite;
 my $path;
@@ -39,6 +40,12 @@ usage('Needs --path')    if not $path;
 usage('Needs --to')      if not $to;
 usage('Needs --smolder') if not $smolder;
 
+my %MAIL = (
+	adamk   => 'adamk@cpan.org',
+	Sewi    => 's.willing@tsbz.de',
+	waxhead => 'plaven@bigpond.net.au',
+);
+
 $ENV{AUTOMATED_TESTING} = 1;
 $ENV{RELEASE_TESTING}   = 1;
 
@@ -59,7 +66,7 @@ while (1) {
 	print scalar localtime;
 	$output = '';
 
-	my $old_rev = svn_revision();
+	my ($old_rev, $old_author) = svn_revision();
 	my @diff = qx{$SVN diff -rHEAD};
 	my $status = '';
 	
@@ -69,7 +76,8 @@ while (1) {
 
 		system "$MAKE realclean";
 		_system("$SVN up");
-		my $rev = svn_revision();
+
+		my ($rev, $author) = svn_revision();
 		if ($rev == $old_rev and not $force) {
 			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
 			$status = "FAIL - could not update svn";
@@ -91,6 +99,7 @@ while (1) {
 			my $file = 'tap.tar.gz';
 			unlink $file;
 			my $test_out = _system("prove --merge -ba $file t/ xt/");
+			#my $test_out = "FAIL"; 
 			if ($test_out =~ /Result: FAIL|FAILED|Bailout called/) {
 				$status = "FAIL - testing";
 			}
@@ -99,7 +108,7 @@ while (1) {
 		}
 
 		$status ||= "SUCCESS";
-		send_message($rev, "rev $rev - $platform - $status", $output);
+		send_message($rev, $author, "rev $rev - $platform - $status", $output);
 	} else {
 		print " - skipping\n";
 	}
@@ -111,8 +120,10 @@ while (1) {
 
 sub svn_revision { 
 	#my ($rev) = map {/(\d+)/} grep {/^Last Changed Rev:/} qx{$SVN info};
-	my ($rev) = map {/(\d+)/} grep {/^Revision:/} qx{$SVN info};
-	return $rev;
+	my @info = qx{$SVN info};
+	my ($rev) = map {/(\d+)/} grep {/^Revision:/} @info;
+	my ($author) = map {/:\s*(\w+)/} grep {/^Last Changed Author:/} @info;
+	return ($rev, $author);
 };
 sub _system {
 	my $cmd = shift;
@@ -129,13 +140,19 @@ sub _system {
 }
 
 sub send_message {
-	my ($rev, $status, $text) = @_;
-	my $msg = MIME::Lite->new(
+	my ($rev, $author, $status, $text) = @_;
+	my %message = (
 		From     => "$username <svn\@perlide.org>",
 		To       => $to,
 		Subject  => "Smoke test $status",
 		Type     => 'multipart/mixed',
 	);
+	#if ($MAIL{$author}) {
+	#	$message{CC} = $MAIL{$author}
+	#}
+	#print Dumper \%message;
+
+	my $msg = MIME::Lite->new(%message);
 	$msg->attach(
 		Type     => 'TEXT',
 		Data     => $text,
