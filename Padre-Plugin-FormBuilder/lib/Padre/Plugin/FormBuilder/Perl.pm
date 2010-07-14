@@ -48,8 +48,8 @@ sub dialog_isa {
 }
 
 sub use_wx {
-	my $self    = shift;
-	my $dialog  = shift;
+	my $self   = shift;
+	my $dialog = shift;
 	return [
 		"use Padre::Wx             ();",
 		"use Padre::Wx::Role::Main ();",

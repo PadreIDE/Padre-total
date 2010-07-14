@@ -23,8 +23,8 @@ use 5.008005;
 use strict;
 use warnings;
 use Params::Util  1.00 ();
-use Padre::Wx     0.66 ();
 use Padre::Plugin 0.66 ();
+use Padre::Wx     0.66 ();
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
@@ -37,8 +37,9 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.66,
-	'Padre::Task'   => 0.66,
+	'Padre::Plugin'         => 0.66,
+	'Padre::Wx'             => 0.66,
+	'Padre::Wx::Role::Main' => 0.66,
 }
 
 sub plugin_name {
@@ -56,10 +57,7 @@ sub plugin_disable {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'Generate Dialog (Old)' => sub {
-			$self->menu_new_dialog_perl;
-		},
-		'Generate Dialog (New)' => sub {
+		'Generate Padre Dialog' => sub {
 			$self->menu_dialog;
 		},
 	];
@@ -72,46 +70,48 @@ sub menu_plugins_simple {
 ######################################################################
 # Menu Commands
 
-sub menu_new_dialog_perl {
-	my $self = shift;
-	my $main = $self->main;
-
-	# Load the wxGlade-generated Perl file
-	my $fbp = $self->dialog_fbp or return;
-
-	# Which package do they want?
-	my $list = $self->package_list($fbp);
-	my $name = $main->single_choice(
-		Wx::gettext('Select Dialog Package'),
-		$self->plugin_name,
-		$list,
-	) or return;
-
-	# Convert to the final class
-	my $new = $self->dialog_class(
-		Params::Util::_IDENTIFIER($name) ? "Padre::Wx::Dialog::$name" : $name
-	) or return;
-
-	# Create the dialog
-	$self->generate_dialog( $fbp, $name, $new );
-
-	return;
-}
-
 sub menu_dialog {
 	my $self = shift;
 	my $main = $self->main;
 
 	# Load the wxGlade-generated Perl file
-	my $fbp = $self->dialog_fbp or return;
+	my $fbp  = $self->dialog_fbp or return;
+	my $list = $self->package_list($fbp);
 
 	# Show the main dialog
 	require Padre::Plugin::FormBuilder::Dialog;
-	Padre::Plugin::FormBuilder::Dialog->new(
-		$main,
-		$fbp,
-		[ 'One', 'Two', 'Three' ],
-	)->ShowModal;
+	my $dialog = Padre::Plugin::FormBuilder::Dialog->new(
+		$main, $fbp, $list,
+	);
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		$dialog->Destroy;
+		return;
+	}
+
+	# Extract information and clean up dialog
+	my $name    = $dialog->selected;
+	my $command = $dialog->command;
+	$dialog->Destroy;
+	unless ( $name and $command ) {
+		return;
+	}
+
+	# Handle the user instructions
+	if ( $command eq 'generate' ) {
+		# Create the dialog
+		my $code = $self->generate_dialog( $fbp, $name, $name );
+
+		# Open the generated code as a new file
+		$self->main->new_document_from_string(
+			$code,
+			'application/x-perl',
+		);
+	} else {
+		# Preview the dialog
+		my $code = $self->generate_dialog( $fbp, $name, $name );
+
+		die "PREVIEW HAS NOT BEEN IMPLEMENTED";
+	}
 
 	return;
 }
@@ -250,13 +250,7 @@ sub generate_dialog {
 		$perl->dialog_class($dialog)
 	);
 
-	# Open the generated code as a new file
-	$self->main->new_document_from_string(
-		$string,
-		'application/x-perl',
-	);
-
-	return;
+	return $string;
 }
 
 1;

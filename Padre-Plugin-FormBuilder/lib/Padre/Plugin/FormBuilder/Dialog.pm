@@ -23,18 +23,26 @@ sub new {
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
+	$self->SetTitle("FormBuilder - $file");
 	$self->CenterOnParent;
 
 	# Update the form elements
-	$self->{file}->SetLabel(
-		$self->{file}->GetLabel
-		. " $file"
-	);
-	foreach my $dialog ( @$dialogs ) {
-		$self->{select}->Append($dialog);
-	}
+	$self->{file}->SetLabel("Select Dialog:");
+	$self->{select}->Append($dialogs);
+	$self->{select}->SetSelection(0) if @$dialogs;
+
+	# What to do once we close
+	$self->{command} = '';
 
 	return $self;
+}
+
+sub command {
+	$_[0]->{command};
+}
+
+sub selected {
+	$_[0]->{select}->GetStringSelection;
 }
 
 
@@ -44,5 +52,16 @@ sub new {
 ######################################################################
 # Event Handlers
 
+sub generate {
+	my $self = shift;
+	$self->{command} = 'generate';
+	$self->EndModal( Wx::wxID_OK );
+}
+
+sub preview {
+	my $self = shift;
+	$self->{command} = 'generate';
+	$self->EndModal( Wx::wxID_OK );
+}
 
 1;
