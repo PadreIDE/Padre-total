@@ -107,7 +107,11 @@ sub menu_dialog {
 
 	# Show the main dialog
 	require Padre::Plugin::FormBuilder::Dialog;
-	Padre::Plugin::FormBuilder::Dialog->new($main)->ShowModal;
+	Padre::Plugin::FormBuilder::Dialog->new(
+		$main,
+		$fbp,
+		[ 'One', 'Two', 'Three' ],
+	)->ShowModal;
 
 	return;
 }

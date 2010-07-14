@@ -16,9 +16,23 @@ our @ISA     = 'Padre::Plugin::FormBuilder::FBP';
 # Customisation
 
 sub new {
-	my $self = shift->SUPER::new(@_);
+	my $class   = shift;
+	my $main    = shift;
+	my $file    = shift;
+	my $dialogs = shift;
 
+	# Create the dialog
+	my $self = $class->SUPER::new($main);
 	$self->CenterOnParent;
+
+	# Update the form elements
+	$self->{file}->SetLabel(
+		$self->{file}->GetLabel
+		. " $file"
+	);
+	foreach my $dialog ( @$dialogs ) {
+		$self->{select}->Append($dialog);
+	}
 
 	return $self;
 }
@@ -30,10 +44,5 @@ sub new {
 ######################################################################
 # Event Handlers
 
-sub generate {
-	my $self = shift;
-
-	die "CODE INCOMPLETE";
-}
 
 1;
