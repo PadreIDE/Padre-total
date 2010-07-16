@@ -1,0 +1,26 @@
+TÒDO
+ - proper gettext support
+ - auto completion (keywords, commands/symbols, labels, BibTeX entries)
+ - create DVI, PS, PDF
+   - display errors
+   - jump to error location in file
+   - show missing references and syntax errors
+ - spell checking
+ - insertion of special characters (snippets/menu)
+ - insertion of tables, enumerations, etc. via snippets
+ - integration of detexify
+ - icons for the tool bar
+ - document outline
+   - command definitions
+   - include statements
+   - sections/chapter/appendix/abstract
+   - Beamer: frames
+   - tableofcontents, etc.
+ - syntax checking
+ - jump to command definition, bib item, reference label
+ - automatic insertion of '' and ``
+ - pretty printing
+ - Windows support
+ - settings dialog
+ - open corresponding bibtex files
+ - open included/inserted files

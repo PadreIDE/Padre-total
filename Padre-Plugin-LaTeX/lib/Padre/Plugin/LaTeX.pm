@@ -3,7 +3,7 @@ package Padre::Plugin::LaTeX;
 use warnings;
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
@@ -13,8 +13,8 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.60,
-	'Padre::Document' => 0.60,
+	'Padre::Plugin'   => 0.64,
+	'Padre::Document' => 0.64,
 }
 
 sub registered_documents {
@@ -23,13 +23,11 @@ sub registered_documents {
 
 sub menu_plugins_simple {
 	my $self = shift;
-	return ();
-}
-
-sub menu_plugins_simple {
-	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->show_about },
+		Wx::gettext('About')             => sub { $self->show_about },
+		Wx::gettext('Create/Update PDF') => sub { $self->create_pdf },
+		Wx::gettext('View PDF')          => sub { $self->view_pdf   },
+		Wx::gettext('Run BibTeX')        => sub { $self->run_bibtex },
 
 		# 'Another Menu Entry' => sub { $self->about },
 		# 'A Sub-Menu...' => [
@@ -60,6 +58,84 @@ END
 	return;
 }
 
+sub create_pdf {
+	my $self = shift;
+
+	my $pdflatex = 'pdflatex -interaction nonstopmode -file-line-error';
+
+        my $main     = $self->main;        
+        my $doc      = $main->current->document;
+	my $tex_dir  = $doc->dirname;
+	my $tex_file = $doc->get_title;
+
+	if ( !$doc->isa('Padre::Document::LaTeX') ) {
+		$main->message(Wx::gettext('Creating PDF files is only supported for LaTeX documents.'));
+		return;
+	}
+
+	# TODO autosave (or ask)
+	
+	chdir $tex_dir;
+	my $output_text = `$pdflatex $tex_file`;
+	$self->_output($output_text);
+	
+	return;	
+}
+
+sub run_bibtex {
+	my $self = shift;
+
+	my $bibtex = 'bibtex';
+
+        my $main     = $self->main;        
+        my $doc      = $main->current->document;
+        
+        my $tex_dir  = $doc->dirname;
+	my $aux_file = $doc->filename;
+	$aux_file =~ s/\.tex/.aux/;
+
+	if ( !$doc->isa('Padre::Document::LaTeX') ) {
+		$main->message(Wx::gettext('Running BibTeX is only supported for LaTeX documents.'));
+		return;
+	}
+
+	# TODO autosave (or ask)
+	
+	chdir $tex_dir;
+	my $output_text = `$bibtex $aux_file`;
+	$self->_output($output_text);
+	
+	return;	
+}
+
+sub view_pdf {
+	my $self = shift;
+
+        my $main = $self->main;        
+        my $doc  = $main->current->document;
+
+	if ( !$doc->isa('Padre::Document::LaTeX') ) {
+		$main->message(Wx::gettext('Viewing PDF files is only supported for LaTeX documents.'));
+		return;
+	}
+
+	# TODO find PDF viewer from system settings
+	my $pdf_viewer = 'evince';
+	
+	my $pdf_file = $doc->filename;	
+	$pdf_file =~ s/\.tex$/.pdf/;
+	
+	if (! -f $pdf_file) {
+		
+	}
+	
+	system "$pdf_viewer $pdf_file &";
+	# TODO check for errors
+	
+	return;
+}
+
+
 sub editor_enable {
 	my $self     = shift;
 	my $editor   = shift;
@@ -71,6 +147,16 @@ sub editor_enable {
 
 	return 1;
 }
+
+sub _output {
+	my ( $self, $text ) = @_;
+	my $main = $self->main;
+	
+	$main->show_output(1);
+	$main->output->clear;
+	$main->output->AppendText($text);
+}
+
 
 1;
 __END__

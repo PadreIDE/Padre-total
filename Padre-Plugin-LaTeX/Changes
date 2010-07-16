@@ -1,5 +1,10 @@
 Revision history for Padre-Plugin-LaTeX
 
+0.02    2010-07-
+        upgrade to Padre version 0.64
+        added preliminary i18n support
+        new features: create+view PDF, run BibTeX
+
 0.01    2010-05-11
         First version, released on an unsuspecting world.
 	Only feature: toggle comments
