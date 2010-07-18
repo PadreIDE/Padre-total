@@ -5,7 +5,7 @@ WriteMakefile
           'NAME' => 'Padre::Plugin::LaTeX',
           'VERSION_FROM' => 'lib/Padre/Plugin/LaTeX.pm',
           'PREREQ_PM' => {
-                           'Padre' => '0.64',
+                           'Padre' => '0.65',
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],

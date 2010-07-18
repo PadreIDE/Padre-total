@@ -11,7 +11,7 @@ my $builder = Module::Build->new(
         'Test::More'  => 0,
     },
     requires => {
-        'Padre'       => '0.64',
+        'Padre'       => '0.65',
     },
     add_to_cleanup      => [ 'Padre-Plugin-LaTeX-*' ],
     create_makefile_pl  => 'traditional',
