@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Catalyst
 
+0.09	(to be released)
+    compatibility with newer Padre versions (ZENOG)
+
 0.08
     disabling plugin's own panel until it's properly fixed
     fixed Build.PL requirements (ticket 53616 - thanks Jens Rehsack for reporting!)

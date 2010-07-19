@@ -14,7 +14,7 @@ sub plugin_name { 'Catalyst' }
   
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin'         => 0.29,
+    'Padre::Plugin'         => 0.43,
 #    'Padre::Document::Perl' => 0.16,
 #    'Padre::Wx::Main'       => 0.16,
 #    'Padre::DB'             => 0.16,
