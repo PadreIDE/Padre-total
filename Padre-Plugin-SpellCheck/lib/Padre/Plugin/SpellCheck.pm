@@ -46,7 +46,7 @@ sub plugin_icon {
 
 # padre interfaces
 sub padre_interfaces {
-    'Padre::Plugin' => '0.26',
+    'Padre::Plugin' => '0.43',
 }
 
 # plugin menu.

@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
+1.1.3 to be released
+ - compatibility to newer Padre version: declare Padre::Plugin interface
+   version 0.43 (ZENOG)
+
 1.1.2 Sat Jun 20 09:00:34 CEST 2009
  - Add Chinese (Traditional) translation (bluet)
  - spanish translation added (brunov)
