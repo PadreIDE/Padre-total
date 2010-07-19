@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-19 14:47+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/SpellCheck.pm:32 lib/Padre/Plugin/SpellCheck.pm:54
+msgid "Spell check"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:55
+msgid "Check spelling\tF7"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:56
+msgid "Preferences"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:78
+msgid "No document opened."
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck.pm:95 lib/Padre/Plugin/SpellCheck/Dialog.pm:303
+msgid "Spell check finished."
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:47
+#, perl-format
+msgid "Spelling (%s)"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:208
+msgid "Add to dictionary"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:209
+msgid "Replace"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:210
+msgid "Replace all"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:211
+msgid "Ignore"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:212
+msgid "Ignore all"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:213
+msgid "Close"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:243
+msgid "Not in dictionary:"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Dialog.pm:265
+msgid "Suggestions"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:39
+msgid "Spelling preferences"
+msgstr ""
+
+#: lib/Padre/Plugin/SpellCheck/Preferences.pm:139
+msgid "Dictionary:"
+msgstr ""
