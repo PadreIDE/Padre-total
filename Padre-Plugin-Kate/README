@@ -1,5 +1,6 @@
 Padre-Plugin-Kate
 
+Use a Perl port of the syntax highlight engine of the Kate editor in Padre.
 
 INSTALLATION
 

@@ -58,7 +58,7 @@ modify it under the same terms as Perl 5 itself.
 
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.41;
+	return 'Padre::Plugin' => 0.43;
 }
 
 sub plugin_name {
