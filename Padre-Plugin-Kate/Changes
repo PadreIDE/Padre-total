@@ -1,6 +1,7 @@
 v0.04 to be released
     make compatible to newer Padre versions (ZENOG)
     more informative README (ZENOG)
+    added support for BibTeX and Java (ZENOG)
 
 v0.03 2010.07.12
     Use mimetype instead of get_mimetype (Alexandr Ciornii)
