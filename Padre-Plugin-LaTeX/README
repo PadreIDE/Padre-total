@@ -1,7 +1,12 @@
 Padre-Plugin-LaTeX
 
 LaTeX support for Padre, the Perl Application Development and Refactoring
-Environment
+Environment.
+
+Syntax highlighting for LaTeX is supported by Padre out of the box.
+This plug-in adds some more features to deal with LaTeX files.
+If you also want syntax highlighting for BibTeX files, try the Kate
+plugin.
 
 INSTALLATION
 

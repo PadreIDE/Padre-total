@@ -1,5 +1,7 @@
 TÒDO
  - proper gettext support
+ - add icon for the plugin manager
+ - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
  - auto completion (keywords, commands/symbols, labels, BibTeX entries)
  - create DVI, PS, PDF
    - display errors
@@ -22,6 +24,8 @@ TÒDO
  - pretty printing
  - Windows support
  - settings dialog
- - open corresponding bibtex files
+ - open corresponding BibTeX files
  - open included/inserted files
  - context-sensitive help
+ - check out LaTeX editors/frontends like LyX, vim, emacs for interesting
+   features
