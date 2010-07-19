@@ -209,7 +209,7 @@ L<$PARROT_DIR/docs/intro.pod>
 POD
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.41;
+	return 'Padre::Plugin' => 0.43;
 }
 
 sub plugin_name {
@@ -231,7 +231,8 @@ sub menu_plugins_simple {
 }
 
 sub registered_documents {
-	'application/x-pasm' => 'Padre::Document::PASM', 'application/x-pir' => 'Padre::Document::PIR',;
+	'application/x-pasm' => 'Padre::Document::PASM',
+	'application/x-pir' => 'Padre::Document::PIR',;
 }
 
 # TODO, Planning the syntax highlighting feature:

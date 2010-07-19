@@ -1,5 +1,7 @@
 Padre-Plugin-Parrot
 
+Padre plugin for Parrot, provides syntax highlighting for PASM and PIR files,
+and lets users run Parrot code inside Padre.
 
 INSTALLATION
 
