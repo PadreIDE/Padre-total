@@ -2,7 +2,10 @@ Revision history for Padre-Plugin-XML
 
 0.07	to be released
 	fix ticket #943: crash on serialization of Task::SyntaxChecker::XML
-        (Zeno Gantner)
+        (ZGANTNER)
+        compatibility with newer versions of Padre (ZGANTNER)
+        improved README file (ZGANTNER)
+        gettext-ified some strings (ZGANTNER)
 
 0.06    2009.05.31
         removed taint mode for tests, leading to build failures (jquelin)

@@ -1,4 +1,3 @@
-
 package Padre::Task::SyntaxChecker::XML;
 use strict;
 use warnings;

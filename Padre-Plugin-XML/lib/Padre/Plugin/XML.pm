@@ -9,8 +9,8 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.26,
-	'Padre::Document' => 0.21,
+	'Padre::Plugin'   => 0.43,
+	'Padre::Document' => 0.43,
 }
 
 sub registered_documents {
@@ -20,7 +20,7 @@ sub registered_documents {
 sub menu_plugins_simple {
 	my $self = shift;
 	return ('XML' => [
-		'Tidy XML', sub { $self->tidy_xml },
+		Wx::gettext('Tidy XML'), sub { $self->tidy_xml },
 	]);
 }
 
