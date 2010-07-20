@@ -24,7 +24,7 @@ use Padre::Current ();
 use Padre::Wx      ();
 use Padre::Plugin  ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing
