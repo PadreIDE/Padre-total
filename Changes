@@ -1,5 +1,9 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.11  TO BE RELEASED
+    - Added translations:
+      - Turkish (BURAK)
+
 0.10  Thu Jan 21 2010
     - A variety of cleanups to use Padre::Current more efficiently (ADAMK)
     - Added menu separator (ADAMK)
