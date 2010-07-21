@@ -19,6 +19,7 @@ Padre-Plugin-PerlCritic/share/locale/*.mo
 Padre-Plugin-PerlTidy/share/locale/*.mo
 Padre-Plugin-REPL/share/locale/*.mo
 Padre-Plugin-SpellCheck/lib/Padre/Plugin/SpellCheck/share/locale/*.mo
+Padre-Plugin-SpellCheck/share/locale/*.mo
 Padre-Plugin-Vi/share/locale/*.mo
 
 Padre/.padre/
@@ -88,3 +89,6 @@ Perl-Staff/pm_to_blib
 
 template.padre.perlide.org/Build
 template.padre.perlide.org/_build
+
+Padre-Plugin-LaTeX/share/locale/*.mo
+
