@@ -124,7 +124,9 @@ sub finish {
 		$doc->check_syntax_in_background( force => 1 );
 		$doc->get_outline( force => 1 );
 	};
-	if ($@) { print "$doc\n"; }
+	if ($@) {
+		#print "$doc\n";
+	}
 
 	# finished here
 	$thread_running = 0;
