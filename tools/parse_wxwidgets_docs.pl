@@ -4,6 +4,38 @@ use 5.006;
 use strict;
 use warnings;
 
+use File::Spec ();
+use LWP::UserAgent ();
+use HTTP::Request ();
+
+# Fetch the wxWidgets HTML documentation zip file if it is not found
+my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
+unless(-e $WX_WIGDETS_HTML_ZIP) {
+	# Download wxwidgets HTML documentation zip file
+	my $url = 'http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/wxWidgets-2.8.10-HTML.zip';
+	print "Downloading $url. Please wait...\n";
+	my $ua = LWP::UserAgent->new;
+	my $req = HTTP::Request->new(GET => $url);
+	my $res = $ua->request($req);
+	if(not $res->is_success) {
+		warn $res->status_line, "\n";
+	}
+
+	# Write download file to disk
+	print "Writing $WX_WIGDETS_HTML_ZIP...\n";
+	if(open FILE, '>:raw', $WX_WIGDETS_HTML_ZIP) {
+		print FILE $res->content;
+		close FILE;
+	} else {
+		warn "Could not open $WX_WIGDETS_HTML_ZIP for writing\n";
+	}
+}
+
+exit;
+
+
+#TODO unzip the file
+
 #Define some constants
 my $WX_CLASSREF = "c:/tools/temp/wx_classref.html";
 
