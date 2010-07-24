@@ -170,7 +170,7 @@ sub run {
 	my $cmd =
 		  Padre::Perl->perl . " "
 		. Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'p6tokens.p5' ) )
-		. " \"$tmp_in\" \"$tmp_out\" \"$tmp_err\" \"$tmp_dir\"";
+		. qq( "$tmp_in" "$tmp_out" "$tmp_err" "$tmp_dir");
 
 	# all this is needed to prevent win32 platforms from:
 	# 1. popping out a command line on each run...
@@ -201,15 +201,15 @@ sub run {
 		local $/ = undef; #enable localized slurp mode
 
 		# slurp the process output...
-		open CHLD_OUT, $tmp_out or warn "Could not open $tmp_out";
-		binmode CHLD_OUT;
-		$out = <CHLD_OUT>;
-		close CHLD_OUT or warn "Could not close $tmp_out\n";
+		open my $CHLD_OUT, '<', $tmp_out or warn "Could not open $tmp_out";
+		binmode $CHLD_OUT;
+		$out = <$CHLD_OUT>;
+		close $CHLD_OUT or warn "Could not close $tmp_out\n";
 
-		open CHLD_ERR, $tmp_err or warn "Cannot open $tmp_err\n";
-		binmode CHLD_ERR, ':utf8';
-		$err = <CHLD_ERR>;
-		close CHLD_ERR or warn "Could not close $tmp_err\n";
+		open my $CHLD_ERR, '<', $tmp_err or warn "Cannot open $tmp_err\n";
+		binmode $CHLD_ERR, ':utf8';
+		$err = <$CHLD_ERR>;
+		close $CHLD_ERR or warn "Could not close $tmp_err\n";
 	}
 
 	if ($err) {
@@ -288,7 +288,7 @@ Gabor Szabo L<http://szabgab.com/>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2008-2009 Padre Developers as in Perl6.pm
+Copyright 2008-2010 Padre Developers as in Perl6.pm
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
