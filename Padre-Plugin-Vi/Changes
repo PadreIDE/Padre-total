@@ -1,9 +1,9 @@
 Revision history for Padre-Plugin-Vi
 
-0.23 unreleased
+0.23	2010.07.24
 	actually install the translations (RSN)
-	compatibility to newer Padre versions
-     
+	compatibility to newer Padre versions (ZENOG)
+	added MANIFEST.SKIP     
 
 0.22    2009.06.22
 

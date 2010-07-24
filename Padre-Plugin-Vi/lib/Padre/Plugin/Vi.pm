@@ -9,7 +9,7 @@ use Scalar::Util qw(refaddr);
 use Padre::Util ('_T');
 use Padre::Constant ();
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 NAME
 
@@ -351,7 +351,7 @@ sub evt_char {
 
 1;
 
-# Copyright 2008 Gabor Szabo.
+# Copyright 2008-2010 Gabor Szabo.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.

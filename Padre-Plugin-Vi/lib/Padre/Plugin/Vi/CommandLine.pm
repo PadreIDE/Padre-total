@@ -17,7 +17,7 @@ Padre::Plugin::Vi::CommandLine - part of the vi plugin in Padre
 
 =cut
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 SYNOPSIS
 
@@ -194,11 +194,10 @@ L<http://padre.perlide.org/>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Gabor Szabo, all rights reserved.
+Copyright 2008-2010 Gabor Szabo, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
-
 
 =cut
 
