@@ -7,7 +7,8 @@ topics:
   background-attachment: Values: scroll | fixed | inherit
   background-color: <color> | transparent | inherit
   background-image: <uri> | none | inherit
-  background-position: [[ <pectentage> | <length> ... ]] | inherit
+  background-position: [[ <percentage> | <length> ... ]] | inherit
+  font-family: <family-name> | <generic-family>  | inherit
 replace:
   four: 4 values corresponding to: top right bottom left
   content_model: (see also content -> padding -> border -> margin)
