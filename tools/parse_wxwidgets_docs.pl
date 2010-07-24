@@ -13,21 +13,29 @@ use Archive::Extract ();
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
 
 # Step 1: Fetch the wxWidgets HTML documentation zip file if it is not found
-unless(download_wxwidgets_html_zip()) {
-	die "wxWidget HTML zip file is not found!\n";
-}
+die "wxWidget HTML zip file is not found!\n" unless download_wxwidgets_html_zip();
 
 # Step 2: unzip the html zip file
 my $dir = File::Temp->newdir;
 unzip_file($dir);
 
 # Step 3: Read WX Classes list index file
-my @wxclasses = read_wx_classes_list($dir);
+my $wx_dir = File::Spec->join($dir, 'docs', 'mshtml', 'wx');
+my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
-# foreach my $wxclass (@wxclasses) {
-	# print $wxclass->{class} . "\n";
-# }
+# Step 4: Process all Wx classes gathering information
+foreach my $wxclass (@wxclasses) {
+	my $file = File::Spec->join($wx_dir, $wxclass->{file});
+	my $class = $wxclass->{class};
+	print "Processing $class...\n";
+	
+	if(open my $fh, '<', $file) {
+		while(my $line = <$fh>) {
+			print $line;
+		}
+	}
+}
  
 exit;
 
@@ -78,7 +86,7 @@ exit;
 sub read_wx_classes_list {
 	my $dir = shift;
 	
-	my $wx_classref = File::Spec->join($dir, 'docs', 'mshtml', 'wx', 'wx_classref.html');
+	my $wx_classref = File::Spec->join($dir, 'wx_classref.html');
 
 	# Stores a list of WX classes filenames
 	my @wxclasses = ();
@@ -91,9 +99,9 @@ sub read_wx_classes_list {
 			if($line =~ /<H2>Alphabetical class reference<\/H2>/) {
 				$begin = 1;
 			} elsif($begin && $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/) {
-				my $wxperl_class = $2;
-				$wxperl_class =~ s/wx(.+?)/Wx::$1/;
-				push @wxclasses, { "file" => $1, "class" => $wxperl_class };
+				my ($file, $class) = ($1, $2);
+				$class =~ s/wx(.+?)/Wx::$1/;
+				push @wxclasses, { "file" => $file, "class" => $class };
 			}
 		}
 	} else {
