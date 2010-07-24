@@ -6,7 +6,7 @@ name           'Padre-Plugin-Vi';
 license        'perl';
 author         'Gabor Szabo <szabgab@gmail.com>';
 all_from       'lib/Padre/Plugin/Vi.pm';
-requires       'Padre'                   => '0.25';
+requires       'Padre'                   => '0.37'; #Padre::Constant
 requires       'Wx::Perl::Dialog'        => '0.04';
 test_requires  'Test::More'              => '0.47';
 no_index       'directory'               => qw{ t xt eg share inc};
