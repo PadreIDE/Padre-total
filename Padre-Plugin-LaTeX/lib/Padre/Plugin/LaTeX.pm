@@ -165,6 +165,16 @@ __END__
 
 Padre::Plugin::LaTeX - L<Padre> and LaTeX
 
+=head1 DESCRIPTION
+
+LaTeX support for Padre, the Perl Application Development and Refactoring
+Environment.
+
+Syntax highlighting for LaTeX is supported by Padre out of the box.
+This plug-in adds some more features to deal with LaTeX files.
+If you also want syntax highlighting for BibTeX files, try the Kate
+plugin.
+
 =head1 AUTHOR
 
 Zeno Gantner, C<< <ZENOG at cpan.org> >>
