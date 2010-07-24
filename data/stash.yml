@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 July 24
+        url: http://ahmadzawawi.blogspot.com/2010/07/padres-second-birthday-party-and.html
+        title: Padre's Second Birthday Party and Hackathon starts today
+        comment: by Ahmad M. Zawawi
       - date: 2010 June 12
         url: http://perlwannabe.vox.com/library/post/padre-064-has-been-released.html
         title: Padre 0.64 has been released
