@@ -25,7 +25,7 @@ The 3 basic modes of vi are in development:
 When you turn on vi-mode, or load Padre with vi-mode already enabled
 you reach the normal navigation mode of vi.
 
-We don't plan to impelement many of the configuration options of vi. 
+We don't plan to implement many of the configuration options of vi. 
 Even parts that are going to be implemented will not use the same method
 of configuration.
 
@@ -137,7 +137,7 @@ Nyw - yank N words
 
 =item *
 
-u - undu last editing
+u - undo last editing
 
 =item *
 
@@ -155,7 +155,7 @@ G - jump to last line
 
 =item *
 
-w, Nw - next word, forwad N words
+w, Nw - next word, forward N words
 
 =item *
 
@@ -221,7 +221,7 @@ separate mapping of numbers to buffers and files.
 
 =head1 TODO
 
-Better indication that Padre is  in vi-mode.
+Better indication that Padre is in vi-mode.
 
 Change the cursor for navigation mode and back to insert mode.
 (fix i)

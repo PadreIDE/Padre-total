@@ -41,7 +41,7 @@ Currently available commands are based on the vi command mode.
 
 =item e path/to/file
 
-open a file for editing supports TAB completion
+open a file for editing, supports TAB completion
 
 =item w
 
