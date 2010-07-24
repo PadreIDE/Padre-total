@@ -1,7 +1,7 @@
 use 5.006;
 use strict;
 use warnings;
-use Module::Build;
+use Module::Build 0.36;
 
 my $builder = Module::Build->new(
     module_name         => 'Padre::Plugin::CSS',
@@ -18,13 +18,14 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-CSS-*' ],
-    create_makefile_pl => 'traditional',
+    #create_makefile_pl => 'traditional',
     meta_merge     => {
         resources => {
             homepage   => 'http://padre.perlide.org/',
             repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-CSS/',
         }
     },
+    share_dir => 'share',
 );
 
 $builder->create_build_script();
