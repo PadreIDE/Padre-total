@@ -25,18 +25,47 @@ my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
 # Step 4: Process all Wx classes gathering information
+my $func = {};
 foreach my $wxclass (@wxclasses) {
 	my $file = File::Spec->join($wx_dir, $wxclass->{file});
 	my $class = $wxclass->{class};
 	print "Processing $class...\n";
 	
 	if(open my $fh, '<', $file) {
+		my $begin_block = 0;
+		my $buffer = '';
+		my $name;
 		while(my $line = <$fh>) {
-			print $line;
+			if($line =~ /<HR>/) {
+				$begin_block = 1;
+				$buffer = '';
+			} elsif($begin_block && $line =~ /<H3>(.+?)<\/H3>/) {
+				$name = $1;
+				$name =~ s/wx(.+?)/Wx::$1/;
+			} elsif($line =~ /^\s*$/) {
+				$begin_block = 0;
+				if($name) {
+					$func->{$name} = $buffer;
+				}
+				$name = undef;
+			} else {
+				$buffer .= $line;
+			}
 		}
 	}
 }
- 
+
+# Step 5: Write the final POD
+my $pod_file = 'wxwidgets.pod';
+print "Writing $pod_file\n";
+if(open(my $fh, '>', 'wxwidgets.pod')) {
+	foreach my $name (keys %$func) {
+		my $desc = $func->{$name};
+		print $fh "=head1 $name\n$desc\n\n";
+	}
+} else {
+	die "Couldnt write $pod_file\n";
+}
 exit;
 
 #
