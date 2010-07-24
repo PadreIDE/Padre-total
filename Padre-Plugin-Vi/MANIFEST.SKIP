@@ -43,5 +43,10 @@
 \B\.DS_Store
 #   Mac OSX SMB mount metadata files
 \B\._
+
 # Avoid archives of this distribution
 \bPadre-Plugin-Vi-[\d\.\_]+
+
+# Avoid directory research/
+/research/
+^research/
