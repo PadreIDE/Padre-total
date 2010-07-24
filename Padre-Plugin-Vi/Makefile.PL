@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use inc::Module::Install;
+use inc::Module::Install 0.92;
 
 name           'Padre-Plugin-Vi';
 license        'perl';
