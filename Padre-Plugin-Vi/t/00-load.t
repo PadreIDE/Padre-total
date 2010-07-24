@@ -10,7 +10,7 @@ use Padre::Plugin::Vi;
 use Padre::Plugin::Vi::Editor;
 
 my $editor = Padre::Plugin::Vi::Editor->new();
-isa_ok($editor, 'Padre::Plugin::Vi::Editor');
+isa_ok( $editor, 'Padre::Plugin::Vi::Editor' );
 BEGIN { $tests += 1; }
 
 # TODO: what should happen when ESC pressed with Ctrl or other modifier?

@@ -248,7 +248,7 @@ r for replacing current character
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.18;
+	'Padre::Plugin' => 0.43;
 }
 
 sub plugin_enable {

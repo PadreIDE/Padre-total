@@ -18,17 +18,17 @@ set_original_cwd($FindBin::Bin);
 {
 	my $value = handle_tab();
 	is $value, 'e';
-	
+
 	$value = handle_tab();
 	is $value, 'w';
 
 	$value = handle_tab();
 	is $value, 'e';
 
-	$value = handle_tab('', 0);
+	$value = handle_tab( '', 0 );
 	is $value, 'w';
 
-	$value = handle_tab('', 1);
+	$value = handle_tab( '', 1 );
 	is $value, 'e';
 
 	BEGIN { $tests += 5; }

@@ -29,13 +29,13 @@ sub editor { return $_[0]->{editor} }
 $subs{CHAR} = {
 
 	# movements
-	l => \&move_right,
-	h => \&move_left,
-	k => \&line_up,
-	j => \&line_down,
-	w => \&word_right,
-	b => \&word_left,
-	e => \&word_right_end,
+	l   => \&move_right,
+	h   => \&move_left,
+	k   => \&line_up,
+	j   => \&line_down,
+	w   => \&word_right,
+	b   => \&word_left,
+	e   => \&word_right_end,
 	' ' => \&move_right,
 
 	G => \&goto_line,
@@ -71,12 +71,12 @@ $subs{CHAR} = {
 	cw   => \&change_words,
 
 	ZZ  => \&save_and_quit,
-	'$' => \&goto_end_of_line,          # Shift-4 is $   End
+	'$' => \&goto_end_of_line,      # Shift-4 is $   End
 	'^' => \&goto_first_non_blank,
 	'0' => \&goto_beginning_of_line,
 
-    '{' => \&paragraph_up,
-    '}' => \&paragraph_down,
+	'{' => \&paragraph_up,
+	'}' => \&paragraph_down,
 };
 
 $subs{PLAIN} = {
@@ -88,7 +88,7 @@ $subs{PLAIN} = {
 	Wx::WXK_DOWN  => $subs{CHAR}{j},
 
 	Wx::WXK_PAGEUP => sub {
-		my ( $self, $count ) = @_;      # TODO use $count ??
+		my ( $self, $count ) = @_; # TODO use $count ??
 		if ( $self->{visual_mode} ) {
 			$self->{editor}->PageUpExtend;
 		} else {
@@ -96,7 +96,7 @@ $subs{PLAIN} = {
 		}
 	},
 	Wx::WXK_PAGEDOWN => sub {
-		my ( $self, $count ) = @_;      # TODO use $count ??
+		my ( $self, $count ) = @_; # TODO use $count ??
 		if ( $self->{visual_mode} ) {
 			$self->{editor}->PageDownExtend;
 		} else {
@@ -111,7 +111,7 @@ $subs{VISUAL} = {
 	d => \&delete_selection,
 	x => \&delete_selection,
 	y => \&yank_selection,
-	v => sub { },              # just end visual mode
+	v => sub { },           # just end visual mode
 };
 
 $subs{SHIFT} = {};
@@ -119,7 +119,7 @@ $subs{SHIFT} = {};
 # the following does not yet work as we need to neuralize the Ctrl-N of Padre
 # before we can see this command
 $subs{COMMAND} = {
-	ord('N') => sub {          # autocompletion
+	ord('N') => sub {       # autocompletion
 		print "Ctrl-N $_[0]\n";
 		my $main = Padre->ide->wx->main;
 		$main->on_autocompletition;
@@ -218,7 +218,7 @@ sub get_char {
 		return 0;
 	}
 	if (   $self->{buffer} =~ /^()(0)$/
-	    or $self->{buffer} =~ /^(\d*)([wbelhjkvaAiIoxupOJPG\$^{}CD ])$/
+		or $self->{buffer} =~ /^(\d*)([wbelhjkvaAiIoxupOJPG\$^{}CD ])$/
 		or $self->{buffer} =~ /^(\d*)(ZZ|d[dw\$]|y[yw\$]|c[w\$])$/ )
 	{
 		my $count   = $1;
@@ -309,23 +309,24 @@ sub goto_beginning_of_line {
 }
 
 sub goto_first_non_blank {
+
 	# goto first non-blank char
 
 	# FIXME: may be the function name is too long :(
 
 	my ($self) = @_;
-	my $line = $self->{editor}->GetCurrentLine;
-	my $text = $self->{editor}->_get_line_by_number($line);
+	my $line   = $self->{editor}->GetCurrentLine;
+	my $text   = $self->{editor}->_get_line_by_number($line);
 
 	$text =~ /^(\s*)/;
-	my $offset = length($1) + 1;  # + 1 for normal mode !
-	my $start = $self->{editor}->PositionFromLine($line);
+	my $offset = length($1) + 1;                          # + 1 for normal mode !
+	my $start  = $self->{editor}->PositionFromLine($line);
 
 	if ( $self->{visual_mode} ) {
 		$self->{editor}->HomeExtend;
 		$self->{editor}->CharRightExtend() for 1 .. $offset;
 	} else {
-		$self->{editor}->GotoPos($start + $offset);
+		$self->{editor}->GotoPos( $start + $offset );
 	}
 }
 
@@ -375,21 +376,21 @@ sub visual_mode {
 }
 
 # switch to insert mode
-sub append_mode {    # append
-	my ( $self, $count ) = @_;    # TODO use $count ??
+sub append_mode { # append
+	my ( $self, $count ) = @_; # TODO use $count ??
 	$self->{insert_mode} = 1;
 
 	# change cursor
 }
 
-sub append_line_end {  # combination with $ and a
-	my ($self) = @_;    # do NOT use $count
+sub append_line_end {          # combination with $ and a
+	my ($self) = @_;           # do NOT use $count
 	$self->goto_end_of_line;
 	$self->{insert_mode} = 1;
 }
 
-sub insert_mode {                 # insert
-	my ( $self, $count ) = @_;    # use $count ?
+sub insert_mode {              # insert
+	my ( $self, $count ) = @_; # use $count ?
 	$self->{insert_mode} = 1;
 	my $pos = $self->{editor}->GetCurrentPos;
 	$self->{editor}->GotoPos( $pos - 1 );
@@ -405,7 +406,7 @@ sub insert_at_first_non_blank {
 }
 
 sub open_below {
-	my ( $self, $count ) = @_;    # TODO use $count ??
+	my ( $self, $count ) = @_; # TODO use $count ??
 	$self->{insert_mode} = 1;
 	my $line = $self->{editor}->GetCurrentLine;
 	my $end  = $self->{editor}->GetLineEndPosition($line);
@@ -477,7 +478,7 @@ sub join_lines {
 }
 
 sub goto_line {
-	my ( $self, $count ) = @_;    # TODO: special case for count !!
+	my ( $self, $count ) = @_; # TODO: special case for count !!
 	$self->{editor}->GotoLine( $count - 1 );
 	$self->{buffer} = '';
 }
@@ -578,50 +579,50 @@ sub word_right_end {
 }
 
 sub paragraph_up {
-    my ($self,$count) = @_;
+	my ( $self, $count ) = @_;
 
-	my $pos       = $self->{editor}->GetCurrentPos;
-	my $line_no   = $self->{editor}->LineFromPosition($pos);
+	my $pos     = $self->{editor}->GetCurrentPos;
+	my $line_no = $self->{editor}->LineFromPosition($pos);
 
-    while ($line_no-- > 0 && $count) {
-        my $line = $self->{editor}->GetLine($line_no);
-        if ($line =~ /^\s*$/) {
-            $count--;
-            last if $count < 1;
-        }
-    }
-	$self->{editor}->GotoLine( $line_no );
+	while ( $line_no-- > 0 && $count ) {
+		my $line = $self->{editor}->GetLine($line_no);
+		if ( $line =~ /^\s*$/ ) {
+			$count--;
+			last if $count < 1;
+		}
+	}
+	$self->{editor}->GotoLine($line_no);
 }
 
 sub paragraph_down {
-    my ($self,$count) = @_;
+	my ( $self, $count ) = @_;
 
 	my $pos       = $self->{editor}->GetCurrentPos;
 	my $line_no   = $self->{editor}->LineFromPosition($pos);
-    my $num_lines = $self->{editor}->GetLineCount;
+	my $num_lines = $self->{editor}->GetLineCount;
 
-    while ($line_no++ < $num_lines && $count) {
-        my $line = $self->{editor}->GetLine($line_no);
-        if ($line =~ /^\s*$/) {
-            $count--;
-            last if $count < 1;
-        }
-    }
-	$self->{editor}->GotoLine( $line_no );
+	while ( $line_no++ < $num_lines && $count ) {
+		my $line = $self->{editor}->GetLine($line_no);
+		if ( $line =~ /^\s*$/ ) {
+			$count--;
+			last if $count < 1;
+		}
+	}
+	$self->{editor}->GotoLine($line_no);
 }
 
-sub change_words  {
+sub change_words {
 	my ( $self, $count ) = @_;
 
-    $self->delete_words($count);
-    $self->{insert_mode} = 1;
+	$self->delete_words($count);
+	$self->{insert_mode} = 1;
 }
 
-sub change_till_end_of_line  {
+sub change_till_end_of_line {
 	my ( $self, $count ) = @_;
 
-    $self->delete_till_end_of_line($count);
-    $self->{insert_mode} = 1;
+	$self->delete_till_end_of_line($count);
+	$self->{insert_mode} = 1;
 }
 
 

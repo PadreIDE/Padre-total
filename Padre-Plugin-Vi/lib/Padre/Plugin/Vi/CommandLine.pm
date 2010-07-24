@@ -111,7 +111,7 @@ sub show_prompt {
 		$main->on_save;
 	} elsif ( $cmd eq 'q' ) {
 		$main->Close;
-	} elsif ( $cmd eq 'wq' ) {    #TODO shall this be save_all ?
+	} elsif ( $cmd eq 'wq' ) { #TODO shall this be save_all ?
 		$main->on_save;
 		$main->Close;
 	} elsif ( $cmd =~ /^\d+$/ ) {

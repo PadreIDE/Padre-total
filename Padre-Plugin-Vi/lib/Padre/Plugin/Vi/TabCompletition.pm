@@ -65,7 +65,7 @@ sub handle_tab {
 					# what shall we do here?
 					return;
 				}
-			} else {    # partial file or directory name
+			} else { # partial file or directory name
 				$dir    = File::Basename::dirname($path);
 				$prefix = File::Basename::basename($path);
 			}
@@ -81,7 +81,7 @@ sub handle_tab {
 		}
 	}
 
-	return if not @current_options;    # somehow alert the user?
+	return if not @current_options; # somehow alert the user?
 
 	my $option;
 	if ($shift) {
