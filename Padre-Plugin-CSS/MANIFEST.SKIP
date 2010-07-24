@@ -45,3 +45,4 @@
 \B\._
 # Avoid archives of this distribution
 \bPadre-Plugin-CSS-[\d\.\_]+
+^MYMETA.yml$
