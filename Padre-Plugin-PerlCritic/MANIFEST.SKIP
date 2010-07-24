@@ -44,4 +44,5 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 # Avoid archives of this distribution
-\bPadre-Plugin-CSS-[\d\.\_]+
+\bPadre-Plugin-PerlCritic-[\d\.\_]+
+MYMETA.yml
