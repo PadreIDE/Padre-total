@@ -126,9 +126,13 @@ sub write_pod {
 						$name = $1;
 						$name =~ s/wx(.+?)/Wx::$1/;
 						if($name =~ /^Wx::(.+?)::(.+?)$/) {
-							if($2 eq "wx$1") {
+							my $method = $2;
+							if($method eq "wx$1") {
 								# C++ constructor... convert to Perl ::new
-								$name = "$class\:\:new"
+								$name = $class . '::new';
+							} elsif ($method =~ /operator.+/) {
+								# Ignore operators
+								$name = undef;
 							}
 						}
 						$desc = '';
@@ -141,7 +145,7 @@ sub write_pod {
 							}
 
 							# print out method description
-$desc = HTML::FormatText->new->format(parse_html($desc));
+							$desc = HTML::FormatText->new->format(parse_html($desc));
 							print $pod "=head2 $name\n$desc\n";
 
 							$name = undef;
