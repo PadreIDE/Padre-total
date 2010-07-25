@@ -128,9 +128,12 @@ sub write_pod {
 						if($name =~ /^Wx::(.+?)::(.+?)$/) {
 							my $method = $2;
 							if($method eq "wx$1") {
-								# C++ constructor... convert to Perl ::new
+								# Convert C++ constructor to ::new
 								$name = $class . '::new';
-							} elsif ($method =~ /operator.+/) {
+							} elsif($method =~ /^~.+/) {
+								# Convert C++ destructor to ::DESTROY
+								$name = $class . '::DESTROY';
+							} elsif ($method =~ /^operator.+/) {
 								# Ignore operators
 								$name = undef;
 							}
