@@ -9,7 +9,7 @@ use File::Spec       ();
 use LWP::UserAgent   ();
 use HTTP::Request    ();
 use Archive::Extract ();
-use HTML::Parse      qw(parse_html);
+use HTML::Parse qw(parse_html);
 use HTML::FormatText ();
 
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
@@ -22,12 +22,12 @@ my $dir = File::Temp->newdir;
 unzip_file($dir);
 
 # Step 3: Read WX Classes list index file
-my $wx_dir = File::Spec->join($dir, 'docs', 'mshtml', 'wx');
+my $wx_dir = File::Spec->join( $dir, 'docs', 'mshtml', 'wx' );
 my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
 # Step 4: Write the final POD while processing all html files
-write_pod($wx_dir, @wxclasses);
+write_pod( $wx_dir, @wxclasses );
 
 # and we're done
 exit;
@@ -36,19 +36,19 @@ exit;
 # Download wxwidgets HTML documentation zip file
 #
 sub download_wxwidgets_html_zip {
-	unless(-e $WX_WIGDETS_HTML_ZIP) {
+	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
 		my $url = 'http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP';
 		print "Downloading $url. Please wait...\n";
-		my $ua = LWP::UserAgent->new;
-		my $req = HTTP::Request->new(GET => $url);
+		my $ua  = LWP::UserAgent->new;
+		my $req = HTTP::Request->new( GET => $url );
 		my $res = $ua->request($req);
-		if(not $res->is_success) {
+		if ( not $res->is_success ) {
 			die $res->status_line, "\n";
 		}
 
 		# Write download file to disk
 		print "Writing $WX_WIGDETS_HTML_ZIP...\n";
-		if(open FILE, '>:raw', $WX_WIGDETS_HTML_ZIP) {
+		if ( open FILE, '>:raw', $WX_WIGDETS_HTML_ZIP ) {
 			print FILE $res->content;
 			close FILE;
 		} else {
@@ -66,9 +66,9 @@ sub unzip_file {
 	my $dir = shift;
 
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
-	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ($zip->is_zip);
+	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
 	print "Extracting $WX_WIGDETS_HTML_ZIP to $dir...\n";
-	$zip->extract(to => $dir) or die $zip->error;
+	$zip->extract( to => $dir ) or die $zip->error;
 }
 
 exit;
@@ -78,21 +78,21 @@ exit;
 #
 sub read_wx_classes_list {
 	my $dir = shift;
-	
-	my $wx_classref = File::Spec->join($dir, 'wx_classref.html');
+
+	my $wx_classref = File::Spec->join( $dir, 'wx_classref.html' );
 
 	# Stores a list of WX classes filenames
 	my @wxclasses = ();
 
 	#Step 1: Read Wx classes list from wx_classref.html
-	if(open(my $fh, $wx_classref)) {
+	if ( open( my $fh, $wx_classref ) ) {
 		print "Opened $wx_classref\n";
 		my $begin;
-		while(my $line = <$fh>) {
-			if($line =~ /<H2>Alphabetical class reference<\/H2>/) {
+		while ( my $line = <$fh> ) {
+			if ( $line =~ /<H2>Alphabetical class reference<\/H2>/ ) {
 				$begin = 1;
-			} elsif($begin && $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/) {
-				my ($file, $class) = ($1, $2);
+			} elsif ( $begin && $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/ ) {
+				my ( $file, $class ) = ( $1, $2 );
 				$class =~ s/wx(.+?)/Wx::$1/;
 				push @wxclasses, { file => $file, class => $class };
 			}
@@ -106,43 +106,47 @@ sub read_wx_classes_list {
 
 #
 # Process wxClassName HTML file
-# 
+#
 sub process_class {
-	my ($class, $file) = @_;
-	
+	my ( $class, $file ) = @_;
+
 	my $oldclass;
 	my $pod_text = '';
-	if(open my $html_file, '<', $file) {
+	if ( open my $html_file, '<', $file ) {
 		my $desc = '';
 		my $name;
-		while(my $line = <$html_file>) {
-			if($line =~ /<H3>(.+?)<\/H3>/) {
+		while ( my $line = <$html_file> ) {
+			if ( $line =~ /<H3>(.+?)<\/H3>/ ) {
 				$name = $1;
 				$name =~ s/wx(.+?)/Wx::$1/;
-				if($name =~ /^Wx::(.+?)::(.+?)$/) {
+				if ( $name =~ /^Wx::(.+?)::(.+?)$/ ) {
 					my $method = $2;
-					if($method eq "wx$1") {
+					if ( $method eq "wx$1" ) {
+
 						# Convert C++ constructor to ::new
 						$name = $class . '::new';
-					} elsif($method =~ /^~.+/) {
+					} elsif ( $method =~ /^~.+/ ) {
+
 						# Convert C++ destructor to ::DESTROY
 						$name = $class . '::DESTROY';
-					} elsif ($method =~ /^operator.+/) {
+					} elsif ( $method =~ /^operator.+/ ) {
+
 						# Ignore operators
 						$name = undef;
 					}
 				}
 				$desc = '';
-			} elsif($line =~ /^\s*$/) {
-				if($name) {
-					if(!$oldclass || $class ne $oldclass) {
+			} elsif ( $line =~ /^\s*$/ ) {
+				if ($name) {
+					if ( !$oldclass || $class ne $oldclass ) {
+
 						# print out new class header
 						$pod_text .= "=head1 $class\n\n";
 						$oldclass = $class;
 					}
 
 					# print out method description
-					$desc = HTML::FormatText->new->format(parse_html($desc));
+					$desc = HTML::FormatText->new->format( parse_html($desc) );
 					$pod_text .= "=head2 $name\n$desc\n";
 
 					$name = undef;
@@ -153,7 +157,7 @@ sub process_class {
 		}
 		close $html_file;
 	}
-	
+
 	return $pod_text;
 }
 
@@ -161,16 +165,16 @@ sub process_class {
 # Writes wxwidgets.pod... :)
 #
 sub write_pod {
-	my ($wx_dir, @wxclasses) = @_;
+	my ( $wx_dir, @wxclasses ) = @_;
 	my $pod_file = 'wxwidgets.pod';
 	print "Writing $pod_file\n";
-	if(open(my $pod, '>', 'wxwidgets.pod')) {
+	if ( open( my $pod, '>', 'wxwidgets.pod' ) ) {
 		my $oldclass;
 		foreach my $wxclass (@wxclasses) {
-			my $file = File::Spec->join($wx_dir, $wxclass->{file});
+			my $file = File::Spec->join( $wx_dir, $wxclass->{file} );
 			my $class = $wxclass->{class};
 			print "Processing $class...\n";
-			print $pod process_class($class, $file);
+			print $pod process_class( $class, $file );
 		}
 		close $pod;
 	} else {
