@@ -152,7 +152,7 @@ sub process_class {
 
 					# print out method description
 					$desc = HTML::FormatText->new->format( parse_html($desc) );
-					$pod_text .= "=head2 $name\n$desc\n";
+					$pod_text .= "=head2 $name\n\n$desc\n";
 
 					$name = undef;
 				}
