@@ -12,6 +12,11 @@ use Archive::Extract ();
 use HTML::Parse qw(parse_html);
 use HTML::FormatText ();
 
+my $pod_dir = File::Spec->join( '..', 'Padre', 'share', 'doc', 'wxwidgets' );
+unless ( -d $pod_dir ) {
+	die "Abort! I could not find ../Padre/share/doc/wxwidgets in the current directory\n";
+}
+
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
 
 # Step 1: Fetch the wxWidgets HTML documentation zip file if it is not found
@@ -27,7 +32,7 @@ my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
 # Step 4: Write the final POD while processing all html files
-write_pod( $wx_dir, @wxclasses );
+write_pod( $pod_dir, $wx_dir, @wxclasses );
 
 # and we're done
 exit;
@@ -165,10 +170,10 @@ sub process_class {
 # Writes wxwidgets.pod... :)
 #
 sub write_pod {
-	my ( $wx_dir, @wxclasses ) = @_;
-	my $pod_file = 'wxwidgets.pod';
+	my ( $pod_dir, $wx_dir, @wxclasses ) = @_;
+	my $pod_file = File::Spec->join( $pod_dir, 'wxwidgets.pod' );
 	print "Writing $pod_file\n";
-	if ( open( my $pod, '>', 'wxwidgets.pod' ) ) {
+	if ( open( my $pod, '>', $pod_file ) ) {
 		my $oldclass;
 		foreach my $wxclass (@wxclasses) {
 			my $file = File::Spec->join( $wx_dir, $wxclass->{file} );
