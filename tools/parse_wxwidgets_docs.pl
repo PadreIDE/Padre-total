@@ -9,6 +9,8 @@ use File::Spec       ();
 use LWP::UserAgent   ();
 use HTTP::Request    ();
 use Archive::Extract ();
+use HTML::Parse      qw(parse_html);
+use HTML::FormatText ();
 
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
 
@@ -24,48 +26,10 @@ my $wx_dir = File::Spec->join($dir, 'docs', 'mshtml', 'wx');
 my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
-# Step 4: Process all Wx classes gathering information
-my $func = {};
-foreach my $wxclass (@wxclasses) {
-	my $file = File::Spec->join($wx_dir, $wxclass->{file});
-	my $class = $wxclass->{class};
-	print "Processing $class...\n";
-	
-	if(open my $fh, '<', $file) {
-		my $begin_block = 0;
-		my $buffer = '';
-		my $name;
-		while(my $line = <$fh>) {
-			if($line =~ /<HR>/) {
-				$begin_block = 1;
-				$buffer = '';
-			} elsif($begin_block && $line =~ /<H3>(.+?)<\/H3>/) {
-				$name = $1;
-				$name =~ s/wx(.+?)/Wx::$1/;
-			} elsif($line =~ /^\s*$/) {
-				$begin_block = 0;
-				if($name) {
-					$func->{$name} = $buffer;
-				}
-				$name = undef;
-			} else {
-				$buffer .= $line;
-			}
-		}
-	}
-}
+# Step 4: Write the final POD while processing all html files
+write_pod($wx_dir, @wxclasses);
 
-# Step 5: Write the final POD
-my $pod_file = 'wxwidgets.pod';
-print "Writing $pod_file\n";
-if(open(my $fh, '>', 'wxwidgets.pod')) {
-	foreach my $name (keys %$func) {
-		my $desc = $func->{$name};
-		print $fh "=head1 $name\n$desc\n\n";
-	}
-} else {
-	die "Couldnt write $pod_file\n";
-}
+# and we're done
 exit;
 
 #
@@ -130,7 +94,7 @@ sub read_wx_classes_list {
 			} elsif($begin && $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/) {
 				my ($file, $class) = ($1, $2);
 				$class =~ s/wx(.+?)/Wx::$1/;
-				push @wxclasses, { "file" => $file, "class" => $class };
+				push @wxclasses, { file => $file, class => $class };
 			}
 		}
 	} else {
@@ -138,6 +102,62 @@ sub read_wx_classes_list {
 	}
 
 	return @wxclasses;
+}
+
+#
+# Writes wxwidgets.pod... :)
+#
+sub write_pod {
+	my ($wx_dir, @wxclasses) = @_;
+	my $pod_file = 'wxwidgets.pod';
+	print "Writing $pod_file\n";
+	if(open(my $pod, '>', 'wxwidgets.pod')) {
+		my $oldclass;
+		foreach my $wxclass (@wxclasses) {
+			my $file = File::Spec->join($wx_dir, $wxclass->{file});
+			my $class = $wxclass->{class};
+			print "Processing $class...\n";
+			
+			if(open my $html_file, '<', $file) {
+				my $desc = '';
+				my $name;
+				while(my $line = <$html_file>) {
+					if($line =~ /<H3>(.+?)<\/H3>/) {
+						$name = $1;
+						$name =~ s/wx(.+?)/Wx::$1/;
+						if($name =~ /^Wx::(.+?)::(.+?)$/) {
+							if($2 eq "wx$1") {
+								# C++ constructor... convert to Perl ::new
+								$name = "$class\:\:new"
+							}
+						}
+						$desc = '';
+					} elsif($line =~ /^\s*$/) {
+						if($name) {
+							if(!$oldclass || $class ne $oldclass) {
+								# print out new class header
+								print $pod "=head1 $class\n\n";
+								$oldclass = $class;
+							}
+
+							# print out method description
+$desc = HTML::FormatText->new->format(parse_html($desc));
+							print $pod "=head2 $name\n$desc\n";
+
+							$name = undef;
+						}
+					} else {
+						$desc .= $line;
+					}
+				}
+				close $html_file;
+			}
+		}
+		close $pod;
+	} else {
+		die "Couldnt write $pod_file\n";
+	}
+
 }
 
 __END__
