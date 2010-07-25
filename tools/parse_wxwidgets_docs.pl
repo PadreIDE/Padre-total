@@ -105,6 +105,59 @@ sub read_wx_classes_list {
 }
 
 #
+# Process wxClassName HTML file
+# 
+sub process_class {
+	my ($class, $file) = @_;
+	
+	my $oldclass;
+	my $pod_text = '';
+	if(open my $html_file, '<', $file) {
+		my $desc = '';
+		my $name;
+		while(my $line = <$html_file>) {
+			if($line =~ /<H3>(.+?)<\/H3>/) {
+				$name = $1;
+				$name =~ s/wx(.+?)/Wx::$1/;
+				if($name =~ /^Wx::(.+?)::(.+?)$/) {
+					my $method = $2;
+					if($method eq "wx$1") {
+						# Convert C++ constructor to ::new
+						$name = $class . '::new';
+					} elsif($method =~ /^~.+/) {
+						# Convert C++ destructor to ::DESTROY
+						$name = $class . '::DESTROY';
+					} elsif ($method =~ /^operator.+/) {
+						# Ignore operators
+						$name = undef;
+					}
+				}
+				$desc = '';
+			} elsif($line =~ /^\s*$/) {
+				if($name) {
+					if(!$oldclass || $class ne $oldclass) {
+						# print out new class header
+						$pod_text .= "=head1 $class\n\n";
+						$oldclass = $class;
+					}
+
+					# print out method description
+					$desc = HTML::FormatText->new->format(parse_html($desc));
+					$pod_text .= "=head2 $name\n$desc\n";
+
+					$name = undef;
+				}
+			} else {
+				$desc .= $line;
+			}
+		}
+		close $html_file;
+	}
+	
+	return $pod_text;
+}
+
+#
 # Writes wxwidgets.pod... :)
 #
 sub write_pod {
@@ -117,48 +170,7 @@ sub write_pod {
 			my $file = File::Spec->join($wx_dir, $wxclass->{file});
 			my $class = $wxclass->{class};
 			print "Processing $class...\n";
-			
-			if(open my $html_file, '<', $file) {
-				my $desc = '';
-				my $name;
-				while(my $line = <$html_file>) {
-					if($line =~ /<H3>(.+?)<\/H3>/) {
-						$name = $1;
-						$name =~ s/wx(.+?)/Wx::$1/;
-						if($name =~ /^Wx::(.+?)::(.+?)$/) {
-							my $method = $2;
-							if($method eq "wx$1") {
-								# Convert C++ constructor to ::new
-								$name = $class . '::new';
-							} elsif($method =~ /^~.+/) {
-								# Convert C++ destructor to ::DESTROY
-								$name = $class . '::DESTROY';
-							} elsif ($method =~ /^operator.+/) {
-								# Ignore operators
-								$name = undef;
-							}
-						}
-						$desc = '';
-					} elsif($line =~ /^\s*$/) {
-						if($name) {
-							if(!$oldclass || $class ne $oldclass) {
-								# print out new class header
-								print $pod "=head1 $class\n\n";
-								$oldclass = $class;
-							}
-
-							# print out method description
-							$desc = HTML::FormatText->new->format(parse_html($desc));
-							print $pod "=head2 $name\n$desc\n";
-
-							$name = undef;
-						}
-					} else {
-						$desc .= $line;
-					}
-				}
-				close $html_file;
-			}
+			print $pod process_class($class, $file);
 		}
 		close $pod;
 	} else {
