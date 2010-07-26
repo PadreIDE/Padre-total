@@ -41,4 +41,4 @@
 \bPadre-Plugin-Ecliptic-[\d\.\_]+
 
 # avoid pot files (gettext)
-\.pot$
+\.pot$^MYMETA.yml$
