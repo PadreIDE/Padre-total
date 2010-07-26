@@ -1,5 +1,6 @@
 ---
 topics:
+  azimuth: <angle> | [[ left-side | far-left | left | center-left | center | center-right | right | far-right | right-side ] || behind ] | leftwards | rightwards | inherit
   padding: length | percentage (REPLACE_four), inherit - REPLACE_content_model
   color:  Color of an element. Values can be RGB: #AABBCC
   float: The direction in which the element should try to move. Values: left|right|none|inherit
