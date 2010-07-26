@@ -4,7 +4,7 @@ name 'Padre-Plugin-WebGUI';
 all_from 'lib/Padre/Plugin/WebGUI.pm';
 author 'Patrick Donelan <pat@patspam.com>';
 license 'perl';
-requires 'Padre' => '0.65';
+requires 'Padre' => '0.43';
 requires 'LWP::UserAgent';
 requires 'JSON';
 test_requires 'Test::More';

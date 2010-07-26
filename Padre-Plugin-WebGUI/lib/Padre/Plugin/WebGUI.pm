@@ -43,7 +43,7 @@ sub plugin_name {
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin' => 0.65,
+    'Padre::Plugin' => 0.43,
         ;
 }
 
