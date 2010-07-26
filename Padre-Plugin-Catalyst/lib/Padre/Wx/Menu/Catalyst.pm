@@ -31,12 +31,12 @@ sub new {
 
 	# Menu items
 	# TODO: Add the menu items. Sample:
-#	$self->{beginner_check} = $self->add_menu_action(
-#		$self,
-#		'perl.beginner_check',
-#	);
-#
-#	$self->AppendSeparator;
+	#	$self->{beginner_check} = $self->add_menu_action(
+	#		$self,
+	#		'perl.beginner_check',
+	#	);
+	#
+	#	$self->AppendSeparator;
 
 	return $self;
 }
@@ -48,9 +48,9 @@ sub title {
 }
 
 sub refresh {
-	my $self    = shift;
+	my $self = shift;
 
-# TODO: Change to refresh options for real items
+	# TODO: Change to refresh options for real items
 
 	my $current = _CURRENT(@_);
 	my $config  = $current->config;
@@ -58,13 +58,13 @@ sub refresh {
 
 	# Disable document-specific entries if we are in a Perl project
 	# but not in a Perl document.
-# FIXME: the two commands below crash unless they are defined. Should they
-# ALWAYS be defined or should we leave them like so? (garu)
+	# FIXME: the two commands below crash unless they are defined. Should they
+	# ALWAYS be defined or should we leave them like so? (garu)
 	$self->{beginner_check}->Enable($perl) if defined $self->{beginner_check};
 
 	# Apply config-driven state
 	$self->{autocomplete_brackets}->Check( $config->autocomplete_brackets )
-        if defined $self->{autocomplete_brackets};
+		if defined $self->{autocomplete_brackets};
 
 	return;
 }
