@@ -98,9 +98,20 @@ sub autocomplete {
 	if ($@) {
 		return ("Cannot build regex for '$prefix'");
 	}
+	my @keywords=qw/abstract  	 and   	 array   	 as   	 break
+case 	catch 	cfunction 	class 	clone
+const 	continue 	declare 	default 	do
+else 	elseif 	enddeclare 	endfor 	endforeach
+endif 	endswitch 	endwhile 	extends 	final
+for 	foreach 	function 	global 	goto
+if 	implements 	interface 	instanceof
+namespace 	new 	old_function 	or 	private
+protected 	public 	static 	switch 	throw
+try 	use 	var 	while 	xor/;
 
 	my %seen;
 	my @words;
+	push @words, grep { $_ =~ $regex and !$seen{$_}++} @keywords;
 	push @words, grep { !$seen{$_}++ } reverse( $pre_text =~ /$regex/g );
 	push @words, grep { !$seen{$_}++ } ( $post_text =~ /$regex/g );
 

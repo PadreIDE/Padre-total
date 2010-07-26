@@ -1,6 +1,7 @@
 Changes in Padre::Plugin::PHP
 
 	00-load.t added (CHORNY)
+	keywords added to autocompletition (CHORNY)
 
 v0.03	2009.11.08
 	Fixed a bug in the preferences dialog
