@@ -15,11 +15,11 @@ Padre::Plugin::WebGUI - Developer tools for WebGUI
 
 =head1 VERSION
 
-Version 0.03
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
@@ -43,7 +43,7 @@ sub plugin_name {
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin' => 0.29,
+    'Padre::Plugin' => 0.65,
         ;
 }
 

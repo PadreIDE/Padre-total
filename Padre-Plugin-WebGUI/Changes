@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-WebGUI
 
+0.05    to be released
+        compatibility to newer version of Padre (ZENOG)
+
+-- No revision history between 0.01 and 0.05
         Replaced debug called with new TRACE() call
 
 
