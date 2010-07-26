@@ -1,3 +1,4 @@
+use 5.006;
 use strict;
 use warnings;
 
@@ -19,7 +20,12 @@ my $builder = Padre::PluginBuilder->new(
       'Padre::PluginBuilder' => '0.12',
     },
     add_to_cleanup      => [ 'Padre-Plugin-CommandLine-*' ],
-    create_makefile_pl => 'traditional',
+    share_dir => 'share',
+    meta_merge     => {
+        resources => {
+            repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-CommandLine',
+        }
+    },
 );
 
 $builder->create_build_script();
