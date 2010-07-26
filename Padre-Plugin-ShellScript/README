@@ -1,6 +1,8 @@
+Padre::Plugin::ShellScript - Shell script support of Padre
 
-Padre::Plugin::ShellScript - ShellScript support of Padre
-This is first release and not completelly usefull.
+Edit, run and debug shell scripts with Padre
+
+This is first release and not completelly useful.
 
 installation:
 

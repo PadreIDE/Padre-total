@@ -14,9 +14,9 @@ sub plugin_name {
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin'     => 0,
-      'Padre::Document' => 0,
-      'Padre::Wx::Main' => 0,
+    'Padre::Plugin'     => 0.43,
+      'Padre::Document' => 0.43,
+      'Padre::Wx::Main' => 0.43,
       ;
 }
 

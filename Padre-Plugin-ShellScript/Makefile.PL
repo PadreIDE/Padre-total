@@ -8,7 +8,7 @@ all_from       'lib/Padre/Plugin/ShellScript.pm';
 
 requires       'perl'                    => '5.008001';
 requires       'Exporter'                => 0;
-requires       'Padre'                   => '0.27';
+requires       'Padre'                   => '0.65';
 requires       'Class::Autouse'          => '1.26';
 
 test_requires  'Test::More'              => '0.47';
