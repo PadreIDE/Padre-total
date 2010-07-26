@@ -13,13 +13,12 @@ keybindings and commands
 
 use strict;
 use warnings;
+
+our $VERSION = '0.02';
+
 use Padre::Util;
-use Padre::Plugin;
 
-use base qw(Padre::Plugin);
-our @ISA     = 'Padre::Plugin';
-
-our $VERSION = '0.18';
+use base 'Padre::Plugin';
 
 my %subs;
 $subs{CTRL} = {
@@ -113,15 +112,20 @@ $subs{CTRL_SHIFT} = {
 		}
 };
 
+sub padre_interfaces {
+	'Padre::Plugin'   => 0.43,
+	'Padre::Document' => 0.43,
+}
+
 sub plugin_name {
-  return 'Emacs Mode for Padre';
+  return Wx::gettext('Emacs Mode for Padre');
 }
 
 
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
   my $self = shift;
-  return 'Emacs Mode' => [
+  return Wx::gettext('Emacs Mode') => [
 			  About => sub { $self->show_about },
 			  Commands => [
 				       'Emacs Ctrl Command \tCtrl-X' => $subs{CTRL}{ord('X')},
@@ -134,12 +138,12 @@ sub show_about {
   my ($main) = @_;
 
   my $about = Wx::AboutDialogInfo->new;
-  $about->SetName("Padre::Plugin::EmacsMode");
+  $about->SetName("Padre::Plugin::Emacs");
   $about->SetDescription(
 			 "Emacs Keybindings and stuff\n".
-			 "Much todo here\n"
+			 "Much TODO here\n"
 			);
-  $about->SetVersion($Padre::Plugin::EmacsMode::VERSION);
+  $about->SetVersion($Padre::Plugin::Emacs::VERSION);
   $about->SetCopyright(Wx::gettext("Copyright 2009 Aaron Trevena"));
 
   # Only Unix/GTK native about box supports websites
@@ -157,7 +161,7 @@ sub plugin_enable {
   my ($self) = @_;
 
   # behaviour rules (more to come)
-  $self->SetTabIndents(1);
+  # $self->SetTabIndents(1);
 
   # get menu keys (FIXME:store them somewhere)
   # skip menuitems with emacs in

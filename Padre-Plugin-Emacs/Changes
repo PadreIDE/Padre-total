@@ -1,0 +1,12 @@
+Revision history for Perl extension Padre-Plugin-EmacsMode.
+
+0.02  to be released
+	- Removed a warning on startup
+        - fixed inconsistent file naming: Padre/Plugin/EmacsMode.pm
+          -> Padre/Plugin/Emacs.pm (ZENOG)
+        - gettext-ified some strings (ZENOG)
+        - defined Padre interface versions (ZENOG)
+
+0.01  Thu Jan 15 17:02:23 2009
+	- initial prototype
+
