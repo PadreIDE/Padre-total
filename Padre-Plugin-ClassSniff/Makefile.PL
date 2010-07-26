@@ -8,7 +8,7 @@ license  'perl';
 homepage       'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-ClassSniff/';
 
-requires  'Padre'          => '0.29';
+requires  'Padre'          => '0.43';
 requires  'Class::Sniff'   => '0.08';
 
 build_requires 'Test::More';

@@ -1,4 +1,8 @@
-Padre-Plugin-Git
+Padre-Plugin-ClassSniff
+
+This module adds very, very basic support for running Class::Sniff
+with the default settings against the document (assumed to be a class)
+in the current editor tab.
 
 INSTALLATION
 
@@ -11,15 +15,13 @@ To install this module, run the following commands:
 
 WARNING
 
-This plugin relies on the command 'git' to be present. There's no check in the
-installation script that git is installed. You have to ensure that yourself.
 
 SUPPORT AND DOCUMENTATION
 
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Padre::Plugin::Git
+    perldoc Padre::Plugin::ClassSniff
 
 COPYRIGHT AND LICENCE
 

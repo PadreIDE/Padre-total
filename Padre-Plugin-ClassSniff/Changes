@@ -10,6 +10,8 @@ Revision history for Padre-Plugin-ClassSniff
 	- Arabic (azawawi)
 	- Spanish (brunov)
   - actually install the translations (RSN)
+  - removed old copy-pasted information from Padre-Plugin-Git (ZENOG)
+  - compatibility to newer Padre versions (ZENOG)
 
 0.01    2009-03-19
   - Initial version
