@@ -1,6 +1,6 @@
 Padre-Plugin-HTMLExport
 
-This module exports highlighted HTML in Padre using Kate syntax
+This module exports highlighted HTML in Padre using the Kate syntax
 highlighting engine.
 
 INSTALLATION
