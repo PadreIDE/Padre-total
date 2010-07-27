@@ -58,16 +58,19 @@ It does NOT support save-as or providing filename.
 
 =cut
 
-my @menu = (
-    [_T("About"),                 \&about],
-    [_T("Show Prompt\tAlt-`"),    \&show_prompt],
-);
-
-sub menu {
-    my ($self) = @_;
-    return @menu;
+sub padre_interfaces {
+	'Padre::Plugin'   => 0.43,
+	'Padre::Document' => 0.21,
 }
 
+my @menu = (
+    _T("About"),                 \&about,
+    _T("Show Prompt\tAlt-`"),    \&show_prompt,
+);
+
+sub menu_plugins_simple {
+	return ('CommandLine' => \@menu);
+}
 
 my @layout =  (
 	[
