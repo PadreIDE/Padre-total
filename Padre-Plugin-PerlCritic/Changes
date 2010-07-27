@@ -1,5 +1,6 @@
 Revision history for Perl extension Padre-Plugin-PerlCritic.
 
+0.08 Tue Jul 27 2010
     - Turkish translation updated (BURAK)
     - Compatibility with latest Padre (CHORNY)
 
