@@ -6,7 +6,7 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our $VERSION = '0.07_01';
+our $VERSION = '0.08';
 our @ISA     = 'Padre::Plugin';
 
 =pod
