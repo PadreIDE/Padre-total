@@ -6,7 +6,7 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our $VERSION = '0.07';
+our $VERSION = '0.07_01';
 our @ISA     = 'Padre::Plugin';
 
 =pod
@@ -25,7 +25,7 @@ on the default .perlcriticrc configuration. See Perl::Critic for details.
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.26',
+	'Padre::Plugin' => '0.43',
 	'Padre::Config' => '0.54',
 }
 
