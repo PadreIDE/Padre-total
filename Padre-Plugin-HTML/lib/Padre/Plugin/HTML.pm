@@ -9,7 +9,7 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.26,
+	'Padre::Plugin'   => 0.43,
 	'Padre::Document' => 0.21,
 }
 
