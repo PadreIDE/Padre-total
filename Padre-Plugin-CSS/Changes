@@ -5,6 +5,7 @@ NOT RELEASED!
     Renamed to the new Padre 0.43 PO naming scheme (azawawi)
     Autocompletition support (CHORNY)
     compatibility to latest Padre version (ZENOG)
+    Italian translation (SBLANDIN)
 
 0.08    2009.05.31
     removed taint mode for tests, which lead to some fails (jquelin)
