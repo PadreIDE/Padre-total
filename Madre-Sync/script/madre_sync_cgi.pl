@@ -7,7 +7,7 @@ Catalyst::ScriptRunner->run('Madre::Sync', 'CGI');
 
 =head1 NAME
 
-configsrv_cgi.pl - Catalyst CGI
+madre_sync_cgi.pl - Catalyst CGI
 
 =head1 SYNOPSIS
 

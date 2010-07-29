@@ -10,11 +10,11 @@ Catalyst::ScriptRunner->run('Madre::Sync', 'Create');
 
 =head1 NAME
 
-configsrv_create.pl - Create a new Catalyst Component
+madre_sync_create.pl - Create a new Catalyst Component
 
 =head1 SYNOPSIS
 
-configsrv_create.pl [options] model|view|controller name [helper] [options]
+madre_sync_create.pl [options] model|view|controller name [helper] [options]
 
  Options:
    --force        don't create a .new file where a file to be created exists
@@ -22,15 +22,15 @@ configsrv_create.pl [options] model|view|controller name [helper] [options]
    --help         display this help and exits
 
  Examples:
-   configsrv_create.pl controller My::Controller
-   configsrv_create.pl -mechanize controller My::Controller
-   configsrv_create.pl view My::View
-   configsrv_create.pl view MyView TT
-   configsrv_create.pl view TT TT
-   configsrv_create.pl model My::Model
-   configsrv_create.pl model SomeDB DBIC::Schema MyApp::Schema create=dynamic\
+   madre_sync_create.pl controller My::Controller
+   madre_sync_create.pl -mechanize controller My::Controller
+   madre_sync_create.pl view My::View
+   madre_sync_create.pl view MyView TT
+   madre_sync_create.pl view TT TT
+   madre_sync_create.pl model My::Model
+   madre_sync_create.pl model SomeDB DBIC::Schema MyApp::Schema create=dynamic\
    dbi:SQLite:/tmp/my.db
-   configsrv_create.pl model AnotherDB DBIC::Schema MyApp::Schema create=static\
+   madre_sync_create.pl model AnotherDB DBIC::Schema MyApp::Schema create=static\
    dbi:Pg:dbname=foo root 4321
 
  See also:

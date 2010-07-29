@@ -4,7 +4,7 @@ package Madre::Sync::Controller::Root;
 
 =head1 NAME
 
-Madre::Sync::Controller::Root - Root Controller for configSrv
+Madre::Sync::Controller::Root - Root Controller for Madre::Sync
 
 =head1 DESCRIPTION
 

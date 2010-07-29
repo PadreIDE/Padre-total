@@ -7,11 +7,11 @@ Catalyst::ScriptRunner->run('Madre::Sync', 'FastCGI');
 
 =head1 NAME
 
-configsrv_fastcgi.pl - Catalyst FastCGI
+madre_sync_fastcgi.pl - Catalyst FastCGI
 
 =head1 SYNOPSIS
 
-configsrv_fastcgi.pl [options]
+madre_sync_fastcgi.pl [options]
 
  Options:
    -? -help      display this help and exits

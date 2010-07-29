@@ -15,7 +15,7 @@ __END__
 
 =head1 NAME
 
-Madre::Sync::View::TT - TT View for configSrv
+Madre::Sync::View::TT - TT View for Madre::Sync
 
 =head1 DESCRIPTION
 

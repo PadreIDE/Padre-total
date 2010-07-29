@@ -11,11 +11,11 @@ Catalyst::ScriptRunner->run('Madre::Sync', 'Server');
 
 =head1 NAME
 
-configsrv_server.pl - Catalyst Test Server
+madre_sync_server.pl - Catalyst Test Server
 
 =head1 SYNOPSIS
 
-configsrv_server.pl [options]
+madre_sync_server.pl [options]
 
    -d --debug           force debug mode
    -f --fork            handle each request in a new process

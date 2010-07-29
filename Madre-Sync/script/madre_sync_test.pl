@@ -7,18 +7,18 @@ Catalyst::ScriptRunner->run('Madre::Sync', 'Test');
 
 =head1 NAME
 
-configsrv_test.pl - Catalyst Test
+madre_sync_test.pl - Catalyst Test
 
 =head1 SYNOPSIS
 
-configsrv_test.pl [options] uri
+madre_sync_test.pl [options] uri
 
  Options:
    --help    display this help and exits
 
  Examples:
-   configsrv_test.pl http://localhost/some_action
-   configsrv_test.pl /some_action
+   madre_sync_test.pl http://localhost/some_action
+   madre_sync_test.pl /some_action
 
  See also:
    perldoc Catalyst::Manual

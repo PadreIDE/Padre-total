@@ -73,11 +73,11 @@ Madre::Sync - Catalyst based application
 
 =head1 SYNOPSIS
 
-    script/configsrv_server.pl
+    script/madre_sync_server.pl
 
 =head1 DESCRIPTION
 
-Server-side component to configSync - an extension to Padre to allow 
+Server-side component to Madre::Sync - an extension to Padre to allow 
 remote sync'ing / storage of Padre user configurations. All interactions
 are RESTful.
 
