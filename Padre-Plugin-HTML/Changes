@@ -1,7 +1,7 @@
 Revision history for Padre-Plugin-HTML
 
         compatibility with latest Padre (CHORNY)
-
+        link to 'HTML 4.01 Specification' (CHORNY)
 
 0.09    2009.05.31
         removed taint mode for test, leading to build failure (jquelin)

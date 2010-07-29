@@ -23,6 +23,9 @@ sub menu_plugins_simple {
 		'Tidy HTML', sub { $self->tidy_html },
 		'HTML Lint', sub { $self->html_lint },
 		'Validate HTML',  sub { $self->validate_html },
+		'Docs'=> [
+			'HTML 4.01 Specification', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/html401/'); },
+		],
 	]);
 }
 
