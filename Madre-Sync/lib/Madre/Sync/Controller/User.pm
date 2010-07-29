@@ -43,10 +43,10 @@ private PUT method for register, provides PUT handling.
 =cut
 
 sub register_PUT {
-	my $self = shift;
-	my $c    = shift;
+	my $self     = shift;
+	my $c        = shift;
 	my $users_rs = $c->model('padreDB::User');
-	my $data = $c->request->data;
+	my $data     = $c->request->data;
 
 	if ( $c->user_exists ) { 
 		$self->status_bad_request(
@@ -97,8 +97,8 @@ sub user :Chained('/login/required') :PathPart('user') :ActionClass('REST') {
 	my $c    = shift;
 
 	# Is this even needed?
-	$c->stash(users_rs => $c->model('padreDB::User'));
-	$c->stash(roles_rs => $c->model('padreDB::Role'));
+	$c->stash( users_rs => $c->model('padreDB::User') );
+	$c->stash( roles_rs => $c->model('padreDB::Role') );
 }
 
 =pod
@@ -110,8 +110,8 @@ private GET method for user, provides GET handling.
 =cut
 
 sub user_GET { 
-	my $self = shift;
-	my $c    = shift;
+	my $self     = shift;
+	my $c        = shift;
 	my $users_rs = $c->stash->{users_rs};
 
 	# Return a 200 OK, with the data in entity
