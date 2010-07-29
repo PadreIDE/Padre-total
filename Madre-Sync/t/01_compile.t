@@ -8,10 +8,10 @@ BEGIN {
 }
 use Test::More tests => 7;
 
-use_ok( 'Madre::Sync'             );
-use_ok( 'Madre::Sync::Schema'     );
-use_ok( 'Madre::Sync::View::TT'   );
-use_ok( 'Madre::Model::padreDB'   );
-use_ok( 'Madre::Controller::Root' );
-use_ok( 'Madre::Controller::User' );
-use_ok( 'Madre::Controller::Conf' );
+use_ok( 'Madre::Sync'                   );
+use_ok( 'Madre::Sync::Schema'           );
+use_ok( 'Madre::Sync::View::TT'         );
+use_ok( 'Madre::Sync::Model::padreDB'   );
+use_ok( 'Madre::Sync::Controller::Root' );
+use_ok( 'Madre::Sync::Controller::User' );
+use_ok( 'Madre::Sync::Controller::Conf' );
