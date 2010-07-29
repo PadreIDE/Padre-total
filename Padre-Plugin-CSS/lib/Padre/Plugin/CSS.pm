@@ -24,6 +24,10 @@ sub menu_plugins_simple {
 	return ('CSS' => [
 		_T('CSS Minifier'),   sub { $self->css_minifier },
 		_T('Validate CSS'),   sub { $self->validate_css },
+		'Docs'=> [
+			'CSS 2.1 specs', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/cover.html'); },
+			'CSS 2.1 property list', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/propidx.html'); },
+		],
 	]);
 }
 
