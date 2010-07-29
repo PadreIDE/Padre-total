@@ -6,6 +6,7 @@ NOT RELEASED!
     Autocompletition support (CHORNY)
     compatibility to latest Padre version (ZENOG)
     Italian translation (SBLANDIN)
+    Use keyword list from css.yml for autocompletition (CHORNY)
 
 0.08    2009.05.31
     removed taint mode for tests, which lead to some fails (jquelin)

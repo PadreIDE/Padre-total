@@ -27,6 +27,7 @@ sub help_init {
 sub help_list {
 	my ($self) = @_;
 
+	$self->help_init unless $data;
 	return [keys %{ $data->{topics} }];
 }
 
