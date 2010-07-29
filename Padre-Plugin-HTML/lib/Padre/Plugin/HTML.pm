@@ -118,11 +118,11 @@ sub html_lint {
 	my $text;
 	my $error_count = $lint->errors;
 
-    foreach my $error ( $lint->errors ) {
-        $text .= $error->as_string . "\n";
-    }
+	foreach my $error ( $lint->errors ) {
+		$text .= $error->as_string . "\n";
+	}
     
-    $text = 'OK' unless ( length($text) );
+	$text = 'OK' unless ( length($text) );
 	$self->_output($text);
 }
 
@@ -140,6 +140,10 @@ use L<WebService::Validator::HTML::W3C> to validate the HTML
 =head1 Tidy HTML
 
 use L<HTML::Tidy> to tidy HTML
+
+=head1 HTML Lint
+
+use L<HTML::Lint> to ?????
 
 =head1 AUTHOR
 
