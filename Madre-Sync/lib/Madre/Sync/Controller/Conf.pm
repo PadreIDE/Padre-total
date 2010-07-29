@@ -17,12 +17,11 @@ TODO: I should rewrite this to just use ActionClass('REST'), , to remove the red
 
 use Moose;
 use namespace::autoclean;
+use JSON::XS ();
 
 BEGIN {
 	extends 'Catalyst::Controller::REST';
 }
-
-use JSON::Any;
 
 =pod
 
@@ -54,7 +53,7 @@ sub conf_GET {
 
 	$self->status_ok(
 		$c,
-		entity => JSON::Any->jsonToObj($config),
+		entity => JSON::XS->new->decode($config),
 	);
 }
 
@@ -76,7 +75,7 @@ sub conf_PUT {
 		eval {
 			$c->model('padreDB::Config')->update_or_create( {
 				id     => $c->user->id,
-				config => JSON::Any->objToJson($data),
+				config => JSON::XS->new->encode($data),
 			} )
 		};
 		if ( $@ ) { 

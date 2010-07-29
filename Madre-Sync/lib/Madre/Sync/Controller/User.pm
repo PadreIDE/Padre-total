@@ -48,7 +48,7 @@ sub register_PUT {
 	my $users_rs = $c->model('padreDB::User');
 	my $data     = $c->request->data;
 
-	if ( $c->user_exists ) { 
+	if ( $c->user_exists ) {
 		$self->status_bad_request(
 			$c, 
 			message => "You cannot create multiple accounts." 
