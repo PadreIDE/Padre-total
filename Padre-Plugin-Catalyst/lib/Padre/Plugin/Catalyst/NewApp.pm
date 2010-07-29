@@ -10,7 +10,7 @@ use Padre::Wx::Dialog ();
 use Padre::Util       ('_T');
 
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 sub on_newapp {
 	my $main = Padre->ide->wx->main;
