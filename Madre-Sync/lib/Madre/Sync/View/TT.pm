@@ -1,11 +1,17 @@
-packageMadre::Sync::View::TT;
+package Madre::Sync::View::TT;
 
 use strict;
 use warnings;
 
 use base 'Catalyst::View::TT';
 
-__PACKAGE__->config(TEMPLATE_EXTENSION => '.tt');
+__PACKAGE__->config( TEMPLATE_EXTENSION => '.tt' );
+
+1;
+
+__END__
+
+=pod
 
 =head1 NAME
 
@@ -29,5 +35,3 @@ This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;

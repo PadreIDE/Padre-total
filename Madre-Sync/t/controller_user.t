@@ -1,9 +1,10 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 3;
 
-BEGIN { use_ok 'Catalyst::Test', 'Madre::Sync' }
-BEGIN { use_ok 'Madre::Sync::Controller::user' }
+use_ok( 'Catalyst::Test', 'Madre::Sync' );
+use_ok( 'Madre::Sync::Controller::user' );
 
 ok( request('/user')->is_success, 'Request should succeed' );
-done_testing();

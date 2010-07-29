@@ -1,7 +1,7 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
-use Test::More;
+use Test::More tests => 1;
 
-BEGIN { use_ok 'Madre::Sync::Model::padreDB' }
-
-done_testing();
+use_ok( 'Madre::Sync::Model::padreDB' );

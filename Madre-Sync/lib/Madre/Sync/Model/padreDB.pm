@@ -4,14 +4,17 @@ use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
 __PACKAGE__->config(
-    schema_class => 'ConfigSrv::Schema',
-    
-    connect_info => {
-        dsn => 'dbi:SQLite:db/data.db',
-        user => '',
-        password => '',
-    }
+	schema_class => 'Madre::Sync::Schema',
+	connect_info => {
+		dsn      => 'dbi:SQLite:db/data.db',
+		user     => '',
+		password => '',
+	}
 );
+
+1;
+
+__END__
 
 =head1 NAME
 
@@ -31,13 +34,9 @@ Catalyst::Helper::Model::DBIC::Schema - 0.4
 
 =head1 AUTHOR
 
-
-
 =head1 LICENSE
 
 This library is free software, you can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;

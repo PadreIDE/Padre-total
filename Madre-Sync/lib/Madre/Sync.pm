@@ -1,5 +1,6 @@
 package Madre::Sync;
 
+use 5.008;
 use Moose;
 use namespace::autoclean;
 use Catalyst::Runtime 5.80;
@@ -12,17 +13,17 @@ use Catalyst::Runtime 5.80;
 # Static::Simple: will serve static files from the application's root
 #                 directory
 
-use Catalyst qw/
-    -Debug
-    ConfigLoader
-    Static::Simple
-    +CatalystX::SimpleLogin
-    Authentication
-    Session
-    Session::Store::File
-    Session::State::Cookie
-    Static::Simple
-/;
+use Catalyst qw{
+	-Debug
+	ConfigLoader
+	Static::Simple
+	+CatalystX::SimpleLogin
+	Authentication
+	Session
+	Session::Store::File
+	Session::State::Cookie
+	Static::Simple
+};
 
 extends 'Catalyst';
 with    'CatalystX::REPL';
@@ -33,32 +34,36 @@ $VERSION = eval $VERSION;
 # Configure the application.
 #
 __PACKAGE__->config(
-   name      => 'Madre-Sync',
-   #default   => 'text/x-yaml',
-   #stash_key => 'rest',
+	name      => 'Madre-Sync',
+	#default   => 'text/x-yaml',
+	#stash_key => 'rest',
 
-   # Disable deprecated behavior needed by old applications
-   disable_component_resolution_regex_fallback => 1,
-   'Plugin::Authentication' => {
-      default => {
-         credential => {
-            class => 'Password',
-            password_field => 'password',
-            password_type => 'clear'
-         },
-         store => { 
-            class => 'DBIx::Class',
-            user_model => 'padreDB::User',
-            role_relation => 'roles',
-            role_field => 'role',
-            use_userdata_from_session => '1'
-         },
-      },
-   },
+	# Disable deprecated behavior needed by old applications
+	disable_component_resolution_regex_fallback => 1,
+	'Plugin::Authentication' => {
+		default => {
+			credential     => {
+				class          => 'Password',
+				password_field => 'password',
+				password_type  => 'clear'
+			},
+			store => { 
+				class                     => 'DBIx::Class',
+				user_model                => 'padreDB::User',
+				role_relation             => 'roles',
+				role_field                => 'role',
+				use_userdata_from_session => '1'
+			},
+		},
+	},
 );
 
 # Start the application
 __PACKAGE__->setup;
+
+1;
+
+__END__
 
 =pod
 
@@ -83,7 +88,10 @@ Any database (including SQLite) should suffice for db support.
 
 =head1 SEE ALSO
 
-L<Madre::Sync::Controller::User>, L<Madre::Sync::Controller::Conf>,  L<Madre::Sync::Controller::Root>, L<Catalyst>
+L<Madre::Sync::Controller::User>,
+L<Madre::Sync::Controller::Conf>,
+L<Madre::Sync::Controller::Root>,
+L<Catalyst>
 
 =head1 AUTHOR
 
@@ -95,5 +103,3 @@ This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
