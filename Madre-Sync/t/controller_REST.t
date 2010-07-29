@@ -3,8 +3,8 @@ use warnings;
 use Test::More tests => 8;
 
 # we dont use Catalyst::Test because we need access to the useragent for redirects on POST 
-#BEGIN { use_ok 'Catalyst::Test', 'configSrv' }
-BEGIN { use_ok 'configSrv::Controller::User' }
+#BEGIN { use_ok 'Catalyst::Test', 'Madre::Sync' }
+BEGIN { use_ok 'Madre::Sync::Controller::User' }
 
 use LWP::UserAgent;
 use HTTP::Cookies;

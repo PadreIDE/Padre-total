@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('configSrv', 'Create');
+Catalyst::ScriptRunner->run('Madre::Sync', 'Create');
 
 1;
 

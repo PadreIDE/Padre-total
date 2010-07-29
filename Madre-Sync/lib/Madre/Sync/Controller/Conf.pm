@@ -1,15 +1,19 @@
-package configSrv::Controller::Conf;
+package Madre::Sync::Controller::Conf;
+
 use Moose;
 use namespace::autoclean;
 
-BEGIN {extends 'Catalyst::Controller::REST'; }
+BEGIN {
+	extends 'Catalyst::Controller::REST';
+}
 
 use JSON::Any;
 
+=pod
+
 =head1 NAME
 
-configSrv::Controller::Conf - Catalyst Controller
-
+Madre::Sync::Controller::Conf - Catalyst Controller
 
 =head1 DESCRIPTION
 

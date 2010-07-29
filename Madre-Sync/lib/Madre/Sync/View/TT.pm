@@ -1,4 +1,4 @@
-package configSrv::View::TT;
+packageMadre::Sync::View::TT;
 
 use strict;
 use warnings;
@@ -9,15 +9,15 @@ __PACKAGE__->config(TEMPLATE_EXTENSION => '.tt');
 
 =head1 NAME
 
-configSrv::View::TT - TT View for configSrv
+Madre::Sync::View::TT - TT View for configSrv
 
 =head1 DESCRIPTION
 
-TT View for configSrv.
+TT View for Madre::Sync.
 
 =head1 SEE ALSO
 
-L<configSrv>
+L<Madre::Sync>
 
 =head1 AUTHOR
 

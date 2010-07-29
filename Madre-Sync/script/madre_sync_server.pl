@@ -5,7 +5,7 @@ BEGIN {
 }
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('configSrv', 'Server');
+Catalyst::ScriptRunner->run('Madre::Sync', 'Server');
 
 1;
 

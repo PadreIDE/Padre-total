@@ -1,4 +1,5 @@
-package configSrv::Controller::Root;
+package Madre::Sync::Controller::Root;
+
 use Moose;
 use namespace::autoclean;
 
@@ -12,11 +13,11 @@ __PACKAGE__->config(namespace => '');
 
 =head1 NAME
 
-configSrv::Controller::Root - Root Controller for configSrv
+Madre::Sync::Controller::Root - Root Controller for configSrv
 
 =head1 DESCRIPTION
 
-configSrv is a Catalyst webservice designed to handle requests
+Madre::Sync is a Catalyst webservice designed to handle requests
 passed in by a remote Padre::ConfigSync instance. It provides 
 a user registration / login mechanism as well as configuration
 storage / retrieval / deletion. 

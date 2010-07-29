@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('configSrv', 'CGI');
+Catalyst::ScriptRunner->run('Madre::Sync', 'CGI');
 
 1;
 

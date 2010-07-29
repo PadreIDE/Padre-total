@@ -1,7 +1,7 @@
-package configSrv;
+package Madre::Sync;
+
 use Moose;
 use namespace::autoclean;
-
 use Catalyst::Runtime 5.80;
 
 # Set flags and add plugins for the application
@@ -25,8 +25,7 @@ use Catalyst qw/
 /;
 
 extends 'Catalyst';
-with 'CatalystX::REPL';
-
+with    'CatalystX::REPL';
 
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
@@ -34,9 +33,9 @@ $VERSION = eval $VERSION;
 # Configure the application.
 #
 __PACKAGE__->config(
-   name => 'configSrv',
-   #'default'   => 'text/x-yaml',
-   #'stash_key' => 'rest',
+   name      => 'Madre-Sync',
+   #default   => 'text/x-yaml',
+   #stash_key => 'rest',
 
    # Disable deprecated behavior needed by old applications
    disable_component_resolution_regex_fallback => 1,
@@ -57,14 +56,15 @@ __PACKAGE__->config(
       },
    },
 );
-# Start the application
-__PACKAGE__->setup();
 
+# Start the application
+__PACKAGE__->setup;
+
+=pod
 
 =head1 NAME
 
-configSrv - Catalyst based application
-
+Madre::Sync - Catalyst based application
 
 =head1 SYNOPSIS
 
@@ -78,12 +78,12 @@ are RESTful.
 
 =head1 DEPLOYMENT 
 
-Follow standard catalyst application deployment procedures for configSrv.
+Follow standard catalyst application deployment procedures for Madre::Sync.
 Any database (including SQLite) should suffice for db support.
 
 =head1 SEE ALSO
 
-L<configSrv::Controller::User>, L<configSrv::Controller::Conf>,  L<configSrv::Controller::Root>, L<Catalyst>
+L<Madre::Sync::Controller::User>, L<Madre::Sync::Controller::Conf>,  L<Madre::Sync::Controller::Root>, L<Catalyst>
 
 =head1 AUTHOR
 

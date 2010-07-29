@@ -1,4 +1,4 @@
-package configSrv::Model::padreDB;
+package Madre::Sync::Model::padreDB;
 
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
@@ -15,11 +15,11 @@ __PACKAGE__->config(
 
 =head1 NAME
 
-configSrv::Model::padreDB - Catalyst DBIC Schema Model
+Madre::Sync::Model::padreDB - Catalyst DBIC Schema Model
 
 =head1 SYNOPSIS
 
-See L<configSrv>
+See L<Madre::Sync>
 
 =head1 DESCRIPTION
 

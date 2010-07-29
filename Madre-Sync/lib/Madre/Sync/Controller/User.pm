@@ -1,4 +1,4 @@
-package configSrv::Controller::User;
+package Madre::Sync::Controller::User;
 use Moose;
 use namespace::autoclean;
 
@@ -6,7 +6,7 @@ BEGIN {extends 'Catalyst::Controller::REST'; }
 
 =head1 NAME
 
-configSrv::Controller::User - Catalyst Controller
+Madre::Sync::Controller::User - Catalyst Controller
 
 =head1 DESCRIPTION
 

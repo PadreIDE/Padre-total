@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 use Catalyst::ScriptRunner;
-Catalyst::ScriptRunner->run('configSrv', 'Test');
+Catalyst::ScriptRunner->run('Madre::Sync', 'Test');
 
 1;
 
