@@ -1,4 +1,0 @@
-
-"Hello ".say;
-"world".say;
-
