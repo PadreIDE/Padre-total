@@ -24,10 +24,8 @@ BEGIN {
 	extends 'Catalyst::Controller::ActionRole';
 }
 
-#
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
-#
 __PACKAGE__->config( namespace => '' );
 
 =pod
@@ -39,10 +37,10 @@ TODO: get rid of this
 
 =cut
 
+# Hello World
 sub index :Path :Args(0) {
-	my ( $self, $c ) = @_;
-
-	# Hello World
+	my $self = shift;
+	my $c    = shift;
 	$c->response->body( $c->welcome_message );
 }
 
@@ -55,8 +53,9 @@ Standard 404 error page
 =cut
 
 sub default :Path {
-	my ( $self, $c ) = @_;
-	$c->response->body( 'Page not found' );
+	my $self = shift;
+	my $c    = shift;
+	$c->response->body('Page not found');
 	$c->response->status(404);
 }
 

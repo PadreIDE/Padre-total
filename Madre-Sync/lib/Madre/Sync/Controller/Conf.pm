@@ -46,10 +46,10 @@ version of it.
 =cut
 
 sub conf_GET {
-	my ($self, $c) = @_;
-
+	my $self       = shift;
+	my $c          = shift;
 	my $configs_rs = $c->model('padreDB::Config');
-	my $config = $configs_rs->search({ id => $c->user->id })->single->config;
+	my $config     = $configs_rs->search( { id => $c->user->id } )->single->config;
 	$config ||= { 1 => 1 };
 
 	$self->status_ok(
@@ -69,17 +69,17 @@ If this fails, will return 302 bad request.
 =cut
 
 sub conf_PUT {
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 	my $data = $c->request->data; 
-
-	if ($data) { 
+	if ( $data ) { 
 		eval {
-			$c->model('padreDB::Config')->update_or_create({
-				id => $c->user->id,
+			$c->model('padreDB::Config')->update_or_create( {
+				id     => $c->user->id,
 				config => JSON::Any->objToJson($data),
-			})
+			} )
 		};
-		if ($@) { 
+		if ( $@ ) { 
 			$c->log->debug("Config storage failure: $@");
 			$self->status_bad_request(
 				$c,
@@ -110,16 +110,14 @@ attempted anyways?
 =cut
 
 sub conf_DELETE { 
-	my ($self, $c) = @_;
-
-	$c->model('padreDB::Config')->search( { id => $c->user->id })->delete;
-
+	my $self = shift;
+	my $c    = shift;
+	$c->model('padreDB::Config')->search( { id => $c->user->id } )->delete;
 	$self->status_ok(
 		$c,
 		entity => { 1 => 1 },
 	);
 }
-
 
 __PACKAGE__->meta->make_immutable;
 

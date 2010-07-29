@@ -43,11 +43,12 @@ private PUT method for register, provides PUT handling.
 =cut
 
 sub register_PUT {
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 	my $users_rs = $c->model('padreDB::User');
 	my $data = $c->request->data;
 
-	if ($c->user_exists()) { 
+	if ( $c->user_exists ) { 
 		$self->status_bad_request(
 			$c, 
 			message => "You cannot create multiple accounts." 
@@ -62,7 +63,7 @@ sub register_PUT {
 			password => $data->{password},
 		} )
 	};
-	if ($@) {
+	if ( $@ ) {
 		$c->log->debug( "User signup failure: $@" );
 		$self->status_bad_request(
 			$c,
@@ -92,7 +93,8 @@ and DELETE HTTP actions. If not logged in, registration attempt will fail with a
 
 # Handle all LOGGED IN user interaction
 sub user :Chained('/login/required') :PathPart('user') :ActionClass('REST') {
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 
 	# Is this even needed?
 	$c->stash(users_rs => $c->model('padreDB::User'));
@@ -108,7 +110,8 @@ private GET method for user, provides GET handling.
 =cut
 
 sub user_GET { 
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 	my $users_rs = $c->stash->{users_rs};
 
 	# Return a 200 OK, with the data in entity
@@ -129,12 +132,13 @@ Synonymous with user PUT.
 =cut
 
 sub user_POST { 
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 	my $data = $c->request->data;
 	my $user = $c->user->get_object();
 
 	# Update email .. its the only user option we can change
-	if (exists $data->{email} && exists $data->{password}) { 
+	if ( exists $data->{email} && exists $data->{password} ) { 
 		eval {
 			$user->update( {
 				email    => $data->{email},
@@ -171,7 +175,8 @@ Synonymous with user PUT.
 
 # Delete an account
 sub user_DELETE { 
-	my ($self, $c) = @_;
+	my $self = shift;
+	my $c    = shift;
 	$c->user->delete;
 
 	$self->status_ok(

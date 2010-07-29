@@ -3,7 +3,6 @@ package Madre::Sync::Model::padreDB;
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
-$DB::single = 1;
 __PACKAGE__->config(
 	schema_class => 'Madre::Sync::Schema',
 	connect_info => {

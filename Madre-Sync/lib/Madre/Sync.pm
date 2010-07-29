@@ -29,10 +29,8 @@ extends 'Catalyst';
 with    'CatalystX::REPL';
 
 our $VERSION = '0.01';
-$VERSION = eval $VERSION;
 
 # Configure the application.
-#
 __PACKAGE__->config(
 	name      => 'Madre-Sync',
 	#default   => 'text/x-yaml',
@@ -42,7 +40,7 @@ __PACKAGE__->config(
 	disable_component_resolution_regex_fallback => 1,
 	'Plugin::Authentication' => {
 		default => {
-			credential     => {
+			credential => {
 				class          => 'Password',
 				password_field => 'password',
 				password_type  => 'clear'
