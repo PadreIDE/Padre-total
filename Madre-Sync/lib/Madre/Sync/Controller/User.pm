@@ -17,6 +17,8 @@ Provides interface to the user and register resource for the REST webservice.
 use Moose;
 use namespace::autoclean;
 
+our $VERSION = '0.01';
+
 BEGIN {
 	extends 'Catalyst::Controller::REST';
 }
@@ -93,6 +95,7 @@ and DELETE HTTP actions. If not logged in, registration attempt will fail with a
 
 # Handle all LOGGED IN user interaction
 sub user :Chained('/login/required') :PathPart('user') :ActionClass('REST') {
+	$DB::single = 1;
 	my $self = shift;
 	my $c    = shift;
 
@@ -110,6 +113,7 @@ private GET method for user, provides GET handling.
 =cut
 
 sub user_GET { 
+	$DB::single = 1;
 	my $self     = shift;
 	my $c        = shift;
 	my $users_rs = $c->stash->{users_rs};
@@ -132,6 +136,7 @@ Synonymous with user PUT.
 =cut
 
 sub user_POST { 
+	$DB::single = 1;
 	my $self = shift;
 	my $c    = shift;
 	my $data = $c->request->data;
@@ -175,6 +180,7 @@ Synonymous with user PUT.
 
 # Delete an account
 sub user_DELETE { 
+	$DB::single = 1;
 	my $self = shift;
 	my $c    = shift;
 	$c->user->delete;
@@ -195,7 +201,9 @@ __END__
 
 =head1 AUTHOR
 
-,,,
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
+
+Matthew Phillips E<lt>mattp@cpan.orgE<gt>
 
 =head1 LICENSE
 

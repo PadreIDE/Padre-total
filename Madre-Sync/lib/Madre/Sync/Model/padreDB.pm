@@ -3,6 +3,8 @@ package Madre::Sync::Model::padreDB;
 use strict;
 use base 'Catalyst::Model::DBIC::Schema';
 
+our $VERSION = '0.01';
+
 __PACKAGE__->config(
 	schema_class => 'Madre::Sync::Schema',
 	connect_info => {
@@ -15,6 +17,8 @@ __PACKAGE__->config(
 1;
 
 __END__
+
+=pod
 
 =head1 NAME
 
@@ -33,6 +37,10 @@ L<Catalyst::Model::DBIC::Schema> Model using schema L<Madre::Sync::Schema>
 Catalyst::Helper::Model::DBIC::Schema - 0.4
 
 =head1 AUTHOR
+
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
+
+Matthew Phillips E<lt>mattp@cpan.orgE<gt>
 
 =head1 LICENSE
 

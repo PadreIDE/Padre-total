@@ -5,15 +5,16 @@ BEGIN {
 	$|  = 1;
 	$^W = 1;
 }
-use Test::More tests => 9;
+
+use Test::More tests => 8;
+use HTTP::Request::Common qw{ GET POST };
 
 use_ok( 'Catalyst::Test', 'Madre::Sync' );
-use_ok( 'Madre::Sync::Controller::Root' );
-use_ok( 'Madre::Sync::Controller::User' );
-use_ok( 'Madre::Sync::Controller::Conf' );
 
-ok( request('/')->is_success,             'Request should succeed' );
-ok( request('/bad')->code == 404,         'Request should fail with 404' );
-ok( request('/login')->is_success,        'Request should succeed' );
-ok( request('/user')->code == 415,        'Request should bounce to login page with 415' );
-ok( request('/user/config')->code == 415, 'Request should bounce to login page with 415' );
+ok( request('/')->code == 404,            'request /            404' );
+ok( request(GET '/')->code == 404,        'GET     /            404' );
+ok( request('/bad')->code == 404,         'request /bad         404' );
+ok( request('/login')->is_success,        'request /login       200' );
+ok( request(GET '/login')->is_success,    'GET     /login       200' );
+ok( request('/user')->code == 415,        'request /user        415 -> /login' );
+ok( request('/user/config')->code == 415, 'request /user/config 415 -> /login' );

@@ -1,20 +1,11 @@
 package Madre::Sync;
 
-use 5.008;
+use 5.008005;
 use Moose;
 use namespace::autoclean;
 use Catalyst::Runtime 5.80;
 
-# Set flags and add plugins for the application
-#
-#         -Debug: activates the debug mode for very useful log messages
-#   ConfigLoader: will load the configuration from a Config::General file in the
-#                 application's home directory
-# Static::Simple: will serve static files from the application's root
-#                 directory
-
 use Catalyst qw{
-	-Debug
 	ConfigLoader
 	Static::Simple
 	+CatalystX::SimpleLogin
@@ -25,19 +16,18 @@ use Catalyst qw{
 	Static::Simple
 };
 
+our $VERSION = '0.01';
+
 extends 'Catalyst';
 with    'CatalystX::REPL';
 
-our $VERSION = '0.01';
-
 # Configure the application.
 __PACKAGE__->config(
-	name      => 'Madre-Sync',
-	#default   => 'text/x-yaml',
-	#stash_key => 'rest',
+	name => 'Madre-Sync',
 
 	# Disable deprecated behavior needed by old applications
 	disable_component_resolution_regex_fallback => 1,
+
 	'Plugin::Authentication' => {
 		default => {
 			credential => {
@@ -93,7 +83,9 @@ L<Catalyst>
 
 =head1 AUTHOR
 
-,,,
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
+
+Matthew Phillips E<lt>mattp@cpan.orgE<gt>
 
 =head1 LICENSE
 

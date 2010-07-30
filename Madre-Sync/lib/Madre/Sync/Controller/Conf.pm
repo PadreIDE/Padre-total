@@ -9,7 +9,9 @@ Madre::Sync::Controller::Conf - Catalyst Controller
 =head1 DESCRIPTION
 
 Provides interface to the conf/config resource for the REST webservice.
-TODO: I should rewrite this to just use ActionClass('REST'), , to remove the redundant serialization/deserialization
+
+TODO: I should rewrite this to just use ActionClass('REST'),
+to remove the redundant serialization/deserialization.
 
 =head1 METHODS
 
@@ -22,6 +24,8 @@ use JSON::XS ();
 BEGIN {
 	extends 'Catalyst::Controller::REST';
 }
+
+our $VERSION = '0.01';
 
 =pod
 
@@ -36,7 +40,7 @@ sub conf :Chained('/login/required') :PathPart('user/config') :ActionClass('REST
 
 =pod
 
-=head2 conf_GET 
+=head2 conf_GET
 
 private GET method for conf, provides GET handling. If logged in, tries to retrieve 
 the user config currently stored in the database. If it exists, returns a serialized 
@@ -45,11 +49,11 @@ version of it.
 =cut
 
 sub conf_GET {
-	my $self       = shift;
-	my $c          = shift;
-	my $configs_rs = $c->model('padreDB::Config');
-	my $config     = $configs_rs->search( { id => $c->user->id } )->single->config;
-	$config ||= { 1 => 1 };
+	my $self   = shift;
+	my $c      = shift;
+	my $rs     = $c->model('padreDB::Config');
+	my $config = $rs->search( { id => $c->user->id } )->single->config
+	          || { 1 => 1 };
 
 	$self->status_ok(
 		$c,
@@ -59,7 +63,7 @@ sub conf_GET {
 
 =pod
 
-=head2 conf_PUT 
+=head2 conf_PUT
 
 private PUT method for conf, provides PUT handling. If the given perl data structure
 passed in through the request validates, will store it serialized in the database. 
@@ -70,14 +74,16 @@ If this fails, will return 302 bad request.
 sub conf_PUT {
 	my $self = shift;
 	my $c    = shift;
-	my $data = $c->request->data; 
-	if ( $data ) { 
+	my $data = $c->request->data;
+
+	if ( $data ) {
 		eval {
 			$c->model('padreDB::Config')->update_or_create( {
 				id     => $c->user->id,
 				config => JSON::XS->new->encode($data),
 			} )
 		};
+
 		if ( $@ ) { 
 			$c->log->debug("Config storage failure: $@");
 			$self->status_bad_request(
@@ -86,6 +92,7 @@ sub conf_PUT {
 			);
 			return;
 		}
+
 		$self->status_ok(
 			$c,
 			entity => { 1 => 1 },
@@ -93,7 +100,9 @@ sub conf_PUT {
 	}
 }
 
-*conf_POST = *conf_PUT;
+sub conf_POST {
+	shift->conf_PUT(@_);
+}
 
 =pod
 
@@ -128,7 +137,9 @@ __END__
 
 =head1 AUTHOR
 
-,,,
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
+
+Matthew Phillips E<lt>mattp@cpan.orgE<gt>
 
 =head1 LICENSE
 

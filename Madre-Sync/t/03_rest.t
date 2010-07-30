@@ -5,6 +5,7 @@ BEGIN {
 	$|  = 1;
 	$^W = 1;
 }
+use Test::More skip_all => 'Requires a running standalone server';
 use Test::More tests => 8;
 
 # We don't use Catalyst::Test because we need access

@@ -8,10 +8,18 @@ BEGIN {
 }
 use Test::More tests => 7;
 
-use_ok( 'Madre::Sync'                   );
-use_ok( 'Madre::Sync::Schema'           );
-use_ok( 'Madre::Sync::View::TT'         );
-use_ok( 'Madre::Sync::Model::padreDB'   );
-use_ok( 'Madre::Sync::Controller::Root' );
-use_ok( 'Madre::Sync::Controller::User' );
-use_ok( 'Madre::Sync::Controller::Conf' );
+use_ok( 'Madre::Sync' );
+
+no strict 'refs';
+is(
+	$Madre::Sync::VERSION,
+	${"Madre::Sync::${_}::VERSION"},
+	"Madre::Sync::$_ loaded",
+) foreach qw{
+	Schema
+	View::TT
+	Model::padreDB
+	Controller::Root
+	Controller::User
+	Controller::Conf
+};

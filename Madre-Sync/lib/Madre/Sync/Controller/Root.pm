@@ -24,25 +24,11 @@ BEGIN {
 	extends 'Catalyst::Controller::ActionRole';
 }
 
+our $VERSION = '0.01';
+
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
 __PACKAGE__->config( namespace => '' );
-
-=pod
-
-=head2 index
-
-The root page (/)
-TODO: get rid of this 
-
-=cut
-
-# Hello World
-sub index :Path :Args(0) {
-	my $self = shift;
-	my $c    = shift;
-	$c->response->body( $c->welcome_message );
-}
 
 =pod
 
@@ -79,7 +65,9 @@ __END__
 
 =head1 AUTHOR
 
-,,,
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
+
+Matthew Phillips E<lt>mattp@cpan.orgE<gt>
 
 =head1 LICENSE
 
