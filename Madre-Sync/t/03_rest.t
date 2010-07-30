@@ -42,7 +42,7 @@ diag 'Add a user';
 my $resp = $ua->request(
 	PUT 'http://localhost:3000/register',
 	'Content-Type' => 'application/json',
-	'Content'      => $json->objToJson($req_data),
+	'Content'      => $json->encode($req_data),
 );
 is( $resp->code, 200, "Account creation" );
 
@@ -64,7 +64,7 @@ diag 'Test uniqueness reregistration';
 $resp = $ua->request(
 	PUT 'http://localhost:3000/register',
 	'Content-Type' => 'application/json',
-	'Content'      => $json->objToJson($req_data),
+	'Content'      => $json->encode($req_data),
 );
 is( $resp->code, 400, "Account creation reattempt with used email / name" );
 
@@ -72,7 +72,7 @@ diag 'Test updating information';
 $resp = $ua->request(
 	POST 'http://localhost:3000/user',
 	'Content-Type' => 'application/json',
-	'Content'      => $json->objToJson( {
+	'Content'      => $json->encode( {
 		email    => 'bademial.ean',
 		password => 'qwerty',
 	} )
@@ -82,7 +82,7 @@ is( $resp->code, 400, "Account modification with invalid email address" );
 $resp = $ua->request(
 	POST 'http://localhost:3000/user',
 	'Content-Type' => 'application/json',
-	'Content'      => $json->objToJson( {
+	'Content'      => $json->encode( {
 		email    => 'goodemail@yes.com',
 		password => 'qwerty',
 	} )
@@ -93,7 +93,7 @@ diag 'Test post of config';
 $resp = $ua->request(
 	POST 'http://localhost:3000/user/config',
 	'Content-Type' => 'application/json',
-	'Content'      => $json->objToJson( {
+	'Content'      => $json->encode( {
 		config => { test => 'goodemail@yes.com', password => 'qwerty' }
 	} )
 );
@@ -105,7 +105,7 @@ $resp = $ua->request(
 	'Accept' => 'application/json',
 );
 
-#$resp = $ua->request( GET , 'Content-Type' => 'application/json', Content => $json->objToJson( { email => 'goodemail@yes.com', password => 'qwerty' } ) );
+#$resp = $ua->request( GET , 'Content-Type' => 'application/json', Content => $json->encode( { email => 'goodemail@yes.com', password => 'qwerty' } ) );
 #$resp =$ua->request( GET 'http://localhost:3000/user/config', 'Content-Type' => 'application/json' );
 #use Data::Dumper;
 #diag Dumper $resp;
