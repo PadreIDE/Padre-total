@@ -31,3 +31,5 @@ foreach my $e (@{ $res->{properties} }) {
     }
   }
 }
+
+#(c) Alexandr Ciornii 2010, Artistic/GPL/public domain
