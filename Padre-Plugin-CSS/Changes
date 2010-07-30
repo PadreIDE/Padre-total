@@ -8,6 +8,7 @@ NOT RELEASED!
     Italian translation (SBLANDIN)
     Use keyword list from css.yml for autocompletition (CHORNY)
     Links to CSS 2.1 specs (CHORNY)
+    Tool to extract list of CSS properties (CHORNY)
 
 0.08    2009.05.31
     removed taint mode for tests, which lead to some fails (jquelin)
