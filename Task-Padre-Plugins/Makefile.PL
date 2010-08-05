@@ -14,7 +14,7 @@ requires 'Padre::Plugin::Alarm' => '0.07';
 requires 'Padre::Plugin::Autoformat' => '1.1.2';
 requires 'Padre::Plugin::CSS' => '0.08';
 requires 'Padre::Plugin::ClassSniff' => '0.01';
-requires 'Padre::Plugin::CommandLine' => '0.02';
+requires 'Padre::Plugin::CommandLine' => '0.03';
 requires 'Padre::Plugin::DataWalker' => '0.01';
 requires 'Padre::Plugin::Debugger' => '0.3';
 requires 'Padre::Plugin::Ecliptic' => '0.18';
@@ -29,7 +29,7 @@ requires 'Padre::Plugin::Kate' => '0.02';
 requires 'Padre::Plugin::Nopaste' => '0.2.1';
 requires 'Padre::Plugin::PAR' => '0.05';
 requires 'Padre::Plugin::PHP' => '0.03';
-requires 'Padre::Plugin::PerlCritic' => '0.06';
+requires 'Padre::Plugin::PerlCritic' => '0.08';
 requires 'Padre::Plugin::PerlTidy' => '0.08';
 requires 'Padre::Plugin::Swarm' => '0.04';
 requires 'Padre::Plugin::Template' => '0.1';
@@ -40,7 +40,7 @@ requires 'Padre::Plugin::XS'  => '0.01';
 
 feature 'Simple Catalyst helper interface for Padre',
 	-default => 0,
-	'Padre::Plugin::Catalyst' => '0.05';
+	'Padre::Plugin::Catalyst' => '0.09';
 feature 'Simple Git interface for Padre',
 	-default => 0,
 	'Padre::Plugin::Git' => '0.01';
