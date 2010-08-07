@@ -32,8 +32,8 @@ file for you.
 =cut
 
 sub padre_interfaces {
-  'Padre::Plugin'         => 0.19,
-  'Padre::Current'        => 0.24,
+  'Padre::Plugin'         => 0.43,
+  'Padre::Current'        => 0.43,
 }
 
 sub menu_plugins_simple {
