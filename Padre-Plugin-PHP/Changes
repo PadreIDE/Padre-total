@@ -1,5 +1,6 @@
 Changes in Padre::Plugin::PHP
 
+v0.04   2010.07.26
 	00-load.t added (CHORNY)
 	keywords added to autocompletition (CHORNY)
 

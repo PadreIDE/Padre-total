@@ -1,12 +1,12 @@
 package Padre::Wx::Dialog::Preferences::PHP;
 
+use 5.008;
 use warnings;
 use strict;
-use 5.008;
 
 use Padre::Wx::Dialog::Preferences ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @ISA     = 'Padre::Wx::Dialog::Preferences';
 
 sub panel {
