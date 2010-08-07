@@ -8,7 +8,6 @@ my $builder = Padre::PluginBuilder->new(
     module_name           => 'Padre::Plugin::PAR',
     license               => 'perl',
     dist_author           => ['Gabor Szabo', 'Steffen Mueller'],
-    create_makefile_pl    => 'traditional',
     create_readme         => 0,
     recursive_test_files  => 0,
 
@@ -34,6 +33,7 @@ my $builder = Padre::PluginBuilder->new(
             repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-PAR/',
         }
     },
+    share_dir => 'share',
 );
 
 $builder->create_build_script();
