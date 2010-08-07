@@ -16,8 +16,8 @@ use base 'Padre::Plugin';
 # Padre::Plugin API Methods
 
 sub padre_interfaces {
-	'Padre::Plugin'          => 0.26,
-	'Padre::Document'        => 0.21,
+	'Padre::Plugin'          => 0.43,
+	'Padre::Document'        => 0.43,
 }
 
 sub registered_documents {
