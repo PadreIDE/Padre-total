@@ -4,14 +4,15 @@ use warnings;
 use strict;
 use 5.008;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
 use Padre::Wx::Dialog::Preferences();
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.26, 'Padre::Document' => 0.21,;
+	'Padre::Plugin' => 0.50,
+	'Padre::Document' => 0.21;
 }
 
 sub registered_documents {
