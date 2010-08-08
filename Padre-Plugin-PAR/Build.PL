@@ -21,7 +21,7 @@ my $builder = Padre::PluginBuilder->new(
         'Cwd'                     => 0,
         'Data::Dumper'            => 0,
 
-        'PAR::Packer'             => 0,
+        'PAR::Packer'             => 1.005,
         'Padre'                   => 0.43,
     },
     build_requires        => {

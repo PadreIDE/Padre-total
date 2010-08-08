@@ -37,3 +37,4 @@
 \B\._
 # Avoid archives of this distribution
 \bPadre-Plugin-PAR-[\d\.\_]+
+^MYMETA.yml$
