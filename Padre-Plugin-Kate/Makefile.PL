@@ -1,6 +1,6 @@
 use strict;
 use lib 'privinc';
-use inc::Module::Install;
+use inc::Module::Install 0.92;
 
 
 name           'Padre-Plugin-Kate';
@@ -20,5 +20,7 @@ bugtracker     'http://padre.perlide.org/';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-Kate';
 
 is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+
+use_ptar() if author_context && $^O =~/win/i; #from Module::Install::PerlTar
 
 WriteAll;
