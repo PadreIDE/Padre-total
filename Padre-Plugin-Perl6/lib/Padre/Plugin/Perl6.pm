@@ -11,7 +11,6 @@ use Padre::Plugin::Perl6::Util;
 
 # exports and version
 our $VERSION   = '0.64';
-our @EXPORT_OK = qw(plugin_config);
 
 # constants for html exporting
 my $FULL_HTML    = 'full_html';
