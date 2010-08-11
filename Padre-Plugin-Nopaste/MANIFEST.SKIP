@@ -32,3 +32,4 @@
 
 # avoid archives of this distribution
 \bPadre-Plugin-Nopaste-[\d\.\_]+
+^MYMETA.yml$

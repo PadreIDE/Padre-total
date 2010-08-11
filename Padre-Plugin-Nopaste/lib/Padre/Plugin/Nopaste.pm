@@ -16,7 +16,15 @@ use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use Module::Util          qw{ find_installed };
 
-use parent qw{ Padre::Plugin Padre::Task };
+#use Padre::Task;
+#our @ISA     = qw{
+#	Padre::Role::Task
+#	Padre::Plugin
+#};
+use parent qw{ Padre::Plugin
+Padre::Role::Task
+}; #
+#
 
 our $VERSION = '0.2.1';
 
@@ -40,50 +48,54 @@ sub plugin_icon {
 
 # padre interface
 sub padre_interfaces {
-    'Padre::Plugin' => 0.28,
-    'Padre::Task'   => 0.30,
+    'Padre::Plugin' => 0.65,
+    'Padre::Task'   => 0.65,
 }
 
 # plugin menu.
 sub menu_plugins_simple {
     my ($self) = @_;
     'Nopaste' => [
-        "Nopaste\tCtrl+Shift+V" => 'schedule',  # launch thread, see Padre::Task
+        "Nopaste\tCtrl+Shift+V" => 'nopaste',  # launch thread, see Padre::Task
     ];
 }
 
+require Padre::Plugin::Nopaste::Task;
+sub nopaste {
+	#TRACE("nopaste") if DEBUG;
+	my $self = shift;
 
-# -- padre task api, refer to Padre::Task
+	# Fire the task
+	$self->task_request(
+		task     => 'Padre::Plugin::Nopaste::Task',
+		document => $self,
+		callback => 'task_response',
+	);
 
-sub prepare {
-    my ($self) = @_;
-
-    my $main     = $self->main;
-    my $current  = $main->current;
-    my $editor   = $current->editor;
-    return unless $editor;
-
-    # no selection means send current file
-    $self->{text} = $editor->GetSelectedText || $editor->GetText;
+	return;
 }
 
+sub task_response {
+	#TRACE("nopaste_response") if DEBUG;
+	my $self = shift;
+	my $task = shift;
+	# Found what we were looking for
+	if ( $task->{location} ) {
+		#$self->ppi_select( $task->{location} );
+		#return;
+	}
 
-sub run {
-    my ($self) = @_;
-
-    require App::Nopaste;
-    my $url = App::Nopaste::nopaste($self->{text});
-
-    # show result in output section
-    $self->task_print("\n");
-    if ( defined $url ) {
-        my $text = "Text successfully nopasted at: $url\n";
-        $self->task_print($text);
-    } else {
-        my $text = "Error while nopasting text\n";
-        $self->task_warn($text);
-    }
+	# Must have been a clean result
+	# TO DO: Convert this to a call to ->main that doesn't require
+	# us to use Wx directly.
+	Wx::MessageBox(
+		$task->{message},
+		$task->{message},
+		Wx::wxOK,
+		$self->current->main,
+	);
 }
+
 
 
 # -- public methods
