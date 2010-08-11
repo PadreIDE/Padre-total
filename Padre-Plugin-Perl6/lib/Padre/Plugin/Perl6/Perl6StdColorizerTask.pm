@@ -98,6 +98,10 @@ sub finish {
 				my $start = $token{last_pos} - $len;
 				$editor->StartStyling( $start, $color );
 				$editor->SetStyling( $len, $color );
+			} elsif ($token{rule} eq '0') {
+				# Why are there such cases?
+			} else {
+				warn "No color found for '$token{rule}'";
 			}
 		}
 		$doc->{tokens} = $self->{tokens};
