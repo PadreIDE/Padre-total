@@ -85,15 +85,22 @@ sub task_response {
 		#return;
 	}
 
+	my $main = $self->current->main;
+
+	# Generate the dump string and set into the output window
+	$main->output->SetValue( $task->{message} );
+	$main->output->SetSelection( 0, 0 );
+	$main->show_output(1);
+
 	# Must have been a clean result
 	# TO DO: Convert this to a call to ->main that doesn't require
 	# us to use Wx directly.
-	Wx::MessageBox(
-		$task->{message},
-		$task->{message},
-		Wx::wxOK,
-		$self->current->main,
-	);
+#	Wx::MessageBox(
+#		$task->{message},
+#		$task->{message},
+#		Wx::wxOK,
+#		$self->current->main,
+#	);
 }
 
 
