@@ -3,10 +3,10 @@ package Padre::Plugin::Nopaste::Task;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Task::PPI ();
+use Padre::Task ();
 use Padre::Logger;
 
-our $VERSION = '0.68';
+our $VERSION = '0.2.1';
 our @ISA     = 'Padre::Task';
 
 =pod
@@ -52,12 +52,10 @@ sub process {
     # show result in output section
     if ( defined $url ) {
         my $text = "Text successfully nopasted at: $url\n";
-        print $text;
         $self->{err}=0;
         $self->{message}=$text;
     } else {
         my $text = "Error while nopasting text\n";
-        print $text;
         $self->{err}=1;
         $self->{message}=$text;
     }
