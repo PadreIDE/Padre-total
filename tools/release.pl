@@ -120,14 +120,17 @@ if ( $ver and $ver ne $version ) {
 
 my $dir = File::Temp::tempdir( CLEANUP => 0 );
 chdir $dir;
-print "DIR $dir\n";
+print "\n**DIR $dir\n";
 
-_system("svn export --quiet -r$rev $URL src");
-chdir 'src';
+# Added /Padre to the destination path, as this allows
+# assumptions in Padre::Share::share to create the 
+# correct rel2abs path.
+_system("svn export --quiet -r$rev $URL src/Padre");
+chdir 'src/Padre';
 
 print "CWD: " . Cwd::cwd() . "\n";
 
-#print "Setting VERSION $version\n";
+print "\n**Checking VERSION $version\n";
 find( \&check_version, 'lib' );	
 die if $error;
 
@@ -143,7 +146,7 @@ _system("$make manifest");
 
 # check and set RELEASE_TESTING if needs be
 my $sanc;
-print "RELEASE_TESTING envorinment variable is: ";
+print "\n**RELEASE_TESTING envorinment variable is: ";
 if( ! defined( $ENV{RELEASE_TESTING} ) ) {
 	print "not set... setting RELEASE_TESTING\n";
 	$sanc = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 1 } );
@@ -156,22 +159,36 @@ else {
 	}
 	print " be done this pass.\n";
 }
+print "\n**make test**\n";
 _system("$make test");
-_system("$make disttest");
 
+print "\n**Doing disttest\n";
+# testing the dist should not be done while under RELEASE_TESTING
+my $no_rel = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 0 } );
+_system("$make disttest");
+$no_rel->restore;
+
+# restore the environment for RELEASE_TESTING
 if( defined($sanc) ) {
 	$sanc->restore;
 }
 
+# check if we have set the display from the command line.
 if (not $display) {
+	print "\n**\$display not set\n";
 	if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
 		print "Turn off DISPLAY\n";
-		my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
+		# not sure why DISPLAY is removed here, since it's needed for the testing.
+		#my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
+		my $no_rel = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 0 } );
+		print "\n\n*** make disttest ***\n\n";
 		_system("$make disttest");
-		$sanctify->restore();
+		$no_rel->restore;
+		#$sanctify->restore();
 	}
 }
 
+print "Now making the distribution\n";
 
 _system("$make dist");
 copy( "$name-$version.tar.gz", $start_dir ) or die $!;
