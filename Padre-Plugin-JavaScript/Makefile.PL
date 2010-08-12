@@ -25,5 +25,6 @@ repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-JavaScript';
 #mailinglist    'http://mail.perlide.org/mailman/listinfo/padre-dev';
 
 is_padre_plugin; # authors: Install Module::Install::PadrePlugin
+use_ptar() if author_context && $^O =~/win/i; #from Module::Install::PerlTar
  
 WriteAll;
