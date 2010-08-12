@@ -130,7 +130,7 @@ chdir 'src/Padre';
 
 print "CWD: " . Cwd::cwd() . "\n";
 
-print "\n**Checking VERSION $version\n";
+print "\n**Checking VERSION for $version\n";
 find( \&check_version, 'lib' );	
 die if $error;
 
@@ -162,11 +162,9 @@ else {
 print "\n**make test**\n";
 _system("$make test");
 
-print "\n**Doing disttest\n";
-# testing the dist should not be done while under RELEASE_TESTING
-my $no_rel = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 0 } );
+print "\n**Doing disttest - with DISPLAY set.\n";
 _system("$make disttest");
-$no_rel->restore;
+
 
 # restore the environment for RELEASE_TESTING
 if( defined($sanc) ) {
@@ -177,14 +175,14 @@ if( defined($sanc) ) {
 if (not $display) {
 	print "\n**\$display not set\n";
 	if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
-		print "Turn off DISPLAY\n";
-		# not sure why DISPLAY is removed here, since it's needed for the testing.
-		#my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
-		my $no_rel = Env::Sanctify->sanctify( env => { RELEASE_TESTING => 0 } );
+		print "\n***Turn off DISPLAY for packagers disttest-ing.\n";
+		# DISPLAY is turned off here to make sure disttest runs without it for various packagers ( such a Fedora )
+		# which require tests to pass, so any tests that fail here complaining it's needs a DISPLAY variable set
+		# needs to be updated with a check for DISPLAY and skip when missing.
+		my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
 		print "\n\n*** make disttest ***\n\n";
 		_system("$make disttest");
-		$no_rel->restore;
-		#$sanctify->restore();
+		$sanctify->restore();
 	}
 }
 
