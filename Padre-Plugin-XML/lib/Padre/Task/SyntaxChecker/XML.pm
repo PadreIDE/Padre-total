@@ -58,7 +58,7 @@ sub _valid {
 
 	if ($@) {
 		# parser error
-		$self->{syntax_check} = _parse_msg( $@, $base_uri );
+		return _parse_msg( $@, $base_uri );
 	}
 	else {
 		if ( $doc->internalSubset() ) {
@@ -79,7 +79,6 @@ sub _valid {
 		}
 	}
 
-    return ($doc, $validator);
 }
 
 sub _check_syntax {
