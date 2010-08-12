@@ -15,7 +15,7 @@ homepage   'http://padre.perlide.org/';
 bugtracker 'http://padre.perlide.org/trac/';
 repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-SDL/';
 
-is_padre_plugin;
+is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 auto_install;
 #install_share_with_mofiles;
 install_share;
