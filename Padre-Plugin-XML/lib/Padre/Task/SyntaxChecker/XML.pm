@@ -40,10 +40,9 @@ sub run {
 	return 1;
 }
 
-sub _check_syntax {
-	my $self = shift;
-
-	my $base_uri = $self->{filename};
+sub _valid {
+	my $base_uri = shift;
+	my $text = shift;
 
 	my $validator = XML::LibXML->new();
 	$validator->validation(0);
@@ -54,7 +53,7 @@ sub _check_syntax {
 
 	my $doc = '';
 	eval {
-		$doc = $validator->parse_string( $self->{text}, $base_uri );
+		$doc = $validator->parse_string($text , $base_uri );
 	};
 
 	if ($@) {
@@ -65,20 +64,30 @@ sub _check_syntax {
 		if ( $doc->internalSubset() ) {
 			$validator->validation(1);
 			eval {
-				$doc = $validator->parse_string( $self->{text}, $base_uri );
+				$doc = $validator->parse_string( $text, $base_uri );
 			};
 			if ($@) {
 				# validation error
-				$self->{syntax_check} = _parse_msg( $@, $base_uri );
+				return _parse_msg( $@, $base_uri );
 			}
 			else {
-				$self->{syntax_check} = [];
+				return [];
 			}
 		}
 		else {
-			$self->{syntax_check} = [];
+			 return [];
 		}
 	}
+
+    return ($doc, $validator);
+}
+
+sub _check_syntax {
+	my $self = shift;
+
+	my $base_uri = $self->{filename};
+
+	$self->{syntax_check} = _valid ($base_uri, $self->{text});
 
 	return;
 }
