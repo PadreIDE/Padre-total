@@ -9,6 +9,10 @@ use Padre::Document ();
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Document';
 
+sub task_syntax {
+	return 'Padre::Task::SyntaxChecker::XML';
+}
+
 sub check_syntax {
 	my $self  = shift;
 	my %args  = @_;
