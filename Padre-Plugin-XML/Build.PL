@@ -11,7 +11,7 @@ my $builder = Module::Build->new(
         'Test::More'  => 0,
     },
     requires => {
-        'Padre'       => '0.26',
+        'Padre'       => '0.43',
         'XML::Tidy'   => 0,
         'XML::LibXML' => '1.67',
     },
