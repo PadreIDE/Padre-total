@@ -20,5 +20,7 @@ auto_install;
 #install_share_with_mofiles;
 install_share;
 
+install_script 'padre_logoish';
+
 WriteAll;
 
