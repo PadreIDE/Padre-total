@@ -6,7 +6,7 @@ package Padre::Plugin::JavaScript;
 use 5.008;
 use strict;
 use warnings;
-use Class::Autouse 'Padre::Document::JavaScript';
+use Class::Autouse 'Padre::Plugin::JavaScript::Document';
 
 our $VERSION = '0.25';
 
@@ -21,8 +21,8 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'application/javascript' => 'Padre::Document::JavaScript',
-	'application/json'       => 'Padre::Document::JavaScript',
+	'application/javascript' => 'Padre::Plugin::JavaScript::Document',
+	'application/json'       => 'Padre::Plugin::JavaScript::Document',
 }
 
 sub menu_plugins_simple {

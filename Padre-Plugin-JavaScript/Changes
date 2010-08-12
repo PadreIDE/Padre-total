@@ -2,6 +2,7 @@
 0.26    
         compatibility with new Padre (CHORNY)
         add JE (Syntax Check)
+        New module name for JS document (CHORNY)
         
 0.25    2009.2.1
         for Padre 0.26

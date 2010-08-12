@@ -1,4 +1,4 @@
-package Padre::Document::JavaScript;
+package Padre::Plugin::JavaScript::Document;
 
 use 5.008;
 use strict;
