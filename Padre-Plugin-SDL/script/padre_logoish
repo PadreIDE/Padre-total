@@ -20,7 +20,7 @@ use Padre::Plugin::SDL::Logoish;
 my ($filename) = @ARGV;
 die "Usage: $0 FILENAME\n" if not $filename;
 
-my $dir = tempdir(CLAENUP => 1);
+my $dir = tempdir(CLEANUP => 1);
 my $out_filename = catfile($dir, basename($filename));
 my $result = Padre::Plugin::SDL::Logoish->compile_to_perl5($filename, $out_filename);
 if ($result) {
