@@ -4,7 +4,7 @@ use warnings;
 
 our $VERSION = '0.01';
 
-use base 'Padre::Task::SyntaxChecker';
+use base 'Padre::Task::Syntax';
 use XML::LibXML;
 
 =pod
@@ -19,7 +19,7 @@ Padre::Task::SyntaxChecker::XML - XML document syntax-checking in the background
   # will be fetched as will the document's notebook page.
   my $task = Padre::Task::SyntaxChecker::XML->new();
   $task->schedule;
-  
+
   my $task2 = Padre::Task::SyntaxChecker::XML->new(
     text          => Padre::Documents->current->text_get,
     on_finish     => sub { my $task = shift; ... },
@@ -34,11 +34,13 @@ Please read its documentation!
 
 =cut
 
+=for cmt
 sub run {
 	my $self = shift;
 	$self->_check_syntax();
 	return 1;
 }
+=cut
 
 sub _valid {
 	my $base_uri = shift;
@@ -118,6 +120,16 @@ sub _parse_msg {
 	return $issues;
 }
 
+sub syntax {
+	my $self = shift;
+	my $text = shift;
+	if (not $self->{filename}) {
+		print "error - no filename\n";
+	}
+	my $base_uri = $self->{filename};
+
+	return _valid($base_uri, $text);
+}
 1;
 
 __END__

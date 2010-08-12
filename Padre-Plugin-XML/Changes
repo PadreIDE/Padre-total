@@ -6,6 +6,7 @@ Revision history for Padre-Plugin-XML
         compatibility with newer versions of Padre (ZGANTNER)
         improved README file (ZGANTNER)
         gettext-ified some strings (ZGANTNER)
+        use Padre::Task::Syntax, Task API 2 compatibility (CHORNY)
 
 0.06    2009.05.31
         removed taint mode for tests, leading to build failures (jquelin)

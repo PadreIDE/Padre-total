@@ -8,4 +8,3 @@ BEGIN {
 }
 
 diag( "Testing Padre::Plugin::XML $Padre::Plugin::XML::VERSION, Perl $], $^X" );
-my $task = Padre::Task::SyntaxChecker::XML->new();
