@@ -1,57 +1,51 @@
 use strict;
 use warnings;
-
-use SDL;
-use SDL::App;
-use SDL::Color;
+use SDL 2.511;
 use SDL::Rect;
-
-# moving a blue rectangle through a window
-
-# based on SDL::Tutorial::Animation
-
-my $width = 640;
-my $height = 480;
-
-my $window = SDL::App->new(
-	-width => $width,
-	-height => $height,
-	-depth => 16,
-	-title => 'SDL Demo',
+use SDL::Events;
+use SDLx::App;
+my $app = SDLx::App->new(
+    width  => 640,
+    height => 480,
+    depth  => 16,
+    title  => 'SDL Demo',
 );
-
-my $rect = SDL::Rect->new( -height => 10, -width => 20);
-my $bg_color = SDL::Color->new(
-	-r => 0x00,
-	-g => 0x00,
-        -b => 0x00,
-        );
-my $color = SDL::Color->new(
-	-r => 0x00,
-	-g => 0x00,
-        -b => 0xff,
-        );
-
-my $bg = SDL::Rect->new(
-	-width  => $width,
-	-height => $height,
-);
+my $rect = SDL::Rect->new( 0, 0, 20, 10 );
+my $bg_color = [ 0, 0, 0,    0 ];
+my $color    = [ 0, 0, 0xff, 0xff ];
+my $velocity = 1.0;
 
 sub draw_frame {
-	my ($app, %args) = @_;
-	$app->fill( $args{ bg }, $args{ bg_color } );
-	$app->fill( $args{rect}, $args{rect_color} );
-	$app->update( $args{bg} );
+    my ( $app, %args ) = @_;
+    $app->draw_rect( $args{bg},   $args{bg_color} );
+    $app->draw_rect( $args{rect}, $args{rect_color} );
+    $app->update();
 }
 
-for my $x (0 .. 640) {
-	$rect->x( $x );
-	draw_frame( $window,
-		bg         => $bg,   
-		bg_color   => $bg_color,
-		rect       => $rect, 
-		rect_color => $color,
-	);
+sub move_handler {
+    my $dt = shift;
+    if ( $rect->x == 0 ) { $velocity = 1; }
+    elsif ( $rect->x + $rect->w == $app->w ) { $velocity = -1; }
+    $rect->x( $rect->x + $velocity * $dt );
+    $rect->y( ( $rect->x / $app->w ) * $app->h );
 }
-        
 
+sub show_handler {
+    draw_frame(
+        $app,
+        bg         => undef,
+        bg_color   => $bg_color,
+        rect       => $rect,
+        rect_color => $color,
+    );
+}
+
+sub event_handler {
+    my $event = shift;
+    return 0 if $event->type == SDL_QUIT;
+    return 1;
+}
+$app->add_event_handler( \&event_handler );
+$app->add_move_handler( \&move_handler );
+$app->add_show_handler( \&show_handler );
+$app->run();
