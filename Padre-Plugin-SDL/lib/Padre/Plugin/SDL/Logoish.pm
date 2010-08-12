@@ -1,6 +1,5 @@
 package Padre::Plugin::SDL::Logoish;
 
-use 5.010;
 use warnings;
 use strict;
 
@@ -51,7 +50,7 @@ and harder challenges.
 
 =cut
 
-use SDL::App;
+use SDLx::App;
 
 # create a board optional named params:
 # width, height
@@ -62,23 +61,24 @@ sub new {
 	$self->{board}{width}  = $args{width}  || 640;
 	$self->{board}{height} = $args{height} || 480;
 
-	$self->{board}{app} = SDL::App->new(
-		-width  => $self->{board}{width},
-		-height => $self->{board}{height},
-		-depth => 16, # TODO
-		-title => 'SDL Padre Logoish', # TODO
+	$self->{board}{app} = SDLx::App->new(
+		width  => $self->{board}{width},
+		height => $self->{board}{height},
+		depth => 16, # TODO
+		title => 'SDL Padre Logoish', # TODO
 	);
 
 	# TODO pass color as param
 	$self->{board}{bg_color} = SDL::Color->new(
-		-r => 0x00,
-		-g => 0x00,
-		-b => 0x00,
+		 0x00,
+		 0x00,
+		 0x00,
 		);
 
 	$self->{board}{bg} = SDL::Rect->new(
-		-width  => $self->{board}{width},
-		-height => $self->{board}{height},
+      0,0,
+		$self->{board}{width},
+		$self->{board}{height},
 	);
 
 
@@ -89,9 +89,9 @@ sub new {
 	$self->set_pen_size_to(2);
 
 	$self->{pen}{color} = SDL::Color->new(
-		-r => 0x00,
-		-g => 0x00,
-		-b => 0xff,
+		 0x00,
+		 0x00,
+		 0xff,
         );
         
 	$self->clear;
@@ -128,35 +128,34 @@ END_OUT
 
 	while (my $line = <$fh>) {
 		chomp $line;
-		#say $line;
 		if ($line =~ /^\s*(#.*)?$/) {
-			say $out $line;
+			print $out $line."\n";
 			next;
 		}
 		# special
 		if ($line =~ /^wait\( \s*(\d+)\s* \);$/x) {
-			say $out "\$logo->wait($1);";
+			print $out "\$logo->wait($1);"."\n";
 			next;
 		}
 
 		# no param
 		if ($line =~ /^(the_value_of_the_direction|the_value_of_x_position|the_value_of_y_position|clear)\(\);$/x) {
-			say $out "\$logo->$1();";
+			print $out "\$logo->$1();"."\n";
 			next;
 		}
 		# one number
 		if ($line =~ /^set_pen_size_to\( \s*(\d+)\s* \);$/x) {
-			say $out "\$logo->set_pen_size_to($1);";
+			print $out "\$logo->set_pen_size_to($1);"."\n";
 			next;
 		}
 		# one possibly negative number
 		if ($line =~ /^change_pen_size_by\( \s*(-?\d+)\s* \);$/x) {
-			say $out "\$logo->change_pen_size_by($1);";
+			print $out "\$logo->change_pen_size_by($1);"."\n";
 			next;
 		}
 		# two numbers
 		if ($line =~ /^goto_xy\(  \s*(\d+)\s* , \s*(\d+)\s* \);$/x) {
-			say $out "\$logo->goto_xy($1, $2);";
+			print $out "\$logo->goto_xy($1, $2);"."\n";
 			next;
 		}
 
