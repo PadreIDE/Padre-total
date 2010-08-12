@@ -8,7 +8,7 @@ use strict;
 use warnings;
 use Class::Autouse 'Padre::Plugin::JavaScript::Document';
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 use base 'Padre::Plugin';
 
@@ -125,6 +125,7 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2008 Adam Kennedy & Fayland Lam all rights reserved.
+Copyright 2010 Padre team.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

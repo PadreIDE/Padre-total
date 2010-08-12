@@ -6,11 +6,8 @@ use warnings;
 use Carp            ();
 use Padre::Document ();
 
-our $VERSION = '0.24';
+our $VERSION = '0.26';
 our @ISA     = 'Padre::Document';
-
-
-
 
 
 #####################################################################

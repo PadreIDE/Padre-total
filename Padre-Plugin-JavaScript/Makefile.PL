@@ -1,5 +1,5 @@
 use strict;
-use inc::Module::Install;
+use inc::Module::Install 0.92;
 
 name           'Padre-Plugin-JavaScript';
 license        'perl';
