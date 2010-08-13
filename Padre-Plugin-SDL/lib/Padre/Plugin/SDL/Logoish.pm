@@ -248,12 +248,11 @@ sub set_pen_size_to {
 
 	if (not defined $self->{pen}{rect}) {
 		$self->{pen}{rect} = SDL::Rect->new( 
-			-height => $self->{pen}{size}, 
-			-width  => $self->{pen}{size},
+			0,0, $self->{pen}{size},$self->{pen}{size},
 			);
 	} else {
-		$self->{pen}{rect}->width($size);
-		$self->{pen}{rect}->height($size);
+		$self->{pen}{rect}->w($size);
+		$self->{pen}{rect}->h($size);
 	}
 
 	return;
