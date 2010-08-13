@@ -7,6 +7,7 @@
 #
 #
 
+use 5.006;
 use strict;
 use warnings;
 
@@ -29,6 +30,7 @@ my $builder = Module::Build->new(
         'Padre::Plugin'         => '0.65',
         'Padre::Task'           => '0.65',
         'parent'                => 0,
+        'perl'                  => '5.008005', #as Padre
     },
     add_to_cleanup      => [ 'Padre-Plugin-Nopaste-*', map { ( '*/' x $_ ) . '*~' } 0..5 ],
     create_makefile_pl  => 'traditional',

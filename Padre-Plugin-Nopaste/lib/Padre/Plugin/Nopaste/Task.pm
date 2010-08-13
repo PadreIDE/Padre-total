@@ -6,7 +6,7 @@ use warnings;
 use Padre::Task ();
 use Padre::Logger;
 
-our $VERSION = '0.2.1';
+our $VERSION = '0.3.0';
 our @ISA     = 'Padre::Task';
 
 =pod

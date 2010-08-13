@@ -1,28 +1,36 @@
 ---
-name: Padre-Plugin-Nopaste
-version: 0.2.1
+abstract: 'send code on a nopaste website from padre'
 author:
   - 'Jerome Quelin <jquelin@gmail.com>'
-abstract: send code on a nopaste website from padre
+build_requires:
+  Test::More: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3603'
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Padre-Plugin-Nopaste
+provides:
+  Padre::Plugin::Nopaste:
+    file: lib/Padre/Plugin/Nopaste.pm
+    version: v0.3.0
+  Padre::Plugin::Nopaste::Task:
+    file: lib/Padre/Plugin/Nopaste/Task.pm
+    version: v0.3.0
 requires:
   App::Nopaste: 0
   File::Basename: 0
   File::Spec::Functions: 0
   Module::Util: 0
-  Padre: 0.28
-  Padre::Plugin: 0.28
-  Padre::Task: 0.30
+  Padre: 0.65
+  Padre::Plugin: 0.65
+  Padre::Task: 0.65
   parent: 0
-build_requires:
-  Test::More: 0
-provides:
-  Padre::Plugin::Nopaste:
-    file: lib/Padre/Plugin/Nopaste.pm
-    version: 0.2.1
-generated_by: Module::Build version 0.32
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  perl: 5.008005
+resources:
+  homepage: http://padre.perlide.org/
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Nopaste/
+version: v0.3.0

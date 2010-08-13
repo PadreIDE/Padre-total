@@ -1,5 +1,6 @@
 Revision history for Padre-Plugin-Nopaste
 
+0.3.0 Aug 13 2010
  - Support Task API 2.0 (CHORNY)
  - Added Padre::Plugin::Nopaste::Task (CHORNY)
 
