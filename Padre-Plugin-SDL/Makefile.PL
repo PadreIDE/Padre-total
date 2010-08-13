@@ -6,7 +6,7 @@ author   'Gabor Szabo <szabgab@gmail.com>';
 license  'perl';
 
 requires  'Padre'         => '0.43';
-requires  'SDL'           => '0'; # '2.2.0';
+requires  'SDL'           => '2.511'; # '2.2.0';
 
 build_requires 'Test::More';
 

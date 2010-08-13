@@ -51,7 +51,7 @@ under the same terms as Perl itself.
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.42;
+	'Padre::Plugin' => 0.62;
 }
 
 sub plugin_name {

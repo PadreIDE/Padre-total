@@ -176,7 +176,7 @@ clear background
 
 sub clear {
 	my $self = shift;
-	$self->{board}{app}->fill( $self->{board}{bg}, $self->{board}{bg_color} );
+	$self->{board}{app}->draw_rect( $self->{board}{bg}, $self->{board}{bg_color} );
 }
 
 =pod
@@ -325,8 +325,8 @@ sub goto_xy {
 		$self->{pen}{rect}->$lead( $self->{pen}{$lead} + $dir{$lead} * $lead_coord );
 		my $follow_coord = $lead_coord * $diff{$follow}/$diff{$lead};
 		$self->{pen}{rect}->$follow( $self->{pen}{$follow} + $dir{$lead} * $follow_coord );
-		$self->{board}{app}->fill( $self->{pen}{rect}, $self->{pen}{color} );
-		$self->{board}{app}->update( $self->{board}{bg} );
+		$self->{board}{app}->draw_rect( $self->{pen}{rect}, $self->{pen}{color} );
+		$self->{board}{app}->update( );
 	}
 
 	$self->{pen}{x} = $to{x};
