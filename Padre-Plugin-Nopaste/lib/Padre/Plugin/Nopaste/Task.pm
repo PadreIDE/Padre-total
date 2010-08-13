@@ -20,6 +20,7 @@ Padre::Plugin::Nopaste::Task
 
 =head1 DESCRIPTION
 
+Async thread that does real nopaste
 
 =cut
 
@@ -68,13 +69,9 @@ __END__
 
 =pod
 
-=head1 SEE ALSO
-
-
-
 =head1 AUTHOR
 
-Alexandr Ciornii
+Alexandr Ciornii, Jerome Quelin, C<< <jquelin@cpan.org> >>
 
 =head1 COPYRIGHT AND LICENSE
 
