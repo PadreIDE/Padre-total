@@ -20,7 +20,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More'       => 0,
         'Text::Autoformat' => 0,
-        'Padre'            => '0.30',
+        'Padre'            => '0.43',
     },
     requires => {
         'File::Basename'        => 0,
