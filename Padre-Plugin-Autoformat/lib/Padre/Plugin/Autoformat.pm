@@ -41,7 +41,7 @@ sub plugin_icon {
 
 # padre interfaces
 sub padre_interfaces {
-    'Padre::Plugin'     => 0.28,
+    'Padre::Plugin'     => 0.68,
     'Padre::Wx::Editor' => 0.30,
 }
 
