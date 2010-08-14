@@ -19,7 +19,7 @@ use Padre::Util           ('_T');
 
 use base qw{ Padre::Plugin };
 
-our $VERSION = '1.1.2';
+our $VERSION = '1.2.0';
 
 
 # -- padre plugin api, refer to Padre::Plugin
