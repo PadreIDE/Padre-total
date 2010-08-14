@@ -161,7 +161,7 @@ The following methods are implemented:
 
 
 
-=head2 Standard Padre::Task API
+=head2 Standard Padre::Role::Task API
 
 In order not to freeze Padre during web access, nopasting is done in a thread,
 as implemented by C<Padre::Task>. Refer to this module's documentation for more
@@ -171,9 +171,11 @@ The following methods are implemented:
 
 =over 4
 
-=item * prepare()
+=item * nopaste()
 
-=item * run()
+=item * task_response()
+
+Callback for task runned by nopaste().
 
 =back
 

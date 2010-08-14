@@ -69,6 +69,24 @@ __END__
 
 =pod
 
+=head1 Standard Padre::Task API
+
+In order not to freeze Padre during web access, nopasting is done in a thread,
+as implemented by C<Padre::Task>. Refer to this module's documentation for more
+information.
+
+The following methods are implemented:
+
+=over 4
+
+=item * prepare()
+
+=item * process()
+
+=item * run()
+
+=back
+
 =head1 AUTHOR
 
 Alexandr Ciornii, Jerome Quelin, C<< <jquelin@cpan.org> >>
