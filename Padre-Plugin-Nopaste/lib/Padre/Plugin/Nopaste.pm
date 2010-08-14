@@ -26,7 +26,7 @@ Padre::Role::Task
 }; #
 #
 
-our $VERSION = '0.3.0';
+our $VERSION = '0.3.1';
 
 
 # -- padre plugin api, refer to Padre::Plugin

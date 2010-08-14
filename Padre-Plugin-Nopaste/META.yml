@@ -15,10 +15,10 @@ name: Padre-Plugin-Nopaste
 provides:
   Padre::Plugin::Nopaste:
     file: lib/Padre/Plugin/Nopaste.pm
-    version: v0.3.0
+    version: v0.3.1
   Padre::Plugin::Nopaste::Task:
     file: lib/Padre/Plugin/Nopaste/Task.pm
-    version: v0.3.0
+    version: v0.3.1
 requires:
   App::Nopaste: 0
   File::Basename: 0
@@ -33,4 +33,4 @@ resources:
   homepage: http://padre.perlide.org/
   license: http://dev.perl.org/licenses/
   repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-Nopaste/
-version: v0.3.0
+version: v0.3.1
