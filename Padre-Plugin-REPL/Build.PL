@@ -16,6 +16,9 @@ my $builder = $class->new(
 	license           => 'perl',
 	dist_author       => 'Ryan Niebur <ryanryan52@gmail.com>',
 	dist_version_from => 'lib/Padre/Plugin/REPL.pm',
+	configure_requires => {
+		'Locale::Msgfmt' => '0.08',
+	},
 	build_requires    => {
 		'Test::More'     => 0,
 		'Locale::Msgfmt' => '0.08',
