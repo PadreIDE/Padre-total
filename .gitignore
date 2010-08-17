@@ -92,3 +92,9 @@ template.padre.perlide.org/_build
 
 Padre-Plugin-LaTeX/share/locale/*.mo
 
+Syntax-Highlight-Perl6/META.yml
+Syntax-Highlight-Perl6/Makefile
+Syntax-Highlight-Perl6/blib/
+Syntax-Highlight-Perl6/inc/
+Syntax-Highlight-Perl6/pm_to_blib
+
