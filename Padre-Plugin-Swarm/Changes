@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.094 - 
+	- convert multicast service to new Task API
 	- add timestamps to chat window
 	- fix JSON parsing in WxSocket transport
 0.093 - Sat Feb 13 23:14:23  EST 2010
