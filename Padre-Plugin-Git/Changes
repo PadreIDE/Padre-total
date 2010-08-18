@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Git
 
         Compatibility with new Padre (CHORNY)
+        chdir to file directory before commit (CHORNY)
 
 0.02    2009.03.25
         Add necessary diff methods for file and dir (kaare)

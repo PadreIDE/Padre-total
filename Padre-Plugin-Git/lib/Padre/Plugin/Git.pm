@@ -8,6 +8,7 @@ use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
+use Padre::Wx::Action ();
 
 use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
@@ -229,7 +230,10 @@ sub git_commit {
 	my $message = $main->prompt("Git Commit of $path", "Please type in your message", "MY_GIT_COMMIT");
 	if ($message) {
 		$main->message( $message, 'Filename' );
+		my $cwd = cwd;
+		chdir File::Basename::dirname($path);
 		system qq(git commit $path -m"$message");
+		chdir $cwd;
 	}
 
 	return;	
@@ -305,9 +309,9 @@ sub git_status_of_project {
 sub git_diff {
 	my ($self, $path) = @_;
 
-    use Cwd qw/cwd chdir/;
-    my $cwd = cwd;
-    chdir File::Basename::dirname($path);
+	use Cwd qw/cwd chdir/;
+	my $cwd = cwd;
+	chdir File::Basename::dirname($path);
 	my $out = capture_merged(sub { system "git diff $path" });
 	chdir $cwd;
 	require Padre::Wx::Dialog::Text;
