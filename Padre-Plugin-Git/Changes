@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Git
 
+        Compatibility with new Padre (CHORNY)
+
 0.02    2009.03.25
         Add necessary diff methods for file and dir (kaare)
         Add inc/* and META.yml to MANIFEST (and therefor the tarball) (ryan52)

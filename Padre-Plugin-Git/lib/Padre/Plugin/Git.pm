@@ -12,6 +12,7 @@ use Padre::Util   ();
 use Capture::Tiny  qw(capture_merged);
 use File::Basename ();
 use File::Spec;
+use Cwd qw/cwd chdir/;
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
@@ -56,7 +57,7 @@ under the same terms as Perl itself.
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.24
+	'Padre::Plugin' => 0.46,
 }
 
 sub plugin_name {
@@ -73,7 +74,7 @@ sub define_actions {
 	my $self = shift;
 	return if $ONCE;
 	$ONCE = 1;
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.about',
 		label       => Wx::gettext('About'),
 		comment     => Wx::gettext('Show information about the Git plugin'),
@@ -83,7 +84,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.commit_file',
 		label       => Wx::gettext('Commit File'),
 		comment     => Wx::gettext('Commit File'),
@@ -93,7 +94,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.commit_project',
 		label       => Wx::gettext('Commit Project'),
 		comment     => Wx::gettext('Commit Project'),
@@ -103,7 +104,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.status_of_file',
 		label       => Wx::gettext('File Status'),
 		comment     => Wx::gettext('Show the status of the current file'),
@@ -113,7 +114,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.status_of_dir',
 		label       => Wx::gettext('Directory Status'),
 		comment     => Wx::gettext('Show the status of the current directory'),
@@ -123,7 +124,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.status_of_project',
 		label       => Wx::gettext('Project Status'),
 		comment     => Wx::gettext('Show the status of the current project'),
@@ -133,7 +134,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.diff_of_file',
 		label       => Wx::gettext('Diff of File'),
 		comment     => Wx::gettext('Diff of File'),
@@ -143,7 +144,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.diff_of_dir',
 		label       => Wx::gettext('Diff of Dir'),
 		comment     => Wx::gettext('Diff of Dir'),
@@ -153,7 +154,7 @@ sub define_actions {
 		},
 	);
 
-	Padre::Action->new(
+	Padre::Wx::Action->new(
 		name        => 'git.diff_of_project',
 		label       => Wx::gettext('Diff of Project'),
 		comment     => Wx::gettext('Diff of Project'),
