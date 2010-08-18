@@ -3,18 +3,17 @@ use strict;
 use warnings;
 use JSON;
 use Padre::Wx      ();
-use Padre::Service ();
+use Padre::Task ();
 use Padre::Logger;
 use Padre::Swarm::Message;
 use IO::Select;
 use IO::Socket::Multicast;
 
 our $VERSION = '0.093';
-our @ISA     = 'Padre::Service';
+our @ISA     = 'Padre::Task';
 
 use Class::XSAccessor
 	accessors => {
-		task_event => 'task_event',
 		service    => 'service',
 		client     => 'client',
 	};
@@ -22,30 +21,34 @@ use Class::XSAccessor
 
 sub hangup {
 	my $self = shift;
-	my $running = shift;
-	$$running = 0;
 	$self->client->shutdown(1) if $self->client;
 	$self->client(undef);
-	
+	$self->handle->message(on_recv=>'DEAD');
 }
 
 sub terminate {
 	my $self = shift;
-	my $running = shift;
-	$$running=0;
 	$self->client(undef);
-
+	$self->handle->message(on_recv=>'DEAD');
 }
 
+
+sub run {
+	my $self = shift;
+	TRACE( "Running" ) if DEBUG;
+	$self->start;
+	while ($self->running) {
+		$self->service_loop;
+	}
+	TRACE("Finished Running") if DEBUG;
+	
+}
 
 sub service_loop {
 	my $self = shift;
 	
 	if (my ($message) = $self->poll(0.2) ) {
-		$self->post_event( 
-			$self->event, 
-			$message
-		);
+		$self->handle->message(on_recv=>$message);
 	}
 	
 	return 1;
@@ -73,6 +76,7 @@ sub receive {
 	my $buffer;
 	my $remote = $sock->recv( $buffer, 65535 );
 	if  ( $remote ) {
+		TRACE("Got data '$buffer'") if DEBUG;
 		#my $marshal = Padre::Plugin::Swarm::Transport->_marshal;
 		#my ($rport,$raddr) = sockaddr_in $remote;
 		#my $ip = inet_ntoa $raddr;
@@ -83,7 +87,7 @@ sub receive {
 
 sub start {
 	my $self = shift;
-	
+	TRACE( "Starting" ) if DEBUG;
 	my $client = IO::Socket::Multicast->new(
 		LocalPort => 12000,
 		ReuseAddr => 1,
@@ -93,13 +97,24 @@ sub start {
 	
 	$self->{client} = $client;
 	$self->{running} = 1;
-	$self->post_event(
-		$self->event,
-		'ALIVE'
-	);
+	$self->handle->message(on_recv=>'ALIVE');
 
 }
 
+sub on_recv {
+	my $self = shift;
+	TRACE( "on_recv handler with @_" ) if DEBUG;
+	if ( $self->{owner} ) {
+		TRACE( "Informing Owner" ) if DEBUG;
+		my $owner = $self->owner;
+		TRACE("Owner is $owner" ) if DEBUG;
+		return unless $owner;
+		$owner->on_service_recv(@_);
+	} else {
+		TRACE("No task owner - message dropped") if DEBUG;
+	}
+
+}
 
 
 1;

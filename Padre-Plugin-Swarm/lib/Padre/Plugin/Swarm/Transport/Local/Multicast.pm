@@ -4,7 +4,7 @@ use warnings;
 use Wx qw( :socket );
 use Padre::Wx ();
 use Padre::Logger;
-use base qw( Padre::Plugin::Swarm::Transport );
+use base qw( Padre::Plugin::Swarm::Transport  Padre::Role::Task );
 use Padre::Plugin::Swarm::Transport::Local::Multicast::Service;
 
 our $VERSION = '0.093';
@@ -43,16 +43,11 @@ sub connect {
     $self->socket( $transmitter );
 
     # start the service thread listener
-    my $service = Padre::Plugin::Swarm::Transport::Local::Multicast::Service->new;
+    my $service = $self->task_request(
+        task => 'Padre::Plugin::Swarm::Transport::Local::Multicast::Service'
+    );
+    
     $self->service($service);
-    $service->schedule;
-    Wx::Event::EVT_COMMAND(
-		Padre->ide->wx,
-		-1,
-		$service->event,
-		sub { $self->on_service_recv(@_) }
-	);
-
     
 }
 
@@ -67,12 +62,15 @@ sub disconnect {
 }
 
 sub on_service_recv {
-    my ($self,$wx,$evt) = @_;
-    my $data = $evt->GetData;
+    my ($self,$data) = @_;
+    TRACE( "On service recv with @_") if DEBUG;
     
     ## TODO - fix Padre::Service to have an event for started/stopped
     if ( $data eq 'ALIVE' ) {
         $self->on_connect->() if $self->on_connect;
+        return;
+    } elsif ( $data eq 'DEAD' ) {
+        $self->on_disconnect->() if $self->on_disconnect;
         return;
     }
     
