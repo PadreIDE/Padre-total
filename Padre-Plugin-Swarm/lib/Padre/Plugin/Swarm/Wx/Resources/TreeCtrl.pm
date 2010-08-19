@@ -11,7 +11,7 @@ use Padre::Util     ();
 use Padre::Wx       ();
 use Padre::Constant ();
 
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 our @ISA     = 'Wx::TreeCtrl';
 
 
@@ -252,7 +252,8 @@ sub _on_tree_item_activated {
 	}
 	
 	if ($node_data->{type} eq 'editor' ) {
-		$self->plugin->send(
+		## Another FIXME!
+		$self->plugin->global->transport->send(
 			{ type=>'gimme',
 			  resource => $node_data->{resource} }
 		);

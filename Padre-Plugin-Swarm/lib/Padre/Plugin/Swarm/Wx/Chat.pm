@@ -16,7 +16,7 @@ use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Util;
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor
@@ -27,6 +27,8 @@ use Class::XSAccessor
 		chatframe => 'chatframe',
 		userlist  => 'userlist',
 		users => 'users',
+		transport => 'transport',
+		label =>'label',
 	},
 	setters => {
 		'set_task' => 'task',
@@ -35,15 +37,18 @@ use Class::XSAccessor
 sub new {
 	my $class = shift;
 	my $main  = shift;
+	my %args = @_;
 	my $self = $class->SUPER::new(
-		$main->bottom, -1,
+		$class->plugin->wx , -1,
 		#'',
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxLC_REPORT
 		| Wx::wxLC_SINGLE_SEL
 	);
-
+	$self->$_( $args{$_} ) for qw( transport label );
+	$main->bottom->show($self);
+	
 	# build large area for chat output , with a
 	#  single line entry widget for input
 	my $sizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
@@ -126,33 +131,33 @@ sub main {
 	$_[0]->GetGrandParent;
 }
 
-sub gettext_label {
-	Wx::gettext('Chat');
+sub view_panel { 'bottom' }
+
+sub view_label {
+	my $self = shift;
+	return $self->label . ' ' . Wx::gettext('Chat');
+}
+
+*gettext_label = \&view_label;
+
+sub view_icon {
+	my $self = shift;
+	my $icon = $self->plugin->plugin_icon;
+	return $icon;
 }
 
 sub enable {
 	my $self     = shift;
 	TRACE( "Enable Chat" ) if DEBUG;
 	TRACE( " main window is " . $self->main ) if DEBUG;
-	TRACE( " message event is " . $self->plugin->message_event ) if DEBUG;	
-	Wx::Event::EVT_COMMAND(
-		$self->plugin->wx,
-		-1,
-		$self->plugin->message_event,
-		sub { $self->accept_message(@_) }
-	);
+
 	# Add ourself to the gui;
 	my $main     = $self->main;
 	my $bottom   = $self->bottom;
 	my $position = $bottom->GetPageCount;
-	
 	$self->update_userlist;
-	
-	my $pos = $bottom->InsertPage( $position, $self, gettext_label(), 0 );
-	$self->Show;
-	my $icon = $self->plugin->plugin_icon;  
-	$bottom->SetPageBitmap($position, $icon );
-	$bottom->SetSelection($position);
+	$bottom->show($self);
+
 	$self->textinput->SetFocus;
 	$main->aui->Update;
 
@@ -191,17 +196,12 @@ sub update_userlist {
 	
 }
 
-sub accept_message {
+sub on_recv {
 	my $self = shift;
-	my $main = shift;
-	my $evt = shift;
-
-	my $payload = $evt->GetData;
-	$evt->Skip(1);
-
-	my $message = Storable::thaw($payload);
+	my $message = shift;
+	TRACE( "on_recv $message" ) if DEBUG;
 	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
-        my $handler = 'accept_' . $message->type;
+	my $handler = 'accept_' . $message->type;
 	TRACE( $handler ) if DEBUG;
         if ( $self->can( $handler ) ) {
         	TRACE( $message->{from} . ' sent ' . $message->{type} ) if DEBUG;
@@ -277,7 +277,7 @@ sub accept_promote {
     # 'chat' promote. stop spewing into the chat 
     # console.
     if ( $message->{service} eq 'chat' ) {
-	$self->update_userlist;
+		$self->update_userlist;
     }
     
     
@@ -285,7 +285,7 @@ sub accept_promote {
 
 sub accept_disco {
 	my ($self,$message) = @_;
-	$self->plugin->send( {type=>'promote',service=>'chat'} );
+	$self->transport->send( {type=>'promote',service=>'chat'} );
 }
 
 sub accept_leave {
@@ -321,7 +321,7 @@ sub command_nick {
 
 sub command_disco {
     my $self = shift;
-    $self->plugin->send({type=>'disco'});
+    $self->transport->send({type=>'disco'});
 }
 
 
@@ -335,7 +335,7 @@ sub tell_service {
 			body => $body,
 			type => 'chat',
 		);
-	$self->plugin->send($message)
+	$self->transport->send($message)
 }
 
 sub on_text_enter {

@@ -3,13 +3,14 @@ package Padre::Swarm::Geometry;
 use strict;
 use warnings;
 use Params::Util qw( _INSTANCE );
+use Padre::Logger;
 use Graph;
 use Graph::Directed;
 use Class::XSAccessor 
     accessors => {
 	graph => 'graph',
     };
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 
 =pod
 
@@ -49,12 +50,25 @@ sub get_users {
 	
 }
 
+
+sub enable {}
+sub disable {}
+
+*on_recv = \&On_SwarmMessage;
+
 sub On_SwarmMessage {
     my ($self,$message) = @_;
     my $handler = 'accept_'  . $message->{type};
-    eval { $self->$handler($message) } if $self->can($handler) ;
-    warn "Geometry handler error - $@" if $@;
-    
+    if ( $self->can($handler) ) {
+		TRACE( "Geometry handler $handler" ) if DEBUG;
+		eval { $self->$handler($message) } ;
+		if ( $@ ) {
+			TRACE( "Geometry handler error - $@" ) if DEBUG;
+		}
+    } else {
+		TRACE( "Ignored " . $message->type ) if DEBUG;
+		
+	}
 }
 
 sub accept_promote {

@@ -9,7 +9,7 @@ use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 use Padre::Logger;
 use Params::Util qw( _INSTANCE ) ;
 
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor {
@@ -23,6 +23,7 @@ use Class::XSAccessor {
 		previous_dir          => 'previous_dir',
 		project_dir_original  => 'project_dir_original',
 		previous_dir_original => 'previous_dir_original',
+		label => 'label',
 	},
 };
 
@@ -47,13 +48,15 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub new {
 	my $class = shift;
 	my $main  = shift;
-	
+	my %args = @_;
 	my $self = $class->SUPER::new(
 		$main->directory_panel,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
+	$self->label($args{label});
+	
 	$self->{tree}   = 
 		Padre::Plugin::Swarm::Wx::Resources::TreeCtrl->new($self);
 
@@ -75,27 +78,15 @@ sub new {
 
 sub enable {
 	my $self = shift;
-	TRACE( "Enable" );
+	TRACE( "Enable" ) if DEBUG;
 	my $left = $self->main->directory_panel;
-	my $position = $left->GetPageCount;
-	my $pos = $left->InsertPage( $position, $self, gettext_label(), 0 );
-	my $icon = Padre::Plugin::Swarm->plugin_icon;
 	
-	$left->SetPageBitmap($position, $icon );
-	$left->SetSelection($position);
-
+	$left->show($self);
+	
+	
 	# TODO - use wx event to catch messages. 
 	$self->refresh;
-	Wx::Event::EVT_COMMAND(
-		$self->plugin->wx,
-		-1,
-		$self->plugin->message_event,
-		sub { $self->on_swarm_message(@_) },
-	);
-	
 
-	$self->Show;
-	
 	return $self;
 }
 
@@ -125,10 +116,18 @@ sub current {
 }
 
 # Returns the window label
-sub gettext_label {
+sub view_label {
 	my $self = shift;
-	return Wx::gettext('Swarm');
+	return $self->label;
 }
+
+*gettext_label = \&view_label;
+
+sub view_icon {
+	my $icon = Padre::Plugin::Swarm->plugin_icon;
+}
+
+sub view_panel  { 'left' }
 
 # Updates the gui, so each compoment can update itself
 # according to the new state
@@ -137,15 +136,9 @@ sub clear {
 	return;
 }
 
-sub on_swarm_message {
+sub on_recv {
 	my $self = shift;
-	my $wx = shift;
-	my $event = shift;
-	my $data = $event->GetData;
-	$event->Skip(1);
-	my $message = Storable::thaw( $data );
-	return unless _INSTANCE( $message , 'Padre::Swarm::Message' );
-
+	my $message = shift;
 	my $handler = 'accept_' . $message->type;
 	TRACE( $handler ) if DEBUG;
         if ( $self->can( $handler ) ) {
@@ -188,7 +181,7 @@ sub accept_leave {
 
 sub refresh {
 	my $self     = shift;
-	TRACE( "Refresh" );	
+	TRACE( "Refresh" ) if DEBUG;
 	my $current  = $self->current;
 	my $document = $current->document;
 

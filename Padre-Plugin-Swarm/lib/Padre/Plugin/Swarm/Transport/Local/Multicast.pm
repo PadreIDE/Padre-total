@@ -7,7 +7,7 @@ use Padre::Logger;
 use base qw( Padre::Plugin::Swarm::Transport  Padre::Role::Task );
 use Padre::Plugin::Swarm::Transport::Local::Multicast::Service;
 
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 
 use Class::XSAccessor
     accessors => {
@@ -16,9 +16,6 @@ use Class::XSAccessor
         config => 'config',
         token  => 'token',
         mcast_address => 'mcast_addr',
-        on_connect => 'on_connect',
-        on_disconnect => 'on_disconnect',
-        on_recv => 'on_recv',
         marshal => 'marshal',
     };
     
@@ -78,13 +75,14 @@ sub on_service_recv {
     if ( $@ ) {
         TRACE( "Failed to decode data '$data' , $@" ) if DEBUG;
     }
-    if ( $self->on_recv ) {
-        $self->on_recv->( $_ ) for @messages;
+    foreach my $m ( @messages ) {
+    
+        $self->on_recv->( $m ) if $self->on_recv;
     }
 }
 
 # Send a Padre::Swarm::Message
-sub send {
+sub NOTsend {
     my $self = shift;
     my $message = shift;
     $message->{token} ||= $self->{token};

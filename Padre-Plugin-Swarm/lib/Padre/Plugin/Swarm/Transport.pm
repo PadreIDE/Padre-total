@@ -4,23 +4,44 @@ use warnings;
 use Padre::Logger;
 use JSON::PP;
 
+use Class::XSAccessor
+		accessors => {
+			marshal => 'marshal',
+			on_connect => 'on_connect',
+			on_disconnect => 'on_disconnect',
+			on_recv => 'on_recv',
+		};
+
 sub new {
 	my $class = shift;
 	my %args = @_;
 	$args{marshal} ||= $class->_marshal;
-	bless \%args, $class;
+	my $self = bless \%args, $class;
+	my $message_event  = Wx::NewEventType;
+	$self->{message_event} = $message_event;
+	return $self;
 }
 
 sub plugin { Padre::Plugin::Swarm->instance }
+
+sub identity { Padre::Plugin::Swarm->instance->identity }
 
 sub loopback { 0 }
 
 sub token { $_[0]->{token} }
 
+sub message_event { $_[0]->{message_event} }
+
 sub send {
 	my $self = shift;
 	my $message = shift;
+	my $mclass = ref $message;
+	unless ( $mclass =~ /^Padre::Swarm::Message/ ) {
+		bless $message , 'Padre::Swarm::Message';
+	}
+	$message->{from} ||= $self->identity->nickname;
 	$message->{token} ||= $self->token;
+	
 	my $data = eval { $self->marshal->encode( $message ) };
 	if ($data) {
 		$self->write($data);

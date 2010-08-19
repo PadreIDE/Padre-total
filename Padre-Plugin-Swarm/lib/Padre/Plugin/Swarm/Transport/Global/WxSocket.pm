@@ -4,9 +4,10 @@ use warnings;
 use Wx qw( :socket );
 use Padre::Wx ();
 use Padre::Logger;
+use Data::Dumper;
 use base qw( Padre::Plugin::Swarm::Transport );
 
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 
 our $KEEPALIVE_TIMER_ID = Wx::NewId;
 
@@ -18,10 +19,8 @@ use Class::XSAccessor
         keepalive=>'keepalive',
         config => 'config',
         token  => 'token',
-        on_connect => 'on_connect',
-        on_disconnect => 'on_disconnect',
-        on_recv => 'on_recv',
         marshal => 'marshal',
+        inputbuffer=>'inputbuffer',
     };
     
 sub loopback { 1 }
@@ -117,7 +116,7 @@ sub on_session_start {
         last if $message;
         $data='';
     }
-    
+    TRACE( "Session start says " . Dumper $message ) if DEBUG;
     return unless $message;
 
     if ( $message->{session} eq 'authorized' ) {
@@ -160,7 +159,7 @@ sub on_session_start {
 
 sub on_timer_alarm {
     my $self = shift;
-    $self->write(' ') ; # waste a packet :(
+    $self->write('') ; # waste a packet :(
     
 }
 
@@ -176,33 +175,45 @@ sub on_socket_input {
     my ($self,$sock,$wx,$evt) = @_;
     
     TRACE( "Socket Input" ) if DEBUG;
-    my $marshal = $self->marshal;
+    my $marshal = $self->_marshal;
     
     my $data = '';
-    
+    my $buffer = $self->inputbuffer;
+    if (length($buffer)) {
+        TRACE( "INPUT BUFFER=$buffer" ) if DEBUG;
+    }
     # Read chunks of data from the socket until there is
     # no more to read, feeding it into the decoder.
     # TODO - can we yield to WxIdle in here? .. safely?
     while ( $sock->Read( $data, 65535, 0  ) ) {
-        eval { $marshal->incr_parse($data) }; # VOID context pls!
+        $buffer .= $data;
+        TRACE("Read chunk '$data'") if DEBUG;
         $data='';
     }
 
+    eval { $marshal->incr_parse($buffer) }; # VOID context pls!
+    
     my @messages;
-    my $fragment;
     while ( my $m =  eval { $marshal->incr_parse() } ) {
-        $fragment = $marshal->incr_text;
-        TRACE( ' Decoded with fragment , '. $fragment ) if DEBUG;
-        
-        push @messages,$m if $m;
-        
-        if ($@) {
-                TRACE( "Unparsable message, $@" ) if DEBUG;
-                TRACE( " BUFFER: " .  $fragment ) if $fragment && DEBUG;
-                $marshal->incr_skip;
-                $marshal->incr_parse($fragment);
+        push @messages,$m;
+        TRACE( 'Parsed '. @messages . ' messages' ) if DEBUG;
+    } continue {
+        my $fragment = $marshal->incr_text;
+        $self->inputbuffer("$fragment");
+    }
+    if ($@) {
+        if (length($buffer) < 200_000 ) {
+            $self->inputbuffer($buffer);
+        } else {
+            TRACE( "Unparsable message, $@" ) if DEBUG;
+            TRACE( "BUFFER= $buffer " ) if DEBUG;
+            $self->inputbuffer('');
         }
-    } ;
+    }
+
+    TRACE( "Remaining input: ".$self->inputbuffer ) if DEBUG;
+    
+    
     
     foreach my $m ( @messages ) {
         #next unless ref $m eq 'HASH';
@@ -211,15 +222,14 @@ sub on_socket_input {
         my $type = $m->{type};
         my $origin = $m->{__origin_class};
         
-        # TODO proper rebless 
-        #my $class = $origin || 'Padre::Swarm::Message::'.ucfirst($type);
-        #my $class = 'Padre::Swarm::Message';
-        #bless $m , $class;
         
         TRACE( " Got " . $m->type . " from " . $m->from ) if DEBUG;
         # Notify the on_recv callback
         $self->on_recv->($m) if $self->on_recv;
     }
+    
+    
+    
     
 }
 
@@ -228,9 +238,11 @@ sub write {
     my $data = shift;
     # Only write if the session has started
     if ( $self->{token} ) {
+        TRACE( "write '$data'" ) if DEBUG;
         $self->socket->Write( $data, length($data) );
     }
     else {
+        TRACE( "Queue message '$data'") if DEBUG;
         push @{ $self->{write_queue} }, $data;
     }
     

@@ -1,3 +1,4 @@
+
 package Padre::Plugin::Swarm;
 
 use 5.008;
@@ -12,7 +13,8 @@ use Padre::Wx::Icon        ();
 use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
-our $VERSION = '0.093';
+
+our $VERSION = '0.094';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 
@@ -22,9 +24,10 @@ use Class::XSAccessor
 		editor   => 'editor',
 		chat     => 'chat',
 		config   => 'config',
-		message_event => 'message_event',
 		wx => 'wx',
-		transport => 'transport',
+
+		global => 'global',
+		local  => 'local',
 	};
 	
 
@@ -35,17 +38,10 @@ sub connect {
 	# For now - use global, 
 	#  could be Padre::Plugin::Swarm::Transport::Local::Multicast
 	#   based on preferences
-	my $transport = 
-	Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
-		token => $self->config->{token},
-		wx => $self->wx,
-		on_recv => sub { $self->on_recv(@_) } ,
-		on_connect => sub { $self->on_transport_connect(@_) },
-		on_disconnect => sub { $self->on_transport_disconnect(@_) }
-	);
-		
-	$self->transport( $transport );
-	$transport->enable;
+	$self->global->enable;
+	$self->local->enable;
+	
+	
 
 	
 }
@@ -53,13 +49,12 @@ sub connect {
 sub disconnect {
 	my $self = shift;
 
-	$self->send( {type=>'leave'} );
-	$self->transport->disable;
-	$self->transport(undef);
+	$self->global->disable;
+	$self->local->disable;
 
 }
 
-sub send {
+sub NOTsend {
 	my $self = shift;
 	my $message = shift;
 	my $mclass = ref $message;
@@ -93,6 +88,7 @@ sub on_transport_disconnect {
 
 sub on_recv { 
 	my $self = shift;
+	# my $universe = shift;
 	my $message = shift;
 	
 	TRACE( "on_recv handler for " . $message->type ) if DEBUG;
@@ -212,8 +208,6 @@ SCOPE: {
 		my $wxobj = new Wx::Panel $self->main;
 		$self->wx( $wxobj );
 		$wxobj->Hide;
-		my $message_event  = Wx::NewEventType;
-		$self->message_event($message_event);
 
 		require Padre::Plugin::Swarm::Wx::Chat;
 		require Padre::Plugin::Swarm::Wx::Resources;
@@ -221,41 +215,77 @@ SCOPE: {
 		require Padre::Plugin::Swarm::Wx::Preferences;
 		require Padre::Plugin::Swarm::Transport::Global::WxSocket;
 		require Padre::Plugin::Swarm::Transport::Local::Multicast;
+		require Padre::Plugin::Swarm::Universe;
 		
 		my $config = $self->bootstrap_config;
-		
 		$self->config( $config );
 		
+		my $geo = Padre::Swarm::Geometry->new;
+		$self->geometry( $geo );
 		
-		$self->geometry( Padre::Swarm::Geometry->new );
+		my $u_global = Padre::Plugin::Swarm::Universe->new;
+		my $u_local  = Padre::Plugin::Swarm::Universe->new;
+		$self->global($u_global);
+		$self->local($u_local);
 		
-		my $editor = Padre::Plugin::Swarm::Wx::Editor->new();
-		$self->editor($editor);
-		$editor->enable;
-
-		my $chat = Padre::Plugin::Swarm::Wx::Chat->new( $self->main );
-		$self->chat( $chat );
-		$chat->enable;
-
-
-		my $directory = Padre::Plugin::Swarm::Wx::Resources->new(
-			$self->main
+		## Instance the transport but do not connect them - yet
+		my $t_global = 
+		Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
+			token => $self->config->{token},
+			wx => $self->wx,
 		);
-		$self->resources( $directory );
-		$directory->enable;
+		$u_global->transport($t_global);
+	
+		my $t_local = 
+			Padre::Plugin::Swarm::Transport::Local::Multicast->new(
+				token => $self->config->{token},
+				wx    => $self->wx,
+			);
+		$u_local->transport($t_local);
+		
+		
+		$u_global->geometry($geo);
+		$u_local->geometry($geo);
+		
+		## Should this be in global or local?
+		my $editor = Padre::Plugin::Swarm::Wx::Editor->new(
+			transport => $t_global,
+		);
+		$self->editor($editor);
+		$u_global->editor($editor);
 
+		my $g_directory = Padre::Plugin::Swarm::Wx::Resources->new(
+			$self->main,
+			label => 'Global'
+		);
+		$self->resources( $g_directory );
+		$u_global->resources($g_directory);
+		
+		my $g_chat = Padre::Plugin::Swarm::Wx::Chat->new( $self->main,
+				label => 'Global', transport => $self->global->transport
+		 );
+		$u_global->chat($g_chat);
+		
+		my $l_chat = Padre::Plugin::Swarm::Wx::Chat->new( 
+				$self->main,
+				label => 'Local', 
+				transport => $self->local->transport
+		 );
+		$u_local->chat($l_chat);
+		
+		
 		$self->connect();
+
+		
 		1;
 	}
 
 	sub plugin_disable {
 		my $self = shift;
-		$self->chat->disable;
-		$self->chat(undef);
 		
-		$self->resources->disable;
-		$self->resources(undef);
-	
+		$self->global->disable;
+		$self->local->disable;
+		
 		$self->editor->disable;
 		$self->editor(undef);
 		

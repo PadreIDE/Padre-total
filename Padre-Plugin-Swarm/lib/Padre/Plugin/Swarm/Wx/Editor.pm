@@ -9,7 +9,7 @@ use Class::XSAccessor
     accessors => {
         editors => 'editors',
         resources=> 'resources',
-        
+        transport => 'transport',
     };
     
 =pod
@@ -57,19 +57,12 @@ sub new {
 
 sub enable {
 	my $self = shift;
-	eval {
-	Wx::Event::EVT_COMMAND(
-	    $self->plugin->wx,
-	    -1,
-	    $self->plugin->message_event,
-	    sub { $self->on_swarm_message(@_) },
-	);
-	};
 
 	foreach my $editor ( $self->plugin->main->editors ) {
-	    $self->editor_enable( $editor, $editor->{Document} )
+	    eval{ $self->editor_enable( $editor, $editor->{Document} ) };
+		TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
 	}
-	TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
+
 }
 
 sub disable {}
@@ -81,7 +74,7 @@ sub editor_enable {
 	return unless $document && $document->filename;
 	
         eval  {
-	    $self->plugin->send(
+	    $self->transport->send(
 		{ 
 			type => 'promote', service => 'editor',
 			resource => $document->filename
@@ -89,6 +82,7 @@ sub editor_enable {
 	    );
 	
 	};
+	TRACE( "Failed to send $@" ) if DEBUG;
 	
 	$self->editors->{ refaddr $editor } = $editor;
 	$self->resources->{ $document->filename } = $document;
@@ -119,20 +113,14 @@ sub editor_disable {
 
 
 # Swarm event handler
-sub on_swarm_message {
-	my ($self,$main,$event) = @_;
-	my $data = $event->GetData;
-	my $message = Storable::thaw( $data );
-	
+sub on_recv {
+	my ($self,$message) = @_;
 	my $handler = 'accept_' . $message->{type};
 	TRACE( $handler ) if DEBUG;
 	if ($self->can($handler)) {
 		eval { $self->$handler($message) };
 		TRACE( "$handler failed - $@" ) if DEBUG && $@;
 	}
-	
-	# don't hog the troff
-	$event->Skip(1);
 	
 }
 # message handlers
@@ -178,7 +166,7 @@ sub accept_gimme {
 
 	if ( exists $self->resources->{$r} ) {
 		my $document = $self->resources->{$r};
-		$self->plugin->send(
+		$self->transport->send(
 		    { 	type => 'openme',
 			service => 'editor',
 			body => $document->text_get,

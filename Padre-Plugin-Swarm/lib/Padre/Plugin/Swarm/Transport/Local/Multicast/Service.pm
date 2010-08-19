@@ -9,7 +9,7 @@ use Padre::Swarm::Message;
 use IO::Select;
 use IO::Socket::Multicast;
 
-our $VERSION = '0.093';
+our $VERSION = '0.094';
 our @ISA     = 'Padre::Task';
 
 use Class::XSAccessor
