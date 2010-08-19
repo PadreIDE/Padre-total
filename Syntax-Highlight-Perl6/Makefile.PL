@@ -5,9 +5,8 @@ name 'Syntax-Highlight-Perl6';
 all_from 'lib/Syntax/Highlight/Perl6.pm';
 
 # Specific dependencies
-requires 'Moose'                => '0.89';
 requires 'Term::ANSIColor'      => '2.00';
-requires 'YAML::XS'             => '0.32';
+requires 'STD'                  => '0.05';
 test_requires 'Test::Exception' => '0.27';
 test_requires 'Test::More'      => '0.86';
 
