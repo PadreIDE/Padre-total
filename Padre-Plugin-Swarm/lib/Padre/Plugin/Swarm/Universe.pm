@@ -90,6 +90,7 @@ sub on_disconnect {
 sub _notify {
 	my $self = shift;
 	my $notify = shift;
+	my $lock = Padre::Current->main->lock('UPDATE');
 	foreach my $c ( $self->components ) {
 		my $component = $self->$c;
 		next unless $component;
@@ -101,6 +102,7 @@ sub _notify {
 			TRACE( "Failed to notify component '$c' , $@") if DEBUG
 		}
 	}
+	return;
 }
 
 

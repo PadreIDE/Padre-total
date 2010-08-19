@@ -283,8 +283,17 @@ SCOPE: {
 	sub plugin_disable {
 		my $self = shift;
 		
-		$self->global->disable;
-		$self->local->disable;
+		eval {
+				$self->global->disable;
+		};
+		if ($@) {
+			TRACE( "Disable global failed $@" ) if DEBUG;
+		}
+		
+		eval { $self->local->disable; };
+		if ($@) {
+			TRACE( "Disable local failed $@" ) if DEBUG;
+		}
 		
 		$self->editor->disable;
 		$self->editor(undef);
