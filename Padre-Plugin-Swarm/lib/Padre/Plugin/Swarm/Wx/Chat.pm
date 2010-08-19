@@ -168,7 +168,7 @@ sub disable {
 	my $self = shift;
 	TRACE( 'Disable Chat' ) if DEBUG;
 	my $main = $self->main;
-	my $bottom= $self->bottom;
+	my $bottom= $main->bottom;
 	my $position = $bottom->GetPageIndex($self);
 	$self->Hide;
 

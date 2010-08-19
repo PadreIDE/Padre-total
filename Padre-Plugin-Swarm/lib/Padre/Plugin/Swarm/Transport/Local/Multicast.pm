@@ -51,7 +51,7 @@ sub connect {
 sub disconnect {
     my $self = shift;
     $self->socket->Destroy;
-    $self->service->hangup;
+    #$self->service->hangup;
     
     # teardown the transmitting socket
     # hangup the service thread
