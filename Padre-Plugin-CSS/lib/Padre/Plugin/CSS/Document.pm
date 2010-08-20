@@ -1,4 +1,4 @@
-package Padre::Document::CSS;
+package Padre::Plugin::CSS::Document;
 
 use 5.008;
 use strict;
