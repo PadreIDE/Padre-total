@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-CSS
 
-NOT RELEASED!
+0.10    2010.08.20
     Add context help with very basic data in a yaml file (SZABGAB)
     Renamed to the new Padre 0.43 PO naming scheme (azawawi)
     Autocompletition support (CHORNY)

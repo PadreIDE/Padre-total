@@ -3,12 +3,11 @@ package Padre::Plugin::Vi::CommandLine;
 use warnings;
 use strict;
 
-
-use Cwd              ();
+use Cwd               ();
 use Padre::Wx::Dialog ();
-use Padre::Wx        ();
-use File::Spec       ();
-use File::Basename   ();
+use Padre::Wx         ();
+use File::Spec        ();
+use File::Basename    ();
 
 use Padre::Plugin::Vi::TabCompletition qw(clear_tab handle_tab set_original_cwd);
 
