@@ -15,7 +15,7 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'text/css' => 'Padre::Document::CSS',
+	'text/css' => 'Padre::Plugin::CSS::Document',
 }
 
 sub menu_plugins_simple {
