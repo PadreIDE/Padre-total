@@ -15,7 +15,7 @@ use File::Basename ();
 use File::Spec;
 use Cwd qw/cwd chdir/;
 
-our $VERSION = '0.03';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
 # TODO

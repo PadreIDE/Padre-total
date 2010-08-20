@@ -3,7 +3,7 @@ package Padre::Plugin::CSS;
 use warnings;
 use strict;
 
-our $VERSION = '0.10';
+our $VERSION = '0.08';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
@@ -15,7 +15,7 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'text/css' => 'Padre::Plugin::CSS::Document',
+	'text/css' => 'Padre::Document::CSS',
 }
 
 sub menu_plugins_simple {

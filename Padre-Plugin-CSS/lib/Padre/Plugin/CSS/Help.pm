@@ -10,7 +10,7 @@ use YAML::Tiny  qw(LoadFile);
 use Padre::Help ();
 use Padre::Util ();
 
-our $VERSION = '0.10';
+our $VERSION = '0.22';
 our @ISA     = 'Padre::Help';
 
 my $data;
