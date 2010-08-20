@@ -8,7 +8,7 @@ use Padre::Document ();
 use File::Spec  ();
 use YAML::Tiny  qw(LoadFile);
 
-our $VERSION = '0.22';
+our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
 
 sub comment_lines_str { return '//' }
