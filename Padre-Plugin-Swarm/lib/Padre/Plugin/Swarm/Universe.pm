@@ -14,7 +14,7 @@ use Class::XSAccessor
 	};
 
 sub components {
-	qw( chat resources geometry editor )
+	qw( geometry chat resources  editor )
 }
 
 sub new {
