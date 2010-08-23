@@ -11,11 +11,11 @@ Perl::Staff - People working for Perl
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
@@ -266,6 +266,102 @@ L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day3>
 =head3 Frank Wiegand
 
 =head3 Tina Müller
+
+=head2 LinuxTag 2010
+
+=head3 Renée Bäcker
+
+(main coordinator)
+
+Event reports
+
+=over 4
+
+=item * FrOSCon - Tag 1.5 (german)
+
+L<http://reneeb-perlblog.blogspot.com/2010/08/froscon-2010-tag-15.html>
+
+=item * FrOSCon - Tag 2 (german)
+
+L<http://reneeb-perlblog.blogspot.com/2010/08/froscon-2010-tag-2.html>
+
+=back
+
+Talks in Perl dev room
+
+=over 4
+
+=item * Profiling mit Devel::NYTProf
+
+L<http://www.slideshare.net/reneebperl/fr-os-con2010develnytprof>
+
+=item * Logging mit Log::Log4perl
+
+=item * Padre, the Perl-IDE
+
+=item * BMATrainer
+
+L<http://www.slideshare.net/reneebperl/fr-os-con2010bmatrainer>
+
+=back
+
+=head3 Thomas Fahle
+
+(main coordinator)
+
+Event reports
+
+=over 4
+
+=item * 
+
+=back
+
+Talks in Perl dev room
+
+=over 4
+
+=item * Dancer
+
+L<http://www.slideshare.net/thomasfahle/dancer-5032076>
+
+=back
+
+=head3 Max Maischein
+
+Talks in Perl dev room
+
+=over 4
+
+=item * WWW::Mechanize::Firefox
+
+L<http://corion.net/talks/WWW-Mechanize-FireFox/www-mechanize-firefox.html>
+
+=item * Web::Scraper
+
+L<http://corion.net/talks/web-scraper/web-scraper-talk.html>
+
+=item * VB2Perl
+
+L<http://corion.net/talks/vb2perl/vb2perl.html>
+
+=back
+
+=head3 Jens Rehsack
+
+=head3 Herbert Breunung
+
+Talks in Perl dev room
+
+=over 4
+
+=item * Testen mit Perl
+
+L<http://www.slideshare.net/lichtkind/perl-testing>
+
+=back
+
+=head3 Roland Schmitz
 
 =cut
 
