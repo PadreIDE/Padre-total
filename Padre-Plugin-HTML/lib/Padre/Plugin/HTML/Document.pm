@@ -1,4 +1,4 @@
-package Padre::Document::HTML;
+package Padre::Plugin::HTML::Document;
 
 use 5.008;
 use strict;

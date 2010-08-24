@@ -1,4 +1,4 @@
-package Padre::Plugin::HTML;
+package Padre::Plugin::HTML::Document;
 
 use warnings;
 use strict;
@@ -14,7 +14,7 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'text/html' => 'Padre::Document::HTML',
+	'text/html' => 'Padre::Plugin::HTML::Document',
 }
 
 sub menu_plugins_simple {
