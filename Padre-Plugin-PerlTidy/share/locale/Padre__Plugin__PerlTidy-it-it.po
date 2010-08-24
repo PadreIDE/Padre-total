@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre2It\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-09-09 23:40+0200\n"
+"PO-Revision-Date: 2010-08-24 11:55+0100\n"
+"Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
+"Language-Team:  <simone.blandino@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+
+#: lib/Padre/Plugin/PerlTidy.pm:38
+msgid "Tidy the active document\tAlt+Shift+F"
+msgstr "Riordina il documento attivo\tAlt+Shift+F"
+
+#: lib/Padre/Plugin/PerlTidy.pm:39
+msgid "Tidy the selected text\tAlt+Shift+G"
+msgstr "Riordina il testo selezionato\tAlt+Shift+G"
+
+#: lib/Padre/Plugin/PerlTidy.pm:40
+msgid "Export active document to HTML file"
+msgstr "Esporta il documento attivo come file HTML"
+
+#: lib/Padre/Plugin/PerlTidy.pm:41
+msgid "Export selected text to HTML file"
+msgstr "Esporta il testo selezionato come file HTML"
+
+#: lib/Padre/Plugin/PerlTidy.pm:55
+#: lib/Padre/Plugin/PerlTidy.pm:169
+msgid "Document is not a Perl document"
+msgstr "Il documento non è un documento Perl"
+
+#: lib/Padre/Plugin/PerlTidy.pm:56
+#: lib/Padre/Plugin/PerlTidy.pm:170
+msgid "Error"
+msgstr "Errore"
+
+#: lib/Padre/Plugin/PerlTidy.pm:74
+#: lib/Padre/Plugin/PerlTidy.pm:192
+msgid "PerlTidy Error"
+msgstr "Errore PerlTidy"
+
+#: lib/Padre/Plugin/PerlTidy.pm:137
+msgid "Save file as..."
+msgstr "Salva con nome..."
+
+#: lib/Padre/Plugin/PerlTidy.pm:147
+msgid "File already exists. Overwrite it?"
+msgstr "Il file esite. Sovrascriverlo?"
+
+#: lib/Padre/Plugin/PerlTidy.pm:148
+msgid "Exist"
+msgstr "Esiste"
+

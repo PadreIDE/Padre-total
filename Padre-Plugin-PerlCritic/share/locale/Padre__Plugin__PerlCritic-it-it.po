@@ -1,0 +1,31 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre2It\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-05-19 02:34+0800\n"
+"PO-Revision-Date: 2010-08-24 11:42+0100\n"
+"Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
+"Language-Team:  <simone.blandino@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Italian\n"
+"X-Poedit-Country: ITALY\n"
+
+#: lib/Padre/Plugin/PerlCritic.pm:31
+msgid "Run PerlCritic"
+msgstr "Esegui PerlCritic"
+
+#: lib/Padre/Plugin/PerlCritic.pm:43
+msgid "Document is not a Perl document"
+msgstr "Il doumento non è un documento Perl"
+
+#: lib/Padre/Plugin/PerlCritic.pm:43
+msgid "Error"
+msgstr "Errore"
+
