@@ -1,4 +1,4 @@
-package Padre::Plugin::HTML::Document;
+package Padre::Plugin::HTML;
 
 use warnings;
 use strict;
