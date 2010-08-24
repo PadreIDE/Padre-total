@@ -313,7 +313,9 @@ Event reports
 
 =over 4
 
-=item * 
+=item * Kurzbericht: Perl@FrOSCon 2010, St. Augustin (21. und 22. August 2010)
+
+L<http://www.thomas-fahle.de/2010/08/kurzbericht-perlfroscon-2010-st-augustin-21-und-22-august-2010.html>
 
 =back
 
