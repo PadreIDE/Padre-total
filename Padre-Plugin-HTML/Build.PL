@@ -25,6 +25,7 @@ my $builder = Module::Build->new(
             repository => 'http://svn.perlide.org/padre/trunk/Padre-Plugin-HTML/',
         }
     },
+    'auto_configure_requires' => 0,
 );
 
 $builder->create_build_script();
