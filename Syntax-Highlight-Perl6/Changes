@@ -1,5 +1,8 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.83 2010.8.25
+    Added missing syml/CORE.syml
+
 0.82 2010.8.25
 	Bundled the new STD.pm6 r3 (lwall++, sorear++)
 	This release enables cross-platform re-compilation of Perl 6 modules
