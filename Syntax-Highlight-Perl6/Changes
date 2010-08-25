@@ -1,8 +1,5 @@
 Revision history for Syntax::Highlight::Perl6.
 
-0.82 2010.?????????
-	Re-used STD cpan package instead of including STD.pm6 inside
-
 0.81 2010.6.7
 	Bundled the new STD.pm6 r31158 (lwall++, sorear++) 
 	POD fix for renaming STD.pm to STD.pm6
