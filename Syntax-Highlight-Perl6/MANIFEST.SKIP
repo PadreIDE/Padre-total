@@ -1,6 +1,5 @@
 # Avoid STD lex cache, and generated files
 \blex
-\bsyml
 \.tar.gz$
 \.tar$
 \bfoo\.pl
