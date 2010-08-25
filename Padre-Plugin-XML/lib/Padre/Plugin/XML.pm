@@ -3,7 +3,7 @@ package Padre::Plugin::XML;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.10';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();

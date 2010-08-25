@@ -6,7 +6,7 @@ use warnings;
 use Carp            ();
 use Padre::Document ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
 
 sub task_syntax {

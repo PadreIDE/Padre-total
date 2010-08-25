@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-XML
 
-0.07	to be released
+0.10	2010.08.25
 	fix ticket #943: crash on serialization of Task::SyntaxChecker::XML
         (ZGANTNER)
         compatibility with newer versions of Padre (ZGANTNER)
