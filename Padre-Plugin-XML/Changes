@@ -8,6 +8,7 @@ Revision history for Padre-Plugin-XML
         gettext-ified some strings (ZGANTNER)
         Task API 2 compatibility (CHORNY)
         auto syntax check works in new Padre (CHORNY)
+        Padre::Document::XML => Padre::Plugin::XML::Document (CHORNY)
 
 0.06    2009.05.31
         removed taint mode for tests, leading to build failures (jquelin)

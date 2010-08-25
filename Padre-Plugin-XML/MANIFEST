@@ -1,6 +1,6 @@
 Build.PL
 Changes
-lib/Padre/Document/XML.pm
+lib/Padre/Plugin/XML/Document.pm
 lib/Padre/Plugin/XML.pm
 lib/Padre/Task/SyntaxChecker/XML.pm
 Makefile.PL

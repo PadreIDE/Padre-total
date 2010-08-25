@@ -14,7 +14,7 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'text/xml' => 'Padre::Document::XML',
+	'text/xml' => 'Padre::Plugin::XML::Document',
 }
 
 sub menu_plugins_simple {

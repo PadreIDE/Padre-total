@@ -1,4 +1,4 @@
-package Padre::Document::XML;
+package Padre::Plugin::XML::Document;
 
 use 5.008;
 use strict;
