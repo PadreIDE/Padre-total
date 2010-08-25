@@ -1,5 +1,6 @@
 Revision history for Padre-Plugin-HTML
 
+0.10    2010.08.25
         compatibility with latest Padre (CHORNY)
         link to 'HTML 4.01 Specification' (CHORNY)
         Padre::Document::HTML => Padre::Plugin::HTML::Document (CHORNY)
