@@ -2,7 +2,7 @@ package Padre::Task::SyntaxChecker::XML;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.10';
 
 use base 'Padre::Task::Syntax';
 use XML::LibXML;
@@ -22,6 +22,7 @@ Padre::Task::SyntaxChecker::XML - XML document syntax-checking in the background
 
   my $task2 = Padre::Task::SyntaxChecker::XML->new(
     text          => Padre::Documents->current->text_get,
+    filename      => Padre::Documents->current->editor->{Document}->filename,
     on_finish     => sub { my $task = shift; ... },
   );
   $task2->schedule;
@@ -29,7 +30,7 @@ Padre::Task::SyntaxChecker::XML - XML document syntax-checking in the background
 =head1 DESCRIPTION
 
 This class implements syntax checking of XML documents in
-the background. It inherits from L<Padre::Task::SyntaxChecker>.
+the background. It inherits from L<Padre::Task::Syntax>.
 Please read its documentation!
 
 =cut
@@ -136,7 +137,7 @@ __END__
 
 =head1 SEE ALSO
 
-This class inherits from L<Padre::Task::SyntaxChecker> which
+This class inherits from L<Padre::Task::Syntax> which
 in turn is a L<Padre::Task> and its instances can be scheduled
 using L<Padre::TaskManager>.
 
@@ -150,6 +151,7 @@ Heiko Jansen, C<< <heiko_jansen@web.de> >>
 =head1 COPYRIGHT AND LICENSE
 
 Copyright 2008 Heiko Jansen
+Copyright 2010 Alexandr Ciornii
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
