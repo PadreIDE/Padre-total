@@ -131,7 +131,7 @@ sub on_session_start {
         # Send any buffered messages now that the session
         # is 'authorized'
         if ($self->{write_queue}) {
-            $self->write( $_ ) for @{ $self->{write_queue} }
+            $self->write( $_ ) while shift @{ $self->{write_queue} };
         }
         
         # Notify the callback
@@ -149,7 +149,7 @@ sub on_session_start {
                     $KEEPALIVE_TIMER_ID, 
                     sub { $self->on_timer_alarm(@_) } 
                 );
-                $timer->Start(60 * 1000, 0); # every minute
+                $timer->Start(5 * 60 * 1000, 0); 
         }
 
         
@@ -159,7 +159,7 @@ sub on_session_start {
 
 sub on_timer_alarm {
     my $self = shift;
-    $self->write('') ; # waste a packet :(
+    $self->write(' ') ; # waste a packet :(
     
 }
 
