@@ -99,7 +99,7 @@ sub editor_disable {
 	return unless $document->filename;
 	
 	eval {
-            $self->plugin->send( {
+            $self->transport->send( {
                 type => 'destroy' , 
                 service => 'editor',
                 resource => $document->filename}
@@ -189,12 +189,18 @@ sub accept_disco {
 	my ($self,$message) = @_;
 	TRACE( $message->{from} . " disco" ) if DEBUG;
 	foreach my $doc ( values %{ $self->resources } ) {
+		TRACE( "Promoting " . $doc->filename ) if DEBUG;
 	    eval  {
-		$self->plugin->send(
-		{ type => 'promote', service => 'editor',
-		    resource => $doc->filename }
-		);
+		$self->transport->send(
+				{ type => 'promote', service => 'editor',
+				  resource => $doc->filename }
+				);
 	    };
+	    
+	    if ($@) {
+			TRACE("Failed to send - $@" ) if DEBUG;
+		}
+	    
 	}
 	
 }
