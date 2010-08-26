@@ -55379,34 +55379,65 @@ metachar__S_046var: !!perl/hash:RE_ast
         zyg:
         - !!perl/hash:RE_decl {}
         - !!perl/hash:RE_method
-          name: termish
+          name: variable
           rest: ''
-    - !!perl/hash:RE_bindnamed
-      atom: !!perl/hash:RE_quantified_atom
-        atom: !!perl/hash:RE_paren
-          re: !!perl/hash:RE_sequence
-            zyg:
-            - !!perl/hash:RE_quantified_atom
-              atom: !!perl/hash:RE_meta
-                min: 1
-                text: \s
-              quant:
-              - '*'
-            - !!perl/hash:RE_string
-              i: 0
-              text: =
-            - !!perl/hash:RE_quantified_atom
-              atom: !!perl/hash:RE_meta
-                min: 1
-                text: \s
-              quant:
-              - '*'
-            - !!perl/hash:RE_method
-              name: quantified_atom
-              rest: ''
-        quant:
-        - '?'
     - !!perl/hash:RE_block {}
+    - !!perl/hash:RE_bracket
+      re: !!perl/hash:RE_first
+        zyg:
+        - !!perl/hash:RE_sequence
+          zyg:
+          - !!perl/hash:RE_bindnamed
+            atom: !!perl/hash:RE_paren
+              re: !!perl/hash:RE_sequence
+                zyg:
+                - !!perl/hash:RE_quantified_atom
+                  atom: !!perl/hash:RE_meta
+                    min: 1
+                    text: \s
+                  quant:
+                  - '*'
+                - !!perl/hash:RE_string
+                  i: 0
+                  text: =
+                - !!perl/hash:RE_quantified_atom
+                  atom: !!perl/hash:RE_meta
+                    min: 1
+                    text: \s
+                  quant:
+                  - '*'
+                - !!perl/hash:RE_method
+                  name: quantified_atom
+                  rest: ''
+          - !!perl/hash:RE_block {}
+        - !!perl/hash:RE_sequence
+          zyg:
+          - !!perl/hash:RE_block {}
+          - !!perl/hash:RE_quantified_atom
+            atom: !!perl/hash:RE_bracket
+              re: !!perl/hash:RE_sequence
+                zyg:
+                - !!perl/hash:RE_assertion
+                  assert: '?'
+                  re: !!perl/hash:RE_method_re
+                    name: before
+                    nobind: 1
+                    re: !!perl/hash:RE_sequence
+                      zyg:
+                      - !!perl/hash:RE_quantified_atom
+                        atom: !!perl/hash:RE_string
+                          i: 0
+                          text: .
+                        quant:
+                        - '?'
+                      - !!perl/hash:RE_cclass
+                        i: 0
+                        text: '[ \[ \{ \< ]'
+                - !!perl/hash:RE_method
+                  name: worry
+                  rest: 1
+            quant:
+            - '?'
 mod_arg: !!perl/hash:RE_ast
   dba: modifier argument
   dic: STD::Regex
@@ -59077,14 +59108,22 @@ and ($C) = ($C->_BRACKETr(sub {
 my $C=shift;
 my $newlang = ($::LANG{'MAIN'});
 $C = bless($C, (ref($newlang) || $newlang));
-$C->_SUBSUMEr(['termish'], sub {
+$C->_SUBSUMEr(['variable'], sub {
 my $C = shift;
-$C->termish
+$C->variable
 })
 }))
-and ($C) = ($C->_OPTr(sub {
+and ($C) = (scalar(do {
+my $M = $C;
+$M->{'sym'} = $M->{'variable'}->Str}, $C))
+and ($C) = ($C->_BRACKETr(sub {
 my $C=shift;
-$C->_SUBSUMEr(['binding'], sub {
+do {    my $C = $C->cursor_xact('ALT ||');
+my $xact = $C->xact;
+my @gather;
+do {
+push @gather, do {
+if (my ($C) = ($C->_SUBSUMEr(['binding'], sub {
 my $C = shift;
 $C->_PAREN( sub {
 my $C=shift;
@@ -59096,11 +59135,44 @@ $C->quantified_atom
 } else { () }
 
 })
-})
 }))) {
 scalar(do {
 my $M = $C;
-$M->{'sym'} = $M->{'termish'}->{'term'}->Str}, $C)
+$C->check_variable($M->{'variable'}) unless substr($M->{'sym'},1,1) eq '<' }, $C)
+} else { () }
+
+}
+}
+or $xact->[-2] or
+do {
+push @gather, do {
+if (my ($C) = (scalar(do {
+my $M = $C;
+$C->check_variable($M->{'variable'}) }, $C))) {
+$C->_OPTr(sub {
+my $C=shift;
+if (my ($C) = ($C->_BRACKETr(sub {
+my $C=shift;
+if (($C) = ($C->before(sub {
+my $C=shift;
+if (my ($C) = ($C->before(sub {
+my $C=shift;
+$C->_PATTERN(qr/\G\.?+[\[\{\<]/)
+}))) { ($C) } else { () }
+}))
+and ($C) = ($C->worry("Apparent subscript will be treated as regex"))) {
+$C
+} else { () }
+}))) { ($C) } else { () }
+})
+} else { () }
+
+}
+};
+@gather;
+}
+}))) {
+$C
 } else { () }
 
 });
