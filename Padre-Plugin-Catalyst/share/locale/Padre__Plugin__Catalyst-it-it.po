@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-14 12:20+0200\n"
-"PO-Revision-Date: 2010-08-24 10:48+0100\n"
+"PO-Revision-Date: 2010-08-27 12:08+0100\n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team:  <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -304,56 +304,56 @@ msgstr ""
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:42
 msgid "Application Name:"
-msgstr ""
+msgstr "Nome applicazione:"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:46
 msgid "Parent Directory:"
-msgstr ""
+msgstr "Cartella superiore:"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:47
 msgid "Pick parent directory"
-msgstr ""
+msgstr "Scegli cartella superiore"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:54
 msgid "short names"
-msgstr ""
+msgstr "Nomi brevi"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:109
 msgid "Invalid Application name"
-msgstr ""
+msgstr "Nome applicazione non valido"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:109
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "missing field"
-msgstr ""
+msgstr "campo mancante"
 
 #: lib/Padre/Plugin/Catalyst/NewApp.pm:113
 msgid "You need to select a base directory"
-msgstr ""
+msgstr "Selezionare la cartella principale"
 
 #: lib/Padre/Plugin/Catalyst/Outline.pm:102
 msgid "Catalyst"
-msgstr ""
+msgstr "Catalyst"
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:35
 #: lib/Padre/Plugin/Catalyst/Panel.pm:40
 #: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Start Server"
-msgstr ""
+msgstr "Avvia server"
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:51
 msgid "auto-restart"
-msgstr ""
+msgstr "riavvio automatico"
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:77
 msgid "Catalyst Dev Server"
-msgstr ""
+msgstr "Server di sviluppo Catalyst"
 
 #: lib/Padre/Plugin/Catalyst/Panel.pm:82
 msgid "Stop Server"
-msgstr ""
+msgstr "Arresta server"
 
 #: lib/Padre/Wx/Menu/Catalyst.pm:47
 msgid "&Catalyst"
-msgstr ""
+msgstr "&Catalyst"
 
