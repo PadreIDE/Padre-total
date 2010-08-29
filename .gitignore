@@ -1,4 +1,5 @@
 # /*/META.yml
+*/blib/
 Padre-Plugin-Alarm/share/locale/*.mo
 Padre-Plugin-Autoformat/lib/Padre/Plugin/Autoformat/share/locale/*.mo
 Debug-Client/META.yml
