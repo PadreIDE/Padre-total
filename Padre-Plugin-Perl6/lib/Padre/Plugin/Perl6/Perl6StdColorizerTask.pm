@@ -93,7 +93,7 @@ sub finish {
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
 			my $color = $colors{ $token{rule} };
-			if ($color) {
+			if (defined $color) {
 				my $len   = length $token{buffer};
 				my $start = $token{last_pos} - $len;
 				$editor->StartStyling( $start, $color );
