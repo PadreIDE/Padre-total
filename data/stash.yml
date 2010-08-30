@@ -27,6 +27,14 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 August 23
+        url: http://www.youtube.com/watch?v=oH_EG4Grso4
+        title: Padre the Perl IDE presentation at YAPC Europe 2010 (part 2)
+        comment: by Gábor Szabó
+      - date: 2010 August 23
+        url: http://www.youtube.com/watch?v=peFrEWzq8pA
+        title: Padre the Perl IDE presentation at YAPC Europe 2010 (part 1)
+        comment: by Gábor Szabó
       - date: 2010 July 28
         url: http://perlwannabe.vox.com/library/post/padre-068-post-birthday-hackthon-release---still-unstable.html
         title: Padre 0.68 - Unstable Has been released.
