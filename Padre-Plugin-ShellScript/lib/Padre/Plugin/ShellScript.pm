@@ -4,45 +4,43 @@ use strict;
 use warnings;
 use 5.008;
 
+our $VERSION = '0.02';
+
 use base 'Padre::Plugin';
 use Class::Autouse 'Padre::Document::ShellScript';
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name {
-    'Shell Script Plugin';
+	'Shell Script';
 }
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin'     => 0.43,
-      'Padre::Document' => 0.43,
-      'Padre::Wx::Main' => 0.43,
-      ;
+	'Padre::Plugin' => 0.43, 'Padre::Document' => 0.43, 'Padre::Wx::Main' => 0.43,;
 }
 
 sub registered_documents {
-    'application/x-shellscript' => 'Padre::Document::ShellScript',
-      ;
+	'application/x-shellscript' => 'Padre::Document::ShellScript',;
 }
 
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
-    my $self = shift;
-    'Shell Script' => [ Information => sub { $self->info() }, ];
+	my $self = shift;
+	'Shell Script' => [ Information => sub { $self->info() }, ];
 }
 
 sub info {
-    my $self = shift;
+	my $self = shift;
 
-    # Generate the About dialog
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName("Shell Script Plugin");
-    $about->SetDescription("Use the Run menu to run and debug shell scripts.");
+	# Generate the About dialog
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName("Shell Script Plugin");
+	$about->SetDescription("Use the Run menu to run and debug shell scripts.");
 
-    # Show the About dialog
-    Wx::AboutBox($about);
+	# Show the About dialog
+	Wx::AboutBox($about);
 
-    return;
+	return;
 }
 1;
 __END__
@@ -57,7 +55,7 @@ Claudio Ramirez C<< <padre.claudio@apt-get.be> >>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Claudio Ramirez all rights reserved.
+Copyright 2009-2010 Claudio Ramirez all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

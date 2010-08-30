@@ -5,30 +5,32 @@ use strict;
 use warnings;
 use Padre::Document ();
 
-our $VERSION = '0.27';
+our $VERSION = '0.02';
 our @ISA     = 'Padre::Document';
 
 sub get_command {
-        my $self     = shift;
-        my $debug    = shift;
+	my $self  = shift;
+	my $debug = shift;
 
-        # Check the file name
-        my $filename = $self->filename;
+	# TODO get shebang
 
-        my $dir = File::Basename::dirname($filename);
-        chdir $dir;
-        return $debug
-                ? qq{"sh" "-xv" "$filename"}
-                : qq{"sh" "$filename"};
+	# Check the file name
+	my $filename = $self->filename;
+
+	my $dir = File::Basename::dirname($filename);
+	chdir $dir;
+	return $debug
+		? qq{"sh" "-xv" "$filename"}
+		: qq{"sh" "$filename"};
 }
 
-sub errstr {
-        # Empty placeholder
-        }
-
+sub comment_lines_str {
+	return '#';
+}
 
 1;
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
+
+# Copyright 2008-2010 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.

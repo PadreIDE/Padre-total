@@ -1,5 +1,7 @@
 0.02    to be released
         compatibility to newer versions of Padre (ZENOG)
+	added $VERSION variable (ZENOG)
+	comment support (ZENOG)
 
 0.01    2009.02.01
         First release

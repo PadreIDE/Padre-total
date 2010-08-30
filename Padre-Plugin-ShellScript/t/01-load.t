@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
+
 BEGIN {
 	$|  = 1;
 	$^W = 1;
@@ -16,6 +17,6 @@ use Class::Autouse ':devel';
 
 ok( $] >= 5.008, 'Perl version is new enough' );
 
-use_ok( 'Wx'                             );
+use_ok('Wx');
 diag( "Tests find Wx: $Wx::VERSION " . Wx::wxVERSION_STRING() );
-use_ok( 'Padre::Plugin::ShellScript'      );
+use_ok('Padre::Plugin::ShellScript');
