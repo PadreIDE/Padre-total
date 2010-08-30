@@ -13,11 +13,13 @@ TÒDO
  - integration of detexify
  - icons for the tool bar
  - document outline
+   - sections/chapter/appendix/abstract
    - command definitions
    - include statements
-   - sections/chapter/appendix/abstract
    - Beamer: frames
    - tableofcontents, etc.
+ - function list
+   - command definitions
  - syntax checking
  - jump to command definition, bib item, reference label
  - automatic insertion of '' and ``
