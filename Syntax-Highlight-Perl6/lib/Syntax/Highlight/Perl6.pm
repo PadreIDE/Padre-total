@@ -89,7 +89,6 @@ sub _lazy_parse {
 			rule             => $self->{rule},
 			actions          => __PACKAGE__ . '::Actions',
 			tmp_prefix       => $self->{tmp_prefix},
-            syml_search_path => [$SHARED],
 		);
 
 		#we parsed it lazily...
