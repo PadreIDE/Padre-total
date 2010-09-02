@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.85 2010.9.02
+	Re-used STD 32116 which is available on CPAN
+	Removed the bundled STD.pm6 files
+
 0.84 2010.8.26
 	Bundled the new STD.pm6 r32104 (lwall++)
 	Added the missing File::ShareDir dependency
