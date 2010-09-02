@@ -558,7 +558,7 @@ Syntax::Highlight::Perl6 - Perl 6 Syntax Highlighter
 
 =head1 DESCRIPTION
 
-C<Syntax::Highlight::Perl6> parses Perl 6 source code using an embedded STD.pm6. 
+C<Syntax::Highlight::Perl6> parses Perl 6 source code using L<STD> cpan package. 
 It matches parse tree nodes to colors then returns them in different output formats.
 It can be used to create web pages with colorful source code samples in its
 simple and snippet html modes, or it can be used as a learning tool in examining
