@@ -86,9 +86,9 @@ sub _lazy_parse {
 		require STD;
 		$self->{parser} = STD->parse(
 			$src_text,
-			rule             => $self->{rule},
-			actions          => __PACKAGE__ . '::Actions',
-			tmp_prefix       => $self->{tmp_prefix},
+			rule       => $self->{rule},
+			actions    => __PACKAGE__ . '::Actions',
+			tmp_prefix => $self->{tmp_prefix},
 		);
 
 		#we parsed it lazily...
@@ -429,7 +429,7 @@ sub _redspans_traverse {
 
 			#now delegate printing to a callback
 			#HACK to prevent parser->lineof(position) from breaking. lineof should be called in the same dynamic scope of parsing
-			$::ORIG = $self->{src_text};  
+			$::ORIG = $self->{src_text};
 			$process_buffer->( $i, $buffer, $rule_to_color, $last_tree, $parser->lineof($i) );
 			$buffer = $c;
 		} else {
