@@ -66,7 +66,7 @@ sub save_file {
     my $url = $self->url;
 
     # Two saves in the same second will cause asset->addRevision to explode
-    return 1 if $self->last_sync && $self->last_sync == time;
+    return 1 if $self->timestamp && $self->timestamp == time;
 
     TRACE("Saving asset $asset->{assetId}") if DEBUG;
 
@@ -81,7 +81,7 @@ sub save_file {
         {   op      => 'padre',
             func    => 'save',
             assetId => $asset->{assetId},
-            props   => to_json($asset),
+            props   => encode_json($asset),
         }
     );
     unless ( $response->header('Padre-Plugin-WebGUI') ) {
@@ -105,9 +105,10 @@ sub process_response {
     # TRACE($content) if DEBUG;
 
     use JSON;
-    my $asset = eval { from_json($content) };
+    my $asset = eval { decode_json($content) };
     if ($@) {
         TRACE($@) if DEBUG;
+        warn $@;
         my $error = "The server sent an invalid response, please try again (and check the logs)";
         $self->set_errstr($error);
         $self->editor->main->error($error);

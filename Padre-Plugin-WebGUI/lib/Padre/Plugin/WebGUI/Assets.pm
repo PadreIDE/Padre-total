@@ -150,7 +150,7 @@ sub build_asset_tree {
     # TRACE($assets) if DEBUG;
 
     use JSON;
-    $assets = eval { from_json($assets) };
+    $assets = eval { decode_json($assets) };
     if ($@) {
         TRACE($@) if DEBUG;
         $self->main->error("The server sent an invalid response, please try again (and check the logs)");
@@ -267,7 +267,7 @@ sub on_tree_item_activated {
         return;
     }
 
-    elsif ( $opts->{action} eq 'details' ) {
+    elsif ( $opts->{action} && $opts->{action} eq 'details' ) {
         my $str = q{};
         for my $key ( sort keys %$item ) {
             $str .= qq{$key:\t\t $item->{$key}\n};

@@ -1,7 +1,8 @@
 Revision history for Padre-Plugin-WebGUI
 
-0.05    to be released
+0.06    2010-09-03
         compatibility to newer version of Padre (ZENOG)
+	Fix saving (Padre::Document::last_sync was removed)
 
 -- No revision history between 0.01 and 0.05
         Replaced debug called with new TRACE() call
