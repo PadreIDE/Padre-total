@@ -51,3 +51,4 @@
 
 # avoid CORE.pad.store files
 \.store$
+^MYMETA.yml$
