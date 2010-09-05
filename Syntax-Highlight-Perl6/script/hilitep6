@@ -9,7 +9,7 @@ use feature qw(say switch);
 use Carp;
 
 #CPAN version
-our $VERSION = '0.85';
+our $VERSION = '0.86';
 
 # my variables
 my ( $clean_html, $help ) = ( 0, 0 );

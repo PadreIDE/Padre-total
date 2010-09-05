@@ -1,5 +1,8 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.86 2010.9.05
+	Moved to Module::Build for more flexibility
+
 0.85 2010.9.02
 	Re-used STD 32116 which is available on CPAN
 	Removed the bundled STD.pm6 files
