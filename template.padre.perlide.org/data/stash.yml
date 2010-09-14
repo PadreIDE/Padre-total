@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 September 14
+        url: http://blogs.perl.org/users/peter_lavender/2010/09/padre-070-has-been-released.html
+        title: Padre 0.70 Release Announcement
+        comment: by Peter Lavender (Release Manager)
       - date: 2010 August 23
         url: http://www.youtube.com/watch?v=oH_EG4Grso4
         title: Padre the Perl IDE presentation at YAPC Europe 2010 (part 2)
