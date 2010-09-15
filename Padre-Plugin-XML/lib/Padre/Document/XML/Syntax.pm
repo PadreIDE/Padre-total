@@ -79,13 +79,9 @@ sub _parse_msg {
 sub syntax {
 	my $self = shift;
 	my $text = shift;
-
-	warn "syntax.\n";
 	
 	my $base_uri = $self->{filename};
 	warn 'No filename' if not $base_uri;
-
-	warn "go!\n";
 
 	return _valid($base_uri, $text);
 }
