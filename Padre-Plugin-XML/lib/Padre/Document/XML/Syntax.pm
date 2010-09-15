@@ -5,6 +5,7 @@ use warnings;
 our $VERSION = '0.10';
 our @ISA     = 'Padre::Task::Syntax';
 
+use Padre::Wx;
 use XML::LibXML;
 
 
@@ -62,15 +63,15 @@ sub _parse_msg {
 	my $m = shift @messages;
 
 	if ( $m =~ m/^:(\d+):\s+(.+)/o ) {
-		push @{$issues}, { msg => $2, line => $1, severity => 'E', desc => '' };
+		push @{$issues}, { msg => $2, line => $1, severity => Padre::Wx::MarkError, desc => '' };
 	}
 	else {
-		push @{$issues}, { msg => $m, line => $error, severity => 'E', desc => '' };
+		push @{$issues}, { msg => $m, line => $error, severity => Padre::Wx::MarkError, desc => '' };
 	}
 
 	foreach my $m (@messages) {
 		$m =~ m/^(\d+):\s+(.+)/o;
-		push @{$issues}, { msg => $2, line => $1, severity => 'E', desc => '' };
+		push @{$issues}, { msg => $2, line => $1, severity => Padre::Wx::MarkError, desc => '' };
 	}
 
 	return $issues;
