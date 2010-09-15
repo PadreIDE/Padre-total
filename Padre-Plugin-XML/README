@@ -1,5 +1,6 @@
 Padre-Plugin-XML
 
+XML support (syntax checking, toggle comment support, tidy XML) for Padre
 
 
 INSTALLATION
@@ -35,8 +36,9 @@ You can also look for information at:
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2008 Fayland Lam
+Copyright (C) 2008-2010 Fayland Lam, Heiko Jansen, Alexandr Ciornii,
+			Zeno Gantner
 
 This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+under the same terms as Perl 5 itself.
 

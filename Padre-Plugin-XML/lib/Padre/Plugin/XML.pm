@@ -14,7 +14,7 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'text/xml' => 'Padre::Plugin::XML::Document',
+	'text/xml' => 'Padre::Document::XML',
 }
 
 sub menu_plugins_simple {
@@ -33,7 +33,7 @@ sub tidy_xml {
 	my $doc = $main->current->document;
 
 	unless ( $doc and $doc->isa('Padre::Document::XML') ) {
-		$main->message( Wx::gettext("This is not a XML document!") );
+		$main->message( Wx::gettext('This is not an XML document! ') . ref $doc );
 		return;
 	}
 
@@ -97,9 +97,14 @@ Fayland Lam, C<< <fayland at gmail.com> >>
 
 Heiko Jansen, C<< <heiko_jansen@web.de> >>
 
+Alexandr Ciornii
+
+Zeno Gantner
+
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2008 Fayland Lam, all rights reserved.
+Copyright 2008-2010 Fayland Lam, Heiko Jansen, Alexandr Ciornii,
+                    Zeno Gantner
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.

@@ -1,11 +1,17 @@
 Revision history for Padre-Plugin-XML
 
+0.11    to be released
+        removed unnecessary code in document class (ZENOG)
+        Padre::Plugin::XML::Document => Padre::Document::XML (ZENOG)
+        Padre::Task::SyntaxChecker::XML => Padre::Document::XML::Syntax (ZENOG)
+        fix error message by change in Padre itself (ZENOG)
+
 0.10	2010.08.25
 	fix ticket #943: crash on serialization of Task::SyntaxChecker::XML
-        (ZGANTNER)
-        compatibility with newer versions of Padre (ZGANTNER)
-        improved README file (ZGANTNER)
-        gettext-ified some strings (ZGANTNER)
+        (ZENOG)
+        compatibility with newer versions of Padre (ZENOG)
+        improved README file (ZENOG)
+        gettext-ified some strings (ZENOG)
         Task API 2 compatibility (CHORNY)
         auto syntax check works in new Padre (CHORNY)
         Padre::Document::XML => Padre::Plugin::XML::Document (CHORNY)

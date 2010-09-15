@@ -1,53 +1,18 @@
-package Padre::Task::SyntaxChecker::XML;
+package Padre::Document::XML::Syntax;
 use strict;
 use warnings;
 
 our $VERSION = '0.10';
+our @ISA     = 'Padre::Task::Syntax';
 
-use base 'Padre::Task::Syntax';
 use XML::LibXML;
 
-=pod
-
-=head1 NAME
-
-Padre::Task::SyntaxChecker::XML - XML document syntax-checking in the background
-
-=head1 SYNOPSIS
-
-  # by default, the text of the current document
-  # will be fetched as will the document's notebook page.
-  my $task = Padre::Task::SyntaxChecker::XML->new();
-  $task->schedule;
-
-  my $task2 = Padre::Task::SyntaxChecker::XML->new(
-    text          => Padre::Documents->current->text_get,
-    filename      => Padre::Documents->current->editor->{Document}->filename,
-    on_finish     => sub { my $task = shift; ... },
-  );
-  $task2->schedule;
-
-=head1 DESCRIPTION
-
-This class implements syntax checking of XML documents in
-the background. It inherits from L<Padre::Task::Syntax>.
-Please read its documentation!
-
-=cut
-
-=for cmt
-sub run {
-	my $self = shift;
-	$self->_check_syntax();
-	return 1;
-}
-=cut
 
 sub _valid {
 	my $base_uri = shift;
-	my $text = shift;
+	my $text     = shift;
 
-	my $validator = XML::LibXML->new();
+	my $validator = XML::LibXML->new;
 	$validator->validation(0);
 	$validator->line_numbers(1);
 	$validator->base_uri($base_uri);
@@ -56,7 +21,7 @@ sub _valid {
 
 	my $doc = '';
 	eval {
-		$doc = $validator->parse_string($text , $base_uri );
+		$doc = $validator->parse_string( $text , $base_uri );
 	};
 
 	if ($@) {
@@ -82,16 +47,6 @@ sub _valid {
 		}
 	}
 
-}
-
-sub _check_syntax {
-	my $self = shift;
-
-	my $base_uri = $self->{filename};
-
-	$self->{syntax_check} = _valid ($base_uri, $self->{text});
-
-	return;
 }
 
 sub _parse_msg {
@@ -124,16 +79,47 @@ sub _parse_msg {
 sub syntax {
 	my $self = shift;
 	my $text = shift;
-	if (not $self->{filename}) {
-		print "error - no filename\n";
-	}
+
+	warn "syntax.\n";
+	
 	my $base_uri = $self->{filename};
+	warn 'No filename' if not $base_uri;
+
+	warn "go!\n";
 
 	return _valid($base_uri, $text);
 }
+
 1;
 
 __END__
+
+
+
+=pod
+
+=head1 NAME
+
+Padre::Document::XML::Syntax - XML document syntax-checking in the background
+
+=head1 SYNOPSIS
+
+  # by default, the text of the current document
+  # will be fetched as will the document's notebook page.
+  my $task = Padre::Document::XML::Syntax->new();
+  $task->schedule;
+
+  my $task2 = Padre::Document::XML::Syntax->new(
+    text          => Padre::Documents->current->text_get,
+    filename      => Padre::Documents->current->editor->{Document}->filename,
+  );
+  $task2->schedule;
+
+=head1 DESCRIPTION
+
+This class implements syntax checking of XML documents in
+the background. It inherits from L<Padre::Task::Syntax>.
+Please read its documentation!
 
 =head1 SEE ALSO
 
@@ -157,4 +143,3 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
-
