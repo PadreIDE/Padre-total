@@ -86,6 +86,7 @@ sub highlighting_mime_types {
 			'application/x-perl',
 			'application/x-php',
 			'text/x-java-source',
+			'text/x-csharp',
 		],
 	);
 }
@@ -99,6 +100,7 @@ my %d = (
 	'application/x-perl'   => 'Perl',
 	'application/x-php'    => 'PHP/PHP',
 	'text/x-java-source'   => 'Java',
+	'text/x-csharp'        => 'C#',
 );
 use Syntax::Highlight::Engine::Kate::All;
 use Syntax::Highlight::Engine::Kate;
