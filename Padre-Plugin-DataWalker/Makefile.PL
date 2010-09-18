@@ -1,4 +1,4 @@
-use inc::Module::Install;
+use inc::Module::Install 1.00;
 
 name     'Padre-Plugin-DataWalker';
 all_from 'lib/Padre/Plugin/DataWalker.pm';
