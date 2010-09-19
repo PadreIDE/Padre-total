@@ -10,19 +10,19 @@ my @files = (
 	'Artistic',
 	'Copying',
 	'README',
-	'perlopref.pod',
+	'perlopquick.pod',
 );
 
-my $dir = File::Spec->join('share', 'doc', 'perlopref');
+my $dir = File::Spec->join('share', 'doc', 'perlopquick');
 unless(-d $dir) {
-	die "Abort! I could not find share/doc/perlopref in the current directory\n";
+	die "Abort! I could not find share/doc/perloquick in the current directory\n";
 }
 
 # Download all files and write them to disk
 for my $file (@files) {
 
-	# Load file from perlopref's github project
-	my $url = "http://github.com/cowens/perlopref/raw/master/$file";
+	# Load file from perlopquick's github project
+	my $url = "http://github.com/cowens/perlopquick/raw/master/$file";
 	print "Loading $url\n";
 	my $ua = LWP::UserAgent->new;
 	my $req = HTTP::Request->new(GET => $url);
@@ -46,14 +46,16 @@ __END__
 
 =head1 NAME
 
-update_perlopref.pl - update perlopref.pod from github
+update_perlopquick.pl - update perlopquick.pod from github
 
 =head1 DESCRIPTION
 
-FYI, perlopref is Perl Operator Reference.
+The perlopquick POD document is a quick reference for the various Perl
+operators.  It is organized by operator, sorted by precedence groups (inside of
+a precedence group there is no sorting).
 
-This is a simple script to obtain the latest perlopref files
-from github and write it in its proper Padre folder
+This is a simple script fetches the latest github perlopquick files
+and stores it into its proper Padre folder
 
 =head1 AUTHOR
 
