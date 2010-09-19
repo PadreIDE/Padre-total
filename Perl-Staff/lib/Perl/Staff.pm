@@ -267,7 +267,7 @@ L<http://picasaweb.google.com/109117812087018133975/LinuxTag2010Day3>
 
 =head3 Tina Müller
 
-=head2 LinuxTag 2010
+=head2 FrOSCon 2010
 
 =head3 Renée Bäcker
 
@@ -364,6 +364,42 @@ L<http://www.slideshare.net/lichtkind/perl-testing>
 =back
 
 =head3 Roland Schmitz
+
+=head2 FrOSCamp
+
+=head3 Renée Bäcker
+
+(main coordinator)
+
+Event reports
+
+=over 4
+
+=item * FrOSCamp Zürich 2010
+
+L<http://reneeb-perlblog.blogspot.com/2010/09/froscamp-zurich-2010.html>
+
+=back
+
+Talks
+
+=over 4
+
+=item * Perl::Critic
+
+L<http://www.slideshare.net/reneebperl/froscamp2010perlcritic>
+
+=item * Padre, the Perl-IDE
+
+L<http://www.slideshare.net/reneebperl/froscamp2010padre>
+
+=item * Moose
+
+L<http://www.slideshare.net/reneebperl/froscamp2010moose>
+
+=back
+
+=head3 Roman Baumer
 
 =cut
 
