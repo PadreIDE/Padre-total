@@ -6,13 +6,13 @@ use warnings;
 
 use Cwd                    ();
 use Padre::Logger;
-use Padre::HelpProvider    ();
+use Padre::Help            ();
 use Padre::DocBrowser::POD ();
 use Padre::Pod2HTML        ();
 use Padre::Util            ();
 
 our $VERSION = '0.01';
-our @ISA     = 'Padre::HelpProvider';
+our @ISA     = 'Padre::Help';
 
 #
 # Initialize help
