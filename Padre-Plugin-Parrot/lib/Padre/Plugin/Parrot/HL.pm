@@ -4,7 +4,7 @@ use warnings;
 
 use Padre::Wx ();
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 # colorize timer to make sure that colorize tasks are scheduled properly...
 my $COLORIZE_TIMER;
