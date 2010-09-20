@@ -1,8 +1,10 @@
 Revision history for Padre-Plugin-Parrot
 
-	- Add menu option to open one of the installed example files.
-	- Enable context sensitive help on PIR files
-	- made compatible to newer Padre versions (ZENOG)
+0.27 2010.9.20
+	- Add menu option to open one of the installed example files (SZABGAB)
+	- Enable context sensitive help on PIR files (SZABGAB)
+	- Made compatible with Padre 0.54 and later (ZENOG, AZAWAWI)
+	- Updated copyright notice (AZAWAWI)
 
 0.26 2009.10.02
 	- Allow the execution of PIR files.
