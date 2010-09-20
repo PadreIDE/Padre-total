@@ -448,14 +448,6 @@ sub show_help {
 
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Parrot - Padre plugin for Parrot
-
-=head1 SYNOPSIS
-
-After installation when you run Padre there should be a menu option Plugins/Parrot.
-
 =head1 AUTHOR
 
 Gabor Szabo L<http://szabgab.com/>
