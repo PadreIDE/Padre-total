@@ -222,8 +222,7 @@ sub menu_plugins_simple {
 }
 
 sub registered_documents {
-	'application/x-pasm' => 'Padre::Document::PASM',
-	'application/x-pir' => 'Padre::Document::PIR',;
+	'application/x-pasm' => 'Padre::Document::PASM', 'application/x-pir' => 'Padre::Document::PIR',;
 }
 
 # TODO, Planning the syntax highlighting feature:
@@ -396,10 +395,11 @@ sub open_example {
 	require File::ShareDir;
 	my $dir = File::Spec->catdir(
 		File::ShareDir::dist_dir('Padre-Plugin-Parrot'),
-		'examples');
+		'examples'
+	);
 
 	my $main = Padre->ide->wx->main;
-	return $main->open_file_dialog( $dir );
+	return $main->open_file_dialog($dir);
 }
 
 sub about {
