@@ -249,16 +249,6 @@ sub run {
 
 				# record the line number
 				$lineno = $1;
-			} elsif ( $msg =~ /^Can't locate object method ".+?" via package "STD"/i ) {
-
-				# STD lex cache is corrupt...
-				$msg = Wx::gettext(
-					"'STD Lex Cache' folder is corrupt. Please click on 'Plugins/Perl6/Maintenance' and then 'Cleanup STD Lex Cache' and then re-open the file."
-				);
-				push @{$issues}, { line => 1, msg => $msg, severity => 'E', };
-
-				# no need to continue collecting errors...
-				last;
 			}
 			if ($lineno) {
 				push @{$issues}, { line => $lineno, msg => $prefix . $msg, severity => $severity, };
