@@ -10,8 +10,9 @@ BEGIN {
 	}
 }
 
-unless ( $ENV{PADRE_PLUGIN_PERL6} ) {
-	plan skip_all => 'Needs PADRE_PLUGIN_PERL6 environment variable';
+# Don't run tests for installs
+unless ( $ENV{AUTOMATED_TESTING} or $ENV{RELEASE_TESTING} ) {
+	plan( skip_all => "Author tests not required for installation" );
 }
 
 eval "use Test::Pod 1.00";
