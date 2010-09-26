@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+0.87 2010.9.26
+	Fixed hilitep6 not being installed (ppisar++)
+		https://rt.cpan.org/Ticket/Display.html?id=61522
+
 0.86 2010.9.05
 	Moved to Module::Build for more flexibility
 	Delete old STD files that were bundled before in Syntax::Highlight::Perl6.
