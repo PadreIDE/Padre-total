@@ -1,0 +1,11 @@
+## name Basic passing
+## failures 0
+## cut
+
+close STDIN;
+
+## name Basic passing
+## failures 1
+## cut
+
+close;
