@@ -64,19 +64,19 @@ END_PERL
 sub dialog_isa {
 	my $self   = shift;
 	my $dialog = shift;
-	return [
+	return $self->nested(
 		"our \@ISA     = qw{",
-		"\tPadre::Wx::Role::Main",
-		"\tWx::Dialog",
+		"Padre::Wx::Role::Main",
+		"Wx::Dialog",
 		"};",
-	];
+	);
 }
 
 sub use_wx {
 	my $self   = shift;
 	my $dialog = shift;
 	return [
-		"use Padre::Wx             ();",
+		"use Padre::Wx ();",
 		"use Padre::Wx::Role::Main ();",
 	];
 }
