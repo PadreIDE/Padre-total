@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 October 10
+        url: http://blogs.perl.org/users/peter_lavender/2010/10/padre-072-has-been-released.html
+        title: Padre 0.72 Release Announcement
+        comment: by Peter Lavender (Release Manager)
       - date: 2010 September 14
         url: http://blogs.perl.org/users/peter_lavender/2010/09/padre-070-has-been-released.html
         title: Padre 0.70 Release Announcement
