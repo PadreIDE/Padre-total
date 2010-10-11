@@ -174,9 +174,9 @@ sub _get_filename {
 
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
-			$main,        Wx::gettext("Save file as..."),
-			$default_dir, ($current or $doc->get_title) . '.html',
-			"*.*",        Wx::wxFD_SAVE,
+			$main, Wx::gettext("Save file as..."),
+			$default_dir, ( $current or $doc->get_title ) . '.html',
+			"*.*", Wx::wxFD_SAVE,
 		);
 		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 			return;
