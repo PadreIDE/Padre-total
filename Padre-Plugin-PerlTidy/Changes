@@ -3,6 +3,10 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
 0.11  TO BE RELEASED
     - Added translations:
       - Turkish (BURAK)
+    - When tidying and exporting an unsaved document or text, the tab title is
+        now used instead of the undefined document filename (AZAWAWI)
+    - Prevent the current destructive nature when tidying a non-Perl document
+        or text (AZAWAWI)
 
 0.10  Thu Jan 21 2010
     - A variety of cleanups to use Padre::Current more efficiently (ADAMK)
