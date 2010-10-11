@@ -67,12 +67,13 @@ sub _tidy {
 		return;
 	}
 	unless ( $document->isa('Padre::Document::Perl') ) {
-		return Wx::MessageBox(
+		Wx::MessageBox(
 			Wx::gettext('Document is not a Perl document'),
 			Wx::gettext('Error'),
 			Wx::wxOK | Wx::wxCENTRE,
 			$main
 		);
+		return;
 	}
 
 	my $destination = undef;
@@ -208,11 +209,12 @@ sub _export {
 	my $doc = $main->current->document;
 
 	if ( !$doc->isa('Padre::Document::Perl') ) {
-		return Wx::MessageBox(
+		Wx::MessageBox(
 			Wx::gettext('Document is not a Perl document'),
 			Wx::gettext('Error'),
 			Wx::wxOK | Wx::wxCENTRE, $main
 		);
+		return;
 	}
 
 	my $filename = _get_filename($main);
