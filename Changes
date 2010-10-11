@@ -8,7 +8,9 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
     - Prevent the current destructive nature when tidying a non-Perl document
         or text (AZAWAWI)
     - Re-used standard Padre's message and error method calls instead of
-        Wx::MessageBox (AZAWAWI, idea from szabgab++)
+        Wx::MessageBox (AZAWAWI, idea from SZABGAB++)
+    - Fixed RT #61993 "Can't tidy code when the bottom pane is off on Padre startup"
+       (AZAWAWI, Reported by RENEEB++)
 
 0.10  Thu Jan 21 2010
     - A variety of cleanups to use Padre::Current more efficiently (ADAMK)
