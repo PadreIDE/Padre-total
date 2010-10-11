@@ -67,12 +67,7 @@ sub _tidy {
 		return;
 	}
 	unless ( $document->isa('Padre::Document::Perl') ) {
-		Wx::MessageBox(
-			Wx::gettext('Document is not a Perl document'),
-			Wx::gettext('Error'),
-			Wx::wxOK | Wx::wxCENTRE,
-			$main
-		);
+		$main->error( Wx::gettext('Document is not a Perl document') );
 		return;
 	}
 
@@ -99,12 +94,7 @@ sub _tidy {
 	eval { Perl::Tidy::perltidy(%tidyargs); };
 
 	if ($@) {
-		Wx::MessageBox(
-			$@,
-			Wx::gettext("PerlTidy Error"),
-			Wx::wxOK | Wx::wxCENTRE,
-			$main
-		);
+		$main->error( Wx::gettext("PerlTidy Error") . ":\n" . $@ );
 		return;
 	}
 
@@ -185,14 +175,7 @@ sub _get_filename {
 		$default_dir = $dialog->GetDirectory;
 		my $path = File::Spec->catfile( $default_dir, $filename );
 		if ( -e $path ) {
-			my $res = Wx::MessageBox(
-				Wx::gettext("File already exists. Overwrite it?"),
-				Wx::gettext("Exist"),
-				Wx::wxYES_NO, $main,
-			);
-			if ( $res == Wx::wxYES ) {
-				return $path;
-			}
+			return $path if $main->yes_no( Wx::gettext("File already exists. Overwrite it?"), Wx::gettext("Exist") );
 		} else {
 			return $path;
 		}
@@ -209,11 +192,7 @@ sub _export {
 	my $doc = $main->current->document;
 
 	if ( !$doc->isa('Padre::Document::Perl') ) {
-		Wx::MessageBox(
-			Wx::gettext('Document is not a Perl document'),
-			Wx::gettext('Error'),
-			Wx::wxOK | Wx::wxCENTRE, $main
-		);
+		$main->error( Wx::gettext('Document is not a Perl document') );
 		return;
 	}
 
@@ -242,12 +221,7 @@ sub _export {
 	eval { Perl::Tidy::perltidy(%tidyargs); };
 
 	if ($@) {
-		my $error_string = $@;
-		Wx::MessageBox(
-			$error_string,
-			Wx::gettext('PerlTidy Error'),
-			Wx::wxOK | Wx::wxCENTRE, $main
-		);
+		$main->error( Wx::gettext("PerlTidy Error") . ":\n" . $@ );
 		return;
 	}
 
