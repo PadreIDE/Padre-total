@@ -1,16 +1,16 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
-0.11  TO BE RELEASED
+0.11  Mon Oct 11 2010
     - Added translations:
       - Turkish (BURAK)
     - When tidying and exporting an unsaved document or text, the tab title is
-        now used instead of the undefined document filename (AZAWAWI)
+      now used instead of the undefined document filename (AZAWAWI)
     - Prevent the current destructive nature when tidying a non-Perl document
-        or text (AZAWAWI)
+      or text (AZAWAWI)
     - Re-used standard Padre's message and error method calls instead of
-        Wx::MessageBox (AZAWAWI, idea from SZABGAB++)
+      Wx::MessageBox (AZAWAWI, idea from SZABGAB++)
     - Fixed RT #61993 "Can't tidy code when the bottom pane is off on Padre startup"
-       (AZAWAWI, Reported by RENEEB++)
+      (AZAWAWI, Reported by RENEEB++)
 
 0.10  Thu Jan 21 2010
     - A variety of cleanups to use Padre::Current more efficiently (ADAMK)
