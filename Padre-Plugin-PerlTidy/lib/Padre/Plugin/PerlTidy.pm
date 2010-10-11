@@ -80,7 +80,10 @@ sub _tidy {
 		errorfile   => \$errorfile,
 	);
 
+	#Make sure output is visible...
+	$main->show_output(1);
 	my $output     = $main->output;
+	
 	my $perltidyrc = $document->project->config->config_perltidy;
 	if ($perltidyrc) {
 		$tidyargs{perltidyrc} = $perltidyrc;
@@ -103,7 +106,6 @@ sub _tidy {
 		my $width    = length($filename) + 2;
 		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
 		$output->AppendText("$errorfile\n");
-		$main->show_output(1);
 	}
 
 	return $destination;
@@ -208,13 +210,16 @@ sub _export {
 		errorfile   => \$error,
 	);
 
+	# Make sure output window is visible...
+	$main->show_output(1);
+	my $output = $main->output;
+	
 	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
-		Padre::Current->main->output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
+		$output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
 	}
-
 	else {
-		Padre::Current->main->output->AppendText("Perl::Tidy running with default or user configuration\n");
+		$output->AppendText("Perl::Tidy running with default or user configuration\n");
 	}
 
 	# TODO: suppress the senseless warning from PerlTidy
@@ -228,8 +233,9 @@ sub _export {
 	if ( defined $error ) {
 		my $width = length( $doc->filename ) + 2;
 		my $main  = Padre::Current->main;
-		$main->output->AppendText( "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
-		$main->output->AppendText("$error\n");
+
+		$output->AppendText( "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
+		$output->AppendText("$error\n");
 		$main->show_output(1);
 	}
 
