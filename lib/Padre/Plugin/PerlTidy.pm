@@ -212,7 +212,7 @@ sub _export {
 
 	# Make sure output window is visible...
 	$main->show_output(1);
-	my $output = $main->output;
+	$output = $main->output;
 	
 	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
