@@ -12,8 +12,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
     },
     requires => {
-        'Padre::Wx::Dialog' => 0,
-        'Padre' 	 => '0.26',
+        'Padre' 	 => '0.57',
         'Audio::Beep' => 0,
     },
     add_to_cleanup      => [ 'Padre-Plugin-Alarm-*' ],

@@ -15,7 +15,7 @@ use Padre::Util   ('_T');
 use vars qw/$alarm_timer_id/;
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.26',
+	'Padre::Plugin' => '0.47',
 }
 
 sub menu_plugins_simple {
