@@ -96,10 +96,13 @@ sub ok_clicked {
 	);
 
 	eval {
-		if( $type eq 'encrypt' ) {
+		if ( $type eq 'encrypt' )
+		{
+
 			# Encrypt
 			$code = $cipher->encrypt_hex($code);
 		} else {
+
 			# Decrypt
 			$code = $cipher->decrypt_hex($code);
 
