@@ -3,7 +3,17 @@ use warnings;
 
 use Module::Build;
 
-my $builder = Module::Build->new(
+my $class = Module::Build->subclass( code => <<'EOF');
+	eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
+	sub process_mo_files {
+		die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
+		msgfmt({
+			in => "lib/Padre/Plugin/Alarm/share/locale/",
+			out => "blib/lib/Padre/Plugin/Alarm/share/locale/"});
+	}
+EOF
+
+my $builder = $class->new(
 	module_name       => 'Padre::Plugin::Alarm',
 	license           => 'perl',
 	dist_author       => 'Fayland Lam <fayland@gmail.com>',
@@ -16,7 +26,7 @@ my $builder = Module::Build->new(
 		'Audio::Beep' => 0,
 	},
 	add_to_cleanup     => ['Padre-Plugin-Alarm-*'],
-	create_makefile_pl => 'traditional',
+	create_makefile_pl => 'passthrough',
 	meta_merge         => {
 		resources => {
 			homepage   => 'http://padre.perlide.org/',
