@@ -96,7 +96,7 @@ sub ok_clicked {
 	);
 
 	eval {
-		$code = ( $type eq 'encrypt' ) ? $cipher->encrypt($code) : $cipher->decrypt($code);
+		$code = ( $type eq 'encrypt' ) ? $cipher->encrypt_hex($code) : $cipher->decrypt_hex($code);
 		$doc->text_set($code);
 	};
 	if ($@) {
