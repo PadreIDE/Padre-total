@@ -3,7 +3,7 @@ package Padre::Plugin::Encrypt;
 use warnings;
 use strict;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use Padre::Wx::Dialog ();
 use base 'Padre::Plugin';
