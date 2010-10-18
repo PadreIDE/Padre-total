@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-use Module::Build;
+
+use Module::Build 0.36;
 
 my $class = Module::Build->subclass( code => <<'EOF');
 	eval { require Locale::Msgfmt; Locale::Msgfmt->import(); };
@@ -11,9 +12,11 @@ my $class = Module::Build->subclass( code => <<'EOF');
 			out => "blib/share/locale/"});
 	}
 EOF
+
 my $builder = $class->new(
 	module_name       => 'Padre::Plugin::Encrypt',
 	license           => 'perl',
+	share_dir         => 'blib/share',
 	dist_author       => 'Fayland Lam <fayland@gmail.com>',
 	dist_version_from => 'lib/Padre/Plugin/Encrypt.pm',
 	build_requires    => {
