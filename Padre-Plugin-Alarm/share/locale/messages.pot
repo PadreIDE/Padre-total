@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-18 23:29+0800\n"
+"POT-Creation-Date: 2010-10-18 15:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,23 +16,35 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: lib/Padre/Plugin/Alarm.pm:30
+msgid "Alarm Clock"
+msgstr ""
+
+#: lib/Padre/Plugin/Alarm.pm:31 lib/Padre/Plugin/Alarm.pm:56
+msgid "Set Alarm Time"
+msgstr ""
+
+#: lib/Padre/Plugin/Alarm.pm:32 lib/Padre/Plugin/Alarm.pm:127
+msgid "Stop Alarm"
+msgstr ""
+
+#: lib/Padre/Plugin/Alarm.pm:33 lib/Padre/Plugin/Alarm.pm:146
+msgid "Clear Alarm"
+msgstr ""
+
 #: lib/Padre/Plugin/Alarm.pm:44
 msgid "Time (eg: 23:55):"
 msgstr ""
 
-#: lib/Padre/Plugin/Alarm.pm:48
+#: lib/Padre/Plugin/Alarm.pm:47
 msgid "Frequency:"
 msgstr ""
 
-#: lib/Padre/Plugin/Alarm.pm:58
-msgid "Set Alarm Time"
-msgstr ""
-
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
 msgstr ""
 
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Wrong Alarm Time"
 msgstr ""
 
@@ -40,14 +52,6 @@ msgstr ""
 msgid "All Alarms are stopped"
 msgstr ""
 
-#: lib/Padre/Plugin/Alarm.pm:127
-msgid "Stop Alarm"
-msgstr ""
-
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "All Alarms are cleared"
-msgstr ""
-
-#: lib/Padre/Plugin/Alarm.pm:146
-msgid "Clear Alarm"
 msgstr ""

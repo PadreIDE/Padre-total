@@ -27,10 +27,10 @@ sub menu_plugins_simple {
 	}
 
 	return (
-		'Alarm Clock' => [
-			'Set Alarm Time', sub { $self->set_alarm_time },
-			'Stop Alarm',     sub { $self->stop_alarm },
-			'Clear Alarm',    sub { $self->clear_alarm },
+		Wx::gettext('Alarm Clock') => [
+			Wx::gettext('Set Alarm Time'), sub { $self->set_alarm_time },
+			Wx::gettext('Stop Alarm'),     sub { $self->stop_alarm },
+			Wx::gettext('Clear Alarm'),    sub { $self->clear_alarm },
 		]
 	);
 }
