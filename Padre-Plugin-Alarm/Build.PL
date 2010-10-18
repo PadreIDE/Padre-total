@@ -8,8 +8,8 @@ my $class = Module::Build->subclass( code => <<'EOF');
 	sub process_mo_files {
 		die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
 		msgfmt({
-			in => "lib/Padre/Plugin/Alarm/share/locale/",
-			out => "blib/lib/Padre/Plugin/Alarm/share/locale/"});
+			in => "share/locale/",
+			out => "blib/share/locale/"});
 	}
 EOF
 
