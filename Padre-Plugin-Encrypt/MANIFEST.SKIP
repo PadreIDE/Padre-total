@@ -45,4 +45,8 @@
 \B\._
 # Avoid archives of this distribution
 \bPadre-Plugin-Encrypt-[\d\.\_]+
+
+# avoid pot files (gettext)
+\.pot$
+
 ^MYMETA.yml$
