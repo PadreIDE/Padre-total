@@ -102,7 +102,7 @@ sub _tidy {
 	}
 
 	if ( defined $errorfile ) {
-		my $filename = $document->filename;
+		my $filename = $document->filename ? $document->filename : $document->get_title;
 		my $width    = length($filename) + 2;
 		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
 		$output->AppendText("$errorfile\n");

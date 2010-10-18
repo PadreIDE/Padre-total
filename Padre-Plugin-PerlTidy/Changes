@@ -1,5 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
+0.13  Not released
+    - Fix the uninitialized variable warning when tidying an unsaved tab (AZAWAWI)
+
 0.12  Tue Oct 12 2010
     - Fix duplicate "my $output" call
 
