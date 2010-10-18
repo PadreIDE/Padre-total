@@ -96,7 +96,18 @@ sub ok_clicked {
 	);
 
 	eval {
-		$code = ( $type eq 'encrypt' ) ? $cipher->encrypt_hex($code) : $cipher->decrypt_hex($code);
+		if( $type eq 'encrypt' ) {
+			# Encrypt
+			$code = $cipher->encrypt_hex($code);
+		} else {
+			# Decrypt
+			$code = $cipher->decrypt_hex($code);
+
+			# Handle various text encodings properly
+			require Padre::Locale;
+			my $encoding = Padre::Locale::encoding_from_string($code);
+			$code = Encode::decode( $encoding, $code );
+		}
 		$doc->text_set($code);
 	};
 	if ($@) {
