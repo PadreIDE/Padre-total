@@ -73,18 +73,19 @@ sub cancel_clicked {
 sub ok_clicked {
 	my ($dialog, $event) = @_;
 
+	my $main = Padre->ide->wx->main;
+
 	my $data = $dialog->get_data;
 	$dialog->Destroy;
 
 	my $private_key = $data->{_private_key_};
 	unless ( length( $private_key ) ) {
-		Wx::MessageBox("Private key is required");
+		$main->message(Wx::gettext("Private key is required"));
 		return;
 	}
 	
 	my $type = $data->{_type_};
 
-	my $main = Padre->ide->wx->main;
 	my $doc = $main->current->document;
 	return unless $doc;
 	my $code = $doc->text_get;
@@ -94,14 +95,15 @@ sub ok_clicked {
 		-key    => $private_key,
 		-cipher => 'Blowfish'
 	);
-	
-	if ( $type eq 'encrypt' ) {
-		$code = $cipher->encrypt($code);
-	} else {
-		$code = $cipher->decrypt($code);
+
+	eval {
+		$code = ($type eq 'encrypt') ? $cipher->encrypt($code) : $cipher->decrypt($code);
+		$doc->text_set( $code );
+	};
+	if ($@) {
+		$main->error(Wx::gettext("Error while encrypting/decrypting:") . "\n" . $@);
 	}
-	
-	$doc->text_set( $code );
+
 }
 
 1;
