@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use 5.008;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use Padre::Wx ();
 use Padre::Current;
@@ -41,7 +41,7 @@ sub load_modules {
 }
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.49;
+	return 'Padre::Plugin' => 0.57;
 }
 
 sub plugin_name {
