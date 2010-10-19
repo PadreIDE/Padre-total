@@ -10,8 +10,16 @@ our $VERSION = '0.65';
 our @ISA     = 'Padre::Document';
 
 # Task Integration
+sub task_functions {
+	return 'Padre::Plugin::Perl6::FunctionList';
+}
+
+sub task_outline {
+	return 'Padre::Plugin::Perl6::Outline';
+}
+
 sub task_syntax {
-	return 'Padre::Plugin::Perl6::Perl6SyntaxCheckerTask';
+	return 'Padre::Plugin::Perl6::Syntax';
 }
 
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
@@ -34,19 +42,25 @@ sub get_command {
 
 # Checks the syntax of a Perl document.
 # Documented in Padre::Document!
-# Implemented as a task. See Padre::Plugin::Perl6::Perl6SyntaxChecker
+# Implemented as a task. See Padre::Plugin::Perl6::Syntax
 sub check_syntax {
-	my $self = shift;
-	my %args = @_;
-	$args{background} = 0;
-	return $self->_check_syntax_internals( \%args );
+	shift->_check_syntax_internals(
+
+		# Passing all arguments is ok, but critic complains
+		{   @_, ## no critic (ProhibitCommaSeparatedStatements)
+			background => 0
+		}
+	);
 }
 
 sub check_syntax_in_background {
-	my $self = shift;
-	my %args = @_;
-	$args{background} = 1;
-	return $self->_check_syntax_internals( \%args );
+	shift->_check_syntax_internals(
+
+		# Passing all arguments is ok, but critic complains
+		{   @_, ## no critic (ProhibitCommaSeparatedStatements)
+			background => 1
+		}
+	);
 }
 
 sub _check_syntax_internals {
