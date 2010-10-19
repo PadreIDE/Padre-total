@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6HelpProvider;
+package Padre::Plugin::Perl6::Help;
 
 use strict;
 use warnings;
@@ -57,7 +57,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Perl6::PerlHelpProvider - Perl 6 Help Provider
+Padre::Plugin::Perl6::Help - Perl 6 Help Provider
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6Colorizer;
+package Padre::Plugin::Perl6::Colorizer;
 
 use 5.010;
 use strict;
@@ -38,7 +38,7 @@ sub colorize {
 				# temporary overlay using the parse tree given by parrot
 				# Create a coloring task
 				my $module = $colorizer eq 'STD'
-					? 'Padre::Plugin::Perl6::Perl6StdColorizerTask'  # STD
+					? 'Padre::Plugin::Perl6::StdColorizerTask'  # STD
 					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask'; # PGE
 				eval "use $module";
 				my $task = $module->new(

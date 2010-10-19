@@ -141,8 +141,8 @@ sub get_outline {
 	}
 	$self->{last_outline_md5} = $md5;
 
-	require Padre::Plugin::Perl6::Perl6OutlineTask;
-	my $task = Padre::Plugin::Perl6::Perl6OutlineTask->new(
+	require Padre::Plugin::Perl6::Outline;
+	my $task = Padre::Plugin::Perl6::Outline->new(
 		editor => $self->editor,
 		text   => $text,
 		tokens => $tokens,
@@ -157,16 +157,16 @@ sub get_outline {
 # Returns the help provider
 #
 sub get_help_provider {
-	require Padre::Plugin::Perl6::Perl6HelpProvider;
-	return Padre::Plugin::Perl6::Perl6HelpProvider->new;
+	require Padre::Plugin::Perl6::Help;
+	return Padre::Plugin::Perl6::Help->new;
 }
 
 #
 # Returns the quick fix provider
 #
 sub get_quick_fix_provider {
-	require Padre::Plugin::Perl6::Perl6QuickFixProvider;
-	return Padre::Plugin::Perl6::Perl6QuickFixProvider->new;
+	require Padre::Plugin::Perl6::QuickFix;
+	return Padre::Plugin::Perl6::QuickFix->new;
 }
 
 1;

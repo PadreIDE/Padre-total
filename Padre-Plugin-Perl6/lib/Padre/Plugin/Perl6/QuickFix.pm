@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6QuickFixProvider;
+package Padre::Plugin::Perl6::QuickFix;
 
 use 5.008;
 use strict;
@@ -703,7 +703,7 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Perl6::Perl6QuickFixProvider - Padre Perl 5 Quick Fix Provider
+Padre::Plugin::Perl6::QuickFix - Padre Perl 5 Quick Fix Provider
 
 =head1 DESCRIPTION
 
