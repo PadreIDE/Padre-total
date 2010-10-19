@@ -229,18 +229,18 @@ sub run {
 			if ( $msg =~ /^===SORRY!===/i ) {
 
 				# the following lines are errors until we see the warnings section
-				$severity = 'E';
+				$severity = 2;
 			} elsif ( $msg =~ /^Potential difficulties/i ) {
 
 				# all rest are warnings...
-				$severity = 'W';
+				$severity = 1;
 				$lineno   = undef;
 			} elsif ( $msg =~ /^Undeclared routine/i ) {
 
 				# all rest are warnings...
 				$prefix   = 'Undeclared routine: ';
 				$lineno   = undef;
-				$severity = 'W';
+				$severity = 1;
 			} elsif ( $msg =~ /^\s+(.+?)\s+used at (\d+)/i ) {
 
 				# record the line number
