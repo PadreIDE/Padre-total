@@ -1,5 +1,9 @@
 Changes
 
+=head1 0.65 2010.10.19
+
+	No need for cleanup STD lex cache anymore
+
 =head1 0.64 2010.03.24
 
 	Depends on Padre 0.57 for various module naming changes
