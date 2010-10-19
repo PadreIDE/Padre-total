@@ -5,7 +5,7 @@ use warnings;
 
 our $VERSION = '0.65';
 
-use Padre::Plugin::Perl6::Perl6Colorizer;
+use Padre::Plugin::Perl6::Colorizer ();
 our @ISA = ('Padre::Plugin::Perl6::Colorizer');
 
 sub colorize {
