@@ -1,4 +1,4 @@
-package Padre::Plugin::Perl6::Perl6StdColorizer;
+package Padre::Plugin::Perl6::StdColorizer;
 
 use strict;
 use warnings;
@@ -6,11 +6,11 @@ use warnings;
 our $VERSION = '0.65';
 
 use Padre::Plugin::Perl6::Perl6Colorizer;
-our @ISA = ('Padre::Plugin::Perl6::Perl6Colorizer');
+our @ISA = ('Padre::Plugin::Perl6::Colorizer');
 
 sub colorize {
 	my $self = shift;
-	$Padre::Plugin::Perl6::Perl6Colorizer::colorizer = 'STD';
+	$Padre::Plugin::Perl6::Colorizer::colorizer = 'STD';
 	$self->SUPER::colorize(@_);
 }
 
