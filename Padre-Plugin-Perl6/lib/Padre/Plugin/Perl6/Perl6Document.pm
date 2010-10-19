@@ -9,6 +9,11 @@ use Padre::Wx ();
 our $VERSION = '0.65';
 our @ISA     = 'Padre::Document';
 
+# Task Integration
+sub task_syntax {
+	return 'Padre::Plugin::Perl6::Perl6SyntaxCheckerTask';
+}
+
 # get Perl6 (rakudo) command line for "Run script" F5 Padre menu item
 sub get_command {
 	my $self = shift;
@@ -65,10 +70,24 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-	print "". ("-" x 80) . "\n";
-	use Data::Dumper; print Dumper($self->{issues});
+	require Padre::Plugin::Perl6::Syntax;
+	my $task = Padre::Plugin::Perl6::Syntax->new(
+		document => $self,
+	);
 
-	return $self->{issues};
+	if ( $args->{background} ) {
+
+		# asynchroneous execution (see on_finish hook)
+		$task->schedule;
+		return;
+	} else {
+
+		# serial execution, returning the result
+		$task->prepare or return;
+		$task->run;
+		$task->finish;
+		return $task->{model};
+	}
 }
 
 # In Perl 6 the best way to comment the current error reliably is
