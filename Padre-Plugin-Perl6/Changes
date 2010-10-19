@@ -3,6 +3,8 @@ Changes
 =head1 0.65 2010.10.19
 
 	No need for cleanup STD lex cache anymore
+	Translation files are now installed via Module::Build 0.36 share_dir
+	Simplified Perl 6 Syntax checker
 
 =head1 0.64 2010.03.24
 
