@@ -1,14 +1,14 @@
 package Padre::Plugin::Perl6::Syntax;
 
+use 5.010;
 use strict;
 use warnings;
+use Carp         ();
+use Params::Util ();
 use Padre::Task  ();
 
 our $VERSION = '0.65';
 our @ISA     = 'Padre::Task';
-
-######################################################################
-# Constructor
 
 sub new {
 	my $self = shift->SUPER::new(@_);
@@ -23,24 +23,26 @@ sub new {
 	# Remove the document entirely as we do this,
 	# as it won't be able to survive serialisation.
 	my $document = delete $self->{document};
-	$self->{issues}     = $document->{issues};
-	
-	
+
+	# Clone issues
+	my $cloned_issues = [];
+	if($document->{issues}) {
+		my @issues = @{$document->{issues}};
+		foreach (@issues) {
+			my %cloned_issue = %$_;
+			push @{$cloned_issues}, \%cloned_issue;
+		}
+	}
+	$self->{issues} = $cloned_issues;
 
 	return $self;
 }
 
-######################################################################
-# Padre::Task Methods
-
 sub run {
 	my $self = shift;
 
-	# Get the syntax problems list
-	my @issues = delete $self->{issues};
-	$self->{model} = \@issues;
-	use Data::Dumper; print Dumper($self->{model});
-	
+	$self->{model} = delete $self->{issues};
+
 	return 1;
 }
 
