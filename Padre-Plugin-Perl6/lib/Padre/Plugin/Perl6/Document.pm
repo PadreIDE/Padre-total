@@ -143,9 +143,7 @@ sub get_outline {
 
 	require Padre::Plugin::Perl6::Outline;
 	my $task = Padre::Plugin::Perl6::Outline->new(
-		editor => $self->editor,
-		text   => $text,
-		tokens => $tokens,
+		document => $self,
 	);
 
 	# asynchronous execution (see on_finish hook)
