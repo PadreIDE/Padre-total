@@ -6,6 +6,7 @@ Changes
 	Translation files are now installed via Module::Build 0.36 share_dir
 	Fixed a Padre compatibility problem with the syntax checker and outline
 	Renamed some packages to more Perl-ish names
+	Outline is working again with the latest STD.pm for package declarators
 
 =head1 0.64 2010.03.24
 

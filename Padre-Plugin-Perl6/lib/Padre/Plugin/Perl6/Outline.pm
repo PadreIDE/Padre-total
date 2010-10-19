@@ -57,7 +57,7 @@ sub find {
 				my $buffer = $token{buffer};
 				my $lineno = $token{lineno};
 				if ( $tree
-					=~ /package_declarator__S_\d+(class|grammar|module|package|role|knowhow|slang) package_def.+def_module_name/
+					=~ /package_declarator__S_\d+(class|grammar|module|package|role|knowhow|slang) package_def longname/
 					)
 				{
 
