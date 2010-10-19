@@ -3,7 +3,7 @@ package Padre::Plugin::Perl6::Perl6StdColorizer;
 use strict;
 use warnings;
 
-our $VERSION = '0.64';
+our $VERSION = '0.65';
 
 use Padre::Plugin::Perl6::Perl6Colorizer;
 our @ISA = ('Padre::Plugin::Perl6::Perl6Colorizer');
