@@ -1,6 +1,6 @@
 Revision history for Padre-Plugin-Encrypt
 
-0.07    (TO BE RELEASED)
+0.07    2010.10.19
         Make sure it works on latest Padre (RT #61657, RENEEB++).  (AZAWAWI)
         Added i18n and some error handling to prevent crashes.  (AZAWAWI)
         Fixed some build issues.  (AZAWAWI)
@@ -18,11 +18,11 @@ Revision history for Padre-Plugin-Encrypt
 0.04    2009.1.5
         for Padre 0.23
 
-0.03	2008.11.24
-		for 'Padre::Plugin' => '0.18'
+0.03    2008.11.24
+        for 'Padre::Plugin' => '0.18'
 
-0.02	2008.11.20
-		from use to require
+0.02    2008.11.20
+        from use to require
 
 0.01    Date/time
         First version, released on an unsuspecting world.
