@@ -1,16 +1,16 @@
 use strict;
 use warnings;
-use Module::Build;
+use Module::Build 0.36;
 
 my %requires = (
 	'perl'                     => '5.010',
-	'Padre'                    => '0.57',
-	'Syntax::Highlight::Perl6' => '0.79',
+	'Padre'                    => '0.72',
+	'Syntax::Highlight::Perl6' => '0.87',
 	'Perl6::Refactor'          => '0',
 	'URI'                      => '1.37',
 	'File::Which'              => '0.05',
 	'Class::XSAccessor'        => '1.02',
-	'App::Grok'                => '0.19',
+	'App::Grok'                => '0.22',
 	'Perl6::Doc'               => '0.45',
 	'HTTP::Status'             => '5.817',
 	'Net::HTTP'                => '5.831',
@@ -25,13 +25,14 @@ my $class = Module::Build->subclass( code => <<'EOF');
 	sub process_mo_files {
 		die("requires Locale::Msgfmt") if(! $INC{'Locale/Msgfmt.pm'});
 		msgfmt({
-			in => "lib/Padre/Plugin/Perl6/share/locale/",
-			out => "blib/lib/Padre/Plugin/Perl6/share/locale/"});
+			in => "share/locale/",
+			out => "blib/share/locale/"});
 	}
 EOF
 my $builder = $class->new(
 	module_name       => 'Padre::Plugin::Perl6',
 	license           => 'perl',
+	share_dir         => 'blib/share',
 	dist_author       => 'Ahmad M. Zawawi and Gabor Szabo',
 	dist_version_from => 'lib/Padre/Plugin/Perl6.pm',
 	build_requires    => {
