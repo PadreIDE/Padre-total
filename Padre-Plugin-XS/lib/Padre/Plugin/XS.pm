@@ -45,14 +45,14 @@ sub padre_interfaces {
 }
 
 sub plugin_name {
-	'XS';
+	Wx::gettext('XS Support');
 }
 
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->about },
+		Wx::gettext('About') => sub { $self->about },
 	];
 }
 
@@ -153,7 +153,7 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription("Padre XS and perlapi support" );
+	$about->SetDescription( Wx::gettext('Padre XS and perlapi support') );
 	$about->SetVersion($VERSION);
 	Wx::AboutBox($about);
 	return;
