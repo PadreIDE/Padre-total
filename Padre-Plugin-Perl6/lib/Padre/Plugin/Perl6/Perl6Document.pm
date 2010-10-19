@@ -65,26 +65,10 @@ sub _check_syntax_internals {
 	}
 	$self->{last_syncheck_md5} = $md5;
 
-	require Padre::Plugin::Perl6::Perl6SyntaxCheckerTask;
-	my $task = Padre::Plugin::Perl6::Perl6SyntaxCheckerTask->new(
-		editor => $self->editor,
-		text   => $text,
-		issues => $self->{issues},
-		( exists $args->{on_finish} ? ( on_finish => $args->{on_finish} ) : () ),
-	);
-	if ( $args->{background} ) {
+	print "". ("-" x 80) . "\n";
+	use Data::Dumper; print Dumper($self->{issues});
 
-		# asynchroneous execution (see on_finish hook)
-		$task->schedule();
-		return ();
-	} else {
-
-		# serial execution, returning the result
-		return () if $task->prepare() =~ /^break$/;
-		$task->run();
-		return $task->{syntax_check};
-	}
-	return;
+	return $self->{issues};
 }
 
 # In Perl 6 the best way to comment the current error reliably is

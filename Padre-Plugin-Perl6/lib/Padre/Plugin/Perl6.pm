@@ -288,7 +288,6 @@ sub menu_plugins {
 			$maintenance_menu->Append( -1, Wx::gettext("Update Six"), ),
 			sub { $self->update_six; },
 		);
-		$maintenance_menu->AppendSeparator;
 	}
 
 	# Preferences
