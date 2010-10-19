@@ -4,7 +4,7 @@ Changes
 
 	No need for cleanup STD lex cache anymore
 	Translation files are now installed via Module::Build 0.36 share_dir
-	Fixed a Padre compatibility problem with the syntax checker
+	Fixed a Padre compatibility problem with the syntax checker and outline
 	Renamed some packages to more Perl-ish names
 
 =head1 0.64 2010.03.24
