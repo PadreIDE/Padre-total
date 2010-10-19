@@ -309,7 +309,7 @@ sub menu_plugins {
 }
 
 sub registered_documents {
-	'application/x-perl6' => 'Padre::Plugin::Perl6::Perl6Document',;
+	'application/x-perl6' => 'Padre::Plugin::Perl6::Document',;
 }
 
 sub provided_highlighters {
