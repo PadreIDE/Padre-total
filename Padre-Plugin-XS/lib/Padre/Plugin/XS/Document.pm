@@ -29,41 +29,41 @@ sub keywords {
 # --Steffen
 sub _load_perlapi_keywords {
 	my $self = shift;
-	
-	if (not eval "use Perl::APIReference 0.03; 1;") {
+
+	if ( not eval "use Perl::APIReference 0.03; 1;" ) {
 		$self->{_perlapi_keywords} =
 			YAML::Tiny::LoadFile( Padre::Util::sharefile( 'languages', 'perl5', 'perlapi_current.yml' ) );
 		return;
 	}
 
 	my $perl_version = $self->{_perlapi_version};
-	
-	if (not defined $perl_version) {
+
+	if ( not defined $perl_version ) {
 		my $project = $self->project;
-		if (defined $project) {
+		if ( defined $project ) {
 			$perl_version = 'newest';
 			my $cfg = $project->config;
 			$perl_version = $cfg->xs_calltips_perlapi_version();
-		}
-		else {
+		} else {
 			$perl_version = Padre->ide->config->xs_calltips_perlapi_version();
 		}
 		$self->{_perlapi_version} = $perl_version;
 	}
-	
-	my $apiref = eval {Perl::APIReference->new(perl_version => $perl_version)};
-	if (not $apiref) {
+
+	my $apiref = eval { Perl::APIReference->new( perl_version => $perl_version ) };
+	if ( not $apiref ) {
+
 		# fallback...
 		$self->{_perlapi_keywords} =
 			YAML::Tiny::LoadFile( Padre::Util::sharefile( 'languages', 'perl5', 'perlapi_current.yml' ) );
 		return;
 	}
-	
+
 	# TODO: Perl::APIReference also provides an "index" method, but that doesn't return the structure
 	#       in exactly the way we want it. Easy way out: Add an accessor to Perl::APIReference that
 	#       returns an API structure akin to what would be returned by loading the YAML.
 	require YAML::Tiny;
-	$self->{_perlapi_keywords} = YAML::Tiny::Load($apiref->as_yaml_calltips);
+	$self->{_perlapi_keywords} = YAML::Tiny::Load( $apiref->as_yaml_calltips );
 	return;
 }
 
