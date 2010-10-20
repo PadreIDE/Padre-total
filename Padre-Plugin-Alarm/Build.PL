@@ -24,7 +24,6 @@ my $builder = $class->new(
 	},
 	requires => {
 		'Padre'       => '0.57',
-		'Audio::Beep' => 0,
 	},
 	add_to_cleanup     => ['Padre-Plugin-Alarm-*'],
 	create_makefile_pl => 'passthrough',
@@ -37,4 +36,5 @@ my $builder = $class->new(
 );
 
 $builder->add_build_element('mo');
+$builder->add_build_element('wav');
 $builder->create_build_script();

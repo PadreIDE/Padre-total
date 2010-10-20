@@ -169,7 +169,7 @@ sub on_timer_alarm {
 
 		if ( $time eq $ntime ) {
 			$did_something = 1;
-			play_music();
+			beep();
 			my $frequency = $_->{frequency};
 			if ( $frequency eq 'once' ) {
 				$_->{status} = 'disabled';
@@ -183,13 +183,15 @@ sub on_timer_alarm {
 	}
 }
 
-sub play_music {
-	require Audio::Beep;
-	my $beeper = Audio::Beep->new();
-	my $music  = "g' f bes' c8 f d4 c8 f d4 bes c g f2";
-
-	# Pictures at an Exhibition by Modest Mussorgsky
-	$beeper->play($music);
+sub beep {
+	my $file = File::ShareDir::dist_file(
+		'Padre-Plugin-Alarm',
+		'audio',
+		'cartman_03.wav',
+	);
+	$file = '' unless -f $file;
+	my $beeper = Wx::Sound->new( $file );
+	$beeper->Play( Wx::wxSOUND_ASYNC );
 }
 
 1;
