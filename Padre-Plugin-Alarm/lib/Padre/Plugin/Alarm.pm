@@ -1,9 +1,9 @@
 package Padre::Plugin::Alarm;
 
+# ABSTRACT: Alarm Clock in Padre
+
 use warnings;
 use strict;
-
-our $VERSION = '0.08';
 
 use base 'Padre::Plugin';
 
@@ -197,10 +197,6 @@ sub beep {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Alarm - Alarm Clock in Padre
-
 =head1 SYNOPSIS
 
 	$>padre
@@ -208,17 +204,4 @@ Padre::Plugin::Alarm - Alarm Clock in Padre
 
 =head1 DESCRIPTION
 
-Alarm Clock (L<Audio::Beep>)
-
-=head1 AUTHOR
-
-Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
+Alarm Clock
