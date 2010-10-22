@@ -1,5 +1,10 @@
+#!/usr/bin/perl
+
+#use 5.008;
 use strict;
-use warnings;
+
+# taken straight from the Padre test
+# 01-load.t
 
 use Test::More;
 
@@ -14,5 +19,4 @@ plan tests => 1;
 
 use_ok('Padre::Plugin::Perl6');
 
-
-
+diag("Testing Padre::Plugin::Perl6 $Padre::Plugin::Perl6::VERSION, Perl $], $^X");
