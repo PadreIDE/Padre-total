@@ -7,6 +7,7 @@ use strict;
 use warnings;
 
 use Padre::Wx ();
+use Padre::Document ();
 
 our @ISA     = 'Padre::Document';
 

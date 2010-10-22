@@ -338,7 +338,7 @@ sub show_perl6_doc {
 	# find the word under the current cursor position
 	my $topic = '';
 	my $doc   = $self->current->document;
-	if ( $doc && $doc->get_mimetype eq q{application/x-perl6} ) {
+	if ( $doc && $doc->mimetype eq q{application/x-perl6} ) {
 
 		# make sure it is a Perl6 document
 		my $editor = $doc->editor;
@@ -401,7 +401,7 @@ sub export_html {
 		return;
 	}
 
-	if ( $doc->get_mimetype ne q{application/x-perl6} ) {
+	if ( $doc->mimetype ne q{application/x-perl6} ) {
 		Wx::MessageBox(
 			Wx::gettext('Not a Perl 6 file'),
 			Wx::gettext('Operation cancelled'),
@@ -523,7 +523,7 @@ sub generate_p6_pir {
 		Wx::MessageBox( Wx::gettext('No document'), Wx::gettext('Error'), Wx::wxOK, $main, );
 		return;
 	}
-	if ( $doc->get_mimetype ne q{application/x-perl6} ) {
+	if ( $doc->mimetype ne q{application/x-perl6} ) {
 		Wx::MessageBox(
 			'Not a Perl 6 file',
 			'Operation cancelled',

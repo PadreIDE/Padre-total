@@ -1,9 +1,11 @@
 Changes
 
 {{$NEXT}}
-	Switch to Dist::Zilla (AZAWAWI)
-	Removed "Update Six" experimental feature (AZAWAWI)
-	Removed "Perl refactor" undeveloped feature (AZAWAWI)
+	Switch to Dist::Zilla
+	Removed "Update Six" experimental feature
+	Removed "Perl refactor" undeveloped feature
+	Fixed a syntax error in "Create Perl 6 Module" template
+	Fixed crashes while exporting document to HTML
 
 0.65 2010.10.19
 
