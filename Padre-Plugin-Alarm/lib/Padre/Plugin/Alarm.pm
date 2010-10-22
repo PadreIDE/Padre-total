@@ -206,7 +206,7 @@ __END__
 
 A simple Alarm Clock plugin
 
-=head1 LICENSE
+=head1 THANKS
 
 The alarm sound sample was taken from L<http://www.freesound.org/>.
 It was made by ryansnook - L<http://www.freesound.org/usersViewSingle.php?id=430094> and
