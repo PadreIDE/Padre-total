@@ -56,12 +56,12 @@ sub bundle_config {
 		[PodWeaver => {}],
 		[PkgVersion => {}],
 		[MetaResources => \%meta_resources],
-		[MetaConfig]
-		[MetaJSON]
-		[NextRelease]
-		[PodSyntaxTests]
-		[ModuleBuild]
-		[LocaleMsgfmt]
+		[MetaConfig => {}],
+		[MetaJSON => {}],
+		[NextRelease => \%next_release_format],
+		[PodSyntaxTests => {}],
+		[ModuleBuild => {}],
+		[LocaleMsgfmt => {}],
     );
 
     push @plugins, @extra;
