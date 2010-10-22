@@ -5,6 +5,8 @@ Revision history for Padre-Plugin-Alarm
 	- Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
 	- Fixed RT #53691 for Padre-Plugin-Alarm: More events when timer reached (AZAWAWI)
 	- The alarm is also more accurate than before (AZAWAWI)
+	- Added an alarm wave file that is licensed under Creative Commons Creative Commons
+	  Sampling Plus 1.0 (GETTY)
 
 0.08  2010.10.19
 	- Renamed to the new Padre 0.43 PO naming scheme (AZAWAWI)

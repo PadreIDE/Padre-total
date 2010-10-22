@@ -204,4 +204,10 @@ __END__
 
 =head1 DESCRIPTION
 
-Alarm Clock
+A simple Alarm Clock plugin
+
+=head1 LICENSE
+
+This alarm sound sample was taken from http://www.freesound.org/
+Made by ryansnook - http://www.freesound.org/usersViewSingle.php?id=430094
+Licensed under: http://creativecommons.org/licenses/sampling+/1.0/
