@@ -381,9 +381,9 @@ sub text_with_one_nl {
 	my $text = $doc->text_get // '';
 
 	my $nlchar = "\n";
-	if ( $doc->get_newline_type eq 'WIN' ) {
+	if ( $doc->newline_type eq 'WIN' ) {
 		$nlchar = "\r\n";
-	} elsif ( $doc->get_newline_type eq 'MAC' ) {
+	} elsif ( $doc->newline_type eq 'MAC' ) {
 		$nlchar = "\r";
 	}
 	$text =~ s/$nlchar/\n/g;
