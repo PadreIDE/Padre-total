@@ -6,6 +6,7 @@ Changes
 	Removed "Perl refactor" undeveloped feature
 	Fixed a syntax error in "Create Perl 6 Module" template
 	Fixed crashes while exporting document to HTML
+	Check for UNIX-only EOL with non-trailing whitespace when building
 
 0.65 2010.10.19
 
