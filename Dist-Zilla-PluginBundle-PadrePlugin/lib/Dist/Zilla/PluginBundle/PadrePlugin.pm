@@ -1,7 +1,4 @@
 package Dist::Zilla::PluginBundle::PadrePlugin;
-BEGIN {
-  $Dist::Zilla::PluginBundle::PadrePlugin::VERSION = '0.01';
-}
 
 # ABSTRACT: Dist::Zilla plugin bundle for PadrePlugin
 
@@ -14,12 +11,15 @@ use Dist::Zilla::PluginBundle::Basic;
 use Dist::Zilla::Plugin::CheckChangeLog;
 use Dist::Zilla::Plugin::CheckChangesTests;
 use Dist::Zilla::Plugin::CompileTests;
-use Dist::Zilla::Plugin::MetaJSON;
-use Dist::Zilla::Plugin::MetaResources;
-use Dist::Zilla::Plugin::ModuleBuild;
-use Dist::Zilla::Plugin::NextRelease;
 use Dist::Zilla::Plugin::PodWeaver;
+use Dist::Zilla::Plugin::PkgVersion;
+use Dist::Zilla::Plugin::MetaResources;
+use Dist::Zilla::Plugin::MetaConfig;
+use Dist::Zilla::Plugin::MetaJSON;
+use Dist::Zilla::Plugin::NextRelease;
 use Dist::Zilla::Plugin::PodSyntaxTests;
+use Dist::Zilla::Plugin::ModuleBuild;
+use Dist::Zilla::Plugin::LocaleMsgfmt;
 
 sub bundle_config {
     my ( $self, $section ) = @_;
@@ -41,10 +41,8 @@ sub bundle_config {
         $meta_resources{$resource} = $arg->{$resource} if defined $arg->{$resource};
     }
 
-	my %next_release_format = {
-		'format' => defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d',
-	};
-
+    my %next_release_format;
+    $next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
 
     # params
 
@@ -104,13 +102,6 @@ is equivalent to:
 	[ModuleBuild]
 	[LocaleMsgfmt]
 
-	You can specify the following options
-
-And also any of the following MetaResources
-
-    homepage
-    repository
-
-=cut
-
-
+	You can specify the following options:
+	    homepage
+	    repository
