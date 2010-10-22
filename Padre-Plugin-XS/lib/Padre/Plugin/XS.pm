@@ -167,7 +167,7 @@ sub about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
 	$about->SetDescription( Wx::gettext('Padre XS and perlapi support') );
-	$about->SetVersion($VERSION);
+	$about->SetVersion($Padre::Plugin::XS::VERSION);
 	Wx::AboutBox($about);
 	return;
 }
