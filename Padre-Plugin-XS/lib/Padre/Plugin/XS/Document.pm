@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use Padre::Document ();
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 # TODO better highlighting. Can vim do better? Can we steal? Add an STC highlighter? ...
 
