@@ -1,17 +1,16 @@
 This is the change log for the Padre::Plugin::XS module:
 
 {{$NEXT}}
-	Switched to Dist::Zilla (AZAWAWI)
-	Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
+    Switched to Dist::Zilla (AZAWAWI)
+    Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
 
-0.03 2010-10-20
+0.03   2010-10-20
     Compatibility with the latest Padre (AZAWAWI, CHORNY)
     Added i18n support (AZAWAWI)
     Added Arabic translation (AZAWAWI)
 
-0.02 2010-04-18
+0.02   2010-04-18
     Bump dependency on Perl::APIReference for 5.12.0 support.
 
-0.01 2009-11-21
+0.01   2009-11-21
     First version unleashed on the unsuspecting world.
-
