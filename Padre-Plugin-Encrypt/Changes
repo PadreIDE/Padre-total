@@ -1,5 +1,7 @@
 Revision history for Padre-Plugin-Encrypt
 
+{{$NEXT}}
+
 0.07    2010.10.19
         Make sure it works on latest Padre (RT #61657, RENEEB++).  (AZAWAWI)
         Added i18n and some error handling to prevent crashes.  (AZAWAWI)

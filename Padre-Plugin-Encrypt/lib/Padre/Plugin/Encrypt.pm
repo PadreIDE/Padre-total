@@ -1,9 +1,9 @@
 package Padre::Plugin::Encrypt;
 
+# ABSTRACT: Encrypt/decrypt files in Padre
+
 use warnings;
 use strict;
-
-our $VERSION = '0.07';
 
 use Padre::Wx::Dialog ();
 use base 'Padre::Plugin';
@@ -122,10 +122,6 @@ sub ok_clicked {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Encrypt - encrypt/decrypt file in Padre
-
 =head1 SYNOPSIS
 
 	$>padre
@@ -136,16 +132,3 @@ Padre::Plugin::Encrypt - encrypt/decrypt file in Padre
 =head1 DESCRIPTION
 
 Encrypt/Decrypt by L<Crypt::CBC>
-
-=head1 AUTHOR
-
-Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
