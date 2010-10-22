@@ -6,10 +6,10 @@ use 5.010;
 use strict;
 use warnings;
 
-use Padre::Wx ();
+use Padre::Wx       ();
 use Padre::Document ();
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 # Task Integration
 sub task_functions {

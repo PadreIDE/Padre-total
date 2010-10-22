@@ -9,7 +9,7 @@ use Carp         ();
 use Params::Util ();
 use Padre::Task  ();
 
-our @ISA     = 'Padre::Task';
+our @ISA = 'Padre::Task';
 
 sub new {
 	my $self = shift->SUPER::new(@_);
@@ -27,8 +27,8 @@ sub new {
 
 	# Clone issues
 	my $cloned_issues = [];
-	if($document->{issues}) {
-		my @issues = @{$document->{issues}};
+	if ( $document->{issues} ) {
+		my @issues = @{ $document->{issues} };
 		foreach (@issues) {
 			my %cloned_issue = %$_;
 			push @{$cloned_issues}, \%cloned_issue;

@@ -9,7 +9,7 @@ use warnings;
 use App::Grok   ();
 use Padre::Help ();
 
-our @ISA     = 'Padre::Help';
+our @ISA = 'Padre::Help';
 
 use Class::XSAccessor accessors => {
 	_grok => '_grok', # App::Grok -> Perl 6 Documentation Reader

@@ -94,12 +94,13 @@ sub finish {
 		for my $htoken (@tokens) {
 			my %token = %{$htoken};
 			my $color = $colors{ $token{rule} };
-			if (defined $color) {
+			if ( defined $color ) {
 				my $len   = length $token{buffer};
 				my $start = $token{last_pos} - $len;
 				$editor->StartStyling( $start, $color );
 				$editor->SetStyling( $len, $color );
-			} elsif ($token{rule} eq '0') {
+			} elsif ( $token{rule} eq '0' ) {
+
 				# Why are there such cases?
 			} else {
 				warn "No color found for '$token{rule}'";
@@ -130,6 +131,7 @@ sub finish {
 		$doc->get_outline( force => 1 );
 	};
 	if ($@) {
+
 		#print "$doc\n";
 	}
 

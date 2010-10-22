@@ -6,9 +6,9 @@ use strict;
 use warnings;
 
 use Params::Util ('_INSTANCE');
-use Padre::Task ();
+use Padre::Task  ();
 
-our @ISA     = 'Padre::Task';
+our @ISA = 'Padre::Task';
 
 sub new {
 	my $self = shift->SUPER::new(@_);
@@ -77,11 +77,12 @@ sub find {
 				} elsif ( $tree =~ /routine_declarator__S_\d+sub routine_def deflongname/ ) {
 
 					# a subroutine
-					$symbol_type = "methods";
+					$symbol_type   = "methods";
 					$symbol_suffix = " (subroutine)";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
 				} elsif ( $tree =~ /routine_declarator__\w+_\d+method method_def (longname|$)/ ) {
+
 					# a method
 					if ( $buffer eq '!' ) {
 
@@ -98,14 +99,14 @@ sub find {
 				} elsif ( $tree =~ /routine_declarator__\w+_\d+submethod method_def longname/ ) {
 
 					# a submethod
-					$symbol_type = "methods";
+					$symbol_type   = "methods";
 					$symbol_suffix = " (submethod)";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;
 				} elsif ( $tree =~ /routine_declarator__\w+_\d+macro macro_def deflongname/ ) {
 
 					# a macro
-					$symbol_type = "methods";
+					$symbol_type   = "methods";
 					$symbol_suffix = " (macro)";
 					$symbol_name .= $buffer;
 					$symbol_line = $lineno;

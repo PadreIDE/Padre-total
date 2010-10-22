@@ -9,7 +9,7 @@ use Padre::Wx                  ();
 use Padre::Plugin::Perl6::Util ();
 use Padre::QuickFix            ();
 
-our @ISA     = ('Padre::QuickFix');
+our @ISA = ('Padre::QuickFix');
 
 #
 # Constructor.
