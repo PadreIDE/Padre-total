@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Encrypt
 
 {{$NEXT}}
+
+0.08    2010.10.22
         Switched to Dist::Zilla
         Fixed 00-load.t failure when $ENV{DISPLAY} is not set
 
