@@ -192,8 +192,6 @@ __END__
 
 This class implements structure info gathering of Perl6 documents in
 the background.
-Also the updating of the GUI is implemented here, because other 
-languages might have different outline structures.
 It inherits from L<Padre::Task::Outline>.
 Please read its documentation!
 
