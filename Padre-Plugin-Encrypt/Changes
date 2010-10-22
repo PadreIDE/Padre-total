@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Encrypt
 
 {{$NEXT}}
+        Added missing meta resources after switching to Dist::Zilla
 
 0.08    2010.10.22
         Switched to Dist::Zilla
