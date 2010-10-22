@@ -236,14 +236,6 @@ sub menu_plugins {
 
 	$self->{menu}->AppendSeparator;
 
-	# Maintenance
-	my $maintenance_menu = Wx::Menu->new();
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Maintenance"), $maintenance_menu ),
-		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
-	);
-
 	# Preferences
 	Wx::Event::EVT_MENU(
 		$main,
