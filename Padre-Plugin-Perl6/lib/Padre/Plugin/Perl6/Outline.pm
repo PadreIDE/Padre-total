@@ -1,5 +1,7 @@
 package Padre::Plugin::Perl6::Outline;
 
+# ABSTRACT: Perl 6 Outline background task
+
 use strict;
 use warnings;
 
@@ -179,12 +181,6 @@ sub find {
 
 __END__
 
-
-=head1 NAME
-
-Padre::Plugin::Perl6::Outline - Perl6 document outline structure info 
-gathering in the background
-
 =head1 SYNOPSIS
 
   # by default, the text of the current document
@@ -206,16 +202,3 @@ Please read its documentation!
 This class inherits from L<Padre::Task::Outline> which
 in turn is a L<Padre::Task> and its instances can be scheduled
 using L<Padre::TaskManager>.
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-Gabor Szabo L<http://szabgab.com/>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2009 Padre Developers as in Perl6.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.

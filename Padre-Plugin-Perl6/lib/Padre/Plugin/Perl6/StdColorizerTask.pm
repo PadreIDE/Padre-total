@@ -1,5 +1,7 @@
 package Padre::Plugin::Perl6::StdColorizerTask;
 
+# ABSTRACT: Perl 6 STD.pm Colorizer Task
+
 use strict;
 use warnings;
 use base 'Padre::Task';
@@ -270,18 +272,3 @@ sub run {
 }
 
 1;
-
-__END__
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-Gabor Szabo L<http://szabgab.com/>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 Padre Developers as in Perl6.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.

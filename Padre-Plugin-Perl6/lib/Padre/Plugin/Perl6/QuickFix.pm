@@ -1,5 +1,6 @@
 package Padre::Plugin::Perl6::QuickFix;
 
+# ABSTRACT: Padre Perl 6 Quick Fix Provider
 use 5.008;
 use strict;
 use warnings;
@@ -700,23 +701,6 @@ sub quick_fix_list {
 
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Perl6::QuickFix - Padre Perl 5 Quick Fix Provider
-
 =head1 DESCRIPTION
 
-Perl 5 quick fix are implemented here
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-Gabor Szabo L<http://szabgab.com/>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2009 Padre Developers as in Perl6.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+Perl 6 quick fixes are implemented here

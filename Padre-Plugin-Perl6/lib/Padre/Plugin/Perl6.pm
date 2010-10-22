@@ -1,5 +1,7 @@
 package Padre::Plugin::Perl6;
 
+# ABSTRACT: Perl 6 Support for Padre
+
 use 5.010;
 use strict;
 use warnings;
@@ -142,42 +144,6 @@ sub menu_plugins {
 		sub { $self->_create_from_template( 'p6_inline_in_p5', 'p5' ) },
 	);
 
-	# Refactor sub menu
-	my $refactor_menu = Wx::Menu->new();
-	Wx::Event::EVT_MENU(
-		$main,
-		$self->{menu}->Append( -1, Wx::gettext("Refactor..."), $refactor_menu ),
-		sub { },
-	);
-
-	# Find variable declaration
-	Wx::Event::EVT_MENU(
-		$main,
-		$refactor_menu->Append( -1, Wx::gettext("Find variable declaration"), ),
-		sub {
-			Wx::MessageBox(
-				Wx::gettext('Perl 6 refactoring support is coming soon...'),
-				Wx::gettext('Error'),
-				Wx::wxOK,
-				$main,
-			);
-		},
-	);
-
-	# Rename variable
-	Wx::Event::EVT_MENU(
-		$main,
-		$refactor_menu->Append( -1, Wx::gettext("Rename variable"), ),
-		sub {
-			Wx::MessageBox(
-				Wx::gettext('Perl 6 refactoring support is coming soon...'),
-				Wx::gettext('Error'),
-				Wx::wxOK,
-				$main,
-			);
-		},
-	);
-
 	# Rakudo sub menu
 	my $rakudo_menu = Wx::Menu->new();
 	Wx::Event::EVT_MENU(
@@ -278,15 +244,6 @@ sub menu_plugins {
 		sub { Wx::LaunchDefaultBrowser("http://padre.perlide.org/irc.html?channel=padre"); },
 	);
 
-	# Update Six distribution on win32
-	if (Padre::Constant::WIN32) {
-		Wx::Event::EVT_MENU(
-			$main,
-			$maintenance_menu->Append( -1, Wx::gettext("Update Six"), ),
-			sub { $self->update_six; },
-		);
-	}
-
 	# Preferences
 	Wx::Event::EVT_MENU(
 		$main,
@@ -370,7 +327,7 @@ sub show_about {
 			. "App::Grok "
 			. $App::Grok::VERSION
 			. "\n" );
-	$about->SetVersion($VERSION);
+	$about->SetVersion($Padre::Plugin::Perl6::VERSION);
 
 	# create and return the camelia icon
 	my $camelia_path = File::Spec->catfile( $self->_sharedir, 'icons', 'camelia-big.png' );
@@ -662,43 +619,15 @@ sub generate_p6_pir {
 
 }
 
-#
-# Updates Six distributon (on win32)
-#
-sub update_six {
-	my $self = shift;
-
-	return if not Padre::Constant::WIN32;
-
-	require Padre::Plugin::Perl6::UpdateDialog;
-	my $dlg = Padre::Plugin::Perl6::UpdateDialog->new($self);
-	$dlg->ShowModal;
-}
-
 1;
 
 __END__
-
-=head1 NAME
-
-Padre::Plugin::Perl6 - Padre plugin for Perl 6
 
 =head1 SYNOPSIS
 
 After installation when you run Padre there should be a menu option Plugins/Perl 6.
 
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-Gabor Szabo L<http://szabgab.com/>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2009 Padre Developers as in Perl6.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
+=head1 ACKNOWLEDGEMENTS
 
 The Camelia image is copyright 2009 by Larry Wall.  Permission to use
 is granted under the Artistic License 2.0, or any subsequent version

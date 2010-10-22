@@ -1,5 +1,7 @@
 package Padre::Plugin::Perl6::Help;
 
+# ABSTRACT: Perl 6 Help provider for Padre
+
 use strict;
 use warnings;
 
@@ -54,23 +56,6 @@ sub help_list {
 
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Perl6::Help - Perl 6 Help Provider
-
 =head1 DESCRIPTION
 
 Perl 6 Help index is built here and rendered.
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-Gabor Szabo L<http://szabgab.com/>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2009 Padre Developers as in Perl6.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
