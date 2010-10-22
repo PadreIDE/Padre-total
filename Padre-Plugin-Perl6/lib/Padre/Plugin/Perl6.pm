@@ -6,11 +6,9 @@ use warnings;
 use Carp;
 use Padre::Wx       ();
 use Padre::Constant ();
+use Padre::Util     ();
 use base 'Padre::Plugin';
 use Padre::Plugin::Perl6::Util;
-
-# exports and version
-our $VERSION   = '0.65';
 
 # constants for html exporting
 my $FULL_HTML    = 'full_html';
@@ -38,11 +36,10 @@ sub padre_interfaces {
 }
 
 #
-# private subroutine to return the current share directory location
-# We will keep this until Module::Build get its own sharedir installation feature
+# Returns the current share directory location
 #
 sub _sharedir {
-	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Perl6', 'share' ) );
+	return Padre::Util::share('Perl6');
 }
 
 # plugin's real icon object

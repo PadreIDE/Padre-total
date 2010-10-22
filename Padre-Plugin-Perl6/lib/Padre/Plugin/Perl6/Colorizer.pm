@@ -6,8 +6,6 @@ use warnings;
 
 use Padre::Wx ();
 
-our $VERSION = '0.65';
-
 # colorize timer to make sure that colorize tasks are scheduled properly...
 my $COLORIZE_TIMER;
 my $COLORIZE_TIMEOUT = 100; # wait n-millisecond before starting the Perl6 colorize task

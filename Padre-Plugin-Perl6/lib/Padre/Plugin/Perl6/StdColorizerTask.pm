@@ -8,7 +8,6 @@ use Padre::Constant ();
 use Padre::Logger;
 use Padre::Util ();
 
-our $VERSION        = '0.65';
 our $thread_running = 0;
 
 # This is run in the main thread before being handed

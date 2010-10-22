@@ -6,7 +6,6 @@ use warnings;
 
 use Padre::Wx ();
 
-our $VERSION = '0.65';
 our @ISA     = 'Padre::Document';
 
 # Task Integration
