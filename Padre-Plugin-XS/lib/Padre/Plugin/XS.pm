@@ -1,18 +1,15 @@
 package Padre::Plugin::XS;
+
+# ABSTRACT: Padre support for perl XS (and perlapi)
+
 use strict;
 use warnings;
 use 5.008;
-
-our $VERSION = '0.03';
 
 use Padre::Wx ();
 use Padre::Current;
 
 use base 'Padre::Plugin';
-
-=head1 NAME
-
-Padre::Plugin::XS - Padre support for perl XS (and perlapi)
 
 =head1 SYNOPSIS
 
@@ -175,13 +172,7 @@ sub about {
 	return;
 }
 
-
 1;
-
-# Copyright 2009-2010 Steffen Mueller.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
 
 __END__
 
@@ -190,17 +181,3 @@ __END__
 Many thanks to Gabor Szabo, who wrote the Kate plugin upon this is based.
 I'm grateful to Herbert Breunung for writing Kephra and getting STC syntax highlighting more
 right that us. Looking at his code has helped me write this.
-
-=head1 AUTHOR
-
-Steffen Mueller, C<smueller@cpan.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009-2010 Steffen Mueller
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
-
-=cut
-
