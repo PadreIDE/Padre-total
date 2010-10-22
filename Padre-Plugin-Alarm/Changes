@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Alarm
 
 {{$NEXT}}
+
+0.09   2010.10.22
 	- Switched to Dist::Zilla (AZAWAWI)
 	- Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
 	- Fixed RT #53691 for Padre-Plugin-Alarm: More events when timer reached (AZAWAWI)
