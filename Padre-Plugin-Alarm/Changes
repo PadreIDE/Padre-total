@@ -3,8 +3,10 @@ Revision history for Padre-Plugin-Alarm
 {{$NEXT}}
 	- Switched to Dist::Zilla (AZAWAWI)
 	- Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
+	- Fixed RT #53691 for Padre-Plugin-Alarm: More events when timer reached (AZAWAWI)
+	- The alarm is also more accurate than before (AZAWAWI)
 
-	0.08  2010.10.19
+0.08  2010.10.19
 	- Renamed to the new Padre 0.43 PO naming scheme (AZAWAWI)
 	- Fixed RT #61653: Plugin not compatible with Padre 0.70 (AZAWAWI)
 	- Translation files are now copied to share folder using Module::Build's share_dir (AZAWAWI)

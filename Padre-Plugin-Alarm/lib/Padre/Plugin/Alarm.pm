@@ -7,11 +7,11 @@ use strict;
 
 use base 'Padre::Plugin';
 
-use Padre::Wx ();
-use Wx::Locale qw(:default);
+use Padre::Wx         ();
 use Padre::Wx::Dialog ();
+use Padre::Util       ();
 
-use vars qw/$alarm_timer_id/;
+our $alarm_timer_id;
 
 sub padre_interfaces {
 	'Padre::Plugin' => '0.47',;
@@ -86,8 +86,11 @@ sub ok_clicked {
 
 	my $alarm_time = $data->{_alarm_time_};
 	if ( $alarm_time !~ /^\d{1,2}\:\d{2}$/ ) {
-		Wx::MessageBox( Wx::gettext('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'), Wx::gettext("Wrong Alarm Time"),
-			Wx::wxOK, $main );
+		Wx::MessageBox(
+			Wx::gettext('Possible Value Format: \d:\d\d or \d\d:\d\d like 6:13 or 23:55'),
+			Wx::gettext("Wrong Alarm Time"),
+			Wx::wxOK, $main
+		);
 		return;
 	}
 
@@ -115,7 +118,7 @@ sub _set_alarm {
 	my $timer = Wx::Timer->new( $main, $alarm_timer_id );
 	unless ( $timer->IsRunning ) {
 		Wx::Event::EVT_TIMER( $main, $alarm_timer_id, \&on_timer_alarm );
-		$timer->Start( 60 * 1000, 0 ); # every minute
+		$timer->Start( 1000, 0 ); # every second
 	}
 }
 
@@ -169,7 +172,7 @@ sub on_timer_alarm {
 
 		if ( $time eq $ntime ) {
 			$did_something = 1;
-			beep();
+			play_alarm();
 			my $frequency = $_->{frequency};
 			if ( $frequency eq 'once' ) {
 				$_->{status} = 'disabled';
@@ -183,15 +186,12 @@ sub on_timer_alarm {
 	}
 }
 
-sub beep {
-	my $file = File::ShareDir::dist_file(
-		'Padre-Plugin-Alarm',
-		'audio',
-		'cartman_03.wav',
-	);
+sub play_alarm {
+	my $audio_dir = File::Spec->catdir( Padre::Util::share('Alarm'), 'audio' );
+	my $file = File::Spec->catfile( $audio_dir, 'alarm.wav' );
 	$file = '' unless -f $file;
-	my $beeper = Wx::Sound->new( $file );
-	$beeper->Play( Wx::wxSOUND_ASYNC );
+	my $sound = Wx::Sound->new($file);
+	$sound->Play(Wx::wxSOUND_ASYNC);
 }
 
 1;
