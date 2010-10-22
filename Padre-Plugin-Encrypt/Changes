@@ -1,11 +1,11 @@
 Revision history for Padre-Plugin-Encrypt
 
 {{$NEXT}}
-        Added missing meta resources after switching to Dist::Zilla
+        Added missing meta resources after switching to Dist::Zilla (AZAWAWI)
 
 0.08    2010.10.22
-        Switched to Dist::Zilla
-        Fixed 00-load.t failure when $ENV{DISPLAY} is not set
+        Switched to Dist::Zilla (AZAWAWI)
+        Fixed 00-load.t failure when $ENV{DISPLAY} is not set (AZAWAWI)
 
 0.07    2010.10.19
         Make sure it works on latest Padre (RT #61657, RENEEB++).  (AZAWAWI)
