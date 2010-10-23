@@ -25,9 +25,9 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 
-		Wx::gettext('1. Run Profile')                                 => sub { $self->on_start_profiling },
-		Wx::gettext('2. Generate Report - Run Profile First')         => sub { $self->on_generate_report },
-		Wx::gettext('3. Show Report -     Run Generate Report First') => sub { $self->on_show_report },
+		Wx::gettext('Run Profiling')                                 => sub { $self->on_start_profiling },
+		Wx::gettext('Generate Profiling Report')         => sub { $self->on_generate_report },
+		Wx::gettext('Show Generated Profiling Report') => sub { $self->on_show_report },
 
 		'---' => undef, # ...add a separator
 
@@ -89,14 +89,12 @@ sub on_generate_report {
 		. $prof_settings{temp_dir}
 		. '/nytprof -f '
 		. $prof_settings{report_file};
-	print "Generating HTML report:\n$report\n";
 	$main->run_command($report);
 }
 
 sub on_show_report {
 
 	my $report = $prof_settings{temp_dir} . '/nytprof/index.html';
-	print "Loading report in browser: $report\n";
 
 	Padre::Wx::launch_browser("file://$report");
 
@@ -104,9 +102,6 @@ sub on_show_report {
 	# now we need to read in the output file
 	# require Devel::NYTProf::Data;
 	# my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
-
-	#print $profile->dump_profile_data();
-
 
 	return;
 

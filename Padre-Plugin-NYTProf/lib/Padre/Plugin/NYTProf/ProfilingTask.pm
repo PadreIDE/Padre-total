@@ -26,9 +26,6 @@ sub new {
 	$self->{prof_settings} = $prof_settings;
 
 
-	print "Perl is: " . $self->{prof_settings}->{perl} . "\n";
-
-
 	$self->{nytprof_envars} = \%nytprof_envars;
 
 	# write the output to whatever temp is
@@ -50,9 +47,7 @@ sub run {
 		# in the file path is the same delimiter NYTProf uses
 		# for NYTPROF environment variable.
 		# not the best but:
-		print "env: $env\n";
 		if ( ( $env eq 'file' ) && ( $^O eq 'MSWin32' ) ) {
-			print "setting drive for win32\n";
 			$self->{nytprof_envars}->{$env} =~ /(\w\:)(.*$)/;
 			$drive = $1;
 			$self->{nytprof_envars}->{$env} = $2;
@@ -65,19 +60,11 @@ sub run {
 	# local $ENV{NYTPROF} = $nytprof_env_vars;
 	# my @cmd = ( $self->{perl}, '-d:NYTProf', $self->{doc_path} );
 
-	#	$self->print( "Env: $nytprof_env_vars\n" );
-	#$self->task_print( "\nEnv: $nytprof_env_vars\n" . join(' ', @cmd) . "\n\n" );
-
 	my $cmd = '';
 	if ( $^O eq "MSWin32" ) {
-		print "Running on windows\n";
 		$cmd = "$drive && set NYTPROF=$nytprof_env_vars && ";
 	} elsif ( $^O eq "darwin" ) {
-		print "Running on Darwin\n";
-
-
 	} elsif ( $^O eq "linux" ) {
-		print "running on linux\n";
 		$cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; "
 			; # . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
 	}
@@ -87,10 +74,9 @@ sub run {
 
 		# append the rest of the command here
 		$cmd .= $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
-		$self->task_print("$cmd\n\n");
 		system($cmd);
 	} else {
-		print "Unable to determine your OS\n";
+		warn "Unable to determine your OS\n";
 	}
 
 	return 1;
@@ -99,9 +85,6 @@ sub run {
 
 sub finish {
 	my $self = shift;
-
-	# get main and write to the output.
-	print "\nFinished profiling...\n";
 
 	return 1;
 

@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: padre-plugin-alarm\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-23 10:52+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Arabic\n"
+
+#: lib/Padre/Plugin/NYTProf.pm:28
+msgid "1. Run Profile"
+msgstr ""
+
+#: lib/Padre/Plugin/NYTProf.pm:29
+msgid "2. Generate Report - Run Profile First"
+msgstr ""
+
+#: lib/Padre/Plugin/NYTProf.pm:30
+msgid "3. Show Report -     Run Generate Report First"
+msgstr ""
+
+#: lib/Padre/Plugin/NYTProf.pm:34
+msgid "About"
+msgstr "عن البرنامج"
+
+#: lib/Padre/Plugin/NYTProf.pm:121
+msgid "This system is running NYTProf version "
+msgstr "يشغل هذا النظام برنامج NYTProf نسخة"
+
+#~ msgid "Alarm Clock"
+#~ msgstr "منبه الساعة"
+#~ msgid "Set Alarm Time"
+#~ msgstr "ضبط وقت المنبه"
+#~ msgid "Stop Alarm"
+#~ msgstr "ايقاف المنبه"
+#~ msgid "Clear Alarm"
+#~ msgstr "مسح المنبه"
+#~ msgid "Time (eg: 23:55):"
+#~ msgstr "الوقت (مثلا: 23:55) :"
+#~ msgid "Frequency:"
+#~ msgstr "التردد:"
+#~ msgid ""
+#~ "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
+#~ msgstr "Formats possibles : \\d:\\d\\d ou \\d\\d:\\d\\d comme 6:13 or 23:55"
+#~ msgid "Wrong Alarm Time"
+#~ msgstr "خطأ في وقت المنبه"
+#~ msgid "All Alarms are stopped"
+#~ msgstr "تم ايقاف كل المنبهات"
+#~ msgid "All Alarms are cleared"
+#~ msgstr "تم مسح كل المنبهات"
+
