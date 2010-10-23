@@ -3,6 +3,7 @@ Changes for Padre-Plugin-Ecliptic
 {{$NEXT}}
 	Switched to Dist::Zilla
 	Fixed Compatibility with the latest Padre
+	Share directory is now accessible via File::ShareDir
 
 0.19  2009.12.17
 

@@ -26,11 +26,10 @@ sub padre_interfaces {
 }
 
 #
-# private subroutine to return the current share directory location
-# We will keep this until Module::Build get its own sharedir installation feature
+# Returns the current share directory location
 #
 sub _sharedir {
-	return Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Ecliptic', 'share' ) );
+	return Padre::Util::share('Ecliptic');
 }
 
 #
