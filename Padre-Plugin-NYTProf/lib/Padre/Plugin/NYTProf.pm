@@ -13,7 +13,7 @@ require Padre::Plugin::NYTProf::ProfilingTask;
 my %prof_settings;
 
 # The plugin name to show in the Plugin Manager and menus
-sub plugin_name {'NYTProf'}
+sub plugin_name {Wx::gettext('NYTProf - Perl Profiler')}
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
