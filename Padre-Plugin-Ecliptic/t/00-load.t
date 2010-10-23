@@ -1,5 +1,10 @@
+#!/usr/bin/perl
+
+#use 5.008;
 use strict;
-use warnings;
+
+# taken straight from the Padre test
+# 01-load.t
 
 use Test::More;
 
@@ -13,3 +18,5 @@ BEGIN {
 plan tests => 1;
 
 use_ok('Padre::Plugin::Ecliptic');
+
+diag("Testing Padre::Plugin::Ecliptic $Padre::Plugin::Ecliptic::VERSION, Perl $], $^X");

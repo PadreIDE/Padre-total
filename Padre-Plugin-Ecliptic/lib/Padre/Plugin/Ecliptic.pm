@@ -1,10 +1,9 @@
 package Padre::Plugin::Ecliptic;
 
+# ABSTRACT: Padre plugin that provides Eclipse-like useful features
+
 use strict;
 use warnings;
-
-# package exports and version
-our $VERSION = '0.19';
 
 # module imports
 use Padre::Wx ();
@@ -23,7 +22,7 @@ sub plugin_name {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.43;
+	return 'Padre::Plugin' => 0.47;
 }
 
 #
@@ -186,10 +185,6 @@ sub _show_quick_module_access_dialog {
 
 __END__
 
-=head1 NAME
-
-Padre::Plugin::Ecliptic - Padre plugin that provides Eclipse-like useful features
-
 =head1 SYNOPSIS
 
 	1. After installation, run Padre.
@@ -225,14 +220,3 @@ Shows a classic about dialog with this module's name and version.
 I wanted a simple plugin name for including Eclipse-related killer features into 
 Padre. So i came up with Ecliptic and it turned out to be the orbit which the 
 Sun takes. And i love it!
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
