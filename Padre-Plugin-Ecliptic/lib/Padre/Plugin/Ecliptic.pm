@@ -132,7 +132,7 @@ sub _show_about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Ecliptic");
 	$about->SetDescription( Wx::gettext("Provides Eclipse-like useful features to Padre.\n") );
-	$about->SetVersion($VERSION);
+	$about->SetVersion($Padre::Plugin::Ecliptic::VERSION);
 	Wx::AboutBox($about);
 
 	return;
@@ -192,22 +192,22 @@ __END__
 
 =head1 DESCRIPTION
 
-Once you enable this Plugin under Padre, you'll get a brand new menu with the 
+Once you enable this Plugin under Padre, you'll get a brand new menu with the
 following options:
 
 =head2 Quick Assist (Shortcut: Ctrl + Shift + L)
 
-This opens a dialog with a list of current Padre actions/shortcuts. When 
+This opens a dialog with a list of current Padre actions/shortcuts. When
 you hit the OK button, the selected Padre action will be performed.
 
 =head2 Quick Outline Access (Shortcut: Ctrl + 4)
 
-This opens a dialog where you can search for outline tree. When you hit the OK 
+This opens a dialog where you can search for outline tree. When you hit the OK
 button, the outline element in the outline tree will be selected.
 
 =head2 Quick Module Access (Shortcut: Ctrl + 5)
 
-This opens a dialog where you can search for a CPAN module. When you hit the OK 
+This opens a dialog where you can search for a CPAN module. When you hit the OK
 button, the selected module will be displayed in Padre's POD browser.
 
 =head2 About
@@ -216,6 +216,6 @@ Shows a classic about dialog with this module's name and version.
 
 =head1 Why the name Ecliptic?
 
-I wanted a simple plugin name for including Eclipse-related killer features into 
-Padre. So i came up with Ecliptic and it turned out to be the orbit which the 
+I wanted a simple plugin name for including Eclipse-related killer features into
+Padre. So i came up with Ecliptic and it turned out to be the orbit which the
 Sun takes. And i love it!
