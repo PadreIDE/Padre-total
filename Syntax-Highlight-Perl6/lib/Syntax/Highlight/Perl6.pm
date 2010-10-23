@@ -12,7 +12,6 @@ require Exporter;
 
 # exports and version
 our @EXPORT_OK = qw();
-our $VERSION   = '0.87';
 
 # filename constants
 my $FILE_CSS    = 'p6_style.css';
@@ -556,7 +555,7 @@ __END__
 
 =head1 DESCRIPTION
 
-C<Syntax::Highlight::Perl6> parses Perl 6 source code using L<STD> cpan package. 
+C<Syntax::Highlight::Perl6> parses Perl 6 source code using L<STD> cpan package.
 It matches parse tree nodes to colors then returns them in different output formats.
 It can be used to create web pages with colorful source code samples in its
 simple and snippet html modes, or it can be used as a learning tool in examining
@@ -681,16 +680,16 @@ The shortened output looks like:
 
 =head1 INCOMPATIBILITIES
 
-This module is dependent on Perl 5.10 features namely the regex engine 
+This module is dependent on Perl 5.10 features namely the regex engine
 and state variables (for STD.pm6). So there will be no Perl 5.8.x support in
 the future.
 
 =head1 SEE ALSO
 
 Discussion about this module and STD.pm6 is usually in #perl6
-(irc://irc.freenode.net/perl6). This module lives in 
-http://svn.perlide.org/padre/trunk/Syntax-Highlight-Perl6 . Larry Wall's 
-C<STD.pm6> lives in http://github.com/perl6/std. 
+(irc://irc.freenode.net/perl6). This module lives in
+http://svn.perlide.org/padre/trunk/Syntax-Highlight-Perl6 . Larry Wall's
+C<STD.pm6> lives in http://github.com/perl6/std.
 
 =head1 BUGS AND LIMITATIONS
 
