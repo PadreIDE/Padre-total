@@ -1,54 +1,6 @@
-# Avoid STD lex cache, and generated files
-\blex
-\.tar.gz$
-\.tar$
-\bfoo\.pl
-\bbar\.pl
-\bFoo\.pm
-\btest\.p6
-\.log$
-\.swp$
+# This is a shorter MANIFEST.SKIP. Credits go to Dist::Zilla :)
 
-# Avoid version control files.
-\bRCS\b
-\bCVS\b
-,v$
-\B\.svn\b
-\B\.cvsignore$
-
-# Avoid Makemaker generated and utility files.
-\bMakefile$
-\bblib
-\bMakeMaker-\d
-\bpm_to_blib$
-\bblibdirs$
-^MANIFEST\.SKIP$
-
-# Avoid Module::Build generated and utility files.
-\bBuild$
-\bBuild.bat$
-\b_build
-
-# Avoid Devel::Cover generated files
-\bcover_db
-
-# Avoid temp and backup files.
-~$
-\.tmp$
-\.old$
-\.bak$
-\#$
-\.#
-\.rej$
-
-# Avoid OS-specific files/dirs
-#   Mac OSX metadata
-\B\.DS_Store
-#   Mac OSX SMB mount metadata files
-\B\._
-# Avoid archives of this distribution
-\bSyntax-Highlight-Perl6-[\d\.\_]+
-
-# avoid CORE.pad.store files
-\.store$
-^MYMETA.yml$
+# avoid pot files (gettext)
+^MANIFEST.SKIP$
+\.po$
+\.pot$

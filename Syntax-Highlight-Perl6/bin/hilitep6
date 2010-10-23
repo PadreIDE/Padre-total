@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+# ABSTRACT: command-line interface to highlight Perl 6 code
+
 # Core modules
 use 5.010;
 use strict;
@@ -7,9 +9,6 @@ use warnings;
 use utf8;
 use feature qw(say switch);
 use Carp;
-
-#CPAN version
-our $VERSION = '0.87';
 
 # my variables
 my ( $clean_html, $help ) = ( 0, 0 );
@@ -168,10 +167,6 @@ main @ARGV;
 
 __END__
 
-=head1 NAME
-
-hilitep6 - command-line interface to highlight Perl 6 code
-
 =head1 USAGE
 
     # read from standard input
@@ -203,11 +198,3 @@ code into html, and ansi escape color sequences.
 =head1 SEE ALSO
 
 See L<Syntax::Highlight::Perl6>
-
-=head1 AUTHOR
-
-Written by Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 LICENSE AND COPYRIGHT
-
-The same license as L<Syntax::Highlight::Perl6>

@@ -1,5 +1,7 @@
 package Syntax::Highlight::Perl6;
 
+# ABSTRACT: Perl 6 Syntax Highlighter
+
 # core modules & directives
 use 5.010;
 use strict;
@@ -526,10 +528,6 @@ sub _slurp {
 
 __END__
 
-=head1 NAME
-
-Syntax::Highlight::Perl6 - Perl 6 Syntax Highlighter
-
 =head1 SYNOPSIS
 
     ### NOTE: This is needed and will be removed in future releases
@@ -684,15 +682,15 @@ The shortened output looks like:
 =head1 INCOMPATIBILITIES
 
 This module is dependent on Perl 5.10 features namely the regex engine 
-and state variables (for STD.pm6). So Perl 5.8.x support will NOT be available
-for now.
+and state variables (for STD.pm6). So there will be no Perl 5.8.x support in
+the future.
 
 =head1 SEE ALSO
 
 Discussion about this module and STD.pm6 is usually in #perl6
 (irc://irc.freenode.net/perl6). This module lives in 
 http://svn.perlide.org/padre/trunk/Syntax-Highlight-Perl6 . Larry Wall's 
-C<STD.pm6> lives in http://svn.pugscode.org/pugs/src/perl6 . 
+C<STD.pm6> lives in http://github.com/perl6/std. 
 
 =head1 BUGS AND LIMITATIONS
 
@@ -710,22 +708,9 @@ You have to put "use STD;" before using this module.
     use STD; # this must be first for now
     use Syntax::Highlight::Perl6;
 
-=item * Directory 'lex' is created when using this module.
-
-STD.pm6 caches digraphs and the matched rules in there.
-So this is Pretty Voodoo Stuff. Otherwise it will be pretty slow.
-
-=item * Slow startup when using the module for the first time
-
-That is related to the creation of the cached 'lex'ing directory by STD.pm6.
-I<This happens only once.>
-
 =back
 
-=head1 AUTHOR
-
-Written by Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >> 
-(C<azawawi> in C<#perl6>).
+=head1 ACKNOWLEDGEMENTS
 
 The project idea was inspired by Moritz Lenz (moritz) -
 http://www.nntp.perl.org/group/perl.perl6.users/2008/07/msg788.html .
@@ -735,17 +720,8 @@ It was replaced afterwards for performance reasons with Larry Wall's
 C<redspans> traversal code. C<redspans> stands for C<red> for reductions,
 and C<spans> from the "from/to span calculations".
 
-Thanks guys. I could not have done it without you ;-)
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright (C) 2008-2010 by Ahmad Zawawi
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
 This library also includes the following libraries:
 
-STD.pm6 by Larry Wall (Artistic License 2.0)
-
 JQuery by John Resig (dual licensed under the MIT and GPL licenses).
+
+Thanks guys. I could not have done it without you ;-)

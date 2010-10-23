@@ -1,5 +1,9 @@
 Revision history for Syntax::Highlight::Perl6.
 
+{{$NEXT}}
+	Switch to Dist::Zilla
+	Fixed POD to reflect latest Perl 6 changes
+
 0.87 2010.9.26
 	Fixed hilitep6 not being installed (ppisar++)
 		https://rt.cpan.org/Ticket/Display.html?id=61522
