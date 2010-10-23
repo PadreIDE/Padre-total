@@ -11,6 +11,7 @@ use Dist::Zilla::PluginBundle::Basic;
 use Dist::Zilla::Plugin::CheckChangeLog;
 use Dist::Zilla::Plugin::CheckChangesTests;
 use Dist::Zilla::Plugin::CompileTests;
+use Dist::Zilla::Plugin::EOLTests;
 use Dist::Zilla::Plugin::PodWeaver;
 use Dist::Zilla::Plugin::PkgVersion;
 use Dist::Zilla::Plugin::MetaResources;
@@ -22,51 +23,52 @@ use Dist::Zilla::Plugin::ModuleBuild;
 use Dist::Zilla::Plugin::LocaleMsgfmt;
 
 sub bundle_config {
-    my ( $self, $section ) = @_;
-    my $class = ( ref $self ) || $self;
+	my ( $self, $section ) = @_;
+	my $class = ( ref $self ) || $self;
 
-    my $arg = $section->{payload};
+	my $arg = $section->{payload};
 
-    my @plugins = Dist::Zilla::PluginBundle::Filter->bundle_config(
-        {   name    => "$class/Basic",
-            payload => {
-                bundle => '@Basic',
-                remove => [qw(MakeMaker)],
-            }
-        }
-    );
+	my @plugins = Dist::Zilla::PluginBundle::Filter->bundle_config(
+		{   name    => "$class/Basic",
+			payload => {
+				bundle => '@Basic',
+				remove => [qw(MakeMaker)],
+			}
+		}
+	);
 
-    my %meta_resources;
-    for my $resource qw(homepage repository) {
-        $meta_resources{$resource} = $arg->{$resource} if defined $arg->{$resource};
-    }
+	my %meta_resources;
+	for my $resource qw(homepage repository) {
+		$meta_resources{$resource} = $arg->{$resource} if defined $arg->{$resource};
+	}
 
-    my %next_release_format;
-    $next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
+	my %next_release_format;
+	$next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
 
-    # params
+	# params
 
-    my $prefix = 'Dist::Zilla::Plugin::';
-    my @extra = map { [ "$class/$prefix$_->[0]" => "$prefix$_->[0]" => $_->[1] ] } (
-		[CheckChangeLog => {}],
-		[CheckChangesTests => {}],
-		[CompileTests => {}],
-		[PodWeaver => {}],
-		[PkgVersion => {}],
-		[MetaResources => \%meta_resources],
-		[MetaConfig => {}],
-		[MetaJSON => {}],
-		[NextRelease => \%next_release_format],
-		[PodSyntaxTests => {}],
-		[ModuleBuild => {}],
-		[LocaleMsgfmt => {}],
-    );
+	my $prefix = 'Dist::Zilla::Plugin::';
+	my @extra = map { [ "$class/$prefix$_->[0]" => "$prefix$_->[0]" => $_->[1] ] } (
+		[ CheckChangeLog    => {} ],
+		[ CheckChangesTests => {} ],
+		[ CompileTests      => {} ],
+		[ EOLTests          => {} ],
+		[ PodWeaver         => {} ],
+		[ PkgVersion        => {} ],
+		[ MetaResources     => \%meta_resources ],
+		[ MetaConfig        => {} ],
+		[ MetaJSON          => {} ],
+		[ NextRelease       => \%next_release_format ],
+		[ PodSyntaxTests    => {} ],
+		[ ModuleBuild       => {} ],
+		[ LocaleMsgfmt      => {} ],
+	);
 
-    push @plugins, @extra;
+	push @plugins, @extra;
 
-    eval "require $_->[1]; 1;" or die for @plugins;    ## no critic Carp
+	eval "require $_->[1]; 1;" or die for @plugins; ## no critic Carp
 
-    return @plugins;
+	return @plugins;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -80,7 +82,7 @@ __END__
 
 Putting the following in your Padre::Plugin::PluginName dist.ini file:
 
-    [@PadrePlugin]
+	[@PadrePlugin]
 
 is equivalent to:
 
@@ -91,6 +93,7 @@ is equivalent to:
 	[CheckChangeLog]
 	[CheckChangesTests]
 	[CompileTests]
+	[EOLTests]
 	[PodWeaver]
 	[PkgVersion]
 	[MetaResources]
@@ -103,5 +106,5 @@ is equivalent to:
 	[LocaleMsgfmt]
 
 	You can specify the following options:
-	    homepage
-	    repository
+		homepage
+		repository
