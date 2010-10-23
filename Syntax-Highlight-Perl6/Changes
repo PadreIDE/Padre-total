@@ -1,6 +1,8 @@
 Revision history for Syntax::Highlight::Perl6.
 
 {{$NEXT}}
+
+0.88   2010.10.23
 	Switch to Dist::Zilla
 	Uses File::ShareDir now to locate resources in the distribution share folder
 	Fixed POD to reflect the latest Perl 6 changes
