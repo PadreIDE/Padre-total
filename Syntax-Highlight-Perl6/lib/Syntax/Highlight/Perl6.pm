@@ -17,7 +17,7 @@ our @EXPORT_OK = qw();
 my $FILE_CSS    = 'p6_style.css';
 my $FILE_ANSI   = 'p6_style.ansi';
 my $FILE_JS     = 'p6_style.js';
-my $FILE_JQUERY = 'jquery-1.4.2.min.js';
+my $FILE_JQUERY = 'jquery-1.4.3.min.js';
 
 
 # my module variables

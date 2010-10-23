@@ -4,6 +4,7 @@ Revision history for Syntax::Highlight::Perl6.
 	Switch to Dist::Zilla
 	Uses File::ShareDir now
 	Fixed POD to reflect latest Perl 6 changes
+	Updated to JQuery 1.4.3
 
 0.87 2010.9.26
 	Fixed hilitep6 not being installed (ppisar++)
