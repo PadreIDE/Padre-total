@@ -32,8 +32,6 @@ require File::Basename;
 require File::Spec;
 require Cwd;
 
-my $SHARED = Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'Perl6' ) );
-
 #----------------------------------------------------------------
 # Returns the syntax highlighting object. It needs a hash
 # of options.
@@ -503,7 +501,8 @@ sub _escape_html {
 # convert to shared package real resource path
 #-----------------------------------------------------
 sub _shared {
-	return File::Spec->join( $SHARED, shift );
+	require File::ShareDir;
+	return File::ShareDir::dist_file('Syntax-Highlight-Perl6', shift);
 }
 
 #-----------------------------------------------------

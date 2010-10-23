@@ -2,6 +2,7 @@ Revision history for Syntax::Highlight::Perl6.
 
 {{$NEXT}}
 	Switch to Dist::Zilla
+	Uses File::ShareDir now
 	Fixed POD to reflect latest Perl 6 changes
 
 0.87 2010.9.26
