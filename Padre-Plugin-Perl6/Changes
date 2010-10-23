@@ -1,6 +1,8 @@
 Changes
 
 {{$NEXT}}
+
+0.66   2010.10.23
 	Switch to Dist::Zilla
 	Removed "Update Six" experimental feature
 	Removed "Perl refactor" undeveloped feature
