@@ -13,113 +13,119 @@ require Padre::Plugin::NYTProf::ProfilingTask;
 my %prof_settings;
 
 # The plugin name to show in the Plugin Manager and menus
-sub plugin_name { 'NYTProf' }
+sub plugin_name {'NYTProf'}
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-    'Padre::Plugin'         => 0.47,
+	'Padre::Plugin' => 0.47,;
 }
 
 
 sub menu_plugins_simple {
-    my $self = shift;
-    return $self->plugin_name  => [
-        
-        Wx::gettext('1. Run Profile')                                    => sub { $self->on_start_profiling },
-        Wx::gettext('2. Generate Report - Run Profile First')            => sub { $self->on_generate_report },        
-        Wx::gettext('3. Show Report -     Run Generate Report First')    => sub { $self->on_show_report },
-        
-        '---'                                                   => undef, # ...add a separator
-        
-        Wx::gettext('About')                                             => sub { $self->on_show_about },
-        
-     ];
-    
+	my $self = shift;
+	return $self->plugin_name => [
+
+		Wx::gettext('1. Run Profile')                                 => sub { $self->on_start_profiling },
+		Wx::gettext('2. Generate Report - Run Profile First')         => sub { $self->on_generate_report },
+		Wx::gettext('3. Show Report -     Run Generate Report First') => sub { $self->on_show_report },
+
+		'---' => undef, # ...add a separator
+
+		Wx::gettext('About') => sub { $self->on_show_about },
+
+	];
+
 }
 
 sub plugin_enable {
-        return;
+	return;
 }
 
 sub plugin_disable {
-    require Class::Unload;
-    Class::Unload->unload('Padre::Plugin::NYTProf::ProfilingTask');
-    Class::Unload->unload('Padre::Plugin::NYTProf');
-    
-#    Class::Unload->unload('Devel::NYTProf');
+	require Class::Unload;
+	Class::Unload->unload('Padre::Plugin::NYTProf::ProfilingTask');
+	Class::Unload->unload('Padre::Plugin::NYTProf');
+
+	#    Class::Unload->unload('Devel::NYTProf');
 
 }
 
 
 sub on_start_profiling {
-    
-    
-    
+
+
 	# need to move these out to the plugin component
-	$prof_settings{doc_path} = Padre::Current->document->filename;
-	$prof_settings{temp_dir} = File::Temp::tempdir;
-	$prof_settings{perl} = Padre::Perl->perl;
+	$prof_settings{doc_path}    = Padre::Current->document->filename;
+	$prof_settings{temp_dir}    = File::Temp::tempdir();
+	$prof_settings{perl}        = Padre::Perl->perl;
 	$prof_settings{report_file} = $prof_settings{temp_dir} . "/nytprof.out";
-	my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new(\%prof_settings);
+	my $prof_task = Padre::Plugin::NYTProf::ProfilingTask->new( \%prof_settings );
 	$prof_task->schedule;
-    
+
 
 	return;
-    
+
 }
+
 sub on_generate_report {
-    
-    my $main    = Padre->ide->wx->main;
-    
-    # create the commandline to create HTML output
-    # nytprof gets put into the perl bin directory
-    #my $bin_path = $prof_settings{perl};
-    #$bin_path =~ dirname( $bin_path); #s/[^\\\/](perl.*$)//i;
-    
-    # TODO the path to nytprofhtml has changed to /usr/local/bin
-    # I'm not sure if this is due to the way I installed it or
-    # if this is a change with the install location with nytprof.
-    # so this needs to be done better.
-    
-    my( $fname, $bin_path, $suffix ) = File::Basename::fileparse( $prof_settings{perl} );
-    my $report = $prof_settings{perl} . ' ' . $bin_path . 'nytprofhtml -o ' . $prof_settings{temp_dir} . '/nytprof -f ' . $prof_settings{report_file};
-    print "Generating HTML report:\n$report\n";
-    $main->run_command($report);
+
+	my $main = Padre->ide->wx->main;
+
+	# create the commandline to create HTML output
+	# nytprof gets put into the perl bin directory
+	#my $bin_path = $prof_settings{perl};
+	#$bin_path =~ dirname( $bin_path); #s/[^\\\/](perl.*$)//i;
+
+	# TODO the path to nytprofhtml has changed to /usr/local/bin
+	# I'm not sure if this is due to the way I installed it or
+	# if this is a change with the install location with nytprof.
+	# so this needs to be done better.
+
+	my ( $fname, $bin_path, $suffix ) = File::Basename::fileparse( $prof_settings{perl} );
+	my $report =
+		  $prof_settings{perl} . ' '
+		. $bin_path
+		. 'nytprofhtml -o '
+		. $prof_settings{temp_dir}
+		. '/nytprof -f '
+		. $prof_settings{report_file};
+	print "Generating HTML report:\n$report\n";
+	$main->run_command($report);
 }
 
 sub on_show_report {
-        
-    my $report = $prof_settings{temp_dir} . '/nytprof/index.html';
-    print "Loading report in browser: $report\n";
-    
-    Padre::Wx::launch_browser("file://$report");
 
-    # testing..
-    # now we need to read in the output file
-    # require Devel::NYTProf::Data;
-    # my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
-    
-    #print $profile->dump_profile_data();
+	my $report = $prof_settings{temp_dir} . '/nytprof/index.html';
+	print "Loading report in browser: $report\n";
 
-    
-    return;
-        
+	Padre::Wx::launch_browser("file://$report");
+
+	# testing..
+	# now we need to read in the output file
+	# require Devel::NYTProf::Data;
+	# my $profile = Devel::NYTProf::Data->new( { filename => $prof_settings{file} } );
+
+	#print $profile->dump_profile_data();
+
+
+	return;
+
 }
 
 sub on_show_about {
-    require Devel::NYTProf;
-    require Class::Unload;
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName("Padre::Plugin::NYTProf");
-    $about->SetDescription(
-		  Wx::getttext('Initial NYTProf profile support for Padre') . "\n\n"
-		. Wx::gettext('This system is running NYTProf version ') . $Devel::NYTProf::VERSION . "\n"
-	);
-    $about->SetVersion( $VERSION );
-    Class::Unload->unload('Devel::NYTProf');
-    
-    Wx::AboutBox( $about );
-    return;
+	require Devel::NYTProf;
+	require Class::Unload;
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName("Padre::Plugin::NYTProf");
+	$about->SetDescription( Wx::getttext('Initial NYTProf profile support for Padre') . "\n\n"
+			. Wx::gettext('This system is running NYTProf version ')
+			. $Devel::NYTProf::VERSION
+			. "\n" );
+	$about->SetVersion($Devel::NYTProf::VERSION);
+	Class::Unload->unload('Devel::NYTProf');
+
+	Wx::AboutBox($about);
+	return;
 }
 
 

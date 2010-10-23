@@ -11,46 +11,47 @@ use base 'Padre::Task';
 # we may want to set some default settings for NYTProf at some stage:
 # keys should be relate to the environment vars NYTProf expects
 my %nytprof_envars = (
-		file	=> 'nytprof.out',
-		);
+	file => 'nytprof.out',
+);
 
 sub new {
-	
-	my $class = shift;
-	my $prof_settings = shift ;
-	
-	my $self = $class->SUPER::new(@_);
-	
-	
-	
-	$self->{prof_settings} = $prof_settings;
-	
 
-	print "Perl is: " . $self->{prof_settings}->{perl} ."\n";
-	
-	
+	my $class         = shift;
+	my $prof_settings = shift;
+
+	my $self = $class->SUPER::new(@_);
+
+
+
+	$self->{prof_settings} = $prof_settings;
+
+
+	print "Perl is: " . $self->{prof_settings}->{perl} . "\n";
+
+
 	$self->{nytprof_envars} = \%nytprof_envars;
-	
+
 	# write the output to whatever temp is
 	$self->{nytprof_envars}->{file} = $self->{prof_settings}->{report_file};
-	
+
 	bless( $self, $class );
 	return $self;
-	
+
 }
 
 sub run {
 	my $self = shift;
-	
+
 	my $nytprof_env_vars = "";
-	my $drive = "";
-	foreach my $env( keys( %{ $self->{nytprof_envars} }  ) ) {
+	my $drive            = "";
+	foreach my $env ( keys( %{ $self->{nytprof_envars} } ) ) {
+
 		# we can't use the full file path because the colon
 		# in the file path is the same delimiter NYTProf uses
 		# for NYTPROF environment variable.
 		# not the best but:
 		print "env: $env\n";
-		if( ($env eq 'file') && ($^O eq 'MSWin32') ) {
+		if ( ( $env eq 'file' ) && ( $^O eq 'MSWin32' ) ) {
 			print "setting drive for win32\n";
 			$self->{nytprof_envars}->{$env} =~ /(\w\:)(.*$)/;
 			$drive = $1;
@@ -59,51 +60,51 @@ sub run {
 		$nytprof_env_vars .= "$env=" . $self->{nytprof_envars}->{$env} . ":";
 	}
 	$nytprof_env_vars =~ s/\:$//;
-	
+
 	# doesn't work as expected
 	# local $ENV{NYTPROF} = $nytprof_env_vars;
 	# my @cmd = ( $self->{perl}, '-d:NYTProf', $self->{doc_path} );
-	
-#	$self->print( "Env: $nytprof_env_vars\n" );
+
+	#	$self->print( "Env: $nytprof_env_vars\n" );
 	#$self->task_print( "\nEnv: $nytprof_env_vars\n" . join(' ', @cmd) . "\n\n" );
-	
+
 	my $cmd = '';
-	if( $^O eq "MSWin32" ) {
+	if ( $^O eq "MSWin32" ) {
 		print "Running on windows\n";
 		$cmd = "$drive && set NYTPROF=$nytprof_env_vars && ";
-	}
-	elsif( $^O eq "darwin" ) {
+	} elsif ( $^O eq "darwin" ) {
 		print "Running on Darwin\n";
-		
-		
-	}
-	elsif( $^O eq "linux" ) {
+
+
+	} elsif ( $^O eq "linux" ) {
 		print "running on linux\n";
-		$cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; "; # . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
+		$cmd = "NYTPROF=$nytprof_env_vars; export NYTPROF; "
+			; # . $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
 	}
-	
+
 	# run the command if we can
-	if( $cmd ne '' ) {
+	if ( $cmd ne '' ) {
+
 		# append the rest of the command here
 		$cmd .= $self->{prof_settings}->{perl} . ' -d:NYTProf ' . $self->{prof_settings}->{doc_path};
 		$self->task_print("$cmd\n\n");
 		system($cmd);
-	}
-	else {
+	} else {
 		print "Unable to determine your OS\n";
 	}
-	
+
 	return 1;
 }
 
 
 sub finish {
 	my $self = shift;
+
 	# get main and write to the output.
 	print "\nFinished profiling...\n";
-	
+
 	return 1;
-	
+
 }
 
 
