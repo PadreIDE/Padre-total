@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
-# ABSTRACT: command-line interface to highlight Perl 6 code
+# ABSTRACT: Command-line interface to highlight Perl 6 code
+# PODNAME: hilitep6
 
 # Core modules
 use 5.010;
