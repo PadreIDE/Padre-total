@@ -105,6 +105,6 @@ is equivalent to:
 	[ModuleBuild]
 	[LocaleMsgfmt]
 
-	You can specify the following options:
-		homepage
-		repository
+You can specify the following options:
+	homepage
+	repository

@@ -1,6 +1,7 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- Minor POD fix (AZAWAWI)
 
 0.01   2010.10.23
 	- First version (AZAWAWI)
