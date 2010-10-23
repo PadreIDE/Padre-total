@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-alarm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-23 10:52+0300\n"
+"POT-Creation-Date: 2010-10-23 10:59+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -12,22 +12,22 @@ msgstr ""
 "X-Poedit-Language: Arabic\n"
 
 #: lib/Padre/Plugin/NYTProf.pm:28
-msgid "1. Run Profile"
-msgstr ""
+msgid "Run Profiling"
+msgstr "تشغيل تحليل البرنامج"
 
 #: lib/Padre/Plugin/NYTProf.pm:29
-msgid "2. Generate Report - Run Profile First"
-msgstr ""
+msgid "Generate Profiling Report"
+msgstr "توليد تقرير التحليل"
 
 #: lib/Padre/Plugin/NYTProf.pm:30
-msgid "3. Show Report -     Run Generate Report First"
-msgstr ""
+msgid "Show Generated Profiling Report"
+msgstr "اظهار تقرير التحليل المولد"
 
 #: lib/Padre/Plugin/NYTProf.pm:34
 msgid "About"
 msgstr "عن البرنامج"
 
-#: lib/Padre/Plugin/NYTProf.pm:121
+#: lib/Padre/Plugin/NYTProf.pm:116
 msgid "This system is running NYTProf version "
 msgstr "يشغل هذا النظام برنامج NYTProf نسخة"
 

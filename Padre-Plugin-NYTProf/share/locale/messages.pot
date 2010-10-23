@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-23 10:52+0300\n"
+"POT-Creation-Date: 2010-10-23 10:59+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,21 +17,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lib/Padre/Plugin/NYTProf.pm:28
-msgid "1. Run Profile"
+msgid "Run Profiling"
 msgstr ""
 
 #: lib/Padre/Plugin/NYTProf.pm:29
-msgid "2. Generate Report - Run Profile First"
+msgid "Generate Profiling Report"
 msgstr ""
 
 #: lib/Padre/Plugin/NYTProf.pm:30
-msgid "3. Show Report -     Run Generate Report First"
+msgid "Show Generated Profiling Report"
 msgstr ""
 
 #: lib/Padre/Plugin/NYTProf.pm:34
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/NYTProf.pm:121
+#: lib/Padre/Plugin/NYTProf.pm:116
 msgid "This system is running NYTProf version "
 msgstr ""
