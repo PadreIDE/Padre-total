@@ -3,6 +3,7 @@ Revision history for Perl6-Refactor
 {{$NEXT}}
 	- Switch to Dist::Zilla
 	- This is now a developer release
+	- refactor_p6 is now installed as an executable script
 
 0.01    2009.7.18
 	- First version, released on an unsuspecting world.
