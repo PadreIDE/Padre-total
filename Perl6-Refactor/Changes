@@ -1,5 +1,9 @@
 Revision history for Perl6-Refactor
 
-=head1 0.01    2009.7.18
+{{$NEXT}}
+	- Switch to Dist::Zilla
+	- This is now a developer release
+
+0.01    2009.7.18
 	- First version, released on an unsuspecting world.
 
