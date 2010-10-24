@@ -1,3 +1,7 @@
+
+# ABSTRACT: Perl 6 refactoring tool
+# PODNAME: refactor_p6
+
 # The start of a gimme5 replacement based on STD parsing.
 # viv stands for roman numbers VIV (i.e. Perl 5 to 6)
 use 5.010;

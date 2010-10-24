@@ -2,7 +2,7 @@ package Perl6::Refactor;
 
 use Moose;
 
-# ABSTRACT: Perl6::Refactor - Refactors Perl 6 code
+# ABSTRACT: Refactors Perl 6 code
 
 sub rename_variable {
 	my $self = shift;
@@ -23,7 +23,7 @@ __END__
 
 =head1 SYNOPSIS
 
-Perl 6 Refactor includes tools for renaming variables, finding variables 
+Perl 6 Refactor includes tools for renaming variables, finding variables
 declarations and more....
 
 Perhaps a little code snippet.
