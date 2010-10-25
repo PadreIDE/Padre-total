@@ -5,6 +5,7 @@ Revision history for Perl extension Padre-Plugin-PerlCritic.
     - Fixed t/* to work under no DISPLAY (AZAWAWI)
     - Added Italian translation (SBLADIN)
     - Updated Arabic translation (AZAWAWI)
+    - Fixed RT #59680: Module::Install included missing (AZAWAWI)
 
 0.08 Tue Jul 27 2010
     - Turkish translation updated (BURAK)
