@@ -92,8 +92,8 @@ sub pir2pbc {
 }
 
 sub get_help_provider {
-	require Padre::HelpProvider::PIR;
-	return Padre::HelpProvider::PIR->new;
+	require Padre::Help::PIR;
+	return Padre::Help::PIR->new;
 }
 
 1;

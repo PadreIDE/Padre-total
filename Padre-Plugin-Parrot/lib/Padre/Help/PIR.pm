@@ -1,4 +1,4 @@
-package Padre::HelpProvider::PIR;
+package Padre::Help::PIR;
 
 use 5.008;
 use strict;
@@ -141,11 +141,11 @@ __END__
 
 =head1 NAME
 
-Padre::HelpProvider::Perl - Perl 5 Help Provider
+Padre::Help::PIR - PIR Help Provider
 
 =head1 DESCRIPTION
 
-Perl 5 Help index is built here and rendered.
+PIR Help index is built here and rendered.
 
 =head1 AUTHOR
 
