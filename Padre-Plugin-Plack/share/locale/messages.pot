@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-24 10:38-0500\n"
+"POT-Creation-Date: 2010-10-25 20:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,7 +60,7 @@ msgstr ""
 msgid "This system is running Plack version"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:288 lib/Padre/Plugin/Plack.pm:473
+#: lib/Padre/Plugin/Plack.pm:288 lib/Padre/Plugin/Plack.pm:480
 msgid "Let plackup guess"
 msgstr ""
 
@@ -86,30 +86,30 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:475
+#: lib/Padre/Plugin/Plack.pm:482
 msgid "Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:481
+#: lib/Padre/Plugin/Plack.pm:488
 msgid "Port"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:487
+#: lib/Padre/Plugin/Plack.pm:494
 msgid "Options"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:493
+#: lib/Padre/Plugin/Plack.pm:500
 msgid "Auto-Restart"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:506 lib/Padre/Plugin/Plack/Panel.pm:33
+#: lib/Padre/Plugin/Plack.pm:513 lib/Padre/Plugin/Plack/Panel.pm:34
 msgid "Start"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack.pm:518
+#: lib/Padre/Plugin/Plack.pm:525
 msgid "View in Browser"
 msgstr ""
 
-#: lib/Padre/Plugin/Plack/Panel.pm:27
+#: lib/Padre/Plugin/Plack/Panel.pm:28
 msgid "Stop"
 msgstr ""
