@@ -5,7 +5,17 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+uuse Test::More;
+
+BEGIN {
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+
+plan tests => 3;
+
 use Padre::Plugin::PerlCritic;
 
 my @menu = Padre::Plugin::PerlCritic->menu_plugins_simple;
