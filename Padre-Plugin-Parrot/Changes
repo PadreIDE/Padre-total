@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Parrot
 
+{{$NEXT}}
+	- Switched to Dist::Zilla (AZAWAWI)
+
 0.27 2010.9.20
 	- Add menu option to open one of the installed example files (SZABGAB)
 	- Enable context sensitive help on PIR files (SZABGAB)
