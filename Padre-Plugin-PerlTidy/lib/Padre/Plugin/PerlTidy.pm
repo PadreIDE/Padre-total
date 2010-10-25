@@ -1,12 +1,10 @@
 package Padre::Plugin::PerlTidy;
 
+# ABSTRACT: Format perl files using Perl::Tidy
+
 =pod
 
-=head1 NAME
-
-Padre::Plugin::PerlTidy - Format perl files using Perl::Tidy
-
-=head1 SYNOPIS
+=head1 SYNOPSIS
 
 This is a simple plugin to run Perl::Tidy on your source code.
 
@@ -24,7 +22,6 @@ use Padre::Current ();
 use Padre::Wx      ();
 use Padre::Plugin  ();
 
-our $VERSION = '0.12';
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing
@@ -371,18 +368,5 @@ Runs Perl::Tidy on the current code selection.
 =head2 export_selection
 
 Export the current code selection as html.
-
-=head1 AUTHOR
-
-Brian Cassidy E<lt>bricas@cpan.orgE<gt>
-
-Patrick Donelan
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 by Patrick Donelan, Brian Cassidy
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
 
 =cut
