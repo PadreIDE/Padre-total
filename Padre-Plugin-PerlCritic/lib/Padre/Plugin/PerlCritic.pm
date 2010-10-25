@@ -1,32 +1,17 @@
 package Padre::Plugin::PerlCritic;
 
+# ABSTRACT: Analyze perl files with Perl::Critic
+
 use 5.008;
 use strict;
 use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our $VERSION = '0.08';
 our @ISA     = 'Padre::Plugin';
 
-=pod
-
-=head1 NAME
-
-Padre::Plugin::PerlCritic - Analyze perl files with Perl::Critic
-
-=head1 SYNOPIS
-
-This is a simple plugin to run Perl::Critic on your source code.
-
-Currently there is no configuration for this plugin, so you have to rely
-on the default .perlcriticrc configuration. See Perl::Critic for details.
-
-=cut
-
 sub padre_interfaces {
-	'Padre::Plugin' => '0.43',
-	'Padre::Config' => '0.54',
+	'Padre::Plugin' => '0.47',
 }
 
 sub plugin_name {
@@ -74,9 +59,9 @@ sub critic {
 	$output->clear;
 	$main->show_output(1);
 	if ( @params ) {
-		$output->AppendText("Perl\::Critic running with project-specific configuration $config_perlcritic\n");
+		$output->AppendText(sprintf(Wx::gettext('Perl::Critic running with project-specific configuration %s'), $config_perlcritic) . "\n");
 	} else {
-		$output->AppendText("Perl\::Critic running with default or user configuration\n");
+		$output->AppendText(Wx::gettext("Perl\::Critic running with default or user configuration") . "\n");
 	}
 
 	# Hand off to Perl::Critic
@@ -89,7 +74,7 @@ sub critic {
 		$output->AppendText(join '', @violations);
 	} else {
 		$output->AppendText(
-			Wx::gettext("Perl\::Critic found nothing to say about this code\n")
+			Wx::gettext('Perl::Critic found nothing to say about this code') . "\n"
 		);
 	}
 
@@ -100,17 +85,9 @@ sub critic {
 
 __END__
 
-=pod
+=head1 SYNOPSIS
 
-=head1 AUTHOR
+This is a simple plugin to run Perl::Critic on your source code.
 
-Kaare Rasmussen E<lt>kaare@cpan.orgE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008 by Kaare Rasmussen
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself. 
-
-=cut
+Currently there is no configuration for this plugin, so you have to rely
+on the default .perlcriticrc configuration. See Perl::Critic for details.

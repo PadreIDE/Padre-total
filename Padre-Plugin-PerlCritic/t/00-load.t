@@ -17,6 +17,6 @@ BEGIN {
 
 plan tests => 1;
 
-use_ok('Padre::Plugin::Alarm');
+use_ok('Padre::Plugin::PerlCritic');
 
-diag("Testing Padre::Plugin::Alarm $Padre::Plugin::Alarm::VERSION, Perl $], $^X");
+diag("Testing Padre::Plugin::PerlCritic $Padre::Plugin::PerlCritic::VERSION, Perl $], $^X");
