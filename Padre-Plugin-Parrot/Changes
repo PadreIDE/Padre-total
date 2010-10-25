@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Parrot
 
 {{$NEXT}}
+
+0.28   2010.10.25
 	- Switched to Dist::Zilla (AZAWAWI)
 	- Added compatibility with the latest Padre (AZAWAWI)
 
