@@ -5,7 +5,7 @@
 use strict;
 use warnings;
 
-uuse Test::More;
+use Test::More;
 
 BEGIN {
 	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
