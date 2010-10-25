@@ -49,7 +49,7 @@ The syntax highlighting provided by this module can be enabled on a perl file-ty
 
 =head1 INSTALLATION
 
-This whole plugin is quite experimental. So is the documentation. 
+This whole plugin is quite experimental. So is the documentation.
 I hope the plugin can work with released and installed versions of Parrot as well but
 I have never tried that. Let me outline how I install the dependencies.
 
@@ -84,7 +84,7 @@ Perl 6 files via the Edit/Preferences/Mime-types dialog.
 
 =head2 Adding Cardinal (Ruby) highlighting
 
-In order to support Ruby highlighting one needs to configure the CARDINAL_DIR 
+In order to support Ruby highlighting one needs to configure the CARDINAL_DIR
 environment variable to point to the place where the cardinal.pbc can be located.
 
   $ cd $HOME/work
@@ -106,7 +106,7 @@ Ruby files via the Edit/Preferences/Mime-types dialog.
 =head3 Configure LD_LIBRARY_PATH (also in .bashrc)
 
  $ export LD_LIBRARY_PATH=$PARROT_DIR/blib/lib/
- 
+
 =head3 Build Parrot::Embed
 
   $ cd $PARROT_DIR/ext/Parrot-Embed/
@@ -121,7 +121,7 @@ The test will give a warning like this, but will pass:
  error:imcc:syntax error, unexpected IDENTIFIER
 	in file 'EVAL_2' line 1
 
-Now if you run Padre and enable Padre::Plugin::Parrot 
+Now if you run Padre and enable Padre::Plugin::Parrot
 it will have an embedded Parrot interpreter that can run
 code written in PIR. (See the Plugins/Parrot/Count Characters...)
 menu options.
@@ -186,19 +186,8 @@ Automatically colorize any file type if it does not have a specified token to co
 
 =cut
 
-my $pod = <<'POD';
-
-=head1 Parrot
-
-Some text
-L<$PARROT_DIR/docs/intro.pod>
-
-=cut
-
-POD
-
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.43;
+	return 'Padre::Plugin' => 0.47;
 }
 
 sub plugin_name {
@@ -406,7 +395,7 @@ sub about {
 	$about->SetDescription( "This plugin currently provides a naive syntax highlighting for PASM files\n"
 			. "If you have Parrot compiled on your system it can also provide execution of\n"
 			. "PASM files\n" );
-	$about->SetVersion($VERSION);
+	$about->SetVersion($Padre::Plugin::Parrot::VERSION);
 	Wx::AboutBox($about);
 	return;
 }
@@ -414,13 +403,12 @@ sub about {
 sub show_help {
 	my $main = Padre->ide->wx->main;
 
-	#print "$main->{help}\n";
 	if ( $ENV{PARROT_DIR} ) {
 		my $path = File::Spec->catfile( $ENV{PARROT_DIR}, 'docs' );
 		my $doc = Padre::Document->new;
-		$doc->{original_content} = $pod;
+		# to enable PodWeaver to work
+		$doc->{original_content} = "\n=" . "head1 Parrot\n\nSome text\nL<\$PARROT_DIR/docs/intro.pod>\n=" . 'cut';
 
-		#my $doc = Padre::Document->new( filename => $path );
 		$doc->set_mimetype('application/x-pod');
 		$main->{help}->help($doc);
 	} else {

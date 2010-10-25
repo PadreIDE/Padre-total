@@ -9,7 +9,6 @@ use warnings;
 use Cwd ();
 use Padre::Logger;
 use Padre::Help            ();
-use Padre::DocBrowser::POD ();
 use Padre::Pod2HTML        ();
 use Padre::Util            ();
 
@@ -120,11 +119,6 @@ sub help_render {
 	$html = Padre::Pod2HTML->pod2html($pod);
 	TRACE($html) if DEBUG;
 
-	# Render using perldoc pseudo code package
-	#my $pod      = Padre::DocBrowser::POD->new;
-	#my $doc      = $pod->resolve( $topic, $hints );
-	#my $pod_html = $pod->render($doc);
-	#$html = $pod_html->body if $pod_html;
 	return ( $html, $location || $topic );
 }
 
