@@ -1,5 +1,7 @@
 package Padre::Document::PIR;
 
+# ABSTRACT: A PIR Document
+
 use 5.008;
 use strict;
 use warnings;
@@ -11,7 +13,6 @@ use Padre::Document ();
 use Padre::Util     ();
 use Padre::Constant;
 
-our $VERSION = '0.27';
 our @ISA     = 'Padre::Document';
 
 # Naive way to parse and colorize pir files
@@ -97,22 +98,3 @@ sub get_help_provider {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-Padre::Plugin::Document::PIR - Padre PIR Document
-
-=head1 AUTHOR
-
-Gabor Szabo L<http://szabgab.com/>
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 Padre Developers as in Parrot.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.

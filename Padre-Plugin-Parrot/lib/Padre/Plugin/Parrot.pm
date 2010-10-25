@@ -1,12 +1,12 @@
 package Padre::Plugin::Parrot;
+
+# ABSTRACT: Experimental Padre plugin for Parrot
+
+use 5.008;
 use strict;
 use warnings;
-use 5.008;
-
-our $VERSION = '0.27';
 
 use Padre::Wx ();
-
 use base 'Padre::Plugin';
 
 my $parrot;
@@ -14,8 +14,6 @@ my $parrot;
 # TODO get documentation from parrot/src/ops/*.ops and parrot/docs/pdds/pdd19_pir.pod
 
 =head1 NAME
-
-Padre::Plugin::Parrot - Experimental Padre plugin for Parrot
 
 =head1 SYNOPSIS
 
@@ -445,18 +443,3 @@ sub show_help {
 #  PASM_COMMENT:     0000aa
 #  PASM_POD:         0000ff
 #
-
-__END__
-
-=head1 AUTHOR
-
-Gabor Szabo L<http://szabgab.com/>
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 Padre Developers as in Parrot.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.

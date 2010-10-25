@@ -1,12 +1,13 @@
 package Padre::Document::PASM;
 
+# ABSTRACT: A PASM Document
+
 use 5.008;
 use strict;
 use warnings;
 use Padre::Document ();
 use Padre::Util     ();
 
-our $VERSION = '0.27';
 our @ISA     = 'Padre::Document';
 
 # Slightly less naive way to parse and colorize pasm files
@@ -164,22 +165,3 @@ sub comment_lines_str {
 }
 
 1;
-
-__END__
-
-=head1 NAME
-
-Padre::Plugin::Document::PASM - A PASM Document
-
-=head1 AUTHOR
-
-Gabor Szabo L<http://szabgab.com/>
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 Padre Developers as in Parrot.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.

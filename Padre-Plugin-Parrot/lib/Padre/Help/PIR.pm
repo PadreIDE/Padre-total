@@ -1,5 +1,7 @@
 package Padre::Help::PIR;
 
+# ABSTRACT: PIR Help Provider
+
 use 5.008;
 use strict;
 use warnings;
@@ -11,7 +13,6 @@ use Padre::DocBrowser::POD ();
 use Padre::Pod2HTML        ();
 use Padre::Util            ();
 
-our $VERSION = '0.27';
 our @ISA     = 'Padre::Help';
 
 #
@@ -139,23 +140,6 @@ sub help_list {
 
 __END__
 
-=head1 NAME
-
-Padre::Help::PIR - PIR Help Provider
-
 =head1 DESCRIPTION
 
 PIR Help index is built here and rendered.
-
-=head1 AUTHOR
-
-Gabor Szabo L<http://szabgab.com/>
-
-Ahmad M. Zawawi C<ahmad.zawawi@gmail.com>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2010 Padre Developers as in Parrot.pm
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
