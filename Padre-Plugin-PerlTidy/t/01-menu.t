@@ -1,7 +1,16 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More;
+
+BEGIN {
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+
+plan tests => 13;
 
 use Padre::Plugin::PerlTidy;
 
