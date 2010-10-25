@@ -9,7 +9,7 @@ package Padre::Plugin::PerlTidy;
 This is a simple plugin to run Perl::Tidy on your source code.
 
 Currently there are no customisable options (since the Padre plugin system
-doesn't support that yet) - however Perl::Tidy will use your normal .perltidyrc 
+doesn't support that yet) - however Perl::Tidy will use your normal .perltidyrc
 file if it exists (see Perl::Tidy documentation).
 
 =cut
