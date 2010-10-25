@@ -22,7 +22,7 @@ use Padre::Current ();
 use Padre::Wx      ();
 use Padre::Plugin  ();
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 # This constant is used when storing
 # and restoring the cursor position.
@@ -79,8 +79,8 @@ sub _tidy {
 
 	#Make sure output is visible...
 	$main->show_output(1);
-	my $output     = $main->output;
-	
+	my $output = $main->output;
+
 	my $perltidyrc = $document->project->config->config_perltidy;
 	if ($perltidyrc) {
 		$tidyargs{perltidyrc} = $perltidyrc;
@@ -100,7 +100,7 @@ sub _tidy {
 
 	if ( defined $errorfile ) {
 		my $filename = $document->filename ? $document->filename : $document->get_title;
-		my $width    = length($filename) + 2;
+		my $width = length($filename) + 2;
 		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
 		$output->AppendText("$errorfile\n");
 	}
@@ -210,12 +210,11 @@ sub _export {
 	# Make sure output window is visible...
 	$main->show_output(1);
 	$output = $main->output;
-	
+
 	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
 		$output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
-	}
-	else {
+	} else {
 		$output->AppendText("Perl::Tidy running with default or user configuration\n");
 	}
 

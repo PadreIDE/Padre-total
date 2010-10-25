@@ -4,6 +4,7 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
     - Switched to Dist::Zilla (AZAWAWI)
     - Fixed t/00-load.t to work under no DISPLAY (AZAWAWI)
     - Fix the uninitialized variable warning when tidying an unsaved tab (AZAWAWI)
+    - Updated Arabic translation (AZAWAWI)
 
 0.12  Tue Oct 12 2010
     - Fix duplicate "my $output" call
