@@ -8,10 +8,10 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',
+	'Padre::Plugin' => '0.47',;
 }
 
 sub plugin_name {
@@ -23,7 +23,7 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('Perl::Critic Current Document') => sub {
 			$self->critic(@_);
-		}
+			}
 	];
 }
 
@@ -49,7 +49,8 @@ sub critic {
 	my $project           = $document->project;
 	my $config            = $project->config;
 	my $config_perlcritic = $config->config_perlcritic;
-	my @params            = $config_perlcritic
+	my @params =
+		$config_perlcritic
 		? ( -profile => $config_perlcritic )
 		: ();
 
@@ -58,24 +59,24 @@ sub critic {
 	my $output = $main->output;
 	$output->clear;
 	$main->show_output(1);
-	if ( @params ) {
-		$output->AppendText(sprintf(Wx::gettext('Perl::Critic running with project-specific configuration %s'), $config_perlcritic) . "\n");
+	if (@params) {
+		$output->AppendText(
+			sprintf( Wx::gettext('Perl::Critic running with project-specific configuration %s'), $config_perlcritic )
+				. "\n" );
 	} else {
-		$output->AppendText(Wx::gettext("Perl\::Critic running with default or user configuration") . "\n");
+		$output->AppendText( Wx::gettext("Perl\::Critic running with default or user configuration") . "\n" );
 	}
 
 	# Hand off to Perl::Critic
 	require Perl::Critic;
-	my $critic     = Perl::Critic->new( @params );
+	my $critic     = Perl::Critic->new(@params);
 	my @violations = $critic->critique( \$text );
 
 	# Write the results to the Output window
-	if ( @violations ) {
-		$output->AppendText(join '', @violations);
+	if (@violations) {
+		$output->AppendText( join '', @violations );
 	} else {
-		$output->AppendText(
-			Wx::gettext('Perl::Critic found nothing to say about this code') . "\n"
-		);
+		$output->AppendText( Wx::gettext('Perl::Critic found nothing to say about this code') . "\n" );
 	}
 
 	return;

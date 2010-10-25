@@ -3,6 +3,8 @@ Revision history for Perl extension Padre-Plugin-PerlCritic.
 {{$NEXT}}
     - Switched to Dist::Zilla (AZAWAWI)
     - Fixed t/00-load.t to work under no DISPLAY (AZAWAWI)
+    - Added Italian translation (SBLADIN)
+    - Updated Arabic translation (AZAWAWI)
 
 0.08 Tue Jul 27 2010
     - Turkish translation updated (BURAK)
