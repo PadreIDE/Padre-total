@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-latex\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-18 18:16+0200\n"
+"POT-Creation-Date: 2010-10-26 16:00+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -11,23 +11,31 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
 
-#: lib/Padre/Plugin/LaTeX.pm:27
+#: lib/Padre/Plugin/LaTeX.pm:12
+msgid "LaTeX"
+msgstr "برنامج LaTeX"
+
+#: lib/Padre/Plugin/LaTeX.pm:26
 msgid "About"
 msgstr "عن"
 
-#: lib/Padre/Plugin/LaTeX.pm:28
+#: lib/Padre/Plugin/LaTeX.pm:27
 msgid "Create/Update PDF"
 msgstr "انشاء أو تحديث PDF"
 
-#: lib/Padre/Plugin/LaTeX.pm:29
+#: lib/Padre/Plugin/LaTeX.pm:28
 msgid "View PDF"
 msgstr "عرض PDF"
 
-#: lib/Padre/Plugin/LaTeX.pm:30
+#: lib/Padre/Plugin/LaTeX.pm:29
 msgid "Run BibTeX"
 msgstr "تشغيل BibTeX"
 
-#: lib/Padre/Plugin/LaTeX.pm:50
+#: lib/Padre/Plugin/LaTeX.pm:46
+msgid "LaTeX Plug-in"
+msgstr "البرنامج المساعد LaTeX"
+
+#: lib/Padre/Plugin/LaTeX.pm:49
 #, perl-format
 msgid ""
 "Copyright 2010 %s\n"
@@ -36,15 +44,15 @@ msgstr ""
 "حقوق الطبع 2010 %s\n"
 "هذا البرنامج المساعد مجاني، تستطيع توزيعه أو تغييره تحت نفس شروط Padre.\n"
 
-#: lib/Padre/Plugin/LaTeX.pm:72
+#: lib/Padre/Plugin/LaTeX.pm:71
 msgid "Creating PDF files is only supported for LaTeX documents."
 msgstr "انشاء ملفات PDF مدعوم فقط في وثائق LATEX."
 
-#: lib/Padre/Plugin/LaTeX.pm:98
+#: lib/Padre/Plugin/LaTeX.pm:97
 msgid "Running BibTeX is only supported for LaTeX documents."
 msgstr "تشغيل BibTeX مدعوم فقط في وثائق LATEX."
 
-#: lib/Padre/Plugin/LaTeX.pm:118
+#: lib/Padre/Plugin/LaTeX.pm:117
 msgid "Viewing PDF files is only supported for LaTeX documents."
 msgstr "عرض PDF مدعوم فقط في وثائق LATEX."
 

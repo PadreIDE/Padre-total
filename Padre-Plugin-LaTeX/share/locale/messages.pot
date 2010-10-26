@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-18 18:16+0200\n"
+"POT-Creation-Date: 2010-10-26 16:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,23 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/LaTeX.pm:27
+#: lib/Padre/Plugin/LaTeX.pm:12
+msgid "LaTeX"
+msgstr ""
+
+#: lib/Padre/Plugin/LaTeX.pm:26
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:28
+#: lib/Padre/Plugin/LaTeX.pm:27
 msgid "Create/Update PDF"
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:29
+#: lib/Padre/Plugin/LaTeX.pm:28
 msgid "View PDF"
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:30
+#: lib/Padre/Plugin/LaTeX.pm:29
 msgid "Run BibTeX"
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:50
+#: lib/Padre/Plugin/LaTeX.pm:46
+msgid "LaTeX Plug-in"
+msgstr ""
+
+#: lib/Padre/Plugin/LaTeX.pm:49
 #, perl-format
 msgid ""
 "Copyright 2010 %s\n"
@@ -40,14 +48,14 @@ msgid ""
 "under the same terms as Padre.\n"
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:72
+#: lib/Padre/Plugin/LaTeX.pm:71
 msgid "Creating PDF files is only supported for LaTeX documents."
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:98
+#: lib/Padre/Plugin/LaTeX.pm:97
 msgid "Running BibTeX is only supported for LaTeX documents."
 msgstr ""
 
-#: lib/Padre/Plugin/LaTeX.pm:118
+#: lib/Padre/Plugin/LaTeX.pm:117
 msgid "Viewing PDF files is only supported for LaTeX documents."
 msgstr ""
