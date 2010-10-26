@@ -1,5 +1,4 @@
 TÒDO
- - proper gettext support
  - add icon for the plugin manager
  - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
  - auto completion (keywords, commands/symbols, labels, BibTeX entries)
