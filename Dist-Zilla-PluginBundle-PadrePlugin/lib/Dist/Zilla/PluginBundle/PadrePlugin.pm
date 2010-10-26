@@ -11,6 +11,7 @@ use Dist::Zilla::PluginBundle::Basic;
 use Dist::Zilla::Plugin::CheckChangeLog;
 use Dist::Zilla::Plugin::CheckChangesTests;
 use Dist::Zilla::Plugin::CompileTests;
+use Dist::Zilla::Plugin::LoadTests;
 use Dist::Zilla::Plugin::EOLTests;
 use Dist::Zilla::Plugin::PodWeaver;
 use Dist::Zilla::Plugin::PkgVersion;
@@ -52,6 +53,7 @@ sub bundle_config {
 		[ CheckChangeLog    => {} ],
 		[ CheckChangesTests => {} ],
 		[ CompileTests      => {} ],
+		[ LoadTests         => { 'needs_display' => '1' } ],
 		[ EOLTests          => {} ],
 		[ PodWeaver         => {} ],
 		[ PkgVersion        => {} ],
@@ -83,6 +85,7 @@ __END__
 Putting the following in your Padre::Plugin::PluginName dist.ini file:
 
 	[@PadrePlugin]
+	module = Your::Module::Name
 
 is equivalent to:
 
@@ -93,6 +96,7 @@ is equivalent to:
 	[CheckChangeLog]
 	[CheckChangesTests]
 	[CompileTests]
+	[LoadTests]
 	[EOLTests]
 	[PodWeaver]
 	[PkgVersion]
