@@ -1,10 +1,10 @@
 package Padre::Plugin::HTMLExport;
 
+# ABSTRACT: Export highlighted HTML in Padre
+
 use 5.008005;
 use warnings;
 use strict;
-
-our $VERSION = '0.05';
 
 use File::Basename ();
 
@@ -169,10 +169,6 @@ sub configure_color {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::HTMLExport - export highlighted HTML in Padre
-
 =head1 SYNOPSIS
 
 	$>padre
@@ -183,16 +179,5 @@ Padre::Plugin::HTMLExport - export highlighted HTML in Padre
 =head1 DESCRIPTION
 
 Export a HTML page by using L<Syntax::Highlight::Engine::Kate>
-
-=head1 AUTHOR
-
-Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut
