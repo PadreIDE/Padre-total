@@ -1,0 +1,6 @@
+Revision history for Dist::Zilla::Plugin::CompileTests
+
+{{$NEXT}}
+ - original release
+ - basic compilation tests
+
