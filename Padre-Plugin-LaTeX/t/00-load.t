@@ -17,6 +17,6 @@ BEGIN {
 
 plan tests => 1;
 
-use_ok('Padre::Plugin::Latex');
+use_ok('Padre::Plugin::LaTeX');
 
-diag("Testing Padre::Plugin::Latex $Padre::Plugin::Latex::VERSION, Perl $], $^X");
+diag("Testing Padre::Plugin::LaTeX $Padre::Plugin::LaTeX::VERSION, Perl $], $^X");
