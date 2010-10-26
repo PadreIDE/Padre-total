@@ -5,12 +5,12 @@ use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
-use Padre::Wx ();
+use Padre::Wx       ();
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 sub get_command {
-	my $self     = shift;
+	my $self = shift;
 
 	my $filename = $self->filename;
 	Wx::LaunchDefaultBrowser($filename);
