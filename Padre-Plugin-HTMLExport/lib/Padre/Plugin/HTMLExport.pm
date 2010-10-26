@@ -45,9 +45,9 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	my $self = shift;
 	return (
-		'Export Colorful HTML' => [
-			'Export HTML...',  sub { $self->export_html },
-			'Configure Color', sub { $self->configure_color },
+		Wx::gettext('Export Colorful HTML') => [
+			Wx::gettext('Export HTML...'),  sub { $self->export_html },
+			Wx::gettext('Configure Color'), sub { $self->configure_color },
 		]
 	);
 }
