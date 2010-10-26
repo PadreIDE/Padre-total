@@ -1,9 +1,12 @@
 Revision history for Padre-Plugin-HTMLExport
 
-0.06	?
-	added translation files (ZENOG)
-	minor message changes (ZENOG)
-	for Padre 0.43 and later (ZENOG)
+{{$NEXT}}
+        Added translation files (ZENOG)
+        Added German translation (ZENOG)
+        Added Italian translation (SBLADIN)
+        Added Arabic translation (AZAWAWI)
+        Minor message changes (ZENOG)
+        Compatiblity with latest Padre (ZENOG, AZAWAWI)
 
 0.05    2009.05.31
         removed taint mode for tests, leading to build errors (jquelin)
