@@ -1,49 +1,44 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
- - Compatibility with the latest Padre (ZENOG, AZAWAWI)
- - Added German translation (ZENOG)
- - Added Japanese translation (ISHIGAKI)
- - Fixed translations in share directory and removed old one(AZAWAWI)
- - Switched to Dist::Zilla (AZAWAWI)
+        - Compatibility with the latest Padre (ZENOG, AZAWAWI)
+        - Added German translation (ZENOG)
+        - Added Japanese translation (ISHIGAKI)
+        - Fixed translations in share directory and removed old one(AZAWAWI)
+        - Switched to Dist::Zilla (AZAWAWI)
 
-1.1.2 Sat Jun 20 09:00:34 CEST 2009
- - Add Chinese (Traditional) translation (bluet)
- - spanish translation added (brunov)
- - remove .po files from MANIFEST.SKIP, they are needed for Debian
-   since they are the source for the .mo files (ryan52)
- - if the user selects one of the suggestions, replace it (ryan52)
+1.1.2 2009.6.20
+        - Add Chinese (Traditional) translation (bluet)
+        - spanish translation added (brunov)
+        - remove .po files from MANIFEST.SKIP, they are needed for Debian
+          since they are the source for the .mo files (ryan52)
+        - if the user selects one of the suggestions, replace it (ryan52)
 
-1.1.1 Fri May  8 17:37:58 CEST 2009
- - work-around for unicode texts (therek)
+1.1.1 2009.5.8
+        - work-around for unicode texts (therek)
 
-1.1.0 Wed Apr 29 18:03:45 CEST 2009
- - possibility to choose dictionary language
-   (but wx::stc has unicode bugs which prevents this feature to be
-   really useful on non-ascii texts)   
- - plugin i18n-ed, ready to accept translations
- - arabic translation added (azawawi)
- - brazilian portuguese translation added (garu)
- - french translation added
- - polish translation added (therek)
+1.1.0 2009.4.29
+        - possibility to choose dictionary language
+          (but wx::stc has unicode bugs which prevents this feature to be
+          really useful on non-ascii texts)   
+        - plugin i18n-ed, ready to accept translations
+        - arabic translation added (azawawi)
+        - brazilian portuguese translation added (garu)
+        - french translation added
+        - polish translation added (therek)
 
-**
+1.0.0 2009.4.22
+        - using a dedicated spellcheck dialog
+        - on error, possibility to replace, replace all, ignore, ignore all
 
-1.0.0 Wed Apr 22 17:51:37 CEST 2009
- - using a dedicated spellcheck dialog
- - on error, possibility to replace, replace all, ignore, ignore all
+0.03 2009.4.5
+        - providing an icon for padre's plugin manager
 
-**
+0.02 2009.4.5
+        - adding newline between wrongly spelled words
+        - changing maintainer
+        - moving away from module::install
+        - cleaning meta information
 
-0.03 Sun Apr  5 17:28:58 CEST 2009
- - providing an icon for padre's plugin manager
-
-0.02 Sun Apr  5 16:41:42 CEST 2009
- - adding newline between wrongly spelled words
- - changing maintainer
- - moving away from module::install
- - cleaning meta information
-
-0.01 Sun Feb  1 16:03:22 CEST 2009
- - First version, released on an unsuspecting world.
-
+0.01 2009.02.01
+        - First version, released on an unsuspecting world.

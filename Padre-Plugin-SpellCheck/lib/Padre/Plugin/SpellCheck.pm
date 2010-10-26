@@ -5,9 +5,9 @@ package Padre::Plugin::SpellCheck;
 use warnings;
 use strict;
 
-use File::Basename        qw{ fileparse };
+use File::Basename qw{ fileparse };
 use File::Spec::Functions qw{ catdir catfile };
-use Module::Util          qw{ find_installed };
+use Module::Util qw{ find_installed };
 
 use base 'Padre::Plugin';
 use Padre::Current;
@@ -23,83 +23,83 @@ sub plugin_name { Wx::gettext('Spell check') }
 
 # plugin icon
 sub plugin_icon {
-    my $self = shift;
+	my $self = shift;
 
-    # find resource path
-    my $pkgpath = find_installed(__PACKAGE__);
-    my (undef, $dirname, undef) = fileparse($pkgpath);
-    my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png');
+	# find resource path
+	my $pkgpath = find_installed(__PACKAGE__);
+	my ( undef, $dirname, undef ) = fileparse($pkgpath);
+	my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
 
-    # create and return icon
-    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 # padre interfaces
 sub padre_interfaces {
-    'Padre::Plugin' => '0.43',
+	'Padre::Plugin' => '0.43',;
 }
 
 # plugin menu.
 sub menu_plugins_simple {
-    Wx::gettext('Spell check') => [
-        Wx::gettext("Check spelling\tF7") => 'spell_check',
-        Wx::gettext("Preferences")        => 'spell_preferences',
-    ];
+	Wx::gettext('Spell check') => [
+		Wx::gettext("Check spelling\tF7") => 'spell_check',
+		Wx::gettext("Preferences")        => 'spell_preferences',
+	];
 }
 
 
 # -- public methods
 
 sub config {
-    my ($self) = @_;
-    my $config = {
-        dictionary => 'en_US',
-    };
-    return $self->config_read || $config;
+	my ($self) = @_;
+	my $config = {
+		dictionary => 'en_US',
+	};
+	return $self->config_read || $config;
 }
 
 sub spell_check {
-    my ($self) = @_;
-    my $main   = Padre::Current->main;
+	my ($self) = @_;
+	my $main = Padre::Current->main;
 
-    # TODO: maybe grey out the menu option if
-    # no file is opened?
-    unless ($main->current->document) {
-        $main->message( Wx::gettext( 'No document opened.' ), 'Padre' );
-	    return;
-    }
-    
-    my $engine = Padre::Plugin::SpellCheck::Engine->new($self);
+	# TODO: maybe grey out the menu option if
+	# no file is opened?
+	unless ( $main->current->document ) {
+		$main->message( Wx::gettext('No document opened.'), 'Padre' );
+		return;
+	}
 
-    # fetch text to check
-    my $selection = Padre::Current->text;
-    my $wholetext = Padre::Current->document->text_get;
-    my $text   = $selection || $wholetext;
-    my $offset = $selection ? Padre::Current->editor->GetSelectionStart : 0;
+	my $engine = Padre::Plugin::SpellCheck::Engine->new($self);
 
-    # try to find a mistake
-    my ($word, $pos) = $engine->check( $text );
+	# fetch text to check
+	my $selection = Padre::Current->text;
+	my $wholetext = Padre::Current->document->text_get;
+	my $text      = $selection || $wholetext;
+	my $offset    = $selection ? Padre::Current->editor->GetSelectionStart : 0;
 
-    # no mistake means we're done
-    if ( not defined $word ) {
-        $main->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
-        return;
-    }
+	# try to find a mistake
+	my ( $word, $pos ) = $engine->check($text);
 
-    my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
-        text   => $text,
-        error  => [ $word, $pos ],
-        engine => $engine,
-        offset => $offset,
-        plugin => $self,
-    );
-    $dialog->ShowModal;
+	# no mistake means we're done
+	if ( not defined $word ) {
+		$main->message( Wx::gettext('Spell check finished.'), 'Padre' );
+		return;
+	}
+
+	my $dialog = Padre::Plugin::SpellCheck::Dialog->new(
+		text   => $text,
+		error  => [ $word, $pos ],
+		engine => $engine,
+		offset => $offset,
+		plugin => $self,
+	);
+	$dialog->ShowModal;
 }
 
 sub spell_preferences {
-    my ($self) = @_;
-    my $prefs  = Padre::Plugin::SpellCheck::Preferences->new($self);
-    $prefs->Show;
+	my ($self) = @_;
+	my $prefs = Padre::Plugin::SpellCheck::Preferences->new($self);
+	$prefs->Show;
 }
 
 
