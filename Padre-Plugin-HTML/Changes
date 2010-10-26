@@ -1,5 +1,10 @@
 Revision history for Padre-Plugin-HTML
 
+{{$NEXT}}
+        Switched to Dist::Zilla (AZAWAWI)
+        Added compatibility with the latest Padre (AZAWAWI)
+        Added Arabic translation (AZAWAWI)
+
 0.10    2010.08.25
         compatibility with latest Padre (CHORNY)
         link to 'HTML 4.01 Specification' (CHORNY)

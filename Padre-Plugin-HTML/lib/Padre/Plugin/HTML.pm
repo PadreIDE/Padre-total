@@ -1,16 +1,16 @@
 package Padre::Plugin::HTML;
 
+# ABSTRACT: L<Padre> and HTML
+
 use warnings;
 use strict;
-
-our $VERSION = '0.10';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.43,
-	'Padre::Document' => 0.21,
+	'Padre::Plugin'   => 0.47,
+	'Padre::Document' => 0.47,
 }
 
 sub registered_documents {
@@ -19,12 +19,12 @@ sub registered_documents {
 
 sub menu_plugins_simple {
 	my $self = shift;
-	return ('HTML' => [
-		'Tidy HTML', sub { $self->tidy_html },
-		'HTML Lint', sub { $self->html_lint },
-		'Validate HTML',  sub { $self->validate_html },
-		'Docs'=> [
-			'HTML 4.01 Specification', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/html401/'); },
+	return (Wx::gettext('HTML') => [
+		Wx::gettext('Tidy HTML'), sub { $self->tidy_html },
+		Wx::gettext('HTML Lint'), sub { $self->html_lint },
+		Wx::gettext('Validate HTML'),  sub { $self->validate_html },
+		Wx::gettext('Docs')=> [
+			Wx::gettext('HTML 4.01 Specification'), sub { Padre::Wx::launch_browser('http://www.w3.org/TR/html401/'); },
 		],
 	]);
 }
@@ -32,14 +32,14 @@ sub menu_plugins_simple {
 sub validate_html {
 	my ( $self ) = @_;
 	my $main = $self->main;
-	
+
 	my $doc  = $main->current->document;
 	my $code = $doc->text_get;
-	
+
 	unless ( $code and length($code) ) {
 		Wx::MessageBox( 'No Code', 'Error', Wx::wxOK | Wx::wxCENTRE, $main );
 	}
-	
+
 	require WebService::Validator::HTML::W3C;
 	my $v = WebService::Validator::HTML::W3C->new(
 		detailed => 1
@@ -64,7 +64,7 @@ sub validate_html {
 sub _output {
 	my ( $self, $text ) = @_;
 	my $main = $self->main;
-	
+
 	$main->show_output(1);
 	$main->output->clear;
 	$main->output->AppendText($text);
@@ -73,14 +73,14 @@ sub _output {
 sub tidy_html {
 	my ( $self ) = @_;
 	my $main = $self->main;
-	
+
 	my $src = $main->current->text;
 	my $doc = $main->current->document;
 	return unless $doc;
 	my $code = ( $src ) ? $src : $doc->text_get;
-	
+
 	return unless ( defined $code and length($code) );
-	
+
 	require HTML::Tidy;
 	my $tidy = HTML::Tidy->new;
 
@@ -90,10 +90,10 @@ sub tidy_html {
     for my $message ( $tidy->messages ) {
         $text .= $message->as_string . "\n";
     }
-    
+
     $text = 'OK' unless ( length($text) );
 	$self->_output($text);
-	
+
 	if ( $src ) {
 		my $editor = $main->current->editor;
 	    $editor->ReplaceSelection( $cleaned_code );
@@ -105,14 +105,14 @@ sub tidy_html {
 sub html_lint {
 	my ( $self ) = @_;
 	my $main = $self->main;
-	
+
 	my $src = $main->current->text;
 	my $doc = $main->current->document;
 	return unless $doc;
 	my $code = ( $src ) ? $src : $doc->text_get;
-	
+
 	return unless ( defined $code and length($code) );
-	
+
 	require HTML::Lint;
 	my $lint = HTML::Lint->new;
 
@@ -124,17 +124,13 @@ sub html_lint {
 	foreach my $error ( $lint->errors ) {
 		$text .= $error->as_string . "\n";
 	}
-    
+
 	$text = 'OK' unless ( length($text) );
 	$self->_output($text);
 }
 
 1;
 __END__
-
-=head1 NAME
-
-Padre::Plugin::HTML - L<Padre> and HTML
 
 =head1 Validate HTML
 
@@ -147,16 +143,5 @@ use L<HTML::Tidy> to tidy HTML
 =head1 HTML Lint
 
 use L<HTML::Lint> to ?????
-
-=head1 AUTHOR
-
-Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut

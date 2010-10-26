@@ -7,13 +7,12 @@ use Carp            ();
 use Padre::Document ();
 use Padre::Wx ();
 
-our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
 
 sub get_command {
 	my $self     = shift;
 
-	my $filename = $self->filename;	
+	my $filename = $self->filename;
 	Wx::LaunchDefaultBrowser($filename);
 }
 
