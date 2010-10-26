@@ -1,7 +1,9 @@
 Revision history for Padre-Plugin-LaTeX
 
-0.03	
+{{$NEXT}}
+        Switched to Dist::Zilla (AZAWAWI)
         Added Arabic translation (AZAWAWI)
+        Compatibility with latest Padre (AZAWAWI)
 
 0.02    2010-07-23
         Compatibility to newer Padre versions

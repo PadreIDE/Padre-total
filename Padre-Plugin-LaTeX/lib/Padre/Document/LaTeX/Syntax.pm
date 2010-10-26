@@ -1,8 +1,10 @@
 package Padre::Document::LaTeX::Syntax;
+
+# ABSTRACT: Latex document syntax-checking in the background
+
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
 our @ISA     = 'Padre::Task::Syntax';
 
 use Padre::Wx;
@@ -45,13 +47,7 @@ sub syntax {
 
 __END__
 
-
-
 =pod
-
-=head1 NAME
-
-Padre::Document::XML::Syntax - XML document syntax-checking in the background
 
 =head1 SYNOPSIS
 
@@ -77,16 +73,5 @@ Please read its documentation!
 This class inherits from L<Padre::Task::Syntax> which
 in turn is a L<Padre::Task> and its instances can be scheduled
 using L<Padre::TaskManager>.
-
-=head1 AUTHOR
-
-Zeno Gantner, C<< <ZENOG at cpan.org> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2010 Zeno Gantner
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
 
 =cut

@@ -1,12 +1,13 @@
 package Padre::Document::LaTeX;
 
+# ABSTRACT: Latex support document for Padre
+
 use 5.008;
 use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
 
-our $VERSION = '0.03';
 our @ISA     = 'Padre::Document';
 
 sub task_functions {

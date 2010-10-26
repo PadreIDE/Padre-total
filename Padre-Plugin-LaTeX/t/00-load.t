@@ -1,9 +1,22 @@
-#!perl
+#!/usr/bin/perl
 
-use Test::More tests => 1;
+#use 5.008;
+use strict;
+
+# taken straight from the Padre test
+# 01-load.t
+
+use Test::More;
 
 BEGIN {
-	use_ok( 'Padre::Plugin::LaTeX' );
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
 }
 
-diag( "Testing Padre::Plugin::LaTeX $Padre::Plugin::LaTeX::VERSION, Perl $], $^X" );
+plan tests => 1;
+
+use_ok('Padre::Plugin::Latex');
+
+diag("Testing Padre::Plugin::Latex $Padre::Plugin::Latex::VERSION, Perl $], $^X");

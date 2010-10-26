@@ -1,9 +1,9 @@
 package Padre::Plugin::LaTeX;
 
+# ABSTRACT: L<Padre> and LaTeX
+
 use warnings;
 use strict;
-
-our $VERSION = '0.03';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
@@ -13,8 +13,8 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.43,
-	'Padre::Document' => 0.43,
+	'Padre::Plugin'   => 0.47,
+	'Padre::Document' => 0.47,
 }
 
 sub registered_documents {
@@ -161,10 +161,6 @@ sub _output {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::LaTeX - L<Padre> and LaTeX
-
 =head1 DESCRIPTION
 
 LaTeX support for Padre, the Perl Application Development and Refactoring
@@ -174,16 +170,5 @@ Syntax highlighting for LaTeX is supported by Padre out of the box.
 This plug-in adds some more features to deal with LaTeX files.
 If you also want syntax highlighting for BibTeX files, try the Kate
 plugin.
-
-=head1 AUTHOR
-
-Zeno Gantner, C<< <ZENOG at cpan.org> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright (C) 2010 Zeno Gantner
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl 5.10.0 itself.
 
 =cut
