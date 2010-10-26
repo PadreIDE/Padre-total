@@ -8,7 +8,7 @@ use warnings;
 use Carp            ();
 use Padre::Document ();
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 sub task_functions {
 	return '';

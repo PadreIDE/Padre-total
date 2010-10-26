@@ -5,7 +5,7 @@ package Padre::Document::LaTeX::Syntax;
 use strict;
 use warnings;
 
-our @ISA     = 'Padre::Task::Syntax';
+our @ISA = 'Padre::Task::Syntax';
 
 use Padre::Wx;
 
@@ -13,30 +13,31 @@ use Padre::Wx;
 sub syntax {
 	my $self = shift;
 	my $text = shift;
-	
+
 	my $filename = $self->{filename};
 
 	# TODO check for pdflatex
 	my $pdflatex_command = "pdflatex -file-line-error -draftmode -interaction nonstopmode $filename";
-	my $output = `$pdflatex_command`;
-	
+	my $output           = `$pdflatex_command`;
+
 	## 	./camra-uhi.tex:292: Paragraph ended before \begin was complete.
 	my @issues = ();
+
 	# push @issues, { msg => $2, line => $1, severity => Padre::Wx::MarkError, desc => '' };
 
 	LINE:
-	foreach my $line (split /\n/, $output) {
+	foreach my $line ( split /\n/, $output ) {
 		next LINE if not $line =~ /.*:(\d+):\s*(.*)/;
-	
+
 		warn "line: $line\n";
-	
+
 		my %issue = (
 			msg      => $2,
 			line     => $1,
 			severity => Padre::Wx::MarkError,
 			desc     => '',
 		);
-		
+
 		push @issues, \%issue;
 	}
 
