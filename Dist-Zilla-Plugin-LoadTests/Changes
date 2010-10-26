@@ -1,4 +1,6 @@
 Revision history for Dist::Zilla::Plugin::CompileTests
 
 {{$NEXT}}
+
+0.01   2010.10.26
         First version, released on an unsuspecting world. (AZAWAWI)
