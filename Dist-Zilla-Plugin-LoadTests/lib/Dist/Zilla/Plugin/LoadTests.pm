@@ -8,29 +8,30 @@ use warnings;
 
 use Moose;
 extends 'Dist::Zilla::Plugin::InlineFiles';
-with    'Dist::Zilla::Role::FileMunger';
+with 'Dist::Zilla::Role::FileMunger';
 
 
 # -- attributes
 
-has module_name => ( is=>'ro', predicate=>'has_module_name' );
+has module_name => ( is => 'ro', predicate => 'has_module_name' );
 
 # -- public methods
 
 # called by the filemunger role
 sub munge_file {
-    my ($self, $file) = @_;
+	my ( $self, $file ) = @_;
 
-    return unless $file->name eq 't/00-load.t';
+	return unless $file->name eq 't/00-load.t';
 
-    my $module_name = ( $self->has_module_name && $self->module_name )
-        ? ''
-        : '# no fake requested ##';
+	my $module_name =
+		( $self->has_module_name && $self->module_name )
+		? ''
+		: '# no fake requested ##';
 
-    # replace strings in the file
-    my $content = $file->content;
-    $content =~ s/LoadTests_MODULE_NAME/$module_name/;
-    $file->content( $content );
+	# replace strings in the file
+	my $content = $file->content;
+	$content =~ s/LoadTests_MODULE_NAME/$module_name/;
+	$file->content($content);
 }
 
 
