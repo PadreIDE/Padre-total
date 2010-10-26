@@ -1,13 +1,6 @@
-#
-# This file is part of Padre::Plugin::SpellCheck.
-# Copyright (c) 2009 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-#
-
 package Padre::Plugin::SpellCheck;
+
+# ABSTRACT: Check spelling in Padre
 
 use warnings;
 use strict;
@@ -16,20 +9,17 @@ use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catdir catfile };
 use Module::Util          qw{ find_installed };
 
-our $VERSION = '1.1.3';
-
 use base 'Padre::Plugin';
 use Padre::Current;
 use Padre::Plugin::SpellCheck::Dialog;
 use Padre::Plugin::SpellCheck::Engine;
 use Padre::Plugin::SpellCheck::Preferences;
-use Padre::Util           ('_T');
 
 
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
-sub plugin_name { _T('Spell check') }
+sub plugin_name { Wx::gettext('Spell check') }
 
 # plugin icon
 sub plugin_icon {
@@ -51,9 +41,9 @@ sub padre_interfaces {
 
 # plugin menu.
 sub menu_plugins_simple {
-    _T('Spell check') => [
-        _T("Check spelling\tF7") => 'spell_check',
-        _T("Preferences")        => 'spell_preferences',
+    Wx::gettext('Spell check') => [
+        Wx::gettext("Check spelling\tF7") => 'spell_check',
+        Wx::gettext("Preferences")        => 'spell_preferences',
     ];
 }
 
@@ -75,7 +65,7 @@ sub spell_check {
     # TODO: maybe grey out the menu option if
     # no file is opened?
     unless ($main->current->document) {
-        $main->message( _T( 'No document opened.' ), 'Padre' );
+        $main->message( Wx::gettext( 'No document opened.' ), 'Padre' );
 	    return;
     }
     
@@ -92,7 +82,7 @@ sub spell_check {
 
     # no mistake means we're done
     if ( not defined $word ) {
-        $main->message( _T( 'Spell check finished.' ), 'Padre' );
+        $main->message( Wx::gettext( 'Spell check finished.' ), 'Padre' );
         return;
     }
 
@@ -115,12 +105,6 @@ sub spell_preferences {
 
 1;
 __END__
-
-=head1 NAME
-
-Padre::Plugin::SpellCheck - check spelling in Padre
-
-
 
 =head1 SYNOPSIS
 
@@ -231,26 +215,6 @@ L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-SpellCheck>
 
 =back
 
-
 Everything aspell related: L<http://aspell.net>.
-
-
-
-=head1 AUTHOR
-
-Jerome Quelin, C<< <jquelin@cpan.org> >>
-
-Original version from Fayland Lam, C<< <fayland at gmail.com> >>
-
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright (c) 2009 Fayland Lam, all rights reserved.
-
-Copyright (c) 2009 Jerome Quelin, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut

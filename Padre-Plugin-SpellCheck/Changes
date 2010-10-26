@@ -1,8 +1,9 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
- - compatibility with the latest Padre (ZENOG, AZAWAWI)
- - added German translation (ZENOG)
+ - Compatibility with the latest Padre (ZENOG, AZAWAWI)
+ - Added German translation (ZENOG)
+ - Added Japanese translation (ISHIGAKI)
  - Fixed translations in share directory and removed old one(AZAWAWI)
  - Switched to Dist::Zilla (AZAWAWI)
 

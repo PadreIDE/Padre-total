@@ -1,18 +1,9 @@
-#
-# This file is part of Padre::Plugin::SpellCheck.
-# Copyright (c) 2009 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-#
-
 package Padre::Plugin::SpellCheck::Dialog;
+
+# ABSTRACT: Spell check dialog for Padre 
 
 use warnings;
 use strict;
-
-our $VERSION = '1.1.2';
 
 use Class::XSAccessor accessors => {
     _autoreplace => '_autoreplace',  # list of automatic replaces
@@ -395,13 +386,6 @@ sub _update {
 
 __END__
 
-
-=head1 NAME
-
-Padre::Plugin::SpellCheck::Dialog - dialog for padre spell check
-
-
-
 =head1 DESCRIPTION
 
 This module implements the dialog window that will be used to interact
@@ -456,20 +440,5 @@ The $engine being used (a C<Padre::Plugin::SpellCheck::Engine> object).
 
 For all related information (bug reporting, source code repository,
 etc.), refer to L<Padre::Plugin::SpellCheck>.
-
-
-
-=head1 AUTHOR
-
-Jerome Quelin, C<< <jquelin@cpan.org> >>
-
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright (c) 2009 Jerome Quelin, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut

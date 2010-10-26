@@ -1,18 +1,9 @@
-#
-# This file is part of Padre::Plugin::SpellCheck.
-# Copyright (c) 2009 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-#
-
 package Padre::Plugin::SpellCheck::Engine;
+
+# ABSTRACT: Spell check engine for the plugin
 
 use warnings;
 use strict;
-
-our $VERSION = '1.1.2';
 
 use Class::XSAccessor accessors => {
     _ignore    => '_ignore',    # list of words to ignore
@@ -131,16 +122,6 @@ sub _count_utf_chars {
 
 __END__
 
-=head1 NAME
-
-Padre::Plugin::SpellCheck::Engine - spell engine for plugin
-
-
-
-=head1 DESCRIPTION
-
-
-
 =head1 PUBLIC METHODS
 
 =head2 Constructor
@@ -189,26 +170,8 @@ Return suggestions for C<$word>.
 
 =back
 
-
-
 =head1 SEE ALSO
 
 For all related information (bug reporting, source code repository,
 etc.), refer to L<Padre::Plugin::SpellCheck>.
-
-
-
-=head1 AUTHOR
-
-Jerome Quelin, C<< <jquelin@cpan.org> >>
-
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright (c) 2009 Jerome Quelin, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
 =cut
