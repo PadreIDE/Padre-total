@@ -13,7 +13,7 @@ with 'Dist::Zilla::Role::FileMunger';
 
 # -- attributes
 
-has module_name => ( is => 'ro', predicate => 'has_module_name' );
+has module => ( is => 'ro', predicate => 'has_module' );
 
 # -- public methods
 
@@ -23,14 +23,19 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
-	my $module_name =
-		( $self->has_module_name && $self->module_name )
-		? ''
-		: '# no fake requested ##';
+	
+	my ($module, $ok, $fail) = ('', '## ', '');
+	if( $self->has_module && $self->module ) {
+		$module = $self->module;
+		$ok = '';
+		$fail = '## ';
+	}
 
 	# replace strings in the file
 	my $content = $file->content;
-	$content =~ s/LoadTests_MODULE_NAME/$module_name/;
+	$content =~ s/LOADTESTS_MODULE/$module/g;
+	$content =~ s/LOADTESTS_OK/$ok/g;
+	$content =~ s/LOADTESTS_FAIL/$fail/g;
 	$file->content($content);
 }
 
@@ -44,7 +49,7 @@ __PACKAGE__->meta->make_immutable;
 In your dist.ini:
 
     [LoadTests]
-    module_name      = Your::Module
+    module = Your::Module
 
 =head1 DESCRIPTION
 
@@ -55,7 +60,7 @@ the following files:
 
 =item * t/00-load.t - a standard test to check whether your module loads or not
 
-This test will find check the module specified by C<module_name> and try to load it.
+This test will find check the module specified by C<module> and try to load it.
 
 =back
 
@@ -64,9 +69,15 @@ This plugin accepts the following options:
 
 =over 4
 
-=item * module_name: a string of the module to check whether it loads or not. No default.
+=item * module: a string of the module to check whether it loads or not. 
+Required otherwise it will fail.
 
 =back
+
+=head1 SEE ALSO
+
+L<Test::NeedsDisplay>
+L<Dist::Zilla>
 
 =cut
 
@@ -75,12 +86,13 @@ ___[ t/00-load.t ]___
 #!perl
 
 use strict;
+use warnings;
 
-use Test::More;
 use Test::NeedsDisplay;
+use Test::More;
 
 plan tests => 1;
 
-use_ok('LOAD_TESTS_MODULE_NAME');
-
-diag("Testing LOAD_TESTS_MODULE_NAME $LOAD_TESTS_MODULE_NAME::VERSION, Perl $], $^X");
+LOADTESTS_FAIL fail 'No module is specified!';
+LOADTESTS_OK   use_ok('LOADTESTS_MODULE');
+LOADTESTS_OK   diag("Testing $LOADTESTS_MODULE::VERSION, Perl $], $^X");
