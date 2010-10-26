@@ -13,7 +13,7 @@ with 'Dist::Zilla::Role::FileMunger';
 
 # -- attributes
 
-has module => ( is => 'ro', predicate => 'has_module' );
+has module        => ( is => 'ro', predicate => 'has_module' );
 has needs_display => ( is => 'ro', predicate => 'has_needs_display' );
 
 # -- public methods
@@ -24,14 +24,15 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
-	my ($module, $ok, $fail) = ('', '## ', '');
-	if( $self->has_module && $self->module ) {
+	my ( $module, $ok, $fail ) = ( '', '## ', '' );
+	if ( $self->has_module && $self->module ) {
 		$module = $self->module;
-		$ok = '';
-		$fail = '## ';
+		$ok     = '';
+		$fail   = '## ';
 	}
-	
-	my $needs_display = $self->has_needs_display && $self->needs_display
+
+	my $needs_display =
+		$self->has_needs_display && $self->needs_display
 		? q{use Test::NeedsDisplay ':skip_all'}
 		: '';
 
