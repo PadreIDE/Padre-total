@@ -1,6 +1,9 @@
-Revision history for Dist::Zilla::Plugin::CompileTests
+Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+        It works now :)
+        'module_name' option is now 'module'
+        Added support for no_display option using Test::NeedsDisplay
 
 0.01   2010.10.26
         First version, released on an unsuspecting world. (AZAWAWI)
