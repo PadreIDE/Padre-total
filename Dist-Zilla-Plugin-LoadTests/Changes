@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+
+0.02   2010.10.26
         It works now as expected (AZAWAWI)
         Renamed 'module_name' option to 'module' (AZAWAWI)
         Added the 'needs_display' option uses Test::NeedsDisplay
