@@ -66,7 +66,7 @@ the following files:
 
 =item * t/00-load.t - a standard test to check whether your module loads or not
 
-This test will find check the module specified by C<module> and try to load it. 
+This test will find check the module specified by C<module> and try to load it.
 The C<needs_display> is useful for GUI tests that need a $ENV{DISPLAY} to work.
 
 =back
@@ -76,7 +76,7 @@ This plugin accepts the following options:
 
 =over 4
 
-=item * module (REQUIRED): a string of the module to check whether it loads or not. 
+=item * module (REQUIRED): a string of the module to check whether it loads or not.
 otherwise it will fail.
 
 =item * needs_display (OPTIONAL): a boolean to ensure that tests needing a display
