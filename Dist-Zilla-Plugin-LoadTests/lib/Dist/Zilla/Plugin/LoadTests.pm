@@ -14,6 +14,7 @@ with 'Dist::Zilla::Role::FileMunger';
 # -- attributes
 
 has module => ( is => 'ro', predicate => 'has_module' );
+has needs_display => ( is => 'ro', predicate => 'has_needs_display' );
 
 # -- public methods
 
@@ -23,19 +24,23 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
-	
 	my ($module, $ok, $fail) = ('', '## ', '');
 	if( $self->has_module && $self->module ) {
 		$module = $self->module;
 		$ok = '';
 		$fail = '## ';
 	}
+	
+	my $needs_display = $self->has_needs_display && $self->needs_display
+		? q{use Test::NeedsDisplay ':skip_all'}
+		: '';
 
 	# replace strings in the file
 	my $content = $file->content;
 	$content =~ s/LOADTESTS_MODULE/$module/g;
 	$content =~ s/LOADTESTS_OK/$ok/g;
-	$content =~ s/LOADTESTS_FAIL/$fail/g;
+	$content =~ s/LOADTESTS_FAIL/$fail/;
+	$content =~ s/LOADTESTS_NEEDS_DISPLAY/$needs_display/;
 	$file->content($content);
 }
 
@@ -60,7 +65,8 @@ the following files:
 
 =item * t/00-load.t - a standard test to check whether your module loads or not
 
-This test will find check the module specified by C<module> and try to load it.
+This test will find check the module specified by C<module> and try to load it. 
+The C<needs_display> is useful for GUI tests that need a $ENV{DISPLAY} to work.
 
 =back
 
@@ -69,8 +75,11 @@ This plugin accepts the following options:
 
 =over 4
 
-=item * module: a string of the module to check whether it loads or not. 
-Required otherwise it will fail.
+=item * module (REQUIRED): a string of the module to check whether it loads or not. 
+otherwise it will fail.
+
+=item * needs_display (OPTIONAL): a boolean to ensure that tests needing a display
+have one otherwise it will skip all the test. Defaults to false.
 
 =back
 
@@ -88,7 +97,7 @@ ___[ t/00-load.t ]___
 use strict;
 use warnings;
 
-use Test::NeedsDisplay;
+LOADTESTS_NEEDS_DISPLAY;
 use Test::More;
 
 plan tests => 1;
