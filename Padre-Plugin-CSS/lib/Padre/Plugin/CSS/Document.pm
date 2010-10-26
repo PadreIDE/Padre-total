@@ -1,5 +1,7 @@
 package Padre::Plugin::CSS::Document;
 
+# ABSTRACT: CSS Document support for Padre
+
 use 5.008;
 use strict;
 use warnings;
@@ -8,7 +10,6 @@ use Padre::Document ();
 use File::Spec  ();
 use YAML::Tiny  qw(LoadFile);
 
-our $VERSION = '0.10';
 our @ISA     = 'Padre::Document';
 
 sub comment_lines_str { return '//' }

@@ -1,5 +1,7 @@
 package Padre::Plugin::CSS::Help;
 
+# ABSTRACT: CSS Help provider
+
 use 5.008;
 use strict;
 use warnings;
@@ -10,7 +12,6 @@ use YAML::Tiny  qw(LoadFile);
 use Padre::Help ();
 use Padre::Util ();
 
-our $VERSION = '0.10';
 our @ISA     = 'Padre::Help';
 
 my $data;

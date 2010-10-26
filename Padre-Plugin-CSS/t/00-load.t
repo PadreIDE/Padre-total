@@ -1,10 +1,22 @@
-#!perl
+#!/usr/bin/perl
 
-use Test::More tests => 2;
+#use 5.008;
+use strict;
+
+# taken straight from the Padre test
+# 01-load.t
+
+use Test::More;
 
 BEGIN {
-	use_ok( 'Padre::Plugin::CSS' );
-	use_ok( 'Padre::Plugin::CSS::Document' );
+	if ( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
 }
 
-diag( "Testing Padre::Plugin::CSS $Padre::Plugin::CSS::VERSION, Perl $], $^X" );
+plan tests => 1;
+
+use_ok('Padre::Plugin::CSS');
+
+diag("Testing Padre::Plugin::CSS $Padre::Plugin::CSS::VERSION, Perl $], $^X");

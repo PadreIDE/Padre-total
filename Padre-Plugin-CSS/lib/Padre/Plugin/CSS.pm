@@ -3,15 +3,14 @@ package Padre::Plugin::CSS;
 use warnings;
 use strict;
 
-our $VERSION = '0.10';
+# ABSTRACT: L<Padre> and CSS
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
-use Padre::Util   ('_T');
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.43,
-	'Padre::Document' => 0.43,
+	'Padre::Plugin'   => 0.47,
+	'Padre::Document' => 0.47,
 }
 
 sub registered_documents {
@@ -22,11 +21,11 @@ sub menu_plugins_simple {
     my $self = shift;
     
 	return ('CSS' => [
-		_T('CSS Minifier'),   sub { $self->css_minifier },
-		_T('Validate CSS'),   sub { $self->validate_css },
-		'Docs'=> [
-			'CSS 2.1 specs', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/cover.html'); },
-			'CSS 2.1 property list', sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/propidx.html'); },
+		Wx::gettext('CSS Minifier'),   sub { $self->css_minifier },
+		Wx::gettext('Validate CSS'),   sub { $self->validate_css },
+		Wx::gettext('Docs')=> [
+			Wx::gettext('CSS 2.1 specs'), sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/cover.html'); },
+			Wx::gettext('CSS 2.1 property list'), sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/propidx.html'); },
 		],
 	]);
 }
@@ -39,7 +38,7 @@ sub validate_css {
 	my $code = $doc->text_get;
 	
 	unless ( $code and length($code) ) {
-		Wx::MessageBox( _T('No Code'), _T('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
+		Wx::MessageBox( Wx::gettext('No Code'), Wx::gettext('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
 	}
 	
 	require WebService::Validator::CSS::W3C;
@@ -48,10 +47,10 @@ sub validate_css {
 
 	if ($ok) {
 		if ( $val->is_valid ) {
-			$self->_output( _T("CSS is valid\n") );
+			$self->_output( Wx::gettext("CSS is valid\n") );
 		} else {
-			my $error_text = _T("CSS is not valid\n");
-			$error_text .= _T("Errors:\n");
+			my $error_text = Wx::gettext("CSS is not valid\n");
+			$error_text .= Wx::gettext("Errors:\n");
 			my @errors = $val->errors;
 			foreach my $err (@errors) {
 				my $message = $err->{message};
@@ -61,7 +60,7 @@ sub validate_css {
 			$self->_output( $error_text );
 		}
 	} else {
-		my $error_text = _T("Failed to validate the code\n");
+		my $error_text = Wx::gettext("Failed to validate the code\n");
 		$self->_output( $error_text );
 	}
 }
@@ -101,10 +100,6 @@ sub css_minifier {
 1;
 __END__
 
-=head1 NAME
-
-Padre::Plugin::CSS - L<Padre> and CSS
-
 =head1 CSS Minifier
 
 use L<CSS::Minifier::XS> to minify css
@@ -112,16 +107,5 @@ use L<CSS::Minifier::XS> to minify css
 =head1 Validate CSS
 
 use L<WebService::Validator::CSS::W3C> to validate the CSS
-
-=head1 AUTHOR
-
-Fayland Lam, C<< <fayland at gmail.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Fayland Lam, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
 
 =cut
