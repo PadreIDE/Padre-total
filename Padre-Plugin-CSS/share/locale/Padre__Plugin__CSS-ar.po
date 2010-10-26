@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: padre-plugin-css\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 20:12+0300\n"
+"POT-Creation-Date: 2010-10-26 20:25+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
 "Language-Team: Ahmad M. Zawawi <ahmad.zawawi@gmail.com>\n"
@@ -10,6 +10,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Arabic\n"
+
+#: lib/Padre/Plugin/CSS.pm:23
+msgid "CSS"
+msgstr "برنامج CSS"
 
 #: lib/Padre/Plugin/CSS.pm:24
 msgid "CSS Minifier"

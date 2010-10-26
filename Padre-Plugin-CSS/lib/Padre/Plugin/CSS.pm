@@ -20,7 +20,7 @@ sub menu_plugins_simple {
 	my $self = shift;
 
 	return (
-		'CSS' => [
+		Wx::gettext('CSS') => [
 			Wx::gettext('CSS Minifier'),
 			sub { $self->css_minifier },
 			Wx::gettext('Validate CSS'),
