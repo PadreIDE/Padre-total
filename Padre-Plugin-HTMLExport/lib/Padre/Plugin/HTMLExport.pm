@@ -39,7 +39,7 @@ our %KATE_ALL = (
 );
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.43',
+	'Padre::Plugin' => '0.47',
 }
 
 sub menu_plugins_simple {
