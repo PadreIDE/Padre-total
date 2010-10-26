@@ -2,6 +2,9 @@ Revision history for Padre-Plugin-LaTeX
 
 {{$NEXT}}
 
+0.04   2010.10.26
+	Nothing... Simply a reupload of 0.03 (AZAWAWI)
+
 0.03   2010.10.26
         Syntax checking still crashes; will improve later (ZENOG)
         Added Italian translation (SBLADIN)
