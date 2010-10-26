@@ -9,29 +9,34 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.47,
-	'Padre::Document' => 0.47,
+	'Padre::Plugin' => 0.47, 'Padre::Document' => 0.47,;
 }
 
 sub registered_documents {
-	'text/css' => 'Padre::Plugin::CSS::Document',
+	'text/css' => 'Padre::Plugin::CSS::Document',;
 }
 
 sub menu_plugins_simple {
-    my $self = shift;
+	my $self = shift;
 
-	return ('CSS' => [
-		Wx::gettext('CSS Minifier'),   sub { $self->css_minifier },
-		Wx::gettext('Validate CSS'),   sub { $self->validate_css },
-		Wx::gettext('Docs')=> [
-			Wx::gettext('CSS 2.1 specs'), sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/cover.html'); },
-			Wx::gettext('CSS 2.1 property list'), sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/propidx.html'); },
-		],
-	]);
+	return (
+		'CSS' => [
+			Wx::gettext('CSS Minifier'),
+			sub { $self->css_minifier },
+			Wx::gettext('Validate CSS'),
+			sub { $self->validate_css },
+			Wx::gettext('Docs') => [
+				Wx::gettext('CSS 2.1 specs'),
+				sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/cover.html'); },
+				Wx::gettext('CSS 2.1 property list'),
+				sub { Padre::Wx::launch_browser('http://www.w3.org/TR/CSS21/propidx.html'); },
+			],
+		]
+	);
 }
 
 sub validate_css {
-	my ( $self ) = @_;
+	my ($self) = @_;
 	my $main = $self->main;
 
 	my $doc  = $main->current->document;
@@ -43,7 +48,7 @@ sub validate_css {
 
 	require WebService::Validator::CSS::W3C;
 	my $val = WebService::Validator::CSS::W3C->new();
-	my $ok  = $val->validate(string => $code);
+	my $ok = $val->validate( string => $code );
 
 	if ($ok) {
 		if ( $val->is_valid ) {
@@ -57,11 +62,11 @@ sub validate_css {
 				$message =~ s/(^\s+|\s+$)//isg;
 				$error_text .= " * $message ($err->{context}) at line $err->{line}\n";
 			}
-			$self->_output( $error_text );
+			$self->_output($error_text);
 		}
 	} else {
 		my $error_text = Wx::gettext("Failed to validate the code\n");
-		$self->_output( $error_text );
+		$self->_output($error_text);
 	}
 }
 
@@ -75,7 +80,7 @@ sub _output {
 }
 
 sub css_minifier {
-	my ( $self ) = @_;
+	my ($self) = @_;
 	my $main = $self->main;
 
 	my $src = $main->current->text;
@@ -87,13 +92,13 @@ sub css_minifier {
 	require CSS::Minifier::XS;
 	CSS::Minifier::XS->import('minify');
 
-	my $css = minify( $code );
+	my $css = minify($code);
 
-	if ( $src ) {
+	if ($src) {
 		my $editor = $main->current->editor;
-		$editor->ReplaceSelection( $css );
+		$editor->ReplaceSelection($css);
 	} else {
-		$doc->text_set( $css );
+		$doc->text_set($css);
 	}
 }
 

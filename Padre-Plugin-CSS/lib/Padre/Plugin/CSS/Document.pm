@@ -7,10 +7,10 @@ use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
-use File::Spec  ();
-use YAML::Tiny  qw(LoadFile);
+use File::Spec      ();
+use YAML::Tiny qw(LoadFile);
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 sub comment_lines_str { return '//' }
 
@@ -109,11 +109,11 @@ sub autocomplete {
 		return ("Cannot build regex for '$prefix'");
 	}
 	require Padre::Plugin::CSS::Help;
-	my $keywords=Padre::Plugin::CSS::Help->help_list;
+	my $keywords = Padre::Plugin::CSS::Help->help_list;
 
 	my %seen;
 	my @words;
-	push @words, grep { $_ =~ $regex and !$seen{$_}++} @$keywords;
+	push @words, grep { $_ =~ $regex and !$seen{$_}++ } @$keywords;
 	push @words, grep { !$seen{$_}++ } reverse( $pre_text =~ /$regex/g );
 	push @words, grep { !$seen{$_}++ } ( $post_text =~ /$regex/g );
 
