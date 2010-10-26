@@ -13,25 +13,25 @@ msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:22
 msgid "HTML"
-msgstr ""
+msgstr "برنامج HTML"
 
 #: lib/Padre/Plugin/HTML.pm:23
 msgid "Tidy HTML"
-msgstr ""
+msgstr "ترتيب HTML"
 
 #: lib/Padre/Plugin/HTML.pm:24
 msgid "HTML Lint"
-msgstr ""
+msgstr "تشغيل HTML Lint"
 
 #: lib/Padre/Plugin/HTML.pm:25
 msgid "Validate HTML"
-msgstr ""
+msgstr "التحقق من HTML"
 
 #: lib/Padre/Plugin/HTML.pm:26
 msgid "Docs"
-msgstr ""
+msgstr "الوثائق"
 
 #: lib/Padre/Plugin/HTML.pm:27
 msgid "HTML 4.01 Specification"
-msgstr ""
+msgstr "مواصفات HTML 4.01"
 
