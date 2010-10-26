@@ -19,7 +19,7 @@ sub registered_documents {
 
 sub menu_plugins_simple {
     my $self = shift;
-    
+
 	return ('CSS' => [
 		Wx::gettext('CSS Minifier'),   sub { $self->css_minifier },
 		Wx::gettext('Validate CSS'),   sub { $self->validate_css },
@@ -33,14 +33,14 @@ sub menu_plugins_simple {
 sub validate_css {
 	my ( $self ) = @_;
 	my $main = $self->main;
-	
+
 	my $doc  = $main->current->document;
 	my $code = $doc->text_get;
-	
+
 	unless ( $code and length($code) ) {
 		Wx::MessageBox( Wx::gettext('No Code'), Wx::gettext('Error'), Wx::wxOK | Wx::wxCENTRE, $main );
 	}
-	
+
 	require WebService::Validator::CSS::W3C;
 	my $val = WebService::Validator::CSS::W3C->new();
 	my $ok  = $val->validate(string => $code);
@@ -68,7 +68,7 @@ sub validate_css {
 sub _output {
 	my ( $self, $text ) = @_;
 	my $main = $self->main;
-	
+
 	$main->show_output(1);
 	$main->output->clear;
 	$main->output->AppendText($text);
@@ -86,9 +86,9 @@ sub css_minifier {
 
 	require CSS::Minifier::XS;
 	CSS::Minifier::XS->import('minify');
-		
+
 	my $css = minify( $code );
-    
+
 	if ( $src ) {
 		my $editor = $main->current->editor;
 		$editor->ReplaceSelection( $css );

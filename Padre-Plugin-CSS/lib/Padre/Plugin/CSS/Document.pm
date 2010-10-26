@@ -21,7 +21,7 @@ sub get_help_provider {
 
 sub find_help_topic {
 	my ($self) = @_;
-	
+
 	# TODO: recognize tags with dash in the name: background-color
 	# TODO: recognize values that include a number: 4px
 	# TODO: recognize pseudo-class selectors:   :visited
@@ -43,7 +43,7 @@ sub find_help_topic {
 	#warn "Topic '$topic'";
 	return if not $topic;
 	$topic =~ s/://;
-	
+
 	return lc $topic;
 }
 

@@ -4,3 +4,4 @@
 ^MANIFEST.SKIP$
 \.po$
 \.pot$
+^tools
