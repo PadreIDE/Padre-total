@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
+
+1.1.3  2010.10.27
         - Compatibility with the latest Padre (ZENOG, AZAWAWI)
         - Added German translation (ZENOG)
         - Added Japanese translation (ISHIGAKI)
