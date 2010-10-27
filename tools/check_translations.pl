@@ -13,7 +13,7 @@ foreach my $plugin_dir ( glob("Padre-Plugin-*") ) {
                     while ( my $line = <$fh> ) {
                         if ( $line =~ /^"Project-Id-Version:\s+(.+?)\\n"/ ) {
                             my $project_id_version = $1;
-                            unless ( $project_id_version =~ /$plugin_dir/i ) {
+                            if ( $project_id_version ne $plugin_dir ) {
                                 print
                                   "Project-Id-Version Mismatch at $pofile\n";
                             }
