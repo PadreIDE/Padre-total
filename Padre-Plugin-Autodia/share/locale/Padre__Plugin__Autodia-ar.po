@@ -13,70 +13,70 @@ msgstr ""
 
 #: lib/Padre/Plugin/Autodia.pm:35
 msgid "Autodia UML Diagrams"
-msgstr ""
+msgstr "رسوم Autodia UML التوضيحية"
 
 #: lib/Padre/Plugin/Autodia.pm:55
 msgid "About"
-msgstr ""
+msgstr "عن"
 
 #: lib/Padre/Plugin/Autodia.pm:56
 msgid "UML"
-msgstr ""
+msgstr "لغة النمذجة الموحدة UML"
 
 #: lib/Padre/Plugin/Autodia.pm:57
 msgid "Class Diagram (This File)"
-msgstr ""
+msgstr "رسم بياني لClass  (هذا الملف)"
 
 #: lib/Padre/Plugin/Autodia.pm:58
 msgid "Class Diagram"
-msgstr ""
+msgstr "رسم بياني لClass"
 
 #: lib/Padre/Plugin/Autodia.pm:76
 msgid "Copyright 2010 Aaron Trevena"
-msgstr ""
+msgstr "حقوق الطبع محفوظة 2010 Aaron Trevena"
 
 #: lib/Padre/Plugin/Autodia.pm:131
 msgid "JavaScript Files"
-msgstr ""
+msgstr "ملفات جافاسكربت"
 
 #: lib/Padre/Plugin/Autodia.pm:133
 msgid "Perl Files"
-msgstr ""
+msgstr "ملفات Perl"
 
 #: lib/Padre/Plugin/Autodia.pm:135
 msgid "PHP Files"
-msgstr ""
+msgstr "ملفات PHP"
 
 #: lib/Padre/Plugin/Autodia.pm:137
 msgid "Python Files"
-msgstr ""
+msgstr "ملفات Python"
 
 #: lib/Padre/Plugin/Autodia.pm:139
 msgid "Ruby Files"
-msgstr ""
+msgstr "ملفات Ruby"
 
 #: lib/Padre/Plugin/Autodia.pm:141
 msgid "SQL Files"
-msgstr ""
+msgstr "ملفات SQL"
 
 #: lib/Padre/Plugin/Autodia.pm:143
 msgid "Text Files"
-msgstr ""
+msgstr "ملفات نصية"
 
 #: lib/Padre/Plugin/Autodia.pm:145
 msgid "Web Files"
-msgstr ""
+msgstr "ملفات ويب"
 
 #: lib/Padre/Plugin/Autodia.pm:158
 #, perl-format
 msgid "%s Files"
-msgstr ""
+msgstr "%s ملفات"
 
 #: lib/Padre/Plugin/Autodia.pm:160
 msgid "All Files"
-msgstr ""
+msgstr "كل الملفات"
 
 #: lib/Padre/Plugin/Autodia.pm:170
 msgid "Open File"
-msgstr ""
+msgstr "فتح ملف"
 
