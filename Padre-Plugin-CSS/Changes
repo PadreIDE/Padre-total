@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-CSS
 
 {{$NEXT}}
+        t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.11   2010.10.26
         Switched to Dist::Zilla (AZAWAWI)

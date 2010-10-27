@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-HTMLExport
 
 {{$NEXT}}
+        t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.06   2010.10.26
         Added translation files (ZENOG)

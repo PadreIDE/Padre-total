@@ -1,7 +1,7 @@
 Revision history for Padre-Plugin-Alarm
 
 {{$NEXT}}
-	- t/00-load.t is magically injected by [@PadrePlugin] and [LoadTests] (AZAWAWI)
+	- t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.09   2010.10.22
 	- Switched to Dist::Zilla (AZAWAWI)

@@ -1,6 +1,7 @@
 Revision history for Perl6-Refactor
 
 {{$NEXT}}
+	- t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.02_01 2010.10.24
 	- Switch to Dist::Zilla

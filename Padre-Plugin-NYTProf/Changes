@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-NYTProf
 
 {{$NEXT}}
+	- t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.01   2010.10.23
 

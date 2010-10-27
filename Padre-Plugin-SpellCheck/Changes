@@ -6,6 +6,7 @@ Revision history for Padre-Plugin-SpellCheck
         - Added Japanese translation (ISHIGAKI)
         - Fixed translations in share directory and removed old one(AZAWAWI)
         - Switched to Dist::Zilla (AZAWAWI)
+        - t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 1.1.2 2009.6.20
         - Add Chinese (Traditional) translation (bluet)

@@ -1,6 +1,7 @@
 Changes
 
 {{$NEXT}}
+	t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.66   2010.10.23
 	Switch to Dist::Zilla

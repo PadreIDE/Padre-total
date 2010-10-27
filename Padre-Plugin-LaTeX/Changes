@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-LaTeX
 
 {{$NEXT}}
+        t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.05   2010.10.26
         Updated Arabic translation since it was not working (AZAWAWI)

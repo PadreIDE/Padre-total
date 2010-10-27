@@ -1,6 +1,7 @@
 This is the change log for the Padre::Plugin::XS module:
 
 {{$NEXT}}
+    t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.05   2010.10.22
     Re-uploaded 0.04 as 0.05 to satisfy the indexer (AZAWAWI)
