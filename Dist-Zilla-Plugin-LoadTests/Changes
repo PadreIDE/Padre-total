@@ -1,7 +1,9 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
-        The 'name' option is used instead removed 'module' option (AZAWAWI)
+
+0.03    2010.10.27
+        The 'name' option is used instead of the 'module' option (AZAWAWI)
 
 0.02    2010.10.26
         It works now as expected (AZAWAWI)
