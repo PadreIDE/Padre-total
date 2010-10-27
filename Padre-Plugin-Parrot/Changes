@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Parrot
 
 {{$NEXT}}
+
+0.29   2010.10.27
 	- t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.28   2010.10.25
