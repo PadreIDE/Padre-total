@@ -23,7 +23,7 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
-	(my $module = $self->zilla->name) =~ s/-/::/g;
+	( my $module = $self->zilla->name ) =~ s/-/::/g;
 
 	my $needs_display =
 		$self->has_needs_display && $self->needs_display
