@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-classsniff\n"
+"Project-Id-Version: Padre-Plugin-ClassSniff\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 20:11+0300\n"
 "PO-Revision-Date: \n"
