@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-spellcheck\n"
+"Project-Id-Version: Padre-Plugin-SpellCheck\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-04-30 07:18+0200\n"
 "PO-Revision-Date: 2009-04-30 02:21-0300\n"
