@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tr 0.10\n"
+"Project-Id-Version: Padre-Plugin-Mojolicious\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-30 16:50-0300\n"
 "PO-Revision-Date: 2010-05-17 21:16+0200\n"

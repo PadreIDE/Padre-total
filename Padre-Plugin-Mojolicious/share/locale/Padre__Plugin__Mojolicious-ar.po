@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-mojolicious\n"
+"Project-Id-Version: Padre-Plugin-Mojolicious\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-30 16:50-0300\n"
 "PO-Revision-Date: 2009-05-31 04:56+0200\n"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-perltidy\n"
+"Project-Id-Version: Padre-Plugin-PerlTidy\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-25 14:42+0300\n"
 "PO-Revision-Date: \n"
