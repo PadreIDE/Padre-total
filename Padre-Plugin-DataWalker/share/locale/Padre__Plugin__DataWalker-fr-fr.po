@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-datawalker\n"
+"Project-Id-Version: Padre-Plugin-DataWalker\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-10 22:50+0300\n"
 "PO-Revision-Date: \n"

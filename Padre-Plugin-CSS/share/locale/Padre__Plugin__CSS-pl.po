@@ -2,7 +2,7 @@
 # Cezary Morga <cm@therek.net>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-css\n"
+"Project-Id-Version: Padre-Plugin-CSS\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 20:07+0300\n"
 "PO-Revision-Date: 2009-05-13 20:02+0200\n"

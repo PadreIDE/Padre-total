@@ -1,7 +1,7 @@
 # Cezary Morga <cm@therek.net>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-commandline\n"
+"Project-Id-Version: Padre-Plugin-CommandLine\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 20:14+0300\n"
 "PO-Revision-Date: 2009-05-13 19:54+0200\n"

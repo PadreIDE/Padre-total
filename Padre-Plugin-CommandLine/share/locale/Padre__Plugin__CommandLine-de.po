@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-commandline\n"
+"Project-Id-Version: Padre-Plugin-CommandLine\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-19 00:59+0800\n"
 "PO-Revision-Date: \n"
