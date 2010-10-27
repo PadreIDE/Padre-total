@@ -1,4 +1,9 @@
 
+{{$NEXT}}
+        Switched to Dist::Zilla (AZAWAWI)
+        Added compatibility with the latest Padre (AZAWAWI)
+        Added Arabic translation (AZAWAWI)
+
 0.26    2010.8.12
         compatibility with new Padre (CHORNY)
         add JE (Syntax Check)

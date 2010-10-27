@@ -1,13 +1,14 @@
 package Padre::Plugin::JavaScript::Document;
 
+# ABSTRACT: JavaScript Document for Padre
+
 use 5.008;
 use strict;
 use warnings;
 use Carp            ();
 use Padre::Document ();
 
-our $VERSION = '0.26';
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 
 #####################################################################
@@ -27,8 +28,3 @@ sub get_function_regex {
 sub comment_lines_str { return '//' }
 
 1;
-
-# Copyright 2008 Gabor Szabo and Fayland Lam
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
