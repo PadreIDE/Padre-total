@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 12:51+0300\n"
+"POT-Creation-Date: 2010-10-27 15:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,71 +16,71 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Autodia.pm:35
-msgid "Autodia UML Diagrams"
+#: lib/Padre/Plugin/Autodia.pm:37
+msgid "Autodia UML Support"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:55
+#: lib/Padre/Plugin/Autodia.pm:59
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:56
+#: lib/Padre/Plugin/Autodia.pm:60
 msgid "UML"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:57
+#: lib/Padre/Plugin/Autodia.pm:61
 msgid "Class Diagram (This File)"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:58
+#: lib/Padre/Plugin/Autodia.pm:62
 msgid "Class Diagram"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:76
+#: lib/Padre/Plugin/Autodia.pm:80
 msgid "Copyright 2010 Aaron Trevena"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:131
+#: lib/Padre/Plugin/Autodia.pm:135
 msgid "JavaScript Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:133
+#: lib/Padre/Plugin/Autodia.pm:137
 msgid "Perl Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:135
+#: lib/Padre/Plugin/Autodia.pm:139
 msgid "PHP Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:137
+#: lib/Padre/Plugin/Autodia.pm:141
 msgid "Python Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:139
+#: lib/Padre/Plugin/Autodia.pm:143
 msgid "Ruby Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:141
+#: lib/Padre/Plugin/Autodia.pm:145
 msgid "SQL Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:143
+#: lib/Padre/Plugin/Autodia.pm:147
 msgid "Text Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:145
+#: lib/Padre/Plugin/Autodia.pm:149
 msgid "Web Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:158
+#: lib/Padre/Plugin/Autodia.pm:162
 #, perl-format
 msgid "%s Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:160
+#: lib/Padre/Plugin/Autodia.pm:164
 msgid "All Files"
 msgstr ""
 
-#: lib/Padre/Plugin/Autodia.pm:170
+#: lib/Padre/Plugin/Autodia.pm:174
 msgid "Open File"
 msgstr ""
