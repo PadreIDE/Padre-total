@@ -13,7 +13,6 @@ with 'Dist::Zilla::Role::FileMunger';
 
 # -- attributes
 
-has module        => ( is => 'ro', predicate => 'has_module' );
 has needs_display => ( is => 'ro', predicate => 'has_needs_display' );
 
 # -- public methods
@@ -24,12 +23,7 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
-	my ( $module, $ok, $fail ) = ( '', '## ', '' );
-	if ( $self->has_module && $self->module ) {
-		$module = $self->module;
-		$ok     = '';
-		$fail   = '## ';
-	}
+	(my $module = $self->zilla->name) =~ s/-/::/g;
 
 	my $needs_display =
 		$self->has_needs_display && $self->needs_display
@@ -39,8 +33,6 @@ sub munge_file {
 	# replace strings in the file
 	my $content = $file->content;
 	$content =~ s/LOADTESTS_MODULE/$module/g;
-	$content =~ s/LOADTESTS_OK/$ok/g;
-	$content =~ s/LOADTESTS_FAIL/$fail/;
 	$content =~ s/LOADTESTS_NEEDS_DISPLAY/$needs_display/;
 	$file->content($content);
 }
@@ -55,7 +47,6 @@ __PACKAGE__->meta->make_immutable;
 In your dist.ini:
 
     [LoadTests]
-    module = Your::Module
 
 =head1 DESCRIPTION
 
@@ -66,8 +57,8 @@ the following files:
 
 =item * t/00-load.t - a standard test to check whether your module loads or not
 
-This test will find check the module specified by C<module> and try to load it.
-The C<needs_display> is useful for GUI tests that need a $ENV{DISPLAY} to work.
+This test will try to load the module specified by C<name>. The C<needs_display>
+is useful for GUI tests that need an $ENV{DISPLAY} to work.
 
 =back
 
@@ -75,9 +66,6 @@ The C<needs_display> is useful for GUI tests that need a $ENV{DISPLAY} to work.
 This plugin accepts the following options:
 
 =over 4
-
-=item * module (REQUIRED): a string of the module to check whether it loads or not.
-otherwise it will fail.
 
 =item * needs_display (OPTIONAL): a boolean to ensure that tests needing a display
 have one otherwise it will skip all the test. Defaults to false.
@@ -87,7 +75,6 @@ have one otherwise it will skip all the test. Defaults to false.
 =head1 SEE ALSO
 
 L<Test::NeedsDisplay>
-L<Dist::Zilla>
 
 =cut
 
@@ -103,6 +90,5 @@ use Test::More;
 
 plan tests => 1;
 
-LOADTESTS_FAIL fail 'No module is specified!';
-LOADTESTS_OK   use_ok('LOADTESTS_MODULE');
-LOADTESTS_OK   diag("Testing $LOADTESTS_MODULE::VERSION, Perl $], $^X");
+use_ok('LOADTESTS_MODULE');
+diag("Testing LOADTESTS_MODULE $LOADTESTS_MODULE::VERSION, Perl $], $^X");
