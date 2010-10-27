@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Encrypt
 
 {{$NEXT}}
+
+0.10   2010.10.27
         t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.09    2010.10.22
