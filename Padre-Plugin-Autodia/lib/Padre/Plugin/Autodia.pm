@@ -1,6 +1,6 @@
 package Padre::Plugin::Autodia;
 
-# ABSTRACT Autodia UML creator plugin for Padre
+# ABSTRACT: Autodia UML creator plugin for Padre
 
 use strict;
 use warnings;
@@ -23,7 +23,9 @@ use Padre::Wx::Dialog ();
 use Padre::Util       ();
 use Padre::Current    ();
 
-my $language_handlers = Autodia->getHandlers();
+
+
+our $language_handlers;
 
 =head1 METHODS
 
@@ -214,6 +216,9 @@ sub _get_handler {
 	$config->{templatefile} = $args->{template} || undef;
 	$config->{outputfile}   = $args->{outfile}  || "autodia-plugin.out";
 
+	unless($language_handlers) {
+		$language_handlers = Autodia->getHandlers();
+	}
 	my $handler_module = $language_handlers->{ lc( $args->{language} ) };
 	eval "require $handler_module" or die "can't run '$handler_module' : $@\n";
 	my $handler = "$handler_module"->new($config);
