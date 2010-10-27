@@ -125,7 +125,7 @@ __END__
 =head1 SYNOPSIS
 
 	$>padre
-	Plugins -> Encrypt -> 
+	Plugins -> Encrypt ->
 						  Encrypt
 						  Decrypt
 
