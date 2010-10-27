@@ -1,6 +1,8 @@
 Changes
 
 {{$NEXT}}
+
+0.67   2010.10.27
 	t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.66   2010.10.23
