@@ -1,5 +1,10 @@
 Revision history for Perl extension Padre::Plugin::Autodia.
 
-0.01  9th November 2009
+{{$NEXT}}
+	- Switched to Dist::Zilla (AZAWAWI)
+	- Added compatibility with the latest Padre (AZAWAWI)
+	- Added Arabic translation (AZAWAWI)
+
+0.01  2009.11.9
 	- Initial release with UML menu options for This File and Selected Files
 

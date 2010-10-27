@@ -1,0 +1,86 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-27 12:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Autodia.pm:35
+msgid "Autodia UML Diagrams"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:55
+msgid "About"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:56
+msgid "UML"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:57
+msgid "Class Diagram (This File)"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:58
+msgid "Class Diagram"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:76
+msgid "Copyright 2010 Aaron Trevena"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:131
+msgid "JavaScript Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:133
+msgid "Perl Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:135
+msgid "PHP Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:137
+msgid "Python Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:139
+msgid "Ruby Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:141
+msgid "SQL Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:143
+msgid "Text Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:145
+msgid "Web Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:158
+#, perl-format
+msgid "%s Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:160
+msgid "All Files"
+msgstr ""
+
+#: lib/Padre/Plugin/Autodia.pm:170
+msgid "Open File"
+msgstr ""
