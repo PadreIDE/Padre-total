@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Padre2It\n"
+"Project-Id-Version: Padre-Plugin-HTMLExport\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-05-18 18:35+0200\n"
 "PO-Revision-Date: 2010-08-23 15:23+0100\n"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-latex\n"
+"Project-Id-Version: Padre-Plugin-LaTeX\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-26 16:00+0300\n"
 "PO-Revision-Date: \n"

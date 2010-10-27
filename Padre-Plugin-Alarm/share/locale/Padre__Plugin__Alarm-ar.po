@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-alarm\n"
+"Project-Id-Version: Padre-Plugin-Alarm\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-10-18 15:43+0300\n"
 "PO-Revision-Date: \n"
