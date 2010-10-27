@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+
+0.03   2010.10.27
 	- Added [LoadTests] with needs_display option enabled. Basically this
 	enables us to drop t/00-load.t from all Padre plugins (AZAWAWI)
 
