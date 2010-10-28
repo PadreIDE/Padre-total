@@ -1,6 +1,7 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.05   2010.10.28
 	- Refactored code to use Dist::Zilla::Role::PluginBundle::Easy (AZAWAWI)
