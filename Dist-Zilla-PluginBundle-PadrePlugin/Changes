@@ -2,6 +2,7 @@ Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)
+	- Removed 'no_display' obsolete option for CompileTests jquelin++ (AZAWAWI)
 
 0.05   2010.10.28
 	- Refactored code to use Dist::Zilla::Role::PluginBundle::Easy (AZAWAWI)

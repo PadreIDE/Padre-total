@@ -63,8 +63,7 @@ sub configure {
 	# Start adding plugins
 	$self->add_plugins(qw( CheckChangeLog CheckChangesTests ));
 
-	# TODO: no_display should be removed once CompileTests supports it
-	my $needs_display = [ 'needs_display' => '1', 'no_display' => '1' ];
+	my $needs_display = [ 'needs_display' => '1', ];
 	$self->add_plugins( [ 'CompileTests' => $needs_display ] );
 	$self->add_plugins( [ 'LoadTests'    => $needs_display ] );
 
@@ -142,7 +141,6 @@ is equivalent to:
 	remove = MakeMaker
 
 	needs_display  = 1
-	no_display     = 1	; will be removed once CompileTests supports it
 
 	[CheckChangeLog]
 	[CheckChangesTests]
