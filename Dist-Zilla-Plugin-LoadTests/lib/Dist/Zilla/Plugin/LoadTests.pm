@@ -56,6 +56,7 @@ __PACKAGE__->meta->make_immutable;
 In your dist.ini:
 
     [LoadTests]
+    ; needs_display = 1
 
 =head1 DESCRIPTION
 

@@ -2,20 +2,21 @@ Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)
-	- Removed 'no_display' obsolete option for CompileTests jquelin++ (AZAWAWI)
+	- Removed the 'no_display' obsolete option of [CompileTests]
+	  jquelin++ (AZAWAWI)
 
 0.05   2010.10.28
 	- Refactored code to use Dist::Zilla::Role::PluginBundle::Easy (AZAWAWI)
 	- Common Padre plugins dependencies are automatically added now
-	when building (AZAWAWI).
+	  when building (AZAWAWI).
 
 0.04   2010.10.28
 	- CompileTests needs_display and no_display options are enabled
-	until my patch is accepted (AZAWAWI)
+	  until my patch is accepted (AZAWAWI)
 
 0.03   2010.10.27
 	- Added [LoadTests] with needs_display option enabled. Basically this
-	enables us to drop t/00-load.t from all Padre plugins (AZAWAWI)
+	  enables us to drop t/00-load.t from all Padre plugins (AZAWAWI)
 
 0.02   2010.10.23
 	- Minor POD fix (AZAWAWI)
