@@ -1,6 +1,7 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+        Added forgotten Test::NeedsDisplay test dependency (AZAWAWI)
 
 0.03    2010.10.27
         The 'name' option is used instead of the 'module' option (AZAWAWI)
