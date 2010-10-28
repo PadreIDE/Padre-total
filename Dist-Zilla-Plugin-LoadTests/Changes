@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+
+0.05    2010.10.28
 	- Reverted to the simpler method of skipping the load test when
 	  $ENV{DISPLAY} is not set on non-win32 platforms (AZAWAWI)
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)
