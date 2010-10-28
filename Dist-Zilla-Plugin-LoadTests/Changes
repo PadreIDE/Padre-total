@@ -1,21 +1,21 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
-        Reverted to the simpler method of skipping when $ENV{DISPLAY} is
-        not set on non-win32 platformsand removed Test::NeedsDisplay
-        dependency (AZAWAWI)
+	- Reverted to the simpler method of skipping the load test when
+	  $ENV{DISPLAY} is not set on non-win32 platforms (AZAWAWI)
+	- Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.04    2010.10.28
-        Added forgotten Test::NeedsDisplay test dependency (AZAWAWI)
+	- Added forgotten Test::NeedsDisplay test dependency (AZAWAWI)
 
 0.03    2010.10.27
-        The 'name' option is used instead of the 'module' option (AZAWAWI)
+	- The 'name' option is used instead of the 'module' option (AZAWAWI)
 
 0.02    2010.10.26
-        It works now as expected (AZAWAWI)
-        Renamed 'module_name' option to 'module' (AZAWAWI)
-        Added the 'needs_display' option uses Test::NeedsDisplay
-        ':skip_all' if enabled (AZAWAWI)
+	- It works now as expected (AZAWAWI)
+	- Renamed 'module_name' option to 'module' (AZAWAWI)
+	- Added the 'needs_display' option uses Test::NeedsDisplay
+	  ':skip_all' if enabled (AZAWAWI)
 
 0.01    2010.10.26
-        First version, released on an unsuspecting world. (AZAWAWI)
+	First version, released on an unsuspecting world. (AZAWAWI)

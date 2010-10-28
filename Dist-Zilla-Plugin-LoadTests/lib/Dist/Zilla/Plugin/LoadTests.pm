@@ -23,12 +23,21 @@ sub munge_file {
 
 	return unless $file->name eq 't/00-load.t';
 
+	# Construct module name from 'name'
 	( my $module = $self->zilla->name ) =~ s/-/::/g;
 
-	my $needs_display =
-		$self->has_needs_display && $self->needs_display
-		? '1'
-		: '0';
+	# Skip all tests if you need a display for this test and $ENV{DISPLAY} is not set
+	my $needs_display = '';
+	if ( $self->has_needs_display && $self->needs_display ) {
+		$needs_display = <<'CODE';
+BEGIN {
+	if( not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+CODE
+	}
 
 	# replace strings in the file
 	my $content = $file->content;
@@ -83,13 +92,7 @@ use warnings;
 
 use Test::More;
 
-BEGIN {
-	if( LOADTESTS_NEEDS_DISPLAY and not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
-		plan skip_all => 'Needs DISPLAY';
-		exit 0;
-	}
-}
-
+LOADTESTS_NEEDS_DISPLAY
 
 plan tests => 1;
 
