@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+
+0.04    2010.10.28
         Added forgotten Test::NeedsDisplay test dependency (AZAWAWI)
 
 0.03    2010.10.27
