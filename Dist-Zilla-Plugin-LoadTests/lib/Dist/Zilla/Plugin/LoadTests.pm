@@ -27,8 +27,8 @@ sub munge_file {
 
 	my $needs_display =
 		$self->has_needs_display && $self->needs_display
-		? q{use Test::NeedsDisplay ':skip_all'}
-		: '';
+		? '1'
+		: '0';
 
 	# replace strings in the file
 	my $content = $file->content;
@@ -72,10 +72,6 @@ have one otherwise it will skip all the test. Defaults to false.
 
 =back
 
-=head1 SEE ALSO
-
-L<Test::NeedsDisplay>
-
 =cut
 
 __DATA__
@@ -85,8 +81,15 @@ ___[ t/00-load.t ]___
 use strict;
 use warnings;
 
-LOADTESTS_NEEDS_DISPLAY;
 use Test::More;
+
+BEGIN {
+	if( LOADTESTS_NEEDS_DISPLAY and not $ENV{DISPLAY} and not $^O eq 'MSWin32' ) {
+		plan skip_all => 'Needs DISPLAY';
+		exit 0;
+	}
+}
+
 
 plan tests => 1;
 
