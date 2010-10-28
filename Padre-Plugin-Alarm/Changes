@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Alarm
 
 {{$NEXT}}
+
+0.11   2010.10.28
 	- Fixed Test::NeedsDisplay dependency in [LoadTests] and [CompileTests] uses now
 	  both no_display and needs_display (AZAWAWI)
 
