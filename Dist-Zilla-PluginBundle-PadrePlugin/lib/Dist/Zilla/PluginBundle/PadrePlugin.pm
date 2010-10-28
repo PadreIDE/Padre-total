@@ -46,7 +46,7 @@ sub bundle_config {
 	my %next_release_format;
 	$next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
 
-	my %needs_display = { 'needs_display' => '1', 'no_display' => '1' };
+	my %needs_display = ( 'needs_display' => '1', 'no_display' => '1' );
 
 	# params
 
