@@ -1,6 +1,9 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- Refactored code to use Dist::Zilla::Role::PluginBundle::Easy (AZAWAWI)
+	- Common Padre plugins dependencies are automatically added now
+	when building (AZAWAWI).
 
 0.04   2010.10.28
 	- CompileTests needs_display and no_display options are enabled

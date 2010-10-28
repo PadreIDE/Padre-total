@@ -4,7 +4,8 @@ package Dist::Zilla::PluginBundle::PadrePlugin;
 
 use Moose;
 use Moose::Autobox;
-with 'Dist::Zilla::Role::PluginBundle';
+use Dist::Zilla;
+with 'Dist::Zilla::Role::PluginBundle::Easy';
 
 use Dist::Zilla::PluginBundle::Filter;
 use Dist::Zilla::PluginBundle::Basic;
@@ -23,56 +24,110 @@ use Dist::Zilla::Plugin::PodSyntaxTests;
 use Dist::Zilla::Plugin::ModuleBuild;
 use Dist::Zilla::Plugin::LocaleMsgfmt;
 
-sub bundle_config {
-	my ( $self, $section ) = @_;
-	my $class = ( ref $self ) || $self;
+# Meta resource repository
+has repository => (
+	is      => 'ro',
+	isa     => 'Str',
+	lazy    => 1,
+	default => sub { $_[0]->payload->{repository} || '' },
+);
 
-	my $arg = $section->{payload};
+# Meta resource homepage
+has homepage => (
+	is      => 'ro',
+	isa     => 'Str',
+	lazy    => 1,
+	default => sub { $_[0]->payload->{homepage} || '' },
+);
 
-	my @plugins = Dist::Zilla::PluginBundle::Filter->bundle_config(
-		{   name    => "$class/Basic",
-			payload => {
-				bundle => '@Basic',
-				remove => [qw(MakeMaker)],
-			}
+# Release date format
+has format => (
+	is      => 'ro',
+	isa     => 'Str',
+	lazy    => 1,
+	default => sub { $_[0]->payload->{format} || '%-6v %{yyyy.MM.dd}d' },
+);
+
+sub configure {
+	my ($self) = @_;
+
+
+	# filter the @Basic bundle and remove [MakeMaker]
+	$self->add_bundle(
+		'@Filter' => {
+			bundle => '@Basic',
+			remove => [qw(MakeMaker)],
 		}
 	);
 
-	my %meta_resources;
-	for my $resource qw(homepage repository) {
-		$meta_resources{$resource} = $arg->{$resource} if defined $arg->{$resource};
-	}
+	# Start adding plugins
+	$self->add_plugins(qw( CheckChangeLog CheckChangesTests ));
 
-	my %next_release_format;
-	$next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
+	# TODO: no_display should be removed once CompileTests supports it
+	my $needs_display = [ 'needs_display' => '1', 'no_display' => '1' ];
+	$self->add_plugins( [ 'CompileTests' => $needs_display ] );
+	$self->add_plugins( [ 'LoadTests'    => $needs_display ] );
 
-	my %needs_display = ( 'needs_display' => '1', 'no_display' => '1' );
+	$self->add_plugins(qw(EOLTests PkgVersion PodWeaver));
 
-	# params
+	$self->add_plugins(
+		[   'MetaResources' => {
 
-	my $prefix = 'Dist::Zilla::Plugin::';
-	my @extra = map { [ "$class/$prefix$_->[0]" => "$prefix$_->[0]" => $_->[1] ] } (
-		[ CheckChangeLog    => {} ],
-		[ CheckChangesTests => {} ],
-		[ CompileTests      => \%needs_display ],
-		[ LoadTests         => \%needs_display ],
-		[ EOLTests          => {} ],
-		[ PodWeaver         => {} ],
-		[ PkgVersion        => {} ],
-		[ MetaResources     => \%meta_resources ],
-		[ MetaConfig        => {} ],
-		[ MetaJSON          => {} ],
-		[ NextRelease       => \%next_release_format ],
-		[ PodSyntaxTests    => {} ],
-		[ ModuleBuild       => {} ],
-		[ LocaleMsgfmt      => {} ],
+				repository => $self->repository,
+				homepage   => $self->homepage,
+			}
+		]
 	);
 
-	push @plugins, @extra;
+	$self->add_plugins(qw( MetaConfig MetaJSON ));
 
-	eval "require $_->[1]; 1;" or die for @plugins; ## no critic Carp
+	$self->add_plugins(
+		[   'NextRelease' => {
+				format => $self->format,
+			}
+		]
+	);
 
-	return @plugins;
+	$self->add_plugins(qw( PodSyntaxTests ModuleBuild LocaleMsgfmt ));
+
+
+	# Add test dependencies
+	$self->add_plugins(
+		[   Prereqs => 'TestNeedsDisplayDeps' => {
+				-phase               => 'test',
+				-type                => 'requires',
+				'Test::NeedsDisplay' => '0'
+			}
+		],
+	);
+	$self->add_plugins(
+		[   Prereqs => 'TestMoreDeps' => {
+				-phase       => 'test',
+				-type        => 'requires',
+				'Test::More' => '0'
+			}
+		],
+	);
+	$self->add_plugins(
+		[   Prereqs => 'LocaleMsgfmtDeps' => {
+				-phase           => 'test',
+				-type            => 'requires',
+				'Locale::Msgfmt' => '0.14'
+			}
+		],
+	);
+
+	# Add runtime dependencies
+	$self->add_plugins(
+		[   Prereqs => 'PadreDeps' => {
+				-phase  => 'runtime',
+				-type   => 'requires',
+				'Padre' => '0.57'
+			}
+		],
+	);
+
+
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -87,7 +142,6 @@ __END__
 Putting the following in your Padre::Plugin::PluginName dist.ini file:
 
 	[@PadrePlugin]
-	module = Your::Module::Name
 
 is equivalent to:
 
@@ -96,7 +150,7 @@ is equivalent to:
 	remove = MakeMaker
 
 	needs_display  = 1
-	no_display     = 1
+	no_display     = 1	; will be removed once CompileTests supports it
 
 	[CheckChangeLog]
 	[CheckChangesTests]
@@ -117,3 +171,4 @@ is equivalent to:
 You can specify the following options:
 	homepage
 	repository
+	format
