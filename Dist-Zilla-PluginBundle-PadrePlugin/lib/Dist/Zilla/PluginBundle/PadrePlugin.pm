@@ -95,6 +95,9 @@ is equivalent to:
 	bundle = @Basic
 	remove = MakeMaker
 
+	needs_display  = 1
+	no_display     = 1
+
 	[CheckChangeLog]
 	[CheckChangesTests]
 	[CompileTests]
