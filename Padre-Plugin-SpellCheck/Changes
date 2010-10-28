@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
+        - Fixed Test::NeedsDisplay dependency in [LoadTests] and [CompileTests] uses now
+          both no_display and needs_display (AZAWAWI)
 
 1.1.3  2010.10.27
         - Compatibility with the latest Padre (ZENOG, AZAWAWI)
