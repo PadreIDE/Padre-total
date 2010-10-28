@@ -93,14 +93,6 @@ sub configure {
 
 	# Add test dependencies
 	$self->add_plugins(
-		[   Prereqs => 'TestNeedsDisplayDeps' => {
-				-phase               => 'test',
-				-type                => 'requires',
-				'Test::NeedsDisplay' => '0'
-			}
-		],
-	);
-	$self->add_plugins(
 		[   Prereqs => 'TestMoreDeps' => {
 				-phase       => 'test',
 				-type        => 'requires',
