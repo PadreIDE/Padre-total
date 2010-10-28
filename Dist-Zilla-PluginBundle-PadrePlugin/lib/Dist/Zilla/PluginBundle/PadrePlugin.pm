@@ -46,14 +46,16 @@ sub bundle_config {
 	my %next_release_format;
 	$next_release_format{format} = defined $arg->{format} ? $arg->{format} : '%-6v %{yyyy.MM.dd}d';
 
+	my %needs_display = { 'needs_display' => '1', 'no_display' => '1' };
+
 	# params
 
 	my $prefix = 'Dist::Zilla::Plugin::';
 	my @extra = map { [ "$class/$prefix$_->[0]" => "$prefix$_->[0]" => $_->[1] ] } (
 		[ CheckChangeLog    => {} ],
 		[ CheckChangesTests => {} ],
-		[ CompileTests      => {} ],
-		[ LoadTests         => { 'needs_display' => '1' } ],
+		[ CompileTests      => \%needs_display ],
+		[ LoadTests         => \%needs_display ],
 		[ EOLTests          => {} ],
 		[ PodWeaver         => {} ],
 		[ PkgVersion        => {} ],

@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- CompileTests needs_display and no_display options are enabled
+	until my patch is accepted (AZAWAWI)
 
 0.03   2010.10.27
 	- Added [LoadTests] with needs_display option enabled. Basically this
