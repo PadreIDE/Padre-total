@@ -1,11 +1,10 @@
 package Padre::Plugin::JavaScript;
 
-# ABSTRACT: L<Padre> and JavaScript
+# ABSTRACT: JavaScript Support for Padre
 
 use 5.008;
 use strict;
 use warnings;
-use Class::Autouse 'Padre::Plugin::JavaScript::Document';
 
 use base 'Padre::Plugin';
 
