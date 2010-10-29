@@ -1,5 +1,6 @@
 
 {{$NEXT}}
+        Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.27   2010.10.27
         Switched to Dist::Zilla (AZAWAWI)
