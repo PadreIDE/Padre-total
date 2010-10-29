@@ -1,6 +1,6 @@
 package Padre::Plugin::HTML;
 
-# ABSTRACT: L<Padre> and HTML
+# ABSTRACT: HTML Support for Padre
 
 use warnings;
 use strict;

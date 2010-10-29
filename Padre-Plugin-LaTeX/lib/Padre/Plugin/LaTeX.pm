@@ -1,6 +1,6 @@
 package Padre::Plugin::LaTeX;
 
-# ABSTRACT: L<Padre> and LaTeX
+# ABSTRACT: LaTeX Support for Padre
 
 use warnings;
 use strict;

@@ -1,9 +1,9 @@
 package Padre::Plugin::CSS;
 
+# ABSTRACT: CSS Support for Padre
+
 use warnings;
 use strict;
-
-# ABSTRACT: L<Padre> and CSS
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
