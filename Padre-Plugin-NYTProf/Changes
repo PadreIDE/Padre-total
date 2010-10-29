@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-NYTProf
 
 {{$NEXT}}
+
+0.03   2010.10.29
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.02   2010.10.27

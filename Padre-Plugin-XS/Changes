@@ -1,6 +1,8 @@
 This is the change log for the Padre::Plugin::XS module:
 
 {{$NEXT}}
+
+0.08   2010.10.29
     Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.07   2010.10.27

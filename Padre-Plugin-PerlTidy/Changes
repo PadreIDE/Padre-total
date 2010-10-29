@@ -1,6 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
+
+0.15   2010.10.29
     - Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.14   2010.10.27

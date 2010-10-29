@@ -1,6 +1,8 @@
 Changes
 
 {{$NEXT}}
+
+0.68   2010.10.29
 	Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.67   2010.10.27

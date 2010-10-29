@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
+
+1.2    2010.10.29
         - Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 1.1.3  2010.10.27

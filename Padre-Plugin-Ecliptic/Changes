@@ -1,6 +1,8 @@
 Changes for Padre-Plugin-Ecliptic
 
 {{$NEXT}}
+
+0.22   2010.10.29
 	Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.21   2010.10.27

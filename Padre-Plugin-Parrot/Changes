@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Parrot
 
 {{$NEXT}}
+
+0.30   2010.10.29
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.29   2010.10.27

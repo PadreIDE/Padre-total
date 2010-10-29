@@ -1,5 +1,7 @@
 
 {{$NEXT}}
+
+0.28   2010.10.29
         Removed Test::NeedsDisplay dependency (AZAWAWI)
         Removed Class::Autouse dependency (AZAWAWI)
 
