@@ -1,8 +1,7 @@
 Revision history for Padre-Plugin-CSS
 
 {{$NEXT}}
-        Fixed Test::NeedsDisplay dependency in [LoadTests] and [CompileTests] uses now
-          both no_display and needs_display (AZAWAWI)
+        Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.12   2010.10.27
         t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)

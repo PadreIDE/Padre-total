@@ -1,8 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
-    - Fixed Test::NeedsDisplay dependency in [LoadTests] and [CompileTests] uses now
-      both no_display and needs_display (AZAWAWI)
+    - Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.14   2010.10.27
     - Fixed t/01-menu.t to work under no DISPLAY (AZAWAWI)
