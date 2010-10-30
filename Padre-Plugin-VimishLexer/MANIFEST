@@ -1,8 +1,0 @@
-Build.PL
-Changes
-MANIFEST
-README
-lib/Padre/Plugin/VimishLexer.pm
-t/00-load.t
-t/pod-coverage.t
-t/pod.t
