@@ -6,17 +6,16 @@ Revision history for Padre-Plugin-Kate
     Added compatibility with the latest Padre (AZAWAWI)
     Added Arabic translation (AZAWAWI)
 
-v0.04 2010.08.11
+0.04   2010.08.11
     make compatible to newer Padre versions (ZENOG)
     more informative README (ZENOG)
     added support for BibTeX and Java (ZENOG)
 
-v0.03 2010.07.12
+0.03   2010.07.12
     Use mimetype instead of get_mimetype (Alexandr Ciornii)
 
-v0.02 2009.09.18
+0.02   2009.09.18
     Fix to allow PHP highlighting as well
 
-v0.01 2009.07.23
+0.01   2009.07.23
     First version released to the already suspicious world.
-
