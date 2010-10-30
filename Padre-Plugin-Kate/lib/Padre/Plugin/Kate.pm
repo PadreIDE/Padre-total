@@ -18,7 +18,7 @@ which implements syntax highlighting rules taken from the Kate editor.
 
 Currently the plugin only implements Perl 5 and PHP highlighting.
 
-Once this plug-in is installed the user can switch the highlilghting of all 
+Once this plug-in is installed the user can switch the highlilghting of all
 Perl 5 or PHP files to use this highlighter via the Preferences menu
 of L<Padre>.
 
@@ -28,7 +28,7 @@ of L<Padre>.
 This is a first attempt to integrate this syntax highlighter with Padre
 and thus many things don't work well. Especially, due to speed issues, currently
 if you set the highlighting to use the Kate plugin, Padre will do so
-only for small files. The hard-coded limit is in the 
+only for small files. The hard-coded limit is in the
 L<Padre::Document::Perl> class (which probably is a bug in itself) which
 probably means it will only limit Perl files and not PHP files.
 
@@ -61,7 +61,7 @@ sub menu_plugins_simple {
 	];
 }
 
-sub provided_highlighters { 
+sub provided_highlighters {
 	return (
 		['Padre::Plugin::Kate', 'Kate', Wx::gettext('Using Syntax::Highlight::Engine::Kate based on the Kate editor')],
 	);
@@ -127,12 +127,12 @@ sub colorize {
 		Keyword => 7,
 		Char => 8,
 		Comment => 9,
-		
+
 		DecVal => 10,
 		Alert => 11,
 		BaseN => 12,
 		Others => 13,
-		
+
 	);
 
 	my $start = 0;
