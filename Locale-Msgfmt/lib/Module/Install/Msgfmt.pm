@@ -10,8 +10,8 @@ our $VERSION = '0.15';
 our @ISA     = 'Module::Install::Base';
 
 sub install_share_with_mofiles {
-	my @orig      = (@_);
 	my $self      = shift;
+	my @orig      = (@_);
 	my $class     = ref($self);
 	my $prefix    = $self->_top->{prefix};
 	my $name      = $self->_top->{name};
