@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Kate
 
 {{$NEXT}}
+
+0.05   2010.10.29
     Added support for C# (CHORNY)
     Switched to Dist::Zilla (AZAWAWI)
     Added compatibility with the latest Padre (AZAWAWI)
