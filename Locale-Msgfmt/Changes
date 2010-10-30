@@ -1,20 +1,21 @@
 Revision history for Locale-Msgfmt
 
 0.15    Feb 06, 2010
-        - General code cleaning
+        - General code cleaning (ADAMK)
         - Changes to Module::Install::Msgfmt to make it compatible with
-	  Module::Install::Share.
-        - Moved script from bin/ to script/
-        - Moved private tools from dev to private
-        - Picking 5.008005 as our minimum Perl to ensure solid Unicode support
-	- Converted the Build.PL to a Module::Install Makefile.PL
+          Module::Install::Share. (ADAMK)
+        - Moved script from bin/ to script/ (ADAMK)
+        - Moved private tools from dev to private (ADAMK)
+        - Picking 5.008005 as our minimum Perl to ensure solid Unicode support (ADAMK)
+        - Converted the Build.PL to a Module::Install Makefile.PL (ADAMK)
+        - Fixed it so that it actually works (AZAWAWI)
 
 0.14    Jul 09, 2009
         - fix a mess with Module::Install::Msgfmt :P
 
 0.13    Jul 08, 2009
         - act like make when rebuilding, only rebuild things that need to be rebuilt.
-          - add a --force option to force the old behavior of always rebuilding
+        - add a --force option to force the old behavior of always rebuilding
         - make the "use" in msgfmt.pl versioned to make sure that the correct version
           of Locale::Msgfmt is being used, and add a test to keep this up to date
 
@@ -74,4 +75,3 @@ Revision history for Locale-Msgfmt
 
 0.01    Jun 24, 2009
         - First version, released on an unsuspecting world.
-
