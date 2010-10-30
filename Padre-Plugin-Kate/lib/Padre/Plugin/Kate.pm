@@ -63,7 +63,8 @@ sub menu_plugins_simple {
 
 sub provided_highlighters {
 	return (
-		['Padre::Plugin::Kate', 'Kate', Wx::gettext('Using Syntax::Highlight::Engine::Kate based on the Kate editor')],
+		[   'Padre::Plugin::Kate', 'Kate', Wx::gettext('Using Syntax::Highlight::Engine::Kate based on the Kate editor')
+		],
 	);
 }
 
@@ -96,7 +97,7 @@ use Syntax::Highlight::Engine::Kate;
 sub colorize {
 	my ( $self, $first ) = @_;
 
-	my $doc = Padre::Current->document;
+	my $doc       = Padre::Current->document;
 	my $mime_type = $doc->mimetype;
 	if ( not $d{$mime_type} ) {
 		warn("Invalid mime-type ($mime_type) passed to the Kate highlighter");
@@ -116,21 +117,21 @@ sub colorize {
 
 	# returns a list of pairs: string, type
 	my @tokens = $kate->highlight($text);
-	my %COLOR = (
-		Normal => 0,
+	my %COLOR  = (
+		Normal   => 0,
 		Operator => 1,
-		String => 2,
+		String   => 2,
 		Function => 3,
 		DataType => 4,
 		Variable => 5,
-		Float => 6,
-		Keyword => 7,
-		Char => 8,
-		Comment => 9,
+		Float    => 6,
+		Keyword  => 7,
+		Char     => 8,
+		Comment  => 9,
 
 		DecVal => 10,
-		Alert => 11,
-		BaseN => 12,
+		Alert  => 11,
+		BaseN  => 12,
 		Others => 13,
 
 	);
@@ -140,17 +141,20 @@ sub colorize {
 	while (@tokens) {
 		my $string = shift @tokens;
 		my $type   = shift @tokens;
+
 		#$type ||= 'Normal';
 		#print "'$string'    '$type'\n";
 		my $color = $COLOR{$type};
-		if (not defined $color) {
+		if ( not defined $color ) {
 			warn "Missing color definition for type '$type'\n";
 			$color = 0;
 		}
 		my $length = length($string);
+
 		#$end += $length;
 		$editor->StartStyling( $start, $color );
 		$editor->SetStyling( $length, $color );
+
 		#$start = $end;
 		$start += $length;
 	}
@@ -163,7 +167,8 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription(Wx::gettext('Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
+	$about->SetDescription(
+		Wx::gettext('Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
 	$about->SetVersion($Padre::Plugin::Kate::VERSION);
 	Wx::AboutBox($about);
 	return;
