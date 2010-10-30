@@ -1,18 +1,15 @@
 package Padre::Plugin::Kate;
+
+# ABSTRACT: Kate Syntax Highlighter for Padre
+
 use strict;
 use warnings;
 use 5.008;
-
-our $VERSION = '0.04';
 
 use Padre::Wx ();
 use Padre::Current;
 
 use base 'Padre::Plugin';
-
-=head1 NAME
-
-Padre::Plugin::Kate - Using the Kate syntax highlighter
 
 =head1 SYNOPSIS
 
@@ -45,20 +42,11 @@ Only highlight a few lines around the the last changed character.
 
 Each one has its own advantage and disadvantage. More research is needed.
 
-=head1 COPYRIGHT
-
-Copyright 2009 Gabor Szabo. L<http://szabgab.com/>
-
-=head1 LICENSE
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
-
 =cut
 
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.43;
+	return 'Padre::Plugin' => 0.47;
 }
 
 sub plugin_name {
@@ -69,13 +57,13 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About' => sub { $self->about },
+		Wx::gettext('About') => sub { $self->about },
 	];
 }
 
 sub provided_highlighters { 
 	return (
-		['Padre::Plugin::Kate', 'Kate', 'Using Syntax::Highlight::Engine::Kate based on the Kate editor'],
+		['Padre::Plugin::Kate', 'Kate', Wx::gettext('Using Syntax::Highlight::Engine::Kate based on the Kate editor')],
 	);
 }
 
@@ -175,18 +163,11 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription("Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting\n" );
-	$about->SetVersion($VERSION);
+	$about->SetDescription(Wx::gettext('Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
+	$about->SetVersion($Padre::Plugin::Kate::VERSION);
 	Wx::AboutBox($about);
 	return;
 }
 
 
 1;
-
-# Copyright 2008-2009 Gabor Szabo.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
-
-
