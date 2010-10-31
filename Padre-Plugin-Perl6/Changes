@@ -1,6 +1,8 @@
 Changes
 
 {{$NEXT}}
+
+0.69   2010.10.31
 	Fixed a regression in the highlighter and syntax checker (AZAWAWI)
 
 0.68   2010.10.29
