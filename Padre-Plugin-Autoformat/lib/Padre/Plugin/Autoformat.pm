@@ -1,26 +1,13 @@
-#
-# This file is part of Padre::Plugin::Autoformat.
-# Copyright (c) 2009 Jerome Quelin, all rights reserved.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the same terms as Perl itself.
-#
-#
-
 package Padre::Plugin::Autoformat;
+
+# ABSTRACT: Reformats your text within Padre
 
 use strict;
 use warnings;
 
 use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
-use Module::Util          qw{ find_installed };
-use Padre::Util           ('_T');
-
 use base qw{ Padre::Plugin };
-
-our $VERSION = '1.2.0';
-
 
 # -- padre plugin api, refer to Padre::Plugin
 
@@ -29,14 +16,12 @@ sub plugin_name { 'Autoformat' }
 
 # plugin icon
 sub plugin_icon {
-    # find resource path
-    my $pkgpath = find_installed(__PACKAGE__);
-    my (undef, $dirname, undef) = fileparse($pkgpath);
-    my $iconpath = catfile( $dirname,
-        'Autoformat', 'share', 'icons', 'justify.png');
+    # find icon path using Padre API
+    my $dir = File::Spec->catdir( Padre::Util::share('Autoformat'), 'icons' );
+    my $icon_file = File::Spec->catfile( $dir, 'justify.png' );
 
     # create and return icon
-    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+    return Wx::Bitmap->new( $icon_file, Wx::wxBITMAP_TYPE_PNG );
 }
 
 # padre interfaces
@@ -48,9 +33,9 @@ sub padre_interfaces {
 # plugin menu.
 sub menu_plugins_simple {
     my ($self) = @_;
-    'Autoformat' => [
+    Wx::gettext('Autoformat') => [
         #'About'                    => 'show_about',
-        _T("Autoformat\tCtrl+Shift+J") => 'autoformat',
+        Wx::gettext("Autoformat\tCtrl+Shift+J") => 'autoformat',
     ];
 }
 
@@ -84,12 +69,6 @@ sub autoformat {
 
 1;
 __END__
-
-=head1 NAME
-
-Padre::Plugin::Autoformat - reformat your text within Padre
-
-
 
 =head1 SYNOPSIS
 
@@ -154,11 +133,6 @@ your bug as I make changes.
 Plugin icon courtesy of Mark James, at
 L<http://www.famfamfam.com/lab/icons/silk/>.
 
-
-Our git repository is located at L<git://repo.or.cz/padre-plugin-autoformat.git>,
-and can be browsed at L<http://repo.or.cz/w/padre-plugin-autoformat.git>.
-
-
 You can also look for information on this module at:
 
 =over 4
@@ -176,20 +150,5 @@ L<http://cpanratings.perl.org/d/Padre-Plugin-Autoformat>
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-Autoformat>
 
 =back
-
-
-
-=head1 AUTHOR
-
-Jerome Quelin, C<< <jquelin@cpan.org> >>
-
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright (c) 2009 Jerome Quelin, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
 
 =cut
