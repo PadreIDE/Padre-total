@@ -1,6 +1,7 @@
 Changes
 
 {{$NEXT}}
+	Fixed a regression in the highlighter and syntax checker (AZAWAWI)
 
 0.68   2010.10.29
 	Removed Test::NeedsDisplay dependency (AZAWAWI)

@@ -176,7 +176,7 @@ sub run {
 	require File::Spec;
 	my $cmd =
 		  Padre::Perl->perl . " "
-		. Cwd::realpath( File::Spec->join( File::Basename::dirname(__FILE__), 'p6tokens.p5' ) )
+		.  File::Spec->catfile( Padre::Util::share('Perl6'), 'p6tokens.p5')
 		. qq( "$tmp_in" "$tmp_out" "$tmp_err" "$tmp_dir");
 
 	# all this is needed to prevent win32 platforms from:
