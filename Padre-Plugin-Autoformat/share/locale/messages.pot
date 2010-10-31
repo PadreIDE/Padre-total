@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-12 18:07+0200\n"
+"POT-Creation-Date: 2010-10-31 15:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Autoformat.pm:53
+#: lib/Padre/Plugin/Autoformat.pm:36
+msgid "Autoformat"
+msgstr ""
+
+#: lib/Padre/Plugin/Autoformat.pm:38
 msgid "Autoformat\tCtrl+Shift+J"
 msgstr ""
