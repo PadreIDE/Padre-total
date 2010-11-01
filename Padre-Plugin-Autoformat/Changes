@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Autoformat
 
 {{$NEXT}}
+
+1.21   2010.11.01
  - Switched to Dist::Zilla (AZAWAWI)
  - Added proper share folder support using File::ShareDir (AZAWAWI)
 
