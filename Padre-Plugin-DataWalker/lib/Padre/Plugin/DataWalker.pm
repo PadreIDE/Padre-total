@@ -1,5 +1,7 @@
 package Padre::Plugin::DataWalker;
 
+# ABSTRACT: Simple Perl data structure browser Padre
+
 use 5.008;
 use warnings;
 use strict;
@@ -7,14 +9,8 @@ use strict;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
-use Padre::Util   ('_T');
 
-our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
-
-=head1 NAME
-
-Padre::Plugin::DataWalker - Simple Perl data structure browser Padre
 
 =head1 SYNOPSIS
 
@@ -86,11 +82,11 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		_T('About')                          => sub { $self->show_about },
-		_T('Browse YAML dump file')          => sub { $self->browse_yaml_file },
-		_T('Browse current document object') => sub { $self->browse_current_document },
-		_T('Browse Padre IDE object')        => sub { $self->browse_padre },
-		_T('Browse Padre main symbol table') => sub { $self->browse_padre_stash },
+		Wx::gettext('About')                          => sub { $self->show_about },
+		Wx::gettext('Browse YAML dump file')          => sub { $self->browse_yaml_file },
+		Wx::gettext('Browse current document object') => sub { $self->browse_current_document },
+		Wx::gettext('Browse Padre IDE object')        => sub { $self->browse_padre },
+		Wx::gettext('Browse Padre main symbol table') => sub { $self->browse_padre_stash },
 	];
 }
 
@@ -100,7 +96,7 @@ sub browse_yaml_file {
 	my $main = Padre->ide->wx->main;
 	my $dialog = Wx::FileDialog->new(
 		$main,
-		_T('Open file'),
+		Wx::gettext('Open file'),
 		$main->cwd,
 		"",
 		"*.*",
@@ -116,8 +112,8 @@ sub browse_yaml_file {
 
 	if (not (-f $file and -r $file)) {
 		Wx::MessageBox(
-			sprintf(_T("Could not find the specified file '%s'"), $file),
-			_T('File not found'),
+			sprintf(Wx::gettext("Could not find the specified file '%s'"), $file),
+			Wx::gettext('File not found'),
 			Wx::wxOK,
 			$main,
 		);
@@ -126,8 +122,8 @@ sub browse_yaml_file {
 	my $data = eval {YAML::XS::LoadFile($file)};
 	if (not defined $data or $@) {
 		Wx::MessageBox(
-			sprintf(_T("Could not read the YAML file.%s", ($@ ? "\n$@" : ""))),
-			_T('Invalid YAML file'),
+			sprintf(Wx::gettext("Could not read the YAML file.%s", ($@ ? "\n$@" : ""))),
+			Wx::gettext('Invalid YAML file'),
 			Wx::wxOK,
 			$main,
 		);
@@ -184,7 +180,7 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Simple Perl data structure browser for Padre
 END_MESSAGE
-	$about->SetVersion( $VERSION );
+	$about->SetVersion( $Padre::Plugin::DataWalker::VERSION );
 
 	# Show the About dialog
 	Wx::AboutBox( $about );
@@ -193,29 +189,3 @@ END_MESSAGE
 }
 
 1;
-
-__END__
-
-
-=head1 AUTHOR
-
-Steffen Mueller, C<< <smueller at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to L<http://padre.perlide.org/>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2009 The Padre development team as listed in Padre.pm.
-all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-=cut
-
-# Copyright 2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

@@ -1,20 +1,20 @@
 Revision history for Padre-Plugin-DataWalker
 
-        compatibility with new Padre (CHORNY)
-        upgrade to Module::Install 1.00
+{{$NEXT}}
+    Switched to Dist::Zilla (AZAWAWI)
+    Compatibility with the latest Padre (CHORNY, AZAWAWI)
 
-0.02 2010-01-12
+0.02 2010.01.12
   - Fix compatibility with Padre >= 0.47 (Jens Rehsack)
   - Added translations:
     - French (jquelin)
     - Polish (therek)
     - Chinese, traditional (BLUET)
-	- Arabic (azawawi)
-	- Spanish (brunov)
-	- Brazilian Portuguese (garu)
+    - Arabic (azawawi)
+    - Spanish (brunov)
+    - Brazilian Portuguese (garu)
   - actually install the translations (RSN)
   - Removed warning due to missing () (SEWI)
 
-0.01    2009-03-19
+0.01    2009.03.19
   - Initial version
-
