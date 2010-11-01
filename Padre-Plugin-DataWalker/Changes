@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-DataWalker
 
 {{$NEXT}}
+
+0.03   2010.11.01
     Switched to Dist::Zilla (AZAWAWI)
     Compatibility with the latest Padre (CHORNY, AZAWAWI)
 
