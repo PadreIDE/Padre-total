@@ -158,7 +158,7 @@ sub _data_walker {
 	my $self = shift;
 	my $data = shift;
 	require Wx::Perl::DataWalker;
-        
+
 	my $dialog = Wx::Perl::DataWalker->new(
 		{data => $data},
 		undef,
