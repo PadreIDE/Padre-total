@@ -10,7 +10,7 @@ use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 =head1 SYNOPSIS
 
@@ -72,7 +72,7 @@ Certainly only useful for debugging Padre.
 
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,
+	'Padre::Plugin' => 0.47,;
 }
 
 sub plugin_name {
@@ -93,36 +93,36 @@ sub menu_plugins_simple {
 sub browse_yaml_file {
 	my $self = shift;
 	require YAML::XS;
-	my $main = Padre->ide->wx->main;
+	my $main   = Padre->ide->wx->main;
 	my $dialog = Wx::FileDialog->new(
 		$main,
 		Wx::gettext('Open file'),
 		$main->cwd,
 		"",
 		"*.*",
-		Wx::wxFD_OPEN|Wx::wxFD_FILE_MUST_EXIST,
+		Wx::wxFD_OPEN | Wx::wxFD_FILE_MUST_EXIST,
 	);
 	unless ( Padre::Constant::WIN32() ) {
 		$dialog->SetWildcard("*");
 	}
 
 	return if $dialog->ShowModal == Wx::wxID_CANCEL;
-	my @filenames = $dialog->GetFilenames or return();
-	my $file = File::Spec->catfile($dialog->GetDirectory(), shift @filenames);
+	my @filenames = $dialog->GetFilenames or return ();
+	my $file = File::Spec->catfile( $dialog->GetDirectory(), shift @filenames );
 
-	if (not (-f $file and -r $file)) {
+	if ( not( -f $file and -r $file ) ) {
 		Wx::MessageBox(
-			sprintf(Wx::gettext("Could not find the specified file '%s'"), $file),
+			sprintf( Wx::gettext("Could not find the specified file '%s'"), $file ),
 			Wx::gettext('File not found'),
 			Wx::wxOK,
 			$main,
 		);
 	}
 
-	my $data = eval {YAML::XS::LoadFile($file)};
-	if (not defined $data or $@) {
+	my $data = eval { YAML::XS::LoadFile($file) };
+	if ( not defined $data or $@ ) {
 		Wx::MessageBox(
-			sprintf(Wx::gettext("Could not read the YAML file.%s", ($@ ? "\n$@" : ""))),
+			sprintf( Wx::gettext( "Could not read the YAML file.%s", ( $@ ? "\n$@" : "" ) ) ),
 			Wx::gettext('Invalid YAML file'),
 			Wx::wxOK,
 			$main,
@@ -130,28 +130,28 @@ sub browse_yaml_file {
 	}
 
 	$self->_data_walker($data);
-	return();
+	return ();
 }
 
 sub browse_padre_stash {
 	my $self = shift;
-	$self->_data_walker(\%::);
-	return();
+	$self->_data_walker( \%:: );
+	return ();
 }
 
 
 sub browse_current_document {
 	my $self = shift;
-	my $doc = Padre::Current->document;
+	my $doc  = Padre::Current->document;
 	$self->_data_walker($doc);
-	return();
+	return ();
 }
 
 
 sub browse_padre {
 	my $self = shift;
-	$self->_data_walker(Padre->ide);
-	return();
+	$self->_data_walker( Padre->ide );
+	return ();
 }
 
 sub _data_walker {
@@ -160,14 +160,14 @@ sub _data_walker {
 	require Wx::Perl::DataWalker;
 
 	my $dialog = Wx::Perl::DataWalker->new(
-		{data => $data},
+		{ data => $data },
 		undef,
 		-1,
 		"DataWalker",
 	);
-	$dialog->SetSize(500, 500);
+	$dialog->SetSize( 500, 500 );
 	$dialog->Show(1);
-	return();
+	return ();
 }
 
 
@@ -180,10 +180,10 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Simple Perl data structure browser for Padre
 END_MESSAGE
-	$about->SetVersion( $Padre::Plugin::DataWalker::VERSION );
+	$about->SetVersion($Padre::Plugin::DataWalker::VERSION);
 
 	# Show the About dialog
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 
 	return;
 }
