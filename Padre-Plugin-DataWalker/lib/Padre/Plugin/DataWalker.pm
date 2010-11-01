@@ -76,7 +76,7 @@ sub padre_interfaces {
 }
 
 sub plugin_name {
-	'DataWalker';
+	Wx::gettext('DataWalker');
 }
 
 sub menu_plugins_simple {
