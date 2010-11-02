@@ -79,8 +79,10 @@ sub ok_clicked {
 		Wx::MessageBox( Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main );
 		return;
 	} elsif ( not $data->{'_directory_'} ) {
-		Wx::MessageBox( Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK,
-			$main );
+		Wx::MessageBox(
+			Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK,
+			$main
+		);
 		return;
 	}
 
