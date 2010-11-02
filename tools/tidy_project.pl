@@ -38,8 +38,12 @@ for my $extra (@extras) {
 }
 
 # formatting documents
-my $cmd = "perltidy --backup-and-modify-in-place --profile=$perltidyrc @files";
-system($cmd) == 0 or die "perltidy exited with return code " . ($? >> 8);
+eval {
+	Perl::Tidy::perltidy(argv => "--backup-and-modify-in-place --profile=$perltidyrc @files");
+};
+if($@) {
+	print "Perl::Tidy failed with the following error:\n$@\n";
+}
 
 # removing backup files
 unlink map {"$_.bak"} @files;
