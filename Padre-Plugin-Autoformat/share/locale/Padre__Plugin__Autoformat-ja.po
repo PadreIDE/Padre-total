@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: Padre-Plugin-Autoformat\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-12 18:07+0200\n"
 "PO-Revision-Date: 2009-07-27 01:12+0900\n"

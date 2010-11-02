@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: padre-plugin-autoformat\n"
+"Project-Id-Version: Padre-Plugin-Autoformat\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-05-11 23:50+0300\n"
 "PO-Revision-Date: \n"
