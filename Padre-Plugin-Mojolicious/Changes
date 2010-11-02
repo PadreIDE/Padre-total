@@ -1,5 +1,10 @@
 Revision history for Padre-Plugin-Mojolicious
 
+{{$NEXT}}
+	- Switched to Dist::Zilla (AZAWAWI)
+	- Removed unused dependencies (AZAWAWI)
+	- Compatibility with the latest Padre (AZAWAWI)
+
 0.03
 	- Removed taint mode for tests, leading to build failure (JQUELIN)
 	- General modernisation to allow it to support Padre 0.64 (ADAMK)

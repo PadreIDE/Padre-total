@@ -1,5 +1,7 @@
 package Padre::Plugin::Mojolicious::NewApp;
 
+# ABSTRACT: A New Mojolicious Application for Padre
+
 use 5.008;
 use strict;
 use warnings;
@@ -7,10 +9,7 @@ use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
-use Padre::Util       ('_T');
 use Padre::DB         ();
-
-our $VERSION = '0.03';
 
 sub on_newapp {
 	my $plugin = shift;
@@ -24,12 +23,12 @@ sub get_layout {
 
 	my @layout = (
 		[
-			[ 'Wx::StaticText', undef,              _T('Application Name:')],
+			[ 'Wx::StaticText', undef,              Wx::gettext('Application Name:')],
 			[ 'Wx::TextCtrl',   '_app_name_',    ''],
 		],
 		[
-			[ 'Wx::StaticText',      undef,         _T('Parent Directory:')],
-			[ 'Wx::DirPickerCtrl',   '_directory_', '',   _T('Pick parent directory')],
+			[ 'Wx::StaticText',      undef,         Wx::gettext('Parent Directory:')],
+			[ 'Wx::DirPickerCtrl',   '_directory_', '',   Wx::gettext('Pick parent directory')],
 		],
 		[
 			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
@@ -45,7 +44,7 @@ sub dialog {
 	my $layout = get_layout();
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $parent,
-		title  => _T('New Mojolicious Application'),
+		title  => Wx::gettext('New Mojolicious Application'),
 		layout => $layout,
 		width  => [ 100, 200 ],
 		bottom => 20,
@@ -82,10 +81,10 @@ sub ok_clicked {
 
 	# TODO improve input validation !
 	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
-		Wx::MessageBox(_T('Invalid Application name'), _T('missing field'), Wx::wxOK, $main);
+		Wx::MessageBox(Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main);
 		return;
 	} elsif ( not $data->{'_directory_'} ) {
-		Wx::MessageBox(_T('You need to select a base directory'), _T('missing field'), Wx::wxOK, $main);
+		Wx::MessageBox(Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK, $main);
 		return;
 	}
 
@@ -119,8 +118,8 @@ sub ok_clicked {
 	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
-		sprintf(_T("%s apparently created. Do you want to open it now?"), $data->{_app_name_}),
-		_T('Done'),
+		sprintf(Wx::gettext("%s apparently created. Do you want to open it now?"), $data->{_app_name_}),
+		Wx::gettext('Done'),
 		Wx::wxYES_NO|Wx::wxCENTRE,
 		$main,
 	);
@@ -144,8 +143,3 @@ sub ok_clicked {
 }
 
 1;
-
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.

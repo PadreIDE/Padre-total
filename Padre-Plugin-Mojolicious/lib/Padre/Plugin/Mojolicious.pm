@@ -1,17 +1,14 @@
 package Padre::Plugin::Mojolicious;
 
+# ABSTRACT: Simple Mojolicious helper interface for Padre
+
 use 5.008;
 use strict;
 use warnings;
-use Padre::Util   ('_T');
+
 use Padre::Plugin ();
 
-our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin';
-
-
-
-
 
 ######################################################################
 # Padre Integration
@@ -46,7 +43,7 @@ sub plugin_disable {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name  => [
-		_T('New Mojolicious Application') => sub { 
+		Wx::gettext('New Mojolicious Application') => sub { 
 			require Padre::Plugin::Mojolicious::NewApp;
 			Padre::Plugin::Mojolicious::NewApp::on_newapp($self);
 			return;
@@ -54,24 +51,24 @@ sub menu_plugins_simple {
 
 		'---' => undef,
 
-		_T('Start Web Server') => sub {
+		Wx::gettext('Start Web Server') => sub {
 			$self->on_start_server;
 		},
 
-		_T('Stop Web Server')  => sub {
+		Wx::gettext('Stop Web Server')  => sub {
 			$self->on_stop_server;
 		},
 
 		'---' => undef,
 
-		_T('Mojolicious Online References') => [
-			_T('Mojolicious Manual') => sub {
+		Wx::gettext('Mojolicious Online References') => [
+			Wx::gettext('Mojolicious Manual') => sub {
 				Padre::Wx::launch_browser('http://search.cpan.org/perldoc?Mojo::Manual::Mojolicious');
 			},
-			_T('Mojolicious Website') => sub {
+			Wx::gettext('Mojolicious Website') => sub {
 				Padre::Wx::launch_browser('http://www.mojolicious.org/');
 			},
-			_T('Mojolicious Community Live Support') => sub {
+			Wx::gettext('Mojolicious Community Live Support') => sub {
 				Padre::Wx::launch_irc( 'irc.perl.org' => 'mojo' );
 			},
 
@@ -79,7 +76,7 @@ sub menu_plugins_simple {
 
 		'---' => undef,
 
-		_T('About') => sub {
+		Wx::gettext('About') => sub {
 			$self->on_show_about;
 		},
 	];
@@ -98,10 +95,10 @@ sub on_start_server {
 	unless ( -e $server_full_path) {
 		Wx::MessageBox(
 			sprintf(
-				_T("Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project."),
+				Wx::gettext("Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project."),
 				$server_full_path
 			),
-			_T('Server not found'),
+			Wx::gettext('Server not found'),
 			Wx::wxOK,
 			$main
 		);
@@ -127,8 +124,8 @@ sub on_start_server {
 
 	# TODO: actually check whether this is true.
 	my $ret = Wx::MessageBox(
-		_T('Web server appears to be running. Launch web browser now?'),
-		_T('Start Web Browser?'),
+		Wx::gettext('Web server appears to be running. Launch web browser now?'),
+		Wx::gettext('Start Web Browser?'),
 		Wx::wxYES_NO | Wx::wxCENTRE,
 		$main,
 	);
@@ -154,7 +151,7 @@ sub on_stop_server {
 	}
 	delete $main->{command};
 	$main->menu->run->enable;
-	$main->output->AppendText(_T("\nWeb server stopped successfully.\n"));
+	$main->output->AppendText(Wx::gettext("\nWeb server stopped successfully.\n"));
 	return;
 }
 
@@ -179,10 +176,6 @@ sub on_show_about {
 __END__
 
 =pod
-
-=head1 NAME
-
-Padre::Plugin::Mojolicious - Simple Mojolicious helper interface for Padre
 
 =head1 VERSION
 
@@ -221,11 +214,6 @@ This menu option contains a series of external reference links on Mojolicious. C
 =head2 'About'
 
 Shows a nice about box with this module's name and version.
-
-
-=head1 AUTHOR
-
-Breno G. de Oliveira, C<< <garu at cpan.org> >>
 
 =head1 BUGS
 
@@ -267,12 +255,3 @@ L<http://search.cpan.org/dist/Padre-Plugin-Mojolicious/>
 =head1 SEE ALSO
 
 L<Mojolicious>, L<Padre>
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
