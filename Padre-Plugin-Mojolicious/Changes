@@ -3,6 +3,7 @@ Revision history for Padre-Plugin-Mojolicious
 {{$NEXT}}
 	- Switched to Dist::Zilla (AZAWAWI)
 	- Removed unused dependencies (AZAWAWI)
+	- Code cleanup (AZAWAWI)
 	- Compatibility with the latest Padre (AZAWAWI)
 
 0.03

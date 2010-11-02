@@ -27,9 +27,9 @@ sub get_mojolicious_project_name {
 sub find_file_from_output {
 	my $filename    = shift;
 	my $output_text = shift;
-	
+
 	$filename .= '.pm';
-	
+
 	if ($output_text =~ m{\[write\] (.+$filename)}) {
 		return $1;
 	} else {
@@ -37,11 +37,11 @@ sub find_file_from_output {
 	}
 }
 
-sub get_document_base_dir {	
+sub get_document_base_dir {
 	my $main     = Padre->ide->wx->main;
 	my $doc      = $main->current->document;
 	my $filename = $doc->filename;
-	
+
 	return unless $filename;
 
 	# check for potential relative path on filename

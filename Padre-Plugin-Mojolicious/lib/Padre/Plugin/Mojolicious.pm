@@ -15,35 +15,28 @@ our @ISA     = 'Padre::Plugin';
 
 sub padre_interfaces {
 	'Padre::Plugin'     => 0.64,
-	'Padre::Util'       => 0.64,
-	'Padre::DB'         => 0.64,
-	'Padre::Wx'         => 0.64,
-	'Padre::Wx::Dialog' => 0.64,
 }
-
-
-
 
 
 ######################################################################
 # Padre::Plugin Methods
 
 sub plugin_name {
-	'Mojolicious'
+	Wx::gettext('Mojolicious')
 }
 
 sub plugin_disable {
 	require Class::Unload;
 	Class::Unload->unload('Padre::Plugin::Mojolicious::NewApp');
 	Class::Unload->unload('Padre::Plugin::Mojolicious::Util');
-	Class::Unload->unload('Mojo');
+	Class::Unload->unload('Mojolicious');
 }
 
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name  => [
-		Wx::gettext('New Mojolicious Application') => sub { 
+		Wx::gettext('New Mojolicious Application') => sub {
 			require Padre::Plugin::Mojolicious::NewApp;
 			Padre::Plugin::Mojolicious::NewApp::on_newapp($self);
 			return;
@@ -116,7 +109,7 @@ sub on_start_server {
 	my $command = "$perl " . File::Spec->catfile(
 		'bin', $server_filename
 	) . ' daemon';
-					   
+
 	$main->run_command($command);
 
 	# restore current dir
@@ -156,16 +149,16 @@ sub on_stop_server {
 }
 
 sub on_show_about {
-	require Mojo;
+	require Mojolicious;
 	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Mojolicious");
 	$about->SetDescription(
 		  "Initial Mojolicious support for Padre\n\n"
-		. "This system is running Mojolicious version " . $Mojo::VERSION . "\n"
+		. "This system is running Mojolicious version " . $Mojolicious::VERSION . "\n"
 	);
-	$about->SetVersion( $VERSION );
-	Class::Unload->unload('Mojo');
+	$about->SetVersion( $Padre::Plugin::Mojolicious::VERSION );
+	Class::Unload->unload('Mojolicious');
 	Wx::AboutBox( $about );
 	return;
 }
