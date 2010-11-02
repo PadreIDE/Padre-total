@@ -1,12 +1,11 @@
 package Padre::Plugin::Catalyst::Panel;
 
+# ABSTRACT: A Catalyst plugin panel
+
 use strict;
 use warnings;
 
-our $VERSION = '0.09';
-
 use Padre::Wx ();
-use Wx        ();
 use base 'Wx::Panel';
 
 sub new {

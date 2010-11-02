@@ -1,16 +1,14 @@
 package Padre::Plugin::Catalyst::Outline;
 
+# ABSTRACT: A Catalyst plugin outline
+
 use strict;
 use warnings;
 
 use Padre::Wx   ();
-use Padre::Util ('_T');
 use Wx;
 
 use base 'Wx::TreeCtrl';
-
-our $VERSION = '0.09';
-
 
 sub new {
 	my $class  = shift;
@@ -101,7 +99,7 @@ sub populate {
 }
 
 sub gettext_label {
-	_T('Catalyst');
+	Wx::gettext('Catalyst');
 }
 
 

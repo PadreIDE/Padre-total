@@ -1,5 +1,9 @@
 Revision history for Padre-Plugin-Catalyst
 
+{{$NEXT}}
+    Switched to Dist::Zilla (AZAWAWI)
+    Code cleanup (AZAWAWI)
+
 0.09
     compatibility with newer Padre versions (ZENOG)
 

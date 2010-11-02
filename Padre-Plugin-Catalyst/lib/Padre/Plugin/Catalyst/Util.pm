@@ -1,13 +1,14 @@
 package Padre::Plugin::Catalyst::Util;
+
+# ABSTRACT: A collection of utility functions
+
 use strict;
 use warnings;
 
 # some code used all around the Plugin
 use Cwd         ();
 use File::Spec  ();
-use Padre::Util ('_T');
-
-our $VERSION = '0.09';
+use Padre::Wx   ();
 
 # get the Catalyst project name, so we can
 # figure out the development server's name
@@ -43,8 +44,8 @@ sub get_document_base_dir {
 
 	unless ($doc) {
 		Wx::MessageBox(
-			_T('Could not open current document. Please make sure you have at least one document open.'),
-			_T('Catalyst project dir not found'), Wx::wxOK, $main
+			Wx::gettext('Could not open current document. Please make sure you have at least one document open.'),
+			Wx::gettext('Catalyst project dir not found'), Wx::wxOK, $main
 		);
 		return;
 	}
@@ -96,8 +97,8 @@ sub get_plugin_menu_item_by_label {
 sub toggle_server_menu {
 	my $toggle = shift;
 
-	my $menu_start = get_plugin_menu_item_by_label( _T('Start Web Server') );
-	my $menu_stop  = get_plugin_menu_item_by_label( _T('Stop Web Server') );
+	my $menu_start = get_plugin_menu_item_by_label( Wx::gettext('Start Web Server') );
+	my $menu_stop  = get_plugin_menu_item_by_label( Wx::gettext('Stop Web Server') );
 	if ( $menu_start and $menu_stop ) {
 		$menu_start->Enable($toggle);
 		$menu_stop->Enable( !$toggle );
@@ -108,10 +109,10 @@ sub toggle_menu_items {
 	my ( $toggle, $is_server_on ) = (@_);
 
 	#TODO: caching this on startup would probably make things marginally faster
-	my $menu_helpers = get_plugin_menu_item_by_label( _T('Create new...') );
-	my $menu_start   = get_plugin_menu_item_by_label( _T('Start Web Server') );
-	my $menu_stop    = get_plugin_menu_item_by_label( _T('Stop Web Server') );
-	my $menu_update  = get_plugin_menu_item_by_label( _T('Update Application Scripts') );
+	my $menu_helpers = get_plugin_menu_item_by_label( Wx::gettext('Create new...') );
+	my $menu_start   = get_plugin_menu_item_by_label( Wx::gettext('Start Web Server') );
+	my $menu_stop    = get_plugin_menu_item_by_label( Wx::gettext('Stop Web Server') );
+	my $menu_update  = get_plugin_menu_item_by_label( Wx::gettext('Update Application Scripts') );
 
 	$menu_helpers->Enable($toggle) if $menu_helpers;
 	$menu_update->Enable($toggle)  if $menu_update;
@@ -125,4 +126,4 @@ sub toggle_menu_items {
 	}
 }
 
-42;
+1;

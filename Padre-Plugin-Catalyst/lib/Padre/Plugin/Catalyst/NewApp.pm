@@ -1,5 +1,7 @@
 package Padre::Plugin::Catalyst::NewApp;
 
+# ABSTRACT: A Catalyst New Application
+
 use 5.008;
 use strict;
 use warnings;
@@ -7,10 +9,6 @@ use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
-use Padre::Util       ('_T');
-
-
-our $VERSION = '0.09';
 
 sub on_newapp {
 	my $main = Padre->ide->wx->main;
@@ -169,9 +167,5 @@ sub ok_clicked {
 
 	return;
 }
-42;
-__END__
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
+
+1;

@@ -1,16 +1,16 @@
 package Padre::Plugin::Catalyst::Helper;
 
+# ABSTRACT: The Catalyst plugin helper
+
 use 5.008;
 use strict;
 use warnings;
+
 use Cwd               ();
 use File::Spec        ();
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
-use Padre::Util       ('_T');
-use Padre::Perl;
-
-our $VERSION = '0.09';
+use Padre::Perl       ();
 
 # TODO: these should've been passed as a parameter
 # but I'm too tired to figure how to do it
@@ -30,7 +30,7 @@ sub dialog {
 
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $main,
-		title  => _T('Create New Component'),
+		title  => Wx::gettext('Create New Component'),
 		layout => $layout,
 		width  => [ 100, 200 ],
 		bottom => 20,
@@ -49,13 +49,13 @@ sub get_model_layout {
 	my $available_models = $helpers_for->{'model'}; #shift; TODO: ungloball this
 
 	my @layout = (
-		[   [ 'Wx::StaticText', undef,    _T('Model Name:') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('Model Name:') ],
 			[ 'Wx::TextCtrl',   '_name_', 'DB' ],
 		],
-		[   [ 'Wx::StaticText', undef,    _T('Type') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('Type') ],
 			[ 'Wx::Choice',     '_type_', $available_models ],
 		],
-		[   [ 'Wx::StaticText', undef,            _T('Additional Parameters:') ],
+		[   [ 'Wx::StaticText', undef,            Wx::gettext('Additional Parameters:') ],
 			[ 'Wx::TextCtrl',   '_extra_params_', '' ],
 		],
 		[   [ 'Wx::CheckBox', '_force_', 'force', 0 ], #TODO add -mechanize parameter too
@@ -71,13 +71,13 @@ sub get_view_layout {
 	my $available_views = $helpers_for->{'view'};      #shift; TODO: ungloball this
 
 	my @layout = (
-		[   [ 'Wx::StaticText', undef,    _T('View Name:') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('View Name:') ],
 			[ 'Wx::TextCtrl',   '_name_', 'TT' ],
 		],
-		[   [ 'Wx::StaticText', undef,    _T('Type') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('Type') ],
 			[ 'Wx::Choice',     '_type_', $available_views ],
 		],
-		[   [ 'Wx::CheckBox', '_force_', _T('force'), 0 ], #TODO add -mechanize parameter too
+		[   [ 'Wx::CheckBox', '_force_', Wx::gettext('force'), 0 ], #TODO add -mechanize parameter too
 		],
 		[   [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],
 			[ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ],
@@ -90,13 +90,13 @@ sub get_controller_layout {
 	my $available_controllers = $helpers_for->{'controller'}; #shift; TODO: ungloball this
 
 	my @layout = (
-		[   [ 'Wx::StaticText', undef,    _T('Controller Name:') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('Controller Name:') ],
 			[ 'Wx::TextCtrl',   '_name_', '' ],
 		],
-		[   [ 'Wx::StaticText', undef,    _T('Type') ],
+		[   [ 'Wx::StaticText', undef,    Wx::gettext('Type') ],
 			[ 'Wx::Choice',     '_type_', $available_controllers ],
 		],
-		[   [ 'Wx::StaticText', undef,            _T('Additional Parameters:') ],
+		[   [ 'Wx::StaticText', undef,            Wx::gettext('Additional Parameters:') ],
 			[ 'Wx::TextCtrl',   '_extra_params_', '' ],
 		],
 		[   [ 'Wx::CheckBox', '_force_', 'force', 0 ],        #TODO add -mechanize parameter too
@@ -111,7 +111,7 @@ sub get_controller_layout {
 
 sub find_helpers_for {
 	my $type     = shift;
-	my $none_str = _T('[none]');
+	my $none_str = Wx::gettext('[none]');
 
 	require Module::Pluggable::Object;
 	my @available_helpers = map {
@@ -138,7 +138,7 @@ sub find_helpers_for {
 sub find_favourites {
 	my $type     = shift;
 	my $helpers  = shift;
-	my $none_str = _T('[none]');
+	my $none_str = Wx::gettext('[none]');
 	if ( $type eq 'View' ) {
 		foreach ( @{$helpers} ) {
 			return $_ if ( $_ eq 'TT' );
@@ -217,8 +217,8 @@ sub create {
 
 	unless ( $data->{'_name_'} ) {
 		Wx::MessageBox(
-			sprintf( _T("You must provide a name for your %s module"), $type ),
-			_T('Module name required'), Wx::wxOK, $main
+			sprintf( Wx::gettext("You must provide a name for your %s module"), $type ),
+			Wx::gettext('Module name required'), Wx::wxOK, $main
 		);
 		return;
 	}
@@ -233,11 +233,11 @@ sub create {
 	if ( !-e $helper_full_path ) {
 		Wx::MessageBox(
 			sprintf(
-				_T( "Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
+				Wx::gettext( "Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
 				),
 				$helper_full_path
 			),
-			_T('Helper not found'),
+			Wx::gettext('Helper not found'),
 			Wx::wxOK, $main
 		);
 		return;
@@ -266,7 +266,7 @@ sub create {
 		push @cmd, '-force';
 	}
 
-	$main->output->AppendText( _T('running:') . "@cmd\n" );
+	$main->output->AppendText( Wx::gettext('running:') . "@cmd\n" );
 
 	# go to the selected directory
 	my $pwd = Cwd::cwd();
@@ -278,7 +278,7 @@ sub create {
 
 	chdir $pwd; # restore directory
 
-	$main->output->AppendText( "\n" . _T("Catalyst helper script ended.") . "\n" );
+	$main->output->AppendText( "\n" . Wx::gettext("Catalyst helper script ended.") . "\n" );
 
 	require Padre::Plugin::Catalyst::Util;
 	my $file = Padre::Plugin::Catalyst::Util::find_file_from_output(
@@ -288,8 +288,8 @@ sub create {
 	if ($file) {
 		$file = Cwd::realpath($file); # avoid relative paths
 		my $ret = Wx::MessageBox(
-			sprintf( _T("%s apparently created. Do you want to open it now?"), $type ),
-			_T('Done'),
+			sprintf( Wx::gettext("%s apparently created. Do you want to open it now?"), $type ),
+			Wx::gettext('Done'),
 			Wx::wxYES_NO | Wx::wxCENTRE,
 			$main,
 		);
@@ -303,8 +303,8 @@ sub create {
 		}
 	} else {
 		Wx::MessageBox(
-			sprintf( _T("Error creating %s. Please check the error output and try again"), $type ),
-			_T('Error'),
+			sprintf( Wx::gettext("Error creating %s. Please check the error output and try again"), $type ),
+			Wx::gettext('Error'),
 			Wx::wxOK | Wx::wxCENTRE,
 			$main,
 		);
@@ -312,4 +312,4 @@ sub create {
 	return;
 }
 
-42;
+1;
