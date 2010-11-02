@@ -42,7 +42,7 @@ exit;
 #
 sub download_wxwidgets_html_zip {
 	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
-		my $url = 'http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP';
+		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP";
 		print "Downloading $url. Please wait...\n";
 		my $ua  = LWP::UserAgent->new;
 		my $req = HTTP::Request->new( GET => $url );
