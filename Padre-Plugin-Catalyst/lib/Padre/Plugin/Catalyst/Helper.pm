@@ -87,7 +87,7 @@ sub get_view_layout {
 }
 
 sub get_controller_layout {
-	my $available_controllers = $helpers_for->{'controller'}; #shift; TODO: ungloball this
+	my $available_controllers = $helpers_for->{'controller'};       #shift; TODO: ungloball this
 
 	my @layout = (
 		[   [ 'Wx::StaticText', undef,    Wx::gettext('Controller Name:') ],
@@ -99,7 +99,7 @@ sub get_controller_layout {
 		[   [ 'Wx::StaticText', undef,            Wx::gettext('Additional Parameters:') ],
 			[ 'Wx::TextCtrl',   '_extra_params_', '' ],
 		],
-		[   [ 'Wx::CheckBox', '_force_', 'force', 0 ],        #TODO add -mechanize parameter too
+		[   [ 'Wx::CheckBox', '_force_', 'force', 0 ],              #TODO add -mechanize parameter too
 		],
 		[   [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],
 			[ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ],
@@ -233,7 +233,8 @@ sub create {
 	if ( !-e $helper_full_path ) {
 		Wx::MessageBox(
 			sprintf(
-				Wx::gettext( "Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
+				Wx::gettext(
+					"Catalyst helper script not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
 				),
 				$helper_full_path
 			),

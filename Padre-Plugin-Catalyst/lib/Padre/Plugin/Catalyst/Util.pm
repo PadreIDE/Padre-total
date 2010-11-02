@@ -6,9 +6,9 @@ use strict;
 use warnings;
 
 # some code used all around the Plugin
-use Cwd         ();
-use File::Spec  ();
-use Padre::Wx   ();
+use Cwd        ();
+use File::Spec ();
+use Padre::Wx  ();
 
 # get the Catalyst project name, so we can
 # figure out the development server's name

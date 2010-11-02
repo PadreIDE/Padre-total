@@ -5,7 +5,7 @@ package Padre::Plugin::Catalyst::Outline;
 use strict;
 use warnings;
 
-use Padre::Wx   ();
+use Padre::Wx ();
 use Wx;
 
 use base 'Wx::TreeCtrl';

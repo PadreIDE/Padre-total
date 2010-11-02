@@ -5,7 +5,7 @@ package Padre::Plugin::Catalyst;
 use warnings;
 use strict;
 
-use Padre::Perl  ();
+use Padre::Perl ();
 
 use base 'Padre::Plugin';
 
@@ -404,7 +404,8 @@ sub on_start_server {
 	if ( !-e $server_full_path ) {
 		Wx::MessageBox(
 			sprintf(
-				Wx::gettext( "Catalyst development web server not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
+				Wx::gettext(
+					"Catalyst development web server not found at\n%s\n\nPlease make sure the active document is from your Catalyst project."
 				),
 				$server_full_path
 			),
@@ -465,7 +466,8 @@ sub run_command {
 		if ( $Wx::Perl::ProcessStream::VERSION < .20 ) {
 			$self->main->error(
 				sprintf(
-					Wx::gettext(       'Wx::Perl::ProcessStream is version %s'
+					Wx::gettext(
+						      'Wx::Perl::ProcessStream is version %s'
 							. ' which is known to cause problems. Get at least 0.20 by typing'
 							. "\ncpan Wx::Perl::ProcessStream"
 					),
