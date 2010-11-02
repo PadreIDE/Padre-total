@@ -8,13 +8,13 @@ use warnings;
 
 use Padre::Plugin ();
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 ######################################################################
 # Padre Integration
 
 sub padre_interfaces {
-	'Padre::Plugin'     => 0.64,
+	'Padre::Plugin' => 0.64,;
 }
 
 
@@ -22,7 +22,7 @@ sub padre_interfaces {
 # Padre::Plugin Methods
 
 sub plugin_name {
-	Wx::gettext('Mojolicious')
+	Wx::gettext('Mojolicious');
 }
 
 sub plugin_disable {
@@ -35,7 +35,7 @@ sub plugin_disable {
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
 	my $self = shift;
-	return $self->plugin_name  => [
+	return $self->plugin_name => [
 		Wx::gettext('New Mojolicious Application') => sub {
 			require Padre::Plugin::Mojolicious::NewApp;
 			Padre::Plugin::Mojolicious::NewApp::on_newapp($self);
@@ -48,7 +48,7 @@ sub menu_plugins_simple {
 			$self->on_start_server;
 		},
 
-		Wx::gettext('Stop Web Server')  => sub {
+		Wx::gettext('Stop Web Server') => sub {
 			$self->on_stop_server;
 		},
 
@@ -84,16 +84,17 @@ sub on_start_server {
 
 	my $server_filename = Padre::Plugin::Mojolicious::Util::get_mojolicious_project_name($project_dir);
 
-	my $server_full_path = File::Spec->catfile($project_dir, 'bin', $server_filename );
-	unless ( -e $server_full_path) {
+	my $server_full_path = File::Spec->catfile( $project_dir, 'bin', $server_filename );
+	unless ( -e $server_full_path ) {
 		Wx::MessageBox(
 			sprintf(
-				Wx::gettext("Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project."),
+				Wx::gettext(
+					"Mojolicious application script not found at\n%s\n\nPlease make sure the active document is from your Mojolicious project."
+				),
 				$server_full_path
 			),
 			Wx::gettext('Server not found'),
-			Wx::wxOK,
-			$main
+			Wx::wxOK, $main
 		);
 		return;
 	}
@@ -106,9 +107,7 @@ sub on_start_server {
 
 	require Padre::Perl;
 	my $perl = Padre::Perl->cperl;
-	my $command = "$perl " . File::Spec->catfile(
-		'bin', $server_filename
-	) . ' daemon';
+	my $command = "$perl " . File::Spec->catfile( 'bin', $server_filename ) . ' daemon';
 
 	$main->run_command($command);
 
@@ -140,11 +139,12 @@ sub on_stop_server {
 	if ( $main->{command} ) {
 		my $processid = $main->{command}->GetProcessId();
 		kill( 9, $processid );
+
 		# $main->{command}->TerminateProcess;
 	}
 	delete $main->{command};
 	$main->menu->run->enable;
-	$main->output->AppendText(Wx::gettext("\nWeb server stopped successfully.\n"));
+	$main->output->AppendText( Wx::gettext("\nWeb server stopped successfully.\n") );
 	return;
 }
 
@@ -153,13 +153,13 @@ sub on_show_about {
 	require Class::Unload;
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName("Padre::Plugin::Mojolicious");
-	$about->SetDescription(
-		  "Initial Mojolicious support for Padre\n\n"
-		. "This system is running Mojolicious version " . $Mojolicious::VERSION . "\n"
-	);
-	$about->SetVersion( $Padre::Plugin::Mojolicious::VERSION );
+	$about->SetDescription( "Initial Mojolicious support for Padre\n\n"
+			. "This system is running Mojolicious version "
+			. $Mojolicious::VERSION
+			. "\n" );
+	$about->SetVersion($Padre::Plugin::Mojolicious::VERSION);
 	Class::Unload->unload('Mojolicious');
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 

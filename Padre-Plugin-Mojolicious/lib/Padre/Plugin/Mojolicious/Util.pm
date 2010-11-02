@@ -17,8 +17,8 @@ sub get_mojolicious_project_name {
 	return unless $project_dir;
 
 	require File::Spec;
-	my @dirs = File::Spec->splitdir($project_dir);
-	my $project_name = lc($dirs[-1]);
+	my @dirs         = File::Spec->splitdir($project_dir);
+	my $project_name = lc( $dirs[-1] );
 	$project_name =~ tr{-}{_};
 
 	return $project_name;
@@ -30,7 +30,7 @@ sub find_file_from_output {
 
 	$filename .= '.pm';
 
-	if ($output_text =~ m{\[write\] (.+$filename)}) {
+	if ( $output_text =~ m{\[write\] (.+$filename)} ) {
 		return $1;
 	} else {
 		return; # sorry, not found
@@ -55,13 +55,13 @@ sub get_document_base_dir {
 
 		#		print "DIR: $olddir\n     $dir\n";
 		# those are the test cases for a Mojolicious directory
-		if (-d File::Spec->catfile($dir, 'bin'      )
-		 && -d File::Spec->catfile($dir, 'lib'      )
-		 && -d File::Spec->catfile($dir, 'log'      )
-		 && -d File::Spec->catfile($dir, 'public'   )
-		 && -d File::Spec->catfile($dir, 't'        )
-		 && -d File::Spec->catfile($dir, 'templates')
-		) {
+		if (   -d File::Spec->catfile( $dir, 'bin' )
+			&& -d File::Spec->catfile( $dir, 'lib' )
+			&& -d File::Spec->catfile( $dir, 'log' )
+			&& -d File::Spec->catfile( $dir, 'public' )
+			&& -d File::Spec->catfile( $dir, 't' )
+			&& -d File::Spec->catfile( $dir, 'templates' ) )
+		{
 			return $dir;
 		}
 		$olddir = $dir;

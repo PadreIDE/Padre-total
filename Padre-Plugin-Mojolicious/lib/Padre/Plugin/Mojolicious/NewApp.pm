@@ -22,17 +22,14 @@ sub on_newapp {
 sub get_layout {
 
 	my @layout = (
-		[
-			[ 'Wx::StaticText', undef,              Wx::gettext('Application Name:')],
-			[ 'Wx::TextCtrl',   '_app_name_',    ''],
+		[   [ 'Wx::StaticText', undef,        Wx::gettext('Application Name:') ],
+			[ 'Wx::TextCtrl',   '_app_name_', '' ],
 		],
-		[
-			[ 'Wx::StaticText',      undef,         Wx::gettext('Parent Directory:')],
-			[ 'Wx::DirPickerCtrl',   '_directory_', '',   Wx::gettext('Pick parent directory')],
+		[   [ 'Wx::StaticText', undef, Wx::gettext('Parent Directory:') ],
+			[ 'Wx::DirPickerCtrl', '_directory_', '', Wx::gettext('Pick parent directory') ],
 		],
-		[
-			[ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
-			[ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
+		[   [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],
+			[ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ],
 		],
 	);
 	return \@layout;
@@ -50,14 +47,12 @@ sub dialog {
 		bottom => 20,
 	);
 
-	$dialog->{_widgets_}->{_directory_}->SetPath(
-		$config->module_start_directory
-	);
+	$dialog->{_widgets_}->{_directory_}->SetPath( $config->module_start_directory );
 
 	$dialog->{_widgets_}->{_ok_}->SetDefault;
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_ok_},      \&ok_clicked      );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_ok_}, \&ok_clicked );
 
-	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_cancel_},  \&cancel_clicked  );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}->{_cancel_}, \&cancel_clicked );
 
 	$dialog->{_widgets_}->{_app_name_}->SetFocus;
 
@@ -81,10 +76,11 @@ sub ok_clicked {
 
 	# TODO improve input validation !
 	if ( $data->{'_app_name_'} =~ m{^\s*$|[^\w\:]}o ) {
-		Wx::MessageBox(Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main);
+		Wx::MessageBox( Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main );
 		return;
 	} elsif ( not $data->{'_directory_'} ) {
-		Wx::MessageBox(Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK, $main);
+		Wx::MessageBox( Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK,
+			$main );
 		return;
 	}
 
@@ -118,9 +114,9 @@ sub ok_clicked {
 	$main->output->AppendText($output_text);
 
 	my $ret = Wx::MessageBox(
-		sprintf(Wx::gettext("%s apparently created. Do you want to open it now?"), $data->{_app_name_}),
+		sprintf( Wx::gettext("%s apparently created. Do you want to open it now?"), $data->{_app_name_} ),
 		Wx::gettext('Done'),
-		Wx::wxYES_NO|Wx::wxCENTRE,
+		Wx::wxYES_NO | Wx::wxCENTRE,
 		$main,
 	);
 	if ( $ret == Wx::wxYES ) {

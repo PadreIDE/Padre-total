@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 16:50-0300\n"
+"POT-Creation-Date: 2010-11-02 12:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,12 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Mojolicious.pm:44
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+#: lib/Padre/Plugin/Mojolicious.pm:25
+msgid "Mojolicious"
+msgstr ""
+
+#: lib/Padre/Plugin/Mojolicious.pm:39
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:47
 msgid "New Mojolicious Application"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:50
+#: lib/Padre/Plugin/Mojolicious.pm:47
 msgid "Start Web Server"
 msgstr ""
 
@@ -29,27 +33,27 @@ msgstr ""
 msgid "Stop Web Server"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:53
+#: lib/Padre/Plugin/Mojolicious.pm:57
 msgid "Mojolicious Online References"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:54
+#: lib/Padre/Plugin/Mojolicious.pm:58
 msgid "Mojolicious Manual"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:57
+#: lib/Padre/Plugin/Mojolicious.pm:61
 msgid "Mojolicious Website"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:60
+#: lib/Padre/Plugin/Mojolicious.pm:64
 msgid "Mojolicious Community Live Support"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:66
+#: lib/Padre/Plugin/Mojolicious.pm:72
 msgid "About"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:82
+#: lib/Padre/Plugin/Mojolicious.pm:91
 #, perl-format
 msgid ""
 "Mojolicious application script not found at\n"
@@ -58,54 +62,54 @@ msgid ""
 "Please make sure the active document is from your Mojolicious project."
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:85
+#: lib/Padre/Plugin/Mojolicious.pm:94
 msgid "Server not found"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:107
+#: lib/Padre/Plugin/Mojolicious.pm:120
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:108
+#: lib/Padre/Plugin/Mojolicious.pm:121
 msgid "Start Web Browser?"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious.pm:132
+#: lib/Padre/Plugin/Mojolicious.pm:147
 msgid ""
 "\n"
 "Web server stopped successfully.\n"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:26
 msgid "Application Name:"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:30
 msgid "Parent Directory:"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:31
 msgid "Pick parent directory"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
 msgid "Invalid Application name"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "missing field"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "You need to select a base directory"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
 #, perl-format
 msgid "%s apparently created. Do you want to open it now?"
 msgstr ""
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:122
 msgid "Done"
 msgstr ""
