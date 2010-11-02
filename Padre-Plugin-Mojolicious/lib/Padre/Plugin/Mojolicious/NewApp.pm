@@ -97,7 +97,7 @@ sub ok_clicked {
 	$main->output->Remove( 0, $main->output->GetLastPosition );
 
 	my @command = (
-		'mojolicious',
+		'mojo',
 		'generate',
 		'app',
 		$data->{'_app_name_'},

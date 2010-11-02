@@ -5,6 +5,7 @@ Revision history for Padre-Plugin-Mojolicious
 	- Removed unused dependencies (AZAWAWI)
 	- Code cleanup (AZAWAWI)
 	- Compatibility with the latest Padre (AZAWAWI)
+	- Compatibility with the latest Mojolicious (AZAWAWI)
 
 0.03
 	- Removed taint mode for tests, leading to build failure (JQUELIN)
