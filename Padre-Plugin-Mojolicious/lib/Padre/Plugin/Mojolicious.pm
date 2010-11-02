@@ -170,13 +170,7 @@ __END__
 
 =pod
 
-=head1 VERSION
-
-Version 0.03
-
 =head1 SYNOPSIS
-
-B<WARNING: CODE IN PROGRESS>
 
 	cpan install Padre::Plugin::Mojolicious;
 
