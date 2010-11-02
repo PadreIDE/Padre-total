@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Padre-Plugin-Alarm\n"
+"Project-Id-Version: PadreIT\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-16 10:46+0100\n"
+"POT-Creation-Date: 2010-10-18 15:43+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team:  <simone.blandino@gmail.com>\n"
@@ -12,23 +12,38 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
+#: lib/Padre/Plugin/Alarm.pm:30
+msgid "Alarm Clock"
+msgstr "Sveglia"
+
+#: lib/Padre/Plugin/Alarm.pm:31
+#: lib/Padre/Plugin/Alarm.pm:56
+msgid "Set Alarm Time"
+msgstr "Imposta l'ora della sveglia"
+
+#: lib/Padre/Plugin/Alarm.pm:32
+#: lib/Padre/Plugin/Alarm.pm:127
+msgid "Stop Alarm"
+msgstr "Blocca la sveglia"
+
+#: lib/Padre/Plugin/Alarm.pm:33
+#: lib/Padre/Plugin/Alarm.pm:146
+msgid "Clear Alarm"
+msgstr "Disabilita sveglia"
+
 #: lib/Padre/Plugin/Alarm.pm:44
 msgid "Time (eg: 23:55):"
 msgstr "Ora (es: 23:55):"
 
-#: lib/Padre/Plugin/Alarm.pm:48
+#: lib/Padre/Plugin/Alarm.pm:47
 msgid "Frequency:"
 msgstr "Frequenza:"
 
-#: lib/Padre/Plugin/Alarm.pm:58
-msgid "Set Alarm Time"
-msgstr "Imposta l'ora della sveglia"
-
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
 msgstr "Possibili formati del valore: \\d:\\d\\d o \\d\\d:\\d\\d come 6:13 o 23:55"
 
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Wrong Alarm Time"
 msgstr "Orario della sveglia errato"
 
@@ -36,15 +51,7 @@ msgstr "Orario della sveglia errato"
 msgid "All Alarms are stopped"
 msgstr "Tutte le sveglie sono bloccate"
 
-#: lib/Padre/Plugin/Alarm.pm:127
-msgid "Stop Alarm"
-msgstr "Blocca la sveglia"
-
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "All Alarms are cleared"
 msgstr "Tutte le sveglie sono disabilitate"
-
-#: lib/Padre/Plugin/Alarm.pm:146
-msgid "Clear Alarm"
-msgstr "Disabilita sveglia"
 
