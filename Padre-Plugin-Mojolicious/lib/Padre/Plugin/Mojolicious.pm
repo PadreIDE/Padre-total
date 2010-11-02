@@ -84,7 +84,7 @@ sub on_start_server {
 
 	my $server_filename = Padre::Plugin::Mojolicious::Util::get_mojolicious_project_name($project_dir);
 
-	my $server_full_path = File::Spec->catfile( $project_dir, 'bin', $server_filename );
+	my $server_full_path = File::Spec->catfile( $project_dir, 'script', $server_filename );
 	unless ( -e $server_full_path ) {
 		Wx::MessageBox(
 			sprintf(
@@ -106,8 +106,7 @@ sub on_start_server {
 	chdir $project_dir;
 
 	require Padre::Perl;
-	my $perl = Padre::Perl->cperl;
-	my $command = "$perl " . File::Spec->catfile( 'bin', $server_filename ) . ' daemon';
+	my $command = Padre::Perl->cperl . ' ' . File::Spec->catfile( 'script', $server_filename ) . ' daemon';
 
 	$main->run_command($command);
 

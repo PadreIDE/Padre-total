@@ -53,9 +53,8 @@ sub get_document_base_dir {
 	my $dir    = $olddir;
 	while (1) {
 
-		#		print "DIR: $olddir\n     $dir\n";
 		# those are the test cases for a Mojolicious directory
-		if (   -d File::Spec->catfile( $dir, 'bin' )
+		if (   -d File::Spec->catfile( $dir, 'script' )
 			&& -d File::Spec->catfile( $dir, 'lib' )
 			&& -d File::Spec->catfile( $dir, 'log' )
 			&& -d File::Spec->catfile( $dir, 'public' )
