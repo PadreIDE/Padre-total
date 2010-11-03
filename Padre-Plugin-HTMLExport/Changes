@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-HTMLExport
 
 {{$NEXT}}
+
+0.08   2010.11.02
         Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.07   2010.10.27
