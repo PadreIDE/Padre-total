@@ -372,7 +372,10 @@ sub on_update_script {
 	chdir $project_dir;
 	chdir File::Spec->updir;
 
-	$main->run_command("catalyst.pl -force -scripts $project");
+	require Padre::Constant;
+	require File::Which;
+	my $catalyst = Padre::Constant::WIN32 ? File::Which::which('catalyst') : 'catalyst.pl';
+	$main->run_command("$catalyst -force -scripts $project");
 
 	# restore current dir
 	chdir $pwd;

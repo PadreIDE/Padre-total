@@ -4,6 +4,7 @@ Revision history for Padre-Plugin-Catalyst
     Switched to Dist::Zilla (AZAWAWI)
     Code cleanup (AZAWAWI)
     Removed unused ExtUtils::Install (AZAWAWI)
+    Fixed 'Update Application Scripts' on win32 (AZAWAWI)
 
 0.09
     compatibility with newer Padre versions (ZENOG)
