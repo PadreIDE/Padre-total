@@ -46,8 +46,7 @@ TODO: Configuration
 
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43,
-	'Padre::Task'   => 0.43,
+	'Padre::Plugin' => 0.47,
 }
 
 sub plugin_name {
