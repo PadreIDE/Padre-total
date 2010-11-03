@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-18 15:37+0300\n"
-"PO-Revision-Date: 2010-11-03 14:29+0100\n"
+"POT-Creation-Date: 2010-10-30 08:24+0200\n"
+"PO-Revision-Date: 2010-11-03 14:49+0100\n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team: Padre2It <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,15 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
-#: lib/Padre/Plugin/Encrypt.pm:18
-msgid "Encrypt <-> Decrpyt"
-msgstr "Cripta <-> decripta"
+#: lib/Padre/Plugin/Kate.pm:64
+msgid "About"
+msgstr "Informazioni su"
 
-#: lib/Padre/Plugin/Encrypt.pm:19
-msgid "Encrypt"
-msgstr "Cripta"
+#: lib/Padre/Plugin/Kate.pm:70
+msgid "Using Syntax::Highlight::Engine::Kate based on the Kate editor"
+msgstr "In uso Syntax::Highlight::Engine::Kate basato sull'editor Kate"
 
-#: lib/Padre/Plugin/Encrypt.pm:20
-msgid "Decrypt"
-msgstr "Decripta"
-
-#: lib/Padre/Plugin/Encrypt.pm:82
-msgid "Private key is required"
-msgstr "Richiesta chiave privata"
-
-#: lib/Padre/Plugin/Encrypt.pm:117
-msgid "Error while encrypting/decrypting:"
-msgstr "Errore criptando/decriptando"
+#: lib/Padre/Plugin/Kate.pm:170
+msgid "Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting"
+msgstr "Sto cercando di usare Syntax::Highlight::Engine::Kate per l'evidenziazione della sintassi"
 

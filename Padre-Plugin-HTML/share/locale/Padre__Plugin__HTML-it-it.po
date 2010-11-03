@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-18 15:37+0300\n"
-"PO-Revision-Date: 2010-11-03 14:29+0100\n"
+"POT-Creation-Date: 2010-10-26 19:17+0300\n"
+"PO-Revision-Date: 2010-11-03 14:33+0100\n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team: Padre2It <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,23 +17,27 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
-#: lib/Padre/Plugin/Encrypt.pm:18
-msgid "Encrypt <-> Decrpyt"
-msgstr "Cripta <-> decripta"
+#: lib/Padre/Plugin/HTML.pm:22
+msgid "HTML"
+msgstr "HTML"
 
-#: lib/Padre/Plugin/Encrypt.pm:19
-msgid "Encrypt"
-msgstr "Cripta"
+#: lib/Padre/Plugin/HTML.pm:23
+msgid "Tidy HTML"
+msgstr "Riordina HTML"
 
-#: lib/Padre/Plugin/Encrypt.pm:20
-msgid "Decrypt"
-msgstr "Decripta"
+#: lib/Padre/Plugin/HTML.pm:24
+msgid "HTML Lint"
+msgstr "Lint HTML"
 
-#: lib/Padre/Plugin/Encrypt.pm:82
-msgid "Private key is required"
-msgstr "Richiesta chiave privata"
+#: lib/Padre/Plugin/HTML.pm:25
+msgid "Validate HTML"
+msgstr "Valida HTML"
 
-#: lib/Padre/Plugin/Encrypt.pm:117
-msgid "Error while encrypting/decrypting:"
-msgstr "Errore criptando/decriptando"
+#: lib/Padre/Plugin/HTML.pm:26
+msgid "Docs"
+msgstr "Documenti"
+
+#: lib/Padre/Plugin/HTML.pm:27
+msgid "HTML 4.01 Specification"
+msgstr "Specifiche HTML 4.01"
 

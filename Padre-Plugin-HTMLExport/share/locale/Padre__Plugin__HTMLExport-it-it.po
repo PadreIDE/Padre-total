@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Padre-Plugin-HTMLExport\n"
+"Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-18 18:35+0200\n"
-"PO-Revision-Date: 2010-08-23 15:23+0100\n"
+"POT-Creation-Date: 2010-10-26 10:52+0300\n"
+"PO-Revision-Date: 2010-11-03 14:37+0100\n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team:  <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,33 +17,45 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
-#: lib/Padre/Plugin/HTMLExport.pm:69
+#: lib/Padre/Plugin/HTMLExport.pm:48
+msgid "Export Colorful HTML"
+msgstr "Esporta HTML colorato"
+
+#: lib/Padre/Plugin/HTMLExport.pm:49
+msgid "Export HTML..."
+msgstr "Esporta HTML..."
+
+#: lib/Padre/Plugin/HTMLExport.pm:50
+msgid "Configure Color"
+msgstr "Configura colori"
+
+#: lib/Padre/Plugin/HTMLExport.pm:71
 msgid "Save as HTML..."
 msgstr "Salva come HTML..."
 
-#: lib/Padre/Plugin/HTMLExport.pm:83
+#: lib/Padre/Plugin/HTMLExport.pm:85
 msgid "File already exists. Overwrite it?"
 msgstr "Il file esiste. Sovrascriverlo?"
 
-#: lib/Padre/Plugin/HTMLExport.pm:84
+#: lib/Padre/Plugin/HTMLExport.pm:86
 msgid "Exist"
 msgstr "Esiste"
 
-#: lib/Padre/Plugin/HTMLExport.pm:101
+#: lib/Padre/Plugin/HTMLExport.pm:103
 #, perl-format
 msgid "%s is not supported"
 msgstr "%s non è supportato"
 
-#: lib/Padre/Plugin/HTMLExport.pm:152
+#: lib/Padre/Plugin/HTMLExport.pm:154
 #, perl-format
 msgid "Saved to %s. Do you want to open it now?"
 msgstr "Salvato su %s. Vuoi aprirlo?"
 
-#: lib/Padre/Plugin/HTMLExport.pm:153
+#: lib/Padre/Plugin/HTMLExport.pm:155
 msgid "Done"
 msgstr "Fatto"
 
-#: lib/Padre/Plugin/HTMLExport.pm:166
+#: lib/Padre/Plugin/HTMLExport.pm:168
 msgid "Not implemented, TODO"
 msgstr "Non implementato, TODO"
 
