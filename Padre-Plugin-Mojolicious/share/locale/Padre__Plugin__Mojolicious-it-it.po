@@ -5,10 +5,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Padre-Plugin-Mojolicious\n"
+"Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 16:50-0300\n"
-"PO-Revision-Date: 2010-08-23 16:01+0100\n"
+"POT-Creation-Date: 2010-11-02 12:26+0200\n"
+"PO-Revision-Date: 2010-11-03 14:52+0100\n"
 "Last-Translator: Simone Blandino <simone.blandino@gmail.com>\n"
 "Language-Team:  <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,12 +17,16 @@ msgstr ""
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
-#: lib/Padre/Plugin/Mojolicious.pm:44
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+#: lib/Padre/Plugin/Mojolicious.pm:25
+msgid "Mojolicious"
+msgstr "Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:39
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:47
 msgid "New Mojolicious Application"
 msgstr "Nuova applicazione Mojolicious"
 
-#: lib/Padre/Plugin/Mojolicious.pm:50
+#: lib/Padre/Plugin/Mojolicious.pm:47
 msgid "Start Web Server"
 msgstr "Avvia server web"
 
@@ -30,27 +34,27 @@ msgstr "Avvia server web"
 msgid "Stop Web Server"
 msgstr "Arresta server web"
 
-#: lib/Padre/Plugin/Mojolicious.pm:53
+#: lib/Padre/Plugin/Mojolicious.pm:57
 msgid "Mojolicious Online References"
 msgstr "Documentazione online Mojolicious"
 
-#: lib/Padre/Plugin/Mojolicious.pm:54
+#: lib/Padre/Plugin/Mojolicious.pm:58
 msgid "Mojolicious Manual"
 msgstr "Manuale Mojolicious"
 
-#: lib/Padre/Plugin/Mojolicious.pm:57
+#: lib/Padre/Plugin/Mojolicious.pm:61
 msgid "Mojolicious Website"
 msgstr "Sito web Mojolicious"
 
-#: lib/Padre/Plugin/Mojolicious.pm:60
+#: lib/Padre/Plugin/Mojolicious.pm:64
 msgid "Mojolicious Community Live Support"
 msgstr "Supporto live della comunità Mojolicious"
 
-#: lib/Padre/Plugin/Mojolicious.pm:66
+#: lib/Padre/Plugin/Mojolicious.pm:72
 msgid "About"
 msgstr "Informazioni su"
 
-#: lib/Padre/Plugin/Mojolicious.pm:82
+#: lib/Padre/Plugin/Mojolicious.pm:91
 #, perl-format
 msgid ""
 "Mojolicious application script not found at\n"
@@ -63,19 +67,19 @@ msgstr ""
 "\n"
 "Per favore, verifica che il documento attivo appartenga al tuo progetto Mojolicious."
 
-#: lib/Padre/Plugin/Mojolicious.pm:85
+#: lib/Padre/Plugin/Mojolicious.pm:94
 msgid "Server not found"
 msgstr "Server non trovato"
 
-#: lib/Padre/Plugin/Mojolicious.pm:107
+#: lib/Padre/Plugin/Mojolicious.pm:120
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Sembra che il server web sia in esecuzione. Avviare il browser adesso?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:108
+#: lib/Padre/Plugin/Mojolicious.pm:121
 msgid "Start Web Browser?"
 msgstr "Avviare il browser?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:132
+#: lib/Padre/Plugin/Mojolicious.pm:147
 msgid ""
 "\n"
 "Web server stopped successfully.\n"
@@ -83,37 +87,37 @@ msgstr ""
 "\n"
 "Web server arrestato con successo.\n"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:26
 msgid "Application Name:"
 msgstr "Nome applicazione:"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:30
 msgid "Parent Directory:"
 msgstr "Cartella superiore:"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:31
 msgid "Pick parent directory"
 msgstr "Scegli la cartella superiore"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
 msgid "Invalid Application name"
 msgstr "Nome applicazione non valido"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "missing field"
 msgstr "Campo mancante"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "You need to select a base directory"
 msgstr "Necessario selezionare una cartella superiore"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
 #, perl-format
 msgid "%s apparently created. Do you want to open it now?"
 msgstr "%s apparentemente creato. Vuoi aprirlo adesso?"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:122
 msgid "Done"
 msgstr "Fatto"
 
