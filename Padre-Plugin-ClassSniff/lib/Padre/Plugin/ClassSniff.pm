@@ -10,10 +10,10 @@ use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our @ISA     = 'Padre::Plugin';
+our @ISA = 'Padre::Plugin';
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,
+	'Padre::Plugin' => 0.47,;
 }
 
 sub plugin_name {
@@ -23,8 +23,8 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About')             => sub { $self->show_about },
-		Wx::gettext('Print Report')      => sub { $self->print_report },
+		Wx::gettext('Print Report') => sub { $self->print_report },
+		Wx::gettext('About')        => sub { $self->show_about },
 	];
 }
 
@@ -47,10 +47,10 @@ sub show_about {
 	$about->SetDescription( <<"END_MESSAGE" );
 Initial Class::Sniff support for Padre
 END_MESSAGE
-	$about->SetVersion( $Padre::Plugin::ClassSniff::VERSION );
+	$about->SetVersion($Padre::Plugin::ClassSniff::VERSION);
 
 	# Show the About dialog
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 
 	return;
 }
