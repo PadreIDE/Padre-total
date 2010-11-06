@@ -1,6 +1,7 @@
 package Padre::Document::WebGUI::Asset;
 
-use 5.008;
+# ABSTRACT: Padre::Document subclass representing a WebGUI Asset
+
 use strict;
 use warnings;
 
@@ -15,15 +16,65 @@ use Class::XSAccessor getters => {
     url   => 'url',
 };
 
-# File-faking
-sub basename     { $_[0]->filename }
-sub dirname      { $_[0]->basename }
-sub time_on_file { $_[0]->asset->{revisionDate} }
-sub load_file    { $_[0]->load_asset }
-sub is_new       { 0 }
+=method asset
 
-# Override this to change the highlighter/lexer
+Accessor
+
+=method url
+
+Accessor
+
+=method basename
+
+File-faking accessor
+
+=cut
+
+sub basename { $_[0]->filename }
+
+=method dirname
+
+File-faking accessor
+
+=cut
+
+sub dirname { $_[0]->basename }
+
+=method time_on_file
+
+File-faking accessor
+
+=cut
+
+sub time_on_file { $_[0]->asset->{revisionDate} }
+
+=method load_file
+
+File-faking accessor
+
+=cut
+
+sub load_file { $_[0]->load_asset }
+
+=method is_new
+
+File-faking accessor
+
+=cut
+
+sub is_new { 0 }
+
+=method lexer
+
+Override this to change the highlighter/lexer
+
+=cut
+
 sub lexer { Padre::MimeTypes->get_lexer('text/html') }
+
+=method load_asset
+
+=cut
 
 sub load_asset {
     my ( $self, $assetId, $url ) = @_;
@@ -31,7 +82,7 @@ sub load_asset {
     TRACE( "Loading asset $assetId from $url with mimetype " . $self->get_mimetype ) if DEBUG;
 
     # TODO: Investigate whether we should actually subclass Padre::File rather than faking it
-#    $self->{file} = {};
+    #    $self->{file} = {};
 
     $self->{url} = $url;
 
@@ -57,7 +108,12 @@ sub load_asset {
     return $self->process_response( $response->content );
 }
 
-# Override Padre::Document::save_file
+=method save_file
+
+Override Padre::Document::save_file
+
+=cut
+
 sub save_file {
     my $self = shift;
 
@@ -78,7 +134,8 @@ sub save_file {
     my $ua       = LWP::UserAgent->new;
     my $response = $ua->post(
         $url,
-        {   op      => 'padre',
+        {
+            op      => 'padre',
             func    => 'save',
             assetId => $asset->{assetId},
             props   => encode_json($asset),
@@ -97,6 +154,10 @@ sub save_file {
 
     return $self->process_response( $response->content );
 }
+
+=method process_response
+
+=cut
 
 sub process_response {
     my $self    = shift;
@@ -127,20 +188,35 @@ sub process_response {
     return 1;
 }
 
-# You can override this to edit something other than the generic 'content' field
+=method get_asset_content
+
+You can override this to edit something other than the generic 'content' field
+
+=cut
+
 sub get_asset_content {
     my $self = shift;
     return $self->asset->{content};
 }
 
-# This is paired with L<get_asset_content> - it gets called to store the editor text
-# back into the appropriate asset field prior to sending hash to server
+=method set_asset_content
+
+This is paired with L<get_asset_content> - it gets called to store the editor text
+back into the appropriate asset field prior to sending hash to server
+
+=cut
+
 sub set_asset_content {
     my $self = shift;
     $self->asset->{content} = $self->text_get;
 }
 
-# You can override this to do something entirely different with the asset
+=method render
+
+You can override this to do something entirely different with the asset
+
+=cut
+
 sub render {
     my $self  = shift;
     my $asset = $self->asset;
@@ -156,5 +232,9 @@ sub render {
     $self->{original_content} = $self->text_get;
     $self->colourize;
 }
+
+=method TRACE
+
+=cut
 
 1;

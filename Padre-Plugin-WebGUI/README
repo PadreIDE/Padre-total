@@ -1,42 +1,9 @@
-Padre-Plugin-WebGUI
+{{ $dist->name }} Perl CPAN distribution
 
-Developer tools for WebGUI
+For online documentation, please visit: 
 
-This plugin adds a "WebGUI" item to the Padre plugin menu, with a bunch of WebGUI-oriented features.
+    http://search.cpan.org/dist/{{ $dist->name }}
 
-To install this module, run the following commands:
+To report bugs and browse the code repository, please visit: 
 
-	perl Makefile.PL
-	make
-	make test
-	make install
-
-SUPPORT AND DOCUMENTATION
-
-After installing, you can find documentation for this module with the
-perldoc command.
-
-    perldoc Padre::Plugin::WebGUI
-
-You can also look for information at:
-
-    RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Padre-Plugin-WebGUI
-
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Padre-Plugin-WebGUI
-
-    CPAN Ratings
-        http://cpanratings.perl.org/d/Padre-Plugin-WebGUI
-
-    Search CPAN
-        http://search.cpan.org/dist/Padre-Plugin-WebGUI/
-
-
-COPYRIGHT AND LICENCE
-
-Copyright (C) 2009 Patrick Donelan
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
+    http://github.com/pdonelan/{{ $dist->name }}

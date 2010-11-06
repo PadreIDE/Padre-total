@@ -1,13 +1,14 @@
 package Padre::Plugin::WebGUI::Assets;
 
-use 5.008;
+# ABSTRACT: WebGUI Asset Tree
+
 use strict;
 use warnings;
 
 use Padre::Current ();
 use Padre::Logger;
-use Padre::Util    ();
-use Padre::Wx      ();
+use Padre::Util ();
+use Padre::Wx   ();
 
 use base 'Wx::TreeCtrl';
 
@@ -18,7 +19,24 @@ use Class::XSAccessor getters => {
     url       => 'url',
 };
 
-# constructor
+=method plugin
+
+Accessor
+
+=method connected
+
+Accessor
+
+=method url
+
+Accessor
+
+=method new
+
+constructor
+
+=cut
+
 sub new {
     my $class  = shift;
     my $plugin = shift;
@@ -46,11 +64,41 @@ sub new {
     return $self;
 }
 
-# accessors
-sub right         { $_[0]->GetParent }
-sub main          { $_[0]->GetGrandParent }
+=method right
+
+Accessor
+
+=cut
+
+sub right { $_[0]->GetParent }
+
+=method main
+
+Accessor
+
+=cut
+
+sub main { $_[0]->GetGrandParent }
+
+=method gettext_label
+
+Accessor
+
+=cut
+
 sub gettext_label { Wx::gettext('Asset Tree') }
-sub clear         { $_[0]->DeleteAllItems }
+
+=method clear
+
+Accessor
+
+=cut
+
+sub clear { $_[0]->DeleteAllItems }
+
+=method update_gui
+
+=cut
 
 sub update_gui {
     my $self = shift;
@@ -61,6 +109,10 @@ sub update_gui {
         $self->update_gui_disconnected;
     }
 }
+
+=method update_gui_disconnected
+
+=cut
 
 sub update_gui_disconnected {
     my $self = shift;
@@ -78,6 +130,10 @@ sub update_gui_disconnected {
 
     $self->Thaw;
 }
+
+=method update_gui_connected
+
+=cut
 
 sub update_gui_connected {
     my $self = shift;
@@ -126,8 +182,13 @@ sub update_gui_connected {
     }
 }
 
-# generate the list of assets
-# todo - make this lazy-load for better performance
+=method build_asset_tree
+
+generate the list of assets
+todo - make this lazy-load for better performance
+
+=cut
+
 sub build_asset_tree {
     my $self = shift;
 
@@ -136,8 +197,7 @@ sub build_asset_tree {
     my $ua       = LWP::UserAgent->new;
     my $response = $ua->get( $self->url . '?op=padre&func=list' );
     unless ( $response->header('Padre-Plugin-WebGUI') ) {
-        $self->main->error(
-            "The server does not appear to have the Padre::Plugin::WebGUI content handler installed");
+        $self->main->error("The server does not appear to have the Padre::Plugin::WebGUI content handler installed");
         return;
     }
     if ( !$response->is_success ) {
@@ -160,6 +220,10 @@ sub build_asset_tree {
         return $assets;
     }
 }
+
+=method edit_asset
+
+=cut
 
 sub edit_asset {
     my $self = shift;
@@ -195,14 +259,18 @@ sub edit_asset {
     my $id   = $main->find_id_of_editor($editor);
     my $page = $main->notebook->GetPage($id);
     $page->SetSavePoint;
-    
+
     # Set tab icon
-    if (my $icon = $self->get_item_icon( $item->{icon} )) {
-        $main->notebook->SetPageBitmap($id, $icon);
+    if ( my $icon = $self->get_item_icon( $item->{icon} ) ) {
+        $main->notebook->SetPageBitmap( $id, $icon );
     }
-    
+
     $main->refresh;
 }
+
+=method on_tree_item_right_click
+
+=cut
 
 sub on_tree_item_right_click {
     my ( $self, $event ) = @_;
@@ -242,7 +310,12 @@ sub on_tree_item_right_click {
     return;
 }
 
-# event handler for item activation
+=method on_tree_item_activated
+
+event handler for item activation
+
+=cut
+
 sub on_tree_item_activated {
     my ( $self, $event, $opts ) = @_;
     $opts ||= {};
@@ -252,9 +325,8 @@ sub on_tree_item_activated {
     return if not defined $item;
 
     if ( $item->{connect} ) {
-        my $url
-            = $self->main->prompt(
-            'Enter a URL to connect to, for example: http://admin:123qwe@dev.localhost.localdomain',
+        my $url =
+          $self->main->prompt( 'Enter a URL to connect to, for example: http://admin:123qwe@dev.localhost.localdomain',
             'Connect To Server', 'wg_url' );
         return unless $url;
         $self->{url} = $url;
@@ -286,6 +358,10 @@ sub on_tree_item_activated {
 
 my $image_lookup;
 
+=method get_item_image
+
+=cut
+
 sub get_item_image {
     my $self = shift;
     my $icon = shift;
@@ -293,21 +369,27 @@ sub get_item_image {
     $icon =~ s{.*/}{};
     my $imglist = $self->GetImageList;
     if ( !$image_lookup->{$icon} ) {
-        my $index
-            = $imglist->Add(
-            Wx::Bitmap->new( $self->plugin->plugin_directory_share . "/icons/16x16/$icon", Wx::wxBITMAP_TYPE_GIF )
-            );
+        my $index = $imglist->Add(
+            Wx::Bitmap->new( $self->plugin->plugin_directory_share . "/icons/16x16/$icon", Wx::wxBITMAP_TYPE_GIF ) );
         $image_lookup->{$icon} = $index;
     }
     return $image_lookup->{$icon} || 0;
 }
 
+=method get_item_icon
+
+=cut
+
 sub get_item_icon {
-    my $self = shift;
-    my $icon = shift;
-    my $index = $self->get_item_image( $icon );
-    return $self->GetImageList->GetIcon( $index );
+    my $self  = shift;
+    my $icon  = shift;
+    my $index = $self->get_item_image($icon);
+    return $self->GetImageList->GetIcon($index);
 }
+
+=method update_treectrl
+
+=cut
 
 sub update_treectrl {
     my ( $self, $items, $parent ) = @_;
@@ -324,9 +406,8 @@ sub update_treectrl {
     return;
 }
 
-1;
+=method TRACE
 
-# Copyright 2009 Patrick Donelan
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
+=cut
+
+1;

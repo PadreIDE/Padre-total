@@ -1,6 +1,7 @@
 package Padre::Document::WebGUI::Asset::Template;
 
-use 5.008;
+# ABSTRACT: Padre::Document::WebGUI::Asset::Snippet subclass representing a WebGUI Template
+
 use strict;
 use warnings;
 use Padre::Document::WebGUI::Asset;
