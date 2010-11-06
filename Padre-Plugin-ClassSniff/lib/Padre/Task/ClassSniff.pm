@@ -16,18 +16,18 @@ sub process_ppi {
 	my $self = shift;
 	my $ppi = shift or return();
 	my $mode = $self->{mode} || 'print_report';
-	
-	
+
+
 	my $sniff_config = $self->{sniff_config} ||= {};
-	
+
 	if (not defined $sniff_config->{class}) {
 		$sniff_config->{class} = $self->find_document_namespace($ppi);
 	}
-	
+
 	if ($mode eq 'print_report') {
 		$self->print_report($ppi);
 	}
-	
+
 	return();
 }
 
@@ -44,7 +44,7 @@ sub print_report {
 	my $self = shift;
 	my $ppi = shift;
 	my $sniff_config = $self->{sniff_config};
-	
+
 	if (not defined $sniff_config->{class}) {
 		$self->task_warn(Wx::gettext("Could not determine class to run Sniff on.\n"));
 		return();
@@ -68,7 +68,7 @@ sub print_report {
 			. "\n"
 		);
 	}
-	
+
 	if (defined $stdout and $stdout =~ /\S/) {
 		$self->task_print( $stdout . "\n" );
 	}
@@ -83,11 +83,11 @@ sub run_sniff {
 	my $self = shift;
 	my $cfg = shift;
 	my $code = shift;
-	
+
 	require YAML::Tiny;
 	require IPC::Cmd;
 	require IPC::Open3;
-	
+
 	my $yaml = YAML::Tiny::Dump($cfg);
 	my @cmd = (
 		Padre->perl_interpreter(),
@@ -108,7 +108,7 @@ sub run_sniff {
 	print $sniff->report();
 HERE
 	push @cmd, '--', $yaml, $code;
-	
+
 	my ($ok, $errno, undef, $stdout, $stderr)
 	  = IPC::Cmd::run( command => \@cmd, verbose => 0 );
 	$stdout = join "", @$stdout
