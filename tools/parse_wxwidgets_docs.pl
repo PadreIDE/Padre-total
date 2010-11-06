@@ -6,9 +6,6 @@ use warnings;
 
 use File::Temp       ();
 use File::Spec       ();
-use LWP::UserAgent   ();
-use HTTP::Request    ();
-use Archive::Extract ();
 use HTML::Parse      ();
 use HTML::FormatText ();
 
@@ -34,6 +31,9 @@ print "Found " . @wxclasses . " Wx Classes to parse\n";
 # Step 4: Write the final POD while processing all html files
 write_pod( $pod_dir, $wx_dir, @wxclasses );
 
+# Step 5: Write Copyright/licensing files
+write_copyright_license( $pod_dir, $wx_dir );
+
 # and we're done
 exit;
 
@@ -44,6 +44,8 @@ sub download_wxwidgets_html_zip {
 	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
 		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP";
 		print "Downloading $url. Please wait...\n";
+		require LWP::UserAgent;
+		require HTTP::Request;
 		my $ua  = LWP::UserAgent->new;
 		my $req = HTTP::Request->new( GET => $url );
 		my $res = $ua->request($req);
@@ -70,6 +72,7 @@ sub download_wxwidgets_html_zip {
 sub unzip_file {
 	my $dir = shift;
 
+	require Archive::Extract;
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
 	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
 	print "Extracting $WX_WIGDETS_HTML_ZIP to $dir...\n";
@@ -182,11 +185,27 @@ sub write_pod {
 			print "Processing $class...\n";
 			print $pod process_class( $class, $file );
 		}
+		print $pod copyright_pod();
 		close $pod;
 	} else {
 		die "Couldnt write $pod_file\n";
 	}
 
+}
+
+#
+# Copyright and license POD section
+#
+sub copyright_pod
+{
+	my ( $pod_dir, $wx_dir ) = @_;
+	
+	return <<'END';
+=head1 COPYRIGHT AND LICENSE
+
+	TODO
+
+END
 }
 
 __END__
