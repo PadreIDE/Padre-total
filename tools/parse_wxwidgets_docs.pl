@@ -9,7 +9,7 @@ use File::Spec       ();
 use LWP::UserAgent   ();
 use HTTP::Request    ();
 use Archive::Extract ();
-use HTML::Parse qw(parse_html);
+use HTML::Parse      ();
 use HTML::FormatText ();
 
 my $pod_dir = File::Spec->join( '..', 'Padre', 'share', 'doc', 'wxwidgets' );
@@ -151,7 +151,7 @@ sub process_class {
 					}
 
 					# print out method description
-					$desc = HTML::FormatText->new->format( parse_html($desc) );
+					$desc = HTML::FormatText->new->format( HTML::Parse::parse_html($desc) );
 					$pod_text .= "=head2 $name\n\n$desc\n";
 
 					$name = undef;
@@ -174,6 +174,7 @@ sub write_pod {
 	my $pod_file = File::Spec->join( $pod_dir, 'wxwidgets.pod' );
 	print "Writing $pod_file\n";
 	if ( open( my $pod, '>', $pod_file ) ) {
+		binmode($pod);
 		my $oldclass;
 		foreach my $wxclass (@wxclasses) {
 			my $file = File::Spec->join( $wx_dir, $wxclass->{file} );
@@ -205,7 +206,7 @@ Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2009 C<< <ahmad.zawawi at gmail.com> >>
+Copyright 2010 C<< <ahmad.zawawi at gmail.com> >>
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
