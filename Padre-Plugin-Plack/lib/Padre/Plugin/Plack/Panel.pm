@@ -1,10 +1,9 @@
 package Padre::Plugin::Plack::Panel;
+
 # ABSTRACT: Plack control panel
 
 use strict;
 use warnings;
-
-our $VERSION = '0.04';
 
 use Padre::Wx   ();
 use Padre::Util ('_T');
@@ -13,43 +12,69 @@ use base 'Wx::Panel';
 use Padre::Current;
 use Padre::Logger;
 
+=method new
+
+=cut
+
 sub new {
     my $class = shift;
     my $doc   = shift;
     my $self  = $class->SUPER::new( Padre::Current->main->bottom );
-    
-    $doc->plugin->build_panel($doc, $self);
-    
+
+    $doc->plugin->build_panel( $doc, $self );
+
     return $self;
 }
+
+=method set_as_started
+
+=cut
 
 sub set_as_started {
     my $self = shift;
     $self->{start_stop}->SetLabel( _T('Stop') );
-    $self->{led}->SetBitmap( $self->led( 'green' ) );
+    $self->{led}->SetBitmap( $self->led('green') );
 }
+
+=method set_as_stopped
+
+=cut
 
 sub set_as_stopped {
     my $self = shift;
     $self->{start_stop}->SetLabel( _T('Start') );
-    $self->{led}->SetBitmap( $self->led( 'red' ) );
+    $self->{led}->SetBitmap( $self->led('red') );
 }
+
+=method output
+
+=cut
 
 sub output { return shift->{output} }
 
-sub gettext_label { 
+=method gettext_label
+
+=cut
+
+sub gettext_label {
     my $self = shift;
-    
+
     require File::Basename;
     my $doc = $self->{doc};
-    if (my $filename = $doc && $doc->filename) {
+    if ( my $filename = $doc && $doc->filename ) {
         return File::Basename::basename($filename);
-    } else {
+    }
+    else {
         return 'Plackup';
     }
 }
 
-# taken from Padre::Plugin::Catalyst
+=method led
+
+Taken from Padre::Plugin::Catalyst
+
+=cut
+
 sub led {
     my ( $self, $color ) = (@_);
 
@@ -287,5 +312,9 @@ sub led {
 
     return;
 }
+
+=method TRACE
+
+=cut
 
 1;
