@@ -1,36 +1,16 @@
 package Padre::Task::ClassSniff;
 
+# ABSTRACT: Running class sniff in the background
+
 use strict;
 use warnings;
+
 use Padre::Task::PPI ();
 use Padre::Wx        ();
-use Padre::Util      ('_T');
 use Scalar::Util     qw(blessed);
 use IPC::Cmd         ();
 
-our $VERSION = '0.29';
 use base 'Padre::Task::PPI';
-
-=pod
-
-=head1 NAME
-
-Padre::Task::ClassSniff - Running class sniff in the background
-
-=head1 SYNOPSIS
-
-  my $task = Padre::Task::ClassSniff->new(
-    mode => 'print_report',
-    sniff_config => { ... },
-  );
-  $task->schedule;
-
-=head1 DESCRIPTION
-
-Runs Class::Sniff on the first namespace of the current document
-and prints the results to the Padre output window.
-
-=cut
 
 sub process_ppi {
 	my $self = shift;
@@ -66,7 +46,7 @@ sub print_report {
 	my $sniff_config = $self->{sniff_config};
 	
 	if (not defined $sniff_config->{class}) {
-		$self->task_warn(_T("Could not determine class to run Sniff on.\n"));
+		$self->task_warn(Wx::gettext("Could not determine class to run Sniff on.\n"));
 		return();
 	}
 
@@ -142,29 +122,23 @@ HERE
 
 __END__
 
+=head1 SYNOPSIS
+
+  my $task = Padre::Task::ClassSniff->new(
+    mode => 'print_report',
+    sniff_config => { ... },
+  );
+  $task->schedule;
+
+=head1 DESCRIPTION
+
+Runs Class::Sniff on the first namespace of the current document
+and prints the results to the Padre output window.
+
 =head1 SEE ALSO
 
-This class inherits from C<Padre::Task::WithOutput> and its instances can be scheduled
+This class inherits from C<Padre::Task::PPI> and its instances can be scheduled
 using C<Padre::TaskManager>.
 
 The transfer of the objects to and from the worker threads is implemented
 with L<Storable>.
-
-=head1 AUTHOR
-
-Steffen Mueller C<< <smueller@cpan.org> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
-
-=cut
-
-
-# Copyright 2008-2009 The Padre development team as listed in Padre.pm.
-# LICENSE
-# This program is free software; you can redistribute it and/or
-# modify it under the same terms as Perl 5 itself.
