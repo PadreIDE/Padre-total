@@ -4,6 +4,7 @@ Revision history for Dist::Zilla::Plugin::LoadTests
 
 0.06    2010.11.07
 	- Added a "SEE ALSO" section to the more generic but slower [CompileTests]
+          (AZAWAWI)
 
 0.05    2010.10.28
 	- Reverted to the simpler method of skipping the load test when
