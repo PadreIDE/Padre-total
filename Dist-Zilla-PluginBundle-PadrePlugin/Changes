@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- Bumped Locale::Msgfmt dependency to 0.15 (AZAWAWI)
+	- Removed LoadTests dependency because CompileTests makes it redundant (AZAWAWI)
 
 0.06   2010.10.28
 	- Removed Test::NeedsDisplay dependency (AZAWAWI)

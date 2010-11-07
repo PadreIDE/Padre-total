@@ -12,7 +12,6 @@ use Dist::Zilla::PluginBundle::Basic;
 use Dist::Zilla::Plugin::CheckChangeLog;
 use Dist::Zilla::Plugin::CheckChangesTests;
 use Dist::Zilla::Plugin::CompileTests;
-use Dist::Zilla::Plugin::LoadTests;
 use Dist::Zilla::Plugin::EOLTests;
 use Dist::Zilla::Plugin::PodWeaver;
 use Dist::Zilla::Plugin::PkgVersion;
@@ -63,9 +62,7 @@ sub configure {
 	# Start adding plugins
 	$self->add_plugins(qw( CheckChangeLog CheckChangesTests ));
 
-	my $needs_display = [ 'needs_display' => '1', ];
-	$self->add_plugins( [ 'CompileTests' => $needs_display ] );
-	$self->add_plugins( [ 'LoadTests'    => $needs_display ] );
+	$self->add_plugins( [ 'CompileTests' => [ 'needs_display' => '1', ] ] );
 
 	$self->add_plugins(qw(EOLTests PkgVersion PodWeaver));
 
@@ -103,7 +100,7 @@ sub configure {
 		[   Prereqs => 'LocaleMsgfmtDeps' => {
 				-phase           => 'test',
 				-type            => 'requires',
-				'Locale::Msgfmt' => '0.14'
+				'Locale::Msgfmt' => '0.15'
 			}
 		],
 	);
@@ -145,7 +142,6 @@ is equivalent to:
 	[CheckChangeLog]
 	[CheckChangesTests]
 	[CompileTests]
-	[LoadTests]
 	[EOLTests]
 	[PodWeaver]
 	[PkgVersion]
