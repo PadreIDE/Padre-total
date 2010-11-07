@@ -82,6 +82,10 @@ have one otherwise it will skip all the test. Defaults to false.
 
 =back
 
+=head1 SEE ALSO
+
+If you need a more generic but slower test for all the packages in your distribution, please use L<Dist::Zilla::Plugin::CompileTests>.
+
 =cut
 
 __DATA__
