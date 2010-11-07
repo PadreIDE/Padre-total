@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::Plugin::LoadTests
 
 {{$NEXT}}
+
+0.06    2010.11.07
 	- Added a "SEE ALSO" section to the more generic but slower [CompileTests]
 
 0.05    2010.10.28
