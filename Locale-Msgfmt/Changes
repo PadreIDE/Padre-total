@@ -1,6 +1,6 @@
 Revision history for Locale-Msgfmt
 
-0.15    Feb 06, 2010
+0.15    Nov 07, 2010
         - General code cleaning (ADAMK)
         - Changes to Module::Install::Msgfmt to make it compatible with
           Module::Install::Share. (ADAMK)
