@@ -9,9 +9,9 @@ use File::Spec       ();
 use HTML::Parse      ();
 use HTML::FormatText ();
 
-my $pod_dir = File::Spec->join( '..', 'Padre', 'share', 'doc', 'wxwidgets' );
+my $pod_dir = File::Spec->join( '..', 'Padre-Plugin-WxWidgets', 'share', 'doc' );
 unless ( -d $pod_dir ) {
-	die "Abort! I could not find ../Padre/share/doc/wxwidgets in the current directory\n";
+	die "Abort! I could not find ../Padre-Plugin-WxWidgets/share/doc in the current directory\n";
 }
 
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
@@ -212,9 +212,9 @@ is copyrighted as the following:
     and other members of the wxWidgets team. Portions (c) 1996 Artificial
     Intelligence Applications Institute.
 
-    The original documentation is licensed under wxWindows Library License version 3.1
-    L<http://docs.wxwidgets.org/2.8.10/wx_wxlicense.html> and GNU Library
-    General Public License version 2 L<http://docs.wxwidgets.org/2.8.10/wx_gnulicense.html>.
+    The original wxWidgets HTML documentation is licensed under:
+      wxWindows Library License version 3.1, http://docs.wxwidgets.org/2.8.10/wx_wxlicense.html
+      GNU Library General Public License version 2, http://docs.wxwidgets.org/2.8.10/wx_gnulicense.html
 
 This document is part of free software; you can redistribute it and/or modify it
 under the same terms as Perl 5 itself.
