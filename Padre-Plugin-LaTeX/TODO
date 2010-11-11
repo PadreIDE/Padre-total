@@ -1,6 +1,12 @@
 TÒDO
  - add icon for the plugin manager
  - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
+ - other tools to possibly use
+   - latexmk (run LaTeX the correct number of times)
+   - LaTeX::Encode, TeX::Encode
+   - preview-latex (used by AucTeX)
+   - chktex (typographic errors)
+   - lacheck (simple one-pass checker)
  - auto completion (keywords, commands/symbols, labels, BibTeX entries)
  - create DVI, PS, PDF
    - display errors
@@ -9,8 +15,10 @@ TÒDO
  - spell checking
  - insertion of special characters (snippets/menu)
  - insertion of tables, enumerations, etc. via snippets
+ - special treatment of tabular environment: transpose and swap columns or rows
  - integration of detexify
  - icons for the tool bar
+ - BibLaTeX support
  - document outline
    - sections/chapter/appendix/abstract
    - command definitions
@@ -28,5 +36,5 @@ TÒDO
  - open corresponding BibTeX files
  - open included/inserted files
  - context-sensitive help
- - check out LaTeX editors/frontends like LyX, vim, emacs for interesting
+ - check out LaTeX editors/frontends like LyX, vim, emacs, gedit for interesting
    features

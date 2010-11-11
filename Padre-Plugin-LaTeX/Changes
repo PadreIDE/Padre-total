@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-LaTeX
 
 {{$NEXT}}
+	add hint about BibTeX highlighting in Kate plugin (ZENOG)
+	add BibTeX support (commenting in and out) (ZENOG)
 
 0.07   2010.10.29
         Removed Test::NeedsDisplay dependency (AZAWAWI)

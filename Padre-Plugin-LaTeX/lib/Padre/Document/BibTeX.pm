@@ -1,6 +1,6 @@
-package Padre::Document::LaTeX;
+package Padre::Document::BibTeX;
 
-# ABSTRACT: LaTeX support document for Padre
+# ABSTRACT: BibTeX support document for Padre
 
 use 5.008;
 use strict;
@@ -19,7 +19,7 @@ sub task_outline {
 }
 
 sub task_syntax {
-	return 'Padre::Document::LaTeX::Syntax';
+	return '';
 }
 
 sub comment_lines_str { return '%' }
