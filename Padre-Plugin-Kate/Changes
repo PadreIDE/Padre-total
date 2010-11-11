@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Kate
 
 {{$NEXT}}
+    nicer 'About' text (ZENOG)
 
 0.05   2010.10.29
     Added support for C# (CHORNY)

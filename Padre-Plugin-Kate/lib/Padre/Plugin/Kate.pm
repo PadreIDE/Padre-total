@@ -168,7 +168,7 @@ sub about {
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
 	$about->SetDescription(
-		Wx::gettext('Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
+		Wx::gettext('Use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
 	$about->SetVersion($Padre::Plugin::Kate::VERSION);
 	Wx::AboutBox($about);
 	return;
