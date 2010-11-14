@@ -1,6 +1,6 @@
 #!perl
 
-# ABSTRACT: Generates a wxwidgets.pod from the wxWidgets HTML documentation 
+# ABSTRACT: Generates a wxwidgets.pod from wxWidgets HTML documentation 
 
 use 5.006;
 use strict;
@@ -11,9 +11,25 @@ use File::Spec       ();
 use HTML::Parse      ();
 use HTML::FormatText ();
 
-my $pod_dir = File::Spec->join( 'share', 'doc' );
-unless ( -d $pod_dir ) {
-	die "Abort! I could not find share/doc in the current directory\n";
+use Getopt::Long     ();
+my $help = '';
+my $result = Getopt::Long::GetOptions( "help"  => \$help,);
+
+if($help) {
+	print <<"HELP";
+
+This is $0, an HTML to POD wxwidgets documentation generator.
+
+Usage:
+    $0 [wx-widgets-html-directory]
+
+    The optional 'wx-widgets-html-directory' points to the wxwidgets 
+    HTML documentation directory. If this is omitted, the script will
+    automatically try to download the HTML documentation from the
+    wxWidgets sourceforge website.
+
+HELP
+	exit;
 }
 
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
@@ -31,7 +47,7 @@ my @wxclasses = read_wx_classes_list($wx_dir);
 print "Found " . @wxclasses . " Wx Classes to parse\n";
 
 # Step 4: Write the final POD while processing all html files
-write_pod( $pod_dir, $wx_dir, @wxclasses );
+write_pod( $wx_dir, @wxclasses );
 
 # and we're done
 exit;
@@ -74,7 +90,6 @@ sub unzip_file {
 	require Archive::Extract;
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
 	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
-	print "Extracting $WX_WIGDETS_HTML_ZIP to $dir...\n";
 	$zip->extract( to => $dir ) or die $zip->error;
 }
 
@@ -172,7 +187,7 @@ sub process_class {
 # Writes wxwidgets.pod... :)
 #
 sub write_pod {
-	my ( $pod_dir, $wx_dir, @wxclasses ) = @_;
+	my ( $wx_dir, @wxclasses ) = @_;
 	my $pod_file = File::Spec->join( $pod_dir, 'wxwidgets.pod' );
 	print "Writing $pod_file\n";
 	if ( open( my $pod, '>', $pod_file ) ) {
@@ -180,9 +195,7 @@ sub write_pod {
 		my $oldclass;
 		foreach my $wxclass (@wxclasses) {
 			my $file = File::Spec->join( $wx_dir, $wxclass->{file} );
-			my $class = $wxclass->{class};
-			print "Processing $class...\n";
-			print $pod process_class( $class, $file );
+			print $pod process_class( $wxclass->{class}, $file );
 		}
 		print $pod copyright_pod();
 		close $pod;
@@ -197,8 +210,6 @@ sub write_pod {
 #
 sub copyright_pod
 {
-	my ( $pod_dir, $wx_dir ) = @_;
-	
 	return <<'END';
 =head1 COPYRIGHT AND LICENSE
 
