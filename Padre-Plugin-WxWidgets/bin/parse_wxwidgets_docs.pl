@@ -1,4 +1,6 @@
-#!/usr/bin/perl
+#!perl
+
+# ABSTRACT: Generates a wxwidgets.pod from the wxWidgets HTML documentation 
 
 use 5.006;
 use strict;
@@ -9,9 +11,9 @@ use File::Spec       ();
 use HTML::Parse      ();
 use HTML::FormatText ();
 
-my $pod_dir = File::Spec->join( '..', 'Padre-Plugin-WxWidgets', 'share', 'doc' );
+my $pod_dir = File::Spec->join( 'share', 'doc' );
 unless ( -d $pod_dir ) {
-	die "Abort! I could not find ../Padre-Plugin-WxWidgets/share/doc in the current directory\n";
+	die "Abort! I could not find share/doc in the current directory\n";
 }
 
 my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
@@ -224,22 +226,7 @@ END
 
 __END__
 
-=head1 NAME
-
-parse_wxwidgets_docs.pl - Parse wxWidgets HTML documentation
-
 =head1 DESCRIPTION
 
 This is a simple script to parse WxWidgets HTML documentation into something useful
 that we can use of in Padre help system :)
-
-=head1 AUTHOR
-
-Ahmad M. Zawawi C<< <ahmad.zawawi at gmail.com> >>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2010 C<< <ahmad.zawawi at gmail.com> >>
-
-This program is free software; you can redistribute it and/or
-modify it under the same terms as Perl 5 itself.
