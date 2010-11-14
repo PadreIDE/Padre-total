@@ -43,7 +43,7 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	Wx::gettext('Spell check') => [
 		Wx::gettext("Check spelling\tF7") => 'spell_check',
-		Wx::gettext("Preferences")        => 'spell_preferences',
+		Wx::gettext('Preferences')        => 'plugin_preferences',
 	];
 }
 
@@ -96,7 +96,7 @@ sub spell_check {
 	$dialog->ShowModal;
 }
 
-sub spell_preferences {
+sub plugin_preferences {
 	my ($self) = @_;
 	my $prefs = Padre::Plugin::SpellCheck::Preferences->new($self);
 	$prefs->Show;
@@ -163,7 +163,7 @@ exist previously.
 
 Spell checks the current selection (or the whole document).
 
-=item * spell_preferences()
+=item * plugin_preferences()
 
 Open the check spelling preferences window.
 
