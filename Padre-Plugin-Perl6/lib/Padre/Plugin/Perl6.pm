@@ -240,7 +240,7 @@ sub menu_plugins {
 	Wx::Event::EVT_MENU(
 		$main,
 		$self->{menu}->Append( -1, Wx::gettext("Preferences"), ),
-		sub { $self->show_preferences; },
+		sub { $self->plugin_preferences; },
 	);
 
 	# the famous about menu item...
@@ -295,7 +295,7 @@ sub _create_from_template {
 	return;
 }
 
-sub show_preferences {
+sub plugin_preferences {
 	my $self = shift;
 
 	require Padre::Plugin::Perl6::Preferences;

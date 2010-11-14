@@ -1,6 +1,7 @@
 Changes
 
 {{$NEXT}}
+	renamed method 'show_preferences' to 'plugin_preferences' (ZENOG)
 
 0.69   2010.10.31
 	Fixed a regression in the highlighter and syntax checker (AZAWAWI)
