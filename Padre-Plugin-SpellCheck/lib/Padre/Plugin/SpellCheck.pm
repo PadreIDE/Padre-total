@@ -69,7 +69,8 @@ sub spell_check {
 		return;
 	}
 
-	my $engine = Padre::Plugin::SpellCheck::Engine->new($self);
+	my $mime_type = $main->current->document->mimetype;
+	my $engine = Padre::Plugin::SpellCheck::Engine->new($self, $mime_type);
 
 	# fetch text to check
 	my $selection = Padre::Current->text;

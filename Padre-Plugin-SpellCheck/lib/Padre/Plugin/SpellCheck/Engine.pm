@@ -16,11 +16,16 @@ use Class::XSAccessor accessors => {
 };
 use Text::Aspell;
 
+my %MIMETYPE_MODE = (
+	'application/x-latex' => 'tex',
+	'text/html'           => 'html',
+	'text/xml'            => 'sgml',
+);
 
 # -- constructor
 
 sub new {
-	my ( $class, $plugin ) = @_;
+	my ( $class, $plugin, $mimetype ) = @_;
 
 	my $self = bless {
 		_ignore    => {},
@@ -35,6 +40,18 @@ sub new {
 	# TODO: configurable later
 	$speller->set_option( 'sug-mode', 'normal' );
 	$speller->set_option( 'lang',     $config->{dictionary} );
+
+	$speller->print_config;
+
+	if (exists $MIMETYPE_MODE{$mimetype}) {
+		if (not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype})) {
+			my $err = $speller->errstr;
+			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
+		}
+	}
+	
+	$speller->print_config;
+	
 	$self->_speller($speller);
 
 	return $self;
