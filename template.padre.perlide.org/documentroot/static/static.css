@@ -53,6 +53,10 @@ div#content {
     padding: 0.75em;
 }
 
+div#footer {
+    text-align: center;
+}
+
 .center_column {
     text-align: left;
     width: 950px;
