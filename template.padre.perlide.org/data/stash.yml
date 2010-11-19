@@ -27,6 +27,10 @@ navigation:
 about:
   - title: y2010
     events:
+      - date: 2010 November 19
+        url: http://blogs.perl.org/users/ovid/2010/11/method-extraction-in-vim.html
+        title: Method Extraction in Vim
+        comment: by Curtis "Ovid" Poe (Ovid)
       - date: 2010 November 14
         url: http://blogs.perl.org/users/peter_lavender/2010/11/padre-074-has-been-released.html
         title: Padre 0.74 Release Announcement
