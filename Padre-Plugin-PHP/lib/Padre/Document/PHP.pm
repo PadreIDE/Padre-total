@@ -169,7 +169,11 @@ sub autoclean {
 sub get_command {
 
 	my $self  = shift;
-	my $debug = shift;
+
+	my $arg_ref = shift || {};
+
+	my $debug = exists $arg_ref->{debug} ? $arg_ref->{debug} : 0;
+	my $trace = exists $arg_ref->{trace} ? $arg_ref->{trace} : 0;
 
 	my $config = Padre->ide->config;
 
@@ -211,16 +215,19 @@ sub get_command {
 		$run_args{$arg} = Padre::DB::History->previous($type) if Padre::DB::History->previous($type);
 	}
 
-	# TODO: Pack args here, because adding the space later confuses the called interpreter
-	my $Script_Args = '';
-	$Script_Args = ' ' . $run_args{script} if defined( $run_args{script} ) and ( $run_args{script} ne '' );
+	my $script_args = '';
+	$script_args = ' ' . $run_args{script} if defined( $run_args{script} ) and ( $run_args{script} ne '' );
 
 	my $dir = File::Basename::dirname($filename);
 	chdir $dir;
 
-	return $debug
-		? qq{"$php" -d error_reporting=E_ALL $run_args{interpreter} "$filename"$Script_Args}
-		: qq{"$php" $run_args{interpreter} "$filename"$Script_Args};
+	my @commands = (qq{"$php"});
+	#push @commands, ''                          if $debug;
+	push @commands, '-d error_reporting=E_ALL)' if $trace;
+	push @commands, "$run_args{interpreter}";
+	push @commands, qq{"$filename"$script_args};
+
+	return join ' ', @commands;		
 }
 
 sub menu {

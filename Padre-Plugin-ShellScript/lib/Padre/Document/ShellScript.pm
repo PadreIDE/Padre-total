@@ -10,7 +10,11 @@ our @ISA     = 'Padre::Document';
 
 sub get_command {
 	my $self  = shift;
-	my $debug = shift;
+
+	my $arg_ref = shift || {};
+
+	my $debug = exists $arg_ref->{debug} ? $arg_ref->{debug} : 0;
+	my $trace = exists $arg_ref->{trace} ? $arg_ref->{trace} : 0;
 
 	# TODO get shebang
 
@@ -19,7 +23,7 @@ sub get_command {
 
 	my $dir = File::Basename::dirname($filename);
 	chdir $dir;
-	return $debug
+	return $trace
 		? qq{"sh" "-xv" "$filename"}
 		: qq{"sh" "$filename"};
 }
