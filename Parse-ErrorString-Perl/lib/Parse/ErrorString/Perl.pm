@@ -1,17 +1,15 @@
+package Parse::ErrorString::Perl;
 
 # ABSTRACT: Parse error messages from the perl interpreter
-
-package Parse::ErrorString::Perl;
 
 use strict;
 use warnings;
 
 use Carp qw(carp cluck);
-use Pod::Find      ();
-use Pod::POM       ();
-use File::Spec     ();
-use File::Basename ();
-
+use Pod::Find                           ();
+use Pod::POM                            ();
+use File::Spec                          ();
+use File::Basename                      ();
 use Parse::ErrorString::Perl::ErrorItem ();
 use Parse::ErrorString::Perl::StackItem ();
 
@@ -432,7 +430,8 @@ __END__
     use Parse::ErrorString::Perl;
 
     my $parser = Parse::ErrorString::Perl->new;
-    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
+    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') 
+    # to get localized explanations
     my @errors = $parser->parse_string($string_containing_stderr_output);
 
     foreach my $error(@errors) {
@@ -449,11 +448,15 @@ __END__
 
 =item new(lang => $lang)
 
-Constructor. Receives an optional C<lang> parameter, specifying that error explanations need to be delivered in a language different from the default (i.e. English). Will try to load C<POD2::$lang::perldiag>.
+Constructor. Receives an optional C<lang> parameter, specifying that
+error explanations need to be delivered in a language different from the
+default (i.e. English). Will try to load C<POD2::$lang::perldiag>.
 
 =item parse_string($string)
 
-Receives an error string generated from the perl interpreter and attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem> objects providing information for each error.
+Receives an error string generated from the perl interpreter and
+attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem>
+objects providing information for each error.
 
 =back
 
@@ -467,9 +470,11 @@ Part of this module is based on code from L<splain>.
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-parse-errorstring-perl at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to 
+C<bug-parse-errorstring-perl at rt.cpan.org>, or through the web interface at 
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>. 
+I will be notified, and then you'll automatically be notified of
+progress on your bug as I make changes.
 
 =head1 SUPPORT
 

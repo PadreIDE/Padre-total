@@ -36,13 +36,20 @@ __END__
 
 =head1 Parse::ErrorString::Perl::ErrorItem
 
-Each object contains the following accessors (only C<message>, C<file>, and C<line> are guaranteed to be present for every error):
+Each object contains the following accessors (only C<message>, C<file>,
+and C<line> are guaranteed to be present for every error):
 
 =over
 
 =item type
 
-Normally returns a single letter idnetifying the type of the error. The possbile options are C<W>, C<D>, C<S>, C<F>, C<P>, C<X>, and C<A>. Sometimes an error can be of either of two types, in which case a string such as "C<S|F>" is returned in scalar context and a list of the two letters is returned in list context. If C<type> is empty, you can assume that the error was not emimtted by perl itself, but by the user or by a third-party module.
+Normally returns a single letter identifying the type of the error. The
+possbile options are C<W>, C<D>, C<S>, C<F>, C<P>, C<X>, and C<A>.
+Sometimes an error can be of either of two types, in which case a string
+such as "C<S|F>" is returned in scalar context and a list of the two
+letters is returned in list context. If C<type> is empty, you can assume
+that the error was not emimtted by perl itself, but by the user or by a
+third-party module.
 
 =item type_description
 
@@ -56,7 +63,9 @@ A description of the error type. The possible options are:
     X => very fatal error
     A => alien error message
 
-If the error can be of either or two types, the two types are concactenated with "C< or >". Note that this description is always returned in English, regardless of the C<lang> option.
+If the error can be of either or two types, the two types are
+concactenated with "C< or >". Note that this description is always
+returned in English, regardless of the C<lang> option.
 
 =item message
 
@@ -64,7 +73,11 @@ The error message.
 
 =item file
 
-The path to the file in which the error occurred, possibly truncated. If the error occurred in a script, the parser will attempt to return only the filename; if the error occurred in a module, the parser will attempt to return the path to the module relative to the directory in @INC in which it resides.
+The path to the file in which the error occurred, possibly truncated. If
+the error occurred in a script, the parser will attempt to return only
+the filename; if the error occurred in a module, the parser will attempt
+to return the path to the module relative to the directory in @INC in
+which it resides.
 
 =item file_abspath
 
@@ -80,7 +93,8 @@ Line in which the error occurred.
 
 =item near
 
-Text near which the error occurred (note that this often contains newline characters).
+Text near which the error occurred (note that this often contains
+newline characters).
 
 =item at
 
@@ -88,7 +102,12 @@ Additional information about where the error occurred (e.g. "C<at EOF>").
 
 =item diagnostics
 
-Detailed explanation of the error (from L<perldiag>). If the C<lang> option is specified when constructing the parser, an attempt will be made to return the diagnostics message in the appropriate language. If an explanation is not found in the localized perldiag, the default perldiag will also be searched. Returned as raw pod, so you may need to use a pod parser to render into the format you need.
+Detailed explanation of the error (from L<perldiag>). If the C<lang>
+option is specified when constructing the parser, an attempt will be
+made to return the diagnostics message in the appropriate language. If
+an explanation is not found in the localized perldiag, the default
+perldiag will also be searched. Returned as raw pod, so you may need to
+use a pod parser to render into the format you need.
 
 =item stack
 

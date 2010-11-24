@@ -29,11 +29,13 @@ __END__
 
 =item sub
 
-The subroutine that was called, qualified with a package name (as printed by C<use diagnostics>).
+The subroutine that was called, qualified with a package name (as
+printed by C<use diagnostics>).
 
 =item file
 
-File where subroutine was called. See C<file> in C<Parse::ErrorString::Perl::ErrorItem>.
+File where subroutine was called. See C<file> in
+C<Parse::ErrorString::Perl::ErrorItem>.
 
 =item file_abspath
 
