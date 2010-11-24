@@ -430,7 +430,7 @@ __END__
     use Parse::ErrorString::Perl;
 
     my $parser = Parse::ErrorString::Perl->new;
-    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') 
+    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR')
     # to get localized explanations
     my @errors = $parser->parse_string($string_containing_stderr_output);
 
@@ -470,9 +470,9 @@ Part of this module is based on code from L<splain>.
 
 =head1 BUGS
 
-Please report any bugs or feature requests to 
-C<bug-parse-errorstring-perl at rt.cpan.org>, or through the web interface at 
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>. 
+Please report any bugs or feature requests to
+C<bug-parse-errorstring-perl at rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>.
 I will be notified, and then you'll automatically be notified of
 progress on your bug as I make changes.
 
