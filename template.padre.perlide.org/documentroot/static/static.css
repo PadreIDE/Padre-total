@@ -38,7 +38,7 @@ body {
     margin: 0;
     padding: 0;
     color: #000;
-    background-color: #dfdfdf;
+    background-color: white;
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
 /*    background-image: url(bg-hexel.png); */
 }
@@ -91,7 +91,7 @@ h1,h2,h3,h4,h5,h6 {
 
 
 #masthead {
-    background-color: #aa99FF;
+    background-color: white;
     margin-bottom: 0;
     vertical-align: middle;
     height: 85px;
