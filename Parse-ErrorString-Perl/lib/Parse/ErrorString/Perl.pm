@@ -1,222 +1,19 @@
 
 # ABSTRACT: Parse error messages from the perl interpreter
 
-=head1 SYNOPSIS
-
-    use Parse::ErrorString::Perl;
-
-    my $parser = Parse::ErrorString::Perl->new;
-    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
-    my @errors = $parser->parse_string($string_containing_stderr_output);
-
-    foreach my $error(@errors) {
-    print 'Captured error message "' .
-        $error->message .
-        '" in file ' . $error->file .
-        ' on line ' . $error->line . "\n";
-    }
-
-
-=head1 METHODS
-
-=over
-
-=item new(lang => $lang)
-
-Constructor. Receives an optional C<lang> parameter, specifying that error explanations need to be delivered in a language different from the default (i.e. English). Will try to load C<POD2::$lang::perldiag>.
-
-=item parse_string($string)
-
-Receives an error string generated from the perl interpreter and attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem> objects providing information for each error.
-
-=back
-
-=head1 Parse::ErrorString::Perl::ErrorItem
-
-Each object contains the following accessors (only C<message>, C<file>, and C<line> are guaranteed to be present for every error):
-
-=over
-
-=item type
-
-Normally returns a single letter idnetifying the type of the error. The possbile options are C<W>, C<D>, C<S>, C<F>, C<P>, C<X>, and C<A>. Sometimes an error can be of either of two types, in which case a string such as "C<S|F>" is returned in scalar context and a list of the two letters is returned in list context. If C<type> is empty, you can assume that the error was not emimtted by perl itself, but by the user or by a third-party module.
-
-=item type_description
-
-A description of the error type. The possible options are:
-
-    W => warning
-    D => deprecation
-    S => severe warning
-    F => fatal error
-    P => internal error
-    X => very fatal error
-    A => alien error message
-
-If the error can be of either or two types, the two types are concactenated with "C< or >". Note that this description is always returned in English, regardless of the C<lang> option.
-
-=item message
-
-The error message.
-
-=item file
-
-The path to the file in which the error occurred, possibly truncated. If the error occurred in a script, the parser will attempt to return only the filename; if the error occurred in a module, the parser will attempt to return the path to the module relative to the directory in @INC in which it resides.
-
-=item file_abspath
-
-Absolute path to the file in which the error occurred.
-
-=item file_msgpath
-
-The file path as displayed in which the error message.
-
-=item line
-
-Line in which the error occurred.
-
-=item near
-
-Text near which the error occurred (note that this often contains newline characters).
-
-=item at
-
-Additional information about where the error occurred (e.g. "C<at EOF>").
-
-=item diagnostics
-
-Detailed explanation of the error (from L<perldiag>). If the C<lang> option is specified when constructing the parser, an attempt will be made to return the diagnostics message in the appropriate language. If an explanation is not found in the localized perldiag, the default perldiag will also be searched. Returned as raw pod, so you may need to use a pod parser to render into the format you need.
-
-=item stack
-
-Callstack for the error. Returns a list of Parse::ErrorString::Perl::StackItem objects.
-
-=back
-
-=head1 Parse::ErrorString::Perl::StackItem
-
-=over
-
-=item sub
-
-The subroutine that was called, qualified with a package name (as printed by C<use diagnostics>).
-
-=item file
-
-File where subroutine was called. See C<file> in C<Parse::ErrorString::Perl::ErrorItem>.
-
-=item file_abspath
-
-See C<file_abspath> in C<Parse::ErrorString::Perl::ErrorItem>.
-
-=item file_msgpath
-
-See C<file_msgpath> in C<Parse::ErrorString::Perl::ErrorItem>.
-
-=item line
-
-The line where the subroutine was called.
-
-=back
-
-=head1 SEE ALSO
-
-L<splain>
-
-=head1 ACKNOWLEDGEMENTS
-
-Part of this module is based on code from L<splain>.
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-parse-errorstring-perl at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Parse::ErrorString::Perl
-
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Parse-ErrorString-Perl>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Parse-ErrorString-Perl>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Parse-ErrorString-Perl>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Parse-ErrorString-Perl/>
-
-=back
-
-=cut
-
-use warnings;
-use strict;
-
-package Parse::ErrorString::Perl::StackItem;
-
-sub new {
-	my ($class, $self) = @_;
-	bless $self, ref $class || $class;
-	return $self;
-}
-
-use Class::XSAccessor
-	getters => {
-		sub => 'sub',
-		file => 'file',
-		file_abspath => 'file_abspath',
-		file_msgpath => 'file_msgpath',
-		line => 'line',
-	};
-
-package Parse::ErrorString::Perl::ErrorItem;
-
-use Class::XSAccessor
-	getters => {
-		type => 'type',
-		type_description => 'type_description',
-		message => 'message',
-		file => 'file',
-		file_abspath => 'file_abspath',
-		file_msgpath => 'file_msgpath',
-		line => 'line',
-		near => 'near',
-		diagnostics => 'diagnostics',
-		at => 'at',
-	};
-
-sub new {
-	my ($class, $self) = @_;
-	bless $self, ref $class || $class;
-	return $self;
-}
-
-sub stack {
-	my $self = shift;
-	return $self->{stack} ? @{ $self->{stack} } : undef;
-
-}
-
 package Parse::ErrorString::Perl;
 
-use Carp;
-use Pod::Find;
-use Pod::POM;
-use File::Spec;
+use strict;
+use warnings;
+
+use Carp qw(carp cluck);
+use Pod::Find ();
+use Pod::POM ();
+use File::Spec ();
 use File::Basename ();
+
+use Parse::ErrorString::Perl::ErrorItem  ();
+use Parse::ErrorString::Perl::StackItem  ();
 
 sub new {
 	my $class = shift;
@@ -358,7 +155,7 @@ sub _get_diagnostics {
 		transmo();
 	};
 	if ($@) {
-		Carp::cluck($@);
+		cluck($@);
 	}
 	return $self->{localized_errors}{$_} ? $self->{localized_errors}{$_} : $self->{errors}{$_};
 }
@@ -626,3 +423,77 @@ sub _prepare_localized_diagnostics {
 
 1;
 
+__END__
+
+=head1 SYNOPSIS
+
+    use Parse::ErrorString::Perl;
+
+    my $parser = Parse::ErrorString::Perl->new;
+    # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
+    my @errors = $parser->parse_string($string_containing_stderr_output);
+
+    foreach my $error(@errors) {
+    print 'Captured error message "' .
+        $error->message .
+        '" in file ' . $error->file .
+        ' on line ' . $error->line . "\n";
+    }
+
+
+=head1 METHODS
+
+=over
+
+=item new(lang => $lang)
+
+Constructor. Receives an optional C<lang> parameter, specifying that error explanations need to be delivered in a language different from the default (i.e. English). Will try to load C<POD2::$lang::perldiag>.
+
+=item parse_string($string)
+
+Receives an error string generated from the perl interpreter and attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem> objects providing information for each error.
+
+=back
+
+=head1 SEE ALSO
+
+L<splain>
+
+=head1 ACKNOWLEDGEMENTS
+
+Part of this module is based on code from L<splain>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-parse-errorstring-perl at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Parse-ErrorString-Perl>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Parse::ErrorString::Perl
+
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Parse-ErrorString-Perl>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Parse-ErrorString-Perl>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Parse-ErrorString-Perl>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Parse-ErrorString-Perl/>
+
+=back
+
+=cut
