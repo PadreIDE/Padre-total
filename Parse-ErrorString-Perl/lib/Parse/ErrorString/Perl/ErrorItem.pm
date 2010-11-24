@@ -5,22 +5,21 @@ package Parse::ErrorString::Perl::ErrorItem;
 use strict;
 use warnings;
 
-use Class::XSAccessor
-	getters => {
-		type => 'type',
-		type_description => 'type_description',
-		message => 'message',
-		file => 'file',
-		file_abspath => 'file_abspath',
-		file_msgpath => 'file_msgpath',
-		line => 'line',
-		near => 'near',
-		diagnostics => 'diagnostics',
-		at => 'at',
-	};
+use Class::XSAccessor getters => {
+	type             => 'type',
+	type_description => 'type_description',
+	message          => 'message',
+	file             => 'file',
+	file_abspath     => 'file_abspath',
+	file_msgpath     => 'file_msgpath',
+	line             => 'line',
+	near             => 'near',
+	diagnostics      => 'diagnostics',
+	at               => 'at',
+};
 
 sub new {
-	my ($class, $self) = @_;
+	my ( $class, $self ) = @_;
 	bless $self, ref $class || $class;
 	return $self;
 }

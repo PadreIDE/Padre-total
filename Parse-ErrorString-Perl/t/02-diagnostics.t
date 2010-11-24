@@ -27,10 +27,10 @@ Execution of error.pl aborted due to compilation errors.
 ENDofMSG
 
 my @errors_compile = $parser->parse_string($msg_compile);
-is(scalar(@errors_compile),          1, 'msg_compile results');
-is($errors_compile[0]->message,      'Global symbol "$kaboom" requires explicit package name', 'msg_compile message');
-is($errors_compile[0]->file_msgpath, 'error.pl', 'msg_compile file');
-is($errors_compile[0]->line,         5, 'msg_compile line');
+is( scalar(@errors_compile),          1,                                                        'msg_compile results' );
+is( $errors_compile[0]->message,      'Global symbol "$kaboom" requires explicit package name', 'msg_compile message' );
+is( $errors_compile[0]->file_msgpath, 'error.pl',                                               'msg_compile file' );
+is( $errors_compile[0]->line,         5,                                                        'msg_compile line' );
 
 
 # use strict;
@@ -69,13 +69,13 @@ Uncaught exception from user code:
 ENDofMSG
 
 my @errors_runtime = $parser->parse_string($msg_runtime);
-is(scalar(@errors_runtime),          2, 'msg_runtime results');
-is($errors_runtime[0]->message,      'Use of uninitialized value $empty in length', 'msg_runtime 1 message');
-is($errors_runtime[0]->file_msgpath, 'error.pl', 'msg_runtime 1 file');
-is($errors_runtime[0]->line,         6, 'msg_runtime 1 line');
-is($errors_runtime[1]->message,      'Illegal division by zero', 'msg_runtime 2 message');
-is($errors_runtime[1]->file_msgpath, 'error.pl', 'msg_runtime 2 file');
-is($errors_runtime[1]->line,         9, 'msg_runtime 2 line');
+is( scalar(@errors_runtime),          2,                                             'msg_runtime results' );
+is( $errors_runtime[0]->message,      'Use of uninitialized value $empty in length', 'msg_runtime 1 message' );
+is( $errors_runtime[0]->file_msgpath, 'error.pl',                                    'msg_runtime 1 file' );
+is( $errors_runtime[0]->line,         6,                                             'msg_runtime 1 line' );
+is( $errors_runtime[1]->message,      'Illegal division by zero',                    'msg_runtime 2 message' );
+is( $errors_runtime[1]->file_msgpath, 'error.pl',                                    'msg_runtime 2 file' );
+is( $errors_runtime[1]->line,         9,                                             'msg_runtime 2 line' );
 
 # use strict;
 # use warnings;
@@ -122,13 +122,13 @@ Execution of error.pl aborted due to compilation errors.
 ENDofMSG
 
 my @errors_near = $parser->parse_string($msg_near);
-is(scalar(@errors_near),          2, 'msg_near results');
-is($errors_near[0]->message,      'syntax error', 'msg_near 1 message');
-is($errors_near[0]->file_msgpath, 'error.pl', 'msg_near 1 file');
-is($errors_near[0]->line,         8, 'msg_near 1 line');
-is($errors_near[1]->message,      'Global symbol "$length" requires explicit package name', 'msg_near 2 message');
-is($errors_near[1]->file_msgpath, 'error.pl', 'msg_near 2 file');
-is($errors_near[1]->line,         8, 'msg_near 2 line');
+is( scalar(@errors_near),          2,                                                        'msg_near results' );
+is( $errors_near[0]->message,      'syntax error',                                           'msg_near 1 message' );
+is( $errors_near[0]->file_msgpath, 'error.pl',                                               'msg_near 1 file' );
+is( $errors_near[0]->line,         8,                                                        'msg_near 1 line' );
+is( $errors_near[1]->message,      'Global symbol "$length" requires explicit package name', 'msg_near 2 message' );
+is( $errors_near[1]->file_msgpath, 'error.pl',                                               'msg_near 2 file' );
+is( $errors_near[1]->line,         8,                                                        'msg_near 2 line' );
 
 # use strict;
 # use warnings;
@@ -168,11 +168,11 @@ Execution of error.pl aborted due to compilation errors.
 ENDofMSG
 
 my @errors_at = $parser->parse_string($msg_at);
-is(scalar(@errors_at),           2, 'msg_at results');
-is($errors_at[0]->message,       'syntax error', 'msg_at 1 message');
-is($errors_at[0]->file_msgpath,  'error.pl', 'msg_at 1 file');
-is($errors_at[0]->line,          5, 'msg_at 1 line');
-is($errors_at[1]->message,       'Missing right curly or square bracket', 'msg_at 2 message');
-is($errors_at[1]->file_msgpath,  'error.pl', 'msg_at 2 file');
-is($errors_at[1]->line,          5, 'msg_at 2 line');
+is( scalar(@errors_at),          2,                                       'msg_at results' );
+is( $errors_at[0]->message,      'syntax error',                          'msg_at 1 message' );
+is( $errors_at[0]->file_msgpath, 'error.pl',                              'msg_at 1 file' );
+is( $errors_at[0]->line,         5,                                       'msg_at 1 line' );
+is( $errors_at[1]->message,      'Missing right curly or square bracket', 'msg_at 2 message' );
+is( $errors_at[1]->file_msgpath, 'error.pl',                              'msg_at 2 file' );
+is( $errors_at[1]->line,         5,                                       'msg_at 2 line' );
 

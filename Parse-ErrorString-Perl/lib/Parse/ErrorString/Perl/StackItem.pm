@@ -6,19 +6,18 @@ use strict;
 use warnings;
 
 sub new {
-	my ($class, $self) = @_;
+	my ( $class, $self ) = @_;
 	bless $self, ref $class || $class;
 	return $self;
 }
 
-use Class::XSAccessor
-	getters => {
-		sub => 'sub',
-		file => 'file',
-		file_abspath => 'file_abspath',
-		file_msgpath => 'file_msgpath',
-		line => 'line',
-	};
+use Class::XSAccessor getters => {
+	sub          => 'sub',
+	file         => 'file',
+	file_abspath => 'file_abspath',
+	file_msgpath => 'file_msgpath',
+	line         => 'line',
+};
 
 1;
 
