@@ -2,24 +2,22 @@
 navigation:
   - name: Home
     href: /
+  - name: Screenshots
+    href: /screenshots.html
+  - name: Documentation
+    href: /docs/
   - name: Download
     href: /download.html
   - name: Developers
     href: /developers.html
   - name: Translators
     href: /translators.html
-  - name: Screenshots
-    href: /screenshots.html
-  - name: Howto
-    href: /howto.html
   - name: Get Involved
     href: /getting_involved.html
   - name: Blogs
     href: http://blogs.padre.perlide.org
   - name: Contact us
     href: /contact.html
-  - name: Documentation
-    href: /docs/
   - name: About
     href: /about.html
 about:
