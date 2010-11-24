@@ -21,7 +21,7 @@ Use of uninitialized value $empty in length at
     (W uninitialized) An undefined value was used as if it were already
     defined.  It was interpreted as a "" or a 0, but maybe it was a mistake.
     To suppress this warning assign a defined value to your variables.
-    
+
     To help you figure out what was undefined, perl will try to tell you the
     name of the variable (if any) that was undefined. In some cases it cannot
     do this, so it also tells you what operation you used the undefined value
@@ -30,13 +30,13 @@ Use of uninitialized value $empty in length at
     program.  For example, "that $foo" is usually optimized into "that "
     . $foo, and the warning will refer to the concatenation (.) operator,
     even though there is no . in your program.
-    
+
 Illegal division by zero at
 	c:\my\very\long\path\to\this\perl\script\called\error.pl line 9 (#2)
     (F) You tried to divide a number by 0.  Either something was wrong in
     your logic, or you need to put a conditional in to guard against
     meaningless input.
-    
+
 Uncaught exception from user code:
 	Illegal division by zero at
 	c:\my\very\long\path\to\this\perl\script\called\error.pl line 9.

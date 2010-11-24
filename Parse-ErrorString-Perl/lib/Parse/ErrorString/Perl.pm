@@ -1,19 +1,14 @@
-=head1 NAME
 
-Parse::ErrorString::Perl - Parse error messages from the perl interpreter
-
-=head1 VERSION
-
-Version 0.13
+# ABSTRACT: Parse error messages from the perl interpreter
 
 =head1 SYNOPSIS
 
     use Parse::ErrorString::Perl;
-	
+
     my $parser = Parse::ErrorString::Perl->new;
     # or: my $parser = Parse::ErrorString::Perl->new(lang => 'FR') to get localized explanations
     my @errors = $parser->parse_string($string_containing_stderr_output);
-    
+
     foreach my $error(@errors) {
     print 'Captured error message "' .
         $error->message .
@@ -32,7 +27,7 @@ Constructor. Receives an optional C<lang> parameter, specifying that error expla
 
 =item parse_string($string)
 
-Receives an error string generated from the perl interpreter and attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem> objects providing information for each error. 
+Receives an error string generated from the perl interpreter and attempts to parse it into a list of C<Parse::ErrorString::Perl::ErrorItem> objects providing information for each error.
 
 =back
 
@@ -50,7 +45,7 @@ Normally returns a single letter idnetifying the type of the error. The possbile
 
 A description of the error type. The possible options are:
 
-    W => warning 
+    W => warning
     D => deprecation
     S => severe warning
     F => fatal error
@@ -90,7 +85,7 @@ Additional information about where the error occurred (e.g. "C<at EOF>").
 
 =item diagnostics
 
-Detailed explanation of the error (from L<perldiag>). If the C<lang> option is specified when constructing the parser, an attempt will be made to return the diagnostics message in the appropriate language. If an explanation is not found in the localized perldiag, the default perldiag will also be searched. Returned as raw pod, so you may need to use a pod parser to render into the format you need. 
+Detailed explanation of the error (from L<perldiag>). If the C<lang> option is specified when constructing the parser, an attempt will be made to return the diagnostics message in the appropriate language. If an explanation is not found in the localized perldiag, the default perldiag will also be searched. Returned as raw pod, so you may need to use a pod parser to render into the format you need.
 
 =item stack
 
@@ -123,10 +118,6 @@ See C<file_msgpath> in C<Parse::ErrorString::Perl::ErrorItem>.
 The line where the subroutine was called.
 
 =back
-
-=head1 AUTHOR
-
-Petar Shangov, C<< <pshangov at yahoo.com> >>
 
 =head1 SEE ALSO
 
@@ -168,14 +159,6 @@ L<http://cpanratings.perl.org/d/Parse-ErrorString-Perl>
 L<http://search.cpan.org/dist/Parse-ErrorString-Perl/>
 
 =back
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Petar Shangov, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
 
 =cut
 
@@ -229,8 +212,6 @@ sub stack {
 
 package Parse::ErrorString::Perl;
 
-our $VERSION = '0.13';
-
 use Carp;
 use Pod::Find;
 use Pod::POM;
@@ -282,22 +263,22 @@ sub parse_string {
 sub _prepare_diagnostics {
 	my $self = shift;
 	my %options = @_;
-	
+
 	my $perldiag;
 	my $pod_filename;
 
 	if ($options{lang}) {
 		$perldiag = 'POD2::' . $options{lang} . '::perldiag';
 		$pod_filename = Pod::Find::pod_where({-inc => 1}, $perldiag);
-	
+
 		if (!$pod_filename) {
 			carp "Could not locate localised perldiag, trying perldiag in English";
 		}
 	}
-	
+
 	if (!$pod_filename) {
 		$pod_filename = Pod::Find::pod_where({-inc => 1}, 'perldiag');
-	
+
 		if (!$pod_filename) {
 			carp "Could not locate perldiag, diagnostic info will no be added";
 			return;
@@ -311,21 +292,21 @@ sub _prepare_diagnostics {
 		carp $parser->error();
 		return;
 	}
-	
-	my %transfmt = (); 
+
+	my %transfmt = ();
 	my %errors;
 	foreach my $item ($pom->head1->[1]->over->[0]->item) {
 		my $header = $item->title;
-		
+
 		my $content = $item->content;
 		$content =~ s/\s*$//;
 		$errors{$header} = $content;
 
 
 		### CODE FROM SPLAIN
-		
+
 		#$header =~ s/[A-Z]<(.*?)>/$1/g;
-		
+
 		my @toks = split( /(%l?[dx]|%c|%(?:\.\d+)?s)/, $header );
 		if (@toks > 1) {
 			my $conlen = 0;
@@ -385,14 +366,14 @@ sub _get_diagnostics {
 
 # GOTCHAS OF "USE DIAGNOSTICS":
 # 1. if error explanations are enabled (i.e. no '-traceonly'),
-#    consecutive numbering at the end of the error message (e.g. "(#1)", 
+#    consecutive numbering at the end of the error message (e.g. "(#1)",
 #    "(#2)", etc) will be appended
-# 2. if error explanations are enabled, the original error messages 
+# 2. if error explanations are enabled, the original error messages
 #    will be split into two lines if they exceed 79 characters
 # 3. if a stack trace is to be printed, the error message will have
 #    a tab prepended and will follow "Uncaught exception from user code:\n\t".
 #	 This message may have been been printed already as part of the
-#	 explanations. 
+#	 explanations.
 
 sub _parse_to_hash {
 	my $self = shift;
@@ -408,7 +389,7 @@ sub _parse_to_hash {
 			(.*)			# $1 - the error message
 			\sat\s(.*)		# $2 - the filename or eval
 			\sline\s(\d+)	# $3 - the line number
-			(?:	
+			(?:
 				\.						# end of error message
 				|(?:					# or start collecting additional information
 					(?:					# option 1: we have a "near" message
@@ -428,17 +409,17 @@ sub _parse_to_hash {
 	# check if error messages were split by diagnostics
 	my @unchecked_lines = split(/\n/, $string);
 	my @checked_lines;
-	
+
 	# lines after the start of the stack trace
 	my @stack_trace;
-	
+
 	for (my $i = 0; $i <= $#unchecked_lines; $i++) {
 		my $current_line = $unchecked_lines[$i];
 		if ($current_line eq "Uncaught exception from user code:") {
 			@stack_trace = @unchecked_lines[++$i .. $#unchecked_lines];
 			last;
 		} elsif ($i == $#unchecked_lines) {
-			push @checked_lines, $current_line; 
+			push @checked_lines, $current_line;
 		} else {
 			my $next_line = $unchecked_lines[$i+1];
 			my $test_line = $current_line . " " . $next_line;
@@ -453,20 +434,20 @@ sub _parse_to_hash {
 				push @checked_lines, $real_line;
 				$i++;
 			} else {
-				push @checked_lines, $current_line; 
+				push @checked_lines, $current_line;
 			}
 		}
 	}
 
 	# file and line number where the fatal error occurred
 	my ($die_at_file, $die_at_line);
-	
+
 	# the items in the stack trace list
 	my @trace_items;
-	
+
 	# the fatal error(s)
 	my @stack_trace_errors;
-	
+
 	if (@stack_trace) {
 		for (my $i = 0; $i <= $#stack_trace; $i++) {
 			if ($stack_trace[$i] =~ /^\sat\s(.*)\sline\s(\d+)$/) {
@@ -484,7 +465,7 @@ sub _parse_to_hash {
 	my $in_near;
 
 	foreach my $line (@checked_lines, @stack_trace_errors) {
-	
+
 		# carriage returns may remain in multi-line 'near' messages and cause problems
 		# $line =~ s/\r/ /g;
 		# $line =~ s/\s+/ /g;
@@ -498,7 +479,7 @@ sub _parse_to_hash {
 				if ($diagnostics) {
 					my $err_type = $self->_get_error_type($diagnostics);
 					my $err_desc = $self->_get_error_desc($err_type);
-	
+
 					$err_item{diagnostics} = $diagnostics;
 					$err_item{type} = $err_type;
 					$err_item{type_description} = $err_desc;
@@ -514,15 +495,15 @@ sub _parse_to_hash {
 				}
 				my $near     = $4;
 				my $near_end = $5;
-				
+
 				$err_item{at} = $6 if $6;
-		
+
 				if ($near and !$near_end) {
 					$in_near = ($near . "\n");
 				} elsif ($near and $near_end) {
 					$err_item{near} = $near;
 				}
-			
+
 				if (!grep {
 						$_->{message} eq $err_item{message} and
 						$_->{line} eq $err_item{line} and
@@ -591,7 +572,7 @@ sub _get_short_path {
 	my ($self, $path) = @_;
 	# my ($volume, $directories, $file) = File::Spec->splitpath($filename);
 	# my @dirs = File::Spec->splitdir($directories);
-	
+
 	my ($filename, $directories, $suffix) = File::Basename::fileparse($path);
 	if ($suffix eq '.pm') {
 		foreach my $inc_dir (@INC) {
@@ -610,7 +591,7 @@ sub _get_short_path {
 sub _prepare_localized_diagnostics {
 	my $self = shift;
 	my %options = @_;
-	
+
 	return unless $options{lang};
 
 	my $perldiag;
@@ -618,23 +599,23 @@ sub _prepare_localized_diagnostics {
 
 	$perldiag = 'POD2::' . $options{lang} . '::perldiag';
 	$pod_filename = Pod::Find::pod_where({-inc => 1}, $perldiag);
-	
+
 	if (!$pod_filename) {
 		carp "Could not locate localised perldiag, will use perldiag in English";
 		return;
 	}
-	
+
 	my $parser = Pod::POM->new();
 	my $pom = $parser->parse_file($pod_filename);
 	if (!$pom) {
 		carp $parser->error();
 		return;
 	}
-	
+
 	my %localized_errors;
 	foreach my $item ($pom->head1->[1]->over->[0]->item) {
 		my $header = $item->title;
-		
+
 		my $content = $item->content;
 		$content =~ s/\s*$//;
 		$localized_errors{$header} = $content;

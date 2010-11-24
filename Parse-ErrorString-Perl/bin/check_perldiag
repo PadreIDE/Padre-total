@@ -1,5 +1,9 @@
 #!/usr/bin/perl -w
 
+package check_perldiag;
+
+# ABSTRACT: check a localized version of L<peldiag> for consistency
+
 use strict;
 use warnings;
 
@@ -44,10 +48,6 @@ for (my $i = 0; $i <= $#local_errors; $i++) {
 }
 
 __END__
-
-=head1 NAME
-
-check_perldiag - check a localized version of L<peldiag> for consistency
 
 =head1 SYNOPSIS
 

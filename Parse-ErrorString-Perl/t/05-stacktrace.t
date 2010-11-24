@@ -7,10 +7,10 @@ use Parse::ErrorString::Perl;
 # use strict;
 # use warnings;
 # use diagnostics '-traceonly';
-#  
+#
 # sub dying { my $illegal = 10 / 0;}
 # sub calling {dying()}
-# 
+#
 # calling();
 
 

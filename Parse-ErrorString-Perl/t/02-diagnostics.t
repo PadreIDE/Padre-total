@@ -14,11 +14,11 @@ my $parser = Parse::ErrorString::Perl->new;
 my $msg_compile = <<'ENDofMSG';
 Global symbol "$kaboom" requires explicit package name at error.pl line 5.
 Execution of error.pl aborted due to compilation errors (#1)
-    (F) You've said "use strict" or "use strict vars", which indicates 
-    that all variables must either be lexically scoped (using "my" or "state"), 
-    declared beforehand using "our", or explicitly qualified to say 
+    (F) You've said "use strict" or "use strict vars", which indicates
+    that all variables must either be lexically scoped (using "my" or "state"),
+    declared beforehand using "our", or explicitly qualified to say
     which package the global variable is in (using "::").
-    
+
 Uncaught exception from user code:
 	Global symbol "$kaboom" requires explicit package name at error.pl line 5.
 Execution of error.pl aborted due to compilation errors.
@@ -48,7 +48,7 @@ Use of uninitialized value $empty in length at error.pl line 6 (#1)
     (W uninitialized) An undefined value was used as if it were already
     defined.  It was interpreted as a "" or a 0, but maybe it was a mistake.
     To suppress this warning assign a defined value to your variables.
-    
+
     To help you figure out what was undefined, perl will try to tell you the
     name of the variable (if any) that was undefined. In some cases it cannot
     do this, so it also tells you what operation you used the undefined value
@@ -57,12 +57,12 @@ Use of uninitialized value $empty in length at error.pl line 6 (#1)
     program.  For example, "that $foo" is usually optimized into "that "
     . $foo, and the warning will refer to the concatenation (.) operator,
     even though there is no . in your program.
-    
+
 Illegal division by zero at error.pl line 9 (#2)
     (F) You tried to divide a number by 0.  Either something was wrong in
     your logic, or you need to put a conditional in to guard against
     meaningless input.
-    
+
 Uncaught exception from user code:
 	Illegal division by zero at error.pl line 9.
  at error.pl line 9
@@ -93,14 +93,14 @@ my "
 Global symbol "$length" requires explicit package name at error.pl line 8.
 Execution of error.pl aborted due to compilation errors (#1)
     (F) Probably means you had a syntax error.  Common reasons include:
-    
+
         A keyword is misspelled.
         A semicolon is missing.
         A comma is missing.
         An opening or closing parenthesis is missing.
         An opening or closing brace is missing.
         A closing quote is missing.
-    
+
     Often there will be another error message associated with the syntax
     error giving more information.  (Sometimes it helps to turn on -w.)
     The error message itself often tells you where it was in the line when
@@ -111,7 +111,7 @@ Execution of error.pl aborted due to compilation errors (#1)
     perl -c repeatedly, chopping away half the program each time to see
     if the error went away.  Sort of the cybernetic version of S<20
     questions>.
-    
+
 Uncaught exception from user code:
 	syntax error at error.pl line 8, near "kaboom
 
@@ -141,14 +141,14 @@ syntax error at error.pl line 5, at EOF
 Missing right curly or square bracket at error.pl line 5, at end of line
 Execution of error.pl aborted due to compilation errors (#1)
     (F) Probably means you had a syntax error.  Common reasons include:
-    
+
         A keyword is misspelled.
         A semicolon is missing.
         A comma is missing.
         An opening or closing parenthesis is missing.
         An opening or closing brace is missing.
         A closing quote is missing.
-    
+
     Often there will be another error message associated with the syntax
     error giving more information.  (Sometimes it helps to turn on -w.)
     The error message itself often tells you where it was in the line when
@@ -159,7 +159,7 @@ Execution of error.pl aborted due to compilation errors (#1)
     perl -c repeatedly, chopping away half the program each time to see
     if the error went away.  Sort of the cybernetic version of S<20
     questions>.
-    
+
 Uncaught exception from user code:
 	syntax error at error.pl line 5, at EOF
 Missing right curly or square bracket at error.pl line 5, at end of line
