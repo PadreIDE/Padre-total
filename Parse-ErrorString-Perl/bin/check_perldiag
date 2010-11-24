@@ -7,8 +7,8 @@ package check_perldiag;
 use strict;
 use warnings;
 
-use Pod::Find;
-use Pod::POM;
+use Pod::Find  ();
+use Pod::POM   ();
 
 my $localized_perldiag = $ARGV[0];
 
@@ -58,16 +58,3 @@ From the command line:
 =head1 DESCRIPTION
 
 This script compares a translated version of L<peldiag> with the default L<peldiag> installed with perl. It compares each error message in the two files and tells you if they do not match. A warning is issued if the two files contain a different number of error messages defined.
-
-=head1 AUTHOR
-
-Petar Shangov, C<< <pshangov at yahoo.com> >>
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Petar Shangov, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-

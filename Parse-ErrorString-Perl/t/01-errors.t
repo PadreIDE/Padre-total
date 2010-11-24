@@ -1,4 +1,4 @@
-#!perl -T
+#!/usr/bin/perl
 
 use Test::More tests => 33;
 use Parse::ErrorString::Perl;
