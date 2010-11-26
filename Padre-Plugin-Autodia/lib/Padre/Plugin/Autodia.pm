@@ -20,7 +20,7 @@ use Autodia;
 
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
-use Padre::Util       ();
+use Padre::Constant   ();
 use Padre::Current    ();
 
 
@@ -80,7 +80,7 @@ sub show_about {
 	$about->SetCopyright( Wx::gettext("Copyright 2010 Aaron Trevena") );
 
 	# Only Unix/GTK native about box supports websites
-	if ( Padre::Util::WXGTK() ) {
+	if ( Padre::Constant::WXGTK() ) {
 		$about->SetWebSite("http://padre.perlide.org/");
 	}
 
@@ -99,22 +99,18 @@ parse and diagram this file, displaying the UML Chart in a new window
 sub draw_this_file {
 	my $self = shift;
 
-	my $document = $self->current->document;
-	warn "document : $document\n";
+	my $document = $self->current->document or return;
 
 	my $filename = $document->filename || $document->tempfile;
-	warn "filename : $filename\n";
 
 	my $outfile = "${filename}.draw_this_file.jpg";
 
-	( my $language = lc( $document->get_mimetype ) ) =~ s|application/[x\-]*||;
-	warn "language : $language, mimetype : ", $document->get_mimetype, "\n";
+	( my $language = lc( $document->mimetype ) ) =~ s|application/[x\-]*||;
 
 	my $autodia_handler =
 		$self->_get_handler( { filenames => [$filename], outfile => $outfile, graphviz => 1, language => $language } );
 
 	my $processed_files = $autodia_handler->process();
-	warn "processed $processed_files files\n";
 
 	$autodia_handler->output();
 
@@ -196,7 +192,6 @@ sub draw_all_files {
 	my $autodia_handler =
 		$self->_get_handler( { filenames => \@filenames, outfile => $outfile, graphviz => 1, language => $language } );
 	my $processed_files = $autodia_handler->process();
-	warn "processed $processed_files files\n";
 	$autodia_handler->output();
 
 	# display generated output in browser
