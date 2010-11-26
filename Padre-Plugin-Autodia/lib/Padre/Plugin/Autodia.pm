@@ -7,6 +7,9 @@ use warnings;
 
 =head1 DESCRIPTION
 
+Note: Before installing this plugin, you need to install L<GraphViz>
+(C<apt-get install graphviz> or get a binary from http://www.graphviz.org/).
+
 Padre plugin to integrate Autodia.
 
 Provides an Autodia menu under 'plugins' with options to create UML diagrams for the current or selected files.
@@ -223,7 +226,7 @@ sub _get_handler {
 
 =head1 SEE ALSO
 
-L<Autodia>, L<Padre>
+L<Autodia>, L<GraphViz>, L<Padre>
 
 =head1 CREDITS
 

@@ -2,7 +2,8 @@ Revision history for Perl extension Padre::Plugin::Autodia.
 
 {{$NEXT}}
 	- Switched to Dist::Zilla (AZAWAWI)
-	- Added compatibility with the latest Padre (AZAWAWI)
+	- Added compatibility with the latest Padre API (AZAWAWI)
+	- Added GraphViz 2.04 missing dependency (AZAWAWI)
 	- Added Arabic translation (AZAWAWI)
 
 0.01  2009.11.9
