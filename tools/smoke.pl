@@ -106,8 +106,8 @@ while (1) {
 			if ($test_out =~ /Result: FAIL|FAILED|Bailout called/) {
 				$status = "FAIL - testing";
 			}
-			_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
-			$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
+			#_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
+			#$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
 		$status ||= "SUCCESS";
