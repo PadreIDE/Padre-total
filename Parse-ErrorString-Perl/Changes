@@ -4,6 +4,7 @@ Revision history for Parse-ErrorString-Perl
         * Switched to Dist::Zilla (AZAWAWI)
         * Refactored the packages into separate files and reorganized POD (AZAWAWI)
         * Fixed q{near "package;"} regex bug (AZAWAWI)
+        * Added "use strict; use warnings;" to all of the tests (AZAWAWI)
 
 0.13    9 February 2009
         * try to fix test script for diagnostic text in perl = 5.8.9 version again...
