@@ -2,7 +2,7 @@ Revision history for Parse-ErrorString-Perl
 
 {{$NEXT}}
         * Bumped Pod::POM dependency to version 0.27 to fix RT #54062 "Test failure
-          on perl 5.11.4"
+          on perl 5.11.4" (AZAWAWI)
 
 0.14    2010.11.29
         * Switched to Dist::Zilla (AZAWAWI)
