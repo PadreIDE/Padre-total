@@ -85,7 +85,7 @@ syntax error at -e line 1, near "package;"
 ENDofMSG
 
 my @errors_near2 = $parser->parse_string($msg_near2);
-is( scalar(@errors_near2),                1,              'msg_near 2 results' );
+is( scalar(@errors_near2),          1,              'msg_near 2 results' );
 is( $errors_near2[0]->message,      'syntax error', 'msg_near 2 message' );
 is( $errors_near2[0]->file_msgpath, '-e',           'msg_near 2 file' );
 is( $errors_near2[0]->line,         1,              'msg_near 2 line' );
