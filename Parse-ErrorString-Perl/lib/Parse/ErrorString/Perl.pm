@@ -6,8 +6,8 @@ use strict;
 use warnings;
 
 use Carp qw(carp cluck);
-use Pod::Find                           ();
-use Pod::POM                            ();
+use Pod::Find ();
+use Pod::POM 0.27 ();
 use File::Spec                          ();
 use File::Basename                      ();
 use Parse::ErrorString::Perl::ErrorItem ();
