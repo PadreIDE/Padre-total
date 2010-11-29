@@ -13,7 +13,7 @@ our @ISA     = 'Padre::Task';
 
 =head1 NAME
 
-Padre::Plugin::Nopaste::Task
+Padre::Plugin::Nopaste::Task - Padre::Task subclass doing nopaste job
 
 =head1 SYNOPSIS
 
