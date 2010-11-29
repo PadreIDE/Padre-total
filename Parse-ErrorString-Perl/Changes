@@ -1,6 +1,8 @@
 Revision history for Parse-ErrorString-Perl
 
 {{$NEXT}}
+
+0.14    2010.11.29
         * Switched to Dist::Zilla (AZAWAWI)
         * Refactored the packages into separate files and reorganized POD (AZAWAWI)
         * Fixed q{near "package;"} regex bug (AZAWAWI)
