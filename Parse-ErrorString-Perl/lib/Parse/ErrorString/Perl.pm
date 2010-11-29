@@ -186,7 +186,7 @@ sub _parse_to_hash {
 				\.						# end of error message
 				|(?:					# or start collecting additional information
 					(?:					# option 1: we have a "near" message
-						,\snear\s\"(.*)	# $4 - the "near" message
+						,\snear\s\"(.*?)# $4 - the "near" message
 						(\")?			# $5 - does the near message end on this line?
 					)
 					|(?:				# option 2: we have an "at" message

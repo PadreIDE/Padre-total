@@ -1,6 +1,9 @@
 #!/usr/bin/perl
 
-use Test::More tests => 33;
+use strict;
+use warnings;
+
+use Test::More tests => 38;
 use Parse::ErrorString::Perl;
 
 my $parser = Parse::ErrorString::Perl->new;
@@ -53,7 +56,7 @@ is( $errors_runtime[1]->line,         8,                                        
 #
 # my $length = 5;
 
-my $msg_near = <<'ENDofMSG';
+my $msg_near1 = <<'ENDofMSG';
 syntax error at error.pl line 7, near "kaboom
 
 my "
@@ -61,18 +64,32 @@ Global symbol "$length" requires explicit package name at error.pl line 7.
 Execution of error.pl aborted due to compilation errors.
 ENDofMSG
 
-my @errors_near = $parser->parse_string($msg_near);
-is( scalar(@errors_near),          2,              'msg_near results' );
-is( $errors_near[0]->message,      'syntax error', 'msg_near 1 message' );
-is( $errors_near[0]->file_msgpath, 'error.pl',     'msg_near 1 file' );
-is( $errors_near[0]->line,         7,              'msg_near 1 line' );
-is( $errors_near[0]->near, 'kaboom
+my @errors_near1 = $parser->parse_string($msg_near1);
+is( scalar(@errors_near1),          2,              'msg_near results' );
+is( $errors_near1[0]->message,      'syntax error', 'msg_near 1 message' );
+is( $errors_near1[0]->file_msgpath, 'error.pl',     'msg_near 1 file' );
+is( $errors_near1[0]->line,         7,              'msg_near 1 line' );
+is( $errors_near1[0]->near, 'kaboom
 
 my ', 'msg_near 1 near'
 );
-is( $errors_near[1]->message,      'Global symbol "$length" requires explicit package name', 'msg_near 2 message' );
-is( $errors_near[1]->file_msgpath, 'error.pl',                                               'msg_near 2 file' );
-is( $errors_near[1]->line,         7,                                                        'msg_near 2 line' );
+is( $errors_near1[1]->message,      'Global symbol "$length" requires explicit package name', 'msg_near 2 message' );
+is( $errors_near1[1]->file_msgpath, 'error.pl',                                               'msg_near 2 file' );
+is( $errors_near1[1]->line,         7,                                                        'msg_near 2 line' );
+
+# package;
+#
+my $msg_near2 = <<'ENDofMSG';
+syntax error at -e line 1, near "package;"
+-e had compilation errors.
+ENDofMSG
+
+my @errors_near2 = $parser->parse_string($msg_near2);
+is( scalar(@errors_near2),                1,              'msg_near 2 results' );
+is( $errors_near2[0]->message,      'syntax error', 'msg_near 2 message' );
+is( $errors_near2[0]->file_msgpath, '-e',           'msg_near 2 file' );
+is( $errors_near2[0]->line,         1,              'msg_near 2 line' );
+is( $errors_near2[0]->near,         'package;' );
 
 #use strict;
 #use warnings;
