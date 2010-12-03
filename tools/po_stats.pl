@@ -63,7 +63,7 @@ if ($text) {
 	save_text_report($text_report_file);
 } 
 if ($html) {
-	usage("--dir was missing") if not $dir;
+	usage('--dir was missing') if not $dir;
 	usage("--dir $dir does not exist") if not -d $dir;
 
 	save_html_report($dir);
@@ -84,14 +84,26 @@ sub collect_report {
 		($share) = File::Find::Rule->directory()->name('share')->in(catdir( $project_dir, 'lib'));
 	}
 	if (not $share or not -e $share) {
-		warn("Could not find a 'share' directory in '$project_dir'");
+		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
+			my $plugin_name = $1;
+			warn "Plugin '$plugin_name' is not internationalized.\n";
+		}
+		else {
+			warn("Could not find a 'share' directory in '$project_dir'");
+		}
 		return;
 	}
 
 	my $localedir = catdir ( $share, 'locale' );
 
 	if (not -d $localedir) {
-		warn("Can't find locale directory '$localedir'.");
+		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
+			my $plugin_name = $1;
+			warn "Plugin '$plugin_name' is not internationalized.\n";
+		}
+		else {		
+			warn("Can't find locale directory '$localedir'.\n");
+		}
 		return;
 	}
 
