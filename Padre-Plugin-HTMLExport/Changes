@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-HTMLExport
 
 {{$NEXT}}
+        - update German translation (ZENOG)
+        - color settings accessible from the plugin manager (ZENOG)     
 
 0.08   2010.11.02
         Removed Test::NeedsDisplay dependency (AZAWAWI)
