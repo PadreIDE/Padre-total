@@ -26,6 +26,8 @@ my $self = Local::Padre::Website::Builder->new(
         'XML::LibXSLT'             => 0,
         'YAML::Tiny'               => 0,
     },
+    dist_author   => 'Padre team',
+    dist_abstract => 'Padre website generator', 
 );
 die "Mandatory parameter --destdir was not specified.\n" unless $self->destdir;
 die "Mandatory parameter --sourcedir was not specified.\n" unless $self->args->{sourcedir};
