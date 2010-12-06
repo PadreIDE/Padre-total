@@ -1,6 +1,6 @@
 #!perl
 
-# ABSTRACT: Generates a wxwidgets.pod from wxWidgets HTML documentation 
+# ABSTRACT: Generates a wxwidgets.pod from wxWidgets HTML documentation
 
 use 5.006;
 use strict;
@@ -12,15 +12,15 @@ use HTML::Parse      ();
 use HTML::FormatText ();
 use Getopt::Long     ();
 
-my ($pod, $verbose, $help) = ('wxwidgets.pod', 0, 0);
-my $result = Getopt::Long::GetOptions( 
-	"pod=s" => \$pod,
+my ( $pod, $verbose, $help ) = ( 'wxwidgets.pod', 0, 0 );
+my $result = Getopt::Long::GetOptions(
+	"pod=s"   => \$pod,
 	"verbose" => \$verbose,
-	"help"  => \$help,
+	"help"    => \$help,
 );
 
 # User Asked for help?
-if($help) {
+if ($help) {
 	_help();
 	exit;
 }
@@ -28,7 +28,8 @@ if($help) {
 # Read the wxwidget HTML documentation directory name
 my $wx_dir = shift @ARGV;
 
-unless($wx_dir) {
+unless ($wx_dir) {
+
 	# User did not specify a wxwidgets directory
 	# Let us download it from sourceforge and unzip it
 
@@ -41,9 +42,10 @@ unless($wx_dir) {
 	# and specify the wx documentation base directory
 	$wx_dir = File::Spec->join( $dir, 'docs', 'mshtml', 'wx' );
 } else {
+
 	# User specified a wxwidget directory
 	# Let us validate it
-	unless(-d $wx_dir) {
+	unless ( -d $wx_dir ) {
 		warn "wxwidgets HTML documentation directory is not valid\n";
 		exit;
 	}
@@ -51,7 +53,7 @@ unless($wx_dir) {
 
 # Read WX Classes list HTML class reference file
 my @wxclasses = _read_wx_classes_list($wx_dir);
-TRACE("Found " . scalar @wxclasses . " Wx Classes to parse");
+TRACE( "Found " . scalar @wxclasses . " Wx Classes to parse" );
 
 # Write the final POD while processing all html files
 _write_pod( $pod, $wx_dir, @wxclasses );
@@ -63,7 +65,7 @@ exit;
 # TRACing print function that is enabled when --verbose is specified
 #
 sub TRACE {
-	print ($_[0] . "\n") if $verbose;
+	print( $_[0] . "\n" ) if $verbose;
 }
 
 #
@@ -84,13 +86,11 @@ Usage:
     
     If you have installed wx2.8-doc on Debian, you can use the
     following path:
-	/usr/share/doc/wx2.8-doc/wx-manual.html
+        /usr/share/doc/wx2.8-doc/wx-manual.html
 
     where options can be one of the following:
-	--pod=filename
-		wxwidgets POD file name 
-		Defaults to 'wxwidgets.pod'
-
+        --pod=filename
+            wxwidgets POD file name. Defaults to wxwidgets.pod
 HELP
 
 }
@@ -102,7 +102,7 @@ HELP
 sub _download_unzipped_wxwidgets_html_doc {
 	my ($WX_WIGDETS_HTML_ZIP) = @_;
 
-	# Let us try to download it if the zip file is not found in the current 
+	# Let us try to download it if the zip file is not found in the current
 	# directory
 	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
 		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP";
@@ -126,9 +126,8 @@ sub _download_unzipped_wxwidgets_html_doc {
 		}
 	}
 
-	
 	# Unzip the html zip file
-	my $dir = File::Temp->newdir(CLEANUP => 0);
+	my $dir = File::Temp->newdir( CLEANUP => 0 );
 	require Archive::Extract;
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
 	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
@@ -155,7 +154,9 @@ sub _read_wx_classes_list {
 		while ( my $line = <$fh> ) {
 			if ( $line =~ /<H2>Alphabetical class reference<\/H2>/ ) {
 				$begin = 1;
-			} elsif ( $begin && $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/ ) {
+			} elsif ( $begin
+				&& $line =~ /<A HREF="(.+?)#.+?"><B>(.+)?<\/B><\/A><BR>/ )
+			{
 				my ( $file, $class ) = ( $1, $2 );
 				$class =~ s/wx(.+?)/Wx::$1/;
 				push @wxclasses, { file => $file, class => $class };
@@ -248,8 +249,7 @@ sub _write_pod {
 #
 # Copyright and license POD section
 #
-sub copyright_pod
-{
+sub copyright_pod {
 	return <<'END';
 =head1 COPYRIGHT AND LICENSE
 
