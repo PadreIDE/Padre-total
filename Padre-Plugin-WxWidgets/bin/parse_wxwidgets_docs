@@ -1,4 +1,4 @@
-#!perl
+#!/usr/bin/perl
 
 # ABSTRACT: Generates a wxwidgets.pod from wxWidgets HTML documentation
 
