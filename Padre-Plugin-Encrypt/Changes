@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Encrypt
 
 {{$NEXT}}
+
+0.12   2010.12.06
         Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.11   2010.10.29

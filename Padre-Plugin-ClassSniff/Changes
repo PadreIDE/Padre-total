@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-ClassSniff
 
 {{$NEXT}}
+
+0.03   2010.12.06
   - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
   - Added translations:
