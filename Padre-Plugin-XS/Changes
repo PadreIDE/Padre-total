@@ -1,6 +1,8 @@
 This is the change log for the Padre::Plugin::XS module:
 
 {{$NEXT}}
+
+0.09   2010.12.06
     Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.08   2010.10.29
