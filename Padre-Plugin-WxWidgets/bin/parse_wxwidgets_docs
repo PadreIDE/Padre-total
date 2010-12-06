@@ -10,55 +10,103 @@ use File::Temp       ();
 use File::Spec       ();
 use HTML::Parse      ();
 use HTML::FormatText ();
-
 use Getopt::Long     ();
-my $help = '';
-my $result = Getopt::Long::GetOptions( "help"  => \$help,);
 
+my ($pod, $verbose, $help) = ('wxwidgets.pod', 0, 0);
+my $result = Getopt::Long::GetOptions( 
+	"pod=s" => \$pod,
+	"verbose" => \$verbose,
+	"help"  => \$help,
+);
+
+# User Asked for help?
 if($help) {
-	print <<"HELP";
-
-This is $0, an HTML to POD wxwidgets documentation generator.
-
-Usage:
-    $0 [wx-widgets-html-directory]
-
-    The optional 'wx-widgets-html-directory' points to the wxwidgets 
-    HTML documentation directory. If this is omitted, the script will
-    automatically try to download the HTML documentation from the
-    wxWidgets sourceforge website.
-
-HELP
+	_help();
 	exit;
 }
 
-my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
+# Read the wxwidget HTML documentation directory name
+my $wx_dir = shift @ARGV;
 
-# Step 1: Fetch the wxWidgets HTML documentation zip file if it is not found
-die "wxWidget HTML zip file is not found!\n" unless download_wxwidgets_html_zip();
+unless($wx_dir) {
+	# User did not specify a wxwidgets directory
+	# Let us download it from sourceforge and unzip it
 
-# Step 2: unzip the html zip file
-my $dir = File::Temp->newdir;
-unzip_file($dir);
+	# The name of the wxwidget ZIP filename to download from the sourceforge website
+	my $WX_WIGDETS_HTML_ZIP = 'wxWidgets-2.8.10-HTML.zip';
 
-# Step 3: Read WX Classes list index file
-my $wx_dir = File::Spec->join( $dir, 'docs', 'mshtml', 'wx' );
-my @wxclasses = read_wx_classes_list($wx_dir);
-print "Found " . @wxclasses . " Wx Classes to parse\n";
+	# Download and unzip the wxWidgets HTML documentation zip file
+	my $dir = _download_unzipped_wxwidgets_html_doc($WX_WIGDETS_HTML_ZIP);
 
-# Step 4: Write the final POD while processing all html files
-write_pod( $wx_dir, @wxclasses );
+	# and specify the wx documentation base directory
+	$wx_dir = File::Spec->join( $dir, 'docs', 'mshtml', 'wx' );
+} else {
+	# User specified a wxwidget directory
+	# Let us validate it
+	unless(-d $wx_dir) {
+		warn "wxwidgets HTML documentation directory is not valid\n";
+		exit;
+	}
+}
+
+# Read WX Classes list HTML class reference file
+my @wxclasses = _read_wx_classes_list($wx_dir);
+TRACE("Found " . scalar @wxclasses . " Wx Classes to parse");
+
+# Write the final POD while processing all html files
+_write_pod( $pod, $wx_dir, @wxclasses );
 
 # and we're done
 exit;
 
 #
-# Download wxwidgets HTML documentation zip file
+# TRACing print function that is enabled when --verbose is specified
 #
-sub download_wxwidgets_html_zip {
+sub TRACE {
+	print ($_[0] . "\n") if $verbose;
+}
+
+#
+# The command-line help
+#
+sub _help {
+	print <<"HELP";
+
+This is $0, an HTML to POD wxwidgets documentation generator.
+
+Usage:
+    $0 [options] [wx-widgets-html-directory]
+
+    The optional 'wx-widgets-html-directory' points to the wxwidgets 
+    HTML documentation directory. If this is omitted, the script will
+    automatically try to download the HTML documentation from the
+    wxWidgets sourceforge website. 
+    
+    If you have installed wx2.8-doc on Debian, you can use the
+    following path:
+	/usr/share/doc/wx2.8-doc/wx-manual.html
+
+    where options can be one of the following:
+	--pod=filename
+		wxwidgets POD file name 
+		Defaults to 'wxwidgets.pod'
+
+HELP
+
+}
+
+#
+# Download if not found and then extract wxwidgets HTML documentation zip file
+# Returns the extracted directory or otherwise dies
+#
+sub _download_unzipped_wxwidgets_html_doc {
+	my ($WX_WIGDETS_HTML_ZIP) = @_;
+
+	# Let us try to download it if the zip file is not found in the current 
+	# directory
 	unless ( -e $WX_WIGDETS_HTML_ZIP ) {
 		my $url = "http://garr.dl.sourceforge.net/project/wxwindows/Documents/2.8.10/$WX_WIGDETS_HTML_ZIP";
-		print "Downloading $url. Please wait...\n";
+		TRACE("Downloading $url. Please wait...");
 		require LWP::UserAgent;
 		require HTTP::Request;
 		my $ua  = LWP::UserAgent->new;
@@ -69,7 +117,7 @@ sub download_wxwidgets_html_zip {
 		}
 
 		# Write download file to disk
-		print "Writing $WX_WIGDETS_HTML_ZIP...\n";
+		TRACE("Writing $WX_WIGDETS_HTML_ZIP...");
 		if ( open FILE, '>:raw', $WX_WIGDETS_HTML_ZIP ) {
 			print FILE $res->content;
 			close FILE;
@@ -78,27 +126,21 @@ sub download_wxwidgets_html_zip {
 		}
 	}
 
-	return -e $WX_WIGDETS_HTML_ZIP;
-}
-
-#
-# Unzip the HTML zip file
-#
-sub unzip_file {
-	my $dir = shift;
-
+	
+	# Unzip the html zip file
+	my $dir = File::Temp->newdir(CLEANUP => 0);
 	require Archive::Extract;
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
 	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
 	$zip->extract( to => $dir ) or die $zip->error;
-}
 
-exit;
+	return $dir;
+}
 
 #
 # Read WX classes list index from docs/mshtml/wx/wx_classref.html
 #
-sub read_wx_classes_list {
+sub _read_wx_classes_list {
 	my $dir = shift;
 
 	my $wx_classref = File::Spec->join( $dir, 'wx_classref.html' );
@@ -108,7 +150,7 @@ sub read_wx_classes_list {
 
 	#Step 1: Read Wx classes list from wx_classref.html
 	if ( open( my $fh, $wx_classref ) ) {
-		print "Opened $wx_classref\n";
+		TRACE("Opened $wx_classref");
 		my $begin;
 		while ( my $line = <$fh> ) {
 			if ( $line =~ /<H2>Alphabetical class reference<\/H2>/ ) {
@@ -120,7 +162,7 @@ sub read_wx_classes_list {
 			}
 		}
 	} else {
-		die "Could not open $wx_classref\n";
+		die "Could not open $wx_classref in $dir\n";
 	}
 
 	return @wxclasses;
@@ -129,7 +171,7 @@ sub read_wx_classes_list {
 #
 # Process wxClassName HTML file
 #
-sub process_class {
+sub _process_class {
 	my ( $class, $file ) = @_;
 
 	my $oldclass;
@@ -186,23 +228,21 @@ sub process_class {
 #
 # Writes wxwidgets.pod... :)
 #
-sub write_pod {
-	my ( $wx_dir, @wxclasses ) = @_;
-	my $pod_file = File::Spec->join( $pod_dir, 'wxwidgets.pod' );
-	print "Writing $pod_file\n";
-	if ( open( my $pod, '>', $pod_file ) ) {
+sub _write_pod {
+	my ( $pod, $wx_dir, @wxclasses ) = @_;
+	TRACE("Writing $pod");
+	if ( open( my $pod, '>', $pod ) ) {
 		binmode($pod);
 		my $oldclass;
 		foreach my $wxclass (@wxclasses) {
 			my $file = File::Spec->join( $wx_dir, $wxclass->{file} );
-			print $pod process_class( $wxclass->{class}, $file );
+			print $pod _process_class( $wxclass->{class}, $file );
 		}
 		print $pod copyright_pod();
 		close $pod;
 	} else {
-		die "Couldnt write $pod_file\n";
+		die "Couldnt write $pod\n";
 	}
-
 }
 
 #
