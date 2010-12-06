@@ -6,7 +6,6 @@ use strict;
 use warnings;
 
 # For Perl 6 documentation support
-use App::Grok   ();
 use Padre::Help ();
 
 our @ISA = 'Padre::Help';
@@ -21,7 +20,7 @@ use Class::XSAccessor accessors => {
 #
 sub help_init {
 	my $self = shift;
-
+	require App::Grok;
 	$self->_grok( App::Grok->new );
 }
 
