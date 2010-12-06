@@ -127,7 +127,7 @@ sub _download_unzipped_wxwidgets_html_doc {
 	}
 
 	# Unzip the html zip file
-	my $dir = File::Temp->newdir( CLEANUP => 0 );
+	my $dir = File::Temp::tempdir;
 	require Archive::Extract;
 	my $zip = Archive::Extract->new( archive => $WX_WIGDETS_HTML_ZIP );
 	die "$WX_WIGDETS_HTML_ZIP is not a zip file\n" unless ( $zip->is_zip );
