@@ -49,9 +49,9 @@ sub new {
 			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
 		}
 	}
-	
+
 	$speller->print_config;
-	
+
 	$self->_speller($speller);
 
 	return $self;
