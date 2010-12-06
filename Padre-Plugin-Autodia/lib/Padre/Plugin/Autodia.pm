@@ -77,17 +77,17 @@ sub show_about {
 	my ($main) = @_;
 
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Padre::Plugin::Autodia");
-	$about->SetDescription( "Integrating automated documentation into Padre IDE" );
+	$about->SetName('Padre::Plugin::Autodia');
+	$about->SetDescription( Wx::gettext('Integrating automated documentation into Padre IDE') );
 	$about->SetVersion($Padre::Plugin::Autodia::VERSION);
-	$about->SetCopyright( Wx::gettext("Copyright 2010 Aaron Trevena") );
+	$about->SetCopyright( Wx::gettext('Copyright 2010') . ' Aaron Trevena' );
 
 	# Only Unix/GTK native about box supports websites
-	if ( Padre::Constant::WXGTK() ) {
-		$about->SetWebSite("http://padre.perlide.org/");
+	if ( Padre::Constant::WXGTK ) {
+		$about->SetWebSite('http://padre.perlide.org/');
 	}
 
-	$about->AddDeveloper("Aaron Trevena : teejay at cpan dot org");
+	$about->AddDeveloper('Aaron Trevena: teejay at cpan dot org');
 
 	Wx::AboutBox($about);
 	return;
