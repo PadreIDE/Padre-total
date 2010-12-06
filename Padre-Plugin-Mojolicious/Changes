@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-Mojolicious
 
 {{$NEXT}}
+	- Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.04   2010.11.02
 	- Switched to Dist::Zilla (AZAWAWI)

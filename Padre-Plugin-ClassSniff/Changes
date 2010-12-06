@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-ClassSniff
 
 {{$NEXT}}
+  - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
   - Added translations:
     - Brazilian Portuguese (garu)

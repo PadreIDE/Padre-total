@@ -1,6 +1,7 @@
 This is the change log for the Padre::Plugin::XS module:
 
 {{$NEXT}}
+    Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.08   2010.10.29
     Removed Test::NeedsDisplay dependency (AZAWAWI)

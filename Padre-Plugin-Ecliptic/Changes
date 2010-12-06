@@ -1,6 +1,7 @@
 Changes for Padre-Plugin-Ecliptic
 
 {{$NEXT}}
+	Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.22   2010.10.29
 	Removed Test::NeedsDisplay dependency (AZAWAWI)

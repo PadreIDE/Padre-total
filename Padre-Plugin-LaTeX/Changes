@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-LaTeX
 
 {{$NEXT}}
+	Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 	add hint about BibTeX highlighting in Kate plugin (ZENOG)
 	add BibTeX support (commenting in and out) (ZENOG)
 	update German translation (ZENOG)

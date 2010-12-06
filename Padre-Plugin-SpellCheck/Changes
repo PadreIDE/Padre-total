@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
+        - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
         - rename method 'spell_preferences' to 'plugin_preferences',
           so that the dialog can also be called from the plugin manager (ZENOG)
         - add support for some filters (XML, HTML, LaTeX) (ZENOG)

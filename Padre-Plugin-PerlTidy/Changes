@@ -1,6 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
+    - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.15   2010.10.29
     - Removed Test::NeedsDisplay dependency (AZAWAWI)

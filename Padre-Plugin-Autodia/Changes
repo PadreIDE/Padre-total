@@ -1,6 +1,7 @@
 Revision history for Perl extension Padre::Plugin::Autodia.
 
 {{$NEXT}}
+	- Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 	- Switched to Dist::Zilla (AZAWAWI)
 	- Added compatibility with the latest Padre API (AZAWAWI)
 	- Added GraphViz 2.04 missing dependency (AZAWAWI)
