@@ -1,6 +1,8 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
+
+0.16   2010.12.06
     - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.15   2010.10.29
