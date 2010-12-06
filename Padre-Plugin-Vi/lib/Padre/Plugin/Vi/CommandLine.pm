@@ -68,7 +68,7 @@ sub dialog {
 	if ( not $dialog ) {
 		$dialog = Padre::Wx::Dialog->new(
 			parent => $main->{notebook},
-			title  => "Command Line",
+			title  => 'vi Command Line',
 			layout => \@layout,
 			width  => [500],
 		);

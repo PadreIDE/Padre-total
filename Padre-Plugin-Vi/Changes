@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-Vi
 
+0.24	?
+	call command line 'vi Command Line' instead 'Command Line' (ZENOG)
+
 0.23	2010.07.24
 	actually install the translations (RSN)
 	compatibility to newer Padre versions (ZENOG)
