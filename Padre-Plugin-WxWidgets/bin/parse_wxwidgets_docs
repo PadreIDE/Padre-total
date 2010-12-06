@@ -46,7 +46,7 @@ unless ($wx_dir) {
 	# User specified a wxwidget directory
 	# Let us validate it
 	unless ( -d $wx_dir ) {
-		warn "wxwidgets HTML documentation directory is not valid\n";
+		warn "WxWidgets HTML documentation directory is not valid\n";
 		exit;
 	}
 }
@@ -242,7 +242,7 @@ sub _write_pod {
 		print $pod copyright_pod();
 		close $pod;
 	} else {
-		die "Couldnt write $pod\n";
+		die "Could not write $pod\n";
 	}
 }
 
@@ -280,4 +280,4 @@ __END__
 =head1 DESCRIPTION
 
 This is a simple script to parse WxWidgets HTML documentation into something useful
-that we can use of in Padre help system :)
+that we can make use of in Padre help system :)
