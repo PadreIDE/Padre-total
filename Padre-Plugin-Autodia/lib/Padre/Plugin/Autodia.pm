@@ -61,8 +61,8 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		Wx::gettext('About') => sub { $self->show_about },
 		Wx::gettext('UML')   => [
-			Wx::gettext('Class Diagram (This File)') => sub { $self->draw_this_file },
-			Wx::gettext('Class Diagram')             => sub { $self->draw_all_files },
+			Wx::gettext('Class Diagram (Current File)') => sub { $self->draw_this_file },
+			Wx::gettext('Class Diagram...')             => sub { $self->draw_all_files },
 		],
 	];
 }
@@ -170,8 +170,8 @@ sub draw_all_files {
 
 	# show dialog, get files
 	my $dialog = Wx::FileDialog->new(
-		Padre->ide->wx->main, Wx::gettext("Open File"),
-		$directory, "", $wildcards, Wx::wxFD_MULTIPLE,
+		Padre->ide->wx->main, Wx::gettext('Open File'),
+		$directory, '', $wildcards, Wx::wxFD_MULTIPLE,
 	);
 	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
 		return;
