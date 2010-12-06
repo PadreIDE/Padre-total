@@ -1,7 +1,2 @@
-# This is a shorter MANIFEST.SKIP. Credits go to Dist::Zilla :)
-
-# avoid pot files (gettext)
 ^MANIFEST.SKIP$
-\.po$
-\.pot$
 ^tools
