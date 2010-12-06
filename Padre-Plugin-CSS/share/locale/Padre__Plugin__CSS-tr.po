@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-CSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-18 23:57+0800\n"
-"PO-Revision-Date: 2010-05-17 01:48+0200\n"
+"POT-Creation-Date: 2010-10-26 20:25+0300\n"
+"PO-Revision-Date: 2010-12-07 00:02+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,11 @@ msgstr ""
 "X-Poedit-Country: TURKEY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: lib/Padre/Plugin/CSS.pm:25
+#: lib/Padre/Plugin/CSS.pm:23
+msgid "CSS"
+msgstr "CSS"
+
+#: lib/Padre/Plugin/CSS.pm:24
 msgid "CSS Minifier"
 msgstr "CSS Ufaltıcı"
 
@@ -26,27 +30,39 @@ msgstr "CSS Ufaltıcı"
 msgid "Validate CSS"
 msgstr "CSS Doğrula"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:28
+msgid "Docs"
+msgstr "Belgeler"
+
+#: lib/Padre/Plugin/CSS.pm:29
+msgid "CSS 2.1 specs"
+msgstr "CSS 2.1 tanımlamaları"
+
+#: lib/Padre/Plugin/CSS.pm:31
+msgid "CSS 2.1 property list"
+msgstr "CSS 2.1 özellik listesi"
+
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "No Code"
 msgstr "Kod Yok"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "Error"
 msgstr "Hata"
 
-#: lib/Padre/Plugin/CSS.pm:47
+#: lib/Padre/Plugin/CSS.pm:55
 msgid "CSS is valid\n"
 msgstr "CSS Doğru\n"
 
-#: lib/Padre/Plugin/CSS.pm:49
+#: lib/Padre/Plugin/CSS.pm:57
 msgid "CSS is not valid\n"
 msgstr "CSS doğru değil\n"
 
-#: lib/Padre/Plugin/CSS.pm:50
+#: lib/Padre/Plugin/CSS.pm:58
 msgid "Errors:\n"
 msgstr "Hatalar:\n"
 
-#: lib/Padre/Plugin/CSS.pm:60
+#: lib/Padre/Plugin/CSS.pm:68
 msgid "Failed to validate the code\n"
 msgstr "Kod doğrulanamadı\n"
 

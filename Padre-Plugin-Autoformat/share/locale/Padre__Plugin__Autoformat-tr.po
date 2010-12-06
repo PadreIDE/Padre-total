@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Autoformat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-12 18:07+0200\n"
-"PO-Revision-Date: 2010-05-17 23:15+0200\n"
+"POT-Creation-Date: 2010-10-31 15:03+0200\n"
+"PO-Revision-Date: 2010-12-07 00:00+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,11 @@ msgstr ""
 "X-Poedit-Country: TURKEY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: lib/Padre/Plugin/Autoformat.pm:53
+#: lib/Padre/Plugin/Autoformat.pm:36
+msgid "Autoformat"
+msgstr "Otomatik biçimlendir"
+
+#: lib/Padre/Plugin/Autoformat.pm:38
 msgid "Autoformat\tCtrl+Shift+J"
 msgstr "Otomatik biçimlendir\tCtrl+Shift+J"
 

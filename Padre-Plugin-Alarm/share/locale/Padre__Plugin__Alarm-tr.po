@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Alarm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-18 23:29+0800\n"
-"PO-Revision-Date: 2010-05-17 01:38+0200\n"
+"POT-Creation-Date: 2010-10-18 15:43+0300\n"
+"PO-Revision-Date: 2010-12-06 23:49+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -18,23 +18,38 @@ msgstr ""
 "X-Poedit-Country: TURKEY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: lib/Padre/Plugin/Alarm.pm:30
+msgid "Alarm Clock"
+msgstr "Alarm Saati"
+
+#: lib/Padre/Plugin/Alarm.pm:31
+#: lib/Padre/Plugin/Alarm.pm:56
+msgid "Set Alarm Time"
+msgstr "Alarm Zamanını Ayarla"
+
+#: lib/Padre/Plugin/Alarm.pm:32
+#: lib/Padre/Plugin/Alarm.pm:127
+msgid "Stop Alarm"
+msgstr "Alarmı Durdur"
+
+#: lib/Padre/Plugin/Alarm.pm:33
+#: lib/Padre/Plugin/Alarm.pm:146
+msgid "Clear Alarm"
+msgstr "Alarmı Temizle"
+
 #: lib/Padre/Plugin/Alarm.pm:44
 msgid "Time (eg: 23:55):"
 msgstr "Zaman (ör: 23:55)"
 
-#: lib/Padre/Plugin/Alarm.pm:48
+#: lib/Padre/Plugin/Alarm.pm:47
 msgid "Frequency:"
 msgstr "Sıklık:"
 
-#: lib/Padre/Plugin/Alarm.pm:58
-msgid "Set Alarm Time"
-msgstr "Alarm Zamanını Ayarla"
-
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
 msgstr "Muhtemel Değer Biçimi: \\d:\\d\\d veya \\d\\d:\\d\\d gözüken 6:13 veya 23:55"
 
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Wrong Alarm Time"
 msgstr "Yanlış Alarm Zamanı"
 
@@ -42,15 +57,7 @@ msgstr "Yanlış Alarm Zamanı"
 msgid "All Alarms are stopped"
 msgstr "Bütün Alarmlar Durdu"
 
-#: lib/Padre/Plugin/Alarm.pm:127
-msgid "Stop Alarm"
-msgstr "Alarmı Durdur"
-
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "All Alarms are cleared"
 msgstr "Bütün Alarmlar temizlendi"
-
-#: lib/Padre/Plugin/Alarm.pm:146
-msgid "Clear Alarm"
-msgstr "Alarmı Temizle"
 
