@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-PerlTidy\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-09 23:40+0200\n"
-"PO-Revision-Date: 2010-05-17 22:07+0200\n"
+"POT-Creation-Date: 2010-10-25 14:42+0300\n"
+"PO-Revision-Date: 2010-12-07 00:43+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -18,46 +18,47 @@ msgstr ""
 "X-Poedit-Country: TURKEY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: lib/Padre/Plugin/PerlTidy.pm:38
+#: lib/Padre/Plugin/PerlTidy.pm:39
+msgid "Perl Tidy"
+msgstr "Perl Tidy"
+
+#: lib/Padre/Plugin/PerlTidy.pm:45
 msgid "Tidy the active document\tAlt+Shift+F"
 msgstr "Etkin belgeye çekidüzen ver\tAlt+Shift+F"
 
-#: lib/Padre/Plugin/PerlTidy.pm:39
+#: lib/Padre/Plugin/PerlTidy.pm:46
 msgid "Tidy the selected text\tAlt+Shift+G"
 msgstr "Seçili metne çekidüzen ver\tAlt+Shift+G"
 
-#: lib/Padre/Plugin/PerlTidy.pm:40
+#: lib/Padre/Plugin/PerlTidy.pm:49
 msgid "Export active document to HTML file"
 msgstr "Etkin belgeyi HTML dosyasına aktar"
 
-#: lib/Padre/Plugin/PerlTidy.pm:41
+#: lib/Padre/Plugin/PerlTidy.pm:51
 msgid "Export selected text to HTML file"
 msgstr "Seçili metni HTML dosyasına aktar"
 
-#: lib/Padre/Plugin/PerlTidy.pm:55
-#: lib/Padre/Plugin/PerlTidy.pm:169
+#: lib/Padre/Plugin/PerlTidy.pm:67
+#: lib/Padre/Plugin/PerlTidy.pm:194
 msgid "Document is not a Perl document"
 msgstr "Belge bir Perl belgesi değil"
 
-#: lib/Padre/Plugin/PerlTidy.pm:56
-#: lib/Padre/Plugin/PerlTidy.pm:170
-msgid "Error"
-msgstr "Hata"
-
-#: lib/Padre/Plugin/PerlTidy.pm:74
-#: lib/Padre/Plugin/PerlTidy.pm:192
+#: lib/Padre/Plugin/PerlTidy.pm:97
+#: lib/Padre/Plugin/PerlTidy.pm:226
 msgid "PerlTidy Error"
 msgstr "PerlTidy Hatası"
 
-#: lib/Padre/Plugin/PerlTidy.pm:137
+#: lib/Padre/Plugin/PerlTidy.pm:166
 msgid "Save file as..."
 msgstr "Dosyayı farklı kaydet..."
 
-#: lib/Padre/Plugin/PerlTidy.pm:147
+#: lib/Padre/Plugin/PerlTidy.pm:177
 msgid "File already exists. Overwrite it?"
 msgstr "Dosya mevcut. Üstüne yazılsın mı?"
 
-#: lib/Padre/Plugin/PerlTidy.pm:148
+#: lib/Padre/Plugin/PerlTidy.pm:177
 msgid "Exist"
 msgstr "Mevcut"
 
+#~ msgid "Error"
+#~ msgstr "Hata"

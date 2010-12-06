@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Mojolicious\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-30 16:50-0300\n"
-"PO-Revision-Date: 2010-05-17 21:16+0200\n"
+"POT-Creation-Date: 2010-11-02 12:26+0200\n"
+"PO-Revision-Date: 2010-12-07 00:32+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team: Turkish\n"
 "MIME-Version: 1.0\n"
@@ -18,12 +18,16 @@ msgstr ""
 "X-Poedit-Country: TURKEY\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: lib/Padre/Plugin/Mojolicious.pm:44
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:46
+#: lib/Padre/Plugin/Mojolicious.pm:25
+msgid "Mojolicious"
+msgstr "Mojolicious"
+
+#: lib/Padre/Plugin/Mojolicious.pm:39
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:47
 msgid "New Mojolicious Application"
 msgstr "Yeni Mojolicious Uygulaması"
 
-#: lib/Padre/Plugin/Mojolicious.pm:50
+#: lib/Padre/Plugin/Mojolicious.pm:47
 msgid "Start Web Server"
 msgstr "Ağ Sunucusunu Başlat"
 
@@ -31,27 +35,27 @@ msgstr "Ağ Sunucusunu Başlat"
 msgid "Stop Web Server"
 msgstr "Ağ Sunucusunu Durdur"
 
-#: lib/Padre/Plugin/Mojolicious.pm:53
+#: lib/Padre/Plugin/Mojolicious.pm:57
 msgid "Mojolicious Online References"
 msgstr "Mojolicious Çevrimiçi Başvuru Kaynakları"
 
-#: lib/Padre/Plugin/Mojolicious.pm:54
+#: lib/Padre/Plugin/Mojolicious.pm:58
 msgid "Mojolicious Manual"
 msgstr "Mojolicious El Kitabı"
 
-#: lib/Padre/Plugin/Mojolicious.pm:57
+#: lib/Padre/Plugin/Mojolicious.pm:61
 msgid "Mojolicious Website"
 msgstr "Mojolicious Sitesi"
 
-#: lib/Padre/Plugin/Mojolicious.pm:60
+#: lib/Padre/Plugin/Mojolicious.pm:64
 msgid "Mojolicious Community Live Support"
 msgstr "Mojolicious Topluluk Canlı Desteği"
 
-#: lib/Padre/Plugin/Mojolicious.pm:66
+#: lib/Padre/Plugin/Mojolicious.pm:72
 msgid "About"
 msgstr "Hakkında"
 
-#: lib/Padre/Plugin/Mojolicious.pm:82
+#: lib/Padre/Plugin/Mojolicious.pm:91
 #, perl-format
 msgid ""
 "Mojolicious application script not found at\n"
@@ -64,19 +68,19 @@ msgstr ""
 "\n"
 "Lütfen geçerli belgenin Mojolicious projenize ait olduğundan emin olun."
 
-#: lib/Padre/Plugin/Mojolicious.pm:85
+#: lib/Padre/Plugin/Mojolicious.pm:94
 msgid "Server not found"
 msgstr "Sunucu bulunamadı"
 
-#: lib/Padre/Plugin/Mojolicious.pm:107
+#: lib/Padre/Plugin/Mojolicious.pm:120
 msgid "Web server appears to be running. Launch web browser now?"
 msgstr "Ağ sunucusu çalışıyor olarak gözüküyor. Tarayıcıyı şimdi başlatmak istiyor musunuz?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:108
+#: lib/Padre/Plugin/Mojolicious.pm:121
 msgid "Start Web Browser?"
 msgstr "Tarayıcı Başlatılsın mı?"
 
-#: lib/Padre/Plugin/Mojolicious.pm:132
+#: lib/Padre/Plugin/Mojolicious.pm:147
 msgid ""
 "\n"
 "Web server stopped successfully.\n"
@@ -84,37 +88,37 @@ msgstr ""
 "\n"
 "Ağ sunucusu başarıyla durduruldu.\n"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:24
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:26
 msgid "Application Name:"
 msgstr "Uygulama Adı:"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:28
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:30
 msgid "Parent Directory:"
 msgstr "Ana Dizin:"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:29
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:31
 msgid "Pick parent directory"
 msgstr "Ana dizin seçin"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
 msgid "Invalid Application name"
 msgstr "Geçersiz Uygulama adı"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:82
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:84
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "missing field"
 msgstr "eksik alan"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:86
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:87
 msgid "You need to select a base directory"
 msgstr "Bir taban dizin seçmelisiniz"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:120
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
 #, perl-format
 msgid "%s apparently created. Do you want to open it now?"
 msgstr "%s oluşturuldu. Şimdi açmak istiyor musunuz?"
 
-#: lib/Padre/Plugin/Mojolicious/NewApp.pm:121
+#: lib/Padre/Plugin/Mojolicious/NewApp.pm:122
 msgid "Done"
 msgstr "Bitti"
 
