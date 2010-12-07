@@ -124,7 +124,7 @@ SpellCheck / Preferences).
 This plugin is using C<Text::Aspell> underneath, so check this module's
 pod for more information.
 
-Of course, you need to have the aspell binary and dictionnary installed.
+Of course, you need to have the aspell binary and dictionary installed.
 
 
 
