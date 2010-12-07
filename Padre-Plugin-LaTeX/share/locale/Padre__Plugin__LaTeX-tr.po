@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre2It\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 16:00+0300\n"
-"PO-Revision-Date: 2010-12-07 00:31+0100\n"
+"POT-Creation-Date: 2010-12-03 14:08+0100\n"
+"PO-Revision-Date: 2010-12-07 01:32+0100\n"
 "Last-Translator: Burak Gürsoy <burak@cpan.org>\n"
 "Language-Team:  <simone.blandino@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -21,44 +21,52 @@ msgstr ""
 msgid "LaTeX"
 msgstr "LaTeX"
 
-#: lib/Padre/Plugin/LaTeX.pm:26
+#: lib/Padre/Plugin/LaTeX.pm:27
 msgid "About"
 msgstr "Hakkında"
 
-#: lib/Padre/Plugin/LaTeX.pm:27
+#: lib/Padre/Plugin/LaTeX.pm:28
 msgid "Create/Update PDF"
 msgstr "PDF Oluştur/Güncelle"
 
-#: lib/Padre/Plugin/LaTeX.pm:28
+#: lib/Padre/Plugin/LaTeX.pm:29
 msgid "View PDF"
 msgstr "PDF Görüntüle"
 
-#: lib/Padre/Plugin/LaTeX.pm:29
+#: lib/Padre/Plugin/LaTeX.pm:30
 msgid "Run BibTeX"
 msgstr "BibTeX Çalıştır"
 
-#: lib/Padre/Plugin/LaTeX.pm:46
+#: lib/Padre/Plugin/LaTeX.pm:47
 msgid "LaTeX Plug-in"
 msgstr "LaTeX Eklentisi"
 
-#: lib/Padre/Plugin/LaTeX.pm:49
+#: lib/Padre/Plugin/LaTeX.pm:50
 #, perl-format
 msgid ""
+"LaTeX support for Padre\n"
+"\n"
+"For syntax highlighting of BibTeX files install the Kate plugin: Padre::Plugin::Kate\n"
+"\n"
 "Copyright 2010 %s\n"
 "This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.\n"
 msgstr ""
+"Padre için LaTeX desteği\n"
+"\n"
+"BibTeX dosyalarının renklendirilmesi için Kate eklentisini kurun: Padre::Plugin::Kate\n"
+"\n"
 "Telif hakkı 2010 %s\n"
 "Bu eklenti ücretsiz bir yazılımdır; Padre ile aynı lisans altında tekrar dağıtabilir ve/veya değiştirebilirsiniz.\n"
 
-#: lib/Padre/Plugin/LaTeX.pm:71
+#: lib/Padre/Plugin/LaTeX.pm:76
 msgid "Creating PDF files is only supported for LaTeX documents."
 msgstr "PDF belgeleri oluşturma seçeneği sadece LaTeX belgeleriyle desteklenmektedir."
 
-#: lib/Padre/Plugin/LaTeX.pm:97
+#: lib/Padre/Plugin/LaTeX.pm:102
 msgid "Running BibTeX is only supported for LaTeX documents."
 msgstr "BibTeX çalıştırma sadece LaTeX belgeleriyle desteklenmektedir."
 
-#: lib/Padre/Plugin/LaTeX.pm:117
+#: lib/Padre/Plugin/LaTeX.pm:122
 msgid "Viewing PDF files is only supported for LaTeX documents."
 msgstr "PDF belgelerinin görüntülenmesi sadece LaTeX belgeleri için desteklenmektedir."
 
