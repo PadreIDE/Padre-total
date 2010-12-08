@@ -7,6 +7,7 @@ Revision history for Perl extension Padre::Plugin::Autodia.
 	- Added GraphViz 2.04 missing dependency (AZAWAWI)
 	- Added Arabic translation (AZAWAWI)
 	- Fix error in About box (ZENOG)
+	- Added Dutch translation (ddn123456 - Dirk De Nijs)
 
 0.01  2009.11.9
 	- Initial release with UML menu options for This File and Selected Files
