@@ -7,21 +7,20 @@ use Moose::Autobox;
 use Dist::Zilla;
 with 'Dist::Zilla::Role::PluginBundle::Easy';
 
-use Dist::Zilla::PluginBundle::Filter;
-use Dist::Zilla::PluginBundle::Basic;
-use Dist::Zilla::Plugin::CheckChangeLog;
-use Dist::Zilla::Plugin::CheckChangesTests;
-use Dist::Zilla::Plugin::CompileTests;
-use Dist::Zilla::Plugin::EOLTests;
-use Dist::Zilla::Plugin::PodWeaver;
-use Dist::Zilla::Plugin::PkgVersion;
-use Dist::Zilla::Plugin::MetaResources;
-use Dist::Zilla::Plugin::MetaConfig;
-use Dist::Zilla::Plugin::MetaJSON;
-use Dist::Zilla::Plugin::NextRelease;
-use Dist::Zilla::Plugin::PodSyntaxTests;
-use Dist::Zilla::Plugin::ModuleBuild;
-use Dist::Zilla::Plugin::LocaleMsgfmt;
+use Dist::Zilla::PluginBundle::Filter      ();
+use Dist::Zilla::PluginBundle::Basic       ();
+use Dist::Zilla::Plugin::CheckChangeLog    ();
+use Dist::Zilla::Plugin::CheckChangesTests ();
+use Dist::Zilla::Plugin::CompileTests      ();
+use Dist::Zilla::Plugin::EOLTests          ();
+use Dist::Zilla::Plugin::PodWeaver         ();
+use Dist::Zilla::Plugin::PkgVersion        ();
+use Dist::Zilla::Plugin::MetaResources     ();
+use Dist::Zilla::Plugin::MetaConfig        ();
+use Dist::Zilla::Plugin::MetaJSON          ();
+use Dist::Zilla::Plugin::NextRelease       ();
+use Dist::Zilla::Plugin::PodSyntaxTests    ();
+use Dist::Zilla::Plugin::LocaleMsgfmt      ();
 
 # Meta resource repository
 has repository => (
@@ -51,11 +50,10 @@ sub configure {
 	my ($self) = @_;
 
 
-	# filter the @Basic bundle and remove [MakeMaker]
+	# filter the @Basic bundle
 	$self->add_bundle(
 		'@Filter' => {
 			bundle => '@Basic',
-			remove => [qw(MakeMaker)],
 		}
 	);
 
@@ -84,7 +82,7 @@ sub configure {
 		]
 	);
 
-	$self->add_plugins(qw( PodSyntaxTests ModuleBuild LocaleMsgfmt ));
+	$self->add_plugins(qw( PodSyntaxTests LocaleMsgfmt ));
 
 
 	# Add test dependencies
@@ -135,13 +133,13 @@ is equivalent to:
 
 	[@Filter]
 	bundle = @Basic
-	remove = MakeMaker
-
-	needs_display  = 1
 
 	[CheckChangeLog]
 	[CheckChangesTests]
+
 	[CompileTests]
+	needs_display  = 1
+
 	[EOLTests]
 	[PodWeaver]
 	[PkgVersion]
@@ -151,10 +149,10 @@ is equivalent to:
 	[NextRelease]
 	format = %-6v %{yyyy.MM.dd}d
 	[PodSyntaxTests]
-	[ModuleBuild]
 	[LocaleMsgfmt]
 
 You can specify the following options:
+
 	homepage
 	repository
 	format

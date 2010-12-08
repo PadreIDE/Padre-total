@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+	- Switched to [MakeMaker] instead of [ModuleBuild] since it conflicts on
+	win32 with [EOLTests] (AZAWAWI)
 
 0.07   2010.11.07
 	- Bumped Locale::Msgfmt dependency to 0.15 (AZAWAWI)
