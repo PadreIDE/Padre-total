@@ -1,6 +1,8 @@
 Revision history for Dist::Zilla::PluginBundle::PadrePlugin
 
 {{$NEXT}}
+
+0.08   2010.12.08
 	- Switched to [MakeMaker] instead of [ModuleBuild] since it conflicts on
 	  win32 with [EOLTests] (AZAWAWI)
 
