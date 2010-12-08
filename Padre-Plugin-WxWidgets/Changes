@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-wxWidgets
 
 {{$NEXT}}
+	- Added better documentation to parse_wxwidgets_docs (AZAWAWI)
+	- Switched back to re-use [@PadrePlugin] (AZAWAWI)
 
 0.02   2010.12.06
 	- Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
