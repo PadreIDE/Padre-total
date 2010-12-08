@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Alarm\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:03+0300\n"
+"POT-Creation-Date: 2010-10-18 15:43+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -12,23 +12,38 @@ msgstr ""
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-Country: Nederland - België\n"
 
+#: lib/Padre/Plugin/Alarm.pm:30
+msgid "Alarm Clock"
+msgstr "Alarmklok"
+
+#: lib/Padre/Plugin/Alarm.pm:31
+#: lib/Padre/Plugin/Alarm.pm:56
+msgid "Set Alarm Time"
+msgstr "Zet Alarm Tijd"
+
+#: lib/Padre/Plugin/Alarm.pm:32
+#: lib/Padre/Plugin/Alarm.pm:127
+msgid "Stop Alarm"
+msgstr "Stop Alarm"
+
+#: lib/Padre/Plugin/Alarm.pm:33
+#: lib/Padre/Plugin/Alarm.pm:146
+msgid "Clear Alarm"
+msgstr "Annuleer Alarm"
+
 #: lib/Padre/Plugin/Alarm.pm:44
 msgid "Time (eg: 23:55):"
 msgstr "Tijd (voorbeeld : 23:55) :"
 
-#: lib/Padre/Plugin/Alarm.pm:48
+#: lib/Padre/Plugin/Alarm.pm:47
 msgid "Frequency:"
 msgstr "Frequentie:"
 
-#: lib/Padre/Plugin/Alarm.pm:58
-msgid "Set Alarm Time"
-msgstr "Zet Alarm Tijd"
-
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Possible Value Format: \\d:\\d\\d or \\d\\d:\\d\\d like 6:13 or 23:55"
 msgstr "Mogelijke Waardenformaten: \\d:\\d\\d of \\d\\d:\\d\\d zoals 6:13 of 23:55"
 
-#: lib/Padre/Plugin/Alarm.pm:91
+#: lib/Padre/Plugin/Alarm.pm:89
 msgid "Wrong Alarm Time"
 msgstr "Foute Alarm Tijd"
 
@@ -36,15 +51,7 @@ msgstr "Foute Alarm Tijd"
 msgid "All Alarms are stopped"
 msgstr "Alle alarmen zijn stopgezet"
 
-#: lib/Padre/Plugin/Alarm.pm:127
-msgid "Stop Alarm"
-msgstr "Stop Alarm"
-
 #: lib/Padre/Plugin/Alarm.pm:146
 msgid "All Alarms are cleared"
 msgstr "Alle alarmen zijn geannuleerd"
-
-#: lib/Padre/Plugin/Alarm.pm:146
-msgid "Clear Alarm"
-msgstr "Annuleer Alarm"
 

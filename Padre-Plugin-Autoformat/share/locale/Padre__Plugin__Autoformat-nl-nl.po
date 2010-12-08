@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-Autoformat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 23:50+0300\n"
+"POT-Creation-Date: 2010-10-31 15:03+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -12,7 +12,11 @@ msgstr ""
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-Country: Nederland - België\n"
 
-#: lib/Padre/Plugin/Autoformat.pm:53
+#: lib/Padre/Plugin/Autoformat.pm:36
+msgid "Autoformat"
+msgstr "Automatisch formatteren"
+
+#: lib/Padre/Plugin/Autoformat.pm:38
 msgid "Autoformat\tCtrl+Shift+J"
 msgstr "Automatisch formatteren\tCtrl+Shift+J"
 

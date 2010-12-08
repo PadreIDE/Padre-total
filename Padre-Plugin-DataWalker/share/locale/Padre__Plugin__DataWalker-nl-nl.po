@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-DataWalker\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-10 22:50+0300\n"
+"POT-Creation-Date: 2010-11-01 17:23+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -10,47 +10,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
-"X-Poedit-Country: Nederland - België\n"
+"X-Poedit-Country: Nederland - BelgiÃ«\n"
 
-#: lib/Padre/Plugin/DataWalker.pm:89
+#: lib/Padre/Plugin/DataWalker.pm:79
+msgid "DataWalker"
+msgstr "DataWalker"
+
+#: lib/Padre/Plugin/DataWalker.pm:85
 msgid "About"
 msgstr "Betreft"
 
-#: lib/Padre/Plugin/DataWalker.pm:90
+#: lib/Padre/Plugin/DataWalker.pm:86
 msgid "Browse YAML dump file"
 msgstr "Doorblader het YAML dump bestand"
 
-#: lib/Padre/Plugin/DataWalker.pm:91
+#: lib/Padre/Plugin/DataWalker.pm:87
 msgid "Browse current document object"
 msgstr "Doorblader het huidige document object"
 
-#: lib/Padre/Plugin/DataWalker.pm:92
+#: lib/Padre/Plugin/DataWalker.pm:88
 msgid "Browse Padre IDE object"
 msgstr "Doorblader Padre IDE object"
 
-#: lib/Padre/Plugin/DataWalker.pm:93
+#: lib/Padre/Plugin/DataWalker.pm:89
 msgid "Browse Padre main symbol table"
 msgstr "Doorblader Padre hoofd symbool tabel"
 
-#: lib/Padre/Plugin/DataWalker.pm:103
+#: lib/Padre/Plugin/DataWalker.pm:99
 msgid "Open file"
 msgstr "Open bestand"
 
-#: lib/Padre/Plugin/DataWalker.pm:119
+#: lib/Padre/Plugin/DataWalker.pm:115
 #, perl-format
 msgid "Could not find the specified file '%s'"
 msgstr "Het bestand '%s' niet gevonden"
 
-#: lib/Padre/Plugin/DataWalker.pm:120
+#: lib/Padre/Plugin/DataWalker.pm:116
 msgid "File not found"
 msgstr "Bestand niet gevonden"
 
-#: lib/Padre/Plugin/DataWalker.pm:129
+#: lib/Padre/Plugin/DataWalker.pm:125
 #, perl-format
 msgid "Could not read the YAML file.%s"
 msgstr "Kon het YAML bestand niet lezen. %s"
 
-#: lib/Padre/Plugin/DataWalker.pm:130
+#: lib/Padre/Plugin/DataWalker.pm:126
 msgid "Invalid YAML file"
 msgstr "Invalide YAML file"
 

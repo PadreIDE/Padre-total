@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-CSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:07+0300\n"
+"POT-Creation-Date: 2010-10-26 20:25+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: ddn <ddn123456 at gmail.com>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -12,7 +12,11 @@ msgstr ""
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-Country: Nederland - België\n"
 
-#: lib/Padre/Plugin/CSS.pm:25
+#: lib/Padre/Plugin/CSS.pm:23
+msgid "CSS"
+msgstr "CSS"
+
+#: lib/Padre/Plugin/CSS.pm:24
 msgid "CSS Minifier"
 msgstr "CSS Minimaliseerder"
 
@@ -20,27 +24,39 @@ msgstr "CSS Minimaliseerder"
 msgid "Validate CSS"
 msgstr "Valideer CSS"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:28
+msgid "Docs"
+msgstr "Documentatie"
+
+#: lib/Padre/Plugin/CSS.pm:29
+msgid "CSS 2.1 specs"
+msgstr "CSS 2.1 specificaties"
+
+#: lib/Padre/Plugin/CSS.pm:31
+msgid "CSS 2.1 property list"
+msgstr "CSS 2.1 lijst eigenschappen"
+
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "No Code"
 msgstr "Geen code"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "Error"
 msgstr "Fout"
 
-#: lib/Padre/Plugin/CSS.pm:47
+#: lib/Padre/Plugin/CSS.pm:55
 msgid "CSS is valid\n"
 msgstr "Le CSS is valide\n"
 
-#: lib/Padre/Plugin/CSS.pm:49
+#: lib/Padre/Plugin/CSS.pm:57
 msgid "CSS is not valid\n"
 msgstr "CSS is niet valide\n"
 
-#: lib/Padre/Plugin/CSS.pm:50
+#: lib/Padre/Plugin/CSS.pm:58
 msgid "Errors:\n"
 msgstr "Fouten:\n"
 
-#: lib/Padre/Plugin/CSS.pm:60
+#: lib/Padre/Plugin/CSS.pm:68
 msgid "Failed to validate the code\n"
 msgstr "Gefaald tijdens het valideren van de code\n"
 

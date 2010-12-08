@@ -1,0 +1,60 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-HTMLExport\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-26 10:52+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: ddn <ddn123456 at gmail.com>\n"
+"Language-Team: ddn <ddn123456 at gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: Nederland - België\n"
+
+#: lib/Padre/Plugin/HTMLExport.pm:48
+msgid "Export Colorful HTML"
+msgstr "Exporteer KleurenHTML"
+
+#: lib/Padre/Plugin/HTMLExport.pm:49
+msgid "Export HTML..."
+msgstr "Exporteer HTML..."
+
+#: lib/Padre/Plugin/HTMLExport.pm:50
+msgid "Configure Color"
+msgstr "Configureer Kleur"
+
+#: lib/Padre/Plugin/HTMLExport.pm:71
+msgid "Save as HTML..."
+msgstr "Opslaan als HTML..."
+
+#: lib/Padre/Plugin/HTMLExport.pm:85
+msgid "File already exists. Overwrite it?"
+msgstr "Bestand bestaat reeds. Overschrijven?"
+
+#: lib/Padre/Plugin/HTMLExport.pm:86
+msgid "Exist"
+msgstr "Bestaand"
+
+#: lib/Padre/Plugin/HTMLExport.pm:103
+#, perl-format
+msgid "%s is not supported"
+msgstr "%s is niet ondersteund"
+
+#: lib/Padre/Plugin/HTMLExport.pm:154
+#, perl-format
+msgid "Saved to %s. Do you want to open it now?"
+msgstr "Opgeslagen als %s. Wenst U het nu te openen?"
+
+#: lib/Padre/Plugin/HTMLExport.pm:155
+msgid "Done"
+msgstr "Klaar"
+
+#: lib/Padre/Plugin/HTMLExport.pm:168
+msgid "Not implemented, TODO"
+msgstr "Nog niet geïmplementeerd, TE DOEN"
+
