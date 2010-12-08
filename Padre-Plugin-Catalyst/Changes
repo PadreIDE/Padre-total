@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-Catalyst
 
 {{$NEXT}}
+
+0.12   2010.12.08
     Fixed a t/01-perl_interpreter.t failure when DISPLAY is not set (AZAWAWI)
 
 0.11   2010.12.06
