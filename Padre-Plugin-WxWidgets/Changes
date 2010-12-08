@@ -1,6 +1,8 @@
 Revision history for Padre-Plugin-wxWidgets
 
 {{$NEXT}}
+
+0.03   2010.12.08
 	- Added better documentation to parse_wxwidgets_docs (AZAWAWI)
 	- Switched back to re-use [@PadrePlugin] (AZAWAWI)
 	- Added Dutch translation (ddn123456 - Dirk De Nijs)
