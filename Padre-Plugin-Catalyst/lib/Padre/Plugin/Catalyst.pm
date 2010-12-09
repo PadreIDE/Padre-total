@@ -217,7 +217,7 @@ sub menu_plugins {
 		$main,
 		$docs_menu->Append( -1, Wx::gettext('Catalyst Community Live Support') ),
 		sub {
-			Padre::Wx::launch_irc( 'irc.perl.org' => 'catalyst' );
+			Padre::Wx::launch_irc( 'catalyst' );
 		},
 	);
 
