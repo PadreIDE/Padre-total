@@ -3,6 +3,7 @@ var channels = {
    win32:        {title:"Win32 specific",                host:"irc.perl.org",     channel:"win32"},
    padre:        {title:"Padre, the Perl IDE",           host:"irc.perl.org",     channel:"padre"},
    catalyst:     {title:"Catalyst",                      host:"irc.perl.org",     channel:"catalyst"},
+   dancer:       {title:"Dancer",                        host:"irc.perl.org",     channel:"dancer"},
    dbix_class:   {title:"DBIx::Class",                   host:"irc.perl.org",     channel:"dbix-class"},
    email:        {title:"Perl Email Project",            host:"irc.perl.org",     channel:"email"},
    parrot:       {title:"Parrot",                        host:"irc.perl.org",     channel:"parrot"},
