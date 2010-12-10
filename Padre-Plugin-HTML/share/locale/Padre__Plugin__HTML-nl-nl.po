@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-HTML\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 19:17+0300\n"
+"POT-Creation-Date: 2010-12-10 17:32+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Claudio Ramirez <padre.claudio@apt-get.be>\n"
 "Language-Team: ddn <ddn123456 at gmail.com>\n"
@@ -24,19 +24,19 @@ msgstr "HTML"
 msgid "Tidy HTML"
 msgstr "Tidy HTML"
 
-#: lib/Padre/Plugin/HTML.pm:24
+#: lib/Padre/Plugin/HTML.pm:25
 msgid "HTML Lint"
 msgstr "HTML Lint"
 
-#: lib/Padre/Plugin/HTML.pm:25
+#: lib/Padre/Plugin/HTML.pm:27
 msgid "Validate HTML"
 msgstr "Valideer HTML"
 
-#: lib/Padre/Plugin/HTML.pm:26
+#: lib/Padre/Plugin/HTML.pm:29
 msgid "Docs"
 msgstr "Documentatie"
 
-#: lib/Padre/Plugin/HTML.pm:27
+#: lib/Padre/Plugin/HTML.pm:30
 msgid "HTML 4.01 Specification"
 msgstr "HTML 4.01 Specificaties"
 

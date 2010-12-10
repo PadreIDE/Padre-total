@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-26 19:17+0300\n"
+"POT-Creation-Date: 2010-12-10 17:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,18 +25,18 @@ msgstr ""
 msgid "Tidy HTML"
 msgstr ""
 
-#: lib/Padre/Plugin/HTML.pm:24
+#: lib/Padre/Plugin/HTML.pm:25
 msgid "HTML Lint"
 msgstr ""
 
-#: lib/Padre/Plugin/HTML.pm:25
+#: lib/Padre/Plugin/HTML.pm:27
 msgid "Validate HTML"
 msgstr ""
 
-#: lib/Padre/Plugin/HTML.pm:26
+#: lib/Padre/Plugin/HTML.pm:29
 msgid "Docs"
 msgstr ""
 
-#: lib/Padre/Plugin/HTML.pm:27
+#: lib/Padre/Plugin/HTML.pm:30
 msgid "HTML 4.01 Specification"
 msgstr ""
