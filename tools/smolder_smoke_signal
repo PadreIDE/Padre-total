@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # 
 # This script was copied from the Smolder distributin. 
 # Please do not make any changes to this copy!  ~ szabgab
