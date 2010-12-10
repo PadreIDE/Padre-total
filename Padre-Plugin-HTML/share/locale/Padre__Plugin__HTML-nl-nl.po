@@ -1,42 +1,42 @@
+# Dutch translations for PACKAGE package.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# claudio <ddn123456@gmail.com>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Padre-Plugin-HTML\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-10 17:32+0100\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Claudio Ramirez <padre.claudio@apt-get.be>\n"
-"Language-Team: ddn <ddn123456 at gmail.com>\n"
-"Language: \n"
+"PO-Revision-Date: 2010-12-10 17:38+0100\n"
+"Last-Translator: claudio <ddn123456@gmail.com>\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ASCII\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Dutch\n"
-"X-Poedit-Country: Nederland - België\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: lib/Padre/Plugin/HTML.pm:22
 msgid "HTML"
-msgstr "HTML"
+msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:23
 msgid "Tidy HTML"
-msgstr "Tidy HTML"
+msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:25
 msgid "HTML Lint"
-msgstr "HTML Lint"
+msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:27
 msgid "Validate HTML"
-msgstr "Valideer HTML"
+msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:29
 msgid "Docs"
-msgstr "Documentatie"
+msgstr ""
 
 #: lib/Padre/Plugin/HTML.pm:30
 msgid "HTML 4.01 Specification"
-msgstr "HTML 4.01 Specificaties"
-
+msgstr ""
