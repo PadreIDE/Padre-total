@@ -1,16 +1,20 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Padre-Plugin-CSS\n"
+msgstr "Project-Id-Version: Padre-Plugin-CSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-25 02:34+0800\n"
+"POT-Creation-Date: 2010-12-11 01:13+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Enrique Nell <blas.gordon@gmail.com>\n"
 "Language-Team: Spanish\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/CSS.pm:25
+#: lib/Padre/Plugin/CSS.pm:23
+msgid "CSS"
+msgstr "CSS"
+
+#: lib/Padre/Plugin/CSS.pm:24
 msgid "CSS Minifier"
 msgstr "Compactador de CSS"
 
@@ -18,27 +22,42 @@ msgstr "Compactador de CSS"
 msgid "Validate CSS"
 msgstr "Validar CSS"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:28
+msgid "Docs"
+msgstr "Documentación"
+
+#: lib/Padre/Plugin/CSS.pm:29
+msgid "CSS 2.1 specs"
+msgstr "Especificaciones de CSS 2.1"
+
+#: lib/Padre/Plugin/CSS.pm:31
+msgid "CSS 2.1 property list"
+msgstr "Lista de propiedades de CSS 2.1"
+
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "No Code"
 msgstr "Sin código"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "Error"
 msgstr "Error"
 
-#: lib/Padre/Plugin/CSS.pm:47
+#: lib/Padre/Plugin/CSS.pm:55
 msgid "CSS is valid\n"
 msgstr "CSS válido\n"
+"\n"
 
-#: lib/Padre/Plugin/CSS.pm:49
+#: lib/Padre/Plugin/CSS.pm:57
 msgid "CSS is not valid\n"
 msgstr "CSS no válido\n"
+"\n"
 
-#: lib/Padre/Plugin/CSS.pm:50
+#: lib/Padre/Plugin/CSS.pm:58
 msgid "Errors:\n"
 msgstr "Errores:\n"
+"\n"
 
-#: lib/Padre/Plugin/CSS.pm:60
+#: lib/Padre/Plugin/CSS.pm:68
 msgid "Failed to validate the code\n"
 msgstr "No se pudo validar el código\n"
-
+"\n"
