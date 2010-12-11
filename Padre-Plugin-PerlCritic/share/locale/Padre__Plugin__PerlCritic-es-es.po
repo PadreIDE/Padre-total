@@ -1,23 +1,40 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Padre-Plugin-PerlCritic\n"
+msgstr "Project-Id-Version: Padre-Plugin-PerlCritic\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-25 02:34+0800\n"
+"POT-Creation-Date: 2010-12-11 01:30+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Bruno Vecchi <vecchi.v@gmail>\n"
-"Language-Team: Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Last-Translator: Enrique Nell <blas.gordon@gmail>\n"
+"Language-Team: Enrique Nell <blas.gordon@gmail>, Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/PerlCritic.pm:31
-msgid "Run PerlCritic"
-msgstr "Lanzar PerlCritic"
+#: lib/Padre/Plugin/PerlCritic.pm:18
+msgid "Perl Critic"
+msgstr "Perl::Critic"
 
-#: lib/Padre/Plugin/PerlCritic.pm:43
+#: lib/Padre/Plugin/PerlCritic.pm:24
+msgid "Perl::Critic Current Document"
+msgstr "Aplicar Perl::Critic al documento actual"
+
+#: lib/Padre/Plugin/PerlCritic.pm:39
 msgid "Document is not a Perl document"
 msgstr "El documento no es un documento Perl"
 
-#: lib/Padre/Plugin/PerlCritic.pm:43
+#: lib/Padre/Plugin/PerlCritic.pm:40
 msgid "Error"
 msgstr "Error"
+
+#: lib/Padre/Plugin/PerlCritic.pm:64
+#, perl-format
+msgid "Perl::Critic running with project-specific configuration %s"
+msgstr "Ejecución de Perl::Critic con la configuración específica del proyecto %s"
+
+#: lib/Padre/Plugin/PerlCritic.pm:67
+msgid "Perl::Critic running with default or user configuration"
+msgstr "Ejecución de Perl::Critic con la configuración del usuario o la predeterminada"
+
+#: lib/Padre/Plugin/PerlCritic.pm:79
+msgid "Perl::Critic found nothing to say about this code"
+msgstr "Perl::Critic no detectó ningún defecto en el código"
