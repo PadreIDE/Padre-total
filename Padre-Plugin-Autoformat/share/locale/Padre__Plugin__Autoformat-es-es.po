@@ -1,16 +1,19 @@
 msgid ""
-msgstr ""
-"Project-Id-Version: Padre-Plugin-Autoformat\n"
+msgstr "Project-Id-Version: Padre-Plugin-Autoformat\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-25 02:34+0800\n"
+"POT-Creation-Date: 2010-12-11 01:07+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Enrique Nell <blas.gordon@gmail.com>\n"
 "Language-Team: Spanish\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Padre/Plugin/Autoformat.pm:53
+#: lib/Padre/Plugin/Autoformat.pm:36
+msgid "Autoformat"
+msgstr "Formato automático"
+
+#: lib/Padre/Plugin/Autoformat.pm:38
 msgid "Autoformat\tCtrl+Shift+J"
 msgstr "Formato automático\tCtrl+Mayús+J"
-
