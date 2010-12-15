@@ -13,6 +13,7 @@ our @ISA = 'Padre::Document';
 
 # Task Integration
 sub task_functions {
+
 	# There is no actual need to support it
 	# We already have outline support
 	return;
