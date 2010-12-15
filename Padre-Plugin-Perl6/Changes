@@ -1,6 +1,8 @@
 Changes
 
 {{$NEXT}}
+
+0.71   2010.12.15
 	Fixed Padre crash when functions list is enabled (AZAWAWI)
 
 0.70   2010.12.06
