@@ -1,6 +1,7 @@
 Changes
 
 {{$NEXT}}
+	Fixed Padre crash when functions list is enabled (AZAWAWI)
 
 0.70   2010.12.06
 	Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)

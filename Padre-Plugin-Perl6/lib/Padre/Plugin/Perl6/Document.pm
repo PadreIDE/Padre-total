@@ -13,7 +13,9 @@ our @ISA = 'Padre::Document';
 
 # Task Integration
 sub task_functions {
-	return 'Padre::Plugin::Perl6::FunctionList';
+	# There is no actual need to support it
+	# We already have outline support
+	return;
 }
 
 sub task_outline {
