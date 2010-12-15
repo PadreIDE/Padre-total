@@ -225,25 +225,25 @@ sub run {
 		$err =~ s/\033\[\d+(?:;\d+(?:;\d+)?)?m//g;
 		TRACE(qq{STD.pm warning/error:\n$err\n}) if DEBUG;
 		my @messages = split /\n/, $err;
-		my ( $lineno, $severity );
+		my ( $lineno, $type );
 		my $issues = [];
 		my $prefix = '';
 		for my $msg (@messages) {
 			if ( $msg =~ /^===SORRY!===/i ) {
 
 				# the following lines are errors until we see the warnings section
-				$severity = 2;
+				$type = 'F';
 			} elsif ( $msg =~ /^Potential difficulties/i ) {
 
 				# all rest are warnings...
-				$severity = 1;
-				$lineno   = undef;
+				$type   = 'W';
+				$lineno = undef;
 			} elsif ( $msg =~ /^Undeclared routine/i ) {
 
 				# all rest are warnings...
-				$prefix   = 'Undeclared routine: ';
-				$lineno   = undef;
-				$severity = 1;
+				$prefix = 'Undeclared routine: ';
+				$lineno = undef;
+				$type   = 'W';
 			} elsif ( $msg =~ /^\s+(.+?)\s+used at (\d+)/i ) {
 
 				# record the line number
@@ -254,7 +254,7 @@ sub run {
 				$lineno = $1;
 			}
 			if ($lineno) {
-				push @{$issues}, { line => $lineno, msg => $prefix . $msg, severity => $severity, };
+				push @{$issues}, { line => $lineno, message => $prefix . $msg, type => $type, };
 			}
 		}
 		$self->{issues} = $issues;

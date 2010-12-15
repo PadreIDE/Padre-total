@@ -34,6 +34,7 @@ sub colorize {
 			$main,
 			$timer_id,
 			sub {
+				my $text = $doc->text_with_one_nl or return;
 
 				# temporary overlay using the parse tree given by parrot
 				# Create a coloring task
@@ -42,7 +43,7 @@ sub colorize {
 					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask'; # PGE
 				eval "use $module";
 				my $task = $module->new(
-					text => $doc->text_with_one_nl,
+					text =>  $text,
 				);
 
 				# hand off to the task manager
