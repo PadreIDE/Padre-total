@@ -43,7 +43,7 @@ sub colorize {
 					: 'Padre::Plugin::Perl6::Perl6PgeColorizerTask'; # PGE
 				eval "use $module";
 				my $task = $module->new(
-					text =>  $text,
+					text => $text,
 				);
 
 				# hand off to the task manager
