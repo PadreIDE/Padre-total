@@ -196,12 +196,12 @@ sub _create {
 sub _create_buttons {
 	my ($self) = @_;
 
-	my $ba  = Wx::Button->new( $self, -1,              _T('Add to dictionary') );
-	my $br  = Wx::Button->new( $self, -1,              _T('Replace') );
-	my $bra = Wx::Button->new( $self, -1,              _T('Replace all') );
-	my $bi  = Wx::Button->new( $self, -1,              _T('Ignore') );
-	my $bia = Wx::Button->new( $self, -1,              _T('Ignore all') );
-	my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, _T('Close') );
+	my $ba  = Wx::Button->new( $self, -1,              _T('&Add to dictionary') );
+	my $br  = Wx::Button->new( $self, -1,              _T('&Replace') );
+	my $bra = Wx::Button->new( $self, -1,              _T('R&eplace all') );
+	my $bi  = Wx::Button->new( $self, -1,              _T('&Ignore') );
+	my $bia = Wx::Button->new( $self, -1,              _T('I&gnore all') );
+	my $bc  = Wx::Button->new( $self, Wx::wxID_CANCEL, _T('&Close') );
 	Wx::Event::EVT_BUTTON( $self, $br,  \&_on_butreplace_clicked );
 	Wx::Event::EVT_BUTTON( $self, $bra, \&_on_butreplace_all_clicked );
 	Wx::Event::EVT_BUTTON( $self, $bi,  \&_on_butignore_clicked );
