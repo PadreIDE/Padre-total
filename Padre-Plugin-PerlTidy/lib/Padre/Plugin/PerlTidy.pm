@@ -50,6 +50,9 @@ sub menu_plugins_simple {
 			\&export_document,
 		Wx::gettext('Export selected text to HTML file') =>
 			\&export_selection,
+		'---' => undef,
+		Wx::gettext('Configure tidy') =>
+			\&configure_tidy,
 	];
 }
 
@@ -57,6 +60,7 @@ sub _tidy {
 	my $main     = shift;
 	my $current  = shift;
 	my $source   = shift;
+	my $perltidyrc = shift;
 	my $document = $current->document;
 
 	# Check for problems
@@ -81,7 +85,9 @@ sub _tidy {
 	$main->show_output(1);
 	my $output = $main->output;
 
-	my $perltidyrc = $document->project->config->config_perltidy;
+	if (not $perltidyrc) {
+		$perltidyrc = $document->project->config->config_perltidy;
+	}
 	if ($perltidyrc) {
 		$tidyargs{perltidyrc} = $perltidyrc;
 		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
@@ -110,11 +116,12 @@ sub _tidy {
 
 sub tidy_selection {
 	my $main = shift;
+	my $perltidyrc = shift;
 
 	# Tidy the current selected text
 	my $current = $main->current;
 	my $text    = $current->text;
-	my $tidy    = _tidy( $main, $current, $text );
+	my $tidy    = _tidy( $main, $current, $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}
@@ -129,14 +136,21 @@ sub tidy_selection {
 	$current->editor->ReplaceSelection($tidy);
 }
 
+sub configure_tidy {
+	require Padre::Plugin::PerlTidy::Dialog;
+	my $d = Padre::Plugin::PerlTidy::Dialog->new;
+	return;
+}
+
 sub tidy_document {
 	my $main = shift;
+	my $perltidyrc = shift;
 
 	# Tidy the entire current document
 	my $current  = $main->current;
 	my $document = $current->document;
 	my $text     = $document->text_get;
-	my $tidy     = _tidy( $main, $current, $text );
+	my $tidy     = _tidy( $main, $current, $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}
@@ -308,6 +322,16 @@ sub _store_cursor_position {
 		print STDERR @_;
 	}
 	return ( $regex, $start );
+}
+
+sub plugin_disable {
+	my $self = shift;
+    
+	# Unload all private classese here, so that they can be reloaded
+	require Class::Unload;
+	Class::Unload->unload('Padre::Plugin::PerlTidy::Dialog');
+	Class::Unload->unload('Perl::Tidy');
+	return;
 }
 
 1;
