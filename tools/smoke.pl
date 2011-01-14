@@ -26,6 +26,7 @@ my $force;
 my $verbose;
 my $to;
 my $smolder;
+my $all;
 GetOptions(
 	 'path=s'    => \$path,
 	 'to=s'      => \$to,
@@ -33,6 +34,7 @@ GetOptions(
 	 'sleep=s'   => \$sleep,
 	 'force'     => \$force,
 	 'verbose'   => \$verbose,
+	'all'        => \$all,
 	 'smolder=s' => \$smolder,
 ) or usage();
 usage() if $help;
@@ -49,8 +51,10 @@ my %MAIL = (
 #	waxhead => 'plaven@bigpond.net.au',
 );
 
-$ENV{AUTOMATED_TESTING} = 1;
-$ENV{RELEASE_TESTING}   = 1;
+if ($all) {
+	$ENV{AUTOMATED_TESTING} = 1;
+	$ENV{RELEASE_TESTING}   = 1;
+}
 
 chdir $path;
 open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
@@ -161,7 +165,15 @@ sub send_message {
 		Data     => $text,
 	);
 
-	$msg->send('smtp','mail.perlide.org', Debug => 0 );
+	# when there is no connection this call throws an exception
+	# don't let it ruin the next party...
+	eval {
+		$msg->send('smtp','mail.perlide.org', Debug => 0 );
+        };
+	if ($@) {
+		warn $@;
+	}
+	return;
 }
 
 
@@ -180,6 +192,8 @@ Usage: $0
        --force                   force a build and report even if there were no changes (for the first run only)
        --verbose                 print output to screen
        --smolder PATH            path to the smolder_smoke_signal script
+
+       --all                     Enable AUTOMATED_TESTING and RELEASE_TESTING
 
 Setup:
   Install command line Subversion client.
