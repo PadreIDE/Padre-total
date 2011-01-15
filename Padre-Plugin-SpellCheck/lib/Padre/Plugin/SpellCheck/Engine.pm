@@ -41,7 +41,7 @@ sub new {
 	$speller->set_option( 'sug-mode', 'normal' );
 	$speller->set_option( 'lang',     $config->{dictionary} );
 
-	$speller->print_config;
+	#$speller->print_config;  # to STDOUT
 
 	if (exists $MIMETYPE_MODE{$mimetype}) {
 		if (not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype})) {
