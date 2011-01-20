@@ -19,6 +19,12 @@ navigation:
   - name: About
     href: /about.html
 about:
+  - title: y2011
+    events:
+      - date: 2011 January 20
+        url: http://blogs.perl.org/users/peter_lavender/2011/01/padre-078-has-been-released---the-late-announcement.html
+        title: Padre 0.78 has been released - the late announcement...
+        comment: by Peter Lavender (Release Manager... for now)
   - title: y2010
     events:
       - date: 2010 December 10
