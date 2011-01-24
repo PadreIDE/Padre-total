@@ -29,6 +29,11 @@ our $VERSION = '0.02';
 
 extends 'FBP::Perl';
 
+has version => (
+	is       => 'ro',
+	isa      => 'Str',
+	required => 0,
+);
 
 
 
@@ -62,9 +67,20 @@ END_PERL
 	return $code;
 }
 
+sub dialog_version {
+	my $self    = shift;
+	my $dialog  = shift;
+	my $version = $self->version || '0.01';
+
+	return [
+		"our \$VERSION = '$version';",
+	];
+}
+
 sub dialog_isa {
 	my $self   = shift;
 	my $dialog = shift;
+
 	return $self->nested(
 		"our \@ISA     = qw{",
 		"Padre::Wx::Role::Main",

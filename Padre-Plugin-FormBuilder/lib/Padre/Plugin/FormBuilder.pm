@@ -24,6 +24,7 @@ use strict;
 use warnings;
 use Params::Util  1.00 ();
 use Padre::Plugin 0.66 ();
+use Padre::Util   0.79 ();
 use Padre::Wx     0.66 ();
 
 our $VERSION = '0.02';
@@ -38,6 +39,7 @@ our @ISA     = 'Padre::Plugin';
 
 sub padre_interfaces {
 	'Padre::Plugin'         => 0.66,
+	'Padre::Util'           => 0.79,
 	'Padre::Wx'             => 0.66,
 	'Padre::Wx::Role::Main' => 0.66,
 }
@@ -241,10 +243,15 @@ sub generate_dialog {
 		return;
 	}
 
+	# Does the project have an existing version?
+	my $version = $self->current->project->version;
+	
+
 	# Generate the perl dialog code
 	require Padre::Plugin::FormBuilder::Perl;
 	my $perl = Padre::Plugin::FormBuilder::Perl->new(
 		project => $project,
+		version => $version,
 	);
 	my $string = $perl->flatten(
 		$perl->dialog_class($dialog)
