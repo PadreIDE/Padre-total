@@ -22,11 +22,12 @@ based on wxFormBuilder designs.
 use 5.008005;
 use strict;
 use warnings;
-use Class::Unload 0.03 ();
-use Params::Util  1.00 ();
-use Padre::Plugin 0.66 ();
-use Padre::Util   0.79 ();
-use Padre::Wx     0.66 ();
+use Class::Inspector 1.22 ();
+use Class::Unload    0.03 ();
+use Params::Util     1.00 ();
+use Padre::Plugin    0.66 ();
+use Padre::Util      0.79 ();
+use Padre::Wx        0.66 ();
 
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
@@ -84,69 +85,67 @@ sub menu_dialog {
 	# Show the main dialog
 	require Padre::Plugin::FormBuilder::Dialog;
 	my $dialog = Padre::Plugin::FormBuilder::Dialog->new(
-		$main, $fbp, $list,
+		$main, $self, $fbp, $list,
 	);
-	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
-		$dialog->Destroy;
-		return;
+	while ( $dialog->ShowModel != Wx::wxID_CANCEL ) {
+		# Extract information and clean up dialog
+		my $name    = $dialog->selected;
+		my $command = $dialog->command;
+		unless ( $name and $command ) {
+			last;
+		}
+
+		# Handle the user instructions
+		if ( $command eq 'generate' ) {
+			# Create the dialog
+			my $code = $self->generate_dialog( $fbp, $name, $name );
+
+			# Open the generated code as a new file
+			$self->main->new_document_from_string(
+				$code,
+				'application/x-perl',
+			);
+		} else {
+			# Generate the dialog
+			my $code = $self->generate_dialog( $fbp, $name, $name );
+
+			# Load the dialog
+			local $@;
+			eval "$code";
+			if ( $@ ) {
+				$self->main->error("Error loading dialog: $@");
+				Class::Unload->unload($name);
+				last;
+			}
+
+			# Create the dialog
+			my $preview = eval {
+				$name->new( $main );
+			};
+			if ( $@ ) {
+				$self->main->error("Error constructing dialog: $@");
+				Class::Unload->unload($name);
+				last;
+			}
+
+			# Show the dialog
+			my $rv = eval {
+				$preview->ShowModal;
+			};
+			$preview->Destroy;
+			if ( $@ ) {
+				$self->main->error("Dialog crashed while in use: $@");
+				Class::Unload->unload($name);
+				last;
+			}
+
+			# Clean up
+			Class::Unload->unload($name);
+		}
+		last;
 	}
 
-	# Extract information and clean up dialog
-	my $name    = $dialog->selected;
-	my $command = $dialog->command;
 	$dialog->Destroy;
-	unless ( $name and $command ) {
-		return;
-	}
-
-	# Handle the user instructions
-	if ( $command eq 'generate' ) {
-		# Create the dialog
-		my $code = $self->generate_dialog( $fbp, $name, $name );
-
-		# Open the generated code as a new file
-		$self->main->new_document_from_string(
-			$code,
-			'application/x-perl',
-		);
-	} else {
-		# Generate the dialog
-		my $code = $self->generate_dialog( $fbp, $name, $name );
-
-		# Load the dialog
-		local $@;
-		eval "$code";
-		if ( $@ ) {
-			$self->main->error("Error loading dialog: $@");
-			Class::Unload->unload($name);
-			return;
-		}
-
-		# Create the dialog
-		my $preview = eval {
-			$name->new( $main );
-		};
-		if ( $@ ) {
-			$self->main->error("Error constructing dialog: $@");
-			Class::Unload->unload($name);
-			return;
-		}
-
-		# Show the dialog
-		my $rv = eval {
-			$preview->ShowModal;
-		};
-		$preview->Destroy;
-		if ( $@ ) {
-			$self->main->error("Dialog crashed while in use: $@");
-			Class::Unload->unload($name);
-			return;
-		}
-
-		# Clean up
-		Class::Unload->unload($name);
-	}
-
 	return;
 }
 
