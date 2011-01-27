@@ -3,6 +3,7 @@ package Padre::Plugin::FormBuilder::Dialog;
 use 5.008;
 use strict;
 use warnings;
+use Class::Inspector                ();
 use Padre::Plugin::FormBuilder::FBP ();
 
 our $VERSION = '0.01';
@@ -60,7 +61,15 @@ sub generate {
 
 sub preview {
 	my $self = shift;
-	$self->{command} = 'generate';
+
+	# We can't preview if the module is already loaded in Padre
+	my $name = $self->selected;
+	if ( Class::Inspector->loaded($name) ) {
+		$self->main->error("Unable to preview, $name is in use by Padre");
+		return;
+	}
+
+	$self->{command} = 'preview';
 	$self->EndModal( Wx::wxID_OK );
 }
 

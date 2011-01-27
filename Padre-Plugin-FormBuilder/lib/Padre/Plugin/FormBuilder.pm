@@ -22,6 +22,7 @@ based on wxFormBuilder designs.
 use 5.008005;
 use strict;
 use warnings;
+use Class::Unload 0.03 ();
 use Params::Util  1.00 ();
 use Padre::Plugin 0.66 ();
 use Padre::Util   0.79 ();
@@ -109,15 +110,45 @@ sub menu_dialog {
 			'application/x-perl',
 		);
 	} else {
-		# Preview the dialog
+		# Generate the dialog
 		my $code = $self->generate_dialog( $fbp, $name, $name );
 
-		die "PREVIEW HAS NOT BEEN IMPLEMENTED";
+		# Load the dialog
+		local $@;
+		eval "$code";
+		if ( $@ ) {
+			$self->main->error("Error loading dialog: $@");
+			Class::Unload->unload($name);
+			return;
+		}
+
+		# Create the dialog
+		my $preview = eval {
+			$name->new( $main );
+		};
+		if ( $@ ) {
+			$self->main->error("Error constructing dialog: $@");
+			Class::Unload->unload($name);
+			return;
+		}
+
+		# Show the dialog
+		my $rv = eval {
+			$preview->ShowModal;
+		};
+		$preview->Destroy;
+		if ( $@ ) {
+			$self->main->error("Dialog crashed while in use: $@");
+			Class::Unload->unload($name);
+			return;
+		}
+
+		# Clean up
+		Class::Unload->unload($name);
 	}
 
 	return;
 }
-
 
 
 
@@ -245,13 +276,12 @@ sub generate_dialog {
 
 	# Does the project have an existing version?
 	my $version = $self->current->project->version;
-	
 
 	# Generate the perl dialog code
 	require Padre::Plugin::FormBuilder::Perl;
 	my $perl = Padre::Plugin::FormBuilder::Perl->new(
 		project => $project,
-		version => $version,
+		defined($version) ? ( version => $version ) : (),
 	);
 	my $string = $perl->flatten(
 		$perl->dialog_class($dialog)

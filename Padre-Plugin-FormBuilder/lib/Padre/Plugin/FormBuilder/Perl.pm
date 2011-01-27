@@ -32,7 +32,8 @@ extends 'FBP::Perl';
 has version => (
 	is       => 'ro',
 	isa      => 'Str',
-	required => 0,
+	required => 1,
+	default  => '0.01',
 );
 
 
@@ -70,7 +71,7 @@ END_PERL
 sub dialog_version {
 	my $self    = shift;
 	my $dialog  = shift;
-	my $version = $self->version || '0.01';
+	my $version = $self->version;
 
 	return [
 		"our \$VERSION = '$version';",
