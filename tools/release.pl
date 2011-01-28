@@ -199,8 +199,12 @@ sub check_version {
 	return if $File::Find::name =~ /\.svn/;
 	return if $_ !~ /\.pm/;
 	my @data = read_file($_);
-	if ( my ($line) = grep { $_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\.?\d';/ } @data ) {
-		if ( $line !~ /^(our \$VERSION\s*=\s*)'$version';/ ) {
+	# someone has moved the $VERSION into a BEGIN{} block.
+	# until this is sorted out the strict searching for 'our $VERSION' has be be removed.
+	#if ( my ($line) = grep { $_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\.?\d';/ } @data ) {
+	if ( my ($line) = grep { $_ =~ /\$VERSION\s*=\s*'\d+\.\d\.?\d';/ } @data ) {
+		#if ( $line !~ /^(our \$VERSION\s*=\s*)'$version';/ ) {
+		if ( $line !~ /(\$VERSION\s*=\s*)'$version';/ ) {
 			chomp $line;
 			warn "Invalid VERSION in $File::Find::name  ($line)\n";
 			$error++;
