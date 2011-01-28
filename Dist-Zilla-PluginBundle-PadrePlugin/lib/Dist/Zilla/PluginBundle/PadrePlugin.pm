@@ -10,7 +10,6 @@ with 'Dist::Zilla::Role::PluginBundle::Easy';
 use Dist::Zilla::PluginBundle::Filter      ();
 use Dist::Zilla::PluginBundle::Basic       ();
 use Dist::Zilla::Plugin::CheckChangeLog    ();
-use Dist::Zilla::Plugin::CheckChangesTests ();
 use Dist::Zilla::Plugin::CompileTests      ();
 use Dist::Zilla::Plugin::EOLTests          ();
 use Dist::Zilla::Plugin::PodWeaver         ();
@@ -58,7 +57,7 @@ sub configure {
 	);
 
 	# Start adding plugins
-	$self->add_plugins(qw( CheckChangeLog CheckChangesTests ));
+	$self->add_plugins(qw( CheckChangeLog ));
 
 	$self->add_plugins( [ 'CompileTests' => [ 'needs_display' => '1', ] ] );
 
