@@ -4,7 +4,6 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Wx                        ();
-use Padre::Wx::Directory::SearchCtrl ();
 use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 use Padre::Logger;
 use Params::Util qw( _INSTANCE ) ;
@@ -70,7 +69,7 @@ sub new {
 	$self->SetSizerAndFit($sizerh);
 	$sizerh->SetSizeHints($self);
 	$self->Hide;
-	TRACE( "Resource tree Ready - ", $self->tree );
+	TRACE( "Resource tree Ready - ", $self->tree ) if DEBUG;
 	return $self;
 	
 }
@@ -92,7 +91,7 @@ sub enable {
 
 sub disable {
 	my $self = shift;
-	TRACE( "Disabled" );
+	TRACE( "Disabled" ) if DEBUG;
 	my $left = $self->main->directory_panel;
 	my $pos = $left->GetPageIndex($self);
 	$self->Hide;
@@ -151,6 +150,8 @@ sub on_recv {
 	
 }
 
+
+## TODO Perform less revolting redraw when things change
 sub accept_promote {
 	my ($self,$message) = @_;
 	if ( $message->{resource} ) {

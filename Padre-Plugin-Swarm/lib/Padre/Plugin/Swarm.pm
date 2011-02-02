@@ -340,7 +340,7 @@ sub bootstrap_config {
 		bootstrap
 	/} = (
 		'Anonymous_'.$$,
-		crypt ( rand.$$.time, 'swarm' ) ,
+		crypt ( rand().$$.time, 'swarm' ) ,
 		'global',
 		'239.255.255.1',
 		'swarm.perlide.org',

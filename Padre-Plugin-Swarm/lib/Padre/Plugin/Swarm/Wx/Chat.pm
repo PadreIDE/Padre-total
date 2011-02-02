@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use Text::Patch ();
 use Params::Util qw{_INSTANCE};
-use Wx::Perl::Dialog::Simple;
 
 use Padre::Current qw{_CURRENT};
 use Padre::Logger;
@@ -172,10 +171,10 @@ sub disable {
 	my $position = $bottom->GetPageIndex($self);
 	$self->Hide;
 
-
+	TRACE( "disable - $bottom" ) if DEBUG;
 	$bottom->RemovePage($position);
 	$main->aui->Update;
-	$self->Destroy;
+	#$self->Destroy;
 }
 
 sub update_userlist {
