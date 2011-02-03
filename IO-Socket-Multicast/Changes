@@ -1,4 +1,6 @@
 Revision history for Perl extension IO-Socket-Multicast
+1.13
+	Spelling corrections rt.cpan.org#64092
 1.12    - Wed Apr 28 20:38:53 EST 2010
 	Test adjustments thankyou Christian W. (BRAMBLE)
 	Documentation updates and corrections (BRAMBLE)

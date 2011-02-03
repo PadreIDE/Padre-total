@@ -88,7 +88,7 @@ sub get_if_addr {
   return $interface if length $interface == 16;
   croak "IO::Interface module not available; use IP addr for interface"
     unless $sock->can('if_addr');
-  croak "unknown or unconfigured interace $interface"
+  croak "unknown or unconfigured interface $interface"
     unless my $addr = $sock->if_addr($interface);
   croak "interface is not multicast capable"
     unless $interface eq 'any' or ($sock->if_flags($interface) & IFF_MULTICAST());
