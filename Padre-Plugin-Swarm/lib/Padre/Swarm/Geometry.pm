@@ -10,7 +10,7 @@ use Class::XSAccessor
     accessors => {
 	graph => 'graph',
     };
-our $VERSION = '0.094';
+our $VERSION = '0.1';
 
 =pod
 

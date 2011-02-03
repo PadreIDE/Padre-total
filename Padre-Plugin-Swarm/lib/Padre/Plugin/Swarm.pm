@@ -14,7 +14,7 @@ use Padre::Swarm::Geometry ();
 use Padre::Logger;
 
 
-our $VERSION = '0.094';
+our $VERSION = '0.1';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor 

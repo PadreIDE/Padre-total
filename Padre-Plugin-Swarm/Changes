@@ -1,5 +1,7 @@
 Changes for Perl extension Padre-Plugin-Swarm
-0.094 - 
+0.1   - Thu Feb  3 13:46:14 EST 2011
+	- fix Changes file
+0.094 - Thu Feb  3 13:35:14 EST 2011
         - fix (1) bug causing crash when disabling plugin
 	- convert multicast service to new Task API
 	- add timestamps to chat window

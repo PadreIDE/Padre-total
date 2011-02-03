@@ -8,7 +8,7 @@ use Padre::Plugin::Swarm::Wx::Resources::TreeCtrl ();
 use Padre::Logger;
 use Params::Util qw( _INSTANCE ) ;
 
-our $VERSION = '0.094';
+our $VERSION = '0.1';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor {
