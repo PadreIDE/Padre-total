@@ -300,9 +300,7 @@ SCOPE: {
 		
 		$self->wx->Destroy;
 		$self->wx(undef);
-		$self->disconnect;
 		
-	
 		undef $instance;
 	
 		

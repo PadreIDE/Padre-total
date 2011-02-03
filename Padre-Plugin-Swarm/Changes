@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.094 - 
+        - fix (1) bug causing crash when disabling plugin
 	- convert multicast service to new Task API
 	- add timestamps to chat window
 	- fix JSON parsing in WxSocket transport
