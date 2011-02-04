@@ -15,7 +15,7 @@ sub padre_interfaces {
 sub menu_plugins_simple {
 	my $self = shift;
 	return (
-		Wx::gettext('Encrypt <-> Decrpyt') => [
+		Wx::gettext('Encrypt <-> Decrypt') => [
 			Wx::gettext('Encrypt'), sub { $self->dencrypt('encrypt') },
 			Wx::gettext('Decrypt'), sub { $self->dencrypt('decrypt') },
 		]
