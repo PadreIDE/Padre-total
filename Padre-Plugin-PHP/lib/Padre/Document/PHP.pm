@@ -89,7 +89,6 @@ sub autocomplete {
 
 	$prefix =~ s{^.*?((\w+::)*\w+)$}{$1};
 	my $last      = $editor->GetLength();
-	my $text      = $editor->GetTextRange( 0, $last );
 	my $pre_text  = $editor->GetTextRange( 0, $first + length($prefix) );
 	my $post_text = $editor->GetTextRange( $first, $last );
 

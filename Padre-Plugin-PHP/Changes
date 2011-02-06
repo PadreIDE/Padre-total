@@ -2,6 +2,7 @@ Changes in Padre::Plugin::PHP
 
 v0.06	??
 	compatibility with new Padre (ZENOG)
+	remove unnecessary variable in Document::PHP::autocomplete (ZENOG)
 
 v0.05   2010.08.08
         compatibility with new Padre (CHORNY)
