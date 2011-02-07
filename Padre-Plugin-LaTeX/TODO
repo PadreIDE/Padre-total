@@ -1,13 +1,6 @@
 TÒDO
  - have some kind of notion of LaTeX projects (one directory ...)
  - add icon for the plugin manager
- - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
- - other tools to possibly use
-   - latexmk (run LaTeX the correct number of times)
-   - LaTeX::Encode, TeX::Encode
-   - preview-latex (used by AucTeX)
-   - chktex (typographic errors)
-   - lacheck (simple one-pass checker)
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file
@@ -16,9 +9,7 @@ TÒDO
  - insertion of special characters (menu)
  - insertion of tables, enumerations, etc. via snippets
  - special treatment of tabular environment: transpose and swap columns or rows
- - integration of detexify
  - icons for the tool bar
- - BibLaTeX support
  - document outline
    - sections/chapter/appendix/abstract
    - command definitions
@@ -27,7 +18,6 @@ TÒDO
    - tableofcontents, etc.
  - function list
    - command definitions
- - syntax checking
  - jump to command definition, bib item, reference label
  - automatic insertion of '' and ``
  - pretty printing
@@ -35,6 +25,14 @@ TÒDO
  - settings dialog
  - open corresponding BibTeX files
  - open included/inserted files
+ - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
  - context-sensitive help
  - check out LaTeX editors/frontends like LyX, vim, emacs, gedit for interesting
    features
+ - BibLaTeX support
+ - other tools to possibly use
+   - latexmk (run LaTeX the correct number of times)
+   - LaTeX::Encode, TeX::Encode
+   - preview-latex (used by AucTeX)
+   - chktex (typographic errors)
+   - lacheck (simple one-pass checker)
