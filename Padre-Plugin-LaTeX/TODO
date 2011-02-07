@@ -1,5 +1,5 @@
 TÒDO
- - have some kind of notion of LaTeX projects (one directory ...)
+ - BibTeX syntax highlighting
  - add icon for the plugin manager
  - create DVI, PS, PDF
    - display errors
@@ -9,7 +9,6 @@ TÒDO
  - insertion of special characters (menu)
  - insertion of tables, enumerations, etc. via snippets
  - special treatment of tabular environment: transpose and swap columns or rows
- - icons for the tool bar
  - document outline
    - sections/chapter/appendix/abstract
    - command definitions
@@ -24,7 +23,9 @@ TÒDO
  - Windows support
  - settings dialog
  - open corresponding BibTeX files
+ - tool bar integration
  - open included/inserted files
+ - have some kind of notion of LaTeX projects (one directory ...)
  - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
  - context-sensitive help
  - check out LaTeX editors/frontends like LyX, vim, emacs, gedit for interesting

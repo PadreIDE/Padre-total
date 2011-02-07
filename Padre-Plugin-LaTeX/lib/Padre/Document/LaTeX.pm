@@ -91,7 +91,6 @@ my @latex_environments = qw/
 	beamercolorbox frame
 /;
 
-# TODO instead, determine packages available on the system
 my @latex_packages = qw/
 	a4wide alg algorithm2e algorithmicx algpseudocode amsfonts amsmath amsopn amssymb
 	babel beamer
@@ -111,7 +110,6 @@ my @latex_packages = qw/
 /;
 
 # method copied from the PHP plugin and a adapted a bit
-# TODO document
 # TODO know includegraphics etc. options (see CSS completion support for ideas)
 # TODO units for height, width, vspace, etc.
 # TODO for bibliography, insert, include, includegraphics, usepackage: check for available files ...
@@ -152,7 +150,7 @@ sub autocomplete {
 	return if ord($nextchar) == 27;      # Close on escape
 	$nextchar = '' if ord($nextchar) < 32;
 
-	# abort ASAP
+	# abort as soon as possible
 	return if $prefix !~ /\\(\w+.*)$/;
 	$prefix = $1;	
 

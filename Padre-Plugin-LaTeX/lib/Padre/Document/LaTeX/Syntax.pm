@@ -57,7 +57,6 @@ sub syntax {
 			file    => $filename,
 			type    => 'F',
 			message => $error_msg,
-			# at # TODO
 		);
 
 		push @issues, \%issue;
@@ -74,16 +73,7 @@ __END__
 
 =head1 SYNOPSIS
 
-  # by default, the text of the current document
-  # will be fetched
-  my $task = Padre::Document::LaTeX::Syntax->new();
-  $task->schedule;
-
-  my $task2 = Padre::Document::LaTeX::Syntax->new(
-    text          => Padre::Documents->current->text_get,
-    filename      => Padre::Documents->current->editor->{Document}->filename,
-  );
-  $task2->schedule;
+Syntax checking for LaTeX documents
 
 =head1 DESCRIPTION
 
