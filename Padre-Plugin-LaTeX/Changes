@@ -1,6 +1,6 @@
 Changes for Padre-Plugin-LaTeX
 
-{{$NEXT}}
+0.09   2011.02.07
         - add Dutch translation (ddn123456 - Dirk De Nijs)
 	- add autocompletion support for LaTeX: complete commands, packages,
 	  environments, internal references, and citations (ZENOG)
