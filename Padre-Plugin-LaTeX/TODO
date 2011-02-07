@@ -1,4 +1,5 @@
 TÒDO
+ - have some kind of notion of LaTeX projects (one directory ...)
  - add icon for the plugin manager
  - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm
  - other tools to possibly use
@@ -7,13 +8,12 @@ TÒDO
    - preview-latex (used by AucTeX)
    - chktex (typographic errors)
    - lacheck (simple one-pass checker)
- - auto completion (keywords, commands/symbols, labels, BibTeX entries)
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file
    - show missing references and syntax errors
  - spell checking
- - insertion of special characters (snippets/menu)
+ - insertion of special characters (menu)
  - insertion of tables, enumerations, etc. via snippets
  - special treatment of tabular environment: transpose and swap columns or rows
  - integration of detexify
