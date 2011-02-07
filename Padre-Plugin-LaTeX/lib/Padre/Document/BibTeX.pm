@@ -27,13 +27,13 @@ sub comment_lines_str { return '%' }
 # TODO complete this
 my @bibtex_types = qw/
 	article book incollection inproceedings misc proceedings thesis
-/;
+	/;
 
 # TODO check for completeness
 my @bibtex_fields = qw/
 	abstract address author booktitle crossref editor ee isbn issn journal keywords
 	location month pages publisher title volume year
-/;
+	/;
 
 sub autocomplete {
 	my $self  = shift;
@@ -62,44 +62,44 @@ sub autocomplete {
 
 	# The second parameter may be a reference to the current event or the next
 	# char which will be added to the editor:
-	my $nextchar = '';                   # Use empty instead of undef
+	my $nextchar = ''; # Use empty instead of undef
 	if ( defined($event) and ( ref($event) eq 'Wx::KeyEvent' ) ) {
 		my $key = $event->GetUnicodeKey;
 		$nextchar = chr($key);
 	} elsif ( defined($event) and ( !ref($event) ) ) {
 		$nextchar = $event;
 	}
-	return if ord($nextchar) == 27;      # Close on escape
+	return if ord($nextchar) == 27; # Close on escape
 	$nextchar = '' if ord($nextchar) < 32;
 
 	# TODO fields, crossref, author, year
 
 	# check for BibTeX entry types
-	if ($prefix =~ /@(\w*)$/) {
+	if ( $prefix =~ /@(\w*)$/ ) {
 		my $entry_prefix = $1;
 		return $self->find_completions( $entry_prefix, $nextchar, map { $_ . '{,' } @bibtex_types );
 	}
-	
+
 	# check for BibTeX fields
-	if ($prefix =~ /(\w*)$/) {
+	if ( $prefix =~ /(\w*)$/ ) {
 		my $field_prefix = $1;
 		return $self->find_completions( $field_prefix, $nextchar, @bibtex_fields );
 	}
-	
+
 	return;
 }
 
 sub find_completions {
-	my $self     = shift;
-	my $prefix   = shift;
-	my $nextchar = shift;
+	my $self       = shift;
+	my $prefix     = shift;
+	my $nextchar   = shift;
 	my @candidates = @_;
 
 	my $editor = $self->editor;
 	my $pos    = $editor->GetCurrentPos;
 	my $line   = $editor->LineFromPosition($pos);
 	my $first  = $editor->PositionFromLine($line);
-	
+
 	my $last      = $editor->GetLength();
 	my $pre_text  = $editor->GetTextRange( 0, $first + length($prefix) );
 	my $post_text = $editor->GetTextRange( $first, $last );
@@ -113,7 +113,7 @@ sub find_completions {
 
 	my %seen;
 	my @words;
-	push @words, grep { $_ =~ $regex and !$seen{$_}++} @candidates;
+	push @words, grep { $_ =~ $regex and !$seen{$_}++ } @candidates;
 	push @words, grep { !$seen{$_}++ } reverse( $pre_text =~ /$regex/g );
 	push @words, grep { !$seen{$_}++ } ( $post_text =~ /$regex/g );
 
@@ -139,7 +139,7 @@ sub find_completions {
 		for ( 0 .. $#words ) {
 			$words[$_] =~ s/\Q$suffix\E$//;
 		}
-	} # TODO check this
+	}                                    # TODO check this
 
 	# This is the final result if there is no char which hasn't been
 	# saved to the editor buffer until now
@@ -155,7 +155,7 @@ sub find_completions {
 		push @final_words, $_;
 	}
 
-	return ( length($prefix), @final_words );	
+	return ( length($prefix), @final_words );
 }
 
 

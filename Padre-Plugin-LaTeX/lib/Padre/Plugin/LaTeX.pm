@@ -13,13 +13,11 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.65,
-	'Padre::Document' => 0.65,;
+	'Padre::Plugin' => 0.65, 'Padre::Document' => 0.65,;
 }
 
 sub registered_documents {
-	'application/x-latex'  => 'Padre::Document::LaTeX',
-	'application/x-bibtex' => 'Padre::Document::BibTeX',;
+	'application/x-latex' => 'Padre::Document::LaTeX', 'application/x-bibtex' => 'Padre::Document::BibTeX',;
 }
 
 sub menu_plugins_simple {
@@ -31,8 +29,8 @@ sub menu_plugins_simple {
 		'---'                            => undef,
 		Wx::gettext('Find Symbol/Special Character')
 			=> sub { Padre::Wx::launch_browser('http://detexify.kirelabs.org') },
-		'---'                            => undef,
-		Wx::gettext('About')             => sub { $self->show_about },
+		'---' => undef,
+		Wx::gettext('About') => sub { $self->show_about },
 	];
 }
 
@@ -44,7 +42,7 @@ sub show_about {
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName(Wx::gettext('LaTeX Plug-in'));
+	$about->SetName( Wx::gettext('LaTeX Plug-in') );
 	my $authors     = 'Zeno Gantner, Ahmad M. Zawawi';
 	my $description = Wx::gettext( <<'END' );
 LaTeX support for Padre

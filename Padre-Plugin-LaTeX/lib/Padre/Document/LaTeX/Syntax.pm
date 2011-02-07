@@ -34,16 +34,16 @@ sub syntax {
 	my @issues = ();
 
 	LINE:
-	for (my $i = 0; $i < scalar @lines; $i++) {
+	for ( my $i = 0; $i < scalar @lines; $i++ ) {
 		my $line = $lines[$i];
-		
+
 		next LINE if not $line =~ /.*:(\d+):\s*(.*)/;
 		my $line_no   = $1;
 		my $error_msg = $2;
 
 		warn "line: '$line'\n";
-		
-		while (++$i < scalar @lines && $lines[$i] !~ /^\[\d+\]/) {
+
+		while ( ++$i < scalar @lines && $lines[$i] !~ /^\[\d+\]/ ) {
 			$lines[$i] =~ s/^l\.\d+ / /;
 			$error_msg .= $lines[$i];
 		}
