@@ -1,6 +1,6 @@
 package Padre::Plugin::LaTeX;
 
-# ABSTRACT: LaTeX Support for Padre
+# ABSTRACT: LaTeX support for Padre
 
 use warnings;
 use strict;
@@ -13,7 +13,8 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47, 'Padre::Document' => 0.47,;
+	'Padre::Plugin'   => 0.65,
+	'Padre::Document' => 0.65,;
 }
 
 sub registered_documents {
@@ -24,15 +25,14 @@ sub registered_documents {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		Wx::gettext('About')             => sub { $self->show_about },
 		Wx::gettext('Create/Update PDF') => sub { $self->create_pdf },
 		Wx::gettext('View PDF')          => sub { $self->view_pdf },
 		Wx::gettext('Run BibTeX')        => sub { $self->run_bibtex },
-
-		# 'Another Menu Entry' => sub { $self->about },
-		# 'A Sub-Menu...' => [
-		#     'Sub-Menu Entry' => sub { $self->about },
-		# ],
+		'---'                            => undef,
+		Wx::gettext('Find Symbol/Special Character')
+			=> sub { Padre::Wx::launch_browser('http://detexify.kirelabs.org') },
+		'---'                            => undef,
+		Wx::gettext('About')             => sub { $self->show_about },
 	];
 }
 
@@ -51,7 +51,7 @@ LaTeX support for Padre
 
 For syntax highlighting of BibTeX files install the Kate plugin: Padre::Plugin::Kate
 
-Copyright 2010 %s
+Copyright 2010, 2011 %s
 This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.
 END
 	$about->SetDescription( sprintf( $description, $authors ) );
