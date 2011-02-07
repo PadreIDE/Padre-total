@@ -9,6 +9,7 @@ Changes for Padre-Plugin-LaTeX
 	- add link to Detexify to the menu (ZENOG)
 	- define get_command method for LaTeX documents so that they can be 'run'
 	  from the menu (ZENOG)
+	- fix syntax checking (ZENOG)
 
 0.08   2010.12.06
 	- restore missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
