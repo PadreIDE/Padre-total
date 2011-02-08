@@ -3,32 +3,33 @@ package Padre::Plugin::XML;
 use warnings;
 use strict;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.65,
-	'Padre::Document' => 0.65,
+	'Padre::Plugin' => 0.65, 'Padre::Document' => 0.65,;
 }
 
 sub registered_documents {
-	'text/xml' => 'Padre::Document::XML',
+	'text/xml' => 'Padre::Document::XML',;
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
-	return ('XML' => [
-		Wx::gettext('Tidy XML'), sub { $self->tidy_xml },
-	]);
+	return (
+		'XML' => [
+			Wx::gettext('Tidy XML'), sub { $self->tidy_xml },
+		]
+	);
 }
 
 sub tidy_xml {
-	my ( $self ) = @_;
-	
+	my ($self) = @_;
+
 	my $main = $self->main;
-	
+
 	my $src = $main->current->text;
 	my $doc = $main->current->document;
 
@@ -37,10 +38,10 @@ sub tidy_xml {
 		return;
 	}
 
-	my $code = ( $src ) ? $src : $doc->text_get;
-	
+	my $code = ($src) ? $src : $doc->text_get;
+
 	return unless ( defined $code and length($code) );
-	
+
 	require XML::Tidy;
 
 	my $tidy_obj = '';
@@ -48,20 +49,19 @@ sub tidy_xml {
 	eval {
 		$tidy_obj = XML::Tidy->new( xml => $code );
 		$tidy_obj->tidy();
-	
+
 		$string = $tidy_obj->toString();
 	};
 
-	if ( ! $@ ) {
-		if ( $src ) {
+	if ( !$@ ) {
+		if ($src) {
 			$string =~ s/\A<\?xml.+?\?>\r?\n?//o;
 			my $editor = $main->current->editor;
-			$editor->ReplaceSelection( $string );
+			$editor->ReplaceSelection($string);
 		} else {
-			$doc->text_set( $string );
+			$doc->text_set($string);
 		}
-	}
-	else {
+	} else {
 		$main->message( Wx::gettext("Tidying failed due to error(s):") . "\n\n" . $@ );
 	}
 
@@ -74,7 +74,7 @@ sub editor_enable {
 	my $document = shift;
 
 	if ( $document->isa('Padre::Document::XML') ) {
-		$editor->SetProperty('fold.html', '1');
+		$editor->SetProperty( 'fold.html', '1' );
 	}
 
 	return 1;

@@ -1,12 +1,23 @@
 package Padre::Document::XML::Syntax;
+
+use 5.008;
 use strict;
 use warnings;
-
-our $VERSION = '0.10';
-our @ISA     = 'Padre::Task::Syntax';
-
 use Padre::Wx;
 use XML::LibXML;
+
+our $VERSION = '0.11';
+our @ISA     = 'Padre::Task::Syntax';
+
+
+sub new {
+	my $class = shift;
+
+	my %args = @_;
+	my $self = $class->SUPER::new(%args);
+
+	return $self;
+}
 
 
 sub _valid {
@@ -21,30 +32,25 @@ sub _valid {
 	$validator->expand_entities(1);
 
 	my $doc = '';
-	eval {
-		$doc = $validator->parse_string( $text , $base_uri );
-	};
+	eval { $doc = $validator->parse_string( $text, $base_uri ); };
 
 	if ($@) {
+
 		# parser error
 		return _parse_msg( $@, $base_uri );
-	}
-	else {
+	} else {
 		if ( $doc->internalSubset() ) {
 			$validator->validation(1);
-			eval {
-				$doc = $validator->parse_string( $text, $base_uri );
-			};
+			eval { $doc = $validator->parse_string( $text, $base_uri ); };
 			if ($@) {
+
 				# validation error
 				return _parse_msg( $@, $base_uri );
-			}
-			else {
+			} else {
 				return [];
 			}
-		}
-		else {
-			 return [];
+		} else {
+			return [];
 		}
 	}
 
@@ -58,33 +64,32 @@ sub _parse_msg {
 
 	my @messages = split( /\n:/, $error );
 
-	my $issues = [];
+	my @issues = ();
 
 	my $m = shift @messages;
 
 	if ( $m =~ m/^:(\d+):\s+(.+)/o ) {
-		push @{$issues}, { msg => $2, line => $1, severity => Padre::Wx::MarkError, desc => '' };
-	}
-	else {
-		push @{$issues}, { msg => $m, line => $error, severity => Padre::Wx::MarkError, desc => '' };
+		push @issues, { message => $2, line => $1, file => '', type => 'F' };
+	} else {
+		push @issues, { message => $m, line => $error, file => '', type => 'F' };
 	}
 
 	foreach my $m (@messages) {
 		$m =~ m/^(\d+):\s+(.+)/o;
-		push @{$issues}, { msg => $2, line => $1, severity => Padre::Wx::MarkError, desc => '' };
+		push @issues, { message => $2, line => $1, file => '', type => 'F' };
 	}
 
-	return $issues;
+	return \@issues;
 }
 
 sub syntax {
 	my $self = shift;
 	my $text = shift;
-	
+
 	my $base_uri = $self->{filename};
 	warn 'No filename' if not $base_uri;
 
-	return _valid($base_uri, $text);
+	return _valid( $base_uri, $text );
 }
 
 1;
