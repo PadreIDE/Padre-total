@@ -36,7 +36,6 @@ sub get_command {
 	$filename = $self->get_title;
 
 	my $command = "pdflatex -interaction nonstopmode -file-line-error $filename";
-	warn "$command\n";
 	return $command;
 }
 
