@@ -11,7 +11,6 @@ sub new {
 	my $class = shift;
 
 	my %args = @_;
-
 	my $self = $class->SUPER::new(%args);
 
 	return $self;
@@ -28,8 +27,6 @@ sub syntax {
 	my $pdflatex_command = "cd $project_dir; pdflatex -file-line-error -draftmode -interaction nonstopmode $filename";
 	my $output           = `$pdflatex_command`;
 
-	warn "Complete output: >>>$output<<<\n";
-
 	my @lines = split /\n/, $output;
 	my @issues = ();
 
@@ -41,16 +38,12 @@ sub syntax {
 		my $line_no   = $1;
 		my $error_msg = $2;
 
-		warn "line: '$line'\n";
-
 		while ( ++$i < scalar @lines && $lines[$i] !~ /^\[\d+\]/ ) {
 			$lines[$i] =~ s/^l\.\d+ / /;
 			$error_msg .= $lines[$i];
 		}
 
 		$error_msg =~ s/\s+/ /g;
-
-		warn "$line_no: '$error_msg'\n";
 
 		my %issue = (
 			line    => $line_no,

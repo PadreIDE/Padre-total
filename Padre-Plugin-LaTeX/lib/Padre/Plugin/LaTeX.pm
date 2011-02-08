@@ -103,7 +103,7 @@ sub run_bibtex {
 
 	# TODO autosave (or ask)
 
-	chdir $tex_dir;
+	chdir $tex_dir; # TODO does this have side effects?
 	my $output_text = `$bibtex $aux_file`;
 	$self->_output($output_text);
 
@@ -121,19 +121,34 @@ sub view_pdf {
 		return;
 	}
 
-	# TODO find PDF viewer from system settings
-	my $pdf_viewer = 'evince';
-
 	my $pdf_file = $doc->filename;
 	$pdf_file =~ s/\.tex$/.pdf/;
 
 	if ( !-f $pdf_file ) {
+		main->error( sprintf( Wx::gettext("Could not find file '%s'."), $pdf_file ) );
+	}
 
+	$self->launch_pdf_viewer($pdf_file);
+
+	return;
+}
+
+
+sub launch_pdf_viewer {
+	my $self     = shift;
+	my $pdf_file = shift;
+
+	# TODO find PDF viewer from system settings like Debian alternatives
+	# TODO get PDF viewer from configuration
+
+	require File::Which;
+	my @pdf_viewers = qw/evince okular xpdf gv acroread/;
+	my $pdf_viewer  = '';
+	foreach my $program (@pdf_viewers) {
+		last if defined( $pdf_viewer = File::Which::which($program) );
 	}
 
 	system "$pdf_viewer $pdf_file &";
-
-	# TODO check for errors
 
 	return;
 }
@@ -159,6 +174,8 @@ sub _output {
 	$main->show_output(1);
 	$main->output->clear;
 	$main->output->AppendText($text);
+
+	return;
 }
 
 
@@ -172,7 +189,7 @@ Environment.
 
 Syntax highlighting for LaTeX is supported by Padre out of the box.
 This plug-in adds some more features to deal with LaTeX files.
-If you also want syntax highlighting for BibTeX files, try the Kate
+If you also want syntax highlighting for BibTeX files, install the Kate
 plugin.
 
 =cut
