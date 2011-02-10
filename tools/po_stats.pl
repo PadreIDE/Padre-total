@@ -39,6 +39,7 @@ $LANG = 'C';
 
 my $tempdir = tempdir( CLEANUP => 1 );
 my $cwd       = cwd;
+my $errors = '';
 
 usage("--all and --project are mutually exclusive") 
 	if $all and $project_dir;
@@ -86,10 +87,10 @@ sub collect_report {
 	if (not $share or not -e $share) {
 		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
 			my $plugin_name = $1;
-			warn "Plugin '$plugin_name' is not internationalized.\n";
+			_warn("Plugin '$plugin_name' is not internationalized.\n");
 		}
 		else {
-			warn("Could not find a 'share' directory in '$project_dir'");
+			_warn("Could not find a 'share' directory in '$project_dir'");
 		}
 		return;
 	}
@@ -99,10 +100,10 @@ sub collect_report {
 	if (not -d $localedir) {
 		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
 			my $plugin_name = $1;
-			warn "Plugin '$plugin_name' is not internationalized.\n";
+			_warn("Plugin '$plugin_name' is not internationalized.\n");
 		}
 		else {		
-			warn("Can't find locale directory '$localedir'.\n");
+			_warn("Can't find locale directory '$localedir'.\n");
 		}
 		return;
 	}
@@ -167,7 +168,7 @@ END_CSS
 	$html .= <<"END_HTML";
 <h1>Padre translation status report</h1>
 <p>The numbers showing the number of errors. An empty cell means that translation does not exist at all</p>
-<p>Generated on: $time</p>
+<p>Generated on: $time (it is generated using a cron-job)</p>
 	
 <table>
 <tr><td class=red>more than 40% missing</td></tr>
@@ -234,6 +235,13 @@ END_HTML
 	}
 	$html .= "</table>";
 	
+	$html .= "<p>Errors</p>\n";
+	if ($errors) {
+		$html .= "<pre>\n$errors\n</pre>\n";
+	} else {
+		$html .= "No errors were reported\n";
+	}
+
 
 
 
@@ -299,6 +307,13 @@ sub generate_text_report {
 	}
 	return $report;
 }
+
+sub _warn {
+	my $w = shift;
+	$errors .= $w;
+	warn($w);
+}
+
 
 
 
