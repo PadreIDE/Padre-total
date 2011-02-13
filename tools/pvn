@@ -1,0 +1,101 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# WARNING: This is an experimental script!!!!
+
+#use Getopt::Long qw(GetOptions);
+my $cmd = shift;
+usage() if not $cmd or $cmd =~ /^(-h|--help|help)$/;
+
+my $URL = 'http://svn.perlide.org/padre';
+my $SVN = '/usr/bin/svn';
+if (not -e $SVN) {
+	die "Could not find svn in '$SVN'";
+}
+
+if ($cmd eq 'ls') {
+	my @branches = qx{$SVN ls $URL/branches/};
+	print map { chomp $_; chop $_; "$_\n"} @branches;
+	exit;
+}
+
+my $branch = shift;
+usage() if not $branch;
+usage('invalid branch') if $branch !~ /^\w[\w-]+$/;
+
+if ($cmd eq 'new') {
+	$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/Padre-$branch -m'branch for #1102'";
+	# TODO: check if we the same branch already exists
+	print "$cmd\n";
+
+} elsif ($cmd eq 'switch') {
+	if ($branch eq 'trunk') {
+		$cmd = "$SVN switch $URL/trunk .";
+	} else {
+		$cmd = "$SVN switch $URL/branches/$branch .";
+	}
+	system $cmd;
+} elsif ($cmd eq 'src') {
+	print get_src(), "\n";
+} elsif ($cmd eq 'log') {
+	$cmd = "$SVN log $URL/branches/$branch --stop-on-copy";
+	#print "$cmd\n";
+	system $cmd;
+} elsif ($cmd eq 'diff') {
+	my $rev = get_src();
+	$cmd = "$SVN diff $URL/branches/$branch -r$rev:HEAD";
+	system $cmd;
+} elsif ($cmd eq 'merge') {
+	my $rev = get_src();
+	#print "$rev\n";
+	# # from the listing get the earlies revision number, where the branching happaned
+	$cmd = "$SVN merge $URL/branches/$branch -r$rev:HEAD .";
+	system $cmd;
+	print "branch $branch merged\n";
+	print "Check it and then commit it using:   svn ci -m'merge $branch'\n";
+} elsif ($cmd eq 'rm') {
+	my $msg = shift || "removing branch: $branch";
+	$cmd = "$SVN rm $URL/branches/$branch -m '$msg'";
+	system $cmd;
+} else {
+	usage("Invalid command '$cmd'");
+}
+
+
+sub get_src {
+	# find out the point of branching
+	$cmd = "$SVN log $URL/branches/$branch --stop-on-copy";
+	#print "$cmd\n";
+	my @result = qx{$cmd};
+	my $rev;
+	foreach my $i (0..@result-2) {
+		if ($result[$i] =~ /^---------/ and $result[$i+1] =~ /^r(\d+)\s+\|/) {
+			$rev = $1;
+		}
+	}
+	return $rev;
+}
+
+sub usage {
+	my $msg = shift;
+	print STDERR "\nERROR: $msg\n\n" if $msg;
+
+	die <<"END_USAGE";
+Usage: $0 
+
+	new  branch_name 'commit message'
+               branch_name - no spaces it can be the number of the ticket
+               commit message - any text (optional)
+        src branch_name      show the revision where the branch was created
+        diff branch_name     show the diff
+        log branch_name      show the log
+        #merge branch_name    merge to current working directory
+        # switch branch_name
+        # switch trunk  
+
+        ls         list all the branches
+        -h or --help or help
+END_USAGE
+
+}
