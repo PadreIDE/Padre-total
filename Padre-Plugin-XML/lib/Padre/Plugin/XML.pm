@@ -9,7 +9,7 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.65, 'Padre::Document' => 0.65,;
+	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81;
 }
 
 sub registered_documents {
@@ -93,9 +93,9 @@ use L<XML::Tidy> to tidy XML
 
 =head1 AUTHOR
 
-Fayland Lam, C<< <fayland at gmail.com> >>
+Fayland Lam C<< <fayland at gmail.com> >>
 
-Heiko Jansen, C<< <heiko_jansen@web.de> >>
+Heiko Jansen C<< <heiko_jansen@web.de> >>
 
 Alexandr Ciornii
 

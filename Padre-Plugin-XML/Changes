@@ -5,6 +5,7 @@ Revision history for Padre-Plugin-XML
         Padre::Plugin::XML::Document => Padre::Document::XML (ZENOG)
         Padre::Task::SyntaxChecker::XML => Padre::Document::XML::Syntax (ZENOG)
         fix syntax checking (ZENOG)
+	Padre 0.81 compatibility (ZENOG)
 
 0.10	2010.08.25
 	fix ticket #943: crash on serialization of Task::SyntaxChecker::XML
