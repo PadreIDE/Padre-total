@@ -2,6 +2,10 @@ Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
 
+0.17  2011.02.14 
+    - Bumped the version number to reflect the adaptation to the Plugin API so the Plugin Manager shows the version of the plugin (CLAUDIO)
+    - Removed bug broke the plugin (related to perltidyc). 	
+
 0.16   2010.12.06
     - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
