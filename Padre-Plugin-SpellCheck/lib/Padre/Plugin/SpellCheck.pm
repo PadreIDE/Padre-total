@@ -5,9 +5,7 @@ package Padre::Plugin::SpellCheck;
 use warnings;
 use strict;
 
-use File::Basename qw{ fileparse };
-use File::Spec::Functions qw{ catdir catfile };
-use Module::Util qw{ find_installed };
+use File::Spec::Functions qw{ catfile };
 
 use base 'Padre::Plugin';
 use Padre::Current;
@@ -26,8 +24,6 @@ sub plugin_icon {
 	my $self = shift;
 
 	# find resource path
-	my $pkgpath = find_installed(__PACKAGE__);
-	my ( undef, $dirname, undef ) = fileparse($pkgpath);
 	my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'spellcheck.png' );
 
 	# create and return icon
@@ -70,7 +66,7 @@ sub spell_check {
 	}
 
 	my $mime_type = $main->current->document->mimetype;
-	my $engine = Padre::Plugin::SpellCheck::Engine->new($self, $mime_type);
+	my $engine = Padre::Plugin::SpellCheck::Engine->new( $self, $mime_type );
 
 	# fetch text to check
 	my $selection = Padre::Current->text;

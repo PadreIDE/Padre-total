@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-SpellCheck
 
 {{$NEXT}}
+	- remove dead code in plugin_icon method (ZENOG)
 
 1.21   2010.12.06
         - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
