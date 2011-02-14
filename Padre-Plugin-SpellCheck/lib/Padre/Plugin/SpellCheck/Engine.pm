@@ -43,8 +43,8 @@ sub new {
 
 	#$speller->print_config;  # to STDOUT
 
-	if (exists $MIMETYPE_MODE{$mimetype}) {
-		if (not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype})) {
+	if ( exists $MIMETYPE_MODE{$mimetype} ) {
+		if ( not defined $speller->set_option( 'mode', $MIMETYPE_MODE{$mimetype} ) ) {
 			my $err = $speller->errstr;
 			warn "Could not set aspell mode '$MIMETYPE_MODE{$mimetype}': $err\n";
 		}
