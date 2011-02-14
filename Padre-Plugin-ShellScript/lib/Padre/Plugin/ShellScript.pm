@@ -6,6 +6,8 @@ use strict;
 use warnings;
 use 5.008;
 
+use File::Spec::Functions qw{ catfile };
+
 use base 'Padre::Plugin';
 use Class::Autouse 'Padre::Document::ShellScript';
 
@@ -21,6 +23,16 @@ sub padre_interfaces {
 
 sub registered_documents {
 	'application/x-shellscript' => 'Padre::Document::ShellScript';
+}
+
+sub plugin_icon {
+	my $self = shift;
+
+	# find resource path
+	my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'gnome-mime-text-x-sh.png' );
+
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 # The command structure to show in the Plugins menu

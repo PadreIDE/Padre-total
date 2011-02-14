@@ -7,7 +7,7 @@ use strict;
 use warnings;
 use Padre::Document ();
 
-our @ISA     = 'Padre::Document';
+our @ISA = 'Padre::Document';
 
 sub get_command {
 	my $self = shift;

@@ -2,6 +2,7 @@
         compatibility to newer versions of Padre (ZENOG)
 	add $VERSION variable (ZENOG)
 	add comment support (ZENOG)
+	add icon (ZENOG)
 
 0.01    2009.02.01
         First release
