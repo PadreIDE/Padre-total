@@ -21,8 +21,10 @@ use Params::Util   ();
 use Padre::Current ();
 use Padre::Wx      ();
 use Padre::Plugin  ();
+use base 'Padre::Plugin';
 
-our @ISA = 'Padre::Plugin';
+our $VERSION=0.17;
+
 
 # This constant is used when storing
 # and restoring the cursor position.
@@ -85,15 +87,18 @@ sub _tidy {
 	$main->show_output(1);
 	my $output = $main->output;
 
-	if (not $perltidyrc) {
-		$perltidyrc = $document->project->config->config_perltidy;
-	}
-	if ($perltidyrc) {
-		$tidyargs{perltidyrc} = $perltidyrc;
-		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
-	} else {
-		$output->AppendText("Perl::Tidy running with default or user configuration\n");
-	}
+#	CLAUDIO: This code breaks the plugin, temporary disabled. 
+#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
+#	Talk to El_Che for more info.
+#	if (not $perltidyrc) {
+#		$perltidyrc = $document->project->config->config_perltidy;
+#	}
+#	if ($perltidyrc) {
+#		$tidyargs{perltidyrc} = $perltidyrc;
+#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
+#	} else {
+#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
+#	}
 
 	# TODO: suppress the senseless warning from PerlTidy
 	require Perl::Tidy;
@@ -260,6 +265,8 @@ sub export_selection {
 }
 
 sub export_document {
+
+
 	my $main = shift;
 	my $text = $main->current->document->text_get;
 	_export( $main, $text );
