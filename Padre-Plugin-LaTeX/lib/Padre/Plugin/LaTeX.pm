@@ -13,7 +13,7 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.65, 'Padre::Document' => 0.65,;
+	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81;
 }
 
 sub registered_documents {
