@@ -1,15 +1,16 @@
 package Padre::Document::ShellScript;
 
+# ABSTRACT: Shell script document support for Padre
+
 use 5.008;
 use strict;
 use warnings;
 use Padre::Document ();
 
-our $VERSION = '0.02';
 our @ISA     = 'Padre::Document';
 
 sub get_command {
-	my $self  = shift;
+	my $self = shift;
 
 	my $arg_ref = shift || {};
 
@@ -33,6 +34,8 @@ sub comment_lines_str {
 }
 
 1;
+
+
 
 # Copyright 2008-2010 The Padre development team as listed in Padre.pm.
 # LICENSE

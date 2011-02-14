@@ -1,10 +1,10 @@
 package Padre::Plugin::ShellScript;
 
+# ABSTRACT: Shell script support for Padre
+
 use strict;
 use warnings;
 use 5.008;
-
-our $VERSION = '0.02';
 
 use base 'Padre::Plugin';
 use Class::Autouse 'Padre::Document::ShellScript';
@@ -16,17 +16,17 @@ sub plugin_name {
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43, 'Padre::Document' => 0.43, 'Padre::Wx::Main' => 0.43,;
+	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81, 'Padre::Wx::Main' => 0.81;
 }
 
 sub registered_documents {
-	'application/x-shellscript' => 'Padre::Document::ShellScript',;
+	'application/x-shellscript' => 'Padre::Document::ShellScript';
 }
 
 # The command structure to show in the Plugins menu
 sub menu_plugins_simple {
 	my $self = shift;
-	'Shell Script' => [ Information => sub { $self->info() }, ];
+	'Shell Script' => [ Information => sub { $self->info() } ];
 }
 
 sub info {
