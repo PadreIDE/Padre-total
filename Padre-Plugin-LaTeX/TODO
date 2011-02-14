@@ -1,6 +1,5 @@
 TODO
- - BibTeX syntax highlighting
- - add icon for the plugin manager
+ - BibTeX syntax checking
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file
@@ -23,7 +22,8 @@ TODO
  - Windows support
  - settings dialog
  - open corresponding BibTeX files
- - tool bar integration
+ - tool bar integration (or own toolbar)
+   could use some icons from here: http://famfamfam.com/lab/icons/silk/
  - open included/inserted files
  - have some kind of notion of LaTeX projects (one directory ...)
  - use LaTeX::Table for a table generation wizard: http://search.cpan.org/dist/LaTeX-Table/lib/LaTeX/Table.pm

@@ -5,6 +5,8 @@ package Padre::Plugin::LaTeX;
 use warnings;
 use strict;
 
+use File::Spec::Functions qw{ catfile };
+
 use base 'Padre::Plugin';
 use Padre::Wx ();
 
@@ -18,6 +20,16 @@ sub padre_interfaces {
 
 sub registered_documents {
 	'application/x-latex' => 'Padre::Document::LaTeX', 'application/x-bibtex' => 'Padre::Document::BibTeX',;
+}
+
+sub plugin_icon {
+	my $self = shift;
+
+	# find resource path
+	my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'text-x-tex.png' );
+
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 sub menu_plugins_simple {
