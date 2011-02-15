@@ -22,7 +22,7 @@ if ($cmd eq 'ls') {
 
 my $branch = shift;
 usage() if not $branch;
-#usage('invalid branch') if $branch !~ /^\w[\w-]+$/;
+usage('invalid branch') if $branch !~ /^\w[\w\-\.]+$/;  # allow release-0.82
 
 if ($cmd eq 'new') {
 	my $msg = shift;
