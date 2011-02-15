@@ -1,78 +1,34 @@
 package Padre::Plugin::SVN;
 
 use 5.008;
-use warnings;
 use strict;
-
+use warnings;
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();
 use Padre::Util   ();
-
-
-
-use SVN::Class qw(svn_file);
+use SVN::Class    ();
 
 our $VERSION = '0.05';
 our @ISA     = 'Padre::Plugin';
 
-=head1 NAME
-
-Padre::Plugin::SVN - Simple SVN interface for Padre
-
-=head1 SYNOPSIS
-
-Requires SVN client tools to be installed.
-
-cpan install Padre::Plugin::SVN
-
-Acces it via Plugin/SVN
-
-=head1 REQUIREMENTS
-
-The plugin requires that the SVN client tools be installed and setup, this includes any cached authentication.
-
-For most of the unices this is a matter of using the package manager to install the svn client tools.
-
-For windows try: http://subversion.tigris.org/getting.html#windows.
 
 
-=head2 Configuring the SVN client for cached authentication.
 
-Because this module uses the installed SVN client, actions that require authentication from the server will fail and leave Padre looking as though it has hung.
-
-The way to address this is to run the svn client from the command line when asked for the login and password details, enter as required.
-
-Once done you should now have your authentication details cached.
-
-More details can be found here: http://svnbook.red-bean.com/nightly/en/svn.serverconfig.netmodel.html#svn.serverconfig.netmodel.credcache
-
-=head1 AUTHOR
-
-Gabor Szabo, C<< <szabgab at gmail.com> >>
-
-Additional work:
-
-Peter Lavender, C<< <peter.lavender at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to L<http://padre.perlide.org/>
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008, 2009, 2010 The Padre development team as listed in Padre.pm.
-all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-
-=cut
 
 #####################################################################
 # Padre::Plugin Methods
+
+sub plugin_name {
+	'SVN';
+}
+
+sub padre_interfaces {
+	'Padre::Plugin' => 0.81,
+	'Padre::Config' => 0.81,
+	'Padre::Wx'     => 0.81,
+	'Padre::Util'   => 0.81,
+}
 
 sub plugin_enable {
 	my $self = shift;
@@ -85,14 +41,6 @@ sub plugin_disable {
 	#require Class::Unload;
 	#Class::Unload->unload('Padre::Plugin::SVN::Wx::SVNDialog');
 	#Class::Unload->unload('Padre::Plugin::SVN');
-}
-
-sub padre_interfaces {
-	'Padre::Plugin' => 0.43;
-}
-
-sub plugin_name {
-	'SVN';
 }
 
 sub menu_plugins_simple {
@@ -227,7 +175,7 @@ sub svn_revert {
 		#
 		my $filename = _get_current_filename();
 		if ($filename) {
-			my $file = svn_file($filename);
+			my $file = SVN::Class::svn_file($filename);
 			$file->revert();
 		}
 	}
@@ -240,7 +188,7 @@ sub svn_blame {
 	if ($filename) {
 		my $main = Padre::Current->main;
 		$self->{_busyCursor} = Wx::BusyCursor->new();
-		my $file = svn_file($filename);
+		my $file = SVN::Class::svn_file($filename);
 		$file->blame();
 		
 		#my $blame = join( "\n", @{ $file->stdout } );
@@ -260,7 +208,7 @@ sub svn_status {
 	my ( $self, $path ) = @_;
 	my $main = Padre->ide->wx->main;
 
-	my $file = svn_file($path);
+	my $file = SVN::Class::svn_file($path);
 
 	my $info = "";
 
@@ -319,7 +267,7 @@ sub svn_log {
 	my ( $self, $path ) = @_;
 	my $main = Padre->ide->wx->main;
 
-	my $file = svn_file($path);
+	my $file = SVN::Class::svn_file($path);
 	$self->{_busyCursor} = Wx::BusyCursor->new();
 	my $out = join( "\n", @{ $file->log() } );
 	$self->{_busyCursor} = undef;
@@ -360,7 +308,7 @@ sub svn_diff {
 	my ( $self, $path ) = @_;
 	my $main = Padre->ide->wx->main;
 
-	my $file = svn_file($path);
+	my $file = SVN::Class::svn_file($path);
 
 	#print $file->stderr;
 	#print $file->stdout;
@@ -384,7 +332,7 @@ sub svn_diff_in_padre {
 
 
 	if ($filename) {
-		my $file     = svn_file($filename);
+		my $file     = SVN::Class::svn_file($filename);
 		my $diff     = $file->diff;
 		my $diff_str = join( "\n", @{ $file->stdout } );
 		$main->new_document_from_string( $diff_str, 'text/x-patch' );
@@ -417,7 +365,7 @@ sub svn_commit {
 	my ( $self, $path ) = @_;
 
 	my $main = Padre->ide->wx->main;
-	my $file = svn_file($path);
+	my $file = SVN::Class::svn_file($path);
 
 # 	== 0 seems to produce false errors here
 #	if (( ! defined($file)) or ($file == 0)){
@@ -519,7 +467,7 @@ sub svn_add {
 	
 	my $main = Padre->ide->wx->main;
 
-	my $file = svn_file($path);
+	my $file = SVN::Class::svn_file($path);
 	$file->add;
 	if ($file->errstr) {
 		$main->error($file->errstr);
@@ -541,3 +489,56 @@ sub svn_add_file {
 
 1;
 
+=pod
+
+=head1 NAME
+
+Padre::Plugin::SVN - Simple SVN interface for Padre
+
+=head1 SYNOPSIS
+
+Requires SVN client tools to be installed.
+
+cpan install Padre::Plugin::SVN
+
+Acces it via Plugin/SVN
+
+=head1 REQUIREMENTS
+
+The plugin requires that the SVN client tools be installed and setup, this includes any cached authentication.
+
+For most of the unices this is a matter of using the package manager to install the svn client tools.
+
+For windows try: http://subversion.tigris.org/getting.html#windows.
+
+=head2 Configuring the SVN client for cached authentication.
+
+Because this module uses the installed SVN client, actions that require authentication from the server will fail and leave Padre looking as though it has hung.
+
+The way to address this is to run the svn client from the command line when asked for the login and password details, enter as required.
+
+Once done you should now have your authentication details cached.
+
+More details can be found here: http://svnbook.red-bean.com/nightly/en/svn.serverconfig.netmodel.html#svn.serverconfig.netmodel.credcache
+
+=head1 AUTHOR
+
+Gabor Szabo, C<< <szabgab at gmail.com> >>
+
+Additional work:
+
+Peter Lavender, C<< <peter.lavender at gmail.com> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to L<http://padre.perlide.org/>
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008, 2009, 2010 The Padre development team as listed in Padre.pm.
+all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
