@@ -22,13 +22,17 @@ if ($cmd eq 'ls') {
 
 my $branch = shift;
 usage() if not $branch;
-usage('invalid branch') if $branch !~ /^\w[\w-]+$/;
+#usage('invalid branch') if $branch !~ /^\w[\w-]+$/;
 
 if ($cmd eq 'new') {
-	$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/Padre-$branch -m'branch for #1102'";
+	my $msg = shift;
+	#$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/Padre-$branch -m'branch for #1102'";
+	$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/$branch -m '$msg'";
 	# TODO: check if we the same branch already exists
 	print "$cmd\n";
 
+	system $cmd;
+	
 } elsif ($cmd eq 'switch') {
 	if ($branch eq 'trunk') {
 		$cmd = "$SVN switch $URL/trunk .";
