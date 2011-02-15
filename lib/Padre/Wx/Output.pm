@@ -17,7 +17,7 @@ use Padre::Wx             ();
 use Padre::Logger;
 use Wx::RichText; # Is this necesary?
 
-our $VERSION = '0.83';
+our $VERSION = '0.82';
 our @ISA     = qw{
 	Padre::Wx::Role::View
 	Padre::Wx::Role::Main

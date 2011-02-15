@@ -9,7 +9,7 @@ use Padre::Search ();
 use Padre::Task   ();
 use Padre::Logger;
 
-our $VERSION = '0.83';
+our $VERSION = '0.82';
 our @ISA     = 'Padre::Task';
 
 
