@@ -1,10 +1,8 @@
 package Padre::Plugin::SVN::Wx::SVNDialog;
 
-
 use 5.008;
-use warnings;
 use strict;
-
+use warnings;
 use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::Wx::Icon   ();
@@ -28,26 +26,20 @@ sub new {
 		[ 700, 600 ], # size - [wide,high]
 	);
 	$self->SetIcon(Padre::Wx::Icon::PADRE);
-	
+
 	if( lc($type) eq 'blame' ) {
 		$self->build_blame_dialog($filePath, $log);
-	}
-	else {
+	} else {
 		$self->build_dialog( $filePath, $log, $getData );
 	}
 
 	return $self;
-
 }
-
 
 sub build_dialog {
 	my ( $self, $file, $log, $getData ) = @_;
-	
-	
-	
-	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
+	my $vbox      = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	my $stTxtFile = Wx::StaticText->new(
 		$self,
 		-1,
@@ -59,9 +51,6 @@ sub build_dialog {
 	);
 
 	$vbox->Add( $stTxtFile, 0, Wx::wxEXPAND );
-
-	#print "file: $file\n";
-	#print "Log: $log\n";
 
 	my $txtCtrl;
 	if ($log) {
@@ -75,8 +64,6 @@ sub build_dialog {
 		);
 	}
 	if ($getData) {
-
-		#print "getting data\n";
 		$txtCtrl = Wx::TextCtrl->new(
 			$self,
 			-1,
@@ -89,8 +76,6 @@ sub build_dialog {
 		$txtCtrl->SetFocus;
 		$self->{txtctrl} = $txtCtrl;
 	}
-
-
 
 	$vbox->Add( $txtCtrl, 1, Wx::wxEXPAND );
 
@@ -107,7 +92,6 @@ sub build_dialog {
 	# in GTK.
 	# not sure what this is going to look like in other window managers.
 	if ($getData) {
-
 		$self->{cancelled} = 0;
 		my $btnCancel = Wx::Button->new( $pnlButtons, Wx::wxID_CANCEL, "Cancel", [ -1, -1 ], [ -1, 40 ] );
 		Wx::Event::EVT_BUTTON( $self, $btnCancel, \&cancel_clicked );
@@ -120,24 +104,17 @@ sub build_dialog {
 
 	$btnBox->Add( $btnOK, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
 
-
 	$pnlButtons->SetSizer($btnBox);
 
-	#$btnBox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT | Wx::wxEXPAND);
 	$vbox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
 
-
 	$self->SetSizer($vbox);
-
 }
 
 
 sub build_blame_dialog {
-	
 	my ( $self, $file, $log ) = @_;
-	
-	#$self->{_busyCursor} = Wx::BusyCursor->new();
-	
+
 	my $vbox = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
 	require Padre::Plugin::SVN::Wx::BlameTree;
@@ -145,100 +122,76 @@ sub build_blame_dialog {
 	$self->{blame}->populate($log);
 	$vbox->Add( $self->{blame}, 0, Wx::wxEXPAND );
 
-	#print "file: $file\n";
-	#print "Log: $log\n";
-
 	my $btnBox     = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	my $pnlButtons = Wx::Panel->new(
 		$self,
 		-1, # id
 		[ -1, -1 ], # position
 		[ -1, -1 ], # size
-		0           # border style
+		0,          # border style
 	);
 
-	# button height is set to 40 simply to get them to look the same
+	# Button height is set to 40 simply to get them to look the same
 	# in GTK.
-	# not sure what this is going to look like in other window managers.
-	
+	# Not sure what this is going to look like in other window managers.
+
 	my $btnExpandAll = Wx::Button->new( $pnlButtons, -1, "Expand", [ -1, -1 ], [ -1, 40 ] );
 	Wx::Event::EVT_BUTTON( $self, $btnExpandAll, \&expand_clicked );
 	$btnBox->Add( $btnExpandAll, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_LEFT );
-	
+
 	my $btnCollapseAll = Wx::Button->new( $pnlButtons, -1, "Collapse", [ -1, -1 ], [ -1, 40 ] );
 	Wx::Event::EVT_BUTTON( $self, $btnCollapseAll, \&collapse_clicked );
 	$btnBox->Add( $btnCollapseAll, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_LEFT );
-	
-
 
 	my $btnOK = Wx::Button->new( $pnlButtons, Wx::wxID_OK, "OK", [ -1, -1 ], [ -1, 40 ] );
 	Wx::Event::EVT_BUTTON( $self, $btnOK, \&ok_clicked );
 
 	$btnBox->Add( $btnOK, 1, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
 
-
 	$pnlButtons->SetSizer($btnBox);
 
-	#$btnBox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT | Wx::wxEXPAND);
 	$vbox->Add( $pnlButtons, 0, Wx::wxALIGN_BOTTOM | Wx::wxALIGN_RIGHT );
-
-
 	$self->SetSizer($vbox);
-	#$self->{_busyCursor} = undef;
 }
 
 sub collapse_clicked {
-	my( $self ) = @_;
-	$self->{_busyCursor} = Wx::BusyCursor->new();
-	$self->{blame}->CollapseAll();
+	my $self = shift;
+	$self->{_busyCursor} = Wx::BusyCursor->new;
+	$self->{blame}->CollapseAll;
 	$self->{_busyCursor} = undef;
 }
 sub expand_clicked {
-	my ($self) = @_;
-	$self->{_busyCursor} = Wx::BusyCursor->new();
-	$self->{blame}->ExpandAll();
+	my $self = shift;
+	$self->{_busyCursor} = Wx::BusyCursor->new;
+	$self->{blame}->ExpandAll;
 	$self->{_busyCursor} = undef;
 }
 
 sub ok_clicked {
-	my ($self) = @_;
+	my $self = shift;
 
-	#print "OK Clicked\n";
 	my $txt;
 	if ( $self->{txtctrl} ) {
-
-		#print "have to return data: " . $self->{txtctrl}->GetValue;
 		$txt = $self->{txtctrl}->GetValue;
 	}
-	$self->Hide();
+	$self->Hide;
 	$self->Destroy;
 	return $txt;
 }
 
 sub cancel_clicked {
-	my ($self) = @_;
+	my $self = shift;
 
 	$self->{cancelled} = 1;
-	#print "Cancel Clicked\n";
-	$self->Hide();
+	$self->Hide;
 	$self->Destroy;
 	$self->{txtctrl}->SetValue("");
 
 	return;
-
 }
 
 sub get_data {
-	my ($self) = @_;
-
-	#print "Getting Data: " . $self->{txtctrl}->GetValue . "\n";
-	return $self->{txtctrl}->GetValue;
-
-	#my $txt =  $self->{txtctrl}->GetValue;
-	#use Data::Dumper;
-	#print Dumper($txt);
-	#return $txt ;
-
+	$_[0]->{txtctrl}->GetValue;
 }
 
 
