@@ -1,0 +1,23 @@
+---
+name: Padre-Plugin-ExperimentalPerlFilter
+version: 0.06
+author:
+  - 'Sebastian Willing <sewi@cpan.org>'
+abstract: Improved Filter-through-Perl function for L<Padre>
+license: perl
+resources:
+  homepage: http://padre.perlide.org/
+  license: http://dev.perl.org/licenses/
+  repository: http://svn.perlide.org/padre/trunk/Padre-Plugin-ExperimentalPerlFilter/
+requires:
+  Padre: 0.80
+build_requires:
+  Test::More: 0
+provides:
+  Padre::Plugin::ExperimentalPerlFilter:
+    file: lib/Padre/Document/ExperimentalPerlFilter.pm
+    version: 0.01
+generated_by: Module::Build version 0.33
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
