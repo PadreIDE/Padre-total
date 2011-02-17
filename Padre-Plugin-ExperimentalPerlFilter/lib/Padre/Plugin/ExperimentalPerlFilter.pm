@@ -41,7 +41,7 @@ sub menu_plugins_simple {
 sub show {
 	my $self = shift;
 
-	Padre::Wx::Dialog::ExperimentalPerlFilter->new($self->main)->show;
+	Padre::Wx::Dialog::ExperimentalPerlFilter->new( $self->main )->show;
 
 	return 1;
 }

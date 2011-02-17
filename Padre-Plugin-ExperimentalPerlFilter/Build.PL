@@ -8,10 +8,10 @@ my $builder = Module::Build->new(
 	dist_author       => 'Sebastian Willing <sewi@cpan.org>',
 	dist_version_from => 'lib/Padre/Plugin/ExperimentalPerlFilter.pm',
 	build_requires    => {
-		'Test::More'  => 0,
+		'Test::More' => 0,
 	},
 	requires => {
-		'Padre'       => '0.80',
+		'Padre' => '0.80',
 	},
 	create_makefile_pl => 'traditional',
 	meta_merge         => {

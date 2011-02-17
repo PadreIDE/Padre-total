@@ -4,7 +4,7 @@ WriteMakefile(
 	'NAME'         => 'Padre::Plugin::ExperimentalPerlFilter',
 	'VERSION_FROM' => 'lib/Padre/Plugin/ExperimentalPerlFilter.pm',
 	'PREREQ_PM'    => {
-		'Padre'       => '0.80',
+		'Padre' => '0.80',
 	},
 	'INSTALLDIRS' => 'site',
 	'EXE_FILES'   => [],

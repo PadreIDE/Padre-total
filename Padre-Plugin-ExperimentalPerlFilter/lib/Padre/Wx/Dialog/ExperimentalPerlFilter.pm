@@ -65,20 +65,23 @@ sub _create_controls {
 
 	# Filter type
 	$self->{filter_mode} = Wx::RadioBox->new(
-		$self,                 -1, Wx::gettext('Input/output:'),
-		Wx::wxDefaultPosition, Wx::wxDefaultSize,
-		[ Wx::gettext('$_ for both'),
-		# Wx::gettext('STDIN/STDOUT'), 
-		  Wx::gettext('wrap in map { }'),
-		  Wx::gettext('wrap in grep { }'), 
+		$self, -1,
+		Wx::gettext('Input/output:'),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		[   Wx::gettext('$_ for both'),
+
+			# Wx::gettext('STDIN/STDOUT'),
+			Wx::gettext('wrap in map { }'),
+			Wx::gettext('wrap in grep { }'),
 		]
 	);
 	$self->{filter_mode_values} = { # Set position of each filter mode
 		default => 0,
-		std => -1,
-		'map' => 1,
-		'grep' => 2,
-		};
+		std     => -1,
+		'map'   => 1,
+		'grep'  => 2,
+	};
 
 	# Perl source
 	my $source_label = Wx::StaticText->new( $self, -1, Wx::gettext('&Perl filter source:') );
@@ -128,7 +131,7 @@ sub _create_controls {
 	# Vertical layout of the left hand side
 	my $left = Wx::BoxSizer->new(Wx::wxVERTICAL);
 
-	$left->Add( $self->{filter_mode},   0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$left->Add( $self->{filter_mode}, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
 
 	$left->Add( $source_label,   0, Wx::wxALL | Wx::wxEXPAND, 1 );
 	$left->Add( $self->{source}, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
@@ -224,8 +227,8 @@ sub show {
 		my $editor = $self->current->editor;
 
 		# Insert sample, but do not overwrite an exisiting filter source
-		$self->{source}->ChangeValue(Wx::gettext("# Input is in \$_\n\$_ = \$_;\n# Output goes to \$_\n"))
-		 unless $self->{source}->GetValue;
+		$self->{source}->ChangeValue( Wx::gettext("# Input is in \$_\n\$_ = \$_;\n# Output goes to \$_\n") )
+			unless $self->{source}->GetValue;
 
 		if ($editor) {
 			my $selection        = $editor->GetSelectedText;
@@ -284,28 +287,30 @@ sub run {
 
 	my $source        = $self->{source}->GetValue;
 	my $original_text = $self->{original_text}->GetValue;
-	my $filter_mode = $self->{filter_mode}->GetSelection;
-	my $document = $self->current->document;
-	my $nl = defined($document) ? $document->newline : "\n"; # Use (bad) default
+	my $filter_mode   = $self->{filter_mode}->GetSelection;
+	my $document      = $self->current->document;
+	my $nl            = defined($document) ? $document->newline : "\n"; # Use (bad) default
 	my $result_text;
 
 	$self->{result_text}->Clear;
 
-	if ($filter_mode == $self->{filter_mode_values}->{default}) {
-		$_ = $original_text;
+	if ( $filter_mode == $self->{filter_mode_values}->{default} ) {
+		$_           = $original_text;
 		$result_text = eval $source;
-	} elsif ($filter_mode == $self->{filter_mode_values}->{std}) {
+	} elsif ( $filter_mode == $self->{filter_mode_values}->{std} ) {
+
 		# TODO: use STDIN/STDOUT
-#		$_ = $original_text;
-#		$result_text = eval $source;
-	} elsif ($filter_mode == $self->{filter_mode_values}->{map}) {
-		$result_text = join($nl,map { eval $source; } split(/$nl/,$original_text));
-	} elsif ($filter_mode == $self->{filter_mode_values}->{grep}) {
-		$result_text = join($nl,grep { eval $source; } split(/$nl/,$original_text));
+		#		$_ = $original_text;
+		#		$result_text = eval $source;
+	} elsif ( $filter_mode == $self->{filter_mode_values}->{map} ) {
+		$result_text = join( $nl, map { eval $source; } split( /$nl/, $original_text ) );
+	} elsif ( $filter_mode == $self->{filter_mode_values}->{grep} ) {
+		$result_text = join( $nl, grep { eval $source; } split( /$nl/, $original_text ) );
 	}
 
 	# Common eval error handling
 	if ($@) {
+
 		# TODO: Set text color red
 		$result_text = Wx::gettext('Error') . ":\n" . $@;
 	}
@@ -313,6 +318,7 @@ sub run {
 	if ( defined $result_text ) {
 		$self->{result_text}->SetValue($result_text);
 	} else {
+
 		# TODO: Set text color red
 		$self->{result_text}->SetValue('undef');
 	}
