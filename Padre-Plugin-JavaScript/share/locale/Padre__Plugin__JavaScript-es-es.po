@@ -12,7 +12,7 @@ msgstr "Project-Id-Version: PACKAGE VERSION\n"
 "Language-Team: Spanish\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
@@ -30,7 +30,7 @@ msgstr "JavaScript::Minifier"
 
 #: lib/Padre/Plugin/JavaScript.pm:34
 msgid "JavaScript Syntax Check"
-msgstr "Comprobaci√≥n de sintaxis de c√≥digo JavaScript"
+msgstr "Comprobación de sintaxis de código JavaScript"
 
 #: lib/Padre/Plugin/JavaScript.pm:85
 msgid "Syntax ok"
