@@ -1,8 +1,3 @@
-# Spanish translations for PACKAGE package.
-# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Enrique Nell <blas.gordon@gmail.com>, 2010.
-#
 msgid ""
 msgstr "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
@@ -30,7 +25,7 @@ msgstr "JavaScript::Minifier"
 
 #: lib/Padre/Plugin/JavaScript.pm:34
 msgid "JavaScript Syntax Check"
-msgstr "Comprobación de sintaxis de código JavaScript"
+msgstr "Comprobaci√≥n de sintaxis de c√≥digo JavaScript"
 
 #: lib/Padre/Plugin/JavaScript.pm:85
 msgid "Syntax ok"
