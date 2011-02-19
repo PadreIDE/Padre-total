@@ -4,7 +4,7 @@ msgstr "Project-Id-Version: Padre-Plugin-Perl6\n"
 "POT-Creation-Date: 2011-02-17 23:19+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Enrique Nell <blas.gordon@gmail>\n"
-"Language-Team: Enrique Nell <blas.gordon@gmail.com>, Bruno Vecchi <vecchi.b@gmail.com>\n"
+"Language-Team: Spanish\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,7 +16,7 @@ msgstr "Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:108
 msgid "Create Perl 6..."
-msgstr "Crear código Perl 6..."
+msgstr "Crear c√≥digo Perl 6..."
 
 #: lib/Padre/Plugin/Perl6.pm:113
 msgid "Script"
@@ -28,7 +28,7 @@ msgstr "Clase"
 
 #: lib/Padre/Plugin/Perl6.pm:123
 msgid "Grammar"
-msgstr "Gramática"
+msgstr "Gram√°tica"
 
 #: lib/Padre/Plugin/Perl6.pm:128
 msgid "Package"
@@ -36,7 +36,7 @@ msgstr "Paquete"
 
 #: lib/Padre/Plugin/Perl6.pm:133
 msgid "Module"
-msgstr "Módulo"
+msgstr "M√≥dulo"
 
 #: lib/Padre/Plugin/Perl6.pm:138
 msgid "Role"
@@ -72,11 +72,11 @@ msgstr "Fragmento HTML"
 
 #: lib/Padre/Plugin/Perl6.pm:193
 msgid "More Help?"
-msgstr "¿Necesita más ayuda?"
+msgstr "¬øNecesita m√°s ayuda?"
 
 #: lib/Padre/Plugin/Perl6.pm:198
 msgid "Perl 6 Introduction"
-msgstr "Introducción a Perl 6"
+msgstr "Introducci√≥n a Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:199
 msgid "Perl 6 Syntax"
@@ -84,11 +84,11 @@ msgstr "Sintaxis de Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:200
 msgid "Perl 6 Objects Introduction"
-msgstr "Introducción a los objetos en Perl 6"
+msgstr "Introducci√≥n a los objetos en Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:201
 msgid "Perl 6 Regexes Introduction"
-msgstr "Introducción a las expresiones regulares en Perl 6"
+msgstr "Introducci√≥n a las expresiones regulares en Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:219
 msgid "Visit #padre for Padre Help"
@@ -117,7 +117,7 @@ msgstr "Error al cargar el archivo de plantilla '%s'"
 
 #: lib/Padre/Plugin/Perl6.pm:314
 msgid "This plugin enables useful Perl 6 features on Padre IDE."
-msgstr "Este complemento habilita características útiles de Perl 6 en el IDE de Padre."
+msgstr "Este complemento habilita caracter√≠sticas √∫tiles de Perl 6 en el IDE de Padre."
 
 #: lib/Padre/Plugin/Perl6.pm:315
 msgid "It integrates coloring and easy access to Perl 6 help documents."
@@ -125,11 +125,11 @@ msgstr "Integra el coloreado de sintaxis y un acceso sencillo a los documentos d
 
 #: lib/Padre/Plugin/Perl6.pm:316
 msgid "The following modules are used:"
-msgstr "Se utilizan los módulos siguientes:"
+msgstr "Se utilizan los m√≥dulos siguientes:"
 
 #: lib/Padre/Plugin/Perl6.pm:400 lib/Padre/Plugin/Perl6.pm:523
 msgid "No document"
-msgstr "Ningún documento"
+msgstr "Ning√∫n documento"
 
 #: lib/Padre/Plugin/Perl6.pm:400 lib/Padre/Plugin/Perl6.pm:523
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:645
@@ -143,7 +143,7 @@ msgstr "No es un archivo de Perl 6"
 
 #: lib/Padre/Plugin/Perl6.pm:407
 msgid "Operation cancelled"
-msgstr "Operación cancelada"
+msgstr "Operaci√≥n cancelada"
 
 #: lib/Padre/Plugin/Perl6/Preferences.pm:29
 msgid "Perl 6 preferences"
@@ -156,12 +156,12 @@ msgstr "Habilitar coloreado de sintaxis"
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:57
 #, perl-format
 msgid "Insert declaration for %s"
-msgstr "Insertar declaración para %s"
+msgstr "Insertar declaraci√≥n para %s"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:88
 #, perl-format
 msgid "Insert a space after %s"
-msgstr "Insertar un espacio después de %s"
+msgstr "Insertar un espacio despu√©s de %s"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:113
 #, perl-format
@@ -174,7 +174,7 @@ msgstr "Use ~ en lugar de . para concatenar cadenas"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:158
 msgid "Use . for method call"
-msgstr "Use . para invocar un método"
+msgstr "Use . para invocar un m√©todo"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:178
 msgid "Use Perl 6 constructor syntax"
@@ -186,15 +186,15 @@ msgstr "Use loop (;;) para crear un bucle"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:220
 msgid "Use [*-1] to access final element"
-msgstr "Use [*-1] para acceder al último elemento"
+msgstr "Use [*-1] para acceder al √∫ltimo elemento"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:240
 msgid "Use N.pick for a random number"
-msgstr "Use N.pick para obtener un número aleatorio"
+msgstr "Use N.pick para obtener un n√∫mero aleatorio"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:258
 msgid "Use (1..N).pick for a random number"
-msgstr "Use (1..N).pick para obtener un número aleatorio"
+msgstr "Use (1..N).pick para obtener un n√∫mero aleatorio"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:278
 msgid "Use [N..*] for indefinite range"
@@ -226,23 +226,23 @@ msgstr "Use !~~ para detectar la ausencia de patrones"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:420
 msgid "Use +> for numeric right shift"
-msgstr "Use +> para el desplazamiento numérico a la derecha"
+msgstr "Use +> para el desplazamiento num√©rico a la derecha"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:438
 msgid "Use ~> for string right shift"
-msgstr "Use ~> para el desplazamiento numérico a la derecha"
+msgstr "Use ~> para el desplazamiento num√©rico a la derecha"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:457
 msgid "Use +< for numeric left shift"
-msgstr "Use +< para el desplazamiento numérico a la izquierda"
+msgstr "Use +< para el desplazamiento num√©rico a la izquierda"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:475
 msgid "Use ~< for string left shift"
-msgstr "Use ~< para el desplazamiento numérico a la izquierda"
+msgstr "Use ~< para el desplazamiento num√©rico a la izquierda"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:495
 msgid "Use $! for eval errors"
-msgstr "Use $! para los errores de evaluación"
+msgstr "Use $! para los errores de evaluaci√≥n"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:515
 msgid "Use $::PERL_VERSION"
@@ -250,7 +250,7 @@ msgstr "Use $::PERL_VERSION"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:546
 msgid "Comment error line"
-msgstr "Comentar línea de error"
+msgstr "Comentar l√≠nea de error"
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:581
 msgid "Surround with try { ... }"
@@ -263,7 +263,7 @@ msgstr "Convertir POD6 a XHTML"
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:644
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:687
 msgid "Operation failed!"
-msgstr "Error en la operación."
+msgstr "Error en la operaci√≥n."
 
 #: lib/Padre/Plugin/Perl6/QuickFix.pm:656
 msgid "Convert POD6 to Text"
