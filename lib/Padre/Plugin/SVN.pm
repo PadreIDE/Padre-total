@@ -83,7 +83,22 @@ sub menu_plugins_simple {
 			my $filename = $self->filename or return;
 			$self->svn_info($filename);
 		},
-		
+		Wx::gettext('Diff') => [
+			Wx::gettext('File') => [
+				Wx::gettext('Show') => sub {
+					my $filename = $self->filename or return;
+					$self->svn_diff($filename);
+				},
+				Wx::gettext('Open in Padre') => sub {
+					my $filename = $self->filename or return;
+					$self->svn_diff_in_padre($filename);
+				},
+			],
+			Wx::gettext('Project') => sub {
+				my $project = $self->project or return;
+				$self->svn_diff( $project->root );
+			},
+		],		
 		Wx::gettext('About') => sub {
 			$self->show_about;
 		},
@@ -262,6 +277,53 @@ sub svn_info {
 	else {
 		$self->main->error( $svn->error_msg, "$path" );
 	}
+}
+
+sub svn_diff {
+	my $self = shift;
+	my $path = shift;
+	#my $file = $self->svn_file($path);
+
+	#$file->diff;
+	#my $status = join( "\n", @{ $file->stdout } );
+
+	$svn->svn_diff($path);
+	
+	if( ! $svn->error ) {
+		my $status = $svn->msg;
+		
+		require Padre::Plugin::SVN::Wx::SVNDialog;
+		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
+			$self->main,
+			$path,
+			$status,
+			'Diff',
+		);
+		$log->Show(1);
+	}
+	else {
+		$self->error($svn->error);
+	}
+	
+	return;
+}
+
+sub svn_diff_in_padre {
+	my $self     = shift;
+	my $path = shift;
+	
+	$svn->svn_diff($path);
+	
+	if( ! $svn->error ) {
+		my $diff = $svn->{msg};
+		
+		$self->main->new_document_from_string( $diff, 'text/x-patch' );
+		return 1;
+	}
+	else {
+		$self->error($svn->error);
+	}
+	
 }
 
 

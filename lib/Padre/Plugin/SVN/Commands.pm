@@ -154,6 +154,30 @@ sub svn_info {
 	
 }
 
+sub svn_diff {
+	my $self = shift;
+	my $path = shift;
+	
+	my($stdout, $stderr) = capture {
+		system "svn diff $path";
+	};
+	
+	#print "stdout: $stdout\n\nstderr: $stderr\n\n";
+	
+	if( $stderr ne "" ) {
+		# handle error
+		print "Error: $stderr\n";
+		$self->{error} = 1;
+		$self->{error_msg} = $stderr;
+		
+		return 0;
+	}
+	
+	$self->{msg} = $stdout;
+	return 1;	
+	
+}
+
 sub is_under_svn {
 	my $self = shift;
 	my $path = shift;
