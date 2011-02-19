@@ -1,9 +1,3 @@
-# Spanish translations for _L package
-# Traducciones al espaÃ±ol para el paquete _L.
-# Copyright (C) 2011 THE _L'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the _L package.
-# makibuki <>, 2011.
-#
 msgid ""
 msgstr "Project-Id-Version: _L 10N\n"
 "Report-Msgid-Bugs-To: \n"
@@ -39,7 +33,7 @@ msgstr "Diagrama de clases..."
 
 #: lib/Padre/Plugin/Autodia.pm:81
 msgid "Integrating automated documentation into Padre IDE"
-msgstr "Integraci—n de documentaci—n automatizada en el IDE Padre"
+msgstr "IntegraciÂ—n de documentaciÂ—n automatizada en el IDE Padre"
 
 #: lib/Padre/Plugin/Autodia.pm:83
 msgid "Copyright 2010"
