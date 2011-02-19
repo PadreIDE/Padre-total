@@ -33,7 +33,7 @@ msgstr "Diagrama de clases..."
 
 #: lib/Padre/Plugin/Autodia.pm:81
 msgid "Integrating automated documentation into Padre IDE"
-msgstr "Integracin de documentacin automatizada en el IDE Padre"
+msgstr "Integración de documentación automatizada en el IDE Padre"
 
 #: lib/Padre/Plugin/Autodia.pm:83
 msgid "Copyright 2010"
