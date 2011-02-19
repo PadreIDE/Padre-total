@@ -131,28 +131,63 @@ sub svn_commit {
 		return 0;
 	}
 	
-	# need to get commit message
-	
 	my $info = "Get some info about the revision details of file etc";
 	
-	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
-		$self->main,
-		$info,
-		undef,
-		'Commit File',
-		1,
-	);
-	$dialog->ShowModal;	
-	
-	# check Cancel!!!!
-	return if $dialog->{cancelled};
+	# need to get commit message
+	while(1) {
+		
+		
+		require Padre::Plugin::SVN::Wx::SVNDialog;
+		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+			$self->main,
+			$info,
+			undef,
+			'Commit File',
+			1,
+		);
+		$dialog->ShowModal;	
+		
+		# check Cancel!!!!
+		return if $dialog->{cancelled};
 
-	my $message = $dialog->get_data;
+		my $message = $dialog->get_data;
+		
+		# whoops!! This isn't going to work "Commit message" is always set in the text control.
+		if ($message and $message ne 'Commit Message') { # "Commit Message" comes from SVNDialog
+			$self->_do_commit($path, $message);
+			last;
+		}
+		else {
+			my $ret = Wx::MessageBox(
+				Wx::gettext(
+				'You really should commit with a useful message'
+				.  "\n\nDo you really want to commit with out a message?"
+				),
+				Wx::gettext("Commit warning"),
+				Wx::wxYES_NO | Wx::wxCENTRE,
+				$self->main,
+			);
+			
+			if( $ret == Wx::wxYES ) {
+				$self->_do_commit($path, $message);
+				last;
+			}
+			else {
+				next;
+			}
+		}
 	
-	# whoops!! This isn't going to work "Commit message" is always set in the text control.
-	if ($message and $message ne 'Commit Message') { # "Commit Message" come from SVNDialog
-				
+	} # end while
+	
+	
+	
+}
+
+sub _do_commit {
+	my $self = shift;
+	my $path = shift;
+	my $message = shift;
+	
 		$svn->svn_commit($path, $message);
 		if( $svn->error ) {
 			$self->main->error( $svn->error_msg, "$path" );
@@ -160,23 +195,8 @@ sub svn_commit {
 		else {
 			$self->main->message( $svn->msg, "$path" );
 		}
-	}
-	else {
-		my $ret = Wx::MessageBox(
-			Wx::gettext(
-			'You really should commit with a useful message'
-			.  "\n\nDo you really want to commit with out a message?"
-			),
-			Wx::gettext("Commit warning"),
-			Wx::wxYES_NO | Wx::wxCENTRE,
-			$self->main,
-		);
 		
-	}
-	
-	
-	
-}
+}	
 
 sub svn_info {
 	my $self = shift;
