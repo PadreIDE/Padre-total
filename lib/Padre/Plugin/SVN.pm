@@ -61,10 +61,21 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 	
-	
+
+		Wx::gettext('Commit') => [
+			Wx::gettext('File') => sub {
+				my $filename = $self->filename or return;
+				$self->svn_commit($filename);
+			},
+			Wx::gettext('Project') => sub {
+				my $project = $self->project or return;
+				$self->svn_commit( $project->root );
+			},
+		],
+			
 		Wx::gettext('Info') => sub {
 			my $filename = $self->filename or return;
-			$self->get_info($filename);
+			$self->svn_info($filename);
 		},
 		
 		Wx::gettext('About') => sub {
@@ -108,7 +119,58 @@ END_MESSAGE
 
 # TODO: update!
 
-sub get_info {
+sub svn_commit {
+	my $self = shift;
+	my $path = shift;
+	
+	# need to get commit message
+	
+	my $info = "Get some info about the revision details of file etc";
+	
+	require Padre::Plugin::SVN::Wx::SVNDialog;
+	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+		$self->main,
+		$info,
+		undef,
+		'Commit File',
+		1,
+	);
+	$dialog->ShowModal;	
+	
+	# check Cancel!!!!
+	return if $dialog->{cancelled};
+
+	my $message = $dialog->get_data;
+	
+	# whoops!! This isn't going to work "Commit message" is always set in the text control.
+	if ($message and $message ne 'Commit Message') { # "Commit Message" come from SVNDialog
+				
+		$svn->svn_commit($path, $message);
+		if( $svn->error ) {
+			$self->main->error( $svn->error_msg, "$path" );
+		}
+		else {
+			$self->main->message( $svn->msg, "$path" );
+		}
+	}
+	else {
+		my $ret = Wx::MessageBox(
+			Wx::gettext(
+			'You really should commit with a useful message'
+			.  "\n\nDo you really want to commit with out a message?"
+			),
+			Wx::gettext("Commit warning"),
+			Wx::wxYES_NO | Wx::wxCENTRE,
+			$self->main,
+		);
+		
+	}
+	
+	
+	
+}
+
+sub svn_info {
 	my $self = shift;
 	my $path = shift;
 	

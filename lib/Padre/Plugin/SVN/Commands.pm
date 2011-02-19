@@ -62,7 +62,6 @@ sub svn_commit {
 	$self->_reset_error;
 	
 	# handle any message text, save to a temp file and use that in the svn command line
-	
 	require File::Temp;
 	my $msg_file = File::Temp->new();
 	print $msg_file $commit_msg;
