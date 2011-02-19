@@ -129,6 +129,22 @@ sub svn_info {
 	return 1;
 	
 }
+sub is_under_svn {
+	my $self = shift;
+	my $path = shift;
+	
+	$self->_reset_error();
+	$self->svn_info( $path );
+	if( $self->{msg} =~ m/Not a versioned resource/i or 
+	    $self->{msg} =~ m/is not a working copy/  ) 
+	{
+	    	return 0;
+	}
+	else {
+		return 1;
+	}
+	
+}
 
 sub _reset_error {
 	my $self = shift;

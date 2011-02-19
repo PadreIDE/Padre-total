@@ -50,6 +50,8 @@ sub plugin_enable {
 # Clean up any of our children we loaded
 sub plugin_disable {
 	my $self = shift;
+	$svn = undef;
+	
 	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
 	$self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
 	$self->uload('Padre::Plugin::SVN::Commands');
@@ -122,6 +124,12 @@ END_MESSAGE
 sub svn_commit {
 	my $self = shift;
 	my $path = shift;
+	
+	
+	if( ! $svn->is_under_svn($path) ) {
+		$self->main->error("$path is not under svn");
+		return 0;
+	}
 	
 	# need to get commit message
 	
