@@ -32,7 +32,7 @@ msgstr "Examinar el objeto de IDE Padre"
 
 #: lib/Padre/Plugin/DataWalker.pm:89
 msgid "Browse Padre main symbol table"
-msgstr "Examinar la tabla de símbolos principal de Padre"
+msgstr "Examinar la tabla de s√≠mbolos principal de Padre"
 
 #: lib/Padre/Plugin/DataWalker.pm:99
 msgid "Open file"
@@ -41,11 +41,11 @@ msgstr "Abrir archivo"
 #: lib/Padre/Plugin/DataWalker.pm:115
 #, perl-format
 msgid "Could not find the specified file '%s'"
-msgstr "No se encontró el archivo '%s'"
+msgstr "No se encontr√≥ el archivo '%s'"
 
 #: lib/Padre/Plugin/DataWalker.pm:116
 msgid "File not found"
-msgstr "No se encontró el archivo"
+msgstr "No se encontr√≥ el archivo"
 
 #: lib/Padre/Plugin/DataWalker.pm:125
 #, perl-format
@@ -54,4 +54,4 @@ msgstr "No se pudo leer el archivo YAML .%s"
 
 #: lib/Padre/Plugin/DataWalker.pm:126
 msgid "Invalid YAML file"
-msgstr "Archivo YAML no válido"
+msgstr "Archivo YAML no v√°lido"
