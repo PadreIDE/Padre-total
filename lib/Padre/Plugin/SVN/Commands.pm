@@ -1,11 +1,13 @@
 package Padre::Plugin::SVN::Commands;
 
+use 5.008;
 use strict;
 use warnings;
 
 #use Data::Dumper;
 use Capture::Tiny 'capture';
 
+our $VERSION = '0.06';
 sub new {
 	my $class = shift;
 	
@@ -178,6 +180,27 @@ sub svn_diff {
 	
 }
 
+
+sub svn_log {
+	my $self = shift;
+	my $path = shift;
+	
+	$self->_reset_error;
+	my($stdout, $stderr) = capture {
+		system "svn log $path";
+	};
+	if( $stderr ne "" ) {
+		# handle error
+		print "Error: $stderr\n";
+		$self->{error} = 1;
+		$self->{error_msg} = $stderr;
+		
+		return 0;
+	}
+	$self->{msg} = $stdout;
+	return 1;
+		
+}
 sub is_under_svn {
 	my $self = shift;
 	my $path = shift;

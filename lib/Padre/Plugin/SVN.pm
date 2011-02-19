@@ -79,10 +79,7 @@ sub menu_plugins_simple {
 			$self->svn_revert;
 		},
 		
-		Wx::gettext('Info') => sub {
-			my $filename = $self->filename or return;
-			$self->svn_info($filename);
-		},
+
 		Wx::gettext('Diff') => [
 			Wx::gettext('File') => [
 				Wx::gettext('Show') => sub {
@@ -98,7 +95,24 @@ sub menu_plugins_simple {
 				my $project = $self->project or return;
 				$self->svn_diff( $project->root );
 			},
+		],
+		
+		Wx::gettext('Info') => sub {
+			my $filename = $self->filename or return;
+			$self->svn_info($filename);
+		},
+		
+		Wx::gettext('Log') => [
+			Wx::gettext('File') => sub {
+				my $filename = $self->filename or return;
+				$self->svn_log($filename);
+			},
+			Wx::gettext('Project') => sub {
+				my $project = $self->project or return;
+				$self->svn_log( $project->root );
+			},
 		],		
+		
 		Wx::gettext('About') => sub {
 			$self->show_about;
 		},
@@ -315,7 +329,7 @@ sub svn_diff_in_padre {
 	$svn->svn_diff($path);
 	
 	if( ! $svn->error ) {
-		my $diff = $svn->{msg};
+		my $diff = $svn->msg || '';
 		
 		$self->main->new_document_from_string( $diff, 'text/x-patch' );
 		return 1;
@@ -326,6 +340,32 @@ sub svn_diff_in_padre {
 	
 }
 
+
+sub svn_log {
+	my $self = shift;
+	my $path = shift;
+	
+	
+
+	$self->{_busyCursor} = Wx::BusyCursor->new;
+	$svn->svn_log($path);
+	$self->{_busyCursor} = undef;
+
+	if( $svn->error ) {
+		
+	}
+	else {
+		require Padre::Plugin::SVN::Wx::SVNDialog;
+		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
+			$self->main,
+			$path,
+			$svn->msg,
+			'Log',
+		);
+		$log->Show(1);
+		
+	}
+}
 
 ######################################################################
 # Support Methods
