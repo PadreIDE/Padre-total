@@ -129,6 +129,7 @@ sub svn_info {
 	return 1;
 	
 }
+
 sub is_under_svn {
 	my $self = shift;
 	my $path = shift;
