@@ -201,6 +201,28 @@ sub svn_log {
 	return 1;
 		
 }
+
+sub svn_blame {
+	my $self = shift;
+	my $path = shift;
+	
+	$self->_reset_error;
+	my( $stdout, $stderr )  = capture {
+		system "svn blame $path";
+	};
+	if( $stderr ne "" ) {
+		# handle error
+		print "Error: $stderr\n";
+		$self->{error} = 1;
+		$self->{error_msg} = $stderr;
+		
+		return 0;
+	}
+	$self->{msg} = $stdout;
+	return 1;
+	
+}
+
 sub is_under_svn {
 	my $self = shift;
 	my $path = shift;

@@ -102,6 +102,11 @@ sub menu_plugins_simple {
 			$self->svn_info($filename);
 		},
 		
+		Wx::gettext('Blame')  => sub {
+			my $filename = $self->filename or return;
+			$self->svn_blame($filename);
+		},
+				
 		Wx::gettext('Log') => [
 			Wx::gettext('File') => sub {
 				my $filename = $self->filename or return;
@@ -366,6 +371,33 @@ sub svn_log {
 		
 	}
 }
+
+sub svn_blame {
+	my $self = shift;
+	my $path = shift;
+
+	$self->{_busyCursor} = Wx::BusyCursor->new;
+	$svn->svn_blame($path);
+	$self->{_busyCursor} = undef;
+	if( $svn->error ) {
+		
+	}
+	else {
+		my @blame = split( /\n/, $svn->msg);
+		
+		require Padre::Plugin::SVN::Wx::SVNDialog;
+		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+			$self->main,
+			$path,
+			\@blame,
+			'Blame',
+		);
+		
+		$dialog->Show(1);
+		return 1;
+	}
+}
+
 
 ######################################################################
 # Support Methods
