@@ -1,9 +1,3 @@
-# Spanish translations for _L package
-# Traducciones al espa√±ol para el paquete _L.
-# Copyright (C) 2011 THE _L'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the _L package.
-# makibuki <>, 2011.
-#
 msgid ""
 msgstr "Project-Id-Version: _L 10N\n"
 "Report-Msgid-Bugs-To: \n"
@@ -19,11 +13,11 @@ msgstr "Project-Id-Version: _L 10N\n"
 
 #: lib/Padre/Plugin/Plack.pm:50
 msgid "New PSGI App"
-msgstr "Nueva aplicación PSGI"
+msgstr "Nueva aplicaci√≥n PSGI"
 
 #: lib/Padre/Plugin/Plack.pm:64
 msgid "Online References"
-msgstr "Referencias en línea"
+msgstr "Referencias en l√≠nea"
 
 #: lib/Padre/Plugin/Plack.pm:76
 msgid "Plack Advent Calendar"
@@ -42,12 +36,12 @@ msgstr "No se pudo abrir el archivo de plantilla %s"
 msgid ""
 "'Sorry Dave, I can't do that - you need to close the corresponding file tab "
 "to close this panel"
-msgstr "'Lo siento, Dave. No puedo hacerlo.' - debe cerrar la pestaña de archivo correspondiente para cerrar este panel"
+msgstr "'Lo siento, Dave. No puedo hacerlo.' - debe cerrar la pesta√±a de archivo correspondiente para cerrar este panel"
 
 #: lib/Padre/Plugin/Plack.pm:240 lib/Padre/Plugin/Plack.pm:266
 #, perl-format
 msgid "Expected a PSGI document, but instead got: %s"
-msgstr "Se esperaba un documento PSGI, pero se recibió %s"
+msgstr "Se esperaba un documento PSGI, pero se recibi√≥ %s"
 
 #: lib/Padre/Plugin/Plack.pm:282
 msgid "PSGI/Plack support for Padre"
@@ -59,7 +53,7 @@ msgstr "por"
 
 #: lib/Padre/Plugin/Plack.pm:285
 msgid "This system is running Plack version"
-msgstr "Este sistema ejecuta Plack versión"
+msgstr "Este sistema ejecuta Plack versi√≥n"
 
 #: lib/Padre/Plugin/Plack.pm:360 lib/Padre/Plugin/Plack.pm:569
 msgid "Let plackup guess"
@@ -68,7 +62,7 @@ msgstr "Dejar que plackup lo adivine"
 #: lib/Padre/Plugin/Plack.pm:372
 msgid ""
 "plackup command not found, please check your Plack installation and $PATH"
-msgstr "No se encuentra el comando plackup. Compruebe la instalación de Plack y la variable $PATH"
+msgstr "No se encuentra el comando plackup. Compruebe la instalaci√≥n de Plack y la variable $PATH"
 
 #: lib/Padre/Plugin/Plack.pm:450
 #, perl-format
@@ -76,13 +70,13 @@ msgid ""
 "Wx::Perl::ProcessStream is version %s which is known to cause problems. Get "
 "at least 0.20 by typing\n"
 "cpan Wx::Perl::ProcessStream"
-msgstr "La versión %s de Wx::Perl::ProcessStream causa problemas. Debe usar como mínimo la versión 0.20. Para ello, escriba\n"
+msgstr "La versi√≥n %s de Wx::Perl::ProcessStream causa problemas. Debe usar como m√≠nimo la versi√≥n 0.20. Para ello, escriba\n"
 "cpan Wx::Perl::ProcessStream"
 
 #: lib/Padre/Plugin/Plack.pm:513
 #, perl-format
 msgid "Failed to start server via '%s'"
-msgstr "No se pudo iniciar el servidor a través de '%s'"
+msgstr "No se pudo iniciar el servidor a trav√©s de '%s'"
 
 #: lib/Padre/Plugin/Plack.pm:513
 msgid "Error"
@@ -102,7 +96,7 @@ msgstr "Opciones"
 
 #: lib/Padre/Plugin/Plack.pm:591
 msgid "Auto-Restart"
-msgstr "Reinicio automático"
+msgstr "Reinicio autom√°tico"
 
 #: lib/Padre/Plugin/Plack.pm:605 lib/Padre/Plugin/Plack/Panel.pm:45
 msgid "Start"
