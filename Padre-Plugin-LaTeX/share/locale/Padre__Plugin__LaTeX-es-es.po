@@ -1,9 +1,3 @@
-# Spanish translations for _L package
-# Traducciones al espa√±ol para el paquete _L.
-# Copyright (C) 2011 THE _L'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the _L package.
-# makibuki <>, 2011.
-#
 msgid ""
 msgstr "Project-Id-Version: _L 10N\n"
 "Report-Msgid-Bugs-To: \n"
@@ -35,7 +29,7 @@ msgstr "Ejecutar BibTeX"
 
 #: lib/Padre/Plugin/LaTeX.pm:42
 msgid "Find Symbol/Special Character"
-msgstr "Buscar símbolo o carácter especial"
+msgstr "Buscar s√≠mbolo o car√°cter especial"
 
 #: lib/Padre/Plugin/LaTeX.pm:45
 msgid "About"
@@ -61,21 +55,21 @@ msgstr "Soporte de LaTeX para Padre\n"
 "Si desea utilizar el resaltado de sintaxis para archivos BibTeX, instale el complemento Kate: Padre::Plugin::Kate.\n"
 "\n"
 "Copyright 2010, 2011 %s\n"
-"Este complemento es software libre; puede redistribuirlo o modificarlo en los mismos términos que Padre.\n"
+"Este complemento es software libre; puede redistribuirlo o modificarlo en los mismos t√©rminos que Padre.\n"
 
 #: lib/Padre/Plugin/LaTeX.pm:86
 msgid "Creating PDF files is only supported for LaTeX documents."
-msgstr "La creación de archivos PDF sólo se ofrece para documentos LaTeX."
+msgstr "La creaci√≥n de archivos PDF s√≥lo se ofrece para documentos LaTeX."
 
 #: lib/Padre/Plugin/LaTeX.pm:112
 msgid "Running BibTeX is only supported for LaTeX documents."
-msgstr "La ejecución de BibTeX sólo se ofrece para documentos LaTeX."
+msgstr "La ejecuci√≥n de BibTeX s√≥lo se ofrece para documentos LaTeX."
 
 #: lib/Padre/Plugin/LaTeX.pm:132
 msgid "Viewing PDF files is only supported for LaTeX documents."
-msgstr "La visualización de archivos PDF sólo se ofrece para documentos LaTeX."
+msgstr "La visualizaci√≥n de archivos PDF s√≥lo se ofrece para documentos LaTeX."
 
 #: lib/Padre/Plugin/LaTeX.pm:140
 #, perl-format
 msgid "Could not find file '%s'."
-msgstr "No se encontró el archivo '%s'."
+msgstr "No se encontr√≥ el archivo '%s'."
