@@ -56,9 +56,44 @@ sub have_svn {
 
 sub svn_commit {
 	my $self = shift;
-	my $file = shift;
+	my $path = shift;
+	my $commit_msg = shift;
+		
+	$self->_reset_error;
 	
+	# handle any message text, save to a temp file and use that in the svn command line
 	
+	require File::Temp;
+	my $msg_file = File::Temp->new();
+	print $msg_file $commit_msg;
+	my $msg_path = $msg_file->filename();
+	$msg_path =~ s!\\!/!g; # escape literal \ for Windows users. see RT#54969 
+		
+	print "Path: $path\n";
+	print "messge file: $msg_path\n";
+	
+	my( $stdout, $stderr ) = capture {
+		system "svn commit --file $msg_path $path";
+	};
+	
+	# remove the temp file
+	undef $msg_file;
+	if( -s $msg_path ) {
+		warn "temp file not removed";
+	}
+	
+	if( $stderr ne "" ) {
+		# handle error
+		print "Error: $stderr\n";
+		$self->{error} = 1;
+		$self->{error_msg} = $stderr;
+		
+		return 0;
+	}
+	
+	$self->{msg} = $stdout;
+	
+	return 1;
 	
 }
 
@@ -68,10 +103,7 @@ sub svn_info {
 	
 	$self->_reset_error;
 	
-
-	#my $cmd  = qx{ svn info $path };
-	#print "command: $cmd\n";
-	#return;
+	print "Path: $path\n";
 	my ($stdout, $stderr ) = capture {
 		system "svn info $path";
 	};
@@ -81,7 +113,8 @@ sub svn_info {
 	if( defined $stderr && $stderr ne "") {
 		# when the file is not versioned it gets returned as an error in stderr, however
 		# we don't want to return a true error in this case.
-		if( $stderr =~ m/Not a versioned resource/ ) {
+		if( $stderr =~ m/Not a versioned resource/i or 
+		    $stderr =~ m/is not a working copy/  ) {
 			$self->{msg} = $stderr;
 			return 1;
 		}
