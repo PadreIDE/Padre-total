@@ -12,8 +12,8 @@ msgstr "Project-Id-Version: Padre-Plugin-Autoformat\n"
 
 #: lib/Padre/Plugin/Autoformat.pm:36
 msgid "Autoformat"
-msgstr "Formato automtico"
+msgstr "Formato automático"
 
 #: lib/Padre/Plugin/Autoformat.pm:38
 msgid "Autoformat\tCtrl+Shift+J"
-msgstr "Formato automtico\tCtrl+Mays+J"
+msgstr "Formato automático\tCtrl+Mayús+J"
