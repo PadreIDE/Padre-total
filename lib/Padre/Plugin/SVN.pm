@@ -6,11 +6,11 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 our @ISA     = 'Padre::Plugin';
 
 
-
+my $svn; # this holds the reference to the command class once instantiated.
 
 
 #####################################################################
@@ -27,90 +27,46 @@ sub padre_interfaces {
 	'Padre::Wx::Dialog' => 0.81,
 }
 
+sub plugin_enable {
+	my $self = shift;
+	require Padre::Plugin::SVN::Commands;
+	$svn = Padre::Plugin::SVN::Commands->new();
+	
+	# check if we have svn installed;
+	if( $svn->error ) {
+		print "We do not have SVN\n";
+		print $svn->error_msg;
+		#$self->error( Wx::gettext('Could not find SVN command line on your system.') );
+		
+		
+		#$self->plugin_disable;
+	}
+	else {
+		print "SVN installed and ready to go\n";
+		#$self->error( Wx::gettext('SVN installed and ready to go.') );
+	}
+}
+
 # Clean up any of our children we loaded
 sub plugin_disable {
 	my $self = shift;
 	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
 	$self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
+	$self->uload('Padre::Plugin::SVN::Commands');
+	
 	return 1;
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		# Maybe reorganize according to File/Directory/Project ?
-		Wx::gettext('Commit') => [
-			Wx::gettext('File') => sub {
-				my $filename = $self->filename or return;
-				$self->svn_commit($filename);
-			},
-			Wx::gettext('Project') => sub {
-				my $project = $self->project or return;
-				$self->svn_commit( $project->root );
-			},
-		],
-
-		'---' => undef,
-
-		Wx::gettext('Add') => [
-			Wx::gettext('File') => sub {
-				my $filename = $self->filename or return;
-				$self->svn_add($filename);
-			},
-		],
-
-		'---' => undef,
-
-		Wx::gettext('Revert') => sub {
-			$self->svn_revert;
+	
+	
+		Wx::gettext('Info') => sub {
+			my $filename = $self->filename or return;
+			$self->get_info($filename);
 		},
-
-		'---' => undef,
-
-		Wx::gettext('Status') => [
-			Wx::gettext('File') => sub {
-				my $filename = $self->filename or return;
-				$self->svn_status($filename);
-			},
-			Wx::gettext('Project') => sub {
-				my $project = $self->project or return;
-				$self->svn_status( $project->root );
-			},
-		],
-
-		Wx::gettext('Log') => [
-			Wx::gettext('File') => sub {
-				my $filename = $self->filename or return;
-				$self->svn_log($filename);
-			},
-			Wx::gettext('Project') => sub {
-				my $project = $self->project or return;
-				$self->svn_log( $project->root );
-			},
-		],
-
-		Wx::gettext('Diff') => [
-			Wx::gettext('File') => [
-				Wx::gettext('Show') => sub {
-					my $filename = $self->filename or return;
-					$self->svn_diff($filename);
-				},
-				Wx::gettext('Open in Padre') => sub {
-					$self->svn_diff_in_padre;
-				},
-			],
-			Wx::gettext('Project') => sub {
-				my $project = $self->project or return;
-				$self->svn_diff( $project->root );
-			},
-		],
-
-		Wx::gettext('Blame')  => sub {
-			$self->svn_blame;
-		},
-
-		'---' => undef,
-
+		
 		Wx::gettext('About') => sub {
 			$self->show_about;
 		},
@@ -152,245 +108,18 @@ END_MESSAGE
 
 # TODO: update!
 
-sub svn_file {
-	# Simple method wrapper around SVN::Class::svn_file that run-time loads
-	require SVN::Class;
-	SVN::Class::svn_file($_[1]);
-}
-
-sub svn_revert {
-	my $self = shift;
-
-	# Firstly warn the person their actions will
-	# go back to the last version of the file
-
-	my $layout = [
-		[
-			[
-				'Wx::StaticText',
-				undef,
-				"Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."
-			],
-		],
-		[
-			[ 'Wx::Button', 'ok',     Wx::wxID_OK ],
-			[ 'Wx::Button', 'cancel', Wx::wxID_CANCEL ]
-		],
-	];
-	my $dialog = Wx::Perl::Dialog->new(
-		parent => $self->main,
-		title  => 'SVN Revert',
-		layout => $layout,
-		width  => [ 500, 1200 ],
-	);
-	$dialog->show_modal or return;
-
-	my $data = $dialog->get_data;
-	if ( $data->{cancel} ) {
-		return;
-	}
-
-	# Continue with the revert
-	my $filename = $self->filename or return;
-	my $file     = $self->svn_file($filename);
-	$file->revert;
-}
-
-sub svn_blame {
-	my $self     = shift;
-	my $filename = $self->filename or return;
-
-	$self->{_busyCursor} = Wx::BusyCursor->new;
-	my $file = $self->svn_file($filename);
-	$file->blame;
-
-	my @blame = @{ $file->stdout };
-	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
-		$self->main,
-		$filename,
-		\@blame,
-		'Blame',
-	);
-	$self->{_busyCursor} = undef;
-	$dialog->Show(1);
-	return 1;
-}
-
-sub svn_status {
+sub get_info {
 	my $self = shift;
 	my $path = shift;
-	my $file = $self->svn_file($path);
-	my $info = "";
-
-	if ( $file->info ) {
-		$info .= "Author: " . $file->info->{author} . "\n";
-		$info .= "File Name: " . $file->info->{name} . "\n";
-		$info .= "Last Revision: " . $file->info->{last_rev} . "\n";
-		$info .= "Current Revision: " . $file->info->{rev} . "\n\n";
-		$info .= "File create Date: " . $file->info->{date} . "\n\n";
-		$info .= "Last Updated: " . $file->info->{updated} . "\n\n";
-		$info .= "File Path: " . $file->info->{path} . "\n";
-		$info .= "File URL: " . $file->info->{_url} . "\n";
-		$info .= "File Root: " . $file->info->{root} . "\n\n";
-		$info .= "Check Sum: " . $file->info->{checksum} . "\n";
-		$info .= "UUID: " . $file->info->{uuid} . "\n";
-		$info .= "Schedule: " . $file->info->{schedule} . "\n";
-		$info .= "Node: " . $file->info->{node} . "\n\n";
-	} else {
-		$info .= 'File is not managed by SVN';
+	
+	$svn->svn_info($path);
+	if( ! $svn->error ) {
+		$self->main->message( $svn->msg, "$path" );
 	}
-
-	$self->main->message( $info, "$path" );
-	return;
-}
-
-sub svn_log {
-	my $self = shift;
-	my $path = shift;
-	my $file = $self->svn_file($path);
-
-	$self->{_busyCursor} = Wx::BusyCursor->new;
-	my $out = join( "\n", @{ $file->log } );
-	$self->{_busyCursor} = undef;
-
-	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
-		$self->main,
-		$path,
-		$out,
-		'Log',
-	);
-	$log->Show(1);
-}
-
-sub svn_diff {
-	my $self = shift;
-	my $path = shift;
-	my $file = $self->svn_file($path);
-
-	$file->diff;
-	my $status = join( "\n", @{ $file->stdout } );
-
-	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
-		$self->main,
-		$path,
-		$status,
-		'Diff',
-	);
-	$log->Show(1);
-
-	return;
-}
-
-sub svn_diff_in_padre {
-	my $self     = shift;
-	my $filename = $self->filename or return;
-	my $file     = $self->svn_file($filename);
-	my $diff     = $file->diff;
-	my $diff_str = join( "\n", @{ $file->stdout } );
-	$self->main->new_document_from_string( $diff_str, 'text/x-patch' );
-	return 1;
-}
-
-sub svn_commit {
-	my $self = shift;
-	my $path = shift;
-	my $file = $self->svn_file($path);
-
-# 	== 0 seems to produce false errors here
-	unless ( defined $file ) {
-		$self->error(Wx::gettext('Unable to find SVN file!'),Wx::gettext('Error - SVN Commit'));
-		return;
+	else {
+		$self->main->error( $svn->error_msg, "$path" );
 	}
-
-	my $info = "$path\n\n";
-	if ( defined( $file->info->{last_rev} ) ) {
-		$info .= "Last Revision: " . $file->info->{last_rev};
-	} else {
-		# New files
-		$info .= "Last Revision: (none)";
-	}
-
-	require Padre::Plugin::SVN::Wx::SVNDialog;
-	my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
-		$self->main,
-		$info,
-		undef,
-		'Commit File',
-		1,
-	);
-	$dialog->ShowModal;
-
-	# check Cancel!!!!
-	return if $dialog->{cancelled};
-
-	my $message = $dialog->get_data;
-
-	# whoops!! This isn't going to work "Commit message" is always set in the text control.
-	if ($message and $message ne 'Commit Message') { # "Commit Message" come from SVNDialog
-		$self->{_busyCursor} = Wx::BusyCursor->new;
-
-		my $revNo = $file->commit($message);
-
-		$self->{_busyCursor} = undef;
-
-		my @commit = @{ $file->stdout };
-		my @err    = @{ $file->stderr };
-		if (@err) {
-			$self->error( join( "\n", @err ), Wx::gettext('Error - SVN Commit') );
-		} else {
-			$self->info( join( "\n", @commit ), "Committed Revision number $revNo." );
-		}
-
-	} else {
-		my $ret = Wx::MessageBox(
-			Wx::gettext(
-			'You really should commit with a useful message'
-			.  "\n\nDo you really want to commit with out a message?"
-			),
-			Wx::gettext("Commit warning"),
-			Wx::wxYES_NO | Wx::wxCENTRE,
-			$self->main,
-		);
-		if( $ret == Wx::wxYES ) {
-			$self->{_busyCursor} = Wx::BusyCursor->new;
-			my $revNo = $file->commit($message);
-			$self->{_busyCursor} = undef;
-
-			my @commit = @{ $file->stdout };
-			my @err    = @{ $file->stderr };
-			if (@err) {
-				$self->error( join( "\n", @err ), 'Error - SVN Commit' );
-			} else {
-				$self->info( join( "\n", @commit ), "Committed Revision number $revNo." );
-			}
-		} else {
-			$self->svn_commit($path);
-		}
-	}
-
-	return;
 }
-
-sub svn_add {
-	my $self = shift;
-	my $path = shift;
-	my $file = $self->svn_file($path);
-
-	$file->add;
-	if ($file->errstr) {
-		$self->error($file->errstr);
-	} else {
-		$self->info("$path scheduled to be added to " . $file->info->{_url});
-	}
-
-	return;
-}
-
-
-
 
 
 ######################################################################

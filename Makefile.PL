@@ -9,6 +9,6 @@ requires       'SVN::Class' => '0.15'; # For --file support
 build_requires 'Test::More';
 
 # Extras needed for building Padre plugins
-is_padre_plugin;
+#is_padre_plugin;
 
 WriteAll;
