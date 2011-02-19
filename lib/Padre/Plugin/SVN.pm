@@ -74,7 +74,11 @@ sub menu_plugins_simple {
 				$self->svn_commit( $project->root );
 			},
 		],
-			
+		
+		Wx::gettext('Revert File') => sub {
+			$self->svn_revert;
+		},
+		
 		Wx::gettext('Info') => sub {
 			my $filename = $self->filename or return;
 			$self->svn_info($filename);
@@ -84,6 +88,7 @@ sub menu_plugins_simple {
 			$self->show_about;
 		},
 	];
+	
 }
 
 
@@ -131,6 +136,7 @@ sub svn_commit {
 		return 0;
 	}
 	
+	#TODO grab the last revision details for the info bar.
 	my $info = "Get some info about the revision details of file etc";
 	
 	# need to get commit message
@@ -179,6 +185,7 @@ sub svn_commit {
 	
 	} # end while
 	
+	return 1;
 	
 	
 }
@@ -188,15 +195,61 @@ sub _do_commit {
 	my $path = shift;
 	my $message = shift;
 	
-		$svn->svn_commit($path, $message);
-		if( $svn->error ) {
-			$self->main->error( $svn->error_msg, "$path" );
-		}
-		else {
-			$self->main->message( $svn->msg, "$path" );
-		}
+	$svn->svn_commit($path, $message);
+	if( $svn->error ) {
+		$self->main->error( $svn->error_msg, "$path" );
+	}
+	else {
+		$self->main->message( $svn->msg, "$path" );
+	}
 		
 }	
+
+
+sub svn_revert {
+	my $self = shift;
+	
+	
+	my $path = $self->filename;
+	
+	if( ! $svn->is_under_svn($path) ) {
+		$self->main->error("$path is not under svn");
+		return 0;
+	}	
+	
+	# Firstly warn the person their actions will
+	# go back to the last version of the file
+
+	my $layout = [
+		[
+			[
+				'Wx::StaticText',
+				undef,
+				"Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."
+			],
+		],
+		[
+			[ 'Wx::Button', 'ok',     Wx::wxID_OK ],
+			[ 'Wx::Button', 'cancel', Wx::wxID_CANCEL ]
+		],
+	];
+	my $dialog = Wx::Perl::Dialog->new(
+		parent => $self->main,
+		title  => 'SVN Revert',
+		layout => $layout,
+		width  => [ 500, 1200 ],
+	);
+	$dialog->show_modal or return;
+			my $data = $dialog->get_data;
+	if ( $data->{cancel} ) {
+		return;
+	}
+	
+	# Continue with the revert
+	
+	$svn->svn_revert($path);	
+	
+}
 
 sub svn_info {
 	my $self = shift;

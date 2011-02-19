@@ -96,6 +96,30 @@ sub svn_commit {
 	
 }
 
+sub svn_revert {
+	my $self = shift;
+	my $path = shift;
+	
+	$self->_reset_error;
+	
+	my ($stdout, $stderr) = capture {
+		system "svn revert $path";
+	};
+	
+	if( $stderr ne "" ) {
+		# handle error
+		print "Error: $stderr\n";
+		$self->{error} = 1;
+		$self->{error_msg} = $stderr;
+		
+		return 0;
+	}
+		
+	$self->{msg} = $stdout;
+	return 1;
+}
+
+
 sub svn_info {
 	my $self = shift;
 	my $path = shift;
