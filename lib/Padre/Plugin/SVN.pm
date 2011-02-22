@@ -223,7 +223,7 @@ sub svn_commit {
 }
 
 
-# testing something, removed after testing.
+
 sub _do_commit {
 	my $self = shift;
 	my $path = shift;
