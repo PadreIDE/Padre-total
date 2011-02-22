@@ -74,12 +74,6 @@ sub menu_plugins_simple {
 				$self->svn_commit( $project->root );
 			},
 		],
-		
-		Wx::gettext('Revert File') => sub {
-			$self->svn_revert;
-		},
-		
-
 		Wx::gettext('Diff') => [
 			Wx::gettext('File') => [
 				Wx::gettext('Show') => sub {
@@ -96,17 +90,6 @@ sub menu_plugins_simple {
 				$self->svn_diff( $project->root );
 			},
 		],
-		
-		Wx::gettext('Info') => sub {
-			my $filename = $self->filename or return;
-			$self->svn_info($filename);
-		},
-		
-		Wx::gettext('Blame')  => sub {
-			my $filename = $self->filename or return;
-			$self->svn_blame($filename);
-		},
-				
 		Wx::gettext('Log') => [
 			Wx::gettext('File') => sub {
 				my $filename = $self->filename or return;
@@ -116,7 +99,22 @@ sub menu_plugins_simple {
 				my $project = $self->project or return;
 				$self->svn_log( $project->root );
 			},
-		],		
+		],
+		'---' => undef,
+		Wx::gettext('Revert File') => sub {
+			$self->svn_revert;
+		},
+		Wx::gettext('Info') => sub {
+			my $filename = $self->filename or return;
+			$self->svn_info($filename);
+		},
+		
+		Wx::gettext('Blame - Show who made changes')  => sub {
+			my $filename = $self->filename or return;
+			$self->svn_blame($filename);
+		},
+				
+		
 		
 		Wx::gettext('About') => sub {
 			$self->show_about;
@@ -158,7 +156,7 @@ END_MESSAGE
 
 # TODO Add in a timer so long running calls can be stopped at some point.
 
-# TODO: update!
+# TODO: update - this is tricky as you may end up with conflicts etc!
 
 sub svn_commit {
 	my $self = shift;
@@ -224,6 +222,8 @@ sub svn_commit {
 	
 }
 
+
+# testing something, removed after testing.
 sub _do_commit {
 	my $self = shift;
 	my $path = shift;
@@ -301,10 +301,6 @@ sub svn_info {
 sub svn_diff {
 	my $self = shift;
 	my $path = shift;
-	#my $file = $self->svn_file($path);
-
-	#$file->diff;
-	#my $status = join( "\n", @{ $file->stdout } );
 
 	$svn->svn_diff($path);
 	
@@ -349,7 +345,11 @@ sub svn_diff_in_padre {
 sub svn_log {
 	my $self = shift;
 	my $path = shift;
-	
+
+	if( ! $svn->is_under_svn($path) ) {
+		$self->main->error("$path is not under svn");
+		return 0;
+	}	
 	
 
 	$self->{_busyCursor} = Wx::BusyCursor->new;
@@ -376,6 +376,11 @@ sub svn_blame {
 	my $self = shift;
 	my $path = shift;
 
+	if( ! $svn->is_under_svn($path) ) {
+		$self->main->error("$path is not under svn");
+		return 0;
+	}
+	
 	$self->{_busyCursor} = Wx::BusyCursor->new;
 	$svn->svn_blame($path);
 	$self->{_busyCursor} = undef;
