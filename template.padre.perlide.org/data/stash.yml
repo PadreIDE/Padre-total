@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 January 30
+        url: http://blogs.perl.org/users/peter_lavender/2011/01/padre-080-has-been-released.html
+        title: Padre 0.80 has been released
+        comment: by Peter Lavender (Release Manager... for now)
       - date: 2011 January 20
         url: http://blogs.perl.org/users/peter_lavender/2011/01/padre-078-has-been-released---the-late-announcement.html
         title: Padre 0.78 has been released - the late announcement...
