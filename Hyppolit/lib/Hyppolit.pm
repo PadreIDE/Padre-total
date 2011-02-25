@@ -29,7 +29,7 @@ use 5.008005;
 
 
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use base 'Exporter';
 
@@ -173,6 +173,19 @@ sub irc_public {
 			$irc->yield(privmsg => $channel, "$1 is $config->{is}{$1}");
 		} else {
 			#$irc->yield(privmsg => $channel, "I don't know what $1 is");
+		}
+	}
+
+	if ($config->{explain}) {	
+		if ($text =~ /^$config->{explain}:\s*(.*)/) {
+			my $code = $1;
+			require Code::Explain;
+			if (not $code) {
+				$irc->yield(privmsg => $channel, "You need to type in a perl5 expression and hope that Code::Explain v$Code::Explain::VERSION understand it");
+			} else {
+				my $ce = Code::Explain->new;
+				$irc->yield(privmsg => $channel, $ce->explain($code));
+			}
 		}
 	}
 
