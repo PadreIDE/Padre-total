@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 February 16
+        url: http://zenoga.tumblr.com/post/3329172612/fixing-an-easy-padre-bug-step-by-step
+        title: Fixing an “Easy” Padre Bug, Step By Step
+        comment: by Zeno Gantner
       - date: 2011 January 30
         url: http://blogs.perl.org/users/peter_lavender/2011/01/padre-080-has-been-released.html
         title: Padre 0.80 has been released
