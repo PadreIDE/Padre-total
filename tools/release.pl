@@ -101,6 +101,9 @@ my $ver;
 
 # URL can be .../trunk/Name     or ../trunk/Name-More-Name
 # or    .../branches/Name or .../barnches/Name-0.12  or the others
+# of course this breaks when you use release-0.82 in the branch
+# and the make dist created Padre-0.82  so best to change 
+# what name is used when branching.
 if ( $URL =~ m{$SVN/(trunk|branches)/([^/]+)$} ) {
 	$name = $2;
 	if ( $name =~ /^([\w-]+)-(\d+\.\d+(_\d+)?)$/ ) {
@@ -118,9 +121,9 @@ if ( $ver and $ver ne $version ) {
 	die "Invalid version $ver - $version\n";
 }
 
-my $dir = File::Temp::tempdir( CLEANUP => 0 );
-chdir $dir;
-print "\n**DIR $dir\n";
+my $tmp_dir = File::Temp::tempdir( CLEANUP => 0 );
+chdir $tmp_dir;
+print "\n**DIR $tmp_dir\n";
 
 # Added /Padre to the destination path, as this allows
 # assumptions in Padre::Share::share to create the 
@@ -189,7 +192,9 @@ if (not $display) {
 print "Now making the distribution\n";
 
 _system("$make dist");
-copy( "$name-$version.tar.gz", $start_dir ) or die $!;
+print "current working dir... " . Cwd::cwd() . "\n";
+print "Copying Padre tar ball back to start dir: $tmp_dir/$name-$version.tar.gz, $start_dir\n";
+copy( "$tmp_dir/$name-$version.tar.gz", $start_dir ) or die $!;
 if ($tag) {
 	_system("svn cp -r$rev $URL $TAGS/$name-$version -m'tag $name-$version'");
 }
