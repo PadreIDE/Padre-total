@@ -1,9 +1,10 @@
 #!/usr/env/perl
 
 use strict;
-use Padre::Plugin::SVN::Commands;
 
 use Test::More;
+
+use Padre::Plugin::SVN::Commands;
 
 plan tests => 1;
 
