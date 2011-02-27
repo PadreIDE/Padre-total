@@ -29,7 +29,7 @@ use 5.008005;
 
 
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use base 'Exporter';
 
@@ -183,8 +183,8 @@ sub irc_public {
 			if (not $code) {
 				$irc->yield(privmsg => $channel, "You need to type in a perl5 expression and hope that Code::Explain v$Code::Explain::VERSION understand it");
 			} else {
-				my $ce = Code::Explain->new;
-				$irc->yield(privmsg => $channel, $ce->explain($code));
+				my $ce = Code::Explain->new( code => $code );
+				$irc->yield(privmsg => $channel, $ce->explain);
 			}
 		}
 	}

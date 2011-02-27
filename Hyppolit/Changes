@@ -1,5 +1,8 @@
 Changes of Hyppolit the IRC bot
 
+v0.07 2011.02.27
+    Update Code::Explain API to 0.02
+
 v0.06 2011.02.25
 	Add support to Code::Explain
 
