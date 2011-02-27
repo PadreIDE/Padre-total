@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 February 27
+        url: http://blogs.perl.org/users/peter_lavender/2011/02/padre-082-has-been-released.html
+        title: Padre 0.82 has been released
+        comment: by Peter Lavender (Release Manager)
       - date: 2011 February 16
         url: http://zenoga.tumblr.com/post/3329172612/fixing-an-easy-padre-bug-step-by-step
         title: Fixing an “Easy” Padre Bug, Step By Step
