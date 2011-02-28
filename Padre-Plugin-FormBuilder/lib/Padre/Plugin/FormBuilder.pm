@@ -26,10 +26,9 @@ use warnings;
 # Normally we would run-time load most of these,
 # but we happen to know Padre uses all of them itself.
 use Class::Inspector 1.22 ();
-use Class::Unload    0.03 ();
 use Params::Util     1.00 ();
 use Padre::Plugin    0.66 ();
-use Padre::Util      0.79 ();
+use Padre::Util      0.81 ();
 use Padre::Wx        0.66 ();
 
 our $VERSION = '0.02';
@@ -88,9 +87,9 @@ sub menu_dialog {
 	# Show the main dialog
 	require Padre::Plugin::FormBuilder::Dialog;
 	my $dialog = Padre::Plugin::FormBuilder::Dialog->new(
-		$main, $self, $fbp, $list,
+		$main, $fbp, $list,
 	);
-	while ( $dialog->ShowModel != Wx::wxID_CANCEL ) {
+	while ( $dialog->ShowModal != Wx::wxID_CANCEL ) {
 		# Extract information and clean up dialog
 		my $name    = $dialog->selected;
 		my $command = $dialog->command;
@@ -117,7 +116,7 @@ sub menu_dialog {
 			eval "$code";
 			if ( $@ ) {
 				$self->main->error("Error loading dialog: $@");
-				Class::Unload->unload($name);
+				$self->unload($name);
 				last;
 			}
 
@@ -127,7 +126,7 @@ sub menu_dialog {
 			};
 			if ( $@ ) {
 				$self->main->error("Error constructing dialog: $@");
-				Class::Unload->unload($name);
+				$self->unload($name);
 				last;
 			}
 
@@ -138,12 +137,12 @@ sub menu_dialog {
 			$preview->Destroy;
 			if ( $@ ) {
 				$self->main->error("Dialog crashed while in use: $@");
-				Class::Unload->unload($name);
+				$self->unload($name);
 				last;
 			}
 
 			# Clean up
-			Class::Unload->unload($name);
+			$self->unload($name);
 		}
 		last;
 	}
