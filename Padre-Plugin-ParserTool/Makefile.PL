@@ -1,6 +1,6 @@
 use inc::Module::Install::DSL 1.00;
 
-all_from      lib/Parser/Plugin/ParserTool.pm
+all_from      lib/Padre/Plugin/ParserTool.pm
 requires      Padre          0.83
 requires      PPI            1.213
 requires      Devel::Dumpvar 0.04

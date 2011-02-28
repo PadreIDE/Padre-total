@@ -6,6 +6,6 @@ use warnings;
 use Padre::Plugin::ParserTool::FBP ();
 
 our $VERSION = '0.01';
-our @ISA     = 'Padre::Plugin::ParserTool::FPB';
+our @ISA     = 'Padre::Plugin::ParserTool::FBP';
 
 1;
