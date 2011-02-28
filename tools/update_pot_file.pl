@@ -37,7 +37,13 @@ print $fh map { "$_$/" } @pmfiles;
 close $fh;
 
 unlink $pot_file;
-system("xgettext",  "--keyword=_T",  "--from-code=utf-8", "-o", $pot_file, "-f", $pmfiles) == 0
+my ($gettext) = grep {$_ =~ /^xgettext/} qx{xgettext -V};
+chomp $gettext;
+if ($gettext ne 'xgettext (GNU gettext-tools) 0.17') {
+	die "Due to bug #1132 we only allow the use of v0.17 of xgettext\n";
+}
+
+system("xgettext",  "--keyword=_T",  "--from-code=utf-8", "-o", $pot_file, "-f", $pmfiles, "--sort-output") == 0
 	or die "xgettext exited with return code " . ($? >> 8);
 
 # cleanup
