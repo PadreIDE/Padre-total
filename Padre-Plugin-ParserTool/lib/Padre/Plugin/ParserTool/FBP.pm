@@ -106,11 +106,12 @@ sub new {
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxSP_NOBORDER,
+		Wx::wxSP_3D,
 	);
+	$self->{m_splitter2}->SetMinimumPaneSize(50);
 
 	$self->{m_panel1} = Wx::Panel->new(
-		$self,
+		$self->{m_splitter2},
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
@@ -118,13 +119,13 @@ sub new {
 	);
 
 	$self->{m_staticText1} = Wx::StaticText->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		"Input Text",
 	);
 
 	$self->{m_textCtrl2} = Wx::TextCtrl->new(
-		$self,
+		$self->{m_panel1},
 		-1,
 		"",
 		Wx::wxDefaultPosition,
@@ -133,7 +134,7 @@ sub new {
 	);
 
 	$self->{m_panel2} = Wx::Panel->new(
-		$self,
+		$self->{m_splitter2},
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
@@ -141,13 +142,13 @@ sub new {
 	);
 
 	$self->{m_staticText2} = Wx::StaticText->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		"Output Structure",
 	);
 
 	$self->{m_textCtrl6} = Wx::TextCtrl->new(
-		$self,
+		$self->{m_panel2},
 		-1,
 		"",
 		Wx::wxDefaultPosition,
