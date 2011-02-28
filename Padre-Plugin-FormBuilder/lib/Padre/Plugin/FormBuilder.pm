@@ -22,6 +22,9 @@ based on wxFormBuilder designs.
 use 5.008005;
 use strict;
 use warnings;
+
+# Normally we would run-time load most of these,
+# but we happen to know Padre uses all of them itself.
 use Class::Inspector 1.22 ();
 use Class::Unload    0.03 ();
 use Params::Util     1.00 ();
