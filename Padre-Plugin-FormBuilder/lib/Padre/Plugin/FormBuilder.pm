@@ -276,7 +276,8 @@ sub generate_dialog {
 	}
 
 	# Does the project have an existing version?
-	my $version = $self->current->project->version;
+	my $project = $self->current->project;
+	my $version = $project ? $project->version : undef;
 
 	# Generate the perl dialog code
 	require Padre::Plugin::FormBuilder::Perl;
