@@ -23,7 +23,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		"Parser Tool",
+		Wx::gettext("Parser Tool"),
 		Wx::wxDefaultPosition,
 		[ 500, 600 ],
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
@@ -32,7 +32,7 @@ sub new {
 	$self->{m_staticText5} = Wx::StaticText->new(
 		$self,
 		-1,
-		"Intro blurb and instructions...",
+		Wx::gettext("Intro blurb and instructions..."),
 	);
 
 	$self->{m_staticline1} = Wx::StaticLine->new(
@@ -46,10 +46,10 @@ sub new {
 	$self->{m_staticText3} = Wx::StaticText->new(
 		$self,
 		-1,
-		"Parser Module",
+		Wx::gettext("Parser Module"),
 	);
 
-	$self->{m_comboBox1} = Wx::ComboBox->new(
+	$self->{module} = Wx::ComboBox->new(
 		$self,
 		-1,
 		"PPI",
@@ -64,10 +64,10 @@ sub new {
 	$self->{m_staticText4} = Wx::StaticText->new(
 		$self,
 		-1,
-		"Parser Function",
+		Wx::gettext("Parser Function"),
 	);
 
-	$self->{m_comboBox2} = Wx::ComboBox->new(
+	$self->{function} = Wx::ComboBox->new(
 		$self,
 		-1,
 		"PPI::Document->new( \\\$INPUT )",
@@ -79,10 +79,10 @@ sub new {
 	$self->{m_staticText6} = Wx::StaticText->new(
 		$self,
 		-1,
-		"Dumper Format",
+		Wx::gettext("Dumper Format"),
 	);
 
-	$self->{m_choice1} = Wx::Choice->new(
+	$self->{dumper} = Wx::Choice->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -91,6 +91,15 @@ sub new {
 			"Devel::Dumpvar",
 			"Data::Dumper",
 		],
+	);
+	$self->{dumper}->SetSelection(0);
+
+	Wx::Event::EVT_CHOICE(
+		$self,
+		$self->{dumper},
+		sub {
+			shift->dumper(@_);
+		},
 	);
 
 	$self->{m_staticline2} = Wx::StaticLine->new(
@@ -106,9 +115,10 @@ sub new {
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		Wx::wxSP_3D,
+		Wx::wxSP_LIVE_UPDATE | Wx::wxSP_NOBORDER,
 	);
-	$self->{m_splitter2}->SetMinimumPaneSize(50);
+	$self->{m_splitter2}->SetSashGravity(0.5);
+	$self->{m_splitter2}->SetMinimumPaneSize(100);
 
 	$self->{m_panel1} = Wx::Panel->new(
 		$self->{m_splitter2},
@@ -121,16 +131,24 @@ sub new {
 	$self->{m_staticText1} = Wx::StaticText->new(
 		$self->{m_panel1},
 		-1,
-		"Input Text",
+		Wx::gettext("Input Text"),
 	);
 
-	$self->{m_textCtrl2} = Wx::TextCtrl->new(
+	$self->{input} = Wx::TextCtrl->new(
 		$self->{m_panel1},
 		-1,
 		"",
 		Wx::wxDefaultPosition,
-		[ -1, -1 ],
-		Wx::wxTE_MULTILINE,
+		[ 250, 300 ],
+		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE,
+	);
+
+	Wx::Event::EVT_TEXT(
+		$self,
+		$self->{input},
+		sub {
+			shift->input(@_);
+		},
 	);
 
 	$self->{m_panel2} = Wx::Panel->new(
@@ -144,16 +162,19 @@ sub new {
 	$self->{m_staticText2} = Wx::StaticText->new(
 		$self->{m_panel2},
 		-1,
-		"Output Structure",
+		Wx::gettext("Output Structure"),
 	);
 
-	$self->{m_textCtrl6} = Wx::TextCtrl->new(
+	$self->{output} = Wx::TextCtrl->new(
 		$self->{m_panel2},
 		-1,
 		"",
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTE_MULTILINE,
+		[ 250, 300 ],
+		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE | Wx::wxTE_READONLY,
+	);
+	$self->{output}->SetBackgroundColour(
+		Wx::Colour->new(240, 240, 240)
 	);
 
 	my $fgSizer2 = Wx::FlexGridSizer->new( 2, 2, 0, 10 );
@@ -161,15 +182,15 @@ sub new {
 	$fgSizer2->SetFlexibleDirection( Wx::wxBOTH );
 	$fgSizer2->SetNonFlexibleGrowMode( Wx::wxFLEX_GROWMODE_SPECIFIED );
 	$fgSizer2->Add( $self->{m_staticText3}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{m_comboBox1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$fgSizer2->Add( $self->{module}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$fgSizer2->Add( $self->{m_staticText4}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{m_comboBox2}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$fgSizer2->Add( $self->{function}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$fgSizer2->Add( $self->{m_staticText6}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{m_choice1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$fgSizer2->Add( $self->{dumper}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 
 	my $bSizer4 = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	$bSizer4->Add( $self->{m_staticText1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer4->Add( $self->{m_textCtrl2}, 1, Wx::wxEXPAND, 0 );
+	$bSizer4->Add( $self->{input}, 1, Wx::wxEXPAND, 0 );
 
 	$self->{m_panel1}->SetSizer($bSizer4);
 	$self->{m_panel1}->Layout;
@@ -177,7 +198,7 @@ sub new {
 
 	my $bSizer5 = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	$bSizer5->Add( $self->{m_staticText2}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer5->Add( $self->{m_textCtrl6}, 1, Wx::wxEXPAND, 0 );
+	$bSizer5->Add( $self->{output}, 1, Wx::wxEXPAND, 0 );
 
 	$self->{m_panel2}->SetSizer($bSizer5);
 	$self->{m_panel2}->Layout;
@@ -204,6 +225,20 @@ sub new {
 	$bSizer1->SetSizeHints($self);
 
 	return $self;
+}
+
+sub dumper {
+	my $self  = shift;
+	my $event = shift;
+
+	die 'EVENT HANDLER NOT IMPLEMENTED';
+}
+
+sub input {
+	my $self  = shift;
+	my $event = shift;
+
+	die 'EVENT HANDLER NOT IMPLEMENTED';
 }
 
 1;
