@@ -34,6 +34,9 @@ use Padre::Wx        0.66 ();
 our $VERSION = '0.02';
 our @ISA     = 'Padre::Plugin';
 
+# Temporary namespace counter
+my $COUNT = 0;
+
 
 
 
@@ -97,53 +100,62 @@ sub menu_dialog {
 			last;
 		}
 
+		# Do they want a Padre dialog or a regular one
+		my $padre = !! $dialog->{padre}->Checked;
+
+		# Should we generate into a temporary namespace
+		my $package = $dialog->{temp}
+
+		# Generate the dialog code
+		my $code = $self->generate_dialog(
+			file    => $fbp,
+			dialog  => $name,
+			package => $name,
+		);
+
 		# Handle the user instructions
 		if ( $command eq 'generate' ) {
-			# Create the dialog
-			my $code = $self->generate_dialog( $fbp, $name, $name );
-
 			# Open the generated code as a new file
 			$self->main->new_document_from_string(
 				$code,
 				'application/x-perl',
 			);
-		} else {
-			# Generate the dialog
-			my $code = $self->generate_dialog( $fbp, $name, $name );
-
-			# Load the dialog
-			local $@;
-			eval "$code";
-			if ( $@ ) {
-				$self->main->error("Error loading dialog: $@");
-				$self->unload($name);
-				last;
-			}
-
-			# Create the dialog
-			my $preview = eval {
-				$name->new( $main );
-			};
-			if ( $@ ) {
-				$self->main->error("Error constructing dialog: $@");
-				$self->unload($name);
-				last;
-			}
-
-			# Show the dialog
-			my $rv = eval {
-				$preview->ShowModal;
-			};
-			$preview->Destroy;
-			if ( $@ ) {
-				$self->main->error("Dialog crashed while in use: $@");
-				$self->unload($name);
-				last;
-			}
-
-			# Clean up
-			$self->unload($name);
+			last;
 		}
+
+		# Must be previes.
+		# Load the dialog
+		local $@;
+		eval "$code";
+		if ( $@ ) {
+			$self->main->error("Error loading dialog: $@");
+			$self->unload($name);
+			last;
+		}
+
+		# Create the dialog
+		my $preview = eval {
+			$name->new( $main );
+		};
+		if ( $@ ) {
+			$self->main->error("Error constructing dialog: $@");
+			$self->unload($name);
+			last;
+		}
+
+		# Show the dialog
+		my $rv = eval {
+			$preview->ShowModal;
+		};
+		$preview->Destroy;
+		if ( $@ ) {
+			$self->main->error("Dialog crashed while in use: $@");
+			$self->unload($name);
+			last;
+		}
+
+		# Clean up
+		$self->unload($name);
 		last;
 	}
 
@@ -248,17 +260,15 @@ sub package_list {
 
 # Generate the class code
 sub generate_dialog {
-	my $self = shift;
-	my $file = shift;
-	my $name = shift;
-	my $pkg  = shift;
+	my $self  = shift;
+	my %param = shift;
 
 	# Load the file
 	require FBP;
 	my $fbp = FBP->new;
-	my $ok  = $fbp->parse_file($file);
+	my $ok  = $fbp->parse_file($param{file});
 	unless ( $ok ) {
-		$self->main->error("Failed to load $file");
+		$self->main->error("Failed to load $param{file}");
 		return;
 	}
 
@@ -268,10 +278,10 @@ sub generate_dialog {
 	);
 	my $dialog = $project->find_first(
 		isa  => 'FBP::Dialog',
-		name => $name,
+		name => $param{dialog},
 	);
 	unless ( $dialog ) {
-		$self->main->error("Failed to find dialog $name");
+		$self->main->error("Failed to find dialog $param{dialog}");
 		return;
 	}
 
@@ -279,14 +289,24 @@ sub generate_dialog {
 	my $project = $self->current->project;
 	my $version = $project ? $project->version : undef;
 
-	# Generate the perl dialog code
-	require Padre::Plugin::FormBuilder::Perl;
-	my $perl = Padre::Plugin::FormBuilder::Perl->new(
-		project => $project,
-		defined($version) ? ( version => $version ) : (),
-	);
+	# Configure the code generator
+	my $perl = undef;
+	if ( $param{padre} ) {
+		require Padre::Plugin::FormBuilder::Perl;
+		$perl = Padre::Plugin::FormBuilder::Perl->new(
+			project => $project,
+			defined($version) ? ( version => $version ) : (),
+		);
+	} else {
+		require FBP::Perl;
+		$perl = FBP::Perl->new(
+			project => $project,
+		);
+	}
+
+	# Generate the class code
 	my $string = $perl->flatten(
-		$perl->dialog_class($dialog)
+		$perl->dialog_class( $dialog, $param{package} )
 	);
 
 	return $string;

@@ -23,6 +23,7 @@ It overloads various methods to make things work in a more Padre-specific way.
 use 5.008005;
 use strict;
 use warnings;
+use Scalar::Util ();
 use Mouse 0.61;
 
 our $VERSION = '0.02';
@@ -39,15 +40,23 @@ has version => (
 
 
 
+
 ######################################################################
 # Dialog Generators
 
 sub dialog_class {
-	my $self  = shift;
-	my $class = ref $self;
-	my $code  = $self->SUPER::dialog_class(@_);
+	my $self    = shift;
+	my $name    = shift;
+	my $package = shift;
+	my $code    = $self->SUPER::dialog_class($name);
 
-	# Prepend the auto-generation "Don't Modify" warning
+	# Customise the package name if requested
+	if ( $package ) {
+		splice( @$code, 0, 1, "package $package;" );
+	}
+
+	# Prepend an auto-generated "Don't Modify" warning
+	my $class = Scalar::Util::blessed($self);
 	splice(
 		@$code, 1, 0,
 		"",
