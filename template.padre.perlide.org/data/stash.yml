@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 March 2
+        url: http://qa.celogeek.com/programming/perl/padreaperlide
+        title: Padre - a perlIDE writed in Perl - a good promise for perl developer
+        comment: by Celogeek
       - date: 2011 February 27
         url: http://blogs.perl.org/users/peter_lavender/2011/02/padre-082-has-been-released.html
         title: Padre 0.82 has been released
