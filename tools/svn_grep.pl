@@ -4,8 +4,8 @@ use warnings;
 
 
 use Getopt::Long qw(GetOptions);
-use File::Temp   qw(tempdir);
-use Cwd          qw(cwd);
+use File::Temp qw(tempdir);
+use Cwd qw(cwd);
 
 my $rev;
 my $regex;
@@ -21,26 +21,28 @@ GetOptions(
 	'last'       => \$last,
 	'regex=s'    => \$regex,
 ) or usage();
-usage("Missing --revision REV") if not $rev;
-usage("Either --firs or --last must be given") if not ($first xor $last);
-usage("Either --url URL or --path PATH must be given") if not ($path xor $url);
-usage("--regex REGEX  was missing") if not $regex;
+usage("Missing --revision REV")                        if not $rev;
+usage("Either --firs or --last must be given")         if not( $first xor $last );
+usage("Either --url URL or --path PATH must be given") if not( $path xor $url );
+usage("--regex REGEX  was missing")                    if not $regex;
 
 
-if (not $url) {
+if ( not $url ) {
 	$url = get_url_from_local($path);
 }
 
-my ($first_rev, $last_rev) = split /:/, $rev;
-if (not $last_rev) {
+my ( $first_rev, $last_rev ) = split /:/, $rev;
+if ( not $last_rev ) {
 	my $head = get_head_rev($url);
+
 	#print "HEAD: $head\n";
 	$last_rev = $head;
 }
 print "Range $first_rev - $last_rev\n";
 
-my $dir = tempdir (CLEANUP => 1);
+my $dir = tempdir( CLEANUP => 1 );
 my $cwd = cwd();
+
 END {
 	chdir $cwd if $cwd;
 }
@@ -50,50 +52,52 @@ my $cmd = "svn co -r$last_rev $url .";
 print "$cmd\n";
 qx{$cmd};
 
-# BUG: might not work well if the string has appeared and 
+# BUG: might not work well if the string has appeared and
 # disappeared and appeared again.
 
 
 if ($last) {
+
 	#Check the last_rev, if it is there report
-	#Check the diff between the first_rev and the last_rev to see if it was changed, 
-	#       if not, report that it was not in that range 
+	#Check the diff between the first_rev and the last_rev to see if it was changed,
+	#       if not, report that it was not in that range
 	# 	TODO: and offer to expand search to older revisions (or do it automatically ?)
 	# Then do a binary search for the last occurance
-	if (in_rev($last_rev)) {
+	if ( in_rev($last_rev) ) {
 		print "Found in last rev ($last_rev)\n";
 		exit;
 	}
-	if (not in_rev($first_rev)) {
+	if ( not in_rev($first_rev) ) {
 		die "Not found in first rev ($rev)\n";
 	}
 	loop();
 } elsif ($first) {
+
 	# Check last_rev, if the string is not there, report that and quit
 	# Check the first_rev if the string is there tell, report that the start is not in the range
 	# Do a binary search
-	if (not in_rev($last_rev)) {
+	if ( not in_rev($last_rev) ) {
 		die "Not in last_rev ($last_rev)\n";
 	}
-	if (in_rev($first_rev)) {
+	if ( in_rev($first_rev) ) {
 		die "The string was in first_rev ($first_rev) already\n";
 	}
 	loop();
 }
 
 sub loop {
-	while ($first_rev < $last_rev) {
-		my $middle = int( ($last_rev+$first_rev) / 2 );
+	while ( $first_rev < $last_rev ) {
+		my $middle = int( ( $last_rev + $first_rev ) / 2 );
 		print "Trying $first_rev - $middle - $last_rev\n";
 		if ($last) {
-			if (in_rev($middle)) {
+			if ( in_rev($middle) ) {
 				last if $middle == $first_rev;
 				$first_rev = $middle;
 			} else {
 				$last_rev = $middle;
 			}
 		} else {
-			if (in_rev($middle)) {
+			if ( in_rev($middle) ) {
 				$last_rev = $middle;
 			} else {
 				last if $middle == $first_rev;
@@ -108,7 +112,7 @@ sub loop {
 
 sub in_rev {
 	my $rev = shift;
-	
+
 	my $cmd = "svn up -r$rev";
 	print "$cmd\n";
 	qx{$cmd};
@@ -124,7 +128,7 @@ sub get_head_rev {
 	my @data = qx{svn info $url};
 	chomp @data;
 	my ($rev) = grep {/^Revision: \d+/} @data;
-	if ($rev =~ /^Revision: (\d+)/) {
+	if ( $rev =~ /^Revision: (\d+)/ ) {
 		return $1;
 	}
 	die "Could not determine head revision\n";
@@ -135,7 +139,7 @@ sub get_url_from_local {
 	my @data = qx{svn info $path};
 	die "svn info failed\n" if not @data;
 	my ($url) = grep {/^URL:/} @data;
-	if ($url =~ /^URL:\s*(.*)/) {
+	if ( $url =~ /^URL:\s*(.*)/ ) {
 		return $1;
 	}
 	die "Could not determined URL\n";

@@ -4,33 +4,30 @@ use warnings;
 use File::Spec ();
 
 foreach my $plugin_dir ( glob("Padre-Plugin-*") ) {
-    my $locale = File::Spec->catdir( $plugin_dir, 'share', 'locale' );
-    if ( -d $locale ) {
-        ( my $plugin_name = $plugin_dir ) =~ s/Padre-Plugin-(\w+)/$1/;
-        foreach my $pofile ( glob( File::Spec->catfile( $locale, '*.po' ) ) ) {
-            if ( $pofile =~ /Padre__Plugin__$plugin_name-(.+?)\.po/ ) {
-                if ( open( my $fh, $pofile ) ) {
-                    while ( my $line = <$fh> ) {
-                        if ( $line =~ /^"Project-Id-Version:\s+(.+?)\\n"/ ) {
-                            my $project_id_version = $1;
-                            if ( $project_id_version ne $plugin_dir ) {
-                                print
-                                  "Project-Id-Version Mismatch at $pofile\n";
-                            }
-                            last;
-                        }
-                    }
-                    close $fh;
-                }
-                else {
-                    print "Could not open $pofile for reading\n";
-                }
-            }
-            else {
-                print "Found mismatched filename $pofile\n";
-            }
-        }
-    }
+	my $locale = File::Spec->catdir( $plugin_dir, 'share', 'locale' );
+	if ( -d $locale ) {
+		( my $plugin_name = $plugin_dir ) =~ s/Padre-Plugin-(\w+)/$1/;
+		foreach my $pofile ( glob( File::Spec->catfile( $locale, '*.po' ) ) ) {
+			if ( $pofile =~ /Padre__Plugin__$plugin_name-(.+?)\.po/ ) {
+				if ( open( my $fh, $pofile ) ) {
+					while ( my $line = <$fh> ) {
+						if ( $line =~ /^"Project-Id-Version:\s+(.+?)\\n"/ ) {
+							my $project_id_version = $1;
+							if ( $project_id_version ne $plugin_dir ) {
+								print "Project-Id-Version Mismatch at $pofile\n";
+							}
+							last;
+						}
+					}
+					close $fh;
+				} else {
+					print "Could not open $pofile for reading\n";
+				}
+			} else {
+				print "Found mismatched filename $pofile\n";
+			}
+		}
+	}
 }
 
 __END__

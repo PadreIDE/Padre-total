@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 # first attempt to build a smoke client for padre
-# install WWW::Mechanize and TAP::Harness::Archive, 
+# install WWW::Mechanize and TAP::Harness::Archive,
 # install MIME::Lite
 # fetch the smolder_smoke_signal script from the Smolder package
 # and put it in the PATH
@@ -17,7 +17,7 @@ use WWW::Mechanize;
 
 use Capture::Tiny qw(capture_merged);
 use Data::Dumper qw(Dumper);
-use Getopt::Long  qw(GetOptions);
+use Getopt::Long qw(GetOptions);
 use MIME::Lite;
 my $path;
 my $help;
@@ -28,16 +28,16 @@ my $to;
 my $smolder;
 my $all;
 GetOptions(
-	 'path=s'    => \$path,
-	 'to=s'      => \$to,
-	 'help'      => \$help,
-	 'sleep=s'   => \$sleep,
-	 'force'     => \$force,
-	 'verbose'   => \$verbose,
-	'all'        => \$all,
-	 'smolder=s' => \$smolder,
+	'path=s'    => \$path,
+	'to=s'      => \$to,
+	'help'      => \$help,
+	'sleep=s'   => \$sleep,
+	'force'     => \$force,
+	'verbose'   => \$verbose,
+	'all'       => \$all,
+	'smolder=s' => \$smolder,
 ) or usage();
-usage() if $help;
+usage()                  if $help;
 usage('Needs --path')    if not $path;
 usage('Needs --to')      if not $to;
 usage('Needs --smolder') if not $smolder;
@@ -46,9 +46,10 @@ my %MAIL = (
 	adamk   => 'adamk@perlide.org',
 	Sewi    => 'sewi@perlide.org',
 	waxhead => 'waxhead@perlide.org',
-#	adamk   => 'adamk@cpan.org',
-#	Sewi    => 's.willing@tsbz.de',
-#	waxhead => 'plaven@bigpond.net.au',
+
+	#	adamk   => 'adamk@cpan.org',
+	#	Sewi    => 's.willing@tsbz.de',
+	#	waxhead => 'plaven@bigpond.net.au',
 );
 
 if ($all) {
@@ -63,8 +64,8 @@ my $password = <$fh>;
 chomp $username;
 chomp $password;
 
-my $SVN  = 'svn';
-my $MAKE = $^O =~ /Win32/i ? 'dmake' : 'make';
+my $SVN      = 'svn';
+my $MAKE     = $^O =~ /Win32/i ? 'dmake' : 'make';
 my $platform = $^O;
 
 my $output;
@@ -73,49 +74,53 @@ while (1) {
 	print scalar localtime;
 	$output = '';
 
-	my ($old_rev, $old_author) = svn_revision();
-	my @diff = qx{$SVN diff -rHEAD};
+	my ( $old_rev, $old_author ) = svn_revision();
+	my @diff   = qx{$SVN diff -rHEAD};
 	my $status = '';
-	
-	if (@diff or $force) {
+
+	if ( @diff or $force ) {
 		print " - running\n";
+
 		#print "status @diff";
 
 		system "$MAKE realclean";
 		_system("$SVN up");
 
-		my ($rev, $author) = svn_revision();
-		if ($rev == $old_rev and not $force) {
+		my ( $rev, $author ) = svn_revision();
+		if ( $rev == $old_rev and not $force ) {
 			$output .= "\n\nSome serious trouble as we could not update from SVN (rev $rev)\n";
 			$status = "FAIL - could not update svn";
 			next; # Let's not send an e-mail now
 		}
-		if (not $status) {
+		if ( not $status ) {
 			my $make_out = _system("$^X Makefile.PL");
-			if ($make_out =~ /Warning: prerequisite (.*)/) {
+			if ( $make_out =~ /Warning: prerequisite (.*)/ ) {
 				$output = "\n\nThere seem to be at least one missing prerequisite:\n$1";
 				$output .= "\n\nThere might be more missing\n";
 				$status = "FAIL - missing prereq";
+
 				# TODO, list al the missing prereqs
 			}
 		}
-		if (not $status) {
+		if ( not $status ) {
 			_system($MAKE);
 		}
-		if (not $status) {
+		if ( not $status ) {
 			my $file = 'tap.tar.gz';
 			unlink $file;
 			my $test_out = _system("prove --merge -ba $file t/ xt/");
-			#my $test_out = "FAIL"; 
-			if ($test_out =~ /Result: FAIL|FAILED|Bailout called/) {
+
+			#my $test_out = "FAIL";
+			if ( $test_out =~ /Result: FAIL|FAILED|Bailout called/ ) {
 				$status = "FAIL - testing";
 			}
+
 			#_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
 			#$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
 		}
 
 		$status ||= "SUCCESS";
-		send_message($rev, $author, "rev $rev - $platform - $status", $output);
+		send_message( $rev, $author, "rev $rev - $platform - $status", $output );
 	} else {
 		print " - skipping\n";
 	}
@@ -125,51 +130,53 @@ while (1) {
 	$force = 0;
 }
 
-sub svn_revision { 
+sub svn_revision {
+
 	#my ($rev) = map {/(\d+)/} grep {/^Last Changed Rev:/} qx{$SVN info};
 	my @info = qx{$SVN info};
-	my ($rev) = map {/(\d+)/} grep {/^Revision:/} @info;
+	my ($rev)    = map {/(\d+)/} grep     {/^Revision:/} @info;
 	my ($author) = map {/:\s*(\w+)/} grep {/^Last Changed Author:/} @info;
-	return ($rev, $author);
-};
+	return ( $rev, $author );
+}
+
 sub _system {
 	my $cmd = shift;
 
 	# Let's not send out the password of the smoke server to the mailing list
-	if ($cmd !~ /--password/) {
+	if ( $cmd !~ /--password/ ) {
 		$output .= "\n\n$cmd\n\n";
 	}
 	print "$cmd\n" if $verbose;
 	my $out = capture_merged { system $cmd; };
+
 	#print $out if $verbose;
 	$output .= $out;
 	return $out;
 }
 
 sub send_message {
-	my ($rev, $author, $status, $text) = @_;
+	my ( $rev, $author, $status, $text ) = @_;
 	my %message = (
-		From     => "$username <svn\@perlide.org>",
-		To       => $to,
-		Subject  => "Padre Smoke test $status",
-		Type     => 'multipart/mixed',
+		From    => "$username <svn\@perlide.org>",
+		To      => $to,
+		Subject => "Padre Smoke test $status",
+		Type    => 'multipart/mixed',
 	);
-	if ($MAIL{$author}) {
-		$message{CC} = $MAIL{$author}
+	if ( $MAIL{$author} ) {
+		$message{CC} = $MAIL{$author};
 	}
+
 	#print Dumper \%message;
 
 	my $msg = MIME::Lite->new(%message);
 	$msg->attach(
-		Type     => 'TEXT',
-		Data     => $text,
+		Type => 'TEXT',
+		Data => $text,
 	);
 
 	# when there is no connection this call throws an exception
 	# don't let it ruin the next party...
-	eval {
-		$msg->send('smtp','mail.perlide.org', Debug => 0 );
-        };
+	eval { $msg->send( 'smtp', 'mail.perlide.org', Debug => 0 ); };
 	if ($@) {
 		warn $@;
 	}

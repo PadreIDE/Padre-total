@@ -22,7 +22,7 @@ use File::Copy qw(copy);
 # mingw32-make
 # cd ..
 # rename parrot x
-# copy the files from 
+# copy the files from
 
 my $src  = "c:/portable/x";
 my $dest = "c:/portable/parrot";
@@ -37,7 +37,7 @@ my @linux_files = qw(
 );
 
 my @files = qw(languages/perl6/perl6.pbc);
-if ($^O eq "MSWin32") {
+if ( $^O eq "MSWin32" ) {
 	push @files, @windows_files;
 } else {
 	push @files, @linux_files;
@@ -49,10 +49,10 @@ foreach my $file (@files) {
 	print $file;
 	chomp $file;
 	next if not $file;
-	my $path = dirname ($file);
+	my $path = dirname($file);
 	print "PATH: $path\n";
-	my $dir = $path eq '.' ? $dest : File::Spec->catdir($dest, $path);
+	my $dir = $path eq '.' ? $dest : File::Spec->catdir( $dest, $path );
 	mkpath $dir;
-	copy(File::Spec->catfile($src, $file), File::Spec->catdir($dest, $path));
+	copy( File::Spec->catfile( $src, $file ), File::Spec->catdir( $dest, $path ) );
 }
 

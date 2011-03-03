@@ -2,14 +2,15 @@
 use strict;
 use warnings;
 
-use Cwd                   qw{ cwd };
+use Cwd qw{ cwd };
 use File::Spec::Functions qw{ catfile catdir };
 use File::Find::Rule;
-use File::Basename        qw{ basename };
-use File::Temp            qw{ tempdir };
-use Data::Dumper          qw{ Dumper };
-use Env                   qw{ LANG };
-use Getopt::Long          qw{ GetOptions };
+use File::Basename qw{ basename };
+use File::Temp qw{ tempdir };
+use Data::Dumper qw{ Dumper };
+use Env qw{ LANG };
+use Getopt::Long qw{ GetOptions };
+
 #use Locale::PO;
 
 # TODO: on the HTML show percentages instead of errors (or have both reports).
@@ -25,44 +26,45 @@ my $details;
 my $all;
 my $trunk;
 GetOptions(
-	'text'      => \$text, 
-	'html'      => \$html, 
-	'dir=s'     => \$dir, 
+	'text'      => \$text,
+	'html'      => \$html,
+	'dir=s'     => \$dir,
 	'project=s' => \$project_dir,
 	'details'   => \$details,
 	'all'       => \$all,
 	'trunk=s'   => \$trunk,
-	) or usage();
+) or usage();
 usage() if not $text and not $html;
 
 $LANG = 'C';
 
 my $tempdir = tempdir( CLEANUP => 1 );
-my $cwd       = cwd;
-my $errors = '';
+my $cwd     = cwd;
+my $errors  = '';
 
-usage("--all and --project are mutually exclusive") 
+usage("--all and --project are mutually exclusive")
 	if $all and $project_dir;
-if (not $all and not $project_dir) {
+if ( not $all and not $project_dir ) {
 	$project_dir = $cwd;
 }
 
 
 if ($project_dir) {
-	$reports{basename $project_dir} = collect_report($project_dir);
+	$reports{ basename $project_dir} = collect_report($project_dir);
 } elsif ($all) {
 	$trunk ||= $cwd;
-	foreach my $project_dir ("$trunk/Padre", glob( "$trunk/Padre-Plugin-*" )) {
+	foreach my $project_dir ( "$trunk/Padre", glob("$trunk/Padre-Plugin-*") ) {
+
 		#print "P: $project_dir\n";
-		$reports{basename $project_dir} = collect_report($project_dir);
+		$reports{ basename $project_dir} = collect_report($project_dir);
 	}
 }
-	
-my $text_report_file = catfile($cwd, 'po_report.txt');
+
+my $text_report_file = catfile( $cwd, 'po_report.txt' );
 
 if ($text) {
 	save_text_report($text_report_file);
-} 
+}
 if ($html) {
 	usage('--dir was missing') if not $dir;
 	usage("--dir $dir does not exist") if not -d $dir;
@@ -80,62 +82,62 @@ sub collect_report {
 	my $plugin_name = basename $project_dir;
 	$plugin_name =~ s/-/__/g;
 
-	my $share = catdir ( $project_dir, 'share' );
-	if (not -e $share) {
-		($share) = File::Find::Rule->directory()->name('share')->in(catdir( $project_dir, 'lib'));
+	my $share = catdir( $project_dir, 'share' );
+	if ( not -e $share ) {
+		($share) = File::Find::Rule->directory()->name('share')->in( catdir( $project_dir, 'lib' ) );
 	}
-	if (not $share or not -e $share) {
-		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
+	if ( not $share or not -e $share ) {
+		if ( $project_dir =~ m/Padre-Plugin-(.*)$/ ) {
 			my $plugin_name = $1;
 			_warn("Plugin '$plugin_name' is not internationalized.\n");
-		}
-		else {
+		} else {
 			_warn("Could not find a 'share' directory in '$project_dir'");
 		}
 		return;
 	}
 
-	my $localedir = catdir ( $share, 'locale' );
+	my $localedir = catdir( $share, 'locale' );
 
-	if (not -d $localedir) {
-		if ($project_dir =~ m/Padre-Plugin-(.*)$/) {
+	if ( not -d $localedir ) {
+		if ( $project_dir =~ m/Padre-Plugin-(.*)$/ ) {
 			my $plugin_name = $1;
 			_warn("Plugin '$plugin_name' is not internationalized.\n");
-		}
-		else {		
+		} else {
 			_warn("Can't find locale directory '$localedir'.\n");
 		}
 		return;
 	}
 
 
-	my @po_files  = glob "$localedir/*.po";
-	my $pot_file  = catfile( $localedir, 'messages.pot' );
-	if (open my $fh, '<', $pot_file) {
-		while (my $line = <$fh>) {
-			if ($line =~ /^msgid/) {
+	my @po_files = glob "$localedir/*.po";
+	my $pot_file = catfile( $localedir, 'messages.pot' );
+	if ( open my $fh, '<', $pot_file ) {
+		while ( my $line = <$fh> ) {
+			if ( $line =~ /^msgid/ ) {
 				$data{total}++;
 			}
 		}
 	}
-	
-	foreach my $po_file (sort @po_files) {
+
+	foreach my $po_file ( sort @po_files ) {
+
 		#print "$po_file\n";
 		my $err = "$tempdir/err";
 		system "msgcmp $po_file $pot_file 2> $err";
-		my $language = substr(basename($po_file), 0, -3);
-		if ($plugin_name ne 'Padre') {
+		my $language = substr( basename($po_file), 0, -3 );
+		if ( $plugin_name ne 'Padre' ) {
 			$language =~ s/^$plugin_name-//;
 		}
-		if (open my $fh, '<', $err) {
+		if ( open my $fh, '<', $err ) {
 			local $/ = undef;
 			$data{$language}{details} = <$fh>;
-			if ($data{$language}{details} =~ /msgcmp: found (\d+) fatal errors?/) {
+			if ( $data{$language}{details} =~ /msgcmp: found (\d+) fatal errors?/ ) {
 				$data{$language}{errors} = $1;
 			} else {
 				$data{$language}{errors} = 0;
 			}
 		} else {
+
 			# TODO: report that could not open file
 		}
 	}
@@ -180,30 +182,31 @@ END_CSS
 <table border=1>
 END_HTML
 
-#die Dumper $reports{"Padre-Plugin-SpellCheck"};
+	#die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
-	my @languages = sort grep {!/total/} keys %{$reports{Padre}};
+	my @languages = sort grep { !/total/ } keys %{ $reports{Padre} };
 	$html .= _header(@languages);
-	
+
 	my %totals;
-	
-	foreach my $project (sort keys %reports) {
+
+	foreach my $project ( sort keys %reports ) {
 		$html .= "<tr><td>$project</td><td>";
 		my $total = $reports{$project}{total};
-		$html .= defined  $total ? $total : '&nbsp;';
+		$html .= defined $total ? $total : '&nbsp;';
 		$total ||= 0;
 
 		$html .= "</td>";
-		if ($reports{$project}{total}) {
+		if ( $reports{$project}{total} ) {
 			$totals{total} += $reports{$project}{total};
 		}
 		foreach my $language (@languages) {
-			if ($reports{$project}{total}) {
-				if (defined $reports{$project}{$language}{errors}) {
-					$html .= _td_open($reports{$project}{$language}{errors}, $total);
+			if ( $reports{$project}{total} ) {
+				if ( defined $reports{$project}{$language}{errors} ) {
+					$html .= _td_open( $reports{$project}{$language}{errors}, $total );
 					$html .= $reports{$project}{$language}{errors};
 					$totals{$language} += $reports{$project}{$language}{errors};
 				} else {
+
 					#$html .= '<td class=red>-';
 					$html .= "<td class=red>$reports{$project}{total}";
 					$totals{$language} += $reports{$project}{total};
@@ -217,24 +220,24 @@ END_HTML
 	}
 	$html .= "<tr><td>TOTAL</td><td>$totals{total}</td>";
 	foreach my $language (@languages) {
-		$html .= _td_open($totals{$language}, $totals{total});
+		$html .= _td_open( $totals{$language}, $totals{total} );
 		$html .= $totals{$language};
 		$html .= "</td>";
 	}
 	$html .= "</tr>";
-	
+
 	$html .= _header(@languages);
-	
+
 	$html .= "</table>\n";
 
 	$html .= "<h2>Padre GUI level of completeness</h2>\n";
 	$html .= "<table>";
 	foreach my $language (@languages) {
-		my $p = 100 - int( 100 * $totals{$language} / $totals{total});
+		my $p = 100 - int( 100 * $totals{$language} / $totals{total} );
 		$html .= "<tr><td>$language</td><td><img src=../img/$p.png /></td><td>$p %</td></tr>\n";
 	}
 	$html .= "</table>";
-	
+
 	$html .= "<p>Errors</p>\n";
 	if ($errors) {
 		$html .= "<pre>\n$errors\n</pre>\n";
@@ -251,15 +254,16 @@ END_HTML
 }
 
 sub _header {
-	return "<tr><td></td><td>Total</td>" . (join "", map {"<td>$_</td>"} @_) . "</tr>\n";
+	return "<tr><td></td><td>Total</td>" . ( join "", map {"<td>$_</td>"} @_ ) . "</tr>\n";
 }
 
 sub _td_open {
-	my ($errors, $total) = @_;
-	if ( $errors > $total * 0.40  ) {
+	my ( $errors, $total ) = @_;
+	if ( $errors > $total * 0.40 ) {
 		return q(<td class=red>);
-#	} elsif ( $errors > $total * 0.20 ) {
-#		return q(<td class=orange>);
+
+		#	} elsif ( $errors > $total * 0.20 ) {
+		#		return q(<td class=orange>);
 	} elsif ( $errors > $total * 0.10 ) {
 		return q(<td class=yellow>);
 	} elsif ( $errors > 0 ) {
@@ -272,14 +276,14 @@ sub _td_open {
 sub save_text_report {
 	my ($text_report_file) = @_;
 	open my $fh, '>', $text_report_file or die;
-	
+
 	print $fh "Generated by $0 on " . localtime() . "\n\n";
-	
-	
-	foreach my $project (sort keys %reports) {
+
+
+	foreach my $project ( sort keys %reports ) {
 		print $fh "--------------------\n";
 		print $fh "Project $project\n\n";
-		print $fh generate_text_report($reports{$project});
+		print $fh generate_text_report( $reports{$project} );
 	}
 	print "file $text_report_file generated.\n";
 }
@@ -287,23 +291,23 @@ sub save_text_report {
 sub generate_text_report {
 	my ($data) = @_;
 
-	my $report    .= "Language  Errors\n";
-	foreach my $language (sort keys %$data) {
-	        next if $language eq 'total';
-		$report .= sprintf("%-10s %s\n", $language, $data->{$language}{errors});
+	my $report .= "Language  Errors\n";
+	foreach my $language ( sort keys %$data ) {
+		next if $language eq 'total';
+		$report .= sprintf( "%-10s %s\n", $language, $data->{$language}{errors} );
 	}
-	
+
 	if ($details) {
-		foreach my $language (sort keys %$data) {
-		        next if $language eq 'total';
+		foreach my $language ( sort keys %$data ) {
+			next if $language eq 'total';
 			$report .= "\n------------------\n";
 			$report .= "Language: $language \n\n";
-			if ($data->{$language}{errors}) {
+			if ( $data->{$language}{errors} ) {
 				$report .= "Fatal errors: $data->{$language}{errors}\n\n";
 			}
 			$report .= $data->{$language}{details};
 		}
-		
+
 	}
 	return $report;
 }

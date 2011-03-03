@@ -10,55 +10,59 @@ usage() if not $cmd or $cmd =~ /^(-h|--help|help)$/;
 
 my $URL = 'http://svn.perlide.org/padre';
 my $SVN = '/usr/bin/svn';
-if (not -e $SVN) {
+if ( not -e $SVN ) {
 	die "Could not find svn in '$SVN'";
 }
 
-if ($cmd eq 'ls') {
+if ( $cmd eq 'ls' ) {
 	my @branches = qx{$SVN ls $URL/branches/};
-	print map { chomp $_; chop $_; "$_\n"} @branches;
+	print map { chomp $_; chop $_; "$_\n" } @branches;
 	exit;
 }
 
 my $branch = shift;
 usage() if not $branch;
-usage('invalid branch') if $branch !~ /^\w[\w\-\.]+$/;  # allow release-0.82
+usage('invalid branch') if $branch !~ /^\w[\w\-\.]+$/; # allow release-0.82
 
-if ($cmd eq 'new') {
+if ( $cmd eq 'new' ) {
 	my $msg = shift;
+
 	#$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/Padre-$branch -m'branch for #1102'";
 	$cmd = "$SVN cp $URL/trunk/Padre $URL/branches/$branch -m '$msg'";
+
 	# TODO: check if we the same branch already exists
 	print "$cmd\n";
 
 	system $cmd;
-	
-} elsif ($cmd eq 'switch') {
-	if ($branch eq 'trunk') {
+
+} elsif ( $cmd eq 'switch' ) {
+	if ( $branch eq 'trunk' ) {
 		$cmd = "$SVN switch $URL/trunk .";
 	} else {
 		$cmd = "$SVN switch $URL/branches/$branch .";
 	}
 	system $cmd;
-} elsif ($cmd eq 'src') {
+} elsif ( $cmd eq 'src' ) {
 	print get_src(), "\n";
-} elsif ($cmd eq 'log') {
+} elsif ( $cmd eq 'log' ) {
 	$cmd = "$SVN log $URL/branches/$branch --stop-on-copy";
+
 	#print "$cmd\n";
 	system $cmd;
-} elsif ($cmd eq 'diff') {
+} elsif ( $cmd eq 'diff' ) {
 	my $rev = get_src();
 	$cmd = "$SVN diff $URL/branches/$branch -r$rev:HEAD";
 	system $cmd;
-} elsif ($cmd eq 'merge') {
+} elsif ( $cmd eq 'merge' ) {
 	my $rev = get_src();
+
 	#print "$rev\n";
 	# # from the listing get the earlies revision number, where the branching happaned
 	$cmd = "$SVN merge $URL/branches/$branch -r$rev:HEAD .";
 	system $cmd;
 	print "branch $branch merged\n";
 	print "Check it and then commit it using:   svn ci -m'merge $branch'\n";
-} elsif ($cmd eq 'rm') {
+} elsif ( $cmd eq 'rm' ) {
 	my $msg = shift || "removing branch: $branch";
 	$cmd = "$SVN rm $URL/branches/$branch -m '$msg'";
 	system $cmd;
@@ -68,13 +72,15 @@ if ($cmd eq 'new') {
 
 
 sub get_src {
+
 	# find out the point of branching
 	$cmd = "$SVN log $URL/branches/$branch --stop-on-copy";
+
 	#print "$cmd\n";
 	my @result = qx{$cmd};
 	my $rev;
-	foreach my $i (0..@result-2) {
-		if ($result[$i] =~ /^---------/ and $result[$i+1] =~ /^r(\d+)\s+\|/) {
+	foreach my $i ( 0 .. @result - 2 ) {
+		if ( $result[$i] =~ /^---------/ and $result[ $i + 1 ] =~ /^r(\d+)\s+\|/ ) {
 			$rev = $1;
 		}
 	}

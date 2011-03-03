@@ -13,18 +13,18 @@ my $version = shift;
 die "Usage: $0 VERSION\n" if not $version or $version !~ /^\d\.\d\.?\d$/;
 print "Setting VERSION $version\n";
 
-find(\&xversion, 'lib');
+find( \&xversion, 'lib' );
 
 
 sub xversion {
-    return if $File::Find::name =~ /\.svn/;
-    return if $_ !~ /\.pm/;
-    my @data = read_file($_);
-    if (grep {$_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\.?\d';/ } @data ) {
-       my @new = map {$_ =~ s/^(our \$VERSION\s*=\s*)'\d+\.\d\.?\d';/$1'$version';/; $_ } @data;
-       write_file($_, @new);
-    } else {
-       warn "No VERSION in $File::Find::name\n";
-    }
+	return if $File::Find::name =~ /\.svn/;
+	return if $_ !~ /\.pm/;
+	my @data = read_file($_);
+	if ( grep { $_ =~ /^our \$VERSION\s*=\s*'\d+\.\d\.?\d';/ } @data ) {
+		my @new = map { $_ =~ s/^(our \$VERSION\s*=\s*)'\d+\.\d\.?\d';/$1'$version';/; $_ } @data;
+		write_file( $_, @new );
+	} else {
+		warn "No VERSION in $File::Find::name\n";
+	}
 }
 

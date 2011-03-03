@@ -13,8 +13,8 @@ my @files = (
 	'perlopquick.pod',
 );
 
-my $dir = File::Spec->join('share', 'doc', 'perlopquick');
-unless(-d $dir) {
+my $dir = File::Spec->join( 'share', 'doc', 'perlopquick' );
+unless ( -d $dir ) {
 	die "Abort! I could not find share/doc/perloquick in the current directory\n";
 }
 
@@ -24,17 +24,17 @@ for my $file (@files) {
 	# Load file from perlopquick's github project
 	my $url = "http://github.com/cowens/perlopquick/raw/master/$file";
 	print "Loading $url\n";
-	my $ua = LWP::UserAgent->new;
-	my $req = HTTP::Request->new(GET => $url);
+	my $ua  = LWP::UserAgent->new;
+	my $req = HTTP::Request->new( GET => $url );
 	my $res = $ua->request($req);
-	if(not $res->is_success) {
+	if ( not $res->is_success ) {
 		warn $res->status_line, "\n";
 	}
 
 	# Write file to disk
-	my $file = File::Spec->join($dir, $file);
+	my $file = File::Spec->join( $dir, $file );
 	print "Writing $file...\n";
-	if(open FILE, '>:raw', $file) {
+	if ( open FILE, '>:raw', $file ) {
 		print FILE $res->content;
 		close FILE;
 	} else {
