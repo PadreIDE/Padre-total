@@ -8,6 +8,13 @@ if($@) {
 	die "Please install Perl::Tidy (e.g. cpan Perl::Tidy)";
 }
 
+my $ver = '20101217';
+if ($Perl::Tidy::VERSION ne $ver) {
+	die "Please install version $ver of Perl::Tidy";
+	# Make sure everyone uses the exact same version!
+}
+
+
 #
 use Cwd                   qw{ cwd };
 use File::Spec::Functions qw{ catfile catdir };
