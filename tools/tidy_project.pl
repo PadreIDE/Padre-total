@@ -5,7 +5,7 @@ use warnings;
 
 eval("require Perl::Tidy");
 if ($@) {
-	die "Please install Perl::Tidy (e.g. cpan Perl::Tidy)";
+die "Please install Perl::Tidy (e.g. cpan Perl::Tidy)";
 }
 
 my $ver = '20101217';
