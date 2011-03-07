@@ -25,21 +25,24 @@ my $sleep;
 my $force;
 my $verbose;
 my $to;
+
 #my $smolder;
 my $all;
 GetOptions(
-	'path=s'    => \$path,
-	'to=s'      => \$to,
-	'help'      => \$help,
-	'sleep=s'   => \$sleep,
-	'force'     => \$force,
-	'verbose'   => \$verbose,
-	'all'       => \$all,
-#	'smolder=s' => \$smolder,
+	'path=s'  => \$path,
+	'to=s'    => \$to,
+	'help'    => \$help,
+	'sleep=s' => \$sleep,
+	'force'   => \$force,
+	'verbose' => \$verbose,
+	'all'     => \$all,
+
+	#	'smolder=s' => \$smolder,
 ) or usage();
-usage()                  if $help;
-usage('Needs --path')    if not $path;
-usage('Needs --to')      if not $to;
+usage()               if $help;
+usage('Needs --path') if not $path;
+usage('Needs --to')   if not $to;
+
 #usage('Needs --smolder') if not $smolder;
 
 my %MAIL = (
@@ -58,6 +61,7 @@ if ($all) {
 }
 
 chdir $path;
+
 #open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
 #my $username = <$fh>;
 #my $password = <$fh>;
