@@ -25,7 +25,7 @@ my $sleep;
 my $force;
 my $verbose;
 my $to;
-my $smolder;
+#my $smolder;
 my $all;
 GetOptions(
 	'path=s'    => \$path,
@@ -35,12 +35,12 @@ GetOptions(
 	'force'     => \$force,
 	'verbose'   => \$verbose,
 	'all'       => \$all,
-	'smolder=s' => \$smolder,
+#	'smolder=s' => \$smolder,
 ) or usage();
 usage()                  if $help;
 usage('Needs --path')    if not $path;
 usage('Needs --to')      if not $to;
-usage('Needs --smolder') if not $smolder;
+#usage('Needs --smolder') if not $smolder;
 
 my %MAIL = (
 	adamk   => 'adamk@perlide.org',
@@ -58,11 +58,11 @@ if ($all) {
 }
 
 chdir $path;
-open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
-my $username = <$fh>;
-my $password = <$fh>;
-chomp $username;
-chomp $password;
+#open my $fh, '<', 'smoke.conf' or usage("Need to have a smoke.conf");
+#my $username = <$fh>;
+#my $password = <$fh>;
+#chomp $username;
+#chomp $password;
 
 my $SVN      = 'svn';
 my $MAKE     = $^O =~ /Win32/i ? 'dmake' : 'make';
@@ -157,7 +157,7 @@ sub _system {
 sub send_message {
 	my ( $rev, $author, $status, $text ) = @_;
 	my %message = (
-		From    => "$username <svn\@perlide.org>",
+		From    => "<svn\@perlide.org>",
 		To      => $to,
 		Subject => "Padre Smoke test $status",
 		Type    => 'multipart/mixed',
@@ -198,7 +198,6 @@ Usage: $0
        --sleep N                 after each run sleep N and then rerun (without this runs only once)
        --force                   force a build and report even if there were no changes (for the first run only)
        --verbose                 print output to screen
-       --smolder PATH            path to the smolder_smoke_signal script
 
        --all                     Enable AUTOMATED_TESTING and RELEASE_TESTING
 
@@ -210,12 +209,7 @@ Setup:
   Manually check out the svn repository of Padre:
   svn co  http://svn.perlide.org/padre/trunk/Padre
 
-  In the new Padre/ directory create file called smoke.conf with
-    your username and password on http://smolder.plusthree.com/ in the file
-  Make sure they are associated with the Padre project on that smolder installation
-   username
-   password
-
+ 
   Make sure all the prereqisites are installed
 
   Then you can run this script with --path pointing to the Padre directory, 
@@ -226,3 +220,9 @@ END
 	exit;
 }
 
+#       --smolder PATH            path to the smolder_smoke_signal script
+# In the new Padre/ directory create file called smoke.conf with
+#    your username and password on http://smolder.plusthree.com/ in the file
+#  Make sure they are associated with the Padre project on that smolder installation
+#   username
+#   password
