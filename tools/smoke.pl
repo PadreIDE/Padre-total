@@ -25,6 +25,7 @@ my $sleep;
 my $force;
 my $verbose;
 my $to;
+my $display = 0;
 
 #my $smolder;
 my $all;
@@ -117,7 +118,23 @@ while (1) {
 			#my $test_out = "FAIL";
 			if ( $test_out =~ /Result: FAIL|FAILED|Bailout called/ ) {
 				$status = "FAIL - testing";
+			} elsif ( not $display ) {
+				if ( $^O ne 'MSWin32' && defined( $ENV{DISPLAY} ) ) {
+					$output .= "\n***Turn off DISPLAY for packagers disttest-ing.\n";
+
+					# DISPLAY is turned off here to make sure disttest runs without it for various packagers ( such a Fedora )
+					# which require tests to pass, so any tests that fail here complaining it's needs a DISPLAY variable set
+					# needs to be updated with a check for DISPLAY and skip when missing.
+					require Env::Sanctify;
+					my $sanctify = Env::Sanctify->sanctify( sanctify => ['DISPLAY'] );
+					my $nodisplay_test_out = _system("prove -b t/ xt/");
+					$sanctify->restore();
+					if ( $nodisplay_test_out =~ /Result: FAIL|FAILED|Bailout called|Error/ ) {
+						$status = "FAIL - testing";
+					}
+				}
 			}
+
 
 			#_system("$^X $smolder --server smolder.plusthree.com --username $username --password $password --file $file --project Padre --revision $rev --platform $platform");
 			#$output .= "\nReports are at http://smolder.plusthree.com/app/public_projects/smoke_reports/11\n";
