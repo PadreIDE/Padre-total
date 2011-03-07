@@ -277,12 +277,6 @@ sub _parse_to_hash {
 					$err_item{diagnostics}      = $diagnostics;
 					$err_item{type}             = $err_type;
 					$err_item{type_description} = $err_desc;
-				} else {
-
-					# perldiag did not contain that error, better signal
-					# it as a Fatal error
-					$err_item{type}             = 'F';
-					$err_item{type_description} = $self->_get_error_desc('F');
 				}
 				my $file = $2;
 				if ( $file =~ /^\(eval\s\d+\)$/ ) {
