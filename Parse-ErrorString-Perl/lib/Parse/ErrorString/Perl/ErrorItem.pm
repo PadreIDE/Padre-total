@@ -48,7 +48,7 @@ possbile options are C<W>, C<D>, C<S>, C<F>, C<P>, C<X>, and C<A>.
 Sometimes an error can be of either of two types, in which case a string
 such as "C<S|F>" is returned in scalar context and a list of the two
 letters is returned in list context. If C<type> is empty, you can assume
-that the error was not emimtted by perl itself, but by the user or by a
+that the error was not emitted by perl itself, but by the user or by a
 third-party module.
 
 =item type_description
