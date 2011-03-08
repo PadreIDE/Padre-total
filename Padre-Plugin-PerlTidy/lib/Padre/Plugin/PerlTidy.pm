@@ -23,7 +23,7 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use base 'Padre::Plugin';
 
-our $VERSION=0.17;
+our $VERSION = 0.17;
 
 
 # This constant is used when storing
@@ -59,11 +59,11 @@ sub menu_plugins_simple {
 }
 
 sub _tidy {
-	my $main     = shift;
-	my $current  = shift;
-	my $source   = shift;
+	my $main       = shift;
+	my $current    = shift;
+	my $source     = shift;
 	my $perltidyrc = shift;
-	my $document = $current->document;
+	my $document   = $current->document;
 
 	# Check for problems
 	unless ( defined $source ) {
@@ -87,18 +87,18 @@ sub _tidy {
 	$main->show_output(1);
 	my $output = $main->output;
 
-#	CLAUDIO: This code breaks the plugin, temporary disabled. 
-#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
-#	Talk to El_Che for more info.
-#	if (not $perltidyrc) {
-#		$perltidyrc = $document->project->config->config_perltidy;
-#	}
-#	if ($perltidyrc) {
-#		$tidyargs{perltidyrc} = $perltidyrc;
-#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
-#	} else {
-#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
-#	}
+	#	CLAUDIO: This code breaks the plugin, temporary disabled.
+	#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
+	#	Talk to El_Che for more info.
+	#	if (not $perltidyrc) {
+	#		$perltidyrc = $document->project->config->config_perltidy;
+	#	}
+	#	if ($perltidyrc) {
+	#		$tidyargs{perltidyrc} = $perltidyrc;
+	#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
+	#	} else {
+	#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
+	#	}
 
 	# TODO: suppress the senseless warning from PerlTidy
 	require Perl::Tidy;
@@ -120,7 +120,7 @@ sub _tidy {
 }
 
 sub tidy_selection {
-	my $main = shift;
+	my $main       = shift;
 	my $perltidyrc = shift;
 
 	# Tidy the current selected text
@@ -148,7 +148,7 @@ sub configure_tidy {
 }
 
 sub tidy_document {
-	my $main = shift;
+	my $main       = shift;
 	my $perltidyrc = shift;
 
 	# Tidy the entire current document
@@ -333,7 +333,7 @@ sub _store_cursor_position {
 
 sub plugin_disable {
 	my $self = shift;
-    
+
 	# Unload all private classese here, so that they can be reloaded
 	require Class::Unload;
 	Class::Unload->unload('Padre::Plugin::PerlTidy::Dialog');
