@@ -3,6 +3,8 @@ TODO
    - BibTeX support
    - explanation of errors (like for Perl 5)
    - catch "! Emergency stop."
+   - also display warnings
+   - get rid of some duplicate errors
  - completion: add brackets to commands that always need them (e.g. \frametitle{...})
  - create DVI, PS, PDF
    - display errors

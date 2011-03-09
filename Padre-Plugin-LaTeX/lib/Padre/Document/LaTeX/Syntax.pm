@@ -73,12 +73,14 @@ sub syntax {
 		my $line_no   = $1;
 		my $error_msg = $2;
 
-		while ( ++$i < scalar @lines && $lines[$i] !~ /^\[\d+\]/ ) {
+		while ( ++$i < scalar @lines && $lines[$i] !~ /^\s*$/ && $lines[$i] !~ /<recently read>/ ) {
 			$lines[$i] =~ s/^l\.\d+ / /;
 			$error_msg .= $lines[$i];
 		}
 
 		$error_msg =~ s/\s+/ /g;
+
+		#warn "error msg '$error_msg'\n";
 
 		my %issue = (
 			line    => $line_no,
