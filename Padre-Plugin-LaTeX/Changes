@@ -5,6 +5,7 @@ Changes for Padre-Plugin-LaTeX
         - compatibility to Padre 0.81 and later (ZENOG)
         - add icon (ZENOG)
         - create temporary file/directory for syntax check (ZENOG)
+        - update German translation (ZENOG)
 
 0.09   2011.02.07
         - add Dutch translation (ddn123456 - Dirk De Nijs)
