@@ -1,6 +1,6 @@
 Changes for Padre-Plugin-LaTeX
 
-0.10   2011.03.??
+0.10   2011.03.09
         - check for different PDF viewers (ZENOG)
         - compatibility to Padre 0.81 and later (ZENOG)
         - add icon (ZENOG)
