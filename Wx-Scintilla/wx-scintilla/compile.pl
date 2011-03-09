@@ -9,7 +9,7 @@ my @modules = (
 	'src\stc\ScintillaWX.cpp',
 	'src\stc\stc.cpp',
 );
-	
+
 my @include_dirs = (
 	'-Iinclude',
 	'-Isrc\stc\scintilla\include',
@@ -28,11 +28,12 @@ for my $module (@modules) {
 		'-c',
 		'-o ' . $object_file,
 		'-DWXBUILDING -D__WXMSW__ -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
-		join(' ', @include_dirs),
+		join( ' ', @include_dirs ),
 		Alien::wxWidgets->libraries(qw(core base)),
 		$module,
 	);
-	my $cmd =  join(' ', @cmd);
+	my $cmd = join( ' ', @cmd );
+
 	#print $cmd . "\n";
 	system($cmd);
 	push @objects, $object_file;
@@ -43,11 +44,11 @@ my @cmd = (
 	Alien::wxWidgets->compiler,
 	'-o ' . $dll,
 	'-mdll -s',
-	join(' ', @objects),
+	join( ' ', @objects ),
 	'-L"C:\strawberry\c\lib"',
 	'-DWXBUILDING -D__WXMSW__ -DSCI_LEXER -DLINK_LEXERS -DWXMAKINGDLL_STC -lgdi32',
 	Alien::wxWidgets->libraries(qw(core base)),
 );
-my $cmd =  join(' ', @cmd);
+my $cmd = join( ' ', @cmd );
 print $cmd . "\n";
 system($cmd);
