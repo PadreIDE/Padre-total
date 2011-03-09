@@ -1,49 +1,53 @@
 use strict;
 use warnings;
 
-use ExtUtils::CBuilder	();
-use Alien::wxWidgets 	();
+use Alien::wxWidgets;
 
 my @modules = (
-	glob('C:\tools\wx-scintilla\src\stc\scintilla\src\*.cxx'),
-	'C:\tools\wx-scintilla\src\stc\PlatWX.cpp',
-	'C:\tools\wx-scintilla\src\stc\ScintillaWX.cpp',
-	'C:\tools\wx-scintilla\src\stc\stc.cpp',
+	glob('src\stc\scintilla\src\*.cxx'),
+	'src\stc\PlatWX.cpp',
+	'src\stc\ScintillaWX.cpp',
+	'src\stc\stc.cpp',
 );
 	
-	#'src/stc/ScintillaWX.cpp',
 my @include_dirs = (
-	'C:\tools\wx-scintilla\src\stc',
-	'C:\tools\wx-scintilla\include',
-	'C:\tools\wx-scintilla\src\stc\scintilla\include',
-	'C:\tools\wx-scintilla\src\stc\scintilla\src',
-	'C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\include',
-	'C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib',
+	'-Iinclude',
+	'-Isrc\stc\scintilla\include',
+	'-Isrc\stc\scintilla\src',
+	'-Isrc\stc',
+	Alien::wxWidgets->include_path
 );
 
 my @objects = ();
-my $builder = ExtUtils::CBuilder->new(quiet => 0);
-#for my $module (@modules) {
-#	print "Compiling $module\n";
-#	my $object_file = $builder->compile(
-#		source 			=> $module,
-#		include_dirs 		=> \@include_dirs,
-#		extra_compiler_flags	=> '-DWXBUILDING -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
-#	);
-#	push @objects, $object_file;
-#}
+for my $module (@modules) {
+	print "Compiling $module\n";
+	my $object_file = $module;
+	$object_file =~ s/(.c|.cpp|.cxx)$/.o/;
+	my @cmd = (
+		Alien::wxWidgets->compiler,
+		'-c',
+		'-o ' . $object_file,
+		'-DWXBUILDING -D__WXMSW__ -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
+		join(' ', @include_dirs),
+		Alien::wxWidgets->libraries(qw(core base)),
+		$module,
+	);
+	my $cmd =  join(' ', @cmd);
+	#print $cmd . "\n";
+	system($cmd);
+	push @objects, $object_file;
+}
 
-@objects = (glob('C:\tools\wx-scintilla\src\stc\scintilla\src\*.o'), glob('C:\tools\wx-scintilla\src\stc\*.o'));
-my $lib_file = $builder->link(
-	module_name 		=> 'stc',
-	objects 		=> \@objects,
-	extra_linker_flags	=> '-DWXBUILDING -D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXMAKINGDLL_STC ' .
-				   '-LC:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib ' .
-				   '-lwxbase28u -lwxmsw28u_core ' .
-				   '-IC:\tools\wx-scintilla\src\stc\scintilla\include ' .
-				   '-IC:\tools\wx-scintilla\src\stc\scintilla\src',
+my $dll = 'stc.dll';
+my @cmd = (
+	Alien::wxWidgets->compiler,
+	'-o ' . $dll,
+	'-mdll -s',
+	join(' ', @objects),
+	'-L"C:\strawberry\c\lib"',
+	'-DWXBUILDING -D__WXMSW__ -DSCI_LEXER -DLINK_LEXERS -DWXMAKINGDLL_STC -lgdi32',
+	Alien::wxWidgets->libraries(qw(core base)),
 );
-print $lib_file . "\n";
-
-print "\n" . ("-" x 20) . "> Finished\n";
-
+my $cmd =  join(' ', @cmd);
+print $cmd . "\n";
+system($cmd);
