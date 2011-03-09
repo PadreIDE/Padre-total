@@ -1,5 +1,9 @@
 TODO
- - BibTeX syntax checking
+ - syntax checking
+   - BibTeX support
+   - explanation of errors (like for Perl 5)
+   - catch "! Emergency stop."
+ - completion: add brackets to commands that always need them (e.g. \frametitle{...})
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file
@@ -8,6 +12,7 @@ TODO
  - insertion of special characters (menu)
  - insertion of tables, enumerations, etc. via snippets
  - special treatment of tabular environment: transpose and swap columns or rows
+   - compare http://www.ctan.org/tex-archive/help/Catalogue/entries/latable.html
  - document outline
    - sections/chapter/appendix/abstract
    - command definitions

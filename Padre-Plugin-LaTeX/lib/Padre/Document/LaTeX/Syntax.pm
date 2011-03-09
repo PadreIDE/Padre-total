@@ -16,16 +16,46 @@ sub new {
 	return $self;
 }
 
+sub _call_pdflatex {
+	my ($self, $text) = @_;
+
+	my $project_dir = $self->{project};
+
+	# create temporary directory and LaTeX file
+	require File::Temp;
+	my $tempdir = File::Temp::tempdir( 'Padre-Document-LaTeX-Syntax-XXXXXX', TMPDIR => 1 );
+	my $file = File::Temp->new( TEMPLATE => 'XXXXXX',
+	                            UNLINK => 1, DIR => $project_dir );
+	
+	# write text to temporary file
+	my $filename = $file->filename;
+	binmode( $file, ':utf8' );
+	$file->print($text);
+	$file->close;
+	
+	# run pdflatex
+	my $pdflatex_command = "cd $project_dir; pdflatex -file-line-error -draftmode -interaction nonstopmode -output-directory $tempdir $filename";
+	#warn "$pdflatex_command\n";
+	my $output = `$pdflatex_command`;
+	
+	eval {
+		# clean up
+		require File::Path;
+		File::Path::remove_tree($tempdir);
+	};
+	warn "$@\n" if $@;
+	
+	return $output;
+}
+
 
 sub syntax {
 	my $self = shift;
 	my $text = shift;
 
-	my $filename    = $self->{filename};
-	my $project_dir = $self->{project};
+	my $output = $self->_call_pdflatex($text);
 
-	my $pdflatex_command = "cd $project_dir; pdflatex -file-line-error -draftmode -interaction nonstopmode $filename";
-	my $output           = `$pdflatex_command`;
+	#warn "OUTPUT: $output\n";
 
 	my @lines = split /\n/, $output;
 	my @issues = ();
@@ -47,13 +77,15 @@ sub syntax {
 
 		my %issue = (
 			line    => $line_no,
-			file    => $filename,
+			file    => $self->{filename},
 			type    => 'F',
 			message => $error_msg,
 		);
 
 		push @issues, \%issue;
 	}
+	my $num_issues = scalar @issues;
+	#warn "pdflatex output parsing: found $num_issues issues.\n";
 
 	return \@issues;
 }
