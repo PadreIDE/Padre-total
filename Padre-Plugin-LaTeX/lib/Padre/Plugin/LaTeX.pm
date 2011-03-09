@@ -30,7 +30,7 @@ sub plugin_icon {
 
 	# create and return icon
 	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
-	
+
 	# TODO: simplify
 }
 

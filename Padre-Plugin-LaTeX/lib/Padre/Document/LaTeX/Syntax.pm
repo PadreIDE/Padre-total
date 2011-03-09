@@ -17,34 +17,39 @@ sub new {
 }
 
 sub _call_pdflatex {
-	my ($self, $text) = @_;
+	my ( $self, $text ) = @_;
 
 	my $project_dir = $self->{project};
 
 	# create temporary directory and LaTeX file
 	require File::Temp;
 	my $tempdir = File::Temp::tempdir( 'Padre-Document-LaTeX-Syntax-XXXXXX', TMPDIR => 1 );
-	my $file = File::Temp->new( TEMPLATE => 'XXXXXX',
-	                            UNLINK => 1, DIR => $project_dir );
-	
+	my $file = File::Temp->new(
+		TEMPLATE => 'XXXXXX',
+		UNLINK   => 1, DIR => $project_dir
+	);
+
 	# write text to temporary file
 	my $filename = $file->filename;
 	binmode( $file, ':utf8' );
 	$file->print($text);
 	$file->close;
-	
+
 	# run pdflatex
-	my $pdflatex_command = "cd $project_dir; pdflatex -file-line-error -draftmode -interaction nonstopmode -output-directory $tempdir $filename";
+	my $pdflatex_command =
+		"cd $project_dir; pdflatex -file-line-error -draftmode -interaction nonstopmode -output-directory $tempdir $filename";
+
 	#warn "$pdflatex_command\n";
 	my $output = `$pdflatex_command`;
-	
+
 	eval {
+
 		# clean up
 		require File::Path;
 		File::Path::remove_tree($tempdir);
 	};
 	warn "$@\n" if $@;
-	
+
 	return $output;
 }
 
@@ -85,6 +90,7 @@ sub syntax {
 		push @issues, \%issue;
 	}
 	my $num_issues = scalar @issues;
+
 	#warn "pdflatex output parsing: found $num_issues issues.\n";
 
 	return \@issues;
