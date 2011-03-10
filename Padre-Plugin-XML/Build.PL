@@ -12,7 +12,7 @@ my $builder = Module::Build->new(
 		'File::Slurp' => 0, #dep of Padre
 	},
 	requires => {
-		'Padre'       => '0.65',
+		'Padre'       => '0.81',
 		'XML::Tidy'   => 1,
 		'XML::LibXML' => '1.67',
 	},
