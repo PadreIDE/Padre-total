@@ -4,6 +4,7 @@ package Padre::Document::LaTeX::Syntax;
 
 use strict;
 use warnings;
+use Padre::Task::Syntax ();
 
 our @ISA = 'Padre::Task::Syntax';
 
