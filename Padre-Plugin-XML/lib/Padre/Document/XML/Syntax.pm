@@ -3,8 +3,9 @@ package Padre::Document::XML::Syntax;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Wx;
-use XML::LibXML;
+use Padre::Task::Syntax ();
+use Padre::Wx           ();
+use XML::LibXML         ();
 
 our $VERSION = '0.11';
 our @ISA     = 'Padre::Task::Syntax';
@@ -15,6 +16,8 @@ sub new {
 
 	my %args = @_;
 	my $self = $class->SUPER::new(%args);
+
+	warn "Create XML syntax checker\n";
 
 	return $self;
 }
@@ -57,12 +60,12 @@ sub _valid {
 }
 
 sub _parse_msg {
-	my ( $error, $base_uri ) = @_;
+	my ( $error_msg, $base_uri ) = @_;
 
-	$error =~ s/${base_uri}:/:/g;
-	$error =~ s/\sat\s.+?LibXML.pm\sline.+//go;
+	$error_msg =~ s/${base_uri}:/:/g;
+	$error_msg =~ s/\sat\s.+?LibXML.pm\sline.+//go;
 
-	my @messages = split( /\n:/, $error );
+	my @messages = split( /\n:/, $error_msg );
 
 	my @issues = ();
 
@@ -71,7 +74,7 @@ sub _parse_msg {
 	if ( $m =~ m/^:(\d+):\s+(.+)/o ) {
 		push @issues, { message => $2, line => $1, file => '', type => 'F' };
 	} else {
-		push @issues, { message => $m, line => $error, file => '', type => 'F' };
+		push @issues, { message => $m, line => $error_msg, file => '', type => 'F' };
 	}
 
 	foreach my $m (@messages) {
@@ -88,6 +91,8 @@ sub syntax {
 
 	my $base_uri = $self->{filename};
 	warn 'No filename' if not $base_uri;
+
+	warn "check ...\n";
 
 	return _valid( $base_uri, $text );
 }
@@ -140,6 +145,7 @@ Heiko Jansen, C<< <heiko_jansen@web.de> >>
 
 Copyright 2008 Heiko Jansen
 Copyright 2010 Alexandr Ciornii
+Copyright 2011 Zeno Gantner
 
 This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
