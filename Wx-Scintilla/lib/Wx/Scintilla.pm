@@ -1,72 +1,56 @@
 package Wx::Scintilla;
 
-# ABSTRACT: wxWidgets Scintilla library
-
-use warnings;
+use Wx;
 use strict;
 
-=head1 SYNOPSIS
+use vars qw($VERSION);
 
-Quick summary of what the module does.
+$VERSION = '0.01';
 
-Perhaps a little code snippet.
+Wx::load_dll( 'stc' );
+Wx::wx_boot( 'Wx::Scintilla', $VERSION );
 
-    use Wx::Scintilla;
+#
+# properly setup inheritance tree
+#
 
-    my $stc = Wx::Scintilla->new();
+no strict;
 
-=head1 SUBROUTINES/METHODS
+package Wx::StyledTextCtrl;   @ISA = qw(Wx::Control);
+package Wx::StyledTextEvent;  @ISA = qw(Wx::CommandEvent);
 
-=head1 BUGS
+package Wx::Event;
 
-Please report any bugs or feature requests to C<bug-wx-scintilla at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Wx-Scintilla>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+use strict;
 
-=head1 SUPPORT
+# !parser: sub { $_[0] =~ m/sub (EVT_\w+)/ }
+# !package: Wx::Event
 
-You can find documentation for this module with the perldoc command.
+sub EVT_STC_CHANGE($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHANGE, $_[2] ) };
+sub EVT_STC_STYLENEEDED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_STYLENEEDED, $_[2] ) };
+sub EVT_STC_CHARADDED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHARADDED, $_[2] ) };
+sub EVT_STC_SAVEPOINTREACHED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_SAVEPOINTREACHED, $_[2] ) };
+sub EVT_STC_SAVEPOINTLEFT($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_SAVEPOINTLEFT, $_[2] ) };
+sub EVT_STC_ROMODIFYATTEMPT($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_ROMODIFYATTEMPT, $_[2] ) };
+sub EVT_STC_KEY($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_KEY, $_[2] ) };
+sub EVT_STC_DOUBLECLICK($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DOUBLECLICK, $_[2] ) };
+sub EVT_STC_UPDATEUI($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_UPDATEUI, $_[2] ) };
+sub EVT_STC_MODIFIED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MODIFIED, $_[2] ) };
+sub EVT_STC_MACRORECORD($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MACRORECORD, $_[2] ) };
+sub EVT_STC_MARGINCLICK($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MARGINCLICK, $_[2] ) };
+sub EVT_STC_NEEDSHOWN($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_NEEDSHOWN, $_[2] ) };
+sub EVT_STC_POSCHANGED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_POSCHANGED, $_[2] ) };
+sub EVT_STC_PAINTED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_PAINTED, $_[2] ) };
+sub EVT_STC_USERLISTSELECTION($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_USERLISTSELECTION, $_[2] ) };
+sub EVT_STC_URIDROPPED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_URIDROPPED, $_[2] ) };
+sub EVT_STC_DWELLSTART($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DWELLSTART, $_[2] ) };
+sub EVT_STC_DWELLEND($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DWELLEND, $_[2] ) };
+sub EVT_STC_START_DRAG($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_START_DRAG, $_[2] ) };
+sub EVT_STC_DRAG_OVER($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DRAG_OVER, $_[2] ) };
+sub EVT_STC_DO_DROP($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DO_DROP, $_[2] ) };
+sub EVT_STC_ZOOM($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_ZOOM, $_[2] ) };
+sub EVT_STC_HOTSPOT_CLICK($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_HOTSPOT_CLICK, $_[2] ) };
+sub EVT_STC_HOTSPOT_DCLICK($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_HOTSPOT_DCLICK, $_[2] ) };
+sub EVT_STC_CALLTIP_CLICK($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CALLTIP_CLICK, $_[2] ) };
 
-    perldoc Wx::Scintilla
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Wx-Scintilla>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Wx-Scintilla>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Wx-Scintilla>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Wx-Scintilla/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 LICENSE AND COPYRIGHT
-
-Copyright 2011 Ahmad M. Zawawi.
-
-This program is free software; you can redistribute it and/or modify it
-under the terms of either: the GNU General Public License as published
-by the Free Software Foundation; or the Artistic License.
-
-See http://dev.perl.org/licenses/ for more information.
-
-
-=cut
-
-1; # End of Wx::Scintilla
+1; # end of Wx::Scintilla
