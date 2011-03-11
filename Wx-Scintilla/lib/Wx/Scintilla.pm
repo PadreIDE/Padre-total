@@ -16,9 +16,9 @@ Wx::wx_boot( 'Wx::Scintilla', $VERSION );
 
 no strict;
 
-package Wx::StyledTextCtrl; @ISA = qw(Wx::Control);
+package Wx::ScintillaTextCtrl; @ISA = qw(Wx::Control);
 
-package Wx::StyledTextEvent; @ISA = qw(Wx::CommandEvent);
+package Wx::ScintillaTextEvent; @ISA = qw(Wx::CommandEvent);
 
 package Wx::Event;
 

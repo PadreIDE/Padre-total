@@ -4,7 +4,7 @@
 //              from ScintillaBase that uses the "wx platform" defined in
 //              PlatWX.cpp.  This class is one end of a bridge between
 //              the wx world and the Scintilla world.  It needs a peer
-//              object of type wxStyledTextCtrl to function.
+//              object of type wxScintillaTextCtrl to function.
 //
 // Author:      Robin Dunn
 //
@@ -59,7 +59,7 @@
     #define WXDLLIMPEXP_STC
 #endif
 
-class WXDLLIMPEXP_STC wxStyledTextCtrl;           // forward
+class WXDLLIMPEXP_STC wxScintillaTextCtrl;           // forward
 class ScintillaWX;
 
 
@@ -88,7 +88,7 @@ private:
 class ScintillaWX : public ScintillaBase {
 public:
 
-    ScintillaWX(wxStyledTextCtrl* win);
+    ScintillaWX(wxScintillaTextCtrl* win);
     ~ScintillaWX();
 
     // base class virtuals
@@ -169,7 +169,7 @@ public:
 private:
     bool                capturedMouse;
     bool                focusEvent;
-    wxStyledTextCtrl*   stc;
+    wxScintillaTextCtrl*   stc;
 
 #if wxUSE_DRAG_AND_DROP
     wxSTCDropTarget*    dropTarget;

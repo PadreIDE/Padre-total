@@ -4,7 +4,7 @@
 //              from ScintillaBase that uses the "wx platform" defined in
 //              PlatformWX.cxx  This class is one end of a bridge between
 //              the wx world and the Scintilla world.  It needs a peer
-//              object of type wxStyledTextCtrl to function.
+//              object of type wxScintillaTextCtrl to function.
 //
 // Author:      Robin Dunn
 //
@@ -233,7 +233,7 @@ static wxTextFileType wxConvertEOLMode(int scintillaMode)
 // Constructor/Destructor
 
 
-ScintillaWX::ScintillaWX(wxStyledTextCtrl* win) {
+ScintillaWX::ScintillaWX(wxScintillaTextCtrl* win) {
     capturedMouse = false;
     focusEvent = false;
     wMain = win;
@@ -299,7 +299,7 @@ void ScintillaWX::DoStartDrag() {
     wxString dragText = stc2wx(drag.s, drag.len);
 
     // Send an event to allow the drag text to be changed
-    wxStyledTextEvent evt(wxEVT_STC_START_DRAG, stc->GetId());
+    wxScintillaTextEvent evt(wxEVT_STC_START_DRAG, stc->GetId());
     evt.SetEventObject(stc);
     evt.SetDragText(dragText);
     evt.SetDragAllowMove(true);
@@ -330,10 +330,10 @@ bool ScintillaWX::SetIdle(bool on) {
         // connect or disconnect the EVT_IDLE handler
         if (on)
             stc->Connect(wxID_ANY, wxEVT_IDLE,
-                         (wxObjectEventFunction) (wxEventFunction) (wxIdleEventFunction) &wxStyledTextCtrl::OnIdle);
+                         (wxObjectEventFunction) (wxEventFunction) (wxIdleEventFunction) &wxScintillaTextCtrl::OnIdle);
         else
             stc->Disconnect(wxID_ANY, wxEVT_IDLE,
-                            (wxObjectEventFunction) (wxEventFunction) (wxIdleEventFunction) &wxStyledTextCtrl::OnIdle);
+                            (wxObjectEventFunction) (wxEventFunction) (wxIdleEventFunction) &wxScintillaTextCtrl::OnIdle);
         idler.state = on;
     }
     return idler.state;
@@ -1049,7 +1049,7 @@ bool ScintillaWX::DoDropText(long x, long y, const wxString& data) {
                                             wxConvertEOLMode(pdoc->eolMode));
 
     // Send an event to allow the drag details to be changed
-    wxStyledTextEvent evt(wxEVT_STC_DO_DROP, stc->GetId());
+    wxScintillaTextEvent evt(wxEVT_STC_DO_DROP, stc->GetId());
     evt.SetEventObject(stc);
     evt.SetDragResult(dragResult);
     evt.SetX(x);
@@ -1080,7 +1080,7 @@ wxDragResult ScintillaWX::DoDragOver(wxCoord x, wxCoord y, wxDragResult def) {
     SetDragPosition(PositionFromLocation(Point(x, y)));
 
     // Send an event to allow the drag result to be changed
-    wxStyledTextEvent evt(wxEVT_STC_DRAG_OVER, stc->GetId());
+    wxScintillaTextEvent evt(wxEVT_STC_DRAG_OVER, stc->GetId());
     evt.SetEventObject(stc);
     evt.SetDragResult(def);
     evt.SetX(x);

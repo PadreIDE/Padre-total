@@ -13,9 +13,9 @@ MODULE=Wx__SCINTILLA
 BOOT:
   INIT_PLI_HELPERS( wx_pli_helpers );
 
-#INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/StyledTextCtrl.xsp
+#INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/ScintillaTextCtrl.xsp
 
-#INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/StyledTextEvent.xsp
+#INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/ScintillaTextEvent.xsp
 
 #include "cpp/st_constants.cpp"
 

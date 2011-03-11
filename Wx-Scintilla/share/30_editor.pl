@@ -289,7 +289,7 @@ use warnings FATAL => 'all';
 
 our $VERSION = '0.01';
 use Wx::STC;
-use base 'Wx::StyledTextCtrl';
+use base 'Wx::ScintillaTextCtrl';
 
 use Wx ':everything';
 use Wx::Event ':everything';

@@ -1,18 +1,8 @@
-#############################################################################
-## Name:        ext/stc/typemap
-## Purpose:     typemap
-## Author:      Mattia Barbon
-## Modified by:
-## Created:     23/05/2002
-## RCS-ID:      $Id: typemap 2317 2008-01-18 22:00:14Z mbarbon $
-## Copyright:   (c) 2002-2004, 2008 Mattia Barbon
-## Licence:     This program is free software; you can redistribute it and/or
-##              modify it under the same terms as Perl itself
-#############################################################################
+## Scintilla typemap
 
 TYPEMAP
 wxDragResult            T_ENUM
 
-wxStyledTextCtrl *      O_WXOBJECT
+wxScintillaTextCtrl *      O_WXOBJECT
 
-wxStyledTextEvent *     O_WXOBJECT
+wxScintillaTextEvent *     O_WXOBJECT

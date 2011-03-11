@@ -137,7 +137,7 @@ void Font::Create(const char *faceName, int characterSet, int size, bool bold, b
     // The minus one is done because since Scintilla uses SC_SHARSET_DEFAULT
     // internally and we need to have wxFONENCODING_DEFAULT == SC_SHARSET_DEFAULT
     // so we adjust the encoding before passing it to Scintilla.  See also
-    // wxStyledTextCtrl::StyleSetCharacterSet
+    // wxScintillaTextCtrl::StyleSetCharacterSet
     wxFontEncoding encoding = (wxFontEncoding)(characterSet-1);
 
     wxFontEncodingArray ea = wxEncodingConverter::GetPlatformEquivalents(encoding);
@@ -1409,7 +1409,7 @@ long Platform::SendScintilla(WindowID w,
                              unsigned long wParam,
                              long lParam) {
 
-    wxStyledTextCtrl* stc = (wxStyledTextCtrl*)w;
+    wxScintillaTextCtrl* stc = (wxScintillaTextCtrl*)w;
     return stc->SendMsg(msg, wParam, lParam);
 }
 
@@ -1418,7 +1418,7 @@ long Platform::SendScintillaPointer(WindowID w,
                                     unsigned long wParam,
                                     void *lParam) {
 
-    wxStyledTextCtrl* stc = (wxStyledTextCtrl*)w;
+    wxScintillaTextCtrl* stc = (wxScintillaTextCtrl*)w;
     return stc->SendMsg(msg, wParam, (long)lParam);
 }
 
