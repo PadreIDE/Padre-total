@@ -1,6 +1,8 @@
 use strict;
 use warnings;
-use Module::Build;
+
+use Module::Build ();
+use Alien::wxWidgets;
 
 # Subclass Module::Build to compile Scintilla first at build time
 my $class = Module::Build->subclass(
@@ -16,7 +18,6 @@ sub ACTION_build {
 sub compile_scintilla {
 	
 	print "Compiling Scintilla\n";
-	use Alien::wxWidgets;
 
 	my @modules = (
 		glob('wx-scintilla\src\stc\scintilla\src\*.cxx'),
@@ -79,6 +80,14 @@ sub compile_scintilla {
 
 SUBCLASS
 
+my $include_path = Alien::wxWidgets->include_path;
+$include_path =~ s/\-I//g;
+my @include_paths = split(/\s/, $include_path); 
+
+my $defines = Alien::wxWidgets->defines;
+$defines =~ s/-D//g;
+my @defines = split(/\s/, $defines);
+
 my $builder = $class->new(
 	module_name       => 'Wx::Scintilla',
 	license           => 'perl',
@@ -89,6 +98,17 @@ my $builder = $class->new(
 		'Alien::wxWidgets' => 0,
 		'Wx'               => 0,
 		'ExtUtils::XSpp'   => 0,
+	},
+	include_dirs => [
+		'.', 
+		'wx-scintilla\include',
+		'wx-scintilla\src\stc\scintilla\include',
+		'wx-scintilla\src\stc\scintilla\src',
+		'C:\strawberry\perl\site\lib\Wx', 
+		@include_paths],
+	extra_compiler_flags => \@defines,
+	xs_files => {
+		'Scintilla1.xs' => 'lib/Wx/Scintilla.xs',
 	},
 	add_to_cleanup     => ['Wx-Scintilla-*'],
 	create_makefile_pl => 'traditional',
