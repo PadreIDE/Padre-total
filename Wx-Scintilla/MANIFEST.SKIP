@@ -42,3 +42,7 @@
 # Avoid archives of this distribution
 \bWx-Scintilla-[\d\.\_]+
 ^MYMETA.yml$
+
+# Avoid temporary files
+^lib/Wx/Scintilla\.(c|xs)$
+\.o\.d$
