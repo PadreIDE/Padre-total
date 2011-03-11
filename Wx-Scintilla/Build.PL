@@ -109,7 +109,7 @@ my $builder = $class->new(
 		'C:\strawberry\perl\site\lib\Wx',
 		@include_paths
 	],
-	extra_compiler_flags => [ Alien::wxWidgets->defines ],
+	extra_compiler_flags => [ '-x', 'c++', Alien::wxWidgets->defines  ],
 	xs_files             => {
 		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
