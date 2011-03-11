@@ -38,7 +38,7 @@ sub build_scintilla {
 
 	my @objects = ();
 	for my $module (@modules) {
-		$self->log_info("Compiling $module");
+		$self->log_info("Compiling $module\n");
 		my $filename = File::Basename::basename($module);
 		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "stcdll_$filename" );
@@ -65,7 +65,7 @@ sub build_scintilla {
 	}
 
 	my $dll = 'wxmsw28u_stc_gcc_custom.dll';
-	$self->log_info("Linking $dll");
+	$self->log_info("Linking $dll\n");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -fPIC -o ' . $dll,
@@ -86,20 +86,20 @@ my $include_path = Alien::wxWidgets->include_path;
 $include_path =~ s/\-I//g;
 my @include_paths = split( /\s/, $include_path );
 
-my $defines = Alien::wxWidgets->defines;
-$defines =~ s/-D//g;
-my @defines = split( /\s/, $defines );
-
 my $builder = $class->new(
-	module_name       => 'Wx::Scintilla',
-	license           => 'perl',
-	dist_author       => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
-	dist_version_from => 'lib/Wx/Scintilla.pm',
-	build_requires    => {
-		'Test::More'       => 0,
-		'Alien::wxWidgets' => 0,
-		'Wx'               => 0,
-		'ExtUtils::XSpp'   => 0,
+	module_name        => 'Wx::Scintilla',
+	license            => 'perl',
+	dist_author        => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
+	dist_version_from  => 'lib/Wx/Scintilla.pm',
+	configure_requires => {
+		'Module::Build' => 0.36,
+	},
+	build_requires => {
+		'Test::More'         => 0,
+		'Alien::wxWidgets'   => 0,
+		'Wx'                 => 0,
+		'ExtUtils::XSpp'     => 0,
+		'ExtUtils::CBuilder' => 0
 	},
 	include_dirs => [
 		'.',
@@ -109,7 +109,7 @@ my $builder = $class->new(
 		'C:\strawberry\perl\site\lib\Wx',
 		@include_paths
 	],
-	extra_compiler_flags => \@defines,
+	extra_compiler_flags => [ Alien::wxWidgets->defines ],
 	xs_files             => {
 		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
@@ -121,6 +121,7 @@ my $builder = $class->new(
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
 		}
 	},
+	verbose => 1,
 );
 
 $builder->create_build_script();
