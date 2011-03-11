@@ -45,4 +45,6 @@
 
 # Avoid temporary files
 ^lib/Wx/Scintilla\.(c|xs)$
+\.dll$
+\.o$
 \.o\.d$
