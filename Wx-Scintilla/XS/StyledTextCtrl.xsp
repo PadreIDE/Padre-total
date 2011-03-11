@@ -13,7 +13,7 @@
 %module{Wx};
 
 #undef FindText
-#include "wx/stc/stc.h"
+#include "../wx-scintilla/include/wx/stc/stc.h"
 
 %typemap{wxDragResult}{simple};
 %typemap{wxFontEncoding}{simple};

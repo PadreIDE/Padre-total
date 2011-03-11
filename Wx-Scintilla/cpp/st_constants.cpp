@@ -11,6 +11,8 @@
 
 #include "cpp/constants.h"
 
+#include "../wx-scintilla/include/wx/stc/stc.h"
+
 double stc_constant( const char* name, int arg )
 {
     // !package: Wx
