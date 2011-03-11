@@ -55,3 +55,17 @@ sub EVT_STC_HOTSPOT_DCLICK($$$)    { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_H
 sub EVT_STC_CALLTIP_CLICK($$$)     { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CALLTIP_CLICK,     $_[2] ) }
 
 1; # end of Wx::Scintilla
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Wx::Scintilla - Perl wxWidgets XS bindings for Scintilla editor component 
+
+=head1 SYNOPSIS
+
+TODO explain :)
+
+=cut

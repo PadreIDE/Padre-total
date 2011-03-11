@@ -2,19 +2,34 @@ use strict;
 use warnings;
 use Module::Build;
 
+# Subclass Module::Build to compile Scintilla first at build time
+my $class = Module::Build->subclass(
+	class => "Module::Build::Custom",
+	code  => <<'SUBCLASS' );
+
+sub ACTION_build {
+	my $self = shift;
+	$self->compile_scintilla();
+	$self->SUPER::ACTION_build;
+}
+
 sub compile_scintilla {
+	
+	print "Compiling Scintilla\n";
+	use Alien::wxWidgets;
+
 	my @modules = (
-		glob('src\stc\scintilla\src\*.cxx'),
-		'src\stc\PlatWX.cpp',
-		'src\stc\ScintillaWX.cpp',
-		'src\stc\stc.cpp',
+		glob('wx-scintilla\src\stc\scintilla\src\*.cxx'),
+		'wx-scintilla\src\stc\PlatWX.cpp',
+		'wx-scintilla\src\stc\ScintillaWX.cpp',
+		'wx-scintilla\src\stc\stc.cpp',
 	);
 
 	my @include_dirs = (
-		'-Iinclude',
-		'-Isrc\stc\scintilla\include',
-		'-Isrc\stc\scintilla\src',
-		'-Isrc\stc',
+		'-Iwx-scintilla\include',
+		'-Iwx-scintilla\src\stc\scintilla\include',
+		'-Iwx-scintilla\src\stc\scintilla\src',
+		'-Iwx-scintilla\src\stc',
 		Alien::wxWidgets->include_path
 	);
 
@@ -62,18 +77,9 @@ sub compile_scintilla {
 	system($cmd);
 }
 
-# Subclass Module::Build to compile Scintilla at build time
-my $builder_class = Module::Build->subclass( code => <<'EOF');
+SUBCLASS
 
-sub ACTION_build {
-	my $self = shift;
-	print "build called\n";
-	$self->SUPER::ACTION_build;
-}
-
-EOF
-
-my $builder = $builder_class = Module::Build->new(
+my $builder = $class->new(
 	module_name       => 'Wx::Scintilla',
 	license           => 'perl',
 	dist_author       => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
@@ -84,11 +90,14 @@ my $builder = $builder_class = Module::Build->new(
 		'Wx'               => 0,
 		'ExtUtils::XSpp'   => 0,
 	},
-	xs_files => {
-		'STC.xs',
-	},
 	add_to_cleanup     => ['Wx-Scintilla-*'],
 	create_makefile_pl => 'traditional',
+	meta_merge         => {
+		resources => {
+			homepage   => 'http://padre.perlide.org/',
+			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
+		}
+	},
 );
 
 $builder->create_build_script();
