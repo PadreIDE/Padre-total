@@ -82,11 +82,11 @@ SUBCLASS
 
 my $include_path = Alien::wxWidgets->include_path;
 $include_path =~ s/\-I//g;
-my @include_paths = split(/\s/, $include_path); 
+my @include_paths = split( /\s/, $include_path );
 
 my $defines = Alien::wxWidgets->defines;
 $defines =~ s/-D//g;
-my @defines = split(/\s/, $defines);
+my @defines = split( /\s/, $defines );
 
 my $builder = $class->new(
 	module_name       => 'Wx::Scintilla',
@@ -100,14 +100,15 @@ my $builder = $class->new(
 		'ExtUtils::XSpp'   => 0,
 	},
 	include_dirs => [
-		'.', 
+		'.',
 		'wx-scintilla\include',
 		'wx-scintilla\src\stc\scintilla\include',
 		'wx-scintilla\src\stc\scintilla\src',
-		'C:\strawberry\perl\site\lib\Wx', 
-		@include_paths],
+		'C:\strawberry\perl\site\lib\Wx',
+		@include_paths
+	],
 	extra_compiler_flags => \@defines,
-	xs_files => {
+	xs_files             => {
 		'Scintilla1.xs' => 'lib/Wx/Scintilla.xs',
 	},
 	add_to_cleanup     => ['Wx-Scintilla-*'],
