@@ -11,13 +11,15 @@ my $class = Module::Build->subclass(
 
 sub ACTION_build {
 	my $self = shift;
-	$self->compile_scintilla();
+	$self->build_scintilla();
 	$self->SUPER::ACTION_build;
 }
 
-sub compile_scintilla {
-	
-	print "Compiling Scintilla\n";
+sub build_scintilla {
+	my $self = shift;
+
+	use Alien::wxWidgets;
+	$self->log_info("Compiling Scintilla\n");
 
 	my @modules = (
 		glob('wx-scintilla\src\stc\scintilla\src\*.cxx'),
@@ -36,7 +38,7 @@ sub compile_scintilla {
 
 	my @objects = ();
 	for my $module (@modules) {
-		print "Compiling $module\n";
+		$self->log_info("Compiling $module");
 		my $filename = File::Basename::basename($module);
 		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "stcdll_$filename" );
@@ -54,16 +56,16 @@ sub compile_scintilla {
 			'-MD -MP',
 			join( ' ', @include_dirs ),
 			$module,
-		);
+		);	
 		my $cmd = join( ' ', @cmd );
 
-		#print $cmd . "\n";
+		$self->log_debug($cmd);
 		system($cmd);
 		push @objects, $object_name;
 	}
 
 	my $dll = 'wxmsw28u_stc_gcc_custom.dll';
-	print "Linking $dll\n";
+	$self->log_info("Linking $dll");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -fPIC -o ' . $dll,
@@ -74,7 +76,7 @@ sub compile_scintilla {
 	);
 	my $cmd = join( ' ', @cmd );
 
-	#print $cmd . "\n";
+	$self->log_debug($cmd);
 	system($cmd);
 }
 
@@ -109,7 +111,7 @@ my $builder = $class->new(
 	],
 	extra_compiler_flags => \@defines,
 	xs_files             => {
-		'Scintilla1.xs' => 'lib/Wx/Scintilla.xs',
+		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
 	add_to_cleanup     => ['Wx-Scintilla-*'],
 	create_makefile_pl => 'traditional',
