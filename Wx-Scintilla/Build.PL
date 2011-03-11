@@ -109,12 +109,12 @@ my $builder = $class->new(
 		'C:\strawberry\perl\site\lib\Wx',
 		@include_paths
 	],
-	extra_compiler_flags => [ '-x', 'c++', Alien::wxWidgets->defines  ],
-	extra_linker_flags => ["-shared", Alien::wxWidgets->libraries],
+	extra_compiler_flags => [ '-x',      'c++', Alien::wxWidgets->defines ],
+	extra_linker_flags   => [ "-shared", Alien::wxWidgets->libraries ],
 	xs_files             => {
 		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
-	add_to_cleanup     => ['Wx-Scintilla-*', '*.o.d', '*.o', '*.dll'],
+	add_to_cleanup     => [ 'Wx-Scintilla-*', '*.o.d', '*.o', '*.dll' ],
 	create_makefile_pl => 'traditional',
 	meta_merge         => {
 		resources => {
