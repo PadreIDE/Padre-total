@@ -22,17 +22,17 @@ sub build_scintilla {
 	$self->log_info("Compiling Scintilla\n");
 
 	my @modules = (
-		glob('wx-scintilla\src\stc\scintilla\src\*.cxx'),
-		'wx-scintilla\src\stc\PlatWX.cpp',
-		'wx-scintilla\src\stc\ScintillaWX.cpp',
-		'wx-scintilla\src\stc\stc.cpp',
+		glob('wx-scintilla/src/stc/scintilla/src/*.cxx'),
+		'wx-scintilla/src/stc/PlatWX.cpp',
+		'wx-scintilla/src/stc/ScintillaWX.cpp',
+		'wx-scintilla/src/stc/stc.cpp',
 	);
 
 	my @include_dirs = (
-		'-Iwx-scintilla\include',
-		'-Iwx-scintilla\src\stc\scintilla\include',
-		'-Iwx-scintilla\src\stc\scintilla\src',
-		'-Iwx-scintilla\src\stc',
+		'-Iwx-scintilla/include',
+		'-Iwx-scintilla/src/stc/scintilla/include',
+		'-Iwx-scintilla/src/stc/scintilla/src',
+		'-Iwx-scintilla/src/stc',
 		Alien::wxWidgets->include_path
 	);
 
@@ -103,10 +103,10 @@ my $builder = $class->new(
 	},
 	include_dirs => [
 		'.',
-		'wx-scintilla\include',
-		'wx-scintilla\src\stc\scintilla\include',
-		'wx-scintilla\src\stc\scintilla\src',
-		'C:\strawberry\perl\site\lib\Wx',
+		'wx-scintilla/include',
+		'wx-scintilla/src/stc/scintilla/include',
+		'wx-scintilla/src/stc/scintilla/src',
+		'C:/strawberry/perl/site/lib/Wx',
 		@include_paths
 	],
 	extra_compiler_flags => [ '-x',      'c++', Alien::wxWidgets->defines ],
