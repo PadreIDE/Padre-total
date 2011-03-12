@@ -114,7 +114,18 @@ my $builder = $class->new(
 	xs_files             => {
 		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
-	add_to_cleanup     => [ 'Wx-Scintilla-*', '*.o.d', '*.o', '*.dll' ],
+	add_to_cleanup     => [ 
+		'Wx-Scintilla-*',
+		'wx-scintilla/src/stc/*.o.d', 
+		'wx-scintilla/src/stc/*.o', 
+		'wx-scintilla/src/stc/scintilla/src/*.o.d', 
+		'wx-scintilla/src/stc/scintilla/src/*.o', 
+		'lib/Wx/Scintilla.c',
+		'lib/Wx/Scintilla.o',
+		'lib/Wx/Scintilla.xs',
+		'blib',
+		'*.dll' 
+	],
 	create_makefile_pl => 'traditional',
 	meta_merge         => {
 		resources => {
