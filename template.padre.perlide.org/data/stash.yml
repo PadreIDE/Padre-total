@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 March 11
+        url: http://zenoga.tumblr.com/post/3782430997/padre-the-perl-ide-a-large-and-friendly-project
+        title: Padre, the Perl IDE: A Large and Friendly Project
+        comment: by Zeno Gantner    
       - date: 2011 March 9
         url: http://zenoga.tumblr.com/post/3748629330/latex-plugin-for-padre
         title: LaTeX Plugin for Padre
