@@ -47,4 +47,4 @@
 ^lib/Wx/Scintilla\.(c|xs)$
 \.dll$
 \.o$
-\.o\.d$
+\.o\.d$^MYMETA\.json$
