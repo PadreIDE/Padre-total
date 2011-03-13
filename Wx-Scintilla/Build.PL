@@ -64,13 +64,15 @@ sub build_scintilla {
 		push @objects, $object_name;
 	}
 
-	my $dll = 'wxmsw28u_stc_gcc_custom.dll';
+	my $dll = 'libwxmsw28u_scintilla.dll';
+	my $lib = 'libwxmsw28u_scintilla.a';
 	$self->log_info("Linking $dll\n");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -fPIC -o ' . $dll,
 		'-mthreads',
 		join( ' ', @objects ),
+		'-Wl,--out-implib=' . $lib,
 		'-lgdi32',
 		Alien::wxWidgets->libraries(qw(core base)),
 	);
