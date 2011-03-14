@@ -8,7 +8,7 @@
 
 #undef THIS
 
-MODULE=Wx__SCINTILLA
+MODULE=Wx__Scintilla
 
 BOOT:
   INIT_PLI_HELPERS( wx_pli_helpers );
@@ -25,4 +25,4 @@ BOOT:
 #define XS( name ) WXXS( name )
 #endif
 
-MODULE=Wx__SCINTILLA
+MODULE=Wx__Scintilla

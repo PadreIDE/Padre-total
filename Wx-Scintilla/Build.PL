@@ -15,6 +15,11 @@ sub ACTION_build {
 	$self->SUPER::ACTION_build;
 }
 
+sub process_xs_files {
+	# Override Module::Build with a null implementation
+	# We will be doing our own custom XS file handling
+}
+
 sub build_scintilla {
 	my $self = shift;
 
