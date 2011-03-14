@@ -102,7 +102,7 @@ sub build_xs {
 	require ExtUtils::ParseXS;
 	ExtUtils::ParseXS::process_file( 
 		filename => 'Scintilla.xs',
-                output => 'lib/Wx/Scintilla.c',
+                output => 'Scintilla.c',
                 prototypes => 0,
                 linenumbers => 0,
                 typemap => [
@@ -114,28 +114,30 @@ sub build_xs {
 
 	@cmd = (
 		Alien::wxWidgets->compiler,
-		'-fvtable-thunks -O2 -mthreads -Os -c',
+		'-fvtable-thunks -O2 -mthreads -Os -c -o Scintilla.o',
 		'-I.',
 		'-Ic:/strawberry/perl/site/lib/Wx/',
 		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/',
 		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/',
 		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
 		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
-		'-DVERSION="0.01" -DXS_VERSION="0.01"',
+		'-DVERSION=\"0.01\" -DXS_VERSION=\"0.01\"',
 		'-IC:/strawberry/perl/lib/CORE',
 		'-DWXPL_EXT -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
-		'lib/Wx/Scintilla.c',
+		'Scintilla.c',
 	);
 	$cmd = join(' ', @cmd);
 	$self->log_info("$cmd\n");
 	system($cmd);
 
 	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");	
-	chmod(644, 'lib/Wx/Scintilla.bs');
+	if(open my $fh, '>Scintilla.bs') {
+		chmod(644, 'Scintilla.bs');
+	}
 	
 	require ExtUtils::Mksymlists;
 	ExtUtils::Mksymlists::Mksymlists(
-		'NAME'=> "Wx::Scintilla", 
+		'NAME'=> 'Wx::Scintilla', 
 		'DLBASE' => 'Scintilla', 
 		'DL_FUNCS' => {  }, 
 		'FUNCLIST' => [], 
@@ -148,7 +150,7 @@ sub build_xs {
 	@cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -s -o ' . $dll,
-		'lib/Wx/Scintilla.o',  
+		'Scintilla.o',  
 		'C:/strawberry/perl/lib/CORE/libperl512.a',
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxmsw28u_core.a',
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxbase28u.a',
@@ -158,11 +160,11 @@ sub build_xs {
 	);
 	$cmd = join(' ', @cmd);
 	$self->log_info("$cmd\n");
-	system(@cmd);
+	system($cmd);
 
 	require File::Copy;
 	chmod(755, 'blib/arch/auto/Wx/Scintilla/Scintilla.dll');
-	File::Copy::copy('Scintilla.bs', 'blib/arch/auto/Wx/Scintilla/Scintilla.bs');
+	File::Copy::copy('Scintilla.bs', 'blib/arch/auto/Wx/Scintilla/Scintilla.bs') or die "Cannot copy Scintilla.bs\n";
 	chmod(644, 'blib/arch/auto/Wx/Scintilla/Scintilla.bs');
 }
 
@@ -182,14 +184,14 @@ my $builder = $class->new(
 		'Module::Build' => 0.36,
 	},
 	build_requires => {
-		'Test::More'         => 0,
-		'Alien::wxWidgets'   => 0,
-		'Wx'                 => 0,
-		'ExtUtils::XSpp'     => 0,
-		'Shell::Command' => 0,
+		'Test::More'       => 0,
+		'Alien::wxWidgets' => 0,
+		'Wx'               => 0,
+		'ExtUtils::XSpp'   => 0,
+		'Shell::Command'   => 0,
 	},
-	needs_compiler => 0, 	# We will be doing our own XS compilation
-	include_dirs => [
+	needs_compiler => 0, # We will be doing our own XS compilation
+	include_dirs   => [
 		'.',
 		'wx-scintilla/include',
 		'wx-scintilla/src/stc/scintilla/include',
@@ -199,15 +201,14 @@ my $builder = $class->new(
 	],
 	extra_compiler_flags => [ '-x',      'c++', Alien::wxWidgets->defines ],
 	extra_linker_flags   => [ "-shared", Alien::wxWidgets->libraries ],
-	add_to_cleanup => [
+	add_to_cleanup       => [
 		'Wx-Scintilla-*',
 		'wx-scintilla/src/stc/*.o.d',
 		'wx-scintilla/src/stc/*.o',
 		'wx-scintilla/src/stc/scintilla/src/*.o.d',
 		'wx-scintilla/src/stc/scintilla/src/*.o',
-		'lib/Wx/Scintilla.c',
-		'lib/Wx/Scintilla.o',
-		'lib/Wx/Scintilla.xs',
+		'Scintilla.c',
+		'Scintilla.o',
 		'blib',
 		'*.dll'
 	],
