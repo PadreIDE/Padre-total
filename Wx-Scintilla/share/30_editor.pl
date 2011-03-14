@@ -3,6 +3,10 @@ use strict;
 use warnings;
 
 
+#TODO remove once testing is finished!
+use lib 'blib/arch/auto/Wx/Scintilla';
+use lib 'lib';
+
 #############################################################################
 ##
 ## Based on a very early version of Padre...
@@ -36,7 +40,7 @@ use warnings FATAL => 'all';
 
 use Wx ':everything';
 use Wx::Event ':everything';
-use Wx::STC ();
+use Wx::Scintilla ();
 
 
 use File::Spec::Functions qw(catfile);
@@ -288,7 +292,7 @@ use strict;
 use warnings FATAL => 'all';
 
 our $VERSION = '0.01';
-use Wx::STC;
+use Wx::Scintilla ();
 use base 'Wx::ScintillaTextCtrl';
 
 use Wx ':everything';
