@@ -209,6 +209,9 @@ my $builder = $class->new(
 		'wx-scintilla/src/stc/scintilla/src/*.o',
 		'Scintilla.c',
 		'Scintilla.o',
+		'Scintilla.bs',
+		'Scintilla.def',
+		'Scintilla_def.old',
 		'blib',
 		'*.dll'
 	],
