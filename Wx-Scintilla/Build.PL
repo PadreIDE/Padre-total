@@ -114,21 +114,21 @@ sub build_xs {
 
 	@cmd = (
 		Alien::wxWidgets->compiler,
-		'-fvtable-thunks  -O2 -mthreads -Os -c',
+		'-fvtable-thunks -O2 -mthreads -Os -c',
 		'-I.',
-		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib',
-		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include',
-		'-Ic:/strawberry/perl/site/lib/Wx',
+		'-Ic:/strawberry/perl/site/lib/Wx/',
+		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/',
+		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/include/',
 		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
-		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2', 	  
-		'-DVERSION="0.01"-DXS_VERSION="0.01"',  
+		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
+		'-DVERSION="0.01" -DXS_VERSION="0.01"',
 		'-IC:/strawberry/perl/lib/CORE',
 		'-DWXPL_EXT -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
 		'lib/Wx/Scintilla.c',
 	);
 	$cmd = join(' ', @cmd);
 	$self->log_info("$cmd\n");
-	system(@cmd);
+	system($cmd);
 
 	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");	
 	chmod(644, 'lib/Wx/Scintilla.bs');
@@ -142,34 +142,17 @@ sub build_xs {
 		'IMPORTS' => {  }, 
 		'DL_VARS' => []);
 
+	my $dll = 'blib/arch/auto/Wx/Scintilla/Scintilla.dll';
+	File::Path::mkpath(File::Basename::dirname($dll), 0, oct(777));
+
 	@cmd = (
-		'g++ -shared  -s',  
-		'-o blib/arch/auto/Wx/Scintilla/Scintilla.dll',
-		'Scintilla.o',  
+		Alien::wxWidgets->compiler,
+		'-shared -s -o ' . $dll,
+		'lib/Wx/Scintilla.o',  
 		'C:/strawberry/perl/lib/CORE/libperl512.a',
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxmsw28u_core.a',
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxbase28u.a',
-		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxmsw28u_core.a', 
-		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxbase28u.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/libmoldname.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/libkernel32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libuser32.a',
 		'C:/strawberry/c/i686-w64-mingw32/lib/libgdi32.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/libwinspool.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libcomdlg32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libadvapi32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libshell32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libole32.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/liboleaut32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libnetapi32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libuuid.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/libws2_32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libmpr.a',
-		'C:/strawberry/c/i686-w64-mingw32/lib/libwinmm.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libversion.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libodbc32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libodbccp32.a', 
-		'C:/strawberry/c/i686-w64-mingw32/lib/libcomctl32.a', 
 		'libwxmsw28u_scintilla.a',
 		'Scintilla.def',
 	);
