@@ -18,6 +18,21 @@ sub ACTION_build {
 sub process_xs_files {
 	# Override Module::Build with a null implementation
 	# We will be doing our own custom XS file handling
+
+=pod TODO
+cp lib/Wx/Scintilla.pm ..\..\blib\lib\Wx\Scintilla.pm
+C:\strawberry\perl\bin\perl.exe C:\strawberry\perl\lib\ExtUtils\xsubpp  -noprototypes -nolinenumbers  -typemap C:\strawberry\perl\lib\ExtUtils\typemap -typemap wx_typemap -typemap typemap  Scintilla.xs > Scintilla.xsc && C:\strawberry\perl\bin\perl.exe -MExtUtils::Command -e "mv" -- Scintilla.xsc Scintilla.c
+g++  -fvtable-thunks  -O2 -mthreads -Os -c  -I. -I..\.. -IC:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib -IC:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\include  -Ic:\strawberry\perl\site\lib\Wx -s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS -fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2 	  -DVERSION=\"0.01\" 	-DXS_VERSION=\"0.01\"  "-IC:\strawberry\perl\lib\CORE"  -DWXPL_EXT -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA Scintilla.c
+cc1plus.exe: warning: switch '-fvtable-thunks' is no longer supported
+Running Mkbootstrap for Wx::Scintilla ()
+C:\strawberry\perl\bin\perl.exe -MExtUtils::Command -e "chmod" -- 644 Scintilla.bs
+C:\strawberry\perl\bin\perl.exe -MExtUtils::Mksymlists -e "Mksymlists('NAME'=>\"Wx::Scintilla\", 'DLBASE' => 'Scintilla', 'DL_FUNCS' => {  }, 'FUNCLIST' => [], 'IMPORTS' => {  }, 'DL_VARS' => []);"
+g++ -shared  -s  -o blib\arch\auto\Wx\Scintilla\Scintilla.dll Scintilla.o  C:\strawberry\perl\lib\CORE\libperl512.a C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib\libwxmsw28u_core.a C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib\libwxbase28u.a C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib\libwxmsw28u_core.a C:\strawberry\perl\site\lib\Alien\wxWidgets\msw_2_8_10_uni_gcc_3_4\lib\libwxbase28u.a C:\strawberry\c\i686-w64-mingw32\lib\libmoldname.a C:\strawberry\c\i686-w64-mingw32\lib\libkernel32.a C:\strawberry\c\i686-w64-mingw32\lib\libuser32.a C:\strawberry\c\i686-w64-mingw32\lib\libgdi32.a C:\strawberry\c\i686-w64-mingw32\lib\libwinspool.a C:\strawberry\c\i686-w64-mingw32\lib\libcomdlg32.a C:\strawberry\c\i686-w64-mingw32\lib\libadvapi32.a C:\strawberry\c\i686-w64-mingw32\lib\libshell32.a C:\strawberry\c\i686-w64-mingw32\lib\libole32.a C:\strawberry\c\i686-w64-mingw32\lib\liboleaut32.a C:\strawberry\c\i686-w64-mingw32\lib\libnetapi32.a C:\strawberry\c\i686-w64-mingw32\lib\libuuid.a C:\strawberry\c\i686-w64-mingw32\lib\libws2_32.a C:\strawberry\c\i686-w64-mingw32\lib\libmpr.a C:\strawberry\c\i686-w64-mingw32\lib\libwinmm.a C:\strawberry\c\i686-w64-mingw32\lib\libversion.a C:\strawberry\c\i686-w64-mingw32\lib\libodbc32.a C:\strawberry\c\i686-w64-mingw32\lib\libodbccp32.a C:\strawberry\c\i686-w64-mingw32\lib\libcomctl32.a libwxmsw28u_scintilla.a Scintilla.def
+C:\strawberry\perl\bin\perl.exe -MExtUtils::Command -e "chmod" -- 755 ..\..\blib\arch\auto\Wx\Scintilla\Scintilla.dll
+C:\strawberry\perl\bin\perl.exe -MExtUtils::Command -e "cp" -- Scintilla.bs ..\..\blib\arch\auto\Wx\Scintilla\Scintilla.bs
+C:\strawberry\perl\bin\perl.exe -MExtUtils::Command -e "chmod" -- 644 ..\..\blib\arch\auto\Wx\Scintilla\Scintilla.bs
+=cut
+
 }
 
 sub build_scintilla {
@@ -121,17 +136,17 @@ my $builder = $class->new(
 	xs_files             => {
 		'Scintilla.xs' => 'lib/Wx/Scintilla.xs',
 	},
-	add_to_cleanup     => [ 
+	add_to_cleanup => [
 		'Wx-Scintilla-*',
-		'wx-scintilla/src/stc/*.o.d', 
-		'wx-scintilla/src/stc/*.o', 
-		'wx-scintilla/src/stc/scintilla/src/*.o.d', 
-		'wx-scintilla/src/stc/scintilla/src/*.o', 
+		'wx-scintilla/src/stc/*.o.d',
+		'wx-scintilla/src/stc/*.o',
+		'wx-scintilla/src/stc/scintilla/src/*.o.d',
+		'wx-scintilla/src/stc/scintilla/src/*.o',
 		'lib/Wx/Scintilla.c',
 		'lib/Wx/Scintilla.o',
 		'lib/Wx/Scintilla.xs',
 		'blib',
-		'*.dll' 
+		'*.dll'
 	],
 	create_makefile_pl => 'traditional',
 	meta_merge         => {
