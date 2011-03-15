@@ -106,7 +106,7 @@ sub colorize {
 
 	# TODO we might need not remove all the color, just from a certain section
 	# TODO reuse the $first passed to the method
-	$doc->remove_color;
+	Padre::Current->editor->remove_color;
 
 	my $editor = $doc->editor;
 	my $text   = $doc->text_get;
