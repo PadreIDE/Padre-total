@@ -84,13 +84,13 @@ sub menu_dialog {
 	my $main = $self->main;
 
 	# Load the wxGlade-generated Perl file
-	my $fbp  = $self->dialog_fbp or return;
-	my $list = $self->package_list($fbp);
+	my $xml  = $self->dialog_fbp or return;
+	my $list = $self->package_list($xml);
 
 	# Show the main dialog
 	require Padre::Plugin::FormBuilder::Dialog;
 	my $dialog = Padre::Plugin::FormBuilder::Dialog->new(
-		$main, $fbp, $list,
+		$main, $xml, $list,
 	);
 	while ( $dialog->ShowModal != Wx::wxID_CANCEL ) {
 		# Extract information and clean up dialog
@@ -101,16 +101,18 @@ sub menu_dialog {
 		}
 
 		# Do they want a Padre dialog or a regular one
-		my $padre = !! $dialog->{padre}->Checked;
+		my $padre = !! $dialog->{padre}->IsChecked;
 
 		# Should we generate into a temporary namespace
-		my $package = $dialog->{temp}
+		my $package = $dialog->{temp}->IsChecked
+			? "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT
+			: $name;
 
 		# Generate the dialog code
 		my $code = $self->generate_dialog(
-			file    => $fbp,
+			file    => $xml,
 			dialog  => $name,
-			package => $name,
+			package => $package,
 		);
 
 		# Handle the user instructions
@@ -244,8 +246,8 @@ sub package_list {
 
 	# Load the file
 	require FBP;
-	my $fbp = FBP->new;
-	my $ok  = $fbp->parse_file($file);
+	my $xml = FBP->new;
+	my $ok  = $xml->parse_file($file);
 	unless ( $ok ) {
 		$self->main->error("Failed to load $file");
 		return;
@@ -254,29 +256,29 @@ sub package_list {
 	return [
 		grep { defined $_ and length $_ }
 		map  { $_->name }
-		$fbp->find( isa => 'FBP::Dialog' )
+		$xml->find( isa => 'FBP::Dialog' )
 	];
 }
 
 # Generate the class code
 sub generate_dialog {
 	my $self  = shift;
-	my %param = shift;
+	my %param = @_;
 
 	# Load the file
 	require FBP;
-	my $fbp = FBP->new;
-	my $ok  = $fbp->parse_file($param{file});
+	my $xml = FBP->new;
+	my $ok  = $xml->parse_file($param{file});
 	unless ( $ok ) {
 		$self->main->error("Failed to load $param{file}");
 		return;
 	}
 
 	# Find the dialog
-	my $project = $fbp->find_first(
+	my $fbp = $xml->find_first(
 		isa  => 'FBP::Project',
 	);
-	my $dialog = $project->find_first(
+	my $dialog = $fbp->find_first(
 		isa  => 'FBP::Dialog',
 		name => $param{dialog},
 	);
@@ -294,13 +296,13 @@ sub generate_dialog {
 	if ( $param{padre} ) {
 		require Padre::Plugin::FormBuilder::Perl;
 		$perl = Padre::Plugin::FormBuilder::Perl->new(
-			project => $project,
+			project => $fbp,
 			defined($version) ? ( version => $version ) : (),
 		);
 	} else {
 		require FBP::Perl;
 		$perl = FBP::Perl->new(
-			project => $project,
+			project => $fbp,
 		);
 	}
 
