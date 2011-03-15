@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2001 March 15
+        url: http://blogs.perl.org/users/peter_lavender/2011/03/padre-084-has-been-released.html
+        title: Padre 0.84 has been released...
+        comment: by Peter Lavender(Release Manager)
       - date: 2011 March 11
         url: http://zenoga.tumblr.com/post/3782430997/padre-the-perl-ide-a-large-and-friendly-project
         title: Padre, the Perl IDE: A Large and Friendly Project
