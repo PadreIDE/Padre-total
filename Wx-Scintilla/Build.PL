@@ -188,7 +188,6 @@ my $builder = $class->new(
 		'Alien::wxWidgets' => 0,
 		'Wx'               => 0,
 		'ExtUtils::XSpp'   => 0,
-		'Shell::Command'   => 0,
 	},
 	needs_compiler => 0, # We will be doing our own XS compilation
 	include_dirs   => [
