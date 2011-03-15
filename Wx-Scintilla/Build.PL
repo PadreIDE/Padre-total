@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use lib './_build/lib';
+use lib 'inc';
 use Module::Build::Scintilla ();
 use Alien::wxWidgets;
 
