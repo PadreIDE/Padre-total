@@ -113,6 +113,7 @@ sub menu_dialog {
 			file    => $xml,
 			dialog  => $name,
 			package => $package,
+			padre   => $padre,
 		);
 
 		# Handle the user instructions
