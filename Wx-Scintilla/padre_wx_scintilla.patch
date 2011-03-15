@@ -1,0 +1,19 @@
+Index: Editor.pm
+===================================================================
+--- Editor.pm	(revision 14048)
++++ Editor.pm	(working copy)
+@@ -15,8 +15,13 @@
+ 
+ our $VERSION    = '0.85';
+ our $COMPATIBLE = '0.81';
+-our @ISA        = 'Wx::StyledTextCtrl';
+ 
++use lib 'd:/tools/padre/Wx-Scintilla/blib/arch/auto/Wx/Scintilla';
++use lib 'd:/tools/padre/Wx-Scintilla/lib';
++use lib 'd:/tools/padre/Wx-Scintilla';
++use Wx::Scintilla	();
++our @ISA        = 'Wx::ScintillaTextCtrl';
++
+ # End-Of-Line modes:
+ # MAC is actually Mac classic.
+ # MAC OS X and later uses UNIX EOLs
