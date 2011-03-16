@@ -52,6 +52,28 @@ sub new {
 	);
 	$self->{select}->SetSelection(0);
 
+	$self->{preview} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Preview"),
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{preview},
+		sub {
+			shift->preview(@_);
+		},
+	);
+
+	$self->{m_staticline4} = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLI_HORIZONTAL,
+	);
+
 	$self->{temp} = Wx::CheckBox->new(
 		$self,
 		-1,
@@ -76,20 +98,6 @@ sub new {
 		Wx::wxLI_HORIZONTAL,
 	);
 
-	$self->{preview} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Preview"),
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{preview},
-		sub {
-			shift->preview(@_);
-		},
-	);
-
 	$self->{generate} = Wx::Button->new(
 		$self,
 		-1,
@@ -110,12 +118,15 @@ sub new {
 		Wx::gettext("Cancel"),
 	);
 
+	my $bSizer5 = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+	$bSizer5->Add( $self->{select}, 1, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer5->Add( $self->{preview}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
+
 	my $gSizer1 = Wx::GridSizer->new( 4, 1, 0, 0 );
 	$gSizer1->Add( $self->{temp}, 0, Wx::wxALL, 5 );
 	$gSizer1->Add( $self->{padre}, 0, Wx::wxALL, 5 );
 
 	my $buttons = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-	$buttons->Add( $self->{preview}, 0, Wx::wxALL, 5 );
 	$buttons->Add( $self->{generate}, 0, Wx::wxBOTTOM | Wx::wxTOP, 5 );
 	$buttons->Add( 50, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $self->{cancel}, 0, Wx::wxALL, 5 );
@@ -123,7 +134,8 @@ sub new {
 	my $sizer2 = Wx::BoxSizer->new( Wx::wxVERTICAL );
 	$sizer2->Add( $self->{file}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $self->{line1}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
-	$sizer2->Add( $self->{select}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer5, 0, Wx::wxEXPAND, 0 );
+	$sizer2->Add( $self->{m_staticline4}, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $gSizer1, 1, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $self->{line2}, 0, Wx::wxEXPAND, 0 );
 	$sizer2->Add( $buttons, 0, Wx::wxEXPAND, 5 );
@@ -139,17 +151,11 @@ sub new {
 }
 
 sub preview {
-	my $self  = shift;
-	my $event = shift;
-
-	die 'EVENT HANDLER NOT IMPLEMENTED';
+	die 'Handler method preview for event preview.OnButtonClick not implemented';
 }
 
 sub generate {
-	my $self  = shift;
-	my $event = shift;
-
-	die 'EVENT HANDLER NOT IMPLEMENTED';
+	die 'Handler method generate for event generate.OnButtonClick not implemented';
 }
 
 1;
