@@ -23,7 +23,7 @@ sub process_xs_files {
 sub build_scintilla {
 	my $self = shift;
 
-	$self->log_info("Building Scintilla Distribution\n");
+	$self->log_info("Building Scintilla library\n");
 
 	my @modules = (
 		glob('wx-scintilla/src/stc/scintilla/src/*.cxx'),
