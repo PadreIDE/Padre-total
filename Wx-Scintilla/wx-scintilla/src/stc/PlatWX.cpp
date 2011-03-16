@@ -14,6 +14,10 @@
 #include "wx/imaglist.h"
 #include "wx/tokenzr.h"
 
+#if wxUSE_DISPLAY
+#include "wx/display.h"
+#endif
+
 #ifdef wxHAVE_RAW_BITMAP
 #include "wx/rawbmp.h"
 #endif
@@ -728,6 +732,20 @@ void Window::SetTitle(const char *s) {
     GETWIN(wid)->SetLabel(stc2wx(s));
 }
 
+// Returns rectangle of monitor pt is on
+PRectangle Window::GetMonitorRect(Point pt) {
+    wxRect rect;
+    if (! wid) return PRectangle();
+#if wxUSE_DISPLAY
+    // Get the display the point is found on
+    int n = wxDisplay::GetFromPoint(wxPoint(pt.x, pt.y));
+    wxDisplay dpy(n == wxNOT_FOUND ? 0 : n);
+    rect = dpy.GetGeometry();
+#else
+    wxUnusedVar(pt);
+#endif
+    return PRectangleFromwxRect(rect);
+}
 
 //----------------------------------------------------------------------
 // Helper classes for ListBox
