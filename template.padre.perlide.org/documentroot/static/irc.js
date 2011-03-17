@@ -1,7 +1,7 @@
 var channels = {
+   padre:        {title:"Padre, the Perl IDE",           host:"irc.perl.org",     channel:"padre"},
    general:      {title:"General Perl Help",             host:"irc.freenode.net", channel:"perl"},
    win32:        {title:"Win32 specific",                host:"irc.perl.org",     channel:"win32"},
-   padre:        {title:"Padre, the Perl IDE",           host:"irc.perl.org",     channel:"padre"},
    catalyst:     {title:"Catalyst",                      host:"irc.perl.org",     channel:"catalyst"},
    dancer:       {title:"Dancer",                        host:"irc.perl.org",     channel:"dancer"},
    dbix_class:   {title:"DBIx::Class",                   host:"irc.perl.org",     channel:"dbix-class"},
@@ -97,9 +97,7 @@ function setup_page() {
         if (i == ch) {
             selected_index = cnt;
         }
-        html    += '<option value="' + i + '"';
-        if (i == 'padre') { html += ' selected'; }
-        html    += '>'  + channels[i].title + '</option>';
+        html    += '<option value="' + i + '">'  + channels[i].title + '</option>';
         cnt++;
     }
     html    += '</select>';
