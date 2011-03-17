@@ -97,7 +97,9 @@ function setup_page() {
         if (i == ch) {
             selected_index = cnt;
         }
-        html    += '<option value="' + i + '">'  + channels[i].title + '</option>';
+        html    += '<option value="' + i + '"';
+        if (i == 'padre') { html += ' selected'; }
+        html    += '>'  + channels[i].title + '</option>';
         cnt++;
     }
     html    += '</select>';
