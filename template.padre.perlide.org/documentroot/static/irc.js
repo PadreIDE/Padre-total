@@ -30,7 +30,7 @@ var channels = {
    // do NOT add a trailing , after the last entry as that breaks IE 7
    // See http://padre.perlide.org/trac/ticket/521
 };
-var default_channel = "general";
+var default_channel = "padre";
 
 function get_values() {
     // getting the parameters from the URL
