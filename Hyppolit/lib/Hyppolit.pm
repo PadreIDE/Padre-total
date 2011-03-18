@@ -348,11 +348,14 @@ sub trac_check {
 	my $trac_check_time = time;
 	my $last_trac_check = $config->{last_trac_check};
 
+	# Starting from v0.12 Trac keeps the changetime in 
+	# microsecond so we need adjust
+	my $microseconds = 1_000_000;
 	my $tickets = $dbh->selectall_hashref("
 		select id from ticket
 			where changetime > ? and changetime <= ?
 			order by changetime asc
-	", "id", {}, $last_trac_check, $trac_check_time);
+	", "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds);
 
 	for my $ticket_id (keys %{$tickets}) {
 		my $text = trac_ticket_text($ticket_id);

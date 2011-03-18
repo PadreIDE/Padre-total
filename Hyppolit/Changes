@@ -1,7 +1,11 @@
 Changes of Hyppolit the IRC bot
 
+
+	Starting from v0.12 Trac keeps the changetime in 
+	microsecond so we adjust
+
 v0.07 2011.02.27
-    Update Code::Explain API to 0.02
+	Update Code::Explain API to 0.02
 
 v0.06 2011.02.25
 	Add support to Code::Explain
