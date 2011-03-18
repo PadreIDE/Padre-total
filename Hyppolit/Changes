@@ -1,6 +1,7 @@
 Changes of Hyppolit the IRC bot
 
 
+	Add 'op me' command for those who are already trusted
 	Starting from v0.12 Trac keeps the changetime in 
 	microsecond so we adjust
 
