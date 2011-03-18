@@ -174,7 +174,7 @@ sub irc_public {
 		} else {
 			#$irc->yield(privmsg => $channel, "I don't know what $1 is");
 		}
-	} elsif ($text =~ /$\s*op\s*me\s*$/) {
+	} elsif ($text =~ /^\s*op\s*me\s*$/) {
 		if ($config->{trusted}{$nick}) {
 			set_op($irc, $channel, $nick);
 		} else {
