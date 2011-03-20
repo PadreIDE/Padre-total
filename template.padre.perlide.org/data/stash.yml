@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2001 March 20
+        url: http://meorero.wordpress.com/2011/03/20/padre-0-84-heb-and-ara-purim/
+        title: Padre 0.84 – for "Purim" in Hebrew and Arabic
+        comment: by Oren Maurer
       - date: 2001 March 15
         url: http://blogs.perl.org/users/peter_lavender/2011/03/padre-084-has-been-released.html
         title: Padre 0.84 has been released...
