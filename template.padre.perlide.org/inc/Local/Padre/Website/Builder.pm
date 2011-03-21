@@ -118,7 +118,10 @@ sub ACTION_process_templates {
         });
 
     # older version of YAML::Tiny return list ??
-    my ($stash) = LoadFile file($self->config_data('sourcedir'), qw(data stash.yml));
+    my ($stash) = eval{ LoadFile file($self->config_data('sourcedir'), qw(data stash.yml))};
+    if ($@) {
+        die $YAML::Tiny::errstr;
+    }
     #die keys %{$stash->{about}[0]};
 
     $stash->{build_date} = $self->dist_version;
