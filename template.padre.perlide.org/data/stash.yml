@@ -31,7 +31,7 @@ about:
         comment: by Peter Lavender(Release Manager)
       - date: 2011 March 11
         url: http://zenoga.tumblr.com/post/3782430997/padre-the-perl-ide-a-large-and-friendly-project
-        title: Padre, the Perl IDE: A Large and Friendly Project
+        title: "Padre, the Perl IDE: A Large and Friendly Project"
         comment: by Zeno Gantner    
       - date: 2011 March 9
         url: http://zenoga.tumblr.com/post/3748629330/latex-plugin-for-padre
@@ -328,7 +328,7 @@ about:
         comment: by Steven Haryanto on Perl Indonesia
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=37
-        title: New: <code>Padre::Plugin::PHP</code> 0.03
+        title: "New: <code>Padre::Plugin::PHP</code> 0.03"
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 08
         url: http://transfixedbutnotdead.com/2009/11/08/best-things-in-life-come-in-threes/
@@ -368,7 +368,7 @@ about:
         comment: by Gábor Szabó
       - date: 2009 October 16
         url: http://www.modernperlbooks.com/mt/2009/10/from-novice-to-adept-cleaning-up-bad-code.html
-        title: From Novice to Adept: Cleaning Up Bad Code
+        title: "From Novice to Adept: Cleaning Up Bad Code"
         comment: by chromatic
       - date: 2009 October 06
         url: http://blog.newint.org/tech/2009/10/06/padre-the-perl-ide-on-osx/
@@ -376,7 +376,7 @@ about:
         comment: Phillip Smith gives instructions on building Padre on Mac
       - date: 2009 October 06
         url: http://use.perl.org/~Alias/journal/39718
-        title: Padre Productivity: 10 seconds here, 10 seconds there
+        title: "Padre Productivity: 10 seconds here, 10 seconds there"
         comment: by Adam Kennedy on file name guessing in Padre
       - date: 2009 October 05
         url: http://szabgab.com/blog/2009/10/1254721436.html
@@ -465,7 +465,7 @@ about:
         comment: by Gábor Szabó
       - date: 2009 September 04
         url: http://stevan-little.blogspot.com/2009/09/re-re-re-moose-or-no-moose.html
-        title: Re: Re: Re: Moose Or No Moose
+        title: "Re: Re: Re: Moose Or No Moose"
         comment: by Stevan Little
       - date: 2009 September 03
         url: http://use.perl.org/~Alias/journal/39573?from=rss
@@ -477,7 +477,7 @@ about:
         comment: by chromatic
       - date: 2009 September 02
         url: http://stevan-little.blogspot.com/2009/09/re-re-moose-or-no-moose.html
-        title: Re: Re: Moose Or No Moose
+        title: "Re: Re: Moose Or No Moose"
         comment: by Stevan Little
       - date: 2009 September 02
         url: http://onionstand.blogspot.com/2009/09/padre-045-stable-released.html
@@ -485,7 +485,7 @@ about:
         comment: by garu on the Onion Stand
       - date: 2009 September 01
         url: http://stevan-little.blogspot.com/2009/09/re-moose-or-no-moose.html
-        title: Re: Moose Or No Moose
+        title: "Re: Moose Or No Moose"
         comment: by Stevan Little
       - date: 2009 September 01
         url: http://jquelin.blogspot.com/2009/09/migrating-to-moose-hell-yeah.html
@@ -509,7 +509,7 @@ about:
         comment: by Ahmad M. Zawawi
       - date: 2009 August 25
         url: http://pugs.blogs.com/audrey/2009/08/my-hobby-troll-hugging.html
-        title: My hobby: Troll hugging.
+        title: "My hobby: Troll hugging."
         comment: by Audrey Tang
       - date: 2009 August 25
         url: http://onionstand.blogspot.com/2009/08/padre-044-released.html
@@ -896,7 +896,7 @@ about:
         comment: by Jerome Quelin
       - date: 2009 January 18
         url: http://use.perl.org/~Alias/journal/38312
-        title: Padre Standalone: Like Strawberry Perl with Chocolate Sauce
+        title: "Padre Standalone: Like Strawberry Perl with Chocolate Sauce"
         comment: by Adam Kennedy
       - date: 2009 January 16
         url: http://szabgab.com/blog/2009/01/1232096454.html
@@ -1027,7 +1027,7 @@ about:
       - date: 2008 November 13
         url: http://www.perlmonks.org/?node_id=723356
         title: Padre and usage statistics
-        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+        comment: post on <a href="http://perlmonks.org/">PerlMonks</a>
       - date: 2008 November 12
         url: http://use.perl.org/~gabor/journal/37862
         title: Auto-indentation, type ahead
@@ -1115,7 +1115,7 @@ about:
       - date: 2008 September 11
         url: http://perlmonks.org/?node_id=710625
         title: Call-tips for Padre
-        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+        comment: post on <a href="http://perlmonks.org/">PerlMonks</a>
       - date: 2008 September 11
         url: http://use.perl.org/~gabor/journal/37410
         title: Padre 0.08 released
@@ -1151,7 +1151,7 @@ about:
       - date: 2008 July 28
         url: http://perlmonks.org/?node_id=700461
         title: Padre released
-        comment:  - post on <a href="http://perlmonks.org/">PerlMonks</a>
+        comment: post on <a href="http://perlmonks.org/">PerlMonks</a>
       - date: 2008 July 28
         url: http://use.perl.org/~gabor/journal/37029
         title: Padre 0.03 released
@@ -1203,7 +1203,7 @@ about:
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 09
         url: http://padre-ide.de/blog/?p=39
-        title: Neu: <code>Padre::Plugin::PHP</code> 0.03
+        title: "Neu: <code>Padre::Plugin::PHP</code> 0.03"
         comment: by Sebastian Willing (SEWI)
       - date: 2009 November 04
         url: http://padre-ide.de/blog/?p=15
@@ -1258,7 +1258,7 @@ about:
     events:
       - date: 2010 February 19
         url: http://linuxtoy.org/archives/padre.html
-        title: Padre: Perl <acronym>IDE</acronym>
+        title: "Padre: Perl <acronym>IDE</acronym>"
         comment: Free software application listing
       - date: 2009 December 10
         url: http://perlchina.org/advent/2009/Padre.html
