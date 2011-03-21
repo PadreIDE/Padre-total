@@ -6,33 +6,33 @@ use lib 'inc';
 use Local::Padre::Website::Builder qw(); # about Local:: see perlmodlib
 
 my $self = Local::Padre::Website::Builder->new(
-    module_name => 'Local::Padre::Website::Builder',
-    build_requires => {
-        'perl'                     => '5.08.8',
-        'autodie'                  => 0,
-        'Capture::Tiny'            => 0,
-        'Encode'                   => 0,
-        'File::Copy'               => 0,
-        'File::Next'               => 0,
-        'File::Which'              => 0,
-        'Module::Build'            => '0.26',
-        'Path::Class'              => 0,
-        'Pod::Xhtml'               => 0,
-        'Template'                 => 0,
-        'Test::More'               => '0.87_01',
-        'Text::Unaccent::PurePerl' => 0,
-        'Time::Piece'              => 0,
-        'XML::LibXML'              => 0,
-        'XML::LibXSLT'             => 0,
-        'YAML::Tiny'               => 0,
-    },
-    dist_author   => 'Padre team',
-    dist_abstract => 'Padre website generator', 
+	module_name    => 'Local::Padre::Website::Builder',
+	build_requires => {
+		'perl'                     => '5.08.8',
+		'autodie'                  => 0,
+		'Capture::Tiny'            => 0,
+		'Encode'                   => 0,
+		'File::Copy'               => 0,
+		'File::Next'               => 0,
+		'File::Which'              => 0,
+		'Module::Build'            => '0.26',
+		'Path::Class'              => 0,
+		'Pod::Xhtml'               => 0,
+		'Template'                 => 0,
+		'Test::More'               => '0.87_01',
+		'Text::Unaccent::PurePerl' => 0,
+		'Time::Piece'              => 0,
+		'XML::LibXML'              => 0,
+		'XML::LibXSLT'             => 0,
+		'YAML::Tiny'               => 0,
+	},
+	dist_author   => 'Padre team',
+	dist_abstract => 'Padre website generator',
 );
-die "Mandatory parameter --destdir was not specified.\n" unless $self->destdir;
+die "Mandatory parameter --destdir was not specified.\n"   unless $self->destdir;
 die "Mandatory parameter --sourcedir was not specified.\n" unless $self->args->{sourcedir};
-$self->config_data(sourcedir => $self->args->{sourcedir});
-$self->config_data(base => $self->args->{base}) if $self->args->{base};
+$self->config_data( sourcedir => $self->args->{sourcedir} );
+$self->config_data( base => $self->args->{base} ) if $self->args->{base};
 $self->create_build_script;
 print "You can run ./Build now.\n";
 
