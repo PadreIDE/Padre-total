@@ -21,7 +21,7 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'     => 0.81,
+	'Padre::Plugin'     => 0.85,
 	'Padre::Wx'         => 0.81,
 	'Padre::Wx::Icon'   => 0.81,
 	'Padre::Wx::Dialog' => 0.81,
@@ -117,8 +117,19 @@ sub menu_plugins_simple {
 	];
 }
 
+sub padre_hooks {
+	my $self = shift;
 
+	return {
+		after_delete => sub {
+			my $self = shift;
+			my $file = shift;
+			$self->svn_delete($file->filename);
+			return 1;
+		},
+	};
 
+}
 
 
 #####################################################################
@@ -384,6 +395,21 @@ sub svn_add {
 		$self->error($file->errstr);
 	} else {
 		$self->info("$path scheduled to be added to " . $file->info->{_url});
+	}
+
+	return;
+}
+
+sub svn_delete {
+	my $self = shift;
+	my $path = shift;
+	my $file = $self->svn_file($path);
+
+	$file->delete;
+	if ($file->errstr) {
+		$self->error($file->errstr);
+	} else {
+		$self->info("$path scheduled to be removed from " . $file->info->{_url});
 	}
 
 	return;

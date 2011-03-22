@@ -1,5 +1,8 @@
 Revision history for Padre-Plugin-SVN
 
+0.06	to-be-released
+		* Delete file from svn if it's being deleted using Padre (SEWI)
+
 0.05	2010.05.23
 		* Changed the blame (log) display to show as a tree view.
 		* gettext-ified some messages (Zeno Gantner)
