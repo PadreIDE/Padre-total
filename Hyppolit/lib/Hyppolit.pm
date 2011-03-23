@@ -360,7 +360,7 @@ sub trac_ticket_text {
 	return if !$ticket;
 	my $ticket_comment = $dbh->selectrow_hashref(
 		q{
-		SELECT oldvalue
+		SELECT oldvalue, author
                 FROM ticket_change
 		WHERE ticket = ?
                   AND field = 'comment'
@@ -368,14 +368,21 @@ sub trac_ticket_text {
 	}, {}, $ticket_id
 	);
 	my $url = "http://padre.perlide.org/trac/ticket/" . $ticket_id;
-	$url .= "#comment:" . $ticket_comment->{oldvalue} if $ticket_comment and $ticket_comment->{oldvalue};
-	return
-		  "#"
-		. $ticket_id . ": "
-		. $ticket->{summary} . " ("
-		. $ticket->{status} . " "
-		. $ticket->{type} . ") [ "
-		. $url . " ]";
+
+	my $msg = "# $ticket_id :  $ticket->{summary} ($ticket->{status} $ticket->{type}) of $ticket->{owner}";
+
+        if ($ticket_comment) {
+		if ($ticket_comment->{oldvalue}) {
+			$url .= "#comment:" . $ticket_comment->{oldvalue}
+		}
+		if ($ticket_comment->{author}) {
+			$msg .= " by $ticket_comment->{author} ";
+		}
+	}
+ 	$msg .= " [ $url ]";
+
+	return $msg;
+
 }
 
 sub trac_check {
