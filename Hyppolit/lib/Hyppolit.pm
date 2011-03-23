@@ -348,14 +348,17 @@ sub trac_changeset_text {
 }
 
 sub trac_ticket_text {
-	return if !$config->{tracdb};
 	my $ticket_id = shift;
+	my $type      = shift;
+
+	return if !$config->{tracdb};
+
 	my $ticket    = $dbh->selectrow_hashref(
 		q{
 		SELECT *
                 FROM ticket
 		WHERE id = ?
-	}, {}, $ticket_id
+	        }, {}, $ticket_id
 	);
 	return if !$ticket;
 	my $ticket_comment = $dbh->selectrow_hashref(
@@ -365,7 +368,7 @@ sub trac_ticket_text {
 		WHERE ticket = ?
                   AND field = 'comment'
 		  ORDER BY time DESC
-	}, {}, $ticket_id
+	        }, {}, $ticket_id
 	);
 	my $url = "http://padre.perlide.org/trac/ticket/" . $ticket_id;
 
@@ -377,6 +380,11 @@ sub trac_ticket_text {
 		}
 		if ($ticket_comment->{author}) {
 			$msg .= " by $ticket_comment->{author} ";
+		}
+	}
+	if ($type) {
+		if ($type eq 'attachment') {
+			$msg .= " new attachment";
 		}
 	}
  	$msg .= " [ $url ]";
@@ -393,25 +401,33 @@ sub trac_check {
 	# microsecond so we need adjust
 	my $microseconds = 1_000_000;
 
-	my $tickets = $dbh->selectall_hashref(
-		q{
+	my %tickets;
+	$tickets{change} = $dbh->selectall_hashref( q{
 		SELECT id
                 FROM ticket
 		WHERE 
                    changetime > ?
                    AND changetime <= ?
 		   ORDER BY changetime ASC
-	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
-	);
+	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds);
 
-	for my $ticket_id ( keys %{$tickets} ) {
-		my $text = trac_ticket_text($ticket_id);
-		if ($text) {
-			$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
-		}
+	$tickets{attachment} = $dbh->selectall_hashref( q{
+	       SELECT id FROM attachment
+	       WHERE
+                   type = 'ticket'
+                   AND changetime > ?
+                   AND changetime <= ?
+	       ORDER BY time ASC
+	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds);
+
+	for my $type (qw(change attachment)) {
+	    for my $ticket_id ( keys %{$tickets{$type}} ) {
+	    	my $text = trac_ticket_text($ticket_id, $type);
+	    	if ($text) {
+	    		$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
+	    	}
+	    }
 	}
-
-	#SELECT type, id, author FROM attachment ORDER BY time ASC;
 
 	$config->{last_trac_check} = $trac_check_time;
 	save_config;
