@@ -396,7 +396,7 @@ sub trac_ticket_text {
 }
 
 sub trac_check {
-	my $trac_check_time = time - 200;
+	my $trac_check_time = time;
 	my $last_trac_check = $config->{last_trac_check};
 
 	# Starting from v0.12 Trac keeps the changetime in
