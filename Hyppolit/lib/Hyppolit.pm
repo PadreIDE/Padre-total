@@ -396,7 +396,7 @@ sub trac_ticket_text {
 }
 
 sub trac_check {
-	my $trac_check_time = time;
+	my $trac_check_time = time - 200;
 	my $last_trac_check = $config->{last_trac_check};
 
 	# Starting from v0.12 Trac keeps the changetime in
@@ -434,6 +434,23 @@ sub trac_check {
 			}
 		}
 	}
+
+	my $wiki = $dbh->selectall_hashref(
+		q{
+	         SELECT name, author
+                 FROM wiki
+                 WHERE
+                   time > ?
+                   AND time <= ?
+                 ORDER BY time ASC
+	}, "name", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
+	);
+
+	for my $page (keys %$wiki) {
+		my $text = "wiki page http://padre.perlide.org/trac/wiki/$page changed by $wiki->{$page}{author}";
+		$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
+	}
+
 
 	$config->{last_trac_check} = $trac_check_time;
 	save_config;
