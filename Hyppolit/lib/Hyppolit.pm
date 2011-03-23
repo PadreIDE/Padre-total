@@ -350,16 +350,23 @@ sub trac_changeset_text {
 sub trac_ticket_text {
 	return if !$config->{tracdb};
 	my $ticket_id = shift;
-	my $ticket    = $dbh->selectrow_hashref( "
-		select * from ticket
-			where id = ?
-	", {}, $ticket_id );
+	my $ticket    = $dbh->selectrow_hashref(
+		q{
+		SELECT *
+                FROM ticket
+		WHERE id = ?
+	}, {}, $ticket_id
+	);
 	return if !$ticket;
-	my $ticket_comment = $dbh->selectrow_hashref( "
-		select oldvalue from ticket_change
-			where ticket = ? and field = 'comment'
-			order by time desc
-	", {}, $ticket_id );
+	my $ticket_comment = $dbh->selectrow_hashref(
+		q{
+		SELECT oldvalue
+                FROM ticket_change
+		WHERE ticket = ?
+                  AND field = 'comment'
+		  ORDER BY time DESC
+	}, {}, $ticket_id
+	);
 	my $url = "http://padre.perlide.org/trac/ticket/" . $ticket_id;
 	$url .= "#comment:" . $ticket_comment->{oldvalue} if $ticket_comment and $ticket_comment->{oldvalue};
 	return
@@ -378,11 +385,17 @@ sub trac_check {
 	# Starting from v0.12 Trac keeps the changetime in
 	# microsecond so we need adjust
 	my $microseconds = 1_000_000;
-	my $tickets      = $dbh->selectall_hashref( "
-		select id from ticket
-			where changetime > ? and changetime <= ?
-			order by changetime asc
-	", "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds );
+
+	my $tickets = $dbh->selectall_hashref(
+		q{
+		SELECT id
+                FROM ticket
+		WHERE 
+                   changetime > ?
+                   AND changetime <= ?
+		   ORDER BY changetime ASC
+	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
+	);
 
 	for my $ticket_id ( keys %{$tickets} ) {
 		my $text = trac_ticket_text($ticket_id);
@@ -390,6 +403,8 @@ sub trac_check {
 			$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
 		}
 	}
+
+	#SELECT type, id, author FROM attachment ORDER BY time ASC;
 
 	$config->{last_trac_check} = $trac_check_time;
 	save_config;
