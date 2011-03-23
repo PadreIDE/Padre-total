@@ -29,7 +29,7 @@ use 5.008005;
 
 
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use base 'Exporter';
 
@@ -372,7 +372,9 @@ sub trac_ticket_text {
 	);
 	my $url = "http://padre.perlide.org/trac/ticket/" . $ticket_id;
 
-	my $msg = "# $ticket_id :  $ticket->{summary} ($ticket->{status} $ticket->{type}) of $ticket->{owner}";
+	my $msg = "# $ticket_id :  $ticket->{summary} ($ticket->{status} $ticket->{type})";
+
+	# of $ticket->{owner}";
 
 	if ($ticket_comment) {
 		if ( $ticket_comment->{oldvalue} ) {
@@ -418,8 +420,8 @@ sub trac_check {
 	       SELECT id FROM attachment
 	       WHERE
                    type = 'ticket'
-                   AND changetime > ?
-                   AND changetime <= ?
+                   AND time > ?
+                   AND time <= ?
 	       ORDER BY time ASC
 	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
 	);

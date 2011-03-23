@@ -1,7 +1,10 @@
 Changes of Hyppolit the IRC bot
 
+v0.09 2011.03.23
+	Add author information to trac messages
+	Add messages about new attachments in trac
 
-v0.08 2011.08.18
+v0.08 2011.03.18
 	Add 'op me' command for those who are already trusted
 	Starting from v0.12 Trac keeps the changetime in 
 	microsecond so we adjust
