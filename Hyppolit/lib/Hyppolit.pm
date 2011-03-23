@@ -353,7 +353,7 @@ sub trac_ticket_text {
 
 	return if !$config->{tracdb};
 
-	my $ticket    = $dbh->selectrow_hashref(
+	my $ticket = $dbh->selectrow_hashref(
 		q{
 		SELECT *
                 FROM ticket
@@ -374,20 +374,20 @@ sub trac_ticket_text {
 
 	my $msg = "# $ticket_id :  $ticket->{summary} ($ticket->{status} $ticket->{type}) of $ticket->{owner}";
 
-        if ($ticket_comment) {
-		if ($ticket_comment->{oldvalue}) {
-			$url .= "#comment:" . $ticket_comment->{oldvalue}
+	if ($ticket_comment) {
+		if ( $ticket_comment->{oldvalue} ) {
+			$url .= "#comment:" . $ticket_comment->{oldvalue};
 		}
-		if ($ticket_comment->{author}) {
+		if ( $ticket_comment->{author} ) {
 			$msg .= " by $ticket_comment->{author} ";
 		}
 	}
 	if ($type) {
-		if ($type eq 'attachment') {
+		if ( $type eq 'attachment' ) {
 			$msg .= " new attachment";
 		}
 	}
- 	$msg .= " [ $url ]";
+	$msg .= " [ $url ]";
 
 	return $msg;
 
@@ -402,31 +402,35 @@ sub trac_check {
 	my $microseconds = 1_000_000;
 
 	my %tickets;
-	$tickets{change} = $dbh->selectall_hashref( q{
+	$tickets{change} = $dbh->selectall_hashref(
+		q{
 		SELECT id
                 FROM ticket
 		WHERE 
                    changetime > ?
                    AND changetime <= ?
 		   ORDER BY changetime ASC
-	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds);
+	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
+	);
 
-	$tickets{attachment} = $dbh->selectall_hashref( q{
+	$tickets{attachment} = $dbh->selectall_hashref(
+		q{
 	       SELECT id FROM attachment
 	       WHERE
                    type = 'ticket'
                    AND changetime > ?
                    AND changetime <= ?
 	       ORDER BY time ASC
-	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds);
+	}, "id", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
+	);
 
 	for my $type (qw(change attachment)) {
-	    for my $ticket_id ( keys %{$tickets{$type}} ) {
-	    	my $text = trac_ticket_text($ticket_id, $type);
-	    	if ($text) {
-	    		$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
-	    	}
-	    }
+		for my $ticket_id ( keys %{ $tickets{$type} } ) {
+			my $text = trac_ticket_text( $ticket_id, $type );
+			if ($text) {
+				$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
+			}
+		}
 	}
 
 	$config->{last_trac_check} = $trac_check_time;
