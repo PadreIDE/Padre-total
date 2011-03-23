@@ -29,7 +29,7 @@ use 5.008005;
 
 
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use base 'Exporter';
 
@@ -446,7 +446,7 @@ sub trac_check {
 	}, "name", {}, $last_trac_check * $microseconds, $trac_check_time * $microseconds
 	);
 
-	for my $page (keys %$wiki) {
+	for my $page ( keys %$wiki ) {
 		my $text = "wiki page http://padre.perlide.org/trac/wiki/$page changed by $wiki->{$page}{author}";
 		$irc->yield( privmsg => $_, $text ) for @{ $config->{channels} };
 	}
