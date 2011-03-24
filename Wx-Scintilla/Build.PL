@@ -32,7 +32,7 @@ my $builder = Module::Build::Scintilla->new(
 		'C:/strawberry/perl/site/lib/Wx',
 		@include_paths
 	],
-	add_to_cleanup       => [
+	add_to_cleanup => [
 		'Wx-Scintilla-*',
 		'wx-scintilla/src/*.o.d',
 		'wx-scintilla/src/*.o',

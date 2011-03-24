@@ -22,7 +22,7 @@
 
 #include "ScintillaWX.h"
 #include "ExternalLexer.h"
-#include "stc.h"
+#include "WxScintilla.h"
 #include "PlatWX.h"
 
 #ifdef __WXMSW__

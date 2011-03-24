@@ -27,7 +27,7 @@
 
 #include "Platform.h"
 #include "PlatWX.h"
-#include "stc.h"
+#include "WxScintilla.h"
 
 
 

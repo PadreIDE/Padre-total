@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////
-// Name:        stc.h
+// Name:        WxScintilla.h
 // Purpose:     A wxWidgets implementation of Scintilla.  This class is the
 //              one meant to be used directly by wx applications.  It does not
 //              derive directly from the Scintilla classes, and in fact there
@@ -9,12 +9,8 @@
 //              Scintilla without polluting the namespace with all the
 //              classes and itentifiers from Scintilla.
 //
-// Author:      Robin Dunn
-//
-// Created:     13-Jan-2000
-// RCS-ID:      $Id: stc.h 62668 2009-11-16 21:31:05Z RD $
-// Copyright:   (c) 2000 by Total Control Software
-// Licence:     wxWindows license
+// Original Author:      Robin Dunn
+// License:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
 #ifndef __stc_h__

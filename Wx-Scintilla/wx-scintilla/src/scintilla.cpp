@@ -23,7 +23,7 @@
 #include "wx/image.h"
 #include "wx/file.h"
 
-#include "stc.h"
+#include "WxScintilla.h"
 #include "ScintillaWX.h"
 
 //----------------------------------------------------------------------
