@@ -27,7 +27,7 @@
 
 #include "Platform.h"
 #include "PlatWX.h"
-#include "wx/stc/stc.h"
+#include "stc.h"
 
 
 

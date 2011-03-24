@@ -26,17 +26,17 @@ sub build_scintilla {
 	$self->log_info("Building Scintilla library\n");
 
 	my @modules = (
-		glob('wx-scintilla/src/stc/scintilla/src/*.cxx'),
-		'wx-scintilla/src/stc/PlatWX.cpp',
-		'wx-scintilla/src/stc/ScintillaWX.cpp',
-		'wx-scintilla/src/stc/stc.cpp',
+		glob('wx-scintilla/src/scintilla/src/*.cxx'),
+		'wx-scintilla/src/PlatWX.cpp',
+		'wx-scintilla/src/ScintillaWX.cpp',
+		'wx-scintilla/src/scintilla.cpp',
 	);
 
 	my @include_dirs = (
 		'-Iwx-scintilla/include',
-		'-Iwx-scintilla/src/stc/scintilla/include',
-		'-Iwx-scintilla/src/stc/scintilla/src',
-		'-Iwx-scintilla/src/stc',
+		'-Iwx-scintilla/src/scintilla/include',
+		'-Iwx-scintilla/src/scintilla/src',
+		'-Iwx-scintilla/src',
 		Alien::wxWidgets->include_path
 	);
 
@@ -45,7 +45,7 @@ sub build_scintilla {
 		$self->log_info("Compiling $module\n");
 		my $filename = File::Basename::basename($module);
 		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
-		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "stcdll_$filename" );
+		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
 		my @cmd = (
 			Alien::wxWidgets->compiler,
 			'-c',
