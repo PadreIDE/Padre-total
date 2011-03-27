@@ -2,6 +2,9 @@ Revision history for {{ $dist->name }}
 
 {{ $NEXT }}
 
+1.002     2011-03-27 15:21:21 America/New_York
+    * Improve handling of unicode (arjancwidlak)
+
 1.001     2010-11-06 02:02:25 America/New_York
     * Updated to use Dist::Zilla
 

@@ -225,9 +225,19 @@ sub render {
     my $text = $self->get_asset_content || q{};
 
     require Padre::Locale;
+    require utf8;
     $self->{encoding} = Padre::Locale::encoding_from_string($text);
-    $text = Encode::decode( $self->{encoding}, $text );
-
+    if ( not utf8::is_utf8( $text ) ) {
+        my $decoded = eval {  Encode::decode( $self->{encoding}, $text ) };
+        if ( $@ ) {
+            my $error = "Error decoding server response.";
+            $self->set_errstr( $error );
+            $self->editor->main->error( $error );
+        }
+        else {
+            $text = $decoded;
+        }
+    }
     $self->text_set($text);
     $self->{original_content} = $self->text_get;
     $self->colourize;
