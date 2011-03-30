@@ -25,8 +25,8 @@ sub new {
 		-1,
 		Wx::gettext("Padre Form Builder"),
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE,
+		[ -1, -1 ],
+		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
 	);
 
 	$self->{file} = Wx::StaticText->new(
@@ -43,12 +43,40 @@ sub new {
 		Wx::wxLI_HORIZONTAL,
 	);
 
+	my $m_staticText3 = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Common Settings"),
+	);
+
+	$self->{padre} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Generate dialog code for use in Padre or a Padre plugin"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+
+	$self->{m_staticline5} = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLI_HORIZONTAL,
+	);
+
+	$self->{m_staticText4} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Generate Single Dialog"),
+	);
+
 	$self->{select} = Wx::Choice->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		[ ],
+		[],
 	);
 	$self->{select}->SetSelection(0);
 
@@ -66,31 +94,15 @@ sub new {
 		},
 	);
 
+	$self->{associate} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Associate dialog with current project"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+
 	$self->{m_staticline4} = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
-
-	$self->{temp} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Generate package  in temporary namespace"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-
-	$self->{padre} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Generate dialog for use in Padre or a plugin"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-
-	$self->{line2} = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -101,7 +113,7 @@ sub new {
 	$self->{generate} = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("Generate"),
+		Wx::gettext("Generate Dialog"),
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -118,34 +130,35 @@ sub new {
 		Wx::gettext("Cancel"),
 	);
 
-	my $bSizer5 = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+	my $bSizer5 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer5->Add( $self->{select}, 1, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL | Wx::wxEXPAND, 5 );
 	$bSizer5->Add( $self->{preview}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
 
-	my $gSizer1 = Wx::GridSizer->new( 4, 1, 0, 0 );
-	$gSizer1->Add( $self->{temp}, 0, Wx::wxALL, 5 );
-	$gSizer1->Add( $self->{padre}, 0, Wx::wxALL, 5 );
-
-	my $buttons = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
-	$buttons->Add( $self->{generate}, 0, Wx::wxBOTTOM | Wx::wxTOP, 5 );
+	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$buttons->Add( $self->{generate}, 0, Wx::wxALL, 5 );
 	$buttons->Add( 50, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $self->{cancel}, 0, Wx::wxALL, 5 );
 
-	my $sizer2 = Wx::BoxSizer->new( Wx::wxVERTICAL );
+	my $sizer2 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$sizer2->Add( $self->{file}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $self->{line1}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
+	$sizer2->Add( $m_staticText3, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $self->{padre}, 0, Wx::wxALL, 5 );
+	$sizer2->Add( $self->{m_staticline5}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
+	$sizer2->Add( $self->{m_staticText4}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $bSizer5, 0, Wx::wxEXPAND, 0 );
+	$sizer2->Add( $self->{associate}, 0, Wx::wxALL, 5 );
+	$sizer2->Add( 0, 5, 1, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $self->{m_staticline4}, 0, Wx::wxEXPAND, 5 );
-	$sizer2->Add( $gSizer1, 1, Wx::wxBOTTOM | Wx::wxEXPAND, 5 );
-	$sizer2->Add( $self->{line2}, 0, Wx::wxEXPAND, 0 );
 	$sizer2->Add( $buttons, 0, Wx::wxEXPAND, 5 );
 
-	my $sizer1 = Wx::BoxSizer->new( Wx::wxHORIZONTAL );
+	my $sizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$sizer1->Add( $sizer2, 1, Wx::wxEXPAND, 5 );
 
 	$self->SetSizer($sizer1);
 	$self->Layout;
 	$sizer1->Fit($self);
+	$sizer1->SetSizeHints($self);
 
 	return $self;
 }

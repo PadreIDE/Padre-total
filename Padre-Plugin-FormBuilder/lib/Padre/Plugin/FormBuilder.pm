@@ -104,7 +104,7 @@ sub menu_dialog {
 		my $padre = !! $dialog->{padre}->IsChecked;
 
 		# Should we generate into a temporary namespace
-		my $package = $dialog->{temp}->IsChecked
+		my $package = $dialog->command eq 'preview'
 			? "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT
 			: $name;
 

@@ -32,6 +32,18 @@ sub new {
 	$self->{select}->Append($dialogs);
 	$self->{select}->SetSelection(0) if @$dialogs;
 
+	# If any of the dialogs are under Padre:: default the
+	# Padre-compatible code generation to true.
+	if ( grep { /^Padre::/ } @$dialogs ) {
+		$self->{padre}->SetValue(1);
+	}
+
+	# If we don't have a current project, disable the checkbox
+	my $project = $main->current->project;
+	unless ( $project and $project->isa('Padre::Project::Perl') {
+		$self->{associate}->Disable;
+	}
+
 	# What to do once we close
 	$self->{command} = '';
 
