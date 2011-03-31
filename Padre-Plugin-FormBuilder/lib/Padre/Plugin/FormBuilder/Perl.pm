@@ -108,6 +108,20 @@ sub use_wx {
 	];
 }
 
+sub window_event {
+	my $self   = shift;
+	my $window = shift;
+	my $event  = shift;
+	my $name   = $window->name;
+	my $method = $window->$event();
+
+	return $self->nested(
+		"sub $method {",
+		"\$_[0]->main->error('Handler method $method for event $name.$event not implemented');",
+		"}",
+	);
+}
+
 1;
 
 =pod

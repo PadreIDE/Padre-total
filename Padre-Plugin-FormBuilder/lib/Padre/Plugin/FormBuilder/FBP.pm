@@ -26,7 +26,7 @@ sub new {
 		Wx::gettext("Padre Form Builder"),
 		Wx::wxDefaultPosition,
 		[ -1, -1 ],
-		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
+		Wx::wxDEFAULT_DIALOG_STYLE,
 	);
 
 	$self->{file} = Wx::StaticText->new(
@@ -47,6 +47,9 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Common Settings"),
+	);
+	$m_staticText3->SetFont(
+		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{padre} = Wx::CheckBox->new(
@@ -69,6 +72,9 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Generate Single Dialog"),
+	);
+	$self->{m_staticText4}->SetFont(
+		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
 	$self->{select} = Wx::Choice->new(
@@ -100,6 +106,9 @@ sub new {
 		Wx::gettext("Associate dialog with current project"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
+	);
+	$self->{associate}->SetToolTip(
+		Wx::gettext("Generates embedded tracking data in the dialog code")
 	);
 
 	$self->{m_staticline4} = Wx::StaticLine->new(
@@ -158,17 +167,16 @@ sub new {
 	$self->SetSizer($sizer1);
 	$self->Layout;
 	$sizer1->Fit($self);
-	$sizer1->SetSizeHints($self);
 
 	return $self;
 }
 
 sub preview {
-	die 'Handler method preview for event preview.OnButtonClick not implemented';
+	$_[0]->main->error('Handler method preview for event preview.OnButtonClick not implemented');
 }
 
 sub generate {
-	die 'Handler method generate for event generate.OnButtonClick not implemented';
+	$_[0]->main->error('Handler method generate for event generate.OnButtonClick not implemented');
 }
 
 1;
