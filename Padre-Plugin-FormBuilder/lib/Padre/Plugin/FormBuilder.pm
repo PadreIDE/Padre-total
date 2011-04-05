@@ -47,6 +47,7 @@ my $COUNT = 0;
 sub padre_interfaces {
 	'Padre::Plugin'         => 0.66,
 	'Padre::Util'           => 0.81,
+	'Padre::Task'           => 0.81,
 	'Padre::Wx'             => 0.66,
 	'Padre::Wx::Role::Main' => 0.66,
 }
@@ -61,6 +62,9 @@ sub plugin_disable {
 	$self->unload('Padre::Plugin::FormBuilder::Dialog');
 	$self->unload('Padre::Plugin::FormBuilder::FBP');
 	$self->unload('Padre::Plugin::FormBuilder::Perl');
+	$self->unload('Padre::Plugin::FormBuilder::List');
+	$self->unload('Padre::Plugin::FormBuilder::Generate');
+	return 1;
 }
 
 sub menu_plugins_simple {
