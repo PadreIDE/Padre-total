@@ -43,7 +43,7 @@ my $debugger = start_debugger();
 	like( $out, qr/^\s*DB<\d+> $/, 'no breakpoint in scalar context' );
 
 	my @out = $debugger->list_break_watch_action;
-	cmp_deeply( \@out, [1, []], 'no breakpoint in list context' )
+	cmp_deeply( \@out, [ 1, [] ], 'no breakpoint in list context' )
 		or diag( $debugger->buffer );
 }
 
@@ -61,14 +61,17 @@ my $debugger = start_debugger();
 
 {
 	my @out = $debugger->list_break_watch_action;
-	cmp_deeply( \@out, [ 3, [
-	  {
-	      file => 't/eg/04-fib.pl',
-		  line => 17,
-		  cond => 1,
-	  },
-	]], 'breakpoints in list context' )
-		or diag( $debugger->buffer );
+	cmp_deeply(
+		\@out,
+		[   3,
+			[   {   file => 't/eg/04-fib.pl',
+					line => 17,
+					cond => 1,
+				},
+			]
+		],
+		'breakpoints in list context'
+	) or diag( $debugger->buffer );
 }
 
 {
@@ -84,7 +87,7 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
 	my $buffer1 = $debugger->buffer;
 	ok( $buffer1 =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is($buffer1, "$trace1\n  DB<> ");
+	is( $buffer1, "$trace1\n  DB<> " );
 
 	cmp_deeply( \@out, [$trace1], 'stack trace' )
 		or diag( $debugger->buffer );
@@ -93,11 +96,11 @@ $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 $ = main::fib(10) called from file `t/eg/04-fib.pl' line 22);
 
 	my $out = $debugger->get_stack_trace;
-	is( $out, $trace2, 'stack trace in scalar context');
+	is( $out, $trace2, 'stack trace in scalar context' );
 
 	my $buffer2 = $debugger->buffer;
 	ok( $buffer2 =~ s/DB<\d+> $/DB<> /, 'replace number as it can be different on other versions of perl' );
-	is($buffer2, "$trace2\n  DB<> ");
+	is( $buffer2, "$trace2\n  DB<> " );
 
 
 }

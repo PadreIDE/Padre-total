@@ -18,10 +18,11 @@ my $debugger = start_debugger();
 isa_ok( $debugger, 'Debug::Client' );
 
 {
-	my @out = $debugger->set_breakpoint('t/eg/Test.pm', 'unique');
-	diag(explain(@out));
-#	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;' ], 'line 6' )
-#		or diag( $debugger->buffer );
+	my @out = $debugger->set_breakpoint( 't/eg/Test.pm', 'unique' );
+	diag( explain(@out) );
+
+	#	cmp_deeply( \@out, [ 'main::', 't/eg/01-add.pl', 6, 'my $x = 1;' ], 'line 6' )
+	#		or diag( $debugger->buffer );
 }
 
 {

@@ -68,12 +68,8 @@ foreach my $t (@tests) {
 	cmp_deeply( [ $prompt, @res ], $t->{exp} );
 }
 
-eval {
-	$d->_prompt();
-};
+eval { $d->_prompt(); };
 like $@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param';
 
-eval {
-	$d->_prompt('hello');
-};
+eval { $d->_prompt('hello'); };
 like $@, qr{_prompt should be called with a reference to a scalar}, '_prompt without param';

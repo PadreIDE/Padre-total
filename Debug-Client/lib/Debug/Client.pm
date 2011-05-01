@@ -326,17 +326,17 @@ In case of no condition the last one will be the number 1.
 =cut
 
 sub list_break_watch_action {
-	my ( $self ) = @_;
+	my ($self) = @_;
 
 	my $ret = $self->send_get('L');
-	if (not wantarray) {
+	if ( not wantarray ) {
 		return $ret;
 	}
 
-    # t/eg/04-fib.pl:
-    #  17:      my $n = shift;
-    #    break if (1)
-	my $buf = $self->buffer;
+	# t/eg/04-fib.pl:
+	#  17:      my $n = shift;
+	#    break if (1)
+	my $buf    = $self->buffer;
 	my $prompt = $self->_prompt( \$buf );
 
 	my @breakpoints;
@@ -344,10 +344,10 @@ sub list_break_watch_action {
 	my $PATH = qr{[\w./-]+};
 	my $LINE = qr{\d+};
 	my $CODE = qr{.*}s;
-	my $COND = qr{1};  ## TODO !!!
-	
+	my $COND = qr{1};       ## TODO !!!
+
 	while ($buf) {
-		if ($buf =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{}) {
+		if ( $buf =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{} ) {
 			my %bp = (
 				file => $1,
 				line => $2,
@@ -448,8 +448,8 @@ sub _get {
 sub _prompt {
 	my ( $self, $buf ) = @_;
 
-	if (not defined $buf or not ref $buf or ref $buf ne 'SCALAR') {
-		Carp::croak('_prompt should be called with a reference to a scalar')
+	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
+		Carp::croak('_prompt should be called with a reference to a scalar');
 	}
 
 	my $prompt;
@@ -465,7 +465,7 @@ sub _prompt {
 # containing the data printed by the debugger
 # If the output indicates that the debugger terminated return '<TERMINATED>'
 # Otherwise it returns   ( $package, $file, $row, $content );
-# where 
+# where
 #    $package   is  main::   or   Some::Module::   (the current package)
 #    $file      is the full or relative path to the current file
 #    $row       is the current row number
@@ -474,8 +474,8 @@ sub _prompt {
 sub _process_line {
 	my ( $self, $buf ) = @_;
 
-	if (not defined $buf or not ref $buf or ref $buf ne 'SCALAR') {
-		Carp::croak('_process_line should be called with a reference to a scalar')
+	if ( not defined $buf or not ref $buf or ref $buf ne 'SCALAR' ) {
+		Carp::croak('_process_line should be called with a reference to a scalar');
 	}
 
 	if ( $$buf =~ /Debugged program terminated/ ) {
