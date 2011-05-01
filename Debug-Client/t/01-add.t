@@ -3,6 +3,8 @@ use warnings;
 
 use t::lib::Debugger;
 
+# Testing step_in (s) and show_line (.) on a simple script
+
 my ( $dir, $pid ) = start_script('t/eg/01-add.pl');
 
 require Test::More;

@@ -41,12 +41,9 @@ my $debugger = start_debugger();
 {
 	my $out = $debugger->list_break_watch_action;
 	like( $out, qr/^\s*DB<\d+> $/, 'no breakpoint in scalar context' );
-}
 
-SKIP: {
-	skip( 'Fix list_break_watch_action in LIST context', 1 );
 	my @out = $debugger->list_break_watch_action;
-	cmp_deeply( \@out, re('^DB<\d+> $'), 'no breakpoint in list context' )
+	cmp_deeply( \@out, [1, []], 'no breakpoint in list context' )
 		or diag( $debugger->buffer );
 }
 
@@ -62,10 +59,15 @@ SKIP: {
 	);
 }
 
-SKIP: {
-	skip( 'Fix list_break_watch_action in LIST context', 1 );
+{
 	my @out = $debugger->list_break_watch_action;
-	cmp_deeply( \@out, [ undef, undef, undef, undef ], 'breakpoints in list context' )
+	cmp_deeply( \@out, [ 3, [
+	  {
+	      file => 't/eg/04-fib.pl',
+		  line => 17,
+		  cond => 1,
+	  },
+	]], 'breakpoints in list context' )
 		or diag( $debugger->buffer );
 }
 

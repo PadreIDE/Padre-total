@@ -3,6 +3,8 @@ use warnings;
 
 use t::lib::Debugger;
 
+# Testing step_in (s) and step_out (r)
+
 my ( $dir, $pid ) = start_script('t/eg/02-sub.pl');
 
 require Test::More;

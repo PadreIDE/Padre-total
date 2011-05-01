@@ -3,6 +3,8 @@ use warnings;
 
 use t::lib::Debugger;
 
+# Testing step_in (s) and get_value of a scalar variable
+
 my ( $dir, $pid ) = start_script('t/eg/02-sub.pl');
 
 require Test::More;

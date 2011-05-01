@@ -307,7 +307,60 @@ sub remove_breakpoint {
 	return 1;
 }
 
-sub list_break_watch_action { $_[0]->send_get('L') }
+=head2 list_break_watch_action
+
+In scalar context returns the list of all the breakpoints 
+and watches as a text output. The data as (L) prints in the
+command line debugger.
+
+In list context it returns the promt number,
+and a list of hashes. Each hash has
+
+  file =>
+  line =>
+  cond => 
+
+to provide the filename, line number and the condition of the breakpoint.
+In case of no condition the last one will be the number 1.
+
+=cut
+
+sub list_break_watch_action {
+	my ( $self ) = @_;
+
+	my $ret = $self->send_get('L');
+	if (not wantarray) {
+		return $ret;
+	}
+
+    # t/eg/04-fib.pl:
+    #  17:      my $n = shift;
+    #    break if (1)
+	my $buf = $self->buffer;
+	my $prompt = $self->_prompt( \$buf );
+
+	my @breakpoints;
+	my %bp;
+	my $PATH = qr{[\w./-]+};
+	my $LINE = qr{\d+};
+	my $CODE = qr{.*}s;
+	my $COND = qr{1};  ## TODO !!!
+	
+	while ($buf) {
+		if ($buf =~ s{^($PATH):\s*($LINE):\s*($CODE)\s+break if \(($COND)\)s*}{}) {
+			my %bp = (
+				file => $1,
+				line => $2,
+				cond => $4,
+			);
+			push @breakpoints, \%bp;
+		} else {
+			die "No breakpoint found in '$buf'";
+		}
+	}
+
+	return ( $prompt, \@breakpoints );
+}
 
 
 =head2 execute_code
@@ -386,8 +439,19 @@ sub _get {
 	return $buf;
 }
 
+# This is an internal method.
+# It takes one argument which is a reference to a scalar that contains the
+# the text sent by the debugger.
+# Extracts and prompt that looks like this:   DB<3> $
+# puts the number from the prompt in $self->{prompt} and also returns it.
+# See 00-internal.t for test cases
 sub _prompt {
 	my ( $self, $buf ) = @_;
+
+	if (not defined $buf or not ref $buf or ref $buf ne 'SCALAR') {
+		Carp::croak('_prompt should be called with a reference to a scalar')
+	}
+
 	my $prompt;
 	if ( $$buf =~ s/\s*DB<(\d+)>\s*$// ) {
 		$prompt = $1;
@@ -397,9 +461,22 @@ sub _prompt {
 	return $self->{prompt} = $prompt;
 }
 
+# Internal method that receives a reference to a scalar
+# containing the data printed by the debugger
+# If the output indicates that the debugger terminated return '<TERMINATED>'
+# Otherwise it returns   ( $package, $file, $row, $content );
+# where 
+#    $package   is  main::   or   Some::Module::   (the current package)
+#    $file      is the full or relative path to the current file
+#    $row       is the current row number
+#    $content   is the content of the current row
 # see 00-internal.t for test cases
 sub _process_line {
 	my ( $self, $buf ) = @_;
+
+	if (not defined $buf or not ref $buf or ref $buf ne 'SCALAR') {
+		Carp::croak('_process_line should be called with a reference to a scalar')
+	}
 
 	if ( $$buf =~ /Debugged program terminated/ ) {
 		return '<TERMINATED>';
@@ -500,7 +577,7 @@ L<GRID::Machine::remotedebugtut>
 
 =head1 COPYRIGHT
 
-Copyright 2008-2009 Gabor Szabo. L<http://www.szabgab.com/>
+Copyright 2008-2011 Gabor Szabo. L<http://szabgab.com/>
 
 =head1 LICENSE
 
