@@ -23,7 +23,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Padre Form Builder"),
+		Wx::gettext("Padre FormBuilder"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE,
@@ -83,6 +83,7 @@ sub new {
 		[],
 	);
 	$self->{select}->SetSelection(0);
+	$self->{select}->Disable;
 
 	$self->{preview} = Wx::Button->new(
 		$self,
@@ -109,6 +110,7 @@ sub new {
 	$self->{associate}->SetToolTip(
 		Wx::gettext("Generates embedded tracking data in the dialog code")
 	);
+	$self->{associate}->Disable;
 
 	$self->{generate} = Wx::Button->new(
 		$self,
@@ -149,6 +151,7 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
+	$self->{padre}->Disable;
 
 	my $m_staticline4 = Wx::StaticLine->new(
 		$self,

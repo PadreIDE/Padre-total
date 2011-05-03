@@ -26,7 +26,6 @@ sub new {
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
-	$self->SetTitle("Padre FormBuilder");
 	$self->CenterOnParent;
 
 	# If we don't have a current project, disable the checkbox
