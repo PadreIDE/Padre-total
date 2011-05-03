@@ -85,13 +85,17 @@ sub menu_dialog {
 	my $self = shift;
 	my $main = $self->main;
 
-	# Load the wxGlade-generated Perl file
-	# my $list = $self->package_list($xml);
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-	# Show the main dialog
+	# Create the new dialog
 	require Padre::Plugin::FormBuilder::Dialog;
-	my $dialog = Padre::Plugin::FormBuilder::Dialog->new($main);
-	$dialog->Show;
+	$self->{dialog} = Padre::Plugin::FormBuilder::Dialog->new($main);
+	$self->{dialog}->Show;
+
 	return;
 }
 

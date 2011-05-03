@@ -129,7 +129,7 @@ sub browse_changed {
 	return;
 }
 
-sub generate {
+sub generate_clicked {
 	my $self   = shift;
 	my $dialog = $self->selected or return;
 	my $xml    = $self->{xml}    or return;
@@ -140,7 +140,7 @@ sub generate {
 		dialog  => $dialog,
 		package => $dialog,
 		padre   => $self->padre,
-	);
+	) or return;
 
 	# Open the generated code as a new file
 	$self->main->new_document_from_string(
@@ -150,7 +150,7 @@ sub generate {
 	return;
 }
 
-sub preview {
+sub preview_clicked {
 	my $self   = shift;
 	my $dialog = $self->selected or return;
 	my $xml    = $self->{xml}    or return;
@@ -162,7 +162,7 @@ sub preview {
 		dialog  => $dialog,
 		package => $name,
 		padre   => $self->padre,
-	);
+	) or return;
 
 	# Load the dialog
 	local $@;
@@ -170,7 +170,7 @@ sub preview {
 	if ( $@ ) {
 		$self->main->error("Error loading dialog: $@");
 		$self->unload($name);
-		last;
+		return;
 	}
 
 	# Create the dialog
@@ -180,7 +180,7 @@ sub preview {
 	if ( $@ ) {
 		$self->main->error("Error constructing dialog: $@");
 		$self->unload($name);
-		last;
+		return;
 	}
 
 	# Show the dialog
@@ -191,7 +191,7 @@ sub preview {
 	if ( $@ ) {
 		$self->main->error("Dialog crashed while in use: $@");
 		$self->unload($name);
-		last;
+		return;
 	}
 
 	# Clean up
@@ -245,9 +245,16 @@ sub generate_dialog {
 	}
 
 	# Generate the class code
-	my $string = $perl->flatten(
-		$perl->dialog_class( $dialog, $param{package} )
-	);
+	local $@;
+	my $string = eval {
+		$perl->flatten(
+			$perl->dialog_class( $dialog, $param{package} )
+		)
+	};
+	if ( $@ ) {
+		$self->main->error("Code Generator Error: $@");
+		return;
+	}
 
 	return $string;
 }

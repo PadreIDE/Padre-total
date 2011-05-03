@@ -25,16 +25,17 @@ sub new {
 		-1,
 		Wx::gettext("Padre Form Builder"),
 		Wx::wxDefaultPosition,
-		[ -1, -1 ],
+		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE,
 	);
+	$self->SetSizeHints( Wx::wxDefaultSize, Wx::wxDefaultSize );
 
-	$self->{file} = Wx::StaticText->new(
+	my $file = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Dialog Source"),
 	);
-	$self->{file}->SetFont(
+	$file->SetFont(
 		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
@@ -57,7 +58,7 @@ sub new {
 		},
 	);
 
-	$self->{line1} = Wx::StaticLine->new(
+	my $line1 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -65,12 +66,12 @@ sub new {
 		Wx::wxLI_HORIZONTAL,
 	);
 
-	$self->{m_staticText4} = Wx::StaticText->new(
+	my $m_staticText4 = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Generate Single Dialog"),
 	);
-	$self->{m_staticText4}->SetFont(
+	$m_staticText4->SetFont(
 		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
@@ -88,12 +89,13 @@ sub new {
 		-1,
 		Wx::gettext("Preview"),
 	);
+	$self->{preview}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$self->{preview},
 		sub {
-			shift->preview(@_);
+			shift->preview_clicked(@_);
 		},
 	);
 
@@ -113,16 +115,17 @@ sub new {
 		-1,
 		Wx::gettext("Generate Dialog"),
 	);
+	$self->{generate}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
 		$self->{generate},
 		sub {
-			shift->generate(@_);
+			shift->generate_clicked(@_);
 		},
 	);
 
-	$self->{line2} = Wx::StaticLine->new(
+	my $line2 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -147,7 +150,7 @@ sub new {
 		Wx::wxDefaultSize,
 	);
 
-	$self->{m_staticline4} = Wx::StaticLine->new(
+	my $m_staticline4 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -155,7 +158,7 @@ sub new {
 		Wx::wxLI_HORIZONTAL,
 	);
 
-	$self->{cancel} = Wx::Button->new(
+	my $cancel = Wx::Button->new(
 		$self,
 		Wx::wxID_CANCEL,
 		Wx::gettext("Close"),
@@ -170,23 +173,23 @@ sub new {
 
 	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$buttons->Add( 50, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $self->{cancel}, 0, Wx::wxALL, 5 );
+	$buttons->Add( $cancel, 0, Wx::wxALL, 5 );
 
 	my $sizer2 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$sizer2->Add( $self->{file}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
+	$sizer2->Add( $file, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
 	$sizer2->Add( $bSizer6, 1, Wx::wxEXPAND, 5 );
 	$sizer2->Add( 0, 5, 1, Wx::wxEXPAND, 5 );
-	$sizer2->Add( $self->{line1}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
-	$sizer2->Add( $self->{m_staticText4}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $line1, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
+	$sizer2->Add( $m_staticText4, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $bSizer5, 0, Wx::wxEXPAND, 0 );
 	$sizer2->Add( $self->{associate}, 0, Wx::wxALL, 5 );
 	$sizer2->Add( $self->{generate}, 0, Wx::wxALL, 5 );
 	$sizer2->Add( 0, 5, 1, Wx::wxEXPAND, 5 );
-	$sizer2->Add( $self->{line2}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
+	$sizer2->Add( $line2, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
 	$sizer2->Add( $m_staticText3, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $self->{padre}, 0, Wx::wxALL, 5 );
 	$sizer2->Add( 0, 5, 1, Wx::wxEXPAND, 5 );
-	$sizer2->Add( $self->{m_staticline4}, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $m_staticline4, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $buttons, 0, Wx::wxEXPAND, 5 );
 
 	my $sizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
@@ -199,16 +202,40 @@ sub new {
 	return $self;
 }
 
-sub browse_changed {
-	$_[0]->main->error('Handler method preview for event browse.OnFilePickerChanged not implemented');
+sub browse {
+	$_[0]->{browse};
+}
+
+sub select {
+	$_[0]->{select};
 }
 
 sub preview {
-	$_[0]->main->error('Handler method preview for event preview.OnButtonClick not implemented');
+	$_[0]->{preview};
+}
+
+sub associate {
+	$_[0]->{associate};
 }
 
 sub generate {
-	$_[0]->main->error('Handler method generate for event generate.OnButtonClick not implemented');
+	$_[0]->{generate};
+}
+
+sub padre {
+	$_[0]->{padre};
+}
+
+sub browse_changed {
+	$_[0]->main->error('Handler method browse_changed for event browse.OnFileChanged not implemented');
+}
+
+sub preview_clicked {
+	$_[0]->main->error('Handler method preview_clicked for event preview.OnButtonClick not implemented');
+}
+
+sub generate_clicked {
+	$_[0]->main->error('Handler method generate_clicked for event generate.OnButtonClick not implemented');
 }
 
 1;
