@@ -29,22 +29,6 @@ sub new {
 	$self->SetTitle("Padre FormBuilder");
 	$self->CenterOnParent;
 
-	# Disable the form elements initially useless
-	$self->{select}->Disable;
-	$self->{preview}->Disable;
-	$self->{associate}->Disable;
-	$self->{generate}->Disable;
-	$self->{padre}->Disable;
-
-	# Update the form elements
-	$self->{file}->SetLabel("Select Source:");
-
-	# If any of the dialogs are under Padre:: default the
-	# Padre-compatible code generation to true.
-	# if ( grep { /^Padre::/ } @$dialogs ) {
-		# $self->{padre}->SetValue(1);
-	# }
-
 	# If we don't have a current project, disable the checkbox
 	my $project = $main->current->project;
 	unless ( $project and $project->isa('Padre::Project::Perl') ) {
@@ -106,6 +90,14 @@ sub browse_changed {
 		$self->{select}->Append($list);
 		$self->{select}->SetSelection(0);
 
+		# If any of the dialogs are under Padre:: default the
+		# Padre-compatible code generation to true.
+		if ( grep { /^Padre::/ } @$list ) {
+			$self->{padre}->SetValue(1);
+		} else {
+			$self->{padre}->SetValue(0);
+		}
+
 		# Enable the dialog list and buttons
 		$self->{select}->Enable;
 		$self->{preview}->Enable;
@@ -138,15 +130,15 @@ sub browse_changed {
 }
 
 sub generate {
-	my $self = shift;
-	my $name = $self->selected or return;
-	my $xml  = $self->{xml}    or return;
+	my $self   = shift;
+	my $dialog = $self->selected or return;
+	my $xml    = $self->{xml}    or return;
 
 	# Generate the dialog code
 	my $code = $self->generate_dialog(
-		xml     => $self->{xml},
-		dialog  => $name,
-		package => $name,
+		xml     => $xml,
+		dialog  => $dialog,
+		package => $dialog,
 		padre   => $self->padre,
 	);
 
@@ -159,15 +151,16 @@ sub generate {
 }
 
 sub preview {
-	my $self = shift;
-	my $name = $self->selected or return;
-	my $xml  = $self->{xml}    or return;
+	my $self   = shift;
+	my $dialog = $self->selected or return;
+	my $xml    = $self->{xml}    or return;
 
 	# Generate the dialog code
+	my $name = "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT;
 	my $code = $self->generate_dialog(
-		xml     => $self->{xml},
-		dialog  => $name,
-		package => "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT,
+		xml     => $xml,
+		dialog  => $dialog,
+		package => $name,
 		padre   => $self->padre,
 	);
 
