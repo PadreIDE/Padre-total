@@ -38,15 +38,15 @@ sub new {
 }
 
 sub path {
-	$_[0]->{browse}->GetPath;
+	$_[0]->browse->GetPath;
 }
 
 sub selected {
-	$_[0]->{select}->GetStringSelection;
+	$_[0]->select->GetStringSelection;
 }
 
 sub padre {
-	!! $_[0]->{padre}->IsChecked;
+	!! $_[0]->padre->IsChecked;
 }
 
 
@@ -61,12 +61,12 @@ sub browse_changed {
 
 	# Flush any existing state
 	$self->{xml} = undef;
-	$self->{select}->Clear;
-	$self->{select}->Disable;
-	$self->{preview}->Disable;
-	$self->{associate}->Disable;
-	$self->{generate}->Disable;
-	$self->{padre}->Disable;
+	$self->select->Clear;
+	$self->select->Disable;
+	$self->preview->Disable;
+	$self->associate->Disable;
+	$self->generate->Disable;
+	$self->padre->Disable;
 
 	# Attempt to load the file and parse out the dialog list
 	local $@;
@@ -86,27 +86,27 @@ sub browse_changed {
 		die "No dialogs found" unless @$list;
 
 		# Populate the dialog list
-		$self->{select}->Append($list);
-		$self->{select}->SetSelection(0);
+		$self->select->Append($list);
+		$self->select->SetSelection(0);
 
 		# If any of the dialogs are under Padre:: default the
 		# Padre-compatible code generation to true.
 		if ( grep { /^Padre::/ } @$list ) {
-			$self->{padre}->SetValue(1);
+			$self->padre->SetValue(1);
 		} else {
-			$self->{padre}->SetValue(0);
+			$self->padre->SetValue(0);
 		}
 
 		# Enable the dialog list and buttons
-		$self->{select}->Enable;
-		$self->{preview}->Enable;
-		$self->{associate}->Enable;
-		$self->{generate}->Enable;
-		$self->{padre}->Enable;
+		$self->select->Enable;
+		$self->preview->Enable;
+		$self->associate->Enable;
+		$self->generate->Enable;
+		$self->padre->Enable;
 
 		# Indicate the FBP file is ok
-		if ( $self->{browse}->HasTextCtrl ) {
-			my $ctrl = $self->{browse}->GetTextCtrl;
+		if ( $self->browse->HasTextCtrl ) {
+			my $ctrl = $self->browse->GetTextCtrl;
 			$ctrl->SetBackgroundColour(
 				Wx::Colour->new('#CCFFCC')
 			);
@@ -114,15 +114,15 @@ sub browse_changed {
 	};
 	if ( $@ ) {
 		# Indicate the FBP file is not ok
-		if ( $self->{browse}->HasTextCtrl ) {
-			my $ctrl = $self->{browse}->GetTextCtrl;
+		if ( $self->browse->HasTextCtrl ) {
+			my $ctrl = $self->browse->GetTextCtrl;
 			$ctrl->SetBackgroundColour(
 				Wx::Colour->new('#FFCCCC')
 			);
 		}
 
 		# Inform the user directly
-		$self->main->error("Missing, invalid or empty file '$path'");
+		$self->error("Missing, invalid or empty file '$path'");
 	}
 
 	return;
@@ -167,7 +167,7 @@ sub preview_clicked {
 	local $@;
 	eval "$code";
 	if ( $@ ) {
-		$self->main->error("Error loading dialog: $@");
+		$self->error("Error loading dialog: $@");
 		$self->unload($name);
 		return;
 	}
@@ -177,7 +177,7 @@ sub preview_clicked {
 		$name->new( $self->main );
 	};
 	if ( $@ ) {
-		$self->main->error("Error constructing dialog: $@");
+		$self->error("Error constructing dialog: $@");
 		$self->unload($name);
 		return;
 	}
@@ -188,7 +188,7 @@ sub preview_clicked {
 	};
 	$preview->Destroy;
 	if ( $@ ) {
-		$self->main->error("Dialog crashed while in use: $@");
+		$self->error("Dialog crashed while in use: $@");
 		$self->unload($name);
 		return;
 	}
@@ -220,7 +220,7 @@ sub generate_dialog {
 		name => $param{dialog},
 	);
 	unless ( $dialog ) {
-		$self->main->error("Failed to find dialog $param{dialog}");
+		$self->error("Failed to find dialog $param{dialog}");
 		return;
 	}
 
@@ -251,7 +251,7 @@ sub generate_dialog {
 		)
 	};
 	if ( $@ ) {
-		$self->main->error("Code Generator Error: $@");
+		$self->error("Code Generator Error: $@");
 		return;
 	}
 
@@ -274,11 +274,11 @@ sub dialog_class {
 	while ( $dialog->ShowModal != Wx::wxID_CANCEL ) {
 		my $package = $dialog->GetValue;
 		unless ( defined $package and length $package ) {
-			$main->error("Did not provide a class name");
+			$self->error("Did not provide a class name");
 			next;
 		}
 		unless ( Params::Util::_CLASS($package) ) {
-			$main->error("Not a valid class name");
+			$self->error("Not a valid class name");
 			next;
 		}
 
@@ -296,6 +296,11 @@ sub unload {
 		Class::Unload->unload($package);
 	}
 	return 1;
+}
+
+# Convenience
+sub error {
+	shift->main->error(@_);
 }
 
 1;
