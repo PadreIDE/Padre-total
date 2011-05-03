@@ -122,6 +122,12 @@ sub window_event {
 	);
 }
 
+# Because we expect everything to be shimmed, apply a stricter interpretation
+# of lexicality if the code is being generated for Padre.
+sub object_lexical {
+	$_[1]->permission ne 'public';
+}
+
 1;
 
 =pod
