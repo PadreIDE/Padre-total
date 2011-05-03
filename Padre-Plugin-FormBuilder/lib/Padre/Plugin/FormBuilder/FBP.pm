@@ -49,6 +49,14 @@ sub new {
 		Wx::wxFLP_DEFAULT_STYLE,
 	);
 
+	Wx::Event::EVT_FILEPICKER_CHANGED(
+		$self,
+		$self->{browse},
+		sub {
+			shift->browse_changed(@_);
+		},
+	);
+
 	$self->{line1} = Wx::StaticLine->new(
 		$self,
 		-1,
@@ -189,6 +197,10 @@ sub new {
 	$sizer1->Fit($self);
 
 	return $self;
+}
+
+sub browse_changed {
+	$_[0]->main->error('Handler method preview for event browse.OnFilePickerChanged not implemented');
 }
 
 sub preview {

@@ -1,8 +1,9 @@
 Changes for Perl extension Padre-Plugin-FormBuilder
 
-0.02 to be relased
+0.02 to be released
 	- Allow toggling between pure FBP::Perl and Padre-specific code
 	- Add option to generate into a temporary namespace
+	- Major reorganisation to act as a permanent dialog
 
 0.01 Fri 26 Jun 2010
 	- Creating initial release by forking Padre-Plugin-FormBuilder
