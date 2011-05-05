@@ -13,6 +13,15 @@ our @ISA     = 'Padre::Plugin::FormBuilder::FBP';
 # Temporary namespace counter
 my $COUNT = 0;
 
+use constant SINGLE => qw{
+	select
+	preview
+	encapsulation
+	version
+	associate
+	generate
+};
+
 
 
 
@@ -45,9 +54,10 @@ sub selected {
 	$_[0]->select->GetStringSelection;
 }
 
-sub padre {
+sub padre_code {
 	!! $_[0]->padre->IsChecked;
 }
+
 
 
 
@@ -62,11 +72,7 @@ sub browse_changed {
 	# Flush any existing state
 	$self->{xml} = undef;
 	$self->select->Clear;
-	$self->select->Disable;
-	$self->preview->Disable;
-	$self->associate->Disable;
-	$self->generate->Disable;
-	$self->padre->Disable;
+	$self->disable(SINGLE, 'padre');
 
 	# Attempt to load the file and parse out the dialog list
 	local $@;
@@ -93,16 +99,14 @@ sub browse_changed {
 		# Padre-compatible code generation to true.
 		if ( grep { /^Padre::/ } @$list ) {
 			$self->padre->SetValue(1);
+			$self->encapsulation->SetSelection(1);
 		} else {
 			$self->padre->SetValue(0);
+			$self->encapsulation->SetSelection(0);
 		}
 
 		# Enable the dialog list and buttons
-		$self->select->Enable;
-		$self->preview->Enable;
-		$self->associate->Enable;
-		$self->generate->Enable;
-		$self->padre->Enable;
+		$self->enable(SINGLE, 'padre');
 
 		# Indicate the FBP file is ok
 		if ( $self->browse->HasTextCtrl ) {
@@ -138,7 +142,7 @@ sub generate_clicked {
 		xml     => $xml,
 		dialog  => $dialog,
 		package => $dialog,
-		padre   => $self->padre,
+		padre   => $self->padre_code,
 	) or return;
 
 	# Open the generated code as a new file
@@ -160,7 +164,7 @@ sub preview_clicked {
 		xml     => $xml,
 		dialog  => $dialog,
 		package => $name,
-		padre   => $self->padre,
+		padre   => $self->padre_code,
 	) or return;
 
 	# Load the dialog
@@ -285,6 +289,24 @@ sub dialog_class {
 		return $package;
 	}
 
+	return;
+}
+
+# Enable a set of controls
+sub enable {
+	my $self = shift;
+	foreach my $name ( @_ ) {
+		$self->$name()->Enable;
+	}
+	return;
+}
+
+# Disable a set of controls
+sub disable {
+	my $self = shift;
+	foreach my $name ( @_ ) {
+		$self->$name()->Disable;
+	}
 	return;
 }
 
