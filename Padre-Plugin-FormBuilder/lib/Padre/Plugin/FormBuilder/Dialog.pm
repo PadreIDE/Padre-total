@@ -143,6 +143,7 @@ sub generate_clicked {
 		dialog  => $dialog,
 		package => $dialog,
 		padre   => $self->padre_code,
+		version => $self->version->GetValue || '0.01',
 	) or return;
 
 	# Open the generated code as a new file
@@ -165,6 +166,7 @@ sub preview_clicked {
 		dialog  => $dialog,
 		package => $name,
 		padre   => $self->padre_code,
+		version => $self->version->GetValue || '0.01',
 	) or return;
 
 	# Load the dialog
@@ -228,17 +230,13 @@ sub generate_dialog {
 		return;
 	}
 
-	# Does the project have an existing version?
-	my $project = $self->current->project;
-	my $version = $project ? $project->version : undef;
-
 	# Configure the code generator
 	my $perl = undef;
 	if ( $param{padre} ) {
 		require Padre::Plugin::FormBuilder::Perl;
 		$perl = Padre::Plugin::FormBuilder::Perl->new(
 			project => $fbp,
-			defined($version) ? ( version => $version ) : (),
+			version => $param{version},
 		);
 	} else {
 		require FBP::Perl;
