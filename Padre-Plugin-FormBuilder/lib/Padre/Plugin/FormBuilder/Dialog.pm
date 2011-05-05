@@ -58,6 +58,10 @@ sub padre_code {
 	!! $_[0]->padre->IsChecked;
 }
 
+sub encapsulate {
+	$_[0]->encapsulation->GetSelection == 1
+}
+
 
 
 
@@ -235,8 +239,9 @@ sub generate_dialog {
 	if ( $param{padre} ) {
 		require Padre::Plugin::FormBuilder::Perl;
 		$perl = Padre::Plugin::FormBuilder::Perl->new(
-			project => $fbp,
-			version => $param{version},
+			project     => $fbp,
+			version     => $param{version},
+			encapsulate => $self->encapsulate,
 		);
 	} else {
 		require FBP::Perl;

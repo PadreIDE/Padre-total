@@ -37,6 +37,13 @@ has version => (
 	default  => '0.01',
 );
 
+has encapsulate => (
+	is       => 'ro',
+	isa      => 'Bool',
+	required => 1,
+	default  => 0,
+);
+
 
 
 
@@ -77,6 +84,31 @@ END_PERL
 	return $code;
 }
 
+sub dialog_new {
+	my $self   = shift;
+	my $dialog = shift;
+	my $lines  = $self->SUPER::dialog_new($dialog);
+
+	# Find the full list of public windows
+	my @public = grep {
+		$_->permission eq 'public'
+	} $dialog->find( isa => 'FBP::Window' );
+	return $lines unless @public;
+
+	# Generate code to save the wxWidgets id values to the hash slots
+	my @save = ( '' );
+	foreach my $window ( @public ) {
+		my $name     = $window->name;
+		my $variable = $self->object_variable($window);
+		push @save, "\t\$self->{$name} = $variable->GetId;";
+	}
+
+	# Splice the bind code into the constructor
+	splice( @$lines, $#$lines - 2, 0, @save );
+
+	return $lines;
+}
+
 sub dialog_version {
 	my $self    = shift;
 	my $dialog  = shift;
@@ -108,6 +140,21 @@ sub use_wx {
 	];
 }
 
+sub window_accessor {
+	my $self = shift;
+	unless ( $self->encapsulate ) {
+		return $self->SUPER::window_accessor(@_);
+	}
+
+	my $object = shift;
+	my $name   = $object->name;
+	return $self->nested(
+		"sub $name {",
+		"Wx::Window::FindWindowById(\$_[0]->{$name});",
+		"}",
+	);
+}
+
 sub window_event {
 	my $self   = shift;
 	my $window = shift;
@@ -125,7 +172,11 @@ sub window_event {
 # Because we expect everything to be shimmed, apply a stricter interpretation
 # of lexicality if the code is being generated for Padre.
 sub object_lexical {
-	$_[1]->permission ne 'public';
+	my $self = shift;
+	unless ( $self->encapsulate ) {
+		return $self->SUPER::object_lexical(@_);
+	}
+	return 1;
 }
 
 1;
