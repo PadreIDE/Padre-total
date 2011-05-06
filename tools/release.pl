@@ -127,8 +127,13 @@ print "\n**DIR $tmp_dir\n";
 # Added /Padre to the destination path, as this allows
 # assumptions in Padre::Share::share to create the
 # correct rel2abs path.
-_system("svn export --quiet -r$rev $URL src/Padre");
-chdir 'src/Padre';
+if ($name eq 'Padre') {
+	_system("svn export --quiet -r$rev $URL src/Padre");
+	chdir 'src/Padre';
+} else {
+	_system("svn export --quiet -r$rev $URL $name");
+	chdir $name;
+}
 
 print "CWD: " . Cwd::cwd() . "\n";
 
@@ -192,7 +197,10 @@ print "Now making the distribution\n";
 
 _system("$make dist");
 print "current working dir... " . Cwd::cwd() . "\n";
-print "Copying Padre tar ball back to start dir: $tmp_dir/$name-$version.tar.gz, $start_dir\n";
+if ($name ne 'Padre') {
+	$tmp_dir .= "/$name";
+}
+print "Copying the release tar ball back to start dir: $tmp_dir/$name-$version.tar.gz, $start_dir\n";
 copy( "$tmp_dir/$name-$version.tar.gz", $start_dir ) or die $!;
 if ($tag) {
 	_system("svn cp -r$rev $URL $TAGS/$name-$version -m'tag $name-$version'");
