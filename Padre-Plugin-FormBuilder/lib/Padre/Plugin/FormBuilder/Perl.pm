@@ -23,8 +23,9 @@ It overloads various methods to make things work in a more Padre-specific way.
 use 5.008005;
 use strict;
 use warnings;
-use Scalar::Util ();
-use Mouse 0.61;
+use Scalar::Util   ();
+use FBP::Perl 0.37 ();
+use Mouse     0.61;
 
 our $VERSION = '0.02';
 

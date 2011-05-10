@@ -2,7 +2,6 @@ use inc::Module::Install::DSL 1.00;
 
 all_from      lib/Padre/Plugin/FormBuilder.pm
 requires_from lib/Padre/Plugin/FormBuilder.pm
-requires      FBP::Perl        0.37
-requires      Mouse            0.61
+requires_from lib/Padre/Plugin/FormBuilder/Perl.pm
 test_requires Test::More       0.47
 test_requires Test::NoWarnings 0.084
