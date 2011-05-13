@@ -94,18 +94,19 @@ sub dialog_new {
 	my @public = grep {
 		$_->permission eq 'public'
 	} $dialog->find( isa => 'FBP::Window' );
-	return $lines unless @public;
 
-	# Generate code to save the wxWidgets id values to the hash slots
-	my @save = ( '' );
-	foreach my $window ( @public ) {
-		my $name     = $window->name;
-		my $variable = $self->object_variable($window);
-		push @save, "\t\$self->{$name} = $variable->GetId;";
+	if ( $self->encapsulate and @public ) {
+		# Generate code to save the wxWidgets id values to the hash slots
+		my @save = ( '' );
+		foreach my $window ( @public ) {
+			my $name     = $window->name;
+			my $variable = $self->object_variable($window);
+			push @save, "\t\$self->{$name} = $variable->GetId;";
+		}
+
+		# Splice the bind code into the constructor
+		splice( @$lines, $#$lines - 2, 0, @save );
 	}
-
-	# Splice the bind code into the constructor
-	splice( @$lines, $#$lines - 2, 0, @save );
 
 	return $lines;
 }
