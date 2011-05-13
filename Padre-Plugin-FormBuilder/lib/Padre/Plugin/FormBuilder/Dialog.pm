@@ -40,7 +40,7 @@ sub new {
 	# If we don't have a current project, disable the checkbox
 	my $project = $main->current->project;
 	unless ( $project and $project->isa('Padre::Project::Perl') ) {
-		$self->{associate}->Disable;
+		$self->associate->Disable;
 	}
 
 	return $self;
