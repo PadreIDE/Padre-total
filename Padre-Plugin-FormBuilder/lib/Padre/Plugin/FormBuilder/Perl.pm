@@ -151,7 +151,7 @@ sub window_accessor {
 	my $name   = $object->name;
 	return $self->nested(
 		"sub $name {",
-		"\$_[0]->FindWindowById(\$_[0]->{$name});",
+		"Wx::Window::FindWindowById(\$_[0]->{$name});",
 		"}",
 	);
 }
