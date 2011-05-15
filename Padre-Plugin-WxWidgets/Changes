@@ -3,6 +3,7 @@ Revision history for Padre-Plugin-wxWidgets
 {{$NEXT}}
 	- Moved bin/parse_wxwidgets_docs to private/bin/parse_wxwidgets_docs
 	  to fix RT #66122 "Do not install parse_wxwidgets_docs"
+    - Added Brazilian Portuguese translation (GARU)
 
 0.03   2010.12.08
 	- Added better documentation to parse_wxwidgets_docs (AZAWAWI)
