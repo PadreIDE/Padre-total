@@ -1,0 +1,38 @@
+# Portuguese translations for Padre-Plugin-JavaScript package.
+# Copyright (C) 2011 THE Padre-Plugin-JavaScript'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Padre-Plugin-JavaScript package.
+# garu <garu@cpan.org>, 2011.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-JavaScript\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-27 15:11+0300\n"
+"PO-Revision-Date: 2011-05-15 01:32-0300\n"
+"Last-Translator: garu <garu@cpan.org>\n"
+"Language-Team: Brazilian Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: lib/Padre/Plugin/JavaScript.pm:26 lib/Padre/Plugin/JavaScript.pm:31
+msgid "JavaScript"
+msgstr "JavaScript"
+
+#: lib/Padre/Plugin/JavaScript.pm:32
+msgid "JavaScript Beautifier"
+msgstr "Embelezador JavaScript"
+
+#: lib/Padre/Plugin/JavaScript.pm:33
+msgid "JavaScript Minifier"
+msgstr "Minimizador JavaScript"
+
+#: lib/Padre/Plugin/JavaScript.pm:34
+msgid "JavaScript Syntax Check"
+msgstr "Verificação de Sintaxe JavaScript"
+
+#: lib/Padre/Plugin/JavaScript.pm:84
+msgid "Syntax ok"
+msgstr "Sintaxe ok"
