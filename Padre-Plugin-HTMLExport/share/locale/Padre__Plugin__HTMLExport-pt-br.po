@@ -1,0 +1,61 @@
+# Portuguese translations for Padre-Plugin-HTMLExport package.
+# Copyright (C) 2011 THE Padre-Plugin-HTMLExport'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Padre-Plugin-HTMLExport package.
+# garu <garu@cpan.org>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-HTMLExport\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-03 12:04+0100\n"
+"PO-Revision-Date: 2011-05-15 01:31-0300\n"
+"Last-Translator: Breno G. de Oliveira <garu@cpan.org>\n"
+"Language-Team: Brazilian Portuguese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: lib/Padre/Plugin/HTMLExport.pm:48
+msgid "Export Colorful HTML"
+msgstr "Exportar HTML Colorido"
+
+#: lib/Padre/Plugin/HTMLExport.pm:49
+msgid "Export HTML..."
+msgstr "Exportar HTML..."
+
+#: lib/Padre/Plugin/HTMLExport.pm:50
+msgid "Configure Color"
+msgstr "Configurar Cor"
+
+#: lib/Padre/Plugin/HTMLExport.pm:71
+msgid "Save as HTML..."
+msgstr "Salvar como HTML..."
+
+#: lib/Padre/Plugin/HTMLExport.pm:85
+msgid "File already exists. Overwrite it?"
+msgstr "Arquivo já existe. Sobrescrever?"
+
+#: lib/Padre/Plugin/HTMLExport.pm:86
+msgid "Exist"
+msgstr "Existe"
+
+#: lib/Padre/Plugin/HTMLExport.pm:103
+#, perl-format
+msgid "%s is not supported"
+msgstr "%s não é suportado"
+
+#: lib/Padre/Plugin/HTMLExport.pm:154
+#, perl-format
+msgid "Saved to %s. Do you want to open it now?"
+msgstr "Salvo em %s. Gostaria de abri-lo agora?"
+
+#: lib/Padre/Plugin/HTMLExport.pm:155
+msgid "Done"
+msgstr "Concluído"
+
+#: lib/Padre/Plugin/HTMLExport.pm:168
+msgid "Not implemented, TODO"
+msgstr "Não implementado, TODO"
+
