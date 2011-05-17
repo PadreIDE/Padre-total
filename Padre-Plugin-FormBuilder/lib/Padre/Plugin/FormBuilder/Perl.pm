@@ -24,7 +24,7 @@ use 5.008005;
 use strict;
 use warnings;
 use Scalar::Util   ();
-use FBP::Perl 0.37 ();
+use FBP::Perl 0.38 ();
 use Mouse     0.61;
 
 our $VERSION = '0.02';
