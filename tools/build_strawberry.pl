@@ -18,11 +18,12 @@ use Archive::Zip;
 my $zip_file = shift or die "Usage: $0 TARGET_ZIP_FILENAME\n";
 die "zipfile alredy exists\n" if -e $zip_file;
 
-my $root = "c:/strawberry";
+my $root   = "c:/strawberry";
 my $target = 'strawberry';
 
-my $file = dirname(abs_path($0)) . "/padre.bat";
+my $file = dirname( abs_path($0) ) . "/padre.bat";
 copy $file, "$root/padre.bat";
+
 #clean();
 zip();
 
@@ -31,19 +32,22 @@ sub clean {
 	foreach my $dir (qw(build sources Bundle)) {
 		File::Path::Tiny::rm("$root/cpan/$dir");
 	}
-	File::Path::Tiny::rm("$root/perl/bin/lex"); # Perl6 
+	File::Path::Tiny::rm("$root/perl/bin/lex"); # Perl6
 }
 
 sub zip {
-    my $verbose = 0;
-    my @files;
+	my $verbose = 0;
+	my @files;
 	my $zip = Archive::Zip->new;
-	$zip->addTree($root, $target, sub {
-	    return if $_ =~ m{cpan/cpan_sqlite_log};
-		return if $_ =~ m{cpan/(build|sources|Bundle)};
-		return if $_ =~ m{perl/bin/lex}; # Perl 6
-		return 1;
-	});
+	$zip->addTree(
+		$root, $target,
+		sub {
+			return if $_ =~ m{cpan/cpan_sqlite_log};
+			return if $_ =~ m{cpan/(build|sources|Bundle)};
+			return if $_ =~ m{perl/bin/lex};               # Perl 6
+			return 1;
+		}
+	);
 	$zip->writeToFileNamed($zip_file);
 }
 
