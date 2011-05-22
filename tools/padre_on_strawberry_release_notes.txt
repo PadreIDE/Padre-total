@@ -1,0 +1,39 @@
+Padre on Strawberry Perl
+Release notes
+
+v1: 2011.05.20
+   Strawberry Perl 5.12.3.0
+   Padre 0.84
+   size: 75,432,834
+
+v2: 2011.05.22
+   Strawberry Perl 5.12.3.0
+   Padre 0.84
+   Padre::Plugin::PerlCritic 0.12
+   Padre::Plugin::PerlTidy 0.16
+   Moose 2.0007
+   Test::Most 0.23
+   WWW::Mechanize 1.68
+   Test::WWW::Mechanize 1.32
+   Test::Deep 0.108
+   Test::Exception 0.31
+   MooseX::StrictConstructor 0.16
+   Task::Kensho
+   MooseX::Singleton
+   Dancer
+   Dancer::Plugin::SiteMap
+   Dancer::Plugin::SimpleCRUD
+   Dancer::Plugin::Database
+   Dancer::Plugin::Captcha::SecurityImage
+   Dancer::Plugin::Auth::RBAC
+   Dancer::Plugin::Auth::Twitter
+   POE
+   DBIx::Class
+   Module::Install
+   size: 81,645,886
+
+OTHER:
+   
+   MooseX::FollowBPB - no such module?
+   Dancer::Plugin::REST  - failed on windows
+   Dancer::Plugin::Authorize - deprecated
