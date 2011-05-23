@@ -32,8 +32,30 @@ v2: 2011.05.22
    Module::Install
    size: 81,645,886
 
+v3: 2011.05. ??
+   Log::Dispatch
+   Win32::Env
+   Win32::Env::Path
+
+   Unzip the file
+   put it in some place without a path in it. e.g c:\strawberry
+   Run the relocation.pl.bat
+   Run the update_env.pl.bat
+   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
+   Run the setup_padre.pl.bat
+       This will put an icon of Padre on your desktop and
+	   you can run it by double clicking on the icon
+	
+   
 OTHER:
    
    MooseX::FollowBPB - no such module?
    Dancer::Plugin::REST  - failed on windows
    Dancer::Plugin::Authorize - deprecated
+
+   System Variables removed:
+   FTP_PASSIVE = 1
+   Path part removed: ;C:\strawberry\c\bin;C:\strawberry\perl\bin;C:\strawberry\perl\site\bin
+   PERL_JSON_BACKEND JSON::XS
+   PERL_YAML_BACKEND YAML
+   TERM dumb
