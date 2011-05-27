@@ -21,8 +21,8 @@ die "zipfile alredy exists\n" if -e $zip_file;
 my $root   = "c:/strawberry";
 my $target = 'strawberry';
 
-my $file = dirname( abs_path($0) ) . "/padre.bat";
-copy $file, "$root/padre.bat";
+my $file = dirname( abs_path($0) ) . "/setup_padre.pl.bat";
+copy $file, "$root/";
 
 #clean();
 zip();

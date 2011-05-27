@@ -1,10 +1,71 @@
 Padre on Strawberry Perl
 Release notes
 
-v1: 2011.05.20
+   Unzip the file
+   put it in some place without a path in it. e.g c:\strawberry
+   Run the relocation.pl.bat
+   Run the update_env.pl.bat
+   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
+       This will make the previous changes work *without* a reboot.
+   Run the setup_padre.pl.bat
+       This will put an icon of Padre on your desktop and
+	   you can run it by double clicking on the icon
+
+
+v3: 2011.05. ??
    Strawberry Perl 5.12.3.0
+
    Padre 0.84
-   size: 75,432,834
+   Padre::Plugin::PerlCritic 0.12
+   Padre::Plugin::PerlTidy 0.16
+
+   Dancer
+   Dancer::Plugin::SiteMap
+   Dancer::Plugin::SimpleCRUD
+   Dancer::Plugin::Database
+   Dancer::Plugin::Captcha::SecurityImage
+   Dancer::Plugin::Auth::RBAC
+   Dancer::Plugin::Auth::Twitter
+   Dancer::Plugin::FlashMessage
+
+   DBIx::Class
+
+   Log::Dispatch
+
+   Modern::Perl
+   Module::Install
+
+   Moose 2.0007
+   MooseX::StrictConstructor 0.16
+   MooseX::Singleton
+
+   Task::Kensho
+
+   Test::Most 0.23
+   Test::WWW::Mechanize 1.32
+   Test::Deep 0.108
+   Test::Exception 0.31
+
+   POE
+
+   WWW::Mechanize 1.68
+
+   Win32::Env
+   Win32::Env::Path
+
+   Spreadsheet::ParseExcel
+   Spreadsheet::WriteExcel
+   Excel::Writer::XLSX
+   Spreadsheet::WriteExcelXML
+
+   Module::Version
+   MongoDB
+       (In order to take full advantage of the MongoDB client 
+	    you will need to download the MongoDB server yourself from
+        http://www.mongodb.org/ )
+
+   Removed padre.bat
+   Added setup_padre.bat to setup desktop icon
 
 v2: 2011.05.22
    Strawberry Perl 5.12.3.0
@@ -30,22 +91,17 @@ v2: 2011.05.22
    POE
    DBIx::Class
    Module::Install
+   
+   Added padre.bat to the c:\strawberry directory
+ 
    size: 81,645,886
 
-v3: 2011.05. ??
-   Log::Dispatch
-   Win32::Env
-   Win32::Env::Path
+v1: 2011.05.20
+   Strawberry Perl 5.12.3.0
+   Padre 0.84
+   size: 75,432,834
 
-   Unzip the file
-   put it in some place without a path in it. e.g c:\strawberry
-   Run the relocation.pl.bat
-   Run the update_env.pl.bat
-   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
-   Run the setup_padre.pl.bat
-       This will put an icon of Padre on your desktop and
-	   you can run it by double clicking on the icon
-	
+==========================   
    
 OTHER:
    
@@ -55,7 +111,6 @@ OTHER:
 
    System Variables removed:
    FTP_PASSIVE = 1
-   Path part removed: ;C:\strawberry\c\bin;C:\strawberry\perl\bin;C:\strawberry\perl\site\bin
    PERL_JSON_BACKEND JSON::XS
    PERL_YAML_BACKEND YAML
    TERM dumb
