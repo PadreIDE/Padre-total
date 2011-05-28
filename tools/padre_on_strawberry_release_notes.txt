@@ -20,13 +20,14 @@ v3: 2011.05. ??
    Padre::Plugin::PerlTidy 0.16
 
    Dancer
-   Dancer::Plugin::SiteMap
-   Dancer::Plugin::SimpleCRUD
-   Dancer::Plugin::Database
-   Dancer::Plugin::Captcha::SecurityImage
    Dancer::Plugin::Auth::RBAC
    Dancer::Plugin::Auth::Twitter
+   Dancer::Plugin::Captcha::SecurityImage
+   Dancer::Plugin::Database
+   Dancer::Plugin::DBIC
    Dancer::Plugin::FlashMessage
+   Dancer::Plugin::SiteMap
+   Dancer::Plugin::SimpleCRUD
 
    DBIx::Class
 
