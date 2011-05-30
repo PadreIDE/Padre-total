@@ -3,7 +3,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
 
-; TODO: Restrict the installation path to have no space or non-ascii characters in the path
+; TODO: Restrict the installation path to have  no non-ascii characters in the path
 ; TODO: do we need to set Environment variable other than Path ? e.g. file extension mapping?
 ; TODO: Add alot more menu items that the original Strawberry also adds
 ; TODO: Add desktop icon for Padre (ask user?)
@@ -117,3 +117,18 @@ end;
 // C:\Program Files\CollabNet\Subversion Client;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;C:\strawberry\c\bin;C:\strawberry\perl\site\bin;C:\strawberry\perl\bin;;C:\Str\perl\bin;C:\Str\perl\site\bin;C:\Str\c\bin;d:\;
 
 
+// Restrict the installation path to have no space 
+function NextButtonClick(CurPageID: Integer): Boolean;
+begin
+  Result :=True;
+  case CurPageID of
+    wpSelectDir :
+    begin
+    if Pos(' ', ExpandConstant('{app}') ) <> 0 then
+      begin
+        MsgBox('You cannot install to a path containing spaces. Please select a different path.', mbError, mb_Ok);
+        Result := False;
+      end;
+    end;
+  end;
+end;
