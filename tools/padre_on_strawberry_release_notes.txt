@@ -1,18 +1,7 @@
 Padre on Strawberry Perl
 Release notes
-
-   Unzip the file
-   put it in some place without a path in it. e.g c:\strawberry
-   Run the relocation.pl.bat
-   Run the update_env.pl.bat
-   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
-       This will make the previous changes work *without* a reboot.
-   Run the setup_padre.pl.bat
-       This will put an icon of Padre on your desktop and
-	   you can run it by double clicking on the icon
-
-
-v3: 2011.05. ??
+   
+v3: 2011.05.29
    Strawberry Perl 5.12.3.0
 
    Padre 0.84
@@ -115,3 +104,55 @@ OTHER:
    PERL_JSON_BACKEND JSON::XS
    PERL_YAML_BACKEND YAML
    TERM dumb
+
+Old released notes: (v1 and v2)
+   Unzip the file
+   put it in some place without a path in it. e.g c:\strawberry
+   Run the relocation.pl.bat
+   Run the update_env.pl.bat
+   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
+       This will make the previous changes work *without* a reboot.
+   Run the setup_padre.pl.bat
+       This will put an icon of Padre on your desktop and
+	   you can run it by double clicking on the icon
+
+===========================
+
+v4: 2011.
+   Don't allow installation directory to have space (Mark Dootson)
+   Net::Telnet
+   Test::MockModule
+   (Test::MockObject)
+   (Test::Warn)
+   (Devel::Cover)
+   (Win32::EventLog)
+   (Win32::Exe)
+   Win32::Daemon
+   Win32::SystemInfo
+   (Win32::TieRegistry)
+   Win32::GuiTest
+   Prima
+   Win32::GUIRobot
+   (MooseX::Types)
+   AppConfig
+   Template::Toolkit
+   (Clone)
+
+   Tie::Simple
+   Text::Patch
+   Aliend::SDL   (SDL-1.2.14 (extended 20100704))
+       http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20100704.zip
+   SDL
+
+   
+   
+TODO:   
+   IO::Tty listed in http://ali.as/top100/index.html - failed
+
+   Inline
+   Inline::C   
+   PDL
+   
+   App::Ack  (ack) - failed
+
+   
