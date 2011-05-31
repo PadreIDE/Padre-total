@@ -43,7 +43,6 @@
  
  [% END %]
 
-
 [% END %]
 
 
@@ -103,6 +102,28 @@ Download size: 45,096,484 bytes.<br />After installation it takes up 300 Mb
  </p>
  [% END %]
 [% END ; # dl_osx %]
+
+[% BLOCK dl_activestate %]
+ [% WRAPPER chrome/styled_panel %]
+ [% # Found the logo here: http://www.flickr.com/photos/27560752@N03/3235556408/ %]
+ [% # Someone with better skills in GIMP should resize the image %]
+ <img class="title_image" src="static/alien/active-perl.jpg" alt=""/>
+ <h1>ActiveState Perl</h1>
+ <p>
+ <a href="http://www.wxperl.co.uk/repository/ppm-repository.html">Mark Dootson provides PPMs</a> for Padre.
+ Add <code><a href="http://www.wxperl.co.uk/repository/ppm-repository.html">http://www.wxperl.co.uk/repository</a></code> to your list of repositories.
+ </p>
+ <p>
+ There are Padre PPMs available for:
+ <ul>
+ <li>MS Windows – Perl 5.12 (32/64 bit), 5.10 (32/64 bit) and 5.8 (32 bit)</li>
+ <li>Linux – Perl 5.12 (32/64 bit), 5.10 (32/64 bit) and 5.8 (32 bit)</li>
+ <li>Mac OS X (32 bit) – Perl 5.12, 5.10, 5.8</li>
+ </ul>
+ </p>
+
+ [% END %]
+[% END ; # dl_activestate %]
 
 
 [% BLOCK dl_linux %]
@@ -175,24 +196,3 @@ please look at the
  [% END %]
 [% END ; # dl_source %]
 
-[% BLOCK dl_activestate %]
- [% WRAPPER chrome/styled_panel %]
- [% # Found the logo here: http://www.flickr.com/photos/27560752@N03/3235556408/ %]
- [% # Someone with better skills in GIMP should resize the image %]
- <img class="title_image" src="static/alien/active-perl.jpg" alt=""/>
- <h1>ActiveState Perl</h1>
- <p>
- <a href="http://www.wxperl.co.uk/repository/ppm-repository.html">Mark Dootson provides PPMs</a> for Padre.
- Add <code><a href="http://www.wxperl.co.uk/repository/ppm-repository.html">http://www.wxperl.co.uk/repository</a></code> to your list of repositories.
- </p>
- <p>
- There are Padre PPMs available for:
- <ul>
- <li>MS Windows – Perl 5.12 (32/64 bit), 5.10 (32/64 bit) and 5.8 (32 bit)</li>
- <li>Linux – Perl 5.12 (32/64 bit), 5.10 (32/64 bit) and 5.8 (32 bit)</li>
- <li>Mac OS X (32 bit) – Perl 5.12, 5.10, 5.8</li>
- </ul>
- </p>
-
- [% END %]
-[% END ; # dl_activestate %]
