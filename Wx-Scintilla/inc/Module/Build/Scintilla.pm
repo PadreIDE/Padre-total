@@ -95,35 +95,34 @@ sub build_xs {
 	my @cmd;
 	my $cmd;
 
+	my $perl_lib = $Config{privlibexp};
+	$perl_lib =~ s/\\/\//g;
+	my $perl_site_lib = $Config{sitelibexp};
+	$perl_site_lib =~ s/\\/\//g;
+
 	require ExtUtils::ParseXS;
-	my $typemap = File::Spec->catfile($Config{privlibexp}, 'ExtUtils/typemap');
-	$typemap =~ s/\\/\//g;
 	ExtUtils::ParseXS::process_file(
 		filename    => 'Scintilla.xs',
 		output      => 'Scintilla.c',
 		prototypes  => 0,
 		linenumbers => 0,
 		typemap     => [
-			$typemap,
+			File::Spec->catfile($perl_lib, 'ExtUtils/typemap'),
 			'wx_typemap',
 			'typemap',
 		],
 	);
 
-	my $wx_include = File::Spec->catfile($Config{sitelibexp}, 'Wx');
-	$wx_include =~ s/\\/\//g;
-	my $perl_core =  File::Spec->catfile($Config{privlibexp}, 'CORE');
-	$perl_core =~ s/\\/\//g;
 	@cmd = (
 		Alien::wxWidgets->compiler,
 		'-fvtable-thunks ' . Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
 		'-I.',
-		"-I$wx_include",
+		'-I' . File::Spec->catfile($perl_site_lib, 'Wx'),
 		Alien::wxWidgets->include_path,
 		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
 		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
 		'-DVERSION=\"0.01\" -DXS_VERSION=\"0.01\"',
-		"-I$perl_core",
+		'-I' . File::Spec->catfile($perl_lib, 'CORE'),
 		'-DWXPL_EXT -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
 		'Scintilla.c',
 	);
