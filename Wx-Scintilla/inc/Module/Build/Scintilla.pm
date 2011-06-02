@@ -152,7 +152,7 @@ sub build_xs {
 		Alien::wxWidgets->compiler,
 		'-shared -s -o ' . $dll,
 		'Scintilla.o',
-		'C:/strawberry/perl/lib/CORE/libperl512.a',
+		File::Spec->catfile($perl_lib, 'CORE/' . $Config{libperl}),
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxmsw28u_core.a',
 		'C:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/libwxbase28u.a',
 		'C:/strawberry/c/i686-w64-mingw32/lib/libgdi32.a',
