@@ -109,7 +109,7 @@ sub build_xs {
 
 	@cmd = (
 		Alien::wxWidgets->compiler,
-		'-fvtable-thunks -O2 -mthreads -Os -c -o Scintilla.o',
+		'-fvtable-thunks ' . Alien::wxWidgets->cflags . ' -c -o Scintilla.o',
 		'-I.',
 		'-Ic:/strawberry/perl/site/lib/Wx/',
 		'-IC:/strawberry/perl/site/lib/Alien/wxWidgets/msw_2_8_10_uni_gcc_3_4/lib/',
