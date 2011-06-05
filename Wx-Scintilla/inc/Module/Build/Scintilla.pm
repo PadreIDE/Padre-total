@@ -90,7 +90,11 @@ sub build_scintilla {
 		push @objects, $object_name;
 	}
 
-	my $shared_lib = File::Spec->catfile('blib/arch/auto/Wx/Scintilla/' . $self->{_wx_scintilla_shared_lib});
+	# Create distribution share directory
+	my $dist_dir = 'blib/arch/auto/Wx/Scintilla/';
+	File::Path::mkpath( $dist_dir, 0, oct(777) );
+
+	my $shared_lib = File::Spec->catfile($dist_dir . $self->{_wx_scintilla_shared_lib});
 	$self->log_info("Linking $shared_lib\n");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
@@ -166,8 +170,6 @@ sub build_xs {
 	);
 
 	my $dll = 'blib/arch/auto/Wx/Scintilla/Scintilla.dll';
-	File::Path::mkpath( File::Basename::dirname($dll), 0, oct(777) );
-
 	@cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -s -o ' . $dll,
@@ -182,7 +184,7 @@ sub build_xs {
 	system($cmd);
 
 	require File::Copy;
-	chmod( 755, 'blib/arch/auto/Wx/Scintilla/Scintilla.dll' );
+	chmod( 755, $dll );
 	File::Copy::copy( 'Scintilla.bs', 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' ) or die "Cannot copy Scintilla.bs\n";
 	chmod( 644, 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' );
 }
