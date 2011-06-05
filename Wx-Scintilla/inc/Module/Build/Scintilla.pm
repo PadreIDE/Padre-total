@@ -137,6 +137,7 @@ sub build_xs {
 		],
 	);
 
+	my $dist_version = $self->dist_version;
 	@cmd = (
 		Alien::wxWidgets->compiler,
 		Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
@@ -145,7 +146,7 @@ sub build_xs {
 		Alien::wxWidgets->include_path,
 		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
 		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
-		'-DVERSION=\"' . $self->dist_version . '\" -DXS_VERSION=\"0.01\"',
+		'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
 		'-I' . File::Spec->catfile( $perl_lib, 'CORE' ),
 		'-DWXPL_EXT -DHAVE_W32API_H '
 			. $self->{_wx_toolkit_define}
