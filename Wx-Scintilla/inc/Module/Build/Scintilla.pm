@@ -10,6 +10,16 @@ our @ISA = qw(Module::Build);
 
 sub ACTION_build {
 	my $self = shift;
+
+	my $toolkit = Alien::wxWidgets->config->{toolkit};
+	if( $toolkit eq 'msw') {
+		$self->{_wx_toolkit_define} = '-D__WXMSW__';
+	} elsif( $toolkit =~ 'gtk' ) {
+		$self->{_wx_toolkit_define} = '-D__WXGTK__';
+	} else {
+		die "Unhandled Alien::wxWidgets->config->{toolkit} '$toolkit'. Please report this to the author\n";
+	}
+
 	$self->build_scintilla();
 	$self->build_xs();
 	$self->SUPER::ACTION_build;
@@ -42,6 +52,7 @@ sub build_scintilla {
 	);
 
 	my @objects = ();
+	my $wx_toolkit_define = $self->{_wx_toolkit_define};
 	for my $module (@modules) {
 		$self->log_info("Compiling $module\n");
 		my $filename = File::Basename::basename($module);
@@ -51,9 +62,9 @@ sub build_scintilla {
 			Alien::wxWidgets->compiler,
 			'-c',
 			'-o ' . $object_name,
-			'-O2 -mthreads -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE',
+			'-O2 -mthreads -DHAVE_W32API_H ' . $self->{_wx_toolkit_define} . ' -D_UNICODE',
 			'-Wall ',
-			'-DWXBUILDING -D__WXMSW__ -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
+			'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
 			'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
 			'-Wno-ctor-dtor-privacy',
 			'-MT' . $object_name,
@@ -123,7 +134,7 @@ sub build_xs {
 		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
 		'-DVERSION=\"0.01\" -DXS_VERSION=\"0.01\"',
 		'-I' . File::Spec->catfile( $perl_lib, 'CORE' ),
-		'-DWXPL_EXT -DHAVE_W32API_H -D__WXMSW__ -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
+		'-DWXPL_EXT -DHAVE_W32API_H ' . $self->{_wx_toolkit_define} . ' -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
 		'Scintilla.c',
 	);
 	$cmd = join( ' ', @cmd );
