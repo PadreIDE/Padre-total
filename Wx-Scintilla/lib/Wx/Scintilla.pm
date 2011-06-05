@@ -8,7 +8,7 @@ our $VERSION = '0.01';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 use File::ShareDir ();
-local $ENV{PATH} =  File::ShareDir::dist_dir('Wx-Scintilla') . ';' . $ENV{PATH} if ($^O eq 'MSWin32');
+local $ENV{PATH} = File::ShareDir::dist_dir('Wx-Scintilla') . ';' . $ENV{PATH} if ( $^O eq 'MSWin32' );
 
 # Load scintilla and ask Wx to boot it :)
 Wx::load_dll('scintilla');
