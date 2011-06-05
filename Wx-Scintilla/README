@@ -1,4 +1,4 @@
-Wx-STC
+Wx-Scintilla
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -26,21 +26,21 @@ SUPPORT AND DOCUMENTATION
 After installing, you can find documentation for this module with the
 perldoc command.
 
-    perldoc Wx::STC
+    perldoc Wx::Scintilla
 
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Wx-STC
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Wx-Scintilla
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Wx-STC
+        http://annocpan.org/dist/Wx-Scintilla
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Wx-STC
+        http://cpanratings.perl.org/d/Wx-Scintilla
 
     Search CPAN
-        http://search.cpan.org/dist/Wx-STC/
+        http://search.cpan.org/dist/Wx-Scintilla/
 
 
 LICENSE AND COPYRIGHT
