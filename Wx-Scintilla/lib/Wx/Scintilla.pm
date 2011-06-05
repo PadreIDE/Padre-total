@@ -4,7 +4,7 @@ use Wx;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 use File::ShareDir ();

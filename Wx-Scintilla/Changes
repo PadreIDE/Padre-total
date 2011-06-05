@@ -1,4 +1,10 @@
 Revision history for Wx-Scintilla
 
+0.03	2011.6.5
+	The package version is extracted correctly to prevent test failures (AZAWAWI)
+
+0.02	2011.6.5
+	Attempt to fix the Wx::Event-subclass-upload-permission error (AZAWAWI)
+
 0.01	2011.6.5
-	First version, released on an unsuspecting world.
+	First version, released on an unsuspecting world  (AZAWAWI)
