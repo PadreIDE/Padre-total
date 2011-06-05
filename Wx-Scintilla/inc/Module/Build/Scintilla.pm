@@ -63,7 +63,6 @@ sub build_scintilla {
 
 	my @objects = ();
 	for my $module (@modules) {
-		$self->log_info("Compiling $module\n");
 		my $filename = File::Basename::basename($module);
 		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
@@ -91,10 +90,11 @@ sub build_scintilla {
 		push @objects, $object_name;
 	}
 
-	$self->log_info("Linking $self->{_wx_scintilla_shared_lib}\n");
+	my $shared_lib = File::Spec->catfile('blib/arch/auto/Wx/Scintilla/' . $self->{_wx_scintilla_shared_lib});
+	$self->log_info("Linking $shared_lib\n");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
-		'-shared -fPIC -o ' . $self->{_wx_scintilla_shared_lib},
+		'-shared -fPIC -o ' . $shared_lib,
 		$self->{_wx_mthreads_define},
 		join( ' ', @objects ),
 		'-Wl,--out-implib=' . $self->{_wx_scintilla_lib},
@@ -103,7 +103,7 @@ sub build_scintilla {
 	);
 	my $cmd = join( ' ', @cmd );
 
-	$self->log_debug("$cmd\n");
+	$self->log_info("$cmd\n");
 	system($cmd);
 }
 
