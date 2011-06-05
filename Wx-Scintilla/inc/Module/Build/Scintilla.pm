@@ -115,7 +115,7 @@ sub build_xs {
 
 	@cmd = (
 		Alien::wxWidgets->compiler,
-		'-fvtable-thunks ' . Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
+		Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
 		'-I.',
 		'-I' . File::Spec->catfile($perl_site_lib, 'Wx'),
 		Alien::wxWidgets->include_path,
