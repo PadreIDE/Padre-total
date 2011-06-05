@@ -12,12 +12,20 @@ sub ACTION_build {
 	my $self = shift;
 
 	my $toolkit = Alien::wxWidgets->config->{toolkit};
+	my $dll;
+	my $lib;
 	if( $toolkit eq 'msw') {
 		$self->{_wx_toolkit_define} = '-D__WXMSW__';
 		$self->{_wx_mthreads_define} = '-mthreads';
+		$self->{_wx_msw_define} = '-DHAVE_W32API_H';
+		$self->{_wx_scintilla_shared_lib} = 'libwxmsw28u_scintilla.dll';
+		$self->{_wx_scintilla_lib} = 'libwxmsw28u_scintilla.a';
 	} elsif( $toolkit =~ 'gtk' ) {
 		$self->{_wx_toolkit_define} = '-D__WXGTK__';
 		$self->{_wx_mthreads_define} = '';
+		$self->{_wx_msw_define} = '';
+		$self->{_wx_scintilla_shared_lib} = 'libwxgtk28u_scintilla.so';
+		$self->{_wx_scintilla_lib} = 'libwxgtk28u_scintilla.a';
 	} else {
 		die "Unhandled Alien::wxWidgets->config->{toolkit} '$toolkit'. Please report this to the author\n";
 	}
@@ -54,8 +62,6 @@ sub build_scintilla {
 	);
 
 	my @objects = ();
-	my $wx_toolkit_define = $self->{_wx_toolkit_define};
-	my $mthreads_define = $self->{_wx_mthreads_define};
 	for my $module (@modules) {
 		$self->log_info("Compiling $module\n");
 		my $filename = File::Basename::basename($module);
@@ -65,9 +71,9 @@ sub build_scintilla {
 			Alien::wxWidgets->compiler,
 			'-c',
 			'-o ' . $object_name,
-			'-O2 ' . $mthreads_define . ' -DHAVE_W32API_H ' . $self->{_wx_toolkit_define} . ' -D_UNICODE',
+			'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
 			'-Wall ',
-			'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER -DLINK_LEXERS',
+			'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER ',
 			'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
 			'-Wno-ctor-dtor-privacy',
 			'-MT' . $object_name,
@@ -78,20 +84,18 @@ sub build_scintilla {
 		);
 		my $cmd = join( ' ', @cmd );
 
-		$self->log_debug("$cmd\n");
+		$self->log_info("$cmd\n");
 		system($cmd);
 		push @objects, $object_name;
 	}
 
-	my $dll = 'libwxmsw28u_scintilla.dll';
-	my $lib = 'libwxmsw28u_scintilla.a';
-	$self->log_info("Linking $dll\n");
+	$self->log_info("Linking $self->{_wx_scintilla_shared_lib}\n");
 	my @cmd = (
 		Alien::wxWidgets->compiler,
-		'-shared -fPIC -o ' . $dll,
+		'-shared -fPIC -o ' . $self->{_wx_scintilla_shared_lib},
 		$self->{_wx_mthreads_define},
 		join( ' ', @objects ),
-		'-Wl,--out-implib=' . $lib,
+		'-Wl,--out-implib=' . $self->{_wx_scintilla_lib},
 		'-lgdi32',
 		Alien::wxWidgets->libraries(qw(core base)),
 	);
