@@ -67,25 +67,27 @@ sub build_scintilla {
 		my $filename = File::Basename::basename($module);
 		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
-		my @cmd = (
-			Alien::wxWidgets->compiler,
-			'-c',
-			'-o ' . $object_name,
-			'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
-			'-Wall ',
-			'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER ',
-			'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
-			'-Wno-ctor-dtor-privacy',
-			'-MT' . $object_name,
-			'-MF' . $object_name . '.d',
-			'-MD -MP',
-			join( ' ', @include_dirs ),
-			$module,
-		);
-		my $cmd = join( ' ', @cmd );
+		unless(-f $object_name) {
+			my @cmd = (
+				Alien::wxWidgets->compiler,
+				'-c',
+				'-o ' . $object_name,
+				'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
+				'-Wall ',
+				'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER ',
+				'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
+				'-Wno-ctor-dtor-privacy',
+				'-MT' . $object_name,
+				'-MF' . $object_name . '.d',
+				'-MD -MP',
+				join( ' ', @include_dirs ),
+				$module,
+			);
 
-		$self->log_info("$cmd\n");
-		system($cmd);
+			my $cmd = join( ' ', @cmd ) ;
+			$self->log_info("$cmd\n");
+			system($cmd);
+		}
 		push @objects, $object_name;
 	}
 
