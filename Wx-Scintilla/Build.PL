@@ -1,6 +1,10 @@
 use strict;
 use warnings;
 
+# We do not support other than Win32 for Wx::Scintilla for now
+# So please die and play nice with CPAN testers :)
+die "OS unsupported\n" if $^O ne 'MSWin32';
+
 use lib 'inc';
 use Module::Build::Scintilla ();
 use Alien::wxWidgets;
