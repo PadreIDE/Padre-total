@@ -24,12 +24,10 @@ package Wx::ScintillaTextCtrl; @ISA = qw(Wx::Control);
 
 package Wx::ScintillaTextEvent; @ISA = qw(Wx::CommandEvent);
 
-package Wx::Event;
+#TODO uncomment when the CPAN permission issue is resolved
+#package Wx::Event;
 
 use strict;
-
-# !parser: sub { $_[0] =~ m/sub (EVT_\w+)/ }
-# !package: Wx::Event
 
 sub EVT_SCINTILLA_CHANGE($$$)            { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHANGE,            $_[2] ) }
 sub EVT_SCINTILLA_STYLENEEDED($$$)       { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_STYLENEEDED,       $_[2] ) }
