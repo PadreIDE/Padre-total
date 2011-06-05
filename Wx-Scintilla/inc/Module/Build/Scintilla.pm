@@ -172,7 +172,7 @@ sub build_xs {
 		'Scintilla.o',
 		File::Spec->catfile( $perl_lib, 'CORE/' . $Config{libperl} ),
 		Alien::wxWidgets->libraries(qw(core base)) . ' -lgdi32',
-		'libwxmsw28u_scintilla.a',
+		$self->{_wx_scintilla_lib},
 		'Scintilla.def',
 	);
 	$cmd = join( ' ', @cmd );

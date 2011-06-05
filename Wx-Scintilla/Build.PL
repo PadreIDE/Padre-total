@@ -44,7 +44,9 @@ my $builder = Module::Build::Scintilla->new(
 		'Scintilla.def',
 		'Scintilla_def.old',
 		'blib',
-		'*.dll'
+		'*.dll',
+		'*.a',
+		'*.so'
 	],
 	create_makefile_pl => 'traditional',
 	meta_merge         => {
