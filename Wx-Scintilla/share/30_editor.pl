@@ -3,10 +3,6 @@ use strict;
 use warnings;
 
 
-#TODO remove once testing is finished!
-use lib 'blib/arch/auto/Wx/Scintilla';
-use lib 'lib';
-
 #############################################################################
 ##
 ## Based on a very early version of Padre...
