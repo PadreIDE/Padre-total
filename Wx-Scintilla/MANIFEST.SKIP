@@ -44,8 +44,11 @@
 ^MYMETA.yml$
 
 # Avoid temporary files
-^lib/Wx/Scintilla\.(c|xs)$
+^Scintilla\.(c|xs|def|bs)$
 \.dll$
+\.a$
+\.so$
 \.o$
-\.o\.d$^MYMETA\.json$
+\.o\.d$
+$^MYMETA\.json$
 ^MYMETA\.json$
