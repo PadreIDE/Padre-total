@@ -121,8 +121,8 @@ sub build_xs {
 
 	my $perl_lib = $Config{privlibexp};
 	$perl_lib =~ s/\\/\//g;
-	my $perl_site_lib = $Config{sitelibexp};
-	$perl_site_lib =~ s/\\/\//g;
+	my $perl_site_arch = $Config{sitearch};
+	$perl_site_arch =~ s/\\/\//g;
 
 	require ExtUtils::ParseXS;
 	ExtUtils::ParseXS::process_file(
@@ -142,7 +142,7 @@ sub build_xs {
 		Alien::wxWidgets->compiler,
 		Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
 		'-I.',
-		'-I' . File::Spec->catfile( $perl_site_lib, 'Wx' ),
+		'-I' . File::Spec->catfile( $perl_site_arch, 'Wx' ),
 		Alien::wxWidgets->include_path,
 		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
 		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
