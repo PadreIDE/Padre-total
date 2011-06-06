@@ -44,7 +44,7 @@
 ^MYMETA.yml$
 
 # Avoid temporary files
-^Scintilla\.(c|xs|def|bs)$
+^Scintilla\.(c|def|bs)$
 \.dll$
 \.a$
 \.so$
