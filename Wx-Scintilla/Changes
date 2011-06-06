@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.042   2011.6.6
+	Quick version to handle packages with undefined versions
+
 0.04	2011.6.6
 	Better handling of File::ShareDir death (AZAWAWI)
 	Fixed XS loader version mismatch bug in Wx::boot by replacing it by XSLoader::load (AZAWAWI)

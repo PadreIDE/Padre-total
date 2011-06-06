@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Wx;
 
-our $VERSION = '0.04';
+our $VERSION = '0.042';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 my $wx_scintilla_path;
@@ -33,12 +33,13 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 
 no strict;
 
-package Wx::ScintillaTextCtrl; @ISA = qw(Wx::Control);
+package Wx::ScintillaTextCtrl; our $VERSION = '0.042'; @ISA = qw(Wx::Control);
 
-package Wx::ScintillaTextEvent; @ISA = qw(Wx::CommandEvent);
+package Wx::ScintillaTextEvent; our $VERSION = '0.042'; @ISA = qw(Wx::CommandEvent);
 
 #TODO uncomment when the CPAN permission issue is resolved
 #package Wx::Event;
+#our $VERSION = '0.042'
 
 use strict;
 
