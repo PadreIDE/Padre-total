@@ -1,6 +1,8 @@
 Revision history for Wx-Scintilla
 
 0.04	TBA
+	Fixed XS loader version mismatch bug in Wx::boot by replacing it by XSLoader::load (AZAWAWI)
+	File::Sharedir is not used to locate shared libs when the test harness is active (AZAWAWI)
 	Updated POD documentation (AZAWAWI)
 	Added a minimal demo Perl editor application in the SYNOPSIS section (AZAWAWI)
 

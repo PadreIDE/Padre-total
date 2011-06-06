@@ -1,18 +1,21 @@
 package Wx::Scintilla;
 
-use Wx;
+
 use strict;
 use warnings;
+use Wx;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 use File::ShareDir ();
-local $ENV{PATH} = File::ShareDir::dist_dir('Wx-Scintilla') . ';' . $ENV{PATH} if ( $^O eq 'MSWin32' );
+my $wx_scintilla_path = $ENV{HARNESS_ACTIVE} ? 'D:\\tools\\padre\\Wx-Scintilla\\blib\\arch\\auto\\Wx\\Scintilla\\' : File::ShareDir::dist_dir('Wx-Scintilla');
+$ENV{PATH} = $wx_scintilla_path . ';' . $ENV{PATH} if( $^O eq 'MSWin32' );
 
 # Load scintilla and ask Wx to boot it :)
 Wx::load_dll('scintilla');
-Wx::wx_boot( 'Wx::Scintilla', $VERSION );
+require XSLoader;
+XSLoader::load 'Wx::Scintilla', $VERSION;
 
 #
 # properly setup inheritance tree
