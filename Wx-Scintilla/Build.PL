@@ -64,6 +64,7 @@ my $builder = Module::Build::Scintilla->new(
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
 		}
 	},
+	dist_abstract => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
 	verbose => 1,
 );
 
