@@ -160,6 +160,8 @@ Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 
 wxStyledTextCtrl Documentation L<http://www.yellowbrain.com/stc/index.html>
 
+Scintilla edit control for Win32::GUI L<Win32::GUI::Scintilla>
+
 =head1 COPYRIGHT
 
 Copyright 2011 Ahmad M. Zawawi.
