@@ -1,19 +1,20 @@
 Index: Editor.pm
 ===================================================================
---- Editor.pm	(revision 14048)
+--- Editor.pm	(revision 14491)
 +++ Editor.pm	(working copy)
-@@ -15,8 +15,13 @@
+@@ -11,13 +11,14 @@
+ use Padre::Wx                 ();
+ use Padre::Wx::FileDropTarget ();
+ use Padre::Wx::Role::Main     ();
++use Wx::Scintilla             ();
+ use Padre::Logger;
  
  our $VERSION    = '0.85';
  our $COMPATIBLE = '0.81';
--our @ISA        = 'Wx::StyledTextCtrl';
+ our @ISA        = qw{
+ 	Padre::Wx::Role::Main
+-	Wx::StyledTextCtrl
++	Wx::ScintillaTextCtrl
+ };
  
-+use lib 'd:/tools/padre/Wx-Scintilla/blib/arch/auto/Wx/Scintilla';
-+use lib 'd:/tools/padre/Wx-Scintilla/lib';
-+use lib 'd:/tools/padre/Wx-Scintilla';
-+use Wx::Scintilla	();
-+our @ISA        = 'Wx::ScintillaTextCtrl';
-+
- # End-Of-Line modes:
- # MAC is actually Mac classic.
- # MAC OS X and later uses UNIX EOLs
+ # Convenience colour constants
