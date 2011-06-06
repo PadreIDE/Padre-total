@@ -140,7 +140,7 @@ about:
         title: Finding your way around Padre, one mistake at a time...
         comment: by Peter Lavender
       - date: 2010 May 16
-        url: http://szabgab.com/blog/2010/05/1274072207.html
+        url: http://szabgab.com/blog/2010/05/fixing-my-editor.html
         title: Fixing my editor
         comment: by Gábor Szabó
       - date: 2010 April 29
@@ -172,7 +172,7 @@ about:
         title: Padre 0.58 - It's still a case of careful as you go.....
         comment: by Peter Lavender (Release Manager)
       - date: 2010 February 22
-        url: http://szabgab.com/blog/2010/02/1266868643.html
+        url: http://szabgab.com/blog/2010/02/help-learning-and-writing-css--is-there-a-parsable-version-of-the-documentation.html
         title: Help learning and writing <acronym>CSS</acronym> - is there a parsable version of the documentation?
         comment: by Gábor Szabó on how to add contextual help to Padre.
       - date: 2010 February 18
@@ -188,11 +188,11 @@ about:
         title: 24/7 commercial quality support - for an open source project
         comment: by Sebastian Willing
       - date: 2010 February 15
-        url: http://szabgab.com/blog/2010/02/1266260384.html
+        url: http://szabgab.com/blog/2010/02/is-padre-really-better-than-vi-emacs-or-eclipse-and-epic.html
         title: Is Padre really better than vi, Emacs or Eclipse + EPIC?
         comment: by Gábor Szabó
       - date: 2010 February 15
-        url: http://szabgab.com/blog/2010/02/1266258560.html
+        url: http://szabgab.com/blog/2010/02/video-of-the-padre-talk-on-fosdem.html
         title: Video of the Padre talk on <acronym>FOSDEM</acronym>
         comment: by Gábor Szabó
       - date: 2010 February 13
@@ -262,7 +262,7 @@ about:
         title: Padre Ticket #1 Fixed! - How our new locking code works
         comment: by Adam Kennedy
       - date: 2009 December 23
-        url: http://szabgab.com/blog/2009/12/1261601193.html
+        url: http://szabgab.com/blog/2009/12/padre-0.53-stand-alone-for-linux-on-perl-5.11.3-released.html
         title: Padre 0.53 Stand Alone for Linux on Perl 5.11.3 released
         comment: by Gábor Szabó
       - date: 2009 December 23
@@ -294,7 +294,7 @@ about:
         title: Padre 0.51 is on the way to <acronym>CPAN</acronym>.
         comment: A new release of Padre!
       - date: 2009 December 06
-        url: http://szabgab.com/blog/2009/12/1260086317.html
+        url: http://szabgab.com/blog/2009/12/promoting-padre-using-social-networks.html
         title: Promoting Padre using Social networks
         comment: by Gábor Szabó
       - date: 2009 December 03
@@ -310,7 +310,7 @@ about:
         title: Padre Standalone 0.50 for Mac (Experimental)
         comment: by Adam Kennedy
       - date: 2009 November 25
-        url: http://szabgab.com/blog/2009/11/1259131466.html
+        url: http://szabgab.com/blog/2009/11/context-sensitive-help-using-padre-the-perl-ide.html
         title: Context Sensitive Help for Perl 5, Perl 6 and Parrot using Padre, the Perl <acronym>IDE</acronym>
         comment: screencast by Gábor Szabó
       - date: 2009 November 22
@@ -318,7 +318,7 @@ about:
         title: Padre - coding and editing in comfort
         comment: by Tamir Lousky
       - date: 2009 November 18
-        url: http://szabgab.com/blog/2009/11/1258578873.html
+        url: http://szabgab.com/blog/2009/11/padre-supporting-technologies-in-addition-to-perl.html
         title: Padre supporting technologies in addition to Perl
         comment: by Gábor Szabó on the results of the second Perl editor poll
       - date: 2009 November 14
@@ -347,7 +347,7 @@ about:
         title: Best things in life come in threes
         comment: Barry Walsh (draegtun) explains how he built Padre on Mac OS X
       - date: 2009 November 08
-        url: http://szabgab.com/blog/2009/11/1257675476.html
+        url: http://szabgab.com/blog/2009/11/padre-0.50-released.html
         title: Padre 0.50 released
         comment: by Gábor Szabó
       - date: 2009 November 04
@@ -375,7 +375,7 @@ about:
         title: Strawberry Professional, Padre, and Ashton's Law
         comment: by Adam Kennedy
       - date: 2009 October 26
-        url: http://szabgab.com/blog/2009/10/1256593212.html
+        url: http://szabgab.com/blog/2009/10/perl-editor-and-ide-poll-results.html
         title: Perl Editor and <acronym>IDE</acronym> Poll results
         comment: by Gábor Szabó
       - date: 2009 October 16
@@ -391,7 +391,7 @@ about:
         title: "Padre Productivity: 10 seconds here, 10 seconds there"
         comment: by Adam Kennedy on file name guessing in Padre
       - date: 2009 October 05
-        url: http://szabgab.com/blog/2009/10/1254721436.html
+        url: http://szabgab.com/blog/2009/10/helping-each-other-you-and-padre.html
         title: Helping each other, you and Padre
         comment: by Gábor Szabó trying to get more people involved in Padre
       - date: 2009 October 05
@@ -400,7 +400,7 @@ about:
         comment: by Kenichi Ishigaki (in Japanese)
         language: Japanese
       - date: 2009 October 02
-        url: http://szabgab.com/blog/2009/10/1254515743.html
+        url: http://szabgab.com/blog/2009/10/my-teenage-memories-and-the-parrot-virtual-machine.html
         title: My teenage memories and the Parrot Virtual Machine
         comment: by Gábor Szabó about <code>Padre::Plugin::Parrot</code>
       - date: 2009 October 01
@@ -444,7 +444,7 @@ about:
         title: What's new in Padre 0.46
         comment: by Ahmad M. Zawawi
       - date: 2009 September 15
-        url: http://szabgab.com/blog/2009/09/1252997602.html
+        url: http://szabgab.com/blog/2009/09/padre-standalone-for-windows-0.45-released.html
         title: Padre Standalone for Windows 0.45 released
         comment: by Gábor Szabó
       - date: 2009 September 15
@@ -460,7 +460,7 @@ about:
         title: Aspects of a Novice-Friendly Distribution
         comment: chromatic describes something very similar to our plans
       - date: 2009 September 10
-        url: http://szabgab.com/blog/2009/09/1252571011.html
+        url: http://szabgab.com/blog/2009/09/help-packaging-padre-on-linux-and-mac-osx.html
         title: Help packaging Padre on Linux and Mac OS X
         comment: by Gábor Szabó
       - date: 2009 September 09
@@ -472,7 +472,7 @@ about:
         title: Things I wish were different in Padre
         comment: Navigating the Perliverse by Jonathan Scott Duff
       - date: 2009 September 07
-        url: http://szabgab.com/blog/2009/09/1252306069.html
+        url: http://szabgab.com/blog/2009/09/how-to-get-started-with-padre.html
         title: How to get started with Padre?
         comment: by Gábor Szabó
       - date: 2009 September 04
@@ -504,7 +504,7 @@ about:
         title: migrating to moose? hell yeah!
         comment: by Jerome Quelin
       - date: 2009 August 31
-        url: http://szabgab.com/blog/2009/08/1251707067.html
+        url: http://szabgab.com/blog/2009/08/improving-the-padre-experience.html
         title: Improving the Padre experience
         comment: by Gábor Szabó
       - date: 2009 August 26
@@ -532,7 +532,7 @@ about:
         title: Trying Padre on MacOS
         comment: Random thoughts of Ruslan Zakirov
       - date: 2009 August 24
-        url: http://szabgab.com/blog/2009/08/1251089599.html
+        url: http://szabgab.com/blog/2009/08/yet-another-reason-why-it-is-important-to-be-nice-to-newbies.html
         title: Yet another reason why it is important to be nice to newbies
         comment: by Gábor Szabó
       - date: 2009 August 24
@@ -552,7 +552,7 @@ about:
         title: Must improve the First Time Experience before we promote Six
         comment: by Adam Kennedy
       - date: 2009 August 06
-        url: http://szabgab.com/blog/2009/08/1249553120.html
+        url: http://szabgab.com/blog/2009/08/where-to-find-windows-users-to-try-padre-the-perl-ide.html
         title: Where to find Windows users to try Padre, the Perl <acronym>IDE</acronym>?
         comment: by Gábor Szabó
       - date: 2009 August 06
@@ -591,7 +591,7 @@ about:
         title: Padre 0.41 released!
         comment: by garu on The Onion Stand
       - date: 2009 July 22
-        url: http://szabgab.com/blog/2009/07/1248240735.html
+        url: http://szabgab.com/blog/2009/07/better-collaboration-tools.html
         title: Better collaboration tools
         comment: by Gábor Szabó
       - date: 2009 July 17
@@ -599,7 +599,7 @@ about:
         title: Padre 0.40 released!
         comment: by garu on The Onion Stand
       - date: 2009 July 16
-        url: http://szabgab.com/blog/2009/07/1247770275.html
+        url: http://szabgab.com/blog/2009/07/why-am-i-writing-padre-the-business-aspect.html
         title: Why am I writing Padre? - The business aspect
         comment: by Gábor Szabó
       - date: 2009 July 16
@@ -615,7 +615,7 @@ about:
         title: On July 27th please join us for Padre's 1st Birthday Party!
         comment: by Adam Kennedy
       - date: 2009 July 11
-        url: http://szabgab.com/blog/2009/07/1247304075.html
+        url: http://szabgab.com/blog/2009/07/padre-standalone-installer-for-windows--first-beta-version.html
         title: Padre standalone installer for Windows - first beta version
         comment: by Gábor Szabó
       - date: 2009 July 10
@@ -623,7 +623,7 @@ about:
         title: Padre Perl 6 Help and Tablets
         comment: by Ahmad M. Zawawi
       - date: 2009 July 09
-        url: http://szabgab.com/blog/2009/07/1247133713.html
+        url: http://szabgab.com/blog/2009/07/padre-0.39-released.html
         title: Padre 0.39 released
         comment: by Gábor Szabó
       - date: 2009 July 08
@@ -651,7 +651,7 @@ about:
         title: <code>Padre::Plugin::WebGUI</code>
         comment: by Patrick Donelan
       - date: 2009 July 02
-        url: http://szabgab.com/blog/2009/07/1246515871.html
+        url: http://szabgab.com/blog/2009/07/why-am-i-writing-padre.html
         title: Why am I writing Padre?
         comment: by Gábor Szabó
       - date: 2009 June 27
@@ -659,7 +659,7 @@ about:
         title: More theft from Padre
         comment: by Mark Grimes
       - date: 2009 June 25
-        url: http://szabgab.com/blog/2009/06/1245915077.html
+        url: http://szabgab.com/blog/2009/06/padre-0.37-released.html
         title: Padre 0.37 released
         comment: by Gábor Szabó
       - date: 2009 June 25
@@ -683,7 +683,7 @@ about:
         title: Padre's Perl 6 support and Ecliptic
         comment: by Ahmad M. Zawawi
       - date: 2009 June 20
-        url: http://szabgab.com/blog/2009/06/1245497295.html
+        url: http://szabgab.com/blog/2009/06/live-help--irc-channels.html
         title: Live Help - <acronym>IRC</acronym> channels
         comment: by Gábor Szabó
       - date: 2009 June 16
@@ -783,7 +783,7 @@ about:
         title: Padre + Mojolicious
         comment: by garu on The Onion Stand
       - date: 2009 April 30
-        url: http://szabgab.com/blog/2009/04/1241072490.html
+        url: http://szabgab.com/blog/2009/04/if-you-can-read-this-then-you-dont-need-this.html
         title: If you can read this then you don't need this
         comment: by Gábor Szabó
       - date: 2009 April 29
@@ -791,7 +791,7 @@ about:
         title: Spell check in Padre now supports multiple languages... kinda
         comment: by Jerome Quelin
       - date: 2009 April 28
-        url: http://szabgab.com/blog/2009/04/1240924550.html
+        url: http://szabgab.com/blog/2009/04/padre-0.34-released.html
         title: Padre 0.34 Released
         comment: by Gábor Szabó
       - date: 2009 April 28
@@ -823,7 +823,7 @@ about:
         title: Padre 0.33 released
         comment: by Gábor Szabó
       - date: 2009 March 31
-        url: http://szabgab.com/blog/2009/03/1237672448.html
+        url: http://szabgab.com/blog/2009/03/padre-and-google-summer-of-code-2009.html
         title: Padre and Google Summer of Code 2009
         comment: by Gábor Szabó
       - date: 2009 March 30
@@ -847,7 +847,7 @@ about:
         title: Auto-format within Padre
         comment: by Jerome Quelin
       - date: 2009 March 09
-        url: http://szabgab.com/blog/2009/03/1236605318.html
+        url: http://szabgab.com/blog/2009/03/ending-the-padre-and-parrot-integration-grant.html
         title: Ending the Padre and Parrot integration grant
         comment: by Gábor Szabó
       - date: 2009 March 07
@@ -899,7 +899,7 @@ about:
         title: Heading towards production-grade Perl-on-a-Stick
         comment: by Adam Kennedy
       - date: 2009 February 02
-        url: http://szabgab.com/blog/2009/02/1233559550.html
+        url: http://szabgab.com/blog/2009/02/padre-0.26-released.html
         title: Padre 0.26 released
         comment: by Gábor Szabó
       - date: 2009 February 02
@@ -911,7 +911,7 @@ about:
         title: "Padre Standalone: Like Strawberry Perl with Chocolate Sauce"
         comment: by Adam Kennedy
       - date: 2009 January 16
-        url: http://szabgab.com/blog/2009/01/1232096454.html
+        url: http://szabgab.com/blog/2009/01/embedding-parrot-in-perl-5.html
         title: Embedding Parrot in Perl 5
         comment: by Gábor Szabó
       - date: 2009 January 15
@@ -931,11 +931,11 @@ about:
         title: Portable Strawberry Perl with Padre, Parrot and Rakudo
         comment: by Gábor Szabó
       - date: 2009 January 12
-        url: http://szabgab.com/blog/2009/01/1231761972.html
+        url: http://szabgab.com/blog/2009/01/getting-started-with-perl-6.html
         title: Getting Started with Perl 6
         comment: by Gábor Szabó
       - date: 2009 January 10
-        url: http://szabgab.com/blog/2009/01/1231623898.html
+        url: http://szabgab.com/blog/2009/01/perl-6-syntax-highlighting.html
         title: Perl 6 syntax highlighting
         comment: by Gábor Szabó
       - date: 2009 January 09
@@ -953,11 +953,11 @@ about:
   - title: y2008
     events:
       - date: 2008 December 30
-        url: http://szabgab.com/blog/2008/12/1230666325.html
+        url: http://szabgab.com/blog/2008/12/ppi-based-syntax-highlighting-for-perl-5.html
         title: <acronym>PPI</acronym> based Syntax highlighting for Perl 5
         comment: by Gábor Szabó
       - date: 2008 December 29
-        url: http://szabgab.com/blog/2008/12/1230563859.html
+        url: http://szabgab.com/blog/2008/12/syntax-highlighting-for-perl-6.html
         title: Syntax highlighting for Perl 6
         comment: by Gábor Szabó
       - date: 2008 December 23
@@ -969,7 +969,7 @@ about:
         title: Padre 0.21 - More improvements than can fit in this margin!
         comment: by Steffen Mueller
       - date: 2008 December 11
-        url: http://szabgab.com/blog/2008/12/1229032305.html
+        url: http://szabgab.com/blog/2008/12/plans-for-integrating-padre-with-parrot-and-rakudo.html
         title: Plans for Integrating Padre with Parrot and Rakudo
         comment: by Gábor Szabó
       - date: 2008 December 10
@@ -977,11 +977,11 @@ about:
         title: If you are keeping an eye on Padre...
         comment: by Adam Kennedy
       - date: 2008 December 10
-        url: http://szabgab.com/blog/2008/12/1228898258.html
+        url: http://szabgab.com/blog/2008/12/grant-accepted-for-integrating-padre-with-parrot-and-rakudo.html
         title: Grant accepted for Integrating Padre with Parrot and Rakudo
         comment: by Gábor Szabó
       - date: 2008 December 10
-        url: http://szabgab.com/blog/2008/12/1228896047.html
+        url: http://szabgab.com/blog/2008/12/plans-for-the-next-month-or-two.html
         title: Plans for the next month or two
         comment: by Gábor Szabó
       - date: 2008 December 10
@@ -993,7 +993,7 @@ about:
         title: Padre 0.20 - French translation, running on Mac
         comment: by Gábor Szabó
       - date: 2008 November 30
-        url: http://szabgab.com/blog/2008/11/1228059107.html
+        url: http://szabgab.com/blog/2008/11/portable-padre-0.19-for-windows.html
         title: Portable Padre 0.19 for Windows
         comment: by Gábor Szabó
       - date: 2008 November 29
@@ -1005,7 +1005,7 @@ about:
         title: Extending the Padre Plug-in <acronym>API</acronym>
         comment: by Adam Kennedy
       - date: 2008 November 27
-        url: http://szabgab.com/blog/2008/11/1227800986.html
+        url: http://szabgab.com/blog/2008/11/10-fold-grows-in-padre-user-base.html
         title: 10-fold grows in Padre user base
         comment: by Gábor Szabó
       - date: 2008 November 25
@@ -1017,11 +1017,11 @@ about:
         title: Padre 0.18 released
         comment: by Gábor Szabó
       - date: 2008 November 20
-        url: http://szabgab.com/blog/2008/11/1227169027.html
+        url: http://szabgab.com/blog/2008/11/padre-talk-in-haifa-reality-check.html
         title: Padre talk in Haifa, reality check
         comment: by Gábor Szabó
       - date: 2008 November 17
-        url: http://szabgab.com/blog/2008/11/1226927840.html
+        url: http://szabgab.com/blog/2008/11/padre-0.17-was-released.html
         title: Padre 0.17 released
         comment: by Gábor Szabó and on <a href="http://use.perl.org/~gabor/journal/37894">use.perl.org</a>
       - date: 2008 November 17
@@ -1045,7 +1045,7 @@ about:
         title: Auto-indentation, type ahead
         comment: by Gábor Szabó
       - date: 2008 November 12
-        url: http://szabgab.com/blog/2008/11/1226472178.html
+        url: http://szabgab.com/blog/2008/11/talking-about-padre-and-wxperl-in-haifa.html
         title: Talking about Padre and wxPerl in Haifa
         comment: by Gábor Szabó
       - date: 2008 November 10
@@ -1053,7 +1053,7 @@ about:
         title: Padre 0.16 released
         comment: by Gábor Szabó
       - date: 2008 November 06
-        url: http://szabgab.com/blog/2008/11/1225946474.html
+        url: http://szabgab.com/blog/2008/11/syntax-highlighting-nightmare.html
         title: Syntax highlighting nightmare
         comment: by Gábor Szabó
       - date: 2008 November 06
@@ -1061,7 +1061,7 @@ about:
         title: Padre committer
         comment: by Fayland Lam
       - date: 2008 November 04
-        url: http://szabgab.com/blog/2008/11/1225779093.html
+        url: http://szabgab.com/blog/2008/11/2008q4-tpf-grant-proposals.html
         title: 2008Q4 TPF Grant Proposals
         comment: by Gábor Szabó
       - date: 2008 November 03
@@ -1113,7 +1113,7 @@ about:
         title: The Quest for "Perfect" Tools
         comment: by Adam Kennedy
       - date: 2008 September 22
-        url: http://szabgab.com/blog/2008/09/1222115601.html
+        url: http://szabgab.com/blog/2008/09/the-quest-for-the-perfect-editor.html
         title: The Quest for the Perfect Editor
         comment: by Gábor Szabó
       - date: 2008 September 17
@@ -1137,7 +1137,7 @@ about:
         title: Padre 0.07 released
         comment: by Gábor Szabó
       - date: 2008 August 31
-        url: http://szabgab.com/blog/2008/08/1220171084.html
+        url: http://szabgab.com/blog/2008/08/padre--the-journey-1.html
         title: Padre - the journey I.
         comment: by Gábor Szabó
       - date: 2008 August 28
@@ -1145,7 +1145,7 @@ about:
         title: Padre 0.06 released
         comment: by Gábor Szabó
       - date: 2008 August 21
-        url: http://szabgab.com/blog/2008/08/1219321463.html
+        url: http://szabgab.com/blog/2008/08/who-needs-an-ide-for-perl-anyway.html
         title: Who needs an <acronym>IDE</acronym> for Perl anyway?
         comment: by Gábor Szabó
       - date: 2008 August 20
@@ -1157,7 +1157,7 @@ about:
         title: YAPC::EU::2008 lighting talk of Gábor
         comment:  (video)
       - date: 2008 August 09
-        url: http://szabgab.com/blog/2008/08/1218281077.html
+        url: http://szabgab.com/blog/2008/08/padre-project-web-site.html
         title: Padre project web site
         comment: by Gábor Szabó
       - date: 2008 July 28
@@ -1169,13 +1169,13 @@ about:
         title: Padre 0.03 released
         comment: by Gábor Szabó
       - date: 2008 July 27
-        url: http://szabgab.com/blog/2008/07/1217106229.html
+        url: http://szabgab.com/blog/2008/07/padre.html
         title: Padre
         comment: by Gábor Szabó
   - title: Before Padre
     events:
       - date: 2008 July 18
-        url: http://szabgab.com/blog/2008/07/1216370890.html
+        url: http://szabgab.com/blog/2008/07/name-a-perl-ide-get-a-perl-book-or-yapc-ticket.html
         title: Name a Perl <acronym>IDE</acronym> - get a Perl book or <acronym>YAPC</acronym> ticket
         comment: by Gábor Szabó also on <a href="http://use.perl.org/~gabor/journal/36948">use.perl.org</a>
       - date: 2008 May 23
@@ -1183,7 +1183,7 @@ about:
         title: An <acronym>IDE</acronym> for Perl?
         comment: by Claudio Ramirez
       - date: 2008 May 22
-        url: http://szabgab.com/blog/2008/05/1211438612.html
+        url: http://szabgab.com/blog/2008/05/open-source-ide-for-perl.html
         title: Open Source <acronym>IDE</acronym> for Perl
         comment: by Gábor Szabó
       - date: 2005 July 03
