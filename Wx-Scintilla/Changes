@@ -2,6 +2,7 @@ Revision history for Wx-Scintilla
 
 0.04	TBA
 	Updated POD documentation (AZAWAWI)
+	Added a minimal demo Perl editor application in the SYNOPSIS section (AZAWAWI)
 
 0.03	2011.6.6
 	The package version is extracted correctly to prevent test failures (AZAWAWI)
