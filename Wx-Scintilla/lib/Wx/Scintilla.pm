@@ -144,13 +144,21 @@ Robin Dunn L<http://alldunn.com/robin/> for the excellent scintilla
 contribution that he made to wxWidgets. This work is based on his codebase.
 Thanks!
 
-=head1 SEE ALSO
+=head1 SUPPORT
 
-wxStyledTextCtrl Documentation L<http://www.yellowbrain.com/stc/index.html>
+Bugs should always be submitted via the CPAN bug tracker
+
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Wx-Scintilla>
+
+For other issues, contact the maintainer.
 
 =head1 AUTHOR
 
 Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
+
+=head1 SEE ALSO
+
+wxStyledTextCtrl Documentation L<http://www.yellowbrain.com/stc/index.html>
 
 =head1 COPYRIGHT
 

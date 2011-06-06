@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.04	TBA
+	Updated POD documentation (AZAWAWI)
+
 0.03	2011.6.6
 	The package version is extracted correctly to prevent test failures (AZAWAWI)
 	Wx::Event is no longer subclassed to prevent the permission error for now (AZAWAWI)
