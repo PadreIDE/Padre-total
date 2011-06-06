@@ -64,7 +64,7 @@ __END__
 
 =head1 NAME
 
-Wx::Scintilla - Fresh Perl wxWidgets XS bindings for Scintilla editor component 
+Wx::Scintilla - Fresh Perl wxWidgets XS bindings for Scintilla editor component
 
 =head SYNOPSIS
 

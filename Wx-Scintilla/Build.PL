@@ -5,7 +5,7 @@ use warnings;
 # So please die and play nice with CPAN testers :)
 # WX_SCINTILLA_BUILD environment variable is only used
 # to allow me to release the package on Linux
-unless ($^O eq "MSWin32" || $^O eq "cygwin" || defined $ENV{WX_SCINTILLA_BUILD}) {
+unless ( $^O eq "MSWin32" || $^O eq "cygwin" || defined $ENV{WX_SCINTILLA_BUILD} ) {
 	die "OS unsupported\n";
 }
 
@@ -65,7 +65,7 @@ my $builder = Module::Build::Scintilla->new(
 		}
 	},
 	dist_abstract => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
-	verbose => 1,
+	verbose       => 1,
 );
 
 $builder->create_build_script();
