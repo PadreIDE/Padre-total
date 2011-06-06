@@ -9,16 +9,17 @@ our $VERSION = '0.04';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 my $wx_scintilla_path;
-if($ENV{HARNESS_ACTIVE}) {
+if ( $ENV{HARNESS_ACTIVE} ) {
 	$wx_scintilla_path = './blib/arch/auto/Wx/Scintilla/';
 } else {
 	eval { require File::ShareDir; $wx_scintilla_path = File::ShareDir::dist_dir('Wx-Scintilla'); 1; };
-	if($@) {
+	if ($@) {
+
 		# fallback
 		$wx_scintilla_path = './blib/arch/auto/Wx/Scintilla/';
 	}
 }
-$ENV{PATH} = $wx_scintilla_path . ';' . $ENV{PATH} if( $^O eq 'MSWin32' );
+$ENV{PATH} = $wx_scintilla_path . ';' . $ENV{PATH} if ( $^O eq 'MSWin32' );
 
 # Load scintilla's DLL through Wx and ask XSLoader to load it
 # NOTE: Do not use Wx::boot since it is buggy and causes test suite to fail while upgrading
