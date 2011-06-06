@@ -140,6 +140,10 @@ Gabor Szabo L<http://szabgab.com> for the idea to backport Perl lexer for
 wxWidgets 2.8.10 L<http://padre.perlide.org/trac/ticket/257> and all of #padre
 members for the continuous support and testing. Thanks!
 
+Robin Dunn L<http://alldunn.com/robin/> for the excellent scintilla 
+contribution that he made to wxWidgets. This work is based on his codebase.
+Thanks!
+
 =head1 SEE ALSO
 
 wxStyledTextCtrl Documentation L<http://www.yellowbrain.com/stc/index.html>
