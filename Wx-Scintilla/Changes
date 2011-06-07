@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.05    TBA
+	Updated POD documentation (AZAWAWI)
+	Experimental linux gtk support (AZAWAWI)
+
 0.042   2011.6.6
 	Quick version to handle packages with undefined versions
 

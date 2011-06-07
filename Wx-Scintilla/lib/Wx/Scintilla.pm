@@ -194,6 +194,11 @@ in scintilla history and here is what we will be getting when we upgrade to
 
 =over
 
+=item Release 2.26
+
+Perl folding folds "here doc"s and adds options fold.perl.at.else and
+fold.perl.comment.explicit. Fold structure for Perl fixed. 
+
 =item Release 2.20
 
 Perl folder works for array blocks, adjacent package statements, nested PODs,
