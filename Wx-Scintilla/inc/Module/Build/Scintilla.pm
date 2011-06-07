@@ -15,12 +15,14 @@ sub ACTION_build {
 	my $dll;
 	my $lib;
 	if ( $toolkit eq 'msw' ) {
+		$self->{_wx_toolkit} = $toolkit;
 		$self->{_wx_toolkit_define}       = '-D__WXMSW__';
 		$self->{_wx_mthreads_define}      = '-mthreads';
 		$self->{_wx_msw_define}           = '-DHAVE_W32API_H';
 		$self->{_wx_scintilla_shared_lib} = 'libwxmsw28u_scintilla.dll';
 		$self->{_wx_scintilla_lib}        = 'libwxmsw28u_scintilla.a';
 	} elsif ( $toolkit =~ 'gtk' ) {
+		$self->{_wx_toolkit} = $toolkit;
 		$self->{_wx_toolkit_define}       = '-D__WXGTK__';
 		$self->{_wx_mthreads_define}      = '';
 		$self->{_wx_msw_define}           = '';
@@ -95,16 +97,34 @@ sub build_scintilla {
 	File::Path::mkpath( $dist_dir, 0, oct(777) );
 
 	my $shared_lib = File::Spec->catfile( $dist_dir . $self->{_wx_scintilla_shared_lib} );
+	
 	$self->log_info("Linking $shared_lib\n");
-	my @cmd = (
-		Alien::wxWidgets->compiler,
-		'-shared -fPIC -o ' . $shared_lib,
-		$self->{_wx_mthreads_define},
-		join( ' ', @objects ),
-		'-Wl,--out-implib=' . $self->{_wx_scintilla_lib},
-		'-lgdi32',
-		Alien::wxWidgets->libraries(qw(core base)),
-	);
+	my @cmd;
+	
+	if($self->{_wx_toolkit} eq 'msw') {
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			'-shared -fPIC -o ' . $shared_lib,
+			$self->{_wx_mthreads_define},
+			join( ' ', @objects ),
+			'-Wl,--out-implib=' . $self->{_wx_scintilla_lib},
+			'-lgdi32',
+			Alien::wxWidgets->libraries(qw(core base)),
+		);
+	} elsif($self->{_wx_toolkit} =~ 'gtk') {
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			'-shared -fPIC -o ', $self->{_wx_scintilla_lib},
+			join( ' ', @objects ),
+			"-Wl,-soname,$shared_lib",
+			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
+			'-latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0',
+			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz',
+		);
+		#-lwxtiff-2.8 -lwxjpeg-2.8  -lwxregexu-2.8
+#-L/home/azawawi/Alien-wxWidgets-0.52/wxWidgets-2.8.12/bld/lib   
+#-Wl,-soname,libwx_gtk2u_stc-2.8.so.0  -Wl,--version-script,/home/azawawi/Alien-wxWidgets-0.52/wxWidgets-2.8.12/bld/version-script -lz -ldl -lm  -lwx_gtk2u_core-2.8  -lwx_baseu-2.8  -lz -ldl -lm
+	}
 	my $cmd = join( ' ', @cmd );
 
 	$self->log_info("$cmd\n");
@@ -157,10 +177,11 @@ sub build_xs {
 	$self->log_info("$cmd\n");
 	system($cmd);
 
-	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
 	if ( open my $fh, '>Scintilla.bs' ) {
 		chmod( 644, 'Scintilla.bs' );
 	}
+	
+	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
 
 	require ExtUtils::Mksymlists;
 	ExtUtils::Mksymlists::Mksymlists(
@@ -172,7 +193,7 @@ sub build_xs {
 		'DL_VARS'  => []
 	);
 
-	my $dll = 'blib/arch/auto/Wx/Scintilla/Scintilla.dll';
+	my $dll = 'blib/arch/auto/Wx/Scintilla/' . $self->{toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so';
 	@cmd = (
 		Alien::wxWidgets->compiler,
 		'-shared -s -o ' . $dll,
