@@ -116,14 +116,11 @@ sub build_scintilla {
 			Alien::wxWidgets->compiler,
 			'-shared -fPIC -o ', $self->{_wx_scintilla_lib},
 			join( ' ', @objects ),
-			"-Wl,-soname,$shared_lib",
+			'-Wl,-soname,' . $shared_lib,
 			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
 			'-latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0',
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz',
 		);
-		#-lwxtiff-2.8 -lwxjpeg-2.8  -lwxregexu-2.8
-#-L/home/azawawi/Alien-wxWidgets-0.52/wxWidgets-2.8.12/bld/lib   
-#-Wl,-soname,libwx_gtk2u_stc-2.8.so.0  -Wl,--version-script,/home/azawawi/Alien-wxWidgets-0.52/wxWidgets-2.8.12/bld/version-script -lz -ldl -lm  -lwx_gtk2u_core-2.8  -lwx_baseu-2.8  -lz -ldl -lm
 	}
 	my $cmd = join( ' ', @cmd );
 
@@ -158,57 +155,101 @@ sub build_xs {
 	);
 
 	my $dist_version = $self->dist_version;
-	@cmd = (
-		Alien::wxWidgets->compiler,
-		Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
-		'-I.',
-		'-I' . File::Spec->catfile( $perl_site_arch, 'Wx' ),
-		Alien::wxWidgets->include_path,
-		'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
-		'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
-		'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
-		'-I' . File::Spec->catfile( $perl_lib, 'CORE' ),
-		'-DWXPL_EXT -DHAVE_W32API_H '
-			. $self->{_wx_toolkit_define}
-			. ' -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
-		'Scintilla.c',
-	);
+	my $toolkit = $self->{_wx_toolkit};
+	if($toolkit eq 'msw') {
+		# win32
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
+			'-I.',
+			'-I' . File::Spec->catfile( $perl_site_arch, 'Wx' ),
+			Alien::wxWidgets->include_path,
+			'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
+			'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
+			'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
+			'-I' . File::Spec->catfile( $perl_lib, 'CORE' ),
+			'-DWXPL_EXT -DHAVE_W32API_H '
+				. $self->{_wx_toolkit_define}
+				. ' -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
+			'Scintilla.c',
+		);
+	} else {
+		# GTK
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			Alien::wxWidgets->c_flags . ' -c -o Scintilla.o',
+			'-I.',
+			'-I' . File::Spec->catfile( $perl_site_arch, 'Wx' ),
+			Alien::wxWidgets->include_path,
+			'-D_REENTRANT -D_GNU_SOURCE -fno-strict-aliasing -pipe -fstack-protector -D_FILE_OFFSET_BITS=64 -O2 -D_LARGEFILE_SOURCE',
+			'-I/usr/local/include',
+			'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
+			'-I' . File::Spec->catfile( $perl_site_arch, 'CORE' ),
+			'-I' . '/home/azawawi/perl5/perlbrew/perls/perl-5.12.3/lib/5.12.3/i686-linux-thread-multi/CORE/',
+			'-DWXPL_EXT '
+				. $self->{_wx_toolkit_define}
+				. ' -D_LARGE_FILES',
+			'Scintilla.c',
+		);
+		
+	}
 	$cmd = join( ' ', @cmd );
 	$self->log_info("$cmd\n");
 	system($cmd);
 
 	if ( open my $fh, '>Scintilla.bs' ) {
-		chmod( 644, 'Scintilla.bs' );
+		close $fh;
 	}
 	
-	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
+	
+	if($toolkit eq 'msw') {
+		$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
 
-	require ExtUtils::Mksymlists;
-	ExtUtils::Mksymlists::Mksymlists(
-		'NAME'     => 'Wx::Scintilla',
-		'DLBASE'   => 'Scintilla',
-		'DL_FUNCS' => {},
-		'FUNCLIST' => [],
-		'IMPORTS'  => {},
-		'DL_VARS'  => []
-	);
+		require ExtUtils::Mksymlists;
+		ExtUtils::Mksymlists::Mksymlists(
+			'NAME'     => 'Wx::Scintilla',
+			'DLBASE'   => 'Scintilla',
+			'DL_FUNCS' => {},
+			'FUNCLIST' => [],
+			'IMPORTS'  => {},
+			'DL_VARS'  => []
+		);
+	}
 
-	my $dll = 'blib/arch/auto/Wx/Scintilla/' . $self->{toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so';
-	@cmd = (
-		Alien::wxWidgets->compiler,
-		'-shared -s -o ' . $dll,
-		'Scintilla.o',
-		File::Spec->catfile( $perl_lib, 'CORE/' . $Config{libperl} ),
-		Alien::wxWidgets->libraries(qw(core base)) . ' -lgdi32',
-		$self->{_wx_scintilla_lib},
-		'Scintilla.def',
-	);
+	my $dll = 'blib/arch/auto/Wx/Scintilla/' . ($self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so');
+	if($toolkit eq 'msw') {
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			'-shared -s -o ' . $dll,
+			'Scintilla.o',
+			File::Spec->catfile( $perl_lib, 'CORE/' . $Config{libperl} ),
+			Alien::wxWidgets->libraries(qw(core base)) . ' -lgdi32',
+			$self->{_wx_scintilla_lib},
+			'Scintilla.def',
+		);
+	} else {
+		#GTK
+		@cmd = (
+			Alien::wxWidgets->compiler,
+			'-shared -s -o ' . $dll,
+			'Scintilla.o',
+			'-L/usr/local/lib',
+			'-fstack-protector',
+			#File::Spec->catfile( $perl_site_arch, 'CORE/' . $Config{libperl} ),
+			'-I' . '/home/azawawi/perl5/perlbrew/perls/perl-5.12.3/lib/5.12.3/i686-linux-thread-multi/CORE/libperl.a',
+			Alien::wxWidgets->libraries(qw(core base)),
+			$self->{_wx_scintilla_lib},
+		);
+	}
 	$cmd = join( ' ', @cmd );
 	$self->log_info("$cmd\n");
 	system($cmd);
 
-	require File::Copy;
 	chmod( 755, $dll );
+
+
+	require File::Copy;
+	unlink('blib/arch/auto/Wx/Scintilla/Scintilla.bs');
 	File::Copy::copy( 'Scintilla.bs', 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' ) or die "Cannot copy Scintilla.bs\n";
 	chmod( 644, 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' );
 }
