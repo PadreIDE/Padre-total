@@ -45,6 +45,9 @@ sub new {
 	# set the lexer to Perl 5
 	$self->SetLexer(wxSTC_LEX_PERL);
 
+	$self->SetText('Hello world, Scintilla');
+	$self->SetFocus;
+
 	return $self;
 }
 
