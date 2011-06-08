@@ -105,10 +105,10 @@ sub build_scintilla {
 	}
 
 	# Create distribution share directory
-	my $dist_dir = 'blib/arch/auto/Wx/Scintilla/';
+	my $dist_dir = 'blib/arch/auto/Wx/Scintilla';
 	File::Path::mkpath( $dist_dir, 0, oct(777) );
 
-	my $shared_lib = File::Spec->catfile( $dist_dir . $self->{_wx_scintilla_shared_lib} );
+	my $shared_lib = File::Spec->catfile( $dist_dir, $self->{_wx_scintilla_shared_lib} );
 
 	$self->log_info("Linking $shared_lib\n");
 	my @cmd;
@@ -126,14 +126,18 @@ sub build_scintilla {
 	} elsif ( $self->{_wx_toolkit} =~ 'gtk' ) {
 		@cmd = (
 			Alien::wxWidgets->compiler,
-			'-shared -fPIC -Wl,-soname,' . $shared_lib,
-			'-o ', $shared_lib,
+			'-shared -fPIC',
+			'-Wl,-soname,' . $self->{_wx_scintilla_shared_lib},
+			'-Wl,-soname,' . $shared_lib,
+			'-Wl,-soname,' . File::Spec->catfile( $self->install_destination('arch'), 'auto/Wx/Scintilla', $self->{_wx_scintilla_shared_lib}),
+			'-o ' . $shared_lib,
 			join( ' ', @objects ),
 			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
 			'-latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0',
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
 	}
+	
 	$self->_run_command( \@cmd );
 }
 
@@ -226,7 +230,7 @@ sub build_xs {
 		);
 	}
 
-	my $dll = 'blib/arch/auto/Wx/Scintilla/' . ( $self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so' );
+	my $dll = File::Spec->catfile('blib/arch/auto/Wx/Scintilla', $self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so' );
 	if ( $toolkit eq 'msw' ) {
 		@cmd = (
 			Alien::wxWidgets->compiler,
@@ -240,7 +244,7 @@ sub build_xs {
 	} else {
 
 		#GTK
-		my $shared_lib = File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla/' . $self->{_wx_scintilla_shared_lib} );
+		my $shared_lib = File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla/', $self->{_wx_scintilla_shared_lib} );
 
 		@cmd = (
 			Alien::wxWidgets->compiler,
