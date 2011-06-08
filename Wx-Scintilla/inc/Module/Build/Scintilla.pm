@@ -2,7 +2,6 @@ package Module::Build::Scintilla;
 
 use strict;
 use warnings;
-use Alien::wxWidgets;
 use Module::Build;
 use Config;
 
@@ -10,6 +9,9 @@ our @ISA = qw(Module::Build);
 
 sub ACTION_build {
 	my $self = shift;
+
+	require Alien::wxWidgets; 
+	Alien::wxWidgets->import;
 
 	my $toolkit = Alien::wxWidgets->config->{toolkit};
 	if ( $toolkit eq 'msw' ) {

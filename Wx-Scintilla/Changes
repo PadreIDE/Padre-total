@@ -5,6 +5,8 @@ Revision history for Wx-Scintilla
 	More POD updates (AZAWAWI)
 	Removed Makefile.PL because of weird compilation failures while using it (AZAWAWI)
 	Handled compilation failures and the user's control-c (AZAWAWI)
+	Removed a few Alien::wxWidgets dependencies in Build.PL which causes a lot
+	  of false UNKNOWNs in CPAN testers reports (AZAWAWI)
 
 0.05	2011.6.8
 	Updated POD documentation (AZAWAWI)
