@@ -64,7 +64,6 @@ my $builder = Module::Build::Scintilla->new(
 		}
 	},
 	dist_abstract => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
-	verbose       => 1,
 );
 
 $builder->create_build_script();

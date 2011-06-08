@@ -41,6 +41,21 @@ sub process_xs_files {
 	# We will be doing our own custom XS file handling
 }
 
+#
+# Joins the list of commands to form a command, executes it a C<system> call
+# and handles CTRL-C and bad exit codes
+#
+sub _run_command {
+	my $self = shift;
+	my $cmds = shift;
+
+	my $cmd = join( ' ', @$cmds );
+	$self->log_info("$cmd\n");
+	my $rc = system($cmd);
+	die "Failed with exit code $rc" if $rc != 0;
+	die "Ctrl-C interrupted command\n" if $rc & 127;
+}
+
 sub build_scintilla {
 	my $self = shift;
 
@@ -83,9 +98,7 @@ sub build_scintilla {
 				$module,
 			);
 
-			my $cmd = join( ' ', @cmd );
-			$self->log_info("$cmd\n");
-			system($cmd);
+			$self->_run_command(\@cmd);
 		}
 		push @objects, $object_name;
 	}
@@ -120,10 +133,7 @@ sub build_scintilla {
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
 	}
-	my $cmd = join( ' ', @cmd );
-
-	$self->log_info("$cmd\n");
-	system($cmd);
+	$self->_run_command(\@cmd);
 }
 
 sub build_xs {
@@ -194,9 +204,7 @@ sub build_xs {
 		);
 
 	}
-	$cmd = join( ' ', @cmd );
-	$self->log_info("$cmd\n");
-	system($cmd);
+	$self->_run_command(\@cmd);
 
 	if ( open my $fh, '>Scintilla.bs' ) {
 		close $fh;
@@ -244,9 +252,7 @@ sub build_xs {
 			$shared_lib,
 		);
 	}
-	$cmd = join( ' ', @cmd );
-	$self->log_info("$cmd\n");
-	system($cmd);
+	$self->_run_command(\@cmd);
 
 	chmod( 0755, $dll );
 
