@@ -36,12 +36,16 @@ my @tfiles =
 	  @ARGV
 	? @ARGV
 	: grep {/^x?t/} File::Find::Rule->file->name("*.t")->relative->in(cwd);
+my @incfiles =
+	  @ARGV
+	? @ARGV
+	: grep {/^inc/} File::Find::Rule->file->name("*.pm")->relative->in(cwd);
 my @examples =
 	  @ARGV
 	? @ARGV
 	: grep {/^share.examples/} File::Find::Rule->file->name("*.pl")->relative->in(cwd);
 
-my @files = ( @pmfiles, @tfiles, @examples );
+my @files = ( @pmfiles, @tfiles, @incfiles, @examples );
 
 my @extras = ( 'Makefile.PL', 'Build.PL', 'dev.pl', 'script/padre', );
 for my $extra (@extras) {
