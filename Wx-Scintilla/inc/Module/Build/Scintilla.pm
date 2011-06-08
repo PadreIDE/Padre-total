@@ -98,7 +98,7 @@ sub build_scintilla {
 				$module,
 			);
 
-			$self->_run_command(\@cmd);
+			$self->_run_command( \@cmd );
 		}
 		push @objects, $object_name;
 	}
@@ -133,7 +133,7 @@ sub build_scintilla {
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
 	}
-	$self->_run_command(\@cmd);
+	$self->_run_command( \@cmd );
 }
 
 sub build_xs {
@@ -204,7 +204,7 @@ sub build_xs {
 		);
 
 	}
-	$self->_run_command(\@cmd);
+	$self->_run_command( \@cmd );
 
 	if ( open my $fh, '>Scintilla.bs' ) {
 		close $fh;
@@ -252,7 +252,7 @@ sub build_xs {
 			$shared_lib,
 		);
 	}
-	$self->_run_command(\@cmd);
+	$self->_run_command( \@cmd );
 
 	chmod( 0755, $dll );
 
