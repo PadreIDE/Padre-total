@@ -12,8 +12,6 @@ sub ACTION_build {
 	my $self = shift;
 
 	my $toolkit = Alien::wxWidgets->config->{toolkit};
-	my $dll;
-	my $lib;
 	if ( $toolkit eq 'msw' ) {
 		$self->{_wx_toolkit} = $toolkit;
 		$self->{_wx_toolkit_define}       = '-D__WXMSW__';
