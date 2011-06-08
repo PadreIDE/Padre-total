@@ -181,10 +181,11 @@ The ambitious goal of this project is to provide fresh Perl 5 and maybe 6
 support in L<Wx> while preserving compatibility with Wx::StyledTextCtrl
 and continually contribute it back to Scintilla project.
 
-=head1 SUPPORTED PLATFORMS
+=head1 PLATFORMS
 
-At the moment, Win32 on strawberry is a supported platform. My next goal is to
-support Ubuntu and then finally MacOS, i wish :)
+At the moment, Linux (Ubuntu) and Windows (Strawberry Perl) are supported platforms. 
+My next goal is to support more platforms. Please let me know if
+you can help out :)
 
 =head1 HISTORY
 
