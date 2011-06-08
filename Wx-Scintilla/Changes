@@ -7,6 +7,7 @@ Revision history for Wx-Scintilla
 	Handled compilation failures and the user's control-c (AZAWAWI)
 	Removed a few Alien::wxWidgets dependencies in Build.PL which causes a lot
 	  of false UNKNOWNs in CPAN testers reports (AZAWAWI)
+	Reuse Module::Build API to use Config (AZAWAWI)
 
 0.05	2011.6.8
 	Updated POD documentation (AZAWAWI)

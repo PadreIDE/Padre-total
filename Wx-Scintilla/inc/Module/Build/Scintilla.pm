@@ -3,7 +3,6 @@ package Module::Build::Scintilla;
 use strict;
 use warnings;
 use Module::Build;
-use Config;
 
 our @ISA = qw(Module::Build);
 
@@ -146,11 +145,11 @@ sub build_xs {
 	my @cmd;
 	my $cmd;
 
-	my $perl_lib = $Config{privlibexp};
+	my $perl_lib = $self->config('privlibexp');
 	$perl_lib =~ s/\\/\//g;
-	my $perl_arch_lib = $Config{archlib};
+	my $perl_arch_lib = $self->config('archlib');
 	$perl_arch_lib =~ s/\\/\//g;
-	my $perl_site_arch = $Config{sitearch};
+	my $perl_site_arch = $self->config('sitearch');
 	$perl_site_arch =~ s/\\/\//g;
 
 	require ExtUtils::ParseXS;
@@ -233,7 +232,7 @@ sub build_xs {
 			Alien::wxWidgets->compiler,
 			'-shared -s -o ' . $dll,
 			'Scintilla.o',
-			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $Config{libperl} ),
+			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $self->config('libperl') ),
 			Alien::wxWidgets->libraries(qw(core base)) . ' -lgdi32',
 			$self->{_wx_scintilla_lib},
 			'Scintilla.def',
@@ -249,7 +248,7 @@ sub build_xs {
 			'Scintilla.o',
 			'-L/usr/local/lib',
 			'-fstack-protector',
-			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $Config{libperl} ),
+			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $self->config('libperl') ),
 			Alien::wxWidgets->libraries(qw(core base)),
 			$shared_lib,
 		);
