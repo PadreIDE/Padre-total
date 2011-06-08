@@ -9,7 +9,7 @@ our @ISA = qw(Module::Build);
 sub ACTION_build {
 	my $self = shift;
 
-	require Alien::wxWidgets; 
+	require Alien::wxWidgets;
 	Alien::wxWidgets->import;
 
 	my $toolkit = Alien::wxWidgets->config->{toolkit};
@@ -129,7 +129,10 @@ sub build_scintilla {
 			'-shared -fPIC',
 			'-Wl,-soname,' . $self->{_wx_scintilla_shared_lib},
 			'-Wl,-soname,' . $shared_lib,
-			'-Wl,-soname,' . File::Spec->catfile( $self->install_destination('arch'), 'auto/Wx/Scintilla', $self->{_wx_scintilla_shared_lib}),
+			'-Wl,-soname,'
+				. File::Spec->catfile(
+				$self->install_destination('arch'), 'auto/Wx/Scintilla', $self->{_wx_scintilla_shared_lib}
+				),
 			'-o ' . $shared_lib,
 			join( ' ', @objects ),
 			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
@@ -137,7 +140,7 @@ sub build_scintilla {
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
 	}
-	
+
 	$self->_run_command( \@cmd );
 }
 
@@ -230,7 +233,9 @@ sub build_xs {
 		);
 	}
 
-	my $dll = File::Spec->catfile('blib/arch/auto/Wx/Scintilla', $self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so' );
+	my $dll =
+		File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla',
+		$self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so' );
 	if ( $toolkit eq 'msw' ) {
 		@cmd = (
 			Alien::wxWidgets->compiler,
