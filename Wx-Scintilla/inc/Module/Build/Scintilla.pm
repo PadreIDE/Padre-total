@@ -228,9 +228,10 @@ sub build_xs {
 		);
 	}
 
-	my $dll =
-		File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla',
-		$self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so' );
+	my $dll = File::Spec->catfile(
+		'blib/arch/auto/Wx/Scintilla',
+		$self->{_wx_toolkit} eq 'msw' ? 'Scintilla.dll' : 'Scintilla.so'
+	);
 	if ( $toolkit eq 'msw' ) {
 		@cmd = (
 			Alien::wxWidgets->compiler,
@@ -256,7 +257,7 @@ sub build_xs {
 			Alien::wxWidgets->libraries(qw(core base)),
 			$shared_lib,
 			'-Wl,-rpath,blib/arch/auto/Wx/Scintilla',
-			'-Wl,-rpath,' . File::Spec->catfile($self->install_destination('arch'), 'auto/Wx/Scintilla'),
+			'-Wl,-rpath,' . File::Spec->catfile( $self->install_destination('arch'), 'auto/Wx/Scintilla' ),
 		);
 	}
 	$self->_run_command( \@cmd );
