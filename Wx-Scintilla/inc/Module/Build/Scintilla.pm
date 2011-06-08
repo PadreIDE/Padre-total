@@ -128,11 +128,6 @@ sub build_scintilla {
 			Alien::wxWidgets->compiler,
 			'-shared -fPIC',
 			'-Wl,-soname,' . $self->{_wx_scintilla_shared_lib},
-			'-Wl,-soname,' . $shared_lib,
-			'-Wl,-soname,'
-				. File::Spec->catfile(
-				$self->install_destination('arch'), 'auto/Wx/Scintilla', $self->{_wx_scintilla_shared_lib}
-				),
 			'-o ' . $shared_lib,
 			join( ' ', @objects ),
 			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
@@ -260,6 +255,8 @@ sub build_xs {
 			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $self->config('libperl') ),
 			Alien::wxWidgets->libraries(qw(core base)),
 			$shared_lib,
+			'-Wl,-rpath,blib/arch/auto/Wx/Scintilla',
+			'-Wl,-rpath,' . File::Spec->catfile($self->install_destination('arch'), 'auto/Wx/Scintilla'),
 		);
 	}
 	$self->_run_command( \@cmd );

@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.06	TBA
+0.06	2011.6.9
 	Added t/03_editor.t to begin testing Scintilla editor functionality (AZAWAWI)
 	More POD updates (AZAWAWI)
 	Removed Makefile.PL because of weird compilation failures while using it (AZAWAWI)
@@ -8,7 +8,7 @@ Revision history for Wx-Scintilla
 	Removed a few Alien::wxWidgets dependencies in Build.PL which causes a lot
 	  of false UNKNOWNs in CPAN testers reports (AZAWAWI)
 	Reuse Module::Build API to use Config (AZAWAWI)
-	Fixed shared library loading problems on Linux by setting multiple sonames (AZAWAWI)
+	Fixed shared library loading problems on Linux by setting runtime link paths (AZAWAWI)
 
 0.05	2011.6.8
 	Updated POD documentation (AZAWAWI)
