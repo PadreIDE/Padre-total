@@ -19,15 +19,15 @@ sub ACTION_build {
 		$self->{_wx_toolkit_define}       = '-D__WXMSW__';
 		$self->{_wx_mthreads_define}      = '-mthreads';
 		$self->{_wx_msw_define}           = '-DHAVE_W32API_H';
-		$self->{_wx_scintilla_shared_lib} = 'libwxmsw28u_scintilla.dll';
-		$self->{_wx_scintilla_lib}        = 'libwxmsw28u_scintilla.a';
+		$self->{_wx_scintilla_shared_lib} = 'libwx_msw28u_scintilla.dll';
+		$self->{_wx_scintilla_lib}        = 'libwx_msw28u_scintilla.a';
 	} elsif ( $toolkit =~ 'gtk' ) {
 		$self->{_wx_toolkit} = $toolkit;
 		$self->{_wx_toolkit_define}       = '-D__WXGTK__';
 		$self->{_wx_mthreads_define}      = '';
 		$self->{_wx_msw_define}           = '';
-		$self->{_wx_scintilla_shared_lib} = 'libwxgtk28u_scintilla.so';
-		$self->{_wx_scintilla_lib}        = 'libwxgtk28u_scintilla.a';
+		$self->{_wx_scintilla_shared_lib} = 'libwx_gtk28u_scintilla.so';
+		$self->{_wx_scintilla_lib}        = '';
 	} else {
 		die "Unhandled Alien::wxWidgets->config->{toolkit} '$toolkit'. Please report this to the author\n";
 	}
@@ -114,12 +114,12 @@ sub build_scintilla {
 	} elsif($self->{_wx_toolkit} =~ 'gtk') {
 		@cmd = (
 			Alien::wxWidgets->compiler,
-			'-shared -fPIC -o ', $self->{_wx_scintilla_lib},
+			'-shared -fPIC -Wl,-soname,' . $shared_lib, 
+			'-o ', $shared_lib,
 			join( ' ', @objects ),
-			'-Wl,-soname,' . $shared_lib,
 			'-pthread -L/usr/lib/i386-linux-gnu -lgtk-x11-2.0 -lgdk-x11-2.0',
 			'-latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0',
-			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz',
+			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
 	}
 	my $cmd = join( ' ', @cmd );
@@ -229,6 +229,8 @@ sub build_xs {
 		);
 	} else {
 		#GTK
+		my $shared_lib = File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla/' . $self->{_wx_scintilla_shared_lib} );
+
 		@cmd = (
 			Alien::wxWidgets->compiler,
 			'-shared -s -o ' . $dll,
@@ -238,20 +240,20 @@ sub build_xs {
 			#File::Spec->catfile( $perl_site_arch, 'CORE/' . $Config{libperl} ),
 			'-I' . '/home/azawawi/perl5/perlbrew/perls/perl-5.12.3/lib/5.12.3/i686-linux-thread-multi/CORE/libperl.a',
 			Alien::wxWidgets->libraries(qw(core base)),
-			$self->{_wx_scintilla_lib},
+			$shared_lib,
 		);
 	}
 	$cmd = join( ' ', @cmd );
 	$self->log_info("$cmd\n");
 	system($cmd);
 
-	chmod( 755, $dll );
+	chmod( 0755, $dll );
 
 
 	require File::Copy;
 	unlink('blib/arch/auto/Wx/Scintilla/Scintilla.bs');
 	File::Copy::copy( 'Scintilla.bs', 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' ) or die "Cannot copy Scintilla.bs\n";
-	chmod( 644, 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' );
+	chmod( 0644, 'blib/arch/auto/Wx/Scintilla/Scintilla.bs' );
 }
 
 1;
