@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.06	TBA
+	Added t/03_editor.t to begin testing Scintilla editor functionality
+
 0.05    2011.6.8
 	Updated POD documentation (AZAWAWI)
 	Experimental linux gtk support (AZAWAWI)
