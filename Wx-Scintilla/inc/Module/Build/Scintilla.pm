@@ -136,6 +136,8 @@ sub build_xs {
 
 	my $perl_lib = $Config{privlibexp};
 	$perl_lib =~ s/\\/\//g;
+	my $perl_arch_lib = $Config{archlib};
+	$perl_arch_lib =~ s/\\/\//g;
 	my $perl_site_arch = $Config{sitearch};
 	$perl_site_arch =~ s/\\/\//g;
 
@@ -165,7 +167,7 @@ sub build_xs {
 			'-s -O2 -DWIN32 -DHAVE_DES_FCRYPT -DUSE_SITECUSTOMIZE -DPERL_IMPLICIT_CONTEXT -DPERL_IMPLICIT_SYS',
 			'-fno-strict-aliasing -mms-bitfields -DPERL_MSVCRT_READFIX -s -O2',
 			'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
-			'-I' . File::Spec->catfile( $perl_lib, 'CORE' ),
+			'-I' . File::Spec->catfile( $perl_arch_lib, 'CORE' ),
 			'-DWXPL_EXT -DHAVE_W32API_H '
 				. $self->{_wx_toolkit_define}
 				. ' -D_UNICODE -DWXUSINGDLL -DNOPCH -DNO_GCC_PRAGMA',
@@ -182,8 +184,7 @@ sub build_xs {
 			'-D_REENTRANT -D_GNU_SOURCE -fno-strict-aliasing -pipe -fstack-protector -D_FILE_OFFSET_BITS=64 -O2 -D_LARGEFILE_SOURCE',
 			'-I/usr/local/include',
 			'-DVERSION=\"' . $dist_version . '\" -DXS_VERSION=\"' . $dist_version . '\"',
-			'-I' . File::Spec->catfile( $perl_site_arch, 'CORE' ),
-			'-I' . '/home/azawawi/perl5/perlbrew/perls/perl-5.12.3/lib/5.12.3/i686-linux-thread-multi/CORE/',
+			'-I' . File::Spec->catfile( $perl_arch_lib, 'CORE' ),
 			'-DWXPL_EXT '
 				. $self->{_wx_toolkit_define}
 				. ' -D_LARGE_FILES',
@@ -220,7 +221,7 @@ sub build_xs {
 			Alien::wxWidgets->compiler,
 			'-shared -s -o ' . $dll,
 			'Scintilla.o',
-			File::Spec->catfile( $perl_lib, 'CORE/' . $Config{libperl} ),
+			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $Config{libperl} ),
 			Alien::wxWidgets->libraries(qw(core base)) . ' -lgdi32',
 			$self->{_wx_scintilla_lib},
 			'Scintilla.def',
@@ -235,8 +236,7 @@ sub build_xs {
 			'Scintilla.o',
 			'-L/usr/local/lib',
 			'-fstack-protector',
-			#File::Spec->catfile( $perl_site_arch, 'CORE/' . $Config{libperl} ),
-			'-I' . '/home/azawawi/perl5/perlbrew/perls/perl-5.12.3/lib/5.12.3/i686-linux-thread-multi/CORE/libperl.a',
+			File::Spec->catfile( $perl_arch_lib, 'CORE/' . $Config{libperl} ),
 			Alien::wxWidgets->libraries(qw(core base)),
 			$shared_lib,
 		);
