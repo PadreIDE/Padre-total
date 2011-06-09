@@ -69,36 +69,58 @@ sub build_scintilla {
 		'wx-scintilla/src/scintilla.cpp',
 	);
 
+	my $compiler = Alien::wxWidgets->compiler;
+	my $include_command = $compiler eq 'cl' ? '/I' : '-I';
 	my @include_dirs = (
-		'-Iwx-scintilla/include',
-		'-Iwx-scintilla/src/scintilla/include',
-		'-Iwx-scintilla/src/scintilla/src',
-		'-Iwx-scintilla/src',
+		$include_command . 'wx-scintilla/include',
+		$include_command . 'wx-scintilla/src/scintilla/include',
+		$include_command . 'wx-scintilla/src/scintilla/src',
+		$include_command . 'wx-scintilla/src',
 		Alien::wxWidgets->include_path
 	);
 
 	my @objects = ();
 	for my $module (@modules) {
 		my $filename = File::Basename::basename($module);
-		$filename =~ s/(.c|.cpp|.cxx)$/.o/;
+		if($compiler eq 'cl') {
+			$filename =~ s/(.c|.cpp|.cxx)$/.obj/;
+		} else {
+			$filename =~ s/(.c|.cpp|.cxx)$/.o/;
+		}
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
 		unless ( -f $object_name ) {
-			my @cmd = (
-				Alien::wxWidgets->compiler,
-				'-c',
-				'-o ' . $object_name,
-				'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
-				'-Wall ',
-				'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER ',
-				'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
-				'-Wno-ctor-dtor-privacy',
-				'-MT' . $object_name,
-				'-MF' . $object_name . '.d',
-				'-MD -MP',
-				join( ' ', @include_dirs ),
-				$module,
-			);
-
+			my $cmd;
+			my @cmd;
+			if($compiler eq 'cl') {
+				# Microsoft compiler
+				@cmd = (
+					$compiler,
+					'/c /nologo /TP /Fo' . $object_name,
+					'/MD /DWIN32 /O2',
+					'/D' . $self->{_wx_msw_define},
+					'/DNDEBUG /D_UNICODE',
+					join( ' ', @include_dirs ),
+					'/W4 /DWXBUILDING /D__WX__ /DSCI_LEXER /DLINK_LEXERS  /DWXUSINGDLL /DWXMAKINGDLL_STC /GR /EHsc',
+					$module,
+				);
+			} else {
+				# Assume gcc
+				@cmd = (
+					$compiler,
+					'-c',
+					'-o ' . $object_name,
+					'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
+					'-Wall ',
+					'-DWXBUILDING ' . $self->{_wx_toolkit_define} . ' -D__WX__ -DSCI_LEXER ',
+					'-D__WX__ -DSCI_LEXER -DLINK_LEXERS -DWXUSINGDLL -DWXMAKINGDLL_STC',
+					'-Wno-ctor-dtor-privacy',
+					'-MT' . $object_name,
+					'-MF' . $object_name . '.d',
+					'-MD -MP',
+					join( ' ', @include_dirs ),
+					$module,
+				);
+			}
 			$self->_run_command( \@cmd );
 		}
 		push @objects, $object_name;
