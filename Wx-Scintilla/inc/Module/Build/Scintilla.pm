@@ -96,6 +96,7 @@ sub build_scintilla {
 				@cmd = (
 					$compiler,
 					'/c /nologo /TP /Fo' . $object_name,
+					'/Fdwxmsw28u_scintilla.pdb',
 					'/MD /DWIN32 /O2',
 					'/D' . $self->{_wx_msw_define},
 					'/DNDEBUG /D_UNICODE',
