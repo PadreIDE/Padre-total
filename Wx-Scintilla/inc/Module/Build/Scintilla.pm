@@ -69,9 +69,9 @@ sub build_scintilla {
 		'wx-scintilla/src/scintilla.cpp',
 	);
 
-	my $compiler = Alien::wxWidgets->compiler;
+	my $compiler        = Alien::wxWidgets->compiler;
 	my $include_command = $compiler eq 'cl' ? '/I' : '-I';
-	my @include_dirs = (
+	my @include_dirs    = (
 		$include_command . 'wx-scintilla/include',
 		$include_command . 'wx-scintilla/src/scintilla/include',
 		$include_command . 'wx-scintilla/src/scintilla/src',
@@ -82,7 +82,7 @@ sub build_scintilla {
 	my @objects = ();
 	for my $module (@modules) {
 		my $filename = File::Basename::basename($module);
-		if($compiler eq 'cl') {
+		if ( $compiler eq 'cl' ) {
 			$filename =~ s/(.c|.cpp|.cxx)$/.obj/;
 		} else {
 			$filename =~ s/(.c|.cpp|.cxx)$/.o/;
@@ -91,7 +91,8 @@ sub build_scintilla {
 		unless ( -f $object_name ) {
 			my $cmd;
 			my @cmd;
-			if($compiler eq 'cl') {
+			if ( $compiler eq 'cl' ) {
+
 				# Microsoft compiler
 				@cmd = (
 					$compiler,
@@ -105,6 +106,7 @@ sub build_scintilla {
 					$module,
 				);
 			} else {
+
 				# Assume gcc
 				@cmd = (
 					$compiler,
