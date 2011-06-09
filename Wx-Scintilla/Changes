@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.07	2011.6.10
+	Removed the 'OS unsupported' test in Build.PL; i want it to fail on other platforms
+	so i can learn more from failures (AZAWAWI)
+
 0.06	2011.6.9
 	Added t/03_editor.t to begin testing Scintilla editor functionality (AZAWAWI)
 	More POD updates (AZAWAWI)

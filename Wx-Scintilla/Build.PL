@@ -1,14 +1,6 @@
 use strict;
 use warnings;
 
-# We do not support other than Win32/Linux platform for Wx::Scintilla for now
-# So please die and play nice with CPAN testers :)
-# WX_SCINTILLA_BUILD environment variable is only used
-# to allow me to release the package on Linux
-unless ( $^O eq 'MSWin32' || $^O eq 'cygwin' || $^O eq 'linux' || defined $ENV{WX_SCINTILLA_BUILD} ) {
-	die "OS unsupported\n";
-}
-
 use lib 'inc';
 use Module::Build::Scintilla ();
 
