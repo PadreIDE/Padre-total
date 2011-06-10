@@ -111,7 +111,7 @@ sub build_scintilla {
 				# Assume gcc
 				@cmd = (
 					$compiler,
-					'-c',
+					'-c -fPIC',
 					'-o ' . $object_name,
 					'-O2 ' . $self->{_wx_mthreads_define} . ' ' . $self->{_wx_msw_define} . ' -D_UNICODE',
 					'-Wall ',
