@@ -183,9 +183,13 @@ and continually contribute it back to Scintilla project.
 
 =head1 PLATFORMS
 
-At the moment, Linux (Ubuntu) and Windows (Strawberry Perl) are supported platforms. 
-My next goal is to support more platforms. Please let me know if
-you can help out :)
+At the moment, Linux (Ubuntu) and Windows (Strawberry and ActivePerl) 
+are supported platforms. My next goal is to support more platforms. Please
+let me know if you can help out :)
+
+On Ubuntu, you need to install the following via:
+
+	sudo apt-get install libwxbase2.8-0 libwxgtk2.8-0 libwxbase2.8-dev libgtk2.0-dev
 
 =head1 HISTORY
 
