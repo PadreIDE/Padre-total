@@ -24,6 +24,7 @@ my $builder = Module::Build::Scintilla->new(
 		'Wx-Scintilla-*',
 		'wx-scintilla/src/*.o.d',
 		'wx-scintilla/src/*.o',
+		'wx-scintilla/src/*.obj',
 		'wx-scintilla/src/scintilla/src/*.o.d',
 		'wx-scintilla/src/scintilla/src/*.o',
 		'wx-scintilla/src/scintilla/src/*.obj',
