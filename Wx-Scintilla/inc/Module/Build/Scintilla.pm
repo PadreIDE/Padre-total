@@ -79,23 +79,16 @@ sub build_scintilla {
 		Alien::wxWidgets->include_path
 	);
 
-	my $vc_dll_dir;
-	if ( $compiler eq 'cl' ) {
-		$vc_dll_dir = 'vc_dll';
-		mkdir $vc_dll_dir;
-	}
-
 	my @objects = ();
 	for my $module (@modules) {
 		my $filename = File::Basename::basename($module);
 		my $object_name;
 		if ( $compiler eq 'cl' ) {
 			$filename =~ s/(.c|.cpp|.cxx)$/.obj/;
-			$object_name = File::Spec->catfile( $vc_dll_dir, "scintilladll_$filename" );
 		} else {
 			$filename =~ s/(.c|.cpp|.cxx)$/.o/;
-			$object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
 		}
+		$object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
 		unless ( -f $object_name ) {
 			my $cmd;
 			my @cmd;
@@ -152,7 +145,8 @@ sub build_scintilla {
 			# MS VC compiler
 			@cmd = (
 				Alien::wxWidgets->linker,
-				"$vc_dll_dir/*.obj",
+				"wx-scintilla/src/*.obj",
+				"wx-scintilla/src/scintilla/src/*.obj",
 				"/DLL /NOLOGO /OUT:$shared_lib",
 				'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
 				Alien::wxWidgets->link_libraries(qw(core base)),
@@ -307,9 +301,9 @@ sub build_xs {
 		if ( $compiler eq 'cl' ) {
 			@cmd = (
 				Alien::wxWidgets->linker,
-				'-out:' . $dll,
-				' -dll -nologo -nodefaultlib -debug -opt:ref,icf',
-				'-machine:x86 Scintilla.obj',
+				'/out:' . $dll,
+				'/dll /nologo /nodefaultlib /debug /opt:ref,icf',
+				'/machine:x86 Scintilla.obj',
 				File::Spec->catfile( $perl_arch_lib, 'CORE/' . $self->config('libperl') ),
 				'blib/arch/auto/Wx/Scintilla/' . $self->{_wx_scintilla_lib},
 				'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
