@@ -16,8 +16,10 @@ use parent qw( Padre::Plugin::Cookbook::FBP::MainFB );
 #######
 sub new {
 	my $class = shift;
-	my $main  = shift; # Padre main window integration
-
+	
+	# Padre main window integration
+	my $main  = shift;
+	
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
 
