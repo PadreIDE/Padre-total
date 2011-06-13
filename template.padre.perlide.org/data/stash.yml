@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 June 13
+        url: http://szabgab.com/blog/2011/06/creating-a-plugin-for-padre-the-perl-ide.html
+        title: Creating a plug-in for Padre, the Perl IDE
+        comment: screencast and blog by Gabor Szabo
       - date: 2011 May 29
         url: http://szabgab.com/blog/2011/05/strawberry-perl-with-cream-5-12-3-v3-released.html
         title: Strawberry Perl with Cream - 5.12.3 v3 released
