@@ -172,7 +172,7 @@ sub build_scintilla {
 			'-Wl,-soname,' . $self->{_wx_scintilla_shared_lib},
 			'-o ' . $shared_lib,
 			join( ' ', @objects ),
-			'-pthread -L/usr/lib/i386-linux-gnu -L/usr/lib -lgtk-x11-2.0 -lgdk-x11-2.0',
+			'-pthread -L/usr/lib/i386-linux-gnu -L/usr/lib32 -lgtk-x11-2.0 -lgdk-x11-2.0',
 			'-latk-1.0 -lgio-2.0 -lpangoft2-1.0 -lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0',
 			'-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm',
 		);
