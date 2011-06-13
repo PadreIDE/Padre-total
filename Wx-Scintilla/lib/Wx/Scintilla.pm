@@ -40,7 +40,7 @@ package Wx::ScintillaTextEvent; our $VERSION = '0.09'; @ISA = qw(Wx::CommandEven
 #Defeat the indexer by splitting the package declaration on two lines
 package
 	Wx::Event;
-our $VERSION = '0.09'
+our $VERSION = '0.09';
 
 use strict;
 
