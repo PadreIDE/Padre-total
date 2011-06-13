@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.09	2011.6.13
+	Defeat the indexer by splitting the package declaration on two lines for
+		Wx::Event (MDOOTSON, AZAWAWI)
+
 0.08	2011.6.10
 	Proper ActivePerl + MS VC Compiler support in Wx::Scintilla (AZAWAWI)
 	Updated POD documentation about supported platforms (AZAWAWI)
