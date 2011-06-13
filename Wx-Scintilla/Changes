@@ -1,6 +1,7 @@
 Revision history for Wx-Scintilla
 
 0.09	2011.6.13
+	Experimental support 64-bit Ubuntu 10.10 (SZABGAB, AZAWAWI)
 	Defeat the indexer by splitting the package declaration on two lines for
 		Wx::Event (MDOOTSON, AZAWAWI)
 
