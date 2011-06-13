@@ -38,8 +38,10 @@ package Wx::ScintillaTextCtrl; our $VERSION = '0.09'; @ISA = qw(Wx::Control);
 package Wx::ScintillaTextEvent; our $VERSION = '0.09'; @ISA = qw(Wx::CommandEvent);
 
 #Defeat the indexer by splitting the package declaration on two lines
+#<<<  do not let perltidy touch this
 package
 	Wx::Event;
+#>>>
 our $VERSION = '0.09';
 
 use strict;
