@@ -1,6 +1,7 @@
 TODO
  - BibTeX:
    - better support for BibTeX entry completion (cite and friends, show BibTeX entries to complete ...)
+   - automagic BibTeX-ification
    - automagic entry cleaning
    - exchange data with DBLP, CiteULike, Zotero, Bibsonomy ...
    - BibLaTeX support

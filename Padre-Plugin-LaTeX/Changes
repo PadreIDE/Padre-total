@@ -1,8 +1,10 @@
 Changes for Padre-Plugin-LaTeX
 
-0.11   2011.05.??
+0.11   2011.06.??
 	- include Padre::Task::Syntax in the syntax checker (ZENOG)
-    - added Brazilian Portuguese translation (GARU)
+	- added Brazilian Portuguese translation (GARU)
+        - change config value perl_autocomplete_min_chars to
+          lang_perl5_autocomplete_min_chars (ZENOG)
 
 0.10   2011.03.09
 	- check for different PDF viewers (ZENOG)

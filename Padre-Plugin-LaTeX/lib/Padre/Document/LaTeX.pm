@@ -5,7 +5,6 @@ package Padre::Document::LaTeX;
 use 5.008;
 use strict;
 use warnings;
-use Carp            ();
 use Padre::Document ();
 
 our @ISA = 'Padre::Document';
@@ -15,7 +14,7 @@ sub task_functions {
 }
 
 sub task_outline {
-	return '';
+	return 'Padre::Document::LaTeX::Outline';
 }
 
 sub task_syntax {
@@ -112,12 +111,13 @@ my @latex_packages = qw/
 # TODO know includegraphics etc. options (see CSS completion support for ideas)
 # TODO units for height, width, vspace, etc.
 # TODO for bibliography, insert, include, includegraphics, usepackage: check for available files ...
+# TODO also offer \begin w/o \end
 sub autocomplete {
 	my $self  = shift;
 	my $event = shift;
 
 	my $config    = Padre->ide->config;
-	my $min_chars = $config->perl_autocomplete_min_chars; # TODO rename this config option?
+	my $min_chars = $config->lang_perl5_autocomplete_min_chars; # TODO rename this config option/have our own?
 
 	my $editor = $self->editor;
 	my $pos    = $editor->GetCurrentPos;

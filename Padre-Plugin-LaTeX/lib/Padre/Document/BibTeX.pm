@@ -40,7 +40,7 @@ sub autocomplete {
 	my $event = shift;
 
 	my $config    = Padre->ide->config;
-	my $min_chars = $config->perl_autocomplete_min_chars; # TODO rename this config option?
+	my $min_chars = $config->lang_perl5_autocomplete_min_chars; # TODO rename this config option?
 
 	my $editor = $self->editor;
 	my $pos    = $editor->GetCurrentPos;
