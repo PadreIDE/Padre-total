@@ -162,7 +162,7 @@ sub autocomplete {
 		# TODO end the currently open environment
 
 		my @candidates = $begin_or_end eq 'begin'
-			? map { $add_bracket . $_ . "}\n\\end{$_}" } @latex_environments # TODO make configurable
+			? map { $add_bracket . $_ . "}\n\\end{$_}", $add_bracket . $_ . '}' } @latex_environments # TODO make configurable
 			: map { $add_bracket . $_ . '}' } @latex_environments;
 		return $self->find_completions( $env_prefix, $nextchar, @candidates );
 	}

@@ -5,6 +5,8 @@ Changes for Padre-Plugin-LaTeX
 	- added Brazilian Portuguese translation (GARU)
         - change config value perl_autocomplete_min_chars to
           lang_perl5_autocomplete_min_chars (ZENOG)
+        - autocompletion: offer 'begin' and 'begin'...'end' for environments,
+          not only 'begin'...'end' (ZENOG)
 
 0.10   2011.03.09
 	- check for different PDF viewers (ZENOG)
