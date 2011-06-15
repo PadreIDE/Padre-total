@@ -5,7 +5,7 @@ use strict;
 use warnings;
 use Wx;
 
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 # Add Wx::Scintilla distribution directory to PATH on windows so that Wx can load it
 my $wx_scintilla_path;
@@ -33,16 +33,20 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 
 no strict;
 
-package Wx::ScintillaTextCtrl; our $VERSION = '0.09'; @ISA = qw(Wx::Control);
+package Wx::ScintillaTextCtrl;
+our $VERSION = '0.10';
+@ISA = qw(Wx::Control);
 
-package Wx::ScintillaTextEvent; our $VERSION = '0.09'; @ISA = qw(Wx::CommandEvent);
+package Wx::ScintillaTextEvent;
+our $VERSION = '0.10';
+@ISA = qw(Wx::CommandEvent);
 
 #Defeat the indexer by splitting the package declaration on two lines
 #<<<  do not let perltidy touch this
 package
 	Wx::Event;
 #>>>
-our $VERSION = '0.09';
+our $VERSION = '0.10';
 
 use strict;
 
