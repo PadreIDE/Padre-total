@@ -91,7 +91,7 @@ sub browse_changed {
 		my $list = [
 			grep { defined $_ and length $_ }
 			map  { $_->name }
-			$self->{xml}->find( isa => 'FBP::Dialog' )
+			$self->{xml}->project->forms
 		];
 		die "No dialogs found" unless @$list;
 
@@ -130,7 +130,7 @@ sub browse_changed {
 		}
 
 		# Inform the user directly
-		$self->error("Missing, invalid or empty file '$path'");
+		$self->error("Missing, invalid or empty file '$path': $@");
 	}
 
 	return;
@@ -250,7 +250,7 @@ sub generate_dialog {
 	local $@;
 	my $string = eval {
 		$perl->flatten(
-			$perl->form_package( $form, $param{package} )
+			$perl->form_class( $form, $param{package} )
 		)
 	};
 	if ( $@ ) {
