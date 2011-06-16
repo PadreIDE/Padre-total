@@ -1,5 +1,16 @@
 Revision history for Wx-Scintilla
 
+0.11	TBA
+	 OS compatibility patch (Big thanks to Mark Dootson++) (MDOOTSON)
+		CentOS 3 32 bit - custom built Perl
+		CentOS 5 32/64 bit - custom built Perl
+		Fedora 14 32 Bit - system Perl & Wx
+		Ubuntu 10/11 32 Bit - system Perl & Wx
+		Mac OS X Snow Leopard - 32 bit custom Perl
+		Windows XP 32 bit custom Perl & Wx
+		Windows Vista 32/64 bit custom Perl & Wx
+		Windows 7 64 bit custom Perl & Wx
+
 0.10	2011.6.15
 	Added Makefile.PL support through Module::Build::Compat (AZAWAWI)
 
