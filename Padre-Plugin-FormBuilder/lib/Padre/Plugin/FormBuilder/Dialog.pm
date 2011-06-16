@@ -222,15 +222,11 @@ sub generate_dialog {
 	my %param = @_;
 
 	# Find the dialog
-	my $fbp = $param{xml}->find_first(
-		isa  => 'FBP::Project',
-	);
-	my $dialog = $fbp->find_first(
-		isa  => 'FBP::Dialog',
-		name => $param{dialog},
-	);
-	unless ( $dialog ) {
-		$self->error("Failed to find dialog $param{dialog}");
+	my $fbp     = $param{xml};
+	my $project = $fbp->project;
+	my $form    = $fbp->form($param{dialog});
+	unless ( $form ) {
+		$self->error("Failed to find form $param{dialog}");
 		return;
 	}
 
@@ -239,14 +235,14 @@ sub generate_dialog {
 	if ( $param{padre} ) {
 		require Padre::Plugin::FormBuilder::Perl;
 		$perl = Padre::Plugin::FormBuilder::Perl->new(
-			project     => $fbp,
+			project     => $project,
 			version     => $param{version},
 			encapsulate => $self->encapsulate,
 		);
 	} else {
 		require FBP::Perl;
 		$perl = FBP::Perl->new(
-			project => $fbp,
+			project => $project,
 		);
 	}
 
@@ -254,7 +250,7 @@ sub generate_dialog {
 	local $@;
 	my $string = eval {
 		$perl->flatten(
-			$perl->dialog_class( $dialog, $param{package} )
+			$perl->form_package( $form, $param{package} )
 		)
 	};
 	if ( $@ ) {

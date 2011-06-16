@@ -24,7 +24,7 @@ use 5.008005;
 use strict;
 use warnings;
 use Scalar::Util   ();
-use FBP::Perl 0.38 ();
+use FBP::Perl 0.39 ();
 use Mouse     0.61;
 
 our $VERSION = '0.02';
@@ -52,11 +52,11 @@ has encapsulate => (
 ######################################################################
 # Dialog Generators
 
-sub dialog_class {
+sub form_class {
 	my $self    = shift;
-	my $name    = shift;
+	my $form    = shift;
 	my $package = shift;
-	my $code    = $self->SUPER::dialog_class($name);
+	my $code    = $self->SUPER::form_class($form);
 
 	# Customise the package name if requested
 	if ( $package ) {
@@ -85,10 +85,10 @@ END_PERL
 	return $code;
 }
 
-sub dialog_new {
+sub form_new {
 	my $self   = shift;
 	my $dialog = shift;
-	my $lines  = $self->SUPER::dialog_new($dialog);
+	my $lines  = $self->SUPER::form_new($dialog);
 
 	# Find the full list of public windows
 	my @public = grep {
@@ -111,9 +111,9 @@ sub dialog_new {
 	return $lines;
 }
 
-sub dialog_version {
+sub project_version {
 	my $self    = shift;
-	my $dialog  = shift;
+	my $project = shift;
 	my $version = $self->version;
 
 	return [
@@ -121,7 +121,7 @@ sub dialog_version {
 	];
 }
 
-sub dialog_isa {
+sub form_isa {
 	my $self   = shift;
 	my $dialog = shift;
 
@@ -133,7 +133,7 @@ sub dialog_isa {
 	);
 }
 
-sub use_wx {
+sub form_wx {
 	my $self   = shift;
 	my $dialog = shift;
 	return [
