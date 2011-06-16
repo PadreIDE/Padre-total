@@ -4,7 +4,9 @@ use warnings;
 use lib 'inc';
 use Module::Build::Scintilla ();
 
-my $builder = Module::Build::Scintilla->new(
+my $stc_builderclass = Module::Build::Scintilla::stc_builderclass();
+
+my $builder = $stc_builderclass->new(
 	module_name        => 'Wx::Scintilla',
 	license            => 'perl',
 	dist_author        => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
@@ -48,7 +50,8 @@ my $builder = Module::Build::Scintilla->new(
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
 		}
 	},
-	dist_abstract => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
+	dist_abstract      => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
+	extra_linker_flags => '-lwxmsw28u_scintilla',
 );
 
 $builder->create_build_script();
