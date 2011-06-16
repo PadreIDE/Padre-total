@@ -122,15 +122,35 @@ sub project_version {
 }
 
 sub form_isa {
-	my $self   = shift;
-	my $dialog = shift;
+	my $self = shift;
+	my $form = shift;
+	if ( $form->isa('FBP::Dialog') ) {
+		return $self->nested(
+			"our \@ISA     = qw{",
+			"Padre::Wx::Role::Main",
+			"Wx::Dialog",
+			"};",
+		);
 
-	return $self->nested(
-		"our \@ISA     = qw{",
-		"Padre::Wx::Role::Main",
-		"Wx::Dialog",
-		"};",
-	);
+	} elsif ( $form->isa('FBP::Frame') ) {
+		return $self->nested(
+			"our \@ISA     = qw{",
+			"Padre::Wx::Role::Main",
+			"Wx::Frame",
+			"};",
+		);
+
+	} elsif ( $form->isa('FBP::Panel') ) {
+		return $self->nested(
+			"our \@ISA     = qw{",
+			"Padre::Wx::Role::Main",
+			"Wx::Panel",
+			"};",
+		);
+
+	} else {
+		die "Unsupported form " . ref($form);
+	}
 }
 
 sub form_wx {
