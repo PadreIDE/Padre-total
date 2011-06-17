@@ -60,7 +60,8 @@ sub stc_prebuild_check {
 		unlink($outfile);
 		print qq(Check for gtk2 development libraries failed.\n);
 		print qq(Perhaps you need to install package libgtk2.0-dev or the equivalent for your system.\n);
-		print qq(The build cannot continue.);
+		print qq(You can ofcourse uninstall it later after the installation is complete.\n);
+		print qq(The build cannot continue.\n);
 		exit(1);
 	}
 	unlink($outfile);
