@@ -21,6 +21,9 @@ if ( $ENV{HARNESS_ACTIVE} ) {
 }
 $ENV{PATH} = $wx_scintilla_path . ';' . $ENV{PATH} if ( $^O eq 'MSWin32' );
 
+# Define Perl 6 lexer
+use constant wxSCINTILLA_LEX_PERL6 => 98;
+
 # Load scintilla's DLL through Wx and ask XSLoader to load it
 # NOTE: Do not use Wx::boot since it is buggy and causes test suite to fail while upgrading
 Wx::load_dll('scintilla');
