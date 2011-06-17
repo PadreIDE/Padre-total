@@ -10,11 +10,11 @@ use warnings;
 use diagnostics;
 use utf8;
 use autodie;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 use version; our $VERSION = qv(0.14);
-use parent -norequire, qw(
+use parent-norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
 );
@@ -37,9 +37,7 @@ sub new {
 		-1,
 		"heading is a public",
 	);
-	$heading->SetFont(
-		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$heading->SetFont( Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	my $m_staticline1 = Wx::StaticLine->new(
 		$self,
@@ -58,8 +56,7 @@ sub new {
 	);
 
 	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$ttennis,
+		$self, $ttennis,
 		sub {
 			shift->ttennis_checked(@_);
 		},
@@ -75,8 +72,7 @@ sub new {
 	$ping->Disable;
 
 	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$ping,
+		$self, $ping,
 		sub {
 			shift->ping_checked(@_);
 		},
@@ -92,8 +88,7 @@ sub new {
 	$pong->Disable;
 
 	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$pong,
+		$self, $pong,
 		sub {
 			shift->pong_checked(@_);
 		},
@@ -106,13 +101,11 @@ sub new {
 	);
 
 	my $user_name = Wx::RadioBox->new(
-		$self,
-		-1,
+		$self, -1,
 		"User * Name",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		[
-			"nick",
+		[   "nick",
 			"cpan",
 			"e-mail",
 		],
@@ -158,12 +151,10 @@ sub new {
 	);
 
 	my $choices = Wx::Choice->new(
-		$self,
-		-1,
+		$self, -1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		[
-			"CPL",
+		[   "CPL",
 			"CPL",
 			"BCPL",
 			"B",
@@ -188,8 +179,7 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self,
-		$output,
+		$self, $output,
 		sub {
 			shift->output_clicked(@_);
 		},
@@ -202,8 +192,7 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self,
-		$update,
+		$self, $update,
 		sub {
 			shift->update_clicked(@_);
 		},
@@ -223,11 +212,11 @@ sub new {
 	$fgSizer1->SetFlexibleDirection(Wx::wxBOTH);
 	$fgSizer1->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
 	$fgSizer1->Add( $ttennis, 0, Wx::wxALL, 5 );
-	$fgSizer1->Add( $ping, 0, Wx::wxALL, 5 );
+	$fgSizer1->Add( $ping,    0, Wx::wxALL, 5 );
 	$fgSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$fgSizer1->Add( $pong, 0, Wx::wxALL, 5 );
+	$fgSizer1->Add( $pong,          0, Wx::wxALL, 5 );
 	$fgSizer1->Add( $m_staticText2, 0, Wx::wxALL, 5 );
-	$fgSizer1->Add( $user_name, 0, Wx::wxALL, 5 );
+	$fgSizer1->Add( $user_name,     0, Wx::wxALL, 5 );
 
 	my $bSizer3 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer3->Add( $name_label, 0, Wx::wxALL, 5 );
@@ -237,36 +226,36 @@ sub new {
 	$fgSizer2->SetFlexibleDirection(Wx::wxBOTH);
 	$fgSizer2->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
 	$fgSizer2->Add( $m_staticText4, 0, Wx::wxALL, 5 );
-	$fgSizer2->Add( $choices, 0, Wx::wxALL, 5 );
+	$fgSizer2->Add( $choices,       0, Wx::wxALL, 5 );
 
 	my $bSizer4 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer4->Add( $output, 0, Wx::wxALL, 5 );
-	$bSizer4->Add( $update, 0, Wx::wxALL, 5 );
+	$bSizer4->Add( $output,       0, Wx::wxALL, 5 );
+	$bSizer4->Add( $update,       0, Wx::wxALL, 5 );
 	$bSizer4->Add( $close_button, 0, Wx::wxALL, 5 );
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer1->Add( $bSizer2, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer2,       0, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline1, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
-	$bSizer1->Add( $fgSizer1, 1, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $fgSizer1,      1, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline2, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
-	$bSizer1->Add( $bSizer3, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer3,       0, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline3, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
-	$bSizer1->Add( $fgSizer2, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $fgSizer2,      0, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline4, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
-	$bSizer1->Add( $bSizer4, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer4,       0, Wx::wxEXPAND,             5 );
 
 	$self->SetSizer($bSizer1);
 	$self->Layout;
 	$bSizer1->Fit($self);
 
-	$self->{heading} = $heading->GetId;
-	$self->{ttennis} = $ttennis->GetId;
-	$self->{ping} = $ping->GetId;
-	$self->{pong} = $pong->GetId;
-	$self->{user_name} = $user_name->GetId;
+	$self->{heading}    = $heading->GetId;
+	$self->{ttennis}    = $ttennis->GetId;
+	$self->{ping}       = $ping->GetId;
+	$self->{pong}       = $pong->GetId;
+	$self->{user_name}  = $user_name->GetId;
 	$self->{name_label} = $name_label->GetId;
 	$self->{name_value} = $name_value->GetId;
-	$self->{choices} = $choices->GetId;
+	$self->{choices}    = $choices->GetId;
 
 	return $self;
 }
@@ -285,7 +274,7 @@ Public Accessor heading Auto-generated.
 
 sub heading {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{heading});
+	return Wx::Window::FindWindowById( $self->{heading} );
 }
 
 =pod
@@ -302,7 +291,7 @@ Public Accessor ttennis Auto-generated.
 
 sub ttennis {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{ttennis});
+	return Wx::Window::FindWindowById( $self->{ttennis} );
 }
 
 =pod
@@ -319,7 +308,7 @@ Public Accessor ping Auto-generated.
 
 sub ping {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{ping});
+	return Wx::Window::FindWindowById( $self->{ping} );
 }
 
 =pod
@@ -336,7 +325,7 @@ Public Accessor pong Auto-generated.
 
 sub pong {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{pong});
+	return Wx::Window::FindWindowById( $self->{pong} );
 }
 
 =pod
@@ -353,7 +342,7 @@ Public Accessor user_name Auto-generated.
 
 sub user_name {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{user_name});
+	return Wx::Window::FindWindowById( $self->{user_name} );
 }
 
 =pod
@@ -370,7 +359,7 @@ Public Accessor name_label Auto-generated.
 
 sub name_label {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{name_label});
+	return Wx::Window::FindWindowById( $self->{name_label} );
 }
 
 =pod
@@ -387,7 +376,7 @@ Public Accessor name_value Auto-generated.
 
 sub name_value {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{name_value});
+	return Wx::Window::FindWindowById( $self->{name_value} );
 }
 
 =pod
@@ -404,7 +393,7 @@ Public Accessor choices Auto-generated.
 
 sub choices {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{choices});
+	return Wx::Window::FindWindowById( $self->{choices} );
 }
 
 =pod
@@ -498,6 +487,7 @@ sub update_clicked {
 }
 
 1;
+
 =pod
 
 =over 4

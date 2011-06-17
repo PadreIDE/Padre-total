@@ -16,9 +16,9 @@ use parent qw( Padre::Plugin::Cookbook::Recipe02::FBP::MainFB );
 #######
 sub new {
 	my $class = shift;
-	
+
 	# Padre main window integration
-	my $main  = shift;
+	my $main = shift;
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
@@ -45,16 +45,10 @@ sub output_clicked {
 	$output->AppendText("output cliked \n");
 	$output->AppendText( "Name: " . $self->name_value->GetValue() . "\n" );
 	if ($update_run_yes) {
-		$output->AppendText(   "Choice GetSelection: "
-							 . $items[ $self->choices->GetSelection() ]
-							 . "\n" );
+		$output->AppendText( "Choice GetSelection: " . $items[ $self->choices->GetSelection() ] . "\n" );
 	}
-	$output->AppendText(   "Choice GetCurrentSelection: "
-						 . $self->choices->GetCurrentSelection()
-						 . "\n" );
-	$output->AppendText(   "User Name GetStringSelection: "
-						 . $self->user_name->GetStringSelection()
-						 . "\n" );
+	$output->AppendText( "Choice GetCurrentSelection: " . $self->choices->GetCurrentSelection() . "\n" );
+	$output->AppendText( "User Name GetStringSelection: " . $self->user_name->GetStringSelection() . "\n" );
 
 	return;
 }
@@ -93,8 +87,7 @@ sub ttennis_checked {
 		$output->AppendText("TRUE\n");
 		$self->ping->Enable;
 		$self->pong->Enable;
-	}
-	else {
+	} else {
 		$output->AppendText("FALSE\n");
 		$self->ping->SetValue(0);
 		$self->pong->SetValue(0);
@@ -117,8 +110,7 @@ sub ping_checked {
 	if ( $self->ping->GetValue ) {
 		$output->AppendText("TRUE\n");
 		$self->pong->SetValue(0);
-	}
-	else {
+	} else {
 		$output->AppendText("FALSE\n");
 	}
 	return;
@@ -137,8 +129,7 @@ sub pong_checked {
 	if ( $self->pong->GetValue ) {
 		$output->AppendText("TRUE\n");
 		$self->ping->SetValue(0);
-	}
-	else {
+	} else {
 		$output->AppendText("FALSE\n");
 	}
 	return;
@@ -167,9 +158,7 @@ sub set_name_label_value {
 			$self->name_value->SetValue( $config->identity_email );
 		}
 		default {
-			$output->AppendText(
-				"huston! we have a problem\n I think you have added another radio button option\n"
-				)
+			$output->AppendText( "huston! we have a problem\n I think you have added another radio button option\n" )
 		}
 	}
 	return;

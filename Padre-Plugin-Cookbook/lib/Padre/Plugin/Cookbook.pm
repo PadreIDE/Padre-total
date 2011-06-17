@@ -7,6 +7,9 @@ use diagnostics;
 use utf8;
 use autodie;
 
+# Avoids regex performance penalty
+use English qw( -no_match_vars );
+
 # Version required
 use version; our $VERSION = qv(0.14);
 use parent qw(Padre::Plugin);
@@ -42,8 +45,11 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'Plug-ins - wxDialogs...' => [
-			'Recipe01 - Hello World' => sub { $self->load_dialog_recipe01_main; },
-			'Recipe02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
+			'Recipe-01 - Hello World'      => sub { $self->load_dialog_recipe01_main; },
+			'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
+			'Recipe-03 - inc About dialog' => sub { $self->load_dialog_recipe03_main; },
+
+			#'Recipe-03 - out & About' => sub { $self->load_dialog_recipeXX_main('Recipe03'); },
 		],
 	];
 }
@@ -58,6 +64,8 @@ sub plugin_disable {
 	$self->unload('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
 	$self->unload('Padre::Plugin::Cookbook::Recipe02::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
+	$self->unload('Padre::Plugin::Cookbook::Recipe03::Main');
+	$self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::MainFB');
 	return 1;
 }
 
@@ -108,6 +116,35 @@ sub load_dialog_recipe02_main {
 
 	return;
 }
+
+########
+# Composed Method,
+# Load Recipe-03 Main Dialog, only once
+#######
+sub load_dialog_recipe03_main {
+	my ( $self, $recipeXX ) = @ARG;
+
+	#my $recipe;
+
+	# Padre main window integration
+	my $main = $self->main;
+
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
+
+	# TODO make dynamic, workaround to bareword needed
+	#require Padre::Plugin::Cookbook::$recipeXX::Main;
+	#$self->{dialog} = Padre::Plugin::Cookbook::$recipeXX::Main->new($main);
+	require Padre::Plugin::Cookbook::Recipe03::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
+	$self->{dialog}->Show;
+
+	return;
+}
+
 1;
 __END__
 
@@ -167,7 +204,8 @@ This is where you defined your plugin menu name, note hyphen for clarity.
 	return $self->plugin_name => [
 		'Plug-ins - wxDialogs...' => [
 			'Recipe-01 - Hello World' => sub { $self->load_dialog_recipe01_main; },
-			'Recipe02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
+			'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
+			'Recipe-03 - inc About dialog' => sub { $self->load_dialog_recipe03_main; },
 		],
 	];
 
@@ -179,6 +217,8 @@ Required method with minimum requirements
     $self->unload('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
     $self->unload('Padre::Plugin::Cookbook::Recipe02::Main');
     $self->unload('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
+    $self->unload('Padre::Plugin::Cookbook::Recipe03::Main');
+    $self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::MainFB');
     
 =item load_dialog_recipe01_main ()
 
@@ -195,6 +235,14 @@ loads our dialog Main, only allows one instance!
     require Padre::Plugin::Cookbook::Recipe02::Main;
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe02::Main->new($main);
     $self->{dialog}->Show;
+
+=item load_dialog_recipe03_main ()
+
+loads our dialog Main, only allows one instance!
+
+    require Padre::Plugin::Cookbook::Recipe03::Main;
+    $self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
+    $self->{dialog}->Show;
     
 =back
 
@@ -207,6 +255,8 @@ Padre::Plugin::Cookbook requires no configuration files or environment variables
 
 Padre::Plugin::Cookbook::Recipe01::Main, Padre::Plugin::Cookbook::Recipe01::FBP::MainFB, 
 Padre::Plugin::Cookbook::Recipe02::Main, Padre::Plugin::Cookbook::Recipe02::FBP::MainFB,
+Padre::Plugin::Cookbook::Recipe03::Main, Padre::Plugin::Cookbook::Recipe03::FBP::MainFB,
+Padre::Plugin::Cookbook::Recipe03::About, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB,
 Padre::Plugin, Padre::Wx::Role::Main, Wx::Dialog,
 
 =head1 AUTHOR
