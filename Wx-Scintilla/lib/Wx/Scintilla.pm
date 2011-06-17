@@ -48,9 +48,8 @@ our $VERSION = '0.11';
 #<<<  do not let perltidy touch this
 package
 	Wx::Event;
-#>>>
 # Don't set global Wx::Event version
-#our $VERSION = '0.11';
+#>>>
 
 use strict;
 
