@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.12	TBA
+	Totally experimental Perl 6 syntax higlighting that is made only
+	for the brave of heart (AZAWAWI)
+
 0.11	2011.6.16
 	 OS compatibility patch (Big thanks to Mark Dootson++) (MDOOTSON)
 		CentOS 3 32 bit - custom built Perl
