@@ -3,9 +3,10 @@ package Padre::Plugin::FormBuilder::Dialog;
 use 5.008;
 use strict;
 use warnings;
-use Class::Unload                   ();
-use Class::Inspector                ();
-use Padre::Plugin::FormBuilder::FBP ();
+use Class::Unload                       ();
+use Class::Inspector                    ();
+use Padre::Plugin::FormBuilder::FBP     ();
+use Padre::Plugin::FormBuilder::Preview ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin::FormBuilder::FBP';
@@ -139,12 +140,17 @@ sub browse_changed {
 sub generate_clicked {
 	my $self   = shift;
 	my $dialog = $self->selected or return;
-	my $xml    = $self->{xml}    or return;
+	my $fbp    = $self->{xml}    or return;
+	my $form   = $fbp->form($dialog);
+	unless ( $form ) {
+		$self->error("Failed to find form $dialog");
+		return;
+	}
 
 	# Generate the dialog code
-	my $code = $self->generate_dialog(
-		xml     => $xml,
-		dialog  => $dialog,
+	my $code = $self->generate_form(
+		fbp     => $fbp,
+		form    => $form,
 		package => $dialog,
 		padre   => $self->padre_code,
 		version => $self->version->GetValue || '0.01',
@@ -161,30 +167,47 @@ sub generate_clicked {
 sub preview_clicked {
 	my $self   = shift;
 	my $dialog = $self->selected or return;
-	my $xml    = $self->{xml}    or return;
-
-	# Generate the dialog code
-	my $name = "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT;
-	my $code = $self->generate_dialog(
-		xml     => $xml,
-		dialog  => $dialog,
-		package => $name,
-		padre   => $self->padre_code,
-		version => $self->version->GetValue || '0.01',
-	) or return;
-
-	# Load the dialog
-	local $@;
-	eval "$code";
-	if ( $@ ) {
-		$self->error("Error loading dialog: $@");
-		$self->unload($name);
+	my $fbp    = $self->{xml}    or return;
+	my $form   = $fbp->form($dialog);
+	unless ( $form ) {
+		$self->error("Failed to find form $dialog");
 		return;
 	}
 
-	# Create the dialog
+	# Generate the dialog code
+	my $name = "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT;
+	SCOPE: {
+		local $@ = '';
+		my $code = eval {
+			$self->generate_form(
+				fbp     => $fbp,
+				form    => $form,
+				package => $name,
+				padre   => $self->padre_code,
+				version => $self->version->GetValue || '0.01',
+			)
+		};
+		if ( $@ or not $code ) {
+			$self->error("Error generating dialog: $@");
+			$self->unload($name);
+			return;
+		}
+
+		# Load the dialog
+		eval "$code";
+		if ( $@ ) {
+			$self->error("Error loading dialog: $@");
+			$self->unload($name);
+			return;
+		}
+	}
+
+	# Create the form
+	local $@;
 	my $preview = eval {
-		$name->new( $self->main );
+		$form->isa('FBP::FormPanel')
+			? Padre::Wx::Dialog::Preview->new( $self->main, $name )
+			: $name->new( $self->main )
 	};
 	if ( $@ ) {
 		$self->error("Error constructing dialog: $@");
@@ -217,32 +240,23 @@ sub preview_clicked {
 # Support Methods
 
 # Generate the class code
-sub generate_dialog {
+sub generate_form {
 	my $self  = shift;
 	my %param = @_;
-
-	# Find the dialog
-	my $fbp     = $param{xml};
-	my $project = $fbp->project;
-	my $form    = $fbp->form($param{dialog});
-	unless ( $form ) {
-		$self->error("Failed to find form $param{dialog}");
-		return;
-	}
 
 	# Configure the code generator
 	my $perl = undef;
 	if ( $param{padre} ) {
 		require Padre::Plugin::FormBuilder::Perl;
 		$perl = Padre::Plugin::FormBuilder::Perl->new(
-			project     => $project,
+			project     => $param{fbp}->project,
 			version     => $param{version},
 			encapsulate => $self->encapsulate,
 		);
 	} else {
 		require FBP::Perl;
 		$perl = FBP::Perl->new(
-			project => $project,
+			project => $param{fbp}->project,
 		);
 	}
 
@@ -250,7 +264,7 @@ sub generate_dialog {
 	local $@;
 	my $string = eval {
 		$perl->flatten(
-			$perl->form_class( $form, $param{package} )
+			$perl->form_class( $param{form}, $param{package} )
 		)
 	};
 	if ( $@ ) {
