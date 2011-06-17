@@ -49,7 +49,8 @@ our $VERSION = '0.11';
 package
 	Wx::Event;
 #>>>
-our $VERSION = '0.11';
+# Don't set global Wx::Event version
+#our $VERSION = '0.11';
 
 use strict;
 

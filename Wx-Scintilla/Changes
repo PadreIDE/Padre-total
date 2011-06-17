@@ -1,6 +1,9 @@
 Revision history for Wx-Scintilla
 
 0.12	TBA
+        Don't set global Wx::Event version
+        Pre-build check for GTK development library
+        Static Perl linking fix
 	Totally experimental Perl 6 syntax higlighting that is made only
 	for the brave of heart (AZAWAWI)
 
