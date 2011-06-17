@@ -1,7 +1,8 @@
 Revision history for Wx-Scintilla
 
 0.12	TBA
-        Don't set global Wx::Event version (MDOOTSON)
+        Updated POD (AZAWAWI)
+	Don't set global Wx::Event version (MDOOTSON)
         Pre-build check for GTK development library (MDOOTSON)
         Static Perl linking fix (MDOOTSON)
 	Totally experimental Perl 6 syntax higlighting that is made only
