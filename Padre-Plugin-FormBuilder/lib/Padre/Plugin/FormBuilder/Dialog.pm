@@ -206,7 +206,7 @@ sub preview_clicked {
 	local $@;
 	my $preview = eval {
 		$form->isa('FBP::FormPanel')
-			? Padre::Wx::Dialog::Preview->new( $self->main, $name )
+			? Padre::Plugin::FormBuilder::Preview->new( $self->main, $name )
 			: $name->new( $self->main )
 	};
 	if ( $@ ) {
