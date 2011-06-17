@@ -23,7 +23,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Padre FormBuilder - Panel Preview"),
+		Wx::gettext("Preview - Panel $panel"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE,

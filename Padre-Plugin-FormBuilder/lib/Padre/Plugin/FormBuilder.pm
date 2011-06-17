@@ -59,10 +59,19 @@ sub plugin_name {
 # Clean up our classes
 sub plugin_disable {
 	my $self = shift;
+
+	# Close the formbuilder dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
+
+	# Unload all our child classes
 	$self->unload('Padre::Plugin::FormBuilder::Dialog');
 	$self->unload('Padre::Plugin::FormBuilder::FBP');
 	$self->unload('Padre::Plugin::FormBuilder::Perl');
 	$self->unload('Padre::Plugin::FormBuilder::Preview');
+
 	return 1;
 }
 
