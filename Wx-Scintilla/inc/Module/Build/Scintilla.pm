@@ -134,7 +134,7 @@ sub ACTION_build {
 	}
 
 	$self->stc_prebuild_check;
-	
+
 	$self->build_scintilla();
 	$self->build_xs();
 	$self->SUPER::ACTION_build;

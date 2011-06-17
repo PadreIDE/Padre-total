@@ -160,8 +160,8 @@ sub stc_find_libperl {
 	if ( $link eq 'static' ) {
 		return '';
 	} else {
-		my $returnpath     = '';
-		my $dllpath = qq($archlib/CORE/$libperlname);
+		my $returnpath = '';
+		my $dllpath    = qq($archlib/CORE/$libperlname);
 		return $dllpath if -f $dllpath;
 
 		# search elsewhere

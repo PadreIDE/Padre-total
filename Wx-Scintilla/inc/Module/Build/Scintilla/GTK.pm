@@ -31,7 +31,7 @@ sub stc_scintilla_link { $_[0]->stc_scintilla_dll; }
 
 sub stc_build_scintilla_object {
 	my ( $self, $module, $object_name, $includedirs ) = @_;
-	
+
 	my @cmd = (
 		$self->stc_compiler,
 		$self->stc_ccflags,
@@ -51,12 +51,12 @@ sub stc_build_scintilla_object {
 }
 
 sub stc_prebuild_check {
-	my $self = shift;
-	my $ld = Alien::wxWidgets->linker;
+	my $self      = shift;
+	my $ld        = Alien::wxWidgets->linker;
 	my $libstring = $self->stc_extra_scintilla_libs;
-	my $outfile = 'stc_checkdepends.out';
-	my $command = qq($ld -fPIC -shared $libstring -o $outfile);
-	if(system($command)) {
+	my $outfile   = 'stc_checkdepends.out';
+	my $command   = qq($ld -fPIC -shared $libstring -o $outfile);
+	if ( system($command) ) {
 		unlink($outfile);
 		print qq(Check for gtk2 development libraries failed.\n);
 		print qq(Perhaps you need to install package libgtk2.0-dev or the equivalent for your system.\n);
@@ -68,10 +68,11 @@ sub stc_prebuild_check {
 }
 
 sub stc_extra_scintilla_libs {
-	my $self = shift;
+	my $self   = shift;
 	my $extras = '-lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lpangoft2-1.0 ';
 	$extras .= '-lgdk_pixbuf-2.0 -lm -lpango-1.0 -lfreetype -lfontconfig -lgobject-2.0 ';
 	$extras .= '-lgmodule-2.0 -lgthread-2.0 -lrt -lglib-2.0 -lpng -lz -ldl -lm ';
+
 	#'-lgio-2.0', # does not apper to be needed and not present on some systems
 	return $extras;
 }
