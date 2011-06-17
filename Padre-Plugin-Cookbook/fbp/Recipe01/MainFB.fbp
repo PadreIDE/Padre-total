@@ -7,6 +7,7 @@
         <property name="disconnect_events">1</property>
         <property name="disconnect_mode">source_name</property>
         <property name="disconnect_python_events">0</property>
+        <property name="embedded_files_path">res</property>
         <property name="encoding">UTF-8</property>
         <property name="event_generation">connect</property>
         <property name="file"></property>
@@ -58,7 +59,7 @@
             <property name="minimize_button">0</property>
             <property name="minimum_size"></property>
             <property name="moveable">1</property>
-            <property name="name">Padre::Plugin::Cookbook::FBP::MainFB</property>
+            <property name="name">Padre::Plugin::Cookbook::Recipe01::FBP::MainFB</property>
             <property name="pane_border">1</property>
             <property name="pane_position"></property>
             <property name="pane_size"></property>

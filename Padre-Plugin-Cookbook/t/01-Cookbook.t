@@ -14,7 +14,7 @@ TODO: {
 # let's check our subs/methods.
 ######
 
-my @subs = qw( padre_interfaces plugin_name menu_plugins_simple plugin_disable load_dialog_main );
+my @subs = qw( padre_interfaces plugin_name menu_plugins_simple plugin_disable load_dialog_recipe01_main );
 use_ok( 'Padre::Plugin::Cookbook', @subs );
 
 foreach my $subs (@subs) {
@@ -26,10 +26,10 @@ foreach my $subs (@subs) {
 # let's check our lib's are here.
 ######
 my $test_object;
-require Padre::Plugin::Cookbook::Main;
-$test_object = new_ok('Padre::Plugin::Cookbook::Main');
+require Padre::Plugin::Cookbook::Recipe01::Main;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe01::Main');
 
-require Padre::Plugin::Cookbook::FBP::MainFB;
-$test_object = new_ok('Padre::Plugin::Cookbook::FBP::MainFB');
+require Padre::Plugin::Cookbook::Recipe01::FBP::MainFB;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
 
 done_testing();

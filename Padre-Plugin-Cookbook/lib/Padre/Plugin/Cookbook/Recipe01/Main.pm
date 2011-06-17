@@ -1,4 +1,4 @@
-package Padre::Plugin::Cookbook::Main;
+package Padre::Plugin::Cookbook::Recipe01::Main;
 
 use 5.010;
 use strict;
@@ -8,18 +8,18 @@ use utf8;
 use autodie;
 
 # Version required
-use version; our $VERSION = qv(0.13);
-use parent qw( Padre::Plugin::Cookbook::FBP::MainFB );
+use version; our $VERSION = qv(0.14);
+use parent qw( Padre::Plugin::Cookbook::Recipe01::FBP::MainFB );
 
 #######
 # Method new
 #######
 sub new {
 	my $class = shift;
-	
+
 	# Padre main window integration
-	my $main  = shift;
-	
+	my $main = shift;
+
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
 
@@ -34,11 +34,19 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Cookbook::Main
+Padre::Plugin::Cookbook::Recipe01::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Main version 0.13
+This document describes Padre::Plugin::Cookbook::Recipe01::Main version 0.13
+
+=head1 DESCRIPTION
+
+Recipe01 - 'Hello World'
+
+Main is the event handler for MainFB, it's parent class.
+It displays a Main dialog with 'Hello World'.
+It's a basic example of a Padre plug-in using a WxDialog.
 
 =head1 SUBROUTINES/METHODS
 
@@ -46,19 +54,13 @@ This document describes Padre::Plugin::Cookbook::Main version 0.13
 
 =item new ()
 
-Constructor. Should be called with $main by CookBook01->load_dialog_main().
+Constructor. Should be called with $main by CookBook->load_dialog_recipe01_main().
 
 =back
 
-=head1 DESCRIPTION
-
-Main is the event handler for MainFB, it's parent class.
-It displays a Main dialog with 'Hello World'.
-It's a basic example of a Padre plug-in using a WxDialog.
-
 =head1 DEPENDENCIES
 
-Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::FBP::MainFB
+Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe01::FBP::MainFB
 
 =head1 AUTHOR
 
