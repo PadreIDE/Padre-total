@@ -48,6 +48,7 @@ sub menu_plugins_simple {
 			'Recipe-01 - Hello World'      => sub { $self->load_dialog_recipe01_main; },
 			'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
 			'Recipe-03 - inc About dialog' => sub { $self->load_dialog_recipe03_main; },
+			'Recipe-04 - ConfigDB beta' => sub { $self->load_dialog_recipe04_main; },
 
 			#'Recipe-03 - out & About' => sub { $self->load_dialog_recipeXX_main('Recipe03'); },
 		],
@@ -60,12 +61,23 @@ sub menu_plugins_simple {
 #######
 sub plugin_disable {
 	my $self = shift;
+	
+	# Close the dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
+	
+	# Unload all our child classes
 	$self->unload('Padre::Plugin::Cookbook::Recipe01::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
 	$self->unload('Padre::Plugin::Cookbook::Recipe02::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
 	$self->unload('Padre::Plugin::Cookbook::Recipe03::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::MainFB');
+	$self->unload('Padre::Plugin::Cookbook::Recipe04::Main');
+	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::MainFB');
+	
 	return 1;
 }
 
@@ -141,6 +153,31 @@ sub load_dialog_recipe03_main {
 	require Padre::Plugin::Cookbook::Recipe03::Main;
 	$self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
 	$self->{dialog}->Show;
+
+	return;
+}
+
+########
+# Composed Method,
+# Load Recipe-04 Main Dialog, only once
+#######
+sub load_dialog_recipe04_main {
+	my $self = shift;
+
+	# Padre main window integration
+	my $main = $self->main;
+
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
+
+	# Create the new dialog
+	require Padre::Plugin::Cookbook::Recipe04::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe04::Main->new($main);
+	$self->{dialog}->Show;
+	$self->{dialog}->set_up;
 
 	return;
 }
