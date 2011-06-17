@@ -53,15 +53,9 @@ has encapsulate => (
 # Dialog Generators
 
 sub form_class {
-	my $self    = shift;
-	my $form    = shift;
-	my $package = shift;
-	my $code    = $self->SUPER::form_class($form);
-
-	# Customise the package name if requested
-	if ( $package ) {
-		splice( @$code, 0, 1, "package $package;" );
-	}
+	my $self = shift;
+	my $form = shift;
+	my $code = $self->SUPER::form_class($form);
 
 	# Prepend an auto-generated "Don't Modify" warning
 	my $class = Scalar::Util::blessed($self);

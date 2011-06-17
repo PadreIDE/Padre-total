@@ -82,6 +82,9 @@ sub browse_changed {
 	# Attempt to load the file and parse out the dialog list
 	local $@;
 	eval {
+		# This might take a little while
+		my $lock = $self->main->lock('UPDATE');
+
 		# Load the file
 		require FBP;
 		$self->{xml} = FBP->new;
@@ -264,12 +267,17 @@ sub generate_form {
 	local $@;
 	my $string = eval {
 		$perl->flatten(
-			$perl->form_class( $param{form}, $param{package} )
-		)
+			$perl->form_class( $param{form} )
+		);
 	};
 	if ( $@ ) {
 		$self->error("Code Generator Error: $@");
 		return;
+	}
+
+	# Customise the package name if requested
+	if ( $param{package} ) {
+		$string =~ s/^package [\w:]+/package $param{package}/;
 	}
 
 	return $string;
