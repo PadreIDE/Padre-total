@@ -131,12 +131,10 @@ sub stc_find_libperl {
 	my $link        = ( $libperlname =~ /\.a$/ ) ? 'static' : 'shared';
 
 	if ( $link eq 'static' ) {
-		return qq($archlib/CORE/$libperlname);
+		return '';
 	}
 
-	my $testforlibperl = $libperlname;
-	$testforlibperl =~ s/\.a$/\.so/;
-	my $dllpath = qq($archlib/CORE/$testforlibperl);
+	my $dllpath = qq($archlib/CORE/$libperlname);
 	return $dllpath if -f $dllpath;
 	if ( $link eq 'shared' ) {
 
@@ -144,7 +142,7 @@ sub stc_find_libperl {
 		my $returnpath = '';
 		my @libperlpaths = split( /\s+/, $Config::Config{libpth} );
 		for my $libdir (@libperlpaths) {
-			if ( -f qq($libdir/$testforlibperl) ) {
+			if ( -f qq($libdir/$libperlname) ) {
 				$returnpath = (qq($libdir/$libperlname));
 				last;
 			}
