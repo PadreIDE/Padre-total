@@ -36,6 +36,10 @@ sub stc_builderclass {
 	return $bclass;
 }
 
+sub stc_extra_scintilla_libs { ''; }
+
+sub stc_prebuild_check { 1; }
+
 sub stc_wxconfig {
 	my $self = shift;
 
@@ -123,14 +127,14 @@ sub ACTION_build {
 	require Alien::wxWidgets;
 	Alien::wxWidgets->import;
 
-
 	# check wx widgets version
 	my $wxversion = Alien::wxWidgets->version;
 	if ( $wxversion !~ /^2\.008/ ) {
 		die("Wx::Scintilla does not support wxWidgets version $wxversion");
 	}
 
-
+	$self->stc_prebuild_check;
+	
 	$self->build_scintilla();
 	$self->build_xs();
 	$self->SUPER::ACTION_build;

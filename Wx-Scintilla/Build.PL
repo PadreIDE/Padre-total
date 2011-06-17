@@ -41,7 +41,8 @@ my $builder = $stc_builderclass->new(
 		'*.pdb',
 		'*.obj',
 		'*.a',
-		'*.so'
+		'*.so',
+                'stc_checkdepends.out',
 	],
 	create_makefile_pl => 'small',
 	meta_merge         => {
