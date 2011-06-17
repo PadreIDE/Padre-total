@@ -38,7 +38,7 @@ Padre::Plugin::Cookbook::Recipe01::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe01::Main version 0.13
+This document describes Padre::Plugin::Cookbook::Recipe01::Main version 0.14
 
 =head1 DESCRIPTION
 

@@ -1,4 +1,4 @@
-use Test::More tests => 12;
+use Test::More tests => 14;
 
 use_ok( 'Padre',                 '0.84' );
 use_ok( 'Padre::Plugin',         '0.84' );
@@ -32,4 +32,9 @@ $test_object = new_ok('Padre::Plugin::Cookbook::Recipe01::Main');
 require Padre::Plugin::Cookbook::Recipe01::FBP::MainFB;
 $test_object = new_ok('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
 
+require Padre::Plugin::Cookbook::Recipe02::Main;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe02::Main');
+
+require Padre::Plugin::Cookbook::Recipe02::FBP::MainFB;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
 done_testing();
