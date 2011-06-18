@@ -1,0 +1,26 @@
+Changes
+lib/Padre/Plugin/Cookbook.pm
+lib/Padre/Plugin/Cookbook/Recipe01/Main.pm
+lib/Padre/Plugin/Cookbook/Recipe01/FBP/MainFB.pm
+lib/Padre/Plugin/Cookbook/Recipe02/Main.pm
+lib/Padre/Plugin/Cookbook/Recipe02/FBP/MainFB.pm
+lib/Padre/Plugin/Cookbook/Recipe03/Main.pm
+lib/Padre/Plugin/Cookbook/Recipe03/FBP/MainFB.pm
+lib/Padre/Plugin/Cookbook/Recipe03/About.pm
+lib/Padre/Plugin/Cookbook/Recipe03/FBP/AboutFB.pm
+lib/Padre/Plugin/Cookbook/Recipe04/Main.pm
+lib/Padre/Plugin/Cookbook/Recipe04/FBP/MainFB.pm
+lib/Padre/Plugin/Cookbook/Recipe04/About.pm
+lib/Padre/Plugin/Cookbook/Recipe04/FBP/AboutFB.pm
+Makefile.PL
+MANIFEST			This list of files
+README
+t/00.load.t
+t/01-Cookbook.t
+t/02-Recipe01.t
+t/03-Recipe02.t
+t/04-About03.t
+t/04-Recipe03.t
+t/11-pod.t
+t/12-pod-coverage.t
+t/13-perlcritic.t
