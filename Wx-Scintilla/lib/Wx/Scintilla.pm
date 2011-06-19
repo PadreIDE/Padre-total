@@ -201,6 +201,10 @@ On Debian/Ubuntu, you need to install the following via:
 
 	sudo apt-get install libgtk2.0-dev
 
+On MacOS 64-bit by default you need to install a 32-bit Perl in order to
+install wxWidgets 2.8.x. Please refer to 
+L<http://wiki.wxperl.info/w/index.php/Mac_OS_X_Platform_Notes> for more information.
+
 =head1 HISTORY
 
 wxWidgets 2.9.1 and trunk has 2.03 so far. I searched for Perl lexer changes
@@ -276,7 +280,8 @@ For other issues, contact the maintainer.
 =head1 AUTHOR
 
 Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
-Mark Dootson
+
+Mark Dootson <http://www.wxperl.co.uk>
 
 =head1 SEE ALSO
 
