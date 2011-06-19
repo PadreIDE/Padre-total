@@ -1,5 +1,7 @@
 Revision history for Wx-Scintilla
 
+0.13	TBA
+
 0.12	2011.6.17
 	Updated POD (AZAWAWI)
 	Don't set global Wx::Event version (MDOOTSON)
