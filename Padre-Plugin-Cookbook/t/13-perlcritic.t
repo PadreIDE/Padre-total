@@ -1,7 +1,21 @@
 #!/usr/bin/env perl
 
-if ( !require Test::Perl::Critic ) {
-	Test::More::plan( skip_all => "Test::Perl::Critic required for testing PBP compliance" );
+use strict;
+use warnings;
+use File::Spec;
+use Test::More;
+use English qw(-no_match_vars);
+
+eval { require Test::Perl::Critic; };
+if ($EVAL_ERROR) {
+	my $msg = 'Test::Perl::Critic required to criticise code';
+	plan( skip_all => $msg );
 }
 
-Test::Perl::Critic::all_critic_ok();
+use Test::Perl::Critic (
+	-severity => 3,
+	-verbose  => 3,
+	-exclude  => [ 'RequireRcsKeywords', ],
+);
+
+all_critic_ok();
