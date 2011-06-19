@@ -14,65 +14,65 @@ use parent qw( Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB );
 use Data::Dumper ();
 
 sub new {
-    my $class = shift;
-    my $main  = shift;
+	my $class = shift;
+	my $main  = shift;
 
-    # Create the dialog
-    my $self = $class->SUPER::new($main);
+	# Create the dialog
+	my $self = $class->SUPER::new($main);
 
-    # add package name to about dialog
-    my @package = split /::/x, __PACKAGE__,;
-    $self->name_version->SetLabel( $package[3] . ' ' . $VERSION );
+	# add package name to about dialog
+	my @package = split /::/x, __PACKAGE__,;
+	$self->name_version->SetLabel( $package[3] . ' ' . $VERSION );
 
-    # add your name below
-    $self->developed_by->SetLabel("developed by bowtie");
+	# add your name below
+	$self->developed_by->SetLabel("developed by bowtie");
 
-    $self->CenterOnParent;
-    return $self;
+	$self->CenterOnParent;
+	return $self;
 }
 
 sub credits_clicked {
-    my $self = shift;
-    my $main = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 
-    $main->show_output(1);
-    my $output = $main->output;
-    $output->clear;
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
 
-    # add maximize icon
-    $main->config->apply( 'main_lockinterface', 0 );
-    $self->config->write;
+	# add maximize icon
+	$main->config->apply( 'main_lockinterface', 0 );
+	$self->config->write;
 
-    my $space   = q{ };
-    my %credits = (
-        'bowtie'  => $space,
-        'Alias'   => $space,
-        'El_Che'  => $space,
-        'claudio' => $space,
-        'azawawi' => $space,
-        'abc'     => 'abc@abc.com',
-    );
+	my $space   = q{ };
+	my %credits = (
+		'bowtie'  => $space,
+		'Alias'   => $space,
+		'El_Che'  => $space,
+		'claudio' => $space,
+		'azawawi' => $space,
+		'abc'     => 'abc@abc.com',
+	);
 
-    $output->AppendText("CREDITS\ncredits_clicked \n\tname:\t\t<e-mail>\n");
-    while ( my ( $key, $value ) = each %credits ) {
-        $output->AppendText("\t$key:\t\t$value\n");
-    }
-    return;
+	$output->AppendText("CREDITS\ncredits_clicked \n\tname:\t\t<e-mail>\n");
+	while ( my ( $key, $value ) = each %credits ) {
+		$output->AppendText("\t$key:\t\t$value\n");
+	}
+	return;
 }
 
 sub licence_clicked {
-    my $self = shift;
-    my $main = $self->main;
+	my $self = shift;
+	my $main = $self->main;
 
-    $main->show_output(1);
-    my $output = $main->output;
-    $output->clear;
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
 
-    # add maximize icon
-    $main->config->apply( 'main_lockinterface', 0 );
-    $self->config->write;
+	# add maximize icon
+	$main->config->apply( 'main_lockinterface', 0 );
+	$self->config->write;
 
-    my $licence = <<'END_LICENCE';
+	my $licence = <<'END_LICENCE';
 LICENSE & COPYRIGHT 
 
 Copyright 2008-2011 The Padre development team as listed in Padre.pm.
@@ -91,12 +91,12 @@ The full text of the license can be found in the LICENSE file included with this
 
 END_LICENCE
 
-    $output->AppendText($licence);
+	$output->AppendText($licence);
 
-    #	while ( my $licence = <DATA> ) {
-    #		$output->AppendText($licence);
-    #	}
-    return;
+	#	while ( my $licence = <DATA> ) {
+	#		$output->AppendText($licence);
+	#	}
+	return;
 }
 
 1;

@@ -47,7 +47,7 @@ sub new {
 	);
 	$about->SetDefault;
 	$about->SetFont( Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 93, 92, 0, "" ) );
-	$about->SetToolTip( "About Dialog with Controler" );
+	$about->SetToolTip("About Dialog with Controler");
 
 	Wx::Event::EVT_BUTTON(
 		$self, $about,

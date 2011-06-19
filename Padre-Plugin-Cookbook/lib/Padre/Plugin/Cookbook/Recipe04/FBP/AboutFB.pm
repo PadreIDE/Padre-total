@@ -10,11 +10,11 @@ use warnings;
 use diagnostics;
 use utf8;
 use autodie;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
 use version; our $VERSION = qv(0.21);
-use parent -norequire, qw(
+use parent-norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
 );
@@ -37,9 +37,7 @@ sub new {
 		-1,
 		"Padre Plug-in",
 	);
-	$package_name->SetFont(
-		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
+	$package_name->SetFont( Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
 
 	my $m_staticline1 = Wx::StaticLine->new(
 		$self,
@@ -54,9 +52,7 @@ sub new {
 		-1,
 		"name_version",
 	);
-	$name_version->SetFont(
-		Wx::Font->new( 14, 70, 90, 90, 0, "" )
-	);
+	$name_version->SetFont( Wx::Font->new( 14, 70, 90, 90, 0, "" ) );
 
 	my $developed_by = Wx::StaticText->new(
 		$self,
@@ -79,8 +75,7 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self,
-		$credits,
+		$self, $credits,
 		sub {
 			shift->credits_clicked(@_);
 		},
@@ -93,8 +88,7 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self,
-		$licence,
+		$self, $licence,
 		sub {
 			shift->licence_clicked(@_);
 		},
@@ -125,14 +119,14 @@ sub new {
 	my $bSizer4 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer4->Add( $credits, 0, Wx::wxALL, 3 );
 	$bSizer4->Add( $licence, 0, Wx::wxALL, 3 );
-	$bSizer4->Add( $Close, 0, Wx::wxALL, 3 );
+	$bSizer4->Add( $Close,   0, Wx::wxALL, 3 );
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer1->Add( $bSizer2, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer2,       0, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline1, 0, Wx::wxEXPAND | Wx::wxALL, 3 );
-	$bSizer1->Add( $bSizer3, 1, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer3,       1, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline2, 0, Wx::wxEXPAND | Wx::wxALL, 3 );
-	$bSizer1->Add( $bSizer4, 0, Wx::wxEXPAND, 5 );
+	$bSizer1->Add( $bSizer4,       0, Wx::wxEXPAND,             5 );
 	$bSizer1->Add( $m_staticline3, 0, Wx::wxEXPAND | Wx::wxALL, 3 );
 
 	$self->SetSizer($bSizer1);
@@ -160,7 +154,7 @@ Public Accessor package_name Auto-generated.
 
 sub package_name {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{package_name});
+	return Wx::Window::FindWindowById( $self->{package_name} );
 }
 
 =pod
@@ -177,7 +171,7 @@ Public Accessor name_version Auto-generated.
 
 sub name_version {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{name_version});
+	return Wx::Window::FindWindowById( $self->{name_version} );
 }
 
 =pod
@@ -194,7 +188,7 @@ Public Accessor developed_by Auto-generated.
 
 sub developed_by {
 	my $self = shift;
-	return Wx::Window::FindWindowById($self->{developed_by});
+	return Wx::Window::FindWindowById( $self->{developed_by} );
 }
 
 =pod
@@ -234,6 +228,7 @@ sub licence_clicked {
 }
 
 1;
+
 =pod
 
 =over 4

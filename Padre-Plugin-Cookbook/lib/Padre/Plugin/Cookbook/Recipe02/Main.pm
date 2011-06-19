@@ -43,12 +43,12 @@ sub output_clicked {
 	$output->clear;
 
 	$output->AppendText("output cliked \n");
-	$output->AppendText( "Name: " . $self->name_value->GetValue() . "\n" );
+	$output->AppendText( 'Name: ' . $self->name_value->GetValue() . "\n" );
 	if ($update_run_yes) {
-		$output->AppendText( "Choice GetSelection: " . $items[ $self->choices->GetSelection() ] . "\n" );
+		$output->AppendText( 'Choice GetSelection: ' . $items[ $self->choices->GetSelection() ] . "\n" );
 	}
-	$output->AppendText( "Choice GetCurrentSelection: " . $self->choices->GetCurrentSelection() . "\n" );
-	$output->AppendText( "User Name GetStringSelection: " . $self->user_name->GetStringSelection() . "\n" );
+	$output->AppendText( 'Choice GetCurrentSelection: ' . $self->choices->GetCurrentSelection() . "\n" );
+	$output->AppendText( 'User Name GetStringSelection: ' . $self->user_name->GetStringSelection() . "\n" );
 
 	return;
 }
@@ -145,20 +145,20 @@ sub set_name_label_value {
 	my $output = $main->output;
 
 	given ( $self->user_name->GetStringSelection() ) {
-		when ("nick") {
+		when ('nick') {
 			$self->name_label->SetLabel( 'user ' . $_ . ' name' );
 			$self->name_value->SetValue( $config->identity_nickname );
 		}
-		when ("cpan") {
+		when ('cpan') {
 			$self->name_label->SetLabel( 'user ' . $_ . ' name' );
 			$self->name_value->SetValue( $config->identity_name );
 		}
-		when ("e-mail") {
+		when ('e-mail') {
 			$self->name_label->SetLabel( 'user ' . $_ . ' name' );
 			$self->name_value->SetValue( $config->identity_email );
 		}
 		default {
-			$output->AppendText( "huston! we have a problem\n I think you have added another radio button option\n" )
+			$output->AppendText("huston! we have a problem\n I think you have added another radio button option\n")
 		}
 	}
 	return;

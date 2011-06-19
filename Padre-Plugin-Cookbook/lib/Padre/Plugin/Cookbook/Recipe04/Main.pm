@@ -37,24 +37,29 @@ sub BUILD {
 
 my $item = Wx::ListItem->new;
 
-has [qw/ relation_name config_db sql_select /] => ( isa     => 'Str',
-													is      => 'rw',
-													default => undef,
-													lazy    => 1,
+has [qw/ relation_name config_db sql_select /] => (
+	isa     => 'Str',
+	is      => 'rw',
+	default => undef,
+	lazy    => 1,
 );
 
-has [qw/ cardinality degree previous_column /] => ( isa     => 'Int',
-													is      => 'rw',
-													default => 0,
-													lazy    => 1,
+has [qw/ cardinality degree previous_column /] => (
+	isa     => 'Int',
+	is      => 'rw',
+	default => 0,
+	lazy    => 1,
 );
 
-has [qw/ attributes tuples /] => ( isa => 'ArrayRef',
-								   is  => 'rw', );
+has [qw/ attributes tuples /] => (
+	isa => 'ArrayRef',
+	is  => 'rw',
+);
 
-has [qw/ dialog_width /] => ( isa     => 'Bool',
-							  is      => 'rw',
-							  default => '0',
+has [qw/ dialog_width /] => (
+	isa     => 'Bool',
+	is      => 'rw',
+	default => '0',
 );
 
 #######
@@ -84,8 +89,10 @@ sub set_up {
 	$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1,
-							   'MEDIUM SEA GREEN for an old school look' );
+	$self->list_ctrl->SetItem(
+		$idx, 1,
+		'MEDIUM SEA GREEN for an old school look'
+	);
 
 	$item->SetId(2);
 	$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
@@ -107,8 +114,10 @@ sub set_up {
 	$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1,
-					  'WARNING only works with Session Files; Update first' );
+	$self->list_ctrl->SetItem(
+		$idx, 1,
+		'WARNING only works with Session Files; Update first'
+	);
 
 	$item->SetId(5);
 	$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
@@ -146,8 +155,7 @@ sub update_clicked {
 	if ($EVAL_ERROR) {
 		say "Opps failed to get cardinality for $self->config_db ";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		$self->cardinality( $self->config_db->count );
 	}
 
@@ -156,8 +164,7 @@ sub update_clicked {
 	if ($EVAL_ERROR) {
 		say "Opps failed to get table info for $self->config_db ";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		$self->attributes( $self->config_db->table_info );
 		$self->degree( scalar( @{ $self->attributes } ) );
 	}
@@ -204,8 +211,7 @@ sub width_ajust_clicked {
 		say "wd: +";
 		$self->SetSize( 1008, -1 );
 		$self->dialog_width('1');
-	}
-	else {
+	} else {
 		say "wd: -";
 		$self->SetSize( 560, -1 );
 		$self->dialog_width('0');
@@ -230,8 +236,7 @@ sub on_list_col_clicked {
 	if ($EVAL_ERROR) {
 		say "column info";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		$col_num = $list_event->GetColumn();
 		if ( $col_num eq 0 ) {
 			say "I don't work on index";
@@ -239,18 +244,18 @@ sub on_list_col_clicked {
 		}
 	}
 
-	say "col_num: ".$col_num;
+	say "col_num: " . $col_num;
 
 	if ( $col_num ne $self->previous_column ) {
 		$sql_order = 'ASC';
 		$self->previous_column($col_num);
-	}
-	else {
+	} else {
 		$sql_order = 'DESC';
+
 		# RESET previous_column
-		$self->previous_column( 0 );
+		$self->previous_column(0);
 	}
-	
+
 	### test code
 
 	eval { say "0: " . @{ $self->attributes }; };
@@ -264,13 +269,12 @@ sub on_list_col_clicked {
 	eval { say "2: " . ${ @{ $self->attributes }[ $col_num - 1 ] }{name}; };
 	p ${ @{ $self->attributes }[ $col_num - 1 ] }{name};
 
-# my $sql_att_name = %{@{ $self->attributes}->[$col_num-1]}->{name};
-#$self->config_db->select("ORDER BY ${@{ $self->attributes}[$col_num-1]}{name}");#DESC");
+	# my $sql_att_name = %{@{ $self->attributes}->[$col_num-1]}->{name};
+	#$self->config_db->select("ORDER BY ${@{ $self->attributes}[$col_num-1]}{name}");#DESC");
 
 	### end test code
 
-	$self->sql_select(
-			"ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order");
+	$self->sql_select("ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order");
 
 	_display_relation($self);
 
@@ -292,8 +296,7 @@ sub _display_any_relation {
 	if ($EVAL_ERROR) {
 		say "Opps $self->config_db is damaged";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		@tuples = $self->config_db->select( $self->sql_select );
 
 		# TODO this is naff sortout
@@ -306,10 +309,8 @@ sub _display_any_relation {
 			$item->SetId($idx);
 
 			if ( $idx % 2 ) {
-				$item->SetBackgroundColour(
-										Wx::Colour->new("MEDIUM SEA GREEN") );
-			}
-			else {
+				$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
+			} else {
 				$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
 			}
 
@@ -318,11 +319,15 @@ sub _display_any_relation {
 			$self->list_ctrl->SetItem( $idx, 0, $idx );
 
 			for ( 1 .. $self->degree ) {
-				$self->list_ctrl->SetItem( $idx, $_,
-										   $tuples[$idx][ ( $_ - 1 ) ] );
+				$self->list_ctrl->SetItem(
+					$idx, $_,
+					$tuples[$idx][ ( $_ - 1 ) ]
+				);
 			}
-			$progressbar->update( $idx,
-								  "Loading $self->relation_name tuples" );
+			$progressbar->update(
+				$idx,
+				"Loading $self->relation_name tuples"
+			);
 			$idx++;
 			_tidy_display($self);
 		}
@@ -349,8 +354,7 @@ sub _display_session_db {
 
 		if ( $idx % 2 ) {
 			$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
-		}
-		else {
+		} else {
 			$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
 		}
 		$self->list_ctrl->InsertItem($item);
@@ -361,8 +365,10 @@ sub _display_session_db {
 
 		# todo fix
 		# require POSIX;
-		my $update = POSIX::strftime( '%Y-%m-%d %H:%M:%S',
-									  localtime $PDbList[$idx][3], );
+		my $update = POSIX::strftime(
+			'%Y-%m-%d %H:%M:%S',
+			localtime $PDbList[$idx][3],
+		);
 
 		$self->list_ctrl->SetItem( $idx, 4, $update );
 		$idx++;
@@ -392,13 +398,14 @@ sub _display_attribute_names {
 		my $column_title;
 		if ( $attribute->{pk} ) {
 			$column_title = "$attribute->{name} $attribute->{type} *";
-		}
-		else {
+		} else {
 			$column_title = "$attribute->{name} $attribute->{type}";
 		}
 		$self->list_ctrl->InsertColumn( $idx, Wx::gettext($column_title) );
-		$self->list_ctrl->SetColumnWidth( $idx,
-										  Wx::wxLIST_AUTOSIZE_USEHEADER );
+		$self->list_ctrl->SetColumnWidth(
+			$idx,
+			Wx::wxLIST_AUTOSIZE_USEHEADER
+		);
 		$idx++;
 	}
 	return;
@@ -439,8 +446,7 @@ sub _show_relation_data {
 	if ($EVAL_ERROR) {
 		say "Opps no info for $self->config_db ";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		$info = $self->config_db->table_info;
 		p @$info;
 	}
@@ -449,8 +455,7 @@ sub _show_relation_data {
 	if ($EVAL_ERROR) {
 		say "Opps $self->config_db is damaged";
 		carp($EVAL_ERROR);
-	}
-	else {
+	} else {
 		$info = $self->config_db->select;
 		p @$info;
 	}
@@ -476,8 +481,7 @@ sub _tidy_display {
 		# say "wxLIST_AUTOSIZE :" . $col_data_size;
 		if ( $col_head_size >= $col_data_size ) {
 			$self->list_ctrl->SetColumnWidth( $_, $col_head_size );
-		}
-		else {
+		} else {
 			$self->list_ctrl->SetColumnWidth( $_, $col_data_size );
 		}
 	}
@@ -491,19 +495,19 @@ sub _tidy_display {
 sub _setup_progressbar {
 	my $self = shift;
 
-# Set modal to true to lock other application windows while the progress
-# box is displayed. Default is 0 (non-modal).
-#
-# Set lazy to true to show the progress dialog only if the whole process
-# takes long enough that the progress box makes sense. Default if 1 (lazy-mode).
+	# Set modal to true to lock other application windows while the progress
+	# box is displayed. Default is 0 (non-modal).
+	#
+	# Set lazy to true to show the progress dialog only if the whole process
+	# takes long enough that the progress box makes sense. Default if 1 (lazy-mode).
 	require Padre::Wx::Progress;
-	my $progress =
-		Padre::Wx::Progress->new( $self,
-								  $self->relation_name,
-								  $self->cardinality,
-								  modal => 0,
-								  lazy  => 1,
-		);
+	my $progress = Padre::Wx::Progress->new(
+		$self,
+		$self->relation_name,
+		$self->cardinality,
+		modal => 0,
+		lazy  => 1,
+	);
 	return $progress;
 }
 
@@ -558,3 +562,109 @@ no Moose;
 1;
 
 __END__
+
+=head1 NAME
+
+Padre::Plugin::Cookbook::Recipe04::Main
+
+=head1 VERSION
+
+This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.21
+
+=head1 DESCRIPTION
+
+Recipe04 - ConfigDB
+
+Main is the event handler for MainFB, it's parent class.
+
+It displays a Main dialog with an about button.
+It's a basic example of a Padre plug-in using a WxDialog.
+
+=head1 SUBROUTINES/METHODS
+
+=over 4
+
+=item new ()
+
+Constructor. Should be called with $main by CookBook->load_dialog_main().
+
+
+=item BUILD
+
+
+=item set_up
+
+
+=item update_clicked
+
+
+=item show_clicked
+
+
+=item on_list_col_clicked
+
+=item warning_clicked
+
+=item about_clicked ()
+
+Event handler for button about
+
+=item plugin_disable ()
+
+=item width_ajust_clicked
+
+Required method with minimum requirements
+
+    $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
+    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
+
+
+=item load_dialog_about ()
+
+loads our dialog Main, only allows one instance!
+
+    require Padre::Plugin::Cookbook::Recipe04::About;
+    $self->{dialog} = Padre::Plugin::Cookbook::Recipe04::About->new( $main );
+    $self->{dialog}->Show;
+
+
+=back
+
+=head1 DEPENDENCIES
+
+Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
+Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe0::FBP::AboutFB
+
+=head1 AUTHOR
+
+bowtie
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
