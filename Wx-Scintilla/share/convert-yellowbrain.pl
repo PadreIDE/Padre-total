@@ -1,6 +1,7 @@
 use strict;
 use warnings;
-
+use Pod::HTML2Pod;
+use File::Spec ();
 
 # auto flush STDOUT
 $| = 1;
@@ -21,21 +22,21 @@ foreach my $line (@index_html_lines) {
 			my ($file, $topic) = ($1, $2);
 			print "Loading $topic\n";
 			my $contents = download_url("$stc_base_url/$file", $file);
+			$file =~ s/\.html/.pod/;
+			$file = File::Spec->catfile('doc', $file);
 			if(open my $fh, '>', $file) {
-				print $fh $contents;
+				print $fh Pod::HTML2Pod::convert(
+				    'content' => $contents,  # input file
+				);
 				close $fh;
 			} else {
-			 die 'Could open $file for writing\n";
-			 }	
+				die "Could open $file for writing\n";
+			}	
 		}
 	}
 }
 
-#use Pod::HTML2Pod;
-#print Pod::HTML2Pod::convert(
-#    'file' => 'index.html',  # input file
-#    'a_href' => 1,  # try converting links
-#);
+
 
 
 sub download_url {
