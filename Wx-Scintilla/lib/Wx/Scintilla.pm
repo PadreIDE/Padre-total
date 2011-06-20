@@ -197,6 +197,10 @@ The ambitious goal of this project is to provide fresh Perl 5 and maybe 6
 support in L<Wx> while preserving compatibility with Wx::StyledTextCtrl
 and continually contribute it back to Scintilla project.
 
+=head1 MANUAL
+
+If you are looking for more API documentation, please consult L<Wx::Scintilla::Manual>
+
 =head1 PLATFORMS
 
 At the moment, Linux (Debian, Ubuntu, Fedora, CentOS) and Windows (Strawberry
@@ -290,6 +294,8 @@ Ahmad M. Zawawi <ahmad.zawawi@gmail.com>
 Mark Dootson <http://www.wxperl.co.uk>
 
 =head1 SEE ALSO
+
+Wx::Scintilla Manual L<Wx::Scintilla::Manual>
 
 wxStyledTextCtrl Documentation L<http://www.yellowbrain.com/stc/index.html>
 
