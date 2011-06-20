@@ -5,7 +5,8 @@ use warnings;
 # auto flush STDOUT
 $| = 1;
 
-my $index_html = download_url('http://www.yellowbrain.com/stc/index.html', 'index.html');
+my $stc_base_url = 'http://www.yellowbrain.com/stc';
+my $index_html = download_url("$stc_base_url/index.html", 'index.html');
 my @index_html_lines = split /\n/, $index_html;
 my $subject_index_pattern = quotemeta q{<a name="subjdex">};
 my $alpha_index_pattern = quotemeta q{<a name="alphadex"><b>Alphabetic Index</b></a></font></p>};
@@ -17,7 +18,15 @@ foreach my $line (@index_html_lines) {
 		$parse_subject_index = 0;
 	} elsif($parse_subject_index) {
 		if($line =~ /<a href\="(.+?)">(.+?)<\/a>/) {
-			print $1 . " => " . $2 . "\n";
+			my ($file, $topic) = ($1, $2);
+			print "Loading $topic\n";
+			my $contents = download_url("$stc_base_url/$file", $file);
+			if(open my $fh, '>', $file) {
+				print $fh $contents;
+				close $fh;
+			} else {
+			 die 'Could open $file for writing\n";
+			 }	
 		}
 	}
 }
