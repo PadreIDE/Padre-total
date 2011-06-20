@@ -1,0 +1,832 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Key Mapping and Execution
+
+=over
+
+=item * CmdKeyAssign
+
+=item * CmdKeyClear
+
+=item * CmdKeyClearAll
+
+=item * CmdKeyExecute
+
+=back
+
+B<Summary>:
+
+The first three commands in this set are used to modify
+keyboard-to-action mappings, the last one is normally used to
+programmatically invoke functions normally executed by a user pressing
+a keyboard key. It theoretically can also be used to send any
+parameterless command to the STC, but this feature is probably of
+limited use (?).
+
+B<backgrounder>:
+
+The STC has a default mapping between certain keys and functions. This
+is simplified/summarized below, but also see the source files:
+contrib/src/stc/Scintilla/src/KeyMap.cxx and
+contrib/src/stc/Scintilla/include/Scintilla.iface.
+
+The actual keystroke mappings occur in a platform-adaptation layer,
+e.g., see contrib/src/stc/ScintillaWx.cpp.
+
+The xxEXTEND actions extend the selection, and the WORDPARTxxx actions
+move between word segments marked by capitalization or underscores;
+e.g., aMixedCaseIdentifier or a_broken_up_identifier, respectively.
+
+B<Key>
+
+B<Action>
+
+B<Description>
+
+DOWN ARROW
+
+LINEDOWN
+
+Move caret down one line
+
+SHIFT DOWN ARROW
+
+LINEDOWNEXTEND
+
+Move caret down one line extending selection to new caret position
+
+CTRL DOWN ARROW
+
+LINESCROLLDOWN
+
+Scroll the document down, keeping the caret visible
+
+UP ARROW
+
+LINEUP
+
+Move caret up one line
+
+SHIFT UP ARROW
+
+LINEUPEXTEND
+
+Move caret up one line extending selection to new caret position
+
+CTRL UP ARROW
+
+LINESCROLLUP
+
+Scroll the document up, keeping the caret visible
+
+LEFT ARROW
+
+CHARLEFT
+
+Move caret left one character
+
+SHIFT LEFT ARROW
+
+CHARLEFTEXTEND
+
+Move caret left one character extending selection to new caret position
+
+CTRL LEFT ARROW
+
+WORDLEFT
+
+Move caret left one word
+
+CTRL+SHIFT LEFT ARROW
+
+WORDLEFTEXTEND
+
+Move caret left one word extending selection to new caret position
+
+ALT LEFT ARROW
+
+WORDPARTLEFT
+
+Move to the previous change in capitalisation
+
+ALT+SHIFT LEFT ARROW
+
+WORDPARTLEFTEXTEND
+
+Move to the previous change in capitalisation extending selection to
+new caret position
+
+RIGHT ARROW
+
+CHARRIGHT
+
+Move caret right one character
+
+SHIFT RIGHT ARROW
+
+CHARRIGHTEXTEND
+
+Move caret right one character extending selection to new caret
+position
+
+CTRL RIGHT ARROW
+
+WORDRIGHT
+
+Move caret right one word
+
+CTRL+SHIFT RIGHT ARROW
+
+WORDRIGHTEXTEND
+
+Move caret right one word extending selection to new caret position
+
+ALT RIGHT ARROW
+
+WORDPARTRIGHT
+
+Move to the next change in capitalisation
+
+ALT+SHIFT RIGHT ARROW
+
+WORDPARTRIGHTEXTEND
+
+Move to the next change in capitalisation extending selection to new
+caret position.
+
+HOME
+
+VCHOME
+
+Move caret to before first visible character on line. If already there
+move to first character on line
+
+SHIFT HOME
+
+VCHOMEEXTEND
+
+Like VCHome but extending selection to new caret position
+
+CTRL HOME
+
+DOCUMENTSTART
+
+Move caret to first position in document
+
+CTRL+SHIFT HOME
+
+DOCUMENTSTARTEXTEND
+
+Move caret to first position in document extending selection to new
+caret position
+
+ALT HOME
+
+HOMEDISPLAY
+
+Move caret to first position on display line
+
+ALT+SHIFT HOME
+
+HOMEDISPLAYEXTEND
+
+Move caret to first position on display line extending selection to new
+caret position.
+
+END
+
+LINEEND
+
+Move caret to last position on line
+
+SHIFT END
+
+LINEENDEXTEND
+
+Move caret to last position on line extending selection to new caret
+position
+
+CTRL END
+
+DOCUMENTEND
+
+Move caret to last position in document
+
+CTRL+SHIFT END
+
+DOCUMENTENDEXTEND
+
+Move caret to last position in document extending selection to new
+caret position
+
+ALT END
+
+LINEENDDISPLAY
+
+Move caret to last position on display line
+
+ALT+SHIFT END
+
+LINEENDDISPLAYEXTEND
+
+Move caret to last position on display line extending selection to new
+caret position
+
+PRIOR
+
+PAGEUP
+
+Move caret one page up
+
+SHIFT PRIOR
+
+PAGEUPEXTEND
+
+Move caret one page up extending selection to new caret position
+
+NEXT
+
+PAGEDOWN
+
+Move caret one page down
+
+SHIFT NEXT
+
+SCI_PAGEDOWNEXTEND
+
+Move caret one page down extending selection to new caret position
+
+DELETE
+
+CLEAR
+
+Delete all text in the document
+
+SHIFT DELETE
+
+CUT
+
+Cut the selection to the clipboard
+
+CTRL DELETE
+
+DELWORDRIGHT
+
+Delete the word to the right of the caret
+
+CTRL+SHIFT DELETE
+
+DELLINERIGHT
+
+Delete forwards from the current position to the end of the line
+
+INSERT
+
+EDITTOGGLEOVERTYPE
+
+Switch from insert to overtype mode or the reverse
+
+SHIFT INSERT
+
+PASTE
+
+Paste the contents of the clipboard into the document replacing the
+selection
+
+CTRL INSERT
+
+COPY
+
+Copy the selection to the clipboard
+
+ESCAPE
+
+CANCEL
+
+Cancel any modes such as call tip or auto-completion list display
+
+BACK
+
+DELETEBACK
+
+Delete the selection or if no selection, the character before the caret
+
+SHIFT BACK
+
+DELETEBACK
+
+Delete the selection or if no selection, the character before the caret
+
+CTRL BACK
+
+DELWORDLEFT
+
+Delete the word to the left of the caret
+
+ALT BACK
+
+UNDO
+
+Undo one action in the undo history
+
+CTRL+SHIFT BACK
+
+DELLINELEFT
+
+Delete back from the current position to the start of the line
+
+CTRL 'Z'
+
+UNDO
+
+Undo one action in the undo history
+
+CTRL 'Y'
+
+REDO
+
+Redoes the next action on the undo history
+
+CTRL 'X'
+
+CUT
+
+Cut the selection to the clipboard
+
+CTRL 'C'
+
+COPY
+
+Copy the selection to the clipboard
+
+CTRL 'V'
+
+PASTE
+
+Paste the contents of the clipboard into the document replacing the
+selection
+
+CTRL 'A'
+
+SELECTALL
+
+Select all the text in the document
+
+TAB
+
+TAB
+
+If selection is empty or all on one line replace the selection with a
+tab character. If more than one line selected, indent the lines.
+
+SHIFT TAB
+
+BACKTAB
+
+Dedent the selected lines
+
+RETURN
+
+NEWLINE
+
+Insert a new line, may use a CRLF, CR or LF depending on EOL mode
+
+SHIFT RETURN
+
+NEWLINE
+
+Insert a new line, may use a CRLF, CR or LF depending on EOL mode
+
+CTRL ADD
+
+ZOOMIN
+
+Magnify the displayed text by increasing the sizes by 1 point
+
+CTRL SUBTRACT
+
+ZOOMOUT
+
+Make the displayed text smaller by decreasing the sizes by 1 point
+
+CTRL DIVIDE
+
+SETZOOM
+
+Set the zoom level to 0. This returns the zoom to 'normal,' i.e., no
+zoom.
+
+CTRL 'L'
+
+LINECUT
+
+Cut the line containing the caret
+
+CTRL+SHIFT 'L'
+
+LINEDELETE
+
+Delete the line containing the caret
+
+CTRL 'T'
+
+LINETRANSPOSE
+
+Switch the current line with the previous
+
+CTRL 'U'
+
+LOWERCASE
+
+Transform the selection to lower case
+
+CTRL+SHIFT 'U'
+
+UPPERCASE
+
+Transform the selection to upper case
+
+----
+
+B<CmdKeyAssign(key,modifiers,command)>
+
+This command is used to add or change an assignment in the key map.
+Returns None.
+
+The B<key> can be any visible (e.g., 'A') or control character (e.g.,
+Ctrl-A) or a key from the SCK_ enumeration (an internal Scintilla
+enum). The SCK_ values are directly available in wxPython and are
+summarized below.
+
+The B<modifiers> are an OR of wxSTC_SCMOD_SHIFT, wxSTC_SCMOD_CTRL, and
+wxSTC_SCMOD_ALT (or 0 if you don't want to specify a modifier at all).
+
+The B<message> is an action from the second list (messages) below. You
+can use an action of SCI_NULL (which is not defined in wxPython but has
+a value of 2172) to set a key mapping to no action, or you can use
+CmdKeyClear, which will do the same thing. You can execute one of these
+actions with the CmdKeyExecute method.
+
+B<Example>
+
+ CmdKeyAssign('L', wxSTC_SCMOD_SHIFT | wxSTC_SCMOD_CTRL, wxSTC_CMD_LINEDELETE);
+
+B<Special I<key> value from SCK_ enum>
+
+=over
+
+=item * wxSTC_KEY_DOWN
+
+=item * wxSTC_KEY_UP
+
+=item * wxSTC_KEY_LEFT
+
+=item * wxSTC_KEY_RIGHT
+
+=item * wxSTC_KEY_HOME
+
+=item * wxSTC_KEY_END
+
+=item * wxSTC_KEY_PRIOR
+
+=item * wxSTC_KEY_NEXT
+
+=item * wxSTC_KEY_DELETE
+
+=item * wxSTC_KEY_INSERT
+
+=item * wxSTC_KEY_ESCAPE
+
+=item * wxSTC_KEY_BACK
+
+=item * wxSTC_KEY_TAB
+
+=item * wxSTC_KEY_RETURN
+
+=item * wxSTC_KEY_ADD
+
+=item * wxSTC_KEY_SUBTRACT
+
+=item * wxSTC_KEY_DIVIDE
+
+=back
+
+B<Values to use for I<message>>
+
+B<Command>
+
+B<Action>
+
+wxSTC_CMD_BACKTAB
+
+Dedent the selected lines
+
+wxSTC_CMD_CANCEL
+
+Cancel any modes such as call tip or auto-completion list display
+
+wxSTC_CMD_CHARLEFT
+
+Move caret left one character
+
+wxSTC_CMD_CHARLEFTEXTEND
+
+Move caret left one character extending selection to new caret position
+
+wxSTC_CMD_CHARRIGHT
+
+Move caret right one character
+
+wxSTC_CMD_CHARRIGHTEXTEND
+
+Move caret right one character extending selection to new caret
+position
+
+wxSTC_CMD_COPY
+
+Copy the selection to the clipboard
+
+wxSTC_CMD_CUT
+
+Cut the selection to the clipboard
+
+wxSTC_CMD_DELETEBACK
+
+Delete the selection or if no selection, the character before the caret
+
+wxSTC_CMD_DELETEBACKNOTLINE
+
+Delete the selection or if no selection, the character before the
+caret. Will not delete the character before at the start of a line.
+
+wxSTC_CMD_DELWORDLEFT
+
+Delete the word to the left of the caret
+
+wxSTC_CMD_DELWORDRIGHT
+
+Delete the word to the right of the caret
+
+wxSTC_CMD_DOCUMENTEND
+
+Move caret to last position in document
+
+wxSTC_CMD_DOCUMENTENDEXTEND
+
+Move caret to last position in document extending selection to new
+caret position
+
+wxSTC_CMD_DOCUMENTSTART
+
+Move caret to first position in document
+
+wxSTC_CMD_DOCUMENTSTARTEXTEND
+
+Move caret to first position in document extending selection to new
+caret position
+
+wxSTC_CMD_EDITTOGGLEOVERTYPE
+
+Switch from insert to overtype mode or the reverse
+
+wxSTC_CMD_FORMFEED
+
+Insert a Form Feed character
+
+wxSTC_CMD_HOME
+
+Move caret to first position on line
+
+wxSTC_CMD_HOMEDISPLAY
+
+Move caret to first position on display line
+
+wxSTC_CMD_HOMEDISPLAYEXTEND
+
+Move caret to first position on display line extending selection to new
+caret position
+
+wxSTC_CMD_HOMEEXTEND
+
+Move caret to first position on line extending selection to new caret
+position
+
+wxSTC_CMD_LINECUT
+
+Cut the line containing the caret
+
+wxSTC_CMD_LINEDELETE
+
+Delete the line containing the caret
+
+wxSTC_CMD_LINEDOWN
+
+Move caret down one line
+
+wxSTC_CMD_LINEDOWNEXTEND
+
+Move caret down one line extending selection to new caret position
+
+wxSTC_CMD_LINEEND
+
+Move caret to last position on line
+
+wxSTC_CMD_LINEENDDISPLAY
+
+Move caret to last position on display line
+
+wxSTC_CMD_LINEENDDISPLAYEXTEND
+
+Move caret to last position on display line extending selection to new
+caret position
+
+wxSTC_CMD_LINEENDEXTEND
+
+Move caret to last position on line extending selection to new caret
+position
+
+wxSTC_CMD_LINESCROLLDOWN
+
+Scroll the document down, keeping the caret visible
+
+wxSTC_CMD_LINESCROLLUP
+
+Scroll the document up, keeping the caret visible
+
+wxSTC_CMD_LINETRANSPOSE
+
+Switch the current line with the previous
+
+wxSTC_CMD_LINEUP
+
+Move caret up one line
+
+wxSTC_CMD_LINEUPEXTEND
+
+Move caret up one line extending selection to new caret position
+
+wxSTC_CMD_LOWERCASE
+
+Transform the selection to lower case
+
+wxSTC_CMD_NEWLINE
+
+Insert a new line, may use a CRLF, CR or LF depending on EOL mode
+
+wxSTC_CMD_PAGEDOWN
+
+Move caret one page down
+
+wxSTC_CMD_PAGEDOWNEXTEND
+
+Move caret one page down extending selection to new caret position
+
+wxSTC_CMD_PAGEUP
+
+Move caret one page up
+
+wxSTC_CMD_PAGEUPEXTEND
+
+Move caret one page up extending selection to new caret position
+
+wxSTC_CMD_REDO
+
+Redoes the next action on the undo history
+
+wxSTC_CMD_SELECTALL
+
+Select all the text in the document
+
+wxSTC_CMD_TAB
+
+If selection is empty or all on one line replace the selection with a
+tab character. If more than one line selected, indent the lines
+
+wxSTC_CMD_UNDO
+
+Redoes the next action on the undo history
+
+wxSTC_CMD_UPPERCASE
+
+Transform the selection to upper case
+
+wxSTC_CMD_VCHOME
+
+Move caret to before first visible character on line. If already there
+move to first character on line
+
+wxSTC_CMD_VCHOMEEXTEND
+
+Like VCHome but extending selection to new caret position
+
+wxSTC_CMD_WORDLEFT
+
+Move caret left one word
+
+wxSTC_CMD_WORDLEFTEXTEND
+
+Move caret left one word extending selection to new caret position
+
+wxSTC_CMD_WORDRIGHT
+
+Move caret right one word
+
+wxSTC_CMD_WORDRIGHTEXTEND
+
+Move caret right one word extending selection to new caret position
+
+wxSTC_CMD_ZOOMIN
+
+Magnify the displayed text by increasing the sizes by 1 point
+
+wxSTC_CMD_ZOOMOUT
+
+Make the displayed text smaller by decreasing the sizes by 1 point
+
+B<A few values are not defined in wxPython as of this writing, but
+should be as they are even in the default keymapping shown earlier on
+this page. They were added in CVS as this was being written.>
+
+wxSTC_CMD_DELLINELEFT: Use 2395
+
+Delete back from the current position to the start of the line
+
+wxSTC_CMD_DELLINERIGHT: Use 2396
+
+Delete forwards from the current position to the end of the line
+
+wxSTC_CMD_WORDPARTLEFT: Use 2390
+
+Move to the next change in capitalisation
+
+wxSTC_CMD_WORDPARTLEFTEXTEND: Use 2391
+
+Move to the previous change in capitalisation extending selection to
+new caret position
+
+wxSTC_CMD_WORDPARTRIGHT: Use 2392
+
+Move caret right one word extending selection to new caret position
+
+wxSTC_CMD_WORDPARTRIGHTEXTEND: Use 2393
+
+Move to the next change in capitalisation extending selection to new
+caret position.
+
+top
+
+----
+
+B<CmdKeyClear(key,modifiers)>
+
+Sets the keyboard action for the keyboard key specified by the method
+arguments to SCI_NULL, which effectively causes no action for that key.
+The arguments B<key> B<and modifiers> are identical to those that would
+be used in the CmdKeyAssign method, above. Returns None.
+
+top
+
+----
+
+B<CmdKeyClearAll()>
+
+Actually completely removes all entries from the key-map. Doesn't
+restore the defaults: there's no method to do so, although obviously
+one could do that manually. Returns None.
+
+top
+
+----
+
+B<CmdKeyExecute(cmd)>
+
+This method is used to programmatically execute one of the key-actions
+(wxSTC_CMD_xxx) that is normally executed by a keypress. For the B<cmd>
+argument, use one of the values in the message table shown for the
+CmdKeyAssign method. Returns None.
+
+Note that several of the messages have direct wxPython methods that you
+can use instead; for example,
+
+ HomeDisplay()
+
+rather than CmdKeyExecute(wxSTC_CMD_HOMEDISPLAY). See this page for
+those methods.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 19894 bytes of input
+#Mon Jun 20 17:29:39 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

@@ -1,0 +1,74 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl.__init__ & .__repr__
+
+B<Summary>:
+
+The __init__ method is called when the STC object is created. It
+returns an STC object instance.
+
+The __repr__ method is used when the built-in function repr(stc_object)
+is used. It returns a string.
+
+----
+
+B<wxStyledTextCtrl.__init__(parent,id,pos,size,style,name)>
+
+B<Parameters and their types:>
+
+I<B<parent>> = parent window. OBJECT
+
+I<B<id>> = window ID constant. INTEGER. Use -1 for auto-generation, or
+use wxNewId()
+
+I<B<pos>> = initial position. wxPOINT. Use wxPyDefaultPosition or omit
+if last kwarg
+
+B<I<size>> = initial size. wxSIZE. Use wxPyDefaultSize or omit if last
+kwarg
+
+B<I<style>> = ORing of Window styles for the control. Long INTEGER.
+
+Note: wxVSCROLL | wxHSCROLL | wxWANTS_CHARS | wxCLIP_CHILDREN are
+always added
+
+to whatever styles you pass to the __init__ method.
+
+B<I<name>> = name of the control. STRING. This is not used by most
+platforms.
+
+Returns the STC instance.
+
+B<Example:>
+
+ from wxPython.stc import *
+ 
+ class Editor(wxStyledTextCtrl):
+ 	wxStyledTextCtrl.__init__(self,wxNewId())
+ 	...
+
+----
+
+B<wxStyledTextCtrl.__repr__()>
+
+Always returns a String object similar to:
+
+E<lt>C wxStyledTextCtrl instance at ########E<gt>"
+
+Where ######## is the hexadecimal address (id) of the object instance.
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 3657 bytes of input
+#Mon Jun 20 17:29:36 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
+# Deleting phrasal "a" element (`a_24) because it has super-phrasal elements (`p_16) as children.
+# Deleting phrasal "a" element (`a_23) because it has super-phrasal elements (`p_6) as children.

@@ -1,0 +1,401 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Markers
+
+=over
+
+=item * MarkerAdd
+
+=item * MarkerDefine
+
+=item * MarkerDelete
+
+=item * MarkerDeleteAll
+
+=item * MarkerDeleteHandle
+
+=item * MarkerGet
+
+=item * MarkerLineFromHandle
+
+=item * MarkerNext
+
+=item * MarkerPrevious
+
+=item * MarkerSetBackground
+
+=item * MarkerSetForeground
+
+=back
+
+B<Summary>:
+
+Markers and Margins: they're intimately connected. Markers are totally
+useless without a margin to put them in (duh). What's important is that
+each of the three left-side margins supports up to 32 symbol specifiers
+using a 32-bit bit-mapped vector called a mask. This mask is set for
+each margin using SetMarginMask. You then assign a marker for each bit
+using MarkerDefine. This method associates an ordinal number in the
+range 0..31 (corresponding with a bit position in the mask) to a symbol
+or alphanumeric character, or, in the future, with a pixmap.
+
+For example, if you assign the wxSTC_MARK_ARROW symbol to bit position
+0, then whenever you use MarkerAdd to add marker #0 to a particular
+line, an arrow will appear in any of the three margins that has bit 0
+set in its mask. MarkerAdd() returns a handle to the marker that you
+can use to keep track of it.
+
+You can 'turn on' any defined symbol for any line: as a matter of fact,
+you could turn on all 31 at once if you had defined all of them.
+However, symbols are drawn starting with symbol #0, so the highest
+numbered symbol will appear on top.
+
+The markers for each line are maintained in a linked list of the marker
+handles. When a line is deleted, its handles are added to the list for
+the previous line: in effect, ORing the markers (although some may be
+duplicated, this op is not currently checked for dupes).
+
+The STC moves markers along with their text lines by watching the
+movement of the beginning of each line.
+
+So, each marker number has an associated symbol. When the STC is
+instantiated, all markers are set to symbol index 0, which is
+wxSTC_MARK_CIRCLE. You can use MarkerDefine to assign a different
+symbol to each marker number. You can use MarkerSetBackground and
+MarkerSetForeground to set the color scheme for each marker, so indeed
+you can use each marker more than once if you wish, with different
+colors.
+
+What symbols are there to use? In future versions of the STC you'll be
+able to use pixmaps (XPM format). This is supported in Scintilla but
+not yet in wxPython. For now, you can use symbols or characters, see
+MarkerDefine.
+
+Some marker numbers are reserved for use in folding margins (#25..#31),
+although you can certainly use them for your own purposes if you're not
+doing folding. There are some defined variables that you can use as
+constants when referring to the 'folding' marker numbers, you could use
+one of these as the first argument to MarkerDefine:
+
+ wxSTC_MARKNUM_FOLDEREND = 25
+ wxSTC_MARKNUM_FOLDEROPENMID = 26
+ wxSTC_MARKNUM_FOLDERMIDTAIL = 27
+ wxSTC_MARKNUM_FOLDERTAIL = 28
+ wxSTC_MARKNUM_FOLDERSUB = 29
+ wxSTC_MARKNUM_FOLDER = 30
+ wxSTC_MARKNUM_FOLDEROPEN = 31
+
+There are also a number of defined variables that you can use to refer
+to symbols; you could use one of these as the second argument to
+MarkerDefine.
+
+ wxSTC_MARK_ARROW
+ wxSTC_MARK_ARROWDOWN
+ wxSTC_MARK_ARROWS
+ wxSTC_MARK_BACKGROUND  (changes the background color of the line, no effect on margin)
+ wxSTC_MARK_BOXMINUS
+ wxSTC_MARK_BOXMINUSCONNECTED
+ wxSTC_MARK_BOXPLUS
+ wxSTC_MARK_BOXPLUSCONNECTED
+ wxSTC_MARK_CHARACTER   (used to create a character-symbol, see below)
+ wxSTC_MARK_CIRCLE
+ wxSTC_MARK_CIRCLEMINUS
+ wxSTC_MARK_CIRCLEMINUSCONNECTED = 
+ wxSTC_MARK_CIRCLEPLUS
+ wxSTC_MARK_CIRCLEPLUSCONNECTED
+ wxSTC_MARK_DOTDOTDOT
+ wxSTC_MARK_EMPTY      (invisible, see below)
+ wxSTC_MARK_LCORNER
+ wxSTC_MARK_LCORNERCURVE
+ wxSTC_MARK_MINUS
+ wxSTC_MARK_PLUS
+ wxSTC_MARK_ROUNDRECT
+ wxSTC_MARK_SHORTARROW
+ wxSTC_MARK_SMALLRECT
+ wxSTC_MARK_TCORNER
+ wxSTC_MARK_TCORNERCURVE
+ wxSTC_MARK_VLINE
+
+From the Scintilla Documentation:
+
+The C<wxSTC_MARK_EMPTY> symbol is invisible, allowing client code to
+track the movement of lines. You would also use it if you chang the
+folding style dynamically and wanted one or more of the
+C<wxSTC_MARKNUM_> group of markers to have no associated symbol.
+
+If you want to use a character as a symbol, add the ASCII value of the
+character to C<wxSTC_MARK_CHARACTER>: e.g.,
+C<MarkerDefine(1,wxSTC_MARK_CHARACTER+(ASCII code for char)).>
+
+The following markers are designed to be used to provide a
+flattened-tree style folding margin: C<wxSTC_MARK_BOXMINUS,
+wxSTC_MARK_BOXMINUSCONNECTED, wxSTC_MARK_BOXPLUS,
+wxSTC_MARK_BOXPLUSCONNECTED, wxSTC_MARK_CIRCLEMINUS,
+wxSTC_MARK_CIRCLEMINUSCONNECTED, wxSTC_MARK_CIRCLEPLUS,
+wxSTC_MARK_CIRCLEPLUSCONNECTED, wxSTC_MARK_LCORNER,
+wxSTC_MARK_LCORNERCURVE, wxSTC_MARK_TCORNER, wxSTC_MARK_TCORNERCURVE,
+and wxSTC_MARK_VLINE.>
+
+The marker numbers C<wxSTC_MARKNUM_FOLDER> and
+C<wxSTC_MARKNUM_FOLDEROPEN> are used for showing that a fold is present
+and open or closed. Any symbols may be assigned for this purpose
+although the (C<wxSTC_MARK_PLUS>, C<wxSTC_MARK_MINUS>) pair or the
+(C<wxSTC_MARK_ARROW>, C<wxSTC_MARK_ARROWDOWN>) pair are good choices.
+As well as these two, more assignments are needed for the flattened
+tree style: C<wxSTC_MARKNUM_FOLDEREND>, C<wxSTC_MARKNUM_FOLDERMIDTAIL>,
+C<wxSTC_MARKNUM_FOLDEROPENMID>, C<wxSTC_MARKNUM_FOLDERSUB>, and
+C<wxSTC_MARKNUM_FOLDERTAIL>. The bits used for folding is specified by
+C<wxSTC_MASK_FOLDERS> which is commonly used as an argument to
+C<SetMarginMask> when defining a margin to be used for folding.
+
+This table shows which C<wxSTC_MARK_>* symbols should be assigned to
+which C<wxSTC_MARKNUM_>* marker numbers to obtain four folding styles:
+Arrow (mimics Macintosh), plus/minus shows folded lines as '+' and
+opened folds as '-', Circle tree, Box tree.
+
+B<wxSTC_MARKNUM_>*
+
+B<Arrow>
+
+B<Plus/minus>
+
+B<Circle tree>
+
+B<Box tree>
+
+C<FOLDEROPEN>
+
+C<ARROWDOWN>
+
+C<MINUS>
+
+C<CIRCLEMINUS>
+
+C<BOXMINUS>
+
+C<FOLDER>
+
+C<ARROW>
+
+C<PLUS>
+
+C<CIRCLEPLUS>
+
+C<BOXPLUS>
+
+C<FOLDERSUB>
+
+C<EMPTY>
+
+C<EMPTY>
+
+C<VLINE>
+
+C<VLINE>
+
+C<FOLDERTAIL>
+
+C<EMPTY>
+
+C<EMPTY>
+
+C<LCORNERCURVE>
+
+C<LCORNER>
+
+C<FOLDEREND>
+
+C<EMPTY>
+
+C<EMPTY>
+
+C<CIRCLEPLUSCONNECTED>
+
+C<BOXPLUSCONNECTED>
+
+C<FOLDEROPENMID>
+
+C<EMPTY>
+
+C<EMPTY>
+
+C<CIRCLEMINUSCONNECTED>
+
+C<BOXMINUSCONNECTED>
+
+C<FOLDERMIDTAIL>
+
+C<EMPTY>
+
+C<EMPTY>
+
+C<TCORNERCURVE>
+
+C<TCORNER>
+
+----
+
+B<MarkerAdd(line,markerNumber)>
+
+Add the marker specified by B<markerNumber> (0..31) to the line
+specified by B<line>. Both line and markerNumber are integers. Returns
+an integer object: a I<handle> that can be used to specify this marker
+when you need to find it or delete it. If B<line> is out of range, or
+if there's not enough memory to add a new marker-handle list for the
+specified line, then MarkerAdd returns -1.
+
+top
+
+----
+
+B<MarkerDefine(markerNumber,markerSymbol,foreground,background)>
+
+This wxPython version of MarkerDefine adds some functionality that the
+'normal' Scintilla version doesn't have; namely, the ability to set the
+foreground and background colors. And as these args are keywords, you
+can only set the background if you want.
+
+MarkerDefine is used to map marker numbers to marker symbols. The
+B<markerNumber> argument is an integer in the range 0..31. As mentioned
+above, a numbers from 25..31 are ordinarily reserved for the folding
+symbols. The B<markerSymbol> is an integer as well, and you can use one
+of the predefined symbol names provided or use an alphanumeric
+character by using wxSTC_MARK_CHARACTER+(ASCII code for char) as the
+value for markerSymbol.
+
+The B<foreground> and B<background> are optional arguments, and you can
+use a wxColour object, a #RRGGBB string, or a color spec like "white".
+
+MarkerDefine returns None.
+
+top
+
+----
+
+B<MarkerDelete(line,markerNumber)>
+
+This method can be used to delete markers on a particular B<line>
+(integer) by using the marker number, B<markerNumber> (an integer)
+i.e., the symbol index, 0..31. You may also choose to delete a marker
+by its handle using MarkerDeleteHandle: the handle is the value
+returned by MarkerAdd().
+
+What's the difference? Well, MarkerDelete scans the marker-handle list
+for the marker whose marker number matches that passed in by the
+B<markerNumber> parameter. But, due to line deletion or other combining
+there can easily be more than one marker with the same marker number in
+the list. So, using MarkerDelete you may need to then use MarkerGet to
+make sure that all markers with the same marker number are deleted from
+a particular line. Depending on your app, it may be more efficient to
+keep track of marker handles and use MarkerDeleteHandle.
+
+If markerNumber is -1, all markers are deleted from the line.
+MarkerDelete returns None.
+
+top
+
+----
+
+B<MarkerDeleteAll(markerNumber)>
+
+Delete all markers that match B<markerNumber> (integer, range 0..31)
+from all lines. If markerNumber is -1, then all markers are deleted
+from B<all> lines. Returns None.
+
+top
+
+----
+
+B<MarkerDeleteHandle(handle)>
+
+Searchs the entire Document for the marker which has a handle matching
+the integer parameter B<handle>, then delete that marker. The parameter
+handle is a value returned from markerAdd. Returns None.
+
+top
+
+----
+
+B<MarkerGet(line)>
+
+Returns a 32-bit integer object that has a bit set for each marker in
+the line specified by the integer parameter B<line>. For example, if
+bit 1 was set then that line would have the marker symbol associated
+with bit 1.
+
+top
+
+----
+
+B<MarkerLineFromHandle(handle)>
+
+Returns the line where the handle specified by the integer parameter
+B<handle> was found, or -1 if it isn't found.
+
+top
+
+----
+
+B<MarkerNext(lineStart,markerMask )>
+
+Starting at (and including) the line specified by the integer parameter
+B<lineStart>, search towards the end-of-file for the first line that
+includes one of the markers specified by the integer parameter
+B<markerMask>. markerMask is a bit-vector that has a bit set for each
+marker number that you want to search for. For example, if you use a
+markerMask of 0x80000000, then the first line that had marker #31 set
+would be returned. Returns -1 if the search is unsuccessful.
+
+top
+
+----
+
+B<MarkerPrevious(lineStart,markerMask)>
+
+Starting (and including) at the line specified by the integer parameter
+B<lineStart>, search towards the beginning-of-file for the first line
+that includes one of the markers specified by the integer parameter
+B<markerMask>. markerMask is a bit-vector that has a bit set for each
+marker number that you want to search for. For example, if you use a
+markerMask of 0x80000000, then the first line that had marker #31 set
+would be returned. Returns -1 if the search is unsuccessful.
+
+top
+
+----
+
+B<MarkerSetBackground(markerNumber,fore)>
+
+Set the foreground color B<fore> for marker number B<markerNumber>
+(integer, range 0..31). The parameter B<fore> can be a wxColour object,
+a #RRGGBB string, or a color spec like "white". Returns None.
+
+top
+
+----
+
+B<MarkerSetForeground(markerNumber,back)>
+
+Set the background color B<back> for marker number B<markerNumber>
+(integer, range 0..31). The parameter B<back> can be a wxColour object,
+a #RRGGBB string, or a color spec like "white". Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 16271 bytes of input
+#Mon Jun 20 17:29:45 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
+# Deleting phrasal "a" element (`a_44) because it has super-phrasal elements (`pre_2) as children.
+# Deleting phrasal "a" element (`a_43) because it has super-phrasal elements (`pre_1) as children.

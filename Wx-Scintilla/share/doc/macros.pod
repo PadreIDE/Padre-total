@@ -1,0 +1,53 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Macros
+
+=over
+
+=item * StartRecord
+
+=item * StopRecord
+
+=back
+
+B<Summary>:
+
+The StartRecord and StopRecord methods set a mode in the STC where
+keystrokes and several other actions cause a EVT_STC_MACRORECORD to be
+emitted. This implies that if you want to have a macro recording
+function in your app you need to handle that event (duh). The STC does
+nothing special regarding macros, and there's no explicit functionality
+to play them back. You'd probably use CmdKeyExecute for some of the
+functionality.
+
+----
+
+StartRecord()
+
+Activate the macro-record mode. Returns None.
+
+top
+
+----
+
+StopRecord()
+
+Deactivate the macro-record mode, Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 2784 bytes of input
+#Mon Jun 20 17:29:43 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

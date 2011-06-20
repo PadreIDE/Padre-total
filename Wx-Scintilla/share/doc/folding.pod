@@ -1,0 +1,312 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Folding
+
+=over
+
+=item * DocLineFromVisible
+
+=item * EnsureVisible
+
+=item * EnsureVisibleEnforcePolicy
+
+=item * GetFoldExpanded
+
+=item * GetFoldLevel
+
+=item * GetFoldParent
+
+=item * GetLastChild
+
+=item * GetLineVisible
+
+=item * HideLines
+
+=item * SetFoldExpanded
+
+=item * SetFoldFlags
+
+=item * SetFoldLevel
+
+=item * SetVisiblePolicy
+
+=item * ShowLines
+
+=item * ToggleFold
+
+=item * VisibleFromDocLine
+
+=back
+
+B<Summary>:
+
+The fundamental operation in folding is making lines invisible or
+visible. Line visibility is a property of the view rather than the
+document so each STC instance may be displaying a different set of
+lines.
+
+ShowLines and HideLines show or hide a range of lines. GetLineVisible
+determines whether a line is visible.
+
+When some lines are hidden, then a particular line in the document may
+be displayed at a different position to its document position.
+VisibleFromDocLine and DocLineFromVisible map from document line to
+display line and back.
+
+Generally the fold points of a document are based on the hierarchical
+structure of the contents of the document. In Python, the hierarchy is
+determined by indentation and in C++ by brace characters. This
+hierarchy can be represented within a STC document object by attaching
+a numeric level to each line. The initial level of a file is
+wxSTC_FOLDLEVELBASE (0x400) to allow unsigned arithmetic on levels. The
+wxSTC_FOLDLEVELNUMBERMASK constant (0x0FFF) can be used to mask out the
+other bits to reveal the fold level number.
+
+There are also two bit flags associated with each line.
+wxSTC_FOLDLEVELWHITEFLAG (0x1000) indicates that the line is blank and
+allows it to be treated slightly different then its level may indicate.
+For example, blank lines should generally not be fold points.
+wxSTC_FOLDLEVELHEADERFLAG (0x2000) indicates that the line is a header
+or fold point.
+
+The hierarchy can be navigated just through GetFoldLevel, but it is
+often useful to find the parent of a line (GetFoldParent) or the line
+that is the last child of a line (GetLastChild).
+
+Each fold point may be either expanded, displaying all its child lines,
+or contracted, hiding all the child lines. This is per view state
+(i.e., per STC instance) and can be manipulated with SetFoldExpanded
+and GetFoldExpanded. Using SetFoldExpanded does not show or hide any
+lines but only changes a state flag and the margin markers that show
+the contraction state. ToggleFold performs the expansion or contraction
+of a fold point in the manner normally expected. A hidden line may be
+hidden because more than one of its parent lines is contracted.
+EnsureVisible travels up the fold hierarchy, expanding any contracted
+folds until it reaches the top level. The line will then be visible.
+EnsureVisibleEnforcePolicy performs the same action, but uses the
+currently set visibility policy (see Caret Operations) to determine
+which range to display.
+
+The fold flags are a set of bit flags set with the SetFoldFlags message
+to determine where folding lines are drawn.
+
+Arguments to SetFoldFlags
+
+2 is draw above if expanded
+
+4 is draw above if not expanded
+
+8 is draw below if expanded
+
+16 is draw below if not expanded
+
+64 is display hexadecimal fold levels
+
+in line margin to aid debugging folding.
+
+Constants useful for folding
+
+ wxSTC_FOLDLEVELBASE
+ wxSTC_FOLDLEVELHEADERFLAG
+ wxSTC_FOLDLEVELNUMBERMASK
+ wxSTC_FOLDLEVELWHITEFLAG
+
+Note: this summary is largely the Scintilla doc on the subject with
+some wxPythonesque editing.
+
+----
+
+B<DocLineFromVisible(lineDisplay)>
+
+Find the document line of a B<display line> taking hidden lines into
+account. The B<lineDisplay> parameter is an integer, and is the line
+that you wish to convert. Returns an integer object.
+
+top
+
+----
+
+B<EnsureVisible(line)>
+
+Ensure a particular line is visible by expanding any header line hiding
+it. The integer parameter B<line> is the line that you wish to operate
+on. Returns None.
+
+top
+
+----
+
+B<EnsureVisibleEnforcePolicy>
+
+Ensure a particular line is visible by expanding any header line hiding
+it, using the currently set visibility policy (see SetVisiblePolicy) to
+determine which range to display. The integer parameter B<line> is the
+line that you wish to operate on. Returns None. top
+
+----
+
+B<GetFoldExpanded(line)>
+
+Is a header line expanded or not? The integer parameter B<line>
+specifies the line to examine. Returns an integer: 1 for expanded or 0
+if not expanded (i.e., is hidden).
+
+top
+
+----
+
+B<GetFoldLevel(line)>
+
+Returns the fold level of a line. The integer parameter B<line> is the
+line to operate on, and the return value is also an integer.
+
+top
+
+----
+
+B<GetFoldParent(line)>
+
+Find the parent line of a child line. The integer parameter B<line> is
+the line to operate on, and the return value is also an integer.
+
+top
+
+----
+
+B<GetLastChild(line,level)>
+
+Find the last child line of a header line. The integer parameter
+B<line> is the line to operate on, and B<level> is the fold level of
+the line (?unsure?). If B<level> is set to -1 (commonly done), then the
+starting level is set to that of the B<line>, i.e., the STC figures it
+out for you. The return value is an integer.
+
+top
+
+----
+
+B<GetLineVisible(line)>
+
+Is a line visible? Returns an integer: 1 if the passed in B<line> is
+visible or 0 if it is not.
+
+top
+
+----
+
+B<HideLines(lineStart,lineEnd)>
+
+Hide the range of lines that include B<lineStart> and B<lineEnd>. These
+values are integers. The return value is None.
+
+top
+
+----
+
+B<SetFoldExpanded(line,expanded)>
+
+Show/hide the children of a header line; that is, show or hide the fold
+point. Note that ToggleFold must also be used to actually perform the
+expansion or contractionl this method just sets flag bits. The integer
+parameter B<line> is the line (fold point) to operate on and the
+integer parameter B<expanded> should be 1 to expand or 0 to hide. The
+return value is None.
+
+top
+
+----
+
+B<SetFoldFlags(flags)>
+
+The integer parameter B<flags> is used to set some control flags:
+
+Arguments to SetFoldFlags
+
+2 is draw above if expanded
+
+4 is draw above if not expanded
+
+8 is draw below if expanded
+
+16 is draw below if not expanded
+
+64 is display hexadecimal fold levels
+
+in line margin to aid debugging folding.
+
+The return value is None
+
+top
+
+----
+
+B<SetFoldLevel(line,level)>
+
+Set the fold B<level> of a B<line>. B<line> and B<level> are integers.
+This method encodes an integer level along with flags indicating
+whether the line is a header and whether it is effectively white space.
+Returns None.
+
+top
+
+----
+
+B<SetVisiblePolicy(visiblePolicy,visibleSlop)>
+
+When EnsureVisibleEnforcePolicy is called, the so-called policy is used
+to determine how vertical positioning is accomplished. The integer
+parameter visiblePolicy can be either C<wxSTC_VISIBLE_SLOP> or or
+C<wxSTC_VISIBLE_STRICT>. The integer parameter B<visibleSlop> specifies
+how far away from the top or bottom vertical boundary the line must be.
+If outside that boundary then a scroll is performed to make it so.
+
+The operation is similar to SetYCaretPolicy. The logic is more than
+this author wanted to pick apart, if you're interested see the
+Scintilla sources, Editor.cxx, C<EnsureLineVisible> method ~ line 4384.
+
+Returns None.
+
+top
+
+----
+
+B<ShowLines(lineStart,lineEnd)>
+
+Unhide the range of lines that include B<lineStart> and B<lineEnd>.
+These values are integers. The return value is None.
+
+top
+
+----
+
+B<ToggleFold(line)>
+
+Perform the actual expansion or contraction of a line. The integer
+parameter B<line> specifies the line to operate on. Returns None
+
+top
+
+----
+
+B<VisibleFromDocLine(line)>
+
+Find the display line of a document B<line> taking hidden lines into
+account. B<line> is an integer as is the return value.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 12214 bytes of input
+#Mon Jun 20 17:29:31 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

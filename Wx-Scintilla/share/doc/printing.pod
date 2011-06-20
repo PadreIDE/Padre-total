@@ -1,0 +1,126 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Printing
+
+=over
+
+=item * FormatRange
+
+=item * GetPrintColourMode
+
+=item * GetPrintMagnification
+
+=item * SetPrintColourMode
+
+=item * SetPrintMagnification
+
+=back
+
+B<Summary>:
+
+Printing is a somewhat complex and seemingly platform-dependent
+operation. At this time the contents of this section is somewhat
+sketchy; an upgrade will come when the author has to implement
+printing. One can also look at the SciTE editor sources (available from
+the Scintilla website), specifically, C<win32/SciTEWinDlg.cxx> and the
+Scintialla sources, specifically in Editor.cxx --
+C<Editor::FormatRange>.
+
+----
+
+B<FormatRange(doDraw,startPos,endPos,draw,target,renderRect,pageRect)>
+
+On Windows, FormatRange can be used to draw the text onto a display
+context which can include a printer display context. The STC basically
+does the same operations as when it draws the text on the screen, but
+leaves out markers, line numbers, selection, and the caret as they
+don't need to be printed. It will support printing the line number
+margin, however. It internally copies all the margin setup information,
+then zero-widths all symbol margins in the copy.
+
+This method returns the last print position in the document. If
+printing doesn't include the last line of the Document, then what's
+returned is the start position of the line AFTER the last line printed.
+
+The parameter B<doDraw> is an integer parameter; if zero, the
+formatting operation doesn't actually occur. You still get the return
+value, so this may be useful to measure what you're trying to print
+before printing it.
+
+The B<startPos> and B<endPos> parameters are integers that specify the
+start and end positions to be printed. Internally, this is rounded off
+to the nearest line.
+
+B<draw> and B<target> are wxDC's (device contexts). You would probably
+want to use printer device contexts here.
+
+B<renderRect> and B<pageRect> are wxRects.
+
+top
+
+----
+
+B<GetPrintColourMode()>
+
+Returns an integer with the print color mode setting. See
+SetPrintColourMode.
+
+top
+
+----
+
+B<GetPrintMagnification()>
+
+Returns an integer with the print magnification setting. See
+SetPrintMagnification.
+
+top
+
+----
+
+B<SetPrintColourMode(mode)>
+
+The integer parameter B<mode> is used to adjust printing for certain
+situations, and is one of:
+
+ wxSTC_PRINT_BLACKONWHITE               To print color on a black&white printer
+ wxSTC_PRINT_COLOURONWHITE              Forces background color to be white, useful for color printer
+ wxSTC_PRINT_COLOURONWHITEDEFAULTBG     Same as COLOURONWHITE except for styles < 32 
+ wxSTC_PRINT_INVERTLIGHT                use if black background is used on screen 
+                                        to invert colors for better printing
+ wxSTC_PRINT_NORMAL                     No special features									   
+
+What occurs internally is that all style settings are modified as
+specified by the B<mode> you select. For more information see
+formatRange in Scintilla's Editor.cxx.
+
+This method returns None.
+
+top
+
+----
+
+B<SetPrintMagnification(magnification)>
+
+This method allows you to print at a smaller or larger size than would
+be drawn on the screen. The integer parameter B<magnification>
+specifies how many points to add to each style. Negative sizes may be
+used (e.g., -3). Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 5800 bytes of input
+#Mon Jun 20 17:29:51 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

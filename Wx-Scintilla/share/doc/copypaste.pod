@@ -1,0 +1,79 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Cut/Copy/Paste
+
+=over
+
+=item * CanPaste
+
+=item * Clear
+
+=item * Copy
+
+=item * Cut
+
+=item * Paste
+
+=back
+
+B<Summary>:
+
+These commands implement cut/copy/paste. There's nothing complex here!
+With the exception of CanPaste, all of these commands return None.
+
+----
+
+B<CanPaste()>
+
+Returns 1 if a paste can be performed.
+
+top
+
+----
+
+B<Clear()>
+
+Clear the selection. Returns None.
+
+top
+
+----
+
+B<Copy()>
+
+Copy the selection. Returns None.
+
+top
+
+----
+
+B<Cut()>
+
+Cut the selection. Returns None.
+
+top
+
+----
+
+B<Paste()>
+
+Paste the clipboard at the cursor position if possible. Will overwrite
+the selection if there is one. Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 2954 bytes of input
+#Mon Jun 20 17:29:22 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

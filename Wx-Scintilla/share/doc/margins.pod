@@ -1,0 +1,358 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 WxStyledTextCtrl - Margins
+
+=over
+
+=item * GetMarginLeft
+
+=item * GetMarginMask
+
+=item * GetMarginRight
+
+=item * GetMarginSensitive
+
+=item * GetMarginType
+
+=item * GetMarginWidth
+
+=item * SetMarginLeft
+
+=item * SetMarginMask
+
+=item * SetMarginRight
+
+=item * SetMargins
+
+=item * SetMarginSensitive
+
+=item * SetMarginType
+
+=item * SetMarginWidth
+
+=back
+
+B<Summary>:
+
+The STC can have up to five margins: a blank margin on each side of the
+text and three additional margins between the left-side blank margin
+and the text. This is illustrated in the figure below. Margins can be
+used for line numbers or symbols, and can be sensitive to mouse clicks
+either to send an event or to select a line of text.
+
+Text Margins
+
+You need to chose whether or not a margin is used for line numbers or
+symbols. If you want line numbers, use margin 0 for the line numbers by
+calling SetMarginType(0,wxSTC_MARGIN_NUMBER). If you want symbols
+and/or folding, call SetMarginType(n, wxSTC_MARGIN_SYMBOL) where n is 1
+or 2. It's a convention that margin 0 is reserved for line numbers.
+
+When you instantiate a STC, defaults related to margins are:
+
+margin
+
+settings
+
+left
+
+1 pixel wide
+
+right
+
+1 pixel wide
+
+0
+
+number margin
+
+0 pixels wide
+
+mask=0
+
+1
+
+symbol margin
+
+16 pixels wide
+
+mask=0x01FFFFFF
+
+2
+
+symbol margin
+
+0 pixels wide
+
+mask=0
+
+As you can see, the default width for the left and right margins is 1
+pixel. You can change these with SetMarginLeft and SetMarginRight, or
+you can use SetMargins which affects both margins with one method call.
+
+For margins 0, 1, and 2, the net effect of these defaults is that the
+zeroth margin is set up for line numbers, but is hidden; the first
+margin is set up for non-folding symbols and is 16 pixels wide, and the
+second margin is set up for symbols, no mask is set, and zero width.
+The meaning of B<mask> is discussed a few paragraphs below.
+
+So you can see that the other margins (called 0, 1, and 2) are used for
+line numbers and symbol display. Again, it seems to be conventional to
+use margin 0 for line numbers, 1 for symbols of various sorts, and 2
+for folding. You set the width of these three margins with the
+SetMarginWidth method. If you set a margin's width to zero it will be
+ignored; however, if you set a marker (using MarkerAdd) on a zero-width
+margin then the background color of the line will change: this is
+useful for debuggers, editors, etc.
+
+The color for the background is painted one of two ways, depending on
+whether or not the margin's mask is set to use any of the folding
+symbols. If folding symbols aren't used (i.e., if mask &
+wxSTC_MASK_FOLDERS == 0) then a solid color is used: the background
+color of the wxSTC_STYLE_LINENUMBER style.
+
+If any folding symbols I<are> set for that margin then a checkerboard
+dithered pattern is used using the system chrome colors:
+wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) and
+wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT). For more
+information on this, see Scintilla src code: Editor.cxx in the Paint()
+method, ~ line 2025, and PlatWX.cpp around line 866.
+
+It's suggested that you read the Markers section before trying to
+understand symbol margins.
+
+For symbol margins there's a 32-bit value for I<each> line, where each
+bit is a on/off flag for a particular symbol. To turn a marker on/off,
+set the corresponding bit on or off with MarkerAdd.
+
+You may be wondering which marker corresponds to each bit? When the STC
+is initialized, all bits correspond to wxSTC_MARK_CIRCLE. You use
+MarkerDefine to set a particular marker bit to correspond to a
+particular marker symbol. Again, see the Markers section for details on
+what type of markers are available.
+
+Before you can turn markers on and off, you need to set a so-called
+I<margin mask> for each symbol margin using the SetMarginMask method.
+It sounds complicated, but all that's required is to have a bit for
+each marker number (those set by MarkerDefine), for example, if you set
+margin 1 to be a symbol margin with SetMarginType(1,
+wxSTC_MARGIN_SYMBOL), and you set marker 0 to wxSTC_MARK_PLUS with
+MarkerDefine(0, wxSTC_MARK_PLUS, "white", "black") then you would set
+margin 1's mask to allow marker 0 to be used on this margin:
+SetMarginMask(1,0x1). If you were using a number of different symbols
+on margin 1, you'd create a mask that's the OR of all the symbol
+numbers and use that for the second argument to SetMarginMask.
+
+If you're using a symbol margin for folding, follow the convention of
+using the upper seven bits for the folding symbols. there's even a
+handy constant wxSTC_MASK_FOLDERS (0x7E000000).
+
+B<Example>:
+
+I want to set up margin 0 for numbers, margin 1 for symbols, and margin
+2 for folding. This simple example is not tested; it's just to give you
+an idea. It leaves out some code that is needed to enable folding, as
+well.
+
+ stcInstance.SetMargins(0,0)    #set left and right outer margins to 0 width
+ lines = stcInstance.GetLineCount() #get # of lines, ensure text is loaded first!
+ 
+ #now figure out the optimum width for the number margin based on how long the
+ #line number string would be. 'lines' is the number of lines, so we
+ #need to make it a string and add an extra char for safety. For example,
+ #if it's 500 lines, str(lines)+' ' = "500 " and we'd figure out the
+ #number of pixels needed for up to 9999 lines. Note that this isn't
+ #dynamic, although it does allow for some growth in the document size.
+ #Could also do this check at idle time and adjust the width as one
+ #scrolls thru the document, i.e., at line 10 have a different line number
+ #margin width than at line 1000. The UltraEdit text editor does this....
+ 
+ width = stcInstance.TextWidth(wxSTC_STYLE_LINENUMBER,str(lines)+' ')
+ stcInstance.SetMarginWidth(0,width)
+                           
+ stcInstance.SetMarginWidth(1, 16)   #margin 1 for symbols, 16 px wide
+ stcInstance.SetMarginType(1, wxSTC_MARGIN_SYMBOL)
+ 
+ #Setup a margin to hold fold markers
+ stcInstance.SetMarginType(2, wxSTC_MARGIN_SYMBOL) #margin 2 for symbols
+ stcInstance.SetMarginMask(2, wxSTC_MASK_FOLDERS)  #set up mask for folding symbols
+ stcInstance.SetMarginSensitive(2, true)           #this one needs to be mouse-aware
+ stcInstance.SetMarginWidth(2, 16)                 #set margin 2 16 px wide
+            
+ #define folding markers		         
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDEREND,     wxSTC_MARK_BOXPLUSCONNECTED,  "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDEROPENMID, wxSTC_MARK_BOXMINUSCONNECTED, "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDERMIDTAIL, wxSTC_MARK_TCORNER,  "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDERTAIL,    wxSTC_MARK_LCORNER,  "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDERSUB,     wxSTC_MARK_VLINE,    "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDER,        wxSTC_MARK_BOXPLUS,  "white", "black")
+ stcInstance.MarkerDefine(wxSTC_MARKNUM_FOLDEROPEN,    wxSTC_MARK_BOXMINUS, "white", "black")
+
+There are two defined variables in wxPython that you can use to to
+define or test for the margin types in SetMarginType and GetMarginType:
+wxSTC_MARGIN_NUMBER and wxSTC_MARGIN_SYMBOL
+
+n.b. I don't like these explanations yet.
+
+----
+
+B<GetMarginLeft()>
+
+Returns an integer object with the left-outer margin size in pixels.
+
+top
+
+----
+
+B<GetMarginMask(margin)>
+
+Returns an integer object with the margin mask for the margin specified
+by the input parameter B<margin> (0,1,2).
+
+top
+
+----
+
+B<GetMarginRight()>
+
+Returns an integer object with the right-outer margin size in pixels.
+
+top
+
+----
+
+B<GetMarginSensitive(margin)>
+
+Returns an integer object with the value 1 (aka TRUE) if the margin
+specified by the input parameter B<margin> (0,1,2) is mouse-sensitive
+or 0 if it is not.
+
+top
+
+----
+
+B<GetMarginType(margin)>
+
+Returns an integer object with the margin type (wxSTC_MARGIN_NUMBER or
+wxSTC_MARGIN_SYMBOL) for the margin specified by the input parameter
+B<margin> (0,1,2).
+
+top
+
+----
+
+B<GetMarginWidth(margin)>
+
+Returns an integer object with the margin width in pixels for the
+margin specified by the input parameter B<margin> (0,1,2).
+
+top
+
+----
+
+B<SetMarginLeft(pixelwidth)>
+
+Sets the width of the left-outer margin to the number of pixels
+specified by the integer argument B<pixelwidth>. Returns None.
+
+top
+
+----
+
+B<SetMarginMask(margin,mask)>
+
+Sets the marker-mask for the margin specified by the integer argument
+B<margin> (0,1,2) to the value of the integer argument B<mask>. Returns
+None.
+
+From the Scintilla documentation:
+
+The mask is a 32-bit value. Each bit corresponds to one of 32 logical
+symbols that can be displayed in a margin that is enabled for symbols.
+There is a useful constant, wxSTC_MASK_FOLDERS (0xFE000000 or
+-33554432), that is a mask for the 7 logical symbols used to denote
+folding. You can assign a wide range of symbols and colours to each of
+the 32 logical symbols, see Markers for more information. If (mask &
+wxSTC_MASK_FOLDERS)==0, the margin background colour is controlled by
+style 33 (wxSTC_STYLE_LINENUMBER).
+
+You add logical markers to a line with MarkerAdd. If a line has an
+associated marker that does not not appear in the mask of any margin
+with a non-zero width, the marker changes the background colour of the
+line. For example, suppose you decide to use logical marker 10 to mark
+lines with a syntax error and you want to show such lines by changing
+the background colour. The mask for this marker is 1 shifted left 10
+times (1E<lt>E<lt>10) which is 0x400. If you make sure that no symbol
+margin includes 0x400 in its mask, any line with the marker gets the
+background colour changed.
+
+To set a non-folding margin 1 use SetMarginMask(1,
+~wxSTC_MASK_FOLDERS); to set a folding margin 2 use SetMarginMask(2,
+wxSTC_MASK_FOLDERS). This is the default set by Scintilla.
+~wxSTC_MASK_FOLDERS is 0x1FFFFFF in hexadecimal. Of course, you may
+need to display all 32 symbols in a margin, in which case use
+SetMarginMask(margin, -1).
+
+top
+
+----
+
+B<SetMarginRight(pixelWidth)>
+
+Sets the width of the right-outer margin to the number of pixels
+specified by the integer argument B<pixelwidth>. Returns None.
+
+top
+
+----
+
+B<SetMargins(left,right)>
+
+This method permits setting both outer-margins at once, using the
+integer parameters B<left> and B<right>. Returns None.
+
+top
+
+----
+
+B<SetMarginSensitive(margin,sensitive)>
+
+Sets the margin specified by the integer parameter B<margin> (0,1,2) to
+be sensitive to mouse clicks if the integer parameter B<sensitive> is
+nonzero, or insensitive if B<sensitive> is 0. Returns None.
+
+top
+
+----
+
+B<SetMarginType(margin,marginType)>
+
+Sets the margin specified by the integer parameter B<margin> (0,1,2) to
+the mode specified by the integer parameter B<marginType>. Use one of
+the values C<wxSTC_MARGIN_NUMBER> or C<wxSTC_MARGIN_SYMBOL> as the
+B<marginType> argument. Returns None.
+
+top
+
+----
+
+B<SetMarginWidth(margin,pixelWidth)>
+
+Sets the margin specified by the integer parameter B<margin> (0,1,2) to
+be the width pixelWidth. Returns None. top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 15021 bytes of input
+#Mon Jun 20 17:29:44 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

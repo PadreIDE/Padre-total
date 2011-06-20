@@ -1,0 +1,120 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Long Line Indicators
+
+=over
+
+=item * GetEdgeColour
+
+=item * GetEdgeColumn
+
+=item * GetEdgeMode
+
+=item * SetEdgeColour
+
+=item * SetEdgeColumn
+
+=item * SetEdgeMode
+
+=back
+
+B<Summary>:
+
+You may wish to have your user see whether or not she is exceeding some
+preset line length limit, without actually cutting off the text. The
+methods in this section allow you to do this.
+
+You set a threshold with SetEdgeColumn. You can choose to use a
+vertical line or to display the remainder of the line with a background
+color. Normally, both of these modes are off, and there's no
+over-length indication. You set the color of the line or highlight with
+SetEdgeColour.
+
+WxPython has some defined variables you can use to pass in parameters
+or test against return values:
+
+ wxSTC_EDGE_BACKGROUND  : highlight the text of the rest of the line
+ wxSTC_EDGE_LINE        : display vertical line at threshold
+ wxSTC_EDGE_NONE        : inactive (default)
+
+The Scintilla documentation states: "The vertical line works well for
+monospaced fonts but not for proportional fonts which should use
+EDGE_BACKGROUND." This author has found these long-line indicators to
+be problematic in all cases, but this may not hold true for you.
+
+----
+
+B<GetEdgeColour()>
+
+Retrieve the color used in edge indication. The returned value is a
+wxColour.
+
+top
+
+----
+
+B<GetEdgeColumn()>
+
+Retrieve an integer with the column number which text should be kept
+within.
+
+top
+
+----
+
+B<GetEdgeMode()>
+
+Returns an integer with the edge highlight mode.
+
+ wxSTC_EDGE_BACKGROUND  : highlight the text of the rest of the line
+ wxSTC_EDGE_LINE        : display vertical line at threshold
+ wxSTC_EDGE_NONE        : inactive
+
+top
+
+----
+
+B<SetEdgeColour(edgeColour)>
+
+Sets the color to use for edge highlighting. The color value
+B<edgeColour> must be a wxColour object, a #RRGGBB string, or a color
+spec like "white". Return value is None.
+
+top
+
+----
+
+B<SetEdgeColumn(column)>
+
+The integer value B<column> sets the column threshold. Returns None.
+
+top
+
+----
+
+B<SetEdgeMode(mode)>
+
+Sets the edge mode. The default when the STC is instantiated is
+wxSTC_EDGE_NONE, i.e., inactive. The integer value B<mode> is one of:
+
+ wxSTC_EDGE_BACKGROUND  : highlight the text of the rest of the line
+ wxSTC_EDGE_LINE        : display vertical line at threshold
+ wxSTC_EDGE_NONE        : inactive
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 4984 bytes of input
+#Mon Jun 20 17:29:43 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

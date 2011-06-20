@@ -1,0 +1,436 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Selection & Positioning
+
+=over
+
+=item * GetAnchor
+
+=item * GetColumn
+
+=item * GetCurrentPos
+
+=item * GetLineEndPosition
+
+=item * GetSelectedText
+
+=item * GetSelection
+
+=item * GetSelectionEnd
+
+=item * GetSelectionStart
+
+=item * GotoLine
+
+=item * GotoPos
+
+=item * HideSelection
+
+=item * LineFromPosition
+
+=item * MoveCaretInsideView
+
+=item * PointFromPosition
+
+=item * PositionFromLine
+
+=item * PositionFromPoint
+
+=item * PositionFromPointClose
+
+=item * SelectAll
+
+=item * SelectionIsRectangle
+
+=item * SetAnchor
+
+=item * SetCurrentPos
+
+=item * SetSelBackground
+
+=item * SetSelection
+
+=item * SetSelectionEnd
+
+=item * SetSelectionStart
+
+=item * SetSelForeground
+
+=back
+
+B<Summary>:
+
+This page is about the selection region and positioning. The
+B<selection region> encompasses two points (actually, positions) in the
+Document: the B<anchor> and the B<current position>. If these are
+identical then there's no selected text.
+
+The B<position> is the logical location in the Document; which ranges
+from 0 (before the first character) to the Document size (after the
+last character).
+
+Note that you need to use care when using methods which change the
+position: you can set the position to between a CR LF pair, or within a
+2-byte character. There's no simple call to check this or fix this up.
+If interested, examine the Scintilla sources: Document.cxx -
+Document::MovePositionOutsideChar() and Editor.cxx -
+MovePositionOutsideChar(). There is no direct way to access these from
+wxPython or wxWindows. Keyboard movements and use of the keymap methods
+don't have this problem as they use the MovePositionOutsideChar code to
+adjust the position outside of CRLFs or 2-byte characters.
+
+The method descriptions that follow are largely those shown in the
+Scintilla documentation, with a few corrections and additional notes.
+
+----
+
+B<GetAnchor()>
+
+Returns an integer with the current anchor position.
+
+top
+
+----
+
+B<GetColumn(pos)>
+
+Returns an integer with the column number of the passed-in integer
+parameter B<pos> (position) within the document taking the width of
+tabs into account. This returns the column number of the last tab on
+the line before pos, plus the number of characters between the last tab
+and pos. If there are no tabs characters on the line, the return value
+is the number of characters up to the position on the line. In both
+cases, double byte characters count as a single character. This is
+probably only useful with monospaced fonts.
+
+top
+
+----
+
+B<GetCurrentPos()>
+
+Returns an integer with the current position.
+
+top
+
+----
+
+B<GetLineEndPosition(line)>
+
+This returns an integer with the position at the end of the line (after
+the last visible characters on a line specified by the integer
+parameter B<line>, before any line end characters (after the last
+visible characters on a line).
+
+top
+
+----
+
+B<GetSelectedText()>
+
+Returns a string object with the contents of the selection. Obviously,
+if the selection length is zero then the string object will be empty.
+
+top
+
+----
+
+B<GetSelection()>
+
+Returns a tuple C<(start,end)> where B<start> and B<end> are integers
+with the start and end positions of the current selection.
+
+top
+
+----
+
+B<GetSelectionEnd()>
+
+Returns an integer object with the position of the end of the
+selection. Note that this may be either the anchor or the current
+position, depending on which is larger: the larger of the two is
+returned.
+
+top
+
+----
+
+B<GetSelectionStart()>
+
+Returns an integer object with the position of the start of the
+selection. Note that this may be either the anchor or the current
+position, depending on which is smaller: the smaller of the two is
+returned.
+
+top
+
+----
+
+B<GotoLine(line)>
+
+Sets the current position to the start of the line specified by the
+integer parameter B<line>. If line is outside the range of lines in the
+document (first line is 0), the line set is the first or last.
+
+The selection, if any, is removed. If necessary, the view is scrolled
+to make the caret visible. The anchor position is set the same as the
+current position.
+
+Returns None.
+
+top
+
+----
+
+B<GotoPos(pos)>
+
+This removes any selection, sets the caret to the position indicated by
+the integer parameter B<pos>, and scrolls the view to make the caret
+visible, if necessary. It is equivalent to SetSelection(pos,pos). The
+anchor position is set the same as the current position. Returns None.
+
+top
+
+----
+
+B<HideSelection(normal)>
+
+Draw the selection in normal mode if the integer parameter B<normal> is
+1 or hide the selection if normal = 0. Returns None.
+
+Note that normal mode selection colors are set to a default: foreground
+is 0xFF0000, background is 0xC0C0C0. This can be changed with
+SetSelForeground and SetSelBackground.
+
+top
+
+----
+
+B<LineFromPosition(pos)>
+
+Given a position B<pos> (integer) within the Document, LineFromPos
+returns an integer value which is the line which contains pos. The
+return value is 0 if pos E<lt>= 0. The return value is the last line if
+pos is beyond the end of the document.
+
+top
+
+----
+
+B<MoveCaretInsideView()>
+
+Move the caret inside current view if it's not there already. Any
+selection is lost. Returns None.
+
+top
+
+----
+
+B<PointFromPosition(pos)>
+
+Given an integer argument B<pos> which represents a position within the
+Document, the return value is a wxPoint object that contains the point
+in the window where a position is displayed.
+
+top
+
+----
+
+B<PositionFromLine(line)>
+
+This returns the an integer with the document position that corresponds
+with the start of the line specified by the integer parameter B<line>.
+If line is negative, the position of the line holding the start of the
+selection is returned. If line is greater than the lines in the
+document, the return value is -1. If line is equal to the number of
+lines in the document (i.e. 1 line past the last line), the return
+value is the end of the document.
+
+top
+
+----
+
+B<PositionFromPoint(pt)>
+
+Returns the integer position given a wxPoint B<pt>.
+
+top
+
+----
+
+B<PositionFromPointClose(x,y)>
+
+Returns the integer position given a pair of coordinates B<x,y>.
+Returns wxSTC_INVALID_POSITION if there's no text close to the point.
+
+top
+
+----
+
+B<SelectAll>
+
+Select all the text in the Document. Returns None.
+
+top
+
+----
+
+B<SelectionIsRectangle()>
+
+Returns an integer whose value is 1 if the selection mode is
+B<Rectangle> or 0 if the selection mode is B<stream>. This is set by
+the user as she makes a selection: if the ALT key is held down during
+the selection process, then the selection is forced to be rectangular,
+otherwise it is I<stream>, which just means 'whatever you select with
+the mouse'.
+
+top
+
+----
+
+B<SetAnchor(posAnchor)>
+
+Sets the anchor position to the value of the integer parameter
+B<posAnchor>. Note that this will create a selection region between the
+position at posAnchor and the currentPosition. If not visible, the
+caret will not be scrolled into view. Returns None.
+
+top
+
+----
+
+B<SetCurrentPos(pos)>
+
+Sets the anchor position to the value of the integer parameter B<pos>.
+Note that this will create a selection region between the position at
+pos and the Anchor. If not visible, the caret will not be scrolled into
+view. Returns None.
+
+top
+
+----
+
+B<SetSelBackground(useSetting,back)>
+
+The default color for the selection background is 0xC0C0C0. You use
+this method to change the background color or restore the default. The
+B<back> parameter can be a wxColour object, a #RRGGBB string, or a
+color spec like "white". The B<useSetting> (integer) parameter controls
+whether or not the value for back is used: if 1 then back is used, if 0
+then the default is restored. The return value is None.
+
+Example:
+
+ SetSelBackground(1,"red")  #change the selection background to red
+ SetSelBackground(0,"red")  #restore the default. "red" is ignored.
+
+top
+
+----
+
+B<SetSelection(start,end)>
+
+Create a selection region using the integer parameters B<start> and
+B<end>. Some special notes:
+
+=over
+
+=item * If I<end> is negative then I<end> is set to the end of the
+document before the selection operation is performed.
+
+=item * If I<start> is negative then I<start> is set to the value of
+I<end>: this will remove the selection.
+
+=back
+
+The caret will always be visible after SetSelection. SetSelection
+returns None.
+
+top
+
+----
+
+B<SetSelectionEnd(pos)>
+
+Sets the selection, using the integer argument B<pos> as the end of the
+selection (the currentPosition) and the preset anchor as the start of
+the selection. In effect, equivalent to
+SetSelection(pos,min(anchor,pos)). Note that this implies that if pos
+E<lt> anchor, then the selection is removed: setSelection (pos,pos).
+
+The caret is not scrolled into view, even if neccessary. The method
+returns None.
+
+The Scintilla documentation provides this table:
+
+anchor
+
+current
+
+C<SCI_SETSELECTIONSTART>
+
+C<pos>
+
+C<Max(pos, current)>
+
+C<SCI_SETSELECTIONEND>
+
+C<Min(anchor, pos)>
+
+C<pos>
+
+Also see EnsureCaretVisible
+
+top
+
+----
+
+B<SetSelectionStart(pos)>
+
+Sets the selection, using the integer argument B<pos> as the start of
+the selection (the anchor) and the preset currentPosition as the end of
+the selection. In effect, equivalent to
+SetSelection(max(currentPos,pos),pos). Note that this implies that if
+pos E<gt> currentPosition, then the selection is removed: setSelection
+(pos,pos).
+
+The caret is not scrolled into view, even if neccessary. The method
+returns None.
+
+Also see: table 1 and EnsureCaretVisible
+
+top
+
+----
+
+B<SetSelForeground(useSetting,fore)>
+
+The default color for the selection foreground is 0xFF0000. You use
+this method to change the foreground color or restore the default. The
+B<fore> parameter can be a wxColour object, a #RRGGBB string, or a
+color spec like "white". The B<useSetting> (integer) parameter controls
+whether or not the value for back is used: if 1 then back is used, if 0
+then the default is restored. The return value is None.
+
+Example:
+
+ SetSelForeground(1,"green")  #change the selection foreground to green
+ SetSelForeground(0,"green")  #restore the default. "green" is ignored.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 15175 bytes of input
+#Mon Jun 20 17:29:57 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

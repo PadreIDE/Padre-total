@@ -1,0 +1,46 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Helpful Hints
+
+B<Summary>:
+
+Some helpful hints!
+
+----
+
+B<GetRGB>
+
+This method takes a #RRGGBB spec as input and returns a tuple (R,G,B).
+
+ def getRGBFromSpec(specString):
+   """converts a #RRGGBB spec to RGB.
+   
+      Returns (Red,Green,Blue) as integers
+   """
+   if specString[0] == '#':
+     specString = specString[1:]
+   #zero-pad to ensure at least 6 chars
+   specstring = specString + '000000'
+   
+   try:
+     r = int(specString[0:2],16)
+     g = int(specString[2:4],16)
+     b = int(specString[4:6],16)
+   except:
+     r=g=b=0
+     
+   return (r,g,b)
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 2471 bytes of input
+#Mon Jun 20 17:29:31 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

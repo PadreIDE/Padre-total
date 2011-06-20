@@ -1,0 +1,81 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - White Space
+
+=over
+
+=item * GetViewWhiteSpace
+
+=item * SetViewWhiteSpace
+
+=item * SetWhitespaceBackground
+
+=item * SetWhitespaceForeground
+
+=back
+
+B<Summary>:
+
+The B<Whitespace> methods are used to control whether or not white
+space is visible and what its foreground and background colors are.
+
+WxPython defines three 'constants' to control whitespace visibility:
+
+ wxSTC_WS_INVISIBLE                      Duh, white space isn't shown
+ wxSTC_WS_VISIBLEALWAYS                  White space is drawn as dots, tabs as arrows
+ wxSTC_WS_VISIBLEAFTERINDENT             Dots/arrows only shown after the first visible character
+
+----
+
+B<GetViewWhiteSpace()>
+
+Returns an integer describing the white space mode: one of
+wxSTC_WS_INVISIBLE, wxSTC_WS_VISIBLEALWAYS, or
+wxSTC_WS_VISIBLEAFTERINDENT.
+
+top
+
+----
+
+B<SetViewWhiteSpace(viewWs)>
+
+The white space mode is set to the value provided as the integer
+parameter B<viewWs>. The parameter is one of wxSTC_WS_INVISIBLE,
+wxSTC_WS_VISIBLEALWAYS, or wxSTC_WS_VISIBLEAFTERINDENT. Returns None.
+
+top
+
+----
+
+B<SetWhitespaceBackground(useSetting, back)>
+
+B<SetWhitespaceForeground(useSetting, fore)>
+
+These two methods allow you to override the color of visible
+whitespace. Usually this is controlled by the lexer, but you can
+override it.
+
+The B<useSetting> parameter is an integer that's 1 to override the
+lexer or 0 to return to the lexer's control. When useSetting=0 then the
+value of back or fore is ignored.
+
+The parameters B<back> and B<fore> are a wxColour object, a #RRGGBB
+string, or a color spec like "white".
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 3864 bytes of input
+#Mon Jun 20 17:30:08 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

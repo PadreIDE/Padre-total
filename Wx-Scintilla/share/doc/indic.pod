@@ -1,0 +1,196 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Indicators
+
+=over
+
+=item * IndicatorGetForeground
+
+=item * IndicatorGetStyle
+
+=item * IndicatorSetForeground
+
+=item * IndicatorSetStyle
+
+=back
+
+B<Summary>:
+
+As seen in the Text Operations page, the style byte is initially set up
+to provide three bits for indicators; hence, you can only have three
+indicator styles in the default configuration, although you have a
+choice of five different indicator types to show (i.e., only three may
+be used). You can use SetStyleBits to change this allocation, but
+beware: everything preprogrammed into the STC for indicators and
+styling assumes the default configuration.
+
+You set the style to use for each indicator by using IndicatorSetStyle.
+
+Indicator
+
+Value
+
+Looks like
+
+wxSTC_INDIC_PLAIN
+
+0
+
+Single-line underline
+
+wxSTC_INDIC_SQUIGGLE
+
+1
+
+Squiggly underline
+
+wxSTC_INDIC_TT
+
+2
+
+Line of small T-shapes
+
+wxSTC_INDIC_DIAGONAL
+
+3
+
+Diagonal hatching
+
+wxSTC_INDIC_STRIKE
+
+4
+
+Strike-out
+
+The default values are probably ok for most applications (see Scintilla
+source file ViewStyle.cxx, ~ line 110).
+
+Style
+
+Indicator
+
+Color
+
+0
+
+Squiggle
+
+#007F00 (dark green)
+
+1
+
+Small T-shapes
+
+#0000FF (light blue)
+
+2
+
+Plain (underline)
+
+#FF0000 (light red)
+
+There are some wxPython constants defined for masking the upper 3 bits
+of the style byte (assuming the default configuration where those are
+the indicator bytes):
+
+Mask
+
+Value
+
+indicator #
+
+wxSTC_INDIC0_MASK
+
+0x20
+
+0
+
+wxSTC_INDIC1_MASK
+
+0x40
+
+1
+
+wxSTC_INDIC2_MASK
+
+0x80
+
+2
+
+wxSTC_INDICS_MASK
+
+0xE0
+
+0,1,2
+
+You can change the color of the indicators with IndicatorSetForeground.
+
+After setting up indicators (you can skip the setup if you're willing
+to accept the defaults) you can then make them appear using
+StartStyling. This method has B<pos> and B<mask> arguments: the pos is
+where to start and the mask tells which bits to affect. For example,
+mask would be wxSTC_INDICS_MASK if all you wanted to affect was the
+indicator bits (again, assuming that there are only three of them).
+Then use SetStyling to make the indicators appear, with the style
+argument set to wxSTC_INDIC0_MASK, wxSTC_INDIC1_MASK, or
+wxSTC_INDIC2_MASK (or an OR of these, depending on what you want to
+see).
+
+Note: if the indic parameter in the following methods is greater than
+wxSTC_INDIC_MAX (7) then the operation is cancelled: the IndicatorSetXX
+methods do nothing and the IndicatorGetXX methods return 0. Note that
+you always need to ensure that indic E<lt>= the actual number of
+indicator bits that exist; this defaults to 3.
+
+----
+
+B<IndicatorGetForeground(indic)>
+
+This method returns a wxColour with the foreground color of the
+indicator specified by the integer parameter B<indic>.
+
+top
+
+----
+
+B<IndicatorGetStyle(indic)>
+
+Returns an integer object with the style number for an indicator
+B<indic>.
+
+top
+
+----
+
+B<IndicatorSetForeground(indic,fore)>
+
+Sets the foreground color B<fore> for the indicator specified by
+B<indic>. The parameter indic is an integer, and fore may be a wxColour
+object, a #RRGGBB string, or a color spec like "white". Returns None.
+
+top
+
+----
+
+B<IndicatorSetStyle(indic,style)>
+
+Sets the B<style> number for an indicator B<indic>. Both style and
+indic are integers. Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 6357 bytes of input
+#Mon Jun 20 17:29:35 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

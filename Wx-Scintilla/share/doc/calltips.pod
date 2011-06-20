@@ -1,0 +1,109 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Calltips
+
+=over
+
+=item * CallTipActive
+
+=item * CallTipCancel
+
+=item * CallTipPosAtStart
+
+=item * CallTipSetBackground
+
+=item * CallTipSetHighlight
+
+=item * CallTipShow
+
+=back
+
+B<Summary>:
+
+Calltips can be used to display the arguments to a function. Most
+often, this is a nice feature to implement when the STC is used for
+editing program or html/xml source code.
+
+CallTipShow is used to set up and open the calltip window. As the user
+types, the STC's container (i.e., your program) can highlight different
+parts of the text displayed in the calltip window.
+
+Calltips are automatically cancelled if an AutoCompShow sequence is
+begun or if the ESCAPE key is pressed, or if ESCAPE is simulating with
+CmdKeyExecute(wxSTC_CMD_CANCEL).
+
+Note that the STC's container has to set the highlighting within the
+call-tip window by using CallTipSetHighlight as this is not
+automatically performed by the STC itself.
+
+----
+
+B<CallTipActive()>
+
+Returns true (nominally a '1') if the STC is in call-tip mode or false
+(0) if not.
+
+top
+
+----
+
+B<CallTipCancel()>
+
+Destroys the calltip window and resets in internal call-tip mode flag
+(so that CallTipActive() will return false). Returns None.
+
+top
+
+----
+
+B<CallTipPosAtStart()>
+
+Returns the position where the caret before the call-tip was displayed.
+
+top
+
+----
+
+B<CallTipSetBackground(back)>
+
+Sets the background color of the calltip window (default = white) to
+the integer value B<back>. The B<back> value should be a RGB color
+constant; e.g., 0xFFFFFF for white.
+
+Returns None. top
+
+----
+
+B<CallTipSetHighlight(start,end)>
+
+Highlight the call-tip text between the B<start> and B<end> positions
+(both are integers). Note that position in this case refers to the
+position in the definition string sent to CallTipShow(). Returns None.
+
+top
+
+----
+
+B<CallTipShow(pos,definition)>
+
+Show a calltip near (integer) position B<pos>. The B<definition> is a
+string object. Note that the STC B<I<only>> supports \n as an EOL
+character; you have to ensure that there's no \r in the string.
+
+Returns None. top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 4633 bytes of input
+#Mon Jun 20 17:29:20 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

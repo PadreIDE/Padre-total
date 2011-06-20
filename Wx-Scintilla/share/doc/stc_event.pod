@@ -1,0 +1,716 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - wxStyledTextEvent
+
+=over
+
+=item * __init__
+
+=item * Clone
+
+=item * GetAlt
+
+=item * GetControl
+
+=item * GetDragAllowMove
+
+=item * GetDragResult
+
+=item * GetDragText
+
+=item * GetFoldLevelNow
+
+=item * GetFoldLevelPrev
+
+=item * GetKey
+
+=item * GetLength
+
+=item * GetLine
+
+=item * GetLinesAdded
+
+=item * GetListType
+
+=item * GetLParam
+
+=back
+
+=over
+
+=item * GetMargin
+
+=item * GetMessage
+
+=item * GetModificationType
+
+=item * GetModifiers
+
+=item * GetPosition
+
+=item * GetShift
+
+=item * GetText
+
+=item * GetWParam
+
+=item * GetX
+
+=item * GetY
+
+=item * SetDragAllowMove
+
+=item * SetDragResult
+
+=item * SetDragText
+
+=item * SetFoldLevelNow
+
+=item * SetFoldLevelPrev
+
+=back
+
+=over
+
+=item * SetKey
+
+=item * SetLength
+
+=item * SetLine
+
+=item * SetLinesAdded
+
+=item * SetListType
+
+=item * SetLParam
+
+=item * SetMargin
+
+=item * SetMessage
+
+=item * SetModificationType
+
+=item * SetModifiers
+
+=item * SetPosition
+
+=item * SetText
+
+=item * SetWParam
+
+=item * SetX
+
+=item * SetY
+
+=back
+
+B<Summary>:
+
+The wxStyledTextEvent is the interface between Scintilla notifications
+and your Python program. wxStyledTextEvent inherits from wxCommandEvent
+and inherits familiar methods from that class; but many of them (e.g.,
+IsChecked()), don't make any sense for the STC. However, wxCommandEvent
+inherits from wxEvent; methods from the wxEvent class B<can> be useful
+(e.g., GetId() and Skip()).
+
+There are two basic types of events that will be sent to a wxPython
+application, EVT_STC_CHANGE and all the others. The former is sent to
+your application when the Scintilla event B<NotifyChange> occurs. This
+one occurs whenever a change is made to the text of the document, but
+not for changes in styling information. This event is simple: there's
+no significant information in the event object other than the fact that
+it occurred and the ID of the STC.
+
+The other events are sent to your app when the internal Scintilla event
+B<NotifyParent> occurs. Many of these events have little information
+aside from the event type and the STC id. Some others have information
+about position, keypress, modifiers (alt, shift, ctrl). Others have
+information about text content, folding, etc. You need to examine the
+event itself to see what's provided: See this page and Events for
+specifics.
+
+You can control what types of modifications will fire a EVT_STC_CHANGE
+and EVT_STC_MODIFIED event with the SetModEventMask command.
+B<Important!> No modifications may be performed while servicing these
+two events!!
+
+B<wxStyledTextEvent attributes>:
+
+These are the attributes specific to this event (not including any due
+to inheritance). The names of the C-language variables are shown.
+There's no direct access to these variables, you need to use the
+methods shown on this page to access them.
+
+ int  m_position;
+ int  m_key;
+ int  m_modifiers;
+ int  m_modificationType; 
+ wxString m_text;
+ int  m_length;
+ int  m_linesAdded;
+ int  m_line;
+ int  m_foldLevelNow;
+ int  m_foldLevelPrev;
+ int  m_margin;  
+ int  m_message; 
+ int  m_wParam;
+ int  m_lParam;
+ int m_listType;
+ int m_x;
+ int m_y;
+ wxString m_dragText;
+ bool     m_dragAllowMove;
+ wxDragResult m_dragResult;
+
+Note that wxPython handles conversions to and from wxWindows-specific
+types such as wxString.
+
+----
+
+The values for m_modificationType are shown below. These can be used in
+your Python program.
+
+ wxSTC_MOD_INSERTTEXT
+ wxSTC_MOD_DELETETEXT
+ wxSTC_MOD_CHANGESTYLE
+ wxSTC_MOD_CHANGEFOLD
+ wxSTC_PERFORMED_USER
+ wxSTC_PERFORMED_UNDO
+ wxSTC_PERFORMED_REDO
+ wxSTC_LASTSTEPINUNDOREDO
+ wxSTC_MOD_CHANGEMARKER
+ wxSTC_MOD_BEFOREINSERT
+ wxSTC_MOD_BEFOREDELETE
+ wxSTC_MODEVENTMASKALL
+
+----
+
+B<__init__>(commandType,id)
+
+Create a new event object. CommandType is the type of event, such as
+wxEVT_STC_CHANGE, wxEVT_STC_STYLENEEDED, etc. id is the control id.
+Note that a user should not ordinarily need to create an event. Most of
+the Set methods are not used by user code, with the exception of
+perhaps SetDragResult or SetDragAllowMove.
+
+top
+
+----
+
+B<Clone>
+
+Create a copy of the event. Required by wxWindows event system.
+
+top
+
+----
+
+B<GetAlt>
+
+Returns the state of the ALT bit in the m_modifiers attribute; i.e., is
+1 if the ALT key was pressed for this event. Valid for
+EVT_STC_MARGINCLICK and EVT_STC_KEY (EVT_STC_KEY not sent in win32).
+
+top
+
+----
+
+B<GetControl>
+
+Returns the state of the CTRL bit in the m_modifiers attribute; i.e.,
+is 1 if the CTRL key was pressed for this event. Valid for
+EVT_STC_MARGINCLICK and EVT_STC_KEY (EVT_STC_KEY not sent in win32).
+
+top
+
+----
+
+B<GetDragAllowMove>
+
+Get the value of the m_dragAllowMove. Always initially set TRUE for the
+EVT_STC_START_DRAG event. See SetDragAllowMove for more information.
+
+top
+
+----
+
+B<GetDragResult>
+
+Get the value of m_dragResult. See SetDragResult.
+
+top
+
+----
+
+B<GetDragText>
+
+Get the value of m_dragText. This is a string that contains text to be
+dropped into the STC.
+
+top
+
+----
+
+B<GetFoldLevelNow>
+
+Get the value of m_foldLevelNow. The fold level after to a change in
+folding level. See also GetFoldLevelPrev.
+
+top
+
+----
+
+B<GetFoldLevelPrev>
+
+Get the value of m_foldLevelPrev. The fold level prior to a change in
+folding level. GetModificationType will be wxSTC_MOD_CHANGEFOLD |
+wxSTC_MOD_CHANGEMARKER. Sent in response to a change in fold level sent
+from a client using SetFoldLevel or due to a change in fold level
+performed by a lexer that supports folding (if applicable).
+
+top
+
+----
+
+B<GetKey>
+
+Returns the value of m_key. This is valid for EVT_STC_CHARADDED and
+EVT_STC_KEY (ECT_STC_KEY not used in win32).
+
+top
+
+----
+
+B<GetLength>
+
+Returns the value of m_length. This is valid for EVT_STC_NEEDSHOWN and
+EVT_STC_MODIFIED.
+
+top
+
+----
+
+B<GetLine>
+
+Returns the value of m_line. Valid for EVT_STC_MODIFIED.
+GetModificationType will be wxSTC_MOD_CHANGEFOLD |
+wxSTC_MOD_CHANGEMARKER. Sent in response to a change in fold level sent
+from a client using SetFoldLevel or due to a change in fold level
+performed by a lexer that supports folding.
+
+top
+
+----
+
+B<GetLinesAdded>
+
+Returns the value of m_linesAdded. Valid for EVT_STC_MODIFIED when
+GetModificationType() returns one of:
+
+=over
+
+=item * wxSTC_MOD_BEFOREINSERT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_MOD_INSERTTEXT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_INSERTTEXT
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_DELETETEXT
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=back
+
+top
+
+----
+
+B<GetListType>
+
+Get the value of m_listType. Valid for EVT_STC_USERLISTSELECTION. Use
+GetText to get the value of the text returned from this user list.
+
+top
+
+----
+
+B<GetLParam>
+
+Get the value of m_lParam. Valid for EVT_STC_MACRORECORD.
+
+top
+
+----
+
+B<GetMargin>
+
+Returns the value of m_margin. This is the margin number where the
+click occurred. Valid for EVT_STC_MARGINCLICK. Note that the
+m_modifieds variable is valid for this event, so you can use
+GetModifiers or the more convenient GetAlt(), GetControl() and
+GetShift() methods to determine the state of the modifier keys when the
+margin was clicked.
+
+top
+
+----
+
+B<GetMessage>
+
+Get the value of m_message. Valid for EVT_STC_MACRORECORD.
+
+top
+
+----
+
+B<GetModificationType>
+
+Get the value of m_modificationType. Used with EVT_STC_MODIFIED to
+indicate the modification type: see the Modification Types table.
+
+top
+
+----
+
+B<GetModifiers>
+
+Returns the value of m_modifiers. Valid for EVT_STC_MARGINCLICK and
+EVT_STC_KEY (EVT_STC_KEY not sent in win32).
+
+top
+
+----
+
+B<GetPosition>
+
+Returns the value of m_position. Valid for wxEVT_STC_START_DRAG (lowest
+character position of start of selection), wxEVT_STC_DO_DROP and
+wxEVT_STC_DRAG_OVER (both of these send the character position of drop
+point x,y location), EVT_STC_DWELLEND and EVT_STC_DWELLSTART (both of
+these send the character position nearest the dwell point or
+INVALID_POSITION = -1 if not near any text), EVT_STC_STYLENEEDED (last
+character position where styling is needed) and EVT_STC_MODIFIED when
+GetModificationType() returns:
+
+=over
+
+=item * wxSTC_MOD_CHANGEMARKER (position may be zero, see Document.cxx
+in Scintilla src)
+
+=item * wxSTC_MOD_CHANGEFOLD | wxSTC_MOD_CHANGEMARKER
+
+=item * wxSTC_MOD_BEFOREDELETE | wxSTC_PERFORMED_USER
+
+=item * wxSTC_MOD_DELETETEXT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_MOD_BEFOREINSERT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_MOD_INSERTTEXT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_MOD_CHANGESTYLE | wxSTC_PERFORMED_USER
+
+=back
+
+top
+
+----
+
+B<GetShift>
+
+Returns the state of the SHIFT bit in the m_modifiers attribute; i.e.,
+is 1 if the SHIFT key was pressed for this event. Valid for
+EVT_STC_MARGINCLICK and EVT_STC_KEY (EVT_STC_KEY not sent in win32).
+
+top
+
+----
+
+B<GetText>
+
+Get the value of the m_text variable. This is valid for
+wxEVT_STC_USERLISTSELECTION, wxEVT_STC_URIDROPPED, and
+wxEVT_STC_MODIFIED when GetModificationType() returns:
+
+=over
+
+=item * wxSTC_MOD_BEFOREDELETE | wxSTC_PERFORMED_USER
+
+=item * wxSTC_MOD_INSERTTEXT | wxSTC_PERFORMED_USER
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_UNDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_INSERTTEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item * wxSTC_PERFORMED_REDO | wxSTC_MOD_DELETETEXT |
+wxSTC_LASTSTEPINUNDOREDO
+
+=item *
+
+=back
+
+top
+
+----
+
+B<GetWParam>
+
+Get the value of m_wParam. Valid for EVT_STC_MACRORECORD.
+
+top
+
+----
+
+B<GetX>
+
+B<GetY>
+
+Get the value of the m_x or m_y variables. These are valid for
+exEVT_STC_DO_DROP, wxEVT_STC_DRAG_OVER, EVT_STC_DWELLEND and
+EVT_STC_DWELLSTART.
+
+top
+
+----
+
+B<SetDragAllowMove>
+
+When a drop source, control which operations may take place. Use one of
+the wxPython defined values:
+
+=over
+
+=item * wxDrag_CopyOnly: allow only copying
+
+=item * wxDrag_AllowMove: allow moving and copying
+
+=item * wxDrag_DefaultMove: the default operation is move rather than
+copy.
+
+=back
+
+top
+
+----
+
+B<SetDragResult>
+
+Set the value of the m_dragResult variable. You can use one of the
+wxPython defined values:
+
+=over
+
+=item * wxDragError: error prevented the d&d operation from completing
+
+=item * wxDragNone: drag target didn't accept the data
+
+=item * wxDragCopy: the data was successfully copied
+
+=item * wxDragMove: the data was successfully moved (MSW only)
+
+=item * wxDragLink: operation is a drag-link
+
+=item * wxDragCancel: the operation was cancelled by user (not an
+error)
+
+=back
+
+top
+
+----
+
+B<SetDragText>
+
+Set the value of m_dragText.
+
+top
+
+----
+
+B<SetFoldLevelNow>
+
+Set the value of m_foldLevelNow.
+
+top
+
+----
+
+B<SetFoldLevelPrev>
+
+Set the value of m_foldLevelPrev.
+
+top
+
+----
+
+B<SetKey>
+
+Set the value of m_key.
+
+top
+
+----
+
+B<SetLength>
+
+Set the value of m_length.
+
+top
+
+----
+
+B<SetLine>
+
+Set the value of m_line.
+
+top
+
+----
+
+B<SetLinesAdded>
+
+Set the value of m_linesAdded.
+
+top
+
+----
+
+B<SetListType>
+
+Set the value of m_listType.
+
+top
+
+----
+
+B<SetLParam>
+
+Set the value of m_lParam.
+
+top
+
+----
+
+B<SetMargin>
+
+Set the value of m_margin.
+
+top
+
+----
+
+B<SetMessage>
+
+Set the value of m_message.
+
+top
+
+----
+
+B<SetModificationType>
+
+Set the value of m_modificationType.
+
+top
+
+----
+
+B<SetModifiers>
+
+Set the value of m_modifiers.
+
+top
+
+----
+
+B<SetPosition>
+
+Set the value of m_position.
+
+top
+
+----
+
+B<SetText>
+
+Set the value of m_text.
+
+top
+
+----
+
+B<SetWParam>
+
+Set the value of m_wParam.
+
+top
+
+----
+
+B<SetX>
+
+Set the value of m_x.
+
+top
+
+----
+
+B<SetY>
+
+Set the value of m_y.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 18612 bytes of input
+#Mon Jun 20 17:29:29 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

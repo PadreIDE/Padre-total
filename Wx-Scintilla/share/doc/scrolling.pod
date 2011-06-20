@@ -1,0 +1,204 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Scrolling
+
+=over
+
+=item * GetEndAtLastLine
+
+=item * GetScrollWidth
+
+=item * GetUseHorizontalScrollBar
+
+=item * GetXOffset
+
+=item * LineScroll
+
+=item * ScrollToColumn
+
+=item * ScrollToLine
+
+=item * SetEndAtLastLine
+
+=item * SetHScrollBar
+
+=item * SetScrollWidth
+
+=item * SetUseHorizontalScrollBar
+
+=item * SetVScrollBar
+
+=item * SetXOffset
+
+=back
+
+B<Summary>:
+
+This section deals with scrolling, and has two methods not shown in the
+Scintilla documentation: ScrollToColumn and ScrollToLine.
+
+Note that the SetHScrollBar method does not perform as one might think
+from the Scintilla documentation, it works differently in
+wxPython/wxWindows: in 'pure' Scintilla, SetHScrollBar turns the
+horizontal scrollbar on and off. In wxPython, this is done with
+SetUseHorizontalScrollBar. In wxPython, SetHScrollBar allows you to
+change the horizontal scrollbar widget. Also, there's no GetHScrollBar,
+as you might expect. That functionality (seeing whether or not the
+scrollbar is active) is provided by GetUseHorizontalScrollBar. Finally,
+there's also a SetVScrollBar method that allows you to change the
+vertical scrollbar widget.
+
+Also note: SetXCaretPolicy and SetYCaretPolicy are here.
+SetVisiblePolicy is here. The ScrollCaret method shown in the Scintilla
+documentation is renamed to EnsureCaretVisible, in the caret
+documentation.
+
+----
+
+B<GetEndAtLastLine()>
+
+Returns an integer with the maximum scroll range mode. See
+SetEndAtLastLine.
+
+top
+
+----
+
+B<GetScrollWidth()>
+
+Returns an integer with the I<assumed> document width in pixels. See
+SetScrollWidth.
+
+top
+
+----
+
+B<GetUseHorizontalScrollBar()>
+
+Returns an integer with the value 1 if the horizontal scroll bar is in
+use or 0 if it is not in use.
+
+top
+
+----
+
+B<GetXOffset()>
+
+Returns an integer with the horizontal scroll position. See SetXOffset
+
+top
+
+----
+
+B<LineScroll(columns,lines)>
+
+The integer parameters B<columns> and B<lines> are used to specify how
+far to scroll the display from the current position. Positive values
+for line move the text upwards (and increase the line number, which may
+or may not be shown by you), negative values move the text downwards.
+Returns None.
+
+top
+
+----
+
+B<ScrollToColumn(column)>
+
+Scroll enough to make the column that's specified by the integer
+parameter B<column> visible. Returns None.
+
+top
+
+----
+
+B<ScrollToLine(line)>
+
+Scroll enough to make the line that's specified by the integer
+parameter B<line> visible. Returns None.
+
+top
+
+----
+
+B<SetEndAtLastLine(endAtLastLine)>
+
+This method allows you to choose whether or not the scroll range ends
+with the last line at the bottom of the view (endAtLastLine=1, the
+default) or whether scrolling should continue until one page below the
+last line (endAtLastLine=0). Returns None.
+
+top
+
+----
+
+B<SetHScrollBar(bar)>
+
+This method allows you to substitute a different scroll bar than the
+one normally used by the STC. The B<bar> argument must be an instance
+of a wxScrollBar. Returns None. NOTE: this method behaves much
+differently than the one that's documented in the Scintialla docs
+(which turns the scrollbar on/off; to do that, see
+SetUseHorizontalScrollBar). You may need to turn off the STC scrollbar
+(?). Returns None.
+
+top
+
+----
+
+B<SetScrollWidth(pixelwidth)>
+
+Sets the document width to the value of the integer parameter
+B<pixelwidth> (default = 2000 pixels). This is used to set the display
+parameters for the horizontal scrollbar widget; basically making sure
+the scroller's thumb is the right width and that the scrollbar roughly
+corresponds to the width of the document. Returns None.
+
+top
+
+----
+
+B<SetUseHorizontalScrollBar(show)>
+
+Turn the horizontal scrollbar on (1) or off (0) depending on the value
+of the integer parameter B<show>. Has no effect if the bar's state
+would be the same (if show=1 but bar is shown and vice-versa). Returns
+None.
+
+top
+
+----
+
+B<SetVScrollBar(bar)>
+
+Substitute a different vertical scroll bar for the one provided by the
+STC. The parameter must be an instance of a wxScrollBar. (Need to shut
+off the STC's scrollbar??). Returns None.
+
+top
+
+----
+
+B<SetXOffset(newOffset)>
+
+The horizontal scroll position in pixels of the start of the text view
+is set to the value of the integer parameter B<newOffset>. A value of 0
+is the normal position with the first text column visible at the left
+of the view. Returns None.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 7887 bytes of input
+#Mon Jun 20 17:29:54 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

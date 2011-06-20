@@ -1,0 +1,112 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Layout
+
+=over
+
+=item * GetLayoutCache
+
+=item * GetWrapMode
+
+=item * SetLayoutCache
+
+=item * SetWrapMode
+
+=back
+
+B<Summary>:
+
+Automatic line wrapping may be used to cause an automatic line break
+when the text on a line becomes wider than the window width. This does
+not affect the content of the line itself, just the display. The
+wrapping mode is set with SetWrapMode.
+
+The STC maintains an internal layout cache to speed redraws. The
+SetLayoutCache method is used to control how this feature works.
+
+----
+
+B<GetLayoutCache()>
+
+Returns an integer object with the value of the layout cache control
+setting.
+
+top
+
+----
+
+B<GetWrapMode()>
+
+Returns an integer object with the value of the wrap mode setting.
+
+top
+
+----
+
+B<SetLayoutCache(mode)>
+
+Much of the time used by the STC is spent on laying out and drawing
+text. The same text layout calculations may be performed many times
+even when the data used in these calculations does not change. To avoid
+these unnecessary calculations in some circumstances, the line layout
+cache can store the results of the calculations. The cache in
+invalidated whenever the underlying data, such as the contents or
+styling of the document changes.
+
+Caching the layout of the whole document has the most effect, making
+dynamic line wrap as much as 20 times faster but this requires 7 times
+the memory required by the document contents.
+
+Values for the integer parameter B<mode>:
+
+=over
+
+=item * wxSTC_CACHE_NONE performs no caching and is the default.
+
+=item * wxSTC_CACHE_CARET caches the layout information for the line
+containing the caret.
+
+=item * wxSTC_CACHE_PAGE caches the layout of the visible lines and the
+caret line.
+
+=item * wxSTC_CACHE_DOCUMENT caches the layout of the entire document.
+
+=back
+
+The return value is None.
+
+top
+
+----
+
+B<SetWrapMode(mode)>
+
+Sets the wrap mode to the value of the integer parameter B<mode>.
+Possible values: wxSTC_WRAP_NONE (no wrapping) or wxSTC_WRAP_WORD
+(wrapping). Returns None.
+
+When the wrap mode is set to wxSTC_WRAP_WORD lines wider than the
+window width are continued on the following lines. Lines are broken
+after space or tab characters or between runs of different styles. If
+this is not possible because a word in one style is wider than the
+window then the break occurs before after the last character that
+completely fits on the line. The horizontal scroll bar does not appear
+when wrap mode is on.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 4741 bytes of input
+#Mon Jun 20 17:29:40 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>

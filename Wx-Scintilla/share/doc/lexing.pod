@@ -1,0 +1,549 @@
+=pod
+
+PyFrame Guide to wxPython
+
+Copyright and License information Home
+
+__ A B C D E F G H I L M P R S T U V W
+
+=head1 wxStyledTextCtrl - Lexing
+
+=over
+
+=item * Colourise
+
+=item * GetLexer
+
+=item * SetKeyWords
+
+=item * SetLexer
+
+=item * SetLexerLanguage
+
+=item * SetProperty
+
+=back
+
+B<Summary>:
+
+Support for syntax coloration and possibly folding is provided by a
+lexer. The wxPython distribution of the Scintilla editing component
+includes support for a number of languages. Support for a particular
+language is set by using the SetLexer method. If you wanted to have
+your code perform the lexing (unlikely...) you could set the lexer to
+wxSTC_LEX_CONTAINER; but this is beyond the scope of this guide. If you
+did use wxSTC_LEX_CONTAINER, you would get STYLE_NEEDED event, see
+EVT_STC_STYLENEEDED.
+
+You can configure some operational aspects of some of the lexers with
+SetProperty.
+
+It's also a good idea to examine the SCITE editor's properties files
+(*.properties) and Embedded.properties; you can find lists of keywords
+and examples of how to set styles for colorizing.
+
+----
+
+B<Colourise(start,end)>
+
+Manually request the lexer to style a range. B<start> and B<end> are
+integer character positions in the Document. Returns None. Not really
+useful in wxPython (?) as the lexer should do this automatically.
+However, this is the method you'd use if handling a STYLE_NEEDED event
+as discussed in the Summary section of this page.
+
+top
+
+----
+
+B<GetLexer()>
+
+Returns an integer object with the lexer selection value.
+
+top
+
+----
+
+B<SetKeyWords(keywordSet,keyWords)>
+
+If you want to colorize language keywords, this method is for you. This
+saucy little number takes an integer parameter B<keywordSet> and a
+space-delimited set of keywords in the string parameter B<keyWords>.
+Impudently returns the omnipresent None.
+
+Some lexers have embedded-language support, controlled by the
+keywordSet parameter. For example, HTML can have embedded languages
+like VBScript, Javascript, and a few others.
+
+=over
+
+=item * wxSTC_LEX_BAAN
+
+=over
+
+=item 1. List 0 (not possible to tell what these are for from the
+source)
+
+=item 2. List 1
+
+=back
+
+=item * wxSTC_LEX_CONF
+
+=over
+
+=item 1. Runtime Directives
+
+=item 2. Common parameters for Apache runtime configuration
+
+=back
+
+=item * wxSTC_LEX_CPP
+
+=over
+
+=item 1. Primary keywords and identifiers
+
+=item 2. Secondary keywords and identifiers - highlighting user defined
+keywords or function calls
+
+=item 3. Documentation comment keywords - doc comment keywords,
+highlighted in style 17
+
+=back
+
+=item * wxSTC_LEX_HTML, wxSTC_LEX_XML, wxSTC_LEX_ASP, wxSTC_LEX_PHP
+
+=over
+
+=item 1. Plain HTML
+
+=item 2. JavaScript
+
+=item 3. VBScript
+
+=item 4. Python
+
+=item 5. PHP
+
+=item 6. XML
+
+=item 7. SGML
+
+=item 8. SGML block
+
+=back
+
+=item * wxSTC_LEX_NNCRONTAB
+
+=over
+
+=item 1. Section keywords and Forth words
+
+=item 2. Keyword
+
+=item 3. Modifier
+
+=back
+
+=item * wxSTC_LEX_LUA
+
+=over
+
+=item 1. Keywords
+
+=item 2. Basic Functions
+
+=item 3. String Manipulation
+
+=item 4. Math functions
+
+=item 5. I/O Facilities
+
+=item 6. System Facilities
+
+=back
+
+=item * wxSTC_LEX_PASCAL
+
+=over
+
+=item 1. keywords
+
+=item 2. classwords
+
+=back
+
+=back
+
+B<Examples>
+
+Python
+
+ stcInstance.SetKeyWords(0,string.join(python_keywords.kwlist))
+
+HTML with optional Zope DTML support
+
+  
+ htmlKeywords = (
+         "a abbr acronym address applet area b base basefont bdo big blockquote"
+         " body br button caption center cite code col colgroup dd del dfn dir"
+         " div dl dt em fieldset font form frame frameset h1 h2 h3 h4 h5 h6"
+         " head hr html i iframe img input ins isindex kbd label legend li link"
+         " map menu meta noframes noscript object ol optgroup option p param"
+         " pre q s samp script select small span strike strong style sub sup"
+         " table tbody td textarea tfoot th thead title tr tt u ul var xml"
+         " xmlns abbr accept-charset accept accesskey action align alink alt"
+         " archive axis background bgcolor border cellpadding cellspacing char"
+         " charoff charset checked cite class classid clear codebase codetype"
+         " color cols colspan compact content coords data datafld dataformatas"
+         " datapagesize datasrc datetime declare defer dir disabled enctype"
+         " event face for frame frameborder headers height href hreflang hspace"
+         " http-equiv id ismap label lang language leftmargin link longdesc"
+         " marginwidth marginheight maxlength media method multiple name nohref"
+         " noresize noshade nowrap object onblur onchange onclick ondblclick"
+         " onfocus onkeydown onkeypress onkeyup onload onmousedown onmousemove"
+         " onmouseover onmouseout onmouseup onreset onselect onsubmit onunload"
+         " profile prompt readonly rel rev rows rowspan rules scheme scope"
+         " selected shape size span src standby start style summary tabindex"
+         " target text title topmargin type usemap valign value valuetype"
+         " version vlink vspace width text password checkbox radio submit reset"
+         " file hidden image public !doctype")
+ 
+ dtmlKeywords = (
+         "dtml-var dtml-if dtml-unless dtml-in dtml-with dtml-let dtml-call"
+         "dtml-raise dtml-try dtml-comment dtml-tree")
+          
+  
+ keywords = htmlKeywords
+ if self.submode and 1:  #add DTML keywords
+ 	keywords = htmlKeywords + ' ' + dtmlKeywords
+ stcInstance.SetKeyWords(0,keywords)
+
+top
+
+----
+
+B<SetLexer(lexer)>
+
+Set the lexer support for a particular language. The integer parameter
+lexer should be chosen from the following list. Note that the list
+indicates whether or not folding is supported and any properties
+(SetProperty) used by the lexer. The method returns None.
+
+Note that the number of styling bits for a new document is set to 5. If
+you are using the HTML lexer you need to set this to 7 after using
+SetLexer.
+
+It's important to set the keywords and properties as well; just setting
+the lexer is not enough!
+
+B<Value>
+
+B<Folding?>
+
+B<properties>
+
+wxSTC_LEX_ADA
+
+no
+
+no
+
+wxSTC_LEX_ASP
+
+no
+
+see wxSTC_LEX_HTML
+
+wxSTC_LEX_AUTOMATIC
+
+N.A.
+
+N.A.
+
+wxSTC_LEX_AVE
+
+no?
+
+"fold" (not implemented?)
+
+wxSTC_LEX_BAAN
+
+yes
+
+"styling.within.preprocessor"
+
+"fold.comment"
+
+"fold.compact"
+
+wxSTC_LEX_BATCH
+
+no
+
+no
+
+wxSTC_LEX_BULLANT
+
+no?
+
+"fold" (not implemented?)
+
+wxSTC_LEX_CONF
+
+no
+
+no (Apache config files)
+
+wxSTC_LEX_CONTAINER
+
+N.A.
+
+N.A.
+
+wxSTC_LEX_CPP
+
+yes
+
+"styling.within.preprocessor"
+
+"fold.comment"
+
+"fold.preprocessor"
+
+"fold.compact"
+
+wxSTC_LEX_DIFF
+
+no
+
+no
+
+wxSTC_LEX_EIFFEL
+
+yes
+
+no
+
+wxSTC_LEX_EIFFELKW
+
+yes
+
+no
+
+wxSTC_LEX_ERRORLIST
+
+no
+
+no
+
+wxSTC_LEX_HTML
+
+no
+
+"asp.default.language" (javascript)
+
+"fold.html"
+
+"fold"
+
+"fold.compact"
+
+wxSTC_LEX_LATEX
+
+no
+
+no
+
+wxSTC_LEX_LISP
+
+yes
+
+no
+
+wxSTC_LEX_LUA
+
+yes
+
+"fold.compact"
+
+wxSTC_LEX_MAKEFILE
+
+no
+
+no
+
+wxSTC_LEX_MATLAB
+
+yes
+
+no
+
+wxSTC_LEX_NNCRONTAB
+
+no
+
+no
+
+wxSTC_LEX_NULL
+
+N.A.
+
+Null language just handles the protocol but does nothing. Use for plain
+text.
+
+wxSTC_LEX_PASCAL
+
+yes
+
+"fold.comment"
+
+"fold.preprocessor"
+
+"fold.compact"
+
+wxSTC_LEX_PERL
+
+yes
+
+no
+
+wxSTC_LEX_PHP
+
+no
+
+see wxSTC_LEX_HTML
+
+wxSTC_LEX_PROPERTIES
+
+no
+
+no
+
+wxSTC_LEX_PYTHON
+
+yes
+
+"fold.comment.python"
+
+"fold.quotes.python"
+
+"tab.timmy.whinge.level"
+
+wxSTC_LEX_RUBY
+
+yes
+
+"tab.timmy.whinge.level"
+
+wxSTC_LEX_SCRIPTOL
+
+Unknown
+
+Although defined, support doesn't exist.
+
+wxSTC_LEX_SQL
+
+yes
+
+"fold"
+
+wxSTC_LEX_TCL
+
+yes
+
+see wxSTC_LEX_CPP
+
+wxSTC_LEX_VB
+
+yes
+
+no
+
+wxSTC_LEX_VBSCRIPT
+
+yes
+
+no
+
+wxSTC_LEX_XCODE
+
+Unknown
+
+Although defined, support doesn't exist. It's for for DevelopMentor's
+GenX product.
+
+wxSTC_LEX_XML
+
+no
+
+see wxSTC_LEX_HTML
+
+Note: "tab.timmy.whinge.level" is a setting that determines how to
+indicate bad indentation.
+
+=over
+
+=item * 0 = ignore (default)
+
+=item * 1 = inconsistent
+
+=item * 2 = mixed spaces/tabs
+
+=item * 3 = spaces are bad
+
+=item * 4 = tabs are bad
+
+=back
+
+When a lexer specifies its language as wxSTC_LEX_AUTOMATIC it receives
+a value assigned in sequence from wxSTC_LEX_AUTOMATIC+1
+(wxSTC_LEX_AUTOMATIC = 1000). This is ordinarily not useful in a
+wxPython application.
+
+wxSTC_LEX_NULL is useful (believe it or not) when you're editing plain
+text, although one supposes you could not set this one and the STC
+would still work just fine.
+
+top
+
+----
+
+B<SetLexerLanguage()>
+
+Set the lexer language using a string rather than one of the integers
+shown in SetLexer. Returns None.
+
+The strings that can be used are: ada, ave, baan, bullant, conf, cpp,
+tcl, nncrontab, eiffel, eiffelkw, hypertext (this is for HTML), xml,
+asp, php, lisp, lua, matlab, batch, diff, props, makefile, errorlist,
+latex, pascal, perl, python, ruby, sql, vb, and vbscript.
+
+top
+
+----
+
+B<SetProperty(key,value)>
+
+This method is used to set a property for a lexer to a certain value.
+This method returns None. Both the key and value parameters are string
+objects. For example, if you were using the Python lexer, you might
+want to twiddle the "tab.timmy.whinge.level" (whatever that means!)
+setting like this:
+
+ stcInstance.SetProperty("tab.timmy.whinge.level", "1")
+
+See SetLexer for supported properties.
+
+top
+
+----
+
+=cut
+
+#Pod::HTML2Pod conversion notes:
+# 12776 bytes of input
+#Mon Jun 20 17:29:41 2011 
+# No a_name switch not specified, so will not try to render <a name='...'>
+# No a_href switch not specified, so will not try to render <a href='...'>
