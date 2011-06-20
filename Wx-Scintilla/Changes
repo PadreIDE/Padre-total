@@ -1,6 +1,7 @@
 Revision history for Wx-Scintilla
 
 0.13	TBA
+	EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
 
 0.12	2011.6.17
 	Updated POD (AZAWAWI)
