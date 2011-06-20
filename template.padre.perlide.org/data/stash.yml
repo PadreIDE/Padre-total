@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 June 20
+        url: http://szabgab.com/blog/2011/06/padre-on-strawberry-perl-v5-released.html
+        title: Padre on Strawberry Perl v5 released
+        comment: blog post and screencast by Gabor Szabo
       - date: 2011 June 17
         url: http://ahmadzawawi.blogspot.com/2011/06/wxscintilla-011-and-padre.html
         title: Wx::Scintilla 0.11 and Padre
