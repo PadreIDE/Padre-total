@@ -90,7 +90,7 @@ sub stc_link_scintilla_objects {
 		$self->stc_link_paths,
 		$self->stc_extra_scintilla_libs,
 		Alien::wxWidgets->libraries(qw(core base)),
-		'-Wl,-soname,' . $shared_lib,
+		'-Wl,-soname,' . $self->stc_scintilla_dll,
 	);
 
 	$self->_run_command( \@cmd );
