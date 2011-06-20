@@ -9,116 +9,116 @@ v4: 2011.06.20
 
     # New
    
-    Devel::Autoflush  0.05
-    Tee               0.14
-    IO::CaptureOutput 1.1102
-    Test::Reporter    1.57
-    CPAN::Reporter    1.1902   
+    Devel::Autoflush                              0.05
+    Tee                                           0.14
+    IO::CaptureOutput                             1.1102
+    Test::Reporter                                1.57
+    CPAN::Reporter                                1.1902   
 
-    Data::UID                              1.217
-    Data::GUID                             0.046
-    Metabase::Fact                         0.019
-    Metabase::Client::Simple               0.008
-    CPAN::Testers::Report                  1.999001
-    Config::Perl::V                        0.12
-    Test::Reporter::Transport::Metabase    1.999008
+    Data::UID                                     1.217
+    Data::GUID                                    0.046
+    Metabase::Fact                                0.019
+    Metabase::Client::Simple                      0.008
+    CPAN::Testers::Report                         1.999001
+    Config::Perl::V                               0.12
+    Test::Reporter::Transport::Metabase           1.999008
 
     # It is disabled before we package the new version
     # If you'd like to enable it you need to follow the instructions on
     # http://wiki.cpantesters.org/wiki/QuickStart
    
-    Text::CSV_XS 0.82
-    Net::Telnet 3.03
+    Text::CSV_XS                                  0.82
+    Net::Telnet                                   3.03
 
-    App::cpanoutdated 0.16
+    App::cpanoutdated                             0.16
 
-    AppConfig 1.66
-    Template 2.22
+    AppConfig                                     1.66
+    Template                                      2.22
 
-    Test::MockModule 0.05
-    Win32::SystemInfo 0.11
-    Win32::Daemon  20110117
-    Win32::GuiTest 1.58
-    Tie::Simple 1.03
-    Text::Patch 1.8
-    Aliend::SDL 1.426  (SDL-1.2.14 (extended 20100704))
+    Test::MockModule                              0.05
+    Win32::SystemInfo                             0.11
+    Win32::Daemon                          20110117
+    Win32::GuiTest                                1.58
+    Tie::Simple                                   1.03
+    Text::Patch                                   1.8
+    Aliend::SDL                                   1.426  (SDL-1.2.14 (extended 20100704))
        http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20100704.zip
-    SDL 2.533
-    File::Next 1.06
+    SDL                                           2.533
+    File::Next                                    1.06
 
-    File::ShareDir::Install 0.03
-    Log::Report 0.92
-    XML::Compile::Tester 0.06
-    XML::Compile 1.21
-    Games::Zumbis 0.04
-    Locale::Maketext::Extract 0.86
-    Games::FrozenBubble 2.212
+    File::ShareDir::Install                       0.03
+    Log::Report                                   0.92
+    XML::Compile::Tester                          0.06
+    XML::Compile                                  1.21
+    Games::Zumbis                                 0.04
+    Locale::Maketext::Extract                     0.86
+    Games::FrozenBubble                           2.212
 
-    Wx::Scintilla  0.12
+    Wx::Scintilla                                 0.12
 
 
     # Upgrades
 
-    Dancer 1.3060
-    Dancer::Plugin::Database 1.40
-    Dancer::Plugin::SimpleCRUT 0.10
-    File::Slurp 9999.19
-    Module::CoreList 2.49
-    ORLite 1.50
-    Test::MockObject 1.20110612
-    Win32::Exe 0.16
+    Dancer                                        1.3060
+    Dancer::Plugin::Database                      1.40
+    Dancer::Plugin::SimpleCRUT                    0.10
+    File::Slurp                                9999.19
+    Module::CoreList                              2.49
+    ORLite                                        1.50
+    Test::MockObject                              1.20110612
+    Win32::Exe                                    0.16
    
-    Padre 0.842  (backporting the usage of Wx::Scintalla )
+    Padre                                         0.842  (backporting the usage of Wx::Scintalla )
    
 v3: 2011.05.29
     Strawberry Perl 5.12.3.0
 
-    Padre 0.84
-    Padre::Plugin::PerlCritic 0.12
-    Padre::Plugin::PerlTidy 0.16
+    Padre                                         0.84
+    Padre::Plugin::PerlCritic                     0.12
+    Padre::Plugin::PerlTidy                       0.16
 
-    Dancer  1.3050
-    Dancer::Plugin::Auth::RBAC               1.110720
-    Dancer::Plugin::Auth::Twitter            0.02
-    Dancer::Plugin::Captcha::SecurityImage   0.10
+    Dancer                                        1.3050
+    Dancer::Plugin::Auth::RBAC                    1.110720
+    Dancer::Plugin::Auth::Twitter                 0.02
+    Dancer::Plugin::Captcha::SecurityImage        0.10
     Dancer::Plugin::Database
-    Dancer::Plugin::DBIC                     0.1504
-    Dancer::Plugin::FlashMessage             0.313
-    Dancer::Plugin::SiteMap                  0.06
+    Dancer::Plugin::DBIC                          0.1504
+    Dancer::Plugin::FlashMessage                  0.313
+    Dancer::Plugin::SiteMap                       0.06
     Dancer::Plugin::SimpleCRUD
 
-    DBIx::Class                              0.08192
+    DBIx::Class                                   0.08192
 
-    Log::Dispatch                            2.29
+    Log::Dispatch                                 2.29
 
-    Modern::Perl                             1.03
-    Module::Install                          1.01
+    Modern::Perl                                  1.03
+    Module::Install                               1.01
 
-    Moose                                    2.0007
-    MooseX::StrictConstructor                0.16
-    MooseX::Singleton                        0.27
+    Moose                                         2.0007
+    MooseX::StrictConstructor                     0.16
+    MooseX::Singleton                             0.27
 
-    Task::Kensho                             0.31
+    Task::Kensho                                  0.31
 
-    Test::Most                               0.23
-    Test::WWW::Mechanize                     1.32
-    Test::Deep                               0.108
-    Test::Exception                          0.31
+    Test::Most                                    0.23
+    Test::WWW::Mechanize                          1.32
+    Test::Deep                                    0.108
+    Test::Exception                               0.31
 
-    POE                                      1.311
+    POE                                           1.311
 
-    WWW::Mechanize                           1.68
+    WWW::Mechanize                                1.68
 
-    Win32::Env                               0.03
-    Win32::Env::Path                         0.03
+    Win32::Env                                    0.03
+    Win32::Env::Path                              0.03
 
-    Spreadsheet::ParseExcel                  0.59
-    Spreadsheet::WriteExcel                  2.37
-    Excel::Writer::XLSX                      0.22
-    Spreadsheet::WriteExcelXML               0.13
+    Spreadsheet::ParseExcel                       0.59
+    Spreadsheet::WriteExcel                       2.37
+    Excel::Writer::XLSX                           0.22
+    Spreadsheet::WriteExcelXML                    0.13
 
-    Module::Version                          0.12
-    MongoDB                                  0.42
+    Module::Version                               0.12
+    MongoDB                                       0.42
         (In order to take full advantage of the MongoDB client 
         you will need to download the MongoDB server yourself from
         http://www.mongodb.org/ )
