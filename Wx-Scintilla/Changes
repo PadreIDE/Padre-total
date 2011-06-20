@@ -1,10 +1,12 @@
 Revision history for Wx-Scintilla
 
+0.14	TBA
+	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
+
 0.13	2011.6.20
 	EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
 	POD updates (AZAWAWI)
 	Added Perl 6 lexer to linked lexers (AZAWAWI)
-	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
 
 0.12	2011.6.17
 	Updated POD (AZAWAWI)
