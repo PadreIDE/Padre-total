@@ -1,4 +1,4 @@
-; -- strawberry_perl_with_cream.iss --
+; -- padre_on_strawberry_perl.iss --
 
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING .ISS SCRIPT FILES!
 ; using ISC 5.4.2(a)
@@ -12,8 +12,8 @@
 ; TODO: check for other perl installations (eg. in the Path variable) and warn or even abort if there is another one
 
 [Setup]
-AppName=Strawberry Perl with Cream
-AppVersion=0.03
+AppName=Padre on Strawberry Perl
+AppVersion=0.04
 DefaultDirName=\Strawberry
 DefaultGroupName=Strawberry Perl
 ; UninstallDisplayIcon={app}\MyProg.exe
@@ -21,7 +21,7 @@ Compression=lzma2
 SolidCompression=yes
 SourceDir=c:\strawberry
 OutputDir=c:\output
-OutputBaseFilename=strawberry-with-cream
+OutputBaseFilename=padre-on-strawberry
 ;AppComments=
 AppContact=http://padre.perlide.org/
 ; AppCopyright=
@@ -47,18 +47,99 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
 ; TODO: don't add the leading semi-colon to the Path if there is already a trailing one
 
 [Files]
-; Excludes: "cpan_sqlite_log*,cpan/build/*,cpan/sources/*,cpan/Bundle/*"; 
-Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"
+
+Source: "*"; DestDir: "{app}"; Flags: "recursesubdirs"; Excludes: "\cpan\cpan_sqlite_log.*,\cpan\build,\cpan\sources,\cpan\Bundle"; 
 
 ; Use the following to play with the packaging with only a few files
 ; In production, comment out these lines an enable the one above
-;Source: "README.txt"; DestDir: "{app}"
-;Source: "perl\site\bin\padre.exe"; DestDir: "{app}\perl\site\bin\"
-;Source: "relocation.pl.bat"; DestDir: "{app}"
+; Source: "README.txt"; DestDir: "{app}"
+; Source: "perl\site\bin\padre.exe"; DestDir: "{app}\perl\site\bin\"
+; Source: "relocation.pl.bat"; DestDir: "{app}"
+; Source: "win32\*"; DestDir: "{app}\win32\";
 
 [Icons]
-Name: "{group}\Padre"; Filename: "{app}\perl\site\bin\padre.exe"
+Name: "{group}\Padre, the Perl IDE"; Filename: "{app}\perl\site\bin\padre.exe"
+Name: "{group}\Strawberry Perl README"; Filename: "{app}\README.txt"
+Name: "{group}\Perl (command line)"; \
+    Filename: "C:\WINDOWS\system32\cmd.exe"; \
+    Comment: "Quick way to get to the command line in order to use Perl."
+;    WorkingDir: "C:\Documents and Settings\Gabor Szabo\My Documents\"
+   
+Name: "{group}\Strawberry Perl Release Notest"; \
+    Filename: "{app}\win32\Strawberry Perl Release Notes.url"; \
+    IconFilename: "{app}\win32\strawberry.ico";
 Name: "{group}\Uninstall"; Filename: "{app}\unins000.exe"
+
+Name: "{group}\Related Websites\Beginning Perl (online book)"; \
+    Filename: "{app}\win32\Beginning Perl (online book).url"; \
+    IconFilename: "{app}\win32\perlhelp.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "Beginning Perl (online book)";
+
+Name: "{group}\Related Websites\learn.perl.org (tutorials, links)"; \
+    Filename: "{app}\win32\learn.perl.org (tutorials, links).url"; \
+    IconFilename: "{app}\win32\perlhelp.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "learn.perl.org (tutorials, links)";
+
+Name: "{group}\Related Websites\Strawberry Perl Website"; \
+    Filename: "{app}\win32\Strawberry Perl Website.url"; \
+    IconFilename: "{app}\win32\strawberry.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "Strawberry Perl Website";
+
+Name: "{group}\Related Websites\CPAN Module Search"; \
+    Filename: "{app}\win32\CPAN Module Search.url"; \
+    IconFilename: "{app}\win32\cpan.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "CPAN Module Search";
+
+Name: "{group}\Related Websites\Live Support"; \
+    Filename: "{app}\win32\Live Support.url"; \
+    IconFilename: "{app}\win32\perldoc.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "Live Support";
+
+Name: "{group}\Related Websites\Padre Website"; \
+    Filename: "{app}\win32\Padre Website.url"; \
+    IconFilename: "{app}\win32\padre.ico"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "Padre Website";
+
+Name: "{group}\Tools\Check installed versions of modules"; \
+    Filename: "{app}\perl\bin\module-version.bat"; \
+    WorkingDir: "{app}\perl\bin\"; \
+    IconFilename: "{app}\win32\strawberry.ico";
+
+Name: "{group}\Tools\Create local library areas"; \
+    Filename: "{app}\perl\bin\llw32helper.bat"; \
+    WorkingDir: "{app}\perl\bin\"; \
+    IconFilename: "{app}\win32\strawberry.ico";
+                                               
+Name: "{group}\Tools\CPAN client"; \
+    Filename: "{app}\perl\bin\cpan.bat"; \
+    WorkingDir: "{app}\perl\bin\"; \
+    IconFilename: "{app}\win32\cpan.ico";
+
+Name: "{group}\Games\Zumbis"; \
+    Filename: "{app}\perl\site\bin\zumbis.bat"; \
+    IconFilename: "{app}\win32\zumbis.ico";
+
+Name: "{group}\Games\Frozen Bubble"; \
+    Filename: "{app}\perl\site\bin\frozen-bubble.bat"; \
+    IconFilename: "{app}\win32\frozen-bubble.ico";
+
+Name: "{group}\Games\SDL Perl Website"; \
+    Filename: "{app}\win32\SDL Perl Website.url"; \
+    WorkingDir: "{app}\win32"; \
+    Comment: "SDL Perl Website"; \
+    IconFilename: "{app}\win32\sdl-perl.ico";
+
+
+
+    ; copy file from Padre\win32\padre.ico to c:\strawberry\win32
+; copy file from tools\strawberry\Padre Website.url to c:\strawberry\win32
+
 
 [Code]
 function getPath(Param: String): string;

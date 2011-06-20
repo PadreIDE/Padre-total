@@ -1,158 +1,338 @@
 Padre on Strawberry Perl
-Release notes
+Release notes with changes since the previous version
+
+v4: 2011.06.20
+    Don't allow installation directory to have space (Mark Dootson)
+	Add several more icons to the "Strawberry menu" - 
+	  mostly taken from the original Strawberry installation
+
+    # New
+   
+    Devel::Autoflush  0.05
+    Tee               0.14
+    IO::CaptureOutput 1.1102
+    Test::Reporter    1.57
+    CPAN::Reporter    1.1902   
+
+    Data::UID                              1.217
+    Data::GUID                             0.046
+    Metabase::Fact                         0.019
+    Metabase::Client::Simple               0.008
+    CPAN::Testers::Report                  1.999001
+    Config::Perl::V                        0.12
+    Test::Reporter::Transport::Metabase    1.999008
+
+    # It is disabled before we package the new version
+    # If you'd like to enable it you need to follow the instructions on
+    # http://wiki.cpantesters.org/wiki/QuickStart
+   
+    Text::CSV_XS 0.82
+    Net::Telnet 3.03
+
+    App::cpanoutdated 0.16
+
+    AppConfig 1.66
+    Template 2.22
+
+    Test::MockModule 0.05
+    Win32::SystemInfo 0.11
+    Win32::Daemon  20110117
+    Win32::GuiTest 1.58
+    Tie::Simple 1.03
+    Text::Patch 1.8
+    Aliend::SDL 1.426  (SDL-1.2.14 (extended 20100704))
+       http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20100704.zip
+    SDL 2.533
+    File::Next 1.06
+
+	File::ShareDir::Install 0.03
+	Log::Report 0.92
+	XML::Compile::Tester 0.06
+	XML::Compile 1.21
+	Games::Zumbis 0.04
+	Locale::Maketext::Extract 0.86
+	Games::FrozenBubble 2.212
+	
+	Wx::Scintilla  0.12
+
+	
+    # Upgrades
+
+    Dancer 1.3060
+    Dancer::Plugin::Database 1.40
+    Dancer::Plugin::SimpleCRUT 0.10
+    File::Slurp 9999.19
+    Module::CoreList 2.49
+    ORLite 1.50
+    Test::MockObject 1.20110612
+    Win32::Exe 0.16
+   
+    Padre 0.842  (backporting the usage of Wx::Scintalla )
    
 v3: 2011.05.29
-   Strawberry Perl 5.12.3.0
+    Strawberry Perl 5.12.3.0
 
-   Padre 0.84
-   Padre::Plugin::PerlCritic 0.12
-   Padre::Plugin::PerlTidy 0.16
+    Padre 0.84
+    Padre::Plugin::PerlCritic 0.12
+    Padre::Plugin::PerlTidy 0.16
 
-   Dancer
-   Dancer::Plugin::Auth::RBAC
-   Dancer::Plugin::Auth::Twitter
-   Dancer::Plugin::Captcha::SecurityImage
-   Dancer::Plugin::Database
-   Dancer::Plugin::DBIC
-   Dancer::Plugin::FlashMessage
-   Dancer::Plugin::SiteMap
-   Dancer::Plugin::SimpleCRUD
+    Dancer  1.3050
+    Dancer::Plugin::Auth::RBAC               1.110720
+    Dancer::Plugin::Auth::Twitter            0.02
+    Dancer::Plugin::Captcha::SecurityImage   0.10
+    Dancer::Plugin::Database
+    Dancer::Plugin::DBIC                     0.1504
+    Dancer::Plugin::FlashMessage             0.313
+    Dancer::Plugin::SiteMap                  0.06
+    Dancer::Plugin::SimpleCRUD
 
-   DBIx::Class
+    DBIx::Class                              0.08192
 
-   Log::Dispatch
+    Log::Dispatch                            2.29
 
-   Modern::Perl
-   Module::Install
+    Modern::Perl                             1.03
+    Module::Install                          1.01
 
-   Moose 2.0007
-   MooseX::StrictConstructor 0.16
-   MooseX::Singleton
+    Moose                                    2.0007
+    MooseX::StrictConstructor                0.16
+    MooseX::Singleton                        0.27
 
-   Task::Kensho
+    Task::Kensho                             0.31
 
-   Test::Most 0.23
-   Test::WWW::Mechanize 1.32
-   Test::Deep 0.108
-   Test::Exception 0.31
+    Test::Most                               0.23
+    Test::WWW::Mechanize                     1.32
+    Test::Deep                               0.108
+    Test::Exception                          0.31
 
-   POE
+    POE                                      1.311
 
-   WWW::Mechanize 1.68
+    WWW::Mechanize                           1.68
 
-   Win32::Env
-   Win32::Env::Path
+    Win32::Env                               0.03
+    Win32::Env::Path                         0.03
 
-   Spreadsheet::ParseExcel
-   Spreadsheet::WriteExcel
-   Excel::Writer::XLSX
-   Spreadsheet::WriteExcelXML
+    Spreadsheet::ParseExcel                  0.59
+    Spreadsheet::WriteExcel                  2.37
+    Excel::Writer::XLSX                      0.22
+    Spreadsheet::WriteExcelXML               0.13
 
-   Module::Version
-   MongoDB
-       (In order to take full advantage of the MongoDB client 
+    Module::Version                          0.12
+    MongoDB                                  0.42
+        (In order to take full advantage of the MongoDB client 
 	    you will need to download the MongoDB server yourself from
         http://www.mongodb.org/ )
 
-   Removed padre.bat
-   Added setup_padre.bat to setup desktop icon
+    Removed padre.bat
+    Added setup_padre.bat to setup desktop icon
 
 v2: 2011.05.22
-   Strawberry Perl 5.12.3.0
-   Padre 0.84
-   Padre::Plugin::PerlCritic 0.12
-   Padre::Plugin::PerlTidy 0.16
-   Moose 2.0007
-   Test::Most 0.23
-   WWW::Mechanize 1.68
-   Test::WWW::Mechanize 1.32
-   Test::Deep 0.108
-   Test::Exception 0.31
-   MooseX::StrictConstructor 0.16
-   Task::Kensho
-   MooseX::Singleton
-   Dancer
-   Dancer::Plugin::SiteMap
-   Dancer::Plugin::SimpleCRUD
-   Dancer::Plugin::Database
-   Dancer::Plugin::Captcha::SecurityImage
-   Dancer::Plugin::Auth::RBAC
-   Dancer::Plugin::Auth::Twitter
-   POE
-   DBIx::Class
-   Module::Install
+    Strawberry Perl 5.12.3.0
+    Padre 0.84
+    Padre::Plugin::PerlCritic 0.12
+    Padre::Plugin::PerlTidy 0.16
+    Moose 2.0007
+    Test::Most 0.23
+    WWW::Mechanize 1.68
+    Test::WWW::Mechanize 1.32
+    Test::Deep 0.108
+    Test::Exception 0.31
+    MooseX::StrictConstructor 0.16
+    Task::Kensho
+    MooseX::Singleton
+    Dancer
+    Dancer::Plugin::SiteMap
+    Dancer::Plugin::SimpleCRUD
+    Dancer::Plugin::Database
+    Dancer::Plugin::Captcha::SecurityImage
+    Dancer::Plugin::Auth::RBAC
+    Dancer::Plugin::Auth::Twitter
+    POE
+    DBIx::Class
+    Module::Install
    
-   Added padre.bat to the c:\strawberry directory
- 
-   size: 81,645,886
+    Added padre.bat to the c:\strawberry directory
 
 v1: 2011.05.20
-   Strawberry Perl 5.12.3.0
-   Padre 0.84
-   size: 75,432,834
+    Strawberry Perl 5.12.3.0
+    Padre 0.84
 
 ==========================   
    
 OTHER:
    
-   MooseX::FollowBPB - no such module?
-   Dancer::Plugin::REST  - failed on windows
-   Dancer::Plugin::Authorize - deprecated
+    Dancer::Plugin::REST  - failed on windows
+    Dancer::Plugin::Authorize - deprecated
 
-   System Variables removed:
-   FTP_PASSIVE = 1
-   PERL_JSON_BACKEND JSON::XS
-   PERL_YAML_BACKEND YAML
-   TERM dumb
+    System Variables removed:
+    FTP_PASSIVE = 1
+    PERL_JSON_BACKEND JSON::XS
+    PERL_YAML_BACKEND YAML
+    TERM dumb
 
 Old released notes: (v1 and v2)
-   Unzip the file
-   put it in some place without a path in it. e.g c:\strawberry
-   Run the relocation.pl.bat
-   Run the update_env.pl.bat
-   Open the Control Panel / System / Advanced / Environment Variables / OK / OK
-       This will make the previous changes work *without* a reboot.
-   Run the setup_padre.pl.bat
-       This will put an icon of Padre on your desktop and
-	   you can run it by double clicking on the icon
+    Unzip the file
+    put it in some place without a path in it. e.g c:\strawberry
+    Run the relocation.pl.bat
+    Run the update_env.pl.bat
+    Open the Control Panel / System / Advanced / Environment Variables / OK / OK
+        This will make the previous changes work *without* a reboot.
+    Run the setup_padre.pl.bat
+        This will put an icon of Padre on your desktop and
+	    you can run it by double clicking on the icon
 
 ===========================
 
-v4: 2011.
-   Don't allow installation directory to have space (Mark Dootson)
-   Net::Telnet
-   Test::MockModule
-   (Test::MockObject)
-   (Test::Warn)
-   (Devel::Cover)
-   (Win32::EventLog)
-   (Win32::Exe)
-   Win32::Daemon
-   Win32::SystemInfo
-   (Win32::TieRegistry)
-   Win32::GuiTest
-   Prima
-   Win32::GUIRobot
-   (MooseX::Types)
-   AppConfig
-   Template::Toolkit
-   (Clone)
+experiments and plans
 
-   Tie::Simple
-   Text::Patch
-   Aliend::SDL   (SDL-1.2.14 (extended 20100704))
-       http://strawberryperl.com/package/kmx/sdl/Win32_SDL-1.2.14-extended-bin_20100704.zip
-   SDL
+We have already in v3:
+    (Test::Warn 0.23)
+    (Devel::Cover 0.78)
+    (Win32::EventLog 0.076)
+    (Win32::TieRegistry 0.26)
+ 
+    Prima
+    Win32::GUIRobot
+    (MooseX::Types)
+    (Clone)
 
+    EV
+    HTTP::Parser::XS
+*    AnyEvent
+    (HTTP::Status)
    
-   
+    Hash::MultiValue
+    Test::TCP
+    Test::SharedFork
+    Filesys::Notify::Simple
+    Devel::StackTrace::AsHTML
+*    Plack
+*    Twiggy
+  
+    Test::LeakTrace
+    Hash::FieldHash
+    Object::ID
+    Sort::Naturally
+    Win32::Pipe
+    Win32::Console::ANSI
+*    Data::Printer             0.19 tests failed, reported,
+*    HTML::Template
+    Class::ISA
+*    CGI::Application
+    Exception::Class::TryCatch
+    CGI::Application::Dispatch
+
+    CGI::Application::Plugin::JSON
+	UNIVERSAL::require
+    Devel::Caller::IgnoreNamespaces
+    Sub::Prototype
+	Sub::WrapPackages
+    CGI::Application::Plugin::LogDispatch
+    File::MMagic
+    CGI::Application::Plugin::Stream
+    CGI::Application::Plugin::TT
+	CGI::Application::Plugin::DevPopup
+    Image::Size
+	Bit::Vector
+    Date::Calc
+	IO::CaptureOutput
+    Date::Parse
+    Date::Format
+    Mail::Address   (in Mailtools)
+    Email::Valid
+    Perl6::Junction
+    Regexp::Common
+    Data::FormValidator
+    HTML::FillInForm
+	CGI::Application::Plugin::ValidateRM
+	Win32::Event
+	Test::HTTP::Server::Simple
+	CGI::Application::Plugin::Redirect
+	HTTP::Server::Simple::Static
+    CGI::Application::Server
+    Class::Trigger
+	DBIx::ContextualFetch
+    Ima::DBI
+    UNIVERSAL::moniker
+    Class::DBI
+	SQL::Abstract::Limit
+    Class::DBI::AbstractSearch
+    Class::DBI::Plugin::RetrieveAll
+    Class::DBI::SQLite is not installed
+	Class::Factory::Util
+    DateTime::Format::Builder
+    Data::FormValidator::Constraints::DateTime
+	GD::Text
+    GD::Graph
+    GD::Graph3d
+	HTML::FormatText
+    Font-AFM
+    HTML::FormatText::WithLinks    (HTML::Format)
+    HTML::TagCloud
+	Email::Date::Format
+    MIME::Lite                (this asks about a number of module in a strange way even though they were already installed)
+    Net::Server::PreFork      (Net-Server 0.99 test got stuck, installed without tests, bug reported)
+    TAP::Harness::Archive
+    Template::Plugin::Cycle
+	Number::Format            (test failed, reported to RT, force installed)
+    Template::Plugin::Number::Format
+    XML::Atom::SimpleFeed is not installed
+
+
+TODO:	
+*   Smolder
+
+    CGI::Simple
+	FreezeThaw
+    CGI::Session
+	String::RewritePrefix
+	MooseX::Storage
+	MooseX::Storage::Deferred
+    Data::Verifier
+    DBIx::Admin::CreateTable
+    Log::Dispatch::Configurator
+    SQL::Statement
+	DBD::CSV
+    MooseX::LogDispatch
+    Log::Dispatch::DBI
+	Perl6::Export
+    ! Perl6::Slurp     (failed to install due to an ipc related test)
+TODO *   App::Office::Contacts
+
 TODO:   
-   IO::Tty listed in http://ali.as/top100/index.html - failed
+    IO::Tty listed in http://ali.as/top100/index.html - failed
 
-   Inline
-   Inline::C   
-   PDL
+    Inline
+    Inline::C   
+    PDL
    
-   App::Ack  (ack) - failed
+    App::Ack  (ack) 1.94 failed, reported via Metabase
+   
+    Task::Plack   -> tons of modules and I am sure some would NOT work in Win32
 
+unmatched requests by ron_zephyr in my blog:
+File::chdir
+Date::Simple
+Marpa::HTML
+App::moduleswhere for mwhere
    
+Building "Padre on Strawberry Perl"
+*) Download and install Strawberry perl strawberry-perl-5.12.3.0.msi
+*) Open command prompt
+*) Change the URL of the CPAN mirror to the locally hosted selective mirror 
+
+ c> cpan
+ cpan> o conf  urllist http://10.0.2.2/strawberry
+
+For development also set:
+ 
+ cpan> o conf prerequisites_policy ask
+ 
+First thing install and setup CPAN::Reporter
+
+
+ 
+
+*) Configure the CPAN client again:
+cpan> o conf  urllist http://cpan.strawberryperl.com/
+cpan> o conf prerequisites_policy follow
+cpan> o conf test_report 0
