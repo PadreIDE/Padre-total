@@ -54,6 +54,7 @@ package
 use strict;
 
 {
+
 	# Disable Wx::EVT_STC_* event warning redefinition
 	no warnings 'redefine';
 
