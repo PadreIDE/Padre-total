@@ -25,6 +25,10 @@ about:
         url: http://ahmadzawawi.blogspot.com/2011/06/wxscintilla-011-and-padre.html
         title: Wx::Scintilla 0.11 and Padre
         comment: by Ahmad M. Zawawi
+      - date: 2011 June 15
+        url: http://www.twit.tv/floss170
+        title: "FLOSS Weekly 170: Strawberry Perl"
+        comment: Interview with Curtis Jewell about Strawberry Perl mentioning Padre a lot
       - date: 2011 June 13
         url: http://szabgab.com/blog/2011/06/creating-a-plugin-for-padre-the-perl-ide.html
         title: Creating a plug-in for Padre, the Perl IDE
