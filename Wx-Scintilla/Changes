@@ -2,6 +2,7 @@ Revision history for Wx-Scintilla
 
 0.14	TBA
 	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
+	Added initial version of Wx::Scintilla::Manual (AZAWAWI)
 
 0.13	2011.6.20
 	EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
