@@ -207,9 +207,9 @@ L<http://wiki.wxperl.info/w/index.php/Mac_OS_X_Platform_Notes> for more informat
 
 =head1 HISTORY
 
-wxWidgets 2.9.1 and trunk has 2.03 so far. I searched for Perl lexer changes
-in scintilla history and here is what we will be getting when we upgrade to 
-2.20+
+wxWidgets 2.9.1 and development have Scintilla 2.03 so far. I searched for Perl lexer
+changes in scintilla history and here is what we will be getting when we upgrade to
+2.20+.
 
 =over
 
