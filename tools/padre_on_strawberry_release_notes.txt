@@ -1,10 +1,11 @@
 Padre on Strawberry Perl
 Release notes with changes since the previous version
 
+v5: 2011.06.20
 v4: 2011.06.20
     Don't allow installation directory to have space (Mark Dootson)
-	Add several more icons to the "Strawberry menu" - 
-	  mostly taken from the original Strawberry installation
+    Add several more icons to the "Strawberry menu" - 
+       mostly taken from the original Strawberry installation
 
     # New
    
@@ -45,17 +46,17 @@ v4: 2011.06.20
     SDL 2.533
     File::Next 1.06
 
-	File::ShareDir::Install 0.03
-	Log::Report 0.92
-	XML::Compile::Tester 0.06
-	XML::Compile 1.21
-	Games::Zumbis 0.04
-	Locale::Maketext::Extract 0.86
-	Games::FrozenBubble 2.212
-	
-	Wx::Scintilla  0.12
+    File::ShareDir::Install 0.03
+    Log::Report 0.92
+    XML::Compile::Tester 0.06
+    XML::Compile 1.21
+    Games::Zumbis 0.04
+    Locale::Maketext::Extract 0.86
+    Games::FrozenBubble 2.212
 
-	
+    Wx::Scintilla  0.12
+
+
     # Upgrades
 
     Dancer 1.3060
@@ -119,7 +120,7 @@ v3: 2011.05.29
     Module::Version                          0.12
     MongoDB                                  0.42
         (In order to take full advantage of the MongoDB client 
-	    you will need to download the MongoDB server yourself from
+        you will need to download the MongoDB server yourself from
         http://www.mongodb.org/ )
 
     Removed padre.bat
@@ -178,7 +179,7 @@ Old released notes: (v1 and v2)
         This will make the previous changes work *without* a reboot.
     Run the setup_padre.pl.bat
         This will put an icon of Padre on your desktop and
-	    you can run it by double clicking on the icon
+        you can run it by double clicking on the icon
 
 ===========================
 
@@ -222,19 +223,19 @@ We have already in v3:
     CGI::Application::Dispatch
 
     CGI::Application::Plugin::JSON
-	UNIVERSAL::require
+    UNIVERSAL::require
     Devel::Caller::IgnoreNamespaces
     Sub::Prototype
-	Sub::WrapPackages
+    Sub::WrapPackages
     CGI::Application::Plugin::LogDispatch
     File::MMagic
     CGI::Application::Plugin::Stream
     CGI::Application::Plugin::TT
-	CGI::Application::Plugin::DevPopup
+    CGI::Application::Plugin::DevPopup
     Image::Size
-	Bit::Vector
+    Bit::Vector
     Date::Calc
-	IO::CaptureOutput
+    IO::CaptureOutput
     Date::Parse
     Date::Format
     Mail::Address   (in Mailtools)
@@ -243,58 +244,58 @@ We have already in v3:
     Regexp::Common
     Data::FormValidator
     HTML::FillInForm
-	CGI::Application::Plugin::ValidateRM
-	Win32::Event
-	Test::HTTP::Server::Simple
-	CGI::Application::Plugin::Redirect
-	HTTP::Server::Simple::Static
+    CGI::Application::Plugin::ValidateRM
+    Win32::Event
+    Test::HTTP::Server::Simple
+    CGI::Application::Plugin::Redirect
+    HTTP::Server::Simple::Static
     CGI::Application::Server
     Class::Trigger
-	DBIx::ContextualFetch
+    DBIx::ContextualFetch
     Ima::DBI
     UNIVERSAL::moniker
     Class::DBI
-	SQL::Abstract::Limit
+    SQL::Abstract::Limit
     Class::DBI::AbstractSearch
     Class::DBI::Plugin::RetrieveAll
     Class::DBI::SQLite is not installed
-	Class::Factory::Util
+    Class::Factory::Util
     DateTime::Format::Builder
     Data::FormValidator::Constraints::DateTime
-	GD::Text
+    GD::Text
     GD::Graph
     GD::Graph3d
-	HTML::FormatText
+    HTML::FormatText
     Font-AFM
     HTML::FormatText::WithLinks    (HTML::Format)
     HTML::TagCloud
-	Email::Date::Format
+    Email::Date::Format
     MIME::Lite                (this asks about a number of module in a strange way even though they were already installed)
     Net::Server::PreFork      (Net-Server 0.99 test got stuck, installed without tests, bug reported)
     TAP::Harness::Archive
     Template::Plugin::Cycle
-	Number::Format            (test failed, reported to RT, force installed)
+    Number::Format            (test failed, reported to RT, force installed)
     Template::Plugin::Number::Format
     XML::Atom::SimpleFeed is not installed
 
 
-TODO:	
+TODO:
 *   Smolder
 
     CGI::Simple
-	FreezeThaw
+    FreezeThaw
     CGI::Session
-	String::RewritePrefix
-	MooseX::Storage
-	MooseX::Storage::Deferred
+    String::RewritePrefix
+    MooseX::Storage
+    MooseX::Storage::Deferred
     Data::Verifier
     DBIx::Admin::CreateTable
     Log::Dispatch::Configurator
     SQL::Statement
-	DBD::CSV
+    DBD::CSV
     MooseX::LogDispatch
     Log::Dispatch::DBI
-	Perl6::Export
+    Perl6::Export
     ! Perl6::Slurp     (failed to install due to an ipc related test)
 TODO *   App::Office::Contacts
 
