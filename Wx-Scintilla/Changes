@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.15	2011.6.21
+	Minor POD fix (AZAWAWI)
+
 0.14	2011.6.21
 	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
 	Added initial version of Wx::Scintilla::Manual (AZAWAWI)
