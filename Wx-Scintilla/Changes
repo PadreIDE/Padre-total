@@ -3,6 +3,11 @@ Revision history for Wx-Scintilla
 0.14	TBA
 	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
 	Added initial version of Wx::Scintilla::Manual (AZAWAWI)
+	Removed File::ShareDir lookup as scintilla DLL is now side by side with the XS DLL  (MDOOTSON)
+	Fixed the bad soname in Linux GTK build (MDOOTSON)
+	Stop linking libperl on non-MSWin32 platforms. Relative -rpath for GTK ensures
+		the current scintilla dll is always loaded (MDOOTSON)
+	Removed File::ShareDir dependency (AZAWAWI)
 
 0.13	2011.6.20
 	EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
