@@ -58,15 +58,9 @@ sub stc_build_scintilla_object {
 		$self->stc_get_architecture_string,
 		$self->stc_ccflags,
 		$self->stc_defines,
-
-		#'-fPIC',
 		'-o ' . $object_name,
 		'-O2 ',
 		'-Wall ',
-
-		#'-MT' . $object_name,
-		#'-MF' . $object_name . '.d',
-		#'-MD -MP',
 		join( ' ', @$includedirs ),
 		$module,
 	);
@@ -82,8 +76,6 @@ sub stc_link_scintilla_objects {
 		$self->stc_get_architecture_string,
 		$self->stc_ldflags,
 		'-headerpad_max_install_names',
-
-		#'-shared -fPIC',
 		'-shared',
 		' -o ' . $shared_lib,
 		join( ' ', @$objects ),
@@ -125,12 +117,9 @@ sub stc_build_xs {
 sub stc_link_xs {
 	my ( $self, $dll ) = @_;
 
-	my $perllib = $self->stc_find_libperl;
-
 	# we must remove any nostdinc params
 	my $ldflags = $Config{lddlflags};
 	$ldflags =~ s/-nostdinc //g;
-
 
 	my @cmd = (
 		Alien::wxWidgets->linker,
@@ -141,7 +130,6 @@ sub stc_link_xs {
 		'-L.',
 		'-s -o ' . $dll,
 		'Scintilla.o',
-		$perllib,
 		'blib/arch/auto/Wx/Scintilla/' . $self->stc_scintilla_link,
 		Alien::wxWidgets->libraries(qw(core base)),
 		$Config{perllibs},
@@ -149,32 +137,6 @@ sub stc_link_xs {
 
 	$self->_run_command( \@cmd );
 
-}
-
-sub stc_find_libperl {
-	my $self        = shift;
-	my $libperlname = $Config{libperl};
-	my $archlib     = $Config::Config{archlib};
-	my $link        = ( $libperlname =~ /\.a$/ ) ? 'static' : 'shared';
-
-	if ( $link eq 'static' ) {
-		return '';
-	} else {
-		my $returnpath = '';
-		my $dllpath    = qq($archlib/CORE/$libperlname);
-		return $dllpath if -f $dllpath;
-
-		# search elsewhere
-
-		my @libperlpaths = split( /\s+/, $Config::Config{libpth} );
-		for my $libdir (@libperlpaths) {
-			if ( -f qq($libdir/$libperlname) ) {
-				$returnpath = (qq($libdir/$libperlname));
-				last;
-			}
-		}
-		return $returnpath;
-	}
 }
 
 # We need our own run command to strip out none buildable architectures

@@ -27,7 +27,16 @@ sub stc_scintilla_dll {
 	return $dllname;
 }
 
-sub stc_scintilla_link { $_[0]->stc_scintilla_dll; }
+sub stc_scintilla_link {
+	my $self    = shift;
+	my $linkname = '-lwx_gtk2';
+	$linkname .= 'u' if Alien::wxWidgets->config->{unicode};
+	$linkname .= 'd' if Alien::wxWidgets->config->{debug};
+	$linkname .= '_scintilla-';
+	my ( $major, $minor, $release ) = $self->stc_version_strings;
+	$linkname .= $major . '.' . $minor;
+	return $linkname;
+}
 
 sub stc_build_scintilla_object {
 	my ( $self, $module, $object_name, $includedirs ) = @_;
@@ -123,7 +132,7 @@ sub stc_link_xs {
 	my ( $self, $dll ) = @_;
 
 	my $perllib = $self->stc_find_libperl;
-
+	
 	my @cmd = (
 		Alien::wxWidgets->linker,
 		Alien::wxWidgets->link_flags,
@@ -131,50 +140,14 @@ sub stc_link_xs {
 		'-fPIC -L.',
 		'-s -o ' . $dll,
 		'Scintilla.o',
-		$perllib,
-		'blib/arch/auto/Wx/Scintilla/' . $self->stc_scintilla_link,
+		'-Lblib/arch/auto/Wx/Scintilla ' . $self->stc_scintilla_link,
 		Alien::wxWidgets->libraries(qw(core base)),
 		$Config{perllibs},
-		'-Wl,-rpath,blib/arch/auto/Wx/Scintilla',
-		'-Wl,-rpath,' . File::Spec->catfile( $self->install_destination('arch'), 'auto/Wx/Scintilla' ),
-
+		"-Wl,-rpath,'\$ORIGIN'",
 	);
-
+	
 	$self->_run_command( \@cmd );
+	
 }
-
-sub stc_find_libperl {
-	my $self = shift;
-
-	# this method has had fairly wide testing in another project
-	my $libperlname = $Config{libperl};
-	my $archlib     = $Config::Config{archlib};
-	my $link        = ( $libperlname =~ /\.a$/ ) ? 'static' : 'shared';
-
-	if ( $link eq 'static' ) {
-		return '';
-	}
-
-	my $dllpath = qq($archlib/CORE/$libperlname);
-	return $dllpath if -f $dllpath;
-	if ( $link eq 'shared' ) {
-
-		# search elsewhere
-		my $returnpath = '';
-		my @libperlpaths = split( /\s+/, $Config::Config{libpth} );
-		for my $libdir (@libperlpaths) {
-			if ( -f qq($libdir/$libperlname) ) {
-				$returnpath = (qq($libdir/$libperlname));
-				last;
-			}
-		}
-		return $returnpath;
-	} else {
-		return '';
-	}
-}
-
-
-
 
 1;
