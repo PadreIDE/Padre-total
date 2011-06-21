@@ -6,7 +6,7 @@ package Wx::Scintilla::Manual;
 
 =head1 NAME
 
-Moose::Manual - What is Wx::Scintilla, and how do I use it?
+Wx::Scintilla::Manual - What is Wx::Scintilla, and how do I use it?
 
 =head1 WHAT IS WX::SCINTILLA?
 
