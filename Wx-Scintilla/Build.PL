@@ -16,7 +16,6 @@ my $builder = $stc_builderclass->new(
 	},
 	build_requires => {
 		'Test::More'       => 0,
-		'File::ShareDir'   => 0,
 		'Alien::wxWidgets' => 0,
 		'Wx'               => 0,
 		'ExtUtils::XSpp'   => 0,
