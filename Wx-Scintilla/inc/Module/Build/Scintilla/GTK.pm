@@ -28,7 +28,7 @@ sub stc_scintilla_dll {
 }
 
 sub stc_scintilla_link {
-	my $self    = shift;
+	my $self     = shift;
 	my $linkname = '-lwx_gtk2';
 	$linkname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$linkname .= 'd' if Alien::wxWidgets->config->{debug};
@@ -143,9 +143,9 @@ sub stc_link_xs {
 		$Config{perllibs},
 		"-Wl,-rpath,'\$ORIGIN'",
 	);
-	
+
 	$self->_run_command( \@cmd );
-	
+
 }
 
 1;
