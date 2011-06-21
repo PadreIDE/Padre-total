@@ -131,8 +131,6 @@ sub stc_build_xs {
 sub stc_link_xs {
 	my ( $self, $dll ) = @_;
 
-	my $perllib = $self->stc_find_libperl;
-	
 	my @cmd = (
 		Alien::wxWidgets->linker,
 		Alien::wxWidgets->link_flags,
