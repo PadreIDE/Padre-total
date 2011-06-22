@@ -17,7 +17,7 @@ use version; our $VERSION = qv(0.22);
 
 use Moose;
 use namespace::autoclean;
-extends qw( Padre::Plugin::Progdocs::FBP::MainFB );
+extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
 # use Try::Tiny;
 use Data::Printer;
