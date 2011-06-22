@@ -16,14 +16,15 @@ perl_version '5.010001';
 version_from 'lib/Padre/Plugin/Cookbook.pm';
 license 'perl';
 
-requires 'Moose' => '2.00';
+requires 'Moose'                => '2.00';
 requires 'namespace::autoclean' => '0.12';
-requires 'Data::Printer' => '0.19';
+requires 'Data::Printer'        => '0.19';
+#requires 'TryCatch'             => '1.00';
 
-test_requires 'Test::More' => '0.98';
-test_requires 'Test::Perl::Critic' => '1.02'; 
+test_requires 'Test::More'          => '0.98';
+test_requires 'Test::Pod::Coverage' => '1.04';
+test_requires 'Test::Perl::Critic'  => '1.02';
 
 auto_install;
 
 WriteAll;
-

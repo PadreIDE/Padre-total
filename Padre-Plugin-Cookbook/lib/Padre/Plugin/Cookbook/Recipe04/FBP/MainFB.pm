@@ -13,7 +13,7 @@ use autodie;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.21);
+use version; our $VERSION = qv(0.22);
 use parent-norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -81,7 +81,15 @@ sub new {
 		$self,
 		$list_ctrl,
 		sub {
-			shift->on_list_col_clicked(@_);
+			shift->_on_list_col_clicked(@_);
+		},
+	);
+
+	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
+		$self,
+		$list_ctrl,
+		sub {
+			shift->_on_list_item_activated(@_);
 		},
 	);
 
@@ -156,17 +164,17 @@ sub new {
 		},
 	);
 
-	my $warning = Wx::Button->new(
+	my $clean = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("Warning"),
+		Wx::gettext("Clean"),
 	);
-	$warning->Disable;
+	$clean->Disable;
 
 	Wx::Event::EVT_BUTTON(
-		$self, $warning,
+		$self, $clean,
 		sub {
-			shift->warning_clicked(@_);
+			shift->clean_clicked(@_);
 		},
 	);
 
@@ -213,7 +221,7 @@ sub new {
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $show, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $warning, 0, Wx::wxALL, 5 );
+	$buttons->Add( $clean, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $width_ajust, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
@@ -241,7 +249,7 @@ sub new {
 	$self->{list_ctrl}      = $list_ctrl->GetId;
 	$self->{relations}      = $relations->GetId;
 	$self->{show}           = $show->GetId;
-	$self->{warning}        = $warning->GetId;
+	$self->{clean}          = $clean->GetId;
 	$self->{width_ajust}    = $width_ajust->GetId;
 
 	return $self;
@@ -336,17 +344,17 @@ sub show {
  
 =over 4
  
-=item warning ()
+=item clean ()
  
-Public Accessor warning Auto-generated.
+Public Accessor clean Auto-generated.
  
 =back
  
 =cut
 
-sub warning {
+sub clean {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{warning} );
+	return Wx::Window::FindWindowById( $self->{clean} );
 }
 
 =pod
@@ -388,7 +396,7 @@ sub about_clicked {
  
 =over 4
  
-=item on_list_col_clicked ()
+=item _on_list_col_clicked ()
  
 Event Handler for list_ctrl.OnListColClick (Required). Auto-generated.
 You must implement this Method in your calling class.
@@ -397,9 +405,28 @@ You must implement this Method in your calling class.
  
 =cut
 
-sub on_list_col_clicked {
+sub _on_list_col_clicked {
 	my $self = shift;
-	return $self->main->error('Handler method on_list_col_clicked for event list_ctrl.OnListColClick not implemented');
+	return $self->main->error('Handler method _on_list_col_clicked for event list_ctrl.OnListColClick not implemented');
+}
+
+=pod
+ 
+=over 4
+ 
+=item _on_list_item_activated ()
+ 
+Event Handler for list_ctrl.OnListItemActivated (Required). Auto-generated.
+You must implement this Method in your calling class.
+ 
+=back
+ 
+=cut
+
+sub _on_list_item_activated {
+	my $self = shift;
+	return $self->main->error(
+		'Handler method _on_list_item_activated for event list_ctrl.OnListItemActivated not implemented');
 }
 
 =pod
@@ -442,18 +469,18 @@ sub show_clicked {
  
 =over 4
  
-=item warning_clicked ()
+=item clean_clicked ()
  
-Event Handler for warning.OnButtonClick (Required). Auto-generated.
+Event Handler for clean.OnButtonClick (Required). Auto-generated.
 You must implement this Method in your calling class.
  
 =back
  
 =cut
 
-sub warning_clicked {
+sub clean_clicked {
 	my $self = shift;
-	return $self->main->error('Handler method warning_clicked for event warning.OnButtonClick not implemented');
+	return $self->main->error('Handler method clean_clicked for event clean.OnButtonClick not implemented');
 }
 
 =pod

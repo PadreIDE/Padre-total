@@ -14,7 +14,8 @@ use English qw( -no_match_vars );
 use version; our $VERSION = qv(0.14);
 use parent qw(Padre::Plugin);
 
-# use Try::Tiny;
+# use TryCatch;
+use Try::Tiny;
 use Data::Dumper;
 use Data::Printer;
 use Carp;
@@ -52,16 +53,20 @@ sub menu_plugins_simple {
 	return $self->plugin_name => [
 		'Plug-ins - wxDialogs...' => [
 			'Recipe-01 - Hello World' => sub { $self->load_dialog_recipe01_main(); },
+
 			# 'Recipe-01 - Hello World' => sub { $self->load_dialog_recipexx_main('Recipe01'); },
-			
+
 			'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main(); },
+
 			# 'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipexx_main('Recipe02'); },
 
 			'Recipe-03 - inc About dialog' => sub { $self->load_dialog_recipe03_main(); },
+
 			# 'Recipe-03 - out & About' => sub { $self->load_dialog_recipexx_main('Recipe03'); },
 
-			'Recipe-04 - ConfigDB beta' => sub { $self->load_dialog_recipe04_main(); },
-			# 'Recipe-04 - ConfigDB beta' => sub { $self->load_dialog_recipexx_main('Recipe04'); },
+			'Recipe-04 - ConfigDB RC1' => sub { $self->load_dialog_recipe04_main(); },
+
+			# 'Recipe-04 - ConfigDB RC1' => sub { $self->load_dialog_recipexx_main('Recipe04'); },
 		],
 	];
 }
@@ -194,30 +199,30 @@ sub load_dialog_recipe04_main {
 # Composed Method,
 # Load Recipe-xx Main Dialog, only once
 #######
-# sub load_dialog_recipexx_main {
-# my ( $self, $recipe_num ) = @ARG;
+#sub load_dialog_recipexx_main {
+#    my ( $self, $recipe_num ) = @ARG;
 #
-# # Padre main window integration
+# Padre main window integration
 # my $main = $self->main;
 #
-# # Clean up any previous existing dialog
+# Clean up any previous existing dialog
 # if ( $self->{dialog} ) {
 # $self->{dialog}->Destroy;
 # $self->{dialog} = undef;
 # }
 #
 # try {
-# # "require" statement with library name as string
-# #require 'Padre/Plugin/Cookbook/' . $recipe_num . '/Main.pm';
+# "require" statement with library name as string
+# require 'Padre/Plugin/Cookbook/' . $recipe_num . '/Main.pm';
 # }
 # catch {
 # say '*** Require failed: ' . $recipe_num;
 # p $recipe_num;
-# carp($_);
+# carp($EVAL_ERROR);
 # return;
 # };
 #
-# # load requested dialog main
+# load requested dialog main
 # my $tmp_obj = 'Padre::Plugin::Cookbook::' . $recipe_num . '::Main';
 # $self->{dialog} = $tmp_obj->new($main);
 # $self->{dialog}->Show;
@@ -228,9 +233,9 @@ sub load_dialog_recipe04_main {
 # catch {
 # say '* info method ' . $recipe_num . '::set_up not found, ok';
 # };
-#
-# return;
-# }
+
+#    return;
+#}
 
 1;
 __END__

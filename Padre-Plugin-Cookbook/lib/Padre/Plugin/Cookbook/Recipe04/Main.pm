@@ -13,18 +13,16 @@ use English qw( -no_match_vars );
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.21);
-
-# use parent qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
+use version; our $VERSION = qv(0.22);
 
 use Moose;
 use namespace::autoclean;
-extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
-use Data::Dumper;
+extends qw( Padre::Plugin::Progdocs::FBP::MainFB );
+
+# use Try::Tiny;
 use Data::Printer;
 use Carp;
 
-#sub new {
 sub BUILD {
 	my $class = shift;
 	my $main  = shift;
@@ -36,6 +34,7 @@ sub BUILD {
 }
 
 my $item = Wx::ListItem->new;
+my @tuples;
 
 has [qw/ relation_name config_db sql_select /] => (
 	isa     => 'Str',
@@ -51,7 +50,7 @@ has [qw/ cardinality degree previous_column /] => (
 	lazy    => 1,
 );
 
-has [qw/ attributes tuples /] => (
+has [qw/ attributes /] => (
 	isa => 'ArrayRef',
 	is  => 'rw',
 );
@@ -69,16 +68,16 @@ sub set_up {
 	my $self = shift;
 
 	# add package name to main dialog #fails as min size naff
-	my @pkg_name = split /::/x, __PACKAGE__,;
+	my @pkg_name = split /::/smx, __PACKAGE__,;
 	$self->package_name->SetLabel( $pkg_name[3] );
 
 	$self->list_ctrl->InsertColumn( 0, Wx::gettext('index') );
-	$self->list_ctrl->SetColumnWidth( 0, 50 );
+	$self->list_ctrl->SetColumnWidth( 0, '50' );
 	$self->list_ctrl->InsertColumn( 1, Wx::gettext('information') );
-	$self->list_ctrl->SetColumnWidth( 1, 400 );
+	$self->list_ctrl->SetColumnWidth( 1, '400' );
 
 	## inserting the file in the list
-	my $item = Wx::ListItem->new;
+	# my $item = Wx::ListItem->new;
 	$item->SetId(0);
 	$item->SetColumn(0);
 	$item->SetText('0');
@@ -86,7 +85,7 @@ sub set_up {
 	$self->list_ctrl->SetItem( $idx, 1, 'Pick a relation and click UPDATE' );
 
 	$item->SetId(1);
-	$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
+	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
 	$self->list_ctrl->SetItem(
@@ -95,41 +94,40 @@ sub set_up {
 	);
 
 	$item->SetId(2);
-	$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem(
-		$idx,
-		1,
-		'use SHOW to peek inside after Update; tip start with SyntaxHighlight'
-	);
-
-	$item->SetId(3);
-	$item->SetBackgroundColour( Wx::Colour->new("CORAL") );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1, 'CORAL highlight warnnings' );
-
-	$item->SetId(4);
-	$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
+	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
 	$self->list_ctrl->SetItem(
 		$idx, 1,
-		'WARNING only works with Session Files; Update first'
+		'use SHOW to peek inside after Update; tip start with SyntaxHighlight'
+	);
+
+	$item->SetId(3);
+	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
+	$idx = $self->list_ctrl->InsertItem($item);
+	$self->list_ctrl->SetItem( $idx, 0, $idx );
+	$self->list_ctrl->SetItem( $idx, 1, 'CLEAN works with History, Session & Session Files; Update first' );
+
+	$item->SetId(4);
+	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
+	$idx = $self->list_ctrl->InsertItem($item);
+	$self->list_ctrl->SetItem( $idx, 0, $idx );
+	$self->list_ctrl->SetItem(
+		$idx, 1,
+		'clicking on Session tuple displays children'
 	);
 
 	$item->SetId(5);
-	$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
+	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
+	$idx = $self->list_ctrl->InsertItem($item);
+	$self->list_ctrl->SetItem( $idx, 0, $idx );
+	$self->list_ctrl->SetItem( $idx, 1, 'COLUMN heading for sorting' );
+
+	$item->SetId(6);
+	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
 	$self->list_ctrl->SetItem( $idx, 1, 'Ajust Width is a toggle: have fun' );
-
-	$item->SetId(6);
-	$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1, '#TODO WARNING, improve sort' );
 
 	return;
 }
@@ -140,7 +138,7 @@ sub set_up {
 sub update_clicked {
 	my $self = shift;
 
-	$self->warning->Disable;
+	$self->clean->Disable;
 	$self->show->Enable;
 	$self->width_ajust->Enable;
 
@@ -148,7 +146,7 @@ sub update_clicked {
 	$self->relation_name( $self->relations->GetStringSelection() );
 
 	# set padre db relation
-	$self->config_db( "Padre::DB::" . $self->relation_name );
+	$self->config_db( 'Padre::DB::' . $self->relation_name );
 
 	# get cardinality
 	eval { $self->config_db->count; };
@@ -193,10 +191,23 @@ sub show_clicked {
 #######
 # Event Handler Button Warning Clicked
 #######
-sub warning_clicked {
+sub clean_clicked {
 	my $self = shift;
 
-	say "warning warning";
+	given ( $self->relation_name ) {
+		when ('Session') {
+			clean_session($self);
+		}
+		when ('SessionFile') {
+			clean_session_files($self);
+		}
+		when ('History') {
+			clean_history($self);
+		}
+		default {
+			return;
+		}
+	}
 
 	return;
 }
@@ -208,11 +219,11 @@ sub width_ajust_clicked {
 	my $self = shift;
 
 	if ( !$self->dialog_width ) {
-		say "wd: +";
+		say 'wd: +';
 		$self->SetSize( 1008, -1 );
 		$self->dialog_width('1');
 	} else {
-		say "wd: -";
+		say 'wd: -';
 		$self->SetSize( 560, -1 );
 		$self->dialog_width('0');
 	}
@@ -224,9 +235,33 @@ sub width_ajust_clicked {
 }
 
 ########
-# Event Handler on_list_col_clicked
+# Event Handler _on_list_item_activated (Session only)
 #######
-sub on_list_col_clicked {
+sub _on_list_item_activated {
+	my ( $self, $list_element ) = @ARG;
+
+	if ( $self->relation_name ne 'Session' ) {
+		say 'quit';
+		return;
+	}
+
+	my $session_id = $tuples[ $list_element->GetIndex ]['0'];
+	say $tuples[ $list_element->GetIndex ]['1'];
+
+	# redefine tuples
+	my @tuples = Padre::DB::SessionFile->select("WHERE session = $session_id");
+
+	for ( 0 .. ( @tuples - 1 ) ) {
+		say $tuples[$_][1];
+	}
+
+	return;
+}
+
+########
+# Event Handler _on_list_col_clicked
+#######
+sub _on_list_col_clicked {
 	my ( $self, $list_event ) = @ARG;
 
 	my $sql_order;
@@ -234,17 +269,15 @@ sub on_list_col_clicked {
 
 	eval { $list_event->GetColumn };
 	if ($EVAL_ERROR) {
-		say "column info";
+		say 'column info';
 		carp($EVAL_ERROR);
 	} else {
 		$col_num = $list_event->GetColumn();
-		if ( $col_num eq 0 ) {
+		if ( $col_num eq '0' ) {
 			say "I don't work on index";
 			return;
 		}
 	}
-
-	say "col_num: " . $col_num;
 
 	if ( $col_num ne $self->previous_column ) {
 		$sql_order = 'ASC';
@@ -257,22 +290,12 @@ sub on_list_col_clicked {
 	}
 
 	### test code
-
-	eval { say "0: " . @{ $self->attributes }; };
-
+	# eval { say '0: ' . @{ $self->attributes }; };
 	# p @{ $self->attributes };
-
-	eval { say "1: " . @{ $self->attributes }[$col_num]; };
-
+	# eval { say '1: ' . @{ $self->attributes }[$col_num]; };
 	# p @{ $self->attributes}[$col_num];
 
-	eval { say "2: " . ${ @{ $self->attributes }[ $col_num - 1 ] }{name}; };
-	p ${ @{ $self->attributes }[ $col_num - 1 ] }{name};
-
-	# my $sql_att_name = %{@{ $self->attributes}->[$col_num-1]}->{name};
-	#$self->config_db->select("ORDER BY ${@{ $self->attributes}[$col_num-1]}{name}");#DESC");
-
-	### end test code
+	eval { say 'sort on: ' . ${ @{ $self->attributes }[ $col_num - 1 ] }{name} . ' ' . $sql_order; };
 
 	$self->sql_select("ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order");
 
@@ -283,12 +306,102 @@ sub on_list_col_clicked {
 
 ########
 # Composed Method,
+# clean history
+#######
+sub clean_history {
+	my $self = shift;
+
+	my @events = $self->config_db->select('ORDER BY name ASC');
+
+	say 'start cleaning';
+	say $self->cardinality;
+	my $count = 0;
+	for ( 0 .. ( @events - 2 ) ) {
+		if ( $events[$_][1] . $events[$_][2] eq $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) {
+			say $events[$_][1] . $events[$_][2];
+			say $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2];
+			say "$count: $_: found duplicate id: $events[$_][0]";
+			eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
+			if ($EVAL_ERROR) {
+				say "Opps $self->config_db tuple $events[$_][0] is missing";
+				carp($EVAL_ERROR);
+			}
+			$count++;
+		}
+	}
+
+	say 'finished cleaning hisory';
+	_display_relation($self);
+
+	return;
+}
+
+########
+# Composed Method,
+# clean session
+#######
+sub clean_session {
+	my $self = shift;
+
+	say 'start cleaning';
+	for ( 0 .. ( @tuples - 1 ) ) {
+
+		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
+
+		if ( @children eq 0 ) {
+			say 'id :' . $tuples[$_][1] . ' empty, deleating';
+			eval { $self->config_db->delete("WHERE id = $tuples[$_][0]"); };
+			if ($EVAL_ERROR) {
+				say "Opps $self->config_db is damaged";
+				carp($EVAL_ERROR);
+			}
+		}
+	}
+	say 'finished cleaning session';
+	_display_relation($self);
+	return;
+}
+
+########
+# Composed Method,
+# clean session files
+#######
+sub clean_session_files {
+	my $self = shift;
+
+	say 'start cleaning';
+	my @session_files = $self->config_db->select( $self->sql_select );
+	my @files;
+
+	for ( 0 .. ( @session_files - 1 ) ) {
+		push @files, $session_files[$_][1];
+	}
+	foreach (@files) {
+		unless ( -e $_ ) {
+			say 'warning warning';
+			say $_;
+			say 'warning warning';
+			eval { $self->config_db->delete("WHERE file = \"$_\""); };
+			if ($EVAL_ERROR) {
+				say "Opps $self->config_db is damaged";
+				carp($EVAL_ERROR);
+			}
+		}
+	}
+
+	say 'finished cleaning session files';
+	_display_relation($self);
+	return;
+}
+
+########
+# Composed Method,
 # display any relation db
 #######
 sub _display_any_relation {
 	my $self = shift;
 
-	my @tuples;
+	# my @tuples;
 
 	_display_attribute_names($self);
 
@@ -298,6 +411,8 @@ sub _display_any_relation {
 		carp($EVAL_ERROR);
 	} else {
 		@tuples = $self->config_db->select( $self->sql_select );
+
+		# p @tuples;
 
 		# TODO this is naff sortout
 		my $progressbar = _setup_progressbar($self);
@@ -309,9 +424,9 @@ sub _display_any_relation {
 			$item->SetId($idx);
 
 			if ( $idx % 2 ) {
-				$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
+				$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
 			} else {
-				$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
+				$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
 			}
 
 			# our display index
@@ -342,39 +457,55 @@ sub _display_any_relation {
 sub _display_session_db {
 	my $self = shift;
 
-	my @PDbList = $self->config_db->select;
-
 	_display_attribute_names($self);
 
-	my $idx = 0;
+	eval { $self->config_db->select; };
+	if ($EVAL_ERROR) {
+		say "Opps $self->config_db is damaged";
+		carp($EVAL_ERROR);
+	} else {
+		@tuples = $self->config_db->select( $self->sql_select );
 
-	foreach (@PDbList) {
+		# TODO this is naff sortout
+		my $progressbar = _setup_progressbar($self);
+		my $idx         = 0;
 
-		$item->SetId($idx);
+		foreach (@tuples) {
 
-		if ( $idx % 2 ) {
-			$item->SetBackgroundColour( Wx::Colour->new("MEDIUM SEA GREEN") );
-		} else {
-			$item->SetBackgroundColour( Wx::Colour->new("WHITE") );
+			# p @{$self->tuples};
+			$item->SetId($idx);
+
+			if ( $idx % 2 ) {
+				$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
+			} else {
+				$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
+			}
+			$self->list_ctrl->InsertItem($item);
+			$self->list_ctrl->SetItem( $idx, 0, $idx );
+			$self->list_ctrl->SetItem( $idx, 1, $tuples[$idx][0] );
+			$self->list_ctrl->SetItem( $idx, 2, $tuples[$idx][1] );
+			$self->list_ctrl->SetItem( $idx, 3, $tuples[$idx][2] );
+
+			my $update = POSIX::strftime(
+				'%Y-%m-%d %H:%M:%S',
+				localtime $tuples[$idx][3],
+			);
+
+			# p $tuples[$idx];
+			# p( ${ @{ $self->attributes }[3] }{name} );
+
+			$self->list_ctrl->SetItem( $idx, 4, $update );
+			$progressbar->update(
+				$idx,
+				"Loading $self->relation_name tuples"
+			);
+			$idx++;
+			_tidy_display($self);
 		}
-		$self->list_ctrl->InsertItem($item);
-		$self->list_ctrl->SetItem( $idx, 0, $idx );
-		$self->list_ctrl->SetItem( $idx, 1, $PDbList[$idx][0] );
-		$self->list_ctrl->SetItem( $idx, 2, $PDbList[$idx][1] );
-		$self->list_ctrl->SetItem( $idx, 3, $PDbList[$idx][2] );
-
-		# todo fix
-		# require POSIX;
-		my $update = POSIX::strftime(
-			'%Y-%m-%d %H:%M:%S',
-			localtime $PDbList[$idx][3],
-		);
-
-		$self->list_ctrl->SetItem( $idx, 4, $update );
-		$idx++;
-		_tidy_display($self);
 	}
+
 	return;
+
 }
 
 ########
@@ -419,12 +550,17 @@ sub _display_relation {
 	my $self = shift;
 
 	given ( $self->relation_name ) {
-		when ("SessionFile") {
-			$self->warning->Enable;
+		when ('History') {
+			$self->clean->Enable;
 			_display_any_relation( $self, $_ );
 		}
-		when ("Session") {
+		when ('Session') {
+			$self->clean->Enable;
 			_display_session_db( $self, $_ );
+		}
+		when ('SessionFile') {
+			$self->clean->Enable;
+			_display_any_relation( $self, $_ );
 		}
 		default {
 			_display_any_relation( $self, $_ );
@@ -448,7 +584,7 @@ sub _show_relation_data {
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->table_info;
-		p @$info;
+		p @{$info};
 	}
 
 	eval { $self->config_db->select; };
@@ -457,8 +593,18 @@ sub _show_relation_data {
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->select;
-		p @$info;
+		p @{$info};
 	}
+
+	# try { $self->config_db->select; }
+	# catch {
+	# say "Opps $self->config_db is damaged";
+	# carp($_);
+	# return;
+	# }
+	#
+	# $info = $self->config_db->select;
+	# p @$info;
 
 	return;
 }
@@ -588,36 +734,17 @@ It's a basic example of a Padre plug-in using a WxDialog.
 
 Constructor. Should be called with $main by CookBook->load_dialog_main().
 
+=item about_clicked
 
 =item BUILD
 
+=item clean_clicked
 
-=item set_up
+=item clean_history
 
+=item clean_session
 
-=item update_clicked
-
-
-=item show_clicked
-
-
-=item on_list_col_clicked
-
-=item warning_clicked
-
-=item about_clicked ()
-
-Event handler for button about
-
-=item plugin_disable ()
-
-=item width_ajust_clicked
-
-Required method with minimum requirements
-
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
-
+=item clean_session_file
 
 =item load_dialog_about ()
 
@@ -626,6 +753,21 @@ loads our dialog Main, only allows one instance!
     require Padre::Plugin::Cookbook::Recipe04::About;
     $self->{dialog} = Padre::Plugin::Cookbook::Recipe04::About->new( $main );
     $self->{dialog}->Show;
+
+=item plugin_disable ()
+
+Required method with minimum requirements
+
+    $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
+    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
+
+=item set_up
+
+=item show_clicked
+
+=item update_clicked
+
+=item width_ajust_clicked
 
 
 =back
