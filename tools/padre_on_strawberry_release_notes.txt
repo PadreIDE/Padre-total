@@ -298,6 +298,9 @@ TODO:
     Perl6::Export
     ! Perl6::Slurp     (failed to install due to an ipc related test)
 TODO *   App::Office::Contacts
+TODO *   App::Office::Contacts::Donations
+TODO: Business::Cart::Generic
+TODO: Business::AU::Ledger - Not really production ready
 
 TODO:   
     IO::Tty listed in http://ali.as/top100/index.html - failed
