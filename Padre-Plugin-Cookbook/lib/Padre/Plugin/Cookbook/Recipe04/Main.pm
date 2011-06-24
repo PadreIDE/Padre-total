@@ -137,10 +137,12 @@ sub set_up {
 #######
 sub update_clicked {
 	my $self = shift;
+	my $main = $self->main;
 
 	$self->clean->Disable;
 	$self->show->Enable;
 	$self->width_ajust->Enable;
+	$main->info(' ');
 
 	# get your selectd relation
 	$self->relation_name( $self->relations->GetStringSelection() );
@@ -219,11 +221,13 @@ sub width_ajust_clicked {
 	my $self = shift;
 
 	if ( !$self->dialog_width ) {
-		say 'wd: +';
+
+		# say 'wd: +';
 		$self->SetSize( 1008, -1 );
 		$self->dialog_width('1');
 	} else {
-		say 'wd: -';
+
+		# say 'wd: -';
 		$self->SetSize( 560, -1 );
 		$self->dialog_width('0');
 	}
@@ -264,6 +268,7 @@ sub _on_list_item_activated {
 sub _on_list_col_clicked {
 	my ( $self, $list_event ) = @ARG;
 
+	my $main = $self->main;
 	my $sql_order;
 	my $col_num;
 
@@ -295,7 +300,7 @@ sub _on_list_col_clicked {
 	# eval { say '1: ' . @{ $self->attributes }[$col_num]; };
 	# p @{ $self->attributes}[$col_num];
 
-	eval { say 'sort on: ' . ${ @{ $self->attributes }[ $col_num - 1 ] }{name} . ' ' . $sql_order; };
+	eval { $main->info( 'sort on: ' . ${ @{ $self->attributes }[ $col_num - 1 ] }{name} . ' ' . $sql_order ); };
 
 	$self->sql_select("ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order");
 
@@ -310,11 +315,14 @@ sub _on_list_col_clicked {
 #######
 sub clean_history {
 	my $self = shift;
+	my $main = $self->main;
 
 	my @events = $self->config_db->select('ORDER BY name ASC');
 
-	say 'start cleaning';
-	say $self->cardinality;
+	$main->info('Cleaning History relation');
+	my $progressbar = _setup_progressbar($self);
+
+	# say $self->cardinality;
 	my $count = 0;
 	for ( 0 .. ( @events - 2 ) ) {
 		if ( $events[$_][1] . $events[$_][2] eq $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) {
@@ -328,9 +336,13 @@ sub clean_history {
 			}
 			$count++;
 		}
+		$progressbar->update(
+			$_,
+			"Cleaning $self->relation_name"
+		);
 	}
 
-	say 'finished cleaning hisory';
+	$main->info('finished cleaning hisory');
 	_display_relation($self);
 
 	return;
@@ -342,8 +354,9 @@ sub clean_history {
 #######
 sub clean_session {
 	my $self = shift;
+	my $main = $self->main;
 
-	say 'start cleaning';
+	$main->info('Cleaning Session relation');
 	for ( 0 .. ( @tuples - 1 ) ) {
 
 		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
@@ -357,7 +370,7 @@ sub clean_session {
 			}
 		}
 	}
-	say 'finished cleaning session';
+	$main->info('Finished Cleaning Session relation');
 	_display_relation($self);
 	return;
 }
@@ -368,8 +381,9 @@ sub clean_session {
 #######
 sub clean_session_files {
 	my $self = shift;
+	my $main = $self->main;
 
-	say 'start cleaning';
+	$main->info('Cleaning Session_Files relation');
 	my @session_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
@@ -389,7 +403,7 @@ sub clean_session_files {
 		}
 	}
 
-	say 'finished cleaning session files';
+	$main->info('Finished Cleaning Session_Files');
 	_display_relation($self);
 	return;
 }

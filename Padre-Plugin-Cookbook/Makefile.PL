@@ -19,6 +19,7 @@ license 'perl';
 requires 'Moose'                => '2.00';
 requires 'namespace::autoclean' => '0.12';
 requires 'Data::Printer'        => '0.19';
+
 #requires 'TryCatch'             => '1.00';
 
 test_requires 'Test::More'          => '0.98';
