@@ -19,7 +19,9 @@ sub padre_interfaces {
 }
 
 sub registered_documents {
-	'application/x-latex' => 'Padre::Document::LaTeX', 'application/x-bibtex' => 'Padre::Document::BibTeX',;
+	'application/x-latex' => 'Padre::Document::LaTeX',
+	'application/x-bibtex' => 'Padre::Document::BibTeX',
+	;
 }
 
 sub plugin_icon {
