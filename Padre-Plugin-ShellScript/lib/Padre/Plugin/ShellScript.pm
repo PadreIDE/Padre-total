@@ -6,19 +6,18 @@ use strict;
 use warnings;
 use 5.008;
 
-use File::Spec::Functions qw{ catfile };
-
 use base 'Padre::Plugin';
-use Class::Autouse 'Padre::Document::ShellScript';
+use Wx ();
+use File::Spec::Functions qw{ catfile };
 
 # The plugin name to show in the Plugin Manager and menus
 sub plugin_name {
-	'Shell Script';
+	Wx::gettext('Shell Script');
 }
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81, 'Padre::Wx::Main' => 0.81;
+	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81, 'Padre::Wx::Main' => 0.86;
 }
 
 sub registered_documents {
@@ -46,8 +45,8 @@ sub info {
 
 	# Generate the About dialog
 	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName("Shell Script Plugin");
-	$about->SetDescription("Use the Run menu to run and debug shell scripts.");
+	$about->SetName( Wx::gettext('Shell Script Plugin') );
+	$about->SetDescription('Use the Run menu to run and debug shell scripts.');
 
 	# Show the About dialog
 	Wx::AboutBox($about);
