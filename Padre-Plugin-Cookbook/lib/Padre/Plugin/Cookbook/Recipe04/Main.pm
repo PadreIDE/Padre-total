@@ -35,6 +35,7 @@ sub BUILD {
 
 my $item = Wx::ListItem->new;
 my @tuples;
+my $card_limit = 127;
 
 has [qw/ relation_name config_db sql_select /] => (
 	isa     => 'Str',
@@ -106,7 +107,10 @@ sub set_up {
 	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
 	$idx = $self->list_ctrl->InsertItem($item);
 	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1, 'CLEAN works with History, Session & Session Files; Update first' );
+	$self->list_ctrl->SetItem(
+		$idx, 1,
+		'CLEAN works with History, Session & Session Files; Update first'
+	);
 
 	$item->SetId(4);
 	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
@@ -151,13 +155,7 @@ sub update_clicked {
 	$self->config_db( 'Padre::DB::' . $self->relation_name );
 
 	# get cardinality
-	eval { $self->config_db->count; };
-	if ($EVAL_ERROR) {
-		say "Opps failed to get cardinality for $self->config_db ";
-		carp($EVAL_ERROR);
-	} else {
-		$self->cardinality( $self->config_db->count );
-	}
+	_get_cardinality($self);
 
 	# get degree
 	eval { $self->config_db->table_info; };
@@ -172,7 +170,7 @@ sub update_clicked {
 	# update dialog title
 	$self->relation_title->SetLabel( $self->relation_name );
 	$self->previous_column(0);
-	$self->sql_select("ORDER BY ${@{ $self->attributes}[0]}{name} ASC");
+	$self->sql_select("ORDER BY ${@{ $self->attributes}[0]}{name} ASC LIMIT $card_limit");
 
 	_display_relation($self);
 
@@ -294,15 +292,9 @@ sub _on_list_col_clicked {
 		$self->previous_column(0);
 	}
 
-	### test code
-	# eval { say '0: ' . @{ $self->attributes }; };
-	# p @{ $self->attributes };
-	# eval { say '1: ' . @{ $self->attributes }[$col_num]; };
-	# p @{ $self->attributes}[$col_num];
-
 	eval { $main->info( 'sort on: ' . ${ @{ $self->attributes }[ $col_num - 1 ] }{name} . ' ' . $sql_order ); };
 
-	$self->sql_select("ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order");
+	$self->sql_select( "ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order LIMIT $card_limit" );
 
 	_display_relation($self);
 
@@ -336,10 +328,10 @@ sub clean_history {
 			}
 			$count++;
 		}
-		$progressbar->update(
-			$_,
-			"Cleaning $self->relation_name"
-		);
+		$progressbar->update( $_, "Cleaning $self->relation_name" );
+
+		# get cardinality
+		_get_cardinality($self);
 	}
 
 	$main->info('finished cleaning hisory');
@@ -368,6 +360,9 @@ sub clean_session {
 				say "Opps $self->config_db is damaged";
 				carp($EVAL_ERROR);
 			}
+
+			# get cardinality
+			_get_cardinality($self);
 		}
 	}
 	$main->info('Finished Cleaning Session relation');
@@ -400,6 +395,9 @@ sub clean_session_files {
 				say "Opps $self->config_db is damaged";
 				carp($EVAL_ERROR);
 			}
+
+			# get cardinality
+			_get_cardinality($self);
 		}
 	}
 
@@ -583,6 +581,24 @@ sub _display_relation {
 	return;
 }
 
+#######
+# Composed Method
+# _get_cardinality
+#######
+sub _get_cardinality {
+
+	my $self = shift;
+	eval { $self->config_db->count; };
+	if ($EVAL_ERROR) {
+		say "Opps failed to get cardinality for $self->config_db ";
+		carp($EVAL_ERROR);
+	} else {
+		$self->cardinality( $self->config_db->count );
+		$self->display_cardinality->SetLabel( "Cardinality: " . $self->cardinality );
+	}
+
+	return;
+}
 ########
 # Composed Method,
 # _show_relation_data
@@ -758,7 +774,7 @@ Constructor. Should be called with $main by CookBook->load_dialog_main().
 
 =item clean_session
 
-=item clean_session_file
+=item clean_session_files
 
 =item load_dialog_about ()
 

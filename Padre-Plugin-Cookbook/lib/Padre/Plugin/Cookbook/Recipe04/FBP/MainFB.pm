@@ -10,11 +10,11 @@ use warnings;
 use diagnostics;
 use utf8;
 use autodie;
-use Padre::Wx             ();
+use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.22);
-use parent-norequire, qw(
+use version; our $VERSION = qv(0.21);
+use parent -norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog
 );
@@ -38,14 +38,24 @@ sub new {
 		-1,
 		Wx::gettext("ConfigDB"),
 	);
-	$package_name->SetFont( Wx::Font->new( 14, 70, 90, 92, 0, "" ) );
+	$package_name->SetFont(
+		Wx::Font->new( 14, 70, 90, 92, 0, "" )
+	);
 
 	my $relation_title = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Relation Name"),
 	);
-	$relation_title->SetFont( Wx::Font->new( 14, 70, 90, 90, 0, "" ) );
+	$relation_title->SetFont(
+		Wx::Font->new( 14, 70, 90, 90, 0, "" )
+	);
+
+	my $display_cardinality = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Cardinality"),
+	);
 
 	my $about = Wx::Button->new(
 		$self,
@@ -54,7 +64,8 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self, $about,
+		$self,
+		$about,
 		sub {
 			shift->about_clicked(@_);
 		},
@@ -106,14 +117,18 @@ sub new {
 		-1,
 		Wx::gettext("config.db"),
 	);
-	$m_staticText5->SetFont( Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" ) );
+	$m_staticText5->SetFont(
+		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
 
 	my $relations = Wx::RadioBox->new(
-		$self, -1,
+		$self,
+		-1,
 		"Relations",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
-		[   "Plugin",
+		[
+			"Plugin",
 			"Session",
 			"SessionFile",
 			"Bookmark",
@@ -144,7 +159,8 @@ sub new {
 	);
 
 	Wx::Event::EVT_BUTTON(
-		$self, $update,
+		$self,
+		$update,
 		sub {
 			shift->update_clicked(@_);
 		},
@@ -158,7 +174,8 @@ sub new {
 	$show->Disable;
 
 	Wx::Event::EVT_BUTTON(
-		$self, $show,
+		$self,
+		$show,
 		sub {
 			shift->show_clicked(@_);
 		},
@@ -172,7 +189,8 @@ sub new {
 	$clean->Disable;
 
 	Wx::Event::EVT_BUTTON(
-		$self, $clean,
+		$self,
+		$clean,
 		sub {
 			shift->clean_clicked(@_);
 		},
@@ -200,10 +218,14 @@ sub new {
 	);
 	$close_button->SetDefault;
 
+	my $bSizer6 = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	$bSizer6->Add( $relation_title, 0, Wx::wxALL, 5 );
+	$bSizer6->Add( $display_cardinality, 0, Wx::wxALL, 5 );
+
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer1->Add( $package_name, 0, Wx::wxALL, 5 );
 	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$bSizer1->Add( $relation_title, 0, Wx::wxALL, 5 );
+	$bSizer1->Add( $bSizer6, 1, Wx::wxEXPAND, 5 );
 	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$bSizer1->Add( $about, 0, Wx::wxALL, 5 );
 
@@ -214,7 +236,7 @@ sub new {
 	$fgSizer2->SetFlexibleDirection(Wx::wxBOTH);
 	$fgSizer2->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
 	$fgSizer2->Add( $m_staticText5, 0, Wx::wxALL, 5 );
-	$fgSizer2->Add( $relations,     0, Wx::wxALL, 5 );
+	$fgSizer2->Add( $relations, 0, Wx::wxALL, 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$buttons->Add( $update, 0, Wx::wxALL, 5 );
@@ -228,13 +250,13 @@ sub new {
 	$buttons->Add( $close_button, 0, Wx::wxALL, 5 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vsizer->Add( $bSizer1,         0, Wx::wxEXPAND,             3 );
+	$vsizer->Add( $bSizer1, 0, Wx::wxEXPAND, 3 );
 	$vsizer->Add( $m_staticline1_1, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
-	$vsizer->Add( $bSizer5,         1, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$vsizer->Add( $bSizer5, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
 	$vsizer->Add( $m_staticline1_2, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$vsizer->Add( $fgSizer2,        0, Wx::wxALL | Wx::wxEXPAND, 3 );
+	$vsizer->Add( $fgSizer2, 0, Wx::wxALL | Wx::wxEXPAND, 3 );
 	$vsizer->Add( $m_staticline1_3, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
-	$vsizer->Add( $buttons,         0, Wx::wxEXPAND,             3 );
+	$vsizer->Add( $buttons, 0, Wx::wxEXPAND, 3 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$sizer->Add( $vsizer, 1, Wx::wxALL, 1 );
@@ -244,13 +266,14 @@ sub new {
 	$sizer->Fit($self);
 	$sizer->SetSizeHints($self);
 
-	$self->{package_name}   = $package_name->GetId;
+	$self->{package_name} = $package_name->GetId;
 	$self->{relation_title} = $relation_title->GetId;
-	$self->{list_ctrl}      = $list_ctrl->GetId;
-	$self->{relations}      = $relations->GetId;
-	$self->{show}           = $show->GetId;
-	$self->{clean}          = $clean->GetId;
-	$self->{width_ajust}    = $width_ajust->GetId;
+	$self->{display_cardinality} = $display_cardinality->GetId;
+	$self->{list_ctrl} = $list_ctrl->GetId;
+	$self->{relations} = $relations->GetId;
+	$self->{show} = $show->GetId;
+	$self->{clean} = $clean->GetId;
+	$self->{width_ajust} = $width_ajust->GetId;
 
 	return $self;
 }
@@ -269,7 +292,7 @@ Public Accessor package_name Auto-generated.
 
 sub package_name {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{package_name} );
+	return Wx::Window::FindWindowById($self->{package_name});
 }
 
 =pod
@@ -286,7 +309,24 @@ Public Accessor relation_title Auto-generated.
 
 sub relation_title {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{relation_title} );
+	return Wx::Window::FindWindowById($self->{relation_title});
+}
+
+=pod
+ 
+=over 4
+ 
+=item display_cardinality ()
+ 
+Public Accessor display_cardinality Auto-generated.
+ 
+=back
+ 
+=cut
+
+sub display_cardinality {
+	my $self = shift;
+	return Wx::Window::FindWindowById($self->{display_cardinality});
 }
 
 =pod
@@ -303,7 +343,7 @@ Public Accessor list_ctrl Auto-generated.
 
 sub list_ctrl {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{list_ctrl} );
+	return Wx::Window::FindWindowById($self->{list_ctrl});
 }
 
 =pod
@@ -320,7 +360,7 @@ Public Accessor relations Auto-generated.
 
 sub relations {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{relations} );
+	return Wx::Window::FindWindowById($self->{relations});
 }
 
 =pod
@@ -337,7 +377,7 @@ Public Accessor show Auto-generated.
 
 sub show {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{show} );
+	return Wx::Window::FindWindowById($self->{show});
 }
 
 =pod
@@ -354,7 +394,7 @@ Public Accessor clean Auto-generated.
 
 sub clean {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{clean} );
+	return Wx::Window::FindWindowById($self->{clean});
 }
 
 =pod
@@ -371,7 +411,7 @@ Public Accessor width_ajust Auto-generated.
 
 sub width_ajust {
 	my $self = shift;
-	return Wx::Window::FindWindowById( $self->{width_ajust} );
+	return Wx::Window::FindWindowById($self->{width_ajust});
 }
 
 =pod
@@ -425,8 +465,7 @@ You must implement this Method in your calling class.
 
 sub _on_list_item_activated {
 	my $self = shift;
-	return $self->main->error(
-		'Handler method _on_list_item_activated for event list_ctrl.OnListItemActivated not implemented');
+	return $self->main->error('Handler method _on_list_item_activated for event list_ctrl.OnListItemActivated not implemented');
 }
 
 =pod
@@ -502,7 +541,6 @@ sub width_ajust_clicked {
 }
 
 1;
-
 =pod
 
 =over 4
