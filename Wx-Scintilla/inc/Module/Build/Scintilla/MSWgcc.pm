@@ -50,8 +50,11 @@ sub stc_build_scintilla_object {
 		$self->stc_defines,
 		( $Config{ptrsize} == 8 ) ? '-DWIN32 -DWIN64' : '-DWIN32',
 		'-o ' . $object_name,
-		'-O2 ',
-		'-Wall ',
+		'-O2',
+		'-Wall',
+		$object_name !~ /((Plat|Scintilla)WX|scintilla)\.o/ 
+		?  '-Wno-missing-braces -Wno-char-subscripts -Wno-strict-overflow -pedantic'
+		: '',
 		'-MT' . $object_name,
 		'-MF' . $object_name . '.d',
 		'-MD -MP',
