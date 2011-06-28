@@ -240,8 +240,8 @@ sub build_xs {
 
 	die 'Unable to determine typemap' if !defined($perltypemap);
 
+	$self->log_info("    XS Scintilla.xs\n");
 	require ExtUtils::ParseXS;
-
 	ExtUtils::ParseXS::process_file(
 		filename    => 'Scintilla.xs',
 		output      => 'Scintilla.c',
