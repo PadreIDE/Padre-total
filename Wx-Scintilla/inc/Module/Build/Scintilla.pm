@@ -157,13 +157,13 @@ sub _run_command {
 	my $cmds = shift;
 
 	my $cmd = join( ' ', @$cmds );
-	if($cmd =~ /(cl|gcc|cc|g\+\+).+-o\s+(\S+)/) {
+	if ( $cmd =~ /(cl|gcc|cc|g\+\+).+-o\s+(\S+)/ ) {
 		$self->log_info("CC -o $2\n");
 	} else {
 		$self->log_info("$cmd\n");
 	}
 	my $rc = system($cmd);
-	die "Failed with exit code $rc\n$cmd\n" if $rc != 0;
+	die "Failed with exit code $rc\n$cmd\n"  if $rc != 0;
 	die "Ctrl-C interrupted command\n$cmd\n" if $rc & 127;
 }
 
