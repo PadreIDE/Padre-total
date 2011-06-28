@@ -157,8 +157,9 @@ sub _run_command {
 	my $cmds = shift;
 
 	my $cmd = join( ' ', @$cmds );
-	if ( $cmd =~ /(cl|gcc|cc|g\+\+).+-o\s+(\S+)/ ) {
-		$self->log_info("CC -o $2\n");
+	if ( $cmd =~ /(cc|gcc|g\+\+|cl).+-o\s+(\S+)/ ) {
+		my $object_name = File::Basename::basename($2);
+		$self->log_info("CC -o $object_name\n");
 	} else {
 		$self->log_info("$cmd\n");
 	}
