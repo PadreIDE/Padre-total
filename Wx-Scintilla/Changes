@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.16	TBA
+0.16	2011.6.28
 	Show a simplified version of commands and show the actual command when it fails or
 		interrupted with Ctrl-C unless perl Build.PL verbose=1 is used (AZAWAWI)
 	Fix RT #69115: Building Wx::Scintilla fails in relocatable perl (AZAWAWI)
