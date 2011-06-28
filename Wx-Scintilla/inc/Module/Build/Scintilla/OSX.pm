@@ -59,8 +59,11 @@ sub stc_build_scintilla_object {
 		$self->stc_ccflags,
 		$self->stc_defines,
 		'-o ' . $object_name,
-		'-O2 ',
-		'-Wall ',
+		'-O2',
+		'-Wall',
+		$object_name !~ /((Plat|Scintilla)WX|scintilla)\.o/
+		? '-Wno-missing-braces -Wno-char-subscripts -Wno-strict-overflow -pedantic'
+		: '',
 		join( ' ', @$includedirs ),
 		$module,
 	);

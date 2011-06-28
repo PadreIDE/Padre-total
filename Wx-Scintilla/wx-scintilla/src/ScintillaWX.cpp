@@ -641,7 +641,7 @@ void ScintillaWX::UpdateSystemCaret() {
 bool ScintillaWX::HasCaretSizeChanged() {
 #ifdef __WXMSW__
     if (( (0 != vs.caretWidth) && (sysCaretWidth != vs.caretWidth) )
-        || (0 != vs.lineHeight) && (sysCaretHeight != vs.lineHeight)) {
+        || ((0 != vs.lineHeight) && (sysCaretHeight != vs.lineHeight))) {
         return true;
     }
 #endif
