@@ -100,7 +100,7 @@ sub stc_build_xs {
 
 	$self->_run_command( \@cmd );
 
-	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
+	$self->log_info("    ExtUtils::Mksymlists Scintilla\n");
 
 	require ExtUtils::Mksymlists;
 	ExtUtils::Mksymlists::Mksymlists(

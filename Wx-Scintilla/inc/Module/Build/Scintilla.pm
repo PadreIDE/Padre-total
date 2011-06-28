@@ -171,8 +171,6 @@ sub _run_command {
 sub build_scintilla {
 	my $self = shift;
 
-	$self->log_info("Building Scintilla library\n");
-
 	my @modules = (
 		glob('wx-scintilla/src/scintilla/src/*.cxx'),
 		'wx-scintilla/src/PlatWX.cpp',
@@ -206,15 +204,11 @@ sub build_scintilla {
 
 	my $shared_lib = File::Spec->catfile( $dist_dir, $self->stc_scintilla_dll );
 
-	$self->log_info("Linking $shared_lib\n");
-
 	$self->stc_link_scintilla_objects( $shared_lib, \@objects );
 }
 
 sub build_xs {
 	my $self = shift;
-
-	$self->log_info("Building Scintilla XS\n");
 
 	my @cmd;
 	my $cmd;
