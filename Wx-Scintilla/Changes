@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.17	TBA
+0.17	2011.6.28
 	Wx::Scintilla cannot exist with Wx::STC (MDOOTSON)
 	More simplified user-friendly build logs (AZAWAWI)
 	Less warnings noise while compiling Scintilla on GTK, MSWgcc and OSX (AZAWAWI)
