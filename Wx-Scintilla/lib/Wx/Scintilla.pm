@@ -82,7 +82,7 @@ __END__
 
 =head1 NAME
 
-Wx::Scintilla - wxWidgets Perl XS wrapper for the Scintilla editor component
+Wx::Scintilla - Scintilla source code editing component for wxWidgets
 
 =head1 SYNOPSIS
 
