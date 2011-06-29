@@ -125,6 +125,11 @@ sub stc_link_xs {
 	# following lines should leave 'perl5xx.lib' unchanged
 	$perllib =~ s/^lib/-l/;
 	$perllib =~ s/\.a$//;
+	
+	# if perl lib is MS link lib perl5xx.lib, we need to prefix fullpath
+	if( $perllib =~ /\.lib$/i) {
+		$perllib = $Config{archlibexp} . '/CORE/' . $perllib;
+	}
 
 	my @cmd = (
 		Alien::wxWidgets->linker,
