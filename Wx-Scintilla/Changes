@@ -4,7 +4,7 @@ Revision history for Wx-Scintilla
     - Reformatted Changes file (AZAWAWI)
 
 0.17  2011.6.28
-    - Wx::Scintilla cannot exist with Wx::STC (MDOOTSON)
+    - Wx::Scintilla cannot exist with Wx::STC (MARKD)
     - More simplified user-friendly build logs (AZAWAWI)
     - Less warnings noise while compiling Scintilla on GTK, MSWgcc and OSX (AZAWAWI)
 
@@ -17,12 +17,12 @@ Revision history for Wx-Scintilla
     - Minor POD fix (AZAWAWI)
 
 0.14  2011.6.21
-    - Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
+    - Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MARKD)
     - Added initial version of Wx::Scintilla::Manual (AZAWAWI)
-    - Removed File::ShareDir lookup as scintilla DLL is now side by side with the XS DLL  (MDOOTSON)
-    - Fixed the bad soname in Linux GTK build (MDOOTSON)
+    - Removed File::ShareDir lookup as scintilla DLL is now side by side with the XS DLL  (MARKD)
+    - Fixed the bad soname in Linux GTK build (MARKD)
     - Stop linking libperl on non-MSWin32 platforms. Relative -rpath for GTK ensures
-      the current scintilla dll is always loaded (MDOOTSON)
+      the current scintilla dll is always loaded (MARKD)
     - Removed File::ShareDir dependency (AZAWAWI)
 
 0.13  2011.6.20
@@ -32,14 +32,14 @@ Revision history for Wx-Scintilla
 
 0.12  2011.6.17
     - Updated POD (AZAWAWI)
-    - Don't set global Wx::Event version (MDOOTSON)
-    - Pre-build check for GTK development library (MDOOTSON)
-    - Static Perl linking fix (MDOOTSON)
+    - Don't set global Wx::Event version (MARKD)
+    - Pre-build check for GTK development library (MARKD)
+    - Static Perl linking fix (MARKD)
     - Totally experimental Perl 6 syntax higlighting that is made only
       for the brave of heart (AZAWAWI)
 
 0.11  2011.6.16
-    - OS compatibility patch (Big thanks to Mark Dootson++) (MDOOTSON)
+    - OS compatibility patch (Big thanks to Mark Dootson++) (MARKD)
       CentOS 3 32 bit - custom built Perl
       CentOS 5 32/64 bit - custom built Perl
       Fedora 14 32 Bit - system Perl & Wx
@@ -55,7 +55,7 @@ Revision history for Wx-Scintilla
 0.09  2011.6.13
     - Experimental support 64-bit Ubuntu 10.10 (SZABGAB, AZAWAWI)
     - Defeat the indexer by splitting the package declaration on two lines for
-      Wx::Event (MDOOTSON, AZAWAWI)
+      Wx::Event (MARKD, AZAWAWI)
 
 0.08  2011.6.10
     - Proper ActivePerl + MS VC Compiler support in Wx::Scintilla (AZAWAWI)
