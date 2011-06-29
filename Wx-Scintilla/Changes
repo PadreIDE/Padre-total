@@ -1,100 +1,103 @@
 Revision history for Wx-Scintilla
 
-0.17	2011.6.28
-	Wx::Scintilla cannot exist with Wx::STC (MDOOTSON)
-	More simplified user-friendly build logs (AZAWAWI)
-	Less warnings noise while compiling Scintilla on GTK, MSWgcc and OSX (AZAWAWI)
+0.18  TBA
+    - Reformatted Changes file (AZAWAWI)
 
-0.16	2011.6.28
-	Show a simplified version of commands and show the actual command when it fails or
-		interrupted with Ctrl-C unless perl Build.PL verbose=1 is used (AZAWAWI)
-	Fix RT #69115: Building Wx::Scintilla fails in relocatable perl (AZAWAWI)
+0.17  2011.6.28
+    - Wx::Scintilla cannot exist with Wx::STC (MDOOTSON)
+    - More simplified user-friendly build logs (AZAWAWI)
+    - Less warnings noise while compiling Scintilla on GTK, MSWgcc and OSX (AZAWAWI)
 
-0.15	2011.6.21
-	Minor POD fix (AZAWAWI)
+0.16  2011.6.28
+    - Show a simplified version of commands and show the actual command when it fails or
+      interrupted with Ctrl-C unless perl Build.PL verbose=1 is used (AZAWAWI)
+    - Fix RT #69115: Building Wx::Scintilla fails in relocatable perl (AZAWAWI)
 
-0.14	2011.6.21
-	Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
-	Added initial version of Wx::Scintilla::Manual (AZAWAWI)
-	Removed File::ShareDir lookup as scintilla DLL is now side by side with the XS DLL  (MDOOTSON)
-	Fixed the bad soname in Linux GTK build (MDOOTSON)
-	Stop linking libperl on non-MSWin32 platforms. Relative -rpath for GTK ensures
-		the current scintilla dll is always loaded (MDOOTSON)
-	Removed File::ShareDir dependency (AZAWAWI)
+0.15  2011.6.21
+    - Minor POD fix (AZAWAWI)
 
-0.13	2011.6.20
-	EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
-	POD updates (AZAWAWI)
-	Added Perl 6 lexer to linked lexers (AZAWAWI)
+0.14  2011.6.21
+    - Ubuntu 11.04+ scrolling redraw fix http://trac.wxwidgets.org/ticket/13229 (MDOOTSON)
+    - Added initial version of Wx::Scintilla::Manual (AZAWAWI)
+    - Removed File::ShareDir lookup as scintilla DLL is now side by side with the XS DLL  (MDOOTSON)
+    - Fixed the bad soname in Linux GTK build (MDOOTSON)
+    - Stop linking libperl on non-MSWin32 platforms. Relative -rpath for GTK ensures
+      the current scintilla dll is always loaded (MDOOTSON)
+    - Removed File::ShareDir dependency (AZAWAWI)
 
-0.12	2011.6.17
-	Updated POD (AZAWAWI)
-	Don't set global Wx::Event version (MDOOTSON)
-	Pre-build check for GTK development library (MDOOTSON)
-	Static Perl linking fix (MDOOTSON)
-	Totally experimental Perl 6 syntax higlighting that is made only
-	for the brave of heart (AZAWAWI)
+0.13  2011.6.20
+    - EVT_SCINTILLA* is now EVT_STC* for backward compatibility with Wx::STC (AZAWAWI)
+    - POD updates (AZAWAWI)
+    - Added Perl 6 lexer to linked lexers (AZAWAWI)
 
-0.11	2011.6.16
-	OS compatibility patch (Big thanks to Mark Dootson++) (MDOOTSON)
-		CentOS 3 32 bit - custom built Perl
-		CentOS 5 32/64 bit - custom built Perl
-		Fedora 14 32 Bit - system Perl & Wx
-		Ubuntu 10/11 32 Bit - system Perl & Wx
-		Mac OS X Snow Leopard - 32 bit custom Perl
-		Windows XP 32 bit custom Perl & Wx
-		Windows Vista 32/64 bit custom Perl & Wx
-		Windows 7 64 bit custom Perl & Wx
+0.12  2011.6.17
+    - Updated POD (AZAWAWI)
+    - Don't set global Wx::Event version (MDOOTSON)
+    - Pre-build check for GTK development library (MDOOTSON)
+    - Static Perl linking fix (MDOOTSON)
+    - Totally experimental Perl 6 syntax higlighting that is made only
+      for the brave of heart (AZAWAWI)
 
-0.10	2011.6.15
-	Added Makefile.PL support through Module::Build::Compat (AZAWAWI)
+0.11  2011.6.16
+    - OS compatibility patch (Big thanks to Mark Dootson++) (MDOOTSON)
+      CentOS 3 32 bit - custom built Perl
+      CentOS 5 32/64 bit - custom built Perl
+      Fedora 14 32 Bit - system Perl & Wx
+      Ubuntu 10/11 32 Bit - system Perl & Wx
+      Mac OS X Snow Leopard - 32 bit custom Perl
+      Windows XP 32 bit custom Perl & Wx
+      Windows Vista 32/64 bit custom Perl & Wx
+      Windows 7 64 bit custom Perl & Wx
 
-0.09	2011.6.13
-	Experimental support 64-bit Ubuntu 10.10 (SZABGAB, AZAWAWI)
-	Defeat the indexer by splitting the package declaration on two lines for
-		Wx::Event (MDOOTSON, AZAWAWI)
+0.10  2011.6.15
+    - Added Makefile.PL support through Module::Build::Compat (AZAWAWI)
 
-0.08	2011.6.10
-	Proper ActivePerl + MS VC Compiler support in Wx::Scintilla (AZAWAWI)
-	Updated POD documentation about supported platforms (AZAWAWI)
+0.09  2011.6.13
+    - Experimental support 64-bit Ubuntu 10.10 (SZABGAB, AZAWAWI)
+    - Defeat the indexer by splitting the package declaration on two lines for
+      Wx::Event (MDOOTSON, AZAWAWI)
 
-0.07	2011.6.10
-	Removed the 'OS unsupported' test in Build.PL; i want it to fail on other platforms
-	so i can learn more from failures (AZAWAWI)
+0.08  2011.6.10
+    - Proper ActivePerl + MS VC Compiler support in Wx::Scintilla (AZAWAWI)
+    - Updated POD documentation about supported platforms (AZAWAWI)
 
-0.06	2011.6.9
-	Added t/03_editor.t to begin testing Scintilla editor functionality (AZAWAWI)
-	More POD updates (AZAWAWI)
-	Removed Makefile.PL because of weird compilation failures while using it (AZAWAWI)
-	Handled compilation failures and the user's control-c (AZAWAWI)
-	Removed a few Alien::wxWidgets dependencies in Build.PL which causes a lot
-	  of false UNKNOWNs in CPAN testers reports (AZAWAWI)
-	Reuse Module::Build API to use Config (AZAWAWI)
-	Fixed shared library loading problems on Linux by setting runtime link paths (AZAWAWI)
+0.07 2011.6.10
+    - Removed the 'OS unsupported' test in Build.PL; i want it to fail on other platforms
+    - so i can learn more from failures (AZAWAWI)
 
-0.05	2011.6.8
-	Updated POD documentation (AZAWAWI)
-	Experimental linux gtk support (AZAWAWI)
+0.06 2011.6.9
+    - Added t/03_editor.t to begin testing Scintilla editor functionality (AZAWAWI)
+    - More POD updates (AZAWAWI)
+    - Removed Makefile.PL because of weird compilation failures while using it (AZAWAWI)
+    - Handled compilation failures and the user's control-c (AZAWAWI)
+    - Removed a few Alien::wxWidgets dependencies in Build.PL which causes a lot
+      of false UNKNOWNs in CPAN testers reports (AZAWAWI)
+    - Reuse Module::Build API to use Config (AZAWAWI)
+    - Fixed shared library loading problems on Linux by setting runtime link paths (AZAWAWI)
 
-0.042	2011.6.6
-	Quick version to handle packages with undefined versions
+0.05  2011.6.8
+    - Updated POD documentation (AZAWAWI)
+    - Experimental linux gtk support (AZAWAWI)
 
-0.04	2011.6.6
-	Better handling of File::ShareDir death (AZAWAWI)
-	Fixed XS loader version mismatch bug in Wx::boot by replacing it by XSLoader::load (AZAWAWI)
-	File::Sharedir is not used to locate shared libs when the test harness is active (AZAWAWI)
-	Updated POD documentation (AZAWAWI)
-	Added a minimal demo Perl editor application in the SYNOPSIS section (AZAWAWI)
+0.042  2011.6.6
+    - Quick version to handle packages with undefined versions
 
-0.03	2011.6.6
-	The package version is extracted correctly to prevent test failures (AZAWAWI)
-	Wx::Event is no longer subclassed to prevent the permission error for now (AZAWAWI)
-	Include the important and missing Scintilla.xs (AZAWAWI)
-	More POD documentation (AZAWAWI)
-	Fixed missing dist_abstract warning in Build.PL (AZAWAWI, Reported by SZABGAB)
+0.04  2011.6.6
+    - Better handling of File::ShareDir death (AZAWAWI)
+    - Fixed XS loader version mismatch bug in Wx::boot by replacing it by XSLoader::load (AZAWAWI)
+    - File::Sharedir is not used to locate shared libs when the test harness is active (AZAWAWI)
+    - Updated POD documentation (AZAWAWI)
+    - Added a minimal demo Perl editor application in the SYNOPSIS section (AZAWAWI)
 
-0.02	2011.6.5
-	Attempt to fix the Wx::Event-subclass-upload-permission error (AZAWAWI)
+0.03  2011.6.6
+    - The package version is extracted correctly to prevent test failures (AZAWAWI)
+    - Wx::Event is no longer subclassed to prevent the permission error for now (AZAWAWI)
+    - Include the important and missing Scintilla.xs (AZAWAWI)
+    - More POD documentation (AZAWAWI)
+    - Fixed missing dist_abstract warning in Build.PL (AZAWAWI, Reported by SZABGAB)
 
-0.01	2011.6.5
-	First version, released on an unsuspecting world  (AZAWAWI)
+0.02  2011.6.5
+    - Attempt to fix the Wx::Event-subclass-upload-permission error (AZAWAWI)
+
+0.01  2011.6.5
+    - First version, released on an unsuspecting world  (AZAWAWI)
