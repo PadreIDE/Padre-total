@@ -53,7 +53,7 @@ sub stc_build_scintilla_object {
 		'-O2',
 		'-Wall',
 		$object_name !~ /((Plat|Scintilla)WX|scintilla)\.o/
-		? '-Wno-missing-braces -Wno-char-subscripts -Wno-strict-overflow -pedantic'
+		? '-Wno-missing-braces -Wno-char-subscripts -pedantic'
 		: '',
 		'-MT' . $object_name,
 		'-MF' . $object_name . '.d',

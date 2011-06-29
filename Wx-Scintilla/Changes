@@ -1,7 +1,8 @@
 Revision history for Wx-Scintilla
 
-0.18  TBA
+0.18  2011.6.29
     - Reformatted Changes file (AZAWAWI)
+    - Fix RT #69176 Unrecognized command line option "-Wno-strict-overflow" (AZAWAWI)
 
 0.17  2011.6.28
     - Wx::Scintilla cannot exist with Wx::STC (MARKD)
