@@ -16,7 +16,7 @@ use parent qw(Padre::Plugin);
 
 # use TryCatch;
 use Try::Tiny;
-use Data::Dumper;
+# use Data::Dumper;
 use Data::Printer;
 use Carp;
 

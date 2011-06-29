@@ -294,7 +294,7 @@ sub _on_list_col_clicked {
 
 	eval { $main->info( 'sort on: ' . ${ @{ $self->attributes }[ $col_num - 1 ] }{name} . ' ' . $sql_order ); };
 
-	$self->sql_select( "ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order LIMIT $card_limit" );
+	$self->sql_select("ORDER BY ${ @{ $self->attributes }[ $col_num - 1 ] }{name} $sql_order LIMIT $card_limit");
 
 	_display_relation($self);
 
@@ -413,8 +413,6 @@ sub clean_session_files {
 sub _display_any_relation {
 	my $self = shift;
 
-	# my @tuples;
-
 	_display_attribute_names($self);
 
 	eval { $self->config_db->select; };
@@ -424,17 +422,12 @@ sub _display_any_relation {
 	} else {
 		@tuples = $self->config_db->select( $self->sql_select );
 
-		# p @tuples;
-
-		# TODO this is naff sortout
 		my $progressbar = _setup_progressbar($self);
-
-		my $idx = 0;
+		my $idx         = 0;
+		my $ddx         = 0;
 
 		foreach (@tuples) {
-
 			$item->SetId($idx);
-
 			if ( $idx % 2 ) {
 				$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
 			} else {
@@ -445,16 +438,20 @@ sub _display_any_relation {
 			$self->list_ctrl->InsertItem($item);
 			$self->list_ctrl->SetItem( $idx, 0, $idx );
 
-			for ( 1 .. $self->degree ) {
-				$self->list_ctrl->SetItem(
-					$idx, $_,
-					$tuples[$idx][ ( $_ - 1 ) ]
+			for ( 0 .. ( $self->degree - 1 ) ) {
+				$ddx = ( $_ + 1 );
+
+				# test for attributes with {null} values
+				if ( !defined( $tuples[$idx][$_] ) ) {
+					say "Opps found a {null} in relation $self->{relation_name} ";
+				} else {
+					$self->list_ctrl->SetItem( $idx, $ddx, ( $tuples[$idx][$_] ) );
+				}
+				$progressbar->update(
+					$idx,
+					"Loading $self->relation_name tuples"
 				);
 			}
-			$progressbar->update(
-				$idx,
-				"Loading $self->relation_name tuples"
-			);
 			$idx++;
 			_tidy_display($self);
 		}
