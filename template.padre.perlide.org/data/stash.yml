@@ -21,6 +21,14 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 June 28
+        url: http://binaryperl.blogspot.com/2011/06/perl5-v-perl6-again.html
+        title: Perl5 v Perl6 - again
+        comment: by Mark Dootson
+      - date: 2011 June 24
+        url: http://binaryperl.blogspot.com/2011/06/wallasey-does-perl-gui-development.html
+        title: Wallasey Does Perl GUI Development
+        comment: by Mark Dootson
       - date: 2011 June 21
         url: http://blogs.perl.org/users/peter_lavender/2011/06/padre-086-has-been-released.html
         title: Padre 0.86 has been released
