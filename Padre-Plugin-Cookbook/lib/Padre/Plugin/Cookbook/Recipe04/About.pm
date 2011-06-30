@@ -12,6 +12,7 @@ use version; our $VERSION = qv(0.22);
 use parent qw( Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB );
 
 use Data::Dumper ();
+my $space = q{ };
 
 sub new {
 	my $class = shift;
@@ -21,16 +22,19 @@ sub new {
 	my $self = $class->SUPER::new($main);
 
 	# add package name to about dialog
-	my @package = split /::/x, __PACKAGE__,;
-	$self->name_version->SetLabel( $package[3] . ' ' . $VERSION );
+	my @package = split /::/smx, __PACKAGE__,;
+	$self->name_version->SetLabel( $package[3] . $space . $VERSION );
 
 	# add your name below
-	$self->developed_by->SetLabel("developed by bowtie");
+	$self->developed_by->SetLabel('developed by bowtie');
 
 	$self->CenterOnParent;
 	return $self;
 }
 
+#######
+# Event Handler for credits_clicked
+#######
 sub credits_clicked {
 	my $self = shift;
 	my $main = $self->main;
@@ -43,13 +47,14 @@ sub credits_clicked {
 	$main->config->apply( 'main_lockinterface', 0 );
 	$self->config->write;
 
-	my $space   = q{ };
 	my %credits = (
 		'bowtie'  => $space,
 		'Alias'   => $space,
 		'El_Che'  => $space,
 		'claudio' => $space,
 		'azawawi' => $space,
+		'Sewi'    => $space,
+		'garu'    => $space,
 		'abc'     => 'abc@abc.com',
 	);
 
@@ -60,6 +65,9 @@ sub credits_clicked {
 	return;
 }
 
+#######
+# Event Handler for licence_clicked
+#######
 sub licence_clicked {
 	my $self = shift;
 	my $main = $self->main;
@@ -93,9 +101,6 @@ END_LICENCE
 
 	$output->AppendText($licence);
 
-	#	while ( my $licence = <DATA> ) {
-	#		$output->AppendText($licence);
-	#	}
 	return;
 }
 

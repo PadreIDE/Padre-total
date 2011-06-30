@@ -91,8 +91,12 @@ sub plugin_disable {
 	$self->unload('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
 	$self->unload('Padre::Plugin::Cookbook::Recipe03::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::MainFB');
+	$self->unload('Padre::Plugin::Cookbook::Recipe03::About');
+	$self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB');
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::Main');
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::MainFB');
+	$self->unload('Padre::Plugin::Cookbook::Recipe04::About');
+	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
 
 	return 1;
 }
