@@ -1,7 +1,7 @@
 Revision history for Wx-Scintilla
 
-0.19  TBA
-
+0.19  2011.7.4
+	- Handle MinGW link to MS style perl5xx.lib (MARKD)
 
 0.18  2011.6.29
     - Reformatted Changes file (AZAWAWI)
