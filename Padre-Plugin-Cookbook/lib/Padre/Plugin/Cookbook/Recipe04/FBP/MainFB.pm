@@ -61,6 +61,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("About"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -124,7 +126,7 @@ sub new {
 	my $relations = Wx::RadioBox->new(
 		$self,
 		-1,
-		"Relations",
+		Wx::gettext("Relations"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		[
@@ -156,6 +158,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Update"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -170,6 +174,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Show"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 	$show->Disable;
 
@@ -185,6 +191,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Clean"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 	$clean->Disable;
 
@@ -200,6 +208,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Ajust Width"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 	$width_ajust->Disable;
 
@@ -215,6 +225,8 @@ sub new {
 		$self,
 		Wx::wxID_CANCEL,
 		Wx::gettext("Close"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
 	);
 	$close_button->SetDefault;
 

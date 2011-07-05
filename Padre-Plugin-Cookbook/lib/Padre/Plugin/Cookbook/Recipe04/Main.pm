@@ -71,67 +71,9 @@ sub set_up {
 	# add package name to main dialog #fails as min size naff
 	my @pkg_name = split /::/smx, __PACKAGE__,;
 	$self->package_name->SetLabel( $pkg_name[3] );
-
-	$self->list_ctrl->InsertColumn( 0, Wx::gettext('index') );
-	$self->list_ctrl->SetColumnWidth( 0, '50' );
-	$self->list_ctrl->InsertColumn( 1, Wx::gettext('information') );
-	$self->list_ctrl->SetColumnWidth( 1, '400' );
-
-	## inserting the file in the list
-	# my $item = Wx::ListItem->new;
-	$item->SetId(0);
-	$item->SetColumn(0);
-	$item->SetText('0');
-	my $idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 1, 'Pick a relation and click UPDATE' );
-
-	$item->SetId(1);
-	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem(
-		$idx, 1,
-		'MEDIUM SEA GREEN for an old school look'
-	);
-
-	$item->SetId(2);
-	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem(
-		$idx, 1,
-		'use SHOW to peek inside after Update; tip start with SyntaxHighlight'
-	);
-
-	$item->SetId(3);
-	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem(
-		$idx, 1,
-		'CLEAN works with History, Session & Session Files; Update first'
-	);
-
-	$item->SetId(4);
-	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem(
-		$idx, 1,
-		'clicking on Session tuple displays children'
-	);
-
-	$item->SetId(5);
-	$item->SetBackgroundColour( Wx::Colour->new('MEDIUM SEA GREEN') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1, 'COLUMN heading for sorting' );
-
-	$item->SetId(6);
-	$item->SetBackgroundColour( Wx::Colour->new('WHITE') );
-	$idx = $self->list_ctrl->InsertItem($item);
-	$self->list_ctrl->SetItem( $idx, 0, $idx );
-	$self->list_ctrl->SetItem( $idx, 1, 'Ajust Width is a toggle: have fun' );
+	$self->relations->SetStringSelection('Plugin');
+	__help_menu_clicked($self);
+	update_clicked($self);
 
 	return;
 }
@@ -219,13 +161,9 @@ sub width_ajust_clicked {
 	my $self = shift;
 
 	if ( !$self->dialog_width ) {
-
-		# say 'wd: +';
 		$self->SetSize( 1008, -1 );
 		$self->dialog_width('1');
 	} else {
-
-		# say 'wd: -';
 		$self->SetSize( 560, -1 );
 		$self->dialog_width('0');
 	}
@@ -243,7 +181,7 @@ sub _on_list_item_activated {
 	my ( $self, $list_element ) = @ARG;
 
 	if ( $self->relation_name ne 'Session' ) {
-		say 'quit';
+		say 'out of scope action requested :(';
 		return;
 	}
 
@@ -512,9 +450,7 @@ sub _display_session_db {
 			_tidy_display($self);
 		}
 	}
-
 	return;
-
 }
 
 ########
@@ -596,6 +532,7 @@ sub _get_cardinality {
 
 	return;
 }
+
 ########
 # Composed Method,
 # _show_relation_data
@@ -605,13 +542,15 @@ sub _show_relation_data {
 
 	my $info;
 
+	# my $fudge = $self->relation_name;
+
 	eval { $self->config_db->table_info; };
 	if ($EVAL_ERROR) {
 		say "Opps no info for $self->config_db ";
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->table_info;
-		p @{$info};
+		p( @{$info}, caller_message => 'Displaying ' . $self->relation_name . ' Structure' );
 	}
 
 	eval { $self->config_db->select; };
@@ -620,18 +559,8 @@ sub _show_relation_data {
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->select;
-		p @{$info};
+		p( @{$info}, caller_message => 'Displaying ' . $self->relation_name . ' Contents' );
 	}
-
-	# try { $self->config_db->select; }
-	# catch {
-	# say "Opps $self->config_db is damaged";
-	# carp($_);
-	# return;
-	# }
-	#
-	# $info = $self->config_db->select;
-	# p @$info;
 
 	return;
 }
@@ -695,6 +624,54 @@ sub about_clicked {
 }
 
 #######
+# Menu Help Clicked
+#######
+sub __help_menu_clicked {
+	my $self = shift;
+	my $main = $self->main;
+
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
+
+	# add maximize icon
+	$main->config->apply( 'main_lockinterface', 0 );
+	$self->config->write;
+
+	my $licence = <<'MENU_HELP';
+	Info for Recipe-04 viewer.
+
+1,	Pick a relation and click UPDATE to view it's contents, only the
+	first 127 tuples will be displayed, then you can use some of the other features.
+2,	MEDIUM SEA GREEN for an old school look.
+3,	Use SHOW to peek inside after first Updating;
+	tip start with SyntaxHighlight,
+	all of Shows output goes to terminal, using Data::Printer
+4,	CLEAN works with History, Session & Session Files,
+5,	Clicking on Session tuple displays it's children in terminal.
+6,	you can sort on any attribute heading excluding index.
+7,	Adjust Width is a toggle: have fun
+
+ps outputs go-to terminal, Padre-Sataus_Bar and Padre-Output.
+
+MENU_HELP
+
+	$output->AppendText($licence);
+
+	return;
+}
+
+#######
+# Menu About Clicked
+#######
+sub __about_menu_clicked {
+	my $self = shift;
+
+	load_dialog_about($self);
+	return;
+}
+
+#######
 # Clean up our Classes, Padre::Plugin, POD out of date as of v0.84
 #######
 sub plugin_disable {
@@ -730,10 +707,9 @@ sub load_dialog_about {
 
 # dose not work with Wx, BP :(
 # __PACKAGE__->meta->make_immutable();
+# __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 no Moose;
-
 1;
-
 __END__
 
 =head1 NAME
