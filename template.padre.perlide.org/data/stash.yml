@@ -21,6 +21,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 July 06
+        url: http://szabgab.com/blog/2011/07/creating-a-successful-open-source-project.html
+        title: Creating a Successful Open Source Project
+        comment: Gabor Szabo on the Marketing Mix (Product, Price, Place and Promotion)
       - date: 2011 June 28
         url: http://binaryperl.blogspot.com/2011/06/perl5-v-perl6-again.html
         title: Perl5 v Perl6 - again
