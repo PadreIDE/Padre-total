@@ -24,7 +24,7 @@ use 5.008005;
 use strict;
 use warnings;
 use Scalar::Util   ();
-use FBP::Perl 0.39 ();
+use FBP::Perl 0.52 ();
 use Mouse     0.61;
 
 our $VERSION = '0.02';
@@ -148,18 +148,34 @@ sub form_isa {
 }
 
 sub form_wx {
-	my $self   = shift;
-	my $dialog = shift;
-	return [
+	my $self  = shift;
+	my $topic = shift;
+	my $lines = [
 		"use Padre::Wx ();",
 		"use Padre::Wx::Role::Main ();",
 	];
+	if ( $topic->find_first( isa => 'FBP::RichTextCtrl' ) ) {
+		push @$lines, "use Wx::STC ();";
+	}
+	if ( $topic->find_first( isa => 'FBP::HtmlWindow' ) ) {
+		push @$lines, "use Wx::HTML ();";
+	}
+	if ( $topic->find_first( isa => 'FBP::Grid' ) ) {
+		push @$lines, "use Wx::Grid ();";
+	}
+	if ( $topic->find_first( isa => 'FBP::Calendar' ) ) {
+		push @$lines, "use Wx::Calendar ();";
+		push @$lines, "use Wx::DateTime ();";
+	} elsif ( $topic->find_first( isa => 'FBP::DatePickerCtrl' ) ) {
+		push @$lines, "use Wx::DateTime ();";
+	}
+	return $lines;
 }
 
-sub window_accessor {
+sub object_accessor {
 	my $self = shift;
 	unless ( $self->encapsulate ) {
-		return $self->SUPER::window_accessor(@_);
+		return $self->SUPER::object_accessor(@_);
 	}
 
 	my $object = shift;
@@ -171,7 +187,7 @@ sub window_accessor {
 	);
 }
 
-sub window_event {
+sub object_event {
 	my $self   = shift;
 	my $window = shift;
 	my $event  = shift;
