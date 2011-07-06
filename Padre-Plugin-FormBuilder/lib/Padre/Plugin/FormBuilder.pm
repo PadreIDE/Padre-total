@@ -53,7 +53,7 @@ sub padre_interfaces {
 }
 
 sub plugin_name {
-	'wxFormBuilder';
+	'Padre Form Builder';
 }
 
 # Clean up our classes
@@ -75,14 +75,38 @@ sub plugin_disable {
 	return 1;
 }
 
-sub menu_plugins_simple {
+sub menu_plugins {
 	my $self = shift;
-	return $self->plugin_name => [
-		'Generate Padre Dialog' => sub {
-			$self->menu_dialog;
+	my $main = shift;
+
+	# Create a manual menu item
+	my $item = Wx::MenuItem->new(
+		undef,
+		-1,
+		$self->plugin_name,
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$item,
+		sub {
+			local $@;
+			eval {
+				$self->menu_dialog($main);
+			};
 		},
-	];
+	);
+
+	return $item;
 }
+
+# sub menu_plugins_simple {
+	# my $self = shift;
+	# return $self->plugin_name => [
+		# 'wxFormBuilder' => sub {
+			# $self->menu_dialog;
+		# },
+	# ];
+# }
 
 
 
