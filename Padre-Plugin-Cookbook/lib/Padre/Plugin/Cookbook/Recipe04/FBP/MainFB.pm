@@ -13,7 +13,7 @@ use autodie;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-use version; our $VERSION = qv(0.21);
+use version; our $VERSION = qv(0.22);
 use parent -norequire, qw(
 	Padre::Wx::Role::Main
 	Wx::Dialog

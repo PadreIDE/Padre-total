@@ -72,7 +72,7 @@ sub set_up {
 	my @pkg_name = split /::/smx, __PACKAGE__,;
 	$self->package_name->SetLabel( $pkg_name[3] );
 	$self->relations->SetStringSelection('Plugin');
-	__help_menu_clicked($self);
+	help_menu_clicked($self);
 	update_clicked($self);
 
 	return;
@@ -626,7 +626,7 @@ sub about_clicked {
 #######
 # Menu Help Clicked
 #######
-sub __help_menu_clicked {
+sub help_menu_clicked {
 	my $self = shift;
 	my $main = $self->main;
 
@@ -664,7 +664,7 @@ MENU_HELP
 #######
 # Menu About Clicked
 #######
-sub __about_menu_clicked {
+sub about_menu_clicked {
 	my $self = shift;
 
 	load_dialog_about($self);
@@ -709,6 +709,7 @@ sub load_dialog_about {
 # __PACKAGE__->meta->make_immutable();
 # __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
 no Moose;
+
 1;
 __END__
 
