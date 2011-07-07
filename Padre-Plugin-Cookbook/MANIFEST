@@ -21,6 +21,6 @@ t/02-Recipe01.t
 t/03-Recipe02.t
 t/04-About03.t
 t/04-Recipe03.t
-t/11-pod.t
-t/12-pod-coverage.t
-t/13-perlcritic.t
+xt/pod.t
+xt/podcoverage.t
+xt/critic.t

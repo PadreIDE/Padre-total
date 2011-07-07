@@ -1,6 +1,6 @@
 package Padre::Plugin::Cookbook;
 
-use 5.010;
+use 5.010001;
 use strict;
 use warnings;
 use diagnostics;
@@ -364,7 +364,7 @@ Padre::Plugin, Padre::Wx::Role::Main, Wx::Dialog,
 
 =head1 AUTHOR
 
-bowtie
+BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

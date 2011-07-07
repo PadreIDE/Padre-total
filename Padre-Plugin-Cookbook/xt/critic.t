@@ -1,26 +1,37 @@
 #!/usr/bin/env perl
 
+# Test that the module passes perlcritic
 use strict;
-use warnings;
-use File::Spec;
-use Test::More;
-use English qw(-no_match_vars);
-use Data::Printer;
-use Carp;
-
-eval { require Test::Perl::Critic; };
-if ($EVAL_ERROR) {
-	my $msg = 'Test::Perl::Critic required to criticise code';
-	plan( skip_all => $msg );
+BEGIN {
+	$|  = 1;
+	$^W = 1;
 }
 
-use Test::Perl::Critic (
+my @MODULES = (
+	'Perl::Critic 1.098',
+	'Test::Perl::Critic 1.01',
+);
+
+# Don't run tests during end-user installs
+use Test::More;
+plan( skip_all => 'Author tests not required for installation' )
+	unless ( $ENV{RELEASE_TESTING} );
+
+# Load the testing modules
+foreach my $MODULE ( @MODULES ) {
+	eval "use $MODULE";
+	if ( $@ ) {
+		$ENV{RELEASE_TESTING}
+		? die( "Failed to load required release-testing module $MODULE" )
+		: plan( skip_all => "$MODULE not available for testing" );
+	}
+}
+
+Test::Perl::Critic->import(
 	-severity => 3,
 	-verbose  => 4,
 	-exclude  => [ 'RequireRcsKeywords', ],
 );
-
-# use Test::More tests => 1;
 
 my @DIRECTORIES = qw(
 	lib/Padre/Plugin/Cookbook/Recipe01
@@ -44,10 +55,4 @@ all_critic_ok(@DIRECTORIES);
 # -verbose  => 4,
 # -exclude  => [ 'RequireRcsKeywords', ],]);
 
-
-
 done_testing();
-
-
-
-
