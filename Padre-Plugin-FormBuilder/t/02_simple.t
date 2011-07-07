@@ -71,8 +71,9 @@ isa_ok( $dialog, 'FBP::Dialog' );
 SCOPE: {
 	# Create the generator object
 	my $code = Padre::Plugin::FormBuilder::Perl->new(
-		project => $project,
-		version => '0.02',
+		project  => $project,
+		version  => '0.02',
+		nocritic => 1,
 	);
 	isa_ok( $code, 'FBP::Perl' );
 
@@ -91,6 +92,7 @@ SCOPE: {
 		project     => $project,
 		version     => '0.03',
 		encapsulate => 1,
+		nocritic    => 1,
 	);
 	isa_ok( $code, 'FBP::Perl' );
 
