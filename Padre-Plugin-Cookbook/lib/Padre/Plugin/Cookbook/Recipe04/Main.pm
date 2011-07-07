@@ -634,10 +634,6 @@ sub help_menu_clicked {
 	my $output = $main->output;
 	$output->clear;
 
-	# add maximize icon
-	$main->config->apply( 'main_lockinterface', 0 );
-	$self->config->write;
-
 	my $licence = <<'MENU_HELP';
 	Info for Recipe-04 viewer.
 

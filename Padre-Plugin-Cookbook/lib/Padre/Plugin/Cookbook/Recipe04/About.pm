@@ -43,10 +43,6 @@ sub credits_clicked {
 	my $output = $main->output;
 	$output->clear;
 
-	# add maximize icon
-	$main->config->apply( 'main_lockinterface', 0 );
-	$self->config->write;
-
 	my %credits = (
 		'bowtie'  => $space,
 		'Alias'   => $space,
@@ -75,10 +71,6 @@ sub licence_clicked {
 	$main->show_output(1);
 	my $output = $main->output;
 	$output->clear;
-
-	# add maximize icon
-	$main->config->apply( 'main_lockinterface', 0 );
-	$self->config->write;
 
 	my $licence = <<'END_LICENCE';
 LICENSE & COPYRIGHT 
