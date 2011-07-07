@@ -26,7 +26,7 @@ sub padre_interfaces {
 # Define Plugin Name required
 #######
 sub plugin_name {
-	return 'Cookbook';
+	return 'Plugin Cookbook';
 }
 
 #######
