@@ -255,11 +255,13 @@ sub generate_form {
 			project     => $param{fbp}->project,
 			version     => $param{version},
 			encapsulate => $self->encapsulate,
+			nocritic    => 1,
 		);
 	} else {
 		require FBP::Perl;
 		$perl = FBP::Perl->new(
-			project => $param{fbp}->project,
+			project  => $param{fbp}->project,
+			nocritic => 1,
 		);
 	}
 
