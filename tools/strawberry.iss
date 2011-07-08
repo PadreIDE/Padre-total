@@ -13,7 +13,7 @@
 
 [Setup]
 AppName=Padre on Strawberry Perl
-AppVersion=0.04
+AppVersion=0.05
 DefaultDirName=\Strawberry
 DefaultGroupName=Strawberry Perl
 ; UninstallDisplayIcon={app}\MyProg.exe
