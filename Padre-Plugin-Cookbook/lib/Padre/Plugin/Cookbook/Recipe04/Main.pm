@@ -20,7 +20,7 @@ use namespace::autoclean;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
 # use Try::Tiny;
-use Data::Printer;
+use Data::Printer { caller_info => 1 };
 use Carp;
 
 sub BUILD {
@@ -643,6 +643,7 @@ sub help_menu_clicked {
 3,	Use SHOW to peek inside after first Updating;
 	tip start with SyntaxHighlight,
 	all of Shows output goes to terminal, using Data::Printer
+	tip set your terminal to white on black
 4,	CLEAN works with History, Session & Session Files,
 5,	Clicking on Session tuple displays it's children in terminal.
 6,	you can sort on any attribute heading excluding index.
@@ -736,6 +737,8 @@ Constructor. Should be called with $main by CookBook->load_dialog_main().
 
 =item about_clicked
 
+=item about_menu_clicked
+
 =item BUILD
 
 =item clean_clicked
@@ -745,6 +748,8 @@ Constructor. Should be called with $main by CookBook->load_dialog_main().
 =item clean_session
 
 =item clean_session_files
+
+=item help_menu_clicked
 
 =item load_dialog_about ()
 
@@ -779,7 +784,7 @@ Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe0::FBP:
 
 =head1 AUTHOR
 
-bowtie
+BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

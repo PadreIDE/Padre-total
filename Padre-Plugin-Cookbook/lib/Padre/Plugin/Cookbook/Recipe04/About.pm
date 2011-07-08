@@ -44,14 +44,14 @@ sub credits_clicked {
 	$output->clear;
 
 	my %credits = (
-		'bowtie'  => $space,
+		'BOWTIE'  => '<kevin.dawson@btclick.com>',
 		'Alias'   => $space,
 		'El_Che'  => $space,
 		'claudio' => $space,
 		'azawawi' => $space,
 		'Sewi'    => $space,
 		'garu'    => $space,
-		'abc'     => 'abc@abc.com',
+		'abc'     => '<abc@abc.com>',
 	);
 
 	$output->AppendText("CREDITS\ncredits_clicked \n\tname:\t\t<e-mail>\n");
@@ -140,7 +140,7 @@ Padre::Plugin::Cookbook03, Padre::Plugin::Cookbook03::FBP::AboutFB
 
 =head1 AUTHOR
 
-bowtie
+BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

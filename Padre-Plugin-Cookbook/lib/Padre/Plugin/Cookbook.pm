@@ -5,8 +5,8 @@ use strict;
 use warnings;
 use Padre::Plugin ();
 
-our $VERSION = '0.014';
-our @ISA     = 'Padre::Plugin';
+our $VERSION = '0.140';
+use parent qw(Padre::Plugin);
 
 #######
 # Define Padre Interfaces required
@@ -264,7 +264,7 @@ Called by Padre::Wx::Dialog::PluginManager
 Required method with minimum requirements
 
 	sub plugin_name {
-		return 'Cookbook';
+		return 'Plugin Cookbook';
 	}
 
 Called by Padre::Wx::Dialog::PluginManager
@@ -277,12 +277,19 @@ Called by Padre::Wx::Dialog::PluginManager
 
 This is where you defined your plugin menu name, note hyphen for clarity.
 
-	return $self->plugin_name => [
-		'Plug-ins - wxDialogs...' => [
-			'Recipe-01 - Hello World' => sub { $self->load_dialog_recipe01_main; },
-			'Recipe-02 - Fun with widgets' => sub { $self->load_dialog_recipe02_main; },
-			'Recipe-03 - inc About dialog' => sub { $self->load_dialog_recipe03_main; },
-		],
+		return $self->plugin_name => [
+		'01 - Hello World' => sub {
+			$self->load_dialog_recipe01_main;
+		},
+		'02 - Fun with widgets' => sub {
+			$self->load_dialog_recipe02_main;
+		},
+		'03 - About dialogs' => sub {
+			$self->load_dialog_recipe03_main;
+		},
+		'04 - ConfigDB RC1' => sub {
+			$self->load_dialog_recipe04_main;
+		},
 	];
 
 =head2 plugin_disable
