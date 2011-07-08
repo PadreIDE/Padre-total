@@ -359,28 +359,25 @@ TODO:
     Task::Plack   -> tons of modules and I am sure some would NOT work in Win32
 
 
-
 Building "Padre on Strawberry Perl"
 *) Download and install Strawberry perl strawberry-perl-5.12.3.0.msi
 *) Open command prompt
-*) Change the URL of the CPAN mirror to the locally hosted selective mirror 
+*) Check in the whole Strawberry directory to a fresh Git repository
+   (Git as that will make it easier to exclude all the files from .git)
 
- c> cpan
- cpan> o conf  urllist http://10.0.2.2/strawberry
-
-For development also set:
- 
+For development set:
  cpan> o conf prerequisites_policy ask
  
 First thing install and setup CPAN::Reporter
 
-
- 
+ cpan> o conf test_report 1
 
 *) Configure the CPAN client again:
-cpan> o conf  urllist http://cpan.strawberryperl.com/
 cpan> o conf prerequisites_policy follow
 cpan> o conf test_report 0
+
+After the installation of each module add the files to Git and commit them to the repository.
+
 
 FAILED
 	Test::File               1.29
