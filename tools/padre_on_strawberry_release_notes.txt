@@ -5,101 +5,120 @@ v6: in the work
 
     # New
 
-	accessors                               1.01
-	asa                                     1.03
-    AnyEvent                                5.34
-    App::Ack  (ack)                         1.94     (test failed, force installed)
-	App::moduleswhere                       0.03     (requested by ron_zephyr)  (no tests)
-	Authen::SASL                            2.15
-	Authen::Simple::Passwd                  0.6
-	Authen::Simple                          0.4
-    Bit::Vector                             7.1
-    CGI::Application                        4.50
-    CGI::Application::Dispatch              3.04
-    CGI::Application::Plugin::JSON          1.02
-    CGI::Application::Plugin::LogDispatch   1.02
-    CGI::Application::Plugin::Stream        2.10
-    CGI::Application::Plugin::TT            1.05
-    CGI::Application::Plugin::DevPopup      1.06
-    CGI::Application::Plugin::ValidateRM    2.4
-    CGI::Application::Plugin::Redirect      1.00
-    CGI::Application::Server                0.062
-	CGI::PSGI                               0.15
-    CGI::Session                            4.45
-    CGI::Simple                             1.113
-	CGI::Emulate::PSGI                      0.12
-    Class::Trigger                          0.14
-	Crypt::PasswdMD5                        1.3
-	Dancer::Plugin::REST                    0.06
-    Data::Dumper::Names                     0.03
-    Data::FormValidator                     4.66
-    Data::Printer                           0.21
-    Data::Verifier                          0.47
-    Date::Calc                              6.3
-	Date::Format                            2.24    (from TimeDate 1.20)
-    Date::Parse                             2.30    (from TimeDate 1.20)
-	Date::Simple                            3.03    (requested by ron_zephyr)
-    DBD::CSV                                0.31
-    DBIx::Admin::CreateTable                2.07
-    DBIx::ContextualFetch                   1.03
-    Devel::Caller::IgnoreNamespaces         1.0
-    Devel::StackTrace::AsHTML               0.11
-    Email::Date::Format                     1.002
-    Email::Send::SMTP::Gmail                0.22
-    Email::Valid                            0.184
-    Exception::Class::TryCatch              1.12
-	File::chdir                             0.1004   (requested by ron_zephyr)
-    File::MMagic                            1.27
-    Filesys::Notify::Simple                 0.07
-    FreezeThaw                              0.5001
-    Hash::FieldHash                         0.10
-    Hash::MultiValue                        0.09
-	HTML::Lint                              2.06
-	HTML::Template                          2.9
-    HTML::FillInForm                        2.00
-    HTTP::Server::Simple::Static            0.07
-	HTTP::Exception                         0.03001
-    HTTP::Parser::XS                        0.14
-	HTTP::Request::AsCGI                    1.2
-    Ima::DBI                                0.35
-    Image::Size                             3.230
-	IO::Handle::Util                        0.01
-	Log::Log4perl                           1.33
-	Log::Dispatch::Array                    1.001
-	Log::Dispatch::Configurator             1.04
-    Mail::Address                           2.08     (from Mailtools 2.08)
-    Marpa                                   0.204000 (requested by ron_zephyr)
-    Marpa::HTML                             0.102000 (requested by ron_zephyr)
-    MIME::Lite                              3.027    (this asks about a number of module in a strange way even though they were already installed)
-    MooseX::Storage                         0.30
-    MooseX::Storage::Deferred               0.30
-    MooseX::LogDispatch                     1.2002
-	Net::SMTP::SSL                          1.01
-	Net::SMTP_auth                          0.08
-    Object::ID                              0.1.1
-    Plack                                   0.9980
-    Perl6::Junction                         1.40000
-    Regexp::Common                 2011041701
-    Sort::Naturally                         1.02
-	String::RewritePrefix                   0.006
-    Sub::Prototype                          0.02
-    Sub::WrapPackages                       2.0
-    SQL::Statement                          1.33
-    Test::LeakTrace                         0.13
-	Test::SharedFork                        0.16
-	Test::TCP                               1.13
-	Test::DatabaseRow                       1.04
-	Test::Mock::LWP                         0.05
-	Test::Perl::Critic                      1.02
-	Test::Trap                              0.2.1
-    Test::HTTP::Server::Simple              0.11
-    Twiggy                                  0.1010
-    UNIVERSAL::moniker                      0.08
-    UNIVERSAL::require                      0.13
-	WebService::GData::YouTube              0.0408
-    Win32::Event                            1.08   (from Win32-IPC 1.08)
-    Win32::Console::ANSI                    1.04
-    Win32::Pipe                             0.024      (no tests!)
+	accessors                                   1.01
+	asa                                         1.03
+    AnyEvent                                    5.34
+    App::Ack  (ack)                             1.94     (test failed, force installed)
+	App::moduleswhere                           0.03     (requested by ron_zephyr)  (no tests)
+	Authen::SASL                                2.15
+	Authen::Simple::Passwd                      0.6
+	Authen::Simple                              0.4
+    Bit::Vector                                 7.1
+    CGI::Application                            4.50
+    CGI::Application::Dispatch                  3.04
+    CGI::Application::Plugin::JSON              1.02
+    CGI::Application::Plugin::LogDispatch       1.02
+    CGI::Application::Plugin::Stream            2.10
+    CGI::Application::Plugin::TT                1.05
+    CGI::Application::Plugin::DevPopup          1.06
+    CGI::Application::Plugin::ValidateRM        2.4
+    CGI::Application::Plugin::Redirect          1.00
+    CGI::Application::Server                    0.062
+	CGI::PSGI                                   0.15
+    CGI::Session                                4.45
+    CGI::Simple                                 1.113
+	CGI::Emulate::PSGI                          0.12
+    Class::Factory::Util                        1.7
+    Class::Trigger                              0.14
+	Crypt::PasswdMD5                            1.3
+	Dancer::Plugin::REST                        0.06
+    Data::Dumper::Names                         0.03
+    Data::FormValidator                         4.66
+    Data::Printer                               0.21
+    Data::FormValidator::Constraints::DateTime  1.11
+    Data::Verifier                              0.47
+    Date::Calc                                  6.3
+	Date::Format                                2.24    (from TimeDate 1.20)
+    Date::Parse                                 2.30    (from TimeDate 1.20)
+	Date::Simple                                3.03    (requested by ron_zephyr)
+    DateTime::Format::Builder                   0.80
+    DBD::CSV                                    0.31
+    DBIx::Admin::CreateTable                    2.07
+    DBIx::ContextualFetch                       1.03
+    Devel::Caller::IgnoreNamespaces             1.0
+    Devel::StackTrace::AsHTML                   0.11
+    Email::Date::Format                         1.002
+    Email::Send::SMTP::Gmail                    0.22
+    Email::Valid                                0.184
+    Exception::Class::TryCatch                  1.12
+	File::chdir                                 0.1004   (requested by ron_zephyr)
+    File::MMagic                                1.27
+    Filesys::Notify::Simple                     0.07
+    FreezeThaw                                  0.5001
+    Font::AFM                                   1.20
+    GD::Text                                    0.86
+    GD::Graph                                   1.44
+    GD::Graph3d                                 0.63
+    Hash::FieldHash                             0.10
+    Hash::MultiValue                            0.09
+    HTML::FormatText                            2.07
+    HTML::FormatText::WithLinks                 0.14
+    HTML::TagCloud                              0.37
+	HTML::Lint                                  2.06
+	HTML::Template                              2.9
+    HTML::FillInForm                            2.00
+    HTTP::Server::Simple::Static                0.07
+	HTTP::Exception                             0.03001
+    HTTP::Parser::XS                            0.14
+	HTTP::Request::AsCGI                        1.2
+    Ima::DBI                                    0.35
+    Image::Size                                 3.230
+	IO::Handle::Util                            0.01
+	Log::Log4perl                               1.33
+	Log::Dispatch::Array                        1.001
+	Log::Dispatch::Configurator                 1.04
+    Mail::Address                               2.08     (from Mailtools 2.08)
+    Marpa                                       0.204000 (requested by ron_zephyr)
+    Marpa::HTML                                 0.102000 (requested by ron_zephyr)
+    MIME::Lite                                  3.027    (this asks about a number of module in a strange way even though they were already installed)
+    MooseX::Storage                             0.30
+    MooseX::Storage::Deferred                   0.30
+    MooseX::LogDispatch                         1.2002
+	Net::SMTP::SSL                              1.01
+	Net::SMTP_auth                              0.08
+    Object::ID                                  0.1.1
+    Plack                                       0.9980
+    Perl6::Junction                             1.40000
+    Regexp::Common                     2011041701
+    Sort::Naturally                             1.02
+	String::RewritePrefix                       0.006
+    Sub::Prototype                              0.02
+    Sub::WrapPackages                           2.0
+    SQL::Statement                              1.33
+    Spreadsheet::Read                           0.42
+    Spreadsheet::ReadSXC                        0.20
+    Spreadsheet::XLSX                           0.13
+    Spreadsheet::Write                          0.03  (no tests)
+    TAP::Harness::Archive                       0.14
+    Template::Plugin::Cycle                     1.06
+    Text::CSV                                   1.21
+    Text::CSV_PP                                1.29
+    Test::LeakTrace                             0.13
+	Test::SharedFork                            0.16
+	Test::TCP                                   1.13
+	Test::DatabaseRow                           1.04
+	Test::Mock::LWP                             0.05
+	Test::Perl::Critic                          1.02
+	Test::Trap                                  0.2.1
+    Test::HTTP::Server::Simple                  0.11
+    Twiggy                                      0.1010
+    UNIVERSAL::moniker                          0.08
+    UNIVERSAL::require                          0.13
+    XML::Atom::SimpleFeed                       0.86
+	WebService::GData::YouTube                  0.0408
+    Win32::Event                                1.08   (from Win32-IPC 1.08)
+    Win32::Console::ANSI                        1.04
+    Win32::Pipe                                 0.024      (no tests!)
 
 	
     # Upgardes
@@ -314,57 +333,31 @@ TODO
     (MooseX::Types)
     (Clone)
 
-
     Class::DBI
     SQL::Abstract::Limit
     Class::DBI::AbstractSearch
     Class::DBI::Plugin::RetrieveAll
     Class::DBI::SQLite is not installed
-    Class::Factory::Util
-    DateTime::Format::Builder
-    Data::FormValidator::Constraints::DateTime
-    GD::Text
-    GD::Graph
-    GD::Graph3d
-    HTML::FormatText
-    Font-AFM
-    HTML::FormatText::WithLinks    (HTML::Format)
-    HTML::TagCloud
-	
-    Net::Server::PreFork      (Net-Server 0.99 test got stuck, installed without tests, bug reported)
-    TAP::Harness::Archive
-    Template::Plugin::Cycle
-    Number::Format            (test failed, reported to RT, force installed)
-    Template::Plugin::Number::Format
-    XML::Atom::SimpleFeed is not installed
 
+    Net::Server::PreFork                        0.99 (Net-Server 0.99 test got stuck, installed without tests, bug reported)
+    Template::Plugin::Number::Format            1.02 (requires Number::Format that fails)
     Smolder
 
-Spreadsheet::ReadSXC
-Spreadsheet::XLSX ??
-Text::CSV
-Text::CSV_PP
-Spreadsheet::Read
-Spreadsheet::Write
-	
     Log::Dispatch::DBI
     Perl6::Export
     ! Perl6::Slurp     (failed to install due to an ipc related test)
-TODO *   App::Office::Contacts
-TODO *   App::Office::Contacts::Donations
-TODO: Business::Cart::Generic
-TODO: Business::AU::Ledger - Not really production ready
 
-TODO:   
-    IO::Tty listed in http://ali.as/top100/index.html - failed
+Try these applications:
+	App::Office::Contacts
+    App::Office::Contacts::Donations
+    Business::Cart::Generic
+    Business::AU::Ledger - Not really production ready
 
     Inline
     Inline::C   
     PDL
    
-   
     Task::Plack   -> tons of modules and I am sure some would NOT work in Win32
-
 
 Building "Padre on Strawberry Perl"
 *) Download and install Strawberry perl strawberry-perl-5.12.3.0.msi
@@ -393,7 +386,9 @@ FAILED
 	XML::LibXML              1.78
 	TAP::Formatter::HTML     0.09  (got stuck during installation)
 	FCGI::ProcManager        0.19
-  
+    Number::Format           1.73 (test failed, reported to RT)
+    IO::Tty                  1.10  listed in http://ali.as/top100/index.html - failed
+    Net::Server              0.99
+
 DEPRECATED
     Dancer::Plugin::Authorize
-
