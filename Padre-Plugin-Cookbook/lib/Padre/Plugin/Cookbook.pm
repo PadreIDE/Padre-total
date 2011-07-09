@@ -238,7 +238,7 @@ This document describes Padre::Plugin::Cookbook version 0.14
   
 =head1 DESCRIPTION
 
-Cookbook is just an example Padre::Plugin uing a WxDialog, showing minimal requirements.
+Cookbook is just an example Padre::Plugin using a WxDialog, showing minimal requirements.
 
 =head1 METHODS
 

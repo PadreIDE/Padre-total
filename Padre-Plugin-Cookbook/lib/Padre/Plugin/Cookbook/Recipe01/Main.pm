@@ -64,7 +64,7 @@ Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe01::FBP::MainFB
 
 =head1 AUTHOR
 
-bowtie
+BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

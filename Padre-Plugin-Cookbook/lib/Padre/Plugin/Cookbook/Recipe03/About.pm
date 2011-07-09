@@ -123,11 +123,13 @@ Constructor. Should be called with $main by Main->load_dialog_about().
 
 =item credits_clicked ()
 
-Event handler for button credits
+Event handler for button credits, 
+Displayes credits in Padre Output window
 
 =item licence_clicked ()
 
-Event handler for button licence
+Event handler for button licence, 
+Displayes license in Padre Output window
 
 =back
 
@@ -137,7 +139,7 @@ Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
 
 =head1 AUTHOR
 
-bowtie
+BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 

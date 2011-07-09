@@ -716,7 +716,7 @@ Padre::Plugin::Cookbook::Recipe04::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.21
+This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.22
 
 =head1 DESCRIPTION
 
@@ -731,25 +731,37 @@ It's a basic example of a Padre plug-in using a WxDialog.
 
 =over 4
 
-=item new ()
+=item new / BUILD
 
 Constructor. Should be called with $main by CookBook->load_dialog_main().
 
 =item about_clicked
 
+Event handler for button about
+
 =item about_menu_clicked
 
-=item BUILD
+for use with wx::frame todo
 
 =item clean_clicked
 
+passes request to dedicated method
+
 =item clean_history
+
+removes duplicate tuples, keeps newiest 
 
 =item clean_session
 
+removes empty sessions
+
 =item clean_session_files
 
+removes tuples which don't have a valid session referance
+
 =item help_menu_clicked
+
+for use with wx::frame todo
 
 =item load_dialog_about ()
 
@@ -768,11 +780,19 @@ Required method with minimum requirements
 
 =item set_up
 
+used 
+
 =item show_clicked
+
+Displays ALL the contents of selected relation in terminal with Data-Printer
 
 =item update_clicked
 
+Displays the contents of your chosen tuple using Padre DB schemes
+
 =item width_ajust_clicked
+
+Is a toggle to increase the width of the dialog of the viewing area
 
 
 =back
@@ -781,6 +801,7 @@ Required method with minimum requirements
 
 Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
 Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe0::FBP::AboutFB
+Data::Printer
 
 =head1 AUTHOR
 

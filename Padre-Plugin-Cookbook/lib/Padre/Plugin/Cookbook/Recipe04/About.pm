@@ -106,7 +106,7 @@ Padre::Plugin::Cookbook::Recipe04::About
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe04::About version 0.10
+This document describes Padre::Plugin::Cookbook::Recipe04::About version 0.22
 
 =head1 DESCRIPTION
 
@@ -126,17 +126,19 @@ Constructor. Should be called with $main by Main->load_dialog_about().
 
 =item credits_clicked ()
 
-Event handler for button credits
+Event handler for button credits, 
+Displayes credits in Padre Output window
 
 =item licence_clicked ()
 
-Event handler for button licence
+Event handler for button licence, 
+Displayes license in Padre Output window
 
 =back
 
 =head1 DEPENDENCIES
 
-Padre::Plugin::Cookbook03, Padre::Plugin::Cookbook03::FBP::AboutFB
+Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB
 
 =head1 AUTHOR
 
