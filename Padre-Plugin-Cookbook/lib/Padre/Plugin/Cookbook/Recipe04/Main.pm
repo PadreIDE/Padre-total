@@ -757,7 +757,7 @@ removes empty sessions
 
 =item clean_session_files
 
-removes tuples which don't have a valid session referance
+removes tuples which don't have a valid session reference
 
 =item help_menu_clicked
 

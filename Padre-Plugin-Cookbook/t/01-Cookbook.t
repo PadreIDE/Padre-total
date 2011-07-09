@@ -1,4 +1,4 @@
-use Test::More tests => 20;
+use Test::More tests => 25;
 
 use_ok( 'Padre',                 '0.84' );
 use_ok( 'Padre::Plugin',         '0.84' );
@@ -15,7 +15,7 @@ TODO: {
 
 my @subs = qw( padre_interfaces plugin_name menu_plugins_simple
 	plugin_disable load_dialog_recipe01_main load_dialog_recipe02_main
-	load_dialog_recipe03_main );
+	load_dialog_recipe03_main load_dialog_recipe04_main );
 use_ok( 'Padre::Plugin::Cookbook', @subs );
 
 foreach my $subs (@subs) {
@@ -50,4 +50,15 @@ $test_object = new_ok('Padre::Plugin::Cookbook::Recipe03::About');
 require Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB;
 $test_object = new_ok('Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB');
 
+require Padre::Plugin::Cookbook::Recipe04::Main;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::Main');
+
+require Padre::Plugin::Cookbook::Recipe04::FBP::MainFB;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::FBP::MainFB');
+
+require Padre::Plugin::Cookbook::Recipe04::About;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::About');
+
+require Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB;
+$test_object = new_ok('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
 done_testing();
