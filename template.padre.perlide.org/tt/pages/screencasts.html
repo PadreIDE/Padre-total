@@ -1,13 +1,20 @@
 [% DEFAULT
-   title="Padre Videos and screencasts"
+   title="Padre Videos and Screencasts"
    description="See screencasts about recent versions of the Perl editor"
 %]
 [% WRAPPER lib/xhtml_doc %]
 
+<div class="spacer"></div>
+[% WRAPPER chrome/styled_panel %]
+<a href="#autocomplete_0.87">Autocomplete in Padre v0.87 (10 July 2011)</a><br />
+<a href="#file_0.84">Describing the File menu of Padre at v0.84 (7 July 2011)</a><br />
+<a href="#padre_0.84_on_strawberry_perl">Padre 0.84 on Strawberry Perl 5.12.3 released (20 June 2011)</a></br />
+[% END %]
+
 
 <div class="spacer"></div>
 [% WRAPPER chrome/styled_panel %]
-<h3>Autocomplete in Padre v0.87 (10 July 2011)</h3>
+<h3 id="autocomplete_0.87">Autocomplete in Padre v0.87 (10 July 2011)</h3>
 <iframe width="853" height="510" src="http://www.youtube.com/embed/ptN63wSVK9w"
 frameborder="0" allowfullscreen></iframe>
 [% END %]
@@ -15,7 +22,7 @@ frameborder="0" allowfullscreen></iframe>
 
 <div class="spacer"></div>
 [% WRAPPER chrome/styled_panel %]
-<h3>Describing the File menu of Padre at v0.84 (7 July 2011)</h3>
+<h3 id="file_0.84">Describing the File menu of Padre at v0.84 (7 July 2011)</h3>
 <iframe width="853" height="510" src="http://www.youtube.com/embed/eCpxUA1vIuM"
 frameborder="0" allowfullscreen></iframe>
 [% END %]
@@ -23,7 +30,7 @@ frameborder="0" allowfullscreen></iframe>
 
 <div class="spacer"></div>
 [% WRAPPER chrome/styled_panel %]
-<h3>Padre 0.84 on Strawberry Perl 5.12.3 released (20 June 2011)</h3>
+<h3 id="padre_0.84_on_strawberry_perl">Padre 0.84 on Strawberry Perl 5.12.3 released (20 June 2011)</h3>
 <iframe width="853" height="510" src="http://www.youtube.com/embed/MKXtGgWi7qs"
 frameborder="0" allowfullscreen></iframe>
 [% END %]
