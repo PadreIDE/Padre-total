@@ -1,5 +1,8 @@
 use inc::Module::Install 1.01;
 
+# Define metadata
+abstract 'Cookbook contains recipes to assist you in makeing your own Padre::Plugin';
+
 # causes warnning
 # MakeMaker attribute "VERSION_FROM" is overriden; use "makemaker_append" to append values
 # ie; if v0.14 -> 0.014000, what fun perl is :)

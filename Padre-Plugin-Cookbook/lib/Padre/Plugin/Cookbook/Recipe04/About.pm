@@ -127,12 +127,12 @@ Constructor. Should be called with $main by Main->load_dialog_about().
 =item credits_clicked ()
 
 Event handler for button credits, 
-Displayes credits in Padre Output window
+Displays credits in Padre Output window
 
 =item licence_clicked ()
 
 Event handler for button licence, 
-Displayes license in Padre Output window
+Displays license in Padre Output window
 
 =back
 

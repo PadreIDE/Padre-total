@@ -232,6 +232,8 @@ __END__
 
 Padre::Plugin::Cookbook
 
+Cookbook contains recipes to assist you in makeing your own Padre::Plugins
+
 =head1 VERSION
 
 This document describes Padre::Plugin::Cookbook version 0.14
