@@ -172,17 +172,17 @@ sub build_scintilla {
 	my $self = shift;
 
 	my @modules = (
-		glob('wx-scintilla/src/scintilla/src/*.cxx'),
-		'wx-scintilla/src/PlatWX.cpp',
-		'wx-scintilla/src/ScintillaWX.cpp',
-		'wx-scintilla/src/scintilla.cpp',
+		glob('wx-scintilla2/src/scintilla/src/*.cxx'),
+		'wx-scintilla2/src/PlatWX.cpp',
+		'wx-scintilla2/src/ScintillaWX.cpp',
+		'wx-scintilla2/src/scintilla.cpp',
 	);
 
 	my @include_dirs = (
-		'-Iwx-scintilla/include',
-		'-Iwx-scintilla/src/scintilla/include',
-		'-Iwx-scintilla/src/scintilla/src',
-		'-Iwx-scintilla/src',
+		'-Iwx-scintilla2/include',
+		'-Iwx-scintilla2/src/scintilla/include',
+		'-Iwx-scintilla2/src/scintilla/src',
+		'-Iwx-scintilla2/src',
 		Alien::wxWidgets->include_path,
 	);
 
