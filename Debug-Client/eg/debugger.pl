@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 
+use Cwd qw(cwd);
 use Getopt::Long qw(GetOptions);
 use Pod::Usage qw(pod2usage);
 
@@ -20,7 +21,6 @@ usage() if $opt{help};
 
 my ($script, @args) = @ARGV;
 
-=pod
 
 my $pid = fork();
 die if not defined $pid;
@@ -31,17 +31,7 @@ if (not $pid) {
 }
 print "PID: $pid\n";
 
-=cut
-use Cwd qw(cwd);
-
-my $process;
-if ($^O =~ /win32/i) {
-	require Win32::Process;
-	require Win32;
-	local $ENV{PERLDB_OPTS} = "RemotePort=$opt{host}:$opt{port}";
-	Win32::Process::Create($process, $opt{perl}, "-d $script @args", 0, 0, cwd);
-}
-print "launched " . $process->GetProcessID .  "\n";
+#require IPC::Run;
 
 require Debug::Client;
 my $debugger = Debug::Client->new(
@@ -49,15 +39,53 @@ my $debugger = Debug::Client->new(
 	port => $opt{port},
 );
 $debugger->listen;
+print "listening\n";
+
+# my @cmd = ($opt{perl}, '-d', @ARGV);
+# {
+	# local $ENV{PERLDB_OPTS} = "RemotePort=$opt{host}:$opt{port}";
+	# IPC::Run::run(\@cmd, sub {}, \&out, \&err);
+# }
+# print "launched";
+
+# sub out {
+	# print "OUT @_";
+# }
+# sub err {
+	# print "ERR @_";
+# }
+
+# my $process;
+# if ($^O =~ /win32/i) {
+	# require Win32::Process;
+	# require Win32;
+	# local $ENV{PERLDB_OPTS} = "RemotePort=$opt{host}:$opt{port}";
+	# Win32::Process::Create($process, $opt{perl}, "-d $script @args", 0, 0, cwd);
+# }
+# print "launched " . $process->GetProcessID .  "\n";
+
+
 my $out = $debugger->get;
 print $out;
+while (1) {
+	chomp(my $input = <STDIN>);
+	if ($input eq 's') {
+		my $out = $debugger->step_in;
+		print $out;
+	}
+	if ($input eq 'q') {
+		
+		last;
+	}
+}
 
-#$out = $debugger->step_in;
   # ...
 
 # On Windows kill() does not seem to have effect
 # print "Killing the script...\n";
-# kill 9, $pid;
+END {
+	kill 9, $pid if $pid;
+}
 # Win32::Process
 #$process->Kill(0);
 
