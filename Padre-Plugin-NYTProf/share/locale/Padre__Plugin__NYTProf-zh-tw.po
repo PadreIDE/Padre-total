@@ -1,0 +1,40 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# BlueT - Matthew Lien <BlueT@bluet.org>, 2011.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-NYTProf\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-23 11:08+0300\n"
+"PO-Revision-Date: 2011-07-11 21:28+0800\n"
+"Last-Translator: BlueT - Matthew Lien - 練喆明 <BlueT@BlueT.org>\n"
+"Language-Team: Chinese (traditional) <>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/NYTProf.pm:16
+msgid "NYTProf - Perl Profiler"
+msgstr "NYTProf - Perl 側寫器 (Profiler)"
+
+#: lib/Padre/Plugin/NYTProf.pm:28
+msgid "Run Profiling"
+msgstr "執行側寫 (Profiling)"
+
+#: lib/Padre/Plugin/NYTProf.pm:29
+msgid "Generate Profiling Report"
+msgstr "產生側寫 (Profiling) 報告"
+
+#: lib/Padre/Plugin/NYTProf.pm:30
+msgid "Show Generated Profiling Report"
+msgstr "顯示產生的側寫 (Profiling) 報告"
+
+#: lib/Padre/Plugin/NYTProf.pm:34
+msgid "About"
+msgstr "關於"
+
+#: lib/Padre/Plugin/NYTProf.pm:116
+msgid "This system is running NYTProf version "
+msgstr "此系統正在執行 NYTProf 版本"

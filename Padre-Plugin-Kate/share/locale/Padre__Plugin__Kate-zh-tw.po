@@ -1,0 +1,28 @@
+# Chinese translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# BlueT - Matthew Lien <BlueT@bluet.org>, 2011.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-Kate\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-30 08:24+0200\n"
+"PO-Revision-Date: 2011-07-11 21:19+0800\n"
+"Last-Translator: BlueT - Matthew Lien - 練喆明 <BlueT@BlueT.org>\n"
+"Language-Team: Chinese (traditional)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: lib/Padre/Plugin/Kate.pm:64
+msgid "About"
+msgstr "關於"
+
+#: lib/Padre/Plugin/Kate.pm:70
+msgid "Using Syntax::Highlight::Engine::Kate based on the Kate editor"
+msgstr "使用基於 Kate 編輯器的 Syntax::Highlight::Engine::Kate"
+
+#: lib/Padre/Plugin/Kate.pm:170
+msgid "Trying to use Syntax::Highlight::Engine::Kate for syntax highlighting"
+msgstr "正嘗試使用 Syntax::Highlight::Engine::Kate 來做語法 highlight"
