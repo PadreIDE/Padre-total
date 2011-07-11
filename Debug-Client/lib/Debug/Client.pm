@@ -18,12 +18,22 @@ Debug::Client - client side code for perl debugger
   my $debugger = Debug::Client->new(host => $host, port => $port);
   $debugger->listen;
 
-  # this is the point where the external script need to be launched
-  # first setting 
-      # $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
-  # then running
-      # perl -d script
- 
+Where $host is the hostname to be used by the script under test (SUT)
+to acces the machine where Debug::Client runs. If they are on the same machine
+this should be C<localhost>.
+$port can be any port number where the Debug::Client could listen.
+
+This is the point where the external SUT needs to be launched 
+by first setting 
+     
+  $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
+
+then running
+
+  perl -d script
+
+Once the script under test wa launched we can call the following:
+
   my $out = $debugger->get;
 
   $out = $debugger->step_in;
@@ -65,6 +75,33 @@ Other planned methods:
 
 
   $debugger->watch_variable   (to make it easy to display values of variables)
+
+=head2 example
+
+  my $script = 'script_to_debug.pl';
+  my @args   = ('param', 'param');
+  
+  my $perl = $^X; # the perl might be a different perl
+  my $host = 'localhost';
+  my $port = 12345;
+  my $pid = fork();
+  die if not defined $pid;
+  
+  if (not $pid) {
+	local $ENV{PERLDB_OPTS} = "RemotePort=$host:$port"
+  	exec("$perl -d $script @args");
+  }
+  
+  
+  require Debug::Client;
+  my $debugger = Debug::Client->new(
+    host => $host,
+    port => $port,
+  );
+  $debugger->listen;
+  my $out = $debugger->get;
+  $out = $debugger->step_in;
+  # ...
 
 =head1 DESCRIPTION
 
