@@ -6,7 +6,7 @@ use Module::Build::Scintilla2::MSW;
 
 use Config;
 
-our @ISA = qw( Module::Build::Scintilla::MSW );
+our @ISA = qw( Module::Build::Scintilla2::MSW );
 
 sub stc_scintilla_lib {
 	my $self    = shift;

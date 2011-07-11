@@ -1,11 +1,11 @@
-package Module::Build::Scintilla::MSW;
+package Module::Build::Scintilla2::MSW;
 
 use strict;
 use warnings;
-use Module::Build::Scintilla;
+use Module::Build::Scintilla2;
 use Config;
 
-our @ISA = qw( Module::Build::Scintilla );
+our @ISA = qw( Module::Build::Scintilla2 );
 
 sub stc_linker {
 	my $self = shift;
