@@ -1,0 +1,57 @@
+use strict;
+use warnings;
+
+use lib 'inc2';
+use Module::Build::Scintilla2 ();
+
+my $stc_builderclass = Module::Build::Scintilla2::stc_builderclass();
+
+my $builder = $stc_builderclass->new(
+	module_name        => 'Wx::Scintilla',
+	license            => 'perl',
+	dist_author        => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},
+	dist_version_from  => 'lib/Wx/Scintilla.pm',
+	configure_requires => {
+		'Module::Build' => 0.36,
+	},
+	build_requires => {
+		'Test::More'       => 0,
+		'Alien::wxWidgets' => 0,
+		'Wx'               => 0,
+		'ExtUtils::XSpp'   => 0,
+	},
+	needs_compiler => 0, # We will be doing our own XS compilation
+	add_to_cleanup => [
+		'Wx-Scintilla-*',
+		'wx-scintilla/src/*.o.d',
+		'wx-scintilla/src/*.o',
+		'wx-scintilla/src/*.obj',
+		'wx-scintilla/src/scintilla/src/*.o.d',
+		'wx-scintilla/src/scintilla/src/*.o',
+		'wx-scintilla/src/scintilla/src/*.obj',
+		'Scintilla.c',
+		'Scintilla.o',
+		'Scintilla.obj',
+		'Scintilla.bs',
+		'Scintilla.def',
+		'Scintilla_def.old',
+		'blib',
+		'*.dll',
+		'*.pdb',
+		'*.obj',
+		'*.a',
+		'*.so',
+		'stc_checkdepends.out',
+	],
+	create_makefile_pl => 'small',
+	meta_merge         => {
+		resources => {
+			homepage   => 'http://padre.perlide.org/',
+			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
+		}
+	},
+	dist_abstract      => 'Fresh Perl wxWidgets XS bindings for Scintilla editor component',
+	extra_linker_flags => '-lwxmsw28u_scintilla',
+);
+
+$builder->create_build_script();
