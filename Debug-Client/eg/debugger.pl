@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use 5.010;
 
 use Cwd qw(cwd);
 use Getopt::Long qw(GetOptions);
@@ -29,7 +30,7 @@ if (not $pid) {
 	local $ENV{PERLDB_OPTS} = "RemotePort=$opt{host}:$opt{port}";
 	exec("$opt{perl} -d $script @args");
 }
-print "PID: $pid\n";
+say "PID: $pid";
 
 #require IPC::Run;
 
@@ -39,14 +40,14 @@ my $debugger = Debug::Client->new(
 	port => $opt{port},
 );
 $debugger->listen;
-print "listening\n";
+say 'listening';
 
 # my @cmd = ($opt{perl}, '-d', @ARGV);
 # {
 	# local $ENV{PERLDB_OPTS} = "RemotePort=$opt{host}:$opt{port}";
 	# IPC::Run::run(\@cmd, sub {}, \&out, \&err);
 # }
-# print "launched";
+# say 'launched';
 
 # sub out {
 	# print "OUT @_";
@@ -67,16 +68,36 @@ print "listening\n";
 
 my $out = $debugger->get;
 print $out;
+my $last_step;
 while (1) {
 	chomp(my $input = <STDIN>);
-	if ($input eq 's') {
-		my $out = $debugger->step_in;
-		print $out;
+	if ($input eq '') {
+		next if not $last_step;
+		$input = $last_step;
 	}
-	if ($input eq 'q') {
-		
-		last;
-	}
+
+	given ($input) {
+		when ('s') {
+			$last_step = 's';
+			my $out = $debugger->step_in;
+			print $out;
+		}
+		when ('n') {
+			$last_step = 'n';
+			my $out = $debugger->step_over;
+			print $out;
+		}
+		when ('q') {
+			last;
+		}
+		when (qr/^c   (?:\s+(\w+))?  $/x) {
+			my $out = $debugger->run($1);
+			print $out;
+		}
+		default {
+			print "Invalid command\n";
+		}
+	}	
 }
 
   # ...

@@ -47,7 +47,7 @@ Once the script under test wa launched we can call the following:
 
   $debugger->run();         # run till end of breakpoint or watch
   $debugger->run( 42 );     # run till line 42  (c in the debugger)
-  $debugger->run( 'foo' );  # tun till beginning of sub
+  $debugger->run( 'foo' );  # run till beginning of sub
 
   $debugger->execute_code( '$answer = 42' );
 
