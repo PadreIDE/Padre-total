@@ -71,8 +71,8 @@ sub stc_link_scintilla_objects {
 	my @cmd = (
 		$self->stc_linker,
 		$self->stc_ldflags,
-		"wx-scintilla/src/*.obj",
-		"wx-scintilla/src/scintilla/src/*.obj",
+		"wx-scintilla2/src/*.obj",
+		"wx-scintilla2/src/scintilla/src/*.obj",
 		"/DLL /NOLOGO /OUT:$shared_lib",
 		'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
 
