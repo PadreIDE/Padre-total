@@ -77,6 +77,9 @@ while (1) {
 	}
 
 	given ($input) {
+		when (['h', '?']) {
+			help();
+		}
 		when ('s') {
 			$last_step = 's';
 			my $out = $debugger->step_in;
@@ -87,6 +90,18 @@ while (1) {
 			my $out = $debugger->step_over;
 			print $out;
 		}
+		when ('r') {
+			my $out = $debugger->step_out;
+			print $out;
+		}
+		when ('T') {
+			my $out = $debugger->get_stack_trace;
+			print $out;
+		}
+		when ('.') {
+			my $out = $debugger->show_line;
+			print $out;
+		}
 		when ('q') {
 			last;
 		}
@@ -95,10 +110,27 @@ while (1) {
 			print $out;
 		}
 		default {
+			#my $out = $debugger->execute_code($input);
+			#print $out;
 			print "Invalid command\n";
 		}
 	}	
 }
+
+sub help {
+	print <<'END_HELP'
+s - step in
+n - step over
+r - step out
+T - stack trace
+. - show current line
+c (line|sub) - run till
+q - quit
+h or ? - help
+END_HELP
+
+}
+			
 
   # ...
 
