@@ -35,8 +35,8 @@
 
 #if wxUSE_STC
 
-#include "wx/stc/stc.h"
-#include "wx/stc/private.h"
+#include "WxScintilla.h"
+#include "private.h"
 
 #ifndef WX_PRECOMP
     #include "wx/wx.h"

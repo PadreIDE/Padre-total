@@ -36,8 +36,8 @@
 
 #include "ScintillaWX.h"
 #include "ExternalLexer.h"
-#include "wx/stc/stc.h"
-#include "wx/stc/private.h"
+#include "WxScintilla.h"
+#include "private.h"
 #include "PlatWX.h"
 
 #ifdef __WXMSW__

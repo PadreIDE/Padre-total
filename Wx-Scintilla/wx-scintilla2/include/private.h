@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////
-// Name:        wx/stc/private.h
+// Name:        private.h
 // Purpose:     Private declarations for wxSTC
 // Author:      Robin Dunn
 // Created:     2007-07-15
