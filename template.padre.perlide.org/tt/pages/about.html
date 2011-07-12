@@ -44,7 +44,12 @@ post on our IRC channel.
  <table>
   [% FOREACH e IN t.events %]
    <tr style="vertical-align: top;"><td style="width: 12em;">[% e.date | html %]</td>
-       <td ><a href="[% e.url | html %]"[% IF t.ISO_639 %] xml:lang="[% t.ISO_639 %]"[% END %]>[% e.title %]</a> [% e.comment %]</td>
+       <td>
+       <a href="[% e.url | html %]"[% IF t.ISO_639 %] xml:lang="[% t.ISO_639 %]"[% END %]>[% e.title %]</a> [% e.comment %]
+       [% IF e.gplusone %]
+       <g:plusone size="small" href="[% e.url | html %]"> </g:plusone>
+       [% END %]
+       </td>
     </tr>
   [% END %]
  </table>

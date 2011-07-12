@@ -128,6 +128,10 @@ sub ACTION_process_templates {
 	}
 
 	#die keys %{$stash->{about}[0]};
+	foreach my $e (@{ $stash->{about}[0]{events} }) {
+		$e->{gplusone} = 1;
+	}
+
 
 	$stash->{build_date}  = $self->dist_version;
 	$stash->{base}        = $self->config_data('base') if $self->config_data('base');
