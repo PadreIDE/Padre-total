@@ -1,7 +1,7 @@
 Revision history for Wx-Scintilla
 
 0.20  TBA
-
+    - The editor doesn't need to be visible to pass tests (ADAMK)
 
 0.19  2011.7.4
     - Handle MinGW link to MS style perl5xx.lib (MARKD)
