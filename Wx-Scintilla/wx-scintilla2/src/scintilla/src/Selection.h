@@ -130,12 +130,9 @@ struct SelectionRange {
 	void MinimizeVirtualSpace();
 };
 
-    
-#include "wx/vector.h"
-    
 class Selection {
-	wxVector<SelectionRange> ranges;
-	wxVector<SelectionRange> rangesSaved;
+	std::vector<SelectionRange> ranges;
+	std::vector<SelectionRange> rangesSaved;
 	SelectionRange rangeRectangular;
 	size_t mainRange;
 	bool moveExtends;
@@ -178,7 +175,7 @@ public:
 	void RemoveDuplicates();
 	void RotateMain();
 	bool Tentative() const { return tentativeMain; }
-	wxVector<SelectionRange> RangesCopy() const {
+	std::vector<SelectionRange> RangesCopy() const {
 		return ranges;
 	}
 };
