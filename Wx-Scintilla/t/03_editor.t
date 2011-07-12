@@ -102,7 +102,8 @@ sub OnInit {
 	);
 	main::ok( $editor, 'Editor instance created' );
 
-	$frame->Show(1);
+	# Uncomment this to observe the test
+	# $frame->Show(1);
 
 	MyTimer->new->Start( 500, 1 );
 
