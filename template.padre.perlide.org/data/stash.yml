@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2001 July 10
+        utl: http://szabgab.com/blog/2011/07/three-new-screencasts-and-a-little-bit-of-statistics.html
+        title: Three new screencasts and a little bit of statistics
+        comment: Gabor Szabo screencasting Padre 0.84 and 0.87
       - date: 2011 July 06
         url: http://szabgab.com/blog/2011/07/creating-a-successful-open-source-project.html
         title: Creating a Successful Open Source Project
