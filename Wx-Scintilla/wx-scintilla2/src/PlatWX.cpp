@@ -11,8 +11,6 @@
     #pragma hdrstop
 #endif
 
-#if wxUSE_STC
-
 #ifndef WX_PRECOMP
     #include "wx/menu.h"
     #include "wx/dcmemory.h"
@@ -504,13 +502,13 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, int ybase,
 
     SetFont(font);
     hdc->SetTextForeground(wxColourFromCA(fore));
-    hdc->SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
+    hdc->SetBackgroundMode(wxTRANSPARENT);
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
     hdc->DrawText(stc2wx(s, len), rc.left, ybase - font.ascent);
 
-    hdc->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
+    hdc->SetBackgroundMode(wxSOLID);
 }
 
 
@@ -1413,7 +1411,7 @@ long Platform::SendScintilla(WindowID w,
                              unsigned long wParam,
                              long lParam) {
 
-    wxStyledTextCtrl* stc = (wxStyledTextCtrl*)w;
+    wxScintillaTextCtrl* stc = (wxScintillaTextCtrl*)w;
     return stc->SendMsg(msg, wParam, lParam);
 }
 
@@ -1422,7 +1420,7 @@ long Platform::SendScintillaPointer(WindowID w,
                                     unsigned long wParam,
                                     void *lParam) {
 
-    wxStyledTextCtrl* stc = (wxStyledTextCtrl*)w;
+    wxScintillaTextCtrl* stc = (wxScintillaTextCtrl*)w;
     return stc->SendMsg(msg, wParam, (wxIntPtr)lParam);
 }
 
@@ -1585,5 +1583,3 @@ const wxWX2MBbuf wx2stc(const wxString& str)
 }
 
 #endif
-
-#endif // wxUSE_STC
