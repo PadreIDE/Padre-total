@@ -7,9 +7,9 @@ package Padre::Plugin::Cookbook::Recipe01::FBP::MainFB;
 use 5.010;
 use strict;
 use warnings;
-use diagnostics;
-use utf8;
-use autodie;
+# use diagnostics;
+# use utf8;
+# use autodie;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 

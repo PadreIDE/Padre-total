@@ -3,9 +3,9 @@ package Padre::Plugin::Cookbook::Recipe04::About;
 use 5.010;
 use strict;
 use warnings;
-use diagnostics;
-use utf8;
-use autodie;
+# use diagnostics;
+# use utf8;
+# use autodie;
 
 # Version required
 use version; our $VERSION = qv(0.22);

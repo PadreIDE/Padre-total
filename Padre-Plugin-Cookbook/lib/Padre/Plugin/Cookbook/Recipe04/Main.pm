@@ -3,9 +3,9 @@ package Padre::Plugin::Cookbook::Recipe04::Main;
 use 5.010;
 use strict;
 use warnings;
-use diagnostics;
-use utf8;
-use autodie;
+# use diagnostics;
+# use utf8;
+# use autodie;
 
 # Avoids regex performance penalty
 use English qw( -no_match_vars );
@@ -15,8 +15,8 @@ use Padre::Wx::Role::Main ();
 
 use version; our $VERSION = qv(0.22);
 
-use Moose;
-use namespace::autoclean;
+use Mouse;
+# use namespace::autoclean;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
 # use Try::Tiny;
@@ -28,7 +28,7 @@ sub BUILD {
 	my $main  = shift;
 
 	# Create the dialog
-	my $self = $class->SUPER::new($main);
+	my $self = $class->SUPER::new();
 
 	return $self;
 }
@@ -705,7 +705,7 @@ sub load_dialog_about {
 # dose not work with Wx, BP :(
 # __PACKAGE__->meta->make_immutable();
 # __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
-no Moose;
+# no Mouse;
 
 1;
 __END__
