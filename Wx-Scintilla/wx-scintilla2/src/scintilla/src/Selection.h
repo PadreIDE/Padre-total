@@ -8,6 +8,8 @@
 #ifndef SELECTION_H
 #define SELECTION_H
 
+#include <vector>
+
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif

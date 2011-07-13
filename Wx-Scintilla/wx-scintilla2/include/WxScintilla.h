@@ -4011,6 +4011,12 @@ public:
     bool GetLastKeydownProcessed() { return m_lastKeyDownConsumed; }
     void SetLastKeydownProcessed(bool val) { m_lastKeyDownConsumed = val; }
 
+    // Write the contents of the editor to filename
+    bool SaveFile(const wxString& filename);
+
+    // Load the contents of filename into the editor
+    bool LoadFile(const wxString& filename);
+
 #ifdef STC_USE_DND
     // Allow for simulating a DnD DragOver
     wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
@@ -4115,9 +4121,6 @@ protected:
     virtual wxWindow *GetEditableWindow() { return this; }
 
 #ifndef SWIG
-    virtual bool DoLoadFile(const wxString& file, int fileType);
-    virtual bool DoSaveFile(const wxString& file, int fileType);
-
     // Event handlers
     void OnPaint(wxPaintEvent& evt);
     void OnScrollWin(wxScrollWinEvent& evt);

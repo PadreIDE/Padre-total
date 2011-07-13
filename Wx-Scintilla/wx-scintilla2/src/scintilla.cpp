@@ -51,7 +51,7 @@
 
 //----------------------------------------------------------------------
 
-const char wxSTCNameStr[] = "stcwindow";
+const wxChar* wxSTCNameStr = wxT("stcwindow");
 
 #ifdef MAKELONG
 #undef MAKELONG
@@ -94,36 +94,36 @@ static wxColour wxColourFromSpec(const wxString& spec) {
 
 //----------------------------------------------------------------------
 
-wxDEFINE_EVENT( wxEVT_STC_CHANGE, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_STYLENEEDED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_CHARADDED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_SAVEPOINTREACHED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_SAVEPOINTLEFT, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_ROMODIFYATTEMPT, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_KEY, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_DOUBLECLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_UPDATEUI, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_MODIFIED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_MACRORECORD, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_MARGINCLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_NEEDSHOWN, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_PAINTED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_USERLISTSELECTION, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_URIDROPPED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_DWELLSTART, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_DWELLEND, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_START_DRAG, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_DRAG_OVER, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_DO_DROP, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_ZOOM, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_HOTSPOT_CLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_HOTSPOT_DCLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_CALLTIP_CLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_AUTOCOMP_SELECTION, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_INDICATOR_CLICK, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_INDICATOR_RELEASE, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_AUTOCOMP_CANCELLED, wxScintillaTextEvent );
-wxDEFINE_EVENT( wxEVT_STC_AUTOCOMP_CHAR_DELETED, wxScintillaTextEvent );
+DEFINE_EVENT_TYPE( wxEVT_STC_CHANGE );
+DEFINE_EVENT_TYPE( wxEVT_STC_STYLENEEDED );
+DEFINE_EVENT_TYPE( wxEVT_STC_CHARADDED );
+DEFINE_EVENT_TYPE( wxEVT_STC_SAVEPOINTREACHED );
+DEFINE_EVENT_TYPE( wxEVT_STC_SAVEPOINTLEFT );
+DEFINE_EVENT_TYPE( wxEVT_STC_ROMODIFYATTEMPT );
+DEFINE_EVENT_TYPE( wxEVT_STC_KEY );
+DEFINE_EVENT_TYPE( wxEVT_STC_DOUBLECLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_UPDATEUI );
+DEFINE_EVENT_TYPE( wxEVT_STC_MODIFIED );
+DEFINE_EVENT_TYPE( wxEVT_STC_MACRORECORD );
+DEFINE_EVENT_TYPE( wxEVT_STC_MARGINCLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_NEEDSHOWN );
+DEFINE_EVENT_TYPE( wxEVT_STC_PAINTED );
+DEFINE_EVENT_TYPE( wxEVT_STC_USERLISTSELECTION );
+DEFINE_EVENT_TYPE( wxEVT_STC_URIDROPPED );
+DEFINE_EVENT_TYPE( wxEVT_STC_DWELLSTART );
+DEFINE_EVENT_TYPE( wxEVT_STC_DWELLEND );
+DEFINE_EVENT_TYPE( wxEVT_STC_START_DRAG );
+DEFINE_EVENT_TYPE( wxEVT_STC_DRAG_OVER );
+DEFINE_EVENT_TYPE( wxEVT_STC_DO_DROP );
+DEFINE_EVENT_TYPE( wxEVT_STC_ZOOM );
+DEFINE_EVENT_TYPE( wxEVT_STC_HOTSPOT_CLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_HOTSPOT_DCLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_CALLTIP_CLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_AUTOCOMP_SELECTION );
+DEFINE_EVENT_TYPE( wxEVT_STC_INDICATOR_CLICK );
+DEFINE_EVENT_TYPE( wxEVT_STC_INDICATOR_RELEASE );
+DEFINE_EVENT_TYPE( wxEVT_STC_AUTOCOMP_CANCELLED );
+DEFINE_EVENT_TYPE( wxEVT_STC_AUTOCOMP_CHAR_DELETED );
 
 
 
@@ -209,9 +209,6 @@ bool wxScintillaTextCtrl::Create(wxWindow *parent,
 
     // Reduces flicker on GTK+/X11
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
-
-    // Make sure it can take the focus
-    SetCanFocus(true);
 
     return true;
 }
@@ -4008,20 +4005,14 @@ void wxScintillaTextCtrl::ScrollToColumn(int column) {
 }
 
 
-#if wxUSE_TEXTCTRL
-bool wxScintillaTextCtrl::DoSaveFile(const wxString& filename, int fileType)
-{
-   bool ok = wxTextAreaBase::DoSaveFile(filename, fileType);
-#else
 bool wxScintillaTextCtrl::SaveFile(const wxString& filename)
 {
 #if wxUSE_FFILE
     wxFFile file(filename, wxT("w"));
-    bool ok = file.IsOpened() && file.Write(GetValue(), *wxConvCurrent);
+    bool ok = file.IsOpened() && file.Write(GetText(), *wxConvCurrent);
 #else
     bool ok = false;
 #endif // wxUSE_FFILE
-#endif
     if (ok)
     {
         SetSavePoint();
@@ -4029,11 +4020,6 @@ bool wxScintillaTextCtrl::SaveFile(const wxString& filename)
     return ok;
 }
 
-#if wxUSE_TEXTCTRL
-bool wxScintillaTextCtrl::DoLoadFile(const wxString& filename, int fileType)
-{
-   bool ok = wxTextAreaBase::DoLoadFile(filename, fileType);
-#else
 bool wxScintillaTextCtrl::LoadFile(const wxString& filename)
 {
 #if wxUSE_FFILE
@@ -4045,13 +4031,12 @@ bool wxScintillaTextCtrl::LoadFile(const wxString& filename)
         ok = file.ReadAll(&text, *wxConvCurrent);
         if (ok)
         {
-            SetValue(text);
+            SetText(text);
         }
     }
 #else
     bool ok = false;
 #endif // wxUSE_FFILE
-#endif
    if (ok)
    {
        EmptyUndoBuffer();
