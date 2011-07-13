@@ -14,7 +14,8 @@
 
  <div class="center_column"> 
  [% INCLUDE lib/masthead %]
- [% INCLUDE chrome/navigation_list  css_class="bottomheavy"%] <g:plusone href="http://padre.perlide.org/"> </g:plusone></div>
+ [% INCLUDE chrome/navigation_list  css_class="bottomheavy"%]
+ </div>
 
 <div id="content_wrapper">
 
@@ -42,8 +43,5 @@ pageTracker._trackPageview();
 } catch(err) {}</script>
 <!-- end Google analytics code -->
 
-<!-- start Google+1 code -->
-<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-<!-- end Google+1 code -->
 </body>
 </html>
