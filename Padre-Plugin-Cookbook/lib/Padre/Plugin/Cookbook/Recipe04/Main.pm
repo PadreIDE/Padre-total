@@ -15,8 +15,8 @@ use Padre::Wx::Role::Main ();
 
 use version; our $VERSION = qv(0.22);
 
-use Mouse;
-# use namespace::autoclean;
+use Moose;
+use namespace::autoclean;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
 # use Try::Tiny;
@@ -705,7 +705,7 @@ sub load_dialog_about {
 # dose not work with Wx, BP :(
 # __PACKAGE__->meta->make_immutable();
 # __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
-# no Mouse;
+no Mouse;
 
 1;
 __END__
