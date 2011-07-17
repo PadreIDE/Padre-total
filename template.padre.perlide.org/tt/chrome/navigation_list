@@ -13,11 +13,7 @@
   [% SET link_to = nav.$href_from  %]
   <li><a href="[% IF section_nav.defined %]#[% link_to | id_attr %][% ELSE %][% link_to  %][% END %]">[% nav.$title_from %]</a></li>
  [% END %]
- <li><g:plusone size="medium" href="http://padre.perlide.org/"> </g:plusone></li>
  </ul>
- <iframe src="http://www.facebook.com/plugins/like.php?href=http://padre.perlide.org/"
-        scrolling="no" frameborder="0"
-        style="border:none; width:450px; height:80px"></iframe> 
  
  <div class="spacer"></div>
 
