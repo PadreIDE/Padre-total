@@ -23,9 +23,10 @@ It overloads various methods to make things work in a more Padre-specific way.
 use 5.008005;
 use strict;
 use warnings;
-use Scalar::Util   ();
-use FBP::Perl 0.54 ();
-use Mouse     0.61;
+use Scalar::Util      ();
+use Params::Util 0.33 ();
+use FBP::Perl    0.55 ();
+use Mouse        0.61;
 
 our $VERSION = '0.02';
 
@@ -44,6 +45,8 @@ has encapsulate => (
 	required => 1,
 	default  => 0,
 );
+
+no Mouse;
 
 
 
@@ -121,6 +124,18 @@ sub project_version {
 	];
 }
 
+sub project_dist {
+	my $self    = shift;
+	my $project = shift;
+	my $name    = $project->name;
+
+	# If the name is a module name (which it is) then convert to
+	# the common dashed version.
+	$name =~ s/::/-/g;
+
+	return $name;
+}
+
 sub form_isa {
 	my $self = shift;
 	my $form = shift;
@@ -178,6 +193,67 @@ sub form_wx {
 	return $lines;
 }
 
+sub form_custom {
+	my $self  = shift;
+	my $form  = shift;
+	my $lines = $self->SUPER::form_custom( $form, @_ );
+
+	# Are any of the files used by the form relative
+	# and within the share directory.
+	if ( grep { /^share\b/ } $self->form_files($form) ) {
+		push @$lines, "use File::ShareDir ();";
+	}
+
+	return $lines;
+}
+
+sub form_files {
+	my $self  = shift;
+	my $form  = shift;
+	my @files = ();
+
+	# Static bitmaps
+	push @files, map {
+		$_->bitmap
+	} $form->find( isa => 'FBP::StaticBitmap' );
+
+	# Tools
+	push @files, map {
+		$_->bitmap
+	} $form->find( isa => 'FBP::Tool' );
+
+	# Menu entries
+	push @files, map {
+		$_->bitmap
+	} $form->find( isa => 'FBP::MenuItem' );
+
+	# Bitmap buttons
+	push @files, map {
+		$_->bitmap,
+		$_->disabled,
+		$_->selected,
+		$_->hover,
+		$_->focus,
+	} $form->find( isa => 'FBP::BitmapButton' );
+
+	# Animation controls
+	push @files, map {
+		$_->inactive_bitmap
+	} $form->find( isa => 'FBP::AnimationCtrl' );
+
+	# Clean and filter
+	my %seen = ();
+	return grep {
+		not $seen{$_}++
+	} map {
+		s/; Load From File$// ? $_ : ()
+	} grep {
+		defined $_
+	} map {
+		Params::Util::_STRING($_)
+	} @files;
+}
+
 sub object_accessor {
 	my $self = shift;
 	unless ( $self->encapsulate ) {
@@ -215,6 +291,22 @@ sub object_lexical {
 		return $self->SUPER::object_lexical(@_);
 	}
 	return 1;
+}
+
+# File name
+sub file {
+	my $self   = shift;
+	my $string = shift;
+	return undef unless Params::Util::_STRING($string);
+	return undef unless $string =~ s/; Load From File$//;
+	unless ( $string =~ s/^share[\\\/]// ) {
+		return $self->quote($string);
+	}
+
+	# Special sharedir form
+	my $file = $self->quote($string);
+	my $dist = $self->quote($self->project_dist($self->project));
+	return "File::ShareDir::dist_file( $dist, $file )";
 }
 
 1;
