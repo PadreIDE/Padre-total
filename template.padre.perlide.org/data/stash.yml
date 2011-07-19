@@ -25,8 +25,12 @@ navigation:
 about:
   - title: y2011
     events:
-      - date: 2001 July 10
-        utl: http://szabgab.com/blog/2011/07/three-new-screencasts-and-a-little-bit-of-statistics.html
+      - date: 2011 July 19
+        url: http://blogs.perl.org/users/adam_kennedy/2011/07/padre-form-builder---a-cross-platform-gui-design-solution-for-perl.html
+        title: Padre Form Builder - A cross-platform GUI design solution for Perl
+        comment: by Adam Kennedy
+      - date: 2011 July 10
+        url: http://szabgab.com/blog/2011/07/three-new-screencasts-and-a-little-bit-of-statistics.html
         title: Three new screencasts and a little bit of statistics
         comment: Gabor Szabo screencasting Padre 0.84 and 0.87
       - date: 2011 July 06
