@@ -9,7 +9,7 @@ requires       namespace::autoclean             0.11
 requires       Class::C3                        0.23
 requires       Moose                            1.08
 requires       DBIx::Class                      0.08123
-requires       DBIx::Class::Timestamp           0.13
+requires       DBIx::Class::TimeStamp           0.13
 requires       Catalyst::Runtime                5.80018
 requires       Catalyst::Plugin::ConfigLoader   0.28
 requires       Catalyst::Plugin::Static::Simple 0.29
