@@ -8,6 +8,8 @@ v6: in the work
     accessors                                   1.01
     asa                                         1.03
     AnyEvent                                    5.34
+    AnyEvent::HTTP                              2.12
+    AnyEvent::Twitter::Stream                   0.21
     App::Ack  (ack)                             1.94     (test failed, force installed)
     App::moduleswhere                           0.03     (requested by ron_zephyr)  (no tests)
     Authen::SASL                                2.15
@@ -326,12 +328,22 @@ We have already in v3:
     (MIME::Types  1.31)
     (MIME::Base64 3.13)
     (MIME::QuotedPrint 3.13)
+
     
 TODO 
     Prima
     Win32::GUIRobot
     (MooseX::Types)
     (Clone)
+	
+    Params::Classify              0.013
+    Class::Mix                    0.004
+    Crypt::Eksblowfish            0.009
+    Crypt::Eksblowfish::Bcrypt    0.009
+    File::BaseDir                 0.03
+    Test::Compile                 0.13
+
+    App::Raps2 (currently Linux only)
 
     Class::DBI
     SQL::Abstract::Limit
