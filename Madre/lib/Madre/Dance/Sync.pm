@@ -1,6 +1,9 @@
 package Madre::Dance::Sync;
 use Dancer;
 use Madre::DB;
+use Digest::MD5 'md5_hex';
+use Data::Dumper;
+
 set serializer => 'mutable';
 
 prefix '/user';
@@ -23,7 +26,7 @@ get '/name/*' => sub {
 };
 
 get '/register' => sub {
-    return template 'register.tt' , { error => param 'error' };
+    return template 'register.tt', { title=>'Registration' } ;
     
 };
 
@@ -43,32 +46,31 @@ post '/register' => sub {
                 die "Passwords do not match\n";
             } elsif  ($email ne $email_confirm ) {
                 die "Email addresses do not match\n";
-            } elsif ( ! defined $password ) {
+            } elsif ( length($password) == 0 ) {
                 die "You must supply a password\n";
-            } elsif ( ! defined $email ) {
+            } elsif ( length($email) == 0 ) {
                 die "You must supply an email address\n";
+            } elsif ( length($nickname) == 0) {
+                die "You must provide a username\n";
             }
         };
         
         if ($@) {
             #warn "ERROR $@";
-            return forward '/user/register',{error=>$@},{method=>'GET'};
+            return template 'register.tt', { error=>$@, title=>'Registration' };
         }
         
     }
 
-    my ($salt,$pw) = $password =~ m/^([A-Za-z0-9]{2}):([A-Fa-f0-9]+)$/;
-    unless ( $salt and $pw and length($pw) >= 32 ) {
-        status 422; # Unprocessable
-        return 'password salt:hex_digest required';
-    }
+    my $salt = substr( $nickname , 0, 1 ) . substr($nickname, -1,1);
+    my $pw_hash = md5_hex( $salt . ':' . $password );
     
-    my $crypted_password = Madre->crypt( $password );
+    
     
     my $user = eval { 
             Madre::DB::User->create( 
                 username => $nickname,
-                password => $crypted_password,
+                password => $pw_hash,
                 email    => $email,
             );
         };
@@ -80,7 +82,7 @@ post '/register' => sub {
         my $location = '/user/name/' . $nickname;
         status 201; # Created
         header 'Location' => $location;
-        return;
+        return template 'created.tt' , { user=>$user, user_uri => $location };
     }
 
 

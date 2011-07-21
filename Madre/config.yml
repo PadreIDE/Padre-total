@@ -27,3 +27,8 @@ template: "simple"
 #     start_tag: '[%'
 #     end_tag:   '%]'
 
+engines:
+    JSON:
+        allow_blessed: 1
+        convert_blessed: 1
+
