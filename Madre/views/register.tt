@@ -1,0 +1,27 @@
+<div id="page">
+  <div id="content">
+    <div id="header">
+      <h1>Register a new user</h1>
+      <h2>Keep Padre configuration in sync between hosts</h2>
+    </div>
+    <div>
+      <form method="POST" id="form_register" action="<% request.base_uri %>">
+       <style>
+        label { display:block; text-align: right; }
+        .error { background-color: #ffeeee; }
+       </style>
+       <div class="error"><% error %></div>
+       <label for="nickname">Nickname:<input type="text" name="nickname"/> </label> 
+       <label for="password">Password:<input type="password" name="password"/></label> 
+       
+       <label for="password_confirm">Confirm Password:<input type="password" name="password_confirm"/></label>
+       
+       <label for="email">Email:<input type="text" name="email"/></label>
+       <label for="email_confirm">Email Confirm:<input type="text" name="email_confirm" /></label>
+       
+       <hr/>
+       <label>Register your account <input type="submit" value="Register" /></label>
+      </form>
+    </div>
+  </div>
+</div>

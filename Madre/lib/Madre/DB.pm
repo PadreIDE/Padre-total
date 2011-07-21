@@ -8,7 +8,7 @@ use ORLite {
                             $dbh->do(q|
                                 CREATE TABLE user ( 
                                     id INTEGER NOT NULL PRIMARY KEY ,
-                                    username TEXT NOT NULL,
+                                    username TEXT UNIQUE NOT NULL,
                                     password TEXT NOT NULL,
                                     email TEXT NOT NULL
                                 )
