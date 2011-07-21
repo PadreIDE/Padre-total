@@ -3,13 +3,15 @@ use strict;
 use warnings;
 
 use File::Temp qw(tempdir);
+use File::HomeDir;
+use File::Spec;
 
 
 use Exporter;
 use vars qw(@ISA @EXPORT);
 @ISA = ('Exporter');
 
-@EXPORT = qw(start_script start_debugger slurp);
+@EXPORT = qw(start_script start_debugger slurp rc_file);
 
 my $host = 'localhost';
 my $port = 12345 + int rand(1000);
@@ -51,5 +53,16 @@ sub slurp {
     local $/ = undef;
     return <$fh>;
 }
+
+# the debugger loads custom settings from
+# a .perldb file. If the user has it, some
+# test outputs might go boo boo.
+sub rc_file {
+    return -e File::Spec->catfile(
+        File::HomeDir->my_home,
+        '.perldb'
+    );
+}
+
 1;
 

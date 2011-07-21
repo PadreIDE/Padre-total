@@ -12,16 +12,6 @@ import Test::More;
 require Test::Deep;
 import Test::Deep;
 
-# the debugger loads custom settings from
-# a .perldb file. If the user has it, some
-# test outputs might go boo boo.
-use File::HomeDir;
-use File::Spec;
-my $rc_file = -e File::Spec->catfile(
-    File::HomeDir->my_home,
-    '.perldb'
-);
-
 plan( tests => 19 );
 
 my $debugger = start_debugger();
@@ -73,7 +63,7 @@ my $debugger = start_debugger();
 }
 
 SKIP: {
-    skip( 'user has .perldb file, skipping...', 1) if $rc_file;
+    skip( 'user has .perldb file, skipping...', 1) if rc_file;
 
 	my @out = $debugger->get_value('$q');
 	cmp_deeply( \@out, [242], '$q is 11*22=242' );

@@ -1,3 +1,7 @@
+v0.12 2011.07.21
+    skip some tests if ~/.perldb exists (GARU)
+    add an example called debugger.pl
+
 v0.11 2009.12.22
     Eliminate most of the list/scalar context separation from methods.
 
