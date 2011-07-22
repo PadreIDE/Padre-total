@@ -154,7 +154,7 @@ sub clean_clicked {
 	return;
 }
 
-########
+#######
 # Event Handler Button Output Clicked
 #######
 sub width_ajust_clicked {
@@ -174,7 +174,7 @@ sub width_ajust_clicked {
 	return;
 }
 
-########
+#######
 # Event Handler _on_list_item_activated (Session only)
 #######
 sub _on_list_item_activated {
@@ -198,7 +198,7 @@ sub _on_list_item_activated {
 	return;
 }
 
-########
+#######
 # Event Handler _on_list_col_clicked
 #######
 sub _on_list_col_clicked {
@@ -239,7 +239,7 @@ sub _on_list_col_clicked {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # clean history
 #######
@@ -278,7 +278,7 @@ sub clean_history {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # clean session
 #######
@@ -308,7 +308,7 @@ sub clean_session {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # clean session files
 #######
@@ -344,7 +344,7 @@ sub clean_session_files {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # display any relation db
 #######
@@ -397,7 +397,7 @@ sub _display_any_relation {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # display session data from db
 #######
@@ -453,7 +453,7 @@ sub _display_session_db {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # _display_attribute_names
 #######
@@ -533,7 +533,7 @@ sub _get_cardinality {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # _show_relation_data
 #######
@@ -541,8 +541,6 @@ sub _show_relation_data {
 	my $self = shift;
 
 	my $info;
-
-	# my $fudge = $self->relation_name;
 
 	eval { $self->config_db->table_info; };
 	if ($EVAL_ERROR) {
@@ -565,7 +563,7 @@ sub _show_relation_data {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # _tidy_display
 #######
@@ -590,7 +588,7 @@ sub _tidy_display {
 	return;
 }
 
-########
+#######
 # Composed Method,
 # _setup_progressbar
 #######
@@ -680,7 +678,7 @@ sub plugin_disable {
 	return 1;
 }
 
-########
+#######
 # Composed Method,
 # Load About Dialog, only once
 #######
@@ -702,10 +700,7 @@ sub load_dialog_about {
 	return;
 }
 
-# dose not work with Wx, BP :(
-# __PACKAGE__->meta->make_immutable();
-# __PACKAGE__->meta->make_immutable( inline_constructor => 0 );
-no Mouse;
+no Moose;
 
 1;
 __END__

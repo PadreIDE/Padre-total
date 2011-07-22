@@ -12,7 +12,7 @@ requires_from 'lib/Padre/Plugin/Cookbook/Recipe02/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe03/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe04/Main.pm';
 
-# requires 'Mouse'                => '0.93';
+requires 'Padre::Plugin'                => '0.84';
 requires 'Moose'                => '2.00';
 requires 'namespace::autoclean' => '0.12';
 requires 'Data::Printer'        => '0.19';
