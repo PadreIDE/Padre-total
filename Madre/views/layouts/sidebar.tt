@@ -1,0 +1,13 @@
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <h3>Join the community</h3>
+            <ul class="links">
+
+              <li><a href="http://padre.perlide.org/">Padre</a></li>
+              <li><a href="http://twitter.com/PerlDancer/">Official Twitter</a></li>
+              <li><a href="http://github.com/sukria/Dancer/">GitHub Community</a></li>
+            </ul>
+          </li>
+          
+        </div>

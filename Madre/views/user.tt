@@ -1,0 +1,29 @@
+
+<div id="page">
+      <div id="sidebar">
+        <ul id="sidebar-items">
+          <li>
+            <h3>User Options</h3>
+            <ul class="links">
+
+              <li><a href="/user/login">Login</a></li>
+              <li><a href="/config/">Show Config</a></li>
+              </ul>
+          </li>
+      </div>    
+
+      <div id="content">
+        <div id="header">
+          <h1><% user.username %></h1>
+          <h2>registered <% user.registered %></h2>
+        </div>
+
+        <div>
+          <img class="user_image" src="/user/<% user.username %>/image" />
+          <h1><% user.username %></h1>
+        </div>
+        
+        
+        </div>
+      </div>
+    </div>

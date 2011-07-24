@@ -7,7 +7,7 @@ appname: "Madre"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
-layout: "main"
+#layout: "main"
 
 # when the charset is set to UTF-8 Dancer will handle for you
 # all the magic of encoding and decoding. You should not care
@@ -18,9 +18,9 @@ charset: "UTF-8"
 # simple: default and very basic template engine
 # template_toolkit: TT
 
-template: "simple"
+# template: "simple"
 
-# template: "template_toolkit"
+template: "template_toolkit"
 # engines:
 #   template_toolkit:
 #     encoding:  'utf8'
@@ -31,4 +31,14 @@ engines:
     JSON:
         allow_blessed: 1
         convert_blessed: 1
+    template_toolkit:
+            WRAPPER: layouts/main.tt
+            
+session: Storable
+session_dir: /tmp/dancer-sessions
+
+plack_middlewares: 
+    -
+        - StackTrace
+
 

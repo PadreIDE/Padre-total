@@ -187,3 +187,5 @@ padding-right: 160px;
 font-family: sans-serif;
 font-size: 10px;
 }
+
+label { display:block; text-align: right; }

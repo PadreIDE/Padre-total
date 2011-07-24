@@ -17,12 +17,15 @@ use ORLite {
                             $dbh->do(q|
                                 CREATE TABLE config (
                                     user_id INTEGER NOT NULL,
-                                    config BLOB,
-                                    modified DATETIME
+                                    data BLOB,
+                                    modified DATETIME NOT NULL DEFAULT (datetime('now')),
+                                    FOREIGN KEY(user_id) REFERENCES user(userid)
                                 )
                             |);
                             
                         }
 };
+
+use Madre::DB::User;
 
 1;
