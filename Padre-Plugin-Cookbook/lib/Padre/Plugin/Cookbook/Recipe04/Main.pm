@@ -87,7 +87,7 @@ sub update_clicked {
 
 	$self->clean->Disable;
 	$self->show->Enable;
-	$self->width_ajust->Enable;
+	$self->width_adjust->Enable;
 	$main->info(' ');
 
 	# get your selectd relation
@@ -102,7 +102,7 @@ sub update_clicked {
 	# get degree
 	eval { $self->config_db->table_info; };
 	if ($EVAL_ERROR) {
-		say "Opps failed to get table info for $self->config_db ";
+		say "Oops failed to get table info for $self->config_db ";
 		carp($EVAL_ERROR);
 	} else {
 		$self->attributes( $self->config_db->table_info );
@@ -157,7 +157,7 @@ sub clean_clicked {
 #######
 # Event Handler Button Output Clicked
 #######
-sub width_ajust_clicked {
+sub width_adjust_clicked {
 	my $self = shift;
 
 	if ( !$self->dialog_width ) {
@@ -261,7 +261,7 @@ sub clean_history {
 			say "$count: $_: found duplicate id: $events[$_][0]";
 			eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
 			if ($EVAL_ERROR) {
-				say "Opps $self->config_db tuple $events[$_][0] is missing";
+				say "Oops $self->config_db tuple $events[$_][0] is missing";
 				carp($EVAL_ERROR);
 			}
 			$count++;
@@ -295,7 +295,7 @@ sub clean_session {
 			say 'id :' . $tuples[$_][1] . ' empty, deleating';
 			eval { $self->config_db->delete("WHERE id = $tuples[$_][0]"); };
 			if ($EVAL_ERROR) {
-				say "Opps $self->config_db is damaged";
+				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
 			}
 
@@ -330,7 +330,7 @@ sub clean_session_files {
 			say 'warning warning';
 			eval { $self->config_db->delete("WHERE file = \"$_\""); };
 			if ($EVAL_ERROR) {
-				say "Opps $self->config_db is damaged";
+				say "Oops $self->config_db is damaged";
 				carp($EVAL_ERROR);
 			}
 
@@ -355,7 +355,7 @@ sub _display_any_relation {
 
 	eval { $self->config_db->select; };
 	if ($EVAL_ERROR) {
-		say "Opps $self->config_db is damaged";
+		say "Oops $self->config_db is damaged";
 		carp($EVAL_ERROR);
 	} else {
 		@tuples = $self->config_db->select( $self->sql_select );
@@ -381,7 +381,7 @@ sub _display_any_relation {
 
 				# test for attributes with {null} values
 				if ( !defined( $tuples[$idx][$_] ) ) {
-					say "Opps found a {null} in relation $self->{relation_name} ";
+					say "Oops found a {null} in relation $self->{relation_name} ";
 				} else {
 					$self->list_ctrl->SetItem( $idx, $ddx, ( $tuples[$idx][$_] ) );
 				}
@@ -408,7 +408,7 @@ sub _display_session_db {
 
 	eval { $self->config_db->select; };
 	if ($EVAL_ERROR) {
-		say "Opps $self->config_db is damaged";
+		say "Oops $self->config_db is damaged";
 		carp($EVAL_ERROR);
 	} else {
 		@tuples = $self->config_db->select( $self->sql_select );
@@ -523,7 +523,7 @@ sub _get_cardinality {
 	my $self = shift;
 	eval { $self->config_db->count; };
 	if ($EVAL_ERROR) {
-		say "Opps failed to get cardinality for $self->config_db ";
+		say "Oops failed to get cardinality for $self->config_db ";
 		carp($EVAL_ERROR);
 	} else {
 		$self->cardinality( $self->config_db->count );
@@ -544,7 +544,7 @@ sub _show_relation_data {
 
 	eval { $self->config_db->table_info; };
 	if ($EVAL_ERROR) {
-		say "Opps no info for $self->config_db ";
+		say "Oops no info for $self->config_db ";
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->table_info;
@@ -553,7 +553,7 @@ sub _show_relation_data {
 
 	eval { $self->config_db->select; };
 	if ($EVAL_ERROR) {
-		say "Opps $self->config_db is damaged";
+		say "Oops $self->config_db is damaged";
 		carp($EVAL_ERROR);
 	} else {
 		$info = $self->config_db->select;
@@ -785,7 +785,7 @@ Displays ALL the contents of selected relation in terminal with Data-Printer
 
 Displays the contents of your chosen tuple using Padre DB schemes
 
-=item width_ajust_clicked
+=item width_adjust_clicked
 
 Is a toggle to increase the width of the dialog of the viewing area
 

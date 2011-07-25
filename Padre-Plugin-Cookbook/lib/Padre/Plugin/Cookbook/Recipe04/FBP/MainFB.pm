@@ -203,20 +203,20 @@ sub new {
 		},
 	);
 
-	my $width_ajust = Wx::Button->new(
+	my $width_adjust = Wx::Button->new(
 		$self,
 		-1,
-		Wx::gettext("Ajust Width"),
+		Wx::gettext("Adjust Width"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-	$width_ajust->Disable;
+	$width_adjust->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$width_ajust,
+		$width_adjust,
 		sub {
-			shift->width_ajust_clicked(@_);
+			shift->width_adjust_clicked(@_);
 		},
 	);
 
@@ -256,7 +256,7 @@ sub new {
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $clean, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $width_ajust, 0, Wx::wxALL, 5 );
+	$buttons->Add( $width_adjust, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $close_button, 0, Wx::wxALL, 5 );
 
@@ -284,7 +284,7 @@ sub new {
 	$self->{relations} = $relations->GetId;
 	$self->{show} = $show->GetId;
 	$self->{clean} = $clean->GetId;
-	$self->{width_ajust} = $width_ajust->GetId;
+	$self->{width_adjust} = $width_adjust->GetId;
 
 	return $self;
 }
@@ -317,8 +317,8 @@ sub clean {
 	Wx::Window::FindWindowById($_[0]->{clean});
 }
 
-sub width_ajust {
-	Wx::Window::FindWindowById($_[0]->{width_ajust});
+sub width_adjust {
+	Wx::Window::FindWindowById($_[0]->{width_adjust});
 }
 
 sub about_clicked {
@@ -345,8 +345,8 @@ sub clean_clicked {
 	$_[0]->main->error('Handler method clean_clicked for event clean.OnButtonClick not implemented');
 }
 
-sub width_ajust_clicked {
-	$_[0]->main->error('Handler method width_ajust_clicked for event width_ajust.OnButtonClick not implemented');
+sub width_adjust_clicked {
+	$_[0]->main->error('Handler method width_adjust_clicked for event width_adjust.OnButtonClick not implemented');
 }
 
 1;
