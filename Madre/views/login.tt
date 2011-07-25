@@ -5,11 +5,11 @@
       <div id="content">
         <div id="header">
           <h1>Login</h1>
-          <h2><a href="/user/lostpassword">Forgot your password ?</a></h2>
+          <h2><a href="/lostpassword">Forgot your password ?</a></h2>
         </div>
 
         <div>
-         <form action="/user/login" method="POST" >
+         <form action="/login" method="POST" >
            <label>Username: <input type="text" name="username" /></label>
            <label>Password: <input type="password" name="password" /></label>
            <input type="submit" value="Login" />

@@ -26,6 +26,4 @@ use ORLite {
                         }
 };
 
-use Madre::DB::User;
-
 1;

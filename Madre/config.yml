@@ -35,7 +35,6 @@ engines:
             WRAPPER: layouts/main.tt
             
 session: Storable
-session_dir: /tmp/dancer-sessions
 
 plack_middlewares: 
     -

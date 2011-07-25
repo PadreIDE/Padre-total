@@ -11,7 +11,7 @@
         .error { background-color: #ffeeee; }
        </style>
        <div class="error"><% error %></div>
-       <label for="nickname">Nickname:<input type="text" name="nickname"/> </label> 
+       <label for="nickname">Nickname:<input type="text" name="username"/> </label> 
        <label for="password">Password:<input type="password" name="password"/></label> 
        
        <label for="password_confirm">Confirm Password:<input type="password" name="password_confirm"/></label>
