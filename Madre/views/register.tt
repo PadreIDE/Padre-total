@@ -4,7 +4,7 @@
       <h1>Register a new user</h1>
       <h2>Keep Padre configuration in sync between hosts</h2>
     </div>
-    <div>
+    <div style="width: 400px; margin: auto;">
       <form method="POST" id="form_register" action="<% request.base_uri %>">
        <style>
         label { display:block; text-align: right; }

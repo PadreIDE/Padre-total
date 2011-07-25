@@ -3,6 +3,7 @@
 
         
       <div id="content">
+      
         <div id="header">
           <h1>Madre </h1>
           <h2>Sync for <a href="http://padre.perlide.org/" >Padre - The Perl IDE</a></h2>
@@ -64,11 +65,16 @@
               </li>
 
             <li>
+              <% IF session.user %>
+              <h2 style="color: gray">Login</h2>
+              <p>You are logged in as <strong><% user.username %></strong>.</p>
+              <% ELSE %>
               <h2><a href="/login">Login</a></h2>
-
+                
               <p>
                 Already registered? Login to access your profile.
               </p>
+              <% END %>
             </li>
 
             <li>
@@ -81,5 +87,12 @@
 
           </ol>
         </div>
+        
+        
+
       </div>
+        <img style="position: absolute;left: -4px; z-index: -2; padding-top: 3px;"  src="/images/reflection.png"/>
     </div>
+
+    
+</div>

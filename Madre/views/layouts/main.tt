@@ -14,16 +14,17 @@
 
 </head>
 <body>
-<% USE Dumper %>
-
+<div id="backdrop"></div> <div id="floor"></div>
 <% content %>
+
+
+
 <div id="footer">
 Powered by <a href="http://perldancer.org/">Dancer</a> <% dancer_version %>
-<h2><% session %></h2>
-<pre><% Dumper.dump( session ) %>
-
-<% Dumper.dump( vars.user ) %>
 </pre>
 </div>
+
+
+
 </body>
 </html>

@@ -8,11 +8,12 @@
           <h2><a href="/lostpassword">Forgot your password ?</a></h2>
         </div>
 
-        <div>
+        <div style="width: 300px; margin: auto;">
          <form action="/login" method="POST" >
            <label>Username: <input type="text" name="username" /></label>
            <label>Password: <input type="password" name="password" /></label>
-           <input type="submit" value="Login" />
+           <hr/>
+           <label><input type="submit" value="Login" /></label>
          </form>
         </div>
         
