@@ -85,13 +85,12 @@ post '/register' => sub {
     if ($@ or ! defined $user) {
         debug( "$@ $user") ;
         status 500; # Internal error
-        return "$@";
+        return { error => $@ , title=>'Registration' } ;
     } else {
         my $location = '/user/name/' . $nickname;
         status 201; # Created
         header 'Location' => $location;
-        template 'created.tt' ;
-        return { user=>$user, user_uri => $location };
+        return template 'created.tt' ,{ user=>$user, user_uri => $location };
     }
 
 
