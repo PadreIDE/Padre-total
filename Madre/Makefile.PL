@@ -16,6 +16,8 @@ WriteMakefile(
         'YAML'       => 0,
         'Dancer'     => 1.3070,
         'ORLite'     => 0,
+        'DateTime'   => 0,
+        'DateTime::Format::Strptime' => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Madre-*' },

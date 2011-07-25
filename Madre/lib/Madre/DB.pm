@@ -10,7 +10,8 @@ use ORLite {
                                     id INTEGER NOT NULL PRIMARY KEY ,
                                     username TEXT UNIQUE NOT NULL,
                                     password TEXT NOT NULL,
-                                    email TEXT NOT NULL
+                                    email TEXT NOT NULL,
+                                    created DATETIME NOT NULL DEFAULT (datetime('now'))
                                 )
                             |);
                             

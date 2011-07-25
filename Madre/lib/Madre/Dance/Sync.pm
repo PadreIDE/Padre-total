@@ -4,6 +4,10 @@ use Madre::DB;
 use Digest::MD5 'md5_hex';
 use Data::Dumper;
 use JSON 'decode_json' , 'encode_json' ;
+use DateTime;
+use DateTime::Format::Strptime;
+
+my $dates = new DateTime::Format::Strptime pattern => '%F %T %z';
 
 set serializer => 'mutable';
 
@@ -21,12 +25,13 @@ before sub {
 
 get '/user/*' => sub {
     my ($username) = splat;
-    my $users = Madre::DB::User->select( 'where username = ? ',$username );
+    my ($user) = Madre::DB::User->select( 'where username = ? ',$username );
     # Single row.
-    if ( @$users == 1 ) {
-        return template 'user.tt' , $users->[0];
+    if ( $user) {
+        my ($conf) = Madre::DB::Config->select('WHERE user_id = ? ORDER BY modified DESC', $user->id );
+        return template 'user.tt' , { user =>  $user, conf => $conf };
     } else {
-        die "Unexpected multirow select for username '$username'";
+        die "No such user '$username'";
     }
 };
 
@@ -79,6 +84,7 @@ post '/register' => sub {
                 username => $nickname,
                 password => $pw_hash,
                 email    => $email,
+                created  => $dates->format_datetime( DateTime->now  ),
             );
         };
     
