@@ -34,6 +34,14 @@ div#floor {
     z-index: -2;
 }
 
+div#reflection {
+    position: absolute; 
+    width: 560px;height: 100px;
+    left: -4px; bottom: -105px;
+    /* z-index: -2;  */
+    background-image: url(/images/reflection.png);
+    background-repeat: no-repeat";
+}
 
 h1 {
 font-size: 28px;
@@ -64,6 +72,8 @@ border-top: none;
 padding: 25px;
 width: 500px;
 min-height: 200px;
+position: relative;
+left: 0px;
 }
 
 #sidebar {

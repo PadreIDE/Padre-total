@@ -15,8 +15,13 @@
 </head>
 <body>
 <div id="backdrop"></div> <div id="floor"></div>
-<% content %>
-
+<div id="page">
+ <div id="content">
+   <% content %>
+   
+ <div id="reflection"></div>
+ </div>
+</div>
 
 
 <div id="footer">

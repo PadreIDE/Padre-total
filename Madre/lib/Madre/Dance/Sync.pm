@@ -15,8 +15,10 @@ before sub {
   if ( session('user') ) {
         my ($u) = eval { Madre::DB::User->load(session('user')) };
         if ($@) {
+            debug( 'Invalid session user ' . session('user') );
             session->destroy;
         } else {
+            debug( 'Loaded session user - ' . $u->username );
             vars->{user} = $u;
         }
   }

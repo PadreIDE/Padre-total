@@ -1,9 +1,3 @@
-
-<div id="page">
-
-        
-      <div id="content">
-      
         <div id="header">
           <h1>Madre </h1>
           <h2>Sync for <a href="http://padre.perlide.org/" >Padre - The Perl IDE</a></h2>
@@ -12,62 +6,16 @@
         <div id="getting-started">
           <h1>Getting started</h1>
           <h2>Synchronise Padre settings - anywhere.</h2>
-                    
-          <h3><a href="#" id="about_env_link">About your application's environment</a></h3>
 
-          <div id="about-content" style="display: none;">
-            <table>
-                <tbody>
-                <tr>
-                    <td>Perl version</td>
-                    <td><tt><% perl_version %></tt></td>
-                </tr>
-                <tr>
-                    <td>Dancer version</td>
-                    <td><tt><% dancer_version %></tt></td>
-                </tr>
-                <tr>
-                    <td>Backend</td>
-                    <td><tt><% settings.apphandler %></tt></td>
-                </tr>
-                <tr>
-                    <td>Appdir</td>
-                    <td><tt>/home/andrewb/dev/padre/trunk/Madre/tmp/Madre</tt></td>
-                </tr>
-                <tr>
-                    <td>Template engine</td>
-                    <td><tt><% settings.template %></tt></td>
-                </tr>
-                <tr>
-                    <td>Logger engine</td>
-                    <td><tt><% settings.logger %></tt></td>
-                </tr>
-                <tr>
-                    <td>Running environment</td>
-                    <td><tt><% settings.environment %></tt></td>
-                </tr>
-                </tbody>
-            </table>
-          </div>
-
-    <script type="text/javascript">
-    $('#about_env_link').click(function() {
-        $('#about-content').slideToggle('fast', function() {
-            // ok
-        });
-    });
-    </script>
-
-
-          <ol>          
+          <ol>
             <li>
               <h2><a href="/register">Register</a></h2>
               </li>
 
             <li>
-              <% IF session.user %>
+              <% IF vars.user %>
               <h2 style="color: gray">Login</h2>
-              <p>You are logged in as <strong><% user.username %></strong>.</p>
+              <p>You are logged in as <a href="/user/<% vars.user.username %>" title="Profile"><strong><% vars.user.username %></strong></a>.</p>
               <% ELSE %>
               <h2><a href="/login">Login</a></h2>
                 
@@ -91,8 +39,3 @@
         
 
       </div>
-        <img style="position: absolute;left: -4px; z-index: -2; padding-top: 3px;"  src="/images/reflection.png"/>
-    </div>
-
-    
-</div>

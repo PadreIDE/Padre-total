@@ -1,5 +1,5 @@
-<div id="page">
-  <div id="content">
+
+
     <div id="header">
       <h1>Register a new user</h1>
       <h2>Keep Padre configuration in sync between hosts</h2>
@@ -23,5 +23,4 @@
        <label>Register your account <input type="submit" value="Register" /></label>
       </form>
     </div>
-  </div>
-</div>
+
