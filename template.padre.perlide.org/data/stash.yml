@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 July 26
+        url: http://wildperl.com/2011/07/padre-dmg-for-osx-lion-alpha-build/
+        title: Padre DMG for OSX Lion – alpha build
+        comment: by Tom Eliaz
       - date: 2011 July 19
         url: http://blogs.perl.org/users/adam_kennedy/2011/07/padre-form-builder---a-cross-platform-gui-design-solution-for-perl.html
         title: Padre Form Builder - A cross-platform GUI design solution for Perl
