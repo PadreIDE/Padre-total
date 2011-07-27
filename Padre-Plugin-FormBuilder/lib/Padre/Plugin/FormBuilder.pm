@@ -31,7 +31,7 @@ use Padre::Plugin    0.66 ();
 use Padre::Util      0.81 ();
 use Padre::Wx        0.66 ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin';
 
 # Temporary namespace counter

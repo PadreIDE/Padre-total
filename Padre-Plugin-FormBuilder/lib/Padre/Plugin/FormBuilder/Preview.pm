@@ -6,10 +6,10 @@ package Padre::Plugin::FormBuilder::Preview;
 use 5.008;
 use strict;
 use warnings;
-use Padre::Wx ();
+use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog

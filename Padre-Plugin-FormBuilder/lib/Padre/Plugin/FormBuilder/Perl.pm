@@ -25,10 +25,10 @@ use strict;
 use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.55 ();
+use FBP::Perl    0.57 ();
 use Mouse        0.61;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 extends 'FBP::Perl';
 

@@ -13,7 +13,7 @@ use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 use File::ShareDir ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -49,7 +49,7 @@ sub new {
 		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
-	my $browse = Wx::FilePickerCtrl->new(
+	$self->{browse} = Wx::FilePickerCtrl->new(
 		$self,
 		-1,
 		"",
@@ -62,13 +62,93 @@ sub new {
 
 	Wx::Event::EVT_FILEPICKER_CHANGED(
 		$self,
-		$browse,
+		$self->{browse},
 		sub {
 			shift->browse_changed(@_);
 		},
 	);
 
 	my $line1 = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLI_HORIZONTAL,
+	);
+
+	my $m_bitmap2 = Wx::StaticBitmap->new(
+		$self,
+		-1,
+		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "common.png" ), Wx::wxBITMAP_TYPE_ANY ),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+
+	my $m_staticText3 = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Code Generation Options"),
+	);
+	$m_staticText3->SetFont(
+		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	);
+
+	my $m_staticText5 = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("\$VERSION ="),
+	);
+
+	$self->{version} = Wx::TextCtrl->new(
+		$self,
+		-1,
+		"0.01",
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxTE_LEFT,
+	);
+	$self->{version}->SetMaxLength(10);
+
+	$self->{translate} = Wx::RadioBox->new(
+		$self,
+		-1,
+		Wx::gettext("Internationalisation"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		[
+			"\"None:\"",
+			"Wx::gettext(\"Naive:\")",
+			"Wx::gettext(\"Smart\") . \":\"",
+		],
+		1,
+		Wx::wxRA_SPECIFY_COLS,
+	);
+	$self->{translate}->SetSelection(0);
+
+	$self->{encapsulation} = Wx::RadioBox->new(
+		$self,
+		-1,
+		Wx::gettext("Encapsulation"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		[
+			"Naive Protection",
+			"Strict Protection",
+		],
+		1,
+		Wx::wxRA_SPECIFY_COLS,
+	);
+	$self->{encapsulation}->SetSelection(0);
+
+	$self->{padre} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("Generate dialog code for use in Padre or a Padre plugin"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+
+	my $m_staticline4 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -93,133 +173,63 @@ sub new {
 		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
-	my $associate = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("...and associate with current project"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-	$associate->SetToolTip(
-		Wx::gettext("Generates embedded tracking data in the dialog code")
-	);
-	$associate->Disable;
-
-	my $select = Wx::Choice->new(
+	$self->{select} = Wx::Choice->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		[],
 	);
-	$select->SetSelection(0);
-	$select->Disable;
+	$self->{select}->SetSelection(0);
+	$self->{select}->Disable;
 
-	my $preview = Wx::Button->new(
+	$self->{preview} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Preview"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-	$preview->Disable;
+	$self->{preview}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$preview,
+		$self->{preview},
 		sub {
 			shift->preview_clicked(@_);
 		},
 	);
 
-	my $m_staticText6 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Encapsulation:"),
-	);
-
-	my $encapsulation = Wx::Choice->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		[
-			"Naive",
-			"Strict",
-		],
-	);
-	$encapsulation->SetSelection(0);
-	$encapsulation->Disable;
-
-	my $m_staticText5 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("\$VERSION ="),
-	);
-
-	my $version = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"0.01",
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTE_LEFT,
-	);
-	$version->SetMaxLength(10);
-	$version->Disable;
-
-	my $generate = Wx::Button->new(
+	$self->{generate} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Generate Dialog"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 	);
-	$generate->Disable;
+	$self->{generate}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$generate,
+		$self->{generate},
 		sub {
 			shift->generate_clicked(@_);
 		},
 	);
 
+	$self->{associate} = Wx::CheckBox->new(
+		$self,
+		-1,
+		Wx::gettext("...and associate with current project"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+	);
+	$self->{associate}->SetToolTip(
+		Wx::gettext("Generates embedded tracking data in the dialog code")
+	);
+	$self->{associate}->Disable;
+
 	my $line2 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
-
-	my $m_bitmap2 = Wx::StaticBitmap->new(
-		$self,
-		-1,
-		Wx::Bitmap->new( File::ShareDir::dist_file( "Padre-Plugin-FormBuilder", "common.png" ), Wx::wxBITMAP_TYPE_ANY ),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-
-	my $m_staticText3 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Common Settings"),
-	);
-	$m_staticText3->SetFont(
-		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
-	);
-
-	my $padre = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Generate dialog code for use in Padre or a Padre plugin"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-	);
-	$padre->Disable;
-
-	my $m_staticline4 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -240,48 +250,53 @@ sub new {
 	$bSizer9->Add( $file, 0, Wx::wxALIGN_BOTTOM, 5 );
 
 	my $bSizer6 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer6->Add( $browse, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer6->Add( $self->{browse}, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+
+	my $bSizer8 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer8->Add( $m_bitmap2, 0, Wx::wxRIGHT, 5 );
+	$bSizer8->Add( $m_staticText3, 0, Wx::wxALIGN_BOTTOM, 1 );
+
+	my $bSizer10 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer10->Add( $m_staticText5, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_RIGHT | Wx::wxBOTTOM | Wx::wxLEFT | Wx::wxTOP, 5 );
+	$bSizer10->Add( $self->{version}, 0, Wx::wxALL, 5 );
+
+	my $bSizer11 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer11->Add( $self->{translate}, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer11->Add( $self->{encapsulation}, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
 
 	my $bSizer7 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer7->Add( $m_bitmap1, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxRIGHT, 5 );
 	$bSizer7->Add( $m_staticText4, 0, Wx::wxALIGN_BOTTOM | Wx::wxBOTTOM, 1 );
 
 	my $bSizer5 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer5->Add( $select, 1, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer5->Add( $preview, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
+	$bSizer5->Add( $self->{select}, 1, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer5->Add( $self->{preview}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
 
-	my $fgSizer2 = Wx::FlexGridSizer->new( 2, 2, 0, 0 );
-	$fgSizer2->SetFlexibleDirection(Wx::wxBOTH);
-	$fgSizer2->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
-	$fgSizer2->Add( $m_staticText6, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
-	$fgSizer2->Add( $encapsulation, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$fgSizer2->Add( $m_staticText5, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_RIGHT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $version, 0, Wx::wxALL, 5 );
-
-	my $bSizer8 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer8->Add( $m_bitmap2, 0, Wx::wxRIGHT, 5 );
-	$bSizer8->Add( $m_staticText3, 0, Wx::wxALIGN_BOTTOM, 1 );
+	my $bSizer12 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer12->Add( $self->{generate}, 0, Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxALL, 5 );
+	$bSizer12->Add( $self->{associate}, 0, Wx::wxALIGN_BOTTOM | Wx::wxALL, 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$buttons->Add( 50, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $cancel, 0, Wx::wxALL, 5 );
 
 	my $sizer2 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$sizer2->Add( $bSizer9, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer9, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$sizer2->Add( $bSizer6, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( 0, 5, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $line1, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 0 );
-	$sizer2->Add( $bSizer7, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$sizer2->Add( $associate, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALL, 5 );
-	$sizer2->Add( $bSizer5, 0, Wx::wxEXPAND, 0 );
-	$sizer2->Add( $fgSizer2, 0, Wx::wxEXPAND, 5 );
-	$sizer2->Add( 0, 20, 0, Wx::wxEXPAND, 5 );
-	$sizer2->Add( $generate, 0, Wx::wxALIGN_CENTER_HORIZONTAL | Wx::wxALL, 5 );
-	$sizer2->Add( $line2, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
-	$sizer2->Add( $bSizer8, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$sizer2->Add( $padre, 0, Wx::wxALL, 5 );
+	$sizer2->Add( $bSizer8, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer10, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer11, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $self->{padre}, 0, Wx::wxALL, 5 );
 	$sizer2->Add( 0, 10, 0, Wx::wxEXPAND, 5 );
 	$sizer2->Add( $m_staticline4, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer7, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer5, 0, Wx::wxEXPAND, 0 );
+	$sizer2->Add( 0, 10, 1, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $bSizer12, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( 0, 20, 0, Wx::wxEXPAND, 5 );
+	$sizer2->Add( $line2, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
 	$sizer2->Add( $buttons, 0, Wx::wxEXPAND, 5 );
 
 	my $sizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
@@ -291,48 +306,43 @@ sub new {
 	$self->Layout;
 	$sizer1->Fit($self);
 
-	$self->{browse} = $browse->GetId;
-	$self->{associate} = $associate->GetId;
-	$self->{select} = $select->GetId;
-	$self->{preview} = $preview->GetId;
-	$self->{encapsulation} = $encapsulation->GetId;
-	$self->{version} = $version->GetId;
-	$self->{generate} = $generate->GetId;
-	$self->{padre} = $padre->GetId;
-
 	return $self;
 }
 
 sub browse {
-	Wx::Window::FindWindowById($_[0]->{browse});
-}
-
-sub associate {
-	Wx::Window::FindWindowById($_[0]->{associate});
-}
-
-sub select {
-	Wx::Window::FindWindowById($_[0]->{select});
-}
-
-sub preview {
-	Wx::Window::FindWindowById($_[0]->{preview});
-}
-
-sub encapsulation {
-	Wx::Window::FindWindowById($_[0]->{encapsulation});
+	$_[0]->{browse};
 }
 
 sub version {
-	Wx::Window::FindWindowById($_[0]->{version});
+	$_[0]->{version};
 }
 
-sub generate {
-	Wx::Window::FindWindowById($_[0]->{generate});
+sub translate {
+	$_[0]->{translate};
+}
+
+sub encapsulation {
+	$_[0]->{encapsulation};
 }
 
 sub padre {
-	Wx::Window::FindWindowById($_[0]->{padre});
+	$_[0]->{padre};
+}
+
+sub select {
+	$_[0]->{select};
+}
+
+sub preview {
+	$_[0]->{preview};
+}
+
+sub generate {
+	$_[0]->{generate};
+}
+
+sub associate {
+	$_[0]->{associate};
 }
 
 sub browse_changed {

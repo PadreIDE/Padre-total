@@ -8,15 +8,23 @@ use Class::Inspector                    ();
 use Padre::Plugin::FormBuilder::FBP     ();
 use Padre::Plugin::FormBuilder::Preview ();
 
-our $VERSION = '0.01';
+our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::FormBuilder::FBP';
 
 # Temporary namespace counter
 my $COUNT = 0;
 
+use constant OPTIONS => qw{
+	translate
+	encapsulation
+	version
+	padre
+};
+
 use constant SINGLE => qw{
 	select
 	preview
+	translate
 	encapsulation
 	version
 	associate
@@ -36,6 +44,7 @@ sub new {
 
 	# Create the dialog
 	my $self = $class->SUPER::new($main);
+	$self->disable( OPTIONS, SINGLE );
 	$self->CenterOnParent;
 
 	# If we don't have a current project, disable the checkbox
@@ -59,8 +68,16 @@ sub padre_code {
 	!! $_[0]->padre->IsChecked;
 }
 
+sub i18n {
+	$_[0]->translate->GetSelection > 0;
+}
+
+sub i18n_trim {
+	$_[0]->translate->GetSelection > 1;
+}
+
 sub encapsulate {
-	$_[0]->encapsulation->GetSelection == 1
+	$_[0]->encapsulation->GetSelection == 1;
 }
 
 
@@ -77,7 +94,7 @@ sub browse_changed {
 	# Flush any existing state
 	$self->{xml} = undef;
 	$self->select->Clear;
-	$self->disable(SINGLE, 'padre');
+	$self->disable( OPTIONS, SINGLE );
 
 	# Attempt to load the file and parse out the dialog list
 	local $@;
@@ -107,14 +124,16 @@ sub browse_changed {
 		# Padre-compatible code generation to true.
 		if ( grep { /^Padre::/ } @$list ) {
 			$self->padre->SetValue(1);
-			$self->encapsulation->SetSelection(1);
+			$self->encapsulation->SetSelection(0);
+			$self->translate->SetSelection(2);
 		} else {
 			$self->padre->SetValue(0);
 			$self->encapsulation->SetSelection(0);
+			$self->translate->SetSelection(0);
 		}
 
 		# Enable the dialog list and buttons
-		$self->enable(SINGLE, 'padre');
+		$self->enable( OPTIONS, SINGLE );
 
 		# Indicate the FBP file is ok
 		if ( $self->browse->HasTextCtrl ) {
@@ -127,8 +146,7 @@ sub browse_changed {
 	if ( $@ ) {
 		# Indicate the FBP file is not ok
 		if ( $self->browse->HasTextCtrl ) {
-			my $ctrl = $self->browse->GetTextCtrl;
-			$ctrl->SetBackgroundColour(
+			$self->browse->GetTextCtrl->SetBackgroundColour(
 				Wx::Colour->new('#FFCCCC')
 			);
 		}
@@ -152,11 +170,13 @@ sub generate_clicked {
 
 	# Generate the dialog code
 	my $code = $self->generate_form(
-		fbp     => $fbp,
-		form    => $form,
-		package => $dialog,
-		padre   => $self->padre_code,
-		version => $self->version->GetValue || '0.01',
+		fbp       => $fbp,
+		form      => $form,
+		package   => $dialog,
+		padre     => $self->padre_code,
+		version   => $self->version->GetValue || '0.01',
+		i18n      => $self->i18n,
+		i18n_trim => $self->i18n_trim,
 	) or return;
 
 	# Open the generated code as a new file
@@ -183,11 +203,13 @@ sub preview_clicked {
 		local $@ = '';
 		my $code = eval {
 			$self->generate_form(
-				fbp     => $fbp,
-				form    => $form,
-				package => $name,
-				padre   => $self->padre_code,
-				version => $self->version->GetValue || '0.01',
+				fbp       => $fbp,
+				form      => $form,
+				package   => $name,
+				padre     => $self->padre_code,
+				version   => $self->version->GetValue || '0.01',
+				i18n      => 0,
+				i18n_trim => 0,
 			)
 		};
 		if ( $@ or not $code ) {
@@ -256,12 +278,16 @@ sub generate_form {
 			version     => $param{version},
 			encapsulate => $self->encapsulate,
 			nocritic    => 1,
+			i18n        => $param{i18n},
+			i18n_trim   => $param{i18n_trim},
 		);
 	} else {
 		require FBP::Perl;
 		$perl = FBP::Perl->new(
-			project  => $param{fbp}->project,
-			nocritic => 1,
+			project   => $param{fbp}->project,
+			nocritic  => 1,
+			i18n      => $param{i18n},
+			i18n_trim => $param{i18n_trim},
 		);
 	}
 
@@ -319,7 +345,7 @@ sub dialog_class {
 sub enable {
 	my $self = shift;
 	foreach my $name ( @_ ) {
-		$self->$name()->Enable;
+		$self->$name()->Enable(1);
 	}
 	return;
 }

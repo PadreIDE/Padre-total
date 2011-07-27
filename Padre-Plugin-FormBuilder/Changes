@@ -1,6 +1,12 @@
 Changes for Perl extension Padre-Plugin-FormBuilder
 
-0.02 to be released
+0.03 to be released
+	- Rearranged the codegen options to allow more detailed descriptions
+	- Added specific control of internationalisation in generated code
+	- Added support for the FPB::Perl i18n_trim option, labelled as
+	  "Smart" internationalisation.
+
+0.02 Mon 18 Jul 2011
 	- Allow toggling between pure FBP::Perl and Padre-specific code
 	- Add option to generate into a temporary namespace
 	- Major reorganisation to act as a permanent dialog
