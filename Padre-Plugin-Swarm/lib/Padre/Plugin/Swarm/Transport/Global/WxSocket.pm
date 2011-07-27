@@ -2,6 +2,7 @@ package Padre::Plugin::Swarm::Transport::Global::WxSocket;
 use strict;
 use warnings;
 use Wx qw( :socket );
+use Wx::Socket;
 use Padre::Wx ();
 use Padre::Logger;
 use Data::Dumper;
