@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 July 28
+        url: http://wildperl.com/2011/07/padre-on-osx-dmg-now-on-leopard-snow-leopard-and-lion/
+        title: Padre on OSX DMG – Now on Leopard, Snow Leopard, and Lion
+        comment:  by Tom Eliaz
       - date: 2011 July 26
         url: http://wildperl.com/2011/07/padre-dmg-for-osx-lion-alpha-build/
         title: Padre DMG for OSX Lion – alpha build
