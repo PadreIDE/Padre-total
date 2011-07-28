@@ -101,7 +101,7 @@ sub new {
 		$self,
 		$self->{dumper},
 		sub {
-			shift->dumper(@_);
+			shift->refresh(@_);
 		},
 	);
 
@@ -152,7 +152,7 @@ sub new {
 		$self,
 		$self->{input},
 		sub {
-			shift->input(@_);
+			shift->refresh(@_);
 		},
 	);
 
@@ -233,12 +233,8 @@ sub new {
 	return $self;
 }
 
-sub dumper {
-	$_[0]->main->error('Handler method dumper for event dumper.OnChoice not implemented');
-}
-
-sub input {
-	$_[0]->main->error('Handler method input for event input.OnText not implemented');
+sub refresh {
+	$_[0]->main->error('Handler method refresh for event dumper.OnChoice not implemented');
 }
 
 1;

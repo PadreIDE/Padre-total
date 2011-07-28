@@ -46,17 +46,28 @@ sub padre_interfaces {
 	'Padre::Wx'       => '0.81',
 }
 
-sub menu_plugins_simple {
+sub menu_plugins {
 	my $self = shift;
-	return $self->plugin_name => [
-		'Parser Tool' => sub {
-			$self->show_dialog;
+	my $main = shift;
+
+	# Create a manual menu item
+	my $item = Wx::MenuItem->new(
+		undef,
+		-1,
+		$self->plugin_name,
+	);
+	Wx::Event::EVT_MENU(
+		$main,
+		$item,
+		sub {
+			local $@;
+			eval {
+				$self->menu_dialog($main);
+			};
 		},
-		'---' => undef,
-		'About'   => sub {
-			$self->show_about;
-		},
-	];
+	);
+
+	return $item;
 }
 
 sub plugin_disable {
@@ -78,13 +89,9 @@ sub plugin_disable {
 ######################################################################
 # Main Methods
 
-sub show_about {
-	die "CODE INCOMPLETE";
-}
-
-sub show_dialog {
+sub menu_dialog {
 	my $self = shift;
-	my $main = $self->main;
+	my $main = shift;
 
 	# Spawn the dialog
 	require Padre::Plugin::ParserTool::Dialog;
