@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.72\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-26 18:47+0200\n"
+"POT-Creation-Date: 2011-07-29 09:58+0200\n"
 "PO-Revision-Date: 2011-03-08 12:00+0100\n"
 "Last-Translator: Zeno Gantner\n"
 "Language-Team: German\n"
@@ -5222,7 +5222,6 @@ msgid "Undo last change in current file"
 msgstr "Letzte Änderung rückgängigmachen"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1585
-#, fuzzy
 msgid "Unfold All"
 msgstr "Alle ausklappen"
 
@@ -5500,7 +5499,6 @@ msgid "Word count and other statistics of the current document"
 msgstr "Statistiken zum Dokument anzeigen"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1671
-#, fuzzy
 msgid "Word-Wrap File"
 msgstr "Automatischer Zeilenumbruch"
 
