@@ -2,7 +2,7 @@ package Padre::Plugin::Swarm::Transport::Global::WxSocket;
 use strict;
 use warnings;
 use Wx qw( :socket );
-use Wx::Socket;
+
 use Padre::Wx ();
 use Padre::Logger;
 use Data::Dumper;
@@ -28,6 +28,7 @@ sub loopback { 1 }
 
 sub enable {
     my $self = shift;
+    require Wx::Socket;
     my $servername = 'swarm.perlide.org';
     $self->connect( $servername ) ;
 }
