@@ -10,7 +10,7 @@ use Padre::Plugin   ();
 use Padre::Wx::Icon ();
 use Padre::Logger;
 
-our $VERSION = '0.1';
+our $VERSION = '0.11';
 our @ISA     = 'Padre::Plugin';
 
 use Class::XSAccessor {
