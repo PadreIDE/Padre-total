@@ -221,7 +221,7 @@ wxScintillaTextCtrl::~wxScintillaTextCtrl() {
 
 //----------------------------------------------------------------------
 
-wxIntPtr wxScintillaTextCtrl::SendMsg(int msg, wxUIntPtr wp, wxIntPtr lp) const
+wxIntPtr wxScintillaTextCtrl::SendMsg(int msg, wxUIntPtr wp, wxIntPtr lp)
 {
     return m_swx->WndProc(msg, wp, lp);
 }
@@ -281,30 +281,30 @@ void wxScintillaTextCtrl::ClearDocumentStyle()
 }
 
 // Returns the number of bytes in the document.
-int wxScintillaTextCtrl::GetLength() const
+int wxScintillaTextCtrl::GetLength()
 {
     return SendMsg(2006, 0, 0);
 }
 
 // Returns the character byte at the position.
-int wxScintillaTextCtrl::GetCharAt(int pos) const {
+int wxScintillaTextCtrl::GetCharAt(int pos) {
          return (unsigned char)SendMsg(2007, pos, 0);
 }
 
 // Returns the position of the caret.
-int wxScintillaTextCtrl::GetCurrentPos() const
+int wxScintillaTextCtrl::GetCurrentPos()
 {
     return SendMsg(2008, 0, 0);
 }
 
 // Returns the position of the opposite end of the selection to the caret.
-int wxScintillaTextCtrl::GetAnchor() const
+int wxScintillaTextCtrl::GetAnchor()
 {
     return SendMsg(2009, 0, 0);
 }
 
 // Returns the style byte at the position.
-int wxScintillaTextCtrl::GetStyleAt(int pos) const {
+int wxScintillaTextCtrl::GetStyleAt(int pos) {
          return (unsigned char)SendMsg(2010, pos, 0);
 }
 
@@ -354,7 +354,7 @@ wxMemoryBuffer wxScintillaTextCtrl::GetStyledText(int startPos, int endPos) {
 }
 
 // Are there any redoable actions in the undo history?
-bool wxScintillaTextCtrl::CanRedo() const
+bool wxScintillaTextCtrl::CanRedo()
 {
     return SendMsg(2016, 0, 0) != 0;
 }
@@ -372,14 +372,14 @@ void wxScintillaTextCtrl::MarkerDeleteHandle(int handle)
 }
 
 // Is undo history being collected?
-bool wxScintillaTextCtrl::GetUndoCollection() const
+bool wxScintillaTextCtrl::GetUndoCollection()
 {
     return SendMsg(2019, 0, 0) != 0;
 }
 
 // Are white space characters currently visible?
 // Returns one of SCWS_* constants.
-int wxScintillaTextCtrl::GetViewWhiteSpace() const
+int wxScintillaTextCtrl::GetViewWhiteSpace()
 {
     return SendMsg(2020, 0, 0);
 }
@@ -391,7 +391,7 @@ void wxScintillaTextCtrl::SetViewWhiteSpace(int viewWS)
 }
 
 // Find the position from a point within the window.
-int wxScintillaTextCtrl::PositionFromPoint(wxPoint pt) const {
+int wxScintillaTextCtrl::PositionFromPoint(wxPoint pt) {
         return SendMsg(2022, pt.x, pt.y);
 }
 
@@ -441,7 +441,7 @@ wxString wxScintillaTextCtrl::GetCurLine(int* linePos) {
 }
 
 // Retrieve the position of the last correctly styled character.
-int wxScintillaTextCtrl::GetEndStyled() const
+int wxScintillaTextCtrl::GetEndStyled()
 {
     return SendMsg(2028, 0, 0);
 }
@@ -453,7 +453,7 @@ void wxScintillaTextCtrl::ConvertEOLs(int eolMode)
 }
 
 // Retrieve the current end of line mode - one of CRLF, CR, or LF.
-int wxScintillaTextCtrl::GetEOLMode() const
+int wxScintillaTextCtrl::GetEOLMode()
 {
     return SendMsg(2030, 0, 0);
 }
@@ -479,7 +479,7 @@ void wxScintillaTextCtrl::SetStyling(int length, int style)
 }
 
 // Is drawing done first into a buffer or direct to the screen?
-bool wxScintillaTextCtrl::GetBufferedDraw() const
+bool wxScintillaTextCtrl::GetBufferedDraw()
 {
     return SendMsg(2034, 0, 0) != 0;
 }
@@ -498,7 +498,7 @@ void wxScintillaTextCtrl::SetTabWidth(int tabWidth)
 }
 
 // Retrieve the visible size of a tab.
-int wxScintillaTextCtrl::GetTabWidth() const
+int wxScintillaTextCtrl::GetTabWidth()
 {
     return SendMsg(2121, 0, 0);
 }
@@ -612,7 +612,7 @@ void wxScintillaTextCtrl::SetMarginType(int margin, int marginType)
 }
 
 // Retrieve the type of a margin.
-int wxScintillaTextCtrl::GetMarginType(int margin) const
+int wxScintillaTextCtrl::GetMarginType(int margin)
 {
     return SendMsg(2241, margin, 0);
 }
@@ -624,7 +624,7 @@ void wxScintillaTextCtrl::SetMarginWidth(int margin, int pixelWidth)
 }
 
 // Retrieve the width of a margin in pixels.
-int wxScintillaTextCtrl::GetMarginWidth(int margin) const
+int wxScintillaTextCtrl::GetMarginWidth(int margin)
 {
     return SendMsg(2243, margin, 0);
 }
@@ -636,7 +636,7 @@ void wxScintillaTextCtrl::SetMarginMask(int margin, int mask)
 }
 
 // Retrieve the marker mask of a margin.
-int wxScintillaTextCtrl::GetMarginMask(int margin) const
+int wxScintillaTextCtrl::GetMarginMask(int margin)
 {
     return SendMsg(2245, margin, 0);
 }
@@ -648,7 +648,7 @@ void wxScintillaTextCtrl::SetMarginSensitive(int margin, bool sensitive)
 }
 
 // Retrieve the mouse click sensitivity of a margin.
-bool wxScintillaTextCtrl::GetMarginSensitive(int margin) const
+bool wxScintillaTextCtrl::GetMarginSensitive(int margin)
 {
     return SendMsg(2247, margin, 0) != 0;
 }
@@ -714,33 +714,33 @@ void wxScintillaTextCtrl::StyleSetUnderline(int style, bool underline)
 }
 
 // Get the foreground colour of a style.
-wxColour wxScintillaTextCtrl::StyleGetForeground(int style) const
+wxColour wxScintillaTextCtrl::StyleGetForeground(int style)
 {
     long c = SendMsg(2481, style, 0);
     return wxColourFromLong(c);
 }
 
 // Get the background colour of a style.
-wxColour wxScintillaTextCtrl::StyleGetBackground(int style) const
+wxColour wxScintillaTextCtrl::StyleGetBackground(int style)
 {
     long c = SendMsg(2482, style, 0);
     return wxColourFromLong(c);
 }
 
 // Get is a style bold or not.
-bool wxScintillaTextCtrl::StyleGetBold(int style) const
+bool wxScintillaTextCtrl::StyleGetBold(int style)
 {
     return SendMsg(2483, style, 0) != 0;
 }
 
 // Get is a style italic or not.
-bool wxScintillaTextCtrl::StyleGetItalic(int style) const
+bool wxScintillaTextCtrl::StyleGetItalic(int style)
 {
     return SendMsg(2484, style, 0) != 0;
 }
 
 // Get the size of characters of a style.
-int wxScintillaTextCtrl::StyleGetSize(int style) const
+int wxScintillaTextCtrl::StyleGetSize(int style)
 {
     return SendMsg(2485, style, 0);
 }
@@ -758,44 +758,44 @@ wxString wxScintillaTextCtrl::StyleGetFaceName(int style) {
 }
 
 // Get is a style to have its end of line filled or not.
-bool wxScintillaTextCtrl::StyleGetEOLFilled(int style) const
+bool wxScintillaTextCtrl::StyleGetEOLFilled(int style)
 {
     return SendMsg(2487, style, 0) != 0;
 }
 
 // Get is a style underlined or not.
-bool wxScintillaTextCtrl::StyleGetUnderline(int style) const
+bool wxScintillaTextCtrl::StyleGetUnderline(int style)
 {
     return SendMsg(2488, style, 0) != 0;
 }
 
 // Get is a style mixed case, or to force upper or lower case.
-int wxScintillaTextCtrl::StyleGetCase(int style) const
+int wxScintillaTextCtrl::StyleGetCase(int style)
 {
     return SendMsg(2489, style, 0);
 }
 
 // Get the character set of the font in a style.
-int wxScintillaTextCtrl::StyleGetCharacterSet(int style) const
+int wxScintillaTextCtrl::StyleGetCharacterSet(int style)
 {
     return SendMsg(2490, style, 0);
 }
 
 // Get is a style visible or not.
-bool wxScintillaTextCtrl::StyleGetVisible(int style) const
+bool wxScintillaTextCtrl::StyleGetVisible(int style)
 {
     return SendMsg(2491, style, 0) != 0;
 }
 
 // Get is a style changeable or not (read only).
 // Experimental feature, currently buggy.
-bool wxScintillaTextCtrl::StyleGetChangeable(int style) const
+bool wxScintillaTextCtrl::StyleGetChangeable(int style)
 {
     return SendMsg(2492, style, 0) != 0;
 }
 
 // Get is a style a hotspot or not.
-bool wxScintillaTextCtrl::StyleGetHotSpot(int style) const
+bool wxScintillaTextCtrl::StyleGetHotSpot(int style)
 {
     return SendMsg(2493, style, 0) != 0;
 }
@@ -825,7 +825,7 @@ void wxScintillaTextCtrl::SetSelBackground(bool useSetting, const wxColour& back
 }
 
 // Get the alpha of the selection.
-int wxScintillaTextCtrl::GetSelAlpha() const
+int wxScintillaTextCtrl::GetSelAlpha()
 {
     return SendMsg(2477, 0, 0);
 }
@@ -837,7 +837,7 @@ void wxScintillaTextCtrl::SetSelAlpha(int alpha)
 }
 
 // Is the selection end of line filled?
-bool wxScintillaTextCtrl::GetSelEOLFilled() const
+bool wxScintillaTextCtrl::GetSelEOLFilled()
 {
     return SendMsg(2479, 0, 0) != 0;
 }
@@ -882,7 +882,7 @@ void wxScintillaTextCtrl::StyleSetVisible(int style, bool visible)
 }
 
 // Get the time in milliseconds that the caret is on and off.
-int wxScintillaTextCtrl::GetCaretPeriod() const
+int wxScintillaTextCtrl::GetCaretPeriod()
 {
     return SendMsg(2075, 0, 0);
 }
@@ -920,7 +920,7 @@ void wxScintillaTextCtrl::IndicatorSetStyle(int indic, int style)
 }
 
 // Retrieve the style of an indicator.
-int wxScintillaTextCtrl::IndicatorGetStyle(int indic) const
+int wxScintillaTextCtrl::IndicatorGetStyle(int indic)
 {
     return SendMsg(2081, indic, 0);
 }
@@ -932,7 +932,7 @@ void wxScintillaTextCtrl::IndicatorSetForeground(int indic, const wxColour& fore
 }
 
 // Retrieve the foreground colour of an indicator.
-wxColour wxScintillaTextCtrl::IndicatorGetForeground(int indic) const
+wxColour wxScintillaTextCtrl::IndicatorGetForeground(int indic)
 {
     long c = SendMsg(2083, indic, 0);
     return wxColourFromLong(c);
@@ -945,7 +945,7 @@ void wxScintillaTextCtrl::IndicatorSetUnder(int indic, bool under)
 }
 
 // Retrieve whether indicator drawn under or over text.
-bool wxScintillaTextCtrl::IndicatorGetUnder(int indic) const
+bool wxScintillaTextCtrl::IndicatorGetUnder(int indic)
 {
     return SendMsg(2511, indic, 0) != 0;
 }
@@ -969,7 +969,7 @@ void wxScintillaTextCtrl::SetWhitespaceSize(int size)
 }
 
 // Get the size of the dots used to mark space characters.
-int wxScintillaTextCtrl::GetWhitespaceSize() const
+int wxScintillaTextCtrl::GetWhitespaceSize()
 {
     return SendMsg(2087, 0, 0);
 }
@@ -983,7 +983,7 @@ void wxScintillaTextCtrl::SetStyleBits(int bits)
 }
 
 // Retrieve number of bits in style bytes used to hold the lexical state.
-int wxScintillaTextCtrl::GetStyleBits() const
+int wxScintillaTextCtrl::GetStyleBits()
 {
     return SendMsg(2091, 0, 0);
 }
@@ -995,19 +995,19 @@ void wxScintillaTextCtrl::SetLineState(int line, int state)
 }
 
 // Retrieve the extra styling information for a line.
-int wxScintillaTextCtrl::GetLineState(int line) const
+int wxScintillaTextCtrl::GetLineState(int line)
 {
     return SendMsg(2093, line, 0);
 }
 
 // Retrieve the last line number that has line state.
-int wxScintillaTextCtrl::GetMaxLineState() const
+int wxScintillaTextCtrl::GetMaxLineState()
 {
     return SendMsg(2094, 0, 0);
 }
 
 // Is the background of the line containing the caret in a different colour?
-bool wxScintillaTextCtrl::GetCaretLineVisible() const
+bool wxScintillaTextCtrl::GetCaretLineVisible()
 {
     return SendMsg(2095, 0, 0) != 0;
 }
@@ -1019,7 +1019,7 @@ void wxScintillaTextCtrl::SetCaretLineVisible(bool show)
 }
 
 // Get the colour of the background of the line containing the caret.
-wxColour wxScintillaTextCtrl::GetCaretLineBackground() const
+wxColour wxScintillaTextCtrl::GetCaretLineBackground()
 {
     long c = SendMsg(2097, 0, 0);
     return wxColourFromLong(c);
@@ -1084,7 +1084,7 @@ void wxScintillaTextCtrl::AutoCompSetSeparator(int separatorCharacter)
 }
 
 // Retrieve the auto-completion list separator character.
-int wxScintillaTextCtrl::AutoCompGetSeparator() const
+int wxScintillaTextCtrl::AutoCompGetSeparator()
 {
     return SendMsg(2107, 0, 0);
 }
@@ -1103,7 +1103,7 @@ void wxScintillaTextCtrl::AutoCompSetCancelAtStart(bool cancel)
 }
 
 // Retrieve whether auto-completion cancelled by backspacing before start.
-bool wxScintillaTextCtrl::AutoCompGetCancelAtStart() const
+bool wxScintillaTextCtrl::AutoCompGetCancelAtStart()
 {
     return SendMsg(2111, 0, 0) != 0;
 }
@@ -1122,7 +1122,7 @@ void wxScintillaTextCtrl::AutoCompSetChooseSingle(bool chooseSingle)
 }
 
 // Retrieve whether a single item auto-completion list automatically choose the item.
-bool wxScintillaTextCtrl::AutoCompGetChooseSingle() const
+bool wxScintillaTextCtrl::AutoCompGetChooseSingle()
 {
     return SendMsg(2114, 0, 0) != 0;
 }
@@ -1134,7 +1134,7 @@ void wxScintillaTextCtrl::AutoCompSetIgnoreCase(bool ignoreCase)
 }
 
 // Retrieve state of ignore case flag.
-bool wxScintillaTextCtrl::AutoCompGetIgnoreCase() const
+bool wxScintillaTextCtrl::AutoCompGetIgnoreCase()
 {
     return SendMsg(2116, 0, 0) != 0;
 }
@@ -1152,7 +1152,7 @@ void wxScintillaTextCtrl::AutoCompSetAutoHide(bool autoHide)
 }
 
 // Retrieve whether or not autocompletion is hidden automatically when nothing matches.
-bool wxScintillaTextCtrl::AutoCompGetAutoHide() const
+bool wxScintillaTextCtrl::AutoCompGetAutoHide()
 {
     return SendMsg(2119, 0, 0) != 0;
 }
@@ -1166,7 +1166,7 @@ void wxScintillaTextCtrl::AutoCompSetDropRestOfWord(bool dropRestOfWord)
 
 // Retrieve whether or not autocompletion deletes any word characters
 // after the inserted text upon completion.
-bool wxScintillaTextCtrl::AutoCompGetDropRestOfWord() const
+bool wxScintillaTextCtrl::AutoCompGetDropRestOfWord()
 {
     return SendMsg(2271, 0, 0) != 0;
 }
@@ -1195,7 +1195,7 @@ void wxScintillaTextCtrl::ClearRegisteredImages()
 }
 
 // Retrieve the auto-completion list type-separator character.
-int wxScintillaTextCtrl::AutoCompGetTypeSeparator() const
+int wxScintillaTextCtrl::AutoCompGetTypeSeparator()
 {
     return SendMsg(2285, 0, 0);
 }
@@ -1215,7 +1215,7 @@ void wxScintillaTextCtrl::AutoCompSetMaxWidth(int characterCount)
 }
 
 // Get the maximum width, in characters, of auto-completion and user lists.
-int wxScintillaTextCtrl::AutoCompGetMaxWidth() const
+int wxScintillaTextCtrl::AutoCompGetMaxWidth()
 {
     return SendMsg(2209, 0, 0);
 }
@@ -1228,7 +1228,7 @@ void wxScintillaTextCtrl::AutoCompSetMaxHeight(int rowCount)
 }
 
 // Set the maximum height, in rows, of auto-completion and user lists.
-int wxScintillaTextCtrl::AutoCompGetMaxHeight() const
+int wxScintillaTextCtrl::AutoCompGetMaxHeight()
 {
     return SendMsg(2211, 0, 0);
 }
@@ -1240,7 +1240,7 @@ void wxScintillaTextCtrl::SetIndent(int indentSize)
 }
 
 // Retrieve indentation size.
-int wxScintillaTextCtrl::GetIndent() const
+int wxScintillaTextCtrl::GetIndent()
 {
     return SendMsg(2123, 0, 0);
 }
@@ -1253,7 +1253,7 @@ void wxScintillaTextCtrl::SetUseTabs(bool useTabs)
 }
 
 // Retrieve whether tabs will be used in indentation.
-bool wxScintillaTextCtrl::GetUseTabs() const
+bool wxScintillaTextCtrl::GetUseTabs()
 {
     return SendMsg(2125, 0, 0) != 0;
 }
@@ -1265,19 +1265,19 @@ void wxScintillaTextCtrl::SetLineIndentation(int line, int indentSize)
 }
 
 // Retrieve the number of columns that a line is indented.
-int wxScintillaTextCtrl::GetLineIndentation(int line) const
+int wxScintillaTextCtrl::GetLineIndentation(int line)
 {
     return SendMsg(2127, line, 0);
 }
 
 // Retrieve the position before the first non indentation character on a line.
-int wxScintillaTextCtrl::GetLineIndentPosition(int line) const
+int wxScintillaTextCtrl::GetLineIndentPosition(int line)
 {
     return SendMsg(2128, line, 0);
 }
 
 // Retrieve the column number of a position, taking tab width into account.
-int wxScintillaTextCtrl::GetColumn(int pos) const
+int wxScintillaTextCtrl::GetColumn(int pos)
 {
     return SendMsg(2129, pos, 0);
 }
@@ -1289,7 +1289,7 @@ void wxScintillaTextCtrl::SetUseHorizontalScrollBar(bool show)
 }
 
 // Is the horizontal scroll bar visible?
-bool wxScintillaTextCtrl::GetUseHorizontalScrollBar() const
+bool wxScintillaTextCtrl::GetUseHorizontalScrollBar()
 {
     return SendMsg(2131, 0, 0) != 0;
 }
@@ -1301,7 +1301,7 @@ void wxScintillaTextCtrl::SetIndentationGuides(int indentView)
 }
 
 // Are the indentation guides visible?
-int wxScintillaTextCtrl::GetIndentationGuides() const
+int wxScintillaTextCtrl::GetIndentationGuides()
 {
     return SendMsg(2133, 0, 0);
 }
@@ -1314,32 +1314,32 @@ void wxScintillaTextCtrl::SetHighlightGuide(int column)
 }
 
 // Get the highlighted indentation guide column.
-int wxScintillaTextCtrl::GetHighlightGuide() const
+int wxScintillaTextCtrl::GetHighlightGuide()
 {
     return SendMsg(2135, 0, 0);
 }
 
 // Get the position after the last visible characters on a line.
-int wxScintillaTextCtrl::GetLineEndPosition(int line) const
+int wxScintillaTextCtrl::GetLineEndPosition(int line)
 {
     return SendMsg(2136, line, 0);
 }
 
 // Get the code page used to interpret the bytes of the document as characters.
-int wxScintillaTextCtrl::GetCodePage() const
+int wxScintillaTextCtrl::GetCodePage()
 {
     return SendMsg(2137, 0, 0);
 }
 
 // Get the foreground colour of the caret.
-wxColour wxScintillaTextCtrl::GetCaretForeground() const
+wxColour wxScintillaTextCtrl::GetCaretForeground()
 {
     long c = SendMsg(2138, 0, 0);
     return wxColourFromLong(c);
 }
 
 // In read-only mode?
-bool wxScintillaTextCtrl::GetReadOnly() const
+bool wxScintillaTextCtrl::GetReadOnly()
 {
     return SendMsg(2140, 0, 0) != 0;
 }
@@ -1357,7 +1357,7 @@ void wxScintillaTextCtrl::SetSelectionStart(int pos)
 }
 
 // Returns the position at the start of the selection.
-int wxScintillaTextCtrl::GetSelectionStart() const
+int wxScintillaTextCtrl::GetSelectionStart()
 {
     return SendMsg(2143, 0, 0);
 }
@@ -1369,7 +1369,7 @@ void wxScintillaTextCtrl::SetSelectionEnd(int pos)
 }
 
 // Returns the position at the end of the selection.
-int wxScintillaTextCtrl::GetSelectionEnd() const
+int wxScintillaTextCtrl::GetSelectionEnd()
 {
     return SendMsg(2145, 0, 0);
 }
@@ -1381,7 +1381,7 @@ void wxScintillaTextCtrl::SetPrintMagnification(int magnification)
 }
 
 // Returns the print magnification.
-int wxScintillaTextCtrl::GetPrintMagnification() const
+int wxScintillaTextCtrl::GetPrintMagnification()
 {
     return SendMsg(2147, 0, 0);
 }
@@ -1393,7 +1393,7 @@ void wxScintillaTextCtrl::SetPrintColourMode(int mode)
 }
 
 // Returns the print colour mode.
-int wxScintillaTextCtrl::GetPrintColourMode() const
+int wxScintillaTextCtrl::GetPrintColourMode()
 {
     return SendMsg(2149, 0, 0);
 }
@@ -1443,13 +1443,13 @@ int wxScintillaTextCtrl::FindText(int minPos, int maxPos,
 }
 
 // Retrieve the display line at the top of the display.
-int wxScintillaTextCtrl::GetFirstVisibleLine() const
+int wxScintillaTextCtrl::GetFirstVisibleLine()
 {
     return SendMsg(2152, 0, 0);
 }
 
 // Retrieve the contents of a line.
-wxString wxScintillaTextCtrl::GetLine(int line) const {
+wxString wxScintillaTextCtrl::GetLine(int line) {
          int len = LineLength(line);
          if (!len) return wxEmptyString;
 
@@ -1462,7 +1462,7 @@ wxString wxScintillaTextCtrl::GetLine(int line) const {
 }
 
 // Returns the number of lines in the document. There is always at least one.
-int wxScintillaTextCtrl::GetLineCount() const
+int wxScintillaTextCtrl::GetLineCount()
 {
     return SendMsg(2154, 0, 0);
 }
@@ -1474,7 +1474,7 @@ void wxScintillaTextCtrl::SetMarginLeft(int pixelWidth)
 }
 
 // Returns the size in pixels of the left margin.
-int wxScintillaTextCtrl::GetMarginLeft() const
+int wxScintillaTextCtrl::GetMarginLeft()
 {
     return SendMsg(2156, 0, 0);
 }
@@ -1486,13 +1486,13 @@ void wxScintillaTextCtrl::SetMarginRight(int pixelWidth)
 }
 
 // Returns the size in pixels of the right margin.
-int wxScintillaTextCtrl::GetMarginRight() const
+int wxScintillaTextCtrl::GetMarginRight()
 {
     return SendMsg(2158, 0, 0);
 }
 
 // Is the document different from when it was last saved?
-bool wxScintillaTextCtrl::GetModify() const
+bool wxScintillaTextCtrl::GetModify()
 {
     return SendMsg(2159, 0, 0) != 0;
 }
@@ -1542,13 +1542,13 @@ void wxScintillaTextCtrl::HideSelection(bool normal)
 }
 
 // Retrieve the line containing a position.
-int wxScintillaTextCtrl::LineFromPosition(int pos) const
+int wxScintillaTextCtrl::LineFromPosition(int pos)
 {
     return SendMsg(2166, pos, 0);
 }
 
 // Retrieve the position at the start of a line.
-int wxScintillaTextCtrl::PositionFromLine(int line) const
+int wxScintillaTextCtrl::PositionFromLine(int line)
 {
     return SendMsg(2167, line, 0);
 }
@@ -1578,13 +1578,13 @@ void wxScintillaTextCtrl::SetReadOnly(bool readOnly)
 }
 
 // Will a paste succeed?
-bool wxScintillaTextCtrl::CanPaste() const
+bool wxScintillaTextCtrl::CanPaste()
 {
     return SendMsg(2173, 0, 0) != 0;
 }
 
 // Are there any undoable actions in the undo history?
-bool wxScintillaTextCtrl::CanUndo() const
+bool wxScintillaTextCtrl::CanUndo()
 {
     return SendMsg(2174, 0, 0) != 0;
 }
@@ -1632,7 +1632,7 @@ void wxScintillaTextCtrl::SetText(const wxString& text)
 }
 
 // Retrieve all the text in the document.
-wxString wxScintillaTextCtrl::GetText() const {
+wxString wxScintillaTextCtrl::GetText() {
          int len  = GetTextLength();
          wxMemoryBuffer mbuf(len+1);   // leave room for the null...
          char* buf = (char*)mbuf.GetWriteBuf(len+1);
@@ -1643,7 +1643,7 @@ wxString wxScintillaTextCtrl::GetText() const {
 }
 
 // Retrieve the number of characters in the document.
-int wxScintillaTextCtrl::GetTextLength() const
+int wxScintillaTextCtrl::GetTextLength()
 {
     return SendMsg(2183, 0, 0);
 }
@@ -1655,7 +1655,7 @@ void wxScintillaTextCtrl::SetOvertype(bool overtype)
 }
 
 // Returns true if overtype mode is active otherwise false is returned.
-bool wxScintillaTextCtrl::GetOvertype() const
+bool wxScintillaTextCtrl::GetOvertype()
 {
     return SendMsg(2187, 0, 0) != 0;
 }
@@ -1667,7 +1667,7 @@ void wxScintillaTextCtrl::SetCaretWidth(int pixelWidth)
 }
 
 // Returns the width of the insert mode caret.
-int wxScintillaTextCtrl::GetCaretWidth() const
+int wxScintillaTextCtrl::GetCaretWidth()
 {
     return SendMsg(2189, 0, 0);
 }
@@ -1680,7 +1680,7 @@ void wxScintillaTextCtrl::SetTargetStart(int pos)
 }
 
 // Get the position that starts the target.
-int wxScintillaTextCtrl::GetTargetStart() const
+int wxScintillaTextCtrl::GetTargetStart()
 {
     return SendMsg(2191, 0, 0);
 }
@@ -1693,7 +1693,7 @@ void wxScintillaTextCtrl::SetTargetEnd(int pos)
 }
 
 // Get the position that ends the target.
-int wxScintillaTextCtrl::GetTargetEnd() const
+int wxScintillaTextCtrl::GetTargetEnd()
 {
     return SendMsg(2193, 0, 0);
 }
@@ -1735,7 +1735,7 @@ void wxScintillaTextCtrl::SetSearchFlags(int flags)
 }
 
 // Get the search flags used by SearchInTarget.
-int wxScintillaTextCtrl::GetSearchFlags() const
+int wxScintillaTextCtrl::GetSearchFlags()
 {
     return SendMsg(2199, 0, 0);
 }
@@ -1821,19 +1821,19 @@ void wxScintillaTextCtrl::SetFoldLevel(int line, int level)
 }
 
 // Retrieve the fold level of a line.
-int wxScintillaTextCtrl::GetFoldLevel(int line) const
+int wxScintillaTextCtrl::GetFoldLevel(int line)
 {
     return SendMsg(2223, line, 0);
 }
 
 // Find the last child line of a header line.
-int wxScintillaTextCtrl::GetLastChild(int line, int level) const
+int wxScintillaTextCtrl::GetLastChild(int line, int level)
 {
     return SendMsg(2224, line, level);
 }
 
 // Find the parent line of a child line.
-int wxScintillaTextCtrl::GetFoldParent(int line) const
+int wxScintillaTextCtrl::GetFoldParent(int line)
 {
     return SendMsg(2225, line, 0);
 }
@@ -1851,7 +1851,7 @@ void wxScintillaTextCtrl::HideLines(int lineStart, int lineEnd)
 }
 
 // Is a line visible?
-bool wxScintillaTextCtrl::GetLineVisible(int line) const
+bool wxScintillaTextCtrl::GetLineVisible(int line)
 {
     return SendMsg(2228, line, 0) != 0;
 }
@@ -1863,7 +1863,7 @@ void wxScintillaTextCtrl::SetFoldExpanded(int line, bool expanded)
 }
 
 // Is a header line expanded?
-bool wxScintillaTextCtrl::GetFoldExpanded(int line) const
+bool wxScintillaTextCtrl::GetFoldExpanded(int line)
 {
     return SendMsg(2230, line, 0) != 0;
 }
@@ -1900,7 +1900,7 @@ void wxScintillaTextCtrl::SetTabIndents(bool tabIndents)
 }
 
 // Does a tab pressed when caret is within indentation indent?
-bool wxScintillaTextCtrl::GetTabIndents() const
+bool wxScintillaTextCtrl::GetTabIndents()
 {
     return SendMsg(2261, 0, 0) != 0;
 }
@@ -1912,7 +1912,7 @@ void wxScintillaTextCtrl::SetBackSpaceUnIndents(bool bsUnIndents)
 }
 
 // Does a backspace pressed when caret is within indentation unindent?
-bool wxScintillaTextCtrl::GetBackSpaceUnIndents() const
+bool wxScintillaTextCtrl::GetBackSpaceUnIndents()
 {
     return SendMsg(2263, 0, 0) != 0;
 }
@@ -1924,7 +1924,7 @@ void wxScintillaTextCtrl::SetMouseDwellTime(int periodMilliseconds)
 }
 
 // Retrieve the time the mouse must sit still to generate a mouse dwell event.
-int wxScintillaTextCtrl::GetMouseDwellTime() const
+int wxScintillaTextCtrl::GetMouseDwellTime()
 {
     return SendMsg(2265, 0, 0);
 }
@@ -1948,7 +1948,7 @@ void wxScintillaTextCtrl::SetWrapMode(int mode)
 }
 
 // Retrieve whether text is word wrapped.
-int wxScintillaTextCtrl::GetWrapMode() const
+int wxScintillaTextCtrl::GetWrapMode()
 {
     return SendMsg(2269, 0, 0);
 }
@@ -1960,7 +1960,7 @@ void wxScintillaTextCtrl::SetWrapVisualFlags(int wrapVisualFlags)
 }
 
 // Retrive the display mode of visual flags for wrapped lines.
-int wxScintillaTextCtrl::GetWrapVisualFlags() const
+int wxScintillaTextCtrl::GetWrapVisualFlags()
 {
     return SendMsg(2461, 0, 0);
 }
@@ -1972,7 +1972,7 @@ void wxScintillaTextCtrl::SetWrapVisualFlagsLocation(int wrapVisualFlagsLocation
 }
 
 // Retrive the location of visual flags for wrapped lines.
-int wxScintillaTextCtrl::GetWrapVisualFlagsLocation() const
+int wxScintillaTextCtrl::GetWrapVisualFlagsLocation()
 {
     return SendMsg(2463, 0, 0);
 }
@@ -1984,7 +1984,7 @@ void wxScintillaTextCtrl::SetWrapStartIndent(int indent)
 }
 
 // Retrive the start indent for wrapped lines.
-int wxScintillaTextCtrl::GetWrapStartIndent() const
+int wxScintillaTextCtrl::GetWrapStartIndent()
 {
     return SendMsg(2465, 0, 0);
 }
@@ -1996,7 +1996,7 @@ void wxScintillaTextCtrl::SetWrapIndentMode(int mode)
 }
 
 // Retrieve how wrapped sublines are placed. Default is fixed.
-int wxScintillaTextCtrl::GetWrapIndentMode() const
+int wxScintillaTextCtrl::GetWrapIndentMode()
 {
     return SendMsg(2473, 0, 0);
 }
@@ -2008,7 +2008,7 @@ void wxScintillaTextCtrl::SetLayoutCache(int mode)
 }
 
 // Retrieve the degree of caching of layout information.
-int wxScintillaTextCtrl::GetLayoutCache() const
+int wxScintillaTextCtrl::GetLayoutCache()
 {
     return SendMsg(2273, 0, 0);
 }
@@ -2020,7 +2020,7 @@ void wxScintillaTextCtrl::SetScrollWidth(int pixelWidth)
 }
 
 // Retrieve the document width assumed for scrolling.
-int wxScintillaTextCtrl::GetScrollWidth() const
+int wxScintillaTextCtrl::GetScrollWidth()
 {
     return SendMsg(2275, 0, 0);
 }
@@ -2032,7 +2032,7 @@ void wxScintillaTextCtrl::SetScrollWidthTracking(bool tracking)
 }
 
 // Retrieve whether the scroll width tracks wide lines.
-bool wxScintillaTextCtrl::GetScrollWidthTracking() const
+bool wxScintillaTextCtrl::GetScrollWidthTracking()
 {
     return SendMsg(2517, 0, 0) != 0;
 }
@@ -2055,7 +2055,7 @@ void wxScintillaTextCtrl::SetEndAtLastLine(bool endAtLastLine)
 
 // Retrieve whether the maximum scroll position has the last
 // line at the bottom of the view.
-bool wxScintillaTextCtrl::GetEndAtLastLine() const
+bool wxScintillaTextCtrl::GetEndAtLastLine()
 {
     return SendMsg(2278, 0, 0) != 0;
 }
@@ -2073,7 +2073,7 @@ void wxScintillaTextCtrl::SetUseVerticalScrollBar(bool show)
 }
 
 // Is the vertical scroll bar visible?
-bool wxScintillaTextCtrl::GetUseVerticalScrollBar() const
+bool wxScintillaTextCtrl::GetUseVerticalScrollBar()
 {
     return SendMsg(2281, 0, 0) != 0;
 }
@@ -2085,7 +2085,7 @@ void wxScintillaTextCtrl::AppendText(const wxString& text) {
 }
 
 // Is drawing done in two phases with backgrounds drawn before foregrounds?
-bool wxScintillaTextCtrl::GetTwoPhaseDraw() const
+bool wxScintillaTextCtrl::GetTwoPhaseDraw()
 {
     return SendMsg(2283, 0, 0) != 0;
 }
@@ -2486,7 +2486,7 @@ void wxScintillaTextCtrl::MoveCaretInsideView()
 }
 
 // How many characters are on a line, including end of line characters?
-int wxScintillaTextCtrl::LineLength(int line) const
+int wxScintillaTextCtrl::LineLength(int line)
 {
     return SendMsg(2350, line, 0);
 }
@@ -2510,7 +2510,7 @@ int wxScintillaTextCtrl::BraceMatch(int pos)
 }
 
 // Are the end of line characters visible?
-bool wxScintillaTextCtrl::GetViewEOL() const
+bool wxScintillaTextCtrl::GetViewEOL()
 {
     return SendMsg(2355, 0, 0) != 0;
 }
@@ -2538,7 +2538,7 @@ void wxScintillaTextCtrl::SetModEventMask(int mask)
 }
 
 // Retrieve the column number which text should be kept within.
-int wxScintillaTextCtrl::GetEdgeColumn() const
+int wxScintillaTextCtrl::GetEdgeColumn()
 {
     return SendMsg(2360, 0, 0);
 }
@@ -2551,7 +2551,7 @@ void wxScintillaTextCtrl::SetEdgeColumn(int column)
 }
 
 // Retrieve the edge highlight mode.
-int wxScintillaTextCtrl::GetEdgeMode() const
+int wxScintillaTextCtrl::GetEdgeMode()
 {
     return SendMsg(2362, 0, 0);
 }
@@ -2564,7 +2564,7 @@ void wxScintillaTextCtrl::SetEdgeMode(int mode)
 }
 
 // Retrieve the colour used in edge indication.
-wxColour wxScintillaTextCtrl::GetEdgeColour() const
+wxColour wxScintillaTextCtrl::GetEdgeColour()
 {
     long c = SendMsg(2364, 0, 0);
     return wxColourFromLong(c);
@@ -2597,7 +2597,7 @@ int wxScintillaTextCtrl::SearchPrev(int flags, const wxString& text)
 }
 
 // Retrieves the number of lines completely visible.
-int wxScintillaTextCtrl::LinesOnScreen() const
+int wxScintillaTextCtrl::LinesOnScreen()
 {
     return SendMsg(2370, 0, 0);
 }
@@ -2610,7 +2610,7 @@ void wxScintillaTextCtrl::UsePopUp(bool allowPopUp)
 }
 
 // Is the selection rectangular? The alternative is the more common stream selection.
-bool wxScintillaTextCtrl::SelectionIsRectangle() const
+bool wxScintillaTextCtrl::SelectionIsRectangle()
 {
     return SendMsg(2372, 0, 0) != 0;
 }
@@ -2623,7 +2623,7 @@ void wxScintillaTextCtrl::SetZoom(int zoom)
 }
 
 // Retrieve the zoom level.
-int wxScintillaTextCtrl::GetZoom() const
+int wxScintillaTextCtrl::GetZoom()
 {
     return SendMsg(2374, 0, 0);
 }
@@ -2645,7 +2645,7 @@ void wxScintillaTextCtrl::ReleaseDocument(void* docPointer) {
 }
 
 // Get which document modification events are sent to the container.
-int wxScintillaTextCtrl::GetModEventMask() const
+int wxScintillaTextCtrl::GetModEventMask()
 {
     return SendMsg(2378, 0, 0);
 }
@@ -2657,7 +2657,7 @@ void wxScintillaTextCtrl::SetSTCFocus(bool focus)
 }
 
 // Get internal focus flag.
-bool wxScintillaTextCtrl::GetSTCFocus() const
+bool wxScintillaTextCtrl::GetSTCFocus()
 {
     return SendMsg(2381, 0, 0) != 0;
 }
@@ -2669,7 +2669,7 @@ void wxScintillaTextCtrl::SetStatus(int statusCode)
 }
 
 // Get error status.
-int wxScintillaTextCtrl::GetStatus() const
+int wxScintillaTextCtrl::GetStatus()
 {
     return SendMsg(2383, 0, 0);
 }
@@ -2681,7 +2681,7 @@ void wxScintillaTextCtrl::SetMouseDownCaptures(bool captures)
 }
 
 // Get whether mouse gets captured.
-bool wxScintillaTextCtrl::GetMouseDownCaptures() const
+bool wxScintillaTextCtrl::GetMouseDownCaptures()
 {
     return SendMsg(2385, 0, 0) != 0;
 }
@@ -2693,7 +2693,7 @@ void wxScintillaTextCtrl::SetSTCCursor(int cursorType)
 }
 
 // Get cursor type.
-int wxScintillaTextCtrl::GetSTCCursor() const
+int wxScintillaTextCtrl::GetSTCCursor()
 {
     return SendMsg(2387, 0, 0);
 }
@@ -2706,7 +2706,7 @@ void wxScintillaTextCtrl::SetControlCharSymbol(int symbol)
 }
 
 // Get the way control characters are displayed.
-int wxScintillaTextCtrl::GetControlCharSymbol() const
+int wxScintillaTextCtrl::GetControlCharSymbol()
 {
     return SendMsg(2389, 0, 0);
 }
@@ -2761,7 +2761,7 @@ void wxScintillaTextCtrl::SetXOffset(int newOffset)
 {
     SendMsg(2397, newOffset, 0);
 }
-int wxScintillaTextCtrl::GetXOffset() const
+int wxScintillaTextCtrl::GetXOffset()
 {
     return SendMsg(2398, 0, 0);
 }
@@ -2793,7 +2793,7 @@ void wxScintillaTextCtrl::SetPrintWrapMode(int mode)
 }
 
 // Is printing line wrapped?
-int wxScintillaTextCtrl::GetPrintWrapMode() const
+int wxScintillaTextCtrl::GetPrintWrapMode()
 {
     return SendMsg(2407, 0, 0);
 }
@@ -2805,7 +2805,7 @@ void wxScintillaTextCtrl::SetHotspotActiveForeground(bool useSetting, const wxCo
 }
 
 // Get the fore colour for active hotspots.
-wxColour wxScintillaTextCtrl::GetHotspotActiveForeground() const
+wxColour wxScintillaTextCtrl::GetHotspotActiveForeground()
 {
     long c = SendMsg(2494, 0, 0);
     return wxColourFromLong(c);
@@ -2818,7 +2818,7 @@ void wxScintillaTextCtrl::SetHotspotActiveBackground(bool useSetting, const wxCo
 }
 
 // Get the back colour for active hotspots.
-wxColour wxScintillaTextCtrl::GetHotspotActiveBackground() const
+wxColour wxScintillaTextCtrl::GetHotspotActiveBackground()
 {
     long c = SendMsg(2495, 0, 0);
     return wxColourFromLong(c);
@@ -2831,7 +2831,7 @@ void wxScintillaTextCtrl::SetHotspotActiveUnderline(bool underline)
 }
 
 // Get whether underlining for active hotspots.
-bool wxScintillaTextCtrl::GetHotspotActiveUnderline() const
+bool wxScintillaTextCtrl::GetHotspotActiveUnderline()
 {
     return SendMsg(2496, 0, 0) != 0;
 }
@@ -2843,7 +2843,7 @@ void wxScintillaTextCtrl::SetHotspotSingleLine(bool singleLine)
 }
 
 // Get the HotspotSingleLine property
-bool wxScintillaTextCtrl::GetHotspotSingleLine() const
+bool wxScintillaTextCtrl::GetHotspotSingleLine()
 {
     return SendMsg(2497, 0, 0) != 0;
 }
@@ -2900,7 +2900,7 @@ void wxScintillaTextCtrl::SetSelectionMode(int mode)
 }
 
 // Get the mode of the current selection.
-int wxScintillaTextCtrl::GetSelectionMode() const
+int wxScintillaTextCtrl::GetSelectionMode()
 {
     return SendMsg(2423, 0, 0);
 }
@@ -3054,7 +3054,7 @@ int wxScintillaTextCtrl::FindColumn(int line, int column)
 }
 
 // Can the caret preferred x position only be changed by explicit movement commands?
-bool wxScintillaTextCtrl::GetCaretSticky() const
+bool wxScintillaTextCtrl::GetCaretSticky()
 {
     return SendMsg(2457, 0, 0) != 0;
 }
@@ -3078,7 +3078,7 @@ void wxScintillaTextCtrl::SetPasteConvertEndings(bool convert)
 }
 
 // Get convert-on-paste setting
-bool wxScintillaTextCtrl::GetPasteConvertEndings() const
+bool wxScintillaTextCtrl::GetPasteConvertEndings()
 {
     return SendMsg(2468, 0, 0) != 0;
 }
@@ -3096,7 +3096,7 @@ void wxScintillaTextCtrl::SetCaretLineBackAlpha(int alpha)
 }
 
 // Get the background alpha of the caret line.
-int wxScintillaTextCtrl::GetCaretLineBackAlpha() const
+int wxScintillaTextCtrl::GetCaretLineBackAlpha()
 {
     return SendMsg(2471, 0, 0);
 }
@@ -3108,7 +3108,7 @@ void wxScintillaTextCtrl::SetCaretStyle(int caretStyle)
 }
 
 // Returns the current style of the caret.
-int wxScintillaTextCtrl::GetCaretStyle() const
+int wxScintillaTextCtrl::GetCaretStyle()
 {
     return SendMsg(2513, 0, 0);
 }
@@ -3120,7 +3120,7 @@ void wxScintillaTextCtrl::SetIndicatorCurrent(int indicator)
 }
 
 // Get the current indicator
-int wxScintillaTextCtrl::GetIndicatorCurrent() const
+int wxScintillaTextCtrl::GetIndicatorCurrent()
 {
     return SendMsg(2501, 0, 0);
 }
@@ -3132,7 +3132,7 @@ void wxScintillaTextCtrl::SetIndicatorValue(int value)
 }
 
 // Get the current indicator vaue
-int wxScintillaTextCtrl::GetIndicatorValue() const
+int wxScintillaTextCtrl::GetIndicatorValue()
 {
     return SendMsg(2503, 0, 0);
 }
@@ -3180,7 +3180,7 @@ void wxScintillaTextCtrl::SetPositionCacheSize(int size)
 }
 
 // How many entries are allocated to the position cache?
-int wxScintillaTextCtrl::GetPositionCacheSize() const
+int wxScintillaTextCtrl::GetPositionCacheSize()
 {
     return SendMsg(2515, 0, 0);
 }
@@ -3204,7 +3204,7 @@ void wxScintillaTextCtrl::SetKeysUnicode(bool keysUnicode)
 }
 
 // Are keys always interpreted as Unicode?
-bool wxScintillaTextCtrl::GetKeysUnicode() const
+bool wxScintillaTextCtrl::GetKeysUnicode()
 {
     return SendMsg(2522, 0, 0) != 0;
 }
@@ -3216,7 +3216,7 @@ void wxScintillaTextCtrl::IndicatorSetAlpha(int indicator, int alpha)
 }
 
 // Get the alpha fill colour of the given indicator.
-int wxScintillaTextCtrl::IndicatorGetAlpha(int indicator) const
+int wxScintillaTextCtrl::IndicatorGetAlpha(int indicator)
 {
     return SendMsg(2524, indicator, 0);
 }
@@ -3228,7 +3228,7 @@ void wxScintillaTextCtrl::SetExtraAscent(int extraAscent)
 }
 
 // Get extra ascent for each line
-int wxScintillaTextCtrl::GetExtraAscent() const
+int wxScintillaTextCtrl::GetExtraAscent()
 {
     return SendMsg(2526, 0, 0);
 }
@@ -3240,7 +3240,7 @@ void wxScintillaTextCtrl::SetExtraDescent(int extraDescent)
 }
 
 // Get extra descent for each line
-int wxScintillaTextCtrl::GetExtraDescent() const
+int wxScintillaTextCtrl::GetExtraDescent()
 {
     return SendMsg(2528, 0, 0);
 }
@@ -3258,7 +3258,7 @@ void wxScintillaTextCtrl::MarginSetText(int line, const wxString& text)
 }
 
 // Get the text in the text margin for a line
-wxString wxScintillaTextCtrl::MarginGetText(int line) const {
+wxString wxScintillaTextCtrl::MarginGetText(int line) {
          long msg = 2531;
          long len = SendMsg(msg, line, 0);
 
@@ -3277,7 +3277,7 @@ void wxScintillaTextCtrl::MarginSetStyle(int line, int style)
 }
 
 // Get the style number for the text margin for a line
-int wxScintillaTextCtrl::MarginGetStyle(int line) const
+int wxScintillaTextCtrl::MarginGetStyle(int line)
 {
     return SendMsg(2533, line, 0);
 }
@@ -3289,7 +3289,7 @@ void wxScintillaTextCtrl::MarginSetStyles(int line, const wxString& styles)
 }
 
 // Get the styles in the text margin for a line
-wxString wxScintillaTextCtrl::MarginGetStyles(int line) const {
+wxString wxScintillaTextCtrl::MarginGetStyles(int line) {
          long msg = 2535;
          long len = SendMsg(msg, line, 0);
 
@@ -3314,7 +3314,7 @@ void wxScintillaTextCtrl::MarginSetStyleOffset(int style)
 }
 
 // Get the start of the range of style numbers used for margin text
-int wxScintillaTextCtrl::MarginGetStyleOffset() const
+int wxScintillaTextCtrl::MarginGetStyleOffset()
 {
     return SendMsg(2538, 0, 0);
 }
@@ -3326,7 +3326,7 @@ void wxScintillaTextCtrl::AnnotationSetText(int line, const wxString& text)
 }
 
 // Get the annotation text for a line
-wxString wxScintillaTextCtrl::AnnotationGetText(int line) const {
+wxString wxScintillaTextCtrl::AnnotationGetText(int line) {
          long msg = 2541;
          long len = SendMsg(msg, line, 0);
 
@@ -3345,7 +3345,7 @@ void wxScintillaTextCtrl::AnnotationSetStyle(int line, int style)
 }
 
 // Get the style number for the annotations for a line
-int wxScintillaTextCtrl::AnnotationGetStyle(int line) const
+int wxScintillaTextCtrl::AnnotationGetStyle(int line)
 {
     return SendMsg(2543, line, 0);
 }
@@ -3357,7 +3357,7 @@ void wxScintillaTextCtrl::AnnotationSetStyles(int line, const wxString& styles)
 }
 
 // Get the annotation styles for a line
-wxString wxScintillaTextCtrl::AnnotationGetStyles(int line) const {
+wxString wxScintillaTextCtrl::AnnotationGetStyles(int line) {
          long msg = 2545;
          long len = SendMsg(msg, line, 0);
 
@@ -3370,7 +3370,7 @@ wxString wxScintillaTextCtrl::AnnotationGetStyles(int line) const {
 }
 
 // Get the number of annotation lines for a line
-int wxScintillaTextCtrl::AnnotationGetLines(int line) const
+int wxScintillaTextCtrl::AnnotationGetLines(int line)
 {
     return SendMsg(2546, line, 0);
 }
@@ -3388,7 +3388,7 @@ void wxScintillaTextCtrl::AnnotationSetVisible(int visible)
 }
 
 // Get the visibility for the annotations for a view
-int wxScintillaTextCtrl::AnnotationGetVisible() const
+int wxScintillaTextCtrl::AnnotationGetVisible()
 {
     return SendMsg(2549, 0, 0);
 }
@@ -3400,7 +3400,7 @@ void wxScintillaTextCtrl::AnnotationSetStyleOffset(int style)
 }
 
 // Get the start of the range of style numbers used for annotations
-int wxScintillaTextCtrl::AnnotationGetStyleOffset() const
+int wxScintillaTextCtrl::AnnotationGetStyleOffset()
 {
     return SendMsg(2551, 0, 0);
 }
@@ -3431,7 +3431,7 @@ void wxScintillaTextCtrl::SetMultipleSelection(bool multipleSelection)
 }
 
 // Whether multiple selections can be made
-bool wxScintillaTextCtrl::GetMultipleSelection() const
+bool wxScintillaTextCtrl::GetMultipleSelection()
 {
     return SendMsg(2564, 0, 0) != 0;
 }
@@ -3443,7 +3443,7 @@ void wxScintillaTextCtrl::SetAdditionalSelectionTyping(bool additionalSelectionT
 }
 
 // Whether typing can be performed into multiple selections
-bool wxScintillaTextCtrl::GetAdditionalSelectionTyping() const
+bool wxScintillaTextCtrl::GetAdditionalSelectionTyping()
 {
     return SendMsg(2566, 0, 0) != 0;
 }
@@ -3455,7 +3455,7 @@ void wxScintillaTextCtrl::SetAdditionalCaretsBlink(bool additionalCaretsBlink)
 }
 
 // Whether additional carets will blink
-bool wxScintillaTextCtrl::GetAdditionalCaretsBlink() const
+bool wxScintillaTextCtrl::GetAdditionalCaretsBlink()
 {
     return SendMsg(2568, 0, 0) != 0;
 }
@@ -3467,13 +3467,13 @@ void wxScintillaTextCtrl::SetAdditionalCaretsVisible(bool additionalCaretsBlink)
 }
 
 // Whether additional carets are visible
-bool wxScintillaTextCtrl::GetAdditionalCaretsVisible() const
+bool wxScintillaTextCtrl::GetAdditionalCaretsVisible()
 {
     return SendMsg(2609, 0, 0) != 0;
 }
 
 // How many selections are there?
-int wxScintillaTextCtrl::GetSelections() const
+int wxScintillaTextCtrl::GetSelections()
 {
     return SendMsg(2570, 0, 0);
 }
@@ -3497,7 +3497,7 @@ void wxScintillaTextCtrl::SetMainSelection(int selection)
 }
 
 // Which selection is the main selection
-int wxScintillaTextCtrl::GetMainSelection() const
+int wxScintillaTextCtrl::GetMainSelection()
 {
     return SendMsg(2575, 0, 0);
 }
@@ -3505,7 +3505,7 @@ void wxScintillaTextCtrl::SetSelectionNCaret(int selection, int pos)
 {
     SendMsg(2576, selection, pos);
 }
-int wxScintillaTextCtrl::GetSelectionNCaret(int selection) const
+int wxScintillaTextCtrl::GetSelectionNCaret(int selection)
 {
     return SendMsg(2577, selection, 0);
 }
@@ -3513,7 +3513,7 @@ void wxScintillaTextCtrl::SetSelectionNAnchor(int selection, int posAnchor)
 {
     SendMsg(2578, selection, posAnchor);
 }
-int wxScintillaTextCtrl::GetSelectionNAnchor(int selection) const
+int wxScintillaTextCtrl::GetSelectionNAnchor(int selection)
 {
     return SendMsg(2579, selection, 0);
 }
@@ -3521,7 +3521,7 @@ void wxScintillaTextCtrl::SetSelectionNCaretVirtualSpace(int selection, int spac
 {
     SendMsg(2580, selection, space);
 }
-int wxScintillaTextCtrl::GetSelectionNCaretVirtualSpace(int selection) const
+int wxScintillaTextCtrl::GetSelectionNCaretVirtualSpace(int selection)
 {
     return SendMsg(2581, selection, 0);
 }
@@ -3529,7 +3529,7 @@ void wxScintillaTextCtrl::SetSelectionNAnchorVirtualSpace(int selection, int spa
 {
     SendMsg(2582, selection, space);
 }
-int wxScintillaTextCtrl::GetSelectionNAnchorVirtualSpace(int selection) const
+int wxScintillaTextCtrl::GetSelectionNAnchorVirtualSpace(int selection)
 {
     return SendMsg(2583, selection, 0);
 }
@@ -3541,7 +3541,7 @@ void wxScintillaTextCtrl::SetSelectionNStart(int selection, int pos)
 }
 
 // Returns the position at the start of the selection.
-int wxScintillaTextCtrl::GetSelectionNStart(int selection) const
+int wxScintillaTextCtrl::GetSelectionNStart(int selection)
 {
     return SendMsg(2585, selection, 0);
 }
@@ -3553,7 +3553,7 @@ void wxScintillaTextCtrl::SetSelectionNEnd(int selection, int pos)
 }
 
 // Returns the position at the end of the selection.
-int wxScintillaTextCtrl::GetSelectionNEnd(int selection) const
+int wxScintillaTextCtrl::GetSelectionNEnd(int selection)
 {
     return SendMsg(2587, selection, 0);
 }
@@ -3561,7 +3561,7 @@ void wxScintillaTextCtrl::SetRectangularSelectionCaret(int pos)
 {
     SendMsg(2588, pos, 0);
 }
-int wxScintillaTextCtrl::GetRectangularSelectionCaret() const
+int wxScintillaTextCtrl::GetRectangularSelectionCaret()
 {
     return SendMsg(2589, 0, 0);
 }
@@ -3569,7 +3569,7 @@ void wxScintillaTextCtrl::SetRectangularSelectionAnchor(int posAnchor)
 {
     SendMsg(2590, posAnchor, 0);
 }
-int wxScintillaTextCtrl::GetRectangularSelectionAnchor() const
+int wxScintillaTextCtrl::GetRectangularSelectionAnchor()
 {
     return SendMsg(2591, 0, 0);
 }
@@ -3577,7 +3577,7 @@ void wxScintillaTextCtrl::SetRectangularSelectionCaretVirtualSpace(int space)
 {
     SendMsg(2592, space, 0);
 }
-int wxScintillaTextCtrl::GetRectangularSelectionCaretVirtualSpace() const
+int wxScintillaTextCtrl::GetRectangularSelectionCaretVirtualSpace()
 {
     return SendMsg(2593, 0, 0);
 }
@@ -3585,7 +3585,7 @@ void wxScintillaTextCtrl::SetRectangularSelectionAnchorVirtualSpace(int space)
 {
     SendMsg(2594, space, 0);
 }
-int wxScintillaTextCtrl::GetRectangularSelectionAnchorVirtualSpace() const
+int wxScintillaTextCtrl::GetRectangularSelectionAnchorVirtualSpace()
 {
     return SendMsg(2595, 0, 0);
 }
@@ -3593,7 +3593,7 @@ void wxScintillaTextCtrl::SetVirtualSpaceOptions(int virtualSpaceOptions)
 {
     SendMsg(2596, virtualSpaceOptions, 0);
 }
-int wxScintillaTextCtrl::GetVirtualSpaceOptions() const
+int wxScintillaTextCtrl::GetVirtualSpaceOptions()
 {
     return SendMsg(2597, 0, 0);
 }
@@ -3608,7 +3608,7 @@ void wxScintillaTextCtrl::SetRectangularSelectionModifier(int modifier)
 }
 
 // Get the modifier key used for rectangular selection.
-int wxScintillaTextCtrl::GetRectangularSelectionModifier() const
+int wxScintillaTextCtrl::GetRectangularSelectionModifier()
 {
     return SendMsg(2599, 0, 0);
 }
@@ -3634,7 +3634,7 @@ void wxScintillaTextCtrl::SetAdditionalSelAlpha(int alpha)
 }
 
 // Get the alpha of the selection.
-int wxScintillaTextCtrl::GetAdditionalSelAlpha() const
+int wxScintillaTextCtrl::GetAdditionalSelAlpha()
 {
     return SendMsg(2603, 0, 0);
 }
@@ -3646,7 +3646,7 @@ void wxScintillaTextCtrl::SetAdditionalCaretForeground(const wxColour& fore)
 }
 
 // Get the foreground colour of additional carets.
-wxColour wxScintillaTextCtrl::GetAdditionalCaretForeground() const
+wxColour wxScintillaTextCtrl::GetAdditionalCaretForeground()
 {
     long c = SendMsg(2605, 0, 0);
     return wxColourFromLong(c);
@@ -3683,7 +3683,7 @@ void wxScintillaTextCtrl::SetLexer(int lexer)
 }
 
 // Retrieve the lexing language of the document.
-int wxScintillaTextCtrl::GetLexer() const
+int wxScintillaTextCtrl::GetLexer()
 {
     return SendMsg(4002, 0, 0);
 }
@@ -3741,13 +3741,13 @@ wxString wxScintillaTextCtrl::GetPropertyExpanded(const wxString& key) {
 
 // Retrieve a 'property' value previously set with SetProperty,
 // interpreted as an int AFTER any '$()' variable replacement.
-int wxScintillaTextCtrl::GetPropertyInt(const wxString& key) const
+int wxScintillaTextCtrl::GetPropertyInt(const wxString& key)
 {
     return SendMsg(4010, (sptr_t)(const char*)wx2stc(key), 0);
 }
 
 // Retrieve the number of bits the current lexer needs for styling.
-int wxScintillaTextCtrl::GetStyleBitsNeeded() const
+int wxScintillaTextCtrl::GetStyleBitsNeeded()
 {
     return SendMsg(4011, 0, 0);
 }
@@ -4361,7 +4361,7 @@ void wxScintillaTextCtrl::OnIdle(wxIdleEvent& evt) {
 }
 
 
-wxSize wxScintillaTextCtrl::DoGetBestSize() const
+wxSize wxScintillaTextCtrl::DoGetBestSize()
 {
     // What would be the best size for a wxSTC?
     // Just give a reasonable minimum until something else can be figured out.
@@ -4562,9 +4562,9 @@ wxScintillaTextEvent::wxScintillaTextEvent(wxEventType commandType, int id)
 #endif
 }
 
-bool wxScintillaTextEvent::GetShift() const { return (m_modifiers & SCI_SHIFT) != 0; }
-bool wxScintillaTextEvent::GetControl() const { return (m_modifiers & SCI_CTRL) != 0; }
-bool wxScintillaTextEvent::GetAlt() const { return (m_modifiers & SCI_ALT) != 0; }
+bool wxScintillaTextEvent::GetShift() { return (m_modifiers & SCI_SHIFT) != 0; }
+bool wxScintillaTextEvent::GetControl() { return (m_modifiers & SCI_CTRL) != 0; }
+bool wxScintillaTextEvent::GetAlt() { return (m_modifiers & SCI_ALT) != 0; }
 
 
 wxScintillaTextEvent::wxScintillaTextEvent(const wxScintillaTextEvent& event):
