@@ -189,6 +189,10 @@ Note: You cannot load Wx::STC and Wx::Scintilla in the same application. They
 are mutually exclusive. The wxSTC_... events are handled by one library or
 the other.
 
+You can enable experimental building of scintilla 2.03 via the following command:
+
+    perl Build.PL --stc2
+
 =head1 MANUAL
 
 If you are looking for more API documentation, please consult L<Wx::Scintilla::Manual>
