@@ -33,6 +33,7 @@
 #include "wx/dnd.h"
 
 #include "ScintillaWX.h"
+#include "LexerModule.h"
 #include "ExternalLexer.h"
 #include "WxScintilla.h"
 #include "private.h"

@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <vector>
 
 #include "Platform.h"
 #include "SplitVector.h"
@@ -32,10 +33,11 @@
 #include "Scintilla.h"
 #include "ScintillaWidget.h"
 #ifdef SCI_LEXER
+#include "ILexer.h"
 #include "SciLexer.h"
-#include "PropSet.h"
+#include "LexAccessor.h"
 #include "Accessor.h"
-#include "KeyWords.h"
+#include "WordList.h"
 #endif
 #include "ContractionState.h"
 #include "SVector.h"
@@ -54,7 +56,6 @@
 #include "Selection.h"
 #include "PositionCache.h"
 #include "Editor.h"
-#include "PropSetSimple.h"
 #include "ScintillaBase.h"
 
 #ifdef __WXMSW__
