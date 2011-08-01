@@ -11,7 +11,7 @@ Getopt::Long::GetOptions(
 
 if ($help) {
 	print <<"HELP";
-    perl Build.PL [--stc2]
+Usage: perl Build.PL [--stc2]
 
     --stc2
         Selects scintilla 2.x for build (experimental)
