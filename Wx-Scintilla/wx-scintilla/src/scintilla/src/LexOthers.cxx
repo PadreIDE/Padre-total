@@ -8,18 +8,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "CharClassify.h"
-#include "PropSet.h"
-#include "Accessor.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -37,6 +40,10 @@ static bool Is1To9(char ch) {
 	return (ch >= '1') && (ch <= '9');
 }
 
+static bool IsAlphabetic(int ch) {
+	return isascii(ch) && isalpha(ch);
+}
+
 static inline bool AtEOL(Accessor &styler, unsigned int i) {
 	return (styler[i] == '\n') ||
 	       ((styler[i] == '\r') && (styler.SafeGetCharAt(i + 1) != '\n'));
@@ -51,7 +58,7 @@ static bool IsBOperator(char ch) {
 // Tests for BATCH Separators
 static bool IsBSeparator(char ch) {
 	return (ch == '\\') || (ch == '.') || (ch == ';') ||
-		(ch == '\"') || (ch == '\'') || (ch == '/') || (ch == ')');
+		(ch == '\"') || (ch == '\'') || (ch == '/');
 }
 
 static void ColouriseBatchLine(
@@ -101,7 +108,7 @@ static void ColouriseBatchLine(
 		}
 		return;
 	// Check for Drive Change (Drive Change is internal command) - return if found
-	} else if ((isalpha(lineBuffer[offset])) &&
+	} else if ((IsAlphabetic(lineBuffer[offset])) &&
 		(lineBuffer[offset + 1] == ':') &&
 		((isspacechar(lineBuffer[offset + 2])) ||
 		(((lineBuffer[offset + 2] == '\\')) &&
@@ -502,7 +509,7 @@ static void ColouriseDiffLine(char *lineBuffer, int endLine, Accessor &styler) {
 		styler.ColourTo(endLine, SCE_DIFF_COMMAND);
 	} else if (0 == strncmp(lineBuffer, "Index: ", 7)) {  // For subversion's diff
 		styler.ColourTo(endLine, SCE_DIFF_COMMAND);
-	} else if (0 == strncmp(lineBuffer, "---", 3)) {
+	} else if (0 == strncmp(lineBuffer, "---", 3) && lineBuffer[3] != '-') {
 		// In a context diff, --- appears in both the header and the position markers
 		if (lineBuffer[3] == ' ' && atoi(lineBuffer + 4) && !strchr(lineBuffer, '/'))
 			styler.ColourTo(endLine, SCE_DIFF_POSITION);
@@ -723,10 +730,10 @@ static void ColourisePropsDoc(unsigned int startPos, int length, int, WordList *
 	unsigned int linePos = 0;
 	unsigned int startLine = startPos;
 
-	// property lexer.props.allow.initial.spaces 
-	//	For properties files, set to 0 to style all lines that start with whitespace in the default style. 
-	//	This is not suitable for SciTE .properties files which use indentation for flow control but 
-	//	can be used for RFC2822 text where indentation is used for continuation lines. 
+	// property lexer.props.allow.initial.spaces
+	//	For properties files, set to 0 to style all lines that start with whitespace in the default style.
+	//	This is not suitable for SciTE .properties files which use indentation for flow control but
+	//	can be used for RFC2822 text where indentation is used for continuation lines.
 	bool allowInitialSpaces = styler.GetPropertyInt("lexer.props.allow.initial.spaces", 1) != 0;
 
 	for (unsigned int i = startPos; i < startPos + length; i++) {
@@ -847,13 +854,17 @@ static void ColouriseMakeLine(
 		styler.ColourTo(endPos, SCE_MAKE_PREPROCESSOR);
 		return;
 	}
+	int varCount = 0;
 	while (i < lengthLine) {
 		if (lineBuffer[i] == '$' && lineBuffer[i + 1] == '(') {
 			styler.ColourTo(startLine + i - 1, state);
 			state = SCE_MAKE_IDENTIFIER;
+			varCount++;
 		} else if (state == SCE_MAKE_IDENTIFIER && lineBuffer[i] == ')') {
-			styler.ColourTo(startLine + i, state);
-			state = SCE_MAKE_DEFAULT;
+			if (--varCount == 0) {
+				styler.ColourTo(startLine + i, state);
+				state = SCE_MAKE_DEFAULT;
+			}
 		}
 
 		// skip identifier and target styling if this is a command line
@@ -922,8 +933,8 @@ static int RecogniseErrorListLine(const char *lineBuffer, unsigned int lengthLin
 		// Command or return status
 		return SCE_ERR_CMD;
 	} else if (lineBuffer[0] == '<') {
-		// Diff removal, but not interested. Trapped to avoid hitting CTAG cases.
-		return SCE_ERR_DEFAULT;
+		// Diff removal.
+		return SCE_ERR_DIFF_DELETION;
 	} else if (lineBuffer[0] == '!') {
 		return SCE_ERR_DIFF_CHANGED;
 	} else if (lineBuffer[0] == '+') {
@@ -961,17 +972,17 @@ static int RecogniseErrorListLine(const char *lineBuffer, unsigned int lengthLin
 	} else if (strstart(lineBuffer, "Warning ")) {
 		// Borland warning message
 		return SCE_ERR_BORLAND;
-	} else if (strstr(lineBuffer, "at line " ) &&
-	           (strstr(lineBuffer, "at line " ) < (lineBuffer + lengthLine)) &&
+	} else if (strstr(lineBuffer, "at line ") &&
+	        (strstr(lineBuffer, "at line ") < (lineBuffer + lengthLine)) &&
 	           strstr(lineBuffer, "file ") &&
 	           (strstr(lineBuffer, "file ") < (lineBuffer + lengthLine))) {
 		// Lua 4 error message
 		return SCE_ERR_LUA;
-	} else if (strstr(lineBuffer, " at " ) &&
-	           (strstr(lineBuffer, " at " ) < (lineBuffer + lengthLine)) &&
+	} else if (strstr(lineBuffer, " at ") &&
+	        (strstr(lineBuffer, " at ") < (lineBuffer + lengthLine)) &&
 	           strstr(lineBuffer, " line ") &&
 	           (strstr(lineBuffer, " line ") < (lineBuffer + lengthLine)) &&
-	           (strstr(lineBuffer, " at " ) < (strstr(lineBuffer, " line ")))) {
+	        (strstr(lineBuffer, " at ") < (strstr(lineBuffer, " line ")))) {
 		// perl error message
 		return SCE_ERR_PERL;
 	} else if ((memcmp(lineBuffer, "   at ", 6) == 0) &&
@@ -1065,7 +1076,7 @@ static int RecogniseErrorListLine(const char *lineBuffer, unsigned int lengthLin
 						numstep = 1; // ch was ' ', handle as if it's a delphi errorline, only add 1 to i.
 					else
 						numstep = 2; // otherwise add 2.
-					for (j = i + numstep; j < lengthLine && isalpha(lineBuffer[j]) && chPos < sizeof(word) - 1; j++)
+					for (j = i + numstep; j < lengthLine && IsAlphabetic(lineBuffer[j]) && chPos < sizeof(word) - 1; j++)
 						word[chPos++] = lineBuffer[j];
 					word[chPos] = 0;
 					if (!CompareCaseInsensitive(word, "error") || !CompareCaseInsensitive(word, "warning") ||
@@ -1131,11 +1142,11 @@ static void ColouriseErrorListDoc(unsigned int startPos, int length, int, WordLi
 	styler.StartSegment(startPos);
 	unsigned int linePos = 0;
 
-	// property lexer.errorlist.value.separate 
-	//	For lines in the output pane that are matches from Find in Files or GCC-style 
-	//	diagnostics, style the path and line number separately from the rest of the 
-	//	line with style 21 used for the rest of the line. 
-	//	This allows matched text to be more easily distinguished from its location. 
+	// property lexer.errorlist.value.separate
+	//	For lines in the output pane that are matches from Find in Files or GCC-style
+	//	diagnostics, style the path and line number separately from the rest of the
+	//	line with style 21 used for the rest of the line.
+	//	This allows matched text to be more easily distinguished from its location.
 	bool valueSeparate = styler.GetPropertyInt("lexer.errorlist.value.separate", 0) != 0;
 	for (unsigned int i = startPos; i < startPos + length; i++) {
 		lineBuffer[linePos++] = styler[i];
@@ -1162,7 +1173,7 @@ static int isTag(int start, Accessor &styler) {
 	while (i < 5 && e) {
 		s[i] = styler[start + i];
 		i++;
-		e = styler[start + i] != '{';
+		e = (strchr("{ \t", styler[start + i]) == NULL);
 	}
 	s[i] = '\0';
 	return (strcmp(s, "begin") == 0) || (strcmp(s, "end") == 0);
@@ -1252,13 +1263,13 @@ static void ColouriseLatexDoc(unsigned int startPos, int length, int initStyle,
 	styler.ColourTo(lengthDoc-1, state);
 }
 
-static const char * const batchWordListDesc[] = {
+static const char *const batchWordListDesc[] = {
 	"Internal Commands",
 	"External Commands",
 	0
 };
 
-static const char * const emptyWordListDesc[] = {
+static const char *const emptyWordListDesc[] = {
 	0
 };
 

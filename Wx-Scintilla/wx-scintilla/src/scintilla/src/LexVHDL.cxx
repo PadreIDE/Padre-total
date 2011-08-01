@@ -1,9 +1,9 @@
 // Scintilla source code edit control
 /** @file LexVHDL.cxx
  ** Lexer for VHDL
- ** Written by Phil Reid, 
+ ** Written by Phil Reid,
  ** Based on:
- **  - The Verilog Lexer by Avi Yegudin 
+ **  - The Verilog Lexer by Avi Yegudin
  **  - The Fortran Lexer by Chuan-jian Shen
  **  - The C++ lexer by Neil Hodgson
  **/
@@ -15,15 +15,18 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -101,7 +104,7 @@ static void ColouriseVHDLDoc(
         }
         sc.SetState(SCE_VHDL_DEFAULT);
       }
-    } else if (sc.state == SCE_VHDL_COMMENT || sc.state == SCE_V_COMMENTLINEBANG) {
+    } else if (sc.state == SCE_VHDL_COMMENT || sc.state == SCE_VHDL_COMMENTLINEBANG) {
       if (sc.atLineEnd) {
         sc.SetState(SCE_VHDL_DEFAULT);
       }
@@ -113,7 +116,7 @@ static void ColouriseVHDLDoc(
       } else if (sc.ch == '\"') {
         sc.ForwardSetState(SCE_VHDL_DEFAULT);
       } else if (sc.atLineEnd) {
-        sc.ChangeState(SCE_V_STRINGEOL);
+        sc.ChangeState(SCE_VHDL_STRINGEOL);
         sc.ForwardSetState(SCE_VHDL_DEFAULT);
       }
     }
@@ -126,7 +129,7 @@ static void ColouriseVHDLDoc(
         sc.SetState(SCE_VHDL_IDENTIFIER);
       } else if (sc.Match('-', '-')) {
         sc.SetState(SCE_VHDL_COMMENT);
-        sc.Forward(); 
+        sc.Forward();
       } else if (sc.Match('-', '-')) {
         if (sc.Match("--!"))  // Nice to have a different comment style
           sc.SetState(SCE_VHDL_COMMENTLINEBANG);
@@ -161,7 +164,7 @@ static bool IsCommentLine(int line, Accessor &styler) {
 static void FoldNoBoxVHDLDoc(
   unsigned int startPos,
   int length,
-  int initStyle,
+  int,
   Accessor &styler)
 {
   // Decided it would be smarter to have the lexer have all keywords included. Therefore I
@@ -249,7 +252,6 @@ static void FoldNoBoxVHDLDoc(
   char  chPrev          = '\0';
   char  chNextNonBlank;
   int   styleNext       = styler.StyleAt(startPos);
-  int   style           = initStyle;
   //Platform::DebugPrintf("Line[%04d] Prev[%20s] ************************* Level[%x]\n", lineCurrent+1, prevWord, levelCurrent);
 
   /***************************************/
@@ -265,16 +267,16 @@ static void FoldNoBoxVHDLDoc(
       j ++ ;
       chNextNonBlank = styler.SafeGetCharAt(j);
     }
-    style           = styleNext;
+    int style           = styleNext;
     styleNext       = styler.StyleAt(i + 1);
     bool atEOL      = (ch == '\r' && chNext != '\n') || (ch == '\n');
 
-		if (foldComment && atEOL && IsCommentLine(lineCurrent, styler)) 
+		if (foldComment && atEOL && IsCommentLine(lineCurrent, styler))
     {
       if(!IsCommentLine(lineCurrent-1, styler) && IsCommentLine(lineCurrent+1, styler))
       {
         levelNext++;
-      } 
+      }
       else if(IsCommentLine(lineCurrent-1, styler) && !IsCommentLine(lineCurrent+1, styler))
       {
         levelNext--;
@@ -380,7 +382,7 @@ static void FoldNoBoxVHDLDoc(
             ((strcmp(s, "begin") == 0) && (strcmp(prevWord, "function") == 0)) ||
             ((strcmp(s, "begin") == 0) && (strcmp(prevWord, "procedure") == 0)))
           {
-            levelMinCurrentBegin = levelNext - 1;  
+            levelMinCurrentBegin = levelNext - 1;
           }
           //Platform::DebugPrintf("Line[%04d] Prev[%20s] Cur[%20s] Level[%x]\n", lineCurrent+1, prevWord, s, levelCurrent);
           strcpy(prevWord, s);
@@ -444,34 +446,34 @@ LexerModule lmVHDL(SCLEX_VHDL, ColouriseVHDLDoc, "vhdl", FoldVHDLDoc, VHDLWordLi
 
 
 // Keyword:
-//    access after alias all architecture array assert attribute begin block body buffer bus case component 
-//    configuration constant disconnect downto else elsif end entity exit file for function generate generic 
-//    group guarded if impure in inertial inout is label library linkage literal loop map new next null of 
-//    on open others out package port postponed procedure process pure range record register reject report 
-//    return select severity shared signal subtype then to transport type unaffected units until use variable 
+//    access after alias all architecture array assert attribute begin block body buffer bus case component
+//    configuration constant disconnect downto else elsif end entity exit file for function generate generic
+//    group guarded if impure in inertial inout is label library linkage literal loop map new next null of
+//    on open others out package port postponed procedure process pure range record register reject report
+//    return select severity shared signal subtype then to transport type unaffected units until use variable
 //    wait when while with
 //
 // Operators:
 //    abs and mod nand nor not or rem rol ror sla sll sra srl xnor xor
 //
 // Attributes:
-//    left right low high ascending image value pos val succ pred leftof rightof base range reverse_range 
-//    length delayed stable quiet transaction event active last_event last_active last_value driving 
+//    left right low high ascending image value pos val succ pred leftof rightof base range reverse_range
+//    length delayed stable quiet transaction event active last_event last_active last_value driving
 //    driving_value simple_name path_name instance_name
 //
 // Std Functions:
-//    now readline read writeline write endfile resolved to_bit to_bitvector to_stdulogic to_stdlogicvector 
-//    to_stdulogicvector to_x01 to_x01z to_UX01 rising_edge falling_edge is_x shift_left shift_right rotate_left 
+//    now readline read writeline write endfile resolved to_bit to_bitvector to_stdulogic to_stdlogicvector
+//    to_stdulogicvector to_x01 to_x01z to_UX01 rising_edge falling_edge is_x shift_left shift_right rotate_left
 //    rotate_right resize to_integer to_unsigned to_signed std_match to_01
 //
 // Std Packages:
-//    std ieee work standard textio std_logic_1164 std_logic_arith std_logic_misc std_logic_signed 
-//    std_logic_textio std_logic_unsigned numeric_bit numeric_std math_complex math_real vital_primitives 
+//    std ieee work standard textio std_logic_1164 std_logic_arith std_logic_misc std_logic_signed
+//    std_logic_textio std_logic_unsigned numeric_bit numeric_std math_complex math_real vital_primitives
 //    vital_timing
 //
 // Std Types:
-//    boolean bit character severity_level integer real time delay_length natural positive string bit_vector 
-//    file_open_kind file_open_status line text side width std_ulogic std_ulogic_vector std_logic 
+//    boolean bit character severity_level integer real time delay_length natural positive string bit_vector
+//    file_open_kind file_open_status line text side width std_ulogic std_ulogic_vector std_logic
 //    std_logic_vector X01 X01Z UX01 UX01Z unsigned signed
 //
 

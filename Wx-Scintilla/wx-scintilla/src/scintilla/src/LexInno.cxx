@@ -7,19 +7,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "CharClassify.h"
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -34,7 +36,6 @@ static void ColouriseInnoDoc(unsigned int startPos, int length, int, WordList *k
 	char *buffer = new char[length];
 	int bufferCount = 0;
 	bool isBOL, isEOL, isWS, isBOLWS = 0;
-	bool isCode = false;
 	bool isCStyleComment = false;
 
 	WordList &sectionKeywords = *keywordLists[0];
@@ -43,6 +44,10 @@ static void ColouriseInnoDoc(unsigned int startPos, int length, int, WordList *k
 	WordList &preprocessorKeywords = *keywordLists[3];
 	WordList &pascalKeywords = *keywordLists[4];
 	WordList &userKeywords = *keywordLists[5];
+
+	int curLine = styler.GetLine(startPos);
+	int curLineState = curLine > 0 ? styler.GetLineState(curLine - 1) : 0;
+	bool isCode = (curLineState == 1);
 
 	// Go through all provided text segment
 	// using the hand-written state machine shown below
@@ -63,6 +68,12 @@ static void ColouriseInnoDoc(unsigned int startPos, int length, int, WordList *k
 		isBOLWS = (isBOL) ? 1 : (isBOLWS && (chPrev == ' ' || chPrev == '\t'));
 		isEOL = (ch == '\n' || ch == '\r');
 		isWS = (ch == ' ' || ch == '\t');
+
+		if ((ch == '\r' && chNext != '\n') || (ch == '\n')) {
+			// Remember the line state for future incremental lexing
+			curLine = styler.GetLine(i);
+			styler.SetLineState(curLine, (isCode ? 1 : 0));
+		}
 
 		switch(state) {
 			case SCE_INNO_DEFAULT:

@@ -8,17 +8,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "Platform.h"
+#include <assert.h>
+#include <ctype.h>
 
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -35,7 +39,7 @@ static inline bool IsAWordStart(const int ch) {
 }
 
 static inline bool IsCsoundOperator(char ch) {
-	if (isalnum(ch))
+	if (isascii(ch) && isalnum(ch))
 		return false;
 	// '.' left out as it is used to make up numbers
 	if (ch == '*' || ch == '/' || ch == '-' || ch == '+' ||
@@ -72,7 +76,7 @@ static void ColouriseCsoundDoc(unsigned int startPos, int length, int initStyle,
 				continue;
 			}
 		}
-              
+
 		// Determine if the current state should terminate.
 		if (sc.state == SCE_CSOUND_OPERATOR) {
 			if (!IsCsoundOperator(static_cast<char>(sc.ch))) {
@@ -119,7 +123,7 @@ static void ColouriseCsoundDoc(unsigned int startPos, int length, int initStyle,
 				sc.SetState(SCE_CSOUND_DEFAULT);
 			}
 		}
-		
+
 		// Determine if a new state should be entered.
 		if (sc.state == SCE_CSOUND_DEFAULT) {
 			if (sc.ch == ';'){
@@ -146,7 +150,7 @@ static void ColouriseCsoundDoc(unsigned int startPos, int length, int initStyle,
 	sc.Complete();
 }
 
-static void FoldCsoundInstruments(unsigned int startPos, int length, int /* initStyle */, WordList *[], 
+static void FoldCsoundInstruments(unsigned int startPos, int length, int /* initStyle */, WordList *[],
 		Accessor &styler) {
 	unsigned int lengthDoc = startPos + length;
 	int visibleChars = 0;

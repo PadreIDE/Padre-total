@@ -9,17 +9,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -94,12 +98,12 @@ static void ColouriseNncrontabDoc(unsigned int startPos, int length, int, WordLi
 					// signals an asterisk
 					// no state jump necessary for this simple case...
 					styler.ColourTo(i,SCE_NNCRONTAB_ASTERISK);
-				} else if( isalpha(ch) || ch == '<' ) {
+				} else if( (isascii(ch) && isalpha(ch)) || ch == '<' ) {
 					// signals the start of an identifier
 					bufferCount = 0;
 					buffer[bufferCount++] = ch;
 					state = SCE_NNCRONTAB_IDENTIFIER;
-				} else if( isdigit(ch) ) {
+				} else if( isascii(ch) && isdigit(ch) ) {
 					// signals the start of a number
 					bufferCount = 0;
 					buffer[bufferCount++] = ch;
@@ -167,7 +171,7 @@ static void ColouriseNncrontabDoc(unsigned int startPos, int length, int, WordLi
 
 			case SCE_NNCRONTAB_IDENTIFIER:
 				// stay  in CONF_IDENTIFIER state until we find a non-alphanumeric
-				if( isalnum(ch) || (ch == '_') || (ch == '-') || (ch == '/') ||
+				if( (isascii(ch) && isalnum(ch)) || (ch == '_') || (ch == '-') || (ch == '/') ||
 					(ch == '$') || (ch == '.') || (ch == '<') || (ch == '>') ||
 					(ch == '@') ) {
 					buffer[bufferCount++] = ch;
@@ -196,7 +200,7 @@ static void ColouriseNncrontabDoc(unsigned int startPos, int length, int, WordLi
 
 			case SCE_NNCRONTAB_NUMBER:
 				// stay  in CONF_NUMBER state until we find a non-numeric
-				if( isdigit(ch) /* || ch == '.' */ ) {
+				if( isascii(ch) && isdigit(ch) /* || ch == '.' */ ) {
 					buffer[bufferCount++] = ch;
 				} else {
 					state = SCE_NNCRONTAB_DEFAULT;

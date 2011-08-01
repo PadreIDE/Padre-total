@@ -12,18 +12,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -113,12 +116,12 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
         if (!IsAWordChar(sc.ch))
         {
           CheckForKeyword(sc, keywordlists);
-          
+
           // Additional check for function keywords needed.
           // A function name must be followed by an opening parenthesis.
           if (sc.state == SCE_MYSQL_FUNCTION && sc.ch != '(')
             sc.ChangeState(SCE_MYSQL_DEFAULT);
-            
+
           sc.SetState(SCE_MYSQL_DEFAULT);
         }
         break;
@@ -137,7 +140,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
           if (keywordlists[4]->InList(&s[2]))
             sc.ChangeState(SCE_MYSQL_KNOWNSYSTEMVARIABLE);
           delete [] s;
-          
+
           sc.SetState(SCE_MYSQL_DEFAULT);
         }
         break;
@@ -232,7 +235,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
               if (sc.Match('/', '*'))
               {
                 sc.SetState(SCE_MYSQL_COMMENT);
-                
+
                 // Skip comment introducer and check for hidden command.
                 sc.Forward(2);
                 if (sc.ch == '!')
@@ -247,7 +250,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
                   // Special MySQL single line comment.
                   sc.SetState(SCE_MYSQL_COMMENTLINE);
                   sc.Forward(2);
-                  
+
                   // Check the third character too. It must be a space or EOL.
                   if (sc.ch != ' ' && sc.ch != '\n' && sc.ch != '\r')
                     sc.ChangeState(SCE_MYSQL_OPERATOR);
@@ -258,7 +261,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
       }
     }
   }
-  
+
   // Do a final check for keywords if we currently have an identifier, to highlight them
   // also at the end of a line.
   if (sc.state == SCE_MYSQL_IDENTIFIER)
@@ -270,7 +273,7 @@ static void ColouriseMySQLDoc(unsigned int startPos, int length, int initStyle, 
     if (sc.state == SCE_MYSQL_FUNCTION && sc.ch != '(')
       sc.ChangeState(SCE_MYSQL_DEFAULT);
   }
-	
+
   sc.Complete();
 }
 
@@ -321,9 +324,9 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
 	int styleNext = styler.StyleAt(startPos);
 	int style = initStyle;
 	
-  bool endFound = false;
-	bool whenFound = false;
-	bool elseFound = false;
+  bool endPending = false;
+	bool whenPending = false;
+	bool elseIfPending = false;
 
   char nextChar = styler.SafeGetCharAt(startPos);
   for (unsigned int i = startPos; length > 0; i++, length--)
@@ -374,18 +377,42 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
         }
         break;
       case SCE_MYSQL_HIDDENCOMMAND:
+        if (endPending)
+        {
+          // A conditional command is not a white space so it should end the current block
+          // before opening a new one.
+          endPending = false;
+          levelNext--;
+          if (levelNext < SC_FOLDLEVELBASE)
+            levelNext = SC_FOLDLEVELBASE;
+        }
         if (style != stylePrev)
           levelNext++;
         else
           if (style != styleNext)
+          {
             levelNext--;
+            if (levelNext < SC_FOLDLEVELBASE)
+              levelNext = SC_FOLDLEVELBASE;
+          }
         break;
       case SCE_MYSQL_OPERATOR:
+        if (endPending)
+        {
+          endPending = false;
+          levelNext--;
+          if (levelNext < SC_FOLDLEVELBASE)
+            levelNext = SC_FOLDLEVELBASE;
+        }
         if (currentChar == '(')
           levelNext++;
         else
           if (currentChar == ')')
+          {
             levelNext--;
+            if (levelNext < SC_FOLDLEVELBASE)
+              levelNext = SC_FOLDLEVELBASE;
+          }
         break;
       case SCE_MYSQL_MAJORKEYWORD:
       case SCE_MYSQL_KEYWORD:
@@ -394,110 +421,98 @@ static void FoldMySQLDoc(unsigned int startPos, int length, int initStyle, WordL
         // Reserved and other keywords.
         if (style != stylePrev)
         {
-          bool beginFound = MatchIgnoreCase(styler, i, "begin");
-          bool ifFound = MatchIgnoreCase(styler, i, "if");
-          bool thenFound = MatchIgnoreCase(styler, i, "then");
-          bool whileFound = MatchIgnoreCase(styler, i, "while");
-          bool loopFound = MatchIgnoreCase(styler, i, "loop");
-          bool repeatFound = MatchIgnoreCase(styler, i, "repeat");
-          
-          if (!foldOnlyBegin && endFound && (ifFound || whileFound || loopFound))
+          // END decreases the folding level, regardless which keyword follows.
+          bool endFound = MatchIgnoreCase(styler, i, "end");
+          if (endPending)
           {
-            endFound = false;
             levelNext--;
             if (levelNext < SC_FOLDLEVELBASE)
               levelNext = SC_FOLDLEVELBASE;
-            
-            // Note that "else" is special here. It may or may not be followed by an "if .. then",
-            // but in any case the level stays the same. When followed by an "if .. then" the level
-            // will be increased later, if not, then at eol.
           }
           else
-            if (!foldOnlyBegin && MatchIgnoreCase(styler, i, "else"))
+            if (!endFound)
             {
-              levelNext--;
-              elseFound = true;
-            }
-            else
-              if (!foldOnlyBegin && thenFound)
-              {
-                if (whenFound)
-                  whenFound = false;
-                else
-                  levelNext++;
-              }
+              if (MatchIgnoreCase(styler, i, "begin"))
+                levelNext++;
               else
-                if (ifFound)
-                  elseFound = false;
-                else
-                  if (MatchIgnoreCase(styler, i, "when"))
-                    whenFound = true;
+              {
+                if (!foldOnlyBegin)
+                {
+                  bool whileFound = MatchIgnoreCase(styler, i, "while");
+                  bool loopFound = MatchIgnoreCase(styler, i, "loop");
+                  bool repeatFound = MatchIgnoreCase(styler, i, "repeat");
+                  bool caseFound = MatchIgnoreCase(styler, i, "case");
+
+                  if (whileFound || loopFound || repeatFound || caseFound)
+                    levelNext++;
                   else
                   {
-                    if (beginFound)
-                      levelNext++;
-                    else
-                      if (!foldOnlyBegin && (loopFound || repeatFound || whileFound))
-                      {
-                        if (endFound)
-                          endFound = false;
-                        else
-                          levelNext++;
-                      }
+                    // IF alone does not increase the fold level as it is also used in non-block'ed
+                    // code like DROP PROCEDURE blah IF EXISTS.
+                    // Instead THEN opens the new level (if not part of an ELSEIF or WHEN (case) branch).
+                    if (MatchIgnoreCase(styler, i, "then"))
+                    {
+                      if (!elseIfPending && !whenPending)
+                        levelNext++;
                       else
-                        if (MatchIgnoreCase(styler, i, "end"))
-                        {
-                          // Multiple "end" in a row are counted multiple times!
-                          if (endFound)
-                          {
-                            levelNext--;
-                            if (levelNext < SC_FOLDLEVELBASE)
-                              levelNext = SC_FOLDLEVELBASE;
-                          }
-                          endFound = true;
-                          whenFound = false;
-                        }
+                      {
+                        elseIfPending = false;
+                        whenPending = false;
+                      }
+                    }
+                    else
+                    {
+                      // Neither of if/then/while/loop/repeat/case, so check for
+                      // sub parts of IF and CASE.
+                      if (MatchIgnoreCase(styler, i, "elseif"))
+                        elseIfPending = true;
+                      if (MatchIgnoreCase(styler, i, "when"))
+                        whenPending = true;
+                    }
                   }
+                }
+              }
+            }
+          
+          // Keep the current end state for the next round.
+          endPending = endFound;
+        }
+        break;
+        
+      default:
+        if (!isspace(currentChar) && endPending)
+        {
+          // END followed by a non-whitespace character (not covered by other cases like identifiers)
+          // also should end a folding block. Typical case: END followed by self defined delimiter.
+          levelNext--;
+          if (levelNext < SC_FOLDLEVELBASE)
+            levelNext = SC_FOLDLEVELBASE;
         }
         break;
     }
     
-    // Handle the case of a trailing end without an if / while etc, as in the case of a begin.
-		if (endFound)
+    if (atEOL)
     {
-			endFound = false;
-			levelNext--;
-			if (levelNext < SC_FOLDLEVELBASE)
-        levelNext = SC_FOLDLEVELBASE;
-		}
-    
-		if (atEOL)
-    {
-			if (elseFound)
-      {
-				levelNext++;
-        elseFound = false;
-      }
-
-			int levelUse = levelCurrent;
-			int lev = levelUse | levelNext << 16;
-			if (visibleChars == 0 && foldCompact)
-				lev |= SC_FOLDLEVELWHITEFLAG;
-			if (levelUse < levelNext)
-				lev |= SC_FOLDLEVELHEADERFLAG;
-			if (lev != styler.LevelAt(lineCurrent))
-				styler.SetLevel(lineCurrent, lev);
+      // Apply the new folding level to this line.
+      // Leave pending states as they are otherwise a line break will de-sync
+      // code folding and valid syntax.
+      int levelUse = levelCurrent;
+      int lev = levelUse | levelNext << 16;
+      if (visibleChars == 0 && foldCompact)
+        lev |= SC_FOLDLEVELWHITEFLAG;
+      if (levelUse < levelNext)
+        lev |= SC_FOLDLEVELHEADERFLAG;
+      if (lev != styler.LevelAt(lineCurrent))
+        styler.SetLevel(lineCurrent, lev);
       
-			lineCurrent++;
-			levelCurrent = levelNext;
-			visibleChars = 0;
-			endFound = false;
-			whenFound = false;
-		}
-    
+      lineCurrent++;
+      levelCurrent = levelNext;
+      visibleChars = 0;
+    }
+
 		if (!isspacechar(currentChar))
-			visibleChars++;
-	}
+      visibleChars++;
+  }
 }
 
 //--------------------------------------------------------------------------------------------------

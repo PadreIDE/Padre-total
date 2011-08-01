@@ -8,18 +8,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
 #include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -44,7 +47,7 @@ static inline bool isLispwordstart(char ch) {
 
 
 static void classifyWordLisp(unsigned int start, unsigned int end, WordList &keywords, WordList &keywords_kw, Accessor &styler) {
-	PLATFORM_ASSERT(end >= start);
+	assert(end >= start);
 	char s[100];
 	unsigned int i;
 	bool digit_flag = true;
@@ -139,7 +142,7 @@ static void ColouriseLispDoc(unsigned int startPos, int length, int initStyle, W
 				}
 			}
 		} else if (state == SCE_LISP_MACRO_DISPATCH) {
-			if (!isdigit(ch)) {
+			if (!(isascii(ch) && isdigit(ch))) {
 				if (ch != 'r' && ch != 'R' && (i - styler.GetStartSegment()) > 1) {
 					state = SCE_LISP_DEFAULT;
 				} else {

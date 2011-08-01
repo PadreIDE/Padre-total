@@ -7,19 +7,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
 #include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -54,13 +56,6 @@ inline bool IsOperator(int ch) {
 	return false;
 }
 
-static inline int MakeLowerCase(int ch) {
-	if (ch < 'A' || ch > 'Z')
-		return ch;
-	else
-		return ch - 'A' + 'a';
-}
-
 static void GetTextSegment(Accessor &styler, unsigned int start, unsigned int end, char *s, size_t len) {
 	size_t i = 0;
 	for (; (i < end - start + 1) && (i < len-1); i++) {
@@ -76,12 +71,12 @@ static const char *GetNextWord(Accessor &styler, unsigned int start, char *s, si
 		char ch = static_cast<char>(styler.SafeGetCharAt(start + i));
 		if ((i == 0) && !IsAWordStart(ch))
 			break;
-		if ((i > 0) && !IsAWordChar(ch)) 
+		if ((i > 0) && !IsAWordChar(ch))
 			break;
 		s[i] = ch;
 	}
 	s[i] = '\0';
-	
+
 	return s;
 }
 
@@ -323,19 +318,19 @@ static int classifyTagHTML(unsigned int start, unsigned int end,
 
 static void classifyWordHTJS(unsigned int start, unsigned int end,
                              WordList &keywords, Accessor &styler, script_mode inScriptType) {
+	char s[30 + 1];
+	unsigned int i = 0;
+	for (; i < end - start + 1 && i < 30; i++) {
+		s[i] = styler[start + i];
+	}
+	s[i] = '\0';
+
 	char chAttr = SCE_HJ_WORD;
-	bool wordIsNumber = IsADigit(styler[start]) || (styler[start] == '.');
-	if (wordIsNumber)
+	bool wordIsNumber = IsADigit(s[0]) || ((s[0] == '.') && IsADigit(s[1]));
+	if (wordIsNumber) {
 		chAttr = SCE_HJ_NUMBER;
-	else {
-		char s[30 + 1];
-		unsigned int i = 0;
-		for (; i < end - start + 1 && i < 30; i++) {
-			s[i] = styler[start + i];
-		}
-		s[i] = '\0';
-		if (keywords.InList(s))
-			chAttr = SCE_HJ_KEYWORD;
+	} else if (keywords.InList(s)) {
+		chAttr = SCE_HJ_KEYWORD;
 	}
 	styler.ColourTo(end, statePrintForState(chAttr, inScriptType));
 }
@@ -494,7 +489,7 @@ static bool isMakoBlockEnd(const int ch, const int chNext, const char *blockType
 	if (strlen(blockType) == 0) {
 		return ((ch == '%') && (chNext == '>'));
 	} else if ((0 == strcmp(blockType, "inherit")) ||
-			   (0 == strcmp(blockType, "namespace")) || 
+			   (0 == strcmp(blockType, "namespace")) ||
 			   (0 == strcmp(blockType, "include")) ||
 			   (0 == strcmp(blockType, "page"))) {
 		return ((ch == '/') && (chNext == '>'));
@@ -504,6 +499,18 @@ static bool isMakoBlockEnd(const int ch, const int chNext, const char *blockType
 		return ch == '}';
 	} else {
 		return (ch == '>');
+	}
+}
+
+static bool isDjangoBlockEnd(const int ch, const int chNext, const char *blockType) {
+	if (strlen(blockType) == 0) {
+		return 0;
+	} else if (0 == strcmp(blockType, "%")) {
+		return ((ch == '%') && (chNext == '}'));
+	} else if (0 == strcmp(blockType, "{")) {
+		return ((ch == '}') && (chNext == '}'));
+	} else {
+		return 0;
 	}
 }
 
@@ -575,14 +582,14 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 	styler.StartAt(startPos, static_cast<char>(STYLE_MAX));
 	char prevWord[200];
 	prevWord[0] = '\0';
-	char nextWord[200];
-	nextWord[0] = '\0';
 	char phpStringDelimiter[200]; // PHP is not limited in length, we are
 	phpStringDelimiter[0] = '\0';
 	int StateToPrint = initStyle;
 	int state = stateForPrintState(StateToPrint);
 	char makoBlockType[200];
 	makoBlockType[0] = '\0';
+	char djangoBlockType[2];
+	djangoBlockType[0] = '\0';
 
 	// If inside a tag, it may be a script tag, so reread from the start to ensure any language tags are seen
 	if (InTagState(state)) {
@@ -607,13 +614,13 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 	int lineCurrent = styler.GetLine(startPos);
 	int lineState;
 	if (lineCurrent > 0) {
-		lineState = styler.GetLineState(lineCurrent);
+		lineState = styler.GetLineState(lineCurrent-1);
 	} else {
 		// Default client and ASP scripting language is JavaScript
 		lineState = eScriptJS << 8;
 
-		// property asp.default.language 
-		//	Script in ASP code is initially assumed to be in JavaScript. 
+		// property asp.default.language
+		//	Script in ASP code is initially assumed to be in JavaScript.
 		//	To change this to VBScript set asp.default.language to 2. Python is 3.
 		lineState |= styler.GetPropertyInt("asp.default.language", eScriptJS) << 4;
 	}
@@ -630,43 +637,48 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 	if (inScriptType == eNonHtmlScript && state == SCE_H_COMMENT) {
 		scriptLanguage = eScriptComment;
 	}
+	script_type beforeLanguage = ScriptOfState(beforePreProc);
 
-	// property fold.html 
-	//	Folding is turned on or off for HTML and XML files with this option. 
+	// property fold.html
+	//	Folding is turned on or off for HTML and XML files with this option.
 	//	The fold option must also be on for folding to occur.
 	const bool foldHTML = styler.GetPropertyInt("fold.html", 0) != 0;
 
 	const bool fold = foldHTML && styler.GetPropertyInt("fold", 0);
 
-	// property fold.html.preprocessor 
-	//	Folding is turned on or off for scripts embedded in HTML files with this option. 
+	// property fold.html.preprocessor
+	//	Folding is turned on or off for scripts embedded in HTML files with this option.
 	//	The default is on.
 	const bool foldHTMLPreprocessor = foldHTML && styler.GetPropertyInt("fold.html.preprocessor", 1);
 
 	const bool foldCompact = styler.GetPropertyInt("fold.compact", 1) != 0;
 
-	// property fold.hypertext.comment 
-	//	Allow folding for comments in scripts embedded in HTML. 
-	//	The default is off. 
+	// property fold.hypertext.comment
+	//	Allow folding for comments in scripts embedded in HTML.
+	//	The default is off.
 	const bool foldComment = fold && styler.GetPropertyInt("fold.hypertext.comment", 0) != 0;
 
-	// property fold.hypertext.heredoc 
-	//	Allow folding for heredocs in scripts embedded in HTML. 
-	//	The default is off.  
+	// property fold.hypertext.heredoc
+	//	Allow folding for heredocs in scripts embedded in HTML.
+	//	The default is off.
 	const bool foldHeredoc = fold && styler.GetPropertyInt("fold.hypertext.heredoc", 0) != 0;
 
-	// property html.tags.case.sensitive 
-	//	For XML and HTML, setting this property to 1 will make tags match in a case 
-	//	sensitive way which is the expected behaviour for XML and XHTML. 
+	// property html.tags.case.sensitive
+	//	For XML and HTML, setting this property to 1 will make tags match in a case
+	//	sensitive way which is the expected behaviour for XML and XHTML.
 	const bool caseSensitive = styler.GetPropertyInt("html.tags.case.sensitive", 0) != 0;
 
-	// property lexer.xml.allow.scripts 
-	//	Set to 0 to disable scripts in XML.  
+	// property lexer.xml.allow.scripts
+	//	Set to 0 to disable scripts in XML.
 	const bool allowScripts = styler.GetPropertyInt("lexer.xml.allow.scripts", 1) != 0;
 
-	// property lexer.html.mako 
-	//	Set to 1 to enable the mako template language.  
+	// property lexer.html.mako
+	//	Set to 1 to enable the mako template language.
 	const bool isMako = styler.GetPropertyInt("lexer.html.mako", 0) != 0;
+
+	// property lexer.html.django
+	//	Set to 1 to enable the django template language.
+	const bool isDjango = styler.GetPropertyInt("lexer.html.django", 0) != 0;
 
 	const CharacterSet setHTMLWord(CharacterSet::setAlphaNum, ".-_:!#", 0x80, true);
 	const CharacterSet setTagContinue(CharacterSet::setAlphaNum, ".-_:!#[", 0x80, true);
@@ -732,8 +744,18 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 				if ((state != SCE_HPHP_COMMENT) && (state != SCE_HPHP_COMMENTLINE) && (state != SCE_HJ_COMMENT) && (state != SCE_HJ_COMMENTLINE) && (state != SCE_HJ_COMMENTDOC) && (!isStringState(state))) {
 				//Platform::DebugPrintf("state=%d, StateToPrint=%d, initStyle=%d\n", state, StateToPrint, initStyle);
 				//if ((state == SCE_HPHP_OPERATOR) || (state == SCE_HPHP_DEFAULT) || (state == SCE_HJ_SYMBOLS) || (state == SCE_HJ_START) || (state == SCE_HJ_DEFAULT)) {
-					if ((ch == '{') || (ch == '}') || (foldComment && (ch == '/') && (chNext == '*'))) {
-						levelCurrent += ((ch == '{') || (ch == '/')) ? 1 : -1;
+					if (ch == '#') {
+						int j = i + 1;
+						while ((j < lengthDoc) && IsASpaceOrTab(styler.SafeGetCharAt(j))) {
+							j++;
+						}
+						if (styler.Match(j, "region") || styler.Match(j, "if")) {
+							levelCurrent++;
+						} else if (styler.Match(j, "end")) {
+							levelCurrent--;
+						}
+					} else if ((ch == '{') || (ch == '}') || (foldComment && (ch == '/') && (chNext == '*'))) {
+						levelCurrent += (((ch == '{') || (ch == '/')) ? 1 : -1);
 					}
 				} else if (((state == SCE_HPHP_COMMENT) || (state == SCE_HJ_COMMENT)) && foldComment && (ch == '*') && (chNext == '/')) {
 					levelCurrent--;
@@ -785,8 +807,6 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 				visibleChars = 0;
 				levelPrev = levelCurrent;
 			}
-			lineCurrent++;
-			lineStartVisibleChars = 0;
 			styler.SetLineState(lineCurrent,
 			                    ((inScriptType & 0x03) << 0) |
 			                    ((tagOpened & 0x01) << 2) |
@@ -794,13 +814,15 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 			                    ((aspScript & 0x0F) << 4) |
 			                    ((clientScript & 0x0F) << 8) |
 			                    ((beforePreProc & 0xFF) << 12));
+			lineCurrent++;
+			lineStartVisibleChars = 0;
 		}
 
 		// Allow falling through to mako handling code if newline is going to end a block
 		if (((ch == '\r' && chNext != '\n') || (ch == '\n')) &&
 			(!isMako || (0 != strcmp(makoBlockType, "%")))) {
 		}
-		
+
 		// generic end of script processing
 		else if ((inScriptType == eNonHtmlScript) && (ch == '<') && (chNext == '/')) {
 			// Check if it's the end of the script tag (or any other HTML tag)
@@ -857,9 +879,11 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 		else if ((state != SCE_H_ASPAT) &&
 		         !isPHPStringState(state) &&
 		         (state != SCE_HPHP_COMMENT) &&
+		         (state != SCE_HPHP_COMMENTLINE) &&
 		         (ch == '<') &&
 		         (chNext == '?') &&
-				 !IsScriptCommentState(state) ) {
+				 !IsScriptCommentState(state)) {
+ 			beforeLanguage = scriptLanguage;
 			scriptLanguage = segIsScriptingIndicator(styler, i + 2, i + 6, eScriptPHP);
 			if (scriptLanguage != eScriptPHP && isStringState(state)) continue;
 			styler.ColourTo(i - 1, StateToPrint);
@@ -886,13 +910,13 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 		}
 
 		// handle the start Mako template Python code
-		else if (isMako && scriptLanguage == eScriptNone && ((ch == '<' && chNext == '%') || 
+		else if (isMako && scriptLanguage == eScriptNone && ((ch == '<' && chNext == '%') ||
 															 (lineStartVisibleChars == 1 && ch == '%') ||
 															 (ch == '$' && chNext == '{') ||
 															 (ch == '<' && chNext == '/' && chNext2 == '%'))) {
 			if (ch == '%')
 				strcpy(makoBlockType, "%");
-			else if (ch == '$') 
+			else if (ch == '$')
 				strcpy(makoBlockType, "{");
 			else if (chNext == '/')
 				GetNextWord(styler, i+3, makoBlockType, sizeof(makoBlockType));
@@ -917,7 +941,7 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 			styler.ColourTo(i, SCE_H_ASP);
 			if (foldHTMLPreprocessor && ch == '<')
 				levelCurrent++;
-				
+
 			if (ch != '%' && ch != '$') {
 				i += strlen(makoBlockType);
 				visibleChars += strlen(makoBlockType);
@@ -931,8 +955,62 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 			continue;
 		}
 
+		// handle the start/end of Django comment
+		else if (isDjango && state != SCE_H_COMMENT && (ch == '{' && chNext == '#')) {
+			styler.ColourTo(i - 1, StateToPrint);
+			beforePreProc = state;
+			beforeLanguage = scriptLanguage;
+			if (inScriptType == eNonHtmlScript)
+				inScriptType = eNonHtmlScriptPreProc;
+			else
+				inScriptType = eNonHtmlPreProc;
+			i += 1;
+			visibleChars += 1;
+			scriptLanguage = eScriptComment;
+			state = SCE_H_COMMENT;
+			styler.ColourTo(i, SCE_H_ASP);
+			ch = static_cast<unsigned char>(styler.SafeGetCharAt(i));
+			continue;
+		} else if (isDjango && state == SCE_H_COMMENT && (ch == '#' && chNext == '}')) {
+			styler.ColourTo(i - 1, StateToPrint);
+			i += 1;
+			visibleChars += 1;
+			styler.ColourTo(i, SCE_H_ASP);
+			state = beforePreProc;
+			if (inScriptType == eNonHtmlScriptPreProc)
+				inScriptType = eNonHtmlScript;
+			else
+				inScriptType = eHtml;
+			scriptLanguage = beforeLanguage;
+			continue;
+		}
+
+		// handle the start Django template code
+		else if (isDjango && scriptLanguage != eScriptPython && (ch == '{' && (chNext == '%' ||  chNext == '{'))) {
+			if (chNext == '%')
+				strcpy(djangoBlockType, "%");
+			else
+				strcpy(djangoBlockType, "{");
+			styler.ColourTo(i - 1, StateToPrint);
+			beforePreProc = state;
+			if (inScriptType == eNonHtmlScript)
+				inScriptType = eNonHtmlScriptPreProc;
+			else
+				inScriptType = eNonHtmlPreProc;
+
+			i += 1;
+			visibleChars += 1;
+			state = SCE_HP_START;
+			beforeLanguage = scriptLanguage;
+			scriptLanguage = eScriptPython;
+			styler.ColourTo(i, SCE_H_ASP);
+
+			ch = static_cast<unsigned char>(styler.SafeGetCharAt(i));
+			continue;
+		}
+
 		// handle the start of ASP pre-processor = Non-HTML
-		else if (!isMako && !isCommentASPState(state) && (ch == '<') && (chNext == '%') && !isPHPStringState(state)) {
+		else if (!isMako && !isDjango && !isCommentASPState(state) && (ch == '<') && (chNext == '%') && !isPHPStringState(state)) {
 			styler.ColourTo(i - 1, StateToPrint);
 			beforePreProc = state;
 			if (inScriptType == eNonHtmlScript)
@@ -977,7 +1055,7 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 				 (ch == '!') &&
 				 (StateToPrint != SCE_H_CDATA) &&
 				 (!IsCommentState(StateToPrint)) &&
-				 (!IsScriptCommentState(StateToPrint)) ) {
+				 (!IsScriptCommentState(StateToPrint))) {
 			beforePreProc = state;
 			styler.ColourTo(i - 2, StateToPrint);
 			if ((chNext == '-') && (chNext2 == '-')) {
@@ -998,8 +1076,8 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 		}
 
 		// handle the end of Mako Python code
-		else if (isMako && 
-			     ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) && 
+		else if (isMako &&
+			     ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
 				 (scriptLanguage != eScriptNone) && stateAllowsTermination(state) &&
 				 isMakoBlockEnd(ch, chNext, makoBlockType)) {
 			if (state == SCE_H_ASPAT) {
@@ -1030,8 +1108,34 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 			continue;
 		}
 
+		// handle the end of Django template code
+		else if (isDjango &&
+			     ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
+				 (scriptLanguage != eScriptNone) && stateAllowsTermination(state) &&
+				 isDjangoBlockEnd(ch, chNext, djangoBlockType)) {
+			if (state == SCE_H_ASPAT) {
+				aspScript = segIsScriptingIndicator(styler,
+				                                    styler.GetStartSegment(), i - 1, aspScript);
+			}
+			if (state == SCE_HP_WORD) {
+				classifyWordHTPy(styler.GetStartSegment(), i - 1, keywords4, styler, prevWord, inScriptType);
+			} else {
+				styler.ColourTo(i - 1, StateToPrint);
+			}
+			i += 1;
+			visibleChars += 1;
+			styler.ColourTo(i, SCE_H_ASP);
+			state = beforePreProc;
+			if (inScriptType == eNonHtmlScriptPreProc)
+				inScriptType = eNonHtmlScript;
+			else
+				inScriptType = eHtml;
+			scriptLanguage = beforeLanguage;
+			continue;
+		}
+
 		// handle the end of a pre-processor = Non-HTML
-		else if ((!isMako && ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
+		else if ((!isMako && !isDjango && ((inScriptType == eNonHtmlPreProc) || (inScriptType == eNonHtmlScriptPreProc)) &&
 				  (((scriptLanguage != eScriptNone) && stateAllowsTermination(state))) &&
 				  (((ch == '%') || (ch == '?')) && (chNext == '>'))) ||
 		         ((scriptLanguage == eScriptSGML) && (ch == '>') && (state != SCE_H_SGML_COMMENT))) {
@@ -1081,7 +1185,7 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 			if (foldHTMLPreprocessor && (scriptLanguage != eScriptXML)) {
 				levelCurrent--;
 			}
-			scriptLanguage = eScriptNone;
+			scriptLanguage = beforeLanguage;
 			continue;
 		}
 		/////////////////////////////////////
@@ -1564,7 +1668,9 @@ static void ColouriseHyperTextDoc(unsigned int startPos, int length, int initSty
 				i += 2;
 			} else if (isLineEnd(ch)) {
 				styler.ColourTo(i - 1, StateToPrint);
-				state = SCE_HJ_STRINGEOL;
+				if (chPrev != '\\' && (chPrev2 != '\\' || chPrev != '\r' || ch != '\n')) {
+					state = SCE_HJ_STRINGEOL;
+				}
 			}
 			break;
 		case SCE_HJ_STRINGEOL:

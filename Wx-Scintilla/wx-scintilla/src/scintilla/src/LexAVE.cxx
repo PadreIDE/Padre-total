@@ -9,18 +9,21 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
-#include <stdarg.h>
 #include <stdio.h>
+#include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
@@ -42,7 +45,7 @@ inline bool IsAWordStart(const int ch) {
 }
 
 inline bool isAveOperator(char ch) {
-	if (isalnum(ch))
+	if (isascii(ch) && isalnum(ch))
 		return false;
 	// '.' left out as it is used to make up numbers
 	if (ch == '*' || ch == '/' || ch == '-' || ch == '+' ||

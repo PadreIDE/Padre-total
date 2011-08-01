@@ -8,25 +8,28 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <assert.h>
+#include <ctype.h>
 
-#include "Platform.h"
-
-#include "PropSet.h"
-#include "Accessor.h"
-#include "StyleContext.h"
-#include "KeyWords.h"
+#include "ILexer.h"
 #include "Scintilla.h"
 #include "SciLexer.h"
+
+#include "WordList.h"
+#include "LexAccessor.h"
+#include "Accessor.h"
+#include "StyleContext.h"
+#include "CharacterSet.h"
+#include "LexerModule.h"
 
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
 
 static inline bool IsAWordChar(const int ch) {
-	return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_' || ch == '\'');
+	return (ch < 0x80) && (isalnum(ch) || ch == '.' || ch == '_' || ch == '\''|| ch == '$');
 }
 
 static inline bool IsAWordStart(const int ch) {
@@ -150,6 +153,22 @@ static bool IsStreamCommentStyle(int style) {
 	return style == SCE_V_COMMENT;
 }
 
+static bool IsCommentLine(int line, Accessor &styler) {
+	int pos = styler.LineStart(line);
+	int eolPos = styler.LineStart(line + 1) - 1;
+	for (int i = pos; i < eolPos; i++) {
+		char ch = styler[i];
+		char chNext = styler.SafeGetCharAt(i + 1);
+		int style = styler.StyleAt(i);
+		if (ch == '/' && chNext == '/' &&
+		   (style == SCE_V_COMMENTLINE || style == SCE_V_COMMENTLINEBANG)) {
+			return true;
+		} else if (!IsASpaceOrTab(ch)) {
+			return false;
+		}
+	}
+	return false;
+}
 // Store both the current line's fold level and the next lines in the
 // level store to make it easy to pick up with each increment
 // and to make it possible to fiddle the current level for "} else {".
@@ -194,6 +213,15 @@ static void FoldNoBoxVerilogDoc(unsigned int startPos, int length, int initStyle
 				// Comments don't end at end of line and the next character may be unstyled.
 				levelNext--;
 			}
+		}
+		if (foldComment && atEOL && IsCommentLine(lineCurrent, styler))
+		{
+			if (!IsCommentLine(lineCurrent - 1, styler)
+			    && IsCommentLine(lineCurrent + 1, styler))
+				levelNext++;
+			else if (IsCommentLine(lineCurrent - 1, styler)
+			         && !IsCommentLine(lineCurrent+1, styler))
+				levelNext--;
 		}
 		if (foldComment && (style == SCE_V_COMMENTLINE)) {
 			if ((ch == '/') && (chNext == '/')) {
@@ -241,24 +269,36 @@ static void FoldNoBoxVerilogDoc(unsigned int startPos, int length, int initStyle
                         if (styler.Match(j, "case") ||
                             styler.Match(j, "casex") ||
                             styler.Match(j, "casez") ||
+                            styler.Match(j, "class") ||
                             styler.Match(j, "function") ||
-                            styler.Match(j, "fork") ||
+                            styler.Match(j, "generate") ||
+                            styler.Match(j, "covergroup") ||
+                            styler.Match(j, "package") ||
+                            styler.Match(j, "primitive") ||
+                            styler.Match(j, "program") ||
+                            styler.Match(j, "sequence") ||
+                            styler.Match(j, "specify") ||
                             styler.Match(j, "table") ||
                             styler.Match(j, "task") ||
-                            styler.Match(j, "generate") ||
-                            styler.Match(j, "specify") ||
-                            styler.Match(j, "primitive") ||
+                            styler.Match(j, "fork") ||
                             (styler.Match(j, "module") && foldAtModule) ||
                             styler.Match(j, "begin")) {
                                 levelNext++;
                         } else if (styler.Match(j, "endcase") ||
+                                   styler.Match(j, "endclass") ||
                                    styler.Match(j, "endfunction") ||
-                                   styler.Match(j, "join") ||
-                                   styler.Match(j, "endtask") ||
                                    styler.Match(j, "endgenerate") ||
-                                   styler.Match(j, "endtable") ||
-                                   styler.Match(j, "endspecify") ||
+                                   styler.Match(j, "endgroup") ||
+                                   styler.Match(j, "endpackage") ||
                                    styler.Match(j, "endprimitive") ||
+                                   styler.Match(j, "endprogram") ||
+                                   styler.Match(j, "endsequence") ||
+                                   styler.Match(j, "endspecify") ||
+                                   styler.Match(j, "endtable") ||
+                                   styler.Match(j, "endtask") ||
+                                   styler.Match(j, "join") ||
+                                   styler.Match(j, "join_any") ||
+                                   styler.Match(j, "join_none") ||
                                    (styler.Match(j, "endmodule") && foldAtModule) ||
                                    (styler.Match(j, "end") && !IsAWordChar(styler.SafeGetCharAt(j+3)))) {
                                 levelNext--;
