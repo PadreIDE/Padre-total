@@ -13,11 +13,11 @@ MODULE=Wx__Scintilla
 BOOT:
   INIT_PLI_HELPERS( wx_pli_helpers );
 
-INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS2/ScintillaTextCtrl.xsp
+INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/ScintillaTextCtrl.xsp
 
-INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS2/ScintillaTextEvent.xsp
+INCLUDE_COMMAND: $^X -MExtUtils::XSpp::Cmd -e xspp -- -t wx_typemap.xsp XS/ScintillaTextEvent.xsp
 
-#include "cpp2/st_constants.cpp"
+#include "cpp/st_constants.cpp"
 
 #  //FIXME//tricky
 #if defined(__WXMSW__)

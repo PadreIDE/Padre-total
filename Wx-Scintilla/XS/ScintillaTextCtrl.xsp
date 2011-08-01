@@ -3,7 +3,7 @@
 %module{Wx};
 
 #undef FindText
-#include "wx-scintilla2/include/WxScintilla.h"
+#include "wx-scintilla/include/WxScintilla.h"
 
 %typemap{wxDragResult}{simple};
 %typemap{wxFontEncoding}{simple};

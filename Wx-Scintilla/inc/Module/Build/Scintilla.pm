@@ -172,17 +172,17 @@ sub build_scintilla {
 	my $self = shift;
 
 	my @modules = (
-		glob('wx-scintilla2/src/scintilla/src/*.cxx'),
-		'wx-scintilla2/src/PlatWX.cpp',
-		'wx-scintilla2/src/ScintillaWX.cpp',
-		'wx-scintilla2/src/scintilla.cpp',
+		glob('wx-scintilla/src/scintilla/src/*.cxx'),
+		'wx-scintilla/src/PlatWX.cpp',
+		'wx-scintilla/src/ScintillaWX.cpp',
+		'wx-scintilla/src/scintilla.cpp',
 	);
 
 	my @include_dirs = (
-		'-Iwx-scintilla2/include',
-		'-Iwx-scintilla2/src/scintilla/include',
-		'-Iwx-scintilla2/src/scintilla/src',
-		'-Iwx-scintilla2/src',
+		'-Iwx-scintilla/include',
+		'-Iwx-scintilla/src/scintilla/include',
+		'-Iwx-scintilla/src/scintilla/src',
+		'-Iwx-scintilla/src',
 		Alien::wxWidgets->include_path,
 	);
 
@@ -234,10 +234,10 @@ sub build_xs {
 
 	die 'Unable to determine typemap' if !defined($perltypemap);
 
-	$self->log_info("    XS Scintilla2.xs\n");
+	$self->log_info("    XS scintilla.xs\n");
 	require ExtUtils::ParseXS;
 	ExtUtils::ParseXS::process_file(
-		filename    => 'Scintilla2.xs',
+		filename    => 'scintilla.xs',
 		output      => 'Scintilla.c',
 		prototypes  => 0,
 		linenumbers => 0,
