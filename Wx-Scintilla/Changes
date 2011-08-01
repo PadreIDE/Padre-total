@@ -1,7 +1,10 @@
 Revision history for Wx-Scintilla
 
-0.20  TBA
+0.20  2011.8.1
     - The editor doesn't need to be visible to pass tests (ADAMK)
+    - Added 'perl Build.PL --stc2' to build experimental Scintilla 2.03. (AZAWAWI)
+      This is a back port from wxWidgets 2.9.2 development branch for wxWidgets 2.8.10+.
+      Please test and let me know if it works for you or not 
 
 0.19  2011.7.4
     - Handle MinGW link to MS style perl5xx.lib (MARKD)
