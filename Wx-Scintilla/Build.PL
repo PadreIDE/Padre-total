@@ -3,13 +3,14 @@ use warnings;
 
 require Getopt::Long;
 
-my ($stc2, $help);
+my ( $stc2, $help );
 Getopt::Long::GetOptions(
 	'stc2' => \$stc2,
-	'help'       => \$help);
+	'help' => \$help
+);
 
-if($help) {
-	  print <<"HELP";
+if ($help) {
+	print <<"HELP";
     perl Build.PL [--stc2]
 
     --stc2
@@ -19,21 +20,23 @@ HELP
 }
 
 # Decide whether to use scintilla 1.x or 2.x
-my ($stc_builderclass, $scintilla_dir);
-if($stc2) {
+my ( $stc_builderclass, $scintilla_dir );
+if ($stc2) {
+
 	# Scintilla 2.x
 	print "Selected Scintilla 2.x for build\n";
 	use lib 'inc2';
 	require Module::Build::Scintilla2;
 	$stc_builderclass = Module::Build::Scintilla2::stc_builderclass();
-	$scintilla_dir = 'wx-scintilla2';
+	$scintilla_dir    = 'wx-scintilla2';
 } else {
+
 	# Scintilla 1.x
 	print "Selected Scintilla 1.x for build.\n";
 	use lib 'inc';
 	require Module::Build::Scintilla;
 	$stc_builderclass = Module::Build::Scintilla::stc_builderclass();
-	$scintilla_dir = 'wx-scintilla';
+	$scintilla_dir    = 'wx-scintilla';
 }
 
 # Create build script
