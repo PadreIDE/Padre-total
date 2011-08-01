@@ -1,21 +1,37 @@
-package Module::Build::Scintilla2::MSWgcc;
+package Module::Build::Scintilla::MSW;
 
 use strict;
 use warnings;
-use Module::Build::Scintilla2::MSW;
-
+use Module::Build::Scintilla;
 use Config;
 
-our @ISA = qw( Module::Build::Scintilla2::MSW );
+our @ISA = qw( Module::Build::Scintilla );
+
+sub stc_linker {
+	my $self = shift;
+	return Alien::wxWidgets->linker;
+}
+
+sub stc_ldflags {
+	my $self = shift;
+	return Alien::wxWidgets->link_flags;
+}
+
+sub stc_compiler {
+	my $self = shift;
+	return Alien::wxWidgets->compiler . ' -c';
+}
+
+sub stc_ccflags {
+	my $self  = shift;
+	my $flags = Alien::wxWidgets->c_flags;
+	return $flags;
+}
 
 sub stc_scintilla_lib {
 	my $self    = shift;
-	my $libname = 'libwxmsw';
-	my ( $major, $minor, $release ) = $self->stc_version_strings;
-	$libname .= $major . $minor;
-	$libname .= 'u' if Alien::wxWidgets->config->{unicode};
-	$libname .= 'd' if Alien::wxWidgets->config->{debug};
-	$libname .= '_scintilla.a';
+	my $libname = $self->stc_scintilla_dll;
+	$libname =~ s/\.dll$/\.lib/i;
 	return $libname;
 }
 
@@ -26,20 +42,11 @@ sub stc_scintilla_dll {
 	$dllname .= $major . $minor;
 	$dllname .= 'u' if Alien::wxWidgets->config->{unicode};
 	$dllname .= 'd' if Alien::wxWidgets->config->{debug};
-	$dllname .= '_scintilla_gcc.dll';
+	$dllname .= '_scintilla_vc.dll';
 	return $dllname;
 }
 
-sub stc_scintilla_link {
-	my $class    = shift;
-	my $linkname = '-lwxmsw';
-	my ( $major, $minor, $release ) = $class->stc_version_strings;
-	$linkname .= $major . $minor;
-	$linkname .= 'u' if Alien::wxWidgets->config->{unicode};
-	$linkname .= 'd' if Alien::wxWidgets->config->{debug};
-	$linkname .= '_scintilla';
-	return $linkname;
-}
+sub stc_scintilla_link { $_[0]->stc_scintilla_lib; }
 
 sub stc_build_scintilla_object {
 	my ( $self, $module, $object_name, $includedirs ) = @_;
@@ -48,16 +55,8 @@ sub stc_build_scintilla_object {
 		$self->stc_compiler,
 		$self->stc_ccflags,
 		$self->stc_defines,
-		( $Config{ptrsize} == 8 ) ? '-DWIN32 -DWIN64' : '-DWIN32',
-		'-o ' . $object_name,
-		'-O2',
-		'-Wall',
-		$object_name !~ /((Plat|Scintilla)WX|scintilla)\.o/
-		? '-Wno-missing-braces -Wno-char-subscripts'
-		: '',
-		'-MT' . $object_name,
-		'-MF' . $object_name . '.d',
-		'-MD -MP',
+		( $Config{ptrsize} == 8 ) ? '-O2 -MD -DWIN32 -DWIN64' : '-O2 -MD -DWIN32',
+		'/nologo /TP /Fo' . $object_name,
 		join( ' ', @$includedirs ),
 		$module,
 	);
@@ -68,17 +67,21 @@ sub stc_build_scintilla_object {
 sub stc_link_scintilla_objects {
 	my ( $self, $shared_lib, $objects ) = @_;
 
+
 	my @cmd = (
 		$self->stc_linker,
 		$self->stc_ldflags,
-		'-shared -o ' . $shared_lib,
-		join( ' ', @$objects ),
-		'-Wl,--out-implib=' . $self->stc_scintilla_lib,
-		'-lgdi32 -luser32',
-		Alien::wxWidgets->libraries(qw(core base)),
+		"wx-scintilla2/src/*.obj",
+		"wx-scintilla2/src/scintilla/src/*.obj",
+		"/DLL /NOLOGO /OUT:$shared_lib",
+		'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
+
+		Alien::wxWidgets->link_libraries(qw(core base)),
+		'gdi32.lib user32.lib',
 	);
 
 	$self->_run_command( \@cmd );
+
 }
 
 sub stc_build_xs {
@@ -88,7 +91,7 @@ sub stc_build_xs {
 
 	my @cmd = (
 		Alien::wxWidgets->compiler,
-		' -c -o Scintilla.o',
+		' /c /FoScintilla.obj',
 		'-I.',
 		'-I' . $self->stc_get_wx_include_path,
 		'-I' . $Config{archlib} . '/CORE',
@@ -103,7 +106,7 @@ sub stc_build_xs {
 
 	$self->_run_command( \@cmd );
 
-	$self->log_info("    ExtUtils::Mksymlists Scintilla\n");
+	$self->log_info("Running Mkbootstrap for Wx::Scintilla\n");
 
 	require ExtUtils::Mksymlists;
 	ExtUtils::Mksymlists::Mksymlists(
@@ -123,31 +126,22 @@ sub stc_link_xs {
 	my $perllib = $Config{libperl};
 
 	# following lines should leave 'perl5xx.lib' unchanged
-	$perllib =~ s/^lib/-l/;
-	$perllib =~ s/\.a$//;
-
-	# if perl lib is MS link lib perl5xx.lib, we need to prefix fullpath
-	if ( $perllib =~ /\.lib$/i ) {
-		$perllib = $Config{archlibexp} . '/CORE/' . $perllib;
-	}
 
 	my @cmd = (
 		Alien::wxWidgets->linker,
 		Alien::wxWidgets->link_flags,
-		$Config{ldflags},
-		'-L.',
-		'-shared -s -o ' . $dll,
-		'Scintilla.o',
+		$Config{lddlflags},
+		'-out:' . $dll,
+		'Scintilla.obj',
+		'blib/arch/auto/Wx/Scintilla/' . $self->stc_scintilla_link,
 		$perllib,
-		$self->stc_scintilla_link,
 		Alien::wxWidgets->libraries(qw(core base)),
-		$Config{perllibs},
-		'Scintilla.def',
+		'/LIBPATH:"' . Alien::wxWidgets->shared_library_path . '"',
+		$Config{perllibs}
 	);
 
 	$self->_run_command( \@cmd );
+
 }
-
-
 
 1;

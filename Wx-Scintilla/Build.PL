@@ -2,10 +2,10 @@ use strict;
 use warnings;
 
 use lib 'inc';
-require Module::Build::Scintilla2;
+require Module::Build::Scintilla;
 
 # Create build script
-Module::Build::Scintilla2::stc_builderclass()->new(
+Module::Build::Scintilla::stc_builderclass()->new(
 	module_name        => 'Wx::Scintilla',
 	license            => 'perl',
 	dist_author        => q{Ahmad M. Zawawi <ahmad.zawawi@gmail.com>},

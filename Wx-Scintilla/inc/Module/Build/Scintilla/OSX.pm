@@ -1,8 +1,8 @@
-package Module::Build::Scintilla2::OSX;
+package Module::Build::Scintilla::OSX;
 
 use strict;
 use warnings;
-use Module::Build::Scintilla2;
+use Module::Build::Scintilla;
 use Config;
 
 our @ISA = qw( Module::Build::Scintilla );

@@ -1,4 +1,4 @@
-package Module::Build::Scintilla2;
+package Module::Build::Scintilla;
 
 use strict;
 use warnings;
@@ -19,18 +19,18 @@ sub stc_builderclass {
 
 	if ( $^O =~ /^mswin/i ) {
 		if ( $Config{cc} eq 'cl' ) {
-			require Module::Build::Scintilla2::MSW;
-			$bclass = 'Module::Build::Scintilla2::MSW';
+			require Module::Build::Scintilla::MSW;
+			$bclass = 'Module::Build::Scintilla::MSW';
 		} else {
-			require Module::Build::Scintilla2::MSWgcc;
-			$bclass = 'Module::Build::Scintilla2::MSWgcc';
+			require Module::Build::Scintilla::MSWgcc;
+			$bclass = 'Module::Build::Scintilla::MSWgcc';
 		}
 	} elsif ( $^O =~ /^darwin/i ) {
-		require Module::Build::Scintilla2::OSX;
-		$bclass = 'Module::Build::Scintilla2::OSX';
+		require Module::Build::Scintilla::OSX;
+		$bclass = 'Module::Build::Scintilla::OSX';
 	} else {
-		require Module::Build::Scintilla2::GTK;
-		$bclass = 'Module::Build::Scintilla2::GTK';
+		require Module::Build::Scintilla::GTK;
+		$bclass = 'Module::Build::Scintilla::GTK';
 	}
 
 	return $bclass;

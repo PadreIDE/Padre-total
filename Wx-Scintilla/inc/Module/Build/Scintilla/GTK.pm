@@ -1,11 +1,11 @@
-package Module::Build::Scintilla2::GTK;
+package Module::Build::Scintilla::GTK;
 
 use strict;
 use warnings;
-use Module::Build::Scintilla2;
+use Module::Build::Scintilla;
 use Config;
 
-our @ISA = qw( Module::Build::Scintilla2 );
+our @ISA = qw( Module::Build::Scintilla );
 
 sub stc_scintilla_lib {''}
 
