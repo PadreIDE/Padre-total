@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.21_01  TBA
+    - Switched to Scintilla 2.03 by default (AZAWAWI)
+    - Removed Scintilla 1.79 (AZAWAWI)
+
 0.20  2011.8.1
     - The editor doesn't need to be visible to pass tests (ADAMK)
     - Added 'perl Build.PL --stc2' to build experimental Scintilla 2.03. (AZAWAWI)
