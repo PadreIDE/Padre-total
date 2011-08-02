@@ -210,6 +210,7 @@ public:
     virtual void RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAllocated back);
     virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill,
                                 ColourAllocated outline, int alphaOutline, int flags);
+    virtual void DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage);
     virtual void Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back);
     virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource);
 
@@ -453,6 +454,10 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     RectangleDraw(rc, outline, fill);
 #endif
 #endif
+}
+
+void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) {
+    printf("RegisterRGBAImage is not implemented! Please contact the author\n");
 }
 
 void SurfaceImpl::Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back) {
@@ -1127,6 +1132,7 @@ public:
     virtual int Find(const char *prefix);
     virtual void GetValue(int n, char *value, int len);
     virtual void RegisterImage(int type, const char *xpm_data);
+    virtual void RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage);
     virtual void ClearRegisteredImages();
     virtual void SetDoubleClickAction(CallBackAction, void *);
     virtual void SetList(const char* list, char separator, char typesep);
@@ -1318,6 +1324,11 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
     // Add an item that maps type to the image index
     itm[type] = idx;
 }
+
+void ListBoxImpl::RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) {
+    printf("RegisterRGBAImage is not implemented! Please contact the author\n");
+}
+
 
 void ListBoxImpl::ClearRegisteredImages() {
     wxDELETE(imgList);
