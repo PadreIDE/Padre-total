@@ -45,7 +45,7 @@ sub new {
 	# set the lexer to Perl 5
 	$self->SetLexer(wxSTC_LEX_PERL);
 
-	$self->SetText(<<"EXAMPLE");
+	$self->SetText(<<'EXAMPLE');
 # Perl 5 example
 use strict;
 use warnings;
