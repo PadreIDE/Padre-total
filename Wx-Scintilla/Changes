@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.21_02  2011.8.2
+    - Fix OSX compilation error (tome++)
+    - Updated editor.pl to include the perl 5.10 // scintilla test
+
 0.21_01  2011.8.2
     - Upgraded to Scintilla 2.28 which was released on 1st August 2011 (AZAWAWI)
     - Switched to building Scintilla 2.x by default (AZAWAWI)
