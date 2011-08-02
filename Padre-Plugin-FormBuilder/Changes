@@ -1,5 +1,8 @@
 Changes for Perl extension Padre-Plugin-FormBuilder
 
+0.04 to be released
+	- Updated to match FBP::Perl 0.59
+
 0.03 to be released
 	- Rearranged the codegen options to allow more detailed descriptions
 	- Added specific control of internationalisation in generated code

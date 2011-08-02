@@ -31,7 +31,7 @@ use Padre::Plugin    0.66 ();
 use Padre::Util      0.81 ();
 use Padre::Wx        0.66 ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin';
 
 # Temporary namespace counter
@@ -99,15 +99,6 @@ sub menu_plugins {
 	return $item;
 }
 
-# sub menu_plugins_simple {
-	# my $self = shift;
-	# return $self->plugin_name => [
-		# 'wxFormBuilder' => sub {
-			# $self->menu_dialog;
-		# },
-	# ];
-# }
-
 
 
 
@@ -155,7 +146,7 @@ L<Padre>
 
 =head1 COPYRIGHT
 
-Copyright 2010 Adam Kennedy.
+Copyright 2010 - 2011 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.

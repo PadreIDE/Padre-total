@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -42,9 +42,8 @@ sub new {
 	my $bSizer7 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$bSizer7->Add( $self->{m_checkBox5}, 0, Wx::wxALL, 5 );
 
-	$self->SetSizer($bSizer7);
+	$self->SetSizerAndFit($bSizer7);
 	$self->Layout;
-	$bSizer7->Fit($self);
 
 	return $self;
 }

@@ -42,9 +42,8 @@ sub new {
 	my $bSizer7 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$bSizer7->Add( $m_checkBox5, 0, Wx::wxALL, 5 );
 
-	$self->SetSizer($bSizer7);
+	$self->SetSizerAndFit($bSizer7);
 	$self->Layout;
-	$bSizer7->Fit($self);
 
 	$self->{m_checkBox5} = $m_checkBox5->GetId;
 

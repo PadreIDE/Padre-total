@@ -25,19 +25,12 @@ use strict;
 use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.57 ();
+use FBP::Perl    0.59 ();
 use Mouse        0.61;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 extends 'FBP::Perl';
-
-has version => (
-	is       => 'ro',
-	isa      => 'Str',
-	required => 1,
-	default  => '0.01',
-);
 
 has encapsulate => (
 	is       => 'ro',
@@ -72,9 +65,9 @@ END_PERL
 	return $lines;
 }
 
-sub package_header {
+sub project_header {
 	my $self  = shift;
-	my $lines = $self->SUPER::package_header(@_);
+	my $lines = $self->SUPER::project_header(@_);
 
 	# Add the modification warning
 	my $class = Scalar::Util::blessed($self);
@@ -112,16 +105,6 @@ sub form_new {
 	}
 
 	return $lines;
-}
-
-sub project_version {
-	my $self    = shift;
-	my $project = shift;
-	my $version = $self->version;
-
-	return [
-		"our \$VERSION = '$version';",
-	];
 }
 
 sub project_dist {
@@ -331,7 +314,7 @@ L<Padre>
 
 =head1 COPYRIGHT
 
-Copyright 2010 Adam Kennedy.
+Copyright 2010 - 2011 Adam Kennedy.
 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
