@@ -456,6 +456,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
 #endif
 }
 
+//TODO implement SurfaceImpl::DrawRGBAImage
 void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height, const unsigned char *pixelsImage) {
     printf("RegisterRGBAImage is not implemented! Please contact the author\n");
 }
@@ -1325,6 +1326,7 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
     itm[type] = idx;
 }
 
+//TODO implement ListBoxImpl::RegisterRGBAImage
 void ListBoxImpl::RegisterRGBAImage(int type, int width, int height, const unsigned char *pixelsImage) {
     printf("RegisterRGBAImage is not implemented! Please contact the author\n");
 }
