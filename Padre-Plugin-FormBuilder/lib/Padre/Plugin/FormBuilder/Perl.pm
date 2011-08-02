@@ -28,7 +28,7 @@ use Params::Util 0.33 ();
 use FBP::Perl    0.59 ();
 use Mouse        0.61;
 
-our $VERSION = '0.04';
+our $VERSION = '0.03';
 
 extends 'FBP::Perl';
 

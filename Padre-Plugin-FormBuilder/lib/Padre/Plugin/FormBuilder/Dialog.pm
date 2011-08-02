@@ -8,7 +8,7 @@ use Class::Inspector                    ();
 use Padre::Plugin::FormBuilder::FBP     ();
 use Padre::Plugin::FormBuilder::Preview ();
 
-our $VERSION = '0.04';
+our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::FormBuilder::FBP';
 
 # Temporary namespace counter
