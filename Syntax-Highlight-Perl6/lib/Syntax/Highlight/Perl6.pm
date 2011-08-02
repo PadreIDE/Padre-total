@@ -328,7 +328,7 @@ sub _read_css_file {
 	my %colors   = ();
 	my $filename = _shared($FILE_CSS);
 	require IO::File;
-	my $fh       = IO::File->new($filename)
+	my $fh = IO::File->new($filename)
 		or croak "Could not open $filename: $!\n";
 	my $line;
 	while ( $line = <$fh> ) {
@@ -355,7 +355,7 @@ sub _read_ansi_file {
 	my %colors   = ();
 	my $filename = _shared($FILE_ANSI);
 	require IO::File;
-	my $fh       = IO::File->new($filename)
+	my $fh = IO::File->new($filename)
 		or croak "Could not open $filename: $!\n";
 	my $line;
 	while ( $line = <$fh> ) {
@@ -504,7 +504,7 @@ sub _escape_html {
 #-----------------------------------------------------
 sub _shared {
 	require File::ShareDir;
-	return File::ShareDir::dist_file('Syntax-Highlight-Perl6', shift);
+	return File::ShareDir::dist_file( 'Syntax-Highlight-Perl6', shift );
 }
 
 #-----------------------------------------------------
@@ -514,7 +514,7 @@ sub _shared {
 sub _slurp {
 	my $filename = shift;
 	require IO::File;
-	my $fh       = IO::File->new($filename)
+	my $fh = IO::File->new($filename)
 		or croak "Could not open $filename for reading";
 	local $/ = undef; #enable localized slurp mode
 	my $contents = <$fh>;
