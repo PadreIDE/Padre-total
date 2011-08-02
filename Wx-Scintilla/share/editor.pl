@@ -51,6 +51,9 @@ use strict;
 use warnings;
 say "Hello world from Perl " . 5 . '!';
 
+my $foo = 10 // 20;
+my $bar = $foo // 5;
+
 EXAMPLE
 	$self->SetFocus;
 
