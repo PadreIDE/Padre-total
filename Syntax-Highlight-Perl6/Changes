@@ -1,6 +1,7 @@
 Revision history for Syntax::Highlight::Perl6.
 
 {{$NEXT}}
+	Added missing 'require IO::File' (AZAWAWI)
 
 0.88   2010.10.23
 	Switch to Dist::Zilla

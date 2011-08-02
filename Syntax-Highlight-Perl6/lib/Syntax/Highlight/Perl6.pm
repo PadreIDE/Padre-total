@@ -327,6 +327,7 @@ sub _read_css_file {
 
 	my %colors   = ();
 	my $filename = _shared($FILE_CSS);
+	require IO::File;
 	my $fh       = IO::File->new($filename)
 		or croak "Could not open $filename: $!\n";
 	my $line;
@@ -353,6 +354,7 @@ sub _read_css_file {
 sub _read_ansi_file {
 	my %colors   = ();
 	my $filename = _shared($FILE_ANSI);
+	require IO::File;
 	my $fh       = IO::File->new($filename)
 		or croak "Could not open $filename: $!\n";
 	my $line;
@@ -511,6 +513,7 @@ sub _shared {
 #-----------------------------------------------------
 sub _slurp {
 	my $filename = shift;
+	require IO::File;
 	my $fh       = IO::File->new($filename)
 		or croak "Could not open $filename for reading";
 	local $/ = undef; #enable localized slurp mode

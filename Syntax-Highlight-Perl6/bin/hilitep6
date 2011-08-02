@@ -117,6 +117,7 @@ sub _slurp_special {
 	if ( ref $filename ) {
 		$fh = $filename;
 	} else {
+		require IO::File;
 		$fh = IO::File->new($filename)
 			or croak "Could not open $filename for reading";
 	}
