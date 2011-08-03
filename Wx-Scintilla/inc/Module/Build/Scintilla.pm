@@ -263,8 +263,8 @@ sub build_xs {
 		$self->log_info("    $scintilla_xs -> $scintilla_c\n");
 		require ExtUtils::ParseXS;
 		ExtUtils::ParseXS::process_file(
-			filename    => $scintilla_c,
-			output      => $scintilla_xs,
+			filename    => $scintilla_xs,
+			output      => $scintilla_c,
 			prototypes  => 0,
 			linenumbers => 0,
 			typemap     => [
