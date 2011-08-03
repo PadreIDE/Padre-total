@@ -84,6 +84,9 @@ sub stc_link_scintilla_objects {
 sub stc_build_xs {
 	my ($self) = @_;
 
+	# Do not build XS if it is up to date
+	return if $self->up_to_date('Scintilla.c', 'Scintilla.o');
+
 	my $dist_version = $self->dist_version;
 
 	my @cmd = (
