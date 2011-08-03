@@ -202,6 +202,7 @@ sub build_scintilla {
 		Alien::wxWidgets->include_path,
 	);
 
+	# Trigger a smart object build if one of the source files is not up to date
 	my @objects = ();
 	for my $module (@modules) {
 		my $filename = File::Basename::basename($module);
@@ -220,7 +221,13 @@ sub build_scintilla {
 
 	my $shared_lib = File::Spec->catfile( $dist_dir, $self->stc_scintilla_dll );
 
-	$self->stc_link_scintilla_objects( $shared_lib, \@objects );
+	# Trigger a smart shared library build if one of the object files is not up to date
+	for my $object (@objects) {
+		unless( $self->up_to_date( $object, $shared_lib ) ) {
+			$self->stc_link_scintilla_objects( $shared_lib, \@objects );
+			last;
+		}
+	}
 }
 
 sub build_xs {
