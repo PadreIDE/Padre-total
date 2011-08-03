@@ -2,7 +2,8 @@ Revision history for Wx-Scintilla
 
 0.21_03  TBA
     - Test and install Module::Build actions invoke build first (AZAWAWI)
-    - Makefile-like compilation dependency management (AZAWAWI)
+    - Trigger smart Makefile-like derived file builds if one of the source
+      files is not up to date (AZAWAWI)
 
 0.21_02  2011.8.2
     - Fix OSX compilation error (TOME++)
