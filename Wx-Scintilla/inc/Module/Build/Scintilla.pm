@@ -257,19 +257,23 @@ sub build_xs {
 
 	die 'Unable to determine typemap' if !defined($perltypemap);
 
-	$self->log_info("    XS Scintilla.xs\n");
-	require ExtUtils::ParseXS;
-	ExtUtils::ParseXS::process_file(
-		filename    => 'Scintilla.xs',
-		output      => 'Scintilla.c',
-		prototypes  => 0,
-		linenumbers => 0,
-		typemap     => [
-			File::Spec->catfile($perltypemap),
-			'wx_typemap',
-			'typemap',
-		],
-	);
+	# Trigger a smart XS build only if it is not up to date.
+	my ($scintilla_xs, $scintilla_c) = ('Scintilla.xs', 'Scintilla.c');
+	unless($self->up_to_date($scintilla_xs, $scintilla_c)) {
+		$self->log_info("    $scintilla_xs -> $scintilla_c\n");
+		require ExtUtils::ParseXS;
+		ExtUtils::ParseXS::process_file(
+			filename    => $scintilla_c,
+			output      => $scintilla_xs,
+			prototypes  => 0,
+			linenumbers => 0,
+			typemap     => [
+				File::Spec->catfile($perltypemap),
+				'wx_typemap',
+				'typemap',
+			],
+		);
+	}
 
 	if ( open my $fh, '>Scintilla.bs' ) {
 		close $fh;
@@ -279,7 +283,8 @@ sub build_xs {
 
 	my $dll = File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla', 'Scintilla.' . $Config{dlext} );
 
-	$self->stc_link_xs($dll);
+	# Trigger a smart XS link only if it is not up to date.
+	$self->stc_link_xs($dll) unless($self->up_to_date($scintilla_c, $dll));
 
 	chmod( 0755, $dll );
 
