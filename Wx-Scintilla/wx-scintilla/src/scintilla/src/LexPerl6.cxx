@@ -42,9 +42,8 @@ static void ColourisePerl6Doc(unsigned int startPos, int length, int, WordList *
 	// Create a buffer large enough to take the largest chunk...
 	char *buffer = new char[length];
 
-	// Perl 6 Keyword list in perl6.properties
+	// Perl 6 Keyword list
 	//WordList &keywords = *keywordLists[0];
-	printf("ColourisePerl6Doc\n");
 
 	// Go through all provided text segment
 	// using the hand-written state machine shown below

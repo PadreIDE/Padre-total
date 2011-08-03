@@ -346,8 +346,8 @@
 #define SCE_PL_FORMAT_IDENT 41
 #define SCE_PL_FORMAT 42
 #define SCE_P6_DEFAULT  0
-#define SCE_P6_COMMENT  2
-#define SCE_P6_STRING   6
+#define SCE_P6_COMMENT  1
+#define SCE_P6_STRING   2
 #define SCE_RB_DEFAULT 0
 #define SCE_RB_ERROR 1
 #define SCE_RB_COMMENTLINE 2

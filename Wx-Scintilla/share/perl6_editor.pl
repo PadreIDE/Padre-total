@@ -22,14 +22,22 @@ sub new {
 	$self->StyleClearAll();
 
 	# Set the various Perl 6 lexer colors
-	$self->StyleSetForeground( 0,  Wx::Colour->new( 0x00, 0x00, 0x7f ) );
-	$self->StyleSetForeground( 1,  Wx::Colour->new( 0x00, 0x7f, 0x00 ) );
-	$self->StyleSetForeground( 2,  Wx::Colour->new( 0xff, 0x7f, 0x00 ) );
+	$self->StyleSetForeground( Wx::Scintilla::wxSCINTILLA_P6_DEFAULT,  Wx::Colour->new( 0x00, 0x00, 0x00 ) );
+	$self->StyleSetForeground( Wx::Scintilla::wxSCINTILLA_P6_COMMENT,  Wx::Colour->new( 0x00, 0x7f, 0x00 ) );
+	$self->StyleSetForeground( Wx::Scintilla::wxSCINTILLA_P6_STRING,  Wx::Colour->new( 0xff, 0x7f, 0x00 ) );
+	$self->StyleSetBold( Wx::Scintilla::wxSCINTILLA_P6_COMMENT, 1);
 
 	# set the lexer to Perl 6
 	$self->SetLexer(Wx::Scintilla::wxSCINTILLA_LEX_PERL6);
 
+	my $keywords = ["use say"];
+	$self->SetKeyWords(0, $keywords);
+
 	$self->SetText(<<"EXAMPLE");
+=pod begin
+This is pod
+=pod end
+
 # Perl 6 example
 use v6;
 say "Hello world from Perl 6!";
