@@ -45,7 +45,6 @@ sub new {
 	# set the lexer to Perl 6
 	$self->SetLexer(Wx::Scintilla::wxSCINTILLA_LEX_PERL6);
 
-	$self->SetText('# Hello world, Scintilla');
 	$self->SetText(<<"EXAMPLE");
 # Perl 6 example
 use v6;
