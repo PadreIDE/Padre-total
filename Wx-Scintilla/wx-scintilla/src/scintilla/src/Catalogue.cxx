@@ -146,6 +146,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmPascal);
 	LINK_LEXER(lmPB);
 	LINK_LEXER(lmPerl);
+	LINK_LEXER(lmPerl6);
 	LINK_LEXER(lmPHPSCRIPT);
 	LINK_LEXER(lmPLM);
 	LINK_LEXER(lmPo);

@@ -25,8 +25,6 @@ sub new {
 	$self->StyleSetForeground( 0,  Wx::Colour->new( 0x00, 0x00, 0x7f ) );
 	$self->StyleSetForeground( 1,  Wx::Colour->new( 0x00, 0x7f, 0x00 ) );
 	$self->StyleSetForeground( 2,  Wx::Colour->new( 0xff, 0x7f, 0x00 ) );
-	$self->StyleSetBold( 12, 1 );
-	$self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
 
 	# set the lexer to Perl 6
 	$self->SetLexer(Wx::Scintilla::wxSCINTILLA_LEX_PERL6);
