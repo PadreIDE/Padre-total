@@ -8,7 +8,7 @@ use Carp;
 our $VERSION = '0.21_03';
 
 # Define Perl 6 lexer
-use constant wxSCINTILLA_LEX_PERL6 => 98;
+use constant wxSCINTILLA_LEX_PERL6 => 102;
 
 # check for loaded Wx::STC
 if ( exists( $INC{'Wx/STC.pm'} ) ) {
