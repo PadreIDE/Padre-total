@@ -140,6 +140,22 @@ sub ACTION_build {
 	$self->SUPER::ACTION_build;
 }
 
+# Build test action invokes build first
+sub ACTION_test {
+	my $self = shift;
+
+	$self->depends_on('build');
+	$self->SUPER::ACTION_test;
+}
+
+# Build install action invokes build first
+sub ACTION_install {
+	my $self = shift;
+
+	$self->depends_on('build');
+	$self->SUPER::ACTION_install;
+}
+
 sub process_xs_files {
 	my $self = shift;
 

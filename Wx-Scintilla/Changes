@@ -1,7 +1,10 @@
 Revision history for Wx-Scintilla
 
+0.21_03  TBA
+    - Test and install Module::Build actions invoke build first (AZAWAWI)
+
 0.21_02  2011.8.2
-    - Fix OSX compilation error (tome++)
+    - Fix OSX compilation error (TOME++)
     - Updated editor.pl to include the perl 5.10 // scintilla test (AZAWAWI)
 
 0.21_01  2011.8.2
