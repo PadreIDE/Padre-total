@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.21_03  TBA
+0.21_03  2011.8.3
     - Test and install Module::Build actions invoke build first (AZAWAWI)
     - Build or link like make *only* when one of the output files is not
       up to date (AZAWAWI)
