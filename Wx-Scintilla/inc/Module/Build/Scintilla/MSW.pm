@@ -88,7 +88,7 @@ sub stc_build_xs {
 	my ($self) = @_;
 
 	# Do not build XS if it is up to date
-	return if $self->up_to_date('Scintilla.c', 'Scintilla.obj');
+	return if $self->up_to_date( 'Scintilla.c', 'Scintilla.obj' );
 
 	my $dist_version = $self->dist_version;
 
