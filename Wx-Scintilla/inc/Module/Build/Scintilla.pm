@@ -208,7 +208,7 @@ sub build_scintilla {
 		my $objext   = $Config{obj_ext};
 		$filename =~ s/\.(c|cpp|cxx)$/$objext/;
 		my $object_name = File::Spec->catfile( File::Basename::dirname($module), "scintilladll_$filename" );
-		unless ( -f $object_name ) {
+		unless ($self->up_to_date( $module, $object_name) ) {
 			$self->stc_build_scintilla_object( $module, $object_name, \@include_dirs );
 		}
 		push @objects, $object_name;
