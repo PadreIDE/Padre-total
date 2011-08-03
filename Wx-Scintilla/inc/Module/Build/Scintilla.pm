@@ -284,7 +284,7 @@ sub build_xs {
 	my $dll = File::Spec->catfile( 'blib/arch/auto/Wx/Scintilla', 'Scintilla.' . $Config{dlext} );
 
 	# Trigger a smart XS link only if it is not up to date.
-	$self->stc_link_xs($dll) unless ( $self->up_to_date( $scintilla_c, $dll ) );
+	$self->stc_link_xs($dll) unless $self->up_to_date( $scintilla_c, $dll );
 
 	chmod( 0755, $dll );
 
