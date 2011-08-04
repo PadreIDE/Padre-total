@@ -16,10 +16,13 @@ sub padre_interfaces {
     return (
 
         # Default, required
-        'Padre::Plugin' => 0.84,
+        'Padre::Plugin' => '0.84',
 
-        # used by MainFB by Padre::Plugin::FormBuilder
+        # used by Main, About and by Padre::Plugin::FormBuilder
+        'Padre::Wx' => 0.84,
+        'Padre::Wx::Main' => '0.86',
         'Padre::Wx::Role::Main' => 0.84,
+        'Padre::Logger' => '0.84',
     );
 }
 
@@ -50,6 +53,15 @@ sub menu_plugins_simple {
         },
     ];
 }
+
+# sub plugin_icon {
+	# my $class = shift;
+	# my $share = $class->plugin_directory_share or return;
+	# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
+	# return unless -f $file;
+	# return unless -r $file;
+	# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+# }
 
 #######
 # Clean up dialog Main, Padre::Plugin,
@@ -219,8 +231,12 @@ Required method with minimum requirements
 	return (
 		# Default, required
 		'Padre::Plugin'         => 0.84,
-		# used by MainFB by Padre::Plugin::FormBuilder
-		'Padre::Wx::Role::Main' => 0.84,
+		
+        # used by Main, About and by Padre::Plugin::FormBuilder
+        'Padre::Wx' => 0.84,
+        'Padre::Wx::Main' => '0.86',
+        'Padre::Wx::Role::Main' => 0.84,
+        'Padre::Logger' => '0.84',
 		);
 	}
 

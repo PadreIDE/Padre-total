@@ -10,6 +10,7 @@ use warnings;
 # Avoids regex performance penalty
 use English qw( -no_match_vars );
 
+use Padre::Logger;
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
@@ -102,7 +103,7 @@ sub update_clicked {
 	# get degree
 	eval { $self->config_db->table_info; };
 	if ($EVAL_ERROR) {
-		say "Oops failed to get table info for $self->config_db ";
+		TRACE("Oops failed to get table info for $self->config_db ") if DEBUG;
 		carp($EVAL_ERROR);
 	} else {
 		$self->attributes( $self->config_db->table_info );
@@ -256,9 +257,10 @@ sub clean_history {
 	my $count = 0;
 	for ( 0 .. ( @events - 2 ) ) {
 		if ( $events[$_][1] . $events[$_][2] eq $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) {
-			say $events[$_][1] . $events[$_][2];
-			say $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2];
-			say "$count: $_: found duplicate id: $events[$_][0]";
+			# TRACE( "Disconnecting!" ) if DEBUG;
+			TRACE( $events[$_][1] . $events[$_][2] ) if DEBUG;
+			TRACE( $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) if DEBUG;
+			TRACE( "$count: $_: found duplicate id: $events[$_][0]" ) if DEBUG;
 			eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db tuple $events[$_][0] is missing";
@@ -381,7 +383,7 @@ sub _display_any_relation {
 
 				# test for attributes with {null} values
 				if ( !defined( $tuples[$idx][$_] ) ) {
-					say "Oops found a {null} in relation $self->{relation_name} ";
+					TRACE("Oops found a {null} in relation $self->{relation_name} ") if DEBUG;
 				} else {
 					$self->list_ctrl->SetItem( $idx, $ddx, ( $tuples[$idx][$_] ) );
 				}
