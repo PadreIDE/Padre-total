@@ -15,7 +15,9 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81;
+	'Padre::Plugin'   => 0.85,
+	'Padre::Document' => 0.85,
+	'Padre::Wx::Main' => 0.85;
 }
 
 sub registered_documents {
@@ -48,6 +50,16 @@ sub menu_plugins_simple {
 		'---' => undef,
 		Wx::gettext('About') => sub { $self->show_about },
 	];
+}
+
+sub plugin_disable {
+	my $self = shift;
+	
+	require Class::Unload;
+	Class::Unload->unload('Padre::Document::LaTeX');
+	Class::Unload->unload('Padre::Document::BibTeX');
+	
+	return 1;
 }
 
 #####################################################################

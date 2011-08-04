@@ -1,5 +1,9 @@
 Changes for Padre-Plugin-LaTeX
 
+0.12   2011.08.??
+        - add interface dependency to Wx::Main (BOWTIE)
+        - add menu_disable method (BOWTIE, ZENOG)
+
 0.11   2011.06.21
 	- include Padre::Task::Syntax in the syntax checker (ZENOG)
 	- added Brazilian Portuguese translation (GARU)

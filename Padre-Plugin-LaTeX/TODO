@@ -1,11 +1,12 @@
 TODO
+ - plugin_disable: go over all open documents and replace document-specific editors by non-specific ones ...
  - BibTeX:
+   - open corresponding BibTeX files
    - better support for BibTeX entry completion (cite and friends, show BibTeX entries to complete ...)
    - automagic BibTeX-ification
    - automagic entry cleaning
    - exchange data with DBLP, CiteULike, Zotero, Bibsonomy ...
    - BibLaTeX support
-     - open corresponding BibTeX files
  - syntax checking
    - BibTeX support
    - explanation of errors (like for Perl 5)
@@ -13,12 +14,22 @@ TODO
    - also display warnings
    - get rid of some duplicate errors
  - TODO recognizer support
- - completion: add brackets to commands that always need them (e.g. \frametitle{...})
+ - auto-completion:
+   - see whether it works at ":", e.g. with \ref{eq:
+   - add brackets to commands that always need them (e.g. \frametitle{...})
+   - support more Beamer commands
+   - recognize Beamer files, also make Beamer support configurable
+   - analyse dependencies to get available commands
+   - support * variants of environments
+   - support multicolumn
+   - support LaTeX command parameters
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file
    - show missing references and syntax errors
  - spell checking
+ - integrate a grammar checker
+ - move selected text into new file 
  - insertion of special characters (menu)
  - insertion of tables, enumerations, etc. via snippets
  - special treatment of tabular environment: transpose and swap columns or rows
@@ -29,6 +40,7 @@ TODO
    - include statements
    - Beamer: frames
    - tableofcontents, etc.
+   - BibTeX: outline by entry type; then key/title; use Text::BibTeX
  - function list
    - command definitions
  - jump to command definition, bib item, reference label
