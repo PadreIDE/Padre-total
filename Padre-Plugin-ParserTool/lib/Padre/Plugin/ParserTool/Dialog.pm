@@ -33,13 +33,33 @@ sub refresh {
 	SCOPE: {
 		local $@;
 		eval "require $module";
-		if ( $@ ) {
-			return $self->error("Failed to load '$module': $@");
-		}
+		return $self->error("Failed to load '$module': $@") if $@;
 	}
 
-	# 
-	
+	# Call the code
+	local $@;
+	my $code = $self->{function}->GetValue;
+	my $rv   = do {
+		local $_ = $self->{input}->GetValue;
+		eval $code;
+	};
+	return $self->error("Failed to execute '$code': $@") if $@;
+
+	# Serialize the output
+	my $dumper = $self->{dumper}->GetStringSelection;
+	if ( $dumper eq 'Data::Dumper' ) {
+		require Data::Dumper;
+		my $output = Data::Dumper::Dumper($rv);
+		$self->{output}->SetValue($output);
+
+	} elsif ( $dumper eq 'Devel::Dumpvar' ) {
+		require Devel::Dumpvar;
+		my $output = Devel::Dumpvar->new( to => 'return' )->dump($rv);
+		$self->{output}->SetValue($output);
+
+	} else {
+		$self->error("Unknown or unsupported dumper '$dumper'");
+	}
 }
 
 1;

@@ -30,7 +30,6 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
 	);
-	$self->SetSizeHints( Wx::wxDefaultSize, Wx::wxDefaultSize );
 
 	$self->{m_staticText5} = Wx::StaticText->new(
 		$self,
@@ -73,7 +72,7 @@ sub new {
 	$self->{function} = Wx::ComboBox->new(
 		$self,
 		-1,
-		"PPI::Document->new( \\\$INPUT )",
+		"PPI::Document->new(\\\$_)",
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		[],
@@ -198,17 +197,15 @@ sub new {
 	$bSizer4->Add( $self->{m_staticText1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$bSizer4->Add( $self->{input}, 1, Wx::wxEXPAND, 0 );
 
-	$self->{m_panel1}->SetSizer($bSizer4);
+	$self->{m_panel1}->SetSizerAndFit($bSizer4);
 	$self->{m_panel1}->Layout;
-	$bSizer4->Fit($self->{m_panel1});
 
 	my $bSizer5 = Wx::BoxSizer->new(Wx::wxVERTICAL);
 	$bSizer5->Add( $self->{m_staticText2}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
 	$bSizer5->Add( $self->{output}, 1, Wx::wxEXPAND, 0 );
 
-	$self->{m_panel2}->SetSizer($bSizer5);
+	$self->{m_panel2}->SetSizerAndFit($bSizer5);
 	$self->{m_panel2}->Layout;
-	$bSizer5->Fit($self->{m_panel2});
 
 	$self->{m_splitter2}->SplitHorizontally(
 		$self->{m_panel1},
@@ -225,10 +222,8 @@ sub new {
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer1->Add( $bSizer2, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
 
-	$self->SetSizer($bSizer1);
+	$self->SetSizerAndFit($bSizer1);
 	$self->Layout;
-	$bSizer1->Fit($self);
-	$bSizer1->SetSizeHints($self);
 
 	return $self;
 }
