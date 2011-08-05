@@ -66,14 +66,11 @@ sub background {
 local $ENV{PERL_ANYEVENT_MODEL} = 'Perl';
 require AnyEvent;
 require IO::Socket::Multicast;
-
+require JSON;
    my $bailout = AnyEvent->condvar;
 
    my $timer = AnyEvent->timer( interval => $freq , cb => \&timer_poll );
    
-   my $wakeup= AnyEvent->signal( signal => 'INT' , cb => sub { wx_queue_read($q) } );
-   #my $idle  = AnyEvent->idle( cb => sub { wx_queue_read($q) } );
-
    my $signal= AnyEvent->signal( signal => 'TERM' , cb => $bailout );
 
    my $client = IO::Socket::Multicast->new(
@@ -83,6 +80,7 @@ require IO::Socket::Multicast;
    $client->mcast_add('239.255.255.1'); #should have the interface
    $client->mcast_loopback( 1 );
    my $g = AnyEvent->io( poll=>'r' , fh => $client , cb => sub { client_socket_read($client) } );
+   my $wakeup= AnyEvent->signal( signal => 'INT' , cb => sub { wx_queue_read($q,$client) } );
 
    my $r = $bailout->recv;
    warn "Bailed out with $r";
@@ -103,8 +101,11 @@ sub client_socket_read {
 
 sub wx_queue_read {
     my $q = shift;
+    my $c = shift;
     while ( defined(my $m = $q->dequeue_nb) ) {
         warn "Got message '$m'";
+        my $msg = JSON::encode_json( { type=>'chat' , body=>$m , from=>$0.$$ } );
+        $c->mcast_send( $msg , '239.255.255.1:12000' ); 
     }
 
 }
