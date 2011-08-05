@@ -31,7 +31,7 @@ sub OnButtonClick {
        warn "Enqueued message";
        $self->{queue}->enqueue( 'Message from WX - button pushed' );
        if ( $self->{thr} ) {
-           $self->{thr}->kill('SIGUSR1');
+           $self->{thr}->kill('SIGINT');
        }
    }
 }
@@ -71,8 +71,8 @@ require IO::Socket::Multicast;
 
    my $timer = AnyEvent->timer( interval => $freq , cb => \&timer_poll );
    
-   my $wakeup= AnyEvent->signal( signal => 'USR1' , cb => sub { wx_queue_read($q) } );
-   my $idle  = AnyEvent->idle( cb => sub { wx_queue_read($q) } );
+   my $wakeup= AnyEvent->signal( signal => 'INT' , cb => sub { wx_queue_read($q) } );
+   #my $idle  = AnyEvent->idle( cb => sub { wx_queue_read($q) } );
 
    my $signal= AnyEvent->signal( signal => 'TERM' , cb => $bailout );
 
