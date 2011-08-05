@@ -37,12 +37,22 @@ exit 0;
 ### Thread
 sub background {
    my $freq = shift;
+local $ENV{PERL_ANYEVENT_MODEL} = 'Perl';
 require AnyEvent;
+require IO::Socket::Multicast;
 
    my $bailout = AnyEvent->condvar;
 
    my $timer = AnyEvent->timer( interval => $freq , cb => \&timer_poll );
    my $signal= AnyEvent->signal( signal => 'TERM' , cb => $bailout );
+
+   my $client = IO::Socket::Multicast->new(
+                LocalPort => 12000,
+                ReuseAddr => 1,
+   ) or die $!;
+   $client->mcast_add('239.255.255.1'); #should have the interface
+   $client->mcast_loopback( 1 );
+   my $g = AnyEvent->io( poll=>'r' , fh => $client , cb => sub { client_socket_read($client) } );
 
    my $r = $bailout->recv;
    warn "Bailed out with $r";
@@ -52,4 +62,11 @@ require AnyEvent;
 sub timer_poll {
     my $time = AnyEvent->now;
     warn "Time is now $time";
+}
+
+sub client_socket_read {
+    my $client = shift;
+    my $message;
+    $client->recv( $message, 65535 );
+    warn "Got message : $message";
 }
