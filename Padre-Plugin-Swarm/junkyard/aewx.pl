@@ -2,7 +2,11 @@
 package MyApp;
 use threads;
 use Wx;
+use Wx::Event;
 use base 'Wx::App';
+use strict;
+use warnings;
+use Data::Dumper;
 
 sub OnInit {
    my $self = shift;
@@ -13,19 +17,39 @@ sub OnInit {
                                 [-1, -1],         # default position
                                 [250, 150],       # size
                                );
-
+   my $button = Wx::Button->new( $frame , -1 , 'Say Something' );
+   Wx::Event::EVT_BUTTON( $self, $button , \&OnButtonClick );
    $frame->Show(1);
 
 
+}
+
+sub OnButtonClick {
+   warn "Button Clicked - @_";
+   my $self = shift;
+   if ( $self->{queue} ) {
+       warn "Enqueued message";
+       $self->{queue}->enqueue( 'Message from WX - button pushed' );
+       if ( $self->{thr} ) {
+           $self->{thr}->kill('SIGUSR1');
+       }
+   }
 }
 
 1;
 
 package main;
 use threads;
-my $app = MyApp->new;
+use Thread::Queue;
 
-my $tid = threads->create(\&background, 1 );
+my $queue = Thread::Queue->new;
+my $tid = threads->create(\&background, 1, $queue );
+my $app = MyApp->new;
+$app->{queue} = $queue;
+$app->{thr}   = $tid;
+
+
+
 warn "Created $tid";
 
 $app->MainLoop;
@@ -37,6 +61,8 @@ exit 0;
 ### Thread
 sub background {
    my $freq = shift;
+   my $q = shift;
+
 local $ENV{PERL_ANYEVENT_MODEL} = 'Perl';
 require AnyEvent;
 require IO::Socket::Multicast;
@@ -44,6 +70,10 @@ require IO::Socket::Multicast;
    my $bailout = AnyEvent->condvar;
 
    my $timer = AnyEvent->timer( interval => $freq , cb => \&timer_poll );
+   
+   my $wakeup= AnyEvent->signal( signal => 'USR1' , cb => sub { wx_queue_read($q) } );
+   my $idle  = AnyEvent->idle( cb => sub { wx_queue_read($q) } );
+
    my $signal= AnyEvent->signal( signal => 'TERM' , cb => $bailout );
 
    my $client = IO::Socket::Multicast->new(
@@ -69,4 +99,12 @@ sub client_socket_read {
     my $message;
     $client->recv( $message, 65535 );
     warn "Got message : $message";
+}
+
+sub wx_queue_read {
+    my $q = shift;
+    while ( defined(my $m = $q->dequeue_nb) ) {
+        warn "Got message '$m'";
+    }
+
 }
