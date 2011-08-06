@@ -89,8 +89,11 @@ sub plugin_disable {
     $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::MainFB');
     $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
     $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
-
+    
+    $self->SUPER::plugin_disable(@_);
+    
     return 1;
+    
 }
 
 ########

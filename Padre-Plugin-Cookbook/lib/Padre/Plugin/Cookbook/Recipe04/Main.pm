@@ -3,6 +3,7 @@ package Padre::Plugin::Cookbook::Recipe04::Main;
 use 5.010;
 use strict;
 use warnings;
+
 # use diagnostics;
 # use utf8;
 # use autodie;
@@ -91,7 +92,7 @@ sub update_clicked {
 	$self->width_adjust->Enable;
 	$main->info(' ');
 
-	# get your selectd relation
+	# get your selected relation
 	$self->relation_name( $self->relations->GetStringSelection() );
 
 	# set padre db relation
@@ -165,7 +166,7 @@ sub width_adjust_clicked {
 		$self->SetSize( 1008, -1 );
 		$self->dialog_width('1');
 	} else {
-		$self->SetSize( 560, -1 );
+		$self->SetSize( 560, 390 );
 		$self->dialog_width('0');
 	}
 
@@ -257,10 +258,9 @@ sub clean_history {
 	my $count = 0;
 	for ( 0 .. ( @events - 2 ) ) {
 		if ( $events[$_][1] . $events[$_][2] eq $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) {
-			# TRACE( "Disconnecting!" ) if DEBUG;
-			TRACE( $events[$_][1] . $events[$_][2] ) if DEBUG;
-			TRACE( $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) if DEBUG;
-			TRACE( "$count: $_: found duplicate id: $events[$_][0]" ) if DEBUG;
+			TRACE( $events[$_][1] .':'. $events[$_][2] )                if DEBUG;
+			TRACE( $events[ $_ + 1 ][1] .':'. $events[ $_ + 1 ][2] )    if DEBUG;
+			TRACE("$count: $_: found duplicate id: $events[$_][0]") if DEBUG;
 			eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db tuple $events[$_][0] is missing";
@@ -268,13 +268,26 @@ sub clean_history {
 			}
 			$count++;
 		}
+		
+		# added check for missing history files
+		if ( $events[$_][1] eq 'files' ) {
+			unless ( -e $events[$_][2] ) {
+				TRACE( "found missing file in history " . $events[$_][2] ) if DEBUG;
+				eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
+				if ($EVAL_ERROR) {
+					say "Oops $self->config_db tuple $events[$_][0] is missing";
+					carp($EVAL_ERROR);
+				}
+			}
+		}
+
 		$progressbar->update( $_, "Cleaning $self->relation_name" );
 
 		# get cardinality
 		_get_cardinality($self);
 	}
 
-	$main->info('finished cleaning hisory');
+	$main->info('Finished Cleaning History');
 	_display_relation($self);
 
 	return;
@@ -294,7 +307,7 @@ sub clean_session {
 		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
 
 		if ( @children eq 0 ) {
-			say 'id :' . $tuples[$_][1] . ' empty, deleating';
+			say 'id :' . $tuples[$_][1] . ' empty, deleting';
 			eval { $self->config_db->delete("WHERE id = $tuples[$_][0]"); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
@@ -327,9 +340,9 @@ sub clean_session_files {
 	}
 	foreach (@files) {
 		unless ( -e $_ ) {
-			say 'warning warning';
-			say $_;
-			say 'warning warning';
+			TRACE('warning warning') if DEBUG;
+			TRACE($_)                if DEBUG;
+			TRACE('warning warning') if DEBUG;
 			eval { $self->config_db->delete("WHERE file = \"$_\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
@@ -641,7 +654,7 @@ sub help_menu_clicked {
 	first 127 tuples will be displayed, then you can use some of the other features.
 2,	MEDIUM SEA GREEN for an old school look.
 3,	Use SHOW to peek inside after first Updating;
-	tip start with SyntaxHighlight,
+	tip start with Syntax Highlight,
 	all of Shows output goes to terminal, using Data::Printer
 	tip set your terminal to white on black
 4,	CLEAN works with History, Session & Session Files,
@@ -746,7 +759,7 @@ passes request to dedicated method
 
 =item clean_history
 
-removes duplicate tuples, keeps newiest 
+removes duplicate tuples, keeps newest 
 
 =item clean_session
 
