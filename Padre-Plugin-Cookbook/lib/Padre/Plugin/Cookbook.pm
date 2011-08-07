@@ -13,54 +13,54 @@ use parent qw(Padre::Plugin);
 # Define Padre Interfaces required
 #######
 sub padre_interfaces {
-    return (
+	return (
 
-        # Default, required
-        'Padre::Plugin' => '0.84',
+		# Default, required
+		'Padre::Plugin' => '0.84',
 
-        # used by Main, About and by Padre::Plugin::FormBuilder
-        'Padre::Wx' => 0.84,
-        'Padre::Wx::Main' => '0.86',
-        'Padre::Wx::Role::Main' => 0.84,
-        'Padre::Logger' => '0.84',
-    );
+		# used by Main, About and by Padre::Plugin::FormBuilder
+		'Padre::Wx'             => 0.84,
+		'Padre::Wx::Main'       => '0.86',
+		'Padre::Wx::Role::Main' => 0.84,
+		'Padre::Logger'         => '0.84',
+	);
 }
 
 #######
 # Define Plugin Name required
 #######
 sub plugin_name {
-    return 'Plugin Cookbook';
+	return 'Plugin Cookbook';
 }
 
 #######
 # Add Plugin to Padre Menu
 #######
 sub menu_plugins_simple {
-    my $self = shift;
-    return $self->plugin_name => [
-        '01 - Hello World' => sub {
-            $self->load_dialog_recipe01_main;
-        },
-        '02 - Fun with widgets' => sub {
-            $self->load_dialog_recipe02_main;
-        },
-        '03 - About dialogs' => sub {
-            $self->load_dialog_recipe03_main;
-        },
-        '04 - ConfigDB RC1' => sub {
-            $self->load_dialog_recipe04_main;
-        },
-    ];
+	my $self = shift;
+	return $self->plugin_name => [
+		'01 - Hello World' => sub {
+			$self->load_dialog_recipe01_main;
+		},
+		'02 - Fun with widgets' => sub {
+			$self->load_dialog_recipe02_main;
+		},
+		'03 - About dialogs' => sub {
+			$self->load_dialog_recipe03_main;
+		},
+		'04 - ConfigDB RC1' => sub {
+			$self->load_dialog_recipe04_main;
+		},
+	];
 }
 
 # sub plugin_icon {
-	# my $class = shift;
-	# my $share = $class->plugin_directory_share or return;
-	# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
-	# return unless -f $file;
-	# return unless -r $file;
-	# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+# my $class = shift;
+# my $share = $class->plugin_directory_share or return;
+# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
+# return unless -f $file;
+# return unless -r $file;
+# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
 # }
 
 #######
@@ -68,32 +68,36 @@ sub menu_plugins_simple {
 # POD out of date as of v0.84
 #######
 sub plugin_disable {
-    my $self = shift;
+	my $self = shift;
 
-    # Close the dialog if it is hanging around
-    if ( $self->{dialog} ) {
-        $self->{dialog}->Destroy;
-        $self->{dialog} = undef;
-    }
+	# Close the dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-    # Unload all our child classes
-    $self->unload('Padre::Plugin::Cookbook::Recipe01::Main');
-    $self->unload('Padre::Plugin::Cookbook::Recipe01::FBP::MainFB');
-    $self->unload('Padre::Plugin::Cookbook::Recipe02::Main');
-    $self->unload('Padre::Plugin::Cookbook::Recipe02::FBP::MainFB');
-    $self->unload('Padre::Plugin::Cookbook::Recipe03::Main');
-    $self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::MainFB');
-    $self->unload('Padre::Plugin::Cookbook::Recipe03::About');
-    $self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::Main');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::MainFB');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
-    
-    $self->SUPER::plugin_disable(@_);
-    
-    return 1;
-    
+	# Unload all our child classes
+	$self->unload(
+		qw{
+			Padre::Plugin::Cookbook::Recipe01::Main
+			Padre::Plugin::Cookbook::Recipe01::FBP::MainFB
+			Padre::Plugin::Cookbook::Recipe02::Main
+			Padre::Plugin::Cookbook::Recipe02::FBP::MainFB
+			Padre::Plugin::Cookbook::Recipe03::Main
+			Padre::Plugin::Cookbook::Recipe03::FBP::MainFB
+			Padre::Plugin::Cookbook::Recipe03::About
+			Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
+			Padre::Plugin::Cookbook::Recipe04::Main
+			Padre::Plugin::Cookbook::Recipe04::FBP::MainFB
+			Padre::Plugin::Cookbook::Recipe04::About
+			Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB
+			}
+	);
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
+
 }
 
 ########
@@ -101,23 +105,23 @@ sub plugin_disable {
 # Load Recipe-01 Main Dialog, only once
 #######
 sub load_dialog_recipe01_main {
-    my $self = shift;
+	my $self = shift;
 
-    # Padre main window integration
-    my $main = $self->main;
+	# Padre main window integration
+	my $main = $self->main;
 
-    # Clean up any previous existing dialog
-    if ( $self->{dialog} ) {
-        $self->{dialog}->Destroy;
-        $self->{dialog} = undef;
-    }
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-    # Create the new dialog
-    require Padre::Plugin::Cookbook::Recipe01::Main;
-    $self->{dialog} = Padre::Plugin::Cookbook::Recipe01::Main->new($main);
-    $self->{dialog}->Show;
+	# Create the new dialog
+	require Padre::Plugin::Cookbook::Recipe01::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe01::Main->new($main);
+	$self->{dialog}->Show;
 
-    return;
+	return;
 }
 
 ########
@@ -125,23 +129,23 @@ sub load_dialog_recipe01_main {
 # Load Recipe-02 Main Dialog, only once
 #######
 sub load_dialog_recipe02_main {
-    my $self = shift;
+	my $self = shift;
 
-    # Padre main window integration
-    my $main = $self->main;
+	# Padre main window integration
+	my $main = $self->main;
 
-    # Clean up any previous existing dialog
-    if ( $self->{dialog} ) {
-        $self->{dialog}->Destroy;
-        $self->{dialog} = undef;
-    }
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-    # Create the new dialog
-    require Padre::Plugin::Cookbook::Recipe02::Main;
-    $self->{dialog} = Padre::Plugin::Cookbook::Recipe02::Main->new($main);
-    $self->{dialog}->Show;
+	# Create the new dialog
+	require Padre::Plugin::Cookbook::Recipe02::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe02::Main->new($main);
+	$self->{dialog}->Show;
 
-    return;
+	return;
 }
 
 ########
@@ -149,23 +153,23 @@ sub load_dialog_recipe02_main {
 # Load Recipe-03 Main Dialog, only once
 #######
 sub load_dialog_recipe03_main {
-    my $self = shift;
+	my $self = shift;
 
-    # Padre main window integration
-    my $main = $self->main;
+	# Padre main window integration
+	my $main = $self->main;
 
-    # Clean up any previous existing dialog
-    if ( $self->{dialog} ) {
-        $self->{dialog}->Destroy;
-        $self->{dialog} = undef;
-    }
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-    # Create the new dialog
-    require Padre::Plugin::Cookbook::Recipe03::Main;
-    $self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
-    $self->{dialog}->Show;
+	# Create the new dialog
+	require Padre::Plugin::Cookbook::Recipe03::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe03::Main->new($main);
+	$self->{dialog}->Show;
 
-    return;
+	return;
 }
 
 ########
@@ -173,24 +177,24 @@ sub load_dialog_recipe03_main {
 # Load Recipe-04 Main Dialog, only once
 #######
 sub load_dialog_recipe04_main {
-    my $self = shift;
+	my $self = shift;
 
-    # Padre main window integration
-    my $main = $self->main;
+	# Padre main window integration
+	my $main = $self->main;
 
-    # Clean up any previous existing dialog
-    if ( $self->{dialog} ) {
-        $self->{dialog}->Destroy;
-        $self->{dialog} = undef;
-    }
+	# Clean up any previous existing dialog
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Destroy;
+		$self->{dialog} = undef;
+	}
 
-    # Create the new dialog
-    require Padre::Plugin::Cookbook::Recipe04::Main;
-    $self->{dialog} = Padre::Plugin::Cookbook::Recipe04::Main->new($main);
-    $self->{dialog}->Show;
-    $self->{dialog}->set_up;
+	# Create the new dialog
+	require Padre::Plugin::Cookbook::Recipe04::Main;
+	$self->{dialog} = Padre::Plugin::Cookbook::Recipe04::Main->new($main);
+	$self->{dialog}->Show;
+	$self->{dialog}->set_up;
 
-    return;
+	return;
 }
 
 1;

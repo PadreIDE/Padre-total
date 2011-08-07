@@ -139,14 +139,18 @@ sub clean_clicked {
 	my $self = shift;
 
 	given ( $self->relation_name ) {
+
+		when ('History') {
+			clean_history($self);
+		}
+		when ('LastPositionInFile') {
+			clean_lastpositioninfile($self);
+		}
 		when ('Session') {
 			clean_session($self);
 		}
 		when ('SessionFile') {
 			clean_session_files($self);
-		}
-		when ('History') {
-			clean_history($self);
 		}
 		default {
 			return;
@@ -361,6 +365,40 @@ sub clean_session_files {
 
 #######
 # Composed Method,
+# clean session files
+#######
+sub clean_lastpositioninfile {
+	my $self = shift;
+	my $main = $self->main;
+
+	$main->info('Cleaning LastPositionInFile relation');
+	my @lastpositioninfile_files = $self->config_db->select( $self->sql_select );
+	my @files;
+
+	for ( 0 .. ( @lastpositioninfile_files - 1 ) ) {
+		push @files, $lastpositioninfile_files[$_][0];
+	}
+	foreach (@files) {
+		unless ( -e $_ ) {
+			TRACE('Deleating missing file from LastPositionInFile: '.$_) if DEBUG;
+			eval { $self->config_db->delete("WHERE name = \"$_\""); };
+			if ($EVAL_ERROR) {
+				say "Oops $self->config_db is damaged";
+				carp($EVAL_ERROR);
+			}
+
+			# get cardinality
+			_get_cardinality($self);
+		}
+	}
+
+	$main->info('Finished Cleaning LastPositionInFile');
+	_display_relation($self);
+	return;
+}
+
+#######
+# Composed Method,
 # display any relation db
 #######
 sub _display_any_relation {
@@ -513,6 +551,10 @@ sub _display_relation {
 		when ('History') {
 			$self->clean->Enable;
 			_display_any_relation( $self, $_ );
+		}		
+		when ('LastPositionInFile') {
+			$self->clean->Enable;
+			_display_any_relation( $self, $_ );
 		}
 		when ('Session') {
 			$self->clean->Enable;
@@ -657,7 +699,7 @@ sub help_menu_clicked {
 	tip start with Syntax Highlight,
 	all of Shows output goes to terminal, using Data::Printer
 	tip set your terminal to white on black
-4,	CLEAN works with History, Session & Session Files,
+4,	CLEAN works with History, Session, Session Files & LastPositionInFile
 5,	Clicking on Session tuple displays it's children in terminal.
 6,	you can sort on any attribute heading excluding index.
 7,	Adjust Width is a toggle: have fun
@@ -759,7 +801,11 @@ passes request to dedicated method
 
 =item clean_history
 
-removes duplicate tuples, keeps newest 
+removes duplicate tuples, keeps newest, also remove missing files
+
+=item clean_lastpositioninfile
+
+removes files missing on system 
 
 =item clean_session
 
