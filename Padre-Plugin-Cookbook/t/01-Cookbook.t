@@ -1,4 +1,4 @@
-use Test::More tests => 25;
+use Test::More tests => 26;
 
 use_ok( 'Padre',                 '0.84' );
 use_ok( 'Padre::Plugin',         '0.84' );
@@ -14,7 +14,7 @@ TODO: {
 ######
 
 my @subs = qw( padre_interfaces plugin_name menu_plugins_simple
-	plugin_disable load_dialog_recipe01_main load_dialog_recipe02_main
+	plugin_disable plugin_icon load_dialog_recipe01_main load_dialog_recipe02_main
 	load_dialog_recipe03_main load_dialog_recipe04_main );
 use_ok( 'Padre::Plugin::Cookbook', @subs );
 

@@ -304,6 +304,10 @@ Required method with minimum requirements
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::About');
 	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
 	
+=head2 plugin_icon
+
+overloads plugin_icon from Padre::Plugin
+
 =head2 load_dialog_recipe01_main
 
 loads our dialog Main, only allows one instance!
