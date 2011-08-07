@@ -30,7 +30,7 @@ sub padre_interfaces {
 # Define Plugin Name required
 #######
 sub plugin_name {
-	return 'Plugin Cookbook';
+	return Wx::gettext('Plugin Cookbook');
 }
 
 #######
@@ -39,29 +39,32 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'01 - Hello World' => sub {
+		Wx::gettext('01 - Hello World') => sub {
 			$self->load_dialog_recipe01_main;
 		},
-		'02 - Fun with widgets' => sub {
+		Wx::gettext('02 - Fun with widgets') => sub {
 			$self->load_dialog_recipe02_main;
 		},
-		'03 - About dialogs' => sub {
+		Wx::gettext('03 - About dialogs') => sub {
 			$self->load_dialog_recipe03_main;
 		},
-		'04 - ConfigDB RC1' => sub {
+		Wx::gettext('04 - ConfigDB RC1') => sub {
 			$self->load_dialog_recipe04_main;
 		},
 	];
 }
 
-# sub plugin_icon {
-# my $class = shift;
-# my $share = $class->plugin_directory_share or return;
-# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
-# return unless -f $file;
-# return unless -r $file;
-# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
-# }
+#######
+# Add icon to Plugin
+#######
+sub plugin_icon {
+	my $class = shift;
+	my $share = $class->plugin_directory_share or return;
+	my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
+	return unless -f $file;
+	return unless -r $file;
+	return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+}
 
 #######
 # Clean up dialog Main, Padre::Plugin,

@@ -255,7 +255,7 @@ sub clean_history {
 
 	my @events = $self->config_db->select('ORDER BY name ASC');
 
-	$main->info('Cleaning History relation');
+	$main->info( Wx::gettext('Cleaning History relation'));
 	my $progressbar = _setup_progressbar($self);
 
 	# say $self->cardinality;
@@ -291,7 +291,7 @@ sub clean_history {
 		_get_cardinality($self);
 	}
 
-	$main->info('Finished Cleaning History');
+	$main->info( Wx::gettext('Finished Cleaning History'));
 	_display_relation($self);
 
 	return;
@@ -305,7 +305,7 @@ sub clean_session {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info('Cleaning Session relation');
+	$main->info( Wx::gettext('Cleaning Session relation'));
 	for ( 0 .. ( @tuples - 1 ) ) {
 
 		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
@@ -322,7 +322,7 @@ sub clean_session {
 			_get_cardinality($self);
 		}
 	}
-	$main->info('Finished Cleaning Session relation');
+	$main->info( Wx::gettext('Finished Cleaning Session relation'));
 	_display_relation($self);
 	return;
 }
@@ -335,7 +335,7 @@ sub clean_session_files {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info('Cleaning Session_Files relation');
+	$main->info( Wx::gettext('Cleaning Session_Files relation'));
 	my @session_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
@@ -344,9 +344,7 @@ sub clean_session_files {
 	}
 	foreach (@files) {
 		unless ( -e $_ ) {
-			TRACE('warning warning') if DEBUG;
-			TRACE($_)                if DEBUG;
-			TRACE('warning warning') if DEBUG;
+			TRACE('Deleating missing file from Session_Files: '.$_) if DEBUG;
 			eval { $self->config_db->delete("WHERE file = \"$_\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
@@ -358,7 +356,7 @@ sub clean_session_files {
 		}
 	}
 
-	$main->info('Finished Cleaning Session_Files');
+	$main->info( Wx::gettext('Finished Cleaning Session_Files'));
 	_display_relation($self);
 	return;
 }
@@ -371,7 +369,7 @@ sub clean_lastpositioninfile {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info('Cleaning LastPositionInFile relation');
+	$main->info( Wx::gettext('Cleaning LastPositionInFile relation'));
 	my @lastpositioninfile_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
@@ -392,7 +390,7 @@ sub clean_lastpositioninfile {
 		}
 	}
 
-	$main->info('Finished Cleaning LastPositionInFile');
+	$main->info( Wx::gettext('Finished Cleaning LastPositionInFile'));
 	_display_relation($self);
 	return;
 }
