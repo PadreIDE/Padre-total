@@ -3,18 +3,22 @@ use inc::Module::Install 1.01;
 # Define metadata
 abstract 'Cookbook contains recipes to assist you in makeing your own Padre::Plugin';
 
-# causes warnning
-# MakeMaker attribute "VERSION_FROM" is overriden; use "makemaker_append" to append values
-# ie; if v0.14 -> 0.014000, what fun perl is :)
+# All from our plugin
 all_from      'lib/Padre/Plugin/Cookbook.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe01/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe02/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe03/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe04/Main.pm';
 
-requires 'Padre::Plugin'        => '0.84';
+# Padre version, should match that of the latest version, used in padre_interfaces, 
+requires 'Padre'                => '0.86';
+
+# required modules from CPAN
 requires 'Moose'                => '2.00';
 requires 'namespace::autoclean' => '0.12';
 requires 'Data::Printer'        => '0.19';
+
+# Optional if you have used the share directory
+install_share
 
 WriteAll;

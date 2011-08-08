@@ -19,9 +19,9 @@ sub padre_interfaces {
 		'Padre::Plugin' => '0.84',
 
 		# used by Main, About and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => 0.84,
+		'Padre::Wx'             => '0.84',
 		'Padre::Wx::Main'       => '0.86',
-		'Padre::Wx::Role::Main' => 0.84,
+		'Padre::Wx::Role::Main' => '0.84',
 		'Padre::Logger'         => '0.84',
 	);
 }
@@ -347,15 +347,15 @@ loads our dialog Main, only allows one instance!
 
 =head1 DEPENDENCIES
 
-Padre::Plugin, 
-Padre::Plugin::Cookbook, 
-Padre::Plugin::Cookbook::Recipe01::FBP::Main, Padre::Plugin::Cookbook::Recipe01::FBP::MainFB, 
-Padre::Plugin::Cookbook::Recipe02::FBP::Main, Padre::Plugin::Cookbook::Recipe02::FBP::MainFB, 
-Padre::Plugin::Cookbook::Recipe03::FBP::Main, Padre::Plugin::Cookbook::Recipe03::FBP::MainFB, 
-Padre::Plugin::Cookbook::Recipe03::About, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB, 
-Padre::Plugin::Cookbook::Recipe04::FBP::Main, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
-Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB, 
-Moose, namespace::autoclean, Data::Printer
+	Padre::Plugin, 
+	Padre::Plugin::Cookbook, 
+	Padre::Plugin::Cookbook::Recipe01::FBP::Main, Padre::Plugin::Cookbook::Recipe01::FBP::MainFB, 
+	Padre::Plugin::Cookbook::Recipe02::FBP::Main, Padre::Plugin::Cookbook::Recipe02::FBP::MainFB, 
+	Padre::Plugin::Cookbook::Recipe03::FBP::Main, Padre::Plugin::Cookbook::Recipe03::FBP::MainFB, 
+	Padre::Plugin::Cookbook::Recipe03::About, Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB, 
+	Padre::Plugin::Cookbook::Recipe04::FBP::Main, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
+	Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB, 
+	Moose, namespace::autoclean, Data::Printer
 
 =head1 AUTHOR
 

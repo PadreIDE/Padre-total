@@ -758,6 +758,7 @@ sub load_dialog_about {
 no Moose;
 
 1;
+
 __END__
 
 =head1 NAME
