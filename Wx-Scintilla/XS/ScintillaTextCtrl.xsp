@@ -214,6 +214,19 @@ wxScintillaTextCtrl::IndicatorSetForeground( indic, fore )
     THIS->IndicatorSetForeground( indic, *fore );
 
 void
+wxScintillaTextCtrl::IndicatorSetAlpha( indicator, alpha )
+    int indicator
+    int alpha
+  CODE:
+    THIS->IndicatorSetAlpha( indicator, alpha );
+
+int
+wxScintillaTextCtrl::IndicatorGetAlpha( indicator )
+    int indicator
+  CODE:
+    THIS->IndicatorGetAlpha( indicator );
+
+void
 wxScintillaTextCtrl::SetWhitespaceForeground( useSetting, fore )
     bool useSetting
     wxColour* fore
