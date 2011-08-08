@@ -224,7 +224,20 @@ int
 wxScintillaTextCtrl::IndicatorGetAlpha( indicator )
     int indicator
   CODE:
-    THIS->IndicatorGetAlpha( indicator );
+    RETVAL = THIS->IndicatorGetAlpha( indicator );
+
+void
+wxScintillaTextCtrl::IndicatorSetUnder( indicator, under )
+    int indicator
+    bool under
+  CODE:
+    THIS->IndicatorSetUnder( indicator, under );
+
+bool
+wxScintillaTextCtrl::IndicatorGetUnder( indicator )
+    int indicator
+  CODE:
+    RETVAL = THIS->IndicatorGetUnder( indicator );
 
 void
 wxScintillaTextCtrl::SetWhitespaceForeground( useSetting, fore )
