@@ -28,6 +28,7 @@ use 5.008005;
 # Also check that it can give op when someone changs alias to a trusted one
 
 my $trac_channel = '#padre';
+my $trac_timeout = 5;
 
 our $VERSION = '0.10';
 
@@ -188,9 +189,11 @@ sub irc_public {
 	# Example:
 	# Hyppolit: trac!
 	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* trac!/x ) {
-		return if $channel ne $trac_channel;
+		#$irc->yield( privmsg => $channel, "Channel $channel" );
+		#$irc->yield( privmsg => $channel, "@$channel" );
+		return if not grep { $_ eq $trac_channel } @$channel;
 		return if not enable_registration();
-		$_[KERNEL]->delay( close_registration => 30 );
+		$_[KERNEL]->delay( disable_registration => 60 * $trac_timeout );
 
 	# word?
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
@@ -485,7 +488,7 @@ sub trac_check {
 }
 
 sub disable_registration {
-	eval { trac('disable'); };
+	eval { trac('disabled'); };
 	my $error = $@;
 	if ($error) {
 		$irc->yield( privmsg => $trac_channel, $error );
@@ -495,13 +498,13 @@ sub disable_registration {
 	return 1;
 }
 sub enable_registration {
-	eval { trac('enable'); };
+	eval { trac('enabled'); };
 	my $error = $@;
 	if ($error) {
 		$irc->yield( privmsg => $trac_channel, $error );
 		return;
 	}
-	$irc->yield( privmsg => $trac_channel, 'Trac registration opened for 5 minutes. Please visit http://padre.perlide.org/trac/register to register' );
+	$irc->yield( privmsg => $trac_channel, 'Trac registration opened for $trac_timeout minutes. Please visit http://padre.perlide.org/trac/register to register' );
 	return 1;
 }
 sub trac {
@@ -510,7 +513,7 @@ sub trac {
 	open my $in, '<', $file or die "Could not open '$file' for reading\n";
 	my @content = <$in>;
 	close $in;
-	@content = map { $_ =~ s/(acct_mgr.web_ui.registrationmodule\s*=\s*)(enabled|disabled)/$1$what/ } @content;
+	@content = map { $_ =~ s/(acct_mgr.web_ui.registrationmodule\s*=\s*)(enabled|disabled)/$1$what/; $_ } @content;
 	open my $out, '>', $file or die "Could not  open '$file' for writing\n";
 	print $out @content;
 	close $out;
