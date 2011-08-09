@@ -27,7 +27,7 @@ use 5.008005;
 # have no OP yet
 # Also check that it can give op when someone changs alias to a trusted one
 
-
+my $trac_channel = '#padre';
 
 our $VERSION = '0.10';
 
@@ -49,6 +49,9 @@ my @methods = qw(
 	_start irc_join irc_public irc_msg
 	irc_tail_input irc_tail_error irc_tail_reset
 	trac_check
+	enable_registration
+	disable_registration
+	open
 );
 our @EXPORT = @methods;
 my $config;
@@ -182,6 +185,13 @@ sub irc_public {
 		$irc->yield( privmsg => $channel, "$word was $was" );
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
 
+	# Example:
+	# Hyppolit: trac!
+	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* trac!/x ) {
+		return if $channel ne $trac_channel;
+		return if not enable_registration();
+		$_[KERNEL]->delay( close_registration => 30 );
+
 	# word?
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
 		my $word = $1;
@@ -251,6 +261,8 @@ sub irc_public {
 		my $karma = $config->{karma}{$1} || 0;
 		$irc->yield( privmsg => $channel, "Karma of $1 is $karma" );
 	}
+
+	return;
 }
 
 
@@ -408,6 +420,7 @@ sub trac_ticket_text {
 
 }
 
+
 sub trac_check {
 	my $trac_check_time = time;
 	my $last_trac_check = $config->{last_trac_check};
@@ -471,9 +484,38 @@ sub trac_check {
 	return;
 }
 
+sub disable_registration {
+	eval { trac('disable'); };
+	my $error = $@;
+	if ($error) {
+		$irc->yield( privmsg => $trac_channel, $error );
+		return;
+	}
+	$irc->yield( privmsg => $trac_channel, 'Trac registration closed' );
+	return 1;
+}
 sub enable_registration {
-	# /var/trac/padre/conf/trac.ini
-	# acct_mgr.web_ui.registrationmodule = enabled
+	eval { trac('enable'); };
+	my $error = $@;
+	if ($error) {
+		$irc->yield( privmsg => $trac_channel, $error );
+		return;
+	}
+	$irc->yield( privmsg => $trac_channel, 'Trac registration opened for 5 minutes. Please visit http://padre.perlide.org/trac/register to register' );
+	return 1;
+}
+sub trac {
+	my $what = shift;
+	my $file = '/var/trac/padre/conf/trac.ini';
+	open my $in, '<', $file or die "Could not open '$file' for reading\n";
+	my @content = <$in>;
+	close $in;
+	@content = map { $_ =~ s/(acct_mgr.web_ui.registrationmodule\s*=\s*)(enabled|disabled)/$1$what/ } @content;
+	open my $out, '>', $file or die "Could not  open '$file' for writing\n";
+	print $out @content;
+	close $out;
+
+	return;
 }
 
 1;
