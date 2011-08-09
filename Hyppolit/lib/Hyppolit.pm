@@ -30,7 +30,7 @@ use 5.008005;
 my $trac_channel = '#padre';
 my $trac_timeout = 5;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use base 'Exporter';
 

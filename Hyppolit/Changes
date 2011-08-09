@@ -1,5 +1,10 @@
 Changes of Hyppolit the IRC bot
 
+v0.11 2011.08.09
+	New command:
+	  uptime?             to get the uptime of the system 
+	  Hyppolit: trac!     to open the Trac registration form for 5 minutes
+
 v0.10 2011.03.23
 	Report changes to the wiki as well
 
