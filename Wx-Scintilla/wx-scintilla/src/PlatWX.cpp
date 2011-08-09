@@ -30,7 +30,7 @@
 #include "wx/imaglist.h"
 #include "wx/tokenzr.h"
 
-#ifdef wxHAS_RAW_BITMAP
+#ifdef wxHAVE_RAW_BITMAP
 #include "wx/rawbmp.h"
 #endif
 #if wxUSE_GRAPHICS_CONTEXT
@@ -385,7 +385,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     return;
 #else
     
-#ifdef wxHAS_RAW_BITMAP
+#ifdef wxHAVE_RAW_BITMAP
 
     // TODO:  do something with cornerSize
     wxUnusedVar(cornerSize);
@@ -394,6 +394,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
     wxAlphaPixelData pixData(bmp);
+    pixData.UseAlpha();
 
     // Set the fill pixels
     ColourDesired cdf(fill.AsLong());
