@@ -25,7 +25,7 @@ use Padre::Util    ('_T');
 use Padre::Wx      ();
 use Padre::DB      ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 # Binary file extensions, which we don't support loading at all
 my %EXT_BINARY = ();
@@ -71,6 +71,7 @@ sub _initialize {
 		bib   => 'application/x-bibtex',
 		bml   => 'application/x-bml',     # dreamwidth file format
 		c     => 'text/x-c',
+		h     => 'text/x-c',
 		cc    => 'text/x-c++src',
 		cpp   => 'text/x-c++src',
 		cxx   => 'text/x-c++src',
@@ -204,7 +205,7 @@ sub _initialize {
 
 	# Padre can use Wx::Scintilla's built-in Perl 6 lexer
 	my $perl6_scintilla_lexer =
-		Padre::Util::wx_scintilla_ready() ? Wx::Scintilla::wxSCINTILLA_LEX_PERL6() : Wx::wxSTC_LEX_NULL;
+		Padre::Config::wx_scintilla_ready() ? Wx::Scintilla::wxSCINTILLA_LEX_PERL6() : Wx::wxSTC_LEX_NULL;
 
 	%MIME = (
 		'text/x-abc' => {
@@ -798,8 +799,12 @@ sub guess_mimetype {
 			# of bits and Padre/Perl simply has the wrong point of view (UTF-8),
 			# so we drop these warnings:
 			local $SIG{__WARN__} = sub {
-				print STDERR $_[0] . ' while looking for mime type of $filename'
-					unless $_[0] =~ /Malformed UTF\-8 char/;
+				# Die if we throw a bad codepoint - this is a binary file.
+				if ( $_[0] =~ /Code point .* is not Unicode/ ) {
+					die $_[0];
+				} elsif ( $_[0] !~ /Malformed UTF\-8 char/ ) {
+					print STDERR "$_[0] while looking for mime type of $filename";
+				}
 			};
 
 			# Is this a script of some kind?

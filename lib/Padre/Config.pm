@@ -22,7 +22,7 @@ use Padre::Config::Host    ();
 use Padre::Config::Upgrade ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 our ( %SETTING, %DEFAULT, %STARTUP, $REVISION, $SINGLETON );
 
@@ -56,6 +56,20 @@ use Class::XSAccessor::Array {
 		project => Padre::Constant::PROJECT,
 	}
 };
+
+
+# NOTE: Do not convert the ->feature_wx_scintilla call here to use
+# Padre::Feature as it would result in a cicular dependency between
+# Padre::Config and Padre::Feature.
+sub wx_scintilla_ready {
+	my $enabled;
+	if ( Padre::Config->read->feature_wx_scintilla ) {
+		eval 'use Wx::Scintilla';
+		$enabled = 1 unless $@;
+	}
+	eval 'use Wx::STC' unless $enabled;
+	return $enabled;
+}
 
 
 
@@ -348,51 +362,6 @@ setting(
 	default => '',
 );
 
-# Support for Module::Starter
-setting(
-	name    => 'module_starter_directory',
-	type    => Padre::Constant::ASCII,
-	store   => Padre::Constant::HUMAN,
-	default => '',
-);
-setting(
-	name    => 'module_starter_builder',
-	type    => Padre::Constant::ASCII,
-	store   => Padre::Constant::HUMAN,
-	default => 'ExtUtils::MakeMaker',
-	options => {
-		'ExtUtils::MakeMaker' => 'ExtUtils::MakeMaker',
-		'Module::Build'       => 'Module::Build',
-		'Module::Install'     => 'Module::Install',
-	},
-);
-setting(
-	name    => 'module_starter_license',
-	type    => Padre::Constant::ASCII,
-	store   => Padre::Constant::HUMAN,
-	default => 'perl',
-
-	# licenses list taken from
-	# http://search.cpan.org/dist/Module-Build/lib/Module/Build/API.pod
-	# even though it should be in http://module-build.sourceforge.net/META-spec.html
-	# and we should fetch it from Module::Start or maybe Software::License.
-	# (but don't load them in this module, it adds bloat)
-	options => {
-		'apache'       => _T('Apache License'),
-		'artistic'     => _T('Artistic License 1.0'),
-		'artistic_2'   => _T('Artistic License 2.0'),
-		'bsd'          => _T('Revised BSD License'),
-		'gpl'          => _T('GPL 2 or later'),
-		'lgpl'         => _T('LGPL 2.1 or later'),
-		'mit'          => _T('MIT License'),
-		'mozilla'      => _T('Mozilla Public License'),
-		'perl'         => _T('The same as Perl itself'),
-		'open_source'  => _T('Other Open Source'),
-		'unrestricted' => _T('Other Unrestricted'),
-		'restrictive'  => _T('Proprietary/Restrictive'),
-	},
-);
-
 # Indent settings
 # Allow projects to forcefully override personal settings
 setting(
@@ -570,8 +539,8 @@ setting(
 		# TO DO: Review this assumption
 
 		# (Ticket #668)
-
-		if ($Padre::Wx::ToolBar::DOCKABLE) {
+		no warnings;
+		if ( $Padre::Wx::ToolBar::DOCKABLE ) {
 			$main->rebuild_toolbar;
 		}
 
@@ -804,9 +773,9 @@ setting(
 
 # Directory Tree Settings
 setting(
-	name  => 'default_projects_directory',
-	type  => Padre::Constant::PATH,
-	store => Padre::Constant::HOST,
+	name    => 'default_projects_directory',
+	type    => Padre::Constant::PATH,
+	store   => Padre::Constant::HOST,
 	default => File::HomeDir->my_documents || '',
 );
 
@@ -814,9 +783,9 @@ setting(
 
 # The default editor font should be Consolas 10pt on Vista and Windows 7
 setting(
-	name  => 'editor_font',
-	type  => Padre::Constant::ASCII,
-	store => Padre::Constant::HUMAN,
+	name    => 'editor_font',
+	type    => Padre::Constant::ASCII,
+	store   => Padre::Constant::HUMAN,
 	default => Padre::Util::DISTRO =~ /^WIN(?:VISTA|7)$/ ? 'consolas 10' : '',
 );
 setting(
@@ -878,8 +847,14 @@ setting(
 	store   => Padre::Constant::HUMAN,
 	default => 0,
 	apply   => sub {
-		$_[0]->feature_folding or return;
-		$_[0]->editor_folding( $_[1] );
+		if ( $Padre::Feature::VERSION ) {
+			Padre::Feature::FOLDING() or return;
+		} else {
+			$_[0]->feature_folding or return;
+		}
+		if ( $_[0]->can('editor_folding') ) {
+			$_[0]->editor_folding( $_[1] );
+		}
 	},
 );
 setting(
@@ -951,10 +926,10 @@ setting(
 	default => 1,
 );
 setting(
-	name  => 'editor_cursor_blink',
-	type  => Padre::Constant::INTEGER,
-	store => Padre::Constant::HUMAN,
-	default => 500, # milliseconds - this is the actual default for the wxStyledTextCtrl - set to 0 to turn off
+	name    => 'editor_cursor_blink',
+	type    => Padre::Constant::INTEGER,
+	store   => Padre::Constant::HUMAN,
+	default => 500, # milliseconds
 );
 setting(
 	name    => 'find_case',
@@ -1251,54 +1226,56 @@ setting(
 # Enable/Disable entire functions that some people dislike.
 # Normally these should be enabled by default (or should be
 # planned to eventually be enabled by default).
-setting(
-	name    => 'feature_config',
-	type    => Padre::Constant::BOOLEAN,
-	store   => Padre::Constant::HUMAN,
-	default => 0,
-);
+
+# Disable Bookmark functionality.
+# Reduces code size and menu entries.
 setting(
 	name    => 'feature_bookmark',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 1,
 );
+
+# Disable convenience font-size changes.
+# Reduces menu entries and prevents accidental font size changes
+# due to Ctrl-MouseWheel mistakes.
 setting(
 	name    => 'feature_fontsize',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 1,
 );
+
+# Disable code folding.
+# Reduces code bloat and menu entries.
 setting(
 	name    => 'feature_folding',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 1,
 );
+
+# Disable session support.
+# Reduces code bloat and database operations.
 setting(
 	name    => 'feature_session',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 1,
 );
+
+# Disable remembering cursor position.
+# Reduces code bloat and database operations.
 setting(
 	name    => 'feature_cursormemory',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 1,
 );
-setting(
-	name    => 'feature_wizard_selector',
-	type    => Padre::Constant::BOOLEAN,
-	store   => Padre::Constant::HUMAN,
-	default => 0,
-);
-setting(
-	name    => 'feature_quick_fix',
-	type    => Padre::Constant::BOOLEAN,
-	store   => Padre::Constant::HUMAN,
-	default => 0,
-);
+
+# Disable GUI debugger.
+# Reduces code bloat and toolbar/menu entries for people that
+# prefer to use command line debugger (which is also less buggy)
 setting(
 	name    => 'feature_debugger',
 	type    => Padre::Constant::BOOLEAN,
@@ -1306,12 +1283,23 @@ setting(
 	default => 1,
 );
 
-# setting(
-# name    => 'feature_restart_hung_task_manager',
-# type    => Padre::Constant::BOOLEAN,
-# store   => Padre::Constant::HUMAN,
-# default => 0,
-# );
+# Enable experimental wizard system.
+setting(
+	name    => 'feature_wizard_selector',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 0,
+);
+
+# Enable experimental quick fix system.
+setting(
+	name    => 'feature_quick_fix',
+	type    => Padre::Constant::BOOLEAN,
+	store   => Padre::Constant::HUMAN,
+	default => 0,
+);
+
+# Enable experimental Wx::Scintilla support.
 setting(
 	name    => 'feature_wx_scintilla',
 	type    => Padre::Constant::BOOLEAN,
@@ -1320,12 +1308,16 @@ setting(
 	help    => _T('Enable or disable the newer Wx::Scintilla source code editing component. ')
 		. _T('This requires an installed Wx::Scintilla and a Padre restart'),
 );
+
+# Enable experimental preference sync support.
 setting(
 	name    => 'feature_sync',
 	type    => Padre::Constant::BOOLEAN,
 	store   => Padre::Constant::HUMAN,
 	default => 0,
 );
+
+# Enable experimental Replace in Files support.
 setting(
 	name    => 'feature_replaceinfiles',
 	type    => Padre::Constant::BOOLEAN,

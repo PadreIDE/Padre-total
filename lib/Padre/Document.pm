@@ -135,7 +135,7 @@ use Padre::MimeTypes ();
 use Padre::File      ();
 use Padre::Logger;
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.81';
 
 
@@ -165,7 +165,7 @@ sub task_syntax {
 # Document Registration
 
 # NOTE: This is probably a bad place to store this
-my $unsaved_number = 0;
+my $UNSAVED = 0;
 
 
 
@@ -176,6 +176,7 @@ my $unsaved_number = 0;
 
 use Class::XSAccessor {
 	getters => {
+		unsaved     => 'unsaved',
 		filename     => 'filename',    # setter is defined as normal function
 		file         => 'file',        # Padre::File - object
 		editor       => 'editor',
@@ -213,7 +214,7 @@ MIME type is defined by the C<guess_mimetype> function.
 
 sub new {
 	my $class = shift;
-	my $self = bless {@_}, $class;
+	my $self  = bless { @_ }, $class;
 
 	# This sub creates the document object and is allowed to use self->filename,
 	# once noone else uses it, it shout be deleted from the $self - hash before
@@ -267,7 +268,7 @@ sub new {
 		}
 		$self->load_file;
 	} else {
-		$unsaved_number++;
+		$self->{unsaved}      = ++$UNSAVED;
 		$self->{newline_type} = $self->default_newline_type;
 	}
 
@@ -336,6 +337,9 @@ sub current {
 	Padre::Current->new( document => $_[0] );
 }
 
+sub lexer_keywords {
+	return [];
+}
 
 
 
@@ -476,6 +480,10 @@ sub is_modified {
 
 sub is_saved {
 	return !!( defined $_[0]->file and not $_[0]->is_modified );
+}
+
+sub is_unsaved {
+	return !!( $_[0]->editor->GetModify and not defined $_[0]->file );
 }
 
 # Returns true if this is a new document that is too insignificant to
@@ -964,7 +972,11 @@ sub get_title {
 	if ( defined( $self->{file} ) and defined( $self->{file}->filename ) and ( $self->{file}->filename ne '' ) ) {
 		return $self->basename;
 	} else {
-		my $str = sprintf( Wx::gettext("Unsaved %d"), $unsaved_number );
+		$self->{unsaved} ||= ++$UNSAVED;
+		my $str = sprintf(
+			Wx::gettext("Unsaved %d"),
+			$self->{unsaved},
+		);
 
 		# A bug in Wx requires a space at the front of the title
 		# (For reasons I don't understand yet)
@@ -1310,6 +1322,10 @@ sub get_function_regex {
 	return '';
 }
 
+sub stc_word_chars {
+	return '';
+}
+
 sub pre_process {
 	return 1;
 }
@@ -1380,6 +1396,9 @@ sub stats {
 		$self->{encoding}
 	);
 }
+
+
+
 
 
 #####################################################################

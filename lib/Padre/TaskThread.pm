@@ -12,10 +12,10 @@ use Padre::TaskQueue ();
 # NOTE: The TRACE() calls in this class should be commented out unless
 # actively debugging, so that the Padre::Logger class will only be
 # loaded AFTER the threads spawn.
-# use Padre::Logger;
-use constant DEBUG => 0;
+use Padre::Logger;
+# use constant DEBUG => 0;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 # Worker id sequence, so identifiers will be available in objects
 # across all instances and threads before the thread has been spawned.
@@ -194,12 +194,8 @@ sub run {
 	# Loop over inbound requests
 	TRACE("Entering worker run-time loop") if DEBUG;
 	while (1) {
-		TRACE("Attempting to dequeue1") if DEBUG;
 		my $message = $queue->dequeue1;
-		TRACE("Completed the dequeue1") if DEBUG;
-
 		unless ( ref $message eq 'ARRAY' and @$message ) {
-
 			# warn("Message is not an ARRAY reference");
 			next;
 		}

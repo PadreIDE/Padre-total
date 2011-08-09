@@ -10,6 +10,7 @@ use warnings;
 use File::Spec           ();
 use Params::Util         ();
 use Padre::Util          ('_T');
+use Padre::Feature       ();
 use Padre::Config::Style ();
 use Padre::Current       ();
 use Padre::Constant      ();
@@ -19,7 +20,7 @@ use Padre::Wx::Menu      ();
 use Padre::Wx::Action    ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 
 
@@ -57,7 +58,7 @@ sub init_language_actions {
 			# With more Padre developers, more countries, and more
 			# people in total British English instead of American
 			# English CLEARLY it is a FAR better default for us to
-			# use.
+			# use British English.
 			# Because it's something of an in-joke to English
 			# speakers, non-English localisations do NOT show this.
 			$label = "English (New Britstralian)";
@@ -78,9 +79,8 @@ sub init_language_actions {
 }
 
 sub init {
-	my $class  = shift;
-	my $main   = shift;
-	my $config = $main->config;
+	my $class = shift;
+	my $main  = shift;
 
 	# Script Execution
 
@@ -137,16 +137,6 @@ sub init {
 	);
 
 	Padre::Wx::Action->new(
-		name        => 'file.new_copy',
-		need_editor => 1,
-		label       => _T('Copy of current file'),
-		comment     => _T('Open a document and copy the content of the current tab'),
-		menu_event  => sub {
-			$_[0]->on_new_from_current;
-		},
-	);
-
-	Padre::Wx::Action->new(
 		name       => 'file.new_p5_script',
 		label      => _T('Perl 5 Script'),
 		comment    => _T('Open a document with a skeleton Perl 5 script'),
@@ -184,37 +174,17 @@ sub init {
 		},
 	);
 
-	# Split projects from files
-
-	Padre::Wx::Action->new(
-		name       => 'file.new_p5_distro',
-		label      => _T('Perl Distribution...'),
-		comment    => _T('Setup a skeleton Perl module distribution'),
-		menu_event => sub {
-			require Padre::Wx::Dialog::ModuleStart;
-			Padre::Wx::Dialog::ModuleStart->start( $_[0] );
-		},
-	);
-
-	Padre::Wx::Action->new(
-		name       => 'file.new_p5_modulestarter',
-		label      => _T('Perl Distribution (New)...'),
-		comment    => _T('Setup a skeleton Perl distribution'),
-		menu_event => sub {
-			require Padre::Wx::Dialog::ModuleStarter;
-			Padre::Wx::Dialog::ModuleStarter->run( $_[0] );
-		},
-	);
-
 	# The wizard selector feature
-	Padre::Wx::Action->new(
-		name       => 'file.wizard_selector',
-		label      => _T('Wizard Selector...'),
-		comment    => _T('Selects and opens a wizard'),
-		menu_event => sub {
-			$_[0]->wizard_selector->show;
-		},
-	) if $config->feature_wizard_selector;
+	if ( Padre::Feature::WIZARD_SELECTOR ) {
+		Padre::Wx::Action->new(
+			name       => 'file.wizard_selector',
+			label      => _T('Wizard Selector...'),
+			comment    => _T('Selects and opens a wizard'),
+			menu_event => sub {
+				$_[0]->wizard_selector->show;
+			},
+		);
+	}
 
 	### NOTE: Add support for plugins here
 
@@ -284,6 +254,17 @@ sub init {
 		toolbar    => 'stock/generic/stock_example',
 		menu_event => sub {
 			$_[0]->on_open_example;
+		},
+	);
+
+	# Opens the last closed file tab like Chrome and Firefox
+	Padre::Wx::Action->new(
+		name       => 'file.open_last_closed_file',
+		label      => _T('Open Last Closed File'),
+		shortcut   => 'Ctrl-Shift-T',
+		comment    => _T('Opens the last closed file'),
+		menu_event => sub {
+			$_[0]->on_open_last_closed_file;
 		},
 	);
 
@@ -370,6 +351,16 @@ sub init {
 		comment     => _T('Select some open files for closing'),
 		menu_event  => sub {
 			$_[0]->on_close_some;
+		},
+	);
+
+	Padre::Wx::Action->new(
+		name        => 'file.duplicate',
+		need_editor => 1,
+		label       => _T('Duplicate'),
+		comment     => _T('Copy the current tab into a new document'),
+		menu_event  => sub {
+			$_[0]->on_duplicate;
 		},
 	);
 
@@ -478,27 +469,29 @@ sub init {
 		},
 	);
 
-	Padre::Wx::Action->new(
-		name       => 'file.open_session',
-		label      => _T('Open Session...'),
-		comment    => _T('Select a session. Close all the files currently open and open all the listed in the session'),
-		shortcut   => 'Ctrl-Alt-O',
-		menu_event => sub {
-			require Padre::Wx::Dialog::SessionManager;
-			Padre::Wx::Dialog::SessionManager->new( $_[0] )->show;
-		},
-	);
+	if ( Padre::Feature::SESSION ) {
+		Padre::Wx::Action->new(
+			name       => 'file.open_session',
+			label      => _T('Open Session...'),
+			comment    => _T('Select a session. Close all the files currently open and open all the listed in the session'),
+			shortcut   => 'Ctrl-Alt-O',
+			menu_event => sub {
+				require Padre::Wx::Dialog::SessionManager;
+				Padre::Wx::Dialog::SessionManager->new( $_[0] )->show;
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name       => 'file.save_session',
-		label      => _T('Save Session...'),
-		comment    => _T('Ask for a session name and save the list of files currently opened'),
-		shortcut   => 'Ctrl-Alt-S',
-		menu_event => sub {
-			require Padre::Wx::Dialog::SessionSave;
-			Padre::Wx::Dialog::SessionSave->new( $_[0] )->show;
-		},
-	);
+		Padre::Wx::Action->new(
+			name       => 'file.save_session',
+			label      => _T('Save Session...'),
+			comment    => _T('Ask for a session name and save the list of files currently opened'),
+			shortcut   => 'Ctrl-Alt-S',
+			menu_event => sub {
+				require Padre::Wx::Dialog::SessionSave;
+				Padre::Wx::Dialog::SessionSave->new( $_[0] )->show;
+			},
+		);
+	}
 
 	# Print files
 
@@ -586,7 +579,7 @@ sub init {
 		shortcut   => 'Ctrl-Z',
 		toolbar    => 'actions/edit-undo',
 		menu_event => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->Undo;
 		},
 	);
@@ -606,7 +599,7 @@ sub init {
 		shortcut   => 'Ctrl-Y',
 		toolbar    => 'actions/edit-redo',
 		menu_event => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->Redo;
 		},
 	);
@@ -620,8 +613,8 @@ sub init {
 		shortcut    => 'Ctrl-A',
 		toolbar     => 'actions/edit-select-all',
 		menu_event  => sub {
-			require Padre::Wx::Editor;
-			Padre::Wx::Editor::text_select_all(@_);
+			my $editor = $_[0]->current->editor or return;
+			$editor->SelectAll;
 		},
 	);
 
@@ -632,7 +625,7 @@ sub init {
 		comment     => _T('Mark the place where the selection should start'),
 		shortcut    => 'Ctrl-[',
 		menu_event  => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->text_selection_mark_start;
 		},
 	);
@@ -644,7 +637,7 @@ sub init {
 		comment     => _T('Mark the place where the selection should end'),
 		shortcut    => 'Ctrl-]',
 		menu_event  => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->text_selection_mark_end;
 		},
 	);
@@ -655,8 +648,8 @@ sub init {
 		label       => _T('Clear Selection Marks'),
 		comment     => _T('Remove all the selection marks'),
 		menu_event  => sub {
-			require Padre::Wx::Editor;
-			Padre::Wx::Editor::text_selection_clear_marks(@_);
+			my $editor = $_[0]->current->editor or return;
+			$editor->text_selection_clear;
 		},
 	);
 
@@ -672,7 +665,7 @@ sub init {
 		shortcut       => 'Ctrl-X',
 		toolbar        => 'actions/edit-cut',
 		menu_event     => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->Cut;
 		},
 	);
@@ -687,7 +680,7 @@ sub init {
 		shortcut       => 'Ctrl-C',
 		toolbar        => 'actions/edit-copy',
 		menu_event     => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->Copy;
 		},
 	);
@@ -701,9 +694,10 @@ sub init {
 		label       => _T('Copy Full Filename'),
 		comment     => _T('Put the full path of the current file in the clipboard'),
 		menu_event  => sub {
-			my $document = Padre::Current->document;
-			return if !defined( $document->{file} );
-			my $editor = Padre::Current->editor;
+			my $current  = $_[0]->current;
+			my $editor   = $current->editor or return;
+			my $document = $current->document;
+			return unless defined $document->{file};
 			$editor->put_text_to_clipboard( $document->{file}->{filename} );
 		},
 	);
@@ -715,9 +709,10 @@ sub init {
 		label       => _T('Copy Filename'),
 		comment     => _T('Put the name of the current file in the clipboard'),
 		menu_event  => sub {
-			my $document = Padre::Current->document;
-			return if !defined( $document->{file} );
-			my $editor = Padre::Current->editor;
+			my $current  = $_[0]->current;
+			my $editor   = $current->editor or return;
+			my $document = $current->document;
+			return unless defined $document->{file};
 			$editor->put_text_to_clipboard( $document->{file}->basename );
 		},
 	);
@@ -729,9 +724,10 @@ sub init {
 		label       => _T('Copy Directory Name'),
 		comment     => _T('Put the full path of the directory of the current file in the clipboard'),
 		menu_event  => sub {
-			my $document = Padre::Current->document;
-			return if !defined( $document->{file} );
-			my $editor = Padre::Current->editor;
+			my $current  = $_[0]->current;
+			my $editor   = $current->editor or return;
+			my $document = $current->document;
+			return unless defined $document->{file};
 			$editor->put_text_to_clipboard( $document->{file}->dirname );
 		},
 	);
@@ -742,9 +738,10 @@ sub init {
 		label       => _T('Copy Editor Content'),
 		comment     => _T('Put the content of the current document in the clipboard'),
 		menu_event  => sub {
-			my $document = Padre::Current->document;
-			return if !defined( $document->{file} );
-			my $editor = Padre::Current->editor;
+			my $current  = $_[0]->current;
+			my $editor   = $current->editor or return;
+			my $document = $current->document;
+			return unless defined $document->{file};
 			$editor->put_text_to_clipboard( $document->text_get );
 		},
 	);
@@ -760,7 +757,7 @@ sub init {
 		shortcut    => 'Ctrl-V',
 		toolbar     => 'actions/edit-paste',
 		menu_event  => sub {
-			my $editor = Padre::Current->editor or return;
+			my $editor = $_[0]->current->editor or return;
 			$editor->Paste;
 		},
 	);
@@ -778,60 +775,63 @@ sub init {
 		},
 	);
 
-	Padre::Wx::Action->new(
-		name        => 'edit.quick_fix',
-		need_editor => 1,
-		label       => _T('&Quick Fix'),
-		comment     => _T('Apply one of the quick fixes for the current document'),
-		shortcut    => 'Ctrl-2',
-		menu_event  => sub {
-			my $main     = shift;
-			my $document = $main->current->document or return;
-			my $editor   = $document->editor;
-			return unless $document->can('get_quick_fix_provider');
+	if ( Padre::Feature::QUICK_FIX ) {
+		Padre::Wx::Action->new(
+			name        => 'edit.quick_fix',
+			need_editor => 1,
+			label       => _T('&Quick Fix'),
+			comment     => _T('Apply one of the quick fixes for the current document'),
+			shortcut    => 'Ctrl-2',
+			menu_event  => sub {
+				my $main     = shift;
+				my $current  = $main->current;
+				my $document = $current->document or return;
+				return unless $document->can('get_quick_fix_provider');
 
-			$editor->AutoCompSetSeparator( ord '|' );
-			my @list  = ();
-			my @items = ();
-			eval {
+				my $editor = $current->editor;
+				$editor->AutoCompSetSeparator( ord '|' );
+				my @list  = ();
+				my @items = ();
+				eval {
 
-				# Find available quick fixes from provider
-				my $provider = $document->get_quick_fix_provider;
-				@items = $provider->quick_fix_list( $document, $editor );
+					# Find available quick fixes from provider
+					my $provider = $document->get_quick_fix_provider;
+					@items = $provider->quick_fix_list( $document, $editor );
 
-				# Add quick list items from document's quick fix provider
-				foreach my $item (@items) {
-					push @list, $item->{text};
-				}
-			};
-			TRACE("Error while calling get_quick_fix_provider: $@\n") if $@;
-			my $empty_list = ( scalar @list == 0 );
-			if ($empty_list) {
-				@list = ( Wx::gettext('No suggestions') );
-			}
-			my $words = join( '|', @list );
-
-			Wx::Event::EVT_STC_USERLISTSELECTION(
-				$main, $editor,
-				sub {
-					return if $empty_list;
-					my $text = $_[1]->GetText;
-					my $selection;
+					# Add quick list items from document's quick fix provider
 					foreach my $item (@items) {
-						if ( $item->{text} eq $text ) {
-							$selection = $item;
-							last;
+						push @list, $item->{text};
+					}
+				};
+				TRACE("Error while calling get_quick_fix_provider: $@\n") if $@;
+				my $empty_list = ( scalar @list == 0 );
+				if ($empty_list) {
+					@list = ( Wx::gettext('No suggestions') );
+				}
+				my $words = join( '|', @list );
+
+				Wx::Event::EVT_STC_USERLISTSELECTION(
+					$main, $editor,
+					sub {
+						return if $empty_list;
+						my $text = $_[1]->GetText;
+						my $selection;
+						foreach my $item (@items) {
+							if ( $item->{text} eq $text ) {
+								$selection = $item;
+								last;
+							}
 						}
-					}
-					if ($selection) {
-						eval { &{ $selection->{listener} }(); };
-						warn "Failed while calling Quick fix $selection->{text}\n" if $@;
-					}
-				},
-			);
-			$editor->UserListShow( 1, $words );
-		},
-	) if $config->feature_quick_fix;
+						if ($selection) {
+							eval { &{ $selection->{listener} }(); };
+							warn "Failed while calling Quick fix $selection->{text}\n" if $@;
+						}
+					},
+				);
+				$editor->UserListShow( 1, $words );
+			},
+		);
+	}
 
 	Padre::Wx::Action->new(
 		name        => 'edit.autocomp',
@@ -862,7 +862,8 @@ sub init {
 		comment     => _T('Select to the matching opening or closing brace'),
 		shortcut    => 'Ctrl-4',
 		menu_event  => sub {
-			shift->current->editor->select_to_matching_brace;
+			my $editor = $_[0]->current->editor or return;
+			$editor->select_to_matching_brace;
 		}
 	);
 
@@ -885,10 +886,9 @@ sub init {
 		comment     => _T('Select a date, filename or other value and insert at the current location'),
 		shortcut    => 'Ctrl-Shift-I',
 		menu_event  => sub {
-			require Padre::Wx::Dialog::SpecialValues;
-			Padre::Wx::Dialog::SpecialValues->insert_special(@_);
+			require Padre::Wx::Dialog::Special;
+			Padre::Wx::Dialog::Special->new(@_)->Show;
 		},
-
 	);
 
 	Padre::Wx::Action->new(
@@ -898,8 +898,8 @@ sub init {
 		comment     => _T('Select and insert a snippet at the current location'),
 		shortcut    => 'Ctrl-Shift-A',
 		menu_event  => sub {
-			require Padre::Wx::Dialog::Snippets;
-			Padre::Wx::Dialog::Snippets->snippets(@_);
+			require Padre::Wx::Dialog::Snippet;
+			Padre::Wx::Dialog::Snippet->new(@_)->Show;
 		},
 	);
 
@@ -1162,47 +1162,48 @@ sub init {
 		shortcut    => 'Ctrl-F',
 		toolbar     => 'actions/edit-find',
 		menu_event  => sub {
-			my $main  = shift;
-			my $event = shift;
+			my $main     = shift;
+			my $findfast = $main->findfast;
 
-			if ( $main->findfast->visible ) {
-				require Padre::Wx::Dialog::Find;
-				my $dialog_find = Padre::Wx::Dialog::Find->new($main);
-				$dialog_find->{wait_ctrl_f} = 1; # (($event->GetModifiers == 2) and ($event->getKeyCode == 70)) ? 1 : 0;
-				$dialog_find->find_term->SetValue( $main->findfast->{entry}->GetValue );
-				$main->findfast->_hide_panel;
-				$dialog_find->run;
-				my $term = $dialog_find->find_term->GetValue;
-				$dialog_find->Destroy;
-				return unless $dialog_find->{cycle_ctrl_f};
-
-				# Ctrl-F in find dialog: Show find in files
-				require Padre::Wx::Dialog::FindInFiles;
-				my $dialog_fif = Padre::Wx::Dialog::FindInFiles->new($main);
-				$dialog_fif->find_term->SetValue($term);
-				$dialog_fif->run;
-				$dialog_fif->Destroy;
-				return unless $dialog_fif->{cycle_ctrl_f};
-			} else {
-				if ( $main->findfast->{panel} ) {
-					$main->findfast->_show_panel;
-				} else {
-					$main->findfast->_create_panel;
-					$main->findfast->_show_panel;
+			# Ctrl-F first press, show fast find
+			unless ( $findfast->visible ) {
+				unless ( $findfast->{panel} ) {
+					$findfast->_create_panel;
 				}
+				$findfast->_show_panel;
+
+				# Do they have a specific search term in mind?
+				my $text = $main->current->text;
+				$text = '' if $text =~ /\n/;
+
+				# Clear out and reset the search term box
+				$findfast->{entry}->ChangeValue($text);
+				$findfast->{entry}->SelectAll;
+				if ( length $text ) {
+					$findfast->search('next');
+				}
+				return;
 			}
 
-			my $current = $main->current;
+			# Ctrl-F second press, show full find dialog
+			require Padre::Wx::Dialog::Find;
+			my $find = Padre::Wx::Dialog::Find->new($main);
+			$find->{wait_ctrl_f} = 1; # (($event->GetModifiers == 2) and ($event->getKeyCode == 70)) ? 1 : 0;
+			$find->find_term->SetValue( $main->findfast->{entry}->GetValue );
+			$main->findfast->_hide_panel;
+			$find->run;
+			my $term = $find->find_term->GetValue;
+			$find->Destroy;
+			return unless $find->{cycle_ctrl_f};
 
-			# Do they have a specific search term in mind?
-			my $text = $current->text;
-			$text = '' if $text =~ /\n/;
+			# Ctrl-F this press, show find in files dialog
+			require Padre::Wx::Dialog::FindInFiles;
+			my $findinfiles = Padre::Wx::Dialog::FindInFiles->new($main);
+			findinfiles->find_term->SetValue($term);
+			findinfiles->run;
+			findinfiles->Destroy;
 
-			# Clear out and reset the search term box
-			$main->findfast->{entry}->ChangeValue($text) if length $text;
-			$main->findfast->search('next');
-
-			return;
+			return
 		},
 	);
 
@@ -1213,36 +1214,10 @@ sub init {
 		comment     => _T('Repeat the last find to find the next match'),
 		shortcut    => 'F3',
 		menu_event  => sub {
-			my $editor = $_[0]->current->editor or return;
-
-			# Handle the obvious case with nothing selected
-			my ( $position1, $position2 ) = $editor->GetSelection;
-			if ( $position1 == $position2 ) {
-				return $_[0]->search_next;
-			}
-
-			# Multiple lines are also done the obvious way
-			my $line1 = $editor->LineFromPosition($position1);
-			my $line2 = $editor->LineFromPosition($position2);
-			unless ( $line1 == $line2 ) {
-				return $_[0]->search_next;
-			}
-
-			# Special case. Make and save a non-regex
-			# case-insensitive search and advance to the next hit.
-			require Padre::Search;
-			my $search = Padre::Search->new(
-				find_case    => 0,
-				find_regex   => 0,
-				find_reverse => 0,
-				find_term    => $editor->GetTextRange(
-					$position1, $position2,
-				),
-			);
-			$_[0]->search_next($search);
+			my $found = $_[0]->search_next;
 
 			# If we can't find another match, show a message
-			if ( ( $editor->GetSelection )[0] == $position1 ) {
+			if ( defined $found and not $found ) {
 				$_[0]->message( Wx::gettext('Failed to find any matches') );
 			}
 		},
@@ -1255,36 +1230,10 @@ sub init {
 		comment     => _T('Repeat the last find, but backwards to find the previous match'),
 		shortcut    => 'Shift-F3',
 		menu_event  => sub {
-			my $editor = $_[0]->current->editor or return;
-
-			# Handle the obvious case with nothing selected
-			my ( $position1, $position2 ) = $editor->GetSelection;
-			if ( $position1 == $position2 ) {
-				return $_[0]->search_previous;
-			}
-
-			# Multiple lines are also done the obvious way
-			my $line1 = $editor->LineFromPosition($position1);
-			my $line2 = $editor->LineFromPosition($position2);
-			unless ( $line1 == $line2 ) {
-				return $_[0]->search_previous;
-			}
-
-			# Special case. Make and save a non-regex
-			# case-insensitive search and advance to the next hit.
-			require Padre::Search;
-			my $search = Padre::Search->new(
-				find_case    => 0,
-				find_regex   => 0,
-				find_reverse => 0,
-				find_term    => $editor->GetTextRange(
-					$position1, $position2,
-				),
-			);
-			$_[0]->search_previous($search);
+			my $found = $_[0]->search_previous;
 
 			# If we can't find another match, show a message
-			if ( ( $editor->GetSelection )[0] == $position1 ) {
+			if ( defined $found and not $found ) {
 				$_[0]->message( Wx::gettext('Failed to find any matches') );
 			}
 		},
@@ -1344,19 +1293,21 @@ sub init {
 		},
 	);
 
-	Padre::Wx::Action->new(
-		name       => 'search.replace_in_files',
-		label      => _T('Re&place in Files...'),
-		comment    => _T('Search and replace text in all files below a given directory'),
-		shortcut   => 'Ctrl-Shift-R',
-		menu_event => sub {
-			require Padre::Wx::Dialog::ReplaceInFiles;
-			my $dialog = Padre::Wx::Dialog::ReplaceInFiles->new( $_[0] );
-			$dialog->run;
-			$dialog->Destroy;
-			return;
-		},
-	);
+	if ( Padre::Feature::REPLACEINFILES ) {
+		Padre::Wx::Action->new(
+			name       => 'search.replace_in_files',
+			label      => _T('Re&place in Files...'),
+			comment    => _T('Search and replace text in all files below a given directory'),
+			shortcut   => 'Ctrl-Alt-R',
+			menu_event => sub {
+				require Padre::Wx::Dialog::ReplaceInFiles;
+				my $dialog = Padre::Wx::Dialog::ReplaceInFiles->new( $_[0] );
+				$dialog->run;
+				$dialog->Destroy;
+				return;
+			},
+		);
+	}
 
 	# Special Search
 
@@ -1372,27 +1323,29 @@ sub init {
 
 	# Bookmark Support
 
-	Padre::Wx::Action->new(
-		name       => 'search.bookmark_set',
-		label      => _T('Set Bookmark'),
-		comment    => _T('Create a bookmark in the current file current row'),
-		shortcut   => 'Ctrl-B',
-		menu_event => sub {
-			require Padre::Wx::Dialog::Bookmarks;
-			Padre::Wx::Dialog::Bookmarks->run_set( $_[0] );
-		},
-	);
+	if ( Padre::Feature::BOOKMARK ) {
+		Padre::Wx::Action->new(
+			name       => 'search.bookmark_set',
+			label      => _T('Set Bookmark'),
+			comment    => _T('Create a bookmark in the current file current row'),
+			shortcut   => 'Ctrl-B',
+			menu_event => sub {
+				require Padre::Wx::Dialog::Bookmarks;
+				Padre::Wx::Dialog::Bookmarks->run_set( $_[0] );
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name       => 'search.bookmark_goto',
-		label      => _T('Go to Bookmark'),
-		comment    => _T('Select a bookmark created earlier and jump to that position'),
-		shortcut   => 'Ctrl-Shift-B',
-		menu_event => sub {
-			require Padre::Wx::Dialog::Bookmarks;
-			Padre::Wx::Dialog::Bookmarks->run_goto( $_[0] );
-		},
-	);
+		Padre::Wx::Action->new(
+			name       => 'search.bookmark_goto',
+			label      => _T('Go to Bookmark'),
+			comment    => _T('Select a bookmark created earlier and jump to that position'),
+			shortcut   => 'Ctrl-Shift-B',
+			menu_event => sub {
+				require Padre::Wx::Dialog::Bookmarks;
+				Padre::Wx::Dialog::Bookmarks->run_goto( $_[0] );
+			},
+		);
+	}
 
 	# Special Search Types
 
@@ -1401,6 +1354,7 @@ sub init {
 		label      => _T('Open Resources...'),
 		comment    => _T('Use a filter to select one or more files'),
 		toolbar    => 'places/folder-saved-search',
+		shortcut   => 'Ctrl-Shift-R',
 		menu_event => sub {
 			$_[0]->open_resource->show;
 		},
@@ -1560,45 +1514,47 @@ sub init {
 		},
 	);
 
-	Padre::Wx::Action->new(
-		name        => 'view.folding',
-		label       => _T('Show Code Folding'),
-		comment     => _T('Show/hide a vertical line on the left hand side of the window to allow folding rows'),
-		menu_method => 'AppendCheckItem',
-		menu_event  => sub {
-			$_[0]->editor_folding( $_[1]->IsChecked );
-		},
-	);
+	if ( Padre::Feature::FOLDING ) {
+		Padre::Wx::Action->new(
+			name        => 'view.folding',
+			label       => _T('Show Code Folding'),
+			comment     => _T('Show/hide a vertical line on the left hand side of the window to allow folding rows'),
+			menu_method => 'AppendCheckItem',
+			menu_event  => sub {
+				$_[0]->editor_folding( $_[1]->IsChecked );
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name        => 'view.fold_all',
-		label       => _T('Fold All'),
-		comment     => _T('Fold all the blocks that can be folded (need folding to be enabled)'),
-		need_editor => 1,
-		menu_event  => sub {
-			$_[0]->current->editor->fold_all;
-		},
-	);
+		Padre::Wx::Action->new(
+			name        => 'view.fold_all',
+			label       => _T('Fold All'),
+			comment     => _T('Fold all the blocks that can be folded (need folding to be enabled)'),
+			need_editor => 1,
+			menu_event  => sub {
+				$_[0]->current->editor->fold_all;
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name        => 'view.unfold_all',
-		label       => _T('Unfold All'),
-		comment     => _T('Unfold all the blocks that can be folded (need folding to be enabled)'),
-		need_editor => 1,
-		menu_event  => sub {
-			$_[0]->current->editor->unfold_all;
-		},
-	);
+		Padre::Wx::Action->new(
+			name        => 'view.unfold_all',
+			label       => _T('Unfold All'),
+			comment     => _T('Unfold all the blocks that can be folded (need folding to be enabled)'),
+			need_editor => 1,
+			menu_event  => sub {
+				$_[0]->current->editor->unfold_all;
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name        => 'view.fold_this',
-		label       => _T('Fold/Unfold Current'),
-		comment     => _T('Unfold all the blocks that can be folded (need folding to be enabled)'),
-		need_editor => 1,
-		menu_event  => sub {
-			$_[0]->current->editor->fold_this;
-		},
-	);
+		Padre::Wx::Action->new(
+			name        => 'view.fold_this',
+			label       => _T('Fold/Unfold Current'),
+			comment     => _T('Unfold all the blocks that can be folded (need folding to be enabled)'),
+			need_editor => 1,
+			menu_event  => sub {
+				$_[0]->current->editor->fold_this;
+			},
+		);
+	}
 
 	Padre::Wx::Action->new(
 		name        => 'view.calltips',
@@ -1678,36 +1634,38 @@ sub init {
 
 	# Font Size
 
-	Padre::Wx::Action->new(
-		name       => 'view.font_increase',
-		label      => _T('Increase Font Size'),
-		comment    => _T('Make the letters bigger in the editor window'),
-		shortcut   => 'Ctrl-+',
-		menu_event => sub {
-			$_[0]->zoom(+1);
-		},
-	);
+	if ( Padre::Feature::FONTSIZE ) {
+		Padre::Wx::Action->new(
+			name       => 'view.font_increase',
+			label      => _T('Increase Font Size'),
+			comment    => _T('Make the letters bigger in the editor window'),
+			shortcut   => 'Ctrl-+',
+			menu_event => sub {
+				$_[0]->zoom(+1);
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name       => 'view.font_decrease',
-		label      => _T('Decrease Font Size'),
-		comment    => _T('Make the letters smaller in the editor window'),
-		shortcut   => 'Ctrl--',
-		menu_event => sub {
-			$_[0]->zoom(-1);
-		},
-	);
+		Padre::Wx::Action->new(
+			name       => 'view.font_decrease',
+			label      => _T('Decrease Font Size'),
+			comment    => _T('Make the letters smaller in the editor window'),
+			shortcut   => 'Ctrl--',
+			menu_event => sub {
+				$_[0]->zoom(-1);
+			},
+		);
 
-	Padre::Wx::Action->new(
-		name       => 'view.font_reset',
-		label      => _T('Reset Font Size'),
-		comment    => _T('Reset the size of the letters to the default in the editor window'),
-		shortcut   => 'Ctrl-0',
-		menu_event => sub {
-			my $editor = $_[0]->current->editor or return;
-			$_[0]->zoom( -1 * $editor->GetZoom );
-		},
-	);
+		Padre::Wx::Action->new(
+			name       => 'view.font_reset',
+			label      => _T('Reset Font Size'),
+			comment    => _T('Reset the size of the letters to the default in the editor window'),
+			shortcut   => 'Ctrl-0',
+			menu_event => sub {
+				my $editor = $_[0]->current->editor or return;
+				$_[0]->zoom( -1 * $editor->GetZoom );
+			},
+		);
+	}
 
 	# Style Actions
 
@@ -2070,7 +2028,7 @@ sub init {
 			return $filename =~ /\.t$/;
 		},
 		label      => _T('Run This Test'),
-		comment    => _T('Run the current test if the current document is a test. (prove -bv)'),
+		comment    => _T('Run the current test if the current document is a test. (prove -lv)'),
 		menu_event => sub {
 			$_[0]->on_run_this_test;
 		},
@@ -2101,7 +2059,7 @@ sub init {
 
 	# Debugging
 
-	if ( $config->feature_debugger ) {
+	if ( Padre::Feature::DEBUGGER ) {
 
 		Padre::Wx::Action->new(
 			name         => 'debug.step_in',
@@ -2337,15 +2295,17 @@ sub init {
 		},
 	);
 
-	Padre::Wx::Action->new(
-		name       => 'tools.sync',
-		label      => _T('Preferences Sync'),
-		comment    => _T('Share your preferences between multiple computers'),
-		menu_event => sub {
-			require Padre::Wx::Dialog::Sync;
-			Padre::Wx::Dialog::Sync->new( $_[0] )->ShowModal;
-		},
-	);
+	if ( Padre::Feature::SYNC ) {
+		Padre::Wx::Action->new(
+			name       => 'tools.sync',
+			label      => _T('Preferences Sync'),
+			comment    => _T('Share your preferences between multiple computers'),
+			menu_event => sub {
+				require Padre::Wx::Dialog::Sync;
+				Padre::Wx::Dialog::Sync->new( $_[0] )->ShowModal;
+			},
+		);
+	}
 
 	Padre::Wx::Action->new(
 		name       => 'tools.keys',
@@ -2830,25 +2790,6 @@ sub init {
 			$_[0]->about->ShowModal;
 		},
 	);
-
-	# This is made for usage by the developers to create a complete
-	# list of all actions used in Padre. It outputs some warnings
-	# while dumping, but they're ignored for now as it should never
-	# run within a productional copy.
-	if ( $ENV{PADRE_EXPORT_ACTIONS} ) {
-		require Data::Dumper;
-		$Data::Dumper::Purity = 1;
-		open(
-			my $action_export_fh,
-			'>',
-			File::Spec->catfile(
-				Padre::Constant::CONFIG_DIR,
-				'actions.dump',
-			),
-		);
-		print $action_export_fh Data::Dumper::Dumper( $_[0]->ide->actions );
-		close $action_export_fh;
-	}
 
 	return 1;
 }

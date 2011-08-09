@@ -9,7 +9,7 @@ use warnings;
 use Padre::DB ();
 use Padre::Wx ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 my @positions;
 
@@ -88,7 +88,6 @@ sub set_position {
 		line => $line,
 		};
 
-	#print Data::Dumper::Dumper \@positions;
 	return;
 }
 

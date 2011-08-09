@@ -7,7 +7,7 @@ use Params::Util          ();
 use Padre::Wx             ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::AuiNotebook
@@ -70,6 +70,27 @@ sub new {
 	);
 
 	return $self;
+}
+
+
+
+
+
+######################################################################
+# GUI Methods
+
+sub relocale {
+	my $self = shift;
+
+	# Fetch all the titles and overwrite
+	foreach my $i ( 0 .. $self->GetPageCount - 1 ) {
+		my $editor   = $self->GetPage($i)   or next;
+		my $document = $editor->{Document}  or next;
+		my $title    = $document->get_title or next;
+		$self->SetPageText( $i, $title );
+	}
+
+	return;
 }
 
 

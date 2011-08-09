@@ -10,7 +10,50 @@ list API changes that may break compatibility for components of Padre, most
 notably for plugins. This allows plugins to update compatibility before the
 next production release, and synchronise their release to the Padre schedule.
 
-0.88 2011.07.26
+
+0.88 2011.08.09
+    - Thread Slave Mastering now works for Task 2.0. This removes thread spawn
+      foreground blocking, reducing per-thread costs by at least 10meg, and can
+      reduce total memory overhead by 50+meg (ADAMK)
+    - The directory tree supports relocale correctly (ADAMK)
+    - The notebook supports relocale correctly for "Unsaved X" files (ADAMK)
+    - Catch a crash (#1268 workaround) (SEWI)
+    - "Run -> Run this test" now use -l as suggested by BOWTIE (SZABGAB)
+    - Header files (.h) are now recognized as a C document (AZAWAWI)
+    - Updated wxWidgets documentation links to 2.8.12 in Padre developer tools
+      internal plugin (AZAWAWI)
+    - Updated generated Padre::Wx::FBP::* modules to FBP::Perl 0.59, which will
+      hopefully fix Layout/Fit logic on Mac (ADAMK)
+    - Padre::DB::Migrate now has a method-based timeline that is even smaller
+      again than the class-based timeline that replaced the script-based
+      timeline, removing the unsightly Padre::DB::Patch123 modules (ADAMK)
+    - Turn off Win32::SetChildShowWindow so that ordinary system() calls 
+      won't generate short-lived command line windows (ADAMK)
+    - Removed Module::Starter integration, it generates evil distros (ADAMK)
+    - Added write/PUT support to Padre::File::HTTP (SEWI)
+    - Fix #1244: Refresh recent open files list on close (SEWI)
+    - #105: Backup unsaved files to disk (SEWI)
+    - While closing all files during shutdown, don't spawn a background task
+      to update the recent files list (ADAMK)
+    - Perl Projects now ignore Makefile.old files (ADAMK)
+    - Upgraded the Insert Special Value dialog to wxFormBuilder (ADAMK)
+    - Upgraded the Insert Snippet dialog to wxFormBuilder (ADAMK)
+    - Removing the deprecated Padre::Wx::Dialog now that all dialogs have been
+      ported away from it to wxFormBuilder (ADAMK)
+    - Fix #1099: Ctrl-Shift-T to get the last closed tab (ZENOG, AZAWAWI)
+    - Scintilla word characters are now set up per document type (ADAMK)
+    - Removed the regex option in fast find as it doesn't make much sense to
+      incrementally fast type a regexp (ADAMK)
+    - Searches done in fast find are now remembered by Padre so they can be
+      repeated by F3 with no find dialogs open (ADAMK)
+    - Stop Mac OSX crashes on save due to tailing pipe in FileDialog (TOME)
+    - Highlight Perl keywords using Scintilla (AZAWAWI)
+    - Optional feature configuration settings are now compiled into the new
+      dedicated namespace Padre::Feature so feature code can be compiled out
+      entirely rather than just being skipped (ADAMK)
+    - The Function List now recognises *function = sub { } in Perl code (ADAMK)
+    - The Function List will interleave private methods with public ones
+      when set to "Alphaetical" sort (ADAMK)
     - Background worker threads that receive a 'cancel' message while they are
       not running a task will no longer silently exit their worker loop, which
       fixes the massive thread leak we've had since Task 2.0 landed! (ADAMK)

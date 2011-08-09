@@ -58,7 +58,7 @@ if ( '2.009000' eq Alien::wxWidgets->version ) {
 
 
 
-
+ 
 #####################################################################
 # Normal Boring Commands
 
@@ -119,8 +119,6 @@ requires 'LWP'                      => '5.815';
 requires 'Module::Build'            => '0.3603';
 requires 'Module::CoreList'         => 0;
 requires 'Module::Manifest'         => '0.07';
-requires 'Module::Refresh'          => '0.13';
-requires 'Module::Starter'          => '1.50';
 requires 'ORLite'                   => '1.48';
 requires 'Params::Util'             => '0.33';
 requires 'Parse::ErrorString::Perl' => '0.14';
@@ -137,7 +135,7 @@ requires 'PPI'                      => '1.213';
 requires 'PPIx::EditorTools'        => '0.13';
 requires 'PPIx::Regexp'             => '0.011';
 requires 'Probe::Perl'              => '0.01';
-requires 'Storable'                 => '2.15';
+requires 'Storable'                 => '2.16';
 requires 'Template::Tiny'           => '0.11';
 requires 'Term::ReadLine'           => 0;
 requires 'Text::Balanced'           => '2.01';

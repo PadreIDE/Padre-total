@@ -9,11 +9,12 @@ use utf8;
 use Padre::Wx               ();
 use Padre::Wx::HtmlWindow   ();
 use Padre::Wx::Icon         ();
+use Padre::Config           ();
 use Padre::Util             ();
 use Wx::Perl::ProcessStream ();
 use PPI                     ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Wx::Dialog';
 
 sub new {
@@ -161,6 +162,8 @@ sub _content_developers {
             Chris Dolan<br>
             <br>
             Claudio Ramirez<br>
+            <br>
+            Tom Eliaz<br>
           </p>
         </td>
         <td valign="top">
@@ -351,7 +354,7 @@ sub _content_info {
 	my $alien = Wx::wxVERSION();
 
 	my $wx_scintilla_html = '';
-	if (Padre::Util::wx_scintilla_ready) {
+	if ( Padre::Config::wx_scintilla_ready() ) {
 		$wx_scintilla_html = <<"END_HTML";
       <tr>
         <td valign="top">Wx::Scintilla</td>

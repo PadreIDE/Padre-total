@@ -13,7 +13,7 @@ use Padre::Wx::Menu ();
 use Padre::Locale   ();
 use Padre::Current  ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -71,19 +71,16 @@ sub new {
 	);
 
 	$self->{extract_subroutine} = $self->add_menu_action(
-		$self,
 		'perl.extract_subroutine',
 	);
 
 	$self->{introduce_temporary} = $self->add_menu_action(
-		$self,
 		'perl.introduce_temporary',
 	);
 
 	$self->AppendSeparator;
 
 	$self->{endify_pod} = $self->add_menu_action(
-		$self,
 		'perl.endify_pod',
 	);
 

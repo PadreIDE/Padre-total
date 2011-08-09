@@ -4,7 +4,7 @@ package Padre::Wx::Role::Conduit;
 
 =head1 NAME
 
-Padre::Wx::Role::Conduit - Role to allows an object to receive Wx events
+Padre::Wx::Role::Conduit - Role to allow an object to receive Wx events
 
 =head1 DESCRIPTION
 
@@ -22,11 +22,11 @@ CPAN spinoff later).
 use 5.008;
 use strict;
 use warnings;
-use Storable  ();
-use Padre::Wx ();
+use Storable ();
+use Wx       ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 our $SIGNAL : shared;
 

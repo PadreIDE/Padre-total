@@ -6,10 +6,11 @@ use 5.008;
 use strict;
 use warnings;
 use Padre::Current  ();
+use Padre::Feature  ();
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -31,12 +32,10 @@ sub new {
 
 	# Undo/Redo
 	$self->{undo} = $self->add_menu_action(
-		$self,
 		'edit.undo',
 	);
 
 	$self->{redo} = $self->add_menu_action(
-		$self,
 		'edit.redo',
 	);
 
@@ -74,12 +73,10 @@ sub new {
 
 	# Cut and Paste
 	$self->{cut} = $self->add_menu_action(
-		$self,
 		'edit.cut',
 	);
 
 	$self->{copy} = $self->add_menu_action(
-		$self,
 		'edit.copy',
 	);
 
@@ -113,21 +110,18 @@ sub new {
 
 	# Paste
 	$self->{paste} = $self->add_menu_action(
-		$self,
 		'edit.paste',
 	);
 
 	my $submenu = Wx::Menu->new;
-	$self->{insert_submenu} = $self->AppendSubMenu( $submenu, Wx::gettext('Insert') );
+	$self->{insert_submenu} = $self->AppendSubMenu(
+		$submenu,
+		Wx::gettext('Insert'),
+	);
 
 	$self->{insert_from_file} = $self->add_menu_action(
 		$submenu,
 		'edit.insert.from_file',
-	);
-
-	$self->{insert_special} = $self->add_menu_action(
-		$submenu,
-		'edit.insert.insert_special',
 	);
 
 	$self->{snippets} = $self->add_menu_action(
@@ -135,35 +129,36 @@ sub new {
 		'edit.insert.snippets',
 	);
 
+	$self->{insert_special} = $self->add_menu_action(
+		$submenu,
+		'edit.insert.insert_special',
+	);
+
 	$self->AppendSeparator;
 
 	$self->{next_problem} = $self->add_menu_action(
-		$self,
 		'edit.next_problem',
 	);
 
-	$self->{quick_fix} = $self->add_menu_action(
-		$self,
-		'edit.quick_fix',
-	);
+	if ( Padre::Feature::QUICK_FIX ) {
+		$self->{quick_fix} = $self->add_menu_action(
+			'edit.quick_fix',
+		);
+	}
 
 	$self->{autocomp} = $self->add_menu_action(
-		$self,
 		'edit.autocomp',
 	);
 
 	$self->{brace_match} = $self->add_menu_action(
-		$self,
 		'edit.brace_match',
 	);
 
 	$self->{brace_match_select} = $self->add_menu_action(
-		$self,
 		'edit.brace_match_select',
 	);
 
 	$self->{join_lines} = $self->add_menu_action(
-		$self,
 		'edit.join_lines',
 	);
 
@@ -171,17 +166,14 @@ sub new {
 
 	# Commenting
 	$self->{comment_toggle} = $self->add_menu_action(
-		$self,
 		'edit.comment_toggle',
 	);
 
 	$self->{comment} = $self->add_menu_action(
-		$self,
 		'edit.comment',
 	);
 
 	$self->{uncomment} = $self->add_menu_action(
-		$self,
 		'edit.uncomment',
 	);
 
@@ -305,12 +297,10 @@ sub new {
 	);
 
 	$self->{filter_tool} = $self->add_menu_action(
-		$self,
 		'edit.filter_tool',
 	);
 
 	$self->{perl_filter} = $self->add_menu_action(
-		$self,
 		'edit.perl_filter',
 	);
 
@@ -352,7 +342,7 @@ sub refresh {
 
 	# Handle the simple cases
 	$self->{next_problem}->Enable($hasdoc);
-	if ( $self->{main}->config->feature_quick_fix ) {
+	if ( Padre::Feature::QUICK_FIX ) {
 		$self->{quick_fix}->Enable($quickfix);
 	}
 	$self->{autocomp}->Enable($hasdoc);

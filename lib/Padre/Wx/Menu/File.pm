@@ -9,9 +9,10 @@ use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Constant ();
 use Padre::Current  ();
+use Padre::Feature  ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -33,7 +34,6 @@ sub new {
 
 	# Create new things
 	$self->{new} = $self->add_menu_action(
-		$self,
 		'file.new',
 	);
 
@@ -42,10 +42,6 @@ sub new {
 		-1,
 		Wx::gettext('New'),
 		$file_new,
-	);
-	$self->{new_copy} = $self->add_menu_action(
-		$file_new,
-		'file.new_copy',
 	);
 	$self->add_menu_action(
 		$file_new,
@@ -68,22 +64,9 @@ sub new {
 		'file.new_p6_script',
 	);
 
-	# Split projects from files
-	$file_new->AppendSeparator;
-
-	$self->add_menu_action(
-		$file_new,
-		'file.new_p5_distro',
-	);
-
-	# Not yet finished
-	# $self->add_menu_action(
-	# $file_new,
-	# 'file.new_p5_modulestarter',
-	# );
-
-	if ( $main->config->feature_wizard_selector ) {
+	if ( Padre::Feature::WIZARD_SELECTOR ) {
 		$file_new->AppendSeparator;
+
 		$self->add_menu_action(
 			$file_new,
 			'file.wizard_selector',
@@ -95,7 +78,6 @@ sub new {
 	# Open things
 
 	$self->add_menu_action(
-		$self,
 		'file.open',
 	);
 
@@ -136,8 +118,12 @@ sub new {
 		'file.open_example',
 	);
 
+	$self->{open_last_closed_file} = $self->add_menu_action(
+		$file_open,
+		'file.open_last_closed_file',
+	);
+
 	$self->{close} = $self->add_menu_action(
-		$self,
 		'file.close',
 	);
 
@@ -181,11 +167,6 @@ sub new {
 
 	### End of close submenu
 
-	$self->{delete} = $self->add_menu_action(
-		$self,
-		'file.delete',
-	);
-
 	# Reload file(s)
 	my $file_reload = Wx::Menu->new;
 	$self->Append(
@@ -211,41 +192,43 @@ sub new {
 
 	### End of reload submenu
 
+	$self->{duplicate} = $self->add_menu_action(
+		'file.duplicate',
+	);
+
+	$self->{delete} = $self->add_menu_action(
+		'file.delete',
+	);
+
 	$self->AppendSeparator;
 
 	# Save files
 	$self->{save} = $self->add_menu_action(
-		$self,
 		'file.save',
 	);
 
 	$self->{save_as} = $self->add_menu_action(
-		$self,
 		'file.save_as',
 	);
 
 	$self->{save_intuition} = $self->add_menu_action(
-		$self,
 		'file.save_intuition',
 	);
 
 	$self->{save_all} = $self->add_menu_action(
-		$self,
 		'file.save_all',
 	);
 
-	if ( $main->config->feature_session ) {
+	if ( Padre::Feature::SESSION ) {
 
 		$self->AppendSeparator;
 
 		# Session operations
 		$self->{open_session} = $self->add_menu_action(
-			$self,
 			'file.open_session',
 		);
 
 		$self->{save_session} = $self->add_menu_action(
-			$self,
 			'file.save_session',
 		);
 
@@ -255,7 +238,6 @@ sub new {
 
 	# Print files
 	$self->{print} = $self->add_menu_action(
-		$self,
 		'file.print',
 	);
 
@@ -289,7 +271,6 @@ sub new {
 
 	# Word Stats
 	$self->{docstat} = $self->add_menu_action(
-		$self,
 		'file.doc_stat',
 	);
 
@@ -297,7 +278,6 @@ sub new {
 
 	# Exiting
 	$self->add_menu_action(
-		$self,
 		'file.quit',
 	);
 
@@ -309,11 +289,11 @@ sub title {
 }
 
 sub refresh {
-	my $self = shift;
+	my $self     = shift;
 	my $document = Padre::Current->document ? 1 : 0;
 
 	$self->{open_in_file_browser}->Enable($document);
-	$self->{new_copy}->Enable($document);
+	$self->{duplicate}->Enable($document);
 	if (Padre::Constant::WIN32) {
 
 		#Win32
@@ -372,8 +352,15 @@ sub refill_recent {
 	}
 
 	# Repopulate with the new files
+	my $last_closed_file_found;
 	foreach my $i ( 1 .. 9 ) {
 		my $file = $files->[ $i - 1 ] or last;
+
+		# Store last closed file for the 'Open Last Closed File' feature
+		unless ($last_closed_file_found) {
+			$self->{main}->{_last_closed_file} = $file;
+			$last_closed_file_found = 1;
+		}
 		Wx::Event::EVT_MENU(
 			$self->{main},
 			$recentfiles->Append( -1, "&$i. $file" ),
@@ -382,6 +369,9 @@ sub refill_recent {
 			},
 		);
 	}
+
+	# Enable/disable 'Open Last Closed File' menu item
+	$self->{open_last_closed_file}->Enable($last_closed_file_found ? 1 : 0);
 
 	return;
 }

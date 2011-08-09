@@ -16,7 +16,7 @@ use Padre::File       ();
 use Padre::Role::Task ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = qw{
 	Padre::Role::Task
 	Padre::Document
@@ -284,17 +284,23 @@ sub guess_subpath {
 my $keywords;
 
 sub keywords {
-	unless ( defined $keywords ) {
-		$keywords = YAML::Tiny::LoadFile( Padre::Util::sharefile( 'languages', 'perl5', 'perl5.yml' ) );
-	}
-	return $keywords;
+	$keywords or
+	$keywords = YAML::Tiny::LoadFile(
+		Padre::Util::sharefile( 'languages', 'perl5', 'perl5.yml' )
+	);
+}
+
+my $wordchars =  join '', '$@%&_:[]{}', 0 .. 9, 'A' .. 'Z', 'a' .. 'z';
+
+sub stc_word_chars {
+	return $wordchars;
 }
 
 # This emulates qr/(?<=^|[\012\015])sub\s$name\b/ but without
 # triggering a "Variable length lookbehind not implemented" error.
 # return qr/(?:(?<=^)\s*sub\s+$_[1]|(?<=[\012\015])\s*sub\s+$_[1])\b/;
 sub get_function_regex {
-	qr/(?:^|[^# \t])[ \t]*((?:sub|func|method)\s+$_[1])\b/;
+	return qr/(?:^|[^# \t-])[ \t]*((?:sub|func|method)\s+$_[1]\b|\*$_[1]\s*=\s*(?:sub\b|\\\&))/;
 }
 
 sub get_functions {
@@ -305,11 +311,16 @@ sub find_functions {
 	my $n = "\\cM?\\cJ";
 	return grep { defined $_ } $_[1] =~ m/
 		(?:
-		${n}__(?:DATA|END)__\b.*
-		|
-		$n$n=\w+.*?$n\s*?$n=cut\b(?=.*?$n)
-		|
-		(?:^|$n)\s*(?:sub|func|method)\s+(\w+(?:::\w+)*)
+			${n}__(?:DATA|END)__\b.*
+			|
+			$n$n=\w+.*?$n\s*?$n=cut\b(?=.*?(?:$n){1,2})
+			|
+			(?:^|$n)\s*
+			(?:
+				(?:sub|func|method)\s+(\w+(?:::\w+)*)
+				|
+				\* (\w+(?:::\w+)*) \s* = \s* (?: sub \b | \\\& )
+			)
 		)
 	/sgx;
 }
@@ -1077,9 +1088,6 @@ EOC
 		# and then stick the new subroutine in above where we are.
 		# being above the selected text also means we won't
 		# lose the location when the change is made to the document
-		#require PPI::Dumper;
-		#my $dumper = PPI::Dumper->new( $ppi_doc );
-		#$dumper->print;
 		require PPIx::EditorTools;
 		my $token = PPIx::EditorTools::find_token_at_location( $ppi_doc, $start_position );
 		return unless $token;
@@ -1869,6 +1877,40 @@ sub guess_filename_to_open {
 	require File::Which;
 	my $filename = File::Which::which($text);
 	return $filename if defined $filename;
+	return;
+}
+
+sub lexer_keywords {
+	return [
+		# Perl Keywords
+		[ qw(NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ AUTOLOAD
+		BEGIN CORE DESTROY END EQ GE GT INIT LE LT NE CHECK abs accept
+		alarm and atan2 bind binmode bless caller chdir chmod chomp chop
+		chown chr chroot close closedir cmp connect continue cos crypt
+		dbmclose dbmopen defined delete die do dump each else elsif endgrent
+		endhostent endnetent endprotoent endpwent endservent eof eq eval
+		exec exists exit exp fcntl fileno flock for foreach fork format
+		formline ge getc getgrent getgrgid getgrnam gethostbyaddr gethostbyname
+		gethostent getlogin getnetbyaddr getnetbyname getnetent getpeername
+		getpgrp getppid getpriority getprotobyname getprotobynumber getprotoent
+		getpwent getpwnam getpwuid getservbyname getservbyport getservent
+		getsockname getsockopt glob gmtime goto grep gt hex if index
+		int ioctl join keys kill last lc lcfirst le length link listen
+		local localtime lock log lstat lt map mkdir msgctl msgget msgrcv
+		msgsnd my ne next no not oct open opendir or ord our pack package
+		pipe pop pos print printf prototype push quotemeta qu
+		rand read readdir readline readlink readpipe recv redo
+		ref rename require reset return reverse rewinddir rindex rmdir
+		scalar seek seekdir select semctl semget semop send setgrent
+		sethostent setnetent setpgrp setpriority setprotoent setpwent
+		setservent setsockopt shift shmctl shmget shmread shmwrite shutdown
+		sin sleep socket socketpair sort splice split sprintf sqrt srand
+		stat study sub substr symlink syscall sysopen sysread sysseek
+		system syswrite tell telldir tie tied time times truncate
+		uc ucfirst umask undef unless unlink unpack unshift untie until
+		use utime values vec wait waitpid wantarray warn while write
+		xor given when default say state UNITCHECK) ],
+	];
 }
 
 1;

@@ -9,7 +9,7 @@ use Params::Util qw( _INSTANCE );
 use Padre::Wx                 ();
 use Padre::Wx::CPAN::Listview ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Wx::Frame';
 
 use Class::XSAccessor {
@@ -126,4 +126,3 @@ sub on_key_pressed {
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
-

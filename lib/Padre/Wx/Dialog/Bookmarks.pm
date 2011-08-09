@@ -7,7 +7,7 @@ use Params::Util              ();
 use Padre::DB                 ();
 use Padre::Wx::FBP::Bookmarks ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::FBP::Bookmarks';
 
 
@@ -263,7 +263,6 @@ sub clean {
 }
 
 1;
-
 
 # Copyright 2008-2011 The Padre development team as listed in Padre.pm.
 # LICENSE

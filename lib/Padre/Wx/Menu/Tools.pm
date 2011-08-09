@@ -8,11 +8,12 @@ use warnings;
 use Params::Util    ();
 use Padre::Constant ();
 use Padre::Config   ();
+use Padre::Feature  ();
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
 use Padre::Current  ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::Menu';
 
 
@@ -34,21 +35,18 @@ sub new {
 
 	# User Preferences
 	$self->add_menu_action(
-		$self,
 		'tools.preferences',
 	);
 
 	# Config Sync
-	if ( $main->config->feature_sync ) {
+	if ( Padre::Feature::SYNC ) {
 		$self->add_menu_action(
-			$self,
 			'tools.sync',
 		);
 	}
 
 	# Key bindings
 	$self->add_menu_action(
-		$self,
 		'tools.keys',
 	);
 
@@ -56,7 +54,6 @@ sub new {
 
 	# Regex Editor
 	$self->add_menu_action(
-		$self,
 		'tools.regex',
 	);
 
@@ -94,7 +91,6 @@ sub new {
 
 	# Link to the Plugin Manager
 	$self->add_menu_action(
-		$self,
 		'plugins.plugin_manager',
 	);
 

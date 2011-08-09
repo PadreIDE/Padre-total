@@ -1,4 +1,4 @@
-package Padre::Wx::Dialog::HTML;
+package Padre::Wx::Frame::HTML;
 
 # Provides a base class for dialogs that are built using dynamic HTML
 
@@ -8,7 +8,7 @@ use warnings;
 use Padre::Wx             ();
 use Padre::Wx::HtmlWindow ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Wx::Frame';
 
 sub new {

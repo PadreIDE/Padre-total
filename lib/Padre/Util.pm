@@ -30,13 +30,13 @@ use FindBin         ();
 use Cwd             ();
 use File::Spec      ();
 use List::Util      ();
-use Padre::Constant (); ### NO more Padre:: dependencies
+use Padre::Constant (); ### NO other Padre:: dependencies
 
 # If we make $VERSION an 'our' variable the parse_variable() function breaks
 use vars qw{ $VERSION $COMPATIBLE };
 
 BEGIN {
-	$VERSION    = '0.89';
+	$VERSION    = '0.88';
 	$COMPATIBLE = '0.81';
 }
 
@@ -295,7 +295,7 @@ sub get_matches {
 	die 'missing parameters' if @_ < 4;
 
 	require Encode;
-	$text  = Encode::encode( 'utf-8', $text );
+	$text  = Encode::encode( 'utf-8', $text  );
 	$regex = Encode::encode( 'utf-8', $regex );
 
 	my @matches = ();
@@ -556,29 +556,6 @@ sub process_memory {
 	}
 	return;
 }
-
-
-=pod
-
-=head3 C<wx_scintilla_ready>
-
-    my $enabled = $main->wx_scintilla_ready;
-
-Returns 1 when Wx::Scintilla is ready to be used (i.e. enabled
-and installed) otherwise it is undefined.
-
-=cut
-
-sub wx_scintilla_ready {
-	my $enabled;
-	if ( Padre::Config->read->feature_wx_scintilla ) {
-		eval 'use Wx::Scintilla';
-		$enabled = 1 unless $@;
-	}
-	eval 'use Wx::STC' unless $enabled;
-	return $enabled;
-}
-
 
 1;
 

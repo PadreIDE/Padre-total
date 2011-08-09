@@ -10,11 +10,15 @@ use Padre::Wx::Role::Config     ();
 use Padre::Wx::FBP::Preferences ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = qw{
 	Padre::Wx::Role::Config
 	Padre::Wx::FBP::Preferences
 };
+
+
+
+
 
 #####################################################################
 # Class Methods
@@ -26,13 +30,19 @@ sub run {
 	my $main  = shift;
 	my $self  = $class->new($main);
 
+	# Always show the first tab regardless of which one
+	# was selected in wxFormBuilder.
+	$self->treebook->ChangeSelection(0);
+
 	# Load preferences from configuration
 	my $config = $main->config;
 	$self->config_load($config);
 
-	# Show the dialog
-	$self->Fit;
+	# Refresh the sizing, layout and position after the config load
+	$self->GetSizer->SetSizeHints($self);
 	$self->CentreOnParent;
+
+	# Show the dialog
 	if ( $self->ShowModal == Wx::wxID_CANCEL ) {
 		return;
 	}
@@ -45,7 +55,9 @@ sub run {
 	return 1;
 }
 
-# 1234567890123456789012345678901234567890
+
+
+
 
 #####################################################################
 # Constructor and Accessors
@@ -91,6 +103,10 @@ sub new {
 sub names {
 	return @{ $_[0]->{names} };
 }
+
+
+
+
 
 #####################################################################
 # Padre::Wx::Role::Config Methods
@@ -180,6 +196,10 @@ sub config_diff {
 	return \%diff;
 }
 
+
+
+
+
 ######################################################################
 # Event Handlers
 
@@ -264,6 +284,10 @@ sub preview_refresh {
 
 	return;
 }
+
+
+
+
 
 ######################################################################
 # Support Methods

@@ -8,7 +8,7 @@ use warnings;
 use File::Spec      ();
 use Padre::Constant ();
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.81';
 
 
@@ -49,7 +49,7 @@ sub new {
 ### DEPRECATED
 sub from_file {
 	if ( $VERSION > 0.84 ) {
-		warn "Deprecated Padre::Util::get_project_rcs called by " . scalar caller();
+		warn "Deprecated Padre::Project::from_file called by " . scalar caller();
 	}
 
 	require Padre::Current;

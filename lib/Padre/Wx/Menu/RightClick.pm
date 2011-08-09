@@ -7,8 +7,9 @@ use strict;
 use warnings;
 use Padre::Wx       ();
 use Padre::Wx::Menu ();
+use Padre::Feature  ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Wx::Menu';
 
 sub new {
@@ -27,7 +28,6 @@ sub new {
 
 	# Undo/Redo
 	$self->{undo} = $self->add_menu_action(
-		$self,
 		'edit.undo',
 	);
 	unless ( $editor->CanUndo ) {
@@ -35,7 +35,6 @@ sub new {
 	}
 
 	$self->{redo} = $self->add_menu_action(
-		$self,
 		'edit.redo',
 	);
 	unless ( $editor->CanRedo ) {
@@ -46,30 +45,25 @@ sub new {
 
 	if ($selection) {
 		$self->{open_selection} = $self->add_menu_action(
-			$self,
 			'file.open_selection',
 		);
 	}
 
 	$self->{open_in_file_browser} = $self->add_menu_action(
-		$self,
 		'file.open_in_file_browser',
 	);
 
 	$self->{find_in_files} = $self->add_menu_action(
-		$self,
 		'search.find_in_files',
 	);
 
 	$self->AppendSeparator;
 
 	$self->{cut} = $self->add_menu_action(
-		$self,
 		'edit.cut',
 	);
 
 	$self->{copy} = $self->add_menu_action(
-		$self,
 		'edit.copy',
 	);
 
@@ -79,7 +73,6 @@ sub new {
 	}
 
 	$self->{paste} = $self->add_menu_action(
-		$self,
 		'edit.paste',
 	);
 	my $text = $editor->get_text_from_clipboard;
@@ -88,32 +81,31 @@ sub new {
 	}
 
 	$self->{select_all} = $self->add_menu_action(
-		$self,
 		'edit.select_all',
 	);
 
 	$self->AppendSeparator;
 
 	$self->{comment_toggle} = $self->add_menu_action(
-		$self,
 		'edit.comment_toggle',
 	);
 
 	$self->{comment} = $self->add_menu_action(
-		$self,
 		'edit.comment',
 	);
 
 	$self->{uncomment} = $self->add_menu_action(
-		$self,
 		'edit.uncomment',
 	);
 
 	my $config = $main->config;
-	if (    $event->isa('Wx::MouseEvent')
-		and $config->feature_folding
-		and $config->editor_folding )
-	{
+	if (
+		Padre::Feature::FOLDING
+		and
+		$event->isa('Wx::MouseEvent')
+		and
+		$config->editor_folding
+	) {
 		my $position = $event->GetPosition;
 		my $line     = $editor->LineFromPosition( $editor->PositionFromPoint($position) );
 		my $point    = $editor->PointFromPosition( $editor->PositionFromLine($line) );
@@ -122,26 +114,28 @@ sub new {
 			$self->AppendSeparator;
 
 			$self->{fold_all} = $self->add_menu_action(
-				$self,
 				'view.fold_all',
 			);
+
 			$self->{unfold_all} = $self->add_menu_action(
-				$self,
 				'view.unfold_all',
 			);
 
-			$self->AppendSeparator;
 		}
 	}
 
-	my $doc = $editor->{Document};
-	if ($doc) {
-		if ( $doc->can('event_on_right_down') ) {
-			$doc->event_on_right_down( $editor, $self, $event );
+	my $document = $editor->{Document};
+	if ( $document ) {
+		$self->AppendSeparator;
+
+		if ( $document->can('event_on_right_down') ) {
+			$document->event_on_right_down( $editor, $self, $event );
 		}
 
 		# Let the plugins have a go
-		$editor->main->ide->plugin_manager->on_context_menu( $doc, $editor, $self, $event );
+		$editor->main->ide->plugin_manager->on_context_menu(
+			$document, $editor, $self, $event,
+		);
 	}
 
 	return $self;

@@ -39,7 +39,6 @@ use Params::Util              ();
 use Time::HiRes               ();
 use Padre::Wx::Action         ();
 use Padre::Wx::ActionLibrary  ();
-use Padre::Wx::WizardLibrary  ();
 use Padre::Constant           ();
 use Padre::Util               ('_T');
 use Padre::Perl               ();
@@ -47,6 +46,7 @@ use Padre::Locale             ();
 use Padre::Current            ();
 use Padre::Document           ();
 use Padre::DB                 ();
+use Padre::Feature            ();
 use Padre::Locker             ();
 use Padre::Wx                 ();
 use Padre::Wx::Icon           ();
@@ -61,7 +61,7 @@ use Padre::Wx::Role::Conduit  ();
 use Padre::Wx::Role::Dialog   ();
 use Padre::Logger;
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.85';
 our @ISA        = qw{
 	Padre::Wx::Role::Conduit
@@ -77,6 +77,9 @@ use constant {
 	TIMER_POSTINIT  => Wx::NewId(),
 	TIMER_NTH       => Wx::NewId(),
 };
+
+# Convenience until we get a config param or something
+use constant BACKUP_INTERVAL => 10;
 
 =pod
 
@@ -197,7 +200,10 @@ sub new {
 	Padre::Wx::ActionLibrary->init($self);
 
 	# Bootstrap the wizard system
-	Padre::Wx::WizardLibrary->init($self);
+	if ( Padre::Feature::WIZARD_SELECTOR ) {
+		require Padre::Wx::WizardLibrary;
+		Padre::Wx::WizardLibrary->init($self);
+	}
 
 	# Temporary store for the notebook tab history
 	# TO DO: Storing this here (might) violate encapsulation.
@@ -209,6 +215,9 @@ sub new {
 
 	# Add some additional attribute slots
 	$self->{marker} = {};
+
+	# Backup time tracking
+	$self->{backup} = 0;
 
 	# Create the menu bar
 	$self->{menu} = Padre::Wx::Menubar->new($self);
@@ -282,7 +291,22 @@ sub new {
 	);
 
 	# Scintilla Event Hooks
-	Wx::Event::EVT_STC_UPDATEUI( $self, -1, \&on_stc_update_ui );
+        # We delay per-stc-update processing until idle.
+        # This is primarily due to a defect http://trac.wxwidgets.org/ticket/4272:
+        # No status bar updates during STC_PAINTED, which we appear to hit on UPDATEUI.
+	Wx::Event::EVT_STC_UPDATEUI( 
+                $self, -1, sub { 
+                  shift->{_do_update_ui} = 1;
+                } );
+        Wx::Event::EVT_IDLE(
+                $self, sub { 
+                  my $self = shift;
+                  if($self->{_do_update_ui}) {
+                    $self->{_do_update_ui} = undef;
+                    $self->on_stc_update_ui();
+                  }
+                });
+
 	Wx::Event::EVT_STC_CHANGE( $self, -1, \&on_stc_change );
 	Wx::Event::EVT_STC_STYLENEEDED( $self, -1, \&on_stc_style_needed );
 	Wx::Event::EVT_STC_CHARADDED( $self, -1, \&on_stc_char_added );
@@ -304,8 +328,10 @@ sub new {
 
 	# This require is only here so it can follow this constructor
 	# when it moves to being created on demand.
-	require Padre::Wx::Debugger;
-	$self->{debugger} = Padre::Wx::Debugger->new;
+	if ( Padre::Feature::DEBUGGER ) {
+		require Padre::Wx::Debugger;
+		$self->{debugger} = Padre::Wx::Debugger->new;
+	}
 
 	# We need an event immediately after the window opened
 	# (we had an issue that if the default of main_statusbar was false it did
@@ -507,12 +533,6 @@ Accessors to operating data:
 
 Accessors that may not belong to this class:
 
-=over 4
-
-=item * C<ack>
-
-=back
-
 =cut
 
 use Class::XSAccessor {
@@ -525,7 +545,6 @@ use Class::XSAccessor {
 		has_bottom         => 'bottom',
 		has_output         => 'output',
 		has_command_line   => 'command_line',
-		has_ack            => 'ack',
 		has_syntax         => 'syntax',
 		has_functions      => 'functions',
 		has_todo           => 'todo',
@@ -678,13 +697,15 @@ sub syntax {
 	return $self->{syntax};
 }
 
-sub debugger {
-	my $self = shift;
-	unless ( defined $self->{debug} ) {
-		require Padre::Wx::Debug;
-		$self->{debug} = Padre::Wx::Debug->new($self);
-	}
-	return $self->{debug};
+BEGIN {
+	*debugger = sub {
+		my $self = shift;
+		unless ( defined $self->{debug} ) {
+			require Padre::Wx::Debug;
+			$self->{debug} = Padre::Wx::Debug->new($self);
+		}
+		return $self->{debug};
+	} if Padre::Feature::DEBUGGER;
 }
 
 sub outline {
@@ -1974,9 +1995,15 @@ sub relocale {
 	$self->ide->plugin_manager->relocale;
 
 	# The menu doesn't support relocale, replace it
-	delete $self->{menu};
-	$self->{menu} = Padre::Wx::Menubar->new($self);
-	$self->SetMenuBar( $self->menu->wx );
+	# I wish this code didn't have to be so ugly, but we want to be
+	# sure we clean up all the menu memory properly.
+	SCOPE: {
+		delete $self->{menu};
+		$self->{menu} = Padre::Wx::Menubar->new($self);
+		my $old = $self->GetMenuBar;
+		$self->SetMenuBar( $self->menu->wx );
+		$old->Destroy;
+	}
 
 	# Refresh the plugins' menu entries
 	$self->refresh_menu_plugins;
@@ -1984,11 +2011,15 @@ sub relocale {
 	# The toolbar doesn't support relocale, replace it
 	$self->rebuild_toolbar;
 
-	# Update window manager captions
+	# Cascade relocation to AUI elements and other tools
 	$self->aui->relocale;
-	$self->left->relocale   if $self->has_left;
-	$self->right->relocale  if $self->has_right;
-	$self->bottom->relocale if $self->has_bottom;
+	$self->left->relocale      if $self->has_left;
+	$self->right->relocale     if $self->has_right;
+	$self->bottom->relocale    if $self->has_bottom;
+	$self->directory->relocale if $self->has_directory;
+
+	# Update the document titles (mostly for unnamed documents)
+	$self->notebook->relocale;
 
 	# Replace the regex editor, keep the data (if it exists)
 	if ( exists $self->{regex_editor} ) {
@@ -2006,53 +2037,6 @@ sub relocale {
 	}
 
 	return;
-}
-
-=pod
-
-=head3 C<reconfig>
-
-    $main->reconfig( $config );
-
-The term and method C<reconfig> is reserved for functionality intended to
-run when Padre's underlying configuration is updated by an external
-actor at run-time. The primary use cases for this method are when the
-user configuration file is synced from a remote network location.
-
-Note: This method is highly experimental and subject to change.
-
-=cut
-
-sub reconfig {
-	my $self   = shift;
-	my $config = shift;
-
-	# Do everything inside a freeze
-	my $lock = $self->lock('UPDATE');
-
-	# The biggest potential change is that the user may have a
-	# different forced locale.
-	# TO DO - This could get subtle (we have to not only know
-	# what the current locale is, but also if it was derived from
-	# the system default or not)
-
-	# Rebuild the toolbar if the lockinterface status has changed
-	# TO DO - Implement this
-
-	# Show or hide all the main gui elements
-	# TO DO - Move this into the config ->apply logic
-	$self->show_functions( $config->main_functions );
-	$self->show_todo( $config->main_todo );
-	$self->show_outline( $config->main_outline );
-	$self->show_directory( $config->main_directory );
-	$self->show_output( $config->main_output );
-	$self->show_command_line( $config->main_command_line );
-	$self->show_syntaxcheck( $config->main_syntaxcheck );
-
-	# Finally refresh the menu to clean it up
-	$self->menu->refresh;
-
-	return 1;
 }
 
 =pod
@@ -2219,26 +2203,28 @@ sub _show_outline {
 
 =cut
 
-sub show_debug {
-	my $self = shift;
-	my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
-	my $lock = $self->lock('UPDATE');
-	$self->_show_debug($on);
-	$self->aui->Update;
-	return;
-}
+BEGIN {
+	*show_debug = sub {
+		my $self = shift;
+		my $on   = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+		my $lock = $self->lock('UPDATE');
+		$self->_show_debug($on);
+		$self->aui->Update;
+		return;
+	} if Padre::Feature::DEBUGGER;
 
-sub _show_debug {
-	my $self = shift;
-	my $lock = $self->lock('UPDATE');
-	if ( $_[0] ) {
-		my $debugger = $self->debugger;
-		$self->right->show($debugger);
-	} elsif ( $self->has_debugger ) {
-		my $debugger = $self->debugger;
-		$self->right->hide($debugger);
-	}
-	return 1;
+	*_show_debug = sub {
+		my $self = shift;
+		my $lock = $self->lock('UPDATE');
+		if ( $_[0] ) {
+			my $debugger = $self->debugger;
+			$self->right->show($debugger);
+		} elsif ( $self->has_debugger ) {
+			my $debugger = $self->debugger;
+			$self->right->hide($debugger);
+		}
+		return 1;
+	} if Padre::Feature::DEBUGGER;
 }
 
 =pod
@@ -2797,7 +2783,7 @@ sub on_run_this_test {
 		close $tempfile;
 
 		my $things_to_test = $tempfile->filename;
-		$self->run_command(qq{"$prove" - -bv < "$things_to_test"});
+		$self->run_command(qq{"$prove" - -lv < "$things_to_test"});
 	} else {
 		$self->run_command("$prove -bv $filename");
 	}
@@ -3304,29 +3290,58 @@ keystroke or menu events.
 
 =head2 C<search_next>
 
-  # Next match for a new search
+  # Next match for a new explicit search
   $main->search_next( $search );
 
-  # Next match on current search (or show Find dialog if none)
+  # Next match on current search
   $main->search_next;
 
-Find the next match for the current search, or spawn the Find dialog.
+Find the next match for the current search.
 
 If no files are open, silently do nothing (don't even remember the new search)
 
 =cut
 
 sub search_next {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = $self->current->editor or return;
+	my $search = $self->search;
+
+	# If we are passed an explicit search object,
+	# shortcut special logic and run that search immediately.
 	if ( Params::Util::_INSTANCE( $_[0], 'Padre::Search' ) ) {
-		$self->{search} = shift;
-	} elsif (@_) {
+		$search = $self->{search} = shift;
+		return !! $search->search_next($editor);
+	} elsif ( @_ ) {
 		die 'Invalid argument to search_next';
 	}
-	if ( $self->search ) {
-		$self->search->search_next($editor);
+
+	# Handle the obvious case with nothing selected
+	my ( $position1, $position2 ) = $editor->GetSelection;
+	if ( $position1 == $position2 ) {
+		return unless $search;
+		return !! $search->search_next($editor);
 	}
+
+	# Multiple lines are also done the obvious way
+	my $line1 = $editor->LineFromPosition($position1);
+	my $line2 = $editor->LineFromPosition($position2);
+	unless ( $line1 == $line2 ) {
+		return unless $search;
+		return !! $self->search_next($editor);
+	}
+
+	# Case-specific search for the current selection
+	require Padre::Search;
+	$search = $self->{search} = Padre::Search->new(
+		find_case    => 1,
+		find_regex   => 0,
+		find_reverse => 0,
+		find_term    => $editor->GetTextRange(
+			$position1, $position2,
+		),
+	);
+	return !! $search->search_next($editor);
 }
 
 =pod
@@ -3346,16 +3361,45 @@ If no files are open, do nothing.
 =cut
 
 sub search_previous {
-	my $self = shift;
+	my $self   = shift;
 	my $editor = $self->current->editor or return;
+	my $search = $self->search;
+
+	# If we are passed an explicit search object,
+	# shortcut special logic and run that search immediately.
 	if ( Params::Util::_INSTANCE( $_[0], 'Padre::Search' ) ) {
-		$self->{search} = shift;
-	} elsif (@_) {
-		die("Invalid argument to search_previous");
+		$search = $self->{search} = shift;
+		return !! $search->search_previous($editor);
+	} elsif ( @_ ) {
+		die 'Invalid argument to search_previous';
 	}
-	if ( $self->search ) {
-		$self->search->search_previous($editor);
+
+	# Handle the obvious case with nothing selected
+	my ( $position1, $position2 ) = $editor->GetSelection;
+	if ( $position1 == $position2 ) {
+		return unless $search;
+		return !! $search->search_previous($editor);
 	}
+
+	# Multiple lines are also done the obvious way
+	my $line1 = $editor->LineFromPosition($position1);
+	my $line2 = $editor->LineFromPosition($position2);
+	unless ( $line1 == $line2 ) {
+		return unless $search;
+		return !! $self->search_previous($editor);
+	}
+
+	# Case-specific search for the current selection
+	require Padre::Search;
+	$search = $self->{search} = Padre::Search->new(
+		find_case    => 1,
+		find_regex   => 0,
+		find_reverse => 0,
+		find_term    => $editor->GetTextRange(
+			$position1, $position2,
+		),
+	);
+	return !! $search->search_previous($editor);
 }
 
 =pod
@@ -3599,8 +3643,10 @@ sub on_close_window {
 
 	# Terminate any currently running debugger session before we start
 	# to do anything significant.
-	if ( $self->{debugger} ) {
-		$self->{debugger}->quit;
+	if ( Padre::Feature::DEBUGGER ) {
+		if ( $self->{debugger} ) {
+			$self->{debugger}->quit;
+		}
 	}
 
 	# Wrap one big database transaction around this entire shutdown process.
@@ -3608,7 +3654,7 @@ sub on_close_window {
 	# just save some basic parts like the last session and so on.
 	# Some of the steps in the shutdown have transactions anyway, but
 	# this will expand them to cover everything.
-	my $transaction = $self->lock('DB');
+	my $transaction = $self->lock('DB', 'refresh_recent');
 
 	# Capture the current session, before we start the interactive
 	# part of the shutdown which will mess it up.
@@ -3926,7 +3972,7 @@ sub setup_editor {
 	my $id = $self->create_tab( $editor, $title );
 	$self->notebook->GetPage($id)->SetFocus;
 
-	if ( $config->feature_cursormemory ) {
+	if ( Padre::Feature::CURSORMEMORY ) {
 		$editor->restore_cursor_position;
 	}
 
@@ -4047,8 +4093,8 @@ sub on_open_selection {
 		return unless length $text;
 	}
 
-	#remove leading and trailing whitespace or newlines
-	#atm, we assume you are opening _one_ file, so newlines in the middle are significant
+	# Remove leading and trailing whitespace or newlines
+	# We assume you are opening _one_ file, so newlines in the middle are significant
 	$text =~ s/^[\s\n]*(.*?)[\s\n]*$/$1/;
 
 	my @files;
@@ -4085,10 +4131,11 @@ sub on_open_selection {
 		return;
 	}
 
-	# Pick a file
 	require List::MoreUtils;
 	@files = List::MoreUtils::uniq(@files);
 	if ( @files > 1 ) {
+
+		# Pick a file
 		my $file = $self->single_choice(
 			Wx::gettext('Choose File'),
 			'',
@@ -4096,6 +4143,8 @@ sub on_open_selection {
 		);
 		$self->setup_editors($file) if defined $file;
 	} else {
+
+		# Open the only result without further interaction
 		$self->setup_editors( $files[0] );
 	}
 
@@ -4228,7 +4277,6 @@ sub open_file_dialog {
 	my @filenames = $dialog->GetFilenames;
 	$self->{cwd} = $dialog->GetDirectory;
 
-	#print Data::Dumper::Dumper \@filenames;
 	#print $dialog->GetPath, " <- path\n";
 	#print $dialog->GetFilename, " <- filename\n";
 	#print $dialog->GetDirectory, " <- directory\n";
@@ -4242,9 +4290,6 @@ sub open_file_dialog {
 		my $fullpath = $dialog->GetPath;
 		$self->{cwd} = File::Basename::dirname($fullpath);
 		@filenames = File::Basename::basename($fullpath);
-
-		#print "Dir: $self->{cwd}\n";
-		#print Data::Dumper::Dumper \@filenames;
 	}
 
 	my @files;
@@ -4344,6 +4389,23 @@ Opens the examples file dialog
 
 sub on_open_example {
 	$_[0]->open_file_dialog( Padre::Util::sharedir('examples') );
+}
+
+=pod
+
+=head3 C<on_open_last_closed_file>
+
+    $main->on_open_last_closed_file;
+
+Opens the last closed file in similar fashion to Chrome and Firefox.
+
+=cut
+
+sub on_open_last_closed_file {
+	my $self = shift;
+
+	my $last_closed_file = $self->{_last_closed_file} or return;
+	$self->setup_editor($last_closed_file);
 }
 
 =pod
@@ -4465,12 +4527,15 @@ sub reload_file {
 		$editor = $document->editor;
 	}
 
-	my $pos = $self->config->feature_cursormemory;
-	$editor->store_cursor_position if $pos;
+	if ( Padre::Feature::CURSORMEMORY ) {
+		$editor->store_cursor_position;
+	}
 	if ( $document->reload ) {
 		$editor = $document->editor;
 		$editor->configure_editor($document);
-		$editor->restore_cursor_position if $pos;
+		if ( Padre::Feature::CURSORMEMORY ) {
+			$editor->restore_cursor_position;
+		}
 	} else {
 		$self->error(
 			sprintf(
@@ -4590,7 +4655,7 @@ sub on_save_as {
 			$self, Wx::gettext('Save file as...'),
 			$self->{cwd},
 			$filename,
-			Wx::gettext('All Files') . ( Padre::Constant::WIN32 ? '|*.*|' : '|*|' ),
+			Wx::gettext('All Files') . ( Padre::Constant::WIN32 ? '|*.*' : '|*' ),
 			Wx::wxFD_SAVE,
 		);
 		if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
@@ -4846,8 +4911,12 @@ sub on_save_all {
 		}
 	}
 
-	# set focus back to the currentDocument
+	# Set focus back to the currentDocument
 	$self->notebook->SetSelection($currentID);
+
+	# Force-refresh backups (i.e. probably delete them)
+	$self->backup(1);
+
 	return 1;
 }
 
@@ -4956,7 +5025,8 @@ sub close {
 	my $document = $editor->{Document}     or return;
 	my $lock     = $self->lock(
 		qw{
-			REFRESH DB
+			REFRESH
+			DB
 			refresh_directory
 			refresh_menu
 			refresh_windowlist
@@ -4998,7 +5068,7 @@ sub close {
 		} @{ $self->{on_close_watchers}->{$fn} };
 	}
 
-	if ( $self->config->feature_cursormemory ) {
+	if ( Padre::Feature::CURSORMEMORY ) {
 		$editor->store_cursor_position;
 	}
 	if ( $document->tempfile ) {
@@ -5018,6 +5088,11 @@ sub close {
 	if ( $self->has_outline ) {
 		$self->outline->clear;
 	}
+
+	# Release all locks
+	undef $lock;
+
+	$self->refresh_recent;
 
 	return 1;
 }
@@ -5069,6 +5144,12 @@ sub close_all {
 	$self->refresh_title;
 
 	$manager->plugin_event('editor_changed');
+
+	# Refresh recent files list
+	$self->refresh_recent;
+
+	# Force-refresh backups (i.e. delete them)
+	$self->backup(1);
 
 	return 1;
 }
@@ -5577,23 +5658,25 @@ No return value.
 
 =cut
 
-sub editor_folding {
-	my $self = shift;
-	my $show = $_[0] ? 1 : 0;
-	my $lock = $self->lock('CONFIG');
-	my $pod  = $self->config->editor_fold_pod;
-	$self->config->set( editor_folding => $show );
+BEGIN {
+	*editor_folding = sub {
+		my $self = shift;
+		my $show = $_[0] ? 1 : 0;
+		my $lock = $self->lock('CONFIG');
+		my $pod  = $self->config->editor_fold_pod;
+		$self->config->set( editor_folding => $show );
 
-	foreach my $editor ( $self->editors ) {
-		$editor->show_folding($show);
-		if ( $show and $pod ) {
-			$editor->fold_pod;
+		foreach my $editor ( $self->editors ) {
+			$editor->show_folding($show);
+			if ( $show and $pod ) {
+				$editor->fold_pod;
+			}
 		}
-	}
 
-	$self->menu->view->refresh;
+		$self->menu->view->refresh;
 
-	return;
+		return;
+	};
 }
 
 =pod
@@ -5871,7 +5954,7 @@ sub on_insert_from_file {
 	my $dialog = Wx::FileDialog->new(
 		$self,      Wx::gettext('Open file'),
 		$self->cwd, '',
-		Wx::gettext('All Files') . ( Padre::Constant::WIN32 ? '|*.*|' : '|*|' ),
+		Wx::gettext('All Files') . ( Padre::Constant::WIN32 ? '|*.*' : '|*' ),
 		Wx::wxFD_OPEN,
 	);
 	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
@@ -6467,21 +6550,22 @@ sub on_oldest_visited_pane {
 
 =pod
 
-=head3 C<on_new_from_current>
+=head3 C<on_duplicate>
 
-    $main->on_new_from_current();
+    $main->on_duplicate;
 
 Create a new document and copy the contents of the current file.
 No return value.
 
 =cut
 
-sub on_new_from_current {
-	my $self = shift;
-
+sub on_duplicate {
+	my $self     = shift;
 	my $document = $self->current->document or return;
-
-	return $self->new_document_from_string( $document->text_get, $document->mimetype );
+	return $self->new_document_from_string(
+		$document->text_get,
+		$document->mimetype,
+	);
 }
 
 =pod
@@ -6704,12 +6788,18 @@ sub key_up {
 		}
 	}
 
-
 	if ( $config->autocomplete_always and ( !$mod ) and ( $code == 8 ) ) {
 		$self->on_autocompletion($event);
 	}
 
+	# Backup unsaved files if needed
+	# NOTE: This should be moved to occur only on the dwell (i.e. at the
+	# same time an undo block is saved) and probably shouldn't HAVE to
+	# rewrite all files when one is changed.
+	$self->backup;
+
 	$event->Skip(1);
+
 	return;
 }
 
@@ -6950,6 +7040,26 @@ sub encode_dialog {
 	return;
 }
 
+
+
+
+
+######################################################################
+# Document Backup
+
+sub backup {
+	my $self     = shift;
+	my $force    = shift;
+	my $duration = time - $self->{backup};
+	if ( $duration < BACKUP_INTERVAL and not $force ) {
+		return;
+	}
+
+	# Load and fire the backup task
+	require Padre::Task::BackupUnsaved;
+	Padre::Task::BackupUnsaved->new->schedule;
+	$self->{backup} = time;
+}
 
 1;
 

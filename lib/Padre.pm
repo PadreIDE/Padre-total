@@ -16,6 +16,7 @@ use File::HomeDir ();
 use List::Util    ();
 use Scalar::Util  ();
 use YAML::Tiny    ();
+use Class::Unload ();
 use DBI           ();
 use DBD::SQLite   ();
 
@@ -23,7 +24,7 @@ use DBD::SQLite   ();
 # TO DO: Bug report dispatched. Likely to be fixed in 0.77.
 use version ();
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.81';
 
 # Since everything is used OO-style, we will be require'ing
@@ -160,7 +161,7 @@ sub new {
 	require Padre::TaskManager;
 	$self->{task_manager} = Padre::TaskManager->new(
 		threads => 1,
-		conduit => $self->{wx}->{main},
+		conduit => $self->wx->conduit,
 	);
 
 	# Startup completed, let go of the database
@@ -172,21 +173,27 @@ sub new {
 sub run {
 	my $self = shift;
 
+	# If we are on Windows, disable Win32::SetChildShowWindow so that
+	# calls to system() or qx() won't spawn visible command line windows.
+	if ( Padre::Constant::WIN32 ) {
+		require Win32;
+		Win32::SetChildShowWindow( Win32::SW_HIDE );
+	}
+
 	# Allow scripts to detect that they are being executed within Padre
 	local $ENV{PADRE_VERSION} = $VERSION;
 
 	TRACE("Padre->run was called version $VERSION") if DEBUG;
 
-	# make WxWidgets translate the default buttons etc.
-	if (Padre::Constant::UNIX) {
-		$ENV{LANGUAGE} = $self->config->locale; ## no critic (RequireLocalizedPunctuationVars)
-	}
+	# Make WxWidgets translate the default buttons
+	local $ENV{LANGUAGE} = Padre::Constant::UNIX
+		? $self->config->locale
+		: $ENV{LANGUAGE};
 
 	# Clean arguments (with a bad patch for saving URLs)
+	# Windows has trouble deleting the work directory of a process,
+	# so reset file to full path
 	if (Padre::Constant::WIN32) {
-
-		# Windows has trouble deleting the work directory of a process,
-		# so reset file to full path
 		$self->{ARGV} = [
 			map {
 				if (/\:/) { $_; }
@@ -226,12 +233,13 @@ sub run {
 	#       that are throw silent exceptions.
 	# local $SIG{__DIE__} = sub { print @_; die $_[0] };
 
-	TRACE("Kill the splash screen") if DEBUG;
+	TRACE("Killing the splash screen") if DEBUG;
 	if ($Padre::Startup::VERSION) {
 		Padre::Startup->destroy_splash;
+		Class::Unload->unload('Padre::Startup');
 	}
 
-	TRACE("Process the action queue") if DEBUG;
+	TRACE("Processing the action queue") if DEBUG;
 	if ( defined $self->opts->{actionqueue} ) {
 		foreach my $action ( split( /\,/, $self->opts->{actionqueue} ) ) {
 			next if $action eq ''; # Skip empty action names
@@ -245,14 +253,12 @@ sub run {
 		}
 	}
 
-	TRACE("Switch into runtime mode") if DEBUG;
+	TRACE("Switching into runtime mode") if DEBUG;
 	$self->wx->MainLoop;
 
 	# All shutdown procedures complete.
 	# Do some final cleaning up.
 	$self->{wx} = undef;
-
-	return;
 }
 
 # Save the YAML configuration file
@@ -515,8 +521,7 @@ Various utility functions.
 =head2 Wx GUI
 
 The C<Padre::Wx::*> namespace is supposed to deal with all the
-Wx related code. Outside of that the code is not supposed to
-know about Wx, but currently it still does.
+Wx related code.
 
 =over 4
 
@@ -526,35 +531,21 @@ know about Wx, but currently it still does.
 
 is the L<Wx::App> subclass. Does not really do much.
 
-=item L<Padre::Wx::Dialog>
-
-is the parent class of all the major dialogs
-that are all implemented in modules in the C<Padre::Wx::Dialog::*>
-namespace. It is actually a plain subclass of L<Wx::Perl::Dialog>.
-
-=over 4
-
 =item L<Padre::Wx::Dialog::Bookmarks>
 
 =item L<Padre::Wx::Dialog::Find>
 
-Current Find and Replace widget.
+This is the main Find dialog
 
-=item L<Padre::Wx::Dialog::ModuleStart>
+=item L<Padre::Wx::Dialog::FindFast>
 
-L<Module::Start> integration. Maybe it should be moved to be a plug-in.
+This is the newer Firefox like inline search box.
 
 =item L<Padre::Wx::Dialog::PluginManager>
 
 =item L<Padre::Wx::Dialog::Preferences>
 
-=item L<Padre::Wx::Dialog::FindFast>
-
-This is the newer Firefox like search box.
-
 =item L<Padre::Wx::Dialog::Snippets>
-
-=back
 
 =item L<Padre::Wx::FileDropTarget>
 
@@ -585,7 +576,7 @@ of running code using C<F5>.
 
 =item L<Padre::Wx::HtmlWindow>
 
-=item L<Padre::Wx::PodFrame>
+=item L<Padre::Wx::Frame::POD>
 
 =item L<Padre::Wx::Popup>
 

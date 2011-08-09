@@ -56,11 +56,14 @@ use 5.008005;
 use strict;
 use warnings;
 use Params::Util      ();
+use Padre::Config     ();
+use Padre::Current    ();
 use Padre::TaskHandle ();
+use Padre::TaskThread ();
 use Padre::TaskWorker ();
 use Padre::Logger;
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.81';
 
 # Timeout values
@@ -68,13 +71,6 @@ use constant {
 	MAX_START_TIMEOUT => 10,
 	MAX_IDLE_TIMEOUT  => 30,
 };
-
-# HACK: Temporary flag to control whether or not we are spawning from
-#       the task master or whether we are spawning directly from the parent.
-#       Leave this turned off, Adam is using it to temporarily enable it
-#       while he is debugging it. Once fixed, it will stay on permanently
-#       and this flag will go away.
-use constant ENABLE_SLAVE_MASTER => 0;
 
 
 
@@ -226,6 +222,12 @@ sub start {
 	TRACE( $_[0] ) if DEBUG;
 	my $self = shift;
 	if ( $self->{threads} ) {
+		# Start the master if it wasn't pre-launched for some reason
+		unless ( Padre::TaskThread->master_running ) {
+			Padre::TaskThread->master;
+		}
+
+		# Start the workers
 		foreach ( 0 .. $self->{minimum} - 1 ) {
 			$self->start_worker;
 		}
@@ -258,18 +260,18 @@ sub stop {
 	# Clear out the pending queue
 	@{ $self->{queue} } = ();
 
-	# Stop all of our workers
-	foreach ( 0 .. $#{ $self->{workers} } ) {
-		$self->stop_worker($_);
-	}
-
 	# Shut down the master thread
-	# NOTE: Ignore the desires of ENABLE_SLAVE_MASTER here on really only
-	# on the reality of the actual running code.
-	if ($Padre::TaskThread::VERSION) {
+	# NOTE: We ignore the status of the thread master settings here and
+	# act only on the basis of whether or not a master thread is running.
+	if ( $Padre::TaskThread::VERSION ) {
 		if ( Padre::TaskThread->master_running ) {
 			Padre::TaskThread->master->stop;
 		}
+	}
+
+	# Stop all of our workers
+	foreach ( 0 .. $#{ $self->{workers} } ) {
+		$self->stop_worker($_);
 	}
 
 	# Empty task handles
@@ -375,43 +377,17 @@ B<Padre::TaskManager>.
 sub start_worker {
 	TRACE( $_[0] ) if DEBUG;
 	my $self = shift;
-
-	if (ENABLE_SLAVE_MASTER) {
-
-		# Bootstrap the master thread if it isn't already running
-		require Padre::TaskThread;
-		my $master = Padre::TaskThread->master;
-
-		# Start the worker via the master.
-		my $worker = Padre::TaskWorker->new;
-		$master->send( start_child => $worker );
-		push @{ $self->{workers} }, $worker;
-		return $worker;
-
-	} else {
-
-		# Create the worker as normal
-		my $worker = Padre::TaskWorker->new;
-
-		# DBI goes nasty if you have a connection open at the moment
-		# the thread is spawned, which we can have if we are in the
-		# middle of a "DB" lock.
-		# To correct this, we need to anti-lock the database and
-		# get rid of the connection temporarily while the spawn is
-		# being done, then restore the database connection afterwards.
-		if ( $Padre::DB::VERSION and Padre::DB->connected ) {
-			Padre::DB->commit;
-			$worker->spawn;
-			Padre::DB->begin;
-			Padre::DB->pragma( 'synchronous' => 0 );
-		} else {
-			$worker->spawn;
-		}
-
-		# Continue as normal
-		push @{ $self->{workers} }, $worker;
-		return $worker;
+	unless ( Padre::TaskThread->master_running ) {
+		die "Master thread is unexpectedly not running";
 	}
+
+	# Start the worker via the master.
+	my $worker = Padre::TaskWorker->new;
+	Padre::TaskThread->master->send(
+		start_child => $worker,
+	);
+	push @{ $self->{workers} }, $worker;
+	return $worker;
 }
 
 =pod
@@ -570,18 +546,8 @@ sub run {
 		# Shortcut if there is nowhere to run the task
 		if ( $self->{threads} ) {
 			if ( scalar keys %$handles >= $self->{maximum} ) {
-
-				# if ( Padre::Current->config->feature_restart_hung_task_manager ) {
-				# # Restart hung task manager!
-				# TRACE('PANIC: Restarting task manager') if DEBUG;
-				# $self->stop;
-				# $self->start;
-				# } else {
-				# Ignore the problem and hope the user does not notice :)
-				TRACE('No more task handles available. Sorry') if DEBUG;
+				TRACE('No more task handles available') if DEBUG;
 				return;
-
-				# }
 			}
 		}
 
@@ -650,8 +616,12 @@ sub on_signal {
 	TRACE( $_[0] ) if DEBUG;
 	my $self    = shift;
 	my $message = shift;
+	unless ( $self->{active} ) {
+		TRACE("Ignoring message while not active") if DEBUG;
+		return;
+	}
 	unless ( Params::Util::_ARRAY($message) ) {
-		TRACE("Unrecognised non-ARRAY or empty message");
+		TRACE("Unrecognised non-ARRAY or empty message") if DEBUG;
 		return;
 	}
 

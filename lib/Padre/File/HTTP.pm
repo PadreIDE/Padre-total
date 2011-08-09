@@ -7,8 +7,10 @@ use warnings;
 use Padre::File;
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::File';
+
+my $WRITE_WARNING_DONE = 0;
 
 sub new {
 	my $class = shift;
@@ -41,25 +43,26 @@ sub new {
 }
 
 sub _request {
-	my $self   = shift;
-	my $method = shift || 'GET';
-	my $URL    = shift || $self->{filename};
+	my $self    = shift;
+	my $method  = shift || 'GET';
+	my $URL     = shift || $self->{filename};
+	my $content = shift;
 
 	TRACE( sprintf( Wx::gettext('Sending HTTP request %s...'), $URL ) ) if DEBUG;
 
-	my $HTTP_Req = HTTP::Request->new( $method, $URL );
+	my $HTTP_req = HTTP::Request->new( $method, $URL, undef, $content );
 
-	my $Result = $self->{UA}->request($HTTP_Req);
+	my $result = $self->{UA}->request($HTTP_req);
 
-	if ( $Result->is_success ) {
+	if ( $result->is_success ) {
 		if (wantarray) {
-			return $Result->content, $Result;
+			return $result->content, $result;
 		} else {
-			return $Result->content;
+			return $result->content;
 		}
 	} else {
 		if (wantarray) {
-			return ( undef, $Result );
+			return ( undef, $result );
 		} else {
 			return;
 		}
@@ -72,8 +75,8 @@ sub can_run {
 
 sub size {
 	my $self = shift;
-	my ( $Content, $Result ) = $self->_request('HEAD');
-	return $Result->header('Content-Length');
+	my ( $content, $result ) = $self->_request('HEAD');
+	return $result->header('Content-Length');
 }
 
 sub mode {
@@ -90,9 +93,9 @@ sub mtime {
 	}
 
 	require HTTP::Date; # Part of LWP which is required for this module but not for Padre
-	my ( $Content, $Result ) = $self->_request('HEAD');
+	my ( $content, $result ) = $self->_request('HEAD');
 
-	$self->{_cached_mtime_value} = HTTP::Date::str2time( $Result->header('Last-Modified') );
+	$self->{_cached_mtime_value} = HTTP::Date::str2time( $result->header('Last-Modified') );
 	$self->{_cached_mtime_time}  = time;
 
 	return $self->{_cached_mtime_value};
@@ -100,8 +103,8 @@ sub mtime {
 
 sub exists {
 	my $self = shift;
-	my ( $Content, $Result ) = $self->_request('HEAD');
-	return 1 if $Result->code == 200;
+	my ( $content, $result ) = $self->_request('HEAD');
+	return 1 if $result->code == 200;
 	return ();
 }
 
@@ -147,22 +150,26 @@ sub readonly {
 	return 1;
 }
 
-# TO DO: Maybe use WebDAV to enable writing
-#sub write {
-#	my $self    = shift;
-#	my $content = shift;
-#	my $encode  = shift || ''; # undef encode = default, but undef will trigger a warning
-#
-#	my $fh;
-#	if ( !open $fh, ">$encode", $self->{filename} ) {
-#		$self->{error} = $!;
-#		return();
-#	}
-#	print {$fh} $content;
-#	close $fh;
-#
-#	return 1;
-#}
+sub write {
+	my $self    = shift;
+	my $content = shift;
+	my $encode  = shift || ''; # undef encode = default, but undef will trigger a warning
+
+	if ( !$WRITE_WARNING_DONE ) {
+		Padre::Current->main->error(
+			Wx::gettext(
+				      "You're going to write a file using HTTP PUT.\n"
+					. "This is highly experimental and not supported by most servers!"
+			)
+		);
+		$WRITE_WARNING_DONE = 1;
+	}
+
+	( $content, my $result ) = $self->_request( 'PUT', undef, $content );
+	return 1 if $result->code == 200 or $result->code == 201;
+
+	return 0;
+}
 
 1;
 

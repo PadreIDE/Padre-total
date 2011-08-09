@@ -16,7 +16,7 @@ use Padre::DB       ();
 use Padre::Constant ();
 use Padre::Logger;
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 sub new {
 	my $class = shift;
@@ -76,13 +76,12 @@ sub locked {
 sub shutdown {
 	my $self = shift;
 	my $lock = $self->lock( 'UPDATE', 'REFRESH', 'CONFIG' );
-	$self->{shutdown} = 1;
 
 	# If we have an update lock running, stop it manually now.
 	# If we don't do this, Win32 Padre will segfault on exit.
 	$self->{update_locker} = undef;
 
-	return 1;
+	$self->{shutdown} = 1;
 }
 
 

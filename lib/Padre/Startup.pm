@@ -32,7 +32,7 @@ use strict;
 use warnings;
 use Padre::Constant ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 
 my $SPLASH = undef;
 
@@ -52,8 +52,8 @@ sub startup {
 	my %setting = (
 		main_singleinstance      => Padre::Constant::DEFAULT_SINGLEINSTANCE,
 		main_singleinstance_port => Padre::Constant::DEFAULT_SINGLEINSTANCE_PORT,
-		startup_splash           => 0,
 		threads                  => 1,
+		startup_splash           => 0,
 	);
 
 	# Load and overlay the startup.yml file
@@ -95,10 +95,7 @@ sub startup {
 		}
 	}
 
-	# NOTE: Replace the following with if ( 0 ) will disable the
-	# slave master quick-spawn optimisation.
 	if ( $setting{threads} ) {
-
 		# Load a limited subset of Wx early so that we can be sure that
 		# the Wx::PlThreadEvent works in child threads. The thread
 		# modules must be loaded before Wx so that threading in Wx works
@@ -106,10 +103,14 @@ sub startup {
 		require threads::shared;
 		require Wx;
 
-		# Second-generation version of the threading optimisation.
-		# This one is much safer because we start with zero existing
-		# tasks and no expectation of existing load behaviour.
+		# Second-generation version of the threading optimisation, with
+		# worker threads spawned of a single initial early spawned
+		# "slave master" thread. This dramatically reduces the overhead
+		# of spawning a thread, because it doesn't need to copy all the
+		# stuff in the parent thread.
+		require Padre::Wx::App;
 		require Padre::TaskThread;
+		Padre::Wx::App->new;
 		Padre::TaskThread->master;
 	}
 

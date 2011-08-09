@@ -7,13 +7,14 @@ use strict;
 use warnings;
 use Padre::Constant          ();
 use Padre::Current           ();
+use Padre::Feature           ();
 use Padre::Config::Style     ();
 use Padre::Wx                ();
 use Padre::Wx::ActionLibrary ();
 use Padre::Wx::Menu          ();
 use Padre::Locale            ();
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.87';
 our @ISA        = 'Padre::Wx::Menu';
 
@@ -37,7 +38,6 @@ sub new {
 
 	# Can the user move stuff around
 	$self->{lockinterface} = $self->add_menu_action(
-		$self,
 		'view.lockinterface',
 	);
 
@@ -45,47 +45,38 @@ sub new {
 
 	# Show or hide GUI elements
 	$self->{functions} = $self->add_menu_action(
-		$self,
 		'view.functions',
 	);
 
 	$self->{todo} = $self->add_menu_action(
-		$self,
 		'view.todo',
 	);
 
 	$self->{outline} = $self->add_menu_action(
-		$self,
 		'view.outline',
 	);
 
 	$self->{directory} = $self->add_menu_action(
-		$self,
 		'view.directory',
 	);
 
 	$self->{output} = $self->add_menu_action(
-		$self,
 		'view.output',
 	);
 
 	$self->{syntaxcheck} = $self->add_menu_action(
-		$self,
 		'view.syntaxcheck',
 	);
 
 	$self->{command_line} = $self->add_menu_action(
-		$self,
 		'view.command_line',
 	);
 
 	$self->{toolbar} = $self->add_menu_action(
-		$self,
 		'view.toolbar',
 	);
 
 	$self->{statusbar} = $self->add_menu_action(
-		$self,
 		'view.statusbar',
 	);
 
@@ -114,61 +105,50 @@ sub new {
 
 	# Show or hide editor elements
 	$self->{currentline} = $self->add_menu_action(
-		$self,
 		'view.currentline',
 	);
 
 	$self->{lines} = $self->add_menu_action(
-		$self,
 		'view.lines',
 	);
 
 	$self->{indentation_guide} = $self->add_menu_action(
-		$self,
 		'view.indentation_guide',
 	);
 
 	$self->{whitespaces} = $self->add_menu_action(
-		$self,
 		'view.whitespaces',
 	);
 
 	$self->{calltips} = $self->add_menu_action(
-		$self,
 		'view.calltips',
 	);
 
 	$self->{eol} = $self->add_menu_action(
-		$self,
 		'view.eol',
 	);
 
 	$self->{rightmargin} = $self->add_menu_action(
-		$self,
 		'view.rightmargin',
 	);
 
 	# Code folding menu entries
-	if ( $config->feature_folding ) {
+	if ( Padre::Feature::FOLDING ) {
 		$self->AppendSeparator;
 
 		$self->{folding} = $self->add_menu_action(
-			$self,
 			'view.folding',
 		);
 
 		$self->{fold_all} = $self->add_menu_action(
-			$self,
 			'view.fold_all',
 		);
 
 		$self->{unfold_all} = $self->add_menu_action(
-			$self,
 			'view.unfold_all',
 		);
 
 		$self->{fold_this} = $self->add_menu_action(
-			$self,
 			'view.fold_this',
 		);
 	}
@@ -176,14 +156,13 @@ sub new {
 	$self->AppendSeparator;
 
 	$self->{word_wrap} = $self->add_menu_action(
-		$self,
 		'view.word_wrap',
 	);
 
 	$self->AppendSeparator;
 
 	# Font Size
-	if ( $config->feature_fontsize ) {
+	if ( Padre::Feature::FONTSIZE ) {
 		$self->{fontsize} = Wx::Menu->new;
 		$self->Append(
 			-1,
@@ -249,7 +228,6 @@ sub new {
 
 	# Window Effects
 	$self->add_menu_action(
-		$self,
 		'view.full_screen',
 	);
 
@@ -286,7 +264,7 @@ sub refresh {
 	$self->{syntaxcheck}->Check( $config->main_syntaxcheck );
 	$self->{toolbar}->Check( $config->main_toolbar );
 
-	if ( $config->feature_folding ) {
+	if ( Padre::Feature::FOLDING ) {
 		my $folding = $config->editor_folding;
 		$self->{folding}->Check($folding);
 		$self->{fold_all}->Enable($folding);
@@ -326,7 +304,7 @@ sub refresh {
 	}
 
 	# Disable zooming if there's no current document
-	if ( $config->feature_folding ) {
+	if ( Padre::Feature::FONTSIZE ) {
 		$self->{font_increase}->Enable($doc);
 		$self->{font_decrease}->Enable($doc);
 		$self->{font_reset}->Enable($doc);

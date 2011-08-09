@@ -118,7 +118,7 @@ use Scalar::Util    ();
 use Padre::Plugin   ();
 use Padre::Constant ();
 
-our $VERSION = '0.89';
+our $VERSION = '0.88';
 our @ISA     = 'Padre::Plugin';
 
 # Track the number of times actions are used
@@ -143,6 +143,12 @@ sub padre_interfaces {
 
 sub plugin_name {
 	'Padre Popularity Contest';
+}
+
+# Core plugins may reuse the page icon
+sub plugin_icon {
+	require Padre::Wx::Icon;
+	Padre::Wx::Icon::find('logo');
 }
 
 sub plugin_enable {

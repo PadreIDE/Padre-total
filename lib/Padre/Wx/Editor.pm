@@ -6,6 +6,8 @@ use warnings;
 use YAML::Tiny                ();
 use Time::HiRes               ();
 use Padre::Constant           ();
+use Padre::Config             ();
+use Padre::Feature            ();
 use Padre::Util               ();
 use Padre::DB                 ();
 use Padre::Wx                 ();
@@ -13,17 +15,17 @@ use Padre::Wx::FileDropTarget ();
 use Padre::Wx::Role::Main     ();
 use Padre::Logger;
 
-our $VERSION    = '0.89';
+our $VERSION    = '0.88';
 our $COMPATIBLE = '0.81';
 
-# NOTE: Wx::ScintillaTextCtrl (Wx::Scintilla) or Wx::StyledTextCtrl (Wx::STC) is added later
-# before object construction
-our @ISA = qw { Padre::Wx::Role::Main };
+# Allow the use of two different versions of Scintilla
+our @ISA = Padre::Config::wx_scintilla_ready()
+	? qw{ Padre::Wx::Role::Main Wx::ScintillaTextCtrl }
+	: qw{ Padre::Wx::Role::Main Wx::StyledTextCtrl    };
 
 # Convenience colour constants
+# NOTE: DO NOT USE "orange" string since it is actually red on win32
 use constant {
-
-	# NOTE: DO NOT USE "orange" string since it is actually red on win32
 	ORANGE => Wx::Colour->new( 255, 165, 0 ),
 	RED    => Wx::Colour->new("red"),
 	GREEN  => Wx::Colour->new("green"),
@@ -36,7 +38,12 @@ use constant {
 #
 # Please note that WIN32 is the API. DO NOT change it to that :)
 #
-my %WXEOL = ();
+# Initialize variables after loading either Wx::Scintilla or Wx::STC
+my %WXEOL = (
+	WIN  => Wx::wxSTC_EOL_CRLF,
+	MAC  => Wx::wxSTC_EOL_CR,
+	UNIX => Wx::wxSTC_EOL_LF,
+);
 
 # mapping for mime-type to the style name in the share/styles/default.yml file
 # TODO this should be defined in MimeTypes.pm
@@ -56,19 +63,9 @@ our %MIME_STYLE = (
 	'text/x-java-source'     => 'c',
 );
 
-# Karl
-# these are the allowed braces for brace highlighting and brace matching
-# this has to be subset of  ( ) [ ] { } < > since we use the scintilla
-# Brace* methods
-# always altern opening and starting braces in the constant
-my $BRACES = '{}[]()';
-my $STC_INVALID_POSITION;
-
 my $data;
 my $data_name;
 my $data_private;
-my $width;
-my $Clipboard_Old = '';
 
 sub new {
 	my $class  = shift;
@@ -80,22 +77,6 @@ sub new {
 	while ( not $main->isa('Padre::Wx::Main') ) {
 		$main = $main->GetParent;
 	}
-
-	# Figure out what to use as this editor instance super class
-	# Wx::ScintillaTextCtrl which needs to be installed (i.e. cpanm Wx::Scintilla),
-	# or Wx::StyledTextCtrl which comes by default with Wx and is very *old*
-	my $editor_super_class = Padre::Util::wx_scintilla_ready() ? 'Wx::ScintillaTextCtrl' : 'Wx::StyledTextCtrl';
-
-	# Push the appropriate editor super class to inheritance list :)
-	push @ISA, $editor_super_class;
-
-	# Initialize variables after loading either Wx::Scintilla or Wx::STC
-	%WXEOL = (
-		WIN  => Wx::wxSTC_EOL_CRLF,
-		MAC  => Wx::wxSTC_EOL_CR,
-		UNIX => Wx::wxSTC_EOL_LF,
-	);
-	$STC_INVALID_POSITION = Wx::wxSTC_INVALID_POSITION;
 
 	# Create the underlying Wx object
 	my $lock = $main->lock( 'UPDATE', 'refresh_windowlist' );
@@ -139,10 +120,6 @@ sub new {
 		BLUE,
 		BLUE,
 	);
-
-	# Set word chars to match Perl variables
-	### This should probably move somewhere Perl-specific
-	$self->SetWordChars( join '', '$@%&_:[]{}', 0 .. 9, 'A' .. 'Z', 'a' .. 'z' );
 
 	# No more unsafe CTRL-L for you :)
 	# CTRL-L or line cut should only work when there is no empty line
@@ -250,24 +227,31 @@ sub error {
 # Most of this should be read from some external files
 # but for now we use this if statement
 sub padre_setup {
-	my $self = shift;
+	my $self     = shift;
+	my $document = $self->{Document};
+	my $mimetype = $document ? $document->mimetype : '';
+	my $filename = $document ? $document->filename : '';
 
-	TRACE("before setting the lexer") if DEBUG;
-	if ( $self->{Document} ) {
-		$self->SetLexer( $self->{Document}->lexer );
+	# Configure lexing for the editor based on the document type
+	if ( $document ) {
+		$self->SetLexer( $document->lexer );
+		$self->SetWordChars( $document->stc_word_chars );
+
+		# Set all the lexer keywords lists that the document provides
+		my @lexer_keywords = @{ $document->lexer_keywords };
+		for my $i ( 0 .. $#lexer_keywords ) {
+			$self->SetKeyWords($i, join(' ', @{$lexer_keywords[$i]}));
+		}
+	} else {
+		$self->SetWordChars('');
 	}
-
-	# the next line will change the ESC key to cut the current selection
-	# See: http://www.yellowbrain.com/stc/keymap.html
-	#$self->CmdKeyAssign(Wx::wxSTC_KEY_ESCAPE, 0, Wx::wxSTC_CMD_CUT);
 
 	# This is supposed to be Wx::wxSTC_CP_UTF8
 	# and Wx::wxUNICODE or wxUSE_UNICODE should be on
 	$self->SetCodePage(65001);
 
-	my $mimetype = $self->{Document} ? $self->{Document}->mimetype : '';
+	# Setup the style for the specific mimetype
 	$mimetype ||= 'text/plain';
-
 	if ( $MIME_STYLE{$mimetype} ) {
 		$self->padre_setup_style( $MIME_STYLE{$mimetype} );
 		return;
@@ -281,8 +265,6 @@ sub padre_setup {
 	}
 
 	# For plain text try to guess based on the filename
-	my $filename = $self->{Document} ? $self->{Document}->filename : '';
-	$filename ||= '';
 	if ( $filename and $filename =~ /\.([^.]+)$/ ) {
 		my $ext = lc $1;
 
@@ -399,7 +381,7 @@ sub padre_setup_style {
 	$self->setup_style_from_config($name);
 
 	# if mimetype is known, then it might be Perl with in-line POD
-	if ( $config->feature_folding and $config->editor_folding ) {
+	if ( Padre::Feature::FOLDING and $config->editor_folding ) {
 		if ( $config->editor_fold_pod ) {
 			$self->fold_pod;
 		}
@@ -563,7 +545,7 @@ sub get_brace_type {
 	my ( $self, $char ) = @_;
 	unless (%_cached_braces) {
 		my $i = 1; # start from one so that all values are true
-		$_cached_braces{$_} = $i++ foreach ( split //, $BRACES );
+		$_cached_braces{$_} = $i++ foreach ( split //, '{}[]()' );
 	}
 	my $v = $_cached_braces{$char} or return 0;
 	return $v;
@@ -597,7 +579,7 @@ sub highlight_braces {
 	my $expression_highlighting = $self->config->editor_brace_expression_highlighting;
 
 	# remove current highlighting if any
-	$self->BraceHighlight( $STC_INVALID_POSITION, $STC_INVALID_POSITION );
+	$self->BraceHighlight( Wx::wxSTC_INVALID_POSITION, Wx::wxSTC_INVALID_POSITION );
 	if ($previous_expr_hiliting_style) {
 		$self->apply_style($previous_expr_hiliting_style);
 		$previous_expr_hiliting_style = undef;
@@ -609,9 +591,7 @@ sub highlight_braces {
 
 	my $actual_pos2 = $self->BraceMatch($actual_pos1);
 
-	#	return if abs( $pos1 - $pos2 ) < 2;
-
-	return if $actual_pos2 == $STC_INVALID_POSITION; #Wx::wxSTC_INVALID_POSITION  #????
+	return if $actual_pos2 == Wx::wxSTC_INVALID_POSITION; #Wx::wxSTC_INVALID_POSITION  #????
 
 	$self->BraceHighlight( $actual_pos1, $actual_pos2 );
 
@@ -649,7 +629,7 @@ sub find_matching_brace {
 	my ( $actual_pos1, $brace, $is_after, $is_opening ) = @$info1;
 
 	my $actual_pos2 = $self->BraceMatch($actual_pos1);
-	return if $actual_pos2 == $STC_INVALID_POSITION;
+	return if $actual_pos2 == Wx::wxSTC_INVALID_POSITION;
 	$actual_pos2++ if $is_after; # ensure is stays inside if origin is inside, same four outside
 	return $actual_pos2;
 }
@@ -701,12 +681,9 @@ sub show_line_numbers {
 	my $self = shift;
 	my $on   = shift;
 
-	# Premature optimization, caching the with that was on the 3rd place
-	# at load time as timed my Deve::NYTProf
-	$width ||= $self->TextWidth( Wx::wxSTC_STYLE_LINENUMBER, "m" ); # width of a single character
 	if ($on) {
 		my $n = 1 + List::Util::max( 2, length( $self->GetLineCount * 2 ) );
-		my $width = $n * $width;
+		my $width = $n * $self->TextWidth( Wx::wxSTC_STYLE_LINENUMBER, "m" );
 		$self->SetMarginWidth( 0, $width );
 		$self->SetMarginType( 0, Wx::wxSTC_MARGIN_NUMBER );
 	} else {
@@ -786,7 +763,7 @@ sub set_preferences {
 	$self->SetViewEOL( $config->editor_eol );
 	$self->SetViewWhiteSpace( $config->editor_whitespace );
 
-	if ( $config->feature_folding ) {
+	if ( Padre::Feature::FOLDING ) {
 		$self->show_folding( $config->editor_folding );
 	}
 
@@ -862,7 +839,7 @@ sub _auto_indent {
 
 	my $indent_style = $self->{Document}->get_indentation_style;
 
-	my $content = $self->_get_line_by_number($prev_line);
+	my $content = $self->GetLine($prev_line);
 	my $indent = ( $content =~ /^(\s+)/ ? $1 : '' );
 
 	if ( $config->editor_autoindent eq 'deep' and $content =~ /\{\s*$/ ) {
@@ -902,13 +879,13 @@ sub _auto_deindent {
 
 	my $indent_style = $self->{Document}->get_indentation_style;
 
-	my $content = $self->_get_line_by_number($line);
+	my $content = $self->GetLine($line);
 	my $indent = ( $content =~ /^(\s+)/ ? $1 : '' );
 
 	# This is for } on a new line:
 	if ( $config->editor_autoindent eq 'deep' and $content =~ /^\s*\}\s*$/ ) {
 		my $prev_line    = $line - 1;
-		my $prev_content = ( $prev_line < 0 ? '' : $self->_get_line_by_number($prev_line) );
+		my $prev_content = ( $prev_line < 0 ? '' : $self->GetLine($prev_line) );
 		my $prev_indent  = ( $prev_content =~ /^(\s+)/ ? $1 : '' );
 
 		# de-indent only in these cases:
@@ -956,74 +933,63 @@ sub _auto_deindent {
 	return;
 }
 
-# given a line number, returns the contents
-sub _get_line_by_number {
-	my $self    = shift;
-	my $line_no = shift;
+BEGIN {
+	*fold_this = sub {
+		my $self        = shift;
+		my $currentLine = $self->GetCurrentLine;
 
-	my $start = $self->PositionFromLine($line_no);
-	my $end   = $self->GetLineEndPosition($line_no);
-	return $self->GetTextRange( $start, $end );
-}
-
-sub fold_this {
-	my ($self) = @_;
-
-	my $currentLine = $self->GetCurrentLine;
-
-	if ( !$self->GetFoldExpanded($currentLine) ) {
-		$self->ToggleFold($currentLine);
-		return;
-	}
-
-	while ( $currentLine >= 0 ) {
-		if ( ( my $parentLine = $self->GetFoldParent($currentLine) ) > 0 ) {
-			$self->ToggleFold($parentLine);
+		unless ( $self->GetFoldExpanded($currentLine) ) {
+			$self->ToggleFold($currentLine);
 			return;
-		} else {
-			$currentLine--;
 		}
-	}
 
-	return;
-}
-
-sub fold_all {
-	my ($self) = @_;
-
-	my $lineCount   = $self->GetLineCount;
-	my $currentLine = $lineCount;
-
-	while ( $currentLine >= 0 ) {
-		if ( ( my $parentLine = $self->GetFoldParent($currentLine) ) > 0 ) {
-			if ( $self->GetFoldExpanded($parentLine) ) {
+		while ( $currentLine >= 0 ) {
+			if ( ( my $parentLine = $self->GetFoldParent($currentLine) ) > 0 ) {
 				$self->ToggleFold($parentLine);
-				$currentLine = $parentLine;
+				return;
 			} else {
 				$currentLine--;
 			}
-		} else {
-			$currentLine--;
 		}
-	}
 
-	return;
-}
+		return;
+	} if Padre::Feature::FOLDING;
 
-sub unfold_all {
-	my ($self) = @_;
+	*fold_all = sub {
+		my $self        = shift;
+		my $lineCount   = $self->GetLineCount;
+		my $currentLine = $lineCount;
 
-	my $lineCount   = $self->GetLineCount;
-	my $currentLine = 0;
-
-	while ( $currentLine <= $lineCount ) {
-		if ( !$self->GetFoldExpanded($currentLine) ) {
-			$self->ToggleFold($currentLine);
+		while ( $currentLine >= 0 ) {
+			if ( ( my $parentLine = $self->GetFoldParent($currentLine) ) > 0 ) {
+				if ( $self->GetFoldExpanded($parentLine) ) {
+					$self->ToggleFold($parentLine);
+					$currentLine = $parentLine;
+				} else {
+					$currentLine--;
+				}
+			} else {
+				$currentLine--;
+			}
 		}
-		$currentLine++;
-	}
 
-	return;
+		return;
+	} if Padre::Feature::FOLDING;
+
+	*unfold_all = sub {
+		my $self        = shift;
+		my $lineCount   = $self->GetLineCount;
+		my $currentLine = 0;
+
+		while ( $currentLine <= $lineCount ) {
+			if ( !$self->GetFoldExpanded($currentLine) ) {
+				$self->ToggleFold($currentLine);
+			}
+			$currentLine++;
+		}
+
+		return;
+	} if Padre::Feature::FOLDING;
 }
 
 # When the focus is received by the editor
@@ -1257,7 +1223,7 @@ sub on_mousewheel {
 		return;
 	}
 
-	if ( $self->config->feature_fontsize ) {
+	if ( Padre::Feature::FONTSIZE ) {
 
 		# The default handler zooms in the wrong direction
 		$self->SetZoom( $self->GetZoom + int( $event->GetWheelRotation / $event->GetWheelDelta ) );
@@ -1270,44 +1236,36 @@ sub on_mousewheel {
 	return;
 }
 
-sub text_select_all {
-	my ( $main, $event ) = @_;
-
-	my $id = $main->notebook->GetSelection;
-	return if $id == -1;
-	$main->notebook->GetPage($id)->SelectAll;
-	return;
-}
-
 sub text_selection_mark_start {
-	my ($self) = @_;
-
-	# find positions
+	my $self = shift;
 	$self->{selection_mark_start} = $self->GetCurrentPos;
 
-	# change selection if start and end are defined
-	$self->SetSelection(
-		$self->{selection_mark_start},
-		$self->{selection_mark_end}
-	) if defined $self->{selection_mark_end};
+	# Change selection if start and end are defined
+	if ( defined $self->{selection_mark_end} ) {
+		$self->SetSelection(
+			$self->{selection_mark_start},
+			$self->{selection_mark_end}
+		);
+	}
 }
 
 sub text_selection_mark_end {
-	my ($self) = @_;
-
+	my $self = shift;
 	$self->{selection_mark_end} = $self->GetCurrentPos;
 
-	# change selection if start and end are defined
-	$self->SetSelection(
-		$self->{selection_mark_start},
-		$self->{selection_mark_end}
-	) if defined $self->{selection_mark_start};
+	# Change selection if start and end are defined
+	if ( defined $self->{selection_mark_start} ) {
+		$self->SetSelection(
+			$self->{selection_mark_start},
+			$self->{selection_mark_end}
+		);
+	}
 }
 
-sub text_selection_clear_marks {
-	my $editor = $_[0]->current->editor;
-	undef $editor->{selection_mark_start};
-	undef $editor->{selection_mark_end};
+sub text_selection_clear {
+	my $editor = shift;
+	$editor->{selection_mark_start} = undef;
+	$editor->{selection_mark_end}   = undef;
 }
 
 #
@@ -1485,9 +1443,9 @@ sub get_text_from_clipboard {
 sub comment_toggle_lines {
 	my ( $self, $begin, $end, $str ) = @_;
 
-	my $comment_start = ref $str eq 'ARRAY' ? $str->[0] : $str;
+	my $comment = ref $str eq 'ARRAY' ? $str->[0] : $str;
 
-	if ( _get_line_by_number( $self, $begin ) =~ /^\s*\Q$comment_start\E/ ) {
+	if ( $self->GetLine($begin) =~ /^\s*\Q$comment\E/ ) {
 		uncomment_lines(@_);
 	} else {
 		comment_lines(@_);
@@ -1514,19 +1472,16 @@ sub comment_lines {
 		$self->InsertText( $pos, $str->[1] );
 	} else {
 		foreach my $line ( $begin .. $end ) {
-			my $text = _get_line_by_number( $self, $line );
-
-			# next if (length($text) == 0);  # should i do this?
-
+			my $text = $self->GetLine($line);
 			if ( $text =~ /^(\s*)/ ) {
 				my $pos = $self->PositionFromLine($line);
 				$pos += length($1);
 				$self->InsertText( $pos, $str . ' ' );
 			}
 		}
-
 	}
 	$self->EndUndoAction;
+
 	return;
 }
 
@@ -1557,7 +1512,7 @@ sub uncomment_lines {
 		}
 	} else {
 		foreach my $line ( $begin .. $end ) {
-			my $text = _get_line_by_number( $self, $line );
+			my $text = $self->GetLine($line);
 
 			# the first line starting with '#!' can't be uncommented!
 			next if ( $line == 0 && $text =~ /^#!/ );
@@ -1576,13 +1531,12 @@ sub uncomment_lines {
 }
 
 sub fold_pod {
-	my ($self) = @_;
-
+	my $self        = shift;
 	my $currentLine = 0;
 	my $lastLine    = $self->GetLineCount;
 
 	while ( $currentLine <= $lastLine ) {
-		if ( $self->_get_line_by_number($currentLine) =~ /^=(pod|head)/ ) {
+		if ( $self->GetLine($currentLine) =~ /^=(pod|head)/ ) {
 			if ( $self->GetFoldExpanded($currentLine) ) {
 				$self->ToggleFold($currentLine);
 				my $foldLevel = $self->GetFoldLevel($currentLine);
@@ -1598,15 +1552,15 @@ sub fold_pod {
 }
 
 sub configure_editor {
-	my $self = shift;
+	my $self     = shift;
 	my $document = shift or return;
-
-	my $eol = $WXEOL{ $document->newline_type };
+	my $eol      = $WXEOL{ $document->newline_type };
 	$self->SetEOLMode($eol) if defined $eol;
 
 	if ( defined $document->{original_content} ) {
 		$self->SetText( $document->{original_content} );
 	}
+
 	$self->EmptyUndoBuffer;
 
 	return;
@@ -1615,15 +1569,14 @@ sub configure_editor {
 sub goto_line_centerize {
 	my $self = shift;
 	my $line = shift;
-
 	$self->goto_pos_centerize( $self->GetLineIndentPosition($line) );
 }
 
 # borrowed from Kephra
 sub goto_pos_centerize {
-	my ( $self, $pos ) = @_;
-
-	my $max = $self->GetLength;
+	my $self = shift;
+	my $pos  = shift;
+	my $max  = $self->GetLength;
 	$pos = 0 unless $pos or $pos < 0;
 	$pos = $max if $pos > $max;
 
@@ -1631,7 +1584,7 @@ sub goto_pos_centerize {
 	$self->SearchAnchor;
 
 	my $line = $self->GetCurrentLine;
-	$self->ScrollToLine( $line - ( $self->LinesOnScreen / 2 ) );
+	$self->ScrollToLine( $line - $self->LinesOnScreen / 2 );
 	$self->EnsureVisible($line);
 	$self->EnsureCaretVisible;
 	$self->SetSelection( $pos, $pos );
@@ -1639,36 +1592,25 @@ sub goto_pos_centerize {
 }
 
 sub insert_text {
-	my ( $self, $text ) = @_;
-
-	my $data = Wx::TextDataObject->new;
-	$data->SetText($text);
-	my $length = $data->GetTextLength;
-
+	my $self = shift;
+	my $text = shift;
+	my $size = Wx::TextDataObject->new($text)->GetTextLength;
+	my $pos  = $self->GetCurrentPos;
 	$self->ReplaceSelection('');
-	my $pos = $self->GetCurrentPos;
 	$self->InsertText( $pos, $text );
-	$self->GotoPos( $pos + $length - 1 );
-
-	return;
+	$self->GotoPos( $pos + $size + 1 );
+	return 1;
 }
 
 sub insert_from_file {
-	my ( $self, $file ) = @_;
-
-	my $text;
-	if ( open( my $fh, '<', $file ) ) {
-		binmode($fh);
-		local $/ = undef;
-		$text = <$fh>;
-		close $fh;
-	} else {
-		return;
-	}
-
+	my $self = shift;
+	my $file = shift;
+	open( my $fh, '<', $file ) or return;
+	binmode($fh);
+	local $/ = undef;
+	my $text = <$fh>;
+	close $fh;
 	$self->insert_text($text);
-
-	return $file;
 }
 
 sub vertically_align {
@@ -1752,37 +1694,39 @@ sub needs_manual_colorize {
 ######################################################################
 # Cursor Memory
 
-#
-# $doc->store_cursor_position()
-#
-# store document's current cursor position in padre's db.
-# no params, no return value.
-#
-sub store_cursor_position {
-	my $self     = shift;
-	my $document = $self->{Document} or return;
-	my $file     = $document->{file} or return;
-	Padre::DB::LastPositionInFile->set_last_pos(
-		$file->filename,
-		$self->GetCurrentPos,
-	);
-}
+BEGIN {
+	#
+	# $doc->store_cursor_position()
+	#
+	# store document's current cursor position in padre's db.
+	# no params, no return value.
+	#
+	*store_cursor_position = sub {
+		my $self     = shift;
+		my $document = $self->{Document} or return;
+		my $file     = $document->{file} or return;
+		Padre::DB::LastPositionInFile->set_last_pos(
+			$file->filename,
+			$self->GetCurrentPos,
+		);
+	} if Padre::Feature::CURSORMEMORY;
 
-#
-# $doc->restore_cursor_position()
-#
-# restore document's cursor position from padre's db.
-# no params, no return value.
-#
-sub restore_cursor_position {
-	my $self     = shift;
-	my $document = $self->{Document} or return;
-	my $file     = $document->{file} or return;
-	my $filename = $file->filename;
-	my $position = Padre::DB::LastPositionInFile->get_last_pos($filename);
-	return unless defined $position;
-	$self->SetCurrentPos($position);
-	$self->SetSelection( $position, $position );
+	#
+	# $doc->restore_cursor_position()
+	#
+	# restore document's cursor position from padre's db.
+	# no params, no return value.
+	#
+	*restore_cursor_position = sub {
+		my $self     = shift;
+		my $document = $self->{Document} or return;
+		my $file     = $document->{file} or return;
+		my $filename = $file->filename;
+		my $position = Padre::DB::LastPositionInFile->get_last_pos($filename);
+		return unless defined $position;
+		$self->SetCurrentPos($position);
+		$self->SetSelection( $position, $position );
+	} if Padre::Feature::CURSORMEMORY;
 }
 
 1;
