@@ -52,7 +52,8 @@ sub set_tab_icon {
     TRACE( ' setting icon to ' . $self->icon_path ) if DEBUG;
 
     my $main = Padre->ide->wx->main;
-    my $id   = $main->find_id_of_editor( $self->editor );
+    #my $id   = $main->find_id_of_editor( $self->editor );
+    my $id = $self->editor->GetId;
     my $icon = Wx::Bitmap->new( $self->icon_path, Wx::wxBITMAP_TYPE_PNG );
     $main->notebook->SetPageBitmap( $id, $icon );
 

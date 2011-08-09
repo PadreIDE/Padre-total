@@ -4,11 +4,14 @@ package Padre::Plugin::Plack;
 
 use warnings;
 use strict;
-use base 'Padre::Plugin';
+
 use utf8;
 
 use Padre::Util ('_T');
 use Padre::Logger;
+
+our $VERSION = "0.01";
+our @ISA     = 'Padre::Plugin';
 
 =method padre_interfaces
 
@@ -18,9 +21,13 @@ Declare the Padre interfaces this plugin uses
 
 sub padre_interfaces {
     'Padre::Plugin'     => 0.43,
-      'Padre::Document' => 0.57;
+      'Padre::Document' => 0.82;
 }
 
+
+sub plugin_name {
+    'Plack';
+}
 =method registered_documents
 
 Declare ourselves as the handler for .psgi files
