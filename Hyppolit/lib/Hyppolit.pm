@@ -144,6 +144,8 @@ sub irc_public {
 
 	my $text = $_[ARG2];
 
+	# Example: 
+	# Hyppolit: trust nickname
 	#print "Nick $nick on channel @$channel said the following: '$text'\n";
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* trust  \s+  (.*)/x ) {
 
@@ -162,11 +164,16 @@ sub irc_public {
 		}
 	}
 
+	# Example:
+        # Hyppolit: word is also text
 	if ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ also \s+ (.*)/x ) {
 		my $word = $1;
 		$config->{is}{$word} .= " and also $2";
 		save_config();
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
+
+	# Example:
+	# Hyppolit: word is text
 	} elsif ( $text =~ /^\s*  $config->{nick} \s* [,:]? \s* (\S+)  \s+ is \s+ (.*)/x ) {
 		my $word = $1;
 		my $was = $config->{is}{$word} || 'unknown';
@@ -174,15 +181,21 @@ sub irc_public {
 		save_config();
 		$irc->yield( privmsg => $channel, "$word was $was" );
 		$irc->yield( privmsg => $channel, "$word is now $config->{is}{$word}" );
+
+	# word?
 	} elsif ( $text =~ /^\s*  (\S+)\?  \s*$/x ) {
-		if ( $1 eq $config->{nick} ) {
+		my $word = $1;
+		if ( $word eq $config->{nick} ) {
 			$irc->yield( privmsg => $channel, "$config->{nick} is a bot currently running version $VERSION" );
 			$irc->yield( privmsg => $channel, "My master is szabgab." );
-		} elsif ( $config->{is}{$1} ) {
-			$irc->yield( privmsg => $channel, "$1 is $config->{is}{$1}" );
+		} elsif ( $word eq 'uptime' ) {
+			chomp ( my $uptime = qx{uptime} );
+			$irc->yield( privmsg => $channel, $uptime );
+		} elsif ( $config->{is}{$word} ) {
+			$irc->yield( privmsg => $channel, "$word is $config->{is}{$word}" );
 		} else {
 
-			#$irc->yield(privmsg => $channel, "I don't know what $1 is");
+			#$irc->yield(privmsg => $channel, "I don't know what $word is");
 		}
 	} elsif ( $text =~ /^\s*op\s*me\s*$/ ) {
 		if ( $config->{trusted}{$nick} ) {
@@ -456,6 +469,11 @@ sub trac_check {
 	save_config;
 	$_[KERNEL]->delay( trac_check => 30 );
 	return;
+}
+
+sub enable_registration {
+	# /var/trac/padre/conf/trac.ini
+	# acct_mgr.web_ui.registrationmodule = enabled
 }
 
 1;
