@@ -1,5 +1,7 @@
 Revision history for Wx-Scintilla
 
+0.21_05  TBA
+
 0.21_04  2011.8.9
     - The rebirth of the experimental Perl 6 lexer (AZAWAWI)
     - Expose IndicatorSetAlpha, IndicatorGetAlpha, IndicatorSetUnder
