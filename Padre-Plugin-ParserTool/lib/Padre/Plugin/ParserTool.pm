@@ -24,7 +24,8 @@ and parsers for custom file formats of your own.
 use 5.008005;
 use strict;
 use warnings;
-use Padre::Plugin ();
+use Params::Util  1.00 ();
+use Padre::Plugin 0.89 ();
 
 our $VERSION = '0.01';
 our @ISA     = 'Padre::Plugin';
@@ -37,13 +38,13 @@ our @ISA     = 'Padre::Plugin';
 # Configuration Methods
 
 sub plugin_name {
-	'Parser Tool';
+	Wx::gettext('Parser Tool');
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => '0.81',
-	'Padre::Document' => '0.81',
-	'Padre::Wx'       => '0.81',
+	'Padre::Plugin'           => '0.89',
+	'Padre::Wx'               => '0.89',
+	'Padre::Wx::Role::Dialog' => '0.89',
 }
 
 sub menu_plugins {
@@ -105,6 +106,7 @@ sub menu_dialog {
 	unless ( $self->{dialog} ) {
 		$self->{dialog} = Padre::Plugin::ParserTool::Dialog->new($main);
 	}
+	$self->{dialog}->refresh;
 	$self->{dialog}->ShowModal;
 
 	return;

@@ -4,13 +4,15 @@ use 5.008;
 use strict;
 use warnings;
 use Params::Util                   ();
-use Padre::Wx::Role::Dialog        ();
 use Padre::Plugin::ParserTool::FBP ();
 
 our $VERSION = '0.01';
-our @ISA     = qw{
-	Padre::Wx::Role::Dialog
-	Padre::Plugin::ParserTool::FBP
+our @ISA     = 'Padre::Plugin::ParserTool::FBP';
+
+use constant {
+	WHITE => Wx::Colour->new('#FFFFFF'),
+	GREEN => Wx::Colour->new('#CCFFCC'),
+	RED   => Wx::Colour->new('#FFCCCC'),
 };
 
 
@@ -23,55 +25,99 @@ our @ISA     = qw{
 sub refresh {
 	my $self = shift;
 
+	# Reset all dialog colours
+	$self->module->SetBackgroundColour(WHITE);
+	$self->function->SetBackgroundColour(WHITE);
+	$self->dumper->SetBackgroundColour(WHITE);
+	$self->output->SetBackgroundColour(WHITE);
+
 	# Check the module
-	my $module = $self->{module}->GetValue;
+	my $module = $self->module->GetValue;
 	unless ( Params::Util::_CLASS($module) ) {
-		return $self->error("Missing or invalid module '$module'");
+		$self->module->SetBackgroundColour(RED);
+		return $self->fail("Missing or invalid module '$module'");
 	}
 
 	# Load the module
 	SCOPE: {
 		local $@;
 		eval "require $module";
-		return $self->error("Failed to load '$module': $@") if $@;
+		if ( $@ ) {
+			$self->module->SetBackgroundColour(RED);
+			return $self->fail("Failed to load '$module': $@");
+		}
+		$self->module->SetBackgroundColour(GREEN);
 	}
 
 	# Call the code
 	local $@;
-	my $code = $self->{function}->GetValue;
+	my $code = $self->function->GetValue;
 	my $rv   = do {
-		local $_ = $self->{input}->GetValue;
+		local $_ = $self->input->GetValue;
 		eval $code;
 	};
-	return $self->error("Failed to execute '$code': $@") if $@;
+	if ( $@ ) {
+		$self->function->SetBackgroundColour(RED);
+		return $self->fail("Failed to execute '$code': $@");
+	}
+	$self->function->SetBackgroundColour(GREEN);
 
 	# Serialize the output
+	local $@;
 	my $dumper = $self->{dumper}->GetStringSelection;
+	my $output = '';
+	my $error  = '';
 	if ( $dumper eq 'Stringify' ) {
-		my $output = defined $rv ? "$rv" : 'undef';
-		$self->{output}->SetValue($output);
+		$output = eval {
+			defined $rv ? "$rv" : 'undef';
+		};
+		$error = "Exception during stringification: $@" if $@;
 
 	}elsif ( $dumper eq 'Data::Dumper' ) {
-		require Data::Dumper;
-		my $output = Data::Dumper::Dumper($rv);
-		$self->{output}->SetValue($output);
+		eval {
+			require Data::Dumper;
+			$output = Data::Dumper::Dumper($rv);
+		};
+		$error = "Exception during Data::Dumper: $@" if $@;
 
 	} elsif ( $dumper eq 'Devel::Dumpvar' ) {
-		require Devel::Dumpvar;
-		my $output = Devel::Dumpvar->new( to => 'return' )->dump($rv);
-		$self->{output}->SetValue($output);
+		eval {
+			require Devel::Dumpvar;
+			$output = Devel::Dumpvar->new(
+				to => 'return',
+			)->dump($rv);
+		};
+		$error = "Exception during Devel::Dumpvar: $@" if $@;
 
 	} elsif ( $dumper eq 'PPI::Dumper' ) {
-		unless ( Params::Util::_INSTANCE($rv, 'PPI::Element') ) {
-			return $self->error("Not a PPI::Element object");
-		}
-		require PPI::Dumper;
-		my $output = PPI::Dumper->new($rv)->string;
-		$self->{output}->SetValue($output);
+		eval {
+			unless ( Params::Util::_INSTANCE($rv, 'PPI::Element') ) {
+				die "Not a PPI::Element object";
+			}
+			require PPI::Dumper;
+			$output = PPI::Dumper->new($rv)->string;
+		};
+		$error = "Exception during PPI::Dumper: $@" if $@;
 
 	} else {
-		$self->error("Unknown or unsupported dumper '$dumper'");
+		$error = "Unknown or unsupported dumper '$dumper'";
 	}
+	if ( $error ) {
+		$self->dumper->SetBackgroundColour(RED);
+		return $self->fail($error);
+	}
+
+	# Print the output
+	$self->dumper->SetBackgroundColour(GREEN);
+	$self->output->SetValue($output);
+
+	return 1;
+}
+
+sub fail {
+	my $self = shift;
+	$self->output->SetBackgroundColour(RED);
+	$self->output->SetValue(shift);
 }
 
 1;
