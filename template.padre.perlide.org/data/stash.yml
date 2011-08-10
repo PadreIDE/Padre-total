@@ -26,6 +26,10 @@ about:
   - title: y2011
     events:
       - date: 2011 August 10
+        url: http://www.pal-blog.de/sprachen/english/2011/hunting-a-padre-bug.html
+        title: Hunting a Padre bug
+        comment:  by Sebastian Willing
+      - date: 2011 August 10
         url: http://blogs.perl.org/users/adam_kennedy/2011/08/padre-088---internals-refactoring-completed.html
         title: Padre 0.88 - Internals refactoring completed!
         comment:  by Adam Kennedy
