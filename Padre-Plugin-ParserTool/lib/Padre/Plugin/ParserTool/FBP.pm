@@ -31,18 +31,28 @@ sub new {
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
 	);
 
-	$self->{m_staticText5} = Wx::StaticText->new(
+	$self->{m_staticText1} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Intro blurb and instructions..."),
+		Wx::gettext("Input Text"),
 	);
 
-	$self->{m_staticline1} = Wx::StaticLine->new(
+	$self->{input} = Wx::TextCtrl->new(
 		$self,
 		-1,
+		"",
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
+		[ 200, 100 ],
+		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE,
+	);
+	$self->{input}->SetMinSize( [ 200, 100 ] );
+
+	Wx::Event::EVT_TEXT(
+		$self,
+		$self->{input},
+		sub {
+			shift->refresh(@_);
+		},
 	);
 
 	$self->{m_staticText3} = Wx::StaticText->new(
@@ -90,8 +100,10 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		[
+			"Stringify",
 			"Devel::Dumpvar",
 			"Data::Dumper",
+			"PPI::Dumper",
 		],
 	);
 	$self->{dumper}->SetSelection(0);
@@ -104,73 +116,14 @@ sub new {
 		},
 	);
 
-	$self->{m_staticline2} = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
-
-	$self->{m_splitter2} = Wx::SplitterWindow->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxSP_LIVE_UPDATE | Wx::wxSP_NOBORDER,
-	);
-	$self->{m_splitter2}->SetSashGravity(0);
-	$self->{m_splitter2}->SetSashSize(1);
-	$self->{m_splitter2}->SetMinimumPaneSize(100);
-
-	$self->{m_panel1} = Wx::Panel->new(
-		$self->{m_splitter2},
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTAB_TRAVERSAL,
-	);
-
-	$self->{m_staticText1} = Wx::StaticText->new(
-		$self->{m_panel1},
-		-1,
-		Wx::gettext("Input Text"),
-	);
-
-	$self->{input} = Wx::TextCtrl->new(
-		$self->{m_panel1},
-		-1,
-		"",
-		Wx::wxDefaultPosition,
-		[ 400, 100 ],
-		Wx::wxTE_DONTWRAP | Wx::wxTE_MULTILINE,
-	);
-	$self->{input}->SetMinSize( [ 400, 100 ] );
-
-	Wx::Event::EVT_TEXT(
-		$self,
-		$self->{input},
-		sub {
-			shift->refresh(@_);
-		},
-	);
-
-	$self->{m_panel2} = Wx::Panel->new(
-		$self->{m_splitter2},
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxTAB_TRAVERSAL,
-	);
-
 	$self->{m_staticText2} = Wx::StaticText->new(
-		$self->{m_panel2},
+		$self,
 		-1,
 		Wx::gettext("Output Structure"),
 	);
 
 	$self->{output} = Wx::TextCtrl->new(
-		$self->{m_panel2},
+		$self,
 		-1,
 		"",
 		Wx::wxDefaultPosition,
@@ -182,42 +135,26 @@ sub new {
 		Wx::Colour->new( 240, 240, 240 )
 	);
 
-	my $fgSizer2 = Wx::FlexGridSizer->new( 2, 2, 0, 10 );
-	$fgSizer2->AddGrowableCol(1);
-	$fgSizer2->SetFlexibleDirection(Wx::wxBOTH);
-	$fgSizer2->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
-	$fgSizer2->Add( $self->{m_staticText3}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{module}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$fgSizer2->Add( $self->{m_staticText4}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{function}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$fgSizer2->Add( $self->{m_staticText6}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
-	$fgSizer2->Add( $self->{dumper}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	my $bSizer6 = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	$bSizer6->Add( $self->{m_staticText1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer6->Add( $self->{input}, 1, Wx::wxEXPAND, 0 );
 
-	my $bSizer4 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer4->Add( $self->{m_staticText1}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer4->Add( $self->{input}, 1, Wx::wxEXPAND, 0 );
+	my $bSizer7 = Wx::BoxSizer->new(Wx::wxVERTICAL);
+	$bSizer7->Add( $self->{m_staticText3}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
+	$bSizer7->Add( $self->{module}, 0, Wx::wxEXPAND | Wx::wxLEFT, 5 );
+	$bSizer7->Add( $self->{m_staticText4}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
+	$bSizer7->Add( $self->{function}, 0, Wx::wxEXPAND | Wx::wxLEFT, 3 );
+	$bSizer7->Add( $self->{m_staticText6}, 0, Wx::wxALIGN_CENTER_VERTICAL | Wx::wxALIGN_LEFT | Wx::wxALL, 5 );
+	$bSizer7->Add( $self->{dumper}, 0, Wx::wxEXPAND | Wx::wxLEFT, 3 );
 
-	$self->{m_panel1}->SetSizerAndFit($bSizer4);
-	$self->{m_panel1}->Layout;
-
-	my $bSizer5 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer5->Add( $self->{m_staticText2}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
-	$bSizer5->Add( $self->{output}, 1, Wx::wxEXPAND, 0 );
-
-	$self->{m_panel2}->SetSizerAndFit($bSizer5);
-	$self->{m_panel2}->Layout;
-
-	$self->{m_splitter2}->SplitHorizontally(
-		$self->{m_panel1},
-		$self->{m_panel2},
-	);
+	my $bSizer51 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer51->Add( $bSizer6, 1, Wx::wxEXPAND, 5 );
+	$bSizer51->Add( $bSizer7, 1, Wx::wxEXPAND, 5 );
 
 	my $bSizer2 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer2->Add( $self->{m_staticText5}, 0, Wx::wxALL, 5 );
-	$bSizer2->Add( $self->{m_staticline1}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
-	$bSizer2->Add( $fgSizer2, 0, Wx::wxEXPAND, 5 );
-	$bSizer2->Add( $self->{m_staticline2}, 0, Wx::wxBOTTOM | Wx::wxEXPAND | Wx::wxTOP, 5 );
-	$bSizer2->Add( $self->{m_splitter2}, 1, Wx::wxEXPAND, 5 );
+	$bSizer2->Add( $bSizer51, 0, Wx::wxEXPAND, 5 );
+	$bSizer2->Add( $self->{m_staticText2}, 0, Wx::wxALL | Wx::wxEXPAND, 5 );
+	$bSizer2->Add( $self->{output}, 1, Wx::wxEXPAND, 0 );
 
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer1->Add( $bSizer2, 1, Wx::wxALL | Wx::wxEXPAND, 5 );
@@ -229,7 +166,7 @@ sub new {
 }
 
 sub refresh {
-	$_[0]->main->error('Handler method refresh for event dumper.OnChoice not implemented');
+	$_[0]->main->error('Handler method refresh for event input.OnText not implemented');
 }
 
 1;

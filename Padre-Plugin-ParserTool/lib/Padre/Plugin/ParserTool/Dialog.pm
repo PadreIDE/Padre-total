@@ -47,7 +47,11 @@ sub refresh {
 
 	# Serialize the output
 	my $dumper = $self->{dumper}->GetStringSelection;
-	if ( $dumper eq 'Data::Dumper' ) {
+	if ( $dumper eq 'Stringify' ) {
+		my $output = defined $rv ? "$rv" : 'undef';
+		$self->{output}->SetValue($output);
+
+	}elsif ( $dumper eq 'Data::Dumper' ) {
 		require Data::Dumper;
 		my $output = Data::Dumper::Dumper($rv);
 		$self->{output}->SetValue($output);
@@ -55,6 +59,14 @@ sub refresh {
 	} elsif ( $dumper eq 'Devel::Dumpvar' ) {
 		require Devel::Dumpvar;
 		my $output = Devel::Dumpvar->new( to => 'return' )->dump($rv);
+		$self->{output}->SetValue($output);
+
+	} elsif ( $dumper eq 'PPI::Dumper' ) {
+		unless ( Params::Util::_INSTANCE($rv, 'PPI::Element') ) {
+			return $self->error("Not a PPI::Element object");
+		}
+		require PPI::Dumper;
+		my $output = PPI::Dumper->new($rv)->string;
 		$self->{output}->SetValue($output);
 
 	} else {
