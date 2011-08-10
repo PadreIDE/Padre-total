@@ -504,7 +504,7 @@ sub enable_registration {
 		$irc->yield( privmsg => $trac_channel, $error );
 		return;
 	}
-	$irc->yield( privmsg => $trac_channel, 'Trac registration opened for $trac_timeout minutes. Please visit http://padre.perlide.org/trac/register to register' );
+	$irc->yield( privmsg => $trac_channel, "Trac registration opened for $trac_timeout minutes. Please visit http://padre.perlide.org/trac/register to register" );
 	return 1;
 }
 sub trac {
