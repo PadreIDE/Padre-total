@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 August 10
+        url: http://blogs.perl.org/users/adam_kennedy/2011/08/padre-088---internals-refactoring-completed.html
+        title: Padre 0.88 - Internals refactoring completed!
+        comment:  by Adam Kennedy
       - date: 2011 July 28
         url: http://wildperl.com/2011/07/padre-on-osx-dmg-now-on-leopard-snow-leopard-and-lion/
         title: Padre on OSX DMG – Now on Leopard, Snow Leopard, and Lion
