@@ -73,6 +73,13 @@ sub menu_plugins {
 sub plugin_disable {
 	my $self = shift;
 
+	# Clean up the dialog if it is still open
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
 	# Unload any child modules we loaded
 	$self->unload( qw{
 		Padre::Plugin::ParserTool::Dialog
@@ -95,7 +102,10 @@ sub menu_dialog {
 
 	# Spawn the dialog
 	require Padre::Plugin::ParserTool::Dialog;
-	Padre::Plugin::ParserTool::Dialog->new($main)->ShowModal;
+	unless ( $self->{dialog} ) {
+		$self->{dialog} = Padre::Plugin::ParserTool::Dialog->new($main);
+	}
+	$self->{dialog}->ShowModal;
 
 	return;
 }
