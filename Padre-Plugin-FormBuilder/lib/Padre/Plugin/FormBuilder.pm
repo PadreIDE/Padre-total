@@ -60,11 +60,8 @@ sub plugin_name {
 sub plugin_disable {
 	my $self = shift;
 
-	# Close the formbuilder dialog if it is hanging around
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	# Remove the dialog
+	$self->clean_dialog;
 
 	# Unload all our child classes
 	$self->unload('Padre::Plugin::FormBuilder::Dialog');
@@ -99,6 +96,19 @@ sub menu_plugins {
 	return $item;
 }
 
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the formbuilder dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->clear_preview;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
+
 
 
 
@@ -111,10 +121,7 @@ sub menu_dialog {
 	my $main = $self->main;
 
 	# Clean up any previous existing dialog
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	$self->clean_dialog;
 
 	# Create the new dialog
 	require Padre::Plugin::FormBuilder::Dialog;

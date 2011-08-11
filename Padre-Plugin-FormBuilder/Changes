@@ -1,6 +1,9 @@
 Changes for Perl extension Padre-Plugin-FormBuilder
 
-0.03 to be released
+0.04 to be released
+	- Added support for previewing frames without crashing
+
+0.03 Tue 2 Aug 2011
 	- Rearranged the codegen options to allow more detailed descriptions
 	- Added specific control of internationalisation in generated code
 	- Added support for the FPB::Perl i18n_trim option, labelled as

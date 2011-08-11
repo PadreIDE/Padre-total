@@ -197,6 +197,9 @@ sub preview_clicked {
 		return;
 	}
 
+	# Close any previous frame
+	$self->clear_preview;
+
 	# Generate the dialog code
 	my $name = "Padre::Plugin::FormBuilder::Temp::Dialog" . ++$COUNT;
 	SCOPE: {
@@ -240,21 +243,25 @@ sub preview_clicked {
 		return;
 	}
 
-	# Show the dialog
-	my $rv = eval {
-		$preview->ShowModal;
-	};
-	$preview->Destroy;
-	if ( $@ ) {
-		$self->error("Dialog crashed while in use: $@");
+	# Handle the ones we can show modally
+	if ( $preview->can('ShowModal') ) {
+		# Show the dialog
+		my $rv = eval {
+			$preview->ShowModal;
+		};
+		$preview->Destroy;
+		if ( $@ ) {
+			$self->error("Dialog crashed while in use: $@");
+		}
 		$self->unload($name);
 		return;
 	}
 
-	# Clean up
-	$self->unload($name);
+	# Show the long way
+	$preview->Show;
+	$self->{frame} = $preview->GetId;
 
-	return;
+	return 1;
 }
 
 
@@ -309,6 +316,15 @@ sub generate_form {
 	}
 
 	return $string;
+}
+
+sub clear_preview {
+	my $self = shift;
+	if ( $self->{frame} ) {
+		my $old = Wx::Window::FindWindowById( delete $self->{frame} );
+		$old->Destroy if $old;
+	}
+	return 1;
 }
 
 # NOTE: Not in use yet, intended for arbitrary class entry later
