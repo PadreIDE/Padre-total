@@ -23,22 +23,26 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use base 'Padre::Plugin';
 
-our $VERSION = 0.17;
-
+our $VERSION = 0.19;
+use File::Spec::Functions;
+use FindBin qw($Bin);
+use Perl::Tidy;
 
 # This constant is used when storing
 # and restoring the cursor position.
 # Keep it small to limit resource use.
-use constant {
-	SELECTIONSIZE => 40,
-};
+use constant { SELECTIONSIZE => 40, };
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.43', 'Padre::Config' => '0.54';
+	return (
+		'Padre::Plugin'   => '0.43',
+		'Padre::Config'   => '0.54',
+		'Padre::Wx::Main' => '0.86',
+	);
 }
 
 sub plugin_name {
-	Wx::gettext('Perl Tidy');
+	return Wx::gettext('Perl Tidy');
 }
 
 sub menu_plugins_simple {
@@ -52,11 +56,12 @@ sub menu_plugins_simple {
 			\&export_document,
 		Wx::gettext('Export selected text to HTML file') =>
 			\&export_selection,
-		'---' => undef,
-		Wx::gettext('Configure tidy') =>
-			\&configure_tidy,
+		'---'                         => undef,
+		Wx::gettext('Configure tidy') => \&configure_tidy,
 	];
 }
+
+my $over_ride;
 
 sub _tidy {
 	my $main       = shift;
@@ -82,10 +87,21 @@ sub _tidy {
 		destination => \$destination,
 		errorfile   => \$errorfile,
 	);
+	if ($over_ride) {
+		$tidyargs{'perltidyrc'} = $perltidyrc;
+	}
 
-	#Make sure output is visible...
-	$main->show_output(1);
-	my $output = $main->output;
+	my $output;
+	if ( $main->config->info_on_statusbar ) {
+
+		# print "info_on_statusbar: " . $main->config->info_on_statusbar . "\n";
+		$main->info( Wx::gettext("Running Tidy, don't forget to save changes.") );
+	} else {
+
+		#Make sure output is visible...
+		$main->show_output(1);
+		$output = $main->output;
+	}
 
 	#	CLAUDIO: This code breaks the plugin, temporary disabled.
 	#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
@@ -101,7 +117,7 @@ sub _tidy {
 	#	}
 
 	# TODO: suppress the senseless warning from PerlTidy
-	require Perl::Tidy;
+	# require Perl::Tidy;
 	eval { Perl::Tidy::perltidy(%tidyargs); };
 
 	if ($@) {
@@ -110,7 +126,12 @@ sub _tidy {
 	}
 
 	if ( defined $errorfile ) {
-		my $filename = $document->filename ? $document->filename : $document->get_title;
+		$main->show_output(1);
+		$output = $main->output;
+		my $filename =
+			  $document->filename
+			? $document->filename
+			: $document->get_title;
 		my $width = length($filename) + 2;
 		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
 		$output->AppendText("$errorfile\n");
@@ -126,7 +147,9 @@ sub tidy_selection {
 	# Tidy the current selected text
 	my $current = $main->current;
 	my $text    = $current->text;
-	my $tidy    = _tidy( $main, $current, $text, $perltidyrc );
+	$over_ride = 0;
+	$perltidyrc = _which_tidyrc( $main, $perltidyrc );
+	my $tidy = _tidy( $main, $current, $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}
@@ -155,7 +178,9 @@ sub tidy_document {
 	my $current  = $main->current;
 	my $document = $current->document;
 	my $text     = $document->text_get;
-	my $tidy     = _tidy( $main, $current, $text, $perltidyrc );
+	$over_ride = 0;
+	$perltidyrc = _which_tidyrc( $main, $perltidyrc );
+	my $tidy = _tidy( $main, $current, $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}
@@ -193,7 +218,11 @@ sub _get_filename {
 		$default_dir = $dialog->GetDirectory;
 		my $path = File::Spec->catfile( $default_dir, $filename );
 		if ( -e $path ) {
-			return $path if $main->yes_no( Wx::gettext("File already exists. Overwrite it?"), Wx::gettext("Exist") );
+			return $path
+				if $main->yes_no(
+				Wx::gettext("File already exists. Overwrite it?"),
+				Wx::gettext("Exist")
+				);
 		} else {
 			return $path;
 		}
@@ -232,7 +261,7 @@ sub _export {
 
 	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
-		$output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
+		$output->AppendText( "Perl\::Tidy running with project-specific configuration $tidyrc\n" );
 	} else {
 		$output->AppendText("Perl::Tidy running with default or user configuration\n");
 	}
@@ -265,7 +294,6 @@ sub export_selection {
 }
 
 sub export_document {
-
 
 	my $main = shift;
 	my $text = $main->current->document->text_get;
@@ -338,6 +366,37 @@ sub plugin_disable {
 	require Class::Unload;
 	Class::Unload->unload('Padre::Plugin::PerlTidy::Dialog');
 	Class::Unload->unload('Perl::Tidy');
+	return;
+}
+
+#######
+# method _which_tidyrc
+# Pick the revelant tidyrc file
+#######
+sub _which_tidyrc {
+	my $main       = shift;
+	my $perltidyrc = shift;
+
+	# perl tidy Padre/tools
+	if ( $ENV{'PADRE_DEV'} ) {
+		eval { $perltidyrc = catfile( $Bin, '../../tools/perltidyrc' ); };
+		if ( -e $perltidyrc ) {
+			$over_ride = 1;
+			return $perltidyrc;
+		} else {
+
+			$main->config->info_on_statusbar(0);
+			$main->info( Wx::gettext("You need to install from SVN Padre/tools.") );
+			print " here we are \n";
+			Wx::MessageBox(
+				Wx::gettext("You need to install from SVN Padre/tools."),
+				Wx::gettext("tools/perltidyrc missing"),
+				Wx::wxCANCEL, # Wx::wxYES_NO, #| Wx::wxCANCEL | Wx::wxCENTRE,
+				$main,
+			);
+			$main->config->info_on_statusbar(1);
+		}
+	}
 	return;
 }
 

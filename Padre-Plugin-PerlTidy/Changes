@@ -1,6 +1,7 @@
 Revision history for Perl extension Padre::Plugin::PerlTidy.
 
 {{$NEXT}}
+    - Use PerlTidy from trunk/tools #1239 (BOWTIE)
 
 0.17  2011.02.14 
     - Bumped the version number to reflect the adaptation to the Plugin API so the Plugin Manager shows the version of the plugin (CLAUDIO)
