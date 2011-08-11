@@ -255,16 +255,16 @@ sub clean_history {
 
 	my @events = $self->config_db->select('ORDER BY name ASC');
 
-	$main->info( Wx::gettext('Cleaning History relation'));
+	$main->info( Wx::gettext('Cleaning History relation') );
 	my $progressbar = _setup_progressbar($self);
 
 	# say $self->cardinality;
 	my $count = 0;
 	for ( 0 .. ( @events - 2 ) ) {
 		if ( $events[$_][1] . $events[$_][2] eq $events[ $_ + 1 ][1] . $events[ $_ + 1 ][2] ) {
-			TRACE( $events[$_][1] .':'. $events[$_][2] )                if DEBUG;
-			TRACE( $events[ $_ + 1 ][1] .':'. $events[ $_ + 1 ][2] )    if DEBUG;
-			TRACE("$count: $_: found duplicate id: $events[$_][0]") if DEBUG;
+			TRACE( $events[$_][1] . ':' . $events[$_][2] )             if DEBUG;
+			TRACE( $events[ $_ + 1 ][1] . ':' . $events[ $_ + 1 ][2] ) if DEBUG;
+			TRACE("$count: $_: found duplicate id: $events[$_][0]")    if DEBUG;
 			eval { $self->config_db->delete("WHERE id = \"$events[$_][0]\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db tuple $events[$_][0] is missing";
@@ -272,7 +272,7 @@ sub clean_history {
 			}
 			$count++;
 		}
-		
+
 		# added check for missing history files
 		if ( $events[$_][1] eq 'files' ) {
 			unless ( -e $events[$_][2] ) {
@@ -291,7 +291,7 @@ sub clean_history {
 		_get_cardinality($self);
 	}
 
-	$main->info( Wx::gettext('Finished Cleaning History'));
+	$main->info( Wx::gettext('Finished Cleaning History') );
 	_display_relation($self);
 
 	return;
@@ -305,7 +305,7 @@ sub clean_session {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info( Wx::gettext('Cleaning Session relation'));
+	$main->info( Wx::gettext('Cleaning Session relation') );
 	for ( 0 .. ( @tuples - 1 ) ) {
 
 		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
@@ -322,7 +322,7 @@ sub clean_session {
 			_get_cardinality($self);
 		}
 	}
-	$main->info( Wx::gettext('Finished Cleaning Session relation'));
+	$main->info( Wx::gettext('Finished Cleaning Session relation') );
 	_display_relation($self);
 	return;
 }
@@ -335,7 +335,7 @@ sub clean_session_files {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info( Wx::gettext('Cleaning Session_Files relation'));
+	$main->info( Wx::gettext('Cleaning Session_Files relation') );
 	my @session_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
@@ -344,7 +344,7 @@ sub clean_session_files {
 	}
 	foreach (@files) {
 		unless ( -e $_ ) {
-			TRACE('Deleating missing file from Session_Files: '.$_) if DEBUG;
+			TRACE( 'Deleating missing file from Session_Files: ' . $_ ) if DEBUG;
 			eval { $self->config_db->delete("WHERE file = \"$_\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
@@ -356,7 +356,7 @@ sub clean_session_files {
 		}
 	}
 
-	$main->info( Wx::gettext('Finished Cleaning Session_Files'));
+	$main->info( Wx::gettext('Finished Cleaning Session_Files') );
 	_display_relation($self);
 	return;
 }
@@ -369,7 +369,7 @@ sub clean_lastpositioninfile {
 	my $self = shift;
 	my $main = $self->main;
 
-	$main->info( Wx::gettext('Cleaning LastPositionInFile relation'));
+	$main->info( Wx::gettext('Cleaning LastPositionInFile relation') );
 	my @lastpositioninfile_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
@@ -378,7 +378,7 @@ sub clean_lastpositioninfile {
 	}
 	foreach (@files) {
 		unless ( -e $_ ) {
-			TRACE('Deleating missing file from LastPositionInFile: '.$_) if DEBUG;
+			TRACE( 'Deleating missing file from LastPositionInFile: ' . $_ ) if DEBUG;
 			eval { $self->config_db->delete("WHERE name = \"$_\""); };
 			if ($EVAL_ERROR) {
 				say "Oops $self->config_db is damaged";
@@ -390,7 +390,7 @@ sub clean_lastpositioninfile {
 		}
 	}
 
-	$main->info( Wx::gettext('Finished Cleaning LastPositionInFile'));
+	$main->info( Wx::gettext('Finished Cleaning LastPositionInFile') );
 	_display_relation($self);
 	return;
 }
@@ -549,7 +549,7 @@ sub _display_relation {
 		when ('History') {
 			$self->clean->Enable;
 			_display_any_relation( $self, $_ );
-		}		
+		}
 		when ('LastPositionInFile') {
 			$self->clean->Enable;
 			_display_any_relation( $self, $_ );
@@ -727,9 +727,13 @@ sub about_menu_clicked {
 sub plugin_disable {
 	my $self = shift;
 
-	require Class::Unload;
-	$self->unload('Padre::Plugin::Cookbook::Recipe04::About');
-	$self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
+	# require Class::Unload;
+	# $self->unload(
+	# Unload all our child classes
+	$self->unload(
+		qw{ Padre::Plugin::Cookbook::Recipe04::About
+			Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB }
+	);
 	return 1;
 }
 

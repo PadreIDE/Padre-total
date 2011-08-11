@@ -19,6 +19,6 @@ requires 'namespace::autoclean' => '0.12';
 requires 'Data::Printer'        => '0.19';
 
 # Optional if you have used the share directory
-install_share
+install_share;
 
 WriteAll;
