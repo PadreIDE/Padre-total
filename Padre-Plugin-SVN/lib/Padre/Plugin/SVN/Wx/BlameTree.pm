@@ -28,7 +28,12 @@ sub new {
 	);
 
 	# Set alternate colour
-	$self->{altColor} = Wx::Colour->new(221, 221, 221);
+	my $bg_color = Wx::SystemSettings::GetColour( Wx::wxSYS_COLOUR_WINDOW );
+	$self->{altColor} = Wx::Colour->new(
+		int( $bg_color->Red   * 0.9 ),
+		int( $bg_color->Green *0.9 ),
+		$bg_color->Blue
+	);
 
 	return $self;
 }
