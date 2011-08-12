@@ -79,7 +79,9 @@ sub new {
 # Perl 5 example
 use strict;
 use warnings;
-say "Hello world from Perl " . 5 . '!';
+
+my $world = 'world';
+say "Hello $world from Perl " . 5 . '!';
 
 my $foo = 10 // 20;
 my $bar = $foo // 5;
