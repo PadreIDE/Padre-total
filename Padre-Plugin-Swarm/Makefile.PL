@@ -4,6 +4,8 @@ all_from      lib/Padre/Plugin/Swarm.pm
 requires      Padre                 0.56
 requires      Wx::Socket            0
 requires      JSON              2.15
+requires      AnyEvent		0
+requires      Object::Event 	0	
 requires      IO::Socket::Multicast 1.11
 requires      IO::Select
 requires      Graph
