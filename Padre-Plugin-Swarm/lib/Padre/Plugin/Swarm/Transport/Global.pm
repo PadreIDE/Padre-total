@@ -58,7 +58,6 @@ sub see_auth {
                 shift->push_read( json => sub { $self->event('recv',@_) } );
             }
         );
-        $self->reg_cb( 'recv', \&recv );
         $self->event(connect=>1);
     }
     else {
