@@ -743,6 +743,15 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSTC_PL_SUB_PROTOTYPE 40
 #define wxSTC_PL_FORMAT_IDENT 41
 #define wxSTC_PL_FORMAT 42
+#define wxSTC_PL_STRING_VAR 43
+#define wxSTC_PL_REGEX_VAR 54
+#define wxSTC_PL_REGSUBST_VAR 55
+#define wxSTC_PL_BACKTICKS_VAR 57
+#define wxSTC_PL_HERE_QQ_VAR 61
+#define wxSTC_PL_HERE_QX_VAR 62
+#define wxSTC_PL_STRING_QQ_VAR 64
+#define wxSTC_PL_STRING_QX_VAR 65
+#define wxSTC_PL_STRING_QR_VAR 66
 
 // Lexical states for SCLEX_RUBY
 #define wxSTC_RB_DEFAULT 0
