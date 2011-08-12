@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-SVN
 
 0.06	to-be-released
+		* Change blame alternate colour to a derivation of the system bg (BRAMBLE)
 		* Delete file from svn if it's being deleted using Padre (SEWI)
 
 0.05	2010.05.23
