@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.21_05  TBA
+0.21_05  2011.8.12
     - Integrated Perl variable interpolation patch by Kein-Hong Man
       from Scintilla interest group (AZAWAWI)
 
