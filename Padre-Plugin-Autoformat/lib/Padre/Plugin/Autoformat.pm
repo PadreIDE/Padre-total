@@ -9,6 +9,8 @@ use File::Basename        qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
 use base qw{ Padre::Plugin };
 
+our $VERSION='1.23';
+
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
@@ -27,7 +29,7 @@ sub plugin_icon {
 # padre interfaces
 sub padre_interfaces {
     'Padre::Plugin'     => 0.68,
-    'Padre::Wx::Editor' => 0.30,
+    'Padre::Wx::Editor' => 0.89,
 }
 
 # plugin menu.
