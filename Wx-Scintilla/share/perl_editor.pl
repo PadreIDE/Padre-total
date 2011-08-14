@@ -75,18 +75,14 @@ sub new {
 	);
 	$self->SetKeyWords(0, join(' ', @keywords));
 
-	$self->SetText(<<'EXAMPLE');
-# Perl 5 example
-use strict;
-use warnings;
-
-my $world = 'world';
-say "Hello $world from Perl " . 5 . '!';
-
-my $foo = 10 // 20;
-my $bar = $foo // 5;
-
-EXAMPLE
+	my $filename = 'share/perl-test-interpolation.pl.txt';
+	if( open my $fh, "<", $filename ) { 
+		local $/ = undef;
+		my $content = <$fh>;
+		$self->SetText($content);
+	} else {
+		die "Cannot open $filename for reading\n";
+	}
 	$self->SetFocus;
 
 	return $self;
