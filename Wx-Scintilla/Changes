@@ -1,8 +1,8 @@
 Revision history for Wx-Scintilla
 
 0.21_06  TBA
-    - Basic variable interpolation for:  "" qq{} `` qx{} // m{} qr{} s{}{}
-      (KHMAN, AZAWAWI)
+    - Basic variable interpolation for:  "" qq{} `` qx{} // m{} qr{} s{}{} (KHMAN)
+    - Fix build failure on wxWidgets 2.8.10 (MARKD)
 
 0.21_05  2011.8.12
     - Integrated Perl variable interpolation patch by Kein-Hong Man
