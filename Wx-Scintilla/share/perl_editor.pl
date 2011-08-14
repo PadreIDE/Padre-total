@@ -1,4 +1,4 @@
-#----> My first scintilla Wx editor :)
+#----> Perl Wx::Scintilla editor :)
 package My::Scintilla::Editor;
 
 use strict;
@@ -105,7 +105,9 @@ sub OnInit {
 	my $frame = Wx::Frame->new(
 	undef,                           # no parent window
 	-1,                              # no window id
-	'My First Scintilla Editor!',    # Window title
+	'Perl Wx::Scintilla editor!',    # Window title
+	[-1, -1],
+	[750, 700],
 	);
 
 	my $editor = My::Scintilla::Editor->new(
