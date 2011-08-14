@@ -6,6 +6,7 @@ use Padre::Logger;
 use Class::XSAccessor 
 	accessors => {
 		resources => 'resources',
+		origin => 'origin',
 		chat => 'chat',
 		geometry => 'geometry',
 		transport => 'transport',
@@ -14,7 +15,7 @@ use Class::XSAccessor
 	};
 
 sub components {
-	qw( geometry chat resources  editor )
+	qw( geometry chat resources editor )
 }
 
 sub new {
@@ -28,6 +29,7 @@ sub plugin { Padre::Plugin::Swarm->instance };
 sub enable {
 	my $self = shift;
 	if ($self->transport) {
+		TRACE( 'Adding transport callbacks' ) if DEBUG;
 		$self->transport->on_connect(
 				sub { $self->on_connect(@_) }
 		);
@@ -41,6 +43,7 @@ sub enable {
 		$self->transport->enable;
 	}
 	foreach my $c ( $self->components ) {
+		TRACE( $c ) if DEBUG;
 		$self->$c->enable if $self->$c;
 	}
 	
@@ -57,9 +60,11 @@ sub disable {
 	$self->transport->disable if $self->transport;
 }
 
+use Data::Dumper;
 
 sub on_recv {
 	my $self = shift;
+	TRACE( Dumper \@_ );
 	$self->_notify( 'on_recv' , @_ );
 }
 

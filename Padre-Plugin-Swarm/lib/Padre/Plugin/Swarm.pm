@@ -11,7 +11,7 @@ use Padre::Wx::Icon ();
 use Padre::Logger;
 
 our $VERSION = '0.11';
-our @ISA     = 'Padre::Plugin';
+our @ISA     = ('Padre::Plugin','Padre::Role::Task','Object::Event');
 
 use Class::XSAccessor {
 	accessors => {
@@ -23,6 +23,7 @@ use Class::XSAccessor {
 		wx        => 'wx',
 		global    => 'global',
 		local     => 'local',
+		service   => 'service',
 	}
 };
 
@@ -32,6 +33,11 @@ sub connect {
 	# For now - use global,
 	#  could be Padre::Plugin::Swarm::Transport::Local::Multicast
 	#   based on preferences
+	sub accept_disco {
+		my ($self,$message) = @_;
+		$self->send( {type=>'promote',service=>'swarm'} ); 
+	};
+	
 	$self->global->enable;
 	$self->local->enable;
 }
@@ -39,19 +45,11 @@ sub connect {
 sub disconnect {
 	my $self = shift;
 
-	$self->global->disable;
-	$self->local->disable;
-}
+	$self->global->event('disable');
+	$self->local->event('disable');
+	
+	$self->service->cancel;
 
-sub NOTsend {
-	my $self = shift;
-	my $message = shift;
-	my $mclass = ref $message;
-	unless ( $mclass =~ /^Padre::Swarm::Message/ ) {
-		bless $message , 'Padre::Swarm::Message';
-	}
-	$message->{from} = $self->identity->nickname;
-	$self->transport->send( $message );
 }
 
 sub on_transport_connect {
@@ -74,34 +72,22 @@ sub on_transport_disconnect {
 }
 
 sub on_recv {
+	TRACE( @_ ) if DEBUG;
 	my $self = shift;
-	# my $universe = shift;
+	my $task = shift;
 	my $message = shift;
 
-	TRACE( "on_recv handler for " . $message->type ) if DEBUG;
+	TRACE( "on_recv handler for " . $message->{type} ) if DEBUG;
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE');
 	my $handler = 'accept_' . $message->type;
 
-	if ( $self->can( $handler ) ) {
-		TRACE( $handler ) if DEBUG;
-		eval { $self->$handler( $message ); };
-	}
-
-	# TODO - make these parts use the message event! srsly
-	$self->geometry->On_SwarmMessage( $message );
-
-	my $data = Storable::freeze( $message );
-	Wx::PostEvent(
-                $self->wx,
-                Wx::PlThreadEvent->new( -1, $self->message_event , $data ),
-        ) if $self->message_event;
+	$self->event($handler,$message);
+	
+	
 }
 
-sub accept_disco {
-	my ($self,$message) = @_;
-	$self->send( {type=>'promote',service=>'swarm'} );
-}
+
 
 
 
@@ -196,12 +182,11 @@ SCOPE: {
 		$self->wx( $wxobj );
 		$wxobj->Hide;
 
+		require Padre::Plugin::Swarm::Service;
 		require Padre::Plugin::Swarm::Wx::Chat;
 		require Padre::Plugin::Swarm::Wx::Resources;
 		require Padre::Plugin::Swarm::Wx::Editor;
 		require Padre::Plugin::Swarm::Wx::Preferences;
-		require Padre::Plugin::Swarm::Transport::Global::WxSocket;
-		require Padre::Plugin::Swarm::Transport::Local::Multicast;
 		require Padre::Plugin::Swarm::Universe;
 		require Padre::Swarm::Geometry;
 
@@ -210,56 +195,49 @@ SCOPE: {
 
 		my $geo = Padre::Swarm::Geometry->new;
 		$self->geometry( $geo );
-
-		my $u_global = Padre::Plugin::Swarm::Universe->new;
-		my $u_local  = Padre::Plugin::Swarm::Universe->new;
-		$self->global($u_global);
-		$self->local($u_local);
-
-		## Instance the transport but do not connect them - yet
-		my $t_global =
-		Padre::Plugin::Swarm::Transport::Global::WxSocket->new(
-			token => $self->config->{token},
-			wx => $self->wx,
+		
+		
+		my $service = $self->task_request(
+				task =>'Padre::Plugin::Swarm::Service',
+					owner => $self,
+					on_message => 'on_recv'
 		);
-		$u_global->transport($t_global);
 
-		my $t_local =
-			Padre::Plugin::Swarm::Transport::Local::Multicast->new(
-				token => $self->config->{token},
-				wx    => $self->wx,
-			);
-		$u_local->transport($t_local);
-
-
-		$u_global->geometry($geo);
-		$u_local->geometry($geo);
-
-		## Should this be in global or local?
-		my $editor = Padre::Plugin::Swarm::Wx::Editor->new(
-			transport => $t_global,
-		);
-		$self->editor($editor);
-		$u_global->editor($editor);
-
-		my $g_directory = Padre::Plugin::Swarm::Wx::Resources->new(
-			$self->main,
-			label => 'Global'
-		);
-		$self->resources( $g_directory );
-		$u_global->resources($g_directory);
-
-		my $g_chat = Padre::Plugin::Swarm::Wx::Chat->new( $self->main,
-				label => 'Global', transport => $self->global->transport
-		 );
-		$u_global->chat($g_chat);
-
-		my $l_chat = Padre::Plugin::Swarm::Wx::Chat->new(
-				$self->main,
-				label => 'Local',
-				transport => $self->local->transport
-		 );
-		$u_local->chat($l_chat);
+		# my $u_global = 	Padre::Plugin::
+				# Swarm::Universe->new(origin=>'global');
+				# 
+		# my $u_local  = 	Padre::Plugin::
+				# Swarm::Universe->new(origin=>'local');
+		# 
+		# $self->global($u_global);
+		# $self->local($u_local);
+# 
+# 
+		# $u_global->geometry($geo);
+		# $u_local->geometry($geo);
+# 
+		# ## Should this be in global or local?
+		# my $editor = Padre::Plugin::Swarm::Wx::Editor->new;
+		# $self->editor($editor);
+		# $u_global->editor($editor);
+# 
+		# my $g_directory = Padre::Plugin::Swarm::Wx::Resources->new(
+			# $self->main,
+			# label => 'Global'
+		# );
+		# $self->resources( $g_directory );
+		# $u_global->resources($g_directory);
+# 
+		# my $g_chat = Padre::Plugin::Swarm::Wx::Chat->new( $self->main,
+				# label => 'Global'
+		 # );
+		# $u_global->chat($g_chat);
+# 
+		# my $l_chat = Padre::Plugin::Swarm::Wx::Chat->new(
+				# $self->main,
+				# label => 'Local',
+		 # );
+		# $u_local->chat($l_chat);
 
 
 		$self->connect();

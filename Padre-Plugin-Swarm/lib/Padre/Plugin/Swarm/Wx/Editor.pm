@@ -57,8 +57,7 @@ sub new {
 
 sub enable {
 	my $self = shift;
-
-	foreach my $editor ( $self->plugin->main->editors ) {
+        foreach my $editor ( $self->plugin->main->editors ) {
 	    eval{ $self->editor_enable( $editor, $editor->{Document} ) };
 		TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
 	}
@@ -72,6 +71,10 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub editor_enable {
 	my ($self,$editor,$document) = @_;
 	return unless $document && $document->filename;
+	
+	Wx::Event::EVT_STC_MODIFIED( $editor , -1,  
+            sub { $self->on_editor_modified(@_) }
+        );
 	
         eval  {
 	    $self->transport->send(
@@ -123,6 +126,47 @@ sub on_recv {
 	}
 	
 }
+
+
+sub on_editor_modified {
+    my ($self,$editor,$event) = @_;
+    my $doc = $editor->main->current->document;
+    return unless defined $doc;
+    return unless $doc->filename;
+    
+    my $file = $doc->filename;
+    my $time = $doc->timestamp;
+    my $type = $event->GetModificationType;
+    
+    return unless ( 
+        $type & Wx::wxSTC_MOD_INSERTTEXT
+            or
+        $type & Wx::wxSTC_MOD_DELETETEXT );
+
+    my $op = ($type & Wx::wxSTC_MOD_INSERTTEXT) ? 'ins' : 'del';
+    my $text = $event->GetText;
+    my $pos = $event->GetPosition;
+    my $len = $event->GetLength;
+    
+    #Debugging noise
+    my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $file";
+    $self->transport->send(
+        { type=>'chat', body=>$payload,
+            op   => $type,
+            t    => $text,
+            time => time(),
+        }
+    );
+    
+    $self->transport->send(
+        {   
+            type=>'delta' , service=>'editor', op=>$op,
+            body=>$text, pos=>$pos,
+            resource=>$file,
+        }
+    );
+}
+
 # message handlers
 
 =head1 MESSAGE HANDLERS
@@ -147,7 +191,10 @@ sub accept_openme {
 	return;
     }
     
-    $self->plugin->main->new_document_from_string( $message->body );
+    my $doc = $self->plugin->main->new_document_from_string( $message->body );
+    TRACE( "Storing $doc with " . $message->{filename} ) if DEBUG;
+    $self->{documents}{$message->{filename}} = $doc;
+    
 }
 
 =head2 gimme
@@ -180,7 +227,7 @@ sub accept_gimme {
 =head1 disco
 
 Respond to discovery messages by transmitting a promote for 
-each known resource
+each known resource 
 
 =cut
 
@@ -207,13 +254,16 @@ sub accept_disco {
 
 =head2 runme
 
+Disabled.
+Execute a message body with string eval
+
 =cut
 
 
 sub NEVER_accept_runme {
     my ($self,$message) = @_;
     # Previously the honour system - now pure evil.
-    return if $message->from eq $self->plugin->identity->nickname;
+    return if $message->token eq $self->transport->token;
     # Ouch..
     my @result = (eval $message->body);
     
@@ -245,6 +295,48 @@ sub NEVER_accept_runme {
     
 }
 
+=head2 delta
 
+Half baked operational transform
+
+
+=cut
+sub accept_delta {
+    my ($self,$message)=@_;
+    # Ignore loopback
+    return if ($message->{token} eq $self->transport->token);
+    
+    if ( exists $self->{documents}{$message->{resource}} ) {
+        
+        $self->_apply_delta( 
+            $message, 
+            $self->{documents}{$message->{resource}} 
+        );
+        
+    }
+    
+}
+
+sub _apply_delta {
+    my ($self,$message,$doc) = @_;
+    my $editor;
+    while ( my ( $id, $ed ) = each %{ $self->editors } ) {
+        next unless $ed->{Document};
+        if ( $ed->{Document} eq $doc ) { $editor = $ed; last }
+        
+    }
+    
+    if ($message->{op} eq 'ins') {
+        $editor->InsertText( $message->{body} , $message->{pos} );
+        
+    } elsif ( $message->{op} eq 'del' ) {
+        $editor->SetTargetStart( $message->{pos} );
+            $editor->SetTargetEnd( $message->{pos} + $message->{len} );
+            $editor->ReplaceTarget( $message->{body} );
+            
+        }
+        
+    
+}
 
 1;

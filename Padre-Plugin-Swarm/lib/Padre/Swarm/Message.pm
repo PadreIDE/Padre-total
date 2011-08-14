@@ -52,6 +52,12 @@ sub service {
 	
 }
 
+sub token {
+    my $self = shift;
+    $self->{token} = shift if @_;
+    return $self->{token};
+}
+
 sub TO_JSON {
 	## really should be the canonical identity
 	my $self = shift;

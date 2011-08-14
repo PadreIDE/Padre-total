@@ -6,6 +6,7 @@ use Data::Dumper;
 use base qw( Object::Event );
 use AnyEvent::Socket;
 use AnyEvent::Handle;
+use JSON;
 
 our $VERSION = '0.11';
 
@@ -20,7 +21,6 @@ sub enable {
     my  $self = shift;
     my $g = tcp_connect $self->{host} , $self->{port},
         sub { $self->event( 'start_session', shift) };
-    warn "Got $g";
     $self->{g} = $g;
 }
 
@@ -31,9 +31,9 @@ sub start_session {
         return;
         
     }
-    warn "Start session $self, $fh";
     my $h = AnyEvent::Handle->new(
         fh => $fh,
+        json => $self->_marshal,
         on_eof => sub { $self->event('disconnect', shift ) },
     );
     
@@ -49,13 +49,12 @@ sub see_auth {
     my $self = shift;
     my $handle = shift;
     my $message = shift;
-    warn "Seen auth " , Dumper $message;
     $self->unreg_cb('start_session');
     
     $self->{token} = $message->{token};
     if ( $message->{session} eq 'authorized' ) {
         $self->{h}->on_read( sub {
-                shift->push_read( json => sub { $self->event('recv',@_) } );
+                shift->push_read( json => sub { $self->event('recv',$_[1]) } );
             }
         );
         $self->event(connect=>1);
@@ -73,15 +72,28 @@ sub send {
     my $message = shift;
     $message->{token} = $self->{token};
     $self->{h}->push_write( json => $message );
-    
 }
 
-# sub recv {
-    # my $self = shift;
-    # my $handle = shift;
-    # my $message = shift;
-    # warn "Received " . Dumper $message;
-    # 
-# }
+sub _marshal {
+	JSON->new
+	    ->allow_blessed
+            ->convert_blessed
+            ->utf8
+            ->filter_json_object(\&synthetic_class );
+}
+
+
+sub synthetic_class {
+	my $var = shift ;
+	if ( exists $var->{__origin_class} ) {
+		my $stub = $var->{__origin_class};
+		my $msg_class = 'Padre::Swarm::Message::' . $stub;
+		my $instance = bless $var , $msg_class;
+		return $instance;
+	} else {
+		return bless $var , 'Padre::Swarm::Message';
+	}
+};
+
 
 1;

@@ -13,5 +13,6 @@ requires      Params::Util          1.00
 requires      Class::XSAccessor     1.03
 requires      Text::Patch           1.04
 test_requires Test::More            0.42
+test_requires Padre                 0.90
 no_index      junkyard
 install_share

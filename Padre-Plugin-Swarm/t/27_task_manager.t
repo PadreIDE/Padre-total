@@ -62,10 +62,25 @@ SCOPE: {
 	my $service = Padre::Plugin::Swarm::Service->new;
 	
 	isa_ok( $service, 'Padre::Plugin::Swarm::Service' );
+	
+	use Data::Dumper;
+	diag( Dumper $service );
+	
 
 	# Schedule the task (which should trigger it's execution)
 	ok( $manager->schedule($service), '->schedule ok' );
-
+	threads->yield();
+	Time::HiRes::sleep(2);
+	
+	$service->notify( send_global => { type=>'chat', body=>$0 , from=>'test' } );
+	$service->notify( send_global => { type=>'disco', from=>'test' } );
+	
+	$service->notify( send_local => { type=>'chat', body=>$0 , from=>'test' } );
+	$service->notify( send_local  => { type=>'disco', from=>'test' } );
+	
+	threads->yield();
+	Time::HiRes::sleep(2);
+	
 	# Only the prepare phase should run (for now)
 	is( $service->{prepare}, 1, '->{prepare} is false' );
 	is( $service->{run},     0, '->{run}     is false' );
