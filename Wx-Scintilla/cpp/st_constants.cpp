@@ -1213,6 +1213,7 @@ double stc_constant( const char* name, int arg )
         r( wxSTC_PL_SUB_PROTOTYPE );
         r( wxSTC_PL_POD_VERB );
         r( wxSTC_PL_VARIABLE_INDEXER );
+        r( wxSTC_PL_XLAT );
         r( wxSTC_PL_STRING_VAR );
         r( wxSTC_PL_REGEX_VAR );
         r( wxSTC_PL_REGSUBST_VAR );

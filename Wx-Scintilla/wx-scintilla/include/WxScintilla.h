@@ -744,6 +744,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSTC_PL_FORMAT_IDENT 41
 #define wxSTC_PL_FORMAT 42
 #define wxSTC_PL_STRING_VAR 43
+#define wxSTC_PL_XLAT 44
 #define wxSTC_PL_REGEX_VAR 54
 #define wxSTC_PL_REGSUBST_VAR 55
 #define wxSTC_PL_BACKTICKS_VAR 57

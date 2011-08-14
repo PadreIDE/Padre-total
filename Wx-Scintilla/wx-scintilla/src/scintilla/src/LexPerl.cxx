@@ -398,7 +398,7 @@ public:
 	static ILexer *LexerFactoryPerl() {
 		return new LexerPerl();
 	}
-	void SCI_METHOD VarInterpolation(StyleContext &sc);
+	void VarInterpolation(StyleContext &sc);
 };
 
 int SCI_METHOD LexerPerl::PropertySet(const char *key, const char *val) {
@@ -427,9 +427,9 @@ int SCI_METHOD LexerPerl::WordListSet(int n, const char *wl) {
 	return firstModification;
 }
 
-void SCI_METHOD LexerPerl::VarInterpolation(StyleContext &sc) {
-	// look for start of an interpolation variable, we may be switching
-	// into an interpolation style or continuing an interpolation style
+void LexerPerl::VarInterpolation(StyleContext &sc) {
+	// look for start of an interpolation variable, we may be switching into
+	// or out of an interpolation style or continuing an interpolation style
 	bool isVar = false;
 	int skip = 0;
 	if (sc.ch == '$' || sc.ch == '@') {
@@ -562,8 +562,18 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 	}
 	if (initStyle == SCE_PL_STRING
 	 || initStyle == SCE_PL_STRING_QQ
+	 || initStyle == SCE_PL_BACKTICKS
+	 || initStyle == SCE_PL_STRING_QX
+	 || initStyle == SCE_PL_REGEX
+	 || initStyle == SCE_PL_STRING_QR
+	 || initStyle == SCE_PL_REGSUBST
 	 || initStyle == SCE_PL_STRING_VAR
 	 || initStyle == SCE_PL_STRING_QQ_VAR
+	 || initStyle == SCE_PL_BACKTICKS_VAR
+	 || initStyle == SCE_PL_STRING_QX_VAR
+	 || initStyle == SCE_PL_REGEX_VAR
+	 || initStyle == SCE_PL_STRING_QR_VAR
+	 || initStyle == SCE_PL_REGSUBST_VAR
 	   ) {
 		// for interpolation, must backtrack through a mix of two different styles
 		int otherStyle = (initStyle >= SCE_PL_STRING_VAR) ?
@@ -576,12 +586,8 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 		}
 		initStyle = SCE_PL_DEFAULT;
 	} else if (initStyle == SCE_PL_STRING_Q
-	        || initStyle == SCE_PL_STRING_QX
-	        || initStyle == SCE_PL_STRING_QR
 	        || initStyle == SCE_PL_STRING_QW
-	        || initStyle == SCE_PL_REGEX
-	        || initStyle == SCE_PL_REGSUBST
-	        || initStyle == SCE_PL_BACKTICKS
+	        || initStyle == SCE_PL_XLAT
 	        || initStyle == SCE_PL_CHARACTER
 	        || initStyle == SCE_PL_NUMBER
 	        || initStyle == SCE_PL_IDENTIFIER
@@ -884,9 +890,11 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 					Quote.Rep--;
 			} else if (sc.ch == Quote.Up) {
 				Quote.Count++;
-			}
+			} else if (Quote.Up != '\'')
+				VarInterpolation(sc);
 			break;
 		case SCE_PL_REGSUBST:
+		case SCE_PL_XLAT:
 			if (Quote.Rep <= 0) {
 				if (!setModifiers.Contains(sc.ch))
 					sc.SetState(SCE_PL_DEFAULT);
@@ -915,10 +923,13 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 					Quote.Count++;
 			} else if (sc.ch == Quote.Up) {
 				Quote.Count++;
-			}
+			} else if (sc.state == SCE_PL_REGSUBST && Quote.Up != '\'' && Quote.Rep == 2)
+				VarInterpolation(sc);
 			break;
 		case SCE_PL_STRING:
 		case SCE_PL_STRING_QQ:
+		case SCE_PL_BACKTICKS:
+		case SCE_PL_STRING_QX:
 			if (!Quote.Down && !IsASpace(sc.ch)) {
 				Quote.Open(sc.ch);
 			} else if (sc.ch == '\\' && Quote.Up != '\\') {
@@ -930,11 +941,16 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 				}
 			} else if (sc.ch == Quote.Up) {
 				Quote.Count++;
-			} else
+			} else if (sc.state == SCE_PL_STRING_QQ || Quote.Up != '\'')
 				VarInterpolation(sc);
 			break;
 		case SCE_PL_STRING_VAR:
 		case SCE_PL_STRING_QQ_VAR:
+		case SCE_PL_BACKTICKS_VAR:
+		case SCE_PL_STRING_QX_VAR:
+		case SCE_PL_REGEX_VAR:
+		case SCE_PL_STRING_QR_VAR:
+		case SCE_PL_REGSUBST_VAR:
 			if (sc.ch == '\\' && Quote.Up != '\\') {
 				sc.SetState(sc.state - INTERPOLATE_SHIFT);
 				sc.Forward();
@@ -942,8 +958,14 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 				Quote.Count--;
 				sc.SetState(sc.state - INTERPOLATE_SHIFT);
 				if (Quote.Count == 0) {
-					sc.ForwardSetState(SCE_PL_DEFAULT);
+					Quote.Rep--;
+					if (sc.state != SCE_PL_REGEX
+					 && sc.state != SCE_PL_STRING_QR
+					 && sc.state != SCE_PL_REGSUBST)
+						sc.ForwardSetState(SCE_PL_DEFAULT);
 				}
+				if (sc.state == SCE_PL_REGSUBST && Quote.Up == Quote.Down)
+					Quote.Count++;
 			} else if (sc.ch == Quote.Up) {
 				Quote.Count++;
 				sc.SetState(sc.state - INTERPOLATE_SHIFT);
@@ -952,10 +974,8 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 			}
 			break;
 		case SCE_PL_STRING_Q:
-		case SCE_PL_STRING_QX:
 		case SCE_PL_STRING_QW:
 		case SCE_PL_CHARACTER:
-		case SCE_PL_BACKTICKS:
 			if (!Quote.Down && !IsASpace(sc.ch)) {
 				Quote.Open(sc.ch);
 			} else if (sc.ch == '\\' && Quote.Up != '\\') {
@@ -1108,10 +1128,10 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 					sc.ChangeState(SCE_PL_STRING_Q);
 					Quote.New();
 				} else if (sc.ch == 'y' && !setWord.Contains(sc.chNext)) {
-					sc.ChangeState(SCE_PL_REGSUBST);
+					sc.ChangeState(SCE_PL_XLAT);
 					Quote.New(2);
 				} else if (sc.Match('t', 'r') && !setWord.Contains(sc.GetRelative(2))) {
-					sc.ChangeState(SCE_PL_REGSUBST);
+					sc.ChangeState(SCE_PL_XLAT);
 					Quote.New(2);
 					sc.Forward();
 					fw++;
