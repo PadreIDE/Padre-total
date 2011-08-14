@@ -1,0 +1,15 @@
+Index: /usr/src/Padre/Padre-Plugin-Patch/scripts/test1.pl
+===================================================================
+--- /usr/src/Padre/Padre-Plugin-Patch/scripts/test1.pl	(revision 0)
++++ /usr/src/Padre/Padre-Plugin-Patch/scripts/test1.pl	(revision 0)
+@@ -0,0 +1,5 @@
++#!/usr/bin/env perl
++
++use 5.010;
++use strict;
++use warnings;
+
+Property changes on: /usr/src/Padre/Padre-Plugin-Patch/scripts/test1.pl
+___________________________________________________________________
+Added: svn:mime-type
+   + text/x-perl
