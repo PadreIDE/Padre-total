@@ -42,6 +42,9 @@ sub set_up {
 	my $self = shift;
 	my $main = $self->main;
 
+	my @pkg_name = split /::/smx, __PACKAGE__,;
+	$self->package_name->SetLabel( $pkg_name[2] );
+
 	# TODO only saved files @items
 	my @items;
 	@items = $self->current_files();
@@ -95,7 +98,7 @@ sub process_clicked {
 	if ( $self->action->GetStringSelection() eq 'Diff' ) {
 
 		if ( $self->file2svn->GetStringSelection() eq 'File' ) {
-			$self->make_patch( $file1, $file2 );
+			$self->make_patch_diff( $file1, $file2 );
 		} elsif ( $self->file2svn->GetStringSelection() eq 'SVN' ) {
 			$self->make_patch_svn($file1);
 		}
@@ -108,8 +111,6 @@ sub process_clicked {
 }
 
 
-
-
 #######
 # Method current_files
 #######
@@ -120,9 +121,37 @@ sub current_files {
 	my $current  = $main->current;
 	my $notebook = $current->notebook;
 
-	my @label = $notebook->labels;
+	my @label      = $notebook->labels;
+	my $open_files = scalar(@label);
 
+	# lets have a look around
+	
+	# say $current->vcs;
+	
 	# p @label;
+	my $open_file_info = ();
+	my $changed;
+
+	for ( 0 .. ( $open_files - 1 ) ) {
+		# say $_;
+		# p $notebook->GetPageText($_);
+
+		$open_file_info->{$_} = (
+			{   'index'    => $_,
+				'URL'      => $label[$_][1],
+				'filename' => $notebook->GetPageText($_),
+				'vcs' => 'todo',
+				# saved, changed, modified
+				'changed' => 0,
+			},
+		);
+		
+		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
+			say 'file changed from disk';
+			$open_file_info->{$_}->{'changed'} = 1;
+		} 
+	}
+	p $open_file_info;
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
@@ -135,9 +164,9 @@ sub current_files {
 }
 
 #######
-# Method make_patch
+# Method make_patch_diff
 #######
-sub make_patch {
+sub make_patch_diff {
 	my ( $self, $dfile1, $dfile2 ) = @ARG;
 	my $main = $self->main;
 
@@ -187,6 +216,10 @@ sub apply_patch {
 	if ( -e $patch ) {
 		TRACE("found 2: $patch") if DEBUG;
 		$diff = read_file($patch);
+		unless ( $patch =~ /(patch|diff)$/ ) {
+			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
+			return;
+		}
 	}
 
 	if ( -e $pfile1 && -e $patch ) {
@@ -202,7 +235,7 @@ sub apply_patch {
 	} else {
 		$main->info( Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
 	}
-	
+
 	return;
 }
 
@@ -216,17 +249,23 @@ sub make_patch_svn {
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
 
-		require SVN::Class;
+		# require SVN::Class;
 		my $file = SVN::Class::svn_file($dfile1);
 		$file->diff;
+
+		p $file;
+
+		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
+		# TRACE output is yuck
+		p @{ $file->stdout };
+		TRACE( @{ $file->stdout } ) if DEBUG;
 		my $diff_str = join( "\n", @{ $file->stdout } );
 
 		TRACE($diff_str) if DEBUG;
 
-		# eval $self->main->new_document_from_string( $diff_str, 'text/x-patch' );
-
 		my $patch_file = $dfile1 . '.patch';
 
+		# TODO File::Slurp should be able to handel @{ $file->stdout }
 		write_file( $patch_file, $diff_str );
 		TRACE("writing file: $patch_file") if DEBUG;
 
@@ -235,7 +274,7 @@ sub make_patch_svn {
 	} else {
 		$main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
 	}
-	
+
 	return;
 }
 
