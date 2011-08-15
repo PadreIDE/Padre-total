@@ -1,5 +1,4 @@
 package Padre::Plugin::Swarm::Universe;
-
 use strict;
 use warnings;
 use Padre::Logger;
@@ -14,67 +13,92 @@ use Class::XSAccessor
 		label =>'label',
 	};
 
+use base qw( Object::Event );
+
+use Padre::Plugin::Swarm::Wx::Chat;
+use Padre::Plugin::Swarm::Wx::Editor;
+use Padre::Plugin::Swarm::Wx::Resources;
+
+
+
 sub components {
 	qw( geometry chat resources editor )
 }
 
 sub new {
 	my $class = shift;
-	my $self = bless { @_ },  ref($class) || $class;
-	return $self;
+	my %args = @_;
+	
+	my $self = $class->SUPER::new(%args);
+	my $rself = $self;
+
+	
+	my $origin = $self->origin;
+	my $plugin = Padre::Plugin::Swarm->instance;
+	
+	$self->reg_cb( "recv" , \&on_recv );
+	$self->reg_cb( "connect" , \&on_connect);
+	$self->reg_cb( "disconnect", \&on_disconnect );
+	
+	$self->chat(
+		new Padre::Plugin::Swarm::Wx::Chat
+				universe => $self,
+				label => ucfirst( $origin ),
+	);
+	
+	# $self->editor(
+		# new Padre::Plugin::Swarm::Wx::Editor
+	# );
+	# 
+	# $self->resources(
+		# new Padre::Plugin::Swarm::Wx::Resources
+	# );
+	
+    Scalar::Util::weaken( $self );
+	
+	return $rself;
 }
 
 sub plugin { Padre::Plugin::Swarm->instance };
 
 sub enable {
 	my $self = shift;
-	if ($self->transport) {
-		TRACE( 'Adding transport callbacks' ) if DEBUG;
-		$self->transport->on_connect(
-				sub { $self->on_connect(@_) }
-		);
-		$self->transport->on_disconnect(
-				sub { $self->on_disconnect(@_) }
-		);
-		$self->transport->on_recv(
-				sub { $self->on_recv(@_) }
-		);
-		
-		$self->transport->enable;
-	}
-	foreach my $c ( $self->components ) {
-		TRACE( $c ) if DEBUG;
-		$self->$c->enable if $self->$c;
-	}
-	
-	
-	
+	$self->event('enable');
+	#foreach my $c ( $self->components ) {
+	#	TRACE( $c ) if DEBUG;
+	#	$self->$c->enable if $self->$c;
+	#}
 }
 
 sub disable { 
 	my $self = shift;
-
-	foreach my $c ( $self->components ) {
-		$self->$c->disable if $self->$c;
-	}
-	$self->transport->disable if $self->transport;
+	$self->event('disable');
+	
+	#foreach my $c ( $self->components ) {
+	#	$self->$c->disable if $self->$c;
+	#}
 }
 
 use Data::Dumper;
 
+sub send {
+	my ($self,$message) = @_;
+	Padre::Plugin::Swarm->instance->send( $self->origin , $message );
+}
+
 sub on_recv {
 	my $self = shift;
-	TRACE( Dumper \@_ );
+	TRACE( @_ );
 	$self->_notify( 'on_recv' , @_ );
 }
 
 sub on_connect {
 	my ($self) = shift;
-	TRACE( "Swarm transport connected" ) if DEBUG;
-	$self->transport->send(
+	TRACE( "Swarm transport connected" );
+	$self->send(
 		{ type=>'announce', service=>'swarm' }
 	);
-	$self->transport->send(
+	$self->send(
 		{ type=>'disco', service=>'swarm' }
 	);
 	

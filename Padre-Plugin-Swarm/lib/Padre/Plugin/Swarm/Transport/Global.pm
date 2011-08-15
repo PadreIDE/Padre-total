@@ -57,7 +57,7 @@ sub see_auth {
                 shift->push_read( json => sub { $self->event('recv',$_[1]) } );
             }
         );
-        $self->event(connect=>1);
+        $self->event('connect'=>1);
     }
     else {
         $self->{h}->destroy;

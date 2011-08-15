@@ -7,6 +7,7 @@ use File::Spec      ();
 use Padre::Constant ();
 use Padre::Wx       ();
 use Padre::Plugin   ();
+use Object::Event   ();
 use Padre::Wx::Icon ();
 use Padre::Logger;
 
@@ -38,8 +39,9 @@ sub connect {
 		$self->send( {type=>'promote',service=>'swarm'} ); 
 	};
 	
-	$self->global->enable;
-	$self->local->enable;
+	$self->global->event('enable');
+	$self->local->event('enable');
+	
 }
 
 sub disconnect {
@@ -52,42 +54,73 @@ sub disconnect {
 
 }
 
-sub on_transport_connect {
-	my ($self) = @_;
-	TRACE( "Swarm transport connected" ) if DEBUG;
-	$self->send(
-		{ type=>'announce', service=>'swarm' }
-	);
-	$self->send(
-		{ type=>'disco', service=>'swarm' }
-	);
-	return;
-}
 
-sub on_transport_disconnect {
-	my ($self) = @_;
-	TRACE( "Swarm transport disconnected" ) if DEBUG;
-	$self->chat->write_unstyled( "swarm transport disconnected!\n" );
-
-}
-
-sub on_recv {
-	TRACE( @_ ) if DEBUG;
+sub on_swarm_service_message {
 	my $self = shift;
-	my $task = shift;
+	my $service = shift;
 	my $message = shift;
 
-	TRACE( "on_recv handler for " . $message->{type} ) if DEBUG;
+
+	use Data::Dumper;
+	TRACE( 'Got service scheduled of ' , Dumper $service ) ;
+	$self->service($service);
+	
+
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE');
-	my $handler = 'accept_' . $message->type;
-
-	$self->event($handler,$message);
 	
+	my $origin  = $message->origin;
+	# Special case for 'connect'
+	if ( $message->type eq 'connect' ) {
+		if ( $origin eq 'local' ) {
+			$self->local->event('connect');
+		} elsif ( $origin eq 'global' ) {
+			$self->global->event('connect');
+		}
+		return;
+	}
+	
+	if ($origin eq 'local') {
+		TRACE( 'Local message dispatch' );
+		$self->local->event( 'recv' , $message );
+	} elsif ( $origin eq 'global' ) {
+		TRACE( 'Global message dispatch' );
+		$self->global->event('recv', $message );
+	} else {
+		TRACE( "Unknown transport dispatch recv_$origin" );
+		$self->event( "recv_$origin" , $message );
+	}	
+	
+	
+	my $handler = 'accept_' . $message->type;
+	TRACE( "send '$handler' event" ) if DEBUG;
+	$self->event($handler,$message);
 	
 }
 
+SCOPE: {
+my @outbox;
 
+sub send {
+	my ($self,$origin,$message) = @_;
+	my $service = $self->{service};
+	
+	TRACE( 'Sending to task ~ ' . $service );
+	# Be careful - we can race our task and send messages to it before it is ready
+	unless ($self->{service}) {
+		TRACE( "Queued service message in outbox" ) ;
+		push @outbox, [$origin,$message];
+		return;
+	}
+	
+	my $handler = 'send_'.$origin;
+	TRACE( "outbound handle $handler" );
+	$self->service->message( $handler => $message );
+	
+}
+
+}
+# END SCOPE:
 
 
 
@@ -183,9 +216,6 @@ SCOPE: {
 		$wxobj->Hide;
 
 		require Padre::Plugin::Swarm::Service;
-		require Padre::Plugin::Swarm::Wx::Chat;
-		require Padre::Plugin::Swarm::Wx::Resources;
-		require Padre::Plugin::Swarm::Wx::Editor;
 		require Padre::Plugin::Swarm::Wx::Preferences;
 		require Padre::Plugin::Swarm::Universe;
 		require Padre::Swarm::Geometry;
@@ -196,49 +226,17 @@ SCOPE: {
 		my $geo = Padre::Swarm::Geometry->new;
 		$self->geometry( $geo );
 		
+		my $u_global = 	Padre::Plugin::Swarm::Universe->new(origin=>'global');
+		my $u_local  = 	Padre::Plugin::Swarm::Universe->new(origin=>'local');
+		
+		$self->global($u_global);
+		$self->local($u_local);
 		
 		my $service = $self->task_request(
 				task =>'Padre::Plugin::Swarm::Service',
 					owner => $self,
-					on_message => 'on_recv'
+					on_message => 'on_swarm_service_message'
 		);
-
-		# my $u_global = 	Padre::Plugin::
-				# Swarm::Universe->new(origin=>'global');
-				# 
-		# my $u_local  = 	Padre::Plugin::
-				# Swarm::Universe->new(origin=>'local');
-		# 
-		# $self->global($u_global);
-		# $self->local($u_local);
-# 
-# 
-		# $u_global->geometry($geo);
-		# $u_local->geometry($geo);
-# 
-		# ## Should this be in global or local?
-		# my $editor = Padre::Plugin::Swarm::Wx::Editor->new;
-		# $self->editor($editor);
-		# $u_global->editor($editor);
-# 
-		# my $g_directory = Padre::Plugin::Swarm::Wx::Resources->new(
-			# $self->main,
-			# label => 'Global'
-		# );
-		# $self->resources( $g_directory );
-		# $u_global->resources($g_directory);
-# 
-		# my $g_chat = Padre::Plugin::Swarm::Wx::Chat->new( $self->main,
-				# label => 'Global'
-		 # );
-		# $u_global->chat($g_chat);
-# 
-		# my $l_chat = Padre::Plugin::Swarm::Wx::Chat->new(
-				# $self->main,
-				# label => 'Local',
-		 # );
-		# $u_local->chat($l_chat);
-
 
 		$self->connect();
 
@@ -249,24 +247,10 @@ SCOPE: {
 	sub plugin_disable {
 		my $self = shift;
 
-		eval {
-				$self->global->disable;
-		};
-		if ($@) {
-			TRACE( "Disable global failed $@" ) if DEBUG;
-		}
-
-		eval { $self->local->disable; };
-		if ($@) {
-			TRACE( "Disable local failed $@" ) if DEBUG;
-		}
-
-		$self->editor->disable;
-		$self->editor(undef);
-
 		$self->wx->Destroy;
 		$self->wx(undef);
-
+		$self->disconnect;
+		
 		undef $instance;
 
 
@@ -294,7 +278,6 @@ sub plugin_preferences {
 sub bootstrap_config {
 	my $self = shift;
 	my $config = $self->config_read;
-	#warn 'Got ' , join "\t" , %$config;
 	@$config{qw/
 		nickname
 		token
@@ -318,12 +301,12 @@ sub bootstrap_config {
 
 sub editor_enable {
 	my $self = shift;
-	$self->editor->editor_enable(@_);
+	$self->event( 'editor_enable' , @_ );
 }
 
 sub editor_disable {
 	my $self = shift;
-	$self->editor->editor_disable(@_);
+	$self->event( 'editor_disable' , @_ );
 }
 
 
@@ -345,7 +328,6 @@ sub show_about {
 Surrender to the Swarm!
 END_MESSAGE
 	$about->SetIcon( Padre::Wx::Icon::cast_to_icon($icon) );
-
 	# Show the About dialog
 	Wx::AboutBox($about);
 

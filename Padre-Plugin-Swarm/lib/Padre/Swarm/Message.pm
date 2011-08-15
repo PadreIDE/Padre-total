@@ -58,6 +58,13 @@ sub token {
     return $self->{token};
 }
 
+sub origin {
+    my $self = shift;
+    $self->{origin} = shift if @_;
+    return $self->{origin};
+}
+
+
 sub TO_JSON {
 	## really should be the canonical identity
 	my $self = shift;

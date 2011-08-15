@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use base 'Padre::Task';
 use Padre::Logger;
-
+use Padre::Swarm::Message;
 use Data::Dumper;
 
 sub new {
@@ -51,18 +51,13 @@ sub run {
         cb => sub { $self->read_task_queue },
     );
     TRACE( "Timer - $queue_poller" ) if DEBUG;
-    
 
     $self->{run}++;
     $bailout->recv;
     
     $self->_teardown_connections;
-    
-    #$self->handle->message( OWNER => $object, @lines );
-    
-    
+
     return 1;
-    
 }
 
 sub _setup_connections {
@@ -139,6 +134,7 @@ sub prepare {
 sub send_global {
     my $self = shift;
     my $message = shift;
+    TRACE( "Sending GLOBAL message " , Dumper $message );
     $self->{global}->send($message);
     
 }
@@ -147,18 +143,24 @@ sub send_global {
 sub send_local {
     my $self = shift;
     my $message = shift;
+    TRACE( "Sending LOCAL message " , Dumper $message );
     $self->{local}->send($message);
     
 }
 
 sub read_task_queue {
     my $self = shift;
-    TRACE( 'Read task queue from Wx' ) if DEBUG;
+    my $cancelled = $self->cancel;
     while( my $message = $self->dequeue_nb ) {
         TRACE( 'Unhandled Incoming message' . Dumper $message );
     
     };
-
+    if ( $cancelled ) {
+        TRACE( 'Cancelled! - bailing out of event loop' ) if DEBUG;
+        $self->{bailout}->send;
+    }
+    
+    return;
 }
 
 sub _recv {
@@ -174,7 +176,10 @@ sub _connect {
     my $origin = shift;
     my $message = shift;
     $self->handle->message( STATUS => "Swarm $origin transport connected " );
-    
+    my $m = new Padre::Swarm::Message
+                origin => $origin,
+                type   => 'connect';
+    $self->handle->message( OWNER => $m );
 }
 
 
@@ -183,6 +188,10 @@ sub _disconnect {
     my $origin = shift;
     my $message = shift;
     $self->handle->message( STATUS => "Swarm $origin transport DISCONNECTED ");
+    my $m = new Padre::Swarm::Message
+                origin => $origin,
+                type   => 'disconnect';
+    $self->handle->message( OWNER => $m );
 }
 
 1;
