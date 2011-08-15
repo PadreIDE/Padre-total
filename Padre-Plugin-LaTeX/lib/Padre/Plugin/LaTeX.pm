@@ -15,9 +15,9 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.85,
-	'Padre::Document' => 0.85,
-	'Padre::Wx::Main' => 0.85;
+	'Padre::Plugin'   => 0.89,
+	'Padre::Document' => 0.89,
+	'Padre::Wx::Main' => 0.89;
 }
 
 sub registered_documents {
@@ -55,9 +55,14 @@ sub menu_plugins_simple {
 sub plugin_disable {
 	my $self = shift;
 	
-	require Class::Unload;
-	Class::Unload->unload('Padre::Document::LaTeX');
-	Class::Unload->unload('Padre::Document::BibTeX');
+	if ( $self->{about_box} ) { 
+		$self->{about_box}->Destroy; 
+		$self->{about_box} = undef; 
+ 	} 	
+	
+	#require Class::Unload;
+	#Class::Unload->unload('Padre::Document::LaTeX');
+	#Class::Unload->unload('Padre::Document::BibTeX');
 	
 	return 1;
 }
@@ -69,8 +74,8 @@ sub show_about {
 	my $self = shift;
 
 	# Generate the About dialog
-	my $about = Wx::AboutDialogInfo->new;
-	$about->SetName( Wx::gettext('LaTeX Plug-in') );
+	my $self->{about} = Wx::AboutDialogInfo->new;
+	$self->{about}->SetName( Wx::gettext('LaTeX Plug-in') );
 	my $authors     = 'Zeno Gantner, Ahmad M. Zawawi';
 	my $description = Wx::gettext( <<'END' );
 LaTeX support for Padre
@@ -80,10 +85,10 @@ For syntax highlighting of BibTeX files install the Kate plugin: Padre::Plugin::
 Copyright 2010, 2011 %s
 This plug-in is free software; you can redistribute it and/or modify it under the same terms as Padre.
 END
-	$about->SetDescription( sprintf( $description, $authors ) );
+	$self->{about}->SetDescription( sprintf( $description, $authors ) );
 
 	# Show the About dialog
-	Wx::AboutBox($about);
+	Wx::AboutBox($self->{about});
 
 	return;
 }
