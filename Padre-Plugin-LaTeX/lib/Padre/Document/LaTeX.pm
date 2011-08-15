@@ -70,7 +70,7 @@ my @latex_commands = qw/
 	rangle right rightarrow Rightarrow rightleftarrow Rightleftarrow
 	seteq substack sum text vee wedge
 
-	bigskip DeclareOptionBeamer defbeamertemplate frame frametitle mode note
+	bigskip DeclareOptionBeamer defbeamertemplate frame framesubtitle frametitle mode note
 	ProcessOptionsBeamer
 	setbeamercolor setbeamersize setbeamertemplate usebeamerfont usetheme
 
