@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.21_06  TBA
+0.21_06  2011.8.15
     - Basic variable interpolation for:  "" qq{} `` qx{} // m{} qr{} s{}{} (KHMAN)
     - Fix build failure on wxWidgets 2.8.10 (MARKD)
 
