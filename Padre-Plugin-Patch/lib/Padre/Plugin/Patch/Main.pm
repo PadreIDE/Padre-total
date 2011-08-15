@@ -125,14 +125,16 @@ sub current_files {
 	my $open_files = scalar(@label);
 
 	# lets have a look around
-	
+	# where the F is vcs ?
+
 	# say $current->vcs;
-	
+
 	# p @label;
 	my $open_file_info = ();
 	my $changed;
 
 	for ( 0 .. ( $open_files - 1 ) ) {
+
 		# say $_;
 		# p $notebook->GetPageText($_);
 
@@ -140,16 +142,18 @@ sub current_files {
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
-				'vcs' => 'todo',
+				'vcs'      => 'todo',
+
 				# saved, changed, modified
+				'current' => 'todo',
 				'changed' => 0,
 			},
 		);
-		
+
 		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
 			say 'file changed from disk';
 			$open_file_info->{$_}->{'changed'} = 1;
-		} 
+		}
 	}
 	p $open_file_info;
 
@@ -285,28 +289,26 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Cookbook::Recipe04::Main
+Padre::Plugin::Patch::Main::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Cookbook::Recipe04::Main version 0.22
+This document describes Padre::Plugin::Patch::Main version 0.22
 
 =head1 DESCRIPTION
-
-Recipe04 - ConfigDB
 
 Main is the event handler for MainFB, it's parent class.
 
 It displays a Main dialog with an about button.
-It's a basic example of a Padre plug-in using a WxDialog.
+
 
 =head1 SUBROUTINES/METHODS
 
 =over 4
 
-=item new / BUILD
+=item new
 
-Constructor. Should be called with $main by CookBook->load_dialog_main().
+Constructor. Should be called with $main by Patch->load_dialog_main().
 
 =item about_clicked
 
@@ -340,21 +342,6 @@ removes tuples which don't have a valid session reference
 
 for use with wx::frame todo
 
-=item load_dialog_about ()
-
-loads our dialog Main, only allows one instance!
-
-    require Padre::Plugin::Cookbook::Recipe04::About;
-    $self->{dialog} = Padre::Plugin::Cookbook::Recipe04::About->new( $main );
-    $self->{dialog}->Show;
-
-=item plugin_disable ()
-
-Required method with minimum requirements
-
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::About');
-    $self->unload('Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB');
-
 =item set_up
 
 used 
@@ -376,8 +363,8 @@ Is a toggle to increase the width of the dialog of the viewing area
 
 =head1 DEPENDENCIES
 
-Padre::Plugin::Cookbook, Padre::Plugin::Cookbook::Recipe04::FBP::MainFB, 
-Padre::Plugin::Cookbook::Recipe04::About, Padre::Plugin::Cookbook::Recipe0::FBP::AboutFB
+Padre::Plugin Padre::Plugin::Patch::Main, 
+Padre::Plugin::Patch::FBP::MainFB, Text::Diff, Text::Patch,
 Data::Printer
 
 =head1 AUTHOR
