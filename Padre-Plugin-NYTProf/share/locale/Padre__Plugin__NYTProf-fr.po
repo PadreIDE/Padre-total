@@ -1,0 +1,42 @@
+# French translations for Padre-Plugin-NYTProf.
+# Copyright (C) 2011 Olivier Mengué.
+# This file is distributed under the same license as the Padre-Plugin-NYTProf package.
+# Olivier Mengué <dolmen@cpan.org>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Padre-Plugin-NYTProf\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-23 11:08+0300\n"
+"PO-Revision-Date: 2011-08-17 00:37+0100\n"
+"Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
+"Language-Team: Olivier Mengué <dolmen@cpan.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: French\n"
+
+#: lib/Padre/Plugin/NYTProf.pm:16
+msgid "NYTProf - Perl Profiler"
+msgstr "NYTProf - Profileur Perl"
+
+#: lib/Padre/Plugin/NYTProf.pm:28
+msgid "Run Profiling"
+msgstr "Lancer le profilage"
+
+#: lib/Padre/Plugin/NYTProf.pm:29
+msgid "Generate Profiling Report"
+msgstr "Générer le rapport de profilage"
+
+#: lib/Padre/Plugin/NYTProf.pm:30
+msgid "Show Generated Profiling Report"
+msgstr "Afficher le rapport de profilage généré"
+
+#: lib/Padre/Plugin/NYTProf.pm:34
+msgid "About"
+msgstr "À propos"
+
+#: lib/Padre/Plugin/NYTProf.pm:116
+msgid "This system is running NYTProf version "
+msgstr "Le système exécute NYTProf version "
+
