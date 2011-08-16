@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.21_07  TBA
+0.21_07  2011.8.16
     - Added variable interpolation for here-docs (KHMAN)
 
 0.21_06  2011.8.15
