@@ -549,9 +549,11 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 	// Includes strings (may be multi-line), numbers (additional state), format
 	// bodies, as well as POD sections.
 	if (initStyle == SCE_PL_HERE_Q
-	        || initStyle == SCE_PL_HERE_QQ
-	        || initStyle == SCE_PL_HERE_QX
-	        || initStyle == SCE_PL_FORMAT
+	 || initStyle == SCE_PL_HERE_QQ
+	 || initStyle == SCE_PL_HERE_QX
+	 || initStyle == SCE_PL_FORMAT
+	 || initStyle == SCE_PL_HERE_QQ_VAR
+	 || initStyle == SCE_PL_HERE_QX_VAR
 	   ) {
 		int delim = (initStyle == SCE_PL_FORMAT) ? SCE_PL_FORMAT_IDENT:SCE_PL_HERE_DELIM;
 		while ((startPos > 1) && (styler.StyleAt(startPos) != delim)) {
@@ -824,13 +826,31 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 				if (HereDoc.DelimiterLength == 0 || sc.Match(HereDoc.Delimiter)) {
 					sc.Forward(HereDoc.DelimiterLength);
 					if (sc.atLineEnd || ((sc.ch == '\r' && sc.chNext == '\n'))) {
-					sc.SetState(SCE_PL_DEFAULT);
-					backFlag = BACK_NONE;
-					HereDoc.State = 0;
+						sc.SetState(SCE_PL_DEFAULT);
+						backFlag = BACK_NONE;
+						HereDoc.State = 0;
+						if (!sc.atLineEnd)
+							sc.Forward();
+						break;
+					}
 				}
-			}
-				while (!sc.atLineEnd)
+				if (sc.state == SCE_PL_HERE_Q) {
+					while (!sc.atLineEnd)
+						sc.Forward();
+					break;
+				}
+				while (!sc.atLineEnd) {
+					if (sc.ch == '\\') {
+						if (sc.state >= SCE_PL_STRING_VAR)
+							sc.SetState(sc.state - INTERPOLATE_SHIFT);
+						if (sc.chNext != '\r' && sc.chNext != '\n')
+							sc.Forward();
+					} else if (sc.state < SCE_PL_STRING_VAR || !setWord.Contains(sc.ch))
+						VarInterpolation(sc);
 					sc.Forward();
+				}
+				if (sc.state >= SCE_PL_STRING_VAR)
+					sc.SetState(sc.state - INTERPOLATE_SHIFT);
 			}
 			break;
 		case SCE_PL_POD:
@@ -923,7 +943,7 @@ void SCI_METHOD LexerPerl::Lex(unsigned int startPos, int length, int initStyle,
 					Quote.Count++;
 			} else if (sc.ch == Quote.Up) {
 				Quote.Count++;
-			} else if (sc.state == SCE_PL_REGSUBST && Quote.Up != '\'' && Quote.Rep == 2)
+			} else if (sc.state == SCE_PL_REGSUBST && Quote.Up != '\'')
 				VarInterpolation(sc);
 			break;
 		case SCE_PL_STRING:

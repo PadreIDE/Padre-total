@@ -41,6 +41,7 @@ EOF
 #     a @@ delimiter pair has priority over @var usage
 # [2] issues with $ in pattern, documentation specifically mentions
 #     that $( $) $| are not interpolated
+#     @+ and @- are also not interpolated
 # [3] "EOF", `EOF` or EOF interpolates, 'EOF' or \EOF doesn't
 #     therefore, SCE_PL_HERE_Q is not interpolated
 
@@ -58,11 +59,6 @@ y{}{};	# transliteration [4]		SCE_PL_REGSUBST
 #--------------------------------------------------------------------------
 # Limitations of preliminary variable interpolation implementation:
 # * Under consideration for future implementation.
-# * IMPORTANT:
-#   For (2),(3) the best way is to scan until the end of the block, to
-#   the ending delimiter, then process the entire string for interpolations.
-#   Perl parses them in much the same way. With the endpoint known, any
-#   incomplete interpolation {} [] brackets is easily found.
 #
 # (1) whitespace not allowed (but in reality, perl allows whitespace
 #     in various places, especially within [] {} subscripts)
@@ -70,23 +66,20 @@ y{}{};	# transliteration [4]		SCE_PL_REGSUBST
 #	multiple lines also work, but users unlikely to code this way
 #	(but there seems to be various exceptions...)
 #
-# (2) ${bareword} style not detected
-#	related to (1), a common idiom used when variable is adjacent
-#       to identifier chars, the bareword is promoted if valid
-#	not many though in lib/perl5 modules
-#
-# (3) subscription elements not detected
+# (2) subscription elements not detected
 #	{} [] -> (or a combination)
 #	heuristics likely to be greedy matching
+#	it may in fact be desirable NOT to highlight any further, because
+#	for example, $foo[$bar] look just fine with simple highlighting
 #
-# (4) special variables not detected, except for $_ @_
-#	@_ @+ @- was specifically mentioned to not require braces like @{+}
-#	$-type special vars is problematic within s{}{} (see [2] above)
-#
-# (5) 'e'/'ee' modifiers for s{}{} causes evaluation of the REPLACEMENT
+# (3) 'e'/'ee' modifiers for s{}{} causes evaluation of the REPLACEMENT
 #	this is related to eval() which evaluates a string as a Perl expr
 #	won't touch this with a ten-yard stick...
 #
+# * VT/FF behaviour not precisely checked, but VT seems to be usually
+#   legal whitespace within {} and maybe [] too... won't touch this
+# * extended regexes also allows comments and stuff like that, but
+#   highlighting all kinds of regex stuff seems like overkill...
 #--------------------------------------------------------------------------
 
 $foo = "baz";	# FOR REFERENCE: example variables to be interpolated
@@ -103,13 +96,14 @@ second line";	# multiline
 
 "\$";		# escaped $
 "text\$text";
+"$text\$text";
 "$";		# ERROR, perl says $name expected or escape with \$
 "$$";		# pid
 "text$$text";	# perl recognizes $$text
 
 "$foo";		# simple var
 "text$foo;;";
-"$foo\n";	# terminated by \
+"$foo\n";	# var terminated by \
 "$$foo";	# reference $foo = \"baz";
 "text$$foo;;";
 "$$$foo";	# reference $foo = \\"baz"; and so on...
@@ -123,13 +117,11 @@ second line";	# multiline
 "${foo}";	# bareword style
 "text${foo}text";
 "$ {  foo  }";	# whitespace behaviour same as above
-
-# almost every operator is used for $-style special variables
-# not implemented for now, but checked some cases:
+		# within {}, all whitespace work, including VT
 
 "-$\-";		# outputs "--" where $\ == $OUTPUT_RECORD_SEPARATOR
 		# but "$\" fails to parse! perl needs a trailing char
-"${";		# ERROR, no closing brace (future TODO)
+"${";		# ERROR, no closing brace
 "$}";		# not a special variable, works, probably undef var
 "$"";		"# ERROR, string's delimiter char has priority
 
@@ -150,13 +142,14 @@ $foo+$foo;";			# multiline
 
 "\@";		# escaped @
 "text\@text";
+"@text\@text";
 "@";		# no error! prints as '@'
 "@@";		# prints as '@@'
 "text@@text";	# perl recognizes @text
 
 "@boo";		# simple array
 "text@boo;;";
-"@boo\n";	# terminated by \
+"@boo\n";	# var terminated by \
 "@bo";		# empty string, probably undef array
 "@@boo";	# the @boo is valid, prints '@one two three'
 "@$boo";	# valid, prints 'one two three' if $boo='boo';
@@ -172,11 +165,8 @@ $foo+$foo;";			# multiline
 "@{ boo }";	# whitespace within {} works, including newlines
 "@ {boo}";	# nope, prints '@ {boo}'
 
-# the special variables for @ are:
-@_ @F @INC @+ @- @ARGV
-# only @_ @+ @- uses operators as second char
 "-@\-";		# nope, prints '-@-', not a special var
-"@{";		# ERROR, no closing brace (future TODO)
+"@{";		# ERROR, no closing brace
 "@}";		# all other bracket chars print as literal chars
 
 # basic variables, these follow identifier rules
@@ -192,7 +182,8 @@ $foo+$foo;";			# multiline
 # mixture of adjacent interpolated vars (untested)
 "$foo$foo"; "$foo$$$foo"; "$foo$#boo"; "$foo@boo"; "$foo@$$boo";
 "@boo$foo"; "@boo$$$foo"; "@boo$#boo"; "@boo@boo"; "@boo@$$boo";
-"$foo$"; "$foo$$$"; "$foo$#"; "$foo@"; "$foo@$$";	# adjacent non-vars
+"$foo$"; "$foo$#"; "$foo@";	# adjacent non-vars
+"$foo$$$"; "$foo@$$";		# $$$ and @$$ interpolated to empty
 
 #--------------------------------------------------------------------------
 # qq{} literal (mostly tested samples)
@@ -205,13 +196,14 @@ qq\stuff\; qq\\;			# backslash delimiter
 
 qq|\$|;		# escaped $
 qq.text\$text.;
+qq.$text\$text.;
 qq*$*;		# ERROR, perl says $name expected or escape with \$
 qq~$$~;		# pid
 qq~text$$text~;	# perl recognizes $$text
 
 qq+$foo+;	# simple var
 qq _text$foo;;_;
-qq@$foo\n@;	# terminated by \
+qq@$foo\n@;	# var terminated by \
 qq($$foo);	# reference $foo = \"baz";
 qq<text$$foo;;>;
 qq[$$$foo];	# reference $foo = \\"baz"; and so on...
@@ -229,10 +221,7 @@ qq/$ { foo }/;	# this sample legal (not fully checked)
 qq;-$\-;;	# outputs "--" where $\ == $OUTPUT_RECORD_SEPARATOR
 		# but "$\" fails to parse! perl needs a trailing char
 
-# almost every operator is used for $-style special variables
-# not implemented for now, but checked some cases:
-
-qq(${);		# ERROR, no closing brace (future TODO)
+qq(${);		# ERROR, no closing brace
 qq($});		# not a special variable, works, probably undef var
 
 qq($#);		# ERROR, special var $# was removed in Perl 5.10
@@ -252,13 +241,14 @@ qq($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]);
 
 qq|\@|;		# escaped @
 qq.text\@text.;
+qq.$text\$text.;
 qq*@*;		# no error! prints as '@'
 qq~@@~;		# prints as '@@'
 qq~text@@text~;	# perl recognizes @text
 
 qq+@boo+;	# simple array
 qq _text@boo;;_;
-qq^@boo\n^;	# terminated by \
+qq^@boo\n^;	# var terminated by \
 qq,@bo,;	# empty string, probably undef array
 qq?@@boo?;	# the @boo is valid, prints '@one two three'
 qq(@$boo);	# valid, prints 'one two three' if $boo='boo';
@@ -274,9 +264,8 @@ qq#@{boo}#;	# bareword style
 qq&@{ boo }&;	# this sample legal (not fully checked)
 qq/@ {boo}/;	# nope, prints '@ {boo}'
 
-# only @_ @+ @- uses operators as second char
 qq;-@\-;;	# nope, prints '-@-', not a special var
-qq(@{);		# ERROR, no closing brace (future TODO)
+qq(@{);		# ERROR, no closing brace
 qq(@});		# all other bracket chars print as literal chars
 
 # basic variables, these follow identifier rules
@@ -292,7 +281,8 @@ qq(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]);
 # mixture of adjacent interpolated vars (untested)
 qq($foo$foo); qq($foo$$$foo); qq($foo$#boo); qq($foo@boo); qq($foo@$$boo);
 qq(@boo$foo); qq(@boo$$$foo); qq(@boo$#boo); qq(@boo@boo); qq(@boo@$$boo);
-qq($foo$); qq($foo$$$); qq($foo$#); qq($foo@); qq($foo@$$);	# adjacent non-vars
+qq($foo$); qq($foo$#); qq($foo@); 	# adjacent non-vars
+qq($foo$$$); qq($foo@$$);		# $$$ and @$$ interpolated to empty
 
 # nested delimiters
 qq((text)$foo(text));	# var terminated by paired delimiter
@@ -320,13 +310,14 @@ second line`;	# multiline
 
 `echo \$`;	# escaped $
 `echo text\$text`;
+`echo $text\$text`;
 `echo $`;	# ERROR, perl says $name expected or escape with \$
 `echo $$`;	# pid
 `echo text$$text`;	# perl recognizes $$text
 
 `echo $foo`;		# simple var
 `echo text$foo;`;
-`echo $foo\n`;	# terminated by \
+`echo $foo\n`;	# var terminated by \
 `echo $$foo`;	# reference $foo = \"baz";
 `echo text$$foo;`;
 `echo $$$foo`;	# reference $foo = \\"baz"; and so on...
@@ -341,12 +332,9 @@ second line`;	# multiline
 `echo text${foo}text`;
 `echo $ {  foo  }`;	# whitespace behaviour same as above
 
-# almost every operator is used for $-style special variables
-# not implemented for now, but checked some cases:
-
 `echo -$\-`;	# outputs "--" where $\ == $OUTPUT_RECORD_SEPARATOR
 		# but "$\" fails to parse! perl needs a trailing char
-`echo ${`;	# ERROR, no closing brace (future TODO)
+`echo ${`;	# ERROR, no closing brace
 `echo $}`;	# not a special variable, works, probably undef var
 `echo $``;	`# ERROR, string's delimiter char has priority
 
@@ -367,13 +355,14 @@ $foo+$foo;`;			# multiline
 
 `echo \@`;		# escaped @
 `echo text\@text`;
+`echo $text\$text`;
 `echo @`;		# no error! prints as '@'
 `echo @@`;		# prints as '@@'
 `echo text@@text`;	# perl recognizes @text
 
 `echo @boo`;		# simple array
 `echo text@boo;`;
-`echo @boo\n`;		# terminated by \
+`echo @boo\n`;		# var terminated by \
 `echo @bo`;		# empty string, probably undef array
 `echo @@boo`;		# the @boo is valid, prints '@one two three'
 `echo @$boo`;		# valid, prints 'one two three' if $boo='boo';
@@ -389,9 +378,8 @@ $foo+$foo;`;			# multiline
 `echo @{ boo }`;	# whitespace within {} works, including newlines
 `echo @ {boo}`;		# nope, prints '@ {boo}'
 
-# only @_ @+ @- uses operators as second char
 `echo -@\-`;		# nope, prints '-@-', not a special var
-`echo @{`;		# ERROR, no closing brace (future TODO)
+`echo @{`;		# ERROR, no closing brace
 `echo @}`;		# all other bracket chars print as literal chars
 
 # basic variables, these follow identifier rules
@@ -407,7 +395,8 @@ $foo+$foo;`;			# multiline
 # mixture of adjacent interpolated vars (untested)
 `$foo$foo`; `$foo$$$foo`; `$foo$#boo`; `$foo@boo`; `$foo@$$boo`;
 `@boo$foo`; `@boo$$$foo`; `@boo$#boo`; `@boo@boo`; `@boo@$$boo`;
-`$foo$`; `$foo$$$`; `$foo$#`; `$foo@`; `$foo@$$`;	# adjacent non-vars
+`$foo$`; `$foo$#`; `$foo@`; 	# adjacent non-vars
+`$foo$$$`; `$foo@$$`;		# $$$ and @$$ interpolated to empty
 
 #--------------------------------------------------------------------------
 # qx{} command (mostly tested samples)
@@ -422,13 +411,14 @@ qx\stuff\; qx\\;			# backslash delimiter
 
 qx|echo \$|;		# escaped $
 qx.echo text\$text.;	# prints 'text', that's funny...
+qx.echo $text\$text.;
 qx*echo $*;		# ERROR, perl says $name expected or escape with \$
 qx~echo $$~;		# pid
 qx~echo text$$text~;	# perl recognizes $$text
 
 qx+echo $foo+;		# simple var
 qx _echo text$foo;_;
-qx@echo $foo\n@;	# terminated by \
+qx@echo $foo\n@;	# var terminated by \
 qx(echo $$foo);		# reference $foo = \"baz";
 qx<echo text$$foo;>;
 qx[echo $$$foo];	# reference $foo = \\"baz"; and so on...
@@ -446,10 +436,7 @@ qx/echo $ { foo }/;	# this sample legal (not fully checked)
 qx;echo -$\-;;		# outputs "--" where $\ == $OUTPUT_RECORD_SEPARATOR
 			# but "$\" fails to parse! perl needs a trailing char
 
-# almost every operator is used for $-style special variables
-# not implemented for now, but checked some cases:
-
-qx(echo ${);		# ERROR, no closing brace (future TODO)
+qx(echo ${);		# ERROR, no closing brace
 qx(echo $});		# not a special variable, works, probably undef var
 
 qx(echo $#);		# ERROR, special var $# was removed in Perl 5.10
@@ -469,13 +456,14 @@ qx($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]);
 
 qx|echo \@|;		# escaped @
 qx.echo text\@text.;
+qx.echo @text\@text.;
 qx*echo @*;		# no error! prints as '@'
 qx~echo @@~;		# prints as '@@'
 qx~echo text@@text~;	# perl recognizes @text
 
 qx+echo @boo+;		# simple array
 qx _echo text@boo;_;
-qx^echo @boo\n^;	# terminated by \
+qx^echo @boo\n^;	# var terminated by \
 qx,echo @bo,;		# empty string, probably undef array
 qx?echo @@boo?;		# the @boo is valid, prints '@one two three'
 qx(echo @$boo);		# valid, prints 'one two three' if $boo='boo';
@@ -491,9 +479,8 @@ qx#echo @{boo}#;	# bareword style
 qx&echo @{ boo }&;	# this sample legal (not fully checked)
 qx/echo @ {boo}/;	# nope, prints '@ {boo}'
 
-# only @_ @+ @- uses operators as second char
 qx;-echo @\-;;		# nope, prints nothing, unclear what echo is doing
-qx(echo @{);		# ERROR, no closing brace (future TODO)
+qx(echo @{);		# ERROR, no closing brace
 qx(echo @});		# all other bracket chars print as literal chars
 
 # basic variables, these follow identifier rules
@@ -509,7 +496,8 @@ qx(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]);
 # mixture of adjacent interpolated vars (untested)
 qx($foo$foo); qx($foo$$$foo); qx($foo$#boo); qx($foo@boo); qx($foo@$$boo);
 qx(@boo$foo); qx(@boo$$$foo); qx(@boo$#boo); qx(@boo@boo); qx(@boo@$$boo);
-qx($foo$); qx($foo$$$); qx($foo$#); qx($foo@); qx($foo@$$);	# adjacent non-vars
+qx($foo$); qx($foo$#); qx($foo@); 	# adjacent non-vars
+qx($foo$$$); qx($foo@$$);		# $$$ and @$$ interpolated to empty
 
 # nested delimiters
 qx((text)$foo(text));	# var terminated by paired delimiter
@@ -535,19 +523,23 @@ print ($foo =~ /$foo/);	# scalar 1 for the match
 # - if something 'matches' in the following, it means that the regex
 #   matched something in a given string and returned scalar 1
 
+# Better way to verify, print a normalized string:
+print qr/$foo/;
+
 /stuff/c;	# FOR REFERENCE: basic
 /multiline string
 second line/;	# multiline
 
 /\$/;		# escaped $, matches '$'
 /text\$text/;	# matches 'text$text'
+/$text\$text/;
 /$/;		# regex end of line
 /$$/;		# matches $$ (pid)
 /text$$text/;	# minimum match 'text', $$text interpolated
 
 /$foo/;		# simple var, matches 'baz'
 /text$foo;;/;	# matches 'textbaz;;'
-/$foo\n/;	# terminated by \, matches "baz\n"
+/$foo\n/;	# var terminated by \, matches "baz\n"
 /$$foo/;	# reference $foo = \"baz";, minimum match 'baz'
 /text$$foo;;/;	# minimum match 'textbaz;;'
 /$$$foo/;	# reference $foo = \\"baz";, minimum match 'baz'
@@ -565,10 +557,7 @@ second line/;	# multiline
 /${  foo  }/;		# but whitespace within {} works
 			# spaces, tabs, multiple lines, VT, FF all work!
 
-# no checking behaviour of special vars in regexes
-# not implemented for now, only checked braces:
-
-/${/;		# ERROR, no closing brace (future TODO)
+/${/;		# ERROR, no closing brace
 
 /$#/;		# ERROR, syntax error, no mention of special var $#
 /$#boo/;	# matches '2', last index of @boo array
@@ -588,13 +577,14 @@ $foo+$foo;/;			# multiline
 
 /\@/;		# escaped @, matches '@'
 /text\@text/;	# matches 'text@text'
+/@text\@text/;
 /@/;		# matches '@'
 /@@/;		# matches '@@'
 /text@@text/;	# minimum match 'text@', @text interpolated
 
 /@boo/;		# simple array, matches 'one two three'
 /text@boo;;/;	# matches 'textone two three;;'
-/@boo\n/;	# terminated by \, matches "one two three\n"
+/@boo\n/;	# var terminated by \, matches "one two three\n"
 /@bo/;		# matches anything, probably undef array
 /@@boo/;	# the @boo is valid, matches '@one two three'
 /@$boo/;	# valid, matches 'one two three' if $boo='boo';
@@ -610,7 +600,7 @@ $foo+$foo;/;			# multiline
 /@{ boo }/;	# whitespace within {} works (barely tested)
 /@ {boo}/;	# matches '@ {boo}', not interpolated
 
-/@{/;		# ERROR, no closing brace (future TODO)
+/@{/;		# ERROR, no closing brace
 
 # basic variables, these follow identifier rules
 /@boo/; /@abc123/; /@_/; /@_abc/; /@_123/; /@a_1/;
@@ -625,7 +615,11 @@ $foo+$foo;/;			# multiline
 # mixture of adjacent interpolated vars (untested)
 /$foo$foo/; /$foo$$$foo/; /$foo$#boo/; /$foo@boo/; /$foo@$$boo/;
 /@boo$foo/; /@boo$$$foo/; /@boo$#boo/; /@boo@boo/; /@boo@$$boo/;
-/$foo$/; /$foo$$$/; /$foo$#/; /$foo@/; /$foo@$$/;	# adjacent non-vars
+/$foo$/; /$foo$#/; /$foo@/;	# adjacent non-vars ???
+/$foo$$$/; 		# $$$ interpolated to empty, min match 'baz'
+/$foo$$/;		# $$ is pid, min match ('baz'.$$)
+/$foo@$$/;		# @$$ interpolated to empty, min match 'baz'
+/$foo@$/;		# @$ interpolated to empty, min match 'baz'
 
 # tests for modifier handling in interpolation code
 /$foo/c; /@boo/c;
@@ -639,15 +633,19 @@ m!stuff!; m mstuffm; m 1stuff1;	# various delimiters
 m(foo); m[foo]; m{foo}; m<foo>;	# 4 kinds of opposite pairs
 m\stuff\; m\\;			# backslash delimiter
 
+# Better way to verify, print a normalized string:
+print qr/$foo/;
+
 m|\$|;		# escaped $, matches '$'
 m.text\$text.;	# matches 'text$text'
+m.$text\$text.;
 m*$*;		# regex end of line
 m~$$~;		# matches $$ (pid)
 m~text$$text~;	# minimum match 'text', $$text interpolated
 
 m+$foo+;	# simple var, matches 'baz'
 m _text$foo;;_;	# matches 'textbaz;;'
-m@$foo\n@;	# terminated by \, matches "baz\n"
+m@$foo\n@;	# var terminated by \, matches "baz\n"
 m($$foo);	# reference $foo = \"baz";, minimum match 'baz'
 m<text$$foo;;>;	# minimum match 'textbaz;;'
 m[$$$foo];	# reference $foo = \\"baz";, minimum match 'baz'
@@ -665,10 +663,7 @@ m/$ {  foo  }/;		# no match, probably not interpolated
 m;${  foo  };;		# but whitespace within {} works
 			# spaces, tabs, multiple lines, VT, FF all work!
 
-# no checking behaviour of special vars in regexes
-# not implemented for now, only checked braces:
-
-m(/${);		# ERROR, no closing brace (future TODO)
+m(/${);		# ERROR, no closing brace
 
 m($#);		# ERROR, syntax error, no mention of special var $#
 m($#boo);	# matches '2', last index of @boo array
@@ -688,13 +683,14 @@ m($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]);
 
 m|\@|;		# escaped @, matches '@'
 m.text\@text.;	# matches 'text@text'
+m.@text\@text.;
 m*@*;		# matches '@'
 m~@@~;		# matches '@@'
 m~text@@text~;	# minimum match 'text@', @text interpolated
 
 m+@boo+;	# simple array, matches 'one two three'
 m _text@boo;;_;	# matches 'textone two three;;'
-m^@boo\n^;	# terminated by \, matches "one two three\n"
+m^@boo\n^;	# var terminated by \, matches "one two three\n"
 m,@bo,;		# matches anything, probably undef array
 m?@@boo?;	# the @boo is valid, matches '@one two three'
 m(@$boo);	# valid, matches 'one two three' if $boo='boo';
@@ -710,7 +706,7 @@ m#@{boo}#;	# bareword style, matches 'one two three'
 m&@{ boo }&;	# whitespace within {} works (barely tested)
 m/@ {boo}/;	# matches '@ {boo}', not interpolated
 
-m!@{!;		# ERROR, no closing brace (future TODO)
+m!@{!;		# ERROR, no closing brace
 
 # basic variables, these follow identifier rules
 m(@boo); m(@abc123); m(@_); m(@_abc); m(@_123); m(@a_1);
@@ -725,7 +721,8 @@ m(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]);
 # mixture of adjacent interpolated vars (untested)
 m($foo$foo); m($foo$$$foo); m($foo$#boo); m($foo@boo); m($foo@$$boo);
 m(@boo$foo); m(@boo$$$foo); m(@boo$#boo); m(@boo@boo); m(@boo@$$boo);
-m($foo$); m($foo$$$); m($foo$#); m($foo@); m($foo@$$);	# adjacent non-vars
+m($foo$); m($foo$#); m($foo@); 	# adjacent non-vars
+m($foo$$$); m($foo$$); m($foo@$$); m($foo@$);	# see // samples
 
 # nested delimiters
 m((text)$foo(text));	# var terminated by paired delimiter
@@ -754,15 +751,19 @@ qr!stuff!; qr mstuffm; qr 1stuff1;	# various delimiters
 qr(foo); qr[foo]; qr{foo}; qr<foo>;	# 4 kinds of opposite pairs
 qr\stuff\; qr\\;			# backslash delimiter
 
+# Better way to verify, print a normalized string:
+print qr/$foo/;
+
 qr|\$|;		# escaped $, matches '$'
 qr.text\$text.;	# matches 'text$text'
+qr.$text\$text.;
 qr*$*;		# regex end of line
 qr~$$~;		# matches $$ (pid)
 qr~text$$text~;	# minimum match 'text', $$text interpolated
 
 qr+$foo+;		# simple var, matches 'baz'
 qr _text$foo;;_;	# matches 'textbaz;;'
-qr@$foo\n@;		# terminated by \, matches "baz\n"
+qr@$foo\n@;		# var terminated by \, matches "baz\n"
 qr($$foo);		# reference $foo = \"baz";, minimum match 'baz'
 qr<text$$foo;;>;	# minimum match 'textbaz;;'
 qr[$$$foo];		# reference $foo = \\"baz";, minimum match 'baz'
@@ -780,10 +781,7 @@ qr/$ {  foo  }/;	# no match, probably not interpolated
 qr;${  foo  };;		# but whitespace within {} works
 			# spaces, tabs, multiple lines, VT, FF all work!
 
-# no checking behaviour of special vars in regexes
-# not implemented for now, only checked braces:
-
-qr(/${);	# ERROR, no closing brace (future TODO)
+qr(/${);	# ERROR, no closing brace
 
 qr($#);			# ERROR, syntax error, no mention of special var $#
 qr($#boo);		# matches '2', last index of @boo array
@@ -803,13 +801,14 @@ qr($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]);
 
 qr|\@|;		# escaped @, matches '@'
 qr.text\@text.;	# matches 'text@text'
+qr.@text\@text.;
 qr*@*;		# matches '@'
 qr~@@~;		# matches '@@'
 qr~text@@text~;	# minimum match 'text@', @text interpolated
 
 qr+@boo+;		# simple array, matches 'one two three'
 qr _text@boo;;_;	# matches 'textone two three;;'
-qr^@boo\n^;		# terminated by \, matches "one two three\n"
+qr^@boo\n^;		# var terminated by \, matches "one two three\n"
 qr,@bo,;		# matches anything, probably undef array
 qr?@@boo?;		# the @boo is valid, matches '@one two three'
 qr(@$boo);		# valid, matches 'one two three' if $boo='boo';
@@ -825,7 +824,7 @@ qr#@{boo}#;	# bareword style, matches 'one two three'
 qr&@{ boo }&;	# whitespace within {} works (barely tested)
 qr/@ {boo}/;	# matches '@ {boo}', not interpolated
 
-qr!@{!;		# ERROR, no closing brace (future TODO)
+qr!@{!;		# ERROR, no closing brace
 
 # basic variables, these follow identifier rules
 qr(@boo); qr(@abc123); qr(@_); qr(@_abc); qr(@_123); qr(@a_1);
@@ -840,7 +839,8 @@ qr(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]);
 # mixture of adjacent interpolated vars (untested)
 qr($foo$foo); qr($foo$$$foo); qr($foo$#boo); qr($foo@boo); qr($foo@$$boo);
 qr(@boo$foo); qr(@boo$$$foo); qr(@boo$#boo); qr(@boo@boo); qr(@boo@$$boo);
-qr($foo$); qr($foo$$$); qr($foo$#); qr($foo@); qr($foo@$$);	# adjacent non-vars
+qr($foo$); qr($foo$#); qr($foo@); 	# adjacent non-vars
+qr($foo$$$); qr($foo$$); qr($foo@$$); qr($foo@$);	# see // samples
 
 # nested delimiters
 qr((text)$foo(text));	# var terminated by paired delimiter
@@ -861,17 +861,16 @@ qr'$#boo';		# dunno what can match this
 qr!$foo!c; qr!@boo!c; qr($foo)c; qr(@boo)c;
 
 #--------------------------------------------------------------------------
-# s{}{} substitution (mostly tested samples)
-# NOTE: Interpolation is done in the first (PATTERN) section.
-#	The second section (REPLACEMENT) is problematic, since it can
-#	either use $1 etc kind of references, or it can be whole Perl
-#	expressions with the e/ee modifiers
+# s{}{} substitution PATTERN section (mostly tested samples)
 #--------------------------------------------------------------------------
 
 # Example test (if matched, entire match is substituted, and prints 'doh'):
 $_ = '$';
 s|\$|doh|;
 print "$_\n";
+
+# Better way to verify, print a normalized string:
+print qr/$foo/;
 
 # FOR REFERENCE:
 s!stuff!stuff!g; s sstuffsstuffsg; s 1stuff1stuff1g;	# various delimiters
@@ -882,13 +881,14 @@ s\stuff\stuff\; s\\\;					# backslash delimiter
 
 s|\$|doh|;		# escaped $, matches '$'
 s.text\$text.doh.;	# matches 'text$text'
+s.$text\$text.doh.;
 s*$*doh*;		# regex end of line
 s~$$~doh~;		# matches $$ (pid)
 s~text$$text~doh~;	# minimum match 'text', $$text interpolated
 
 s+$foo+doh+;		# simple var, matches 'baz'
 s _text$foo;;_doh_;	# matches 'textbaz;;'
-s@$foo\n@doh@;		# terminated by \, matches "baz\n"
+s@$foo\n@doh@;		# var terminated by \, matches "baz\n"
 s($$foo)(doh);		# reference $foo = \"baz";, minimum match 'baz'
 s<text$$foo;;><doh>;	# minimum match 'textbaz;;'
 s[$$$foo][doh];		# reference $foo = \\"baz";, minimum match 'baz'
@@ -906,10 +906,7 @@ s/$ {  foo  }/doh/;	# no match, probably not interpolated
 s;${  foo  };doh;;	# but whitespace within {} works
 			# spaces, tabs, multiple lines, VT, FF all work!
 
-# no checking behaviour of special vars in regexes
-# not implemented for now, only checked braces:
-
-s(/${)(doh);		# ERROR, no closing brace (future TODO)
+s(${)(doh);		# ERROR, no closing brace
 
 s($#)(doh);		# ERROR, syntax error, no mention of special var $#
 s($#boo)(doh);		# matches '2', last index of @boo array
@@ -929,13 +926,14 @@ s($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i])(doh);
 
 s|\@|doh|;		# escaped @, matches '@'
 s.text\@text.doh.;	# matches 'text@text'
+s.@text\@text.doh.;
 s*@*doh*;		# matches '@'
 s~@@~doh~;		# matches '@@'
 s~text@@text~doh~;	# minimum match 'text@', @text interpolated
 
 s+@boo+doh+;		# simple array, matches 'one two three'
 s _text@boo;;_doh_;	# matches 'textone two three;;'
-s^@boo\n^doh^;		# terminated by \, matches "one two three\n"
+s^@boo\n^doh^;		# var terminated by \, matches "one two three\n"
 s,@bo,doh,;		# matches anything, probably undef array
 s?@@boo?doh?;		# the @boo is valid, matches '@one two three'
 s(@$boo)(doh);		# valid, matches 'one two three' if $boo='boo';
@@ -951,7 +949,7 @@ s#@{boo}#doh#;		# bareword style, matches 'one two three'
 s&@{ boo }&doh&;	# whitespace within {} works (barely tested)
 s/@ {boo}/doh/;		# matches '@ {boo}', not interpolated
 
-s!@{!doh!;		# ERROR, no closing brace (future TODO)
+s!@{!doh!;		# ERROR, no closing brace
 
 # basic variables, these follow identifier rules
 s(@boo)(doh); s(@abc123)(doh); s(@_)(doh); s(@_abc)(doh); s(@_123)(doh); s(@a_1)(doh);
@@ -966,7 +964,8 @@ s(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i])(doh);
 # mixture of adjacent interpolated vars (untested)
 s($foo$foo)(doh); s($foo$$$foo)(doh); s($foo$#boo)(doh); s($foo@boo)(doh); s($foo@$$boo)(doh);
 s(@boo$foo)(doh); s(@boo$$$foo)(doh); s(@boo$#boo)(doh); s(@boo@boo)(doh); s(@boo@$$boo)(doh);
-s($foo$)(doh); s($foo$$$)(doh); s($foo$#)(doh); s($foo@)(doh); s($foo@$$)(doh);	# adjacent non-vars
+s($foo$)(doh); s($foo$#)(doh); s($foo@)(doh); 	# adjacent non-vars
+s($foo$$$)(doh); s($foo@$$)(doh);		# see // samples
 
 # nested delimiters
 s((text)$foo(text))(doh);	# var terminated by paired delimiter
@@ -974,11 +973,11 @@ s<<>$foo<>><doh>;
 s{${foo{bar}}}{doh};		# legal syntax, dunno meaning
 
 # wordchar delimiters
-s _$foo_doh_;		# space separator after 'm' mandatory
+s _$foo_doh_;		# space separator after 's' mandatory
 s 1$foo1doh1;		# delimiter is not consumed by interpolated var
 s m$foomdohm;
 
-# m{} does not interpolate when a '' delimiter pair is used
+# s{}{} does not interpolate when a '' delimiter pair is used
 s'$foo'doh';		# dunno what can match this
 s'@boo'doh';		# '@boo'
 s'$#boo'doh';		# dunno what can match this
@@ -988,13 +987,388 @@ s!$foo!doh!c; s!@boo!doh!c;
 s($foo)(doh)c; s(@boo)(doh)c;
 s{$foo}  {doh}c; s{@boo}  {doh}c;
 
-# REPLACEMENT segment should not have any interpolation highlighting
-s!stuff!$foo!; s!stuff!$#foo!; s!stuff!@boo!;
+#--------------------------------------------------------------------------
+# s{}{} substitution REPLACEMENT section (mostly tested samples)
+#--------------------------------------------------------------------------
+
+# Example test (we want to study the behaviour of the RHS):
+$_ = '';
+s||doh|;
+print "$_\n";
+
+# FOR REFERENCE:
+s!stuff!stuff!g; s sstuffsstuffsg; s 1stuff1stuff1g;	# various delimiters
+s(stuff)(stuff); s[stuff][stuff];			# 4 kinds of opposite pairs
+s{stuff}{stuff}; s<stuff><stuff>;
+s(stuff)[stuff]; s{stuff}<stuff>; s[stuff]!stuff!;	# mixed delimiters
+s\stuff\stuff\; s\\\;					# backslash delimiter
+
+s||\$|;			# escaped $, outputs '$'
+s..text\$text.;		# outputs 'text$text'
+s..$text\$text.;
+s**$*;			# ERROR, perl says $name expected or escape with \$
+s~~$$~;			# outputs $$ (pid)
+s~~text$$text~;		# outputs 'text', $$text interpolated
+
+s++$foo+;		# simple var, outputs 'baz'
+s __text$foo;;_;	# outputs 'textbaz;;'
+s@@$foo\n@;		# var terminated by \, outputs "baz\n"
+s()($$foo);		# reference $foo = \"baz";, outputs 'baz'
+s<><text$$foo;;>;	# outputs 'textbaz;;'
+s[][$$$foo];		# reference $foo = \\"baz";, outputs 'baz'
+s{}{text$$$foo;;};	# outputs 'textbaz;;'
+s%%$$$$$$$$$$$$$$$$$$$foo%;	# still legal...
+				# won't generate an error if $foo = "baz";, but
+				# output seems to be an empty string
+
+s::$ 	foo:;	# outputs 'baz', whitespace probably follows qq{}
+
+s##${foo}#;		# bareword style, outputs 'baz'
+s&&text${foo}text&;	# outputs 'textbaztext'
+s//$ {  foo  }/;	# still outputs 'baz'
+s;;${  foo  };;		# still outputs 'baz'
+			# exact whitespace behaviour untested
+
+s()(${);		# ERROR, no closing brace
+
+s()($#);		# ERROR, syntax error, no mention of special var $#
+s()($#boo);		# outputs '2', last index of @boo array
+s()(text$#boo;;);	# outputs 'text2;;'
+s()($# boo);		# $# unsupported warning, unlike the syntax error for /$#/
+			# outputs ' boo'
+
+# basic variables, these follow identifier rules
+s()($foo); s()($abc123); s()($_); s()($_abc); s()($_123); s()($a_1);
+s()($foo $foo	$foo-$foo+$foo;);	# non-word char terminates
+s()($foo $foo	$foo
+$foo+$foo;);				# multiline
+
+# subscripted variable samples (untested)
+# highlighting of subscript portion not implemented yet
+s()($foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]);
+
+s||\@|;			# escaped @, outputs '@'
+s..text\@text.;		# outputs 'text@text'
+s..@text\@text.;
+s**@*;			# outputs '@'
+s~~@@~;			# outputs '@@'
+s~~text@@text~;		# outputs 'text@', @text interpolated
+
+s++@boo+;		# simple array, outputs 'one two three'
+s __text@boo;;_;	# outputs 'textone two three;;'
+s^^@boo\n^;		# var terminated by \, outputs "one two three\n"
+s,,@bo,;		# outputs empty string, probably undef array
+s??@@boo?;		# the @boo is valid, outputs '@one two three'
+s()(@$boo);		# valid, outputs 'one two three' if $boo='boo';
+s<><@$$$boo>;		# valid, same result
+s(){text@$$$boo;;;};
+s%%@$$$$$$$$$$$$$$$$$$$boo%;	# still legal...
+
+s::@$:;			# outputs empty string, probably undef array
+s::$@boo:;		# nope, outputs 'boo' where $@ is a special variable
+s::@  	boo:;		# outputs '@  	boo', not interpolated
+
+s##@{boo}#;		# bareword style, outputs 'one two three'
+s&&@{ boo }&;		# whitespace within {} works (barely tested)
+s//@ {boo}/;		# outputs '@ {boo}', not interpolated
+
+s!!@{!;			# ERROR, no closing brace
+
+# basic variables, these follow identifier rules
+s()(@boo); s()(@abc123); s()(@_); s()(@_abc); s()(@_123); s()(@a_1);
+s()(@boo @boo	@boo-@boo+@boo;);	# non-word char terminates
+s()(@boo @boo	@boo
+@boo+@boo;);				# multiline
+
+# subscripted variable samples (untested)
+# highlighting of subscript portion not implemented yet
+s()(@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]);
+
+# mixture of adjacent interpolated vars (untested)
+s()($foo$foo); s()($foo$$$foo); s()($foo$#boo); s()($foo@boo); s()($foo@$$boo);
+s()(@boo$foo); s()(@boo$$$foo); s()(@boo$#boo); s()(@boo@boo); s()(@boo@$$boo);
+s()($foo$); s()($foo$#); s()($foo@); 	# adjacent non-vars
+s()($foo$$$); s()($foo@$$);		# see // samples
+
+# nested delimiters
+s()((text)$foo(text));		# var terminated by paired delimiter
+s<><<>$foo<>>;
+s{}{${foo{bar}}};		# legal syntax, dunno meaning
+
+# wordchar delimiters
+s __$foo_;		# space separator after 's' mandatory
+s 11$foo1;		# delimiter is not consumed by interpolated var
+s mm$foom;
+
+# s{}{} does not interpolate when a '' delimiter pair is used
+s''$foo';		# outputs '$foo'
+s''@boo';		# outputs '@boo'
+s''$#boo';		# outputs '$#boo'
+
+# tests for modifier handling in interpolation code
+s!!$foo!c; s!!@boo!c;
+s()($foo)c; s()(@boo)c;
+s{}  {$foo}c; s{}  {@boo}c;
 
 #--------------------------------------------------------------------------
 # <<EOF here-doc (TODO)
 #--------------------------------------------------------------------------
 
+# FOR REFERENCE: comprehensive non-interpolation test cases in perl-test-cases.pl
+# - the front portion is mostly free from the variable interpolation code
+#   path, so there should not be any behavioural changes for EOF/"EOF"
+# - the ending delimiter portion is close to variable interpolation code,
+#   interpolated variables in the penultimate line tests for any effects
+
+print <<EOF;	# non-quoted HEREDOC
+some text
+EOF
+print <<"EOF"	# double-quoted HEREDOC
+some text
+EOF
+
+print <<EOF;	# escaped $
+\$
+EOF
+print <<EOF;	#
+text\$text
+EOF
+print <<EOF;	#
+$text\$text
+EOF
+print <<EOF;	# ERROR, perl says $name expected or escape with \$
+$
+EOF
+print <<EOF;	# pid
+$$
+EOF
+print <<EOF;	# perl recognizes $$text
+text$$text
+EOF
+
+print <<EOF;	# simple var
+$foo
+EOF
+print <<"EOF";	# simple var "EOF"
+$foo
+EOF
+print <<EOF;	#
+text$foo;;
+EOF
+print <<EOF;	# var terminated by \
+$foo\n
+EOF
+print <<EOF;	# reference $foo = \"baz";
+$$foo
+EOF
+print <<EOF;	#
+text$$foo;;
+EOF
+print <<EOF;	# reference $foo = \\"baz"; and so on...
+$$$foo
+EOF
+print <<EOF;	#
+text$$$foo;;
+EOF
+print <<EOF;	# still legal...
+$$$$$$$$$$$$$$$$$$$foo
+EOF
+
+# still works with additional spaces and tabs
+# also with multiple newlines (and CR too)
+# VT failed, FF worked (consider this unreliable)
+print <<EOF;	#
+$ 	foo
+EOF
+
+print <<EOF;	# bareword style
+${foo}
+EOF
+print <<EOF;	#
+text${foo}
+EOF
+# whitespace behaviour same as above
+# within {}, all whitespace work, including VT
+print <<EOF;	#
+$ {  foo  }
+EOF
+
+# outputs "--" where $\ == $OUTPUT_RECORD_SEPARATOR
+# "$\" parses without error, unsure what it means
+print <<EOF;	#
+-$\-
+EOF
+print <<EOF;	# ERROR, no closing brace
+${
+EOF
+print <<EOF;	# not a special variable, works, probably undef var
+$}
+EOF
+
+print <<EOF;	# ERROR, special var $# was removed in Perl 5.10
+$#
+EOF
+print <<EOF;	# prints 2, last index of @boo array
+$#boo
+EOF
+print <<EOF;	#
+text$#boo;;
+EOF
+print <<EOF;	# warning, then 'boo' (no space allowed in between)
+$# boo
+EOF
+
+# basic variables, these follow identifier rules
+print <<EOF;	#
+$foo $abc123 $_ $_abc $_123 $a_1
+EOF
+print <<EOF;	# non-word char terminates
+$foo $foo	$foo-$foo+$foo;
+EOF
+print <<EOF;	# multiline
+$foo $foo	$foo
+$foo+$foo;
+EOF
+
+# subscripted variable samples (untested)
+# highlighting of subscript portion not implemented yet
+print <<EOF;	#
+$foo[0]$foo{key}$foo->{k}$foo{k}[i]$foo->{k}[i]
+EOF
+
+print <<EOF;	# escaped @
+\@
+EOF
+print <<EOF;	#
+text\@text
+EOF
+print <<EOF;	#
+@text\@text
+EOF
+print <<EOF;	# no error! prints as '@'
+@
+EOF
+print <<EOF;	# prints as '@@'
+@@
+EOF
+print <<EOF;	# perl recognizes @text
+text@@text
+EOF
+
+print <<EOF;	# simple array
+@boo
+EOF
+print <<"EOF";	# simple array "EOF"
+@boo
+EOF
+print <<EOF;	#
+text@boo;;
+EOF
+print <<EOF;	# var terminated by \
+@boo\n
+EOF
+print <<EOF;	# empty string, probably undef array
+@bo
+EOF
+print <<EOF;	# the @boo is valid, prints '@one two three'
+@@boo
+EOF
+print <<EOF;	# valid, prints 'one two three' if $boo='boo';
+@$boo
+EOF
+print <<EOF;	# valid, same output
+@$$$boo
+EOF
+print <<EOF;	#
+text@$$$boo;;;
+EOF
+print <<EOF;	# still legal...
+@$$$$$$$$$$$$$$$$$$$boo
+EOF
+
+print <<EOF;	# empty string, probably undef array
+@$
+EOF
+print <<EOF;	# nope, prints 'boo' where $@ is a special variable
+$@boo
+EOF
+print <<EOF;	# nope, prints '@  	boo'! whitespace not allowed!
+@  	boo
+EOF
+
+print <<EOF;	# bareword style
+@{boo}
+EOF
+print <<EOF;	# whitespace within {} works, including newlines
+@{ boo }
+EOF
+print <<EOF;	# nope, prints '@ {boo}'
+@ {boo}
+EOF
+
+print <<EOF;	# nope, prints '-@-', not a special var
+-@\-
+EOF
+print <<EOF;	# ERROR, no closing brace
+@{
+EOF
+print <<EOF;	# all other bracket chars print as literal chars
+@}
+EOF
+
+# basic variables, these follow identifier rules
+print <<EOF;	#
+@boo @abc123 @_ @_abc @_123 @a_1
+EOF
+print <<EOF;	# non-word char terminates
+@boo @boo	@boo-@boo+@boo;
+EOF
+print <<EOF;	# multiline
+@boo @boo	@boo
+@boo+@boo;
+EOF
+
+# subscripted variable samples (untested)
+# highlighting of subscript portion not implemented yet
+print <<EOF;	#
+@boo[0]@boo{key}@boo->{k}@boo{k}[i]@boo->{k}[i]
+EOF
+
+# mixture of adjacent interpolated vars (untested)
+print <<EOF;	#
+$foo$foo $foo$$$foo $foo$#boo $foo@boo $foo@$$boo
+EOF
+print <<EOF;	#
+@boo$foo @boo$$$foo @boo$#boo @boo@boo @boo@$$boo
+EOF
+print <<EOF;	# adjacent non-vars
+$foo$ $foo$# $foo@
+EOF
+print <<EOF;	# $$$ and @$$ interpolated to empty
+$foo$$$ $foo@$$
+EOF
+
+# end-of-line backslash does not seem to have any effect, but \t is a tab etc.
+# the following verifies that backslash at end-of-line has no effect
+# for backslash within a line, see above tests
+print <<EOF;	#
+text\
+$foo\
+text\
+EOF
+print <<EOF;	#
+text\
+@boo\
+text\
+EOF
+print <<EOF;	#
+text\
+$foo\
+EOF
+print <<EOF;	#
+text\
+@boo\
+EOF
 
 #--------------------------------------------------------------------------
 # non-interpolated checks: these should NOT have any interpolation!
@@ -1016,6 +1390,148 @@ EOF
 <<\EOF;		# backslashed HEREDOC
 foo $foo $#bar @boo boo
 EOF
+
+#--------------------------------------------------------------------------
+# Perl 5.10 samples from Cygwin's version		20110815
+# - common ones like $! are not repeated too many times...
+#--------------------------------------------------------------------------
+
+# lib/perl5/5.10/*
+# AutoSplit.pm
+    open(my $in, "<$filename") or die "AutoSplit: Can't open $filename: $!\n";
+# assert.pl
+    &panic("ASSERTION BOTCHED: $_[$[]",$@) unless eval $_[$[];
+    print "\npanic: @_\n";
+# bigfloat.pl
+	&norm(($1 ? "$1$2$x" : "+$2$x"), (($x ne '') ? $6-length($x) : $6));
+# dumpvar.pl
+    $short = "0..$#{$_[0]}  '" .
+    my $end = "0..$#{$v}  '" .
+	  print "${sp}-> REUSED_ADDRESS\n" ;
+# Dumpvalue.pm
+    print "0..$#{$v}  @a$shortmore\n";
+	$short = $sp . "0..$#{$v}  " .
+# DBM_Filter.pm
+	if ( ! defined %{ "${class}::"} ) {
+            croak "$caller: Cannot Load DBM Filter '$class': $@" if $@;
+        my $fetch  = *{ "${class}::Fetch"  }{CODE};
+# DB.pm
+      $DB::dbline{$DB::lineno} =~ s/;9($|\0)/$1/;    # clear any temp breakpt
+# CPAN.pm
+                open(STDOUT,">$m$_") or die "open:$_:$!\n";
+        die "$@" if "$@";
+            $other_fingerprint->{'mtime_$^X'} = $other_fingerprint->{'stat($^X)'}[9];
+# charnames.pm
+	  croak ":alias cannot use existing pragma :$1 (reversed order?)";
+# FileHandle.pm
+	    my $c = *{"${pkg}::$func"}{CODE}
+		or die "${pkg}::$func missing";
+# NEXT.pm
+        my @every = map { my $sub = "${_}::$wanted_method";
+# SelfLoader.pm
+    my $fh = \*{"${callpack}::DATA"};
+            if (defined(&{"${1}::AUTOLOAD"})) {
+# strict.pm
+unless ( __FILE__ =~ /(^|[\/\\])\Q${\__PACKAGE__}\E\.pmc?$/ ) {
+    die("Incorrect use of pragma '${\__PACKAGE__}' at $f line $l.\n");
+# subs.pm
+	*{"${callpack}::$sym"} = \&{"${callpack}::$sym"};
+# Switch.pm
+		*{"${pkg}::$_"} = \&$_;
+# Test.pm
+    print $TESTOUT "# Running under perl version $] for $^O",
+# Memoize.pm
+      croak "Unrecognized option to `${context}_CACHE': `$cache_opt' should be one of (@CONTEXT_TAGS); aborting";
+          "function $info->{NAME}" : "anonymous function $func";
+  $DEBUG and warn "${name}($fn) => $cref in _make_cref\n";
+# Fatal.pm
+            $sub = "${pkg}::$sub" unless $sub =~ /::/;
+            push @out, "${else}if (\@_ == $n) {\n";
+# CGI.pm
+	   croak("$AUTOLOAD: $@");
+    @TEMP=("${SL}usr${SL}tmp","${SL}var${SL}tmp",
+	   "C:${SL}temp","${SL}tmp","${SL}temp",
+	   "${vol}${SL}Temporary Items",
+           "${SL}WWW_ROOT", "${SL}SYS\$SCRATCH",
+	   "C:${SL}system${SL}temp");
+# perl5db.pl
+    $ENV{PERLDB_PIDS} = "$$";
+    $pids             = "[pid=$$]";
+    CORE::warn("perldb: couldn't parse $file: $@") if $@;
+            $prefix = $sub =~ /::/ ? "" : "${'package'}::";
+          ? "(@{ $sub[$i]{args} })"
+            print $fh "$sub[$i]{context}=$sub$args from $file:$sub[$i]{line}\n";
+            print $fh "$sub[$i]{context} = $s$args"
+              . " called from $file"
+              . " line $sub[$i]{line}\n";
+        $ENV{"${stem}_$i"} = $val;
+    my $n = delete $ENV{"${stem}_n"};
+            $version{$file} = "${ $_ . '::VERSION' } from ";
+
+# lib/perl5/5.10/Archive/*
+# lib/perl5/5.10/Attribute/*
+# Handlers.pm
+		or die "Internal error: $lastattr{pkg} symbol went missing";
+		*{"$lastattr{pkg}::_ATTR_${_}_${name}"} = $lastattr{ref};
+	croak "Attribute handler '$2' doesn't handle $1 attributes";
+	my $handler = "_ATTR_${type}_${attr}";
+# lib/perl5/5.10/Carp/*
+# Heavy.pm
+  $mess = "$err at $i{file} line $i{line}$tid_msg\n";
+      $mess .= "\t$i{sub_name} called at $i{file} line $i{line}$tid_msg\n";
+# lib/perl5/5.10/CPAN/*
+# yaml_not_installed.pm
+    "'$self->{module}' not installed, cannot $self->{during} '$self->{file}'\n";
+# Index.pm
+        Carp::cluck("META-PROTOCOL[$CPAN::META->{PROTOCOL}]");
+# InfoObj.pm
+        $self->debug("ID[$self->{ID}]");
+            push @m, sprintf "    %-12s %s\n", $_, "@{$self->{$_}}";
+                        push @svalue, "$y=>$v->{$x}{$y}";
+# Author.pm
+                                       "authors/id/@$chksumfile",
+# FirstTime.pm
+            $CPAN::Frontend->mywarn("Ignoring excessive arguments '@{$args{args}}'");
+                ("Warning (maybe harmless): '$CPAN::Config->{yaml_module}' not installed.\n");
+# Distribution.pm
+                $CPAN::Frontend->unrecoverable_error(<<EOF);
+Couldn't move '$distdir' to '$packagedir': $!
+
+Cannot continue: Please find the reason why I cannot move
+$builddir/tmp-$$/$distdir
+to
+$packagedir
+and fix the problem, then retry
+
+EOF
+                join("", map {"    $_->[0] \[$map{$_->[1]}]\n"} @good_prereq_tuples),
+
+# lib/perl5/5.10/Math/*
+
+# lib/perl5/5.10/Pod/*
+# Termcap.pm
+sub cmd_b { my $self = shift; return "$$self{BOLD}$_[1]$$self{NORM}" }
+    my $codes = "(?:\Q$$self{BOLD}\E|\Q$$self{UNDL}\E|\Q$$self{NORM}\E)";
+    my $char = "(?:$codes*[^\\n])";
+    my $shortchar = $char . "{0,$width}";
+        if (s/^($shortchar)\s+// || s/^($longchar)//) {...}
+# Overstrike.pm
+        if (s/^((?>$char){0,$width})(?:\Z|\s+)//) {...}
+# HTML.pm
+    return $self->{'podhtml_LOT'}{"$to#$section"}; # quite possibly undef!
+# BlackBox.pm
+        DEBUG > 1 and print "Starting new ${$paras}[-1][0] para at line ${$self}{'line_count'}\n";
+          DEBUG > 1 and print "Resuming verbatim para at line ${$self}{'line_count'}\n";
+  DEBUG > 1 and print "Popping $curr_open->[-1][0] $curr_open->[-1][1]{'target'} because of =end $content\n";
+
+# lib/perl5/5.10/Pod/Term/*
+
+
+
+
+
+
+# lib/perl5/5.10/*
 
 #--------------------------------------------------------------------------
 # end of test file
