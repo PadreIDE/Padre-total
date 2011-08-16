@@ -75,7 +75,7 @@ sub send {
     $self->{h}->push_write( json => $message );
     # implement our own loopback ?
     # something segfaults when I do this???
-    $self->event('recv', $message );
+    #$self->event('recv', $message );
     
 }
 

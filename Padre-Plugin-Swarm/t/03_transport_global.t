@@ -21,7 +21,6 @@ $bailout->recv;
 $t->reg_cb('recv', sub { ok(1,'Got message');$message->send } );
 
 $t->send({body=>'hello world',type=>'chat',from=>'test'});
-$t->send({type=>'disco'});
 $message->recv;
 
 

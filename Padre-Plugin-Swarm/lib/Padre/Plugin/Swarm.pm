@@ -50,8 +50,6 @@ sub disconnect {
 	$self->global->event('disable');
 	$self->local->event('disable');
 	
-	##$self->service->cancel;
-	
 	# What are the chances either of these work ?
 	$self->task_reset;
 
