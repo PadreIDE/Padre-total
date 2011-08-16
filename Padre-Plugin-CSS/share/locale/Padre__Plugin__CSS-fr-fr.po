@@ -2,17 +2,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-CSS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:07+0300\n"
+"POT-Creation-Date: 2010-10-26 20:25+0300\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
-"Language-Team: jérôme quelin <jquelin@cpan.org>\n"
+"Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
+"Language-Team: Jérôme Quelin <jquelin@cpan.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: French\n"
 "X-Poedit-Country: FRANCE\n"
 
-#: lib/Padre/Plugin/CSS.pm:25
+#: lib/Padre/Plugin/CSS.pm:23
+msgid "CSS"
+msgstr "CSS"
+
+#: lib/Padre/Plugin/CSS.pm:24
 msgid "CSS Minifier"
 msgstr "Minifieur CSS"
 
@@ -20,27 +25,39 @@ msgstr "Minifieur CSS"
 msgid "Validate CSS"
 msgstr "Valider le CSS"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:28
+msgid "Docs"
+msgstr "Documentations"
+
+#: lib/Padre/Plugin/CSS.pm:29
+msgid "CSS 2.1 specs"
+msgstr "Spécifications CSS 2.1"
+
+#: lib/Padre/Plugin/CSS.pm:31
+msgid "CSS 2.1 property list"
+msgstr "Liste des propriétés CSS 2.1"
+
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "No Code"
 msgstr "Pas de code"
 
-#: lib/Padre/Plugin/CSS.pm:38
+#: lib/Padre/Plugin/CSS.pm:46
 msgid "Error"
 msgstr "Erreur"
 
-#: lib/Padre/Plugin/CSS.pm:47
+#: lib/Padre/Plugin/CSS.pm:55
 msgid "CSS is valid\n"
 msgstr "Le CSS est valide\n"
 
-#: lib/Padre/Plugin/CSS.pm:49
+#: lib/Padre/Plugin/CSS.pm:57
 msgid "CSS is not valid\n"
 msgstr "Le CSS n'est pas valide\n"
 
-#: lib/Padre/Plugin/CSS.pm:50
+#: lib/Padre/Plugin/CSS.pm:58
 msgid "Errors:\n"
 msgstr "Erreurs :\n"
 
-#: lib/Padre/Plugin/CSS.pm:60
+#: lib/Padre/Plugin/CSS.pm:68
 msgid "Failed to validate the code\n"
 msgstr "Erreur lors de la validation du code\n"
 
