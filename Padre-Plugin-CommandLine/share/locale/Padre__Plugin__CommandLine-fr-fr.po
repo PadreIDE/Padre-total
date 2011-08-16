@@ -2,10 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Padre-Plugin-CommandLine\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-05-11 20:14+0300\n"
+"POT-Creation-Date: 2009-05-19 00:59+0800\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Jérôme Quelin <jquelin@gmail.com>\n"
-"Language-Team: jérôme quelin <jquelin@cpan.org>\n"
+"Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
+"Language-Team: Jérôme Quelin <jquelin@cpan.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,11 +15,12 @@ msgstr ""
 
 #: lib/Padre/Plugin/CommandLine.pm:60
 msgid "About"
-msgstr "A propos"
+msgstr "À propos"
 
+# Vas savoir comment on tape ce raccourci sur un clavier AZERTY !
 #: lib/Padre/Plugin/CommandLine.pm:61
 msgid "Show Prompt\tAlt-`"
-msgstr "Montrer le prompt\tAlt-`"
+msgstr "Montrer l'invite\tAlt-`"
 
 #: lib/Padre/Plugin/CommandLine.pm:85
 msgid "Command Line"
