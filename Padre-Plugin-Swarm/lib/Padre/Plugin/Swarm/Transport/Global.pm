@@ -4,6 +4,7 @@ use warnings;
 use Padre::Logger;
 use Data::Dumper;
 use base qw( Object::Event );
+use Padre::Swarm::Message;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
 use JSON;
@@ -72,6 +73,10 @@ sub send {
     my $message = shift;
     $message->{token} = $self->{token};
     $self->{h}->push_write( json => $message );
+    # implement our own loopback ?
+    # something segfaults when I do this???
+    $self->event('recv', $message );
+    
 }
 
 sub _marshal {

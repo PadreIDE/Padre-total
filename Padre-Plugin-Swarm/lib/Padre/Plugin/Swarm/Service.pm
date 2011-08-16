@@ -134,17 +134,16 @@ sub prepare {
 sub send_global {
     my $self = shift;
     my $message = shift;
-    TRACE( "Sending GLOBAL message " , Dumper $message );
+    TRACE( "Sending GLOBAL message " , Dumper $message ) if DEBUG;
     $self->{global}->send($message);
-    # implement our own loopback ?
-    $self->{global}->event('recv', $message );
+    
 }
 
 
 sub send_local {
     my $self = shift;
     my $message = shift;
-    TRACE( "Sending LOCAL message " , Dumper $message );
+    TRACE( "Sending LOCAL message " , Dumper $message ) if DEBUG;
     $self->{local}->send($message);
     
 }
@@ -152,10 +151,10 @@ sub send_local {
 sub read_task_queue {
     my $self = shift;
     my $cancelled = $self->cancel;
-    TRACE( "state of self->cancel == $cancelled" );
-    TRACE( "state of self->{handle} == " . $self->{handle} ) ;
+    TRACE( "state of self->cancel == $cancelled" ) if DEBUG;
+    TRACE( "state of self->{handle} == " . $self->{handle} ) if DEBUG;
     while( my $message = $self->dequeue_nb ) {
-        TRACE( 'Unhandled Incoming message' . Dumper $message );
+        TRACE( 'Unhandled Incoming message' . Dumper $message ) if DEBUG;
         if ( $message->[0] eq 'message' ) {
             shift @$message;
             my ($method,@args) = @$message;
@@ -177,7 +176,7 @@ sub read_task_queue {
 
 sub _recv {
     my($self,$origin,$transport,$message) = @_;
-    TRACE( "$origin  transport=$transport, " . Dumper ($message) ) ;
+    TRACE( "$origin  transport=$transport, " . Dumper ($message) )  if DEBUG;
     die "Origin '$origin' incorrect" unless ($origin=~/global|local/);
     
     $message->{origin} = $origin;

@@ -6,6 +6,7 @@ use Data::Dumper;
 use base qw( Object::Event );
 use AnyEvent::Handle;
 use IO::Socket::Multicast;
+use Padre::Swarm::Message;
 use JSON;
 our $VERSION = '0.11';
 
