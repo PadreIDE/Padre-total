@@ -35,6 +35,8 @@ sub new {
 	return $self;
 }
 
+my $open_file_info = undef;
+
 #######
 # Method set_up
 #######
@@ -50,11 +52,12 @@ sub set_up {
 	@items = $self->current_files();
 
 	# SetSelection should be current file
-	my $mcf = $main->current->filename;
+	# my $mcf = $main->current->filename;
+	my $mcf = $main->current->title;
 
 	# SetSelection should be current file
 	my $selection;
-	for ( 0 .. @items ) {
+	for ( 0 .. ( @items - 1 ) ) {
 
 		# TODO sort out error
 		if ( $items[$_] eq $mcf ) {
@@ -76,7 +79,7 @@ sub set_up {
 }
 
 #######
-# Event Handler Button Show Clicked
+# Event Handler process_clicked
 #######
 sub process_clicked {
 	my $self = shift;
@@ -86,8 +89,10 @@ sub process_clicked {
 
 	my @items = $self->current_files();
 
-	$file1 = $items[ $self->file1->GetSelection() ];
-	$file2 = $items[ $self->file2->GetSelection() ];
+	# $file1 = $items[ $self->file1->GetSelection() ];
+	# $file2 = $items[ $self->file2->GetSelection() ];
+	$file1 = $self->file1->GetCurrentSelection();
+	$file2 = $self->file2->GetCurrentSelection();
 
 	TRACE( $self->action->GetStringSelection() ) if DEBUG;
 
@@ -97,16 +102,49 @@ sub process_clicked {
 
 	if ( $self->action->GetStringSelection() eq 'Diff' ) {
 
-		if ( $self->file2svn->GetStringSelection() eq 'File' ) {
+		if ( $self->against->GetStringSelection() eq 'File' ) {
 			$self->make_patch_diff( $file1, $file2 );
-		} elsif ( $self->file2svn->GetStringSelection() eq 'SVN' ) {
+		} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 			$self->make_patch_svn($file1);
+		} elsif ( $self->against->GetStringSelection() eq 'Git' ) {
+			$self->make_patch_git($file1);
 		}
 	}
 
 	# reset dialog
-	$self->set_up;
+	# $self->set_up;
 
+	return;
+}
+
+#######
+# Event Handler on_action
+#######
+sub on_action {
+	my $self = shift;
+		if ( $self->action->GetStringSelection() eq 'Patch' ) {
+		$self->against->Enable(0);
+		$self->file2->Enable(1);
+	} else {
+		# Diff
+		$self->against->Enable(1);
+		$self->file2->Enable(1);
+		$self->against->SetSelection(0);
+	}
+	return;
+}
+
+#######
+# Event Handler on_against
+#######
+sub on_against {
+	my $self = shift;
+		if ( $self->against->GetStringSelection() eq 'File' ) {
+		$self->file2->Enable(1);
+	} else {
+		# SVN or Git
+		$self->file2->Enable(0);
+	}
 	return;
 }
 
@@ -130,7 +168,7 @@ sub current_files {
 	# say $current->vcs;
 
 	# p @label;
-	my $open_file_info = ();
+	# my $open_file_info = ();
 	my $changed;
 
 	for ( 0 .. ( $open_files - 1 ) ) {
@@ -160,8 +198,12 @@ sub current_files {
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
 	my @display_names;
-	foreach (@order) {
-		push @display_names, $label[$_][1];
+
+	# foreach (@order) {
+	for ( 0 .. ( @label -1 ) ) {
+
+		# push @display_names, $label[$_][1];
+		push @display_names, $open_file_info->{$_}->{'filename'};
 	}
 
 	return @display_names;
@@ -171,8 +213,15 @@ sub current_files {
 # Method make_patch_diff
 #######
 sub make_patch_diff {
-	my ( $self, $dfile1, $dfile2 ) = @ARG;
+	my ( $self, $df1, $df2 ) = @ARG;
 	my $main = $self->main;
+
+	my $dfile1 = $open_file_info->{$df1}->{'URL'};
+	say "pfile: $dfile1";
+
+	my $dfile2 = $open_file_info->{$df2}->{'URL'};
+	say "pfile: $dfile2";
+
 
 	if ( -e $dfile1 ) {
 		TRACE("found 1: $dfile1") if DEBUG;
@@ -207,26 +256,36 @@ sub make_patch_diff {
 # Method apply_patch
 ########
 sub apply_patch {
-	my ( $self, $pfile1, $patch ) = @ARG;
+	my ( $self, $pf1, $pf2 ) = @ARG;
 	my $main = $self->main;
 
 	my ( $source, $diff );
+
+	my $pfile1 = $open_file_info->{$pf1}->{'URL'};
+	say "pfile: $pfile1";
+
+	my $patchf = $open_file_info->{$pf2}->{'URL'};
+	say "pfile: $pfile1";
 
 	if ( -e $pfile1 ) {
 		TRACE("found 1: $pfile1") if DEBUG;
 		$source = read_file($pfile1);
 	}
 
-	if ( -e $patch ) {
-		TRACE("found 2: $patch") if DEBUG;
-		$diff = read_file($patch);
-		unless ( $patch =~ /(patch|diff)$/ ) {
+	# if ( -e $pfile1 ) {
+	# TRACE("found 1: $pfile1") if DEBUG;
+	# $source = read_file($pfile1);
+	# }
+	if ( -e $patchf ) {
+		TRACE("found 2: $patchf") if DEBUG;
+		$diff = read_file($patchf);
+		unless ( $patchf =~ /(patch|diff)$/ ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
 		}
 	}
 
-	if ( -e $pfile1 && -e $patch ) {
+	if ( -e $pfile1 && -e $patchf ) {
 
 		require Text::Patch;
 		my $our_patch;
@@ -244,11 +303,15 @@ sub apply_patch {
 }
 
 #######
-# Event on_action
+# Method make_patch_svn
+# inspired by P-P-SVN
 #######
 sub make_patch_svn {
-	my ( $self, $dfile1 ) = @ARG;
+	my ( $self, $df1 ) = @ARG;
 	my $main = $self->main;
+
+	my $dfile1 = $open_file_info->{$df1}->{'URL'};
+	say "dfile: $dfile1";
 
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
@@ -273,7 +336,7 @@ sub make_patch_svn {
 		write_file( $patch_file, $diff_str );
 		TRACE("writing file: $patch_file") if DEBUG;
 
-		eval $main->setup_editor($patch_file);
+		$main->setup_editor($patch_file);
 		$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 	} else {
 		$main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
@@ -282,6 +345,50 @@ sub make_patch_svn {
 	return;
 }
 
+#######
+# Method make_patch_git
+#######
+sub make_patch_git {
+	my ( $self, $df1 ) = @ARG;
+	my $main = $self->main;
+
+	my $dfile1 = $open_file_info->{$df1}->{'URL'};
+	say "dfile: $dfile1";
+	
+	say 'Oops Git Yet To Be inplemented';
+	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
+
+	# if ( require SVN::Class ) {
+	# TRACE('found SVN::Class, Good to go') if DEBUG;
+
+	# # 		# require SVN::Class;
+	# my $file = SVN::Class::svn_file($dfile1);
+	# $file->diff;
+
+	# # 		p $file;
+
+	# # 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
+	# # TRACE output is yuck
+	# p @{ $file->stdout };
+	# TRACE( @{ $file->stdout } ) if DEBUG;
+	# my $diff_str = join( "\n", @{ $file->stdout } );
+
+	# # 		TRACE($diff_str) if DEBUG;
+
+	# # 		my $patch_file = $dfile1 . '.patch';
+
+	# # 		# TODO File::Slurp should be able to handel @{ $file->stdout }
+	# write_file( $patch_file, $diff_str );
+	# TRACE("writing file: $patch_file") if DEBUG;
+
+	# # 		eval $main->setup_editor($patch_file);
+	# $main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
+	# } else {
+	# $main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
+	# }
+
+	return;
+}
 
 1;
 

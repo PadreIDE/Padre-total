@@ -27,14 +27,14 @@ sub new {
 		-1,
 		Wx::gettext("Main"),
 		Wx::wxDefaultPosition,
-		[ 670, 200 ],
+		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
 	);
 
 	my $package_name = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Padre Patch"),
+		Wx::gettext("Padre::Plugin::Patch"),
 	);
 	$package_name->SetFont(
 		Wx::Font->new( 14, 70, 90, 92, 0, "" )
@@ -62,9 +62,65 @@ sub new {
 		[],
 	);
 	$file1->SetSelection(0);
-	$file1->SetMinSize( [ 600, -1 ] );
+	$file1->SetMinSize( [ 200, -1 ] );
 
 	my $m_staticline1_2 = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLI_HORIZONTAL,
+	);
+
+	my $action = Wx::RadioBox->new(
+		$self,
+		-1,
+		Wx::gettext("Action"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		[
+			"Patch",
+			"Diff",
+		],
+		1,
+		Wx::wxRA_SPECIFY_COLS,
+	);
+	$action->SetSelection(0);
+
+	Wx::Event::EVT_RADIOBOX(
+		$self,
+		$action,
+		sub {
+			shift->on_action(@_);
+		},
+	);
+
+	my $against = Wx::RadioBox->new(
+		$self,
+		-1,
+		Wx::gettext("Against"),
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		[
+			"File",
+			"SVN",
+			"Git",
+		],
+		2,
+		Wx::wxRA_SPECIFY_COLS,
+	);
+	$against->SetSelection(0);
+	$against->Disable;
+
+	Wx::Event::EVT_RADIOBOX(
+		$self,
+		$against,
+		sub {
+			shift->on_against(@_);
+		},
+	);
+
+	my $m_staticline4 = Wx::StaticLine->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
@@ -86,7 +142,7 @@ sub new {
 		[],
 	);
 	$file2->SetSelection(0);
-	$file2->SetMinSize( [ 600, -1 ] );
+	$file2->SetMinSize( [ 200, -1 ] );
 
 	my $m_staticline3 = Wx::StaticLine->new(
 		$self,
@@ -95,36 +151,6 @@ sub new {
 		Wx::wxDefaultSize,
 		Wx::wxLI_HORIZONTAL,
 	);
-
-	my $action = Wx::RadioBox->new(
-		$self,
-		-1,
-		Wx::gettext("Action"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		[
-			"Patch",
-			"Diff",
-		],
-		1,
-		Wx::wxRA_SPECIFY_ROWS,
-	);
-	$action->SetSelection(0);
-
-	my $file2svn = Wx::RadioBox->new(
-		$self,
-		-1,
-		Wx::gettext("File-2 or SVN::Class"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		[
-			"File",
-			"SVN",
-		],
-		1,
-		Wx::wxRA_SPECIFY_ROWS,
-	);
-	$file2svn->SetSelection(0);
 
 	my $process = Wx::Button->new(
 		$self,
@@ -151,6 +177,14 @@ sub new {
 	);
 	$close_button->SetDefault;
 
+	my $m_staticline5 = Wx::StaticLine->new(
+		$self,
+		-1,
+		Wx::wxDefaultPosition,
+		Wx::wxDefaultSize,
+		Wx::wxLI_HORIZONTAL,
+	);
+
 	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer1->Add( $package_name, 0, Wx::wxALL, 5 );
 	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
@@ -159,13 +193,18 @@ sub new {
 	$bSizer5->Add( $label1, 0, Wx::wxALL, 5 );
 	$bSizer5->Add( $file1, 1, Wx::wxALL, 5 );
 
+	my $bSizer7 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
+	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+	$bSizer7->Add( $action, 0, Wx::wxALL, 5 );
+	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+	$bSizer7->Add( $against, 0, Wx::wxALL, 5 );
+	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+
 	my $bSizer51 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$bSizer51->Add( $label2, 0, Wx::wxALL, 5 );
 	$bSizer51->Add( $file2, 1, Wx::wxALL, 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$buttons->Add( $action, 0, Wx::wxALL, 5 );
-	$buttons->Add( $file2svn, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
 	$buttons->Add( $process, 0, Wx::wxALL, 5 );
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
@@ -176,21 +215,24 @@ sub new {
 	$vsizer->Add( $m_staticline1_1, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
 	$vsizer->Add( $bSizer5, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
 	$vsizer->Add( $m_staticline1_2, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
+	$vsizer->Add( $bSizer7, 0, Wx::wxEXPAND, 5 );
+	$vsizer->Add( $m_staticline4, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
 	$vsizer->Add( $bSizer51, 1, Wx::wxEXPAND, 5 );
 	$vsizer->Add( $m_staticline3, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
 	$vsizer->Add( $buttons, 0, Wx::wxEXPAND, 3 );
+	$vsizer->Add( $m_staticline5, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$sizer->Add( $vsizer, 0, Wx::wxALL, 1 );
 
-	$self->SetSizer($sizer);
+	$self->SetSizerAndFit($sizer);
 	$self->Layout;
 
 	$self->{package_name} = $package_name->GetId;
 	$self->{file1} = $file1->GetId;
-	$self->{file2} = $file2->GetId;
 	$self->{action} = $action->GetId;
-	$self->{file2svn} = $file2svn->GetId;
+	$self->{against} = $against->GetId;
+	$self->{file2} = $file2->GetId;
 	$self->{process} = $process->GetId;
 
 	return $self;
@@ -204,20 +246,28 @@ sub file1 {
 	Wx::Window::FindWindowById($_[0]->{file1});
 }
 
-sub file2 {
-	Wx::Window::FindWindowById($_[0]->{file2});
-}
-
 sub action {
 	Wx::Window::FindWindowById($_[0]->{action});
 }
 
-sub file2svn {
-	Wx::Window::FindWindowById($_[0]->{file2svn});
+sub against {
+	Wx::Window::FindWindowById($_[0]->{against});
+}
+
+sub file2 {
+	Wx::Window::FindWindowById($_[0]->{file2});
 }
 
 sub process {
 	Wx::Window::FindWindowById($_[0]->{process});
+}
+
+sub on_action {
+	$_[0]->main->error('Handler method on_action for event action.OnRadioBox not implemented');
+}
+
+sub on_against {
+	$_[0]->main->error('Handler method on_against for event against.OnRadioBox not implemented');
 }
 
 sub process_clicked {
