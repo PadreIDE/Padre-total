@@ -180,7 +180,7 @@ sub disable {
 sub update_userlist {
 	my $self = shift;
 	my $userlist = $self->userlist;
-	my $geo = $self->plugin->geometry;
+	my $geo = $self->universe->geometry;
 	my @users = $geo->get_users();
 	$userlist->DeleteAllItems;
 	foreach my $user ( @users ) {
@@ -215,6 +215,14 @@ sub on_recv {
             }
         }
 
+}
+
+sub on_connect {
+	my $self = shift;
+	$self->universe->send(
+		{type=>'announce',service=>'chat',
+		from=>$self->plugin->identity->nickname 
+	});
 }
 
 sub write_timestamp {
@@ -268,7 +276,6 @@ sub accept_announce {
         $self->users->{$nick} = 1;
     }
      $self->update_userlist;
-    
 }
 
 sub accept_promote {
@@ -277,6 +284,7 @@ sub accept_promote {
     ## Todo - manipulate the geometry ourselves for
     # 'chat' promote. stop spewing into the chat 
     # console.
+    TRACE( Dumper $message );
     if ( $message->{service} eq 'chat' ) {
 		$self->update_userlist;
     }

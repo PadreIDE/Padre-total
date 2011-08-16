@@ -18,7 +18,7 @@ use base qw( Object::Event );
 use Padre::Plugin::Swarm::Wx::Chat;
 use Padre::Plugin::Swarm::Wx::Editor;
 use Padre::Plugin::Swarm::Wx::Resources;
-
+use Padre::Swarm::Geometry;
 
 
 sub components {
@@ -44,6 +44,10 @@ sub new {
 		new Padre::Plugin::Swarm::Wx::Chat
 				universe => $self,
 				label => ucfirst( $origin ),
+	);
+	
+	$self->geometry(
+		new Padre::Swarm::Geometry
 	);
 	
 	# $self->editor(
@@ -84,7 +88,7 @@ use Data::Dumper;
 sub send {
 	my ($self,$message) = @_;
 	
-	TRACE( Dumper $message );
+	TRACE( Dumper $message ) if DEBUG;
 	$message->{from} = $self->plugin->identity->nickname;
 	
 	Padre::Plugin::Swarm->instance->send( $self->origin , $message );
@@ -92,7 +96,7 @@ sub send {
 
 sub on_recv {
 	my $self = shift;
-	TRACE( @_ );
+	TRACE( @_ ) if DEBUG;;
 	$self->_notify( 'on_recv' , @_ );
 }
 
@@ -127,7 +131,7 @@ sub _notify {
 	foreach my $c ( $self->components ) {
 		my $component = $self->$c;
 		next unless $component;
-		TRACE( "Notify $component with @_" ) if DEBUG;
+		TRACE( "Notify $component -> $notify with @_" ) if DEBUG;
 		eval {
 			$component->$notify(@_) if $component->can($notify);
 		};

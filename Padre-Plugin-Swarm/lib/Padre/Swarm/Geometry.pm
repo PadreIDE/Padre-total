@@ -46,7 +46,9 @@ sub plugin {
 
 sub get_users {
 	my $self = shift;
-	return $self->graph->successors( '~identity' );
+	my @users = $self->graph->successors('~identity');
+	TRACE( @users );
+	return @users;
 	
 }
 
@@ -54,16 +56,15 @@ sub get_users {
 sub enable {}
 sub disable {}
 
-*on_recv = \&On_SwarmMessage;
-
-sub On_SwarmMessage {
+sub on_recv {
     my ($self,$message) = @_;
-    my $handler = 'accept_'  . $message->{type};
+    my $handler = 'accept_'  . $message->type;
+    TRACE( "Geometry recv $handler" );
     if ( $self->can($handler) ) {
 		TRACE( "Geometry handler $handler" ) if DEBUG;
 		eval { $self->$handler($message) } ;
 		if ( $@ ) {
-			TRACE( "Geometry handler error - $@" ) if DEBUG;
+			TRACE( "Geometry handler error - $@" );
 		}
     } else {
 		TRACE( "Ignored " . $message->type ) if DEBUG;
@@ -78,7 +79,7 @@ sub accept_promote {
 	#$self->graph->add_edge( $message->{service} , $message->{from} );
 	# just in case
 	$self->graph->add_edge( '~identity' => $message->{from} );
-	
+
 	if ($message->{resource}) {
 		$self->graph->add_edge( 
 			$message->{from} , 
@@ -114,6 +115,7 @@ sub accept_announce {
 	my $self = shift;
 	my $message = shift;
 	$self->graph->add_edge( '~identity' => $message->{from} );
+	TRACE( $self->graph );
 	if ( exists $message->{resource} ) {
 		$self->graph->add_edge( 
 		    $message->{from} ,
