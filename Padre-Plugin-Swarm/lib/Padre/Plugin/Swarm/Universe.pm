@@ -83,6 +83,10 @@ use Data::Dumper;
 
 sub send {
 	my ($self,$message) = @_;
+	
+	TRACE( Dumper $message );
+	$message->{from} = $self->plugin->identity->nickname;
+	
 	Padre::Plugin::Swarm->instance->send( $self->origin , $message );
 }
 

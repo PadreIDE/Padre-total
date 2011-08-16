@@ -50,7 +50,10 @@ sub disconnect {
 	$self->global->event('disable');
 	$self->local->event('disable');
 	
-	$self->service->cancel;
+	##$self->service->cancel;
+	
+	# What are the chances either of these work ?
+	$self->task_reset;
 
 }
 
@@ -62,10 +65,10 @@ sub on_swarm_service_message {
 
 
 	use Data::Dumper;
-	TRACE( 'Got service scheduled of ' , Dumper $service ) ;
+	#TRACE( 'Got service scheduled of ' , Dumper $service ) ;
 	$self->service($service);
 	
-
+	TRACE( 'Inbound message is ' . Dumper( $message ) );
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE');
 	
