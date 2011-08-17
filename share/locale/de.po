@@ -1055,7 +1055,7 @@ msgstr "Einige Dateien schließen"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1732
 msgid "Close the highest priority panel (usually using ESC key)"
-msgstr ""
+msgstr "Schließe das Panel mit der höchsten Priorität (normalerweise mit der Esc-Taste)"
 
 #: lib/Padre/Config.pm:584
 msgid "Code Order"
@@ -1379,7 +1379,7 @@ msgstr "Tschechisch"
 
 #: lib/Padre/Wx/ActionLibrary.pm:368
 msgid "D&uplicate"
-msgstr ""
+msgstr "D&uplizieren"
 
 #: lib/Padre/Wx/Dialog/WindowList.pm:356
 msgid "DELETED"
@@ -1391,7 +1391,7 @@ msgstr "Dänisch"
 
 #: lib/Padre/Config/Style.pm:51
 msgid "Dark"
-msgstr ""
+msgstr "Dunkel"
 
 #: lib/Padre/Wx/Dialog/Special.pm:63
 msgid "Date/Time"
@@ -1681,11 +1681,11 @@ msgstr "Smart highlighting während des Schreibens aktivieren"
 
 #: lib/Padre/Config.pm:1372
 msgid "Enable or disable the Run with Devel::EndStats if it is installed. "
-msgstr ""
+msgstr "Ausführen mit Devel::EndStats aktivieren/deaktivieren falls installiert."
 
 #: lib/Padre/Config.pm:1391
 msgid "Enable or disable the Run with Devel::TraceUse if it is installed. "
-msgstr ""
+msgstr "Ausführen mit Devel::TraceUse aktivieren/deaktivieren falls installiert."
 
 #: lib/Padre/Config.pm:1338
 msgid ""
@@ -1702,15 +1702,15 @@ msgstr "Dokument nach utf-8 konvertieren"
 
 #: lib/Padre/Wx/ActionLibrary.pm:989
 msgid "Encode Document to..."
-msgstr "Dokument umkodieren zu..."
+msgstr "Dokument konvertieren nach..."
 
 #: lib/Padre/Wx/Main.pm:6979
 msgid "Encode document to..."
-msgstr "Dokument umkodieren zu..."
+msgstr "Dokument konvertieren nach..."
 
 #: lib/Padre/Wx/Main.pm:6978
 msgid "Encode to:"
-msgstr "Kodieren als:"
+msgstr "Konvertieren nach:"
 
 #: lib/Padre/Wx/Dialog/DocStats.pm:131
 msgid "Encoding"
@@ -3322,7 +3322,7 @@ msgstr "Öffnet die Datei mit dem Standard-Editor des Systems"
 
 #: lib/Padre/Wx/ActionLibrary.pm:273
 msgid "Opens the last closed file"
-msgstr ""
+msgstr "Öffnet die letzte geschlossene Datei"
 
 #: lib/Padre/Wx/Dialog/Replace.pm:303
 msgid "Options"
@@ -3751,7 +3751,7 @@ msgstr "R/W"
 
 #: lib/Padre/Wx/Menu/File.pm:174
 msgid "Re&load"
-msgstr "Datei erneut &laden"
+msgstr "Erneut &laden"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2445
 msgid "Re&load All Plug-ins"
@@ -4820,12 +4820,12 @@ msgstr "Spezieller Wert..."
 #: lib/Padre/Config.pm:1382
 msgid ""
 "Specify Devel::EndStats options. 'feature_devel_endstats' must be enabled."
-msgstr ""
+msgstr "Spezifiziert Optionen für Devel::EndStats. 'feature_devel_endstats' muss aktiviert sein."
 
 #: lib/Padre/Config.pm:1401
 msgid ""
 "Specify Devel::TraceUse options. 'feature_devel_traceuse' must be enabled."
-msgstr ""
+msgstr "Spezifiziert Optionen für Devel::TraceUse. 'feature_devel_traceuse' muss aktiviert sein."
 
 #: lib/Padre/Wx/ActionLibrary.pm:2150
 msgid "Start running and/or continue running till next breakpoint or watch"
@@ -5418,7 +5418,8 @@ msgstr "Es läuft noch ein Prozess, sollen dieser und Padre beendet werden?"
 msgid ""
 "You're going to write a file using HTTP PUT.\n"
 "This is highly experimental and not supported by most servers!"
-msgstr ""
+msgstr "Sie sind dabei, eine Datei mittels HTTP PUT zu speichern."
+"Diese Funktion ist höchstexperimentell, und wird von den meisten Servern nicht unterstützt."
 
 #: lib/Padre/CPAN.pm:185
 msgid "cpanm is unexpectedly not installed"
