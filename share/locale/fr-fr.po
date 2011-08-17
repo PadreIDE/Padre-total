@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: padre\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-16 15:53+0200\n"
-"PO-Revision-Date: 2011-08-17 01:07+0100\n"
+"PO-Revision-Date: 2011-08-17 23:11+0100\n"
 "Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
 "Language-Team: Jérôme Quelin <jquelin@cpan.org>\n"
 "Language: \n"
@@ -241,7 +241,6 @@ msgid "&Help"
 msgstr "Aid&e"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2463
-#, fuzzy
 msgid "&Install CPAN Module"
 msgstr "Installation d'un module CPAN"
 
@@ -250,12 +249,10 @@ msgid "&Join Lines"
 msgstr "&Joindre les lignes"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2340
-#, fuzzy
 msgid "&Key Bindings"
 msgstr "Raccourcis clavier"
 
 #: lib/Padre/Plugin/Devel.pm:89
-#, fuzzy
 msgid "&Load All Padre Modules"
 msgstr "Charger tous les modules Padre"
 
@@ -272,7 +269,6 @@ msgid "&Matching Menu Items:"
 msgstr "Items menus &concordants"
 
 #: lib/Padre/Wx/Menu/Tools.pm:64
-#, fuzzy
 msgid "&Module Tools"
 msgstr "Outils module"
 
@@ -995,7 +991,7 @@ msgstr "Effacer les marques de sélection"
 
 #: lib/Padre/Wx/Dialog/OpenResource.pm:222
 msgid "Click on the arrow for filter settings"
-msgstr ""
+msgstr "Cliquez sur la flèche pour les paramètres de filtrage"
 
 #: lib/Padre/Wx/Menu/File.pm:135
 #: lib/Padre/Wx/Dialog/FilterTool.pm:152
@@ -1100,7 +1096,7 @@ msgstr "Commenter les lignes sélectionnées"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1096
 msgid "Compare the file in the editor to that on the disk and show the diff in the output window"
-msgstr "Comparer le fichier dans l'éditeur à son état sur disque et montrer la différence dans le panel de sortie"
+msgstr "Comparer le fichier dans l'éditeur à son état sur disque et montrer la différence dans le panneau de sortie"
 
 #: lib/Padre/Wx/About.pm:320
 msgid "Config:"
@@ -1385,7 +1381,7 @@ msgstr "Tchèque"
 
 #: lib/Padre/Wx/ActionLibrary.pm:368
 msgid "D&uplicate"
-msgstr ""
+msgstr "D&upliquer"
 
 #: lib/Padre/Wx/Dialog/WindowList.pm:356
 msgid "DELETED"
@@ -1397,7 +1393,7 @@ msgstr "Danois"
 
 #: lib/Padre/Config/Style.pm:51
 msgid "Dark"
-msgstr ""
+msgstr "Sombre"
 
 #: lib/Padre/Wx/Dialog/Special.pm:63
 msgid "Date/Time"
@@ -1566,7 +1562,7 @@ msgstr "Afficher la valeur"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2257
 msgid "Display the current value of a variable in the right hand side debugger pane"
-msgstr "Montre la valeur courante d'une variable dans le panel de débug de droite"
+msgstr "Montre la valeur courante d'une variable dans le panneau de débogage de droite"
 
 #: lib/Padre/Wx/Dialog/Warning.pm:49
 msgid "Do not show this again"
@@ -1919,9 +1915,8 @@ msgid "Escape (Esc)"
 msgstr "Échap"
 
 #: lib/Padre/Wx/Dialog/RegexEditor.pm:139
-#, fuzzy
 msgid "Escape characters"
-msgstr "Minuscules"
+msgstr "Caractères d'échappement"
 
 #: lib/Padre/Wx/FBP/Expression.pm:71
 msgid "Evaluate"
@@ -2456,9 +2451,8 @@ msgid "Hungarian"
 msgstr "Hongrois"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1389
-#, fuzzy
 msgid "If activated, do not allow moving around some of the windows"
-msgstr "Permettre à l'utilisateur de déplacer les panels"
+msgstr "Permettre à l'utilisateur de déplacer les panneaux"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2134
 msgid "If within a subroutine, run till return is called and then stop."
@@ -3165,9 +3159,8 @@ msgid "Open File"
 msgstr "Ouvrir"
 
 #: lib/Padre/Wx/ActionLibrary.pm:271
-#, fuzzy
 msgid "Open Last Closed File"
-msgstr "Dernier fichier visité"
+msgstr "Réouvrir le dernier fichier fermé"
 
 #: lib/Padre/Wx/Dialog/OpenResource.pm:30
 #: lib/Padre/Wx/Dialog/OpenResource.pm:76
@@ -3829,7 +3822,7 @@ msgstr "&Expression régulière"
 
 #: lib/Padre/Wx/Dialog/WhereFrom.pm:29
 msgid "Reinstalling/installing on other computer"
-msgstr ""
+msgstr "Réinstallation/installation sur un autre ordinateur"
 
 #: lib/Padre/Wx/FindResult.pm:125
 msgid "Related editor has been closed"
@@ -3966,7 +3959,6 @@ msgid "Replace Text:"
 msgstr "Remplacement :"
 
 #: lib/Padre/Wx/FBP/ReplaceInFiles.pm:63
-#, fuzzy
 msgid "Replace With"
 msgstr "Remplacement :"
 
@@ -4024,7 +4016,7 @@ msgstr "Remettre la taille par défaut de la police de la fenêtre d'édition"
 
 #: lib/Padre/Wx/Dialog/KeyBindings.pm:134
 msgid "Reset to default shortcut"
-msgstr ""
+msgstr "Revenir au raccourci par défaut"
 
 #: lib/Padre/Wx/Main.pm:3091
 msgid "Restore focus..."
@@ -4341,7 +4333,7 @@ msgstr "Sélectionner les fichiers à fermer:"
 
 #: lib/Padre/Wx/Dialog/OpenResource.pm:239
 msgid "Select one or more resources to open"
-msgstr ""
+msgstr "Sélectionnez une ou plusieurs ressources à ouvrir"
 
 #: lib/Padre/Wx/ActionLibrary.pm:359
 msgid "Select some open files for closing"
@@ -4431,9 +4423,8 @@ msgid "Set the focus to the \"Command Line\" window"
 msgstr "Mettre le focus sur le panneau du profil"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2607
-#, fuzzy
 msgid "Set the focus to the \"Functions\" window"
-msgstr "Mettre le focus sur le panel des fonctions"
+msgstr "Mettre le focus sur le panneau des fonctions"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2634
 #, fuzzy
@@ -4446,14 +4437,12 @@ msgid "Set the focus to the \"Output\" window"
 msgstr "Mettre le focus sur le panneau de sortie"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2656
-#, fuzzy
 msgid "Set the focus to the \"Syntax Check\" window"
-msgstr "Mettre le focus sur le panel de vérification syntaxique"
+msgstr "Mettre le focus sur le panneau de vérification syntaxique"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2621
-#, fuzzy
 msgid "Set the focus to the \"Todo\" window"
-msgstr "Mettre le focus sur le panel de sortie"
+msgstr "Mettre le focus sur le panneau de sortie"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2678
 #, fuzzy
@@ -4475,7 +4464,7 @@ msgstr "&Raccourci :"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2330
 msgid "Share your preferences between multiple computers"
-msgstr ""
+msgstr "Partagez vos préférences entre plusieurs ordinateurs"
 
 #: lib/Padre/MimeTypes.pm:305
 msgid "Shell Script"
@@ -4499,14 +4488,13 @@ msgstr "&Description"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1570
 msgid "Show Call Tips"
-msgstr "Montrer la syntaxe d'appel"
+msgstr "Montrer les astuces"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1529
 msgid "Show Code Folding"
 msgstr "Montrer les replis de code"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1420
-#, fuzzy
 msgid "Show Command Line"
 msgstr "Fenêtre ligne de commande"
 
@@ -4516,7 +4504,7 @@ msgstr "Surligner la ligne courante"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1410
 msgid "Show Functions"
-msgstr "Montrer les fonctions"
+msgstr "Fenêtre des fonctions"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1626
 msgid "Show Indentation Guide"
@@ -4532,14 +4520,13 @@ msgstr "Montrer les retours chariot"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1440
 msgid "Show Outline"
-msgstr "Montrer le profil"
+msgstr "Fenêtre profil"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1400
 msgid "Show Output"
-msgstr "Montrer le résultat"
+msgstr "Fenêtre résultat"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1450
-#, fuzzy
 msgid "Show Project Browser"
 msgstr "Fenêtre explorateur de projet"
 
@@ -4548,35 +4535,32 @@ msgid "Show Right Margin"
 msgstr "Montrer la marge de droite"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2240
-#, fuzzy
 msgid "Show Stack Trace (&t)"
-msgstr "Lancer la pile d'appel"
+msgstr "Afficher la pile d'appels (&t)"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1479
 msgid "Show Status Bar"
-msgstr "Montrer la barre de statut"
+msgstr "Barre d'état"
 
 #: lib/Padre/Wx/Dialog/RegexEditor.pm:246
-#, fuzzy
 msgid "Show Subs&titution"
-msgstr "Montrer les fonctions"
+msgstr "Afficher la substitution"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1460
 msgid "Show Syntax Check"
-msgstr "Montrer la vérification syntaxique"
+msgstr "Fenêtre de vérification syntaxique"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1430
 msgid "Show To-do List"
-msgstr "Montrer la To-do liste"
+msgstr "Fenêtre liste To-do"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1489
 msgid "Show Toolbar"
-msgstr "Montrer la barre d'outil"
+msgstr "Barre d'outils"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2271
-#, fuzzy
 msgid "Show Value Now (&x)"
-msgstr "Montrer la valeur"
+msgstr "Afficher la valeur"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1616
 msgid "Show Whitespaces"
@@ -4588,16 +4572,15 @@ msgstr "Montrer une ligne verticale indiquant la marge de droite"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1411
 msgid "Show a window listing all the functions in the current document"
-msgstr "Montrer le panel listant toutes les fonctions du document courant"
+msgstr "Afficher le panneau listant toutes les fonctions du document courant"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1441
 msgid "Show a window listing all the parts of the current file (functions, pragmas, modules)"
-msgstr "Montrer le panel listant toutes les parties du fichier courant (fonctions, pragmas, modules)"
+msgstr "Afficher le panneau listant toutes les parties du fichier courant (fonctions, pragmas, modules)"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1431
-#, fuzzy
 msgid "Show a window listing all todo items in the current document"
-msgstr "Montrer le panel listant toutes les fonctions du document courant"
+msgstr "Afficher le panneau listant toutes les TODO du document courant"
 
 #: lib/Padre/Wx/Menu/Edit.pm:312
 msgid "Show as"
@@ -4617,43 +4600,39 @@ msgstr "Montrer le rapport"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2816
 msgid "Show information about Padre"
-msgstr "Montrer des informations sur Padre"
+msgstr "Afficher des informations sur Padre"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:95
-#, fuzzy
 msgid "Show low priority info messages on status bar (not in a popup)"
-msgstr "Montrer les messages d'information de basse priorité dans la barre de statut (pas dans un popup)"
+msgstr "Afficher les messages d'information de basse priorité dans la barre de statut (pas dans un popup)"
 
 #: lib/Padre/Config.pm:1118
 msgid "Show low-priority info messages on statusbar (not in a popup)"
 msgstr "Montrer les messages d'information de basse priorité dans la barre de statut (pas dans un popup)"
 
 #: lib/Padre/Config.pm:721
-#, fuzzy
 msgid "Show or hide the status bar at the bottom of the window."
-msgstr "Montrer/Cacher la barre de statut en bas de l'écran"
+msgstr "Montrer/Cacher la barre de statut en bas de l'écran."
 
 #: lib/Padre/Wx/Dialog/Positions.pm:107
 msgid "Show previous positions"
 msgstr ""
 
 #: lib/Padre/Wx/ActionLibrary.pm:2578
-#, fuzzy
 msgid "Show previous positions..."
-msgstr "Aller à la position précédente"
+msgstr "Afficher les positions précédentes..."
 
 #: lib/Padre/Wx/FBP/Preferences.pm:103
-#, fuzzy
 msgid "Show right margin at column"
-msgstr "Montrer une marge droite à la colonne :"
+msgstr "Afficher une marge droite à la colonne :"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1157
 msgid "Show the ASCII values of the selected text in decimal numbers in the output window"
-msgstr "Montrer les valeurs ASCII en décimal du texte sélectionné dans le panel de sortie"
+msgstr "Montrer les valeurs ASCII en décimal du texte sélectionné dans le panneau de sortie"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1147
 msgid "Show the ASCII values of the selected text in hexadecimal notation in the output window"
-msgstr "Montrer les codes ASCII du texte sélectionné dans le panel de sortie"
+msgstr "Montrer les codes ASCII du texte sélectionné dans le panneau de sortie"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2726
 msgid "Show the POD (Perldoc) version of the current document"
@@ -4668,9 +4647,8 @@ msgid "Show the Padre plug-in manager to enable or disable plug-ins"
 msgstr "Montre le gestionnaire de greffons de Padre pour les dés/activer."
 
 #: lib/Padre/Wx/ActionLibrary.pm:1421
-#, fuzzy
 msgid "Show the command line window"
-msgstr "Raccourcir le chemin commun dans la fenêtre liste ?"
+msgstr "Afficher la fenêtre de ligne de commande"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2713
 msgid "Show the help article for the current context"
@@ -4685,13 +4663,12 @@ msgid "Show the list of positions recently visited"
 msgstr ""
 
 #: lib/Padre/Wx/ActionLibrary.pm:2272
-#, fuzzy
 msgid "Show the value of a variable now in a pop-up window."
-msgstr "Montre la valeur d'une variable."
+msgstr "Affiche la valeur d'une variable."
 
 #: lib/Padre/Wx/ActionLibrary.pm:1401
 msgid "Show the window displaying the standard output and standard error of the running scripts"
-msgstr "Montrer le panel contenant la sortie et l'erreur standards des scripts lancés"
+msgstr "Montrer le panneau contenant la sortie et l'erreur standard des scripts lancés"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1765
 msgid "Show what perl thinks about your code"
@@ -4740,17 +4717,14 @@ msgid "Simulate &Crash"
 msgstr "Simuler un crash"
 
 #: lib/Padre/Plugin/Devel.pm:91
-#, fuzzy
 msgid "Simulate Background &Exception"
-msgstr "Simuler un crash"
+msgstr "Simuler une exception"
 
 #: lib/Padre/Wx/Dialog/RegexEditor.pm:473
-#, fuzzy
 msgid "Single-line (&s)"
 msgstr "Simple-ligne (%s)"
 
 #: lib/Padre/Wx/Dialog/Special.pm:71
-#, fuzzy
 msgid "Size"
 msgstr "Taille de la police"
 
@@ -4764,7 +4738,7 @@ msgstr "Ignorer en utilisant MANIFEST.SKIP"
 
 #: lib/Padre/Wx/Dialog/OpenResource.pm:267
 msgid "Skip version control system files"
-msgstr ""
+msgstr "Sauter les fichiers de systèmes de gestion de version"
 
 #: lib/Padre/Document.pm:1367
 #: lib/Padre/Document.pm:1368
@@ -4776,18 +4750,16 @@ msgid "Slow but accurate and we have full control so bugs can be fixed"
 msgstr "Lent mais correct, de plus nous avons le contrôle dessus donc les bugs peuvent être corrigés"
 
 #: lib/Padre/Wx/FBP/Snippet.pm:60
-#, fuzzy
 msgid "Snippet"
-msgstr "Extrait :"
+msgstr "Extrait"
 
 #: lib/Padre/Wx/ActionLibrary.pm:906
-#, fuzzy
 msgid "Snippets..."
-msgstr "Extraits"
+msgstr "Extraits..."
 
 #: lib/Padre/Config/Style.pm:51
 msgid "Solarize"
-msgstr ""
+msgstr "Solarize"
 
 #: lib/Padre/Wx/Dialog/SessionManager.pm:112
 #, perl-format
@@ -4900,14 +4872,13 @@ msgid "Switch Padre interface language to %s"
 msgstr "Changer la langue de Padre vers « %s »"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1505
-#, fuzzy
 msgid "Switch document type"
-msgstr "Changer le type de document en %s"
+msgstr "Changer le type de document"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1694
 #, fuzzy
 msgid "Switch highlighting colours"
-msgstr "Changer le style de surlignage à %s"
+msgstr "Changer les couleurs de surlignage"
 
 #: lib/Padre/Wx/ActionLibrary.pm:40
 msgid "Switch language to system default"
@@ -4922,7 +4893,6 @@ msgid "Syntax Check"
 msgstr "Vérification syntaxique"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:781
-#, fuzzy
 msgid "Syntax Highlighter"
 msgstr "Coloriseur syntaxique :"
 
@@ -4986,17 +4956,17 @@ msgstr ""
 
 #: lib/Padre/Wx/Directory.pm:593
 msgid "The directory browser got an undef object and may stop working now. Please save your work and restart Padre."
-msgstr ""
+msgstr "Le navigateur a reçu un objet undef et pourrait s'arrêter de fonctionner maintenant. Sauvegardez votre travail et redémarrez Padre."
 
 #: lib/Padre/Document.pm:255
 #, perl-format
 msgid "The file %s you are trying to open is %s bytes large. It is over the arbitrary file size limit of Padre which is currently %s. Opening this file may reduce performance. Do you still want to open the file?"
-msgstr ""
+msgstr "Le fichier %s que vous tentez d'ouvrir est ouvert est de %s octets. C'est plus que la limite arbitraire de Padre de %s. Ouvrir le fichier pourrait diminuer la performance. Voulez-vous malgré cela l'ouvrir ?"
 
 #: lib/Padre/Wx/Dialog/KeyBindings.pm:388
 #, perl-format
 msgid "The shortcut '%s' is already used by the action '%s'.\n"
-msgstr ""
+msgstr "Le raccourci « %s » est déjà utilisé par l'action « %s ».\n"
 
 #: lib/Padre/Wx/Main.pm:5415
 msgid "There are no differences\n"
@@ -5004,11 +4974,11 @@ msgstr "Il n'y a pas de différences\n"
 
 #: lib/Padre/Wx/Dialog/Positions.pm:106
 msgid "There are no positions saved yet"
-msgstr ""
+msgstr "Il n'y a pas encore de position sauvée."
 
 #: lib/Padre/PPI/EndifyPod.pm:42
 msgid "This document does not contain any POD"
-msgstr ""
+msgstr "Ce document ne contient pas de POD"
 
 #: lib/Padre/Wx/ActionLibrary.pm:2415
 msgid "This function reloads the My plug-in without restarting Padre"
@@ -5020,11 +4990,11 @@ msgstr ""
 
 #: lib/Padre/Config.pm:1392
 msgid "This requires an installed Devel::TraceUse and a Padre restart"
-msgstr ""
+msgstr "Ceci requiert Devel::TraceUse installé et un redémarrage de Padre"
 
 #: lib/Padre/Config.pm:1339
 msgid "This requires an installed Wx::Scintilla and a Padre restart"
-msgstr ""
+msgstr "Ceci requiert Wx::Scintilla installé et un redémarrage de Padre"
 
 #: lib/Padre/Wx/Main.pm:5251
 msgid "This type of file (URL) is missing delete support."
@@ -5058,7 +5028,7 @@ msgstr "Turc"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1461
 msgid "Turn on syntax checking of the current document and show output in a window"
-msgstr "Activer la vérification syntaxique du document courant et montre sa sortie dans le cadre de sortie"
+msgstr "Activer la vérification syntaxique du document courant et montre sa sortie dans le panneau de sortie"
 
 #: lib/Padre/Wx/Dialog/Advanced.pm:112
 msgid "Type"
@@ -5081,16 +5051,15 @@ msgid "Ultraedit"
 msgstr "Ultraedit"
 
 #: lib/Padre/File/FTP.pm:186
-#, fuzzy, perl-format
+#, perl-format
 msgid "Unable to parse %s"
-msgstr "Convertir les tabulations en espaces"
+msgstr "Impossible d'analyser %s"
 
 #: lib/Padre/Wx/ActionLibrary.pm:587
 msgid "Undo last change in current file"
 msgstr "Annuler le dernier changement dans le fichier courant"
 
 #: lib/Padre/Wx/ActionLibrary.pm:1549
-#, fuzzy
 msgid "Unfold All"
 msgstr "Tout déplier"
 
@@ -5464,7 +5433,6 @@ msgid "unsupported"
 msgstr "non supporté"
 
 #: lib/Padre/Plugin/Devel.pm:103
-#, fuzzy
 msgid "wxPerl &Live Support"
 msgstr "Support en direct pour wxPerl"
 
