@@ -35,7 +35,11 @@ sub new {
 	return $self;
 }
 
-my $open_file_info = undef;
+my $open_file_info = ();
+my $action_request = 'Patch';
+my @file1_list;
+my @file2_list;
+my $open_files;
 
 #######
 # Method set_up
@@ -48,8 +52,8 @@ sub set_up {
 	# $self->package_name->SetLabel( $pkg_name[2] );
 
 	# TODO only saved files @items
-	my @items;
-	@items = $self->current_files();
+	# my @items;
+	@file1_list = $self->current_files('saved');
 
 	# SetSelection should be current file
 	# my $mcf = $main->current->filename;
@@ -57,10 +61,10 @@ sub set_up {
 
 	# SetSelection should be current file
 	my $selection;
-	for ( 0 .. ( @items - 1 ) ) {
+	for ( 0 .. ( @file1_list - 1 ) ) {
 
 		# TODO sort out error
-		if ( $items[$_] eq $mcf ) {
+		if ( $file1_list[$_] eq $mcf ) {
 			$selection = $_;
 		}
 	}
@@ -69,13 +73,20 @@ sub set_up {
 	# $self->combo->Clear();
 	# $self->combo->Append( \@items );
 	# $self->combo->SetSelection($selection);
-	
+
 	$self->file1->Clear();
-	$self->file1->Append( \@items );
+	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection($selection);
+
+	if ( $action_request eq 'Patch' ) {
+		@file2_list = $self->current_files('patch');
+	} else {
+		@file2_list = $self->current_files('saved');
+	}
+
 	# eval { @items = $self->current_files(); };
 	$self->file2->Clear();
-	$self->file2->Append( \@items );
+	$self->file2->Append( \@file2_list );
 	$self->file2->SetSelection(0);
 
 	return;
@@ -94,8 +105,11 @@ sub process_clicked {
 
 	# $file1 = $items[ $self->file1->GetSelection() ];
 	# $file2 = $items[ $self->file2->GetSelection() ];
-	$file1 = $self->file1->GetCurrentSelection();
-	$file2 = $self->file2->GetCurrentSelection();
+	# $file1 = $self->file1->GetCurrentSelection();
+	# say $self->file1->GetSelection();
+	# say $self->file1->GetCurrentSelection();
+	$file1 = $file1_list[ $self->file1->GetSelection() ];
+	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
 
 	TRACE( $self->action->GetStringSelection() ) if DEBUG;
 
@@ -115,7 +129,7 @@ sub process_clicked {
 	}
 
 	# reset dialog
-	# $self->set_up;
+	$self->set_up;
 
 	return;
 }
@@ -125,14 +139,21 @@ sub process_clicked {
 #######
 sub on_action {
 	my $self = shift;
-		if ( $self->action->GetStringSelection() eq 'Patch' ) {
+	if ( $self->action->GetStringSelection() eq 'Patch' ) {
+
+		$action_request = 'Patch';
+		$self->set_up;
 		$self->against->Enable(0);
 		$self->file2->Enable(1);
 	} else {
+
 		# Diff
+		$action_request = 'Diff';
+		$self->set_up;
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
 		$self->against->SetSelection(0);
+
 	}
 	return;
 }
@@ -142,9 +163,10 @@ sub on_action {
 #######
 sub on_against {
 	my $self = shift;
-		if ( $self->against->GetStringSelection() eq 'File' ) {
+	if ( $self->against->GetStringSelection() eq 'File' ) {
 		$self->file2->Enable(1);
 	} else {
+
 		# SVN or Git
 		$self->file2->Enable(0);
 	}
@@ -156,14 +178,16 @@ sub on_against {
 # Method current_files
 #######
 sub current_files {
-	my $self = shift;
+
+	# my $self = shift;
+	my ( $self, $request_list ) = @ARG;
 
 	my $main     = $self->main;
 	my $current  = $main->current;
 	my $notebook = $current->notebook;
 
-	my @label      = $notebook->labels;
-	my $open_files = scalar(@label);
+	my @label = $notebook->labels;
+	$open_files = scalar(@label) - 1;
 
 	# lets have a look around
 	# where the F is vcs ?
@@ -174,7 +198,7 @@ sub current_files {
 	# my $open_file_info = ();
 	my $changed;
 
-	for ( 0 .. ( $open_files - 1 ) ) {
+	for ( 0 .. $open_files ) {
 
 		# say $_;
 		# p $notebook->GetPageText($_);
@@ -200,16 +224,39 @@ sub current_files {
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
-	my @display_names;
+	my @display_names = ();
 
-	# foreach (@order) {
-	for ( 0 .. ( @label -1 ) ) {
+	# for ( 0 .. ( @label - 1 ) ) {
+	if ( $request_list eq 'saved' ) {
+		for ( 0 .. $open_files ) {
 
-		# push @display_names, $label[$_][1];
-		push @display_names, $open_file_info->{$_}->{'filename'};
+			# push @display_names, $label[$_][1];
+			unless ( $open_file_info->{$_}->{'changed'} || $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+				push @display_names, $open_file_info->{$_}->{'filename'};
+			}
+		}
+		return @display_names;
 	}
 
-	return @display_names;
+	# return @display_names
+	if ( $request_list eq 'patch' ) {
+		for ( 0 .. $open_files ) {
+
+			# push @display_names, $label[$_][1];
+			if ( $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+				push @display_names, $open_file_info->{$_}->{'filename'};
+			}
+		}
+		return @display_names;
+	}
+
+	# foreach (@order) {
+	# for ( 0 .. ( @label - 1 ) ) {
+
+	# # 		# push @display_names, $label[$_][1];
+	# push @display_names, $open_file_info->{$_}->{'filename'};
+	# }
+	return;
 }
 
 #######
@@ -219,11 +266,25 @@ sub make_patch_diff {
 	my ( $self, $df1, $df2 ) = @ARG;
 	my $main = $self->main;
 
-	my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	say "pfile: $dfile1";
+	# say $df1;
+	my $dfile1;
 
-	my $dfile2 = $open_file_info->{$df2}->{'URL'};
-	say "pfile: $dfile2";
+	# my $list1_card = keys $open_file_info;
+	for ( 0 .. $open_files ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
+			$dfile1 = $open_file_info->{$_}->{'URL'};
+		}
+	}
+	# say "dfile1: $dfile1";
+
+	# say $df2;
+	my $dfile2;
+	for ( 0 .. $open_files ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $df2 ) {
+			$dfile2 = $open_file_info->{$_}->{'URL'};
+		}
+	}
+	# say "dfile2: $dfile2";
 
 
 	if ( -e $dfile1 ) {
@@ -263,12 +324,31 @@ sub apply_patch {
 	my $main = $self->main;
 
 	my ( $source, $diff );
+	# say $pf1;
+	my $pfile1;
 
-	my $pfile1 = $open_file_info->{$pf1}->{'URL'};
-	say "pfile: $pfile1";
+	# my $list1_card = keys $open_file_info;
+	for ( 0 .. $open_files ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
+			$pfile1 = $open_file_info->{$_}->{'URL'};
+		}
+	}
+	# say "pfile1: $pfile1";
 
-	my $patchf = $open_file_info->{$pf2}->{'URL'};
-	say "pfile: $pfile1";
+	# say $pf2;
+	my $patchf;
+	for ( 0 .. $open_files ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
+			$patchf = $open_file_info->{$_}->{'URL'};
+		}
+	}
+	# say "patchf: $patchf";
+
+	# my $pfile1 = $open_file_info->{$pf1}->{'URL'};
+	# say "pfile: $pfile1";
+
+	# # 	my $patchf = $open_file_info->{$pf2}->{'URL'};
+	# say "pfile: $pfile1";
 
 	if ( -e $pfile1 ) {
 		TRACE("found 1: $pfile1") if DEBUG;
@@ -313,8 +393,19 @@ sub make_patch_svn {
 	my ( $self, $df1 ) = @ARG;
 	my $main = $self->main;
 
-	my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	say "dfile: $dfile1";
+	# say $df1;
+	my $dfile1;
+
+	# my $list1_card = keys $open_file_info;
+	for ( 0 .. $open_files ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
+			$dfile1 = $open_file_info->{$_}->{'URL'};
+		}
+	}
+	TRACE( "dfile1 to svn: $dfile1" ) if DEBUG;
+
+	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
+	# say "dfile: $dfile1";
 
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
@@ -355,9 +446,9 @@ sub make_patch_git {
 	my ( $self, $df1 ) = @ARG;
 	my $main = $self->main;
 
-	my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	say "dfile: $dfile1";
-	
+	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
+	# say "dfile: $dfile1";
+
 	say 'Oops Git Yet To Be inplemented';
 	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
 
