@@ -42,45 +42,89 @@ sub comment_lines_str {
 	return '%';
 }
 
+my @latex_star_commands = qw/
+	chapter paragraph section subsection subsubsection 
+/;
+
 my @latex_commands = qw/
 	begin end
 
-	DeclareMathOperator
+	DeclareMathOperator pdfpageheight pdfpagewidth RequirePackage usepackage
 
 	addtocounter appendix author
 	bibliography bibliographystyle
-	caption chapter cite
+	caption cite
 	date documentclass dots
 	footnote
 	hline href hspace
 	include includegraphics insert institute item
-	label
+	label LaTeX
 	maketitle
 	newcommand newpage
-	pagebreak pagestyle paragraph
-	ref
-	section subsection subsubsection subtitle
+	pagebreak pagestyle
+	raggedleft raggedright ref
+	subtitle
 	tableofcontents textbar textbf textcolor textgreater textit textless textsc
-	texttt thepage title titlegraphic today
-	url usepackage
+	TeX texttt thepage title titlegraphic today
+	url
 	vspace
 
-	alpha beta gamma sigma omega
-	cdot frac ge hat in langle left leftarrow Leftarrow mathcal mathrm partial
-	rangle right rightarrow Rightarrow rightleftarrow Rightleftarrow
-	seteq substack sum text vee wedge
+	alpha beta gamma delta epsilon zeta eta theta iota kappa lambda mu nu xi omicron pi rho sigma tau upsilon phi chi psi omega
+	varepsilon vartheta varpi varrho varsigma varphi
+	Alpha Beta Gamma Delta Epsilon Zeta Eta Theta Iota Kappa Lambda Mu Nu Xi Omicron Pi Rho Sigma Tau Upsilon Phi Chi Psi Omega
+	amalg approx ast asymp
+	bigcirc bigcup bigtriangledown bigtriangleup bowtie bullet
+	cap cdot cdotp circ colon cong cup
+	dagger dashv ddagger diamond div doteq downarrow Downarrow
+	equiv exists
+	forall frac frown
+	ge geq
+	hat hookleftarrow hookrightarrow
+	in
+	Join
+	langle ldotp le leadsto left leftarrow Leftarrow leftharpoondown leftharpoonup leftrightarrow Leftrightarrow leq lhd ll
+	longleftarrow Longleftarrow longleftrightarrow Longleftrightarrow longmapsto longrightarrow Longrightarrow
+	mapsto mathbb mathcal mathrm mid models mp
+	nearrow neq ni nwarrow
+	odot ominus oplus oslash
+	parallel partial perp pm prec preceq propto
+	rangle rhd right rightarrow Rightarrow rightharpoondown rightharpoonup rightleftarrow Rightleftarrow rightleftharpoons
+	searrow seteq setminus sim simeq smile sqcap sqcup sqsubset sqsubseteq sqsupset sqsupseteq star subset subseteq substack
+	succ succeq sum supset supseteq swarrow
+	text tilde times triangleleft triangleright
+	unlhd unrhd uparrow Uparrow updownarrow Updownarrow uplus
+	vdash vee
+	wedge wr
 
 	bigskip DeclareOptionBeamer defbeamertemplate frame framesubtitle frametitle mode note
 	ProcessOptionsBeamer
-	setbeamercolor setbeamersize setbeamertemplate usebeamerfont usetheme
+	setbeamercolor setbeamersize setbeameroption setbeamertemplate usebeamerfont usetheme
 
 	fancyhead fancyfoot headheight headrulewidth footrulewidth
+	
+	acro ac acs acf acl
+	
+	For ForAll Procedure Repeat State Until While
 	/;
+push @latex_commands, @latex_star_commands;
+
+my @latex_star_environments = qw/
+	equation eqnarray figure table
+/;
 
 my @latex_environments = qw/
-	align cases center document enumerate eqnarray equation figure footnotesize
+	abstract acronym align
+	cases center
+	document
+	enumerate
+	flushleft flushright footnotesize
+	Huge
 	itemize Large
-	math pmatrix small table tabular tiny verbatim
+	math
+	pmatrix
+	small
+	tabular tiny
+	verbatim
 
 	algorithm algorithmic
 
@@ -88,9 +132,10 @@ my @latex_environments = qw/
 
 	beamercolorbox frame
 	/;
+push @latex_environments, @latex_star_environments;
 
 my @latex_packages = qw/
-	a4wide alg algorithm2e algorithmicx algpseudocode amsfonts amsmath amsopn amssymb
+	a4wide acronym alg algorithm2e algorithmicx algpseudocode amsfonts amsmath amsopn amssymb
 	babel beamer
 	cite color colortbl
 	dcolumn
