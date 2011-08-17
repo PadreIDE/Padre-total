@@ -1,11 +1,21 @@
 Revision history for Wx-Scintilla
 
+0.21_08  2011.8.17
+    - The following variable interpolation patterns are now
+      highlighted correctly (KHMAN, AZAWAWI):
+          ${word} @{word} and things like $${word}
+          $#{word} @#{word} and things like $#${word}
+          ${digit} @{digit}
+          $$ and most special variables with operator characters
+          $0 to $9 and things like $123
+          $^A and other control character special variables
+
 0.21_07  2011.8.16
-    - Added variable interpolation for here-docs (KHMAN)
+    - Added variable interpolation for here-docs (KHMAN, AZAWAWI)
 
 0.21_06  2011.8.15
-    - Added variable interpolation for:  "" qq{} `` qx{} // m{} qr{} s{}{} (KHMAN)
-    - Fix build failure on wxWidgets 2.8.10 (MARKD)
+    - Added variable interpolation for:  "" qq{} `` qx{} // m{} qr{} s{}{} (KHMAN, AZAWAWI)
+    - Fix build failure on wxWidgets 2.8.10 (MARKD, AZAWAWI)
 
 0.21_05  2011.8.12
     - Integrated Perl variable interpolation patch by Kein-Hong Man
