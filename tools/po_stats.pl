@@ -169,6 +169,9 @@ END_CSS
 	my $time = localtime();
 	$html .= <<"END_HTML";
 <h1>Padre translation status report</h1>
+<p><a href="http://padre.perlide.org/translators.html">Get to know our translators on the Padre website.</a></p>
+<p>If you want to help translating Padre, you can check out our
+   <a href="http://padre.perlide.org/trac/wiki/TranslationIntro">wiki page on translations</a>.
 <p>The numbers showing the number of errors. An empty cell means that translation does not exist at all</p>
 <p>Generated on: $time (it is generated using a cron-job)</p>
 	
