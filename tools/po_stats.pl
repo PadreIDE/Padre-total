@@ -147,8 +147,13 @@ sub collect_report {
 
 sub save_html_report {
 	my ($dir) = @_;
-	my $html = "<html><head><title>Padre translation status report</title></head><body>\n";
-	$html .= <<'END_CSS';
+	my $html = <<'END_HEAD';
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
+<title>Padre translation status report</title>
 <style type="text/css">
 .red {
     background-color: red;
@@ -165,36 +170,39 @@ sub save_html_report {
     background-color: lightgreen;
 }
 </style>
-END_CSS
+</head><body>
+END_HEAD
 
 	my $time = localtime();
 	$html .= <<"END_HTML";
 <h1>Padre translation status report</h1>
 <p><a href="http://padre.perlide.org/translators.html">Get to know our translators on the Padre website.</a></p>
 <p>If you want to help translating Padre, you can check out our
-   <a href="http://padre.perlide.org/trac/wiki/TranslationIntro">wiki page on translations</a>.
+   <a href="http://padre.perlide.org/trac/wiki/TranslationIntro">wiki page on translations</a>.</p>
 <p>The numbers showing the number of errors. An empty cell means that translation does not exist at all</p>
 <p>Generated on: $time (it is generated using a cron-job)</p>
-	
+
 <table>
-<tr><td class=red>more than 40% missing</td></tr>
-<tr><td class=yellow>10%-40% missing</td></tr>
-<tr><td class=green>less than 10% missing</td></tr>
-<tr><td class=lightgreen>perfect</td></tr>
+<tr><td class="red">more than 40% missing</td></tr>
+<tr><td class="yellow">10%-40% missing</td></tr>
+<tr><td class="green">less than 10% missing</td></tr>
+<tr><td class="lightgreen">perfect</td></tr>
 </table>
 
-<table border=1>
+<table border="1">
 END_HTML
 
 	#die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
 	my @languages = uniq sort grep { !/total/ } map { keys %{ $reports{$_} } } keys %reports;
+	$html .= '<thead>';
 	$html .= _header(@languages);
+	$html .= '</thead><tbody>';
 
 	my %totals;
 
 	foreach my $project ( sort keys %reports ) {
-		$html .= "<tr><td>$project</td><td>";
+		$html .= "<tr><th>$project</th><td>";
 		my $total = $reports{$project}{total};
 		$html .= defined $total ? $total : '&nbsp;';
 		$total ||= 0;
@@ -212,7 +220,7 @@ END_HTML
 				} else {
 
 					#$html .= '<td class=red>-';
-					$html .= "<td class=red>$reports{$project}{total}";
+					$html .= "<td class='red'>$reports{$project}{total}";
 					$totals{$language} += $reports{$project}{total};
 				}
 			} else {
@@ -232,13 +240,13 @@ END_HTML
 
 	$html .= _header(@languages);
 
-	$html .= "</table>\n";
+	$html .= "</tbody></table>\n";
 
 	$html .= "<h2>Padre GUI level of completeness</h2>\n";
 	$html .= "<table>";
 	foreach my $language (@languages) {
 		my $p = 100 - int( 100 * $totals{$language} / $totals{total} );
-		$html .= "<tr><td>$language</td><td><img src=../img/$p.png /></td><td>$p %</td></tr>\n";
+		$html .= "<tr><td>$language</td><td><img src='../img/$p.png' alt='$p %'/></td><td>$p %</td></tr>\n";
 	}
 	$html .= "</table>";
 
@@ -246,14 +254,14 @@ END_HTML
 	if ($errors) {
 		$html .= "<pre>\n$errors\n</pre>\n";
 	} else {
-		$html .= "No errors were reported\n";
+		$html .= "<p>No errors were reported</p>\n";
 	}
 
 
 
 
 	$html .= "</body></html>";
-	open my $fh, '>', "$dir/index.html" or die;
+	open my $fh, '>:utf8', "$dir/index.html" or die;
 	print $fh $html;
 }
 
@@ -264,16 +272,16 @@ sub _header {
 sub _td_open {
 	my ( $errors, $total ) = @_;
 	if ( $errors > $total * 0.40 ) {
-		return q(<td class=red>);
+		return q(<td class="red">);
 
 		#	} elsif ( $errors > $total * 0.20 ) {
 		#		return q(<td class=orange>);
 	} elsif ( $errors > $total * 0.10 ) {
-		return q(<td class=yellow>);
+		return q(<td class="yellow">);
 	} elsif ( $errors > 0 ) {
-		return q(<td class=green>);
+		return q(<td class="green">);
 	} else {
-		return q(<td class=lightgreen>);
+		return q(<td class="lightgreen">);
 	}
 }
 
