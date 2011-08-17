@@ -108,7 +108,8 @@ sub disable {
 	my $pos = $left->GetPageIndex($self);
 	$self->Hide;
 	$left->RemovePage($pos);
-	$self->Destroy;
+	# Bad idea ?
+	#$self->Destroy;
 	
 }
 
