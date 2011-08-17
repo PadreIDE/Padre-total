@@ -40,6 +40,16 @@ sub new {
 	$self->reg_cb( "connect" , \&on_connect);
 	$self->reg_cb( "disconnect", \&on_disconnect );
 	
+	## Padre events from plugin - rethrow
+	$self->plugin->reg_cb( 
+		"editor_enable",
+		sub {shift; $self->event('editor_enable', @_ ) }
+	);
+	$self->plugin->reg_cb( 
+		"editor_disable",
+		sub {shift; $self->event('editor_disable', @_ ) }
+	);
+	
 	$self->chat(
 		new Padre::Plugin::Swarm::Wx::Chat
 				universe => $self,
@@ -48,17 +58,23 @@ sub new {
 	
 	$self->geometry(
 		new Padre::Swarm::Geometry
+				
 	);
 	
-	# $self->editor(
-		# new Padre::Plugin::Swarm::Wx::Editor
-	# );
-	# 
-	# $self->resources(
-		# new Padre::Plugin::Swarm::Wx::Resources
-	# );
 	
-    Scalar::Util::weaken( $self );
+	$self->editor(
+		new Padre::Plugin::Swarm::Wx::Editor
+				universe => $self,
+	);
+	# 
+	$self->resources(
+		Padre::Plugin::Swarm::Wx::Resources->new(
+				universe => $self,
+				label => ucfirst( $origin )
+		)
+	);
+	
+	Scalar::Util::weaken( $self );
 	
 	return $rself;
 }
@@ -130,7 +146,11 @@ sub _notify {
 	my $lock = Padre::Current->main->lock('UPDATE');
 	foreach my $c ( $self->components ) {
 		my $component = $self->$c;
-		next unless $component;
+		unless ( $component ) {
+			TRACE( "$notify not handled by component $c" );
+			next;
+		}
+
 		TRACE( "Notify $component -> $notify with @_" ) if DEBUG;
 		eval {
 			$component->$notify(@_) if $component->can($notify);

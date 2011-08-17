@@ -285,7 +285,6 @@ sub accept_promote {
     ## Todo - manipulate the geometry ourselves for
     # 'chat' promote. stop spewing into the chat 
     # console.
-    TRACE( Dumper $message );
     if ( $message->{service} eq 'chat' ) {
 		$self->update_userlist;
     }
@@ -327,6 +326,14 @@ sub command_nick {
             $previous	
         ) unless $@;
     
+}
+
+sub command_geo {
+	my $self = shift;
+	my $geo = $self->universe->geometry;
+	foreach my $edge ( $geo->graph->edges ) {
+		$self->write_unstyled( join (' => ' , @$edge) . "\n" );
+	}
 }
 
 sub command_disco {

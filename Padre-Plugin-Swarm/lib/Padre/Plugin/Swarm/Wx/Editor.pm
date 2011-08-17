@@ -9,7 +9,7 @@ use Class::XSAccessor
     accessors => {
         editors => 'editors',
         resources=> 'resources',
-        transport => 'transport',
+        universe => 'universe',
     };
     
 =pod
@@ -52,19 +52,29 @@ sub new {
 	TRACE( "Instanced editor supervisor" ) if DEBUG;
 	$args{editors} = {};
 	$args{resources} = {};
-	return bless \%args, $class ;
+	
+	my $self = bless \%args, $class ;
+	my $rself = $self;
+	Scalar::Util::weaken($self);
+	
+	$self->universe->reg_cb( 'editor_enable' , sub { shift;$self->editor_enable(@_) } );
+	$self->universe->reg_cb( 'editor_disable', sub { shift;$self->editor_disable(@_) } );
+	
+	return $self;
 }
 
 sub enable {
 	my $self = shift;
         foreach my $editor ( $self->plugin->main->editors ) {
 	    eval{ $self->editor_enable( $editor, $editor->{Document} ) };
-		TRACE( "Failed to enable editor - $@" ) if DEBUG && $@;
+		TRACE( "Failed to enable editor - $@" ) if $@;
 	}
 
 }
 
-sub disable {}
+sub disable {
+	
+}
 
 sub plugin { Padre::Plugin::Swarm->instance }
 
@@ -75,18 +85,14 @@ sub editor_enable {
 	Wx::Event::EVT_STC_MODIFIED( $editor , -1,  
             sub { $self->on_editor_modified(@_) }
         );
-	
-        eval  {
-	    $self->transport->send(
+
+	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
 			resource => $document->filename
 		}
-	    );
-	
-	};
-	TRACE( "Failed to send $@" ) if DEBUG;
-	
+	);
+
 	$self->editors->{ refaddr $editor } = $editor;
 	$self->resources->{ $document->filename } = $document;
 	
@@ -101,17 +107,17 @@ sub editor_disable {
 	my ($self,$editor,$document) = @_;
 	return unless $document->filename;
 	
-	eval {
-            $self->transport->send( {
-                type => 'destroy' , 
-                service => 'editor',
-                resource => $document->filename}
-            );
+	$self->universe->send(
+			{
+				type => 'destroy' , 
+				service => 'editor',
+				resource => $document->filename
+			}
+	);
 
-        delete $self->editors->{refaddr $editor};
-        delete $self->resources->{$document->filename};
-	};
-        TRACE( "Failed to promote editor close! $@" ) if DEBUG && $@;
+	delete $self->editors->{refaddr $editor};
+	delete $self->resources->{$document->filename};
+
 }
 
 
@@ -209,17 +215,23 @@ sub accept_gimme {
 	
 	my $r = $message->{resource};
 	$r =~ s/^://;
-	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
-
+	TRACE( $message->{from} . ' requests resource ' . $r ) ;
+	
 	if ( exists $self->resources->{$r} ) {
 		my $document = $self->resources->{$r};
-		$self->transport->send(
-		    { 	type => 'openme',
-			service => 'editor',
-			body => $document->text_get,
-			to   => $message->from ,
-		}
+		$self->universe->send(
+		    {
+				type => 'openme',
+				service => 'editor',
+				body => $document->text_get,
+				to   => $message->from ,
+			}
 		);
+	} else {
+		$self->universe->send(
+			{ type => 'destroy', service=>'editor', resource=>$r }
+		);
+		
 	}
 	
 }

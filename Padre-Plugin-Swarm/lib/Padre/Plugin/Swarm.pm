@@ -21,10 +21,6 @@ sub plugin_interfaces {
 
 use Class::XSAccessor {
 	accessors => {
-		geometry  => 'geometry',
-		resources => 'resources',
-		editor    => 'editor',
-		chat      => 'chat',
 		config    => 'config',
 		wx        => 'wx',
 		global    => 'global',
@@ -230,9 +226,6 @@ SCOPE: {
 		my $config = $self->bootstrap_config;
 		$self->config( $config );
 
-		my $geo = Padre::Swarm::Geometry->new;
-		$self->geometry( $geo );
-		
 		my $u_global = 	Padre::Plugin::Swarm::Universe->new(origin=>'global');
 		my $u_local  = 	Padre::Plugin::Swarm::Universe->new(origin=>'local');
 		

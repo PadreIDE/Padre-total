@@ -47,9 +47,7 @@ sub plugin {
 sub get_users {
 	my $self = shift;
 	my @users = $self->graph->successors('~identity');
-	TRACE( @users );
 	return @users;
-	
 }
 
 
@@ -59,7 +57,7 @@ sub disable {}
 sub on_recv {
     my ($self,$message) = @_;
     my $handler = 'accept_'  . $message->type;
-    TRACE( "Geometry recv $handler" );
+    TRACE( "Geometry recv $handler" ) if DEBUG;
     if ( $self->can($handler) ) {
 		TRACE( "Geometry handler $handler" ) if DEBUG;
 		eval { $self->$handler($message) } ;
@@ -76,8 +74,6 @@ sub accept_promote {
 	my $self = shift;
 	my $message = shift;
 	$self->graph->add_edge( '~service' => $message->{service} );
-	#$self->graph->add_edge( $message->{service} , $message->{from} );
-	# just in case
 	$self->graph->add_edge( '~identity' => $message->{from} );
 
 	if ($message->{resource}) {
@@ -92,7 +88,8 @@ sub accept_promote {
 sub accept_destroy {
 	my $self = shift;
 	my $message = shift;
-        return unless $message->{resource};
+	return unless $message->{resource};
+	
 	$self->graph->delete_edge( $message->{from} ,
 		':' . $message->{resource}
 	);
@@ -115,7 +112,6 @@ sub accept_announce {
 	my $self = shift;
 	my $message = shift;
 	$self->graph->add_edge( '~identity' => $message->{from} );
-	TRACE( $self->graph );
 	if ( exists $message->{resource} ) {
 		$self->graph->add_edge( 
 		    $message->{from} ,
