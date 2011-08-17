@@ -7,7 +7,7 @@ use warnings;
 use utf8;
 use autodie;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 use English qw( -no_match_vars );
 
 use Padre::Logger;
@@ -44,8 +44,8 @@ sub set_up {
 	my $self = shift;
 	my $main = $self->main;
 
-	my @pkg_name = split /::/smx, __PACKAGE__,;
-	$self->package_name->SetLabel( $pkg_name[2] );
+	# my @pkg_name = split /::/smx, __PACKAGE__,;
+	# $self->package_name->SetLabel( $pkg_name[2] );
 
 	# TODO only saved files @items
 	my @items;
@@ -66,10 +66,13 @@ sub set_up {
 	}
 
 	# @items = Padre::Current->filename;
+	# $self->combo->Clear();
+	# $self->combo->Append( \@items );
+	# $self->combo->SetSelection($selection);
+	
 	$self->file1->Clear();
 	$self->file1->Append( \@items );
 	$self->file1->SetSelection($selection);
-
 	# eval { @items = $self->current_files(); };
 	$self->file2->Clear();
 	$self->file2->Append( \@items );
@@ -102,7 +105,7 @@ sub process_clicked {
 
 	if ( $self->action->GetStringSelection() eq 'Diff' ) {
 
-		if ( $self->against->GetStringSelection() eq 'File' ) {
+		if ( $self->against->GetStringSelection() eq 'File-2' ) {
 			$self->make_patch_diff( $file1, $file2 );
 		} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 			$self->make_patch_svn($file1);

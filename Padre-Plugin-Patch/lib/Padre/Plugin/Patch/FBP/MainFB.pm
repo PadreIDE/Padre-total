@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -25,52 +25,20 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Main"),
+		Wx::gettext("Patch"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
-	);
-
-	my $package_name = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Padre::Plugin::Patch"),
-	);
-	$package_name->SetFont(
-		Wx::Font->new( 14, 70, 90, 92, 0, "" )
-	);
-
-	my $m_staticline1_1 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
-
-	my $label1 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("File-1"),
 	);
 
 	my $file1 = Wx::Choice->new(
 		$self,
 		-1,
 		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		[ 200, -1 ],
 		[],
 	);
 	$file1->SetSelection(0);
-	$file1->SetMinSize( [ 200, -1 ] );
-
-	my $m_staticline1_2 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
 
 	my $action = Wx::RadioBox->new(
 		$self,
@@ -102,7 +70,7 @@ sub new {
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		[
-			"File",
+			"File-2",
 			"SVN",
 			"Git",
 		],
@@ -120,20 +88,6 @@ sub new {
 		},
 	);
 
-	my $m_staticline4 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
-
-	my $label2 = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("File-2"),
-	);
-
 	my $file2 = Wx::Choice->new(
 		$self,
 		-1,
@@ -143,14 +97,6 @@ sub new {
 	);
 	$file2->SetSelection(0);
 	$file2->SetMinSize( [ 200, -1 ] );
-
-	my $m_staticline3 = Wx::StaticLine->new(
-		$self,
-		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
-	);
 
 	my $process = Wx::Button->new(
 		$self,
@@ -185,24 +131,38 @@ sub new {
 		Wx::wxLI_HORIZONTAL,
 	);
 
-	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer1->Add( $package_name, 0, Wx::wxALL, 5 );
-	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+	my $file_1 = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("File-1"),
+		),
+		Wx::wxVERTICAL,
+	);
+	$file_1->Add( $file1, 0, Wx::wxALL, 5 );
 
-	my $bSizer5 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer5->Add( $label1, 0, Wx::wxALL, 5 );
-	$bSizer5->Add( $file1, 1, Wx::wxALL, 5 );
+	my $sbSizer2 = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("Options"),
+		),
+		Wx::wxHORIZONTAL,
+	);
+	$sbSizer2->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+	$sbSizer2->Add( $action, 0, Wx::wxALL, 5 );
+	$sbSizer2->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
+	$sbSizer2->Add( $against, 0, Wx::wxALL, 5 );
 
-	my $bSizer7 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$bSizer7->Add( $action, 0, Wx::wxALL, 5 );
-	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$bSizer7->Add( $against, 0, Wx::wxALL, 5 );
-	$bSizer7->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-
-	my $bSizer51 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer51->Add( $label2, 0, Wx::wxALL, 5 );
-	$bSizer51->Add( $file2, 1, Wx::wxALL, 5 );
+	my $file_2 = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("File-2"),
+		),
+		Wx::wxVERTICAL,
+	);
+	$file_2->Add( $file2, 1, Wx::wxALL, 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
 	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
@@ -211,14 +171,9 @@ sub new {
 	$buttons->Add( $close_button, 0, Wx::wxALL, 5 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vsizer->Add( $bSizer1, 0, Wx::wxEXPAND, 3 );
-	$vsizer->Add( $m_staticline1_1, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
-	$vsizer->Add( $bSizer5, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$vsizer->Add( $m_staticline1_2, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$vsizer->Add( $bSizer7, 0, Wx::wxEXPAND, 5 );
-	$vsizer->Add( $m_staticline4, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
-	$vsizer->Add( $bSizer51, 1, Wx::wxEXPAND, 5 );
-	$vsizer->Add( $m_staticline3, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
+	$vsizer->Add( $file_1, 0, Wx::wxEXPAND, 5 );
+	$vsizer->Add( $sbSizer2, 1, Wx::wxEXPAND, 5 );
+	$vsizer->Add( $file_2, 0, Wx::wxEXPAND, 5 );
 	$vsizer->Add( $buttons, 0, Wx::wxEXPAND, 3 );
 	$vsizer->Add( $m_staticline5, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
 
@@ -228,7 +183,6 @@ sub new {
 	$self->SetSizerAndFit($sizer);
 	$self->Layout;
 
-	$self->{package_name} = $package_name->GetId;
 	$self->{file1} = $file1->GetId;
 	$self->{action} = $action->GetId;
 	$self->{against} = $against->GetId;
@@ -236,10 +190,6 @@ sub new {
 	$self->{process} = $process->GetId;
 
 	return $self;
-}
-
-sub package_name {
-	Wx::Window::FindWindowById($_[0]->{package_name});
 }
 
 sub file1 {

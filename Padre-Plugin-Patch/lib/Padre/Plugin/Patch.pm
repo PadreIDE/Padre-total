@@ -7,7 +7,7 @@ use strict;
 use utf8;
 use autodie;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 use English qw( -no_match_vars );
 use Data::Printer { caller_info => 1 };
 
@@ -36,7 +36,7 @@ sub padre_interfaces {
 # Define Plugin Name required
 #######
 sub plugin_name {
-	return Wx::gettext('Padre Patch... Alpha');
+	return Wx::gettext('Padre Patch... Beta');
 }
 
 #######
@@ -179,7 +179,7 @@ None reported.
 
 =head1 BUGS AND LIMITATIONS
 
-Lots, but hay it's Alpha,
+some, but hay it's Beta,
 
 
 =head1 AUTHOR
