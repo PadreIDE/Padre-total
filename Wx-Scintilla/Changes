@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.22    2011.8.17
+    - 0.21_08 is now released as stable 0.22 to the *unsuspecting* world (AZAWAWI)
+
 0.21_08  2011.8.17
     - The following variable interpolation patterns are now
       highlighted correctly (KHMAN, AZAWAWI):
