@@ -18,7 +18,7 @@ sub new {
 sub notify {
     my ($self,$handler,$message) = @_;
     TRACE( "Notify slave task '$handler' , $message" ) if DEBUG;
-    $self->handle->message( $handler => $message );
+    $self->message( $handler => $message );
     
 }
 
@@ -152,7 +152,6 @@ sub read_task_queue {
     my $self = shift;
     my $cancelled = $self->cancel;
     TRACE( "state of self->cancel == $cancelled" ) if DEBUG;
-    TRACE( "state of self->{handle} == " . $self->{handle} ) if DEBUG;
     while( my $message = $self->dequeue_nb ) {
         TRACE( 'Unhandled Incoming message' . Dumper $message ) if DEBUG;
         if ( $message->[0] eq 'message' ) {
@@ -181,7 +180,7 @@ sub _recv {
     
     $message->{origin} = $origin;
     
-    $self->handle->message( OWNER =>  $message );
+    $self->message( OWNER =>  $message );
     
 }
 
@@ -189,11 +188,11 @@ sub _connect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
-    $self->handle->message( STATUS => "Swarm $origin transport connected " );
+    $self->status( "Swarm $origin transport connected" );
     my $m = new Padre::Swarm::Message
                 origin => $origin,
                 type   => 'connect';
-    $self->handle->message( OWNER => $m );
+    $self->message( OWNER => $m );
 }
 
 
@@ -201,11 +200,11 @@ sub _disconnect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
-    $self->handle->message( STATUS => "Swarm $origin transport DISCONNECTED ");
+    $self->status("Swarm $origin transport DISCONNECTED");
     my $m = new Padre::Swarm::Message
                 origin => $origin,
                 type   => 'disconnect';
-    $self->handle->message( OWNER => $m );
+    $self->message( OWNER => $m );
 }
 
 1;

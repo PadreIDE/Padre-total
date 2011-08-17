@@ -8,7 +8,7 @@ use AnyEvent::Handle;
 use IO::Socket::Multicast;
 use Padre::Swarm::Message;
 use JSON;
-our $VERSION = '0.11';
+our $VERSION = '0.2';
 
 sub new {
     my $class = shift;

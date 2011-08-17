@@ -11,8 +11,13 @@ use Object::Event   ();
 use Padre::Wx::Icon ();
 use Padre::Logger;
 
-our $VERSION = '0.11';
+our $VERSION = '0.2';
 our @ISA     = ('Padre::Plugin','Padre::Role::Task','Object::Event');
+
+sub plugin_interfaces {
+	'Padre::Task' => 0.91,
+	'Padre::Document' => 0.91,
+}
 
 use Class::XSAccessor {
 	accessors => {
@@ -113,6 +118,11 @@ sub send {
 	my $handler = 'send_'.$origin;
 	TRACE( "outbound handle $handler" );
 	$self->service->message( $handler => $message );
+	
+	# Ugly - provide 'global' loopback here.
+	$self->event('recv', 'global', $message );
+	
+	
 	
 }
 

@@ -9,7 +9,7 @@ use AnyEvent::Socket;
 use AnyEvent::Handle;
 use JSON;
 
-our $VERSION = '0.11';
+our $VERSION = '0.2';
 
 sub new {
     my $class = shift;

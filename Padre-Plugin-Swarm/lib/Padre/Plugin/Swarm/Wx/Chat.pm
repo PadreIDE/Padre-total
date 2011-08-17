@@ -15,7 +15,7 @@ use Padre::Swarm::Identity;
 use Padre::Swarm::Message;
 use Padre::Swarm::Message::Diff;
 use Padre::Util;
-our $VERSION = '0.11';
+our $VERSION = '0.2';
 our @ISA     = 'Wx::Panel';
 
 use Class::XSAccessor
@@ -166,6 +166,7 @@ sub enable {
 sub disable {
 	my $self = shift;
 	TRACE( 'Disable Chat' ) if DEBUG;
+	$self->universe->send( {type=>'leave', service=>'chat' } );
 	my $main = Padre->ide->wx->main;
 	my $bottom= $main->bottom;
 	my $position = $bottom->GetPageIndex($self);
