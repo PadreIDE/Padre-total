@@ -198,8 +198,8 @@ sub accept_openme {
     }
     
     my $doc = $self->plugin->main->new_document_from_string( $message->body );
-    TRACE( "Storing $doc with " . $message->{filename} ) if DEBUG;
-    $self->{documents}{$message->{filename}} = $doc;
+    TRACE( "Storing $doc with " . $message->{resource} ) if DEBUG;
+    $self->{documents}{$message->{resource}} = $doc;
     
 }
 
@@ -224,6 +224,7 @@ sub accept_gimme {
 				type => 'openme',
 				service => 'editor',
 				body => $document->text_get,
+				resource => $document->filename,
 				to   => $message->from ,
 			}
 		);
