@@ -59,11 +59,8 @@ sub on_swarm_service_message {
 	my $message = shift;
 
 
-	use Data::Dumper;
-	#TRACE( 'Got service scheduled of ' , Dumper $service ) ;
 	$self->service($service);
 	
-	TRACE( 'Inbound message is ' . Dumper( $message ) ) if DEBUG;
 	# TODO can i use 'SWARM' instead?
 	my $lock = $self->main->lock('UPDATE');
 	
@@ -85,7 +82,7 @@ sub on_swarm_service_message {
 		TRACE( 'Global message dispatch' ) if DEBUG;
 		$self->global->event('recv', $message );
 	} else {
-		TRACE( "Unknown transport dispatch recv_$origin" ) if DEBUG;
+		TRACE( "Unknown transport dispatch recv_$origin" );
 		$self->event( "recv_$origin" , $message );
 	}	
 	
@@ -116,7 +113,9 @@ sub send {
 	$self->service->message( $handler => $message );
 	
 	# Ugly - provide 'global' loopback here.
-	$self->event('recv', 'global', $message );
+	my $loop = bless $message, 'Padre::Swarm::Message';
+	$loop->{origin} = 'global';
+	$self->on_swarm_service_message( $self->service ,  $loop );
 	
 	
 	
