@@ -10,6 +10,7 @@ use File::Temp qw{ tempdir };
 use Data::Dumper qw{ Dumper };
 use Env qw{ LANG };
 use Getopt::Long qw{ GetOptions };
+use List::MoreUtils qw{ uniq };
 
 #use Locale::PO;
 
@@ -109,7 +110,7 @@ sub collect_report {
 	}
 
 
-	my @po_files = glob "$localedir/*.po";
+	my @po_files = glob catfile( $localedir, '*.po');
 	my $pot_file = catfile( $localedir, 'messages.pot' );
 	if ( open my $fh, '<', $pot_file ) {
 		while ( my $line = <$fh> ) {
@@ -187,7 +188,7 @@ END_HTML
 
 	#die Dumper $reports{"Padre-Plugin-SpellCheck"};
 
-	my @languages = sort grep { !/total/ } keys %{ $reports{Padre} };
+	my @languages = uniq sort grep { !/total/ } map { keys %{ $reports{$_} } } keys %reports;
 	$html .= _header(@languages);
 
 	my %totals;
