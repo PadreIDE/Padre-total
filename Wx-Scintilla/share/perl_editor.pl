@@ -119,7 +119,7 @@ sub new {
 
     # set the lexer to Perl 5
     $self->SetLexer(wxSTC_LEX_PERL);
-    $self->SetStyleBits(7);
+    $self->SetStyleBits($self->GetStyleBitsNeeded);
 
     my @keywords = qw(
       NULL __FILE__ __LINE__ __PACKAGE__ __DATA__ __END__ AUTOLOAD
