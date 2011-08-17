@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 August 17
+        url: http://ahmadzawawi.blogspot.com/2011/08/wxscintilla-latest-scintilla-in-box.html
+        title: Wx::Scintilla - Latest Scintilla in a box
+        comment: by Ahmad M. Zawawi
       - date: 2011 August 16
         url: http://blogs.perl.org/users/adam_kennedy/2011/08/padre-is-starting-to-smell-a-little-bit-like-10.html
         title: Padre is starting to smell a little bit like 1.0
