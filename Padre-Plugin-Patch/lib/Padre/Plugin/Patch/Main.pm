@@ -212,47 +212,49 @@ sub current_files {
 #######
 sub make_patch_diff {
 	my $self = shift;
-	my $df1  = shift;
-	my $df2  = shift;
+	my $file1_name  = shift;
+	my $file2_name  = shift;
 	my $main = $self->main;
 
 	# say $df1;
-	my $dfile1;
+	# my $dfile1;
 
 	# my $list1_card = keys $open_file_info;
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
-			$dfile1 = $open_file_info->{$_}->{'URL'};
-		}
-	}
+	# for ( 0 .. $self->{tab_cardinality} ) {
+		# if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
+			# $dfile1 = $open_file_info->{$_}->{'URL'};
+		# }
+	# }
 	# say "dfile1: $dfile1";
 
 	# say $df2;
-	my $dfile2;
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $df2 ) {
-			$dfile2 = $open_file_info->{$_}->{'URL'};
-		}
-	}
+	# my $dfile2;
+	# for ( 0 .. $self->{tab_cardinality} ) {
+		# if ( $open_file_info->{$_}->{'filename'} eq $df2 ) {
+			# $dfile2 = $open_file_info->{$_}->{'URL'};
+		# }
+	# }
 	# say "dfile2: $dfile2";
+	
+	my $file1_url = filename_url( $self, $file1_name );
+	my $file2_url = filename_url( $self, $file2_name );
 
-
-	if ( -e $dfile1 ) {
-		TRACE("found 1: $dfile1") if DEBUG;
+	if ( -e $file1_url ) {
+		TRACE("found $file1_url: $file1_url") if DEBUG;
 	}
 
-	if ( -e $dfile2 ) {
-		TRACE("found 2: $dfile2") if DEBUG;
+	if ( -e $file2_url ) {
+		TRACE("found $file2_url: $file2_url") if DEBUG;
 	}
 
-	if ( -e $dfile1 && -e $dfile2 ) {
+	if ( -e $file1_url && -e $file2_url ) {
 		require Text::Diff;
 		my $our_diff;
-		eval { $our_diff = Text::Diff::diff( $dfile1, $dfile2, { STYLE => 'Unified' } ); };
+		eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ); };
 		TRACE($our_diff) if DEBUG;
 
 		# This works though
-		my $patch_file = $dfile1 . '.patch';
+		my $patch_file = $file1_url . '.patch';
 
 		File::Slurp::write_file( $patch_file, $our_diff );
 		TRACE("writing file: $patch_file") if DEBUG;
@@ -271,41 +273,44 @@ sub make_patch_diff {
 ########
 sub apply_patch {
 	my $self = shift;
-	my $pf1  = shift;
-	my $pf2  = shift;
+	my $file1_name  = shift;
+	my $file2_name  = shift;
 	my $main = $self->main;
 
 	my ( $source, $diff );
-	my $pfile1;
+	# my $pfile1;
 
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
-			$pfile1 = $open_file_info->{$_}->{'URL'};
-		}
+	# for ( 0 .. $self->{tab_cardinality} ) {
+		# if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
+			# $pfile1 = $open_file_info->{$_}->{'URL'};
+		# }
+	# }
+	
+	# my $patchf;
+	# for ( 0 .. $self->{tab_cardinality} ) {
+		# if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
+			# $patchf = $open_file_info->{$_}->{'URL'};
+		# }
+	# }
+	
+	my $file1_url = filename_url( $self, $file1_name );
+	my $file2_url = filename_url( $self, $file2_name );
+	
+	if ( -e $file1_url ) {
+		TRACE("found $file1_url: $file1_url") if DEBUG;
+		$source = File::Slurp::read_file($file1_url);
 	}
 
-	my $patchf;
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
-			$patchf = $open_file_info->{$_}->{'URL'};
-		}
-	}
-
-	if ( -e $pfile1 ) {
-		TRACE("found 1: $pfile1") if DEBUG;
-		$source = File::Slurp::read_file($pfile1);
-	}
-
-	if ( -e $patchf ) {
-		TRACE("found 2: $patchf") if DEBUG;
-		$diff = File::Slurp::read_file($patchf);
-		unless ( $patchf =~ /(patch|diff)$/ ) {
+	if ( -e $file2_url ) {
+		TRACE("found $file2_url: $file2_url") if DEBUG;
+		$diff = File::Slurp::read_file($file2_url);
+		unless ( $file2_url =~ /(patch|diff)$/ ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
 		}
 	}
 
-	if ( -e $pfile1 && -e $patchf ) {
+	if ( -e $file1_url && -e $file2_url ) {
 
 		require Text::Patch;
 		my $our_patch;
@@ -322,37 +327,54 @@ sub apply_patch {
 	return;
 }
 
+
+#######
+# Composed Method
+# 
+#######
+sub filename_url {
+	my $self = shift;
+	my $filename = shift;
+
+	for ( 0 .. $self->{tab_cardinality} ) {
+		if ( $open_file_info->{$_}->{'filename'} eq $filename ) {
+			return $open_file_info->{$_}->{'URL'};
+		}
+	}
+	return;
+}
+
+
 #######
 # Method make_patch_svn
 # inspired by P-P-SVN
 #######
 sub make_patch_svn {
 	my $self = shift;
-	my $df1  = shift;
+	my $file1_name = shift;
 	my $main = $self->main;
 
-	# say $df1;
-	my $dfile1;
+	# say $file1;
+	# my $dfile1;
 
-	# my $list1_card = keys $open_file_info;
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
-			$dfile1 = $open_file_info->{$_}->{'URL'};
-		}
-	}
-	TRACE( "dfile1 to svn: $dfile1" ) if DEBUG;
+# # 	my $list1_card = keys $open_file_info;
+	# for ( 0 .. $self->{tab_cardinality} ) {
+		# if ( $open_file_info->{$_}->{'filename'} eq $file1 ) {
+			# $dfile1 = $open_file_info->{$_}->{'URL'};
+		# }
+	# }
+	
+	my $file1_url = filename_url( $self, $file1_name );
+	
+	TRACE( "file1_url to svn: $file1_url" ) if DEBUG;
 
-	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	# say "dfile1: $dfile1";
+	say "file1_url: $file1_url";
 
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
 
-		# require SVN::Class;
-		my $file = SVN::Class::svn_file($dfile1);
+		my $file = SVN::Class::svn_file($file1_url);
 		$file->diff;
-
-		# p $file;
 
 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
 		# TRACE output is yuck
@@ -361,7 +383,7 @@ sub make_patch_svn {
 
 		TRACE($diff_str) if DEBUG;
 
-		my $patch_file = $dfile1 . '.patch';
+		my $patch_file = $file1_url . '.patch';
 
 		# TODO File::Slurp should be able to handel @{ $file->stdout }
 		File::Slurp::write_file( $patch_file, $diff_str );
