@@ -19,17 +19,15 @@ sub new {
 	my $self  = $class->SUPER::new(@_);
 
 	$self->CenterOnParent;
+	$self->{action_request} = 'Patch';
 	$self->set_up;
 	return $self;
 }
 
 # Violates encapsulation
-my $open_file_info = ();
-my $action_request = 'Patch';
-my @file1_list;
-my @file2_list;
+my $open_file_info = {};
+my ( @file1_list, @file2_list );
 
-# my $open_files;
 
 #######
 # Method set_up
@@ -38,7 +36,6 @@ sub set_up {
 	my $self = shift;
 	my $main = $self->main;
 
-	# TODO only saved files @items
 	@file1_list = $self->current_files('saved');
 
 	# SetSelection should be current file
@@ -46,8 +43,7 @@ sub set_up {
 
 	# SetSelection should be current file
 	my $selection;
-	for ( 0 .. ( @file1_list - 1 ) ) {
-
+	for ( 0 .. $self->{tab_cardinality} ) {
 		# TODO sort out error
 		if ( $file1_list[$_] eq $mcf ) {
 			$selection = $_;
@@ -58,7 +54,7 @@ sub set_up {
 	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection($selection);
 
-	if ( $action_request eq 'Patch' ) {
+	if ( $self->{action_request} eq 'Patch' ) {
 		@file2_list = $self->current_files('patch');
 	} else {
 		@file2_list = $self->current_files('saved');
@@ -114,14 +110,14 @@ sub on_action {
 	my $self = shift;
 	if ( $self->action->GetStringSelection() eq 'Patch' ) {
 
-		$action_request = 'Patch';
+		$self->{action_request} = 'Patch';
 		$self->set_up;
 		$self->against->Enable(0);
 		$self->file2->Enable(1);
 	} else {
 
 		# Diff
-		$action_request = 'Diff';
+		$self->{action_request} = 'Diff';
 		$self->set_up;
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
@@ -145,7 +141,6 @@ sub on_against {
 	}
 	return;
 }
-
 
 #######
 # Method current_files
@@ -231,7 +226,6 @@ sub make_patch_diff {
 		eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ); };
 		TRACE($our_diff) if DEBUG;
 
-		# This works though
 		my $patch_file = $file1_url . '.patch';
 
 		File::Slurp::write_file( $patch_file, $our_diff );
@@ -291,7 +285,6 @@ sub apply_patch {
 	return;
 }
 
-
 #######
 # Composed Method
 #
@@ -307,7 +300,6 @@ sub filename_url {
 	}
 	return;
 }
-
 
 #######
 # Method make_patch_svn
@@ -339,7 +331,6 @@ sub make_patch_svn {
 
 		my $patch_file = $file1_url . '.patch';
 
-		# TODO File::Slurp should be able to handel @{ $file->stdout }
 		File::Slurp::write_file( $patch_file, $diff_str );
 		TRACE("writing file: $patch_file") if DEBUG;
 
@@ -365,33 +356,22 @@ sub make_patch_git {
 	say 'Oops Git Yet To Be inplemented';
 	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
 
-	# if ( require SVN::Class ) {
+	# if ( require Git ) {
 	# TRACE('found SVN::Class, Good to go') if DEBUG;
 
-	# # 		# require SVN::Class;
-	# my $file = SVN::Class::svn_file($dfile1);
+# # 	my $file = SVN::Class::svn_file($dfile1);
 	# $file->diff;
 
-	# # 		p $file;
-
-	# # 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
-	# # TRACE output is yuck
-	# p @{ $file->stdout };
-	# TRACE( @{ $file->stdout } ) if DEBUG;
+# # 	TRACE( @{ $file->stdout } ) if DEBUG;
 	# my $diff_str = join( "\n", @{ $file->stdout } );
 
-	# # 		TRACE($diff_str) if DEBUG;
-
-	# # 		my $patch_file = $dfile1 . '.patch';
-
-	# # 		# TODO File::Slurp should be able to handel @{ $file->stdout }
-	# write_file( $patch_file, $diff_str );
+# # 	write_file( $patch_file, $diff_str );
 	# TRACE("writing file: $patch_file") if DEBUG;
 
-	# # 		eval $main->setup_editor($patch_file);
+# # 	eval $main->setup_editor($patch_file);
 	# $main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 	# } else {
-	# $main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
+	# $main->info( Wx::gettext('Oops, might help if you install Git') );
 	# }
 
 	return;
