@@ -28,7 +28,7 @@ my $open_file_info = ();
 my $action_request = 'Patch';
 my @file1_list;
 my @file2_list;
-my $open_files;
+# my $open_files;
 
 #######
 # Method set_up
@@ -156,11 +156,13 @@ sub current_files {
 	my $current      = $main->current;
 	my $notebook     = $current->notebook;
 	my @label        = $notebook->labels;
-	$open_files      = scalar(@label) - 1;
+	# $open_files      = scalar(@label) - 1;
+	$self->{tab_cardinality} = scalar(@label) - 1;
 
 	my $changed;
 
-	for ( 0 .. $open_files ) {
+	# for ( 0 .. $open_files ) {	
+	for ( 0 .. $self->{tab_cardinality} ) {
 		$open_file_info->{$_} = (
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
@@ -185,7 +187,7 @@ sub current_files {
 	my @display_names = ();
 
 	if ( $request_list eq 'saved' ) {
-		for ( 0 .. $open_files ) {
+		for ( 0 .. $self->{tab_cardinality} ) {
 			unless ( $open_file_info->{$_}->{'changed'} || $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
 				push @display_names, $open_file_info->{$_}->{'filename'};
 			}
@@ -194,7 +196,7 @@ sub current_files {
 	}
 
 	if ( $request_list eq 'patch' ) {
-		for ( 0 .. $open_files ) {
+		for ( 0 .. $self->{tab_cardinality} ) {
 			if ( $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
 				push @display_names, $open_file_info->{$_}->{'filename'};
 			}
@@ -218,7 +220,7 @@ sub make_patch_diff {
 	my $dfile1;
 
 	# my $list1_card = keys $open_file_info;
-	for ( 0 .. $open_files ) {
+	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
 			$dfile1 = $open_file_info->{$_}->{'URL'};
 		}
@@ -227,7 +229,7 @@ sub make_patch_diff {
 
 	# say $df2;
 	my $dfile2;
-	for ( 0 .. $open_files ) {
+	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $df2 ) {
 			$dfile2 = $open_file_info->{$_}->{'URL'};
 		}
@@ -276,14 +278,14 @@ sub apply_patch {
 	my ( $source, $diff );
 	my $pfile1;
 
-	for ( 0 .. $open_files ) {
+	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
 			$pfile1 = $open_file_info->{$_}->{'URL'};
 		}
 	}
 
 	my $patchf;
-	for ( 0 .. $open_files ) {
+	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
 			$patchf = $open_file_info->{$_}->{'URL'};
 		}
@@ -333,7 +335,7 @@ sub make_patch_svn {
 	my $dfile1;
 
 	# my $list1_card = keys $open_file_info;
-	for ( 0 .. $open_files ) {
+	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
 			$dfile1 = $open_file_info->{$_}->{'URL'};
 		}
@@ -341,7 +343,7 @@ sub make_patch_svn {
 	TRACE( "dfile1 to svn: $dfile1" ) if DEBUG;
 
 	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	# say "dfile: $dfile1";
+	# say "dfile1: $dfile1";
 
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
