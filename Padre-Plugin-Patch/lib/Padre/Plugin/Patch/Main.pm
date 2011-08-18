@@ -3,38 +3,27 @@ package Padre::Plugin::Patch::Main;
 use 5.010;
 use strict;
 use warnings;
-
-use utf8;
-use autodie;
+use File::Slurp ();
+use Padre::Wx   ();
+use Padre::Plugin::Patch::FBP::MainFB ();
+use Padre::Logger;
 
 our $VERSION = '0.03';
-use English qw( -no_match_vars );
-
-use Padre::Logger;
-use Padre::Wx       ();
-use Padre::Wx::Main ();
-
-use Data::Printer { caller_info => 1 };
-use File::Slurp;
-
-use parent qw( Padre::Plugin::Patch::FBP::MainFB );
-
+our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
 #######
 # new
 #######
 sub new {
 	my $class = shift;
-	my $main  = shift;
-
-	# Create the dialog
-	my $self = $class->SUPER::new($main);
+	my $self  = $class->SUPER::new(@_);
 
 	$self->CenterOnParent;
 	$self->set_up;
 	return $self;
 }
 
+# Violates encapsulation
 my $open_file_info = ();
 my $action_request = 'Patch';
 my @file1_list;
@@ -48,15 +37,10 @@ sub set_up {
 	my $self = shift;
 	my $main = $self->main;
 
-	# my @pkg_name = split /::/smx, __PACKAGE__,;
-	# $self->package_name->SetLabel( $pkg_name[2] );
-
 	# TODO only saved files @items
-	# my @items;
 	@file1_list = $self->current_files('saved');
 
 	# SetSelection should be current file
-	# my $mcf = $main->current->filename;
 	my $mcf = $main->current->title;
 
 	# SetSelection should be current file
@@ -69,12 +53,7 @@ sub set_up {
 		}
 	}
 
-	# @items = Padre::Current->filename;
-	# $self->combo->Clear();
-	# $self->combo->Append( \@items );
-	# $self->combo->SetSelection($selection);
-
-	$self->file1->Clear();
+	$self->file1->Clear;
 	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection($selection);
 
@@ -84,8 +63,7 @@ sub set_up {
 		@file2_list = $self->current_files('saved');
 	}
 
-	# eval { @items = $self->current_files(); };
-	$self->file2->Clear();
+	$self->file2->Clear;
 	$self->file2->Append( \@file2_list );
 	$self->file2->SetSelection(0);
 
@@ -98,16 +76,10 @@ sub set_up {
 sub process_clicked {
 	my $self = shift;
 
-	# say 'process_clicked';
 	my ( $file1, $file2 );
 
 	my @items = $self->current_files();
 
-	# $file1 = $items[ $self->file1->GetSelection() ];
-	# $file2 = $items[ $self->file2->GetSelection() ];
-	# $file1 = $self->file1->GetCurrentSelection();
-	# say $self->file1->GetSelection();
-	# say $self->file1->GetCurrentSelection();
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
 	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
 
@@ -178,31 +150,17 @@ sub on_against {
 # Method current_files
 #######
 sub current_files {
+	my $self         = shift;
+	my $request_list = shift;
+	my $main         = $self->main;
+	my $current      = $main->current;
+	my $notebook     = $current->notebook;
+	my @label        = $notebook->labels;
+	$open_files      = scalar(@label) - 1;
 
-	# my $self = shift;
-	my ( $self, $request_list ) = @ARG;
-
-	my $main     = $self->main;
-	my $current  = $main->current;
-	my $notebook = $current->notebook;
-
-	my @label = $notebook->labels;
-	$open_files = scalar(@label) - 1;
-
-	# lets have a look around
-	# where the F is vcs ?
-
-	# say $current->vcs;
-
-	# p @label;
-	# my $open_file_info = ();
 	my $changed;
 
 	for ( 0 .. $open_files ) {
-
-		# say $_;
-		# p $notebook->GetPageText($_);
-
 		$open_file_info->{$_} = (
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
@@ -220,17 +178,14 @@ sub current_files {
 			$open_file_info->{$_}->{'changed'} = 1;
 		}
 	}
-	p $open_file_info;
+	# p $open_file_info;
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
 	my @display_names = ();
 
-	# for ( 0 .. ( @label - 1 ) ) {
 	if ( $request_list eq 'saved' ) {
 		for ( 0 .. $open_files ) {
-
-			# push @display_names, $label[$_][1];
 			unless ( $open_file_info->{$_}->{'changed'} || $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
 				push @display_names, $open_file_info->{$_}->{'filename'};
 			}
@@ -238,11 +193,8 @@ sub current_files {
 		return @display_names;
 	}
 
-	# return @display_names
 	if ( $request_list eq 'patch' ) {
 		for ( 0 .. $open_files ) {
-
-			# push @display_names, $label[$_][1];
 			if ( $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
 				push @display_names, $open_file_info->{$_}->{'filename'};
 			}
@@ -250,12 +202,6 @@ sub current_files {
 		return @display_names;
 	}
 
-	# foreach (@order) {
-	# for ( 0 .. ( @label - 1 ) ) {
-
-	# # 		# push @display_names, $label[$_][1];
-	# push @display_names, $open_file_info->{$_}->{'filename'};
-	# }
 	return;
 }
 
@@ -263,7 +209,9 @@ sub current_files {
 # Method make_patch_diff
 #######
 sub make_patch_diff {
-	my ( $self, $df1, $df2 ) = @ARG;
+	my $self = shift;
+	my $df1  = shift;
+	my $df2  = shift;
 	my $main = $self->main;
 
 	# say $df1;
@@ -304,7 +252,7 @@ sub make_patch_diff {
 		# This works though
 		my $patch_file = $dfile1 . '.patch';
 
-		write_file( $patch_file, $our_diff );
+		File::Slurp::write_file( $patch_file, $our_diff );
 		TRACE("writing file: $patch_file") if DEBUG;
 
 		eval $main->setup_editor($patch_file);
@@ -320,48 +268,35 @@ sub make_patch_diff {
 # Method apply_patch
 ########
 sub apply_patch {
-	my ( $self, $pf1, $pf2 ) = @ARG;
+	my $self = shift;
+	my $pf1  = shift;
+	my $pf2  = shift;
 	my $main = $self->main;
 
 	my ( $source, $diff );
-	# say $pf1;
 	my $pfile1;
 
-	# my $list1_card = keys $open_file_info;
 	for ( 0 .. $open_files ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
 			$pfile1 = $open_file_info->{$_}->{'URL'};
 		}
 	}
-	# say "pfile1: $pfile1";
 
-	# say $pf2;
 	my $patchf;
 	for ( 0 .. $open_files ) {
 		if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
 			$patchf = $open_file_info->{$_}->{'URL'};
 		}
 	}
-	# say "patchf: $patchf";
-
-	# my $pfile1 = $open_file_info->{$pf1}->{'URL'};
-	# say "pfile: $pfile1";
-
-	# # 	my $patchf = $open_file_info->{$pf2}->{'URL'};
-	# say "pfile: $pfile1";
 
 	if ( -e $pfile1 ) {
 		TRACE("found 1: $pfile1") if DEBUG;
-		$source = read_file($pfile1);
+		$source = File::Slurp::read_file($pfile1);
 	}
 
-	# if ( -e $pfile1 ) {
-	# TRACE("found 1: $pfile1") if DEBUG;
-	# $source = read_file($pfile1);
-	# }
 	if ( -e $patchf ) {
 		TRACE("found 2: $patchf") if DEBUG;
-		$diff = read_file($patchf);
+		$diff = File::Slurp::read_file($patchf);
 		unless ( $patchf =~ /(patch|diff)$/ ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
@@ -390,7 +325,8 @@ sub apply_patch {
 # inspired by P-P-SVN
 #######
 sub make_patch_svn {
-	my ( $self, $df1 ) = @ARG;
+	my $self = shift;
+	my $df1  = shift;
 	my $main = $self->main;
 
 	# say $df1;
@@ -414,11 +350,10 @@ sub make_patch_svn {
 		my $file = SVN::Class::svn_file($dfile1);
 		$file->diff;
 
-		p $file;
+		# p $file;
 
 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
 		# TRACE output is yuck
-		p @{ $file->stdout };
 		TRACE( @{ $file->stdout } ) if DEBUG;
 		my $diff_str = join( "\n", @{ $file->stdout } );
 
@@ -427,7 +362,7 @@ sub make_patch_svn {
 		my $patch_file = $dfile1 . '.patch';
 
 		# TODO File::Slurp should be able to handel @{ $file->stdout }
-		write_file( $patch_file, $diff_str );
+		File::Slurp::write_file( $patch_file, $diff_str );
 		TRACE("writing file: $patch_file") if DEBUG;
 
 		$main->setup_editor($patch_file);
@@ -443,7 +378,8 @@ sub make_patch_svn {
 # Method make_patch_git
 #######
 sub make_patch_git {
-	my ( $self, $df1 ) = @ARG;
+	my $self = shift;
+	my $df1  = shift;
 	my $main = $self->main;
 
 	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
@@ -502,7 +438,6 @@ Main is the event handler for MainFB, it's parent class.
 
 It displays a Main dialog with an about button.
 
-
 =head1 SUBROUTINES/METHODS
 
 =over 4
@@ -559,14 +494,7 @@ Displays the contents of your chosen tuple using Padre DB schemes
 
 Is a toggle to increase the width of the dialog of the viewing area
 
-
 =back
-
-=head1 DEPENDENCIES
-
-Padre::Plugin Padre::Plugin::Patch::Main, 
-Padre::Plugin::Patch::FBP::MainFB, Text::Diff, Text::Patch,
-Data::Printer
 
 =head1 AUTHOR
 
