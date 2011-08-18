@@ -3,8 +3,8 @@ package Padre::Plugin::Patch::Main;
 use 5.010;
 use strict;
 use warnings;
-use File::Slurp ();
-use Padre::Wx   ();
+use File::Slurp                       ();
+use Padre::Wx                         ();
 use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Logger;
 
@@ -28,6 +28,7 @@ my $open_file_info = ();
 my $action_request = 'Patch';
 my @file1_list;
 my @file2_list;
+
 # my $open_files;
 
 #######
@@ -156,12 +157,10 @@ sub current_files {
 	my $current      = $main->current;
 	my $notebook     = $current->notebook;
 	my @label        = $notebook->labels;
-	# $open_files      = scalar(@label) - 1;
 	$self->{tab_cardinality} = scalar(@label) - 1;
 
 	my $changed;
 
-	# for ( 0 .. $open_files ) {	
 	for ( 0 .. $self->{tab_cardinality} ) {
 		$open_file_info->{$_} = (
 			{   'index'    => $_,
@@ -180,7 +179,6 @@ sub current_files {
 			$open_file_info->{$_}->{'changed'} = 1;
 		}
 	}
-	# p $open_file_info;
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
@@ -211,31 +209,11 @@ sub current_files {
 # Method make_patch_diff
 #######
 sub make_patch_diff {
-	my $self = shift;
-	my $file1_name  = shift;
-	my $file2_name  = shift;
-	my $main = $self->main;
+	my $self       = shift;
+	my $file1_name = shift;
+	my $file2_name = shift;
+	my $main       = $self->main;
 
-	# say $df1;
-	# my $dfile1;
-
-	# my $list1_card = keys $open_file_info;
-	# for ( 0 .. $self->{tab_cardinality} ) {
-		# if ( $open_file_info->{$_}->{'filename'} eq $df1 ) {
-			# $dfile1 = $open_file_info->{$_}->{'URL'};
-		# }
-	# }
-	# say "dfile1: $dfile1";
-
-	# say $df2;
-	# my $dfile2;
-	# for ( 0 .. $self->{tab_cardinality} ) {
-		# if ( $open_file_info->{$_}->{'filename'} eq $df2 ) {
-			# $dfile2 = $open_file_info->{$_}->{'URL'};
-		# }
-	# }
-	# say "dfile2: $dfile2";
-	
 	my $file1_url = filename_url( $self, $file1_name );
 	my $file2_url = filename_url( $self, $file2_name );
 
@@ -272,30 +250,16 @@ sub make_patch_diff {
 # Method apply_patch
 ########
 sub apply_patch {
-	my $self = shift;
-	my $file1_name  = shift;
-	my $file2_name  = shift;
-	my $main = $self->main;
+	my $self       = shift;
+	my $file1_name = shift;
+	my $file2_name = shift;
+	my $main       = $self->main;
 
 	my ( $source, $diff );
-	# my $pfile1;
 
-	# for ( 0 .. $self->{tab_cardinality} ) {
-		# if ( $open_file_info->{$_}->{'filename'} eq $pf1 ) {
-			# $pfile1 = $open_file_info->{$_}->{'URL'};
-		# }
-	# }
-	
-	# my $patchf;
-	# for ( 0 .. $self->{tab_cardinality} ) {
-		# if ( $open_file_info->{$_}->{'filename'} eq $pf2 ) {
-			# $patchf = $open_file_info->{$_}->{'URL'};
-		# }
-	# }
-	
 	my $file1_url = filename_url( $self, $file1_name );
 	my $file2_url = filename_url( $self, $file2_name );
-	
+
 	if ( -e $file1_url ) {
 		TRACE("found $file1_url: $file1_url") if DEBUG;
 		$source = File::Slurp::read_file($file1_url);
@@ -330,10 +294,10 @@ sub apply_patch {
 
 #######
 # Composed Method
-# 
+#
 #######
 sub filename_url {
-	my $self = shift;
+	my $self     = shift;
 	my $filename = shift;
 
 	for ( 0 .. $self->{tab_cardinality} ) {
@@ -350,23 +314,13 @@ sub filename_url {
 # inspired by P-P-SVN
 #######
 sub make_patch_svn {
-	my $self = shift;
+	my $self       = shift;
 	my $file1_name = shift;
-	my $main = $self->main;
+	my $main       = $self->main;
 
-	# say $file1;
-	# my $dfile1;
-
-# # 	my $list1_card = keys $open_file_info;
-	# for ( 0 .. $self->{tab_cardinality} ) {
-		# if ( $open_file_info->{$_}->{'filename'} eq $file1 ) {
-			# $dfile1 = $open_file_info->{$_}->{'URL'};
-		# }
-	# }
-	
 	my $file1_url = filename_url( $self, $file1_name );
-	
-	TRACE( "file1_url to svn: $file1_url" ) if DEBUG;
+
+	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
 	say "file1_url: $file1_url";
 
@@ -402,12 +356,11 @@ sub make_patch_svn {
 # Method make_patch_git
 #######
 sub make_patch_git {
-	my $self = shift;
-	my $df1  = shift;
-	my $main = $self->main;
+	my $self       = shift;
+	my $file1_name = shift;
+	my $main       = $self->main;
 
-	# my $dfile1 = $open_file_info->{$df1}->{'URL'};
-	# say "dfile: $dfile1";
+	my $file1_url = filename_url( $self, $file1_name );
 
 	say 'Oops Git Yet To Be inplemented';
 	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
