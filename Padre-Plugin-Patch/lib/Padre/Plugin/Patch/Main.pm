@@ -25,7 +25,6 @@ sub new {
 }
 
 # Violates encapsulation
-my $open_file_info = {};
 my ( @file1_list, @file2_list );
 
 
@@ -157,7 +156,7 @@ sub current_files {
 	my $changed;
 
 	for ( 0 .. $self->{tab_cardinality} ) {
-		$open_file_info->{$_} = (
+		$self->{open_file_info}->{$_} = (
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
@@ -171,7 +170,7 @@ sub current_files {
 
 		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
 			say 'file changed from disk';
-			$open_file_info->{$_}->{'changed'} = 1;
+			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
 	}
 
@@ -181,8 +180,8 @@ sub current_files {
 
 	if ( $request_list eq 'saved' ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
-			unless ( $open_file_info->{$_}->{'changed'} || $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
-				push @display_names, $open_file_info->{$_}->{'filename'};
+			unless ( $self->{open_file_info}->{$_}->{'changed'} || $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
 			}
 		}
 		return @display_names;
@@ -190,8 +189,8 @@ sub current_files {
 
 	if ( $request_list eq 'patch' ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
-			if ( $open_file_info->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
-				push @display_names, $open_file_info->{$_}->{'filename'};
+			if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
 			}
 		}
 		return @display_names;
@@ -294,8 +293,8 @@ sub filename_url {
 	my $filename = shift;
 
 	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $open_file_info->{$_}->{'filename'} eq $filename ) {
-			return $open_file_info->{$_}->{'URL'};
+		if ( $self->{open_file_info}->{$_}->{'filename'} eq $filename ) {
+			return $self->{open_file_info}->{$_}->{'URL'};
 		}
 	}
 	return;
@@ -325,7 +324,7 @@ sub make_patch_svn {
 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
 		# TRACE output is yuck
 		TRACE( @{ $file->stdout } ) if DEBUG;
-		my $diff_str = join( "\n", @{ $file->stdout } );
+		my $diff_str = join "\n", @{ $file->stdout } ;
 
 		TRACE($diff_str) if DEBUG;
 
