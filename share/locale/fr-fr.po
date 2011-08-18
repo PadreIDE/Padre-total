@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: padre\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-16 15:53+0200\n"
-"PO-Revision-Date: 2011-08-17 23:11+0100\n"
+"PO-Revision-Date: 2011-08-19 00:35+0100\n"
 "Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
 "Language-Team: Jérôme Quelin <jquelin@cpan.org>\n"
 "Language: \n"
@@ -728,11 +728,11 @@ msgstr "Activer l'auto-complétion lors de la frappe"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:324
 msgid "Autocomplete brackets"
-msgstr "Autocomplète les parenthèses"
+msgstr "Auto-compléter les parenthèses"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:245
 msgid "Autocomplete new functions in scripts"
-msgstr "Auto-compléte les nouvelles fonctions dans les scripts"
+msgstr "Auto-compléter les nouvelles fonctions dans les scripts"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:237
 msgid "Autocomplete new methods in packages"
@@ -788,7 +788,7 @@ msgstr "Booléen"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:307
 msgid "Braces Assist"
-msgstr ""
+msgstr "Aide pour les parenthèses"
 
 #: lib/Padre/Wx/ActionLibrary.pm:205
 msgid "Browse directory of the current document to open one or several files"
@@ -983,7 +983,7 @@ msgstr "Vider la liste des fichiers récents"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:381
 msgid "Clean up file content on saving (for supported document types)"
-msgstr "Nettoyer le contenu du fichier lors de la sauvegarde (pour les types de document supportés)"
+msgstr "Nettoyer le contenu du fichier lors de la sauvegarde (types de document supportés)"
 
 #: lib/Padre/Wx/ActionLibrary.pm:657
 msgid "Clear Selection Marks"
@@ -1118,7 +1118,7 @@ msgstr "Connexion au serveur FTP réussie."
 
 #: lib/Padre/Wx/FindResult.pm:178
 msgid "Content"
-msgstr "Type de contenu :"
+msgstr "Contenu"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:212
 msgid "Content Assist"
@@ -1174,19 +1174,19 @@ msgstr "Copier la &sélection"
 
 #: lib/Padre/Wx/ActionLibrary.pm:733
 msgid "Copy Directory Name"
-msgstr "Copier le nom du répertoire"
+msgstr "Copier le nom du &répertoire"
 
 #: lib/Padre/Wx/ActionLibrary.pm:747
 msgid "Copy Editor Content"
-msgstr "Copier le contenu de l'éditeur"
+msgstr "Copier le c&ontenu de l'éditeur"
 
 #: lib/Padre/Wx/ActionLibrary.pm:718
 msgid "Copy Filename"
-msgstr "Copier le nom du fichier"
+msgstr "Copier le nom du &fichier"
 
 #: lib/Padre/Wx/ActionLibrary.pm:703
 msgid "Copy Full Filename"
-msgstr "Copier le chemin du fichier"
+msgstr "Copier le &chemin du fichier"
 
 #: lib/Padre/Wx/Dialog/Advanced.pm:118
 msgid "Copy Name"
@@ -4602,13 +4602,14 @@ msgstr "Montrer le rapport"
 msgid "Show information about Padre"
 msgstr "Afficher des informations sur Padre"
 
+# L'espace pour ce libellé est limité. S'il est trop long il décale trop à d roite d'autres contrôles du dialogue.
 #: lib/Padre/Wx/FBP/Preferences.pm:95
 msgid "Show low priority info messages on status bar (not in a popup)"
-msgstr "Afficher les messages d'information de basse priorité dans la barre de statut (pas dans un popup)"
+msgstr "Messages d'information de basse priorité dans la barre d'état (pas dans un popup)"
 
 #: lib/Padre/Config.pm:1118
 msgid "Show low-priority info messages on statusbar (not in a popup)"
-msgstr "Montrer les messages d'information de basse priorité dans la barre de statut (pas dans un popup)"
+msgstr "Montrer les messages d'information de basse priorité dans la barre d'état (pas dans un popup)"
 
 #: lib/Padre/Config.pm:721
 msgid "Show or hide the status bar at the bottom of the window."
@@ -5167,7 +5168,7 @@ msgstr "Utiliser une fenêtre externe pour l'exécution"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:373
 msgid "Use panel order for Ctrl-Tab (not usage history)"
-msgstr "Utiliser l'ordre des onglets pour ctrl+tab (et non selon l'historique d'usage)"
+msgstr "Utiliser l'ordre des onglets pour Ctrl+Tab (et non selon l'historique d'usage)"
 
 #: lib/Padre/Wx/FBP/Preferences.pm:528
 msgid "Use splash screen"
