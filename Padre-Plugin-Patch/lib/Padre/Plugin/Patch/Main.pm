@@ -408,79 +408,77 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Patch::Main::Main
+Padre::Plugin::Patch::Main
 
 =head1 VERSION
 
-This document describes Padre::Plugin::Patch::Main version 0.22
+This document describes Padre::Plugin::Patch::Main version 0.03
 
 =head1 DESCRIPTION
 
-Main is the event handler for MainFB, it's parent class.
+Patch or Diff a single file, a very simplest tool, only works on saved files, one at a time in Padre editor,
+The resulting patch file will be in Unified form. All dependencies are Perl packages, no cmd/system calls.
 
-It displays a Main dialog with an about button.
-
-=head1 SUBROUTINES/METHODS
+=head1 METHODS
 
 =over 4
 
 =item new
 
-Constructor. Should be called with $main by Patch->load_dialog_main().
-
-=item about_clicked
-
-Event handler for button about
-
-=item about_menu_clicked
-
-for use with wx::frame todo
-
-=item clean_clicked
-
-passes request to dedicated method
-
-=item clean_history
-
-removes duplicate tuples, keeps newest, also remove missing files
-
-=item clean_lastpositioninfile
-
-removes files missing on system 
-
-=item clean_session
-
-removes empty sessions
-
-=item clean_session_files
-
-removes tuples which don't have a valid session reference
-
-=item help_menu_clicked
-
-for use with wx::frame todo
+Constructor. Should be called with C<$main> by C<Patch::load_dialog_main()>.
 
 =item set_up
 
-used 
+C<set_up> configures the dialogue for your environment
 
-=item show_clicked
+=item on_action
 
-Displays ALL the contents of selected relation in terminal with Data-Printer
+Event handler for action, adjust dialogue accordingly
 
-=item update_clicked
+=item on_against
 
-Displays the contents of your chosen tuple using Padre DB schemes
+Event handler for against, adjust dialogue accordingly
 
-=item width_adjust_clicked
+=item process_clicked
 
-Is a toggle to increase the width of the dialog of the viewing area
+Event handler for process_clicked, perform your chosen action, all results go into a new tab in editor.
+
+=item current_files
+
+extracts file info from Padre about all open files in editor
+
+=item apply_patch
+
+A convenience method to apply patch to chosen file.
+
+=item make_patch_diff
+
+A convenience method to generate a patch/diff file from two selected files.
+
+=item make_patch_svn
+
+Only works if you have C<SVN::Class> installed.
+A convenience method to generate a patch/diff file from a selected file and svn if applicable,
+ie file has been checked out.
+
+=item make_patch_git
+
+To be implemented.
+
+=item filelist_type
+
+composed method
+
+=item filename_url
+
+composed method
+
 
 =back
 
 =head1 BUGS AND LIMITATIONS 
 
-List Order is that of load order, if you move your Tabs the List Order will not follow
+List Order is that of load order, if you move your Tabs the List Order will not follow suite.
 
 
 =head1 AUTHOR
@@ -489,30 +487,15 @@ BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c) 2008-2011 The Padre development team as listed in Padre.pm.
+Copyright 2008-2011 The Padre development team as listed in Padre.pm.
 
-This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself.
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl 5 itself.
 
-=head1 DISCLAIMER OF WARRANTY
+The full text of the license can be found in the
+LICENSE file included with this module.
 
-BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
-FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
-OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
-EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
-ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
-YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
-NECESSARY SERVICING, REPAIR, OR CORRECTION.
-
-IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
-WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
-REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
-LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
-OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
-THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
-RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
-FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
-SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGES.
+# Copyright 2008-2011 The Padre development team as listed in Padre.pm.
+# LICENSE
+# This program is free software; you can redistribute it and/or
+# modify it under the same terms as Perl 5 itself.
