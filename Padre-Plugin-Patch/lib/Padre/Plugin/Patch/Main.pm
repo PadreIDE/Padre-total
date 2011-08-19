@@ -24,27 +24,23 @@ sub new {
 	return $self;
 }
 
-# Violates encapsulation
-my ( @file1_list, @file2_list );
-
-
 #######
 # Method set_up
 #######
 sub set_up {
 	my $self = shift;
 	my $main = $self->main;
-
-	@file1_list = $self->current_files('saved');
+	
+	my @file1_list = $self->current_files('saved');
 
 	# SetSelection should be current file
-	my $mcf = $main->current->title;
+	my $current_tab_title = $main->current->title;
 
 	# SetSelection should be current file
 	my $selection;
 	for ( 0 .. $self->{tab_cardinality} ) {
 		# TODO sort out error
-		if ( $file1_list[$_] eq $mcf ) {
+		if ( $file1_list[$_] eq $current_tab_title ) {
 			$selection = $_;
 		}
 	}
@@ -52,7 +48,8 @@ sub set_up {
 	$self->file1->Clear;
 	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection($selection);
-
+	
+	my @file2_list;
 	if ( $self->{action_request} eq 'Patch' ) {
 		@file2_list = $self->current_files('patch');
 	} else {
@@ -89,7 +86,15 @@ sub process_clicked {
 	my ( $file1, $file2 );
 
 	my @items = $self->current_files();
-
+	my @file1_list = $self->current_files('saved');	
+	
+	my @file2_list;
+	if ( $self->{action_request} eq 'Patch' ) {
+		@file2_list = $self->current_files('patch');
+	} else {
+		@file2_list = $self->current_files('saved');
+	}
+	
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
 	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
 

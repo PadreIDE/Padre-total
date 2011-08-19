@@ -29,7 +29,7 @@ sub padre_interfaces {
 # Define Plugin Name required
 #######
 sub plugin_name {
-	Wx::gettext('Padre Patch... Beta');
+	return Wx::gettext('Padre Patch... Beta');
 }
 
 #######
