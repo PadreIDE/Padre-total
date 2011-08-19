@@ -11,6 +11,7 @@ use Padre::Logger;
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
+
 #######
 # new
 #######
@@ -24,13 +25,14 @@ sub new {
 	return $self;
 }
 
+
 #######
 # Method set_up
 #######
 sub set_up {
 	my $self = shift;
 	my $main = $self->main;
-	
+
 	my @file1_list = $self->current_files('saved');
 
 	# SetSelection should be current file
@@ -39,6 +41,7 @@ sub set_up {
 	# SetSelection should be current file
 	my $selection;
 	for ( 0 .. $self->{tab_cardinality} ) {
+
 		# TODO sort out error
 		if ( $file1_list[$_] eq $current_tab_title ) {
 			$selection = $_;
@@ -48,24 +51,19 @@ sub set_up {
 	$self->file1->Clear;
 	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection($selection);
-	
-	my @file2_list;
-	if ( $self->{action_request} eq 'Patch' ) {
-		@file2_list = $self->current_files('patch');
-	} else {
-		@file2_list = $self->current_files('saved');
-	}
+
+	my @file2_list = filelist_type($self);
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list );
 	$self->file2->SetSelection(0);
-	
+
 	#ToDo create against items on the fly
 	my @vcs = [qw ( File-1 SVN Git CVS)];
-	
+
 	# this don't
 	#$self->against->Clear;
-	
+
 	#ToDo how to add items
 	# $self->against->Append( 4, \@vcs ); #Append fails
 	# $self->against->SetStringSelection( 3, 'CVS');
@@ -73,9 +71,10 @@ sub set_up {
 	# $self->against->ItemDisable(2);
 	# this works
 	$self->against->SetSelection(1);
-	
+
 	return;
 }
+
 
 #######
 # Event Handler process_clicked
@@ -85,16 +84,10 @@ sub process_clicked {
 
 	my ( $file1, $file2 );
 
-	my @items = $self->current_files();
-	my @file1_list = $self->current_files('saved');	
-	
-	my @file2_list;
-	if ( $self->{action_request} eq 'Patch' ) {
-		@file2_list = $self->current_files('patch');
-	} else {
-		@file2_list = $self->current_files('saved');
-	}
-	
+	my @items      = $self->current_files();
+	my @file1_list = $self->current_files('saved');
+	my @file2_list = filelist_type($self);
+
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
 	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
 
@@ -121,6 +114,7 @@ sub process_clicked {
 	return;
 }
 
+
 #######
 # Event Handler on_action
 #######
@@ -145,6 +139,7 @@ sub on_action {
 	return;
 }
 
+
 #######
 # Event Handler on_against
 #######
@@ -160,6 +155,7 @@ sub on_against {
 	return;
 }
 
+
 #######
 # Method current_files
 #######
@@ -172,18 +168,14 @@ sub current_files {
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
 
-	my $changed;
-
 	for ( 0 .. $self->{tab_cardinality} ) {
 		$self->{open_file_info}->{$_} = (
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
 				'vcs'      => 'todo',
-
-				# saved, changed, modified
-				'current' => 'todo',
-				'changed' => 0,
+				'current'  => 'todo',
+				'changed'  => 0,
 			},
 		);
 
@@ -199,7 +191,9 @@ sub current_files {
 
 	if ( $request_list eq 'saved' ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
-			unless ( $self->{open_file_info}->{$_}->{'changed'} || $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+			unless ( $self->{open_file_info}->{$_}->{'changed'}
+				|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ )
+			{
 				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
 			}
 		}
@@ -217,6 +211,7 @@ sub current_files {
 
 	return;
 }
+
 
 #######
 # Method make_patch_diff
@@ -257,6 +252,7 @@ sub make_patch_diff {
 
 	return;
 }
+
 
 ########
 # Method apply_patch
@@ -303,9 +299,9 @@ sub apply_patch {
 	return;
 }
 
+
 #######
-# Composed Method
-#
+# Composed Method filename_url
 #######
 sub filename_url {
 	my $self     = shift;
@@ -318,6 +314,23 @@ sub filename_url {
 	}
 	return;
 }
+
+
+#######
+# Composed Method filelist_type
+#######
+sub filelist_type {
+	my $self = shift;
+
+	if ( $self->{action_request} eq 'Patch' ) {
+		return $self->current_files('patch');
+	} else {
+		return $self->current_files('saved');
+	}
+
+	return;
+}
+
 
 #######
 # Method make_patch_svn
@@ -343,7 +356,7 @@ sub make_patch_svn {
 		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
 		# TRACE output is yuck
 		TRACE( @{ $file->stdout } ) if DEBUG;
-		my $diff_str = join "\n", @{ $file->stdout } ;
+		my $diff_str = join "\n", @{ $file->stdout };
 
 		TRACE($diff_str) if DEBUG;
 
@@ -361,6 +374,7 @@ sub make_patch_svn {
 	return;
 }
 
+
 #######
 # Method make_patch_git
 #######
@@ -377,16 +391,16 @@ sub make_patch_git {
 	# if ( require Git ) {
 	# TRACE('found SVN::Class, Good to go') if DEBUG;
 
-# # 	my $file = SVN::Class::svn_file($dfile1);
+	# # 	my $file = SVN::Class::svn_file($dfile1);
 	# $file->diff;
 
-# # 	TRACE( @{ $file->stdout } ) if DEBUG;
+	# # 	TRACE( @{ $file->stdout } ) if DEBUG;
 	# my $diff_str = join( "\n", @{ $file->stdout } );
 
-# # 	write_file( $patch_file, $diff_str );
+	# # 	write_file( $patch_file, $diff_str );
 	# TRACE("writing file: $patch_file") if DEBUG;
 
-# # 	eval $main->setup_editor($patch_file);
+	# # 	eval $main->setup_editor($patch_file);
 	# $main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 	# } else {
 	# $main->info( Wx::gettext('Oops, might help if you install Git') );
