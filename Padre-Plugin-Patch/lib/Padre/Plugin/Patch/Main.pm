@@ -62,7 +62,21 @@ sub set_up {
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list );
 	$self->file2->SetSelection(0);
-
+	
+	#ToDo create against items on the fly
+	my @vcs = [qw ( File-1 SVN Git CVS)];
+	
+	# this don't
+	#$self->against->Clear;
+	
+	#ToDo how to add items
+	# $self->against->Append( 4, \@vcs ); #Append fails
+	# $self->against->SetStringSelection( 3, 'CVS');
+	# $self->against->SetItemLabel(2, "Third");
+	# $self->against->ItemDisable(2);
+	# this works
+	$self->against->SetSelection(1);
+	
 	return;
 }
 
