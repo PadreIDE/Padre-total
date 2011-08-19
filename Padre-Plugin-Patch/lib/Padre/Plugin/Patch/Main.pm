@@ -1,6 +1,6 @@
 package Padre::Plugin::Patch::Main;
 
-use 5.010;
+use 5.008;
 use strict;
 use warnings;
 use File::Slurp                       ();
@@ -70,7 +70,7 @@ sub set_up {
 	# $self->against->SetItemLabel(2, "Third");
 	# $self->against->ItemDisable(2);
 	# this works
-	$self->against->SetSelection(1);
+	$self->against->SetSelection(0);
 
 	return;
 }
@@ -173,14 +173,14 @@ sub current_files {
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
-				'vcs'      => 'todo',
-				'current'  => 'todo',
+				# 'vcs'      => 'todo',
+				# 'current'  => 'todo',
 				'changed'  => 0,
 			},
 		);
 
 		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
-			say 'file changed from disk';
+			TRACE( "Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
 			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
 	}
@@ -189,6 +189,7 @@ sub current_files {
 
 	my @display_names = ();
 
+	# TODO sort out error
 	if ( $request_list eq 'saved' ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
 			unless ( $self->{open_file_info}->{$_}->{'changed'}
@@ -200,6 +201,7 @@ sub current_files {
 		return @display_names;
 	}
 
+	# TODO sort out error
 	if ( $request_list eq 'patch' ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
 			if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
@@ -244,7 +246,7 @@ sub make_patch_diff {
 		File::Slurp::write_file( $patch_file, $our_diff );
 		TRACE("writing file: $patch_file") if DEBUG;
 
-		eval $main->setup_editor($patch_file);
+		$main->setup_editor($patch_file);
 		$main->info( Wx::gettext("Diff Succesful, you should see a new tab in editor called $patch_file") );
 	} else {
 		$main->info( Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
@@ -345,8 +347,6 @@ sub make_patch_svn {
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
-	say "file1_url: $file1_url";
-
 	if ( require SVN::Class ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
 
@@ -385,7 +385,7 @@ sub make_patch_git {
 
 	my $file1_url = filename_url( $self, $file1_name );
 
-	say 'Oops Git Yet To Be inplemented';
+	TRACE ('Oops Git Yet To Be inplemented') if DEBUG;
 	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
 
 	# if ( require Git ) {
