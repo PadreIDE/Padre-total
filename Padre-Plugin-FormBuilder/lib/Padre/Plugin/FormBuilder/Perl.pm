@@ -26,20 +26,29 @@ use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
 use FBP::Perl    0.59 ();
-use Mouse        0.61;
 
 our $VERSION = '0.03';
+our @ISA     = 'FBP::Perl';
 
-extends 'FBP::Perl';
 
-has encapsulate => (
-	is       => 'ro',
-	isa      => 'Bool',
-	required => 1,
-	default  => 0,
-);
 
-no Mouse;
+
+
+######################################################################
+# Constructor
+
+sub new {
+	my $self = shift->SUPER::new(@_);
+
+	# The encapsulate accessor
+	$self->{encapsulate} = $self->{encapsulate} ? 1 : 0;
+
+	return $self;
+}
+
+sub encapsulate {
+	$_[0]->{encapsulate};
+}
 
 
 

@@ -2,6 +2,7 @@ Changes for Perl extension Padre-Plugin-FormBuilder
 
 0.04 to be released
 	- Added support for previewing frames without crashing
+	- Removed the use of Mouse as it causes reloading problems
 
 0.03 Tue 2 Aug 2011
 	- Rearranged the codegen options to allow more detailed descriptions
