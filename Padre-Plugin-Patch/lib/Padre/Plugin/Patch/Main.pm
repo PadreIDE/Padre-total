@@ -59,7 +59,7 @@ sub set_up {
 	$self->file2->SetSelection(0);
 
 	#ToDo create against items on the fly
-	my @vcs = [qw ( File-1 SVN Git CVS)];
+	# my @vcs = [qw ( File-1 SVN Git CVS)];
 
 	# this don't
 	#$self->against->Clear;
@@ -70,6 +70,9 @@ sub set_up {
 	# $self->against->SetItemLabel(2, "Third");
 	# $self->against->ItemDisable(2);
 	# this works
+
+	# only works when against is enabled, wrong place
+	$self->against->EnableItem( 2, 0 );
 	$self->against->SetSelection(0);
 
 	return;
@@ -133,6 +136,10 @@ sub on_action {
 		$self->set_up;
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
+		unless ( eval { require SVN::Class } ) {
+			$self->against->EnableItem( 1, 0 );
+		}
+		$self->against->EnableItem( 2, 0 );
 		$self->against->SetSelection(0);
 
 	}
@@ -173,14 +180,15 @@ sub current_files {
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
+
 				# 'vcs'      => 'todo',
 				# 'current'  => 'todo',
-				'changed'  => 0,
+				'changed' => 0,
 			},
 		);
 
 		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
-			TRACE( "Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
+			TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
 			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
 	}
@@ -347,7 +355,7 @@ sub make_patch_svn {
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
-	if ( require SVN::Class ) {
+	if ( eval { require SVN::Class } ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
 
 		my $file = SVN::Class::svn_file($file1_url);
@@ -385,7 +393,7 @@ sub make_patch_git {
 
 	my $file1_url = filename_url( $self, $file1_name );
 
-	TRACE ('Oops Git Yet To Be inplemented') if DEBUG;
+	TRACE('Oops Git Yet To Be inplemented') if DEBUG;
 	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
 
 	# if ( require Git ) {
@@ -484,6 +492,11 @@ Displays the contents of your chosen tuple using Padre DB schemes
 Is a toggle to increase the width of the dialog of the viewing area
 
 =back
+
+=head1 BUGS AND LIMITATIONS 
+
+List Order is that of load order, if you move your Tabs the List Order will not follow
+
 
 =head1 AUTHOR
 
