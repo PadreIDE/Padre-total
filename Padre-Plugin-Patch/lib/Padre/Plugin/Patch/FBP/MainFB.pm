@@ -25,7 +25,7 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Patch"),
+		Wx::gettext("Patch_RC1"),
 		Wx::wxDefaultPosition,
 		Wx::wxDefaultSize,
 		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
@@ -72,7 +72,7 @@ sub new {
 		[
 			"File-2",
 			"SVN",
-			"Git",
+			# "Git",
 		],
 		2,
 		Wx::wxRA_SPECIFY_COLS,

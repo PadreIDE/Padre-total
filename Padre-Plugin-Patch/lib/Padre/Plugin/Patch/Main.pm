@@ -91,9 +91,7 @@ sub process_clicked {
 			$self->make_patch_diff( $file1, $file2 );
 		} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 			$self->make_patch_svn($file1);
-		} elsif ( $self->against->GetStringSelection() eq 'Git' ) {
-			$self->make_patch_git($file1);
-		}
+		} 
 	}
 
 	# reset dialog
@@ -124,7 +122,6 @@ sub on_action {
 		unless ( eval { require SVN::Class } ) {
 			$self->against->EnableItem( 1, 0 );
 		}
-		$self->against->EnableItem( 2, 0 );
 		$self->against->SetSelection(0);
 
 	}
@@ -141,7 +138,7 @@ sub on_against {
 		$self->file2->Enable(1);
 	} else {
 
-		# SVN or Git
+		# SVN
 		$self->file2->Enable(0);
 	}
 	return;
@@ -165,9 +162,6 @@ sub current_files {
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
-
-				# 'vcs'      => 'todo',
-				# 'current'  => 'todo',
 				'changed' => 0,
 			},
 		);
@@ -367,41 +361,6 @@ sub make_patch_svn {
 	return;
 }
 
-
-#######
-# Method make_patch_git
-#######
-sub make_patch_git {
-	my $self       = shift;
-	my $file1_name = shift;
-	my $main       = $self->main;
-
-	my $file1_url = filename_url( $self, $file1_name );
-
-	TRACE('Oops Git Yet To Be inplemented') if DEBUG;
-	$main->info( Wx::gettext('Oops, Git Yet To Be inplemented') );
-
-	# if ( require Git ) {
-	# TRACE('found SVN::Class, Good to go') if DEBUG;
-
-	# # 	my $file = SVN::Class::svn_file($dfile1);
-	# $file->diff;
-
-	# # 	TRACE( @{ $file->stdout } ) if DEBUG;
-	# my $diff_str = join( "\n", @{ $file->stdout } );
-
-	# # 	write_file( $patch_file, $diff_str );
-	# TRACE("writing file: $patch_file") if DEBUG;
-
-	# # 	eval $main->setup_editor($patch_file);
-	# $main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
-	# } else {
-	# $main->info( Wx::gettext('Oops, might help if you install Git') );
-	# }
-
-	return;
-}
-
 1;
 
 __END__
@@ -416,8 +375,15 @@ This document describes Padre::Plugin::Patch::Main version 0.03
 
 =head1 DESCRIPTION
 
-Patch or Diff a single file, a very simplest tool, only works on saved files, one at a time in Padre editor,
-The resulting patch file will be in Unified form. All dependencies are Perl packages, no cmd/system calls.
+A very simplitic tool, only works on open saved files, in the Padre editor.
+
+Patch a single file, in the editor with a patch/diff file that is also open.
+
+Diff between two open files, the resulting patch file will be in Unified form.
+
+Diff a single file to svn, the resulting patch file will be in Unified form.
+
+All results will be a new Tab.
 
 =head1 METHODS
 
@@ -457,13 +423,10 @@ A convenience method to generate a patch/diff file from two selected files.
 
 =item make_patch_svn
 
-Only works if you have C<SVN::Class> installed.
+NB only works if you have C<SVN::Class> installed.
+
 A convenience method to generate a patch/diff file from a selected file and svn if applicable,
 ie file has been checked out.
-
-=item make_patch_git
-
-To be implemented.
 
 =item filelist_type
 
