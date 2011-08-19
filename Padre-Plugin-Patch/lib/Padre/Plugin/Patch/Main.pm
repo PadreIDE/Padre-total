@@ -481,9 +481,11 @@ composed method
 List Order is that of load order, if you move your Tabs the List Order will not follow suite.
 
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 BOWTIE E<lt>kevin.dawson@btclick.comE<gt>
+
+Adam Kennedy E<lt>adamk@cpan.orgE<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
