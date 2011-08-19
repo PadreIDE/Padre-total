@@ -27,9 +27,9 @@ use warnings;
 # but we happen to know Padre uses all of them itself.
 use Class::Inspector 1.22 ();
 use Params::Util     1.00 ();
-use Padre::Plugin    0.66 ();
+use Padre::Plugin    0.91 ();
 use Padre::Util      0.81 ();
-use Padre::Wx        0.66 ();
+use Padre::Wx        0.91 ();
 
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin';
@@ -45,11 +45,11 @@ my $COUNT = 0;
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin'         => 0.66,
-	'Padre::Util'           => 0.81,
-	'Padre::Task'           => 0.81,
-	'Padre::Wx'             => 0.66,
-	'Padre::Wx::Role::Main' => 0.66,
+	'Padre::Plugin'         => 0.91,
+	'Padre::Util'           => 0.91,
+	'Padre::Task'           => 0.91,
+	'Padre::Wx'             => 0.91,
+	'Padre::Wx::Role::Main' => 0.91,
 }
 
 sub plugin_name {
@@ -64,10 +64,12 @@ sub plugin_disable {
 	$self->clean_dialog;
 
 	# Unload all our child classes
-	$self->unload('Padre::Plugin::FormBuilder::Dialog');
-	$self->unload('Padre::Plugin::FormBuilder::FBP');
-	$self->unload('Padre::Plugin::FormBuilder::Perl');
-	$self->unload('Padre::Plugin::FormBuilder::Preview');
+	$self->unload( qw{
+		Padre::Plugin::FormBuilder::Dialog
+		Padre::Plugin::FormBuilder::FBP
+		Padre::Plugin::FormBuilder::Perl
+		Padre::Plugin::FormBuilder::Preview
+	} );
 
 	return 1;
 }

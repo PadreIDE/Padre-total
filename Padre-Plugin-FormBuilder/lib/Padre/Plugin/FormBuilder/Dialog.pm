@@ -3,8 +3,8 @@ package Padre::Plugin::FormBuilder::Dialog;
 use 5.008;
 use strict;
 use warnings;
-use Class::Unload                       ();
 use Class::Inspector                    ();
+use Padre::Unload                       ();
 use Padre::Plugin::FormBuilder::FBP     ();
 use Padre::Plugin::FormBuilder::Preview ();
 
@@ -284,6 +284,7 @@ sub generate_form {
 			project     => $param{fbp}->project,
 			version     => $param{version},
 			encapsulate => $self->encapsulate,
+			prefix      => 2,
 			nocritic    => 1,
 			i18n        => $param{i18n},
 			i18n_trim   => $param{i18n_trim},
@@ -377,10 +378,9 @@ sub disable {
 
 # Convenience integration with Class::Unload
 sub unload {
-	require Class::Unload;
 	my $either = shift;
 	foreach my $package (@_) {
-		Class::Unload->unload($package);
+		Padre::Unload::unload($package);
 	}
 	return 1;
 }

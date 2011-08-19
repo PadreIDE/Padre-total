@@ -26,21 +26,21 @@ sub new {
 		$parent,
 		-1,
 		Wx::gettext("Test Dialog"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::DEFAULT_DIALOG_STYLE,
 	);
 
 	my $m_checkBox5 = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Check Me!"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
-	my $bSizer7 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer7->Add( $m_checkBox5, 0, Wx::wxALL, 5 );
+	my $bSizer7 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer7->Add( $m_checkBox5, 0, Wx::ALL, 5 );
 
 	$self->SetSizerAndFit($bSizer7);
 	$self->Layout;

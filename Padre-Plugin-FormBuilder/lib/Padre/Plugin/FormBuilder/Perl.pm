@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.59 ();
+use FBP::Perl    0.61 ();
 
 our $VERSION = '0.03';
 our @ISA     = 'FBP::Perl';
@@ -299,6 +299,26 @@ sub file {
 	my $file = $self->quote($string);
 	my $dist = $self->quote($self->project_dist($self->project));
 	return "File::ShareDir::dist_file( $dist, $file )";
+}
+
+sub wx {
+	my $self = shift;
+	unless ( $self->prefix > 1 ) {
+		return $self->SUPER::wx(@_);
+	}
+
+	# Apply the same null checks as the normal method
+	my $string = shift;
+	return 0  if $string eq '';
+	return -1 if $string eq 'wxID_ANY';
+
+	# Handle constants in the new Wx::FOO style
+	$string =~ s/\bwx//gi;
+
+	# Tidy a collection of multiple constants
+	$string =~ s/\s*\|\s*/ | /g;
+
+	return $string;
 }
 
 1;
