@@ -1,0 +1,39 @@
+# French translations for Padre-Plugin-Encrypt package.
+# Copyright (C) 2011 THE Padre-Plugin-Encrypt'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Padre-Plugin-Encrypt package.
+# Olivier Mengué <dolmen@cpan.org>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-10-18 15:37+0300\n"
+"PO-Revision-Date: 2011-08-19 09:26+0100\n"
+"Last-Translator: Olivier Mengué <dolmen@cpan.org>\n"
+"Language-Team: French <traduc@traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: lib/Padre/Plugin/Encrypt.pm:18
+msgid "Encrypt <-> Decrpyt"
+msgstr "Chiffrer <-> Déchiffrer"
+
+#: lib/Padre/Plugin/Encrypt.pm:19
+msgid "Encrypt"
+msgstr "Chiffrer"
+
+#: lib/Padre/Plugin/Encrypt.pm:20
+msgid "Decrypt"
+msgstr "Déchiffrer"
+
+#: lib/Padre/Plugin/Encrypt.pm:82
+msgid "Private key is required"
+msgstr "Une clé privée est nécessaire"
+
+#: lib/Padre/Plugin/Encrypt.pm:117
+msgid "Error while encrypting/decrypting:"
+msgstr "Erreur lors du chiffrage/déchiffrage :"
+
