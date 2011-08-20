@@ -313,7 +313,7 @@ sub wx {
 	return -1 if $string eq 'wxID_ANY';
 
 	# Handle constants in the new Wx::FOO style
-	$string =~ s/\bwx//gi;
+	$string =~ s/\bwx/Wx::/gi;
 
 	# Tidy a collection of multiple constants
 	$string =~ s/\s*\|\s*/ | /g;
