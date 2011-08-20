@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -25,90 +25,89 @@ sub new {
 	my $self = $class->SUPER::new(
 		$parent,
 		-1,
-		Wx::gettext("Patch_RC1"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
+		Wx::gettext("Patch"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
 
-	my $file1 = Wx::Choice->new(
+	$self->{file1} = Wx::Choice->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
+		Wx::DefaultPosition,
 		[ 200, -1 ],
 		[],
 	);
-	$file1->SetSelection(0);
+	$self->{file1}->SetSelection(0);
 
-	my $action = Wx::RadioBox->new(
+	$self->{action} = Wx::RadioBox->new(
 		$self,
 		-1,
 		Wx::gettext("Action"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[
 			"Patch",
 			"Diff",
 		],
 		1,
-		Wx::wxRA_SPECIFY_COLS,
+		Wx::RA_SPECIFY_COLS,
 	);
-	$action->SetSelection(0);
+	$self->{action}->SetSelection(0);
 
 	Wx::Event::EVT_RADIOBOX(
 		$self,
-		$action,
+		$self->{action},
 		sub {
 			shift->on_action(@_);
 		},
 	);
 
-	my $against = Wx::RadioBox->new(
+	$self->{against} = Wx::RadioBox->new(
 		$self,
 		-1,
 		Wx::gettext("Against"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[
 			"File-2",
 			"SVN",
-			# "Git",
 		],
 		2,
-		Wx::wxRA_SPECIFY_COLS,
+		Wx::RA_SPECIFY_COLS,
 	);
-	$against->SetSelection(0);
-	$against->Disable;
+	$self->{against}->SetSelection(0);
+	$self->{against}->Disable;
 
 	Wx::Event::EVT_RADIOBOX(
 		$self,
-		$against,
+		$self->{against},
 		sub {
 			shift->on_against(@_);
 		},
 	);
 
-	my $file2 = Wx::Choice->new(
+	$self->{file2} = Wx::Choice->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[],
 	);
-	$file2->SetSelection(0);
-	$file2->SetMinSize( [ 200, -1 ] );
+	$self->{file2}->SetSelection(0);
+	$self->{file2}->SetMinSize( [ 200, -1 ] );
 
-	my $process = Wx::Button->new(
+	$self->{process} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Process"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$process,
+		$self->{process},
 		sub {
 			shift->process_clicked(@_);
 		},
@@ -116,19 +115,19 @@ sub new {
 
 	my $close_button = Wx::Button->new(
 		$self,
-		Wx::wxID_CANCEL,
+		Wx::ID_CANCEL,
 		Wx::gettext("Close"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$close_button->SetDefault;
 
-	my $m_staticline5 = Wx::StaticLine->new(
+	$self->{m_staticline5} = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
 	);
 
 	my $file_1 = Wx::StaticBoxSizer->new(
@@ -137,9 +136,9 @@ sub new {
 			-1,
 			Wx::gettext("File-1"),
 		),
-		Wx::wxVERTICAL,
+		Wx::VERTICAL,
 	);
-	$file_1->Add( $file1, 0, Wx::wxALL, 5 );
+	$file_1->Add( $self->{file1}, 0, Wx::ALL, 5 );
 
 	my $sbSizer2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -147,12 +146,12 @@ sub new {
 			-1,
 			Wx::gettext("Options"),
 		),
-		Wx::wxHORIZONTAL,
+		Wx::HORIZONTAL,
 	);
-	$sbSizer2->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$sbSizer2->Add( $action, 0, Wx::wxALL, 5 );
-	$sbSizer2->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$sbSizer2->Add( $against, 0, Wx::wxALL, 5 );
+	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$sbSizer2->Add( $self->{action}, 0, Wx::ALL, 5 );
+	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$sbSizer2->Add( $self->{against}, 0, Wx::ALL, 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -160,56 +159,50 @@ sub new {
 			-1,
 			Wx::gettext("File-2"),
 		),
-		Wx::wxVERTICAL,
+		Wx::VERTICAL,
 	);
-	$file_2->Add( $file2, 1, Wx::wxALL, 5 );
+	$file_2->Add( $self->{file2}, 1, Wx::ALL, 5 );
 
-	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $process, 0, Wx::wxALL, 5 );
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $close_button, 0, Wx::wxALL, 5 );
+	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $self->{process}, 0, Wx::ALL, 5 );
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $close_button, 0, Wx::ALL, 5 );
 
-	my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vsizer->Add( $file_1, 0, Wx::wxEXPAND, 5 );
-	$vsizer->Add( $sbSizer2, 1, Wx::wxEXPAND, 5 );
-	$vsizer->Add( $file_2, 0, Wx::wxEXPAND, 5 );
-	$vsizer->Add( $buttons, 0, Wx::wxEXPAND, 3 );
-	$vsizer->Add( $m_staticline5, 0, Wx::wxEXPAND | Wx::wxALL, 5 );
+	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$vsizer->Add( $file_1, 0, Wx::EXPAND, 5 );
+	$vsizer->Add( $sbSizer2, 1, Wx::EXPAND, 5 );
+	$vsizer->Add( $file_2, 0, Wx::EXPAND, 5 );
+	$vsizer->Add( $buttons, 0, Wx::EXPAND, 3 );
+	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND | Wx::ALL, 5 );
 
-	my $sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$sizer->Add( $vsizer, 0, Wx::wxALL, 1 );
+	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$sizer->Add( $vsizer, 0, Wx::ALL, 1 );
 
 	$self->SetSizerAndFit($sizer);
 	$self->Layout;
-
-	$self->{file1} = $file1->GetId;
-	$self->{action} = $action->GetId;
-	$self->{against} = $against->GetId;
-	$self->{file2} = $file2->GetId;
-	$self->{process} = $process->GetId;
 
 	return $self;
 }
 
 sub file1 {
-	Wx::Window::FindWindowById($_[0]->{file1});
+	$_[0]->{file1};
 }
 
 sub action {
-	Wx::Window::FindWindowById($_[0]->{action});
+	$_[0]->{action};
 }
 
 sub against {
-	Wx::Window::FindWindowById($_[0]->{against});
+	$_[0]->{against};
 }
 
 sub file2 {
-	Wx::Window::FindWindowById($_[0]->{file2});
+	$_[0]->{file2};
 }
 
 sub process {
-	Wx::Window::FindWindowById($_[0]->{process});
+	$_[0]->{process};
 }
 
 sub on_action {
