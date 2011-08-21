@@ -126,7 +126,7 @@ sub on_connect {
 		{ type=>'disco', service=>'swarm' }
 	);
 	
-	$self->_notify( 'on_connect', @_ );
+	#$self->_notify( 'on_connect', @_ );
 	
 	return;
 }
@@ -136,13 +136,23 @@ sub on_disconnect {
 	my $self = shift;
 	TRACE( "Swarm transport disconnected" ) if DEBUG;
 	
-	$self->_notify('on_connect', @_ );
+	#$self->_notify('on_connect', @_ );
 	
 }
+
+
+use Params::Util '_INVOCANT';
+use Carp 'confess';
+use Data::Dumper;
 
 sub _notify {
 	my $self = shift;
 	my $notify = shift;
+	my $message= $_[0];
+	unless ( _INVOCANT($message) ) {
+		confess 'unblessed message', Dumper \@_;
+		
+	}
 	my $lock = Padre::Current->main->lock('UPDATE');
 	foreach my $c ( $self->components ) {
 		my $component = $self->$c;

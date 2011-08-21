@@ -78,6 +78,15 @@ sub disable {
 
 sub plugin { Padre::Plugin::Swarm->instance }
 
+
+sub canonical_resource {
+	my $self = shift;
+	my $name = shift;
+	#$self->universe->token 
+	return $self . '@' . $name;
+}
+
+
 sub editor_enable {
 	my ($self,$editor,$document) = @_;
 	return unless $document && $document->filename;
@@ -89,12 +98,12 @@ sub editor_enable {
 	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
-			resource => $document->filename
+			resource => $self->canonical_resource( $document->filename )
 		}
 	);
 
 	$self->editors->{ refaddr $editor } = $editor;
-	$self->resources->{ $document->filename } = $document;
+	$self->resources->{ $self->canonical_resource( $document->filename ) } = $document;
 	
 	
 	TRACE( "Failed to promote editor open! $@" ) if DEBUG && $@;
@@ -111,12 +120,12 @@ sub editor_disable {
 			{
 				type => 'destroy' , 
 				service => 'editor',
-				resource => $document->filename
+				resource => $self->canonical_resource( $document->filename )
 			}
 	);
 
 	delete $self->editors->{refaddr $editor};
-	delete $self->resources->{$document->filename};
+	delete $self->resources->{ $self->canonical_resource( $document->filename ) };
 
 }
 
@@ -140,7 +149,7 @@ sub on_editor_modified {
     return unless defined $doc;
     return unless $doc->filename;
     
-    my $file = $doc->filename;
+    my $resource = $self->canonical_resource($doc->filename);
     my $time = $doc->timestamp;
     my $type = $event->GetModificationType;
     
@@ -155,20 +164,20 @@ sub on_editor_modified {
     my $len = $event->GetLength;
     
     #Debugging noise
-    my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $file";
-    $self->transport->send(
-        { type=>'chat', body=>$payload,
-            op   => $type,
-            t    => $text,
-            time => time(),
-        }
-    );
+    #my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $file";
+    # $self->universe->send(
+        # { type=>'chat', body=>$payload,
+            # op   => $type,
+            # t    => $text,
+            # time => time(),
+        # }
+    # );
     
-    $self->transport->send(
+    $self->universe->send(
         {   
             type=>'delta' , service=>'editor', op=>$op,
             body=>$text, pos=>$pos,
-            resource=>$file,
+            resource=>$resource,
         }
     );
 }

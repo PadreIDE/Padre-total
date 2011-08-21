@@ -78,9 +78,9 @@ sub new {
 	$sizerh->SetSizeHints($self);
 	$self->Hide;
 	TRACE( "Resource tree Ready - ", $self->tree ) if DEBUG;
-	$self->universe->reg_cb( 'enable' , sub { $self->enable(@_) } );
-	$self->universe->reg_cb( 'disable' , sub { $self->disable(@_) } );
-	$self->universe->reg_cb( 'recv' , sub { $self->on_recv(@_) } );
+	$self->universe->reg_cb( 'enable' , sub {  $self->enable(@_) } );
+	$self->universe->reg_cb( 'disable' , sub {$self->disable(@_) } );
+	$self->universe->reg_cb( 'recv' , sub { shift; $self->on_recv(@_) } );
 	
 	return $self;
 	
@@ -148,10 +148,14 @@ sub clear {
 	return;
 }
 
+
+use Carp 'croak';
 sub on_recv {
 	my $self = shift;
-	my $universe = shift;
+	#my $universe = shift;
 	my $message = shift;
+	
+	
 	my $handler = 'accept_' . $message->type;
 	TRACE( $handler ) ;# if DEBUG;
         if ( $self->can( $handler ) ) {

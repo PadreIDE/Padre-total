@@ -35,7 +35,7 @@ sub run {
     require Padre::Plugin::Swarm::Transport::Local;
     my $rself = $self;
     Scalar::Util::weaken( $self );
-
+    TRACE( " AnyEvent loaded " );
     my $bailout = AnyEvent->condvar;
     $self->{bailout} = $bailout;
     $self->_setup_connections;
@@ -61,6 +61,7 @@ sub run {
 }
 
 sub _setup_connections {
+    TRACE( @_ );
     my $self = shift;
     
     my $global = new Padre::Plugin::Swarm::Transport::Global
@@ -150,14 +151,13 @@ sub send_local {
 
 sub read_task_queue {
     my $self = shift;
-    my $cancelled = $self->cancel;
-    TRACE( "state of self->cancel == $cancelled" ) if DEBUG;
-    while( my $message = $self->dequeue_nb ) {
-        TRACE( 'Unhandled Incoming message' . Dumper $message ) if DEBUG;
+    TRACE( 'Read task queue' );
+eval {
+    while( my $message = $self->child_inbox ) {
+        #TRACE( 'Unhandled Incoming message' . Dumper $message ) if DEBUG;
         if ( $message->[0] eq 'message' ) {
             shift @$message;
             my ($method,@args) = @$message;
-            
             eval { $self->$method(@args);};
             if ($@) {
                 TRACE( $@ ) ;
@@ -165,11 +165,16 @@ sub read_task_queue {
         }
     
     };
-    if ( $cancelled ) {
+    if ( $self->cancelled ) {
         TRACE( 'Cancelled! - bailing out of event loop' ) if DEBUG;
         $self->{bailout}->send;
     }
+ };
     
+ if ($@) {
+        TRACE( 'Task queue error ' . $@ )
+     
+ }
     return;
 }
 
@@ -180,7 +185,7 @@ sub _recv {
     
     $message->{origin} = $origin;
     
-    $self->message( OWNER =>  $message );
+    $self->tell_owner( $message );
     
 }
 
@@ -188,11 +193,11 @@ sub _connect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
-    $self->status( "Swarm $origin transport connected" );
+    $self->tell_status( "Swarm $origin transport connected" );
     my $m = new Padre::Swarm::Message
                 origin => $origin,
                 type   => 'connect';
-    $self->message( OWNER => $m );
+    $self->tell_owner( $m );
 }
 
 
@@ -200,11 +205,11 @@ sub _disconnect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
-    $self->status("Swarm $origin transport DISCONNECTED");
+    $self->tell_status("Swarm $origin transport DISCONNECTED");
     my $m = new Padre::Swarm::Message
                 origin => $origin,
                 type   => 'disconnect';
-    $self->message( OWNER => $m );
+    $self->tell_owner( $m );
 }
 
 1;

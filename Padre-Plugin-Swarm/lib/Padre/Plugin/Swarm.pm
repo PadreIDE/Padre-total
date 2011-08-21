@@ -48,17 +48,23 @@ sub disconnect {
 	$self->local->event('disable');
 	
 	# What are the chances either of these work ?
-	$self->task_reset;
+	$self->task_cancel;
 
 }
 
+
+use Params::Util '_INVOCANT';
+use Carp 'confess';
+use Data::Dumper;
 
 sub on_swarm_service_message {
 	my $self = shift;
 	my $service = shift;
 	my $message = shift;
 
-
+	unless ( _INVOCANT($message) ) {
+		confess 'unblessed message ' . Dumper $message;
+	}
 	$self->service($service);
 	
 	# TODO can i use 'SWARM' instead?
@@ -92,13 +98,27 @@ sub on_swarm_service_message {
 	$self->event($handler,$message);
 	
 }
+sub on_swarm_service_finish {
+	my $self = shift;
+	TRACE( "Service finished?? @_" ) ;
+}
+
+
+sub task_cancel {
+	my $self = shift;
+	$self->task_manager->cancel( $self->{task_revision} );
+}
+
+
 
 SCOPE: {
 my @outbox;
+use Data::Dumper;
 
 sub send {
 	my ($self,$origin,$message) = @_;
 	my $service = $self->{service};
+	TRACE( Dumper $service ) ;
 	
 	TRACE( 'Sending to task ~ ' . $service ) if DEBUG;
 	# Be careful - we can race our task and send messages to it before it is ready
@@ -109,8 +129,8 @@ sub send {
 	}
 	
 	my $handler = 'send_'.$origin;
-	TRACE( "outbound handle $handler" );
-	$self->service->message( $handler => $message );
+	TRACE( "outbound handle $handler" ) if DEBUG;
+	$self->service->tell_child( $handler => $message );
 	
 	# Ugly - provide 'global' loopback here.
 	my $loop = bless $message, 'Padre::Swarm::Message';
@@ -234,9 +254,10 @@ SCOPE: {
 		my $service = $self->task_request(
 				task =>'Padre::Plugin::Swarm::Service',
 					owner => $self,
-					on_message => 'on_swarm_service_message'
+					on_message => 'on_swarm_service_message',
+					on_finish  => 'on_swarm_service_finish',
 		);
-
+		$self->{service} = $service;
 		$self->connect();
 
 
