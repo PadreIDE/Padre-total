@@ -47,8 +47,8 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 		[
-			"Patch",
-			"Diff",
+			Wx::gettext("Patch"),
+			Wx::gettext("Diff"),
 		],
 		1,
 		Wx::RA_SPECIFY_COLS,
@@ -70,8 +70,8 @@ sub new {
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 		[
-			"File-2",
-			"SVN",
+			Wx::gettext("File-2"),
+			Wx::gettext("SVN"),
 		],
 		2,
 		Wx::RA_SPECIFY_COLS,

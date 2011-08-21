@@ -43,7 +43,7 @@ sub set_up {
 	for ( 0 .. $self->{tab_cardinality} ) {
 
 		# TODO sort out error
-		if ( $file1_list[$_] eq $current_tab_title ) {
+		if ( eval { $file1_list[$_] eq $current_tab_title } ) {
 			$selection = $_;
 		}
 	}
@@ -91,7 +91,7 @@ sub process_clicked {
 			$self->make_patch_diff( $file1, $file2 );
 		} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 			$self->make_patch_svn($file1);
-		} 
+		}
 	}
 
 	# reset dialog
@@ -162,7 +162,7 @@ sub current_files {
 			{   'index'    => $_,
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
-				'changed' => 0,
+				'changed'  => 0,
 			},
 		);
 
@@ -189,7 +189,7 @@ sub current_files {
 	}
 
 	# TODO sort out error
-	if ( $request_list eq 'patch' ) {
+	if ( eval { $request_list eq 'patch' } ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
 			if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
 				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
