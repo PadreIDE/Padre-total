@@ -40,7 +40,7 @@ sub set_up {
 
 	# SetSelection should be current file
 	my $selection;
-	for ( 0 .. $self->{tab_cardinality} ) {
+	foreach ( 0 .. $self->{tab_cardinality} ) {
 
 		# TODO sort out error
 		if ( eval { $file1_list[$_] eq $current_tab_title } ) {
@@ -72,7 +72,7 @@ sub process_clicked {
 
 	my ( $file1, $file2 );
 
-	my @items      = $self->current_files();
+	# my @items      = $self->current_files();
 	my @file1_list = $self->current_files('saved');
 	my @file2_list = filelist_type($self);
 
@@ -119,6 +119,10 @@ sub on_action {
 		$self->set_up;
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
+
+		# as we can not added items to a radiobox,
+		# we can only enable & disable when radiobox enabled
+		# test inspired my Any
 		unless ( eval { require SVN::Class } ) {
 			$self->against->EnableItem( 1, 0 );
 		}
@@ -157,6 +161,7 @@ sub current_files {
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
 
+	# create a bucket for open file info, as only a current file bucket exsist
 	for ( 0 .. $self->{tab_cardinality} ) {
 		$self->{open_file_info}->{$_} = (
 			{   'index'    => $_,
@@ -354,9 +359,11 @@ sub make_patch_svn {
 
 		$main->setup_editor($patch_file);
 		$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
-	} else {
-		$main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
 	}
+
+	# else {
+	# $main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
+	# }
 
 	return;
 }
