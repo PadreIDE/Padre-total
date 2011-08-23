@@ -94,7 +94,7 @@ sub process_clicked {
 		}
 	}
 
-	# reset dialog
+	# reset dialogue's display information
 	$self->set_up;
 
 	return;
@@ -120,8 +120,8 @@ sub on_action {
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
 
-		# as we can not added items to a radiobox,
-		# we can only enable & disable when radiobox enabled
+		# as we can not added items to a radio-box,
+		# we can only enable & disable when radio-box enabled
 		# test inspired my Any
 		unless ( eval { require SVN::Class } ) {
 			$self->against->EnableItem( 1, 0 );
@@ -161,7 +161,7 @@ sub current_files {
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
 
-	# create a bucket for open file info, as only a current file bucket exsist
+	# create a bucket for open file info, as only a current file bucket exist
 	for ( 0 .. $self->{tab_cardinality} ) {
 		$self->{open_file_info}->{$_} = (
 			{   'index'    => $_,
@@ -382,7 +382,7 @@ This document describes Padre::Plugin::Patch::Main version 0.03
 
 =head1 DESCRIPTION
 
-A very simplitic tool, only works on open saved files, in the Padre editor.
+A very simplistic tool, only works on open saved files, in the Padre editor.
 
 Patch a single file, in the editor with a patch/diff file that is also open.
 
