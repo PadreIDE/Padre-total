@@ -38,6 +38,10 @@ sub start_session {
         on_eof => sub { $self->event('disconnect', shift ) },
     );
     
+    
+    # now we register our own disconnect handler for teardown;
+    $self->reg_cb('disconnect', \&disconnect );
+    
     TRACE( $h );
     $self->{h} = $h;
     $h->push_write( json => { trustme=>$$.rand() } );
@@ -45,6 +49,22 @@ sub start_session {
     $self->reg_cb( 'see_auth' , \&see_auth );
     
 }
+
+
+sub disconnect {
+
+    TRACE( 'disconnect' , @_ ) ;
+    my $self = shift;
+
+    $self->unreg_cb('disconnect', \&disconnect);
+    if ($self->{h}) {
+        $self->{h}->destroy;
+        delete $self->{h};
+    }
+    
+
+}
+
 
 sub see_auth {
     TRACE( @_ );
