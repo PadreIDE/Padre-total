@@ -121,7 +121,10 @@ sub _teardown_connections {
     my $self = shift;
     my $global = delete $self->{global};
     my $local = delete $self->{local};
+    TRACE( 'Teardown global' );
     $global->event('disconnect');
+    
+    TRACE( 'Teardown local' );    
     $local->event('disconnect');
     
     return ();
