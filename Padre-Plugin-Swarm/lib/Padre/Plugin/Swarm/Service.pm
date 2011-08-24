@@ -64,7 +64,7 @@ sub run {
     
     
     $self->_teardown_connections;
-
+    TRACE( 'returning from ->run' );
     return 1;
 }
 

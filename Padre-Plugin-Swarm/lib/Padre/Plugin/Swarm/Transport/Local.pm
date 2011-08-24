@@ -37,6 +37,7 @@ sub enable {
         }
     );
     $self->reg_cb( 'readable' , \&readable );
+    $self->reg_cb('disconnect', \&disconnect );
     $self->event('connect',1);
     
     return;
@@ -76,6 +77,18 @@ sub readable {
         $self->event('recv', $message);
     }
     
+}
+
+
+sub disconnect {
+    TRACE( @_ );
+    my $self = shift;
+    delete $self->{m};
+    if ( $self->{h} ) {
+        $self->{h}->destroy;
+        delete $self->{h};
+        
+    }       
 }
 
 sub _marshal {
