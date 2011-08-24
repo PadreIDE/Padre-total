@@ -11,7 +11,7 @@ requires_from 'lib/Padre/Plugin/Cookbook/Recipe03/Main.pm';
 requires_from 'lib/Padre/Plugin/Cookbook/Recipe04/Main.pm';
 
 # Padre version, should match that of the latest version, used in padre_interfaces, 
-requires 'Padre'                => '0.86';
+requires 'Padre'                => '0.90';
 
 # required modules from CPAN
 requires 'Moose'                => '2.00';

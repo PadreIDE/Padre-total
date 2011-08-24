@@ -16,13 +16,13 @@ sub padre_interfaces {
 	return (
 
 		# Default, required
-		'Padre::Plugin' => '0.84',
+		'Padre::Plugin' => '0.90',
 
 		# used by Main, About and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => '0.84',
-		'Padre::Wx::Main'       => '0.86',
-		'Padre::Wx::Role::Main' => '0.84',
-		'Padre::Logger'         => '0.84',
+		'Padre::Wx'             => '0.90',
+		'Padre::Wx::Main'       => '0.90',
+		'Padre::Wx::Role::Main' => '0.90',
+		'Padre::Logger'         => '0.90',
 	);
 }
 
@@ -53,6 +53,15 @@ sub menu_plugins_simple {
 		},
 	];
 }
+
+# sub plugin_icon {
+	# my $class = shift;
+	# my $share = $class->plugin_directory_share or return;
+	# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
+	# return unless -f $file;
+	# return unless -r $file;
+	# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+# }
 
 #######
 # Add icon to Plugin
