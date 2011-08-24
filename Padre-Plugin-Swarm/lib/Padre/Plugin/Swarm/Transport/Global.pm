@@ -26,11 +26,11 @@ sub enable {
 }
 
 sub start_session {
+    TRACE(  @_ ) ;
     my ($self,$fh) = @_;
     unless ($fh) {
         $self->event('disconnect','Connection failed ' . $!);
-        return;
-        
+        return;   
     }
     my $h = AnyEvent::Handle->new(
         fh => $fh,
@@ -38,7 +38,7 @@ sub start_session {
         on_eof => sub { $self->event('disconnect', shift ) },
     );
     
-
+    TRACE( $h );
     $self->{h} = $h;
     $h->push_write( json => { trustme=>$$.rand() } );
     $h->push_read( json => sub { $self->event( 'see_auth' , @_ ) } );
@@ -47,6 +47,8 @@ sub start_session {
 }
 
 sub see_auth {
+    TRACE( @_ );
+    
     my $self = shift;
     my $handle = shift;
     my $message = shift;
@@ -68,9 +70,20 @@ sub see_auth {
     }
 }
 
+
+use Carp 'confess';
+use Data::Dumper;
+$Data::Dumper::Indent=1;
+
 sub send {
+    TRACE( @_ );
     my $self = shift;
     my $message = shift;
+    if ( threads::shared::is_shared( $message ) ) {
+        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );
+        
+        confess "$message , is a shared value";    
+    }
     $message->{token} = $self->{token};
     $self->{h}->push_write( json => $message );
     # implement our own loopback ?

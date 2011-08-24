@@ -42,9 +42,20 @@ sub enable {
     return;
 }
 
+
+use Carp 'confess';
+use Data::Dumper;
+
 sub send {
     my $self = shift;
     my $message = shift;
+    
+    if ( threads::shared::is_shared( $message ) ) {
+        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );
+        
+        confess "$message , is a shared value";    
+    }    
+
     $message->{token} = $self->{token};
     my $data = eval { $self->_marshal->encode($message) };
     if ($data) {
