@@ -40,20 +40,28 @@ sub run {
     $self->{bailout} = $bailout;
     $self->_setup_connections;
     
+    
+    # the latency on this is awful , unsurprisingly
+    # it would be better to have a socketpair to poll for read from our parent.
+    
     # my $sig_catch = AnyEvent->signal( signal=>'INT',
         # cb => sub { $self->read_task_queue }
     # );
     # TRACE( "Signal catcher $sig_catch" ) if DEBUG;
     
+    
+    
     my $queue_poller = AnyEvent->timer( 
-        after => 1,
-        interval => 1 ,
+        after => .2,
+        interval => .2 ,
         cb => sub { $self->read_task_queue },
     );
     TRACE( "Timer - $queue_poller" ) if DEBUG;
 
     $self->{run}++;
-    $bailout->recv;
+    my $exit_mode = $bailout->recv;
+    TRACE( "Bailout reached! " . $exit_mode );
+    
     
     $self->_teardown_connections;
 
@@ -135,7 +143,7 @@ sub prepare {
 sub send_global {
     my $self = shift;
     my $message = shift;
-    TRACE( "Sending GLOBAL message " , Dumper $message ) if DEBUG;
+    TRACE( "Sending GLOBAL message " , Dumper $message );# if DEBUG;
     $self->{global}->send($message);
     
 }
@@ -151,10 +159,10 @@ sub send_local {
 
 sub read_task_queue {
     my $self = shift;
-    TRACE( 'Read task queue' );
+    #TRACE( 'Read task queue' );
 eval {
     while( my $message = $self->child_inbox ) {
-        #TRACE( 'Unhandled Incoming message' . Dumper $message ) if DEBUG;
+        TRACE( 'Unhandled Incoming message' . Dumper $message ) ; # if DEBUG;
         if ( $message->[0] eq 'message' ) {
             shift @$message;
             my ($method,@args) = @$message;
@@ -166,8 +174,8 @@ eval {
     
     };
     if ( $self->cancelled ) {
-        TRACE( 'Cancelled! - bailing out of event loop' ) if DEBUG;
-        $self->{bailout}->send;
+        TRACE( 'Cancelled! - bailing out of event loop' ) ;#if DEBUG;
+        $self->{bailout}->send('cancelled');
     }
  };
     
@@ -180,7 +188,7 @@ eval {
 
 sub _recv {
     my($self,$origin,$transport,$message) = @_;
-    TRACE( "$origin  transport=$transport, " . Dumper ($message) )  if DEBUG;
+    TRACE( "$origin  transport=$transport, " . Dumper ($message) ); #  if DEBUG;
     die "Origin '$origin' incorrect" unless ($origin=~/global|local/);
     
     $message->{origin} = $origin;
@@ -193,6 +201,7 @@ sub _connect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
+    TRACE( "Connected $origin" );
     $self->tell_status( "Swarm $origin transport connected" );
     my $m = new Padre::Swarm::Message
                 origin => $origin,
