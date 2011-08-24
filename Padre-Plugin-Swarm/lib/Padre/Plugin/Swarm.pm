@@ -62,6 +62,12 @@ sub on_swarm_service_message {
 	my $service = shift;
 	my $message = shift;
 
+
+	if ( threads::shared::is_shared( $message ) ) {
+		TRACE('Parent RECV : shared ??? ' . Dumper $message );
+		confess 'got : shared $message';
+		
+	}	
 	unless ( _INVOCANT($message) ) {
 		confess 'unblessed message ' . Dumper $message;
 	}
@@ -89,7 +95,7 @@ sub on_swarm_service_message {
 		$self->global->event('recv', $message );
 	} else {
 		TRACE( "Unknown transport dispatch recv_$origin" );
-		$self->event( "recv_$origin" , $message );
+		confess "Unknown transport dispatch recv_$origin" ;
 	}	
 	
 	
@@ -102,6 +108,17 @@ sub on_swarm_service_finish {
 	my $self = shift;
 	TRACE( "Service finished?? @_" ) ;
 }
+
+
+sub on_swarm_service_status {
+	
+TRACE( @_ ) 	;
+my $self = shift;
+$self->main->status(shift);
+
+	
+}
+
 
 
 sub task_cancel {
@@ -118,7 +135,7 @@ use Data::Dumper;
 sub send {
 	my ($self,$origin,$message) = @_;
 	my $service = $self->{service};
-	TRACE( Dumper $service ) ;
+	
 	
 	TRACE( 'Sending to task ~ ' . $service ) if DEBUG;
 	# Be careful - we can race our task and send messages to it before it is ready
@@ -132,11 +149,10 @@ sub send {
 	TRACE( "outbound handle $handler" ) if DEBUG;
 	$self->service->tell_child( $handler => $message );
 	
-	# Ugly - provide 'global' loopback here.
-	my $loop = bless $message, 'Padre::Swarm::Message';
-	$loop->{origin} = 'global';
-	$self->on_swarm_service_message( $self->service ,  $loop );
-	
+	# # Ugly - provide 'global' loopback here.
+	# my $loop = bless $message, 'Padre::Swarm::Message';
+	# $loop->{origin} = 'global';
+	# $self->on_swarm_service_message( $self->service ,  $loop );
 	
 	
 }
@@ -253,9 +269,9 @@ SCOPE: {
 		
 		my $service = $self->task_request(
 				task =>'Padre::Plugin::Swarm::Service',
-					owner => $self,
 					on_message => 'on_swarm_service_message',
 					on_finish  => 'on_swarm_service_finish',
+					on_status  => 'on_swarm_service_status',
 		);
 		$self->{service} = $service;
 		$self->connect();
