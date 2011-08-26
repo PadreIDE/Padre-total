@@ -160,6 +160,14 @@ sub send_local {
     
 }
 
+
+sub shutdown_service {
+    my $self = shift;
+    my $reason = shift;
+    $self->{bailout}->send($reason);
+}
+
+
 sub read_task_queue {
     my $self = shift;
     #TRACE( 'Read task queue' );

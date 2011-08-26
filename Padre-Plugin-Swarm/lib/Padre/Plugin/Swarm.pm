@@ -44,11 +44,13 @@ sub connect {
 sub disconnect {
 	my $self = shift;
 
+
+	$self->service->tell_child( 'shutdown_service' => "disabled" );
 	$self->global->event('disable');
 	$self->local->event('disable');
 	
 	# What are the chances either of these work ?
-	$self->task_cancel;
+	#$self->task_cancel;
 
 }
 
