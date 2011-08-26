@@ -166,14 +166,12 @@ sub read_task_queue {
 eval {
     while( my $message = $self->child_inbox ) {
         TRACE( 'Unhandled Incoming message' . Dumper $message ) ; # if DEBUG;
-        if ( $message->[0] eq 'message' ) {
-            shift @$message;
             my ($method,@args) = @$message;
             eval { $self->$method(@args);};
             if ($@) {
                 TRACE( $@ ) ;
             }
-        }
+        
     
     };
     if ( $self->cancelled ) {

@@ -7,6 +7,7 @@ use base qw( Object::Event );
 use Padre::Swarm::Message;
 use AnyEvent::Socket;
 use AnyEvent::Handle;
+use Scalar::Util 'blessed';
 use JSON;
 
 our $VERSION = '0.2';
@@ -100,15 +101,17 @@ sub send {
     my $self = shift;
     my $message = shift;
     if ( threads::shared::is_shared( $message ) ) {
-        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );
-        
+        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );    
         confess "$message , is a shared value";    
     }
     $message->{token} = $self->{token};
     $self->{h}->push_write( json => $message );
     # implement our own loopback ?
-    # something segfaults when I do this???
-    #$self->event('recv', $message );
+    # nasty but fake what the deserializing marshal _would_ do.
+    unless ( blessed $message ) {
+        bless $message, 'Padre::Swarm::Message';   
+    }
+    $self->event('recv', $message );
     
 }
 
