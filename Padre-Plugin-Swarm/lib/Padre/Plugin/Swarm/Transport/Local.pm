@@ -69,6 +69,12 @@ sub send {
 sub readable {
     my $self = shift;
     my $data;
+    unless ( $self->{m} ) {
+        TRACE( 'Multicast handle has gone away!' );
+        return;
+        
+    }
+    
     $self->{m}->recv($data,65535);
     TRACE( "Received data $data") if DEBUG;
     my $message = eval{ $self->_marshal->decode($data) };
@@ -83,10 +89,10 @@ sub readable {
 sub disconnect {
     TRACE( @_ );
     my $self = shift;
-    delete $self->{m};
     if ( $self->{h} ) {
         $self->{h}->destroy;
         delete $self->{h};
+        delete $self->{m};
         
     }       
 }
