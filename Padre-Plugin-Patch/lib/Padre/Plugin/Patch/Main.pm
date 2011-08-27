@@ -3,11 +3,14 @@ package Padre::Plugin::Patch::Main;
 use 5.008;
 use strict;
 use warnings;
-use File::Slurp                       ();
-use Padre::Wx                         ();
-use Padre::Plugin::Patch::FBP::MainFB ();
-use Padre::Logger;
+use File::Slurp ();
+use Padre::Wx   ();
 
+use Padre::Plugin::Patch::FBP::MainFB ();
+use Padre::Current;
+use Padre::Project;
+use Padre::Logger;
+use Data::Printer { caller_info => 1 };
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
@@ -73,7 +76,13 @@ sub process_clicked {
 	my ( $file1, $file2 );
 
 	# my @items      = $self->current_files();
+
+		# if ( $self->against->GetStringSelection() eq 'SVN' )
+	# {
+		# @file1_list = $self->current_files('SVN');
+	# } 
 	my @file1_list = $self->current_files('saved');
+
 	my @file2_list = filelist_type($self);
 
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
@@ -160,6 +169,7 @@ sub current_files {
 	my $notebook     = $current->notebook;
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
+	my @file_vcs = map { $_->project->vcs } Padre::Current->main->documents;
 
 	# create a bucket for open file info, as only a current file bucket exist
 	for ( 0 .. $self->{tab_cardinality} ) {
@@ -168,6 +178,7 @@ sub current_files {
 				'URL'      => $label[$_][1],
 				'filename' => $notebook->GetPageText($_),
 				'changed'  => 0,
+				'vcs'      => $file_vcs[$_],
 			},
 		);
 
@@ -176,6 +187,9 @@ sub current_files {
 			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
 	}
+
+	# require Padre::Project;
+	p $self->{open_file_info};
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
@@ -203,6 +217,15 @@ sub current_files {
 		return @display_names;
 	}
 
+	# TODO sort out error
+	if ( eval { $request_list eq 'SVN' } ) {
+		for ( 0 .. $self->{tab_cardinality} ) {
+			if ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' ) {
+				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
+			}
+		}
+		return @display_names;
+	}
 	return;
 }
 
