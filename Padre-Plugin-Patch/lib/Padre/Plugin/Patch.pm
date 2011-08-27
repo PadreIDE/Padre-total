@@ -22,6 +22,7 @@ sub padre_interfaces {
 		'Padre::Wx::Main'       => '0.89',
 		'Padre::Wx::Role::Main' => '0.89',
 		'Padre::Logger'         => '0.89',
+		'Padre::Current'        => '0.90',
 	);
 }
 
@@ -45,9 +46,7 @@ sub menu_plugins {
 		$main, $item,
 		sub {
 			local $@;
-			eval {
-				$self->load_dialog_main($_[0]);
-			};
+			eval { $self->load_dialog_main( $_[0] ); };
 		},
 	);
 

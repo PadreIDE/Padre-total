@@ -3,14 +3,12 @@ package Padre::Plugin::Patch::Main;
 use 5.008;
 use strict;
 use warnings;
-use File::Slurp ();
-use Padre::Wx   ();
-
+use File::Slurp                       ();
+use Padre::Wx                         ();
 use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
-use Padre::Project;
 use Padre::Logger;
-use Data::Printer { caller_info => 1 };
+# use Data::Printer { caller_info => 1 };
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
@@ -42,18 +40,18 @@ sub set_up {
 	my $current_tab_title = $main->current->title;
 
 	# SetSelection should be current file
-	my $selection;
+	# my $selection;
 	foreach ( 0 .. $self->{tab_cardinality} ) {
 
 		# TODO sort out error
 		if ( eval { $file1_list[$_] eq $current_tab_title } ) {
-			$selection = $_;
+			$self->{selection} = $_;
 		}
 	}
 
 	$self->file1->Clear;
 	$self->file1->Append( \@file1_list );
-	$self->file1->SetSelection($selection);
+	$self->file1->SetSelection($self->{selection});
 
 	my @file2_list = filelist_type($self);
 
@@ -77,10 +75,6 @@ sub process_clicked {
 
 	# my @items      = $self->current_files();
 
-		# if ( $self->against->GetStringSelection() eq 'SVN' )
-	# {
-		# @file1_list = $self->current_files('SVN');
-	# } 
 	my @file1_list = $self->current_files('saved');
 
 	my @file2_list = filelist_type($self);
@@ -149,10 +143,14 @@ sub on_against {
 	my $self = shift;
 	if ( $self->against->GetStringSelection() eq 'File' ) {
 		$self->file2->Enable(1);
-	} else {
+	} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 
-		# SVN
+		# SVN only display files that are part of a SVN
 		$self->file2->Enable(0);
+		my @file1_list = $self->current_files('SVN');
+		$self->file1->Clear;
+		$self->file1->Append( \@file1_list );
+		$self->file1->SetSelection($self->{selection});
 	}
 	return;
 }
@@ -169,6 +167,8 @@ sub current_files {
 	my $notebook     = $current->notebook;
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
+	
+	# thanks Alias
 	my @file_vcs = map { $_->project->vcs } Padre::Current->main->documents;
 
 	# create a bucket for open file info, as only a current file bucket exist
@@ -188,8 +188,8 @@ sub current_files {
 		}
 	}
 
-	# require Padre::Project;
-	p $self->{open_file_info};
+	# nb enable Data::Printer above to use
+	# p $self->{open_file_info};
 
 	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
 
@@ -411,7 +411,7 @@ Patch a single file, in the editor with a patch/diff file that is also open.
 
 Diff between two open files, the resulting patch file will be in Unified form.
 
-Diff a single file to svn, the resulting patch file will be in Unified form.
+Diff a single file to svn, only display files that are part of an SVN already, the resulting patch file will be in Unified form.
 
 All results will be a new Tab.
 
