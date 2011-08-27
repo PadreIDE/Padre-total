@@ -8,6 +8,7 @@ use Padre::Wx                         ();
 use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
 use Padre::Logger;
+
 # use Data::Printer { caller_info => 1 };
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
@@ -51,7 +52,7 @@ sub set_up {
 
 	$self->file1->Clear;
 	$self->file1->Append( \@file1_list );
-	$self->file1->SetSelection($self->{selection});
+	$self->file1->SetSelection( $self->{selection} );
 
 	my @file2_list = filelist_type($self);
 
@@ -73,10 +74,7 @@ sub process_clicked {
 
 	my ( $file1, $file2 );
 
-	# my @items      = $self->current_files();
-
 	my @file1_list = $self->current_files('saved');
-
 	my @file2_list = filelist_type($self);
 
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
@@ -141,17 +139,26 @@ sub on_action {
 #######
 sub on_against {
 	my $self = shift;
-	if ( $self->against->GetStringSelection() eq 'File' ) {
+	my @file1_list;
+	
+	if ( $self->against->GetStringSelection() eq 'File-2' ) {
+		
+		# show saved files only
 		$self->file2->Enable(1);
-	} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
+		@file1_list = $self->current_files('saved');
+	}
+	elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 
 		# SVN only display files that are part of a SVN
 		$self->file2->Enable(0);
-		my @file1_list = $self->current_files('SVN');
-		$self->file1->Clear;
-		$self->file1->Append( \@file1_list );
-		$self->file1->SetSelection($self->{selection});
+		@file1_list = $self->current_files('SVN');
+
 	}
+	
+	$self->file1->Clear;
+	$self->file1->Append( \@file1_list );
+	$self->file1->SetSelection( $self->{selection} );
+	
 	return;
 }
 
@@ -167,7 +174,7 @@ sub current_files {
 	my $notebook     = $current->notebook;
 	my @label        = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
-	
+
 	# thanks Alias
 	my @file_vcs = map { $_->project->vcs } Padre::Current->main->documents;
 
@@ -220,7 +227,9 @@ sub current_files {
 	# TODO sort out error
 	if ( eval { $request_list eq 'SVN' } ) {
 		for ( 0 .. $self->{tab_cardinality} ) {
-			if ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' ) {
+			if ( ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
+				&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) )
+			{
 				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
 			}
 		}
