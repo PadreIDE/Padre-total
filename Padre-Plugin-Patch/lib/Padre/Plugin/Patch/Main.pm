@@ -54,7 +54,7 @@ sub set_up {
 	$self->file1->Append( \@file1_list );
 	$self->file1->SetSelection( $self->{selection} );
 
-	my @file2_list = filelist_type($self);
+	my @file2_list = file2_list_type($self);
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list );
@@ -75,7 +75,7 @@ sub process_clicked {
 	my ( $file1, $file2 );
 
 	my @file1_list = $self->current_files('saved');
-	my @file2_list = filelist_type($self);
+	my @file2_list = file2_list_type($self);
 
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
 	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
@@ -240,45 +240,35 @@ sub current_files {
 
 
 #######
-# Method make_patch_diff
+# Composed Method file2_list_type
 #######
-sub make_patch_diff {
-	my $self       = shift;
-	my $file1_name = shift;
-	my $file2_name = shift;
-	my $main       = $self->main;
+sub file2_list_type {
+	my $self = shift;
 
-	my $file1_url = filename_url( $self, $file1_name );
-	my $file2_url = filename_url( $self, $file2_name );
-
-	if ( -e $file1_url ) {
-		TRACE("found $file1_url: $file1_url") if DEBUG;
-	}
-
-	if ( -e $file2_url ) {
-		TRACE("found $file2_url: $file2_url") if DEBUG;
-	}
-
-	if ( -e $file1_url && -e $file2_url ) {
-		require Text::Diff;
-		my $our_diff;
-		eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ); };
-		TRACE($our_diff) if DEBUG;
-
-		my $patch_file = $file1_url . '.patch';
-
-		File::Slurp::write_file( $patch_file, $our_diff );
-		TRACE("writing file: $patch_file") if DEBUG;
-
-		$main->setup_editor($patch_file);
-		$main->info( Wx::gettext("Diff Succesful, you should see a new tab in editor called $patch_file") );
+	if ( $self->{action_request} eq 'Patch' ) {
+		return $self->current_files('patch');
 	} else {
-		$main->info( Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
+		return $self->current_files('saved');
 	}
 
 	return;
 }
 
+#######
+# Composed Method filename_url
+#######
+sub filename_url {
+	my $self     = shift;
+	my $filename = shift;
+	
+	# given tab name get url of file
+	for ( 0 .. $self->{tab_cardinality} ) {
+		if ( $self->{open_file_info}->{$_}->{'filename'} eq $filename ) {
+			return $self->{open_file_info}->{$_}->{'URL'};
+		}
+	}
+	return;
+}
 
 ########
 # Method apply_patch
@@ -325,38 +315,45 @@ sub apply_patch {
 	return;
 }
 
-
 #######
-# Composed Method filename_url
+# Method make_patch_diff
 #######
-sub filename_url {
-	my $self     = shift;
-	my $filename = shift;
+sub make_patch_diff {
+	my $self       = shift;
+	my $file1_name = shift;
+	my $file2_name = shift;
+	my $main       = $self->main;
 
-	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $self->{open_file_info}->{$_}->{'filename'} eq $filename ) {
-			return $self->{open_file_info}->{$_}->{'URL'};
-		}
+	my $file1_url = filename_url( $self, $file1_name );
+	my $file2_url = filename_url( $self, $file2_name );
+
+	if ( -e $file1_url ) {
+		TRACE("found $file1_url: $file1_url") if DEBUG;
 	}
-	return;
-}
 
+	if ( -e $file2_url ) {
+		TRACE("found $file2_url: $file2_url") if DEBUG;
+	}
 
-#######
-# Composed Method filelist_type
-#######
-sub filelist_type {
-	my $self = shift;
+	if ( -e $file1_url && -e $file2_url ) {
+		require Text::Diff;
+		my $our_diff;
+		eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ); };
+		TRACE($our_diff) if DEBUG;
 
-	if ( $self->{action_request} eq 'Patch' ) {
-		return $self->current_files('patch');
+		my $patch_file = $file1_url . '.patch';
+
+		File::Slurp::write_file( $patch_file, $our_diff );
+		TRACE("writing file: $patch_file") if DEBUG;
+
+		$main->setup_editor($patch_file);
+		$main->info( Wx::gettext("Diff Succesful, you should see a new tab in editor called $patch_file") );
 	} else {
-		return $self->current_files('saved');
+		$main->info( Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
 	}
 
 	return;
 }
-
 
 #######
 # Method make_patch_svn
@@ -392,10 +389,6 @@ sub make_patch_svn {
 		$main->setup_editor($patch_file);
 		$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 	}
-
-	# else {
-	# $main->info( Wx::gettext('Oops, might help if you install SVN::Class') );
-	# }
 
 	return;
 }
@@ -467,7 +460,7 @@ NB only works if you have C<SVN::Class> installed.
 A convenience method to generate a patch/diff file from a selected file and svn if applicable,
 ie file has been checked out.
 
-=item filelist_type
+=item file2_list_type
 
 composed method
 
