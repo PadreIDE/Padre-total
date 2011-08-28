@@ -8,7 +8,6 @@ use Padre::Wx                         ();
 use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
 use Padre::Logger;
-
 # use Data::Printer { caller_info => 1 };
 our $VERSION = '0.03';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
@@ -140,25 +139,23 @@ sub on_action {
 sub on_against {
 	my $self = shift;
 	my @file1_list;
-	
+
 	if ( $self->against->GetStringSelection() eq 'File-2' ) {
-		
+
 		# show saved files only
 		$self->file2->Enable(1);
 		@file1_list = $self->current_files('saved');
-	}
-	elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
+		$self->file1->Clear;
+		$self->file1->Append( \@file1_list );
+		$self->file1->SetSelection( $self->{selection} );
+
+	} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 
 		# SVN only display files that are part of a SVN
 		$self->file2->Enable(0);
-		@file1_list = $self->current_files('SVN');
-
+		file1_list_svn($self);
 	}
-	
-	$self->file1->Clear;
-	$self->file1->Append( \@file1_list );
-	$self->file1->SetSelection( $self->{selection} );
-	
+
 	return;
 }
 
@@ -224,17 +221,6 @@ sub current_files {
 		return @display_names;
 	}
 
-	# TODO sort out error
-	if ( eval { $request_list eq 'SVN' } ) {
-		for ( 0 .. $self->{tab_cardinality} ) {
-			if ( ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
-				&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) )
-			{
-				push @display_names, $self->{open_file_info}->{$_}->{'filename'};
-			}
-		}
-		return @display_names;
-	}
 	return;
 }
 
@@ -255,12 +241,34 @@ sub file2_list_type {
 }
 
 #######
+# Composed Method file1_list_svn
+#######
+sub file1_list_svn {
+	my $self = shift;
+	my @file1_list_svn;
+
+	for ( 0 .. $self->{tab_cardinality} ) {
+		if ( ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
+			&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) )
+		{
+			push @file1_list_svn, $self->{open_file_info}->{$_}->{'filename'};
+		}
+	}
+
+	$self->file1->Clear;
+	$self->file1->Append( \@file1_list_svn );
+	$self->file1->SetSelection( $self->{selection} );
+	
+	return;
+}
+
+#######
 # Composed Method filename_url
 #######
 sub filename_url {
 	my $self     = shift;
 	my $filename = shift;
-	
+
 	# given tab name get url of file
 	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $self->{open_file_info}->{$_}->{'filename'} eq $filename ) {
