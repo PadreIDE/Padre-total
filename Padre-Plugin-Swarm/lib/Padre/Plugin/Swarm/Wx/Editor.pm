@@ -91,9 +91,12 @@ sub editor_enable {
 	my ($self,$editor,$document) = @_;
 	return unless $document && $document->filename;
 	
-	Wx::Event::EVT_STC_MODIFIED( $editor , -1,  
-            sub { $self->on_editor_modified(@_) }
-        );
+	
+	# really we should only track this on editors that other swarmers have
+	# taken an interest in
+	#Wx::Event::EVT_STC_MODIFIED( $editor , -1,  
+        #    sub { $self->on_editor_modified(@_) }
+        #);
 
 	$self->universe->send(
 		{ 

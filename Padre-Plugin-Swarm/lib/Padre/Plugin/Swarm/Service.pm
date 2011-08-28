@@ -28,11 +28,16 @@ sub run {
     my $self = shift;
     
     require Scalar::Util;
+    
+    
+    # when AnyEvent detects Wx it falls back to POE (erk).
+    # , tricking it into using pureperl seems to work.
     $ENV{PERL_ANYEVENT_MODEL}='Perl';
     $ENV{PERL_ANYEVENT_VERBOSE} = 8;
     require AnyEvent;
     require Padre::Plugin::Swarm::Transport::Global;
     require Padre::Plugin::Swarm::Transport::Local;
+    
     my $rself = $self;
     Scalar::Util::weaken( $self );
     TRACE( " AnyEvent loaded " );
@@ -173,7 +178,6 @@ sub read_task_queue {
     #TRACE( 'Read task queue' );
 eval {
     while( my $message = $self->child_inbox ) {
-        TRACE( 'Unhandled Incoming message' . Dumper $message ) ; # if DEBUG;
             my ($method,@args) = @$message;
             eval { $self->$method(@args);};
             if ($@) {
