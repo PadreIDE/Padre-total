@@ -9,8 +9,8 @@ use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
 use Padre::Logger;
 
-use Data::Printer { caller_info => 1 };
-our $VERSION = '0.03';
+# use Data::Printer { caller_info => 1 };
+our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
 
@@ -23,6 +23,7 @@ sub new {
 
 	$self->CenterOnParent;
 	$self->{action_request} = 'Patch';
+	$self->{selection}      = 0;
 	$self->set_up;
 	return $self;
 }
@@ -34,35 +35,27 @@ sub new {
 sub set_up {
 	my $self = shift;
 	my $main = $self->main;
-	
+
+	# generate open file bucket
 	current_files($self);
+
+	# display default saved file lists
 	file_lists_saved($self);
-	# my @file1_list = $self->current_files('saved');
-	my @file1_list = @{$self->{file1_list_ref}};
-	# SetSelection should be current file
-	my $current_tab_title = $main->current->title;
 
 	# SetSelection should be current file
-	# my $selection;
 	foreach ( 0 .. $self->{tab_cardinality} ) {
 
-		# TODO sort out error
-		if ( eval { @{$self->{file1_list_ref}}[$_] eq $current_tab_title } ) {
+		# TODO sort out error, Alias why is this causing problems $main->current->title
+		if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
 			$self->{selection} = $_;
 		}
 	}
 
-	# $self->file1->Clear;
-	# $self->file1->Append( \@file1_list );
-	# $self->file1->SetSelection( $self->{selection} );
+	# reload file list with current selection
 	file_lists_saved($self);
-	# file2_list_patch($self);
-	file2_list_type($self);
-	# my @file2_list = file2_list_type($self);
 
-	# 	$self->file2->Clear;
-	# $self->file2->Append( \@file2_list );
-	# $self->file2->SetSelection(0);
+	# display correct file-2 list
+	file2_list_type($self);
 
 	$self->against->SetSelection(0);
 
@@ -78,14 +71,8 @@ sub process_clicked {
 
 	my ( $file1, $file2 );
 
-	# my @file1_list = $self->current_files('saved');
-	# my @file2_list = file2_list_type($self);
-	p @{$self->{file1_list_ref}};
-	my @file1_list = @{$self->{file1_list_ref}};
-	p @file1_list;
-	my @file2_list = @{$self->{file2_list_ref}};
-	# file2_list_patch($self);
-	# my @file2_list = $self->{file2_list};
+	my @file1_list = @{ $self->{file1_list_ref} };
+	my @file2_list = @{ $self->{file2_list_ref} };
 
 	$file1 = $file1_list[ $self->file1->GetSelection() ];
 	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
@@ -128,7 +115,6 @@ sub on_action {
 		# Diff
 		$self->{action_request} = 'Diff';
 		$self->set_up;
-		# file_lists_saved($self);
 		$self->against->Enable(1);
 		$self->file2->Enable(1);
 
@@ -156,10 +142,6 @@ sub on_against {
 
 		# show saved files only
 		$self->file2->Enable(1);
-		# @file1_list = $self->current_files('saved');
-		# $self->file1->Clear;
-		# $self->file1->Append( \@file1_list );
-		# $self->file1->SetSelection( $self->{selection} );
 		file_lists_saved($self);
 
 	} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
@@ -177,12 +159,11 @@ sub on_against {
 # Method current_files
 #######
 sub current_files {
-	my $self         = shift;
-	# my $request_list = shift;
-	my $main         = $self->main;
-	my $current      = $main->current;
-	my $notebook     = $current->notebook;
-	my @label        = $notebook->labels;
+	my $self     = shift;
+	my $main     = $self->main;
+	my $current  = $main->current;
+	my $notebook = $current->notebook;
+	my @label    = $notebook->labels;
 	$self->{tab_cardinality} = scalar(@label) - 1;
 
 	# thanks Alias
@@ -208,32 +189,6 @@ sub current_files {
 	# nb enable Data::Printer above to use
 	# p $self->{open_file_info};
 
-	my @order = sort { $label[$a][0] cmp $label[$b][0] } ( 0 .. $#label );
-
-	my @display_names = ();
-
-	# TODO sort out error
-	# if ( $request_list eq 'saved' ) {
-		# for ( 0 .. $self->{tab_cardinality} ) {
-			# unless ( $self->{open_file_info}->{$_}->{'changed'}
-				# || $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ )
-			# {
-				# push @display_names, $self->{open_file_info}->{$_}->{'filename'};
-			# }
-		# }
-		# return @display_names;
-	# }
-
-	# TODO sort out error
-	# if ( eval { $request_list eq 'patch' } ) {
-		# for ( 0 .. $self->{tab_cardinality} ) {
-			# if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
-				# push @display_names, $self->{open_file_info}->{$_}->{'filename'};
-			# }
-		# }
-		# return @display_names;
-	# }
-
 	return;
 }
 
@@ -245,11 +200,11 @@ sub file2_list_type {
 	my $self = shift;
 
 	if ( $self->{action_request} eq 'Patch' ) {
-		# return $self->current_files('patch');
+
 		# update File-2 = *.patch
 		file2_list_patch($self);
 	} else {
-		# return $self->current_files('saved');
+
 		# File-1 = File-2 = saved files
 		file_lists_saved($self);
 	}
@@ -263,23 +218,25 @@ sub file_lists_saved {
 	my $self = shift;
 	my @file_lists_saved;
 	for ( 0 .. $self->{tab_cardinality} ) {
-			unless ( $self->{open_file_info}->{$_}->{'changed'}
-				|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ )
-			{
-				push @file_lists_saved, $self->{open_file_info}->{$_}->{'filename'};
-			}
-		}	
-		
+		unless ( $self->{open_file_info}->{$_}->{'changed'}
+			|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ )
+		{
+			push @file_lists_saved, $self->{open_file_info}->{$_}->{'filename'};
+		}
+	}
+	
+	TRACE("file_lists_saved: @file_lists_saved") if DEBUG;
+	
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->file1->SetSelection( $self->{selection} );
 	$self->{file1_list_ref} = \@file_lists_saved;
-	
+
 	$self->file2->Clear;
 	$self->file2->Append( \@file_lists_saved );
 	$self->file2->SetSelection( $self->{selection} );
 	$self->{file2_list_ref} = \@file_lists_saved;
-	
+
 	return;
 }
 
@@ -294,12 +251,14 @@ sub file2_list_patch {
 			push @file2_list_patch, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
-
+	
+	TRACE("file2_list_patch: @file2_list_patch") if DEBUG;
+	
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list_patch );
 	$self->file2->SetSelection(0);
 	$self->{file2_list_ref} = \@file2_list_patch;
-	
+
 	return;
 }
 
@@ -318,17 +277,14 @@ sub file1_list_svn {
 			push @file1_list_svn, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
-	
+
 	TRACE("file1_list_svn: @file1_list_svn") if DEBUG;
 
 	$self->file1->Clear;
-	$self->file1->Append( \@file1_list_svn );	
+	$self->file1->Append( \@file1_list_svn );
 	$self->file1->SetSelection( $self->{selection} );
 	$self->{file1_list_ref} = \@file1_list_svn;
-	
-	p @file1_list_svn;
-	p $self->{file1_list_ref};
-	p @{$self->{file1_list_ref}};
+
 	return;
 }
 
