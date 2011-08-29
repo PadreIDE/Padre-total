@@ -171,10 +171,14 @@ sub new {
         print "EVT_STC_INDICATOR_RELEASE triggered\n";
     } );
 
+    $self->AnnotationClearAll;
+    $self->AnnotationSetText(1, 'Perl rocks!');
+    $self->AnnotationSetVisible( 2 );
+
     $self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
     $self->SetIndicatorCurrent(0);
     $self->IndicatorFillRange(0, 20);
-    
+
     return $self;
 }
 
