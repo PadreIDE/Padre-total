@@ -163,6 +163,18 @@ sub new {
     }
     $self->SetFocus;
 
+    Wx::Event::EVT_STC_INDICATOR_CLICK( $self, $self, sub {
+        print "EVT_STC_INDICATOR_CLICK triggered\n";
+    } );
+
+    Wx::Event::EVT_STC_INDICATOR_RELEASE( $self, $self, sub {
+        print "EVT_STC_INDICATOR_RELEASE triggered\n";
+    } );
+
+    $self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
+    $self->SetIndicatorCurrent(0);
+    $self->IndicatorFillRange(0, 20);
+    
     return $self;
 }
 
