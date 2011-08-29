@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.24  2011.8.29
+    - Released 0.23_01 as stable 0.24 (AZAWAWI)
+
 0.23_01  2011.8.21
     - Updated the string variable interpolation Perl lexer to the latest (KHMAN, AZAWAWI)
 
