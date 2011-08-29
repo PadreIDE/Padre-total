@@ -157,8 +157,7 @@ sub on_recv {
 	
 	
 	my $handler = 'accept_' . $message->type;
-	TRACE( $handler ) ;# if DEBUG;
-        if ( $self->can( $handler ) ) {
+	if ( $self->can( $handler ) ) {
             eval {
                 $self->$handler($message);
             };
@@ -172,7 +171,6 @@ sub on_recv {
 ## TODO Perform less revolting redraw when things change
 sub accept_promote {
 	my ($self,$message) = @_;
-	TRACE( $message ) ;
 	if ( $message->{resource} ) {
 		$self->refresh;
 	}

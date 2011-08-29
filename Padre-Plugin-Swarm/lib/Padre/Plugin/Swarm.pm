@@ -109,7 +109,6 @@ sub on_swarm_service_message {
 }
 
 sub on_swarm_service_running {
-	TRACE( @_ );
 	my ($self,$service) = @_;
 	$self->{service} = $service;
 	
@@ -117,14 +116,14 @@ sub on_swarm_service_running {
 }
 
 sub on_swarm_service_finish {
+	TRACE( "Service finished?? @_" ) if DEBUG;
 	my $self = shift;
-	TRACE( "Service finished?? @_" ) ;
 }
 
 
 sub on_swarm_service_status {
 	
-TRACE( @_ ) 	;
+TRACE( @_ )  if DEBUG;
 my $self = shift;
 $self->main->status(shift);
 
@@ -158,7 +157,7 @@ sub send {
 	}
 	
 	my $handler = 'send_'.$origin;
-	TRACE( "outbound handle $handler" ) ;#if DEBUG;
+	TRACE( "outbound handle $handler" ) if DEBUG;
 	# Disable this until Task 3.? properly supports bi-directional communication
 	#$self->service->tell_child( $handler => $message );
 	

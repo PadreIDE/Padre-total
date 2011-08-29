@@ -6,8 +6,48 @@ use IO::Handle;
 use Padre::Logger;
 use Padre::Swarm::Message;
 use Data::Dumper;
+use Socket;
 use Storable;
 use POSIX qw(:errno_h :fcntl_h);
+
+
+{
+    my %sockets = ();
+    my $socketid = 1;
+    sub _new_socketpair {
+        my $self = shift;
+        my $id = $socketid++;
+        
+        
+        my ($read,$write) = ( IO::Handle->new() , IO::Handle->new() );
+        socketpair( $read, $write, AF_UNIX, SOCK_STREAM, PF_UNSPEC ) or die $!;
+	binmode $read;	
+        binmode $write;
+        my $fd_read = $read->fileno;
+        $sockets{$id} = [ $read, $write ];
+        $self->{_inbound_file_descriptor} = $fd_read;
+        return $self->{socketid}= $id;
+    }
+    
+    
+    sub _cleanup_socketid {
+        my $self = shift;
+        my $id = $self->{socketid};
+        my ($read,$write) = @{ delete $sockets{$id} };
+        undef $read;
+        undef $write;
+        return ();
+    }
+
+    
+    sub _get_socketpair {
+        my $self = shift;
+        my $id = $self->{socketid};
+        return @{ $sockets{$id} };
+    }
+    
+}
+
 
 sub new {
 	shift->SUPER::new(
@@ -18,12 +58,31 @@ sub new {
 	);
 }
 
-sub notify {
-    my ($self,$handler,$message) = @_;
-    TRACE( "Notify slave task '$handler' , $message" ) if DEBUG;
-    $self->message( $handler => $message );
+# sub notify {
+    # my ($self,$handler,$message) = @_;
+    # TRACE( "Notify slave task '$handler' , $message" ) if DEBUG;
+    # $self->message( $handler => $message );
     
+# # }
+
+
+sub notify {
+    my $self = shift;
+    my $handler = shift;
+    my $message = shift;
+    
+    eval {
+        my $data = Storable::freeze( [ $handler => $message ] );
+        TRACE( "Transmit storable encoded envelope size=".length($data) );
+        # Cargo from AnyEvent::Handle, register_write_type =>'storable'
+        my ($read,$write) = $self->_get_socketpair;
+        $write->syswrite( pack "w/a*", $data );
+    };
+    if ($@) {
+        TRACE( "Failed to send message down parent_socket , $@" );
+    }
 }
+
 
 ############## TASK METHODS #######################
 
@@ -174,13 +233,22 @@ sub _teardown_connections {
 }
 
 sub finish {
-	$_[0]->{finish}++;
 	TRACE( "Finished called" ) if DEBUG;
+	
+	my $self = shift;
+        $self->_cleanup_socketid($self->{socketid});
+        
+        
+        $self->{finish}++;
+	
 	#$_[0]->{bailout}->(); Damnit - now I am confused is this a parent or child method?????
 	return 1;
 }
 
 sub prepare {
+        my $self = shift;
+        $self->_new_socketpair;# mutator , need to know.
+        
 	$_[0]->{prepare}++;
 	return 1;
 }

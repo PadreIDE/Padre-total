@@ -118,7 +118,7 @@ sub on_recv {
 
 sub on_connect {
 	my ($self) = shift;
-	TRACE( "Swarm transport connected" );
+	TRACE( "Swarm transport connected" ) if DEBUG;
 	$self->send(
 		{ type=>'announce', service=>'swarm' }
 	);
