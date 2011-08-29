@@ -1488,6 +1488,10 @@ double stc_constant( const char* name, int arg )
         r( wxEVT_STC_HOTSPOT_CLICK );
         r( wxEVT_STC_HOTSPOT_DCLICK );
         r( wxEVT_STC_CALLTIP_CLICK );
+        r( wxEVT_STC_INDICATOR_CLICK );
+        r( wxEVT_STC_INDICATOR_RELEASE );
+        r( wxEVT_STC_AUTOCOMP_CANCELLED );
+        r( wxEVT_STC_AUTOCOMP_DELETED );
         break;
     case 'T':
         r( wxSTC_TIME_FOREVER );
