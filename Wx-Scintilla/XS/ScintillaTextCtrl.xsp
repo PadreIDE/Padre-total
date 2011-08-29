@@ -240,6 +240,65 @@ wxScintillaTextCtrl::IndicatorGetUnder( indicator )
     RETVAL = THIS->IndicatorGetUnder( indicator );
 
 void
+wxScintillaTextCtrl::SetIndicatorCurrent( indicator )
+    int indicator
+  CODE:
+    THIS->SetIndicatorCurrent( indicator);
+
+int
+wxScintillaTextCtrl::GetIndicatorCurrent()
+
+void
+wxScintillaTextCtrl::SetIndicatorValue( value )
+    int value
+  CODE:
+    THIS->SetIndicatorValue( value );
+
+int
+wxScintillaTextCtrl::GetIndicatorValue()
+
+void
+wxScintillaTextCtrl::IndicatorFillRange( position, fillLength )
+    int position
+    int fillLength
+  CODE:
+    THIS->IndicatorFillRange(position, fillLength);
+
+void
+wxScintillaTextCtrl::IndicatorClearRange(position, clearLength)
+    int position
+    int clearLength
+  CODE:
+    THIS->IndicatorClearRange(position, clearLength);
+
+int
+wxScintillaTextCtrl::IndicatorAllOnFor(position)
+    int position
+  CODE:
+    RETVAL = THIS->IndicatorAllOnFor(position);
+
+int
+wxScintillaTextCtrl::IndicatorValueAt(indicator, position)
+    int indicator
+    int position
+  CODE:
+    RETVAL = THIS->IndicatorValueAt( indicator, position);
+
+int
+wxScintillaTextCtrl::IndicatorStart(indicator, position)
+    int indicator
+    int position
+  CODE:
+    RETVAL = THIS->IndicatorStart( indicator, position);
+
+int
+wxScintillaTextCtrl::IndicatorEnd(indicator, position)
+    int indicator
+    int position
+  CODE:
+    RETVAL = THIS->IndicatorEnd( indicator, position);
+
+void
 wxScintillaTextCtrl::SetWhitespaceForeground( useSetting, fore )
     bool useSetting
     wxColour* fore
