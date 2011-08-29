@@ -1,7 +1,8 @@
 Revision history for Wx-Scintilla
 
 0.25_01 TBA
-
+    - Deprecate IndicatorSetStyle and IndicatorGetStyle. Please use Scintilla's Modern indicators.
+        http://www.scintilla.org/ScintillaDoc.html#SCI_INDICATORFILLRANGE
 
 0.24  2011.8.29
     - Released 0.23_01 as stable 0.24 (AZAWAWI)
