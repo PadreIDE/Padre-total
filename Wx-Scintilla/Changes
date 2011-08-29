@@ -1,8 +1,6 @@
 Revision history for Wx-Scintilla
 
 0.25_01 TBA
-    - Deprecate IndicatorSetStyle and IndicatorGetStyle. Please use Scintilla's modern indicators.
-        http://www.scintilla.org/ScintillaDoc.html#SCI_INDICATORFILLRANGE (AZAWAWI)
     - Exposed wxEVT_STC_INDICATOR_CLICK, wxEVT_STC_INDICATOR_RELEASE,
         wxEVT_STC_AUTOCOMP_CANCELLED and wxEVT_STC_AUTOCOMP_CHAR_DELETED events (AZAWAWI)
     - Cleaned up the source code from unused SWIG defines (AZAWAWI)

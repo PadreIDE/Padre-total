@@ -92,11 +92,6 @@ static wxColour wxColourFromSpec(const wxString& spec) {
         return wxColour(spec);
 }
 
-// Warn about deprecated API
-static void deprecate(const char* oldUsage, const char* newUsage) {
-    printf("%s is deprecated. Please use %s\n", oldUsage, newUsage);
-}
-
 //----------------------------------------------------------------------
 
 DEFINE_EVENT_TYPE( wxEVT_STC_CHANGE );
@@ -921,14 +916,12 @@ void wxScintillaTextCtrl::EndUndoAction()
 // Set an indicator to plain, squiggle or TT.
 void wxScintillaTextCtrl::IndicatorSetStyle(int indic, int style)
 {
-    deprecate("IndicatorSetStyle", "Modern Indicators");
     SendMsg(2080, indic, style);
 }
 
 // Retrieve the style of an indicator.
 int wxScintillaTextCtrl::IndicatorGetStyle(int indic)
 {
-    deprecate("IndicatorGetStyle", "Modern Indicators");
     return SendMsg(2081, indic, 0);
 }
 
