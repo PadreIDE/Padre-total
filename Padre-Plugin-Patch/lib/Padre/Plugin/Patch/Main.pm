@@ -43,16 +43,16 @@ sub set_up {
 	file_lists_saved($self);
 
 	# SetSelection should be current file
-	foreach ( 0 .. $self->{tab_cardinality} ) {
+	# foreach ( 0 .. $self->{tab_cardinality} ) {
 
-		# TODO sort out error, Alias why is this causing problems $main->current->title
-		if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
-			$self->{selection} = $_;
-		}
-	}
+# # 		# TODO sort out error, Alias why is this causing problems $main->current->title
+		# if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
+			# $self->{selection} = $_;
+		# }
+	# }
 
 	# reload file list with current selection
-	file_lists_saved($self);
+	# file_lists_saved($self);
 
 	# display correct file-2 list
 	file2_list_type($self);
@@ -229,8 +229,10 @@ sub file_lists_saved {
 	
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
-	$self->file1->SetSelection( $self->{selection} );
 	$self->{file1_list_ref} = \@file_lists_saved;
+	set_selection($self);
+	$self->file1->SetSelection( $self->{selection} );
+	# $self->{file1_list_ref} = \@file_lists_saved;
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file_lists_saved );
@@ -282,9 +284,28 @@ sub file1_list_svn {
 
 	$self->file1->Clear;
 	$self->file1->Append( \@file1_list_svn );
-	$self->file1->SetSelection( $self->{selection} );
 	$self->{file1_list_ref} = \@file1_list_svn;
+	set_selection($self);
+	$self->file1->SetSelection( $self->{selection} );
+	# $self->{file1_list_ref} = \@file1_list_svn;
 
+	return;
+}
+#######
+# Composed Method set_selection
+#######
+sub set_selection {
+	my $self = shift;
+	my $main = $self->main;
+	
+	# SetSelection should be current file
+	foreach ( 0 .. $self->{tab_cardinality} ) {
+
+		# TODO sort out error, Alias why is this causing problems $main->current->title
+		if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
+			$self->{selection} = $_;
+		}
+	}
 	return;
 }
 
