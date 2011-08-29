@@ -3,6 +3,8 @@ package Padre::Plugin::Swarm;
 use 5.008;
 use strict;
 use warnings;
+use Socket;
+use IO::Handle;
 use File::Spec      ();
 use Padre::Constant ();
 use Padre::Wx       ();
@@ -32,10 +34,6 @@ use Class::XSAccessor {
 sub connect {
 	my $self = shift;
 
-	# For now - use global,
-	#  could be Padre::Plugin::Swarm::Transport::Local::Multicast
-	#   based on preferences
-	
 	$self->global->event('enable');
 	$self->local->event('enable');
 	
@@ -50,7 +48,7 @@ sub disconnect {
 	$self->local->event('disable');
 	
 	# What are the chances either of these work ?
-	#$self->task_cancel;
+	$self->task_cancel;
 
 }
 
@@ -65,6 +63,8 @@ sub on_swarm_service_message {
 	my $message = shift;
 
 
+	# Puke about this as ': shared' should only be applied to the storable data
+	#  as it is moved between threads. Decoded message should NOT be :shared
 	if ( threads::shared::is_shared( $message ) ) {
 		TRACE('Parent RECV : shared ??? ' . Dumper $message );
 		confess 'got : shared $message';
@@ -73,6 +73,7 @@ sub on_swarm_service_message {
 	unless ( _INVOCANT($message) ) {
 		confess 'unblessed message ' . Dumper $message;
 	}
+	# do I still need this ? 
 	$self->service($service);
 	
 	# TODO can i use 'SWARM' instead?
@@ -106,6 +107,15 @@ sub on_swarm_service_message {
 	$self->event($handler,$message);
 	
 }
+
+sub on_swarm_service_running {
+	TRACE( @_ );
+	my ($self,$service) = @_;
+	$self->{service} = $service;
+	
+	
+}
+
 sub on_swarm_service_finish {
 	my $self = shift;
 	TRACE( "Service finished?? @_" ) ;
@@ -122,7 +132,7 @@ $self->main->status(shift);
 }
 
 
-
+# Surely Padre::Role::Task would provide this?
 sub task_cancel {
 	my $self = shift;
 	$self->task_manager->cancel( $self->{task_revision} );
@@ -148,15 +158,23 @@ sub send {
 	}
 	
 	my $handler = 'send_'.$origin;
-	TRACE( "outbound handle $handler" ) if DEBUG;
-	$self->service->tell_child( $handler => $message );
+	TRACE( "outbound handle $handler" ) ;#if DEBUG;
+	# Disable this until Task 3.? properly supports bi-directional communication
+	#$self->service->tell_child( $handler => $message );
 	
-	# # Ugly - provide 'global' loopback here.
-	# my $loop = bless $message, 'Padre::Swarm::Message';
-	# $loop->{origin} = 'global';
-	# $self->on_swarm_service_message( $self->service ,  $loop );
-	
-	
+	# Instead use the socketpair created in plugin_enable to push data to the
+	#  service thread. i think this is still prone to massive fuckup - but seems
+	#  to work for me.
+	eval {
+			my $data = Storable::freeze( [ $handler => $message ] );
+			TRACE( "Transmit storable encoded envelope size=".length($data) );
+			# Cargo from AnyEvent::Handle, register_write_type =>'storable'
+			$self->{parent_socket}->syswrite( pack "w/a*", $data );
+	};
+	if ($@) {
+		TRACE( "Failed to send message down parent_socket , $@" );
+	}
+
 }
 
 }
@@ -268,14 +286,29 @@ SCOPE: {
 		
 		$self->global($u_global);
 		$self->local($u_local);
+	
+		# copy-paste from '-f socketpair' docs. 
+		my ($read,$write) = ( IO::Handle->new() , IO::Handle->new() );
+		socketpair( $read, $write, AF_UNIX, SOCK_STREAM, PF_UNSPEC ) or die $!;
 		
-		my $service = $self->task_request(
+		#$read->autoflush(1);
+		#$read->blocking(0);
+		#$write->autoflush(1);
+		#$write->blocking(0);
+		binmode $write;
+		$self->{parent_socket} = $write;
+		$self->{child_socket}  = $read;
+		
+		my $fd_read = $read->fileno;
+		
+		$self->task_request(
 				task =>'Padre::Plugin::Swarm::Service',
 					on_message => 'on_swarm_service_message',
 					on_finish  => 'on_swarm_service_finish',
+					on_run     => 'on_swarm_service_running',
 					on_status  => 'on_swarm_service_status',
+					inbound_file_descriptor => $fd_read,
 		);
-		$self->{service} = $service;
 		$self->connect();
 
 
@@ -398,7 +431,8 @@ peer programming and collaborative editing functionality.
 Within this plugin all rules are suspended. No security, no efficiency,
 no scalability, no standards compliance, remote code execution,
 everything is allowed. The only goal is things that work, and things
-that look shiny in a demo :)
+that look shiny in a demo :) B<Addendum> Deliberate remote code execution was 
+removed very early. Swarm no longer blindly runs code sent to it from the network.
 
 Lessons learned here will be applied to more practical plugins later.
 
@@ -406,15 +440,13 @@ Lessons learned here will be applied to more practical plugins later.
 
 =over
 
-=item Global server transport
+=item Global server transport - Collaborate with other Swarmers on teh interwebs
 
-=item Local network multicast transport.
+=item Local network multicast transport - Collaborate with Swarmers on your local network
 
 =item L<User chat|Padre::Plugin::Swarm::Wx::Chat> - converse with other padre editors
 
 =item Resources - browse and open files from other users' editor
-
-=item Remote execution! Run arbitary code in other users' editor
 
 =back
 
@@ -432,7 +464,7 @@ Crashes when 'Reload All Plugins' is called from the padre plugin manager
 
 =head1 COPYRIGHT
 
-Copyright 2009-2010 The Padre development team as listed in Padre.pm
+Copyright 2009-2011 The Padre development team as listed in Padre.pm
 
 =head1 LICENSE
 

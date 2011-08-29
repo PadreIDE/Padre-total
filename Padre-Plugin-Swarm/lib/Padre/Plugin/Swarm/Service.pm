@@ -2,9 +2,12 @@ package Padre::Plugin::Swarm::Service;
 use strict;
 use warnings;
 use base 'Padre::Task';
+use IO::Handle;
 use Padre::Logger;
 use Padre::Swarm::Message;
 use Data::Dumper;
+use Storable;
+use POSIX qw(:errno_h :fcntl_h);
 
 sub new {
 	shift->SUPER::new(
@@ -35,13 +38,36 @@ sub run {
     $ENV{PERL_ANYEVENT_MODEL}='Perl';
     $ENV{PERL_ANYEVENT_VERBOSE} = 8;
     require AnyEvent;
+    require AnyEvent::Handle;
     require Padre::Plugin::Swarm::Transport::Global;
     require Padre::Plugin::Swarm::Transport::Local;
-    
-    my $rself = $self;
-    Scalar::Util::weaken( $self );
     TRACE( " AnyEvent loaded " );
+    
+    my $file_no = $self->{inbound_file_descriptor};
+    
+    my $inbound = IO::Handle->new();
+    #    
+    eval { $inbound->fdopen( $file_no , 'r'); $inbound->fdopen($file_no,'w') };
+    if ($@) {
+        TRACE( "Failed to open inbound channel - $@ - $! ==" . $self->{inbound_file_descriptor}  );
+    }
+    
+    
+    # TRACE( "Using inbound handle $inbound" );
+    my $parent_io = AnyEvent::Handle->new(
+        fh => $inbound ,
+        #fh => $self->{inbound_file_descriptor},
+        #on_read => sub { warn "Readable @_"; shift->push_read(storable=>\&read_parent_socket)  } ,
+        on_read => sub { shift->push_read( storable => sub { $self->read_parent_socket(@_) } ) },
+        on_error => sub { warn "Error on parent_io channel"; },
+        on_eof   => sub { warn "EOF on parent_io channel"; }
+    ) or die $! ;
+    TRACE( "Using AE io handle $parent_io" );
+    
+    #my $io = AnyEvent->io( poll => 'r' , fh => $inbound , cb => sub { $self->read_parent_socket($inbound) } );
+    
     my $bailout = AnyEvent->condvar;
+    
     $self->{bailout} = $bailout;
     $self->_setup_connections;
     
@@ -57,18 +83,25 @@ sub run {
     
     
     my $queue_poller = AnyEvent->timer( 
-        after => .2,
-        interval => .2 ,
+        after => 0.2,
+        interval => 0.2 ,
         cb => sub { $self->read_task_queue },
     );
     TRACE( "Timer - $queue_poller" ) if DEBUG;
 
     $self->{run}++;
+    
+    ## Blocking now ... until the bailout is sent or croaked
     my $exit_mode = $bailout->recv;
     TRACE( "Bailout reached! " . $exit_mode );
-    
-    
     $self->_teardown_connections;
+    my $cleanup = AnyEvent->condvar;
+    my $graceful = AnyEvent->timer( after=>1 , cb => $cleanup );
+    ## blocking for graceful cleanup
+    TRACE( "Waiting for graceful exit from transports" );
+    $cleanup->recv;
+    
+    
     TRACE( 'returning from ->run' );
     return 1;
 }
@@ -124,13 +157,17 @@ sub _setup_connections {
 
 sub _teardown_connections {
     my $self = shift;
-    my $global = delete $self->{global};
-    my $local = delete $self->{local};
     TRACE( 'Teardown global' );
-    $global->event('disconnect');
+    eval { $self->{global}->event('disconnect'); };
+    TRACE( $@ ) if $@;
     
     TRACE( 'Teardown local' );    
-    $local->event('disconnect');
+    eval { $self->{local}->event('disconnect'); };
+    TRACE( $@ ) if $@;
+    
+    my $global = delete $self->{global};
+    my $local = delete $self->{local};
+    
     
     return ();
     
@@ -139,7 +176,7 @@ sub _teardown_connections {
 sub finish {
 	$_[0]->{finish}++;
 	TRACE( "Finished called" ) if DEBUG;
-	$_[0]->{bailout}->();
+	#$_[0]->{bailout}->(); Damnit - now I am confused is this a parent or child method?????
 	return 1;
 }
 
@@ -172,6 +209,21 @@ sub shutdown_service {
     $self->{bailout}->send($reason);
 }
 
+sub read_parent_socket {
+    TRACE( @_ );
+    my ($self,$inbound,$envelope) = @_;
+    unless ( ref $envelope eq 'ARRAY' ) {
+        TRACE( 'Unknown inbound envelope message: ' . Dumper $envelope );
+        return;
+    }
+    
+    my ($method,@args) = @$envelope;
+    eval { $self->$method(@args) };
+    if ($@) {
+        TRACE( 'Method dispatch failed with ' . $@ . ' for ' . Dumper $envelope );
+    }
+    
+}
 
 sub read_task_queue {
     my $self = shift;

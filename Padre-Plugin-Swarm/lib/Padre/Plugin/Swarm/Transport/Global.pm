@@ -57,13 +57,12 @@ sub disconnect {
     TRACE( 'disconnect' , @_ ) ;
     my $self = shift;
 
-    $self->unreg_cb('disconnect', \&disconnect);
     if ($self->{h}) {
         $self->{h}->destroy;
         delete $self->{h};
     }
+    $self->unreg_me;
     
-
 }
 
 

@@ -89,12 +89,13 @@ sub readable {
 sub disconnect {
     TRACE( @_ );
     my $self = shift;
-    if ( $self->{h} ) {
-        $self->{h}->destroy;
-        delete $self->{h};
-        delete $self->{m};
+    if ( $self->{io} ) {
+        delete $self->{io};
         
-    }       
+        my $m = delete $self->{m};
+        $m->mcast_drop('239.255.255.1');
+    }
+    $self->unreg_me;   
 }
 
 sub _marshal {
