@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.25_02 TBA
+    - Exposed annotations API (AZAWAWI)
+
 0.25_01 2011.8.29
     - Exposed wxEVT_STC_INDICATOR_CLICK, wxEVT_STC_INDICATOR_RELEASE,
         wxEVT_STC_AUTOCOMP_CANCELLED and wxEVT_STC_AUTOCOMP_CHAR_DELETED events (AZAWAWI)

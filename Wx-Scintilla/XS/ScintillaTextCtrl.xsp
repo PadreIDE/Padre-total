@@ -299,6 +299,72 @@ wxScintillaTextCtrl::IndicatorEnd(indicator, position)
     RETVAL = THIS->IndicatorEnd( indicator, position);
 
 void
+wxScintillaTextCtrl::AnnotationSetText(line, text)
+    int line
+    wxString& text
+  CODE:
+    THIS->AnnotationSetText( line, text );
+
+wxString
+wxScintillaTextCtrl::AnnotationGetText(line)
+    int line
+  CODE:
+    RETVAL = THIS->AnnotationGetText( line );
+
+void
+wxScintillaTextCtrl::AnnotationSetStyle(line, style)
+    int line
+    int style
+  CODE:
+    THIS->AnnotationSetStyle( line, style );
+
+int
+wxScintillaTextCtrl::AnnotationGetStyle(line)
+    int line
+  CODE:
+    RETVAL = THIS->AnnotationGetStyle( line );
+
+void
+wxScintillaTextCtrl::AnnotationSetStyles(line, styles)
+    int line
+    wxString& styles
+  CODE:
+    THIS->AnnotationSetStyles( line, styles );
+
+wxString
+wxScintillaTextCtrl::AnnotationGetStyles(line)
+    int line
+  CODE:
+    RETVAL = THIS->AnnotationGetStyles( line );
+
+int
+wxScintillaTextCtrl::AnnotationGetLines(line)
+    int line
+  CODE:
+    RETVAL = THIS->AnnotationGetLines( line );
+
+void
+wxScintillaTextCtrl::AnnotationClearAll()
+
+void
+wxScintillaTextCtrl::AnnotationSetVisible(visible)
+    int visible
+  CODE:
+    THIS->AnnotationSetVisible( visible );
+
+int
+wxScintillaTextCtrl::AnnotationGetVisible()
+
+void
+wxScintillaTextCtrl::AnnotationSetStyleOffset(style)
+    int style
+  CODE:
+    THIS->AnnotationSetStyleOffset( style );
+
+int
+wxScintillaTextCtrl::AnnotationGetStyleOffset()
+
+void
 wxScintillaTextCtrl::SetWhitespaceForeground( useSetting, fore )
     bool useSetting
     wxColour* fore
