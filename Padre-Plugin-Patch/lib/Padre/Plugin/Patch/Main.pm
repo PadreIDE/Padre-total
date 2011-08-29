@@ -59,12 +59,9 @@ sub process_clicked {
 
 	my ( $file1, $file2 );
 
-	my @file1_list = @{ $self->{file1_list_ref} };
-	my @file2_list = @{ $self->{file2_list_ref} };
-
-	$file1 = $file1_list[ $self->file1->GetSelection() ];
-	$file2 = $file2_list[ $self->file2->GetCurrentSelection() ];
-
+	$file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
+	$file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
+	
 	TRACE( $self->action->GetStringSelection() ) if DEBUG;
 
 	if ( $self->action->GetStringSelection() eq 'Patch' ) {
