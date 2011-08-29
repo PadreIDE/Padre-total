@@ -6,6 +6,7 @@ Revision history for Wx-Scintilla
     - Exposed wxEVT_STC_INDICATOR_CLICK, wxEVT_STC_INDICATOR_RELEASE,
         wxEVT_STC_AUTOCOMP_CANCELLED and wxEVT_STC_AUTOCOMP_CHAR_DELETED events (AZAWAWI)
     - Cleaned up the source code from unused SWIG defines (AZAWAWI)
+    - Expose Scintilla's modern indicator API (AZAWAWI)
 
 0.24  2011.8.29
     - Released 0.23_01 as stable 0.24 (AZAWAWI)
