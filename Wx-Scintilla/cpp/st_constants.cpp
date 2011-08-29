@@ -1491,7 +1491,7 @@ double stc_constant( const char* name, int arg )
         r( wxEVT_STC_INDICATOR_CLICK );
         r( wxEVT_STC_INDICATOR_RELEASE );
         r( wxEVT_STC_AUTOCOMP_CANCELLED );
-        r( wxEVT_STC_AUTOCOMP_DELETED );
+        r( wxEVT_STC_AUTOCOMP_CHAR_DELETED );
         break;
     case 'T':
         r( wxSTC_TIME_FOREVER );

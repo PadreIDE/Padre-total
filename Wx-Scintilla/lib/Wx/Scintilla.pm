@@ -78,7 +78,7 @@ use strict;
 	sub EVT_STC_INDICATOR_CLICK($$$)    { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_INDICATOR_CLICK,    $_[2] ) }
 	sub EVT_STC_INDICATOR_RELEASE($$$)  { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_INDICATOR_RELEASE,  $_[2] ) }
 	sub EVT_STC_AUTOCOMP_CANCELLED($$$) { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_AUTOCOMP_CANCELLED, $_[2] ) }
-	sub EVT_STC_AUTOCOMP_DELETED($$$)   { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_AUTOCOMP_DELETED,   $_[2] ) }
+	sub EVT_STC_AUTOCOMP_CHAR_DELETED($$$)   { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_AUTOCOMP_CHAR_DELETED,   $_[2] ) }
 }
 
 1; # The end of Wx::Scintilla? :)
