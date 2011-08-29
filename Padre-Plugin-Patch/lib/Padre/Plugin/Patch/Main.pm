@@ -42,18 +42,6 @@ sub set_up {
 	# display default saved file lists
 	file_lists_saved($self);
 
-	# SetSelection should be current file
-	# foreach ( 0 .. $self->{tab_cardinality} ) {
-
-# # 		# TODO sort out error, Alias why is this causing problems $main->current->title
-		# if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
-			# $self->{selection} = $_;
-		# }
-	# }
-
-	# reload file list with current selection
-	# file_lists_saved($self);
-
 	# display correct file-2 list
 	file2_list_type($self);
 
@@ -180,7 +168,7 @@ sub current_files {
 			},
 		);
 
-		if ( $notebook->GetPageText($_) =~ /^\*/ ) {
+		if ( $notebook->GetPageText($_) =~ /^\*/sxm ) {
 			TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
 			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
@@ -219,20 +207,19 @@ sub file_lists_saved {
 	my @file_lists_saved;
 	for ( 0 .. $self->{tab_cardinality} ) {
 		unless ( $self->{open_file_info}->{$_}->{'changed'}
-			|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ )
+			|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm )
 		{
 			push @file_lists_saved, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
-	
+
 	TRACE("file_lists_saved: @file_lists_saved") if DEBUG;
-	
+
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->{file1_list_ref} = \@file_lists_saved;
 	set_selection($self);
 	$self->file1->SetSelection( $self->{selection} );
-	# $self->{file1_list_ref} = \@file_lists_saved;
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file_lists_saved );
@@ -249,13 +236,13 @@ sub file2_list_patch {
 	my $self = shift;
 	my @file2_list_patch;
 	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) {
+		if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) {
 			push @file2_list_patch, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
-	
+
 	TRACE("file2_list_patch: @file2_list_patch") if DEBUG;
-	
+
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list_patch );
 	$self->file2->SetSelection(0);
@@ -274,7 +261,7 @@ sub file1_list_svn {
 	for ( 0 .. $self->{tab_cardinality} ) {
 		if (   ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
 			&& !( $self->{open_file_info}->{$_}->{'changed'} )
-			&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/ ) )
+			&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) )
 		{
 			push @file1_list_svn, $self->{open_file_info}->{$_}->{'filename'};
 		}
@@ -287,7 +274,6 @@ sub file1_list_svn {
 	$self->{file1_list_ref} = \@file1_list_svn;
 	set_selection($self);
 	$self->file1->SetSelection( $self->{selection} );
-	# $self->{file1_list_ref} = \@file1_list_svn;
 
 	return;
 }
@@ -297,7 +283,7 @@ sub file1_list_svn {
 sub set_selection {
 	my $self = shift;
 	my $main = $self->main;
-	
+
 	# SetSelection should be current file
 	foreach ( 0 .. $self->{tab_cardinality} ) {
 
@@ -347,7 +333,7 @@ sub apply_patch {
 	if ( -e $file2_url ) {
 		TRACE("found $file2_url: $file2_url") if DEBUG;
 		$diff = File::Slurp::read_file($file2_url);
-		unless ( $file2_url =~ /(patch|diff)$/ ) {
+		unless ( $file2_url =~ /(patch|diff)$/sxm ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
 		}
@@ -361,7 +347,7 @@ sub apply_patch {
 		TRACE($our_patch) if DEBUG;
 
 		# Open the patched file as a new file
-		eval $main->new_document_from_string( $our_patch => 'application/x-perl', );
+		$main->new_document_from_string( $our_patch => 'application/x-perl', );
 		$main->info( Wx::gettext('Patch Succesful, you should see a new tab in editor called Unsaved #') );
 	} else {
 		$main->info( Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
