@@ -22,6 +22,7 @@ sub padre_interfaces {
 		'Padre::Wx'             => '0.91',
 		'Padre::Wx::Main'       => '0.91',
 		'Padre::Wx::Role::Main' => '0.91',
+		'Padre::DB'             => '0.91',
 		'Padre::Logger'         => '0.91',
 	);
 }
@@ -55,12 +56,12 @@ sub menu_plugins_simple {
 }
 
 # sub plugin_icon {
-	# my $class = shift;
-	# my $share = $class->plugin_directory_share or return;
-	# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
-	# return unless -f $file;
-	# return unless -r $file;
-	# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
+# my $class = shift;
+# my $share = $class->plugin_directory_share or return;
+# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
+# return unless -f $file;
+# return unless -r $file;
+# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
 # }
 
 #######
