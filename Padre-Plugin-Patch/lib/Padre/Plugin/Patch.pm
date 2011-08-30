@@ -15,14 +15,14 @@ sub padre_interfaces {
 	return (
 
 		# Default, required
-		'Padre::Plugin' => '0.89',
+		'Padre::Plugin' => '0.91',
 
 		# used by Main, and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => '0.89',
-		'Padre::Wx::Main'       => '0.89',
-		'Padre::Wx::Role::Main' => '0.89',
-		'Padre::Logger'         => '0.89',
-		'Padre::Current'        => '0.90',
+		'Padre::Wx'             => '0.91',
+		'Padre::Wx::Main'       => '0.91',
+		'Padre::Wx::Role::Main' => '0.91',
+		'Padre::Logger'         => '0.91',
+		'Padre::Current'        => '0.91',
 	);
 }
 
