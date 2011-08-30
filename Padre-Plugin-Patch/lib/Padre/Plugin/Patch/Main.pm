@@ -61,7 +61,7 @@ sub process_clicked {
 
 	$file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
 	$file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
-	
+
 	TRACE( $self->action->GetStringSelection() ) if DEBUG;
 
 	if ( $self->action->GetStringSelection() eq 'Patch' ) {
@@ -282,10 +282,9 @@ sub set_selection {
 	my $main = $self->main;
 
 	# SetSelection should be current file
-	foreach ( 0 .. $self->{tab_cardinality} ) {
+	foreach ( 0 .. @{ $self->{file1_list_ref} } -1 ) {
 
-		# TODO sort out error, Alias why is this causing problems $main->current->title
-		if ( eval { @{ $self->{file1_list_ref} }[$_] eq $main->current->title } ) {
+		if ( @{ $self->{file1_list_ref} }[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
 		}
 	}
