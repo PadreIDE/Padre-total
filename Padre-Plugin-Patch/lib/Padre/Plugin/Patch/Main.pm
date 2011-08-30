@@ -114,7 +114,6 @@ sub on_action {
 #######
 sub on_against {
 	my $self = shift;
-	my @file1_list;
 
 	if ( $self->against->GetStringSelection() eq 'File-2' ) {
 
@@ -275,7 +274,7 @@ sub set_selection {
 	my $main = $self->main;
 
 	# SetSelection should be current file
-	foreach ( 0 .. @{ $self->{file1_list_ref} } -1 ) {
+	foreach ( 0 .. @{ $self->{file1_list_ref} } - 1 ) {
 
 		if ( @{ $self->{file1_list_ref} }[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
@@ -499,6 +498,18 @@ composed method
 composed method
 
 =item set_selection
+
+composed method
+
+=item file1_list_svn
+
+composed method
+
+=item file2_list_patch
+
+composed method
+
+=item file_lists_saved
 
 composed method
 
