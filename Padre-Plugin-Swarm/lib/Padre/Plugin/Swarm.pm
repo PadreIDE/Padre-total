@@ -158,21 +158,7 @@ sub send {
 	
 	my $handler = 'send_'.$origin;
 	TRACE( "outbound handle $handler" ) if DEBUG;
-	# Disable this until Task 3.? properly supports bi-directional communication
-	#$self->service->tell_child( $handler => $message );
-	
-	# Instead use the socketpair created in plugin_enable to push data to the
-	#  service thread. i think this is still prone to massive fuckup - but seems
-	#  to work for me.
-	eval {
-			my $data = Storable::freeze( [ $handler => $message ] );
-			TRACE( "Transmit storable encoded envelope size=".length($data) );
-			# Cargo from AnyEvent::Handle, register_write_type =>'storable'
-			$self->{parent_socket}->syswrite( pack "w/a*", $data );
-	};
-	if ($@) {
-		TRACE( "Failed to send message down parent_socket , $@" );
-	}
+	$self->{service}->notify( $handler => $message );
 
 }
 
@@ -285,20 +271,6 @@ SCOPE: {
 		
 		$self->global($u_global);
 		$self->local($u_local);
-	
-		# copy-paste from '-f socketpair' docs. 
-		my ($read,$write) = ( IO::Handle->new() , IO::Handle->new() );
-		socketpair( $read, $write, AF_UNIX, SOCK_STREAM, PF_UNSPEC ) or die $!;
-		
-		#$read->autoflush(1);
-		#$read->blocking(0);
-		#$write->autoflush(1);
-		#$write->blocking(0);
-		binmode $write;
-		$self->{parent_socket} = $write;
-		$self->{child_socket}  = $read;
-		
-		my $fd_read = $read->fileno;
 		
 		$self->task_request(
 				task =>'Padre::Plugin::Swarm::Service',
@@ -306,7 +278,6 @@ SCOPE: {
 					on_finish  => 'on_swarm_service_finish',
 					on_run     => 'on_swarm_service_running',
 					on_status  => 'on_swarm_service_status',
-					inbound_file_descriptor => $fd_read,
 		);
 		$self->connect();
 

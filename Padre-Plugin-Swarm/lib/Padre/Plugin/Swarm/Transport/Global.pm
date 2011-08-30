@@ -27,7 +27,6 @@ sub enable {
 }
 
 sub start_session {
-    TRACE(  @_ ) ;
     my ($self,$fh) = @_;
     unless ($fh) {
         $self->event('disconnect','Connection failed ' . $!);
@@ -43,7 +42,6 @@ sub start_session {
     # now we register our own disconnect handler for teardown;
     $self->reg_cb('disconnect', \&disconnect );
     
-    TRACE( $h );
     $self->{h} = $h;
     $h->push_write( json => { trustme=>$$.rand() } );
     $h->push_read( json => sub { $self->event( 'see_auth' , @_ ) } );
@@ -53,8 +51,6 @@ sub start_session {
 
 
 sub disconnect {
-
-    TRACE( 'disconnect' , @_ ) ;
     my $self = shift;
 
     if ($self->{h}) {
@@ -67,8 +63,6 @@ sub disconnect {
 
 
 sub see_auth {
-    TRACE( @_ );
-    
     my $self = shift;
     my $handle = shift;
     my $message = shift;
@@ -96,7 +90,6 @@ use Data::Dumper;
 $Data::Dumper::Indent=1;
 
 sub send {
-    TRACE( @_ );
     my $self = shift;
     my $message = shift;
     if ( threads::shared::is_shared( $message ) ) {

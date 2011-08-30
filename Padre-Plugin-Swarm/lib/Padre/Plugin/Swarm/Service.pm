@@ -9,6 +9,7 @@ use Data::Dumper;
 use Socket;
 use Storable;
 use POSIX qw(:errno_h :fcntl_h);
+use Carp 'croak';
 
 
 {
@@ -17,11 +18,9 @@ use POSIX qw(:errno_h :fcntl_h);
     sub _new_socketpair {
         my $self = shift;
         my $id = $socketid++;
-        
-        
         my ($read,$write) = ( IO::Handle->new() , IO::Handle->new() );
         socketpair( $read, $write, AF_UNIX, SOCK_STREAM, PF_UNSPEC ) or die $!;
-	binmode $read;	
+        binmode $read;
         binmode $write;
         my $fd_read = $read->fileno;
         $sockets{$id} = [ $read, $write ];
@@ -73,7 +72,7 @@ sub notify {
     
     eval {
         my $data = Storable::freeze( [ $handler => $message ] );
-        TRACE( "Transmit storable encoded envelope size=".length($data) );
+        TRACE( "Transmit storable encoded envelope size=".length($data) ) if DEBUG;
         # Cargo from AnyEvent::Handle, register_write_type =>'storable'
         my ($read,$write) = $self->_get_socketpair;
         $write->syswrite( pack "w/a*", $data );
@@ -95,14 +94,15 @@ sub run {
     # when AnyEvent detects Wx it falls back to POE (erk).
     # , tricking it into using pureperl seems to work.
     $ENV{PERL_ANYEVENT_MODEL}='Perl';
-    $ENV{PERL_ANYEVENT_VERBOSE} = 8;
+    #
+    $ENV{PERL_ANYEVENT_VERBOSE} = 8 if DEBUG;
     require AnyEvent;
     require AnyEvent::Handle;
     require Padre::Plugin::Swarm::Transport::Global;
     require Padre::Plugin::Swarm::Transport::Local;
-    TRACE( " AnyEvent loaded " );
+    TRACE( " AnyEvent loaded " ) if DEBUG;
     
-    my $file_no = $self->{inbound_file_descriptor};
+    my $file_no = $self->{_inbound_file_descriptor};
     
     my $inbound = IO::Handle->new();
     #    
@@ -121,7 +121,7 @@ sub run {
         on_error => sub { warn "Error on parent_io channel"; },
         on_eof   => sub { warn "EOF on parent_io channel"; }
     ) or die $! ;
-    TRACE( "Using AE io handle $parent_io" );
+    TRACE( "Using AE io handle $parent_io" ) if DEBUG;
     
     #my $io = AnyEvent->io( poll => 'r' , fh => $inbound , cb => sub { $self->read_parent_socket($inbound) } );
     
@@ -129,17 +129,6 @@ sub run {
     
     $self->{bailout} = $bailout;
     $self->_setup_connections;
-    
-    
-    # the latency on this is awful , unsurprisingly
-    # it would be better to have a socketpair to poll for read from our parent.
-    
-    # my $sig_catch = AnyEvent->signal( signal=>'INT',
-        # cb => sub { $self->read_task_queue }
-    # );
-    # TRACE( "Signal catcher $sig_catch" ) if DEBUG;
-    
-    
     
     my $queue_poller = AnyEvent->timer( 
         after => 0.2,
@@ -152,21 +141,21 @@ sub run {
     
     ## Blocking now ... until the bailout is sent or croaked
     my $exit_mode = $bailout->recv;
-    TRACE( "Bailout reached! " . $exit_mode );
+    TRACE( "Bailout reached! " . $exit_mode ) if DEBUG;
     $self->_teardown_connections;
     my $cleanup = AnyEvent->condvar;
     my $graceful = AnyEvent->timer( after=>1 , cb => $cleanup );
     ## blocking for graceful cleanup
-    TRACE( "Waiting for graceful exit from transports" );
+    TRACE( "Waiting for graceful exit from transports" ) if DEBUG;
     $cleanup->recv;
     
     
-    TRACE( 'returning from ->run' );
+    TRACE( 'returning from ->run' ) if DEBUG;
     return 1;
 }
 
 sub _setup_connections {
-    TRACE( @_ );
+    TRACE( @_ ) if DEBUG;
     my $self = shift;
     
     my $global = new Padre::Plugin::Swarm::Transport::Global
@@ -216,14 +205,18 @@ sub _setup_connections {
 
 sub _teardown_connections {
     my $self = shift;
-    TRACE( 'Teardown global' );
+    TRACE( 'Teardown global' ) if DEBUG;
+    local $@;
     eval { $self->{global}->event('disconnect'); };
-    TRACE( $@ ) if $@;
+    if ( $@ ) {
+        TRACE( $@ ) if DEBUG;
+    }
     
-    TRACE( 'Teardown local' );    
+    TRACE( 'Teardown local' ) if DEBUG;
     eval { $self->{local}->event('disconnect'); };
-    TRACE( $@ ) if $@;
-    
+    if ($@) {
+        TRACE( $@ ) if DEBUG;
+    }
     my $global = delete $self->{global};
     my $local = delete $self->{local};
     
@@ -236,7 +229,7 @@ sub finish {
 	TRACE( "Finished called" ) if DEBUG;
 	
 	my $self = shift;
-        $self->_cleanup_socketid($self->{socketid});
+    $self->_cleanup_socketid($self->{socketid});
         
         
         $self->{finish}++;
@@ -246,17 +239,16 @@ sub finish {
 }
 
 sub prepare {
-        my $self = shift;
-        $self->_new_socketpair;# mutator , need to know.
-        
-	$_[0]->{prepare}++;
-	return 1;
+    my $self = shift;
+    $self->_new_socketpair; # mutator , need to know.
+    $self->{prepare}++;
+    return 1;
 }
 
 sub send_global {
     my $self = shift;
     my $message = shift;
-    TRACE( "Sending GLOBAL message " , Dumper $message );# if DEBUG;
+    TRACE( "Sending GLOBAL message %$message" ) if DEBUG;
     $self->{global}->send($message);
     
 }
@@ -265,7 +257,7 @@ sub send_global {
 sub send_local {
     my $self = shift;
     my $message = shift;
-    TRACE( "Sending LOCAL message " , Dumper $message ) if DEBUG;
+    TRACE( "Sending LOCAL message %$message" ) if DEBUG;
     $self->{local}->send($message);
     
 }
@@ -278,7 +270,6 @@ sub shutdown_service {
 }
 
 sub read_parent_socket {
-    TRACE( @_ );
     my ($self,$inbound,$envelope) = @_;
     unless ( ref $envelope eq 'ARRAY' ) {
         TRACE( 'Unknown inbound envelope message: ' . Dumper $envelope );
@@ -286,6 +277,7 @@ sub read_parent_socket {
     }
     
     my ($method,@args) = @$envelope;
+    local $@;
     eval { $self->$method(@args) };
     if ($@) {
         TRACE( 'Method dispatch failed with ' . $@ . ' for ' . Dumper $envelope );
@@ -295,34 +287,39 @@ sub read_parent_socket {
 
 sub read_task_queue {
     my $self = shift;
-    #TRACE( 'Read task queue' );
-eval {
-    while( my $message = $self->child_inbox ) {
-            my ($method,@args) = @$message;
-            eval { $self->$method(@args);};
-            if ($@) {
-                TRACE( $@ ) ;
-            }
+    
+    # We're probably NOT receiving anything from parent calling ->tell_child
+    #  that would be in the child_inbox, this can become a periodic poll for 
+    #   $self->cancelled ONLY.
+    eval {
+        while( my $message = $self->child_inbox ) {
+                my ($method,@args) = @$message;
+                local $@;
+                eval { $self->$method(@args);};
+                if ($@) {
+                    TRACE( $@ ) ;
+                }
+        }
         
+        if ( $self->cancelled ) {
+            TRACE( 'Cancelled! - bailing out of event loop' ) if DEBUG;
+            $self->{bailout}->send('cancelled');
+        }
+        
+     };
     
-    };
-    if ( $self->cancelled ) {
-        TRACE( 'Cancelled! - bailing out of event loop' ) ;#if DEBUG;
-        $self->{bailout}->send('cancelled');
-    }
- };
-    
- if ($@) {
+    if ($@) {
         TRACE( 'Task queue error ' . $@ )
-     
- }
+    }
     return;
 }
 
 sub _recv {
     my($self,$origin,$transport,$message) = @_;
-    TRACE( "$origin  transport=$transport, " . Dumper ($message) ); #  if DEBUG;
-    die "Origin '$origin' incorrect" unless ($origin=~/global|local/);
+    TRACE( "$origin  transport=$transport, %$message" ) if DEBUG;
+    # Our caller either screwed up arguments or passed something odd.
+    # TODO - let Service interrogate the $transport->origin ??
+    croak "Origin '$origin' incorrect" unless ($origin=~/global|local/);
     
     $message->{origin} = $origin;
     
@@ -334,7 +331,7 @@ sub _connect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
-    TRACE( "Connected $origin" );
+    TRACE( "Connected $origin" ) if DEBUG;
     $self->tell_status( "Swarm $origin transport connected" );
     my $m = new Padre::Swarm::Message
                 origin => $origin,
@@ -347,6 +344,7 @@ sub _disconnect {
     my $self = shift;
     my $origin = shift;
     my $message = shift;
+    TRACE( "Disconnected $origin" ) if DEBUG;
     $self->tell_status("Swarm $origin transport DISCONNECTED");
     my $m = new Padre::Swarm::Message
                 origin => $origin,

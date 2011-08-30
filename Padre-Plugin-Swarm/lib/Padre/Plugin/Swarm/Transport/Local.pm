@@ -53,7 +53,6 @@ sub send {
     
     if ( threads::shared::is_shared( $message ) ) {
         TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );
-        
         confess "$message , is a shared value";    
     }    
 
@@ -72,13 +71,9 @@ sub readable {
     unless ( $self->{m} ) {
         TRACE( 'Multicast handle has gone away!' );
         return;
-        
     }
-    
     $self->{m}->recv($data,65535);
-    TRACE( "Received data $data") if DEBUG;
     my $message = eval{ $self->_marshal->decode($data) };
-    
     if ( $message ) {
         $self->event('recv', $message);
     }
@@ -87,7 +82,6 @@ sub readable {
 
 
 sub disconnect {
-    TRACE( @_ );
     my $self = shift;
     if ( $self->{io} ) {
         delete $self->{io};
