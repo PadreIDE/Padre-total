@@ -13,7 +13,6 @@ use Padre::Logger;
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
-
 #######
 # new
 #######
@@ -27,7 +26,6 @@ sub new {
 	$self->set_up;
 	return $self;
 }
-
 
 #######
 # Method set_up
@@ -50,17 +48,14 @@ sub set_up {
 	return;
 }
 
-
 #######
 # Event Handler process_clicked
 #######
 sub process_clicked {
 	my $self = shift;
 
-	my ( $file1, $file2 );
-
-	$file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
-	$file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
+	my $file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
+	my $file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
 
 	TRACE( $self->action->GetStringSelection() ) if DEBUG;
 
@@ -82,7 +77,6 @@ sub process_clicked {
 
 	return;
 }
-
 
 #######
 # Event Handler on_action
@@ -115,7 +109,6 @@ sub on_action {
 	return;
 }
 
-
 #######
 # Event Handler on_against
 #######
@@ -138,7 +131,6 @@ sub on_against {
 
 	return;
 }
-
 
 #######
 # Method current_files
@@ -177,7 +169,6 @@ sub current_files {
 	return;
 }
 
-
 #######
 # Composed Method file2_list_type
 #######
@@ -196,6 +187,7 @@ sub file2_list_type {
 
 	return;
 }
+
 #######
 # Composed Method file_lists_saved
 #######
@@ -274,6 +266,7 @@ sub file1_list_svn {
 
 	return;
 }
+
 #######
 # Composed Method set_selection
 #######
@@ -505,6 +498,9 @@ composed method
 
 composed method
 
+=item set_selection
+
+composed method
 
 =back
 
