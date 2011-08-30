@@ -6,7 +6,7 @@ use warnings;
 
 # use Padre::Plugin ();
 
-our $VERSION = '0.140';
+our $VERSION = '0.141';
 use parent qw(Padre::Plugin);
 
 #######
@@ -16,13 +16,13 @@ sub padre_interfaces {
 	return (
 
 		# Default, required
-		'Padre::Plugin' => '0.90',
+		'Padre::Plugin' => '0.91',
 
 		# used by Main, About and by Padre::Plugin::FormBuilder
-		'Padre::Wx'             => '0.90',
-		'Padre::Wx::Main'       => '0.90',
-		'Padre::Wx::Role::Main' => '0.90',
-		'Padre::Logger'         => '0.90',
+		'Padre::Wx'             => '0.91',
+		'Padre::Wx::Main'       => '0.91',
+		'Padre::Wx::Role::Main' => '0.91',
+		'Padre::Logger'         => '0.91',
 	);
 }
 
@@ -42,13 +42,13 @@ sub menu_plugins_simple {
 		Wx::gettext('01 - Hello World') => sub {
 			$self->load_dialog_recipe01_main;
 		},
-		Wx::gettext('02 - Fun with widgets') => sub {
+		Wx::gettext('02 - Fun with widgets...') => sub {
 			$self->load_dialog_recipe02_main;
 		},
-		Wx::gettext('03 - About dialogs') => sub {
+		Wx::gettext('03 - About dialogs...') => sub {
 			$self->load_dialog_recipe03_main;
 		},
-		Wx::gettext('04 - ConfigDB RC1') => sub {
+		Wx::gettext('04 - ConfigDB...') => sub {
 			$self->load_dialog_recipe04_main;
 		},
 	];
