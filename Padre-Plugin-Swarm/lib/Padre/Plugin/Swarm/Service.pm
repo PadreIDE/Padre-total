@@ -142,16 +142,18 @@ sub run {
     ## Blocking now ... until the bailout is sent or croaked
     my $exit_mode = $bailout->recv;
     TRACE( "Bailout reached! " . $exit_mode ) if DEBUG;
+    undef $queue_poller;
+    
     $self->_teardown_connections;
     my $cleanup = AnyEvent->condvar;
-    my $graceful = AnyEvent->timer( after=>1 , cb => $cleanup );
+    my $graceful = AnyEvent->timer( after=>0.5, cb => $cleanup );
     ## blocking for graceful cleanup
     TRACE( "Waiting for graceful exit from transports" ) if DEBUG;
     $cleanup->recv;
     
     
     TRACE( 'returning from ->run' ) if DEBUG;
-    return 1;
+    return 0;
 }
 
 sub _setup_connections {
