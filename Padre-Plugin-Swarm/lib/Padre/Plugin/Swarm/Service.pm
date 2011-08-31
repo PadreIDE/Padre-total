@@ -266,6 +266,7 @@ sub send_local {
 sub shutdown_service {
     my $self = shift;
     my $reason = shift;
+    TRACE( 'Shutdown service with reason ' . $reason );
     $self->{bailout}->send($reason);
 }
 
@@ -292,14 +293,14 @@ sub read_task_queue {
     #  that would be in the child_inbox, this can become a periodic poll for 
     #   $self->cancelled ONLY.
     eval {
-        while( my $message = $self->child_inbox ) {
-                my ($method,@args) = @$message;
-                local $@;
-                eval { $self->$method(@args);};
-                if ($@) {
-                    TRACE( $@ ) ;
-                }
-        }
+        # while( my $message = $self->child_inbox ) {
+                # my ($method,@args) = @$message;
+                # local $@;
+                # eval { $self->$method(@args);};
+                # if ($@) {
+                    # TRACE( $@ ) ;
+                # }
+        # }
         
         if ( $self->cancelled ) {
             TRACE( 'Cancelled! - bailing out of event loop' ) if DEBUG;
@@ -333,9 +334,8 @@ sub _connect {
     my $message = shift;
     TRACE( "Connected $origin" ) if DEBUG;
     $self->tell_status( "Swarm $origin transport connected" );
-    my $m = new Padre::Swarm::Message
-                origin => $origin,
-                type   => 'connect';
+    # TODO this is a service event - NOT a swarm message. 
+    my $m = [ 'connect_'.$origin , 1 ];
     $self->tell_owner( $m );
 }
 
@@ -346,9 +346,7 @@ sub _disconnect {
     my $message = shift;
     TRACE( "Disconnected $origin" ) if DEBUG;
     $self->tell_status("Swarm $origin transport DISCONNECTED");
-    my $m = new Padre::Swarm::Message
-                origin => $origin,
-                type   => 'disconnect';
+    my $m = [ 'disconnect_'.$origin , 1 ];
     $self->tell_owner( $m );
 }
 

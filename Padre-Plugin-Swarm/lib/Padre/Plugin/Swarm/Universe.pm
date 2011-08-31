@@ -37,8 +37,13 @@ sub new {
 	my $plugin = Padre::Plugin::Swarm->instance;
 	
 	$self->reg_cb( "recv" , \&on_recv );
+	$self->plugin->reg_cb( "recv_$origin" , sub { shift; $self->event('recv',@_) } );
+	
 	$self->reg_cb( "connect" , \&on_connect);
+	$self->plugin->reg_cb("connect_$origin", sub{ shift; $self->event('connect',@_)} );
+	
 	$self->reg_cb( "disconnect", \&on_disconnect );
+	$self->plugin->reg_cb("disconnect_$origin", sub{ shift; $self->event('disconnect',@_)} );
 	
 	## Padre events from plugin - rethrow
 	$self->plugin->reg_cb( 
@@ -119,6 +124,7 @@ sub on_recv {
 sub on_connect {
 	my ($self) = shift;
 	TRACE( "Swarm transport connected" ) if DEBUG;
+	$self->plugin->_flush_outbox($self->origin);
 	$self->send(
 		{ type=>'announce', service=>'swarm' }
 	);

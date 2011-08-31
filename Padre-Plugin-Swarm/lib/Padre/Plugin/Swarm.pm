@@ -1,5 +1,4 @@
 package Padre::Plugin::Swarm;
-
 use 5.008;
 use strict;
 use warnings;
@@ -12,13 +11,17 @@ use Padre::Plugin   ();
 use Object::Event   ();
 use Padre::Wx::Icon ();
 use Padre::Logger;
+use Params::Util '_INVOCANT';
+use Carp 'confess';
+use Data::Dumper;
 
 our $VERSION = '0.2';
 our @ISA     = ('Padre::Plugin','Padre::Role::Task','Object::Event');
 
-sub plugin_interfaces {
-	'Padre::Task' => 0.91,
-	'Padre::Document' => 0.91,
+sub padre_interfaces {
+	'Padre::Task' 		=> 0.91,
+	'Padre::Document' 	=> 0.91,
+	'Padre::Plugin' 	=> 0.91,
 }
 
 use Class::XSAccessor {
@@ -31,107 +34,101 @@ use Class::XSAccessor {
 	}
 };
 
+# TODO connect/disconnect should be ->enable and ->disable
 sub connect {
 	my $self = shift;
-
 	$self->global->event('enable');
 	$self->local->event('enable');
-	
+	return;
 }
 
 sub disconnect {
 	my $self = shift;
 
 
-	$self->service->tell_child( 'shutdown_service' => "disabled" );
 	$self->global->event('disable');
 	$self->local->event('disable');
 	
-	# What are the chances either of these work ?
-	$self->task_cancel;
-
+	# Don't rely on Task bi-directional
+	#$self->service->tell_child( 'shutdown_service' => "disabled" );
+	
+	# Co-operative shutdown the service, allowing Task->run to complete in the child
+	$self->service->notify( 'shutdown_service'  , 'disabled' );
+	return;
+	
 }
 
 
-use Params::Util '_INVOCANT';
-use Carp 'confess';
-use Data::Dumper;
-
+## Task::Role handlers for subscribed states of the child task/service
 sub on_swarm_service_message {
 	my $self = shift;
 	my $service = shift;
-	my $message = shift;
-
-
+	my $incoming= shift;
+	
 	# Puke about this as ': shared' should only be applied to the storable data
 	#  as it is moved between threads. Decoded message should NOT be :shared
-	if ( threads::shared::is_shared( $message ) ) {
-		TRACE('Parent RECV : shared ??? ' . Dumper $message );
+	if ( threads::shared::is_shared( $incoming ) ) {
+		TRACE('Parent RECV : shared ??? ' . Dumper $incoming );
 		confess 'got : shared $message';
-		
-	}	
-	unless ( _INVOCANT($message) ) {
-		confess 'unblessed message ' . Dumper $message;
 	}
-	# do I still need this ? 
-	$self->service($service);
-	
-	# TODO can i use 'SWARM' instead?
-	my $lock = $self->main->lock('UPDATE');
-	
-	my $origin  = $message->origin;
-	# Special case for 'connect'
-	if ( $message->type eq 'connect' ) {
-		if ( $origin eq 'local' ) {
-			$self->local->event('connect');
-		} elsif ( $origin eq 'global' ) {
-			$self->global->event('connect');
-		}
+
+	if (ref $incoming eq 'ARRAY') {
+		# Enveloped messages from the service are 'events'
+		my ($eventname,@args) = @$incoming;
+		TRACE( 'Posting Service event ' . $eventname );
+		$self->event($eventname,@args);
 		return;
+	} elsif ( _INVOCANT($incoming) ) {  # TODO be more explicit about INVOCANT
+		
+		my $lock = $self->main->lock('UPDATE');
+		my $origin  = $incoming->origin;
+		$self->event( "recv_$origin" , $incoming );
+		
+		# if ($origin eq 'local') {
+			# TRACE( 'Local message dispatch' ) if DEBUG;
+			# $self->local->event( 'recv' , $incoming );
+		# } elsif ( $origin eq 'global' ) {
+			# TRACE( 'Global message dispatch' ) if DEBUG;
+			# $self->global->event('recv', $incoming );
+		# } else {
+			# TRACE( "Unknown transport dispatch recv_$origin" );
+			# confess "Unknown transport dispatch recv_$origin" ;
+		# }
+		
+		#my $handler = 'accept_' . $incoming->type;
+		#TRACE( "send '$handler' event" ) if DEBUG;
+		#$self->event($handler,$incoming);
 	}
 	
-	if ($origin eq 'local') {
-		TRACE( 'Local message dispatch' ) if DEBUG;
-		$self->local->event( 'recv' , $message );
-	} elsif ( $origin eq 'global' ) {
-		TRACE( 'Global message dispatch' ) if DEBUG;
-		$self->global->event('recv', $message );
-	} else {
-		TRACE( "Unknown transport dispatch recv_$origin" );
-		confess "Unknown transport dispatch recv_$origin" ;
-	}	
-	
-	
-	my $handler = 'accept_' . $message->type;
-	TRACE( "send '$handler' event" ) if DEBUG;
-	$self->event($handler,$message);
-	
+	return;
 }
 
 sub on_swarm_service_running {
 	my ($self,$service) = @_;
+	# Capture the service. We're not CONNECTED yet - the service is just running
 	$self->{service} = $service;
-	
-	
+	return;
 }
 
 sub on_swarm_service_finish {
 	TRACE( "Service finished?? @_" ) if DEBUG;
 	my $self = shift;
+	# In theory we're already disconnected
+	# just cleanup the finished task
+	delete $self->{service};
+	return;
 }
 
 
 sub on_swarm_service_status {
-	
-TRACE( @_ )  if DEBUG;
-my $self = shift;
-$self->main->status(shift);
-
-	
+	TRACE( @_ )  if DEBUG;
+	my $self = shift;
+	$self->main->status(shift);
 }
 
 
 # Surely Padre::Role::Task would provide this?
+# TODO - investigate a way to have Service co-operatively exit it's loop
 sub task_cancel {
 	my $self = shift;
 	$self->task_manager->cancel( $self->{task_revision} );
@@ -143,10 +140,18 @@ SCOPE: {
 my @outbox;
 use Data::Dumper;
 
+sub _flush_outbox {
+	my ($self,$origin) = @_;
+	my @list = grep { $_->[0] eq $origin } @outbox;
+	my @keep = grep { $_->[0] ne $origin } @outbox;
+	@outbox = @keep;
+	$self->send(@$_) for @list;
+	return;
+}
+
 sub send {
 	my ($self,$origin,$message) = @_;
 	my $service = $self->{service};
-	
 	
 	TRACE( 'Sending to task ~ ' . $service ) if DEBUG;
 	# Be careful - we can race our task and send messages to it before it is ready
@@ -166,7 +171,7 @@ sub send {
 # END SCOPE:
 
 
-
+# TODO move identity management into the ::Universe
 sub identity {
 	my $self = shift;
 	unless ($self->{identity}) {
@@ -196,10 +201,6 @@ sub identity {
 
 #####################################################################
 # Padre::Plugin Methods
-
-sub padre_interfaces {
-	'Padre::Plugin' => 0.56;
-}
 
 sub plugin_name {
 	'Swarm';
@@ -279,6 +280,8 @@ SCOPE: {
 					on_run     => 'on_swarm_service_running',
 					on_status  => 'on_swarm_service_status',
 		);
+		$self->reg_cb( 'connect' , \&event_connect );
+		$self->reg_cb( 'disconnect', \&event_disconnect );
 		$self->connect();
 
 
@@ -296,7 +299,7 @@ SCOPE: {
 
 
 	}
-}
+} # END SCOPE
 
 sub plugin_preferences {
 	my $self = shift;
@@ -340,6 +343,8 @@ sub bootstrap_config {
 
 }
 
+
+# Catch notification from Padre and rethrow events for them.
 sub editor_enable {
 	my $self = shift;
 	$self->event( 'editor_enable' , @_ );
