@@ -155,18 +155,33 @@ sub save_html_report {
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head>
 <title>Padre translation status report</title>
 <style type="text/css">
-.red {
+body, th, tr {
+    font: 13px Verdana,Arial,'Bitstream Vera Sans',Helvetica,sans-serif;
+}
+th {
+    font-weight: bold;
+    text-align: left;
+}
+th.lang {
+    font-weight: normal;
+    text-align: center;
+}
+.num, .num-red, .num-orange, .num-yellow, .num-green, .num-lgreen {
+    text-align: right;
+}
+.red, .num-red {
     background-color: red;
 }
-.orange {
+.orange, .num-orange {
     background-color: orange;
-}.yellow {
+}
+.yellow, .num-yellow {
     background-color: yellow;
 }
-.green {
+.green, .num-green {
     background-color: green;
 }
-.lightgreen {
+.lgreen, .num-lgreen {
     background-color: lightgreen;
 }
 </style>
@@ -182,11 +197,14 @@ END_HEAD
 <p>The numbers showing the number of errors. An empty cell means that translation does not exist at all</p>
 <p>Generated on: $time (it is generated using a cron-job)</p>
 
-<table>
+<table id="legend">
+<caption>Legend</caption>
+<tbody>
 <tr><td class="red">more than 40% missing</td></tr>
 <tr><td class="yellow">10%-40% missing</td></tr>
 <tr><td class="green">less than 10% missing</td></tr>
-<tr><td class="lightgreen">perfect</td></tr>
+<tr><td class="lgreen">perfect</td></tr>
+</tbody>
 </table>
 
 <table border="1">
@@ -202,7 +220,7 @@ END_HTML
 	my %totals;
 
 	foreach my $project ( sort keys %reports ) {
-		$html .= "<tr><th>$project</th><td>";
+		$html .= "<tr><th>$project</th><td class='num'>";
 		my $total = $reports{$project}{total};
 		$html .= defined $total ? $total : '&nbsp;';
 		$total ||= 0;
@@ -220,7 +238,7 @@ END_HTML
 				} else {
 
 					#$html .= '<td class=red>-';
-					$html .= "<td class='red'>$reports{$project}{total}";
+					$html .= "<td class='num-red'>$reports{$project}{total}";
 					$totals{$language} += $reports{$project}{total};
 				}
 			} else {
@@ -246,11 +264,11 @@ END_HTML
 	$html .= "<table>";
 	foreach my $language (@languages) {
 		my $p = 100 - int( 100 * $totals{$language} / $totals{total} );
-		$html .= "<tr><td>$language</td><td><img src='../img/$p.png' alt='$p %'/></td><td>$p %</td></tr>\n";
+		$html .= "<tr><th>$language</th><td><img src='../img/$p.png' alt='$p %'/></td><td class='num'>$p %</td></tr>\n";
 	}
 	$html .= "</table>";
 
-	$html .= "<p>Errors</p>\n";
+	$html .= "<h2>Errors</h2>\n";
 	if ($errors) {
 		$html .= "<pre>\n$errors\n</pre>\n";
 	} else {
@@ -266,22 +284,22 @@ END_HTML
 }
 
 sub _header {
-	return "<tr><td></td><td>Total</td>" . ( join "", map {"<td>$_</td>"} @_ ) . "</tr>\n";
+	return "<tr><td></td><th>Total</th>" . ( join "", map {"<th class='lang'>$_</th>"} @_ ) . "</tr>\n";
 }
 
 sub _td_open {
 	my ( $errors, $total ) = @_;
 	if ( $errors > $total * 0.40 ) {
-		return q(<td class="red">);
+		return q(<td class="num-red">);
 
 		#	} elsif ( $errors > $total * 0.20 ) {
 		#		return q(<td class=orange>);
 	} elsif ( $errors > $total * 0.10 ) {
-		return q(<td class="yellow">);
+		return q(<td class="num-yellow">);
 	} elsif ( $errors > 0 ) {
-		return q(<td class="green">);
+		return q(<td class="num-green">);
 	} else {
-		return q(<td class="lightgreen">);
+		return q(<td class="num-lgreen">);
 	}
 }
 
