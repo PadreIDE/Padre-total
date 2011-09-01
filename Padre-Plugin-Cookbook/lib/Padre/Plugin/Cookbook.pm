@@ -55,14 +55,6 @@ sub menu_plugins_simple {
 	];
 }
 
-# sub plugin_icon {
-# my $class = shift;
-# my $share = $class->plugin_directory_share or return;
-# my $file  = File::Spec->catfile( $share, 'icons', '16x16', 'cookbook.png' );
-# return unless -f $file;
-# return unless -r $file;
-# return Wx::Bitmap->new( $file, Wx::wxBITMAP_TYPE_PNG );
-# }
 
 #######
 # Add icon to Plugin
@@ -82,12 +74,9 @@ sub plugin_icon {
 #######
 sub plugin_disable {
 	my $self = shift;
-
+	
 	# Close the dialog if it is hanging around
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	$self->clean_dialog;
 
 	# Unload all our child classes
 	$self->unload(
@@ -122,12 +111,9 @@ sub load_dialog_recipe01_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-
-	# Clean up any previous existing dialog
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new dialog
 	require Padre::Plugin::Cookbook::Recipe01::Main;
@@ -146,12 +132,9 @@ sub load_dialog_recipe02_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-
-	# Clean up any previous existing dialog
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new dialog
 	require Padre::Plugin::Cookbook::Recipe02::Main;
@@ -170,12 +153,9 @@ sub load_dialog_recipe03_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-
-	# Clean up any previous existing dialog
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new dialog
 	require Padre::Plugin::Cookbook::Recipe03::Main;
@@ -194,12 +174,9 @@ sub load_dialog_recipe04_main {
 
 	# Padre main window integration
 	my $main = $self->main;
-
-	# Clean up any previous existing dialog
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new dialog
 	require Padre::Plugin::Cookbook::Recipe04::Main;
@@ -208,6 +185,22 @@ sub load_dialog_recipe04_main {
 	$self->{dialog}->set_up;
 
 	return;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
 }
 
 1;

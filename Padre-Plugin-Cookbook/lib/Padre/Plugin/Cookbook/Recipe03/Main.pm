@@ -3,9 +3,6 @@ package Padre::Plugin::Cookbook::Recipe03::Main;
 use 5.010;
 use strict;
 use warnings;
-# use diagnostics;
-# use utf8;
-# use autodie;
 
 # Version required
 use version; our $VERSION = qv(0.14);
@@ -47,9 +44,18 @@ sub about_clicked {
 #######
 sub plugin_disable {
 	my $self = shift;
-	require Class::Unload;
-	$self->unload('Padre::Plugin::Cookbook::Recipe03::About');
-	$self->unload('Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB');
+
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
+	# Unload all our child classes
+	$self->unload(
+		qw{
+			Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
+			Padre::Plugin::Cookbook::Recipe03::About
+			}
+	);
+	$self->SUPER::plugin_disable(@_);
 	return 1;
 }
 
@@ -61,11 +67,8 @@ sub load_dialog_about {
 	my $self = shift;
 	my $main = $self->main;
 
-	# Clean up any previous existing about
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new about
 	require Padre::Plugin::Cookbook::Recipe03::About;
@@ -75,6 +78,21 @@ sub load_dialog_about {
 	return;
 }
 
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
+}
 1;
 
 __END__
@@ -164,4 +182,3 @@ RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
 FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
 SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
 SUCH DAMAGES.
-
