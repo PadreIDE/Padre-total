@@ -186,7 +186,6 @@ sub launch_pdf_viewer {
 	return;
 }
 
-
 sub editor_enable {
 	my $self     = shift;
 	my $editor   = shift;
