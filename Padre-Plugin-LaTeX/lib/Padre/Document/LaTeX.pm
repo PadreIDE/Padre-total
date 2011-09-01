@@ -62,7 +62,7 @@ my @latex_commands = qw/
 	maketitle
 	newcommand newpage
 	pagebreak pagestyle
-	raggedleft raggedright ref
+	raggedleft raggedright ref renewcommand
 	subtitle
 	tableofcontents textbar textbf textcolor textgreater textit textless textsc
 	TeX texttt thepage title titlegraphic today
@@ -97,7 +97,7 @@ my @latex_commands = qw/
 	wedge wr
 
 	bigskip DeclareOptionBeamer defbeamertemplate frame framesubtitle frametitle mode note
-	ProcessOptionsBeamer
+	only pause ProcessOptionsBeamer
 	setbeamercolor setbeamersize setbeameroption setbeamertemplate usebeamerfont usetheme
 
 	fancyhead fancyfoot headheight headrulewidth footrulewidth
@@ -130,7 +130,7 @@ my @latex_environments = qw/
 
 	column columns
 
-	beamercolorbox frame
+	beamercolorbox block example frame overlayarea overprint proof theorem
 	/;
 push @latex_environments, @latex_star_environments;
 

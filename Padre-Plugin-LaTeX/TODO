@@ -23,6 +23,9 @@ TODO
    - support * variants of environments
    - support multicolumn
    - support LaTeX command parameters
+     - support optional commands
+   - support more packages; use options to configure which commands are supported
+   - configure using YAML file, not in code
  - create DVI, PS, PDF
    - display errors
    - jump to error location in file

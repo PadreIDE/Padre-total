@@ -1,6 +1,6 @@
 Changes for Padre-Plugin-LaTeX
 
-0.12   2011.08.??
+0.12   2011.09.01
         - add interface dependency to Wx::Main (BOWTIE)
         - add menu_disable method (BOWTIE, ZENOG)
         - compatibility with Padre 0.89 and later (ZENOG)
