@@ -140,7 +140,9 @@ sub current_files {
 	my $current  = $main->current;
 	my $notebook = $current->notebook;
 	my @label    = $notebook->labels;
-	$self->{tab_cardinality} = scalar(@label) - 1;
+
+	# get last element # not size
+	$self->{tab_cardinality} = $#label;
 
 	# thanks Alias
 	my @file_vcs = map { $_->project->vcs } Padre::Current->main->documents;
@@ -274,7 +276,7 @@ sub set_selection {
 	my $main = $self->main;
 
 	# SetSelection should be current file
-	foreach ( 0 .. @{ $self->{file1_list_ref} } - 1 ) {
+	foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
 
 		if ( @{ $self->{file1_list_ref} }[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
