@@ -43,7 +43,7 @@ sub comment_lines_str {
 }
 
 my @latex_star_commands = qw/
-	chapter paragraph section subsection subsubsection 
+	chapter paragraph section subsection subsubsection
 /;
 
 my @latex_commands = qw/
@@ -101,9 +101,9 @@ my @latex_commands = qw/
 	setbeamercolor setbeamersize setbeameroption setbeamertemplate usebeamerfont usetheme
 
 	fancyhead fancyfoot headheight headrulewidth footrulewidth
-	
+
 	acro ac acs acf acl
-	
+
 	For ForAll Procedure Repeat State Until While
 	/;
 push @latex_commands, @latex_star_commands;
