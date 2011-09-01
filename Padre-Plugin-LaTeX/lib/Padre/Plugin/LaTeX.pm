@@ -54,16 +54,16 @@ sub menu_plugins_simple {
 
 sub plugin_disable {
 	my $self = shift;
-	
-	if ( $self->{about_box} ) { 
-		$self->{about_box}->Destroy; 
-		$self->{about_box} = undef; 
- 	} 	
-	
+
+	if ( $self->{about_box} ) {
+		$self->{about_box}->Destroy;
+		$self->{about_box} = undef;
+ 	}
+
 	#require Class::Unload;
 	#Class::Unload->unload('Padre::Document::LaTeX');
 	#Class::Unload->unload('Padre::Document::BibTeX');
-	
+
 	return 1;
 }
 
