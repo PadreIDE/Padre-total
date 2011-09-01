@@ -103,6 +103,7 @@ sub clean_dialog {
 
 	# Close the main dialog if it is hanging around
 	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
 		$self->{dialog}->Destroy;
 		delete $self->{dialog};
 	}
