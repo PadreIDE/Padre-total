@@ -727,13 +727,19 @@ sub about_menu_clicked {
 sub plugin_disable {
 	my $self = shift;
 
-	# require Class::Unload;
-	# $self->unload(
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
+
 	# Unload all our child classes
 	$self->unload(
-		qw{ Padre::Plugin::Cookbook::Recipe04::About
-			Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB }
+		qw{
+			Padre::Plugin::Cookbook::Recipe04::About
+			Padre::Plugin::Cookbook::Recipe04::FBP::AboutFB
+			}
 	);
+
+	$self->SUPER::plugin_disable(@_);
+
 	return 1;
 }
 
@@ -745,11 +751,8 @@ sub load_dialog_about {
 	my $self = shift;
 	my $main = $self->main;
 
-	# Clean up any previous existing about
-	if ( $self->{dialog} ) {
-		$self->{dialog}->Destroy;
-		$self->{dialog} = undef;
-	}
+	# Close the dialog if it is hanging around
+	$self->clean_dialog;
 
 	# Create the new about
 	require Padre::Plugin::Cookbook::Recipe04::About;
@@ -757,6 +760,22 @@ sub load_dialog_about {
 	$self->{dialog}->Show;
 
 	return;
+}
+
+########
+# Composed Method clean_dialog
+########
+sub clean_dialog {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{dialog} ) {
+		$self->{dialog}->Hide;
+		$self->{dialog}->Destroy;
+		delete $self->{dialog};
+	}
+
+	return 1;
 }
 
 no Moose;

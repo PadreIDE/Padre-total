@@ -51,11 +51,13 @@ sub plugin_disable {
 	# Unload all our child classes
 	$self->unload(
 		qw{
-			Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
 			Padre::Plugin::Cookbook::Recipe03::About
+			Padre::Plugin::Cookbook::Recipe03::FBP::AboutFB
 			}
 	);
+
 	$self->SUPER::plugin_disable(@_);
+
 	return 1;
 }
 

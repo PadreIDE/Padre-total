@@ -4,7 +4,9 @@ use 5.010001;
 use strict;
 use warnings;
 
-# use Padre::Plugin ();
+use Padre::Plugin;
+use Padre::Util;
+use Padre::Wx;
 
 our $VERSION = '0.141';
 use parent qw(Padre::Plugin);
@@ -74,10 +76,10 @@ sub plugin_icon {
 #######
 sub plugin_disable {
 	my $self = shift;
-	
+		
 	# Close the dialog if it is hanging around
 	$self->clean_dialog;
-
+	
 	# Unload all our child classes
 	$self->unload(
 		qw{
