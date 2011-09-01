@@ -1,4 +1,7 @@
-0.02    2011.06.??
+0.03	2011.09.01
+	compatibility to Padre 0.90 (ZENOG)
+
+0.02    2011.06.25
         compatibility to newer versions of Padre (ZENOG)
 	add $VERSION variable (ZENOG)
 	add comment support (ZENOG)

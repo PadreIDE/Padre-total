@@ -17,7 +17,7 @@ sub plugin_name {
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81, 'Padre::Wx::Main' => 0.86;
+	'Padre::Plugin' => 0.89, 'Padre::Document' => 0.89, 'Padre::Wx::Main' => 0.89;
 }
 
 sub registered_documents {
