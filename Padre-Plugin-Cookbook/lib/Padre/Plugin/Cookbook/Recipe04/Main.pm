@@ -4,10 +4,6 @@ use 5.010;
 use strict;
 use warnings;
 
-# use diagnostics;
-# use utf8;
-# use autodie;
-
 # Avoids regex performance penalty
 use English qw( -no_match_vars );
 
@@ -21,7 +17,6 @@ use Moose;
 use namespace::autoclean;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
-# use Try::Tiny;
 use Data::Printer { caller_info => 1 };
 use Carp;
 
@@ -196,8 +191,8 @@ sub _on_list_item_activated {
 
 	# redefine tuples
 	my @tuples = Padre::DB::SessionFile->select("WHERE session = $session_id");
-
-	for ( 0 .. ( @tuples - 1 ) ) {
+	
+	for ( 0 .. $#tuples ) {
 		say $tuples[$_][1];
 	}
 
@@ -306,8 +301,7 @@ sub clean_session {
 	my $main = $self->main;
 
 	$main->info( Wx::gettext('Cleaning Session relation') );
-	for ( 0 .. ( @tuples - 1 ) ) {
-
+	for ( 0 .. $#tuples ) {
 		my @children = Padre::DB::SessionFile->select("WHERE session = $tuples[$_][0]");
 
 		if ( @children eq 0 ) {
@@ -339,7 +333,7 @@ sub clean_session_files {
 	my @session_files = $self->config_db->select( $self->sql_select );
 	my @files;
 
-	for ( 0 .. ( @session_files - 1 ) ) {
+	for ( 0 .. $#session_files ) {
 		push @files, $session_files[$_][1];
 	}
 	foreach (@files) {
@@ -372,8 +366,8 @@ sub clean_lastpositioninfile {
 	$main->info( Wx::gettext('Cleaning LastPositionInFile relation') );
 	my @lastpositioninfile_files = $self->config_db->select( $self->sql_select );
 	my @files;
-
-	for ( 0 .. ( @lastpositioninfile_files - 1 ) ) {
+	
+	for ( 0 .. $#lastpositioninfile_files ) {
 		push @files, $lastpositioninfile_files[$_][0];
 	}
 	foreach (@files) {
