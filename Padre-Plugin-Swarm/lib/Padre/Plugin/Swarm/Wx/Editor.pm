@@ -82,7 +82,6 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub canonical_resource {
 	my $self = shift;
 	my $name = shift;
-	#$self->universe->token 
 	return $self . '@' . $name;
 }
 
@@ -92,11 +91,6 @@ sub editor_enable {
 	return unless $document && $document->filename;
 	
 	
-	# really we should only track this on editors that other swarmers have
-	# taken an interest in
-	#Wx::Event::EVT_STC_MODIFIED( $editor , -1,  
-        #    sub { $self->on_editor_modified(@_) }
-        #);
 
 	$self->universe->send(
 		{ 
@@ -137,7 +131,7 @@ sub editor_disable {
 sub on_recv {
 	my ($self,$message) = @_;
 	my $handler = 'accept_' . $message->{type};
-	TRACE( $handler ) if DEBUG;
+	TRACE( $handler ) ;#if DEBUG;
 	if ($self->can($handler)) {
 		eval { $self->$handler($message) };
 		TRACE( "$handler failed - $@" ) if DEBUG && $@;
@@ -166,8 +160,8 @@ sub on_editor_modified {
     my $pos = $event->GetPosition;
     my $len = $event->GetLength;
     
-    #Debugging noise
-    #my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $file";
+    # #Debugging noise
+    # my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $resource";
     # $self->universe->send(
         # { type=>'chat', body=>$payload,
             # op   => $type,
@@ -179,7 +173,7 @@ sub on_editor_modified {
     $self->universe->send(
         {   
             type=>'delta' , service=>'editor', op=>$op,
-            body=>$text, pos=>$pos,
+            body=>$text, pos=>$pos, 
             resource=>$resource,
         }
     );
@@ -206,12 +200,12 @@ sub accept_openme {
     # Skip anything not addressed to us.
     if ( $message->to ne $self->plugin->identity->nickname ) 
     {
-	return;
+        return;
     }
     
     my $doc = $self->plugin->main->new_document_from_string( $message->body );
     TRACE( "Storing $doc with " . $message->{resource} ) if DEBUG;
-    $self->{documents}{$message->{resource}} = $doc;
+    $self->{documents}{ $message->{resource} } = $doc;
     
 }
 
@@ -236,11 +230,12 @@ sub accept_gimme {
 				type => 'openme',
 				service => 'editor',
 				body => $document->text_get,
-				resource => $document->filename,
+				resource => $r,
 				to   => $message->from ,
 			}
 		);
 	} else {
+		# tell any future requestors to forget this resource
 		$self->universe->send(
 			{ type => 'destroy', service=>'editor', resource=>$r }
 		);
@@ -265,7 +260,7 @@ sub accept_disco {
 	    eval  {
 		$self->transport->send(
 				{ type => 'promote', service => 'editor',
-				  resource => $doc->filename }
+				  resource => $self->canonical_resource( $doc->filename ) }
 				);
 	    };
 	    
@@ -329,6 +324,7 @@ Half baked operational transform
 sub accept_delta {
     my ($self,$message)=@_;
     # Ignore loopback
+    TRACE( "Got delta from " . $message->{from} );
     return if ($message->{token} eq $self->transport->token);
     
     if ( exists $self->{documents}{$message->{resource}} ) {
