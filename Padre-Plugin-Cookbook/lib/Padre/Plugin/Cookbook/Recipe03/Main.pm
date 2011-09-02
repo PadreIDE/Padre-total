@@ -75,7 +75,7 @@ sub load_dialog_about {
 	# Create the new about
 	require Padre::Plugin::Cookbook::Recipe03::About;
 	$self->{dialog} = Padre::Plugin::Cookbook::Recipe03::About->new($main);
-	$self->{dialog}->Show;
+	$self->{dialog}->ShowModal;
 
 	return;
 }
