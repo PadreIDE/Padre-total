@@ -2,11 +2,18 @@
 use strict;
 use warnings;
 
+#
 # update messages.pot file with new strings detected.
 #
 use Cwd qw{ cwd };
 use File::Spec::Functions qw{ catfile catdir };
 use File::Find::Rule;
+use Getopt::Long;
+
+GetOptions (
+	'verbose'  => \(my $verbose = 0),
+	'cleanup!' => \(my $cleanup = 1),
+) or die "Error while parsing command-line parameters.\n";
 
 my $cwd = cwd;
 my $localedir = catdir( $cwd, 'share', 'locale' );
@@ -29,10 +36,10 @@ unless ( -d $localedir ) {
 }
 
 my $pot_file = catfile( $localedir, 'messages.pot' );
-my $pmfiles  = catfile( $cwd,       'files.txt' );
+my $pmfiles  = catfile( $cwd,       'pm-files.txt' );
 
 # build list of perl modules from where to extract strings
-my @pmfiles = grep {/^lib/} File::Find::Rule->file()->name("*.pm")->relative->in($cwd);
+my @pmfiles = grep {/^lib/} File::Find::Rule->file()->name('*.pm')->relative->in($cwd);
 open my $fh, '>', $pmfiles or die "cannot open '$pmfiles': $!\n";
 print $fh map {"$_$/"} @pmfiles;
 close $fh;
@@ -44,8 +51,11 @@ if ( $gettext ne 'xgettext (GNU gettext-tools) 0.17' ) {
 	die "Due to bug #1132 we only allow the use of v0.17 of xgettext\n";
 }
 
-system( "xgettext", "--keyword=_T", "--from-code=utf-8", "-o", $pot_file, "-f", $pmfiles, "--sort-output" ) == 0
-	or die "xgettext exited with return code " . ( $? >> 8 );
+print STDERR (join ' ', 'xgettext', '--keyword=_T', '--from-code=utf-8', '-o', $pot_file, '-f', $pmfiles, '--sort-output') . "\n" if $verbose;
+system( 'xgettext', '--keyword=_T', '--from-code=utf-8', '-o', $pot_file, '-f', $pmfiles, '--sort-output' ) == 0
+	or die 'xgettext exited with return code ' . ( $? >> 8 ) . "\n";
 
 # cleanup
-unlink $pmfiles;
+if ($cleanup) {
+	unlink $pmfiles;
+}
