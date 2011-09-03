@@ -9,7 +9,7 @@ use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
 use Padre::Logger;
 
-use Data::Printer { caller_info => 1 };
+# use Data::Printer { caller_info => 1 };
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
@@ -32,7 +32,8 @@ sub new {
 #######
 sub set_up {
 	my $self = shift;
-	my $main = $self->main;
+
+	# my $main = $self->main;
 
 	# generate open file bucket
 	current_files($self);
@@ -258,8 +259,6 @@ sub file1_list_svn {
 		}
 	}
 
-	p $self->{file1_list_ref};
-
 	TRACE("file1_list_svn: @{ $self->{file1_list_ref} }") if DEBUG;
 
 	$self->file1->Clear;
@@ -270,29 +269,6 @@ sub file1_list_svn {
 	return;
 }
 
-# sub file1_list_svn {
-# my $self = shift;
-# my @file1_list_svn;
-
-# # 	for ( 0 .. $self->{tab_cardinality} ) {
-# if (   ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
-# && !( $self->{open_file_info}->{$_}->{'changed'} )
-# && !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) )
-# {
-# push @file1_list_svn, $self->{open_file_info}->{$_}->{'filename'};
-# }
-# }
-
-# # 	TRACE("file1_list_svn: @file1_list_svn") if DEBUG;
-
-# # 	$self->file1->Clear;
-# $self->file1->Append( \@file1_list_svn );
-# $self->{file1_list_ref} = \@file1_list_svn;
-# set_selection($self);
-# $self->file1->SetSelection( $self->{selection} );
-
-# # 	return;
-# }
 
 #######
 # Composed Method set_selection
@@ -342,16 +318,13 @@ sub apply_patch {
 	my $file2_url = filename_url( $self, $file2_name );
 
 	if ( -e $file1_url ) {
-		TRACE("found $file1_name: $file1_url") if DEBUG;
+		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
 		$source = File::Slurp::read_file($file1_url);
-		p $source;
 	}
 
 	if ( -e $file2_url ) {
-		TRACE("found $file2_name: $file2_url") if DEBUG;
-
+		TRACE("found file2 => $file2_name: $file2_url") if DEBUG;
 		$diff = File::Slurp::read_file($file2_url);
-		p $diff;
 		unless ( $file2_url =~ /(patch|diff)$/sxm ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
@@ -364,20 +337,18 @@ sub apply_patch {
 		my $our_patch;
 		eval { $our_patch = Text::Patch::patch( $source, $diff, { STYLE => 'Unified' } ); };
 		if ($@) {
-			p $@;
+			TRACE("error trying to patch: $@") if DEBUG;
 			$main->info(
 				Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
 			return;
-		}
-		else {
-		TRACE($our_patch) if DEBUG;
+		} else {
+			TRACE($our_patch) if DEBUG;
 
-		# Open the patched file as a new file
-		$main->new_document_from_string( $our_patch => 'application/x-perl', );
-		$main->info( Wx::gettext('Patch Succesful, you should see a new tab in editor called Unsaved #') );
-	} 
-	# else {
-		# $main->info( Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
+			# Open the patched file as a new file
+			$main->new_document_from_string( $our_patch => 'application/x-perl', );
+			$main->info( Wx::gettext('Patch Succesful, you should see a new tab in editor called Unsaved #') );
+		}
+
 	}
 
 	return;
@@ -396,11 +367,11 @@ sub make_patch_diff {
 	my $file2_url = filename_url( $self, $file2_name );
 
 	if ( -e $file1_url ) {
-		TRACE("found $file1_url: $file1_url") if DEBUG;
+		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
 	}
 
 	if ( -e $file2_url ) {
-		TRACE("found $file2_url: $file2_url") if DEBUG;
+		TRACE("found file2 => $file2_name: $file2_url") if DEBUG;
 	}
 
 	if ( -e $file1_url && -e $file2_url ) {
