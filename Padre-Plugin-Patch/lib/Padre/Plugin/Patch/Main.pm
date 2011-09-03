@@ -33,8 +33,6 @@ sub new {
 sub set_up {
 	my $self = shift;
 
-	# my $main = $self->main;
-
 	# generate open file bucket
 	current_files($self);
 
@@ -65,7 +63,6 @@ sub process_clicked {
 	}
 
 	if ( $self->action->GetStringSelection() eq 'Diff' ) {
-
 		if ( $self->against->GetStringSelection() eq 'File-2' ) {
 			$self->make_patch_diff( $file1, $file2 );
 		} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
@@ -84,6 +81,7 @@ sub process_clicked {
 #######
 sub on_action {
 	my $self = shift;
+
 	if ( $self->action->GetStringSelection() eq 'Patch' ) {
 
 		$self->{action_request} = 'Patch';
@@ -92,7 +90,6 @@ sub on_action {
 		$self->file2->Enable(1);
 	} else {
 
-		# Diff
 		$self->{action_request} = 'Diff';
 		$self->set_up;
 		$self->against->Enable(1);
@@ -335,20 +332,19 @@ sub apply_patch {
 
 		require Text::Patch;
 		my $our_patch;
-		eval { $our_patch = Text::Patch::patch( $source, $diff, { STYLE => 'Unified' } ); };
-		if ($@) {
-			TRACE("error trying to patch: $@") if DEBUG;
-			$main->info(
-				Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
-			return;
-		} else {
+		if ( eval { $our_patch = Text::Patch::patch( $source, $diff, { STYLE => 'Unified' } ) } ) {
+
 			TRACE($our_patch) if DEBUG;
 
 			# Open the patched file as a new file
 			$main->new_document_from_string( $our_patch => 'application/x-perl', );
 			$main->info( Wx::gettext('Patch Succesful, you should see a new tab in editor called Unsaved #') );
+		} else {
+			TRACE("error trying to patch: $@") if DEBUG;
+			$main->info(
+				Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
+			return;
 		}
-
 	}
 
 	return;
@@ -377,14 +373,7 @@ sub make_patch_diff {
 	if ( -e $file1_url && -e $file2_url ) {
 		require Text::Diff;
 		my $our_diff;
-		eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ); };
-		if ($@) {
-			TRACE("error trying to patch: $@") if DEBUG;
-			$main->info(
-				Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
-			return;
-		} else {
-
+		if ( eval { $our_diff = Text::Diff::diff( $file1_url, $file2_url, { STYLE => 'Unified' } ) } ) {
 			TRACE($our_diff) if DEBUG;
 
 			my $patch_file = $file1_url . '.patch';
@@ -394,6 +383,11 @@ sub make_patch_diff {
 
 			$main->setup_editor($patch_file);
 			$main->info( Wx::gettext("Diff Succesful, you should see a new tab in editor called $patch_file") );
+		} else {
+			TRACE("error trying to patch: $@") if DEBUG;
+			$main->info(
+				Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
+			return;
 		}
 	}
 
