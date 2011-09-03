@@ -379,7 +379,7 @@ sub on_text_char {
         my ($fragment) = $partial =~ /(\w+)$/;
         return unless $fragment;
         
-        my @users = $self->plugin->geometry->get_users;
+        my @users = $self->universe->geometry->get_users;
         my @possible = grep { $_ =~ /^$fragment/ } @users;
         if ( scalar @possible == 1 ) {
         	my $replace = shift @possible;
