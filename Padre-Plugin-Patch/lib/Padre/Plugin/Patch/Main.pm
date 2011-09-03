@@ -415,26 +415,32 @@ sub make_patch_svn {
 
 	if ( eval { require SVN::Class } ) {
 		TRACE('found SVN::Class, Good to go') if DEBUG;
+		my $file;
+		if ( eval { $file = SVN::Class::svn_file($file1_url) } ) {
 
-		my $file = SVN::Class::svn_file($file1_url);
-		$file->diff;
+			$file->diff;
 
-		# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
-		# TRACE output is yuck
-		TRACE( @{ $file->stdout } ) if DEBUG;
-		my $diff_str = join "\n", @{ $file->stdout };
+			# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
+			# TRACE output is yuck
+			TRACE( @{ $file->stdout } ) if DEBUG;
+			my $diff_str = join "\n", @{ $file->stdout };
 
-		TRACE($diff_str) if DEBUG;
+			TRACE($diff_str) if DEBUG;
 
-		my $patch_file = $file1_url . '.patch';
+			my $patch_file = $file1_url . '.patch';
 
-		File::Slurp::write_file( $patch_file, $diff_str );
-		TRACE("writing file: $patch_file") if DEBUG;
+			File::Slurp::write_file( $patch_file, $diff_str );
+			TRACE("writing file: $patch_file") if DEBUG;
 
-		$main->setup_editor($patch_file);
-		$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
+			$main->setup_editor($patch_file);
+			$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
+		} else {
+			TRACE("Error trying to get an SVN Diff: $@") if DEBUG;
+			$main->info(
+				Wx::gettext('Sorry Diff Failed, are you sure your have access to the repository for this action') );
+			return;
+		}
 	}
-
 	return;
 }
 
