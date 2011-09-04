@@ -5,6 +5,6 @@
 
 #polls ul li span {
     width: 150px;
-    float: left;
+    display: inline-block;
 }
 
