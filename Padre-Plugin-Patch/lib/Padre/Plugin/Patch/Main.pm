@@ -34,13 +34,13 @@ sub set_up {
 	my $self = shift;
 
 	# generate open file bucket
-	current_files($self);
+	$self->current_files();
 
 	# display default saved file lists
-	file_lists_saved($self);
+	$self->file_lists_saved();
 
 	# display correct file-2 list
-	file2_list_type($self);
+	$self->file2_list_type();
 
 	$self->against->SetSelection(0);
 
@@ -117,13 +117,13 @@ sub on_against {
 
 		# show saved files only
 		$self->file2->Enable(1);
-		file_lists_saved($self);
+		$self->file_lists_saved();
 
 	} elsif ( $self->against->GetStringSelection() eq 'SVN' ) {
 
 		# SVN only display files that are part of a SVN
 		$self->file2->Enable(0);
-		file1_list_svn($self);
+		$self->file1_list_svn();
 	}
 
 	return;
@@ -177,11 +177,11 @@ sub file2_list_type {
 	if ( $self->{action_request} eq 'Patch' ) {
 
 		# update File-2 = *.patch
-		file2_list_patch($self);
+		$self->file2_list_patch();
 	} else {
 
 		# File-1 = File-2 = saved files
-		file_lists_saved($self);
+		$self->file_lists_saved();
 	}
 
 	return;
@@ -206,7 +206,7 @@ sub file_lists_saved {
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->{file1_list_ref} = \@file_lists_saved;
-	set_selection($self);
+	$self->set_selection();
 	$self->file1->SetSelection( $self->{selection} );
 
 	$self->file2->Clear;
@@ -260,7 +260,7 @@ sub file1_list_svn {
 
 	$self->file1->Clear;
 	$self->file1->Append( $self->{file1_list_ref} );
-	set_selection($self);
+	$self->set_selection();
 	$self->file1->SetSelection( $self->{selection} );
 
 	return;
@@ -311,8 +311,8 @@ sub apply_patch {
 
 	my ( $source, $diff );
 
-	my $file1_url = filename_url( $self, $file1_name );
-	my $file2_url = filename_url( $self, $file2_name );
+	my $file1_url = $self->filename_url( $file1_name );
+	my $file2_url = $self->filename_url( $file2_name );
 
 	if ( -e $file1_url ) {
 		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
@@ -359,8 +359,8 @@ sub make_patch_diff {
 	my $file2_name = shift;
 	my $main       = $self->main;
 
-	my $file1_url = filename_url( $self, $file1_name );
-	my $file2_url = filename_url( $self, $file2_name );
+	my $file1_url = $self->filename_url( $file1_name );
+	my $file2_url = $self->filename_url( $file2_name );
 
 	if ( -e $file1_url ) {
 		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
@@ -403,7 +403,7 @@ sub make_patch_svn {
 	my $file1_name = shift;
 	my $main       = $self->main;
 
-	my $file1_url = filename_url( $self, $file1_name );
+	my $file1_url = $self->filename_url( $file1_name );
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
