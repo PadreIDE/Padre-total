@@ -1,21 +1,10 @@
-a:hover
-{
-    color: red;
+#polls ul {
+    list-style: none;
+    padding-left: 0px;
 }
-.styled_table th, .styled_table td
-{
-    vertical-align:top;
-    text-align: left;
-}
-.styled_table
-{
-    border-collapse: collapse;
-    overflow: hidden;
-}
-.styled_table td, .styled_table th
-{
-    border: 1.5pt black solid;
-    padding: 2pt;
-    padding-right: 20pt;
+
+#polls ul li span {
+    width: 150px;
+    float: left;
 }
 
