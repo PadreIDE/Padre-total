@@ -175,6 +175,9 @@ double stc_constant( const char* name, int arg )
         r( wxSTC_AVE_WORD4 );
         r( wxSTC_AVE_WORD5 );
         r( wxSTC_AVE_WORD6 );
+        r( wxSTC_ANNOTATION_HIDDEN );
+        r( wxSTC_ANNOTATION_STANDARD );
+        r( wxSTC_ANNOTATION_BOXED );
         break;
     case 'B':
         r( wxSTC_B_DEFAULT );
