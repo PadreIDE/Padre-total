@@ -1,10 +1,8 @@
 package Padre::Plugin::PerlTidy::Dialog;
 
-# ABSTRACT: A Perl Tidy plugin dialog
-
 use strict;
 use warnings;
-
+use File::Temp        ();
 use Padre::Wx::Dialog ();
 use Perl::Tidy;
 
@@ -20,9 +18,8 @@ my %conf = (
 );
 
 sub new {
-	my ($class) = @_;
-	my $self = bless {}, $class;
-
+	my $class = shift;
+	my $self  = bless {}, $class;
 	my $layout = get_view_layout();
 	my $dialog = dialog($layout);
 	$dialog->Show(1);
@@ -60,59 +57,6 @@ sub get_view_layout {
 
 	my @layout;
 
-	#    my @keys = sort keys %defaults;
-
-	# sub _add {
-	# my ($k) = @_;
-	# __add( $keys[$k] );
-	# }
-	#
-	# sub __add {
-	# my ($name) = @_;
-	# if ( $roption_range->{$name} ) {
-	# my $r = $roption_range->{$name};
-	#
-	# # for now we assume either 2 numbers as range ends or more than two exact values
-	# # this seems to be correct in version 2010/12/17
-	# # even though this might change
-	# my @values;
-	# if ( @$r == 2 ) {
-	# @values = ( $r->[0] .. $r->[1] );
-	# }
-	# else {
-	# @values = @$r;
-	# }
-	#
-	# return (
-	# [ 'Wx::StaticText', undef, $name ],
-	# [ 'Wx::Choice',     $name, \@values ],
-	# );
-	# }
-	# else {
-	# return [ 'Wx::CheckBox', $name, $name, 0 ];
-	# }
-	# }
-
-	# foreach my $i (0 .. int @keys / 3) {
-	# push @layout,
-	# [
-	# _add(3*$i),
-	# _add(3*$i+1),
-	# _add(3*$i+2),
-	# ],
-	# }
-	# if (1 == @keys % 3) {
-	# push @layout,
-	# [
-	# _add(-1),
-	# ],
-	# } elsif (2 == @keys % 3) {
-	# push @layout,
-	# [
-	# _add(-2),
-	# _add(-1),
-	# ],
-	# }
 	sub _dd {
 		my $name = shift;
 		if ( not exists $conf{$name} ) {
@@ -138,6 +82,7 @@ sub get_view_layout {
 		warn "Could not handle option '$name'";
 		return;
 	}
+
 	push @layout,
 		(
 		[ _dd('maximum-line-length'),    _dd('space-for-semicolon') ],
@@ -158,10 +103,8 @@ sub get_view_layout {
 
 sub dialog {
 	my $layout = shift;
-
 	my $main   = Padre->ide->wx->main;
 	my $config = Padre->ide->config;
-
 	my $dialog = Padre::Wx::Dialog->new(
 		parent => $main,
 		title  => Wx::gettext('Create New Component'),
@@ -170,7 +113,6 @@ sub dialog {
 		bottom => 20,
 	);
 
-	#	$dialog->{_widgets_}->{_ok_}->SetDefault;
 	Wx::Event::EVT_BUTTON(
 		$dialog, $dialog->{_widgets_}->{_tidy_all_},
 		\&tidy_all
@@ -185,8 +127,6 @@ sub dialog {
 		\&cancel_clicked
 	);
 
-	#	$dialog->{_widgets_}->{_name_}->SetFocus;
-
 	return $dialog;
 }
 
@@ -194,8 +134,6 @@ sub tidy_all {
 	my ( $dialog, $event ) = @_;
 	my $data = $dialog->get_widgets_values;
 
-	#	_collect_data
-	require File::Temp;
 	my $dir        = File::Temp::tempdir( CLEANUP => 1 );
 	my $perltidyrc = "$dir/perltidy";
 	my $opts       = '';
