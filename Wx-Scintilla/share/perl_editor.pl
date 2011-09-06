@@ -175,8 +175,8 @@ sub new {
 	} );
 
 	$self->AnnotationClearAll;
-	$self->AnnotationSetText(2, "1st line\nSecond line");
-	$self->AnnotationSetStyles(2, ['fore:#FFFFFF,back:#FF0000','fore:#FFFFFF,back:#FF0000']);
+	$self->AnnotationSetText(2, "1st\n2nd");
+	$self->AnnotationSetStyles(2, "\001\002\003\000\001\002\003");
 
 	#TODO must be in Wx namespace
 	$self->AnnotationSetVisible( wxSTC_ANNOTATION_BOXED );
