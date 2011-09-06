@@ -57,6 +57,7 @@ sub new {
         Wx::Colour->new( 0x7f, 0x7f, 0x00 ) );
 
     use constant {
+		# Must be defined by Wx::Scintilla
         wxSTC_PL_STRING_VAR    => 43,
         wxSTC_PL_XLAT          => 44,
         wxSTC_PL_REGEX_VAR     => 54,
@@ -108,6 +109,8 @@ sub new {
         wxSTC_PL_STRING_QQ_VAR() => $color2,
         wxSTC_PL_STRING_QX_VAR() => $color2,
         wxSTC_PL_STRING_QR_VAR() => $color2,
+
+        wxSTC_ANNOTATION_BOXED => 2,
     );
 
     for my $style ( keys %styles ) {
@@ -172,8 +175,11 @@ sub new {
     } );
 
     $self->AnnotationClearAll;
-    $self->AnnotationSetText(1, 'Perl rocks!');
-    $self->AnnotationSetVisible( 2 );
+    $self->AnnotationSetText(2, "1st line\nSecond line");
+    $self->AnnotationSetStyles(2, ['fore:#FFFFFF,back:#FF0000','fore:#FFFFFF,back:#FF0000']);
+
+	#TODO must be in Wx namespace
+    $self->AnnotationSetVisible( wxSTC_ANNOTATION_BOXED );
 
     $self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
     $self->SetIndicatorCurrent(0);
