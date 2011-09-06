@@ -19,9 +19,9 @@ our $VERSION = '0.2';
 our @ISA     = ('Padre::Plugin','Padre::Role::Task','Object::Event');
 
 sub padre_interfaces {
-	'Padre::Task' 		=> 0.91,
-	'Padre::Document' 	=> 0.91,
-	'Padre::Plugin' 	=> 0.91,
+	#'Padre::Task' 		=> 0.90,
+	#'Padre::Document' 	=> 0.91,
+	#'Padre::Plugin' 	=> 0.91,
 }
 
 use Class::XSAccessor {
@@ -75,7 +75,7 @@ sub on_swarm_service_message {
 	if (ref $incoming eq 'ARRAY') {
 		# Enveloped messages from the service are 'events'
 		my ($eventname,@args) = @$incoming;
-		TRACE( 'Posting Service event ' . $eventname );
+		TRACE( 'Posting Service event ' . $eventname ) if DEBUG;
 		$self->event($eventname,@args);
 		return;
 	} elsif ( _INVOCANT($incoming) ) {  # TODO be more explicit about INVOCANT
@@ -156,7 +156,7 @@ sub send {
 	TRACE( 'Sending to task ~ ' . $service ) if DEBUG;
 	# Be careful - we can race our task and send messages to it before it is ready
 	unless ($self->{service}) {
-		TRACE( "Queued service message in outbox" ) ;
+		TRACE( "Queued service message in outbox" ) if DEBUG;
 		push @outbox, [$origin,$message];
 		return;
 	}

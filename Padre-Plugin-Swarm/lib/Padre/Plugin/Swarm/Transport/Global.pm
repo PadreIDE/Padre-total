@@ -67,7 +67,7 @@ sub see_auth {
     my $handle = shift;
     my $message = shift;
     $self->unreg_cb('start_session');
-    
+    $self->{h} = $handle;
     $self->{token} = $message->{token};
     if ( $message->{session} eq 'authorized' ) {
         $self->{h}->on_read( sub {

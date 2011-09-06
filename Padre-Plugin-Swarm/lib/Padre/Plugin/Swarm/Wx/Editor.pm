@@ -131,7 +131,7 @@ sub editor_disable {
 sub on_recv {
 	my ($self,$message) = @_;
 	my $handler = 'accept_' . $message->{type};
-	TRACE( $handler ) ;#if DEBUG;
+	TRACE( $handler ) if DEBUG;
 	if ($self->can($handler)) {
 		eval { $self->$handler($message) };
 		TRACE( "$handler failed - $@" ) if DEBUG && $@;
@@ -221,7 +221,7 @@ sub accept_gimme {
 	
 	my $r = $message->{resource};
 	$r =~ s/^://;
-	TRACE( $message->{from} . ' requests resource ' . $r ) ;
+	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
 	
 	if ( exists $self->resources->{$r} ) {
 		my $document = $self->resources->{$r};

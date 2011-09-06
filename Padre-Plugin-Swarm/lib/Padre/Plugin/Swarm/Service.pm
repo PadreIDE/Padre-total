@@ -268,7 +268,7 @@ sub send_local {
 sub shutdown_service {
     my $self = shift;
     my $reason = shift;
-    TRACE( 'Shutdown service with reason ' . $reason );
+    TRACE( 'Shutdown service with reason ' . $reason ) if DEBUG;
     $self->{bailout}->send($reason);
 }
 
