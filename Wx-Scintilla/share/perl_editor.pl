@@ -68,6 +68,8 @@ sub new {
         wxSTC_PL_STRING_QQ_VAR => 64,
         wxSTC_PL_STRING_QX_VAR => 65,
         wxSTC_PL_STRING_QR_VAR => 66,
+
+        wxSTC_ANNOTATION_BOXED => 2,
     };
 
     my $color1 = Wx::Colour->new( 0xff, 0x7f, 0x00 );
@@ -109,8 +111,6 @@ sub new {
         wxSTC_PL_STRING_QQ_VAR() => $color2,
         wxSTC_PL_STRING_QX_VAR() => $color2,
         wxSTC_PL_STRING_QR_VAR() => $color2,
-
-        wxSTC_ANNOTATION_BOXED => 2,
     );
 
     for my $style ( keys %styles ) {
