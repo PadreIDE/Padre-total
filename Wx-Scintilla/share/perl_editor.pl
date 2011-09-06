@@ -184,6 +184,11 @@ sub new {
 	$self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
 	$self->SetIndicatorCurrent(0);
 	$self->IndicatorFillRange(0, 20);
+	
+	Wx::Event::EVT_STC_POSCHANGED( $self, $self, sub {
+		#my $event = shift;
+		print "pos changed to "; #. $event->position . "\n";
+	});
 
 	return $self;
 }
