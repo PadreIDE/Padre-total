@@ -174,9 +174,20 @@ sub new {
 		print "EVT_STC_INDICATOR_RELEASE triggered\n";
 	} );
 
+	my $WARNING_STYLE = 126;
+	my $ERROR_STYLE = $WARNING_STYLE + 1;
+	$self->StyleSetForeground( $WARNING_STYLE, Wx::Colour->new(0xAF, 0x80, 0x00) );
+	$self->StyleSetBackground( $WARNING_STYLE, Wx::Colour->new(0xFF, 0xFF, 0xF0) );
+	$self->StyleSetItalic( $WARNING_STYLE, 1 );
+	$self->StyleSetForeground( $ERROR_STYLE, Wx::Colour->new(0xAF, 0x00, 0x00) );
+	$self->StyleSetBackground( $ERROR_STYLE, Wx::Colour->new(0xFF, 0xF0, 0xF0) );
+	$self->StyleSetItalic( $ERROR_STYLE, 1 );
+
 	$self->AnnotationClearAll;
-	$self->AnnotationSetText(2, "1st\n2nd");
-	$self->AnnotationSetStyles(2, "\001\002\003\000\001\002\003");
+	my $annoText1 = "Warning\n";
+	my $annoText2 = "Error!";
+	$self->AnnotationSetText(2, $annoText1 . $annoText2);
+	$self->AnnotationSetStyles(2, sprintf("%c", $WARNING_STYLE) x length($annoText1) . sprintf("%c", $ERROR_STYLE) x length($annoText2));
 
 	#TODO must be in Wx namespace
 	$self->AnnotationSetVisible( wxSTC_ANNOTATION_BOXED );
@@ -185,11 +196,6 @@ sub new {
 	$self->SetIndicatorCurrent(0);
 	$self->IndicatorFillRange(0, 20);
 	
-	Wx::Event::EVT_STC_POSCHANGED( $self, $self, sub {
-		#my $event = shift;
-		print "pos changed to "; #. $event->position . "\n";
-	});
-
 	return $self;
 }
 
