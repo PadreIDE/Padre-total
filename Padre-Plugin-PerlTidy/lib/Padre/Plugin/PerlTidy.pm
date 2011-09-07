@@ -11,7 +11,7 @@ use Padre::Wx      ();
 use Padre::Plugin  ();
 use FindBin qw($Bin);
 
-our $VERSION = 0.19;
+our $VERSION = 0.18;
 our @ISA     = 'Padre::Plugin';
 
 # This constant is used when storing and restoring the cursor position.
@@ -46,14 +46,8 @@ sub menu_plugins_simple {
 		Wx::gettext('Export selected text to HTML file') => sub {
 			$self->export_selection;
 		},
-		'---'                         => undef,
-		Wx::gettext('Configure tidy') => sub {
-			$self->configure_tidy;
-		},
 	];
 }
-
-my $over_ride;
 
 
 
@@ -64,34 +58,33 @@ my $over_ride;
 
 sub tidy_document {
 	my $self     = shift;
-	my $current  = $self->current;
-	my $main     = $current->main;
-	my $document = $current->document;
+	my $main     = $self->main;
+	my $document = $self->current->document;
 	my $text     = $document->text_get;
 
 	# Tidy the entire current document
-	$over_ride = 0;
-	my $perltidyrc = $self->_which_tidyrc( $main, undef );
-	my $tidy = $self->_tidy( $main, $current, $text, $perltidyrc );
+	$self->{over_ride} = 0;
+	my $perltidyrc = $self->_which_tidyrc;
+	my $tidy = $self->_tidy( $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
 	}
 
 	# Overwrite the entire document
-	my ( $regex, $start ) = $self->_store_cursor_position($current);
+	my ( $regex, $start ) = $self->_get_cursor_position;
 	$document->text_set($tidy);
-	$self->_restore_cursor_position( $current, $regex, $start );
+	$self->_set_cursor_position( $regex, $start );
 }
 
 sub tidy_selection {
-	my $self     = shift;
-	my $current  = $self->current;
-	my $main     = $current->main;
-	my $text     = $current->text;
+	my $self    = shift;
+	my $main    = $self->main;
+	my $current = $self->current;
+	my $text    = $current->text;
 
 	# Tidy the current selected text
-	$over_ride = 0;
-	my $perltidyrc = $self->_which_tidyrc( $main, undef );
+	$self->{over_ride} = 0;
+	my $perltidyrc = $self->_which_tidyrc;
 	my $tidy = $self->_tidy( $main, $current, $text, $perltidyrc );
 	unless ( defined Params::Util::_STRING($tidy) ) {
 		return;
@@ -108,27 +101,15 @@ sub tidy_selection {
 }
 
 sub export_selection {
-	my $self    = shift;
-	my $current = $self->current;
-	my $main    = $current->main;
-	my $text    = $current->text;
-	$self->_export( $main, $text );
-	return;
+	my $self = shift;
+	my $text = $self->current->text or return;
+	$self->_export( $text );
 }
 
 sub export_document {
-	my $self    = shift;
-	my $current = $self->current;
-	my $main    = $current->main;
-	my $text    = $current->text_get;
-	$self->_export( $main, $text );
-	return;
-}
-
-sub configure_tidy {
-	require Padre::Plugin::PerlTidy::Dialog;
-	Padre::Plugin::PerlTidy::Dialog->new;
-	return;
+	my $self     = shift;
+	my $document = $self->current->document or return;
+	$self->_export( $document->text_get );
 }
 
 
@@ -140,11 +121,10 @@ sub configure_tidy {
 
 sub _tidy {
 	my $self       = shift;
-	my $main       = shift;
-	my $current    = shift;
 	my $source     = shift;
 	my $perltidyrc = shift;
-	my $document   = $current->document;
+	my $main       = $self->main;
+	my $document   = $self->current->document;
 
 	# Check for problems
 	unless ( defined $source ) {
@@ -163,7 +143,7 @@ sub _tidy {
 		destination => \$destination,
 		errorfile   => \$errorfile,
 	);
-	if ($over_ride) {
+	if ( $self->{over_ride} ) {
 		$tidyargs{'perltidyrc'} = $perltidyrc;
 	}
 
@@ -216,19 +196,18 @@ sub _tidy {
 }
 
 sub _export {
-	my $self = shift;
-	my $main = shift;
-	my $src  = shift;
+	my $self     = shift;
+	my $src      = shift;
+	my $main     = $self->main;
+	my $document = $main->current->document;
 	return unless defined $src;
 
-	my $doc = $main->current->document;
-
-	if ( !$doc->isa('Padre::Document::Perl') ) {
+	if ( !$document->isa('Padre::Document::Perl') ) {
 		$main->error( Wx::gettext('Document is not a Perl document') );
 		return;
 	}
 
-	my $filename = $self->_get_filename($main);
+	my $filename = $self->_get_filename;
 	return unless defined $filename;
 
 	my ( $output, $error );
@@ -243,7 +222,7 @@ sub _export {
 	$main->show_output(1);
 	$output = $main->output;
 
-	if ( my $tidyrc = $doc->project->config->config_perltidy ) {
+	if ( my $tidyrc = $document->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
 		$output->AppendText( "Perl\::Tidy running with project-specific configuration $tidyrc\n" );
 	} else {
@@ -261,10 +240,10 @@ sub _export {
 	}
 
 	if ( defined $error ) {
-		my $width = length( $doc->filename ) + 2;
+		my $width = length( $document->filename ) + 2;
 		my $main  = Padre::Current->main;
 
-		$output->AppendText( "\n\n" . "-" x $width . "\n" . $doc->filename . "\n" . "-" x $width . "\n" );
+		$output->AppendText( "\n\n" . "-" x $width . "\n" . $document->filename . "\n" . "-" x $width . "\n" );
 		$output->AppendText("$error\n");
 		$main->show_output(1);
 	}
@@ -273,22 +252,22 @@ sub _export {
 }
 
 sub _get_filename {
-	my $self        = shift;
-	my $main        = shift;
-	my $doc         = $main->current->document or return;
-	my $current     = $doc->filename;
-	my $default_dir = '';
+	my $self     = shift;
+	my $main     = $self->main;
+	my $document = $self->current->document or return;
+	my $filename = $document->filename;
+	my $dir      = '';
 
-	if ( defined $current ) {
-		$default_dir = File::Basename::dirname($current);
+	if ( defined $filename ) {
+		$dir = File::Basename::dirname($filename);
 	}
 
 	while (1) {
 		my $dialog = Wx::FileDialog->new(
 			$main,
 			Wx::gettext("Save file as..."),
-			$default_dir,
-			( $current or $doc->get_title ) . '.html',
+			$dir,
+			( $filename or $document->get_title ) . '.html',
 			"*.*",
 			Wx::wxFD_SAVE,
 		);
@@ -296,8 +275,8 @@ sub _get_filename {
 			return;
 		}
 		my $filename = $dialog->GetFilename;
-		$default_dir = $dialog->GetDirectory;
-		my $path = File::Spec->catfile( $default_dir, $filename );
+		$dir = $dialog->GetDirectory;
+		my $path = File::Spec->catfile( $dir, $filename );
 		if ( -e $path ) {
 			return $path
 				if $main->yes_no(
@@ -311,13 +290,12 @@ sub _get_filename {
 }
 
 # parameter: $main, compiled regex
-sub _restore_cursor_position {
-	my $self    = shift;
-	my $current = shift;
-	my $regex   = shift;
-	my $start   = shift;
-	my $editor  = $current->editor;
-	my $text    = $editor->GetTextRange(
+sub _set_cursor_position {
+	my $self   = shift;
+	my $regex  = shift;
+	my $start  = shift;
+	my $editor = $self->current->editor or return;
+	my $text   = $editor->GetTextRange(
 		( $start - SELECTIONSIZE ) > 0 ? $start - SELECTIONSIZE
 		: 0,
 		( $start + SELECTIONSIZE < $editor->GetLength ) ? $start + SELECTIONSIZE
@@ -337,11 +315,10 @@ sub _restore_cursor_position {
 # parameter: $current
 # returns: compiled regex, start position
 # compiled regex is /^./ if no valid regex can be reconstructed.
-sub _store_cursor_position {
-	my $self    = shift;
-	my $current = shift;
-	my $editor  = $current->editor;
-	my $pos     = $editor->GetCurrentPos;
+sub _get_cursor_position {
+	my $self   = shift;
+	my $editor = $self->current->editor or return;
+	my $pos    = $editor->GetCurrentPos;
 
 	my $start;
 	if ( ( $pos - SELECTIONSIZE ) > 0 ) {
@@ -369,42 +346,27 @@ sub _store_cursor_position {
 	return ( $regex, $start );
 }
 
-sub plugin_disable {
-	my $self = shift;
-	$self->unload('Padre::Plugin::PerlTidy::Dialog');
-	return;
-}
-
-#######
-# method _which_tidyrc
 # Pick the revelant tidyrc file
-#######
 sub _which_tidyrc {
-	my $self       = shift;
-	my $main       = shift;
-	my $perltidyrc = shift;
+	my $self = shift;
 
 	# perl tidy Padre/tools
 	if ( $ENV{'PADRE_DEV'} ) {
-		eval {
-			$perltidyrc = File::Spec->catfile( $Bin, '../../tools/perltidyrc' );
+		my $perltidyrc = eval {
+			File::Spec->catfile( $Bin, '../../tools/perltidyrc' );
 		};
 		if ( -e $perltidyrc ) {
-			$over_ride = 1;
+			$self->{over_ride} = 1;
 			return $perltidyrc;
+		} 
 
-		} else {
-			$main->config->info_on_statusbar(0);
-			$main->info( Wx::gettext("You need to install from SVN Padre/tools.") );
-			print " here we are \n";
-			Wx::MessageBox(
-				Wx::gettext("You need to install from SVN Padre/tools."),
-				Wx::gettext("tools/perltidyrc missing"),
-				Wx::wxCANCEL,
-				$main,
-			);
-			$main->config->info_on_statusbar(1);
-		}
+		my $main = $self->main;
+		Wx::MessageBox(
+			Wx::gettext("You need to install from SVN Padre/tools."),
+			Wx::gettext("tools/perltidyrc missing"),
+			Wx::wxCANCEL,
+			$main,
+		);
 	}
 
 	return;

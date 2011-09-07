@@ -1,6 +1,7 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
-
 use Test::More;
 
 BEGIN {
@@ -14,7 +15,7 @@ plan tests => 13;
 
 use Padre::Plugin::PerlTidy;
 
-{
+SCOPE: {
 	my @menu = Padre::Plugin::PerlTidy->menu_plugins_simple;
 	is @menu, 2, 'one menu item';
 	is $menu[0], 'Perl Tidy', 'plugin name';
