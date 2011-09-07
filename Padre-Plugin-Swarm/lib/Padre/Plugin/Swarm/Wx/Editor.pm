@@ -82,13 +82,13 @@ sub plugin { Padre::Plugin::Swarm->instance }
 
 sub canonical_resource {
 	my $self = shift;
-	my $name = shift;
-	my $current = Padre::Current->new( filename=>$name );
+	my $doc = shift;
+	my $current = Padre::Current->new( document=>$doc );
 
 	
 	my $project_dir = $current->document->project_dir;
 	my $base = File::Basename::basename( $project_dir );
-	my $shortpath = $name;
+	my $shortpath = $doc->filename;
 	$shortpath =~ s/^$project_dir//;
 	
 	my $canonical = sprintf(
@@ -127,12 +127,12 @@ sub editor_enable {
 	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
-			resource => $self->canonical_resource( $document->filename )
+			resource => $self->canonical_resource( $document )
 		}
 	);
 
 	$self->editors->{ refaddr $editor } = $editor;
-	$self->resources->{ $self->canonical_resource( $document->filename ) } = $document;
+	$self->resources->{ $self->canonical_resource( $document) } = $document;
 	
 	
 	TRACE( "Failed to promote editor open! $@" ) if DEBUG && $@;
@@ -149,12 +149,12 @@ sub editor_disable {
 			{
 				type => 'destroy' , 
 				service => 'editor',
-				resource => $self->canonical_resource( $document->filename )
+				resource => $self->canonical_resource( $document )
 			}
 	);
 
 	delete $self->editors->{refaddr $editor};
-	delete $self->resources->{ $self->canonical_resource( $document->filename ) };
+	delete $self->resources->{ $self->canonical_resource( $document) };
 
 }
 
@@ -178,7 +178,7 @@ sub on_editor_modified {
     return unless defined $doc;
     return unless $doc->filename;
     
-    my $resource = $self->canonical_resource($doc->filename);
+    my $resource = $self->canonical_resource($doc);
     my $time = $doc->timestamp;
     my $type = $event->GetModificationType;
     
@@ -292,17 +292,11 @@ sub accept_disco {
 	TRACE( $message->{from} . " disco" ) if DEBUG;
 	foreach my $doc ( values %{ $self->resources } ) {
 		TRACE( "Promoting " . $doc->filename ) if DEBUG;
-	    eval  {
-		$self->transport->send(
+		$self->universe->send(
 				{ type => 'promote', service => 'editor',
-				  resource => $self->canonical_resource( $doc->filename ) }
+				  resource => $self->canonical_resource( $doc ) }
 				);
-	    };
-	    
-	    if ($@) {
-			TRACE("Failed to send - $@" ) if DEBUG;
-		}
-	    
+
 	}
 	
 }
