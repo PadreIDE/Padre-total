@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 September 7
+        url: http://ahmadzawawi.blogspot.com/2011/09/fancy-syntax-checking-with-padre.html
+        title: Fancy syntax checking with Padre
+        comment: by Ahmad M. Zawawi
       - date: 2011 August 17
         url: http://ahmadzawawi.blogspot.com/2011/08/wxscintilla-latest-scintilla-in-box.html
         title: Wx::Scintilla - Latest Scintilla in a box
