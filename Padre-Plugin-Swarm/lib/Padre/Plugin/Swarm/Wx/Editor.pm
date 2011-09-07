@@ -3,6 +3,7 @@ package Padre::Plugin::Swarm::Wx::Editor;
 use strict;
 use warnings;
 use Scalar::Util qw( refaddr );
+use File::Basename;
 use Padre::Logger;
 
 use Class::XSAccessor
@@ -82,8 +83,39 @@ sub plugin { Padre::Plugin::Swarm->instance }
 sub canonical_resource {
 	my $self = shift;
 	my $name = shift;
-	return $self . '@' . $name;
+	my $current = Padre::Current->new( filename=>$name );
+
+	
+	my $project_dir = $current->document->project_dir;
+	my $base = File::Basename::basename( $project_dir );
+	my $shortpath = $name;
+	$shortpath =~ s/^$project_dir//;
+	
+	my $canonical = sprintf(
+		'owner=%s,project=%s,path=%s',
+		$self->universe, # owner
+		$base, 
+		$shortpath
+	); 
+	# TRACE( $canonical );
+	return $canonical;
+	
+	# The old way 
+	#return $self . '@' . $name;
 }
+
+sub resolve_resource {
+	my $self = shift;
+	my $r    = shift;
+	my ($owner,$project,$path) =
+		$r =~ m/^owner=(.+),project=(.+),path=(.+)$/;
+	# TRACE( $r );
+	# TRACE( 'Owner - ' . $owner );
+	# TRACE( 'Project - ' . $project);
+	# TRACE( 'Path(s) - ' . $path );
+	return ( owner => $owner , project => $project , path => $path );
+}
+
 
 
 sub editor_enable {
@@ -220,6 +252,9 @@ sub accept_gimme {
 	my ($self,$message) = @_;
 	
 	my $r = $message->{resource};
+	
+	my ($owner,$project,$path) = $self->resolve_resource( $r );
+	
 	$r =~ s/^://;
 	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
 	

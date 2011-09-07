@@ -79,7 +79,7 @@ sub accept_promote {
 	if ($message->{resource}) {
 		$self->graph->add_edge( 
 			$message->{from} , 
-			':' . $message->{resource} );
+			$message->{resource} );
 	}
 	
 
@@ -91,10 +91,10 @@ sub accept_destroy {
 	return unless $message->{resource};
 	
 	$self->graph->delete_edge( $message->{from} ,
-		':' . $message->{resource}
+		$message->{resource}
 	);
 		
-	$self->graph->delete_edge( ':' . $message->{resource} ,
+	$self->graph->delete_edge( $message->{resource} ,
 		$message->{service}
 	);
 	
