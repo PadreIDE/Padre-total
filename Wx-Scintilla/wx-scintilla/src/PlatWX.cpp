@@ -343,9 +343,11 @@ void SurfaceImpl::RectangleDraw(PRectangle rc, ColourAllocated fore, ColourAlloc
 }
 
 void SurfaceImpl::FillRectangle(PRectangle rc, ColourAllocated back) {
+    const wxPen oldPen = hdc->GetPen();
     BrushColour(back);
     hdc->SetPen(*wxTRANSPARENT_PEN);
     hdc->DrawRectangle(wxRectFromPRectangle(rc));
+    hdc->SetPen( oldPen );
 }
 
 void SurfaceImpl::FillRectangle(PRectangle rc, Surface &surfacePattern) {

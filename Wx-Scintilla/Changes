@@ -2,6 +2,7 @@ Revision history for Wx-Scintilla
 
 0.25_03 TBA
     - Removed stale yellowbrain.com parsed POD documentation (AZAWAWI)
+    - wxSTC_ANNOTATION_BOXED border was not being drawn (AZAWAWI)
 
 0.25_02 2011.9.6
     - Exposed annotations API (AZAWAWI)
