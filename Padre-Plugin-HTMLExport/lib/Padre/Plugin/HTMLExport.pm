@@ -6,6 +6,8 @@ use 5.008005;
 use warnings;
 use strict;
 
+our $VERSION = '0.09';
+
 use File::Basename ();
 
 use base 'Padre::Plugin';
