@@ -11,6 +11,8 @@ use Padre::Wx         ();
 use Padre::Wx::Dialog ();
 use Padre::DB         ();
 
+our $VERSION = '0.06';
+
 sub on_newapp {
 	my $plugin = shift;
 	my $main   = $plugin->main;
