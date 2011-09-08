@@ -69,13 +69,15 @@ sub nopaste {
 	$self->task_request(
 		task     => 'Padre::Plugin::Nopaste::Task',
 		document => $self,
-		callback => 'task_response',
+		callback => 'on_finish',
+		# callback => 'task_response',
 	);
 
 	return;
 }
 
-sub task_response {
+sub on_finish {
+# sub task_response {
 	#TRACE("nopaste_response") if DEBUG;
 	my $self = shift;
 	my $task = shift;
