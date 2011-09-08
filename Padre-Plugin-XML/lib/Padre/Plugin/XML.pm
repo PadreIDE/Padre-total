@@ -1,5 +1,6 @@
 package Padre::Plugin::XML;
 
+use v5.8.7;
 use warnings;
 use strict;
 
