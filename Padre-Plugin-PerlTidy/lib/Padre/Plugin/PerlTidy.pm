@@ -20,9 +20,9 @@ use constant SELECTIONSIZE => 40;
 
 sub padre_interfaces {
 	return (
-		'Padre::Plugin'   => '0.43',
-		'Padre::Config'   => '0.54',
-		'Padre::Wx::Main' => '0.86',
+		'Padre::Plugin'   => '0.91',
+		'Padre::Config'   => '0.91',
+		'Padre::Wx::Main' => '0.91',
 	);
 }
 
@@ -39,7 +39,7 @@ sub menu_plugins_simple {
 		Wx::gettext("Tidy the selected text\tAlt+Shift+G") => sub {
 			$self->tidy_selection;
 		},
-		'---' => undef,
+		'---'                                              => undef,
 		Wx::gettext('Export active document to HTML file') => sub {
 			$self->export_document;
 		},
@@ -103,11 +103,11 @@ sub tidy_selection {
 sub export_selection {
 	my $self = shift;
 	my $text = $self->current->text or return;
-	$self->_export( $text );
+	$self->_export($text);
 }
 
 sub export_document {
-	my $self     = shift;
+	my $self = shift;
 	my $document = $self->current->document or return;
 	$self->_export( $document->text_get );
 }
@@ -146,6 +146,9 @@ sub _tidy {
 	if ( $self->{over_ride} ) {
 		$tidyargs{'perltidyrc'} = $perltidyrc;
 	}
+	if ( $self->{over_ride} ) {
+		$tidyargs{'perltidyrc'} = $perltidyrc;
+	}
 
 	my $output;
 	if ( $main->config->info_on_statusbar ) {
@@ -175,6 +178,32 @@ sub _tidy {
 		require Perl::Tidy;
 		Perl::Tidy::perltidy(%tidyargs);
 	};
+
+	#	CLAUDIO: This code breaks the plugin, temporary disabled.
+	#	Have a look at Perl::Tidy line 126 for details: expecting a reference related to a file and not Wx::CommandEvent).
+	#	Talk to El_Che for more info.
+	#	if (not $perltidyrc) {
+	#		$perltidyrc = $document->project->config->config_perltidy;
+	#	}
+	#	if ($perltidyrc) {
+	#		$tidyargs{perltidyrc} = $perltidyrc;
+	#		$output->AppendText("Perl::Tidy running with project configuration $perltidyrc\n");
+	#	} else {
+	#		$output->AppendText("Perl::Tidy running with default or user configuration\n");
+	#	}
+
+	if ( defined $errorfile ) {
+		$main->show_output(1);
+		$output = $main->output;
+		my $filename =
+			  $document->filename
+			? $document->filename
+			: $document->get_title;
+		my $width = length($filename) + 2;
+		$output->AppendText( "\n\n" . "-" x $width . "\n" . $filename . "\n" . "-" x $width . "\n" );
+		$output->AppendText("$errorfile\n");
+	}
+
 	if ($@) {
 		$main->error( Wx::gettext("PerlTidy Error") . ":\n" . $@ );
 		return;
@@ -224,7 +253,7 @@ sub _export {
 
 	if ( my $tidyrc = $document->project->config->config_perltidy ) {
 		$tidyargs{perltidyrc} = $tidyrc;
-		$output->AppendText( "Perl\::Tidy running with project-specific configuration $tidyrc\n" );
+		$output->AppendText("Perl\::Tidy running with project-specific configuration $tidyrc\n");
 	} else {
 		$output->AppendText("Perl::Tidy running with default or user configuration\n");
 	}
@@ -302,7 +331,8 @@ sub _set_cursor_position {
 		: $editor->GetLength
 	);
 	eval {
-		if ( $text =~ /($regex)/ ) {
+		if ( $text =~ /($regex)/ )
+		{
 			my $pos = $start + length $1;
 			$editor->SetCurrentPos($pos);
 			$editor->SetSelection( $pos, $pos );
@@ -352,13 +382,11 @@ sub _which_tidyrc {
 
 	# perl tidy Padre/tools
 	if ( $ENV{'PADRE_DEV'} ) {
-		my $perltidyrc = eval {
-			File::Spec->catfile( $Bin, '../../tools/perltidyrc' );
-		};
+		my $perltidyrc = eval { File::Spec->catfile( $Bin, '../../tools/perltidyrc' ); };
 		if ( -e $perltidyrc ) {
 			$self->{over_ride} = 1;
 			return $perltidyrc;
-		} 
+		}
 
 		my $main = $self->main;
 		Wx::MessageBox(
