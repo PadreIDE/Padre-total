@@ -5,6 +5,8 @@ package Padre::Plugin::Dancer;
 use warnings;
 use strict;
 
+our $VERSION = '0.01';
+
 use Padre::Perl ();
 
 use base 'Padre::Plugin';
@@ -19,7 +21,7 @@ sub padre_interfaces {
 
 # TODO: see the Catalyst plugin for inspiration
 # sub plugin_icon {
-#	my $icon = 
+#	my $icon =
 #	return Wx::Bitmap->newFromXPM($icon);
 #}
 
@@ -32,18 +34,25 @@ sub menu_plugins_simple {
 			Wx::gettext('New Dancer...') => [
 				Wx::gettext('Application'), sub { $self->new_dancer_app },
 			],
-			Wx::gettext('Start Web Server'), sub { $self->on_start_server },
-			Wx::gettext('Stop Web Server'),  sub { $self->on_stop_server },
+			Wx::gettext('Start Web Server'),
+			sub { $self->on_start_server },
+			Wx::gettext('Stop Web Server'),
+			sub { $self->on_stop_server },
 
 			Wx::gettext('Dancer Online References') => [
-				Wx::gettext('Dancer Website'), sub { 
-					Padre::Wx::launch_browser('http://www.perldancer.org/'); 
+				Wx::gettext('Dancer Website'),
+				sub {
+					Padre::Wx::launch_browser('http://www.perldancer.org/');
 				},
-				Wx::gettext('Dance Community Live Support'), sub {
-					Padre::Wx::launch_irc( 'dancer' );
+				Wx::gettext('Dance Community Live Support'),
+				sub {
+					Padre::Wx::launch_irc('dancer');
 				},
 			],
-			Wx::gettext('About'), sub { $self->on_show_about },
+			Wx::gettext('About'),
+			sub {
+				$self->on_show_about;
+			},
 		],
 	);
 }

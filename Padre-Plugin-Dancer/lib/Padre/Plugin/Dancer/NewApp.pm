@@ -83,7 +83,8 @@ sub ok_clicked {
 		Wx::MessageBox( Wx::gettext('Invalid Application name'), Wx::gettext('missing field'), Wx::wxOK, $main );
 		return;
 	} elsif ( not $data->{'_directory_'} ) {
-		Wx::MessageBox( Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK, $main );
+		Wx::MessageBox( Wx::gettext('You need to select a base directory'), Wx::gettext('missing field'), Wx::wxOK,
+			$main );
 		return;
 	}
 
@@ -99,17 +100,16 @@ sub ok_clicked {
 	$main->show_output(1);
 	$main->output->Remove( 0, $main->output->GetLastPosition );
 
-	my @command = (
-		'dancer', '-a', $data->{'_app_name_'}, '-p', $data->{'_directory_'}
-	);
+	my @command = ( 'dancer', '-a', $data->{'_app_name_'}, '-p', $data->{'_directory_'} );
 
 	# go to the selected directory
-#	my $pwd = Cwd::cwd();
-#	chdir $data->{'_directory_'};
+	#	my $pwd = Cwd::cwd();
+	#	chdir $data->{'_directory_'};
 
 	# run command, then immediately restore directory
 	my $output_text = qx(@command);
-#	chdir $pwd;
+
+	#	chdir $pwd;
 
 	$main->output->AppendText($output_text);
 
