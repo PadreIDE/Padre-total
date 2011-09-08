@@ -6,10 +6,10 @@ use base 'Padre::Plugin';
 use Padre::Wx;
 
 sub require_modules {
-    require LWP::Simple;
-    require ExtUtils::InstallPAR;
-    require ExtUtils::InferConfig;
-    require Padre::Wx::Dialog;
+	require LWP::Simple;
+	require ExtUtils::InstallPAR;
+	require ExtUtils::InferConfig;
+	require Padre::Wx::Dialog;
 }
 
 our $VERSION = '0.01';
@@ -25,96 +25,113 @@ plugin interface of Padre 0.17.
 
 =cut
 
+#######
+# Define Padre Interfaces required
+#######
+sub padre_interfaces {
+	return (
+		'Padre::Plugin' => '0.91',
+		'Padre::Wx'     => '0.91',
+	);
+}
+
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('InstallPARDist');
+}
+
 sub menu_plugins_simple {
-    my $self = shift;
-    return 'Install PAR dist.' => [
-      'Install PAR distribution' => \&on_install_par_dist,
-    ];
+	my $self = shift;
+	return 'Install PAR dist.' => [
+		'Install PAR distribution' => \&on_install_par_dist,
+	];
 }
 
 
 sub dialog {
-  my ( $win ) = @_;
+	my ($win) = @_;
 
-  my @layout = (
-    [
-      [ 'Wx::StaticText', undef,          'Path or URL to install from:'],
-      [ 'Wx::TextCtrl',   '_par_uri_',    'your.par'],
-    ],
-    [
-      [ 'Wx::StaticText',      undef,    'Target perl:'],
-#      [ 'Wx::FilePickerCtrl',   '_target_perl_', $^X,  'Pick target perl'],
-      [ 'Wx::TextCtrl',   '_target_perl_', $^X],
-    ],
-    [
-      [ 'Wx::Button',     '_ok_',           Wx::wxID_OK     ],
-      [ 'Wx::Button',     '_cancel_',       Wx::wxID_CANCEL ],
-    ],
-  );
+	my @layout = (
+		[   [ 'Wx::StaticText', undef,       'Path or URL to install from:' ],
+			[ 'Wx::TextCtrl',   '_par_uri_', 'your.par' ],
+		],
+		[   [ 'Wx::StaticText', undef, 'Target perl:' ],
 
-  my $dialog = Padre::Wx::Dialog->new(
-    parent          => $win,
-    title           => "Install PAR distribution",
-    layout          => \@layout,
-    width           => [200, 300],
-  );
+			#      [ 'Wx::FilePickerCtrl',   '_target_perl_', $^X,  'Pick target perl'],
+			[ 'Wx::TextCtrl', '_target_perl_', $^X ],
+		],
+		[   [ 'Wx::Button', '_ok_',     Wx::wxID_OK ],
+			[ 'Wx::Button', '_cancel_', Wx::wxID_CANCEL ],
+		],
+	);
 
-  $dialog->{_widgets_}{_ok_}->SetDefault;
-  Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},      \&ok_clicked      );
-  Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_},  \&cancel_clicked  );
+	my $dialog = Padre::Wx::Dialog->new(
+		parent => $win,
+		title  => "Install PAR distribution",
+		layout => \@layout,
+		width  => [ 200, 300 ],
+	);
 
-  $dialog->{_widgets_}{_par_uri_}->SetFocus;
-  $dialog->Show(1);
+	$dialog->{_widgets_}{_ok_}->SetDefault;
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_ok_},     \&ok_clicked );
+	Wx::Event::EVT_BUTTON( $dialog, $dialog->{_widgets_}{_cancel_}, \&cancel_clicked );
 
-  return;
+	$dialog->{_widgets_}{_par_uri_}->SetFocus;
+	$dialog->Show(1);
+
+	return;
 }
 
 sub cancel_clicked {
-  my ($dialog, $event) = @_;
+	my ( $dialog, $event ) = @_;
 
-  $dialog->Destroy;
+	$dialog->Destroy;
 
-  return;
+	return;
 }
 
 sub ok_clicked {
-  my ($dialog, $event) = @_;
+	my ( $dialog, $event ) = @_;
 
-  my $main = Padre->ide->wx->main;
+	my $main = Padre->ide->wx->main;
 
-  my $data = $dialog->get_data;
-  $dialog->Destroy;
+	my $data = $dialog->get_data;
+	$dialog->Destroy;
 
-  my $perl = $data->{_target_perl_};
-  $perl = undef
-    if not defined $perl or $perl eq '' or $perl eq $^X;
-  
-  my $par = $data->{_par_uri_};
-  if ( not defined $par or ( not -f $par and not $par =~ /^\w+:/ ) ) {
-    Wx::MessageBox( "No PAR URL or path supplied.", "Failed", Wx::wxOK|Wx::wxCENTRE, $main );
-    return;
-  }
+	my $perl = $data->{_target_perl_};
+	$perl = undef
+		if not defined $perl
+			or $perl eq ''
+			or $perl eq $^X;
 
-  my $success = ExtUtils::InstallPAR::install(
-    par => $par,
-    perl => $perl,
-  );
+	my $par = $data->{_par_uri_};
+	if ( not defined $par or ( not -f $par and not $par =~ /^\w+:/ ) ) {
+		Wx::MessageBox( "No PAR URL or path supplied.", "Failed", Wx::wxOK | Wx::wxCENTRE, $main );
+		return;
+	}
 
-  if ($success) {
-    Wx::MessageBox( "Installed '$par' into '$perl'", "Done", Wx::wxOK|Wx::wxCENTRE, $main );
-  } else {
-    Wx::MessageBox( "Error installing '$par' into '$perl'", "Failed", Wx::wxOK|Wx::wxCENTRE, $main );
-  }
+	my $success = ExtUtils::InstallPAR::install(
+		par  => $par,
+		perl => $perl,
+	);
+
+	if ($success) {
+		Wx::MessageBox( "Installed '$par' into '$perl'", "Done", Wx::wxOK | Wx::wxCENTRE, $main );
+	} else {
+		Wx::MessageBox( "Error installing '$par' into '$perl'", "Failed", Wx::wxOK | Wx::wxCENTRE, $main );
+	}
 }
 
 
 
 
 sub on_install_par_dist {
-  my ($window, $event) = @_;
-  require_modules();
+	my ( $window, $event ) = @_;
+	require_modules();
 
-  dialog($window);
+	dialog($window);
 
 }
 
