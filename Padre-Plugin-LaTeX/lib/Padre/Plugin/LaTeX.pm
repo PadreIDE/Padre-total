@@ -18,15 +18,11 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'   => 0.89,
-	'Padre::Document' => 0.89,
-	'Padre::Wx::Main' => 0.89;
+	'Padre::Plugin' => 0.91, 'Padre::Document' => 0.91, 'Padre::Wx::Main' => 0.91;
 }
 
 sub registered_documents {
-	'application/x-latex' => 'Padre::Document::LaTeX',
-	'application/x-bibtex' => 'Padre::Document::BibTeX',
-	;
+	'application/x-latex' => 'Padre::Document::LaTeX', 'application/x-bibtex' => 'Padre::Document::BibTeX',;
 }
 
 sub plugin_icon {
@@ -61,7 +57,7 @@ sub plugin_disable {
 	if ( $self->{about_box} ) {
 		$self->{about_box}->Destroy;
 		$self->{about_box} = undef;
- 	}
+	}
 
 	#require Class::Unload;
 	#Class::Unload->unload('Padre::Document::LaTeX');
@@ -91,7 +87,7 @@ END
 	$self->{about}->SetDescription( sprintf( $description, $authors ) );
 
 	# Show the About dialog
-	Wx::AboutBox($self->{about});
+	Wx::AboutBox( $self->{about} );
 
 	return;
 }
