@@ -5,6 +5,8 @@ package Padre::Plugin::HTML;
 use warnings;
 use strict;
 
+our $VERSION = '0.16';
+
 use base 'Padre::Plugin';
 use Padre::Wx ();
 

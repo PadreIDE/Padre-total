@@ -4,6 +4,7 @@ Revision history for Padre-Plugin-HTML
         Added Dutch translation (ddn123456 - Dirk De Nijs)
         Added Brazilian Portuguese translation (GARU)
         compatibility to Padre 0.86 (ZENOG)
+        Swtich from Dist::Zilla to Module::Install (SZABGAB)
 
 0.14   2010.12.06
         Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
