@@ -2,8 +2,11 @@ package Padre::Plugin::YAML;
 
 # ABSTRACT: YAML support for Padre
 
+use v5.8.7;
 use warnings;
 use strict;
+
+our $VERSION = '0.02';
 
 use File::Spec::Functions qw{ catfile };
 

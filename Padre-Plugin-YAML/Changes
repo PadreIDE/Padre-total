@@ -1,5 +1,8 @@
 Changes for Padre-Plugin-YAML
 
+Next version
+    Switch to Module::Install
+
 0.01    2011.06.24
-	First version, released on an unsuspecting world.
-	- Only feature: toggle comments
+    First version, released on an unsuspecting world.
+    Only feature: toggle comments
