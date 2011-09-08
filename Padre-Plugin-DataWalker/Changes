@@ -2,6 +2,8 @@ Revision history for Padre-Plugin-DataWalker
 
 {{$NEXT}}
 
+    Switching to Module::Install
+
 0.04   2010.12.06
     Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
