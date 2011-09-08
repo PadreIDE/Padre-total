@@ -57,7 +57,7 @@ under the same terms as Perl itself.
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.24;
+	'Padre::Plugin' => '0.91';
 }
 
 sub plugin_name {
@@ -221,4 +221,3 @@ sub svk_diff_of_project {
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
-
