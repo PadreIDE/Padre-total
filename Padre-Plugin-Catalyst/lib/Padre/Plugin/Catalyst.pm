@@ -17,7 +17,7 @@ sub plugin_name {'Catalyst'}
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,;
+	'Padre::Plugin' => 0.91,;
 }
 
 sub plugin_icon {
@@ -220,7 +220,7 @@ sub menu_plugins {
 		$main,
 		$docs_menu->Append( -1, Wx::gettext('Catalyst Community Live Support') ),
 		sub {
-			Padre::Wx::launch_irc( 'catalyst' );
+			Padre::Wx::launch_irc('catalyst');
 		},
 	);
 
