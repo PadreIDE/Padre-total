@@ -32,7 +32,7 @@ modify it under the same terms as Perl 5 itself.
 =cut
 
 sub padre_interfaces {
-    return 'Padre::Plugin'         => 0.26,
+	return 'Padre::Plugin' => '0.91',;
 }
 
 
@@ -43,8 +43,8 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		'About'                          => \&about,
-		'Size of document'               => \&len_in_rakudo, 
+		'About'            => \&about,
+		'Size of document' => \&len_in_rakudo,
 	];
 }
 
@@ -58,8 +58,8 @@ sub plugin_enable {
 	my $rakudo = Inline::Rakudo->rakudo;
 
 	return if not $rakudo;
-	
-my $code = <<'END_PIR';
+
+	my $code = <<'END_PIR';
 sub len($str) {
 	return $str.chars;
 }
@@ -72,22 +72,22 @@ END_PIR
 }
 
 
-	
+
 sub len_in_rakudo {
 	my ($main) = @_;
 
 	my $rakudo = Inline::Rakudo->rakudo;
-	if (not $rakudo) {
-		Wx::MessageBox( "Rakudo is not available", "No luck", Wx::wxOK|Wx::wxCENTRE, $main );
+	if ( not $rakudo ) {
+		Wx::MessageBox( "Rakudo is not available", "No luck", Wx::wxOK | Wx::wxCENTRE, $main );
 		return;
 	}
-    my $doc = Padre::Current->document;
+	my $doc = Padre::Current->document;
 	my $str = "No file is open";
 	if ($doc) {
-		$str = "Number of characters in the current file: " . $rakudo->run_sub('len', $doc->text_get);
+		$str = "Number of characters in the current file: " . $rakudo->run_sub( 'len', $doc->text_get );
 	}
 
-	Wx::MessageBox( "From Rakudo: $str", "Worksforme", Wx::wxOK|Wx::wxCENTRE, $main );
+	Wx::MessageBox( "From Rakudo: $str", "Worksforme", Wx::wxOK | Wx::wxCENTRE, $main );
 	return;
 }
 
@@ -96,11 +96,9 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription(
-		"Experimental Plugin written in Perl 6\n"
-	);
+	$about->SetDescription( "Experimental Plugin written in Perl 6\n" );
 	$about->SetVersion($VERSION);
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 	return;
 }
 
@@ -110,4 +108,3 @@ sub about {
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
-
