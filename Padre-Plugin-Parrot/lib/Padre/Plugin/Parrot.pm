@@ -6,6 +6,8 @@ use 5.008;
 use strict;
 use warnings;
 
+our $VERSION = '0.31';
+
 use Padre::Wx ();
 use base 'Padre::Plugin';
 
@@ -406,6 +408,7 @@ sub show_help {
 	if ( $ENV{PARROT_DIR} ) {
 		my $path = File::Spec->catfile( $ENV{PARROT_DIR}, 'docs' );
 		my $doc = Padre::Document->new;
+
 		# to enable PodWeaver to work
 		$doc->{original_content} = "\n=" . "head1 Parrot\n\nSome text\nL<\$PARROT_DIR/docs/intro.pod>\n=" . 'cut';
 
