@@ -244,6 +244,7 @@ sub _update_matches_list_box {
 		$self->_status_text->SetLabel( Wx::gettext("Reading modules. Please wait...") );
 		my %seen;
 		for my $path (@INC) {
+			require File::Find::Rule;
 			for my $file ( File::Find::Rule->name('*.pm')->in($path) ) {
 				my $module = substr( $file, length($path) + 1 );
 				$module =~ s/.pm$//;

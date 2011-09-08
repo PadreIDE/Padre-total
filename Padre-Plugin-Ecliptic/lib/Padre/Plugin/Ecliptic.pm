@@ -17,7 +17,7 @@ use base 'Padre::Plugin';
 # Returns the plugin name to Padre
 #
 sub plugin_name {
-	return Wx::gettext("Ecliptic");
+	return Wx::gettext('Ecliptic');
 }
 
 #
