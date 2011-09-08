@@ -10,6 +10,7 @@ author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 
 all_from 'lib/Padre/Plugin/Dancer.pm';
 requires_from 'lib/Padre/Plugin/Dancer/NewApp.pm';
+requires_from 'lib/Padre/Plugin/Catalyst/Util.pm';
 
 requires 'Padre'      => '0.91';
 requires 'Dancer'     => 0;
