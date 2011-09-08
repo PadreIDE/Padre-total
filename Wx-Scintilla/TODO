@@ -1,7 +1,6 @@
 Implement SurfaceImpl::DrawRGBAImage in PlatWx.cpp
 Implement ListBoxImpl::RegisterRGBAImage in PlatWx.cpp
 Provide perl-ish method names SetText => set_text along with keeping CamelCase method name compatibility
-Parse yellowbrain STC documentation and provide first-class Scintilla documentation in POD
+Parse Scintilla offical documentation and provide first-class Scintilla documentation in POD
 Support more platforms: cygwin, FreeBSD
 Native Perl 6 lexer
-Fix Perl 5 lexer bugs
