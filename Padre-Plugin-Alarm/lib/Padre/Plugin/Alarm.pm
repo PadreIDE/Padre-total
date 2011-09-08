@@ -4,6 +4,7 @@ package Padre::Plugin::Alarm;
 
 use warnings;
 use strict;
+our $VERSION = '0.14';
 
 use base 'Padre::Plugin';
 
@@ -14,7 +15,7 @@ use Padre::Util       ();
 our $alarm_timer_id;
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',;
+	'Padre::Plugin' => '0.91',;
 }
 
 sub menu_plugins_simple {
@@ -191,7 +192,7 @@ sub play_alarm {
 	my $file = File::Spec->catfile( $audio_dir, 'alarm.wav' );
 	$file = '' unless -f $file;
 	my $sound = Wx::Sound->new($file);
-	$sound->Play(Wx::wxSOUND_ASYNC);
+	$sound->Play( Wx::wxSOUND_ASYNC() );
 }
 
 1;
