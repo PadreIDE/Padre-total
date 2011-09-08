@@ -74,7 +74,7 @@ Certainly only useful for debugging Padre.
 
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,;
+	'Padre::Plugin' => 0.91,;
 }
 
 sub plugin_name {
