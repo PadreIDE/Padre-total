@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.26_01 TBA
+    - Fixed ExtUtils::Parse 3.03_02+ warnings about missing
+    'OUTPUT: RETVAL' sections (AZAWAWI)
+
 0.26 2011.9.8
     - Released 0.23_01 as stable 0.24 (AZAWAWI)
     - Fix RT #70662: cpanm Wx::Scintilla fails on Ubuntu Lucid

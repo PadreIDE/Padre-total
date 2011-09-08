@@ -225,6 +225,7 @@ wxScintillaTextCtrl::IndicatorGetAlpha( indicator )
     int indicator
   CODE:
     RETVAL = THIS->IndicatorGetAlpha( indicator );
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::IndicatorSetUnder( indicator, under )
@@ -238,6 +239,7 @@ wxScintillaTextCtrl::IndicatorGetUnder( indicator )
     int indicator
   CODE:
     RETVAL = THIS->IndicatorGetUnder( indicator );
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::SetIndicatorCurrent( indicator )
@@ -276,13 +278,15 @@ wxScintillaTextCtrl::IndicatorAllOnFor(position)
     int position
   CODE:
     RETVAL = THIS->IndicatorAllOnFor(position);
-
+  OUTPUT: RETVAL
+  
 int
 wxScintillaTextCtrl::IndicatorValueAt(indicator, position)
     int indicator
     int position
   CODE:
     RETVAL = THIS->IndicatorValueAt( indicator, position);
+  OUTPUT: RETVAL
 
 int
 wxScintillaTextCtrl::IndicatorStart(indicator, position)
@@ -290,6 +294,7 @@ wxScintillaTextCtrl::IndicatorStart(indicator, position)
     int position
   CODE:
     RETVAL = THIS->IndicatorStart( indicator, position);
+  OUTPUT: RETVAL
 
 int
 wxScintillaTextCtrl::IndicatorEnd(indicator, position)
@@ -297,6 +302,7 @@ wxScintillaTextCtrl::IndicatorEnd(indicator, position)
     int position
   CODE:
     RETVAL = THIS->IndicatorEnd( indicator, position);
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::AnnotationSetText(line, text)
@@ -310,6 +316,7 @@ wxScintillaTextCtrl::AnnotationGetText(line)
     int line
   CODE:
     RETVAL = THIS->AnnotationGetText( line );
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::AnnotationSetStyle(line, style)
@@ -323,6 +330,7 @@ wxScintillaTextCtrl::AnnotationGetStyle(line)
     int line
   CODE:
     RETVAL = THIS->AnnotationGetStyle( line );
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::AnnotationSetStyles(line, styles)
@@ -336,12 +344,14 @@ wxScintillaTextCtrl::AnnotationGetStyles(line)
     int line
   CODE:
     RETVAL = THIS->AnnotationGetStyles( line );
+  OUTPUT: RETVAL
 
 int
 wxScintillaTextCtrl::AnnotationGetLines(line)
     int line
   CODE:
     RETVAL = THIS->AnnotationGetLines( line );
+  OUTPUT: RETVAL
 
 void
 wxScintillaTextCtrl::AnnotationClearAll()
