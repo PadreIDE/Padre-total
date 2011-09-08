@@ -4,6 +4,7 @@ Revision history for Wx-Scintilla
     - Released 0.23_01 as stable 0.24 (AZAWAWI)
     - Fix RT #70662: cpanm Wx::Scintilla fails on Ubuntu Lucid
       by requiring ExtUtils::XSpp 0.1602 (KAARE, AZAWAWI)
+    - Drop Makefile.PL generation in Build.PL (AZAWAWI)
 
 0.25_03 2011.9.7
     - Removed stale yellowbrain.com parsed POD documentation (AZAWAWI)

@@ -42,7 +42,6 @@ Module::Build::Scintilla::stc_builderclass()->new(
 		'*.so',
 		'stc_checkdepends.out',
 	],
-	create_makefile_pl => 'small',
 	meta_merge         => {
 		resources => {
 			homepage   => 'http://padre.perlide.org/',
