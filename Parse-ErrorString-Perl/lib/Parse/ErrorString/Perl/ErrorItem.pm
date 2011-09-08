@@ -5,6 +5,8 @@ package Parse::ErrorString::Perl::ErrorItem;
 use strict;
 use warnings;
 
+our $VERSION = '0.16';
+
 use Class::XSAccessor getters => {
 	type             => 'type',
 	type_description => 'type_description',

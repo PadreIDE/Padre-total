@@ -2,8 +2,11 @@ package Parse::ErrorString::Perl;
 
 # ABSTRACT: Parse error messages from the perl interpreter
 
+use v5.8.7;
 use strict;
 use warnings;
+
+our $VERSION = '0.16';
 
 use Carp qw(carp cluck);
 use Pod::Find ();

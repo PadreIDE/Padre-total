@@ -5,6 +5,8 @@ package Parse::ErrorString::Perl::StackItem;
 use strict;
 use warnings;
 
+our $VERSION = '0.16';
+
 sub new {
 	my ( $class, $self ) = @_;
 	bless $self, ref $class || $class;
