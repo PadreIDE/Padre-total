@@ -14,7 +14,7 @@ our $VERSION = '0.30';
 # Padre::Plugin API Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47, 'Padre::Document' => 0.47,;
+	'Padre::Plugin' => 0.91, 'Padre::Document' => 0.91,;
 }
 
 sub registered_documents {
