@@ -248,7 +248,7 @@ r for replacing current character
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43;
+	'Padre::Plugin' => '0.91';
 }
 
 sub plugin_enable {
@@ -308,7 +308,7 @@ sub about {
 	$about->SetCopyright( _T("Copyright 2008 Gabor Szabo") );
 
 	# Only Unix/GTK native about box supports websites
-	if (Padre::Constant::WXGTK) {
+	if (Padre::Constant::UNIX) {
 		$about->SetWebSite("http://padre.perlide.org/");
 	}
 
