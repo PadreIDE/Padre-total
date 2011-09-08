@@ -16,7 +16,7 @@ sub plugin_name {'Dancer'}
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,;
+	'Padre::Plugin' => '0.91',;
 }
 
 # TODO: see the Catalyst plugin for inspiration
