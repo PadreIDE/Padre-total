@@ -19,142 +19,151 @@ our $VERSION = '0.19';
 use base 'Padre::Plugin';
 
 sub plugin_enable {
-    my ($self) = @_;
+	my ($self) = @_;
 }
 
 sub plugin_disable {
-    my ($self) = @_;
+	my ($self) = @_;
 }
 
 sub plugin_name {
-    return 'Line Filter';
+	return 'Line Filter';
+}
+
+#######
+# Define Padre Interfaces required
+#######
+sub padre_interfaces {
+	return (
+		'Padre::Plugin' => '0.91',
+	);
 }
 
 sub plugin_menu_name {
-    return 'Line &Filter';
+	return 'Line &Filter';
 }
 
 sub menu_plugins_simple {
-    my $self = shift;
-    return $self->plugin_menu_name => [
-        '&Document'   => [
-            '&Remain' => \&document_remain,
-            '&Delete' => \&document_delete,
-        ],
-        '&Selection'  => [
-            '&Remain' => \&selection_remain,
-            '&Delete' => \&selection_delete,
-        ],
-        '&About'                 => \&about,
-    ];
+	my $self = shift;
+	return $self->plugin_menu_name => [
+		'&Document' => [
+			'&Remain' => \&document_remain,
+			'&Delete' => \&document_delete,
+		],
+		'&Selection' => [
+			'&Remain' => \&selection_remain,
+			'&Delete' => \&selection_delete,
+		],
+		'&About' => \&about,
+	];
 }
 
 sub document_remain {
-    my ( $window, $event ) = @_;
+	my ( $window, $event ) = @_;
 
-    my $filter = user_input($window, Wx::gettext("Filter: Document Remain"));
-    return unless $filter;
+	my $filter = user_input( $window, Wx::gettext("Filter: Document Remain") );
+	return unless $filter;
 
-    my $doc = $window->current->document;
-    my $src = $doc->text_get;
-    return unless $src;
+	my $doc = $window->current->document;
+	my $src = $doc->text_get;
+	return unless $src;
 
-    my $newtext = filtering($filter, $src);
-    $doc->text_set( $newtext );
+	my $newtext = filtering( $filter, $src );
+	$doc->text_set($newtext);
 }
 
 sub document_delete {
-    my ( $window, $event ) = @_;
+	my ( $window, $event ) = @_;
 
-    my $filter = user_input($window, Wx::gettext("Filter: Document Delete"));
-    return unless $filter;
+	my $filter = user_input( $window, Wx::gettext("Filter: Document Delete") );
+	return unless $filter;
 
-    my $doc = $window->current->document;
-    my $src = $doc->text_get;
-    return unless $src;
+	my $doc = $window->current->document;
+	my $src = $doc->text_get;
+	return unless $src;
 
-    my $newtext = filtering($filter, $src, 1);
-    $doc->text_set( $newtext );
+	my $newtext = filtering( $filter, $src, 1 );
+	$doc->text_set($newtext);
 }
 
 sub selection_remain {
-    my ( $window, $event ) = @_;
+	my ( $window, $event ) = @_;
 
-    my $filter = user_input($window, Wx::gettext("Filter: Selection Remain"));
-    return unless $filter;
+	my $filter = user_input( $window, Wx::gettext("Filter: Selection Remain") );
+	return unless $filter;
 
-    my $src = $window->current->text;
-    return unless $src;
+	my $src = $window->current->text;
+	return unless $src;
 
-    my $newtext = filtering($filter, $src);
+	my $newtext = filtering( $filter, $src );
 
-    my $editor = $window->current->editor;
-    $editor->ReplaceSelection( $newtext );
-    select_all($window);
+	my $editor = $window->current->editor;
+	$editor->ReplaceSelection($newtext);
+	select_all($window);
 }
 
 sub selection_delete {
-    my ( $window, $event ) = @_;
+	my ( $window, $event ) = @_;
 
-    my $filter = user_input($window, Wx::gettext("Filter: Selection Delete"));
-    return unless $filter;
+	my $filter = user_input( $window, Wx::gettext("Filter: Selection Delete") );
+	return unless $filter;
 
-    my $src = $window->current->text;
-    return unless $src;
+	my $src = $window->current->text;
+	return unless $src;
 
-    my $newtext = filtering($filter, $src, 1);
+	my $newtext = filtering( $filter, $src, 1 );
 
-    my $editor = $window->current->editor;
-    $editor->ReplaceSelection( $newtext );
-    select_all($window);
+	my $editor = $window->current->editor;
+	$editor->ReplaceSelection($newtext);
+	select_all($window);
 }
 
 sub about {
-    my ( $window, $event ) = @_;
+	my ( $window, $event ) = @_;
 
-# Generate the About dialog
-    my $about = Wx::AboutDialogInfo->new;
-    $about->SetName(plugin_name());
-    $about->SetDescription( <<"END_MESSAGE" );
+	# Generate the About dialog
+	my $about = Wx::AboutDialogInfo->new;
+	$about->SetName( plugin_name() );
+	$about->SetDescription( <<"END_MESSAGE" );
 Line Filter plugin for Padre.
 END_MESSAGE
 
-# Show the About dialog
-    Wx::AboutBox( $about );
+	# Show the About dialog
+	Wx::AboutBox($about);
 
-    return;
+	return;
 }
 
 sub user_input {
-    my ($window, $title) = @_;
+	my ( $window, $title ) = @_;
 
-    my $dialog = Wx::TextEntryDialog->new( $window, Wx::gettext("Filter:"), $title, '' );
-    if ($dialog->ShowModal == Wx::wxID_CANCEL) {
-        return;
-    }   
-    my $filter = $dialog->GetValue;
-    $dialog->Destroy;
-    return if not defined $filter;
-    return $filter;
+	my $dialog = Wx::TextEntryDialog->new( $window, Wx::gettext("Filter:"), $title, '' );
+	if ( $dialog->ShowModal == Wx::wxID_CANCEL ) {
+		return;
+	}
+	my $filter = $dialog->GetValue;
+	$dialog->Destroy;
+	return if not defined $filter;
+	return $filter;
 }
 
 sub select_all {
-    my $window = shift;
+	my $window = shift;
 
-    my $id = $window->{notebook}->GetSelection;
-    return if $id == -1;
-    $window->{notebook}->GetPage($id)->SelectAll;
+	my $id = $window->{notebook}->GetSelection;
+	return if $id == -1;
+	$window->{notebook}->GetPage($id)->SelectAll;
 }
 
 sub filtering {
-    my ( $filter, $src, $delete ) = @_;
+	my ( $filter, $src, $delete ) = @_;
 
-    my @lines = split /\n/, $src;
-    my $newtext = join "\n", grep { $delete ? !m/$filter/ : m/$filter/ } split /\n/, $src;
-    return unless defined $newtext && length $newtext;
-    $newtext =~ s{\n$}{};
+	my @lines = split /\n/, $src;
+	my $newtext = join "\n", grep { $delete ? !m/$filter/ : m/$filter/ } split /\n/, $src;
+	return unless defined $newtext && length $newtext;
+	$newtext =~ s{\n$}{};
 
-    return $newtext;
+	return $newtext;
 }
 
 
