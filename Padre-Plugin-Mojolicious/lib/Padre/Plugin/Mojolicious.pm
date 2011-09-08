@@ -16,7 +16,7 @@ our @ISA = 'Padre::Plugin';
 # Padre Integration
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.64,;
+	'Padre::Plugin' => 0.91,;
 }
 
 
