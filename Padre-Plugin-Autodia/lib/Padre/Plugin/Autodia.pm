@@ -47,7 +47,7 @@ Declare the Padre interfaces this plugin uses
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',
+	'Padre::Plugin' => '0.91', 'Padre::Wx' => '0.91',;
 }
 
 =head2 menu_plugins_simple
@@ -83,7 +83,7 @@ sub show_about {
 	$about->SetCopyright( Wx::gettext('Copyright 2010') . ' Aaron Trevena' );
 
 	# Only Unix/GTK native about box supports websites
-	if ( Padre::Constant::WXGTK ) {
+	if (Padre::Constant::WXGTK) {
 		$about->SetWebSite('http://padre.perlide.org/');
 	}
 
@@ -156,9 +156,11 @@ my $languages = {
 	PHP        => [qw/.php .php3 .php4 .php5 .PHP/],
 };
 
-my $wildcards =
-	join( '|',
-	map { sprintf(Wx::gettext("%s Files"), $_) => join( ';', map ( "*$_", @{ $languages->{$_} } ) ) } sort keys %$languages );
+my $wildcards = join(
+	'|',
+	map { sprintf( Wx::gettext("%s Files"), $_ ) => join( ';', map ( "*$_", @{ $languages->{$_} } ) ) }
+		sort keys %$languages
+);
 
 $wildcards .= (Padre::Constant::WIN32) ? Wx::gettext("All Files") . "|*.*|" : Wx::gettext("All Files") . "|*|";
 
@@ -214,7 +216,7 @@ sub _get_handler {
 	$config->{templatefile} = $args->{template} || undef;
 	$config->{outputfile}   = $args->{outfile}  || "autodia-plugin.out";
 
-	unless($language_handlers) {
+	unless ($language_handlers) {
 		$language_handlers = Autodia->getHandlers();
 	}
 	my $handler_module = $language_handlers->{ lc( $args->{language} ) };
