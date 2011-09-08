@@ -8,6 +8,8 @@ use warnings;
 
 use base 'Padre::Plugin';
 
+our $VERSION = '0.30';
+
 ######################################################################
 # Padre::Plugin API Methods
 

@@ -2,6 +2,7 @@
 {{$NEXT}}
         Added Dutch translation (ddn123456 - Dirk De Nijs)
         Added Brazilian Portuguese translation (GARU)
+        Switched from Dist::Zilla to Module::Install (SZABGAB)
 
 0.29   2010.12.06
         Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
@@ -20,7 +21,7 @@
         add JE (Syntax Check)
         New module name for JS document (CHORNY)
         Ability to release on Windows (CHORNY)
-        
+
 0.25    2009.2.1
         for Padre 0.26
 

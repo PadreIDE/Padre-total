@@ -10,6 +10,7 @@ use Padre::Document ();
 
 our @ISA = 'Padre::Document';
 
+our $VERSION = '0.30';
 
 #####################################################################
 # Padre::Document::JavaScript Methods
