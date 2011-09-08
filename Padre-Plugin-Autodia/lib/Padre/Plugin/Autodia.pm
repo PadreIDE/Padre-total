@@ -26,7 +26,7 @@ use Padre::Wx::Dialog ();
 use Padre::Constant   ();
 use Padre::Current    ();
 
-
+our $VERSION = '0.02';
 
 our $language_handlers;
 
