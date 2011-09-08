@@ -1,19 +1,20 @@
 Revision history for Padre-Plugin-NYTProf
 
 {{$NEXT}}
-	- Added Dutch translation (ddn123456 - Dirk De Nijs)
+    - Added Dutch translation (ddn123456 - Dirk De Nijs)
     - Added Brazilian Portuguese translation (GARU)
+    - Switch to Module::Install (SZABGAB)
 
 0.04   2010.12.06
-	- Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
+    - Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
 0.03   2010.10.29
-	- Removed Test::NeedsDisplay dependency (AZAWAWI)
+    - Removed Test::NeedsDisplay dependency (AZAWAWI)
 
 0.02   2010.10.27
-	- t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
+    - t/00-load.t is magically injected by [@PadrePlugin] via [LoadTests] (AZAWAWI)
 
 0.01   2010.10.23
 
-	- First version, released on an unsuspecting world.
+    - First version, released on an unsuspecting world.
 

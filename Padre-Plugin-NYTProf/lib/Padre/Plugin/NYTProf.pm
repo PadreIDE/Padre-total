@@ -2,8 +2,11 @@ package Padre::Plugin::NYTProf;
 
 # ABSTRACT: Integrated profiling for Padre.
 
+use v5.8.7;
 use warnings;
 use strict;
+
+our $VERSION = '0.05';
 
 use base 'Padre::Plugin';
 

@@ -7,6 +7,7 @@ use warnings;
 
 use base 'Padre::Task';
 
+our $VERSION = '0.05';
 
 # we may want to set some default settings for NYTProf at some stage:
 # keys should be relate to the environment vars NYTProf expects
