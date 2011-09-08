@@ -5,6 +5,8 @@ package Padre::Task::ClassSniff;
 use strict;
 use warnings;
 
+our $VERSION = '0.31';
+
 use Padre::Task::PPI ();
 use Padre::Wx        ();
 use Scalar::Util qw(blessed);

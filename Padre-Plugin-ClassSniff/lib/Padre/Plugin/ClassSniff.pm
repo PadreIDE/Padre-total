@@ -6,6 +6,8 @@ use 5.008;
 use warnings;
 use strict;
 
+our $VERSION = '0.31';
+
 use Padre::Config ();
 use Padre::Wx     ();
 use Padre::Plugin ();

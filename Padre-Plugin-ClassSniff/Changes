@@ -1,6 +1,7 @@
 Revision history for Padre-Plugin-ClassSniff
 
 {{$NEXT}}
+  - Switch to Module::Install (SZABGAB)
 
 0.30   2010.12.06
   - Bumped to version 0.30 to be able to actually upload (AZAWAWI)
