@@ -27,8 +27,19 @@ sub make_panel {
 	( $input, $output ) = Padre::Plugin::REPL::Panel->new();
 }
 
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('REPL');
+}
+
 sub padre_interfaces {
-	return 'Padre::Plugin' => '0.26';
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Util'     => '0.91',
+	);
 }
 
 sub plugin_enable {
