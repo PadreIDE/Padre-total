@@ -9,24 +9,28 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => '0.26',
+	'Padre::Plugin' => '0.91',;
 }
 
 sub menu_plugins_simple {
 	my $self = shift;
-	return ('ViewInBrowser' => [
-		'View in Browser', sub { $self->view_in_browser },
-	]);
+	return (
+		'ViewInBrowser' => [
+			'View in Browser', sub { $self->view_in_browser },
+		]
+	);
 }
 
 sub view_in_browser {
-	my ( $self ) = @_;
+	my ($self) = @_;
 	my $main = $self->main;
-	
+
 	my $filename = $main->current->filename;
-	unless ( $filename ) {
-		Wx::MessageBox( 'What to open? God KNOWS!',
-		'Error', Wx::wxOK | Wx::wxCENTRE, $main );
+	unless ($filename) {
+		Wx::MessageBox(
+			'What to open? God KNOWS!',
+			'Error', Wx::wxOK | Wx::wxCENTRE, $main
+		);
 		return;
 	}
 	Wx::LaunchDefaultBrowser($filename);
