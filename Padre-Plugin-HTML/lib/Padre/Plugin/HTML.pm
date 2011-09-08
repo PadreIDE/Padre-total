@@ -11,7 +11,7 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47, 'Padre::Document' => 0.81,;
+	'Padre::Plugin' => 0.91, 'Padre::Document' => 0.91,;
 }
 
 sub registered_documents {
