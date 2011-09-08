@@ -5,6 +5,8 @@ package Padre::Plugin::Catalyst::Panel;
 use strict;
 use warnings;
 
+our $VERSION = '0.14';
+
 use Padre::Wx ();
 use base 'Wx::Panel';
 

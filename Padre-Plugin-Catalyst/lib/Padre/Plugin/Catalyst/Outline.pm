@@ -5,6 +5,8 @@ package Padre::Plugin::Catalyst::Outline;
 use strict;
 use warnings;
 
+our $VERSION = '0.14';
+
 use Padre::Wx ();
 use Wx;
 

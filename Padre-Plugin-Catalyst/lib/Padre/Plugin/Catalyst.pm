@@ -2,8 +2,11 @@ package Padre::Plugin::Catalyst;
 
 # ABSTRACT: Catalyst helper interface for Padre
 
+use v5.8.7;
 use warnings;
 use strict;
+
+our $VERSION = '0.14';
 
 use Padre::Perl ();
 

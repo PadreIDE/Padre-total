@@ -5,6 +5,8 @@ package Padre::Plugin::Catalyst::Util;
 use strict;
 use warnings;
 
+our $VERSION = '0.14';
+
 # some code used all around the Plugin
 use Cwd        ();
 use File::Spec ();
