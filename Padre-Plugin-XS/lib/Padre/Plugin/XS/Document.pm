@@ -7,6 +7,8 @@ use strict;
 use warnings;
 use Padre::Document ();
 
+our $VERSION = '0.10';
+
 our @ISA = 'Padre::Document';
 
 # TODO better highlighting. Can vim do better? Can we steal? Add an STC highlighter? ...

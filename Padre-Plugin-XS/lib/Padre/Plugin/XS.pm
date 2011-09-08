@@ -2,9 +2,11 @@ package Padre::Plugin::XS;
 
 # ABSTRACT: Padre support for perl XS (and perlapi)
 
+use v5.8.7;
 use strict;
 use warnings;
-use 5.008;
+
+our $VERSION = '0.10';
 
 use Padre::Wx ();
 use Padre::Current;
