@@ -10,8 +10,19 @@ our $VERSION = '0.12';
 use Padre::Wx::Dialog ();
 use base 'Padre::Plugin';
 
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('Encrypt <-> Decrypt');
+}
+
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43;
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Wx::Main' => '0.91',
+	);
 }
 
 sub menu_plugins_simple {
