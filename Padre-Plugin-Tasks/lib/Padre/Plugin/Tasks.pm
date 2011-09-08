@@ -90,7 +90,7 @@ under the same terms as Perl itself.
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.42;
+	'Padre::Plugin' => '0.91';
 }
 
 sub plugin_name {
@@ -100,9 +100,9 @@ sub plugin_name {
 sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
-		_T('About') => sub { $self->show_about },
+		_T('About')             => sub { $self->show_about },
 		_T('Open Tasks Window') => \&on_show_window,
-		
+
 	];
 }
 
@@ -110,7 +110,7 @@ sub menu_plugins_simple {
 # Custom Methods
 
 sub on_show_window {
-	my $self = shift;
+	my $self  = shift;
 	my $event = shift;
 
 	require Padre::Plugin::Tasks::Dialog;
@@ -135,4 +135,3 @@ END_MESSAGE
 }
 
 1;
-
