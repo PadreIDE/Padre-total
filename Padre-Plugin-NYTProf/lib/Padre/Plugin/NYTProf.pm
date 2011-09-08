@@ -16,11 +16,11 @@ require Padre::Plugin::NYTProf::ProfilingTask;
 my %prof_settings;
 
 # The plugin name to show in the Plugin Manager and menus
-sub plugin_name {Wx::gettext('NYTProf - Perl Profiler')}
+sub plugin_name { Wx::gettext('NYTProf - Perl Profiler') }
 
 # Declare the Padre interfaces this plugin uses
 sub padre_interfaces {
-	'Padre::Plugin' => 0.47,;
+	'Padre::Plugin' => 0.91,;
 }
 
 
@@ -28,8 +28,8 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 
-		Wx::gettext('Run Profiling')                                 => sub { $self->on_start_profiling },
-		Wx::gettext('Generate Profiling Report')         => sub { $self->on_generate_report },
+		Wx::gettext('Run Profiling')                   => sub { $self->on_start_profiling },
+		Wx::gettext('Generate Profiling Report')       => sub { $self->on_generate_report },
 		Wx::gettext('Show Generated Profiling Report') => sub { $self->on_show_report },
 
 		'---' => undef, # ...add a separator
@@ -85,8 +85,8 @@ sub on_generate_report {
 	# so this needs to be done better.
 
 	my ( $fname, $bin_path, $suffix ) = File::Basename::fileparse( $prof_settings{perl} );
-	my $report =
-		  $prof_settings{perl} . ' '
+	my $report
+		= $prof_settings{perl} . ' '
 		. $bin_path
 		. 'nytprofhtml -o '
 		. $prof_settings{temp_dir}
