@@ -14,11 +14,11 @@ use base 'Padre::Plugin';
 use Padre::Wx ();
 
 sub plugin_name {
-	Wx::gettext('YAML');
+	return Wx::gettext('YAML');
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.81, 'Padre::Document' => 0.81;
+	return ( 'Padre::Plugin' => 0.91, 'Padre::Document' => 0.91 );
 }
 
 sub registered_documents {
@@ -28,11 +28,11 @@ sub registered_documents {
 #sub plugin_icon {
 #	my $self = shift;
 
-	# find resource path
-	#my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'file.png' );
+# find resource path
+#my $iconpath = catfile( $self->plugin_directory_share, 'icons', 'file.png' );
 
-	# create and return icon
-	#return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+# create and return icon
+#return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 #}
 
 sub menu_plugins_simple {
