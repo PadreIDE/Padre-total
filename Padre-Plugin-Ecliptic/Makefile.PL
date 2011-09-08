@@ -11,11 +11,11 @@ requires_from 'lib/Padre/Plugin/Ecliptic/QuickAssistDialog.pm';
 requires_from 'lib/Padre/Plugin/Ecliptic/QuickModuleAccessDialog.pm';
 requires_from 'lib/Padre/Plugin/Ecliptic/QuickOutlineAccessDialog.pm';
 
-requires 'Padre'                 => '0.91';
-requires 'Class::XSAccessor'     => '1.02';
-requires 'File::Which'           => '0.05';
-requires 'File::Spec::Functions' => 0;
-requires 'Module::Util'          => 0;
+requires 'Padre'             => '0.91';
+requires 'Class::XSAccessor' => '1.02';
+requires 'File::Which'       => '0.05';
+requires 'File::Find::Rule'  => 0;
+
 
 test_requires 'Test::More' => '0.47';
 no_index 'directory'       => qw{ t xt eg share inc};
