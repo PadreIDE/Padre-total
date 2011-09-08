@@ -40,7 +40,7 @@ sub load_modules {
 }
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.57;
+	return 'Padre::Plugin' => '0.91';
 }
 
 sub plugin_name {
