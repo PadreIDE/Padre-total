@@ -17,7 +17,7 @@ Module::Build::Scintilla::stc_builderclass()->new(
 		'Test::More'       => 0,
 		'Alien::wxWidgets' => 0,
 		'Wx'               => 0,
-		'ExtUtils::XSpp'   => 0,
+		'ExtUtils::XSpp'   => '0.1602',
 	},
 	needs_compiler => 0, # We will be doing our own XS compilation
 	add_to_cleanup => [
