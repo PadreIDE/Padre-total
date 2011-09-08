@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.26_01 TBA
+0.27_01 TBA
     - Fixed ExtUtils::Parse 3.03_02+ warnings about missing
     'OUTPUT: RETVAL' sections (AZAWAWI)
 
