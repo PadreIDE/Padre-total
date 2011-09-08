@@ -9,7 +9,7 @@ use Padre::Wx ();
 
 use base 'Padre::Plugin';
 
-our $ProtocolRegex = qr/^ssh:\/\//;
+our $ProtocolRegex        = qr/^ssh:\/\//;
 our $ProtocolHandlerClass = 'Padre::Plugin::SSH::File';
 
 
@@ -24,9 +24,9 @@ TODO
 =cut
 
 sub padre_interfaces {
-	return(
-		'Padre::Plugin' => 0.41,
-		'Padre::File'   => 0.50, # lie until 0.51 is released
+	return (
+		'Padre::Plugin' => '0.91',
+		'Padre::File'   => '0.91', # lie until 0.51 is released
 	);
 }
 
@@ -45,13 +45,13 @@ sub plugin_enable {
 	my $self = shift;
 	require Padre::File;
 	require Padre::Plugin::SSH::File;
-	Padre::File->RegisterProtocol($ProtocolRegex, $ProtocolHandlerClass);
+	Padre::File->RegisterProtocol( $ProtocolRegex, $ProtocolHandlerClass );
 	return 1;
 }
 
 sub plugin_disable {
 	my $self = shift;
-	Padre::File->DropProtocol($ProtocolRegex, $ProtocolHandlerClass);
+	Padre::File->DropProtocol( $ProtocolRegex, $ProtocolHandlerClass );
 	return 1;
 }
 
@@ -78,4 +78,3 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl 5 itself.
 
 =cut
-
