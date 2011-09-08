@@ -10,6 +10,8 @@ use Padre::Document ();
 
 our @ISA = 'Padre::Document';
 
+our $VERSION = '0.14';
+
 sub task_functions {
 	return '';
 }

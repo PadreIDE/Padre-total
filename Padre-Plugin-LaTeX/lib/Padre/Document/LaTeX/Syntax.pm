@@ -8,6 +8,8 @@ use Padre::Task::Syntax ();
 
 our @ISA = 'Padre::Task::Syntax';
 
+our $VERSION = '0.14';
+
 sub new {
 	my $class = shift;
 

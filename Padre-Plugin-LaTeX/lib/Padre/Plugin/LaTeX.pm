@@ -2,8 +2,11 @@ package Padre::Plugin::LaTeX;
 
 # ABSTRACT: LaTeX support for Padre
 
+use v5.8.7;
 use warnings;
 use strict;
+
+our $VERSION = '0.14';
 
 use File::Spec::Functions qw{ catfile };
 
@@ -74,7 +77,7 @@ sub show_about {
 	my $self = shift;
 
 	# Generate the About dialog
-	my $self->{about} = Wx::AboutDialogInfo->new;
+	$self->{about} = Wx::AboutDialogInfo->new;
 	$self->{about}->SetName( Wx::gettext('LaTeX Plug-in') );
 	my $authors     = 'Zeno Gantner, Ahmad M. Zawawi';
 	my $description = Wx::gettext( <<'END' );

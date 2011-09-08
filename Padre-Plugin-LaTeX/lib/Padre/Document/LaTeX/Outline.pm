@@ -9,6 +9,8 @@ use Padre::Task::Outline ();
 
 our @ISA = 'Padre::Task::Outline';
 
+our $VERSION = '0.14';
+
 sub find {
 	my $self = shift;
 	my $text = shift;
