@@ -189,11 +189,15 @@ Automatically colorize any file type if it does not have a specified token to co
 =cut
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.47;
+	return (
+		'Padre::Plugin'  => '0.91',
+		'Padre::Wx'      => '0.91',
+		'Padre::Current' => '0.91',
+	);
 }
 
 sub plugin_name {
-	'Parrot';
+	return Wx::gettext('Parrot');
 }
 
 sub menu_plugins_simple {

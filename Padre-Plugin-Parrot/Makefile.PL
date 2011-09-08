@@ -27,4 +27,6 @@ repository 'http://svn.perlide.org/padre/trunk/Padre-Plugin-Parrot';
 
 is_padre_plugin; # authors: Install Module::Install::PadrePlugin
 
+install_share;
+
 WriteAll;
