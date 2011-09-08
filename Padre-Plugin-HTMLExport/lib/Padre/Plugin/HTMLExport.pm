@@ -40,8 +40,19 @@ our %KATE_ALL = (
 	'text/xml'           => 'XML',
 );
 
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('Export Colorful HTML');
+}
+
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',;
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Wx::Main' => '0.91',
+	);
 }
 
 sub menu_plugins_simple {
