@@ -14,6 +14,8 @@ use Padre::Util ();
 
 our @ISA = 'Padre::Help';
 
+our $VERSION = '0.15';
+
 my $data;
 
 sub help_init {

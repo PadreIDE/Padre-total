@@ -2,8 +2,11 @@ package Padre::Plugin::CSS;
 
 # ABSTRACT: CSS Support for Padre
 
+use v5.8.7;
 use warnings;
 use strict;
+
+our $VERSION = '0.15';
 
 use base 'Padre::Plugin';
 use Padre::Wx ();

@@ -12,6 +12,8 @@ use YAML::Tiny qw(LoadFile);
 
 our @ISA = 'Padre::Document';
 
+our $VERSION = '0.15';
+
 sub comment_lines_str { return '//' }
 
 sub get_help_provider {
