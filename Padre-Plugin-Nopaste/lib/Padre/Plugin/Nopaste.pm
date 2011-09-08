@@ -56,7 +56,6 @@ sub padre_interfaces {
 		'Padre::Plugin' => '0.91',
 		'Padre::Task'   => '0.91',
 		'Padre::Logger' => '0.91',
-		'Padre::Task'   => '0.91',
 	);
 }
 
