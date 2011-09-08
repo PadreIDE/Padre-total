@@ -48,11 +48,11 @@ Each one has its own advantage and disadvantage. More research is needed.
 
 
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.47;
+	return 'Padre::Plugin' => '0.91';
 }
 
 sub plugin_name {
-	'Kate';
+	return Wx::gettext('Kate');
 }
 
 
