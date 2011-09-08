@@ -8,6 +8,8 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
+our $VERSION = '0.13';
+
 our @ISA = 'Padre::Plugin';
 
 sub padre_interfaces {
