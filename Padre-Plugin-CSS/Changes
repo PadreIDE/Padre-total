@@ -2,6 +2,8 @@ Revision history for Padre-Plugin-CSS
 
 {{$NEXT}}
 
+        Switch from Dist::Zilla to Module::Install
+
 0.14   2010.12.06
         Restored missing POT/PO translation sources (Damyan Ivanov, AZAWAWI)
 
@@ -33,7 +35,7 @@ Revision history for Padre-Plugin-CSS
         - Chinese (Traditional) translation (BLUET)
         - Arabic (azawawi)
         - Spanish (brunov)
-    
+
 0.06    2009.05.18
         Added translations:
         - French (jquelin)
