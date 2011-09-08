@@ -11,22 +11,37 @@ use Padre::Plugin ();
 our $VERSION = '0.13';
 
 our @ISA = 'Padre::Plugin';
-
+#######
+# Method Padre_Interfaces required
+#######
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',;
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Wx::Main' => '0.91',
+		'Padre::Logger'   => '0.91',
+	);
 }
 
 sub plugin_name {
-	Wx::gettext('Perl Critic');
+	return Wx::gettext('Perl-Critic');
 }
 
-sub menu_plugins_simple {
+sub menu_plugins {
 	my $self = shift;
-	return $self->plugin_name => [
-		Wx::gettext('Perl::Critic Current Document') => sub {
-			$self->critic(@_);
-			}
-	];
+	my $main = shift;
+
+	# Create a manual menu item
+	my $item = Wx::MenuItem->new( undef, -1, $self->plugin_name, );
+	Wx::Event::EVT_MENU(
+		$main, $item,
+		sub {
+			local $@;
+			eval { $self->critic($main); };
+		},
+	);
+
+	return $item;
 }
 
 sub critic {
@@ -39,9 +54,7 @@ sub critic {
 	unless ( $document->isa('Padre::Document::Perl') ) {
 		return Wx::MessageBox(
 			Wx::gettext('Document is not a Perl document'),
-			Wx::gettext('Error'),
-			Wx::wxOK | Wx::wxCENTRE,
-			$self,
+			Wx::gettext('Error'), Wx::wxOK | Wx::wxCENTRE, $self,
 		);
 	}
 	my $text = $document->text_get;
@@ -63,10 +76,14 @@ sub critic {
 	$main->show_output(1);
 	if (@params) {
 		$output->AppendText(
-			sprintf( Wx::gettext('Perl::Critic running with project-specific configuration %s'), $config_perlcritic )
-				. "\n" );
+			sprintf(
+				Wx::gettext('Perl::Critic running with project-specific configuration %s'),
+				$config_perlcritic
+				)
+				. "\n"
+		);
 	} else {
-		$output->AppendText( Wx::gettext("Perl\::Critic running with default or user configuration") . "\n" );
+		$output->AppendText( Wx::gettext('Perl::Critic running with default or user configuration') . "\n" );
 	}
 
 	# Hand off to Perl::Critic
@@ -82,6 +99,24 @@ sub critic {
 	}
 
 	return;
+}
+
+#######
+# Method plugin_disable required
+#######
+sub plugin_disable {
+	my $self = shift;
+
+	# Unload other cpan modules
+	$self->unload(
+		qw{
+			Perl::Critic
+			}
+	);
+
+	$self->SUPER::plugin_disable(@_);
+
+	return 1;
 }
 
 1;
