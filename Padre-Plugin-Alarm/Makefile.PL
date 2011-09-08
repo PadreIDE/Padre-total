@@ -7,7 +7,7 @@ license 'perl';
 author 'Fayland Lam <fayland@gmail.com>';
 author 'Ahmad M. Zawawi <ahmad.zawawi@gmail.com>';
 
-all_from 'lib/Padre/Plugin/CSS.pm';
+all_from 'lib/Padre/Plugin/Alarm.pm';
 
 requires 'Padre' => '0.91';
 
