@@ -19,7 +19,7 @@ our @ISA     = 'Padre::Plugin';
 # Padre::Plugin Methods
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.42
+	'Padre::Plugin' => '0.91';
 }
 
 sub plugin_name {
@@ -30,6 +30,7 @@ sub menu_plugins_simple {
 	my $self = shift;
 	return $self->plugin_name => [
 		'About' => sub { $self->show_about },
+
 		# 'Another Menu Entry' => sub { $self->about },
 		# 'A Sub-Menu...' => [
 		#     'Sub-Menu Entry' => sub { $self->about },
@@ -55,9 +56,9 @@ sub show_about {
 	$file = '' unless -f $file;
 
 	# Attempt to play the file
-	if ( $file ) {
-		my $wave = Wx::Sound->new( $file );
-		$wave->Play( Wx::wxSOUND_ASYNC );
+	if ($file) {
+		my $wave = Wx::Sound->new($file);
+		$wave->Play( Wx::wxSOUND_ASYNC() );
 	}
 
 	# Generate the About dialog
@@ -71,12 +72,13 @@ File = '$file'
 END_MESSAGE
 
 	# Show the About dialog
-	Wx::AboutBox( $about );
+	Wx::AboutBox($about);
 
 	return;
 }
 
 1;
+
 # Copyright 2008 Gabor Szabo.
 # LICENSE
 # This program is free software; you can redistribute it and/or
