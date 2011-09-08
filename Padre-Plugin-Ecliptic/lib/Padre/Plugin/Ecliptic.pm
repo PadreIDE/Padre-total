@@ -24,7 +24,10 @@ sub plugin_name {
 # This plugin is compatible with the following Padre plugin interfaces version
 #
 sub padre_interfaces {
-	return 'Padre::Plugin' => 0.47;
+	return (
+		'Padre::Plugin' => '0.91',
+		'Padre::Wx'     => '0.91',
+	);
 }
 
 #
