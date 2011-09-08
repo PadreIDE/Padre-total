@@ -6,6 +6,8 @@ use strict;
 use warnings;
 use 5.008;
 
+our $VERSION = '0.06';
+
 use Padre::Wx ();
 use Padre::Current;
 
@@ -167,8 +169,7 @@ sub about {
 
 	my $about = Wx::AboutDialogInfo->new;
 	$about->SetName(__PACKAGE__);
-	$about->SetDescription(
-		Wx::gettext('Use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
+	$about->SetDescription( Wx::gettext('Use Syntax::Highlight::Engine::Kate for syntax highlighting') . "\n" );
 	$about->SetVersion($Padre::Plugin::Kate::VERSION);
 	Wx::AboutBox($about);
 	return;
