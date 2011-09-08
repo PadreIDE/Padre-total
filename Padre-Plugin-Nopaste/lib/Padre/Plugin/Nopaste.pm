@@ -12,9 +12,9 @@ package Padre::Plugin::Nopaste;
 use strict;
 use warnings;
 
-use File::Basename        qw{ fileparse };
+use File::Basename qw{ fileparse };
 use File::Spec::Functions qw{ catfile };
-use Module::Util          qw{ find_installed };
+use Module::Util qw{ find_installed };
 
 #use Padre::Task;
 #our @ISA     = qw{
@@ -22,8 +22,9 @@ use Module::Util          qw{ find_installed };
 #	Padre::Plugin
 #};
 use parent qw{ Padre::Plugin
-Padre::Role::Task
-}; #
+	Padre::Role::Task
+	}; #
+
 #
 
 our $VERSION = '0.3.1';
@@ -32,36 +33,45 @@ our $VERSION = '0.3.1';
 # -- padre plugin api, refer to Padre::Plugin
 
 # plugin name
-sub plugin_name { 'Nopaste' }
+sub plugin_name {'Nopaste'}
 
 # plugin icon
 sub plugin_icon {
-    # find resource path
-    my $pkgpath = find_installed(__PACKAGE__);
-    my (undef, $dirname, undef) = fileparse($pkgpath);
-    my $iconpath = catfile( $dirname,
-        'Nopaste', 'share', 'icons', 'paste.png');
 
-    # create and return icon
-    return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
+	# find resource path
+	my $pkgpath = find_installed(__PACKAGE__);
+	my ( undef, $dirname, undef ) = fileparse($pkgpath);
+	my $iconpath = catfile(
+		$dirname,
+		'Nopaste', 'share', 'icons', 'paste.png'
+	);
+
+	# create and return icon
+	return Wx::Bitmap->new( $iconpath, Wx::wxBITMAP_TYPE_PNG );
 }
 
 # padre interface
 sub padre_interfaces {
-    'Padre::Plugin' => 0.65,
-    'Padre::Task'   => 0.65,
+	return (
+		'Padre::Plugin' => '0.91',
+		'Padre::Task'   => '0.91',
+		'Padre::Logger' => '0.91',
+		'Padre::Task'   => '0.91',
+	);
 }
 
 # plugin menu.
 sub menu_plugins_simple {
-    my ($self) = @_;
-    'Nopaste' => [
-        "Nopaste\tCtrl+Shift+V" => 'nopaste',  # launch thread, see Padre::Task
-    ];
+	my ($self) = @_;
+	'Nopaste' => [
+		"Nopaste\tCtrl+Shift+V" => 'nopaste', # launch thread, see Padre::Task
+	];
 }
 
 require Padre::Plugin::Nopaste::Task;
+
 sub nopaste {
+
 	#TRACE("nopaste") if DEBUG;
 	my $self = shift;
 
@@ -70,6 +80,7 @@ sub nopaste {
 		task     => 'Padre::Plugin::Nopaste::Task',
 		document => $self,
 		callback => 'on_finish',
+
 		# callback => 'task_response',
 	);
 
@@ -77,12 +88,15 @@ sub nopaste {
 }
 
 sub on_finish {
-# sub task_response {
+
+	# sub task_response {
 	#TRACE("nopaste_response") if DEBUG;
 	my $self = shift;
 	my $task = shift;
+
 	# Found what we were looking for
 	if ( $task->{location} ) {
+
 		#$self->ppi_select( $task->{location} );
 		#return;
 	}
@@ -97,12 +111,12 @@ sub on_finish {
 	# Must have been a clean result
 	# TO DO: Convert this to a call to ->main that doesn't require
 	# us to use Wx directly.
-#	Wx::MessageBox(
-#		$task->{message},
-#		$task->{message},
-#		Wx::wxOK,
-#		$self->current->main,
-#	);
+	#	Wx::MessageBox(
+	#		$task->{message},
+	#		$task->{message},
+	#		Wx::wxOK,
+	#		$self->current->main,
+	#	);
 }
 
 
