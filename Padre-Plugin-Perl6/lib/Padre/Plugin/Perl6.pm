@@ -5,6 +5,9 @@ package Padre::Plugin::Perl6;
 use 5.010;
 use strict;
 use warnings;
+
+our $VERSION = '0.71';
+
 use Carp;
 use Padre::Wx       ();
 use Padre::Constant ();
@@ -30,11 +33,17 @@ sub plugin_config {
 
 # Returns the plugin name to Padre
 sub plugin_name {
-	return Wx::gettext("Perl 6");
+	return Wx::gettext('Perl 6');
 }
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43;
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Constant' => '0.91',
+		'Padre::Util'     => '0.91',
+		'Padre::Current'  => '0.91',
+	);
 }
 
 #
