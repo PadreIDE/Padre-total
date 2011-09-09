@@ -5,6 +5,8 @@ package Padre::Plugin::WxWidgets;
 use warnings;
 use strict;
 
+our $VERSION = '0.03';
+
 use base 'Padre::Plugin';
 
 use Padre::Wx ();
