@@ -55,8 +55,12 @@ sub process_clicked {
 
 	my $file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
 	my $file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
-
-	TRACE( $self->action->GetStringSelection() ) if DEBUG;
+	
+	TRACE( '$self->file1->GetSelection(): ' . $self->file1->GetSelection() )               if DEBUG;
+	TRACE( '$file1: ' . $file1 )                                                           if DEBUG;
+	TRACE( '$self->file2->GetCurrentSelection(): ' . $self->file2->GetCurrentSelection() ) if DEBUG;
+	TRACE( '$file2: ' . $file2 )                                                           if DEBUG;
+	TRACE( $self->action->GetStringSelection() )                                           if DEBUG;
 
 	if ( $self->action->GetStringSelection() eq 'Patch' ) {
 		$self->apply_patch( $file1, $file2 );
@@ -206,7 +210,7 @@ sub file_lists_saved {
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->{file1_list_ref} = \@file_lists_saved;
-	$self->set_selection();
+	$self->set_selection( $self->{file1_list_ref} );
 	$self->file1->SetSelection( $self->{selection} );
 
 	$self->file2->Clear;
@@ -222,9 +226,11 @@ sub file_lists_saved {
 #######
 sub file2_list_patch {
 	my $self = shift;
+
 	my @file2_list_patch;
 	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) {
+
 			push @file2_list_patch, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
@@ -233,8 +239,9 @@ sub file2_list_patch {
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list_patch );
-	$self->file2->SetSelection(0);
 	$self->{file2_list_ref} = \@file2_list_patch;
+	$self->set_selection( $self->{file2_list_ref} );
+	$self->file2->SetSelection( $self->{selection} );
 
 	return;
 }
@@ -260,7 +267,7 @@ sub file1_list_svn {
 
 	$self->file1->Clear;
 	$self->file1->Append( $self->{file1_list_ref} );
-	$self->set_selection();
+	$self->set_selection( $self->{file1_list_ref} );
 	$self->file1->SetSelection( $self->{selection} );
 
 	return;
@@ -271,16 +278,21 @@ sub file1_list_svn {
 # Composed Method set_selection
 #######
 sub set_selection {
-	my $self = shift;
-	my $main = $self->main;
+	my $self          = shift;
+	my $file_list_ref = shift;
+	my $main          = $self->main;
+
+	$self->{selection} = 0;
 
 	# SetSelection should be current file
-	foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
+	foreach ( 0 .. $#{$file_list_ref} ) {
 
-		if ( @{ $self->{file1_list_ref} }[$_] eq $main->current->title ) {
+		if ( @{$file_list_ref}[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
+			return;
 		}
 	}
+
 	return;
 }
 
@@ -311,8 +323,8 @@ sub apply_patch {
 
 	my ( $source, $diff );
 
-	my $file1_url = $self->filename_url( $file1_name );
-	my $file2_url = $self->filename_url( $file2_name );
+	my $file1_url = $self->filename_url($file1_name);
+	my $file2_url = $self->filename_url($file2_name);
 
 	if ( -e $file1_url ) {
 		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
@@ -341,6 +353,9 @@ sub apply_patch {
 			$main->info( Wx::gettext('Patch Succesful, you should see a new tab in editor called Unsaved #') );
 		} else {
 			TRACE("error trying to patch: $@") if DEBUG;
+
+			# Open the patched file as a new file
+			$main->new_document_from_string( "This is the error I got back\n\n$@" => 'application/x-perl', );
 			$main->info(
 				Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
 			return;
@@ -359,8 +374,8 @@ sub make_patch_diff {
 	my $file2_name = shift;
 	my $main       = $self->main;
 
-	my $file1_url = $self->filename_url( $file1_name );
-	my $file2_url = $self->filename_url( $file2_name );
+	my $file1_url = $self->filename_url($file1_name);
+	my $file2_url = $self->filename_url($file2_name);
 
 	if ( -e $file1_url ) {
 		TRACE("found file1 => $file1_name: $file1_url") if DEBUG;
@@ -403,7 +418,7 @@ sub make_patch_svn {
 	my $file1_name = shift;
 	my $main       = $self->main;
 
-	my $file1_url = $self->filename_url( $file1_name );
+	my $file1_url = $self->filename_url($file1_name);
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
