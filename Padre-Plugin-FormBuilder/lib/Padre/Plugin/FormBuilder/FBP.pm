@@ -13,7 +13,7 @@ use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 use File::ShareDir ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog

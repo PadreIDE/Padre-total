@@ -25,9 +25,9 @@ use strict;
 use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.61 ();
+use FBP::Perl    0.62 ();
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 our @ISA     = 'FBP::Perl';
 
 
@@ -167,19 +167,19 @@ sub form_wx {
 		"use Padre::Wx ();",
 		"use Padre::Wx::Role::Main ();",
 	];
-	if ( $topic->find_first( isa => 'FBP::RichTextCtrl' ) ) {
+	if ( $self->find_plain( $topic => 'FBP::RichTextCtrl' ) ) {
 		push @$lines, "use Wx::STC ();";
 	}
-	if ( $topic->find_first( isa => 'FBP::HtmlWindow' ) ) {
+	if ( $self->find_plain( $topic => 'FBP::HtmlWindow' ) ) {
 		push @$lines, "use Wx::HTML ();";
 	}
-	if ( $topic->find_first( isa => 'FBP::Grid' ) ) {
+	if ( $self->find_plain( $topic => 'FBP::Grid' ) ) {
 		push @$lines, "use Wx::Grid ();";
 	}
-	if ( $topic->find_first( isa => 'FBP::Calendar' ) ) {
+	if ( $self->find_plain( $topic => 'FBP::Calendar' ) ) {
 		push @$lines, "use Wx::Calendar ();";
 		push @$lines, "use Wx::DateTime ();";
-	} elsif ( $topic->find_first( isa => 'FBP::DatePickerCtrl' ) ) {
+	} elsif ( $self->find_plain( $topic => 'FBP::DatePickerCtrl' ) ) {
 		push @$lines, "use Wx::DateTime ();";
 	}
 	return $lines;
