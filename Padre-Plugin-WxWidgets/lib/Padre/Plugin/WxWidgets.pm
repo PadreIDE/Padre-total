@@ -11,8 +11,15 @@ use base 'Padre::Plugin';
 
 use Padre::Wx ();
 
+#######
+# Define Plugin Name required
+#######
+sub plugin_name {
+	return Wx::gettext('wxWidgets Support');
+}
+
 sub padre_interfaces {
-	'Padre::Plugin' => '0.47',;
+	'Padre::Plugin' => '0.91',;
 }
 
 sub menu_plugins_simple {
