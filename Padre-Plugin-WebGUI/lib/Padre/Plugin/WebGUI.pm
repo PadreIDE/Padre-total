@@ -43,7 +43,14 @@ Declare the Padre interfaces this plugin uses
 =cut
 
 sub padre_interfaces {
-	'Padre::Plugin' => 0.43,;
+	return (
+		'Padre::Plugin'   => '0.91',
+		'Padre::Wx'       => '0.91',
+		'Padre::Wx::Main' => '0.91',
+		'Padre::Util'     => '0.91',
+		'Padre::Logger'   => '0.91',
+		'Padre::Current'  => '0.91',
+	);
 }
 
 =method registered_documents
