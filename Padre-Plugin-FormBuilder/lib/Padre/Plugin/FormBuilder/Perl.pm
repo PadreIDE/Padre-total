@@ -171,7 +171,7 @@ sub form_wx {
 		push @$lines, "use Wx::STC ();";
 	}
 	if ( $self->find_plain( $topic => 'FBP::HtmlWindow' ) ) {
-		push @$lines, "use Wx::HTML ();";
+		push @$lines, "use Wx::Html ();";
 	}
 	if ( $self->find_plain( $topic => 'FBP::Grid' ) ) {
 		push @$lines, "use Wx::Grid ();";
