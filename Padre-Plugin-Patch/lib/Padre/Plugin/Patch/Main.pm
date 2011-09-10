@@ -55,7 +55,7 @@ sub process_clicked {
 
 	my $file1 = @{ $self->{file1_list_ref} }[ $self->file1->GetSelection() ];
 	my $file2 = @{ $self->{file2_list_ref} }[ $self->file2->GetCurrentSelection() ];
-	
+
 	TRACE( '$self->file1->GetSelection(): ' . $self->file1->GetSelection() )               if DEBUG;
 	TRACE( '$file1: ' . $file1 )                                                           if DEBUG;
 	TRACE( '$self->file2->GetCurrentSelection(): ' . $self->file2->GetCurrentSelection() ) if DEBUG;
@@ -210,13 +210,18 @@ sub file_lists_saved {
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->{file1_list_ref} = \@file_lists_saved;
-	$self->set_selection( $self->{file1_list_ref} );
+
+	# $self->set_selection( $self->{file1_list_ref} );
+	$self->set_selection_file1();
 	$self->file1->SetSelection( $self->{selection} );
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file_lists_saved );
-	$self->file2->SetSelection( $self->{selection} );
+
+	# $self->file2->SetSelection( $self->{selection} );
 	$self->{file2_list_ref} = \@file_lists_saved;
+	$self->set_selection_file2();
+	$self->file2->SetSelection( $self->{selection} );
 
 	return;
 }
@@ -230,7 +235,6 @@ sub file2_list_patch {
 	my @file2_list_patch;
 	for ( 0 .. $self->{tab_cardinality} ) {
 		if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) {
-
 			push @file2_list_patch, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
@@ -240,7 +244,9 @@ sub file2_list_patch {
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list_patch );
 	$self->{file2_list_ref} = \@file2_list_patch;
-	$self->set_selection( $self->{file2_list_ref} );
+
+	# $self->set_selection( $self->{file2_list_ref} );
+	$self->set_selection_file2();
 	$self->file2->SetSelection( $self->{selection} );
 
 	return;
@@ -249,7 +255,6 @@ sub file2_list_patch {
 #######
 # Composed Method file1_list_svn
 #######
-
 sub file1_list_svn {
 	my $self = shift;
 
@@ -267,7 +272,9 @@ sub file1_list_svn {
 
 	$self->file1->Clear;
 	$self->file1->Append( $self->{file1_list_ref} );
-	$self->set_selection( $self->{file1_list_ref} );
+
+	# $self->set_selection( $self->{file1_list_ref} );
+	$self->set_selection_file1();
 	$self->file1->SetSelection( $self->{selection} );
 
 	return;
@@ -275,19 +282,61 @@ sub file1_list_svn {
 
 
 #######
-# Composed Method set_selection
+# Composed Method set_selection_file1
 #######
-sub set_selection {
-	my $self          = shift;
-	my $file_list_ref = shift;
-	my $main          = $self->main;
+sub set_selection_file1 {
+	my $self = shift;
+	my $main = $self->main;
+
+	$self->{selection} = 0;
+	if ( $main->current->title =~ /(patch|diff)$/sxm ) {
+		# print 'Padre::Current->filename:'.Padre::Current->filename."\n";
+		# print 'Padre::Current->title:'.$main->current->title."\n";
+		
+		my @pathch_target = split(/\./, $main->current->title, 3);
+		# print "got you: $pathch_target[0]\n";
+		$pathch_target[0] =~ s/^\s{1}//;
+		# print "got you: $pathch_target[0]\n";
+		
+		# SetSelection should be Patch target file
+		foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
+			
+		# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
+		# print "got you: $pathch_target[0]\n";
+		
+			if ( @{ $self->{file1_list_ref} }[$_] =~ /^$pathch_target[0]/ ) {
+				$self->{selection} = $_;
+				return;
+			}
+		}
+	} else {
+
+		# SetSelection should be current file
+		foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
+
+			if ( @{ $self->{file1_list_ref} }[$_] eq $main->current->title ) {
+				$self->{selection} = $_;
+				return;
+			}
+		}
+	}
+
+	return;
+}
+
+#######
+# Composed Method set_selection_file2
+#######
+sub set_selection_file2 {
+	my $self = shift;
+	my $main = $self->main;
 
 	$self->{selection} = 0;
 
 	# SetSelection should be current file
-	foreach ( 0 .. $#{$file_list_ref} ) {
+	foreach ( 0 .. $#{ $self->{file2_list_ref} } ) {
 
-		if ( @{$file_list_ref}[$_] eq $main->current->title ) {
+		if ( @{ $self->{file2_list_ref} }[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
 			return;
 		}
