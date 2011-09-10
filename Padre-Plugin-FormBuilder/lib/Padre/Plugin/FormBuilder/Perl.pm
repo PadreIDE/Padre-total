@@ -25,7 +25,7 @@ use strict;
 use warnings;
 use Scalar::Util      ();
 use Params::Util 0.33 ();
-use FBP::Perl    0.62 ();
+use FBP::Perl    0.63 ();
 
 our $VERSION = '0.04';
 our @ISA     = 'FBP::Perl';
@@ -38,7 +38,11 @@ our @ISA     = 'FBP::Perl';
 # Constructor
 
 sub new {
-	my $self = shift->SUPER::new(@_);
+	my $self = shift->SUPER::new(
+		# Apply the default prefix style
+		prefix => 2,
+		@_,
+	);
 
 	# The encapsulate accessor
 	$self->{encapsulate} = $self->{encapsulate} ? 1 : 0;
