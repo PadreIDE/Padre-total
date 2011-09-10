@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.28 2011.9.10
+    - Released 0.27_01 as stable 0.28 (AZAWAWI)
+
 0.27_01 2011.9.8
     - Fixed ExtUtils::Parse 3.03_02+ warnings about missing
     'OUTPUT: RETVAL' sections (AZAWAWI)
