@@ -290,20 +290,23 @@ sub set_selection_file1 {
 
 	$self->{selection} = 0;
 	if ( $main->current->title =~ /(patch|diff)$/sxm ) {
+
 		# print 'Padre::Current->filename:'.Padre::Current->filename."\n";
 		# print 'Padre::Current->title:'.$main->current->title."\n";
-		
-		my @pathch_target = split(/\./, $main->current->title, 3);
+
+		my @pathch_target = split( /\./, $main->current->title, 3 );
+
 		# print "got you: $pathch_target[0]\n";
 		$pathch_target[0] =~ s/^\s{1}//;
+
 		# print "got you: $pathch_target[0]\n";
-		
+
 		# SetSelection should be Patch target file
 		foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
-			
-		# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
-		# print "got you: $pathch_target[0]\n";
-		
+
+			# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
+			# print "got you: $pathch_target[0]\n";
+
 			if ( @{ $self->{file1_list_ref} }[$_] =~ /^$pathch_target[0]/ ) {
 				$self->{selection} = $_;
 				return;
@@ -369,7 +372,11 @@ sub apply_patch {
 	my $file1_name = shift;
 	my $file2_name = shift;
 	my $main       = $self->main;
-
+	
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
+	
 	my ( $source, $diff );
 
 	my $file1_url = $self->filename_url($file1_name);
@@ -403,8 +410,21 @@ sub apply_patch {
 		} else {
 			TRACE("error trying to patch: $@") if DEBUG;
 
+			# if I don't save $EVAL_ERROR it get's lost, now I am confused :(
+			my $patch_eval_error = $@;
+
+			# $main->show_output(1);
+			# my $output = $main->output;
+			# $output->clear;
+			$output->AppendText("Patch Dialog failed to Complete.\n");
+			$output->AppendText("Your requested Action Patch, with following parameters.\n");
+			$output->AppendText("File-1: $file1_url \n");
+			$output->AppendText("File-2: $file2_url \n");
+			$output->AppendText("What follows is the error I received if any: \n");
+			$output->AppendText("$patch_eval_error $@");
+
 			# Open the patched file as a new file
-			$main->new_document_from_string( "This is the error I got back\n\n$@" => 'application/x-perl', );
+			# $main->new_document_from_string( "This is the error I got back\n\n$@" => 'application/x-perl', );
 			$main->info(
 				Wx::gettext('Sorry Patch Failed, are you sure your choice of files was correct for this action') );
 			return;
@@ -422,7 +442,11 @@ sub make_patch_diff {
 	my $file1_name = shift;
 	my $file2_name = shift;
 	my $main       = $self->main;
-
+	
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
+	
 	my $file1_url = $self->filename_url($file1_name);
 	my $file2_url = $self->filename_url($file2_name);
 
@@ -466,7 +490,11 @@ sub make_patch_svn {
 	my $self       = shift;
 	my $file1_name = shift;
 	my $main       = $self->main;
-
+	
+	$main->show_output(1);
+	my $output = $main->output;
+	$output->clear;
+	
 	my $file1_url = $self->filename_url($file1_name);
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
