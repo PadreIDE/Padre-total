@@ -9,7 +9,7 @@ use Padre::Plugin::Patch::FBP::MainFB ();
 use Padre::Current;
 use Padre::Logger;
 
-# use Data::Printer { caller_info => 1 };
+use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.04';
 our @ISA     = 'Padre::Plugin::Patch::FBP::MainFB';
 
@@ -170,7 +170,7 @@ sub current_files {
 	}
 
 	# nb enable Data::Printer above to use
-	# p $self->{open_file_info};
+	p $self->{open_file_info};
 
 	return;
 }
@@ -309,8 +309,9 @@ sub set_selection_file1 {
 
 			# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
 			# print "got you: $pathch_target[0]\n";
-
-			if ( @{ $self->{file1_list_ref} }[$_] =~ /^$pathch_target[0]/ ) {
+			
+			# add optional leading space \s?
+			if ( @{ $self->{file1_list_ref} }[$_] =~ /^\s?$pathch_target[0]/ ) {
 				$self->{selection} = $_;
 				return;
 			}
