@@ -10,6 +10,11 @@ use Padre::Swarm::Message;
 use JSON;
 our $VERSION = '0.2';
 
+=pod
+
+
+=cut 
+
 sub new {
     my $class = shift;
     my $self = $class->SUPER::new(@_);
@@ -38,7 +43,7 @@ sub enable {
     );
     $self->reg_cb( 'readable' , \&readable );
     $self->reg_cb('disconnect', \&disconnect );
-    $self->event('connect',1);
+    $self->event('connect',$self->{token} );
     
     return;
 }

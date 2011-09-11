@@ -11,7 +11,6 @@ use Storable;
 use POSIX qw(:errno_h :fcntl_h);
 use Carp 'croak';
 
-
 {
     my %sockets = ();
     my $socketid = 1;
@@ -333,11 +332,12 @@ sub _recv {
 sub _connect {
     my $self = shift;
     my $origin = shift;
+    my $transport = shift;
     my $message = shift;
     TRACE( "Connected $origin" ) if DEBUG;
     $self->tell_status( "Swarm $origin transport connected" );
     # TODO this is a service event - NOT a swarm message. 
-    my $m = [ 'connect_'.$origin , 1 ];
+    my $m = [ 'connect_'.$origin , $message ];
     $self->tell_owner( $m );
 }
 

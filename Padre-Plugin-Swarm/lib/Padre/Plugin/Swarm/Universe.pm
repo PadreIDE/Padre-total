@@ -4,6 +4,7 @@ use warnings;
 use Padre::Logger;
 use Class::XSAccessor 
 	accessors => {
+		token => 'token',
 		resources => 'resources',
 		origin => 'origin',
 		chat => 'chat',
@@ -122,8 +123,9 @@ sub on_recv {
 }
 
 sub on_connect {
-	my ($self) = shift;
-	TRACE( "Swarm transport connected" ) if DEBUG;
+	my ($self,$token) = @_;
+	TRACE( "Swarm transport connected", @_ )  ; #if DEBUG;
+	$self->{token} = $token;
 	$self->plugin->_flush_outbox($self->origin);
 	$self->send(
 		{ type=>'announce', service=>'swarm' }
@@ -155,9 +157,15 @@ sub _notify {
 	my $self = shift;
 	my $notify = shift;
 	my $message= $_[0];
+
 	unless ( _INVOCANT($message) ) {
 		confess 'unblessed message', Dumper \@_;
 		
+	}
+	if ($message->{token} eq $self->{token}) {
+		$message->{is_loopback} = 1;
+	} else {
+		$message->{is_loopback} = 0;
 	}
 	my $lock = Padre::Current->main->lock('UPDATE');
 	foreach my $c ( $self->components ) {
@@ -172,7 +180,7 @@ sub _notify {
 			$component->$notify(@_) if $component->can($notify);
 		};
 		if ($@) {
-			TRACE( "Failed to notify component '$c' , $@") if DEBUG
+			TRACE( "Failed to notify component '$c' , $@" );# $if DEBUG
 		}
 	}
 	return;

@@ -1,5 +1,7 @@
 use Test::More tests => 2;
 use Padre::Plugin::Swarm::Transport::Global;
+use strict;
+use warnings;
 
 my $bailout = AnyEvent->condvar;
 my $message = AnyEvent->condvar;

@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.2	- unreleased
+	- first real 2-way co-operative editing capability
 	- move to new Padre::Task api
 	- add Swarm::Universe container for tools and transports
 	- replace Wx::Socket and IO::Poll task transport with AnyEvent
