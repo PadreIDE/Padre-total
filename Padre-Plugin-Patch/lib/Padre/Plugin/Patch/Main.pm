@@ -294,11 +294,11 @@ sub set_selection_file1 {
 		# print 'Padre::Current->filename:'.Padre::Current->filename."\n";
 		# print 'Padre::Current->title:'.$main->current->title."\n";
 
-		my @pathch_target = split( /\./, $main->current->title, 3 );
+		my @pathch_target = split( /\./, $main->current->title, 2 );
 
 		# print "got you: $pathch_target[0]\n";
 		$pathch_target[0] =~ s/^\s{1}//;
-
+		TRACE("Looking for File-1 to apply a patch to: $pathch_target[0]") if DEBUG;
 		# print "got you: $pathch_target[0]\n";
 
 		# SetSelection should be Patch target file
@@ -372,11 +372,11 @@ sub apply_patch {
 	my $file1_name = shift;
 	my $file2_name = shift;
 	my $main       = $self->main;
-	
+
 	$main->show_output(1);
 	my $output = $main->output;
 	$output->clear;
-	
+
 	my ( $source, $diff );
 
 	my $file1_url = $self->filename_url($file1_name);
@@ -420,8 +420,8 @@ sub apply_patch {
 			$output->AppendText("Your requested Action Patch, with following parameters.\n");
 			$output->AppendText("File-1: $file1_url \n");
 			$output->AppendText("File-2: $file2_url \n");
-			$output->AppendText("What follows is the error I received if any: \n");
-			$output->AppendText("$patch_eval_error $@");
+			$output->AppendText("What follows is the error I received from Text::Patch::patch, if any: \n");
+			$output->AppendText("$patch_eval_error");
 
 			# Open the patched file as a new file
 			# $main->new_document_from_string( "This is the error I got back\n\n$@" => 'application/x-perl', );
@@ -442,11 +442,11 @@ sub make_patch_diff {
 	my $file1_name = shift;
 	my $file2_name = shift;
 	my $main       = $self->main;
-	
+
 	$main->show_output(1);
 	my $output = $main->output;
 	$output->clear;
-	
+
 	my $file1_url = $self->filename_url($file1_name);
 	my $file2_url = $self->filename_url($file2_name);
 
@@ -473,6 +473,14 @@ sub make_patch_diff {
 			$main->info( Wx::gettext("Diff Succesful, you should see a new tab in editor called $patch_file") );
 		} else {
 			TRACE("error trying to patch: $@") if DEBUG;
+
+			$output->AppendText("Patch Dialog failed to Complete.\n");
+			$output->AppendText("Your requested Action Diff, with following parameters.\n");
+			$output->AppendText("File-1: $file1_url \n");
+			$output->AppendText("File-2: $file2_url \n");
+			$output->AppendText("What follows is the error I received from Text::Diff::diff, if any: \n");
+			$output->AppendText($@);
+
 			$main->info(
 				Wx::gettext('Sorry Diff Failed, are you sure your choice of files was correct for this action') );
 			return;
@@ -490,11 +498,11 @@ sub make_patch_svn {
 	my $self       = shift;
 	my $file1_name = shift;
 	my $main       = $self->main;
-	
+
 	$main->show_output(1);
 	my $output = $main->output;
 	$output->clear;
-	
+
 	my $file1_url = $self->filename_url($file1_name);
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
@@ -522,6 +530,13 @@ sub make_patch_svn {
 			$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 		} else {
 			TRACE("Error trying to get an SVN Diff: $@") if DEBUG;
+			
+			$output->AppendText("Patch Dialog failed to Complete.\n");
+			$output->AppendText("Your requested Action Diff against SVN, with following parameters.\n");
+			$output->AppendText("File-1: $file1_url \n");
+			$output->AppendText("What follows is the error I received from SVN::Class, if any: \n");
+			$output->AppendText($@);
+			
 			$main->info(
 				Wx::gettext('Sorry Diff Failed, are you sure your have access to the repository for this action') );
 			return;
