@@ -409,15 +409,15 @@ sub on_editor_modified {
     my $pos = $event->GetPosition;
     my $len = $event->GetLength;
     
-    #Debugging noise
-    my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $resource";
-    $self->universe->send(
-        { type=>'chat', body=>$payload,
-            op   => $type,
-            t    => $text,
-            time => time(),
-        }
-    );
+    ## Debugging noise
+    # my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $resource";
+    # $self->universe->send(
+        # { type=>'chat', body=>$payload,
+            # op   => $type,
+            # t    => $text,
+            # time => time(),
+        # }
+    # );
     
     $self->universe->send(
         {   
