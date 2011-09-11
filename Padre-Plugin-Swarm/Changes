@@ -1,5 +1,6 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.2	- unreleased
+	- first attempt at collaboration with bowtie from irc. (BRAMBLE)
 	- first real 2-way co-operative editing capability
 	- move to new Padre::Task api
 	- add Swarm::Universe container for tools and transports
