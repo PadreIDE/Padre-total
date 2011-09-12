@@ -12,6 +12,12 @@ our $VERSION = '0.2';
 
 =pod
 
+=head1 NAME
+
+Padre::Plugin::Swarm::Transport::Local - Multicast swarm message bus
+
+=head1 DESCRIPTION
+
 
 =cut 
 

@@ -12,12 +12,13 @@ BEGIN {
         }
 }
 
-plan tests => 7;
+plan tests => 8;
 
 use_ok('Padre::Plugin::Swarm');
+use_ok('Padre::Plugin::Swarm::Service');
 use_ok('Padre::Swarm::Identity');
 use_ok('Padre::Swarm::Message');
 use_ok('Padre::Swarm::Message::Diff');
 use_ok('Padre::Swarm::Geometry');
-use_ok('Padre::Plugin::Swarm::Transport::Local::Multicast');
-use_ok('Padre::Plugin::Swarm::Transport::Global::WxSocket');
+use_ok('Padre::Plugin::Swarm::Transport::Local');
+use_ok('Padre::Plugin::Swarm::Transport::Global');
