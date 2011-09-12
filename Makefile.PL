@@ -6,6 +6,7 @@ author         'Gabor Szabo <szabgab@gmail.com>';
 license        'perl';
 requires       'Padre'      => '0.81';
 requires	'File::Temp';
+requires 'Capture::Tiny';
 build_requires 'Test::More';
 
 # Extras needed for building Padre plugins

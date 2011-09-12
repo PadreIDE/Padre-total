@@ -3,8 +3,11 @@ package Padre::Plugin::SVN;
 use 5.008;
 use strict;
 use warnings;
+
 use Padre::Wx     ();
 use Padre::Plugin ();
+
+
 
 our $VERSION = '0.06';
 our @ISA     = 'Padre::Plugin';
@@ -54,7 +57,7 @@ sub plugin_disable {
 	
 	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
 	$self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
-	$self->uload('Padre::Plugin::SVN::Commands');
+	$self->unload('Padre::Plugin::SVN::Commands');
 	
 	return 1;
 }
@@ -169,7 +172,9 @@ sub svn_commit {
 	}
 	
 	#TODO grab the last revision details for the info bar.
-	my $info = "Get some info about the revision details of file etc";
+	#my $info = "Get some info about the revision details of file etc";
+	require Padre::Plugin::SVN::Info;
+	my $info = $svn->svn_info_object($path);
 	
 	# need to get commit message
 	while(1) {
@@ -178,7 +183,7 @@ sub svn_commit {
 		require Padre::Plugin::SVN::Wx::SVNDialog;
 		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
 			$self->main,
-			$info,
+			$info->path(),
 			undef,
 			'Commit File',
 			1,

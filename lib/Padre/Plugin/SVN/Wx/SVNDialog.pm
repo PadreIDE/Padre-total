@@ -51,7 +51,7 @@ sub build_dialog {
 	);
 
 	$vbox->Add( $stTxtFile, 0, Wx::wxEXPAND );
-
+	
 	my $txtCtrl;
 	if ($log) {
 		$txtCtrl = Wx::TextCtrl->new(

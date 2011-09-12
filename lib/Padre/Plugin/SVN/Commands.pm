@@ -7,6 +7,9 @@ use warnings;
 #use Data::Dumper;
 use Capture::Tiny 'capture';
 
+use Padre::Plugin::SVN::Info;
+
+
 our $VERSION = '0.06';
 sub new {
 	my $class = shift;
@@ -126,6 +129,9 @@ sub svn_info {
 	my $self = shift;
 	my $path = shift;
 	
+	
+	#my $info = Padre::Plugin::SVN::Info->new();
+	
 	$self->_reset_error;
 	
 	print "Path: $path\n";
@@ -133,13 +139,15 @@ sub svn_info {
 		system "svn info $path";
 	};
 	
+	
+	
+	
 	#print "stdout: $stdout\n\nstderr: $stderr\n\n";
 	
 	if( defined $stderr && $stderr ne "") {
 		# when the file is not versioned it gets returned as an error in stderr, however
 		# we don't want to return a true error in this case.
-		if( $stderr =~ m/Not a versioned resource/i or 
-		    $stderr =~ m/is not a working copy/  ) {
+		if( $stderr =~ m/Not a versioned resource/i or $stderr =~ m/is not a working copy/  ) {
 			$self->{msg} = $stderr;
 			return 1;
 		}
@@ -149,12 +157,55 @@ sub svn_info {
 		return 0;
 	}
 	
+	#$info->parse_info($stdout);
 	#print "svn_info: $stdout\n";
 	$self->{msg} = $stdout;
 	
 	return 1;
 	
 }
+
+# I need something to work with for now
+sub svn_info_object {
+		my $self = shift;
+	my $path = shift;
+	
+	
+	#my $info = Padre::Plugin::SVN::Info->new();
+	
+	$self->_reset_error;
+	
+	print "Path: $path\n";
+	my ($stdout, $stderr ) = capture {
+		system "svn info $path";
+	};
+	
+	my $info = Padre::Plugin::SVN::Info->new();
+	
+	#print "stdout: $stdout\n\nstderr: $stderr\n\n";
+	
+	if( defined $stderr && $stderr ne "") {
+		# when the file is not versioned it gets returned as an error in stderr, however
+		# we don't want to return a true error in this case.
+		if( $stderr =~ m/Not a versioned resource/i or $stderr =~ m/is not a working copy/  ) {
+			$self->{msg} = $stderr;
+			return 1;
+		}
+		
+		$self->{error} = 1;
+		$self->{err_msg} = $stderr;
+		return 0;
+	}
+	
+	$info->parse_info($stdout);
+	#print "svn_info: $stdout\n";
+	
+	
+	return $info;	
+	
+		
+}
+
 
 sub svn_diff {
 	my $self = shift;
