@@ -138,8 +138,10 @@ sub task_cancel {
 
 
 SCOPE: {
+# This is here to cheat and presume transports will connect - eventually.
+# accept ->send from the foreground and queue it until the service is 
+# running and connected;
 my @outbox;
-use Data::Dumper;
 
 sub _flush_outbox {
 	my ($self,$origin) = @_;
@@ -247,6 +249,9 @@ SCOPE: {
 	my $instance;
 
 	sub new {
+		die "Plugin instance is still defined - cannot create a new one"
+			if $instance;
+		
 		$instance = shift->SUPER::new(@_);
 	}
 
@@ -292,8 +297,10 @@ SCOPE: {
 	sub plugin_disable {
 		my $self = shift;
 
+		# TODO - is this being used at ALL ?
 		$self->wx->Destroy;
 		$self->wx(undef);
+		
 		$self->disconnect;
 		
 		undef $instance;
@@ -407,22 +414,47 @@ peer programming and collaborative editing functionality.
 Within this plugin all rules are suspended. No security, no efficiency,
 no scalability, no standards compliance, remote code execution,
 everything is allowed. The only goal is things that work, and things
-that look shiny in a demo :) B<Addendum> Deliberate remote code execution was 
-removed very early. Swarm no longer blindly runs code sent to it from the network.
+that look shiny in a demo :)
 
-Lessons learned here will be applied to more practical plugins later.
+B<Addendum> Deliberate remote code execution was 
+removed very early. Swarm no longer blindly runs code sent to it from the network.
 
 =head1 FEATURES
 
+=head2 Connectivity
+
 =over
 
-=item Global server transport - Collaborate with other Swarmers on teh interwebs
+=item * 
 
-=item Local network multicast transport - Collaborate with Swarmers on your local network
+Global server transport - Collaborate with other Swarmers on teh interwebs. 
+C<swarm.perlide.org> is a free swarm server
 
-=item L<User chat|Padre::Plugin::Swarm::Wx::Chat> - converse with other padre editors
+=item *
 
-=item Resources - browse and open files from other users' editor
+Local network multicast transport. Collaborate with Swarmers on your 
+local network. No configuration required - other editors should simply 'appear'
+
+=back
+
+=head2 Interfaces
+
+=over
+    
+=item *
+
+L<User chat|Padre::Plugin::Swarm::Wx::Chat> 
+- converse with other padre editors
+
+=item *
+
+Resources - browse and open files from another users' editor
+
+=item *
+
+L<Editor|Padre::Plugin::Swarm::Wx::Editor>
+integration and co-operation allow multiple users to edit the same document
+at the same time
 
 =back
 
@@ -432,11 +464,13 @@ L<Padre::Swarm::Manual> L<Padre::Plugin::Swarm::Wx::Chat>
 
 =head1 BUGS
 
-Many. Identity management and interaction with L<Padre::Swarm::Geometry> is
-rather poor.
+  Many. Identity management and interaction with L<Padre::Swarm::Geometry> is
+  rather poor.
 
-Crashes when 'Reload All Plugins' is called from the padre plugin manager
-
+  More than 2 users editing same document at once does not work
+  
+  No accomodation is made for edits that overlap in time spent transmitting
+  them. Edits MAY arrive out of order.
 
 =head1 COPYRIGHT
 
