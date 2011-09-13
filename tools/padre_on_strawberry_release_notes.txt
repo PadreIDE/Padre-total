@@ -329,13 +329,15 @@ We have already in v3:
     (MIME::Base64 3.13)
     (MIME::QuotedPrint 3.13)
 
-    
-TODO 
+
+TODO
+App::pmuninstall
+
     Prima
     Win32::GUIRobot
     (MooseX::Types)
     (Clone)
-	
+
     Params::Classify              0.013
     Class::Mix                    0.004
     Crypt::Eksblowfish            0.009
