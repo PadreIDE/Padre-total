@@ -20,13 +20,14 @@ sub new {
 	$self->{error_msg} = "";
 	$self->{msg} = "";
 	
+	$self->{info} =  Padre::Plugin::SVN::Info->new();
 	
 	
 	bless $self, $class;
 	
 	# check if we have svn installed
 	if( ! $self->have_svn() ) {
-		$self->{error} = 0;
+		$self->{error} = 1;
 		$self->{error_msg} = 'The SVN commandline tools do not appear to be installed on your system.';
 		
 	}
@@ -37,6 +38,23 @@ sub new {
 	return $self;
 }
 
+
+
+
+sub error {
+		my $self = shift;
+		 return $self->{error};
+}
+
+sub error_msg {
+		my $self = shift;
+		 return $self->{error_msg};
+}
+
+
+sub msg {
+	return shift->{msg};
+}
 
 
 sub have_svn {
@@ -51,10 +69,10 @@ sub have_svn {
 	
 	#print Dump($stdout);
 	if( $stdout =~ m/useage:/ ) {
-		return 1;
+		return 0;
 	}
 	else {
-		return 0;
+		return 1;
 	}
 }
 
@@ -130,17 +148,12 @@ sub svn_info {
 	my $path = shift;
 	
 	
-	#my $info = Padre::Plugin::SVN::Info->new();
-	
 	$self->_reset_error;
 	
-	print "Path: $path\n";
+	print "svn_info - Path: $path\n";
 	my ($stdout, $stderr ) = capture {
 		system "svn info $path";
 	};
-	
-	
-	
 	
 	#print "stdout: $stdout\n\nstderr: $stderr\n\n";
 	
@@ -148,62 +161,29 @@ sub svn_info {
 		# when the file is not versioned it gets returned as an error in stderr, however
 		# we don't want to return a true error in this case.
 		if( $stderr =~ m/Not a versioned resource/i or $stderr =~ m/is not a working copy/  ) {
-			$self->{msg} = $stderr;
-			return 1;
+			$self->{error} = 1;
+			$self->{error_msg} = $stderr;
+			
 		}
 		
-		$self->{error} = 1;
-		$self->{err_msg} = $stderr;
-		return 0;
+		$self->{error}  = 1;
+		$self->{error_msg} = $stderr;
+ 		return;
 	}
 	
 	#$info->parse_info($stdout);
 	#print "svn_info: $stdout\n";
-	$self->{msg} = $stdout;
 	
-	return 1;
+		$self->{error} = 0;
+		$self->{info} ->parse_info($stdout);
+		$self->{msg} = $stdout;
+		
 	
 }
 
-# I need something to work with for now
-sub svn_info_object {
+sub info {
 		my $self = shift;
-	my $path = shift;
-	
-	
-	#my $info = Padre::Plugin::SVN::Info->new();
-	
-	$self->_reset_error;
-	
-	print "Path: $path\n";
-	my ($stdout, $stderr ) = capture {
-		system "svn info $path";
-	};
-	
-	my $info = Padre::Plugin::SVN::Info->new();
-	
-	#print "stdout: $stdout\n\nstderr: $stderr\n\n";
-	
-	if( defined $stderr && $stderr ne "") {
-		# when the file is not versioned it gets returned as an error in stderr, however
-		# we don't want to return a true error in this case.
-		if( $stderr =~ m/Not a versioned resource/i or $stderr =~ m/is not a working copy/  ) {
-			$self->{msg} = $stderr;
-			return 1;
-		}
-		
-		$self->{error} = 1;
-		$self->{err_msg} = $stderr;
-		return 0;
-	}
-	
-	$info->parse_info($stdout);
-	#print "svn_info: $stdout\n";
-	
-	
-	return $info;	
-	
-		
+		 return $self->{info};
 }
 
 
@@ -299,20 +279,6 @@ sub _reset_error {
 }
 
 
-sub error {
-	my $self = shift;
-	
-	return $self->{error};
-}
-
-sub error_msg {
-	my $self = shift;
-	return $self->{error_msg};
-}
-
-sub msg {
-	return shift->{msg};
-}
 
 sub _check_exists {
 	my $self = shift;

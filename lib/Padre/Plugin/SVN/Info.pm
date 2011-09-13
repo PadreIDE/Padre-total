@@ -20,6 +20,11 @@ sub new {
 	
 }
 
+sub reset {
+		my $self = shift;
+		 $self->{info} = {};
+}
+
 sub parse_info {
 		my $self = shift;
 		my $info = shift;  # string coming in?

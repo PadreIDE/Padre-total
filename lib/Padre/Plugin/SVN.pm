@@ -7,7 +7,7 @@ use warnings;
 use Padre::Wx     ();
 use Padre::Plugin ();
 
-
+use Padre::Plugin::SVN::Info;
 
 our $VERSION = '0.06';
 our @ISA     = 'Padre::Plugin';
@@ -58,6 +58,7 @@ sub plugin_disable {
 	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
 	$self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
 	$self->unload('Padre::Plugin::SVN::Commands');
+	$self->unload('Padre::Plugin::SVN::Info');
 	
 	return 1;
 }
@@ -167,15 +168,19 @@ sub svn_commit {
 	
 	
 	if( ! $svn->is_under_svn($path) ) {
-		$self->main->error("$path is not under svn");
+		$self->main->error("$path is not under svn.");
 		return 0;
 	}
 	
 	#TODO grab the last revision details for the info bar.
 	#my $info = "Get some info about the revision details of file etc";
-	require Padre::Plugin::SVN::Info;
-	my $info = $svn->svn_info_object($path);
 	
+	print "getting some info\n";
+	$svn->svn_info($path);
+	print "Path of the file\n";
+	print $svn->info->path;
+	my $info = $svn->info;
+
 	# need to get commit message
 	while(1) {
 		
