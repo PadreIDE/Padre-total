@@ -15,6 +15,7 @@ use Class::XSAccessor
 	};
 
 use base qw( Object::Event );
+use Data::Dumper;
 
 use Padre::Plugin::Swarm::Wx::Chat;
 use Padre::Plugin::Swarm::Wx::Editor;
@@ -90,22 +91,12 @@ sub plugin { Padre::Plugin::Swarm->instance };
 sub enable {
 	my $self = shift;
 	$self->event('enable');
-	#foreach my $c ( $self->components ) {
-	#	TRACE( $c ) if DEBUG;
-	#	$self->$c->enable if $self->$c;
-	#}
 }
 
 sub disable { 
 	my $self = shift;
 	$self->event('disable');
-	
-	#foreach my $c ( $self->components ) {
-	#	$self->$c->disable if $self->$c;
-	#}
 }
-
-use Data::Dumper;
 
 sub send {
 	my ($self,$message) = @_;
@@ -124,7 +115,7 @@ sub on_recv {
 
 sub on_connect {
 	my ($self,$token) = @_;
-	TRACE( "Swarm transport connected", @_ )  ; #if DEBUG;
+	TRACE( "Swarm transport connected", @_ ) if DEBUG;
 	$self->{token} = $token;
 	$self->plugin->_flush_outbox($self->origin);
 	$self->send(

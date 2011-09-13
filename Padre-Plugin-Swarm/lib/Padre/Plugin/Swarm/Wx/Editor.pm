@@ -189,7 +189,7 @@ sub accept_openme {
     # Skip anything not addressed to us.
     if ( $message->to ne $self->plugin->identity->nickname ) 
     {
-	TRACE( 'Bailout message to ' . $message->to );
+	TRACE( 'Bailout message to ' . $message->to ) if DEBUG;
         return;
     }
     
@@ -198,7 +198,7 @@ sub accept_openme {
     my $resource = $message->{resource};
     $self->resources->{$resource} = $doc;
     my $current = Padre::Current->new();
-    TRACE( 'editor = ' . $current->editor );
+    TRACE( 'editor = ' . $current->editor ) if DEBUG;
     Wx::Event::EVT_STC_MODIFIED( 
 	$editor,
 	-1,
@@ -228,7 +228,7 @@ sub accept_gimme {
 	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
 	
 	if ( exists $self->resources->{$r} ) {
-		TRACE( 'Give ' . $message->from . ' resource ... ' , $r );
+		TRACE( 'Give ' . $message->from . ' resource ... ' , $r ) if DEBUG;;
 		my $document = $self->resources->{$r};
 		my $current = Padre::Current->new(document=>$document);
 		
@@ -241,7 +241,7 @@ sub accept_gimme {
 				to   => $message->from ,
 			}
 		);
-		TRACE( 'Register modified for resource...' , $r );
+		TRACE( 'Register modified for resource...' , $r ) if DEBUG;
 		Wx::Event::EVT_STC_MODIFIED( 
 			$current->editor , -1 ,
 			sub { $self->on_editor_modified($r,@_) }
@@ -251,7 +251,7 @@ sub accept_gimme {
 			TRACE( "Gimme for myself???" );
 	} else {
 		# tell any future requestors to forget this resource
-		TRACE( 'Tell ' . $message->from . ' to remove the resource...', $r );
+		TRACE( 'Tell ' . $message->from . ' to remove the resource...', $r ) if DEBUG;
 		
 		$self->universe->send(
 			{ type => 'destroy', service=>'editor', resource=>$r }
@@ -336,9 +336,7 @@ sub accept_delta {
     my ($self,$message)=@_;
     # Ignore loopback
     return if $message->{is_loopback};
-    TRACE( "Got delta from " . $message->{from} );
-    TRACE( %$message );
-    #return if ($message->{token} eq $self->transport->token);
+    TRACE( "Got delta from " . $message->{from} ) if DEBUG;
     
     if ( exists $self->resources->{ $message->{resource} } ) {
         
@@ -356,48 +354,48 @@ sub accept_delta {
 
 sub _apply_delta {
     my ($self,$message,$doc) = @_;
-    TRACE( 'Apply delta ' , @_ );
+    TRACE( 'Apply delta ' , @_ ) if DEBUG;
     my $editor = $doc->editor;
-my $mask = $editor->GetModEventMask();
-$editor->SetModEventMask(0);
+    my $mask = $editor->GetModEventMask();
+    $editor->SetModEventMask(0);
+    
 eval {
     if ($message->{op} eq 'ins') {
-        $editor->InsertText( $message->{pos}, $message->{body}  );
-        
+	$editor->InsertText( $message->{pos}, $message->{body}  );
+	
     } elsif ( $message->{op} eq 'del' ) {
-        $editor->SetTargetStart( $message->{pos} );
-            $editor->SetTargetEnd( $message->{pos} + length($message->body) );
-            $editor->ReplaceTarget( '' ); # compare to $message->{body} ??
+	$editor->SetTargetStart( $message->{pos} );
+	    $editor->SetTargetEnd( $message->{pos} + length($message->body) );
+	    $editor->ReplaceTarget( '' ); # compare to $message->{body} ??
     }
 };
+
 TRACE( 'Apply delta failed' , $@ ) if $@;
 
-$editor->SetModEventMask( $mask );
-
+    $editor->SetModEventMask( $mask );
+    return;
 
 }
 
-use Data::Dumper;
 sub on_editor_modified {
     my ($self,$resource,$editor,$event) = @_;
     return unless $resource;
 
     my $doc = $self->resources->{ $resource };
-    TRACE( 'Tracking res/doc = ' , $resource , $doc , $event );
+    TRACE( 'Tracking res/doc = ' , $resource , $doc , $event ) if DEBUG;
     return unless defined $doc;
-    #return unless $doc->filename;
     
-    my $time = $doc->timestamp;
+    my $time = $doc->timestamp; # bad - resource->zerotime
     my $type = $event->GetModificationType;
     
-    my %flags = (
-	insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
-	delete => $type & Wx::wxSTC_MOD_DELETETEXT,
-	user   => $type & Wx::wxSTC_PERFORMED_USER,
-	undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
-	redo   => $type & Wx::wxSTC_PERFORMED_REDO,
-    );
-    TRACE( Dumper \%flags );
+    # my %flags = (
+	# insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
+	# delete => $type & Wx::wxSTC_MOD_DELETETEXT,
+	# user   => $type & Wx::wxSTC_PERFORMED_USER,
+	# undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
+	# redo   => $type & Wx::wxSTC_PERFORMED_REDO,
+    # );
+    # TRACE( Dumper \%flags );
     
     return unless ( 
         $type & Wx::wxSTC_MOD_INSERTTEXT
@@ -408,16 +406,6 @@ sub on_editor_modified {
     my $text = $event->GetText;
     my $pos = $event->GetPosition;
     my $len = $event->GetLength;
-    
-    ## Debugging noise
-    # my $payload = "op=$type , text=$text, length=$len, position=$pos , time=$time :: $resource";
-    # $self->universe->send(
-        # { type=>'chat', body=>$payload,
-            # op   => $type,
-            # t    => $text,
-            # time => time(),
-        # }
-    # );
     
     $self->universe->send(
         {   
