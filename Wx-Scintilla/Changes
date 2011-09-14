@@ -1,6 +1,6 @@
 Revision history for Wx-Scintilla
 
-0.29_02 TBA
+0.29_02 2011.9.14
     - More missing wxSTC indicator constants: wxSTC_INDIC_DASH, wxSTC_INDIC_DOTS,
       wxSTC_INDIC_DOTBOX, wxSTC_INDIC_STRAIGHTBOX (AZAWAWI)
     - Add missing SetEmptySelection to remove any selection and sets the caret at position
