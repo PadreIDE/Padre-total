@@ -10,7 +10,7 @@ use Padre::Plugin ();
 use Padre::Plugin::SVN::Info;
 use Padre::Plugin::SVN::Dialog::Commit;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 our @ISA     = 'Padre::Plugin';
 
 
@@ -25,10 +25,9 @@ sub plugin_name {
 }
 
 sub padre_interfaces {
-	'Padre::Plugin'     => 0.81,
-	'Padre::Wx'         => 0.81,
-	'Padre::Wx::Icon'   => 0.81,
-	'Padre::Wx::Dialog' => 0.81,
+	 'Padre::Plugin' 		=> 0.91,
+	 'Padre::Wx'       => 0.91,
+	 'Padre::Wx::Icon' => 0.91,
 }
 
 sub plugin_enable {

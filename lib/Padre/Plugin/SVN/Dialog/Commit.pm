@@ -19,7 +19,11 @@ sub new {
 	
 	my $self = $class->SUPER::new($main);
 
-	 $self->txtFilePath("Testing Path");
+
+      # set some values in the dialogs labels.
+	 $self->{txtFilePath}->SetLabel("Testing Path");
+	 $self->{txtRepo}->SetLabel("This is the repo");
+	 $self->{txtCurrentRevision}->SetLabel("This is the current revision");
 	
 	return $self;
 }
