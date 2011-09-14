@@ -198,6 +198,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSTC_INDIC_HIDDEN 5
 #define wxSTC_INDIC_BOX 6
 #define wxSTC_INDIC_ROUNDBOX 7
+#define wxSTC_INDIC_STRAIGHTBOX 8
+#define wxSTC_INDIC_DASH 9
+#define wxSTC_INDIC_DOTS 10
+#define wxSTC_INDIC_SQUIGGLELOW 11
+#define wxSTC_INDIC_DOTBOX 12
 #define wxSTC_INDIC_MAX 31
 #define wxSTC_INDIC_CONTAINER 8
 #define wxSTC_INDIC0_MASK 0x20
@@ -3991,7 +3996,7 @@ public:
     wxPoint PointFromPosition(int pos);
 
     // Remove any selection and sets the caret at position. The caret is not scrolled into view.
-    void wxScintillaTextCtrl::SetEmptySelection(int pos);
+    void SetEmptySelection(int pos);
 
     // Scroll enough to make the given line visible
     void ScrollToLine(int line);
