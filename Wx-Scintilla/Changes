@@ -1,5 +1,9 @@
 Revision history for Wx-Scintilla
 
+0.29_02 TBA
+    - More missing wxSTC indicator constants: wxSTC_INDIC_DASH, wxSTC_INDIC_DOTS,
+      wxSTC_INDIC_DOTBOX, wxSTC_INDIC_STRAIGHTBOX (AZAWAWI)
+
 0.29_01 2011.9.11
     - Updated to Scintilla 2.29 prerelease (AZAWAWI)
 
