@@ -1,0 +1,66 @@
+Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/Dialog/Commit.pm
+===================================================================
+--- /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/Dialog/Commit.pm	(revision 16245)
++++ /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/Dialog/Commit.pm	(working copy)
+@@ -6,39 +6,40 @@
+ 
+ 
+ # Version required
+-use version; 
++use version;
+ our $VERSION = qv(0.01);
+ 
+-use parent qw( Padre::Plugin::SVN::FBP::Commit );
++use Padre::Wx;
++use Padre::Plugin::SVN::FBP::Commit;
++use Padre::Logger;
+ 
++our @ISA = 'Padre::Plugin::SVN::FBP::Commit';
+ 
++
+ sub new {
+ 	my $class = shift;
+-	my $main = shift;
+-	my $info = shift;
+-	
+-	my $self = $class->SUPER::new($main);
++	my $self  = $class->SUPER::new(@_);
+ 
+-	 $self->txtFilePath("Testing Path");
+-	
++	# my $main = shift;
++	# my $info = shift;
++
++	$self->CenterOnParent;
++
++	# my $self = $class->SUPER::new($main);
++
++	# $self->txtFilePath("Testing Path");
++
+ 	return $self;
+ }
+ 
+ 
+ sub on_click_ok {
+-		my $self = shift;
+-		 print "OK has been clicked\n";
+-}
++	my $self = shift;
+ 
+-sub on_click_cancel {
+-		my $self = shift;
+-		 print "Cancel has been clicked\n";
+-		 
++	print "OK has been clicked\n";
++	
++	return;
+ }
+ 
+ 
+-
+-
+-
+-
+-1;
+\ No newline at end of file
++1;

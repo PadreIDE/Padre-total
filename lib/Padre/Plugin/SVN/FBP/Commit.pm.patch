@@ -1,0 +1,55 @@
+Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/FBP/Commit.pm
+===================================================================
+--- /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/FBP/Commit.pm	(revision 16245)
++++ /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN/FBP/Commit.pm	(working copy)
+@@ -81,25 +81,18 @@
+ 		"",
+ 		Wx::DefaultPosition(),
+ 		Wx::DefaultSize(),
+-		Wx::TE_MULTILINE ()| Wx::TE_WORDWRAP(),
++		Wx::TE_MULTILINE() | Wx::TE_WORDWRAP(),
+ 	);
+ 
+ 	$self->{btnCancel} = Wx::Button->new(
+ 		$self,
+-		-1,
++		Wx::ID_CANCEL(),
+ 		Wx::gettext("Cancel"),
+ 		Wx::DefaultPosition(),
+ 		Wx::DefaultSize(),
+ 	);
++	$self->{btnCancel}->SetDefault;
+ 
+-	Wx::Event::EVT_BUTTON(
+-		$self,
+-		$self->{btnCancel},
+-		sub {
+-			shift->on_click_cancel(@_);
+-		},
+-	);
+-
+ 	$self->{btnOK} = Wx::Button->new(
+ 		$self,
+ 		-1,
+@@ -120,8 +113,8 @@
+ 	$gSizer2->Add( $self->{m_staticText4}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND(), 5 );
+ 	$gSizer2->Add( $self->{txtFilePath}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
+ 	$gSizer2->Add( $self->{m_staticText6}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND() | Wx::RIGHT(), 5 );
+-	$gSizer2->Add( $self->{txtRepo}, 0, Wx::ALIGN_LEFT ()| Wx::EXPAND(), 5 );
+-	$gSizer2->Add( $self->{m_staticText8}, 0, Wx::ALIGN_RIGHT ()| Wx::EXPAND() | Wx::RIGHT(), 5 );
++	$gSizer2->Add( $self->{txtRepo}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
++	$gSizer2->Add( $self->{m_staticText8}, 0, Wx::ALIGN_RIGHT() | Wx::EXPAND() | Wx::RIGHT(), 5 );
+ 	$gSizer2->Add( $self->{txtCurrentRevision}, 0, Wx::ALIGN_LEFT() | Wx::EXPAND(), 5 );
+ 
+ 	$self->{m_panel1}->SetSizerAndFit($gSizer2);
+@@ -157,10 +150,6 @@
+ 	$_[0]->{txtCurrentRevision};
+ }
+ 
+-sub on_click_cancel {
+-	$_[0]->main->error('Handler method on_click_cancel for event btnCancel.OnButtonClick not implemented');
+-}
+-
+ sub on_click_ok {
+ 	$_[0]->main->error('Handler method on_click_ok for event btnOK.OnButtonClick not implemented');
+ }

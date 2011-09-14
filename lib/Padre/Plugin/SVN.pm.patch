@@ -1,0 +1,653 @@
+Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
+===================================================================
+--- /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm	(revision 16245)
++++ /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm	(working copy)
+@@ -4,11 +4,9 @@
+ use strict;
+ use warnings;
+ 
+-use Padre::Wx     ();
+ use Padre::Plugin ();
+-
+ use Padre::Plugin::SVN::Info;
+-use Padre::Plugin::SVN::Dialog::Commit;
++use Data::Printer { caller_info => 1, colored => 1, };
+ 
+ our $VERSION = '0.06';
+ our @ISA     = 'Padre::Plugin';
+@@ -21,111 +19,141 @@
+ # Padre::Plugin Methods
+ 
+ sub plugin_name {
+-	'SVN';
++	return Wx::gettext('SVN-take2');
+ }
+ 
+ sub padre_interfaces {
+-	'Padre::Plugin'     => 0.81,
+-	'Padre::Wx'         => 0.81,
+-	'Padre::Wx::Icon'   => 0.81,
+-	'Padre::Wx::Dialog' => 0.81,
++	return (
++		'Padre::Plugin'         => 0.91,
++		'Padre::Wx'             => 0.91,
++		'Padre::Wx::Main'       => '0.91',
++		'Padre::Wx::Role::Main' => '0.91',
++		'Padre::Wx::Icon'       => 0.91,
++	);
+ }
+ 
+ sub plugin_enable {
+ 	my $self = shift;
+ 	require Padre::Plugin::SVN::Commands;
+ 	$svn = Padre::Plugin::SVN::Commands->new();
+-	
++
+ 	# check if we have svn installed;
+-	if( $svn->error ) {
++	if ( $svn->error ) {
+ 		print "We do not have SVN\n";
+ 		print $svn->error_msg;
++
+ 		#$self->error( Wx::gettext('Could not find SVN command line on your system.') );
+-		
+-		
+ 		#$self->plugin_disable;
+-	}
+-	else {
++	} else {
+ 		print "SVN installed and ready to go\n";
++
+ 		#$self->error( Wx::gettext('SVN installed and ready to go.') );
+ 	}
+ }
+ 
+-# Clean up any of our children we loaded
++#######
++# Clean up Padre::Plugin,
++#######
+ sub plugin_disable {
+ 	my $self = shift;
+-	$svn = undef;
+-	
+-	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
+-	$self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
+-	$self->unload('Padre::Plugin::SVN::Commands');
+-	$self->unload('Padre::Plugin::SVN::Info');
+-	
++
++	# Close the dialog if it is hanging around
++	$self->clean_dialog();
++
++	# Unload all our child classes
++	$self->unload(
++		qw{
++			Padre::Plugin::Patch::Dialog::Commit
++			Padre::Plugin::Patch::FBP::Commit
++			Padre::Plugin::SVN::Commands
++			Padre::Plugin::SVN::Info
++			}
++	);
++
++	$self->SUPER::plugin_disable(@_);
++
+ 	return 1;
+ }
+ 
++# Clean up any of our children we loaded
++# sub plugin_disable {
++# my $self = shift;
++# $svn = undef;
++
++# # 	$self->unload('Padre::Plugin::SVN::Wx::BlameTree');
++# $self->unload('Padre::Plugin::SVN::Wx::SVNDialog');
++# $self->unload('Padre::Plugin::SVN::Commands');
++# $self->unload('Padre::Plugin::SVN::Info');
++
++# # 	return 1;
++# }
++
+ sub menu_plugins_simple {
+ 	my $self = shift;
+ 	return $self->plugin_name => [
+-	
+ 
++
+ 		Wx::gettext('Commit') => [
+ 			Wx::gettext('File') => sub {
++
+ 				my $filename = $self->filename or return;
+-				$self->svn_commit($filename);
++				# $self->svn_commit($filename);
++				# $filename 
++				p $filename;
++				$self->load_dialog_commit();
+ 			},
++
+ 			Wx::gettext('Project') => sub {
+-				my $project = $self->project or return;
+-				$self->svn_commit( $project->root );
++			my $project = $self->project or return;
++			$self->svn_commit( $project->root );
+ 			},
+ 		],
++
+ 		Wx::gettext('Diff') => [
+-			Wx::gettext('File') => [
+-				Wx::gettext('Show') => sub {
+-					my $filename = $self->filename or return;
+-					$self->svn_diff($filename);
+-				},
+-				Wx::gettext('Open in Padre') => sub {
+-					my $filename = $self->filename or return;
+-					$self->svn_diff_in_padre($filename);
+-				},
+-			],
+-			Wx::gettext('Project') => sub {
+-				my $project = $self->project or return;
+-				$self->svn_diff( $project->root );
+-			},
++		Wx::gettext('File') => [
++		Wx::gettext('Show') => sub {
++		my $filename = $self->filename or return;
++		$self->svn_diff($filename);
++		},
++		Wx::gettext('Open in Padre') => sub {
++		my $filename = $self->filename or return;
++		$self->svn_diff_in_padre($filename);
++		},
+ 		],
++		Wx::gettext('Project') => sub {
++		my $project = $self->project or return;
++		$self->svn_diff( $project->root );
++		},
++		],
+ 		Wx::gettext('Log') => [
+-			Wx::gettext('File') => sub {
+-				my $filename = $self->filename or return;
+-				$self->svn_log($filename);
+-			},
+-			Wx::gettext('Project') => sub {
+-				my $project = $self->project or return;
+-				$self->svn_log( $project->root );
+-			},
++		Wx::gettext('File') => sub {
++		my $filename = $self->filename or return;
++		$self->svn_log($filename);
++		},
++		Wx::gettext('Project') => sub {
++		my $project = $self->project or return;
++		$self->svn_log( $project->root );
++		},
+ 		],
+ 		'---' => undef,
+ 		Wx::gettext('Revert File') => sub {
+-			$self->svn_revert;
++		$self->svn_revert;
+ 		},
+ 		Wx::gettext('Info') => sub {
+-			my $filename = $self->filename or return;
+-			$self->svn_info($filename);
++		my $filename = $self->filename or return;
++		$self->svn_info($filename);
+ 		},
+-		
++
+ 		Wx::gettext('Blame - Show who made changes')  => sub {
+-			my $filename = $self->filename or return;
+-			$self->svn_blame($filename);
++		my $filename = $self->filename or return;
++		$self->svn_blame($filename);
+ 		},
+-				
+-		
+-		
++
+ 		Wx::gettext('About') => sub {
+ 			$self->show_about;
+ 		},
+ 	];
+-	
++
+ }
+ 
+ 
+@@ -153,9 +181,56 @@
+ }
+ 
+ 
++########
++# Composed Method,
++# load_dialog_commit
++#######
++sub load_dialog_commit {
++	my $self = shift;
++	my $main = shift;
++	my $path = shift;
+ 
+ 
++	if ( !$svn->is_under_svn($path) ) {
++		$self->main->error("$path is not under svn.");
++		return 0;
++	}
+ 
++	#TODO grab the last revision details for the info bar.
++	#my $info = "Get some info about the revision details of file etc";
++
++
++	print "getting some info\n";
++	$svn->svn_info($path);
++	print "Path of the file\n";
++
++	# Clean up any previous existing dialog
++	$self->clean_dialog;
++
++	# Create the new dialog
++	require Padre::Plugin::SVN::Dialog::Commit;
++	$self->{dialog} = Padre::Plugin::SVN::Dialog::Commit->new($main);
++	$self->{dialog}->Show;
++
++	return;
++}
++
++########
++# Composed Method clean_dialog
++########
++sub clean_dialog {
++	my $self = shift;
++
++	# Close the main dialog if it is hanging around
++	if ( $self->{dialog} ) {
++		$self->{dialog}->Hide;
++		$self->{dialog}->Destroy;
++		delete $self->{dialog};
++	}
++
++	return 1;
++}
++
+ ######################################################################
+ # SVN Methods
+ 
+@@ -166,119 +241,115 @@
+ sub svn_commit {
+ 	my $self = shift;
+ 	my $path = shift;
+-	
+-	
+-	if( ! $svn->is_under_svn($path) ) {
++
++
++	if ( !$svn->is_under_svn($path) ) {
+ 		$self->main->error("$path is not under svn.");
+ 		return 0;
+ 	}
+-	
++
+ 	#TODO grab the last revision details for the info bar.
+ 	#my $info = "Get some info about the revision details of file etc";
+-	
++
+ 	print "getting some info\n";
+ 	$svn->svn_info($path);
+ 	print "Path of the file\n";
+ 	print $svn->info->path;
+-	my $info = $svn->info;
+-	my $main = $self->main;
+-	my $commit = Padre::Plugin::SVN::FBP::Commit->new($main, $info);
+-	
++	my $info   = $svn->info;
++	my $main   = $self->main;
++	my $commit = Padre::Plugin::SVN::FBP::Commit->new( $main, $info );
++
+ 	$commit->ShowModal;
+ 
+ 	# need to get commit message
+ 	#while(1) {
+-		
+-		
+-		#require Padre::Plugin::SVN::Wx::SVNDialog;
+-		#my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+-		#	$self->main,
+-		#	$info->path(),
+-		#	undef,
+-		#	'Commit File',
+-		#	1,
+-		#);
+-		#$dialog->ShowModal;	
+-		
+-		# check Cancel!!!!
+-		#return if $dialog->{cancelled};
+ 
+-		#my $message = $dialog->get_data;
+-		
+-		# whoops!! This isn't going to work "Commit message" is always set in the text control.
+-		#if ($message and $message ne 'Commit Message') { # "Commit Message" comes from SVNDialog
+-		#	$self->_do_commit($path, $message);
+-		#	last;
+-		#}
+-		#else {
+-		#	my $ret = Wx::MessageBox(
+-		#		Wx::gettext(
+-		#		'You really should commit with a useful message'
+-		#		.  "\n\nDo you really want to commit with out a message?"
+-		#		),
+-		#		Wx::gettext("Commit warning"),
+-		#		Wx::wxYES_NO | Wx::wxCENTRE,
+-		#		$self->main,
+-		#	);
+-			
+-		#	if( $ret == Wx::wxYES ) {
+-		#		$self->_do_commit($path, $message);
+-		#		last;
+-		#	}
+-		#	else {
+-		#		next;
+-		#	}
+-		#}
+-	
++
++	#require Padre::Plugin::SVN::Wx::SVNDialog;
++	#my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
++	#	$self->main,
++	#	$info->path(),
++	#	undef,
++	#	'Commit File',
++	#	1,
++	#);
++	#$dialog->ShowModal;
++
++	# check Cancel!!!!
++	#return if $dialog->{cancelled};
++
++	#my $message = $dialog->get_data;
++
++	# whoops!! This isn't going to work "Commit message" is always set in the text control.
++	#if ($message and $message ne 'Commit Message') { # "Commit Message" comes from SVNDialog
++	#	$self->_do_commit($path, $message);
++	#	last;
++	#}
++	#else {
++	#	my $ret = Wx::MessageBox(
++	#		Wx::gettext(
++	#		'You really should commit with a useful message'
++	#		.  "\n\nDo you really want to commit with out a message?"
++	#		),
++	#		Wx::gettext("Commit warning"),
++	#		Wx::wxYES_NO | Wx::wxCENTRE,
++	#		$self->main,
++	#	);
++
++	#	if( $ret == Wx::wxYES ) {
++	#		$self->_do_commit($path, $message);
++	#		last;
++	#	}
++	#	else {
++	#		next;
++	#	}
++	#}
++
+ 	#} # end while
+-	
++
+ 	return 1;
+-	
+-	
++
++
+ }
+ 
+ 
+ 
+ sub _do_commit {
+-	my $self = shift;
+-	my $path = shift;
++	my $self    = shift;
++	my $path    = shift;
+ 	my $message = shift;
+-	
+-	$svn->svn_commit($path, $message);
+-	if( $svn->error ) {
++
++	$svn->svn_commit( $path, $message );
++	if ( $svn->error ) {
+ 		$self->main->error( $svn->error_msg, "$path" );
+-	}
+-	else {
++	} else {
+ 		$self->main->message( $svn->msg, "$path" );
+ 	}
+-		
+-}	
+ 
++}
+ 
++
+ sub svn_revert {
+ 	my $self = shift;
+-	
+-	
++
++
+ 	my $path = $self->filename;
+-	
+-	if( ! $svn->is_under_svn($path) ) {
++
++	if ( !$svn->is_under_svn($path) ) {
+ 		$self->main->error("$path is not under svn");
+ 		return 0;
+-	}	
+-	
++	}
++
+ 	# Firstly warn the person their actions will
+ 	# go back to the last version of the file
+ 
+ 	my $layout = [
+-		[
+-			[
+-				'Wx::StaticText',
++		[   [   'Wx::StaticText',
+ 				undef,
+ 				"Warning!\n\nSVN Revert will revert the current file saved to the file system.\n\nIt will not change your current document if you have unsaved changes.\n\nReverting your changes means you will lose any changes made since your last SVN Commit."
+ 			],
+ 		],
+-		[
+-			[ 'Wx::Button', 'ok',     Wx::wxID_OK ],
++		[   [ 'Wx::Button', 'ok',     Wx::wxID_OK ],
+ 			[ 'Wx::Button', 'cancel', Wx::wxID_CANCEL ]
+ 		],
+ 	];
+@@ -289,26 +360,25 @@
+ 		width  => [ 500, 1200 ],
+ 	);
+ 	$dialog->show_modal or return;
+-			my $data = $dialog->get_data;
++	my $data = $dialog->get_data;
+ 	if ( $data->{cancel} ) {
+ 		return;
+ 	}
+-	
++
+ 	# Continue with the revert
+-	
+-	$svn->svn_revert($path);	
+-	
++
++	$svn->svn_revert($path);
++
+ }
+ 
+ sub svn_info {
+ 	my $self = shift;
+ 	my $path = shift;
+-	
++
+ 	$svn->svn_info($path);
+-	if( ! $svn->error ) {
++	if ( !$svn->error ) {
+ 		$self->main->message( $svn->msg, "$path" );
+-	}
+-	else {
++	} else {
+ 		$self->main->error( $svn->error_msg, "$path" );
+ 	}
+ }
+@@ -318,10 +388,10 @@
+ 	my $path = shift;
+ 
+ 	$svn->svn_diff($path);
+-	
+-	if( ! $svn->error ) {
++
++	if ( !$svn->error ) {
+ 		my $status = $svn->msg;
+-		
++
+ 		require Padre::Plugin::SVN::Wx::SVNDialog;
+ 		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
+ 			$self->main,
+@@ -330,30 +400,28 @@
+ 			'Diff',
+ 		);
+ 		$log->Show(1);
++	} else {
++		$self->error( $svn->error );
+ 	}
+-	else {
+-		$self->error($svn->error);
+-	}
+-	
++
+ 	return;
+ }
+ 
+ sub svn_diff_in_padre {
+-	my $self     = shift;
++	my $self = shift;
+ 	my $path = shift;
+-	
++
+ 	$svn->svn_diff($path);
+-	
+-	if( ! $svn->error ) {
++
++	if ( !$svn->error ) {
+ 		my $diff = $svn->msg || '';
+-		
++
+ 		$self->main->new_document_from_string( $diff, 'text/x-patch' );
+ 		return 1;
++	} else {
++		$self->error( $svn->error );
+ 	}
+-	else {
+-		$self->error($svn->error);
+-	}
+-	
++
+ }
+ 
+ 
+@@ -361,20 +429,19 @@
+ 	my $self = shift;
+ 	my $path = shift;
+ 
+-	if( ! $svn->is_under_svn($path) ) {
++	if ( !$svn->is_under_svn($path) ) {
+ 		$self->main->error("$path is not under svn");
+ 		return 0;
+-	}	
+-	
++	}
+ 
++
+ 	$self->{_busyCursor} = Wx::BusyCursor->new;
+ 	$svn->svn_log($path);
+ 	$self->{_busyCursor} = undef;
+ 
+-	if( $svn->error ) {
+-		
+-	}
+-	else {
++	if ( $svn->error ) {
++
++	} else {
+ 		require Padre::Plugin::SVN::Wx::SVNDialog;
+ 		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
+ 			$self->main,
+@@ -383,7 +450,7 @@
+ 			'Log',
+ 		);
+ 		$log->Show(1);
+-		
++
+ 	}
+ }
+ 
+@@ -391,20 +458,19 @@
+ 	my $self = shift;
+ 	my $path = shift;
+ 
+-	if( ! $svn->is_under_svn($path) ) {
++	if ( !$svn->is_under_svn($path) ) {
+ 		$self->main->error("$path is not under svn");
+ 		return 0;
+ 	}
+-	
++
+ 	$self->{_busyCursor} = Wx::BusyCursor->new;
+ 	$svn->svn_blame($path);
+ 	$self->{_busyCursor} = undef;
+-	if( $svn->error ) {
+-		
+-	}
+-	else {
+-		my @blame = split( /\n/, $svn->msg);
+-		
++	if ( $svn->error ) {
++
++	} else {
++		my @blame = split( /\n/, $svn->msg );
++
+ 		require Padre::Plugin::SVN::Wx::SVNDialog;
+ 		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+ 			$self->main,
+@@ -412,7 +478,7 @@
+ 			\@blame,
+ 			'Blame',
+ 		);
+-		
++
+ 		$dialog->Show(1);
+ 		return 1;
+ 	}
+@@ -428,7 +494,7 @@
+ 	my $self     = shift;
+ 	my $document = $self->current->document;
+ 	my $filename = $document->filename;
+-	unless ( $filename ) {
++	unless ($filename) {
+ 		$self->error('File needs to be saved first.');
+ 		return;
+ 	}
+@@ -437,8 +503,8 @@
+ 		my $ret = Wx::MessageBox(
+ 			sprintf(
+ 				Wx::gettext(
+-					'%s has not been saved but SVN would commit the file from disk.'
+-					. "\n\nDo you want to save the file first (No aborts commit)?"
++					      '%s has not been saved but SVN would commit the file from disk.'
++						. "\n\nDo you want to save the file first (No aborts commit)?"
+ 				),
+ 				$filename,
+ 			),
+@@ -458,7 +524,7 @@
+ sub project {
+ 	my $self    = shift;
+ 	my $project = $self->current->project;
+-	unless ( $project ) {
++	unless ($project) {
+ 		return $self->main->error( Wx::gettext('Could not find project root') );
+ 	}
+ }
