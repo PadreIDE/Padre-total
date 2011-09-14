@@ -1451,7 +1451,7 @@ wxScintillaTextCtrl::PointFromPosition( pos )
   OUTPUT: RETVAL
 
 void
-SetEmptySelection( pos )
+wxScintillaTextCtrl::SetEmptySelection( pos )
     int pos
   CODE:
     THIS->SetEmptySelection( pos );

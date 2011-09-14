@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 # Load Wx::Scintilla
-use Wx::Scintilla ();    # replaces use Wx::STC
+use Wx::Scintilla 0.29 ();    # replaces use Wx::STC
 use base 'Wx::ScintillaTextCtrl';    # replaces Wx::StyledTextCtrl
 
 use Wx qw(:everything);
@@ -195,7 +195,9 @@ sub new {
 	$self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
 	$self->SetIndicatorCurrent(0);
 	$self->IndicatorFillRange(0, 20);
-	
+
+	$self->SetEmptySelection(0);
+
 	return $self;
 }
 
