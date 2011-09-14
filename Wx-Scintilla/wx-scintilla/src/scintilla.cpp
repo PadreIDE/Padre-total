@@ -3993,6 +3993,11 @@ wxPoint wxScintillaTextCtrl::PointFromPosition(int pos) {
     return wxPoint(x, y);
 }
 
+// Remove any selection and sets the caret at position. The caret is not scrolled into view.
+void wxScintillaTextCtrl::SetEmptySelection(int pos) {
+    SendMsg(SCI_SETEMPTYSELECTION, 0, pos);
+}
+
 // Scroll enough to make the given line visible
 void wxScintillaTextCtrl::ScrollToLine(int line) {
     m_swx->DoScrollToLine(line);

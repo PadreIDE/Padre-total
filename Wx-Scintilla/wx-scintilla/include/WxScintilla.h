@@ -3990,6 +3990,8 @@ public:
     // Retrieve the point in the window where a position is displayed.
     wxPoint PointFromPosition(int pos);
 
+    // Remove any selection and sets the caret at position. The caret is not scrolled into view.
+    void wxScintillaTextCtrl::SetEmptySelection(int pos);
 
     // Scroll enough to make the given line visible
     void ScrollToLine(int line);
