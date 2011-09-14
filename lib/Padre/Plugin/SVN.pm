@@ -8,6 +8,7 @@ use Padre::Wx     ();
 use Padre::Plugin ();
 
 use Padre::Plugin::SVN::Info;
+use Padre::Plugin::SVN::Dialog::Commit;
 
 our $VERSION = '0.06';
 our @ISA     = 'Padre::Plugin';
@@ -180,52 +181,56 @@ sub svn_commit {
 	print "Path of the file\n";
 	print $svn->info->path;
 	my $info = $svn->info;
+	my $main = $self->main;
+	my $commit = Padre::Plugin::SVN::FBP::Commit->new($main, $info);
+	
+	$commit->ShowModal;
 
 	# need to get commit message
-	while(1) {
+	#while(1) {
 		
 		
-		require Padre::Plugin::SVN::Wx::SVNDialog;
-		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
-			$self->main,
-			$info->path(),
-			undef,
-			'Commit File',
-			1,
-		);
-		$dialog->ShowModal;	
+		#require Padre::Plugin::SVN::Wx::SVNDialog;
+		#my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
+		#	$self->main,
+		#	$info->path(),
+		#	undef,
+		#	'Commit File',
+		#	1,
+		#);
+		#$dialog->ShowModal;	
 		
 		# check Cancel!!!!
-		return if $dialog->{cancelled};
+		#return if $dialog->{cancelled};
 
-		my $message = $dialog->get_data;
+		#my $message = $dialog->get_data;
 		
 		# whoops!! This isn't going to work "Commit message" is always set in the text control.
-		if ($message and $message ne 'Commit Message') { # "Commit Message" comes from SVNDialog
-			$self->_do_commit($path, $message);
-			last;
-		}
-		else {
-			my $ret = Wx::MessageBox(
-				Wx::gettext(
-				'You really should commit with a useful message'
-				.  "\n\nDo you really want to commit with out a message?"
-				),
-				Wx::gettext("Commit warning"),
-				Wx::wxYES_NO | Wx::wxCENTRE,
-				$self->main,
-			);
+		#if ($message and $message ne 'Commit Message') { # "Commit Message" comes from SVNDialog
+		#	$self->_do_commit($path, $message);
+		#	last;
+		#}
+		#else {
+		#	my $ret = Wx::MessageBox(
+		#		Wx::gettext(
+		#		'You really should commit with a useful message'
+		#		.  "\n\nDo you really want to commit with out a message?"
+		#		),
+		#		Wx::gettext("Commit warning"),
+		#		Wx::wxYES_NO | Wx::wxCENTRE,
+		#		$self->main,
+		#	);
 			
-			if( $ret == Wx::wxYES ) {
-				$self->_do_commit($path, $message);
-				last;
-			}
-			else {
-				next;
-			}
-		}
+		#	if( $ret == Wx::wxYES ) {
+		#		$self->_do_commit($path, $message);
+		#		last;
+		#	}
+		#	else {
+		#		next;
+		#	}
+		#}
 	
-	} # end while
+	#} # end while
 	
 	return 1;
 	
