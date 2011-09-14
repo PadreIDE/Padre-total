@@ -1451,6 +1451,12 @@ wxScintillaTextCtrl::PointFromPosition( pos )
   OUTPUT: RETVAL
 
 void
+SetEmptySelection( pos )
+    int pos
+  CODE:
+    THIS->SetEmptySelection( pos );
+
+void
 wxScintillaTextCtrl::ScrollToLine( line )
     int line
 
