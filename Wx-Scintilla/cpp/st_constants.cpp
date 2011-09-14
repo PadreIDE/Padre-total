@@ -791,6 +791,11 @@ double stc_constant( const char* name, int arg )
         r( wxSTC_INDIC_CONTAINER );
         r( wxSTC_INDIC_HIDDEN );
         r( wxSTC_INDIC_ROUNDBOX );
+        r( wxSTC_INDIC_SQUIGGLELOW );
+        r( wxSTC_INDIC_DASH );
+        r( wxSTC_INDIC_DOTS );
+        r( wxSTC_INDIC_DOTBOX );
+        r( wxSTC_INDIC_STRAIGHTBOX );
         r( wxSTC_INNO_COMMENT );
         r( wxSTC_INNO_COMMENT_PASCAL );
         r( wxSTC_INNO_DEFAULT );
