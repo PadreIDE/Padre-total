@@ -1,8 +1,8 @@
 Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
 ===================================================================
---- /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm	(revision 16245)
+--- /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm	(revision 16258)
 +++ /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm	(working copy)
-@@ -4,11 +4,9 @@
+@@ -4,13 +4,11 @@
  use strict;
  use warnings;
  
@@ -13,9 +13,12 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
 -use Padre::Plugin::SVN::Dialog::Commit;
 +use Data::Printer { caller_info => 1, colored => 1, };
  
- our $VERSION = '0.06';
+-our $VERSION = '0.07';
++our $VERSION = '0.06';
  our @ISA     = 'Padre::Plugin';
-@@ -21,111 +19,141 @@
+ 
+ 
+@@ -21,110 +19,141 @@
  # Padre::Plugin Methods
  
  sub plugin_name {
@@ -24,10 +27,9 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  }
  
  sub padre_interfaces {
--	'Padre::Plugin'     => 0.81,
--	'Padre::Wx'         => 0.81,
--	'Padre::Wx::Icon'   => 0.81,
--	'Padre::Wx::Dialog' => 0.81,
+-	 'Padre::Plugin' 		=> 0.91,
+-	 'Padre::Wx'       => 0.91,
+-	 'Padre::Wx::Icon' => 0.91,
 +	return (
 +		'Padre::Plugin'         => 0.91,
 +		'Padre::Wx'             => 0.91,
@@ -121,7 +123,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
 +				# $self->svn_commit($filename);
 +				# $filename 
 +				p $filename;
-+				$self->load_dialog_commit();
++				$self->load_dialog_commit($filename);
  			},
 +
  			Wx::gettext('Project') => sub {
@@ -212,7 +214,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  }
  
  
-@@ -153,9 +181,56 @@
+@@ -152,9 +181,56 @@
  }
  
  
@@ -222,10 +224,10 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
 +#######
 +sub load_dialog_commit {
 +	my $self = shift;
-+	my $main = shift;
++	my $main = $self->main;
 +	my $path = shift;
  
- 
++	p $path;
 +	if ( !$svn->is_under_svn($path) ) {
 +		$self->main->error("$path is not under svn.");
 +		return 0;
@@ -233,7 +235,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  
 +	#TODO grab the last revision details for the info bar.
 +	#my $info = "Get some info about the revision details of file etc";
-+
+ 
 +
 +	print "getting some info\n";
 +	$svn->svn_info($path);
@@ -269,7 +271,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  ######################################################################
  # SVN Methods
  
-@@ -166,119 +241,115 @@
+@@ -165,119 +241,115 @@
  sub svn_commit {
  	my $self = shift;
  	my $path = shift;
@@ -458,7 +460,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  			[ 'Wx::Button', 'cancel', Wx::wxID_CANCEL ]
  		],
  	];
-@@ -289,26 +360,25 @@
+@@ -288,26 +360,25 @@
  		width  => [ 500, 1200 ],
  	);
  	$dialog->show_modal or return;
@@ -493,7 +495,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		$self->main->error( $svn->error_msg, "$path" );
  	}
  }
-@@ -318,10 +388,10 @@
+@@ -317,10 +388,10 @@
  	my $path = shift;
  
  	$svn->svn_diff($path);
@@ -507,7 +509,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		require Padre::Plugin::SVN::Wx::SVNDialog;
  		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
  			$self->main,
-@@ -330,30 +400,28 @@
+@@ -329,30 +400,28 @@
  			'Diff',
  		);
  		$log->Show(1);
@@ -549,7 +551,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  }
  
  
-@@ -361,20 +429,19 @@
+@@ -360,20 +429,19 @@
  	my $self = shift;
  	my $path = shift;
  
@@ -576,7 +578,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		require Padre::Plugin::SVN::Wx::SVNDialog;
  		my $log = Padre::Plugin::SVN::Wx::SVNDialog->new(
  			$self->main,
-@@ -383,7 +450,7 @@
+@@ -382,7 +450,7 @@
  			'Log',
  		);
  		$log->Show(1);
@@ -585,7 +587,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  	}
  }
  
-@@ -391,20 +458,19 @@
+@@ -390,20 +458,19 @@
  	my $self = shift;
  	my $path = shift;
  
@@ -613,7 +615,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		require Padre::Plugin::SVN::Wx::SVNDialog;
  		my $dialog = Padre::Plugin::SVN::Wx::SVNDialog->new(
  			$self->main,
-@@ -412,7 +478,7 @@
+@@ -411,7 +478,7 @@
  			\@blame,
  			'Blame',
  		);
@@ -622,7 +624,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		$dialog->Show(1);
  		return 1;
  	}
-@@ -428,7 +494,7 @@
+@@ -427,7 +494,7 @@
  	my $self     = shift;
  	my $document = $self->current->document;
  	my $filename = $document->filename;
@@ -631,7 +633,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  		$self->error('File needs to be saved first.');
  		return;
  	}
-@@ -437,8 +503,8 @@
+@@ -436,8 +503,8 @@
  		my $ret = Wx::MessageBox(
  			sprintf(
  				Wx::gettext(
@@ -642,7 +644,7 @@ Index: /usr/src/Padre/Padre-Plugin-SVN/lib/Padre/Plugin/SVN.pm
  				),
  				$filename,
  			),
-@@ -458,7 +524,7 @@
+@@ -457,7 +524,7 @@
  sub project {
  	my $self    = shift;
  	my $project = $self->current->project;
