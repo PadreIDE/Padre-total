@@ -57,6 +57,8 @@ sub disconnect {
         $self->{h}->destroy;
         delete $self->{h};
     }
+    delete $self->{chirp};
+    
     $self->unreg_me;
     
 }
@@ -75,6 +77,15 @@ sub see_auth {
             }
         );
         $self->event('connect'=>$self->{token} );
+        # this is hideous but works for me
+        # timer pushes some data to the socket every so often to convince
+        # firewalls "I really DO want this connection - OK!"
+        my $chirp = AnyEvent->timer(
+            after => 60,
+            interval => 300,
+            cb => sub { $self->send( {}) }
+        );
+        $self->{chirp} = $chirp;
     }
     else {
         $self->{h}->destroy;
