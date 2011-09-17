@@ -1,5 +1,23 @@
 Revision history for Wx-Scintilla
 
+0.29_03 2011.9.14
+    - Updated to Scintilla 2.29 released on 16th September 2011 (AZAWAWI):
+        - LaTeX lexer improved with more states and fixes to most outstanding
+          bugs. Bug #1493111. Bug #1856356. Bug #3081692.
+        - Lua lexer updates for Lua 5.2 beta with goto labels and "\z" string
+          escape.
+        - Perl string styling highlights interpolated variables.
+        - Perl lexer updated for Perl 5.14.0 with 0X and 0B numeric literal
+          prefixes, break keyword and "+" supported in subroutine prototypes.
+        - Perl bug fixed with CRLF line endings.
+        - Markdown lexer fixed to not change state with "_" in middle of word.
+        - Mouse pointer changes over selection to an arrow near start when
+          scrolled horizontally.
+        - Indicators that finish at the end of the document no longer expand
+          when text is appended.
+        - On Windows, autocompletion lists will scroll instead of document when
+          mouse wheel spun.
+
 0.29_02 2011.9.14
     - More missing wxSTC indicator constants: wxSTC_INDIC_DASH, wxSTC_INDIC_DOTS,
       wxSTC_INDIC_DOTBOX, wxSTC_INDIC_STRAIGHTBOX (AZAWAWI)
