@@ -17,7 +17,7 @@ use Moose;
 use namespace::autoclean;
 extends qw( Padre::Plugin::Cookbook::Recipe04::FBP::MainFB );
 
-use Data::Printer { caller_info => 1 };
+use Data::Printer { caller_info => 1, colored => 1, };
 use Carp;
 
 sub BUILD {
