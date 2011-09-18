@@ -247,6 +247,13 @@ sub accept_gimme {
 			sub { $self->on_editor_modified($r,@_) }
 		);
 		
+		# anounce this
+		$self->universe->chat->write_timestamp;
+		$self->universe->chat->write_user_styled( $message->{from}, $message->{from} );
+		$self->universe->chat->write_unstyled(
+			' has been given a copy of ' . $document->filename 
+		);
+		
 	} elsif ( $owner eq $self->universe ) {
 			TRACE( "Gimme for myself???" );
 	} else {
