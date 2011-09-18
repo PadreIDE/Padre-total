@@ -213,15 +213,11 @@ sub file_lists_saved {
 	$self->file1->Clear;
 	$self->file1->Append( \@file_lists_saved );
 	$self->{file1_list_ref} = \@file_lists_saved;
-
-	# $self->set_selection( $self->{file1_list_ref} );
 	$self->set_selection_file1();
 	$self->file1->SetSelection( $self->{selection} );
 
 	$self->file2->Clear;
 	$self->file2->Append( \@file_lists_saved );
-
-	# $self->file2->SetSelection( $self->{selection} );
 	$self->{file2_list_ref} = \@file_lists_saved;
 	$self->set_selection_file2();
 	$self->file2->SetSelection( $self->{selection} );
@@ -247,8 +243,6 @@ sub file2_list_patch {
 	$self->file2->Clear;
 	$self->file2->Append( \@file2_list_patch );
 	$self->{file2_list_ref} = \@file2_list_patch;
-
-	# $self->set_selection( $self->{file2_list_ref} );
 	$self->set_selection_file2();
 	$self->file2->SetSelection( $self->{selection} );
 
@@ -275,8 +269,6 @@ sub file1_list_svn {
 
 	$self->file1->Clear;
 	$self->file1->Append( $self->{file1_list_ref} );
-
-	# $self->set_selection( $self->{file1_list_ref} );
 	$self->set_selection_file1();
 	$self->file1->SetSelection( $self->{selection} );
 
@@ -294,9 +286,6 @@ sub set_selection_file1 {
 	$self->{selection} = 0;
 	if ( $main->current->title =~ /(patch|diff)$/sxm ) {
 
-		# print 'Padre::Current->filename:'.Padre::Current->filename."\n";
-		# print 'Padre::Current->title:'.$main->current->title."\n";
-
 		my @pathch_target = split( /\./, $main->current->title, 2 );
 
 		# print "got you: $pathch_target[0]\n";
@@ -304,13 +293,8 @@ sub set_selection_file1 {
 		$pathch_target[0] =~ s/^\p{Space}{1}//;
 		TRACE("Looking for File-1 to apply a patch to: $pathch_target[0]") if DEBUG;
 
-		# print "got you: $pathch_target[0]\n";
-
 		# SetSelection should be Patch target file
 		foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
-
-			# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
-			# print "got you: $pathch_target[0]\n";
 
 			# add optional leading space \s?
 			if ( @{ $self->{file1_list_ref} }[$_] =~ /^\p{Space}?$pathch_target[0]/ ) {
@@ -344,7 +328,6 @@ sub set_selection_file2 {
 
 	# SetSelection should be current file
 	foreach ( 0 .. $#{ $self->{file2_list_ref} } ) {
-
 		if ( @{ $self->{file2_list_ref} }[$_] eq $main->current->title ) {
 			$self->{selection} = $_;
 			return;
@@ -419,9 +402,6 @@ sub apply_patch {
 			# if I don't save $EVAL_ERROR it get's lost, now I am confused :(
 			my $patch_eval_error = $@;
 
-			# $main->show_output(1);
-			# my $output = $main->output;
-			# $output->clear;
 			$output->AppendText("Patch Dialog failed to Complete.\n");
 			$output->AppendText("Your requested Action Patch, with following parameters.\n");
 			$output->AppendText("File-1: $file1_url \n");
