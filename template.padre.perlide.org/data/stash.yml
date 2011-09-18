@@ -25,6 +25,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 September 18
+        url: http://ahmadzawawi.blogspot.com/2011/09/padre-realtime-diff.html
+        title: Padre realtime diff
+        comment: by Ahmad M. Zawawi
       - date: 2011 September 11
         url: http://ahmadzawawi.blogspot.com/2011/09/solarized-padre.html
         title: Solarized Padre
