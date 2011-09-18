@@ -85,7 +85,7 @@ sub process_clicked {
 #######
 sub on_action {
 	my $self = shift;
-	
+
 	# re-generate open file bucket
 	$self->current_files();
 
@@ -300,8 +300,10 @@ sub set_selection_file1 {
 		my @pathch_target = split( /\./, $main->current->title, 2 );
 
 		# print "got you: $pathch_target[0]\n";
-		$pathch_target[0] =~ s/^\s{1}//;
+		# \p{Space} == \s
+		$pathch_target[0] =~ s/^\p{Space}{1}//;
 		TRACE("Looking for File-1 to apply a patch to: $pathch_target[0]") if DEBUG;
+
 		# print "got you: $pathch_target[0]\n";
 
 		# SetSelection should be Patch target file
@@ -309,9 +311,9 @@ sub set_selection_file1 {
 
 			# print '@{ $self->{file1_list_ref} }[$_]: '.@{ $self->{file1_list_ref} }[$_]."\n";
 			# print "got you: $pathch_target[0]\n";
-			
+
 			# add optional leading space \s?
-			if ( @{ $self->{file1_list_ref} }[$_] =~ /^\s?$pathch_target[0]/ ) {
+			if ( @{ $self->{file1_list_ref} }[$_] =~ /^\p{Space}?$pathch_target[0]/ ) {
 				$self->{selection} = $_;
 				return;
 			}
@@ -534,13 +536,13 @@ sub make_patch_svn {
 			$main->info( Wx::gettext("SVN Diff Succesful, you should see a new tab in editor called $patch_file") );
 		} else {
 			TRACE("Error trying to get an SVN Diff: $@") if DEBUG;
-			
+
 			$output->AppendText("Patch Dialog failed to Complete.\n");
 			$output->AppendText("Your requested Action Diff against SVN, with following parameters.\n");
 			$output->AppendText("File-1: $file1_url \n");
 			$output->AppendText("What follows is the error I received from SVN::Class, if any: \n");
 			$output->AppendText($@);
-			
+
 			$main->info(
 				Wx::gettext('Sorry Diff Failed, are you sure your have access to the repository for this action') );
 			return;
@@ -624,9 +626,14 @@ composed method
 
 composed method
 
-=item set_selection
+=item set_selection_file1
 
 composed method
+
+=item set_selection_file2
+
+composed method
+
 
 =item file1_list_svn
 
