@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.30 2011.9.18
+    - Released 0.29_03 as stable 0.30 (AZAWAWI)
+
 0.29_03 2011.9.17
     - Updated to Scintilla 2.29 released on 16th September 2011 (AZAWAWI):
         - LaTeX lexer improved with more states and fixes to most outstanding
