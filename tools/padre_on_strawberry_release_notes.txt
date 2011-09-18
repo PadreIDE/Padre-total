@@ -332,6 +332,7 @@ We have already in v3:
 
 TODO
 App::pmuninstall
+App::cpanminus
 
     Prima
     Win32::GUIRobot
