@@ -288,7 +288,7 @@ sub accept_gimme {
 		$self->universe->chat->write_timestamp;
 		$self->universe->chat->write_user_styled( $message->{from}, $message->{from} );
 		$self->universe->chat->write_unstyled(
-			' has been given a copy of ' . $document->filename 
+			' has been given a copy of ' . $document->filename . "\n"
 		);
 		
 	} elsif ( $owner eq $self->universe ) {
