@@ -56,14 +56,6 @@ sub new {
 	);
 }
 
-# sub notify {
-    # my ($self,$handler,$message) = @_;
-    # TRACE( "Notify slave task '$handler' , $message" ) if DEBUG;
-    # $self->message( $handler => $message );
-    
-# # }
-
-
 sub notify {
     my $self = shift;
     my $handler = shift;
@@ -227,16 +219,11 @@ sub _teardown_connections {
 }
 
 sub finish {
-	TRACE( "Finished called" ) if DEBUG;
-	
-	my $self = shift;
+    TRACE( "Finished called" ) if DEBUG;
+    my $self = shift;
     $self->_cleanup_socketid($self->{socketid});
-        
-        
-        $self->{finish}++;
-	
-	#$_[0]->{bailout}->(); Damnit - now I am confused is this a parent or child method?????
-	return 1;
+    $self->{finish}++;
+    return 1;
 }
 
 sub prepare {
