@@ -5,7 +5,7 @@ use warnings;
 use Wx;
 use Carp;
 
-our $VERSION = '0.30';
+our $VERSION = '0.31_01';
 
 # Define Perl 6 lexer
 use constant wxSCINTILLA_LEX_PERL6  => 102;
@@ -28,11 +28,11 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 no strict;
 
 package Wx::ScintillaTextCtrl;
-our $VERSION = '0.30';
+our $VERSION = '0.31_01';
 @ISA = qw(Wx::Control);
 
 package Wx::ScintillaTextEvent;
-our $VERSION = '0.30';
+our $VERSION = '0.31_01';
 @ISA = qw(Wx::CommandEvent);
 
 #Defeat the indexer by splitting the package declaration on two lines
@@ -62,7 +62,7 @@ use strict;
 	sub EVT_STC_MACRORECORD($$$)        { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MACRORECORD,        $_[2] ) }
 	sub EVT_STC_MARGINCLICK($$$)        { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MARGINCLICK,        $_[2] ) }
 	sub EVT_STC_NEEDSHOWN($$$)          { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_NEEDSHOWN,          $_[2] ) }
-	sub EVT_STC_POSCHANGED($$$)         { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_POSCHANGED,         $_[2] ) }
+	sub EVT_STC_POSCHANGED($$$)         { require Carp; Carp::croak 'EVT_STC_POSCHANGED is deprecated - Please use EVT_STC_UPDATEUI instead.'; }
 	sub EVT_STC_PAINTED($$$)            { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_PAINTED,            $_[2] ) }
 	sub EVT_STC_USERLISTSELECTION($$$)  { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_USERLISTSELECTION,  $_[2] ) }
 	sub EVT_STC_URIDROPPED($$$)         { $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_URIDROPPED,         $_[2] ) }
