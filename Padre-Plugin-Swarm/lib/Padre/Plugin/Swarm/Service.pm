@@ -322,6 +322,8 @@ sub _recv {
     # Our caller either screwed up arguments or passed something odd.
     # TODO - let Service interrogate the $transport->origin ??
     croak "Origin '$origin' incorrect" unless ($origin=~/global|local/);
+    # skip noop 
+    return if $message->type eq 'noop';
     
     $message->{origin} = $origin;
     

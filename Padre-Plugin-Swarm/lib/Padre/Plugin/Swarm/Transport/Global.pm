@@ -83,7 +83,7 @@ sub see_auth {
         my $chirp = AnyEvent->timer(
             after => 60,
             interval => 300,
-            cb => sub { $self->send( {}) }
+            cb => sub { $self->send( {type=>'noop'}) }
         );
         $self->{chirp} = $chirp;
     }
