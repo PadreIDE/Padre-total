@@ -122,8 +122,6 @@ sub editor_enable {
 	my ($self,$editor,$document) = @_;
 	return unless $document && $document->filename;
 	
-	
-
 	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
@@ -181,6 +179,21 @@ with the contents of message->body
 
 use Data::Dumper;
 
+sub _rig_editor_events {
+    my ($self,$editor,$resource) = @_;
+    # catch changes to the document
+    Wx::Event::EVT_STC_MODIFIED(
+        $editor, -1 , sub { $self->on_editor_modified($resource,@_) }
+    );
+    # catch cursor movement (and a million other things) 
+    Wx::Event::EVT_STC_UPDATEUI(
+        $editor, -1 , sub { $self->on_editor_updateui($resource,@_) }
+    );
+
+    return ();
+
+}
+
 sub accept_openme {
     my ($self,$message) = @_;
     # Skip loopback 
@@ -199,11 +212,12 @@ sub accept_openme {
     $self->resources->{$resource} = $doc;
     my $current = Padre::Current->new();
     TRACE( 'editor = ' . $current->editor ) if DEBUG;
-    Wx::Event::EVT_STC_MODIFIED( 
-	$editor,
-	-1,
-	sub { $self->on_editor_modified($resource,@_) }
-    );
+    $self->_rig_editor_events( $editor,$resource );
+#    Wx::Event::EVT_STC_MODIFIED( 
+#	$editor,
+#	-1,
+#	sub { $self->on_editor_modified($resource,@_) }
+#    );
     
     return;
     
@@ -242,10 +256,7 @@ sub accept_gimme {
 			}
 		);
 		TRACE( 'Register modified for resource...' , $r ) if DEBUG;
-		Wx::Event::EVT_STC_MODIFIED( 
-			$current->editor , -1 ,
-			sub { $self->on_editor_modified($r,@_) }
-		);
+		$self->_rig_editor_events( $document->editor,$r );
 		
 		# anounce this
 		$self->universe->chat->write_timestamp;
@@ -333,6 +344,23 @@ sub NEVER_accept_runme {
     
 }
 
+sub accept_cursor {
+    my ($self,$message) = @_;
+    return if $message->{is_loopback};
+    TRACE( "Moving ghost cursor belonging to ".$message->from );
+    my $resource = $message->{resource};
+    unless ( exists $self->resources->{ $resource } ) {
+        return;
+    }
+
+    my $doc = $self->resources->{ $resource };
+    my $editor = $doc->editor;
+    my $line = $editor->LineFromPosition( $message->{body} ); # I hope that is a number!
+    $editor->MarkerAdd($line,1); # TODO define a marker for swarm ??
+    return;
+
+}
+
 =head2 delta
 
 Half baked operational transform
@@ -384,6 +412,29 @@ TRACE( 'Apply delta failed' , $@ ) if $@;
 
 }
 
+{ # SCOPE
+# more leaks !
+my %cursor_pos = ();
+
+sub on_editor_updateui {
+    my ($self,$resource,$editor,$event) = @_;
+    my $pos = $editor->GetCurrentPos;
+    if ( ! exists $cursor_pos{$resource} 
+        || $cursor_pos{$resource} != $pos )
+    {
+        $cursor_pos{$resource} = $pos; 
+        $self->universe->send(
+            { type=>'cursor', resource=>$resource, body=>$pos }
+        );
+    } else {
+        # NOOP
+        return;
+    } 
+    
+}
+
+} # END SCOPE
+
 sub on_editor_modified {
     my ($self,$resource,$editor,$event) = @_;
     return unless $resource;
@@ -395,14 +446,15 @@ sub on_editor_modified {
     my $time = $doc->timestamp; # bad - resource->zerotime
     my $type = $event->GetModificationType;
     
-    # my %flags = (
-	# insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
-	# delete => $type & Wx::wxSTC_MOD_DELETETEXT,
-	# user   => $type & Wx::wxSTC_PERFORMED_USER,
-	# undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
-	# redo   => $type & Wx::wxSTC_PERFORMED_REDO,
-    # );
-    # TRACE( Dumper \%flags );
+     my %flags = (
+	 insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
+	 delete => $type & Wx::wxSTC_MOD_DELETETEXT,
+	 user   => $type & Wx::wxSTC_PERFORMED_USER,
+	 undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
+	 redo   => $type & Wx::wxSTC_PERFORMED_REDO,
+          style  => $type & Wx::wxSTC_MOD_CHANGESTYLE,
+     );
+    #TRACE( Dumper \%flags );
     
     return unless ( 
         $type & Wx::wxSTC_MOD_INSERTTEXT
