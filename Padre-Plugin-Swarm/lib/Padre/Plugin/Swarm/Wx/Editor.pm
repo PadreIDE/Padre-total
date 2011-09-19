@@ -19,19 +19,20 @@ our $SWARM_MARKER = 10;
 
 =head1 NAME
 
-Padre::Plugin::Swarm::Wx::Editor - Padre editor collaboration
+Padre::Plugin::Swarm::Wx::Editor - Padre editor/network integration
 
 =head1 DESCRIPTION
 
-Hijack the padre editor for the purposes of collaboration. 
+Hijack the padre editor for the purposes of co-operative editing. 
 
-=head1 TODO
+=head1 FEATURES
 
-Shared/Ghost cursors/document
+Ghost cursors
 
 Trap editor cursor movement for common documents and ghost the
 remote users' cursors in the local editor.
 
+=head1 TODO
 
 =head2 Operational transform - concurrent remote edits
 

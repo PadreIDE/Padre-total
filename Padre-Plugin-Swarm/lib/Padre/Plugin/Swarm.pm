@@ -414,14 +414,14 @@ __END__
 
 =head1 NAME
 
-Padre::Plugin::Swarm - Experimental plugin for collaborative editing
+Padre::Plugin::Swarm - Experimental plugin for co-operative editing
 
 =head1 DESCRIPTION
 
 This is Swarm!
 
 Swarm is a Padre plugin for experimenting with remote inspection,
-peer programming and collaborative editing functionality.
+peer programming and co-operative editing functionality.
 
 Within this plugin all rules are suspended. No security, no efficiency,
 no scalability, no standards compliance, remote code execution,
@@ -439,12 +439,12 @@ removed very early. Swarm no longer blindly runs code sent to it from the networ
 
 =item * 
 
-Global server transport - Collaborate with other Swarmers on teh interwebs. 
+Global server transport - Connect with other Swarmers on teh interwebs. 
 C<swarm.perlide.org> is a free swarm server
 
 =item *
 
-Local network multicast transport. Collaborate with Swarmers on your 
+Local network multicast transport. Connect with Swarmers on your 
 local network. No configuration required - other editors should simply 'appear'
 
 =back
@@ -466,20 +466,21 @@ Resources - browse and open files from another users' editor
 
 L<Editor|Padre::Plugin::Swarm::Wx::Editor>
 integration and co-operation allow multiple users to edit the same document
-at the same time
+at the same time.
 
 =back
 
 =head1 SEE ALSO
 
 L<Padre::Swarm::Manual> L<Padre::Plugin::Swarm::Wx::Chat>
+L<Padre::Plugin::Swarm::Wx::Editor>
 
 =head1 BUGS
 
   Many. Identity management and interaction with L<Padre::Swarm::Geometry> is
   rather poor.
 
-  More than 2 users editing same document at once does not work
+  More than 2 users editing same document at once MAY not work
   
   No accomodation is made for edits that overlap in time spent transmitting
   them. Edits MAY arrive out of order.

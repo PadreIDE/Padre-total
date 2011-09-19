@@ -1,6 +1,7 @@
 package Padre::Plugin::Swarm::Transport::Local;
 use strict;
 use warnings;
+use Carp 'confess';
 use Padre::Logger;
 use Data::Dumper;
 use base qw( Object::Event );
@@ -18,6 +19,14 @@ Padre::Plugin::Swarm::Transport::Local - Multicast swarm message bus
 
 =head1 DESCRIPTION
 
+=head1 SYNOPSIS
+
+    my $t = Padre::Plugin::Swarm::Transport::Local->new();
+    $t->reg_cb('connect' , sub { printf "Transport %s connected", shift } );
+    $t->reg_cb('recv', \&incoming_message );
+    $t->reg_cb('disconnect', sub { warn "Disconnected" } );
+    
+    $t->enable;
 
 =cut 
 
@@ -53,10 +62,6 @@ sub enable {
     
     return;
 }
-
-
-use Carp 'confess';
-use Data::Dumper;
 
 sub send {
     my $self = shift;
@@ -96,32 +101,31 @@ sub disconnect {
     my $self = shift;
     if ( $self->{io} ) {
         delete $self->{io};
-        
         my $m = delete $self->{m};
         $m->mcast_drop('239.255.255.1');
     }
-    $self->unreg_me;   
+    $self->unreg_me;
 }
 
 sub _marshal {
-	JSON->new
-	    ->allow_blessed
-            ->convert_blessed
-            ->utf8
-            ->filter_json_object(\&synthetic_class );
+    JSON->new
+        ->allow_blessed
+        ->convert_blessed
+        ->utf8
+        ->filter_json_object(\&synthetic_class );
 }
 
 
 sub synthetic_class {
-	my $var = shift ;
-	if ( exists $var->{__origin_class} ) {
-		my $stub = $var->{__origin_class};
-		my $msg_class = 'Padre::Swarm::Message::' . $stub;
-		my $instance = bless $var , $msg_class;
-		return $instance;
-	} else {
-		return bless $var , 'Padre::Swarm::Message';
-	}
+    my $var = shift ;
+    if ( exists $var->{__origin_class} ) {
+        my $stub = $var->{__origin_class};
+        my $msg_class = 'Padre::Swarm::Message::' . $stub;
+        my $instance = bless $var , $msg_class;
+        return $instance;
+    } else {
+        return bless $var , 'Padre::Swarm::Message';
+    }
 };
 
 

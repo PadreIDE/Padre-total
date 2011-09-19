@@ -1,6 +1,7 @@
 package Padre::Plugin::Swarm::Transport::Global;
 use strict;
 use warnings;
+use Carp 'confess';
 use Padre::Logger;
 use Data::Dumper;
 use base qw( Object::Event );
@@ -95,48 +96,43 @@ sub see_auth {
     }
 }
 
-
-use Carp 'confess';
-use Data::Dumper;
-$Data::Dumper::Indent=1;
-
 sub send {
     my $self = shift;
     my $message = shift;
     if ( threads::shared::is_shared( $message ) ) {
-        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );    
-        confess "$message , is a shared value";    
+        TRACE( "SEND A SHARED REFERENCE ?!?!?! - " . Dumper $message );
+        confess "$message , is a shared value";
     }
     $message->{token} = $self->{token};
     $self->{h}->push_write( json => $message );
     # implement our own loopback ?
     # nasty but fake what the deserializing marshal _would_ do.
     unless ( blessed $message ) {
-        bless $message, 'Padre::Swarm::Message';   
+        bless $message, 'Padre::Swarm::Message';
     }
     $self->event('recv', $message );
     
 }
 
 sub _marshal {
-	JSON->new
-	    ->allow_blessed
-            ->convert_blessed
-            ->utf8
-            ->filter_json_object(\&synthetic_class );
+    JSON->new
+        ->allow_blessed
+        ->convert_blessed
+        ->utf8
+        ->filter_json_object(\&synthetic_class );
 }
 
 
 sub synthetic_class {
-	my $var = shift ;
-	if ( exists $var->{__origin_class} ) {
-		my $stub = $var->{__origin_class};
-		my $msg_class = 'Padre::Swarm::Message::' . $stub;
-		my $instance = bless $var , $msg_class;
-		return $instance;
-	} else {
-		return bless $var , 'Padre::Swarm::Message';
-	}
+    my $var = shift ;
+    if ( exists $var->{__origin_class} ) {
+        my $stub = $var->{__origin_class};
+        my $msg_class = 'Padre::Swarm::Message::' . $stub;
+        my $instance = bless $var , $msg_class;
+        return $instance;
+    } else {
+        return bless $var , 'Padre::Swarm::Message';
+    }
 };
 
 
