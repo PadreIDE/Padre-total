@@ -344,6 +344,10 @@ sub NEVER_accept_runme {
     
 }
 
+{ # SCOPE
+
+my %previous_cursor = ();
+
 sub accept_cursor {
     my ($self,$message) = @_;
     return if $message->{is_loopback};
@@ -352,14 +356,22 @@ sub accept_cursor {
     unless ( exists $self->resources->{ $resource } ) {
         return;
     }
-
+    
+    my $key = $resource . $message->from;
     my $doc = $self->resources->{ $resource };
     my $editor = $doc->editor;
     my $line = $editor->LineFromPosition( $message->{body} ); # I hope that is a number!
+    my $previous = $previous_cursor{$key};
+    if ( $previous ) {
+        $editor->MarkerDelete($previous,1);
+    }
     $editor->MarkerAdd($line,1); # TODO define a marker for swarm ??
+    $previous_cursor{$key} = $line;
     return;
 
 }
+
+} # END SCOPE
 
 =head2 delta
 
