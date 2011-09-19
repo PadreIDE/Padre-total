@@ -1,4 +1,7 @@
 <div id="masthead">
+  <span style="float:right;z-index:-10;">
+    <a href="/download.html"><img alt="Download Padre" id="padredownload" height="50" src="/static/download.png" /></a>
+ </span>
  <a href="/"><img alt="" id="padrelogo" src="/static/logo.png" /></a>
  <div style="padding-top: 12px">
   <h1 style="margin-bottom: 0.25em">[% title %]</h1>

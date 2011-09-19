@@ -131,6 +131,8 @@ ul.navigation li {
     font-family: arial,helvetica,sans-serif;
     text-align: center;
     float: left;
+    padding: .2em 0 .2em 0;
+    
   /*  width: 4em; */
 
     border: solid #CCC 1px;

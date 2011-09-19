@@ -1,0 +1,23 @@
+[% DEFAULT 
+  title="Padre People"
+  description="People involved with Pa"
+%]
+[% WRAPPER lib/xhtml_doc %]
+  [% INCLUDE getting_involved %]
+[% END %]
+
+
+[% BLOCK getting_involved %]
+[% WRAPPER chrome/styled_panel %]
+<h2>Padre people</h2>
+
+<ul>
+    <li><a href="/developers.html">Developers</a></li>
+    <li><a href="/translators.html">Translators</a></li>
+    <li>Users (this could be you!)</li>
+</ul>
+
+<div class="spacer" ></div>
+[% END %]
+[% END %]
+

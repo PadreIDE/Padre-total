@@ -4,22 +4,16 @@ navigation:
     href: /
   - name: Screenshots
     href: /screenshots.html
-  - name: Screencasts
-    href: /screencasts.html
   - name: Documentation
     href: /docs/
-  - name: Download
-    href: /download.html
-  - name: Developers
-    href: /developers.html
-  - name: Translators
-    href: /translators.html
-  - name: Get Involved
-    href: /getting_involved.html
-  - name: Wiki
-    href: /trac/wiki
   - name: Support / Contact us
     href: /contact.html
+  - name: Get Involved
+    href: /getting_involved.html
+  - name: People
+    href: /people.html
+  - name: Wiki
+    href: /trac/wiki
   - name: About
     href: /about.html
 about:
