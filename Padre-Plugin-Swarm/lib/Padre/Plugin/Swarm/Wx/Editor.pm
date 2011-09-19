@@ -6,11 +6,14 @@ use Scalar::Util qw( refaddr );
 use File::Basename;
 use Padre::Logger;
 use Padre::Constant;
+use Padre::Wx::Constant;
 use Class::XSAccessor
     accessors => {
         resources=> 'resources',
         universe => 'universe',
     };
+    
+our $SWARM_MARKER = 10;
     
 =pod
 
@@ -120,8 +123,20 @@ sub resolve_resource {
 
 sub editor_enable {
 	my ($self,$editor,$document) = @_;
+        # TODO - dreadful since documents from swarm openme arrive like this
 	return unless $document && $document->filename;
 	
+	# Add decoration
+	$editor->MarkerDefine( 
+        $SWARM_MARKER,  
+        Wx::wxSTC_MARK_ARROW,
+        #Wx::wxSTC_MARK_CHARACTER + ord('S'), 
+        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
+        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
+        
+    );
+
+
 	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
@@ -344,34 +359,36 @@ sub NEVER_accept_runme {
     
 }
 
-{ # SCOPE
 
 my %previous_cursor = ();
 
 sub accept_cursor {
     my ($self,$message) = @_;
     return if $message->{is_loopback};
-    TRACE( "Moving ghost cursor belonging to ".$message->from );
+
+
     my $resource = $message->{resource};
+    my $position = $message->{body};
     unless ( exists $self->resources->{ $resource } ) {
         return;
     }
-    
+    TRACE( "Moving ghost cursor belonging to ".$message->from ) if DEBUG;
+    TRACE( "position ='$position'"  ) if DEBUG;
     my $key = $resource . $message->from;
     my $doc = $self->resources->{ $resource };
     my $editor = $doc->editor;
-    my $line = $editor->LineFromPosition( $message->{body} ); # I hope that is a number!
+    my $line = $editor->LineFromPosition( $position ); # I hope that is a number!
     my $previous = $previous_cursor{$key};
-    if ( $previous ) {
-        $editor->MarkerDelete($previous,1);
+    TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
+    if ( defined $previous ) {
+        $editor->MarkerDelete($previous,$SWARM_MARKER);
     }
-    $editor->MarkerAdd($line,1); # TODO define a marker for swarm ??
+    $editor->MarkerAdd($line,$SWARM_MARKER);
     $previous_cursor{$key} = $line;
     return;
 
 }
 
-} # END SCOPE
 
 =head2 delta
 
@@ -431,6 +448,7 @@ my %cursor_pos = ();
 sub on_editor_updateui {
     my ($self,$resource,$editor,$event) = @_;
     my $pos = $editor->GetCurrentPos;
+    TRACE( "Position is '$pos'" ) if DEBUG;
     if ( ! exists $cursor_pos{$resource} 
         || $cursor_pos{$resource} != $pos )
     {
