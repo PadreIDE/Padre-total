@@ -209,6 +209,20 @@ sub _rig_editor_events {
 
 }
 
+sub _rig_editor_decoration {
+    my ($self,$editor) = @_;
+	$editor->MarkerDefine( 
+        $SWARM_MARKER,  
+        Wx::wxSTC_MARK_ARROW,
+        #Wx::wxSTC_MARK_CHARACTER + ord('S'), 
+        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
+        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
+        
+    );
+    
+    return ();
+}
+
 sub accept_openme {
     my ($self,$message) = @_;
     # Skip loopback 
@@ -228,11 +242,7 @@ sub accept_openme {
     my $current = Padre::Current->new();
     TRACE( 'editor = ' . $current->editor ) if DEBUG;
     $self->_rig_editor_events( $editor,$resource );
-#    Wx::Event::EVT_STC_MODIFIED( 
-#	$editor,
-#	-1,
-#	sub { $self->on_editor_modified($resource,@_) }
-#    );
+    $self->_rig_editor_decoration($editor);
     
     return;
     
@@ -272,6 +282,7 @@ sub accept_gimme {
 		);
 		TRACE( 'Register modified for resource...' , $r ) if DEBUG;
 		$self->_rig_editor_events( $document->editor,$r );
+		$self->_rig_editor_decoration( $document->editor );
 		
 		# anounce this
 		$self->universe->chat->write_timestamp;
