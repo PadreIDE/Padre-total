@@ -211,8 +211,14 @@ sub _rig_editor_events {
 
 sub _rig_editor_decoration {
     my ($self,$editor) = @_;
-	$editor->MarkerDefine( 
+    # my $icon = $self->plugin->margin_icon;
+    # warn $icon;
+    # $editor->RegisterImage( 5 ,
+	# $icon
+    # );
+    $editor->MarkerDefine( 
         $SWARM_MARKER,  
+        
         Wx::wxSTC_MARK_ARROW,
         #Wx::wxSTC_MARK_CHARACTER + ord('S'), 
         Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
