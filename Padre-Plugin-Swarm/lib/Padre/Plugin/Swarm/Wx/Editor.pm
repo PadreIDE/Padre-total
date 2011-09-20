@@ -127,17 +127,6 @@ sub editor_enable {
         # TODO - dreadful since documents from swarm openme arrive like this
 	return unless $document && $document->filename;
 	
-	# Add decoration
-	$editor->MarkerDefine( 
-        $SWARM_MARKER,  
-        Wx::wxSTC_MARK_ARROW,
-        #Wx::wxSTC_MARK_CHARACTER + ord('S'), 
-        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
-        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
-        
-    );
-
-
 	$self->universe->send(
 		{ 
 			type => 'promote', service => 'editor',
@@ -217,11 +206,14 @@ sub _rig_editor_decoration {
     # $editor->RegisterImage( 5 ,
 	# $icon
     # );
+    warn "STC_MARK_CHARACTER == " . Wx::wxSTC_MARK_CHARACTER,$/;
+    warn "STC_MARK_ROUNDRECT == " . Wx::wxSTC_MARK_ROUNDRECT,$/;
+
     $editor->MarkerDefine( 
         $SWARM_MARKER,  
         
-        Wx::wxSTC_MARK_ARROW,
-        #Wx::wxSTC_MARK_CHARACTER + ord('S'), 
+        #Wx::wxSTC_MARK_ARROW,
+        Wx::wxSTC_MARK_ROUNDRECT, 
         Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
         Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
         
