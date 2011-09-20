@@ -27,10 +27,13 @@ Hijack the padre editor for the purposes of co-operative editing.
 
 =head1 FEATURES
 
-Ghost cursors
+=over
 
-Trap editor cursor movement for common documents and ghost the
-remote users' cursors in the local editor.
+=item *
+
+Ghost cursors - cursor movement for common documents is relayed to
+other swarm users. The left margin of the editor renders a ghost of
+the remote users' cursor.
 
 =head1 TODO
 
@@ -201,23 +204,20 @@ sub _rig_editor_events {
 
 sub _rig_editor_decoration {
     my ($self,$editor) = @_;
-    # my $icon = $self->plugin->margin_icon;
+    my $icon = $self->plugin->plugin_icon;
     # warn $icon;
-    # $editor->RegisterImage( 5 ,
-	# $icon
-    # );
-    warn "STC_MARK_CHARACTER == " . Wx::wxSTC_MARK_CHARACTER,$/;
-    warn "STC_MARK_ROUNDRECT == " . Wx::wxSTC_MARK_ROUNDRECT,$/;
+     $editor->RegisterImage( 5 ,
+	 $icon
+     );
 
-    $editor->MarkerDefine( 
-        $SWARM_MARKER,  
+    $editor->MarkerDefineBitmap( $SWARM_MARKER, $icon );
+    # $editor->MarkerDefine( 
+        # $SWARM_MARKER,   
+        # Wx::wxSTC_MARK_CHARACTER() + ord('S'),
+        # Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
+        # Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
         
-        #Wx::wxSTC_MARK_ARROW,
-        Wx::wxSTC_MARK_ROUNDRECT, 
-        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
-        Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
-        
-    );
+# #     );
     
     return ();
 }
