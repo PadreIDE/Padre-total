@@ -19,6 +19,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 September 21
+        url: http://ahmadzawawi.blogspot.com/2011/09/padre-differentiates-with-style.html
+        title: Padre differentiates with style :)
+        comment: by Ahmad M. Zawawi
       - date: 2011 September 18
         url: http://ahmadzawawi.blogspot.com/2011/09/wxscintilla-030-released.html
         title: Wx::Scintilla 0.30 released
