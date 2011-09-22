@@ -483,15 +483,27 @@ sub make_patch_diff {
 sub test_svn {
 	my $self = shift;
 
-	my $svn_version       = 0;
-	my @local_svn_version = 0;
+	# zero dependants, fails if required
+	use Sort::Versions;
+	my $svn_version          = 0;
+	# my @local_svn_version    = 0;
+	my $required_svn_version = '1.6.2';
 
 	if ( eval { $svn_version = qx{svn --version --quiet} } ) {
-		@local_svn_version = split /\./, $svn_version, 3;
-		p @local_svn_version;
+		$svn_version =~ s/\n//;
+		p $svn_version;
+
+		# @local_svn_version = split /\./, $svn_version, 3;
+		# p @local_svn_version;
 
 		# test for svn version 1.6.x, this is blody crude
-		if ( $local_svn_version[1] >= 6 ) {
+		# if ( $local_svn_version[1] >= 6 ) {
+
+		my $r = versioncmp( $required_svn_version, $svn_version, );
+		p $r;
+
+		# This is so much better,
+		if ( versioncmp( $required_svn_version, $svn_version, ) == -1 ) {
 			print "Found local SVN v$svn_version";
 			TRACE("Found local SVN v$svn_version") if DEBUG;
 			return 1;
@@ -549,7 +561,8 @@ sub make_patch_svn {
 			if ($@) {
 				$output->AppendText($@);
 			} else {
-				$output->AppendText("Sorry Diff to SVN Failed, I don't think there are any diffrences in the file: $file1_name");
+				$output->AppendText(
+					"Sorry Diff to SVN Failed, I don't think there are any diffrences in the file: $file1_name");
 			}
 
 			$main->info(
