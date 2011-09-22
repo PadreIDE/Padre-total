@@ -522,14 +522,7 @@ sub make_patch_svn {
 		my $diff_str;
 		if ( eval { $diff_str = qx{ svn diff $file1_url} } ) {
 
-			## $file->diff;
-			# p $file;
-
-			# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
-			# TRACE output is yuck
-			# TRACE( @{ $file->stdout } ) if DEBUG;
-			# my $diff_str = join "\n", @{ $file->stdout };
-			# my $diff_str = $file;
+			p $diff_str;
 			TRACE($diff_str) if DEBUG;
 
 			my $patch_file = $file1_url . '.patch';
