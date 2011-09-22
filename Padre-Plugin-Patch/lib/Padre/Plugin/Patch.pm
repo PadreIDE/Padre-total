@@ -87,6 +87,7 @@ sub plugin_disable {
 		qw{
 			Padre::Plugin::Patch::Main
 			Padre::Plugin::Patch::FBP::MainFB
+			Sort::Versions
 			}
 	);
 

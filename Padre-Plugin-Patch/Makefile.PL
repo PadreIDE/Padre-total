@@ -11,10 +11,11 @@ requires_from 'lib/Padre/Plugin/Patch/Main.pm';
 requires 'Padre' => '0.89';
 
 # required modules from CPAN
-requires 'File::Slurp'   => '9999.19';
-requires 'Text::Diff'    => '1.41';
-requires 'Text::Patch'   => '1.8';
-requires 'Data::Printer' => '0.22';
+requires 'File::Slurp'    => '9999.19';
+requires 'Text::Diff'     => '1.41';
+requires 'Text::Patch'    => '1.8';
+requires 'Data::Printer'  => '0.22';
+requires 'Sort::Versions' => '1.5';
 
 # Optional if you have used the share directory
 #install_share;
