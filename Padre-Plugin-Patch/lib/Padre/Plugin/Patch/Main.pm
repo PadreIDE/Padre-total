@@ -1,6 +1,6 @@
 package Padre::Plugin::Patch::Main;
 
-use 5.008;
+use 5.014;
 use strict;
 use warnings;
 use File::Slurp                       ();
@@ -105,7 +105,8 @@ sub on_action {
 		# as we can not added items to a radio-box,
 		# we can only enable & disable when radio-box enabled
 		# test inspired my Any
-		unless ( eval { require SVN::Class } ) {
+		# unless ( eval { require SVN::Class } ) {
+		unless ( test_svn() ) {
 			$self->against->EnableItem( 1, 0 );
 		}
 		$self->against->SetSelection(0);
@@ -163,7 +164,7 @@ sub current_files {
 			},
 		);
 
-		if ( $notebook->GetPageText($_) =~ /^\*/sxm ) {
+		if ( $notebook->GetPageText($_) =~ m/^\*/sxm ) {
 			TRACE("Found an unsaved file, will ignore: $notebook->GetPageText($_)") if DEBUG;
 			$self->{open_file_info}->{$_}->{'changed'} = 1;
 		}
@@ -202,7 +203,7 @@ sub file_lists_saved {
 	my @file_lists_saved;
 	for ( 0 .. $self->{tab_cardinality} ) {
 		unless ( $self->{open_file_info}->{$_}->{'changed'}
-			|| $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm )
+			|| $self->{open_file_info}->{$_}->{'filename'} =~ m/(patch|diff)$/sxm )
 		{
 			push @file_lists_saved, $self->{open_file_info}->{$_}->{'filename'};
 		}
@@ -233,7 +234,7 @@ sub file2_list_patch {
 
 	my @file2_list_patch;
 	for ( 0 .. $self->{tab_cardinality} ) {
-		if ( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) {
+		if ( $self->{open_file_info}->{$_}->{'filename'} =~ m/(patch|diff)$/sxm ) {
 			push @file2_list_patch, $self->{open_file_info}->{$_}->{'filename'};
 		}
 	}
@@ -259,7 +260,7 @@ sub file1_list_svn {
 	for ( 0 .. $self->{tab_cardinality} ) {
 		if (   ( $self->{open_file_info}->{$_}->{'vcs'} eq 'SVN' )
 			&& !( $self->{open_file_info}->{$_}->{'changed'} )
-			&& !( $self->{open_file_info}->{$_}->{'filename'} =~ /(patch|diff)$/sxm ) )
+			&& !( $self->{open_file_info}->{$_}->{'filename'} =~ m/(patch|diff)$/sxm ) )
 		{
 			push @{ $self->{file1_list_ref} }, $self->{open_file_info}->{$_}->{'filename'};
 		}
@@ -284,20 +285,20 @@ sub set_selection_file1 {
 	my $main = $self->main;
 
 	$self->{selection} = 0;
-	if ( $main->current->title =~ /(patch|diff)$/sxm ) {
+	if ( $main->current->title =~ m/(patch|diff)$/sxm ) {
 
-		my @pathch_target = split( /\./, $main->current->title, 2 );
+		my @pathch_target = split( m/\./, $main->current->title, 2 );
 
 		# print "got you: $pathch_target[0]\n";
-		# \p{Space} == \s
-		$pathch_target[0] =~ s/^\p{Space}{1}//;
+		# \h == \p{Space} == \s
+		$pathch_target[0] =~ s/^\s{1}//a;
 		TRACE("Looking for File-1 to apply a patch to: $pathch_target[0]") if DEBUG;
 
 		# SetSelection should be Patch target file
 		foreach ( 0 .. $#{ $self->{file1_list_ref} } ) {
 
-			# add optional leading space \s?
-			if ( @{ $self->{file1_list_ref} }[$_] =~ /^\p{Space}?$pathch_target[0]/ ) {
+			# add optional leading space \s? -> \p{Space}?
+			if ( @{ $self->{file1_list_ref} }[$_] =~ m/^\s? $pathch_target[0]/xa ) {
 				$self->{selection} = $_;
 				return;
 			}
@@ -379,7 +380,7 @@ sub apply_patch {
 	if ( -e $file2_url ) {
 		TRACE("found file2 => $file2_name: $file2_url") if DEBUG;
 		$diff = File::Slurp::read_file($file2_url);
-		unless ( $file2_url =~ /(patch|diff)$/sxm ) {
+		unless ( $file2_url =~ m/(patch|diff)$/sxm ) {
 			$main->info( Wx::gettext('Patch file should end in .patch or .diff, you should reselect & try again') );
 			return;
 		}
@@ -477,6 +478,29 @@ sub make_patch_diff {
 }
 
 #######
+# Composed Method test_svn
+#######
+sub test_svn {
+	my $self = shift;
+
+	my $svn_version       = 0;
+	my @local_svn_version = 0;
+
+	if ( eval { $svn_version = qx{svn --version --quiet} } ) {
+		@local_svn_version = split /\./, $svn_version, 3;
+		p @local_svn_version;
+
+		# test for svn version 1.6.x, this is blody crude
+		if ( $local_svn_version[1] >= 6 ) {
+			print "Found local SVN v$svn_version";
+			TRACE("Found local SVN v$svn_version") if DEBUG;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+#######
 # Method make_patch_svn
 # inspired by P-P-SVN
 #######
@@ -493,18 +517,19 @@ sub make_patch_svn {
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
-	if ( eval { require SVN::Class } ) {
-		TRACE('found SVN::Class, Good to go') if DEBUG;
-		my $file;
-		if ( eval { $file = SVN::Class::svn_file($file1_url) } ) {
+	if (test_svn) {
+		TRACE('found local SVN, Good to go') if DEBUG;
+		my $diff_str;
+		if ( eval { $diff_str = qx{ svn diff $file1_url} } ) {
 
-			$file->diff;
+			## $file->diff;
+			# p $file;
 
 			# TODO talk to Alias about supporting Data::Printer { caller_info => 1 }; in Padre::Logger
 			# TRACE output is yuck
-			TRACE( @{ $file->stdout } ) if DEBUG;
-			my $diff_str = join "\n", @{ $file->stdout };
-
+			# TRACE( @{ $file->stdout } ) if DEBUG;
+			# my $diff_str = join "\n", @{ $file->stdout };
+			# my $diff_str = $file;
 			TRACE($diff_str) if DEBUG;
 
 			my $patch_file = $file1_url . '.patch';
@@ -520,7 +545,7 @@ sub make_patch_svn {
 			$output->AppendText("Patch Dialog failed to Complete.\n");
 			$output->AppendText("Your requested Action Diff against SVN, with following parameters.\n");
 			$output->AppendText("File-1: $file1_url \n");
-			$output->AppendText("What follows is the error I received from SVN::Class, if any: \n");
+			$output->AppendText("What follows is the error I received from SVN, if any: \n");
 			$output->AppendText($@);
 
 			$main->info(
