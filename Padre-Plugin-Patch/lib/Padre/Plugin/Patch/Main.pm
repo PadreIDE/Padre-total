@@ -513,6 +513,13 @@ sub make_patch_svn {
 	my $output = $main->output;
 	$output->clear;
 
+	# add test for any changes, ask azawawi, how to to negate running
+	# if (undef) {
+	# $main->info(
+	# Wx::gettext("Sorry Diff was not run as there are't any in this file: $file1_name") );
+	# return;
+	# }
+
 	my $file1_url = $self->filename_url($file1_name);
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
@@ -539,7 +546,11 @@ sub make_patch_svn {
 			$output->AppendText("Your requested Action Diff against SVN, with following parameters.\n");
 			$output->AppendText("File-1: $file1_url \n");
 			$output->AppendText("What follows is the error I received from SVN, if any: \n");
-			$output->AppendText($@);
+			if ($@) {
+				$output->AppendText($@);
+			} else {
+				$output->AppendText("Sorry Diff to SVN Failed, I don't think there are any diffrences in the file: $file1_name");
+			}
 
 			$main->info(
 				Wx::gettext('Sorry Diff Failed, are you sure your have access to the repository for this action') );
