@@ -204,7 +204,7 @@ sub _rig_editor_events {
 
 sub _rig_editor_decoration {
     my ($self,$editor) = @_;
-    my $icon = $self->plugin->plugin_icon;
+    my $icon = $self->plugin->margin_icon;
     # warn $icon;
      $editor->RegisterImage( 5 ,
 	 $icon
