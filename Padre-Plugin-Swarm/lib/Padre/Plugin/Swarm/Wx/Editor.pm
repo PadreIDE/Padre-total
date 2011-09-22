@@ -7,12 +7,13 @@ use File::Basename;
 use Padre::Logger;
 use Padre::Constant;
 use Padre::Wx::Constant;
-use Class::XSAccessor
+use Class::XSAccessor {
     accessors => {
         resources=> 'resources',
         universe => 'universe',
-    };
-    
+    },
+};
+
 our $SWARM_MARKER = 10;
     
 =pod
@@ -56,120 +57,120 @@ respond to.
 
 
 sub new {
-	my $class = shift;
-	my %args  = @_;
-	TRACE( "Instanced editor supervisor" ) if DEBUG;
-	$args{resources} = {};
-	
-	my $self = bless \%args, $class ;
-	my $rself = $self;
-	Scalar::Util::weaken($self);
-	
-	$self->universe->reg_cb( 'editor_enable' , sub { shift;$self->editor_enable(@_) } );
-	$self->universe->reg_cb( 'editor_disable', sub { shift;$self->editor_disable(@_) } );
-	
-	return $self;
+        my $class = shift;
+        my %args  = @_;
+        TRACE( "Instanced editor supervisor" ) if DEBUG;
+        $args{resources} = {};
+        
+        my $self = bless \%args, $class ;
+        my $rself = $self;
+        Scalar::Util::weaken($self);
+        
+        $self->universe->reg_cb( 'editor_enable' , sub { shift;$self->editor_enable(@_) } );
+        $self->universe->reg_cb( 'editor_disable', sub { shift;$self->editor_disable(@_) } );
+        
+        return $self;
 }
 
 sub enable {
-	my $self = shift;
+        my $self = shift;
         foreach my $editor ( $self->plugin->main->editors ) {
-	    eval{ $self->editor_enable( $editor, $editor->{Document} ) };
-		TRACE( "Failed to enable editor - $@" ) if $@;
-	}
+            eval{ $self->editor_enable( $editor, $editor->{Document} ) };
+                TRACE( "Failed to enable editor - $@" ) if $@;
+        }
 
 }
 
 sub disable {
-	
+        
 }
 
 sub plugin { Padre::Plugin::Swarm->instance }
 
 
 sub canonical_resource {
-	my $self = shift;
-	my $doc = shift;
-	my $current = Padre::Current->new( document=>$doc );
+        my $self = shift;
+        my $doc = shift;
+        my $current = Padre::Current->new( document=>$doc );
 
-	
-	my $project_dir = $current->document->project_dir;
-	my $base = File::Basename::basename( $project_dir );
-	my $shortpath = $doc->filename;
-	$shortpath =~ s/^$project_dir//;
-	
-	my $canonical = sprintf(
-		'owner=%s,project=%s,path=%s',
-		$self->universe, # owner
-		$base, 
-		$shortpath
-	); 
-	# TRACE( $canonical );
-	return $canonical;
-	
-	# The old way 
-	#return $self . '@' . $name;
+        
+        my $project_dir = $current->document->project_dir;
+        my $base = File::Basename::basename( $project_dir );
+        my $shortpath = $doc->filename;
+        $shortpath =~ s/^$project_dir//;
+        
+        my $canonical = sprintf(
+                'owner=%s,project=%s,path=%s',
+                $self->universe, # owner
+                $base, 
+                $shortpath
+        ); 
+        # TRACE( $canonical );
+        return $canonical;
+        
+        # The old way 
+        #return $self . '@' . $name;
 }
 
 sub resolve_resource {
-	my $self = shift;
-	my $r    = shift;
-	my ($owner,$project,$path) =
-		$r =~ m/^owner=(.+),project=(.+),path=(.+)$/;
-	# TRACE( $r );
-	# TRACE( 'Owner - ' . $owner );
-	# TRACE( 'Project - ' . $project);
-	# TRACE( 'Path(s) - ' . $path );
-	return ( owner => $owner , project => $project , path => $path );
+        my $self = shift;
+        my $r    = shift;
+        my ($owner,$project,$path) =
+                $r =~ m/^owner=(.+),project=(.+),path=(.+)$/;
+        # TRACE( $r );
+        # TRACE( 'Owner - ' . $owner );
+        # TRACE( 'Project - ' . $project);
+        # TRACE( 'Path(s) - ' . $path );
+        return ( owner => $owner , project => $project , path => $path );
 }
 
 
 
 sub editor_enable {
-	my ($self,$editor,$document) = @_;
+        my ($self,$editor,$document) = @_;
         # TODO - dreadful since documents from swarm openme arrive like this
-	return unless $document && $document->filename;
-	
-	$self->universe->send(
-		{ 
-			type => 'promote', service => 'editor',
-			resource => $self->canonical_resource( $document )
-		}
-	);
+        return unless $document && $document->filename;
+        
+        $self->universe->send(
+                { 
+                        type => 'promote', service => 'editor',
+                        resource => $self->canonical_resource( $document )
+                }
+        );
 
-	$self->resources->{ $self->canonical_resource( $document) } = $document;
+        $self->resources->{ $self->canonical_resource( $document) } = $document;
 
 }
 
 # TODO - document->filename should be $self->canonical_resource($document); ?
 
 sub editor_disable {
-	my ($self,$editor,$document) = @_;
-	return unless $document->filename;
-	
-	$self->universe->send(
-			{
-				type => 'destroy' , 
-				service => 'editor',
-				resource => $self->canonical_resource( $document )
-			}
-	);
+        my ($self,$editor,$document) = @_;
+        return unless $document->filename;
+        
+        $self->universe->send(
+                        {
+                                type => 'destroy' , 
+                                service => 'editor',
+                                resource => $self->canonical_resource( $document )
+                        }
+        );
 
-	delete $self->resources->{ $self->canonical_resource( $document) };
+        delete $self->resources->{ $self->canonical_resource( $document) };
 
 }
 
 
 # Swarm event handler
 sub on_recv {
-	my ($self,$message) = @_;
-	my $handler = 'accept_' . $message->{type};
-	TRACE( $handler ) if DEBUG;
-	if ($self->can($handler)) {
-		eval { $self->$handler($message) };
-		TRACE( "$handler failed - $@" )  if $@;
-	}
-	
+        my ($self,$message) = @_;
+        my $handler = 'accept_' . $message->{type};
+        TRACE( $handler ) if DEBUG;
+        if ($self->can($handler)) {
+                eval { $self->$handler($message) };
+                TRACE( "$handler failed - $@" )  if $@;
+        }
+        
 }
 
 # message handlers
@@ -189,13 +190,34 @@ use Data::Dumper;
 
 sub _rig_editor_events {
     my ($self,$editor,$resource) = @_;
-    # catch changes to the document
+
+    # Catch changes to the document
     Wx::Event::EVT_STC_MODIFIED(
         $editor, -1 , sub { $self->on_editor_modified($resource,@_) }
     );
-    # catch cursor movement (and a million other things) 
+
+    # Catch focusing (to add ghosts)
+    Wx::Event::EVT_SET_FOCUS(
+        $editor,
+        sub {
+            $self->on_editor_set_focus( $resource, @_ );
+        },
+    );
+
+    # Catch defocusing (to remove ghosts)
+    Wx::Event::EVT_KILL_FOCUS(
+        $editor,
+        sub {
+            $self->on_editor_kill_focus( $resource, @_ );
+        },
+    );
+
+    # Catch cursor movement (and a million other things) 
     Wx::Event::EVT_STC_UPDATEUI(
-        $editor, -1 , sub { $self->on_editor_updateui($resource,@_) }
+        $editor, -1,
+        sub {
+            $self->on_editor_updateui( $resource, @_ );
+        },
     );
 
     return ();
@@ -206,9 +228,7 @@ sub _rig_editor_decoration {
     my ($self,$editor) = @_;
     my $icon = $self->plugin->margin_icon;
     # warn $icon;
-     $editor->RegisterImage( 5 ,
-	 $icon
-     );
+    $editor->RegisterImage( 5, $icon );
 
     $editor->MarkerDefineBitmap( $SWARM_MARKER, $icon );
     # $editor->MarkerDefine( 
@@ -230,10 +250,10 @@ sub accept_openme {
     # Skip anything not addressed to us.
     if ( $message->to ne $self->plugin->identity->nickname ) 
     {
-	TRACE( 'Bailout message to ' . $message->to ) if DEBUG;
+        TRACE( 'Bailout message to ' . $message->to ) if DEBUG;
         return;
     }
-    
+
     my $doc = $self->plugin->main->new_document_from_string( $message->body );
     my $editor = $doc->editor;
     my $resource = $message->{resource};
@@ -255,53 +275,53 @@ if the resource matches one of our open documents.
 =cut
 
 sub accept_gimme {
-	my ($self,$message) = @_;
-	return if $message->{is_loopback};
-	
-	my $r = $message->{resource};
-	
-	my ($owner,$project,$path) = $self->resolve_resource( $r );
-	
-	#$r =~ s/^://; # legacy hack - remove me
-	TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
-	
-	if ( exists $self->resources->{$r} ) {
-		TRACE( 'Give ' . $message->from . ' resource ... ' , $r ) if DEBUG;;
-		my $document = $self->resources->{$r};
-		my $current = Padre::Current->new(document=>$document);
-		
-		$self->universe->send(
-		    {
-				type => 'openme',
-				service => 'editor',
-				body => $document->text_get,
-				resource => $r,
-				to   => $message->from ,
-			}
-		);
-		TRACE( 'Register modified for resource...' , $r ) if DEBUG;
-		$self->_rig_editor_events( $document->editor,$r );
-		$self->_rig_editor_decoration( $document->editor );
-		
-		# anounce this
-		$self->universe->chat->write_timestamp;
-		$self->universe->chat->write_user_styled( $message->{from}, $message->{from} );
-		$self->universe->chat->write_unstyled(
-			' has been given a copy of ' . $document->filename . "\n"
-		);
-		
-	} elsif ( $owner eq $self->universe ) {
-			TRACE( "Gimme for myself???" );
-	} else {
-		# tell any future requestors to forget this resource
-		TRACE( 'Tell ' . $message->from . ' to remove the resource...', $r ) if DEBUG;
-		
-		$self->universe->send(
-			{ type => 'destroy', service=>'editor', resource=>$r }
-		);
-		
-	}
-	
+        my ($self,$message) = @_;
+        return if $message->{is_loopback};
+        
+        my $r = $message->{resource};
+        
+        my ($owner,$project,$path) = $self->resolve_resource( $r );
+        
+        #$r =~ s/^://; # legacy hack - remove me
+        TRACE( $message->{from} . ' requests resource ' . $r ) if DEBUG;
+        
+        if ( exists $self->resources->{$r} ) {
+                TRACE( 'Give ' . $message->from . ' resource ... ' , $r ) if DEBUG;;
+                my $document = $self->resources->{$r};
+                my $current = Padre::Current->new(document=>$document);
+                
+                $self->universe->send(
+                    {
+                                type => 'openme',
+                                service => 'editor',
+                                body => $document->text_get,
+                                resource => $r,
+                                to   => $message->from ,
+                        }
+                );
+                TRACE( 'Register modified for resource...' , $r ) if DEBUG;
+                $self->_rig_editor_events( $document->editor,$r );
+                $self->_rig_editor_decoration( $document->editor );
+                
+                # anounce this
+                $self->universe->chat->write_timestamp;
+                $self->universe->chat->write_user_styled( $message->{from}, $message->{from} );
+                $self->universe->chat->write_unstyled(
+                        ' has been given a copy of ' . $document->filename . "\n"
+                );
+                
+        } elsif ( $owner eq $self->universe ) {
+                        TRACE( "Gimme for myself???" );
+        } else {
+                # tell any future requestors to forget this resource
+                TRACE( 'Tell ' . $message->from . ' to remove the resource...', $r ) if DEBUG;
+                
+                $self->universe->send(
+                        { type => 'destroy', service=>'editor', resource=>$r }
+                );
+                
+        }
+        
 }
 
 =head1 disco
@@ -311,19 +331,18 @@ each known resource
 
 =cut
 
-
 sub accept_disco {
-	my ($self,$message) = @_;
-	TRACE( $message->{from} . " disco" ) if DEBUG;
-	foreach my $doc ( values %{ $self->resources } ) {
-		TRACE( "Promoting " . $doc->filename ) if DEBUG;
-		$self->universe->send(
-				{ type => 'promote', service => 'editor',
-				  resource => $self->canonical_resource( $doc ) }
-				);
+        my ($self,$message) = @_;
+        TRACE( $message->{from} . " disco" ) if DEBUG;
+        foreach my $doc ( values %{ $self->resources } ) {
+                TRACE( "Promoting " . $doc->filename ) if DEBUG;
+                $self->universe->send(
+                                { type => 'promote', service => 'editor',
+                                  resource => $self->canonical_resource( $doc ) }
+                                );
 
-	}
-	
+        }
+        
 }
 
 =head2 runme
@@ -343,32 +362,31 @@ sub NEVER_accept_runme {
     
     my $file = ($message->{filename} || 'Unknown');
     if ( $@ ) {
-	
-	my $reply = "Ran document $file but failed with $@";
+        
+        my $reply = "Ran document $file but failed with $@";
        
-	    $self->plugin->send(
-		 {type => 'openme', to=>$message->from, service=>'editor',
-		 body => $reply,}
-	    );
+            $self->plugin->send(
+                 {type => 'openme', to=>$message->from, service=>'editor',
+                 body => $reply,}
+            );
         
     }
     else {
-	    my $reply = 'Ran document sucessfully - returning '
-		. join('', @result );
-	    $self->plugin->send(
-		{
-			type => 'openme',
-			service => 'editor',
-			to=>$message->from,
-			body => $reply,
-			filename => $file,
-		}
-	    );
+            my $reply = 'Ran document sucessfully - returning '
+                . join('', @result );
+            $self->plugin->send(
+                {
+                        type => 'openme',
+                        service => 'editor',
+                        to=>$message->from,
+                        body => $reply,
+                        filename => $file,
+                }
+            );
         
     }
     
 }
-
 
 my %previous_cursor = ();
 
@@ -376,36 +394,47 @@ sub accept_cursor {
     my ($self,$message) = @_;
     return if $message->{is_loopback};
 
-
     my $resource = $message->{resource};
     my $position = $message->{body};
     unless ( exists $self->resources->{ $resource } ) {
         return;
     }
+
     TRACE( "Moving ghost cursor belonging to ".$message->from ) if DEBUG;
     TRACE( "position ='$position'"  ) if DEBUG;
-    my $key = $resource . $message->from;
-    my $doc = $self->resources->{ $resource };
-    my $editor = $doc->editor;
-    my $line = $editor->LineFromPosition( $position ); # I hope that is a number!
+    my $key      = $resource . $message->from;
+    my $editor   = $self->resources->{ $resource }->editor;
     my $previous = $previous_cursor{$key};
-    TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
-    if ( defined $previous ) {
-        $editor->MarkerDelete($previous,$SWARM_MARKER);
+    if ( $position >= 0 ) {
+        # I hope that is a number!
+        my $line = $editor->LineFromPosition( $position );
+        TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
+        if ( defined $previous ) {
+            TRACE("Moving from line '$position' to line '$line'") if DEBUG;
+            $editor->MarkerDelete( $previous, $SWARM_MARKER );
+            $editor->MarkerAdd( $line, $SWARM_MARKER );
+
+        } else {
+            TRACE("Adding fresh ghost to line '$line'") if DEBUG;
+            $editor->MarkerAdd( $line, $SWARM_MARKER );
+        }
+        $previous_cursor{$key} = $line;
+
+    } elsif ( defined $previous ) {
+        TRACE("Removing ghost from line '$previous'") if DEBUG;
+        $editor->MarkerDelete( $previous, $SWARM_MARKER );
+        delete $previous_cursor{$key};
     }
-    $editor->MarkerAdd($line,$SWARM_MARKER);
-    $previous_cursor{$key} = $line;
+
     return;
-
 }
-
 
 =head2 delta
 
 Half baked operational transform
 
-
 =cut
+
 sub accept_delta {
     my ($self,$message)=@_;
     # Ignore loopback
@@ -435,12 +464,12 @@ sub _apply_delta {
     
 eval {
     if ($message->{op} eq 'ins') {
-	$editor->InsertText( $message->{pos}, $message->{body}  );
-	
+        $editor->InsertText( $message->{pos}, $message->{body}  );
+        
     } elsif ( $message->{op} eq 'del' ) {
-	$editor->SetTargetStart( $message->{pos} );
-	    $editor->SetTargetEnd( $message->{pos} + length($message->body) );
-	    $editor->ReplaceTarget( '' ); # compare to $message->{body} ??
+        $editor->SetTargetStart( $message->{pos} );
+            $editor->SetTargetEnd( $message->{pos} + length($message->body) );
+            $editor->ReplaceTarget( '' ); # compare to $message->{body} ??
     }
 };
 
@@ -451,26 +480,69 @@ TRACE( 'Apply delta failed' , $@ ) if $@;
 
 }
 
-{ # SCOPE
+SCOPE: {
 # more leaks !
 my %cursor_pos = ();
+
+sub on_editor_set_focus {
+    my ($self,$resource,$editor,$event) = @_;
+    my $pos = $editor->GetCurrentPos;
+    TRACE( "Position is '$pos'" ) if DEBUG;
+
+    # Send the cursor position, shortcut if unchanged
+    unless (
+        exists $cursor_pos{$resource}
+        and
+        $cursor_pos{$resource} == $pos
+    ) {
+        $cursor_pos{$resource} = $pos; 
+        $self->universe->send( {
+            type     => 'cursor',
+            resource => $resource,
+            body     => $pos,
+        } );
+    }
+
+    # Continue processing
+    $event->Skip(1);
+}
 
 sub on_editor_updateui {
     my ($self,$resource,$editor,$event) = @_;
     my $pos = $editor->GetCurrentPos;
     TRACE( "Position is '$pos'" ) if DEBUG;
-    if ( ! exists $cursor_pos{$resource} 
-        || $cursor_pos{$resource} != $pos )
-    {
+
+    # Send the cursor position, shortcut if unchanged
+    unless (
+        exists $cursor_pos{$resource}
+        and
+        $cursor_pos{$resource} == $pos
+    ) {
         $cursor_pos{$resource} = $pos; 
-        $self->universe->send(
-            { type=>'cursor', resource=>$resource, body=>$pos }
-        );
-    } else {
-        # NOOP
-        return;
-    } 
-    
+        $self->universe->send( {
+            type     => 'cursor',
+            resource => $resource,
+            body     => $pos,
+        } );
+    }
+
+}
+
+sub on_editor_kill_focus {
+    my ($self,$resource,$editor,$event) = @_;
+
+    # Send negative ghost position to indicate to remove it
+    if ( exists $cursor_pos{$resource} ) {
+        $self->universe->send( {
+            type     => 'cursor',
+            resource => $resource,
+            body     => -1,
+        } );
+        delete $cursor_pos{$resource};
+    }
+
+    # Continue processing
+    $event->Skip(1);
 }
 
 } # END SCOPE
@@ -487,11 +559,11 @@ sub on_editor_modified {
     my $type = $event->GetModificationType;
     
      my %flags = (
-	 insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
-	 delete => $type & Wx::wxSTC_MOD_DELETETEXT,
-	 user   => $type & Wx::wxSTC_PERFORMED_USER,
-	 undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
-	 redo   => $type & Wx::wxSTC_PERFORMED_REDO,
+         insert => $type & Wx::wxSTC_MOD_INSERTTEXT,
+         delete => $type & Wx::wxSTC_MOD_DELETETEXT,
+         user   => $type & Wx::wxSTC_PERFORMED_USER,
+         undo   => $type & Wx::wxSTC_PERFORMED_UNDO,
+         redo   => $type & Wx::wxSTC_PERFORMED_REDO,
           style  => $type & Wx::wxSTC_MOD_CHANGESTYLE,
      );
     #TRACE( Dumper \%flags );
