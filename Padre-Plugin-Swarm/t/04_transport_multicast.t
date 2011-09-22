@@ -20,6 +20,10 @@ $bailout->recv;
 
 $t->reg_cb( recv => sub { ok(1,'Got message'); $message->send } ) ;
 
-$t->send({body=>'hello world',type=>'chat',from=>'test'});
+$t->send( { 
+    type => 'chat',
+    from => '04_transport_multicast.t',
+    body => 'Hello Multicast!',
+} );
 
 $message->recv;
