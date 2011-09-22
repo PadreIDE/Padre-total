@@ -489,12 +489,12 @@ sub test_svn {
 
 	if ( eval { $svn_version = qx{svn --version --quiet} } ) {
 		$svn_version =~ s/\n//;
-		p $svn_version;
+		# p $svn_version;
 
-		my $r = versioncmp( $required_svn_version, $svn_version, );
-		p $r;
+# # 		my $r = versioncmp( $required_svn_version, $svn_version, );
+		# p $r;
 
-		# This is so much better,
+		# This is so much better, now we are testing for version as well
 		if ( versioncmp( $required_svn_version, $svn_version, ) == -1 ) {
 			print "Found local SVN v$svn_version";
 			TRACE("Found local SVN v$svn_version") if DEBUG;
