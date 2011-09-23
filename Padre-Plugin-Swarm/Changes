@@ -1,5 +1,7 @@
 Changes for Perl extension Padre-Plugin-Swarm
 0.2	- unreleased
+	- add different cursor styling to indicate the original owner's cursor
+        - add ghost cursors in the editor margin showing where other remote editors cursors are
 	- pod updates
 	- first attempt at collaboration with bowtie from irc. (BRAMBLE)
 	- first real 2-way co-operative editing capability
