@@ -13,9 +13,13 @@ use Class::XSAccessor {
         universe => 'universe',
     },
 };
+our @SWARM_MARKERS = (
+    our $SWARM_MARKER1 = 10,
+    our $SWARM_MARKER2 = 11,
+    our $SWARM_MARKER_OWNER1 = 12,
+    our $SWARM_MARKER_OWNER2 = 13,
+);
 
-our $SWARM_MARKER1 = 10;
-our $SWARM_MARKER2 = 11;
     
 =pod
 
@@ -232,6 +236,10 @@ sub _rig_editor_decoration {
     $editor->MarkerDefineBitmap( $SWARM_MARKER1, $icon1 );
     $editor->MarkerDefineBitmap( $SWARM_MARKER2, $icon2 );
     
+    my ($o_icon1,$o_icon2) = $self->plugin->margin_owner_icons;
+    $editor->MarkerDefineBitmap( $SWARM_MARKER_OWNER1, $o_icon1 );
+    $editor->MarkerDefineBitmap( $SWARM_MARKER_OWNER2, $o_icon2 );
+    
     return ();
 }
 
@@ -389,6 +397,7 @@ sub accept_cursor {
 
     my $resource = $message->{resource};
     my $position = $message->{body};
+    my $is_owner = $message->{owner};
     unless ( exists $self->resources->{ $resource } ) {
         return;
     }
@@ -401,12 +410,14 @@ sub accept_cursor {
     if ( $position >= 0 ) {
         # I hope that is a number!
         my $line = $editor->LineFromPosition( $position );
-        my $CURRENT_MARKER = ($position % 2 == 0) ? $SWARM_MARKER1 : $SWARM_MARKER2;
+        my $CURRENT_MARKER = $is_owner ?
+                                ($position % 2 == 0) ? $SWARM_MARKER_OWNER1 : $SWARM_MARKER_OWNER2
+                              : ($position % 2 == 0) ? $SWARM_MARKER1 : $SWARM_MARKER2;
+                                
         TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
         if ( defined $previous ) {
             TRACE("Moving from line '$position' to line '$line'") if DEBUG;
-            $editor->MarkerDelete( $previous, $SWARM_MARKER1 );
-            $editor->MarkerDelete( $previous, $SWARM_MARKER2 );
+            $editor->MarkerDelete( $previous, $_ ) for @SWARM_MARKERS;
             $editor->MarkerAdd( $line, $CURRENT_MARKER );
 
         } else {
@@ -417,8 +428,7 @@ sub accept_cursor {
 
     } elsif ( defined $previous ) {
         TRACE("Removing ghost from line '$previous'") if DEBUG;
-        $editor->MarkerDelete( $previous, $SWARM_MARKER1 );
-        $editor->MarkerDelete( $previous, $SWARM_MARKER2 );
+        $editor->MarkerDelete( $previous, $_ ) for @SWARM_MARKERS;
         delete $previous_cursor{$key};
     }
 
@@ -507,7 +517,8 @@ sub on_editor_updateui {
     my ($self,$resource,$editor,$event) = @_;
     my $pos = $editor->GetCurrentPos;
     TRACE( "Position is '$pos'" ) if DEBUG;
-
+    my %resolved = $self->resolve_resource( $resource );
+    
     # Send the cursor position, shortcut if unchanged
     unless (
         exists $cursor_pos{$resource}
@@ -519,6 +530,7 @@ sub on_editor_updateui {
             type     => 'cursor',
             resource => $resource,
             body     => $pos,
+            owner    => ($resolved{owner} eq $self->universe) ? 1 : 0,
         } );
     }
 

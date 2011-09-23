@@ -257,6 +257,27 @@ sub margin_icons {
 	return ($icon1,$icon2);
 }
 
+sub margin_owner_icons {
+	my $class = shift;
+	my $icon1  = Padre::Wx::Icon::find(
+		'margin/owner-one',
+		{
+			size  => '12x12',
+			icons => $class->plugin_icons_directory,
+		}
+	);
+	my $icon2  = Padre::Wx::Icon::find(
+		'margin/owner-two',
+		{
+			size  => '12x12',
+			icons => $class->plugin_icons_directory,
+		}
+	);
+	
+	return ($icon1,$icon2);
+}
+
+
 sub menu_plugins_simple {
     my $self = shift;
     return $self->plugin_name => [
