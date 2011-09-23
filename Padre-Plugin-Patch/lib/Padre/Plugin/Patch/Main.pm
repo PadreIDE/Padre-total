@@ -33,6 +33,9 @@ sub new {
 sub set_up {
 	my $self = shift;
 
+	# test for local svn_local
+	$self->test_svn();
+
 	# generate open file bucket
 	$self->current_files();
 
@@ -106,7 +109,8 @@ sub on_action {
 		# we can only enable & disable when radio-box enabled
 		# test inspired my Any
 		# unless ( eval { require SVN::Class } ) {
-		unless ( test_svn() ) {
+		# unless ( test_svn() ) {
+		unless ( $self->{svn_local} ) {
 			$self->against->EnableItem( 1, 0 );
 		}
 		$self->against->SetSelection(0);
@@ -482,14 +486,15 @@ sub make_patch_diff {
 #######
 sub test_svn {
 	my $self = shift;
-	
+
 	use File::Find;
 	use Sort::Versions;
-	
+	$self->{svn_local} = 0;
+
 	my $svn_client_version   = 0;
 	my $required_svn_version = '1.6.2';
-	my $svn_found = 0;
-	
+	my $svn_found            = 0;
+
 	# search in path for svn
 	my @directories = split /:|;/, $ENV{PATH};
 	find(
@@ -497,15 +502,15 @@ sub test_svn {
 			if ( $_ eq 'svn' ) {
 				say 'found svn in path';
 				$svn_found = 1;
-			} 
+			}
 		},
 		@directories
 	);
-	
+
 	# if svn not found in path exit
-	if ( !$svn_found ){
+	if ( !$svn_found ) {
 		say 'svn not found in path';
-		return 0;
+		return;
 	}
 
 	# test svn version
@@ -515,14 +520,15 @@ sub test_svn {
 		# This is so much better, now we are testing for version as well
 		if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
 			TRACE("Found local SVN v$svn_client_version") if DEBUG;
-			return 1;
+			$self->{svn_local} = 1;
+			return;
 		} else {
 			TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
 		}
 	} else {
 		TRACE("SVN not Found error: $@") if DEBUG;
 	}
-	return 0;
+	return;
 }
 
 #######
@@ -549,7 +555,8 @@ sub make_patch_svn {
 
 	TRACE("file1_url to svn: $file1_url") if DEBUG;
 
-	if (test_svn) {
+	# if (test_svn) {
+	if ( $self->{svn_local} ) {
 		TRACE('found local SVN, Good to go') if DEBUG;
 		my $diff_str;
 		if ( eval { $diff_str = qx{ svn diff $file1_url} } ) {
