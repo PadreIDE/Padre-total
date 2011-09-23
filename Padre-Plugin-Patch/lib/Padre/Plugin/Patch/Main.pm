@@ -497,8 +497,7 @@ sub test_svn {
 	find(
 		sub {
 			if ( $_ eq 'svn' ) {
-				say 'found svn in path';
-				TRACE("Found Local SVN in path") if DEBUG;
+				TRACE("Found SVN in local path") if DEBUG;
 				$svn_found = 1;
 			}
 		},
@@ -507,25 +506,23 @@ sub test_svn {
 
 	# if svn not found in path exit
 	if ( !$svn_found ) {
-		say 'svn not found in path';
 		TRACE("SVN not Found in Local path") if DEBUG;
 		return;
 	}
 
 	# test svn version
-	if ( eval { $svn_client_version = qx{svn --version --quiet} } ) {
+	if ( $svn_client_version = qx{svn --version --quiet} ) {
 		chomp($svn_client_version);
 
 		# This is so much better, now we are testing for version as well
 		if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
-			TRACE("Found local SVN v$svn_client_version") if DEBUG;
+			say "Found local SVN v$svn_client_version, good to go.";
+			TRACE("Found local SVN v$svn_client_version, good to go.") if DEBUG;
 			$self->{svn_local} = 1;
 			return;
 		} else {
 			TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
 		}
-	} else {
-		TRACE("SVN not Found error: $@") if DEBUG;
 	}
 	return;
 }
@@ -542,13 +539,6 @@ sub make_patch_svn {
 	$main->show_output(1);
 	my $output = $main->output;
 	$output->clear;
-
-	# add test for any changes, ask azawawi, how to to negate running
-	# if (undef) {
-	# $main->info(
-	# Wx::gettext("Sorry Diff was not run as there are't any in this file: $file1_name") );
-	# return;
-	# }
 
 	my $file1_url = $self->filename_url($file1_name);
 
@@ -652,9 +642,13 @@ A convenience method to apply patch to chosen file.
 
 A convenience method to generate a patch/diff file from two selected files.
 
+=item test_svn
+
+Test for local svn client and version >=1.6.2.
+
 =item make_patch_svn
 
-NB only works if you have C<SVN::Class> installed.
+NB only works if you have passed test_svn.
 
 A convenience method to generate a patch/diff file from a selected file and svn if applicable,
 ie file has been checked out.
@@ -674,7 +668,6 @@ composed method
 =item set_selection_file2
 
 composed method
-
 
 =item file1_list_svn
 
