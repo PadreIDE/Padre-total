@@ -498,6 +498,7 @@ sub test_svn {
 		sub {
 			if ( $_ eq 'svn' ) {
 				say 'found svn in path';
+				TRACE("Found Local SVN in path") if DEBUG;
 				$svn_found = 1;
 			}
 		},
@@ -507,6 +508,7 @@ sub test_svn {
 	# if svn not found in path exit
 	if ( !$svn_found ) {
 		say 'svn not found in path';
+		TRACE("SVN not Found in Local path") if DEBUG;
 		return;
 	}
 
