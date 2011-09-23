@@ -107,9 +107,6 @@ sub on_action {
 
 		# as we can not added items to a radio-box,
 		# we can only enable & disable when radio-box enabled
-		# test inspired my Any
-		# unless ( eval { require SVN::Class } ) {
-		# unless ( test_svn() ) {
 		unless ( $self->{svn_local} ) {
 			$self->against->EnableItem( 1, 0 );
 		}
@@ -582,7 +579,7 @@ sub make_patch_svn {
 				$output->AppendText($@);
 			} else {
 				$output->AppendText(
-					"Sorry Diff to SVN Failed, I don't think there are any diffrences in the file: $file1_name");
+					"Sorry Diff to SVN Failed, I don't think there are any diffrences in this file: $file1_name");
 			}
 
 			$main->info(
