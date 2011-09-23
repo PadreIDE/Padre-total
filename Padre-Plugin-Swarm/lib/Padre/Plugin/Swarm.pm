@@ -237,16 +237,24 @@ sub plugin_large_icon {
 	return $icon;
 }
 
-sub margin_icon {
+sub margin_icons {
 	my $class = shift;
-	my $icon  = Padre::Wx::Icon::find(
-		'margin/padre-plugin-swarm',
+	my $icon1  = Padre::Wx::Icon::find(
+		'margin/ghost-one',
 		{
 			size  => '12x12',
 			icons => $class->plugin_icons_directory,
 		}
 	);
-	return $icon;	
+	my $icon2  = Padre::Wx::Icon::find(
+		'margin/ghost-two',
+		{
+			size  => '12x12',
+			icons => $class->plugin_icons_directory,
+		}
+	);
+	
+	return ($icon1,$icon2);
 }
 
 sub menu_plugins_simple {

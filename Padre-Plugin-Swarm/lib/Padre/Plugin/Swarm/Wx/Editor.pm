@@ -14,7 +14,8 @@ use Class::XSAccessor {
     },
 };
 
-our $SWARM_MARKER = 10;
+our $SWARM_MARKER1 = 10;
+our $SWARM_MARKER2 = 11;
     
 =pod
 
@@ -226,18 +227,10 @@ sub _rig_editor_events {
 
 sub _rig_editor_decoration {
     my ($self,$editor) = @_;
-    my $icon = $self->plugin->margin_icon;
-    # warn $icon;
-    $editor->RegisterImage( 5, $icon );
-
-    $editor->MarkerDefineBitmap( $SWARM_MARKER, $icon );
-    # $editor->MarkerDefine( 
-        # $SWARM_MARKER,   
-        # Wx::wxSTC_MARK_CHARACTER() + ord('S'),
-        # Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_INFOTEXT ),
-        # Wx::SystemSettings::GetColour(Wx::SYS_COLOUR_DESKTOP ),
-        
-# #     );
+    my ($icon1,$icon2) = $self->plugin->margin_icons;
+    
+    $editor->MarkerDefineBitmap( $SWARM_MARKER1, $icon1 );
+    $editor->MarkerDefineBitmap( $SWARM_MARKER2, $icon2 );
     
     return ();
 }
@@ -408,21 +401,24 @@ sub accept_cursor {
     if ( $position >= 0 ) {
         # I hope that is a number!
         my $line = $editor->LineFromPosition( $position );
+        my $CURRENT_MARKER = ($position % 2 == 0) ? $SWARM_MARKER1 : $SWARM_MARKER2;
         TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
         if ( defined $previous ) {
             TRACE("Moving from line '$position' to line '$line'") if DEBUG;
-            $editor->MarkerDelete( $previous, $SWARM_MARKER );
-            $editor->MarkerAdd( $line, $SWARM_MARKER );
+            $editor->MarkerDelete( $previous, $SWARM_MARKER1 );
+            $editor->MarkerDelete( $previous, $SWARM_MARKER2 );
+            $editor->MarkerAdd( $line, $CURRENT_MARKER );
 
         } else {
             TRACE("Adding fresh ghost to line '$line'") if DEBUG;
-            $editor->MarkerAdd( $line, $SWARM_MARKER );
+            $editor->MarkerAdd( $line, $CURRENT_MARKER );
         }
         $previous_cursor{$key} = $line;
 
     } elsif ( defined $previous ) {
         TRACE("Removing ghost from line '$previous'") if DEBUG;
-        $editor->MarkerDelete( $previous, $SWARM_MARKER );
+        $editor->MarkerDelete( $previous, $SWARM_MARKER1 );
+        $editor->MarkerDelete( $previous, $SWARM_MARKER2 );
         delete $previous_cursor{$key};
     }
 
