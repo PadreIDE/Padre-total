@@ -99,7 +99,8 @@ sub disable {
 }
 
 sub send {
-	my ($self,$message) = @_;
+	my $self    = shift;
+	my $message = (@_ == 1) ? shift : { @_ };
 	
 	TRACE( Dumper $message ) if DEBUG;
 	$message->{from} = $self->plugin->identity->nickname;
