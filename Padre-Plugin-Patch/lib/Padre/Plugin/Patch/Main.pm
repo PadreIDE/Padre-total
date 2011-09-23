@@ -484,18 +484,18 @@ sub test_svn {
 	my $self = shift;
 
 	use Sort::Versions;
-	my $svn_version          = 0;
+	my $svn_client_version   = 0;
 	my $required_svn_version = '1.6.2';
 
-	if ( eval { $svn_version = qx{svn --version --quiet} } ) {
-		$svn_version =~ s/\n//;
-
+	if ( eval { $svn_client_version = qx{svn --version --quiet} } ) {
+		chomp($svn_client_version);
+		
 		# This is so much better, now we are testing for version as well
-		if ( versioncmp( $required_svn_version, $svn_version, ) == -1 ) {
-			TRACE("Found local SVN v$svn_version") if DEBUG;
+		if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
+			TRACE("Found local SVN v$svn_client_version") if DEBUG;
 			return 1;
 		} else {
-			TRACE("Found SVN v$svn_version but require v$required_svn_version") if DEBUG;
+			TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
 		}
 	} else {
 		TRACE("SVN not Found error: $@") if DEBUG;
