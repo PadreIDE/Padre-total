@@ -484,49 +484,29 @@ sub make_patch_diff {
 sub test_svn {
 	my $self = shift;
 
-	# use File::Find;
 	use Sort::Versions;
 	$self->{svn_local} = 0;
 
 	my $svn_client_version   = 0;
 	my $required_svn_version = '1.6.2';
-	# my $svn_found            = 0;
-
-# # 	# search in path for svn
-	# my @directories = split /:|;/, $ENV{PATH};
-	# find(
-		# sub {
-			# if ( $_ eq 'svn' ) {
-				# TRACE("Found SVN in local path") if DEBUG;
-				# $svn_found = 1;
-			# }
-		# },
-		# @directories
-	# );
-
-# # 	# if svn not found in path exit
-	# if ( !$svn_found ) {
-		# TRACE("SVN not Found in Local path") if DEBUG;
-		# return;
-	# }
 
 	if ( $self->file_in_path('svn') ) {
 
-	# test svn version
-	if ( $svn_client_version = qx{svn --version --quiet} ) {
-		chomp($svn_client_version);
+		# test svn version
+		if ( $svn_client_version = qx{svn --version --quiet} ) {
+			chomp($svn_client_version);
 
-		# This is so much better, now we are testing for version as well
-		if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
-			say "Found local SVN v$svn_client_version, good to go.";
-			TRACE("Found local SVN v$svn_client_version, good to go.") if DEBUG;
-			$self->{svn_local} = 1;
-			return;
-		} else {
-			TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
+			# This is so much better, now we are testing for version as well
+			if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
+				say "Found local SVN v$svn_client_version, good to go.";
+				TRACE("Found local SVN v$svn_client_version, good to go.") if DEBUG;
+				$self->{svn_local} = 1;
+				return;
+			} else {
+				TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
+			}
 		}
 	}
-}
 	return;
 }
 
@@ -534,9 +514,9 @@ sub test_svn {
 # Composed Method file_in_path
 #######
 sub file_in_path {
-	my $self = shift;
+	my $self         = shift;
 	my $file_to_find = shift;
-	my $svn_found = 0;
+	my $svn_found    = 0;
 	use File::Find;
 
 	# search in path for svn
@@ -544,7 +524,6 @@ sub file_in_path {
 	find(
 		sub {
 			if ( $_ eq $file_to_find ) {
-				say "Found $file_to_find in local path";
 				TRACE("Found $file_to_find in local path") if DEBUG;
 				$svn_found = 1;
 			}
@@ -554,7 +533,6 @@ sub file_in_path {
 
 	# if svn not found in path exit
 	if ( !$svn_found ) {
-		say "$file_to_find not Found in Local path";
 		TRACE("$file_to_find not Found in Local path") if DEBUG;
 		return $svn_found;
 	}
@@ -679,6 +657,10 @@ A convenience method to generate a patch/diff file from two selected files.
 =item test_svn
 
 Test for local svn client and version >=1.6.2.
+
+=item file_in_path
+
+Test for local vcs client.
 
 =item make_patch_svn
 
