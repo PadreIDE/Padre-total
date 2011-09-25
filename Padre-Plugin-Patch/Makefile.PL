@@ -16,7 +16,6 @@ requires 'Text::Diff'     => '1.41';
 requires 'Text::Patch'    => '1.8';
 requires 'Data::Printer'  => '0.22';
 requires 'Sort::Versions' => '1.5';
-requires 'File::Find'     => '1.19';
 
 # Optional if you have used the share directory
 #install_share;

@@ -483,16 +483,15 @@ sub make_patch_diff {
 #######
 sub test_svn {
 	my $self = shift;
-	
-	require File::Which;
+
 	use Sort::Versions;
 	$self->{svn_local} = 0;
 
 	my $svn_client_version   = 0;
 	my $required_svn_version = '1.6.2';
 
-	# if ( $self->file_in_path('svn') ) {
 	if ( File::Which::which('svn') ) {
+
 		# test svn version
 		if ( $svn_client_version = qx{svn --version --quiet} ) {
 			chomp($svn_client_version);
@@ -511,34 +510,6 @@ sub test_svn {
 	return;
 }
 
-#######
-# Composed Method file_in_path
-#######
-sub file_in_path {
-	my $self         = shift;
-	my $file_to_find = shift;
-	my $svn_found    = 0;
-	use File::Find;
-
-	# search in path for svn
-	my @directories = split /:|;/, $ENV{PATH};
-	find(
-		sub {
-			if ( $_ eq $file_to_find ) {
-				TRACE("Found $file_to_find in local path") if DEBUG;
-				$svn_found = 1;
-			}
-		},
-		@directories
-	);
-
-	# if svn not found in path exit
-	if ( !$svn_found ) {
-		TRACE("$file_to_find not Found in Local path") if DEBUG;
-		return $svn_found;
-	}
-	return $svn_found;
-}
 
 #######
 # Method make_patch_svn
