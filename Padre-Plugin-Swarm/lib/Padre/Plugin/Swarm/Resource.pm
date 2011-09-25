@@ -1,6 +1,7 @@
 package Padre::Plugin::Swarm::Resource;
 use strict;
 use warnings;
+use Padre::Logger;
 use Time::HiRes 'time';
 use Digest::JHash 'jhash';
 
@@ -75,7 +76,7 @@ sub perform_edit {
 
 sub perform_remote_edit {
     my ($self,$edit) = @_;
-    my $r_zerotime = $edit->zerotime;
+    my $r_deltatime = $edit->delta_time;
     my $r_sequence = $edit->sequence;
     if ( $r_sequence <= $self->sequence ) {
         TRACE( 'Out of sequence edit arrived late' );
