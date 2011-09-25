@@ -80,25 +80,11 @@ sub on_swarm_service_message {
 		$self->event($eventname,@args);
 		return;
 	} elsif ( _INVOCANT($incoming) ) {  # TODO be more explicit about INVOCANT
-		
+		# This still seems to result in editor flicker?
 		my $lock = $self->main->lock('UPDATE');
+		
 		my $origin  = $incoming->origin;
 		$self->event( "recv_$origin" , $incoming );
-		
-		# if ($origin eq 'local') {
-			# TRACE( 'Local message dispatch' ) if DEBUG;
-			# $self->local->event( 'recv' , $incoming );
-		# } elsif ( $origin eq 'global' ) {
-			# TRACE( 'Global message dispatch' ) if DEBUG;
-			# $self->global->event('recv', $incoming );
-		# } else {
-			# TRACE( "Unknown transport dispatch recv_$origin" );
-			# confess "Unknown transport dispatch recv_$origin" ;
-		# }
-		
-		#my $handler = 'accept_' . $incoming->type;
-		#TRACE( "send '$handler' event" ) if DEBUG;
-		#$self->event($handler,$incoming);
 	}
 	
 	return;
@@ -305,6 +291,9 @@ SCOPE: {
 		my $wxobj = new Wx::Panel $self->main;
 		$self->wx( $wxobj );
 		$wxobj->Hide;
+		
+		Wx::Image::AddHandler( Wx::XPMHandler->new );
+
 
 		require Padre::Plugin::Swarm::Service;
 		require Padre::Plugin::Swarm::Wx::Preferences;
