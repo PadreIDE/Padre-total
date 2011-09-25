@@ -19,6 +19,10 @@ navigation:
 about:
   - title: y2011
     events:
+      - date: 2011 September 25
+        url: http://padrepm.blogspot.com/2011/09/my-life-is-in-editor-padre.html
+        title: My life is in the editor Padre 
+        comment: by Nikolay Mishin
       - date: 2011 September 21
         url: http://ahmadzawawi.blogspot.com/2011/09/padre-differentiates-with-style.html
         title: Padre differentiates with style :)
@@ -1343,6 +1347,10 @@ about:
   - title: Russian
     ISO_639: ru
     events:
+      - date: 2011 September 25
+        url: http://padrepm.blogspot.com/2011/09/padre.html
+        title: My life in editor Padre
+        comment: by Nikolay Mishin
       - date: 2009 October 27
         url: http://onperl.ru/onperl/2009/10/naim-shafiev-pro-ide-padre.html
         title: Наим Шафиев про <acronym>IDE</acronym> Padre
