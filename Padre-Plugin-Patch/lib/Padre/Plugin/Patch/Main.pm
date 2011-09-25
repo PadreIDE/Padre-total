@@ -483,15 +483,16 @@ sub make_patch_diff {
 #######
 sub test_svn {
 	my $self = shift;
-
+	
+	require File::Which;
 	use Sort::Versions;
 	$self->{svn_local} = 0;
 
 	my $svn_client_version   = 0;
 	my $required_svn_version = '1.6.2';
 
-	if ( $self->file_in_path('svn') ) {
-
+	# if ( $self->file_in_path('svn') ) {
+	if ( File::Which::which('svn') ) {
 		# test svn version
 		if ( $svn_client_version = qx{svn --version --quiet} ) {
 			chomp($svn_client_version);
