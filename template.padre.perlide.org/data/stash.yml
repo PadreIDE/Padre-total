@@ -1349,8 +1349,8 @@ about:
     events:
       - date: 2011 September 25
         url: http://padrepm.blogspot.com/2011/09/padre.html
-        title: My life in editor Padre
-        comment: by Nikolay Mishin
+        title: Моя жизнь в редакторе Padre 
+        comment: Николай Мишин
       - date: 2009 October 27
         url: http://onperl.ru/onperl/2009/10/naim-shafiev-pro-ide-padre.html
         title: Наим Шафиев про <acronym>IDE</acronym> Padre
