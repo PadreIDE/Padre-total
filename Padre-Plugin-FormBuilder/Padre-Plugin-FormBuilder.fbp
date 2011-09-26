@@ -1421,7 +1421,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnChar"></event>
-                                <event name="OnCheckBox"></event>
+                                <event name="OnCheckBox">complete_refresh</event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>
                                 <event name="OnKeyDown"></event>
@@ -1478,7 +1478,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnChar"></event>
-                                <event name="OnCheckBox"></event>
+                                <event name="OnCheckBox">complete_refresh</event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>
                                 <event name="OnKeyDown"></event>
@@ -1535,7 +1535,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnChar"></event>
-                                <event name="OnCheckBox"></event>
+                                <event name="OnCheckBox">complete_refresh</event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>
                                 <event name="OnKeyDown"></event>
@@ -1592,7 +1592,7 @@
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
                                 <event name="OnChar"></event>
-                                <event name="OnCheckBox"></event>
+                                <event name="OnCheckBox">complete_refresh</event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>
                                 <event name="OnKeyDown"></event>
@@ -1634,7 +1634,7 @@
                                 <property name="label">Generate Wx Application</property>
                                 <property name="maximum_size"></property>
                                 <property name="minimum_size"></property>
-                                <property name="name">generate_complete</property>
+                                <property name="name">complete</property>
                                 <property name="permission">public</property>
                                 <property name="pos"></property>
                                 <property name="size"></property>
@@ -1648,7 +1648,7 @@
                                 <property name="window_extra_style"></property>
                                 <property name="window_name"></property>
                                 <property name="window_style"></property>
-                                <event name="OnButtonClick">generate_clicked</event>
+                                <event name="OnButtonClick">complete_clicked</event>
                                 <event name="OnChar"></event>
                                 <event name="OnEnterWindow"></event>
                                 <event name="OnEraseBackground"></event>

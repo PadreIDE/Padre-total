@@ -31,6 +31,13 @@ use constant SINGLE => qw{
 	generate
 };
 
+use constant COMPLETE => qw{
+	complete_fbp
+	complete_shim
+	complete_app
+	complete_script
+};
+
 
 
 
@@ -133,7 +140,7 @@ sub browse_changed {
 		}
 
 		# Enable the dialog list and buttons
-		$self->enable( OPTIONS, SINGLE );
+		$self->enable( OPTIONS, SINGLE, COMPLETE );
 
 		# Indicate the FBP file is ok
 		if ( $self->browse->HasTextCtrl ) {
@@ -262,6 +269,71 @@ sub preview_clicked {
 	$self->{frame} = $preview->GetId;
 
 	return 1;
+}
+
+sub complete_refresh {
+	my $self = shift;
+
+	# Show the complete button if any box is ticked
+	foreach my $checkbox ( COMPLETE ) {
+		next unless $checkbox->IsEnabled;
+		next unless $checkbox->IsChecked;
+		return $self->enable('complete');
+	}
+
+	# None of the tick boxes are enabled
+	return $self->disable('complete');
+}
+
+sub complete_clicked {
+	my $self = shift;
+	my $fbp    = $self->{xml} or return;
+
+	# Prepare the common generation options
+	my $files  = 0;
+	my %common = (
+		fbp       => $fbp,
+		padre     => $self->padre_code,
+		version   => $self->version->GetValue || '0.01',
+		i18n      => 0,
+		i18n_trim => 0,
+	);
+
+	# Generate all of the FBP dialogs
+	if ( $self->complete_fbp->IsChecked ) {
+		foreach my $form ( $fbp->project->forms ) {
+			my $name = $form->name or next;
+
+			# Generate the class
+			my $code = $self->generate_form(
+				$form => $form,
+				$name => $name,
+				%common,
+			) or return;
+
+			# Open the generated code as a new file
+			$self->main->new_document_from_string(
+				$code => 'application/x-perl',
+			);
+		}
+	}
+
+	# Generate all of the shim dialogs
+	if ( $self->complete_shim->IsChecked ) {
+
+	}
+
+	# Generate the Wx::App root class
+	if ( $self->complete_app->IsChecked ) {
+
+	}
+
+	# Generate the launch script for the app
+	if ( $self->complete_script->IsChecked ) {
+
+	}
+
+	return;
 }
 
 

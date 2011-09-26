@@ -263,6 +263,14 @@ sub new {
 	);
 	$self->{complete_fbp}->Disable;
 
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{complete_fbp},
+		sub {
+			shift->complete_refresh(@_);
+		},
+	);
+
 	$self->{complete_shim} = Wx::CheckBox->new(
 		$self,
 		-1,
@@ -271,6 +279,14 @@ sub new {
 		Wx::DefaultSize,
 	);
 	$self->{complete_shim}->Disable;
+
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{complete_shim},
+		sub {
+			shift->complete_refresh(@_);
+		},
+	);
 
 	$self->{complete_app} = Wx::CheckBox->new(
 		$self,
@@ -281,6 +297,14 @@ sub new {
 	);
 	$self->{complete_app}->Disable;
 
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{complete_app},
+		sub {
+			shift->complete_refresh(@_);
+		},
+	);
+
 	$self->{complete_script} = Wx::CheckBox->new(
 		$self,
 		-1,
@@ -290,20 +314,28 @@ sub new {
 	);
 	$self->{complete_script}->Disable;
 
-	$self->{generate_complete} = Wx::Button->new(
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{complete_script},
+		sub {
+			shift->complete_refresh(@_);
+		},
+	);
+
+	$self->{complete} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Generate Wx Application"),
 		Wx::DefaultPosition,
 		Wx::DefaultSize,
 	);
-	$self->{generate_complete}->Disable;
+	$self->{complete}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$self->{generate_complete},
+		$self->{complete},
 		sub {
-			shift->generate_clicked(@_);
+			shift->complete_clicked(@_);
 		},
 	);
 
@@ -380,7 +412,7 @@ sub new {
 	$sizer2->Add( $self->{complete_shim}, 0, Wx::ALL, 5 );
 	$sizer2->Add( $self->{complete_app}, 0, Wx::ALL, 5 );
 	$sizer2->Add( $self->{complete_script}, 0, Wx::ALL, 5 );
-	$sizer2->Add( $self->{generate_complete}, 0, Wx::ALL, 5 );
+	$sizer2->Add( $self->{complete}, 0, Wx::ALL, 5 );
 	$sizer2->Add( 0, 20, 0, Wx::EXPAND, 5 );
 	$sizer2->Add( $line2, 0, Wx::BOTTOM | Wx::EXPAND | Wx::TOP, 5 );
 	$sizer2->Add( $buttons, 0, Wx::EXPAND, 5 );
@@ -446,8 +478,8 @@ sub complete_script {
 	$_[0]->{complete_script};
 }
 
-sub generate_complete {
-	$_[0]->{generate_complete};
+sub complete {
+	$_[0]->{complete};
 }
 
 sub browse_changed {
@@ -460,6 +492,14 @@ sub preview_clicked {
 
 sub generate_clicked {
 	$_[0]->main->error('Handler method generate_clicked for event generate.OnButtonClick not implemented');
+}
+
+sub complete_refresh {
+	$_[0]->main->error('Handler method complete_refresh for event complete_fbp.OnCheckBox not implemented');
+}
+
+sub complete_clicked {
+	$_[0]->main->error('Handler method complete_clicked for event complete.OnButtonClick not implemented');
 }
 
 1;
