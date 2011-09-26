@@ -288,7 +288,7 @@ sub complete_refresh {
 
 sub complete_clicked {
 	my $self = shift;
-	my $fbp    = $self->{xml} or return;
+	my $fbp  = $self->{xml} or return;
 
 	# Prepare the common generation options
 	my $files  = 0;
@@ -307,8 +307,8 @@ sub complete_clicked {
 
 			# Generate the class
 			my $code = $self->generate_form(
-				$form => $form,
-				name  => $name,
+				form => $form,
+				name => $name,
 				%common,
 			) or return;
 
