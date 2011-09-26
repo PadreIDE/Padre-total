@@ -275,7 +275,8 @@ sub complete_refresh {
 	my $self = shift;
 
 	# Show the complete button if any box is ticked
-	foreach my $checkbox ( COMPLETE ) {
+	foreach my $name ( COMPLETE ) {
+		my $checkbox = $self->$name();
 		next unless $checkbox->IsEnabled;
 		next unless $checkbox->IsChecked;
 		return $self->enable('complete');
@@ -307,7 +308,7 @@ sub complete_clicked {
 			# Generate the class
 			my $code = $self->generate_form(
 				$form => $form,
-				$name => $name,
+				name  => $name,
 				%common,
 			) or return;
 
