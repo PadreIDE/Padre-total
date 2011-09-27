@@ -140,7 +140,14 @@ sub browse_changed {
 		}
 
 		# Enable the dialog list and buttons
-		$self->enable( OPTIONS, SINGLE, COMPLETE );
+		$self->enable( OPTIONS, SINGLE );
+
+		# We need at least one frame to build a complete application
+		if ( $self->{xml}->project->find_first( isa => 'FBP::Frame' ) ) {
+			$self->enable( COMPLETE );
+		} else {
+			$self->disable( COMPLETE );
+		}
 
 		# Indicate the FBP file is ok
 		if ( $self->browse->HasTextCtrl ) {
@@ -271,6 +278,15 @@ sub preview_clicked {
 	return 1;
 }
 
+sub clear_preview {
+	my $self = shift;
+	if ( $self->{frame} ) {
+		my $old = Wx::Window::FindWindowById( delete $self->{frame} );
+		$old->Destroy if $old;
+	}
+	return 1;
+}
+
 sub complete_refresh {
 	my $self = shift;
 
@@ -300,6 +316,22 @@ sub complete_clicked {
 		i18n_trim => 0,
 	);
 
+	# Generate the launch script for the app
+	if ( $self->complete_script->IsChecked ) {
+		my $code = $self->generate_script(%common) or return;
+		$self->main->new_document_from_string(
+			$code => 'application/x-perl',
+		);
+	}
+
+	# Generate the Wx::App root class
+	if ( $self->complete_app->IsChecked ) {
+		my $code = $self->generate_app(%common) or return;
+		$self->main->new_document_from_string(
+			$code => 'application/x-perl',
+		);
+	}
+
 	# Generate all of the FBP dialogs
 	if ( $self->complete_fbp->IsChecked ) {
 		foreach my $form ( $fbp->project->forms ) {
@@ -324,16 +356,6 @@ sub complete_clicked {
 
 	}
 
-	# Generate the Wx::App root class
-	if ( $self->complete_app->IsChecked ) {
-
-	}
-
-	# Generate the launch script for the app
-	if ( $self->complete_script->IsChecked ) {
-
-	}
-
 	return;
 }
 
@@ -342,35 +364,53 @@ sub complete_clicked {
 
 
 ######################################################################
-# Support Methods
+# Code Generation Methods
+
+# Generate a launch script
+sub generate_script {
+	my $self = shift;
+	my $perl = $self->generator(@_);
+
+	# Generate the script code
+	local $@;
+	my $string = eval {
+		$perl->flatten(
+			$perl->script_app
+		);
+	};
+	if ( $@ ) {
+		$self->error("Code Generator Error: $@");
+		return;
+	}
+
+	return $string;
+}
+
+# Generate the root Wx app class
+sub generate_app {
+	my $self = shift;
+	my $perl = $self->generator(@_);
+
+	# Generate the app code
+	local $@;
+	my $string = eval {
+		$perl->flatten(
+			$perl->app_class
+		);
+	};
+	if ( $@ ) {
+		$self->error("Code Generator Error: $@");
+		return;
+	}
+
+	return $string;
+}
 
 # Generate the class code
 sub generate_form {
 	my $self  = shift;
+	my $perl  = $self->generator(@_);
 	my %param = @_;
-
-	# Configure the code generator
-	my $perl = undef;
-	if ( $param{padre} ) {
-		require Padre::Plugin::FormBuilder::Perl;
-		$perl = Padre::Plugin::FormBuilder::Perl->new(
-			project     => $param{fbp}->project,
-			version     => $param{version},
-			encapsulate => $self->encapsulate,
-			prefix      => 2,
-			nocritic    => 1,
-			i18n        => $param{i18n},
-			i18n_trim   => $param{i18n_trim},
-		);
-	} else {
-		require FBP::Perl;
-		$perl = FBP::Perl->new(
-			project   => $param{fbp}->project,
-			nocritic  => 1,
-			i18n      => $param{i18n},
-			i18n_trim => $param{i18n_trim},
-		);
-	}
 
 	# Generate the class code
 	local $@;
@@ -390,15 +430,6 @@ sub generate_form {
 	}
 
 	return $string;
-}
-
-sub clear_preview {
-	my $self = shift;
-	if ( $self->{frame} ) {
-		my $old = Wx::Window::FindWindowById( delete $self->{frame} );
-		$old->Destroy if $old;
-	}
-	return 1;
 }
 
 # NOTE: Not in use yet, intended for arbitrary class entry later
@@ -429,6 +460,41 @@ sub dialog_class {
 	}
 
 	return;
+}
+
+
+
+
+
+######################################################################
+# Support Methods
+
+sub generator {
+	my $self  = shift;
+	my %param = @_;
+
+	# Use the version tweaked for Padre?
+	if ( $param{padre} ) {
+		require Padre::Plugin::FormBuilder::Perl;
+		return Padre::Plugin::FormBuilder::Perl->new(
+			project     => $param{fbp}->project,
+			version     => $param{version},
+			encapsulate => $self->encapsulate,
+			prefix      => 2,
+			nocritic    => 1,
+			i18n        => $param{i18n},
+			i18n_trim   => $param{i18n_trim},
+		);
+	}
+
+	# Just use the normal version
+	require FBP::Perl;
+	return FBP::Perl->new(
+		project   => $param{fbp}->project,
+		nocritic  => 1,
+		i18n      => $param{i18n},
+		i18n_trim => $param{i18n_trim},
+	);
 }
 
 # Enable a set of controls
