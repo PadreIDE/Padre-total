@@ -474,7 +474,7 @@ eval {
         
     } elsif ( $message->{op} eq 'del' ) {
         $editor->SetTargetStart( $message->{pos} );
-            $editor->SetTargetEnd( $message->{pos} + length($message->body) );
+            $editor->SetTargetEnd( $message->{pos} + $message->{len} );
             $editor->ReplaceTarget( '' ); # compare to $message->{body} ??
     }
 };
@@ -589,7 +589,7 @@ sub on_editor_modified {
     $self->universe->send(
         {   
             type=>'delta' , service=>'editor', op=>$op,
-            body=>$text, pos=>$pos, 
+            body=>$text, pos=>$pos, len=>$len,
             resource=>$resource,
         }
     );
