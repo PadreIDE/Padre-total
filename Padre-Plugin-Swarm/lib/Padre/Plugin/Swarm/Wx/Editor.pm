@@ -466,8 +466,9 @@ sub _apply_delta {
     TRACE( 'Apply delta ' , @_ ) if DEBUG;
     my $editor = $doc->editor;
     my $mask = $editor->GetModEventMask();
+    my $undocollect = $editor->GetUndoCollection;
     $editor->SetModEventMask(0);
-    
+    $editor->SetUndoCollection(0);
 eval {
     if ($message->{op} eq 'ins') {
         $editor->InsertText( $message->{pos}, $message->{body}  );
@@ -481,6 +482,7 @@ eval {
 
 TRACE( 'Apply delta failed' , $@ ) if $@;
 
+    $editor->SetUndoCollection($undocollect);
     $editor->SetModEventMask( $mask );
     return;
 
