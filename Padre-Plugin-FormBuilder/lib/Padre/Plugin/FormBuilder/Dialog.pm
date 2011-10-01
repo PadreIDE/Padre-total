@@ -132,7 +132,7 @@ sub browse_changed {
 		if ( grep { /^Padre::/ } @$list ) {
 			$self->padre->SetValue(1);
 			$self->encapsulation->SetSelection(0);
-			$self->translate->SetSelection(2);
+			$self->translate->SetSelection(1);
 		} else {
 			$self->padre->SetValue(0);
 			$self->encapsulation->SetSelection(0);
