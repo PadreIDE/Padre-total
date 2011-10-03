@@ -191,7 +191,7 @@ sub _on_list_item_activated {
 
 	# redefine tuples
 	my @tuples = Padre::DB::SessionFile->select("WHERE session = $session_id");
-	
+
 	for ( 0 .. $#tuples ) {
 		say $tuples[$_][1];
 	}
@@ -366,7 +366,7 @@ sub clean_lastpositioninfile {
 	$main->info( Wx::gettext('Cleaning LastPositionInFile relation') );
 	my @lastpositioninfile_files = $self->config_db->select( $self->sql_select );
 	my @files;
-	
+
 	for ( 0 .. $#lastpositioninfile_files ) {
 		push @files, $lastpositioninfile_files[$_][0];
 	}
@@ -622,18 +622,11 @@ sub _tidy_display {
 	for ( 1 .. $self->degree ) {
 		$self->list_ctrl->SetColumnWidth( $_, Wx::wxLIST_AUTOSIZE_USEHEADER );
 		my $col_head_size = $self->list_ctrl->GetColumnWidth($_);
-
-		# say "wxLIST_AUTOSIZE_USEHEADER  :" . $col_head_size;
 		$self->list_ctrl->SetColumnWidth( $_, Wx::wxLIST_AUTOSIZE );
 		my $col_data_size = $self->list_ctrl->GetColumnWidth($_);
-
-		# say "wxLIST_AUTOSIZE :" . $col_data_size;
-		if ( $col_head_size >= $col_data_size ) {
-			$self->list_ctrl->SetColumnWidth( $_, $col_head_size );
-		} else {
-			$self->list_ctrl->SetColumnWidth( $_, $col_data_size );
-		}
+		$self->list_ctrl->SetColumnWidth( $_, ( $col_head_size >= $col_data_size ) ? $col_head_size : $col_data_size );
 	}
+	
 	return;
 }
 
