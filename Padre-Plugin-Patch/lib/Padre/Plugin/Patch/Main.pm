@@ -6,8 +6,9 @@ use warnings;
 use File::Slurp                       ();
 use Padre::Wx                         ();
 use Padre::Plugin::Patch::FBP::MainFB ();
-use Padre::Current;
-use Padre::Logger;
+use Padre::Current                    ();
+use Padre::Util                       ();
+use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.04';
@@ -172,7 +173,7 @@ sub current_files {
 	}
 
 	# nb enable Data::Printer above to use
-	p $self->{open_file_info};
+	# p $self->{open_file_info};
 
 	return;
 }
@@ -483,6 +484,8 @@ sub make_patch_diff {
 #######
 sub test_svn {
 	my $self = shift;
+	my $main = $self->main;
+
 
 	use Sort::Versions;
 	$self->{svn_local} = 0;
@@ -491,10 +494,16 @@ sub test_svn {
 	my $required_svn_version = '1.6.2';
 
 	if ( File::Which::which('svn') ) {
+		
+		my $dir = '/tmp';
+
+		# p Padre::Util::run_in_directory_two('svn --version --quiet');
 
 		# test svn version
-		if ( $svn_client_version = qx{svn --version --quiet} ) {
+		# if ( $svn_client_version = qx{svn --version --quiet} ) {
+		if ( $svn_client_version = Padre::Util::run_in_directory_two('svn --version --quiet') ) {
 			chomp($svn_client_version);
+			p $svn_client_version;
 
 			# This is so much better, now we are testing for version as well
 			if ( versioncmp( $required_svn_version, $svn_client_version, ) == -1 ) {
@@ -504,6 +513,11 @@ sub test_svn {
 				return;
 			} else {
 				TRACE("Found SVN v$svn_client_version but require v$required_svn_version") if DEBUG;
+				$main->info(
+					Wx::gettext(
+						"Warring found SVN v$svn_client_version but we require SVN v$required_svn_version and it is now called \"Apache Subversion\""
+					)
+				);
 			}
 		}
 	}

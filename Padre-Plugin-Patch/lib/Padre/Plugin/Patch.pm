@@ -23,6 +23,7 @@ sub padre_interfaces {
 		'Padre::Wx::Role::Main' => '0.91',
 		'Padre::Logger'         => '0.91',
 		'Padre::Current'        => '0.91',
+		'Padre::Util'           => '0.91',
 	);
 }
 
