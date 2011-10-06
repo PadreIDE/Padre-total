@@ -14,7 +14,7 @@ requires       'WebService::Validator::HTML::W3C' => 0;
 test_requires  'Test::More'              => '0.47';
 no_index       'directory'               => qw{ t xt eg share inc};
 homepage       'http://padre.perlide.org/';
-bugtracker     'http://padre.perlide.org/';
+bugtracker     'http://padre.perlide.org/trac';
 repository     'http://svn.perlide.org/padre/trunk/Padre-Plugin-HTML';
 
 is_padre_plugin; # authors: Install Module::Install::PadrePlugin
