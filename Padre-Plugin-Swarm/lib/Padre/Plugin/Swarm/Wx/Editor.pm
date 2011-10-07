@@ -417,18 +417,17 @@ sub accept_cursor {
         TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
         if ( defined $previous ) {
             TRACE("Moving from line '$position' to line '$line'") if DEBUG;
-            $editor->MarkerDelete( $previous, $_ ) for @SWARM_MARKERS;
-            $editor->MarkerAdd( $line, $CURRENT_MARKER );
+            $editor->MarkerDeleteHandle( $previous );
+            $previous_cursor{$key} = $editor->MarkerAdd( $line, $CURRENT_MARKER );
 
         } else {
             TRACE("Adding fresh ghost to line '$line'") if DEBUG;
-            $editor->MarkerAdd( $line, $CURRENT_MARKER );
+            $previous_cursor{$key} = $editor->MarkerAdd( $line, $CURRENT_MARKER );
         }
-        $previous_cursor{$key} = $line;
 
     } elsif ( defined $previous ) {
         TRACE("Removing ghost from line '$previous'") if DEBUG;
-        $editor->MarkerDelete( $previous, $_ ) for @SWARM_MARKERS;
+        $editor->MarkerDeleteHandle( $previous );
         delete $previous_cursor{$key};
     }
 
