@@ -13,12 +13,13 @@ use Class::XSAccessor {
         universe => 'universe',
     },
 };
-our @SWARM_MARKERS = (
-    our $SWARM_MARKER1 = 10,
-    our $SWARM_MARKER2 = 11,
-    our $SWARM_MARKER_OWNER1 = 12,
-    our $SWARM_MARKER_OWNER2 = 13,
-);
+use constant SWARM_STC_MARGIN       => 4;
+use constant SWARM_MARKER_OWNER1    => 10;
+use constant SWARM_MARKER_OWNER2    => 11;
+use constant SWARM_MARKER_GHOST_1   => 12;
+use constant SWARM_MARKER_GHOST_2   => 13;
+use constant SWARM_MARKER_MASK =>
+    1<<10 | 1<<11 | 1<<12 | 1<<13; # seems wrong
 
     
 =pod
@@ -233,12 +234,28 @@ sub _rig_editor_decoration {
     my ($self,$editor) = @_;
     my ($icon1,$icon2) = $self->plugin->margin_icons;
     
-    $editor->MarkerDefineBitmap( $SWARM_MARKER1, $icon1 );
-    $editor->MarkerDefineBitmap( $SWARM_MARKER2, $icon2 );
+    $editor->MarkerDefineBitmap( SWARM_MARKER_GHOST_1, $icon1 );
+    $editor->MarkerDefineBitmap( SWARM_MARKER_GHOST_2, $icon2 );
     
     my ($o_icon1,$o_icon2) = $self->plugin->margin_owner_icons;
-    $editor->MarkerDefineBitmap( $SWARM_MARKER_OWNER1, $o_icon1 );
-    $editor->MarkerDefineBitmap( $SWARM_MARKER_OWNER2, $o_icon2 );
+    $editor->MarkerDefineBitmap( SWARM_MARKER_OWNER1, $o_icon1 );
+    $editor->MarkerDefineBitmap( SWARM_MARKER_OWNER2, $o_icon2 );
+    
+    $editor->SetMarginWidth( SWARM_STC_MARGIN, 14 );
+    $editor->SetMarginType(
+        SWARM_STC_MARGIN, 
+        Wx::wxSTC_MARGIN_SYMBOL
+    );
+    $editor->SetMarginMask( SWARM_STC_MARGIN, SWARM_MARKER_MASK );
+    
+    my $padre_symbols = $editor->GetMarginMask(1);
+    warn "padre margin mask = $padre_symbols";
+    $padre_symbols = $padre_symbols & ~SWARM_MARKER_MASK;
+    warn "minus swarm markers =  $padre_symbols";
+    
+    $editor->SetMarginMask(
+        1 , $editor->GetMarginMask(1) & ~SWARM_MARKER_MASK 
+    );
     
     return ();
 }
@@ -255,7 +272,10 @@ sub accept_openme {
         return;
     }
 
-    my $doc = $self->plugin->main->new_document_from_string( $message->body );
+    my $doc = $self->plugin     
+                ->main->new_document_from_string( 
+                    $message->body , $message->{mimetype}
+                );
     my $editor = $doc->editor;
     my $resource = $message->{resource};
     $self->resources->{$resource} = $doc;
@@ -296,6 +316,7 @@ sub accept_gimme {
                                 type => 'openme',
                                 service => 'editor',
                                 body => $document->text_get,
+                                mimetype => $document->guess_mimetype,
                                 resource => $r,
                                 to   => $message->from ,
                         }
@@ -410,9 +431,10 @@ sub accept_cursor {
     if ( $position >= 0 ) {
         # I hope that is a number!
         my $line = $editor->LineFromPosition( $position );
-        my $CURRENT_MARKER = $is_owner ?
-                                ($position % 2 == 0) ? $SWARM_MARKER_OWNER1 : $SWARM_MARKER_OWNER2
-                              : ($position % 2 == 0) ? $SWARM_MARKER1 : $SWARM_MARKER2;
+        my $CURRENT_MARKER = 
+            $is_owner ?
+                ($position % 2 == 0) ? SWARM_MARKER_OWNER1 : SWARM_MARKER_OWNER2
+              : ($position % 2 == 0) ? SWARM_MARKER_GHOST_1 : SWARM_MARKER_GHOST_2;
                                 
         TRACE( "Using line=$line for position '$position', previously '$previous'") if DEBUG;
         if ( defined $previous ) {
