@@ -1,0 +1,45 @@
+Index: LexAda.cxx
+===================================================================
+--- LexAda.cxx	(revision 16781)
++++ LexAda.cxx	(working copy)
+@@ -11,6 +11,10 @@
+ #include <stdarg.h>
+ #include <assert.h>
+ 
++#include <ctype.h>
++#ifdef _MSC_VER
++#pragma warning(disable: 4786)
++#endif
+ #include <string>
+ 
+ #include "ILexer.h"
+Index: LexMPT.cxx
+===================================================================
+--- LexMPT.cxx	(revision 16781)
++++ LexMPT.cxx	(working copy)
+@@ -13,6 +13,10 @@
+ #include <stdarg.h>
+ #include <assert.h>
+ 
++#include <ctype.h>
++#ifdef _MSC_VER
++#pragma warning(disable: 4786)
++#endif
+ #include <string>
+ 
+ #include "ILexer.h"
+Index: LexSpice.cxx
+===================================================================
+--- LexSpice.cxx	(revision 16781)
++++ LexSpice.cxx	(working copy)
+@@ -11,6 +11,10 @@
+ #include <stdarg.h>
+ #include <assert.h>
+ 
++#include <ctype.h>
++#ifdef _MSC_VER
++#pragma warning(disable: 4786)
++#endif
+ #include <string>
+ 
+ #include "ILexer.h"
