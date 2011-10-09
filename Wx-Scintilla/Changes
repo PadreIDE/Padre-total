@@ -1,7 +1,8 @@
 Revision history for Wx-Scintilla
 
-0.31_01 TBA
+0.31_01 2011.10.9
     - Croak about deprecated EVT_STC_POSCHANGED (SUBMERSIBLE_TOASTER, AZAWAWI)
+    - Fix ticket:1341 'Wx-Scintilla build fails on wxWidgets 2.8.10' (MARKD)
 
 0.30 2011.9.18
     - Released 0.29_03 as stable 0.30 (AZAWAWI)
