@@ -5,7 +5,7 @@ use warnings;
 use Wx;
 use Carp;
 
-our $VERSION = '0.32';
+our $VERSION = '0.33_01';
 
 # Define Perl 6 lexer
 use constant wxSCINTILLA_LEX_PERL6  => 102;
@@ -1729,11 +1729,11 @@ XSLoader::load 'Wx::Scintilla', $VERSION;
 no strict;
 
 package Wx::ScintillaTextCtrl;
-our $VERSION = '0.32';
+our $VERSION = '0.33_01';
 @ISA = qw(Wx::Control);
 
 package Wx::ScintillaTextEvent;
-our $VERSION = '0.32';
+our $VERSION = '0.33_01';
 @ISA = qw(Wx::CommandEvent);
 
 #Defeat the indexer by splitting the package declaration on two lines
