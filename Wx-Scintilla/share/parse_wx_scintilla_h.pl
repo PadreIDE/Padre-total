@@ -1,3 +1,5 @@
+#!/usr/bin/perl
+
 use strict;
 use warnings;
 
@@ -15,13 +17,13 @@ use constant {
 CODE
 
 while ( my $line = <$fh> ) {
-    if ( $line =~ /^\s*#define\s+wxSTC_(.+)\s+(.+)\s*$/ ) {
+    if ( $line =~ /^\s*#define\s+wxSTC_(\S+)\s+(.+?)\s*$/ ) {
 
         my ( $name, $val ) = ( $1, $2 );
         $name =~ s/^(\d)/_$1/;
-        print $output "$name => $val,\n";
+        print $output "    $name => $val,\n";
     }
 }
-print $output "};\n";
+print $output "};\n\n1;\n";
 close $output;
 close $fh;
