@@ -1,5 +1,8 @@
 Revision history for Wx-Scintilla
 
+0.32 2011.10.11
+    - Released 0.31_02 as stable 0.32 (AZAWAWI)
+
 0.31_02 2011.10.11
     - Wx::Scintilla contains now Wx::wxSTC_XYZ as Wx::Scintilla::XYZ constants 
       (AZAWAWI)
