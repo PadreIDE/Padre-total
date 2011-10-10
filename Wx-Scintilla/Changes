@@ -1,7 +1,8 @@
 Revision history for Wx-Scintilla
 
-0.31_02 TBA
-    - Wx::Scintilla nows exports all of wxSTC constants (AZAWAWI)
+0.31_02 2011.10.11
+    - Wx::Scintilla contains now Wx::wxSTC_XYZ as Wx::Scintilla::XYZ constants 
+      (AZAWAWI)
 
 0.31_01 2011.10.9
     - Croak about deprecated EVT_STC_POSCHANGED (SUBMERSIBLE_TOASTER, AZAWAWI)
