@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 # Load Wx::Scintilla
-use Wx::Scintilla 0.30 ();    # replaces use Wx::STC
+use Wx::Scintilla 0.32 ();    # replaces use Wx::STC
 use base 'Wx::ScintillaTextCtrl';    # replaces Wx::StyledTextCtrl
 
 use Wx qw(:everything);
@@ -19,7 +19,7 @@ sub new {
     # Set the font
     my $font = Wx::Font->new( 10, wxTELETYPE, wxNORMAL, wxNORMAL );
     $self->SetFont($font);
-    $self->StyleSetFont( wxSTC_STYLE_DEFAULT, $font );
+    $self->StyleSetFont( Wx::Scintilla::STYLE_DEFAULT, $font );
     $self->StyleClearAll();
 
     # Set the various Perl lexer colors
@@ -56,23 +56,6 @@ sub new {
     $self->StyleSetForeground( Wx::Scintilla::PL_SYMBOLTABLE,
         Wx::Colour->new( 0x7f, 0x7f, 0x00 ) );
 
-    use constant {
-
-        # Must be defined by Wx::Scintilla
-        wxSTC_PL_STRING_VAR    => 43,
-        wxSTC_PL_XLAT          => 44,
-        wxSTC_PL_REGEX_VAR     => 54,
-        wxSTC_PL_REGSUBST_VAR  => 55,
-        wxSTC_PL_BACKTICKS_VAR => 57,
-        wxSTC_PL_HERE_QQ_VAR   => 61,
-        wxSTC_PL_HERE_QX_VAR   => 62,
-        wxSTC_PL_STRING_QQ_VAR => 64,
-        wxSTC_PL_STRING_QX_VAR => 65,
-        wxSTC_PL_STRING_QR_VAR => 66,
-
-        wxSTC_ANNOTATION_BOXED => 2,
-    };
-
     my $color1 = Wx::Colour->new( 0xff, 0x7f, 0x00 );
     my $color2 = Wx::Colour->new( 0x00, 0x00, 0xff );
     my %styles = (
@@ -103,15 +86,15 @@ sub new {
         Wx::Scintilla::PL_FORMAT_IDENT  => $color1,
         Wx::Scintilla::PL_FORMAT        => $color1,
 
-        wxSTC_PL_STRING_VAR()    => $color2,
-        wxSTC_PL_REGEX_VAR()     => $color2,
-        wxSTC_PL_REGSUBST_VAR()  => $color2,
-        wxSTC_PL_BACKTICKS_VAR() => $color2,
-        wxSTC_PL_HERE_QQ_VAR()   => $color2,
-        wxSTC_PL_HERE_QX_VAR()   => $color2,
-        wxSTC_PL_STRING_QQ_VAR() => $color2,
-        wxSTC_PL_STRING_QX_VAR() => $color2,
-        wxSTC_PL_STRING_QR_VAR() => $color2,
+        Wx::Scintilla::PL_STRING_VAR => $color2,
+        Wx::Scintilla::PL_REGEX_VAR  => $color2,
+        Wx::Scintilla::PL_REGSUBST_VAR => $color2,
+        Wx::Scintilla::PL_BACKTICKS_VAR => $color2,
+        Wx::Scintilla::PL_HERE_QQ_VAR => $color2,
+        Wx::Scintilla::PL_HERE_QX_VAR => $color2,
+        Wx::Scintilla::PL_STRING_QQ_VAR => $color2,
+        Wx::Scintilla::PL_STRING_QX_VAR => $color2,
+        Wx::Scintilla::PL_STRING_QR_VAR => $color2,
     );
 
     for my $style ( keys %styles ) {
@@ -119,10 +102,10 @@ sub new {
     }
 
     $self->StyleSetBold( Wx::Scintilla::PL_WORD, 1 );
-    $self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
+    $self->StyleSetSpec( Wx::Scintilla::H_TAG, "fore:#0000ff" );
 
     # set the lexer to Perl 5
-    $self->SetLexer(wxSTC_LEX_PERL);
+    $self->SetLexer(Wx::Scintilla::LEX_PERL);
     $self->SetStyleBits( $self->GetStyleBitsNeeded );
 
     my @keywords = qw(
