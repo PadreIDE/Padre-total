@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 # Load Wx::Scintilla
-use Wx::Scintilla 0.29 ();    # replaces use Wx::STC
+use Wx::Scintilla 0.30 ();    # replaces use Wx::STC
 use base 'Wx::ScintillaTextCtrl';    # replaces Wx::StyledTextCtrl
 
 use Wx qw(:everything);
@@ -23,37 +23,37 @@ sub new {
 	$self->StyleClearAll();
 
 	# Set the various Perl lexer colors
-	$self->StyleSetForeground( Wx::wxSTC_PL_DEFAULT,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_DEFAULT,
 		Wx::Colour->new( 0x00, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_ERROR,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_ERROR,
 		Wx::Colour->new( 0xff, 0x00, 0x00 ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_COMMENTLINE,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_COMMENTLINE,
 		Wx::Colour->new( 0x00, 0x7f, 0x00 ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_POD,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_POD,
 		Wx::Colour->new( 0x7f, 0x7f, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_NUMBER,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_NUMBER,
 		Wx::Colour->new( 0x00, 0x7f, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_WORD,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_WORD,
 		Wx::Colour->new( 0x00, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_STRING,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_STRING,
 		Wx::Colour->new( 0xff, 0x7f, 0x00 ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_CHARACTER,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_CHARACTER,
 		Wx::Colour->new( 0x7f, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_PUNCTUATION,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_PUNCTUATION,
 		Wx::Colour->new( 0x00, 0x00, 0x00 ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_PREPROCESSOR,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_PREPROCESSOR,
 		Wx::Colour->new( 0x7f, 0x7f, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_OPERATOR,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_OPERATOR,
 		Wx::Colour->new( 0x00, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_IDENTIFIER,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_IDENTIFIER,
 		Wx::Colour->new( 0x00, 0x00, 0xff ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_SCALAR,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_SCALAR,
 		Wx::Colour->new( 0x7f, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_ARRAY,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_ARRAY,
 		Wx::Colour->new( 0x40, 0x80, 0xff ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_HASH,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_HASH,
 		Wx::Colour->new( 0xff, 0x00, 0x7f ) );
-	$self->StyleSetForeground( Wx::wxSTC_PL_SYMBOLTABLE,
+	$self->StyleSetForeground( Wx::Scintilla::wxSTC_PL_SYMBOLTABLE,
 		Wx::Colour->new( 0x7f, 0x7f, 0x00 ) );
 
 	use constant {
@@ -75,32 +75,32 @@ sub new {
 	my $color1 = Wx::Colour->new( 0xff, 0x7f, 0x00 );
 	my $color2 = Wx::Colour->new( 0x00, 0x00, 0xff );
 	my %styles = (
-		Wx::wxSTC_PL_REGEX         => $color1,
-		Wx::wxSTC_PL_REGSUBST      => $color1,
-		Wx::wxSTC_PL_LONGQUOTE     => $color1,
-		Wx::wxSTC_PL_BACKTICKS     => $color1,
-		Wx::wxSTC_PL_DATASECTION   => $color1,
-		Wx::wxSTC_PL_HERE_DELIM    => $color1,
-		Wx::wxSTC_PL_HERE_Q        => $color1,
-		Wx::wxSTC_PL_HERE_QQ       => $color1,
-		Wx::wxSTC_PL_HERE_QX       => $color1,
-		Wx::wxSTC_PL_STRING_Q      => $color1,
-		Wx::wxSTC_PL_STRING_QQ     => $color1,
-		Wx::wxSTC_PL_STRING_QX     => $color1,
-		Wx::wxSTC_PL_STRING_QR     => $color1,
-		Wx::wxSTC_PL_STRING_QW     => $color1,
-		Wx::wxSTC_PL_POD_VERB      => $color1,
-		Wx::wxSTC_PL_SUB_PROTOTYPE => $color1,
-		Wx::wxSTC_PL_FORMAT_IDENT  => $color1,
-		Wx::wxSTC_PL_FORMAT        => $color1,
-		Wx::wxSTC_PL_STRING_QQ     => $color1,
-		Wx::wxSTC_PL_STRING_QX     => $color1,
-		Wx::wxSTC_PL_STRING_QR     => $color1,
-		Wx::wxSTC_PL_STRING_QW     => $color1,
-		Wx::wxSTC_PL_POD_VERB      => $color1,
-		Wx::wxSTC_PL_SUB_PROTOTYPE => $color1,
-		Wx::wxSTC_PL_FORMAT_IDENT  => $color1,
-		Wx::wxSTC_PL_FORMAT        => $color1,
+		Wx::Scintilla::wxSTC_PL_REGEX         => $color1,
+		Wx::Scintilla::wxSTC_PL_REGSUBST      => $color1,
+		Wx::Scintilla::wxSTC_PL_LONGQUOTE     => $color1,
+		Wx::Scintilla::wxSTC_PL_BACKTICKS     => $color1,
+		Wx::Scintilla::wxSTC_PL_DATASECTION   => $color1,
+		Wx::Scintilla::wxSTC_PL_HERE_DELIM    => $color1,
+		Wx::Scintilla::wxSTC_PL_HERE_Q        => $color1,
+		Wx::Scintilla::wxSTC_PL_HERE_QQ       => $color1,
+		Wx::Scintilla::wxSTC_PL_HERE_QX       => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_Q      => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QQ     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QX     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QR     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QW     => $color1,
+		Wx::Scintilla::wxSTC_PL_POD_VERB      => $color1,
+		Wx::Scintilla::wxSTC_PL_SUB_PROTOTYPE => $color1,
+		Wx::Scintilla::wxSTC_PL_FORMAT_IDENT  => $color1,
+		Wx::Scintilla::wxSTC_PL_FORMAT        => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QQ     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QX     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QR     => $color1,
+		Wx::Scintilla::wxSTC_PL_STRING_QW     => $color1,
+		Wx::Scintilla::wxSTC_PL_POD_VERB      => $color1,
+		Wx::Scintilla::wxSTC_PL_SUB_PROTOTYPE => $color1,
+		Wx::Scintilla::wxSTC_PL_FORMAT_IDENT  => $color1,
+		Wx::Scintilla::wxSTC_PL_FORMAT        => $color1,
 
 		wxSTC_PL_STRING_VAR()    => $color2,
 		wxSTC_PL_REGEX_VAR()     => $color2,
@@ -117,7 +117,7 @@ sub new {
 		$self->StyleSetForeground( $style, $styles{$style} );
 	}
 
-	$self->StyleSetBold( Wx::wxSTC_PL_WORD, 1 );
+	$self->StyleSetBold( Wx::Scintilla::wxSTC_PL_WORD, 1 );
 	$self->StyleSetSpec( wxSTC_H_TAG, "fore:#0000ff" );
 
 	# set the lexer to Perl 5
@@ -189,8 +189,7 @@ sub new {
 	$self->AnnotationSetText(2, $annoText1 . $annoText2);
 	$self->AnnotationSetStyles(2, sprintf("%c", $WARNING_STYLE) x length($annoText1) . sprintf("%c", $ERROR_STYLE) x length($annoText2));
 
-	#TODO must be in Wx namespace
-	$self->AnnotationSetVisible( wxSTC_ANNOTATION_BOXED );
+	$self->AnnotationSetVisible( Wx::Scintilla::wxSTC_ANNOTATION_BOXED );
 
 	$self->IndicatorSetForeground( 0, Wx::Colour->new("red") );
 	$self->SetIndicatorCurrent(0);
