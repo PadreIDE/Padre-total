@@ -42,7 +42,7 @@ Module::Build::Scintilla::stc_builderclass()->new(
 		'*.so',
 		'stc_checkdepends.out',
 	],
-	meta_merge         => {
+	meta_merge => {
 		resources => {
 			homepage   => 'http://padre.perlide.org/',
 			repository => 'http://svn.perlide.org/padre/trunk/Wx-Scintilla/',
