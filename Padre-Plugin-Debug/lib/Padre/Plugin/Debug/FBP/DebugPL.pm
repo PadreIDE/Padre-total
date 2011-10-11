@@ -44,15 +44,12 @@ sub new {
 		Wx::DefaultSize,
 	);
 
-	my $svn_command_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$top_sizer->Add( $svn_command_sizer, 0, Wx::EXPAND, 5 );
 	$top_sizer->Add( $self->{status}, 1, Wx::ALIGN_CENTER_VERTICAL | Wx::ALL | Wx::EXPAND, 8 );
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL);
 	$main_sizer->Add( $top_sizer, 0, Wx::ALIGN_RIGHT | Wx::ALL | Wx::EXPAND, 2 );
-	$main_sizer->Add( $self->{m_textCtrl1}, 0, Wx::ALL, 5 );
+	$main_sizer->Add( $self->{m_textCtrl1}, 1, Wx::ALL | Wx::EXPAND, 5 );
 
 	$self->SetSizer($main_sizer);
 	$self->Layout;
