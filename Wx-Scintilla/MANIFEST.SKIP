@@ -44,6 +44,7 @@
 ^MYMETA.yml$
 
 # Avoid temporary files
+^Scintilla.iface$
 ^Scintilla\.(c|def|bs)$
 \.dll$
 \.a$
@@ -55,3 +56,4 @@
 \.lib$
 $^MYMETA\.json$
 ^MYMETA\.json$
+
