@@ -74,7 +74,31 @@ sub new {
 	$self->{m_staticText3} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("MyLabel"),
+		Wx::gettext("Line #"),
+	);
+
+	$self->{bp_line_number} = Wx::TextCtrl->new(
+		$self,
+		-1,
+		"",
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	$self->{breakpoint_button} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Breakpoint"),
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{breakpoint_button},
+		sub {
+			shift->breakpoint_clicked(@_);
+		},
 	);
 
 	$self->{m_staticText2} = Wx::StaticText->new(
@@ -116,11 +140,14 @@ sub new {
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("Options"),
+			Wx::gettext("Breakpoint Simulation"),
 		),
 		Wx::HORIZONTAL,
 	);
 	$sbSizer2->Add( $self->{m_staticText3}, 0, Wx::ALL, 5 );
+	$sbSizer2->Add( $self->{bp_line_number}, 0, Wx::ALL, 5 );
+	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$sbSizer2->Add( $self->{breakpoint_button}, 0, Wx::ALL, 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -152,12 +179,20 @@ sub new {
 	return $self;
 }
 
+sub bp_line_number {
+	$_[0]->{bp_line_number};
+}
+
 sub on_debug_bottom_clicked {
 	$_[0]->main->error('Handler method on_debug_bottom_clicked for event debug_bottom.OnCheckBox not implemented');
 }
 
 sub on_breakpoints_clicked {
 	$_[0]->main->error('Handler method on_breakpoints_clicked for event m_checkBox2.OnCheckBox not implemented');
+}
+
+sub breakpoint_clicked {
+	$_[0]->main->error('Handler method breakpoint_clicked for event breakpoint_button.OnButtonClick not implemented');
 }
 
 1;

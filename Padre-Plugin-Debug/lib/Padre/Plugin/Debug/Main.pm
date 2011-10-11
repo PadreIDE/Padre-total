@@ -1,6 +1,6 @@
 package Padre::Plugin::Debug::Main;
 
-use 5.014;
+use 5.010;
 use strict;
 use warnings;
 
@@ -126,8 +126,8 @@ sub load_panel_breakpoints {
 	my $self = shift;
 	my $main = $self->main;
 
-	require Padre::Plugin::Debug::Breakpoints;
-	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
+	require Padre::Plugin::Debug::Breakpointspl;
+	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpointspl->new($main);
 
 	$self->{panel_breakpoints}->Show;
 	
@@ -177,7 +177,11 @@ sub plugin_disable {
 	return 1;
 }
 
-
+sub breakpoint_clicked {
+	my $self = shift;
+	say 'breakpoint_clicked: '.$self->bp_line_number->GetValue();
+	return;
+}
 
 1;
 
