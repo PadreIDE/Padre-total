@@ -263,6 +263,18 @@ sub margin_owner_icons {
 	return ($icon1,$icon2);
 }
 
+sub margin_feedback_icon {
+	my $class = shift;
+	my $icon = Padre::Wx::Icon::find(
+		'margin/feedback',
+		{
+			size  => '12x12',
+			icons => $class->plugin_icons_directory,
+		}
+	);
+	warn "Got icon $icon";
+	return $icon;
+}
 
 sub menu_plugins_simple {
     my $self = shift;

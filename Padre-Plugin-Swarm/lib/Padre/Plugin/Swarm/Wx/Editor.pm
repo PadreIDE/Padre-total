@@ -18,8 +18,9 @@ use constant SWARM_MARKER_OWNER1    => 10;
 use constant SWARM_MARKER_OWNER2    => 11;
 use constant SWARM_MARKER_GHOST_1   => 12;
 use constant SWARM_MARKER_GHOST_2   => 13;
+use constant SWARM_MARKER_FEEDBACK  => 14;
 use constant SWARM_MARKER_MASK =>
-    1<<10 | 1<<11 | 1<<12 | 1<<13; # seems wrong
+    1<<10 | 1<<11 | 1<<12 | 1<<13 | 1<<14; # seems wrong
 
     
 =pod
@@ -241,17 +242,17 @@ sub _rig_editor_decoration {
     $editor->MarkerDefineBitmap( SWARM_MARKER_OWNER1, $o_icon1 );
     $editor->MarkerDefineBitmap( SWARM_MARKER_OWNER2, $o_icon2 );
     
+    my $feedback = $self->plugin->margin_feedback_icon;
+    $editor->MarkerDefineBitmap( SWARM_MARKER_FEEDBACK, $feedback );
+    
     $editor->SetMarginWidth( SWARM_STC_MARGIN, 14 );
     $editor->SetMarginType(
         SWARM_STC_MARGIN, 
-        Wx::wxSTC_MARGIN_SYMBOL
+        Wx::Scintilla::MARGIN_SYMBOL
     );
     $editor->SetMarginMask( SWARM_STC_MARGIN, SWARM_MARKER_MASK );
     
-    my $padre_symbols = $editor->GetMarginMask(1);
-    warn "padre margin mask = $padre_symbols";
-    $padre_symbols = $padre_symbols & ~SWARM_MARKER_MASK;
-    warn "minus swarm markers =  $padre_symbols";
+    $editor->MarkerAdd( 1, SWARM_MARKER_FEEDBACK );
     
     $editor->SetMarginMask(
         1 , $editor->GetMarginMask(1) & ~SWARM_MARKER_MASK 
@@ -427,7 +428,10 @@ sub accept_cursor {
     TRACE( "position ='$position'"  ) if DEBUG;
     my $key      = $resource . $message->from;
     my $editor   = $self->resources->{ $resource }->editor;
+    $editor->MarkerAdd( 1 , SWARM_MARKER_FEEDBACK );
+    
     my $previous = $previous_cursor{$key};
+    
     if ( $position >= 0 ) {
         # I hope that is a number!
         my $line = $editor->LineFromPosition( $position );
