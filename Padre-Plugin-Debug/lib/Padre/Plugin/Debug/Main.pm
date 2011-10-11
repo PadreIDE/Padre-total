@@ -4,15 +4,20 @@ use 5.010;
 use strict;
 use warnings;
 
+# Turn on $OUTPUT_AUTOFLUSH
+$| = 1;
+use diagnostics;
+
 use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
+
 # use Padre::Current                    ();
 # use Padre::Util                       ();
 # use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.04';
-our @ISA     = 'Padre::Plugin::Debug::FBP::MainFB';
+use parent qw( Padre::Plugin::Debug::FBP::MainFB );
 
 #######
 # new
@@ -33,8 +38,9 @@ sub new {
 #######
 sub set_up {
 	my $self = shift;
-	
-	$self->{debug_bottom} = 0;
+
+	$self->{debug_visable}       = 0;
+	$self->{breakpoints_visable} = 0;
 
 	return;
 }
@@ -44,32 +50,34 @@ sub set_up {
 ########
 sub on_debug_bottom_clicked {
 	my $self = shift;
-	
-	if ( $self->{debug_visable} eq 1 ) {
+
+	if ( $self->{debug_visable} == 1 ) {
+
 		#todo turn off
 		$self->unload_panel_debug();
-	}
-	else {
-		#todo turn on 
+	} else {
+
+		#todo turn on
 		$self->load_panel_debug();
 	}
-	
+
 	return;
 }
 
 ########
 # Event Handler on_breakpoints_clicked
 ########
-sub on_breakpoints_clicked {	
+sub on_breakpoints_clicked {
 	my $self = shift;
 	my $main = $self->main;
-	
-	if ( $self->{breakpoints_visable} eq 1 ) {
+
+	if ( $self->{breakpoints_visable} == 1 ) {
+
 		#todo turn off
 		$self->unload_panel_breakpoints();
-	}
-	else {
-		#todo turn on 
+	} else {
+
+		#todo turn on
 		$self->load_panel_breakpoints();
 	}
 
@@ -92,9 +100,9 @@ sub load_panel_debug {
 	$self->{panel_debug_bottom} = Padre::Plugin::Debug::Bottom->new($main);
 
 	$self->{panel_debug_bottom}->Show;
-	
+
 	$main->aui->Update;
-	
+
 	$self->{debug_visable} = 1;
 
 	return;
@@ -112,9 +120,9 @@ sub unload_panel_debug {
 		$self->{panel_debug_bottom}->Destroy;
 		delete $self->{panel_debug_bottom};
 	}
-	
+
 	$self->{debug_visable} = 0;
-	
+
 	return 1;
 }
 
@@ -130,9 +138,9 @@ sub load_panel_breakpoints {
 	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpointspl->new($main);
 
 	$self->{panel_breakpoints}->Show;
-	
+
 	$main->aui->Update;
-	
+
 	$self->{breakpoints_visable} = 1;
 
 	return;
@@ -150,9 +158,9 @@ sub unload_panel_breakpoints {
 		$self->{panel_breakpoints}->Destroy;
 		delete $self->{panel_breakpoints};
 	}
-	
+
 	$self->{breakpoints_visable} = 0;
-	
+
 	return 1;
 }
 
@@ -177,11 +185,56 @@ sub plugin_disable {
 	return 1;
 }
 
+#######
+# event handler breakpoint_clicked
+#######
 sub breakpoint_clicked {
 	my $self = shift;
-	say 'breakpoint_clicked: '.$self->bp_line_number->GetValue();
+	say 'breakpoint_clicked: ' . $self->bp_line_number->GetValue();
+	$self->add_bp_marker( $self->bp_line_number->GetValue() );
 	return;
 }
+
+########
+# composed method add_bp_marker
+########
+sub add_bp_marker {
+	my $self           = shift;
+	my $bp_line_number = shift;
+
+	my $main = $self->main;
+
+	# $self->running or return;
+
+	my $editor = Padre::Current->editor;
+	my $file   = $editor->{Document}->filename;
+	p $file;
+
+	# my $row    = $editor->GetCurrentLine + 1;
+	my $row = $bp_line_number;
+
+	# TODO ask for a condition
+	# TODO allow setting breakpoints even before the script and the debugger runs
+	# (by saving it in the debugger configuration file?)
+
+	# if ( not $self->{client}->set_breakpoint( $file, $row ) ) {
+	# $self->error( sprintf( Wx::gettext("Could not set breakpoint on file '%s' row '%s'"), $file, $row ) );
+	# return;
+	# }
+
+	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
+
+	# TODO: This should be the condition I guess
+	
+	my %bp = ( filename => $file, line_number => $bp_line_number, active => 1, );
+	p %bp;
+	
+
+	return;
+}
+
+
+
 
 1;
 
