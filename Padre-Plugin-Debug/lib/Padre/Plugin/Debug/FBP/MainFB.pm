@@ -55,6 +55,14 @@ sub new {
 		Wx::DefaultSize,
 	);
 
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{m_checkBox2},
+		sub {
+			shift->on_breakpoints_clicked(@_);
+		},
+	);
+
 	$self->{m_checkBox3} = Wx::CheckBox->new(
 		$self,
 		-1,
@@ -146,6 +154,10 @@ sub new {
 
 sub on_debug_bottom_clicked {
 	$_[0]->main->error('Handler method on_debug_bottom_clicked for event debug_bottom.OnCheckBox not implemented');
+}
+
+sub on_breakpoints_clicked {
+	$_[0]->main->error('Handler method on_breakpoints_clicked for event m_checkBox2.OnCheckBox not implemented');
 }
 
 1;

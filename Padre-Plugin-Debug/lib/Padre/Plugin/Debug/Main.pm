@@ -45,7 +45,7 @@ sub set_up {
 sub on_debug_bottom_clicked {
 	my $self = shift;
 	
-	if ( $self->{debug_bottom} eq 1 ) {
+	if ( $self->{debug_visable} eq 1 ) {
 		#todo turn off
 		$self->unload_panel_debug();
 	}
@@ -54,6 +54,25 @@ sub on_debug_bottom_clicked {
 		$self->load_panel_debug();
 	}
 	
+	return;
+}
+
+########
+# Event Handler on_breakpoints_clicked
+########
+sub on_breakpoints_clicked {	
+	my $self = shift;
+	my $main = $self->main;
+	
+	if ( $self->{breakpoints_visable} eq 1 ) {
+		#todo turn off
+		$self->unload_panel_breakpoints();
+	}
+	else {
+		#todo turn on 
+		$self->load_panel_breakpoints();
+	}
+
 	return;
 }
 
@@ -76,7 +95,7 @@ sub load_panel_debug {
 	
 	$main->aui->Update;
 	
-	$self->{debug_bottom} = 1;
+	$self->{debug_visable} = 1;
 
 	return;
 }
@@ -94,7 +113,45 @@ sub unload_panel_debug {
 		delete $self->{panel_debug_bottom};
 	}
 	
-	$self->{debug_bottom} = 0;
+	$self->{debug_visable} = 0;
+	
+	return 1;
+}
+
+########
+# Composed Method,
+# Load Panel Breakpoints, only once
+#######
+sub load_panel_breakpoints {
+	my $self = shift;
+	my $main = $self->main;
+
+	require Padre::Plugin::Debug::Breakpoints;
+	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
+
+	$self->{panel_breakpoints}->Show;
+	
+	$main->aui->Update;
+	
+	$self->{breakpoints_visable} = 1;
+
+	return;
+}
+
+########
+# Composed Method,
+# Unload Panel Breakpoints, only once
+#######
+sub unload_panel_breakpoints {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{panel_breakpoints} ) {
+		$self->{panel_breakpoints}->Destroy;
+		delete $self->{panel_breakpoints};
+	}
+	
+	$self->{breakpoints_visable} = 0;
 	
 	return 1;
 }

@@ -761,7 +761,7 @@
                                         <property name="window_name"></property>
                                         <property name="window_style"></property>
                                         <event name="OnChar"></event>
-                                        <event name="OnCheckBox"></event>
+                                        <event name="OnCheckBox">on_breakpoints_clicked</event>
                                         <event name="OnEnterWindow"></event>
                                         <event name="OnEraseBackground"></event>
                                         <event name="OnKeyDown"></event>
@@ -1326,7 +1326,7 @@
             <property name="id">wxID_ANY</property>
             <property name="maximum_size"></property>
             <property name="minimum_size"></property>
-            <property name="name">Padre::Plugin::Debug::FBP::Breakpoints</property>
+            <property name="name">Padre::Plugin::Debug::FBP::BreakpointsPL</property>
             <property name="pos"></property>
             <property name="size">500,300</property>
             <property name="subclass"></property>
