@@ -12,7 +12,7 @@ use warnings;
 use Padre::Wx ();
 use Padre::Wx::Role::Main ();
 
-our $VERSION = '0.22';
+our $VERSION = '0.01';
 our @ISA     = qw{
 	Padre::Wx::Role::Main
 	Wx::Dialog
@@ -26,72 +26,71 @@ sub new {
 		$parent,
 		-1,
 		Wx::gettext("Main"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxDEFAULT_DIALOG_STYLE | Wx::wxRESIZE_BORDER,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
 	);
-	$self->SetSizeHints( Wx::wxDefaultSize, Wx::wxDefaultSize );
 
-	my $package_name = Wx::StaticText->new(
+	$self->{package_name} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("ConfigDB"),
 	);
-	$package_name->SetFont(
+	$self->{package_name}->SetFont(
 		Wx::Font->new( 14, 70, 90, 92, 0, "" )
 	);
 
-	my $relation_title = Wx::StaticText->new(
+	$self->{relation_title} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Relation Name"),
 	);
-	$relation_title->SetFont(
+	$self->{relation_title}->SetFont(
 		Wx::Font->new( 14, 70, 90, 90, 0, "" )
 	);
 
-	my $display_cardinality = Wx::StaticText->new(
+	$self->{display_cardinality} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("Cardinality"),
 	);
 
-	my $about = Wx::Button->new(
+	$self->{about} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("About"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$about,
+		$self->{about},
 		sub {
 			shift->about_clicked(@_);
 		},
 	);
 
-	my $m_staticline1_1 = Wx::StaticLine->new(
+	$self->{m_staticline1_1} = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
 	);
 
-	my $list_ctrl = Wx::ListCtrl->new(
+	$self->{list_ctrl} = Wx::ListCtrl->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLC_EDIT_LABELS | Wx::wxLC_REPORT,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LC_EDIT_LABELS | Wx::LC_REPORT,
 	);
-	$list_ctrl->SetMinSize( [ 560, 188 ] );
+	$self->{list_ctrl}->SetMinSize( [ 560, 188 ] );
 
 	Wx::Event::EVT_LIST_COL_CLICK(
 		$self,
-		$list_ctrl,
+		$self->{list_ctrl},
 		sub {
 			shift->_on_list_col_clicked(@_);
 		},
@@ -99,7 +98,7 @@ sub new {
 
 	Wx::Event::EVT_LIST_ITEM_ACTIVATED(
 		$self,
-		$list_ctrl,
+		$self->{list_ctrl},
 		sub {
 			shift->_on_list_item_activated(@_);
 		},
@@ -108,26 +107,26 @@ sub new {
 	my $m_staticline1_2 = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
 	);
 
-	my $m_staticText5 = Wx::StaticText->new(
+	$self->{m_staticText5} = Wx::StaticText->new(
 		$self,
 		-1,
 		Wx::gettext("config.db"),
 	);
-	$m_staticText5->SetFont(
-		Wx::Font->new( Wx::wxNORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
+	$self->{m_staticText5}->SetFont(
+		Wx::Font->new( Wx::NORMAL_FONT->GetPointSize, 70, 90, 92, 0, "" )
 	);
 
-	my $relations = Wx::RadioBox->new(
+	$self->{relations} = Wx::RadioBox->new(
 		$self,
 		-1,
 		Wx::gettext("Relations"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 		[
 			"Plugin",
 			"Session",
@@ -139,82 +138,83 @@ sub new {
 			"RecentlyUsed",
 			"SyntaxHighlight",
 			"LastPositionInFile",
+			"DebugBreakpoints",
 		],
 		2,
-		Wx::wxRA_SPECIFY_ROWS,
+		Wx::RA_SPECIFY_ROWS,
 	);
-	$relations->SetSelection(0);
+	$self->{relations}->SetSelection(0);
 
-	my $m_staticline1_3 = Wx::StaticLine->new(
+	$self->{m_staticline1_3} = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
-		Wx::wxLI_HORIZONTAL,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
+		Wx::LI_HORIZONTAL,
 	);
 
-	my $update = Wx::Button->new(
+	$self->{update} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Update"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$update,
+		$self->{update},
 		sub {
 			shift->update_clicked(@_);
 		},
 	);
 
-	my $show = Wx::Button->new(
+	$self->{show} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Show"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
-	$show->Disable;
+	$self->{show}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$show,
+		$self->{show},
 		sub {
 			shift->show_clicked(@_);
 		},
 	);
 
-	my $clean = Wx::Button->new(
+	$self->{clean} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Clean"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
-	$clean->Disable;
+	$self->{clean}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$clean,
+		$self->{clean},
 		sub {
 			shift->clean_clicked(@_);
 		},
 	);
 
-	my $width_adjust = Wx::Button->new(
+	$self->{width_adjust} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Adjust Width"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
-	$width_adjust->Disable;
+	$self->{width_adjust}->Disable;
 
 	Wx::Event::EVT_BUTTON(
 		$self,
-		$width_adjust,
+		$self->{width_adjust},
 		sub {
 			shift->width_adjust_clicked(@_);
 		},
@@ -222,103 +222,92 @@ sub new {
 
 	my $close_button = Wx::Button->new(
 		$self,
-		Wx::wxID_CANCEL,
+		Wx::ID_CANCEL,
 		Wx::gettext("Close"),
-		Wx::wxDefaultPosition,
-		Wx::wxDefaultSize,
+		Wx::DefaultPosition,
+		Wx::DefaultSize,
 	);
 	$close_button->SetDefault;
 
-	my $bSizer6 = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$bSizer6->Add( $relation_title, 0, Wx::wxALL, 5 );
-	$bSizer6->Add( $display_cardinality, 0, Wx::wxALL, 5 );
+	my $bSizer6 = Wx::BoxSizer->new(Wx::VERTICAL);
+	$bSizer6->Add( $self->{relation_title}, 0, Wx::ALL, 5 );
+	$bSizer6->Add( $self->{display_cardinality}, 0, Wx::ALL, 5 );
 
-	my $bSizer1 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer1->Add( $package_name, 0, Wx::wxALL, 5 );
-	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$bSizer1->Add( $bSizer6, 1, Wx::wxEXPAND, 5 );
-	$bSizer1->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$bSizer1->Add( $about, 0, Wx::wxALL, 5 );
+	my $bSizer1 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer1->Add( $self->{package_name}, 0, Wx::ALL, 5 );
+	$bSizer1->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer1->Add( $bSizer6, 1, Wx::EXPAND, 5 );
+	$bSizer1->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$bSizer1->Add( $self->{about}, 0, Wx::ALL, 5 );
 
-	my $bSizer5 = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$bSizer5->Add( $list_ctrl, 1, Wx::wxALL | Wx::wxEXPAND, 3 );
+	my $bSizer5 = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$bSizer5->Add( $self->{list_ctrl}, 1, Wx::ALL | Wx::EXPAND, 3 );
 
 	my $fgSizer2 = Wx::FlexGridSizer->new( 0, 2, 0, 0 );
-	$fgSizer2->SetFlexibleDirection(Wx::wxBOTH);
-	$fgSizer2->SetNonFlexibleGrowMode(Wx::wxFLEX_GROWMODE_SPECIFIED);
-	$fgSizer2->Add( $m_staticText5, 0, Wx::wxALL, 5 );
-	$fgSizer2->Add( $relations, 0, Wx::wxALL, 5 );
+	$fgSizer2->SetFlexibleDirection(Wx::BOTH);
+	$fgSizer2->SetNonFlexibleGrowMode(Wx::FLEX_GROWMODE_SPECIFIED);
+	$fgSizer2->Add( $self->{m_staticText5}, 0, Wx::ALL, 5 );
+	$fgSizer2->Add( $self->{relations}, 0, Wx::ALL, 5 );
 
-	my $buttons = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$buttons->Add( $update, 0, Wx::wxALL, 5 );
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $show, 0, Wx::wxALL, 5 );
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $clean, 0, Wx::wxALL, 5 );
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $width_adjust, 0, Wx::wxALL, 5 );
-	$buttons->Add( 0, 0, 1, Wx::wxEXPAND, 5 );
-	$buttons->Add( $close_button, 0, Wx::wxALL, 5 );
+	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$buttons->Add( $self->{update}, 0, Wx::ALL, 5 );
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $self->{show}, 0, Wx::ALL, 5 );
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $self->{clean}, 0, Wx::ALL, 5 );
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $self->{width_adjust}, 0, Wx::ALL, 5 );
+	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
+	$buttons->Add( $close_button, 0, Wx::ALL, 5 );
 
-	my $vsizer = Wx::BoxSizer->new(Wx::wxVERTICAL);
-	$vsizer->Add( $bSizer1, 0, Wx::wxEXPAND, 3 );
-	$vsizer->Add( $m_staticline1_1, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
-	$vsizer->Add( $bSizer5, 1, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$vsizer->Add( $m_staticline1_2, 0, Wx::wxALL | Wx::wxEXPAND, 1 );
-	$vsizer->Add( $fgSizer2, 0, Wx::wxALL | Wx::wxEXPAND, 3 );
-	$vsizer->Add( $m_staticline1_3, 0, Wx::wxEXPAND | Wx::wxALL, 1 );
-	$vsizer->Add( $buttons, 0, Wx::wxEXPAND, 3 );
+	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
+	$vsizer->Add( $bSizer1, 0, Wx::EXPAND, 3 );
+	$vsizer->Add( $self->{m_staticline1_1}, 0, Wx::EXPAND | Wx::ALL, 1 );
+	$vsizer->Add( $bSizer5, 1, Wx::ALL | Wx::EXPAND, 1 );
+	$vsizer->Add( $m_staticline1_2, 0, Wx::ALL | Wx::EXPAND, 1 );
+	$vsizer->Add( $fgSizer2, 0, Wx::ALL | Wx::EXPAND, 3 );
+	$vsizer->Add( $self->{m_staticline1_3}, 0, Wx::EXPAND | Wx::ALL, 1 );
+	$vsizer->Add( $buttons, 0, Wx::EXPAND, 3 );
 
-	my $sizer = Wx::BoxSizer->new(Wx::wxHORIZONTAL);
-	$sizer->Add( $vsizer, 1, Wx::wxALL, 1 );
+	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
+	$sizer->Add( $vsizer, 1, Wx::ALL, 1 );
 
-	$self->SetSizer($sizer);
+	$self->SetSizerAndFit($sizer);
 	$self->Layout;
-	$sizer->Fit($self);
-	$sizer->SetSizeHints($self);
-
-	$self->{package_name} = $package_name->GetId;
-	$self->{relation_title} = $relation_title->GetId;
-	$self->{display_cardinality} = $display_cardinality->GetId;
-	$self->{list_ctrl} = $list_ctrl->GetId;
-	$self->{relations} = $relations->GetId;
-	$self->{show} = $show->GetId;
-	$self->{clean} = $clean->GetId;
-	$self->{width_adjust} = $width_adjust->GetId;
 
 	return $self;
 }
 
 sub package_name {
-	Wx::Window::FindWindowById($_[0]->{package_name});
+	$_[0]->{package_name};
 }
 
 sub relation_title {
-	Wx::Window::FindWindowById($_[0]->{relation_title});
+	$_[0]->{relation_title};
 }
 
 sub display_cardinality {
-	Wx::Window::FindWindowById($_[0]->{display_cardinality});
+	$_[0]->{display_cardinality};
 }
 
 sub list_ctrl {
-	Wx::Window::FindWindowById($_[0]->{list_ctrl});
+	$_[0]->{list_ctrl};
 }
 
 sub relations {
-	Wx::Window::FindWindowById($_[0]->{relations});
+	$_[0]->{relations};
 }
 
 sub show {
-	Wx::Window::FindWindowById($_[0]->{show});
+	$_[0]->{show};
 }
 
 sub clean {
-	Wx::Window::FindWindowById($_[0]->{clean});
+	$_[0]->{clean};
 }
 
 sub width_adjust {
-	Wx::Window::FindWindowById($_[0]->{width_adjust});
+	$_[0]->{width_adjust};
 }
 
 sub about_clicked {
