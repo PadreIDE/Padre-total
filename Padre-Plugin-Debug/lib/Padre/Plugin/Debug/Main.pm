@@ -10,14 +10,16 @@ use diagnostics;
 
 use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
-
-# use Padre::Current                    ();
+use Padre::Current                    ();
 # use Padre::Util                       ();
 # use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.04';
 use parent qw( Padre::Plugin::Debug::FBP::MainFB );
+
+#TODO there must be a better way than this
+my @all_bp;
 
 #######
 # new
@@ -192,6 +194,7 @@ sub breakpoint_clicked {
 	my $self = shift;
 	say 'breakpoint_clicked: ' . $self->bp_line_number->GetValue();
 	$self->add_bp_marker( $self->bp_line_number->GetValue() );
+	$self->overwirte_padre_yaml();
 	return;
 }
 
@@ -225,14 +228,82 @@ sub add_bp_marker {
 	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
 
 	# TODO: This should be the condition I guess
-	
+
 	my %bp = ( filename => $file, line_number => $bp_line_number, active => 1, );
 	p %bp;
-	
+
+	$self->bp_data($file, $bp_line_number, 1);
+	return;
+}
+
+########
+#
+########
+sub bp_data {
+	my $self = shift;
+	my $file_url = shift;
+	my $bp_line = shift;
+	my $active = shift;
+
+	push @all_bp , { filename => $file_url, line_number => $bp_line, active => $active, };
+	p @all_bp;
 
 	return;
 }
 
+########
+# YAML
+########
+sub get_padre_yaml {
+	my $self = shift;
+	my $main = $self->main;
+	my $current = $main->current;
+
+	# p $current->project;
+	# p $current->project->root;
+	# p $current->project->padre_yml;
+
+	my $padre_yml;
+	if ( $current->project->padre_yml ) {
+		$padre_yml = $current->project->padre_yml;
+	}
+	else {
+	$padre_yml = $current->project->root . '/padre.yml';
+	}
+
+	p $padre_yml;
+
+	return $padre_yml;
+}
+
+
+sub overwirte_padre_yaml {
+	my $self = shift;
+
+	my $padre_yaml_url = $self->get_padre_yaml();
+
+	if ( -e $padre_yaml_url ) {
+	say 'found padre.yml';
+	}
+
+	use YAML::Tiny;
+
+	# Create a YAML file
+	my $debug_yaml = YAML::Tiny->new();
+
+	# Open the config
+	# $debug_yaml = YAML::Tiny::LoadFile($padre_yaml_url);
+
+ 	# $debug_yaml = YAML::Tiny->read( $padre_yaml_url );
+
+ 	$debug_yaml->[0] = [@all_bp];
+ 	p $debug_yaml;
+
+ 	#NB this will overwirte the file $padre_yaml_url
+ 	$debug_yaml->write( $padre_yaml_url);
+
+	return;
+}
 
 
 

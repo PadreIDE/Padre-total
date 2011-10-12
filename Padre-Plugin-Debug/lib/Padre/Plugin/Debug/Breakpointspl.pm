@@ -22,7 +22,7 @@ sub new {
 
     # Create the panel
     my $self  = $class->SUPER::new($panel);
-    
+
     $main->aui->Update;
 
     return $self;
