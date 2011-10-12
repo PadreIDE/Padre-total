@@ -11,6 +11,7 @@ use diagnostics;
 use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
 use Padre::Current                    ();
+
 # use Padre::Util                       ();
 # use Padre::Logger qw(TRACE DEBUG);
 
@@ -43,6 +44,7 @@ sub set_up {
 
 	$self->{debug_visable}       = 0;
 	$self->{breakpoints_visable} = 0;
+	$self->_setup_db();
 
 	return;
 }
@@ -195,6 +197,7 @@ sub breakpoint_clicked {
 	say 'breakpoint_clicked: ' . $self->bp_line_number->GetValue();
 	$self->add_bp_marker( $self->bp_line_number->GetValue() );
 	$self->overwirte_padre_yaml();
+	$self->_add_bp_db();
 	return;
 }
 
@@ -202,8 +205,8 @@ sub breakpoint_clicked {
 # composed method add_bp_marker
 ########
 sub add_bp_marker {
-	my $self           = shift;
-	my $bp_line_number = shift;
+	my $self        = shift;
+	my $line_number = shift;
 
 	my $main = $self->main;
 
@@ -214,25 +217,20 @@ sub add_bp_marker {
 	p $file;
 
 	# my $row    = $editor->GetCurrentLine + 1;
-	my $row = $bp_line_number;
-
-	# TODO ask for a condition
-	# TODO allow setting breakpoints even before the script and the debugger runs
-	# (by saving it in the debugger configuration file?)
-
-	# if ( not $self->{client}->set_breakpoint( $file, $row ) ) {
-	# $self->error( sprintf( Wx::gettext("Could not set breakpoint on file '%s' row '%s'"), $file, $row ) );
-	# return;
-	# }
+	my $row = $line_number;
 
 	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
 
 	# TODO: This should be the condition I guess
 
-	my %bp = ( filename => $file, line_number => $bp_line_number, active => 1, );
+	my %bp = ( filename => $file, line_number => $line_number, active => 1, );
 	p %bp;
 
-	$self->bp_data($file, $bp_line_number, 1);
+	$self->{bp_file}   = $file;
+	$self->{bp_line}   = $line_number;
+	$self->{bp_active} = 1;
+
+	$self->bp_data( $file, $line_number, 1 );
 	return;
 }
 
@@ -240,35 +238,89 @@ sub add_bp_marker {
 #
 ########
 sub bp_data {
-	my $self = shift;
+	my $self     = shift;
 	my $file_url = shift;
-	my $bp_line = shift;
-	my $active = shift;
+	my $bp_line  = shift;
+	my $active   = shift;
 
-	push @all_bp , { filename => $file_url, line_number => $bp_line, active => $active, };
+	push @all_bp, { filename => $file_url, line_number => $bp_line, active => $active, };
 	p @all_bp;
+
+	# my %tmp_bp = ( filename => $file_url, line_number => $bp_line, active => $active, last_used => time(), );
+	# $self->{bp_data} = %tmp_bp;
+	# p $self->{bp_data};
 
 	return;
 }
 
 ########
+# Debug Breakpoint DB
+########
+sub _setup_db {
+	my $self = shift;
+
+	# set padre db relation
+	$self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
+	p $self->{debug_breakpoints};
+	p $self->{debug_breakpoints}->table_info;
+	p $self->{debug_breakpoints}->select;
+	return;
+}
+
+
+sub _add_bp_db {
+	my $self = shift;
+
+	# Padre::DB->do(
+	# 'INSERT INTO debug_breakpoints ( filename, line_number, active, last_used ) values ( ?, ?, ?, ?)',
+	# {}, $self->{bp_file}, $self->{bp_line}, $self->{bp_active}, time(),
+	# );
+
+	$self->{debug_breakpoints}->create(
+		filename    => $self->{bp_file},
+		line_number => $self->{bp_line},
+		active      => $self->{bp_active},
+		last_used   => time(),
+	);
+
+	p $self->{debug_breakpoints}->select;
+	return;
+}
+
+sub _delete_bp_db {
+	my $self = shift;
+
+	$self->{debug_breakpoints}->delete(
+		"WHERE filename = \"$self->{bp_file}\"
+		AND line_number = \"$self->{bp_line}\""
+	);
+
+	p $self->{debug_breakpoints}->select;
+
+	return;
+}
+
+
+
+
+########
 # YAML
 ########
 sub get_padre_yaml {
-	my $self = shift;
-	my $main = $self->main;
+	my $self    = shift;
+	my $main    = $self->main;
 	my $current = $main->current;
 
 	# p $current->project;
-	# p $current->project->root;
+	p $current->project->root;
+
 	# p $current->project->padre_yml;
 
 	my $padre_yml;
 	if ( $current->project->padre_yml ) {
 		$padre_yml = $current->project->padre_yml;
-	}
-	else {
-	$padre_yml = $current->project->root . '/padre.yml';
+	} else {
+		$padre_yml = $current->project->root . '/padre.yml';
 	}
 
 	p $padre_yml;
@@ -283,7 +335,7 @@ sub overwirte_padre_yaml {
 	my $padre_yaml_url = $self->get_padre_yaml();
 
 	if ( -e $padre_yaml_url ) {
-	say 'found padre.yml';
+		say 'found padre.yml';
 	}
 
 	use YAML::Tiny;
@@ -294,13 +346,13 @@ sub overwirte_padre_yaml {
 	# Open the config
 	# $debug_yaml = YAML::Tiny::LoadFile($padre_yaml_url);
 
- 	# $debug_yaml = YAML::Tiny->read( $padre_yaml_url );
+	# $debug_yaml = YAML::Tiny->read( $padre_yaml_url );
 
- 	$debug_yaml->[0] = [@all_bp];
- 	p $debug_yaml;
+	$debug_yaml->[0] = [@all_bp];
+	p $debug_yaml;
 
- 	#NB this will overwirte the file $padre_yaml_url
- 	$debug_yaml->write( $padre_yaml_url);
+	#NB this will overwirte the file $padre_yaml_url
+	$debug_yaml->write($padre_yaml_url);
 
 	return;
 }
