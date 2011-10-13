@@ -26,17 +26,17 @@ sub new {
 		$parent,
 		-1,
 		Wx::gettext("Debug Simulator"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::DEFAULT_DIALOG_STYLE | Wx::RESIZE_BORDER,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
 	$self->{debug_bottom} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Debug Bottom"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 
 	Wx::Event::EVT_CHECKBOX(
@@ -51,8 +51,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Breakpoints"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 
 	Wx::Event::EVT_CHECKBOX(
@@ -67,8 +67,8 @@ sub new {
 		$self,
 		-1,
 		Wx::gettext("Variables"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 
 	$self->{m_staticText3} = Wx::StaticText->new(
@@ -81,16 +81,16 @@ sub new {
 		$self,
 		-1,
 		"",
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 
 	$self->{breakpoint_button} = Wx::Button->new(
 		$self,
 		-1,
 		Wx::gettext("Breakpoint"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -101,27 +101,113 @@ sub new {
 		},
 	);
 
-	$self->{m_staticText2} = Wx::StaticText->new(
+	$self->{step_in} = Wx::BitmapButton->new(
 		$self,
 		-1,
-		Wx::gettext("MyLabel"),
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{step_in}->SetToolTip(
+		Wx::gettext("Step In")
+	);
+
+	$self->{step_over} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{step_over}->SetToolTip(
+		Wx::gettext("Step Over")
+	);
+
+	$self->{step_out} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{step_out}->SetToolTip(
+		Wx::gettext("Step Out")
+	);
+
+	$self->{run_till} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{run_till}->SetToolTip(
+		Wx::gettext("Run Till Breakpoint")
+	);
+
+	$self->{set_breakpoints} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{set_breakpoints}->SetToolTip(
+		Wx::gettext("Set Breakpoint")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{set_breakpoints},
+		sub {
+			shift->set_breakpoints_clicked(@_);
+		},
+	);
+
+	$self->{display_value} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{display_value}->SetToolTip(
+		Wx::gettext("Display Value")
+	);
+
+	$self->{quit_debugger} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{quit_debugger}->SetToolTip(
+		Wx::gettext("Quit Debugger")
 	);
 
 	my $close_button = Wx::Button->new(
 		$self,
-		Wx::ID_CANCEL,
+		Wx::ID_CANCEL(),
 		Wx::gettext("Close"),
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
 	);
 	$close_button->SetDefault;
 
 	$self->{m_staticline5} = Wx::StaticLine->new(
 		$self,
 		-1,
-		Wx::DefaultPosition,
-		Wx::DefaultSize,
-		Wx::LI_HORIZONTAL,
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::LI_HORIZONTAL(),
 	);
 
 	my $file_1 = Wx::StaticBoxSizer->new(
@@ -130,11 +216,11 @@ sub new {
 			-1,
 			Wx::gettext("View -> Show Debug"),
 		),
-		Wx::HORIZONTAL,
+		Wx::HORIZONTAL(),
 	);
-	$file_1->Add( $self->{debug_bottom}, 0, Wx::ALL, 5 );
-	$file_1->Add( $self->{m_checkBox2}, 0, Wx::ALL, 5 );
-	$file_1->Add( $self->{m_checkBox3}, 0, Wx::ALL, 5 );
+	$file_1->Add( $self->{debug_bottom}, 0, Wx::ALL(), 5 );
+	$file_1->Add( $self->{m_checkBox2}, 0, Wx::ALL(), 5 );
+	$file_1->Add( $self->{m_checkBox3}, 0, Wx::ALL(), 5 );
 
 	my $sbSizer2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -142,36 +228,42 @@ sub new {
 			-1,
 			Wx::gettext("Breakpoint Simulation"),
 		),
-		Wx::HORIZONTAL,
+		Wx::HORIZONTAL(),
 	);
-	$sbSizer2->Add( $self->{m_staticText3}, 0, Wx::ALL, 5 );
-	$sbSizer2->Add( $self->{bp_line_number}, 0, Wx::ALL, 5 );
-	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$sbSizer2->Add( $self->{breakpoint_button}, 0, Wx::ALL, 5 );
+	$sbSizer2->Add( $self->{m_staticText3}, 0, Wx::ALL(), 5 );
+	$sbSizer2->Add( $self->{bp_line_number}, 0, Wx::ALL(), 5 );
+	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$sbSizer2->Add( $self->{breakpoint_button}, 0, Wx::ALL(), 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("File-2"),
+			Wx::gettext("Debug Buttons"),
 		),
-		Wx::VERTICAL,
+		Wx::HORIZONTAL(),
 	);
-	$file_2->Add( $self->{m_staticText2}, 0, Wx::ALL, 5 );
+	$file_2->Add( $self->{step_in}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{step_over}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{step_out}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{run_till}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
 
-	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$buttons->Add( 0, 0, 1, Wx::EXPAND, 5 );
-	$buttons->Add( $close_button, 0, Wx::ALL, 5 );
+	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
+	$buttons->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+	$buttons->Add( $close_button, 0, Wx::ALL(), 5 );
 
-	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL);
-	$vsizer->Add( $file_1, 0, Wx::EXPAND, 5 );
-	$vsizer->Add( $sbSizer2, 1, Wx::EXPAND, 5 );
-	$vsizer->Add( $file_2, 0, Wx::EXPAND, 5 );
-	$vsizer->Add( $buttons, 0, Wx::EXPAND, 3 );
-	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND | Wx::ALL, 5 );
+	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL());
+	$vsizer->Add( $file_1, 0, Wx::EXPAND(), 5 );
+	$vsizer->Add( $sbSizer2, 1, Wx::EXPAND(), 5 );
+	$vsizer->Add( $file_2, 0, Wx::EXPAND(), 5 );
+	$vsizer->Add( $buttons, 0, Wx::EXPAND(), 3 );
+	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND() | Wx::ALL(), 5 );
 
-	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL);
-	$sizer->Add( $vsizer, 0, Wx::ALL, 1 );
+	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
+	$sizer->Add( $vsizer, 0, Wx::ALL(), 1 );
 
 	$self->SetSizerAndFit($sizer);
 	$self->Layout;
@@ -193,6 +285,10 @@ sub on_breakpoints_clicked {
 
 sub breakpoint_clicked {
 	$_[0]->main->error('Handler method breakpoint_clicked for event breakpoint_button.OnButtonClick not implemented');
+}
+
+sub set_breakpoints_clicked {
+	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
 }
 
 1;

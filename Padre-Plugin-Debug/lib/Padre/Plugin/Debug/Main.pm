@@ -16,7 +16,7 @@ use Padre::Current                    ();
 # use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
-our $VERSION = '0.04';
+our $VERSION = '0.02';
 use parent qw( Padre::Plugin::Debug::FBP::MainFB );
 
 #TODO there must be a better way than this
@@ -44,6 +44,30 @@ sub set_up {
 
 	$self->{debug_visable}       = 0;
 	$self->{breakpoints_visable} = 0;
+
+	# Setup the debug button icons
+
+	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
+	$self->{step_in}->Disable;
+
+	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
+	$self->{step_over}->Disable;
+
+	$self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-jump-back') );
+	$self->{step_out}->Disable;
+
+	$self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_tools-macro') );
+	$self->{run_till}->Disable;
+
+	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	$self->{set_breakpoints}->Enable;
+
+	$self->{display_value}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-watch-variable') );
+	$self->{display_value}->Disable;
+
+	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/stop') );
+	$self->{quit_debugger}->Disable;
+
 	$self->_setup_db();
 
 	return;
@@ -182,12 +206,102 @@ sub plugin_disable {
 		qw{
 			Padre::Plugin::Debug::Bottom
 			Padre::Plugin::Debug::FBP::DebugPL
+			Padre::Plugin::Debug::Breakpointspl
+			Padre::Plugin::Debug::FBP::BreakpointsPL
 			}
 	);
 
 	$self->SUPER::plugin_disable(@_);
 	return 1;
 }
+
+
+#######
+# event handler breakpoint_clicked
+#######
+sub set_breakpoints_clicked {
+	my $self    = shift;
+	my $main    = $self->main;
+	my $current = $main->current;
+
+	# $self->running or return;
+	my $editor = Padre::Current->editor;
+	$self->{bp_file} = $editor->{Document}->filename;
+	$self->{bp_line} = $editor->GetCurrentLine + 1;
+
+	# p $current->project->root;
+	# dereferance array and test for contents
+	if ($#{ $self->{debug_breakpoints}
+				->select("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"")
+		} >= 0
+		)
+	{
+		say 'delete me';
+		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$self->_delete_bp_db();
+
+	} else {
+		say 'create me';
+		$self->{bp_active} = 1;
+		$editor->MarkerAdd( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$self->_add_bp_db();
+	}
+
+	return;
+}
+
+
+########
+# Debug Breakpoint DB
+########
+
+#######
+# internal method _setup_db connector
+#######
+sub _setup_db {
+	my $self = shift;
+
+	# set padre db relation
+	$self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
+
+	# p $self->{debug_breakpoints};
+	# p $self->{debug_breakpoints}->table_info;
+	# p $self->{debug_breakpoints}->select;
+	return;
+}
+
+#######
+# internal method _add_bp_db
+#######
+sub _add_bp_db {
+	my $self = shift;
+
+	$self->{debug_breakpoints}->create(
+		filename    => $self->{bp_file},
+		line_number => $self->{bp_line},
+		active      => $self->{bp_active},
+		last_used   => time(),
+	);
+
+	# p $self->{debug_breakpoints}->select;
+	return;
+}
+
+#######
+# internal method _delete_bp_db
+#######
+sub _delete_bp_db {
+	my $self = shift;
+
+	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"");
+
+	# p $self->{debug_breakpoints}->select;
+	return;
+}
+
+#######################################
+# only yaml below to be deleted later
+#######################################
 
 #######
 # event handler breakpoint_clicked
@@ -219,7 +333,7 @@ sub add_bp_marker {
 	# my $row    = $editor->GetCurrentLine + 1;
 	my $row = $line_number;
 
-	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
+	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 	# TODO: This should be the condition I guess
 
@@ -233,74 +347,6 @@ sub add_bp_marker {
 	$self->bp_data( $file, $line_number, 1 );
 	return;
 }
-
-########
-#
-########
-sub bp_data {
-	my $self     = shift;
-	my $file_url = shift;
-	my $bp_line  = shift;
-	my $active   = shift;
-
-	push @all_bp, { filename => $file_url, line_number => $bp_line, active => $active, };
-	p @all_bp;
-
-	# my %tmp_bp = ( filename => $file_url, line_number => $bp_line, active => $active, last_used => time(), );
-	# $self->{bp_data} = %tmp_bp;
-	# p $self->{bp_data};
-
-	return;
-}
-
-########
-# Debug Breakpoint DB
-########
-sub _setup_db {
-	my $self = shift;
-
-	# set padre db relation
-	$self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
-	p $self->{debug_breakpoints};
-	p $self->{debug_breakpoints}->table_info;
-	p $self->{debug_breakpoints}->select;
-	return;
-}
-
-
-sub _add_bp_db {
-	my $self = shift;
-
-	# Padre::DB->do(
-	# 'INSERT INTO debug_breakpoints ( filename, line_number, active, last_used ) values ( ?, ?, ?, ?)',
-	# {}, $self->{bp_file}, $self->{bp_line}, $self->{bp_active}, time(),
-	# );
-
-	$self->{debug_breakpoints}->create(
-		filename    => $self->{bp_file},
-		line_number => $self->{bp_line},
-		active      => $self->{bp_active},
-		last_used   => time(),
-	);
-
-	p $self->{debug_breakpoints}->select;
-	return;
-}
-
-sub _delete_bp_db {
-	my $self = shift;
-
-	$self->{debug_breakpoints}->delete(
-		"WHERE filename = \"$self->{bp_file}\"
-		AND line_number = \"$self->{bp_line}\""
-	);
-
-	p $self->{debug_breakpoints}->select;
-
-	return;
-}
-
-
 
 
 ########
@@ -343,9 +389,7 @@ sub overwirte_padre_yaml {
 	# Create a YAML file
 	my $debug_yaml = YAML::Tiny->new();
 
-	# Open the config
-	# $debug_yaml = YAML::Tiny::LoadFile($padre_yaml_url);
-
+	# reading a non exsisting file cause an error
 	# $debug_yaml = YAML::Tiny->read( $padre_yaml_url );
 
 	$debug_yaml->[0] = [@all_bp];
@@ -357,8 +401,54 @@ sub overwirte_padre_yaml {
 	return;
 }
 
+########
+#
+########
+sub bp_data {
+	my $self     = shift;
+	my $file_url = shift;
+	my $bp_line  = shift;
+	my $active   = shift;
 
+	push @all_bp, { filename => $file_url, line_number => $bp_line, active => $active, };
+	p @all_bp;
+
+	return;
+}
 
 1;
 
 __END__
+
+
+=head1 STATUS
+
+wait untill working before migrating into Padre ( => 0.95 ) don't want to nack trunk
+
+to view Padre::DB::DebugBreakpoints use P-P-Cookbook::Recipie04 in trunk
+
+we can add and delete breakpoints via debug button icon.
+
+
+=head1 BUGS AND LIMITATIONS 
+
+normal editor modifications do not update the DB, 
+will need to look in future at features and background task to do this
+
+
+=head1 TODO 
+
+load breakpoints for current file
+
+look at debug having its own margin and new icons, current thinking two dots
+a coloured one for active and gray for not active with switch in breakpoint panel 
+
+get panels to integrate with Padre
+
+get breakpoint panel to only show current project bp's, inspired by vcs options
+
+add funcitonalty from trunk so all icons at as present inplimation
+
+look at variables
+
+
