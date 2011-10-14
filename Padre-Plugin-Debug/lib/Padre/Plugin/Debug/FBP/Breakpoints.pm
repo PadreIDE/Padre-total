@@ -26,7 +26,7 @@ sub new {
 		$parent,
 		-1,
 		Wx::DefaultPosition(),
-		[ 500, 300 ],
+		[ 295, 495 ],
 		Wx::TAB_TRAVERSAL(),
 	);
 
@@ -70,13 +70,14 @@ sub new {
 		},
 	);
 
-	$self->{m_listCtrl1} = Wx::ListCtrl->new(
+	$self->{list} = Wx::ListCtrl->new(
 		$self,
 		-1,
 		Wx::DefaultPosition(),
-		[ 300, -1 ],
-		Wx::LC_EDIT_LABELS() | Wx::LC_REPORT(),
+		Wx::DefaultSize(),
+		Wx::LC_REPORT() | Wx::LC_SINGLE_SEL(),
 	);
+	$self->{list}->SetMinSize( [ 260, 380 ] );
 
 	$self->{show_project} = Wx::CheckBox->new(
 		$self,
@@ -113,8 +114,8 @@ sub new {
 
 	my $bSizer10 = Wx::BoxSizer->new(Wx::VERTICAL());
 	$bSizer10->Add( $button_sizer, 0, Wx::EXPAND(), 5 );
-	$bSizer10->Add( $self->{m_listCtrl1}, 1, Wx::ALL(), 5 );
-	$bSizer10->Add( $checkbox_sizer, 1, Wx::EXPAND(), 5 );
+	$bSizer10->Add( $self->{list}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
+	$bSizer10->Add( $checkbox_sizer, 0, Wx::EXPAND(), 5 );
 
 	$self->SetSizer($bSizer10);
 	$self->Layout;

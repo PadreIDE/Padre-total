@@ -436,9 +436,12 @@ to view Padre::DB::DebugBreakpoints use P-P-Cookbook::Recipie04 in trunk
 
 we can add and delete breakpoints via debug button icon.
 
+load breakpoints for current file
+
+get breakpoint panel to only show current project bp's, inspired by vcs options
+
 
 =head1 BUGS AND LIMITATIONS 
-
 
 normal editor modifications do not update the DB,
 ( due to DB storing absolute values and editor is relative )
@@ -447,16 +450,12 @@ will need to look in future at features and background task to do this
 
 =head1 TODO 
 
-load breakpoints for current file
-
 look at debug having its own margin and new icons, current thinking two dots
 a coloured one for active and gray for not active with switch in breakpoint panel 
 
 get panels to integrate with Padre, play nice?
 
-get breakpoint panel to only show current project bp's, inspired by vcs options
-
-add funcitonalty from trunk so all icons at as present inplimation
+add funcitonalty from trunk so all icons mimic current inplimation
 
 look at variables
 

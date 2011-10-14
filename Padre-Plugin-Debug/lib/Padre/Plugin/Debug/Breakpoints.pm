@@ -4,32 +4,35 @@ use 5.010;
 use strict;
 use warnings;
 
-use Padre::Wx::Role::Main   ();
+use Padre::Wx::Role::Main ();
 use Padre::Wx::Role::View ();
-use Padre::Wx               ();
+use Padre::Wx             ();
 use Padre::Plugin::Debug::FBP::Breakpoints;
+use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.01';
 our @ISA     = qw{ Padre::Wx::Role::View Padre::Wx::Role::Main Padre::Plugin::Debug::FBP::Breakpoints };
-
+use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
 # new
 #######
 sub new {
-    my $class = shift;
+	my $class = shift;
 	my $main  = shift;
 	my $panel = $main->right;
 
-    # Create the panel
-    my $self  = $class->SUPER::new($panel);
+	# Create the panel
+	my $self = $class->SUPER::new($panel);
 
-    $main->aui->Update;
-    
-    $self->set_up();
+	$main->aui->Update;
 
-    return $self;
+	$self->set_up();
+
+	return $self;
 }
+
+
 
 ###############
 # Make Padre::Wx::Role::View happy
@@ -93,8 +96,9 @@ sub view_stop {
 	return;
 }
 
-###############################
-
+###############
+# Make Padre::Wx::Role::View happy end
+###############
 
 
 #######
@@ -107,62 +111,73 @@ sub set_up {
 	$self->{breakpoints_visable} = 0;
 
 	# Setup the debug button icons
-
-	# $self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
-	# $self->{step_in}->Disable;
-
-# # 	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
-	# $self->{step_over}->Disable;
-
-# # 	$self->{step_out}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-jump-back') );
-	# $self->{step_out}->Disable;
-
-# # 	$self->{run_till}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_tools-macro') );
-	# $self->{run_till}->Disable;
-	
 	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
 	$self->{refresh}->Enable;
-	
+
 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
 	$self->{set_breakpoints}->Enable;
 
-	# $self->{display_value}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-watch-variable') );
-	# $self->{display_value}->Disable;
-
-# # 	$self->{quit_debugger}->SetBitmapLabel( Padre::Wx::Icon::find('actions/stop') );
-	# $self->{quit_debugger}->Disable;
+	# Update the checkboxes with their corresponding values in the
+	# configuration
+	$self->{show_project}->SetValue(0);
+	$self->{show_project} = 0;
 
 	$self->_setup_db();
 
+	# Setup columns
+	my @column_headers = qw( Line_No File_Name Active );
+	my $index          = 0;
+	for my $column_header (@column_headers) {
+		$self->{list}->InsertColumn( $index++, Wx::gettext($column_header) );
+	}
+
+	# Tidy the list
+	Padre::Util::tidy_list( $self->{list} );
+
+	$self->on_refresh_click();
+
 	return;
 }
 
-
-
-
-
+#######
+# event handler on_refresh_click
+#######
 sub on_refresh_click {
-	my $self = shift;
+	my $self    = shift;
+	my $main    = $self->main;
+	my $current = $main->current;
 
-	say 'on_refresh_click';
+	$self->{project_dir}  = $current->document->project_dir;
+	$self->{current_file} = $current->document->filename;
+
+	# say 'on_refresh_click';
+	$self->_update_list();
 
 	return;
 }
 
-
-# sub set_breakpoints_clicked {
-	# $_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
-# }
-
+#######
+# event handler on_show_project_click
+#######
 sub on_show_project_click {
-	my $self = shift;
+	my ( $self, $event ) = @_;
 
-	say 'on_show_project_click';
+	if ( $event->IsChecked ) {
+		$self->{show_project} = 1;
+
+		# say 'on_show_project_click yes';
+		# say $self->{show_project};
+	} else {
+		$self->{show_project} = 0;
+
+		# say 'on_show_project_click no';
+		# say $self->{show_project};
+	}
+
+	$self->on_refresh_click();
 
 	return;
 }
-
-
 
 #######
 # event handler breakpoint_clicked
@@ -184,17 +199,19 @@ sub set_breakpoints_clicked {
 		} >= 0
 		)
 	{
-		say 'delete me';
+
+		# say 'delete me';
 		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		$self->_delete_bp_db();
 
 	} else {
-		say 'create me';
+
+		# say 'create me';
 		$self->{bp_active} = 1;
 		$editor->MarkerAdd( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		$self->_add_bp_db();
 	}
-
+	$self->on_refresh_click();
 	return;
 }
 
@@ -247,7 +264,67 @@ sub _delete_bp_db {
 	return;
 }
 
+
+#######
+# Composed Method,
+# display any relation db
+#######
+sub _update_list {
+	my $self = shift;
+
+	my $item = Wx::ListItem->new;
+
+	# clear ListCtrl items
+	$self->{list}->DeleteAllItems;
+
+	my $editor = Padre::Current->editor;
+
+	# eval { $self->{debug_breakpoints}->select; };
+	# if ($EVAL_ERROR) {
+	# say "Oops $self->config_db is damaged";
+	# carp($EVAL_ERROR);
+	# } else {
+		
+	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
+	my @tuples = $self->{debug_breakpoints}->select($sql_select);
+
+	# $item->SetId($idx);
+	# $self->{list}->InsertItem($item);
+	# $self->{list}->SetItemData( $index, 0 );
+
+	my $index = 0;
+
+	for ( 0 .. $#tuples ) {
+
+		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
+			if ( $self->{show_project} == 0 && $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+				$item->SetId($index);
+				$self->{list}->InsertItem($item);
+				$self->{list}->SetItem( $index, 0, ( $tuples[$_][2] ) );
+				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
+				$self->{list}->SetItem( $index,   1, ( $tuples[$_][1] ) );
+				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+
+			} elsif ( $self->{show_project} == 1 ) {
+				$item->SetId($index);
+				$self->{list}->InsertItem($item);
+				$self->{list}->SetItem( $index, 0, ( $tuples[$_][2] ) );
+				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
+				$self->{list}->SetItem( $index,   1, ( $tuples[$_][1] ) );
+				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+
+			}
+		}
+
+		Padre::Util::tidy_list( $self->{list} );
+	}
+
+	# }
+	return;
+}
+
+
 1;
 
 __END__
-
