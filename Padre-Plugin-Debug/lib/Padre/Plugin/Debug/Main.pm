@@ -430,33 +430,36 @@ __END__
 
 =head1 STATUS
 
-wait untill working before migrating into Padre ( => 0.95 ) don't want to nack trunk
+waiting until this Plug-in is working before migrating into Padre ( => 0.95 ) 
+don't want to muck trunk.
 
-to view Padre::DB::DebugBreakpoints use P-P-Cookbook::Recipie04 in trunk
+To view Padre::DB::DebugBreakpoints use P-P-Cookbook::Recipie04 in trunk
 
-we can add and delete breakpoints via debug button icon.
+We can now add and delete breakpoints via icon in debug simulation and Breakpoint panel.
 
-load breakpoints for current file
+Load breakpoints for current file, on load of Breakpoint panel.
 
-get breakpoint panel to only show current project bp's, inspired by vcs options
+Get breakpoint panel to only show current file and current project bp's only, 
+inspired by vcs options
 
 
 =head1 BUGS AND LIMITATIONS 
 
 normal editor modifications do not update the DB,
 ( due to DB storing absolute values and editor is relative )
-will need to look in future at features and background task to do this
+will need to look in future at features and background task to do this.
+
+Current thinking would be to compare bp time-stamp to History time-stamp if it had one
 
 
 =head1 TODO 
 
-look at debug having its own margin and new icons, current thinking two dots
-a coloured one for active and gray for not active with switch in breakpoint panel 
+look at debug having its own margin (shared with code folding) and new icons, 
+current thinking two dots a coloured one for active and Gray for not active 
+with switch in breakpoint panel 
 
 get panels to integrate with Padre, play nice?
 
-add funcitonalty from trunk so all icons mimic current inplimation
+add functionality from trunk so all icons mimic current debug implementation
 
-look at variables
-
-
+look at displaying variables
