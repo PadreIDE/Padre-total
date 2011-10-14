@@ -92,8 +92,8 @@ sub plugin_disable {
 			Padre::Plugin::Debug::FBP::MainFB
 			Padre::Plugin::Debug::Bottom
 			Padre::Plugin::Debug::FBP::DebugPL
-			Padre::Plugin::Debug::Breakpointspl
-			Padre::Plugin::Debug::FBP::BreakpointsPL
+			Padre::Plugin::Debug::Breakpoints
+			Padre::Plugin::Debug::FBP::Breakpoints
 			Sort::Versions
 			}
 	);

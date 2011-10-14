@@ -38,6 +38,7 @@ sub new {
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
+	$self->{debug_bottom}->Disable;
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
@@ -70,6 +71,7 @@ sub new {
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
+	$self->{m_checkBox3}->Disable;
 
 	$self->{m_staticText3} = Wx::StaticText->new(
 		$self,
@@ -193,6 +195,12 @@ sub new {
 		Wx::gettext("Quit Debugger")
 	);
 
+	$self->{m_staticText31} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("Click Breakpoints to enable Buttons"),
+	);
+
 	my $close_button = Wx::Button->new(
 		$self,
 		Wx::ID_CANCEL(),
@@ -226,7 +234,7 @@ sub new {
 		Wx::StaticBox->new(
 			$self,
 			-1,
-			Wx::gettext("Breakpoint Simulation"),
+			Wx::gettext("Breakpoint Simulation yaml only"),
 		),
 		Wx::HORIZONTAL(),
 	);
@@ -252,6 +260,7 @@ sub new {
 	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
 
 	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
+	$buttons->Add( $self->{m_staticText31}, 0, Wx::ALL(), 5 );
 	$buttons->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$buttons->Add( $close_button, 0, Wx::ALL(), 5 );
 
