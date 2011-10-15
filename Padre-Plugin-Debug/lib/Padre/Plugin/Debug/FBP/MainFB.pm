@@ -31,20 +31,19 @@ sub new {
 		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
-	$self->{debug_bottom} = Wx::CheckBox->new(
+	$self->{debug_output} = Wx::CheckBox->new(
 		$self,
 		-1,
-		Wx::gettext("Debug Bottom"),
+		Wx::gettext("Debug Output"),
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
 	);
-	$self->{debug_bottom}->Disable;
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
-		$self->{debug_bottom},
+		$self->{debug_output},
 		sub {
-			shift->on_debug_bottom_clicked(@_);
+			shift->on_debug_output_clicked(@_);
 		},
 	);
 
@@ -72,36 +71,6 @@ sub new {
 		Wx::DefaultSize(),
 	);
 	$self->{m_checkBox3}->Disable;
-
-	$self->{m_staticText3} = Wx::StaticText->new(
-		$self,
-		-1,
-		Wx::gettext("Line #"),
-	);
-
-	$self->{bp_line_number} = Wx::TextCtrl->new(
-		$self,
-		-1,
-		"",
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-
-	$self->{breakpoint_button} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Breakpoint"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{breakpoint_button},
-		sub {
-			shift->breakpoint_clicked(@_);
-		},
-	);
 
 	$self->{step_in} = Wx::BitmapButton->new(
 		$self,
@@ -226,22 +195,9 @@ sub new {
 		),
 		Wx::HORIZONTAL(),
 	);
-	$file_1->Add( $self->{debug_bottom}, 0, Wx::ALL(), 5 );
+	$file_1->Add( $self->{debug_output}, 0, Wx::ALL(), 5 );
 	$file_1->Add( $self->{m_checkBox2}, 0, Wx::ALL(), 5 );
 	$file_1->Add( $self->{m_checkBox3}, 0, Wx::ALL(), 5 );
-
-	my $sbSizer2 = Wx::StaticBoxSizer->new(
-		Wx::StaticBox->new(
-			$self,
-			-1,
-			Wx::gettext("Breakpoint Simulation yaml only"),
-		),
-		Wx::HORIZONTAL(),
-	);
-	$sbSizer2->Add( $self->{m_staticText3}, 0, Wx::ALL(), 5 );
-	$sbSizer2->Add( $self->{bp_line_number}, 0, Wx::ALL(), 5 );
-	$sbSizer2->Add( 0, 0, 1, Wx::EXPAND(), 5 );
-	$sbSizer2->Add( $self->{breakpoint_button}, 0, Wx::ALL(), 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -266,7 +222,6 @@ sub new {
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL());
 	$vsizer->Add( $file_1, 0, Wx::EXPAND(), 5 );
-	$vsizer->Add( $sbSizer2, 1, Wx::EXPAND(), 5 );
 	$vsizer->Add( $file_2, 0, Wx::EXPAND(), 5 );
 	$vsizer->Add( $buttons, 0, Wx::EXPAND(), 3 );
 	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND() | Wx::ALL(), 5 );
@@ -280,20 +235,12 @@ sub new {
 	return $self;
 }
 
-sub bp_line_number {
-	$_[0]->{bp_line_number};
-}
-
-sub on_debug_bottom_clicked {
-	$_[0]->main->error('Handler method on_debug_bottom_clicked for event debug_bottom.OnCheckBox not implemented');
+sub on_debug_output_clicked {
+	$_[0]->main->error('Handler method on_debug_output_clicked for event debug_output.OnCheckBox not implemented');
 }
 
 sub on_breakpoints_clicked {
 	$_[0]->main->error('Handler method on_breakpoints_clicked for event m_checkBox2.OnCheckBox not implemented');
-}
-
-sub breakpoint_clicked {
-	$_[0]->main->error('Handler method breakpoint_clicked for event breakpoint_button.OnButtonClick not implemented');
 }
 
 sub set_breakpoints_clicked {

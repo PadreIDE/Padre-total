@@ -74,9 +74,9 @@ sub set_up {
 }
 
 ########
-# Event Handler on_debug_bottom_clicked
+# Event Handler on_debug_output_clicked
 ########
-sub on_debug_bottom_clicked {
+sub on_debug_output_clicked {
 	my $self = shift;
 
 	if ( $self->{debug_visable} == 1 ) {
@@ -126,8 +126,8 @@ sub load_panel_debug {
 	# $self->clean_dialog;
 
 	# Create the new about
-	require Padre::Plugin::Debug::Bottom;
-	$self->{panel_debug_bottom} = Padre::Plugin::Debug::Bottom->new($main);
+	require Padre::Plugin::Debug::DebugOutput;
+	$self->{panel_debug_bottom} = Padre::Plugin::Debug::DebugOutput->new($main);
 
 	$self->{panel_debug_bottom}->Show;
 
@@ -206,8 +206,8 @@ sub plugin_disable {
 	# Unload all our child classes
 	$self->unload(
 		qw{
-			Padre::Plugin::Debug::Bottom
-			Padre::Plugin::Debug::FBP::DebugPL
+			Padre::Plugin::Debug::DebugOutput
+			Padre::Plugin::Debug::FBP::DebugOutput
 			Padre::Plugin::Debug::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
 			}
@@ -223,205 +223,14 @@ sub plugin_disable {
 #######
 sub set_breakpoints_clicked {
 	my $self    = shift;
-	# my $main    = $self->main;
-	
-# # 	require Padre::Plugin::Debug::Breakpointspl;
-	# Padre::Plugin::Debug::Breakpointspl::set_breakpoints_clicked();
+
 	$self->{panel_breakpoints}->set_breakpoints_clicked();
 
-	# my $current = $main->current;
-
-# # 	# $self->running or return;
-	# my $editor = Padre::Current->editor;
-	# $self->{bp_file} = $editor->{Document}->filename;
-	# $self->{bp_line} = $editor->GetCurrentLine + 1;
-
-# # 	# p $current->project->root;
-	# # dereferance array and test for contents
-	# if ($#{ $self->{debug_breakpoints}
-				# ->select("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"")
-		# } >= 0
-		# )
-	# {
-		# say 'delete me';
-		# $editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
-		# $self->_delete_bp_db();
-
-# # 	} else {
-		# say 'create me';
-		# $self->{bp_active} = 1;
-		# $editor->MarkerAdd( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
-		# $self->_add_bp_db();
-	# }
-
 	return;
 }
 
 
-########
-# Debug Breakpoint DB
-########
 
-#######
-# internal method _setup_db connector
-#######
-# sub _setup_db {
-	# my $self = shift;
-
-# # 	# set padre db relation
-	# $self->{debug_breakpoints} = ('Padre::DB::DebugBreakpoints');
-
-# # 	# p $self->{debug_breakpoints};
-	# # p $self->{debug_breakpoints}->table_info;
-	# # p $self->{debug_breakpoints}->select;
-	# return;
-# }
-
-#######
-# internal method _add_bp_db
-#######
-# sub _add_bp_db {
-	# my $self = shift;
-
-# # 	$self->{debug_breakpoints}->create(
-		# filename    => $self->{bp_file},
-		# line_number => $self->{bp_line},
-		# active      => $self->{bp_active},
-		# last_used   => time(),
-	# );
-
-# # 	p $self->{debug_breakpoints}->select;
-	# return;
-# }
-
-#######
-# internal method _delete_bp_db
-#######
-# sub _delete_bp_db {
-	# my $self = shift;
-
-# # 	$self->{debug_breakpoints}->delete("WHERE filename = \"$self->{bp_file}\" AND line_number = \"$self->{bp_line}\"");
-
-# # 	# p $self->{debug_breakpoints}->select;
-	# return;
-# }
-
-#######################################
-# only yaml below to be deleted later
-#######################################
-
-#######
-# event handler breakpoint_clicked
-#######
-sub breakpoint_clicked {
-	my $self = shift;
-	say 'breakpoint_clicked: ' . $self->bp_line_number->GetValue();
-	$self->add_bp_marker( $self->bp_line_number->GetValue() );
-	$self->overwirte_padre_yaml();
-	# $self->_add_bp_db();
-	return;
-}
-
-########
-# composed method add_bp_marker
-########
-sub add_bp_marker {
-	my $self        = shift;
-	my $line_number = shift;
-
-	my $main = $self->main;
-
-	# $self->running or return;
-
-	my $editor = Padre::Current->editor;
-	my $file   = $editor->{Document}->filename;
-	p $file;
-
-	# my $row    = $editor->GetCurrentLine + 1;
-	my $row = $line_number;
-
-	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT() );
-
-	# TODO: This should be the condition I guess
-
-	my %bp = ( filename => $file, line_number => $line_number, active => 1, );
-	p %bp;
-
-	$self->{bp_file}   = $file;
-	$self->{bp_line}   = $line_number;
-	$self->{bp_active} = 1;
-
-	$self->bp_data( $file, $line_number, 1 );
-	return;
-}
-
-
-########
-# YAML
-########
-sub get_padre_yaml {
-	my $self    = shift;
-	my $main    = $self->main;
-	my $current = $main->current;
-
-	# p $current->project;
-	p $current->project->root;
-
-	# p $current->project->padre_yml;
-
-	my $padre_yml;
-	if ( $current->project->padre_yml ) {
-		$padre_yml = $current->project->padre_yml;
-	} else {
-		$padre_yml = $current->project->root . '/padre.yml';
-	}
-
-	p $padre_yml;
-
-	return $padre_yml;
-}
-
-
-sub overwirte_padre_yaml {
-	my $self = shift;
-
-	my $padre_yaml_url = $self->get_padre_yaml();
-
-	if ( -e $padre_yaml_url ) {
-		say 'found padre.yml';
-	}
-
-	use YAML::Tiny;
-
-	# Create a YAML file
-	my $debug_yaml = YAML::Tiny->new();
-
-	# reading a non exsisting file cause an error
-	# $debug_yaml = YAML::Tiny->read( $padre_yaml_url );
-
-	$debug_yaml->[0] = [@all_bp];
-	p $debug_yaml;
-
-	#NB this will overwirte the file $padre_yaml_url
-	$debug_yaml->write($padre_yaml_url);
-
-	return;
-}
-
-########
-#
-########
-sub bp_data {
-	my $self     = shift;
-	my $file_url = shift;
-	my $bp_line  = shift;
-	my $active   = shift;
-
-	push @all_bp, { filename => $file_url, line_number => $bp_line, active => $active, };
-	p @all_bp;
-
-	return;
-}
 
 1;
 

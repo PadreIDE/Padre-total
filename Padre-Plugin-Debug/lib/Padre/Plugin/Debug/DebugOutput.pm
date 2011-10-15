@@ -1,14 +1,14 @@
-package Padre::Plugin::Debug::Bottom;
+package Padre::Plugin::Debug::DebugOutput;
 
 use 5.008;
 use strict;
 use warnings;
 
 use Padre::Wx::Role::View;
-use Padre::Plugin::Debug::FBP::DebugPL;
+use Padre::Plugin::Debug::FBP::DebugOutput;
 
 our $VERSION = '0.01';
-our @ISA     = qw{ Padre::Wx::Role::View Padre::Plugin::Debug::FBP::DebugPL };
+our @ISA     = qw{ Padre::Wx::Role::View Padre::Plugin::Debug::FBP::DebugOutput };
 
 
 #######
