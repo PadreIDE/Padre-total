@@ -42,7 +42,7 @@ sub new {
 sub set_up {
 	my $self = shift;
 
-	$self->{debug_visable}       = 0;
+	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable} = 0;
 
 	# Setup the debug button icons
@@ -77,20 +77,54 @@ sub set_up {
 # Event Handler on_debug_output_clicked
 ########
 sub on_debug_output_clicked {
-	my $self = shift;
+	my ( $self, $event ) = @_;
 
-	if ( $self->{debug_visable} == 1 ) {
+	if ( $self->{debug_output_visable} == 1 ) {
 
 		#todo turn off
-		$self->unload_panel_debug();
+		$self->unload_panel_debug_output();
 	} else {
 
 		#todo turn on
-		$self->load_panel_debug();
+		# $self->load_panel_debug();
+		$self->load_panel_debug_output();
 	}
 
 	return;
 }
+########
+# Composed Method,
+# Load Panel Debug Output,
+#######
+sub load_panel_debug_output {
+	my $self = shift;
+	my $main = $self->main;
+	
+	require Padre::Plugin::Debug::DebugOutput;
+	$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+	$self->{panel_debug_output}->Show;
+	$self->{debug_output_visable} = 1;
+
+	return;
+}
+########
+# Composed Method,
+# Unload Panel Debug Output,
+#######
+sub unload_panel_debug_output {
+	my $self = shift;
+
+	# Close the main dialog if it is hanging around
+	if ( $self->{panel_debug_output} ) {
+		$self->{panel_debug_output}->Destroy;
+		delete $self->{panel_debug_output};
+	}
+
+	$self->{debug_output_visable} = 0;
+
+	return 1;
+}
+
 
 ########
 # Event Handler on_breakpoints_clicked
@@ -113,52 +147,9 @@ sub on_breakpoints_clicked {
 
 	return;
 }
-
 ########
 # Composed Method,
-# Load Panel Debug Bottom, only once
-#######
-sub load_panel_debug {
-	my $self = shift;
-	my $main = $self->main;
-
-	# Close the dialog if it is hanging around
-	# $self->clean_dialog;
-
-	# Create the new about
-	require Padre::Plugin::Debug::DebugOutput;
-	$self->{panel_debug_bottom} = Padre::Plugin::Debug::DebugOutput->new($main);
-
-	$self->{panel_debug_bottom}->Show;
-
-	$main->aui->Update;
-
-	$self->{debug_visable} = 1;
-
-	return;
-}
-
-########
-# Composed Method,
-# Unload Panel Debug Bottom, only once
-#######
-sub unload_panel_debug {
-	my $self = shift;
-
-	# Close the main dialog if it is hanging around
-	if ( $self->{panel_debug_bottom} ) {
-		$self->{panel_debug_bottom}->Destroy;
-		delete $self->{panel_debug_bottom};
-	}
-
-	$self->{debug_visable} = 0;
-
-	return 1;
-}
-
-########
-# Composed Method,
-# Load Panel Breakpoints, only once
+# Load Panel Breakpoints
 #######
 sub load_panel_breakpoints {
 	my $self = shift;
@@ -166,19 +157,14 @@ sub load_panel_breakpoints {
 
 	require Padre::Plugin::Debug::Breakpoints;
 	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
-
 	$self->{panel_breakpoints}->Show;
-
-	$main->aui->Update;
-
 	$self->{breakpoints_visable} = 1;
 
 	return;
 }
-
 ########
 # Composed Method,
-# Unload Panel Breakpoints, only once
+# Unload Panel Breakpoints
 #######
 sub unload_panel_breakpoints {
 	my $self = shift;
@@ -194,6 +180,7 @@ sub unload_panel_breakpoints {
 	return 1;
 }
 
+
 #######
 # Clean up our Classes, Padre::Plugin, POD out of date as of v0.84
 #######
@@ -201,7 +188,8 @@ sub plugin_disable {
 	my $self = shift;
 
 	# Close the dialog if it is hanging around
-	$self->unload_panel_debug;
+	$self->unload_panel_breakpoints;
+	$self->unpanel_debug_output;
 
 	# Unload all our child classes
 	$self->unload(
@@ -251,6 +239,8 @@ Load breakpoints for current file, on load of Breakpoint panel.
 Get breakpoint panel to only show current file and current project bp's only, 
 inspired by vcs options
 
+changed breakpoint margin marker to ... so as to co-exist with diff margin markers,
+and avoid information contamination due to colour washout of previous SMALLRECT.
 
 =head1 BUGS AND LIMITATIONS 
 
