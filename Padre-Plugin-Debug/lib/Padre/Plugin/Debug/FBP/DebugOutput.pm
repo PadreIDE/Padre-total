@@ -36,7 +36,7 @@ sub new {
 		Wx::gettext("Status"),
 	);
 
-	$self->{m_textCtrl1} = Wx::TextCtrl->new(
+	$self->{output} = Wx::TextCtrl->new(
 		$self,
 		-1,
 		"",
@@ -49,12 +49,16 @@ sub new {
 
 	my $main_sizer = Wx::BoxSizer->new(Wx::VERTICAL());
 	$main_sizer->Add( $top_sizer, 0, Wx::ALIGN_RIGHT() | Wx::ALL() | Wx::EXPAND(), 2 );
-	$main_sizer->Add( $self->{m_textCtrl1}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
+	$main_sizer->Add( $self->{output}, 1, Wx::ALL() | Wx::EXPAND(), 5 );
 
 	$self->SetSizer($main_sizer);
 	$self->Layout;
 
 	return $self;
+}
+
+sub output {
+	$_[0]->{output};
 }
 
 1;

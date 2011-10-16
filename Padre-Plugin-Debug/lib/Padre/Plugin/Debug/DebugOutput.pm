@@ -4,12 +4,12 @@ use 5.008;
 use strict;
 use warnings;
 
-use Padre::Wx ();
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput;
 
 our $VERSION = '0.01';
-our @ISA     = qw{ Padre::Wx Padre::Wx::Role::View Padre::Plugin::Debug::FBP::DebugOutput };
+our @ISA     = qw{ Padre::Wx::Role::View Padre::Plugin::Debug::FBP::DebugOutput };
+
 
 
 #######
@@ -24,7 +24,7 @@ sub new {
 	my $self = $class->SUPER::new($panel);
 
 	$main->aui->Update;
-
+		
 	return $self;
 }
 
@@ -93,6 +93,14 @@ sub view_stop {
 sub gettext_label {
 	Wx::gettext('Debug Output');
 }
+
+sub dout {
+	my $self = shift;
+	my $out_text = shift;
+	$self->{output}->AppendText("$out_text.\n");
+	return;
+}
+
 
 1;
 

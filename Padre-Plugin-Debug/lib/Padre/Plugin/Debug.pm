@@ -94,6 +94,7 @@ sub plugin_disable {
 			Padre::Plugin::Debug::FBP::DebugPL
 			Padre::Plugin::Debug::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
+			Padre::Plugin::Debug::Wx::Debugger
 			Sort::Versions
 			}
 	);

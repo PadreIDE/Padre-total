@@ -41,14 +41,17 @@ sub new {
 #######
 sub set_up {
 	my $self = shift;
+	my $main = $self->main;
 
 	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable} = 0;
-
+	require Padre::Plugin::Debug::Wx::Debugger;
+	$self->{debugger} = Padre::Plugin::Debug::Wx::Debugger->new();
+	
 	# Setup the debug button icons
 
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
-	$self->{step_in}->Disable;
+	$self->{step_in}->Enable;
 
 	$self->{step_over}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-procedure') );
 	$self->{step_over}->Disable;
@@ -77,17 +80,22 @@ sub set_up {
 # Event Handler on_debug_output_clicked
 ########
 sub on_debug_output_clicked {
-	my ( $self, $event ) = @_;
+	my $self = shift;
+	# my ( $self, $event ) = @_;
 
 	if ( $self->{debug_output_visable} == 1 ) {
 
 		#todo turn off
 		$self->unload_panel_debug_output();
+		$self->{step_in}->Disable;
+		$self->{quit_debugger}->Disable;
 	} else {
 
 		#todo turn on
 		# $self->load_panel_debug();
 		$self->load_panel_debug_output();
+		$self->{step_in}->Enable;
+		$self->{quit_debugger}->Enable;
 	}
 
 	return;
@@ -131,7 +139,7 @@ sub unload_panel_debug_output {
 ########
 sub on_breakpoints_clicked {
 	my $self = shift;
-	my $main = $self->main;
+	# my $main = $self->main;
 
 	if ( $self->{breakpoints_visable} == 1 ) {
 
@@ -143,6 +151,7 @@ sub on_breakpoints_clicked {
 		#todo turn on
 		$self->load_panel_breakpoints();
 		$self->{set_breakpoints}->Enable;
+		$self->{step_in}->Enable;
 	}
 
 	return;
@@ -198,6 +207,7 @@ sub plugin_disable {
 			Padre::Plugin::Debug::FBP::DebugOutput
 			Padre::Plugin::Debug::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
+			Padre::Plugin::Debug::Wx::Debugger
 			}
 	);
 
@@ -216,10 +226,40 @@ sub set_breakpoints_clicked {
 
 	return;
 }
+#######
+#
+#######
+sub step_in_clicked {
+	my $self = shift;
+	
+	# $self->{panel_debug_output}->dout('step in');
+	$self->{debugger}->debug_perl_step_in;
+	$self->{run_till}->Enable;
+	$self->{quit_debugger}->Enable;
+	return;
+}
+#######
+#
+#######
+sub quit_debugger_clicked {
+	my $self = shift;
+	
+	# $self->{panel_debug_output}->dout('quit debugger');
+	$self->{debugger}->debug_perl_quit;
+	$self->{run_till}->Disable;
+	return;
+}
+#######
+#
+#######
+sub run_till_clicked {
+	my $self = shift;
+	
+	# $self->{panel_debug_output}->dout('run till');
+	$self->{debugger}->debug_perl_run;
 
-
-
-
+	return;
+}
 1;
 
 __END__

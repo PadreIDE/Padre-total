@@ -47,7 +47,7 @@ sub new {
 		},
 	);
 
-	$self->{m_checkBox2} = Wx::CheckBox->new(
+	$self->{breakpoints} = Wx::CheckBox->new(
 		$self,
 		-1,
 		Wx::gettext("Breakpoints"),
@@ -57,7 +57,7 @@ sub new {
 
 	Wx::Event::EVT_CHECKBOX(
 		$self,
-		$self->{m_checkBox2},
+		$self->{breakpoints},
 		sub {
 			shift->on_breakpoints_clicked(@_);
 		},
@@ -82,6 +82,14 @@ sub new {
 	);
 	$self->{step_in}->SetToolTip(
 		Wx::gettext("Step In")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{step_in},
+		sub {
+			shift->step_in_clicked(@_);
+		},
 	);
 
 	$self->{step_over} = Wx::BitmapButton->new(
@@ -118,6 +126,14 @@ sub new {
 	);
 	$self->{run_till}->SetToolTip(
 		Wx::gettext("Run Till Breakpoint")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{run_till},
+		sub {
+			shift->run_till_clicked(@_);
+		},
 	);
 
 	$self->{set_breakpoints} = Wx::BitmapButton->new(
@@ -164,6 +180,14 @@ sub new {
 		Wx::gettext("Quit Debugger")
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{quit_debugger},
+		sub {
+			shift->quit_debugger_clicked(@_);
+		},
+	);
+
 	$self->{m_staticText31} = Wx::StaticText->new(
 		$self,
 		-1,
@@ -196,7 +220,7 @@ sub new {
 		Wx::HORIZONTAL(),
 	);
 	$file_1->Add( $self->{debug_output}, 0, Wx::ALL(), 5 );
-	$file_1->Add( $self->{m_checkBox2}, 0, Wx::ALL(), 5 );
+	$file_1->Add( $self->{breakpoints}, 0, Wx::ALL(), 5 );
 	$file_1->Add( $self->{m_checkBox3}, 0, Wx::ALL(), 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
@@ -240,11 +264,23 @@ sub on_debug_output_clicked {
 }
 
 sub on_breakpoints_clicked {
-	$_[0]->main->error('Handler method on_breakpoints_clicked for event m_checkBox2.OnCheckBox not implemented');
+	$_[0]->main->error('Handler method on_breakpoints_clicked for event breakpoints.OnCheckBox not implemented');
+}
+
+sub step_in_clicked {
+	$_[0]->main->error('Handler method step_in_clicked for event step_in.OnButtonClick not implemented');
+}
+
+sub run_till_clicked {
+	$_[0]->main->error('Handler method run_till_clicked for event run_till.OnButtonClick not implemented');
 }
 
 sub set_breakpoints_clicked {
 	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
+}
+
+sub quit_debugger_clicked {
+	$_[0]->main->error('Handler method quit_debugger_clicked for event quit_debugger.OnButtonClick not implemented');
 }
 
 1;

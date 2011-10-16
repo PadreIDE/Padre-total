@@ -264,6 +264,11 @@ sub _delete_bp_db {
 	return;
 }
 
+sub test {
+	my $self = shift;
+	$self->_update_list();
+	return;
+}
 
 #######
 # Composed Method,
