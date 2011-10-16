@@ -17,7 +17,7 @@ sufficient abstraction from L<Wx>.
 
 =cut
 
-use 5.008;
+use 5.010;
 use strict;
 use warnings;
 use Padre::Constant ();
@@ -139,16 +139,16 @@ sub debug_perl {
 	$self->_get_bp_db();
 
 	#######
-	if ( $save->{breakpoints} ) {
-		foreach my $file ( keys %{ $save->{breakpoints} } ) {
-			foreach my $row ( keys %{ $save->{breakpoints}->{$file} } ) {
+	# if ( $save->{breakpoints} ) {
+		# foreach my $file ( keys %{ $save->{breakpoints} } ) {
+			# foreach my $row ( keys %{ $save->{breakpoints}->{$file} } ) {
 
-				# TODO what if this fails?
-				# TODO find the editor of that $file first!
-				$self->{client}->set_breakpoint( $file, $row );
-			}
-		}
-	}
+# # 				# TODO what if this fails?
+				# # TODO find the editor of that $file first!
+				# $self->{client}->set_breakpoint( $file, $row );
+			# }
+		# }
+	# }
 	#######
 
 	unless ( $self->_set_debugger ) {
@@ -289,7 +289,7 @@ sub debug_perl_quit {
 sub debug_perl_step_in {
 	my $self = shift;
 
-	p $self->{client};
+	# p $self->{client};
 
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
@@ -501,6 +501,8 @@ sub _get_bp_db {
 	my $editor = Padre::Current->editor;
 	# $self->{project_dir} = Padre::Current->document->project_dir;
 	$self->{current_file} = Padre::Current->document->filename;
+	
+	say "current file from _get_bp_db: $self->{current_file}";
 	
 	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);

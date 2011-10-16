@@ -30,26 +30,6 @@ sub new {
 		Wx::TAB_TRAVERSAL(),
 	);
 
-	$self->{refresh} = Wx::BitmapButton->new(
-		$self,
-		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW(),
-	);
-	$self->{refresh}->SetToolTip(
-		Wx::gettext("Refresh List")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{refresh},
-		sub {
-			shift->on_refresh_click(@_);
-		},
-	);
-
 	$self->{set_breakpoints} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -67,6 +47,26 @@ sub new {
 		$self->{set_breakpoints},
 		sub {
 			shift->set_breakpoints_clicked(@_);
+		},
+	);
+
+	$self->{refresh} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW(),
+	);
+	$self->{refresh}->SetToolTip(
+		Wx::gettext("Refresh List")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{refresh},
+		sub {
+			shift->on_refresh_click(@_);
 		},
 	);
 
@@ -99,8 +99,8 @@ sub new {
 	);
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
-	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 1 );
 	$button_sizer->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
+	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 1 );
 
 	my $checkbox_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -123,12 +123,12 @@ sub new {
 	return $self;
 }
 
-sub on_refresh_click {
-	$_[0]->main->error('Handler method on_refresh_click for event refresh.OnButtonClick not implemented');
-}
-
 sub set_breakpoints_clicked {
 	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
+}
+
+sub on_refresh_click {
+	$_[0]->main->error('Handler method on_refresh_click for event refresh.OnButtonClick not implemented');
 }
 
 sub on_show_project_click {

@@ -104,6 +104,14 @@ sub new {
 		Wx::gettext("Step Over")
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{step_over},
+		sub {
+			shift->step_over_clicked(@_);
+		},
+	);
+
 	$self->{step_out} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -114,6 +122,14 @@ sub new {
 	);
 	$self->{step_out}->SetToolTip(
 		Wx::gettext("Step Out")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{step_out},
+		sub {
+			shift->step_out_clicked(@_);
+		},
 	);
 
 	$self->{run_till} = Wx::BitmapButton->new(
@@ -168,6 +184,14 @@ sub new {
 		Wx::gettext("Display Value")
 	);
 
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{display_value},
+		sub {
+			shift->display_value_clicked(@_);
+		},
+	);
+
 	$self->{quit_debugger} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -191,7 +215,7 @@ sub new {
 	$self->{m_staticText31} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Click Breakpoints to enable Buttons"),
+		Wx::gettext("Warning! Check box to view panel \n( you must un-check to remove panel)"),
 	);
 
 	my $close_button = Wx::Button->new(
@@ -271,12 +295,24 @@ sub step_in_clicked {
 	$_[0]->main->error('Handler method step_in_clicked for event step_in.OnButtonClick not implemented');
 }
 
+sub step_over_clicked {
+	$_[0]->main->error('Handler method step_over_clicked for event step_over.OnButtonClick not implemented');
+}
+
+sub step_out_clicked {
+	$_[0]->main->error('Handler method step_out_clicked for event step_out.OnButtonClick not implemented');
+}
+
 sub run_till_clicked {
 	$_[0]->main->error('Handler method run_till_clicked for event run_till.OnButtonClick not implemented');
 }
 
 sub set_breakpoints_clicked {
 	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
+}
+
+sub display_value_clicked {
+	$_[0]->main->error('Handler method display_value_clicked for event display_value.OnButtonClick not implemented');
 }
 
 sub quit_debugger_clicked {

@@ -217,49 +217,90 @@ sub plugin_disable {
 
 
 #######
-# event handler breakpoint_clicked
-#######
-sub set_breakpoints_clicked {
-	my $self    = shift;
-
-	$self->{panel_breakpoints}->set_breakpoints_clicked();
-
-	return;
-}
-#######
-#
+# sub step_in_clicked
 #######
 sub step_in_clicked {
 	my $self = shift;
 	
 	# $self->{panel_debug_output}->dout('step in');
 	$self->{debugger}->debug_perl_step_in;
+	$self->{step_over}->Enable;
+	$self->{step_out}->Enable;
 	$self->{run_till}->Enable;
+	$self->{display_value}->Enable;
 	$self->{quit_debugger}->Enable;
 	return;
 }
 #######
-#
+# sub step_over_clicked
 #######
-sub quit_debugger_clicked {
+sub step_over_clicked {
 	my $self = shift;
-	
-	# $self->{panel_debug_output}->dout('quit debugger');
-	$self->{debugger}->debug_perl_quit;
-	$self->{run_till}->Disable;
+
+	say 'step_over_clicked';
+	$self->{debugger}->debug_perl_step_over;
+
 	return;
 }
 #######
-#
+# sub step_out_clicked
+#######
+sub step_out_clicked {
+	my $self = shift;
+
+	say 'step_out_clicked';
+	$self->{debugger}->debug_perl_step_out;
+
+	return;
+}
+#######
+# sub run_till_clicked
 #######
 sub run_till_clicked {
 	my $self = shift;
 	
-	# $self->{panel_debug_output}->dout('run till');
+	say 'run_till_clicked';
 	$self->{debugger}->debug_perl_run;
 
 	return;
 }
+#######
+# event handler breakpoint_clicked
+#######
+sub set_breakpoints_clicked {
+	my $self = shift;
+	
+	say 'set_breakpoints_clicked';
+	$self->{panel_breakpoints}->set_breakpoints_clicked();
+
+	return;
+}
+#######
+# sub display_value
+#######
+sub display_value_clicked {
+	my $self = shift;
+	
+	say 'display_value';
+	$self->{debugger}->debug_perl_display_value;
+
+	return;
+}
+#######
+# sub quit_debugger_clicked
+#######
+sub quit_debugger_clicked {
+	my $self = shift;
+	
+	say 'quit_debugger_clicked';
+	$self->{debugger}->debug_perl_quit;
+	$self->{step_over}->Disable;
+	$self->{step_out}->Disable;
+	$self->{run_till}->Disable;
+	$self->{display_value}->Disable;
+	return;
+}
+
 1;
 
 __END__
