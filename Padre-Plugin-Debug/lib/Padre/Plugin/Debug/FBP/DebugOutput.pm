@@ -42,6 +42,7 @@ sub new {
 		"",
 		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
+		Wx::TE_MULTILINE | Wx::TE_READONLY,
 	);
 
 	my $top_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());

@@ -20,7 +20,7 @@ use Data::Printer { caller_info => 1, colored => 1, };
 sub new {
 	my $class = shift;
 	my $main  = shift;
-	my $panel = shift || $main->right;
+	my $panel = shift || $main->left;
 
 	# Create the panel
 	my $self = $class->SUPER::new($panel);

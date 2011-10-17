@@ -75,6 +75,7 @@ sub set_up {
 
 ########
 # Event Handler on_debug_output_clicked
+# this is a naff loading method,
 ########
 sub on_debug_output_clicked {
 	my $self = shift;
@@ -92,21 +93,25 @@ sub on_debug_output_clicked {
 # 		#todo turn off
 		$self->unload_panel_debug_output();
 		
+		# $self->{panel_debug_output}->disable($self);
+		
 		# $main->bottom->hide( $self->{panel_debug_output} );
 		# delete $self->{panel_debug_output};
 		
 		$self->{debug_output_visable} = 0;
 		$self->{step_in}->Disable;
+		$self->{display_value}->Disable;
 		$self->{quit_debugger}->Disable;
 	} else {
 
 # 		#todo turn on
 		$self->load_panel_debug_output();
 		
-		# $main->bottom->show( $self->{panel_debug_output} );
+		# $self->{panel_debug_output}->enable($self);
 		
 		$self->{debug_output_visable} = 1;
 		$self->{step_in}->Enable;
+		$self->{display_value}->Enable;
 		$self->{quit_debugger}->Enable;
 	}
 	
@@ -236,7 +241,6 @@ sub plugin_disable {
 sub step_in_clicked {
 	my $self = shift;
 	
-	# $self->{panel_debug_output}->dout('step in');
 	$self->{debugger}->debug_perl_step_in;
 	$self->{step_over}->Enable;
 	$self->{step_out}->Enable;
@@ -274,7 +278,7 @@ sub run_till_clicked {
 	my $self = shift;
 	
 	say 'run_till_clicked';
-	$self->{debugger}->debug_perl_run;
+	$self->{debugger}->debug_perl_run_till;
 
 	return;
 }
@@ -294,9 +298,10 @@ sub set_breakpoints_clicked {
 #######
 sub display_value_clicked {
 	my $self = shift;
-	
+
 	say 'display_value';
-	$self->{debugger}->debug_perl_display_value;
+	$self->{panel_debug_output}->debug_out('step in');
+	# $self->{debugger}->debug_perl_display_value;
 
 	return;
 }

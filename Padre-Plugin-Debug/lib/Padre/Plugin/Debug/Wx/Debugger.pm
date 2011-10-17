@@ -146,6 +146,7 @@ sub debug_perl {
 	p $module;
 	p $file;
 	p $row;
+	say 'content';
 	p $content;
 
 	my $save = ( $self->{save}->{$filename} ||= {} );
@@ -363,7 +364,7 @@ sub debug_perl_step_over {
 # #	$self->debug_perl_run;
 # }
 
-sub debug_perl_run {
+sub debug_perl_run_till {
 	my $self  = shift;
 	my $param = shift;
 
@@ -380,6 +381,8 @@ sub debug_perl_run {
 		$self->debug_perl_quit;
 		return;
 	}
+	say 'content';
+	p $self->{client};
 	$self->_set_debugger;
 
 	return;
@@ -494,7 +497,7 @@ sub debug_perl_evaluate_expression {
 sub quit {
 	my $self = shift;
 	if ( $self->{client} ) {
-		$self->debug_perl_quit;
+		$self->_quit;
 	}
 	return;
 }
@@ -525,7 +528,7 @@ sub _get_bp_db {
 	$self->_setup_db();
 	my $editor = Padre::Current->editor;
 
-	# $self->{project_dir} = Padre::Current->document->project_dir;
+	$self->{project_dir} = Padre::Current->document->project_dir;
 	$self->{current_file} = Padre::Current->document->filename;
 
 	say "current file from _get_bp_db: $self->{current_file}";
@@ -537,16 +540,17 @@ sub _get_bp_db {
 
 	for ( 0 .. $#tuples ) {
 
-		# if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
-
-		if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 
 			# $self->{client}->set_breakpoint( $file, $row );
+			say "self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]";
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-		}
+			
+			if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+			}
 
-		# }
+		}
 	}
 	return;
 }

@@ -1,13 +1,12 @@
 package Padre::Plugin::Debug::DebugOutput;
 
-use 5.008;
+use 5.010;
 use strict;
 use warnings;
 
-use Padre::Wx;
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput;
-
+use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.01';
 
 our @ISA     = qw{
@@ -19,14 +18,31 @@ our @ISA     = qw{
 #######
 # new
 #######
+# sub new { # todo use a better object constructor
+	# my $class = shift; # What class are we constructing?
+	# my $self  = {};    # Allocate new memory
+	# bless $self, $class; # Mark it of the right type
+	# $self->_init(@_);    # Call _init with remaining args
+	# return $self;
+# } #new
+
+# # sub _init {
+	# my ( $self, @args ) = @_;
+
+# # 	# $self->{client} = undef;
+	# # $self->{file}   = undef;
+	# # $self->{save}   = {};
+
+# # 	return $self;
+# } #_init
 sub new {
 	my $class = shift;
 	my $main  = shift;
 	my $panel = shift || $main->bottom;
 
-	# Create the panel
+# 	# Create the panel
 	my $self = $class->SUPER::new($panel);
-		
+ 			
 	return $self;
 }
 
@@ -96,10 +112,43 @@ sub gettext_label {
 	Wx::gettext('Debug Output');
 }
 
-sub dout {
+# sub enable {
+	# my $self     = shift;
+	# # TRACE( "Enable Chat" ) if DEBUG;
+
+# # 	# Add ourself to the gui;
+	# my $main     = Padre->ide->wx->main;
+	# my $bottom   = $self->bottom;
+	# my $position = $bottom->GetPageCount;
+	# # $self->update_userlist;
+	# $bottom->show($self);
+
+# # 	# $self->textinput->SetFocus;
+	# $main->aui->Update;
+
+# # 	$self->{enabled} = 1;
+# }
+
+# sub disable {
+	# my $self = shift;
+	# # TRACE( 'Disable Chat' ) if DEBUG;
+	# # $self->universe->send( {type=>'leave', service=>'chat' } );
+	# my $main = Padre->ide->wx->main;
+	# my $bottom= $main->bottom;
+	# my $position = $bottom->GetPageIndex($self);
+	# $self->Hide;
+
+# # 	# TRACE( "disable - $bottom" ) if DEBUG;
+	# $bottom->RemovePage($position);
+	# $main->aui->Update;
+	# #$self->Destroy;
+# }
+
+sub debug_out {
 	my $self = shift;
 	my $out_text = shift;
-	$self->{output}->AppendText("$out_text.\n");
+
+	$self->{output}->AppendText($out_text . "\n");
 	return;
 }
 
