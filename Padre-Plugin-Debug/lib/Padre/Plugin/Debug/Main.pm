@@ -11,16 +11,13 @@ use diagnostics;
 use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
 use Padre::Current                    ();
-# use Padre::Plugin::Debug::Breakpointspl;
-# use Padre::Util                       ();
+use Padre::Util                       ();
 # use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.02';
 use parent qw( Padre::Plugin::Debug::FBP::MainFB );
 
-#TODO there must be a better way than this
-my @all_bp;
 
 #######
 # new
@@ -81,22 +78,39 @@ sub set_up {
 ########
 sub on_debug_output_clicked {
 	my $self = shift;
-	# my ( $self, $event ) = @_;
+	my $main = $self->main;
+	
+	say 'on_debug_output_clicked';
+	
+	# require Padre::Plugin::Debug::DebugOutput;
+	# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+	
+# # 	p $self->{debug_output_visable};
 
 	if ( $self->{debug_output_visable} == 1 ) {
 
-		#todo turn off
+# 		#todo turn off
 		$self->unload_panel_debug_output();
+		
+		# $main->bottom->hide( $self->{panel_debug_output} );
+		# delete $self->{panel_debug_output};
+		
+		$self->{debug_output_visable} = 0;
 		$self->{step_in}->Disable;
 		$self->{quit_debugger}->Disable;
 	} else {
 
-		#todo turn on
-		# $self->load_panel_debug();
+# 		#todo turn on
 		$self->load_panel_debug_output();
+		
+		# $main->bottom->show( $self->{panel_debug_output} );
+		
+		$self->{debug_output_visable} = 1;
 		$self->{step_in}->Enable;
 		$self->{quit_debugger}->Enable;
 	}
+	
+	# $self->aui->Update;
 
 	return;
 }
@@ -108,12 +122,12 @@ sub load_panel_debug_output {
 	my $self = shift;
 	my $main = $self->main;
 	
-	require Padre::Plugin::Debug::DebugOutput;
+require Padre::Plugin::Debug::DebugOutput;
 	$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
 	$self->{panel_debug_output}->Show;
 	$self->{debug_output_visable} = 1;
 
-	return;
+return;
 }
 ########
 # Composed Method,
@@ -122,15 +136,15 @@ sub load_panel_debug_output {
 sub unload_panel_debug_output {
 	my $self = shift;
 
-	# Close the main dialog if it is hanging around
+# 	# Close the main dialog if it is hanging around
 	if ( $self->{panel_debug_output} ) {
 		$self->{panel_debug_output}->Destroy;
 		delete $self->{panel_debug_output};
 	}
 
-	$self->{debug_output_visable} = 0;
+$self->{debug_output_visable} = 0;
 
-	return 1;
+return 1;
 }
 
 

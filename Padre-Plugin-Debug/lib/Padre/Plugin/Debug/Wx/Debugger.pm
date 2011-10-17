@@ -35,16 +35,34 @@ Simple constructor.
 
 =cut
 
-sub new {
-	my $class = shift;
-
-	my $self = bless {
-		client => undef,
-		file   => undef,
-		save   => {},
-	}, $class;
+sub new { # todo use a better object constructor
+	my $class = shift; # What class are we constructing?
+	my $self  = {};    # Allocate new memory
+	bless $self, $class; # Mark it of the right type
+	$self->_init(@_);    # Call _init with remaining args
 	return $self;
-}
+} #new
+
+sub _init {
+	my ( $self, @args ) = @_;
+
+	$self->{client} = undef;
+	$self->{file}   = undef;
+	$self->{save}   = {};
+
+	return $self;
+} #_init
+
+# sub new {
+# my $class = shift;
+
+# # 	my $self = bless {
+# client => undef,
+# file   => undef,
+# save   => {},
+# }, $class;
+# return $self;
+# }
 
 sub message {
 	Padre::Current->main->message( $_[1] );
@@ -140,14 +158,14 @@ sub debug_perl {
 
 	#######
 	# if ( $save->{breakpoints} ) {
-		# foreach my $file ( keys %{ $save->{breakpoints} } ) {
-			# foreach my $row ( keys %{ $save->{breakpoints}->{$file} } ) {
+	# foreach my $file ( keys %{ $save->{breakpoints} } ) {
+	# foreach my $row ( keys %{ $save->{breakpoints}->{$file} } ) {
 
-# # 				# TODO what if this fails?
-				# # TODO find the editor of that $file first!
-				# $self->{client}->set_breakpoint( $file, $row );
-			# }
-		# }
+	# # 				# TODO what if this fails?
+	# # TODO find the editor of that $file first!
+	# $self->{client}->set_breakpoint( $file, $row );
+	# }
+	# }
 	# }
 	#######
 
@@ -180,8 +198,8 @@ sub _set_debugger {
 	# They should be reunited soon !!!! (or not)
 
 	# $editor->SetMarginWidth( Padre::Constant::MARGIN_MARKER, 16 );
-	$editor->MarkerDeleteAll(Padre::Constant::MARKER_LOCATION);
-	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_LOCATION );
+	$editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
+	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_LOCATION() );
 
 	my $debugger = $main->debugger;
 	my $count    = $debugger->GetItemCount;
@@ -216,52 +234,52 @@ sub running {
 	return !!Padre::Current->editor;
 }
 
-sub debug_perl_remove_breakpoint {
-	my $self = shift;
-	$self->running or return;
+# sub debug_perl_remove_breakpoint {
+# my $self = shift;
+# $self->running or return;
 
-	my $editor = Padre::Current->editor;
-	my $file   = $editor->{Document}->filename;
-	my $row    = $editor->GetCurrentLine + 1;
-	$self->{client}->remove_breakpoint( $file, $row );
-	delete $self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row};
+# # 	my $editor = Padre::Current->editor;
+# my $file   = $editor->{Document}->filename;
+# my $row    = $editor->GetCurrentLine + 1;
+# $self->{client}->remove_breakpoint( $file, $row );
+# delete $self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row};
 
-	return;
-}
+# # 	return;
+# }
 
-sub debug_perl_set_breakpoint {
-	my $self = shift;
-	$self->running or return;
+# sub debug_perl_set_breakpoint {
+# my $self = shift;
+# $self->running or return;
 
-	my $editor = Padre::Current->editor;
-	my $file   = $editor->{Document}->filename;
-	my $row    = $editor->GetCurrentLine + 1;
+# # 	my $editor = Padre::Current->editor;
+# my $file   = $editor->{Document}->filename;
+# my $row    = $editor->GetCurrentLine + 1;
 
-	# TODO ask for a condition
-	# TODO allow setting breakpoints even before the script and the debugger runs
-	# (by saving it in the debugger configuration file?)
-	if ( not $self->{client}->set_breakpoint( $file, $row ) ) {
-		$self->error( sprintf( Wx::gettext("Could not set breakpoint on file '%s' row '%s'"), $file, $row ) );
-		return;
-	}
+# # 	# TODO ask for a condition
+# # TODO allow setting breakpoints even before the script and the debugger runs
+# # (by saving it in the debugger configuration file?)
+# if ( not $self->{client}->set_breakpoint( $file, $row ) ) {
+# $self->error( sprintf( Wx::gettext("Could not set breakpoint on file '%s' row '%s'"), $file, $row ) );
+# return;
+# }
 
-	# $editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
+# # 	# $editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
 
-	# TODO: This should be the condition I guess
-	$self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row} = 1;
+# # 	# TODO: This should be the condition I guess
+# $self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row} = 1;
 
-	return;
-}
+# # 	return;
+# }
 
-sub debug_perl_list_breakpoints {
-	my $self = shift;
-	$self->running or return;
+# sub debug_perl_list_breakpoints {
+# my $self = shift;
+# $self->running or return;
 
-	# LIST context crashes in Debug::Client 0.10
-	$self->message( scalar $self->{client}->list_break_watch_action );
+# # 	# LIST context crashes in Debug::Client 0.10
+# $self->message( scalar $self->{client}->list_break_watch_action );
 
-	return;
-}
+# # 	return;
+# }
 
 sub debug_perl_jumpt_to {
 	my $self = shift;
@@ -277,7 +295,7 @@ sub debug_perl_quit {
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
 	$current->main->show_debug(0);
-	$current->editor->MarkerDeleteAll(Padre::Constant::MARKER_LOCATION);
+	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
 	# Detach the debugger
 	$self->{client}->quit;
@@ -333,17 +351,17 @@ sub debug_perl_step_over {
 	return;
 }
 
-sub debug_perl_run_to_cursor {
-	my $self = shift;
-	Padre::Current->main->error("Not implemented");
+# sub debug_perl_run_to_cursor {
+# my $self = shift;
+# Padre::Current->main->error("Not implemented");
 
-	# Commented our for critic:
-	#	my $file = $current->filename;
-	#	my $row  = '';
-	#
-	#	# put a breakpoint to the cursor and then run till there
-	#	$self->debug_perl_run;
-}
+# # 	# Commented our for critic:
+# #	my $file = $current->filename;
+# #	my $row  = '';
+# #
+# #	# put a breakpoint to the cursor and then run till there
+# #	$self->debug_perl_run;
+# }
 
 sub debug_perl_run {
 	my $self  = shift;
@@ -405,11 +423,13 @@ sub debug_perl_show_value {
 	$self->running or return;
 
 	my $text = $self->_debug_get_variable or return;
+
 	my $value = eval { $self->{client}->get_value($text) };
 	if ($@) {
 		$self->error( sprintf( Wx::gettext("Could not evaluate '%s'"), $text ) );
 		return;
 	}
+	say "text: $text => value: $value";
 	$self->message("$text = $value");
 
 	return;
@@ -421,7 +441,7 @@ sub _debug_get_variable {
 
 	#my $text = $current->text;
 	my ( $location, $text ) = $document->get_current_symbol;
-	if ( not $text or $text !~ /^[\$@%\\]/ ) {
+	if ( not $text or $text !~ m/^[\$@%\\]/smx ) {
 		Padre::Current->main->error(
 			sprintf(
 				Wx::gettext(
@@ -438,10 +458,15 @@ sub debug_perl_display_value {
 	my $self = shift;
 	$self->running or return;
 
-	my $text     = $self->_debug_get_variable or return;
+	my $text = $self->_debug_get_variable or return;
+	p $text;
 	my $debugger = Padre::Current->main->debugger;
-	my $count    = $debugger->GetItemCount;
-	my $idx      = $debugger->InsertStringItem( $count + 1, $text );
+
+	# p $debugger;
+	my $count = $debugger->GetItemCount;
+	p $count;
+	my $idx = $debugger->InsertStringItem( $count + 1, $text );
+	p $idx;
 
 	#	my $value = eval { $self->{client}->get_value($text) };
 	#	if ($@) {
@@ -499,11 +524,12 @@ sub _get_bp_db {
 
 	$self->_setup_db();
 	my $editor = Padre::Current->editor;
+
 	# $self->{project_dir} = Padre::Current->document->project_dir;
 	$self->{current_file} = Padre::Current->document->filename;
-	
+
 	say "current file from _get_bp_db: $self->{current_file}";
-	
+
 	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
@@ -513,12 +539,13 @@ sub _get_bp_db {
 
 		# if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 
-			if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+		if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 
-				# $self->{client}->set_breakpoint( $file, $row );
-				$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-			}
+			# $self->{client}->set_breakpoint( $file, $row );
+			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		}
+
 		# }
 	}
 	return;

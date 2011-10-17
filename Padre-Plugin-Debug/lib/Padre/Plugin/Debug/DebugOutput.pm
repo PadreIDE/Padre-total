@@ -4,12 +4,16 @@ use 5.008;
 use strict;
 use warnings;
 
+use Padre::Wx;
 use Padre::Wx::Role::View;
 use Padre::Plugin::Debug::FBP::DebugOutput;
 
 our $VERSION = '0.01';
-our @ISA     = qw{ Padre::Wx::Role::View Padre::Plugin::Debug::FBP::DebugOutput };
 
+our @ISA     = qw{
+	Padre::Wx::Role::View
+	Padre::Plugin::Debug::FBP::DebugOutput
+};
 
 
 #######
@@ -22,8 +26,6 @@ sub new {
 
 	# Create the panel
 	my $self = $class->SUPER::new($panel);
-
-	$main->aui->Update;
 		
 	return $self;
 }
