@@ -2,16 +2,18 @@ package Wx::Scintilla;
 
 use strict;
 use warnings;
-use Wx;
-use Carp;
+use Carp ();
+use Wx   ();
 
 our $VERSION = '0.33_01';
 
 # Define Perl 6 lexer
-use constant wxSCINTILLA_LEX_PERL6  => 102;
-use constant wxSCINTILLA_P6_DEFAULT => 0;
-use constant wxSCINTILLA_P6_COMMENT => 1;
-use constant wxSCINTILLA_P6_STRING  => 2;
+use constant {
+    wxSCINTILLA_LEX_PERL6  => 102,
+    wxSCINTILLA_P6_DEFAULT => 0,
+    wxSCINTILLA_P6_COMMENT => 1,
+    wxSCINTILLA_P6_STRING  => 2,
+};
 
 use constant {
     INVALID_POSITION                => -1,
@@ -1736,145 +1738,194 @@ package Wx::ScintillaTextEvent;
 our $VERSION = '0.33_01';
 @ISA = qw(Wx::CommandEvent);
 
-#Defeat the indexer by splitting the package declaration on two lines
-#<<<  do not let perltidy touch this
-package
-    Wx::Event;
-# Don't set global Wx::Event version
-#>>>
-
 use strict;
 
-{
+# Load the renamespaced versions
+require Wx::Scintilla::TextCtrl;
+require Wx::Scintilla::TextEvent;
+
+# Set up all of the events
+SCOPE: {
 
     # Disable Wx::EVT_STC_* event warning redefinition
     no warnings 'redefine';
 
-    sub EVT_STC_CHANGE($$$) {
-        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHANGE, $_[2] );
-    }
+    # SVN_XXXXXX notification messages
 
-    sub EVT_STC_STYLENEEDED($$$) {
+    sub Wx::Event::EVT_STC_STYLENEEDED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_STYLENEEDED, $_[2] );
     }
 
-    sub EVT_STC_CHARADDED($$$) {
+    sub Wx::Event::EVT_STC_CHARADDED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHARADDED, $_[2] );
     }
 
-    sub EVT_STC_SAVEPOINTREACHED($$$) {
+    sub Wx::Event::EVT_STC_SAVEPOINTREACHED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_SAVEPOINTREACHED, $_[2] );
     }
 
-    sub EVT_STC_SAVEPOINTLEFT($$$) {
+    sub Wx::Event::EVT_STC_SAVEPOINTLEFT($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_SAVEPOINTLEFT, $_[2] );
     }
 
-    sub EVT_STC_ROMODIFYATTEMPT($$$) {
+    sub Wx::Event::EVT_STC_ROMODIFYATTEMPT($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_ROMODIFYATTEMPT, $_[2] );
     }
 
-    sub EVT_STC_KEY($$$) {
+    sub Wx::Event::EVT_STC_KEY($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_KEY, $_[2] );
     }
 
-    sub EVT_STC_DOUBLECLICK($$$) {
+    sub Wx::Event::EVT_STC_DOUBLECLICK($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DOUBLECLICK, $_[2] );
     }
 
-    sub EVT_STC_UPDATEUI($$$) {
+    sub Wx::Event::EVT_STC_UPDATEUI($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_UPDATEUI, $_[2] );
     }
 
-    sub EVT_STC_MODIFIED($$$) {
+    sub Wx::Event::EVT_STC_MODIFIED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MODIFIED, $_[2] );
     }
 
-    sub EVT_STC_MACRORECORD($$$) {
+    sub Wx::Event::EVT_STC_MACRORECORD($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MACRORECORD, $_[2] );
     }
 
-    sub EVT_STC_MARGINCLICK($$$) {
+    sub Wx::Event::EVT_STC_MARGINCLICK($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_MARGINCLICK, $_[2] );
     }
 
-    sub EVT_STC_NEEDSHOWN($$$) {
+    sub Wx::Event::EVT_STC_NEEDSHOWN($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_NEEDSHOWN, $_[2] );
     }
 
-    sub EVT_STC_POSCHANGED($$$) {
-        require Carp;
-        Carp::croak
-'EVT_STC_POSCHANGED is deprecated - Please use EVT_STC_UPDATEUI instead.';
-    }
-
-    sub EVT_STC_PAINTED($$$) {
+    sub Wx::Event::EVT_STC_PAINTED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_PAINTED, $_[2] );
     }
 
-    sub EVT_STC_USERLISTSELECTION($$$) {
+    sub Wx::Event::EVT_STC_USERLISTSELECTION($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_USERLISTSELECTION, $_[2] );
     }
 
-    sub EVT_STC_URIDROPPED($$$) {
+    sub Wx::Event::EVT_STC_URIDROPPED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_URIDROPPED, $_[2] );
     }
 
-    sub EVT_STC_DWELLSTART($$$) {
+    sub Wx::Event::EVT_STC_DWELLSTART($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DWELLSTART, $_[2] );
     }
 
-    sub EVT_STC_DWELLEND($$$) {
+    sub Wx::Event::EVT_STC_DWELLEND($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DWELLEND, $_[2] );
     }
 
-    sub EVT_STC_START_DRAG($$$) {
-        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_START_DRAG, $_[2] );
-    }
-
-    sub EVT_STC_DRAG_OVER($$$) {
-        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DRAG_OVER, $_[2] );
-    }
-
-    sub EVT_STC_DO_DROP($$$) {
-        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DO_DROP, $_[2] );
-    }
-
-    sub EVT_STC_ZOOM($$$) {
+    sub Wx::Event::EVT_STC_ZOOM($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_ZOOM, $_[2] );
     }
 
-    sub EVT_STC_HOTSPOT_CLICK($$$) {
+    sub Wx::Event::EVT_STC_HOTSPOT_CLICK($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_HOTSPOT_CLICK, $_[2] );
     }
 
-    sub EVT_STC_HOTSPOT_DCLICK($$$) {
+    sub Wx::Event::EVT_STC_HOTSPOT_DCLICK($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_HOTSPOT_DCLICK, $_[2] );
     }
 
-    sub EVT_STC_CALLTIP_CLICK($$$) {
-        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CALLTIP_CLICK, $_[2] );
-    }
-
-    sub EVT_STC_INDICATOR_CLICK($$$) {
+    sub Wx::Event::EVT_STC_INDICATOR_CLICK($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_INDICATOR_CLICK, $_[2] );
     }
 
-    sub EVT_STC_INDICATOR_RELEASE($$$) {
+    sub Wx::Event::EVT_STC_INDICATOR_RELEASE($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_INDICATOR_RELEASE, $_[2] );
     }
 
-    sub EVT_STC_AUTOCOMP_CANCELLED($$$) {
+    sub Wx::Event::EVT_STC_CALLTIP_CLICK($$$) {
+        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CALLTIP_CLICK, $_[2] );
+    }
+
+    sub Wx::Event::EVT_STC_AUTOCOMP_CANCELLED($$$) {
         $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_AUTOCOMP_CANCELLED, $_[2] );
     }
 
-    sub EVT_STC_AUTOCOMP_CHAR_DELETED($$$) {
+    sub Wx::Event::EVT_STC_AUTOCOMP_CHAR_DELETED($$$) {
         $_[0]
           ->Connect( $_[1], -1, &Wx::wxEVT_STC_AUTOCOMP_CHAR_DELETED, $_[2] );
     }
+
+    # SCEN_XXXXXX notification messages
+
+    sub Wx::Event::EVT_STC_CHANGE($$$) {
+        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_CHANGE, $_[2] );
+    }
+
+    # Events that do not seem to match the documentation
+
+    sub Wx::Event::EVT_STC_START_DRAG($$$) {
+        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_START_DRAG, $_[2] );
+    }
+
+    sub Wx::Event::EVT_STC_DRAG_OVER($$$) {
+        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DRAG_OVER, $_[2] );
+    }
+
+    sub Wx::Event::EVT_STC_DO_DROP($$$) {
+        $_[0]->Connect( $_[1], -1, &Wx::wxEVT_STC_DO_DROP, $_[2] );
+    }
+
+    # Deprecated notifications
+
+    sub Wx::Event::EVT_STC_POSCHANGED($$$) {
+        Carp::croak('EVT_STC_POSCHANGED is deprecated, use EVT_STC_UPDATEUI');
+    }
+
+    sub Wx::Event::EVT_STC_CHECKBRACE($$$) {
+        Carp::croak('EVT_STC_CHECKBRACE is deprecated, use EVT_STC_UPDATEUI');
+    }
+
 }
 
-1;    # The end of Wx::Scintilla? :)
+# Create the aliases to the native versions.
+# The order here matches the order in the Scintilla documentation.
+BEGIN {
+    # SCN_XXXXXX notifications
+    *EVT_STYLENEEDED         = *Wx::Event::EVT_STC_STYLENEEDED;
+    *EVT_CHARADDED           = *Wx::Event::EVT_STC_CHARADDED;
+    *EVT_SAVEPOINTREACHED    = *Wx::Event::EVT_STC_SAVEPOINTREACHED;
+    *EVT_SAVEPOINTLEFT       = *Wx::Event::EVT_STC_SAVEPOINTLEFT;
+    *EVT_MODIFYATTEMPTRO     = *Wx::Event::EVT_STC_ROMODIFYATTEMPT;
+    *EVT_KEY                 = *Wx::Event::EVT_STC_KEY;
+    *EVT_DOUBLECLICK         = *Wx::Event::EVT_STC_DOUBLECLICK;
+    *EVT_UPDATEUI            = *Wx::Event::EVT_STC_UPDATEUI;
+    *EVT_MODIFIED            = *Wx::Event::EVT_STC_MODIFIED;
+    *EVT_MACRORECORD         = *Wx::Event::EVT_STC_MACRORECORD;
+    *EVT_MARGINCLICK         = *Wx::Event::EVT_STC_MARGINCLICK;
+    *EVT_NEEDSHOWN           = *Wx::Event::EVT_STC_NEEDSHOWN;
+    *EVT_PAINTED             = *Wx::Event::EVT_STC_PAINTED;
+    *EVT_USERLISTSELECTION   = *Wx::Event::EVT_STC_USERLISTSELECTION;
+    *EVT_URIDROPPED          = *Wx::Event::EVT_STC_URIDROPPED;
+    *EVT_DWELLSTART          = *Wx::Event::EVT_STC_DWELLSTART;
+    *EVT_DWELLEND            = *Wx::Event::EVT_STC_DWELLEND;
+    *EVT_ZOOM                = *Wx::Event::EVT_STC_ZOOM;
+    *EVT_HOTSPOTCLICK        = *Wx::Event::EVT_STC_HOTSPOT_CLICK;
+    *EVT_HOTSPOTDOUBLECLICK  = *Wx::Event::EVT_STC_HOTSPOT_DCLICK;
+    # *EVT_HOTSPOTRELEASECLICK = *Wx::Event::EVT_STC_HOTSPOTRELEASECLICK;
+    *EVT_INDICATORCLICK      = *Wx::Event::EVT_STC_INDICATOR_CLICK;
+    *EVT_INDICATORRELEASE    = *Wx::Event::EVT_STC_INDICATOR_RELEASE;
+    *EVT_CALLTIPCLICK        = *Wx::Event::EVT_STC_CALLTIP_CLICK;
+    # *EVT_AUTOCSELECTION      = *Wx::Event::EVT_STC_AUTOCSELECTION;
+    *EVT_AUTOCCANCELLED      = *Wx::Event::EVT_STC_AUTOCOMP_CANCELLED;
+    *EVT_AUTOCCHARDELETED    = *Wx::Event::EVT_STC_AUTOCOMP_CHAR_DELETED;
+
+    # SCEN_XXXXXX notifications
+    *EVT_CHANGE              = *Wx::Event::EVT_STC_CHANGE;
+
+    # Deprecated notifications
+    *EVT_POSCHANGED          = *Wx::Event::EVT_STC_POSCHANGED;
+    *EVT_CHECKBRACE          = *Wx::Event::EVT_STC_CHECKBRACE;
+}
+
+1;
 
 __END__
 

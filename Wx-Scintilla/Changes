@@ -1,7 +1,9 @@
 Revision history for Wx-Scintilla
 
 0.33_01 TBA
-
+    - Moved Wx::ScintillaTextCtrl to Wx::Scintilla::TextCtrl
+    - Moved Wx::ScintillaTextEvent to Wx::Scintilla::TextEvent
+    - Moved Wx::Event::EVT_STC_XXXXXX to Wx::Scintilla::EVT_XXXXXX
 
 0.32 2011.10.11
     - Released 0.31_02 as stable 0.32 (AZAWAWI)

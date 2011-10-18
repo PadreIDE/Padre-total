@@ -1,6 +1,10 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
 use strict;
+BEGIN {
+	$^W = 1;
+}
+
 use Wx;
 use lib "t/lib";
 use Test::More 'no_plan';
