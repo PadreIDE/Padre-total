@@ -140,14 +140,14 @@ sub debug_perl {
 	$self->{file} = $filename;
 
 	# we can use this to extract bp against
-	p $self->{file};
+	# p $self->{file};
 
 	my ( $module, $file, $row, $content ) = $self->{client}->get;
-	p $module;
-	p $file;
-	p $row;
-	say 'content';
-	p $content;
+	# p $module;
+	# p $file;
+	# p $row;
+	# say 'content';
+	# p $content;
 
 	my $save = ( $self->{save}->{$filename} ||= {} );
 	#######
@@ -191,6 +191,7 @@ sub _set_debugger {
 	if ( $editor->{Document}->filename ne $file ) {
 		$main->setup_editor($file);
 		$editor = $main->current->editor;
+		$self->_get_bp_db();
 	}
 
 	$editor->goto_line_centerize( $row - 1 );
@@ -462,14 +463,14 @@ sub debug_perl_display_value {
 	$self->running or return;
 
 	my $text = $self->_debug_get_variable or return;
-	p $text;
+	# p $text;
 	my $debugger = Padre::Current->main->debugger;
 
 	# p $debugger;
 	my $count = $debugger->GetItemCount;
-	p $count;
+	# p $count;
 	my $idx = $debugger->InsertStringItem( $count + 1, $text );
-	p $idx;
+	# p $idx;
 
 	#	my $value = eval { $self->{client}->get_value($text) };
 	#	if ($@) {
@@ -543,7 +544,7 @@ sub _get_bp_db {
 		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 
 			# $self->{client}->set_breakpoint( $file, $row );
-			say "self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]";
+			# say "self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]";
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 			
 			if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
