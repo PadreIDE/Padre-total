@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use Padre::Wx::Role::View;
-use Padre::Plugin::Debug::FBP::DebugOutput;
+use Padre::Plugin::Debug::FBP::DebugOutput ();
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.01';
 
@@ -84,14 +84,15 @@ sub view_close {
 	return;
 }
 
-sub view_icon {
-	my $self = shift;
-
-	# This method should return a valid Wx bitmap to be used as the icon for
-	# a notebook page (displayed alongside C<view_label>).
-	return;
-}
-
+#
+#  sub view_icon {
+#  	my $self = shift;
+#
+# 	# This method should return a valid Wx bitmap to be used as the icon for
+# 	# a notebook page (displayed alongside C<view_label>).
+# 	return;
+# }
+#
 sub view_start {
 	my $self = shift;
 

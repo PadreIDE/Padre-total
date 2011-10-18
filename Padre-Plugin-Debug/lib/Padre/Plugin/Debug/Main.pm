@@ -78,44 +78,52 @@ sub set_up {
 # this is a naff loading method,
 ########
 sub on_debug_output_clicked {
-	my $self = shift;
+	my ($self, $event) = @_;
 	my $main = $self->main;
-	
-	say 'on_debug_output_clicked';
-	
-	# require Padre::Plugin::Debug::DebugOutput;
-	# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
-	
-# # 	p $self->{debug_output_visable};
 
-	if ( $self->{debug_output_visable} == 1 ) {
+	# Construct debug output panel if it is not there
+	unless($self->{panel_debug_output}) {
+		require Padre::Plugin::Debug::DebugOutput;
+		$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+	}
 
-# 		#todo turn off
-		$self->unload_panel_debug_output();
+	if($event->IsChecked) {
+		$main->bottom->show( $self->{panel_debug_output} );
+	} else {
+		$main->bottom->hide( $self->{panel_debug_output} );
+		delete $self->{panel_debug_output};
+	}
+
+# p $self->{debug_output_visable};
+
+# # 	if ( $self->{debug_output_visable} == 1 ) {
+
+# # todo turn off
+		# $self->unload_panel_debug_output();
 		
-		# $self->{panel_debug_output}->disable($self);
+# # 		$self->{panel_debug_output}->disable($self);
 		
-		# $main->bottom->hide( $self->{panel_debug_output} );
+# # 		$main->bottom->hide( $self->{panel_debug_output} );
 		# delete $self->{panel_debug_output};
 		
-		$self->{debug_output_visable} = 0;
-		$self->{step_in}->Disable;
-		$self->{display_value}->Disable;
-		$self->{quit_debugger}->Disable;
-	} else {
+# # 		$self->{debug_output_visable} = 0;
+		# $self->{step_in}->Disable;
+		# $self->{display_value}->Disable;
+		# $self->{quit_debugger}->Disable;
+	# } else {
 
-# 		#todo turn on
-		$self->load_panel_debug_output();
+# # todo turn on
+		# $self->load_panel_debug_output();
 		
-		# $self->{panel_debug_output}->enable($self);
+# # 		$self->{panel_debug_output}->enable($self);
 		
-		$self->{debug_output_visable} = 1;
-		$self->{step_in}->Enable;
-		$self->{display_value}->Enable;
-		$self->{quit_debugger}->Enable;
-	}
+# # 		$self->{debug_output_visable} = 1;
+		# $self->{step_in}->Enable;
+		# $self->{display_value}->Enable;
+		# $self->{quit_debugger}->Enable;
+	# }
 	
-	# $self->aui->Update;
+	$self->aui->Update;
 
 	return;
 }
