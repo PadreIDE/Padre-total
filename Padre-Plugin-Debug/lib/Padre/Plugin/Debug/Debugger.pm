@@ -1,4 +1,4 @@
-package Padre::Plugin::Debug::Wx::Debugger;
+package Padre::Plugin::Debug::Debugger;
 
 =pod
 
@@ -626,8 +626,8 @@ sub show_debug_output {
 
 	# Construct debug output panel if it is not there
 	unless ( $self->{panel_debug_output} ) {
-		require Padre::Plugin::Debug::DebugOutput;
-		$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+		require Padre::Plugin::Debug::Panel::DebugOutput;
+		$self->{panel_debug_output} = Padre::Plugin::Debug::Panel::DebugOutput->new($main);
 	}
 
 	$self->_show_debug_output($show);
@@ -668,8 +668,8 @@ sub show_debug_variable {
 
 	# Construct debug output panel if it is not there
 	unless ( $self->{panel_debug_variable} ) {
-		require Padre::Plugin::Debug::DebugVariable;
-		$self->{panel_debug_variable} = Padre::Plugin::Debug::DebugVariable->new($main);
+		require Padre::Plugin::Debug::Panel::DebugVariable;
+		$self->{panel_debug_variable} = Padre::Plugin::Debug::Panel::DebugVariable->new($main);
 	}
 
 	$self->_show_debug_variable($show);

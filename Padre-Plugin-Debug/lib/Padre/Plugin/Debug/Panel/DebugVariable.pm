@@ -1,4 +1,4 @@
-package Padre::Plugin::Debug::DebugVariable;
+package Padre::Plugin::Debug::Panel::DebugVariable;
 
 use 5.010;
 use strict;
@@ -25,6 +25,8 @@ sub new {
 
 	# 	# Create the panel
 	my $self = $class->SUPER::new($panel);
+	
+	$self->set_up();
 
 	return $self;
 }
@@ -98,6 +100,51 @@ sub gettext_label {
 ###############
 # Make Padre::Wx::Role::View happy end
 ###############
+
+
+#######
+# Method set_up
+#######
+sub set_up {
+	my $self = shift;
+
+	# $self->{debug_visable}       = 0;
+	# $self->{breakpoints_visable} = 0;
+
+	# Setup the debug button icons
+	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
+	$self->{refresh}->Enable;
+
+# # 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
+	# $self->{set_breakpoints}->Enable;
+
+	# Update the checkboxes with their corresponding values in the
+	# configuration
+	# $self->{show_project}->SetValue(0);
+	# $self->{show_project} = 0;
+
+# # 	$self->_setup_db();('Variable') if $c == 0;
+	# return Wx::gettext('Value')
+
+	# Setup columns names and order here
+	my @column_headers = qw( Variable Value );
+	my $index          = 0;
+	for my $column_header (@column_headers) {
+		$self->{variables}->InsertColumn( $index++, Wx::gettext($column_header) );
+	}
+
+	# Tidy the list
+	Padre::Util::tidy_list( $self->{variables} );
+
+	# $self->on_refresh_click();
+
+	return;
+}
+
+
+
+
+
 
 sub on_refresh_click {
 	my $self = shift;

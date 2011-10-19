@@ -1,4 +1,4 @@
-package Padre::Plugin::Debug::DebugOutput;
+package Padre::Plugin::Debug::Panel::DebugOutput;
 
 use 5.010;
 use strict;

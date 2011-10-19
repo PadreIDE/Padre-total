@@ -1,4 +1,4 @@
-package Padre::Plugin::Debug::Breakpoints;
+package Padre::Plugin::Debug::Panel::Breakpoints;
 
 use 5.010;
 use strict;
