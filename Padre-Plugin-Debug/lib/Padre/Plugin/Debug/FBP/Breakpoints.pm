@@ -26,28 +26,8 @@ sub new {
 		$parent,
 		-1,
 		Wx::DefaultPosition(),
-		[ 295, 495 ],
+		[ 195, 530 ],
 		Wx::TAB_TRAVERSAL(),
-	);
-
-	$self->{set_breakpoints} = Wx::BitmapButton->new(
-		$self,
-		-1,
-		Wx::NullBitmap(),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
-	);
-	$self->{set_breakpoints}->SetToolTip(
-		Wx::gettext("Set Breakpoints (toggle)")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{set_breakpoints},
-		sub {
-			shift->set_breakpoints_clicked(@_);
-		},
 	);
 
 	$self->{refresh} = Wx::BitmapButton->new(
@@ -70,6 +50,26 @@ sub new {
 		},
 	);
 
+	$self->{set_breakpoints} = Wx::BitmapButton->new(
+		$self,
+		-1,
+		Wx::NullBitmap(),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
+	);
+	$self->{set_breakpoints}->SetToolTip(
+		Wx::gettext("Set Breakpoints (toggle)")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{set_breakpoints},
+		sub {
+			shift->set_breakpoints_clicked(@_);
+		},
+	);
+
 	$self->{list} = Wx::ListCtrl->new(
 		$self,
 		-1,
@@ -77,7 +77,7 @@ sub new {
 		Wx::DefaultSize(),
 		Wx::LC_REPORT() | Wx::LC_SINGLE_SEL(),
 	);
-	$self->{list}->SetMinSize( [ 260, 380 ] );
+	$self->{list}->SetMinSize( Wx::DefaultSize() );
 
 	$self->{show_project} = Wx::CheckBox->new(
 		$self,
@@ -99,8 +99,9 @@ sub new {
 	);
 
 	my $button_sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
-	$button_sizer->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
+	$button_sizer->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$button_sizer->Add( $self->{refresh}, 0, Wx::ALL(), 1 );
+	$button_sizer->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
 
 	my $checkbox_sizer = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -123,12 +124,12 @@ sub new {
 	return $self;
 }
 
-sub set_breakpoints_clicked {
-	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
-}
-
 sub on_refresh_click {
 	$_[0]->main->error('Handler method on_refresh_click for event refresh.OnButtonClick not implemented');
+}
+
+sub set_breakpoints_clicked {
+	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
 }
 
 sub on_show_project_click {
