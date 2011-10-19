@@ -1,17 +1,17 @@
-package Padre::Plugin::Debug::DebugOutput;
+package Padre::Plugin::Debug::DebugVariable;
 
 use 5.010;
 use strict;
 use warnings;
 
 use Padre::Wx::Role::View;
-use Padre::Plugin::Debug::FBP::DebugOutput ();
+use Padre::Plugin::Debug::FBP::DebugVariable ();
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.01';
 
 our @ISA = qw{
 	Padre::Wx::Role::View
-	Padre::Plugin::Debug::FBP::DebugOutput
+	Padre::Plugin::Debug::FBP::DebugVariable
 };
 
 
@@ -21,7 +21,7 @@ our @ISA = qw{
 sub new {
 	my $class = shift;
 	my $main  = shift;
-	my $panel = shift || $main->bottom;
+	my $panel = shift || $main->right;
 
 	# 	# Create the panel
 	my $self = $class->SUPER::new($panel);
@@ -39,7 +39,7 @@ sub view_panel {
 	# This method describes which panel the tool lives in.
 	# Returns the string 'right', 'left', or 'bottom'.
 
-	return 'bottom';
+	return 'right';
 }
 
 sub view_label {
@@ -50,7 +50,7 @@ sub view_label {
 	# once when the object is constructed, and again if the user triggers a
 	# C<relocale> cascade to change their interface language.
 
-	return Wx::gettext('Debug Output');
+	return Wx::gettext('Debug Variables');
 }
 
 
@@ -93,21 +93,27 @@ sub view_stop {
 }
 
 sub gettext_label {
-	Wx::gettext('Debug Output');
+	Wx::gettext('Debug Variables');
 }
 ###############
 # Make Padre::Wx::Role::View happy end
 ###############
 
-sub debug_output {
-	my $self   = shift;
-	my $output = shift;
+sub on_refresh_click {
+	my $self = shift;
 
-	$self->{output}->ChangeValue($output);
-
-	# $self->{output}->AppendText($out_text . "\n");
 	return;
 }
+
+
+sub on_show_package_click {
+	my $self = shift;
+
+	return;
+}
+
+
+
 
 
 1;

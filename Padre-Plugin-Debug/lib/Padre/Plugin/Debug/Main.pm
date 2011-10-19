@@ -230,7 +230,7 @@ sub step_in_clicked {
 	my $self = shift;
 
 	TRACE('step_in_clicked') if DEBUG;
-	$self->{debugger}->debug_perl_step_in;
+	$self->{debugger}->step_in();
 	$self->{step_over}->Enable;
 	$self->{step_out}->Enable;
 	$self->{run_till}->Enable;
@@ -310,8 +310,9 @@ sub quit_debugger_clicked {
 	$self->{step_out}->Disable;
 	$self->{run_till}->Disable;
 	$self->{display_value}->Disable;
-	$main->left->hide( $self->{panel_breakpoints} );
-	$self->{breakpoints}->SetValue(0);
+	
+	# $main->left->hide( $self->{panel_breakpoints} );
+	# $self->{breakpoints}->SetValue(0);
 
 	# $main->bottom->hide( $self->{panel_debug_output} );
 	# $self->{debug_output}->SetValue(0);

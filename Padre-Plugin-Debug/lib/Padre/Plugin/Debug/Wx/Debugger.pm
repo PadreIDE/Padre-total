@@ -98,6 +98,7 @@ sub debug_perl {
 
 	$main->show_debug(1);
 	$self->show_debug_output(1);
+	$self->show_debug_variable(1);
 
 	if ( $self->{client} ) {
 		$main->error( Wx::gettext('Debugger is already running') );
@@ -304,6 +305,7 @@ sub debug_perl_quit {
 	my $current = Padre::Current->new;
 	$current->main->show_debug(0);
 	$self->show_debug_output(0);
+	$self->show_debug_variable(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
 	# Detach the debugger
@@ -313,7 +315,7 @@ sub debug_perl_quit {
 	return;
 }
 
-sub debug_perl_step_in {
+sub step_in {
 	my $self = shift;
 
 	# p $self->{client};
@@ -612,8 +614,7 @@ sub _show_bp_autoload {
 }
 
 ########
-# Event Handler on_debug_output_clicked
-# this is a naff loading method,
+# Panel Controler show debug output
 ########
 sub show_debug_output {
 	my $self = shift;
@@ -637,8 +638,7 @@ sub show_debug_output {
 }
 
 ########
-# Event Handler on_debug_output_clicked
-# this is a naff loading method,
+# Panel Launcher show debug output
 ########
 sub _show_debug_output {
 	my $self = shift;
@@ -657,6 +657,47 @@ sub _show_debug_output {
 	return;
 }
 
+########
+# Panel Controler show debug output
+########
+sub show_debug_variable {
+	my $self = shift;
+	my $current = Padre::Current->new;
+	my $main    = $current->main;
+	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+
+	# Construct debug output panel if it is not there
+	unless ( $self->{panel_debug_variable} ) {
+		require Padre::Plugin::Debug::DebugVariable;
+		$self->{panel_debug_variable} = Padre::Plugin::Debug::DebugVariable->new($main);
+	}
+
+	$self->_show_debug_variable($show);
+
+	$main->aui->Update;
+
+	return;
+}
+
+########
+# Panel Launcher show debug variable
+########
+sub _show_debug_variable {
+	my $self = shift;
+
+	# my $main = $self->main;
+	my $current = Padre::Current->new;
+	my $main    = $current->main;
+
+	if ( $_[0] ) {
+		$main->right->show( $self->{panel_debug_variable} );
+	} else {
+		$main->right->hide( $self->{panel_debug_variable} );
+		delete $self->{panel_debug_variable};
+	}
+
+	return;
+}
 
 1;
 

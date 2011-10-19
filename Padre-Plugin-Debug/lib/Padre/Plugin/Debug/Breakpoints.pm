@@ -11,7 +11,10 @@ use Padre::Plugin::Debug::FBP::Breakpoints;
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.01';
-our @ISA     = qw{ Padre::Wx::Role::View  Padre::Plugin::Debug::FBP::Breakpoints };
+our @ISA     = qw{
+	Padre::Wx::Role::View
+	Padre::Plugin::Debug::FBP::Breakpoints
+};
 use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
@@ -32,8 +35,6 @@ sub new {
 	return $self;
 }
 
-
-
 ###############
 # Make Padre::Wx::Role::View happy
 ###############
@@ -44,7 +45,7 @@ sub view_panel {
 	# This method describes which panel the tool lives in.
 	# Returns the string 'right', 'left', or 'bottom'.
 
-	return 'right';
+	return 'left';
 }
 
 sub view_label {
@@ -294,9 +295,9 @@ sub _update_list {
 	# say "Oops $self->config_db is damaged";
 	# carp($EVAL_ERROR);
 	# } else {
-		
+
 	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
-	my @tuples = $self->{debug_breakpoints}->select($sql_select);
+	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
 	# $item->SetId($idx);
 	# $self->{list}->InsertItem($item);
@@ -312,7 +313,8 @@ sub _update_list {
 				$self->{list}->InsertItem($item);
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
-				$self->{list}->SetItem( $index,   0, ( $tuples[$_][1] ) );
+				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
+
 				# TODO add when we have alternative markings
 				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
@@ -322,7 +324,8 @@ sub _update_list {
 				$self->{list}->InsertItem($item);
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
-				$self->{list}->SetItem( $index,   0, ( $tuples[$_][1] ) );
+				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
+
 				# TODO add when we have alternative markings
 				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 
