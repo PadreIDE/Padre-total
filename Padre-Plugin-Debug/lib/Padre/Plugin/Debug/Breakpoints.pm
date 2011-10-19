@@ -129,8 +129,8 @@ sub set_up {
 
 	$self->_setup_db();
 
-	# Setup columns
-	my @column_headers = qw( Line_No File_Name Active );
+	# Setup columns names and order here
+	my @column_headers = qw( Path Line ); # Active );
 	my $index          = 0;
 	for my $column_header (@column_headers) {
 		$self->{list}->InsertColumn( $index++, Wx::gettext($column_header) );
@@ -310,19 +310,21 @@ sub _update_list {
 			if ( $self->{show_project} == 0 && $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
-				$self->{list}->SetItem( $index, 0, ( $tuples[$_][2] ) );
+				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
-				$self->{list}->SetItem( $index,   1, ( $tuples[$_][1] ) );
-				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+				$self->{list}->SetItem( $index,   0, ( $tuples[$_][1] ) );
+				# TODO add when we have alternative markings
+				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 			} elsif ( $self->{show_project} == 1 ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
-				$self->{list}->SetItem( $index, 0, ( $tuples[$_][2] ) );
+				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
-				$self->{list}->SetItem( $index,   1, ( $tuples[$_][1] ) );
-				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
+				$self->{list}->SetItem( $index,   0, ( $tuples[$_][1] ) );
+				# TODO add when we have alternative markings
+				# $self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
 
 			}
 		}
