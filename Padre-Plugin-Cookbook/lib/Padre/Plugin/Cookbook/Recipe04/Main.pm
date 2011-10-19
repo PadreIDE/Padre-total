@@ -135,6 +135,9 @@ sub clean_clicked {
 
 	given ( $self->relation_name ) {
 
+		when ('DebugBreakpoints') {
+			clean_debug_breakpoints_files($self);
+		}
 		when ('History') {
 			clean_history($self);
 		}
@@ -239,7 +242,39 @@ sub _on_list_col_clicked {
 
 	return;
 }
+#######
+# Composed Method,
+# clean debug_breakpoints_files
+#######
+sub clean_debug_breakpoints_files {
+	my $self = shift;
+	my $main = $self->main;
 
+	$main->info( Wx::gettext('Cleaning DebugBreakpoints Filename relation') );
+	my @debug_breakpoints_files = $self->config_db->select( $self->sql_select );
+	my @files;
+
+	for ( 0 .. $#debug_breakpoints_files ) {
+		push @files, $debug_breakpoints_files[$_][1];
+	}
+	foreach (@files) {
+		unless ( -e $_ ) {
+			TRACE( 'Deleating missing filename from DebugBreakpoints: ' . $_ ) if DEBUG;
+			eval { $self->config_db->delete("WHERE filename = \"$_\""); };
+			if ($EVAL_ERROR) {
+				say "Oops $self->config_db is damaged";
+				carp($EVAL_ERROR);
+			}
+
+			# get cardinality
+			_get_cardinality($self);
+		}
+	}
+
+	$main->info( Wx::gettext('Finished Cleaning DebugBreakpoints') );
+	_display_relation($self);
+	return;
+}
 #######
 # Composed Method,
 # clean history
@@ -540,6 +575,10 @@ sub _display_relation {
 	my $self = shift;
 
 	given ( $self->relation_name ) {
+		when ('DebugBreakpoints') {
+			$self->clean->Enable;
+			_display_any_relation( $self, $_ );
+		}
 		when ('History') {
 			$self->clean->Enable;
 			_display_any_relation( $self, $_ );
