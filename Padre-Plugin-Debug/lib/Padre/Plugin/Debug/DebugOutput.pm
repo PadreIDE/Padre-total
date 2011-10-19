@@ -18,23 +18,6 @@ our @ISA     = qw{
 #######
 # new
 #######
-# sub new { # todo use a better object constructor
-	# my $class = shift; # What class are we constructing?
-	# my $self  = {};    # Allocate new memory
-	# bless $self, $class; # Mark it of the right type
-	# $self->_init(@_);    # Call _init with remaining args
-	# return $self;
-# } #new
-
-# # sub _init {
-	# my ( $self, @args ) = @_;
-
-# # 	# $self->{client} = undef;
-	# # $self->{file}   = undef;
-	# # $self->{save}   = {};
-
-# # 	return $self;
-# } #_init
 sub new {
 	my $class = shift;
 	my $main  = shift;
@@ -145,11 +128,12 @@ sub gettext_label {
 	# #$self->Destroy;
 # }
 
-sub debug_out {
+sub debug_output {
 	my $self = shift;
-	my $out_text = shift;
-
-	$self->{output}->AppendText($out_text . "\n");
+	my $output = shift;
+	
+	$self->{output}->ChangeValue($output);
+	# $self->{output}->AppendText($out_text . "\n");
 	return;
 }
 

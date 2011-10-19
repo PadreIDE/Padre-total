@@ -90,12 +90,12 @@ sub plugin_disable {
 		qw{
 			Padre::Plugin::Debug::Main
 			Padre::Plugin::Debug::FBP::MainFB
-			Padre::Plugin::Debug::Bottom
-			Padre::Plugin::Debug::FBP::DebugPL
+			Padre::Plugin::Debug::DebugOutput
+			Padre::Plugin::Debug::FBP::DebugOutput
 			Padre::Plugin::Debug::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
 			Padre::Plugin::Debug::Wx::Debugger
-			Sort::Versions
+			Debug::Client
 			}
 	);
 

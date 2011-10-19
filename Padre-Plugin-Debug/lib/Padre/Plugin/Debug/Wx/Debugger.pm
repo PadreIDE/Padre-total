@@ -23,9 +23,13 @@ use warnings;
 use Padre::Constant ();
 use Padre::Current  ();
 use Padre::Wx       ();
-use Padre::Logger;
+
+# use Padre::Wx::Role::View ();
+use Padre::Logger qw(TRACE DEBUG);
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.91';
+
+# our @ISA     = qw{ Padre::Wx::Role::View };
 
 =pod
 
@@ -93,6 +97,7 @@ sub debug_perl {
 	my $editor   = $current->editor;
 
 	$main->show_debug(1);
+	$self->show_debug_output(1);
 
 	if ( $self->{client} ) {
 		$main->error( Wx::gettext('Debugger is already running') );
@@ -143,6 +148,7 @@ sub debug_perl {
 	# p $self->{file};
 
 	my ( $module, $file, $row, $content ) = $self->{client}->get;
+
 	# p $module;
 	# p $file;
 	# p $row;
@@ -191,7 +197,7 @@ sub _set_debugger {
 	if ( $editor->{Document}->filename ne $file ) {
 		$main->setup_editor($file);
 		$editor = $main->current->editor;
-		$self->_get_bp_db();
+		$self->_show_bp_autoload();
 	}
 
 	$editor->goto_line_centerize( $row - 1 );
@@ -297,6 +303,7 @@ sub debug_perl_quit {
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
 	$current->main->show_debug(0);
+	$self->show_debug_output(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
 	# Detach the debugger
@@ -327,6 +334,15 @@ sub debug_perl_step_in {
 		$self->debug_perl_quit;
 		return;
 	}
+
+	# p $self->{client}->buffer;
+	# p $self->{client}->get_yvalue(0);
+	# $self->{panel_debug_output}->debug_output( $self->{client}->get_yvalue(0) );
+	# p $self->{client}->get_yvalue(1);
+	my $output = $self->{client}->buffer;
+	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$self->{panel_debug_output}->debug_output($output);
+
 	$self->_set_debugger;
 
 	return;
@@ -382,8 +398,20 @@ sub debug_perl_run_till {
 		$self->debug_perl_quit;
 		return;
 	}
-	say 'content';
-	p $self->{client};
+
+	# say 'inside run till';
+	# p $self->{client};
+	# p $self->{client}->show_line;
+	# p $self->{client}->buffer;
+	my $output = $self->{client}->buffer;
+
+	# p $self->{client}->get_yvalue(0);
+	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$self->{panel_debug_output}->debug_output($output);
+
+	# p $self->{client}->get_yvalue(1);
+	# p @stack_trace;
+
 	$self->_set_debugger;
 
 	return;
@@ -445,6 +473,8 @@ sub _debug_get_variable {
 
 	#my $text = $current->text;
 	my ( $location, $text ) = $document->get_current_symbol;
+	p $location;
+	p $text;
 	if ( not $text or $text !~ m/^[\$@%\\]/smx ) {
 		Padre::Current->main->error(
 			sprintf(
@@ -458,18 +488,21 @@ sub _debug_get_variable {
 	return $text;
 }
 
-sub debug_perl_display_value {
+sub display_value {
 	my $self = shift;
 	$self->running or return;
 
 	my $text = $self->_debug_get_variable or return;
+
 	# p $text;
 	my $debugger = Padre::Current->main->debugger;
 
 	# p $debugger;
 	my $count = $debugger->GetItemCount;
+
 	# p $count;
 	my $idx = $debugger->InsertStringItem( $count + 1, $text );
+
 	# p $idx;
 
 	#	my $value = eval { $self->{client}->get_value($text) };
@@ -526,27 +559,26 @@ sub _setup_db {
 sub _get_bp_db {
 	my $self = shift;
 
+	#TODO should realy test follow someware
 	$self->_setup_db();
 	my $editor = Padre::Current->editor;
 
-	$self->{project_dir} = Padre::Current->document->project_dir;
+	$self->{project_dir}  = Padre::Current->document->project_dir;
 	$self->{current_file} = Padre::Current->document->filename;
 
-	say "current file from _get_bp_db: $self->{current_file}";
+	TRACE("current file from _get_bp_db: $self->{current_file}") if DEBUG;
 
 	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
-	my $index = 0;
-
 	for ( 0 .. $#tuples ) {
 
 		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
+			TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
+				if DEBUG;
 
-			# $self->{client}->set_breakpoint( $file, $row );
-			# say "self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]";
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-			
+
 			if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			}
@@ -556,6 +588,74 @@ sub _get_bp_db {
 	return;
 }
 
+#######
+# Composed Method, _show_bp_autoload
+# for an autoloaded file (current) display breakpoints in editor if any
+#######
+sub _show_bp_autoload {
+	my $self = shift;
+
+	#TODO is there a better way
+	my $editor = Padre::Current->editor;
+	$self->{current_file} = Padre::Current->document->filename;
+
+	my $sql_select = "WHERE filename = \"$self->{current_file}\"";
+	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
+
+	for ( 0 .. $#tuples ) {
+
+		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
+		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+	}
+
+	return;
+}
+
+########
+# Event Handler on_debug_output_clicked
+# this is a naff loading method,
+########
+sub show_debug_output {
+	my $self = shift;
+
+	# my $main = $self->main;
+	my $current = Padre::Current->new;
+	my $main    = $current->main;
+	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+
+	# Construct debug output panel if it is not there
+	unless ( $self->{panel_debug_output} ) {
+		require Padre::Plugin::Debug::DebugOutput;
+		$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+	}
+
+	$self->_show_debug_output($show);
+
+	$main->aui->Update;
+
+	return;
+}
+
+########
+# Event Handler on_debug_output_clicked
+# this is a naff loading method,
+########
+sub _show_debug_output {
+	my $self = shift;
+
+	# my $main = $self->main;
+	my $current = Padre::Current->new;
+	my $main    = $current->main;
+
+	if ( $_[0] ) {
+		$main->bottom->show( $self->{panel_debug_output} );
+	} else {
+		$main->bottom->hide( $self->{panel_debug_output} );
+		delete $self->{panel_debug_output};
+	}
+
+	return;
+}
 
 
 1;

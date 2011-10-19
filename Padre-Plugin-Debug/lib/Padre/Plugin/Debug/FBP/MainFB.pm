@@ -215,7 +215,7 @@ sub new {
 	$self->{m_staticText31} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("Warning! Check box to view panel \n( you must un-check to remove panel)"),
+		Wx::gettext("info: none"),
 	);
 
 	my $close_button = Wx::Button->new(
@@ -281,6 +281,14 @@ sub new {
 	$self->Layout;
 
 	return $self;
+}
+
+sub debug_output {
+	$_[0]->{debug_output};
+}
+
+sub breakpoints {
+	$_[0]->{breakpoints};
 }
 
 sub on_debug_output_clicked {

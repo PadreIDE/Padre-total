@@ -12,7 +12,7 @@ use Padre::Wx                         ();
 use Padre::Plugin::Debug::FBP::MainFB ();
 use Padre::Current                    ();
 use Padre::Util                       ();
-# use Padre::Logger qw(TRACE DEBUG);
+use Padre::Logger qw(TRACE DEBUG);
 
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.02';
@@ -41,11 +41,13 @@ sub set_up {
 	my $main = $self->main;
 
 	$self->{debug_output_visable} = 0;
-	$self->{breakpoints_visable} = 0;
+	$self->{breakpoints_visable}  = 0;
 	require Padre::Plugin::Debug::Wx::Debugger;
 	$self->{debugger} = Padre::Plugin::Debug::Wx::Debugger->new();
-	
+
 	# Setup the debug button icons
+
+	$self->{debug_output}->Disable;
 
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
 	$self->{step_in}->Enable;
@@ -78,51 +80,22 @@ sub set_up {
 # this is a naff loading method,
 ########
 sub on_debug_output_clicked {
-	my ($self, $event) = @_;
+	my ( $self, $event ) = @_;
 	my $main = $self->main;
 
 	# Construct debug output panel if it is not there
-	unless($self->{panel_debug_output}) {
+	unless ( $self->{panel_debug_output} ) {
 		require Padre::Plugin::Debug::DebugOutput;
 		$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
 	}
 
-	if($event->IsChecked) {
+	if ( $event->IsChecked ) {
 		$main->bottom->show( $self->{panel_debug_output} );
 	} else {
 		$main->bottom->hide( $self->{panel_debug_output} );
 		delete $self->{panel_debug_output};
 	}
 
-# p $self->{debug_output_visable};
-
-# # 	if ( $self->{debug_output_visable} == 1 ) {
-
-# # todo turn off
-		# $self->unload_panel_debug_output();
-		
-# # 		$self->{panel_debug_output}->disable($self);
-		
-# # 		$main->bottom->hide( $self->{panel_debug_output} );
-		# delete $self->{panel_debug_output};
-		
-# # 		$self->{debug_output_visable} = 0;
-		# $self->{step_in}->Disable;
-		# $self->{display_value}->Disable;
-		# $self->{quit_debugger}->Disable;
-	# } else {
-
-# # todo turn on
-		# $self->load_panel_debug_output();
-		
-# # 		$self->{panel_debug_output}->enable($self);
-		
-# # 		$self->{debug_output_visable} = 1;
-		# $self->{step_in}->Enable;
-		# $self->{display_value}->Enable;
-		# $self->{quit_debugger}->Enable;
-	# }
-	
 	$self->aui->Update;
 
 	return;
@@ -131,55 +104,60 @@ sub on_debug_output_clicked {
 # Composed Method,
 # Load Panel Debug Output,
 #######
-sub load_panel_debug_output {
-	my $self = shift;
-	my $main = $self->main;
-	
-require Padre::Plugin::Debug::DebugOutput;
-	$self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
-	$self->{panel_debug_output}->Show;
-	$self->{debug_output_visable} = 1;
+# sub load_panel_debug_output {
+# my $self = shift;
+# my $main = $self->main;
 
-return;
-}
+# # require Padre::Plugin::Debug::DebugOutput;
+# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+# $self->{panel_debug_output}->Show;
+# $self->{debug_output_visable} = 1;
+
+# # return;
+# }
 ########
 # Composed Method,
 # Unload Panel Debug Output,
 #######
-sub unload_panel_debug_output {
-	my $self = shift;
+# sub unload_panel_debug_output {
+# my $self = shift;
 
-# 	# Close the main dialog if it is hanging around
-	if ( $self->{panel_debug_output} ) {
-		$self->{panel_debug_output}->Destroy;
-		delete $self->{panel_debug_output};
-	}
+# # # 	# Close the main dialog if it is hanging around
+# if ( $self->{panel_debug_output} ) {
+# $self->{panel_debug_output}->Destroy;
+# delete $self->{panel_debug_output};
+# }
 
-$self->{debug_output_visable} = 0;
+# # $self->{debug_output_visable} = 0;
 
-return 1;
-}
+# # return 1;
+# }
 
 
 ########
 # Event Handler on_breakpoints_clicked
 ########
 sub on_breakpoints_clicked {
-	my $self = shift;
-	# my $main = $self->main;
+	my ( $self, $event ) = @_;
+	my $main = $self->main;
 
-	if ( $self->{breakpoints_visable} == 1 ) {
+	# Construct breakpoint panel if it is not there
+	unless ( $self->{panel_breakpoints} ) {
+		require Padre::Plugin::Debug::Breakpoints;
+		$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
+	}
 
-		#todo turn off
-		$self->unload_panel_breakpoints();
-		$self->{set_breakpoints}->Disable;
-	} else {
-
-		#todo turn on
-		$self->load_panel_breakpoints();
+	if ( $event->IsChecked ) {
+		$main->left->show( $self->{panel_breakpoints} );
 		$self->{set_breakpoints}->Enable;
 		$self->{step_in}->Enable;
+	} else {
+		$main->left->hide( $self->{panel_breakpoints} );
+		$self->{set_breakpoints}->Disable;
+		delete $self->{panel_breakpoints};
 	}
+
+	$self->aui->Update;
 
 	return;
 }
@@ -187,34 +165,34 @@ sub on_breakpoints_clicked {
 # Composed Method,
 # Load Panel Breakpoints
 #######
-sub load_panel_breakpoints {
-	my $self = shift;
-	my $main = $self->main;
+# sub load_panel_breakpoints {
+# my $self = shift;
+# my $main = $self->main;
 
-	require Padre::Plugin::Debug::Breakpoints;
-	$self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
-	$self->{panel_breakpoints}->Show;
-	$self->{breakpoints_visable} = 1;
+# # 	require Padre::Plugin::Debug::Breakpoints;
+# $self->{panel_breakpoints} = Padre::Plugin::Debug::Breakpoints->new($main);
+# $self->{panel_breakpoints}->Show;
+# $self->{breakpoints_visable} = 1;
 
-	return;
-}
+# # 	return;
+# }
 ########
 # Composed Method,
 # Unload Panel Breakpoints
 #######
-sub unload_panel_breakpoints {
-	my $self = shift;
+# sub unload_panel_breakpoints {
+# my $self = shift;
 
-	# Close the main dialog if it is hanging around
-	if ( $self->{panel_breakpoints} ) {
-		$self->{panel_breakpoints}->Destroy;
-		delete $self->{panel_breakpoints};
-	}
+# # 	# Close the main dialog if it is hanging around
+# if ( $self->{panel_breakpoints} ) {
+# $self->{panel_breakpoints}->Destroy;
+# delete $self->{panel_breakpoints};
+# }
 
-	$self->{breakpoints_visable} = 0;
+# # 	$self->{breakpoints_visable} = 0;
 
-	return 1;
-}
+# # 	return 1;
+# }
 
 
 #######
@@ -225,7 +203,8 @@ sub plugin_disable {
 
 	# Close the dialog if it is hanging around
 	$self->unload_panel_breakpoints;
-	$self->unpanel_debug_output;
+
+	# $self->unpanel_debug_output;
 
 	# Unload all our child classes
 	$self->unload(
@@ -235,6 +214,7 @@ sub plugin_disable {
 			Padre::Plugin::Debug::Breakpoints
 			Padre::Plugin::Debug::FBP::Breakpoints
 			Padre::Plugin::Debug::Wx::Debugger
+			Debug::Client
 			}
 	);
 
@@ -248,7 +228,8 @@ sub plugin_disable {
 #######
 sub step_in_clicked {
 	my $self = shift;
-	
+
+	TRACE('step_in_clicked') if DEBUG;
 	$self->{debugger}->debug_perl_step_in;
 	$self->{step_over}->Enable;
 	$self->{step_out}->Enable;
@@ -263,7 +244,7 @@ sub step_in_clicked {
 sub step_over_clicked {
 	my $self = shift;
 
-	say 'step_over_clicked';
+	TRACE('step_over_clicked') if DEBUG;
 	$self->{debugger}->debug_perl_step_over;
 
 	return;
@@ -274,7 +255,7 @@ sub step_over_clicked {
 sub step_out_clicked {
 	my $self = shift;
 
-	say 'step_out_clicked';
+	TRACE('step_out_clicked') if DEBUG;
 	$self->{debugger}->debug_perl_step_out;
 
 	return;
@@ -284,8 +265,8 @@ sub step_out_clicked {
 #######
 sub run_till_clicked {
 	my $self = shift;
-	
-	say 'run_till_clicked';
+
+	TRACE('run_till_clicked') if DEBUG;
 	$self->{debugger}->debug_perl_run_till;
 
 	return;
@@ -295,8 +276,8 @@ sub run_till_clicked {
 #######
 sub set_breakpoints_clicked {
 	my $self = shift;
-	
-	say 'set_breakpoints_clicked';
+
+	TRACE('set_breakpoints_clicked') if DEBUG;
 	$self->{panel_breakpoints}->set_breakpoints_clicked();
 
 	return;
@@ -307,9 +288,12 @@ sub set_breakpoints_clicked {
 sub display_value_clicked {
 	my $self = shift;
 
-	say 'display_value';
-	$self->{panel_debug_output}->debug_out('step in');
-	# $self->{debugger}->debug_perl_display_value;
+	TRACE('display_value') if DEBUG;
+
+	# if ( $self->{panel_debug_output} ) {
+	# $self->{panel_debug_output}->debug_out('display value');
+	# }
+	$self->{debugger}->display_value();
 
 	return;
 }
@@ -318,13 +302,19 @@ sub display_value_clicked {
 #######
 sub quit_debugger_clicked {
 	my $self = shift;
-	
-	say 'quit_debugger_clicked';
+	my $main = $self->main;
+
+	TRACE('quit_debugger_clicked') if DEBUG;
 	$self->{debugger}->debug_perl_quit;
 	$self->{step_over}->Disable;
 	$self->{step_out}->Disable;
 	$self->{run_till}->Disable;
 	$self->{display_value}->Disable;
+	$main->left->hide( $self->{panel_breakpoints} );
+	$self->{breakpoints}->SetValue(0);
+
+	# $main->bottom->hide( $self->{panel_debug_output} );
+	# $self->{debug_output}->SetValue(0);
 	return;
 }
 
@@ -332,6 +322,7 @@ sub quit_debugger_clicked {
 
 __END__
 
+=pod
 
 =head1 STATUS
 
@@ -365,8 +356,28 @@ look at debug having its own margin (shared with code folding) and new icons,
 current thinking two dots a coloured one for active and Gray for not active 
 with switch in breakpoint panel 
 
-get panels to integrate with Padre, play nice?
+get panels to integrate with Padre, play nice=yes, still not finished
 
 add functionality from trunk so all icons mimic current debug implementation
 
-look at displaying variables
+look at displaying variables yes, but in a nice table
+
+=head1 Method 
+
+=head2 Add the following to Debug::Client
+
+	sub get_yvalue {
+		my ( $self, $var ) = @_;
+		die "no parameter given\n" if not defined $var;
+
+		if ( $var =~ /^\d/ ) {
+			$self->_send("y $var");
+			my $buf = $self->_get;
+			$self->_prompt( \$buf );
+			return $buf;
+		}
+
+		# die "Unknown parameter '$var'\n";
+	}
+
+=cut

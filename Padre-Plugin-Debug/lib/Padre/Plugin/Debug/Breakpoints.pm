@@ -4,14 +4,14 @@ use 5.010;
 use strict;
 use warnings;
 
-use Padre::Wx::Role::Main ();
+# use Padre::Wx::Role::Main ();
 use Padre::Wx::Role::View ();
 use Padre::Wx             ();
 use Padre::Plugin::Debug::FBP::Breakpoints;
 use English qw( -no_match_vars ); # Avoids regex performance penalty
 
 our $VERSION = '0.01';
-our @ISA     = qw{ Padre::Wx::Role::View Padre::Wx::Role::Main Padre::Plugin::Debug::FBP::Breakpoints };
+our @ISA     = qw{ Padre::Wx::Role::View  Padre::Plugin::Debug::FBP::Breakpoints };
 use Data::Printer { caller_info => 1, colored => 1, };
 
 #######
@@ -72,13 +72,15 @@ sub view_close {
 	return;
 }
 
-sub view_icon {
-	my $self = shift;
-
-	# This method should return a valid Wx bitmap to be used as the icon for
-	# a notebook page (displayed alongside C<view_label>).
-	return;
-}
+#
+# sub view_icon {
+# 	my $self = shift;
+#
+#  	# This method should return a valid Wx bitmap to be used as the icon for
+#	# a notebook page (displayed alongside C<view_label>).
+#	return;
+#}
+#
 
 sub view_start {
 	my $self = shift;
@@ -96,6 +98,9 @@ sub view_stop {
 	return;
 }
 
+sub gettext_label {
+	Wx::gettext('BreakPoints');
+}
 ###############
 # Make Padre::Wx::Role::View happy end
 ###############
