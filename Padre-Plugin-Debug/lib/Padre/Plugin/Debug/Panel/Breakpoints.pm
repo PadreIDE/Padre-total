@@ -296,7 +296,7 @@ sub _update_list {
 	# carp($EVAL_ERROR);
 	# } else {
 
-	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
+	my $sql_select = 'ORDER BY filename ASC, line_number DESC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
 	# $item->SetId($idx);

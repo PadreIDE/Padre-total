@@ -43,7 +43,8 @@ sub set_up {
 	$self->{debug_output_visable} = 0;
 	$self->{breakpoints_visable}  = 0;
 	require Padre::Plugin::Debug::Debugger;
-	$self->{debugger} = Padre::Plugin::Debug::Debugger->new();
+	$self->{debugger} = Padre::Plugin::Debug::Debugger->new($main);
+	# $self->{debugger}->setup();
 
 	# Setup the debug button icons
 
@@ -167,7 +168,7 @@ sub step_in_clicked {
 	my $self = shift;
 
 	TRACE('step_in_clicked') if DEBUG;
-	$self->{debugger}->step_in();
+	$self->{debugger}->debug_step_in();
 	$self->{step_over}->Enable;
 	$self->{step_out}->Enable;
 	$self->{run_till}->Enable;
@@ -182,7 +183,7 @@ sub step_over_clicked {
 	my $self = shift;
 
 	TRACE('step_over_clicked') if DEBUG;
-	$self->{debugger}->debug_perl_step_over;
+	$self->{debugger}->debug_step_over;
 
 	return;
 }
@@ -193,7 +194,7 @@ sub step_out_clicked {
 	my $self = shift;
 
 	TRACE('step_out_clicked') if DEBUG;
-	$self->{debugger}->debug_perl_step_out;
+	$self->{debugger}->debug_step_out;
 
 	return;
 }
@@ -204,7 +205,7 @@ sub run_till_clicked {
 	my $self = shift;
 
 	TRACE('run_till_clicked') if DEBUG;
-	$self->{debugger}->debug_perl_run_till;
+	$self->{debugger}->debug_run_till;
 
 	return;
 }
@@ -238,7 +239,7 @@ sub quit_debugger_clicked {
 	my $main = $self->main;
 
 	TRACE('quit_debugger_clicked') if DEBUG;
-	$self->{debugger}->debug_perl_quit;
+	$self->{debugger}->debug_quit;
 	$self->{step_over}->Disable;
 	$self->{step_out}->Disable;
 	$self->{run_till}->Disable;

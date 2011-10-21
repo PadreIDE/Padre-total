@@ -1,21 +1,5 @@
 package Padre::Plugin::Debug::Debugger;
 
-=pod
-
-=head1 NAME
-
-Padre::Wx::Debugger - Interface to the Perl debugger.
-
-=head1 DESCRIPTION
-
-Padre::Wx::Debugger provides a wrapper for the generalised L<Debug::Client>.
-
-It should really live at Padre::Debugger, but does not currently have
-sufficient abstraction from L<Wx>.
-
-=head1 METHODS
-
-=cut
 
 use 5.010;
 use strict;
@@ -31,13 +15,10 @@ our $VERSION = '0.91';
 
 # our @ISA     = qw{ Padre::Wx::Role::View };
 
-=pod
 
-=head2 new
-
-Simple constructor.
-
-=cut
+#######
+# new
+#######
 
 sub new { # todo use a better object constructor
 	my $class = shift; # What class are we constructing?
@@ -48,12 +29,14 @@ sub new { # todo use a better object constructor
 } #new
 
 sub _init {
-	my ( $self, @args ) = @_;
-
+	my ( $self, $main, @args ) = @_;
+	
+	$self->{main} = $main;
+	
 	$self->{client} = undef;
 	$self->{file}   = undef;
 	$self->{save}   = {};
-
+	
 	return $self;
 } #_init
 
@@ -68,35 +51,32 @@ sub _init {
 # return $self;
 # }
 
-sub message {
-	Padre::Current->main->message( $_[1] );
+sub setup {
+	my $self = shift;
+	my $main = $self->{main};
+	p $main;
+	return;	 
 }
 
-sub error {
-	Padre::Current->main->error( $_[1] );
-}
 
-=pod
+# sub message {
+	# Padre::Current->main->message( $_[1] );
+# }
 
-=head2 debug_perl
+# sub error {
+	# Padre::Current->main->error( $_[1] );
+# }
 
-  $main->debug_perl;
-
-Run current document under Perl debugger. An error is reported if
-current is not a Perl document.
-
-Returns true if debugger successfully started.
-
-=cut
 
 sub debug_perl {
 	my $self     = shift;
+	my $main = $self->{main};
 	my $current  = Padre::Current->new;
-	my $main     = $current->main;
+	# my $main     = $current->main;
 	my $document = $current->document;
 	my $editor   = $current->editor;
 
-	$main->show_debug(1);
+	# $main->show_debug(1);
 	$self->show_debug_output(1);
 	$self->show_debug_variable(1);
 
@@ -179,7 +159,7 @@ sub debug_perl {
 
 	unless ( $self->_set_debugger ) {
 		$main->error( Wx::gettext('Debugging failed. Did you check your program for syntax errors?') );
-		$self->debug_perl_quit;
+		$self->debug_quit;
 		return;
 	}
 
@@ -188,8 +168,9 @@ sub debug_perl {
 
 sub _set_debugger {
 	my $self    = shift;
+	my $main = $self->{main};
 	my $current = Padre::Current->new;
-	my $main    = $current->main;
+	# my $main    = $current->main;
 	my $editor  = $current->editor or return;
 	my $file    = $self->{client}->{filename} or return;
 	my $row     = $self->{client}->{row} or return;
@@ -229,9 +210,10 @@ sub _set_debugger {
 
 sub running {
 	my $self = shift;
+	my $main = $self->{main};
 
 	unless ( $self->{client} ) {
-		Padre::Current->main->message(
+		$main->message(
 			Wx::gettext(
 				"The debugger is not running.\nYou can start the debugger using one of the commands 'Step In', 'Step Over', or 'Run till Breakpoint' in the Debug menu."
 			),
@@ -297,13 +279,13 @@ sub debug_perl_jumpt_to {
 	return;
 }
 
-sub debug_perl_quit {
+sub debug_quit {
 	my $self = shift;
 	$self->running or return;
 
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
-	$current->main->show_debug(0);
+	# $current->main->show_debug(0);
 	$self->show_debug_output(0);
 	$self->show_debug_variable(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
@@ -315,14 +297,18 @@ sub debug_perl_quit {
 	return;
 }
 
-sub step_in {
+#######
+# Method debug_step_in
+#######
+sub debug_step_in {
 	my $self = shift;
+	my $main = $self->{main};
 
 	# p $self->{client};
 
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
-			Padre::Current->main->error( Wx::gettext('Debugger not running') );
+			$main->error( Wx::gettext('Debugger not running') );
 			return;
 		}
 
@@ -333,7 +319,7 @@ sub step_in {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_in;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_perl_quit;
+		$self->debug_quit;
 		return;
 	}
 
@@ -350,12 +336,16 @@ sub step_in {
 	return;
 }
 
-sub debug_perl_step_over {
+#######
+# Method debug_step_over
+#######
+sub debug_step_over {
 	my $self = shift;
+	my $main = $self->{main};
 
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
-			Padre::Current->main->error( Wx::gettext('Debugger not running') );
+			$main->error( Wx::gettext('Debugger not running') );
 			return;
 		}
 	}
@@ -363,7 +353,7 @@ sub debug_perl_step_over {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_over;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_perl_quit;
+		$self->debug_quit;
 		return;
 	}
 	$self->_set_debugger;
@@ -383,13 +373,17 @@ sub debug_perl_step_over {
 # #	$self->debug_perl_run;
 # }
 
-sub debug_perl_run_till {
+#######
+# Method debug_run_till
+#######
+sub debug_run_till {
 	my $self  = shift;
 	my $param = shift;
-
+	my $main = $self->{main};
+	
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
-			Padre::Current->main->error( Wx::gettext('Debugger not running') );
+			$main->error( Wx::gettext('Debugger not running') );
 			return;
 		}
 	}
@@ -397,7 +391,7 @@ sub debug_perl_run_till {
 	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_perl_quit;
+		$self->debug_quit;
 		return;
 	}
 
@@ -419,26 +413,33 @@ sub debug_perl_run_till {
 	return;
 }
 
-sub debug_perl_step_out {
+#######
+# Method debug_step_out
+#######
+sub debug_step_out {
 	my $self = shift;
+	my $main = $self->{main};
 
 	unless ( $self->{client} ) {
-		Padre::Current->main->error( Wx::gettext('Debugger not running') );
+		$main->error( Wx::gettext('Debugger not running') );
 		return;
 	}
 
 	my ( $module, $file, $row, $content ) = $self->{client}->step_out;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_perl_quit;
+		$self->debug_quit;
 		return;
 	}
 	$self->_set_debugger;
 
 	return;
 }
-
-sub debug_perl_show_stack_trace {
+#######
+# show_stack_trace
+# todo add checkmark to simulator to test
+#######
+sub display_stack_trace {
 	my $self = shift;
 	$self->running or return;
 
@@ -447,20 +448,24 @@ sub debug_perl_show_stack_trace {
 	if ( ref($trace) and ref($trace) eq 'ARRAY' ) {
 		$str = join "\n", @$trace;
 	}
-	$self->message($str);
+	# $self->message($str);
+	$self->{panel_debug_output}->debug_output($str);
 
 	return;
 }
-
+#######
+# todo debug_perl_show_value
+#######
 sub debug_perl_show_value {
 	my $self = shift;
+	my $main = $self->{main};
 	$self->running or return;
 
 	my $text = $self->_debug_get_variable or return;
 
 	my $value = eval { $self->{client}->get_value($text) };
 	if ($@) {
-		$self->error( sprintf( Wx::gettext("Could not evaluate '%s'"), $text ) );
+		$main->error( sprintf( Wx::gettext("Could not evaluate '%s'"), $text ) );
 		return;
 	}
 	say "text: $text => value: $value";
@@ -468,9 +473,12 @@ sub debug_perl_show_value {
 
 	return;
 }
-
+#######
+# todo _debug_get_variable
+#######
 sub _debug_get_variable {
 	my $self = shift;
+	my $main = $self->{main};
 	my $document = Padre::Current->document or return;
 
 	#my $text = $current->text;
@@ -478,7 +486,7 @@ sub _debug_get_variable {
 	p $location;
 	p $text;
 	if ( not $text or $text !~ m/^[\$@%\\]/smx ) {
-		Padre::Current->main->error(
+		$main->error(
 			sprintf(
 				Wx::gettext(
 					"'%s' does not look like a variable. First select a variable in the code and then try again."),
@@ -489,7 +497,9 @@ sub _debug_get_variable {
 	}
 	return $text;
 }
-
+#######
+# todo display_value
+#######
 sub display_value {
 	my $self = shift;
 	$self->running or return;
@@ -515,7 +525,9 @@ sub display_value {
 	#		$debugger->SetItem( $idx, 1, $value );
 	#	}
 }
-
+#######
+# 
+#######
 sub debug_perl_evaluate_expression {
 	my $self = shift;
 	$self->running or return;
@@ -529,7 +541,9 @@ sub debug_perl_evaluate_expression {
 
 	return;
 }
-
+#######
+# quit
+#######
 sub quit {
 	my $self = shift;
 	if ( $self->{client} ) {
@@ -618,10 +632,8 @@ sub _show_bp_autoload {
 ########
 sub show_debug_output {
 	my $self = shift;
+	my $main = $self->{main};
 
-	# my $main = $self->main;
-	my $current = Padre::Current->new;
-	my $main    = $current->main;
 	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
 
 	# Construct debug output panel if it is not there
@@ -636,16 +648,12 @@ sub show_debug_output {
 
 	return;
 }
-
 ########
 # Panel Launcher show debug output
 ########
 sub _show_debug_output {
 	my $self = shift;
-
-	# my $main = $self->main;
-	my $current = Padre::Current->new;
-	my $main    = $current->main;
+	my $main = $self->{main};
 
 	if ( $_[0] ) {
 		$main->bottom->show( $self->{panel_debug_output} );
@@ -662,8 +670,8 @@ sub _show_debug_output {
 ########
 sub show_debug_variable {
 	my $self = shift;
-	my $current = Padre::Current->new;
-	my $main    = $current->main;
+	my $main = $self->{main};
+
 	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
 
 	# Construct debug output panel if it is not there
@@ -678,16 +686,12 @@ sub show_debug_variable {
 
 	return;
 }
-
 ########
 # Panel Launcher show debug variable
 ########
 sub _show_debug_variable {
 	my $self = shift;
-
-	# my $main = $self->main;
-	my $current = Padre::Current->new;
-	my $main    = $current->main;
+	my $main = $self->{main};
 
 	if ( $_[0] ) {
 		$main->right->show( $self->{panel_debug_variable} );
@@ -701,10 +705,42 @@ sub _show_debug_variable {
 
 1;
 
-# TODO:
+# TODO: which panel
 # Keep the debugger window open even after ending the script
 
 # Copyright 2008-2011 The Padre development team as listed in Padre.pm.
 # LICENSE
 # This program is free software; you can redistribute it and/or
 # modify it under the same terms as Perl 5 itself.
+
+__END__
+
+=pod
+
+=head1 NAME
+
+Padre::Wx::Debugger - Interface to the Perl debugger.
+
+=head1 DESCRIPTION
+
+Padre::Wx::Debugger provides a wrapper for the generalised L<Debug::Client>.
+
+It should really live at Padre::Debugger, but does not currently have
+sufficient abstraction from L<Wx>.
+
+=head1 METHODS
+
+=head2 new
+
+Simple constructor.
+
+=head2 debug_perl
+
+  $main->debug_perl;
+
+Run current document under Perl debugger. An error is reported if
+current is not a Perl document.
+
+Returns true if debugger successfully started.
+
+=cut
