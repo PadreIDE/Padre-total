@@ -30,13 +30,14 @@ sub new { # todo use a better object constructor
 
 sub _init {
 	my ( $self, $main, @args ) = @_;
-	
+
 	$self->{main} = $main;
-	
-	$self->{client} = undef;
-	$self->{file}   = undef;
-	$self->{save}   = {};
-	
+
+	$self->{client}        = undef;
+	$self->{file}          = undef;
+	$self->{save}          = {};
+	$self->{show_trace_on} = 0;
+
 	return $self;
 } #_init
 
@@ -55,23 +56,24 @@ sub setup {
 	my $self = shift;
 	my $main = $self->{main};
 	p $main;
-	return;	 
+	return;
 }
 
 
 # sub message {
-	# Padre::Current->main->message( $_[1] );
+# Padre::Current->main->message( $_[1] );
 # }
 
 # sub error {
-	# Padre::Current->main->error( $_[1] );
+# Padre::Current->main->error( $_[1] );
 # }
 
 
 sub debug_perl {
-	my $self     = shift;
-	my $main = $self->{main};
-	my $current  = Padre::Current->new;
+	my $self    = shift;
+	my $main    = $self->{main};
+	my $current = Padre::Current->new;
+
 	# my $main     = $current->main;
 	my $document = $current->document;
 	my $editor   = $current->editor;
@@ -168,12 +170,13 @@ sub debug_perl {
 
 sub _set_debugger {
 	my $self    = shift;
-	my $main = $self->{main};
+	my $main    = $self->{main};
 	my $current = Padre::Current->new;
+
 	# my $main    = $current->main;
-	my $editor  = $current->editor or return;
-	my $file    = $self->{client}->{filename} or return;
-	my $row     = $self->{client}->{row} or return;
+	my $editor = $current->editor            or return;
+	my $file   = $self->{client}->{filename} or return;
+	my $row    = $self->{client}->{row}      or return;
 
 	# Open the file if needed
 	if ( $editor->{Document}->filename ne $file ) {
@@ -285,6 +288,7 @@ sub debug_quit {
 
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
+
 	# $current->main->show_debug(0);
 	$self->show_debug_output(0);
 	$self->show_debug_variable(0);
@@ -319,7 +323,8 @@ sub debug_step_in {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_in;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_quit;
+
+		# $self->debug_quit;
 		return;
 	}
 
@@ -327,6 +332,7 @@ sub debug_step_in {
 	# p $self->{client}->get_yvalue(0);
 	# $self->{panel_debug_output}->debug_output( $self->{client}->get_yvalue(0) );
 	# p $self->{client}->get_yvalue(1);
+	# $self->display_stack_trace(1);
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
@@ -353,7 +359,8 @@ sub debug_step_over {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_over;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_quit;
+
+		# $self->debug_quit;
 		return;
 	}
 	$self->_set_debugger;
@@ -379,8 +386,8 @@ sub debug_step_over {
 sub debug_run_till {
 	my $self  = shift;
 	my $param = shift;
-	my $main = $self->{main};
-	
+	my $main  = $self->{main};
+
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
 			$main->error( Wx::gettext('Debugger not running') );
@@ -391,22 +398,17 @@ sub debug_run_till {
 	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_quit;
+
+		# $self->debug_quit;
 		return;
 	}
 
-	# say 'inside run till';
-	# p $self->{client};
-	# p $self->{client}->show_line;
-	# p $self->{client}->buffer;
+	# $self->display_stack_trace(1);
 	my $output = $self->{client}->buffer;
 
 	# p $self->{client}->get_yvalue(0);
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-
-	# p $self->{client}->get_yvalue(1);
-	# p @stack_trace;
 
 	$self->_set_debugger;
 
@@ -428,7 +430,8 @@ sub debug_step_out {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_out;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-		$self->debug_quit;
+
+		# $self->debug_quit;
 		return;
 	}
 	$self->_set_debugger;
@@ -436,10 +439,50 @@ sub debug_step_out {
 	return;
 }
 #######
-# show_stack_trace
+# display_trace
 # todo add checkmark to simulator to test
 #######
-sub display_stack_trace {
+sub display_trace {
+	my $self = shift;
+
+	$self->running or return;
+	my $trace_on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+
+	my $trace_status;
+
+	if ( $trace_on == 1 && $self->{show_trace_on} == 1 ) {
+		return;
+	}
+
+	if ( $trace_on == 1 && $self->{show_trace_on} == 0 ) {
+		$trace_status = $self->{client}->toggle_trace;
+		$self->{panel_debug_output}->debug_output($trace_status);
+		if ( $trace_status =~ m/ on /sm ) {
+			$self->{show_trace_on} = 1;
+		}
+		return;
+	}
+
+	if ( $trace_on == 0 && $self->{show_trace_on} == 0 ) {
+		return;
+	}
+
+	if ( $trace_on == 0 && $self->{show_trace_on} == 1 ) {
+		$trace_status = $self->{client}->toggle_trace;
+		$self->{panel_debug_output}->debug_output($trace_status);
+		if ( $trace_status =~ m/ off /sm ) {
+			$self->{show_trace_on} = 0;
+		}
+		return;
+	}
+
+	return;
+}
+
+#######
+# todo
+#######
+sub debug_perl_show_stack_trace {
 	my $self = shift;
 	$self->running or return;
 
@@ -448,8 +491,7 @@ sub display_stack_trace {
 	if ( ref($trace) and ref($trace) eq 'ARRAY' ) {
 		$str = join "\n", @$trace;
 	}
-	# $self->message($str);
-	$self->{panel_debug_output}->debug_output($str);
+	$self->message($str);
 
 	return;
 }
@@ -477,8 +519,8 @@ sub debug_perl_show_value {
 # todo _debug_get_variable
 #######
 sub _debug_get_variable {
-	my $self = shift;
-	my $main = $self->{main};
+	my $self     = shift;
+	my $main     = $self->{main};
 	my $document = Padre::Current->document or return;
 
 	#my $text = $current->text;
@@ -526,16 +568,16 @@ sub display_value {
 	#	}
 }
 #######
-# 
+#
 #######
 sub debug_perl_evaluate_expression {
 	my $self = shift;
 	$self->running or return;
 
 	my $expression = Padre::Current->main->prompt(
-		Wx::gettext("Expression:"),
-		Wx::gettext("Expr"),
-		"EVAL_EXPRESSION"
+		Wx::gettext('Expression:'),
+		Wx::gettext('Expr'),
+		'EVAL_EXPRESSION'
 	);
 	$self->{client}->execute_code($expression);
 
@@ -547,7 +589,7 @@ sub debug_perl_evaluate_expression {
 sub quit {
 	my $self = shift;
 	if ( $self->{client} ) {
-		$self->_quit;
+		$self->debug_quit;
 	}
 	return;
 }
@@ -584,7 +626,7 @@ sub _get_bp_db {
 
 	TRACE("current file from _get_bp_db: $self->{current_file}") if DEBUG;
 
-	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
+	my $sql_select = 'ORDER BY filename DESC, line_number DESC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
 	for ( 0 .. $#tuples ) {
@@ -595,7 +637,7 @@ sub _get_bp_db {
 
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 
-			if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+			if ( $tuples[$_][1] =~ m/^$self->{current_file}/sm ) {
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			}
 
@@ -634,7 +676,7 @@ sub show_debug_output {
 	my $self = shift;
 	my $main = $self->{main};
 
-	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $show = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
 
 	# Construct debug output panel if it is not there
 	unless ( $self->{panel_debug_output} ) {
@@ -672,7 +714,7 @@ sub show_debug_variable {
 	my $self = shift;
 	my $main = $self->{main};
 
-	my $show    = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
+	my $show = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
 
 	# Construct debug output panel if it is not there
 	unless ( $self->{panel_debug_variable} ) {

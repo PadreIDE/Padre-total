@@ -14,6 +14,13 @@ our @ISA = qw{
 	Padre::Plugin::Debug::FBP::DebugOutput
 };
 
+use constant {
+	RED        => Wx::Colour->new('red'),
+	DARK_GREEN => Wx::Colour->new( 0x00, 0x90, 0x00 ),
+	BLUE       => Wx::Colour->new('blue'),
+	GRAY       => Wx::Colour->new('gray'),
+	BLACK      => Wx::Colour->new('black'),
+};
 
 #######
 # new
@@ -102,7 +109,9 @@ sub gettext_label {
 sub debug_output {
 	my $self   = shift;
 	my $output = shift;
-
+	
+	#TODO change to DARK_RED
+	$self->{output}->SetForegroundColour(RED);
 	$self->{output}->ChangeValue($output);
 
 	# $self->{output}->AppendText($out_text . "\n");

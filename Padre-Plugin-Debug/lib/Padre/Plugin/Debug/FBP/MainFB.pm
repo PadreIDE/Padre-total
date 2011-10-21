@@ -172,6 +172,25 @@ sub new {
 		},
 	);
 
+	$self->{trace} = Wx::Button->new(
+		$self,
+		-1,
+		Wx::gettext("Trace"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+	$self->{trace}->SetToolTip(
+		Wx::gettext("Trace On, Trace Off see status in Debug Output")
+	);
+
+	Wx::Event::EVT_BUTTON(
+		$self,
+		$self->{trace},
+		sub {
+			shift->trace_clicked(@_);
+		},
+	);
+
 	$self->{display_value} = Wx::BitmapButton->new(
 		$self,
 		-1,
@@ -215,7 +234,7 @@ sub new {
 	$self->{m_staticText31} = Wx::StaticText->new(
 		$self,
 		-1,
-		Wx::gettext("info: none"),
+		Wx::gettext("info: trace is a toggle \n it in not reset upon compleation"),
 	);
 
 	my $close_button = Wx::Button->new(
@@ -260,6 +279,7 @@ sub new {
 	$file_2->Add( $self->{step_out}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{run_till}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
+	$file_2->Add( $self->{trace}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
 
@@ -317,6 +337,10 @@ sub run_till_clicked {
 
 sub set_breakpoints_clicked {
 	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
+}
+
+sub trace_clicked {
+	$_[0]->main->error('Handler method trace_clicked for event trace.OnButtonClick not implemented');
 }
 
 sub display_value_clicked {

@@ -44,6 +44,7 @@ sub set_up {
 	$self->{breakpoints_visable}  = 0;
 	require Padre::Plugin::Debug::Debugger;
 	$self->{debugger} = Padre::Plugin::Debug::Debugger->new($main);
+
 	# $self->{debugger}->setup();
 
 	# Setup the debug button icons
@@ -64,6 +65,8 @@ sub set_up {
 
 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
 	$self->{set_breakpoints}->Disable;
+
+	$self->{trace}->Disable;
 
 	$self->{display_value}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-watch-variable') );
 	$self->{display_value}->Disable;
@@ -86,18 +89,18 @@ sub on_debug_output_clicked {
 
 	# Construct debug output panel if it is not there
 	# unless ( $self->{panel_debug_output} ) {
-		# require Padre::Plugin::Debug::DebugOutput;
-		# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
+	# require Padre::Plugin::Debug::DebugOutput;
+	# $self->{panel_debug_output} = Padre::Plugin::Debug::DebugOutput->new($main);
 	# }
 
-# # 	if ( $event->IsChecked ) {
-		# $main->bottom->show( $self->{panel_debug_output} );
+	# # 	if ( $event->IsChecked ) {
+	# $main->bottom->show( $self->{panel_debug_output} );
 	# } else {
-		# $main->bottom->hide( $self->{panel_debug_output} );
-		# delete $self->{panel_debug_output};
+	# $main->bottom->hide( $self->{panel_debug_output} );
+	# delete $self->{panel_debug_output};
 	# }
 
-# # 	$self->aui->Update;
+	# # 	$self->aui->Update;
 
 	return;
 }
@@ -174,6 +177,8 @@ sub step_in_clicked {
 	$self->{run_till}->Enable;
 	$self->{display_value}->Enable;
 	$self->{quit_debugger}->Enable;
+	$self->{trace}->Enable;
+
 	return;
 }
 #######
@@ -221,6 +226,14 @@ sub set_breakpoints_clicked {
 	return;
 }
 #######
+# sub trace_clicked
+#######
+sub trace_clicked {
+	my $self = shift;
+	$self->{debugger}->display_trace(1);
+	return;
+}
+#######
 # sub display_value
 #######
 sub display_value_clicked {
@@ -244,7 +257,8 @@ sub quit_debugger_clicked {
 	$self->{step_out}->Disable;
 	$self->{run_till}->Disable;
 	$self->{display_value}->Disable;
-	
+	$self->{trace}->Disable;
+
 	$main->left->hide( $self->{panel_breakpoints} );
 	$self->{breakpoints}->SetValue(0);
 
@@ -311,6 +325,16 @@ look at displaying variables yes, but in a nice table
 		}
 
 		# die "Unknown parameter '$var'\n";
+	}
+
+
+	sub toggle_trace {
+		my ($self) = @_;
+		$self->_send('t');
+		my $buf = $self->_get;
+
+		$self->_prompt( \$buf );
+		return $buf;
 	}
 
 =cut
