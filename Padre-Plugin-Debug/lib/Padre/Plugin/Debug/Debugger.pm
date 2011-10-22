@@ -331,13 +331,7 @@ sub debug_step_in {
 		return;
 	}
 
-	p $self->{client}->show_breakpoints();
-
-	# p $self->{client}->buffer;
-	# p $self->{client}->get_yvalue(0);
-	# $self->{panel_debug_output}->debug_output( $self->{client}->get_yvalue(0) );
-	# p $self->{client}->get_yvalue(1);
-	# $self->display_stack_trace(1);
+	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
@@ -371,7 +365,7 @@ sub debug_step_over {
 		return;
 	}
 	
-	p $self->{client}->show_breakpoints();
+	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
@@ -417,14 +411,9 @@ sub debug_run_till {
 		return;
 	}
 
-	#another hack just to see whats going on
-	#$self->{client}->list_break_watch_action;
-	p $self->{client}->show_breakpoints();
 
-	# $self->display_stack_trace(1);
+	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
-
-	# p $self->{client}->get_yvalue(0);
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
 
@@ -454,7 +443,7 @@ sub debug_step_out {
 		$self->debug_quit;
 		return;
 	}
-	p $self->{client}->show_breakpoints();
+	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
@@ -642,9 +631,9 @@ sub _get_bp_db {
 	my $editor = Padre::Current->editor;
 
 	$self->{project_dir} = Padre::Current->document->project_dir;
-	p $self->{project_dir};
+	# p $self->{project_dir};
 	$self->{current_file} = Padre::Current->document->filename;
-	p $self->{current_file};
+	# p $self->{current_file};
 
 	TRACE("current file from _get_bp_db: $self->{current_file}") if DEBUG;
 
@@ -653,25 +642,26 @@ sub _get_bp_db {
 
 	for ( 0 .. $#tuples ) {
 
-		# p $tuples[$_][1];
-
-		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
-			TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
-				if DEBUG;
+		# if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
+			# TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
+				# if DEBUG;
 			# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
 			#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
+			# option 1
+			# if you get spourios bp clean DB with recipe04
 			# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+			
+			# Option 2 means that at present you must step-in to load a files bp before using run-till
 
-			if ( !$tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+			if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
 				# say "653 current file $self->{current_file} and line $tuples[$_][2]";
+				# option 2
 				$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			}
 
 		}
-
-	}
 
 	return;
 }
@@ -695,6 +685,7 @@ sub _show_bp_autoload {
 		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
 
 		# autoload of breakpoints only works on step in
+		# option 2
 		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}

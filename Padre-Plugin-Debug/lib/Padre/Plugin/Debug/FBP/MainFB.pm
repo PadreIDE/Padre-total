@@ -27,7 +27,7 @@ sub new {
 		-1,
 		Wx::gettext("Debug Simulator"),
 		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
+		[ 360, 160 ],
 		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
@@ -297,7 +297,7 @@ sub new {
 	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
 	$sizer->Add( $vsizer, 0, Wx::ALL(), 1 );
 
-	$self->SetSizerAndFit($sizer);
+	$self->SetSizer($sizer);
 	$self->Layout;
 
 	return $self;
