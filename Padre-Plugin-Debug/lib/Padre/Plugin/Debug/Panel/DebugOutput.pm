@@ -118,6 +118,13 @@ sub debug_output {
 	return;
 }
 
+sub debug_status {
+	my $self = shift;
+	my $status =shift;
+	$self->{status}->SetLabel($status);
+	return; 
+}
+
 
 1;
 

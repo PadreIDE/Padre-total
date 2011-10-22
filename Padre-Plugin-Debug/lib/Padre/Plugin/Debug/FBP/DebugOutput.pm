@@ -58,6 +58,10 @@ sub new {
 	return $self;
 }
 
+sub status {
+	$_[0]->{status};
+}
+
 sub output {
 	$_[0]->{output};
 }

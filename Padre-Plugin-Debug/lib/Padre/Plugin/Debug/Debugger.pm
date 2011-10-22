@@ -33,10 +33,10 @@ sub _init {
 
 	$self->{main} = $main;
 
-	$self->{client}        = undef;
-	$self->{file}          = undef;
-	$self->{save}          = {};
-	$self->{show_trace_on} = 0;
+	$self->{client}       = undef;
+	$self->{file}         = undef;
+	$self->{save}         = {};
+	$self->{trace_status} = 'Trace = off';
 
 	return $self;
 } #_init
@@ -78,8 +78,9 @@ sub debug_perl {
 	my $document = $current->document;
 	my $editor   = $current->editor;
 
-	# $main->show_debug(1);
+	$main->show_debug(1);
 	$self->show_debug_output(1);
+
 	$self->show_debug_variable(1);
 
 	if ( $self->{client} ) {
@@ -289,8 +290,9 @@ sub debug_quit {
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
 
-	# $current->main->show_debug(0);
+	$current->main->show_debug(0);
 	$self->show_debug_output(0);
+
 	$self->show_debug_variable(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
@@ -323,10 +325,13 @@ sub debug_step_in {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_in;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-
-		# $self->debug_quit;
+		$self->{trace_status} = 'Trace = off';
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
+		$self->debug_quit;
 		return;
 	}
+
+	p $self->{client}->show_breakpoints();
 
 	# p $self->{client}->buffer;
 	# p $self->{client}->get_yvalue(0);
@@ -359,10 +364,18 @@ sub debug_step_over {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_over;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
+		$self->{trace_status} = 'Trace = off';
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
 
-		# $self->debug_quit;
+		$self->debug_quit;
 		return;
 	}
+	
+	p $self->{client}->show_breakpoints();
+	my $output = $self->{client}->buffer;
+	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$self->{panel_debug_output}->debug_output($output);
+	
 	$self->_set_debugger;
 
 	return;
@@ -398,10 +411,15 @@ sub debug_run_till {
 	my ( $module, $file, $row, $content ) = $self->{client}->run($param);
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
-
-		# $self->debug_quit;
+		$self->{trace_status} = 'Trace = off';
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
+		$self->debug_quit;
 		return;
 	}
+
+	#another hack just to see whats going on
+	#$self->{client}->list_break_watch_action;
+	p $self->{client}->show_breakpoints();
 
 	# $self->display_stack_trace(1);
 	my $output = $self->{client}->buffer;
@@ -430,17 +448,23 @@ sub debug_step_out {
 	my ( $module, $file, $row, $content ) = $self->{client}->step_out;
 	if ( $module eq '<TERMINATED>' ) {
 		TRACE('TERMINATED') if DEBUG;
+		$self->{trace_status} = 'Trace = off';
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
 
-		# $self->debug_quit;
+		$self->debug_quit;
 		return;
 	}
+	p $self->{client}->show_breakpoints();
+	my $output = $self->{client}->buffer;
+	$output .= "\n" . $self->{client}->get_yvalue(0);
+	$self->{panel_debug_output}->debug_output($output);
+	
 	$self->_set_debugger;
 
 	return;
 }
 #######
-# display_trace
-# todo add checkmark to simulator to test
+# sub display_trace
 #######
 sub display_trace {
 	my $self = shift;
@@ -448,31 +472,23 @@ sub display_trace {
 	$self->running or return;
 	my $trace_on = ( @_ ? ( $_[0] ? 1 : 0 ) : 1 );
 
-	my $trace_status;
-
-	if ( $trace_on == 1 && $self->{show_trace_on} == 1 ) {
+	if ( $trace_on == 1 && $self->{trace_status} eq 'Trace = on' ) {
 		return;
 	}
 
-	if ( $trace_on == 1 && $self->{show_trace_on} == 0 ) {
-		$trace_status = $self->{client}->toggle_trace;
-		$self->{panel_debug_output}->debug_output($trace_status);
-		if ( $trace_status =~ m/ on /sm ) {
-			$self->{show_trace_on} = 1;
-		}
+	if ( $trace_on == 1 && $self->{trace_status} eq 'Trace = off' ) {
+		$self->{trace_status} = $self->{client}->toggle_trace;
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
 		return;
 	}
 
-	if ( $trace_on == 0 && $self->{show_trace_on} == 0 ) {
+	if ( $trace_on == 0 && $self->{trace_status} eq 'Trace = off' ) {
 		return;
 	}
 
-	if ( $trace_on == 0 && $self->{show_trace_on} == 1 ) {
-		$trace_status = $self->{client}->toggle_trace;
-		$self->{panel_debug_output}->debug_output($trace_status);
-		if ( $trace_status =~ m/ off /sm ) {
-			$self->{show_trace_on} = 0;
-		}
+	if ( $trace_on == 0 && $self->{trace_status} eq 'Trace = on' ) {
+		$self->{trace_status} = $self->{client}->toggle_trace;
+		$self->{panel_debug_output}->debug_status( $self->{trace_status} );
 		return;
 	}
 
@@ -480,7 +496,7 @@ sub display_trace {
 }
 
 #######
-# todo
+# todo add button to main dialog to test
 #######
 sub debug_perl_show_stack_trace {
 	my $self = shift;
@@ -495,6 +511,7 @@ sub debug_perl_show_stack_trace {
 
 	return;
 }
+
 #######
 # todo debug_perl_show_value
 #######
@@ -515,6 +532,7 @@ sub debug_perl_show_value {
 
 	return;
 }
+
 #######
 # todo _debug_get_variable
 #######
@@ -539,6 +557,7 @@ sub _debug_get_variable {
 	}
 	return $text;
 }
+
 #######
 # todo display_value
 #######
@@ -567,8 +586,9 @@ sub display_value {
 	#		$debugger->SetItem( $idx, 1, $value );
 	#	}
 }
+
 #######
-#
+# todo convert to dialog
 #######
 sub debug_perl_evaluate_expression {
 	my $self = shift;
@@ -596,7 +616,7 @@ sub quit {
 
 
 #######
-# internal method _setup_db connector
+# Internal method _setup_db connector
 #######
 sub _setup_db {
 	my $self = shift;
@@ -611,8 +631,8 @@ sub _setup_db {
 }
 
 #######
-# Composed Method,
-# display any relation db
+# Internal Method _get_bp_db
+# display relation db
 #######
 sub _get_bp_db {
 	my $self = shift;
@@ -621,28 +641,38 @@ sub _get_bp_db {
 	$self->_setup_db();
 	my $editor = Padre::Current->editor;
 
-	$self->{project_dir}  = Padre::Current->document->project_dir;
+	$self->{project_dir} = Padre::Current->document->project_dir;
+	p $self->{project_dir};
 	$self->{current_file} = Padre::Current->document->filename;
+	p $self->{current_file};
 
 	TRACE("current file from _get_bp_db: $self->{current_file}") if DEBUG;
 
-	my $sql_select = 'ORDER BY filename DESC, line_number DESC';
+	my $sql_select = 'ORDER BY filename ASC, line_number ASC';
 	my @tuples     = $self->{debug_breakpoints}->select($sql_select);
 
 	for ( 0 .. $#tuples ) {
 
+		# p $tuples[$_][1];
+
 		if ( $tuples[$_][1] =~ m/^ $self->{project_dir} /sxm ) {
 			TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
 				if DEBUG;
+			# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
+			#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
+			# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 
-			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+			if ( !$tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 
-			if ( $tuples[$_][1] =~ m/^$self->{current_file}/sm ) {
+				# say "653 current file $self->{current_file} and line $tuples[$_][2]";
+				$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			}
 
 		}
+
 	}
+
 	return;
 }
 
@@ -663,6 +693,9 @@ sub _show_bp_autoload {
 	for ( 0 .. $#tuples ) {
 
 		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
+
+		# autoload of breakpoints only works on step in
+		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}
 

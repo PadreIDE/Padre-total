@@ -17,6 +17,14 @@ our @ISA     = qw{
 };
 use Data::Printer { caller_info => 1, colored => 1, };
 
+use constant {
+	RED        => Wx::Colour->new('red'),
+	DARK_GREEN => Wx::Colour->new( 0x00, 0x90, 0x00 ),
+	BLUE       => Wx::Colour->new('blue'),
+	GRAY       => Wx::Colour->new('gray'),
+	BLACK      => Wx::Colour->new('black'),
+};
+
 #######
 # new
 #######
@@ -311,6 +319,7 @@ sub _update_list {
 			if ( $self->{show_project} == 0 && $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
+				$self->{list}->SetItemTextColour( $index, BLUE );
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );
@@ -322,6 +331,13 @@ sub _update_list {
 			} elsif ( $self->{show_project} == 1 ) {
 				$item->SetId($index);
 				$self->{list}->InsertItem($item);
+				
+				# make current file blue
+				if ( $tuples[$_][1] =~ m/^$self->{current_file}/ ) {
+					$self->{list}->SetItemTextColour( $index, BLUE );
+				} else {
+					$self->{list}->SetItemTextColour( $index, DARK_GREEN );
+				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
 				$self->{list}->SetItem( $index, 0, ( $tuples[$_][1] ) );

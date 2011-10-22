@@ -230,7 +230,9 @@ sub set_breakpoints_clicked {
 #######
 sub trace_clicked {
 	my $self = shift;
+	
 	$self->{debugger}->display_trace(1);
+
 	return;
 }
 #######
@@ -328,6 +330,7 @@ look at displaying variables yes, but in a nice table
 	}
 
 
+
 	sub toggle_trace {
 		my ($self) = @_;
 		$self->_send('t');
@@ -336,5 +339,16 @@ look at displaying variables yes, but in a nice table
 		$self->_prompt( \$buf );
 		return $buf;
 	}
+
+
+
+	sub show_breakpoints {
+		my ($self) = @_;
+
+		my $ret = $self->send_get('L');
+
+		return $ret;
+	}
+
 
 =cut
