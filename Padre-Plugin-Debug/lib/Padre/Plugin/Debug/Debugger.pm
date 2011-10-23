@@ -8,18 +8,30 @@ use Padre::Constant ();
 use Padre::Current  ();
 use Padre::Wx       ();
 
-# use Padre::Wx::Role::View ();
 use Padre::Logger qw(TRACE DEBUG);
 use Data::Printer { caller_info => 1, colored => 1, };
 our $VERSION = '0.91';
 
-# our @ISA     = qw{ Padre::Wx::Role::View };
+use constant {
+	BLANK => qq{},
+};
 
+
+=pod
+
+=head1 issue
+
+	Option 1 should be default but initial files bp's are screwed update
+	
+	I think this is a Debug::Client issue reciving a burst of bp's or perl -d issue
+
+	Option 2 means that at present you must step-in to load a files bp before using run-till
+
+=cut
 
 #######
 # new
 #######
-
 sub new { # todo use a better object constructor
 	my $class = shift; # What class are we constructing?
 	my $self  = {};    # Allocate new memory
@@ -42,44 +54,17 @@ sub _init {
 	return $self;
 } #_init
 
-# sub new {
-# my $class = shift;
-
-# # 	my $self = bless {
-# client => undef,
-# file   => undef,
-# save   => {},
-# }, $class;
-# return $self;
-# }
-
-sub setup {
-	my $self = shift;
-	my $main = $self->{main};
-	p $main;
-	return;
-}
-
-
-# sub message {
-# Padre::Current->main->message( $_[1] );
-# }
-
-# sub error {
-# Padre::Current->main->error( $_[1] );
-# }
-
-
+#######
+# sub debug_perl
+#######
 sub debug_perl {
-	my $self    = shift;
-	my $main    = $self->{main};
-	my $current = Padre::Current->new;
-
-	# my $main     = $current->main;
+	my $self     = shift;
+	my $main     = $self->{main};
+	my $current  = Padre::Current->new;
 	my $document = $current->document;
 	my $editor   = $current->editor;
 
-	# $main->show_debug(1);
+	# display panels
 	$self->show_debug_output(1);
 	$self->show_debug_variable(1);
 
@@ -128,37 +113,12 @@ sub debug_perl {
 
 	$self->{file} = $filename;
 
-	# we can use this to extract bp against
-	# p $self->{file};
-
 	my ( $module, $file, $row, $content ) = $self->{client}->get;
 
-	# p $module;
-	# p $file;
-	# p $row;
-	# say 'content';
-	# p $content;
-
 	my $save = ( $self->{save}->{$filename} ||= {} );
-	#######
-	#TODO add write breakpoints to $self->{client}->set_breakpoint
-	# require Padre::Plugin::Debug::Breakpoints;
-	# Padre::Plugin::Debug::Breakpoints::test();
 
+	# get bp's from db
 	$self->_get_bp_db();
-
-	#######
-	# if ( $save->{breakpoints} ) {
-	# foreach my $file ( keys %{ $save->{breakpoints} } ) {
-	# foreach my $row ( keys %{ $save->{breakpoints}->{$file} } ) {
-
-	# # 				# TODO what if this fails?
-	# # TODO find the editor of that $file first!
-	# $self->{client}->set_breakpoint( $file, $row );
-	# }
-	# }
-	# }
-	#######
 
 	unless ( $self->_set_debugger ) {
 		$main->error( Wx::gettext('Debugging failed. Did you check your program for syntax errors?') );
@@ -169,12 +129,14 @@ sub debug_perl {
 	return 1;
 }
 
+#######
+# sub _set_debugger
+#######
 sub _set_debugger {
 	my $self    = shift;
 	my $main    = $self->{main};
 	my $current = Padre::Current->new;
 
-	# my $main    = $current->main;
 	my $editor = $current->editor            or return;
 	my $file   = $self->{client}->{filename} or return;
 	my $row    = $self->{client}->{row}      or return;
@@ -191,32 +153,18 @@ sub _set_debugger {
 	#### TODO this was taken from the Padre::Wx::Syntax::start() and  changed a bit.
 	# They should be reunited soon !!!! (or not)
 
-	# $editor->SetMarginWidth( Padre::Constant::MARGIN_MARKER, 16 );
 	$editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_LOCATION() );
 
-
-	# display value follows, why use a display panel as a storage
-	foreach my $variable ( keys $self->{var_val} ) {
-		my $value;
-		eval { $value = $self->{client}->get_value($variable); };
-		if ($@) {
-
-			#ignore error
-		} else {
-			my $search_text = 'Use of uninitialized value';
-			unless ( $value =~ m/$search_text/) {
-			$self->{var_val}{$variable} = $value;
-		}
-		}
-		# say $variable;
-	}
-	# now let's update variable values in DebugVariables panel
-	$self->{panel_debug_variable}->update_variables( $self->{var_val} );
+	# update variables and output
+	$self->_output_variables();
 
 	return 1;
 }
 
+#######
+# sub running
+#######
 sub running {
 	my $self = shift;
 	my $main = $self->{main};
@@ -234,53 +182,9 @@ sub running {
 	return !!Padre::Current->editor;
 }
 
-# sub debug_perl_remove_breakpoint {
-# my $self = shift;
-# $self->running or return;
-
-# # 	my $editor = Padre::Current->editor;
-# my $file   = $editor->{Document}->filename;
-# my $row    = $editor->GetCurrentLine + 1;
-# $self->{client}->remove_breakpoint( $file, $row );
-# delete $self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row};
-
-# # 	return;
-# }
-
-# sub debug_perl_set_breakpoint {
-# my $self = shift;
-# $self->running or return;
-
-# # 	my $editor = Padre::Current->editor;
-# my $file   = $editor->{Document}->filename;
-# my $row    = $editor->GetCurrentLine + 1;
-
-# # 	# TODO ask for a condition
-# # TODO allow setting breakpoints even before the script and the debugger runs
-# # (by saving it in the debugger configuration file?)
-# if ( not $self->{client}->set_breakpoint( $file, $row ) ) {
-# $self->error( sprintf( Wx::gettext("Could not set breakpoint on file '%s' row '%s'"), $file, $row ) );
-# return;
-# }
-
-# # 	# $editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_BREAKPOINT );
-
-# # 	# TODO: This should be the condition I guess
-# $self->{save}->{ $self->{file} }->{breakpoints}->{$file}->{$row} = 1;
-
-# # 	return;
-# }
-
-# sub debug_perl_list_breakpoints {
-# my $self = shift;
-# $self->running or return;
-
-# # 	# LIST context crashes in Debug::Client 0.10
-# $self->message( scalar $self->{client}->list_break_watch_action );
-
-# # 	return;
-# }
-
+#######
+# sub debug_perl_jumpt_to
+#######
 sub debug_perl_jumpt_to {
 	my $self = shift;
 	$self->running or return;
@@ -288,6 +192,9 @@ sub debug_perl_jumpt_to {
 	return;
 }
 
+#######
+# sub debug_quit
+#######
 sub debug_quit {
 	my $self = shift;
 	$self->running or return;
@@ -313,8 +220,6 @@ sub debug_quit {
 sub debug_step_in {
 	my $self = shift;
 	my $main = $self->{main};
-
-	# p $self->{client};
 
 	unless ( $self->{client} ) {
 		unless ( $self->debug_perl ) {
@@ -379,18 +284,6 @@ sub debug_step_over {
 	return;
 }
 
-# sub debug_perl_run_to_cursor {
-# my $self = shift;
-# Padre::Current->main->error("Not implemented");
-
-# # 	# Commented our for critic:
-# #	my $file = $current->filename;
-# #	my $row  = '';
-# #
-# #	# put a breakpoint to the cursor and then run till there
-# #	$self->debug_perl_run;
-# }
-
 #######
 # Method debug_run_till
 #######
@@ -414,7 +307,6 @@ sub debug_run_till {
 		$self->debug_quit;
 		return;
 	}
-
 
 	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
@@ -447,6 +339,7 @@ sub debug_step_out {
 		$self->debug_quit;
 		return;
 	}
+
 	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
@@ -456,6 +349,7 @@ sub debug_step_out {
 
 	return;
 }
+
 #######
 # sub display_trace
 #######
@@ -489,7 +383,7 @@ sub display_trace {
 }
 
 #######
-# todo add button to main dialog to test
+#TODO Debug -> menu when in trunk
 #######
 sub debug_perl_show_stack_trace {
 	my $self = shift;
@@ -506,7 +400,7 @@ sub debug_perl_show_stack_trace {
 }
 
 #######
-# todo debug_perl_show_value
+#TODO Debug -> menu when in trunk
 #######
 sub debug_perl_show_value {
 	my $self = shift;
@@ -527,7 +421,7 @@ sub debug_perl_show_value {
 }
 
 #######
-# todo _debug_get_variable$line
+# sub _debug_get_variable$line
 #######
 sub _debug_get_variable {
 	my $self     = shift;
@@ -553,7 +447,7 @@ sub _debug_get_variable {
 }
 
 #######
-# todo display_value
+# Method display_value
 #######
 sub display_value {
 	my $self = shift;
@@ -561,33 +455,14 @@ sub display_value {
 
 	my $variable = $self->_debug_get_variable or return;
 
-	$self->{var_val}{$variable} = '';
-	say "text $variable";
-
+	$self->{var_val}{$variable} = BLANK;
 	$self->{panel_debug_variable}->update_variables( $self->{var_val} );
 
-	# p $text;
-	# my $debugger = Padre::Current->main->debugger;
-
-	# p $debugger;
-	# my $count = $debugger->GetItemCount;
-
-	# p $count;
-	# my $idx = $debugger->InsertStringItem( $count + 1, $text );
-
-	# p $idx;
-
-	#	my $value = eval { $self->{client}->get_value($text) };
-	#	if ($@) {
-	#		$main->error(sprintf(Wx::gettext("Could not evaluate '%s'"), $text));
-	#		return;
-	#	} else {
-	#		$debugger->SetItem( $idx, 1, $value );
-	#	}
+	return;
 }
 
 #######
-# todo convert to dialog
+#TODO Debug -> menu when in trunk
 #######
 sub debug_perl_evaluate_expression {
 	my $self = shift;
@@ -603,13 +478,39 @@ sub debug_perl_evaluate_expression {
 	return;
 }
 #######
-# quit
+# Method quit
 #######
 sub quit {
 	my $self = shift;
 	if ( $self->{client} ) {
 		$self->debug_quit;
 	}
+	return;
+}
+
+#######
+# Composed Method _output_variables
+#######
+sub _output_variables {
+	my $self = shift;
+
+	foreach my $variable ( keys $self->{var_val} ) {
+		my $value;
+		eval { $value = $self->{client}->get_value($variable); };
+		if ($@) {
+
+			#ignore error
+		} else {
+			my $search_text = 'Use of uninitialized value';
+			unless ( $value =~ m/$search_text/ ) {
+				$self->{var_val}{$variable} = $value;
+			}
+		}
+	}
+
+	# now let's update variable values in DebugVariables panel
+	$self->{panel_debug_variable}->update_variables( $self->{var_val} );
+
 	return;
 }
 
@@ -659,11 +560,13 @@ sub _get_bp_db {
 		# if DEBUG;
 		# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
 		#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
-		# option 1
+
 		# if you get spourios bp clean DB with recipe04
+
+		# option 1
 		# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 
-		# Option 2 means that at present you must step-in to load a files bp before using run-till
+
 
 		if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
@@ -696,8 +599,8 @@ sub _show_bp_autoload {
 
 		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
 
-		# autoload of breakpoints only works on step in
-		# option 2
+		# autoload of breakpoints works with option1
+		# option 2 only works on step in
 		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}
