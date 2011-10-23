@@ -32,7 +32,7 @@ sub new {
 
 	# 	# Create the panel
 	my $self = $class->SUPER::new($panel);
-	
+
 	$self->set_up();
 
 	return $self;
@@ -115,23 +115,11 @@ sub gettext_label {
 sub set_up {
 	my $self = shift;
 
-	# $self->{debug_visable}       = 0;
-	# $self->{breakpoints_visable} = 0;
+	$self->{show_project_variables} = 0;
 
 	# Setup the debug button icons
 	$self->{refresh}->SetBitmapLabel( Padre::Wx::Icon::find('actions/view-refresh') );
-	$self->{refresh}->Enable;
-
-# # 	$self->{set_breakpoints}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-insert-breakpoint') );
-	# $self->{set_breakpoints}->Enable;
-
-	# Update the checkboxes with their corresponding values in the
-	# configuration
-	# $self->{show_project}->SetValue(0);
-	# $self->{show_project} = 0;
-
-# # 	$self->_setup_db();('Variable') if $c == 0;
-	# return Wx::gettext('Value')
+	$self->{refresh}->Disable;
 
 	# Setup columns names and order here
 	my @column_headers = qw( Variable Value );
@@ -143,8 +131,6 @@ sub set_up {
 	# Tidy the list
 	Padre::Util::tidy_list( $self->{variables} );
 
-	# $self->on_refresh_click();
-
 	return;
 }
 
@@ -153,8 +139,9 @@ sub set_up {
 # display any relation db
 #######
 sub update_variables {
-	my $self = shift;
-	my $var_val_ref = shift;
+	my $self             = shift;
+	my $var_val_ref      = shift;
+	my $auto_var_val_ref = shift;
 
 	my $item = Wx::ListItem->new;
 
@@ -165,17 +152,28 @@ sub update_variables {
 
 	my $index = 0;
 
-	foreach my $var ( keys %{ $var_val_ref } ) {
+	foreach my $var ( keys %{$var_val_ref} ) {
 
-				$item->SetId($index);
-				$self->{variables}->InsertItem($item);
-				$self->{variables}->SetItemTextColour( $index, BLUE );
+		$item->SetId($index);
+		$self->{variables}->InsertItem($item);
+		$self->{variables}->SetItemTextColour( $index, BLUE );
 
-				$self->{variables}->SetItem( $index, 0, $var );
-				$self->{variables}->SetItem( $index++, 1, $var_val_ref->{$var} );
-			}
+		$self->{variables}->SetItem( $index,   0, $var );
+		$self->{variables}->SetItem( $index++, 1, $var_val_ref->{$var} );
+	}
 
-		Padre::Util::tidy_list( $self->{variables} );
+	if ( $self->{show_project_variables} == 1 ) {
+		foreach my $var ( keys %{$auto_var_val_ref} ) {
+
+			$item->SetId($index);
+			$self->{variables}->InsertItem($item);
+			$self->{variables}->SetItemTextColour( $index, DARK_GREEN );
+
+			$self->{variables}->SetItem( $index,   0, $var );
+			$self->{variables}->SetItem( $index++, 1, $auto_var_val_ref->{$var} );
+		}
+	}
+	Padre::Util::tidy_list( $self->{variables} );
 
 	return;
 }
@@ -189,7 +187,19 @@ sub on_refresh_click {
 
 
 sub on_show_package_click {
-	my $self = shift;
+	my ( $self, $event ) = @_;
+
+	if ( $event->IsChecked ) {
+		$self->{show_project_variables} = 1;
+
+		# say 'on_show_project_click yes';
+		# say $self->{show_project};
+	} else {
+		$self->{show_project_variables} = 0;
+
+		# say 'on_show_project_click no';
+		# say $self->{show_project};
+	}
 
 	return;
 }
