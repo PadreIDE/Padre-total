@@ -339,5 +339,13 @@ look at displaying variables yes, but in a nice table
 		$self->_prompt( \$buf );
 		return $buf;
 	}
+	
+	sub show_breakpoints {
+		my ($self) = @_;
+
+		my $ret = $self->send_get('L');
+
+		return $ret;
+	}
 
 =cut
