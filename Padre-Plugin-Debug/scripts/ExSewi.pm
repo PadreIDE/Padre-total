@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(wh eh);
 
 sub wh {
 	
-	my $fred = 'bloggs';
+	my $fred = 'bloggs two';
 	
 	#bp 19-20 this is 18
 	say 'running wh';

@@ -499,7 +499,7 @@ sub _output_variables {
 	#TODO Auto values kind of works, needs more attention
 
 	my $auto_values = $self->{client}->get_yvalue(0);
-	# p $auto_values;
+	p $auto_values;
 
 	$auto_values =~ s/^([\$\@\%]\w+)/:;$1/xmg;
 	# p $auto_values;
