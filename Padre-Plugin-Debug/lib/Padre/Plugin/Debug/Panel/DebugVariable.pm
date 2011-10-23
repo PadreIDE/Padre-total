@@ -14,6 +14,13 @@ our @ISA = qw{
 	Padre::Plugin::Debug::FBP::DebugVariable
 };
 
+use constant {
+	RED        => Wx::Colour->new('red'),
+	DARK_GREEN => Wx::Colour->new( 0x00, 0x90, 0x00 ),
+	BLUE       => Wx::Colour->new('blue'),
+	GRAY       => Wx::Colour->new('gray'),
+	BLACK      => Wx::Colour->new('black'),
+};
 
 #######
 # new
@@ -141,9 +148,37 @@ sub set_up {
 	return;
 }
 
+#######
+# Composed Method,
+# display any relation db
+#######
+sub update_variables {
+	my $self = shift;
+	my $var_val_ref = shift;
 
+	my $item = Wx::ListItem->new;
 
+	# clear ListCtrl items
+	$self->{variables}->DeleteAllItems;
 
+	my $editor = Padre::Current->editor;
+
+	my $index = 0;
+
+	foreach my $var ( keys %{ $var_val_ref } ) {
+
+				$item->SetId($index);
+				$self->{variables}->InsertItem($item);
+				$self->{variables}->SetItemTextColour( $index, BLUE );
+
+				$self->{variables}->SetItem( $index, 0, $var );
+				$self->{variables}->SetItem( $index++, 1, $var_val_ref->{$var} );
+			}
+
+		Padre::Util::tidy_list( $self->{variables} );
+
+	return;
+}
 
 
 sub on_refresh_click {

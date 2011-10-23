@@ -37,6 +37,7 @@ sub _init {
 	$self->{file}         = undef;
 	$self->{save}         = {};
 	$self->{trace_status} = 'Trace = off';
+	$self->{var_val}      = {};
 
 	return $self;
 } #_init
@@ -78,9 +79,8 @@ sub debug_perl {
 	my $document = $current->document;
 	my $editor   = $current->editor;
 
-	$main->show_debug(1);
+	# $main->show_debug(1);
 	$self->show_debug_output(1);
-
 	$self->show_debug_variable(1);
 
 	if ( $self->{client} ) {
@@ -195,19 +195,24 @@ sub _set_debugger {
 	$editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 	$editor->MarkerAdd( $row - 1, Padre::Constant::MARKER_LOCATION() );
 
-	my $debugger = $main->debugger;
-	my $count    = $debugger->GetItemCount;
-	foreach my $c ( 0 .. $count - 1 ) {
-		my $variable = $debugger->GetItemText($c);
-		my $value = eval { $self->{client}->get_value($variable); };
+
+	# display value follows, why use a display panel as a storage
+	foreach my $variable ( keys $self->{var_val} ) {
+		my $value;
+		eval { $value = $self->{client}->get_value($variable); };
 		if ($@) {
 
-			#$main->error(sprintf(Wx::gettext("Could not evaluate '%s'"), $text));
-			#return;
+			#ignore error
 		} else {
-			$debugger->SetItem( $c, 1, $value );
+			my $search_text = 'Use of uninitialized value';
+			unless ( $value =~ m/$search_text/) {
+			$self->{var_val}{$variable} = $value;
 		}
+		}
+		# say $variable;
 	}
+	# now let's update variable values in DebugVariables panel
+	$self->{panel_debug_variable}->update_variables( $self->{var_val} );
 
 	return 1;
 }
@@ -290,9 +295,8 @@ sub debug_quit {
 	# Clean up the GUI artifacts
 	my $current = Padre::Current->new;
 
-	$current->main->show_debug(0);
+	# $current->main->show_debug(0);
 	$self->show_debug_output(0);
-
 	$self->show_debug_variable(0);
 	$current->editor->MarkerDeleteAll( Padre::Constant::MARKER_LOCATION() );
 
@@ -364,12 +368,12 @@ sub debug_step_over {
 		$self->debug_quit;
 		return;
 	}
-	
+
 	$self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -447,7 +451,7 @@ sub debug_step_out {
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
-	
+
 	$self->_set_debugger;
 
 	return;
@@ -523,7 +527,7 @@ sub debug_perl_show_value {
 }
 
 #######
-# todo _debug_get_variable
+# todo _debug_get_variable$line
 #######
 sub _debug_get_variable {
 	my $self     = shift;
@@ -532,8 +536,9 @@ sub _debug_get_variable {
 
 	#my $text = $current->text;
 	my ( $location, $text ) = $document->get_current_symbol;
-	p $location;
-	p $text;
+
+	# p $location;
+	# p $text;
 	if ( not $text or $text !~ m/^[\$@%\\]/smx ) {
 		$main->error(
 			sprintf(
@@ -554,16 +559,21 @@ sub display_value {
 	my $self = shift;
 	$self->running or return;
 
-	my $text = $self->_debug_get_variable or return;
+	my $variable = $self->_debug_get_variable or return;
+
+	$self->{var_val}{$variable} = '';
+	say "text $variable";
+
+	$self->{panel_debug_variable}->update_variables( $self->{var_val} );
 
 	# p $text;
-	my $debugger = Padre::Current->main->debugger;
+	# my $debugger = Padre::Current->main->debugger;
 
 	# p $debugger;
-	my $count = $debugger->GetItemCount;
+	# my $count = $debugger->GetItemCount;
 
 	# p $count;
-	my $idx = $debugger->InsertStringItem( $count + 1, $text );
+	# my $idx = $debugger->InsertStringItem( $count + 1, $text );
 
 	# p $idx;
 
@@ -631,8 +641,10 @@ sub _get_bp_db {
 	my $editor = Padre::Current->editor;
 
 	$self->{project_dir} = Padre::Current->document->project_dir;
+
 	# p $self->{project_dir};
 	$self->{current_file} = Padre::Current->document->filename;
+
 	# p $self->{current_file};
 
 	TRACE("current file from _get_bp_db: $self->{current_file}") if DEBUG;
@@ -643,25 +655,25 @@ sub _get_bp_db {
 	for ( 0 .. $#tuples ) {
 
 		# if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
-			# TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
-				# if DEBUG;
-			# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
-			#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
-			# option 1
-			# if you get spourios bp clean DB with recipe04
-			# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-			
-			# Option 2 means that at present you must step-in to load a files bp before using run-till
+		# TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
+		# if DEBUG;
+		# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
+		#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
+		# option 1
+		# if you get spourios bp clean DB with recipe04
+		# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 
-			if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
+		# Option 2 means that at present you must step-in to load a files bp before using run-till
 
-				# say "653 current file $self->{current_file} and line $tuples[$_][2]";
-				# option 2
-				$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
-			}
+		if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
+			# say "653 current file $self->{current_file} and line $tuples[$_][2]";
+			# option 2
+			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		}
+
+	}
 
 	return;
 }
