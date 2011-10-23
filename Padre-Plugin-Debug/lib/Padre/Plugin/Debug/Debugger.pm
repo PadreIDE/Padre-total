@@ -17,18 +17,6 @@ use constant {
 };
 
 
-=pod
-
-=head1 issue
-
-	Option 1 should be default but initial files bp's are screwed update
-	
-	I think this is a Debug::Client issue reciving a burst of bp's or perl -d issue
-
-	Option 2 means that at present you must step-in to load a files bp before using run-till
-
-=cut
-
 #######
 # new
 #######
@@ -240,7 +228,7 @@ sub debug_step_in {
 		return;
 	}
 
-	$self->{client}->show_breakpoints();
+	p $self->{client}->show_breakpoints();
 	my $output = $self->{client}->buffer;
 	$output .= "\n" . $self->{client}->get_yvalue(0);
 	$self->{panel_debug_output}->debug_output($output);
@@ -555,29 +543,22 @@ sub _get_bp_db {
 
 	for ( 0 .. $#tuples ) {
 
-		# if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
-		# TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]")
-		# if DEBUG;
-		# say "650 file $tuples[$_][1] and line $tuples[$_][2]";
-		#TODO the following should work, but produces surious bp's in launch file, so what if it's just a pl file
-
-		# if you get spourios bp clean DB with recipe04
-
-		# option 1
-		# $self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
-
-
-
 		if ( $tuples[$_][1] =~ m/$self->{current_file}/ ) {
 
-			# say "653 current file $self->{current_file} and line $tuples[$_][2]";
-			# option 2
+			# set current file breakpoints and markers
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		}
 
 	}
+	for ( 0 .. $#tuples ) {
 
+		if ( $tuples[$_][1] =~ m/$self->{project_dir}/ ) {
+			
+		# set common project files bp's in debugger
+		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+		}
+	}
 	return;
 }
 
@@ -599,8 +580,7 @@ sub _show_bp_autoload {
 
 		TRACE("show breakpoints autoload: self->{client}->set_breakpoint: $tuples[$_][1] => $tuples[$_][2]") if DEBUG;
 
-		# autoload of breakpoints works with option1
-		# option 2 only works on step in
+		# autoload of breakpoints and mark file
 		$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
 		$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 	}
