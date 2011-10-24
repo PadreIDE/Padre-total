@@ -495,41 +495,63 @@ sub _output_variables {
 			}
 		}
 	}
-	
+
 	#TODO Auto values kind of works, needs more attention
 
 	my $auto_values = $self->{client}->get_yvalue(0);
-	p $auto_values;
+	# p $auto_values;
 
 	$auto_values =~ s/^([\$\@\%]\w+)/:;$1/xmg;
 	# p $auto_values;
 
 	my @auto = split m/^:;/xm, $auto_values;
+
+	#TODO, don't generate a ghost
+	#remove ghost at begining
+	shift @auto;
 	# p @auto;
 
+	# This is better I think, it's quicker
 	$self->{auto_var_val} = {};
 	foreach (@auto) {
-		my $val = $_;
-		my @test = split m/ = /, $val;
-		# p @test;
-		# if ($_) {
-			# m/^([\$\@\%]\w+)/xm;
-			# my $var = $1;
-			# say "\$1: $1 \$2: $2";
-			# $auto_vars{$1} = {$2};
-			
-			# $val =~ s/^$var//;
-			# p $1;
-			# say $val;
-			if ( defined $test[0] ) {
-				if ( defined $test[1] ) {
-			$self->{auto_var_val}{$test[0]} = $test[1];
-		} else {
-			$self->{auto_var_val}{$test[0]} = BLANK;
+		$_ =~ m/ = /;
+
+		# $` before and $' after $#
+		if ( defined $` ) {
+			if ( defined $' ) {
+				$self->{auto_var_val}{$`} = $';
+			} else {
+				$self->{auto_var_val}{$`} = BLANK;
 			}
 		}
-		# }
 	}
+
+
+	# # 		my $val = $_;
+	# my @test = split m/ = /, $val;
+
+
+	# p @test;
+	# if ($_) {
+	# m/^([\$\@\%]\w+)/xm;
+	# my $var = $1;
+	# say "\$1: $1 \$2: $2";
+	# $auto_vars{$1} = {$2};
+
+	# $val =~ s/^$var//;
+	# p $1;
+	# say $val;
+
+	# if ( defined $test[0] ) {
+	# if ( defined $test[1] ) {
+	# $self->{auto_var_val}{$test[0]} = $test[1];
+	# } else {
+	# $self->{auto_var_val}{$test[0]} = BLANK;
+	# }
+	# }
+	# }
+	# }
+
 	# p %auto_vars;
 	# p $self->{auto_var_val};
 	# now let's update variable values in DebugVariables panel
