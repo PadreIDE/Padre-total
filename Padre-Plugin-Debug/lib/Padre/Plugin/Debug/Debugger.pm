@@ -605,6 +605,7 @@ sub _get_bp_db {
 
 			# set current file breakpoints and markers
 			$self->{client}->set_breakpoint( $tuples[$_][1], $tuples[$_][2] );
+			
 			$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 		}
 

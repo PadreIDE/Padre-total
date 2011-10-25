@@ -27,24 +27,8 @@ sub new {
 		-1,
 		Wx::gettext("Debug Simulator"),
 		Wx::DefaultPosition(),
-		[ 360, 160 ],
-		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
-	);
-
-	$self->{debug_output} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Debug Output"),
-		Wx::DefaultPosition(),
 		Wx::DefaultSize(),
-	);
-
-	Wx::Event::EVT_CHECKBOX(
-		$self,
-		$self->{debug_output},
-		sub {
-			shift->on_debug_output_clicked(@_);
-		},
+		Wx::DEFAULT_DIALOG_STYLE() | Wx::RESIZE_BORDER(),
 	);
 
 	$self->{breakpoints} = Wx::CheckBox->new(
@@ -59,18 +43,9 @@ sub new {
 		$self,
 		$self->{breakpoints},
 		sub {
-			shift->on_breakpoints_clicked(@_);
+			shift->breakpoints_checked(@_);
 		},
 	);
-
-	$self->{m_checkBox3} = Wx::CheckBox->new(
-		$self,
-		-1,
-		Wx::gettext("Variables"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{m_checkBox3}->Disable;
 
 	$self->{step_in} = Wx::BitmapButton->new(
 		$self,
@@ -81,7 +56,7 @@ sub new {
 		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
 	);
 	$self->{step_in}->SetToolTip(
-		Wx::gettext("Step In")
+		Wx::gettext("s [expr]\nSingle step. Executes until the beginning of another statement, descending into subroutine calls. If an expression is supplied that includes function calls, it too will be single-stepped.")
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -101,7 +76,7 @@ sub new {
 		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
 	);
 	$self->{step_over}->SetToolTip(
-		Wx::gettext("Step Over")
+		Wx::gettext("n [expr]\nNext. Executes over subroutine calls, until the beginning of the next statement. If an expression is supplied that includes function calls, those functions will be executed with stops before each statement.")
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -121,7 +96,7 @@ sub new {
 		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
 	);
 	$self->{step_out}->SetToolTip(
-		Wx::gettext("Step Out")
+		Wx::gettext("r\nContinue until the return from the current subroutine. Dump the return value if the PrintRet option is set (default).")
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -141,7 +116,7 @@ sub new {
 		Wx::BU_AUTODRAW() | Wx::NO_BORDER(),
 	);
 	$self->{run_till}->SetToolTip(
-		Wx::gettext("Run Till Breakpoint")
+		Wx::gettext("c [line|sub]\nContinue, optionally inserting a one-time-only breakpoint at the specified line or subroutine.")
 	);
 
 	Wx::Event::EVT_BUTTON(
@@ -169,25 +144,6 @@ sub new {
 		$self->{set_breakpoints},
 		sub {
 			shift->set_breakpoints_clicked(@_);
-		},
-	);
-
-	$self->{trace} = Wx::Button->new(
-		$self,
-		-1,
-		Wx::gettext("Trace"),
-		Wx::DefaultPosition(),
-		Wx::DefaultSize(),
-	);
-	$self->{trace}->SetToolTip(
-		Wx::gettext("Trace On, Trace Off see status in Debug Output")
-	);
-
-	Wx::Event::EVT_BUTTON(
-		$self,
-		$self->{trace},
-		sub {
-			shift->trace_clicked(@_);
 		},
 	);
 
@@ -231,10 +187,26 @@ sub new {
 		},
 	);
 
-	$self->{m_staticText31} = Wx::StaticText->new(
+	$self->{trace} = Wx::CheckBox->new(
 		$self,
 		-1,
-		Wx::gettext("info: trace is a toggle \n it in not reset upon compleation"),
+		Wx::gettext("Trace"),
+		Wx::DefaultPosition(),
+		Wx::DefaultSize(),
+	);
+
+	Wx::Event::EVT_CHECKBOX(
+		$self,
+		$self->{trace},
+		sub {
+			shift->trace_checked(@_);
+		},
+	);
+
+	$self->{info} = Wx::StaticText->new(
+		$self,
+		-1,
+		Wx::gettext("info: read POD in Main.pm"),
 	);
 
 	my $close_button = Wx::Button->new(
@@ -262,9 +234,9 @@ sub new {
 		),
 		Wx::HORIZONTAL(),
 	);
-	$file_1->Add( $self->{debug_output}, 0, Wx::ALL(), 5 );
+	$file_1->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$file_1->Add( $self->{breakpoints}, 0, Wx::ALL(), 5 );
-	$file_1->Add( $self->{m_checkBox3}, 0, Wx::ALL(), 5 );
+	$file_1->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 
 	my $file_2 = Wx::StaticBoxSizer->new(
 		Wx::StaticBox->new(
@@ -279,44 +251,51 @@ sub new {
 	$file_2->Add( $self->{step_out}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{run_till}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{set_breakpoints}, 0, Wx::ALL(), 5 );
-	$file_2->Add( $self->{trace}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{display_value}, 0, Wx::ALL(), 5 );
 	$file_2->Add( $self->{quit_debugger}, 0, Wx::ALL(), 5 );
 
+	my $file_11 = Wx::StaticBoxSizer->new(
+		Wx::StaticBox->new(
+			$self,
+			-1,
+			Wx::gettext("Options"),
+		),
+		Wx::HORIZONTAL(),
+	);
+	$file_11->Add( $self->{trace}, 0, Wx::ALL(), 5 );
+	$file_11->Add( 0, 0, 1, Wx::EXPAND(), 5 );
+
 	my $buttons = Wx::BoxSizer->new(Wx::HORIZONTAL());
-	$buttons->Add( $self->{m_staticText31}, 0, Wx::ALL(), 5 );
+	$buttons->Add( $self->{info}, 0, Wx::ALL(), 5 );
 	$buttons->Add( 0, 0, 1, Wx::EXPAND(), 5 );
 	$buttons->Add( $close_button, 0, Wx::ALL(), 5 );
 
 	my $vsizer = Wx::BoxSizer->new(Wx::VERTICAL());
 	$vsizer->Add( $file_1, 0, Wx::EXPAND(), 5 );
 	$vsizer->Add( $file_2, 0, Wx::EXPAND(), 5 );
+	$vsizer->Add( $file_11, 1, Wx::EXPAND(), 5 );
 	$vsizer->Add( $buttons, 0, Wx::EXPAND(), 3 );
 	$vsizer->Add( $self->{m_staticline5}, 0, Wx::EXPAND() | Wx::ALL(), 5 );
 
 	my $sizer = Wx::BoxSizer->new(Wx::HORIZONTAL());
 	$sizer->Add( $vsizer, 0, Wx::ALL(), 1 );
 
-	$self->SetSizer($sizer);
+	$self->SetSizerAndFit($sizer);
 	$self->Layout;
 
 	return $self;
-}
-
-sub debug_output {
-	$_[0]->{debug_output};
 }
 
 sub breakpoints {
 	$_[0]->{breakpoints};
 }
 
-sub on_debug_output_clicked {
-	$_[0]->main->error('Handler method on_debug_output_clicked for event debug_output.OnCheckBox not implemented');
+sub trace {
+	$_[0]->{trace};
 }
 
-sub on_breakpoints_clicked {
-	$_[0]->main->error('Handler method on_breakpoints_clicked for event breakpoints.OnCheckBox not implemented');
+sub breakpoints_checked {
+	$_[0]->main->error('Handler method breakpoints_checked for event breakpoints.OnCheckBox not implemented');
 }
 
 sub step_in_clicked {
@@ -339,16 +318,16 @@ sub set_breakpoints_clicked {
 	$_[0]->main->error('Handler method set_breakpoints_clicked for event set_breakpoints.OnButtonClick not implemented');
 }
 
-sub trace_clicked {
-	$_[0]->main->error('Handler method trace_clicked for event trace.OnButtonClick not implemented');
-}
-
 sub display_value_clicked {
 	$_[0]->main->error('Handler method display_value_clicked for event display_value.OnButtonClick not implemented');
 }
 
 sub quit_debugger_clicked {
 	$_[0]->main->error('Handler method quit_debugger_clicked for event quit_debugger.OnButtonClick not implemented');
+}
+
+sub trace_checked {
+	$_[0]->main->error('Handler method trace_checked for event trace.OnCheckBox not implemented');
 }
 
 1;

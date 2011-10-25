@@ -49,7 +49,7 @@ sub set_up {
 
 	# Setup the debug button icons
 
-	$self->{debug_output}->Disable;
+	# $self->{debug_output}->Disable;
 
 	$self->{step_in}->SetBitmapLabel( Padre::Wx::Icon::find('stock/code/stock_macro-stop-after-command') );
 	$self->{step_in}->Enable;
@@ -108,7 +108,7 @@ sub on_debug_output_clicked {
 ########
 # Event Handler on_breakpoints_clicked
 ########
-sub on_breakpoints_clicked {
+sub breakpoints_checked {
 	my ( $self, $event ) = @_;
 	my $main = $self->main;
 
@@ -228,10 +228,29 @@ sub set_breakpoints_clicked {
 #######
 # sub trace_clicked
 #######
-sub trace_clicked {
-	my $self = shift;
-	
-	$self->{debugger}->display_trace(1);
+sub trace_checked {
+	# my $self = shift;
+	my ( $self, $event ) = @_;
+
+	if ( $event->IsChecked ) {
+		# $self->{show_project} = 1;
+		$self->{debugger}->display_trace(1);
+
+		# say 'on_show_project_click yes';
+		# say $self->{show_project};
+	} else {
+		# $self->{show_project} = 0;
+		$self->{debugger}->display_trace(0);
+
+		# say 'on_show_project_click no';
+		# say $self->{show_project};
+	}
+
+	# $self->on_refresh_click();
+
+# # 	return;
+# }	
+	# $self->{debugger}->display_trace(1);
 
 	return;
 }
