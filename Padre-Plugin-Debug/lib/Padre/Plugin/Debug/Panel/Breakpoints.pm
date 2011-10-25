@@ -216,6 +216,7 @@ sub set_breakpoints_clicked {
 
 		# say 'delete me';
 		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_BREAKPOINT() );
+		$editor->MarkerDelete( $self->{bp_line} - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 		$self->_delete_bp_db();
 
 	} else {
@@ -321,8 +322,10 @@ sub _update_list {
 				$self->{list}->InsertItem($item);
 				if ( $tuples[$_][3] == 1 ) {
 				$self->{list}->SetItemTextColour( $index, BLUE );
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 			} else {
 				$self->{list}->SetItemTextColour( $index, GRAY );
+				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_NOT_BREAKABLE() );
 				}
 				$self->{list}->SetItem( $index, 1, ( $tuples[$_][2] ) );
 				$tuples[$_][1] =~ s/^ $self->{project_dir} //sxm;
@@ -330,7 +333,7 @@ sub _update_list {
 
 				# TODO add when we have alternative markings
 				$self->{list}->SetItem( $index++, 2, ( $tuples[$_][3] ) );
-				$editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
+				# $editor->MarkerAdd( $tuples[$_][2] - 1, Padre::Constant::MARKER_BREAKPOINT() );
 
 			} elsif ( $self->{show_project} == 1 ) {
 				$item->SetId($index);
